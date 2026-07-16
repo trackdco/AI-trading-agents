@@ -6,9 +6,9 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** (none — setup nearly done; repo initialized, hand log committed)
-- **Blocked on:** Databento data download (blocks Steps 2+ on real data; Steps 1–3 checks run on fixtures); Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET)
-- **Next action:** Spec 1, Step 1 (repo scaffold) — can start immediately
+- **Last completed step:** Spec 1, Step 1 (repo scaffold) — check passed, committed
+- **Blocked on:** Databento data download (blocks Steps 2+ on real data; Steps 2–3 checks run on fixtures); Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET)
+- **Next action:** Spec 1, Step 2 (data ingest) — after human confirmation of Step 1 per workflow rules
 
 ## Gates ledger (Angus sign-offs — append-only)
 
@@ -26,6 +26,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Data: Jan 2026→present primary; 2025 as robustness check only (Angus regime rationale, honesty guard noted)
 
 ## Session log (newest first)
+
+### 2026-07-16 — Spec 1 Step 1: repo scaffold (Claude Code, remote session, Brake driving)
+- Steps completed: Step 1 — README.md, config/strategy.yaml (76 leaf parameters, all §-traced), config/news_calendar.csv (17 Feb 2026 seed rows), src/engine/, src/backtest/, tests/, data/raw/, output/, .gitignore (data/raw/ + output/ + .env ignored)
+- Checks passed: repo tree matches Step 1 list; strategy.yaml parses via PyYAML; automated scan confirms every parameter line carries a §/spec-1 trace comment; news_calendar.csv parses with expected columns
+- Divergences/flags raised — PLACEHOLDER values in strategy.yaml (doc names the parameter but gives no start value; all marked PLACEHOLDER in-file): T_cancel start value (§5.5, set 15.0 pts); session box times (§2, standard Asia 18:00–03:00 / London 03:00–09:30 / NY 09:30–16:00 used); W2 "full trading day" scope read as full CME session 18:00→15:55 (§1); volume-profile value-area % (set 70, industry standard); slippage S_normal=1 / S_news=4 ticks, N_news=15 min, commission $2.50/side (spec-1 §3, engineering placeholders). News calendar seeded from the hand log's News detail column because the reference journals are not in the repo — times use the log where stated, standard release times otherwise; impact ratings best-effort. `.env.example` flagged in next-tasks.md (required by code-standards, not named in Step 1) rather than silently added.
+- Questions parked for Angus: confirm the PLACEHOLDER values above; prior session's four PNL Points quirks, Step 4 reference-chart values, and strategy-doc final read-through all still pending
+- Next session starts at: Spec 1, Step 2 (data ingest) — Step 1 result shown to human for confirmation first
 
 ### 2026-07-16 — Repo initialization (Claude Code, remote session)
 - Steps completed: repo created; full context pack committed (context/, strategy-definition-v1.0.md, spec-1); Angus's 28-trade hand log committed at data/reference/feb2026_hand_log.csv (as-is, per reported-not-fixed)

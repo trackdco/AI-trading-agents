@@ -30,6 +30,7 @@ Ordered. Do not start a task before its predecessor's gate clears.
 - [ ] Buy sim/eval only after paper track record reviewed against backtest expectations
 
 ## Parked / flagged (do not build without promotion to a spec)
+- `.env.example` documenting required vars (DATABENTO_API_KEY now; TELEGRAM_* in Phase 4) — required by code-standards §Data & secrets but not named in Spec 1 Step 1; flagged per no-silent-scope rule
 - Weekly volume profile variant (config-flagged, test in Phase 2 tournaments)
 - H3 session expansion (London / full-day W2 results will inform)
 - H4 news-buffer filter
