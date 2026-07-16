@@ -6,9 +6,9 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** (none — awaiting setup tasks)
-- **Blocked on:** Databento data download; repo initialization
-- **Next action:** Spec 1, Step 1 (repo scaffold)
+- **Last completed step:** (none — setup nearly done; repo initialized, hand log committed)
+- **Blocked on:** Databento data download (blocks Steps 2+ on real data; Steps 1–3 checks run on fixtures); Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET)
+- **Next action:** Spec 1, Step 1 (repo scaffold) — can start immediately
 
 ## Gates ledger (Angus sign-offs — append-only)
 
@@ -26,6 +26,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Data: Jan 2026→present primary; 2025 as robustness check only (Angus regime rationale, honesty guard noted)
 
 ## Session log (newest first)
+
+### 2026-07-16 — Repo initialization (Claude Code, remote session)
+- Steps completed: repo created; full context pack committed (context/, strategy-definition-v1.0.md, spec-1); Angus's 28-trade hand log committed at data/reference/feb2026_hand_log.csv (as-is, per reported-not-fixed)
+- Checks passed: all 28 reference trades present; hand-log P&L $ / R Multiple / Risk $ columns cross-check internally
+- Divergences/flags raised: PNL Points column quirks in hand log, pending Angus confirmation — Feb 10 logged +11 pts on a −$220 loss (should be −11); Feb 18 09:42 logged 0 pts on −$400 stop (should be −20); Feb 19 logged 0 pts on −$150 discretionary close; Feb 27 09:40 logged 0 pts on −$324 stop (should be −27). Also noted: Feb 2 "BE stopped" means the hand sample already includes BE management (relevant to V0-vs-V1 tournament framing); Feb 19 discretionary close will never be matched by a mechanical exit (expected calibration divergence, not a bug)
+- Questions parked for Angus: confirm the four PNL Points quirks above; provide reference-chart values (BB basis, daily VWAP ±1σ, NY VWAP, daily POC) for Feb 11 09:48 ET and Feb 17 09:50 ET for the Step 4 parity gate; formally confirm strategy-definition-v1.0.md final read-through (status line says "LOCKED pending final read-through")
+- Next session starts at: Spec 1, Step 1 (repo scaffold)
 
 ### YYYY-MM-DD — (template)
 - Steps completed:
