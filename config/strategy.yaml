@@ -1,0 +1,135 @@
+# config/strategy.yaml — every configurable number for the Market Engine & Backtester.
+#
+# RULES (code-standards.md / architecture.md invariant 5):
+#   - Every parameter carries a comment tracing it to a § of strategy-definition-v1.0.md
+#     (or to spec-1 Section 3 for engineering/fill-realism parameters).
+#   - CALIBRATE   = numeric parameter the February re-run tunes (value below is the doc's start value).
+#   - TOURNAMENT  = rule variant tested head-to-head; the `variant`/flag keys select the active one.
+#   - PLACEHOLDER = the doc names the parameter but gives NO starting value. Values below are
+#     best-effort stand-ins, flagged in context/progress-tracker.md for Angus confirmation.
+#     Changing them later is calibration input, not a rule change.
+
+instrument:
+  symbol: NQ                      # §1 — NQ (CME), sized via MNQ where risk requires
+  tick_size: 0.25                 # spec-1 §3 — fill realism; prices round to tick at every order boundary
+  point_value_nq: 20.0            # §1 — NQ $ per point
+  point_value_mnq: 2.0            # §1 — MNQ $ per point
+
+session:
+  timezone: America/New_York      # spec-1 §0 — all timestamps tz-aware NY, DST via tz library
+  entry_window: W1                # §1 TOURNAMENT — active variant (W1 primary, Angus-confirmed intent)
+  entry_windows:
+    W1: { start: "08:00", end: "11:00" }   # §1 — pre-market through pre-lunch (primary)
+    W2: { start: "18:00", end: "15:55" }   # §1 — "full trading day" PLACEHOLDER read: full CME session
+                                           #      (18:00 prior day → EOD flatten); confirm scope with Angus
+    # W3 (other sessions, e.g. London) = Hypothesis H3, only after v1 validates — intentionally not configured (§1)
+  eod_flatten: "15:55"            # §1 — Vault backstop flatten time, default 15:55 ET
+  boxes:                          # §2 — session boxes Asia/London/NY. PLACEHOLDER times: the doc names
+    asia:   { start: "18:00", end: "03:00" }   # §2 PLACEHOLDER — the boxes but gives no clock times;
+    london: { start: "03:00", end: "09:30" }   # §2 PLACEHOLDER — standard conventions used, Angus to
+    ny:     { start: "09:30", end: "16:00" }   # §2 PLACEHOLDER — confirm before Step 3 signs off
+
+timeframes:
+  entry: ["1min", "2min", "3min", "5min"]   # §1 — entry TFs, resampled from 1m base (spec-1 §3)
+  mtf_arbitration: highest_wins   # §1 CONFIRMED — simultaneous valid triggers → take the highest TF
+  htf_flag_tf: "15min"            # §1 — context TF for HTF trend/range flag
+  range_extreme_tfs: ["1h", "4h"] # §1 — context TFs for HTF range extremes
+
+indicators:
+  bollinger:
+    length: 20                    # §2 — BB(20, SMA, close, 2σ); basis "BB MA" = core cluster level
+    ma_type: sma                  # §2
+    source: close                 # §2
+    stdev_mult: 2.0               # §2
+  ny_vwap:
+    anchor: "09:30"               # §2 — anchored 09:30 ET cash open; does NOT exist pre-market
+                                  #      (architecture invariant 1: returns NaN before anchor)
+    bands_sigma: [1, 2, 3]        # §2 — ±1σ/±2σ/±3σ; volume-weighted stdev, TradingView formula (spec-1 §3)
+  daily_vwap:
+    anchor: "18:00"               # §2 CONFIRMED — resets at CME daily session open 18:00 ET;
+                                  #      the ONLY VWAP pre-9:30 (§3)
+    bands_sigma: [1, 2, 3]        # §2 — full band set, CORE component per Angus
+  volume_profile:
+    anchors: [daily, session]     # §2 — daily + session profiles required (spec-1 §3)
+    weekly_enabled: false         # §2 TOURNAMENT — weekly anchor is a tested variant behind this flag
+    value_area_pct: 70            # §2 PLACEHOLDER — VAH/VAL value-area %; doc doesn't state it,
+                                  #      70% is the industry standard — Angus to confirm
+  data_levels:
+    window_min: 15                # §2 CALIBRATE — extremes printed within N min of scheduled release (start 15)
+
+cluster:
+  min_level_types: 2              # §3 — confluence cluster = ≥2 of {BB MA, NY VWAP mid/±1σ (post-9:30 only),
+                                  #      daily VWAP mid/±1σ/±2σ/±3σ, daily POC}; pre-9:30 VWAP family = daily only
+  tolerance_points: 10.0          # §3 CALIBRATE — proximity tolerance (start ~10 NQ pts)
+  tolerance_pct: 0.04             # §3 CALIBRATE — percentage form of the same tolerance (0.04%)
+
+triggers:
+  displacement:
+    min_levels_through: 2         # §3 — body closes through ≥2 cluster levels
+    body_range_min: 0.6           # §3 CALIBRATE — B_min, body/range floor (start 0.6)
+    close_extreme_quartile: 0.25  # §3 — close within extreme quartile of candle range
+                                  #      (top 25% longs / bottom 25% shorts)
+    atr_floor_enabled: false      # §3 — OPTIONAL size floor: range ≥ k × ATR(20)
+    atr_floor_k: 1.0              # §3 CALIBRATE — k (start 1.0)
+    atr_length: 20                # §3 — ATR(20)
+  over_extension_sigma: 2         # §3 — over-extension = touch of NY VWAP ±2σ
+  over_extension_extreme_sigma: 3 # §3 — extreme over-extension = ±3σ
+
+entry:
+  variant: E1                     # §5.3 TOURNAMENT — active limit-price variant:
+                                  #      E1 = limit at BB MA (most frequent in journals)
+                                  #      E2 = limit at 50% of trigger candle's wick
+                                  #      E3 = limit at penetrated cluster level nearest block's close
+  cancel_if_runs_points: 15.0     # §5.5 CALIBRATE PLACEHOLDER — T_cancel: cancel unfilled order if price
+                                  #      runs this many points beyond entry; doc gives NO start value —
+                                  #      flagged for Angus
+  one_position_at_a_time: true    # §5.6 CONFIRMED — no overlapping trades ever (also Vault rule §10)
+
+targets:
+  front_run_points: 2.5           # §6.4 CALIBRATE CONFIRMED — F: working target = level ∓ F
+                                  #      (doc start range 2–3 NQ pts; midpoint used)
+  rr_floor: 1.5                   # §6.5 CALIBRATE — nearest valid target < 1.5R → skip trade
+  news_day_override: true         # §6.3 CONFIRMED — on high-impact days, untaken data extreme beyond
+                                  #      default target becomes the target
+  news_override_vwap_proxy: false # §6.3 TOURNAMENT — fallback variant to test (VWAP −1/+1 as proxy)
+  alignment_min_stack: 2          # §6.6 — prefer targets where ≥2 menu levels stack within tolerance
+
+filters:
+  min_confluence_counter_trend: 3 # §7 — confluence minimum, counter-trend
+  min_confluence_with_trend: 2    # §7 — confluence minimum, with-trend (at reduced risk, §9)
+  location_veto: true             # §7 — no longs at HTF range top / no shorts at range bottom
+  invalidation_at_entry: false    # §7 HYPOTHESIS (test) — trigger candle touching opposing ±1σ → stand down
+  news_entry_buffer_enabled: false  # §7 — H4 "no entry within N min of release"; test only, default off
+  news_entry_buffer_min: 15       # §7 PLACEHOLDER — N for H4 if enabled
+  # Volatility stand-down (§7): [OPEN] — no computable definition yet; intentionally not configured.
+
+management:
+  variant: V0                     # §8 TOURNAMENT — active variant; V0 = set-and-forget baseline.
+                                  #      Calibration (spec-1 Step 8) runs V0. Priority head-to-head: V1 vs V0.
+  v1_be_at_r: 1.0                 # §8 V1 CONFIRMED — BE on TOUCH of +1R (any TF tick), stop to entry exact
+  v4_partial_pct: 50              # §8 V4 — 50% partial at first structural level, runner to target
+
+sizing:
+  full_unit_min_confluences: 3    # §9 — full unit requires 3+ confluences AND (with-trend OR
+  full_unit_min_target_r: 2.0     # §9 — A-at-extension) AND target ≥ 2R; anything less → half unit
+  # Absolute per-trade risk ceiling comes from Monte Carlo vs eval rules (Spec 4) — intentionally absent (§9)
+
+vault:
+  max_trades_per_day: 3           # §10 — config range 2–3; start 3
+  daily_halt_losses: 2            # §10 — halt after 2 losses on the day…
+  daily_halt_r: -2.0              # §10 — …or −2R on the day, whichever first (placeholder; MC calibrates)
+
+fills:                            # spec-1 §3 — fill realism (engineering parameters; no § start values)
+  trade_through_ticks: 1          # spec-1 §3 — resting limit fills only when price trades strictly
+                                  #      through it by ≥1 tick (0.25)
+  slippage_ticks_normal: 1        # spec-1 §3 PLACEHOLDER — S_normal, ticks per side
+  slippage_ticks_news: 4          # spec-1 §3 PLACEHOLDER — S_news, ticks per side near releases
+  news_slippage_window_min: 15    # spec-1 §3 PLACEHOLDER — N_news, minutes around scheduled release
+  commission_per_contract_side: 2.50  # spec-1 §3 PLACEHOLDER — $/contract/side; confirm broker numbers
+
+data:
+  primary_start: "2026-01-01"     # §12.1 — 1-minute NQ, Jan 2026 → present, primary dataset
+  robustness_2025: false          # §12.1 — 2025 pulled later as regime-robustness check ONLY, not pass/fail
+  calibration_start: "2026-02-02" # §12.2 / spec-1 Step 8 — February re-run vs the 28 hand trades
+  calibration_end: "2026-02-27"   # §12.2 / spec-1 Step 8
+  news_calendar: config/news_calendar.csv  # spec-1 §3 — news calendar is an input file, not an API

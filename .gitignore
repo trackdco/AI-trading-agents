@@ -1,0 +1,18 @@
+# data & outputs (code-standards.md: data/raw/ and output/ are gitignored;
+# data/reference/ IS committed — it's ground truth)
+data/raw/*
+!data/raw/.gitkeep
+output/*
+!output/.gitkeep
+
+# secrets — API keys and tokens live in .env, never committed
+.env
+
+# python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/

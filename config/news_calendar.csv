@@ -1,0 +1,26 @@
+# Scheduled economic releases (spec-1 Section 3: input file, not an API). Lines starting with # are comments.
+# Columns: datetime_ET,event,impact
+# February 2026 seeded from the "News detail" column of data/reference/feb2026_hand_log.csv
+# (the reference journals themselves are not in the repo). Event names kept as Angus logged them;
+# release times taken from the log where stated, otherwise the release's standard time.
+# Impact ratings are best-effort — Angus to confirm.
+# TODO(Angus/Brakey/Pat): fill March 2026 -> present from an economic calendar export before running
+# the backtester beyond February.
+datetime_ET,event,impact
+2026-02-02 10:00,ISM Manufacturing PMI,high
+2026-02-04 08:15,Non-Farm Employment Change,high
+2026-02-04 10:00,ISM Services PMI,high
+2026-02-05 08:30,Unemployment Claims,medium
+2026-02-05 10:00,JOLTS Job Openings,medium
+2026-02-06 10:00,UoM Consumer Sentiment,medium
+2026-02-10 08:30,Core Retail Sales,high
+2026-02-11 08:30,Non-Farm Employment Change,high
+2026-02-12 08:30,Unemployment Claims,medium
+2026-02-13 08:30,CPI,high
+2026-02-17 08:30,Empire State Manufacturing Index,medium
+2026-02-19 08:30,Unemployment Claims,medium
+2026-02-20 08:30,Core Price Index,high
+2026-02-20 09:45,Flash PMI,medium
+2026-02-20 10:00,New Home Sales,medium
+2026-02-26 08:30,Unemployment Claims,medium
+2026-02-27 08:30,PPI,high
