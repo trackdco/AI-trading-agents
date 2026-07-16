@@ -1,0 +1,29 @@
+﻿Name,Contracts,Date,Day of week,Direction,Entry TF,"Entry Time ",Exit Reason,HTF (15M),In Window,MAE (R),MFE (R),News Today,News detail,P&L $,PNL Points,Pattern,Post exit ext. (R),R Multiple,"Result ",Risk $,Stop pts
+NQ Trade Entry,5 MNQ,"February 2, 2026",monday,short,2M,10:52,BE stopped,uptrend,Yes,-0.04,2.9,Yes,ISM Manufacturing PMI above forecasted predictions,0,0,A,0,0,BE,245,24
+NQ Trade Entry,3 MNQ,"February 3, 2026",tuesday,long,2M,10:52,stop hit,downtrend,Yes,-1,1.1,No,,-390,-61,A,0,-1,loss,390,61.5
+NQ Trade Entry,5 MNQ,"February 4, 2026",wednesday,short,5M,9:48,target hit,downtrend,Yes,-0.48,3.3,Yes,"8:15 Non farm employment change lower than forecast, 10am ISM services PMI above forecast",1235,123.5,B2,3.2,3.3,win,367.5,36.75
+NQ Trade Entry,4 MNQ,"February 4, 2026",wednesday,short,5M,10:30,target hit,downtrend,Yes,-0.33,3.57,Yes,Same as the other trade today,1426,178.25,B2,1.74,3.57,win,400,50
+NQ Trade Entry,3 MNQ,"February 5, 2026",thursday,long,2M,9:36,target hit,downtrend,Yes,-0.25,2.15,Yes,"8:30am unemployment claims, worse than forecast. 10am JOLTS job openings, worse than forecast",796,132.75,A,0.88,2.15,win,372,62
+NQ Trade Entry,5 mnq,"February 6, 2026",friday,short,5M,10:10,stop hit,uptrend,Yes,-1,-1,Yes,"UOM Consumer Sentiment 10am, better than forecast",-330,-33,A,0,-1,loss,330,33
+NQ Trade Entry,3 mnq,"February 6, 2026",friday,long,5M,10:20,target hit,uptrend,Yes,-0.38,2.62,Yes,Same as detailed on the other trade this day,1032,172,B2,1,2.62,win,390,65
+NQ Trade Entry,5 mnq,"February 9, 2026",monday,long,1M,9:36,target hit,downtrend,Yes,-0.45,3.31,No,,1092.5,109.25,A,3.7,3.31,win,330,33
+NQ Trade Entry,1 NQ,"February 10, 2026",tuesday,long,2M,"10:34 ",stop hit,range,Yes,-1,1.35,Yes,"Core retail sales at 8:30, worse than projected.",-220,11,B2,0,-1,loss,220,11
+NQ Trade Entry,5 MNQ,"February 11, 2026",wednesday,short,3M,9:48,target hit,range,Yes,-0.14,5.98,Yes,"Non farm employment change at 8:30, better than forecasted.",1705,170,A,6.3,5.98,win,285,28.5
+NQ Trade Entry,5 mnq,"February 12, 2026",thursday,short,2M,9:40,target hit,range,Yes,-0.8,3.37,Yes,Unemployment claims 8:30 am worse than forecasted,840,84,A,9.6,3.37,win,250,25
+NQ Trade Entry,4 MNQ,"February 13, 2026",friday,long,3M,9:33,stop hit,range,Yes,-1,1,Yes,"CPI news at 8:30 am, worse than forecasted. ",-400,-50,B2,0,-1,loss,400,50
+NQ Trade Entry,"5 mnq ","February 17, 2026",tuesday,long,1M,"9:32 ",target hit,range,Yes,-0.13,3.69,Yes,"Empire state manufacturing index at 8:30 am, better than forecast ",1200,120,B,1.2,3.69,win,325,32.5
+NQ Trade Entry,5 mnq,"February 17, 2026",tuesday,short,2M,9:50,target hit,downtrend,Yes,-0.075,3.88,Yes,same as other trade today,1550,155.25,A,1.725,3.88,win,400,40
+NQ Trade Entry,5,"February 18, 2026",wednesday,short,5M,8:35,target hit,range,Yes,0.12,4.17,No,,1240,124,B2,0.5,4.17,win,300,30
+NQ Trade Entry,1 NQ mini,"February 18, 2026",wednesday,short,3M,9:42,stop hit,range,Yes,-1,1,No,,-400,0,B2,0,-1,loss,400,20
+NQ Trade Entry,"6 MNQ ","February 18, 2026",wednesday,long,1M,9:53,target hit,range,Yes,-0.07,4.78,No,,1521,126.75,B,5.88,4.78,win,321,26.5
+NQ Trade Entry,1 NQ,"February 19, 2026",thursday,short,5M,9:00,discretionary close,downtrend,Yes,-0.35,1.5,Yes,"Unemployment claims at 8:30, better than forecast",-150,0,B,0,-0.35,loss,420,21
+NQ Trade Entry,2 NQ,"February 20, 2026",friday,long,3M,8:06,target hit,downtrend,Yes,-0.12,4.79,Yes,"Core price index at 8:30, better than forecast.",1580,39.5,A,0.94,4.79,win,330,8.25
+NQ Trade Entry,3 mnq,"February 20, 2026",friday,long,1M,9:31,target hit,downtrend,Yes,-0.1,3.18,Yes,"Same as detailed on previous trade this day. ",844.5,140.75,A,4.96,3.18,win,267,44.25
+NQ Trade Entry,2 MNQ,"February 20, 2026",friday,long,3M,10:33,target hit,uptrend,Yes,-0.306,3.22,Yes,"Same as explained before, along with PMI at 9:45, worse than forecast. Also, new home sales at 10 AM, better than forecast.",804,201,B2,0.16,3.22,win,250,62.5
+NQ Trade Entry,5 mnq,"February 23, 2026",monday,short,5M,10:20,target hit,range,Yes,-0.38,2.74,No,,1067,106.75,B,3.52,2.74,win,390,39
+NQ Trade Entry,1 NQ,"February 24, 2026",tuesday,long,5M,8:20,target hit,range,Yes,-0.43,3.67,No,,1070,53.5,B,0.35,3.67,win,290,14.5
+NQ Trade Entry,5 MNQ,"February 24, 2026",tuesday,long,5M,10:10,target hit,range,Yes,-0.15,4.28,No,,1775,177.5,B2,1,4.28,win,415,41.5
+NQ Trade Entry,5 mnq,"February 25, 2026",wednesday,long,5M,9:25,target hit,range,Yes,-0.06,12.98,No,,1980,198,B2,1.35,12.98,win,150,15
+NQ Trade Entry,10 mnq,"February 26, 2026",thursday,short,3M,9:18,target hit,range,Yes,-0.17,4.22,Yes,"Unemployment claims 8:30, better than forecast.",1120,73,A,25.88,4.22,win,345,17.25
+NQ Trade Entry,6 MNQ,"February 27, 2026",friday,long,5M,9:40,stop hit,downtrend,Yes,-1,0,Yes,"PPI at 8:30, better than forecasted",-324,0,A,0,-1,loss,324,27
+NQ Trade Entry,5 mnq,"February 27, 2026",friday,long,3M,9:54,target hit,downtrend,Yes,-0.14,4.62,Yes,same as logged on the other trade today,1630,163,A,0.14,4.62,win,350,35
