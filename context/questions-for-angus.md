@@ -88,6 +88,21 @@ tunes. Same items; answering here covers his nudge.)
     stop 40 ⇒ target level ≥ 80 pts away, and the target must be a real level, not an
     arbitrary 2R price. Front-run F is execution mechanics, excluded from the R math.
 
+15. **NEW — does the §9 v1.1 type-ladder STACK with or SUPERSEDE the §7 count-minimum?**
+    (Surfaced by the Step-8 calibration report — it is the single biggest driver of MISSED.)
+    Your v1.1 sizing ladder says a **2-type BB+VWAP** cluster is *tradeable at half size*.
+    But §7 still requires **3 confluences counter-trend / 2 with-trend**. For a 2-type
+    counter-trend setup these collide: the ladder permits it (half), §7 vetoes it (2 < 3).
+    The engine currently enforces BOTH (a trade must clear the §7 count AND the BB+VWAP gate),
+    so many of your actual trades are vetoed for confluence 2 < 3 even when the engine detected
+    the *identical* trigger you took (e.g. Feb 11 09:48 3M A, your +5.98R). The decision-log
+    says the ladder "refines §7/§9" — which did you mean:
+    (a) **STACK** — keep §7's 3-counter-trend minimum on top of the BB+VWAP gate (engine is
+        already correct; the MISSED trades are "detector rightly stricter than me"); or
+    (b) **SUPERSEDE** — the type-ladder replaces the raw count for sizing, so 2-type BB+VWAP
+        is a valid HALF-size trade regardless of trend (drop min_conf_counter to 2 / gate on
+        types only)? This is a rule ruling + doc bump, NOT something Brake tunes to February. **→**
+
 ## P4 — scope decision (with Brake)
 
 9. ~~**Data range.**~~ ✅ ANSWERED (Angus, 17 Jul): full backtest runs **Jan 1 → present**.

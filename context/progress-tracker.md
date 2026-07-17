@@ -49,6 +49,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-17 — Spec 1 Step 8: calibration report vs the 28 hand trades (Claude Code, Brake driving)
+- Built `src/backtest/calibrate.py`: matches engine Feb 2–27 W1/E1/V0 trades to the reference log on (date, direction, entry time ±15 min) using the OPEN-clock convention (engine trigger_ts − TF vs hand open time). Emits `output/calibration_report.md` (force-tracked like parity_report.md — it is the GATE deliverable) with MATCHED / MISSED / EXTRA + a headline gate-distribution. `tests/test_calibrate.py` (tf parsing, open-clock shift, ±min). **No tuning** (spec-1 Step 8): measure and report only.
+- **Result: 28 reference / 20 engine → MATCHED 4, MISSED 24, EXTRA 16.** Low match rate is the honest raw-engine signal, NOT a defect to tune away.
+- **Headline finding (for the Angus GATE):** `vetoed_confluence` (2 < 3 counter-trend) is the nearest gate on **13 of 24** MISSED trades — in several the engine detected the *identical* trigger Angus took (same time/TF/pattern) but rejected it for 2 confluence types. This collides with the v1.1 §9 type-ladder (2-type BB+VWAP = tradeable half). **NEW open question P5.15: does the type-ladder STACK with or SUPERSEDE the §7 count-minimum?** — biggest lever, needs an Angus ruling + doc bump, not a Brake tune. Secondary: `vetoed_halt` ×4 is a cascade (EXTRA early losers trip the §10 halt → miss later winners); `vetoed_news_preopen` ×1 = the Feb-20 08:06 pre-PCE case (rides on P5.14).
+- Checks: 89 tests, ruff clean.
+- Next GATE: Angus classifies every MISSED/EXTRA ("my setup, I missed it" vs "detector too loose/strict") and rules P5.15 + P5.14. Then Step 9 (diagnostics slices).
+
 ### 2026-07-17 — v1.1 engine reconciliation before Step 8 calibration (Claude Code, Brake driving)
 - Two v1.1 rules that change the TRADE SET were still un-wired at the end of Step 7; reconciled them now so Angus reviews a calibration produced by the current rulebook (not a stale engine):
   1. **News stand-down TIGHTENED (decision-log 2026-07-17, doc wins):** the earlier "blocked from RELEASE time" reading is replaced — on a high-impact pre-open release day the ENTIRE pre-market is now vetoed (`vetoed_news_preopen`), entries only from 09:30. Angus's own Feb 20 08:06 pre-release entry is now vetoed (rides on the still-open P5.14 PCE ruling). config comment + engine + test updated.
