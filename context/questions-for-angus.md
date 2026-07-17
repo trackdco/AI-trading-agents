@@ -119,6 +119,29 @@ tunes. Same items; answering here covers his nudge.)
     distance-ordered menu outward to the first level that clears 2R** (skip only if nothing
     does)? That matches your "minimum 2R, justified at an actual level" rule. Yes/no. **→**
 
+17. **NEW — V5 runner-target definition (BLOCKS the V5 partial-exit build).** You asked for
+    V5: "75% out at first structure, then a 25% runner to full extension." First build read
+    "full extension" as the FURTHEST opposing level on the §6 menu — which resolved to
+    prior_week_high/low on 32 of 44 trades (a level tens–hundreds of pts away, almost never
+    reached, so the 25% runner just round-tripped and gave back its gains). That made the
+    −5.48R V5 result invalid; it's reverted and V5 is unbuilt until you pin the target. Which
+    did you mean: (a) the runner targets the **opposing VWAP band** (short runner → VWAP−1σ,
+    long runner → VWAP+1σ) — the "next band out" reading; (b) the **furthest structural level**
+    on the §6 menu (my original — produced nonsense); or (c) something else (name it)? **→**
+
+18. **NEW — keep vs cut pre-market, now that the attribution is known (decides the W1 window).**
+    You said "scrap pre-market, it leaks, trade from 09:30." Verified isolate (one change,
+    nothing else): cutting pre-market takes Feb **+2.59R → −5.15R**. BUT the entire pre-market
+    **+3.98R is EXTRA trades you did NOT take** — Feb 23 +5.41R, Feb 24 +4.14R, Feb 26 +2.72R
+    (2 of 3 pattern "unclassified", the detector can't even name them); your actual NY setups
+    net **−1.39R** in the engine. So your pre-market *hand-trading* may leak, but the ENGINE's
+    pre-market is its (accidental) profit center, not your edge. Options: (a) **CUT** for
+    fidelity — accept −5.15R as the honest current state, then fix NY-capture; (b) **KEEP** —
+    but know the +R is EXTRA/unclassified, a flattering-but-fake headline; (c) keep for the
+    daily-model/Asia arms only, cut for the NY/W1 arm. Either way the next real bottleneck is
+    **NY-capture** (engine MISSES ~23 of your 28 hand trades and loses on the NY ones it takes).
+    My rec: (a) for honesty, then attack NY-capture. Your call. **→**
+
 ## P4 — scope decision (with Brake)
 
 9. ~~**Data range.**~~ ✅ ANSWERED (Angus, 17 Jul): full backtest runs **Jan 1 → present**.
