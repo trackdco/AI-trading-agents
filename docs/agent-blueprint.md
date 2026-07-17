@@ -10,6 +10,23 @@
 | Grounding | `strategy-definition-v1.0.md` (the constitution), `context/architecture.md`, `context/ai-workflow-rules.md`, and the **real** engine interfaces as of Step 6: `src/engine/snapshot.py` (`Snapshot`, `Cluster`, `Level`), `src/engine/triggers.py` (`Trigger`), `config/strategy.yaml` |
 | Raw design material | `docs/agent-blueprint-design/*.json` — the full per-lane design artifacts this document summarizes |
 
+> **⚠️ v1.1 ADDENDUM (2026-07-17, after this design was produced):** Angus bumped
+> the constitution to **strategy-definition-v1.1.md** (nine 17-Jul rules folded
+> in; § numbering unchanged). Every §-reference below still resolves, but Spec 3
+> works from **v1.1**, which already answers or changes parts of this design:
+> **Q-5 is ANSWERED** (oversized stop = `sizing.oversized_stop_points` 42 pts;
+> late-window = entries after `sizing.late_window_after` 10:30 → half; "thin
+> target" is subsumed — RR floor is now a **hard 2.0R**, not 1.5, replacing
+> §6.5/Q-10 assumptions); **the §7/§9 confluence model is now TYPE-SPECIFIC,
+> not count-only** — FULL = BB+VWAP+POC all three; HALF = exactly 2 types and
+> they MUST include BB+VWAP; **no BB+VWAP together ⇒ no trade** — Atlas's
+> confluence checks and the §5.6 facts/size table must be redesigned around
+> types, not counts, in Spec 3; NEW rules the lanes must absorb: **VWAP warm-up**
+> (no entries 18:00–19:00 ET — Helios), **high-impact pre-open stand-down** (no
+> entries before 09:30 on high-impact pre-open release days — Helios, and it
+> reshapes I-5), T_cancel 22, session boxes CONFIRMED, VA 70% CONFIRMED.
+> The unanswered Q-list survives otherwise; renumbering happens in Spec 3.
+
 ---
 
 ## 1. Plain-English overview
