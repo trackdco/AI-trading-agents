@@ -78,6 +78,8 @@ class BacktestConfig(BaseModel):
     v4_partial_pct: float
     v5_partial_pct: float = 75.0  # ANGUS pass-7: % booked at first structure (V5/V6)
     rr_floor_partial: float = 1.5  # ANGUS pass-7: "RR floor for the first profit target is 1.5"
+    v7_partial_r: float = 1.5     # pass-8 MFE-derived TEST arm: V7 books v5_partial_pct at a
+                                  # FIXED +kR milestone (not a structure); trade set = V0's
     max_trades_per_day: int       # §10
     halt_losses: int
     halt_r: float
@@ -122,6 +124,7 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         v4_partial_pct=c["management"]["v4_partial_pct"],
         v5_partial_pct=c["management"].get("v5_partial_pct", 75.0),
         rr_floor_partial=c["targets"].get("rr_floor_partial", 1.5),
+        v7_partial_r=c["management"].get("v7_partial_r", 1.5),
         oversized_stop=c["sizing"]["oversized_stop_points"],
         late_window_after=_hhmm(c["sizing"]["late_window_after"]),
         require_bb_vwap=c["sizing"].get("require_bb_vwap", True),
@@ -483,17 +486,23 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                 else:
                     tgt = pos.order.working_target
                     tgt_fill = (h >= tgt + through) if sign == 1 else (lo <= tgt - through)
-                    # V4/V5/V6 partial before target (nearer level), same trade-through rule
-                    if (pos is not None and cfg.mgmt_variant in ("V4", "V5", "V6")
+                    # V4/V5/V6/V7 partial before target (nearer milestone), same trade-through
+                    # rule. V4/V5/V6 book at the first STRUCTURE; V7 (pass-8 MFE test arm)
+                    # books at a FIXED +kR milestone computed from the fill.
+                    if (pos is not None and cfg.mgmt_variant in ("V4", "V5", "V6", "V7")
                             and not pos.partial_done):
-                        plvl = pos.partial_level
+                        if cfg.mgmt_variant == "V7":
+                            plvl = pos.entry + sign * cfg.v7_partial_r * pos.risk_pts
+                        else:
+                            plvl = pos.partial_level
                         if plvl is not None:
                             p_fill = (h >= plvl + through) if sign == 1 else (lo <= plvl - through)
                             if p_fill:
                                 pct = cfg.v4_partial_pct if cfg.mgmt_variant == "V4" \
                                     else cfg.v5_partial_pct
-                                close_trade(pos, plvl, "partial_structural", ts, 0,
-                                            frac=pct / 100.0)
+                                reason = "partial_r_milestone" if cfg.mgmt_variant == "V7" \
+                                    else "partial_structural"
+                                close_trade(pos, plvl, reason, ts, 0, frac=pct / 100.0)
                                 if pos is not None:
                                     pos.partial_done = True
                     if pos is not None and tgt_fill:

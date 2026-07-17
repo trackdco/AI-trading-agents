@@ -384,6 +384,42 @@ def test_v5_partial_books_then_runner_stops_out():
     assert rec.r_multiple == pytest.approx(0.75 * 2.0 + 0.25 * (-10.25 / 10), abs=1e-3)
 
 
+def test_v7_books_75_at_fixed_r_milestone_runner_to_target():
+    # V7: 75% at +1.5R (= 25015 on risk 10 from 25000), runner to the model target (25100;
+    # working 25097.5). Trade set is V0's — no partial-floor gate.
+    c = cfg(mgmt_variant="V7")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)                    # risk 10
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25008, 25015.25, 25007, 25014),   # +1.5R milestone through
+                                        (25030, 25097.75, 25028, 25090)])  # target
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+target"
+    # 0.75 * 1.5R + 0.25 * (25097.5-25000)/10 = 1.125 + 2.4375
+    assert rec.r_multiple == pytest.approx(3.5625, abs=1e-4)
+
+
+def test_v7_partial_then_stop_is_net_winner():
+    # the MFE case: reaches +1.5R, banks 75%, runner returns to stop -> net POSITIVE
+    c = cfg(mgmt_variant="V7")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25008, 25015.25, 25007, 25014),   # +1.5R banked
+                                        (25010, 25012, 24989.5, 24991)])   # stop hit
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+stop"
+    # 0.75*1.5 + 0.25*((24989.75-25000)/10) = 1.125 - 0.256 -> a WIN
+    assert rec.r_multiple == pytest.approx(1.125 + 0.25 * (-10.25 / 10), abs=1e-3)
+    assert rec.r_multiple > 0
+
+
 # ------------------------------------------------------------- Angus 2026-07-17 rules
 
 def test_vwap_warmup_veto():
