@@ -1,0 +1,261 @@
+{
+  "ts": "2026-02-11T09:48:00-05:00",
+  "ref_price": 25386.25,
+  "session": "ny",
+  "htf_regime": "uptrend",
+  "indicators": {
+    "ts": "2026-02-11T09:48:00-05:00",
+    "tfs": {
+      "1min": {
+        "bar_ts": "2026-02-11T09:47:00-05:00",
+        "bb_basis": 25394.9625,
+        "bb_upper": 25458.599217978048,
+        "bb_lower": 25331.325782021955
+      },
+      "2min": {
+        "bar_ts": "2026-02-11T09:48:00-05:00",
+        "bb_basis": 25408.4375,
+        "bb_upper": 25452.69720938698,
+        "bb_lower": 25364.17779061302
+      },
+      "3min": {
+        "bar_ts": "2026-02-11T09:48:00-05:00",
+        "bb_basis": 25409.7875,
+        "bb_upper": 25455.775888480388,
+        "bb_lower": 25363.79911151961
+      },
+      "5min": {
+        "bar_ts": "2026-02-11T09:45:00-05:00",
+        "bb_basis": 25360.0,
+        "bb_upper": 25499.515859313604,
+        "bb_lower": 25220.484140686396
+      }
+    },
+    "daily_vwap": {
+      "mid": 25334.63687268731,
+      "upper_1": 25414.17621585876,
+      "lower_1": 25255.097529515864,
+      "upper_2": 25493.71555903021,
+      "lower_2": 25175.558186344413,
+      "upper_3": 25573.254902201657,
+      "lower_3": 25096.018843172966
+    },
+    "ny_vwap": {
+      "mid": 25397.521855856216,
+      "upper_1": 25427.792606093313,
+      "lower_1": 25367.251105619118,
+      "upper_2": 25458.06335633041,
+      "lower_2": 25336.98035538202,
+      "upper_3": 25488.33410656751,
+      "lower_3": 25306.709605144923
+    },
+    "daily_profile": {
+      "poc": 25385.625,
+      "vah": 25464.625,
+      "val": 25279.125
+    }
+  },
+  "session_high": 25465.25,
+  "session_low": 25146.25,
+  "prior_day_high": 25447.25,
+  "prior_day_low": 25198.25,
+  "prior_week_high": null,
+  "prior_week_low": null,
+  "clusters": [
+    {
+      "center": 25363.6256,
+      "confluence_count": 2,
+      "types": [
+        "bb",
+        "vwap"
+      ],
+      "members": [
+        "bb_basis_5min",
+        "nyvwap_lower_1"
+      ]
+    },
+    {
+      "center": 25392.7031,
+      "confluence_count": 3,
+      "types": [
+        "bb",
+        "poc",
+        "vwap"
+      ],
+      "members": [
+        "poc",
+        "bb_basis_1min",
+        "nyvwap_mid"
+      ]
+    },
+    {
+      "center": 25410.8004,
+      "confluence_count": 2,
+      "types": [
+        "bb",
+        "vwap"
+      ],
+      "members": [
+        "bb_basis_2min",
+        "bb_basis_3min",
+        "dvwap_upper_1"
+      ]
+    }
+  ],
+  "data_levels": [
+    {
+      "event": "Core Retail Sales",
+      "impact": "high",
+      "data_high": 25356.0,
+      "data_low": 25301.5,
+      "event_time": "2026-02-10T08:30:00-05:00"
+    },
+    {
+      "event": "Non-Farm Employment Change",
+      "impact": "high",
+      "data_high": 25367.75,
+      "data_low": 25238.75,
+      "event_time": "2026-02-11T08:30:00-05:00"
+    }
+  ],
+  "target_menu": [
+    {
+      "name": "daily_vwap_mid",
+      "price": 25334.63687268731,
+      "type": "vwap",
+      "distance": -51.6131
+    },
+    {
+      "name": "daily_vwap_upper_1",
+      "price": 25414.17621585876,
+      "type": "vwap",
+      "distance": 27.9262
+    },
+    {
+      "name": "daily_vwap_lower_1",
+      "price": 25255.097529515864,
+      "type": "vwap",
+      "distance": -131.1525
+    },
+    {
+      "name": "daily_vwap_upper_2",
+      "price": 25493.71555903021,
+      "type": "vwap",
+      "distance": 107.4656
+    },
+    {
+      "name": "daily_vwap_lower_2",
+      "price": 25175.558186344413,
+      "type": "vwap",
+      "distance": -210.6918
+    },
+    {
+      "name": "ny_vwap_mid",
+      "price": 25397.521855856216,
+      "type": "vwap",
+      "distance": 11.2719
+    },
+    {
+      "name": "profile_poc",
+      "price": 25385.625,
+      "type": "poc",
+      "distance": -0.625
+    },
+    {
+      "name": "profile_vah",
+      "price": 25464.625,
+      "type": "structural",
+      "distance": 78.375
+    },
+    {
+      "name": "profile_val",
+      "price": 25279.125,
+      "type": "structural",
+      "distance": -107.125
+    },
+    {
+      "name": "prior_day_high",
+      "price": 25447.25,
+      "type": "structural",
+      "distance": 61.0
+    },
+    {
+      "name": "prior_day_low",
+      "price": 25198.25,
+      "type": "structural",
+      "distance": -188.0
+    },
+    {
+      "name": "prior_week_high",
+      "price": null,
+      "type": "structural",
+      "distance": null
+    },
+    {
+      "name": "prior_week_low",
+      "price": null,
+      "type": "structural",
+      "distance": null
+    },
+    {
+      "name": "asia_session_high",
+      "price": 25345.5,
+      "type": "structural",
+      "distance": -40.75
+    },
+    {
+      "name": "asia_session_low",
+      "price": 25252.75,
+      "type": "structural",
+      "distance": -133.5
+    },
+    {
+      "name": "london_session_high",
+      "price": 25452.0,
+      "type": "structural",
+      "distance": 65.75
+    },
+    {
+      "name": "london_session_low",
+      "price": 25146.25,
+      "type": "structural",
+      "distance": -240.0
+    },
+    {
+      "name": "ny_session_high",
+      "price": 25465.25,
+      "type": "structural",
+      "distance": 79.0
+    },
+    {
+      "name": "ny_session_low",
+      "price": 25339.25,
+      "type": "structural",
+      "distance": -47.0
+    },
+    {
+      "name": "data_high_Core Retail Sale",
+      "price": 25356.0,
+      "type": "data",
+      "distance": -30.25
+    },
+    {
+      "name": "data_low_Core Retail Sale",
+      "price": 25301.5,
+      "type": "data",
+      "distance": -84.75
+    },
+    {
+      "name": "data_high_Non-Farm Employm",
+      "price": 25367.75,
+      "type": "data",
+      "distance": -18.5
+    },
+    {
+      "name": "data_low_Non-Farm Employm",
+      "price": 25238.75,
+      "type": "data",
+      "distance": -147.5
+    }
+  ]
+}

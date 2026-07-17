@@ -6,11 +6,11 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** Spec 1, Step 4 (indicators) — BUILT, adversarially verified, and **PARITY GATE PASSED (2026-07-17)**: Angus read NQH2026 and confirmed all rows within 1.0 pt. 40 tests pass, ruff clean.
-- **Blocked on:** Nothing — Step 4 gate cleared. Steps 5-9 unblocked.
+- **Last completed step:** Spec 1, Step 5 (snapshot builder) — src/engine/snapshot.py: one pydantic Snapshot per timestamp (indicators per TF + §3 clusters + HTF regime + session context + data levels + target-menu distances). Golden-file test passes deterministically (44 tests total, ruff clean). Step 4 parity gate remains PASSED.
+- **Blocked on:** Nothing — Steps 6-9 unblocked.
 - **⚠️ Parity instrument fix (from data/reference/parity_chart_settings.md, salvaged from Angus's branch):** Angus must read the chart on **NQH2026 (March 2026 NQ)** — NOT MNQ1! and NOT a back-adjusted `1!` continuous. Engine uses unspliced continuous NQ = NQH6 for Feb 11/17 (verified). Back-adjust + micro-volume would shift prices/VWAP/POC by tens of points and guarantee a false gate failure.
 - **Branch consolidation:** canonical branch = `claude/getting-started-6lwnvs` (see context/TEAM.md). Three duplicate-engine branches superseded; useful files salvaged (.env.example, parity_chart_settings.md).
-- **Next action:** Spec 1 Step 5 (snapshot builder), then 6-9 (triggers → backtester → calibration → diagnostics). One engine-driver at a time — coordinate via context/TEAM.md before starting.
+- **Next action:** Spec 1 Step 6 (trigger detection: rejection block + displacement per §3, pattern A/B/B2 per §4, MTF arbitration), then 7-9. One engine-driver at a time — coordinate via context/TEAM.md before starting.
 
 ## Gates ledger (Angus sign-offs — append-only)
 
@@ -29,6 +29,12 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Hand-log resolutions (Brake/Angus): Feb 3 10:52 → true P&L −$369 on a 61.5-pt stop (P&L −390→−369, Risk 390→369, pts −61→−61.5); Feb 26 09:18 → 73 pts correct, P&L was the typo (1120→$1460 = 73×10 MNQ×$2). All 28 rows now cross-check clean (points = P&L ÷ (contracts × $/pt)).
 
 ## Session log (newest first)
+
+### 2026-07-17 — Spec 1 Step 5: snapshot builder (Claude Code, Brake driving)
+- Steps completed: Step 5 — src/engine/snapshot.py: build_snapshot(df_1m, ts) → pydantic Snapshot (Engine→Desk contract). Composes indicators_asof (per-TF BB + daily/NY VWAP + developing profile) with: §3 confluence clusters (single-linkage within cluster.tolerance_points, ≥2 distinct level types {bb, vwap, poc}; NY VWAP absent pre-09:30 → daily-only rule automatic), HTF regime flag (15m fractal swings k=2, HH/HL→uptrend / LH/LL→downtrend / else range), session context (box, session H/L, prior-day + prior-week H/L), data levels near recent releases, and target-menu levels with signed distances (§6). tests/test_snapshot.py + golden fixture (self-contained Feb 9–11 slice, pinned inputs).
+- Checks passed: golden-file test matches exactly and is DETERMINISTIC across PYTHONHASHSEED (caught + fixed a set-iteration ordering bug in session-extremes); no-lookahead test (perturbing bars after ts leaves the snapshot identical); pre-09:30 test (no ny-vwap cluster member). 44 tests total, ruff clean.
+- Divergences/flags raised (documented in snapshot.py, for Angus): (1) cluster candidate set = BB basis per entry TF + daily/NY VWAP family + daily POC (VAH/VAL and structural NOT cluster members — §3's explicit set); confirm whether structural levels should count toward confluence. (2) HTF swing rule chosen: fractal k=2, last-2-swings HH/HL vs LH/LL — document/confirm vs Angus's mental model. (3) Target menu omits HTF 1h/4h range extremes (deferred with the session-anchored HTF resampler) and pullback-origin (trade-specific, Step 6/7). (4) "which BB TF" for a cluster: all entry-TF BB bases are candidates, counted once as type "bb".
+- Next session starts at: Spec 1 Step 6 (trigger detection).
 
 ### 2026-07-17 — Hand-log PNL Points cross-check + correction (Claude Code, Brake driving)
 - Brake directed: the odd PNL-Points cells are logging misses — cross-check vs sizing/P&L and auto-compute. Method: per row, derive $/point = Risk$ ÷ (Stop pts × contracts), snap to MNQ $2 / NQ $20, then points = P&L ÷ (contracts × $/pt); compared to the logged PNL Points across all 28 rows.
