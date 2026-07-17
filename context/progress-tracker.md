@@ -6,11 +6,11 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** Spec 1, Step 5 (snapshot builder) — src/engine/snapshot.py: one pydantic Snapshot per timestamp (indicators per TF + §3 clusters + HTF regime + session context + data levels + target-menu distances). Golden-file test passes deterministically (44 tests total, ruff clean). Step 4 parity gate remains PASSED.
-- **Blocked on:** Nothing — Steps 6-9 unblocked.
+- **Last completed step:** Spec 1, Step 6 (trigger detection) — src/engine/triggers.py: rejection-block + displacement per entry TF vs §3 clusters, pattern A/B/B2 (§4) + HTF flag, MTF arbitration (highest TF wins). SPOT-CHECK PASSES: triggers exist at all four reference trades (Feb 4 09:48, Feb 11 09:48, Feb 17 09:50, Feb 25 09:25) with the reference direction present nearby. 54 tests pass, ruff clean.
+- **Blocked on:** Nothing — Steps 7-9 unblocked.
 - **⚠️ Parity instrument fix (from data/reference/parity_chart_settings.md, salvaged from Angus's branch):** Angus must read the chart on **NQH2026 (March 2026 NQ)** — NOT MNQ1! and NOT a back-adjusted `1!` continuous. Engine uses unspliced continuous NQ = NQH6 for Feb 11/17 (verified). Back-adjust + micro-volume would shift prices/VWAP/POC by tens of points and guarantee a false gate failure.
 - **Branch consolidation:** canonical branch = `claude/getting-started-6lwnvs` (see context/TEAM.md). Three duplicate-engine branches superseded; useful files salvaged (.env.example, parity_chart_settings.md).
-- **Next action:** Spec 1 Step 6 (trigger detection: rejection block + displacement per §3, pattern A/B/B2 per §4, MTF arbitration), then 7-9. One engine-driver at a time — coordinate via context/TEAM.md before starting.
+- **Next action:** Spec 1 Step 7 (backtester core: event loop, working limit orders E1/E2/E3, stops/targets, fills+slippage, entry windows, management V0-V4, Vault constraints), then 8-9. One engine-driver at a time — coordinate via context/TEAM.md before starting.
 
 ## Gates ledger (Angus sign-offs — append-only)
 
@@ -29,6 +29,12 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Hand-log resolutions (Brake/Angus): Feb 3 10:52 → true P&L −$369 on a 61.5-pt stop (P&L −390→−369, Risk 390→369, pts −61→−61.5); Feb 26 09:18 → 73 pts correct, P&L was the typo (1120→$1460 = 73×10 MNQ×$2). All 28 rows now cross-check clean (points = P&L ÷ (contracts × $/pt)).
 
 ## Session log (newest first)
+
+### 2026-07-17 — Spec 1 Step 6: trigger detection (Claude Code, Brake driving)
+- Steps completed: Step 6 — src/engine/triggers.py: detect_triggers over any window. Per entry-TF candle (evaluated at CLOSE via indicators_asof, no lookahead): displacement (body through ≥2 cluster levels, body/range≥B_min, close in extreme quartile, optional ATR floor) checked FIRST, then rejection block (wick into cluster, body closes back on trade side of ALL levels); pattern A/B/B2 (§4) + HTF flag (15m regime vs direction); MTF arbitration (highest TF wins, §1). scripts/run_triggers_feb.py → output/triggers_feb.csv (gitignored artifact). tests/test_triggers.py (10 tests, incl. self-contained integration spot-check on the committed slice).
+- Checks passed: SPOT-CHECK — triggers exist within 5 min of all four clearest reference trades (Feb 4 09:48 short, Feb 11 09:48 short, Feb 17 09:50 short, Feb 25 09:25 long), reference direction present nearby for all four. 54 tests total, ruff clean.
+- Divergences/flags raised (for calibration Step 8 / Angus, NOT tuned away per anti-tuning rule): (1) at the EXACT reference minute, Feb 4 & Feb 25 match direction; Feb 11 09:48 & Feb 17 09:50 show the opposite direction at that bar (reference direction fires within ~3 min) — a real detector-vs-human divergence for Angus to classify. (2) Pattern mapping is interpretive: displacement→B; rejection→A if over-extended/counter-trend else B2 if with-trend — confirm vs Angus's taxonomy. (3) Cluster set for triggers = bb + daily/NY vwap + POC (same as snapshot §3); structural levels not counted. (4) Detector runs the 07:45–11:00 ET morning band per Feb trading day (covers all reference entry times 8:06–10:52).
+- Next session starts at: Spec 1 Step 7 (backtester core).
 
 ### 2026-07-17 — Spec 1 Step 5: snapshot builder (Claude Code, Brake driving)
 - Steps completed: Step 5 — src/engine/snapshot.py: build_snapshot(df_1m, ts) → pydantic Snapshot (Engine→Desk contract). Composes indicators_asof (per-TF BB + daily/NY VWAP + developing profile) with: §3 confluence clusters (single-linkage within cluster.tolerance_points, ≥2 distinct level types {bb, vwap, poc}; NY VWAP absent pre-09:30 → daily-only rule automatic), HTF regime flag (15m fractal swings k=2, HH/HL→uptrend / LH/LL→downtrend / else range), session context (box, session H/L, prior-day + prior-week H/L), data levels near recent releases, and target-menu levels with signed distances (§6). tests/test_snapshot.py + golden fixture (self-contained Feb 9–11 slice, pinned inputs).
