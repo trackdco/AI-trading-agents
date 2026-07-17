@@ -6,46 +6,46 @@ Spec-1 Step 4 PARITY GATE. Engine values below; Angus fills the blank columns fr
 
 Angus traded the **3M** entry TF this day (short, 09:48) — check the 3min BB row first.
 
-Last CLOSED bar used per TF (bar stamp): 1min: 09:47, 2min: 09:48, 3min: 09:48, 5min: 09:45. The 1m bar stamped 09:47 closed at 09:48; the 1m bar stamped 09:48 was still forming and is NOT used.
+Values are as of the CLOSE of the 09:48 candle — the gate candle is INCLUDED (it closed at 09:49). Last CLOSED bar used per TF (bar stamp): 1min: 09:48, 2min: 09:48, 3min: 09:48, 5min: 09:45.
 
 | Level | Engine value | Angus chart value | Δ | within 1.0 pt? |
 |---|---|---|---|---|
-| BB basis 1min | 25394.96 | ___ | ___ | ___ |
+| BB basis 1min | 25393.59 | ___ | ___ | ___ |
 | BB basis 2min | 25408.44 | ___ | ___ | ___ |
 | BB basis 3min | 25409.79 | ___ | ___ | ___ |
 | BB basis 5min | 25360.00 | ___ | ___ | ___ |
-| Daily VWAP mid | 25334.64 | ___ | ___ | ___ |
-| Daily VWAP +1σ | 25414.18 | ___ | ___ | ___ |
-| Daily VWAP −1σ | 25255.10 | ___ | ___ | ___ |
-| NY VWAP mid | 25397.52 | ___ | ___ | ___ |
+| Daily VWAP mid | 25335.33 | ___ | ___ | ___ |
+| Daily VWAP +1σ | 25414.74 | ___ | ___ | ___ |
+| Daily VWAP −1σ | 25255.92 | ___ | ___ | ___ |
+| NY VWAP mid | 25397.63 | ___ | ___ | ___ |
 | Daily POC (as-of) | 25385.62 | ___ | ___ | ___ |
 
 ## Tuesday February 17, 2026 — 09:50 ET
 
 Angus traded the **2M** entry TF for the 09:50 trade (short) — check the 2min BB row first.
 
-Last CLOSED bar used per TF (bar stamp): 1min: 09:49, 2min: 09:50, 3min: 09:48, 5min: 09:50. The 1m bar stamped 09:49 closed at 09:50; the 1m bar stamped 09:50 was still forming and is NOT used.
+Values are as of the CLOSE of the 09:50 candle — the gate candle is INCLUDED (it closed at 09:51). Last CLOSED bar used per TF (bar stamp): 1min: 09:50, 2min: 09:50, 3min: 09:51, 5min: 09:50.
 
 | Level | Engine value | Angus chart value | Δ | within 1.0 pt? |
 |---|---|---|---|---|
-| BB basis 1min | 24719.55 | ___ | ___ | ___ |
+| BB basis 1min | 24717.54 | ___ | ___ | ___ |
 | BB basis 2min | 24687.09 | ___ | ___ | ___ |
-| BB basis 3min | 24666.80 | ___ | ___ | ___ |
+| BB basis 3min | 24664.83 | ___ | ___ | ___ |
 | BB basis 5min | 24639.21 | ___ | ___ | ___ |
-| Daily VWAP mid | 24672.57 | ___ | ___ | ___ |
-| Daily VWAP +1σ | 24743.95 | ___ | ___ | ___ |
-| Daily VWAP −1σ | 24601.19 | ___ | ___ | ___ |
-| NY VWAP mid | 24713.80 | ___ | ___ | ___ |
+| Daily VWAP mid | 24670.96 | ___ | ___ | ___ |
+| Daily VWAP +1σ | 24742.10 | ___ | ___ | ___ |
+| Daily VWAP −1σ | 24599.82 | ___ | ___ | ___ |
+| NY VWAP mid | 24705.28 | ___ | ___ | ___ |
 | Daily POC (as-of) | 24662.88 | ___ | ___ | ___ |
 
 ## Conventions (what the engine computed, so chart comparison is apples-to-apples)
 
-- **Last-CLOSED-candle semantics:** every value is taken from the last candle fully
-  closed at the gate timestamp. The 1m base frame is start-labeled, so at T the last
-  closed 1m bar is the one stamped T−1min. Resampled 2m/3m/5m frames are close-labeled
-  (built only from already-closed 1m bars; trailing partial bins dropped) — the exact
-  bars used are listed above each table. On the chart: read the indicator value of the
-  **last completed candle**, not the forming one.
+- **Gate-candle-CLOSE semantics (Angus-confirmed):** every value is taken as of the
+  CLOSE of the named gate candle — the 09:48 / 09:50 1m bar is INCLUDED (it closes one
+  minute later). Resampled 2m/3m/5m frames are close-labeled (built only from
+  already-closed 1m bars; trailing partial bins dropped) — the exact bars used are listed
+  above each table. On the chart: hover the **named candle** (confirm its close matches
+  the gate close) and read that completed candle's indicator values.
 - **Bollinger Bands:** BB(20, SMA of close, 2.0σ), population stdev — TradingView
   ``ta.stdev`` — computed per entry TF (§2).
 - **VWAP source:** hlc3 = (high+low+close)/3 per 1m bar — standard TradingView VWAP (§2).

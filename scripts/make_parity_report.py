@@ -77,25 +77,28 @@ def main() -> None:
     sections = []
     printed = []
     for ts, tf_note in GATES:
-        snap = indicators_asof(df, ts, cfg)
+        # Gate value = as of the CLOSE of the named 1m candle (Angus-confirmed convention):
+        # the gate bar stamped `ts` is INCLUDED. It closes at ts+1min, so evaluate there.
+        # indicators_asof stays a pure "as of instant T" primitive; the +1min lives here.
+        asof = ts + pd.Timedelta(minutes=1)
+        snap = indicators_asof(df, asof, cfg)
         sections.append(
             f"## {ts.strftime('%A %B %d, %Y — %H:%M ET')}\n\n"
             f"{tf_note}\n\n"
-            f"Last CLOSED bar used per TF (bar stamp): {_bar_ts_line(snap)}. "
-            f"The 1m bar stamped {snap['tfs']['1min']['bar_ts'].strftime('%H:%M')} closed at "
-            f"{ts.strftime('%H:%M')}; the 1m bar stamped {ts.strftime('%H:%M')} was still "
-            f"forming and is NOT used.\n\n"
+            f"Values are as of the CLOSE of the {ts.strftime('%H:%M')} candle — the gate candle "
+            f"is INCLUDED (it closed at {asof.strftime('%H:%M')}). Last CLOSED bar used per TF "
+            f"(bar stamp): {_bar_ts_line(snap)}.\n\n"
             f"{_table(snap)}\n")
         printed.append((ts, _rows_for(snap), snap))
 
     conventions = f"""## Conventions (what the engine computed, so chart comparison is apples-to-apples)
 
-- **Last-CLOSED-candle semantics:** every value is taken from the last candle fully
-  closed at the gate timestamp. The 1m base frame is start-labeled, so at T the last
-  closed 1m bar is the one stamped T−1min. Resampled 2m/3m/5m frames are close-labeled
-  (built only from already-closed 1m bars; trailing partial bins dropped) — the exact
-  bars used are listed above each table. On the chart: read the indicator value of the
-  **last completed candle**, not the forming one.
+- **Gate-candle-CLOSE semantics (Angus-confirmed):** every value is taken as of the
+  CLOSE of the named gate candle — the 09:48 / 09:50 1m bar is INCLUDED (it closes one
+  minute later). Resampled 2m/3m/5m frames are close-labeled (built only from
+  already-closed 1m bars; trailing partial bins dropped) — the exact bars used are listed
+  above each table. On the chart: hover the **named candle** (confirm its close matches
+  the gate close) and read that completed candle's indicator values.
 - **Bollinger Bands:** BB(20, SMA of close, 2.0σ), population stdev — TradingView
   ``ta.stdev`` — computed per entry TF (§2).
 - **VWAP source:** hlc3 = (high+low+close)/3 per 1m bar — standard TradingView VWAP (§2).

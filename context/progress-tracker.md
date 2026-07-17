@@ -7,10 +7,10 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
 - **Last completed step:** Spec 1, Step 4 (indicators) — BUILT + adversarially verified (8 findings, 2 medium auto-fixed, parity numbers unchanged). 40 tests pass, ruff clean. output/parity_report.md generated with LOCKED engine numbers (committed for cross-session review).
-- **Blocked on:** Step 4 PARITY GATE — Angus's chart readings for Feb 11 09:48 ET, Feb 17 09:50 ET, read on **NQH2026 (not MNQ1! back-adjusted)**. Engine numbers are locked and waiting in output/parity_report.md.
+- **Blocked on:** Step 4 PARITY GATE — Angus's `NQH2026` chart readings + sign-off. Parity numbers LOCKED and additionally cross-verified: a second independent engine agrees on trade-TF BB + POC to the penny, BB matched Angus's own chart screenshot to Δ0.00, and the parity-script as-of convention was fixed (gate value = CLOSE of the named candle, gate bar INCLUDED — Angus-confirmed; corrected Feb 17 NY VWAP 24713.80→24705.28). Awaiting the human chart-column fill in output/parity_report.md.
 - **⚠️ Parity instrument fix (from data/reference/parity_chart_settings.md, salvaged from Angus's branch):** Angus must read the chart on **NQH2026 (March 2026 NQ)** — NOT MNQ1! and NOT a back-adjusted `1!` continuous. Engine uses unspliced continuous NQ = NQH6 for Feb 11/17 (verified). Back-adjust + micro-volume would shift prices/VWAP/POC by tens of points and guarantee a false gate failure.
 - **Branch consolidation:** canonical branch = `claude/getting-started-6lwnvs` (see context/TEAM.md). Three duplicate-engine branches superseded; useful files salvaged (.env.example, parity_chart_settings.md).
-- **Next action:** finish Step 4 verification → lock parity numbers → Angus signs off → Steps 5-9.
+- **Next action:** Angus fills the chart column in `output/parity_report.md` from `NQH2026` and signs off → then Steps 5-9 (snapshot → triggers → backtester → calibration → diagnostics).
 
 ## Gates ledger (Angus sign-offs — append-only)
 
@@ -28,6 +28,12 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Data: Jan 2026→present primary; 2025 as robustness check only (Angus regime rationale, honesty guard noted)
 
 ## Session log (newest first)
+
+### 2026-07-17 — Spec 1 Step 4 parity verification + as-of fix (Claude Code, Brake driving)
+- Cross-verified Step 4 indicators with a second independent implementation: trade-TF Bollingers (Feb 11 3m = 25409.79, Feb 17 2m = 24687.09) and daily POC agree to the penny. BB also validated to Δ0.00 against Angus's replay-screenshot 3m candle (Feb 11 10:18–10:20 = 25323.94). Daily-VWAP center matched the (MNQ) screenshot within 0.85.
+- **Finding + fix:** `scripts/make_parity_report.py` called `indicators_asof(gate_ts)`, which treated the named gate bar as still-forming and EXCLUDED it — off-by-one vs the gate anchor (the named candle's close). Impact: Feb 17 NY VWAP off by 8.5 pts (the 09:50 bar is the session's biggest-volume bar), daily VWAP ~1.6, ±1σ ~1.8, 1m BB ~2; trade-TF BB + POC immune. Fixed in the CALLER only (evaluate as of `gate_ts + 1min` = candle close); `src/engine/` untouched (indicators_asof stays a pure no-lookahead "as of instant T" primitive). Angus confirmed the convention ("numbers are good").
+- Regenerated + committed the signable `output/parity_report.md` (force-added past the output/ ignore) with the corrected numbers.
+- Next: Angus fills chart column from NQH2026 + signs off → Steps 5-9.
 
 ### 2026-07-17 — Spec 1 Step 4: indicators + parity report, adversarially verified (Claude Code, Brake driving)
 - Steps completed: Step 4 — src/engine/indicators.py (per-TF Bollinger population stdev; daily VWAP 18:00-anchored + NY VWAP 09:30-anchored, both hlc3 source with VOLUME-WEIGHTED σ bands, NY VWAP NaN pre-9:30; developing volume profile POC/VAH/VAL/HVN/LVN in 0.25-pt bins; indicators_asof with structural last-closed-bar semantics). tests/test_indicators.py (incl. mandatory test_ny_vwap_absent_premarket + no-lookahead). scripts/make_parity_report.py → output/parity_report.md.
