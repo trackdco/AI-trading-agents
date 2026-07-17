@@ -6,7 +6,8 @@
 1. **Confluence minimum 3 → 2 everywhere** (§7): the two types must be **BB + VWAP together**; POC is bonus confluence, never a requirement. The v1.1 "counter-trend demands 3-type alignment" rule is DELETED — it was the nearest gate on 13 of the 24 MISSED February trades, and the diagnostics showed 2-confluence trades outperforming 3-confluence (+0.49 vs −0.21 avg R). Resolves P5.15 as SUPERSEDE.
 2. **Full size is the default — counter-trend reversals included** (§9): Angus: "I wasn't doing 50%" in the hand backtest; the v1.1 confluence/type-count sizing tiers and the with-trend-or-A-at-extension conviction test are DELETED. Half size survives ONLY on the two deliberate overrides: oversized stop (>42) and late-window fill (>10:30, session-scoped windows). Reverses the v1.1 counter-trend-half reading (P5.10) at Angus's direction.
 3. **Minimum stop NEW** (§5.4): structural stop narrower than **10 pts** → NO TRADE (skip, never widen). Kills the 1–4-pt coin-toss stops behind most February EXTRA losses; Angus's real stops run 10–20 pts.
-4. Deliberately NOT changed this pass (one-problem-at-a-time): T_cancel, news/PCE classification (P5.14 still open — rerun "with the news variable after"), halt, RR floor, entry/management variants.
+4. Deliberately NOT changed this pass (one-problem-at-a-time): T_cancel, news/PCE classification (P5.14 still open — rerun "with the news variable after"), RR floor, entry/management variants.
+5. **Same-day addendum (calibration ruling #2, after the v1.2 full-Feb run):** daily halt (§10) = **−2R day total only**; the 2-loss counter removed (option (a)) — scratches were tripping it (6 MISSED trades, the run's #1 gate). Kept under the v1.2 label at Angus's direction.
 **Source of truth:** 28 hand-backtested trades (Feb 2–27 2026, NQ, NY morning) + journals + charts + Q&A.
 **Purpose:** Section 0 context for every spec in the build. Nothing is implemented that isn't written here. Items marked CALIBRATE are numeric parameters the February re-run tunes; items marked TOURNAMENT are rule variants tested head-to-head.
 
@@ -117,7 +118,7 @@ Each variant runs over identical data; Monte Carlo compares distributions; winne
 ## 10. Vault (deterministic, no LLM access)
 
 - Max trades/day: **3** (config 2–3; Angus: "no more than 2–3 genuinely high-probability setups exist per day").
-- Daily halt: after **2 losses** or **−2R** on the day, whichever first (placeholder; MC calibrates).
+- Daily halt: on **−2R day total ONLY** [ANGUS calibration ruling #2, 17 Jul 2026 — option (a)]. The v1.0/v1.1 "2 losses" counter is REMOVED: it counted a −0.1R scratch the same as a full stop-out, and on Feb 12/17 two scratches locked the robot out of the day's real winners. Damage halts the day; attempt count does not. (Still a placeholder band for MC to calibrate.)
 - One position at a time; no stop widening; EOD flatten (§1); drawdown kill-switch vs trailing DD buffer; size ceiling from MC.
 - All verdicts (taken/skipped/vetoed) logged to strict-schema journal. Nightly stats refresh; weekly Edge-Lab-style review is generated as PROPOSALS ONLY — rule changes require out-of-sample evidence + Angus sign-off + doc version bump. The system never edits its own rules. [CONFIRMED — Angus]
 

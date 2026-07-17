@@ -247,6 +247,19 @@ def test_daily_halt_after_losses():
     assert any(v.status == "vetoed_halt" for v in vd)
 
 
+def test_v12_halt_loss_counter_disabled():
+    # §10 v1.2 (ANGUS option a): halt_losses=0 disables the counter — losses alone never
+    # halt the day; only the -R damage threshold does.
+    c = cfg(halt_losses=0, halt_r=-99.0, max_trades_per_day=99)
+    tr, vd, _ = _quick_loss_day(4, c)
+    assert len(tr) == 4                                    # all four lose, nobody halts
+    assert not any(v.status == "vetoed_halt" for v in vd)
+    c2 = cfg(halt_losses=0, halt_r=-2.0, max_trades_per_day=99)
+    tr2, vd2, _ = _quick_loss_day(4, c2)
+    assert len(tr2) < 4                                    # -2R damage still halts
+    assert any(v.status == "vetoed_halt" for v in vd2)
+
+
 def test_eod_flatten():
     t = trig("2026-02-11 15:50")
     bars = mk_bars("2026-02-11 15:50", [(25005, 25006, 25004, 25005),

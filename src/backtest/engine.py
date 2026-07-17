@@ -329,8 +329,11 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
         return day_stats.setdefault(d, {"fills": 0, "losses": 0, "r": 0.0})
 
     def halted(ts) -> bool:
+        # §10 v1.2 (ANGUS calibration ruling #2, 17 Jul): halt on DAMAGE (-2R day total),
+        # not attempt count — two -0.1R scratches must not lock out the day's real setups.
+        # halt_losses = 0 disables the loss counter entirely (Angus option (a)).
         st = day(ts)
-        return st["losses"] >= cfg.halt_losses or st["r"] <= cfg.halt_r
+        return (cfg.halt_losses > 0 and st["losses"] >= cfg.halt_losses) or st["r"] <= cfg.halt_r
 
     def veto(t: Trigger, status: str, reason: str):
         verdicts.append(Verdict(ts=t.ts, tf=t.tf, direction=t.direction,

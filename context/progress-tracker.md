@@ -50,6 +50,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-17 — Calibration ruling #2: halt = damage-only (Claude Code, Angus driving)
+- v1.2 full-Feb official run landed (Brake): 30 trades, 5W/25L, **+4.72R** (v1.1: +0.65R); avg win +3.81R / avg loss −0.57R; MATCHED 4 (incl. Feb 11 +3.92R, Feb 24 +2.86R), MISSED 24, EXTRA 26 (3 winners on untraded days). Feb data slice now committed (data/reference/nq_1m_feb2026.parquet) — any session can run the pipeline.
+- **#1 gate = vetoed_halt ×6, tripped by scratches** (Feb 12: −0.10R + −0.13R = day locked, +3.37R winner missed). **Angus ruled option (a): halt on −2R day total ONLY; the 2-loss counter is REMOVED** (config daily_halt_losses: 2→0 = disabled; engine honors 0=off; §10 updated; kept under the v1.2 label at Angus's direction — changelog item 5).
+- Queue behind it (future single passes, NOT touched): rr_floor target-selection divergence ×6 (engine picks near target and vetoes where Angus aimed further — §6 tree ruling needed); T_cancel ×4; detector QA for Brake: Feb 25 monster's trigger carries a 1-pt displacement stop (hand stop 15) — stop-placement smell, engineering not rules; report header still says v1.1 (calibrate.py cosmetic).
+- Full-Feb v1.2+halt(a) rerun in progress in Angus's session (detection caching, then simulate-only).
+
+
 ### 2026-07-17 — Official v1.2 full-Feb report + committed Feb data slice (Claude Code, Brake driving)
 - **Committed `data/reference/nq_1m_feb2026.parquet`** (27,358 1m bars, Feb 1 18:00 → Feb 27 17:00 ET, 545 KB, roll column included) so Angus's chat can run calibration reruns straight from the repo — same pattern as the parity slice. `scripts/run_backtest_feb.py` now falls back to the slice when `data/nq_1m.parquet` is absent; fallback VERIFIED: slice-only run reproduces the full-data run exactly.
 - **Official v1.2 Feb 2–27 W1/E1/V0 run:** 30 trades, 5W/25L, **+4.71R, +$2,838** (1 NQ, net comm) — up from +0.65R under v1.1. Days: +6.30R Feb 24, +4.43R Feb 23, +3.92R Feb 11, +2.72R Feb 26; worst −2.02R. New gate mix: min-stop veto ×88 working as intended (coin-toss kills), bb_vwap ×169 now the entry gate, no confluence vetoes (P5.15 ruling live).
