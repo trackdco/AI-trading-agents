@@ -85,7 +85,8 @@
 - Location: no longs at HTF range top / shorts at range bottom.
 - Invalidation-at-entry: trigger candle simultaneously touching the opposing ±1σ → stand down. [Hypothesis — test]
 - Volatility stand-down: computable definition TBD (opening range vs ATR). [OPEN]
-- News handling: data is bias/target input, not a blackout — with ONE v1.1 exception below; slippage modeled punitively near releases. "No entry within N min of release" = H4, test. **High-impact pre-open stand-down [NEW — Angus, v1.1]:** a HIGH-impact release scheduled before 09:30 ET (e.g. CPI 08:30) kills all pre-market entries that day — let price play out post-news; first entries from the 09:30 open.
+- News handling: data is bias/target input, not a blackout — with ONE v1.1 exception below; slippage modeled punitively near releases. "No entry within N min of release" = H4, test. **High-impact pre-open stand-down [NEW — Angus, v1.1]:** a HIGH-impact release scheduled before 09:30 ET (e.g. CPI 08:30) kills ALL pre-market entries that day — **including entries before the release itself** [CONFIRMED — Angus, 17 Jul: "pre-release entries aren't good"]; first entries from the 09:30 open.
+- **"High-impact" defined [CONFIRMED — Angus, 17 Jul]:** Forex Factory **red-folder** releases — the prints that cause giant 1-minute candles: CPI, PPI, Non-Farm Employment/payrolls family, JOLTS, and peers of that magnitude. Orange/medium releases do NOT trigger the stand-down or the §6.3 news-day override ("if it's not that, I don't care about it"). The news_calendar `impact=high` tag must mean exactly this; Feb 2026 rows were seeded best-effort from the hand log and need re-verification against Forex Factory red-folder status [ACTION — Brake]. Edge case pending Angus (see questions-for-angus P5.14): PCE is red-folder on FF but not on Angus's named list — Feb 20 (Core PCE 08:30) decides whether his own 08:06 hand trade survives the rule.
 
 ## 8. Trade Management — TOURNAMENT (split-test, per Angus)
 

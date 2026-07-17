@@ -43,7 +43,9 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Late-window scope RESOLVED (Angus): after-10:30 half-sizing ONLY in session-scoped (NY-only) windows; W2 full-day has NO time-based sizing. §9 + §12.3 updated; W1-vs-W2 arms intentionally differ in sizing.
 - 2026-07-17 — 2R measurement RESOLVED (Angus): R measured to the ACTUAL level (stop 40 ⇒ target level ≥80 pts away; target must be a real menu level). Front-run F = execution only, excluded from R math. §6.5 updated.
 - 2026-07-17 — Data range CONFIRMED (Angus): full backtest Jan 1 → present. Brake to re-pull Databento from 2026-01-01 (current data starts Feb 1); Feb calibration can proceed on current data meanwhile.
-- 2026-07-17 — STILL OPEN for Angus: entry-time semantics (order-placement clock vs fill clock for the 09:30/10:30/11:00 cutoffs) — questions-for-angus P5.12, reworded with an example. Needed before Step 7 sizing/window logic is final.
+- 2026-07-17 — Entry-time clock RESOLVED (Angus): **FILL time** governs all time cutoffs (10:30 sizing / 11:00 window / 09:30 stand-down). Brake's Step 7 fill-clock implementation confirmed correct. P5.12 closed.
+- 2026-07-17 — News stand-down TIGHTENED (Angus): pre-release entries are NOT allowed — on a qualifying day the ENTIRE pre-market is blocked, entries from 09:30. **Overrides Brake's Step 7 release-time reading — engine change needed (doc wins).**
+- 2026-07-17 — "High-impact" DEFINED (Angus): Forex Factory red-folder class — CPI, PPI, Non-Farm/payrolls family, JOLTS, giant-1m-candle prints. Orange/medium never trigger stand-down or §6.3 override. ACTION Brake: re-verify Feb calendar impact tags vs FF red-folder (Feb rows were hand-log-seeded guesses). NEW OPEN P5.14: PCE is FF-red but not on Angus's list — Feb 20 Core PCE decides whether his own 08:06 hand trade survives; Angus to rule (strict red-folder vs named list).
 
 ## Session log (newest first)
 

@@ -71,13 +71,19 @@ tunes. Same items; answering here covers his nudge.)
     ONLY to session-scoped (NY-only) windows; **W2 full-day has no time-based sizing at all.**
     (W2's exact span — working read 18:00→15:55 CME session — still riding on the config
     placeholder; low priority, confirm whenever.)
-12. **"Entry time" definition.** STILL OPEN — reworded for clarity: the strategy has time
-    cutoffs (no entries after 11:00 in W1; half-size after 10:30; nothing before 09:30 on
-    big-news days). But a trade has TWO times: when the signal candle closes and the order is
-    placed, vs when price actually comes back and FILLS the resting limit — which can be
-    several minutes later. Example: signal at 10:28, order placed, price fills it at 10:36.
-    Is that a before-10:30 trade (full size) or an after-10:30 trade (half)? Which clock do
-    the cutoffs run on — order placement or fill? **→**
+12. ~~**"Entry time" definition.**~~ ✅ ANSWERED (Angus, 17 Jul): **FILL time** governs every
+    time cutoff (10:30 half-sizing, 11:00 window end, 09:30 news stand-down). Signal 10:28 /
+    fill 10:36 = after-10:30 trade = half. Brake's Step 7 already implements the fill clock —
+    no change needed.
+
+14. **NEW — the PCE edge case (decides your own Feb 20 trade).** Your high-impact definition
+    is "Forex Factory red folder" AND your named list (CPI, PPI, Non-Farm, JOLTS)… but
+    **PCE — the Fed's inflation gauge — is normally red-folder on FF**, while you said you
+    don't care about it. Feb 20 had Core PCE at 08:30, and your winning 08:06 entry that day
+    was PRE-release. Strict red-folder → the rule bans that trade (calibration divergence on
+    your own winner). Named-list-only → the trade survives. Which is it: (a) strict FF
+    red-folder, accept losing Feb-20-type mornings; or (b) your named list of giant-candle
+    prints (CPI / PPI / NFP-family / JOLTS + rate decisions), PCE excluded? **→**
 13. ~~**2R measured to what.**~~ ✅ ANSWERED (Angus, 17 Jul): measured to the ACTUAL level —
     stop 40 ⇒ target level ≥ 80 pts away, and the target must be a real level, not an
     arbitrary 2R price. Front-run F is execution mechanics, excluded from the R math.
