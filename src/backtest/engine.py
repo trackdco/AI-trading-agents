@@ -37,6 +37,9 @@ Documented conventions (flagged in progress-tracker for Angus):
   * $ P&L reported at 1 NQ contract (R is the calibration currency; Angus sized variably).
   * §9 conviction sizing: size=1.0 (full) needs conviction (3+ confluence AND (with-trend
     OR pattern A) AND target ≥ 2R), else 0.5; applied to $ only, not R.
+  * §9 v1.1 cluster-TYPE ladder (ANGUS): NO TRADE unless BB+VWAP both in the crossed cluster;
+    FULL additionally needs POC (BB+VWAP+POC) plus the conviction test above; exactly-2 -> HALF.
+    Also HALF on oversized stop (> sizing.oversized_stop_points) or late-window fill (>= 10:30).
 """
 from __future__ import annotations
 
@@ -77,9 +80,10 @@ class BacktestConfig(BaseModel):
     halt_r: float
     oversized_stop: float         # §9 ANGUS 2026-07-17: stop wider than this -> half size
     late_window_after: dtime      # §9 ANGUS 2026-07-17: entries (fills) after this -> half size
+    require_bb_vwap: bool         # §9 v1.1: cluster must hold BB+VWAP (no-trade gate); full=BB+VWAP+POC
     vwap_warmup_min: int          # ANGUS 2026-07-17: no entries within N min of the 18:00 anchor
-    no_premarket_high_impact: bool  # ANGUS 2026-07-17: high-impact pre-open release -> no entries
-                                    # from the release time until 09:30 (documented reading)
+    no_premarket_high_impact: bool  # ANGUS 2026-07-17 (TIGHTENED): on a high-impact pre-open
+                                    # release day the ENTIRE pre-market is blocked; entries from 09:30
     tick: float
     through_ticks: int
     slip_normal: int
@@ -112,6 +116,7 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         v4_partial_pct=c["management"]["v4_partial_pct"],
         oversized_stop=c["sizing"]["oversized_stop_points"],
         late_window_after=_hhmm(c["sizing"]["late_window_after"]),
+        require_bb_vwap=c["sizing"].get("require_bb_vwap", True),
         vwap_warmup_min=c["filters"]["vwap_warmup_min"],
         no_premarket_high_impact=c["filters"]["no_premarket_entry_on_high_impact"],
         max_trades_per_day=c["vault"]["max_trades_per_day"],
@@ -354,7 +359,14 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
         conviction = (p.order.trig.confluence_count >= 3
                       and (p.order.trig.htf_flag == "with_trend" or p.order.trig.pattern == "A")
                       and sign * (p.order.working_target - p.entry) / p.risk_pts >= 2.0)
-        size = 1.0 if conviction else 0.5                    # §9 ($ scaling only)
+        # §9 v1.1 cluster-TYPE ladder (ANGUS): FULL needs BB+VWAP+POC all present AND conviction;
+        # exactly-2 (incl BB+VWAP, already gated at entry) -> HALF. Legacy typeless -> conviction only.
+        ctypes = set(p.order.trig.cluster_types)
+        if cfg.require_bb_vwap and ctypes:
+            full = {"bb", "vwap", "poc"}.issubset(ctypes) and conviction
+        else:
+            full = conviction
+        size = 1.0 if full else 0.5                           # §9 ($ scaling only)
         # ANGUS 2026-07-17 half-size overrides: oversized stop / late-window entry
         if p.risk_pts > cfg.oversized_stop or p.fill_ts.time() >= cfg.late_window_after:
             size = 0.5
@@ -504,18 +516,24 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                 veto(t, "vetoed_vwap_warmup",
                      f"within {cfg.vwap_warmup_min}min of the 18:00 daily-VWAP anchor")
                 continue
-            # ANGUS 2026-07-17: high-impact pre-open release -> no entries until the 09:30 open
-            # (blocked from the RELEASE time, preserving pre-release entries; flagged reading)
+            # ANGUS 2026-07-17 (TIGHTENED): on a high-impact pre-open release day the ENTIRE
+            # pre-market is blocked -> no entries until 09:30 (doc wins; pre-release entries gone)
             if cfg.no_premarket_high_impact and tod < dtime(9, 30):
                 rel = preopen_news.get(ts.date())
-                if rel is not None and ts >= rel:
+                if rel is not None:
                     veto(t, "vetoed_news_preopen",
-                         f"high-impact release {rel.time()} -> no entries until 09:30")
+                         f"high-impact day (release {rel.time()}) -> whole pre-market blocked until 09:30")
                     continue
             need = cfg.min_conf_with if t.htf_flag == "with_trend" else cfg.min_conf_counter
             if t.confluence_count < need:
                 veto(t, "vetoed_confluence", f"confluence {t.confluence_count} < {need} "
                      f"({t.htf_flag})")
+                continue
+            # §9 v1.1 (ANGUS): NO TRADE unless BOTH BB and VWAP are in the crossed cluster.
+            # Guarded on non-empty cluster_types so legacy triggers without type data pass through.
+            if cfg.require_bb_vwap and t.cluster_types and not {"bb", "vwap"}.issubset(t.cluster_types):
+                veto(t, "vetoed_bb_vwap",
+                     f"cluster {sorted(t.cluster_types)} lacks BB+VWAP (§9 v1.1 no-trade)")
                 continue
             limit = entry_limit(t)
             if limit is None:

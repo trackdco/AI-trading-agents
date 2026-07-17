@@ -29,6 +29,7 @@ def cfg(**over) -> BacktestConfig:
                 halt_losses=2, halt_r=-2.0,
                 oversized_stop=42.0, late_window_after=time(10, 30),
                 vwap_warmup_min=60, no_premarket_high_impact=True,
+                require_bb_vwap=True,
                 tick=0.25, through_ticks=1,
                 slip_normal=1, slip_news=4, news_window_min=15,
                 commission_side=2.5, point_value=20.0)
@@ -44,14 +45,15 @@ def mk_bars(start: str, rows: list[tuple]) -> pd.DataFrame:
 
 
 def trig(ts: str, direction="long", conf=3, htf="counter_trend", pattern="A",
-         entry_ref=25000.0, stop_ref=None, tf="3min") -> Trigger:
+         entry_ref=25000.0, stop_ref=None, tf="3min", cluster_types=("bb", "vwap", "poc")) -> Trigger:
     stop = stop_ref if stop_ref is not None else (entry_ref - 10 if direction == "long"
                                                   else entry_ref + 10)
     wl, wh = (stop, entry_ref) if direction == "long" else (entry_ref, stop)
     return Trigger(ts=pd.Timestamp(ts, tz=NY).isoformat(), tf=tf, direction=direction,
                    kind="rejection_block", pattern=pattern, htf_flag=htf,
                    entry_ref=entry_ref, stop_ref=stop, wick_low=wl, wick_high=wh,
-                   cluster_center=entry_ref, confluence_count=conf, close=entry_ref + 2)
+                   cluster_center=entry_ref, confluence_count=conf,
+                   cluster_types=list(cluster_types), close=entry_ref + 2)
 
 
 def stub_resolver(level: float):
@@ -313,19 +315,19 @@ def test_vwap_warmup_veto():
 
 
 def test_high_impact_preopen_news_blocks_until_open():
+    # ANGUS 2026-07-17 (TIGHTENED): on a high-impact pre-open release day the ENTIRE pre-market
+    # is blocked -> both pre-release and post-release pre-open triggers are vetoed; 09:30+ allowed.
     cal = pd.DataFrame({"datetime_ET": [pd.Timestamp("2026-02-20 08:30", tz=NY)],
                         "event": ["Core Price Index"], "impact": ["high"]})
-    pre_release = trig("2026-02-20 08:06")     # BEFORE the release -> allowed (documented reading)
+    pre_release = trig("2026-02-20 08:06")     # BEFORE the release -> now vetoed (whole pre-market)
     post_release = trig("2026-02-20 08:45")    # after release, before 09:30 -> vetoed
     after_open = trig("2026-02-20 09:35")      # after the open -> allowed
     rows = [(25005, 25006, 25004, 25005)] * 120
-    rows[7] = (25004, 25005, 24999.75, 25002)   # 08:07: fill the pre-release order
-    rows[8] = (25050, 25101.0, 25040, 25090)    # 08:08: target -> flat again before 08:45
     bars = mk_bars("2026-02-20 08:00", rows)
     _, vd, _ = run(bars, [pre_release, post_release, after_open],
                    resolver=stub_resolver(25100), entry=pin_entry(25000), calendar=cal)
     st = {v.ts: v.status for v in vd}
-    assert st.get(pre_release.ts) != "vetoed_news_preopen"
+    assert st[pre_release.ts] == "vetoed_news_preopen"
     assert st[post_release.ts] == "vetoed_news_preopen"
     assert st.get(after_open.ts) != "vetoed_news_preopen"
 
@@ -346,6 +348,32 @@ def test_late_window_half_size():
                                         (25050, 25101.0, 25040, 25090)])
     tr, _, _ = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
     assert len(tr) == 1 and tr[0].size == 0.5
+
+
+def test_bb_vwap_gate_vetoes_cluster_without_both():
+    # §9 v1.1: a cluster missing BB or VWAP -> NO TRADE, even at high confluence.
+    t = trig("2026-02-11 09:48", conf=3, cluster_types=("vwap", "poc"))   # no BB
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),
+                                        (25050, 25101.0, 25040, 25090)])
+    tr, vd, _ = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    st = {v.ts: v.status for v in vd}
+    assert len(tr) == 0
+    assert st[t.ts] == "vetoed_bb_vwap"
+
+
+def test_bb_vwap_present_but_no_poc_is_half_size():
+    # §9 v1.1: BB+VWAP (exactly 2) trades but only HALF; adding POC would make it eligible for FULL.
+    half = trig("2026-02-11 09:48", conf=3, pattern="A", cluster_types=("bb", "vwap"))
+    rows = [(25005, 25006, 25004, 25005), (25004, 25005, 24999.75, 25002),
+            (25050, 25101.0, 25040, 25090)]
+    tr, _, _ = run(mk_bars("2026-02-11 09:48", rows), [half],
+                   resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert len(tr) == 1 and tr[0].size == 0.5
+    full = trig("2026-02-11 09:48", conf=3, pattern="A", cluster_types=("bb", "vwap", "poc"))
+    tr2, _, _ = run(mk_bars("2026-02-11 09:48", rows), [full],
+                    resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert len(tr2) == 1 and tr2[0].size == 1.0
 
 
 # ------------------------------------------------------------- integration (slice)

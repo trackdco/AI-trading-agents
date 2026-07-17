@@ -65,6 +65,9 @@ class Trigger(BaseModel):
     wick_high: float
     cluster_center: float
     confluence_count: int
+    cluster_types: list[str] = []   # distinct level types in the crossed cluster: bb | vwap | poc
+                                    # (§9 ANGUS v1.1 sizing ladder: FULL=BB+VWAP+POC, HALF=2 incl
+                                    #  BB+VWAP, NO TRADE without both BB+VWAP)
     close: float
 
 
@@ -211,6 +214,7 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
                 pattern = "unclassified"  # range regime, no over-extension — §4 silent (flagged)
             g = res.get("cluster")
             center = round(sum(p for _, p, _ in g) / len(g), 4) if g else res["entry_ref"]
+            ctypes = sorted({typ for _, _, typ in g}) if g else []
             raw.append(Trigger(ts=t.isoformat(), tf=tf, direction=res["direction"],
                                kind=res["kind"], pattern=pattern, htf_flag=htf,
                                entry_ref=round(float(res["entry_ref"]), 4),
@@ -218,7 +222,8 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
                                wick_low=round(float(res["wick_low"]), 4),
                                wick_high=round(float(res["wick_high"]), 4),
                                cluster_center=round(float(center), 4),
-                               confluence_count=res["count"], close=round(float(fr["close"].iloc[i]), 4)))
+                               confluence_count=res["count"], cluster_types=ctypes,
+                               close=round(float(fr["close"].iloc[i]), 4)))
     return _mtf_arbitrate(raw)
 
 
