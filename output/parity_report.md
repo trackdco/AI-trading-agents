@@ -72,7 +72,7 @@ without sign-off on this report.**
 
 ## SIGN-OFF — PASSED ✅
 
-**2026-07-17** — Brake read the reference chart on **NQH2026** (unadjusted March-2026 NQ)
+**2026-07-17** — Angus read the reference chart on **NQH2026** (unadjusted March-2026 NQ)
 and confirmed **every row is within 1.0 NQ point** of the engine values (BB on the traded
 TF, daily VWAP ±1σ, NY VWAP, daily POC, both gate candles). Step 4 parity gate **PASSED**;
 engine cleared to proceed to Steps 5-9. Recorded in context/progress-tracker.md gates ledger.

@@ -6,7 +6,7 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** Spec 1, Step 4 (indicators) — BUILT, adversarially verified, and **PARITY GATE PASSED (2026-07-17)**: Brake read NQH2026 and confirmed all rows within 1.0 pt. 40 tests pass, ruff clean.
+- **Last completed step:** Spec 1, Step 4 (indicators) — BUILT, adversarially verified, and **PARITY GATE PASSED (2026-07-17)**: Angus read NQH2026 and confirmed all rows within 1.0 pt. 40 tests pass, ruff clean.
 - **Blocked on:** Nothing — Step 4 gate cleared. Steps 5-9 unblocked.
 - **⚠️ Parity instrument fix (from data/reference/parity_chart_settings.md, salvaged from Angus's branch):** Angus must read the chart on **NQH2026 (March 2026 NQ)** — NOT MNQ1! and NOT a back-adjusted `1!` continuous. Engine uses unspliced continuous NQ = NQH6 for Feb 11/17 (verified). Back-adjust + micro-volume would shift prices/VWAP/POC by tens of points and guarantee a false gate failure.
 - **Branch consolidation:** canonical branch = `claude/getting-started-6lwnvs` (see context/TEAM.md). Three duplicate-engine branches superseded; useful files salvaged (.env.example, parity_chart_settings.md).
@@ -17,7 +17,7 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 | Date | Gate | Result | Notes |
 |---|---|---|---|
 | 2026-07-17 | strategy-definition v1.0 locked | PASSED | Q&A incorporated; daily VWAP anchor confirmed 18:00 ET |
-| 2026-07-17 | Spec 1 Step 4 parity report | PASSED | Brake read NQH2026 and confirmed every row within 1.0 pt (BB per trade TF, daily VWAP ±1σ, NY VWAP, daily POC). Engine cleared for Steps 5-9. |
+| 2026-07-17 | Spec 1 Step 4 parity report | PASSED | Angus read NQH2026 and confirmed every row within 1.0 pt (BB per trade TF, daily VWAP ±1σ, NY VWAP, daily POC). Engine cleared for Steps 5-9. |
 | — | Spec 1 Step 8 calibration classification | pending | |
 
 ## Decision log (append-only; one line per decision, with source)
@@ -29,7 +29,7 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
-### 2026-07-17 — Spec 1 Step 4 parity verification + as-of fix (Claude Code, Brake driving)
+### 2026-07-17 — Spec 1 Step 4 parity verification + as-of fix (Claude Code, Angus driving)
 - Cross-verified Step 4 indicators with a second independent implementation: trade-TF Bollingers (Feb 11 3m = 25409.79, Feb 17 2m = 24687.09) and daily POC agree to the penny. BB also validated to Δ0.00 against Angus's replay-screenshot 3m candle (Feb 11 10:18–10:20 = 25323.94). Daily-VWAP center matched the (MNQ) screenshot within 0.85.
 - **Finding + fix:** `scripts/make_parity_report.py` called `indicators_asof(gate_ts)`, which treated the named gate bar as still-forming and EXCLUDED it — off-by-one vs the gate anchor (the named candle's close). Impact: Feb 17 NY VWAP off by 8.5 pts (the 09:50 bar is the session's biggest-volume bar), daily VWAP ~1.6, ±1σ ~1.8, 1m BB ~2; trade-TF BB + POC immune. Fixed in the CALLER only (evaluate as of `gate_ts + 1min` = candle close); `src/engine/` untouched (indicators_asof stays a pure no-lookahead "as of instant T" primitive). Angus confirmed the convention ("numbers are good").
 - Regenerated + committed the signable `output/parity_report.md` (force-added past the output/ ignore) with the corrected numbers.
