@@ -151,6 +151,11 @@ management:
                                   #      runner targets the NEXT structural (V5) or the one beyond (V6).
                                   #      Runner rides free of the RR floor (targets.rr_floor_partial
                                   #      gates the first leg instead).
+  v7_partial_r: 1.5               # pass-8 TEST ARM (MFE-derived; MEASURED and REJECTED for Feb —
+                                  #      see progress-tracker pass 8): V7 books v5_partial_pct at a
+                                  #      FIXED +kR milestone; trade set identical to V0. Result:
+                                  #      win% 19.6→26.1 but +30.41R→+4.77R (winners pay ~-30R,
+                                  #      only 3 losers convert +5R). Kept for future distributions.
 
 sizing:
   # §9 v1.2 — ANGUS calibration ruling 2026-07-17: FULL size is the DEFAULT for every entry,
