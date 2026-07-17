@@ -7,8 +7,10 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
 - **Last completed step:** Spec 1, Step 3 (resampler + sessions) — `pytest tests/test_sessions.py` green (8 tests incl. DST boundary); smoke-tested on the real 161k-bar dataset. Full suite 21 passed, ruff clean.
-- **Blocked on:** Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET). Data is loaded and ready.
-- **Next action:** Spec 1, Step 4 (indicators) — the PARITY GATE step. Build BB/VWAP/volume-profile, then produce output/parity_report.md for Angus. GATE: do not proceed to Steps 5-9 until Angus signs off.
+- **Blocked on:** Step 4 PARITY GATE — Angus's chart readings for Feb 11 09:48 ET, Feb 17 09:50 ET. Step 4 indicators built + green; final adversarial verification of the VWAP/profile formulas in progress before parity numbers are locked.
+- **⚠️ Parity instrument fix (from data/reference/parity_chart_settings.md, salvaged from Angus's branch):** Angus must read the chart on **NQH2026 (March 2026 NQ)** — NOT MNQ1! and NOT a back-adjusted `1!` continuous. Engine uses unspliced continuous NQ = NQH6 for Feb 11/17 (verified). Back-adjust + micro-volume would shift prices/VWAP/POC by tens of points and guarantee a false gate failure.
+- **Branch consolidation:** canonical branch = `claude/getting-started-6lwnvs` (see context/TEAM.md). Three duplicate-engine branches superseded; useful files salvaged (.env.example, parity_chart_settings.md).
+- **Next action:** finish Step 4 verification → lock parity numbers → Angus signs off → Steps 5-9.
 
 ## Gates ledger (Angus sign-offs — append-only)
 
