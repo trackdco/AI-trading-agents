@@ -5,7 +5,7 @@ validated, timezone-aware parquet at ``data/nq_1m.parquet`` with the canonical c
 
     ts_event (America/New_York, tz-aware) | open | high | low | close | volume | roll
 
-Validation performed (per strategy-definition-v1.1.md §12 and spec-1 Step 2):
+Validation performed (per strategy-definition-v1.2.md §12 and spec-1 Step 2):
   * timestamps strictly monotonic increasing with NO duplicates — a violation RAISES
     (code-standards: validation errors raise, never warn);
   * gap report — unexpected missing 1-minute bars per CME daily session, written to

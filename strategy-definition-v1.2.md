@@ -1,6 +1,12 @@
-# NQ VWAP/BB/Profile Strategy — Definition v1.1
+# NQ VWAP/BB/Profile Strategy — Definition v1.2
 
-**Status:** LOCKED. v1.1 amendments instated by Angus (17 Jul 2026); supersedes v1.0. Full-doc final read-through still owed by Angus (open item in `context/questions-for-angus.md`).
+**Status:** LOCKED. v1.2 amendments instated by Angus (17 Jul 2026, from the Step-8 February calibration review); supersedes v1.1. Full-doc final read-through still owed by Angus (open item in `context/questions-for-angus.md`).
+
+**Changes v1.1 → v1.2** (Angus rulings on the Step-8 calibration report — the first pass of the Phase-2 loop: engine reported divergences, Angus disposed; recorded in `context/progress-tracker.md`):
+1. **Confluence minimum 3 → 2 everywhere** (§7): the two types must be **BB + VWAP together**; POC is bonus confluence, never a requirement. The v1.1 "counter-trend demands 3-type alignment" rule is DELETED — it was the nearest gate on 13 of the 24 MISSED February trades, and the diagnostics showed 2-confluence trades outperforming 3-confluence (+0.49 vs −0.21 avg R). Resolves P5.15 as SUPERSEDE.
+2. **Full size is the default — counter-trend reversals included** (§9): Angus: "I wasn't doing 50%" in the hand backtest; the v1.1 confluence/type-count sizing tiers and the with-trend-or-A-at-extension conviction test are DELETED. Half size survives ONLY on the two deliberate overrides: oversized stop (>42) and late-window fill (>10:30, session-scoped windows). Reverses the v1.1 counter-trend-half reading (P5.10) at Angus's direction.
+3. **Minimum stop NEW** (§5.4): structural stop narrower than **10 pts** → NO TRADE (skip, never widen). Kills the 1–4-pt coin-toss stops behind most February EXTRA losses; Angus's real stops run 10–20 pts.
+4. Deliberately NOT changed this pass (one-problem-at-a-time): T_cancel, news/PCE classification (P5.14 still open — rerun "with the news variable after"), halt, RR floor, entry/management variants.
 **Source of truth:** 28 hand-backtested trades (Feb 2–27 2026, NQ, NY morning) + journals + charts + Q&A.
 **Purpose:** Section 0 context for every spec in the build. Nothing is implemented that isn't written here. Items marked CALIBRATE are numeric parameters the February re-run tunes; items marked TOURNAMENT are rule variants tested head-to-head.
 
@@ -62,7 +68,7 @@
    - **E1:** limit at the BB MA (most frequent in journals)
    - **E2:** limit at the 50% level of the trigger candle's wick
    - **E3:** limit at the penetrated cluster level nearest the block's close
-4. Stop: beyond the wick extreme of the trigger candle / displacement origin. Structural, never widened (Vault-enforced).
+4. Stop: beyond the wick extreme of the trigger candle / displacement origin. Structural, never widened (Vault-enforced). **Minimum stop [NEW — Angus, v1.2]: if the structural stop is narrower than 10 pts, SKIP the trade** — never widen to fit ("on NQ we need breathing room"; real stops run 10–20 pts; sub-5-pt wick-stops are coin tosses). CALIBRATE within 10–15 only.
 5. No fill → no chase. Order cancels if price runs T_cancel points beyond entry without filling. **T_cancel: 20–25 pts, start 22** [CONFIRMED — Angus, v1.1]. Rationale: a missed limit that runs and later returns to the entry usually fails — price rarely re-chases (same behaviour motivating V1 BE-at-1R, §8) — so the cancel must be loose enough not to kill normal fills, then final. CALIBRATE within the 20–25 band only.
 6. One position at a time. No overlapping trades ever. [CONFIRMED — Angus]
 
@@ -80,7 +86,7 @@
 
 ## 7. Filters & Skip Criteria
 
-- **Confluence minimum (v1.1, type-specific):** entry requires **BB MA + VWAP both present** in the cluster — two types that don't include both = NO TRADE. Exactly two types (BB + VWAP) = tradeable at half unit (§9). All three core types (BB + VWAP + POC) = full-unit eligible (§9). Trend overlay unchanged from v1.0: counter-trend demands the full 3-type alignment; with-trend may trade the 2-type (BB+VWAP) case at reduced risk.
+- **Confluence minimum (v1.2 — Angus calibration ruling, 17 Jul 2026):** entry requires **BB MA + VWAP both present** in the cluster — that is the whole gate, for every trade, counter-trend included. Two types not including both = NO TRADE. POC (or anything else) stacking on top = bonus confluence, never a requirement. *(v1.1's "counter-trend demands 3-type alignment" is deleted — it vetoed 13 of Angus's 24 February trades while the 2-confluence trades were the profitable ones; P5.15 ruled SUPERSEDE.)*
 - **VWAP warm-up [NEW — Angus, v1.1]:** no entries in the **first hour after the daily-VWAP anchor** (18:00 ET → no entries before 19:00 ET) — the VWAP needs time to form before it means anything. Bites the Asia/overnight (daily-model) variants; W1/NY unaffected.
 - Location: no longs at HTF range top / shorts at range bottom.
 - Invalidation-at-entry: trigger candle simultaneously touching the opposing ±1σ → stand down. [Hypothesis — test]
@@ -100,12 +106,12 @@ Each variant runs over identical data; Monte Carlo compares distributions; winne
 
 ## 9. Sizing & Conviction
 
-- **Full unit** requires **all three core types aligned — BB + VWAP + POC** (§7) AND (with-trend OR A-at-extension) AND target ≥ 2R (automatic in v1.1 — §6.5 makes 2R the floor on every trade).
-- **Half unit** on any of:
-  - exactly **two** confluence types (which must include BB + VWAP — §7; anything less is a no-trade; §7's trend gate applies FIRST, so the 2-type case is with-trend only — counter-trend already requires all three types to enter at all);
-  - **oversized stop: > 40–45 pts, start 42** [CONFIRMED — Angus, v1.1]. The stop sits at the trigger wick extreme / displacement origin (§5.4), so stop size tracks trigger size; Feb sample median ≈ 30 pts, so 40–45 = "block too big, de-risk". CALIBRATE within the band only;
-  - **late-window entry: after 10:30 ET** [CONFIRMED — Angus, v1.1], applying ONLY to session-scoped (NY-only) test windows such as W1. [RESOLVED — Angus, 17 Jul 2026: **W2 full-day testing has NO time-based half-sizing** — the late-window rule simply does not exist there.] Context: 09:45–10:15 is peak AM-macro (most volatile/probable); post-10:30 setups are lower conviction. (v1.0's "thin target" trigger is removed — §6.5.)
-- **Default & precedence (v1.1 clarification of v1.0's two-bucket intent):** §7 gates entry first; among trades that enter, only two sizes exist. A trade that fails ANY full-unit condition trades at **half** — half is the default, not an exception list (this covers the 3-type counter-trend trade that is not A-at-extension: it enters per §7, sized half). Any half-unit trigger present demotes an otherwise-full trade to half; multiple triggers do not stack below half. [CONFIRMED — Angus, 17 Jul 2026: counter-trend-non-A with full 3-type alignment = half.]
+*(v1.2 — Angus calibration ruling, 17 Jul 2026. The v1.1 confluence/type-count sizing tiers and the with-trend-or-A-at-extension conviction test are DELETED: "I wasn't doing 50%… trade counter-trend reversals at full size." History of the superseded v1.1 ladder is in git and the v1.2 changelog.)*
+
+- **Full unit is the default for every entry that passes §7** — counter-trend reversals included. There is no confluence-based or trend-based size reduction.
+- **Half unit** only on the two deliberate overrides (either present → half; they do not stack below half):
+  - **oversized stop: > 40–45 pts, start 42** [CONFIRMED — Angus, v1.1]. The stop sits at the trigger wick extreme / displacement origin (§5.4), so stop size tracks trigger size; Feb sample median ≈ 30 pts, so 40–45 = "block too big, de-risk". CALIBRATE within the band only. (Floor at the other end: stops < 10 pts are a no-trade — §5.4 v1.2.)
+  - **late-window entry: after 10:30 ET** [CONFIRMED — Angus, v1.1], applying ONLY to session-scoped (NY-only) test windows such as W1. [RESOLVED — Angus: **W2 full-day testing has NO time-based half-sizing.**] Context: 09:45–10:15 is peak AM-macro; post-10:30 setups are lower conviction.
 - Absolute per-trade risk ceiling comes from Monte Carlo vs eval rules — expected well below the sample's $400.
 
 ## 10. Vault (deterministic, no LLM access)

@@ -9,7 +9,7 @@ gates everything before it reaches a human or a market.
 
 ## The constitution
 
-[`strategy-definition-v1.1.md`](strategy-definition-v1.1.md) is the single source of
+[`strategy-definition-v1.2.md`](strategy-definition-v1.2.md) is the single source of
 truth for every trading rule. When code and that document conflict, the document wins.
 When the document is ambiguous, stop and ask Angus — never guess trading semantics.
 
@@ -17,7 +17,7 @@ When the document is ambiguous, stop and ask Angus — never guess trading seman
 
 | Path | What it is |
 |---|---|
-| `strategy-definition-v1.1.md` | The rulebook. Everything traces here. |
+| `strategy-definition-v1.2.md` | The rulebook. Everything traces here. |
 | `spec-1-market-engine-backtester.md` | Active build spec (Phase 1), executed one step at a time. |
 | `context/` | Project overview, architecture, code standards, workflow rules, progress tracker. |
 | `config/strategy.yaml` | Every configurable parameter, each commented with its § source in the strategy doc. |

@@ -2,7 +2,7 @@
 
 Purpose: capture the human chart-read configuration for the Spec 1 Step 4
 parity gate (Feb 11 2026 09:48 ET, Feb 17 2026 09:50 ET), and flag mismatches
-against `strategy-definition-v1.1.md` §2 and `spec-1` Section 3 BEFORE readings
+against `strategy-definition-v1.2.md` §2 and `spec-1` Section 3 BEFORE readings
 are recorded. A 1.0-point tolerance is only meaningful if chart and engine use
 identical definitions on the same instrument.
 

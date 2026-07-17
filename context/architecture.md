@@ -43,7 +43,7 @@ In **backtest mode**, the Desk is bypassed: triggers.py IS the mechanical rule s
 2. All timestamps are tz-aware America/New_York. DST is handled by the tz library, never by offset arithmetic.
 3. Signals compute on closed candles; orders activate next bar. A no-lookahead test must exist and pass.
 4. One open position maximum, ever.
-5. Every configurable number lives in `config/strategy.yaml` with a comment tracing it to a § of strategy-definition-v1.1.md.
+5. Every configurable number lives in `config/strategy.yaml` with a comment tracing it to a § of strategy-definition-v1.2.md.
 6. The Vault has no import path from any module that calls an LLM.
 
 ## Environments

@@ -30,6 +30,9 @@ def cfg(**over) -> BacktestConfig:
                 oversized_stop=42.0, late_window_after=time(10, 30),
                 vwap_warmup_min=60, no_premarket_high_impact=True,
                 require_bb_vwap=True,
+                # min-stop disabled by default so hand-built geometry fixtures stay valid;
+                # the §5 v1.2 rule has its own dedicated tests below (min_stop_points=10)
+                min_stop_points=0.0,
                 tick=0.25, through_ticks=1,
                 slip_normal=1, slip_news=4, news_window_min=15,
                 commission_side=2.5, point_value=20.0)
@@ -375,18 +378,49 @@ def test_bb_vwap_gate_vetoes_cluster_without_both():
     assert st[t.ts] == "vetoed_bb_vwap"
 
 
-def test_bb_vwap_present_but_no_poc_is_half_size():
-    # §9 v1.1: BB+VWAP (exactly 2) trades but only HALF; adding POC would make it eligible for FULL.
-    half = trig("2026-02-11 09:48", conf=3, pattern="A", cluster_types=("bb", "vwap"))
+def test_v12_full_size_default_even_counter_trend_two_types():
+    # §9 v1.2 (ANGUS calibration ruling): FULL size is the default — a 2-type BB+VWAP
+    # COUNTER-TREND trade is full size; POC adds nothing to sizing any more.
     rows = [(25005, 25006, 25004, 25005), (25004, 25005, 24999.75, 25002),
             (25050, 25101.0, 25040, 25090)]
-    tr, _, _ = run(mk_bars("2026-02-11 09:48", rows), [half],
-                   resolver=stub_resolver(25100), entry=pin_entry(25000))
-    assert len(tr) == 1 and tr[0].size == 0.5
-    full = trig("2026-02-11 09:48", conf=3, pattern="A", cluster_types=("bb", "vwap", "poc"))
-    tr2, _, _ = run(mk_bars("2026-02-11 09:48", rows), [full],
-                    resolver=stub_resolver(25100), entry=pin_entry(25000))
-    assert len(tr2) == 1 and tr2[0].size == 1.0
+    for ctypes in (("bb", "vwap"), ("bb", "vwap", "poc")):
+        t = trig("2026-02-11 09:48", conf=2, htf="counter_trend", pattern="B",
+                 cluster_types=ctypes)
+        tr, _, _ = run(mk_bars("2026-02-11 09:48", rows), [t],
+                       resolver=stub_resolver(25100), entry=pin_entry(25000),
+                       c=cfg(min_conf_counter=2))
+        assert len(tr) == 1 and tr[0].size == 1.0, ctypes
+
+
+def test_v12_counter_trend_two_confluence_enters():
+    # §7 v1.2: confluence minimum is 2 everywhere — conf=2 counter-trend must NOT be
+    # vetoed_confluence (this was the gate on 13 of the 24 Feb MISSED trades).
+    t = trig("2026-02-11 09:48", conf=2, htf="counter_trend", pattern="A",
+             cluster_types=("bb", "vwap"))
+    rows = [(25005, 25006, 25004, 25005), (25004, 25005, 24999.75, 25002),
+            (25050, 25101.0, 25040, 25090)]
+    tr, verdicts, _ = run(mk_bars("2026-02-11 09:48", rows), [t],
+                          resolver=stub_resolver(25100), entry=pin_entry(25000),
+                          c=cfg(min_conf_counter=2))
+    assert not any(v.status == "vetoed_confluence" for v in verdicts)
+    assert len(tr) == 1
+
+
+def test_v12_min_stop_veto():
+    # §5 v1.2 (ANGUS): structural stop narrower than min_stop_points -> skip, never widen.
+    tight = trig("2026-02-11 09:48", stop_ref=24996.0)   # 4-pt stop vs pinned 25000 entry
+    rows = [(25005, 25006, 25004, 25005), (25004, 25005, 24999.75, 25002),
+            (25050, 25101.0, 25040, 25090)]
+    tr, verdicts, _ = run(mk_bars("2026-02-11 09:48", rows), [tight],
+                          resolver=stub_resolver(25100), entry=pin_entry(25000),
+                          c=cfg(min_stop_points=10.0))
+    assert len(tr) == 0
+    assert any(v.status == "vetoed_min_stop" for v in verdicts)
+    ok = trig("2026-02-11 09:48", stop_ref=24990.0)      # exactly 10 pts -> allowed
+    tr2, v2, _ = run(mk_bars("2026-02-11 09:48", rows), [ok],
+                     resolver=stub_resolver(25100), entry=pin_entry(25000),
+                     c=cfg(min_stop_points=10.0))
+    assert len(tr2) == 1 and not any(v.status == "vetoed_min_stop" for v in v2)
 
 
 # ------------------------------------------------------------- integration (slice)

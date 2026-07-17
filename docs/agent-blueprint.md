@@ -11,7 +11,7 @@
 | Raw design material | `docs/agent-blueprint-design/*.json` — the full per-lane design artifacts this document summarizes |
 
 > **⚠️ v1.1 ADDENDUM (2026-07-17, after this design was produced):** Angus bumped
-> the constitution to **strategy-definition-v1.1.md** (nine 17-Jul rules folded
+> the constitution to **strategy-definition-v1.2.md** (nine 17-Jul rules folded
 > in; § numbering unchanged). Every §-reference below still resolves, but Spec 3
 > works from **v1.1**, which already answers or changes parts of this design:
 > **Q-5 is ANSWERED** (oversized stop = `sizing.oversized_stop_points` 42 pts;

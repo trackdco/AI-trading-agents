@@ -23,7 +23,7 @@ Git rules (keep it simple):
 
 | Person | Owns | Touches (parallel-safe lanes) |
 |---|---|---|
-| **Angus** | Strategy authority + sign-offs | `strategy-definition-v1.1.md`, chart readings, gate approvals, answering "what number did you mean". |
+| **Angus** | Strategy authority + sign-offs | `strategy-definition-v1.2.md`, chart readings, gate approvals, answering "what number did you mean". |
 | **Brake + Angus** | Data + running simulations to find leaks, then refine strategy/risk metrics before finalizing | data pulls, `config/`, `output/` reports, calibration/diagnostics review. |
 | **Pat** | Builds the **agents** (Phase 3: atlas/helios/apollo/hephaestus/hermes in `.claude/agents/`) and the **bots** (Phase 4–5: Vault live loop, Telegram, paper trading) | `.claude/agents/`, live-loop code — comes AFTER the engine + calibration are validated. |
 | **Claude Code (this branch)** | Builds the deterministic **Market Engine + Backtester** (Spec 1), one step at a time, flags anything questionable | `src/engine/`, `src/backtest/`, `tests/`. |

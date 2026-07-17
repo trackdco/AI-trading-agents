@@ -89,6 +89,9 @@ entry:
                                   #      E1 = limit at BB MA (most frequent in journals)
                                   #      E2 = limit at 50% of trigger candle's wick
                                   #      E3 = limit at penetrated cluster level nearest block's close
+  min_stop_points: 10.0           # §5 v1.2 — ANGUS calibration ruling 2026-07-17 NEW: structural
+                                  #      stop narrower than this → NO TRADE (skip, never widen).
+                                  #      His stops run 10-20 pts; 1-4 pt wick-stops = coin tosses.
   cancel_if_runs_points: 22.0     # §5.5 CALIBRATE — T_cancel: cancel unfilled order if price runs this
                                   #      many points beyond entry. ANGUS 2026-07-17: band 20-25, start 22
                                   #      (price rarely re-chases a missed limit)
@@ -105,8 +108,11 @@ targets:
   alignment_min_stack: 2          # §6.6 — prefer targets where ≥2 menu levels stack within tolerance
 
 filters:
-  min_confluence_counter_trend: 3 # §7 — confluence minimum, counter-trend
-  min_confluence_with_trend: 2    # §7 — confluence minimum, with-trend (at reduced risk, §9)
+  min_confluence_counter_trend: 2 # §7 v1.2 — ANGUS calibration ruling 2026-07-17: was 3; the
+                                  #      3-count counter-trend minimum vetoed 13 of his 24 Feb
+                                  #      trades. Minimum is now 2 EVERYWHERE, and the two must
+                                  #      be BB+VWAP (sizing.require_bb_vwap gate below).
+  min_confluence_with_trend: 2    # §7 — confluence minimum, with-trend (unchanged)
   location_veto: true             # §7 — no longs at HTF range top / no shorts at range bottom
   invalidation_at_entry: false    # §7 HYPOTHESIS (test) — trigger candle touching opposing ±1σ → stand down
   news_entry_buffer_enabled: false  # §7 — H4 "no entry within N min of release"; test only, default off
@@ -126,17 +132,18 @@ management:
   v4_partial_pct: 50              # §8 V4 — 50% partial at first structural level, runner to target
 
 sizing:
-  full_unit_min_confluences: 3    # §9 — full unit requires 3+ confluences AND (with-trend OR
-  full_unit_min_target_r: 2.0     # §9 — A-at-extension) AND target ≥ 2R; anything less → half unit
-  oversized_stop_points: 42       # §9 — ANGUS 2026-07-17 NEW: stop wider than this (band 40-45,
+  # §9 v1.2 — ANGUS calibration ruling 2026-07-17: FULL size is the DEFAULT for every entry,
+  # counter-trend reversals included ("I wasn't doing 50%"). The v1.1 confluence/type-count
+  # sizing tiers and the with-trend-or-A conviction test are REMOVED; the old
+  # full_unit_min_confluences / full_unit_min_target_r keys are gone (2R lives in targets.rr_floor).
+  # HALF only on the two deliberate overrides below.
+  oversized_stop_points: 42       # §9 — ANGUS 2026-07-17: stop wider than this (band 40-45,
                                   #      median wick-stop ~30) → HALF size
-  late_window_after: "10:30"      # §9 — ANGUS 2026-07-17 NEW: entries after 10:30 ET → HALF size
-                                  #      (09:45-10:15 is prime AM-macro)
-  require_bb_vwap: true           # §9 v1.1 (ANGUS 2026-07-17, now WIRED): the cluster-TYPE ladder.
-                                  #      NO TRADE unless BOTH BB and VWAP are in the crossed cluster;
-                                  #      FULL = BB+VWAP+POC all three (AND §9 conviction holds);
-                                  #      exactly 2 incl. BB+VWAP → HALF. Layers over §7 confluence
-                                  #      minimums and the oversized-stop/late-window half overrides.
+  late_window_after: "10:30"      # §9 — ANGUS 2026-07-17: fills after 10:30 ET → HALF size,
+                                  #      session-scoped windows only (09:45-10:15 is prime AM-macro)
+  require_bb_vwap: true           # §7 v1.2 — the ENTRY GATE: no trade unless BOTH BB and VWAP
+                                  #      are in the crossed cluster (POC = bonus confluence,
+                                  #      not required; no effect on size any more)
   # Absolute per-trade risk ceiling comes from Monte Carlo vs eval rules (Spec 4) — intentionally absent (§9)
 
 vault:

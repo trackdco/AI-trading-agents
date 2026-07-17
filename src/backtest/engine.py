@@ -35,11 +35,12 @@ Documented conventions (flagged in progress-tracker for Angus):
     stop. V4 partial exits at the first structural menu level via trade-through; R is the
     leg-weighted sum. Commission charged as 2 sides per trade regardless of legs (flag).
   * $ P&L reported at 1 NQ contract (R is the calibration currency; Angus sized variably).
-  * §9 conviction sizing: size=1.0 (full) needs conviction (3+ confluence AND (with-trend
-    OR pattern A) AND target ≥ 2R), else 0.5; applied to $ only, not R.
-  * §9 v1.1 cluster-TYPE ladder (ANGUS): NO TRADE unless BB+VWAP both in the crossed cluster;
-    FULL additionally needs POC (BB+VWAP+POC) plus the conviction test above; exactly-2 -> HALF.
-    Also HALF on oversized stop (> sizing.oversized_stop_points) or late-window fill (>= 10:30).
+  * §7/§9 v1.2 (ANGUS calibration ruling 2026-07-17): entry gate = BB+VWAP both present in
+    the crossed cluster (POC = bonus, no 3-count minimum anywhere — counter-trend included).
+    Size = FULL (1.0) by default for every entry; HALF (0.5) only on oversized stop
+    (> sizing.oversized_stop_points) or late-window fill (>= 10:30). Applied to $ only, not R.
+  * §5 v1.2 (ANGUS): structural stop < entry.min_stop_points (start 10) -> vetoed_min_stop,
+    never widened.
 """
 from __future__ import annotations
 
@@ -80,7 +81,8 @@ class BacktestConfig(BaseModel):
     halt_r: float
     oversized_stop: float         # §9 ANGUS 2026-07-17: stop wider than this -> half size
     late_window_after: dtime      # §9 ANGUS 2026-07-17: entries (fills) after this -> half size
-    require_bb_vwap: bool         # §9 v1.1: cluster must hold BB+VWAP (no-trade gate); full=BB+VWAP+POC
+    require_bb_vwap: bool         # §7 v1.2: cluster must hold BB+VWAP (the entry gate; POC = bonus)
+    min_stop_points: float        # §5 v1.2 ANGUS: structural stop narrower than this -> no trade
     vwap_warmup_min: int          # ANGUS 2026-07-17: no entries within N min of the 18:00 anchor
     no_premarket_high_impact: bool  # ANGUS 2026-07-17 (TIGHTENED): on a high-impact pre-open
                                     # release day the ENTIRE pre-market is blocked; entries from 09:30
@@ -117,6 +119,7 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         oversized_stop=c["sizing"]["oversized_stop_points"],
         late_window_after=_hhmm(c["sizing"]["late_window_after"]),
         require_bb_vwap=c["sizing"].get("require_bb_vwap", True),
+        min_stop_points=c["entry"]["min_stop_points"],
         vwap_warmup_min=c["filters"]["vwap_warmup_min"],
         no_premarket_high_impact=c["filters"]["no_premarket_entry_on_high_impact"],
         max_trades_per_day=c["vault"]["max_trades_per_day"],
@@ -356,18 +359,11 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
         sign = 1 if p.order.trig.direction == "long" else -1
         pts = sum(fr * sign * (px - p.entry) for fr, px, _, _ in p.legs)
         r = pts / p.risk_pts if p.risk_pts > 0 else 0.0
-        conviction = (p.order.trig.confluence_count >= 3
-                      and (p.order.trig.htf_flag == "with_trend" or p.order.trig.pattern == "A")
-                      and sign * (p.order.working_target - p.entry) / p.risk_pts >= 2.0)
-        # §9 v1.1 cluster-TYPE ladder (ANGUS): FULL needs BB+VWAP+POC all present AND conviction;
-        # exactly-2 (incl BB+VWAP, already gated at entry) -> HALF. Legacy typeless -> conviction only.
-        ctypes = set(p.order.trig.cluster_types)
-        if cfg.require_bb_vwap and ctypes:
-            full = {"bb", "vwap", "poc"}.issubset(ctypes) and conviction
-        else:
-            full = conviction
-        size = 1.0 if full else 0.5                           # §9 ($ scaling only)
-        # ANGUS 2026-07-17 half-size overrides: oversized stop / late-window entry
+        # §9 v1.2 (ANGUS calibration ruling 2026-07-17): FULL size is the default for every
+        # entry — counter-trend reversals included ("I wasn't doing 50%"). The v1.1
+        # confluence/type-count sizing tiers and the with-trend-or-A conviction test are
+        # DELETED. HALF only on the two deliberate overrides: oversized stop / late-window fill.
+        size = 1.0
         if p.risk_pts > cfg.oversized_stop or p.fill_ts.time() >= cfg.late_window_after:
             size = 0.5
         dollars = pts * cfg.point_value * size - 2 * cfg.commission_side
@@ -551,6 +547,13 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             risk = sgn * (limit - stop)
             if risk <= 0:
                 veto(t, "vetoed_bad_geometry", "stop not beyond entry")
+                continue
+            # §5 v1.2 (ANGUS calibration ruling 2026-07-17): structural stop must be at least
+            # min_stop_points wide — tighter is a SKIP, never widened. Kills the 1-4 pt
+            # coin-toss stops behind most of the Feb EXTRA losses ("give NQ breathing room").
+            if risk < cfg.min_stop_points:
+                veto(t, "vetoed_min_stop",
+                     f"stop {risk:.2f} pts < {cfg.min_stop_points:g} minimum (§5 v1.2)")
                 continue
             tgt = resolve(t, limit, stop)
             if tgt is None:

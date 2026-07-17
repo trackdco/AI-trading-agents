@@ -2,7 +2,7 @@
 
 Your lane: strategy authority + sign-offs. These are parked decisions the engine has
 been running on PLACEHOLDER assumptions for. Answer inline (write after each **→**), and
-they get folded into `config/strategy.yaml` / `strategy-definition-v1.1.md`. Nothing here
+they get folded into `config/strategy.yaml` / `strategy-definition-v1.2.md`. Nothing here
 blocks the Step 4 gate (that's PASSED) — this clears the runway for Steps 5–8 and keeps the
 Step 8 calibration honest.
 
@@ -14,8 +14,8 @@ tunes. Same items; answering here covers his nudge.)
 
 ## P1 — cheap, unblocks Steps 5–6 (do first)
 
-1. **Strategy doc final read-through.** Now targets **v1.1** (bumped 17 Jul 2026 with your
-   instated rules — see its header changelog). Read it once end-to-end; confirm it's final
+1. **Strategy doc final read-through.** Now targets **v1.2** (17 Jul 2026 — v1.1 instated your
+   nine rules; v1.2 instated your calibration rulings, see both changelogs in the header). Read it once end-to-end; confirm it's final
    (or list edits). The v1.1 amendments themselves are already Angus-approved; this is the
    whole-document once-over.
    **→**
@@ -58,15 +58,16 @@ tunes. Same items; answering here covers his nudge.)
    is subsumed — below 2R is a no-trade, not a downsize. `targets.rr_floor 1.5 → 2.0`.
 
 > ✅ **Strategy-doc v1.1 bump DONE** (Angus directed, 17 Jul 2026): all of the above folded into
-> `strategy-definition-v1.1.md` (§2/§3/§5.5/§6.5/§7/§9 + header changelog). Reconciliation of
+> `strategy-definition-v1.2.md` (§2/§3/§5.5/§6.5/§7/§9 + header changelog). Reconciliation of
 > "2 must be BB+VWAP" with the trend rule: counter-trend requires the full 3-type alignment;
 > with-trend may trade 2-type (BB+VWAP) at half. Repo references updated; `config/strategy.yaml`
 > left for Brake to update together with the new values (his lane, he's mid-build).
 
 ## P5 — NEW (surfaced by the v1.1 adversarial audit, 17 Jul) — needed before/at Step 7-8
 
-10. ~~**Counter-trend full-confluence sizing.**~~ ✅ CONFIRMED (Angus, 17 Jul): all three
-    aligned but counter-trend and not A-at-extension → **half**. Tag removed from §9.
+10. ~~**Counter-trend full-confluence sizing.**~~ ⚠️ SUPERSEDED by v1.2 (same day): the
+    calibration review reversed this — counter-trend now trades **FULL** size (Angus: "I
+    wasn't doing 50%"). See §9 v1.2.
 11. ~~**Late-window in W2.**~~ ✅ ANSWERED (Angus, 17 Jul): after-10:30 half-sizing applies
     ONLY to session-scoped (NY-only) windows; **W2 full-day has no time-based sizing at all.**
     (W2's exact span — working read 18:00→15:55 CME session — still riding on the config
@@ -88,7 +89,13 @@ tunes. Same items; answering here covers his nudge.)
     stop 40 ⇒ target level ≥ 80 pts away, and the target must be a real level, not an
     arbitrary 2R price. Front-run F is execution mechanics, excluded from the R math.
 
-15. **NEW — does the §9 v1.1 type-ladder STACK with or SUPERSEDE the §7 count-minimum?**
+15. ~~**Does the §9 v1.1 type-ladder STACK with or SUPERSEDE the §7 count-minimum?**~~
+    ✅ RULED (Angus, 17 Jul, calibration review): **SUPERSEDE — and further.** Confluence
+    minimum is 2 everywhere (must be BB+VWAP; POC bonus); the 3-counter-trend minimum is
+    deleted; sizing is FULL by default (half only oversized-stop/late-window). Instated in
+    v1.2 + engine + config; validated on the committed slice (Feb 11 09:48 now trades, +3.92R).
+    Original question preserved below for the record:
+    **(superseded)**
     (Surfaced by the Step-8 calibration report — it is the single biggest driver of MISSED.)
     Your v1.1 sizing ladder says a **2-type BB+VWAP** cluster is *tradeable at half size*.
     But §7 still requires **3 confluences counter-trend / 2 with-trend**. For a 2-type
