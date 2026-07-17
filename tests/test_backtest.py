@@ -317,6 +317,73 @@ def test_v4_partial_legs_weighted_r():
     assert len(tr_) == 1 and tr_[0].exit_reason == "target"
 
 
+def _v56_resolver(partial=25020.0, s2=25050.0, s3=25080.0, pick=25100.0):
+    """3-tuple resolver with the structural sequence V5/V6 consume."""
+    aux = {"partial_level": partial, "structural_2": ("s2", s2), "structural_3": ("s3", s3)}
+    return lambda t, entry, stop: ("model_pick", pick, dict(aux))
+
+
+def test_v5_books_75_at_first_structure_runner_to_next_structural():
+    # ANGUS pass-7: 75% at first structure (25020), 25% runner to s2 (25050; working 25047.5)
+    c = cfg(mgmt_variant="V5")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)                    # risk 10
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25010, 25020.25, 25008, 25018),   # partial through 25020
+                                        (25030, 25047.75, 25028, 25045)])  # runner target through
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.target_name == "s2" and rec.target_level == 25050.0
+    assert rec.exit_reason == "partial+target"
+    # legs: 0.75 * (25020-25000)/10 + 0.25 * (25047.5-25000)/10 = 1.5 + 1.1875
+    assert rec.r_multiple == pytest.approx(2.6875, abs=1e-4)
+
+
+def test_v6_runner_targets_structural_3():
+    c = cfg(mgmt_variant="V6")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25010, 25020.25, 25008, 25018),   # partial through 25020
+                                        (25030, 25077.75, 25028, 25070)])  # s3 working 25077.5
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.target_name == "s3" and rec.target_level == 25080.0
+    # 0.75 * 2.0 + 0.25 * (25077.5-25000)/10 = 1.5 + 1.9375
+    assert rec.r_multiple == pytest.approx(3.4375, abs=1e-4)
+
+
+def test_v5_first_target_floor_vetoes_thin_first_structure():
+    # first structure at +10 pts on a 10-pt risk = RR 1.0 < rr_floor_partial 1.5 -> veto
+    c = cfg(mgmt_variant="V5")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005)] * 3)
+    _, vd, _ = simulate(bars, [t], c, target_resolver=_v56_resolver(partial=25010.0),
+                        entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert any(v.status == "vetoed_rr_floor" and "partial floor" in v.reason for v in vd)
+
+
+def test_v5_partial_books_then_runner_stops_out():
+    # partial fills at 25020, runner then reverses to the stop: net = 0.75*2R + 0.25*(-1R)
+    c = cfg(mgmt_variant="V5")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25010, 25020.25, 25008, 25018),   # partial through 25020
+                                        (25010, 25012, 24989.5, 24991)])   # stop 24990 hit
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+stop"
+    # slippage 1 tick on the stop leg: 0.75*2.0 + 0.25*((24989.75-25000)/10)
+    assert rec.r_multiple == pytest.approx(0.75 * 2.0 + 0.25 * (-10.25 / 10), abs=1e-3)
+
+
 # ------------------------------------------------------------- Angus 2026-07-17 rules
 
 def test_vwap_warmup_veto():

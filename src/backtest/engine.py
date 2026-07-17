@@ -73,9 +73,11 @@ class BacktestConfig(BaseModel):
     news_override: bool           # §6.3
     min_conf_counter: int         # §7
     min_conf_with: int            # §7
-    mgmt_variant: str             # V0..V4 (§8)
+    mgmt_variant: str             # V0..V6 (§8; V5/V6 = ANGUS pass-7 75/25 partials)
     v1_be_at_r: float
     v4_partial_pct: float
+    v5_partial_pct: float = 75.0  # ANGUS pass-7: % booked at first structure (V5/V6)
+    rr_floor_partial: float = 1.5  # ANGUS pass-7: "RR floor for the first profit target is 1.5"
     max_trades_per_day: int       # §10
     halt_losses: int
     halt_r: float
@@ -118,6 +120,8 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         min_conf_with=c["filters"]["min_confluence_with_trend"],
         mgmt_variant=c["management"]["variant"], v1_be_at_r=c["management"]["v1_be_at_r"],
         v4_partial_pct=c["management"]["v4_partial_pct"],
+        v5_partial_pct=c["management"].get("v5_partial_pct", 75.0),
+        rr_floor_partial=c["targets"].get("rr_floor_partial", 1.5),
         oversized_stop=c["sizing"]["oversized_stop_points"],
         late_window_after=_hhmm(c["sizing"]["late_window_after"]),
         require_bb_vwap=c["sizing"].get("require_bb_vwap", True),
@@ -333,9 +337,13 @@ def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None,
         else:
             pick_name, pick_price = pick.name, float(pick.price)
         aux = {}
-        st = nearest(types=_STRUCTURAL)
-        if st is not None:
-            aux["partial_level"] = float(st.price)         # V4 milestone (§8)
+        sts = [lv for lv in beyond if lv.type in _STRUCTURAL]   # distance-ordered structurals
+        if sts:
+            aux["partial_level"] = float(sts[0].price)     # V4/V5/V6 first structure (§8)
+        if len(sts) > 1:                                   # V5 runner -> NEXT structural (ANGUS)
+            aux["structural_2"] = (sts[1].name, float(sts[1].price))
+        if len(sts) > 2:                                   # V6 runner -> the one BEYOND (ANGUS)
+            aux["structural_3"] = (sts[2].name, float(sts[2].price))
         vw = nearest(types=("vwap",))
         if vw is not None:
             aux["v2_band"] = float(vw.price)               # V2 milestone (§8)
@@ -475,14 +483,17 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                 else:
                     tgt = pos.order.working_target
                     tgt_fill = (h >= tgt + through) if sign == 1 else (lo <= tgt - through)
-                    # V4 partial before target (nearer level), same trade-through rule
-                    if (pos is not None and cfg.mgmt_variant == "V4" and not pos.partial_done):
+                    # V4/V5/V6 partial before target (nearer level), same trade-through rule
+                    if (pos is not None and cfg.mgmt_variant in ("V4", "V5", "V6")
+                            and not pos.partial_done):
                         plvl = pos.partial_level
                         if plvl is not None:
                             p_fill = (h >= plvl + through) if sign == 1 else (lo <= plvl - through)
                             if p_fill:
-                                frac = cfg.v4_partial_pct / 100.0
-                                close_trade(pos, plvl, "partial_structural", ts, 0, frac=frac)
+                                pct = cfg.v4_partial_pct if cfg.mgmt_variant == "V4" \
+                                    else cfg.v5_partial_pct
+                                close_trade(pos, plvl, "partial_structural", ts, 0,
+                                            frac=pct / 100.0)
                                 if pos is not None:
                                     pos.partial_done = True
                     if pos is not None and tgt_fill:
@@ -628,15 +639,33 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                 veto(t, "vetoed_no_target", "no opposing level beyond entry (§6)")
                 continue
             name, level, aux = (*tgt, {}) if len(tgt) == 2 else tgt
-            working = _round_tick(level - sgn * cfg.front_run, cfg.tick)
-            reward = sgn * (working - limit)
-            if risk > 0 and reward / risk < cfg.rr_floor:
-                veto(t, "vetoed_rr_floor",
-                     f"RR {reward / risk:.2f} < {cfg.rr_floor} (target {name})")
-                continue
+            plvl = aux.get("partial_level")
+            if cfg.mgmt_variant in ("V5", "V6") and plvl is not None:
+                # ANGUS pass-7 partials: 75% books at the FIRST structure (plvl); the 25%
+                # runner targets the NEXT structural (V5) or the one beyond it (V6). Floor:
+                # the FIRST profit target must offer >= rr_floor_partial ("RR floor for the
+                # first profit target is 1.5"); the runner leg rides free. Missing s2/s3
+                # falls back to the model-picked target as the runner.
+                runner = aux.get("structural_2") if cfg.mgmt_variant == "V5" else \
+                    (aux.get("structural_3") or aux.get("structural_2"))
+                if runner is not None:
+                    name, level = runner
+                first_rr = sgn * (plvl - limit) / risk
+                if first_rr < cfg.rr_floor_partial:
+                    veto(t, "vetoed_rr_floor",
+                         f"first-structure RR {first_rr:.2f} < {cfg.rr_floor_partial} (partial floor)")
+                    continue
+                working = _round_tick(level - sgn * cfg.front_run, cfg.tick)
+            else:
+                working = _round_tick(level - sgn * cfg.front_run, cfg.tick)
+                reward = sgn * (working - limit)
+                if risk > 0 and reward / risk < cfg.rr_floor:
+                    veto(t, "vetoed_rr_floor",
+                         f"RR {reward / risk:.2f} < {cfg.rr_floor} (target {name})")
+                    continue
             order = _Order(trig=t, limit=limit, stop=stop, target_name=name,
                            target_level=level, working_target=working, placed=ts,
-                           partial_level=aux.get("partial_level"),
+                           partial_level=plvl,
                            v2_band=aux.get("v2_band"))
 
     # equity
