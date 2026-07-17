@@ -27,7 +27,9 @@ from src.engine.sessions import load_news_calendar
 NY = "America/New_York"
 ROOT = Path(__file__).resolve().parents[2]
 TRADES = ROOT / "output/trades.csv"
-PARQUET = ROOT / "data/nq_1m.parquet"
+# full dataset when present; else the committed Feb slice (same fallback as run_backtest_feb)
+_FULL = ROOT / "data/nq_1m.parquet"
+PARQUET = _FULL if _FULL.exists() else ROOT / "data/reference/nq_1m_feb2026.parquet"
 OUT = ROOT / "output/diagnostics.csv"
 
 GAP_THRESHOLD_PTS = 15.0        # diagnostic-only heuristic (NOT a rule): 09:30 open vs prior

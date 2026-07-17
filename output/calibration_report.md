@@ -7,22 +7,22 @@ Match key: (date, direction, entry time ±15 min), OPEN-clock (engine trigger_ts
 | bucket | count |
 |---|---|
 | reference (hand) trades | 28 |
-| engine trades | 30 |
-| **MATCHED** | 4 |
-| **MISSED** (hand took, engine didn't) | 24 |
-| **EXTRA** (engine took, hand didn't) | 26 |
+| engine trades | 33 |
+| **MATCHED** | 5 |
+| **MISSED** (hand took, engine didn't) | 23 |
+| **EXTRA** (engine took, hand didn't) | 28 |
 
 ## Headline patterns (observations, not fixes)
 
 Nearest gate on each MISSED reference trade (what stopped the engine from taking a trade Angus took):
 
-- **vetoed_halt** × 6
-- **vetoed_rr_floor** × 6
+- **vetoed_rr_floor** × 7
 - **cancelled_tcancel** × 4
+- **vetoed_bad_geometry** × 4
 - **vetoed_bb_vwap** × 3
-- **vetoed_bad_geometry** × 2
+- **vetoed_min_stop** × 2
+- **vetoed_halt** × 1
 - **vetoed_news_preopen** × 1
-- **vetoed_min_stop** × 1
 - **skipped_position_open** × 1
 
 Reading (v1.2 run — for Angus to rule, not for the engine to self-correct):
@@ -37,6 +37,7 @@ Reading (v1.2 run — for Angus to rule, not for the engine to self-correct):
 
 | date | dir | Δopen | hand (TF/pat, R, exit) | engine (TF/pat, entry/stop/tgt, R, exit) |
 |---|---|---|---|---|
+| 2026-02-02 | short | 4m | 2M A, +0.00R, BE stopped | 3min A | entry 25866.00 stop 25867.00 target 25735.50 | -0.07R stop |
 | 2026-02-11 | short | 2m | 3M A, +5.98R, target hit | 1min B | entry 25397.00 stop 25436.75 target 25241.25 | +3.92R target |
 | 2026-02-19 | short | 0m | 5M B, -0.35R, discretionary close | 3min unclassified | entry 24849.75 stop 24866.00 target 24800.50 | -1.02R stop |
 | 2026-02-24 | long | 8m | 5M B2, +4.28R, target hit | 2min A | entry 24840.50 stop 24835.25 target 24870.50 | +2.86R target |
@@ -45,10 +46,6 @@ Reading (v1.2 run — for Angus to rule, not for the engine to self-correct):
 ## MISSED — reference trades the engine did not take
 
 For each: the nearest rejected trigger (same date+direction) and which gate stopped it. `window_gates` tallies every verdict within ±15 min.
-
-- **2026-02-02 short 2M 10:52** (A, +0.00R, BE stopped; news=Yes)
-  - nearest trigger: 10:51 3min A → **vetoed_halt** (daily halt active (§10)) — 1m away
-  - gates within ±15m: vetoed_halt×8
 
 - **2026-02-03 long 2M 10:52** (A, -1.00R, stop hit; news=No)
   - nearest trigger: 10:52 1min unclassified → **vetoed_halt** (daily halt active (§10)) — 0m away
@@ -83,20 +80,20 @@ For each: the nearest rejected trigger (same date+direction) and which gate stop
   - gates within ±15m: vetoed_bb_vwap×6, vetoed_bad_geometry×3, vetoed_rr_floor×1, vetoed_min_stop×1
 
 - **2026-02-12 short 2M 09:40** (A, +3.37R, target hit; news=Yes)
-  - nearest trigger: 09:40 5min B → **vetoed_halt** (daily halt active (§10)) — 0m away
-  - gates within ±15m: vetoed_halt×8
+  - nearest trigger: 09:40 5min B → **vetoed_rr_floor** (RR 0.09 < 2.0 (target asia_session_high)) — 0m away
+  - gates within ±15m: vetoed_rr_floor×3, vetoed_min_stop×2, vetoed_bb_vwap×2, vetoed_bad_geometry×1
 
 - **2026-02-13 long 3M 09:33** (B2, -1.00R, stop hit; news=Yes)
   - nearest trigger: 09:30 1min A → **vetoed_rr_floor** (RR 1.61 < 2.0 (target data_extreme_CPI)) — 3m away
   - gates within ±15m: vetoed_rr_floor×5, vetoed_bb_vwap×1
 
 - **2026-02-17 long 1M 09:32** (B, +3.69R, target hit; news=Yes)
-  - nearest trigger: 09:32 2min unclassified → **vetoed_halt** (daily halt active (§10)) — 0m away
-  - gates within ±15m: vetoed_halt×10
+  - nearest trigger: 09:32 2min unclassified → **vetoed_bad_geometry** (stop not beyond entry) — 0m away
+  - gates within ±15m: vetoed_bad_geometry×4, vetoed_bb_vwap×3, vetoed_rr_floor×3
 
 - **2026-02-17 short 2M 09:50** (A, +3.88R, target hit; news=Yes)
-  - nearest trigger: 09:50 2min unclassified → **vetoed_halt** (daily halt active (§10)) — 0m away
-  - gates within ±15m: vetoed_halt×10
+  - nearest trigger: 09:50 2min unclassified → **vetoed_bad_geometry** (stop not beyond entry) — 0m away
+  - gates within ±15m: vetoed_bad_geometry×6, vetoed_rr_floor×2, cancelled_tcancel×2
 
 - **2026-02-18 short 5M 08:35** (B2, +4.17R, target hit; news=No)
   - nearest trigger: 08:35 5min unclassified → **vetoed_bb_vwap** (cluster ['bb', 'poc'] lacks BB+VWAP (§9 v1.1 no-trade)) — 0m away
@@ -124,7 +121,7 @@ For each: the nearest rejected trigger (same date+direction) and which gate stop
 
 - **2026-02-23 short 5M 10:20** (B, +2.74R, target hit; news=No)
   - nearest trigger: 10:20 2min unclassified → **vetoed_rr_floor** (RR 0.54 < 2.0 (target london_session_low)) — 0m away
-  - gates within ±15m: vetoed_halt×4, vetoed_rr_floor×1, vetoed_min_stop×1, vetoed_bad_geometry×1, vetoed_bb_vwap×1
+  - gates within ±15m: vetoed_vault_max×4, vetoed_rr_floor×1, vetoed_min_stop×1, vetoed_bad_geometry×1, vetoed_bb_vwap×1
 
 - **2026-02-24 long 5M 08:20** (B, +3.67R, target hit; news=No)
   - nearest trigger: 08:20 2min B2 → **vetoed_bad_geometry** (stop not beyond entry) — 0m away
@@ -139,8 +136,8 @@ For each: the nearest rejected trigger (same date+direction) and which gate stop
   - gates within ±15m: skipped_position_open×11, vetoed_bb_vwap×5
 
 - **2026-02-27 long 3M 09:54** (A, +4.62R, target hit; news=Yes)
-  - nearest trigger: 09:55 5min A → **vetoed_halt** (daily halt active (§10)) — 1m away
-  - gates within ±15m: vetoed_halt×9, skipped_position_open×1, vetoed_bad_geometry×1
+  - nearest trigger: 09:55 5min A → **vetoed_min_stop** (stop 8.25 pts < 10 minimum (§5 v1.2)) — 1m away
+  - gates within ±15m: vetoed_bad_geometry×4, vetoed_rr_floor×3, cancelled_tcancel×2, vetoed_min_stop×1, skipped_position_open×1
 
 ## EXTRA — engine trades Angus did not take
 
@@ -158,11 +155,13 @@ For each: the nearest rejected trigger (same date+direction) and which gate stop
 | 2026-02-10 | short | 10:36 | 3min unclassified | entry 25391.50 stop 25410.25 target 25294.75 | -0.66R stop |
 | 2026-02-12 | short | 08:30 | 2min A | entry 25355.25 stop 25353.25 target 25318.25 | -0.10R stop |
 | 2026-02-12 | long | 09:12 | 1min unclassified | entry 25377.25 stop 25376.00 target 25417.25 | -0.13R stop |
+| 2026-02-12 | long | 10:24 | 2min unclassified | entry 25226.00 stop 25214.75 target 25317.75 | -1.02R stop |
 | 2026-02-13 | short | 09:52 | 1min unclassified | entry 24737.25 stop 24745.75 target 24644.75 | -0.33R stop |
 | 2026-02-16 | long | 09:51 | 3min B | entry 24754.25 stop 24734.25 target 24871.50 | -0.46R stop |
 | 2026-02-17 | long | 08:35 | 5min A | entry 24601.25 stop 24578.75 target 24654.75 | -1.01R stop |
 | 2026-02-17 | short | 08:45 | 5min B | entry 24624.25 stop 24610.25 target 24560.75 | -0.02R stop |
 | 2026-02-19 | short | 08:43 | 1min unclassified | entry 24849.00 stop 24860.50 target 24800.50 | -0.63R stop |
+| 2026-02-19 | long | 09:15 | 5min B | entry 24855.00 stop 24842.50 target 24913.75 | -1.02R stop |
 | 2026-02-23 | long | 08:05 | 5min unclassified | entry 24921.75 stop 24907.00 target 25001.50 | +5.41R target |
 | 2026-02-23 | long | 10:24 | 2min unclassified | entry 24897.00 stop 24878.50 target 25001.50 | -0.97R stop |
 | 2026-02-23 | long | 10:24 | 3min unclassified | entry 24876.50 stop 24878.50 target 25001.50 | -0.01R stop |

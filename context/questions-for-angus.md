@@ -110,6 +110,15 @@ tunes. Same items; answering here covers his nudge.)
         is a valid HALF-size trade regardless of trend (drop min_conf_counter to 2 / gate on
         types only)? This is a rule ruling + doc bump, NOT something Brake tunes to February. **→**
 
+16. **NEW — target selection vs the 2R floor (pass-3 bottleneck, decides ~6 MISSED incl. two
+    ~+3.5R winners).** When a setup fires, the robot picks the pattern's default target (A →
+    VWAP mid, B2 → next structural, B → opposing liquidity). If THAT level offers <2R it
+    vetoes the trade — even when a further level on your §6 menu offers plenty. Feb 12 09:39:
+    vetoed at RR **1.98** to NY-VWAP-mid (you made +3.37R aiming further). Feb 17: vetoed at
+    RR **1.99**. Question: when the default target is under 2R, should the robot **walk the
+    distance-ordered menu outward to the first level that clears 2R** (skip only if nothing
+    does)? That matches your "minimum 2R, justified at an actual level" rule. Yes/no. **→**
+
 ## P4 — scope decision (with Brake)
 
 9. ~~**Data range.**~~ ✅ ANSWERED (Angus, 17 Jul): full backtest runs **Jan 1 → present**.
