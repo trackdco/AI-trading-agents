@@ -49,6 +49,12 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-17 — Spec 1 Step 9: per-slice diagnostics (§12.5) (Claude Code, Brake driving)
+- Built `src/backtest/diagnostics.py`: reads output/trades.csv, emits `output/diagnostics.csv` (long format) with per-value expectancy for each dimension — pattern × TF × confluence × HTF flag × time-bucket × news-day + roll-day + gap-day. Each dimension is a full partition, so rows sum to the headline (20 trades / +0.65R) — verified by `tests/test_diagnostics.py`. Full 6-way cross-tab deferred until the Jan→present sample (n≈1 cells now; noted, not silently capped). Wired into run_backtest_feb.py so one command emits trades/verdicts/equity/diagnostics + the calibration report.
+- **Leak-location signal (report only):** confluence **3 → 13 trades, −0.21 avg R (losing)** vs confluence **2 → 7 trades, +0.49 avg R (winning)**; unclassified pattern −0.82 avg R; news-day True 0/6 wins. Reinforces P5.15 (the 3-count minimum may be filtering out the edge) — for Angus to rule, not to tune.
+- CSVs stay gitignored (regenerable); markdown reports are the tracked gate deliverables. 92 tests, ruff clean.
+- **Spec 1 build complete (Steps 1–9).** Remaining before lock: Angus's GATE (classify MISSED/EXTRA, rule P5.14/P5.15), then Jan-1 data re-pull for the full-sample run.
+
 ### 2026-07-17 — Spec 1 Step 8: calibration report vs the 28 hand trades (Claude Code, Brake driving)
 - Built `src/backtest/calibrate.py`: matches engine Feb 2–27 W1/E1/V0 trades to the reference log on (date, direction, entry time ±15 min) using the OPEN-clock convention (engine trigger_ts − TF vs hand open time). Emits `output/calibration_report.md` (force-tracked like parity_report.md — it is the GATE deliverable) with MATCHED / MISSED / EXTRA + a headline gate-distribution. `tests/test_calibrate.py` (tf parsing, open-clock shift, ±min). **No tuning** (spec-1 Step 8): measure and report only.
 - **Result: 28 reference / 20 engine → MATCHED 4, MISSED 24, EXTRA 16.** Low match rate is the honest raw-engine signal, NOT a defect to tune away.

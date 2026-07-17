@@ -77,6 +77,13 @@ def main():
         print(f"  {d}: {by_day[d]} trades  {day_r:+.2f}R")
     print("\nwrote output/trades.csv, output/verdicts.csv, output/equity.csv")
 
+    # Step 9 diagnostics + Step 8 calibration report from this same run (spec-1 artifacts)
+    from src.backtest.calibrate import main as calibrate_main  # noqa: E402
+    from src.backtest.diagnostics import main as diagnostics_main  # noqa: E402
+    print()
+    diagnostics_main()
+    calibrate_main()
+
 
 if __name__ == "__main__":
     main()
