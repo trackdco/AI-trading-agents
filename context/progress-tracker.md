@@ -6,18 +6,18 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** Spec 1, Step 4 (indicators) — BUILT + adversarially verified (8 findings, 2 medium auto-fixed, parity numbers unchanged). 40 tests pass, ruff clean. output/parity_report.md generated with LOCKED engine numbers (committed for cross-session review).
-- **Blocked on:** Step 4 PARITY GATE — Angus's `NQH2026` chart readings + sign-off. Parity numbers LOCKED and additionally cross-verified: a second independent engine agrees on trade-TF BB + POC to the penny, BB matched Angus's own chart screenshot to Δ0.00, and the parity-script as-of convention was fixed (gate value = CLOSE of the named candle, gate bar INCLUDED — Angus-confirmed; corrected Feb 17 NY VWAP 24713.80→24705.28). Awaiting the human chart-column fill in output/parity_report.md.
+- **Last completed step:** Spec 1, Step 4 (indicators) — BUILT, adversarially verified, and **PARITY GATE PASSED (2026-07-17)**: Brake read NQH2026 and confirmed all rows within 1.0 pt. 40 tests pass, ruff clean.
+- **Blocked on:** Nothing — Step 4 gate cleared. Steps 5-9 unblocked.
 - **⚠️ Parity instrument fix (from data/reference/parity_chart_settings.md, salvaged from Angus's branch):** Angus must read the chart on **NQH2026 (March 2026 NQ)** — NOT MNQ1! and NOT a back-adjusted `1!` continuous. Engine uses unspliced continuous NQ = NQH6 for Feb 11/17 (verified). Back-adjust + micro-volume would shift prices/VWAP/POC by tens of points and guarantee a false gate failure.
 - **Branch consolidation:** canonical branch = `claude/getting-started-6lwnvs` (see context/TEAM.md). Three duplicate-engine branches superseded; useful files salvaged (.env.example, parity_chart_settings.md).
-- **Next action:** Angus fills the chart column in `output/parity_report.md` from `NQH2026` and signs off → then Steps 5-9 (snapshot → triggers → backtester → calibration → diagnostics).
+- **Next action:** Spec 1 Step 5 (snapshot builder), then 6-9 (triggers → backtester → calibration → diagnostics). One engine-driver at a time — coordinate via context/TEAM.md before starting.
 
 ## Gates ledger (Angus sign-offs — append-only)
 
 | Date | Gate | Result | Notes |
 |---|---|---|---|
 | 2026-07-17 | strategy-definition v1.0 locked | PASSED | Q&A incorporated; daily VWAP anchor confirmed 18:00 ET |
-| — | Spec 1 Step 4 parity report | pending | |
+| 2026-07-17 | Spec 1 Step 4 parity report | PASSED | Brake read NQH2026 and confirmed every row within 1.0 pt (BB per trade TF, daily VWAP ±1σ, NY VWAP, daily POC). Engine cleared for Steps 5-9. |
 | — | Spec 1 Step 8 calibration classification | pending | |
 
 ## Decision log (append-only; one line per decision, with source)
