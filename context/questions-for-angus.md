@@ -67,22 +67,26 @@ tunes. Same items; answering here covers his nudge.)
 
 10. ~~**Counter-trend full-confluence sizing.**~~ ✅ CONFIRMED (Angus, 17 Jul): all three
     aligned but counter-trend and not A-at-extension → **half**. Tag removed from §9.
-11. **W2 span + late-window in W2.** Working read: W2 = full CME session 18:00→15:55.
-    Confirm; and does the after-10:30 half-sizing apply inside W2, or only session-scoped
-    windows (your words implied the latter)? Affects the W1-vs-W2 tournament comparison. **→**
-12. **"Entry time" definition.** Four rules key off entry time (W1 end 11:00, late 10:30,
-    warm-up 19:00, stand-down 09:30). With resting limits, trigger and fill can be minutes
-    apart (trigger 10:28, fill 10:36 — full or half?). Which timestamp governs: trigger-candle
-    close, order placement, or fill? **→**
-13. **2R measured to what.** Target working price = level ∓ front-run F (§6.4). Is the 2R floor
-    measured to the raw level or to the working (front-run) target the backtest actually fills
-    at? (~0.05R difference; changes which trades exist.) **→**
+11. ~~**Late-window in W2.**~~ ✅ ANSWERED (Angus, 17 Jul): after-10:30 half-sizing applies
+    ONLY to session-scoped (NY-only) windows; **W2 full-day has no time-based sizing at all.**
+    (W2's exact span — working read 18:00→15:55 CME session — still riding on the config
+    placeholder; low priority, confirm whenever.)
+12. **"Entry time" definition.** STILL OPEN — reworded for clarity: the strategy has time
+    cutoffs (no entries after 11:00 in W1; half-size after 10:30; nothing before 09:30 on
+    big-news days). But a trade has TWO times: when the signal candle closes and the order is
+    placed, vs when price actually comes back and FILLS the resting limit — which can be
+    several minutes later. Example: signal at 10:28, order placed, price fills it at 10:36.
+    Is that a before-10:30 trade (full size) or an after-10:30 trade (half)? Which clock do
+    the cutoffs run on — order placement or fill? **→**
+13. ~~**2R measured to what.**~~ ✅ ANSWERED (Angus, 17 Jul): measured to the ACTUAL level —
+    stop 40 ⇒ target level ≥ 80 pts away, and the target must be a real level, not an
+    arbitrary 2R price. Front-run F is execution mechanics, excluded from the R math.
 
 ## P4 — scope decision (with Brake)
 
-9. **Data range.** Loaded dataset starts **Feb 1, 2026**, not Jan 1 — fine for Feb
-   calibration, but the full Jan→present run needs Brake to re-pull from Jan 1. Do you want
-   the Jan-onward run, and when? **→**
+9. ~~**Data range.**~~ ✅ ANSWERED (Angus, 17 Jul): full backtest runs **Jan 1 → present**.
+   **→ Brake action:** re-pull Databento from 2026-01-01 (current dataset starts Feb 1).
+   Feb calibration can run on current data meanwhile.
 
 ---
 

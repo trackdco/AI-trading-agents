@@ -40,6 +40,10 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — **strategy-definition bumped v1.0 → v1.1** (Angus directed): all nine 17-Jul decisions folded in (§2 boxes+VA%, §3 core-types note, §5.5 T_cancel 22, §6.5 RR floor 2.0 hard, §7 type-specific confluence + VWAP warm-up + high-impact pre-open stand-down, §9 oversized-stop 42 + late-window 10:30 half-sizing). § numbering unchanged; file renamed strategy-definition-v1.1.md; living references updated (config/strategy.yaml header left for Brake to bump with the values — his lane).
 - 2026-07-17 — Sizing edge case CONFIRMED (Angus): 3-type alignment + counter-trend + not A-at-extension = HALF unit (§9 fails-full→half default). questions-for-angus P5.10 closed; P5.11–13 (W2 span/late-window, entry-time semantics, 2R vs front-run) remain open.
 - 2026-07-17 — Step 8 pre-reads from Angus (leans, formal ruling at the calibration review): the Feb 11/17 ~3-min trigger offset is most likely human-reads-forming-candle vs robot-waits-for-close (expected divergence, not detector bug); robot's A/B/B2 mapping "quite accurate", he'll eyeball a sample of labels at Step 8.
+- 2026-07-17 — Late-window scope RESOLVED (Angus): after-10:30 half-sizing ONLY in session-scoped (NY-only) windows; W2 full-day has NO time-based sizing. §9 + §12.3 updated; W1-vs-W2 arms intentionally differ in sizing.
+- 2026-07-17 — 2R measurement RESOLVED (Angus): R measured to the ACTUAL level (stop 40 ⇒ target level ≥80 pts away; target must be a real menu level). Front-run F = execution only, excluded from R math. §6.5 updated.
+- 2026-07-17 — Data range CONFIRMED (Angus): full backtest Jan 1 → present. Brake to re-pull Databento from 2026-01-01 (current data starts Feb 1); Feb calibration can proceed on current data meanwhile.
+- 2026-07-17 — STILL OPEN for Angus: entry-time semantics (order-placement clock vs fill clock for the 09:30/10:30/11:00 cutoffs) — questions-for-angus P5.12, reworded with an example. Needed before Step 7 sizing/window logic is final.
 
 ## Session log (newest first)
 
