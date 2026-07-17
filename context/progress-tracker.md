@@ -53,6 +53,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-17 — Pass 7: target-model × VWAP-touch split (6 arms) — win-rate/R tradeoff isolated (Claude Code, Angus driving)
+- **Setup:** all arms on E3 entry / min-stop 6 / floor 2.0 / W1 08:00; re-detected triggers carry `vwap_touched` (83% of the 1261 triggers touch a band). Touch arms swap the BB+VWAP composition gate for the price-touch gate (Angus's ruled semantics).
+- **Results (tr / win% / totR / R-tr / MATCH):** default-prox 44/20.5%/+31.08/+0.71/6 · default-touch 46/19.6%/+30.41/+0.66/7 · vwap_revert-prox 51/13.7%/+34.57/+0.68/7 · vwap_revert-touch 51/15.7%/+19.63/+0.39/8 · walk_menu-prox 54/22.2%/+10.14/+0.19/8 · walk_menu-touch 55/18.2%/+3.08/+0.06/9.
+- **Key reads:** (1) win% and R trade off through TARGET DISTANCE — walk_menu (near targets) tops win% at 22% but gates R; vwap_revert (far band) tops R +34.6 at the lowest win% 13.7%. Single-target mgmt can't break the tradeoff → partials (V5/V6) are the win-rate lever (Angus's hand log ≈61% wins via banking at first structure). (2) Touch gate = correct semantics, weak screen: +1 MATCH in every pair, no win-rate lift (junk touches bands too). (3) MATCH still 6–9/28 — engine trades its own valid setups (Angus explicitly OK with this; goal = win-rate up, not hand-log replication).
+- **Infra:** first re-detection was silently killed mid-run (sandbox reap) — detection is now checkpointed per-day (`scripts/_detect_feb_checkpoint.py`); sweep in `scripts/_split_sweep.py`.
+- **Next:** build V5/V6 partial exits properly (75% at first structure; V5 runner → next structural, V6 → one beyond — Angus's definition), then split 75% vs 100% on the two leading target models (default, vwap_revert).
+
 ### 2026-07-17 — Pass 6: E3 entry + min-stop 6 implemented — +31R but EXTRA-driven (Claude Code, Angus driving)
 - **Angus's pass-5 rulings implemented (config):** entry variant **E1→E3** (reclaim entry — §5.3 tournament winner); **min_stop 10→6** (admit his own tight stops: Feb 20 08:06 = 8.25pt hand stop, +12.98R Feb 25 monster = 9.0pt); **rr_floor STAYS 2.0** (the sweep showed 1.5 is worse once E3 fixes the entry — Angus concurred).
 - **Result (E3 / min6 / floor 2.0):** 44 trades, 9 wins (20.5%), **+31.08R, +$5,788**, MATCHED 6/28. vs E1 baseline +2.59R. Mechanically the entry+stop fix is huge (bad_geometry vetoes 211→3; tight-stop winners unblocked).
