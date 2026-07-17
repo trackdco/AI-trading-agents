@@ -42,7 +42,7 @@ def _params() -> dict:
                             pd.Timestamp("2026-02-11 08:30", tz=NY)],
             "event": ["Core Retail Sales", "Non-Farm Employment Change"],
             "impact": ["high", "high"]}),
-        cluster_tol=10.0, data_window_min=15)
+        cluster_tol=10.0, data_window_min=15, cluster_min_types=2)
 
 
 def _build(df=None):
@@ -73,8 +73,10 @@ def test_snapshot_pydantic_validates_and_json_roundtrips():
 def test_snapshot_no_lookahead():
     df = _slice()
     base = _build(df).model_dump_json()
-    # perturb every bar strictly AFTER the gate ts; the snapshot must be identical
-    future = df["ts_event"] > GATE_TS
+    # perturb every bar stamped AT/after the gate ts: 1m bars are START-labeled, so the bar
+    # stamped GATE_TS is still FORMING at GATE_TS — a lookahead bug would include exactly
+    # that bar, so it must be perturbed too. The snapshot must be identical.
+    future = df["ts_event"] >= GATE_TS
     df2 = df.copy()
     df2.loc[future, ["open", "high", "low", "close"]] += 500.0
     df2.loc[future, "volume"] *= 7
@@ -89,3 +91,21 @@ def test_cluster_premarket_uses_daily_vwap_only():
     assert (snap.indicators["ny_vwap"]["mid"]) is None
     for c in snap.clusters:
         assert not any(m.startswith("nyvwap") for m in c.members)
+
+
+# ------------------------------------------------------------------ §3 cluster-set rules
+
+def test_ny_vwap_2_3_sigma_never_cluster_candidates():
+    # §3: NY VWAP contributes mid/±1σ ONLY; ±2σ/±3σ are the over-extension detector
+    from src.engine.snapshot import _gather_levels
+    ind = {"tfs": {"1min": {"bb_basis": 100.0}},
+           "daily_vwap": {"mid": 100.0, "upper_1": 101.0, "lower_1": 99.0,
+                          "upper_2": 102.0, "lower_2": 98.0, "upper_3": 103.0, "lower_3": 97.0},
+           "ny_vwap": {"mid": 100.5, "upper_1": 101.5, "lower_1": 99.5,
+                       "upper_2": 102.5, "lower_2": 97.5, "upper_3": 103.5, "lower_3": 96.5}}
+    names = {n for n, _, _ in _gather_levels(ind, {"poc": 100.2})}
+    assert {"nyvwap_mid", "nyvwap_upper_1", "nyvwap_lower_1"} <= names
+    assert not any(n.startswith(("nyvwap_upper_2", "nyvwap_lower_2",
+                                 "nyvwap_upper_3", "nyvwap_lower_3")) for n in names)
+    # daily VWAP keeps its FULL band set (§3)
+    assert {"dvwap_upper_2", "dvwap_lower_3"} <= names

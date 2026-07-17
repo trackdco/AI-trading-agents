@@ -8,18 +8,29 @@ impossible because it all flows through `indicators_asof` / `_closed_1m` semanti
 
 Documented conventions (flagged in progress-tracker for Angus):
   * Confluence cluster (§3): candidate levels are {BB basis per entry TF (type "bb"),
-    daily VWAP mid/±1/±2/±3σ + (post-09:30 only) NY VWAP mid/±1σ (type "vwap"), daily POC
-    (type "poc")}. Single-linkage grouping within `cluster.tolerance_points`; a cluster needs
-    ≥2 DISTINCT types (per §3 "confluence count = distinct level types"). Pre-09:30 the VWAP
+    daily VWAP mid/±1/±2/±3σ + (post-09:30 only) NY VWAP mid/±1σ ONLY (type "vwap"), daily
+    POC (type "poc")}. NY VWAP ±2σ/±3σ are the §3 OVER-EXTENSION detector, never cluster
+    candidates (`_NY_CLUSTER_KEYS` enforces the §3 whitelist). Grouping is SPAN-BOUNDED:
+    sorted levels are grouped greedily while the group's TOTAL span stays within
+    `cluster.tolerance_points` (interpretation of §3 "within proximity tolerance" — the
+    earlier single-linkage chaining let adjacent-gap chains span many multiples of the
+    tolerance; flagged in progress-tracker for Angus). A cluster needs
+    ≥ `cluster.min_level_types` DISTINCT types (§3, config-driven). Pre-09:30 the VWAP
     family is daily-only (NY VWAP is None upstream), so the pre-market rule is automatic.
   * HTF regime (§4 flag): on 15m closed bars, fractal swings with lookback k=2 (a swing high
     is a bar strictly higher than the 2 bars each side; swing low symmetric). Using the last
     two confirmed swing highs (SH) and lows (SL): uptrend if SH↑ and SL↑; downtrend if SH↓ and
     SL↓; else range; "unknown" if <2 of either. This exact rule is the chosen definition.
-  * Target menu (§6): daily VWAP mid/±1σ/±2σ, NY VWAP mid (post-09:30), POC/VAH/VAL,
-    prior-day H/L, prior-week H/L, current-session Asia/London/NY extremes, and recent data
-    extremes. HTF 1h/4h range extremes are deferred with the session-anchored HTF resampler
-    (flagged Step-4); pullback-origin is trade-specific (Step 6/7), not a snapshot level.
+  * Target menu (§6): daily VWAP mid/±1σ/±2σ, NY VWAP mid/±1σ/±2σ (post-09:30; §6 "VWAP
+    middle; VWAP ±1σ/±2σ" is not daily-only and §2 lists NY VWAP's role incl. targets),
+    POC/VAH/VAL, prior-day H/L, prior-week H/L, current-session Asia/London/NY extremes,
+    and data extremes. HTF 1h/4h range extremes are deferred with the session-anchored HTF
+    resampler (flagged Step-4); pullback-origin is trade-specific (Step 6/7), not a
+    snapshot level.
+  * Data levels (§2/§6.3): bounded to releases within the CURRENT CME session (18:00-ET
+    boundary) — §6.3's news-day override targets that day's untaken data extreme, not
+    weeks-old ones. The exact recency window is an Angus question (flagged); menu names
+    carry the release HH:MM so same-named events cannot collide.
 """
 from __future__ import annotations
 
@@ -31,6 +42,7 @@ from pydantic import BaseModel
 from src.engine.data import _session_date
 from src.engine.indicators import (
     IndicatorsConfig,
+    _anchor_session_date,
     _closed_1m,
     indicators_asof,
     load_indicators_config,
@@ -49,6 +61,10 @@ from src.engine.sessions import (
 
 _HTF_TF = "15min"
 _SWING_K = 2  # fractal lookback each side
+
+# §3 whitelist — NY VWAP cluster candidacy is "middle/±1σ (post-9:30 only)"; ±2σ/±3σ are the
+# over-extension detector (§3) and target-menu levels (§6), NEVER cluster candidates.
+_NY_CLUSTER_KEYS = ("mid", "upper_1", "lower_1")
 
 
 # ---------------------------------------------------------------- schema
@@ -116,43 +132,58 @@ def _htf_regime(closed_1m: pd.DataFrame, ts: pd.Timestamp) -> str:
 
 
 def _gather_levels(ind: dict, poc_vah_val: dict) -> list[tuple[str, float, str]]:
-    """Candidate cluster levels: (name, price, type). NY VWAP already None pre-09:30 upstream."""
+    """Candidate cluster levels: (name, price, type). NY VWAP already None pre-09:30 upstream.
+
+    NY VWAP contributes mid/±1σ ONLY (§3 — `_NY_CLUSTER_KEYS`); the daily VWAP contributes
+    its full band set (§3 lists daily mid/±1σ/±2σ/±3σ explicitly).
+    """
     out: list[tuple[str, float, str]] = []
     for tf, d in ind["tfs"].items():
         if d.get("bb_basis") is not None:
             out.append((f"bb_basis_{tf}", d["bb_basis"], "bb"))
-    for fam, tag in (("daily_vwap", "dvwap"), ("ny_vwap", "nyvwap")):
+    for fam, tag, allowed in (("daily_vwap", "dvwap", None),
+                              ("ny_vwap", "nyvwap", _NY_CLUSTER_KEYS)):
         v = ind.get(fam) or {}
-        if v.get("mid") is not None:
-            out.append((f"{tag}_mid", v["mid"], "vwap"))
         for key, val in v.items():
-            if key != "mid" and val is not None:
+            if val is not None and (allowed is None or key in allowed):
                 out.append((f"{tag}_{key}", val, "vwap"))
     if poc_vah_val.get("poc") is not None:
         out.append(("poc", poc_vah_val["poc"], "poc"))
     return out
 
 
-def _clusters(levels: list[tuple[str, float, str]], tol: float) -> list[Cluster]:
-    """Single-linkage groups within `tol`; keep groups spanning >=2 distinct types (§3)."""
+def _level_groups(levels: list[tuple[str, float, str]], tol: float,
+                  min_types: int) -> list[list[tuple[str, float, str]]]:
+    """Span-bounded groups: sorted levels grouped greedily while TOTAL span <= `tol`;
+    keep groups spanning >= `min_types` distinct types (§3 "within proximity tolerance").
+
+    Shared by snapshot clusters and trigger detection (one grouping rule, one place).
+    Replaces single-linkage chaining, whose adjacent-gap rule let "clusters" span many
+    multiples of the tolerance (interpretation flagged in progress-tracker for Angus).
+    """
     if not levels:
         return []
     ordered = sorted(levels, key=lambda x: x[1])
     groups, cur = [], [ordered[0]]
     for lv in ordered[1:]:
-        if lv[1] - cur[-1][1] <= tol:
+        if lv[1] - cur[0][1] <= tol:          # bound the group's TOTAL span, not the gap
             cur.append(lv)
         else:
             groups.append(cur)
             cur = [lv]
     groups.append(cur)
+    return [g for g in groups if len({t for _, _, t in g}) >= min_types]
+
+
+def _clusters(levels: list[tuple[str, float, str]], tol: float,
+              min_types: int) -> list[Cluster]:
+    """`_level_groups` output as pydantic Clusters (center = mean of member prices)."""
     clusters = []
-    for g in groups:
+    for g in _level_groups(levels, tol, min_types):
         types = sorted({t for _, _, t in g})
-        if len(types) >= 2:
-            clusters.append(Cluster(center=round(sum(p for _, p, _ in g) / len(g), 4),
-                                    confluence_count=len(types), types=types,
-                                    members=[n for n, _, _ in g]))
+        clusters.append(Cluster(center=round(sum(p for _, p, _ in g) / len(g), 4),
+                                confluence_count=len(types), types=types,
+                                members=[n for n, _, _ in g]))
     return clusters
 
 
@@ -181,12 +212,16 @@ def build_snapshot(df_1m: pd.DataFrame, ts: pd.Timestamp,
                    boxes: list[SessionBox] | None = None,
                    calendar: pd.DataFrame | None = None,
                    cluster_tol: float | None = None,
-                   data_window_min: int | None = None) -> Snapshot:
+                   data_window_min: int | None = None,
+                   cluster_min_types: int | None = None) -> Snapshot:
     ind_cfg = ind_cfg or load_indicators_config()
     boxes = boxes if boxes is not None else load_session_boxes()
-    if cluster_tol is None:
+    if cluster_tol is None or cluster_min_types is None:
         import yaml
-        cluster_tol = float(yaml.safe_load(open("config/strategy.yaml"))["cluster"]["tolerance_points"])
+        _cl = yaml.safe_load(open("config/strategy.yaml"))["cluster"]
+        cluster_tol = float(_cl["tolerance_points"]) if cluster_tol is None else cluster_tol
+        cluster_min_types = (int(_cl["min_level_types"]) if cluster_min_types is None
+                             else cluster_min_types)
     data_window_min = data_window_min if data_window_min is not None else load_data_level_window()
 
     ind = indicators_asof(df_1m, ts, ind_cfg)
@@ -206,15 +241,21 @@ def build_snapshot(df_1m: pd.DataFrame, ts: pd.Timestamp,
     prof = ind.get("daily_profile") or {}
 
     # clusters (§3)
-    clusters = _clusters(_gather_levels(ind, prof), cluster_tol)
+    clusters = _clusters(_gather_levels(ind, prof), cluster_tol, cluster_min_types)
 
-    # data levels near recent releases, as of ts
+    # data levels near recent releases, as of ts — bounded to the CURRENT CME session
+    # (18:00-ET boundary): §6.3's news-day override targets that day's untaken data
+    # extreme, not weeks-stale ones. Exact recency window = Angus question (flagged).
     if calendar is None:
         try:
             calendar = load_news_calendar()
         except Exception:
             calendar = pd.DataFrame(columns=["datetime_ET", "event", "impact"])
     past_cal = calendar[calendar["datetime_ET"] <= ts]
+    if not past_cal.empty:
+        ses = _anchor_session_date(past_cal["datetime_ET"], dtime(18, 0))
+        cur_ses = _anchor_session_date(pd.Series([ts]), dtime(18, 0)).iloc[0]
+        past_cal = past_cal[(ses == cur_ses).to_numpy()]
     dl = data_levels(closed, past_cal, data_window_min)
     dl_records = [{"event": r["event"], "impact": r["impact"],
                    "data_high": r["data_high"], "data_low": r["data_low"],
@@ -231,8 +272,11 @@ def build_snapshot(df_1m: pd.DataFrame, ts: pd.Timestamp,
     dv = ind.get("daily_vwap") or {}
     for key in ("mid", "upper_1", "lower_1", "upper_2", "lower_2"):
         menu.append(lvl(f"daily_vwap_{key}", dv.get(key), "vwap"))
-    if (ind.get("ny_vwap") or {}).get("mid") is not None:
-        menu.append(lvl("ny_vwap_mid", ind["ny_vwap"]["mid"], "vwap"))
+    nv = ind.get("ny_vwap") or {}
+    if nv.get("mid") is not None:
+        # §6 menu "VWAP middle; VWAP ±1σ/±2σ" — NY family mirrors the daily entries
+        for key in ("mid", "upper_1", "lower_1", "upper_2", "lower_2"):
+            menu.append(lvl(f"ny_vwap_{key}", nv.get(key), "vwap"))
     for key in ("poc", "vah", "val"):
         menu.append(lvl(f"profile_{key}", prof.get(key), "poc" if key == "poc" else "structural"))
     if pdl is not None:
@@ -245,8 +289,9 @@ def build_snapshot(df_1m: pd.DataFrame, ts: pd.Timestamp,
         menu.append(lvl(f"{name}_session_high", hi, "structural"))
         menu.append(lvl(f"{name}_session_low", lo, "structural"))
     for r in dl_records:
-        menu.append(lvl(f"data_high_{r['event'][:16]}", r["data_high"], "data"))
-        menu.append(lvl(f"data_low_{r['event'][:16]}", r["data_low"], "data"))
+        hhmm = r["event_time"][11:16]  # disambiguate same-named events by release time
+        menu.append(lvl(f"data_high_{r['event'][:16]}_{hhmm}", r["data_high"], "data"))
+        menu.append(lvl(f"data_low_{r['event'][:16]}_{hhmm}", r["data_low"], "data"))
     menu = [m for m in menu if m is not None]
 
     return Snapshot(

@@ -75,17 +75,15 @@
       ]
     },
     {
-      "center": 25392.7031,
-      "confluence_count": 3,
+      "center": 25390.2938,
+      "confluence_count": 2,
       "types": [
         "bb",
-        "poc",
-        "vwap"
+        "poc"
       ],
       "members": [
         "poc",
-        "bb_basis_1min",
-        "nyvwap_mid"
+        "bb_basis_1min"
       ]
     },
     {
@@ -103,13 +101,6 @@
     }
   ],
   "data_levels": [
-    {
-      "event": "Core Retail Sales",
-      "impact": "high",
-      "data_high": 25356.0,
-      "data_low": 25301.5,
-      "event_time": "2026-02-10T08:30:00-05:00"
-    },
     {
       "event": "Non-Farm Employment Change",
       "impact": "high",
@@ -154,6 +145,30 @@
       "price": 25397.521855856216,
       "type": "vwap",
       "distance": 11.2719
+    },
+    {
+      "name": "ny_vwap_upper_1",
+      "price": 25427.792606093313,
+      "type": "vwap",
+      "distance": 41.5426
+    },
+    {
+      "name": "ny_vwap_lower_1",
+      "price": 25367.251105619118,
+      "type": "vwap",
+      "distance": -18.9989
+    },
+    {
+      "name": "ny_vwap_upper_2",
+      "price": 25458.06335633041,
+      "type": "vwap",
+      "distance": 71.8134
+    },
+    {
+      "name": "ny_vwap_lower_2",
+      "price": 25336.98035538202,
+      "type": "vwap",
+      "distance": -49.2696
     },
     {
       "name": "profile_poc",
@@ -234,25 +249,13 @@
       "distance": -47.0
     },
     {
-      "name": "data_high_Core Retail Sale",
-      "price": 25356.0,
-      "type": "data",
-      "distance": -30.25
-    },
-    {
-      "name": "data_low_Core Retail Sale",
-      "price": 25301.5,
-      "type": "data",
-      "distance": -84.75
-    },
-    {
-      "name": "data_high_Non-Farm Employm",
+      "name": "data_high_Non-Farm Employm_08:30",
       "price": 25367.75,
       "type": "data",
       "distance": -18.5
     },
     {
-      "name": "data_low_Non-Farm Employm",
+      "name": "data_low_Non-Farm Employm_08:30",
       "price": 25238.75,
       "type": "data",
       "distance": -147.5
