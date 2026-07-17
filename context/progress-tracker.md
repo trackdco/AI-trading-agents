@@ -26,6 +26,7 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Agents never see P&L/prior outcomes; system proposes, human disposes on rule changes (Angus + Claude)
 - 2026-07-17 — Entry window W1 8:00–11:00 primary; W2 full-day priority test; BE-at-1R vs none = priority tournament (Angus)
 - 2026-07-17 — Data: Jan 2026→present primary; 2025 as robustness check only (Angus regime rationale, honesty guard noted)
+- 2026-07-17 — Hand-log resolutions (Brake/Angus): Feb 3 10:52 → true P&L −$369 on a 61.5-pt stop (P&L −390→−369, Risk 390→369, pts −61→−61.5); Feb 26 09:18 → 73 pts correct, P&L was the typo (1120→$1460 = 73×10 MNQ×$2). All 28 rows now cross-check clean (points = P&L ÷ (contracts × $/pt)).
 
 ## Session log (newest first)
 

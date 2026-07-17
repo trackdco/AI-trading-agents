@@ -1,6 +1,6 @@
 ﻿Name,Contracts,Date,Day of week,Direction,Entry TF,"Entry Time ",Exit Reason,HTF (15M),In Window,MAE (R),MFE (R),News Today,News detail,P&L $,PNL Points,Pattern,Post exit ext. (R),R Multiple,"Result ",Risk $,Stop pts
 NQ Trade Entry,5 MNQ,"February 2, 2026",monday,short,2M,10:52,BE stopped,uptrend,Yes,-0.04,2.9,Yes,ISM Manufacturing PMI above forecasted predictions,0,0,A,0,0,BE,245,24
-NQ Trade Entry,3 MNQ,"February 3, 2026",tuesday,long,2M,10:52,stop hit,downtrend,Yes,-1,1.1,No,,-390,-61,A,0,-1,loss,390,61.5
+NQ Trade Entry,3 MNQ,"February 3, 2026",tuesday,long,2M,10:52,stop hit,downtrend,Yes,-1,1.1,No,,-369,-61.5,A,0,-1,loss,369,61.5
 NQ Trade Entry,5 MNQ,"February 4, 2026",wednesday,short,5M,9:48,target hit,downtrend,Yes,-0.48,3.3,Yes,"8:15 Non farm employment change lower than forecast, 10am ISM services PMI above forecast",1235,123.5,B2,3.2,3.3,win,367.5,36.75
 NQ Trade Entry,4 MNQ,"February 4, 2026",wednesday,short,5M,10:30,target hit,downtrend,Yes,-0.33,3.57,Yes,Same as the other trade today,1426,178.25,B2,1.74,3.57,win,400,50
 NQ Trade Entry,3 MNQ,"February 5, 2026",thursday,long,2M,9:36,target hit,downtrend,Yes,-0.25,2.15,Yes,"8:30am unemployment claims, worse than forecast. 10am JOLTS job openings, worse than forecast",796,132.75,A,0.88,2.15,win,372,62
@@ -24,6 +24,6 @@ NQ Trade Entry,5 mnq,"February 23, 2026",monday,short,5M,10:20,target hit,range,
 NQ Trade Entry,1 NQ,"February 24, 2026",tuesday,long,5M,8:20,target hit,range,Yes,-0.43,3.67,No,,1070,53.5,B,0.35,3.67,win,290,14.5
 NQ Trade Entry,5 MNQ,"February 24, 2026",tuesday,long,5M,10:10,target hit,range,Yes,-0.15,4.28,No,,1775,177.5,B2,1,4.28,win,415,41.5
 NQ Trade Entry,5 mnq,"February 25, 2026",wednesday,long,5M,9:25,target hit,range,Yes,-0.06,12.98,No,,1980,198,B2,1.35,12.98,win,150,15
-NQ Trade Entry,10 mnq,"February 26, 2026",thursday,short,3M,9:18,target hit,range,Yes,-0.17,4.22,Yes,"Unemployment claims 8:30, better than forecast.",1120,73,A,25.88,4.22,win,345,17.25
+NQ Trade Entry,10 mnq,"February 26, 2026",thursday,short,3M,9:18,target hit,range,Yes,-0.17,4.22,Yes,"Unemployment claims 8:30, better than forecast.",1460,73,A,25.88,4.22,win,345,17.25
 NQ Trade Entry,6 MNQ,"February 27, 2026",friday,long,5M,9:40,stop hit,downtrend,Yes,-1,0,Yes,"PPI at 8:30, better than forecasted",-324,-27,A,0,-1,loss,324,27
 NQ Trade Entry,5 mnq,"February 27, 2026",friday,long,3M,9:54,target hit,downtrend,Yes,-0.14,4.62,Yes,same as logged on the other trade today,1630,163,A,0.14,4.62,win,350,35
