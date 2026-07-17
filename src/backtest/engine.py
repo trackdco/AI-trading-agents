@@ -82,7 +82,9 @@ class BacktestConfig(BaseModel):
     oversized_stop: float         # §9 ANGUS 2026-07-17: stop wider than this -> half size
     late_window_after: dtime      # §9 ANGUS 2026-07-17: entries (fills) after this -> half size
     require_bb_vwap: bool         # §7 v1.2: cluster must hold BB+VWAP (the entry gate; POC = bonus)
-    min_stop_points: float        # §5 v1.2 ANGUS: structural stop narrower than this -> no trade
+    require_vwap_touch: bool = False  # ANGUS pass-6: trade only if price ACTUALLY reached a VWAP band
+    target_model: str = "default"     # ANGUS pass-6 split test: "default" | "vwap_revert" | "walk_menu"
+    min_stop_points: float = 10.0     # §5 v1.2 ANGUS: structural stop narrower than this -> no trade
     vwap_warmup_min: int          # ANGUS 2026-07-17: no entries within N min of the 18:00 anchor
     no_premarket_high_impact: bool  # ANGUS 2026-07-17 (TIGHTENED): on a high-impact pre-open
                                     # release day the ENTIRE pre-market is blocked; entries from 09:30
@@ -119,6 +121,8 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         oversized_stop=c["sizing"]["oversized_stop_points"],
         late_window_after=_hhmm(c["sizing"]["late_window_after"]),
         require_bb_vwap=c["sizing"].get("require_bb_vwap", True),
+        require_vwap_touch=c["filters"].get("require_vwap_touch", False),
+        target_model=c["targets"].get("model", "default"),
         min_stop_points=c["entry"]["min_stop_points"],
         vwap_warmup_min=c["filters"]["vwap_warmup_min"],
         no_premarket_high_impact=c["filters"]["no_premarket_entry_on_high_impact"],
@@ -225,9 +229,19 @@ class _Slip:
         return self.cfg.slip_normal
 
 
-def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None):
+def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None,
+                            model: str = "default", rr_floor: float = 2.0,
+                            front_run: float = 0.0):
     """§6 target tree against the Step-5 snapshot at trigger time. Returns a callable
-    (trig, entry, stop) -> (name, level) or None when no valid opposing level exists."""
+    (trig, entry, stop) -> (name, level, aux) or None when no valid opposing level exists.
+
+    ANGUS pass-6 split test — `model`:
+      "default"    §6.2 pattern tree (A->VWAP mid, B2->next structural, B->opposing liquidity).
+      "vwap_revert" mean-reversion: target the VWAP band 2 sigma toward-and-across the mean from
+                    the entry band (enter ~VWAP-1 -> target VWAP+1; enter ~VWAP-2 -> target mid).
+      "walk_menu"  walk the distance-ordered menu outward, pick the FIRST level clearing rr_floor
+                    (skip only if none does) — the P5.16 idea.
+    """
     from src.engine.snapshot import build_snapshot
 
     def resolve(trig: Trigger, entry: float, stop: float):
@@ -248,7 +262,50 @@ def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None):
                 return lv
             return None
 
-        if trig.pattern == "A":                                    # §6.2 A -> VWAP middle
+        news_ok = True   # news-day override applies to the "default" model only (others self-target)
+        if model == "vwap_revert":
+            news_ok = False
+            # sigma-indexed VWAP bands (prefer NY post-09:30, else daily); target = entry band +/- 2
+            bands = {}
+            for prefix in ("ny_vwap", "daily_vwap"):
+                d = {}
+                for lv in snap.target_menu:
+                    if lv.type != "vwap" or not lv.name.startswith(prefix + "_"):
+                        continue
+                    nm = lv.name[len(prefix) + 1:]
+                    if nm == "mid":
+                        d[0] = lv
+                    elif nm.startswith("upper_"):
+                        d[int(nm.split("_")[1])] = lv
+                    elif nm.startswith("lower_"):
+                        d[-int(nm.split("_")[1])] = lv
+                if d:
+                    bands = d
+                    break
+            pick = None
+            if bands:
+                entry_idx = min(bands, key=lambda k: abs(bands[k].price - entry))
+                tgt_idx = entry_idx + sign * 2
+                if tgt_idx in bands and sign * (bands[tgt_idx].price - entry) > 0:
+                    pick = bands[tgt_idx]
+                else:                                    # best available VWAP band beyond entry
+                    avail = [k for k in bands if sign * (bands[k].price - entry) > 0]
+                    if avail:
+                        pick = bands[max(avail, key=lambda k: sign * (bands[k].price - entry))]
+            pick = pick or nearest(types=("vwap",)) or nearest()
+        elif model == "walk_menu":
+            news_ok = False
+            risk = sign * (entry - stop)
+            pick = None
+            for lv in beyond:                            # nearest first; first to clear the floor
+                working = lv.price - sign * front_run
+                reward = sign * (working - entry)
+                if risk > 0 and reward / risk >= rr_floor:
+                    pick = lv
+                    break
+            if pick is None:
+                return None
+        elif trig.pattern == "A":                                  # §6.2 A -> VWAP middle
             pick = nearest(names=("ny_vwap_mid",)) or nearest(names=("daily_vwap_mid",)) \
                 or nearest()
         elif trig.pattern == "B2":                                 # §6.2 B2 -> next structural
@@ -256,8 +313,8 @@ def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None):
         else:                                                      # B (and unclassified) -> opposing liquidity
             pick = nearest(names=("prior_day_", "asia_session_", "london_session_")) or nearest()
 
-        # §6.3 news-day override: untaken data extreme beyond the default target
-        if pick is not None and snap.data_levels:
+        # §6.3 news-day override: untaken data extreme beyond the default target (default model only)
+        if news_ok and pick is not None and snap.data_levels:
             for r in snap.data_levels:
                 lvl = r["data_high"] if trig.direction == "long" else r["data_low"]
                 if sign * (lvl - pick.price) > 0 and r.get("impact") == "high":
@@ -298,7 +355,8 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             calendar = load_news_calendar()
         except Exception:
             calendar = pd.DataFrame(columns=["datetime_ET", "event", "impact"])
-    resolve = target_resolver or default_target_resolver(df_1m, calendar)
+    resolve = target_resolver or default_target_resolver(
+        df_1m, calendar, cfg.target_model, cfg.rr_floor, cfg.front_run)
     slip = _Slip(cfg, _news_times(calendar))
 
     # high-impact releases scheduled before 09:30, keyed by calendar date (Angus news rule)
@@ -539,6 +597,13 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             if cfg.require_bb_vwap and t.cluster_types and not {"bb", "vwap"}.issubset(t.cluster_types):
                 veto(t, "vetoed_bb_vwap",
                      f"cluster {sorted(t.cluster_types)} lacks BB+VWAP (§9 v1.1 no-trade)")
+                continue
+            # ANGUS pass-6: require price to ACTUALLY have reached a VWAP band ("it rejected VWAP"),
+            # not just a VWAP level sitting near a BB level (Brake's Feb-24 find). Supersedes the
+            # composition check above when enabled — set require_bb_vwap:false in the touch arm.
+            if cfg.require_vwap_touch and not t.vwap_touched:
+                veto(t, "vetoed_vwap_touch",
+                     "price did not reach a VWAP band (ANGUS pass-6 quality filter)")
                 continue
             limit = entry_limit(t)
             if limit is None:

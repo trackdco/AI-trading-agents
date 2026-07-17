@@ -50,6 +50,7 @@ __all__ = ["Trigger", "detect_triggers", "_level_groups"]  # _level_groups re-ex
 
 _TF_RANK = {"1min": 1, "2min": 2, "3min": 3, "5min": 5, "15min": 15}
 _ONE_MIN = pd.Timedelta(minutes=1)
+_VWAP_TOUCH_TOL = 0.5   # ANGUS pass-6: 2-tick tolerance for "the wick reached the VWAP band"
 
 
 class Trigger(BaseModel):
@@ -68,6 +69,10 @@ class Trigger(BaseModel):
     cluster_types: list[str] = []   # distinct level types in the crossed cluster: bb | vwap | poc
                                     # (§9 ANGUS v1.1 sizing ladder: FULL=BB+VWAP+POC, HALF=2 incl
                                     #  BB+VWAP, NO TRADE without both BB+VWAP)
+    vwap_touched: bool = False      # ANGUS pass-6: did the candle's range actually REACH a VWAP
+                                    # band? (his "it actually rejected VWAP" standard). Distinct
+                                    # from cluster_types having 'vwap' (that's level-proximity, not
+                                    # a price touch — Brake's Feb-24 find). Gate: filters.require_vwap_touch.
     close: float
 
 
@@ -215,6 +220,12 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
             g = res.get("cluster")
             center = round(sum(p for _, p, _ in g) / len(g), 4) if g else res["entry_ref"]
             ctypes = sorted({typ for _, _, typ in g}) if g else []
+            # ANGUS pass-6 VWAP-touch: did the bar's actual range reach a VWAP band level?
+            # (a real price touch, not level-proximity). Tolerance = 2 ticks for rounding.
+            bar_lo, bar_hi = float(fr["low"].iloc[i]), float(fr["high"].iloc[i])
+            vwaps = [p for _, p, typ in levels if typ == "vwap"]
+            vwap_touched = any(bar_lo - _VWAP_TOUCH_TOL <= p <= bar_hi + _VWAP_TOUCH_TOL
+                               for p in vwaps)
             raw.append(Trigger(ts=t.isoformat(), tf=tf, direction=res["direction"],
                                kind=res["kind"], pattern=pattern, htf_flag=htf,
                                entry_ref=round(float(res["entry_ref"]), 4),
@@ -223,6 +234,7 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
                                wick_high=round(float(res["wick_high"]), 4),
                                cluster_center=round(float(center), 4),
                                confluence_count=res["count"], cluster_types=ctypes,
+                               vwap_touched=bool(vwap_touched),
                                close=round(float(fr["close"].iloc[i]), 4)))
     return _mtf_arbitrate(raw)
 

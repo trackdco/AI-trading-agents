@@ -110,6 +110,12 @@ targets:
                                   #      default target becomes the target
   news_override_vwap_proxy: false # §6.3 TOURNAMENT — fallback variant to test (VWAP −1/+1 as proxy)
   alignment_min_stack: 2          # §6.6 — prefer targets where ≥2 menu levels stack within tolerance
+  model: default                  # ANGUS pass-6 SPLIT TEST — target selection model:
+                                  #   default     = §6.2 pattern tree (A→VWAP mid, B2→structural, B→liquidity)
+                                  #   vwap_revert = mean-reversion to the VWAP band 2σ across the mean
+                                  #                 (enter ~VWAP−1 → target VWAP+1; ~VWAP−2 → mid)
+                                  #   walk_menu   = walk levels outward to the first that clears rr_floor
+                                  #   (news_day_override applies to 'default' only; the others self-target)
 
 filters:
   min_confluence_counter_trend: 2 # §7 v1.2 — ANGUS calibration ruling 2026-07-17: was 3; the
@@ -127,6 +133,10 @@ filters:
                                   #      release day (e.g. CPI 08:30) the ENTIRE pre-market is blocked;
                                   #      entries only from the 09:30 open. Overrides the earlier release-time
                                   #      reading (doc wins) — pre-release entries like Feb 20 08:06 now vetoed
+  require_vwap_touch: false       # ANGUS pass-6 QUALITY FILTER (split test) — trade only if the trigger
+                                  #      candle's range ACTUALLY reached a VWAP band ("it rejected VWAP"),
+                                  #      not just a VWAP level near a BB level (Brake's Feb-24 find). When
+                                  #      ON, set sizing.require_bb_vwap:false — touch supersedes composition.
   # Volatility stand-down (§7): [OPEN] — no computable definition yet; intentionally not configured.
 
 management:
