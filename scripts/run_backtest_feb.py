@@ -49,7 +49,12 @@ def load_or_detect(df: pd.DataFrame) -> list[Trigger]:
 
 
 def main():
-    df = pd.read_parquet("data/nq_1m.parquet")
+    # full dataset when present; else the committed Feb slice (data/reference/ is tracked so
+    # Angus's chat can run calibration reruns without re-pulling Databento)
+    full, ref = Path("data/nq_1m.parquet"), Path("data/reference/nq_1m_feb2026.parquet")
+    src = full if full.exists() else ref
+    print(f"data: {src}")
+    df = pd.read_parquet(src)
     feb = df[(df["ts_event"] >= pd.Timestamp("2026-02-01 18:00", tz=NY)) &
              (df["ts_event"] <= pd.Timestamp("2026-02-27 17:00", tz=NY))].reset_index(drop=True)
     triggers = load_or_detect(feb)

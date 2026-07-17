@@ -188,19 +188,19 @@ def write_report(res: dict) -> None:
     for k, v in sorted(tally.items(), key=lambda kv: -kv[1]):
         L.append(f"- **{k}** × {v}")
     L.append("")
-    L.append("Reading (for Angus to rule, not for the engine to self-correct):")
+    L.append("Reading (v1.2 run — for Angus to rule, not for the engine to self-correct):")
     L.append("")
-    L.append("- **`vetoed_confluence` dominates.** In several cases the engine detected the *same* "
-             "trigger Angus took (same time/TF/pattern) but counted only 2 confluence types and "
-             "the §7 minimum for counter-trend is 3. This collides with the v1.1 sizing ladder "
-             "(§9), which treats a 2-type **BB+VWAP** cluster as *tradeable at half size*. **Do the "
-             "type-ladder and the §7 count-minimum STACK (both must pass) or does the ladder "
-             "SUPERSEDE the count for counter-trend?** Decision-log says the ladder \"refines §7/§9\" "
-             "— needs an explicit ruling; it is the biggest single driver of MISSED.")
-    L.append("- **`vetoed_halt` is a cascade.** The engine takes EXTRA early losers, trips the §10 "
-             "2-loss / −2R daily halt, then MISSES Angus's later winners on the same day (Feb 12, "
-             "17). Fewer EXTRA entries would remove most halt-blocks — i.e. this is downstream of "
-             "the confluence/selection question, not an independent halt problem.")
+    L.append("- **The v1.1 confluence blocker is resolved** (P5.15 ruled: BB+VWAP gate, POC bonus, "
+             "no 3-count minimum). The MISSED mix is now spread across execution/risk gates rather "
+             "than one dominant selection rule.")
+    L.append("- **`vetoed_halt` is a cascade, not an independent problem.** The engine takes EXTRA "
+             "early losers, trips the §10 2-loss / −2R daily halt, then misses Angus's later "
+             "winners the same day. Fewer bad EXTRA entries would clear most of these.")
+    L.append("- **`vetoed_rr_floor`** now ties for the top MISSED gate: on these setups the engine's "
+             "target menu offers < 2R to the actual level where Angus saw ≥ 2R — target-selection "
+             "divergence (menu contents / level choice), not a sizing question.")
+    L.append("- **`cancelled_tcancel`** kills several of Angus's winners: price ran > T_cancel (22) "
+             "beyond the limit before filling. His fills chase further than the current band.")
     L.append("- **`vetoed_news_preopen` × Feb 20 08:06** is the tightened news rule vetoing Angus's "
              "own pre-PCE entry (open item P5.14 — strict FF-red vs named-list ruling decides it).")
     L.append("")
