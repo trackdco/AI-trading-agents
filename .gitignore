@@ -1,0 +1,22 @@
+# Data & outputs (code-standards: gitignored; data/reference/ IS committed)
+data/raw/*
+output/*
+data/*.parquet
+
+# Keep directory placeholders
+!data/raw/.gitkeep
+!output/.gitkeep
+
+# Secrets (code-standards: keys/tokens live in .env, never committed)
+.env
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# OS / editor
+.DS_Store

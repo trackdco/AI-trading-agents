@@ -1,0 +1,28 @@
+# FLAGGED ADDITION (code-standards "no silent scope"): not named in spec-1 step 1,
+# added to pin the approved dependency list (code-standards.md, Python section) and
+# to configure ruff/pytest, both required by the per-step checks.
+
+[project]
+name = "nq-trading-system"
+version = "0.1.0"
+description = "NQ mechanical trading system — market engine, backtester, desk, vault"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas",
+    "numpy",
+    "pydantic>=2",
+    "PyYAML",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
