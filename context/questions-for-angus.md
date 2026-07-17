@@ -65,10 +65,8 @@ tunes. Same items; answering here covers his nudge.)
 
 ## P5 — NEW (surfaced by the v1.1 adversarial audit, 17 Jul) — needed before/at Step 7-8
 
-10. **Counter-trend full-confluence sizing.** All three types aligned (BB+VWAP+POC) but
-    counter-trend and NOT an A-at-extension: v1.0/v1.1 full-unit rule excludes it, no half
-    trigger caught it. v1.1 now says it trades at **half** (fails-full → half default,
-    tagged in §9). Confirm that reading. **→**
+10. ~~**Counter-trend full-confluence sizing.**~~ ✅ CONFIRMED (Angus, 17 Jul): all three
+    aligned but counter-trend and not A-at-extension → **half**. Tag removed from §9.
 11. **W2 span + late-window in W2.** Working read: W2 = full CME session 18:00→15:55.
     Confirm; and does the after-10:30 half-sizing apply inside W2, or only session-scoped
     windows (your words implied the latter)? Affects the W1-vs-W2 tournament comparison. **→**

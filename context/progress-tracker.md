@@ -38,6 +38,8 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Value-area % CONFIRMED 70 (Angus).
 - 2026-07-17 — News rule (Angus): override fires on HIGH-impact days only; NEW — on a high-impact pre-open release (e.g. CPI 08:30) no entries until 09:30 open. config news.no_premarket_entry_on_high_impact=true.
 - 2026-07-17 — **strategy-definition bumped v1.0 → v1.1** (Angus directed): all nine 17-Jul decisions folded in (§2 boxes+VA%, §3 core-types note, §5.5 T_cancel 22, §6.5 RR floor 2.0 hard, §7 type-specific confluence + VWAP warm-up + high-impact pre-open stand-down, §9 oversized-stop 42 + late-window 10:30 half-sizing). § numbering unchanged; file renamed strategy-definition-v1.1.md; living references updated (config/strategy.yaml header left for Brake to bump with the values — his lane).
+- 2026-07-17 — Sizing edge case CONFIRMED (Angus): 3-type alignment + counter-trend + not A-at-extension = HALF unit (§9 fails-full→half default). questions-for-angus P5.10 closed; P5.11–13 (W2 span/late-window, entry-time semantics, 2R vs front-run) remain open.
+- 2026-07-17 — Step 8 pre-reads from Angus (leans, formal ruling at the calibration review): the Feb 11/17 ~3-min trigger offset is most likely human-reads-forming-candle vs robot-waits-for-close (expected divergence, not detector bug); robot's A/B/B2 mapping "quite accurate", he'll eyeball a sample of labels at Step 8.
 
 ## Session log (newest first)
 
