@@ -27,8 +27,24 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Entry window W1 8:00–11:00 primary; W2 full-day priority test; BE-at-1R vs none = priority tournament (Angus)
 - 2026-07-17 — Data: Jan 2026→present primary; 2025 as robustness check only (Angus regime rationale, honesty guard noted)
 - 2026-07-17 — Hand-log resolutions (Brake/Angus): Feb 3 10:52 → true P&L −$369 on a 61.5-pt stop (P&L −390→−369, Risk 390→369, pts −61→−61.5); Feb 26 09:18 → 73 pts correct, P&L was the typo (1120→$1460 = 73×10 MNQ×$2). All 28 rows now cross-check clean (points = P&L ÷ (contracts × $/pt)).
+- 2026-07-17 — Session hours CONFIRMED (Angus): Asia 18:00–03:00, London 03:00–09:30, NY 09:30–16:00 ET. Pre-market = either/or (NY-premarket vs late-London); kept in London box.
+- 2026-07-17 — VWAP warm-up NEW (Angus): no entries in the first hour after the 18:00 daily anchor (not before 19:00 ET) — daily VWAP needs to form. Bites Asia/overnight (daily-model) backtests; W1/NY unaffected.
+- 2026-07-17 — Cancel distance (Angus): T_cancel 15→20–25 (start ~22); price rarely re-chases a missed limit, so a tight cancel is wrong. config entry.cancel_if_runs_points 15→22.
+- 2026-07-17 — Oversized-stop half-size NEW (Angus): stop = rejection-block wick, median ~30; oversized = 40–45 (start 42) → half. Hard 2R target min still applies. config sizing.oversized_stop_points=42.
+- 2026-07-17 — Sizing/confluence (Angus): FULL = BB+VWAP+POC (3 aligned); HALF = exactly 2 AND must include BB+VWAP; NO TRADE if BB+VWAP not both present. Refines §7/§9 (the "2 must be BB+VWAP" constraint is new).
+- 2026-07-17 — Late-window (Angus): 09:45–10:15 = prime AM-macro; entries after 10:30 → half size (strict-session tests). config sizing.late_window_after="10:30".
+- 2026-07-17 — Target floor (Angus): hard 2R minimum every trade (not 1.5); "thin target → half" subsumed (below 2R = no trade). config targets.rr_floor 1.5→2.0.
+- 2026-07-17 — Value-area % CONFIRMED 70 (Angus).
+- 2026-07-17 — News rule (Angus): override fires on HIGH-impact days only; NEW — on a high-impact pre-open release (e.g. CPI 08:30) no entries until 09:30 open. config news.no_premarket_entry_on_high_impact=true.
 
 ## Session log (newest first)
+
+### 2026-07-17 — Angus strategy decisions captured (Claude Code, Angus driving)
+- Angus answered all 7 open "what did you mean" params and added 3 NEW rules. Recorded in the decision log above + questions-for-angus.md (P1/P3 now fully answered).
+- **For Brake to apply to config/strategy.yaml** (his lane — NOT applied here to avoid a double-edit collision while he's building): `entry.cancel_if_runs_points 15→22` (band 20-25); `targets.rr_floor 1.5→2.0` (hard 2R min); NEW `sizing.oversized_stop_points=42` (band 40-45, →half); NEW `sizing.late_window_after="10:30"` (→half); NEW session VWAP warm-up = no entries <60min after the 18:00 anchor; NEW `news.no_premarket_entry_on_high_impact=true`; `value_area_pct` stays 70.
+- Sizing/confluence clarified: FULL=BB+VWAP+POC; HALF=2 incl. BB+VWAP; else NO TRADE.
+- **STRATEGY-DOC v1.1 BUMP FLAGGED (Angus owns the doc):** RR floor 1.5→2.0 (§6.5) + thin-target subsumed (§9); "2 must be BB+VWAP" vs §7's trend-based 3-counter/2-with (reconcile); 3 new rules not in v1.0 (VWAP warm-up, high-impact pre-open no-trade-till-09:30, oversized-stop & late-window half-size).
+- Engine impact: these are inputs to Steps 6 (triggers, already built) + 7 (backtester) — Brake should fold them in before/at Step 7 + the calibration run.
 
 ### 2026-07-17 — Spec 1 Step 6: trigger detection (Claude Code, Brake driving)
 - Steps completed: Step 6 — src/engine/triggers.py: detect_triggers over any window. Per entry-TF candle (evaluated at CLOSE via indicators_asof, no lookahead): displacement (body through ≥2 cluster levels, body/range≥B_min, close in extreme quartile, optional ATR floor) checked FIRST, then rejection block (wick into cluster, body closes back on trade side of ALL levels); pattern A/B/B2 (§4) + HTF flag (15m regime vs direction); MTF arbitration (highest TF wins, §1). scripts/run_triggers_feb.py → output/triggers_feb.csv (gitignored artifact). tests/test_triggers.py (10 tests, incl. self-contained integration spot-check on the committed slice).
