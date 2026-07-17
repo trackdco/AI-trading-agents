@@ -77,14 +77,12 @@ tunes. Same items; answering here covers his nudge.)
     fill 10:36 = after-10:30 trade = half. Brake's Step 7 already implements the fill clock —
     no change needed.
 
-14. **NEW — the PCE edge case (decides your own Feb 20 trade).** Your high-impact definition
-    is "Forex Factory red folder" AND your named list (CPI, PPI, Non-Farm, JOLTS)… but
-    **PCE — the Fed's inflation gauge — is normally red-folder on FF**, while you said you
-    don't care about it. Feb 20 had Core PCE at 08:30, and your winning 08:06 entry that day
-    was PRE-release. Strict red-folder → the rule bans that trade (calibration divergence on
-    your own winner). Named-list-only → the trade survives. Which is it: (a) strict FF
-    red-folder, accept losing Feb-20-type mornings; or (b) your named list of giant-candle
-    prints (CPI / PPI / NFP-family / JOLTS + rate decisions), PCE excluded? **→**
+14. ~~**The PCE edge case.**~~ ✅ ANSWERED (Angus, 17 Jul pass 9): **(b) named list only** —
+    CPI / PPI / NFP-payrolls family / JOLTS / rate decisions; **PCE excluded**. Implemented
+    as `filters.named_high_impact` (regex list) gating the pre-open stand-down + §6.3
+    override. Feb 20 08:06 admitted. NOTE (overnight suite): the ruling costs Feb ~−12R on
+    the engine (unblocked mornings added losers) — it stands on doctrine, revisit only with
+    out-of-sample evidence.
 13. ~~**2R measured to what.**~~ ✅ ANSWERED (Angus, 17 Jul): measured to the ACTUAL level —
     stop 40 ⇒ target level ≥ 80 pts away, and the target must be a real level, not an
     arbitrary 2R price. Front-run F is execution mechanics, excluded from the R math.
@@ -110,37 +108,18 @@ tunes. Same items; answering here covers his nudge.)
         is a valid HALF-size trade regardless of trend (drop min_conf_counter to 2 / gate on
         types only)? This is a rule ruling + doc bump, NOT something Brake tunes to February. **→**
 
-16. **NEW — target selection vs the 2R floor (pass-3 bottleneck, decides ~6 MISSED incl. two
-    ~+3.5R winners).** When a setup fires, the robot picks the pattern's default target (A →
-    VWAP mid, B2 → next structural, B → opposing liquidity). If THAT level offers <2R it
-    vetoes the trade — even when a further level on your §6 menu offers plenty. Feb 12 09:39:
-    vetoed at RR **1.98** to NY-VWAP-mid (you made +3.37R aiming further). Feb 17: vetoed at
-    RR **1.99**. Question: when the default target is under 2R, should the robot **walk the
-    distance-ordered menu outward to the first level that clears 2R** (skip only if nothing
-    does)? That matches your "minimum 2R, justified at an actual level" rule. Yes/no. **→**
+16. ~~**Target selection vs the 2R floor.**~~ ✅ ANSWERED (Angus, 17 Jul pass 9): **YES —
+    walk the distance-ordered menu outward to the first level clearing the floor** (veto only
+    if nothing does). Implemented as `targets.walkout_under_floor: true` (resolver walk-out,
+    `walkout_` name prefix for observability). Suite: MATCHED 6→8, win% 20.5→23.1.
 
-17. **NEW — V5 runner-target definition (BLOCKS the V5 partial-exit build).** You asked for
-    V5: "75% out at first structure, then a 25% runner to full extension." First build read
-    "full extension" as the FURTHEST opposing level on the §6 menu — which resolved to
-    prior_week_high/low on 32 of 44 trades (a level tens–hundreds of pts away, almost never
-    reached, so the 25% runner just round-tripped and gave back its gains). That made the
-    −5.48R V5 result invalid; it's reverted and V5 is unbuilt until you pin the target. Which
-    did you mean: (a) the runner targets the **opposing VWAP band** (short runner → VWAP−1σ,
-    long runner → VWAP+1σ) — the "next band out" reading; (b) the **furthest structural level**
-    on the §6 menu (my original — produced nonsense); or (c) something else (name it)? **→**
+17. ~~**V5 runner-target definition.**~~ ✅ ANSWERED (Angus, 17 Jul pass 6): V5 runner → the
+    **next structural level**; V6 runner → the **one beyond it** (75% booked at first
+    structure; first-PT floor 1.5). Built + measured (pass 8): both lose to V0 on Feb's
+    distribution (partials cap the tail) — V0 stays active; V5/V6/V7 remain testable variants.
 
-18. **NEW — keep vs cut pre-market, now that the attribution is known (decides the W1 window).**
-    You said "scrap pre-market, it leaks, trade from 09:30." Verified isolate (one change,
-    nothing else): cutting pre-market takes Feb **+2.59R → −5.15R**. BUT the entire pre-market
-    **+3.98R is EXTRA trades you did NOT take** — Feb 23 +5.41R, Feb 24 +4.14R, Feb 26 +2.72R
-    (2 of 3 pattern "unclassified", the detector can't even name them); your actual NY setups
-    net **−1.39R** in the engine. So your pre-market *hand-trading* may leak, but the ENGINE's
-    pre-market is its (accidental) profit center, not your edge. Options: (a) **CUT** for
-    fidelity — accept −5.15R as the honest current state, then fix NY-capture; (b) **KEEP** —
-    but know the +R is EXTRA/unclassified, a flattering-but-fake headline; (c) keep for the
-    daily-model/Asia arms only, cut for the NY/W1 arm. Either way the next real bottleneck is
-    **NY-capture** (engine MISSES ~23 of your 28 hand trades and loses on the NY ones it takes).
-    My rec: (a) for honesty, then attack NY-capture. Your call. **→**
+18. ~~**Keep vs cut pre-market.**~~ ✅ ANSWERED (Angus, 17 Jul pass 6): **KEEP — trade from
+    08:00** ("that's clearly not the leak"). W1 stays 08:00–11:00.
 
 ## P4 — scope decision (with Brake)
 
