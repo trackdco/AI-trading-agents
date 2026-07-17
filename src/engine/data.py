@@ -5,14 +5,14 @@ validated, timezone-aware parquet at ``data/nq_1m.parquet`` with the canonical c
 
     ts_event (America/New_York, tz-aware) | open | high | low | close | volume | roll
 
-Validation performed (per strategy-definition-v1.0.md §12 and spec-1 Step 2):
+Validation performed (per strategy-definition-v1.1.md §12 and spec-1 Step 2):
   * timestamps strictly monotonic increasing with NO duplicates — a violation RAISES
     (code-standards: validation errors raise, never warn);
   * gap report — unexpected missing 1-minute bars per CME daily session, written to
     ``output/gap_report.csv`` (expected closures — the 17:00–18:00 ET daily maintenance
     break and the weekend close — are excluded, so only real holes are reported);
   * roll tags — the ``roll`` column marks the first bar after the continuous contract's
-    underlying ``instrument_id`` changes (Databento volume-based roll, unspliced; §3).
+    underlying ``instrument_id`` changes (Databento volume-based roll, unspliced; spec-1 §3).
 
 All timestamps are tz-aware ``America/New_York`` via zoneinfo; DST is handled by the tz
 library, never by offset arithmetic (architecture invariant 2).
@@ -126,7 +126,7 @@ def _is_parent_export(df: pd.DataFrame) -> bool:
 def to_continuous_front_month(df: pd.DataFrame, session_open: time = time(18, 0)) -> pd.DataFrame:
     """Collapse a Databento parent export into one volume-based, unspliced continuous series.
 
-    Rule (documented per spec-1 §Design-Decisions; strategy-definition §3 = "continuous NQ,
+    Rule (documented per spec-1 §3 Design Decisions: "continuous NQ,
     volume-based roll, unspliced"):
       * calendar spreads (symbols containing '-') are dropped — outright contracts only;
       * the front month for each CME trade date (18:00 ET session boundary) is the outright

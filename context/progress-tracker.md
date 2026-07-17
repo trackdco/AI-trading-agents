@@ -17,6 +17,7 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 | Date | Gate | Result | Notes |
 |---|---|---|---|
 | 2026-07-17 | strategy-definition v1.0 locked | PASSED | Q&A incorporated; daily VWAP anchor confirmed 18:00 ET |
+| 2026-07-17 | strategy-definition v1.1 amendments | PASSED | Angus instated the nine 17-Jul rules ("those were supposed to be rules beforehand") and directed the bump. Full-doc read-through still open (questions-for-angus P1.1). |
 | 2026-07-17 | Spec 1 Step 4 parity report | PASSED | Angus read NQH2026 and confirmed every row within 1.0 pt (BB per trade TF, daily VWAP ±1σ, NY VWAP, daily POC). Engine cleared for Steps 5-9. |
 | — | Spec 1 Step 8 calibration classification | pending | |
 
@@ -36,8 +37,16 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Target floor (Angus): hard 2R minimum every trade (not 1.5); "thin target → half" subsumed (below 2R = no trade). config targets.rr_floor 1.5→2.0.
 - 2026-07-17 — Value-area % CONFIRMED 70 (Angus).
 - 2026-07-17 — News rule (Angus): override fires on HIGH-impact days only; NEW — on a high-impact pre-open release (e.g. CPI 08:30) no entries until 09:30 open. config news.no_premarket_entry_on_high_impact=true.
+- 2026-07-17 — **strategy-definition bumped v1.0 → v1.1** (Angus directed): all nine 17-Jul decisions folded in (§2 boxes+VA%, §3 core-types note, §5.5 T_cancel 22, §6.5 RR floor 2.0 hard, §7 type-specific confluence + VWAP warm-up + high-impact pre-open stand-down, §9 oversized-stop 42 + late-window 10:30 half-sizing). § numbering unchanged; file renamed strategy-definition-v1.1.md; living references updated (config/strategy.yaml header left for Brake to bump with the values — his lane).
 
 ## Session log (newest first)
+
+### 2026-07-17 — strategy-definition v1.1 bump (Claude Code, Angus driving)
+- Angus reviewed the flagged reconciliation items and directed the bump ("those were supposed to be rules beforehand"). Renamed strategy-definition-v1.0.md → v1.1.md; § numbering PRESERVED so every §-reference in config/spec/code stays valid.
+- Amendments applied (header changelog lists all nine): §2 session-box clock times + VA 70%; §3 core-types (BB/VWAP/POC) sizing-ladder note; §5.5 T_cancel 20–25 start 22; §6.5 RR floor 2.0 HARD (thin-target-half removed); §7 type-specific confluence minimum (no BB+VWAP → no trade) + VWAP warm-up (no entries 18:00–19:00 ET) + high-impact pre-open stand-down (no pre-market entries, start 09:30); §9 sizing ladder (full = 3 core types; half = 2 incl BB+VWAP / stop >42 / entry >10:30). Also fixed a v1.0 cross-ref typo (§4 pointed at §8 for the confluence rule; now §7).
+- Living filename references updated (README, spec-1 + supersession note, TEAM.md, architecture, project-overview, ai-workflow-rules, parity_chart_settings, questions-for-angus, data.py docstring). Historical log lines left as written. **config/strategy.yaml deliberately untouched** — Brake applies the new values + header reference together (his lane, mid-build).
+- **Handoff to Brake:** apply config values per the 17-Jul decision-log lines before the Step 7/8 runs; backtester must implement §7 warm-up + news stand-down and §9 ladder as written in v1.1.
+- **Adversarial audit before push** (3-agent workflow: diff-fidelity / references / consistency): diff verified faithful (only the nine authorized edits; § numbering intact; no rules silently dropped), references clean. Consistency pass found 1 blocker + 6 minors → fixed post-audit (changelog item 10): §9 default-&-precedence rule closes the undefined-size gap for counter-trend 3-type non-A trades (reading tagged for Angus confirm), §6.5 "nearest"→"selected target", §7 news blackout wording reconciled, oversized-stop wording covers displacement stops, changelog items 5/7 aligned with section text, W2 working-read + §12.3 tournament note added. data.py roll-rule comment misattribution (strategy-§3 → spec-1 §3) fixed. Remaining genuine strategy calls routed to questions-for-angus P5 (items 10–13: counter-trend-non-A confirm, W2 span/late-window, entry-time semantics, 2R vs front-run). 54 tests green, ruff clean after fixes.
 
 ### 2026-07-17 — Angus strategy decisions captured (Claude Code, Angus driving)
 - Angus answered all 7 open "what did you mean" params and added 3 NEW rules. Recorded in the decision log above + questions-for-angus.md (P1/P3 now fully answered).

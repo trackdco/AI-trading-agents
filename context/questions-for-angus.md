@@ -2,7 +2,7 @@
 
 Your lane: strategy authority + sign-offs. These are parked decisions the engine has
 been running on PLACEHOLDER assumptions for. Answer inline (write after each **→**), and
-they get folded into `config/strategy.yaml` / `strategy-definition-v1.0.md`. Nothing here
+they get folded into `config/strategy.yaml` / `strategy-definition-v1.1.md`. Nothing here
 blocks the Step 4 gate (that's PASSED) — this clears the runway for Steps 5–8 and keeps the
 Step 8 calibration honest.
 
@@ -14,9 +14,10 @@ tunes. Same items; answering here covers his nudge.)
 
 ## P1 — cheap, unblocks Steps 5–6 (do first)
 
-1. **Strategy doc final read-through.** `strategy-definition-v1.0.md` still says
-   *"LOCKED pending final Angus read-through."* Read it once end-to-end; confirm it's final
-   (or list edits).
+1. **Strategy doc final read-through.** Now targets **v1.1** (bumped 17 Jul 2026 with your
+   instated rules — see its header changelog). Read it once end-to-end; confirm it's final
+   (or list edits). The v1.1 amendments themselves are already Angus-approved; this is the
+   whole-document once-over.
    **→**
 
 2. ~~**Session box times.**~~ ✅ ANSWERED (Angus): Asia 18:00–03:00, London 03:00–09:30,
@@ -56,11 +57,28 @@ tunes. Same items; answering here covers his nudge.)
    **+ Target floor (NEW):** hard **2R minimum on every trade** (not 1.5). "Thin target → half"
    is subsumed — below 2R is a no-trade, not a downsize. `targets.rr_floor 1.5 → 2.0`.
 
-> ⚠️ **Strategy-doc reconciliation (Angus owns the v1.1 bump):** several of the above CHANGE or
-> ADD to the LOCKED v1.0 doc — RR floor 1.5→2.0 (§6.5) + thin-target subsumed (§9); the
-> "2 must be BB+VWAP" confluence minimum vs §7's trend-based 3-counter/2-with (reconcile); and
-> three brand-new rules (VWAP warm-up, high-impact pre-open no-trade-till-09:30, oversized-stop
-> & late-window half-size). Fold into strategy-definition and bump to v1.1.
+> ✅ **Strategy-doc v1.1 bump DONE** (Angus directed, 17 Jul 2026): all of the above folded into
+> `strategy-definition-v1.1.md` (§2/§3/§5.5/§6.5/§7/§9 + header changelog). Reconciliation of
+> "2 must be BB+VWAP" with the trend rule: counter-trend requires the full 3-type alignment;
+> with-trend may trade 2-type (BB+VWAP) at half. Repo references updated; `config/strategy.yaml`
+> left for Brake to update together with the new values (his lane, he's mid-build).
+
+## P5 — NEW (surfaced by the v1.1 adversarial audit, 17 Jul) — needed before/at Step 7-8
+
+10. **Counter-trend full-confluence sizing.** All three types aligned (BB+VWAP+POC) but
+    counter-trend and NOT an A-at-extension: v1.0/v1.1 full-unit rule excludes it, no half
+    trigger caught it. v1.1 now says it trades at **half** (fails-full → half default,
+    tagged in §9). Confirm that reading. **→**
+11. **W2 span + late-window in W2.** Working read: W2 = full CME session 18:00→15:55.
+    Confirm; and does the after-10:30 half-sizing apply inside W2, or only session-scoped
+    windows (your words implied the latter)? Affects the W1-vs-W2 tournament comparison. **→**
+12. **"Entry time" definition.** Four rules key off entry time (W1 end 11:00, late 10:30,
+    warm-up 19:00, stand-down 09:30). With resting limits, trigger and fill can be minutes
+    apart (trigger 10:28, fill 10:36 — full or half?). Which timestamp governs: trigger-candle
+    close, order placement, or fill? **→**
+13. **2R measured to what.** Target working price = level ∓ front-run F (§6.4). Is the 2R floor
+    measured to the raw level or to the working (front-run) target the backtest actually fills
+    at? (~0.05R difference; changes which trades exist.) **→**
 
 ## P4 — scope decision (with Brake)
 

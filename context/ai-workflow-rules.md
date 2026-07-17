@@ -6,7 +6,7 @@ Every Claude Code session begins by loading context in this order — and adopti
 1. `context/project-overview.md`
 2. `context/architecture.md`
 3. `context/code-standards.md`
-4. `strategy-definition-v1.0.md`
+4. `strategy-definition-v1.1.md`
 5. The active spec (`spec-N-*.md`)
 6. `context/progress-tracker.md` (where the last session stopped)
 
@@ -31,7 +31,7 @@ Never "just adjust the threshold so February matches." Rule/parameter changes re
 ## Agent files (Phase 3 preview)
 
 - Agents live in `.claude/agents/`, one markdown per agent (atlas.md, helios.md, apollo.md, hephaestus.md, hermes.md).
-- Each agent file contains: role, its verbatim slice of strategy-definition-v1.0.md, its input (Snapshot fields it may read), and a mandatory JSON output schema. Agents that return anything but valid schema JSON are a bug.
+- Each agent file contains: role, its verbatim slice of strategy-definition-v1.1.md, its input (Snapshot fields it may read), and a mandatory JSON output schema. Agents that return anything but valid schema JSON are a bug.
 - Agents never receive: account balance, P&L, prior trade outcomes, or each other's verdicts (Hermes aggregates; specialists stay independent).
 - Prompt changes to agent files are versioned like code and logged in progress-tracker.md — a prompt edit IS a strategy change.
 
