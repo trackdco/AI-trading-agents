@@ -420,6 +420,86 @@ def test_v7_partial_then_stop_is_net_winner():
     assert rec.r_multiple > 0
 
 
+# ------------------------------------------------------------- pass-9 rulings (Angus)
+
+def test_walk_out_picks_first_level_clearing_floor():
+    from src.backtest.engine import _walk_out
+
+    class L:
+        def __init__(self, name, price):
+            self.name, self.price, self.type = name, price, "structural"
+
+    beyond = [L("near", 25010.0), L("mid", 25025.0), L("far", 25100.0)]
+    # long from 25000 stop 24990 (risk 10, floor 2.0, front_run 2.5):
+    # near working 25007.5 -> RR 0.75; mid working 25022.5 -> RR 2.25 -> first clear
+    lv = _walk_out(beyond, 25000.0, 24990.0, 1, 2.0, 2.5)
+    assert lv is not None and lv.name == "mid"
+    # floor nothing can clear -> None
+    assert _walk_out(beyond, 25000.0, 24990.0, 1, 50.0, 2.5) is None
+
+
+def test_named_high_impact_list():
+    from src.backtest.engine import _is_named_high
+    pats = ["CPI", "PPI", "non.?farm|payroll|NFP", "JOLTS"]
+    assert _is_named_high("CPI y/y", pats)
+    assert _is_named_high("Non-Farm Employment Change", pats)
+    assert not _is_named_high("Core PCE Price Index m/m", pats)
+    assert _is_named_high("Core PCE Price Index m/m", [])   # empty list = strict red-folder
+
+
+def test_named_list_unblocks_pce_premarket_but_not_cpi():
+    # a high-impact 08:30 release blocks the whole pre-market ONLY if it matches the named list
+    for event, expect_block in (("Core PCE Price Index", False), ("CPI y/y", True)):
+        cal = pd.DataFrame({"datetime_ET": [pd.Timestamp("2026-02-20 08:30", tz=NY)],
+                            "event": [event], "impact": ["high"]})
+        t = trig("2026-02-20 08:06")
+        bars = mk_bars("2026-02-20 08:00", [(25005, 25006, 25004, 25005)] * 10)
+        c = cfg()
+        c = c.model_copy(update={"named_high_impact": ["CPI", "PPI", "NFP", "JOLTS"]})
+        _, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                            entry_price_fn=pin_entry(25000), calendar=cal)
+        blocked = any(v.status == "vetoed_news_preopen" for v in vd)
+        assert blocked == expect_block, f"{event}: blocked={blocked} expected {expect_block}"
+
+
+def test_e4_market_entry_fills_next_open_with_slippage_and_ignores_tcancel():
+    # price runs away immediately (t_cancel would kill an E3 limit); E4 fills at next open+slip
+    c = cfg(entry_variant="E4")
+    t = trig("2026-02-11 09:48", stop_ref=24995.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25006, 25030, 25005, 25028),    # E4 fills at open 25006+slip
+                                        (25030, 25101, 25028, 25100)])   # runs to target
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.entry == pytest.approx(25006 + 1 * 0.25)      # open + 1 tick adverse slip
+    # R currency = ACTUAL fill->stop distance (not the build reference)
+    assert rec.r_multiple == pytest.approx(
+        (rec.exit_price - rec.entry) / (rec.entry - rec.stop_initial), abs=1e-3)
+    assert not any(v.status == "cancelled_tcancel" for v in vd)
+
+
+def test_e4_short_fill_slips_down_and_gap_through_stop_is_cancelled():
+    # short market entry slips DOWN (adverse); if the next bar opens beyond the stop, cancel
+    c = cfg(entry_variant="E4")
+    t_ok = trig("2026-02-11 09:48", direction="short", entry_ref=25000.0, stop_ref=25010.0)
+    bars = mk_bars("2026-02-11 09:48", [(24998, 24999, 24996, 24997),
+                                        (24996, 24997, 24895, 24900),    # fill 24996-0.25
+                                        (24900, 24901, 24870, 24875)])
+    tr_, vd, _ = simulate(bars, [t_ok], c, target_resolver=stub_resolver(24880),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(24996 - 0.25)
+
+    t_gap = trig("2026-02-11 09:48", direction="short", entry_ref=25000.0, stop_ref=25010.0)
+    bars2 = mk_bars("2026-02-11 09:48", [(24998, 24999, 24996, 24997),
+                                         (25015, 25016, 25010, 25012)])  # opens beyond stop
+    tr2, vd2, _ = simulate(bars2, [t_gap], c, target_resolver=stub_resolver(24880),
+                           entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert tr2 == []
+    assert any(v.status == "cancelled_gap_through_stop" for v in vd2)
+
+
 # ------------------------------------------------------------- Angus 2026-07-17 rules
 
 def test_vwap_warmup_veto():

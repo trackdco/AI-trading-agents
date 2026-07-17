@@ -119,6 +119,10 @@ targets:
   rr_floor_partial: 1.5           # ANGUS pass-7 — V5/V6 only: the FIRST profit target (first structure)
                                   #      must offer >= this ("RR floor for the first profit target is 1.5");
                                   #      the 25% runner is exempt. Single-target variants keep rr_floor.
+  walkout_under_floor: true       # ANGUS pass-9 RULING (P5.16 = YES): when the default-tree target
+                                  #      computes < rr_floor, walk the §6 menu outward to the FIRST
+                                  #      level that clears it (veto only if nothing does). Rescues the
+                                  #      rr_floor class of his missed winners (Feb 12/18/20/06).
 
 filters:
   min_confluence_counter_trend: 2 # §7 v1.2 — ANGUS calibration ruling 2026-07-17: was 3; the
@@ -140,6 +144,15 @@ filters:
                                   #      candle's range ACTUALLY reached a VWAP band ("it rejected VWAP"),
                                   #      not just a VWAP level near a BB level (Brake's Feb-24 find). When
                                   #      ON, set sizing.require_bb_vwap:false — touch supersedes composition.
+  named_high_impact:              # ANGUS pass-9 RULING (P5.14): "high-impact" = this NAMED LIST only
+                                  #      (regex, case-insensitive) — PCE deliberately EXCLUDED. Empty
+                                  #      list = strict FF red-folder (every impact=high row counts).
+                                  #      Gates the pre-open stand-down AND the §6.3 target override.
+    - "CPI"
+    - "PPI"
+    - "non.?farm|payroll|NFP|employment change"
+    - "JOLTS"
+    - "rate decision|FOMC|federal funds"
   # Volatility stand-down (§7): [OPEN] — no computable definition yet; intentionally not configured.
 
 management:

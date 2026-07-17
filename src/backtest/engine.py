@@ -44,6 +44,7 @@ Documented conventions (flagged in progress-tracker for Angus):
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from datetime import time as dtime
 from pathlib import Path
@@ -88,6 +89,10 @@ class BacktestConfig(BaseModel):
     require_bb_vwap: bool         # §7 v1.2: cluster must hold BB+VWAP (the entry gate; POC = bonus)
     require_vwap_touch: bool = False  # ANGUS pass-6: trade only if price ACTUALLY reached a VWAP band
     target_model: str = "default"     # ANGUS pass-6 split test: "default" | "vwap_revert" | "walk_menu"
+    walkout_under_floor: bool = False  # ANGUS pass-9 RULING: when the default target computes < rr_floor,
+                                       # walk the menu outward to the FIRST level clearing it (P5.16=yes)
+    named_high_impact: list[str] = []  # ANGUS pass-9 RULING (P5.14): high-impact = NAMED LIST only
+                                       # (regex, case-insens). Empty = strict red-folder (all "high").
     min_stop_points: float = 10.0     # §5 v1.2 ANGUS: structural stop narrower than this -> no trade
     vwap_warmup_min: int          # ANGUS 2026-07-17: no entries within N min of the 18:00 anchor
     no_premarket_high_impact: bool  # ANGUS 2026-07-17 (TIGHTENED): on a high-impact pre-open
@@ -130,6 +135,8 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         require_bb_vwap=c["sizing"].get("require_bb_vwap", True),
         require_vwap_touch=c["filters"].get("require_vwap_touch", False),
         target_model=c["targets"].get("model", "default"),
+        walkout_under_floor=c["targets"].get("walkout_under_floor", False),
+        named_high_impact=c["filters"].get("named_high_impact", []),
         min_stop_points=c["entry"]["min_stop_points"],
         vwap_warmup_min=c["filters"]["vwap_warmup_min"],
         no_premarket_high_impact=c["filters"]["no_premarket_entry_on_high_impact"],
@@ -236,9 +243,33 @@ class _Slip:
         return self.cfg.slip_normal
 
 
+def _is_named_high(event: str, patterns: list[str]) -> bool:
+    """ANGUS P5.14 ruling: with a named list configured, only listed events count as
+    high-impact (PCE et al. excluded). Empty list = strict red-folder (every impact=='high')."""
+    if not patterns:
+        return True
+    ev = str(event).lower()
+    return any(re.search(p.lower(), ev) for p in patterns)
+
+
+def _walk_out(beyond: list, entry: float, stop: float, sign: int,
+              rr_floor: float, front_run: float):
+    """ANGUS pass-9 ruling (P5.16=yes): first menu level (nearest-out order) whose WORKING
+    price clears rr_floor, or None. Pure so tests can drive it without a snapshot."""
+    risk = sign * (entry - stop)
+    if risk <= 0:
+        return None
+    for lv in beyond:
+        working = lv.price - sign * front_run
+        if sign * (working - entry) / risk >= rr_floor:
+            return lv
+    return None
+
+
 def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None,
                             model: str = "default", rr_floor: float = 2.0,
-                            front_run: float = 0.0):
+                            front_run: float = 0.0, walkout: bool = False,
+                            named_high: list[str] | None = None):
     """§6 target tree against the Step-5 snapshot at trigger time. Returns a callable
     (trig, entry, stop) -> (name, level, aux) or None when no valid opposing level exists.
 
@@ -320,11 +351,13 @@ def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None,
         else:                                                      # B (and unclassified) -> opposing liquidity
             pick = nearest(names=("prior_day_", "asia_session_", "london_session_")) or nearest()
 
-        # §6.3 news-day override: untaken data extreme beyond the default target (default model only)
+        # §6.3 news-day override: untaken data extreme beyond the default target (default model
+        # only). P5.14: with a named list configured, only listed events qualify as high-impact.
         if news_ok and pick is not None and snap.data_levels:
             for r in snap.data_levels:
                 lvl = r["data_high"] if trig.direction == "long" else r["data_low"]
-                if sign * (lvl - pick.price) > 0 and r.get("impact") == "high":
+                if (sign * (lvl - pick.price) > 0 and r.get("impact") == "high"
+                        and _is_named_high(r.get("event", ""), named_high or [])):
                     ev = pd.Timestamp(r["event_time"])
                     seg = df_1m[(df_1m["ts_event"] > ev) & (df_1m["ts_event"] < ts)]
                     taken = (not seg.empty and
@@ -339,6 +372,15 @@ def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None,
             return None
         else:
             pick_name, pick_price = pick.name, float(pick.price)
+        # ANGUS pass-9 (P5.16=yes): default target under the floor -> walk outward to the
+        # first menu level that clears it, instead of letting order-build veto the trade.
+        if walkout and model == "default":
+            risk = sign * (entry - stop)
+            working = pick_price - sign * front_run
+            if risk > 0 and sign * (working - entry) / risk < rr_floor:
+                alt = _walk_out(beyond, entry, stop, sign, rr_floor, front_run)
+                if alt is not None:
+                    pick_name, pick_price = f"walkout_{alt.name}", float(alt.price)
         aux = {}
         sts = [lv for lv in beyond if lv.type in _STRUCTURAL]   # distance-ordered structurals
         if sts:
@@ -367,14 +409,18 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
         except Exception:
             calendar = pd.DataFrame(columns=["datetime_ET", "event", "impact"])
     resolve = target_resolver or default_target_resolver(
-        df_1m, calendar, cfg.target_model, cfg.rr_floor, cfg.front_run)
+        df_1m, calendar, cfg.target_model, cfg.rr_floor, cfg.front_run,
+        walkout=cfg.walkout_under_floor, named_high=cfg.named_high_impact)
     slip = _Slip(cfg, _news_times(calendar))
 
-    # high-impact releases scheduled before 09:30, keyed by calendar date (Angus news rule)
+    # high-impact releases scheduled before 09:30, keyed by calendar date (Angus news rule).
+    # P5.14 (ANGUS): with a named list configured, only listed events trigger the stand-down.
     preopen_news: dict = {}
     if calendar is not None and not calendar.empty:
         hi = calendar[(calendar["impact"] == "high")
                       & (calendar["datetime_ET"].dt.time < dtime(9, 30))]
+        if cfg.named_high_impact:
+            hi = hi[hi["event"].map(lambda e: _is_named_high(e, cfg.named_high_impact))]
         for _, ev in hi.iterrows():
             d0 = ev["datetime_ET"].date()
             cur = preopen_news.get(d0)
@@ -415,6 +461,9 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             return (t.wick_low + t.wick_high) / 2
         if cfg.entry_variant == "E3":                       # §5.3 E3: penetrated level nearest close
             return t.entry_ref
+        if cfg.entry_variant == "E4":                       # pass-9 E4: MARKET on the next bar.
+            return t.close                                  # build-time reference for the gates;
+                                                            # actual fill = next bar open +/- slip
         # E1: BB basis of the trigger TF at trigger time (§5.3)
         from src.engine.indicators import indicators_asof, load_indicators_config
         ind = indicators_asof(df_1m, pd.Timestamp(t.ts), load_indicators_config())
@@ -534,10 +583,15 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                 veto(t, "cancelled_window_end", f"unfilled at {cfg.win_end}")
                 order = None
             else:
-                ran = (h >= order.limit + cfg.t_cancel) if sign == 1 else \
-                      (lo <= order.limit - cfg.t_cancel)
-                fillable = (lo <= order.limit - through) if sign == 1 else \
-                           (h >= order.limit + through)
+                if cfg.entry_variant == "E4":
+                    # pass-9 E4: MARKET entry — fills unconditionally on this (next) bar at the
+                    # open with adverse slippage; no resting limit, so T_cancel never applies.
+                    ran, fillable = False, True
+                else:
+                    ran = (h >= order.limit + cfg.t_cancel) if sign == 1 else \
+                          (lo <= order.limit - cfg.t_cancel)
+                    fillable = (lo <= order.limit - through) if sign == 1 else \
+                               (h >= order.limit + through)
                 if ran:                                       # cancel wins over same-bar fill
                     veto(t, "cancelled_tcancel",
                          f"price ran {cfg.t_cancel} pts beyond limit unfilled")
@@ -554,27 +608,43 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                         # open (favourable), not the limit — otherwise a same-bar gap past the stop
                         # books a phantom loss (entry at limit, exit at open). risk_pts stays the
                         # INTENDED risk (limit->stop, the R currency); actual P&L uses the real fill.
-                        fill_px = min(order.limit, o) if sign == 1 else max(order.limit, o)
-                        pos = _Pos(order=order, entry=fill_px, fill_ts=ts,
-                                   stop=order.stop,
-                                   risk_pts=abs(order.limit - order.stop))
-                        pos.partial_level = order.partial_level
-                        pos.v2_band = order.v2_band
-                        verdicts.append(Verdict(ts=t.ts, tf=t.tf, direction=t.direction,
-                                                pattern=t.pattern, status="taken",
-                                                reason=f"filled {fill_px}"))
-                        order = None
-                        # evaluate exits on the fill bar itself (stop first, conservative)
-                        p = pos
-                        stop_hit = (lo <= p.stop) if sign == 1 else (h >= p.stop)
-                        if stop_hit:
-                            sl = slip.ticks(ts)
-                            worse = min(p.stop, o) if sign == 1 else max(p.stop, o)
-                            close_trade(p, worse - sign * sl * cfg.tick, "stop", ts, sl)
+                        if cfg.entry_variant == "E4":
+                            # market order crosses the spread: open + adverse slippage; the R
+                            # currency is the ACTUAL fill->stop distance (no resting price exists)
+                            sl_in = slip.ticks(ts)
+                            fill_px = _round_tick(o + sign * sl_in * cfg.tick, cfg.tick)
                         else:
-                            tgt = p.order.working_target
-                            if (h >= tgt + through) if sign == 1 else (lo <= tgt - through):
-                                close_trade(p, tgt, "target", ts, 0)
+                            fill_px = min(order.limit, o) if sign == 1 else max(order.limit, o)
+                        if cfg.entry_variant == "E4" and sign * (fill_px - order.stop) <= 0:
+                            # opened at/beyond the stop: a market entry here is instant dead risk
+                            st["fills"] -= 1
+                            veto(t, "cancelled_gap_through_stop",
+                                 f"market fill {fill_px} at/beyond stop {order.stop}")
+                            order = None
+                            fill_px = None
+                        if fill_px is not None:
+                            pos = _Pos(order=order, entry=fill_px, fill_ts=ts,
+                                       stop=order.stop,
+                                       risk_pts=(abs(fill_px - order.stop)
+                                                 if cfg.entry_variant == "E4"
+                                                 else abs(order.limit - order.stop)))
+                            pos.partial_level = order.partial_level
+                            pos.v2_band = order.v2_band
+                            verdicts.append(Verdict(ts=t.ts, tf=t.tf, direction=t.direction,
+                                                    pattern=t.pattern, status="taken",
+                                                    reason=f"filled {fill_px}"))
+                            order = None
+                            # evaluate exits on the fill bar itself (stop first, conservative)
+                            p = pos
+                            stop_hit = (lo <= p.stop) if sign == 1 else (h >= p.stop)
+                            if stop_hit:
+                                sl = slip.ticks(ts)
+                                worse = min(p.stop, o) if sign == 1 else max(p.stop, o)
+                                close_trade(p, worse - sign * sl * cfg.tick, "stop", ts, sl)
+                            else:
+                                tgt = p.order.working_target
+                                if (h >= tgt + through) if sign == 1 else (lo <= tgt - through):
+                                    close_trade(p, tgt, "target", ts, 0)
 
         # ---- new triggers closing at this bar's label ----
         for t in trig_by_ts.get(ts, []):
