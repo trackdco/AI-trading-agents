@@ -10,8 +10,10 @@ live loop (Phase 4) consumes this. Recorded here so Phase 4 builds it correctly.
 - **Token:** lives ONLY in `.env` as `TELEGRAM_BOT_TOKEN` (gitignored). Never commit it.
   - ⚠️ The original BotFather token was shown in a screenshot in chat — **regenerate
     it via @BotFather `/revoke` before go-live** and put the fresh token in `.env`.
-- **Group chat ID:** goes in `.env` as `TELEGRAM_CHAT_ID` (a negative number, e.g.
-  `-100…`). Obtained from @getidsbot. TODO: paste value into `.env`.
+- **Group chat ID:** `-5356314891` (basic group — no `-100` supergroup prefix; if
+  Telegram later upgrades it to a supergroup the ID changes to a `-100…` form and must
+  be re-read). Goes in `.env` as `TELEGRAM_CHAT_ID`. Not a secret on its own — useless
+  without the bot token — so recorded here; Phase 4 copies it into `.env`.
 - **Angus's personal user ID:** needed for the command lock below. TODO: obtain from
   @userinfobot, store as `TELEGRAM_ANGUS_USER_ID` in `.env`.
 
@@ -44,7 +46,7 @@ Engine → Desk (Atlas/Helios/Apollo/Hephaestus → Hermes)  →  Vault (Python)
 | Key | Value | Status |
 |---|---|---|
 | `TELEGRAM_BOT_TOKEN` | bot token from @BotFather (regenerate before go-live) | pending |
-| `TELEGRAM_CHAT_ID` | group chat ID from @getidsbot (negative number) | pending |
+| `TELEGRAM_CHAT_ID` | `-5356314891` (basic group) | captured ✅ |
 | `TELEGRAM_ANGUS_USER_ID` | Angus's personal user ID from @userinfobot | pending |
 
 ## When this gets built
