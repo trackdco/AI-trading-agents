@@ -472,14 +472,20 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                         order = None
                     else:
                         st["fills"] += 1
-                        pos = _Pos(order=order, entry=order.limit, fill_ts=ts,
+                        # gap-through entry: a resting limit cannot fill better than the bar's
+                        # first traded price. If the bar OPENED beyond the limit, the fill is the
+                        # open (favourable), not the limit — otherwise a same-bar gap past the stop
+                        # books a phantom loss (entry at limit, exit at open). risk_pts stays the
+                        # INTENDED risk (limit->stop, the R currency); actual P&L uses the real fill.
+                        fill_px = min(order.limit, o) if sign == 1 else max(order.limit, o)
+                        pos = _Pos(order=order, entry=fill_px, fill_ts=ts,
                                    stop=order.stop,
                                    risk_pts=abs(order.limit - order.stop))
                         pos.partial_level = order.partial_level
                         pos.v2_band = order.v2_band
                         verdicts.append(Verdict(ts=t.ts, tf=t.tf, direction=t.direction,
                                                 pattern=t.pattern, status="taken",
-                                                reason=f"filled {order.limit}"))
+                                                reason=f"filled {fill_px}"))
                         order = None
                         # evaluate exits on the fill bar itself (stop first, conservative)
                         p = pos

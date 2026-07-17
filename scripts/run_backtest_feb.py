@@ -8,6 +8,7 @@ output/verdicts.csv, output/equity.csv.
 
     python scripts/run_backtest_feb.py
 """
+import ast
 import sys
 from pathlib import Path
 
@@ -26,7 +27,11 @@ def load_or_detect(df: pd.DataFrame) -> list[Trigger]:
     if CSV.exists() and CSV.stat().st_mtime > DETECTOR.stat().st_mtime:
         print(f"using cached {CSV} (fresher than detector)")
         rows = pd.read_csv(CSV)
-        return [Trigger(**r) for r in rows.to_dict("records")]
+        recs = rows.to_dict("records")
+        for r in recs:                       # CSV stores list columns as their repr; parse back
+            ct = r.get("cluster_types")
+            r["cluster_types"] = ast.literal_eval(ct) if isinstance(ct, str) else []
+        return [Trigger(**r) for r in recs]
     print("detecting triggers per day (07:45-11:00 band) — this takes a while...")
     out: list[Trigger] = []
     for d in pd.date_range("2026-02-02", "2026-02-27", freq="D"):

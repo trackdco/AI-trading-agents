@@ -350,6 +350,19 @@ def test_late_window_half_size():
     assert len(tr) == 1 and tr[0].size == 0.5
 
 
+def test_gap_through_entry_is_a_scratch_not_a_phantom_loss():
+    # A short limit whose FILL bar opens past both the entry and the stop must fill at the open
+    # (gap), not the limit — otherwise entry@limit + stop@open books a phantom multi-R loss.
+    t = trig("2026-02-11 09:48", direction="short", entry_ref=25000.0, stop_ref=25002.0)
+    bars = mk_bars("2026-02-11 09:48", [
+        (24998, 24999, 24997, 24998),      # 09:48: order placed, no fill (price below entry)
+        (25010, 25012, 25008, 25011),      # 09:49: opens 25010 past entry+stop -> fill@open, scratch
+    ])
+    tr, _, _ = run(bars, [t], resolver=stub_resolver(24900), entry=pin_entry(25000))
+    assert len(tr) == 1 and tr[0].exit_reason == "stop"
+    assert tr[0].r_multiple > -1.0     # scratch (entry≈exit), not the ~-5R phantom of the old bug
+
+
 def test_bb_vwap_gate_vetoes_cluster_without_both():
     # §9 v1.1: a cluster missing BB or VWAP -> NO TRADE, even at high confluence.
     t = trig("2026-02-11 09:48", conf=3, cluster_types=("vwap", "poc"))   # no BB
@@ -397,8 +410,10 @@ def test_integration_slice_runs_and_is_consistent():
     assert len(verdicts) == len(trigs)                     # every trigger got a verdict
     for tr in trades:
         sign = 1 if tr.direction == "long" else -1
-        assert sign * (tr.entry - tr.stop_initial) > 0     # stop beyond entry
-        assert sign * (tr.working_target - tr.entry) > 0   # target beyond entry
+        # intended geometry is on the ORDER (limit vs stop/target); the actual fill may gap past
+        # a level on a gap-through bar, so assert the invariants on limit_price, not the fill.
+        assert sign * (tr.limit_price - tr.stop_initial) > 0     # stop beyond entry order
+        assert sign * (tr.working_target - tr.limit_price) > 0   # target beyond entry order
         seg = df[(df["ts_event"] >= pd.Timestamp(tr.fill_ts)) &
                  (df["ts_event"] <= pd.Timestamp(tr.exit_ts))]
         assert not seg.empty
