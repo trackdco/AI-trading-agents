@@ -28,12 +28,9 @@ tunes. Same items; answering here covers his nudge.)
 
 3. ~~**Hand-log point-value quirks** (Feb 10, 18, 19, 27).~~ ✅ DONE — Brake corrected & pushed.
 
-3b. **Two more hand-log rows Brake couldn't safely auto-fix** (primary columns disagree with
-   each other, so which is the typo is YOUR call):
-   - **Feb 3 10:52** — P&L −$390 implies −65 pts, but the 61.5-pt stop implies −61.5 (you
-     logged −61). Which is right: the P&L or the stop? **→**
-   - **Feb 26 09:18** — P&L $1120 implies 56 pts, but Stop×R (17.25 × 4.22) implies 73 pts
-     (what you logged). Is the P&L the typo, or the points? **→**
+3b. ~~**Two more hand-log rows** (Feb 3 10:52, Feb 26 09:18).~~ ✅ RESOLVED (commit 6252074):
+   Feb 3 → −61.5 pts (P&L −390→−369); Feb 26 → 73 pts kept, P&L 1120→1460 (the typo). All
+   28 rows cross-check clean.
 
 4. ~~**Feb 19 discretionary close** is an expected divergence.~~ ✅ CONFIRMED by Angus.
 
