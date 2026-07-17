@@ -89,15 +89,16 @@ entry:
                                   #      E1 = limit at BB MA (most frequent in journals)
                                   #      E2 = limit at 50% of trigger candle's wick
                                   #      E3 = limit at penetrated cluster level nearest block's close
-  cancel_if_runs_points: 15.0     # §5.5 CALIBRATE PLACEHOLDER — T_cancel: cancel unfilled order if price
-                                  #      runs this many points beyond entry; doc gives NO start value —
-                                  #      flagged for Angus
+  cancel_if_runs_points: 22.0     # §5.5 CALIBRATE — T_cancel: cancel unfilled order if price runs this
+                                  #      many points beyond entry. ANGUS 2026-07-17: band 20-25, start 22
+                                  #      (price rarely re-chases a missed limit)
   one_position_at_a_time: true    # §5.6 CONFIRMED — no overlapping trades ever (also Vault rule §10)
 
 targets:
   front_run_points: 2.5           # §6.4 CALIBRATE CONFIRMED — F: working target = level ∓ F
                                   #      (doc start range 2–3 NQ pts; midpoint used)
-  rr_floor: 1.5                   # §6.5 CALIBRATE — nearest valid target < 1.5R → skip trade
+  rr_floor: 2.0                   # §6.5 — ANGUS 2026-07-17: HARD 2R minimum every trade (was 1.5);
+                                  #      "thin target → half" (§9) subsumed — below 2R = no trade
   news_day_override: true         # §6.3 CONFIRMED — on high-impact days, untaken data extreme beyond
                                   #      default target becomes the target
   news_override_vwap_proxy: false # §6.3 TOURNAMENT — fallback variant to test (VWAP −1/+1 as proxy)
@@ -110,6 +111,12 @@ filters:
   invalidation_at_entry: false    # §7 HYPOTHESIS (test) — trigger candle touching opposing ±1σ → stand down
   news_entry_buffer_enabled: false  # §7 — H4 "no entry within N min of release"; test only, default off
   news_entry_buffer_min: 15       # §7 PLACEHOLDER — N for H4 if enabled
+  vwap_warmup_min: 60             # ANGUS 2026-07-17 NEW: no entries in the first hour after the
+                                  #      18:00 daily-VWAP anchor (VWAP needs to form); W1/NY unaffected
+  no_premarket_entry_on_high_impact: true   # ANGUS 2026-07-17 NEW: on a high-impact pre-open release
+                                  #      (e.g. CPI 08:30) no entries until the 09:30 open. Engine reading:
+                                  #      blocked from the RELEASE TIME until 09:30 (preserves pre-release
+                                  #      entries like Angus's Feb 20 08:06) — flagged for Angus to confirm
   # Volatility stand-down (§7): [OPEN] — no computable definition yet; intentionally not configured.
 
 management:
@@ -121,6 +128,13 @@ management:
 sizing:
   full_unit_min_confluences: 3    # §9 — full unit requires 3+ confluences AND (with-trend OR
   full_unit_min_target_r: 2.0     # §9 — A-at-extension) AND target ≥ 2R; anything less → half unit
+  oversized_stop_points: 42       # §9 — ANGUS 2026-07-17 NEW: stop wider than this (band 40-45,
+                                  #      median wick-stop ~30) → HALF size
+  late_window_after: "10:30"      # §9 — ANGUS 2026-07-17 NEW: entries after 10:30 ET → HALF size
+                                  #      (09:45-10:15 is prime AM-macro)
+  # ANGUS 2026-07-17 (pending strategy-doc v1.1 bump — needs cluster TYPES on the Trigger):
+  #   FULL = BB+VWAP+POC aligned; HALF = exactly 2 incl. BB+VWAP; NO TRADE without BB+VWAP.
+  #   Deferred to the v1.1 reconciliation with §7's trend-based minimums (see decision log).
   # Absolute per-trade risk ceiling comes from Monte Carlo vs eval rules (Spec 4) — intentionally absent (§9)
 
 vault:
