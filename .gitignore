@@ -8,6 +8,10 @@ output/*
 # secrets — API keys and tokens live in .env, never committed
 .env
 
+# raw news-calendar source PDFs (Forex Factory exports) — the parsed CSV is committed,
+# the bulky source PDFs are not. Extract with scripts/extract_news_calendar.py.
+data/reference/news_pdfs/
+
 # python
 __pycache__/
 *.py[cod]

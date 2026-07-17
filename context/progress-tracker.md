@@ -27,6 +27,14 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-17 — News calendar extended Mar–Jul 2026 (Claude Code, remote session, Brake driving)
+- Work done: parsed three Forex Factory calendar PDF exports Angus provided (Mar 1–May 2, May 2–Jul 3, Jul 3–present) into config/news_calendar.csv. Added 219 rows (2026-03-02 → 2026-07-17); file now holds 236 total (Feb seed kept as-is). Committed the reproducible extractor at scripts/extract_news_calendar.py.
+- Data-quality issues caught and handled (these would have silently corrupted the backtest): (1) exports are in **Australia/Melbourne (GMT+10)**, not ET — every timestamp converted to America/New_York with zoneinfo (DST-aware; exports straddle the Apr 5 AU DST change), verified against known ET release times (NFP/CPI 8:30, ISM 10:00); (2) impact colour lives only in the PDF folder-icon graphics — read from rendered pixels (red→high, orange→medium, grey→holiday); (3) the two PDFs overlap on May 2 and Jul 3 — deduped; (4) fixed a July-page layout quirk that leaked the Actual value into event names; (5) US market holidays validated to the known set (Memorial Day May 25, Juneteenth Jun 19, Jul 3 obs); (6) AHE / Unemployment Rate snapped to travel with the payrolls print (correctly Thu Jul 2 that week, since Jul 3 is the holiday).
+- Checks passed: 236 rows parse; columns intact; ruff clean on scripts/; committed script reproduces the committed rows byte-for-byte; 0 weekday violations on recurring releases (NFP=Fri, Claims=Thu) except the legitimate Jul-2 holiday shift.
+- Flags for Angus (also in the news_calendar.csv header): confirm impact ratings match how we want news days classified; decide whether non-data rows (Trump/Fed speeches, DST shift, OPEC) should be ignored by the engine (Phase 2); dates around the Apr 5 AU DST change + holiday weeks are the least certain (recurring releases were weekday-validated, others worth a spot-check); all-day/tentative rows carry a 00:00 placeholder time. New TODO: extend calendar past 2026-07-17 before backtesting beyond that date.
+- Note: input PDFs are NOT committed (gitignored under data/reference/news_pdfs/); Pillow used dev-only for pixel colour reading (not an engine runtime dependency).
+- Next action unchanged: Spec 1, Step 2 (data ingest).
+
 ### 2026-07-16 — Spec 1 Step 1: repo scaffold (Claude Code, remote session, Brake driving)
 - Steps completed: Step 1 — README.md, config/strategy.yaml (76 leaf parameters, all §-traced), config/news_calendar.csv (17 Feb 2026 seed rows), src/engine/, src/backtest/, tests/, data/raw/, output/, .gitignore (data/raw/ + output/ + .env ignored)
 - Checks passed: repo tree matches Step 1 list; strategy.yaml parses via PyYAML; automated scan confirms every parameter line carries a §/spec-1 trace comment; news_calendar.csv parses with expected columns

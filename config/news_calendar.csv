@@ -1,11 +1,5 @@
 # Scheduled economic releases (spec-1 Section 3: input file, not an API). Lines starting with # are comments.
-# Columns: datetime_ET,event,impact
-# February 2026 seeded from the "News detail" column of data/reference/feb2026_hand_log.csv
-# (the reference journals themselves are not in the repo). Event names kept as Angus logged them;
-# release times taken from the log where stated, otherwise the release's standard time.
-# Impact ratings are best-effort — Angus to confirm.
-# TODO(Angus/Brakey/Pat): fill March 2026 -> present from an economic calendar export before running
-# the backtester beyond February.
+# Columns: 
 datetime_ET,event,impact
 2026-02-02 10:00,ISM Manufacturing PMI,high
 2026-02-04 08:15,Non-Farm Employment Change,high
@@ -24,3 +18,222 @@ datetime_ET,event,impact
 2026-02-20 10:00,New Home Sales,medium
 2026-02-26 08:30,Unemployment Claims,medium
 2026-02-27 08:30,PPI,high
+2026-03-02 10:00,ISM Manufacturing PMI,high
+2026-03-02 10:00,ISM Manufacturing Prices,medium
+2026-03-02 11:00,President Trump Speaks,medium
+2026-03-04 08:15,ADP Non-Farm Employment Change,high
+2026-03-04 10:00,ISM Services PMI,high
+2026-03-05 08:30,Unemployment Claims,high
+2026-03-06 07:30,FOMC Member Waller Speaks,medium
+2026-03-06 08:30,Average Hourly Earnings m/m,high
+2026-03-06 08:30,Core Retail Sales m/m,high
+2026-03-06 08:30,Non-Farm Employment Change,high
+2026-03-06 08:30,Retail Sales m/m,high
+2026-03-06 08:30,Unemployment Rate,high
+2026-03-08 03:00,Daylight Saving Time Shift,holiday
+2026-03-09 17:30,President Trump Speaks,medium
+2026-03-10 08:30,Core CPI m/m,high
+2026-03-11 08:30,Core CPI y/y,high
+2026-03-11 08:30,CPI m/m,high
+2026-03-11 08:30,CPI y/y,high
+2026-03-11 16:25,President Trump Speaks,medium
+2026-03-12 08:30,Unemployment Claims,high
+2026-03-12 08:30,Core PCE Price Index m/m,high
+2026-03-13 08:30,Prelim GDP q/q,high
+2026-03-13 08:30,Core Durable Goods Orders m/m,medium
+2026-03-13 08:30,Durable Goods Orders m/m,medium
+2026-03-13 10:00,JOLTS Job Openings,high
+2026-03-13 10:00,Prelim UoM Consumer Sentiment,medium
+2026-03-13 10:00,Prelim UoM Inflation Expectations,medium
+2026-03-14 08:30,Prelim GDP Price Index q/q,medium
+2026-03-16 08:30,Empire State Manufacturing Index,medium
+2026-03-16 10:00,Pending Home Sales m/m,medium
+2026-03-16 11:30,President Trump Speaks,medium
+2026-03-17 14:00,Federal Funds Rate,high
+2026-03-17 14:00,FOMC Economic Projections,high
+2026-03-18 08:30,Core PPI m/m,high
+2026-03-18 08:30,PPI m/m,high
+2026-03-18 14:00,FOMC Statement,high
+2026-03-18 14:30,FOMC Press Conference,high
+2026-03-19 08:30,Unemployment Claims,high
+2026-03-19 08:30,Philly Fed Manufacturing Index,medium
+2026-03-19 10:00,New Home Sales,medium
+2026-03-21 09:45,Flash Manufacturing PMI,high
+2026-03-21 13:30,FOMC Member Powell Speaks,medium
+2026-03-24 09:45,Flash Services PMI,high
+2026-03-24 10:00,Richmond Manufacturing Index,medium
+2026-03-25 19:20,President Trump Speaks,medium
+2026-03-26 08:30,Unemployment Claims,high
+2026-03-26 10:00,Revised UoM Consumer Sentiment,medium
+2026-03-26 16:00,President Trump Speaks,medium
+2026-03-27 17:30,President Trump Speaks,medium
+2026-03-30 10:00,JOLTS Job Openings,high
+2026-03-30 10:30,FOMC Member Powell Speaks,high
+2026-03-31 10:00,CB Consumer Confidence,medium
+2026-03-31 10:00,ISM Manufacturing PMI,high
+2026-04-01 08:15,ADP Non-Farm Employment Change,high
+2026-04-01 08:30,Core Retail Sales m/m,high
+2026-04-01 08:30,Retail Sales m/m,high
+2026-04-01 10:00,ISM Manufacturing Prices,medium
+2026-04-01 21:00,President Trump Speaks,high
+2026-04-02 08:30,Unemployment Claims,high
+2026-04-03 08:30,Average Hourly Earnings m/m,high
+2026-04-03 08:30,Non-Farm Employment Change,high
+2026-04-03 08:30,Unemployment Rate,high
+2026-04-04 09:00,ISM Services PMI,high
+2026-04-05 00:00,OPEC-JMMC Meetings,high
+2026-04-06 13:00,President Trump Speaks,high
+2026-04-06 14:00,FOMC Meeting Minutes,high
+2026-04-07 08:30,Core Durable Goods Orders m/m,medium
+2026-04-07 08:30,Durable Goods Orders m/m,medium
+2026-04-09 08:30,Core PCE Price Index m/m,high
+2026-04-09 08:30,Final GDP q/q,high
+2026-04-09 08:30,Unemployment Claims,medium
+2026-04-09 08:30,Core CPI m/m,high
+2026-04-09 08:30,Core CPI y/y,high
+2026-04-09 08:33,Final GDP Price Index q/q,medium
+2026-04-10 10:00,Prelim UoM Consumer Sentiment,medium
+2026-04-10 10:00,Prelim UoM Inflation Expectations,medium
+2026-04-11 08:30,CPI m/m,high
+2026-04-11 08:30,CPI y/y,high
+2026-04-14 08:30,Core PPI m/m,high
+2026-04-14 08:30,PPI m/m,high
+2026-04-15 06:00,President Trump Speaks,medium
+2026-04-15 08:30,Empire State Manufacturing Index,medium
+2026-04-16 08:30,Philly Fed Manufacturing Index,medium
+2026-04-16 08:30,Unemployment Claims,medium
+2026-04-16 14:00,FOMC Member Waller Speaks,medium
+2026-04-16 19:00,President Trump Speaks,medium
+2026-04-17 17:00,President Trump Speaks,medium
+2026-04-18 08:30,Core Retail Sales m/m,high
+2026-04-21 08:30,Retail Sales m/m,high
+2026-04-21 08:30,President Trump Speaks,medium
+2026-04-21 10:00,Fed Chairman Warsh Testifies,high
+2026-04-21 10:00,Pending Home Sales m/m,medium
+2026-04-23 08:30,Unemployment Claims,medium
+2026-04-23 09:45,Flash Manufacturing PMI,medium
+2026-04-23 09:45,Flash Services PMI,medium
+2026-04-24 10:00,Revised UoM Consumer Sentiment,medium
+2026-04-24 12:00,President Trump Speaks,medium
+2026-04-25 22:45,President Trump Speaks,medium
+2026-04-26 19:00,President Trump Speaks,medium
+2026-04-28 10:00,CB Consumer Confidence,medium
+2026-04-28 14:00,Federal Funds Rate,high
+2026-04-28 14:00,FOMC Statement,high
+2026-04-28 14:30,FOMC Press Conference,high
+2026-04-30 08:30,Advance GDP q/q,high
+2026-04-30 08:30,Core PCE Price Index m/m,high
+2026-04-30 08:30,Employment Cost Index q/q,high
+2026-04-30 08:30,Advance GDP Price Index q/q,medium
+2026-04-30 08:30,Unemployment Claims,medium
+2026-05-01 10:00,ISM Manufacturing PMI,medium
+2026-05-01 10:00,ISM Manufacturing Prices,medium
+2026-05-01 15:00,President Trump Speaks,medium
+2026-05-04 10:00,ISM Services PMI,high
+2026-05-04 15:00,New Home Sales,medium
+2026-05-05 10:00,JOLTS Job Openings,high
+2026-05-05 10:00,New Home Sales,medium
+2026-05-06 08:15,ADP Non-Farm Employment Change,medium
+2026-05-07 08:30,Unemployment Claims,medium
+2026-05-08 08:30,Average Hourly Earnings m/m,high
+2026-05-08 08:30,Non-Farm Employment Change,high
+2026-05-08 08:30,Unemployment Rate,high
+2026-05-08 10:00,Prelim UoM Consumer Sentiment,medium
+2026-05-08 10:00,Prelim UoM Inflation Expectations,medium
+2026-05-08 12:00,President Trump Speaks,medium
+2026-05-09 08:30,Core CPI m/m,high
+2026-05-12 08:30,Core CPI y/y,high
+2026-05-12 08:30,CPI m/m,high
+2026-05-12 08:30,CPI y/y,high
+2026-05-12 14:40,Fed Chair Nomination Vote,high
+2026-05-13 08:30,Core PPI m/m,high
+2026-05-13 08:30,PPI m/m,high
+2026-05-14 08:30,Core Retail Sales m/m,high
+2026-05-14 08:30,Retail Sales m/m,high
+2026-05-14 08:30,Unemployment Claims,medium
+2026-05-19 10:00,Pending Home Sales m/m,medium
+2026-05-19 14:00,FOMC Meeting Minutes,high
+2026-05-21 08:30,Philly Fed Manufacturing Index,medium
+2026-05-21 08:30,Unemployment Claims,medium
+2026-05-21 09:45,Flash Manufacturing PMI,medium
+2026-05-21 09:45,Flash Services PMI,medium
+2026-05-22 10:00,Revised UoM Consumer Sentiment,medium
+2026-05-25 00:00,Bank Holiday,holiday
+2026-05-26 10:00,CB Consumer Confidence,medium
+2026-05-27 08:30,Core PCE Price Index m/m,high
+2026-05-28 08:30,Prelim GDP q/q,high
+2026-05-28 08:30,Prelim GDP Price Index q/q,medium
+2026-05-28 08:30,Unemployment Claims,medium
+2026-05-28 10:00,New Home Sales,medium
+2026-05-28 14:00,Treasury Sec Bessent Speaks,medium
+2026-05-31 10:00,ISM Manufacturing PMI,high
+2026-05-31 20:30,FOMC Member Powell Speaks,medium
+2026-06-01 10:00,ISM Manufacturing Prices,medium
+2026-06-02 10:00,JOLTS Job Openings,medium
+2026-06-02 10:00,ISM Services PMI,high
+2026-06-03 08:15,ADP Non-Farm Employment Change,high
+2026-06-03 10:00,Treasury Sec Bessent Speaks,medium
+2026-06-04 08:30,Unemployment Claims,medium
+2026-06-04 15:00,President Trump Speaks,medium
+2026-06-05 08:30,Average Hourly Earnings m/m,high
+2026-06-05 08:30,Non-Farm Employment Change,high
+2026-06-05 08:30,Unemployment Rate,high
+2026-06-07 00:00,OPEC-JMMC Meetings,medium
+2026-06-07 00:00,OPEC Meetings,medium
+2026-06-07 08:30,Core CPI m/m,high
+2026-06-10 08:30,Core CPI y/y,high
+2026-06-10 08:30,CPI m/m,high
+2026-06-10 08:30,CPI y/y,high
+2026-06-11 08:30,Core PPI m/m,high
+2026-06-11 08:30,PPI m/m,high
+2026-06-11 08:30,Unemployment Claims,medium
+2026-06-12 10:00,Prelim UoM Consumer Sentiment,medium
+2026-06-12 10:00,Prelim UoM Inflation Expectations,medium
+2026-06-16 10:45,President Trump Speaks,medium
+2026-06-16 14:00,Federal Funds Rate,high
+2026-06-17 08:30,Core Retail Sales m/m,medium
+2026-06-17 08:30,Retail Sales m/m,medium
+2026-06-17 14:00,FOMC Economic Projections,high
+2026-06-17 14:00,FOMC Statement,high
+2026-06-17 14:30,FOMC Press Conference,high
+2026-06-18 08:30,Philly Fed Manufacturing Index,medium
+2026-06-18 08:30,Unemployment Claims,medium
+2026-06-19 00:00,Bank Holiday,holiday
+2026-06-23 09:45,Flash Manufacturing PMI,medium
+2026-06-23 09:45,Flash Services PMI,medium
+2026-06-23 14:05,President Trump Speaks,medium
+2026-06-23 20:30,President Trump Speaks,medium
+2026-06-25 08:30,Core PCE Price Index m/m,high
+2026-06-25 08:30,Final GDP q/q,high
+2026-06-25 08:30,Final GDP Price Index q/q,medium
+2026-06-25 08:30,Unemployment Claims,medium
+2026-06-26 10:00,Revised UoM Consumer Sentiment,medium
+2026-06-26 10:00,Revised UoM Inflation Expectations,medium
+2026-06-26 10:00,CB Consumer Confidence,medium
+2026-06-26 13:30,President Trump Speaks,medium
+2026-06-30 10:00,JOLTS Job Openings,medium
+2026-06-30 10:00,ISM Manufacturing PMI,high
+2026-06-30 10:00,ISM Manufacturing Prices,medium
+2026-07-01 08:15,ADP Non-Farm Employment Change,medium
+2026-07-01 09:00,Fed Chairman Warsh Speaks,high
+2026-07-01 15:15,President Trump Speaks,medium
+2026-07-02 08:30,Average Hourly Earnings m/m,high
+2026-07-02 08:30,Non-Farm Employment Change,high
+2026-07-02 08:30,Unemployment Rate,high
+2026-07-02 08:30,Unemployment Claims,medium
+2026-07-03 00:00,Bank Holiday,holiday
+2026-07-06 10:00,ISM Services PMI,high
+2026-07-06 14:00,FOMC Meeting Minutes,high
+2026-07-09 08:30,Unemployment Claims,medium
+2026-07-09 08:30,Core CPI m/m,high
+2026-07-14 08:30,Core CPI y/y,high
+2026-07-14 08:30,CPI m/m,high
+2026-07-14 08:30,CPI y/y,high
+2026-07-14 10:00,Fed Chairman Warsh Testifies,high
+2026-07-15 08:30,Core PPI m/m,high
+2026-07-15 08:30,PPI m/m,high
+2026-07-15 21:00,President Trump Speaks,medium
+2026-07-16 08:30,Core Retail Sales m/m,medium
+2026-07-16 08:30,Philly Fed Manufacturing Index,medium
+2026-07-16 08:30,Retail Sales m/m,medium
+2026-07-16 08:30,Unemployment Claims,medium
