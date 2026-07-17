@@ -6,9 +6,9 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** Spec 1, Step 2 (data ingest) — COMPLETE incl. real Databento data: 161,525 continuous bars ingested to data/nq_1m.parquet, full-dataset gap report generated. Both Step 2 checks pass.
-- **Blocked on:** Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET). Data no longer a blocker.
-- **Next action:** Spec 1, Step 3 (resampler + sessions) — after human confirmation of Step 2 per workflow rules
+- **Last completed step:** Spec 1, Step 3 (resampler + sessions) — `pytest tests/test_sessions.py` green (8 tests incl. DST boundary); smoke-tested on the real 161k-bar dataset. Full suite 21 passed, ruff clean.
+- **Blocked on:** Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET). Data is loaded and ready.
+- **Next action:** Spec 1, Step 4 (indicators) — the PARITY GATE step. Build BB/VWAP/volume-profile, then produce output/parity_report.md for Angus. GATE: do not proceed to Steps 5-9 until Angus signs off.
 
 ## Gates ledger (Angus sign-offs — append-only)
 
@@ -26,6 +26,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Data: Jan 2026→present primary; 2025 as robustness check only (Angus regime rationale, honesty guard noted)
 
 ## Session log (newest first)
+
+### 2026-07-17 — Spec 1 Step 3: resampler + sessions (Claude Code, remote session, Brake driving)
+- Steps completed: Step 3 — src/engine/sessions.py: resample_ohlcv/resample_all (1m→2/3/5/15m), session_of/add_session (Asia/London/NY §2 boxes), running_session_extremes, prior_day_levels, prior_week_levels, data_levels (extremes near news releases) + news-calendar loader. tests/test_sessions.py (8 tests).
+- Checks passed: pytest tests/test_sessions.py = 8 passed incl. **test_dst_boundary** (spring-forward Mar 8: EST −05:00 vs EDT −04:00 handled; 09:30 classifies NY on both sides; resample + prior-day map correctly across it). Hand-computed resample fixture verifies close-time labels + boundary (09:35 bar aggregates 09:30–09:34, excludes 09:35). Real-data smoke: 2/3/5/15m counts ≈ base/N, volume conserved, 213 news events matched data-levels, Mar 6–9 resample shows both EST/EDT offsets. Full suite 21 passed; ruff clean.
+- Divergences/flags raised: (1) **Resampler label convention** — Databento 1m is START-labeled (ts=interval open); to realize the spec's "right-closed, label=close time" the resampler bins `closed='left', label='right'` so N-min bars are stamped by CLOSE (no lookahead). Documented in-module + hand-tested. (2) **1m base stays start-labeled** while resampled TFs are close-labeled — the 1m entry-TF reconciliation (treat 1m signal as actionable at ts+1min) is deferred to Step 5 (snapshot); flagged. (3) **prior_week uses ISO week (Mon-start)** — trading-week (Sun 18:00→Fri 17:00) is a possible refinement, flag for Angus. (4) **data_levels window = [E, E+N]** (post-release reaction, N=15 from config); §2 says "within N min of a release" — confirm post-release vs symmetric with Angus. (5) Session box times are the Step-1 PLACEHOLDER values (Asia 18:00–03:00 / London 03:00–09:30 / NY 09:30–16:00) — still pending Angus confirmation.
+- Questions parked for Angus: confirm items (3)(4)(5) above; all prior parked items still open (strategy.yaml PLACEHOLDERs incl. T_cancel & "oversized stop", news impact ratings, four PNL Points quirks, Step 4 chart values, parent→continuous derivation, Jan-1 data, strategy-doc read-through).
+- Next session starts at: Spec 1, Step 4 (indicators) — the parity-gate step.
 
 ### 2026-07-17 — Real Databento data ingested; parent→continuous derivation added (Claude Code, Brake driving)
 - What happened: Angus/Brake's Databento pull came as a **"parent" export** (all NQ outright contracts + calendar spreads, GLBX.MDP3 ohlcv-1m, 2026-02-01→2026-07-15, ~254k rows, decimal px / ISO ts). That is many rows per minute, not the single continuous series the engine needs.
