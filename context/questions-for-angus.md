@@ -6,7 +6,9 @@ they get folded into `config/strategy.yaml` / `strategy-definition-v1.0.md`. Not
 blocks the Step 4 gate (that's PASSED) — this clears the runway for Steps 5–8 and keeps the
 Step 8 calibration honest.
 
-Priority order is top-to-bottom.
+Priority order is top-to-bottom. (Brake's chat calls #2 "session hours", #5 "cancel
+distance", and #6 "oversized stop" — the "what did you mean" numbers he needs before he
+tunes. Same items; answering here covers his nudge.)
 
 ---
 
@@ -24,17 +26,16 @@ Priority order is top-to-bottom.
 
 ## P2 — needed for the Step 8 calibration to be trustworthy (only you can answer)
 
-3. **Hand-log point-value quirks.** Four rows in `feb2026_hand_log.csv` look mis-keyed;
-   confirm the corrected value so the calibration MATCHED/MISSED comparison is right:
-   - Feb 10 logged **+11** on a −$220 loss → should be **−11**? **→**
-   - Feb 18 09:42 logged **0** on a −$400 stop → should be **−20**? **→**
-   - Feb 19 logged **0** on a −$150 discretionary close (see #5) **→**
-   - Feb 27 09:40 logged **0** on a −$324 stop → should be **−27**? **→**
+3. ~~**Hand-log point-value quirks** (Feb 10, 18, 19, 27).~~ ✅ DONE — Brake corrected & pushed.
 
-4. **Feb 19 discretionary close.** A mechanical exit will never reproduce a discretionary
-   close — so the engine will show this as a divergence at Step 8. Confirm that's expected
-   (not a bug to chase).
-   **→**
+3b. **Two more hand-log rows Brake couldn't safely auto-fix** (primary columns disagree with
+   each other, so which is the typo is YOUR call):
+   - **Feb 3 10:52** — P&L −$390 implies −65 pts, but the 61.5-pt stop implies −61.5 (you
+     logged −61). Which is right: the P&L or the stop? **→**
+   - **Feb 26 09:18** — P&L $1120 implies 56 pts, but Stop×R (17.25 × 4.22) implies 73 pts
+     (what you logged). Is the P&L the typo, or the points? **→**
+
+4. ~~**Feb 19 discretionary close** is an expected divergence.~~ ✅ CONFIRMED by Angus.
 
 ## P3 — config calls that are strategy, not engineering (have working placeholders)
 
