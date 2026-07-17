@@ -85,13 +85,17 @@ triggers:
   over_extension_extreme_sigma: 3 # §3 — extreme over-extension = ±3σ
 
 entry:
-  variant: E1                     # §5.3 TOURNAMENT — active limit-price variant:
-                                  #      E1 = limit at BB MA (most frequent in journals)
-                                  #      E2 = limit at 50% of trigger candle's wick
-                                  #      E3 = limit at penetrated cluster level nearest block's close
-  min_stop_points: 10.0           # §5 v1.2 — ANGUS calibration ruling 2026-07-17 NEW: structural
-                                  #      stop narrower than this → NO TRADE (skip, never widen).
-                                  #      His stops run 10-20 pts; 1-4 pt wick-stops = coin tosses.
+  variant: E3                     # §5.3 TOURNAMENT — active limit-price variant. ANGUS pass-5
+                                  #      ruling 2026-07-17: E3 wins the entry tournament (enter at
+                                  #      the reclaim, where he actually enters). E1 (BB MA) sat
+                                  #      12-53pt off the reclaim -> bad-geometry/tcancel misses;
+                                  #      Feb E1 +2.59R -> E3 +13.74R. E2 (wick 50%) barely fills.
+                                  #      E1 = limit at BB MA / E2 = 50% of wick / E3 = penetrated level.
+  min_stop_points: 6.0            # §5 — ANGUS pass-5 ruling 2026-07-17: was 10; too blunt once E3
+                                  #      is active (reclaim entry sits near invalidation -> 7-9pt
+                                  #      stops). 10 clipped his own tight-stop winners (Feb 20 08:06
+                                  #      = 8.25pt; +12.98R Feb 25 monster = 9.0pt). 6 admits those;
+                                  #      still kills the 1-4pt coin-toss stops. Watch EXTRA quality.
   cancel_if_runs_points: 22.0     # §5.5 CALIBRATE — T_cancel: cancel unfilled order if price runs this
                                   #      many points beyond entry. ANGUS 2026-07-17: band 20-25, start 22
                                   #      (price rarely re-chases a missed limit)
