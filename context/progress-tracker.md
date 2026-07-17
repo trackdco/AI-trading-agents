@@ -6,8 +6,8 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** Spec 1, Step 3 (resampler + sessions) — `pytest tests/test_sessions.py` green (8 tests incl. DST boundary); smoke-tested on the real 161k-bar dataset. Full suite 21 passed, ruff clean.
-- **Blocked on:** Step 4 PARITY GATE — Angus's chart readings for Feb 11 09:48 ET, Feb 17 09:50 ET. Step 4 indicators built + green; final adversarial verification of the VWAP/profile formulas in progress before parity numbers are locked.
+- **Last completed step:** Spec 1, Step 4 (indicators) — BUILT + adversarially verified (8 findings, 2 medium auto-fixed, parity numbers unchanged). 40 tests pass, ruff clean. output/parity_report.md generated with LOCKED engine numbers (committed for cross-session review).
+- **Blocked on:** Step 4 PARITY GATE — Angus's chart readings for Feb 11 09:48 ET, Feb 17 09:50 ET, read on **NQH2026 (not MNQ1! back-adjusted)**. Engine numbers are locked and waiting in output/parity_report.md.
 - **⚠️ Parity instrument fix (from data/reference/parity_chart_settings.md, salvaged from Angus's branch):** Angus must read the chart on **NQH2026 (March 2026 NQ)** — NOT MNQ1! and NOT a back-adjusted `1!` continuous. Engine uses unspliced continuous NQ = NQH6 for Feb 11/17 (verified). Back-adjust + micro-volume would shift prices/VWAP/POC by tens of points and guarantee a false gate failure.
 - **Branch consolidation:** canonical branch = `claude/getting-started-6lwnvs` (see context/TEAM.md). Three duplicate-engine branches superseded; useful files salvaged (.env.example, parity_chart_settings.md).
 - **Next action:** finish Step 4 verification → lock parity numbers → Angus signs off → Steps 5-9.
@@ -28,6 +28,14 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Data: Jan 2026→present primary; 2025 as robustness check only (Angus regime rationale, honesty guard noted)
 
 ## Session log (newest first)
+
+### 2026-07-17 — Spec 1 Step 4: indicators + parity report, adversarially verified (Claude Code, Brake driving)
+- Steps completed: Step 4 — src/engine/indicators.py (per-TF Bollinger population stdev; daily VWAP 18:00-anchored + NY VWAP 09:30-anchored, both hlc3 source with VOLUME-WEIGHTED σ bands, NY VWAP NaN pre-9:30; developing volume profile POC/VAH/VAL/HVN/LVN in 0.25-pt bins; indicators_asof with structural last-closed-bar semantics). tests/test_indicators.py (incl. mandatory test_ny_vwap_absent_premarket + no-lookahead). scripts/make_parity_report.py → output/parity_report.md.
+- Build method: authored + 3-lens adversarial verification (formula parity / lookahead-tz / volume-profile) + fix pass. 8 findings, ALL confirmed. 2 medium FIXED: (a) daily-VWAP session boundary honored the config 18:00 anchor via a new anchor-aware helper in indicators.py (data._session_date left unchanged — it hardcodes 17:00 for the gap report; no real bars in 17:00–18:00 so parity numbers were provably unaffected); (b) added a resample-rule guard so HTF rules like 4h can't silently midnight-anchor. Parity numbers identical before/after fixes; independently recomputed to the cent.
+- Checks passed: 40 tests pass (was 21), ruff clean. LOCKED engine values in output/parity_report.md.
+- Low-severity findings FLAGGED for later refinement (none affect the parity gate): (1) HVN/LVN defined as strict 1-bin local extrema on 0.25-pt bins → ~113 "HVNs" (noise); needs a prominence/min-gap rule before HVN/LVN are used. (2) POC/VAH/VAL reported at bin CENTER (+0.125 vs the tick grid) — within the 1-pt gate tolerance; consider reporting the traded (lower-edge) price. (3) profile_asof scope='ny' window ends 17:00 (maintenance) vs the config NY box 16:00 — reconcile. (4) data._session_date's session_open param is dead (17:00 hardcoded) — worked around in the indicator layer; clean up at the source later. (5) HTF (1h/4h) session-anchored resampler deferred to Step 5.
+- Flags for Angus (parity gate): read the chart on NQH2026 (dated March-2026 NQ), not MNQ1! back-adjusted (see data/reference/parity_chart_settings.md); check the BB row for the TF he traded (Feb 11 = 3M, Feb 17 09:50 = 2M); daily POC is the DEVELOPING (as-of) profile, read the chart profile as-of that time; POC reported at bin center (within tolerance).
+- Next session starts at: Step 4 parity GATE — Angus fills chart values in output/parity_report.md; |Δ| ≤ 1.0 pt each → sign-off → Step 5. DO NOT build Steps 5-9 before sign-off.
 
 ### 2026-07-17 — Spec 1 Step 3: resampler + sessions (Claude Code, remote session, Brake driving)
 - Steps completed: Step 3 — src/engine/sessions.py: resample_ohlcv/resample_all (1m→2/3/5/15m), session_of/add_session (Asia/London/NY §2 boxes), running_session_extremes, prior_day_levels, prior_week_levels, data_levels (extremes near news releases) + news-calendar loader. tests/test_sessions.py (8 tests).

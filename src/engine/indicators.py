@@ -7,7 +7,8 @@ Step-4 parity gate against Angus's reference charts is meaningful:
   * ``bollinger`` — BB(length, SMA of close, mult·σ), POPULATION stdev (ddof=0, matching
     TradingView ``ta.stdev``). Basis = the SMA ("BB MA", core cluster level §2/§3).
   * ``daily_vwap`` — anchored at the CME daily session open 18:00 ET (§2 CONFIRMED),
-    grouped via ``data._session_date`` (bars at/after 17:00 ET belong to the NEXT session).
+    grouped via ``_anchor_session_date`` (bars at/after the CONFIGURED anchor belong to
+    the NEXT session — the anchor argument is honored, not silently pinned to 17:00).
   * ``ny_vwap`` — anchored 09:30 ET cash open (§2); DOES NOT EXIST pre-anchor: NaN for
     every bar before 09:30 and at/after the 17:00 ET session end (architecture invariant 1).
   * VWAP formula (TradingView): source = hlc3 = (high+low+close)/3 per bar;
@@ -49,10 +50,11 @@ import pandas as pd
 import yaml
 from pydantic import BaseModel
 
-from src.engine.data import _MAINT_START, _session_date
+from src.engine.data import _MAINT_START
 from src.engine.sessions import _parse_hhmm, resample_ohlcv
 
 _ONE_MIN = pd.Timedelta(minutes=1)
+_ONE_HOUR = pd.Timedelta(hours=1)  # wall-clock alignment unit for the resample-rule guard
 _BIN_EPS = 1e-9        # float guard for price/bin_points division (prices are tick multiples)
 _VA_EPS = 1e-9         # float guard for the >= value-area coverage comparison
 _HLC3_SOURCE = "hlc3"  # §2 — the only implemented VWAP source (TradingView standard)
@@ -93,6 +95,47 @@ def load_indicators_config(config_path: Path = Path("config/strategy.yaml")) -> 
         vp_value_area_pct=ind["volume_profile"]["value_area_pct"],
         vp_weekly_enabled=ind["volume_profile"]["weekly_enabled"],
     )
+
+
+# ---------------------------------------------------------------- session grouping / resample guard
+
+def _anchor_session_date(ts: pd.Series, session_open: dtime) -> pd.Series:
+    """CME session (trade) date per bar, honoring the CONFIGURED anchor.
+
+    Bars stamped at/after ``session_open`` (wall-clock ET) belong to the NEXT calendar
+    day's session; earlier bars belong to the current day's. This is the indicator-layer
+    replacement for ``data._session_date``, which is pinned to the 17:00 maintenance
+    boundary for gap reporting and ignores its ``session_open`` argument — here the
+    18:00 anchor from config (``indicators.daily_vwap.anchor``, §2 CONFIRMED) really is
+    the grouping boundary, so any bar in [17:00, 18:00) stays in the OLD session and the
+    first bar at/after 18:00 starts the new one.
+    """
+    roll_next = ts.dt.time >= session_open
+    return (ts.dt.normalize() + pd.to_timedelta(roll_next.astype(int), unit="D")).dt.date
+
+
+def _check_resample_rule(rule: str) -> None:
+    """Raise unless ``rule`` evenly divides one hour (wall-clock-safe resampling).
+
+    ``sessions.resample_ohlcv`` bins from midnight of the first bar's day (pandas
+    default ``origin='start_day'``). For rules dividing 60 minutes the bin boundaries
+    are wall-clock-anchored and DST-invariant — identical to TradingView's
+    session-anchored bins, because both the 18:00->midnight offset (360 min) and the
+    DST shift (60 min) are whole hours. For longer rules (e.g. the '4h' in
+    ``timeframes.range_extreme_tfs``) the bins would be midnight-anchored and shift by
+    an hour at DST — NOT TradingView's 18:00-ET-anchored futures bars — so such rules
+    are rejected here; the session-anchored HTF resampler is deferred to Step 5
+    (flagged in config/strategy.yaml).
+    """
+    td = pd.Timedelta(rule)
+    if td <= pd.Timedelta(0):
+        raise ValueError(f"resample rule must be a positive interval, got {rule!r}")
+    if _ONE_HOUR % td != pd.Timedelta(0):
+        raise ValueError(
+            f"resample rule {rule!r} does not divide 60 minutes: sessions.resample_ohlcv "
+            f"bins would be midnight-anchored and DST-shifting, not CME-session-anchored "
+            f"(TradingView parity). HTF rules like '4h' need the session-anchored "
+            f"resampler deferred to Step 5.")
 
 
 # ---------------------------------------------------------------- Bollinger Bands
@@ -147,11 +190,13 @@ def daily_vwap(df_1m: pd.DataFrame, bands: list[int] = [1, 2, 3],
                session_open: dtime = dtime(18, 0)) -> pd.DataFrame:
     """Daily VWAP ± k·σ anchored at the CME daily session open, 18:00 ET (§2 CONFIRMED).
 
-    Grouping uses ``data._session_date``: the session containing a bar starts at the
-    prior 18:00 ET, so the VWAP resets on the first bar at/after 18:00 and exists for
-    EVERY bar of the session (it is the only VWAP pre-9:30, §3).
+    Grouping uses ``_anchor_session_date`` with ``session_open`` (the configured anchor
+    is HONORED): the session containing a bar starts at the prior ``session_open``, so
+    the VWAP resets on the first bar at/after 18:00 ET — bars in [17:00, 18:00) belong
+    to the OLD session — and exists for EVERY bar of the session (it is the only VWAP
+    pre-9:30, §3).
     """
-    group = _session_date(df_1m["ts_event"], session_open)
+    group = _anchor_session_date(df_1m["ts_event"], session_open)
     return _anchored_vwap(df_1m, group, bands)
 
 
@@ -266,16 +311,17 @@ def profile_asof(df_1m: pd.DataFrame, ts: pd.Timestamp, scope: str,
                  ny_end: dtime = _MAINT_START) -> VolumeProfile | None:
     """DEVELOPING volume profile as of ``ts`` — only bars fully closed at ts (no lookahead).
 
-    scope="daily": the current CME session (18:00-ET boundary via ``data._session_date``)
-    containing ts. scope="ny": bars from 09:30 ET on ts's calendar day (NY box).
+    scope="daily": the current CME session (``session_open`` boundary — 18:00 ET — via
+    ``_anchor_session_date``) containing ts. scope="ny": bars from 09:30 ET on ts's
+    calendar day (NY box).
     Returns None when no closed bars exist yet in scope (profile does not exist yet —
     e.g. daily right at 18:00, NY pre-09:31).
     """
     closed = _closed_1m(df_1m, ts)
     bts = closed["ts_event"]
     if scope == "daily":
-        sd = _session_date(bts, session_open)
-        cur = _session_date(pd.Series([ts]), session_open).iloc[0]
+        sd = _anchor_session_date(bts, session_open)
+        cur = _anchor_session_date(pd.Series([ts]), session_open).iloc[0]
         sl = closed[(sd == cur).to_numpy()]
     elif scope == "ny":
         t = bts.dt.time
@@ -302,8 +348,8 @@ def weekly_profile_asof(df_1m: pd.DataFrame, ts: pd.Timestamp, bin_points: float
         raise ValueError("weekly volume profile is disabled "
                          "(indicators.volume_profile.weekly_enabled: false)")
     closed = _closed_1m(df_1m, ts)
-    sd = _session_date(closed["ts_event"], session_open)
-    cur = _session_date(pd.Series([ts]), session_open).iloc[0]
+    sd = _anchor_session_date(closed["ts_event"], session_open)
+    cur = _anchor_session_date(pd.Series([ts]), session_open).iloc[0]
     iso = pd.DatetimeIndex(pd.to_datetime(sd.astype("string"))).isocalendar()
     wk = (iso["year"].astype(int) * 100 + iso["week"].astype(int)).to_numpy()
     cur_iso = pd.Timestamp(cur).isocalendar()
@@ -337,7 +383,10 @@ def indicators_asof(df_1m: pd.DataFrame, ts: pd.Timestamp, cfg: IndicatorsConfig
     Per entry TF (1m base + close-labeled resamples): BB basis/upper/lower of the last
     CLOSED bar at ts, plus that bar's stamp (``bar_ts``). The resampled frames are built
     from already-closed 1m bars and any trailing partial bin (label > ts) is dropped, so
-    lookahead is structurally impossible. Plus: daily VWAP mid/±kσ, NY VWAP mid/±kσ
+    lookahead is structurally impossible. Entry-TF rules must divide 60 minutes
+    (``_check_resample_rule``) so bins stay wall-clock/CME-session aligned — '4h'-style
+    HTF rules raise until the Step-5 session-anchored resampler exists.
+    Plus: daily VWAP mid/±kσ, NY VWAP mid/±kσ
     (None pre-09:30 / outside the NY window), and the developing daily-profile
     POC/VAH/VAL. Missing values (insufficient history, pre-anchor) are None.
     """
@@ -347,6 +396,7 @@ def indicators_asof(df_1m: pd.DataFrame, ts: pd.Timestamp, cfg: IndicatorsConfig
 
     out: dict = {"ts": ts, "tfs": {}}
     for tf in cfg.entry_tfs:
+        _check_resample_rule(tf)  # reject midnight-anchored/DST-shifting bins (e.g. '4h')
         if pd.Timedelta(tf) == _ONE_MIN:
             frame = closed                                   # START-labeled base frame
         else:
@@ -363,8 +413,8 @@ def indicators_asof(df_1m: pd.DataFrame, ts: pd.Timestamp, cfg: IndicatorsConfig
                           "bb_lower": _none_if_nan(bb["lower"])}
 
     # daily VWAP: last closed bar of the CURRENT CME session (18:00-ET boundary)
-    cur_session = _session_date(pd.Series([ts]), cfg.daily_anchor).iloc[0]
-    in_session = closed[(_session_date(closed["ts_event"], cfg.daily_anchor)
+    cur_session = _anchor_session_date(pd.Series([ts]), cfg.daily_anchor).iloc[0]
+    in_session = closed[(_anchor_session_date(closed["ts_event"], cfg.daily_anchor)
                          == cur_session).to_numpy()]
     if in_session.empty:
         out["daily_vwap"] = _vwap_none(cfg.daily_bands)

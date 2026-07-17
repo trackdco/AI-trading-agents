@@ -103,7 +103,7 @@ def test_daily_vwap_hand_computed_volume_weighted_bands():
 
 
 def test_daily_vwap_resets_at_1800_anchor():
-    # 16:58/16:59 close the old session; 18:00 starts the new one (data._session_date).
+    # 16:58/16:59 close the old session; 18:00 starts the new one (anchor-aware grouping).
     old = _bars("2026-02-02 16:58", [(100, 100, 100, 100, 10), (200, 200, 200, 200, 10)])
     new = _bars("2026-02-02 18:00", [(300, 300, 300, 300, 10), (310, 310, 310, 310, 10)])
     dv = daily_vwap(pd.concat([old, new], ignore_index=True))
@@ -111,6 +111,32 @@ def test_daily_vwap_resets_at_1800_anchor():
     assert dv["vwap"].iloc[1] == pytest.approx(150.0)   # (100*10+200*10)/20 — same session
     assert dv["vwap"].iloc[2] == pytest.approx(300.0)   # RESET: 18:00 bar starts fresh
     assert dv["vwap"].iloc[3] == pytest.approx(305.0)   # accumulates within the new session
+
+
+def test_daily_vwap_1800_anchor_owns_maintenance_window():
+    # The configured 18:00 anchor is the REAL grouping boundary (review fix): bars in
+    # [17:00, 18:00) belong to the OLD session — no reset at 17:00 — and the reset
+    # happens exactly on the first bar at/after 18:00. Flat bars, vol 10 each:
+    #   16:59 -> 100, 17:30 -> 200, 17:59 -> 300, 18:00 -> 400
+    df = pd.concat([_flat_bars("2026-02-02 16:59", [(100.0, 10)]),
+                    _flat_bars("2026-02-02 17:30", [(200.0, 10)]),
+                    _flat_bars("2026-02-02 17:59", [(300.0, 10)]),
+                    _flat_bars("2026-02-02 18:00", [(400.0, 10)])], ignore_index=True)
+    dv = daily_vwap(df)                                       # default session_open 18:00
+    assert dv["vwap"].iloc[0] == pytest.approx(100.0)
+    assert dv["vwap"].iloc[1] == pytest.approx(150.0)         # 17:30 does NOT reset
+    assert dv["vwap"].iloc[2] == pytest.approx(200.0)         # 17:59 still the old session
+    assert dv["vwap"].iloc[3] == pytest.approx(400.0)         # 18:00 RESETS
+
+
+def test_daily_vwap_session_open_parameter_honored():
+    # session_open is no longer inert: a 23:00 anchor must group differently from 18:00.
+    df = pd.concat([_flat_bars("2026-02-02 18:00", [(100.0, 10)]),
+                    _flat_bars("2026-02-02 23:30", [(300.0, 10)])], ignore_index=True)
+    default = daily_vwap(df)                                  # both bars in one session
+    assert default["vwap"].iloc[1] == pytest.approx(200.0)
+    late = daily_vwap(df, session_open=pd.Timestamp("2026-01-01 23:00").time())
+    assert late["vwap"].iloc[1] == pytest.approx(300.0)       # 23:30 starts a new session
 
 
 # ------------------------------------------------------------------ NY VWAP (mandatory test)
@@ -283,6 +309,21 @@ def test_no_lookahead_indicators_asof():
 def test_indicators_asof_rejects_naive_timestamp():
     with pytest.raises(ValueError):
         indicators_asof(_asof_fixture(), pd.Timestamp("2026-02-04 09:48"), CFG)
+
+
+def test_indicators_asof_rejects_non_hour_dividing_tf():
+    # sessions.resample_ohlcv bins from midnight (origin='start_day'): rules that do not
+    # divide 60min (e.g. '4h', '40min') would be midnight-anchored and DST-shifting, not
+    # CME-18:00-anchored TradingView bins — the indicator layer must raise (review fix).
+    df = _asof_fixture()
+    ts = pd.Timestamp("2026-02-04 09:48", tz="America/New_York")
+    for bad_tf in ("4h", "40min"):
+        with pytest.raises(ValueError, match="does not divide 60 minutes"):
+            indicators_asof(df, ts, CFG.model_copy(update={"entry_tfs": [bad_tf]}))
+    # rules dividing 60min stay accepted ('1h' included — 15min fixture history is
+    # too short for a closed 1h bar at 09:48 to matter here, only that it does not raise)
+    ok = indicators_asof(df, ts, CFG.model_copy(update={"entry_tfs": ["15min", "1h"]}))
+    assert ok["tfs"]["15min"]["bar_ts"] == pd.Timestamp("2026-02-04 09:45", tz="America/New_York")
 
 
 def test_load_indicators_config_matches_yaml():

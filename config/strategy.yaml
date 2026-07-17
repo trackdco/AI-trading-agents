@@ -33,7 +33,12 @@ timeframes:
   entry: ["1min", "2min", "3min", "5min"]   # §1 — entry TFs, resampled from 1m base (spec-1 §3)
   mtf_arbitration: highest_wins   # §1 CONFIRMED — simultaneous valid triggers → take the highest TF
   htf_flag_tf: "15min"            # §1 — context TF for HTF trend/range flag
-  range_extreme_tfs: ["1h", "4h"] # §1 — context TFs for HTF range extremes
+  range_extreme_tfs: ["1h", "4h"] # §1 — context TFs for HTF range extremes.
+                                  #      FLAGGED (Step-4 review): sessions.resample_ohlcv bins from
+                                  #      midnight (pandas origin='start_day') — correct only for rules
+                                  #      dividing 60min ("1h" OK; entry TFs OK). "4h" needs the CME
+                                  #      18:00-ET session-anchored HTF resampler (spec-1 Step 5); the
+                                  #      indicator layer raises on such rules rather than mis-binning.
 
 indicators:
   bollinger:
