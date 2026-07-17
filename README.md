@@ -37,11 +37,12 @@ one commit per completed spec step (`step-N: ...`).
 
 ## Setup
 
-Python 3.11+. Approved dependencies only: pandas, numpy, pydantic v2, PyYAML, pytest,
-ruff (anything else must be flagged first).
+Python 3.11+. Approved dependencies: pandas, numpy, pydantic v2, PyYAML, pytest, ruff.
+Additional (flagged): **pyarrow** — required by Spec 1 Step 2's parquet output
+(`data/nq_1m.parquet`); logged in `context/progress-tracker.md`.
 
 ```bash
-pip install pandas numpy "pydantic>=2" pyyaml pytest ruff
+pip install pandas numpy "pydantic>=2" pyyaml pytest ruff pyarrow
 ```
 
 Databento API key lives in `.env` (gitignored, never committed). Historical NQ
@@ -54,8 +55,21 @@ ruff check .   # must be clean before every commit
 pytest         # must be green before every commit
 ```
 
-Reproduction commands for the backtest and reports will be documented here as the
-corresponding spec steps land (Steps 2+).
+## Data ingest (Step 2)
+
+Convert a Databento `ohlcv-1m` CSV export into the validated parquet the engine reads:
+
+```bash
+python -m src.engine.data data/raw/nq_ohlcv_1m.csv
+# -> data/nq_1m.parquet  (ts_event tz-aware NY, open, high, low, close, volume, roll)
+# -> output/gap_report.csv  (unexpected missing minutes per CME daily session)
+```
+
+Timestamps are converted to `America/New_York` (DST-aware). Prices in Databento's
+native 1e-9 fixed-precision integers are auto-decoded. Contract rolls (continuous NQ,
+volume-based) are tagged in the `roll` column. Duplicate or out-of-order timestamps
+raise. DBN input is a documented TODO — CSV is supported today (see Step 2 flags in the
+progress tracker).
 
 ## Non-negotiables
 

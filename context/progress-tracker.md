@@ -6,9 +6,9 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** Spec 1, Step 1 (repo scaffold) — check passed, committed
-- **Blocked on:** Databento data download (blocks Steps 2+ on real data; Steps 2–3 checks run on fixtures); Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET)
-- **Next action:** Spec 1, Step 2 (data ingest) — after human confirmation of Step 1 per workflow rules
+- **Last completed step:** Spec 1, Step 2 (data ingest) — `pytest tests/test_data.py` green on the bundled 2-day fixture; committed
+- **Blocked on:** Databento data download (blocks the FULL-dataset gap report at Step 2's second check, and Steps 3+ on real data); Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET)
+- **Next action:** Spec 1, Step 3 (resampler + sessions) — after human confirmation of Step 2 per workflow rules
 
 ## Gates ledger (Angus sign-offs — append-only)
 
@@ -26,6 +26,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Data: Jan 2026→present primary; 2025 as robustness check only (Angus regime rationale, honesty guard noted)
 
 ## Session log (newest first)
+
+### 2026-07-17 — Spec 1 Step 2: data ingest (Claude Code, remote session, Brake driving)
+- Steps completed: Step 2 — src/engine/data.py (Databento ohlcv-1m CSV -> validated tz-aware parquet at data/nq_1m.parquet, columns ts_event/open/high/low/close/volume/roll); tests/fixtures/nq_1m_2day.csv (2-day Databento-native fixture with a deliberate 09:35 gap + an instrument_id roll); tests/test_data.py (12 tests); conftest.py (repo root on sys.path).
+- Checks passed: `pytest tests/test_data.py` = 12 passed; ruff clean repo-wide; end-to-end CLI produced parquet (dtypes verified: ts_event datetime64[ns, America/New_York], roll bool) + output/gap_report.csv. Validation proven: duplicate/non-monotonic timestamps raise; tz conversion UTC->NY (DST-aware); 1e-9 fixed-precision prices auto-decoded to ~20000; roll tagged once at the instrument_id change; gap report counts a real RTH hole but EXCLUDES the 17:00-18:00 maintenance break and the weekend close (hand-built unit tests).
+- Divergences/flags raised: (1) NEW DEPENDENCY **pyarrow** — not in the approved list, but Spec 1 Step 2 mandates parquet output; added to README setup, flag it to Angus. (2) SCOPE — implemented **CSV ingest only**; DBN input is a documented TODO in data.py (deferred until Angus's actual Databento export format is known, to avoid pulling the heavy `databento` package on assumptions). (3) The `roll` column is an extension beyond the spec's literal 6-column list, required by the "roll-date tags" validation clause (§3 "tag roll dates in the data"). (4) Step 2's SECOND check ("gap report generated for full dataset") is still BLOCKED on the Databento download — the gap-report machinery is built and tested on the fixture; run `python -m src.engine.data data/raw/<file>.csv` when data lands.
+- Questions parked for Angus: OK to keep pyarrow? Confirm the Databento export flavour (continuous symbol e.g. NQ.c.0 vs NQ.v.0; CSV vs DBN; pretty-px/pretty-ts on/off) so the loader assumptions can be confirmed. Plus all prior parked items (strategy.yaml PLACEHOLDERs, news impact ratings, four PNL Points quirks, Step 4 chart values, strategy-doc read-through).
+- Next session starts at: Spec 1, Step 3 (resampler + sessions).
 
 ### 2026-07-17 — News calendar extended Mar–Jul 2026 (Claude Code, remote session, Brake driving)
 - Work done: parsed three Forex Factory calendar PDF exports Angus provided (Mar 1–May 2, May 2–Jul 3, Jul 3–present) into config/news_calendar.csv. Added 219 rows (2026-03-02 → 2026-07-17); file now holds 236 total (Feb seed kept as-is). Committed the reproducible extractor at scripts/extract_news_calendar.py.

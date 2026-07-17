@@ -4,6 +4,8 @@ data/raw/*
 !data/raw/.gitkeep
 output/*
 !output/.gitkeep
+# generated validated dataset (Step 2 output) — reproducible from data/raw/ via src/engine/data.py
+data/*.parquet
 
 # secrets — API keys and tokens live in .env, never committed
 .env
