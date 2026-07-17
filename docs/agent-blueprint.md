@@ -85,7 +85,13 @@ that asymmetry are measured, not assumed (§6.6).
 
 ## 4. Interface contracts
 
-### 4.1 Engine → Desk (exists today)
+### 4.1 Engine → Desk
+
+The contract is a **triple**: `(Snapshot, Trigger, ProposedConstruction)`. The
+first two exist today; the third is I-4 and **the Desk cannot run without it**
+(fail-closed — agents validate constructions, they never originate prices). The
+runner validates all three at Step 2 and projects Hephaestus's construction
+slice through its allowlist like any other field group.
 
 Bound to the real pydantic models:
 
@@ -120,39 +126,75 @@ displacement trade:
 | I-9 | **`data_levels[].swept: bool`** (engine-stamped, needs intrabar history) | §6.3 needs "untaken" — no agent can prove it from one snapshot | Hephaestus news override |
 | I-10 | **MTF arbitration evidence** (`Trigger.suppressed_tfs[]`) or an explicit ruling that §1 arbitration is engine-trust + unit-test only | nobody can currently audit "highest TF won" | Apollo (or explicit N/A) |
 | I-11 | **Shared correlation id** (`trigger_id` echoed in Snapshot+Trigger) | ts-string equality is the only join key today | Runner joins, journal |
+| I-12 | **Typed pydantic sub-models for `Snapshot.indicators` and `data_levels`** (currently untyped `dict`/`list[dict]`) | `model_json_schema()` carries no sub-keys, so allowlist path validation and rename detection are vacuous for the majority of declared paths — until this lands, path validation must run against a golden fully-populated Snapshot fixture instead | §6.1 enforcement guarantee |
+| I-13 | **Uniform close-labeled `bar_ts`**: `indicators_asof` serves the 1min slot from the START-labeled base frame while `Trigger.ts` is CLOSE-labeled for every TF (incl. 1min via `resample_ohlcv`) — normalize engine-side, or every consumer must special-case a 1-minute offset for the 1min lane | Apollo APL-1, Helios timestamp_coherence (verify finding; see errata) |
 
-### 4.3 Specialist → Hermes (common envelope)
+### 4.3 Specialist → Hermes (common envelope — NORMATIVE)
+
+**This envelope is normative; the per-agent `output_schema_proposal` blocks in
+the artifacts predate it and drifted (verify findings 11/21/22 — Hermes read
+fields no specialist emitted). Spec 3 regenerates all five schemas FROM this
+envelope; where an artifact disagrees with this section, this section wins.**
 
 Every specialist returns exactly one JSON object (strict schema,
-`additionalProperties: false`), sharing this envelope; per-agent payloads are in
-the design artifacts:
+`additionalProperties: false`):
 
 ```
 { agent: "<name>",               // const per agent
-  agent_version: "x.y.z",        // hash-locked, §6.4
+  agent_version: "x.y.z",        // uniform key name (not prompt_version); hash-locked, §6.4
   trigger_ts: "<ISO ET>",        // must byte-echo Trigger.ts
   verdict: "pass" | "fail",      // MUST equal AND(all gates)
-  gates: { <check_name>: "pass"|"fail"|("not_evaluated" only where structurally N/A) },
-  facts: { ... },                // §9 conviction inputs this lane owns (see §5.6)
-  <recomputed/computed>: {...},  // shown work: expected vs observed numbers
-  data_gaps: [ "<field path>" ], // inputs needed but absent/null
-  thesis|finding: "≤ bounded chars, §-cited, no confidence language" }
+  gates: { <check_name>: { pass: bool | "not_evaluated",
+                           ref: "§n",          // the strategy-doc anchor
+                           note?: "≤240 chars" } },   // ONE shape for all agents
+  facts: { ... },                // §9 conviction inputs this lane owns — exact paths in §5.6
+  recomputed: { ... },           // shown work: expected vs observed numbers (null = uncomputable)
+  data_gaps: [ "<field path>" ], // universal, all agents: inputs needed but absent/null
+  finding: "≤160 chars",         // one §-cited conclusion sentence (feeds the pass thesis)
+  fail_reason: "≤300 chars"|null // §-cited veto sentence when verdict=fail (feeds the veto thesis)
+}
 ```
 
-`not_evaluated` is legal ONLY where structurally N/A (the other kind's anatomy
-gate; a disabled config flag) and counts as pass; anything else missing = fail.
+Mandatory per-lane `facts` (consumed by the runner's §9 table, §5.6):
+`atlas.facts.confluence_recount` · `helios.facts.late_window_entry` (bool|null) ·
+`apollo.facts.a_at_extension` (bool) · `hephaestus.facts.{target_r,
+oversized_stop, thin_target}` (number|null, bool|null, bool|null).
+
+`not_evaluated` is legal ONLY where structurally N/A — the other kind's anatomy
+gate, a disabled config flag, or **the displacement-cluster gap** (Apollo APL-2
+until I-3 lands; note Atlas still FAILs the same gap in its own lane, which
+preserves fail-closed overall) — and counts as pass; anything else missing = fail.
+
+**Missing-config policy** (verify finding 25): a check whose *advisory output*
+depends on an undefined config key (e.g. `sizing.late_window_min`, Q-5) emits
+`null` + a `data_gaps` entry and its gate PASSES — advisory flags never veto.
+A check whose *gate* depends on an undefined key fails closed (Hephaestus's
+indeterminate-half rule stands). Consequence, stated plainly: **until Q-5 is
+answered, no trade can size `full` or grade `A`.**
 
 ### 4.4 Desk → Vault: the Verdict
 
 The **pinned core** (architecture.md, unchanged):
 `{trade, pattern, direction, entry, stop, target, size, grade, thesis, gates: {atlas, helios, apollo, hephaestus}}`.
 
-Field sourcing: `trade` = AND of gates (Hermes-computed, runner-asserted);
-`pattern`/`direction` = verbatim `Trigger` (Apollo disagreement ⇒ veto, never a
-rewrite — preserves backtest/live parity); `entry`/`stop`/`target` = copied from
-Hephaestus's validated construction; `size` (`full`|`half` — the §9 **unit**
-designation; contract count is the Vault's) and `grade` = fixed §9 lookup table,
-recomputed by the runner.
+Field sourcing (**normative — supersedes hermes.json's wording, see errata**):
+`trade` = AND of gates (runner-computed); `pattern`/`direction` = verbatim
+`Trigger` (Apollo disagreement ⇒ veto, never a rewrite — preserves backtest/live
+parity); `entry`/`stop`/`target` = copied from the **engine-computed
+ProposedConstruction that Hephaestus validated** — never from an LLM recompute;
+Hephaestus's recomputed values are the cross-check only, and without I-4 the
+Desk does not run. **`target` = the front-run `working_target`** (the price the
+Vault actually works); `target_name`/`target_level` ride in the additive journal
+fields (fold into Q-13/Q-18 for ratification). `size` (`full`|`half` — the §9
+**unit** designation; contract count is the Vault's) and `grade`: the **single
+pinned chain** is engine computes size inside ProposedConstruction → Hephaestus
+gates it → the runner computes/asserts the final `size`/`grade` from the §5.6
+facts table. The runner is the one backstop; neither the Vault nor Hermes
+re-derives. **Grade under indeterminacy** (verify finding 38): an indeterminate
+half-trigger counts as PRESENT for sizing (forces half, fail-closed) but is
+EXCLUDED from the grade's H-count, and the grade carries a `provisional` marker
+until Q-5 lands — so Hermes and the runner can never disagree on an undefined
+input.
 
 **PROPOSED-ADDITIVE fields (NEEDS-ANGUS):** `schema_version`, `ts`, `tf`,
 `trigger_kind`, `gate_reasons` (per-agent `{code, detail, refs}` — satisfies §10
@@ -196,7 +238,7 @@ location, level/menu integrity. Never candle anatomy, clock, or construction.
 
 *Key edge cases:* displacement triggers (cluster=None, hard-coded count=2) must
 still match a Snapshot cluster — no match = FAIL, not skip; single-linkage
-chaining can exceed full-span tolerance (Q-8); equidistant cluster tie broken
+chaining can exceed full-span tolerance (Q-4); equidistant cluster tie broken
 deterministically (lower center).
 
 ### 5.2 Helios — session, time & news context
@@ -222,11 +264,11 @@ mechanism and §4 pattern the engine claims?
 
 | Check | § | kind | Pass condition (compressed) |
 |---|---|---|---|
-| snapshot_trigger_coherence | §1/§5.2 | R | tf ∈ entry TFs; trigger IS the last closed bar of its TF; valid bar-boundary alignment |
+| snapshot_trigger_coherence | §1/§5.2 | R | tf ∈ entry TFs; trigger IS the last closed bar of its TF **(labeling convention: `Trigger.ts` is CLOSE-labeled for every TF; `indicators.tfs.1min.bar_ts` is START-labeled, so the 1min lane expects `bar_ts == ts − 1min`, other TFs equality — mirrors Helios; strict equality would veto every 1min trigger. See I-13 + errata: the artifact's APL-1 and its "START-labeled Trigger.ts" edge-case claim are WRONG)** |
 | cluster_reconstruction | §3 | R | (rejections) the trigger's cluster reconstructs from raw indicator prices — gaps, types, count, center |
 | rejection_block_anatomy | §3/§5.4 | R | traded into cluster, closed strictly back on trade side of ALL levels, wick exists; `entry_ref`/`stop_ref` are the anatomically correct references |
 | displacement_anatomy | §3 | R | body through ≥ N levels, body/range ≥ B_min, extreme-quartile close, optional ATR floor — **uncomputable without I-1/I-2; fails closed until added** (the forcing function for the interface change) |
-| pattern_taxonomy_mapping | §4 | R | derived pattern (B for displacement w/ wrong-side precondition; A needs over-extension or counter-trend; B2 needs with-trend) == label; `range`+no-OE rejection = unclassifiable = FAIL (finding E-6) |
+| pattern_taxonomy_mapping | §4 | R | derived pattern == label; B for displacement w/ wrong-side precondition; B2 needs with-trend; `range`+no-OE rejection = unclassifiable = FAIL (finding E-6). **A-route caveat (PENDING-ANGUS, Q-23): §4's A qualifiers are "over-extension and/or HTF range extreme" — counter-trend is NOT a §4 A-route; the artifact's `A if (OE OR counter_trend)` mirrors the engine, not the doc. Fail-closed default: A requires OE (range-extreme evidence absent until I-7)** |
 | htf_flag_consistency | §4 | R | regime×direction mapping holds; `unknown` = FAIL |
 | over_extension_classification | §3/§9 | R | direction-appropriate NY VWAP band touch → none/standard/extreme/unavailable; A-pattern without counter-trend requires standard/extreme |
 | invalidation_at_entry | §7 | R | behind `filters.invalidation_at_entry`; designed now (opposing ±1σ touch) so enabling is a config flip; needs I-1 + a VWAP-family ruling (Q-7) |
@@ -242,7 +284,7 @@ for the §9 formula (their verification is Atlas/Apollo's lane).
 |---|---|---|---|
 | entry_matches_active_variant | §5.3 | R | E1 = trigger-TF BB basis; E2 = 50% of wick zone; E3 = penetrated level nearest close — recomputed, tick-rounded, must match exactly |
 | stop_beyond_wick_extreme | §5.4 | R | stop at/just beyond wick extreme in the adverse direction, ≤ 1 tick from `stop_ref`, never widened (buffer ruling Q-9) |
-| target_is_pattern_default | §6.1–6.2 | R | recomputed selection-tree default (A→VWAP mid; B2→next structural with move; B→opposing liquidity preferring ±2σ alignment) — and the target MUST be a menu level |
+| target_is_pattern_default | §6.1–6.2 | R | recomputed selection-tree default (A→VWAP mid; B2→next level **of `type=='structural'` only** with move — the artifact's "nearest menu level of any type" drops §6.2's structural qualifier, see errata; B→opposing liquidity preferring ±2σ alignment) — and the target MUST be a menu level. **§6.2's "pre-market extreme" maps to NO existing field** (boxes are asia/london/ny) — needs a premarket box or an Angus stand-in ruling (Q-24) |
 | news_day_override_applied | §6.3 | R | qualifying untaken high-impact extreme beyond default ⇒ it becomes the target (nearest); else default stands; "untaken" needs I-9 |
 | front_run_working_target | §6.4 | R | working = level ∓ `targets.front_run_points`, tick-rounded, still beyond entry |
 | rr_floor_met | §6.5 | R | R computed from entry/stop; target-R ≥ `targets.rr_floor`, else the ONLY passing behavior is skip — proposing anyway = veto |
@@ -280,10 +322,36 @@ clarity.
 - **§7 confluence-minimum gate lives in exactly one lane: Atlas** (using its own
   recount). Apollo owns the geometry of the same cluster; deliberate input
   overlap, single gate owner.
+- **`htf_flag` consistency is a declared dual-key** (Atlas + Apollo APL-6 both
+  gate it): it is a pure function of three shared fields with the mapping pinned
+  verbatim in both files, so disagreement is structurally impossible — and both
+  fail-closed on `unknown`. (Verify finding 12: this ruling was previously
+  missing; the artifacts' single-owner proposals are superseded.)
 - **Pre-09:30 rule is deliberately dual-keyed**: Helios owns the TIME half (NY
-  VWAP fields null), Atlas the COMPOSITION half (no `nyvwap_*` members).
-  Redundant vetoes are harmless; a dropped half is not. Stated explicitly so
-  neither lane assumes the other covers it.
+  VWAP fields null), Atlas the COMPOSITION half (no `nyvwap_*` members) — and
+  Atlas's gate additionally re-checks nullity, so nullity is dual-checked and
+  only the composition half is Atlas-exclusive (verify finding 20). Redundant
+  vetoes are harmless; a dropped half is not.
+- **Repo-wide numeric conventions (pinned, both lanes cite them)** (verify
+  finding 27): price equality uses ONE epsilon, `1e-3` on 4dp-rounded prices;
+  trigger↔cluster matching uses ONE rule — nearest cluster center within
+  `cluster.tolerance_points`, tie → lower center, ambiguity within EPS of two
+  centers → FAIL closed; float boundary comparisons are inclusive exactly where
+  the engine's are. The artifacts' divergent conventions (Atlas 10-pt match vs
+  Apollo EPS-only) are superseded.
+- **World-knowledge rule** (verify finding 10): model world knowledge (holiday
+  calendars, release schedules) may NEVER touch a gate; it is permitted only in
+  clearly-labeled advisory anomaly fields, and only until I-5/I-6 land, after
+  which advisory context comes from engine fields exclusively.
+- **LLM/Python split — design default pending Q-14 ratification** (verify
+  finding 29): the deterministic runner owns input validation, allowlist
+  projection, dispatch, collection/validation, unanimity, size/grade, and
+  emission; the Hermes **LLM call composes only the thesis** from validated
+  specialist findings plus the fixed Trigger frame fields (`pattern, direction,
+  tf, close`) — the isolation test's allowed input set is exactly that.
+  If thesis composition itself fails, the runner emits the veto-style
+  mechanical thesis and the trade is NOT lost (supersedes the artifact's
+  stricter veto-on-thesis-failure reading; Angus may overrule via Q-14).
 - **§9 sizing facts flow to Hermes as facts, not verdicts**: C (Atlas recount ⊕
   Trigger), with-trend (flag), A-at-extension (Apollo), target-R / oversized-stop
   / thin-target (Hephaestus), late-window (Helios). Hermes applies the fixed
@@ -307,9 +375,15 @@ Full detail: `docs/agent-blueprint-design/runtime.json`.
 Allowlists live as machine-readable frontmatter **inside each agent file**; the
 runner's `project()` builds a fresh dict of only the declared dot-paths — the
 render function has no parameter through which the full Snapshot could even be
-threaded. Declared paths are validated against `Snapshot.model_json_schema()` at
-startup (a renamed engine field aborts boot rather than silently emptying a
-slice). Changing an allowlist changes the file hash ⇒ forces a version bump.
+threaded (the ProposedConstruction is a third projected payload, Hephaestus-only).
+Declared paths are validated at startup — **against a golden fully-populated
+Snapshot fixture until I-12 lands** (`model_json_schema()` is vacuous for the
+untyped `indicators` dict — verify findings 16/26); a renamed engine field
+aborts boot rather than silently emptying a slice. Changing an allowlist changes
+the file hash ⇒ forces a version bump. **Agent files declare an EMPTY tool set**
+— a Claude Code agent file without one inherits tools (file read/write, bash,
+web), which would be a live outbound/side channel no import-scan test catches
+(verify finding 4); asserted at boot and by `test_desk_agent_files_no_tools`.
 
 ### 6.2 Failure modes (all fail-closed, all journaled)
 invalid JSON / schema violation / per-call timeout (cancel at deadline) / partial
@@ -339,11 +413,21 @@ commit.
 
 ### 6.5 Latency budget (CALIBRATE from Phase-5 measurements)
 Trigger closes → limit must be working early next bar. Proposed: 4 parallel
-specialist calls, 20 s per-call timeout, 30 s total budget, 45 s hard deadline,
-staleness bound 10 s — leaves ≥15 s of the minute for Vault + order placement.
-Estimated p50 8–12 s. Breach ⇒ veto (`latency_breach`), never a late order.
-All latencies logged on successes too, so the budget is recalibrated from
-measured p50/p99, not asserted.
+specialist calls, 20 s per-call timeout, 30 s total budget, 45 s hard deadline —
+leaves ≥15 s of the minute for Vault + order placement. Estimated p50 8–12 s.
+Breach ⇒ veto (`latency_breach`), never a late order. **Staleness is TWO bounds,
+not one** (verify finding 35 — a single 10 s bound at emission would veto every
+verdict given the design's own p50): `desk.staleness_max_s` (10 s) is measured
+at **receipt/dispatch** (is the pair fresh enough to grade?); the **emission**
+bound is the 45 s hard deadline. The artifact's Step-6 emission-time re-check
+against the 10 s key is superseded. All latencies logged on successes too, so
+the budget is recalibrated from measured p50/p99, not asserted.
+**Fill-parity note** (verify finding 36): the Step-7 backtester models the limit
+working from the START of the next bar; live it starts working up to ~45–60 s
+in. The journal logs per-trade `t_active` (order-working wall time), the §6.6
+shadow ledger reports "limit touched before t_active" as a fill-parity
+divergence metric, and the pre-funded-eval Monte Carlo resolves approved trades
+counting fills only from `t_active`.
 
 ### 6.6 Backtest vs live — the shadow ledger
 Live adds a veto-only layer the calibrated backtest never had: graded-live trades
@@ -355,6 +439,12 @@ gate class (**mechanical-gate vetoes should be ~0** — any nonzero one is an
 engine bug or stale config, escalated as a defect); expectancy of vetoed vs
 approved in shadow-R; operational vetoes (timeouts etc.) tracked separately; and
 a re-run Monte Carlo on the veto-adjusted distribution before any funded eval.
+**Attribution rule** (verify finding 42): before a mechanical-gate veto is
+escalated as an engine defect, `replay_verdict` classifies it — engine-value
+mismatch vs LLM re-derivation error — and the LLM-error class is its own line in
+the weekly metric split; pure snapshot-internal arithmetic (menu-distance
+recompute, tick alignment, front-run subtraction) is a candidate to move into
+the deterministic runner if its LLM error rate is nonzero.
 Divergences are reported, never patched by loosening prompts.
 
 ### 6.7 Named tests Phase 3 must ship
@@ -372,7 +462,15 @@ fixtures replayed offline; zero API calls in CI) ·
 `test_desk_lockfile_ci_consistency` · `test_desk_verbatim_slice` ·
 `test_desk_journal_schema_strict` · `test_desk_crash_recovery` ·
 `test_desk_latency_logged` · `test_desk_prompt_determinism` ·
-`test_desk_hermes_input_isolation`.
+`test_desk_hermes_input_isolation` (allowed inputs = the four validated
+specialist outputs + the fixed Trigger frame fields the thesis template
+consumes) · `test_desk_agent_files_no_tools` (every agent file grants zero
+tools; hash-locked like the allowlists).
+Note on the independence test (verify finding 32): agent files must express
+lane boundaries **without naming sibling agents** ("out of lane: candle
+anatomy", not "that's Apollo's job") — the artifacts' mandate texts do name
+siblings and must be rephrased when Spec 3 turns them into agent files; the
+static test scans for sibling names, schema keys, and verdict fields.
 
 ## 7. Rule coverage map
 
@@ -408,6 +506,12 @@ ruling (doc wins ⇒ engine change; engine behavior intended ⇒ doc bump):
 | E-7 | Displacement counts penetrations of ANY candidate level; §3 says through ≥2 **cluster** levels (levels forming a valid ≥2-type cluster) | `triggers.py _test_candle` | §3 |
 | E-8 | `stop_ref` placed AT the wick extreme; §5.4 says "**beyond** the wick extreme" — at-vs-beyond needs a ruling + config key (`entry.stop_buffer_ticks`) | `triggers.py` | §5.4 |
 | E-9 | `data_levels` has no retention bound — February events still appear in a July snapshot and leak stale rows into `target_menu` | `sessions.data_levels` | §2/§6 |
+| E-10 | `cluster.min_level_types` exists in strategy.yaml but the engine hard-codes the literal `2` in both `_clusters` and `_level_groups` — changing the config silently does nothing | `snapshot.py` / `triggers.py` | §3 / architecture inv-5 |
+| E-11 | The §7 confluence minimum (3 counter-trend / 2 with-trend) is enforced NOWHERE in the engine/backtest path — `detect_triggers` emits any ≥2-type trigger regardless of HTF flag. **This is a calibration-validity issue for Steps 7–8, not just a Desk issue** | `triggers.py` | §7 |
+| E-12 | Bar-label asymmetry: `Trigger.ts` is CLOSE-labeled for every TF, but `indicators_asof` serves the 1min slot START-labeled — any consumer comparing them must special-case a 1-minute offset (see I-13; this asymmetry produced a broken check in our own first draft) | `indicators.py` / `triggers.py` | spec-1 §3 conventions |
+
+*(E-10 and E-11 were found by the verification pass, not the design pass —
+finding 17. E-11 deserves the engine driver's attention before Step 8 runs.)*
 
 ## 9. Open questions for Spec 3 (rolled up, deduped)
 
@@ -438,15 +542,39 @@ ruling (doc wins ⇒ engine change; engine behavior intended ⇒ doc bump):
   exceeded by session extreme since event_time; cleaner: engine `swept` flag I-9).
 - Q-12: news_day `unknown` under an enabled §6.3 override — note-only, size
   downgrade, or veto? (Design: note-only.)
-- Q-13: ratify/amend the A/B/C grade mapping and the veto nullability convention
-  (§4.4); confirm `size` = unit designation only.
+- Q-13: ratify/amend the A/B/C grade mapping (incl. the provisional-grade
+  convention under Q-5 indeterminacy), the veto nullability convention (§4.4),
+  `Verdict.target` = working_target, and `size` = unit designation only.
+- Q-23: is counter-trend ALONE (no over-extension, no range extreme) a
+  legitimate pattern-A route? §4's text says no; the engine says yes
+  (E-6-adjacent; the Desk fail-closed default is A-requires-OE until ruled).
+- Q-24: §6.2's "pre-market extreme" — no premarket session box exists (boxes:
+  asia/london/ny). Add an 08:00–09:30 box (Angus defines the clock) or bless a
+  stand-in (London extreme?).
+- Q-25: which `target_menu` types count as "structural" for the §6.2 B2 default
+  (type=='structural' only? does POC/VAH/VAL qualify?).
+- Q-26: §7 location veto — applies in ALL regimes or only `htf_regime=='range'`?
+  And bless (or reject) the session/prior-day/prior-week PROXY for HTF range
+  extremes until I-7, plus a dedicated `filters.location_veto_band_points` key.
+  As designed the all-regime proxy reading systematically vetoes with-trend B2
+  entries near session/prior-day highs — this needs Angus's eyes specifically.
+- Q-27: is a still-forming data extreme (ts < event_time + window) eligible as a
+  §6/§6.3 target, or only after its window closes?
+- Q-28: E2 on a displacement — "50% of the trigger candle's wick" = the
+  origin-to-body-edge zone the Trigger encodes, or the classical wick?
 
 **Engineering — Spec-3 decisions:**
 - Q-14: unanimity + size/grade computed in pure Python (runner) with the Hermes
   LLM composing only the thesis — recommended — or LLM-owned with runner assert?
 - Q-15: retry policy — zero retries (strictest) vs one bounded transport-class
-  retry (design default: one within-budget API-error retry; zero for
-  invalid-JSON).
+  retry. **Stated interim default (both artifacts normalized to it): one
+  within-budget API-error retry; zero for invalid-JSON/timeout.**
+- Q-15b: config-key names normalized to: `desk.staleness_max_s`,
+  `sizing.oversized_stop_max`, `sizing.late_window_min` (the artifacts used two
+  names each — verify finding 19); veto_reason enum includes `hermes_invalid`
+  and `hermes_arithmetic_mismatch`; mid-cycle trigger handling stays OPEN as
+  Q-19 (the runtime artifact's "queued serially" sentence is a proposal, not a
+  decision).
 - Q-16: interface additions I-1..I-11 — engine-driver scope, ordering, and which
   land before vs during Phase 3.
 - Q-17: desk config placement (`strategy.yaml desk:` block vs `desk.yaml`) +
@@ -477,8 +605,26 @@ ruling (doc wins ⇒ engine change; engine behavior intended ⇒ doc bump):
    suite.
 4. **Phase 3 execution (Pat + Claude Code):** build exactly what Spec 3 says.
 
+## 11. Verification pass
+
+A 4-lens adversarial review (constitution compliance, coverage & consistency,
+buildability, trading-domain sense) ran against the draft and returned **44
+findings (8 blocker / 22 major / 14 minor)** — all resolved in this document.
+The most important: a false engine claim + a check that would have vetoed every
+1-minute trigger (→ I-13, E-12, §5.3 fix); Hermes consuming fields no
+specialist emitted (→ the normative §4.3 envelope); the ProposedConstruction
+having no transport (→ §4.1 triple); a staleness bound the design's own latency
+could never meet (→ §6.5 two-bound split); and two NEW engine findings (E-10,
+E-11 — the §7 confluence minimum is unenforced in the backtest path, which
+matters for Step-8 calibration).
+
+**Where an artifact JSON disagrees with this document, this document wins.**
+Known artifact errata are catalogued in `docs/agent-blueprint-design/ERRATA.md`
+— the artifacts are kept unmodified as the design audit trail.
+
 ---
-*Design artifacts produced 2026-07-17 by a 7-way parallel design pass against the
-Step-6 engine, followed by an adversarial verification pass (see progress
-tracker). This document supersedes nothing and decides nothing — it exists so
-Spec 3 starts from a worked design instead of a blank page.*
+*Design artifacts produced 2026-07-17 by a 7-way parallel design pass against
+the Step-6 engine, then hardened by a 4-way adversarial verification pass (44
+findings applied). This document supersedes nothing outside this repo's docs
+folder and decides nothing — it exists so Spec 3 starts from a worked, verified
+design instead of a blank page.*
