@@ -1,0 +1,481 @@
+{
+ "lane": "Atlas \u2014 market structure & levels",
+ "mandate": "Atlas is the Desk's structural auditor. For each candidate it independently re-derives, from raw Snapshot values only, everything the constitution says about WHERE the trade is: that the trigger's confluence cluster is legal (\u00a73 member set, pre-09:30 daily-VWAP-only rule, proximity tolerance), that the confluence count is a correct count of distinct level TYPES (VWAP family \u00d71, BB \u00d71, POC \u00d71, structural \u00d71) and meets the \u00a77 minimum implied by the HTF flag, that the HTF flag itself is consistent with the snapshot's regime, that the \u00a77 location veto (no longs at the HTF range top / no shorts at the range bottom) is applied against the best available structural extremes, and that the \u00a76 target menu is internally consistent (distances recompute, band/profile ordering sane, every Snapshot-derivable level present, data levels only from already-released events). Atlas never opines on candle anatomy (Apollo), session/time/news (Helios), or entry/stop/target/size construction (Hephaestus); it never sees account state, P&L, prior trades, or other agents' verdicts; it emits one strict-schema JSON gate report to Hermes and nothing else. Any unresolvable input, unmatched cluster, or unknown regime fails closed.",
+ "strategy_slice_refs": [
+  "\u00a72 indicator table rows: NY session VWAP (anchored 09:30, does NOT exist pre-market), Daily VWAP (the ONLY VWAP pre-9:30), Volume profile (POC = core cluster level), Data levels (extremes within N min of releases)",
+  "\u00a73 verbatim: Confluence cluster + Confluence count definitions (the whole first two bullets)",
+  "\u00a74 last bullet: HTF flag with_trend / counter_trend / range; counter-trend raises confluence requirement",
+  "\u00a76 Menu line + Selection tree step 1 (list opposing structural levels beyond entry) \u2014 menu-integrity context only, NOT selection",
+  "\u00a77 bullets 1-2: Confluence minimum (3 counter-trend / 2 with-trend) and Location (no longs at HTF range top / shorts at range bottom)",
+  "\u00a71 Context TFs line: 15m for HTF trend/range flag; 1h/4h for range extremes (needed to state what the location veto is supposed to bind to)"
+ ],
+ "snapshot_allowlist": [
+  "ts",
+  "ref_price",
+  "session",
+  "htf_regime",
+  "indicators.tfs.1min.bb_basis",
+  "indicators.tfs.2min.bb_basis",
+  "indicators.tfs.3min.bb_basis",
+  "indicators.tfs.5min.bb_basis",
+  "indicators.daily_vwap.mid",
+  "indicators.daily_vwap.upper_1",
+  "indicators.daily_vwap.upper_2",
+  "indicators.daily_vwap.upper_3",
+  "indicators.daily_vwap.lower_1",
+  "indicators.daily_vwap.lower_2",
+  "indicators.daily_vwap.lower_3",
+  "indicators.ny_vwap.mid",
+  "indicators.ny_vwap.upper_1",
+  "indicators.ny_vwap.upper_2",
+  "indicators.ny_vwap.upper_3",
+  "indicators.ny_vwap.lower_1",
+  "indicators.ny_vwap.lower_2",
+  "indicators.ny_vwap.lower_3",
+  "indicators.daily_profile.poc",
+  "indicators.daily_profile.vah",
+  "indicators.daily_profile.val",
+  "session_high",
+  "session_low",
+  "prior_day_high",
+  "prior_day_low",
+  "prior_week_high",
+  "prior_week_low",
+  "clusters[].center",
+  "clusters[].confluence_count",
+  "clusters[].types",
+  "clusters[].members",
+  "data_levels[].event",
+  "data_levels[].impact",
+  "data_levels[].data_high",
+  "data_levels[].data_low",
+  "data_levels[].event_time",
+  "target_menu[].name",
+  "target_menu[].price",
+  "target_menu[].type",
+  "target_menu[].distance"
+ ],
+ "trigger_allowlist": [
+  "ts",
+  "direction",
+  "kind",
+  "htf_flag",
+  "cluster_center",
+  "confluence_count"
+ ],
+ "config_refs": [
+  "cluster.tolerance_points",
+  "cluster.min_level_types",
+  "filters.min_confluence_counter_trend",
+  "filters.min_confluence_with_trend",
+  "filters.location_veto",
+  "indicators.ny_vwap.anchor",
+  "indicators.daily_vwap.anchor",
+  "indicators.ny_vwap.bands_sigma",
+  "indicators.daily_vwap.bands_sigma",
+  "indicators.data_levels.window_min",
+  "timeframes.entry",
+  "timeframes.range_extreme_tfs"
+ ],
+ "checks": [
+  {
+   "name": "cluster_integrity",
+   "rule_ref": "\u00a73 (confluence cluster, proximity tolerance)",
+   "kind": "recompute",
+   "inputs": [
+    "Trigger.cluster_center",
+    "Trigger.kind",
+    "Snapshot.clusters[].center",
+    "Snapshot.clusters[].members",
+    "Snapshot.indicators.tfs.{1min,2min,3min,5min}.bb_basis",
+    "Snapshot.indicators.daily_vwap.*",
+    "Snapshot.indicators.ny_vwap.*",
+    "Snapshot.indicators.daily_profile.poc",
+    "config: cluster.tolerance_points"
+   ],
+   "pass_condition": "A Snapshot cluster exists whose center is within cluster.tolerance_points of Trigger.cluster_center (nearest wins; tie -> lower center). Every member name of that cluster resolves to a non-null price in Snapshot.indicators via the fixed name map (bb_basis_{tf} -> indicators.tfs.{tf}.bb_basis; dvwap_X -> indicators.daily_vwap.X; nyvwap_X -> indicators.ny_vwap.X; poc -> indicators.daily_profile.poc). Sorted by resolved price, every adjacent gap <= cluster.tolerance_points, and the mean of resolved prices equals the cluster's center within 0.01 pts. Any unmatched cluster, unresolvable member, or violated gap = FAIL.",
+   "fail_note": "Cluster in the Trigger does not exist in / does not reconstruct from the Snapshot's own indicator values \u2014 engine bug, stale indicators, or tolerance drift."
+  },
+  {
+   "name": "confluence_recount",
+   "rule_ref": "\u00a73 (confluence count = distinct level types: VWAP family x1, BB x1, POC x1, structural x1)",
+   "kind": "recompute",
+   "inputs": [
+    "matched cluster from cluster_integrity: Snapshot.clusters[].members, .types, .confluence_count",
+    "Trigger.confluence_count"
+   ],
+   "pass_condition": "Recount distinct types from the matched cluster's member names alone (any nyvwap_*/dvwap_* -> 'vwap' counted ONCE for the whole family; bb_basis_* -> 'bb' once; poc -> 'poc' once). Recount == cluster.confluence_count == Trigger.confluence_count AND recount >= cluster.min_level_types. Any mismatch or recount < minimum = FAIL.",
+   "fail_note": "Type-counting bug: e.g. daily VWAP + NY VWAP double-counted as 2, or multiple BB basis TFs inflating the count. Known hazard: displacement Triggers carry hard-coded confluence_count=2 (triggers.py _test_candle), so this gate is the only real count for kind=displacement."
+  },
+  {
+   "name": "member_legality",
+   "rule_ref": "\u00a73 (cluster candidate set: BB MA, NY VWAP middle/\u00b11\u03c3 post-9:30 only, daily VWAP middle/\u00b11\u03c3/\u00b12\u03c3/\u00b13\u03c3, daily POC)",
+   "kind": "recompute",
+   "inputs": [
+    "matched cluster: Snapshot.clusters[].members",
+    "Snapshot.ts",
+    "config: indicators.ny_vwap.anchor, timeframes.entry"
+   ],
+   "pass_condition": "Every member name is in the \u00a73 allowlist: {bb_basis_{tf} for tf in timeframes.entry} \u222a {dvwap_mid, dvwap_upper_1..3, dvwap_lower_1..3} \u222a {poc} \u222a ({nyvwap_mid, nyvwap_upper_1, nyvwap_lower_1} only if ET-time(Snapshot.ts) >= indicators.ny_vwap.anchor). Any other name \u2014 including nyvwap_upper_2/3 or nyvwap_lower_2/3 at ANY time of day \u2014 = FAIL.",
+   "fail_note": "Engine currently emits ALL NY VWAP bands as cluster candidates (snapshot.py _gather_levels) while \u00a73 permits NY VWAP middle/\u00b11\u03c3 only \u2014 this gate will veto such clusters until doc and engine are reconciled (open question #1)."
+  },
+  {
+   "name": "pre0930_vwap_family",
+   "rule_ref": "\u00a73 (pre-9:30 the VWAP family = daily VWAP only) + architecture invariant 1",
+   "kind": "recompute",
+   "inputs": [
+    "Snapshot.ts",
+    "Snapshot.indicators.ny_vwap.mid/upper_1..3/lower_1..3",
+    "Snapshot.clusters[].members (all clusters)",
+    "Snapshot.target_menu[].name",
+    "config: indicators.ny_vwap.anchor"
+   ],
+   "pass_condition": "If ET-time(Snapshot.ts) < indicators.ny_vwap.anchor: every indicators.ny_vwap field is null AND no member of ANY Snapshot cluster starts with 'nyvwap' AND no target_menu name is 'ny_vwap_mid'. If ts >= anchor: vacuously pass (presence checked by member_legality). Any pre-anchor NY VWAP value or reference = FAIL.",
+   "fail_note": "A non-null NY VWAP before 09:30 means the anchor logic or config is broken; \u00a72 is explicit that NY VWAP does not exist pre-market."
+  },
+  {
+   "name": "htf_flag_consistency",
+   "rule_ref": "\u00a74 (HTF flag: with_trend / counter_trend / range) + \u00a71 (15m context TF)",
+   "kind": "recompute",
+   "inputs": [
+    "Snapshot.htf_regime",
+    "Trigger.direction",
+    "Trigger.htf_flag"
+   ],
+   "pass_condition": "Recompute expected flag: uptrend+long -> with_trend; uptrend+short -> counter_trend; downtrend+short -> with_trend; downtrend+long -> counter_trend; range -> range. Expected == Trigger.htf_flag AND Snapshot.htf_regime != 'unknown'. htf_regime == 'unknown' = FAIL (fail-closed: the \u00a77 minimum cannot be graded without a regime).",
+   "fail_note": "Known engine hazard: triggers.py _htf_flag maps regime 'unknown' to trend_dir='short', so unknown-regime shorts get labeled 'with_trend' and would inherit the lenient confluence minimum. Atlas fails these closed (open question #4)."
+  },
+  {
+   "name": "confluence_minimum",
+   "rule_ref": "\u00a77 bullet 1 (confluence minimum: 3 counter-trend; 2 with-trend)",
+   "kind": "recompute",
+   "inputs": [
+    "confluence_recount result (Atlas's own recount, NOT the Trigger's number)",
+    "Trigger.htf_flag",
+    "config: filters.min_confluence_counter_trend, filters.min_confluence_with_trend"
+   ],
+   "pass_condition": "required = filters.min_confluence_with_trend if Trigger.htf_flag == 'with_trend' else filters.min_confluence_counter_trend (counter_trend, range, and any other value all take the higher minimum \u2014 fail-closed default pending Angus, open question #3). PASS iff Atlas's recounted confluence >= required.",
+   "fail_note": "Uses the independently recounted confluence so a count-inflation bug upstream cannot smuggle a 2-type counter-trend trade past \u00a77."
+  },
+  {
+   "name": "location_veto",
+   "rule_ref": "\u00a77 bullet 2 (no longs at HTF range top / no shorts at range bottom) + \u00a71 (1h/4h range extremes)",
+   "kind": "judgment",
+   "inputs": [
+    "Trigger.direction",
+    "Trigger.cluster_center",
+    "Snapshot.htf_regime",
+    "Snapshot.ref_price",
+    "Snapshot.session_high",
+    "Snapshot.session_low",
+    "Snapshot.prior_day_high",
+    "Snapshot.prior_day_low",
+    "Snapshot.prior_week_high",
+    "Snapshot.prior_week_low",
+    "Snapshot.target_menu[] (type=='structural' entries)",
+    "config: filters.location_veto, cluster.tolerance_points"
+   ],
+   "pass_condition": "Atlas names an operative range top and bottom from the available structural extremes (the Snapshot lacks true 1h/4h range fields \u2014 deferred in the engine; proxy = the extremes it judges controlling among session/prior-day/prior-week levels given htf_regime, each cited by field name in its evidence). PASS iff NOT (direction=='long' AND cluster_center >= operative_top - cluster.tolerance_points) AND NOT (direction=='short' AND cluster_center <= operative_bottom + cluster.tolerance_points). If filters.location_veto is false the gate passes vacuously but the operative range is still reported. Judgment lives ONLY in choosing the operative extremes; the comparison itself is arithmetic and the cited levels make it auditable.",
+   "fail_note": "Buying into the top of the controlling range (or selling its bottom) is the \u00a77 location veto. The proximity band reuses cluster.tolerance_points as a stand-in until a dedicated filters.location_veto_band_points exists (open question #5)."
+  },
+  {
+   "name": "target_menu_integrity",
+   "rule_ref": "\u00a76 (target menu + selection step 1) + \u00a72 (band/profile definitions, data-level availability)",
+   "kind": "recompute",
+   "inputs": [
+    "Snapshot.target_menu[].{name,price,type,distance}",
+    "Snapshot.ref_price",
+    "Snapshot.ts",
+    "Snapshot.indicators.daily_vwap.*",
+    "Snapshot.indicators.ny_vwap.mid",
+    "Snapshot.indicators.daily_profile.{poc,vah,val}",
+    "Snapshot.prior_day_high/low",
+    "Snapshot.prior_week_high/low",
+    "Snapshot.data_levels[].{event,data_high,data_low,event_time}",
+    "Trigger.direction",
+    "config: indicators.data_levels.window_min"
+   ],
+   "pass_condition": "ALL of: (a) for every menu entry, |distance - (price - ref_price)| <= 0.01; (b) ordering sanity where non-null: daily_vwap lower_2 < lower_1 < mid < upper_1 < upper_2, daily_profile val <= poc <= vah, prior_day_low < prior_day_high, prior_week_low < prior_week_high, session_low <= session_high; (c) completeness: every non-null Snapshot-derivable level appears in the menu (daily_vwap mid/\u00b11\u03c3/\u00b12\u03c3, ny_vwap_mid iff indicators.ny_vwap.mid non-null, profile poc/vah/val, prior-day/week H/L, one high+low per data_levels entry) \u2014 null source fields excuse absence, non-null ones do not; (d) at least one menu level lies beyond the trade in trade direction (long: some distance > 0; short: some distance < 0) so \u00a76.1 has something to select from; (e) every data_levels entry and every type=='data' menu level has event_time <= Snapshot.ts. Any clause false = FAIL.",
+   "fail_note": "Catches stale/corrupt indicator plumbing (bands out of order), silent menu omissions that would starve Hephaestus's selection tree, no-opposing-target candidates, and future-dated data levels (calendar leak). Whether a still-forming extreme (ts < event_time + data_levels.window_min) is target-ELIGIBLE is Hephaestus/Angus territory \u2014 Atlas only certifies existence and release-has-passed, and reports the still-forming flag per data level (open question #7)."
+  }
+ ],
+ "output_schema_proposal": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AtlasVerdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+   "agent",
+   "agent_version",
+   "snapshot_ts",
+   "trigger_ts",
+   "verdict",
+   "gates",
+   "recount",
+   "operative_range",
+   "evidence"
+  ],
+  "properties": {
+   "agent": {
+    "const": "atlas"
+   },
+   "agent_version": {
+    "type": "string",
+    "description": "version stamp of atlas.md; prompt edits are versioned like code"
+   },
+   "snapshot_ts": {
+    "type": "string",
+    "description": "must echo Snapshot.ts exactly; Hermes rejects on mismatch"
+   },
+   "trigger_ts": {
+    "type": "string",
+    "description": "must echo Trigger.ts exactly"
+   },
+   "verdict": {
+    "enum": [
+     "pass",
+     "fail"
+    ],
+    "description": "AND of all gates; any fail or any unevaluable gate = fail"
+   },
+   "gates": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "cluster_integrity",
+     "confluence_recount",
+     "member_legality",
+     "pre0930_vwap_family",
+     "htf_flag_consistency",
+     "confluence_minimum",
+     "location_veto",
+     "target_menu_integrity"
+    ],
+    "properties": {
+     "cluster_integrity": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "confluence_recount": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "member_legality": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "pre0930_vwap_family": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "htf_flag_consistency": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "confluence_minimum": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "location_veto": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "target_menu_integrity": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     }
+    }
+   },
+   "recount": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "confluence_count",
+     "types",
+     "matched_cluster_center",
+     "members_resolved"
+    ],
+    "properties": {
+     "confluence_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Atlas's independent distinct-type recount (\u00a73)"
+     },
+     "types": {
+      "type": "array",
+      "items": {
+       "enum": [
+        "vwap",
+        "bb",
+        "poc",
+        "structural"
+       ]
+      },
+      "uniqueItems": true
+     },
+     "matched_cluster_center": {
+      "type": [
+       "number",
+       "null"
+      ],
+      "description": "center of the Snapshot cluster matched to Trigger.cluster_center; null = no match (gate fails)"
+     },
+     "members_resolved": {
+      "type": "boolean",
+      "description": "true iff every member name resolved to a non-null indicator price"
+     },
+     "structural_within_tolerance": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "structural menu level names within cluster.tolerance_points of the cluster center \u2014 reported, NOT counted, pending open question #2"
+     }
+    }
+   },
+   "operative_range": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "top",
+     "bottom"
+    ],
+    "properties": {
+     "top": {
+      "type": [
+       "object",
+       "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+       "source_field",
+       "price"
+      ],
+      "properties": {
+       "source_field": {
+        "type": "string"
+       },
+       "price": {
+        "type": "number"
+       }
+      }
+     },
+     "bottom": {
+      "type": [
+       "object",
+       "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+       "source_field",
+       "price"
+      ],
+      "properties": {
+       "source_field": {
+        "type": "string"
+       },
+       "price": {
+        "type": "number"
+       }
+      }
+     }
+    },
+    "description": "the extremes Atlas used for the \u00a77 location veto, cited by exact Snapshot field name"
+   },
+   "data_levels_status": {
+    "type": "array",
+    "items": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "event",
+      "released",
+      "still_forming"
+     ],
+     "properties": {
+      "event": {
+       "type": "string"
+      },
+      "released": {
+       "type": "boolean"
+      },
+      "still_forming": {
+       "type": "boolean"
+      }
+     }
+    },
+    "description": "per data level: event_time <= ts, and ts < event_time + data_levels.window_min"
+   },
+   "evidence": {
+    "type": "array",
+    "maxItems": 16,
+    "items": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "gate",
+      "detail"
+     ],
+     "properties": {
+      "gate": {
+       "type": "string"
+      },
+      "detail": {
+       "type": "string",
+       "maxLength": 300
+      }
+     }
+    },
+    "description": "one line per failed or noteworthy gate: expected vs observed, with field names and numbers"
+   },
+   "thesis": {
+    "type": "string",
+    "maxLength": 600,
+    "description": "human-auditable structural read; no recommendation language beyond the gates"
+   }
+  }
+ },
+ "edge_cases": [
+  "ts exactly at indicators.ny_vwap.anchor (09:30:00): the presence rule is strict \u2014 'before anchor implies absent'; at exactly the anchor Atlas asserts nothing about presence (first NY bar may not have closed) and only checks internal nullability consistency",
+  "kind=='displacement': upstream cluster is None, Trigger.confluence_count is hard-coded 2, and Trigger.cluster_center==entry_ref (a single penetrated level, not a mean) \u2014 cluster_integrity must match the NEAREST Snapshot cluster within tolerance; no match = FAIL, not skip",
+  "htf_regime=='unknown' (insufficient 15m swing history, e.g. early after data start): htf_flag_consistency fails closed \u2014 and today's engine would mislabel such shorts 'with_trend'",
+  "single-linkage chaining: adjacent gaps each <= tolerance_points but total cluster span > tolerance_points \u2014 passes the engine-parity check; whether \u00a73 'within proximity tolerance' means full span is open question #8",
+  "ref_price null (empty closed-bar history): every gate FAILS; Atlas must still emit valid schema JSON with verdict=fail, never crash or go silent",
+  "two Snapshot clusters equidistant from Trigger.cluster_center: deterministic tie-break (lower center) with an evidence line, so reruns are reproducible",
+  "early-history snapshots where prior_week/prior_day levels are null: menu completeness excuses absence only when the source Snapshot field is itself null \u2014 non-null field missing from menu is always FAIL",
+  "data_levels entry with event_time > Snapshot.ts (news-calendar error): target_menu_integrity FAILS \u2014 that is a future-information leak",
+  "data extreme still forming (ts < event_time + data_levels.window_min): reported in data_levels_status, not auto-failed \u2014 eligibility ruling pending (open question #7)",
+  "session=='' (ts outside all session boxes): session_high/low may cover odd spans; location_veto must still name operative extremes from what is non-null and return a binary gate",
+  "NY VWAP \u00b12\u03c3/\u00b13\u03c3 appearing as cluster members: engine currently emits them (snapshot.py _gather_levels loops ALL bands), \u00a73 allows mid/\u00b11\u03c3 only \u2014 member_legality will veto every such cluster until reconciled; expect calibration friction",
+  "zero-width clusters (two levels at identical price): gaps of 0 pass tolerance; type recount still deduplicates correctly (e.g. dvwap_mid + nyvwap_mid = vwap x1 = count 1 = invalid cluster)"
+ ],
+ "open_questions_for_spec3": [
+  "ENGINE-VS-DOC DISCREPANCY (found while designing, needs Angus before Phase 3): snapshot.py _gather_levels adds ALL NY VWAP bands (\u00b11\u03c3/\u00b12\u03c3/\u00b13\u03c3) as cluster candidates, but \u00a73 permits 'NY VWAP middle/\u00b11\u03c3 (post-9:30 only)'. The module docstring even states mid/\u00b11\u03c3 while the code loops every band. Atlas's member_legality gate follows the doc and will veto \u00b12\u03c3/\u00b13\u03c3-membered clusters \u2014 reconcile engine or doc first, else calibration and the Desk will disagree.",
+  "\u00a73's confluence-count taxonomy lists 'structural \u00d71' but \u00a73's cluster candidate set contains no structural levels and the engine never counts them \u2014 so counter-trend (min 3) is only reachable via bb+vwap+poc. Does Angus intend structural levels (prior-day/week/session extremes) within tolerance of the cluster to add +1 to the count? Atlas reports structural_within_tolerance but does not count it pending this ruling.",
+  "\u00a77 gives confluence minimums for counter-trend (3) and with-trend (2) only \u2014 what applies when htf_flag=='range'? Atlas defaults fail-closed to the counter-trend minimum; needs Angus confirmation and a config key (e.g. filters.min_confluence_range).",
+  "triggers.py _htf_flag: regime 'unknown' falls through to trend_dir='short', so unknown-regime shorts are labeled 'with_trend' (lenient minimum) and longs 'counter_trend'. Almost certainly a bug \u2014 Atlas fails 'unknown' closed regardless; engine should probably emit an explicit 'unknown' flag.",
+  "The Snapshot has NO HTF 1h/4h range-extreme fields (deferred with the session-anchored resampler, per snapshot.py docstring) and no \u00a76 'HTF range extremes' menu entries \u2014 yet \u00a77's location veto and \u00a76's menu name them. Spec 3 needs either (a) new Snapshot fields htf_range_high/htf_range_low once the 4h resampler lands, or (b) Angus's blessing of Atlas's prior-day/week/session proxy. Also missing: a filters.location_veto_band_points config (Atlas reuses cluster.tolerance_points as stand-in).",
+  "Does the \u00a77 location veto apply only when htf_regime=='range', or also to longs into the controlling range top during an uptrend? Atlas currently applies it in all regimes (conservative); confirm intent.",
+  "Is a data extreme target-eligible while still forming (ts < event_time + data_levels.window_min)? Atlas certifies released-and-exists; eligibility belongs to whoever owns \u00a76 selection (Hephaestus) but the rule is unwritten.",
+  "\u00a73 tolerance semantics: single-linkage chaining (engine) lets a cluster's full span exceed tolerance_points while every adjacent gap passes. Is tolerance adjacent-gap (engine parity, Atlas's current check) or full-span? Calibration may already have implicitly answered this \u2014 document it.",
+  "Displacement Triggers carry cluster=None and hard-coded confluence_count=2. Should the Trigger schema carry the penetrated level NAMES so Atlas (count) and Apollo (body-through anatomy) can each verify without guessing which levels were meant? Cheap engine change, big auditability win.",
+  "Snapshot.Cluster exposes member names but not member prices; Atlas resolves prices through indicators.* \u2014 which works today (bb/vwap/poc are all in indicators) but silently breaks if structural members are ever added per open question #2. Consider adding {name, price, type} member objects to Cluster."
+ ],
+ "split_concerns": "Four seams need explicit ownership rulings. (1) Displacement confluence: the candle-body-through-\u22652-levels anatomy is Apollo, but the count that feeds \u00a77 minimums is Atlas \u2014 with the engine hard-coding count=2 for displacements, both agents will touch the same levels; proposal: Atlas owns the count from Snapshot clusters, Apollo owns the geometry, duplicated inputs are fine because both fail closed. (2) The pre-09:30 NY VWAP rule is simultaneously a level-family rule (Atlas, \u00a73) and a clock rule (Helios, session/time); proposal: both check it independently \u2014 redundant vetoes are harmless, a gap is not. (3) htf_flag consistency: regime is structure (Atlas) but the flag also modulates Apollo's A/B2 pattern classification and Hephaestus's \u00a79 sizing \u2014 if Atlas owns flag-vs-regime consistency (proposed here, since Atlas's \u00a77 minimum keys off it), Apollo and Hephaestus must consume the flag as given, not re-derive it differently. (4) Data extremes are touched by three lanes \u2014 Atlas certifies existence/release, Helios certifies news-day status, Hephaestus applies the \u00a76.3 override \u2014 and NOBODY currently owns 'is the data extreme still untaken (unswept)', which \u00a76.3 requires; that determination needs intrabar history no agent has, so it likely belongs in the engine as a Snapshot field (e.g. data_levels[].swept: bool). Finally, 'target-menu sane distances' (Atlas, integrity) vs 'target selection and RR floor' (Hephaestus) is a clean boundary ONLY if Hephaestus is required to select strictly from menu entries Atlas certified \u2014 Hermes should enforce that ordering or the integrity gate protects nothing."
+}
