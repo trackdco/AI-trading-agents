@@ -54,6 +54,10 @@ indicators:
     weekly_enabled: false         # §2 TOURNAMENT — weekly anchor is a tested variant behind this flag
     value_area_pct: 70            # §2 PLACEHOLDER — VAH/VAL value-area %; doc doesn't state it,
                                   #      70% is the industry standard — Angus to confirm
+    bin_points: 0.25              # spec-1 §3 volume profile from 1m bars — bin size engineering
+                                  #      PLACEHOLDER, tick size
+  vwap:
+    source: hlc3                  # §2 standard TradingView VWAP — source hlc3, volume-weighted stdev bands
   data_levels:
     window_min: 15                # §2 CALIBRATE — extremes printed within N min of scheduled release (start 15)
 
