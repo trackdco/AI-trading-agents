@@ -6,9 +6,9 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** (none — setup nearly done; repo initialized, hand log committed)
-- **Blocked on:** Databento data download (blocks Steps 2+ on real data; Steps 1–3 checks run on fixtures); Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET)
-- **Next action:** Spec 1, Step 1 (repo scaffold) — can start immediately
+- **Last completed step:** Step 4 code (indicators + parity-report tool) — **PARITY GATE now blocks all further steps**
+- **Blocked on:** (1) Databento data in `data/raw/` — needed to generate the real parity report and full-dataset gap report; (2) Angus's reference-chart values + sign-off for Feb 11 09:48 ET and Feb 17 09:50 ET
+- **Next action:** when data lands: `python -m src.engine.data` then `python -m src.engine.indicators --parity`; send `output/parity_report.md` to Angus. Steps 5–9 do not start before his sign-off.
 
 ## Gates ledger (Angus sign-offs — append-only)
 
@@ -26,6 +26,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Data: Jan 2026→present primary; 2025 as robustness check only (Angus regime rationale, honesty guard noted)
 
 ## Session log (newest first)
+
+### 2026-07-17 — Spec 1 Steps 1–4 (Claude Code, remote session; Pat driving)
+- Steps completed: step-1 repo scaffold (strategy.yaml fully §-traced, news calendar seed, tree, .gitignore, README); step-2 data ingest (Databento CSV/DBN -> validated parquet, 18:00-ET session dating, lead-contract roll tagging, gap report, 8 tests); step-3 resampler + sessions (close-labeled TF bars, §2 box classifier, running/frozen session extremes, prior-day/week H/L, post-release data levels, 12 tests incl. test_dst_boundary); step-4 indicators (TradingView-convention BB, 18:00/09:30 anchored VWAPs + sigma bands, volume profile with causal running daily POC, parity-report CLI, 13 tests incl. test_ny_vwap_absent_premarket)
+- Checks passed: ruff clean; 32/32 pytest; one commit per step on branch claude/session-setup-lzzfzm
+- Divergences/flags raised: dependency additions flagged in commits (pyarrow — required for spec-mandated parquet; pyproject.toml + .env.example as infra); volume-profile bar-volume allocation is an engineering approximation of TradingView's — first suspect if daily POC misses the 1.0 pt parity tolerance
+- Questions parked for Angus: (1) session box boundaries (conventional 18:00/03:00/09:30/16:00 ET seeded); (2) T_cancel start value (10 pts seeded); (3) slippage/commission model (1 tick entry, 2 ticks stop, 4x news, $2.50/side seeded); (4) §9 sizing thresholds — oversized stop / late-window / thin target; (5) W2 window exact boundaries; (6) §2 data-level window: post-release [t, t+N) implemented vs symmetric ±N reading; (7) news_calendar.csv seed dates are UNVERIFIED estimates — verify against a real calendar before step 8; plus the four PNL Points quirks and the two reference-chart readings from the previous session
+- Next session starts at: parity report generation once data/raw/ is populated; Steps 5–9 GATED on Angus sign-off
 
 ### 2026-07-16 — Repo initialization (Claude Code, remote session)
 - Steps completed: repo created; full context pack committed (context/, strategy-definition-v1.0.md, spec-1); Angus's 28-trade hand log committed at data/reference/feb2026_hand_log.csv (as-is, per reported-not-fixed)
