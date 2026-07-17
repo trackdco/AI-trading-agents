@@ -66,10 +66,13 @@ python -m src.engine.data data/raw/nq_ohlcv_1m.csv
 ```
 
 Timestamps are converted to `America/New_York` (DST-aware). Prices in Databento's
-native 1e-9 fixed-precision integers are auto-decoded. Contract rolls (continuous NQ,
-volume-based) are tagged in the `roll` column. Duplicate or out-of-order timestamps
-raise. DBN input is a documented TODO — CSV is supported today (see Step 2 flags in the
-progress tracker).
+native 1e-9 fixed-precision integers are auto-decoded. Duplicate or out-of-order
+timestamps raise. DBN input is a documented TODO — CSV is supported today.
+
+A Databento **"parent"** export (all NQ outright contracts + calendar spreads, i.e. many
+rows per minute) is accepted directly: it is collapsed to a single volume-based, unspliced
+continuous front-month series, and the roll is tagged in the `roll` column. A single-series
+export (e.g. `NQ.v.0` continuous) is used as-is. See Step 2 flags in the progress tracker.
 
 ## Non-negotiables
 

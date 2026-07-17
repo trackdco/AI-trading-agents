@@ -53,6 +53,10 @@ In **backtest mode**, the Desk is bypassed: triggers.py IS the mechanical rule s
 
 ## External services
 
-- Databento — historical (later live) NQ data. Key in `.env`, never committed.
+- Databento — historical (later live) NQ data. Key in `.env`, never committed. Exports may arrive
+  as a "parent" pull (all NQ outrights + calendar spreads, many rows/minute); `src/engine/data.py`
+  derives the single volume-based, unspliced continuous front-month series from it (front = highest
+  daily-volume outright per 18:00-ET session; roll on front-month change; no price adjustment).
+  Equivalent to Databento's NQ.v.0 but computed in-repo so the roll is auditable.
 - Anthropic (Claude Code) — build tooling now; Desk runtime in Phase 3.
 - Telegram Bot API — Phase 4 alerting. Token in `.env`.

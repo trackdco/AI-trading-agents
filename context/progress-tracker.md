@@ -6,8 +6,8 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 - **Active phase:** 1 — Market Engine & Backtester
 - **Active spec:** spec-1-market-engine-backtester.md
-- **Last completed step:** Spec 1, Step 2 (data ingest) — `pytest tests/test_data.py` green on the bundled 2-day fixture; committed
-- **Blocked on:** Databento data download (blocks the FULL-dataset gap report at Step 2's second check, and Steps 3+ on real data); Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET)
+- **Last completed step:** Spec 1, Step 2 (data ingest) — COMPLETE incl. real Databento data: 161,525 continuous bars ingested to data/nq_1m.parquet, full-dataset gap report generated. Both Step 2 checks pass.
+- **Blocked on:** Angus's reference-chart values for the Step 4 parity gate (Feb 11 09:48 ET, Feb 17 09:50 ET). Data no longer a blocker.
 - **Next action:** Spec 1, Step 3 (resampler + sessions) — after human confirmation of Step 2 per workflow rules
 
 ## Gates ledger (Angus sign-offs — append-only)
@@ -26,6 +26,14 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 - 2026-07-17 — Data: Jan 2026→present primary; 2025 as robustness check only (Angus regime rationale, honesty guard noted)
 
 ## Session log (newest first)
+
+### 2026-07-17 — Real Databento data ingested; parent→continuous derivation added (Claude Code, Brake driving)
+- What happened: Angus/Brake's Databento pull came as a **"parent" export** (all NQ outright contracts + calendar spreads, GLBX.MDP3 ohlcv-1m, 2026-02-01→2026-07-15, ~254k rows, decimal px / ISO ts). That is many rows per minute, not the single continuous series the engine needs.
+- Decision (ENGINEERING, flagged for Angus): rather than have Brake re-download NQ.v.0, we derive the continuous series from the parent file. Added `to_continuous_front_month()` to src/engine/data.py. **Exact roll rule chosen:** outright contracts only (drop symbols containing '-'); front month = the outright with the greatest total volume per CME trade date (18:00 ET session boundary); continuous takes that contract's minute bars for the session; rolls at the session boundary on front-month change; **unspliced** (no price back-adjustment) per strategy-definition §3. This reproduces Databento's NQ.v.0 transparently/auditably (fits the project's anti-black-box stance). Volume separation is huge (~500k front vs a few hundred back) so front-month is unambiguous.
+- Result: 161,525 continuous bars, 142 trading days, 2026-02-01→2026-07-15. Rolls tagged: 2026-03-15 (NQH6→NQM6) and 2026-06-14 (NQM6→NQU6) — the normal quarterly rolls. Unspliced roll price-gaps present as expected (+164.75 Mar, +513.25 Jun). Prices 22,973–30,970 (sane for NQ). Monotonic, no dup timestamps.
+- Gap report (output/gap_report.csv): 6 sessions with "unexpected" missing minutes — ALL are US market holidays / early closes (Feb 16 Presidents' Day, Apr 3 Good Friday, May 25 Memorial, Jun 19 Juneteenth, Jul 3 Jul-4-obs) plus one trivial 1-minute overnight blip (Apr 21). i.e. the data is clean; gaps = real closures. `_is_closed` intentionally doesn't model holidays — cross-reference config/news_calendar.csv holiday rows.
+- FLAGS for Angus: (1) **Data starts 2026-02-01, not Jan 1** — the download range was Feb–Jul. config data.primary_start = 2026-01-01. Calibration (Feb) is fully covered; re-pull with start 2026-01-01 before any full Jan-onward backtest. (2) Confirm OK to derive continuous from parent vs using Databento NQ.v.0 (result is equivalent; ours is auditable). (3) Presidents' Day (Feb 16) + Good Friday (Apr 3) are US market holidays not yet in news_calendar.csv (which is scheduled-releases focused) — note for the holiday cross-reference.
+- Tests: added test_parent_collapses_to_volume_front_month (spreads dropped, one row/min, roll tagged). Full suite 13 passed; ruff clean. Parent CSV + parquet are gitignored (not committed).
 
 ### 2026-07-17 — Spec 1 Step 2: data ingest (Claude Code, remote session, Brake driving)
 - Steps completed: Step 2 — src/engine/data.py (Databento ohlcv-1m CSV -> validated tz-aware parquet at data/nq_1m.parquet, columns ts_event/open/high/low/close/volume/roll); tests/fixtures/nq_1m_2day.csv (2-day Databento-native fixture with a deliberate 09:35 gap + an instrument_id roll); tests/test_data.py (12 tests); conftest.py (repo root on sys.path).

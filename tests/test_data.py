@@ -19,6 +19,7 @@ from src.engine.data import (
     ingest,
     read_databento_csv,
     tag_rolls,
+    to_continuous_front_month,
 )
 
 FIXTURE = Path(__file__).parent / "fixtures" / "nq_1m_2day.csv"
@@ -94,6 +95,44 @@ def test_no_instrument_id_means_no_rolls(tmp_path):
     )
     df = read_databento_csv(csv, NY, price_scale=1.0)
     assert tag_rolls(df).sum() == 0
+
+
+# ----------------------------------------------------------------- parent -> continuous
+
+def test_parent_collapses_to_volume_front_month():
+    # Two outrights (FRONT high-volume, BACK low-volume) + one calendar spread, over two
+    # sessions; the front contract switches on day 2 (a roll). Expect: spreads dropped, one
+    # row per minute, day1 uses FRONT, day2 uses BACK, roll tagged on day2.
+    rows = []
+    def bar(ts, sym, iid, vol):
+        rows.append({"ts_event": pd.Timestamp(ts, tz=NY), "open": 20000.0, "high": 20001.0,
+                     "low": 19999.0, "close": 20000.5, "volume": vol,
+                     "instrument_id": iid, "symbol": sym})
+    # session 1 (2026-02-02): FRONT (NQH6) dominates volume
+    bar("2026-02-02 09:30", "NQH6", 1, 500)
+    bar("2026-02-02 09:30", "NQM6", 2, 5)
+    bar("2026-02-02 09:30", "NQH6-NQM6", 9, 3)                      # spread -> dropped
+    bar("2026-02-02 09:31", "NQH6", 1, 400)
+    bar("2026-02-02 09:31", "NQM6", 2, 4)
+    # session 2 (2026-02-03): BACK (NQM6) now dominates -> roll
+    bar("2026-02-03 09:30", "NQH6", 1, 6)
+    bar("2026-02-03 09:30", "NQM6", 2, 600)
+    bar("2026-02-03 09:31", "NQH6", 1, 5)
+    bar("2026-02-03 09:31", "NQM6", 2, 550)
+    df = pd.DataFrame(rows)
+
+    cont = to_continuous_front_month(df).sort_values("ts_event").reset_index(drop=True)
+    assert "symbol" in cont.columns  # builder keeps symbol; read_databento_csv drops it later
+    assert (cont.groupby("ts_event").size() == 1).all()            # one row per minute
+    day1 = cont[cont["ts_event"].dt.date.astype(str) == "2026-02-02"]
+    day2 = cont[cont["ts_event"].dt.date.astype(str) == "2026-02-03"]
+    assert set(day1["instrument_id"]) == {1}                       # front = NQH6 on day 1
+    assert set(day2["instrument_id"]) == {2}                       # rolled to NQM6 on day 2
+    assert not cont["symbol"].str.contains("-").any()             # spreads gone
+
+    cont["roll"] = tag_rolls(cont)
+    assert cont["roll"].sum() == 1
+    assert cont.loc[cont["roll"], "ts_event"].iloc[0].date().isoformat() == "2026-02-03"
 
 
 # ----------------------------------------------------------------- gap report

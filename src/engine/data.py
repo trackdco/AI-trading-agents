@@ -75,12 +75,17 @@ def load_strategy_timezone(config_path: Path = Path("config/strategy.yaml")) -> 
 
 # ---------------------------------------------------------------- read / normalize
 
-def read_databento_csv(path: Path, timezone: str, price_scale: float | None) -> pd.DataFrame:
-    """Read a Databento ohlcv-1m CSV into a normalized, tz-aware frame.
+def read_databento_csv(path: Path, timezone: str, price_scale: float | None,
+                       session_open: time = time(18, 0)) -> pd.DataFrame:
+    """Read a Databento ohlcv-1m CSV into a normalized, tz-aware single-series frame.
 
     Handles Databento's native encoding: ``ts_event`` as integer nanoseconds since the
     UNIX epoch (UTC) or an ISO string, and fixed-precision 1e-9 integer prices. Returns
     columns ts_event(tz-aware NY), open, high, low, close, volume, instrument_id(if present).
+
+    If the export is a Databento "parent" pull (all NQ outright contracts + calendar
+    spreads, i.e. many rows per minute), it is collapsed to a single volume-based,
+    unspliced continuous front-month series here (see ``to_continuous_front_month``).
     """
     raw = pd.read_csv(path)
     missing = {"ts_event", "open", "high", "low", "close", "volume"} - set(raw.columns)
@@ -101,7 +106,47 @@ def read_databento_csv(path: Path, timezone: str, price_scale: float | None) -> 
     out["volume"] = raw["volume"].astype("int64")
     if "instrument_id" in raw.columns:
         out["instrument_id"] = raw["instrument_id"].astype("int64")
-    return out
+    if "symbol" in raw.columns:
+        out["symbol"] = raw["symbol"].astype("string")
+
+    if _is_parent_export(out):
+        out = to_continuous_front_month(out, session_open)
+    return out.drop(columns=[c for c in ("symbol",) if c in out.columns])
+
+
+def _is_parent_export(df: pd.DataFrame) -> bool:
+    """True if the frame holds many contracts (parent pull) rather than one clean series."""
+    if "symbol" not in df.columns:
+        return False
+    s = df["symbol"]
+    is_spread = s.str.contains("-", na=False)
+    return bool(is_spread.any() or s[~is_spread].nunique() > 1)
+
+
+def to_continuous_front_month(df: pd.DataFrame, session_open: time = time(18, 0)) -> pd.DataFrame:
+    """Collapse a Databento parent export into one volume-based, unspliced continuous series.
+
+    Rule (documented per spec-1 §Design-Decisions; strategy-definition §3 = "continuous NQ,
+    volume-based roll, unspliced"):
+      * calendar spreads (symbols containing '-') are dropped — outright contracts only;
+      * the front month for each CME trade date (18:00 ET session boundary) is the outright
+        contract with the greatest total volume that session;
+      * the continuous series takes that contract's 1-minute bars for the whole session and
+        rolls at the session boundary when the front contract changes;
+      * prices are NOT back-adjusted (unspliced), so a price gap appears at each roll — the
+        roll is tagged downstream via the ``instrument_id`` change and surfaced in diagnostics.
+
+    This reproduces Databento's NQ.v.0 continuous from the raw parent pull, transparently.
+    """
+    outr = df[~df["symbol"].str.contains("-", na=False)].copy()
+    outr["_sd"] = _session_date(outr["ts_event"], session_open)
+    daily_vol = outr.groupby(["_sd", "symbol"], observed=True)["volume"].sum().reset_index()
+    front = (daily_vol.loc[daily_vol.groupby("_sd")["volume"].idxmax(), ["_sd", "symbol"]]
+             .rename(columns={"symbol": "_front"}))
+    merged = outr.merge(front, on="_sd")
+    cont = merged[merged["symbol"] == merged["_front"]].copy()
+    return (cont.drop(columns=["_sd", "_front"])
+            .sort_values("ts_event", kind="stable").reset_index(drop=True))
 
 
 def _resolve_price_scale(prices: pd.DataFrame, price_scale: float | None) -> float:
@@ -202,7 +247,7 @@ def build_gap_report(df: pd.DataFrame, session_open: time) -> pd.DataFrame:
 
 def ingest(cfg: IngestConfig) -> IngestResult:
     """Full pipeline: read -> validate -> tag rolls -> gap report -> write parquet."""
-    df = read_databento_csv(cfg.input_path, cfg.timezone, cfg.price_scale)
+    df = read_databento_csv(cfg.input_path, cfg.timezone, cfg.price_scale, cfg.session_open)
     df = df.sort_values("ts_event", kind="stable").reset_index(drop=True)
     check_monotonic_unique(df)
     df["roll"] = tag_rolls(df)
