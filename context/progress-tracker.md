@@ -53,6 +53,14 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — Pass 14: OOS March FAILS (−$4,430) — diagnosis: regime, not entries/exits; regime agent ASSIGNED TO PAT (Claude Code, Angus driving)
+- **OOS gate opened:** Brake committed the full dataset (`data/reference/nq_1m_feb_jul2026.parquet`, 161,525 bars, rolls Mar 15/Jun 14 tagged). Champion v2 run cold on March: **36tr, 8% win, −$4,430** (Feb: +$11,442/36.4%).
+- **Forensic chain (each hypothesis measured, in order):** (1) vol regime — REFUTED (morning median 16.8 vs 13.8pt, FEWER shock bars in-window than Feb); (2) trade construction — unchanged (stops/targets/walkout share ≈ Feb); (3) HTF regime mix — shifted (counter-trend 25%→42%) but March lost across ALL regimes; (4) **ROOT CAUSE: amplitude/regime — median March loser peaked +1.33R (22/33 reached +1R) then the war trend steamrolled the reversion.** Entries fired correctly; the tape stopped paying reversion.
+- **Management CANNOT rescue it (measured):** V1 BE@1R −$3,980; V7@1.0 −$4,188 (25% win!); V7@1.5 −$3,220. Winner give-back ≈ loser conversions — the tail-protection law cuts both ways. March-type tape is untradeable for this system at full size.
+- **Angus ruling:** the failure was fading a war (longs/fades in open hostilities). ASSIGNED TO PAT: a regime-context agent (macro/narrative in, {regime, bias, permitted structures, size multiplier} out) gating the engine like the existing condition de-risks. Brief committed at `docs/TASK-FOR-PAT-regime-agent.md`; TEAM.md flagged. Constraints: no P&L visibility, no-hindsight verdicts, shadow-first, Angus+OOS for any rule.
+- Honest data nuance recorded: March SHORTS lost more than longs (−$3.5k vs −$0.9k) — fade-structured shorts died on relief rips (Mar 23 ceasefire tweet +408pt/1m). The agent must set structure+size, not just direction.
+- Detection continues through Apr–Jul (watchdog on). Full Feb→Jul table + shock annex + day-of-month split still the deliverable; April = the snap-back test.
+
 ### 2026-07-18 — Pass 13: CHAMPION v2 — max-2-trades/day (§10 sanctioned value) + V1 rejected (Claude Code, Angus driving)
 - **B3-champ loser autopsy (28L):** day's 3rd trade = 0/7, −$1,410 (1st: 28%w +$4,958; 2nd: 47%w +$6,485); 11/28 losers ran ≥+1R before dying (median loser MFE +0.76R); 09:00–09:30 slot 0/3 (watch); POC-in-cluster again loser-side (5tr 20%w).
 - **CHAMPION v2 = B3 + end-10:15 + max_trades_per_day 2 (§10's other documented value): 33tr, 36.4% win, +$11,442, maxDD $1,370, 8.4× P&L/DD, 56% green days.** Every metric improved simultaneously; beats B8's ratio (5.5×).

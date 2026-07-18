@@ -19,6 +19,13 @@ Git rules (keep it simple):
    thing twice.
 4. When a new Claude session spins up, its first action is to switch to this branch.
 
+## ⚠️ PAT: NEW ASSIGNMENT WAITING (18 Jul, from Angus)
+
+**Read `docs/TASK-FOR-PAT-regime-agent.md` before anything else** — Angus has directed a
+regime-context agent (reads macro/war/narrative context, gates the engine's bias/structure/
+size). March's −$4,430 out-of-sample month is the motivating evidence; the brief has the
+mandate, contract strawman, constraints, and acceptance criteria.
+
 ## Who does what
 
 | Person | Owns | Touches (parallel-safe lanes) |
