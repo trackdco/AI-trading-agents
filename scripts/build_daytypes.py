@@ -41,6 +41,24 @@ def main():
                 rec["type"] = "imbalanced"
                 rec["direction"] = 1 if ov.poc > pv.poc else -1
             rec["prior_vah"], rec["prior_val"], rec["prior_poc"] = pv.vah, pv.val, pv.poc
+            # --- A2 (v0.4 proposal): auction-context features, all strictly pre-open ---
+            rec["on_vah"], rec["on_val"], rec["on_poc"] = ov.vah, ov.val, ov.poc
+            if ov.val >= pv.vah:                       # overnight value vs prior day's value
+                rec["value_position"] = "above"
+            elif ov.vah <= pv.val:
+                rec["value_position"] = "below"
+            elif frac >= 0.5:
+                rec["value_position"] = "inside"
+            else:
+                rec["value_position"] = "overlap_up" if ov.poc > pv.poc else "overlap_dn"
+            p800 = float(on_bars.iloc[-1]["close"])    # last pre-open print
+            rec["open_vs_value"] = ("above_value" if p800 > ov.vah
+                                    else "below_value" if p800 < ov.val else "in_value")
+            vwap_on = float((on_bars["close"] * on_bars["volume"]).sum()
+                            / max(on_bars["volume"].sum(), 1))
+            # +ve = price above overnight VWAP = overnight buyers carrying profit;
+            # stretched inventory tends to correct (the fade fuel the agent asks about)
+            rec["inventory_pts"] = round(p800 - vwap_on, 2)
         if not day_bars.empty:
             prior = volume_profile(day_bars, 0.25, 70)
         rows.append(rec)
