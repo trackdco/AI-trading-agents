@@ -18,7 +18,8 @@ from src.engine.sessions import resample_ohlcv          # noqa: E402
 from src.engine.triggers import _order_block            # noqa: E402
 
 DATA = Path("data/reference/nq_1m_feb_jul2026.parquet")
-CACHES = [Path("output/triggers_feb.csv"), Path("output/triggers_marjul.csv")]
+CACHES = [Path("output/triggers_feb.csv"), Path("output/triggers_marjul.csv"),
+          Path("output/triggers_junjul.csv")]
 
 
 def main():
