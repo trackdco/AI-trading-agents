@@ -421,10 +421,35 @@ def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None,
 
 # ---------------------------------------------------------------- simulator
 
+def _trigger_class(t: Trigger) -> str:
+    """Classify a trigger as 'reversion' (fades the move) or 'continuation' (rides it),
+    for the regime de-risk gate (docs/replay-integration-contract.md).
+
+    Pattern is primary; htf_flag is the fallback when pattern is unclear.
+    PROPOSED pending Angus: pattern B (reclaim) treated as continuation (it rides the
+    reclaim leg); pattern wins over htf_flag on conflict. Flip the B line on his ruling.
+    """
+    if t.pattern == "A":
+        return "reversion"
+    if t.pattern in ("B", "B2"):
+        return "continuation"
+    return "reversion" if t.htf_flag == "counter_trend" else "continuation"
+
+
 def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
              target_resolver=None, entry_price_fn=None,
-             calendar: pd.DataFrame | None = None):
-    """Replay closed 1m bars against triggers. Returns (trades, verdicts, equity_df)."""
+             calendar: pd.DataFrame | None = None,
+             day_gate=None):
+    """Replay closed 1m bars against triggers. Returns (trades, verdicts, equity_df).
+
+    day_gate: optional Callable[[str], dict | None] — given a session date 'YYYY-MM-DD'
+    (CME 18:00 boundary), returns that day's regime de-risk gate (keys: stand_down,
+    allow_reversion, allow_continuation, size_multiplier) or None. None (the default)
+    = today's behavior, byte-identical: arm A of the walk-forward replay. Arms B/C pass
+    a gate built from the desk agents' combined verdict. The gate only REMOVES trades and
+    SHRINKS size — never widens risk, adds trades, or overrides a Vault limit
+    (docs/replay-integration-contract.md). Kept a plain dict so the engine imports no
+    desk/LLM module (architecture boundary)."""
     if calendar is None:
         try:
             calendar = load_news_calendar()
@@ -470,6 +495,13 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
     def day(ts) -> dict:
         d = _session_date(pd.Series([ts]), dtime(18, 0)).iloc[0]
         return day_stats.setdefault(d, {"fills": 0, "losses": 0, "r": 0.0})
+
+    def gate(ts) -> dict | None:
+        # regime de-risk gate for ts's session date; None when no gate is supplied (arm A)
+        if day_gate is None:
+            return None
+        d = _session_date(pd.Series([ts]), dtime(18, 0)).iloc[0]
+        return day_gate(str(d))
 
     def in_window(tod) -> bool:
         # entry window; supports OVERNIGHT spans (start > end wraps midnight, e.g. 18:00->10:15)
@@ -533,6 +565,11 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
         size = 1.0
         if p.risk_pts > cfg.oversized_stop or p.fill_ts.time() >= cfg.late_window_after:
             size = 0.5
+        # regime de-risk gate (arms B/C): scale the §9 unit by the agents' size_multiplier
+        # (composes with the half-size overrides above; None gate = ×1.0 = arm A).
+        g = gate(p.fill_ts)
+        if g is not None:
+            size *= g.get("size_multiplier", 1.0)
         dollars = pts * cfg.point_value * size - 2 * cfg.commission_side
         last = p.legs[-1]
         trades.append(TradeRecord(
@@ -741,6 +778,22 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             if day(ts)["fills"] >= cfg.max_trades_per_day:
                 veto(t, "vetoed_vault_max", "max trades/day reached (§10)")
                 continue
+            # REGIME DE-RISK GATE (arms B/C; None for arm A) — desk agents' combined verdict.
+            # Only removes trades / shrinks size (docs/replay-integration-contract.md).
+            g = gate(ts)
+            if g is not None:
+                if g.get("stand_down"):
+                    veto(t, "skipped_regime_standdown", "regime agents stood the day down")
+                    continue
+                cls = _trigger_class(t)
+                if cls == "reversion" and not g.get("allow_reversion", True):
+                    veto(t, "skipped_regime_no_reversion",
+                         "regime gate: reversion (fade) not permitted today")
+                    continue
+                if cls == "continuation" and not g.get("allow_continuation", True):
+                    veto(t, "skipped_regime_no_continuation",
+                         "regime gate: continuation not permitted today")
+                    continue
             # ANGUS 2026-07-17: daily VWAP warm-up — no entries within N min of the 18:00 anchor
             mins_since_anchor = (tod.hour * 60 + tod.minute) - 18 * 60
             if 0 <= mins_since_anchor < cfg.vwap_warmup_min:

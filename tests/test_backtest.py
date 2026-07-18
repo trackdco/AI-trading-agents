@@ -846,3 +846,65 @@ def test_integration_slice_runs_and_is_consistent():
         spans = sorted((pd.Timestamp(x.fill_ts), pd.Timestamp(x.exit_ts)) for x in trades)
         for a, b in zip(spans, spans[1:]):
             assert a[1] <= b[0]                            # one position at a time
+
+
+# ------------------------------------------------------------- regime de-risk gate (replay B/C)
+
+def _filling_bars():
+    # a long that fills at 25000 and hits target 25100 (working 25097.5); reused across gate tests
+    return mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),
+                                        (25050, 25097.75, 25040, 25090)])
+
+
+def _gate(**over):
+    g = dict(stand_down=False, allow_reversion=True, allow_continuation=True, size_multiplier=1.0)
+    g.update(over)
+    return lambda d: g
+
+
+def test_day_gate_none_is_byte_identical_to_arm_a():
+    # the whole point: day_gate=None must not perturb arm A at all
+    t = trig("2026-02-11 09:48")
+    bars = _filling_bars()
+    base = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    gated = simulate(bars, [t], cfg(), target_resolver=stub_resolver(25100),
+                     entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL, day_gate=None)
+    assert [x.model_dump() for x in base[0]] == [x.model_dump() for x in gated[0]]
+    assert [v.model_dump() for v in base[1]] == [v.model_dump() for v in gated[1]]
+
+
+def test_gate_stand_down_removes_all_trades():
+    t = trig("2026-02-11 09:48")
+    tr, vd, _ = simulate(_filling_bars(), [t], cfg(), target_resolver=stub_resolver(25100),
+                         entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL,
+                         day_gate=_gate(stand_down=True))
+    assert tr == []
+    assert any(v.status == "skipped_regime_standdown" for v in vd)
+
+
+def test_gate_blocks_reversion_keeps_continuation():
+    # pattern A = reversion; a reversion-blocked day must skip it...
+    t_a = trig("2026-02-11 09:48", pattern="A")
+    tr, vd, _ = simulate(_filling_bars(), [t_a], cfg(), target_resolver=stub_resolver(25100),
+                         entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL,
+                         day_gate=_gate(allow_reversion=False))
+    assert tr == [] and any(v.status == "skipped_regime_no_reversion" for v in vd)
+    # ...but a continuation (B2, with_trend) still trades on the same gate
+    t_b2 = trig("2026-02-11 09:48", pattern="B2", htf="with_trend", conf=2)
+    tr2, _, _ = simulate(_filling_bars(), [t_b2], cfg(), target_resolver=stub_resolver(25100),
+                         entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL,
+                         day_gate=_gate(allow_reversion=False))
+    assert len(tr2) == 1
+
+
+def test_gate_size_multiplier_halves_dollars_not_r():
+    t = trig("2026-02-11 09:48")
+    full, _, _ = simulate(_filling_bars(), [t], cfg(), target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL, day_gate=_gate())
+    half, _, _ = simulate(_filling_bars(), [t], cfg(), target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL,
+                          day_gate=_gate(size_multiplier=0.5))
+    assert half[0].r_multiple == pytest.approx(full[0].r_multiple)     # R unchanged
+    assert half[0].size == pytest.approx(full[0].size * 0.5)           # unit halved
+    assert half[0].dollars < full[0].dollars                          # dollars scale with size

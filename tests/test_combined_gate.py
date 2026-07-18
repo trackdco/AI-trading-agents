@@ -68,3 +68,23 @@ def test_extra_field_forbidden_on_gate():
     g = combine(_rg(), _hg())
     with pytest.raises(Exception):
         type(g)(**{**g.model_dump(), "surprise": 1})
+
+
+def test_day_gate_from_schedule_round_trip(tmp_path):
+    import pandas as pd
+    from src.desk.combined_gate import day_gate_from_schedule
+    p = tmp_path / "sched.csv"
+    pd.DataFrame([
+        {"date": "2026-03-23", "allow_reversion": False, "allow_continuation": False,
+         "size_multiplier": 0.0, "directional_bias": "neutral", "stand_down": True,
+         "reasons": "x", "conflict": False},
+        {"date": "2026-02-12", "allow_reversion": True, "allow_continuation": False,
+         "size_multiplier": 0.5, "directional_bias": "neutral", "stand_down": False,
+         "reasons": "y", "conflict": False},
+    ]).to_csv(p, index=False)
+    dg = day_gate_from_schedule(p)
+    assert dg("2026-03-23")["stand_down"]
+    assert dg("2026-02-12")["size_multiplier"] == 0.5 and dg("2026-02-12")["allow_reversion"]
+    assert dg("2026-07-04") is None                 # unlisted day -> arm A
+    assert set(dg("2026-02-12")) == {"stand_down", "allow_reversion",
+                                     "allow_continuation", "size_multiplier"}

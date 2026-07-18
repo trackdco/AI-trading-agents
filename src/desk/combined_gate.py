@@ -23,6 +23,10 @@ loop is the one engine-lane touch the replay needs.
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Callable
+
+import pandas as pd
 from pydantic import BaseModel
 
 from src.desk.htf_agent import HTFGate
@@ -81,3 +85,26 @@ def combine(regime: RegimeGate, htf: HTFGate) -> CombinedGate:
         reasons=reasons or ["both agents permit the day's structures"],
         conflict=conflict,
     )
+
+
+# ------------------------------------------------------------------ engine seam
+
+# keys the engine's simulate(day_gate=...) reads (docs/replay-integration-contract.md)
+_GATE_KEYS = ("stand_down", "allow_reversion", "allow_continuation", "size_multiplier")
+
+
+def day_gate_from_schedule(
+    schedule_csv: Path = Path("output/combined_gate_schedule.csv"),
+) -> Callable[[str], dict | None]:
+    """Load output/combined_gate_schedule.csv into the `day_gate` callable the engine's
+    simulate() consumes: date 'YYYY-MM-DD' -> {stand_down, allow_reversion,
+    allow_continuation, size_multiplier} or None for a day with no verdict (arm A).
+
+    Returns a plain dict (not a pydantic model) so the engine imports no desk module —
+    the architecture boundary holds from both sides."""
+    df = pd.read_csv(schedule_csv)
+    table = {
+        str(row["date"]): {k: row[k] for k in _GATE_KEYS}
+        for _, row in df.iterrows()
+    }
+    return lambda date: table.get(date)
