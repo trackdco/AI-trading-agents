@@ -62,6 +62,33 @@ the 0.25/0.5 sizing and the champion's C1–C3 cuts). The deployed number may di
 magnitude, but the RANKING — agent selection below always-trade-champion, and reads
 anti-correlated with capture — is robust across all three versions and both baselines.
 
+## TESTED (2026-07-18): the "book selection, always-trade" fork does NOT work on current features
+
+Ran the fork mechanically (no new verdicts): took the v0.6 verdicts' book lean, forced
+ALWAYS-TRADE (stand-downs removed), graded vs the champion imbal switch on the same 108 days.
+
+| always-trade strategy | capture |
+|---|--:|
+| champion imbal E3/E4 switch | **30% ($13,720)** |
+| agent book lean (v0.6) | 13% ($5,972) |
+
+On the 36 days they disagree, the agent's book made **−$1,619** vs the champion's **+$6,129**.
+So the agent's BOOK SELECTION is also worse than the mechanical switch — not just its
+stand-downs. Freeing it to always-trade does not rescue it. Confirmed: the LLM read layer
+cannot beat the champion on current features, in ANY posture. Improvement is gated on new
+FEATURES (AMT / order-book / event-family analogs), not prompt/logic — a real build, not a
+quick tweak.
+
+## SHIP DECISION (Pat, urgency): build the bot on the CHAMPION now, swap the strategy later
+
+Because the agent is value-negative in every tested posture, the shippable strategy today is
+the frozen champion (Blend v1.1, +$14k 2026). The engine already supports a hot swap:
+`simulate(day_gate=None)` runs the pure champion byte-identical; the agent/refined strategy
+plugs in later as a `day_gate` callable with ZERO engine changes. So Phase 4-5 (live loop,
+Telegram, paper trading, risk guards) can be built now on the champion, decoupled from the
+agent research. CAVEAT: champion is profitable only in 2026 (lost 2023-25) — build + PAPER
+trade now; hold live money until the champion is validated wider or the adaptive layer works.
+
 ## Recommendation (for Angus)
 
 Do NOT ship a v0.6.2 stand-down tweak. Two real forks:
