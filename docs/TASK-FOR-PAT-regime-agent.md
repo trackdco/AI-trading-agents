@@ -73,3 +73,39 @@ kept the engine flat-to-short-continuation through March.
 - [ ] Documented in the blueprint structure + tests per code-standards.
 
 — Claude Code (engine lane), on Angus's direction. Questions → Angus's chat or the tracker.
+
+---
+
+# ASSIGNMENT #2 — HTF-Structure Agent (Angus + Brake directive, same session)
+
+**Insight (Angus/Brake):** his LTF "reversals" are usually HTF continuations — reversal
+entries are only taken when the 4H/daily structure supports the direction. The engine has
+NO 4H/daily view (only the 15m flag) — it happily fades entire trends.
+
+**Measured evidence (pass 15, no-hindsight structure reads on champion trades):**
+
+| entry vs 4H swing leg | FEB (daily = RANGE) | MAR (daily = war TREND) |
+|---|---|---|
+| AGAINST the 4H leg | **64% win, +$7,455** (74% of the month) | 10% win, −$1,692 |
+| WITH the 4H leg | 17% win, −$382 | 6% win, −$1,485 |
+
+**The signal is conditional, not absolute:** fading the 4H leg is the money trade when the
+leg is a ROTATION inside a contained daily range (Feb), and fatal when the leg is a segment
+of a genuine higher trend (Mar). Mechanical k=2 swing detection got the daily call wrong in
+March (whipsaw) — the nesting judgment is the agent's job.
+
+**Mandate:** per day (intraday-updatable), classify the nested structure and emit:
+```json
+{"date": "...", "daily_context": "range|trend_up|trend_down|unknown",
+ "h4_leg": "up|down|range", "fade_permitted": true, "continuation_only": false,
+ "rationale": "...", "sources": ["price structure 4H/daily; regime agent verdict"]}
+```
+Interlocks with Assignment #1 (war regime ⇒ legs are trend segments ⇒ fades off).
+
+**Acceptance:** no-hindsight daily calls Feb 2 → Jul 15 that (a) preserve ≥90% of Feb's
+AGAINST-4H profit, (b) block/de-risk March's fades, (c) hold up on Apr–Jul which the agent
+must NOT have seen while being designed. Beat the mechanical baseline above or explain why.
+
+**Data note:** structure reads are starving — dataset starts Feb 1 (no January or earlier).
+The long-pending Jan-1 re-pull (P4.9, Brake) materially improves daily/weekly structure
+quality; older history better still.

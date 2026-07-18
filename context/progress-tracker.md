@@ -53,6 +53,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — Pass 15: HTF-structure hypothesis measured — conditional 4H-fade edge found; agent #2 assigned to Pat (Claude Code, Angus+Brake driving)
+- **Angus/Brake hypothesis:** losing trades fade entire trends; his reversals require 4H/daily structural support. Measured with no-hindsight swing reads on champion trades:
+- **DAILY alignment: no signal** (Feb = all-neutral daily range — gate harmless; Mar = whipsawed detector, buckets random). **4H alignment: STRONG CONDITIONAL signal — Feb AGAINST-4H-leg trades: 64% win, +$7,455 (74% of the month); Mar AGAINST-4H: 10% win, −$1,692.** Fading the 4H leg wins when the leg is a rotation inside a daily RANGE, dies when it's a segment of a genuine trend (war). The discriminator is the NESTING (daily context), not the alignment itself.
+- Mechanical k=2 swing detection failed the March daily call (whipsaw) → the nesting judgment is agent territory. **Assignment #2 appended to docs/TASK-FOR-PAT-regime-agent.md** (HTF-structure agent; interlocks with the regime agent; acceptance = preserve Feb's AGAINST-4H profit, block March's fades, hold on unseen Apr–Jul).
+- Data limitation logged: no pre-Feb history starves daily/weekly structure — Jan-1 re-pull (P4.9) upgraded from parked to NEEDED for both agents.
+- Detection: through mid-April, watchdog healthy. Full Feb→Jul table remains the pending deliverable.
+
 ### 2026-07-18 — Pass 14: OOS March FAILS (−$4,430) — diagnosis: regime, not entries/exits; regime agent ASSIGNED TO PAT (Claude Code, Angus driving)
 - **OOS gate opened:** Brake committed the full dataset (`data/reference/nq_1m_feb_jul2026.parquet`, 161,525 bars, rolls Mar 15/Jun 14 tagged). Champion v2 run cold on March: **36tr, 8% win, −$4,430** (Feb: +$11,442/36.4%).
 - **Forensic chain (each hypothesis measured, in order):** (1) vol regime — REFUTED (morning median 16.8 vs 13.8pt, FEWER shock bars in-window than Feb); (2) trade construction — unchanged (stops/targets/walkout share ≈ Feb); (3) HTF regime mix — shifted (counter-trend 25%→42%) but March lost across ALL regimes; (4) **ROOT CAUSE: amplitude/regime — median March loser peaked +1.33R (22/33 reached +1R) then the war trend steamrolled the reversion.** Entries fired correctly; the tape stopped paying reversion.
