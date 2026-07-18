@@ -420,6 +420,28 @@ def test_v7_partial_then_stop_is_net_winner():
     assert rec.r_multiple > 0
 
 
+# ------------------------------------------------------------- pass-12 overnight window
+
+def test_overnight_window_wraps_midnight_and_eod_flatten_spares_overnight_positions():
+    # window 18:00->10:15 (wraps): a 20:00 trigger is IN window; its position must NOT be
+    # flattened by the 15:55 eod check (20:00 > 15:55 was the old bug); it rides to target.
+    c = cfg(win_start=time(18, 0), win_end=time(10, 15), vwap_warmup_min=0)
+    t = trig("2026-02-11 20:00")
+    bars = mk_bars("2026-02-11 20:00", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25030, 25101, 25028, 25100)])     # target
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1 and tr_[0].exit_reason == "target"
+
+    # and a 10:20 trigger is OUTSIDE the wrapped window
+    t2 = trig("2026-02-12 10:20")
+    bars2 = mk_bars("2026-02-12 10:20", [(25005, 25006, 25004, 25005)] * 3)
+    _, vd2, _ = simulate(bars2, [t2], c, target_resolver=stub_resolver(25100),
+                         entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert any(v.status == "vetoed_window" for v in vd2)
+
+
 # ------------------------------------------------------------- pass-9 rulings (Angus)
 
 def test_walk_out_picks_first_level_clearing_floor():

@@ -443,6 +443,17 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
         d = _session_date(pd.Series([ts]), dtime(18, 0)).iloc[0]
         return day_stats.setdefault(d, {"fills": 0, "losses": 0, "r": 0.0})
 
+    def in_window(tod) -> bool:
+        # entry window; supports OVERNIGHT spans (start > end wraps midnight, e.g. 18:00->10:15)
+        if cfg.win_start <= cfg.win_end:
+            return cfg.win_start <= tod < cfg.win_end
+        return tod >= cfg.win_start or tod < cfg.win_end
+
+    def past_eod(tod) -> bool:
+        # flatten belt fires ONLY between eod_flatten and the 18:00 session close — an
+        # overnight position (e.g. filled 20:00) must not trip yesterday's flatten time
+        return cfg.eod_flatten <= tod < dtime(18, 0)
+
     def halted(ts) -> bool:
         # §10 v1.2 (ANGUS calibration ruling #2, 17 Jul): halt on DAMAGE (-2R day total),
         # not attempt count — two -0.1R scratches must not lock out the day's real setups.
@@ -519,7 +530,7 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             if pos.pending_stop is not None:                 # BE move applies from this bar on
                 pos.stop = pos.pending_stop
                 pos.pending_stop = None
-            if tod >= cfg.eod_flatten:                       # §10 EOD flatten: market at open
+            if past_eod(tod):                                # §10 EOD flatten: market at open
                 sl = slip.ticks(ts)
                 px = o - sign * sl * cfg.tick
                 close_trade(pos, px, "eod", ts, sl)
@@ -575,11 +586,11 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             t = order.trig
             sign = 1 if t.direction == "long" else -1
             through = cfg.through_ticks * cfg.tick
-            if tod >= cfg.eod_flatten or halted(ts):
-                veto(t, "cancelled_eod" if tod >= cfg.eod_flatten else "cancelled_halt",
+            if past_eod(tod) or halted(ts):
+                veto(t, "cancelled_eod" if past_eod(tod) else "cancelled_halt",
                      "order cancelled before fill")
                 order = None
-            elif tod >= cfg.win_end:
+            elif not in_window(tod):
                 veto(t, "cancelled_window_end", f"unfilled at {cfg.win_end}")
                 order = None
             else:
@@ -654,7 +665,7 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             if order is not None:
                 veto(t, "skipped_order_working", "an order is already working")
                 continue
-            if not (cfg.win_start <= tod < cfg.win_end):
+            if not in_window(tod):
                 veto(t, "vetoed_window", f"outside entry window {cfg.win_start}-{cfg.win_end}")
                 continue
             if halted(ts):
