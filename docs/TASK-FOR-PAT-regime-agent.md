@@ -1,6 +1,42 @@
 # TASK FOR PAT — Regime-Context Agent (Angus directive, 18 Jul 2026)
 
-## ANGUS DIRECTIVE (18 Jul, late) — replay readouts route through Angus
+## ANGUS DIRECTIVE (18 Jul, latest) — the C2 feedback contract is DOLLARS, not wins
+
+Confirmed tonight by reading the briefing keys: the agent receives NO outcome
+feedback in any currency — not dollars, not binary. It has never been told how a
+verdict turned out. Meanwhile the edge is magnitude-skewed (top 10% of trading
+days carry 35% of all oracle P&L; top 20% carry 52%; median green day $370 vs
+biggest $4,480), so even binary win/loss feedback would mis-train it: at ~45% day
+win rate with that skew, loss-dodging looks good in counts and is ruinous in
+dollars. Measured bill, Mar–Jun (scripts/score_sizing.py, standing instrument):
+cost $10,042 on shrunk winners vs $6,232 saved on shrunk losers; avg size 0.57 on
+eventual winners vs 0.49 on eventual losers — a flat tax, not insurance.
+
+**Contract for the sequential driver — append to every morning briefing:**
+
+```json
+"yesterday_result": {
+  "your_size": 0.5, "realized_usd": +410,
+  "full_size_counterfactual_usd": +820, "oracle_usd": +1650,
+  "sizing_regret_usd": -410,            // realized - full_size counterfactual
+  "read_regret_usd": -1240              // realized - oracle (read + sizing)
+},
+"rolling_20d": {
+  "your_cumulative_regret_usd": -3810,
+  "your_arm_expectancy_usd": +85,       // B4 health input
+  "champion_expectancy_usd": +170
+}
+```
+
+Rules: DOLLARS everywhere (Angus: the agent cannot live in a world where shrunk
+winners cost nothing); single-day numbers always paired with the rolling-20d
+line so one loud day can't whipsaw the frame (the anti-overreaction damper);
+regret is charged against the agent's own verdict, mechanically, no agent turn
+spent computing it. The base-rates digest (output/base_rates.json,
+scripts/build_base_rates.py --asof for replays) supplies the PRE-verdict
+magnitude context; this block supplies the POST-verdict charge. Grade v0.4+ on
+score_sizing.py discrimination (size_winners − size_losers) moving above +0.10
+alongside the read metrics.
 
 All replay metric readouts go to ANGUS for trading interpretation before
 conclusions get drawn from them. Report raw numbers (reads, capture, arm deltas,
