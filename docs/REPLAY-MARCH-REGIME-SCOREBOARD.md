@@ -124,6 +124,50 @@ All still regime-agent-only; HTF layer unrun; no news (arm C).
 
 ---
 
+## v0.4 June (analog block + fresh-eyes panel) — first grade, 2026-07-18
+
+Re-ran the full June chain under agent v0.4.0 (analog block in the briefing), same
+May-29 seed as the v0.3 June run — apples-to-apples on one month. Reads first (D1).
+All grading uses Angus's $0-best-book = FLAT rule.
+
+| metric | v0.3 chained | **v0.4 chained** | v0.4 fresh-eyes |
+|---|--:|--:|--:|
+| reads (3-way) | 38% (8/21) | **38% (8/21)** | 45% (9/20) |
+| dollar capture | $802 = 7% | **$2,472 = 22%** | $2,359 = 21% |
+| regret vs ceiling | — | −$8,789 | −$8,691 |
+
+**Three honest findings:**
+
+1. **The analog block tripled dollar-capture (7% → 22%) but did NOT move 3-way read
+   accuracy (38%, unchanged).** Same hit *count*, 3× the captured dollars — the
+   agent's read-implied book choices landed on higher-value days and cut negative
+   wrong-book bets. Real improvement in call *quality*, none in label accuracy.
+2. **It did NOT fix the marquee miss (06-08).** The analogs for that day voted
+   8 FLAT / 6 ROTATION / 1 MOMENTUM, so v0.4 followed the plurality to FLAT and stood
+   down — but the oracle was ROTATION (+$3,131). The plurality vote was itself wrong,
+   and FLAT captured $0 vs v0.3's momentum call (+$475). Following the analog majority
+   hurt here. The aggregate capture gain came from *other* days, not this one.
+3. **Fresh-eyes edged the incumbent on reads (45% vs 38%), and on the 5 days they
+   diverged the fresh mind was right more often (2) than the chained mind (1), with 2
+   both-wrong.** On a 21-day sample this is directional, not conclusive — but it is the
+   first *measured* sign that inherited memory is a net drag on reads, exactly the
+   frame lock-in June flagged. The chained agent stood FLAT on 06-24 and 06-26 where
+   the no-memory twin correctly took ROTATION — memory carrying a stale defensive frame.
+
+### What this means for the campaign
+
+- Keep the analog block: 3× capture is worth having, and it's inside the contract.
+- The 60%+ read target is NOT reached by the analog block alone (reads flat at 38%) —
+  so per docs/FOR-ANGUS-c1c2-contract-question.md, "option 3 (analog alone closes it)"
+  is falsified. But the fresh-eyes result points somewhere other than C1/C2: the drag
+  may be *memory itself*, not missing feedback. The cleaner next experiment is likely
+  **reducing/quarantining memory** (fresh-eyes-led reads + analog retrieval, notes used
+  only for continuity not framing) rather than adding a self-referential loop. Flagged
+  for Angus alongside the C1/C2 question.
+- Full fresh-vs-chained ledger: output/v04/jun_divergence.csv, jun_ledger.csv.
+
+---
+
 ## Oracle benchmark (Pat directive, 2026-07-18): all scoreboards now graded vs oracle + stand-down
 
 The objective metric is Angus's oracle + stand-down ceiling (scripts/
