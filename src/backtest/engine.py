@@ -81,6 +81,9 @@ class BacktestConfig(BaseModel):
     rr_floor_partial: float = 1.5  # ANGUS pass-7: "RR floor for the first profit target is 1.5"
     v7_partial_r: float = 1.5     # pass-8 MFE-derived TEST arm: V7 books v5_partial_pct at a
                                   # FIXED +kR milestone (not a structure); trade set = V0's
+    v9_arm_r: float = 6.0         # pass-26 V9 GIVEBACK TRAIL: arms only after this excursion (R)
+    v9_lock_frac: float = 0.5     # pass-26 V9: once armed, stop locks at this fraction of peak MFE
+    v9_floor_r: float = 3.0       # pass-26 V9: ...but never below this many R
     v8_partial_pct: float = 50.0  # pass-17 V8 (ANGUS March style): % booked at first structure;
                                   # runner TRAILS the prior completed 5m swing; premarket fills
                                   # go BE at 09:29 ("BE before the open for volatility")
@@ -220,6 +223,7 @@ class _Pos:
     partial_done: bool = False
     partial_level: float | None = None
     v2_band: float | None = None
+    mfe_pts: float = 0.0          # pass-26 V9: peak favorable excursion since fill (points)
 
 
 # ---------------------------------------------------------------- helpers
@@ -620,6 +624,22 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                                 cur = pos.pending_stop if pos.pending_stop is not None else pos.stop
                                 if (sign == 1 and cand > cur) or (sign == -1 and cand < cur):
                                     pos.pending_stop = cand
+                    # pass-26 V9 (ANGUS "fix that bug"): GIVEBACK TRAIL — arms ONLY after an
+                    # extreme excursion (>= v9_arm_r in R). Rescues the +12R-round-trips-to-a-
+                    # stop-out class (July autopsy: 9 of 134 trades) without capping the tail
+                    # or touching normal trades. Once armed, the stop locks at
+                    # max(v9_floor_r, v9_lock_frac * peakMFE) R, ratcheting as MFE grows;
+                    # like every arm, the move takes effect NEXT bar (pending_stop).
+                    if cfg.mgmt_variant == "V9" and pos is not None:
+                        fav = (h - pos.entry) if sign == 1 else (pos.entry - lo)
+                        pos.mfe_pts = max(pos.mfe_pts, float(fav))
+                        mfe_r = pos.mfe_pts / pos.risk_pts if pos.risk_pts > 0 else 0.0
+                        if mfe_r >= cfg.v9_arm_r:
+                            lock_r = max(cfg.v9_floor_r, cfg.v9_lock_frac * mfe_r)
+                            cand = _round_tick(pos.entry + sign * lock_r * pos.risk_pts, cfg.tick)
+                            cur = pos.pending_stop if pos.pending_stop is not None else pos.stop
+                            if (sign == 1 and cand > cur) or (sign == -1 and cand < cur):
+                                pos.pending_stop = cand
 
         # ---- working order (only when flat) ----
         if pos is None and order is not None:

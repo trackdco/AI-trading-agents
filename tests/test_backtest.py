@@ -487,6 +487,55 @@ def test_ec_displacement_market_fills_but_rejection_rests_limit():
     assert any(v.status == "cancelled_tcancel" for v in vd2)
 
 
+# ------------------------------------------------------------- pass-26 V9 giveback trail
+
+def test_v9_rescues_extreme_excursion_round_trip():
+    # +8R excursion then full round-trip: V0 would exit at the stop for -1R; V9 arms at +6R
+    # and locks max(3R, 0.5*8R)=4R -> exits positive on the way back.
+    c = cfg(mgmt_variant="V9")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)         # risk 10 pts from 25000
+    rows = [(25005, 25006, 25004, 25005),                  # 09:48 trigger bar
+            (25004, 25005, 24999.75, 25002),               # 09:49 fill 25000
+            (25010, 25080.5, 25008, 25078),                # 09:50 +8R excursion -> arms, lock 4R
+            (25070, 25072, 25035, 25040)]                  # 09:51 collapses through 25040 lock
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=stub_resolver(25200),   # target far away (never hit)
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "stop"
+    assert rec.exit_price >= 25039.0                       # locked ~+4R, not the original stop
+    assert rec.r_multiple > 3.0
+
+
+def test_v9_inert_below_arm_threshold():
+    # +4R excursion then round-trip: V9 never arms -> identical to V0 (-1R at original stop)
+    c = cfg(mgmt_variant="V9")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),
+            (25004, 25005, 24999.75, 25002),               # fill 25000
+            (25010, 25040.5, 25008, 25038),                # +4R only — below the 6R arm
+            (25030, 25032, 24989.5, 24991)]                # round-trips to the original stop
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=stub_resolver(25200),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    assert tr_[0].exit_price <= 24990.0                    # original stop, 1-tick slip allowed
+    assert tr_[0].r_multiple < 0
+
+
+def test_v9_does_not_block_target():
+    c = cfg(mgmt_variant="V9")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),
+            (25004, 25005, 24999.75, 25002),               # fill 25000
+            (25030, 25101, 25028, 25100)]                  # straight to target
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1 and tr_[0].exit_reason == "target"
+
+
 # ------------------------------------------------------------- pass-22 E5 order-block entry
 
 def test_e5_rests_limit_at_ob_mid_with_block_stop():
