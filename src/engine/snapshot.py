@@ -131,14 +131,23 @@ def _htf_regime(closed_1m: pd.DataFrame, ts: pd.Timestamp) -> str:
     return "uptrend" if up else "downtrend" if down else "range"
 
 
+_INCLUDE_OTE_CACHE: bool | None = None
+
+
 def _include_ote() -> bool:
-    import yaml
-    from pathlib import Path
-    try:
-        c = yaml.safe_load(open(Path("config/strategy.yaml")))
-        return bool(c.get("cluster", {}).get("include_ote", False))
-    except Exception:
-        return False
+    """Config flag, memoized: the flag cannot change mid-run, and re-parsing the YAML per
+    candle was ~24% of detection wall-time (pass-24 profile). Detection scripts that force
+    OTE on monkeypatch this function itself, so the memo never masks an override."""
+    global _INCLUDE_OTE_CACHE
+    if _INCLUDE_OTE_CACHE is None:
+        import yaml
+        from pathlib import Path
+        try:
+            c = yaml.safe_load(open(Path("config/strategy.yaml")))
+            _INCLUDE_OTE_CACHE = bool(c.get("cluster", {}).get("include_ote", False))
+        except Exception:
+            _INCLUDE_OTE_CACHE = False
+    return _INCLUDE_OTE_CACHE
 
 
 _OTE_FIBS = (0.382, 0.5, 0.618, 0.705, 0.786)   # ANGUS pass-22: 0.382 aggressive-continuation

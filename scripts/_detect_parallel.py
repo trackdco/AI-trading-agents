@@ -47,7 +47,13 @@ def _one_day(task):
     if _df[(_df["ts_event"] >= start) & (_df["ts_event"] <= end)].empty:
         out.write_text("")                       # holiday / missing session marker
         return day, 0
-    trigs = detect_triggers(_df, start=start, end=end)
+    # 10-day trailing window: verified result-IDENTICAL to full history on sample days
+    # across the dataset (pass 24) — all indicators are session/rolling-scoped, and the
+    # HTF fractal regime only reads the most recent swings. Detection cost becomes flat
+    # ~22s/day instead of growing with dataset position (July was 5.7x slower).
+    sub = _df[(_df["ts_event"] >= start - pd.Timedelta(days=10))
+              & (_df["ts_event"] < end + pd.Timedelta(minutes=1))].reset_index(drop=True)
+    trigs = detect_triggers(sub, start=start, end=end)
     pd.DataFrame([t.model_dump() for t in trigs]).to_csv(out, index=False)
     return day, len(trigs)
 
