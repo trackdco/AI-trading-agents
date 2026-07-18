@@ -94,3 +94,48 @@ in either direction:
 - **FAIL:** agent arm red on the quarter → the insurance-premium critique stands
   everywhere, not just in green months, and the design pivots (fresh-eyes panel,
   briefing features, or deeper).
+
+## THE INFORMATION BUMP (v0.5) — Angus-approved direction, 18 Jul (late)
+
+Three measured defects, one root cause: the agent decides in an information
+vacuum and is never billed. The bump is three wires, landed as ONE version
+(D1 one-bump rule) so attribution stays clean, graded reads-first:
+
+- **W1 (fixes: empty feedback loop).** Sequential driver appends the
+  `yesterday_result` block (spec in TASK-FOR-PAT doc): realized / full-size
+  counterfactual / oracle dollars + sizing_regret + rolling-20d cumulative
+  regret and expectancies. Mechanical, no agent turn. — Pat
+- **W2 (fixes: unpriced fear inputs).** Briefing joins the two retrieval tables:
+  `analog_days` (A1 block, built — the "15 mornings like this and what paid")
+  and the base-rates digest (built, --asof for replays). Every danger signal now
+  arrives priced. — Pat wiring; engine tables done
+- **W3 (fixes: magnitude blindness).** Prompt bump: reason and justify in
+  expectancy DOLLARS, not event probabilities; sizing notches widened to
+  {0, 0.25, 0.5, 0.75, 1.0}; verdict schema adds `expected_value_usd` (its own
+  stated EV, so calibration becomes gradeable per C3). — Pat prompt/schema
+
+Exam unchanged: May 2026 + Q2 2025 (post-calendar, base rates --asof
+2025-04-01), reads before P&L, sizing graded on score_sizing.py discrimination.
+
+## PREDICTIONS P5–P8 (filed before any v0.5 run — grade me)
+
+- **P5 (reads).** 3-way reads on exam months: 50–58% (from ~40% avg). Hard
+  floor: the agent must beat the mechanical analog-majority baseline (52% in
+  2026, 44% in 2025). If the agent reads BELOW the majority-of-analogs it is
+  subtracting judgment from retrieval — that would be a design-level fail, not
+  a tuning miss.
+- **P6 (sizing).** Discrimination (avg size winners − losers) from +0.09 to
+  ≥ +0.20; cost-on-winners down 40–60% while saved-on-losers holds within
+  ±25%; net sizing effect ≥ −$500/quarter (from −$3,810/4mo).
+- **P7 (money).** Green-month capture 30–40% (from 17–27%). Q2 2025 exam: PASS
+  per the pre-registered bar (≥ $0), central estimate +$2,500–5,500 vs the
+  +$18,132 ceiling (14–30% capture) — vol-normalization gate G7 is the main
+  drag risk on this one.
+- **P8 (new failure mode this bump can CREATE).** Regret feedback can over-swing
+  the agent aggressive (counterfactual-chasing: "yesterday's caution cost $800 →
+  size 1.0 always"), and base-rate priors can make it lazy ("priors say flat,
+  skip reading today's tape"). Detection is already built: under-FLAT cost line
+  (E4 scorecard) rising month-over-month = over-aggression; verdicts citing
+  priors without same-day tape evidence in cited_evidence = laziness; fresh-eyes
+  divergence spiking = either. Named in advance so nobody discovers it in a
+  crash-out.
