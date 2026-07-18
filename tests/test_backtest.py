@@ -420,6 +420,30 @@ def test_v7_partial_then_stop_is_net_winner():
     assert rec.r_multiple > 0
 
 
+# ------------------------------------------------------------- pass-17 EC contextual entry
+
+def test_ec_displacement_market_fills_but_rejection_rests_limit():
+    # EC: a displacement trigger market-fills next bar open+slip even when price runs away;
+    # a rejection trigger with the same tape rests an E3 limit and gets t_cancelled instead.
+    c = cfg(entry_variant="EC")
+    runaway = [(25005, 25006, 25004, 25005),
+               (25006, 25030, 25005, 25028),
+               (25030, 25101, 25028, 25100)]
+    t_disp = trig("2026-02-11 09:48", stop_ref=24995.0)
+    t_disp = t_disp.model_copy(update={"kind": "displacement"})
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", runaway), [t_disp], c,
+                          target_resolver=stub_resolver(25100),
+                          entry_price_fn=None, calendar=EMPTY_CAL)
+    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(25006 + 0.25)
+
+    t_rej = trig("2026-02-11 09:48", stop_ref=24995.0)   # kind=rejection_block, entry_ref 25000
+    tr2, vd2, _ = simulate(mk_bars("2026-02-11 09:48", runaway), [t_rej], c,
+                           target_resolver=stub_resolver(25100),
+                           entry_price_fn=None, calendar=EMPTY_CAL)
+    assert tr2 == []
+    assert any(v.status == "cancelled_tcancel" for v in vd2)
+
+
 # ------------------------------------------------------------- pass-12 overnight window
 
 def test_overnight_window_wraps_midnight_and_eod_flatten_spares_overnight_positions():

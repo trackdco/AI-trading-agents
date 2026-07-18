@@ -220,6 +220,13 @@ class _Pos:
 
 # ---------------------------------------------------------------- helpers
 
+def _is_market_entry(cfg, trig) -> bool:
+    """pass-17 EC (ANGUS's actual execution): market entry for DISPLACEMENT triggers,
+    resting limit for rejection blocks. E4 = market for everything (tournament arm)."""
+    return cfg.entry_variant == "E4" or (
+        cfg.entry_variant == "EC" and trig.kind == "displacement")
+
+
 def _round_tick(p: float, tick: float) -> float:
     return round(round(p / tick) * tick, 10)
 
@@ -472,9 +479,13 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             return (t.wick_low + t.wick_high) / 2
         if cfg.entry_variant == "E3":                       # §5.3 E3: penetrated level nearest close
             return t.entry_ref
-        if cfg.entry_variant == "E4":                       # pass-9 E4: MARKET on the next bar.
-            return t.close                                  # build-time reference for the gates;
+        if cfg.entry_variant == "E4" or (cfg.entry_variant == "EC"
+                                         and t.kind == "displacement"):
+            return t.close                                  # MARKET on the next bar (E4/EC-disp):
+                                                            # build-time reference for the gates;
                                                             # actual fill = next bar open +/- slip
+        if cfg.entry_variant == "EC":                       # EC rejection block -> E3 limit
+            return t.entry_ref
         # E1: BB basis of the trigger TF at trigger time (§5.3)
         from src.engine.indicators import indicators_asof, load_indicators_config
         ind = indicators_asof(df_1m, pd.Timestamp(t.ts), load_indicators_config())
@@ -594,9 +605,9 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                 veto(t, "cancelled_window_end", f"unfilled at {cfg.win_end}")
                 order = None
             else:
-                if cfg.entry_variant == "E4":
-                    # pass-9 E4: MARKET entry — fills unconditionally on this (next) bar at the
-                    # open with adverse slippage; no resting limit, so T_cancel never applies.
+                if _is_market_entry(cfg, t):
+                    # E4/EC-displacement: MARKET entry — fills unconditionally on this (next)
+                    # bar at the open with adverse slippage; no resting limit, no T_cancel.
                     ran, fillable = False, True
                 else:
                     ran = (h >= order.limit + cfg.t_cancel) if sign == 1 else \
@@ -619,14 +630,14 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                         # open (favourable), not the limit — otherwise a same-bar gap past the stop
                         # books a phantom loss (entry at limit, exit at open). risk_pts stays the
                         # INTENDED risk (limit->stop, the R currency); actual P&L uses the real fill.
-                        if cfg.entry_variant == "E4":
+                        if _is_market_entry(cfg, t):
                             # market order crosses the spread: open + adverse slippage; the R
                             # currency is the ACTUAL fill->stop distance (no resting price exists)
                             sl_in = slip.ticks(ts)
                             fill_px = _round_tick(o + sign * sl_in * cfg.tick, cfg.tick)
                         else:
                             fill_px = min(order.limit, o) if sign == 1 else max(order.limit, o)
-                        if cfg.entry_variant == "E4" and sign * (fill_px - order.stop) <= 0:
+                        if _is_market_entry(cfg, t) and sign * (fill_px - order.stop) <= 0:
                             # opened at/beyond the stop: a market entry here is instant dead risk
                             st["fills"] -= 1
                             veto(t, "cancelled_gap_through_stop",
@@ -637,7 +648,7 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                             pos = _Pos(order=order, entry=fill_px, fill_ts=ts,
                                        stop=order.stop,
                                        risk_pts=(abs(fill_px - order.stop)
-                                                 if cfg.entry_variant == "E4"
+                                                 if _is_market_entry(cfg, t)
                                                  else abs(order.limit - order.stop)))
                             pos.partial_level = order.partial_level
                             pos.v2_band = order.v2_band
