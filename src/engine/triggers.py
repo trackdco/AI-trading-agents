@@ -233,7 +233,11 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
             ind = indicators_asof(df_1m, t, cfg)
             levels = _gather_levels(ind, ind.get("daily_profile") or {})
             if _include_ote():                       # ANGUS pass-22 fib confluence (split arm)
-                closed_now = df_1m[df_1m["ts_event"] < t]
+                # 10-day lookback: fractal fibs use only the most RECENT swing pair, so a
+                # trailing window is result-identical to full history (>= 60 4H blocks vs
+                # the 7-bar minimum) and keeps per-candle resampling tractable.
+                closed_now = df_1m[(df_1m["ts_event"] < t)
+                                   & (df_1m["ts_event"] >= t - pd.Timedelta(days=10))]
                 levels = levels + _ote_levels(closed_now, t)
             if len(levels) < 2:
                 continue
