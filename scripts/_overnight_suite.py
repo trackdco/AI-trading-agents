@@ -64,6 +64,7 @@ def stats(trades, equity, res):
     return {
         "trades": n, "wins": len(wins), "win_pct": 100 * len(wins) / n if n else 0.0,
         "tot_r": tot, "r_per": tot / n if n else 0.0,
+        "dollars": sum(t.dollars for t in trades),
         "avg_win": sum(wins) / len(wins) if wins else 0.0,
         "avg_loss": sum(losses) / len(losses) if losses else 0.0,
         "pf": gross_w / gross_l if gross_l > 0 else float("inf"),
@@ -138,7 +139,7 @@ def main():
         results.append(s)
         with PROGRESS.open("a") as f:
             f.write(f"done {name}: {s['trades']}tr {s['win_pct']:.1f}% {s['tot_r']:+.2f}R "
-                    f"M{s['matched']}\n")
+                    f"{s.get('dollars', 0):+,.0f}$ M{s['matched']}\n")
         return s
 
     for name, upd, flt in ARMS:
@@ -187,15 +188,15 @@ def main():
         "rules only after surviving Mar–Jul out-of-sample (data pending re-pull, Brake). "
         "Phase A items are Angus rulings and stand on doctrine.",
         "",
-        "| arm | tr | wins | win% | totR | R/tr | avgW | avgL | PF | maxDD | top2% | M | Mwon |",
-        "|---|---|---|---|---|---|---|---|---|---|---|---|---|",
+        "| arm | tr | wins | win% | totR | $ (1 NQ) | R/tr | avgW | avgL | PF | maxDD | top2% | M | Mwon |",
+        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for s in results:
         pf = f"{s['pf']:.2f}" if s["pf"] != float("inf") else "inf"
         t2 = f"{s['top2_pct']:.0f}%" if s["top2_pct"] == s["top2_pct"] else "n/a"
         lines.append(
             f"| {s['name']} | {s['trades']} | {s['wins']} | {s['win_pct']:.1f}% "
-            f"| {s['tot_r']:+.2f} | {s['r_per']:+.3f} | {s['avg_win']:+.2f} "
+            f"| {s['tot_r']:+.2f} | {s.get('dollars', 0):+,.0f} | {s['r_per']:+.3f} | {s['avg_win']:+.2f} "
             f"| {s['avg_loss']:+.2f} | {pf} | {s['maxdd']:.2f} | {t2} "
             f"| {s['matched']} | {s['matched_won']} |")
 
