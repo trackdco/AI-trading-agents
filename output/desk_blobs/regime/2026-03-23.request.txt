@@ -1,6 +1,9 @@
 ---
 name: regime-context
-version: 0.1.0
+version: 0.2.0
+# 0.2.0: hindsight decontamination — removed dated references to specific 2026
+# months/outcomes so walk-forward replays over those months are not seeded with
+# their own future. Principles kept, dates and outcomes removed.
 tools: []
 # tools MUST stay empty (blueprint §6.1): this agent reads its briefing and nothing
 # else — no files, no web, no shell. The runner enforces it; the frontmatter declares it.
@@ -14,10 +17,10 @@ BEFORE the open, you read one pre-open briefing and answer a single question:
 **what kind of day is the market set up for, and which playbook (if any) should the
 mechanical engine be allowed to run?**
 
-Why you exist: in March 2026 the engine's mean-reversion playbook lost for a month
-straight because the tape was a one-way risk-off trend under open hostilities —
-entries were locally fine; the REGIME was wrong. Your job is to catch that class of
-error using only what is knowable each morning.
+Why you exist: a mean-reversion playbook that is locally correct trade-by-trade
+still loses relentlessly when the tape enters a persistent one-way risk regime —
+entries fine, REGIME wrong. Your job is to catch that class of morning using only
+what is knowable before the open.
 
 ## Hard rules (violating any invalidates your output)
 
@@ -97,6 +100,6 @@ If not standing down, permit at least one structure.
 ---
 
 BRIEFING (JSON, your ONLY source of facts):
-{"analog_days": "L2 analog module not available", "calendar": [{"event": "Flash Manufacturing PMI", "impact": "high", "today": false, "when": "2026-03-21T09:45:00-04:00"}, {"event": "FOMC Member Powell Speaks", "impact": "medium", "today": false, "when": "2026-03-21T13:30:00-04:00"}], "cutoff_et": "2026-03-23T08:00:00-04:00", "date": "2026-03-23", "news": "news archive not available (arm B)", "overnight": {"gap_vs_prior_close_pts": 172.75, "net_pts": 488.0, "range_pts": 990.5}, "playbook_notes": "(none yet)", "regime_vector": {"day": "2026-03-23", "day_type": "imbalanced", "gap_open_pts": 175.5, "imbal_share_10": 0.7, "imbal_share_20": 0.55, "range_pctl_20": 0.75, "red_folder_today": "0", "streak_imbal": "0", "trap_rate_10": 0.1}, "schema_version": "1.0", "shock_bars": {"count": 48, "largest": {"range_pts": 489.75, "ts": "2026-03-23 07:05:00-04:00"}, "threshold_pts": 55.5}, "trailing_sessions": [{"close": 24958.0, "date": "2026-03-09", "net_pts": 522.75, "range_pts": 1058.0}, {"close": 25010.5, "date": "2026-03-10", "net_pts": 29.0, "range_pts": 387.5}, {"close": 24945.5, "date": "2026-03-11", "net_pts": -64.75, "range_pts": 306.5}, {"close": 24568.5, "date": "2026-03-12", "net_pts": -366.0, "range_pts": 431.5}, {"close": 24335.25, "date": "2026-03-13", "net_pts": -231.75, "range_pts": 471.5}, {"close": 24872.25, "date": "2026-03-16", "net_pts": 372.25, "range_pts": 543.5}, {"close": 25027.5, "date": "2026-03-17", "net_pts": 157.5, "range_pts": 388.75}, {"close": 24606.25, "date": "2026-03-18", "net_pts": -413.5, "range_pts": 645.0}, {"close": 24617.0, "date": "2026-03-19", "net_pts": -5.0, "range_pts": 398.5}, {"close": 24217.25, "date": "2026-03-20", "net_pts": -415.5, "range_pts": 689.25}], "trailing_stats": {"directional_streak_days": 3, "net_10d_pts": -415.0, "net_5d_pts": -304.25, "pct_off_window_high": 3.281, "pct_off_window_low": 1.747}, "weekday": "Monday"}
+{"analog_days": "L2 analog module not available", "calendar": [{"event": "Flash Manufacturing PMI", "impact": "high", "today": false, "when": "2026-03-21T09:45:00-04:00"}, {"event": "FOMC Member Powell Speaks", "impact": "medium", "today": false, "when": "2026-03-21T13:30:00-04:00"}], "cutoff_et": "2026-03-23T08:00:00-04:00", "date": "2026-03-23", "news": "news archive not available (arm B)", "overnight": {"gap_vs_prior_close_pts": 172.75, "net_pts": 488.0, "range_pts": 990.5}, "playbook_notes": "2026-03-23 (first entry): Trailing 10d is risk-off — net_10d -415, net_5d -304.25, 3-day down streak into Mar 20, price near window low (1.747% off low, 3.281% off high). Overnight Mon brought an unscheduled violent counter-trend shock: +488 net, 990.5pt range, 489.75pt single bar at 07:05, 48 bars over the 55.5pt shock threshold — no red-folder event on today's calendar and no news feed (arm B) to attribute it. Called event_risk / full stand-down: fading the shock and chasing it both look bad. Watch tomorrow: if the up-move holds and shock bars subside, this may be a regime turn off the lows (possible war-regime flip to upside or trap setup on the gap); if it fully retraces, the down war regime resumes — bias short, continuation-only. Do not treat low trap_rate_10 (0.1) as license for breakout takes while shock count is this elevated. Re-arm normal sizing only after a session with contained ranges and shock count back near baseline.", "regime_vector": {"day": "2026-03-23", "day_type": "imbalanced", "gap_open_pts": 175.5, "imbal_share_10": 0.7, "imbal_share_20": 0.55, "range_pctl_20": 0.75, "red_folder_today": "0", "streak_imbal": "0", "trap_rate_10": 0.1}, "schema_version": "1.0", "shock_bars": {"count": 48, "largest": {"range_pts": 489.75, "ts": "2026-03-23 07:05:00-04:00"}, "threshold_pts": 55.5}, "trailing_sessions": [{"close": 24958.0, "date": "2026-03-09", "net_pts": 522.75, "range_pts": 1058.0}, {"close": 25010.5, "date": "2026-03-10", "net_pts": 29.0, "range_pts": 387.5}, {"close": 24945.5, "date": "2026-03-11", "net_pts": -64.75, "range_pts": 306.5}, {"close": 24568.5, "date": "2026-03-12", "net_pts": -366.0, "range_pts": 431.5}, {"close": 24335.25, "date": "2026-03-13", "net_pts": -231.75, "range_pts": 471.5}, {"close": 24872.25, "date": "2026-03-16", "net_pts": 372.25, "range_pts": 543.5}, {"close": 25027.5, "date": "2026-03-17", "net_pts": 157.5, "range_pts": 388.75}, {"close": 24606.25, "date": "2026-03-18", "net_pts": -413.5, "range_pts": 645.0}, {"close": 24617.0, "date": "2026-03-19", "net_pts": -5.0, "range_pts": 398.5}, {"close": 24217.25, "date": "2026-03-20", "net_pts": -415.5, "range_pts": 689.25}], "trailing_stats": {"directional_streak_days": 3, "net_10d_pts": -415.0, "net_5d_pts": -304.25, "pct_off_window_high": 3.281, "pct_off_window_low": 1.747}, "weekday": "Monday"}
 
-Respond with EXACTLY one JSON object matching the verdict schema. Set "agent_version" to "5038a3ac1d44" and "date" to "2026-03-23". No prose outside the JSON.
+Respond with EXACTLY one JSON object matching the verdict schema. Set "agent_version" to "989b47c01fd6" and "date" to "2026-03-23". No prose outside the JSON.
