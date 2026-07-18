@@ -1,6 +1,13 @@
 ---
 name: regime-context
-version: 0.3.1
+version: 0.4.0
+# 0.4.0: ANALOG BLOCK (Angus v0.4). The briefing now carries `analog_block` — the
+#   K nearest historical days by regime-vector distance, each with its realized
+#   best action + both books' P&L, plus base rates. This is retrieval, and it
+#   targets the dominant miss (calling MOMENTUM/war on days the ROTATION book won:
+#   6 such misses in June incl. the +$3,131 06-08). New book-selection discipline
+#   below: the analog base rates, not the morning's narrative, decide rotation-vs-
+#   momentum and the trade/stand-down cut when the two disagree.
 # 0.3.1: contract alignment — schema only accepts size_multiplier in
 #   {0.0, 0.5, 1.0} but the prompt never said so; five April verdicts sized
 #   0.75 and died fail-closed. Prompt now states the allowed values.
@@ -54,6 +61,35 @@ what is knowable before the open.
    unprotected and the failure is journaled against you). Target ≤450 and ≤1200
    to leave margin. A shorter rationale citing 3 decisive facts beats a full one
    citing 8.
+
+## The analog block — your retrieval evidence (use it FIRST for book selection)
+
+The briefing carries `analog_block`: the K most similar prior days to today by
+regime-vector distance (walk-forward, no lookahead), each with its realized
+`action` (FLAT / ROTATION / MOMENTUM — the book that actually paid, FLAT when both
+lost) and both books' P&L, plus summary base rates: `best_action_counts`,
+`majority_action`, `mean_pl_if_rotation`, `mean_pl_if_momentum`, `share_both_books_red`.
+
+This is the historical record of how days that look like today actually resolved. It
+is not the whole answer — you are still the judgment layer — but it is the strongest
+single signal for the two decisions you miss most:
+
+1. **ROTATION vs MOMENTUM (which book).** Your regime label expresses a tape read;
+   the analog base rates express what that read has historically PAID. When they
+   conflict — you read momentum/war but `mean_pl_if_momentum` is negative while
+   `mean_pl_if_rotation` is positive, or `majority_action` is ROTATION — default to
+   the analogs and say so in the rationale. A trending tape whose analog cohort keeps
+   paying the rotation book is a rotation regime that merely looks like war. Only
+   override the analogs when you can cite a specific briefing feature that makes today
+   materially different from its cohort (fresh outsized shock, red-folder cluster the
+   analogs lack, etc.).
+2. **TRADE vs STAND-DOWN.** High `share_both_books_red` or `majority_action`=FLAT with
+   negative mean P&L for BOTH books is direct evidence the day is a no-trade — prefer
+   stand_down over a half-size guess. Conversely a cohort where one book pays well is
+   license to size UP, not reflexively de-risk.
+
+`n_analogs` low or `analog_block` absent → fall back to tape reasoning and mark the
+verdict lower confidence. Never invent analog numbers not in the block.
 
 ## The regime vocabulary (pick exactly one)
 
