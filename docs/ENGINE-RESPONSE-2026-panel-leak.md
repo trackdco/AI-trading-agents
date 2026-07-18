@@ -61,3 +61,27 @@ Fixing event-day reads alone bridges as-run 15% → 60% capture upper bound in
 measured — memory quarantine (June: reads 45% vs 38%), analog retrieval (3×
 capture), sizing discipline — comes within an order of magnitude of this single
 miss class. B1/B2 is the campaign.
+
+## 5. MEASURED (Angus "run it", 18 Jul): the delayed-entry test, all four years
+
+Blanket delay FAILED (sign-flips by year — another dead reflex). But splitting by
+RELEASE TIME exposed two conditional rules:
+
+| rule | 4-yr effect | by year |
+|---|--:|---|
+| **R1: release ≤ 09:30 → MOMENTUM entries wait for release+10min** | **+$9,765** | +335 / +7,305 / +2,030 / +95 — green ALL FOUR years |
+| **R2: release at 10:00+ → no ROTATION entries pre-release** | **+$3,251** | +1,212 / +559 / +2,278 / −798 — green 3 of 4 |
+| combined two-rule floor (event days, books unchanged otherwise) | **+$13,018** | +1,548 / +7,864 / +4,308 / −702 |
+
+Tape logic: post-release displacement is momentum structure (wait for the number,
+trade the reaction); pre-10:00 chop poisons rotation reclaims (don't fade a
+market that's waiting). Caveats, stated plainly: R1's magnitude is concentrated
+in 2024 (+$7.3k of $9.8k); 2026 is the weakest year for both rules (−$702
+combined) — the floor is an off-era edge that roughly breaks even in-era. Do NOT
+extend either rule beyond its bucket (rotation-early and momentum-late both
+sign-flip).
+
+**v0.6 shape:** engine enforces R1/R2 as the mechanical timing floor
+(config-gated, split-testable); the agent's 08:00 verdict arms book/size on top
+and may still stand down with non-calendar evidence. Event-day capture then has
+three layers: timing floor (mechanical), book choice (agent), size (agent).
