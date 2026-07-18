@@ -53,6 +53,12 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — First order-book depth sample landed (Claude Code, Brake driving)
+- **Committed `data/reference/nq_depth_sample_apr1_2026.csv` (+.md provenance):** NQ mbp-10 depth, Apr 1 08:00-11:00 ET, front-month only, 1-min book snapshots x 20 levels (3,600 rows, ~0.1 MB). Condensed by Brake locally from his Databento batch job `GLBX-20260718-7TJ76U958U` (raw ~4.9 GB stays OUT of git on his machine — per team agreement). Prices cross-validated against `data/nq_1m.parquet` (exact window match).
+- Job condition notes: Apr 4/11 missing (weekend), Apr 10 `degraded` — skip Apr 10 if condensing more days.
+- **Guardrail restated:** depth/order-flow is for HUMAN study + live-phase visual prototyping ONLY — never an engine/backtest input (replay-inaccurate; same basis as the MIG exclusion, §2).
+
+
 ### 2026-07-18 — Pass 22: ANGUS RULINGS — RSI banned; rulebook v2.0 rewrite ordered; FIB extended to HTF ranges; calibration window = Feb→Apr (Claude Code, Angus driving)
 - **RSI: BANNED** ("fucking useless") — the open divergence question is closed; no RSI anywhere in the system.
 - **Rulebook rewrite ORDERED:** strategy doc goes to v2.0 reflecting the real strategy: FIB added (intraday impulse legs + HTF ranges), MIG marked PENDING (awaiting order-book data), EC/V8/level-memory mechanisms, session scope. Queued after the OTE/E5 build so it documents as-built behavior; Angus signs off (doc authority).
