@@ -1,6 +1,13 @@
 ---
 name: regime-context
-version: 0.6.0
+version: 0.6.1
+# 0.6.1: OVERSHOOT CORRECTION. v0.6 fixed the over-standing-down (FLAT 70%->35%) and
+#   lifted capture (15%->19%) but overshot — it traded too much (35% flat vs the oracle's
+#   50%) and the leak shifted to WRONG-BOOK trades. Two anchors to the analog majority:
+#   (a) stand down when majority_action==FLAT (retrieval no-trade signal, pulls flat rate
+#   back toward 50%); 0.25 is only for a weak BOOK signal, never for "unsure whether to
+#   trade". (b) the book you arm IS majority_action when it names one — the tape narrative
+#   no longer overrides the cohort's realized book (kills the rotation-called-momentum leak).
 # 0.6.0: EVENT-DAY FIX (Angus B1/B2, whole-2026 leak evidence). The event_risk->
 #   stand_down reflex was 52% of all regret — event days are disproportionately the
 #   biggest DIRECTIONAL WINNERS, and no pre-open feature identifies the true no-trade
@@ -83,21 +90,26 @@ This is the historical record of how days that look like today actually resolved
 is not the whole answer — you are still the judgment layer — but it is the strongest
 single signal for the two decisions you miss most:
 
-1. **ROTATION vs MOMENTUM (which book).** Your regime label expresses a tape read;
-   the analog base rates express what that read has historically PAID. When they
-   conflict — you read momentum/war but `mean_pl_if_momentum` is negative while
-   `mean_pl_if_rotation` is positive, or `majority_action` is ROTATION — default to
-   the analogs and say so in the rationale. A trending tape whose analog cohort keeps
-   paying the rotation book is a rotation regime that merely looks like war. Only
-   override the analogs when you can cite a specific briefing feature that makes today
-   materially different from its cohort (fresh outsized shock, red-folder cluster the
-   analogs lack, etc.).
-2. **TRADE vs STAND-DOWN vs REDUCED-ARM.** A HIGH `share_both_books_red` (e.g. ≳0.6)
-   with negative mean P&L for BOTH books is the affirmative evidence that licenses a
-   real stand-down — cite it. A cohort where one book clearly pays is license to size
-   UP (0.5–1.0), not to de-risk. The common middle case — cohort mixed, one book mildly
-   positive, no strong both-red signal — is a **0.25 reduced-arm** day, NOT a stand-down:
-   arm the better book small. Do not read a merely mediocre cohort as a no-trade.
+1. **ROTATION vs MOMENTUM (which book) — the analog majority DECIDES, not the label.**
+   When `majority_action` is ROTATION or MOMENTUM, that is the book you arm, full stop —
+   the regime label you'd have guessed does not override it. (v0.6 evidence: the residual
+   leak is wrong-book trades — calling rotation when momentum won and vice versa — because
+   the tape narrative was trusted over the retrieval.) You may override the majority ONLY
+   by citing a SPECIFIC briefing feature that makes today materially different from its
+   cohort (fresh outsized shock, a red-folder cluster the analogs lack) — and say so
+   explicitly. "My read is war so I'll take momentum" is NOT an override; the cohort's
+   realized book beats the morning's story.
+2. **TRADE vs STAND-DOWN vs REDUCED-ARM — anchored to `majority_action`.**
+   - `majority_action` == **FLAT** → **stand down** (0.0). The cohort of similar days mostly
+     did not pay; this is the retrieval-based no-trade signal and it is what keeps your
+     flat rate near the oracle's ~50%. (Reinforce, don't require: also flat when
+     `share_both_books_red` ≳0.6.)
+   - `majority_action` is a **book** and its `mean_pl_if_<book>` is clearly positive →
+     **size UP** (0.5, or 1.0 on a strong one-sided cohort). Arm that book.
+   - `majority_action` is a **book** but the edge is thin / the cohort is split → **0.25
+     reduced-arm** on that book. This is the middle tier, NOT a licence to trade every day.
+   Do not reduce a FLAT-majority day to a 0.25 "just in case" — a FLAT cohort is a
+   stand-down. 0.25 is for a weak BOOK signal, not for doubt about whether to trade at all.
 
 `n_analogs` low or `analog_block` absent → fall back to tape reasoning and mark the
 verdict lower confidence. Never invent analog numbers not in the block.
@@ -174,12 +186,19 @@ If not standing down, permit at least one structure. `size_multiplier` is a
 four-notch dial — 0.0 (stand down), 0.25 (reduced-arm), 0.5 (de-risked), 1.0
 (normal) — any other number (0.75, 0.1, …) fails validation and voids the verdict.
 
-**Choosing between 0.0 and 0.25 (the v0.6 discipline).** Standing down forfeits the
-day entirely; a wrong stand-down on a directional day is the desk's costliest error.
-So `stand_down`/0.0 is now reserved for days you can affirmatively argue are
-untradeable — cite it: fresh outsized overnight shock with no direction, or an analog
-cohort with a high `share_both_books_red`. A calendar event alone is NEVER sufficient.
-When you are merely UNSURE (mixed tape, low conviction, event pending), use **0.25** —
-arm the better book at a small stake so a directional day still pays something, instead
-of hiding and capturing nothing. Prefer 0.25 over stand-down whenever doubt, not
-conviction, is what's driving you toward flat.
+**Choosing the size notch (v0.6.1 — corrected after the v0.6 overshoot).** v0.6 swung
+too far: it stood down on only 35% of days when the oracle wanted ~50%, and traded so
+many marginal days that wrong-book picks became the new leak. The correction is to anchor
+the notch to the analog `majority_action`, not to your feeling of doubt:
+
+- **0.0 (stand down)** — when `majority_action` == FLAT, or `share_both_books_red` ≳0.6.
+  This is your no-trade signal; it is what pulls your flat rate back toward the oracle's
+  50%. A calendar event alone is still NEVER sufficient — but a FLAT-majority cohort IS.
+- **0.25 (reduced-arm)** — `majority_action` is a book but the edge is thin or the cohort
+  is split. Arm that book small. This is NOT the default for "unsure whether to trade" —
+  an unsure-whether-to-trade day with a FLAT-leaning cohort is a stand-down, not a 0.25.
+- **0.5 / 1.0** — `majority_action` is a book with a clearly positive mean; size to the
+  strength and one-sidedness of the cohort.
+
+Reserve 0.25 for a weak BOOK signal, and reserve 0.0 for a FLAT cohort. Do not blur them:
+the v0.6 failure was turning FLAT-cohort days into 0.25 trades "just in case."
