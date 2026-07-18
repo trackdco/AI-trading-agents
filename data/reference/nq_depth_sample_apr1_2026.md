@@ -16,3 +16,9 @@
   backtest — it is replay-inaccurate by nature (same reason MIG LiquidityEdge was excluded,
   strategy-doc §2). This sample exists for HUMAN study (where liquidity walls sat vs the
   engine's levels) and for prototyping live-phase visual tools only.
+
+## London window added (2026-07-18)
+`nq_depth_sample_apr1_2026_london.csv` — same day/recipe, **02:00–05:59 ET** (Angus's London
+request, pass-28): 4,800 rows = 240 min x 20 levels, prices 24,004.5–24,177.5. NY-window file
+unchanged. Remaining Apr 2–9 sessions pending (Brake's condenser had a date-parsing bug that
+skipped them; fixed, re-run in progress).
