@@ -38,9 +38,11 @@ def test_cluster_types_unique():
 
 
 def test_desk_context_optional_and_accepted():
-    r = JournalRecord(**MIN, regime_verdict="war/short/0.5", htf_verdict="trend_down/segment/no_fade",
+    r = JournalRecord(**MIN, regime_call="war", regime_conf="high", playbook="continuation_only",
+                      htf_verdict="trend_down/segment/no_fade", analog_k_winrate=0.4,
                       gates_applied=["regime_size_0.5", "htf_no_fade"], size_multiplier_applied=0.5)
     assert r.size_multiplier_applied == 0.5 and "htf_no_fade" in r.gates_applied
+    assert r.regime_call == "war" and r.analog_k_winrate == 0.4
 
 
 def test_from_trade_record_adapter():
@@ -53,9 +55,9 @@ def test_from_trade_record_adapter():
         exit_reason="target", points=32.25, r_multiple=2.1, size=1.0, dollars=645.0,
         slippage_ticks=1, mgmt_variant="V0",
     )
-    r = from_trade_record(tr, config_hash="champion@deadbeef", regime_verdict="balance/neutral/0.5")
+    r = from_trade_record(tr, config_hash="champion@deadbeef", regime_call="balance")
     assert r.confluence_count == 3 and r.risk_pts == pytest.approx(15.25)
-    assert r.win is True and r.regime_verdict == "balance/neutral/0.5"
+    assert r.win is True and r.regime_call == "balance"
 
 
 def test_coverage_report_flags_engine_gaps():

@@ -6,10 +6,14 @@ single contract shared by (a) the backtester's per-trade output, (b) the
 walk-forward replay's memory, and (c) the live execution feed later. Per the
 task doc it EXTENDS the engine's `TradeRecord` rather than duplicating it.
 
-STATUS: PROPOSED — needs engine-lane + Angus ratification before it is the
-frozen contract (docs/REGIME-ADAPTATION-DESIGN.md prerequisite #2: "journal
-schema freeze — mid-replay schema churn poisons the experiment"). Once ratified,
-`SCHEMA_VERSION` is bumped only through the normal gate.
+STATUS: SUPERSEDED FOR THE CORE by the engine lane's frozen v1.0
+(docs/JOURNAL-SCHEMA-v1.md, pass 30) — THAT is the authoritative journal
+(producer = engine lane). This module is now REFRAMED as the **v1.1 extension
+proposal**: the executed-trade superset + the agent-output / review fields the
+engine v1.0 explicitly RESERVED ("regime_call / regime_conf / playbook",
+"analog_k_winrate", "news_ids"). It does not compete with v1.0; it proposes the
+next version's additions using the reserved names. Ratification = engine lane +
+Angus, as a v1.1 bump. See docs/journal-schema-freeze.md for the mapping.
 
 The freeze reconciles two emitters that have already drifted: the engine's
 `TradeRecord` (src/backtest/engine.py) and the condensed `output/journal_*.csv`
@@ -95,9 +99,13 @@ class JournalRecord(BaseModel, extra="forbid"):
     dollars: float                        # net of commissions, at size
     win: bool | None = None
 
-    # --- desk context (optional — filled once agents gate) ------------------
-    regime_verdict: str | None = None     # e.g. "balance/neutral/0.5"
-    htf_verdict: str | None = None        # e.g. "range/rotation/fade_ok"
+    # --- desk context (optional — v1.1 additions, using engine v1.0's RESERVED names) ---
+    regime_call: str | None = None        # reserved v1.0 name; e.g. "balance" (regime agent)
+    regime_conf: str | None = None        # reserved v1.0 name; low|medium|high
+    playbook: str | None = None           # reserved v1.0 name; the permitted-structure/book choice
+    htf_verdict: str | None = None        # HTF agent: e.g. "range/rotation/fade_ok"
+    analog_k_winrate: float | None = None # reserved v1.0 name; L2 lookup empirical win rate
+    news_ids: list[str] = Field(default_factory=list)       # reserved v1.0 name; briefing item ids
     gates_applied: list[str] = Field(default_factory=list)  # which de-risks were live
     size_multiplier_applied: float | None = None            # agent size mult that scaled this
 
@@ -134,7 +142,7 @@ _TR_RENAME = {
 def from_trade_record(tr: BaseModel, config_hash: str, **desk_context) -> JournalRecord:
     """Lift an engine `TradeRecord` into the frozen schema, deriving what it omits.
 
-    desk_context accepts any optional desk/review field (regime_verdict, etc.).
+    desk_context accepts any optional desk/review field (regime_call, etc.).
     """
     d = tr.model_dump()
     data = {
