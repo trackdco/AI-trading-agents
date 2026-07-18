@@ -54,6 +54,11 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — Journal schema: ENGINE-LANE HALF SIGNED (Claude Code, Brake driving)
+- Pat's prereq #2 (docs/journal-schema-freeze.md): re-ran `coverage_report()` (25/55, gap list matches the doc), verified EVERY ADD-list field against engine code, and signed the two engine-lane checkboxes with a per-field emittability table (source-of-truth pointers). All emittable; only true engine addition = a `trail_moves` counter. `from_trade_record()` writer path + name-reconciliation map adopted. `news_context` quality caveat noted (rides on the Feb-only calendar until news_archive lands).
+- **Still open before `-proposed` drops: Angus's review-slot checkbox** (angus_verdict / would_angus_take) — deliberately NOT signed for him.
+
+
 ### 2026-07-18 — Journal reconciled to engine v1.0 + replay integration contract (Claude Code, Pat driving — desk lane)
 - Engine lane froze docs/JOURNAL-SCHEMA-v1.md (v1.0, authoritative). Reconciled src/desk/journal.py from a competing 'freeze' to the v1.1 EXTENSION proposal — adopted v1.0's reserved names (regime_call/regime_conf/playbook/analog_k_winrate/news_ids). No duplicate schema. Suite 176 green.
 - **docs/replay-integration-contract.md — FOR ENGINE LANE (the one remaining engineering blocker for the replay):** add optional `day_gate` param to simulate() (default None = arm A byte-identical); de-risk application rules; trigger->reversion/continuation mapping PROPOSED with the pattern-B case + pattern-vs-htf tiebreak flagged FOR ANGUS. Desk supplies the schedule (combined_gate_schedule.csv); engine implements the hook.

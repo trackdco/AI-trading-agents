@@ -66,15 +66,47 @@ delta to a specific gate.
 
 ## Ratification checklist (who signs what)
 
-- [ ] **Engine lane:** confirm the ADD list above is emittable from the
+- [x] **Engine lane:** confirm the ADD list above is emittable from the
       backtester + diag22, and adopt `from_trade_record()` as the writer path
-      (extend `TradeRecord`, don't fork it).
-- [ ] **Engine lane:** adopt the name-reconciliation map for the condensed
-      journal (or retire the abbreviated CSV in favor of the frozen writer).
+      (extend `TradeRecord`, don't fork it). **SIGNED — see verification below.**
+- [x] **Engine lane:** adopt the name-reconciliation map for the condensed
+      journal. **SIGNED** (map adopted; retire-vs-keep of the abbreviated CSV is
+      deferred to when the frozen writer is wired — the CSV's producer is not
+      engine-lane's file to delete).
 - [ ] **Angus:** confirm the review fields (`angus_verdict`, `would_angus_take`)
       are the slots he wants for "give me the data and I'll say where to improve."
 - [ ] On sign-off: drop `-proposed` from `SCHEMA_VERSION`; every journal row
       thereafter stamps it, and the replay may start (churn now = a gated change).
+
+## Engine-lane verification (2026-07-18, Brake's lane — per-field emittability)
+
+Checked against `src/backtest/engine.py` (TradeRecord/_Pos/simulate),
+`src/engine/triggers.py` (Trigger), and existing scripts. `coverage_report()`
+re-run this date: 25/55 emitted, gap list identical to the ADD table above.
+
+| Field | Emittable? | Source of truth |
+|---|---|---|
+| `config_hash` | YES (trivial) | sha256 of `config/strategy.yaml` at `load_backtest_config()`; VALUE becomes stable when the champion freeze (prereq #1) lands — field emittable today with whatever config ran |
+| `cluster_types` | YES (copy-through) | already on `Trigger` (triggers.py:86); order holds the Trigger → copy into TradeRecord at close |
+| `cluster_center` | YES (copy-through) | `Trigger.cluster_center` (triggers.py:84) |
+| `vwap_touched` | YES (copy-through) | `Trigger.vwap_touched` (triggers.py:89) |
+| `day_type` | YES (writer join) | not computed inside `simulate()` — joined per `trade_date` from `scripts/build_regime_vector.py` output (pre-open classification, no lookahead). Emitted by the `from_trade_record()` writer path, not the simulator |
+| `session` | YES (derive) | from `fill_ts` vs §2 session boxes (pure function of an emitted field) |
+| `news_context` | YES (calendar join) | nearest release ± window from the news calendar at `fill_ts`; **quality caveat:** rides on the Feb-only calendar until the Feb–Jul `news_archive.csv` (Brake task #5) lands |
+| `rr_at_entry` | YES (record-at-place) | engine already computes `reward / risk` for the §6.5 floor veto at order placement — record instead of discarding |
+| `mfe_r` / `mae_r` / `time_to_mfe_min` | YES (path pass) | computable from 1m bars between `fill_ts` and `exit_ts` (precedent: the MFE giveback study + diag22); writer post-pass, or an in-`simulate` tracker later — same numbers either way on 1m granularity |
+| `partial_fills` | YES (trivial) | `len(_Pos.legs) - 1` (engine.py:226) |
+| `trail_moves` | YES (small addition) | count `pending_stop` reassignments in V8/V9 management — needs a per-position counter (a few lines), no design change |
+| `be_armed` | YES (trivial) | `_Pos.be_done` (engine.py:224) |
+| `angus_verdict` / `would_angus_take` | YES as NULLABLE | engine emits null; filled by Angus / the capture-matcher — schema must keep them Optional |
+
+**Name note:** TradeRecord's `confluence` maps to frozen `confluence_count`
+(`coverage_report` shows zero `unknown_emitted`, so `from_trade_record()`
+already reconciles it) — flagged only so nobody "fixes" the difference twice.
+
+**Net verdict: every ADD-list field is emittable; none requires a rule change or
+schema redesign. The one true engine addition is the `trail_moves` counter.**
+Awaiting Angus's review-slot confirmation to drop `-proposed`.
 
 ## What is NOT decided here
 
