@@ -33,9 +33,13 @@ NAMED = ["CPI", "PPI", "non.?farm|payroll|NFP|employment change", "JOLTS",
 
 
 def main():
-    df = pd.read_parquet("data/reference/nq_1m_feb_jul2026.parquet")
+    data = Path("data/reference/nq_1m_master.parquet")
+    if not data.exists():                              # pre-pass-31 fallback
+        data = Path("data/reference/nq_1m_feb_jul2026.parquet")
+    df = pd.read_parquet(data)
     dt = pd.read_csv("output/amt_daytypes.csv")
-    cal = load_news_calendar()
+    cal = load_news_calendar()                         # NOTE: covers 2026 only —
+    # red_folder_today is 0 for 2023-25 until a historical FF calendar lands (flagged)
 
     # morning tape stats per day (for trailing features only — each day's row uses
     # PRIOR days' stats, so today's morning never leaks into today's vector)
