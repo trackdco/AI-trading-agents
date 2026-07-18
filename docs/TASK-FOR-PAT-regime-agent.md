@@ -109,3 +109,32 @@ must NOT have seen while being designed. Beat the mechanical baseline above or e
 **Data note:** structure reads are starving — dataset starts Feb 1 (no January or earlier).
 The long-pending Jan-1 re-pull (P4.9, Brake) materially improves daily/weekly structure
 quality; older history better still.
+
+---
+
+## GREENLIGHT UPDATE (Angus, 18 Jul 2026, pass 29) — BUILD, don't just scaffold
+
+Angus ruling: agents move from scaffold-only to ACTIVE BUILD, targeting the walk-forward
+replay experiment (not live trading — live stays gated behind validation):
+
+1. **Regime-context agent** (this doc) — priority #1. Tonight's data made its mandate
+   precise: regime resolution is the single biggest P&L lever. Mechanical index (trailing
+   imbalanced-day share, committed in output/amt_daytypes.csv) is the baseline it must beat.
+   Its output decides: reversal-set vs continuation-set vs stand-down, per day.
+2. **Historical-analog module ("how good is this setup, historically?")** — Angus spec via
+   his Malaysia contact's bot: given a candidate trade's feature vector (pattern, regime,
+   day-type, alignment votes, risk geometry, hour — the journal schema), look up the K most
+   similar historical setups and return the empirical win-rate / R-distribution → confidence
+   + sizing input. NOTE: the CORE of this is mechanical (k-NN over the journal — engine lane
+   can build the lookup); the AGENT wraps judgment around it (why this analog set does/doesn't
+   apply today). Data need: multi-year 1m NQ history to deepen the analog library (cheap;
+   Angus approved buying data as needed).
+3. **Walk-forward adaptive replay** (the "Monte Carlo with adapting agents" Angus wants):
+   replay Feb→Jul day by day; agents receive the journal-so-far; they may adjust their OWN
+   playbook notes (adaptation journaled per Hermes mandate) — no human sign-off DURING the
+   sim (Angus ruling); the STATIC champion runs as control. Deliverable: adaptive-vs-static
+   P&L + a log of every adaptation and whether it paid. Cost note: thousands of LLM calls,
+   fine as a one-off. 2026 data is past model cutoffs (no memorized-headline cheating).
+
+Engine lane provides: journal schema + champion configs (output/journal_champion.csv is the
+live example), trigger caches, simulate() as the fill engine. Ping when scaffolds are up.
