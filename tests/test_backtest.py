@@ -487,6 +487,63 @@ def test_ec_displacement_market_fills_but_rejection_rests_limit():
     assert any(v.status == "cancelled_tcancel" for v in vd2)
 
 
+# ------------------------------------------------------------- pass-22 E5 order-block entry
+
+def test_e5_rests_limit_at_ob_mid_with_block_stop():
+    # E5: resting limit at the two-candle block's 50% (ob_mid), stop beyond the BLOCK
+    # (ob_stop), even though entry_ref/stop_ref carry the E3 geometry.
+    c = cfg(entry_variant="E5")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0).model_copy(
+        update={"ob_mid": 24995.0, "ob_stop": 24985.0})
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25000, 25001, 24994.75, 24998),   # trades through 24995
+                                        (25003, 25101, 25002, 25100)])     # target
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=None, calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    assert tr_[0].entry == pytest.approx(24995.0)          # ob_mid, not entry_ref 25000
+    assert tr_[0].stop_initial == pytest.approx(24985.0)   # block stop, not stop_ref 24990
+
+
+def test_e5_falls_back_to_e3_when_no_ob_partner():
+    # detector found no opposite-colored candle -> ob fields None -> E3 reclaim + wick stop
+    c = cfg(entry_variant="E5")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)          # ob_mid/ob_stop default None
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # through 25000
+                                        (25003, 25101, 25002, 25100)])
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=None, calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    assert tr_[0].entry == pytest.approx(25000.0)
+    assert tr_[0].stop_initial == pytest.approx(24990.0)
+
+
+def test_ec2_displacement_market_but_rejection_rests_ob_limit():
+    # EC2: displacement -> market next open+slip (like EC); rejection -> E5 order-block limit
+    c = cfg(entry_variant="EC2")
+    runaway = [(25005, 25006, 25004, 25005),
+               (25006, 25030, 25005, 25028),
+               (25030, 25101, 25028, 25100)]
+    t_disp = trig("2026-02-11 09:48", stop_ref=24995.0).model_copy(
+        update={"kind": "displacement", "ob_mid": 24995.0, "ob_stop": 24985.0})
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", runaway), [t_disp], c,
+                          target_resolver=stub_resolver(25100),
+                          entry_price_fn=None, calendar=EMPTY_CAL)
+    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(25006 + 0.25)   # market, not OB
+
+    t_rej = trig("2026-02-11 09:48", stop_ref=24990.0).model_copy(
+        update={"ob_mid": 24995.0, "ob_stop": 24985.0})
+    dip = [(25005, 25006, 25004, 25005),
+           (25000, 25001, 24994.75, 24998),    # trades through the OB mid
+           (25003, 25101, 25002, 25100)]
+    tr2, vd2, _ = simulate(mk_bars("2026-02-11 09:48", dip), [t_rej], c,
+                           target_resolver=stub_resolver(25100),
+                           entry_price_fn=None, calendar=EMPTY_CAL)
+    assert len(tr2) == 1 and tr2[0].entry == pytest.approx(24995.0)
+    assert tr2[0].stop_initial == pytest.approx(24985.0)
+
+
 # ------------------------------------------------------------- pass-12 overnight window
 
 def test_overnight_window_wraps_midnight_and_eod_flatten_spares_overnight_positions():

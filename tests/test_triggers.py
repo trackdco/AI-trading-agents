@@ -203,3 +203,42 @@ def test_no_forming_bar_evaluated_on_truncated_data():
                             end=pd.Timestamp("2026-02-11 09:55", tz=NY), tol=10.0)
     last_closed = cut + pd.Timedelta(minutes=1)  # 1m bars are start-labeled
     assert all(pd.Timestamp(t.ts) <= last_closed for t in trigs)
+
+
+# ------------------------------------------------------------------ pass-22 order block (E5)
+
+def test_order_block_two_candle_midpoint_and_stop():
+    from src.engine.triggers import _order_block
+    # i=2 is the (bullish) trigger candle; i=1 is bearish -> the OB partner
+    fr = pd.DataFrame({"open":  [100.0, 105.0, 96.0],
+                       "high":  [101.0, 106.0, 104.0],
+                       "low":   [99.0, 95.0, 95.5],
+                       "close": [100.5, 96.0, 103.0]})
+    mid, stop = _order_block(fr, 2, "long")
+    # combined range of bars 1+2: high 106, low 95 -> mid 100.5, block stop = combined LOW
+    assert mid == 100.5 and stop == 95.0
+    # short mirror: partner must be BULLISH; bar 1 bearish is skipped, bar 0 bullish is used
+    mid_s, stop_s = _order_block(fr, 2, "short")
+    assert mid_s == (max(101.0, 104.0) + min(99.0, 95.5)) / 2 and stop_s == 104.0
+
+
+def test_order_block_none_without_opposite_candle_in_lookback():
+    from src.engine.triggers import _order_block
+    # all candles bullish -> a long trigger finds no bearish partner within the lookback
+    fr = pd.DataFrame({"open":  [100.0, 101.0, 102.0, 103.0, 104.0],
+                       "high":  [101.5, 102.5, 103.5, 104.5, 105.5],
+                       "low":   [99.5, 100.5, 101.5, 102.5, 103.5],
+                       "close": [101.0, 102.0, 103.0, 104.0, 105.0]})
+    assert _order_block(fr, 4, "long") == (None, None)
+    # and the very first bar of a frame has no lookback at all
+    assert _order_block(fr, 0, "long") == (None, None)
+
+
+def test_trigger_ob_fields_nan_coerces_to_none():
+    # CSV cache round-trip: read_csv turns None into NaN — the model must coerce it back
+    t = Trigger(ts="2026-02-11T09:48:00-05:00", tf="3min", direction="long",
+                kind="rejection_block", pattern="A", htf_flag="counter_trend",
+                entry_ref=25000.0, stop_ref=24990.0, wick_low=24990.0, wick_high=25000.0,
+                cluster_center=25000.0, confluence_count=2, cluster_types=["bb", "vwap"],
+                ob_mid=float("nan"), ob_stop=float("nan"), close=25002.0)
+    assert t.ob_mid is None and t.ob_stop is None

@@ -226,9 +226,11 @@ class _Pos:
 
 def _is_market_entry(cfg, trig) -> bool:
     """pass-17 EC (ANGUS's actual execution): market entry for DISPLACEMENT triggers,
-    resting limit for rejection blocks. E4 = market for everything (tournament arm)."""
+    resting limit for rejection blocks. E4 = market for everything (tournament arm).
+    pass-22 EC2 = same contextual split, but rejection blocks rest at the ORDER-BLOCK
+    50% (E5) instead of the E3 reclaim."""
     return cfg.entry_variant == "E4" or (
-        cfg.entry_variant == "EC" and trig.kind == "displacement")
+        cfg.entry_variant in ("EC", "EC2") and trig.kind == "displacement")
 
 
 def _round_tick(p: float, tick: float) -> float:
@@ -489,11 +491,14 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             return (t.wick_low + t.wick_high) / 2
         if cfg.entry_variant == "E3":                       # §5.3 E3: penetrated level nearest close
             return t.entry_ref
-        if cfg.entry_variant == "E4" or (cfg.entry_variant == "EC"
-                                         and t.kind == "displacement"):
-            return t.close                                  # MARKET on the next bar (E4/EC-disp):
-                                                            # build-time reference for the gates;
-                                                            # actual fill = next bar open +/- slip
+        if _is_market_entry(cfg, t):
+            return t.close                                  # MARKET on the next bar (E4/EC-disp/
+                                                            # EC2-disp): build-time reference for
+                                                            # the gates; fill = next bar open +/- slip
+        if cfg.entry_variant in ("E5", "EC2"):              # ANGUS pass-22 ORDER BLOCK: limit at
+                                                            # the two-candle block's 50%; fall back
+                                                            # to the E3 reclaim when no OB partner
+            return t.ob_mid if t.ob_mid is not None else t.entry_ref
         if cfg.entry_variant == "EC":                       # EC rejection block -> E3 limit
             return t.entry_ref
         # E1: BB basis of the trigger TF at trigger time (§5.3)
@@ -746,7 +751,14 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                 veto(t, "vetoed_no_entry_ref", f"no {cfg.entry_variant} reference available")
                 continue
             limit = _round_tick(limit, cfg.tick)
-            stop = _round_tick(t.stop_ref, cfg.tick)
+            # E5/EC2 resting OB entries: stop beyond the two-candle BLOCK (Angus pass-22 —
+            # "mark the range of those two", stop past it), not just the trigger wick. The
+            # E3 fallback (no OB partner) keeps the wick stop.
+            if (cfg.entry_variant in ("E5", "EC2") and not _is_market_entry(cfg, t)
+                    and t.ob_mid is not None and t.ob_stop is not None):
+                stop = _round_tick(t.ob_stop, cfg.tick)
+            else:
+                stop = _round_tick(t.stop_ref, cfg.tick)
             sgn = 1 if t.direction == "long" else -1
             risk = sgn * (limit - stop)
             if risk <= 0:

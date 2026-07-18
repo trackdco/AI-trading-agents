@@ -131,6 +131,74 @@ def _htf_regime(closed_1m: pd.DataFrame, ts: pd.Timestamp) -> str:
     return "uptrend" if up else "downtrend" if down else "range"
 
 
+def _include_ote() -> bool:
+    import yaml
+    from pathlib import Path
+    try:
+        c = yaml.safe_load(open(Path("config/strategy.yaml")))
+        return bool(c.get("cluster", {}).get("include_ote", False))
+    except Exception:
+        return False
+
+
+_OTE_FIBS = (0.382, 0.5, 0.618, 0.705, 0.786)   # ANGUS pass-22: 0.382 aggressive-continuation
+                                                # (with-trend only, enforced at the engine gate),
+                                                # 0.5 equilibrium, 0.705 his favourite
+
+
+def _fractal_swings(bars: pd.DataFrame, k: int = 2) -> tuple[list, list]:
+    """(swing_highs, swing_lows) as (idx, price) lists — same fractal rule as _htf_regime."""
+    hi, lo = bars["high"].to_numpy(), bars["low"].to_numpy()
+    sh, sl = [], []
+    for i in range(k, len(bars) - k):
+        if hi[i] == max(hi[i - k:i + k + 1]) and hi[i] > max(hi[i - k:i]) and hi[i] > max(hi[i + 1:i + k + 1]):
+            sh.append((i, float(hi[i])))
+        if lo[i] == min(lo[i - k:i + k + 1]) and lo[i] < min(lo[i - k:i]) and lo[i] < min(lo[i + 1:i + k + 1]):
+            sl.append((i, float(lo[i])))
+    return sh, sl
+
+
+def _ote_levels(closed_1m: pd.DataFrame, ts: pd.Timestamp) -> list[tuple[str, float, str]]:
+    """ANGUS pass-22 FIB levels, two anchor classes (no lookahead — closed bars only):
+
+    * 15m IMPULSE LEG: most recent fractal swing pair on 15m bars <= ts; fib the leg.
+    * 4H RANGE: session-anchored (18:00 ET) 4-hour blocks; most recent fractal swing
+      high/low = the 4H structural range ("mark out the 4-hour range"); fib the range.
+
+    Each anchor contributes prices at _OTE_FIBS as cluster-candidate levels of type "ote"
+    (names ote15_<fib> / ote4h_<fib>). Retracement is measured from the LEG END back toward
+    its origin, so 0.382 is the shallow pullback and 0.786 the deep one.
+    """
+    out: list[tuple[str, float, str]] = []
+
+    def leg_fibs(prefix: str, sh: list, sl: list):
+        if not sh or not sl:
+            return
+        (ih, ph), (il, pl) = sh[-1], sl[-1]
+        if ih == il:
+            return
+        lo_to_hi = il < ih                    # upleg: low first, then high
+        for f in _OTE_FIBS:
+            px = (ph - (ph - pl) * f) if lo_to_hi else (pl + (ph - pl) * f)
+            out.append((f"{prefix}_{int(f * 1000)}", round(px, 4), "ote"))
+
+    m15 = resample_ohlcv(closed_1m, "15min")
+    m15 = m15[m15["ts_event"] <= ts].reset_index(drop=True)
+    if len(m15) >= 7:
+        sh, sl = _fractal_swings(m15)
+        leg_fibs("ote15", sh, sl)
+
+    shifted = closed_1m["ts_event"] - pd.Timedelta(hours=18)
+    blocks = closed_1m.assign(_blk=shifted.dt.floor("4h"))
+    h4 = blocks.groupby("_blk").agg(high=("high", "max"), low=("low", "min"),
+                                    ts_end=("ts_event", "max")).reset_index()
+    h4 = h4[h4["ts_end"] <= ts].reset_index(drop=True)
+    if len(h4) >= 7:
+        sh, sl = _fractal_swings(h4)
+        leg_fibs("ote4h", sh, sl)
+    return out
+
+
 def _gather_levels(ind: dict, poc_vah_val: dict) -> list[tuple[str, float, str]]:
     """Candidate cluster levels: (name, price, type). NY VWAP already None pre-09:30 upstream.
 
@@ -240,8 +308,12 @@ def build_snapshot(df_1m: pd.DataFrame, ts: pd.Timestamp,
     # developing daily profile VAH/VAL (indicators_asof gives poc/vah/val)
     prof = ind.get("daily_profile") or {}
 
-    # clusters (§3)
-    clusters = _clusters(_gather_levels(ind, prof), cluster_tol, cluster_min_types)
+    # clusters (§3); ANGUS pass-22: OTE fib levels join the candidates behind the
+    # cluster.include_ote flag (split-test arm — default off keeps prior behavior)
+    cand = _gather_levels(ind, prof)
+    if _include_ote():
+        cand = cand + _ote_levels(closed, ts)
+    clusters = _clusters(cand, cluster_tol, cluster_min_types)
 
     # data levels near recent releases, as of ts — bounded to the CURRENT CME session
     # (18:00-ET boundary): §6.3's news-day override targets that day's untaken data

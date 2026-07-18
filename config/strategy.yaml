@@ -71,6 +71,12 @@ cluster:
                                   #      daily VWAP mid/±1σ/±2σ/±3σ, daily POC}; pre-9:30 VWAP family = daily only
   tolerance_points: 10.0          # §3 CALIBRATE — proximity tolerance (start ~10 NQ pts)
   tolerance_pct: 0.04             # §3 CALIBRATE — percentage form of the same tolerance (0.04%)
+  include_ote: false              # ANGUS pass-22 SPLIT TEST — add FIB/OTE retracement levels
+                                  #      (0.382 aggressive continuation / 0.5 equilibrium / 0.618 /
+                                  #      0.705 favourite / 0.786) as a cluster level type "ote".
+                                  #      Two anchors: 15m impulse-leg fibs + session-anchored 4H range.
+                                  #      Default OFF — existing trigger caches stay valid; OTE arms
+                                  #      re-detect with this ON.
 
 triggers:
   displacement:

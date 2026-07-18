@@ -40,17 +40,34 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from src.engine.indicators import IndicatorsConfig, indicators_asof, load_indicators_config
 from src.engine.sessions import resample_ohlcv
-from src.engine.snapshot import _gather_levels, _level_groups
+from src.engine.snapshot import _gather_levels, _include_ote, _level_groups, _ote_levels
 
 __all__ = ["Trigger", "detect_triggers", "_level_groups"]  # _level_groups re-exported (shared rule)
 
 _TF_RANK = {"1min": 1, "2min": 2, "3min": 3, "5min": 5, "15min": 15}
 _ONE_MIN = pd.Timedelta(minutes=1)
 _VWAP_TOUCH_TOL = 0.5   # ANGUS pass-6: 2-tick tolerance for "the wick reached the VWAP band"
+_OB_LOOKBACK = 3        # ANGUS pass-22: bars scanned back for the opposite-colored OB partner
+
+
+def _order_block(fr: pd.DataFrame, i: int, direction: str) -> tuple[float | None, float | None]:
+    """ANGUS pass-22: two-candle order block = the most recent OPPOSITE-colored candle
+    before the trigger candle ("a bearish candle and a bullish candle. Mark the range of
+    those two, and enter at the 50%"). Long trigger -> partner is bearish; short -> bullish.
+    Scan back <= _OB_LOOKBACK bars (dojis/same-color noise between are skipped).
+    Returns (mid, stop_extreme): entry at the combined range's 50%, stop beyond the BLOCK
+    (combined low for longs / high for shorts)."""
+    for j in range(i - 1, max(i - 1 - _OB_LOOKBACK, -1), -1):
+        o, c = float(fr["open"].iloc[j]), float(fr["close"].iloc[j])
+        if (c < o) if direction == "long" else (c > o):
+            hi = max(float(fr["high"].iloc[j]), float(fr["high"].iloc[i]))
+            lo = min(float(fr["low"].iloc[j]), float(fr["low"].iloc[i]))
+            return round((hi + lo) / 2, 4), round(lo if direction == "long" else hi, 4)
+    return None, None
 
 
 class Trigger(BaseModel):
@@ -73,7 +90,22 @@ class Trigger(BaseModel):
                                     # band? (his "it actually rejected VWAP" standard). Distinct
                                     # from cluster_types having 'vwap' (that's level-proximity, not
                                     # a price touch — Brake's Feb-24 find). Gate: filters.require_vwap_touch.
+    ob_mid: float | None = None     # ANGUS pass-22 ORDER BLOCK: midpoint of the two-candle block
+                                    # (most recent OPPOSITE-colored candle before the trigger +
+                                    # the trigger candle; combined high/low range, enter at 50%).
+                                    # None when no opposite candle sits within the lookback —
+                                    # E5 then falls back to E3's reclaim level in the engine.
+    ob_stop: float | None = None    # the block's stop-side extreme (combined LOW for longs /
+                                    # HIGH for shorts) — E5's structural stop sits beyond the
+                                    # BLOCK, not just the trigger wick (can be wider than stop_ref)
     close: float
+
+    @field_validator("ob_mid", "ob_stop", mode="before")
+    @classmethod
+    def _csv_nan_is_none(cls, v):
+        """CSV cache round-trip: None -> NaN on read_csv; coerce back so `is not None`
+        checks in the engine stay truthful for cached triggers."""
+        return None if isinstance(v, float) and np.isnan(v) else v
 
 
 def _htf_flag(regime: str, direction: str) -> str:
@@ -200,6 +232,9 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
             t = fr["ts_event"].iloc[i]
             ind = indicators_asof(df_1m, t, cfg)
             levels = _gather_levels(ind, ind.get("daily_profile") or {})
+            if _include_ote():                       # ANGUS pass-22 fib confluence (split arm)
+                closed_now = df_1m[df_1m["ts_event"] < t]
+                levels = levels + _ote_levels(closed_now, t)
             if len(levels) < 2:
                 continue
             groups = _level_groups(levels, tol, min_types)
@@ -226,6 +261,7 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
             vwaps = [p for _, p, typ in levels if typ == "vwap"]
             vwap_touched = any(bar_lo - _VWAP_TOUCH_TOL <= p <= bar_hi + _VWAP_TOUCH_TOL
                                for p in vwaps)
+            ob_mid, ob_stop = _order_block(fr, i, res["direction"])
             raw.append(Trigger(ts=t.isoformat(), tf=tf, direction=res["direction"],
                                kind=res["kind"], pattern=pattern, htf_flag=htf,
                                entry_ref=round(float(res["entry_ref"]), 4),
@@ -235,6 +271,7 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
                                cluster_center=round(float(center), 4),
                                confluence_count=res["count"], cluster_types=ctypes,
                                vwap_touched=bool(vwap_touched),
+                               ob_mid=ob_mid, ob_stop=ob_stop,
                                close=round(float(fr["close"].iloc[i]), 4)))
     return _mtf_arbitrate(raw)
 
