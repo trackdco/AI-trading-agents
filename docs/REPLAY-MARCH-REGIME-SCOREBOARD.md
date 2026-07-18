@@ -124,6 +124,42 @@ All still regime-agent-only; HTF layer unrun; no news (arm C).
 
 ---
 
+## v0.6 vs v0.5 — 2026 A/B (108 graded days, same seed, 2026-07-18)
+
+The event-day fix (no auto-FLAT on event_risk + 0.25 reduced-arm tier), re-graded on the
+same 2026 days as v0.5. **Mixed result — it fixed the target but overshot.**
+
+| metric | v0.5 | v0.6 |
+|---|--:|--:|
+| **agent FLAT rate** | 70% | **35%** (oracle = 50%) |
+| dollar capture | 15% ($6,811) | **19% ($8,379, +$1,568)** |
+| reads (3-way) | 47% | **36%** |
+| regret | $38,137 | $36,737 |
+
+- **The primary target moved, hard:** the over-standing-down that was 52% of the leak is
+  gone — FLAT rate 70% → 35%. Behaviorally exactly as designed (Feb went from 7 stand-downs
+  to 0; the four April stand-downs were all analog-both-red ≥0.6, not calendar-driven).
+- **Dollar capture improved** (+$1,568, 15%→19%) — trading the winners it used to sit out.
+- **But it OVERSHOT into over-trading:** 35% FLAT vs the 50% oracle target. And 3-way READS
+  fell (47%→36%) — two causes: (1) fewer correct FLAT-matches (lost ~19 of the easy
+  stand-down hits), (2) with the day now traded, the BOOK-selection error dominates
+  (03-19/03-20/04-13 all rotation-when-momentum; 05-21 traded a both-red day and lost
+  −$1,350). The leak shifted from "hides on winners" to "trades wrong book / trades flat days."
+- **The single biggest leak persists:** 03-17 (FOMC, +$3,485) is STILL a stand-down in v0.6 —
+  its analog cohort reads both-red, so the evidence-gated rule correctly followed the base
+  rate, and the base rate was wrong for that one day (consistent with §"can't out-filter").
+
+**Verdict: partial win.** Capture up, the fixed reflex fixed — but the agent traded caution
+for aggression and reads regressed. This is a tuning overshoot, not a broken design: the
+0.25/no-auto-flat push was too strong. Natural v0.6.1: keep the reduced-arm tier but restore
+a middle ground so it lands nearer 50% FLAT (e.g. default to 0.25 only when the analog cohort
+is genuinely mixed; stand down when both-red ≥0.6 as now; and require the book choice to
+follow the analog majority more strictly to cut the wrong-book trades). Held the 2023-25
+fan-out pending this decision — spending ~770 verdicts on a known-overshoot config is the
+wrong order; fix the overshoot on 2026 first, THEN validate across years.
+
+---
+
 ## FreshEyes v0.5 — WHOLE-2026 calibration (108 graded days, 2026-07-18)
 
 The memory-quarantined agent (v0.4 analog prompt, no inherited notes) run across the
