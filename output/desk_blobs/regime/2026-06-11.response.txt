@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "agent_version": "8edaaab11833",
+  "date": "2026-06-11",
+  "regime": "event_risk",
+  "directional_bias": "short",
+  "permitted_structures": ["reversion", "continuation"],
+  "stand_down": false,
+  "size_multiplier": 0.5,
+  "confidence": "medium",
+  "rationale": "PPI red-folder cluster prints 08:30 ET, after the 08:00 cutoff (red_folder_today=2) -> event_risk overrides. Tape remains war-short (net_5d_pts=-1964.75, price 2.385% off window low) but the +429pt counter-trend overnight gap is unconfirmed until PPI resolves -> bias short at 0.5; never 1.0 on a red-folder morning. trap_rate_10=0.1 with no structure-specific failure evidence -> both structures permitted. Vector gap_open_pts=161.5 misses actual +429; keep ignoring vector gap fields.",
+  "cited_evidence": [
+    "regime_vector.red_folder_today=2",
+    "calendar: PPI m/m impact=high today=true when=2026-06-11T08:30-04:00",
+    "overnight.gap_vs_prior_close_pts=429.0",
+    "trailing_stats.net_5d_pts=-1964.75",
+    "trailing_stats.pct_off_window_low=2.385",
+    "regime_vector.trap_rate_10=0.1",
+    "shock_bars.count=23",
+    "regime_vector.gap_open_pts=161.5"
+  ],
+  "playbook_notes": "2026-06-11 (Thu). PPI+claims 08:30 ET (red_folder_today=2) print after 08:00 cutoff -> event_risk overrides label again. Tape: Wed closed 28472 (post-CPI close under ~28700 overnight low -> prior branch (a) war-short reconfirmed), BUT overnight gap +429/net +446 puts price ~28918 - counter-trend bounce, still below 29000 balance floor, unconfirmed pre-PPI. Bias short, 0.5, both structures (trap_rate_10=0.1, no structure-specific exclusion; ranges still 2-4x norm - fade blowoffs cautiously BOTH ways). Shocks: 23 bars, threshold 96, largest still 220 (6/9 12:38) - no fresh overnight outsized bar; vol high but not accelerating. Vector: gap_open_pts 161.5 vs actual +429, wrong again - trust reset stands, ignore vector gap/streak fields until two consecutive hits; day_type 'balanced' contradicts tape. Next session: (a) close back under ~28472 Wed close -> war-short reconfirmed, consider 1.0 only if calendar clear and shocks subside; (b) close above ~29400 -> failed-break/trap risk for shorts, stay 0.5, respect reversion, shift bias toward neutral; (c) close 29000-29400 -> mixed, balance-lean at 0.5. Never upsize to 1.0 on a red-folder morning regardless of direction."
+}

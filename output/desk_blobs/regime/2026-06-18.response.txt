@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "agent_version": "8edaaab11833",
+  "date": "2026-06-18",
+  "regime": "war",
+  "directional_bias": "long",
+  "permitted_structures": ["reversion", "continuation"],
+  "stand_down": false,
+  "size_multiplier": 0.5,
+  "confidence": "medium",
+  "rationale": "Post-FOMC Thu, red_folder_today=0. 6/17 closed 30141.75 inside 30000-30832 (branch c: war-long, low conviction). Overnight gap +281.75 toward the 20d high (1.78% off) with net_5d +1138 — war-long evidence. But no close above 30832 yet, net_10d -826.75, 2-day down streak, and vector gap_open 24.75 badly missed the 281.75 actual gap (day_type 'balanced' untrusted). Mixed evidence: bias long, half size, both structures (trap_rate_10=0.1, no structure-specific exclusion).",
+  "cited_evidence": [
+    "overnight.gap_vs_prior_close_pts=281.75",
+    "trailing_stats.net_5d_pts=1138.0",
+    "trailing_stats.net_10d_pts=-826.75",
+    "trailing_stats.pct_off_window_high=1.782",
+    "regime_vector.red_folder_today=0",
+    "regime_vector.trap_rate_10=0.1",
+    "regime_vector.gap_open_pts=24.75",
+    "trailing_sessions[2026-06-17].close=30141.75"
+  ],
+  "playbook_notes": "2026-06-18 (Thu): Post-FOMC. 6/17 closed 30141.75 inside 30000-30832 - branch (c): war-long low conviction, 0.5. Overnight gap +281.75 (net +281, range 404) - buyers pressing toward 20d high (1.78% off, 7.78% off low); net_5d +1138 vs net_10d -826.75 mixed, streak 2 down. red_folder_today=0 (Philly Fed + Claims 8:30, medium only); range_pctl_20=0.35 - neither standing rule binds, but held 0.5 pending a confirming close. trap_rate_10=0.1, streak_imbal=0 - no structure-specific exclusion; both structures permitted, bias long. Vector trust: gap_open 24.75 vs actual 281.75 - second straight large miss; treat day_type 'balanced' as unreliable on gap mornings. Shocks 69 (from 65), largest 176.25 (6/12, not fresh) - elevated, drifting up, not accelerating. Next session branches: (a) close above 30832 - war-long confirmed, 1.0 eligible only if no red folder and range_pctl_20 < 0.85; (b) gap fails and close under 30000 - trap confirmed, bias short 0.5, favor reversion; (c) close inside 30000-30832 - stay war-long 0.5, low conviction. Standing rules: never 1.0 on a red-folder morning; never 1.0 while range_pctl_20 >= 0.85; large post-event gaps stay 0.5 until a close confirms direction."
+}
