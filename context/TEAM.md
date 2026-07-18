@@ -19,6 +19,13 @@ Git rules (keep it simple):
    thing twice.
 4. When a new Claude session spins up, its first action is to switch to this branch.
 
+## ⚠️ BRAKE: DATA PULL WAITING (18 Jul, from Angus)
+
+**Read `docs/TASK-FOR-BRAKE-orderbook-data.md`** — Angus has committed to order-book data
+(Databento `trades` tick schema first; `mbp-10` if budget allows) to build the
+absorption/exhaustion heat-map confluence (his MIG replacement). Feb–Mar first for cheap
+validation against his hand logs.
+
 ## ⚠️ PAT: NEW ASSIGNMENT WAITING (18 Jul, from Angus)
 
 **Read `docs/TASK-FOR-PAT-regime-agent.md` before anything else** — Angus has directed a
