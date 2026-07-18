@@ -53,6 +53,14 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — Pass 22: ANGUS RULINGS — RSI banned; rulebook v2.0 rewrite ordered; FIB extended to HTF ranges; calibration window = Feb→Apr (Claude Code, Angus driving)
+- **RSI: BANNED** ("fucking useless") — the open divergence question is closed; no RSI anywhere in the system.
+- **Rulebook rewrite ORDERED:** strategy doc goes to v2.0 reflecting the real strategy: FIB added (intraday impulse legs + HTF ranges), MIG marked PENDING (awaiting order-book data), EC/V8/level-memory mechanisms, session scope. Queued after the OTE/E5 build so it documents as-built behavior; Angus signs off (doc authority).
+- **FIB clarified — TWO anchor classes:** (a) intraday impulse-leg retracements (0.382 aggressive-continuation/with-trend-only, 0.5 equilibrium, 0.618, 0.705 favourite, 0.786 outer); (b) **HTF RANGE fibs — mark the 4H range or 15m range and fib it**; canonical example: bullish 4H + tap of 15m-range 0.5 + VWAP band touch + BB break = valid long "any day of the week." HTF-range fibs feed both entry confluence AND the HTF-structure context (Pat's agent).
+- **Calibration window RULED: Feb 2 → end-Apr/start-May** (his actually-traded period; ground truth = Feb hand log + Mar journal + Apr live records). May = semi-holdout; **Jun–Jul LOCKED untouched.** Acceptance bar: engine performance on Feb–Apr should be "at least a bit relative to" his documented results BEFORE touching untraded months.
+- Confluence gate note: with `ote` (+ later `mig`) types joining BB/VWAP/POC, Angus's earlier "minimum 3 of 5" resurfaces as a testable arm (current gate: min-2 with BB+VWAP mandatory) — will test, not silently change.
+- Build starting: OTE cluster type (both anchors) → E5 order-block entries → level-memory layer, one at a time on the Feb–Apr board.
+
 ### 2026-07-18 — Pass 21: LIVE-EXECUTION EVIDENCE CATALOGED (21 images) — MIG live model, OTE confirmed, all-session trading (Claude Code, Angus driving)
 - Angus uploaded 21 live records (TopstepX executions + live TV charts + 2 flagged replay-practice reps). Catalog: `data/reference/live_trades_catalog.md`. AEST→ET −14h applied (Angus's correction).
 - **Live MIG model:** boxes act as rejection / target / RECLAIM levels; later live version prints per-box B%/S% participation ("B 82% | S 18%") — unreproducible from OHLCV, reconstructable from tick/book data → the order-book pull (Brake's task) is now evidence-justified. Recurring live bracket template: entry limit at box supply edge, stop beyond box, target at opposing box edge — entry/stop/target all box-anchored = the mechanization target for the level-memory layer.
