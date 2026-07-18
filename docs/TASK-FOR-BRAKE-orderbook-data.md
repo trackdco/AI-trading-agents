@@ -1,5 +1,13 @@
 # TASK FOR BRAKE — Order-book data pull (Angus directive, 18 Jul 2026)
 
+## UPDATE 3 (18 Jul, pass 24) — ANGUS: pull APRIL first, one month only (~$80/mo economics)
+
+April is the chosen validation month: it's the worst performer of the Feb–Apr test window
+AND the month with Angus's documented live executions — so the heatmap's benefit gets
+cross-checked directly against his real trades where the system hurts most. Scope the pull
+to April 2026 (trades schema per Update 2; mbp-10 stays phase-2). Feb–Mar can follow later
+if April validates.
+
 **Why (Angus, pass 20):** MIG LiquidityEdge (absorption/exhaustion heat map, A–C graded
 levels) turns out to be a CORE confluence in his real trading ("tapped a MIG A level +
 closed through the VWAP band → market order"). The mechanical system excluded it (§2) and
