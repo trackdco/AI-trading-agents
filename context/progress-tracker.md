@@ -62,7 +62,7 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ### 2026-07-18 — Pass 20b: Angus's entry-mechanism specs (verbal → mechanical, pending screenshot validation)
 - **Three NEW mechanisms from Angus (his real entries, none coded yet):**
-  1. **OTE/Fib continuation:** impulse leg (fractal swings) → OTE = 62–79% retracement zone; entry when OTE ∩ BB/VWAP band. → new cluster candidate type `ote`.
+  1. **OTE/Fib continuation:** impulse leg (fractal swings) → fib retracement; ANGUS's key levels (pass 21b refinement): **0.382 = aggressive continuation, 0.5 = equilibrium, 0.618, 0.705 = his favourite ("golden ratio" in his usage), 0.786 outer** — each fib level joins the cluster candidates as type `ote` (entry = fib ∩ BB/VWAP band confluence).
   2. **+2σ MIG-touch reversion (the sequence):** overextension touches +2σ AND a remembered liquidity level → WAIT for candle close back inside → market order (or limit at VWAP retest), reversion target. → detector state machine (touch → confirmation close → entry); formalizes his Mar-11-style patience.
   3. **Order-block 50% entry (E5):** at the reaction, OB = last opposite candle + reversal candle; limit at the midpoint of their combined range (≠ E2's single-candle wick 50%).
 - Build order AFTER his live screenshots pin definitions against real examples; one at a time, measured on Feb+Mar. These + level memory + regime gate = the current roadmap to his 60–70% selection quality.
