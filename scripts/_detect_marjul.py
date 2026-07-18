@@ -24,7 +24,7 @@ def main():
     done: set[str] = set()
     if CKPT.exists():
         prev = pd.read_csv(CKPT)
-        done = set(pd.to_datetime(prev["ts"]).dt.strftime("%Y-%m-%d"))
+        done = set(pd.to_datetime(prev["ts"], utc=True).dt.tz_convert(NY).dt.strftime("%Y-%m-%d"))
         print(f"checkpoint: {len(prev)} triggers over {len(done)} days", flush=True)
 
     for d in pd.date_range("2026-03-02", "2026-07-15", freq="D"):
