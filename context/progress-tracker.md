@@ -19,6 +19,7 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 | 2026-07-17 | strategy-definition v1.0 locked | PASSED | Q&A incorporated; daily VWAP anchor confirmed 18:00 ET |
 | 2026-07-17 | strategy-definition v1.1 amendments | PASSED | Angus instated the nine 17-Jul rules ("those were supposed to be rules beforehand") and directed the bump. Full-doc read-through still open (questions-for-angus P1.1). |
 | 2026-07-17 | Spec 1 Step 4 parity report | PASSED | Angus read NQH2026 and confirmed every row within 1.0 pt (BB per trade TF, daily VWAP ±1σ, NY VWAP, daily POC). Engine cleared for Steps 5-9. |
+| 2026-07-18 | Blend v1.1 = cuts C1/C2/C3, APPROVED | PASSED | Angus (pass 30, relayed to Pat pass 31): all three journal cuts are IN — C1 effective risk < 5 pts (both books), C2 B-pattern triggers in the 09:00 hour, C3 rotation book (E3) skips with-trend triggers. Spec frozen in docs/CHAMPION-v1.1-FROZEN.md; replay baseline A. In-sample ref +$17,814 / 45% win; 2023–25 OOS exam running (pass 31). |
 | — | Spec 1 Step 8 calibration classification | pending | |
 
 ## Decision log (append-only; one line per decision, with source)
