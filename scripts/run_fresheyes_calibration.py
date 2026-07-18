@@ -52,7 +52,9 @@ LEDGER = OUT / "ledger.csv"
 
 
 def _days(start: str, end: str) -> list[str]:
-    vec = _load_inputs()[1]
+    # read the vector directly — ingest needs only the day list, and _load_inputs()
+    # pulls the arm-C news loader which now collides with Brake's calendar file.
+    vec = pd.read_csv("output/regime_vector.csv")
     return [d for d in vec["day"] if start <= d <= end]
 
 

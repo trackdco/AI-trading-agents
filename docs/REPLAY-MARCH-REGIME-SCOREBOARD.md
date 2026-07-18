@@ -124,6 +124,71 @@ All still regime-agent-only; HTF layer unrun; no news (arm C).
 
 ---
 
+## FreshEyes v0.5 — WHOLE-2026 calibration (108 graded days, 2026-07-18)
+
+The memory-quarantined agent (v0.4 analog prompt, no inherited notes) run across the
+entire gradeable 2026 horizon (Feb 3 → Jul 15) — calibrating over the time series
+instead of one month. Speed: the 96 non-June verdicts fired in **~6.4 min wall-clock**
+(5 month-workers in parallel, ~8 concurrent each) — a full ~110-day year is a handful
+of parallel waves, not 110 serial steps. Scales to 2023-25 with zero code change once
+Brake's book data lands.
+
+| month | reads | capture | regret |
+|---|--:|--:|--:|
+| Feb | 35% (6/17) | $2,455 / 9,261 | $6,806 |
+| Mar | 48% (10/21) | $1,595 / 11,486 | $9,891 |
+| Apr | 38% (8/21) | −$280 / 6,090 | $6,370 |
+| May | 60% (12/20) | $1,187 / 6,551 | $5,364 |
+| Jun | 45% (9/20) | $2,359 / 11,050 | $8,691 |
+| Jul | 67% (6/9) | −$505 / 510 | $1,015 |
+| **ALL** | **47% (51/108)** | **$6,811 / 44,948 = 15%** | **$38,137** |
+
+### THE leak, now proven across 5 months — event_risk → stand-down on winners
+
+Confusion matrix (agent action vs realized oracle):
+
+```
+oracle    FLAT  MOMENTUM  ROTATION
+FLAT        40        17        19     <- agent stood down 76 days...
+MOMENTUM     6         4         4
+ROTATION     8         3         7
+```
+
+- The agent went **FLAT on 76 of 108 days (70%)** while the oracle wanted FLAT on only
+  **54 (50%)** — over-flat by 20 days.
+- Of those 76 stand-downs, **36 were wrong** (17 momentum + 19 rotation days it sat out),
+  and those 36 days are almost the entire $38k regret.
+- **7 of the top-8 regret days are the SAME pattern: agent FLAT, oracle MOMENTUM/ROTATION**
+  — and 5 of them are labeled `event_risk` (03-17 +$3,485, 06-08 +$3,131, 03-19 +$1,800,
+  05-18 +$1,545, 04-30 +$1,495). The agent calls "event_risk," flattens, and those days
+  repeatedly become the month's biggest directional winners.
+
+This is no longer a one-month artifact — it is the dominant, consistent money leak of the
+whole system, and it is **exactly what Angus's B2 (event-risk expires post-release) and B3
+(split taxonomy — event is a timing modifier, not a regime) target.** The whole-horizon
+data promotes B2/B3 from "a good idea" to "the single highest-value fix on the board."
+
+### Two honest caveats that revise earlier claims
+
+1. **Fresh-eyes reads OK (47%) but captures poorly (15%).** June's "fresh beats chained on
+   reads" did NOT translate to more dollars over the horizon — with no memory the agent
+   defaults to caution (event_risk/FLAT) even harder, so it labels regimes fine but sits
+   out winners. Quarantining memory is therefore NOT the win I floated last section; the
+   real enemy is the event_risk→FLAT reflex, present in every mode.
+2. **Apr and Jul captured NEGATIVE** (−$280, −$505): the read-implied book picks net-lost
+   on those months. Small, but it means the agent isn't merely leaving money on the table
+   there — it's picking losing books on the few days it does trade.
+
+### Direction this sets
+
+Next agent revision (v0.6, for Angus): kill the event_risk→auto-FLAT reflex. event_risk
+should modify SIZE/timing, not force stand-down — the analog block already tells the agent
+whether similar event days paid (and which book); wire the stand-down cut to the analog
+base rate (high `share_both_books_red`) rather than to the calendar label. That single
+change addresses the majority of the $38k regret.
+
+---
+
 ## v0.4 June (analog block + fresh-eyes panel) — first grade, 2026-07-18
 
 Re-ran the full June chain under agent v0.4.0 (analog block in the briefing), same
