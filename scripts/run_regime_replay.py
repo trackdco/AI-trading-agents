@@ -79,8 +79,18 @@ def _latest_notes() -> str:
 
 def _append(path: Path, row: dict) -> None:
     df = pd.DataFrame([row])
-    header = not path.exists()
-    df.to_csv(path, mode="a", header=header, index=False)
+    if not path.exists():
+        df.to_csv(path, index=False)
+        return
+    # journal rows vary in width (a failure row has no verdict fields); a naive
+    # append then corrupts the CSV for every reader. When the columns differ
+    # from the existing header, rewrite the file with the union instead.
+    existing_cols = list(pd.read_csv(path, nrows=0).columns)
+    if list(df.columns) == existing_cols:
+        df.to_csv(path, mode="a", header=False, index=False)
+    else:
+        full = pd.concat([pd.read_csv(path), df], ignore_index=True)
+        full.to_csv(path, index=False)
 
 
 def cmd_emit(args) -> int:
