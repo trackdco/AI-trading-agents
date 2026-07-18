@@ -68,3 +68,35 @@ nothing here is a rule until it survives that; (2) Feb-25 stop-placement bug (de
 ~1pt stop_ref on some displacement bars; clips the +12.98R monster in every arm); (3) Angus
 picks the frontier, or orders the untested hybrid (E4 + B7's exclusions + rulings with exact
 dollar-DD curves).
+
+---
+
+# Pass 11 appendix — double-down suite (Angus's DNA levers, dollars-first)
+
+| arm | tr | win% | month $ | $ maxDD | pos. days |
+|---|---|---|---|---|---|
+| **B3 + end 10:15 (CHAMPION)** | 40 | 30.0% | **+$10,032** | $2,035 | **56%** |
+| A4b + end 10:15 | 43 | 30.2% | +$9,075 | $2,190 | 50% |
+| B7 + end 10:15 + no-Fri | 23 | 34.8% | +$8,310 | $1,560 | 50% |
+| B7 + end 10:15 | 25 | 32.0% | +$8,275 | $1,560 | 44% |
+| B7 + no-Fri | 33 | 27.3% | +$8,065 | $1,712 | 47% |
+| B7 + no-with-trend | 32 | 25.0% | +$6,885 | $1,472 | 44% |
+| target-RR-cap 4.5 (any base) | — | 20–23% | +$2.9–4.3k ✗ | — | 33–42% |
+
+**Adopted candidate: B3 + window-end 10:15** (all patterns except unclassified, rulings on,
+trade 08:00–10:15). +$10,032 / 30% win / 56% positive days / $2,035 maxDD — and **every
+weekday is positive** (Mon +$3,535, Tue +$3,008, Thu +$1,585, Wed +$1,210, Fri +$695).
+
+**Key discoveries:**
+1. **The weekday effect was a time-of-day effect in disguise.** With the 10:15 cut in, the
+   Thu/Fri losses vanish and Monday becomes the #2 day — day-weighted sizing (Tue/Wed 1.5x,
+   others 0.5x) HURTS the champion (+$9,234 < +$10,032). De-risking by weekday is superseded
+   by cutting 10:15+.
+2. **Target-RR cap REJECTED:** the far-target loser cluster and the +12R/+13.7R winners live
+   in the same feature. Capping amputates the payoff tail (same failure mode as partials).
+3. no-with-trend filter rejected (cuts winners with the losers).
+
+**GUARDRAIL:** all Feb-derived; the champion + the two runners-up go to Mar–Jul
+out-of-sample the moment the full dataset lands. Then: London/Asia session detection suite
+(pure engine optimization, no hand-log reference), and the displacement stop_ref bug
+(~1pt stops) before any lock.
