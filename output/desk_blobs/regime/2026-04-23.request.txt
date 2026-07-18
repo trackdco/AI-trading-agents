@@ -1,9 +1,6 @@
 ---
 name: regime-context
-version: 0.3.1
-# 0.3.1: contract alignment — schema only accepts size_multiplier in
-#   {0.0, 0.5, 1.0} but the prompt never said so; five April verdicts sized
-#   0.75 and died fail-closed. Prompt now states the allowed values.
+version: 0.3.0
 # 0.3.0: two replay-driven revisions (Pat-directed; pending Angus ratification):
 #   (a) war regime no longer implies continuation-only — a structure may be
 #       excluded only on direct briefing evidence against THAT structure, never
@@ -107,8 +104,7 @@ what is knowable before the open.
   "directional_bias": "long | short | neutral",
   "permitted_structures": ["reversion", "continuation"],
   "stand_down": false,
-  "size_multiplier": 1.0,   // MUST be exactly 0.0, 0.5, or 1.0 — no other value validates
-
+  "size_multiplier": 1.0,
   "confidence": "low | medium | high",
   "rationale": "<=600 chars, every claim traceable to cited_evidence",
   "cited_evidence": ["field=value", "... max 8"],
@@ -118,6 +114,12 @@ what is knowable before the open.
 
 Consistency requirements: `stand_down: true` ⇒ `permitted_structures: []` and
 `size_multiplier: 0.0`. Never emit `size_multiplier: 0.0` without `stand_down: true`.
-If not standing down, permit at least one structure. `size_multiplier` is a
-three-notch dial — 0.0 (stand down), 0.5 (de-risked), 1.0 (normal) — any other
-number (0.75, 0.25, …) fails validation and voids the verdict.
+If not standing down, permit at least one structure.
+
+
+---
+
+BRIEFING (JSON, your ONLY source of facts):
+{"analog_days": "L2 analog module not available", "calendar": [{"event": "Retail Sales m/m", "impact": "high", "today": false, "when": "2026-04-21T08:30:00-04:00"}, {"event": "President Trump Speaks", "impact": "medium", "today": false, "when": "2026-04-21T08:30:00-04:00"}, {"event": "Fed Chairman Warsh Testifies", "impact": "high", "today": false, "when": "2026-04-21T10:00:00-04:00"}, {"event": "Pending Home Sales m/m", "impact": "medium", "today": false, "when": "2026-04-21T10:00:00-04:00"}, {"event": "Unemployment Claims", "impact": "medium", "today": true, "when": "2026-04-23T08:30:00-04:00"}, {"event": "Flash Manufacturing PMI", "impact": "medium", "today": true, "when": "2026-04-23T09:45:00-04:00"}, {"event": "Flash Services PMI", "impact": "medium", "today": true, "when": "2026-04-23T09:45:00-04:00"}], "cutoff_et": "2026-04-23T08:00:00-04:00", "date": "2026-04-23", "news": "news archive not available (arm B)", "overnight": {"gap_vs_prior_close_pts": -74.0, "net_pts": -42.5, "range_pts": 251.75}, "playbook_notes": "2026-03-31 (first note). Regime=war, bias short: 5 straight down days, net_5d -1270.25 / net_10d -1448.75, close 1.457% off window low, 18 shock bars >60pts. L1 vector suspect today: day_type=balanced, streak_imbal=0, red_folder_today=0 despite the trailing streak and high-impact ISM Mfg PMI 10:00 ET on the calendar — treat vector streak/red-folder fields as unreliable until reconciled. Overnight gapped +253.75 against the trend (net +240.5, range 443.5): in a war tape a large counter-trend gap is either a short-covering fade (continuation-short setup) or an early regime turn; briefing gives no evidence to distinguish, so both structures permitted at 0.5 size per v0.3 rule (no label-only exclusions). Next session check: gap holds/extends -> downgrade war toward balance, revisit bias; gap fades -> war-short confirmed, consider normalizing continuation size. Keep new risk light around 10:00 ET data (ISM + CB Consumer Confidence).", "regime_vector": {"day": "2026-04-23", "day_type": "balanced", "gap_open_pts": 124.25, "imbal_share_10": 0.8, "imbal_share_20": 0.65, "range_pctl_20": 0.2, "red_folder_today": "0", "streak_imbal": "5", "trap_rate_10": 0.1}, "schema_version": "1.0", "shock_bars": {"count": 50, "largest": {"range_pts": 157.25, "ts": "2026-04-21 16:09:00-04:00"}, "threshold_pts": 40.0}, "trailing_sessions": [{"close": 25244.75, "date": "2026-04-09", "net_pts": 207.0, "range_pts": 316.75}, {"close": 25333.0, "date": "2026-04-10", "net_pts": 96.0, "range_pts": 200.0}, {"close": 25585.5, "date": "2026-04-13", "net_pts": 605.5, "range_pts": 694.75}, {"close": 25990.0, "date": "2026-04-14", "net_pts": 414.75, "range_pts": 443.25}, {"close": 26359.5, "date": "2026-04-15", "net_pts": 373.75, "range_pts": 443.75}, {"close": 26464.25, "date": "2026-04-16", "net_pts": 114.25, "range_pts": 288.5}, {"close": 26840.75, "date": "2026-04-17", "net_pts": 380.75, "range_pts": 444.75}, {"close": 26774.25, "date": "2026-04-20", "net_pts": 174.5, "range_pts": 292.75}, {"close": 26721.25, "date": "2026-04-21", "net_pts": -55.5, "range_pts": 350.0}, {"close": 27106.5, "date": "2026-04-22", "net_pts": 377.0, "range_pts": 408.25}], "trailing_stats": {"directional_streak_days": 1, "net_10d_pts": 2688.0, "net_5d_pts": 991.0, "pct_off_window_high": 0.381, "pct_off_window_low": 8.545}, "weekday": "Thursday"}
+
+Respond with EXACTLY one JSON object matching the verdict schema. Set "agent_version" to "6cbfd786de69" and "date" to "2026-04-23". No prose outside the JSON.
