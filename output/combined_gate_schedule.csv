@@ -1,0 +1,4 @@
+date,allow_reversion,allow_continuation,size_multiplier,directional_bias,stand_down,reasons,conflict
+2026-02-12,True,False,0.5,neutral,False,continuation blocked: regime agent excludes continuation,False
+2026-03-10,False,False,0.0,neutral,True,continuation blocked: regime agent excludes continuation,False
+2026-03-23,False,False,0.0,neutral,True,continuation blocked: regime agent excludes continuation,False
