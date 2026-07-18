@@ -53,6 +53,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — Pass 20b: Angus's entry-mechanism specs (verbal → mechanical, pending screenshot validation)
+- **Three NEW mechanisms from Angus (his real entries, none coded yet):**
+  1. **OTE/Fib continuation:** impulse leg (fractal swings) → OTE = 62–79% retracement zone; entry when OTE ∩ BB/VWAP band. → new cluster candidate type `ote`.
+  2. **+2σ MIG-touch reversion (the sequence):** overextension touches +2σ AND a remembered liquidity level → WAIT for candle close back inside → market order (or limit at VWAP retest), reversion target. → detector state machine (touch → confirmation close → entry); formalizes his Mar-11-style patience.
+  3. **Order-block 50% entry (E5):** at the reaction, OB = last opposite candle + reversal candle; limit at the midpoint of their combined range (≠ E2's single-candle wick 50%).
+- Build order AFTER his live screenshots pin definitions against real examples; one at a time, measured on Feb+Mar. These + level memory + regime gate = the current roadmap to his 60–70% selection quality.
+
 ### 2026-07-18 — Pass 20: TWO ANGUS CORRECTIONS — May benchmark void; MIG LiquidityEdge was a CORE confluence (Claude Code, Angus driving)
 - **May correction:** Angus STOPPED trading early May (began building the trackd app; payouts were ~April). The "May = his +$5k benchmark month" framing is VOID — May engine results (F1 EC +$955 only green arm) stand as engine-only observations with no human benchmark. Feb+Mar remain the only calibrated months until his live funded screenshots land.
 - **MIG revelation:** MIG LiquidityEdge (absorption/exhaustion heat map, levels graded A–C) was a MUCH bigger confluence in his real trading than credited — canonical setup: "tapped a MIG A level + closed through the VWAP band → market order, stop below displacement candle, let it run." The strategy doc §2 EXCLUDED MIG from the mechanical system (decision 2026-07-17) and the screenshot catalog was told to ignore the gray boxes — that exclusion likely explains a chunk of the selection-quality gap (his 60–70% vs engine's best 45.5%).
