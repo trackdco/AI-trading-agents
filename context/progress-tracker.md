@@ -54,6 +54,11 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — JUNE COMPLETE via sequential driver: reads 24% (worst yet), P&L −$1,720 — frame lock-in identified (Claude Code, Pat driving — desk lane)
+- Full June replayed day-by-day (22/22 valid, 0 fail-closed; driver + one orchestrator agent spawning fresh zero-context verdict agents). Reads-first per v0.4 D1: **24% (5/21), capture 7%** — dominant miss MOMENTUM-called-ROTATION (6 days incl. 06-08 rotation +$3,131); binary trade/no-trade 62% (TRADE precision 85%, FLAT precision 25%). Arm B: +$3,535 → +$1,815 (−$1,720, the usual green-month half-size premium).
+- **New risk-register item for Angus's v0.4: FRAME LOCK-IN.** Sequential memory improved discipline (executed inherited plans, self-authored standing rules, Bank Holiday stand-down) but entrenched an early war framing through a rotation-rich stretch — read accuracy fell as chaining strengthened. C1/C2 feedback must be able to BREAK a frame, not just carry one. Cross-month ledger: Mar 43%/17%, Apr 44%/25%, May 35%/27%, Jun 24%/7% — v0.3.x sizes sanely but does not read better; strongest evidence yet for the A1 analog block.
+- Engine lane merged Pat-addenda E1+E4 (L1 vector fixes; FLAT scored as first-class binary read) — already live in scripts/score_regime_reads.py.
+
 ### 2026-07-18 — SEQUENTIAL REPLAY DRIVER BUILT + chaining proven live (Claude Code, Pat driving — desk lane; Angus authorized via Pat)
 - scripts/run_sequential_replay.py: day-by-day emit → wait-for-fresh-response → ingest, so day N+1's briefing carries day N's playbook notes (v0.4 addendum E3 — the substrate C1/C2 need). Transport-pluggable (file-watch; stale responses from parallel runs rejected by mtime freshness gate), idempotent/resumable, fail-closed continues past invalid days. 4 new tests, suite 185 green.
 - Fixed latent journal-corruption bug in the shared harness `_append` (mixed-width failure/success rows silently broke the CSV for readers; now rewrites with column union on width change).

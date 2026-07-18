@@ -158,6 +158,53 @@ oracle BEFORE its P&L is discussed, per the v0.4 process guard (D1).
 
 ---
 
+## June 2026 — first SEQUENTIAL month (driver-chained, v0.3.1, OOS)
+
+June ran through scripts/run_sequential_replay.py: 22/22 verdicts valid, each
+day's briefing carrying the prior day's playbook notes. Reads first (D1):
+
+**Reads: 5/21 = 24% — the worst month yet, below 3-way random (33%).**
+Capture $802 / $11,261 = **7%**. Arm B P&L: arm A +$3,535 → arm B +$1,815,
+effect −$1,720 (the familiar ~half-profit premium on a green month).
+Binary trade/no-trade (new E4 metric): 62% — TRADE precision 85%, but FLAT
+precision only 25%; over-FLAT cost $1,216 (6 days), under-FLAT $992 (2 days).
+
+Two findings, both v0.4 evidence:
+
+1. **The dominant June miss is MOMENTUM-called-ROTATION (6 days,** incl. 06-08
+   where the rotation book made +$3,131). The agent's war/short reads were
+   often directionally right about the tape — but the champion's rotation
+   book was what actually paid. This is the day-vs-regime mismatch (E5) at
+   full strength: regime label ≠ which book profits today. Because v0.3
+   permits both structures, the gate only half-sized these days rather than
+   banning the winner — the READS metric is rightly harsher than the P&L.
+2. **Chaining improved discipline, not reads.** The sequential agent executed
+   inherited plans, built standing rules (never 1.0 on red-folder mornings /
+   at range_pctl≥0.85; holidays = 0.0), stood down the 06-19 Bank Holiday,
+   and audited the L1 vector daily. But read accuracy FELL — and the notes
+   chain shows why: the war framing adopted early in June propagated day to
+   day through a rotation-rich stretch. **Memory can entrench a wrong frame**
+   (frame lock-in) — a genuine risk register item for v0.4's C1/C2: feedback
+   must be able to BREAK a frame, not just carry it.
+
+### Cross-month ledger (regime-only, no HTF, no news)
+
+| month | reads | capture | arm B effect | sample |
+|---|--:|--:|--:|---|
+| Mar | 43% | 17% | −$1,715 | in-sample, parallel |
+| Apr | 44% | 25% | −$1,776 | OOS, parallel |
+| May | 35% | 27% | +$840 | OOS, parallel |
+| Jun | **24%** | **7%** | −$1,720 | OOS, **sequential** |
+
+The blunt conclusion for the v0.4 pass: the v0.3.x prompt sizes more sanely
+than v0.2 but does NOT read regimes better — accuracy is drifting DOWN while
+the sizing discipline carries the P&L. The read problem is exactly where
+Angus's A1 analog block aims, and June is the strongest evidence yet that
+inference-from-one-morning (plus chained priors) cannot hit the 60%+ target —
+retrieval over the 850-day library is the missing input.
+
+---
+
 ## v0.2 run (original) — detail below
 
 ## The number
