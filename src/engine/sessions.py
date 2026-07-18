@@ -160,12 +160,27 @@ def prior_week_levels(df: pd.DataFrame) -> pd.DataFrame:
 
 def load_news_calendar(path: Path = Path("config/news_calendar.csv"),
                        tz: str = TZ_DEFAULT) -> pd.DataFrame:
-    """Read config/news_calendar.csv (skipping '#' comments); localize datetime_ET to tz."""
-    rows = [ln for ln in open(path) if not ln.startswith("#")]
+    """Read config/news_calendar.csv (skipping '#' comments); localize datetime_ET to tz.
+
+    If config/news_calendar_hist.csv exists (2023-25 backfill from
+    scripts/scrape_ff_calendar.py, same schema) it is concatenated in, so every
+    consumer — engine news rules, regime vector, briefings — sees the full history
+    the moment the file lands. Overlapping (datetime_ET, event) rows prefer the
+    hand-maintained primary file.
+    """
     from io import StringIO
-    cal = pd.read_csv(StringIO("".join(rows)))
+
+    def _read(p: Path) -> pd.DataFrame:
+        rows = [ln for ln in open(p) if not ln.startswith("#")]
+        return pd.read_csv(StringIO("".join(rows)))
+
+    cal = _read(path)
+    hist = path.with_name("news_calendar_hist.csv")
+    if hist.exists():
+        cal = pd.concat([cal, _read(hist)]).drop_duplicates(
+            ["datetime_ET", "event"], keep="first")
     cal["datetime_ET"] = pd.to_datetime(cal["datetime_ET"]).dt.tz_localize(tz)
-    return cal
+    return cal.sort_values("datetime_ET").reset_index(drop=True)
 
 
 def data_levels(df: pd.DataFrame, calendar: pd.DataFrame, n_minutes: int) -> pd.DataFrame:
