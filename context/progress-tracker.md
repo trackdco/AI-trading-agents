@@ -53,6 +53,13 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — Pass 21: LIVE-EXECUTION EVIDENCE CATALOGED (21 images) — MIG live model, OTE confirmed, all-session trading (Claude Code, Angus driving)
+- Angus uploaded 21 live records (TopstepX executions + live TV charts + 2 flagged replay-practice reps). Catalog: `data/reference/live_trades_catalog.md`. AEST→ET −14h applied (Angus's correction).
+- **Live MIG model:** boxes act as rejection / target / RECLAIM levels; later live version prints per-box B%/S% participation ("B 82% | S 18%") — unreproducible from OHLCV, reconstructable from tick/book data → the order-book pull (Brake's task) is now evidence-justified. Recurring live bracket template: entry limit at box supply edge, stop beyond box, target at opposing box edge — entry/stop/target all box-anchored = the mechanization target for the level-memory layer.
+- **OTE fib CONFIRMED live** (0.382/0.5/0.618/0.705/0.786 drawn on 4 charts, used at box edges/VWAP confluence) — pass-20b spec validated by example.
+- **He traded ALL sessions live** (NY morning incl. post-10:15, Asia, London) — full-day expansion = how he actually traded, not speculation.
+- Timeline refined: live activity Mar 30 → May 7. Open question for Angus in the catalog: RSI divergence tags on every live chart vs "I don't use RSI anymore."
+
 ### 2026-07-18 — Pass 20b: Angus's entry-mechanism specs (verbal → mechanical, pending screenshot validation)
 - **Three NEW mechanisms from Angus (his real entries, none coded yet):**
   1. **OTE/Fib continuation:** impulse leg (fractal swings) → OTE = 62–79% retracement zone; entry when OTE ∩ BB/VWAP band. → new cluster candidate type `ote`.
