@@ -40,6 +40,14 @@ dollars. Measured bill, Mar–Jun (scripts/score_sizing.py, standing instrument)
 cost $10,042 on shrunk winners vs $6,232 saved on shrunk losers; avg size 0.57 on
 eventual winners vs 0.49 on eventual losers — a flat tax, not insurance.
 
+**UPDATE (Angus go, 18 Jul): the draft code for all three wires is COMMITTED —
+`src/desk/briefing_v05.py`** (opt-in module, nothing imports it by default; your
+in-flight v0.4 run is untouched). `upgrade_briefing()` = W2, `feedback_block()` =
+W1 (implements the contract below exactly — smoke-tested on real June days),
+`V05_SIZE_NOTCHES` + `V05_PROMPT_ADDENDUM` = W3. Two calls in the driver + the
+prompt splice and v0.5 is running. Publish on Angus's word once v0.4 results are
+reviewed.
+
 **Contract for the sequential driver — append to every morning briefing:**
 
 ```json
