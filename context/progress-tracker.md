@@ -54,6 +54,11 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — ENGINE day_gate HOOK BUILT — replay's last engineering blocker CLOSED (Claude Code, Pat driving; Brake cleared the engine lane)
+- simulate() gains one optional day_gate param (docs/replay-integration-contract.md). Default None = arm A byte-identical (test-proven + full suite green). A supplied gate only removes trades (stand_down / class-not-permitted) and shrinks size (size_multiplier, $ only, R unchanged). Trigger reversion/continuation via _trigger_class (pattern primary; **pattern-B=continuation + pattern-vs-htf tiebreak PROPOSED — Angus to confirm, working default in place so NOT blocking**). Engine imports no desk module (boundary holds). Desk seam: combined_gate.day_gate_from_schedule(). 5 new tests, suite 181 green, ruff clean.
+- **END-TO-END VERIFIED on the real pilot schedule:** Mar 23 (ceasefire-shock war day) — arm A takes the fade that lost the month; arm B (agents) skips it via stand-down. The mechanism works through the real engine.
+- **Replay status:** arms A & B are now RUNNABLE (engine hook + combined gate + baseline all in place). Remaining: run the agents over the full Feb–Jul period + build the walk-forward driver (Pat lane); news archive for arm C (Brake); Angus's pattern-B ruling (non-blocking, default set).
+
 ### 2026-07-18 — Journal schema: ENGINE-LANE HALF SIGNED (Claude Code, Brake driving)
 - Pat's prereq #2 (docs/journal-schema-freeze.md): re-ran `coverage_report()` (25/55, gap list matches the doc), verified EVERY ADD-list field against engine code, and signed the two engine-lane checkboxes with a per-field emittability table (source-of-truth pointers). All emittable; only true engine addition = a `trail_moves` counter. `from_trade_record()` writer path + name-reconciliation map adopted. `news_context` quality caveat noted (rides on the Feb-only calendar until news_archive lands).
 - **Still open before `-proposed` drops: Angus's review-slot checkbox** (angus_verdict / would_angus_take) — deliberately NOT signed for him.
