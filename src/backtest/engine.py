@@ -81,6 +81,9 @@ class BacktestConfig(BaseModel):
     rr_floor_partial: float = 1.5  # ANGUS pass-7: "RR floor for the first profit target is 1.5"
     v7_partial_r: float = 1.5     # pass-8 MFE-derived TEST arm: V7 books v5_partial_pct at a
                                   # FIXED +kR milestone (not a structure); trade set = V0's
+    v8_partial_pct: float = 50.0  # pass-17 V8 (ANGUS March style): % booked at first structure;
+                                  # runner TRAILS the prior completed 5m swing; premarket fills
+                                  # go BE at 09:29 ("BE before the open for volatility")
     max_trades_per_day: int       # §10
     halt_losses: int
     halt_r: float
@@ -130,6 +133,7 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         v5_partial_pct=c["management"].get("v5_partial_pct", 75.0),
         rr_floor_partial=c["targets"].get("rr_floor_partial", 1.5),
         v7_partial_r=c["management"].get("v7_partial_r", 1.5),
+        v8_partial_pct=c["management"].get("v8_partial_pct", 50.0),
         oversized_stop=c["sizing"]["oversized_stop_points"],
         late_window_after=_hhmm(c["sizing"]["late_window_after"]),
         require_bb_vwap=c["sizing"].get("require_bb_vwap", True),
@@ -420,6 +424,12 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
         walkout=cfg.walkout_under_floor, named_high=cfg.named_high_impact)
     slip = _Slip(cfg, _news_times(calendar))
 
+    v8_fm = None
+    if cfg.mgmt_variant == "V8":                      # prior-5m swing lookup for the V8 trail
+        from src.engine.sessions import resample_ohlcv
+        _fm = resample_ohlcv(df_1m, "5min")           # close-labeled: bar T completed at T
+        v8_fm = (_fm["ts_event"], _fm["high"].to_numpy(), _fm["low"].to_numpy())
+
     # high-impact releases scheduled before 09:30, keyed by calendar date (Angus news rule).
     # P5.14 (ANGUS): with a named list configured, only listed events trigger the stand-down.
     preopen_news: dict = {}
@@ -560,7 +570,7 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                     # V4/V5/V6/V7 partial before target (nearer milestone), same trade-through
                     # rule. V4/V5/V6 book at the first STRUCTURE; V7 (pass-8 MFE test arm)
                     # books at a FIXED +kR milestone computed from the fill.
-                    if (pos is not None and cfg.mgmt_variant in ("V4", "V5", "V6", "V7")
+                    if (pos is not None and cfg.mgmt_variant in ("V4", "V5", "V6", "V7", "V8")
                             and not pos.partial_done):
                         if cfg.mgmt_variant == "V7":
                             plvl = pos.entry + sign * cfg.v7_partial_r * pos.risk_pts
@@ -569,8 +579,9 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                         if plvl is not None:
                             p_fill = (h >= plvl + through) if sign == 1 else (lo <= plvl - through)
                             if p_fill:
-                                pct = cfg.v4_partial_pct if cfg.mgmt_variant == "V4" \
-                                    else cfg.v5_partial_pct
+                                pct = (cfg.v4_partial_pct if cfg.mgmt_variant == "V4"
+                                       else cfg.v8_partial_pct if cfg.mgmt_variant == "V8"
+                                       else cfg.v5_partial_pct)
                                 reason = "partial_r_milestone" if cfg.mgmt_variant == "V7" \
                                     else "partial_structural"
                                 close_trade(pos, plvl, reason, ts, 0, frac=pct / 100.0)
@@ -591,6 +602,19 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                                 pos.pending_stop, pos.be_done = pos.entry, True
                         elif v == "V3" and pos.fill_ts.time() < dtime(9, 30) and tod >= dtime(9, 30):
                             pos.pending_stop, pos.be_done = pos.entry, True
+                    # pass-17 V8 (ANGUS March style): premarket fills -> BE at 09:29; once the
+                    # partial is booked, TRAIL the runner behind the prior completed 5m swing.
+                    if cfg.mgmt_variant == "V8" and pos is not None:
+                        if (not pos.be_done and pos.fill_ts.time() < dtime(9, 29)
+                                and tod >= dtime(9, 29)):
+                            pos.pending_stop, pos.be_done = pos.entry, True
+                        if pos.partial_done and v8_fm is not None:
+                            j = v8_fm[0].searchsorted(ts, side="right") - 1
+                            if j >= 0:
+                                cand = float(v8_fm[2][j]) if sign == 1 else float(v8_fm[1][j])
+                                cur = pos.pending_stop if pos.pending_stop is not None else pos.stop
+                                if (sign == 1 and cand > cur) or (sign == -1 and cand < cur):
+                                    pos.pending_stop = cand
 
         # ---- working order (only when flat) ----
         if pos is None and order is not None:

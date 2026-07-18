@@ -420,6 +420,49 @@ def test_v7_partial_then_stop_is_net_winner():
     assert rec.r_multiple > 0
 
 
+# ------------------------------------------------------------- pass-17 V8 trail management
+
+def test_v8_books_partial_then_trails_prior_5m_swing():
+    # 50% at first structure (25020), then the runner trails the prior completed 5m low:
+    # 09:50-09:54 bin low 25008 becomes the stop from 09:56; the 09:57 dip exits the runner
+    # WELL above entry instead of round-tripping to 24990.
+    c = cfg(mgmt_variant="V8")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),      # 09:48
+            (25004, 25005, 24999.75, 25002),   # 09:49 fill 25000
+            (25010, 25020.25, 25008, 25018),   # 09:50 partial through 25020
+            (25018, 25022, 25012, 25020),      # 09:51
+            (25020, 25024, 25015, 25022),      # 09:52
+            (25022, 25026, 25016, 25024),      # 09:53
+            (25024, 25028, 25018, 25026),      # 09:54  (5m bin 09:50-09:54: low 25008)
+            (25026, 25030, 25020, 25028),      # 09:55  prior-5m available -> pending 25008
+            (25028, 25030, 25022, 25026),      # 09:56  stop now 25008
+            (25024, 25025, 25006, 25010)]      # 09:57  dips through 25008 -> runner out
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+stop"
+    assert rec.exit_price == pytest.approx(25008 - 0.25)   # trailed 5m low, 1 tick slip
+    assert rec.r_multiple > 1.0                            # runner banked profit, not -1R
+
+
+def test_v8_premarket_fill_goes_be_at_0929():
+    c = cfg(mgmt_variant="V8")
+    t = trig("2026-02-11 09:18", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005)]                  # 09:18 trigger bar
+    rows += [(25004, 25005, 24999.75, 25002)]              # 09:19 fill 25000
+    rows += [(25005, 25008, 25002, 25006)] * 10            # 09:20-09:29 drift
+    rows += [(25004, 25005, 24998.0, 24999)]               # 09:30 dips -> BE stop
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:18", rows), [t], c,
+                          target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    assert tr_[0].exit_reason == "be_stop"
+    assert abs(tr_[0].r_multiple) < 0.1
+
+
 # ------------------------------------------------------------- pass-17 EC contextual entry
 
 def test_ec_displacement_market_fills_but_rejection_rests_limit():
