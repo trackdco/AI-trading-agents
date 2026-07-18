@@ -63,6 +63,20 @@ Practical notes:
 - Same instrument filtering as before (outrights only, front-month by volume — reuse
   `to_continuous_front_month`'s roll logic for alignment with the 1m series).
 
+## UPDATE 5 (pass 28) — Apr 1 sample received ✓; next condensing requests (same raw files)
+
+The Apr 1 mbp-10 sample landed and already produced a finding (the session's biggest wall —
+92 lots offered at 24,063.50 — sat under the engine's losing 09:46 long; a depth check at
+the trigger would have vetoed it). To turn anecdote into statistics, from the SAME Apr 1–11
+raw files (no new purchase):
+1. Condense the remaining clean sessions with the same recipe: **Apr 2, 3, 6, 7, 8, 9**
+   (skip Apr 10 — Databento flagged it degraded).
+2. ALSO cut **02:00–05:30 ET** windows per session (Angus: London's first two hours were
+   his best sessions) — same one-snapshot-per-minute, 10+10 levels format.
+Scope note for expectations: 10 levels ≈ ±2.4 pts around price — this is the AT-THE-TOUCH
+confirmation layer (Angus's live usage), not the zone map; the zone map comes from the
+`trades` footprint (`scripts/condense_trades.py`) when that pull lands.
+
 ## UPDATE 4 (pass 28) — Brake: STOP compressing the 18 GB export for GitHub
 
 GitHub hard-caps files at 100 MB; no compression gets 18 GB under that, and we don't need
