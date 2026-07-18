@@ -138,3 +138,15 @@ replay experiment (not live trading — live stays gated behind validation):
 
 Engine lane provides: journal schema + champion configs (output/journal_champion.csv is the
 live example), trigger caches, simulate() as the fill engine. Ping when scaffolds are up.
+
+## Design note for the FULL replay (engine lane, pass 33): playbook-note compaction
+
+The 3-day pilot's playbook notes are excellent — and at ~750 replay days they will outgrow
+any context window by month 4. Before the full run, give the notes a rolling structure:
+- last N days of notes verbatim (recent memory),
+- older notes DISTILLED into standing rules (each rule carries: born-date, evidence count,
+  last-confirmed date),
+- standing rules are themselves reviewable/retirable by the agent (retirements journaled
+  like any adaptation — the unlearning is data too).
+Every distillation pass is journaled so the adaptation ledger can still trace any rule back
+to the raw notes that spawned it.
