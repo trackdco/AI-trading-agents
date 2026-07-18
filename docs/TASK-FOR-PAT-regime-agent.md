@@ -1,5 +1,33 @@
 # TASK FOR PAT — Regime-Context Agent (Angus directive, 18 Jul 2026)
 
+## ANGUS DIRECTIVE (18 Jul) — TWO-TIER TESTING PROTOCOL (speed without breaking the chain)
+
+Angus's concern: 30s/verdict × one-day-at-a-time = the walk feels like "multiple
+days." Real math: 890 sessions × 30s ≈ 7.4h — one arm of the full walk is ONE
+overnight. But iteration must be much faster than exams. Protocol:
+
+1. **Two tiers, already supported by your own driver modes.**
+   - **Tier 1 — ITERATION (parallel mode, minutes/month):** prompt/briefing tweaks
+     get graded on reads over one month in parallel mode (each day seeded from a
+     compacted note snapshot). ~20 concurrent calls ≈ wall-clock of ONE verdict.
+     Fail fast here; most candidate changes die here cheaply.
+   - **Tier 2 — EXAMS (sequential mode, overnight):** only survivors of Tier 1 get
+     a chained run (Q2 2025, the Long Walk). Chaining is the EXPERIMENT there —
+     never approximate it in an exam.
+2. **Within a day, everything runs concurrently.** Incumbent, fresh-eyes, HTF are
+   mutually independent given the same briefing — a 3-agent panel costs the same
+   30s as one agent. Serial-per-day ≠ serial-per-agent.
+3. **Across arms, chains are independent** — every arm/variant runs concurrently.
+   N arms cost one arm's wall-clock.
+4. **Per-call latency diet:** (a) enable prompt caching — system prompt + standing
+   rules + digest are byte-stable day to day; only the daily block changes;
+   (b) briefing diet — trailing_sessions raw OHLC dumps can shrink to the derived
+   stats + retrieval tables (A1/base-rates carry more signal in fewer tokens);
+   (c) rationale caps stay (already fixed v0.3.0).
+5. **Checkpoint/resume (gate G6) makes long runs restartable, and journaled
+   verdicts are a cache** — a re-run after a non-agent change (scoring, harness)
+   replays from the journal at zero agent cost.
+
 ## ANGUS DIRECTIVE (18 Jul, latest) — the C2 feedback contract is DOLLARS, not wins
 
 Confirmed tonight by reading the briefing keys: the agent receives NO outcome
