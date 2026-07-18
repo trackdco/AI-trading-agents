@@ -69,15 +69,8 @@ def main():
     dt["imbal"] = dt.type.eq("imbalanced").astype(float)
     dt["imbal_share_20"] = dt.imbal.rolling(20, min_periods=5).mean()
     dt["imbal_share_10"] = dt.imbal.rolling(10, min_periods=5).mean()
-    streak = []
-    s = 0
-    for v in dt.imbal.shift(1).fillna(0):        # entering today = up to YESTERDAY
-        streak.append(s)
-        s = s + 1 if v == 1 else 0
-        streak[-1] = s if False else streak[-1]  # keep entering-today semantics
-    # recompute cleanly: streak entering day i = run length of imbal ending at i-1
-    streak = []
-    run = 0
+    # E1 fix: streak entering day i = consecutive imbalanced days ending at i-1
+    streak, run = [], 0
     for v in dt.imbal:
         streak.append(run)
         run = run + 1 if v == 1 else 0
@@ -97,11 +90,13 @@ def main():
             pctl = None
         pc = prev_close.get(days[i - 1]) if i > 0 else None
         op = open_800.get(d)
-        gap = abs(op - pc) if pc is not None and op is not None else None
+        gap = (op - pc) if pc is not None and op is not None else None  # SIGNED (E1 fix)
         evs = cal[cal["datetime_ET"].dt.strftime("%Y-%m-%d") == d]
         red = sum(1 for _, e in evs.iterrows()
-                  if str(e.get("impact", "")).lower() == "high"
-                  and _is_named_high(str(e.get("event", "")), NAMED))
+                  if str(e.get("impact", "")).lower() == "high")          # E1: ALL high
+        named = sum(1 for _, e in evs.iterrows()
+                    if str(e.get("impact", "")).lower() == "high"
+                    and _is_named_high(str(e.get("event", "")), NAMED))
         r = dt.iloc[i]
         rows.append(dict(day=d, day_type=r.type,
                          imbal_share_20=round(r.imbal_share_20, 3) if pd.notna(r.imbal_share_20) else None,
@@ -110,7 +105,8 @@ def main():
                          range_pctl_20=round(pctl, 3) if pctl is not None else None,
                          gap_open_pts=round(gap, 2) if gap is not None else None,
                          streak_imbal=int(r.streak_imbal),
-                         red_folder_today=red))
+                         red_folder_today=red,
+                         named_high_today=named))
     out = pd.DataFrame(rows)
     out.to_csv("output/regime_vector.csv", index=False)
     print(f"wrote output/regime_vector.csv ({len(out)} days)")

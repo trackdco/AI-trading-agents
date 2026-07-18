@@ -53,9 +53,26 @@ def main():
     for _, x in S[~S.hit].iterrows():
         print(f"  MISS {x.day}: agent={x.agent} ({x.agent_regime}) oracle={x.oracle} "
               f"E3 {x.e3:+,.0f} E4 {x.e4:+,.0f}")
+    # E4 (Pat): FLAT as a first-class binary prediction target — the oracle is flat
+    # 47-50% of days, so trade/no-trade discrimination is scored on its own.
+    ag_t, or_t = S.agent != "FLAT", S.oracle != "FLAT"
+    print(f"binary trade/no-trade: {(ag_t == or_t).sum()}/{len(S)} = "
+          f"{(ag_t == or_t).mean() * 100:.0f}% (2-way random ≈ 50%)")
+    for name, pred, act in [("TRADE", ag_t, or_t), ("FLAT", ~ag_t, ~or_t)]:
+        tp = (pred & act).sum()
+        prec = tp / pred.sum() * 100 if pred.sum() else float("nan")
+        rec = tp / act.sum() * 100 if act.sum() else float("nan")
+        print(f"  {name}: precision {prec:.0f}% ({tp}/{pred.sum()})  "
+              f"recall {rec:.0f}% ({tp}/{act.sum()})")
+    over = ((~ag_t) & or_t)          # sat out a tradeable day
+    under = (ag_t & (~or_t))         # traded a day the oracle sat out
     S["agent_pl"] = S.apply(lambda x: 0 if x.agent == "FLAT"
                             else (x.e3 if x.agent == "ROTATION" else x.e4), axis=1)
     S["oracle_pl"] = S.apply(lambda x: max(x.e3, x.e4, 0), axis=1)
+    print(f"  over-FLAT cost (sat out tradeable days): "
+          f"${S.loc[over, 'oracle_pl'].sum():+,.0f} across {over.sum()} days")
+    print(f"  under-FLAT cost (traded no-trade days):  "
+          f"${S.loc[under, 'agent_pl'].sum():+,.0f} across {under.sum()} days")
     cap = S.agent_pl.sum() / S.oracle_pl.sum() * 100 if S.oracle_pl.sum() else 0
     print(f"read-quality capture: ${S.agent_pl.sum():+,.0f} / ${S.oracle_pl.sum():+,.0f} = {cap:.0f}%")
 
