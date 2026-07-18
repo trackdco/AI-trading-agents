@@ -33,7 +33,8 @@ MIN_ANALOGS = 10
 
 
 def action(e3, e4):
-    return "FLAT" if max(e3, e4) < 0 else ("ROTATION" if e3 >= e4 else "MOMENTUM")
+    # Angus ruling (18 Jul): best-book $0 on no trades counts as FLAT
+    return "FLAT" if max(e3, e4) <= 0 else ("ROTATION" if e3 >= e4 else "MOMENTUM")
 
 
 def main():

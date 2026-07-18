@@ -1,5 +1,37 @@
 # TASK FOR PAT — Regime-Context Agent (Angus directive, 18 Jul 2026)
 
+## ANGUS DIRECTIVE (18 Jul, evening) — PARALLELIZE THE DESK + fresh-eyes panel
+
+Angus, verbatim intent: why is ONE agent grinding these replays when eight are set
+up? Sequential chaining is serial *within* a chain by design — but nothing else is:
+
+1. **Independent arms are independent chains — run them concurrently.** Arm A vs
+   arm B, prompt variants, the {0,0.25,0.5,0.75,1.0} sizing split-test: each is its
+   own sealed chain with its own notes. One worker per arm, same wall-clock as one.
+2. **Different exam months/quarters fan out the same way** (chains don't cross
+   month-boundary in the current design beyond inherited notes — seed each from the
+   prior month's closing note snapshot and run all months at once per arm).
+3. **PER-DAY FRESH-EYES PANEL — this is also the frame lock-in fix.** Your June
+   finding (early war framing entrenched through a rotation-rich stretch; chaining
+   strengthened while accuracy fell) has the same cure as Angus's parallelism
+   demand: each day, alongside the incumbent chained agent, a SECOND agent with NO
+   inherited notes (briefing only) renders an independent verdict. Agreement =
+   proceed; disagreement = flag in the journal and score both. The chained mind
+   gets memory, the fresh mind is immune to folklore — divergence between them IS
+   the lock-in detector, measured daily instead of discovered post-month.
+4. **Scorecard + regret lines (C1/C2) compute mechanically after each day** — no
+   agent turn needed; don't spend one on it.
+
+## SCORING RULE CHANGE (Angus ruling, 18 Jul): $0 best-book days are FLAT
+
+A day where the best book made $0 on no trades now counts oracle=FLAT
+(score_regime_reads.py + analog table updated; an agent sitting out a nothing-day
+is not a miss). Restated under the new rule: Mar 48%, Apr 38%, May 45%, **Jun 38%
+(not 24%)** — and June's binary trade/no-trade is **71%, the best month on record**
+(TRADE precision 85%). June's true failure is 3-way book confusion
+(momentum-called-rotation), not the on/off switch. Update your ledger lines
+accordingly before quoting June as "worst month yet."
+
 **Assigned by Angus** (pass 14, out-of-sample review). Read this first, then
 `context/progress-tracker.md` passes 11–14, then `docs/agent-blueprint.md` (your Phase-3
 design — this agent slots into that framework).

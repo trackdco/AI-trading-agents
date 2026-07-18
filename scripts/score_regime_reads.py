@@ -35,7 +35,9 @@ def main():
         if d not in r.index:
             continue
         e3, e4 = r.loc[d, "pl_e3"], r.loc[d, "pl_e4"]
-        oracle = "FLAT" if max(e3, e4) < 0 else ("ROTATION" if e3 >= e4 else "MOMENTUM")
+        # ANGUS RULING (18 Jul): a day where the best book made $0 taking no trades
+        # counts as FLAT — sitting out a day where trading earned nothing is not a miss.
+        oracle = "FLAT" if max(e3, e4) <= 0 else ("ROTATION" if e3 >= e4 else "MOMENTUM")
         if x.stand_down or x.size_multiplier == 0:
             agent = "FLAT"
         elif x.regime in ("balance", "trap"):
