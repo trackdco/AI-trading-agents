@@ -42,7 +42,6 @@ from src.desk.v04 import (  # noqa: E402
     attach_analog_block,
     grade_day,
     load_analog_block,
-    oracle_action,
     verdict_action,
 )
 
@@ -111,7 +110,8 @@ def cmd_ingest(args) -> int:
     print(f"\n=== FreshEyes v0.5 calibration — {len(L)} graded days "
           f"({args.start}..{args.end}), {failed} fail-closed ===\n")
     hdr = f"{'month':9} {'days':>5} {'reads':>10} {'capture':>18} {'regret':>10}"
-    print(hdr); print("-" * len(hdr))
+    print(hdr)
+    print("-" * len(hdr))
     for m, g in L.groupby("month"):
         cap = g.agent_pl.sum() / g.oracle_pl.sum() * 100 if g.oracle_pl.sum() else 0
         print(f"{m:9} {len(g):>5} {str(g.hit.sum())+'/'+str(len(g))+' '+str(round(g.hit.mean()*100))+'%':>10} "
