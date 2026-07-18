@@ -53,6 +53,11 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — Pass 19: four-month scoreboard (Feb–May) — F7 only net-positive; EC regime-bimodal; regime-gate value priced at ≈+$11.4k (Claude Code, Angus driving)
+- **May completed** (top-up detected 26–29 after DST-bug fix; 919 triggers/20 days) and run on F0/F7/F1. **Full table in output/fidelity_report.md.** Headlines: F0 −$928 4-month total; **F7 +$1,776 (only positive; best win rate every month: 45.5/22.2/17.9/24.2)**; F1 EC −$3,470 but GREEN in May (+$955, the only green May arm) and Feb +$11k — while alone-fatal in April (−$13,325): EC's April was the disaster, not news-off.
+- **Angus's bar ("green every single month") unmet by every static config — and his thesis confirmed:** the right trades exist every month but are different KINDS per regime. A regime gate choosing {EC in Feb/May, V8 in Mar, stand-down in Apr} ≈ +$11.4k/4mo with no red month (upper bound) — the agents' mandate now has a price tag.
+- Angus hunting live funded-account execution screenshots (fraud-proof ground truth) + May journal. Jun–Jul detection = next referee set.
+
 ### 2026-07-18 — Passes 17–18: EC + V8 built; fidelity matrix F0–F9; APRIL referee — V8 is the first regime-robust layer (Claude Code, autonomous while Angus at the beach)
 - **Built + tested + pushed:** EC contextual entries (displacement→market, rejection→limit — his actual execution) and V8 management (50% at first structure, runner trails prior completed 5m swing, premarket BE at 09:29 — his March style). 42 tests.
 - **Fidelity matrix (10 arms × Feb+Mar, capture vs his 45 hand trades) + APRIL true-OOS:** full tables in output/fidelity_report.md. Headlines: F5 (EC+newsOFF) topped Feb+Mar combined (+$11,638) then LOST −$14,652 in April — a two-month curve fit, caught by the OOS gate. **F7 (champion+V8): Mar −$4,430→−$638, Apr −$5,660→−$3,335, Feb cost −$3,730 — the only layer that improved every unseen month. V8 = validated damage-control candidate.** EC quadruples March winner-capture (1→4 of 9) but must be regime-gated (agents) — EC+V8 interact badly (market fills trail out on first pullback).

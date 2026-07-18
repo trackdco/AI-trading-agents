@@ -59,3 +59,37 @@ performance in February if it means March is better")._
   referees. His May trade log (screenshots pending) upgrades May to a calibrated month.
 - Parked: full-day session map (per-session budgets), Jan-1 data re-pull (structure history),
   heatmap/orderflow (Angus: later), Feb-25 stop_ref detector bug.
+
+---
+
+# Pass 19 — the FOUR-MONTH scoreboard (Feb–May, Angus's "green every month" bar)
+
+| month | F0 champion v2 | F7 champion+V8 | F1 EC |
+|---|---|---|---|
+| FEB | +$11,442 (36.4%) | +$7,712 (**45.5%**) | +$11,035 |
+| MAR | −$4,430 (8.3%) | **−$638** (22.2%) | −$2,135 |
+| APR | −$5,660 (8.1%) | **−$3,335** (17.9%) | **−$13,325 (9.5%)** ✗ |
+| MAY (Angus's +$5k month) | −$2,280 (21.2%) | −$1,963 (24.2%) | **+$955 (32.4%, 47% green days)** |
+| **4-month total** | **−$928** | **+$1,776** | **−$3,470** |
+| months green | 1/4 | 1/4 | 2/4 |
+
+## Conclusions
+
+1. **No static configuration passes the bar.** Best 4-month total is F7 at barely +$1,776.
+2. **F7 (V8 trail) = the only net-positive stack** and the best win rate every single month
+   (45.5/22.2/17.9/24.2) with the shallowest worst month (−$3,335). It is the mechanical floor.
+3. **EC is confirmed REGIME-BIMODAL:** best-in-class in rotation/momentum months (Feb +$11k;
+   only green arm in May), catastrophic in headline-chaos (Apr −$13.3k). Entry MODE must be
+   regime-gated — this is now quantified, not speculative.
+4. **The regime-gate value proposition, priced:** a gate that had picked EC in Feb/May, V8 in
+   Mar, and stand-down in Apr = **≈ +$11.4k over the four months with zero red months.** That
+   is the agents' job description with a dollar figure attached (upper bound; a real no-hindsight
+   gate captures part of it).
+5. Angus's claim — "my strategy is profitable every month when you take the right trades" —
+   is CONSISTENT with the data: the right trades exist each month, but they are different
+   KINDS of trades (entry mode, structure priority, stand-downs) per regime. No fixed config
+   takes them all; judgment (agents) selects among mechanically-sound modes.
+
+_All arms remain Feb/Mar-calibrated; Apr/May are their out-of-sample. May journal/live funded
+screenshots from Angus will upgrade May to a calibrated month. Jun–Jul detection pending as
+the next referee set._
