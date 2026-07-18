@@ -74,3 +74,23 @@ P4. Risk register: B1 whipsaw if release-only leaks; A1 confident-nonsense on
     novel regimes (library-depth gate is the guard); B2 walks into post-release traps of
     the Aug-2024 class (A3 event analogs must flag "day stayed hostile" shocks); bundled
     v0.4 muddies attribution -> reads scored before P&L, always.
+
+## THE BAR (Angus, 18 Jul, 5am — pre-registered before any 2025 run)
+
+Angus, verbatim intent: "The real tell is where the champion lost money in 2025.
+If we run the agent in a span in 2025 and it maintains profitability, I actually
+do agree with you on that."
+
+Locked as the exam's pass condition so nobody can move the goalposts afterward,
+in either direction:
+
+- **Exam:** Q2 2025 (Apr–Jun), sequential driver, fresh-eyes panel if built,
+  reads scored before P&L. Requires Brake's calendar file first.
+- **Context:** champion is RED in every month of the span (E3 −$5,870,
+  E4 −$2,772 across the quarter; oracle+SD ceiling +$18,132).
+- **PASS:** agent arm finishes the quarter ≥ $0 while following its own verdicts
+  at full discipline. That is "maintained profitability where the champion lost."
+- **Distinction:** ≥ 30% oracle capture (≥ ~$5.4k) = the 55–60% story has a pulse.
+- **FAIL:** agent arm red on the quarter → the insurance-premium critique stands
+  everywhere, not just in green months, and the design pivots (fresh-eyes panel,
+  briefing features, or deeper).
