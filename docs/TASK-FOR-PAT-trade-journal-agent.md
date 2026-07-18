@@ -1,8 +1,18 @@
-# TASK FOR PAT — Trade-journaling agent (Angus directive, 18 Jul 2026, pass 24)
+# TASK FOR PAT — Trade journaling = HERMES reporting mandate (Angus directive, 18 Jul 2026, pass 24)
 
 **Angus:** "We're going to need an agent specifically for trade journaling, where it logs all
 of the executed trades with all of the relevant criteria to a point where I could give you
 the data and I could look at where we can improve the trades."
+
+**UPDATE (Angus, same day):** this is NOT a new sixth agent — "the Hermes agent is gonna have
+to report all of those trades. That's one thing that we should probably update for the scaffold
+of the Hermes agent." So: extend the HERMES scaffold. The blueprint's journal
+(`docs/agent-blueprint-design/` — runtime.json `logging_journal`: append-only JournalRow per
+grading, verdict_id join key, Vault appends its own taken/skipped row) already covers VERDICTS;
+Hermes's scaffold gains the **executed-trade reporting duty**: the joined
+verdict → fill → outcome → path view below, produced as a first-class report, always on.
+Rationale (Angus): "we will always have data to look at and see where things can be improved
+as the markets evolve and as the markets become more efficient."
 
 **Phase note (Angus, same pass):** agents are SCAFFOLD-ONLY right now — like the regime-context
 and HTF-structure agents, this gets designed/scaffolded but NOT integrated until the mechanical
