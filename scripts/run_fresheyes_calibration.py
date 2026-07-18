@@ -30,7 +30,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.run_regime_replay import _load_inputs  # noqa: E402
+from src.backtest.engine import load_news_calendar  # noqa: E402
 from src.desk.regime_agent import (  # noqa: E402
     build_briefing,
     parse_verdict,
@@ -45,22 +45,35 @@ from src.desk.v04 import (  # noqa: E402
     verdict_action,
 )
 
-BLOBS = Path("output/desk_blobs/fe")
-OUT = Path("output/fe")
-VERDICTS = OUT / "verdicts.csv"
-LEDGER = OUT / "ledger.csv"
+MASTER_PARQUET = "data/reference/nq_1m_master.parquet"   # covers 2023-01 .. 2026-07
+
+
+def _paths(tag: str):
+    """Namespace blobs + ledgers by run tag so v0.5 and v0.6 don't overwrite."""
+    blobs = Path(f"output/desk_blobs/{tag}")
+    out = Path(f"output/{tag}")
+    return blobs, out, out / "verdicts.csv", out / "ledger.csv"
 
 
 def _days(start: str, end: str) -> list[str]:
-    # read the vector directly — ingest needs only the day list, and _load_inputs()
-    # pulls the arm-C news loader which now collides with Brake's calendar file.
     vec = pd.read_csv("output/regime_vector.csv")
     return [d for d in vec["day"] if start <= d <= end]
 
 
+def _inputs(parquet: str):
+    # year-agnostic loader: master parquet (all years) + vector + the now-backfilled
+    # calendar. No arm-C news (avoids the collision; these runs are arm B).
+    df = pd.read_parquet(parquet)
+    vec = pd.read_csv("output/regime_vector.csv")
+    cal = load_news_calendar()
+    return df, vec, cal
+
+
 def cmd_emit(args) -> int:
+    BLOBS, _OUT, _V, _L = _paths(args.tag)
     BLOBS.mkdir(parents=True, exist_ok=True)
-    df, vec, cal, _analogs, news = _load_inputs()
+    df, vec, cal = _inputs(args.parquet)
+    news = None
     emitted = skipped = 0
     for d in _days(args.start, args.end):
         try:
@@ -79,11 +92,12 @@ def cmd_emit(args) -> int:
 
 
 def _append(path: Path, rows: list[dict]) -> None:
-    OUT.mkdir(parents=True, exist_ok=True)
+    path.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(rows).to_csv(path, index=False)
 
 
 def cmd_ingest(args) -> int:
+    BLOBS, _OUT, VERDICTS, LEDGER = _paths(args.tag)
     books = _load_books()
     verdicts, ledger, failed = [], [], 0
     for d in _days(args.start, args.end):
@@ -108,15 +122,15 @@ def cmd_ingest(args) -> int:
         return 0
     _append(LEDGER, ledger)
     L = pd.DataFrame(ledger)
+    L["year"] = L.month.str[:4]
 
-    print(f"\n=== FreshEyes v0.5 calibration — {len(L)} graded days "
+    print(f"\n=== FreshEyes calibration [{args.tag}] — {len(L)} graded days "
           f"({args.start}..{args.end}), {failed} fail-closed ===\n")
-    hdr = f"{'month':9} {'days':>5} {'reads':>10} {'capture':>18} {'regret':>10}"
+    hdr = f"{'period':9} {'days':>5} {'reads':>10} {'capture':>18} {'regret':>10}"
     print(hdr)
     print("-" * len(hdr))
-    for m, g in L.groupby("month"):
-        cap = g.agent_pl.sum() / g.oracle_pl.sum() * 100 if g.oracle_pl.sum() else 0
-        print(f"{m:9} {len(g):>5} {str(g.hit.sum())+'/'+str(len(g))+' '+str(round(g.hit.mean()*100))+'%':>10} "
+    for y, g in L.groupby("year"):                       # by-year rollup (multi-year runs)
+        print(f"{y:9} {len(g):>5} {str(g.hit.sum())+'/'+str(len(g))+' '+str(round(g.hit.mean()*100))+'%':>10} "
               f"{'$'+format(int(g.agent_pl.sum()),',')+'/'+format(int(g.oracle_pl.sum()),','):>18} "
               f"{'$'+format(int(g.regret.sum()),','):>10}")
     cap = L.agent_pl.sum() / L.oracle_pl.sum() * 100 if L.oracle_pl.sum() else 0
@@ -144,6 +158,9 @@ def main() -> int:
         s = sub.add_parser(name)
         s.add_argument("--start", required=True)
         s.add_argument("--end", required=True)
+        s.add_argument("--tag", default="fe", help="run namespace (e.g. fe_v06)")
+        if name == "emit":
+            s.add_argument("--parquet", default=MASTER_PARQUET)
     args = p.parse_args()
     return cmd_emit(args) if args.cmd == "emit" else cmd_ingest(args)
 
