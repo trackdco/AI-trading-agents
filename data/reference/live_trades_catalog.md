@@ -1,14 +1,19 @@
 # Live-execution evidence catalog (Angus's uploads, 18 Jul 2026 — pass 21)
 
-21 images from commits b1baa2c + 8414785 (branch r64muf). Times on phone/platform clocks are
-AEST/UTC+10 (Angus) → ET = −14h; TradingView chart axes are ET unless noted. P&L fields on
-Topstep shots are mostly masked — these are SETUP/EXECUTION evidence, not a complete ledger.
+21 images from commits b1baa2c + 8414785 (branch r64muf). Phone/platform clocks are
+Melbourne time (Angus) → ET conversion is DST-AWARE per the EXECUTION DATE (Angus's rule):
+  before 2026-03-08: AEDT(+11) vs EST(−5) = −16h
+  2026-03-08 → 2026-04-05: AEDT(+11) vs EDT(−4) = −15h
+  after 2026-04-05: AEST(+10) vs EDT(−4) = −14h
+TopstepX screenshots print "UTC+10" explicitly (no ambiguity). TradingView chart axes are ET
+unless noted. P&L fields on Topstep shots are mostly masked — these are SETUP/EXECUTION
+evidence, not a complete ledger.
 
 ## Timeline of live activity (contradicts nothing; refines "stopped early May" → last seen May 7)
 Mar 30 → Apr 10 (dense cluster) → Apr 14 → Apr 22–27 → Apr 29 → **May 7 (final)**.
 
 ## Executions (TopstepX, live)
-- IMG_3161: $50K Combine, SHORT 4 MNQ @23,554 (MNQM26), +95pts onside, TP resting; 01:45 AEST = **11:45 ET** (late NY morning — after our 10:15 cutoff).
+- IMG_3161: $50K Combine, SHORT 4 MNQ @23,554 (MNQM26), +95pts onside, TP resting; 01:45 Melbourne = **11:45 ET** (post-Apr-5 −14h; price zone pins the date post-Apr-5) (late NY morning — after our 10:15 cutoff).
 - IMG_3364/3366/3376/3378: **Apr 10 cluster** (MNQM26, 6-lot brackets): overnight RP&L +$1,416 banked (00:19 UTC+10 = 10:19 ET); LONG 6 @~25,261.75 w/ stop trailed to +1.75 lock (23:08 ET = Asia); LONG 6 w/ 6.75pt stop (03:10 ET = **London**); SHORT 6 w/ 31.75pt stop (04:24 ET = London).
 - **Sessions traded live: NY morning, late NY, Asia, London — ALL of them.** (Full-day expansion is not speculative; it's how he actually traded.)
 
