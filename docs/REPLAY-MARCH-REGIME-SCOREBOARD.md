@@ -124,6 +124,40 @@ All still regime-agent-only; HTF layer unrun; no news (arm C).
 
 ---
 
+## Oracle benchmark (Pat directive, 2026-07-18): all scoreboards now graded vs oracle + stand-down
+
+The objective metric is Angus's oracle + stand-down ceiling (scripts/
+score_regime_reads.py): per day, perfectly pick the better book at full size, or
+stand down when both books lose — `oracle_pl = max(E3, E4, 0)`. Full-dataset
+ceiling $37,014 vs champion $14,022 (Gates ledger). The campaign goal is to
+close the agent→oracle gap month over month; champion-relative deltas are
+secondary color.
+
+| month | oracle+SD ceiling | agent read-capture | read accuracy | arm B actual |
+|---|--:|--:|--:|--:|
+| Mar (v0.3.0, in-sample) | +$11,485 | +$1,980 = **17%** | 43% (9/21) | +$1,641 |
+| Apr (v0.3.0, OOS) | +$6,090 | +$1,535 = **25%** | 44% (7/16) | +$1,869 |
+| May (v0.3.1, OOS) | +$6,552 | +$1,778 = **27%** | 35% (7/20) | +$890 |
+
+(Read-capture = full-size follow-the-reads P&L ÷ oracle P&L — Angus's primary
+metric. Arm B actual is the half-size-damped engine result; different lens.)
+
+Capture is trending the right way (17% → 25% → 27%) but read ACCURACY is not
+(43% → 44% → 35%): May's better capture came from sizing luck, not better
+regime reads. The May confusion matrix shows the v0.3 revision traded one miss
+class for another — event_risk over-call persists (FLAT on tradeable days:
+05-12/13/19), and a NEW class appeared: **war-called chop** (six May days read
+MOMENTUM where the oracle wanted FLAT — the structure-exclusion fix stopped
+banning structures but the agent now over-trusts trend labels in chop).
+Both are v0.4 material (docs/PROPOSED-AGENT-ADJUSTMENTS-v0.4.md): B2/B3
+(event expiry + taxonomy split) target the first; the analog block (A1) and
+health-conditioned default (B4) target the second.
+
+Standing rule going forward: every month replayed gets its reads scored vs the
+oracle BEFORE its P&L is discussed, per the v0.4 process guard (D1).
+
+---
+
 ## v0.2 run (original) — detail below
 
 ## The number
