@@ -12,20 +12,34 @@ rejection block of a big bullish candle with a big bottom wick (sellers absorbed
 engine already detects these candles as triggers; the book data lets us GRADE the zones
 (how much volume was absorbed / rests there) and persist them as levels.
 
-## UPDATE (18 Jul, pass 23) — Angus posted the MIG product listing; buy LESS, not more
+## UPDATE 2 (18 Jul, pass 23) — ANGUS RULING: mbp-10 is IN, as its own later phase
 
-The listing self-describes as **"MicroDOM-style liquidity & volume blocks for
-TradingView"** (by Mohs Mayfair, $48.99/mo). TradingView Pine indicators have NO access
-to real order-book depth — Pine sees price/volume (and lower-TF intrabar bars) only. So
-MIG's boxes, B%/S% dominance tags, sweeps and "displacement confirmations" are all
-RECONSTRUCTED from traded price/volume. Its "depth mapping / millisecond order flow"
-copy is marketing, not a data capability the indicator can have.
+Angus used the live heatmap himself pre-break and rates it highly as ORDER CONFIRMATION
+and EXIT TARGETS — that's real resting-depth value beyond anything MIG reconstructs, so
+depth data is confirmed, sequenced AFTER current calibration proves out on price data:
+1. **NOW — `trades` historical** (this task): powers level-memory + absorption grading.
+2. **DEPTH PHASE (after performance delivers): `mbp-10` historical, Feb→May first** —
+   calibrate the depth layer against Angus's live screenshots and his
+   confirmation/exit-target usage. Historical data doesn't expire; no need to buy
+   before the phase starts.
+3. **LIVE LAUNCH: Databento live mbp-10 stream** — same schema, same code path,
+   agents read the book in real time. NOTE: live CME data adds exchange license fees
+   on top of Databento's rate (production cost, not calibration cost).
 
-**Therefore: buy the `trades` schema ONLY. Do NOT buy `mbp-10`.** True resting-depth
-data cannot be needed to replicate an indicator that never saw resting depth. Trades
-ticks (with aggressor-side flag) are strictly better raw material than MIG's own input.
-If we ever want true depth as an UPGRADE beyond MIG, a ~2-week mbp-10 sample later is
-the cheap way to test whether it adds anything.
+**MIG subscription ≠ agent data source.** It's an invite-only TradingView Pine
+indicator: the sub buys chart pixels, there is no API, Pine boxes can't export their
+coordinates, and an invite-only script can't be edited to add alerts. Agents can never
+consume it. Our graded-zones/level-memory layer pointed at mbp-10 IS the heatmap —
+machine-readable and backtestable, which MIG can't be even in principle.
+
+## Context (superseded recommendation, kept for the reasoning)
+
+The MIG listing self-describes as **"MicroDOM-style liquidity & volume blocks for
+TradingView"** (by Mohs Mayfair, $48.99/mo). Pine indicators see price/volume only —
+no order-book access — so MIG's boxes/B%/S% tags are reconstructed from traded
+price/volume, and `trades` ticks are strictly better raw material than MIG's own input.
+That argued for skipping mbp-10; Angus's live experience (depth as confirmation/exits,
+a use BEYOND replicating MIG) overrules — hence the phased plan above.
 
 ## What to pull (Databento, GLBX.MDP3, same NQ outrights as the price pull)
 
