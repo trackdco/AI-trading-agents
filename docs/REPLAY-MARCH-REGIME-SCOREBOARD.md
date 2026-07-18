@@ -67,6 +67,63 @@ questions remaining are (1) does it save more than it costs in a **drawdown mont
 
 ---
 
+## Multi-month replay (2026-07-18, second session): April + May out-of-sample
+
+The v0.3 revisions were designed on March, so March can't certify them. April and
+May were then replayed **fully out-of-sample** (fresh emits, fresh zero-context
+verdicts, playbook notes chained walk-forward month to month).
+
+First, the champion's own monthly record (full-history run — note this scores
+March +$2,710 vs the sliced harness's +$3,356; the engine's history-dependent
+vetoes shift with warm-up, but arm A vs arm B always share one harness so the
+agent deltas are unaffected):
+
+| month | champion | character |
+|---|--:|---|
+| Feb | +$4,455 | green |
+| Mar | +$2,710 | green (in-sample retest month) |
+| Apr | +$2,635 | green (OOS test 1) |
+| May | **+$50** | flat/chop (OOS test 2 — the stress test) |
+| Jun | +$3,535 | green |
+| Jul (9d) | −$650 | partial, only red stretch |
+
+### April (OOS, green month): agent effect −$1,776 on ruled days
+
+Arm A +$3,645 / arm B +$1,869 over 17 ruled days. Two findings:
+- **New contract bug:** the agent sized 0.75 on five war-long days
+  (04-15/16/20/22/29) — the schema only accepts {0.0, 0.5, 1.0} and the prompt
+  never said so; all five died fail-closed (traded as champion). Fixed as v0.3.1
+  (prompt now states the allowed values — contract alignment, not tuning).
+- The always-half-size collapse is **not absolute**: 04-10 got a full-size 1.0
+  call (delta $0) and the 0.75 attempts show graded judgment the contract
+  couldn't accept.
+
+### May (OOS, flat month): agent effect **+$840** — first agent win
+
+Arm A **+$50** / arm B **+$890** over 21 ruled days, v0.3.1 (all 21 valid, plus
+a correct stand-down on the 05-25 Bank Holiday). The discrimination thesis
+held: full-size 1.0 on the clean war-long days — **including 05-11, the month's
+biggest winner (+$1,935), left completely untouched** — and half-size across the
+chop, which cut eight losing days roughly in half. The one blemish: 05-06 was
+sized 1.0 and lost −$580 in full; sizing is judgment, not clairvoyance.
+
+### The cross-month picture
+
+| month | champion (ruled days) | agent effect | agent version | sample |
+|---|--:|--:|---|---|
+| Mar | +$3,356 | −$1,715 | v0.3.0 | in-sample (revisions designed on it) |
+| Apr | +$3,645 | −$1,776 | v0.3.0 | out-of-sample |
+| May | +$50 | **+$840** | v0.3.1 | out-of-sample |
+
+The layer now behaves like what it is — insurance: it costs roughly half the
+profit in months the champion wins anyway, and pays out in flat/choppy months.
+Whether it's worth carrying depends on (a) cutting the green-month premium —
+the agent still defaults to 0.5 on most days; with 0.75 now legal, that should
+improve — and (b) June + the partial July as further out-of-sample evidence.
+All still regime-agent-only; HTF layer unrun; no news (arm C).
+
+---
+
 ## v0.2 run (original) — detail below
 
 ## The number
