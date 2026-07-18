@@ -19,7 +19,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 NY = "America/New_York"
-DATA = Path("data/reference/nq_1m_feb_jul2026.parquet")
+DATA = Path("data/reference/nq_1m_feb_jul2026.parquet")   # overridden by --data (pass 31)
 WORKERS = 4
 BAND = ("07:45", "11:00")   # overridden by --band-start/--band-end (pass-28 all-session sweep)
 
@@ -68,9 +68,12 @@ def main():
     ap.add_argument("--merge", default=None, help="extra csv (e.g. legacy checkpoint) to merge")
     ap.add_argument("--band-start", default="07:45", help="intraday detection band start (ET)")
     ap.add_argument("--band-end", default="11:00", help="intraday detection band end (ET)")
+    ap.add_argument("--data", default=None, help="1m parquet to detect over (default: feb_jul2026)")
     a = ap.parse_args()
-    global BAND
+    global BAND, DATA
     BAND = (a.band_start, a.band_end)
+    if a.data:
+        DATA = Path(a.data)
 
     final = Path(a.out)
     daydir = final.parent / (final.stem + "_days")

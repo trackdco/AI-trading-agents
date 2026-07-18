@@ -20,6 +20,10 @@ from src.engine.triggers import _order_block            # noqa: E402
 DATA = Path("data/reference/nq_1m_feb_jul2026.parquet")
 CACHES = [Path("output/triggers_feb.csv"), Path("output/triggers_marjul.csv"),
           Path("output/triggers_junjul.csv")]
+# CLI override (pass 31): python -m scripts._augment_ob <data.parquet> <cache.csv> [...]
+if len(sys.argv) > 2:
+    DATA = Path(sys.argv[1])
+    CACHES = [Path(p) for p in sys.argv[2:]]
 
 
 def main():
