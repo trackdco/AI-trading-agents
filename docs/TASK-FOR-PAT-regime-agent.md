@@ -1,5 +1,26 @@
 # TASK FOR PAT — Regime-Context Agent (Angus directive, 18 Jul 2026)
 
+## ANGUS DIRECTIVE (18 Jul, latest) — ANTI-OVERFIT GRADING STANDARD (supersedes tier-1 scope)
+
+Angus: June's 21 days is too small to conclude anything, and "I don't want to
+optimize for June" the way the champion was over-fit to February. Standard:
+
+1. **Candidate changes are graded FRESH-EYES over the FULL 2023–2026 history**
+   (~890 days). No chain → fully parallel → ~30–40 min wall-clock at 20
+   concurrent calls. Nobody tests on a month again; the cheap test IS the
+   four-era test. Statistical resolution ±1.6pts vs ±10pts on a single month —
+   38%-vs-45% questions are only answerable at this sample size.
+2. **Q2 2025 is a SACRED HOLDOUT.** Pre-registered exam + pass bar; it is never
+   iterated on, only run to grade a finished version. Requires the base-rates
+   digest built with --asof 2025-04-01 and analog table (walk-forward, already
+   safe).
+3. **Chained/sequential runs are rare and final** — one overnight pass for a
+   config that already won the fresh-eyes broad test, to measure what only
+   sequence can: quarantined-memory effects and the C2 dollar-feedback loop.
+4. Caveat on 2023-25 grading before Brake's calendar lands: red_folder is 0
+   there, so event-read quality only becomes gradeable off-2026 after the
+   backfill. Note it on any pre-calendar full-history grade.
+
 ## ANGUS DIRECTIVE (18 Jul) — TWO-TIER TESTING PROTOCOL (speed without breaking the chain)
 
 Angus's concern: 30s/verdict × one-day-at-a-time = the walk feels like "multiple
