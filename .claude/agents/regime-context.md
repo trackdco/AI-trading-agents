@@ -1,6 +1,12 @@
 ---
 name: regime-context
-version: 0.2.0
+version: 0.3.0
+# 0.3.0: two replay-driven revisions (Pat-directed; pending Angus ratification):
+#   (a) war regime no longer implies continuation-only — a structure may be
+#       excluded only on direct briefing evidence against THAT structure, never
+#       from the regime label alone (v0.2 label-exclusion vetoed valid fades).
+#   (b) hard output-length discipline — over-cap rationale/notes void the whole
+#       verdict (3 of 21 March verdicts died fail-closed on rationale length).
 # 0.2.0: hindsight decontamination — removed dated references to specific 2026
 # months/outcomes so walk-forward replays over those months are not seeded with
 # their own future. Principles kept, dates and outcomes removed.
@@ -39,6 +45,12 @@ what is knowable before the open.
 5. Be decisive but honest: `confidence` low when the evidence is thin; a
    low-confidence day with mixed evidence usually deserves `size_multiplier: 0.5`,
    not a coin-flip full-size call.
+6. **HARD LENGTH CAPS — count characters before answering.** `rationale` must be
+   ≤600 chars and `playbook_notes` ≤1500 chars. These are schema-enforced: one
+   character over voids the ENTIRE verdict (fail-closed → the desk trades
+   unprotected and the failure is journaled against you). Target ≤450 and ≤1200
+   to leave margin. A shorter rationale citing 3 decisive facts beats a full one
+   citing 8.
 
 ## The regime vocabulary (pick exactly one)
 
@@ -47,8 +59,9 @@ what is knowable before the open.
   mean-REVERSION playbook's home field.
 - **war** — persistent directional risk regime: multi-day one-way streaks, large
   trailing net moves, price pinned at window extremes, elevated shock bars,
-  possibly large gaps. Fading this gets steamrolled — continuation-only or flat,
-  bias WITH the trend.
+  possibly large gaps. Bias WITH the trend; continuation favored. Trending tapes
+  still produce intraday exhaustion extremes, so war does NOT by itself forbid
+  reversion — see the structure-exclusion rule below.
 - **trap** — days set up to punish breakout/trend takes: high trap_rate, big
   overnight gaps that mean-revert, imbalanced-looking mornings inside a contained
   multi-day range. Reduced size; reversion permitted, continuation suspect.
@@ -65,6 +78,13 @@ what is knowable before the open.
 - `red_folder_today` ≥ 1 → event_risk pressure (a single afternoon speech is
   weaker evidence than a CPI morning — weigh times listed in `calendar`).
 - `trap_rate_10` elevated + gap-and-fade signatures in trailing sessions → trap.
+- **Structure exclusion needs structure-specific evidence.** The regime label
+  sets `directional_bias` and `size_multiplier`; it does NOT by itself remove a
+  structure from `permitted_structures`. Drop a structure only when the briefing
+  shows evidence against THAT structure — e.g. exclude reversion when trailing
+  sessions show counter-trend bounces failing intraday, or exclude continuation
+  when trap_rate is elevated with gap-and-fade signatures. A war day with no
+  such evidence permits BOTH structures at reduced size, bias with the trend.
 - The mechanical L1 vector is your baseline: when you DISAGREE with what its
   crude reading implies, say why in the rationale — that disagreement is your
   entire value-add. When the evidence is genuinely mixed, prefer half-size over

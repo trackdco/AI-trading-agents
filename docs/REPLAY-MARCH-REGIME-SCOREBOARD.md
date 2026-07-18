@@ -3,9 +3,71 @@
 **Question.** Does the regime-context agent layer improve on the static champion
 (Blend v1.1) when replayed walk-forward over a real month?
 
-**Answer for March 2026: no — it hurt, by −$5,365.** This is a *reported finding*,
-not a defect to tune away (anti-tuning discipline). See "Why" below — the cause is
-diagnostic, and points at two concrete revisions for the agent-design owner (Angus).
+**Answer for March 2026: no.** Agent v0.2: **−$5,365**. After the two Pat-directed
+revisions (v0.3.0, below): **−$1,715** — better, still negative, and the retest
+surfaced a new failure mode. All numbers reported straight (anti-tuning discipline).
+
+---
+
+## v0.3.0 retest (2026-07-18)
+
+Two revisions were made to `.claude/agents/regime-context.md` (Pat-directed,
+pending Angus ratification) and the full month re-run from scratch (fresh emits,
+22 fresh zero-context verdicts, new agent hash `6cbfd786de69`):
+
+1. **Structure-exclusion rule** — a regime label (e.g. war) no longer removes a
+   structure by itself; exclusion now requires briefing evidence against THAT
+   structure. This fixes the 03-19 class of error (war ⇒ continuation-only vetoing
+   the champion's winning fade).
+2. **Hard length caps in the prompt** — rationale ≤600 / notes ≤1500 stated as
+   verdict-voiding, with a target under each.
+
+**Validity caveat: this retest is in-sample.** The revisions were designed by
+looking at March's failures, so March can no longer certify the agent. The result
+below measures whether the fixes *behave as intended*; certification needs a month
+the v0.3 agent has never influenced (e.g. April–July).
+
+### v0.3 result — 22/22 days ruled, 0 schema failures
+
+| metric | v0.2 | v0.3 |
+|---|--:|--:|
+| arm A — static champion | +$4,276 (18d) | **+$3,356 (22d — full March, matches frozen baseline)** |
+| arm B — champion + regime agent | −$1,089 | **+$1,641** |
+| agents' effect | **−$5,365** | **−$1,715** |
+| schema-failed verdicts | 3 of 21 | **0 of 22** |
+
+Both fixes did what they were built to do:
+- **No structure vetoes fired.** 03-19 went from −$132 (fade blocked, losers kept)
+  to +$895 — exactly the half-sized champion trade. The wiring bug is gone.
+- **No verdicts died on length.** 03-06 (NFP quintuple cluster) now stands down
+  validly and saves its −$75.
+
+### The new finding: the agent has collapsed into "always half-size"
+
+Every one of the 22 days got `size_multiplier: 0.5` (or the one stand-down).
+Arm B ≈ arm A × 0.5 almost line-for-line (+$1,641 ≈ half of +$3,356). The verdicts
+justify it the same way each day: March's shock-bar counts and 300–1000pt ranges
+read as "elevated volatility ⇒ 0.5x" every single morning. With the structure veto
+removed, the agent's only remaining lever is size — and it never uses 1.0.
+
+A de-risk layer that outputs a constant is not exercising judgment; it is a static
+position-size cut, which needs no LLM. **For Angus:** the agent needs either
+(a) calibration guidance for what "normal" volatility looks like (its briefing has
+no baseline to compare shock counts against, so everything looks elevated), or
+(b) an explicit instruction that 1.0 is the default and 0.5 must cite a
+day-specific trigger, not the month's ambient volatility. Not tuned here.
+
+### Bottom line after v0.3
+
+On a green month the honest expectation for a pure de-risk layer is now
+≈ −(half the month's profit), and that is exactly what we got. The two real
+questions remaining are (1) does it save more than it costs in a **drawdown month**
+(the fair test, still unrun), and (2) can it learn to size 1.0 on clean days
+(the new finding above). 
+
+---
+
+## v0.2 run (original) — detail below
 
 ## The number
 

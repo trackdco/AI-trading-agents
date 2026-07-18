@@ -1,6 +1,12 @@
 ---
 name: regime-context
-version: 0.2.0
+version: 0.3.0
+# 0.3.0: two replay-driven revisions (Pat-directed; pending Angus ratification):
+#   (a) war regime no longer implies continuation-only — a structure may be
+#       excluded only on direct briefing evidence against THAT structure, never
+#       from the regime label alone (v0.2 label-exclusion vetoed valid fades).
+#   (b) hard output-length discipline — over-cap rationale/notes void the whole
+#       verdict (3 of 21 March verdicts died fail-closed on rationale length).
 # 0.2.0: hindsight decontamination — removed dated references to specific 2026
 # months/outcomes so walk-forward replays over those months are not seeded with
 # their own future. Principles kept, dates and outcomes removed.
@@ -39,6 +45,12 @@ what is knowable before the open.
 5. Be decisive but honest: `confidence` low when the evidence is thin; a
    low-confidence day with mixed evidence usually deserves `size_multiplier: 0.5`,
    not a coin-flip full-size call.
+6. **HARD LENGTH CAPS — count characters before answering.** `rationale` must be
+   ≤600 chars and `playbook_notes` ≤1500 chars. These are schema-enforced: one
+   character over voids the ENTIRE verdict (fail-closed → the desk trades
+   unprotected and the failure is journaled against you). Target ≤450 and ≤1200
+   to leave margin. A shorter rationale citing 3 decisive facts beats a full one
+   citing 8.
 
 ## The regime vocabulary (pick exactly one)
 
@@ -47,8 +59,9 @@ what is knowable before the open.
   mean-REVERSION playbook's home field.
 - **war** — persistent directional risk regime: multi-day one-way streaks, large
   trailing net moves, price pinned at window extremes, elevated shock bars,
-  possibly large gaps. Fading this gets steamrolled — continuation-only or flat,
-  bias WITH the trend.
+  possibly large gaps. Bias WITH the trend; continuation favored. Trending tapes
+  still produce intraday exhaustion extremes, so war does NOT by itself forbid
+  reversion — see the structure-exclusion rule below.
 - **trap** — days set up to punish breakout/trend takes: high trap_rate, big
   overnight gaps that mean-revert, imbalanced-looking mornings inside a contained
   multi-day range. Reduced size; reversion permitted, continuation suspect.
@@ -65,6 +78,13 @@ what is knowable before the open.
 - `red_folder_today` ≥ 1 → event_risk pressure (a single afternoon speech is
   weaker evidence than a CPI morning — weigh times listed in `calendar`).
 - `trap_rate_10` elevated + gap-and-fade signatures in trailing sessions → trap.
+- **Structure exclusion needs structure-specific evidence.** The regime label
+  sets `directional_bias` and `size_multiplier`; it does NOT by itself remove a
+  structure from `permitted_structures`. Drop a structure only when the briefing
+  shows evidence against THAT structure — e.g. exclude reversion when trailing
+  sessions show counter-trend bounces failing intraday, or exclude continuation
+  when trap_rate is elevated with gap-and-fade signatures. A war day with no
+  such evidence permits BOTH structures at reduced size, bias with the trend.
 - The mechanical L1 vector is your baseline: when you DISAGREE with what its
   crude reading implies, say why in the rationale — that disagreement is your
   entire value-add. When the evidence is genuinely mixed, prefer half-size over
@@ -100,6 +120,6 @@ If not standing down, permit at least one structure.
 ---
 
 BRIEFING (JSON, your ONLY source of facts):
-{"analog_days": "L2 analog module not available", "calendar": [{"event": "Flash Manufacturing PMI", "impact": "high", "today": false, "when": "2026-03-21T09:45:00-04:00"}, {"event": "FOMC Member Powell Speaks", "impact": "medium", "today": false, "when": "2026-03-21T13:30:00-04:00"}], "cutoff_et": "2026-03-23T08:00:00-04:00", "date": "2026-03-23", "news": "news archive not available (arm B)", "overnight": {"gap_vs_prior_close_pts": 172.75, "net_pts": 488.0, "range_pts": 990.5}, "playbook_notes": "2026-03-23 (first entry): Trailing 10d is risk-off — net_10d -415, net_5d -304.25, 3-day down streak into Mar 20, price near window low (1.747% off low, 3.281% off high). Overnight Mon brought an unscheduled violent counter-trend shock: +488 net, 990.5pt range, 489.75pt single bar at 07:05, 48 bars over the 55.5pt shock threshold — no red-folder event on today's calendar and no news feed (arm B) to attribute it. Called event_risk / full stand-down: fading the shock and chasing it both look bad. Watch tomorrow: if the up-move holds and shock bars subside, this may be a regime turn off the lows (possible war-regime flip to upside or trap setup on the gap); if it fully retraces, the down war regime resumes — bias short, continuation-only. Do not treat low trap_rate_10 (0.1) as license for breakout takes while shock count is this elevated. Re-arm normal sizing only after a session with contained ranges and shock count back near baseline.", "regime_vector": {"day": "2026-03-23", "day_type": "imbalanced", "gap_open_pts": 175.5, "imbal_share_10": 0.7, "imbal_share_20": 0.55, "range_pctl_20": 0.75, "red_folder_today": "0", "streak_imbal": "0", "trap_rate_10": 0.1}, "schema_version": "1.0", "shock_bars": {"count": 48, "largest": {"range_pts": 489.75, "ts": "2026-03-23 07:05:00-04:00"}, "threshold_pts": 55.5}, "trailing_sessions": [{"close": 24958.0, "date": "2026-03-09", "net_pts": 522.75, "range_pts": 1058.0}, {"close": 25010.5, "date": "2026-03-10", "net_pts": 29.0, "range_pts": 387.5}, {"close": 24945.5, "date": "2026-03-11", "net_pts": -64.75, "range_pts": 306.5}, {"close": 24568.5, "date": "2026-03-12", "net_pts": -366.0, "range_pts": 431.5}, {"close": 24335.25, "date": "2026-03-13", "net_pts": -231.75, "range_pts": 471.5}, {"close": 24872.25, "date": "2026-03-16", "net_pts": 372.25, "range_pts": 543.5}, {"close": 25027.5, "date": "2026-03-17", "net_pts": 157.5, "range_pts": 388.75}, {"close": 24606.25, "date": "2026-03-18", "net_pts": -413.5, "range_pts": 645.0}, {"close": 24617.0, "date": "2026-03-19", "net_pts": -5.0, "range_pts": 398.5}, {"close": 24217.25, "date": "2026-03-20", "net_pts": -415.5, "range_pts": 689.25}], "trailing_stats": {"directional_streak_days": 3, "net_10d_pts": -415.0, "net_5d_pts": -304.25, "pct_off_window_high": 3.281, "pct_off_window_low": 1.747}, "weekday": "Monday"}
+{"analog_days": "L2 analog module not available", "calendar": [{"event": "Flash Manufacturing PMI", "impact": "high", "today": false, "when": "2026-03-21T09:45:00-04:00"}, {"event": "FOMC Member Powell Speaks", "impact": "medium", "today": false, "when": "2026-03-21T13:30:00-04:00"}], "cutoff_et": "2026-03-23T08:00:00-04:00", "date": "2026-03-23", "news": "news archive not available (arm B)", "overnight": {"gap_vs_prior_close_pts": 172.75, "net_pts": 488.0, "range_pts": 990.5}, "playbook_notes": "(none yet)", "regime_vector": {"day": "2026-03-23", "day_type": "imbalanced", "gap_open_pts": 175.5, "imbal_share_10": 0.7, "imbal_share_20": 0.55, "range_pctl_20": 0.75, "red_folder_today": "0", "streak_imbal": "0", "trap_rate_10": 0.1}, "schema_version": "1.0", "shock_bars": {"count": 48, "largest": {"range_pts": 489.75, "ts": "2026-03-23 07:05:00-04:00"}, "threshold_pts": 55.5}, "trailing_sessions": [{"close": 24958.0, "date": "2026-03-09", "net_pts": 522.75, "range_pts": 1058.0}, {"close": 25010.5, "date": "2026-03-10", "net_pts": 29.0, "range_pts": 387.5}, {"close": 24945.5, "date": "2026-03-11", "net_pts": -64.75, "range_pts": 306.5}, {"close": 24568.5, "date": "2026-03-12", "net_pts": -366.0, "range_pts": 431.5}, {"close": 24335.25, "date": "2026-03-13", "net_pts": -231.75, "range_pts": 471.5}, {"close": 24872.25, "date": "2026-03-16", "net_pts": 372.25, "range_pts": 543.5}, {"close": 25027.5, "date": "2026-03-17", "net_pts": 157.5, "range_pts": 388.75}, {"close": 24606.25, "date": "2026-03-18", "net_pts": -413.5, "range_pts": 645.0}, {"close": 24617.0, "date": "2026-03-19", "net_pts": -5.0, "range_pts": 398.5}, {"close": 24217.25, "date": "2026-03-20", "net_pts": -415.5, "range_pts": 689.25}], "trailing_stats": {"directional_streak_days": 3, "net_10d_pts": -415.0, "net_5d_pts": -304.25, "pct_off_window_high": 3.281, "pct_off_window_low": 1.747}, "weekday": "Monday"}
 
-Respond with EXACTLY one JSON object matching the verdict schema. Set "agent_version" to "989b47c01fd6" and "date" to "2026-03-23". No prose outside the JSON.
+Respond with EXACTLY one JSON object matching the verdict schema. Set "agent_version" to "6cbfd786de69" and "date" to "2026-03-23". No prose outside the JSON.
