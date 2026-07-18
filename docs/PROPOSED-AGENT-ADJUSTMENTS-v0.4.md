@@ -59,3 +59,18 @@ D1. All of A+B+C land as ONE version bump (v0.4). Fair exam = months the agent w
     March retests count for anything.
 
 Engine lane commits to A1–A3 (data plumbing) immediately on Angus's go.
+
+## Engine-lane predictions (pass 34 — to be GRADED by the fair exam)
+
+P1. Reads on March-class months: 43% -> 60-67% (B2/B3 convert 4-5 of the 7 event-flat
+    misses; A2 catches 1-2 of the 3 trap-day misses; B3 half-fixes the war/rotation mix).
+P2. March P&L: -$1,715 -> +$2,500-4,500, still likely UNDER the champion (+$4,276) —
+    insurance premium never reaches zero in a green month; beating the champion on March
+    would itself be a warning sign of March-overfit.
+P3. Red months are the payoff: May 2026 agent arm +$800-1,500 (champion +$10); a 2025
+    quarter's bleed cut 40-60%, ~50/50 odds one 2025 month flips green on flats alone.
+    Acid test: agent beats champion on {Mar + May + 2025 quarter} COMBINED.
+P4. Risk register: B1 whipsaw if release-only leaks; A1 confident-nonsense on
+    novel regimes (library-depth gate is the guard); B2 walks into post-release traps of
+    the Aug-2024 class (A3 event analogs must flag "day stayed hostile" shocks); bundled
+    v0.4 muddies attribution -> reads scored before P&L, always.
