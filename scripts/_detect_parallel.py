@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 NY = "America/New_York"
 DATA = Path("data/reference/nq_1m_feb_jul2026.parquet")
 WORKERS = 4
+BAND = ("07:45", "11:00")   # overridden by --band-start/--band-end (pass-28 all-session sweep)
 
 _df = None
 _OTE = False
@@ -41,8 +42,8 @@ def _init(ote: bool):
 def _one_day(task):
     day, daydir = task
     from src.engine.triggers import detect_triggers
-    start = pd.Timestamp(f"{day} 07:45", tz=NY)
-    end = pd.Timestamp(f"{day} 11:00", tz=NY)
+    start = pd.Timestamp(f"{day} {BAND[0]}", tz=NY)
+    end = pd.Timestamp(f"{day} {BAND[1]}", tz=NY)
     out = Path(daydir) / f"{day}.csv"
     if _df[(_df["ts_event"] >= start) & (_df["ts_event"] <= end)].empty:
         out.write_text("")                       # holiday / missing session marker
@@ -65,7 +66,11 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--ote", action="store_true", help="force OTE fib cluster levels ON")
     ap.add_argument("--merge", default=None, help="extra csv (e.g. legacy checkpoint) to merge")
+    ap.add_argument("--band-start", default="07:45", help="intraday detection band start (ET)")
+    ap.add_argument("--band-end", default="11:00", help="intraday detection band end (ET)")
     a = ap.parse_args()
+    global BAND
+    BAND = (a.band_start, a.band_end)
 
     final = Path(a.out)
     daydir = final.parent / (final.stem + "_days")

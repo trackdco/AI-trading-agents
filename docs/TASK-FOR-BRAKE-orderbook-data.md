@@ -63,6 +63,14 @@ Practical notes:
 - Same instrument filtering as before (outrights only, front-month by volume — reuse
   `to_continuous_front_month`'s roll logic for alignment with the 1m series).
 
+## UPDATE 4 (pass 28) — Brake: STOP compressing the 18 GB export for GitHub
+
+GitHub hard-caps files at 100 MB; no compression gets 18 GB under that, and we don't need
+the raw ticks in git AT ALL. Run **`scripts/condense_trades.py`** (committed, instructions
+in its docstring) locally next to your export — it turns the raw file into the per-minute
+footprint parquet (~50–100x smaller). Commit ONLY that parquet. If the output still tops
+~95 MB, run it once per month (one output file per month).
+
 ## Size problem ("it's gigs, we can't upload it") — solved by never uploading raw
 
 Raw ticks never touch GitHub. Committed output = a per-1m-bar FOOTPRINT parquet
