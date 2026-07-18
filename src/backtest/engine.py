@@ -84,6 +84,11 @@ class BacktestConfig(BaseModel):
     v9_arm_r: float = 6.0         # pass-26 V9 GIVEBACK TRAIL: arms only after this excursion (R)
     v9_lock_frac: float = 0.5     # pass-26 V9: once armed, stop locks at this fraction of peak MFE
     v9_floor_r: float = 3.0       # pass-26 V9: ...but never below this many R
+    v9_max_risk_pts: float | None = None  # pass-26b: arm ONLY when risk_pts <= this (None = always).
+                                  # July-autopsy classes separate cleanly: round-trip losers have
+                                  # 2-4pt risks (far targets unreachable at that scale); the big
+                                  # winners V9 was clipping have 9-12pt risks. Condition the trail
+                                  # on the class it exists to fix.
     v8_partial_pct: float = 50.0  # pass-17 V8 (ANGUS March style): % booked at first structure;
                                   # runner TRAILS the prior completed 5m swing; premarket fills
                                   # go BE at 09:29 ("BE before the open for volatility")
@@ -630,7 +635,9 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                     # or touching normal trades. Once armed, the stop locks at
                     # max(v9_floor_r, v9_lock_frac * peakMFE) R, ratcheting as MFE grows;
                     # like every arm, the move takes effect NEXT bar (pending_stop).
-                    if cfg.mgmt_variant == "V9" and pos is not None:
+                    if (cfg.mgmt_variant == "V9" and pos is not None
+                            and (cfg.v9_max_risk_pts is None
+                                 or pos.risk_pts <= cfg.v9_max_risk_pts)):
                         fav = (h - pos.entry) if sign == 1 else (pos.entry - lo)
                         pos.mfe_pts = max(pos.mfe_pts, float(fav))
                         mfe_r = pos.mfe_pts / pos.risk_pts if pos.risk_pts > 0 else 0.0
