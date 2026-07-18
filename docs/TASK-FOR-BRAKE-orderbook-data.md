@@ -1,5 +1,35 @@
 # TASK FOR BRAKE — Order-book data pull (Angus directive, 18 Jul 2026)
 
+## UPDATE 6 (18 Jul, Angus directive) — NEW TASK, JUMPS THE QUEUE: historical news calendar
+
+**This is now the single blocking item for the next agent exam — do it before any more
+depth condensing.** The regime agent's event awareness (`red_folder_today`) prints 0 for
+every day before 2026 because our Forex Factory calendar only covers Feb 2026 onward.
+The March replays proved event-read is central, so testing the agent on 2025 without a
+calendar handicaps it on exactly the feature that matters most. My server is
+Cloudflare-blocked from forexfactory.com; a home connection isn't. Ten-minute job:
+
+```
+git pull
+pip install cloudscraper beautifulsoup4 pandas
+python scripts/scrape_ff_calendar.py
+```
+
+- Fetches the 37 FF calendar month pages (Jan 2023 → Jan 2026, ~3s apart, a few
+  minutes), USD events only, and writes **`config/news_calendar_hist.csv`** (a few
+  hundred KB — commits fine as-is, no condensing).
+- It prints per-year counts + a sanity line at the end; roughly **60–100 high-impact
+  days/year** means it worked.
+- Commit + push the CSV on its own branch (e.g. `news-data`) and ping the tracker.
+- If Cloudflare blocks the scrape: open each month URL in a browser
+  (forexfactory.com/calendar?month=jan.2023 … dec.2025), save the pages as HTML into
+  one folder, then `python scripts/scrape_ff_calendar.py --html-dir that_folder`.
+  If parsing comes back empty, push one saved month page and I'll adapt the parser.
+
+Everything downstream is pre-wired (the loader auto-merges the file): once it lands I
+rebuild the regime vector + analog table and rerun the 2023–25 baselines. Full run
+instructions are in the script's docstring.
+
 ## UPDATE 3 (18 Jul, pass 24) — ANGUS: pull APRIL first, one month only (~$80/mo economics)
 
 April is the chosen validation month: it's the worst performer of the Feb–Apr test window
