@@ -53,6 +53,12 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — Pass 13: CHAMPION v2 — max-2-trades/day (§10 sanctioned value) + V1 rejected (Claude Code, Angus driving)
+- **B3-champ loser autopsy (28L):** day's 3rd trade = 0/7, −$1,410 (1st: 28%w +$4,958; 2nd: 47%w +$6,485); 11/28 losers ran ≥+1R before dying (median loser MFE +0.76R); 09:00–09:30 slot 0/3 (watch); POC-in-cluster again loser-side (5tr 20%w).
+- **CHAMPION v2 = B3 + end-10:15 + max_trades_per_day 2 (§10's other documented value): 33tr, 36.4% win, +$11,442, maxDD $1,370, 8.4× P&L/DD, 56% green days.** Every metric improved simultaneously; beats B8's ratio (5.5×).
+- **V1 BE-at-1R REJECTED on measurement:** +$4,818 (halves money), 20% win, 19 BE-scratches — kills winners-in-progress. Fourth confirmation of the tail law: partials/caps/early-BE amputate the payoff; the only move that works is cutting junk ENTRIES (unclassified, 3rd-of-day, post-10:15).
+- Full-day detection still running (checkpointed). OOS gate list: Champion v2, B8, end-10:15, Tue/Wed sizing, Fri de-risk.
+
 ### 2026-07-18 — Pass 12: B8 efficiency king + overnight-window engine fixes + full-day discovery launched (Claude Code, Angus driving)
 - **Angus's standing notes:** end-10:15 NY = set now; Fri de-risk (not hard cut), Tue/Wed = max size; B3+1015 and B7+1015 both keepers; wants full-day (Asia/London) discovery with lenient halt so NY still gets a chance; P&L over R, always.
 - **Two-arm anatomy:** B7+1015+noFri wins by CONCENTRATION (data-extreme targets 2tr/100%/+$4,525 = >half its profit; A-rejections 50% win; 08:00 hour +$3,885). B3+1015 champ wins via the WALK-OUT class (15tr/40%/+$5,912 = 59% of profit) + breadth — champ has NO dollar-negative slice left (nothing to trim; upside = ADD sessions).
