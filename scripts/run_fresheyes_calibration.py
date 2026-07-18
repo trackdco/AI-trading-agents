@@ -97,7 +97,7 @@ def cmd_ingest(args) -> int:
             print(f"{d}: INVALID ({type(e).__name__}: {e}) — fail-closed")
             continue
         verdicts.append(v.model_dump())
-        act = verdict_action(v.regime, v.stand_down, v.size_multiplier)
+        act = verdict_action(v.regime, v.stand_down, v.size_multiplier, v.permitted_structures)
         g = grade_day(d, act, books=books)
         if g is not None:
             ledger.append({"month": d[:7], "regime": v.regime, **g})

@@ -87,15 +87,29 @@ def oracle_action(e3: float, e4: float) -> str:
     return "FLAT" if max(e3, e4) <= 0 else ("ROTATION" if e3 >= e4 else "MOMENTUM")
 
 
-def verdict_action(regime: str, stand_down: bool, size_multiplier: float) -> str:
-    """Map a verdict to the 3-way action space score_regime_reads.py uses."""
+def verdict_action(regime: str, stand_down: bool, size_multiplier: float,
+                   permitted_structures: list[str] | None = None) -> str:
+    """Map a verdict to the 3-way action space score_regime_reads.py uses.
+
+    v0.6: an event_risk day that is NOT standing down now TRADES (timing floor +
+    reduced-arm), so it must map to the book it armed, not to FLAT. When a single
+    structure is permitted we read the book from it (reversion→ROTATION,
+    continuation→MOMENTUM); otherwise we fall back to the regime lean. This is
+    backward-compatible: for every prior regime/structure combination that already
+    resolved to a book it resolves to the SAME book — only event_risk-with-a-committed-
+    structure changes (it used to be scored FLAT, understating that it traded)."""
     if stand_down or size_multiplier == 0:
         return "FLAT"
+    ps = set(permitted_structures or [])
+    if ps == {"reversion"}:
+        return "ROTATION"
+    if ps == {"continuation"}:
+        return "MOMENTUM"
     if regime in ("balance", "trap"):
         return "ROTATION"
     if regime == "war":
         return "MOMENTUM"
-    return "FLAT"                       # event_risk with no directional book = FLAT
+    return "FLAT"                       # event_risk with both/neither structures = no committed book
 
 
 def grade_day(day: str, action: str, books: pd.DataFrame | None = None) -> dict | None:
@@ -120,9 +134,9 @@ def divergence_row(day: str, chained_v: dict, fresh_v: dict,
     """One frame-lock-in detector row: chained vs fresh action, agreement, and (if the
     realized day is known) which mind — if either — the oracle vindicated."""
     ca = verdict_action(chained_v["regime"], chained_v["stand_down"],
-                        chained_v["size_multiplier"])
+                        chained_v["size_multiplier"], chained_v.get("permitted_structures"))
     fa = verdict_action(fresh_v["regime"], fresh_v["stand_down"],
-                        fresh_v["size_multiplier"])
+                        fresh_v["size_multiplier"], fresh_v.get("permitted_structures"))
     books = _load_books() if books is None else books
     orc = None
     if day in books.index:

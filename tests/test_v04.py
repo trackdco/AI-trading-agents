@@ -49,9 +49,32 @@ def test_verdict_action_mapping():
     assert v04.verdict_action("war", False, 1.0) == "MOMENTUM"
     assert v04.verdict_action("balance", False, 0.5) == "ROTATION"
     assert v04.verdict_action("trap", False, 0.5) == "ROTATION"
-    assert v04.verdict_action("event_risk", False, 0.5) == "FLAT"
+    assert v04.verdict_action("event_risk", False, 0.5) == "FLAT"   # no committed structure
     assert v04.verdict_action("war", True, 0.0) == "FLAT"       # stand-down overrides
     assert v04.verdict_action("war", False, 0.0) == "FLAT"
+
+
+def test_verdict_action_v06_event_day_that_trades_maps_to_its_book():
+    # v0.6: event_risk no longer auto-FLAT — a traded event day maps to the armed book
+    assert v04.verdict_action("event_risk", False, 0.25, ["continuation"]) == "MOMENTUM"
+    assert v04.verdict_action("event_risk", False, 0.25, ["reversion"]) == "ROTATION"
+    # structure overrides a conflicting regime label (engine gates the book by structure)
+    assert v04.verdict_action("war", False, 0.5, ["reversion"]) == "ROTATION"
+    # still FLAT when standing down regardless of structure
+    assert v04.verdict_action("event_risk", True, 0.0, ["continuation"]) == "FLAT"
+
+
+def test_v06_size_tiers_schema():
+    from src.desk.regime_agent import RegimeVerdict
+    base = dict(schema_version="1.0", agent_version="a" * 12, date="2026-03-06",
+                regime="event_risk", directional_bias="long",
+                permitted_structures=["continuation"], stand_down=False,
+                confidence="medium", rationale="reduced-arm event day",
+                cited_evidence=["x=1"], playbook_notes="")
+    assert RegimeVerdict(**dict(base, size_multiplier=0.25)).size_multiplier == 0.25
+    for bad in (0.75, 0.1, 0.3):
+        with pytest.raises(Exception):
+            RegimeVerdict(**dict(base, size_multiplier=bad))
 
 
 def test_grade_day_regret_math(tmp_path, monkeypatch):
@@ -68,8 +91,10 @@ def test_grade_day_regret_math(tmp_path, monkeypatch):
 
 def test_divergence_row_flags_disagreement():
     books = pd.DataFrame([{"day": "D", "pl_e3": 900.0, "pl_e4": -100.0}]).set_index("day")
-    chained = dict(VALID, regime="war", stand_down=False, size_multiplier=1.0)   # MOMENTUM
-    fresh = dict(VALID, regime="balance", stand_down=False, size_multiplier=0.5)  # ROTATION
+    chained = dict(VALID, regime="war", permitted_structures=["continuation"],
+                   stand_down=False, size_multiplier=1.0)                          # MOMENTUM
+    fresh = dict(VALID, regime="balance", permitted_structures=["reversion"],
+                 stand_down=False, size_multiplier=0.5)                            # ROTATION
     r = v04.divergence_row("D", chained, fresh, books=books)
     assert r["chained_action"] == "MOMENTUM" and r["fresh_action"] == "ROTATION"
     assert r["agree"] is False
@@ -138,11 +163,13 @@ def test_harness_emits_both_and_chained_carries_notes(wired):
 
     def answer(day, kind, prompt):
         prompts[(day, kind)] = prompt
-        # fresh reads war (wrong book), chained reads balance (rotation, correct)
-        regime = "war" if kind == "fresh" else "balance"
+        # fresh reads war/continuation (MOMENTUM, wrong book); chained reads
+        # balance/reversion (ROTATION, the correct book for the fixture's books)
+        regime, structs = (("war", ["continuation"]) if kind == "fresh"
+                           else ("balance", ["reversion"]))
         notes = f"NOTE-{day}-{kind}"
         return json.dumps(dict(VALID, date=day, regime=regime,
-                               permitted_structures=["reversion"], size_multiplier=0.5,
+                               permitted_structures=structs, size_multiplier=0.5,
                                playbook_notes=notes))
 
     rc = _run(tmp, blobs, answer, ["--arm", "armX", "--start", "2026-02-11",

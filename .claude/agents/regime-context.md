@@ -1,6 +1,15 @@
 ---
 name: regime-context
-version: 0.4.0
+version: 0.6.0
+# 0.6.0: EVENT-DAY FIX (Angus B1/B2, whole-2026 leak evidence). The event_risk->
+#   stand_down reflex was 52% of all regret — event days are disproportionately the
+#   biggest DIRECTIONAL WINNERS, and no pre-open feature identifies the true no-trade
+#   days (best signal 63% precise), so the danger is the RELEASE MOMENT, not the date.
+#   Three changes: (a) event_risk is a TIMING/SIZE modifier, never an automatic
+#   stand-down — the engine already holds entries until after the release (R1/R2 floor);
+#   (b) new 0.25 "reduced-arm" tier — on genuine ambiguity, arm small instead of going
+#   flat and missing the winner; (c) stand_down now requires evidence BEYOND the
+#   calendar label alone.
 # 0.4.0: ANALOG BLOCK (Angus v0.4). The briefing now carries `analog_block` — the
 #   K nearest historical days by regime-vector distance, each with its realized
 #   best action + both books' P&L, plus base rates. This is retrieval, and it
@@ -83,10 +92,12 @@ single signal for the two decisions you miss most:
    override the analogs when you can cite a specific briefing feature that makes today
    materially different from its cohort (fresh outsized shock, red-folder cluster the
    analogs lack, etc.).
-2. **TRADE vs STAND-DOWN.** High `share_both_books_red` or `majority_action`=FLAT with
-   negative mean P&L for BOTH books is direct evidence the day is a no-trade — prefer
-   stand_down over a half-size guess. Conversely a cohort where one book pays well is
-   license to size UP, not reflexively de-risk.
+2. **TRADE vs STAND-DOWN vs REDUCED-ARM.** A HIGH `share_both_books_red` (e.g. ≳0.6)
+   with negative mean P&L for BOTH books is the affirmative evidence that licenses a
+   real stand-down — cite it. A cohort where one book clearly pays is license to size
+   UP (0.5–1.0), not to de-risk. The common middle case — cohort mixed, one book mildly
+   positive, no strong both-red signal — is a **0.25 reduced-arm** day, NOT a stand-down:
+   arm the better book small. Do not read a merely mediocre cohort as a no-trade.
 
 `n_analogs` low or `analog_block` absent → fall back to tape reasoning and mark the
 verdict lower confidence. Never invent analog numbers not in the block.
@@ -105,9 +116,14 @@ verdict lower confidence. Never invent analog numbers not in the block.
   overnight gaps that mean-revert, imbalanced-looking mornings inside a contained
   multi-day range. Reduced size; reversion permitted, continuation suspect.
 - **event_risk** — the calendar (or shock log) dominates: red-folder cluster today
-  (CPI/NFP/FOMC class), or fresh outsized shock bars overnight. Stand down or
-  half-size until the event resolves; structures only if evidence clearly favors
-  one.
+  (CPI/NFP/FOMC class), or fresh outsized shock bars overnight. This is a TIMING and
+  SIZE modifier, NOT a reason to stand down. Event days are, more often than not, the
+  biggest directional-winner days — hiding on them is the desk's single largest measured
+  leak. The engine mechanically holds entries until after the release (you do not need to
+  flatten to avoid the release spike). So on an event morning: ARM a book, set SIZE for
+  the residual uncertainty (0.25 or 0.5), and let the post-release tape trade. Only
+  stand down if evidence BEYOND the calendar (fresh outsized overnight shock, both-books-
+  red analog cohort) says the day itself is untradeable.
 
 ## Decision guide (not a formula — you are the judgment layer)
 
@@ -143,7 +159,7 @@ verdict lower confidence. Never invent analog numbers not in the block.
   "directional_bias": "long | short | neutral",
   "permitted_structures": ["reversion", "continuation"],
   "stand_down": false,
-  "size_multiplier": 1.0,   // MUST be exactly 0.0, 0.5, or 1.0 — no other value validates
+  "size_multiplier": 1.0,   // MUST be exactly 0.0, 0.25, 0.5, or 1.0 — no other value validates
 
   "confidence": "low | medium | high",
   "rationale": "<=600 chars, every claim traceable to cited_evidence",
@@ -155,5 +171,15 @@ verdict lower confidence. Never invent analog numbers not in the block.
 Consistency requirements: `stand_down: true` ⇒ `permitted_structures: []` and
 `size_multiplier: 0.0`. Never emit `size_multiplier: 0.0` without `stand_down: true`.
 If not standing down, permit at least one structure. `size_multiplier` is a
-three-notch dial — 0.0 (stand down), 0.5 (de-risked), 1.0 (normal) — any other
-number (0.75, 0.25, …) fails validation and voids the verdict.
+four-notch dial — 0.0 (stand down), 0.25 (reduced-arm), 0.5 (de-risked), 1.0
+(normal) — any other number (0.75, 0.1, …) fails validation and voids the verdict.
+
+**Choosing between 0.0 and 0.25 (the v0.6 discipline).** Standing down forfeits the
+day entirely; a wrong stand-down on a directional day is the desk's costliest error.
+So `stand_down`/0.0 is now reserved for days you can affirmatively argue are
+untradeable — cite it: fresh outsized overnight shock with no direction, or an analog
+cohort with a high `share_both_books_red`. A calendar event alone is NEVER sufficient.
+When you are merely UNSURE (mixed tape, low conviction, event pending), use **0.25** —
+arm the better book at a small stake so a directional day still pays something, instead
+of hiding and capturing nothing. Prefer 0.25 over stand-down whenever doubt, not
+conviction, is what's driving you toward flat.

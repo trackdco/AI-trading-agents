@@ -60,7 +60,7 @@ class RegimeVerdict(BaseModel, extra="forbid"):
     directional_bias: str                  # long | short | neutral
     permitted_structures: list[str]        # subset of {reversion, continuation}
     stand_down: bool
-    size_multiplier: float                 # 0.0 | 0.5 | 1.0
+    size_multiplier: float                 # 0.0 | 0.25 | 0.5 | 1.0  (0.25 = v0.6 reduced-arm)
     confidence: str                        # low | medium | high
     rationale: str                         # <= 600 chars, cites briefing facts only
     cited_evidence: list[str]              # <= 8 briefing-field references
@@ -91,8 +91,10 @@ class RegimeVerdict(BaseModel, extra="forbid"):
     @field_validator("size_multiplier")
     @classmethod
     def _size(cls, v: float) -> float:
-        if v not in (0.0, 0.5, 1.0):
-            raise ValueError("size_multiplier must be 0.0, 0.5 or 1.0")
+        # v0.6: 0.25 "reduced-arm" tier added — a small stake keeps the desk in the
+        # winners it used to stand down on entirely (whole-2026 leak: 36 wrong-FLATs).
+        if v not in (0.0, 0.25, 0.5, 1.0):
+            raise ValueError("size_multiplier must be 0.0, 0.25, 0.5 or 1.0")
         return v
 
     @field_validator("permitted_structures")

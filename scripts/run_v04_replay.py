@@ -149,7 +149,7 @@ def run_day(day: str, inputs, notes: str, p: dict, poll_s: float,
     for kind, v in (("chained", cv), ("fresh", fv)):
         if v is None:
             continue
-        g = grade_day(day, verdict_action(v.regime, v.stand_down, v.size_multiplier))
+        g = grade_day(day, verdict_action(v.regime, v.stand_down, v.size_multiplier, v.permitted_structures))
         if g is not None:
             _append(p["ledger"], {"arm": kind, **g})
     return "ok" if cv is not None else "failclosed"
