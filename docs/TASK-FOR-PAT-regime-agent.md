@@ -1,5 +1,15 @@
 # TASK FOR PAT — Regime-Context Agent (Angus directive, 18 Jul 2026)
 
+## ANGUS DIRECTIVE (18 Jul, late) — replay readouts route through Angus
+
+All replay metric readouts go to ANGUS for trading interpretation before
+conclusions get drawn from them. Report raw numbers (reads, capture, arm deltas,
+per-day tables) without narrative verdicts — Angus judges what the tape context
+meant. He caught the June "worst month yet" framing being partly a scoring
+artifact within minutes of seeing it; that review loop is now standing process.
+See also docs/LONG-WALK-2023-2026.md — the full-history adaptive replay Angus has
+queued, with launch gates G3–G6 in your lane.
+
 ## ANGUS DIRECTIVE (18 Jul, evening) — PARALLELIZE THE DESK + fresh-eyes panel
 
 Angus, verbatim intent: why is ONE agent grinding these replays when eight are set
