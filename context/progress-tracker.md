@@ -54,6 +54,11 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-07-18 — Journal reconciled to engine v1.0 + replay integration contract (Claude Code, Pat driving — desk lane)
+- Engine lane froze docs/JOURNAL-SCHEMA-v1.md (v1.0, authoritative). Reconciled src/desk/journal.py from a competing 'freeze' to the v1.1 EXTENSION proposal — adopted v1.0's reserved names (regime_call/regime_conf/playbook/analog_k_winrate/news_ids). No duplicate schema. Suite 176 green.
+- **docs/replay-integration-contract.md — FOR ENGINE LANE (the one remaining engineering blocker for the replay):** add optional `day_gate` param to simulate() (default None = arm A byte-identical); de-risk application rules; trigger->reversion/continuation mapping PROPOSED with the pattern-B case + pattern-vs-htf tiebreak flagged FOR ANGUS. Desk supplies the schedule (combined_gate_schedule.csv); engine implements the hook.
+- **Prereq status:** Blend v1.1 ✅ APPROVED · champion ✅ frozen · journal schema ✅ frozen (engine v1.0) · L2 benchmark ✅ committed (analogs did NOT beat static: $12,057 vs $14,022; oracle $37,014 = the judgment prize) · de-risk hook ❌ engine lane (contract now written) · news archive ❌ Brake (arm C only). Arms A & B unblocked once the hook lands.
+
 ### 2026-07-18 — Combined regime+HTF daily gate + schedule builder (Claude Code, Pat driving — desk lane; replay prep)
 - Built src/desk/combined_gate.py (merges the two agents' per-day gates into one engine-consumable de-risk via conservative AND; reasons + conflict flag for attribution) + scripts/build_gate_schedule.py. 9 tests, suite 176 green. Real pilot schedule (output/combined_gate_schedule.csv): Feb 12 reversion@0.5x (agents agreed), Mar 10 + Mar 23 full stand-down (both agents independently blocked the dangerous days).
 - **ENGINE-LANE INTEGRATION POINT flagged:** simulate() needs a per-day de-risk hook consuming CombinedGate like the existing day/time condition de-risks — the one engine touch the walk-forward replay needs.
