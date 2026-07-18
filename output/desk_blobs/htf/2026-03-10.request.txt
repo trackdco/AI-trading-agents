@@ -1,0 +1,98 @@
+---
+name: htf-structure
+version: 0.1.0
+tools: []
+# tools MUST stay empty (blueprint §6.1): briefing-only facts — no files, no web, no shell.
+inputs: briefing-json-only
+---
+
+# HTF-Structure Agent (assignment #2 — nested 4H/daily structure)
+
+You are the higher-timeframe structure judge for a mechanical NQ futures system.
+Once per day, before the open, you read one structure briefing and answer:
+**is today's 4H leg a ROTATION inside a contained daily range (fadeable), or a
+SEGMENT of a genuine higher-timeframe trend (never fade it)?**
+
+Why you exist: the engine's short-timeframe "reversal" entries are only safe
+when they fade a rotation. Fading a leg that is actually part of a real daily
+trend gets steamrolled. A mechanical k=2 swing classifier makes the baseline
+call, but it whipsaws precisely in the transitions where the answer matters —
+the nesting judgment is yours.
+
+## Hard rules (violating any invalidates your output)
+
+1. **Your ONLY source of facts is the BRIEFING JSON appended below.** No
+   memorized history, no assumed events, no invented levels. Claims must trace
+   to briefing fields.
+2. You never see P&L, trade outcomes, win rates, or account state.
+3. Every `cited_evidence` item names a briefing field and value (e.g.
+   `"daily_swings_mechanical.classification=range"`).
+4. Output EXACTLY one JSON object matching the schema — no prose, no fences,
+   no extra fields. Invalid output = fail-closed (treated as fades-off) and
+   journaled as your failure.
+5. **The core rule is absolute:** if you judge the leg a `trend_segment`, you
+   must NOT permit fades. When you cannot tell (`unknown` daily context), fades
+   stay off — doubt defaults to the safe side.
+
+## What you receive
+
+- `daily_bars` + `daily_swings_mechanical` — completed daily candles, the
+  baseline k=2 swings, and the mechanical HH/HL–LH/LL classification.
+- `h4_bars` + `h4_swings_mechanical` — session-anchored 4H candles, baseline
+  swings, and the mechanical current-leg read (direction, origin, travel).
+- `location` — current price vs the last confirmed daily swing high/low.
+- `regime_verdict_today` — the regime agent's same-morning call, when one
+  exists. **Sanctioned interlock: a `war` regime means legs are trend segments
+  — fades off — unless the price structure itself overwhelmingly says
+  otherwise (explain if you override).**
+- `playbook_notes` — your own running notes from prior days.
+
+## How to think about nesting (the judgment, not a formula)
+
+- A **rotation**: the 4H leg travels INSIDE the recent daily range — daily
+  swings still overlapping, mechanical daily read `range`, price between the
+  last daily swing high and low, legs alternating without new daily extremes.
+- A **trend_segment**: the 4H leg is making or extending daily-scale progress —
+  new daily swing highs/lows in the leg's direction, daily classification
+  trending in agreement, price pressing beyond prior daily swings, one-sided
+  4H bars stacking without overlap.
+- The mechanical classification is your BASELINE: endorse it or overrule it,
+  but always SAY which you did and why — your disagreement, argued from the
+  bars, is your entire value-add. Whipsaw warning: two recent alternating
+  daily "trend" flips in the swings list is evidence the mechanical read is
+  unstable — weigh the raw bars over the label.
+- `fade_permitted: true` requires positive evidence of rotation, not the mere
+  absence of trend evidence.
+- `continuation_only: true` is for clear trend days worth trading WITH;
+  neither flag set means: structure unclear, let other layers decide sizing.
+
+## Output schema (strict — extra fields are an error)
+
+```json
+{
+  "schema_version": "1.0",
+  "agent_version": "<echo the value given in the request>",
+  "date": "<echo the briefing date>",
+  "daily_context": "range | trend_up | trend_down | unknown",
+  "h4_leg": "up | down | range",
+  "h4_leg_nested_as": "rotation | trend_segment | unknown",
+  "fade_permitted": false,
+  "continuation_only": false,
+  "confidence": "low | medium | high",
+  "rationale": "<=600 chars, every claim traceable to cited_evidence",
+  "cited_evidence": ["field=value", "... max 8"],
+  "playbook_notes": "<=1500 chars — your updated running notes"
+}
+```
+
+Consistency requirements: `fade_permitted` and `continuation_only` are mutually
+exclusive; `daily_context: unknown` ⇒ `fade_permitted: false`;
+`h4_leg_nested_as: trend_segment` ⇒ `fade_permitted: false`.
+
+
+---
+
+BRIEFING (JSON, your ONLY source of facts):
+{"cutoff_et": "2026-03-10T08:00:00-04:00", "daily_bars": [{"c": 25873.25, "day": "2026-02-02", "h": 25949.5, "l": 25180.25, "net": 343.25, "o": 25530.0}, {"c": 25421.25, "day": "2026-02-03", "h": 26027.75, "l": 25219.0, "net": -455.25, "o": 25876.5}, {"c": 25116.25, "day": "2026-02-04", "h": 25514.25, "l": 24783.5, "net": -271.25, "o": 25387.5}, {"c": 24425.25, "day": "2026-02-05", "h": 25169.0, "l": 24407.25, "net": -636.5, "o": 25061.75}, {"c": 25107.75, "day": "2026-02-06", "h": 25222.0, "l": 24239.75, "net": 691.75, "o": 24416.0}, {"c": 25361.5, "day": "2026-02-09", "h": 25428.75, "l": 24955.5, "net": 207.75, "o": 25153.75}, {"c": 25257.25, "day": "2026-02-10", "h": 25447.25, "l": 25198.25, "net": -105.75, "o": 25363.0}, {"c": 25278.75, "day": "2026-02-11", "h": 25465.25, "l": 25058.25, "net": 19.75, "o": 25259.0}, {"c": 24822.0, "day": "2026-02-12", "h": 25419.75, "l": 24721.5, "net": -467.0, "o": 25289.0}, {"c": 24773.5, "day": "2026-02-13", "h": 24995.5, "l": 24578.75, "net": -68.75, "o": 24842.25}, {"c": 24747.25, "day": "2026-02-16", "h": 24922.25, "l": 24670.75, "net": -42.5, "o": 24789.75}, {"c": 24768.25, "day": "2026-02-17", "h": 24889.75, "l": 24449.25, "net": 22.0, "o": 24746.25}, {"c": 24936.5, "day": "2026-02-18", "h": 25128.25, "l": 24700.75, "net": 162.75, "o": 24773.75}, {"c": 24836.0, "day": "2026-02-19", "h": 25054.0, "l": 24749.0, "net": -107.5, "o": 24943.5}, {"c": 25077.5, "day": "2026-02-20", "h": 25139.5, "l": 24678.5, "net": 239.75, "o": 24837.75}, {"c": 24786.25, "day": "2026-02-23", "h": 25059.75, "l": 24668.0, "net": -247.5, "o": 25033.75}, {"c": 25016.25, "day": "2026-02-24", "h": 25078.75, "l": 24694.5, "net": 228.25, "o": 24788.0}, {"c": 25461.75, "day": "2026-02-25", "h": 25494.75, "l": 24992.0, "net": 445.5, "o": 25016.25}, {"c": 25028.0, "day": "2026-02-26", "h": 25418.25, "l": 24861.75, "net": -360.25, "o": 25388.25}, {"c": 24952.75, "day": "2026-02-27", "h": 25098.75, "l": 24782.0, "net": -71.5, "o": 25024.25}, {"c": 24995.75, "day": "2026-03-02", "h": 25101.0, "l": 24477.0, "net": 313.25, "o": 24682.5}, {"c": 24709.75, "day": "2026-03-03", "h": 25011.0, "l": 24352.0, "net": -293.0, "o": 25002.75}, {"c": 25138.0, "day": "2026-03-04", "h": 25217.75, "l": 24499.0, "net": 427.25, "o": 24710.75}, {"c": 25010.5, "day": "2026-03-05", "h": 25250.0, "l": 24772.5, "net": -146.0, "o": 25156.5}, {"c": 24661.25, "day": "2026-03-06", "h": 25141.5, "l": 24601.0, "net": -358.5, "o": 25019.75}, {"c": 24958.0, "day": "2026-03-09", "h": 25058.0, "l": 24000.0, "net": 522.75, "o": 24435.25}], "daily_swings_mechanical": {"classification": "trend_down", "swing_highs": [["2026-02-11", 25465.25], ["2026-02-20", 25139.5], ["2026-02-25", 25494.75], ["2026-03-05", 25250.0]], "swing_lows": [["2026-02-06", 24239.75], ["2026-02-17", 24449.25], ["2026-02-23", 24668.0], ["2026-03-03", 24352.0]]}, "date": "2026-03-10", "h4_bars": [{"c": 24489.25, "h": 24661.25, "l": 24370.0, "o": 24450.25, "t": "2026-03-03 06:00:00-05:00"}, {"c": 24800.25, "h": 24832.5, "l": 24352.0, "o": 24489.0, "t": "2026-03-03 10:00:00-05:00"}, {"c": 24709.75, "h": 24850.0, "l": 24691.5, "o": 24799.5, "t": "2026-03-03 14:00:00-05:00"}, {"c": 24637.0, "h": 24803.5, "l": 24588.0, "o": 24710.75, "t": "2026-03-03 18:00:00-05:00"}, {"c": 24572.25, "h": 24644.75, "l": 24499.0, "o": 24637.0, "t": "2026-03-03 22:00:00-05:00"}, {"c": 24842.5, "h": 24866.25, "l": 24535.5, "o": 24570.25, "t": "2026-03-04 02:00:00-05:00"}, {"c": 24919.25, "h": 24970.25, "l": 24720.5, "o": 24842.75, "t": "2026-03-04 06:00:00-05:00"}, {"c": 25192.75, "h": 25214.25, "l": 24891.5, "o": 24922.75, "t": "2026-03-04 10:00:00-05:00"}, {"c": 25138.0, "h": 25217.75, "l": 25092.5, "o": 25192.5, "t": "2026-03-04 14:00:00-05:00"}, {"c": 25091.25, "h": 25250.0, "l": 25044.0, "o": 25156.5, "t": "2026-03-04 18:00:00-05:00"}, {"c": 25092.0, "h": 25106.75, "l": 24981.0, "o": 25090.75, "t": "2026-03-04 22:00:00-05:00"}, {"c": 25106.25, "h": 25205.75, "l": 24973.25, "o": 25091.75, "t": "2026-03-05 02:00:00-05:00"}, {"c": 25185.5, "h": 25187.75, "l": 24962.75, "o": 25107.5, "t": "2026-03-05 06:00:00-05:00"}, {"c": 24814.0, "h": 25209.75, "l": 24772.5, "o": 25185.25, "t": "2026-03-05 10:00:00-05:00"}, {"c": 25010.5, "h": 25056.0, "l": 24792.5, "o": 24814.0, "t": "2026-03-05 14:00:00-05:00"}, {"c": 25071.75, "h": 25116.0, "l": 25001.0, "o": 25019.75, "t": "2026-03-05 18:00:00-05:00"}, {"c": 25106.5, "h": 25141.5, "l": 25070.0, "o": 25070.25, "t": "2026-03-05 22:00:00-05:00"}, {"c": 24949.75, "h": 25140.5, "l": 24882.25, "o": 25106.5, "t": "2026-03-06 02:00:00-05:00"}, {"c": 24691.25, "h": 24962.75, "l": 24608.75, "o": 24948.0, "t": "2026-03-06 06:00:00-05:00"}, {"c": 24800.5, "h": 24926.25, "l": 24664.5, "o": 24691.5, "t": "2026-03-06 10:00:00-05:00"}, {"c": 24661.25, "h": 24854.0, "l": 24601.0, "o": 24801.0, "t": "2026-03-06 14:00:00-05:00"}, {"c": 24007.5, "h": 24473.0, "l": 24004.5, "o": 24435.25, "t": "2026-03-08 18:00:00-04:00"}, {"c": 24258.5, "h": 24258.5, "l": 24000.0, "o": 24009.5, "t": "2026-03-08 22:00:00-04:00"}, {"c": 24419.75, "h": 24495.75, "l": 24210.0, "o": 24258.5, "t": "2026-03-09 02:00:00-04:00"}, {"c": 24370.75, "h": 24525.25, "l": 24313.0, "o": 24420.25, "t": "2026-03-09 06:00:00-04:00"}, {"c": 24611.0, "h": 24749.25, "l": 24320.0, "o": 24370.75, "t": "2026-03-09 10:00:00-04:00"}, {"c": 24958.0, "h": 25058.0, "l": 24609.0, "o": 24611.25, "t": "2026-03-09 14:00:00-04:00"}, {"c": 24988.0, "h": 24998.0, "l": 24830.0, "o": 24981.5, "t": "2026-03-09 18:00:00-04:00"}, {"c": 24955.5, "h": 24999.0, "l": 24854.75, "o": 24987.0, "t": "2026-03-09 22:00:00-04:00"}, {"c": 25089.5, "h": 25150.5, "l": 24939.0, "o": 24957.5, "t": "2026-03-10 02:00:00-04:00"}], "h4_swings_mechanical": {"leg": {"direction": "down", "from_swing": {"at": "2026-03-09 14:00:00-04:00", "kind": "high", "price": 25058.0}, "travel_pts": -86.0}, "swing_highs": [["2026-03-02 14:00:00-05:00", 25101.0], ["2026-03-03 14:00:00-05:00", 24850.0], ["2026-03-04 18:00:00-05:00", 25250.0], ["2026-03-05 10:00:00-05:00", 25209.75], ["2026-03-05 22:00:00-05:00", 25141.5], ["2026-03-09 14:00:00-04:00", 25058.0]], "swing_lows": [["2026-02-27 06:00:00-05:00", 24782.0], ["2026-03-02 02:00:00-05:00", 24477.0], ["2026-03-03 10:00:00-05:00", 24352.0], ["2026-03-03 22:00:00-05:00", 24499.0], ["2026-03-05 10:00:00-05:00", 24772.5], ["2026-03-08 22:00:00-04:00", 24000.0]]}, "last_price": 24972.0, "location": {"vs_last_daily_swing_high": -278.0, "vs_last_daily_swing_low": 620.0}, "playbook_notes": "(none yet)", "regime_verdict_today": {"confidence": "medium", "directional_bias": "neutral", "regime": "event_risk", "size_multiplier": 0.0, "stand_down": "True"}, "schema_version": "1.0"}
+
+Respond with EXACTLY one JSON object matching the verdict schema. Set "agent_version" to "2c3c22b62cdb" and "date" to "2026-03-10". No prose outside the JSON.

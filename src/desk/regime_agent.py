@@ -324,12 +324,14 @@ def blob_ref(content: str) -> str:
 
 
 def journal_row(briefing: dict, prompt: str, raw_response: str,
-                verdict: RegimeVerdict | None, error: str | None = None) -> dict:
+                verdict: BaseModel | None, error: str | None = None,
+                agent_file: Path = AGENT_FILE) -> dict:
     """One append-only journal record per grading (desk contract: every verdict —
-    valid or failed — is journaled with blob refs)."""
+    valid or failed — is journaled with blob refs). Shared by all desk agents:
+    pass the agent's own file so the version stamp is correct."""
     return {
         "date": briefing["date"],
-        "agent_version": agent_version(),
+        "agent_version": agent_version(agent_file),
         "briefing_sha": blob_ref(json.dumps(briefing, sort_keys=True, default=str)),
         "prompt_sha": blob_ref(prompt),
         "response_sha": blob_ref(raw_response),
