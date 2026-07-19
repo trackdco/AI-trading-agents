@@ -169,6 +169,25 @@ def test_sink_error_does_not_kill_loop_or_other_sinks():
     assert delivered and errors == ["telegram down"]   # later sink still served
 
 
+def test_record_sink_gets_full_record_book_and_cfg_and_is_isolated():
+    def sim(df, trigs, cfg, day_gate=None):
+        return [_rec("2026-02-10", "2026-02-10T09:00")], [], None
+    records, errors = [], []
+
+    def bad_record_sink(tr, book, cfg):
+        raise RuntimeError("journal disk full")
+    v = Vault(cfg="static", book="E3", triggers=[_trig("2026-02-10T08:30:00-05:00")],
+              sim_fn=sim, on_sink_error=lambda e, ev: errors.append(str(e)))
+    v.add_record_sink(bad_record_sink)
+    v.add_record_sink(lambda tr, book, cfg: records.append((tr, book, cfg)))
+    out = v.on_bar(_bar("2026-02-10 09:00"))
+    assert len(out) == 1 and errors == ["journal disk full"]   # loop + later sink survive
+    tr, book, cfg = records[0]
+    assert tr.trade_date == "2026-02-10" and book == "E3" and cfg == "static"
+    v.on_bar(_bar("2026-02-10 09:01"))
+    assert len(records) == 1                     # emit-once semantics shared with sinks
+
+
 def test_add_triggers_dedup_and_session_refresh():
     captured = {}
 

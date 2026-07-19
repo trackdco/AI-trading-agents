@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import ast
 import sys
+import tempfile
 from pathlib import Path
 
 import pandas as pd
@@ -32,6 +33,7 @@ from src.engine.triggers import Trigger  # noqa: E402
 from src.live.champion import book_for_day, champion_books, e4_trigger_ok  # noqa: E402
 from src.live.champion import champion_policy  # noqa: E402
 from src.live.feed import ReplayFeed  # noqa: E402
+from src.live.journal import LiveJournal  # noqa: E402
 from src.live.vault import Vault  # noqa: E402
 
 NY = "America/New_York"
@@ -87,11 +89,14 @@ def main(argv=None) -> int:
     batch_keys = [key(t.trade_date, t.fill_ts, t.direction, t.points, t.dollars)
                   for _, t in batch]
 
-    # ---- streaming: the Vault exactly as paper trading will run it
+    # ---- streaming: the Vault exactly as paper trading will run it, journal attached
     feed = ReplayFeed(df, start=args.start, end=args.end, warmup_days=16)
-    vault = Vault(session_policy=champion_policy(vector), triggers=trigs)
+    journal = LiveJournal(Path(tempfile.mkdtemp(prefix="parity_journal_")))
+    vault = Vault(session_policy=journal.wrap_policy(champion_policy(vector)),
+                  triggers=trigs)
     emitted = []
     vault.add_sink(emitted.append)
+    vault.add_record_sink(journal.on_record)
     for bar in feed.stream():
         vault.on_bar(bar)
     stream = [e for e in emitted if args.start <= e.trade_date <= args.end]
@@ -110,6 +115,21 @@ def main(argv=None) -> int:
         print(f"  {mark} batch {b}")
         if b != s:
             print(f"      stream {s}")
+    # ---- Stage-6 gate: the journal must match the batch trade log row-for-row.
+    # journal rows come from full TradeRecords; keep only the scored window (warmup
+    # days can complete trades too, exactly like the raw stream above).
+    in_window = [r for r in journal.trades() if args.start <= r.trade_date <= args.end]
+    jkeys = [key(r.trade_date, r.fill_ts, r.direction, r.points, r.dollars)
+             for r in in_window]
+    jok = jkeys == batch_keys
+    picks = [d for d in journal.decisions() if d["type"] == "session"]
+    print(f"\nJOURNAL: {len(jkeys)} trade rows, {len(picks)} session picks logged — "
+          f"{'row-for-row MATCH' if jok else 'MISMATCH vs batch trade log'}")
+    if not jok:
+        print(f"  missing={[k for k in batch_keys if k not in jkeys]}\n"
+              f"  unexpected={[k for k in jkeys if k not in batch_keys]}")
+
+    ok = ok and jok
     print(f"\nPARITY: {'MATCH — gate PASSED' if ok else 'MISMATCH — gate FAILED'}")
     return 0 if ok else 1
 

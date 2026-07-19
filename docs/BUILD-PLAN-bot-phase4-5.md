@@ -68,10 +68,17 @@ boundary: alerts fire from the Vault, after the risk check; no agent touches Tel
 - Optional inbound command lock to `TELEGRAM_ANGUS_USER_ID` (status / pause / kill).
 - **Done-when:** a replayed day fires the full alert sequence into the group correctly.
 
-## Stage 6 — Journaling 🔨
+## Stage 6 — Journaling ✅ (19 Jul)
 Every live decision + trade appended to a journal (reuse `src/desk/journal.py` schema) —
 so live can be reconciled against backtest and audited. Same blob discipline as the replay.
 - **Done-when:** a replayed day's journal matches the backtest trade log row-for-row.
+- Built: `src/live/journal.py` — `LiveJournal` writes `journal.jsonl` (frozen-schema
+  `JournalRecord` per completed trade, lifted from the engine's FULL `TradeRecord` via a
+  new `Vault.add_record_sink`, with `config_hash` + `playbook`) and `decisions.jsonl`
+  (session book picks via `wrap_policy`, risk halts, notes). Restart-safe dedup,
+  fail-soft writes. `scripts/parity_check.py` now also asserts journal==batch
+  row-for-row; both standing windows (Feb 9–13, Mar 16–20) re-passed after the Vault
+  change. 261 tests green.
 
 ## Stage 7 — PARITY CHECK 🔒 (live loop == backtest) — the gate before trusting paper
 Run Stages 2–6 over several historical days via the replay feed and assert the Vault

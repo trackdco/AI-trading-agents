@@ -119,6 +119,7 @@ class Vault:
         self._bars: list[Bar] = []
         self._emitted: set[tuple] = set()              # (trade_date, fill_ts): emit once
         self._sinks: list[Callable[[TradeEvent], None]] = []
+        self._record_sinks: list[Callable] = []        # fn(TradeRecord, book, cfg)
         self._cur_sess: str | None = None
         self._sess_active = True
         self._sess_triggers: list = []
@@ -131,6 +132,13 @@ class Vault:
     # ---- wiring -------------------------------------------------------------
     def add_sink(self, fn: Callable[[TradeEvent], None]) -> "Vault":
         self._sinks.append(fn)
+        return self
+
+    def add_record_sink(self, fn: Callable) -> "Vault":
+        """Sink receiving (engine TradeRecord, book, cfg) per newly-completed trade —
+        the journal's richer feed (TradeEvent is the trimmed alert view). Same
+        emission-once semantics and error isolation as add_sink."""
+        self._record_sinks.append(fn)
         return self
 
     def add_triggers(self, triggers) -> None:
@@ -170,6 +178,11 @@ class Vault:
                 try:
                     s(ev)
                 except Exception as e:                 # a sink must never kill the loop
+                    self._on_sink_error(e, ev)
+            for rs in self._record_sinks:
+                try:
+                    rs(tr, self.book, self.cfg)
+                except Exception as e:
                     self._on_sink_error(e, ev)
         return fresh
 
