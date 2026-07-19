@@ -33,6 +33,7 @@ per (date, reason) — the Telegram hook for Stage 5.
 
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
@@ -40,6 +41,20 @@ from typing import Callable
 from src.live.vault import TradeEvent
 
 KILL_FILE = Path("output/live/KILL")
+
+
+def fanout(*fns: Callable[[str, str], None]) -> Callable[[str, str], None]:
+    """Combine halt hooks (Telegram + journal + ...) into one on_halt callable.
+    Each hook is isolated: one raising hook can never stop the others (Stage-6
+    review F4)."""
+    def call(date: str, reason: str) -> None:
+        for fn in fns:
+            try:
+                fn(date, reason)
+            except Exception as e:
+                print(f"[risk] halt hook failed: {type(e).__name__}: {e}",
+                      file=sys.stderr)
+    return call
 
 
 @dataclass(frozen=True)
@@ -104,7 +119,11 @@ class RiskGuard:
         if (date, reason) not in self._announced:
             self._announced.add((date, reason))
             if self._on_halt is not None:
-                self._on_halt(date, reason)
+                try:                                   # gate() runs INSIDE the engine's
+                    self._on_halt(date, reason)        # day_gate path — a raising alert
+                except Exception as e:                 # hook must never kill the loop
+                    print(f"[risk] on_halt failed: {type(e).__name__}: {e}",
+                          file=sys.stderr)
         return {"stand_down": True, "allow_reversion": False,
                 "allow_continuation": False, "size_multiplier": 0.0,
                 "risk_reason": reason}

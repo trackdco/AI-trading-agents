@@ -161,3 +161,28 @@ def test_crash_restart_broker_plus_seed_keeps_the_day_halted(tmp_path):
     guard2.seed(broker2.trades)
     out = guard2.gate("2026-02-10")
     assert out is not None and out["risk_reason"] == "daily_loss_limit"
+
+
+# ---- Stage-6 review regressions ---------------------------------------------
+
+def test_raising_on_halt_hook_cannot_break_gate(tmp_path):
+    """Review F4: gate() runs inside the engine's day_gate path — a broken alert hook
+    must not kill the trading loop, and the stand-down must still be returned."""
+    def bad_hook(date, reason):
+        raise RuntimeError("alert pipeline down")
+    g = RiskGuard(_limits(tmp_path, daily_loss_dollars=50.0, max_trades_per_day=99),
+                  on_halt=bad_hook)
+    g.on_trade(_ev(dollars=-100.0))
+    out = g.gate("2026-02-10")                     # must not raise
+    assert out is not None and out["risk_reason"] == "daily_loss_limit"
+
+
+def test_fanout_calls_all_hooks_and_isolates_failures(tmp_path):
+    from src.live.risk import fanout
+    calls = []
+
+    def bad(date, reason):
+        raise RuntimeError("boom")
+    hook = fanout(bad, lambda d, r: calls.append((d, r)))
+    hook("2026-02-10", "kill_switch")              # must not raise
+    assert calls == [("2026-02-10", "kill_switch")]

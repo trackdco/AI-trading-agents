@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import shutil
 import sys
 import tempfile
 from pathlib import Path
@@ -131,6 +132,10 @@ def main(argv=None) -> int:
 
     ok = ok and jok
     print(f"\nPARITY: {'MATCH — gate PASSED' if ok else 'MISMATCH — gate FAILED'}")
+    if ok:
+        shutil.rmtree(journal.dir, ignore_errors=True)
+    else:
+        print(f"journal kept for forensics: {journal.dir}")
     return 0 if ok else 1
 
 

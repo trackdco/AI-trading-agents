@@ -10,16 +10,19 @@ Two files, same blob discipline as the replay artifacts:
                     stand-down), risk halts, free-form notes. One JSON object per line,
                     so a crash mid-write can cost at most the final line.
 
-Restart-safe: on construction the journal re-reads its own file and re-arms trade
-dedup, so a crash-looping bot never double-writes a trade (same discipline as
-PaperBroker). Every write is fail-soft — a full disk or bad permission can never raise
+Restart-safe: on construction the journal re-reads its own files and re-arms trade AND
+session-pick dedup, so a crash-looping bot never double-writes (same discipline as
+PaperBroker). Reads are TOLERANT (Stage-6 review F1): a torn final line — exactly what
+a crash mid-write leaves — is skipped and counted, never a startup crash; a row that
+fails schema validation (drift) is likewise skipped, counted, and left on disk for
+forensics. Every write is fail-soft — a full disk or bad permission can never raise
 into the trading loop (the Vault isolates sinks too; belt and braces).
 
-Wiring (alongside the Stage 3-5 sinks):
+Wiring (alongside the Stage 3-5 sinks; `fanout` from src.live.risk combines halt hooks):
     journal = LiveJournal()
     vault.add_record_sink(journal.on_record)        # full trade records
     policy  = journal.wrap_policy(champion_policy(vector))   # logs daily book picks
-    guard   = RiskGuard(..., on_halt=multi(tg.on_halt, journal.on_halt))
+    guard   = RiskGuard(..., on_halt=fanout(tg.on_halt, journal.on_halt))
 """
 
 from __future__ import annotations
@@ -41,7 +44,9 @@ def _trade_key(trade_date, fill_ts) -> tuple[str, str]:
 
 
 def cfg_hash(cfg) -> str:
-    """12-hex reproducibility stamp of an engine config (pydantic JSON is stable)."""
+    """12-hex reproducibility stamp of an engine config (pydantic JSON is stable).
+    Computed fresh on every call — an id()-keyed cache was PROVEN unsound in the
+    Stage-6 review (F2): CPython reuses freed addresses, which stamped a stale hash."""
     return hashlib.sha256(cfg.model_dump_json().encode()).hexdigest()[:12]
 
 
@@ -51,11 +56,15 @@ class LiveJournal:
         self.journal_path = self.dir / "journal.jsonl"
         self.decisions_path = self.dir / "decisions.jsonl"
         self.failures = 0
-        self._cfg_hashes: dict[int, str] = {}          # id(cfg) -> hash (per-session cfg reuse)
+        self.corrupt_journal_lines = 0                 # updated on each trades() read
+        self.corrupt_decision_lines = 0                # updated on each decisions() read
         self._logged: set[tuple[str, str]] = set()     # trade dedup, re-armed from disk
-        if self.journal_path.exists():
-            for rec in self.trades():
-                self._logged.add(_trade_key(rec.trade_date, rec.fill_ts))
+        for rec in self.trades():
+            self._logged.add(_trade_key(rec.trade_date, rec.fill_ts))
+        self._sessions_logged: set[tuple] = set()      # (date, book) dedup, re-armed too
+        for d in self.decisions():
+            if d.get("type") == "session":
+                self._sessions_logged.add((d.get("date"), d.get("book")))
 
     # ---- sinks --------------------------------------------------------------
     def on_record(self, tr, book: str, cfg) -> None:
@@ -63,10 +72,7 @@ class LiveJournal:
         key = _trade_key(tr.trade_date, tr.fill_ts)
         if key in self._logged:
             return
-        h = self._cfg_hashes.get(id(cfg))
-        if h is None:
-            h = self._cfg_hashes[id(cfg)] = cfg_hash(cfg)
-        rec = from_trade_record(tr, config_hash=h, playbook=book)
+        rec = from_trade_record(tr, config_hash=cfg_hash(cfg), playbook=book)
         if self._append(self.journal_path, rec.model_dump_json()):
             self._logged.add(key)
 
@@ -78,26 +84,47 @@ class LiveJournal:
 
     def wrap_policy(self, policy: Callable) -> Callable:
         """Wrap a session policy so every daily pick is journaled: which book ran the
-        day, or that the policy sat it out. Transparent — returns the pick unchanged."""
+        day, or that the policy sat it out. Transparent — returns the pick unchanged.
+        A (date, book) pair is logged ONCE across restarts (review F3): a restarted
+        Vault re-rolls its warmup sessions, and without dedup every restart would
+        re-append the same picks and make the audit trail read like re-decisions."""
         def logged(date: str):
             picked = policy(date)
-            self._decision({"type": "session", "date": date,
-                            "book": None if picked is None else picked[0]})
+            skey = (date, None if picked is None else picked[0])
+            if skey not in self._sessions_logged:
+                if self._decision({"type": "session", "date": skey[0], "book": skey[1]}):
+                    self._sessions_logged.add(skey)
             return picked
         return logged
 
     # ---- reading / reconciliation ------------------------------------------
     def trades(self) -> list[JournalRecord]:
-        if not self.journal_path.exists():
-            return []
-        return [JournalRecord(**json.loads(line))
-                for line in self.journal_path.read_text().splitlines() if line.strip()]
+        """All journaled trades. Tolerant read (review F1): a torn or drifted line is
+        skipped and counted in `corrupt_journal_lines`, never raised — a crash
+        mid-write must not become a crash on restart."""
+        rows, bad = [], 0
+        for line in self._lines(self.journal_path):
+            try:
+                rows.append(JournalRecord(**json.loads(line)))
+            except Exception as e:
+                bad += 1
+                print(f"[journal] skipping bad journal line: {type(e).__name__}",
+                      file=sys.stderr)
+        self.corrupt_journal_lines = bad
+        return rows
 
     def decisions(self) -> list[dict]:
-        if not self.decisions_path.exists():
-            return []
-        return [json.loads(line)
-                for line in self.decisions_path.read_text().splitlines() if line.strip()]
+        """The decision trail. Same tolerant-read contract as trades()."""
+        rows, bad = [], 0
+        for line in self._lines(self.decisions_path):
+            try:
+                rows.append(json.loads(line))
+            except Exception as e:
+                bad += 1
+                print(f"[journal] skipping bad decisions line: {type(e).__name__}",
+                      file=sys.stderr)
+        self.corrupt_decision_lines = bad
+        return rows
 
     def reconcile(self, expected) -> dict:
         """Row-for-row diff vs a batch backtest trade list (engine TradeRecords).
@@ -114,9 +141,16 @@ class LiveJournal:
                 "unexpected": [o for o in ours if o not in theirs]}
 
     # ---- internals ----------------------------------------------------------
-    def _decision(self, row: dict) -> None:
-        self._append(self.decisions_path,
-                     json.dumps({"ts": datetime.now().astimezone().isoformat(), **row}))
+    @staticmethod
+    def _lines(path: Path):
+        if not path.exists():
+            return []
+        return [line for line in path.read_text().splitlines() if line.strip()]
+
+    def _decision(self, row: dict) -> bool:
+        return self._append(self.decisions_path,
+                            json.dumps({"ts": datetime.now().astimezone().isoformat(),
+                                        **row}))
 
     def _append(self, path: Path, line: str) -> bool:
         """Fail-soft append: a full disk / bad permission never raises into the loop."""

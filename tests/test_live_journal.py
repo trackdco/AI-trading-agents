@@ -83,3 +83,62 @@ def test_cfg_hash_stable_and_distinct():
     a, b = _Cfg('{"x":1}'), _Cfg('{"x":1}')
     assert cfg_hash(a) == cfg_hash(b)                   # content-addressed, not identity
     assert cfg_hash(a) != cfg_hash(_Cfg('{"x":2}'))
+
+
+# ---- Stage-6 review regressions ---------------------------------------------
+
+def test_torn_final_line_survives_restart(tmp_path):
+    """Review F1: a crash mid-write leaves a torn last line — restart must not crash,
+    intact rows must survive, and dedup must still hold."""
+    j = LiveJournal(tmp_path)
+    j.on_record(_tr(), "E4", _Cfg())
+    with (tmp_path / "journal.jsonl").open("a") as f:
+        f.write('{"trade_date": "2026-03-18", "fill_')  # torn mid-write
+    j2 = LiveJournal(tmp_path)                          # must construct, not raise
+    assert len(j2.trades()) == 1 and j2.corrupt_journal_lines == 1
+    j2.on_record(_tr(), "E4", _Cfg())                   # intact row still deduped
+    assert len(j2.trades()) == 1
+
+
+def test_torn_decisions_line_skipped_not_raised(tmp_path):
+    j = LiveJournal(tmp_path)
+    j.on_halt("2026-03-18", "kill_switch")
+    with (tmp_path / "decisions.jsonl").open("a") as f:
+        f.write('{"type": "hal')
+    assert len(j.decisions()) == 1 and j.corrupt_decision_lines == 1
+    LiveJournal(tmp_path)                               # restart seeding tolerant too
+
+
+def test_schema_drift_row_skipped_and_counted(tmp_path):
+    j = LiveJournal(tmp_path)
+    j.on_record(_tr(), "E4", _Cfg())
+    with (tmp_path / "journal.jsonl").open("a") as f:
+        f.write('{"trade_date": "2026-03-18", "not_a_field": 1}\n')  # valid JSON, bad row
+    assert len(j.trades()) == 1 and j.corrupt_journal_lines == 1
+
+
+def test_config_hash_immune_to_id_reuse(tmp_path):
+    """Review F2 (proven live): CPython reuses freed object ids — the stamp must be
+    content-addressed, never cached by id()."""
+    j = LiveJournal(tmp_path)
+    cfg_a = _Cfg('{"win_end":"10:15"}')
+    j.on_record(_tr(), "E3", cfg_a)
+    del cfg_a                                           # free the address
+    cfg_b = _Cfg('{"win_end":"11:30"}')                 # often lands on the SAME id
+    j.on_record(_tr(fill="2026-03-17T09:00:00-04:00"), "E3", cfg_b)
+    assert j.trades()[1].config_hash == cfg_hash(cfg_b)
+
+
+def test_session_picks_logged_once_across_restarts(tmp_path):
+    """Review F3: a restarted Vault re-rolls warmup sessions — the audit trail must
+    not re-append the same pick every restart."""
+    j = LiveJournal(tmp_path)
+    policy = j.wrap_policy(lambda d: ("E3", "cfg", None))
+    policy("2026-03-17")
+    policy("2026-03-17")                                # same session re-rolled
+    assert len(j.decisions()) == 1
+    j2 = LiveJournal(tmp_path)                          # crash-restart
+    j2.wrap_policy(lambda d: ("E3", "cfg", None))("2026-03-17")
+    assert len(j2.decisions()) == 1                     # still once
+    j2.wrap_policy(lambda d: ("E4", "cfg", None))("2026-03-17")
+    assert len(j2.decisions()) == 2                     # a DIFFERENT pick is news
