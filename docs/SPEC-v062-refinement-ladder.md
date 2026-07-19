@@ -93,3 +93,39 @@ Named failure modes (P8's children), with tells:
   acceptable — the rung's capture bar decides, reads bar is the tiebreak.
 Confidence in PROMOTE: ~55%. If it fails, the diagnosis order is: leak table
 first, sizing histogram second, prompt third.
+
+## RUNG 1 RESULT (run 19 Jul, 118 verdicts, 0 fail-closed, ~17 min via 3 parallel workflows)
+
+**FAIL.** Official grade on floored books (106 graded days):
+- reads 52/106 = **49%** (bar ≥49%: met exactly)
+- capture full-size **+$4,059 = 9%** of the $45,419 ceiling (bar >21%: FAILED decisively)
+- as-verdicted +$1,356 = 3%; FLAT rate **81%** vs oracle 50%
+- champion switch on same floored books: +$13,188 = **29%** capture
+- expected_value_usd present in 100% of verdicts; zero fail-closed
+
+**P9 graded: MISS.** Central case was promote at 22-30% capture with flat rate
+falling to 50-62%. Reality: flat rate ROSE to 81%. The failure mode was not the
+over-swing I hedged 45% on — it was ANCHOR LOCK, which I did not name:
+
+1. The v0.6.1 rule "stand down when analog majority_action==FLAT" survived into
+   v0.6.2 (posture kept by design). The analog majority is FLAT on ~80% of days,
+   so the anchor binds almost daily and OUTRANKS the new sections.
+2. The base-rates topline ("47% of days FLAT; both books negative
+   unconditionally") reads as a standing endorsement of hiding when presented
+   without conditioning — the counterweight armed the fear it was built to price.
+3. The C2 bill was sourced from the v0.6.1 lineage, whose rolling sizing regret
+   was POSITIVE (its caution had been locally profitable) — the bill certified
+   the anchor instead of fighting it. Evidence: 03-17 FOMC analogs voted
+   6 FLAT / 2 MOMENTUM; the agent obeyed the cohort and missed +$3,485; top-8
+   leaks are ALL FLAT-on-winners, again.
+
+Per the frozen ladder: STOP, diagnose (done above), no rung re-sit until a v0.6.3
+proposal is reviewed by Angus. The three wires are not disproven — they were
+overruled by a rule that predates them. Proposed v0.6.3 delta (ONE change class):
+demote the analog-majority-FLAT anchor from a RULE to one input among the
+retrieval evidence, and present base rates conditionally only (no unconditioned
+topline). Bill source switches to the config's own lineage as soon as it has one.
+
+Standing fact worth its own line: **champion switch + R1/R2 floor = 29% capture
+(+$13,188) on 2026** — the strongest verified whole-config on the board today,
+fully mechanical. The bar for any agent lineage is now explicitly this number.
