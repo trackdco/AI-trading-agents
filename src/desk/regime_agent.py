@@ -66,6 +66,10 @@ class RegimeVerdict(BaseModel, extra="forbid"):
     cited_evidence: list[str]              # <= 8 briefing-field references
     playbook_notes: str                    # <= 1500 chars — the agent's adaptation memory,
                                            # journaled every day (design doc L3)
+    expected_value_usd: float | None = None  # v0.6.2 (C3): the agent's own P&L point-
+                                           # estimate at its chosen size; graded for
+                                           # calibration. Optional so older verdicts
+                                           # and prompts stay valid.
 
     @field_validator("regime")
     @classmethod

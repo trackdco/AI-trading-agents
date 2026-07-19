@@ -140,3 +140,106 @@ def feedback_block(day: str, verdicts: pd.DataFrame, daily: pd.DataFrame,
             "champion_expectancy_usd": round(tail.full.mean()),
         },
     }
+
+
+# ------------------------------------------------- v0.6.2: event-family analogs
+
+FAMILIES = {
+    "CPI": ("cpi",), "PPI": ("ppi",), "PCE": ("pce",),
+    "NFP": ("non-farm", "nonfarm", "payroll", "unemployment rate",
+            "average hourly earnings"),
+    "ISM": ("ism",), "GDP": ("gdp",), "RETAIL": ("retail sales",),
+    "FOMC": ("fomc", "federal funds", "fed chair", "rate decision"),
+    "JOBLESS": ("jolts", "employment change"),
+}
+
+
+def _families_of(events: list[str]) -> list[str]:
+    out = []
+    for fam, keys in FAMILIES.items():
+        if any(k in e.lower() for e in events for k in keys):
+            out.append(fam)
+    return out
+
+
+def event_analogs(day: str, calendar: pd.DataFrame, books: pd.DataFrame,
+                  k: int = 8) -> dict | None:
+    """A3: the last k SAME-EVENT-FAMILY mornings before `day`, with what paid.
+
+    calendar: datetime_ET (tz-aware) / event / impact. books: day-indexed
+    pl_e3/pl_e4 (use the R1/R2-floored books for v0.6.2 so 'what paid' means
+    'what paid under the timing floor the engine actually enforces').
+    """
+    cal = calendar[calendar.impact == "high"].copy()
+    cal["d"] = cal.datetime_ET.dt.strftime("%Y-%m-%d")
+    today = cal[cal.d == day]
+    if today.empty:
+        return None
+    fams = _families_of(list(today.event))
+    if not fams:
+        return None
+    keys = tuple(k2 for f in fams for k2 in FAMILIES[f])
+    prior = cal[(cal.d < day) & cal.event.str.lower().str.contains("|".join(keys))]
+    days = [d for d in sorted(prior.d.unique(), reverse=True) if d in books.index][:k]
+    if not days:
+        return None
+    rows = []
+    for d in sorted(days):
+        e3, e4 = float(books.loc[d, "pl_e3"]), float(books.loc[d, "pl_e4"])
+        act = "FLAT" if max(e3, e4) <= 0 else ("ROTATION" if e3 >= e4 else "MOMENTUM")
+        rows.append(dict(day=d, best_action=act, rotation=round(e3), momentum=round(e4)))
+    acts = [r["best_action"] for r in rows]
+    return dict(families=fams, k=len(rows),
+                counts={a: acts.count(a) for a in ("FLAT", "ROTATION", "MOMENTUM")},
+                days=rows)
+
+
+def build_v062_briefing(briefing: dict, day: str, calendar: pd.DataFrame,
+                        books: pd.DataFrame, verdict_ledger: pd.DataFrame | None,
+                        asof: str | None = None) -> dict:
+    """Assemble the full v0.6.2 briefing: priced retrieval (W2) + event-family
+    analogs (A3) + the dollar bill (W1, C2 contract as ruled by Angus 19 Jul).
+
+    verdict_ledger: prior graded verdicts of this lineage (day/action/agent_pl
+    columns plus stand_down/size via merge upstream) used as the feedback source;
+    in a parallel run this is the predecessor version's ledger — disclosed in any
+    report. None -> feedback line reads "(no prior verdict yet)".
+    """
+    briefing = upgrade_briefing(briefing, day, asof=asof)
+    ea = event_analogs(day, calendar, books)
+    if ea is not None:
+        briefing["event_family_analogs"] = ea
+    briefing["yesterday_result"] = (
+        ledger_feedback(day, verdict_ledger) if verdict_ledger is not None
+        else "(no prior verdict yet)")
+    return briefing
+
+
+def ledger_feedback(day: str, ledger: pd.DataFrame, window: int = 20) -> dict | str:
+    """C2 bill from a GRADED LEDGER (day/action/agent_pl/oracle_pl [+ size]).
+
+    agent_pl is the agent's chosen book at FULL size; `size` (if present) is the
+    verdicted multiplier. realized = size x agent_pl; sizing regret bills the
+    shrinkage of the agent's own call, read regret bills the distance to oracle.
+    """
+    h = ledger[ledger.day < day].sort_values("day")
+    if h.empty:
+        return "(no prior verdict yet)"
+    h = h.copy()
+    h["s"] = h["size"] if "size" in h.columns else 1.0
+    h["realized"] = h.s * h.agent_pl
+    y = h.iloc[-1]
+    tail = h.tail(window)
+    return {
+        "date": y.day, "your_size": round(float(y.s), 2),
+        "realized_usd": round(y.realized),
+        "full_size_counterfactual_usd": round(y.agent_pl),
+        "oracle_usd": round(y.oracle_pl),
+        "sizing_regret_usd": round(y.realized - y.agent_pl),
+        "read_regret_usd": round(y.realized - y.oracle_pl),
+        "rolling_20d": {
+            "your_cumulative_sizing_regret_usd": round((tail.realized - tail.agent_pl).sum()),
+            "your_cumulative_read_regret_usd": round((tail.realized - tail.oracle_pl).sum()),
+            "your_arm_expectancy_usd": round(tail.realized.mean()),
+        },
+    }

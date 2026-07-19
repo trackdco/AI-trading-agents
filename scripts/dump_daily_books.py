@@ -16,6 +16,24 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.year_suite import _init, run_task  # noqa: E402
+import scripts.year_suite as ys  # noqa: E402
+
+
+def _floored_run_task(task):
+    from src.backtest.engine import load_news_calendar
+    from src.backtest.event_timing import event_entry_floor
+    arm, month = task
+    book = 'rotation' if arm == 'e3book' else 'momentum'
+    floor = event_entry_floor(load_news_calendar(), book)
+    keep = [t for t in ys._ctx['TRIGS']
+            if t.ts[:10] not in floor or pd.Timestamp(t.ts) >= floor[t.ts[:10]]]
+    saved = ys._ctx['TRIGS']
+    ys._ctx['TRIGS'] = keep
+    try:
+        return run_task(task)
+    finally:
+        ys._ctx['TRIGS'] = saved
+
 
 
 def main():
@@ -23,6 +41,8 @@ def main():
     ap.add_argument("--years", default="2023,2024,2025,2026")
     ap.add_argument("--daydir", default="output/triggers_hist2326_days")
     ap.add_argument("--out", default="output/allyears_daily_books.csv")
+    ap.add_argument("--timing-floor", action="store_true",
+                    help="apply the R1/R2 event-day entry floor (v0.6.2 grading books)")
     a = ap.parse_args()
 
     daily = {}                                       # day -> {"E3": $, "E4": $}
@@ -32,7 +52,8 @@ def main():
         tasks = [(arm, m) for m in months for arm in ("e3book", "e4book")]
         with ProcessPoolExecutor(max_workers=4, initializer=_init,
                                  initargs=(year, a.daydir, "none")) as ex:
-            for arm, mo, _, per_day in ex.map(run_task, tasks):
+            fn = _floored_run_task if a.timing_floor else run_task
+            for arm, mo, _, per_day in ex.map(fn, tasks):
                 key = "E3" if arm == "e3book" else "E4"
                 for d, v in per_day.items():
                     daily.setdefault(d, {"E3": 0.0, "E4": 0.0})[key] += v

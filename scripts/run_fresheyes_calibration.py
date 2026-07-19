@@ -36,6 +36,7 @@ from src.desk.regime_agent import (  # noqa: E402
     parse_verdict,
     render_prompt,
 )
+from src.desk.briefing_v05 import build_v062_briefing  # noqa: E402
 from src.desk.v04 import (  # noqa: E402
     _load_books,
     as_fresh_eyes,
@@ -74,6 +75,15 @@ def cmd_emit(args) -> int:
     BLOBS.mkdir(parents=True, exist_ok=True)
     df, vec, cal = _inputs(args.parquet)
     news = None
+    agent_file = Path(args.agent_file) if args.agent_file else None
+    v062_books = v062_ledger = None
+    if args.v062:
+        # R1/R2-floored books = "what paid under the floor the engine enforces"
+        v062_books = pd.read_csv(args.books).rename(
+            columns={"E3": "pl_e3", "E4": "pl_e4"}).set_index("day")
+        if args.feedback_ledger:
+            fl = pd.read_csv(args.feedback_ledger)
+            v062_ledger = fl[["day", "action", "agent_pl", "oracle_pl"]].copy()
     emitted = skipped = 0
     for d in _days(args.start, args.end):
         try:
@@ -83,8 +93,13 @@ def cmd_emit(args) -> int:
             skipped += 1
             continue
         brief = attach_analog_block(as_fresh_eyes(base), load_analog_block(d))
+        if args.v062:
+            brief = build_v062_briefing(brief, d, cal, v062_books, v062_ledger,
+                                        asof=args.asof)
         (BLOBS / f"{d}.briefing.json").write_text(json.dumps(brief, default=str))
-        (BLOBS / f"{d}.request.txt").write_text(render_prompt(brief))
+        (BLOBS / f"{d}.request.txt").write_text(
+            render_prompt(brief, agent_file=agent_file) if agent_file
+            else render_prompt(brief))
         emitted += 1
     print(f"emitted {emitted} fresh-eyes requests to {BLOBS}/ ({skipped} skipped). "
           f"Answer each as <date>.response.txt (parallel, any order), then `ingest`.")
@@ -161,6 +176,16 @@ def main() -> int:
         s.add_argument("--tag", default="fe", help="run namespace (e.g. fe_v06)")
         if name == "emit":
             s.add_argument("--parquet", default=MASTER_PARQUET)
+            s.add_argument("--v062", action="store_true",
+                           help="attach base_rates + event_family_analogs + C2 bill")
+            s.add_argument("--agent-file", default=None,
+                           help="override agent definition (e.g. regime-context-v062.md)")
+            s.add_argument("--books", default="output/allyears_daily_books_r1r2.csv",
+                           help="v062: floored books for event analogs + feedback")
+            s.add_argument("--feedback-ledger", default=None,
+                           help="v062: graded ledger of the predecessor lineage (C2 source)")
+            s.add_argument("--asof", default=None,
+                           help="v062: base-rates cutoff for replay safety")
     args = p.parse_args()
     return cmd_emit(args) if args.cmd == "emit" else cmd_ingest(args)
 
