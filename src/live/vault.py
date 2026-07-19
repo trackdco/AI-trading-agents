@@ -146,6 +146,16 @@ class Vault:
         self._record_sinks.append(fn)
         return self
 
+    def seed_emitted(self, trades) -> "Vault":
+        """Mark (trade_date, fill_ts) of already-recorded trades as emitted, so a
+        RESTART (or a replay that re-covers today's bars) never re-fires their sinks —
+        no duplicate Telegram alerts, no double journal/broker rows. The broker and
+        journal also dedup internally; this stops the alert BEFORE it is sent.
+        Seed from the restored broker's trades, after wiring sinks, before streaming."""
+        for t in trades:
+            self._emitted.add((str(t.trade_date), str(t.fill_ts)))
+        return self
+
     def add_triggers(self, triggers) -> None:
         """Feed newly-detected triggers (live path). Deduped by identity; a re-delivered
         trigger is a no-op. Refreshes the current session's working set."""
