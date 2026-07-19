@@ -103,3 +103,28 @@ should help HERE more than it helped the 3-way read proxy. Estimate for 2026:
 - Risk: the agent over-trusts value_position on inside/overlap days where it's
   weak (12-pt flat spread is modest); tell = book accuracy on 'inside' days.
 Only a run confirms it. This is the last free build before the Long Walk.
+
+## OVERNIGHT RUN (20 Jul, Angus authorized) — fresh-eyes full history + chained 2026 only
+
+Scope decision (Angus, cost-conscious): fresh-eyes runs the FULL 2023-2026 walk
+(912 days, walk-forward-clean --asof base rates per year, 8 parallel background
+workflows). Chained (true day-to-day playbook_notes memory) is scoped to 2026 ONLY
+(139 days) rather than the full 4 years — chaining is strictly serial (can't
+parallelize; day N depends on day N-1's notes) and after tonight's spend-limit hit,
+running it across 4 years unattended was judged too risky. 2026 alone gives a direct,
+same-year chained-vs-fresh-eyes comparison, which is the point of the test.
+
+Chained implementation: no CLI driver needed. A Workflow script holds `notes` in a
+plain JS variable across a sequential for-loop (NOT parallel/pipeline — literally
+await agent() one at a time). Each call: agent reads the v0.7 contract + the day's
+pre-built briefing.json (reused from the fresh-eyes emit — same features, health
+gate, base rates), receives the running notes inline in the prompt, and returns
+structured output via a JSON schema (date/regime_stance/book/size_multiplier/
+expected_value_usd/rationale/cited_evidence/playbook_notes) — schema-forced output
+sidesteps free-text JSON parsing failures. The returned playbook_notes becomes next
+iteration's carried notes. No file writes needed for the chain itself.
+
+Grading plan on completion: pull fresh-eyes' own 2026 subset from the walk_v07 tag,
+grade both arms on IDENTICAL 2026 floored books, and report reads/capture/FLAT-rate/
+health-override-rate side by side — this is the real "does memory help or hurt"
+answer promised since June's frame-lock-in finding, now on 139 days not ~20.
