@@ -1,5 +1,42 @@
 # TASK FOR BRAKE — Order-book data pull (Angus directive, 18 Jul 2026)
 
+## UPDATE 9 (20 Jul, Angus directive) — NEW TASK: the stop-size study (this is a BIG find)
+
+**Angus's framing, and it's the key insight:** on the 2026 champion trades, winning
+trades only ran a median **0.44R against us** before turning — 0% of winners ever dipped
+past 0.5R. But every trade risks a full **1R**. Angus's exact logic: *"if the winners
+only ran to 0.44 of the actual stop loss, that literally means the losers are losing
+twice as much as they should."* The stop is sized for a drawdown winners never take —
+so it ONLY ever makes losers lose more. In-sample this is worth ~+49R (~$14k on 146
+trades). **We need the robust, out-of-sample, full-history number.**
+
+**Why it can't be answered from current data:** the full-history trade file
+(output/allyears_book_trades.csv, 2,955 trades) does NOT log MAE/MFE per trade — only
+the 146-trade 2026 journal does. So step 1 is regenerating the trade data WITH excursion
+logging. NOTE for the engine lane: the v0.7 agent walk does NOT produce this — it selects
+books off pre-computed daily P&L. The MAE/MFE comes from re-running the ENGINE book
+simulations. Engine lane will add per-trade MAE/MFE logging + ship a stop-sweep harness;
+Brake RUNS it across all four years and reports.
+
+**The test (once the harness lands — engine lane is building it now):**
+1. Re-run both books 2023–2026 logging entry / exit / MAE / MFE per trade.
+2. Sweep candidate stop rules, each graded OUT-OF-SAMPLE with HONEST winner-conversion
+   accounting (a tighter stop converts some winners to losers — count that, don't hide it):
+   - **fixed tighter**: 0.5R / 0.6R / 0.7R / 0.8R vs the current 1R
+   - **structure stop**: behind the swing that invalidates the setup (engine already
+     computes fractal swings)
+   - **vol-scaled stop**: stop distance scales with the session's morning range (calm
+     tape → tighter, fast tape → wider) — reuses the vol-norm work
+3. Report per year AND full-history: which stop rule adds the most net R, and CRUCIALLY
+   whether it holds in ≥3 of 4 years (no single-era hero — same anti-overfit bar as
+   everything else). A rule that only wins 2026 is rejected.
+
+**Deliverable:** "stop rule X adds $Y/year robustly, converting Z winners to losers but
+cutting every loss from 1R to WR." That number is the price-only backend prize — and it's
+the baseline the heatmap (Update 8) then improves on top of. Same measure-before-believe
+discipline: it's completely fine if the honest OOS number is smaller than the $14k
+in-sample tease. That's the point of testing it.
+
 ## UPDATE 8 (20 Jul, Angus directive) — HEATMAP RE-SCOPE: this is an EXIT/STOP tool, not just an entry filter
 
 **Read this before continuing any mbp-10 work.** Everything below (Updates 1-5) framed

@@ -57,6 +57,7 @@ def cmd_emit(a):
     cal = load_news_calendar()
     books = pd.read_csv(BOOKS).rename(columns={"E3": "pl_e3", "E4": "pl_e4"}).set_index("day")
     stance = json.loads((O / "stance.json").read_text()) if (O / "stance.json").exists() else {}
+    led = pd.read_csv(O / "ledger.csv").to_dict("records") if (O / "ledger.csv").exists() else []
     days = _days(a.start, a.end)
     if a.sample:
         days = days[::max(1, len(days) // a.sample)][:a.sample]
@@ -70,6 +71,9 @@ def cmd_emit(a):
                                  d, cal, books, None, asof=a.asof)
         br["carried_stance"] = stance.get("current", "risk_on")
         br["champion_book_today"] = champ_pick(d, vec)
+        recent = [r["pl"] for r in led[-20:]]
+        br["regime_health"] = (round(sum(recent) / len(recent)) if len(recent) >= 10
+                               else "insufficient_history")   # health gate input
         (B / f"{d}.briefing.json").write_text(json.dumps(br, default=str))
         (B / f"{d}.request.txt").write_text(
             render_prompt(br, agent_file=Path(a.agent_file)))
@@ -118,17 +122,29 @@ def cmd_ingest(a):
             failed += 1
             print(f"{d}: INVALID ({e})")
             continue
-        stance["current"] = v["regime_stance"]          # carry forward
         e3, e4 = float(books.loc[d, "E3"]), float(books.loc[d, "E4"])
-        if v["regime_stance"] == "risk_off":
+        # HEALTH GATE (Angus workaround, 20 Jul): risk_off is only honored when the
+        # trailing-20d realized expectancy is negative. On a healthy tape an unjustified
+        # risk_off is OVERRIDDEN to trade — closes the escape hatch that binary sizing
+        # would otherwise open (caution migrating from the size knob to the stance knob).
+        recent = [r["pl"] for r in ledger[-20:]]
+        health = (sum(recent) / len(recent)) if len(recent) >= 10 else 0.0
+        stance_req = v["regime_stance"]
+        overridden = False
+        if stance_req == "risk_off" and health > 0:
+            stance_req = "risk_on"            # gate: healthy tape -> must trade
+            overridden = True
+        stance["current"] = stance_req                   # carry forward the GATED stance
+        if stance_req == "risk_off":
             act, pl = "FLAT", 0.0
         else:
             act = champ_pick(d, vec) if v["book"] == "CHAMPION" else v["book"]
-            pl = v["size"] * (e3 if act == "ROTATION" else e4)
+            pl = 1.0 * (e3 if act == "ROTATION" else e4)   # BINARY: full size always
         orc = max(e3, e4, 0.0)
         oracle = "FLAT" if max(e3, e4) <= 0 else ("ROTATION" if e3 >= e4 else "MOMENTUM")
-        ledger.append(dict(day=d, stance=v["regime_stance"], book=v["book"], act=act,
-                           size=v["size"], pl=round(pl), oracle=oracle,
+        ledger.append(dict(day=d, stance=stance_req, stance_asked=v["regime_stance"],
+                           health_override=overridden, book=v["book"], act=act,
+                           size=1.0 if act != "FLAT" else 0.0, pl=round(pl), oracle=oracle,
                            hit=act == oracle, orc=round(orc), e3=round(e3), e4=round(e4)))
     L = pd.DataFrame(ledger)
     L.to_csv(O / "ledger.csv", index=False)

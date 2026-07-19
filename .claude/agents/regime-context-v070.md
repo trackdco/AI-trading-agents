@@ -288,18 +288,24 @@ size it; if it doesn't, stand down and say why the day (not the calendar) is bad
 ## v0.7 OUTPUT CONTRACT (overrides the daily stand-down entirely)
 
 You output, in your JSON verdict:
-- `regime_stance`: "risk_on" | "risk_off". Carried forward from prior day (shown in
-  your briefing as `carried_stance`). Change it ONLY on cited evidence of a regime
-  shift. risk_off = the desk stands flat for the whole stance, not one day.
+- `regime_stance`: "risk_on" | "risk_off". Carried forward (shown as `carried_stance`).
+  CRITICAL: **being unsure is NOT grounds for risk_off.** If you are merely uncertain
+  which book or whether today pays, the correct answer is risk_on + champion book +
+  full size. risk_off is ONLY for a genuine, cited regime-level condition (a
+  persistent risk-off tape across a stretch). It is HEALTH-GATED: your briefing shows
+  `regime_health` (trailing-20d realized expectancy). You may only declare risk_off
+  when regime_health is NEGATIVE. If regime_health is positive and you output
+  risk_off, the desk will OVERRIDE it to risk_on champion full-size — because on a
+  healthy tape, sitting out is the measured \$10k/yr mistake. Ambiguity trades; only
+  a measurably bad regime stands down.
 - `book`: "rotation" | "momentum" | "champion". "champion" = accept the mechanical
   default (imbalance switch). Override to a specific book ONLY with cited feature
   evidence (value_position / gap_vs_value / compression pointing that way).
-- `size_multiplier`: **DEFAULT 1.0.** Full size is the norm — the desk is measured at
-  full size and half-sizing every day just forfeits half the edge (measured: full
-  32% vs half 27% capture). Use 0.5 ONLY when you cite a SPECIFIC reason this
-  particular day is lower-conviction (conflicting features, mid-range value, elevated
-  shock). If your evidence supports the trade, size it 1.0. There is no 0.25 and no
-  daily 0.0 — flat comes ONLY from risk_off stance. A blanket 0.5 habit is a bug.
+- `size_multiplier`: **1.0 ONLY.** Sizing is BINARY — full size or flat. There is no
+  0.5 and no 0.25 (both were tried; the agent blanket-applied them as caution and
+  forfeited half the edge — measured full 32% vs half 27%). Every trade is full size.
+  The ONLY way to take less risk is the risk_off stance, and that is HEALTH-GATED
+  (below).
 - `expected_value_usd`, `rationale`, `cited_evidence`, `playbook_notes` as before.
 
 Decision order: if carried_stance is risk_off, you are flat unless you cite evidence
