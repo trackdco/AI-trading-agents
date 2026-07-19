@@ -57,7 +57,8 @@ def _bucket(x, edges, labels):
 def upgrade_briefing(briefing: dict, day: str,
                      analog_path: str = "output/analog_briefing.csv",
                      rates_path: str = "output/base_rates.json",
-                     asof: str | None = None) -> dict:
+                     asof: str | None = None,
+                     include_topline: bool = False) -> dict:
     """Fill analog_days with the A1 block and attach today's base-rate slices.
 
     Slim by design (briefing diet): only the digest rows matching today's
@@ -75,8 +76,10 @@ def upgrade_briefing(briefing: dict, day: str,
         digest = json.loads(rp.read_text())
         v = briefing.get("regime_vector", {}) or {}
         sh = briefing.get("shock_bars", {}) or {}
-        sel = {"note": digest.get("note"), "topline": digest.get("topline"),
-               "asof_cutoff": digest.get("asof_cutoff")}
+        sel = {"note": digest.get("note"), "asof_cutoff": digest.get("asof_cutoff")}
+        if include_topline:                # v0.6.3: OFF — the unconditioned "47% of
+            sel["topline"] = digest.get("topline")  # days FLAT / books negative" line
+            # read as standing permission to hide (Rung-1 anchor-lock diagnosis)
         dt = v.get("day_type")
         if dt in digest.get("by_day_type", {}):
             sel["today_day_type"] = {dt: digest["by_day_type"][dt]}

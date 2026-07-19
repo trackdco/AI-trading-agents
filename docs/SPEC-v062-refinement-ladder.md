@@ -129,3 +129,25 @@ topline). Bill source switches to the config's own lineage as soon as it has one
 Standing fact worth its own line: **champion switch + R1/R2 floor = 29% capture
 (+$13,188) on 2026** — the strongest verified whole-config on the board today,
 fully mechanical. The bar for any agent lineage is now explicitly this number.
+
+## v0.6.3 (built 19 Jul from Angus's Q1-Q3 rulings) + PREDICTION P10 (filed pre-run)
+
+Angus's rulings, verbatim intent: Q1 "I don't trade FOMC days because the price
+action's comically shit. Sometimes I will — if the statistics back it, trade it."
+Q2 "To stand down, it would make sense if you're predicting negative EV on both
+books." Q3 "0.5 and 1.0 — 0.25 is unrealistic; you can't run 2.5 micros."
+
+v0.6.3 changes (decision ORDER only, evidence unchanged): (a) cohort vote demoted
+to evidence — trading against it AND hiding with it both require cited statistics;
+(b) stand_down requires stated negative EV on BOTH books; (c) sizes {0, 0.5, 1.0},
+0.25 dead; (d) base rates conditional-only (no topline); (e) no predecessor bill in
+parallel mode (own-lineage only — honest cold start).
+
+**P10:** flat rate drops to 45-65% (the binding rule is gone and hiding now costs
+justification effort); capture 13-22% — genuine risk of missing the >21% bar again
+but from the OTHER side (over-swing now live: without the anchor, wrong-book picks
+on newly-traded days are the likely leak); reads 44-51%. PROMOTE probability ~35%
+— two behavioral misses in a row earn wide error bars. Tells: if capture lands
+<13% with flat <50%, over-swing confirmed and the feature ceiling (fork-test
+finding) is officially the binding constraint — the depth-data conversation, not
+another prompt.
