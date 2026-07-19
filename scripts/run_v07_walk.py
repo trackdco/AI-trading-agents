@@ -2,8 +2,11 @@
 """v0.7 REGIME-DIAL walk driver (Angus, docs/SPEC-v07-regime-dial.md).
 
 The regime dial: champion book by default, agent overrides book + size, and the
-ONLY path to flat is a persistent risk-off STANCE that carries forward day to day.
-That stance makes this inherently CHAINED — day N sees the stance carried from N-1.
+ONLY path to flat is a risk-off stance that is HEALTH-GATED at ingest — honored only
+when the champion's trailing-20d P&L is negative (the tape is bad for everyone). The
+health signal is precomputed from the champion books, so the run is BATCHABLE (parallel
+emit -> parallel agent -> sequential ingest), not a slow serial chain. Stance
+persistence emerges from health persistence (a trailing-20d measure moves slowly).
 
 Modes:
   emit    --start --end [--sample N]   write request blobs (fresh-eyes book+size test:
@@ -51,13 +54,30 @@ def champ_pick(day, vec):
     return "MOMENTUM" if r.iloc[0].imbal_share_20 >= 0.5 else "ROTATION"
 
 
+def champ_health_map(window=20):
+    """Trailing-`window`-day champion floored P&L as of each day (pre-open). This is the
+    HEALTH signal for the risk-off gate: computable upfront for all days (no chicken-egg),
+    so the batch run has a consistent signal at emit AND ingest. Negative = the tape has
+    been bad for everyone -> risk_off is permitted. Champion pick = imbalance switch."""
+    B = pd.read_csv(BOOKS)
+    vec = pd.read_csv("output/regime_vector.csv")[["day", "imbal_share_20"]]
+    d = B.merge(vec, on="day", how="left").sort_values("day").reset_index(drop=True)
+    d["cpl"] = d.apply(lambda r: r.E4 if (pd.notna(r.imbal_share_20) and r.imbal_share_20 >= 0.5)
+                       else r.E3, axis=1)
+    hm = {}
+    for i, row in d.iterrows():
+        prior = d.cpl.iloc[max(0, i - window):i]
+        hm[row.day] = round(prior.sum()) if len(prior) >= 10 else None
+    return hm
+
+
 def cmd_emit(a):
     B, O = _paths(a.tag)
     df = pd.read_parquet(MASTER); vec = pd.read_csv("output/regime_vector.csv")
     cal = load_news_calendar()
     books = pd.read_csv(BOOKS).rename(columns={"E3": "pl_e3", "E4": "pl_e4"}).set_index("day")
     stance = json.loads((O / "stance.json").read_text()) if (O / "stance.json").exists() else {}
-    led = pd.read_csv(O / "ledger.csv").to_dict("records") if (O / "ledger.csv").exists() else []
+    health_map = champ_health_map()
     days = _days(a.start, a.end)
     if a.sample:
         days = days[::max(1, len(days) // a.sample)][:a.sample]
@@ -71,9 +91,8 @@ def cmd_emit(a):
                                  d, cal, books, None, asof=a.asof)
         br["carried_stance"] = stance.get("current", "risk_on")
         br["champion_book_today"] = champ_pick(d, vec)
-        recent = [r["pl"] for r in led[-20:]]
-        br["regime_health"] = (round(sum(recent) / len(recent)) if len(recent) >= 10
-                               else "insufficient_history")   # health gate input
+        br["regime_health"] = (health_map.get(d) if health_map.get(d) is not None
+                               else "insufficient_history")   # champion trailing-20d P&L
         (B / f"{d}.briefing.json").write_text(json.dumps(br, default=str))
         (B / f"{d}.request.txt").write_text(
             render_prompt(br, agent_file=Path(a.agent_file)))
@@ -105,6 +124,7 @@ def cmd_ingest(a):
     vec = pd.read_csv("output/regime_vector.csv")
     books = pd.read_csv(BOOKS).set_index("day")
     stance = json.loads((O / "stance.json").read_text()) if (O / "stance.json").exists() else {"current": "risk_on"}
+    health_map = champ_health_map()
     ledger = []
     if (O / "ledger.csv").exists():
         ledger = pd.read_csv(O / "ledger.csv").to_dict("records")
@@ -127,8 +147,8 @@ def cmd_ingest(a):
         # trailing-20d realized expectancy is negative. On a healthy tape an unjustified
         # risk_off is OVERRIDDEN to trade — closes the escape hatch that binary sizing
         # would otherwise open (caution migrating from the size knob to the stance knob).
-        recent = [r["pl"] for r in ledger[-20:]]
-        health = (sum(recent) / len(recent)) if len(recent) >= 10 else 0.0
+        health = health_map.get(d)
+        health = health if health is not None else 0.0
         stance_req = v["regime_stance"]
         overridden = False
         if stance_req == "risk_off" and health > 0:
