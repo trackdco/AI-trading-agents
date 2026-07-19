@@ -171,6 +171,18 @@ def test_history_is_bounded(tmp_path):
     assert (span.max() - span.min()) <= pd.Timedelta(days=2)
 
 
+def test_detect_disabled_skips_detection_and_trades(tmp_path):
+    alerts = _Alerts()
+    r = _runner(tmp_path, alerts)
+    r.detect_enabled = False                          # warmup mode: no re-detection
+    r.on_bar(_bar("2026-02-10 08:31"))
+    out = r.on_bar(_bar("2026-02-10 09:00"))
+    assert out == [] and alerts.trades == 0           # no triggers -> no trades
+    r.detect_enabled = True                           # 'go live'
+    out2 = r.on_bar(_bar("2026-02-10 09:05"))         # detector emits, fill bar present
+    assert len(out2) == 1 and alerts.trades == 1
+
+
 def test_prime_loads_warmup_without_trading_or_summarizing(tmp_path):
     alerts = _Alerts()
     r = _runner(tmp_path, alerts)

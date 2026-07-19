@@ -59,6 +59,11 @@ class LiveRunner:
                  sim_fn=None, session_policy=None):
         self.alerts = alerts
         self.history_days = history_days
+        self.detect_enabled = True                   # off while feeding known-historical
+                                                     # warmup bars (they carry no
+                                                     # in-scope triggers; skipping the
+                                                     # re-detect is a big speedup and
+                                                     # changes no trade — see runner_drill)
         self._history: list[dict] = []
         self._frame_cache: pd.DataFrame | None = None
         self._cur_sess: str | None = None
@@ -128,7 +133,7 @@ class LiveRunner:
         self._trim_history(ts)
         self._frame_cache = None                      # invalidate: history changed
 
-        if self.detector.wants(ts):
+        if self.detect_enabled and self.detector.wants(ts):
             new = self.detector.on_bar(self._frame(), bar)
             if new:
                 self.vault.add_triggers(new)

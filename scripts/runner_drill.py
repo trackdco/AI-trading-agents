@@ -79,11 +79,25 @@ def batch_reference(df, args):
     return keys
 
 
-def run_runner(df, args, tmp, alerts, resume=False):
-    feed = ReplayFeed(df, start=args.start, end=args.end, warmup_days=16)
+def run_runner(df, args, tmp, alerts):
+    """Feed the runner exactly as live would: warmup bars first with DETECTION OFF (they
+    fill the Vault's indicator/level buffer and the detector/vector history but carry no
+    in-window triggers), then the target window with detection ON. This is both faster
+    and more faithful than re-detecting historical warmup every run."""
     runner = LiveRunner(ledger_path=tmp / "ledger.csv", journal_dir=tmp / "journal",
                         starting_equity=25_000.0, alerts=alerts)
-    runner.run_replay(feed)
+    warm_lo = pd.Timestamp(args.start, tz=NY) - pd.Timedelta(days=16)
+    win_lo = pd.Timestamp(args.start, tz=NY)
+    warmup = df[(df.ts_event >= warm_lo) & (df.ts_event < win_lo)]
+    window = ReplayFeed(df, start=args.start, end=args.end)
+
+    runner.detect_enabled = False
+    for bar in ReplayFeed(warmup).stream():
+        runner.on_bar(bar)
+    runner.detect_enabled = True                       # 'go live' at the window open
+    for bar in window.stream():
+        runner.on_bar(bar)
+    runner.finalize()
     return runner
 
 
@@ -118,7 +132,7 @@ def main(argv=None) -> int:
 
     # --- restart leg: rebuild from the SAME ledger, replay again, assert no dup alerts
     alerts2 = _CountingAlerts()
-    runner2 = run_runner(df, args, tmp, alerts2, resume=True)
+    runner2 = run_runner(df, args, tmp, alerts2)
     live2 = [event_key(e) for e in runner2.broker.trades
              if args.start <= e.trade_date <= args.end]
     restart_ok = live2 == batch and alerts2.trades == 0
