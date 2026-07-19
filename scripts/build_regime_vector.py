@@ -113,6 +113,13 @@ def main():
                          open_vs_value=r.get("open_vs_value"),
                          inventory_pts=round(r.inventory_pts, 2) if pd.notna(r.get("inventory_pts")) else None))
     out = pd.DataFrame(rows)
+    # v0.7 Tier-A features (measured winners: on_nr_rank compression, gap_vs_value,
+    # pdc_loc trend-persistence) — merged from candidate_features if present. Pre-open
+    # by construction; kept in the vector (agent sees them), NOT the analog metric.
+    cf = Path("output/candidate_features.csv")
+    if cf.exists():
+        c = pd.read_csv(cf)[["day", "on_nr_rank", "gap_vs_value", "pdc_loc"]]
+        out = out.merge(c, on="day", how="left")
     out.to_csv("output/regime_vector.csv", index=False)
     print(f"wrote output/regime_vector.csv ({len(out)} days)")
     print(out.groupby(out.day.str[:7])[["imbal_share_20", "trap_rate_10"]].mean().round(2).to_string())
