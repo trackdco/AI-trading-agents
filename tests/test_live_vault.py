@@ -188,6 +188,46 @@ def test_record_sink_gets_full_record_book_and_cfg_and_is_isolated():
     assert len(records) == 1                     # emit-once semantics shared with sinks
 
 
+def test_pending_policy_retried_per_bar_then_applied():
+    """Stage-8: a policy may answer PENDING until the day's overnight completes —
+    the Vault must stay inactive, retry each bar, then trade the eventual pick."""
+    from src.live.vault import PENDING
+    asked, sims = [], {"n": 0}
+
+    def policy(day):
+        asked.append(day)
+        return PENDING if len(asked) < 3 else ("E4", "warcfg", lambda t: True)
+
+    def sim(df, trigs, cfg, day_gate=None):
+        sims["n"] += 1
+        return [_rec("2026-02-10", "2026-02-10T09:00")], [], None
+    v = Vault(session_policy=policy, sim_fn=sim,
+              triggers=[_trig("2026-02-10T08:30:00-05:00")])
+    assert v.on_bar(_bar("2026-02-10 08:31")) == [] and sims["n"] == 0   # pending
+    assert v.on_bar(_bar("2026-02-10 08:32")) == [] and sims["n"] == 0   # still
+    out = v.on_bar(_bar("2026-02-10 09:00"))                             # decided now
+    assert len(out) == 1 and out[0].book == "E4" and v.cfg == "warcfg"
+    assert asked == ["2026-02-10"] * 3                # retried once per bar
+    v.on_bar(_bar("2026-02-10 09:01"))
+    assert asked == ["2026-02-10"] * 3                # settled: no more retries
+
+
+def test_pending_policy_can_resolve_to_stand_down():
+    from src.live.vault import PENDING
+    calls = {"n": 0}
+
+    def policy(day):
+        calls["n"] += 1
+        return PENDING if calls["n"] < 2 else None
+    v = Vault(session_policy=policy, sim_fn=_noop_sim,
+              triggers=[_trig("2026-02-10T08:30:00-05:00")])
+    v.on_bar(_bar("2026-02-10 08:31"))
+    v.on_bar(_bar("2026-02-10 08:32"))                # resolves to sit-out
+    assert not v._sess_active and not v._sess_pending
+    v.on_bar(_bar("2026-02-10 08:33"))
+    assert calls["n"] == 2                            # no retry after resolution
+
+
 def test_add_triggers_dedup_and_session_refresh():
     captured = {}
 

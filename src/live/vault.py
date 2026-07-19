@@ -46,6 +46,10 @@ from src.backtest.engine import (
 from src.live.feed import BAR_COLS, Bar
 
 _SESSION_BOUNDARY = dtime(18, 0)
+PENDING = "pending"              # a session policy may return this sentinel: "not
+                                 # decidable yet — ask me again next bar". Needed live:
+                                 # the champion's book switch uses the day's own
+                                 # overnight (complete at 08:00), 14h after the roll.
 DEFAULT_WARMUP_SESSIONS = 10     # >= 2 trading weeks: prior-week levels stay correct
 SIM_PAD_SESSIONS = 0             # fill-loop frame: the current session (18:00 -> now) —
                                  # every champion trade sits >= 14h after session open, so
@@ -124,6 +128,7 @@ class Vault:
         self._sess_active = True
         self._sess_triggers: list = []
         self._sess_done = False                        # all causal triggers disposed, window over
+        self._sess_pending = False                     # policy answered PENDING; retry per bar
         try:
             self._calendar = load_news_calendar()
         except Exception:
@@ -157,9 +162,11 @@ class Vault:
         if sess != self._cur_sess:
             self._roll_session(sess)
             self._trim()                               # per ROLL, not per bar (perf)
-        self._bars.append(bar)
-        if not self._sess_active or self._sess_done:
-            return []
+        elif self._sess_pending:                       # policy said "not yet" — retry
+            self._apply_pick(self._policy(sess), sess)  # each later bar. Deciding late
+        self._bars.append(bar)                         # is safe: sims are backward-
+        if not self._sess_active or self._sess_done:   # looking, so a pick at 08:00
+            return []                                  # still sees the 07:xx bars
         cutoff = pd.Timestamp(bar.ts_event)
         trigs = [t for t in self._sess_triggers if pd.Timestamp(t.ts) <= cutoff]
         if not trigs:
@@ -234,14 +241,27 @@ class Vault:
         self._cur_sess = sess
         self._sess_done = False
         if self._policy is not None:
-            picked = self._policy(sess)
-            if picked is None:                         # policy sits this session out
-                self._sess_active = False
-                self._sess_triggers = []
-                return
-            self.book, self.cfg, self._sess_pred = picked
+            self._apply_pick(self._policy(sess), sess)
         else:
             self._sess_pred = None
+            self._sess_active = True
+            self._sess_pending = False
+            self._load_session_triggers(sess)
+
+    def _apply_pick(self, picked, sess: str) -> None:
+        """Apply a session policy's answer: a (book, cfg, pred) pick, None (sit the
+        session out), or PENDING (undecidable yet — stay inactive, retry next bar)."""
+        if picked == PENDING:
+            self._sess_pending = True
+            self._sess_active = False
+            self._sess_triggers = []
+            return
+        self._sess_pending = False
+        if picked is None:                             # policy sits this session out
+            self._sess_active = False
+            self._sess_triggers = []
+            return
+        self.book, self.cfg, self._sess_pred = picked
         self._sess_active = True
         self._load_session_triggers(sess)
 

@@ -55,7 +55,7 @@ def main():
         if len(prior) < MIN_ANALOGS or pd.isna(r[feats]).any():
             rows.append(dict(day=d, n_analogs=0, analog_block=""))
             continue
-        mu, sd = prior[feats].mean(), prior[feats].std().replace(0, 1)
+        sd = prior[feats].std().replace(0, 1)
         dist = ((((prior[feats].astype(float) - r[feats].astype(float)) / sd) ** 2)
                 .sum(axis=1)) ** 0.5
         an = prior.assign(dist=dist).nsmallest(K, "dist")
