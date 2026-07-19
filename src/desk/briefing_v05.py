@@ -85,6 +85,18 @@ def upgrade_briefing(briefing: dict, day: str,
             sel["today_day_type"] = {dt: digest["by_day_type"][dt]}
         red = "red_folder" if (v.get("red_folder_today") or 0) > 0 else "clear"
         sel["today_calendar"] = {red: digest["by_red_folder"].get(red)}
+        # v0.7: AMT auction base-rate slices — how days with today's value position and
+        # inventory stretch have actually resolved (value_position swings the momentum
+        # lean 15%->37%; stretched inventory 55% FLAT). The agent's edge is book choice;
+        # this is the prior that most directly informs it.
+        vp = v.get("value_position")
+        if vp in digest.get("by_value_position", {}):
+            sel["today_value_position"] = {vp: digest["by_value_position"][vp]}
+        inv = v.get("inventory_pts")
+        if inv is not None:
+            ib = ("short>40pts" if inv < -40 else "long>40pts" if inv > 40 else "neutral")
+            if ib in digest.get("by_overnight_inventory", {}):
+                sel["today_inventory"] = {ib: digest["by_overnight_inventory"][ib]}
         pct = sh.get("pctl_20d")
         if pct is None:                     # E2 ruler not joined yet -> CSV lookup
             sr = Path("output/shock_ruler.csv")

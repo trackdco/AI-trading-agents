@@ -78,3 +78,28 @@ tonight hit the Max-20x monthly spend limit at ~350 verdicts. So:
 All verdicts to date were produced by the current model. Before any cross-model
 comparison, re-sit one spent regression paper (June 2026) under the new model to
 measure the model's own delta — the trader changed, not just the config.
+
+## AMT features wired (v0.7) + PREDICTION P11 (2026, filed pre-run)
+
+Wired: value_position / open_vs_value / inventory_pts into regime_vector.csv
+(agent sees them as facts) + today's value_position & inventory base-rate slices
+into the briefing. NOT wired into the analog distance metric — MEASURED to hurt
+the 2026 analog read (49%->45%, equal-weighting diluted the imbalance signal);
+kept out of matching, surfaced to the agent directly instead.
+
+Measured signal (2026, mechanical, no agent):
+- value_position swings the momentum-lean 15% (overlap_dn) -> 37% (overlap_up)
+- as a BOOK-CHOICE rule it beats the champion imbalance rule: 62% vs 55% right,
+  +$4,794 on 58 tradeable days; on the 16 disagreement days $12,594 vs $7,800
+- as the dial's book baseline (all days, full size): 24% vs 18% capture, +$2,544
+
+P11: because the regime dial's whole game is book choice (no daily FLAT), AMT
+should help HERE more than it helped the 3-way read proxy. Estimate for 2026:
+- 3-way read accuracy: ~flat (44-49%) — AMT informs book choice, not the FLAT
+  call, and reads have been sticky regardless of inputs.
+- regime-dial CAPTURE: 32% -> 35-40%, driven by better book overrides. The agent
+  won't match the pure value_position rule but now sees the signal + base rates
+  that produce it. Central estimate +$1,500-3,500 over the AMT-blind dial.
+- Risk: the agent over-trusts value_position on inside/overlap days where it's
+  weak (12-pt flat spread is modest); tell = book accuracy on 'inside' days.
+Only a run confirms it. This is the last free build before the Long Walk.

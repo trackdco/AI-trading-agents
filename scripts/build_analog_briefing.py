@@ -28,6 +28,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 FEATS = ["imbal_share_20", "imbal_share_10", "trap_rate_10", "range_pctl_20",
          "gap_open_pts", "streak_imbal", "red_folder_today"]
+# v0.7 NOTE: AMT features were tested IN the distance metric and MEASURED to hurt the
+# 2026 analog read (49%->45%, equal-weighting diluted the imbalance signal). They are
+# therefore kept OUT of matching and surfaced to the agent directly (vector + base
+# rates) instead — additive information, no disruption to similarity.
 K = 15
 MIN_ANALOGS = 10
 

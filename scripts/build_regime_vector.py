@@ -106,7 +106,12 @@ def main():
                          gap_open_pts=round(gap, 2) if gap is not None else None,
                          streak_imbal=int(r.streak_imbal),
                          red_folder_today=red,
-                         named_high_today=named))
+                         named_high_today=named,
+                         # AMT auction features (v0.7): built in build_daytypes, wired here so
+                         # the agent SEES today's value context and the analog metric can match on it
+                         value_position=r.get("value_position"),
+                         open_vs_value=r.get("open_vs_value"),
+                         inventory_pts=round(r.inventory_pts, 2) if pd.notna(r.get("inventory_pts")) else None))
     out = pd.DataFrame(rows)
     out.to_csv("output/regime_vector.csv", index=False)
     print(f"wrote output/regime_vector.csv ({len(out)} days)")
