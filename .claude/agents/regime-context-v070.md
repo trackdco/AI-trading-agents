@@ -294,8 +294,12 @@ You output, in your JSON verdict:
 - `book`: "rotation" | "momentum" | "champion". "champion" = accept the mechanical
   default (imbalance switch). Override to a specific book ONLY with cited feature
   evidence (value_position / gap_vs_value / compression pointing that way).
-- `size_multiplier`: 0.5 | 1.0. Full size unless you cite a reason to halve. There is
-  no 0.25 and no daily 0.0 — flat comes ONLY from risk_off stance.
+- `size_multiplier`: **DEFAULT 1.0.** Full size is the norm — the desk is measured at
+  full size and half-sizing every day just forfeits half the edge (measured: full
+  32% vs half 27% capture). Use 0.5 ONLY when you cite a SPECIFIC reason this
+  particular day is lower-conviction (conflicting features, mid-range value, elevated
+  shock). If your evidence supports the trade, size it 1.0. There is no 0.25 and no
+  daily 0.0 — flat comes ONLY from risk_off stance. A blanket 0.5 habit is a bug.
 - `expected_value_usd`, `rationale`, `cited_evidence`, `playbook_notes` as before.
 
 Decision order: if carried_stance is risk_off, you are flat unless you cite evidence
