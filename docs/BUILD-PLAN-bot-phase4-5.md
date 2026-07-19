@@ -80,14 +80,30 @@ so live can be reconciled against backtest and audited. Same blob discipline as 
   row-for-row; both standing windows (Feb 9–13, Mar 16–20) re-passed after the Vault
   change. 261 tests green.
 
-## Stage 7 — PARITY CHECK 🔒 (live loop == backtest) — the gate before trusting paper
+## Stage 7 — PARITY CHECK 🔒✅ (19 Jul) (live loop == backtest)
 Run Stages 2–6 over several historical days via the replay feed and assert the Vault
 produces the SAME trades, P&L, and journal as `simulate()` on those days. This proves the
 live loop faithfully implements the champion. **Do not proceed to real-time paper until
 parity is exact.**
 - **Done-when:** N historical days reconcile to zero difference vs the backtest.
+- Closed on 40 days: Feb 9–13 (7 trades), Mar 16–20 (8), and ALL of April (30) —
+  trades, P&L, and journal reconcile to zero difference. `scripts/parity_check.py`
+  remains the standing gate: re-run after ANY Vault/champion/engine change.
 
-## Stage 8 — Live paper trading 👤🔨
+## Stage 8 — Live paper trading 👤🔨 (in progress 19 Jul)
+Live-input groundwork DONE and gated (the two things caches/CSVs provided until now):
+- `src/live/detector.py` streams the REAL `detect_triggers` per closed bar
+  (07:45–11:00 band, 10-min tail, ~0.8s/bar) — `scripts/detector_parity.py` matches
+  the frozen cache trigger-for-trigger.
+- `src/live/vector.py` computes the E3/E4 switch from bars; decides at the first
+  ≥08:00 bar via the Vault's new PENDING sentinel (the switch provably uses the
+  day's own overnight) — `scripts/vector_parity.py` matches `book_for_day` on all
+  113 reference days.
+Remaining: the assembled runner (feed → detector → Vault(vector policy) → guard →
+broker → journal → Telegram + CommandListener; restart recovery; re-alert
+suppression on restart), a full-stack replay drill (stream computing its OWN
+triggers+vector vs batch), and the live Databento feed (needs Pat's vendor
+decision + API key).
 Point the Vault at the **live** feed in paper mode; run through real sessions. Watch via
 Telegram; reconcile each day's paper results against what the backtest would have done on
 the same bars.
