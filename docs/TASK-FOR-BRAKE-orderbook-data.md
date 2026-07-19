@@ -1,5 +1,70 @@
 # TASK FOR BRAKE — Order-book data pull (Angus directive, 18 Jul 2026)
 
+## UPDATE 8 (20 Jul, Angus directive) — HEATMAP RE-SCOPE: this is an EXIT/STOP tool, not just an entry filter
+
+**Read this before continuing any mbp-10 work.** Everything below (Updates 1-5) framed
+the depth heatmap as order confirmation / entry timing. Angus's correction: the bigger
+prize is on the OTHER side of the trade — **exits and stop placement.**
+
+The mechanical oracle ceiling we've been measuring against all week (the $260k/4yr
+figure quoted everywhere in the repo) is built ENTIRELY from price-based entries and
+EXITS. It has no concept of resting liquidity ahead of price. Angus's hypothesis,
+stated directly: *"if we're cutting our trades too early because there's a strong
+indication on heatmap that we're going to go far higher, I want to implement that."*
+That means: **the oracle ceiling itself may be too low** — it's the ceiling of a
+strategy that exits blind to the book. A heatmap-aware exit (trail behind absorbed
+levels, hold through a thin patch, take profit into a wall) could raise the actual
+achievable ceiling above what we've been chasing all week.
+
+So when the April mbp-10 data is condensed, the FIRST study on it (before any entry
+work) should be: **for each of our historical winning AND losing trades that hit its
+mechanical stop or target, what did the book look like in the 30-60s before that exit?**
+Specifically:
+- Trades that hit a fixed target/trail-stop and exited — was there a large resting
+  wall just beyond the exit price that the mechanical exit left on the table?
+- Losing trades that got stopped — was the stop placed inside a thin/absorbed zone
+  that a book-aware stop would have avoided, or did depth actually predict the reversal?
+- This produces a concrete, denominated number: "book-aware exits would have added
+  $X / recovered Y% of the trades that exited too early" — the heatmap's OWN oracle
+  delta, on top of the price-only ceiling.
+
+Practical note: this needs the same Apr 1-11 mbp-10 window already sampled (Update 5)
+— no new purchase, just a new study angle on data already in hand. Full-April pull
+(Update 3, ~$80/mo) still stands for when this angle validates.
+
+## UPDATE 7 (20 Jul, Angus directive) — NEW TASK: pull VIX (+ VXN) historical data
+
+**Brake: pull historical VIX data — this is a parallel, independent task to the
+heatmap work above, doesn't block on it.** Angus's reasoning: VIX moves inversely to
+equities/Nasdaq and is the highest-signal EXTERNAL regime feature we don't have yet —
+elevated/rising VIX historically favors trend/momentum days, low/calm VIX favors
+chop/rotation days. This is the next feature-discovery round after tonight's Tier-A
+free features (which already flipped the 4-year book-selection P&L from -8% to +1% —
+see docs/SPEC-v07-regime-dial.md — so there's real reason to expect VIX adds more).
+
+**What to pull:** daily VIX (CBOE), and ideally VXN (the Nasdaq-100 equivalent —
+more relevant to NQ specifically) for the full backtest span, 2023-01 through today.
+Free sources, no paid data needed:
+- CBOE historical data page (VIX and VXN both have free downloadable CSVs going
+  back years) — first choice, most authoritative.
+- Yahoo Finance `^VIX` and `^VXN` daily history as a fallback/cross-check.
+- FRED (`VIXCLS` series) as a third cross-check if the above have gaps.
+
+**Format:** date, close (and ideally open/high/low if the source has it — term-structure
+day-over-day change matters more than level, so we want daily deltas computable).
+Drop it as `data/reference/vix_history.csv` (and `vxn_history.csv` if pulled separately),
+commit + push on its own branch, ping the tracker.
+
+**Angus wants it CROSS-CHECKED, not just added** — same discipline as tonight's feature
+round (several candidates were tested and REJECTED for adding noise, not just accepted
+because they sounded right). Once the data lands, engine lane will:
+1. Compute VIX level + day-over-day change as of each session's pre-open.
+2. Measure its book-lean discrimination against the floored oracle books exactly like
+   the Tier-A features (scripts/measure_candidate_features.py) — keep it ONLY if it
+   moves the needle beyond what's already wired.
+3. Report back with numbers either way — this could come back "didn't help," and
+   that's a valid, useful result, not a failure.
+
 ## UPDATE 6 (18 Jul, Angus directive) — NEW TASK, JUMPS THE QUEUE: historical news calendar
 
 **This is now the single blocking item for the next agent exam — do it before any more
