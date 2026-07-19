@@ -64,3 +64,24 @@ def test_reconcile_against_batch():
     assert not bad["match"]
     assert bad["missing"] == [("2026-02-10", "2026-02-10T11:00:00-05:00", 75)]
     assert bad["unexpected"] == [("2026-02-10", "2026-02-10T10:00:00-05:00", -50)]
+
+
+def test_ledger_persists_full_trade_and_restore_is_verbatim(tmp_path):
+    path = tmp_path / "ledger.csv"
+    b = PaperBroker(ledger_path=path)
+    ev = _ev(dollars=200.0)
+    b.on_trade(ev)
+    r = PaperBroker.restore(path).trades[0]
+    # nothing fabricated on restore: audit-critical fields come back verbatim
+    assert (r.trigger_ts, r.stop_initial, r.target_level) == \
+           (ev.trigger_ts, ev.stop_initial, ev.target_level)
+    assert (r.entry, r.exit_price, r.dollars, r.book) == \
+           (ev.entry, ev.exit_price, ev.dollars, ev.book)
+
+
+def test_restore_handles_missing_target_level(tmp_path):
+    path = tmp_path / "ledger.csv"
+    b = PaperBroker(ledger_path=path)
+    ev = _ev(dollars=50.0)
+    b.on_trade(TradeEvent(**{**ev.__dict__, "target_level": None}))
+    assert PaperBroker.restore(path).trades[0].target_level is None

@@ -22,9 +22,9 @@ import pandas as pd
 
 from src.live.vault import TradeEvent
 
-LEDGER_COLS = ["trade_date", "book", "pattern", "direction", "fill_ts", "entry",
-               "exit_ts", "exit_price", "exit_reason", "points", "dollars",
-               "r_multiple", "size"]
+LEDGER_COLS = ["trade_date", "book", "pattern", "direction", "trigger_ts", "fill_ts",
+               "entry", "stop_initial", "target_level", "exit_ts", "exit_price",
+               "exit_reason", "points", "dollars", "r_multiple", "size"]
 
 
 @dataclass
@@ -96,24 +96,26 @@ class PaperBroker:
 
     @classmethod
     def restore(cls, ledger_path: Path, starting_equity: float = 0.0) -> "PaperBroker":
-        """Rebuild the account from the ledger after a restart. Restored rows are only
-        used for totals/dedup — they are plain records, not TradeEvents re-emitted."""
+        """Rebuild the account from the ledger after a restart — every persisted field
+        comes back verbatim (the ledger carries the full trade, nothing is fabricated)."""
         broker = cls(ledger_path=ledger_path, starting_equity=starting_equity)
         if ledger_path.exists():
             for r in pd.read_csv(ledger_path).to_dict("records"):
+                tl = r.get("target_level")
                 ev = TradeEvent(
-                    trade_date=str(r["trade_date"]), trigger_ts=str(r["fill_ts"]),
+                    trade_date=str(r["trade_date"]), trigger_ts=str(r["trigger_ts"]),
                     direction=r["direction"], pattern=str(r["pattern"]),
                     fill_ts=str(r["fill_ts"]), entry=float(r["entry"]),
-                    stop_initial=float(r["entry"]),          # not persisted; unused for totals
-                    target_level=None, exit_ts=str(r["exit_ts"]),
+                    stop_initial=float(r["stop_initial"]),
+                    target_level=None if pd.isna(tl) else float(tl),
+                    exit_ts=str(r["exit_ts"]),
                     exit_price=float(r["exit_price"]), exit_reason=str(r["exit_reason"]),
                     points=float(r["points"]), dollars=float(r["dollars"]),
                     r_multiple=float(r["r_multiple"]), size=float(r["size"]),
                     book=str(r["book"]))
-                self_key = (ev.trade_date, ev.fill_ts)
-                if self_key not in broker._seen:
-                    broker._seen.add(self_key)
+                k = (ev.trade_date, ev.fill_ts)
+                if k not in broker._seen:
+                    broker._seen.add(k)
                     broker._trades.append(ev)
         return broker
 

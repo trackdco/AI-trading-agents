@@ -123,3 +123,41 @@ def test_vault_integration_guard_gate_reaches_engine_and_sink_updates(tmp_path):
     v.on_bar(b2)
     assert seen_gates[0] is None                              # first sim: unrestricted
     assert seen_gates[1] is not None and seen_gates[1]["stand_down"]   # second sim: halted
+
+
+def test_default_limits_are_silent_on_a_normal_two_trade_day(tmp_path):
+    # engine cap is 2/day; the guard backstop must sit ABOVE it or every normal day
+    # announces a false halt (alert noise). Two winning trades at defaults -> no halt.
+    halts = []
+    g = RiskGuard(_limits(tmp_path), on_halt=lambda d, r: halts.append((d, r)))
+    g.on_trade(_ev(dollars=200.0))
+    g.on_trade(_ev(fill="2026-02-10T10:00:00-05:00", dollars=150.0))
+    assert g.gate("2026-02-10") is None and halts == []
+
+
+def test_seed_restores_halt_state_without_reannouncing(tmp_path):
+    halts = []
+    g = RiskGuard(_limits(tmp_path, daily_loss_dollars=500.0, max_trades_per_day=99),
+                  on_halt=lambda d, r: halts.append((d, r)))
+    g.seed([_ev(dollars=-600.0)])                 # restart recovery from the ledger
+    out = g.gate("2026-02-10")
+    assert out is not None and out["risk_reason"] == "daily_loss_limit"
+    assert halts == []                            # silent: the halt already fired pre-crash
+
+
+def test_crash_restart_broker_plus_seed_keeps_the_day_halted(tmp_path):
+    # end-to-end restart drill: trade books -> crash -> restore broker -> seed guard
+    from src.live.paper_broker import PaperBroker
+    led = tmp_path / "ledger.csv"
+    broker = PaperBroker(ledger_path=led)
+    guard = RiskGuard(_limits(tmp_path, daily_loss_dollars=500.0, max_trades_per_day=99))
+    t = _ev(dollars=-600.0)
+    guard.on_trade(t)
+    broker.on_trade(t)
+    assert guard.gate("2026-02-10") is not None   # halted pre-crash
+
+    broker2 = PaperBroker.restore(led)            # --- restart ---
+    guard2 = RiskGuard(_limits(tmp_path, daily_loss_dollars=500.0, max_trades_per_day=99))
+    guard2.seed(broker2.trades)
+    out = guard2.gate("2026-02-10")
+    assert out is not None and out["risk_reason"] == "daily_loss_limit"
