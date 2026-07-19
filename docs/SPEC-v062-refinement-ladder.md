@@ -69,3 +69,27 @@ majority anchoring beyond v0.6.1's current rule. One bump, attributable.
   event-family conditional analogs are the A3 completion.
 
 ## APPROVED (Angus, 19 Jul): rungs frozen as written; C2 confirmed. Build is live.
+
+## PREDICTION P9 — Rung 1 outcome (filed while the verdicts run, before ingestion)
+
+Central case: **PROMOTE, capture 22–30%** (bar: >21%), reads **48–54%** (bar: ≥49%
+— this one is genuinely at risk), flat rate falling from v0.6.1's 78% to **50–62%**.
+Mechanism: all three wires push the same direction in this era — the C2 bill shows
+the v0.6.1 lineage its own mountain of read-regret from hiding; base rates price
+the fear; event-family analogs + the floored ground truth make momentum the
+retrieved answer on event days (floored momentum book 2026: +$7,285). The event-
+risk wrong-FLAT class (52% of panel regret) should be cut by more than half.
+Secondary predictions: 0.25 sizing on <25% of trading verdicts (prompt forbids
+default-0.25); expected_value_usd present in >90% of valid verdicts; ≤3
+fail-closed.
+
+Named failure modes (P8's children), with tells:
+- **Over-swing** (bill + anti-dilution prompt → trades chop): capture 12–18%,
+  under-FLAT cost dominating the leak table → RUNG FAILS, fix is damping the
+  bill's tone, not reverting the wires.
+- **Prompt overload** (four new sections → confusion): fail-closed >5 or
+  citations quoting sections without using them.
+- **Reads flat while dollars jump** (the v0.4 analog-block pattern repeating):
+  acceptable — the rung's capture bar decides, reads bar is the tiebreak.
+Confidence in PROMOTE: ~55%. If it fails, the diagnosis order is: leak table
+first, sizing histogram second, prompt third.
