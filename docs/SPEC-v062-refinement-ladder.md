@@ -67,3 +67,5 @@ majority anchoring beyond v0.6.1's current rule. One bump, attributable.
   features cap the read.
 - Historical-analog K-NN upgrade: distance metric now includes real red_folder;
   event-family conditional analogs are the A3 completion.
+
+## APPROVED (Angus, 19 Jul): rungs frozen as written; C2 confirmed. Build is live.

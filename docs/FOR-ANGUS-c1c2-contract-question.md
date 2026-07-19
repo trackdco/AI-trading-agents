@@ -49,3 +49,11 @@ fresh-eyes divergence ledger will tell us whether memory is helping or entrenchi
 also bears on how much C1/C2 memory-feedback we want.
 
 Your call on which option, and whether to wait for the June v0.4 number first.
+
+## RULING (Angus, 19 Jul): CONFIRMED — option 1-modified
+
+Dollars in the briefing: mechanical ground-truth feedback (realized / full-size
+counterfactual / oracle / regret) with the rolling-20d damper, per the C2 contract
+in TASK-FOR-PAT (src/desk/briefing_v05.feedback_block). Narrative self-authored
+memory stays quarantined (fresh-eyes posture). The v0.3 "agent never sees P&L"
+contract clause is formally relaxed to this extent and no further.
