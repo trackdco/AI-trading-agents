@@ -10,6 +10,7 @@ from src.live.telegram import (
     TelegramAlerts,
     TelegramConfig,
     fmt_trade,
+    whoami,
 )
 from src.live.vault import TradeEvent
 
@@ -120,6 +121,25 @@ def test_poll_offset_advances_and_poll_is_failsoft(tmp_path):
     lis2 = CommandListener(_cfg(), guard, PaperBroker(),
                            transport=FakeTransport(raise_on="getUpdates"))
     assert lis2.poll_once() == 0                               # network down: no raise
+
+
+def test_whoami_lists_unique_senders_with_ids():
+    updates = [
+        {"update_id": 1, "message": {"from": {"id": 7732530108, "first_name": "Pat",
+                                              "username": "pat_t"},
+                                     "chat": {"id": 7732530108}, "text": "hello"}},
+        {"update_id": 2, "message": {"from": {"id": 7732530108, "first_name": "Pat",
+                                              "username": "pat_t"},
+                                     "chat": {"id": 7732530108}, "text": "again"}},
+        {"update_id": 3, "message": {"from": {"id": 4242, "first_name": "Angus"},
+                                     "chat": {"id": -5356314891}, "text": "/status"}},
+        {"update_id": 4, "message": {}},                       # no sender: skipped
+    ]
+    rows = whoami(_cfg(), transport=FakeTransport(updates=updates))
+    assert [r["user_id"] for r in rows] == [7732530108, 4242]  # deduped, in order
+    assert rows[0]["username"] == "pat_t"
+    assert rows[1] == {"user_id": 4242, "name": "Angus", "username": None,
+                       "chat_id": -5356314891}
 
 
 def test_config_from_env_requires_token(monkeypatch, tmp_path):

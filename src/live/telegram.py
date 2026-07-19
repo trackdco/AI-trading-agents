@@ -197,6 +197,29 @@ class CommandListener:
             print(f"[telegram] reply failed: {type(e).__name__}: {e}", file=sys.stderr)
 
 
+# ------------------------------------------------------------------ setup helpers
+
+def whoami(cfg: TelegramConfig, transport: Callable = _http_transport) -> list[dict]:
+    """List everyone who messaged OUR bot recently, with their Telegram user id.
+
+    This exists so the team never has to trust a third-party "user info" bot to learn
+    their id — Telegram is full of impostor clones of @userinfobot/@RawDataBot that
+    mimic the display name but never reply. DM our own bot instead, then run
+    `python -m src.live.telegram --whoami`. (getUpdates keeps messages ~24h, and this
+    read does not ack offsets, so the live CommandListener still sees everything.)"""
+    out = transport("getUpdates", {"timeout": 0}, cfg.token)
+    seen: dict[int, dict] = {}
+    for upd in out.get("result", []):
+        msg = upd.get("message") or {}
+        frm = msg.get("from") or {}
+        if "id" in frm:
+            name = " ".join(x for x in (frm.get("first_name"), frm.get("last_name")) if x)
+            seen[frm["id"]] = {"user_id": frm["id"], "name": name,
+                               "username": frm.get("username"),
+                               "chat_id": (msg.get("chat") or {}).get("id")}
+    return list(seen.values())
+
+
 # ------------------------------------------------------------------ smoke test
 
 if __name__ == "__main__":
@@ -205,4 +228,14 @@ if __name__ == "__main__":
         ok = TelegramAlerts(cfg).say("✅ NQ desk bot: Telegram wiring OK (stage-5 smoke test)")
         print("sent" if ok else "FAILED — check token/chat id in .env")
         raise SystemExit(0 if ok else 1)
+    if "--whoami" in sys.argv:
+        rows = whoami(TelegramConfig.from_env())
+        if not rows:
+            print("no messages seen yet — send our bot a direct message (say 'hello'), "
+                  "then run this again (messages stay visible for ~24h)")
+        for r in rows:
+            u = f"@{r['username']}" if r["username"] else "(no username)"
+            print(f"user_id={r['user_id']}  name={r['name']}  {u}  "
+                  f"(seen in chat {r['chat_id']})")
+        raise SystemExit(0)
     print(__doc__)
