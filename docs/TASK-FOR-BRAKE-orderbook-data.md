@@ -1,5 +1,61 @@
 # TASK FOR BRAKE — Order-book data pull (Angus directive, 18 Jul 2026)
 
+## THE DATA ROADMAP (priority order, 20 Jul) — read this first
+
+Ranked by value-per-dollar and testability against our MEASURED losses. Do them in
+this order; do NOT jump ahead.
+
+| # | Data | Schema / source | Est. cost (NQ) | Status |
+|---|------|-----------------|---------------|--------|
+| 1 | Historical FF calendar 2023-25 | scraper | free | Update 6 — DONE if pushed |
+| 2 | **VIX / VXN** | CBOE/Yahoo/FRED | **free** | Update 7 — IN PROGRESS |
+| 3 | **CVD / delta / footprint** | Databento `trades` | **~$10-20/mo (CHEAP)** | Update 11 — NEXT, buy generously (6-12mo) |
+| 4 | Heatmap / resting liquidity | Databento `mbp-10` | $80/mo | Updates 3/5/8 — 3+ months, in progress |
+| 5 | **Cross-market (ES/YM/RTY + 10Y + DXY)** | Yahoo/FRED daily; Databento 1m | free daily / small intraday | Update 10 — AFTER #3 & #4 |
+| — | Options/gamma, COT | various | expensive/speculative | PARKED — not until the above prove out |
+
+KEY POINT: #3 (trades) and #4 (mbp-10) each unlock ~4 derived features for ZERO extra
+data cost (VWAP bands, volume nodes, large-trade flow, aggressor imbalance from #3;
+walls, book imbalance, vacuum, absorption from #4). Engine lane derives + tests those
+as the data lands — no new purchases needed for them.
+
+## UPDATE 11 (20 Jul, Angus directive) — NEXT BUY: CVD / trades data (the cheap, high-value one)
+
+**This is the priority purchase after VIX.** CVD = Cumulative Volume Delta (running
+buy-initiated minus sell-initiated volume). It attacks the two biggest MEASURED loss
+pools directly and it is TESTABLE against our existing trade history the day it lands.
+
+**What to pull:** Databento GLBX.MDP3 **`trades` schema** (aggressor-side-tagged ticks),
+same NQ outrights/front-month roll as the 1m price pull. This is a DIFFERENT (and much
+cheaper) schema than the mbp-10 heatmap — trades are a tiny fraction of book updates, so
+estimate ~$10-20/mo vs heatmap's $80. **CHECK THE METERED COST PREVIEW before confirming**
+(it may be even cheaper). Because it's cheap, **buy generously — 6 to 12 months, ideally
+back to 2023-01** so we have hundreds of give-back/entry-miss cases for OOS testing, not
+the ~44 we get from a partial 2026.
+
+**Why (the measured case):** engine lane ran the give-back autopsy — 44 champion losers
+that hit +1R then reversed to a full loss. Price catches only ~45% of them (a rejection
+wick). The other 55% reversed with NO price warning — because the aggression died at the
+top, invisibly. CVD divergence (price new high, delta lower high) is the ONLY thing that
+sees that. Same for the 45 entry-miss losers (hollow entries with no real buying behind
+them — CVD/absorption confirms whether a level is defended).
+
+**Deliverable:** condense the raw `trades` ticks LOCALLY (raw never travels, same doctrine
+as depth — see scripts/condense_trades.py) into a per-minute footprint/delta parquet:
+buy_vol, sell_vol, delta, cumulative_delta per price level per minute. Commit ONLY that.
+Engine lane then re-runs the give-back and entry-miss autopsies with CVD and reports
+whether it separates the populations (the wick test got 45%; CVD should beat it clearly).
+
+## UPDATE 10 (20 Jul, Angus directive) — LATER (after #3 and #4): cross-market data
+
+**Do NOT start this until CVD (#3) and the heatmap window (#4) are in hand.** Lower
+priority — a secondary regime lever, and VIX already covers part of it. When ready:
+daily **ES/YM/RTY, 10Y yield (^TNX), DXY** history 2023-present (Yahoo Finance / FRED,
+free) as `data/reference/crossmarket_daily.csv`; intraday 1m versions later via Databento
+only if the daily version measures as useful. Engine lane tests overnight cross-market
+moves (yields/dollar direction, index correlation) as pre-open regime features, same
+measure-before-believe bar as the Tier-A features — keep only what beats noise.
+
 ## UPDATE 9 (20 Jul) — CORRECTED: fixed stop-tightening FAILS; the study is about SMART stops
 
 **CORRECTION (engine lane owns this error):** an earlier version of this task claimed
