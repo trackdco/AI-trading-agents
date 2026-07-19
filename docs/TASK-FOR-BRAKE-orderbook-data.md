@@ -1,14 +1,32 @@
 # TASK FOR BRAKE — Order-book data pull (Angus directive, 18 Jul 2026)
 
-## UPDATE 9 (20 Jul, Angus directive) — NEW TASK: the stop-size study (this is a BIG find)
+## UPDATE 9 (20 Jul) — CORRECTED: fixed stop-tightening FAILS; the study is about SMART stops
 
-**Angus's framing, and it's the key insight:** on the 2026 champion trades, winning
-trades only ran a median **0.44R against us** before turning — 0% of winners ever dipped
-past 0.5R. But every trade risks a full **1R**. Angus's exact logic: *"if the winners
-only ran to 0.44 of the actual stop loss, that literally means the losers are losing
-twice as much as they should."* The stop is sized for a drawdown winners never take —
-so it ONLY ever makes losers lose more. In-sample this is worth ~+49R (~$14k on 146
-trades). **We need the robust, out-of-sample, full-history number.**
+**CORRECTION (engine lane owns this error):** an earlier version of this task claimed
+winners never dip past 0.5R and a half-stop is worth ~+$14k. That was a SIGN BUG in the
+MAE analysis (checked mae_r > 0.5 when MAE is negative). The correct math on the 2026
+champion: **48% of winners (23/48) dip more than 0.5R before working**, and cutting the
+stop to 0.5R takes the champion from ~$13,900 to ~$1,600 (−89%) — it converts 23 winners
+to losses to save on 95 losers. Classic tail-law amputation, exactly what we proved 7×.
+
+**So a blindly tighter FIXED stop is dead.** The study is NOT "how tight can we go." It is:
+**can a stop that is placed SMARTER (not just tighter) cut loser size WITHOUT amputating
+the winners that need room?** The winners take heat because they enter near real support;
+the question is whether structure/vol/heatmap placement can distinguish "heat the winner
+needs" from "heat that means the trade is wrong."
+
+1. Re-run both books 2023–2026 logging entry / exit / MAE / MFE per trade (engine lane
+   ships this harness).
+2. Test SMART stop rules, OOS, honest winner-conversion accounting:
+   - **structure stop**: behind the swing that invalidates the setup (not a fixed R).
+     Hypothesis: winners' heat stays above the swing; losers break it.
+   - **vol-scaled stop**: distance scales with the morning range.
+   - **fixed tighter (0.5–0.8R)**: included ONLY as the control that we expect to FAIL —
+     to confirm the harness reproduces the −89% and isn't flattering tighter stops.
+   Reject anything that doesn't beat the current 1R in ≥3 of 4 years.
+3. Deliverable is honest either way — "no stop rule beats 1R on price data alone" is a
+   completely valid result, and it would mean the exit prize lives entirely in the
+   heatmap (Update 8), not in price-based stop placement.
 
 **Why it can't be answered from current data:** the full-history trade file
 (output/allyears_book_trades.csv, 2,955 trades) does NOT log MAE/MFE per trade — only
