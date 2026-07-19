@@ -99,11 +99,39 @@ Live-input groundwork DONE and gated (the two things caches/CSVs provided until 
   ≥08:00 bar via the Vault's new PENDING sentinel (the switch provably uses the
   day's own overnight) — `scripts/vector_parity.py` matches `book_for_day` on all
   113 reference days.
-Remaining: the assembled runner (feed → detector → Vault(vector policy) → guard →
-broker → journal → Telegram + CommandListener; restart recovery; re-alert
-suppression on restart), a full-stack replay drill (stream computing its OWN
-triggers+vector vs batch), and the live Databento feed (needs Pat's vendor
-decision + API key).
+
+The assembled runner is DONE: `src/live/runner.py` (`LiveRunner`) wires
+feed → detector → Vault(live vector policy) → risk guard → broker → journal →
+Telegram, with the correct startup order (restore broker → seed guard → seed
+Vault's emitted-set so a restart re-fires nothing), the strategy-swap seam
+(`strategy_gate` composes UNDER the risk guard — champion untouched when None), a
+daily heartbeat summary (incl. 0-trade days), and `prime()` to preload warmup
+history for a feed that starts at "now". 9 unit tests cover trade fan-out, the
+crash-restart-with-no-duplicate-alerts drill, the kill switch, and the seam.
+
+`scripts/runner_drill.py` — the strongest proof in the build — streams real bars
+through the WHOLE assembled runner computing its OWN triggers and OWN book pick
+(no pre-loaded caches/CSV), diffs against the batch backtest, and runs a restart
+leg. **PASSED** on Mar 17 (2/2 trades, restart byte-identical, 0 duplicate
+alerts) and the full Mar 16–20 week. A performance bug was found and fixed along
+the way (see below) — the drill only became practical after the fix.
+
+**Perf fix (found via the drill, not a review — worth recording):** the Vault
+retries a PENDING session policy every bar of the ~14h overnight window (by
+design — a late book pick is still safe). `LiveVectorPolicy.__call__` was
+pulling the full accumulated-history frame on every one of those ~840 retries/
+day, against a live runner's growing 16–20 day buffer — profiling showed
+per-bar cost climbing (6.5ms → 17.5ms and rising) as history grew. Fixed with
+`LiveVectorPolicy.note_bar(ts)`: an O(1) hook the runner calls every bar to
+track only the latest bar seen per session day, so the expensive frame is
+touched at most once/day, exactly when a real decision is made. 7 new unit
+tests lock the call-count contract. A 16-day warmup leg went from
+minutes-and-climbing to **44.6s flat (2.87ms/bar, constant)** — confirmed via
+direct profiling, with the vector gate re-run afterward (still 113/113 match —
+correctness unaffected).
+
+Remaining: the live Databento feed (needs Pat's vendor decision + API key) —
+the only piece left before real-time paper trading can start.
 Point the Vault at the **live** feed in paper mode; run through real sessions. Watch via
 Telegram; reconcile each day's paper results against what the backtest would have done on
 the same bars.
