@@ -52,8 +52,19 @@ class LiveVectorPolicy:
     """Session policy computing the champion's daily book switch from streamed bars.
 
     bars_provider: () -> DataFrame with BAR_COLS (the runner's accumulated history,
-    warmup included). Called only when a decision is attempted, so the frame reflects
-    everything up to the current bar.
+    warmup included). Called only when a decision is ACTUALLY made — never merely to
+    check readiness (perf review, 19 Jul): the Vault retries a PENDING policy on every
+    bar of the ~14h overnight window, so a bars_provider() call in that fast path
+    forced a full history materialization on every one of those bars, ~840/day. A
+    live runner keeps 16-20 days of 1m history; that made a day's warmup alone take
+    minutes and grow worse as history grew (O(n) per bar, O(n^2) per warmup leg).
+
+    `note_bar(ts)` is the fix: an O(1) hook (no bars_provider access) the runner calls
+    on every closed bar to track only the LATEST bar timestamp per session day. The
+    PENDING check in __call__ uses that tracked timestamp, so bars_provider() — the
+    expensive part — is invoked at most ONCE per day, exactly when a real decision is
+    made. A caller that never calls note_bar still gets correct (if slower) behavior:
+    __call__ falls back to bars_provider() to find the latest bar itself.
     """
 
     def __init__(self, bars_provider: Callable[[], pd.DataFrame],
@@ -64,10 +75,18 @@ class LiveVectorPolicy:
         self.shares: dict[str, float | None] = {}      # day -> imbal_share_20 (audit)
         self._imbal: list[tuple[str, float]] = []      # (day, 0/1) classified days
         self._seed_trimmed = False
+        self._latest_ts: dict[str, pd.Timestamp] = {}  # day -> latest bar ts (O(1) hook)
         if Path(daytypes_csv).exists():
             dt = pd.read_csv(daytypes_csv)
             self._imbal = [(str(r.day), float(r.type == "imbalanced"))
                            for r in dt.itertuples() if r.type != "unknown"]
+
+    def note_bar(self, ts: pd.Timestamp) -> None:
+        """O(1) readiness hook — call on every closed bar (before the Vault consults
+        this policy). Tracks only the latest bar's session day + timestamp; never
+        touches bars_provider(). Safe to call for bars outside any pending day."""
+        day = str(_session_date(pd.Series([ts]), _BOUNDARY).iloc[0])
+        self._latest_ts[day] = ts
 
     def __call__(self, day: str):
         if not self._seed_trimmed:                     # a replayed day must never read
@@ -75,19 +94,27 @@ class LiveVectorPolicy:
             self._seed_trimmed = True
         if day in self._picks:
             return self._picks[day]
-        bars = self._bars()
-        sd = _session_date(bars["ts_event"], _BOUNDARY).astype(str)
-        today = bars[sd == day]
+
+        bars = sd = today = None                        # fetched at most ONCE below,
+        last = self._latest_ts.get(day)                 # whichever path resolves it
+        if last is None:                                 # slow-path fallback (no
+            bars = self._bars()                          # note_bar calls): materialize
+            sd = _session_date(bars["ts_event"], _BOUNDARY).astype(str)   # now to
+            today = bars[sd == day]                      # answer readiness...
+            last = None if today.empty else today["ts_event"].iloc[-1]
+
         # ready only when the latest bar sits on the session's MORNING side at/after
         # 08:00 — evening bars (18:00+, prior calendar date) must stay PENDING, else
         # the day would be "classified" at 18:01 with zero overnight bars.
-        if today.empty:
-            return PENDING
-        last = today["ts_event"].iloc[-1]
-        if not (str(last.date()) == day and last.time() >= _OPEN):
+        if last is None or not (str(last.date()) == day and last.time() >= _OPEN):
             return PENDING                             # overnight not complete yet
-        pick = self._decide(day, bars, sd, today)
-        self._picks[day] = pick
+
+        if bars is None:                                 # fast path (note_bar tracked):
+            bars = self._bars()                          # materialize ONCE, right now
+            sd = _session_date(bars["ts_event"], _BOUNDARY).astype(str)
+            today = bars[sd == day]
+        pick = self._decide(day, bars, sd, today)        # ...and REUSE it here, never
+        self._picks[day] = pick                          # re-fetched
         return pick
 
     # ---- internals ----------------------------------------------------------

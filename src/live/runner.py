@@ -133,6 +133,9 @@ class LiveRunner:
         self._trim_history(ts)
         self._frame_cache = None                      # invalidate: history changed
 
+        if hasattr(self.vector, "note_bar"):           # O(1) readiness hook (perf
+            self.vector.note_bar(ts)                   # review): keeps the Vault's
+                                                        # PENDING retry loop cheap
         if self.detect_enabled and self.detector.wants(ts):
             new = self.detector.on_bar(self._frame(), bar)
             if new:
