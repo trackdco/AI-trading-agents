@@ -166,7 +166,7 @@ def main():
     # precompute per-day 1m arrays (09:30-10:35) once for the vectorized exit scan
     b = bars[(bars.ts_event.dt.time >= OPEN_T) & (bars.ts_event.dt.time <= dtime(10, 35))].copy()
     b["day"] = b.ts_event.dt.strftime("%Y-%m-%d")
-    day1m = {d: (g.ts_event.view("int64").to_numpy(), g.low.to_numpy(), g.high.to_numpy(), g.close.to_numpy())
+    day1m = {d: (g.ts_event.astype("int64").to_numpy(), g.low.to_numpy(), g.high.to_numpy(), g.close.to_numpy())
              for d, g in b.groupby("day")}
     print(f"CDR v2 — post-open 09:40-10:15, 2026 Feb-Jul, TOL={tol}, cvd={cvd_mode}\n", flush=True)
     allT = []
