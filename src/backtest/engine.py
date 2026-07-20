@@ -105,6 +105,14 @@ class BacktestConfig(BaseModel):
     named_high_impact: list[str] = []  # ANGUS pass-9 RULING (P5.14): high-impact = NAMED LIST only
                                        # (regex, case-insens). Empty = strict red-folder (all "high").
     min_stop_points: float = 10.0     # §5 v1.2 ANGUS: structural stop narrower than this -> no trade
+    # Tier-2 (Angus 20 Jul): the post-open tape is ~2.4x wider than pre-market, so 9:40+ needs a
+    # wider stop floor. After post_open_after, the floor becomes max(min_stop_points, post_open_min_stop).
+    # (Both default off; the principled form is an ATR-scaled floor — this is the window-conditional stand-in.)
+    post_open_after: dtime | None = None
+    post_open_min_stop: float = 0.0
+    # Tier-2: sit out a volatile mid-session pocket (the 09:30-09:40 cash open bled 22% win, MFE 1.15).
+    no_trade_start: dtime | None = None
+    no_trade_end: dtime | None = None
     vwap_warmup_min: int          # ANGUS 2026-07-17: no entries within N min of the 18:00 anchor
     no_premarket_high_impact: bool  # ANGUS 2026-07-17 (TIGHTENED): on a high-impact pre-open
                                     # release day the ENTIRE pre-market is blocked; entries from 09:30
@@ -159,6 +167,13 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         news_window_min=c["fills"]["news_slippage_window_min"],
         commission_side=c["fills"]["commission_per_contract_side"],
         point_value=c["instrument"]["point_value_nq"],
+        post_open_after=(_hhmm(c["sizing"]["post_open_after"])
+                         if c.get("sizing", {}).get("post_open_after") else None),
+        post_open_min_stop=c.get("entry", {}).get("post_open_min_stop", 0.0),
+        no_trade_start=(_hhmm(c["session"]["no_trade_start"])
+                        if c.get("session", {}).get("no_trade_start") else None),
+        no_trade_end=(_hhmm(c["session"]["no_trade_end"])
+                      if c.get("session", {}).get("no_trade_end") else None),
     )
 
 
@@ -772,6 +787,11 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             if not in_window(tod):
                 veto(t, "vetoed_window", f"outside entry window {cfg.win_start}-{cfg.win_end}")
                 continue
+            # Tier-2 (Angus 20 Jul): sit out a volatile mid-session pocket (e.g. 09:30-09:40 cash open)
+            if cfg.no_trade_start is not None and cfg.no_trade_start <= tod < cfg.no_trade_end:
+                veto(t, "vetoed_no_trade_window",
+                     f"inside sit-out window {cfg.no_trade_start}-{cfg.no_trade_end}")
+                continue
             if halted(ts):
                 veto(t, "vetoed_halt", "daily halt active (§10)")
                 continue
@@ -847,9 +867,13 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             # §5 v1.2 (ANGUS calibration ruling 2026-07-17): structural stop must be at least
             # min_stop_points wide — tighter is a SKIP, never widened. Kills the 1-4 pt
             # coin-toss stops behind most of the Feb EXTRA losses ("give NQ breathing room").
-            if risk < cfg.min_stop_points:
+            floor = cfg.min_stop_points
+            if (cfg.post_open_after is not None and tod >= cfg.post_open_after
+                    and cfg.post_open_min_stop > floor):
+                floor = cfg.post_open_min_stop        # Tier-2: wider floor for the volatile post-open
+            if risk < floor:
                 veto(t, "vetoed_min_stop",
-                     f"stop {risk:.2f} pts < {cfg.min_stop_points:g} minimum (§5 v1.2)")
+                     f"stop {risk:.2f} pts < {floor:g} minimum (§5 v1.2)")
                 continue
             tgt = resolve(t, limit, stop)
             if tgt is None:

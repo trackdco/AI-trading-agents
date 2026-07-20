@@ -18,6 +18,8 @@ instrument:
 session:
   timezone: America/New_York      # spec-1 §0 — all timestamps tz-aware NY, DST via tz library
   entry_window: W1                # §1 TOURNAMENT — active variant (W1 primary, Angus-confirmed intent)
+  no_trade_start: "09:30"         # Tier-2 (Angus 20 Jul): sit out the 09:30-09:40 cash open (22% win, chop).
+  no_trade_end:   "09:40"         #   PENDING OOS validation before trusting live.
   entry_windows:
     W1: { start: "08:00", end: "11:00" }   # §1 — pre-market through pre-lunch (primary)
     W2: { start: "18:00", end: "15:55" }   # §1 — "full trading day" PLACEHOLDER read: full CME session
@@ -98,6 +100,8 @@ entry:
                                   #      Feb E1 +2.59R -> E3 +13.74R. E2 (wick 50%) barely fills.
                                   #      E1 = limit at BB MA / E2 = 50% of wick / E3 = penetrated level.
   min_stop_points: 6.0            # §5 — ANGUS pass-5 ruling 2026-07-17: was 10; too blunt once E3
+  post_open_min_stop: 10.0        # Tier-2 (Angus 20 Jul): post-open tape ~2.4x wider -> 10pt floor after
+                                  #   post_open_after. PENDING OOS validation. (ATR-scaled is the ideal form.)
                                   #      is active (reclaim entry sits near invalidation -> 7-9pt
                                   #      stops). 10 clipped his own tight-stop winners (Feb 20 08:06
                                   #      = 8.25pt; +12.98R Feb 25 monster = 9.0pt). 6 admits those;
@@ -184,6 +188,7 @@ sizing:
   # HALF only on the two deliberate overrides below.
   oversized_stop_points: 42       # §9 — ANGUS 2026-07-17: stop wider than this (band 40-45,
                                   #      median wick-stop ~30) → HALF size
+  post_open_after: "09:40"        # Tier-2 (Angus 20 Jul): after this time the stop floor = post_open_min_stop.
   late_window_after: "10:30"      # §9 — ANGUS 2026-07-17: fills after 10:30 ET → HALF size,
                                   #      session-scoped windows only (09:45-10:15 is prime AM-macro)
   require_bb_vwap: true           # §7 v1.2 — the ENTRY GATE: no trade unless BOTH BB and VWAP
