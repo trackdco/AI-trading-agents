@@ -61,18 +61,16 @@ def report(J, label):
 
 
 def main():
+    cap = int(sys.argv[1]) if len(sys.argv) > 1 else 2
     allt = load()
     df = pd.read_parquet(DATA)
-    print(f"POST-OPEN 09:40-10:15, FULL 2026 (Feb-Jul), standard triggers\n")
-    for cap in (2, 3, 4):
-        base = load_backtest_config().model_copy(
-            update={"win_start": POST_S, "win_end": POST_E, "max_trades_per_day": cap})
-        print(f"--- cap {cap}/day ---")
-        report(run(allt, df, base.model_copy(update={"entry_variant": "E3", "mgmt_variant": "V0"}), False), "champion E3/V0")
-        report(run(allt, df, base.model_copy(update={"entry_variant": "E3", "mgmt_variant": "V8"}), False), "E3 + V8")
-        report(run(allt, df, base.model_copy(update={"entry_variant": "E4", "mgmt_variant": "V8", "oversized_stop": 15.0}), False), "E4 + V8 + guard15")
-        report(run(allt, df, base.model_copy(update={"entry_variant": "E4", "mgmt_variant": "V8", "oversized_stop": 15.0}), True), "E4+V8+guard15 tight-trig")
-        print()
+    print(f"POST-OPEN 09:40-10:15, FULL 2026 (Feb-Jul), standard triggers, CAP {cap}/day\n", flush=True)
+    base = load_backtest_config().model_copy(
+        update={"win_start": POST_S, "win_end": POST_E, "max_trades_per_day": cap})
+    report(run(allt, df, base.model_copy(update={"entry_variant": "E3", "mgmt_variant": "V0"}), False), "champion E3/V0")
+    report(run(allt, df, base.model_copy(update={"entry_variant": "E3", "mgmt_variant": "V8"}), False), "E3 + V8")
+    report(run(allt, df, base.model_copy(update={"entry_variant": "E4", "mgmt_variant": "V8", "oversized_stop": 15.0}), False), "E4 + V8 + guard15")
+    report(run(allt, df, base.model_copy(update={"entry_variant": "E4", "mgmt_variant": "V8", "oversized_stop": 15.0}), True), "E4+V8+guard15 tight-trig")
 
 
 if __name__ == "__main__":
