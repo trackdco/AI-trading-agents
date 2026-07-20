@@ -48,3 +48,33 @@ full Feb–Jul**. The magnet's marginal lift over it is the fragile n=10, one-ou
   rests on the depth-free combo, not the magnet.
 - Carry the project's own frame forward: **optimize expectancy, not win rate.** The 60% headline is a
   win-rate mirage on one trade; expectancy says the magnet adds nothing significant yet.
+
+---
+
+## Follow-up — 09:45-10:15 window with proper absorption/exhaustion (Brake ask)
+
+`python3 scripts/window_0945_1015_absorb_exhaust.py` (from getting-started worktree). Absorption/
+exhaustion implemented properly (not the crude target-wall magnet): absorption = large resting wall
+on the REJECTION side hit by opposing CVD and holding; exhaustion = CVD divergence over the 5-min
+approach.
+
+**Sample wall:** the window has only **5 April trades with depth** (28 full Feb-Jul). Heatmap =
+April-only, so any absorption result is anecdotal.
+
+Depth-free signals, full 28-trade window:
+| cut | n | win | P&L | avgR |
+|---|--:|--:|--:|--:|
+| baseline | 28 | 43% | +$4,852 | **+0.48R** |
+| CVD confirm | 11 | 36% | +$2,795 | +0.68R |
+| exhaustion (CVD div) | 4 | 75% | +$3,690 | +1.69R |
+| exhaustion + CVD | 2 | 100% | +$2,920 | +3.17R |
+| real stop >=6pt | 23 | 48% | +$4,502 | +0.51R |
+
+**Heatmap absorption fired on 0 of 5 April trades** — April's book is too thin (p99 size = 9) for a
+MAG=15 wall to exist; absorption is untestable here, not just small-n.
+
+**Conclusion:** the durable finding is the **window itself** — 09:45-10:15 baseline is +0.48R (n=28)
+vs the champion's +0.22R overall, present in every month. Exhaustion's 75%/+1.69R is n=4 (its +CVD
+combo n=2) — the same small-n mirage as the magnet; a hint to test on more data, not a result.
+Recommend testing "prefer 09:45-10:15" as a standalone depth-free TIME rule on the full sample +
+OOS, rather than stacking order-flow filters that collapse n to single digits.
