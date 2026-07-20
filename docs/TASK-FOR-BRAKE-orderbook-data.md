@@ -99,7 +99,7 @@ this order; do NOT jump ahead.
 |---|------|-----------------|---------------|--------|
 | 1 | Historical FF calendar 2023-25 | scraper | free | Update 6 — DONE |
 | 2 | **VIX / VXN** | CBOE/Yahoo/FRED | **free** | ✅ DONE — `data/reference/vix_daily.csv` (VIXCLS 1990→2026-07-16) |
-| 3 | **CVD / delta / footprint** | Databento `trades` | **~$10-20/mo (CHEAP)** | ⏳ APRIL SLICE DELIVERED — `data/reference/cvd/footprint_apr2026.parquet`; full Feb–Jul span gated on April validation |
+| 3 | **CVD / delta / footprint** | Databento `trades` | **~$10-20/mo (CHEAP)** | ✅ FULL Feb–Jul 2026 SPAN DELIVERED — `data/reference/cvd/` (feb_mar + apr + may_jul); ready for the powered give-back/entry-miss re-test |
 | 4 | Heatmap / resting liquidity | Databento `mbp-10` | $80/mo | ✅ APRIL VERIFIED CORRECT (Update 14) — `data/reference/depth_apr2026/`; want Feb/Mar/May for 3+ mo |
 | 5 | **Cross-market (ES/YM/RTY + 10Y + DXY)** | Yahoo/FRED daily; Databento 1m | free daily / small intraday | Update 10 — AFTER #3 & #4 |
 | — | Options/gamma, COT | various | expensive/speculative | PARKED — not until the above prove out |
