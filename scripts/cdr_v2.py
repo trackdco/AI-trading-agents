@@ -72,7 +72,7 @@ def opening_leg_fibs(bars1m, day):
     return {f: b - f * rng for f in (0.382, 0.5, 0.705)}   # retracement levels
 
 
-def run_tf(tf, bars1m, vwap1m, fp, tol, cvd_mode):
+def run_tf(tf, bars1m, vwap1m, fp, tol, cvd_mode, day1m):
     tfd = resample_ohlcv(bars1m, f"{tf}min").reset_index(drop=True)
     bb = bollinger(tfd, 20, 2.0)
     tfd = tfd.join(bb[["basis", "upper", "lower"]])
@@ -82,10 +82,11 @@ def run_tf(tf, bars1m, vwap1m, fp, tol, cvd_mode):
     trades, stage = [], dict(bars=0, zone=0, reject=0)
     for day, g in tfd.groupby("day"):
         fpd = fp[fp.day == day]
-        if fpd.empty:
+        if fpd.empty or day not in day1m:
             continue
         poc, delta = dev_poc_and_delta(fpd)
         fibs = opening_leg_fibs(bars1m, day)
+        dts, dlo, dhi, dcl = day1m[day]     # precomputed 1m numpy arrays 09:30-10:35
         g = g.reset_index(drop=True)
         for i in range(1, len(g)):
             row = g.iloc[i]
@@ -135,21 +136,22 @@ def run_tf(tf, bars1m, vwap1m, fp, tol, cvd_mode):
             cands = [x for x in opp if (x > entry) == (direction == "long") and abs(x - entry) > risk]
             tgt = (min(cands) if direction == "long" else max(cands)) if cands else \
                   (entry + 2*risk if direction == "long" else entry - 2*risk)
-            # outcome scan on 1m to 10:30
-            scan = bars1m[(bars1m.ts_event > pd.Timestamp(row.ts_event)) &
-                          (bars1m.ts_event.dt.time <= dtime(10, 30)) &
-                          (bars1m.ts_event.dt.strftime("%Y-%m-%d") == day)]
-            out = None
-            for _, b in scan.iterrows():
-                if direction == "long":
-                    if b.low <= stop: out = -risk; break
-                    if b.high >= tgt: out = tgt - entry; break
-                else:
-                    if b.high >= stop: out = -risk; break
-                    if b.low <= tgt: out = entry - tgt; break
-            if out is None:
-                last = scan.iloc[-1].close if len(scan) else entry
+            # outcome scan on 1m to 10:30 (vectorized: first bar hitting stop/target)
+            j0 = int(np.searchsorted(dts, pd.Timestamp(row.ts_event).value, side="right"))
+            lo, hi, cl = dlo[j0:], dhi[j0:], dcl[j0:]
+            if direction == "long":
+                hit_stop = lo <= stop; hit_tgt = hi >= tgt
+            else:
+                hit_stop = hi >= stop; hit_tgt = lo <= tgt
+            si = np.argmax(hit_stop) if hit_stop.any() else 10**9
+            ti = np.argmax(hit_tgt) if hit_tgt.any() else 10**9
+            if si == ti == 10**9:
+                last = cl[-1] if len(cl) else entry
                 out = (last - entry) if direction == "long" else (entry - last)
+            elif si <= ti:
+                out = -risk
+            else:
+                out = (tgt - entry) if direction == "long" else (entry - tgt)
             trades.append(dict(day=day, month=day[:7], tf=tf, direction=direction,
                                risk=risk, R=out/risk, dollars=out*PV - 2*COMM, cvd_dir=cvd_dir))
     return pd.DataFrame(trades), stage
@@ -161,10 +163,15 @@ def main():
     bars = pd.read_parquet(DATA)
     vwap = daily_vwap(bars, bands=[1, 2, 3], session_open=dtime(18, 0))
     fp = load_fp()
+    # precompute per-day 1m arrays (09:30-10:35) once for the vectorized exit scan
+    b = bars[(bars.ts_event.dt.time >= OPEN_T) & (bars.ts_event.dt.time <= dtime(10, 35))].copy()
+    b["day"] = b.ts_event.dt.strftime("%Y-%m-%d")
+    day1m = {d: (g.ts_event.view("int64").to_numpy(), g.low.to_numpy(), g.high.to_numpy(), g.close.to_numpy())
+             for d, g in b.groupby("day")}
     print(f"CDR v2 — post-open 09:40-10:15, 2026 Feb-Jul, TOL={tol}, cvd={cvd_mode}\n", flush=True)
     allT = []
     for tf in (1, 2, 3):
-        T, st = run_tf(tf, bars, vwap, fp, tol, cvd_mode)
+        T, st = run_tf(tf, bars, vwap, fp, tol, cvd_mode, day1m)
         allT.append(T)
         print(f"  TF{tf}: funnel bars={st['bars']} zone={st['zone']} reject={st['reject']} -> {len(T)} trades", flush=True)
     J = pd.concat(allT) if any(len(t) for t in allT) else pd.DataFrame()
