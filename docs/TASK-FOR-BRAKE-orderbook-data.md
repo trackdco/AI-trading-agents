@@ -1,5 +1,43 @@
 # TASK FOR BRAKE — Order-book data pull (Angus directive, 18 Jul 2026)
 
+## UPDATE 13 (20 Jul, Angus directive) — HEATMAP DEPTH DATA IS BROKEN, please fix (BLOCKER)
+
+**Assigned to Brake. This blocks all heatmap work — top priority on the data side.**
+
+The April `mbp-10` depth snapshots are under-scaled by ~1-2 orders of magnitude and
+are unusable as delivered. Hard proof (engine lane, cross-checked against the CVD
+footprint + 1m master for the same minutes):
+
+| minute (2026-04-01) | contracts TRADED that minute | ENTIRE 20-level book (all bid+ask) |
+|---|--:|--:|
+| 08:30 ET | 619 | 57 |
+| 09:30 ET (cash open) | 4,761 | 52 |
+| 10:00 ET | 2,243 | 48 |
+
+You cannot push 4,761 contracts through a book that shows 52 resting contracts total.
+Real NQ `mbp-10` during the RTH open should show hundreds across the ten levels. The
+condensed files show a median of **2 contracts/level** (98.4% of levels ≤6). Something
+in the pipeline is dropping the real size.
+
+**Likely suspects to check in `scripts/condense_depth.py`:**
+1. The "keep the modal instrument_id" filter — is it selecting a thin/far-dated
+   contract or a spread leg instead of the NQ front month? (Price alone won't tell
+   NQ from MNQ — check the instrument_id / symbol against the known front-month roll.)
+2. Is the parse only capturing *displayed/iceberg-visible* size, or only the delta
+   messages rather than the full book state at each snapshot?
+3. Unit/multiplier handling — is `size` being divided, truncated, or read from the
+   wrong field of the mbp-10 record?
+
+**FASTEST PATH (Angus's suggestion, 20 Jul): plug the engine-lane agent into the data
+directly.** Open a terminal in the folder holding the RAW Databento `mbp-10` exports
+and add this repo to that session (or run the agent from that environment) so the
+engine lane can read the raw book snapshots and `condense_depth.py` side by side and
+diagnose the scale bug directly — far faster than describing symptoms back and forth.
+What needs to be visible: the raw exports (even one day is enough to diagnose),
+`scripts/condense_depth.py`, and the front-month roll reference. **Do NOT buy any more
+heatmap months until a corrected condense produces realistic book sizes** (sanity
+check: RTH-open top-of-book should be tens of contracts, 10-deep should be hundreds).
+
 ## UPDATE 12 (20 Jul) — April validation done: no signal yet, and a depth-scale flag
 
 Engine lane re-ran the give-back/entry-miss autopsy against the April CVD + heatmap
