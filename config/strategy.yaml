@@ -163,6 +163,17 @@ filters:
     - "non.?farm|payroll|NFP|employment change"
     - "JOLTS"
     - "rate decision|FOMC|federal funds"
+  # SHIPPED 2026-07-20 (Angus) — the "don't-trade" SELECTION gate (docs/FINDING-dont-trade-filter.md).
+  #      A post-engine selection filter (applied in src/backtest/selection.py), NOT an engine mechanic —
+  #      it decides which validated trades to keep, and never touches fill/stop logic. In-sample 2026:
+  #      132t -> 78t, +$14,009 -> +$14,351, win 33% -> 41%, 5/6 months green. Cross-year OOS is OPEN
+  #      (docs/FINDING-oracle-is-hindsight...): ship as a 2026-regime gate, not a proven cross-year edge.
+  cut_below_value_open: true      #      skip trades whose day opened below the prior value area
+                                  #      (open_vs_value == "below_value"): 0% win / -$2,355 in-sample
+  require_cvd_absorption: true    #      require CVD absorption (flow INTO the level) — skip hollow
+                                  #      rejections (the #1 loser/winner separator: winners cvd ~-74, losers ~-10)
+  cvd_absorption_max: 0.0         #      keep trades with cvd <= this. 0.0 = shipped (41% win, keeps the money);
+                                  #      -30 -> 44% win / still 5-6 green; -60 -> 50% but breaks a month (too tight)
   # Volatility stand-down (§7): [OPEN] — no computable definition yet; intentionally not configured.
 
 management:
