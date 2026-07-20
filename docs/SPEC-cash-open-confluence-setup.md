@@ -74,6 +74,50 @@ and just enter."*
 When an `_ote_levels` fib coincides with VWAP + developing POC (3-way, within tolerance) and there is
 conviction, wait for the **reaction** at the level and enter (no displacement break required).
 
+---
+
+## v2 — FULL MODEL from 11 live executions (Angus, 20 Jul) — supersedes the sketch above
+
+v1 (close-through + fixed 2R) LOST (28-32% win). Reviewing 11 real trades (London + NY) crystallized the
+actual method. It is a **confluence-rejection** system (reversion OR continuation), NOT close-through.
+
+### The canonical setup
+1. **Bias/context gate.** Read Asia→London behaviour, session sweeps (London/Asia highs-lows taken),
+   and overall order flow → a directional bias for the day. Only take setups WITH the bias.
+   ("I go with what the market's giving me.")
+2. **Confluence anchor** — a STACK of levels sitting together (the tighter, the more A+):
+   - **BB basis** (20 SMA, "the moving average") — the spine of almost every entry.
+   - **VWAP deviation band** — usually ±1 (NY-anchored *and* Globex); ±2/±3 = over-extended → revert.
+   - **Fib of a marked leg** (opening 9:30 leg or the impulse leg): **0.705 (OTE)**, 0.5 (equilibrium), 0.382.
+   - **POC** — developing daily (sticks near price in NY), **weekly POC**, daily value-area high.
+   - **15-minute BB basis** — a strong NY magnet ("price reaches it a lot").
+3. **Trigger = displacement then REJECTION** (two flavours):
+   - *Reversion:* over-extension to VWAP +2/+3 → return to 0.5/VWAP-mid → reject the aligned band+fib.
+   - *Continuation:* displacement through BB-basis + VWAP band → **retest of the BB basis** → enter with trend.
+   The confirmation is a **rejection block / wick / a candle closing back across the BB basis** — NOT the
+   displacement candle itself (v1's mistake).
+4. **Entry** — LIMIT at the confluence level (BB basis / VWAP band / fib 0.705), or MARKET on the
+   rejection candle. Preferred: wait for the rejection confirmation.
+5. **Stop** — beyond the **displacement/rejection candle** (or the 9:30 opening candle); the rejection
+   high/low. NOT too tight — hold a buffer (repeated lesson: greedy tight stops got wicked out).
+6. **Break-even at the first magnet** — POC or the VWAP middle band (~1R). Bank risk early.
+7. **Target = the NEXT structural level** (never a fixed R): VWAP middle band, 15m BB basis, weekly/daily
+   POC, opposite VWAP band (−2), session highs/lows (Asia/London), **midnight open**, daily VA high, HTF level.
+
+### Level catalog to build (engine has BB, VWAP dev-bands, developing POC, fib; ADD:)
+- weekly POC + daily value-area high (extend `profile_asof` scope)
+- 15-minute BB basis
+- midnight open (00:00 ET price)
+- session highs/lows: Asia, London, NY (rolling session extremes)
+- fib anchored on the **opening 9:30 leg** (impulse from the open)
+
+### What v2 changes vs v1 (why v1 lost)
+- entry = retest/rejection, NOT displacement close.
+- exits = level-based (BE at first magnet → target next level), NOT fixed 2R.
+- stop = beyond the displacement candle with a BUFFER, not minimal-risk-maximising.
+- confluence must STACK (BB basis + VWAP band + fib + POC), not just POC≈BB.
+- add the bias/context gate.
+
 ## Measurement plan (once built)
 - Detect CDR triggers 09:40–10:15 over 2026; grade with the current engine (V8 mgmt, structural stop).
 - Compare candidates/day vs current 0.5 and vs Angus's ~1 A+/night; win% and $/trade.
