@@ -28,6 +28,9 @@ def load_triggers(buf):
     return out
 
 df=pd.read_parquet(DATA)
+# champion only trades 08:00-10:15 ET; trim bars to 07:45-11:00 ET/day so simulate is ~6x faster
+_et=pd.to_datetime(df.ts_event,utc=True).dt.tz_convert(NY)
+df=df[(_et.dt.time>=dtime(7,45))&(_et.dt.time<=dtime(11,0))].reset_index(drop=True)
 V=pd.read_csv("output/regime_vector.csv")
 war={r.day for _,r in V.iterrows() if pd.notna(r.imbal_share_20) and r.imbal_share_20>=0.5}
 cfg0=load_backtest_config()
