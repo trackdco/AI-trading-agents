@@ -102,20 +102,53 @@ def main():
 
     # is the better book PREDICTABLE from pre-open features?
     feats = ["imbal_share_20", "imbal_share_10", "trap_rate_10", "range_pctl_20",
-             "gap_open_pts", "streak_imbal", "inventory_pts", "on_nr_rank", "gap_vs_value"]
+             "gap_open_pts", "streak_imbal", "inventory_pts", "on_nr_rank"]   # numeric only
     Vd = V.set_index("day")
     D = D.set_index("day")
     D = D.join(Vd[feats]).join(preopen_cvd())
+    D.reset_index().to_csv(f"{SP}/book_choice.csv", index=False)          # save FIRST (crash-safe)
     print(f"\n== which pre-open features separate E3-better vs E4-better days? ==")
     print(f"  (mean feature value on days each book won; gap = signal strength)")
     for f in feats + ["preopen_cvd"]:
-        if f not in D.columns:
+        if f not in D.columns or not pd.api.types.is_numeric_dtype(D[f]):
             continue
         e3w, e4w = D[D.better == "e3"][f].dropna(), D[D.better == "e4"][f].dropna()
         if len(e3w) < 5 or len(e4w) < 5:
             continue
         print(f"    {f:16s} E3-day {e3w.mean():+9.2f}   E4-day {e4w.mean():+9.2f}   Δ {e4w.mean()-e3w.mean():+9.2f}")
-    D.reset_index().to_csv(f"{SP}/book_choice.csv", index=False)
+
+    # ---- book-selector: |gap| or |inventory| large -> E3 (rotation); else E4 (momentum) ----
+    # fit the threshold on 2026 (in-sample), then validate OOS on 2023-2025 (allyears_daily_books.csv,
+    # pre-E2 cache -- valid since E-2 is inert: 0 htf relabels).
+    print(f"\n== BOOK-SELECTOR: gap/inventory rule, IS(2026) + OOS(2023-25) ==")
+    oos = pd.read_csv("output/allyears_daily_books.csv")
+    oos = oos[oos.year.astype(str) < "2026"][["day", "E3", "E4"]]
+    both = pd.concat([D.reset_index()[["day", "e3", "e4"]].rename(columns={"e3": "E3", "e4": "E4"}), oos],
+                     ignore_index=True)
+    both = both.merge(Vd[["gap_open_pts", "inventory_pts"]].reset_index(), on="day", how="left")
+    both["year"] = both.day.str[:4]
+
+    def evalrule(dd, gthr, ithr):
+        pick_e3 = (dd.gap_open_pts.abs() >= gthr) | (dd.inventory_pts.abs() >= ithr)
+        sel = dd.E3.where(pick_e3, dd.E4)
+        return sel
+
+    D26 = both[both.year == "2026"]
+    # sweep small grid on 2026 only
+    best = None
+    for g in (10, 15, 20, 25, 30, 40):
+        for i in (5, 8, 10, 15, 20):
+            pnl = evalrule(D26, g, i).sum()
+            if best is None or pnl > best[0]:
+                best = (pnl, g, i)
+    _, gthr, ithr = best
+    print(f"  tuned on 2026: gap>={gthr} or |inv|>={ithr}")
+    for y, gy in both.groupby("year"):
+        sel = evalrule(gy, gthr, ithr)
+        e3, e4, orc = gy.E3.sum(), gy.E4.sum(), gy[["E3", "E4"]].max(axis=1).clip(lower=0).sum()
+        tag = "IS " if y == "2026" else "OOS"
+        print(f"  {tag} {y}: selector ${sel.sum():+8,.0f}  | alwaysE3 ${e3:+8,.0f} alwaysE4 ${e4:+8,.0f} "
+              f"| oracle+SD ${orc:+8,.0f}  selector={sel.sum()/orc*100:2.0f}%")
 
 
 if __name__ == "__main__":
