@@ -1,5 +1,29 @@
 # TASK FOR BRAKE — Order-book data pull (Angus directive, 18 Jul 2026)
 
+## UPDATE 12 (20 Jul) — April validation done: no signal yet, and a depth-scale flag
+
+Engine lane re-ran the give-back/entry-miss autopsy against the April CVD + heatmap
+drop (per Update 11's stated deliverable) and ran it through 3-reviewer adversarial
+verification before reporting anything. Result: **no CVD/heatmap signal survives** in
+April (all three tests land at p=0.13-0.79 once two real bugs the reviewers caught
+were fixed — see `scripts/test_cvd_heatmap_givebacks.py` and the published report).
+This is "the test wasn't sound/powered enough to tell," not "no signal exists" — the
+fixed test design is ready to re-run the moment more months land.
+
+**Action for Brake — please check before pulling more heatmap months:** the April
+mbp-10 depth snapshots show a suspiciously thin book — median resting size per level
+is **2 contracts**, 98.4% of all top-10 levels ≤6 contracts, across 36,240 sampled
+rows, during the 08:00-11:00 ET window (the 08:30 print + 09:30 cash open, NQ's most
+liquid stretch). That's roughly 1-2 orders of magnitude below realistic NQ depth.
+Please sanity-check `scripts/condense_depth.py`'s "keep the modal instrument_id"
+filter and unit/multiplier handling against a known-liquid reference minute before
+we spend more on heatmap months — if the pipeline is dropping real size, no amount
+of extra months fixes that.
+
+CVD is still the priority buy (cheap, and the fix to the test is nearly free) — go
+ahead with the 6-12mo `trades` pull per Update 11 once convenient. Hold heatmap
+purchases beyond April until the depth-scale question is answered.
+
 ## THE DATA ROADMAP (priority order, 20 Jul) — read this first
 
 Ranked by value-per-dollar and testability against our MEASURED losses. Do them in
