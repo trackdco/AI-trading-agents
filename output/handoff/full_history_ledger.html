@@ -1,0 +1,264 @@
+<title>The Full-History Ledger — 2023 → 2026</title>
+<style>
+  :root{
+    --bg:#0f1317; --panel:#161c23; --line:#2a3542;
+    --ink:#d9e2ec; --mut:#8fa0b0; --faint:#5c6b7a;
+    --pos:#3fd07f; --neg:#f2646f; --amber:#e8b04a;
+    --s-static:#3576b8; --s-oracle:#b8822a;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: light){:root{
+    --bg:#f4f6f8; --panel:#ffffff; --line:#d5dde4; --ink:#1b2530; --mut:#54657a; --faint:#8395a7;
+    --pos:#0d8f4f; --neg:#cf3745; --amber:#a86e12; --s-static:#2270b8; --s-oracle:#a86e12;}}
+  :root[data-theme="dark"]{--bg:#0f1317; --panel:#161c23; --line:#2a3542; --ink:#d9e2ec;
+    --mut:#8fa0b0; --faint:#5c6b7a; --pos:#3fd07f; --neg:#f2646f; --amber:#e8b04a;
+    --s-static:#3576b8; --s-oracle:#b8822a;}
+  :root[data-theme="light"]{--bg:#f4f6f8; --panel:#ffffff; --line:#d5dde4; --ink:#1b2530;
+    --mut:#54657a; --faint:#8395a7; --pos:#0d8f4f; --neg:#cf3745; --amber:#a86e12;
+    --s-static:#2270b8; --s-oracle:#a86e12;}
+  html{background:var(--bg)}
+  body{font-family:var(--sans);color:var(--ink);margin:0;padding:0 16px 80px;line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{padding:40px 0 14px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  h1{font-size:clamp(22px,4vw,30px);margin:0 0 6px;letter-spacing:-.01em;text-wrap:balance}
+  .sub{color:var(--mut);font-size:14px;max-width:74ch}
+  nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+  nav a{font-family:var(--mono);font-size:12px;color:var(--s-static);text-decoration:none;
+    border:1px solid var(--line);border-radius:3px;padding:3px 8px;background:var(--panel)}
+  h2{font-size:17px;margin:44px 0 4px}
+  h2 .tag{font-family:var(--mono);font-size:11px;color:var(--faint);font-weight:400;margin-left:8px}
+  h3{font-size:14px;margin:22px 0 4px;color:var(--mut)}
+  .note{color:var(--mut);font-size:13.5px;max-width:80ch;margin:2px 0 12px}
+  .note b{color:var(--ink)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin:16px 0}
+  .tile{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:12px 14px}
+  .tile .k{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.07em;text-transform:uppercase}
+  .tile .v{font-family:var(--mono);font-size:20px;margin-top:4px;font-weight:700}
+  .tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:4px;background:var(--panel)}
+  table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:12.5px;
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  th{color:var(--faint);font-weight:600;text-align:right;padding:8px 12px;border-bottom:1px solid var(--line);
+    font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  th:first-child,td:first-child{text-align:left}
+  td{padding:6px 12px;text-align:right;border-bottom:1px solid color-mix(in srgb,var(--line) 45%,transparent)}
+  tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:color-mix(in srgb,var(--s-static) 6%,transparent)}
+  .p{color:var(--pos)} .n{color:var(--neg)} .m{color:var(--mut)}
+  .o{color:var(--s-oracle);font-weight:700}
+  .est{color:var(--s-static);font-weight:700}
+  .tot td{border-top:1px solid var(--line);font-weight:700}
+  .flat td{background:color-mix(in srgb,var(--faint) 8%,transparent)}
+  .chip{display:inline-block;font-family:var(--mono);font-size:10.5px;border-radius:3px;
+    padding:1px 7px;margin-left:8px;vertical-align:middle}
+  .c-live{color:var(--pos);border:1px solid color-mix(in srgb,var(--pos) 45%,transparent)}
+  .c-est{color:var(--s-static);border:1px solid color-mix(in srgb,var(--s-static) 45%,transparent)}
+  .c-wait{color:var(--amber);border:1px solid color-mix(in srgb,var(--amber) 45%,transparent)}
+  ul.find{font-size:13.5px;color:var(--mut);max-width:82ch;padding-left:20px}
+  ul.find li{margin:7px 0}
+  ul.find b{color:var(--ink)}
+  .hbox{border:1px solid color-mix(in srgb,var(--amber) 45%,transparent);border-radius:4px;
+    padding:10px 14px;font-size:13px;color:var(--mut);max-width:82ch;margin:14px 0}
+  .hbox b{color:var(--amber)}
+</style>
+<div class="wrap">
+<header>
+  <h1>The Full-History Ledger — Jan 2023 → Jul 2026</h1>
+  <div class="sub">The frozen 2026 system sent back through three alien years, the oracle measured in
+  every era, and the conservative agent-stack forecast built on top. All figures 1 NQ contract ·
+  $20/pt · commissions in. MEASURED = simulated fills; EST = stated-assumption forecasts.</div>
+  <nav><a href="#thesis">Routing thesis</a><a href="#y2026">2026</a><a href="#y2024">2024</a>
+  <a href="#y2023">2023</a><a href="#y2025">2025</a><a href="#ceiling">Agent ceiling</a>
+  <a href="#adjust">Pre-handover findings</a></nav>
+</header>
+
+<section id="thesis">
+<h2>The routing thesis — proven in every era <span class="chip c-live">MEASURED</span></h2>
+<div class="tiles">
+  <div class="tile"><div class="k">SD-Oracle 2023</div><div class="v o">+$73,014</div></div>
+  <div class="tile"><div class="k">SD-Oracle 2024</div><div class="v o">+$76,049</div></div>
+  <div class="tile"><div class="k">SD-Oracle 2025</div><div class="v o">+$62,549</div></div>
+  <div class="tile"><div class="k">SD-Oracle 2026 (6mo)</div><div class="v o">+$45,159</div></div>
+  <div class="tile"><div class="k">Flat days at ceiling</div><div class="v">40–45%</div></div>
+</div>
+<div class="note">The STAND-DOWN oracle (all years now MEASURED, not estimated) picks the better of
+our two books each day — or sits flat. It sits flat <b>40–45% of all days</b> and wins 60–68% of the
+trades it does take, in every era. The stand-down button alone is worth $23–29k/yr over the forced
+oracle — <b>discretion is half the edge</b>. Everything below is about who gets to claim it:
+mechanical rules, memory, agents, or the book data.</div>
+<div class="tablebox"><table>
+<thead><tr><th>Year</th><th>Forced oracle</th><th>Stand-down oracle</th><th>Flat days</th><th>Oracle trades</th><th>Oracle win%</th></tr></thead>
+<tbody>
+<tr><td>2023</td><td class="o">+$50,051</td><td class="o">+$73,014</td><td>114/256 (45%)</td><td>271 (169W–102L)</td><td>62%</td></tr>
+<tr><td>2024</td><td class="o">+$53,489</td><td class="o">+$76,049</td><td>102/258 (40%)</td><td>293 (175W–118L)</td><td>60%</td></tr>
+<tr><td>2025</td><td class="o">+$33,670</td><td class="o">+$62,549</td><td>114/254 (45%)</td><td>230 (147W–83L)</td><td><b>64%</b></td></tr>
+<tr><td>2026 (6mo)</td><td class="o">+$37,014</td><td class="o">+$45,159</td><td>31/110 (28%)</td><td>98 (67W–31L)</td><td>68%</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="y2026">
+<h2>2026 · Feb–Jul <span class="chip c-live">MEASURED</span><span class="tag">the calibration era — champion's home field</span></h2>
+<div class="tablebox"><table>
+<thead><tr><th>Month</th><th>Champion v1.1</th><th>Stand-down oracle</th><th>Oracle trades</th><th>Oracle W–L</th><th>Oracle win%</th><th>Days flat</th></tr></thead>
+<tbody>
+<tr><td>FEB</td><td class="p">+$6,599</td><td class="o">+$9,261</td><td>20</td><td>14–6</td><td>70%</td><td>3</td></tr>
+<tr><td>MAR</td><td class="p">+$4,250</td><td class="o">+$11,485</td><td>15</td><td>11–4</td><td>73%</td><td>8</td></tr>
+<tr><td>APR</td><td class="p">+$3,705</td><td class="o">+$6,090</td><td>19</td><td>12–7</td><td>63%</td><td>7</td></tr>
+<tr><td>MAY</td><td class="p">+$10</td><td class="o">+$6,552</td><td>16</td><td>12–4</td><td>75%</td><td>8</td></tr>
+<tr><td>JUN</td><td class="p">+$3,765</td><td class="o">+$11,261</td><td>24</td><td>16–8</td><td>67%</td><td>4</td></tr>
+<tr><td>JUL½</td><td class="n">−$515</td><td class="o">+$511</td><td>4</td><td>2–2</td><td>50%</td><td>1</td></tr>
+<tr class="tot"><td>TOTAL</td><td class="p">+$17,814</td><td class="o">+$45,159</td><td>98</td><td>67–31</td><td>68%</td><td>31/110</td></tr>
+</tbody></table></div>
+<div class="note"><b>The 50%+ win rate lives at the ceiling in every single month (63–75%)</b> with zero
+management partials — routing IS the win-rate machine. The perfect player sits flat 28% of all days.
+Champion v1.1 captures 39% of the ceiling here, on its home tape.</div>
+</section>
+
+<section id="y2024">
+<h2>2024 — election year <span class="chip c-live">MEASURED</span><span class="tag">frozen system, zero recalibration</span></h2>
+<div class="tablebox"><table>
+<thead><tr><th>Month</th><th>Oracle</th><th>Rotation book (E3+V8)</th><th>Momentum book (E4t15)</th><th>Static switch</th><th>v1.1 frozen</th><th>Agent est.*</th></tr></thead>
+<tbody>
+<tr><td>JAN</td><td class="o">+5,299</td><td class="p">+564</td><td class="n">−50</td><td class="p">+791</td><td class="n">−391</td><td class="est">+2,650</td></tr>
+<tr><td>FEB</td><td class="o">+1,364</td><td class="n">−1,065</td><td class="n">−3,495</td><td class="n">−3,495</td><td class="n">−2,705</td><td class="est">+550</td></tr>
+<tr><td>MAR</td><td class="o">+4,510</td><td class="p">+2,428 (57.5%)</td><td class="n">−745</td><td class="n">−745</td><td class="n">−695</td><td class="est">+2,700</td></tr>
+<tr><td>APR</td><td class="o">+8,391</td><td class="p">+1,838</td><td class="p">+3,250</td><td class="p">+3,051</td><td class="p">+3,605</td><td class="est">+5,000</td></tr>
+<tr><td>MAY</td><td class="o">+2,250</td><td class="p">+1,109</td><td class="n">−4,642</td><td class="n">−4,642</td><td class="n">−5,412</td><td class="est">+900</td></tr>
+<tr><td>JUN</td><td class="o">+3,774</td><td class="p">+575</td><td class="n">−585</td><td class="n">−585</td><td class="n">−120</td><td class="est">+1,900</td></tr>
+<tr><td>JUL</td><td class="o">+2,716</td><td class="n">−1,918</td><td class="n">−3,122</td><td class="n">−6,272</td><td class="n">−5,964</td><td class="est">+1,200</td></tr>
+<tr class="flat"><td>AUG</td><td class="n">−981</td><td class="n">−4,974 (12.5%)</td><td class="n">−3,395</td><td class="n">−3,395</td><td class="n">−3,235</td><td class="est">≈ 0 (stand-down)</td></tr>
+<tr><td>SEP</td><td class="o">+6,113</td><td class="n">−1,252</td><td class="p">+2,285</td><td class="p">+2,757</td><td class="p">+1,976</td><td class="est">+3,050</td></tr>
+<tr><td>OCT</td><td class="o">+10,011</td><td class="p">+2,068</td><td class="p">+4,880</td><td class="p">+2,451</td><td class="p">+1,578</td><td class="est">+6,500</td></tr>
+<tr class="flat"><td>NOV</td><td class="o">+1,540</td><td class="n">−2,071</td><td class="n">−2,970</td><td class="n">−1,994</td><td class="n">−3,120</td><td class="est">+800 (half-size)</td></tr>
+<tr><td>DEC</td><td class="o">+8,502</td><td class="p">+34</td><td class="p">+2,400</td><td class="p">+1,579</td><td class="p">+124</td><td class="est">+5,500</td></tr>
+<tr class="tot"><td>TOTAL</td><td class="o">+53,489</td><td class="n">−2,664</td><td class="n">−6,189</td><td class="n">−10,499</td><td class="n">−14,359</td><td class="est">≈ +30,750</td></tr>
+</tbody></table></div>
+<div class="note">*Agent est. <span class="chip c-est">EST</span>: conservative per-month capture (40–65%) scaled by regime
+READABILITY — event-anchored months (Oct pre-election, Dec resolution) are the easiest calls; chop months hardest.
+<b>AUG = the yen-carry unwind</b>, the only month in three years where even perfect routing loses — the pure
+stand-down month. <b>NOV = election week</b>: second-weakest oracle, every real arm red — the "respect the event"
+month. The run-up (OCT, +$10k) and resolution (DEC, +$8.5k) paid; the event itself was the trap.
+<b>v1.1's cuts are era-fitted</b> — it trails the raw books here; see findings.</div>
+</section>
+
+<section id="y2023">
+<h2>2023 — melt-up year <span class="chip c-live">MEASURED</span><span class="tag">NQ at 12–16k: the scale confound era</span></h2>
+<div class="tablebox"><table>
+<thead><tr><th>Arm</th><th>2023 total</th><th>Green months</th><th>Verdict</th></tr></thead>
+<tbody>
+<tr><td>Rotation book (E3+V8)</td><td class="n">−$10,955</td><td>4/12</td><td class="m">params 2× too loose at half the price level</td></tr>
+<tr><td>Momentum book (E4tight)</td><td class="n">−$90</td><td>8/12</td><td class="m">survives raw — remarkable given the skew</td></tr>
+<tr><td>Static switch</td><td class="n">−$10,590</td><td>3/12</td><td class="m">2026 thresholds don't transfer</td></tr>
+<tr><td>v1.1 frozen</td><td class="n">−$6,026</td><td>3/12</td><td class="m">Feb +$5,145 its best foreign month</td></tr>
+<tr class="tot"><td>Oracle</td><td class="o">+$50,051</td><td>12/12</td><td class="m">the edge was there all along</td></tr>
+</tbody></table></div>
+<div class="note">A 15-pt stop cap at NQ 15,000 behaves like a 30-pt cap at 30,000 — every
+point-denominated parameter was effectively 2× looser in 2023.</div>
+<h3>Normalization arms (measured) — parameters as ratios, 2023 rerun</h3>
+<div class="tablebox"><table>
+<thead><tr><th>Arm</th><th>Raw (frozen units)</th><th>Vol-normalized</th><th>Price-normalized</th><th>Verdict</th></tr></thead>
+<tbody>
+<tr><td>Momentum book (E4t)</td><td class="n">−$90</td><td class="p">+$2,868 (6/12 green)</td><td class="p">+$687</td><td class="p">vol-norm turns it properly green</td></tr>
+<tr><td>Rotation book (E3+V8)</td><td class="n">−$10,955</td><td class="n">−$8,176</td><td class="n">−$9,241</td><td class="m">helped, not cured</td></tr>
+<tr><td>Static switch</td><td class="n">−$10,590</td><td class="n">−$4,673</td><td class="n">−$8,592</td><td class="m">+$5.9k recovered</td></tr>
+<tr><td>v1.1</td><td class="n">−$6,026</td><td class="n">−$4,378</td><td class="n">−$6,486</td><td class="m">cuts still era-fitted</td></tr>
+</tbody></table></div>
+<div class="note"><b>Verdict: volatility-normalization is adopted</b> — it beats price-normalization
+everywhere and recovers $1.6–5.9k per arm in 2023 with no 2026 cost. But it is deliberately NOT sold as
+the cure: after normalization the rotation book and switch remain red in 2023 — <b>the residual deficit
+is the decision layer</b>, same conclusion as 2025. (Stage B — normalizing the detection-level cluster
+tolerance — needs one re-detection and may recover more.)</div>
+</section>
+
+<section id="y2025">
+<h2>2025 — the hostile year <span class="chip c-live">MEASURED</span><span class="tag">closest to 2026 in price — and the WORST mechanical year</span></h2>
+<div class="tablebox"><table>
+<thead><tr><th>Month</th><th>Oracle</th><th>Rotation book (E3+V8)</th><th>Momentum book (E4t15)</th><th>Static switch</th><th>v1.1 frozen</th></tr></thead>
+<tbody>
+<tr><td>JAN</td><td class="o">+2,926</td><td class="p">+19</td><td class="n">−3,575</td><td class="n">−1,166</td><td class="n">−1,042</td></tr>
+<tr><td>FEB</td><td class="o">+206</td><td class="n">−5,366 (13.2%)</td><td class="n">−2,165</td><td class="n">−2,165</td><td class="n">−820</td></tr>
+<tr><td>MAR</td><td class="o">+824</td><td class="n">−2,215</td><td class="n">−4,350</td><td class="n">−3,869</td><td class="n">−2,964</td></tr>
+<tr><td>APR</td><td class="o">+4,949</td><td class="n">−759</td><td class="n">−1,468</td><td class="n">−742</td><td class="n">−2,438</td></tr>
+<tr><td>MAY</td><td class="o">+1,716</td><td class="n">−4,576 (12.2%)</td><td class="n">−775</td><td class="n">−775</td><td class="n">−485</td></tr>
+<tr><td>JUN</td><td class="o">+3,684</td><td class="n">−535</td><td class="n">−530</td><td class="n">−530</td><td class="n">−520</td></tr>
+<tr><td>JUL</td><td class="o">+1,932</td><td class="n">−1,271</td><td class="n">−3,225</td><td class="n">−3,225</td><td class="n">−2,770</td></tr>
+<tr><td>AUG</td><td class="o">+3,098</td><td class="n">−2,181</td><td class="p">+970</td><td class="p">+970</td><td class="p">+1,115</td></tr>
+<tr><td>SEP</td><td class="o">+2,285</td><td class="n">−4,132</td><td class="n">−1,592</td><td class="n">−1,214</td><td class="n">−1,452</td></tr>
+<tr><td>OCT</td><td class="o">+5,879</td><td class="n">−911</td><td class="n">−995</td><td class="n">−3,460</td><td class="n">−4,094</td></tr>
+<tr><td>NOV</td><td class="o">+1,174</td><td class="n">−2,918</td><td class="n">−1,530</td><td class="n">−415</td><td class="n">−290</td></tr>
+<tr><td>DEC</td><td class="o">+4,997</td><td class="n">−110</td><td class="n">−55</td><td class="n">−55</td><td class="p">+585</td></tr>
+<tr class="tot"><td>TOTAL</td><td class="o">+33,670</td><td class="n">−24,955</td><td class="n">−19,290</td><td class="n">−16,646</td><td class="n">−15,175</td></tr>
+</tbody></table></div>
+<div class="note"><b>The 2025 diagnosis (measured):</b> median morning range <b>177 pts vs 116 (2023)
+and 137 (2024)</b> at the same %-of-price volatility, and slightly MORE directional (drift-eff 0.48 vs
+0.43). The tools were wrong-sized for a bigger arena: the momentum book's fixed 15-pt cap selected
+micro-stops inside 177-pt morning noise (win% 21) and the fade book kept fading a driftier tape
+(win% 23). <b>Vol-normalization recovers $4–7k/arm (v1.1: −$15.2k → −$10.1k) — real but partial.</b>
+The rest is decision-layer: the stand-down oracle made <b>+$62,549 in 2025 at a 64% win rate</b> — the
+best win rate of any year — while sitting flat 45% of days. The edge was fully present; the frozen
+layer couldn't route to it. 2025 is therefore the agents' entrance exam (finding #7).</div>
+<h3>Vol-normalized 2025 (measured)</h3>
+<div class="tablebox"><table>
+<thead><tr><th>Arm</th><th>Raw</th><th>Vol-normalized</th><th>Recovery</th></tr></thead>
+<tbody>
+<tr><td>Rotation book</td><td class="n">−$24,955</td><td class="n">−$17,587</td><td class="p">+$7,368</td></tr>
+<tr><td>Momentum book</td><td class="n">−$19,290</td><td class="n">−$14,920</td><td class="p">+$4,370</td></tr>
+<tr><td>Static switch</td><td class="n">−$16,646</td><td class="n">−$12,599</td><td class="p">+$4,047</td></tr>
+<tr><td>v1.1</td><td class="n">−$15,175</td><td class="n">−$10,104</td><td class="p">+$5,071</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="ceiling">
+<h2>The conservative agent-stack ceiling <span class="chip c-est">EST</span><span class="tag">what we're aiming for — Angus's target framing</span></h2>
+<div class="tablebox"><table>
+<thead><tr><th>Year</th><th>Stand-down oracle (MEASURED)</th><th>Agent stack @ 55–60% (Angus target)</th><th>Green months at that capture</th></tr></thead>
+<tbody>
+<tr><td>2023</td><td class="o">+$73,014</td><td class="est">≈ +$40–44k</td><td>~12/12</td></tr>
+<tr><td>2024</td><td class="o">+$76,049</td><td class="est">≈ +$42–46k</td><td>~12/12</td></tr>
+<tr><td>2025 (hostile)</td><td class="o">+$62,549</td><td class="est">≈ +$34–38k</td><td>~11/12</td></tr>
+<tr><td>2026 (6mo)</td><td class="o">+$45,159</td><td class="est">≈ +$25–27k</td><td>6/6</td></tr>
+<tr class="tot"><td>Every year</td><td class="m">green at ceiling, 60–68% win</td><td class="est">≈ +$35–50k / yr</td><td class="m">at 1 contract, pre-Vault-sizing</td></tr>
+</tbody></table></div>
+<div class="note">Assumes a mature stack (3yr analog memory · regime agent w/ live news · daily-learning
+playbooks coordinated through Hermes) attains 55–60% of perfect hindsight on a three-way daily decision.
+<b>Not counted at all:</b> the heatmap layer (raises the books themselves, i.e. the ceiling, not just the
+capture — Angus's live order-flow usage says this is real), and Vault sizing on funded accounts
+(percentage-of-drawdown sizing, the true dollar multiplier). Every capture % here gets replaced by a
+measured number in Pat's walk-forward replay; layers that miss their row get cut.</div>
+</section>
+
+<section id="adjust">
+<h2>Pre-handover findings — small adjustments before the agents run <span class="chip c-live">FROM THE DATA</span></h2>
+<ul class="find">
+<li><b>1. Adopt volatility-normalized units — RESOLVED, measured.</b> Vol-scaling beats price-scaling
+everywhere and recovers $1.6–5.9k/arm in 2023 at zero 2026 cost. All point-params become vol-ratios in
+the agent-era config. Stage B (normalizing detection-level cluster tolerance, needs one re-detection)
+queued.</li>
+<li><b>2. Demote the v1.1 cuts from champion to regime-conditional.</b> C1/C2/C3 added +$4k in 2026 and
+subtracted real money in 2024. They were journal-mined on one era. Proposal: cuts become
+<i>candidate rules the agents may apply</i> when analogs support them — not hardwired law. (C1 likely
+survives normalization as a ratio; C2/C3 must re-earn their place.)</li>
+<li><b>3. Give the replay baseline BOTH raw books + the switch, not just v1.1.</b> The 2024 data shows
+raw books beat the cut-down champion off-era — agents should inherit the toolbox, not one era's
+favorite configuration.</li>
+<li><b>4. The event calendar is the cheapest big win.</b> Aug-2024 (carry unwind) and Nov-2024
+(election week) are exactly the months a news-reading agent converts from disasters to ≈0. A historical
+headline archive (GDELT, free) + scheduled-event calendar for 2023–25 is required for the replay's
+news arm — on Brake's list.</li>
+<li><b>5. Depth study stays April 2026</b> (full month being purchased): every engine trade + every
+Angus live execution gets its book state reconstructed at entry — the loser-cutting layer's exam.</li>
+<li><b>6. Gate agent authority by library depth.</b> The agents' predicted worst failure mode is
+overconfident calls on thin analogs (the L2 benchmark already showed a shallow library losing to the
+dumb switch). Rule for Pat: below N comparable analog days, the agent may only stand down or defer to
+mechanical — never override with conviction. Authority is earned as the library deepens.</li>
+<li><b>7. 2025 is the agents' real exam.</b> A year where both books bleed, the day-type index reads
+normal, and the oracle stays green 12/12 — pure decision-layer territory. If the agent arm can't at
+least go flat-ish through 2025, the stack isn't ready; if it turns 2025 green, it's real.</li>
+</ul>
+<div class="hbox"><b>Honesty box.</b> MEASURED numbers are simulated fills with slippage + commissions on
+1 contract. EST numbers are stated-assumption forecasts, deliberately conservative, and exist to be
+replaced by replay measurements. The oracle is hindsight and untradeable — it is the measuring stick,
+not the promise. The promise is the process: every layer must beat the layer below it on data it has
+never seen, or it gets cut.</div>
+</section>
+</div>

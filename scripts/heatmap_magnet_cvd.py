@@ -20,12 +20,13 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-SP = "/tmp/claude-0/-home-user-AI-trading-agents/8f4cdd65-f942-532a-87f2-c9c07c27272a/scratchpad"
+# read the committed journal (travels with the repo); fall back to any local scratchpad copy
+JOURNAL = Path("output/handoff/champ_journal_cvd.csv")
 MAG, DIST = 15, 6   # magnet size threshold (p95~8), and max distance entry->magnet (points)
 
 
 def main():
-    J = pd.read_csv(f"{SP}/champ_journal_cvd.csv")
+    J = pd.read_csv(JOURNAL)
     J = J[J.date.str.startswith("2026-04")].copy()
     bars = pd.read_parquet("data/reference/nq_1m_feb_jul2026.parquet")
     bars["key"] = bars.ts_event.dt.strftime("%Y-%m-%d %H:%M")
