@@ -128,3 +128,50 @@ Grading plan on completion: pull fresh-eyes' own 2026 subset from the walk_v07 t
 grade both arms on IDENTICAL 2026 floored books, and report reads/capture/FLAT-rate/
 health-override-rate side by side — this is the real "does memory help or hurt"
 answer promised since June's frame-lock-in finding, now on 139 days not ~20.
+
+## RESULTS (20 Jul) — both arms complete, graded
+
+Fresh-eyes: 912/912 answered, 884 gradeable days, 0 invalid. Chained: 139/139
+answered, 127 gradeable days, 0 errors. Three overnight failure modes hit and fixed
+live (stacked-workflow silent death, a hard session-usage limit that hit all three
+arms simultaneously, a CronCreate watchdog that never fired once in ~8 hours) — see
+the overnight-report artifacts for the full incident writeups.
+
+**Fresh-eyes, full 4-year walk (vs champion+floor):**
+
+| year | champion+floor | fresh-eyes v0.7 | Δ |
+|---|--:|--:|--:|
+| 2023 | −$10,214 (−14%) | −$440 (−1%) | +$9,774 |
+| 2024 | −$3,579 (−5%) | +$2,391 (+3%) | +$5,970 |
+| 2025 | −$15,962 (−25%) | −$13,783 (−22%) | +$2,179 |
+| 2026 | +$8,878 (+18%) | +$10,913 (+23%) | +$2,035 |
+| **4-year total** | **−$20,877** | **−$919 (−0%)** | **+$19,958** |
+
+Graded against the pre-registered PROMOTE bars: beats champion+floor on the 4-year
+total ✅, beats it in 4/4 years individually (bar was ≥3/4) ✅, but does NOT clear
+"every year ≥ $0" ❌ — 2023 and 2025 are still net negative, just far less so. Real,
+measured progress (the dial substantially shrinks the bleed in every single year),
+not full promotion-grade performance. Say that plainly.
+
+**Chained vs fresh-eyes, identical 127 days in 2026:**
+
+| | fresh-eyes | chained |
+|---|--:|--:|
+| P&L | +$10,913 | +$14,465 |
+| capture | 23% | 30% |
+| reads | 35% | 39% |
+| flat | 17% | 17% |
+| book override | 28/127 (22%) | 25/127 (20%) |
+| health-gate overrides | 0% | 0% |
+
+Chained wins by +$3,552 / +7pp capture. Flat-rate and health-override-rate are
+IDENTICAL between the two arms (both mechanically gated by the same precomputed
+`regime_health` signal, present in both arms' briefings regardless of memory) — the
+entire gap is book-choice accuracy (39% vs 35% reads), despite chained overriding
+the champion pick slightly LESS often. Memory doesn't change WHEN the desk trades;
+it changes WHICH book it picks when it does. Caveat: one run each, not multiple
+seeds — the exact-match flat-rate/health-gate numbers make pure noise less likely
+as the explanation, but a repeat chained run on a different year would firm this up
+before treating "+7pp from memory" as load-bearing for design decisions.
+
+Full writeup: artifact "The Long Walk — Final Results" (published 20 Jul).
