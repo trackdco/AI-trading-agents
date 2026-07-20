@@ -1,0 +1,198 @@
+diff --git a/src/backtest/engine.py b/src/backtest/engine.py
+index a695d9c..9ae4a80 100644
+--- a/src/backtest/engine.py
++++ b/src/backtest/engine.py
+@@ -536,6 +536,21 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
+         st = day(ts)
+         return (cfg.halt_losses > 0 and st["losses"] >= cfg.halt_losses) or st["r"] <= cfg.halt_r
+ 
++    def avoid_entry(tod, ts) -> bool:
++        # BUGFIX (Brake ruling 20 Jul): the sit-out / VWAP-warmup / high-impact-pre-open
++        # blocks must gate RESTING-ORDER FILLS too, not only NEW triggers — otherwise an
++        # order placed just before the window fills inside it. Holds the order (no fill this
++        # bar); it can still fill after the window, or cancel at t_cancel / window-end.
++        if cfg.no_trade_start is not None and cfg.no_trade_start <= tod < cfg.no_trade_end:
++            return True
++        msa = (tod.hour * 60 + tod.minute) - 18 * 60          # minutes since the 18:00 anchor
++        if 0 <= msa < cfg.vwap_warmup_min:
++            return True
++        if (cfg.no_premarket_high_impact and tod < dtime(9, 30)
++                and preopen_news.get(ts.date()) is not None):
++            return True
++        return False
++
+     def veto(t: Trigger, status: str, reason: str):
+         verdicts.append(Verdict(ts=t.ts, tf=t.tf, direction=t.direction,
+                                 pattern=t.pattern, status=status, reason=reason))
+@@ -700,82 +715,6 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
+                             if (sign == 1 and cand > cur) or (sign == -1 and cand < cur):
+                                 pos.pending_stop = cand
+ 
+-        # ---- working order (only when flat) ----
+-        if pos is None and order is not None:
+-            t = order.trig
+-            sign = 1 if t.direction == "long" else -1
+-            through = cfg.through_ticks * cfg.tick
+-            if past_eod(tod) or halted(ts):
+-                veto(t, "cancelled_eod" if past_eod(tod) else "cancelled_halt",
+-                     "order cancelled before fill")
+-                order = None
+-            elif not in_window(tod):
+-                veto(t, "cancelled_window_end", f"unfilled at {cfg.win_end}")
+-                order = None
+-            else:
+-                if _is_market_entry(cfg, t):
+-                    # E4/EC-displacement: MARKET entry — fills unconditionally on this (next)
+-                    # bar at the open with adverse slippage; no resting limit, no T_cancel.
+-                    ran, fillable = False, True
+-                else:
+-                    ran = (h >= order.limit + cfg.t_cancel) if sign == 1 else \
+-                          (lo <= order.limit - cfg.t_cancel)
+-                    fillable = (lo <= order.limit - through) if sign == 1 else \
+-                               (h >= order.limit + through)
+-                if ran:                                       # cancel wins over same-bar fill
+-                    veto(t, "cancelled_tcancel",
+-                         f"price ran {cfg.t_cancel} pts beyond limit unfilled")
+-                    order = None
+-                elif fillable:
+-                    st = day(ts)
+-                    if st["fills"] >= cfg.max_trades_per_day:
+-                        veto(t, "vetoed_vault_max", "max trades/day reached at fill time")
+-                        order = None
+-                    else:
+-                        st["fills"] += 1
+-                        # gap-through entry: a resting limit cannot fill better than the bar's
+-                        # first traded price. If the bar OPENED beyond the limit, the fill is the
+-                        # open (favourable), not the limit — otherwise a same-bar gap past the stop
+-                        # books a phantom loss (entry at limit, exit at open). risk_pts stays the
+-                        # INTENDED risk (limit->stop, the R currency); actual P&L uses the real fill.
+-                        if _is_market_entry(cfg, t):
+-                            # market order crosses the spread: open + adverse slippage; the R
+-                            # currency is the ACTUAL fill->stop distance (no resting price exists)
+-                            sl_in = slip.ticks(ts)
+-                            fill_px = _round_tick(o + sign * sl_in * cfg.tick, cfg.tick)
+-                        else:
+-                            fill_px = min(order.limit, o) if sign == 1 else max(order.limit, o)
+-                        if _is_market_entry(cfg, t) and sign * (fill_px - order.stop) <= 0:
+-                            # opened at/beyond the stop: a market entry here is instant dead risk
+-                            st["fills"] -= 1
+-                            veto(t, "cancelled_gap_through_stop",
+-                                 f"market fill {fill_px} at/beyond stop {order.stop}")
+-                            order = None
+-                            fill_px = None
+-                        if fill_px is not None:
+-                            pos = _Pos(order=order, entry=fill_px, fill_ts=ts,
+-                                       stop=order.stop,
+-                                       risk_pts=(abs(fill_px - order.stop)
+-                                                 if _is_market_entry(cfg, t)
+-                                                 else abs(order.limit - order.stop)))
+-                            pos.partial_level = order.partial_level
+-                            pos.v2_band = order.v2_band
+-                            verdicts.append(Verdict(ts=t.ts, tf=t.tf, direction=t.direction,
+-                                                    pattern=t.pattern, status="taken",
+-                                                    reason=f"filled {fill_px}"))
+-                            order = None
+-                            # evaluate exits on the fill bar itself (stop first, conservative)
+-                            p = pos
+-                            stop_hit = (lo <= p.stop) if sign == 1 else (h >= p.stop)
+-                            if stop_hit:
+-                                sl = slip.ticks(ts)
+-                                worse = min(p.stop, o) if sign == 1 else max(p.stop, o)
+-                                close_trade(p, worse - sign * sl * cfg.tick, "stop", ts, sl)
+-                            else:
+-                                tgt = p.order.working_target
+-                                if (h >= tgt + through) if sign == 1 else (lo <= tgt - through):
+-                                    close_trade(p, tgt, "target", ts, 0)
+-
+         # ---- new triggers closing at this bar's label ----
+         for t in trig_by_ts.get(ts, []):
+             if pos is not None:
+@@ -909,6 +848,88 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
+                            partial_level=plvl,
+                            v2_band=aux.get("v2_band"))
+ 
++        # ---- working order (fill AFTER this bar's triggers are placed) ----
++        # BUGFIX (Brake ruling 20 Jul): moved below trigger placement so an order activates
++        # on the bar stamped == its trigger's close ts (was 1 bar late). The bar labeled ts
++        # covers [ts, ts+1min) — strictly after the trigger candle — so this is causal, not
++        # lookahead. Pre-existing orders (from earlier bars) also fill here, unchanged.
++        if pos is None and order is not None:
++            t = order.trig
++            sign = 1 if t.direction == "long" else -1
++            through = cfg.through_ticks * cfg.tick
++            if past_eod(tod) or halted(ts):
++                veto(t, "cancelled_eod" if past_eod(tod) else "cancelled_halt",
++                     "order cancelled before fill")
++                order = None
++            elif not in_window(tod):
++                veto(t, "cancelled_window_end", f"unfilled at {cfg.win_end}")
++                order = None
++            elif avoid_entry(tod, ts):
++                pass                                          # sit-out/warmup/news: hold, no fill
++            else:
++                if _is_market_entry(cfg, t):
++                    # E4/EC-displacement: MARKET entry — fills unconditionally on this (next)
++                    # bar at the open with adverse slippage; no resting limit, no T_cancel.
++                    ran, fillable = False, True
++                else:
++                    ran = (h >= order.limit + cfg.t_cancel) if sign == 1 else \
++                          (lo <= order.limit - cfg.t_cancel)
++                    fillable = (lo <= order.limit - through) if sign == 1 else \
++                               (h >= order.limit + through)
++                if ran:                                       # cancel wins over same-bar fill
++                    veto(t, "cancelled_tcancel",
++                         f"price ran {cfg.t_cancel} pts beyond limit unfilled")
++                    order = None
++                elif fillable:
++                    st = day(ts)
++                    if st["fills"] >= cfg.max_trades_per_day:
++                        veto(t, "vetoed_vault_max", "max trades/day reached at fill time")
++                        order = None
++                    else:
++                        st["fills"] += 1
++                        # gap-through entry: a resting limit cannot fill better than the bar's
++                        # first traded price. If the bar OPENED beyond the limit, the fill is the
++                        # open (favourable), not the limit — otherwise a same-bar gap past the stop
++                        # books a phantom loss (entry at limit, exit at open). risk_pts stays the
++                        # INTENDED risk (limit->stop, the R currency); actual P&L uses the real fill.
++                        if _is_market_entry(cfg, t):
++                            # market order crosses the spread: open + adverse slippage; the R
++                            # currency is the ACTUAL fill->stop distance (no resting price exists)
++                            sl_in = slip.ticks(ts)
++                            fill_px = _round_tick(o + sign * sl_in * cfg.tick, cfg.tick)
++                        else:
++                            fill_px = min(order.limit, o) if sign == 1 else max(order.limit, o)
++                        if _is_market_entry(cfg, t) and sign * (fill_px - order.stop) <= 0:
++                            # opened at/beyond the stop: a market entry here is instant dead risk
++                            st["fills"] -= 1
++                            veto(t, "cancelled_gap_through_stop",
++                                 f"market fill {fill_px} at/beyond stop {order.stop}")
++                            order = None
++                            fill_px = None
++                        if fill_px is not None:
++                            pos = _Pos(order=order, entry=fill_px, fill_ts=ts,
++                                       stop=order.stop,
++                                       risk_pts=(abs(fill_px - order.stop)
++                                                 if _is_market_entry(cfg, t)
++                                                 else abs(order.limit - order.stop)))
++                            pos.partial_level = order.partial_level
++                            pos.v2_band = order.v2_band
++                            verdicts.append(Verdict(ts=t.ts, tf=t.tf, direction=t.direction,
++                                                    pattern=t.pattern, status="taken",
++                                                    reason=f"filled {fill_px}"))
++                            order = None
++                            # evaluate exits on the fill bar itself (stop first, conservative)
++                            p = pos
++                            stop_hit = (lo <= p.stop) if sign == 1 else (h >= p.stop)
++                            if stop_hit:
++                                sl = slip.ticks(ts)
++                                worse = min(p.stop, o) if sign == 1 else max(p.stop, o)
++                                close_trade(p, worse - sign * sl * cfg.tick, "stop", ts, sl)
++                            else:
++                                tgt = p.order.working_target
++                                if (h >= tgt + through) if sign == 1 else (lo <= tgt - through):
++                                    close_trade(p, tgt, "target", ts, 0)
++
+     # equity
+     closed = sorted(trades, key=lambda tr: tr.exit_ts)
+     eq_rows, cr, cd = [], 0.0, 0.0
