@@ -7,12 +7,13 @@ Method: grade both books UNCAPPED (cap 6 ~ uncapped in the 08:00-10:15 window) t
 per-day candidate set with CVD conviction, then reconstruct policies in pandas:
   benchmark: per day pick the better book at a realistic 2-cap; stand down if it still loses.
   P0 static-2   : first 2 candidates by time (= current champion)
-  P1 fade-gate  : causal — take candidates in time order, only if CVD conviction is a fade, cap 2
-  P2 best2-fade : rank day's candidates by fade strength, take top 2 (hindsight CEILING)
-  P3 best1-fade : top 1 by fade strength
+  P1 confirm-gate: causal — take candidates in time order, only if flow CONFIRMS, cap 2
+  P2 best2-confirm: rank day's candidates by confirmation strength, top 2 (hindsight CEILING)
+  P3 best1-confirm: top 1 by confirmation strength
 
-CVD conviction = signed aggressive delta (buy-sell) in the 3-min window BEFORE entry, oriented
-to direction. FADE = flow against the trade (low/negative) -> the champion's rejection edge.
+CVD conviction = signed aggressive delta (BUY-SELL) in the 3-min window BEFORE entry, oriented
+to direction. CONFIRMATION = flow WITH the trade (high/positive: buyers before a long).
+SIGN VERIFIED (scratchpad/sign_test.py): side 'A' = aggressive SELL, 'B' = BUY -> buy-sell = B-A.
 
     python -m scripts.selection_study
 """
@@ -50,7 +51,7 @@ def load_cvd_delta():
     frames = [pd.read_parquet(f"data/reference/cvd/{f}.parquet", columns=["ts_minute", "side", "volume"])
               for f in CVD]
     d = pd.concat(frames, ignore_index=True)
-    d["signed"] = np.where(d["side"] == "A", d["volume"], -d["volume"])
+    d["signed"] = np.where(d["side"] == "B", d["volume"], -d["volume"])   # B(buy) - A(sell)
     g = d.groupby("ts_minute")["signed"].sum().rename("delta")
     g.index = g.index.tz_convert(NY)
     return g.sort_index()
@@ -134,37 +135,37 @@ def main():
     P0 = cand.groupby("date", group_keys=False).apply(lambda g: first_n_by_time(g, 2))
     summarize(P0, "P0 static-2 (current)", oracle_sd)
 
-    for thr in (0.0, -200.0, -500.0):
+    for thr in (0.0, 200.0, 500.0):   # keep trades whose CONFIRMATION >= thr
         def gate(g, thr=thr):
             keep, out = 0, []
             for r in g.sort_values("fill_ts").itertuples():
                 if keep >= 2:
                     break
-                if pd.notna(r.cvd) and r.cvd <= thr:
+                if pd.notna(r.cvd) and r.cvd >= thr:
                     out.append(r.Index); keep += 1
             return g.loc[out]
         P1 = cand.groupby("date", group_keys=False).apply(gate)
-        summarize(P1, f"P1 fade-gate cvd<={thr:.0f} (causal)", oracle_sd)
+        summarize(P1, f"P1 confirm-gate cvd>={thr:.0f} (causal)", oracle_sd)
 
-    P2 = cand.groupby("date", group_keys=False).apply(lambda g: g.sort_values("cvd").head(2))
-    summarize(P2, "P2 best-2-by-fade (ceiling)", oracle_sd)
-    P3 = cand.groupby("date", group_keys=False).apply(lambda g: g.sort_values("cvd").head(1))
-    summarize(P3, "P3 best-1-by-fade (ceiling)", oracle_sd)
+    P2 = cand.groupby("date", group_keys=False).apply(lambda g: g.sort_values("cvd", ascending=False).head(2))
+    summarize(P2, "P2 best-2-by-confirm (ceiling)", oracle_sd)
+    P3 = cand.groupby("date", group_keys=False).apply(lambda g: g.sort_values("cvd", ascending=False).head(1))
+    summarize(P3, "P3 best-1-by-confirm (ceiling)", oracle_sd)
 
-    # ---- proxy check: is the fade edge just time-of-day or WAR? ----
-    print(f"\n== PROXY CHECK: fade edge vs confounds (on P0 static-2 set) ==")
-    P0 = P0.copy()
+    # ---- proxy check: is the confirmation edge just time-of-day or WAR? ----
+    print(f"\n== PROXY CHECK: confirmation edge vs confounds (on P0 static-2 set) ==")
+    P0 = P0.reset_index(drop=True).copy()   # groupby-apply left 'date' in the index -> restore it
     P0["war"] = P0.date.isin(war)
-    P0["fade"] = P0.cvd <= 0
+    P0["confirm"] = P0.cvd > 0
     P0["preopen"] = P0.fillt.apply(lambda t: t < dtime(9, 30))
     for seg, mask in [("pre-open", P0.preopen), ("post-open", ~P0.preopen),
                       ("non-WAR", ~P0.war), ("WAR", P0.war)]:
         s = P0[mask]
         if len(s) < 5:
             continue
-        f, nf = s[s.fade], s[~s.fade]
-        print(f"  {seg:9s}: fade {len(f):3d}t win {(f.dollars>0).mean()*100:2.0f}% ${f.dollars.sum():+7,.0f}  |  "
-              f"follow {len(nf):3d}t win {(nf.dollars>0).mean()*100:2.0f}% ${nf.dollars.sum():+7,.0f}")
+        f, nf = s[s.confirm], s[~s.confirm]
+        print(f"  {seg:9s}: confirm {len(f):3d}t win {(f.dollars>0).mean()*100:2.0f}% ${f.dollars.sum():+7,.0f}  |  "
+              f"non-confirm {len(nf):3d}t win {(nf.dollars>0).mean()*100:2.0f}% ${nf.dollars.sum():+7,.0f}")
 
 
 if __name__ == "__main__":

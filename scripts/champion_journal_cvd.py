@@ -39,13 +39,16 @@ def load_triggers():
 
 
 def load_cvd_delta():
-    """Per-minute signed aggressive delta (A=buy vol, B=sell vol) -> delta = buy - sell, in ET."""
+    """Per-minute signed aggressive delta = BUY - SELL, in ET.
+    SIGN VERIFIED EMPIRICALLY (scratchpad/sign_test.py): corr(A-B, price change) = -0.66,
+    i.e. side 'A' = aggressive SELL (A-heavy minutes push price DOWN), side 'B' = aggressive BUY.
+    So buy-sell = B - A. (Fable5 caught the original A=buy mislabel; price test confirms.)"""
     frames = []
     for f in CVD:
         d = pd.read_parquet(f"data/reference/cvd/{f}.parquet", columns=["ts_minute", "side", "volume"])
         frames.append(d)
     d = pd.concat(frames, ignore_index=True)
-    d["signed"] = np.where(d["side"] == "A", d["volume"], -d["volume"])
+    d["signed"] = np.where(d["side"] == "B", d["volume"], -d["volume"])   # B(buy) - A(sell)
     g = d.groupby("ts_minute")["signed"].sum().rename("delta")
     g.index = g.index.tz_convert(NY)
     return g.sort_index()
