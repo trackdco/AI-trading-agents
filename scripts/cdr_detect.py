@@ -161,8 +161,7 @@ def report(T, stage, tf, ndays):
 
 def main():
     bars = pd.read_parquet(DATA)
-    vwap = daily_vwap(bars, bands=[2], session_open=dtime(18, 0))
-    vwap["ts_event"] = bars["ts_event"].values
+    vwap = daily_vwap(bars, bands=[2], session_open=dtime(18, 0))  # already carries tz-aware ts_event
     fp = load_footprint()
     ndays = fp.day.nunique()
     import sys as _s
