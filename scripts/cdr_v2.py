@@ -101,7 +101,7 @@ def run_tf(tf, bars1m, vwap1m, fp, tol, cvd_mode):
                       "v+2": vw["upper_2"], "v-2": vw["lower_2"], "bb": row.basis,
                       "bbU": row.upper, "bbL": row.lower, "poc": poc[pmin]}
             for k, v in fibs.items():
-                levels["fib" + k[0]] = v
+                levels[f"fib{k}"] = v
             # find a zone: a price where >=2 levels cluster
             vals = sorted(levels.values())
             zone = None
