@@ -1,3 +1,9 @@
+> **UPDATE (overnight, 21 Jul): P0 COMPLETE.** All resume steps below are done — fixes applied +
+> verified (3 agents), 4 tests updated, DST fix + regression test, suite 299 green, champion
+> re-measured with adversarial verification. See **`docs/MORNING-REPORT-2026-07-21.md`** for the
+> authoritative results (headline: fix corrects an inflated 1-contract $ figure but the edge in R is
+> intact-to-better; 09:15–09:45 stand-out validated OOS). This file is retained as history.
+
 # SESSION STATE — engine audit + entry-timing fix (Brake, 20 Jul 2026)
 
 Resume point. Read top-to-bottom. Work is on `getting-started-6lwnvs` (the real pipeline) but

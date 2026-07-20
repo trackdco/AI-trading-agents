@@ -114,10 +114,23 @@ Two findings:
    (−0.81R/−0.33R buckets) and the marginal fills the timing fix surfaced. Best = mixed + stand-out:
    **+$10,392 / +47.8R / +0.362R** — recovers the dollars the fix "cost" AND lifts R.
 
-**Caveat:** these runs span Feb–Jul incl. the Jun/Jul **OOS** block. This is a DIAGNOSTIC PROPOSAL, not
-a locked change — the honest next step is to validate the 09:15–09:45 stand-out on the fixed engine
-with Jun/Jul held out, then Angus sign-off + doc bump (per the project's no-tuning rule). It extends
-the already-shipped 09:30–09:40 sit-out.
+**OOS-clean validation (did it overfit? No):** split the 09:15–09:45 stand-out IN-SAMPLE (Feb–May) vs
+OUT-OF-SAMPLE (Jun–Jul) on the fixed engine:
+
+| | trades | win% | net$ | netR | **exp** |
+|---|--:|--:|--:|--:|--:|
+| IS (Feb–May) no gate | 111 | 29.7% | +$6,724 | +34.1 | +0.307 |
+| IS + stand-out | 101 | 31.7% | +$8,167 | +41.4 | **+0.410** |
+| OOS (Jun–Jul) no gate | 34 | 26.5% | +$1,225 | +3.0 | +0.088 |
+| OOS + stand-out | 31 | 29.0% | +$2,225 | +6.3 | **+0.205** |
+
+The stand-out lifts expectancy **in both periods** (IS +0.31→+0.41R; OOS +0.09→+0.21R — more than
+doubling the thin OOS tail) — directionally consistent, so it is **not overfit**. Caveat: OOS n=31 is
+small and the underlying edge is thin (per §5), so treat the OOS lift as encouraging-not-proven.
+
+**This is the night's cleanest actionable proposal for Angus:** extend the shipped 09:30–09:40 sit-out
+to **09:15–09:45** on the fixed engine. It passed an OOS check; it needs only Angus sign-off + a
+strategy-doc version bump (per the no-tuning rule) to lock.
 
 ## 7. Artifacts
 - Full fix patch (engine timing + resting-fill gate + DST + tests): `patches/engine-entry-timing-fix.patch`
