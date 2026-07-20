@@ -40,14 +40,39 @@ and just enter."*
 | fib levels | `_ote_levels` (pass-22) | exists |
 | displacement candle / retest / structural stop | new detection logic | build |
 
-## OPEN PARAMETERS — need Angus's exact settings before building (they change the levels materially)
-1. **Bollinger Bands:** period + σ (standard 20 / 2.0?) and **timeframe** (1m / 2m / 5m candles?).
-2. **Which POC:** developing (today, live-building — thin at 09:40), **prior-day**, or overnight POC?
-   ("daily POC" is ambiguous for a 09:40 entry.)
-3. **VWAP anchor:** cash-open (09:30) or Globex/overnight (18:00)? "Respect" tolerance (ticks)?
-4. **Displacement threshold:** what qualifies as "break through" — candle *close* beyond BB & POC, and
-   by how much (ticks / % of ATR)?
-5. **Confluence tolerance:** how close must VWAP, BB, POC be to count as "aligned" (ticks/points)?
+## PARAMETERS — CONFIRMED by Angus (20 Jul)
+1. **POC = developing (today)**, live-building from the cash open — POC of the volume profile using
+   only bars up to the current bar.  → `indicators.profile_asof(...)` (exists).
+2. **Bollinger = 20 length, SMA basis, 2.0 σ, 0 offset.**  → `indicators.bollinger(df, 20, 2.0)` (exists).
+3. **VWAP = Globex/overnight** (18:00 ET anchor).  → `indicators.daily_vwap` (exists).
+4. **Multi-timeframe, execution TF = the TF the displacement prints on.** Angus: *"if it displaces
+   through on the 2-minute Bollinger Band MA with POC aligning and VWAP rejection, I enter based on the
+   2 minute. The entry mechanism is the same."* So scan {1m, 2m, 3m, 5m}; the displacement TF is the
+   trade's execution TF (stop/retest measured on that TF's candles).
+5. Still to tune (start with defaults, calibrate on data): confluence tolerance (how close BB-line, POC,
+   VWAP must sit — start ~ a few points / ATR-scaled); displacement = candle **close** beyond the
+   BB+POC confluence.
+
+## ALL INDICATORS ALREADY EXIST (`src/engine/indicators.py`) — build is setup-logic only
+| piece | engine function | note |
+|---|---|---|
+| Globex VWAP | `daily_vwap` (18:00 anchor) | + volume-weighted bands |
+| Bollinger 20/SMA/2σ | `bollinger(df, 20, 2.0)` | population σ (ddof=0), matches TV |
+| developing POC | `profile_asof` | developing profile; POC = max-volume bin as-of ts |
+| fib levels | `snapshot._ote_levels` | for the fib-confluence variant |
+
+## DETECTION ALGORITHM (per execution TF, per bar in 09:40–10:15)
+1. Compute on this TF's candles: BB(20, 2σ) [basis + upper/lower], Globex VWAP, developing POC (asof bar).
+2. **Confluence**: a BB line (basis per Angus's "BB MA"; also test outer band) sits within tolerance of
+   the developing POC. VWAP is on the correct side (respected/rejected in the trade direction).
+3. **Displacement**: a candle *closes through* the BB+POC confluence, moving away from VWAP (commitment).
+4. **Entry**: on the **retest** of the broken level (POC or BB line) after the displacement candle.
+5. **Stop**: just beyond the **displacement candle** extreme (low for long / high for short).
+6. Direction: long when VWAP respected as support + up-displacement through confluence above; short mirror.
+
+### Fib-confluence variant
+When an `_ote_levels` fib coincides with VWAP + developing POC (3-way, within tolerance) and there is
+conviction, wait for the **reaction** at the level and enter (no displacement break required).
 
 ## Measurement plan (once built)
 - Detect CDR triggers 09:40–10:15 over 2026; grade with the current engine (V8 mgmt, structural stop).
