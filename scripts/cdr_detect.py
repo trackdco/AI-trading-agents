@@ -55,7 +55,7 @@ def dev_poc_series(fp_day):
     return out
 
 
-def run_tf(tf, bars1m, vwap1m, fp):
+def run_tf(tf, bars1m, vwap1m, fp, tol=TOL):
     rule = f"{tf}min"
     tfd = resample_ohlcv(bars1m, rule).reset_index(drop=True)
     bb = bollinger(tfd, 20, 2.0)
@@ -65,6 +65,7 @@ def run_tf(tf, bars1m, vwap1m, fp):
     # 1m frames keyed by minute for VWAP + intrabar exit scan
     v1 = vwap1m.set_index("ts_event")["vwap"]
     trades = []
+    stage = dict(bars=0, confluence=0, displacement=0)
     for day, g in tfd.groupby("day"):
         fpd = fp[fp.day == day]
         if fpd.empty:
@@ -84,17 +85,20 @@ def run_tf(tf, bars1m, vwap1m, fp):
             vw = v1.get(pmin, np.nan)
             if pd.isna(vw):
                 continue
+            stage["bars"] += 1
             # confluence: POC aligns with a BB line
             lines = {"basis": row.basis, "upper": row.upper, "lower": row.lower}
             line_name = min(lines, key=lambda k: abs(lines[k] - P))
-            if abs(lines[line_name] - P) > TOL:
+            if abs(lines[line_name] - P) > tol:
                 continue
+            stage["confluence"] += 1
             level = (lines[line_name] + P) / 2.0
             # displacement: close through the level, prev close on the other side, away from VWAP
             long_disp = prev.close < level <= row.close and vw <= level
             short_disp = prev.close > level >= row.close and vw >= level
             if not (long_disp or short_disp):
                 continue
+            stage["displacement"] += 1
             direction = "long" if long_disp else "short"
             stop = row.low if direction == "long" else row.high
             risk = abs(level - stop)
@@ -137,13 +141,17 @@ def run_tf(tf, bars1m, vwap1m, fp):
             dollars = outcome * PV - 2 * COMM
             trades.append(dict(day=day, tf=tf, direction=direction, filled=True,
                                line=line_name, risk=risk, R=outcome / risk, dollars=dollars))
-    return pd.DataFrame(trades)
+    return pd.DataFrame(trades), stage
 
 
-def report(T, tf, ndays):
+def report(T, stage, tf, ndays):
+    print(f"\n== TF {tf}min ==  funnel: bars={stage['bars']}  confluence={stage['confluence']}  "
+          f"displacement={stage['displacement']}  setups={len(T)}")
+    if not len(T) or "filled" not in T.columns:
+        print("   (no setups)"); return
     f = T[T.filled]
     setups = len(T)
-    print(f"\n== TF {tf}min ==  setups {setups} ({setups/ndays:.2f}/day)  filled {len(f)} ({len(f)/max(setups,1)*100:.0f}%)")
+    print(f"   setups {setups} ({setups/ndays:.2f}/day)  filled {len(f)} ({len(f)/max(setups,1)*100:.0f}%)")
     if len(f):
         print(f"   filled: win {(f.dollars>0).mean()*100:.0f}%  avg {f.R.mean():+.2f}R  "
               f"${f.dollars.sum():+,.0f}  (${f.dollars.mean():+.0f}/t)  "
@@ -157,13 +165,17 @@ def main():
     vwap["ts_event"] = bars["ts_event"].values
     fp = load_footprint()
     ndays = fp.day.nunique()
-    print(f"CDR detector — 2026 Feb-Jul, {ndays} days, window {WIN_S}-{WIN_E}, TOL={TOL}pt, target={TGT_R}R")
+    import sys as _s
+    tol = float(_s.argv[1]) if len(_s.argv) > 1 else TOL
+    print(f"CDR detector — 2026 Feb-Jul, {ndays} days, window {WIN_S}-{WIN_E}, TOL={tol}pt, target={TGT_R}R")
     allT = []
     for tf in (1, 2, 3):
-        T = run_tf(tf, bars, vwap, fp)
-        report(T, tf, ndays)
-        allT.append(T)
-    pd.concat(allT).to_csv(f"/tmp/claude-0/-home-user-AI-trading-agents/8f4cdd65-f942-532a-87f2-c9c07c27272a/scratchpad/cdr_trades.csv", index=False)
+        T, stage = run_tf(tf, bars, vwap, fp, tol=tol)
+        report(T, stage, tf, ndays)
+        if len(T):
+            allT.append(T)
+    if allT:
+        pd.concat(allT).to_csv(f"/tmp/claude-0/-home-user-AI-trading-agents/8f4cdd65-f942-532a-87f2-c9c07c27272a/scratchpad/cdr_trades.csv", index=False)
 
 
 if __name__ == "__main__":
