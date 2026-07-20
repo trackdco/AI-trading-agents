@@ -1,6 +1,34 @@
 # TASK FOR BRAKE — Order-book data pull (Angus directive, 18 Jul 2026)
 
+## UPDATE 14 (20 Jul, Brake) — ✅ RESOLVED: depth data is CORRECT, not broken (Update 13 closed)
+
+The depth-scale flag was investigated by running an agent **directly on the raw mbp-10
+files on Brake's Mac** (Angus's suggested fastest path). Verdict: **there is no bug — the
+condenser was faithful.** Independently confirmed three ways on the raw feed:
+
+1. **Right instrument, all 30 days.** Front month = **NQM6**, correctly selected every day
+   (not a spread leg, back month, or micro).
+2. **Sizes read faithfully.** Raw max reaches **112 at top-of-book / 619 across 20 levels**
+   — rules out truncation or a unit/scaling error. The re-read output is **byte-identical**
+   to the committed `data/reference/depth_apr2026/` (re-verified in the engine session).
+3. **Prices track the real market** (24,000 → 27,500 across April), matching the 1m master.
+
+**The book really is thin — that's NQ, not a pipeline fault.** Measured on the committed
+month (NY window): top-of-book single level median **2** (p95 4, max 47); full 20-level
+book median **72**, p95 122, max 306. The 9:30 "52 contracts vs 4,761 traded" is genuine
+heavy flow-through a thin, fast book. **"Hundreds at top-of-book" is ES behavior; NQ's
+top-10 simply doesn't hold that.** No amount of re-pulling changes this — it's the market.
+
+**One honest methodological lever if you want a less spiky heatmap (Angus's call):** the
+current file stores the **last-message-of-minute** book snapshot, which often catches the
+book mid-depletion right after a sweep (hence the thin per-minute prints). Alternatives
+that show *resting* liquidity better **without fabricating anything**: per-minute **max**
+book, or **time-weighted average** book across the minute. Say the word and we'll rebuild
+the month from the raw with either method (raw still on Brake's Mac) — otherwise the
+current last-snapshot data stands and is accurate.
+
 ## UPDATE 13 (20 Jul, Angus directive) — HEATMAP DEPTH DATA IS BROKEN, please fix (BLOCKER)
+**[CLOSED by Update 14 — investigated on raw feed; data verified correct, not broken.]**
 
 **Assigned to Brake. This blocks all heatmap work — top priority on the data side.**
 
@@ -72,7 +100,7 @@ this order; do NOT jump ahead.
 | 1 | Historical FF calendar 2023-25 | scraper | free | Update 6 — DONE |
 | 2 | **VIX / VXN** | CBOE/Yahoo/FRED | **free** | ✅ DONE — `data/reference/vix_daily.csv` (VIXCLS 1990→2026-07-16) |
 | 3 | **CVD / delta / footprint** | Databento `trades` | **~$10-20/mo (CHEAP)** | ⏳ APRIL SLICE DELIVERED — `data/reference/cvd/footprint_apr2026.parquet`; full Feb–Jul span gated on April validation |
-| 4 | Heatmap / resting liquidity | Databento `mbp-10` | $80/mo | ⏳ APRIL DONE — `data/reference/depth_apr2026/` (48 files); still want Feb/Mar/May for 3+ mo |
+| 4 | Heatmap / resting liquidity | Databento `mbp-10` | $80/mo | ✅ APRIL VERIFIED CORRECT (Update 14) — `data/reference/depth_apr2026/`; want Feb/Mar/May for 3+ mo |
 | 5 | **Cross-market (ES/YM/RTY + 10Y + DXY)** | Yahoo/FRED daily; Databento 1m | free daily / small intraday | Update 10 — AFTER #3 & #4 |
 | — | Options/gamma, COT | various | expensive/speculative | PARKED — not until the above prove out |
 
