@@ -3,6 +3,12 @@
 **Decision needed from you (strategy authority) before Pat/Claude Code write a single
 line of the Desk (Atlas/Helios/Apollo/Hephaestus/Hermes).**
 
+**Update (19 Jul, after this packet was first sent):** the Desk skill docs were built
+against the original blueprint's v1.0 assumptions, then discovered to be stale — the
+LOCKED, current strategy is `strategy-definition-v1.2.md`, which already resolves
+several items below via your 17 Jul calibration rulings. Marked ✅ RESOLVED BY v1.2
+inline; everything else is still genuinely open.
+
 ## Why this exists
 
 Pat wants to start building the Desk. The design (`docs/agent-blueprint.md` +
@@ -31,13 +37,16 @@ first lets Pat start on partial agent files while the rest gets worked through:
 - **E-3** (§8) — displacement triggers currently get a hard-coded, made-up
   confluence count (`2`) instead of a real one. Feeds sizing AND the location
   checks with a fake number today, in the backtest too, not just the Desk.
-- **E-11** (§8) — the §7 confluence minimum (3 counter-trend / 2 with-trend)
-  isn't enforced ANYWHERE in the current engine/backtest path. This is a
-  calibration-validity issue for the numbers we've already been grading against,
-  not just a Desk blocker — flagging this one as urgent independent of Desk timing.
-- **Q-5** (§9) — the three half-trigger thresholds ("oversized stop," "late-window
-  entry," "thin target") are named in your §9 but never given numbers. Hephaestus's
-  sizing gate cannot run without these.
+- **E-11** (§8) — **still open, but the rule itself is now v1.2's**: the §7
+  confluence minimum isn't enforced ANYWHERE in the current engine/backtest path.
+  What "isn't enforced" now means the v1.2 BB+VWAP-both-present rule (see Q-2/Q-3
+  below), not the old 3-vs-2 split. Still a calibration-validity issue for numbers
+  already graded against, not just a Desk blocker.
+- ~~**Q-5** (§9) — half-trigger thresholds~~ **✅ RESOLVED BY v1.2**: oversized
+  stop > 42 pts, late-window entry after 10:30 ET (session-scoped windows only —
+  W2 has no time-based sizing). "Thin target" as a half-trigger no longer exists —
+  v1.2 deleted it; below the 2.0R floor is a SKIP, not a half-size trade. See
+  `strategy-definition-v1.2.md` §9 and `config/strategy.yaml` `sizing:`.
 
 ## A. Engine findings — doc vs. code disagree, which wins? (§8, E-1..E-12)
 
@@ -61,26 +70,36 @@ behavior intended (→ doc gets amended)? One-line answer is enough per item.
 
 ## B. Trading-rulebook questions (§9, Q-1..Q-13, Q-23..Q-28)
 
-- **Q-2:** does a structural level (prior-day/week/session extreme) near a cluster
-  add +1 to confluence count?
-- **Q-3:** confluence minimum when HTF regime is "range"?
-- **Q-4:** cluster tolerance — adjacent-gap or full-cluster-span?
-- **Q-5:** numbers for "oversized stop," "late-window entry," "thin target" (see
-  starting-subset above — this one's urgent).
+- ~~**Q-2:** does a structural level add +1 to confluence count?~~
+  **✅ RESOLVED BY v1.2**: no. Structural levels are target/context weight only,
+  never entry-minimum credit (§3). The entry gate is just "BB present AND VWAP
+  present" — POC and structural are bonus, never required.
+- ~~**Q-3:** confluence minimum when HTF regime is "range"?~~ **✅ RESOLVED BY
+  v1.2**: moot — the same BB+VWAP-present rule applies to every trade regardless
+  of regime, counter-trend included. No regime-based split exists anymore.
+- **Q-4:** cluster tolerance — adjacent-gap or full-cluster-span? (still open —
+  v1.2 didn't touch this)
 - **Q-6:** does a candle closing exactly at a window boundary (e.g. 11:00) count
   as in or out?
 - **Q-7:** §7's "opposing ±1σ" invalidation — NY VWAP or daily VWAP?
 - **Q-8:** pattern-A default target "VWAP middle" — NY mid when available, else
   daily mid?
 - **Q-9:** stop at vs. beyond the wick extreme (pairs with E-8), and which way to
-  round to the tick?
-- **Q-10:** RR-floor basis — the raw target level or the front-run-adjusted one?
+  round to the tick? (v1.2 added a separate NEW rule — minimum stop 10pts, skip
+  below it — but did not resolve this at-vs-beyond question)
+- ~~**Q-10:** RR-floor basis — raw target level or front-run-adjusted?~~
+  **✅ RESOLVED BY v1.2**: the raw `target_level`. Front-run points are execution
+  mechanics only for fills and never enter the R calculation. RR floor is also
+  now a hard 2.0R, not a CALIBRATE placeholder.
 - **Q-11:** "untaken" data extreme — best computable definition (design's proxy
   vs. a proper engine-stamped `swept` flag, I-9)?
 - **Q-12:** an unknown news-day status under an active override — note only, size
   downgrade, or veto?
-- **Q-13:** ratify or amend the A/B/C grade mapping, the veto field-nullability
-  convention, and "target = working_target."
+- **Q-13:** ratify or amend the A/B grade mapping (simplified under v1.2 — no
+  finer tier below "half" exists anymore, so grade C was dropped), the veto
+  field-nullability convention, and "target = working_target" terminology
+  (renamed `target_level` vs `target` in the skill docs to avoid the ambiguity
+  Q-10's resolution exposed).
 - **Q-23:** is counter-trend alone (no over-extension, no range extreme) a valid
   pattern-A route? Doc text says no, engine behavior says yes.
 - **Q-24:** no premarket session box currently exists for the §6.2 "pre-market
@@ -103,6 +122,18 @@ choices (retry policy, config file layout, runner concurrency, etc.), except:
 **Q-20** (should specialists see the engine's computed answers as a cross-check,
 or re-derive fully blind) touch strategy intent enough that your preference
 would help.
+
+## Where the build actually stands now
+
+Pat asked for the build to start in parallel rather than wait — the four
+specialist skill docs (`docs/desk-skills/{atlas,helios,apollo,hephaestus}-skill.md`)
+and the Hermes coordinator instructions (`docs/desk-skills/hermes-coordinator.md`)
+are written and ready for Pat to paste into the third-party Hermes product, along
+with the Python receiver (`src/desk/verdict.py`, `src/desk/receiver.py`, tested)
+that risk-gates and journals whatever Hermes decides. Every item this packet marks
+✅ RESOLVED is already built into those docs correctly. Every item still open is
+marked `<<PLACEHOLDER: ...>>` inline in the relevant skill doc — a plain
+find-and-replace once you rule, no rebuild needed.
 
 ## What happens after your rulings land
 
