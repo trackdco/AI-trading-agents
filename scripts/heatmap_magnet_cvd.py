@@ -30,7 +30,6 @@ BAND, TOPN = 10, 5
 
 def main():
     J = pd.read_csv(JOURNAL)
-    J = J[J.date.str.startswith("2026-04")].copy()   # depth is April-only until Brake pulls more
     bars = pd.read_parquet("data/reference/nq_1m_feb_jul2026.parquet")
     bars["key"] = bars.ts_event.dt.strftime("%Y-%m-%d %H:%M")
     cl = dict(zip(bars.key, bars.close))
@@ -38,12 +37,16 @@ def main():
     J["entry"] = J.key.map(cl)
     J = J.dropna(subset=["entry"])
 
-    # per-day persistent liquidity bands
+    # per-day persistent liquidity bands, across ALL committed depth dirs
+    # (depth_apr2026 today; a full-year depth_* dir auto-joins the moment it lands — no code change)
     perday = {}
-    for f in glob.glob("data/reference/depth_apr2026/*_ny.csv"):
+    for f in glob.glob("data/reference/depth*/*_ny.csv"):
         d = pd.read_csv(f)
         day = f.split("nq_depth_")[1][:10]
         perday[day] = d.groupby("price")["size"].sum().nlargest(TOPN).index.values
+    # restrict to trades whose day has depth coverage (auto-scales as more months land)
+    J = J[J.date.isin(perday)].copy()
+    print(f"depth coverage: {len(perday)} days, months {sorted(J.date.str[:7].unique())}")
 
     def on_magnet(row):
         top = perday.get(row.date)
