@@ -109,9 +109,14 @@ class Trigger(BaseModel):
 
 
 def _htf_flag(regime: str, direction: str) -> str:
-    if regime == "range":
+    # E-2 FIX (Angus ruling, 20 Jul): an UNKNOWN regime is NEUTRAL, not a silent downtrend.
+    # The old `else "short"` defaulted unknown-regime shorts to "with_trend" (lenient) and longs
+    # to "counter_trend" — manufacturing phantom "with-trend" shorts that bled (18% win) on a
+    # long-biased instrument. Unknown now resolves to "range" (neutral); only genuine
+    # uptrend/downtrend set a directional trend.
+    if regime in ("range", "unknown"):
         return "range"
-    trend_dir = "long" if regime == "uptrend" else "short"
+    trend_dir = "long" if regime == "uptrend" else "short"   # only uptrend/downtrend reach here
     return "with_trend" if direction == trend_dir else "counter_trend"
 
 
