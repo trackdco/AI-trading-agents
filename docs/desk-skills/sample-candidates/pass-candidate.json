@@ -1,0 +1,130 @@
+{
+  "_meta": {
+    "candidate_id": "pass-2026-02-11-nq-short-A",
+    "expected_verdict": "TAKE (full unit)",
+    "based_on": "Real logged trade — data/reference/feb2026_hand_log.csv: Feb 11 2026, short, 3M entry, 09:48 ET, Pattern A, target hit, +5.98R (MAE -0.14R, stop 28.5 pts, risk $285 on 5 MNQ).",
+    "price_anchor": "Our OHLCV data ends 2026-01-31; Feb prices are not in the dataset. Levels anchored to real NQH6 values from glbx-mdp3-20251002-20260131 (Jan 30 2026 NY session traded ~25,640–25,920). Early-Feb geometry placed ~25,760–25,980.",
+    "note": "Every field is constructed to genuinely satisfy the check its agent performs. No field is a near-miss."
+  },
+
+  "candidate_direction": "short",
+
+  "higher_timeframe_swing_sequence": [
+    { "type": "swing_high", "price": 25978.00, "time": "2026-02-11T09:00:00-05:00" },
+    { "type": "swing_low",  "price": 25812.50, "time": "2026-02-11T09:12:00-05:00" },
+    { "type": "swing_high", "price": 25969.75, "time": "2026-02-11T09:33:00-05:00" },
+    { "type": "swing_low",  "price": 25834.25, "time": "2026-02-11T09:42:00-05:00" },
+    { "type": "swing_high", "price": 25974.00, "time": "2026-02-11T09:47:00-05:00", "note": "equal-highs with 09:00 high → buy-side liquidity sweep, then rejection" }
+  ],
+  "_htf_classification": "range (15m): equal highs ~25,974–25,978, base ~25,812–25,834. Short from range top is permitted (§7 forbids only shorts at range bottom / longs at range top).",
+
+  "price_position_in_range": { "current": 25948.00, "range_high": 25978.00, "range_low": 25762.00 },
+
+  "upcoming_news_events": [],
+  "_news_note": "08:30 ET NFP (high-impact) already released before the 09:48 entry (news IS bias input this session, not a blackout — §7). No further high-impact release inside the entry/target window → news check clear.",
+
+  "current_session": "NY",
+
+  "broad_risk_tone": {
+    "tone": "risk-off",
+    "derived_from": "08:30 NFP printed above forecast → 2Y/10Y yields higher; index futures rejecting session highs; NQ leading ES lower; VIX +0.4. Directional headwind for longs — aligns with a short."
+  },
+
+  "liquidity_pool_swept": {
+    "pool": "session / pre-market equal highs (buy-side liquidity above the 25,974–25,978 double-top)",
+    "price": 25974.00,
+    "time": "2026-02-11T09:47:00-05:00"
+  },
+
+  "liquidity_draw_target": {
+    "level": "NY session VWAP middle / daily VWAP middle confluence (downside draw)",
+    "price": 25861.00
+  },
+
+  "entry_relative_to_sweep": "after",
+
+  "entry_trigger_type": "order_block",
+  "_trigger_note": "Bearish order block / rejection block at the swept high (strategy §3): candle wicks through the cluster and closes back below all cluster levels. Tradeable zone = body edge → wick extreme.",
+
+  "entry_price": 25948.00,
+
+  "trigger_zone": {
+    "low": 25940.00,
+    "high": 25974.00,
+    "coincident_levels": [
+      { "type": "vwap_family", "label": "NY session VWAP +2σ", "price": 25955.00 },
+      { "type": "vwap_family", "label": "daily VWAP +2σ",       "price": 25961.00 },
+      { "type": "poc",         "label": "prior-session daily POC", "price": 25952.00 },
+      { "type": "structural",  "label": "pre-market / session equal highs", "price": 25974.00 }
+    ],
+    "distinct_confluence_types": 3,
+    "notes": "VWAP family (counts once) + POC + structural, all within the ~10-pt tolerance. ≥3 distinct types → satisfies the confluence minimum for any HTF flag."
+  },
+
+  "spread_and_fill_data": {
+    "spread_pts": 0.25,
+    "spread_ticks": 1,
+    "fill_quality": "normal — top-of-book depth healthy after the NFP repricing, no thin-book flag"
+  },
+
+  "current_time_window": {
+    "time": "2026-02-11T09:48:00-05:00",
+    "kill_zone": "NY AM kill zone (09:30–11:00 ET)",
+    "in_kill_zone": true
+  },
+
+  "recent_volume_and_volatility": {
+    "volume_vs_avg": "1.8x 20-bar average (elevated, post-NFP)",
+    "regime": "directional",
+    "chop_flag": false
+  },
+
+  "setup_timing_alignment": {
+    "has_narrower_optimal_window": true,
+    "optimal_window": "09:30–10:30 ET post-open AM impulse (matches Feb-sample winners 02/05, 02/09, 02/11, 02/12, 02/17)",
+    "current_matches": true
+  },
+
+  "account_risk_percent_per_trade": "1.0% of account equity, fixed (Vault-enforced; structural stop, never widened)",
+
+  "proposed_position_size_and_risk": {
+    "instrument": "MNQ",
+    "contracts": 5,
+    "stop_pts": 28.5,
+    "dollar_risk": 285.00,
+    "account_equity_ref": 28500,
+    "risk_percent": 1.0
+  },
+
+  "stop_price": 25976.50,
+  "invalidation_price": 25974.00,
+  "target_price": 25861.00,
+  "_rr_note": "Risk = 25948.00 → 25976.50 = 28.5 pts. Reward = 25948.00 → 25861.00 = 87 pts. R:R ≈ 3.05R ≥ the 1.5R floor and ≥ 2R full-conviction gate. Stop sits beyond the wick extreme (25,974); invalidation = structural wick.",
+
+  "setup_historical_performance": {
+    "setup_type": "Pattern A — reversal from over-extension",
+    "sample": "28-trade Feb 2026 hand backtest (NQ, NY morning)",
+    "instances": 13,
+    "wins": 9,
+    "losses": 3,
+    "breakeven": 1,
+    "win_rate": 0.69,
+    "avg_winner_R": 3.94,
+    "sample_expectancy_R": 2.5,
+    "caveat": "Hand-backtested ground truth, not yet machine-validated; strategy §12 treats the Feb re-run as calibration, not pass/fail."
+  },
+
+  "recent_trade_history": {
+    "last_2_sessions": [
+      { "date": "2026-02-09", "direction": "long",  "result": "win",  "R": 3.31 },
+      { "date": "2026-02-10", "direction": "long",  "result": "loss", "R": -1.00 }
+    ],
+    "net_R_prior_2": 2.31,
+    "vault_state": "daily halt inactive; 0/3 trades used today; no 2-loss or -2R condition on the day"
+  },
+
+  "playbook_match": {
+    "matched": true,
+    "entry": "Pattern A — Reversal (strategy-definition-v1.0 §4): over-extension (NY VWAP +2σ) and/or HTF range extreme → rejection block against the prior move → retest entry."
+  }
+}

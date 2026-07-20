@@ -1,0 +1,140 @@
+{
+  "_meta": {
+    "candidate_id": "fail-2026-02-03-nq-long-A-bbpoc-novwap",
+    "expected_verdict": "VETO — confluence filter (bb+poc, no vwap).",
+    "single_failing_field": "trigger_zone.coincident_levels / trigger_zone.distinct_confluence_types",
+    "failure_mechanism": "Counter-trend long (into a clean 15m downtrend). Strategy §7 requires >=3 distinct confluence types for counter-trend entries. The cluster here is Bollinger basis (BB) + daily POC = 2 types. The VWAP family — which Angus calls a CORE component (strategy §2) — is 24+ pts away, outside the ~10-pt tolerance, so it does NOT count. 2 < 3 → skip. Every other check passes; this is the ONLY disqualifier.",
+    "based_on": "Real logged trade — data/reference/feb2026_hand_log.csv: Feb 3 2026, long, 2M, Pattern A, counter-trend (15m downtrend), stop hit -1.0R. Entry time normalized 10:52 ET -> 09:52 ET into the core AM kill zone so timing fully passes and the confluence shortfall is the sole failure.",
+    "price_anchor": "Anchored to real NQH6 levels (glbx-mdp3-20251002-20260131, data ends 2026-01-31); Feb prices are not in the dataset.",
+    "why_informative": "Superficially tradeable — real swept low, clean bullish order block, R:R > 3, in kill zone, no news. An ICT trader takes it; the desk correctly vetoes on confluence count. This is the exact cohort §7 exists to filter, and the real Feb 3 instance lost -1.0R."
+  },
+
+  "candidate_direction": "long",
+
+  "higher_timeframe_swing_sequence": [
+    { "type": "swing_high", "price": 25972.00, "time": "2026-02-03T09:02:00-05:00" },
+    { "type": "swing_low",  "price": 25860.00, "time": "2026-02-03T09:18:00-05:00" },
+    { "type": "swing_high", "price": 25918.00, "time": "2026-02-03T09:30:00-05:00", "note": "lower high" },
+    { "type": "swing_low",  "price": 25802.00, "time": "2026-02-03T09:40:00-05:00", "note": "lower low" },
+    { "type": "swing_high", "price": 25846.00, "time": "2026-02-03T09:46:00-05:00", "note": "lower high" },
+    { "type": "swing_low",  "price": 25786.00, "time": "2026-02-03T09:51:00-05:00", "note": "new lower low → sweep of equal session lows, then reclaim" }
+  ],
+  "_htf_classification": "downtrend (15m): consistent lower highs / lower lows. A long is COUNTER-TREND → strategy §7 raises the confluence requirement to >=3.",
+
+  "price_position_in_range": { "current": 25796.00, "range_high": 25972.00, "range_low": 25786.00 },
+  "_location_note": "Long near the session low. §7 forbids longs at HTF range TOP and shorts at range BOTTOM — a long at the bottom is location-legal, so no location veto. The only veto is confluence.",
+
+  "upcoming_news_events": [],
+  "_news_note": "Feb 3 2026 had no scheduled high-impact release (hand log 'News Today' = No). News check clear.",
+
+  "current_session": "NY",
+
+  "broad_risk_tone": {
+    "tone": "risk-off",
+    "derived_from": "15m making lower highs / lower lows since the open; NQ underperforming ES; negative breadth. Counter-trend context — permitted by §7 only at >=3 confluences, which is exactly where this candidate falls short."
+  },
+
+  "liquidity_pool_swept": {
+    "pool": "equal session lows / sell-side liquidity below 25,790–25,792",
+    "price": 25786.00,
+    "time": "2026-02-03T09:51:00-05:00"
+  },
+
+  "liquidity_draw_target": {
+    "level": "daily VWAP middle (untested from below) / 15m range mid — valid upside draw",
+    "price": 25842.00
+  },
+
+  "entry_relative_to_sweep": "after",
+
+  "entry_trigger_type": "order_block",
+  "_trigger_note": "Bullish order block / rejection block: 2M candle wicks below the equal lows (25,786) and closes back above them. Trigger structure itself is clean and valid — the trigger check passes.",
+
+  "entry_price": 25796.00,
+
+  "trigger_zone": {
+    "low": 25786.00,
+    "high": 25800.00,
+    "coincident_levels": [
+      { "type": "bb",  "label": "15m Bollinger basis (BB MA, lower-drifted in the downtrend)", "price": 25795.50 },
+      { "type": "poc", "label": "prior-session daily POC", "price": 25798.00 }
+    ],
+    "distinct_confluence_types": 2,
+    "vwap_family_status": {
+      "in_cluster": false,
+      "tolerance_pts": 10.0,
+      "nearest": [
+        { "label": "daily VWAP -1σ",   "price": 25820.00, "distance_pts": 24.0 },
+        { "label": "daily VWAP middle", "price": 25842.00, "distance_pts": 46.0 }
+      ]
+    },
+    "notes": "BB + POC = 2 distinct types. VWAP family is 24+ pts away — outside the ~10-pt tolerance — so it does NOT join the cluster. Counter-trend long requires >=3 (strategy §7); only 2 present → VETO. THIS IS THE SINGLE FAILING CHECK."
+  },
+
+  "spread_and_fill_data": {
+    "spread_pts": 0.25,
+    "spread_ticks": 1,
+    "fill_quality": "normal, no thin-book flag"
+  },
+
+  "current_time_window": {
+    "time": "2026-02-03T09:52:00-05:00",
+    "kill_zone": "NY AM kill zone (09:30–11:00 ET)",
+    "in_kill_zone": true
+  },
+
+  "recent_volume_and_volatility": {
+    "volume_vs_avg": "1.2x 20-bar average",
+    "regime": "directional",
+    "chop_flag": false
+  },
+
+  "setup_timing_alignment": {
+    "has_narrower_optimal_window": true,
+    "optimal_window": "09:30–10:30 ET post-open AM impulse",
+    "current_matches": true
+  },
+
+  "account_risk_percent_per_trade": "1.0% of account equity, fixed (Vault-enforced; structural stop, never widened)",
+
+  "proposed_position_size_and_risk": {
+    "instrument": "MNQ",
+    "contracts": 10,
+    "stop_pts": 14.0,
+    "dollar_risk": 280.00,
+    "account_equity_ref": 28000,
+    "risk_percent": 1.0
+  },
+
+  "stop_price": 25782.00,
+  "invalidation_price": 25786.00,
+  "target_price": 25842.00,
+  "_rr_note": "Risk = 25796.00 → 25782.00 = 14 pts. Reward = 25796.00 → 25842.00 = 46 pts. R:R ≈ 3.3R ≥ 1.5R floor. R:R check passes — the trade is only rejected on confluence.",
+
+  "setup_historical_performance": {
+    "setup_type": "Pattern A — reversal",
+    "sample": "28-trade Feb 2026 hand backtest (NQ, NY morning)",
+    "instances": 13,
+    "wins": 9,
+    "losses": 3,
+    "breakeven": 1,
+    "win_rate": 0.69,
+    "avg_winner_R": 3.94,
+    "sample_expectancy_R": 2.5,
+    "note": "Pattern A carries positive edge in aggregate (this check passes). But the counter-trend-with-only-2-confluences subset is precisely the cohort §7 filters out — the one logged instance matching this exact profile (Feb 3 2026) resulted in -1.0R.",
+    "caveat": "Hand-backtested ground truth, not yet machine-validated (strategy §12)."
+  },
+
+  "recent_trade_history": {
+    "last_2_sessions": [
+      { "date": "2026-02-02", "direction": "short", "result": "breakeven", "R": 0.0 }
+    ],
+    "net_R_prior_2": 0.0,
+    "vault_state": "daily halt inactive; 0/3 trades used today; no losses on the book"
+  },
+
+  "playbook_match": {
+    "matched": true,
+    "entry": "Pattern A — Reversal (strategy-definition-v1.0 §4): swept low → rejection block → retest. The pattern/structure matches; the confluence FILTER (§7), evaluated separately, is what vetoes."
+  }
+}
