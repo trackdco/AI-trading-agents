@@ -64,11 +64,23 @@ depth is APRIL-ONLY until Brake pulls more — see Brake task).
 4. **Brake**: pull depth/heatmap for Feb, Mar, May, Jun, Jul (only April exists) so magnet+CVD can be
    tested full-year, not just April.
 
-## Key files
-- agent ledger `output/v07/chained2026/ledger.csv` · regime `output/regime_vector.csv`
-- detectors/tests: `scripts/cdr_v2.py` (confluence-rejection), `scripts/heatmap_magnet_cvd.py`,
-  `scripts/postopen_e6.py` (E4+V8+geometry), `scripts/champion_journal_cvd.py`
-- journals (scratchpad): `champ_journal_cvd.csv` (per-trade + CVD), `cdr_v2_trades.csv`
-- findings: `docs/FINDING-dont-trade-filter.md`, `docs/FINDING-oracle-is-hindsight...md`,
+## Key files (data now COMMITTED into output/ so it travels — no dead scratchpad paths)
+- **`output/handoff/champ_journal_cvd.csv`** — per-trade + CVD journal (input to heatmap test & the
+  don't-trade filter). heatmap_magnet_cvd.py already reads this path.
+- **`output/v07/chained2026/ledger.csv`** — the chained-agent base (+$14,465, 5/6 green). For tasks 2/3.
+  **FULLY REPRODUCIBLE** now: `python -m scripts.grade_chained_2026` regenerates it from committed inputs
+  (`output/handoff/chained2026_agent_verdicts.json` = the raw 139-day agent walk verdicts, +
+  `output/allyears_daily_books_r1r2.csv` + `output/regime_vector.csv`). Verified: reproduces +$14,465.
+  The raw agent verdicts are the irreplaceable piece (the dead session's LLM walk) — now committed.
+- **`output/handoff/cdr_v2_trades.csv`** — confluence-rejection journal (regime-gate overlay, task 3).
+- **`output/handoff/{full_history_ledger.html, standdown_all.py}`** — SD-oracle benchmark (~$45k).
+- regime read `output/regime_vector.csv` · depth `data/reference/depth_apr2026/*_ny.csv` (April only)
+- detectors/tests: `scripts/cdr_v2.py`, `scripts/heatmap_magnet_cvd.py`, `scripts/postopen_e6.py`,
+  `scripts/champion_journal_cvd.py`
+- findings/specs: `docs/FINDING-dont-trade-filter.md`, `docs/FINDING-oracle-is-hindsight...md`,
   `docs/SPEC-cash-open-confluence-setup.md` (Angus's 11-trade A+ spec, v2 model)
-- depth: `data/reference/depth_apr2026/*_ny.csv` (April only)
+
+### To regenerate the journals from scratch (if ever needed)
+`python -m scripts.champion_journal_cvd` -> writes champ_journal_cvd.csv; `python -m scripts.cdr_v2 6 off 1`
+-> writes cdr_v2_trades.csv. (Both currently write to the session scratchpad; the COMMITTED copies in
+output/handoff/ are the canonical ones for the other account.)

@@ -18,7 +18,10 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.run_v07_walk import champ_health_map, champ_pick  # noqa: E402
 
-RESULT_FILE = "/tmp/claude-0/-home-user-AI-trading-agents/8f4cdd65-f942-532a-87f2-c9c07c27272a/tasks/wyoz6a0lw.output"
+# committed raw agent verdicts (travels with repo); fall back to the original session task file
+RESULT_FILE = "output/handoff/chained2026_agent_verdicts.json"
+if not Path(RESULT_FILE).exists():
+    RESULT_FILE = "/tmp/claude-0/-home-user-AI-trading-agents/8f4cdd65-f942-532a-87f2-c9c07c27272a/tasks/wyoz6a0lw.output"
 BOOKS = "output/allyears_daily_books_r1r2.csv"
 OUT = Path("output/v07/chained2026")
 
