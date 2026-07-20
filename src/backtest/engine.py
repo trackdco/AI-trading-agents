@@ -110,68 +110,82 @@ def htf_flag(df1m):
     return pd.DataFrame({"ts": r["ts"], "htf": flag})
 
 
+# level columns -> confluence TYPE group (VWAP family collapses to one type, §3)
+LEVEL_COLS = ["bb_ma", "dvwap0", "dvwap+1", "dvwap-1", "dvwap+2", "dvwap-2",
+              "dvwap+3", "dvwap-3", "nyvwap0", "nyvwap+1", "nyvwap-1", "poc",
+              "pdh", "pdl"]
+LEVEL_GROUP = np.array([0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3])  # BB, VWAPfam, POC, struct
+N_GROUPS = 4
+
+
+def _confluence(Lmat, pierced):
+    """Per row: max # distinct TYPE-groups among pierced levels within TOL of an anchor."""
+    n, K = Lmat.shape
+    Lp = np.where(pierced, Lmat, np.nan)
+    best = np.zeros(n, dtype=np.int16)
+    for a in range(K):
+        La = Lp[:, a]                                   # anchor value (nan if not pierced)
+        anchored = ~np.isnan(La)
+        if not anchored.any():
+            continue
+        within = pierced & (Lmat >= La[:, None]) & (Lmat <= (La + TOL)[:, None])
+        confl = np.zeros(n, dtype=np.int16)
+        for g in range(N_GROUPS):
+            cols = np.where(LEVEL_GROUP == g)[0]
+            confl += (within[:, cols].any(axis=1)).astype(np.int16)
+        confl = np.where(anchored, confl, 0)
+        best = np.maximum(best, confl)
+    return best
+
+
 def find_triggers(tf_df, base, htf, tf):
-    """Vectorized level attach + windowed scan for rejection blocks."""
+    """Vectorized level attach + rejection-block detection over the entry window."""
     m = pd.merge_asof(tf_df.sort_values("ts"), base.sort_values("ts"),
                       on="ts", direction="backward")
     m = pd.merge_asof(m, htf.sort_values("ts"), on="ts", direction="backward")
     hhmm = m["ts"].dt.strftime("%H:%M")
-    win = (hhmm >= WIN_A) & (hhmm <= WIN_B)
-    m = m[win].copy()
-    out = []
-    for row in m.itertuples(index=False):
-        levels = {}
-        if not np.isnan(row.bb_ma): levels["BB"] = row.bb_ma
-        if not np.isnan(row.dvwap):
-            levels["dVWAP"] = row.dvwap
-            for n in (1, 2, 3):
-                levels[f"dVWAP+{n}"] = row.dvwap + n * row.dvwap_sd
-                levels[f"dVWAP-{n}"] = row.dvwap - n * row.dvwap_sd
-        if not np.isnan(row.nyvwap):
-            levels["nyVWAP"] = row.nyvwap
-            levels["nyVWAP+1"] = row.nyvwap + row.nyvwap_sd
-            levels["nyVWAP-1"] = row.nyvwap - row.nyvwap_sd
-        if not np.isnan(row.poc): levels["POC"] = row.poc
-        if len(levels) < 2:
-            continue
-        lv = sorted(levels.items(), key=lambda x: x[1])
-        vals = np.array([x[1] for x in lv])
-        # LONG: levels in (low, close), wick pierced from below, closed above
-        for direction, cond in (("long", (vals > row.low) & (vals < row.close)),
-                                 ("short", (vals < row.high) & (vals > row.close))):
-            idx = np.where(cond)[0]
-            if len(idx) < 2:
-                continue
-            sub = vals[idx]
-            # tightest window of >=2 levels within tolerance
-            best = None
-            for a in range(len(sub)):
-                b = a
-                while b + 1 < len(sub) and sub[b + 1] - sub[a] <= TOL:
-                    b += 1
-                if b - a + 1 >= 2 and (best is None or (b - a) > (best[1] - best[0])):
-                    best = (a, b)
-            if best is None:
-                continue
-            names = [lv[idx[k]][0] for k in range(best[0], best[1] + 1)]
-            clv = sub[best[0]:best[1] + 1]
-            types = set(n.split("+")[0].split("-")[0].replace("dVWAP", "VWAPfam")
-                        .replace("nyVWAP", "VWAPfam") for n in names)
-            confl = len(types)
-            with_trend = (direction == "long" and row.htf == "uptrend") or \
-                         (direction == "short" and row.htf == "downtrend")
-            need = CFG["cluster"]["min_confluence_with_trend"] if with_trend \
-                else CFG["cluster"]["min_confluence_counter"]
-            if confl < need:
-                continue
-            out.append(dict(ts=row.ts, tf=tf, direction=direction, bb_ma=row.bb_ma,
-                            trig_high=row.high, trig_low=row.low, close=row.close,
-                            dvwap=row.dvwap, dvwap_sd=row.dvwap_sd, poc=row.poc,
-                            pdh=row.pdh, pdl=row.pdl, nyvwap=row.nyvwap,
-                            htf=row.htf, confluence=confl, with_trend=with_trend,
-                            cluster_lo=float(clv.min()), cluster_hi=float(clv.max())))
-            break
-    return pd.DataFrame(out)
+    m = m[(hhmm >= WIN_A) & (hhmm <= WIN_B)].reset_index(drop=True)
+    if m.empty:
+        return pd.DataFrame()
+    dv, sd = m["dvwap"].values, m["dvwap_sd"].values
+    ny, nysd = m["nyvwap"].values, m["nyvwap_sd"].values
+    cols = {
+        "bb_ma": m["bb_ma"].values,
+        "dvwap0": dv, "dvwap+1": dv + sd, "dvwap-1": dv - sd,
+        "dvwap+2": dv + 2 * sd, "dvwap-2": dv - 2 * sd,
+        "dvwap+3": dv + 3 * sd, "dvwap-3": dv - 3 * sd,
+        "nyvwap0": ny, "nyvwap+1": ny + nysd, "nyvwap-1": ny - nysd,
+        "poc": m["poc"].values, "pdh": m["pdh"].values, "pdl": m["pdl"].values,
+    }
+    Lmat = np.column_stack([cols[c] for c in LEVEL_COLS])
+    low, high, close = m["low"].values, m["high"].values, m["close"].values
+    pierced_long = (Lmat > low[:, None]) & (Lmat < close[:, None])
+    pierced_short = (Lmat < high[:, None]) & (Lmat > close[:, None])
+    confl_long = _confluence(Lmat, pierced_long)
+    confl_short = _confluence(Lmat, pierced_short)
+    htf_arr = m["htf"].values
+    # need: 2 with-trend, 3 counter-trend (§7)
+    wt_long = htf_arr == "uptrend"
+    wt_short = htf_arr == "downtrend"
+    need_long = np.where(wt_long, 2, 3)
+    need_short = np.where(wt_short, 2, 3)
+    ok_long = confl_long >= need_long
+    ok_short = confl_short >= need_short
+    # pick direction with higher confluence when both fire
+    direction = np.where(ok_long & (~ok_short | (confl_long >= confl_short)), "long",
+                np.where(ok_short, "short", ""))
+    valid = (direction != "")
+    m = m[valid].copy()
+    if m.empty:
+        return pd.DataFrame()
+    m["tf"] = tf
+    m["direction"] = direction[valid]
+    m["confluence"] = np.where(direction == "long", confl_long, confl_short)[valid]
+    m["with_trend"] = np.where(direction == "long", wt_long, wt_short)[valid]
+    m = m.rename(columns={"high": "trig_high", "low": "trig_low"})
+    return m[["ts", "tf", "direction", "bb_ma", "trig_high", "trig_low", "close",
+              "dvwap", "dvwap_sd", "poc", "pdh", "pdl", "nyvwap", "htf",
+              "confluence", "with_trend"]]
 
 
 def pick_target(sig, entry, stop):
@@ -191,11 +205,18 @@ def pick_target(sig, entry, stop):
 
 
 def backtest(base1m, sigs):
-    idx = base1m.set_index("ts")
-    path_lo = idx["low"]; path_hi = idx["high"]
+    if sigs.empty:
+        return pd.DataFrame()
+    # pre-group 1m bars by calendar day (avoids scanning 1M rows per trigger)
+    b = base1m.copy()
+    b["cal"] = b["ts"].dt.tz_localize(None).dt.normalize()
+    daybars = {}
+    for cal, g in b.groupby("cal"):
+        daybars[cal] = (g["ts"].values, g["low"].values.astype(float),
+                        g["high"].values.astype(float), g["close"].values.astype(float))
     sigs = sigs.sort_values(["ts", "tf"], ascending=[True, False])  # MTF: highest tf first
     trades = []
-    day_state = {}  # cal_date -> dict(count, losses, r)
+    day_state = {}
     open_until = pd.Timestamp.min.tz_localize(NY)
     for sig in sigs.to_dict("records"):
         ts = sig["ts"]
@@ -211,7 +232,6 @@ def backtest(base1m, sigs):
         entry = sig["bb_ma"]                        # E1
         if np.isnan(entry):
             continue
-        # entry must be reachable in trigger direction (limit is a pullback)
         stop = (sig["trig_low"] - TICK) if d == "long" else (sig["trig_high"] + TICK)
         risk = abs(entry - stop)
         if risk < 2 * TICK:
@@ -219,26 +239,25 @@ def backtest(base1m, sigs):
         tgt = pick_target(sig, entry, stop)
         if tgt is None:
             continue
-        # simulate from next 1m bar to EOD flatten
-        day_bars = idx.loc[(idx.index > ts) & (idx.index.normalize() == cal)]
-        flat_t = pd.Timestamp(f"{cal.date()} {CFG['session']['eod_flatten']}", tz=NY)
-        filled = False; fill_i = None
-        exit_px = None; exit_reason = None
-        for t, bar in day_bars.iterrows():
-            if t > flat_t:
+        if cal not in daybars:
+            continue
+        tsa, loa, hia, cla = daybars[cal]
+        flat_t = np.datetime64(pd.Timestamp(f"{cal.date()} {CFG['session']['eod_flatten']}", tz=NY).tz_convert("UTC").tz_localize(None))
+        start = np.searchsorted(tsa, np.datetime64(pd.Timestamp(ts).tz_convert("UTC").tz_localize(None)), side="right")
+        filled = False; entry_fill = None
+        exit_px = None; exit_reason = None; last_close = None
+        for i in range(start, len(tsa)):
+            if tsa[i].astype("datetime64[ns]") > flat_t:
                 break
-            lo, hi = bar["low"], bar["high"]
+            lo, hi = loa[i], hia[i]; last_close = cla[i]
             if not filled:
-                # limit fill
                 if (d == "long" and lo <= entry) or (d == "short" and hi >= entry):
                     filled = True
-                    # cancel check happens before fill each bar; fill at limit + slippage
                     entry_fill = entry + (SLIP if d == "long" else -SLIP)
                 elif (d == "long" and lo <= entry - TCANCEL) or \
                      (d == "short" and hi >= entry + TCANCEL):
                     exit_reason = "cancelled"; break
                 continue
-            # in trade (V0: no management). stop-first on same-bar ambiguity.
             if d == "long":
                 if lo <= stop:
                     exit_px = stop - SLIP; exit_reason = "stop"; break
@@ -252,10 +271,9 @@ def backtest(base1m, sigs):
         if exit_reason == "cancelled" or not filled:
             continue
         if exit_px is None:  # flattened at EOD
-            last = day_bars.loc[day_bars.index <= flat_t]
-            if last.empty:
+            if last_close is None:
                 continue
-            exit_px = last["close"].iloc[-1]; exit_reason = "eod"
+            exit_px = last_close; exit_reason = "eod"
         pnl_pts = (exit_px - entry_fill) if d == "long" else (entry_fill - exit_px)
         pnl_pts -= COMM_PTS
         r = pnl_pts / risk
@@ -274,10 +292,19 @@ def backtest(base1m, sigs):
 
 
 def run():
-    base = load_continuous()
+    import os, time
+    t0 = time.time()
+    if os.path.exists("data/nq_1m.parquet"):
+        base = pd.read_parquet("data/nq_1m.parquet")
+    else:
+        base = load_continuous(); base.to_parquet("data/nq_1m.parquet")
+    print(f"  load {time.time()-t0:.0f}s  rows={len(base):,}")
+    t0 = time.time()
     base = add_vwaps_poc(base)
     base = prior_levels(base)
     htf = htf_flag(base)
+    print(f"  indicators {time.time()-t0:.0f}s")
+    t0 = time.time()
     all_sig = []
     for tf in CFG["indicators"]["entry_tfs"]:
         tfd = resample_tf(base, tf)
