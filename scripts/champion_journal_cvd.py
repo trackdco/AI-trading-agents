@@ -52,9 +52,11 @@ def load_cvd_delta():
 
 
 def conviction(delta_series, fill_ts, direction):
-    """Signed delta over the KMIN-min window ending at the entry minute, oriented to direction."""
+    """Signed delta over the KMIN-min window ending STRICTLY BEFORE the entry minute (no
+    lookahead: the entry minute's volume partly occurs after our fill, so it's excluded),
+    oriented to direction."""
     t = pd.Timestamp(fill_ts).tz_convert(NY).floor("min")
-    win = delta_series.loc[t - pd.Timedelta(minutes=KMIN - 1): t]
+    win = delta_series.loc[t - pd.Timedelta(minutes=KMIN): t - pd.Timedelta(minutes=1)]
     if win.empty:
         return np.nan
     d = float(win.sum())
