@@ -45,13 +45,18 @@ had both, we had ~60% win in April, trade frequency down a lot but P&L up a lot.
 use of heatmap tested as noise earlier (`test_cvd_heatmap_givebacks.py`); this is the **ENTRY**
 conviction use — a big resting-liquidity wall at the entry level + CVD absorption.
 
-Script is **written and ready**: `scripts/heatmap_magnet_cvd.py` (magnet = size>=15 on the reject
-side within 6pt of entry; absorb = cvd<=0; on April champion trades using Brake's `depth_apr2026`).
-It was RUNNING when the usage cap hit — the run was cut off by an infra hiccup, NOT a code error.
+**RUN — result is in** (`scripts/heatmap_magnet_cvd.py`, reads the committed journal):
+- First magnet def (single-snapshot wall, size>=15 within 6pt) was WRONG — too strict, only 1/29
+  April trades qualified. Replaced.
+- **PERSISTENT-liquidity magnet** (entry within 10pt of a top-5 daily liquidity band) **+ CVD absorb
+  (cvd<=0): 14t, 50% win, +$3,470** vs 38% baseline. Directionally confirms Angus's magnet+CVD signal
+  (fewer trades, higher win, positive) — not the exact 60%, which needs his precise magnet definition.
+- CVD-absorb alone: 21t, 48% win, +$3,960. (magnet mainly sharpens win-rate.)
 
-**FIRST ACTION on resume:** `python -m scripts.heatmap_magnet_cvd` — confirm MAGNET+CVD ≈ 60% win /
-fewer trades / higher P&L in April. If it holds, magnet+CVD is a top-tier conviction filter (but
-depth is APRIL-ONLY until Brake pulls more — see Brake task).
+**NEXT on this thread:** get Angus's exact "heatmap magnet" definition (persistent band? magnet as a
+TARGET price is drawn to? aggregated over what window?) and re-tune to reproduce the 60%. Depth is
+APRIL-ONLY until Brake pulls the other months (Brake task) — then test full-year and fold magnet+CVD
+into the don't-trade / conviction layer.
 
 ## TASK LIST (assigned to Angus / next session — mirrored as GitHub issues)
 1. **Run `scripts/heatmap_magnet_cvd.py`** — confirm the 60%-April magnet+CVD result. (in-flight)
