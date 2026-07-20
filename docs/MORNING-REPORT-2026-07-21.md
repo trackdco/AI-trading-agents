@@ -1,96 +1,103 @@
 # MORNING REPORT — overnight engine audit + entry-timing fix (for Brake/Angus)
 
-**TL;DR:** The champion engine is fundamentally SOUND (no lookahead, no material inflation).
-Fixing the one confirmed correctness bug Brake ruled on — entries activating a full minute late —
-produced a **big, consequential result**: it revealed that the champion's *dollar* edge substantially
-leaned on that bug. Corrected, the champion makes **~$8k not ~$14k** over Feb–Jul. The damage is
-entirely in the **E4 (market-entry, WAR-day) arm**; the **E3 (limit) arm actually improves**.
-**Recommendation: keep the fix (it's correct), and re-evaluate the champion — especially the E4
-market-entry arm — under correct timing before trusting the +$14k.**
+**TL;DR:** The champion engine is fundamentally SOUND (no lookahead, no material inflation). I fixed
+the one confirmed correctness bug Brake ruled on — entries activating a full minute late — and the two
+follow-ons (resting-fill gating, DST session-date). All fixes are independently verified correct; the
+full test suite is green (298 passing incl. new regression tests).
+
+**The nuanced headline (survived an adversarial red-team):** the fix **corrects an inflated
+1-contract dollar figure** — the champion's oft-cited "+$14k" over Feb–Jul was partly late-fill
+artifact and partly rule-violating fills; honestly restated it's **~+$8k at 1 contract**. BUT the
+strategy is **risk-sized** (R is the real currency; dollars-at-1-contract is just a reporting
+convention), and **in R the champion is flat-to-slightly-better (+34R → +44R)** — the edge is **not
+eroded**. The dollar drop is a sizing-currency + trade-admission effect, not a broken signal.
+**Keep the fix. Restate the champion's dollars honestly. The genuine concern — statistically thin
+edge on BOTH engines — predates the fix.**
 
 ---
 
-## 1. What I did overnight
-1. Completed the P0 engine audit (3 parallel auditors: fill-realism, lookahead, timezone) — all
-   cross-verified.
-2. Applied the two fixes Brake authorized (entry timing + resting-fill gating).
-3. **Measured the fix's champion P&L impact** before/after, capped and uncapped.
-4. Ran an independent adversarial verification of the fix + the finding (3 more agents).
-5. [pending] DST fix (bug #3), test updates, full suite green.
-
-## 2. Audit verdict: engine is SOUND
-- **No lookahead** — verified empirically (prefix-invariance: indicators 80/80, triggers 22/22).
+## 1. Audit verdict: engine is SOUND
+Three parallel auditors (fill-realism, lookahead, timezone), all cross-verified:
+- **No lookahead** — proven empirically (prefix-invariance: indicators 80/80, triggers 22/22).
 - **No material inflation** — stop-first ties, trade-through fills, correct slippage, min-stop floor,
-  correct R/$; all confirmed by code-trace + probes.
+  correct R/$.
 - The only leaky resampler in the repo is on the SUPERSEDED `brake-43x58e` naive engine, not the
   champion. Ignore that naive engine's numbers.
 
-## 3. The entry-timing fix and its impact (THE headline)
-The bug: an entry order activated one bar LATE (the fill step ran before order-placement in the
-per-bar loop), contradicting the engine's own docstring ("active for bars ≥ ts"). Fixed so orders
-activate on the trigger's own bar.
+## 2. Fixes applied (all verified, suite green)
+1. **Entry-timing (bug #1):** an order activated one bar LATE (fill block ran before order-placement),
+   contradicting the engine's own docstring ("active for bars ≥ ts"). Moved the fill block after
+   trigger-placement so orders activate on the trigger's own bar. **Independently verified correct**
+   (no double-fill, no dropped order, no lookahead; fills at the bar-ts open = the earliest
+   legitimately executable price).
+2. **Resting-fill gating (bug #2):** the sit-out / VWAP-warmup / news-preopen blocks gated only NEW
+   triggers, not resting-order fills — so the baseline was booking **rule-violating fills** inside the
+   09:30–09:40 sit-out and pre-09:30 news windows. Added `avoid_entry` to the fill path.
+3. **DST session-date (bug #3):** `normalize() + fixed-24h` mislabeled fall-back-Sunday evening bars.
+   Fixed with a tz-naive next-calendar-day computation. **Confirmed inert on Feb–Jul** (champion
+   byte-identical before/after) and covered by a new fall-back regression test.
 
+## 3. Champion P&L impact of the entry-timing fix
 Champion (E3+V8 non-WAR / E4 WAR, 08:00–10:15), today's engine:
 
-| config | trades | net $ | win% | net R | exp |
-|---|--:|--:|--:|--:|--:|
-| capped (max2/day) baseline | 132 | **+$14,009** | 32.6% | +27.2 | +0.206R |
-| capped fixed | 145 | **+$7,949** | 29.0% | +37.1 | +0.256R |
-| uncapped baseline | 161 | **+$14,808** | 34.2% | +34.1 | +0.212R |
-| uncapped fixed | 177 | **+$8,438** | 29.4% | +44.0 | +0.249R |
+| config | trades | net $ (1-contract) | win% | **net R** |
+|---|--:|--:|--:|--:|
+| capped (max2/day) baseline | 132 | +$14,009 | 32.6% | +27.2 |
+| capped fixed | 145 | +$7,949 | 29.0% | **+37.1** |
+| uncapped baseline | 161 | +$14,808 | 34.2% | +34.1 |
+| uncapped fixed | 177 | +$8,438 | 29.4% | **+44.0** |
 
-Note the baseline (+$14,009) reproduces the canonical champion (+$13,857) — so this is the real thing.
+The baseline (+$14,009) reproduces the canonical champion (+$13,857) — this is the real thing.
+**Read the R column, not the $ column** (see §4). In R the fix is flat-to-better; the $ figure falls.
 
-**The paradox: R goes UP, dollars go DOWN.** Resolved by splitting the arms (uncapped):
+By arm (uncapped): E3 limit 19t/+$3,246/42% → 19t/+$2,728/**63%**; E4 market 142t/+$11,562/33% →
+158t/+$5,710/25%.
 
-| arm | baseline | fixed |
-|---|---|---|
-| **E3 (limit)** | 19t / +$3,246 / **42%** win | 19t / +$2,728 / **63%** win |
-| **E4 (market)** | 142t / +$11,562 / **33%** win | 158t / +$5,710 / **25%** win |
-
-- **E3 limit entries: the fix HELPS** (win 42%→63%). The bug was costing genuine limit fills.
-- **E4 market entries: the fix HURTS** (win 33%→25%, $ halves). A market order that filled a minute
-  late was catching a small pullback (better price). At the correct immediate fill, E4 is much worse.
-- The champion is dominated by E4 (158/177 trades), so net dollars fall.
-
-Mechanisms confirmed on real trades:
-- **Timing**: e.g. 2026-04-23 long — baseline filled 08:04 @ 27038.25, fixed filled 08:03 @ 27041.50
-  (exactly one bar earlier, at the real bar open).
-- **Cap crowding** (capped only): 2026-04-30 — baseline caught the 09:14 short (+$1,665); fixed filled
-  two earlier losers and the 2-trade/day budget was spent before 09:14, missing the monster.
-- Exit mix shifts toward more stops (uncapped stops 104→124, targets 50→43).
-
-## 4. What this means (for Angus)
-- **The fix is correct — do NOT revert.** A limit/market order entering a minute late is not a real,
-  tradeable edge; it flattered the backtest.
-- **The E4 (market-entry, WAR-day) arm's dollar edge was largely a fill-bug artifact.** It should be
-  re-examined; the E3 (limit) approach is the robust one and gets BETTER under correct timing.
-- The E3/E4/management tournament should be **re-run on the fixed engine** — the previous winner was
-  chosen under buggy fills.
-- Everything here is in-sample Feb–Jul; treat as a strong lead pending the OOS discipline.
+## 4. Why R goes UP but 1-contract $ goes DOWN (the crux)
+Three independent verifiers dug into this. Reconciled:
+- **The strategy is risk-sized.** Engine header: "$ P&L reported at 1 NQ contract (R is the calibration
+  currency; Angus sized variably)." Realized P&L ∝ net R, not 1-contract dollars.
+- **On the 123 RETAINED E4 trades** (same trade, shifted exactly 1 bar), correct timing gives
+  **tighter stops (14.4→11.6 pts) and MORE R** (+17R→+56R; paired ΔR +0.32/trade, t=2.20, p≈0.028).
+  The late fill was the distortion — it gave *wider* stops and less R. So "E4 edge was a late-fill
+  artifact" is **backwards on the retained core**.
+- **1-contract dollars fall because corrected entries are tighter** ($/R 444→180). Under proper
+  risk-sizing you'd trade more contracts for the same risk → same-or-better dollars.
+- **The aggregate win% drop (33→25%) is composition:** ~16 marginal fills the 1-bar delay was
+  accidentally filtering (27/29 are stops), plus removing baseline "winners" that were themselves
+  artifacts (e.g. the 02-11 +$2,067 E3 short — a 09:47 limit the no-chase t_cancel rule *should* have
+  killed; the delay skipped the cancel bar and caught a lucky re-touch. Removing it is correct).
+- **Hand-trace confirmed** the mechanism at the bar level: the late fill skipped the trigger bar's own
+  adverse intrabar spike (all 3/3 stop→target flips explained); the fixed engine correctly enters into
+  it. Realistic, not lookahead.
 
 ## 5. Adversarial verification (3 independent agents)
-**(a) Raw-bar hand-trace — CONFIRMED.** Independently traced fills against the raw 1-minute bars:
-- The baseline vs fixed fill is exactly ONE bar apart in 96.9% of matched E4 pairs; every fill price
-  is a real bar open + an identical ~1-tick adverse slippage — so the engines differ ONLY by which
-  bar they enter on.
-- The buggy engine's higher win rate is mechanical: entering one bar LATE **skips the trigger bar's
-  own adverse intrabar excursion.** All 3/3 stop→target outcome-flips are explained exactly (the
-  trigger bar's high/low hit the stop on the immediate fill; the late fill entered after the spike and
-  survived). 27 of 29 "extra" fills the fixed engine takes are stops — valid losing signals the bug
-  skipped.
-- Conclusion: the fixed engine correctly enters *into* the spike (realistic); the bug entered *after*
-  it (unrealistic). The E4 33% win rate was inflated; 25% is real.
+- **(a) Fix code-correctness — CORRECT.** Surgical diff; no double-fill/drop/lookahead; invariants hold;
+  `avoid_entry` never loses an order. The 4 failing tests encoded the OLD 1-bar-late timing (now updated).
+- **(b) Raw-bar hand-trace — timing shift is real & correct.** 96.9% of matched E4 pairs fill exactly
+  1 bar apart at real bar opens; the buggy engine's higher win rate came from entering *after* the
+  trigger bar's spike; 27/29 "extra" fills are legit signals the bug skipped.
+- **(c) Red-team — refuted the strong headline.** The "+$14k" 1-contract figure is inflated (→ ~$8k),
+  but "champion untrustworthy / E4 needs rethinking" does NOT survive: in R the champion is flat-to-
+  better and retained E4 improves. **Honest caveats:** the R improvement (34→44) is itself within noise
+  (Welch p≈0.88 on per-trade R); per-trade expectancy is thin on BOTH engines (t≈1.0–1.4, ~19 E3 days /
+  ~70 concentrated WAR days); the edge's fragility predates the fix.
 
-**(b) Fix code-correctness trace — [pending].**
-**(c) Red-team refutation attempt — [pending].**
-
-## 6. Remaining engineering (status)
-- [ ] Update 4 E4/EC tests to the corrected `≥ ts` timing (they encoded the 1-bar-late bug).
-- [ ] DST fix (bug #3) + regression test; confirm zero change to Jan–Jul champion.
-- [ ] Full test suite green.
+## 6. What to actually do (for Angus)
+1. **Keep the fix — it's correct.** A limit/market order entering a minute late (and booking fills
+   inside sit-out/news windows) is not a real edge.
+2. **Restate the champion's P&L honestly:** ~+$8k at 1 contract (not +$14k); +44R over Feb–Jul in the
+   sizing currency. The edge in R is intact-to-slightly-better.
+3. **The real issue is statistical fragility** (thin per-trade expectancy on both engines) — this is
+   what the roadmap (time-gating, CVD-confirm, ≥6pt stop, more OOS) is for; it is NOT caused by the fix.
+4. **One genuine open item the fix surfaces: trade admission.** Correct activation admits ~16 marginal
+   fills; whether to keep them is a tunable entry-window/filter question (candidate for the P1 work).
+5. Re-run the E3/E4/management tournament on the fixed engine before locking a champion — the prior
+   winner was chosen under buggy fills (this changes *rankings*, even if the aggregate edge holds).
 
 ## 7. Artifacts
-- Fix patch: `patches/engine-entry-timing-fix.patch`
-- Measurement harness: `scripts/_measure_timing_fix.py` (+ `_diff_champion.py`) — run from a
-  getting-started checkout.
+- Full fix patch (engine timing + resting-fill gate + DST + tests): `patches/engine-entry-timing-fix.patch`
+- Measurement harness: `scripts/_measure_timing_fix.py`, `scripts/_diff_champion.py`
+- Evidence journals: `analysis/champ_{baseline,fixed}{,_cap50}.csv`
+- Files changed (apply to a getting-started checkout): src/backtest/engine.py, src/engine/data.py,
+  src/engine/indicators.py, tests/test_backtest.py, tests/test_sessions.py.

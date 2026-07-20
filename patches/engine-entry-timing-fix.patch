@@ -196,3 +196,124 @@ index a695d9c..9ae4a80 100644
      # equity
      closed = sorted(trades, key=lambda tr: tr.exit_ts)
      eq_rows, cr, cd = [], 0.0, 0.0
+diff --git a/src/engine/data.py b/src/engine/data.py
+index c921fbc..a147c0e 100644
+--- a/src/engine/data.py
++++ b/src/engine/data.py
+@@ -202,7 +202,11 @@ def _is_closed(idx: pd.DatetimeIndex) -> pd.Series:
+ def _session_date(ts: pd.Series, session_open: time) -> pd.Series:
+     """CME trade-date: bars at/after the maintenance break roll into the next day's session."""
+     roll_next = ts.dt.time >= _MAINT_START
+-    return (ts.dt.normalize() + pd.to_timedelta(roll_next.astype(int), unit="D")).dt.date
++    # DST-safe: compute the next CALENDAR day on the tz-naive local date. Adding a fixed 24h
++    # Timedelta to a tz-aware midnight lands at 23:00 on a fall-back (25h) day, mislabelling
++    # Sunday-evening bars into the prior session (BUGFIX: was `ts.dt.normalize() + 24h`).
++    base = ts.dt.tz_localize(None).dt.normalize()
++    return (base + pd.to_timedelta(roll_next.astype(int), unit="D")).dt.date
+ 
+ 
+ def build_gap_report(df: pd.DataFrame, session_open: time) -> pd.DataFrame:
+diff --git a/src/engine/indicators.py b/src/engine/indicators.py
+index 76c6b3e..597651c 100644
+--- a/src/engine/indicators.py
++++ b/src/engine/indicators.py
+@@ -111,7 +111,10 @@ def _anchor_session_date(ts: pd.Series, session_open: dtime) -> pd.Series:
+     first bar at/after 18:00 starts the new one.
+     """
+     roll_next = ts.dt.time >= session_open
+-    return (ts.dt.normalize() + pd.to_timedelta(roll_next.astype(int), unit="D")).dt.date
++    # DST-safe next calendar day on the tz-naive local date (BUGFIX: `normalize()+24h` mislabels
++    # fall-back Sunday-evening bars — the 18:00 CME open belongs to the NEXT session).
++    base = ts.dt.tz_localize(None).dt.normalize()
++    return (base + pd.to_timedelta(roll_next.astype(int), unit="D")).dt.date
+ 
+ 
+ def _check_resample_rule(rule: str) -> None:
+diff --git a/tests/test_backtest.py b/tests/test_backtest.py
+index 27dc817..9e12398 100644
+--- a/tests/test_backtest.py
++++ b/tests/test_backtest.py
+@@ -477,7 +477,7 @@ def test_ec_displacement_market_fills_but_rejection_rests_limit():
+     tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", runaway), [t_disp], c,
+                           target_resolver=stub_resolver(25100),
+                           entry_price_fn=None, calendar=EMPTY_CAL)
+-    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(25006 + 0.25)
++    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(25005 + 0.25)   # bar-ts open (09:48)
+ 
+     t_rej = trig("2026-02-11 09:48", stop_ref=24995.0)   # kind=rejection_block, entry_ref 25000
+     tr2, vd2, _ = simulate(mk_bars("2026-02-11 09:48", runaway), [t_rej], c,
+@@ -579,7 +579,7 @@ def test_ec2_displacement_market_but_rejection_rests_ob_limit():
+     tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", runaway), [t_disp], c,
+                           target_resolver=stub_resolver(25100),
+                           entry_price_fn=None, calendar=EMPTY_CAL)
+-    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(25006 + 0.25)   # market, not OB
++    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(25005 + 0.25)   # market at bar-ts open, not OB
+ 
+     t_rej = trig("2026-02-11 09:48", stop_ref=24990.0).model_copy(
+         update={"ob_mid": 24995.0, "ob_stop": 24985.0})
+@@ -661,14 +661,14 @@ def test_e4_market_entry_fills_next_open_with_slippage_and_ignores_tcancel():
+     # price runs away immediately (t_cancel would kill an E3 limit); E4 fills at next open+slip
+     c = cfg(entry_variant="E4")
+     t = trig("2026-02-11 09:48", stop_ref=24995.0)
+-    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+-                                        (25006, 25030, 25005, 25028),    # E4 fills at open 25006+slip
++    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),    # 09:48 = bar-ts; E4 fills here
++                                        (25006, 25030, 25005, 25028),
+                                         (25030, 25101, 25028, 25100)])   # runs to target
+     tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                           entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+     assert len(tr_) == 1
+     rec = tr_[0]
+-    assert rec.entry == pytest.approx(25006 + 1 * 0.25)      # open + 1 tick adverse slip
++    assert rec.entry == pytest.approx(25005 + 1 * 0.25)      # bar-ts open + 1 tick adverse slip
+     # R currency = ACTUAL fill->stop distance (not the build reference)
+     assert rec.r_multiple == pytest.approx(
+         (rec.exit_price - rec.entry) / (rec.entry - rec.stop_initial), abs=1e-3)
+@@ -679,16 +679,16 @@ def test_e4_short_fill_slips_down_and_gap_through_stop_is_cancelled():
+     # short market entry slips DOWN (adverse); if the next bar opens beyond the stop, cancel
+     c = cfg(entry_variant="E4")
+     t_ok = trig("2026-02-11 09:48", direction="short", entry_ref=25000.0, stop_ref=25010.0)
+-    bars = mk_bars("2026-02-11 09:48", [(24998, 24999, 24996, 24997),
+-                                        (24996, 24997, 24895, 24900),    # fill 24996-0.25
++    bars = mk_bars("2026-02-11 09:48", [(24998, 24999, 24996, 24997),    # 09:48 = bar-ts; fill 24998-0.25
++                                        (24996, 24997, 24895, 24900),
+                                         (24900, 24901, 24870, 24875)])
+     tr_, vd, _ = simulate(bars, [t_ok], c, target_resolver=stub_resolver(24880),
+                           entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+-    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(24996 - 0.25)
++    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(24998 - 0.25)
+ 
+     t_gap = trig("2026-02-11 09:48", direction="short", entry_ref=25000.0, stop_ref=25010.0)
+-    bars2 = mk_bars("2026-02-11 09:48", [(24998, 24999, 24996, 24997),
+-                                         (25015, 25016, 25010, 25012)])  # opens beyond stop
++    # the FILL bar (the trigger's own bar) opens beyond the stop -> gap-through-stop cancel
++    bars2 = mk_bars("2026-02-11 09:48", [(25015, 25016, 25010, 25012)])
+     tr2, vd2, _ = simulate(bars2, [t_gap], c, target_resolver=stub_resolver(24880),
+                            entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+     assert tr2 == []
+diff --git a/tests/test_sessions.py b/tests/test_sessions.py
+index e3f8852..94b96d5 100644
+--- a/tests/test_sessions.py
++++ b/tests/test_sessions.py
+@@ -143,3 +143,21 @@ def test_dst_boundary():
+     pdl = prior_day_levels(df)
+     assert pdl.iloc[2]["prior_day_high"] == 110    # Mon Mar 9 sees Fri Mar 6 high
+     assert pdl.iloc[2]["prior_day_low"] == 90
++
++
++def test_dst_fallback_session_date():
++    # Fall-back (Sun Nov 1 2026 02:00 EDT->EST = a 25h day): Sunday-evening bars at/after the
++    # 18:00 CME open must roll into MONDAY's session, NOT stay on Sunday. Regression for the
++    # `normalize()+fixed-24h` DST bug that landed them at 23:00 same-day on fall-back days.
++    from datetime import time as dtime
++    from src.engine.data import _session_date
++    from src.engine.indicators import _anchor_session_date
++    ts = pd.Series(pd.to_datetime([
++        "2026-11-01 18:00", "2026-11-01 20:00", "2026-11-01 23:59",   # Sun evening -> Mon session
++        "2026-11-02 09:30",                                            # Mon cash -> Mon
++        "2026-02-11 09:48",                                            # EST control -> same day
++    ]).tz_localize(NY))
++    for fn in (lambda s: _session_date(s, dtime(18, 0)),
++               lambda s: _anchor_session_date(s, dtime(18, 0))):
++        d = fn(ts).astype(str)
++        assert list(d) == ["2026-11-02", "2026-11-02", "2026-11-02", "2026-11-02", "2026-02-11"]
