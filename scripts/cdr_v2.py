@@ -2,18 +2,12 @@
 """CDR v2 — confluence-REJECTION post-open detector (Angus's A+ method, 11-trade spec).
 Additive-only + stand-down, graded on MONTH CONSISTENCY (green every month), not total $.
 
-Per TF {1,2,3}min, per bar in 09:40-10:15:
-  1. Build the confluence zone: >=2 of {VWAP+-1/+-2, BB basis, developing POC, opening-leg fib
-     0.382/0.5/0.705} within TOL of each other.
-  2. REJECTION trigger: bar wicks INTO the zone and closes back OUT (rejection wick), with VWAP on
-     the origin side. long = reject support (wick down, close up); short = reject resistance.
-  3. CVD confirmation (toggle): aggressive delta in the rejection bar is ABSORBED (flow against the
-     trade = the fade signal). Recorded always; optionally required.
-  4. Entry at rejection close. Stop beyond the wick extreme + buffer. Target = next structural level
-     (nearest opposite: VWAP-mid / opposite band / POC), leg-scaled fallback 2R. BE at first magnet.
-  5. STAND-DOWN: no confluence rejection -> no trade.
+Per TF {1,2,3}min, per bar 09:40-10:15: confluence zone (>=2 of {VWAP+-1/+-2, BB basis, developing
+POC, opening-leg fib 0.382/0.5/0.705} within TOL) -> REJECTION wick into/out of zone -> enter at
+close, stop beyond wick+buffer, target next structural level (BE at first magnet), else stand down.
+CVD confirmation toggle: absorbed flow (against) vs with-flow. All per-day data precomputed once.
 
-    python -m scripts.cdr_v2 [TOL] [cvd_mode: off|against|with]
+    python -m scripts.cdr_v2 [TOL] [cvd: off|against|with]
 """
 import sys
 from datetime import time as dtime
@@ -32,9 +26,7 @@ CVD = ["footprint_feb_mar2026", "footprint_apr2026", "footprint_may_jul2026"]
 WIN_S, WIN_E = dtime(9, 40), dtime(10, 15)
 OPEN_T = dtime(9, 30)
 MONTHS = ["2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07"]
-TOL = 6.0
-BUF = 2.0            # stop buffer beyond wick (points)
-PV, COMM = 20.0, 2.50
+TOL, BUF, PV, COMM = 6.0, 2.0, 20.0, 2.50
 
 
 def load_fp():
@@ -44,67 +36,57 @@ def load_fp():
     d["ts"] = d.ts_minute.dt.tz_convert(NY)
     d["day"] = d.ts.dt.strftime("%Y-%m-%d")
     d = d[(d.ts.dt.time >= OPEN_T) & (d.ts.dt.time <= WIN_E)]
-    d["signed"] = np.where(d["side"] == "B", d["volume"], -d["volume"])   # B=buy - A=sell (verified)
+    d["signed"] = np.where(d["side"] == "B", d["volume"], -d["volume"])   # B(buy)-A(sell), verified
     return d
 
 
-def dev_poc_and_delta(fpd):
+def poc_delta_for_day(fpd):
     poc, delta, cum = {}, {}, {}
     for ts, g in fpd.groupby("ts"):
         for p, v in zip(g.price.values, g.volume.values):
             cum[p] = cum.get(p, 0) + v
-        poc[ts.floor("min")] = max(cum, key=cum.get)
-        delta[ts.floor("min")] = float(g.signed.sum())
+        k = int(ts.floor("min").value)
+        poc[k] = max(cum, key=cum.get)
+        delta[k] = float(g.signed.sum())
     return poc, delta
 
 
-def opening_leg_fibs(bars1m, day):
-    """Fib the 9:30 opening leg: 9:30 open -> extreme by 09:40. Returns dict of level->price."""
-    d = bars1m[(bars1m.ts_event.dt.strftime("%Y-%m-%d") == day) &
-               (bars1m.ts_event.dt.time >= OPEN_T) & (bars1m.ts_event.dt.time < WIN_S)]
-    if len(d) < 3:
+def fibs_for_day(opening):
+    """opening = 09:30-09:40 1m slice (open, high, low)."""
+    if opening is None or len(opening) < 3:
         return {}
-    o = d.iloc[0].open
-    hi, lo = d.high.max(), d.low.min()
-    up = (hi - o) >= (o - lo)
-    a, b = (lo, hi) if up else (hi, lo)      # leg from a->b
+    o = opening.iloc[0].open
+    hi, lo = opening.high.max(), opening.low.min()
+    a, b = (lo, hi) if (hi - o) >= (o - lo) else (hi, lo)
     rng = b - a
-    return {f: b - f * rng for f in (0.382, 0.5, 0.705)}   # retracement levels
+    return {f: b - f * rng for f in (0.382, 0.5, 0.705)}
 
 
-def run_tf(tf, bars1m, vwap1m, fp, tol, cvd_mode, day1m):
+def run_tf(tf, bars1m, tol, cvd_mode, poc_by_day, delta_by_day, fibs_by_day, vwap_map, day1m):
     tfd = resample_ohlcv(bars1m, f"{tf}min").reset_index(drop=True)
-    bb = bollinger(tfd, 20, 2.0)
-    tfd = tfd.join(bb[["basis", "upper", "lower"]])
+    tfd = tfd.join(bollinger(tfd, 20, 2.0)[["basis", "upper", "lower"]])
     tfd["day"] = tfd.ts_event.dt.strftime("%Y-%m-%d")
     tfd["t"] = tfd.ts_event.dt.time
-    vb = vwap1m.set_index("ts_event")
+    tfd["k"] = tfd.ts_event.astype("int64")
     trades, stage = [], dict(bars=0, zone=0, reject=0)
     for day, g in tfd.groupby("day"):
-        fpd = fp[fp.day == day]
-        if fpd.empty or day not in day1m:
+        if day not in day1m or day not in poc_by_day:
             continue
-        poc, delta = dev_poc_and_delta(fpd)
-        fibs = opening_leg_fibs(bars1m, day)
-        dts, dlo, dhi, dcl = day1m[day]     # precomputed 1m numpy arrays 09:30-10:35
+        poc, delta, fibs = poc_by_day[day], delta_by_day[day], fibs_by_day.get(day, {})
+        dts, dlo, dhi, dcl = day1m[day]
         g = g.reset_index(drop=True)
+        lows, highs, closes, ks, ts_ = g.low.values, g.high.values, g.close.values, g.k.values, g.t.values
+        bas, up, lo_ = g.basis.values, g.upper.values, g.lower.values
         for i in range(1, len(g)):
-            row = g.iloc[i]
-            if not (WIN_S <= row.t <= WIN_E) or pd.isna(row.basis):
+            if not (WIN_S <= ts_[i] <= WIN_E) or np.isnan(bas[i]):
                 continue
-            pmin = pd.Timestamp(row.ts_event).floor("min")
-            if pmin not in poc or pmin not in vb.index:
+            k = int(ks[i])
+            if k not in poc or k not in vwap_map:
                 continue
             stage["bars"] += 1
-            vw = vb.loc[pmin]
-            # candidate confluence levels
-            levels = {"vwap": vw["vwap"], "v+1": vw["upper_1"], "v-1": vw["lower_1"],
-                      "v+2": vw["upper_2"], "v-2": vw["lower_2"], "bb": row.basis,
-                      "bbU": row.upper, "bbL": row.lower, "poc": poc[pmin]}
-            for k, v in fibs.items():
-                levels[f"fib{k}"] = v
-            # find a zone: a price where >=2 levels cluster
-            vals = sorted(levels.values())
+            vw = vwap_map[k]   # [vwap,u1,l1,u2,l2]
+            levels = [vw[0], vw[1], vw[2], vw[3], vw[4], bas[i], up[i], lo_[i], poc[k]] + list(fibs.values())
+            vals = sorted(levels)
             zone = None
             for x in vals:
                 near = [y for y in vals if abs(y - x) <= tol]
@@ -113,40 +95,34 @@ def run_tf(tf, bars1m, vwap1m, fp, tol, cvd_mode, day1m):
             if zone is None:
                 continue
             stage["zone"] += 1
-            # rejection: wick into zone, close back out
-            long_rej = row.low <= zone + tol and row.close > zone + tol/2 and vw["vwap"] >= zone
-            short_rej = row.high >= zone - tol and row.close < zone - tol/2 and vw["vwap"] <= zone
+            long_rej = lows[i] <= zone + tol and closes[i] > zone + tol/2 and vw[0] >= zone
+            short_rej = highs[i] >= zone - tol and closes[i] < zone - tol/2 and vw[0] <= zone
             if not (long_rej or short_rej):
                 continue
             direction = "long" if long_rej else "short"
             stage["reject"] += 1
-            d_bar = delta.get(pmin, 0.0)
-            cvd_dir = d_bar if direction == "long" else -d_bar   # +ve = flow WITH trade
-            if cvd_mode == "against" and cvd_dir >= 0:   # require absorbed (flow against)
+            cvd_dir = (delta.get(k, 0.0)) * (1 if direction == "long" else -1)
+            if cvd_mode == "against" and cvd_dir >= 0:
                 continue
             if cvd_mode == "with" and cvd_dir <= 0:
                 continue
-            entry = row.close
-            stop = (row.low - BUF) if direction == "long" else (row.high + BUF)
+            entry = closes[i]
+            stop = (lows[i] - BUF) if direction == "long" else (highs[i] + BUF)
             risk = abs(entry - stop)
             if risk < 2:
                 continue
-            # target = nearest opposite structural level; fallback 2R
-            opp = [levels["vwap"], levels["poc"], levels["v+1"] if direction == "long" else levels["v-1"]]
+            opp = [vw[0], poc[k], vw[1] if direction == "long" else vw[2]]
             cands = [x for x in opp if (x > entry) == (direction == "long") and abs(x - entry) > risk]
             tgt = (min(cands) if direction == "long" else max(cands)) if cands else \
                   (entry + 2*risk if direction == "long" else entry - 2*risk)
-            # outcome scan on 1m to 10:30 (vectorized: first bar hitting stop/target)
-            j0 = int(np.searchsorted(dts, pd.Timestamp(row.ts_event).value, side="right"))
-            lo, hi, cl = dlo[j0:], dhi[j0:], dcl[j0:]
-            if direction == "long":
-                hit_stop = lo <= stop; hit_tgt = hi >= tgt
-            else:
-                hit_stop = hi >= stop; hit_tgt = lo <= tgt
-            si = np.argmax(hit_stop) if hit_stop.any() else 10**9
-            ti = np.argmax(hit_tgt) if hit_tgt.any() else 10**9
+            j0 = int(np.searchsorted(dts, k, side="right"))
+            slo, shi, scl = dlo[j0:], dhi[j0:], dcl[j0:]
+            hs = (slo <= stop) if direction == "long" else (shi >= stop)
+            ht = (shi >= tgt) if direction == "long" else (slo <= tgt)
+            si = int(np.argmax(hs)) if hs.any() else 10**9
+            ti = int(np.argmax(ht)) if ht.any() else 10**9
             if si == ti == 10**9:
-                last = cl[-1] if len(cl) else entry
+                last = scl[-1] if len(scl) else entry
                 out = (last - entry) if direction == "long" else (entry - last)
             elif si <= ti:
                 out = -risk
@@ -162,31 +138,39 @@ def main():
     cvd_mode = sys.argv[2] if len(sys.argv) > 2 else "off"
     bars = pd.read_parquet(DATA)
     vwap = daily_vwap(bars, bands=[1, 2, 3], session_open=dtime(18, 0))
+    ks = bars.ts_event.astype("int64").to_numpy()
+    vw = vwap[["vwap", "upper_1", "lower_1", "upper_2", "lower_2"]].to_numpy()
+    vwap_map = {int(ks[i]): vw[i] for i in range(len(ks))}
     fp = load_fp()
-    # precompute per-day 1m arrays (09:30-10:35) once for the vectorized exit scan
+    poc_by_day, delta_by_day = {}, {}
+    for d, g in fp.groupby("day"):
+        poc_by_day[d], delta_by_day[d] = poc_delta_for_day(g)
     b = bars[(bars.ts_event.dt.time >= OPEN_T) & (bars.ts_event.dt.time <= dtime(10, 35))].copy()
     b["day"] = b.ts_event.dt.strftime("%Y-%m-%d")
-    day1m = {d: (g.ts_event.astype("int64").to_numpy(), g.low.to_numpy(), g.high.to_numpy(), g.close.to_numpy())
-             for d, g in b.groupby("day")}
-    print(f"CDR v2 — post-open 09:40-10:15, 2026 Feb-Jul, TOL={tol}, cvd={cvd_mode}\n", flush=True)
+    b["t"] = b.ts_event.dt.time
+    day1m, fibs_by_day = {}, {}
+    for d, g in b.groupby("day"):
+        day1m[d] = (g.ts_event.astype("int64").to_numpy(), g.low.to_numpy(), g.high.to_numpy(), g.close.to_numpy())
+        fibs_by_day[d] = fibs_for_day(g[g.t < WIN_S])
+    print(f"CDR v2 — post-open 09:40-10:15, 2026 Feb-Jul, TOL={tol}, cvd={cvd_mode}", flush=True)
     allT = []
     for tf in (1, 2, 3):
-        T, st = run_tf(tf, bars, vwap, fp, tol, cvd_mode, day1m)
+        T, st = run_tf(tf, bars, tol, cvd_mode, poc_by_day, delta_by_day, fibs_by_day, vwap_map, day1m)
         allT.append(T)
-        print(f"  TF{tf}: funnel bars={st['bars']} zone={st['zone']} reject={st['reject']} -> {len(T)} trades", flush=True)
+        print(f"  TF{tf}: bars={st['bars']} zone={st['zone']} reject={st['reject']} -> {len(T)}t", flush=True)
     J = pd.concat(allT) if any(len(t) for t in allT) else pd.DataFrame()
     if not len(J):
         print("no trades"); return
     print(f"\nALL TF: {len(J)}t  ${J.dollars.sum():+,.0f}  win {(J.dollars>0).mean()*100:.0f}%  avg {J.R.mean():+.2f}R")
-    print("\nMONTH CONSISTENCY (the scorecard):")
-    by = J.groupby("month").dollars.agg(["count", "sum"]); by["win"] = J.groupby("month").apply(lambda x: (x.dollars>0).mean()*100)
+    print("MONTH CONSISTENCY:")
+    by = J.groupby("month").dollars.agg(["count", "sum"])
+    wins = J.groupby("month").apply(lambda x: (x.dollars > 0).mean() * 100)
     green = 0
     for m in MONTHS:
         if m in by.index:
-            r = by.loc[m]; g = "GREEN" if r["sum"] > 0 else "red"
-            green += r["sum"] > 0
-            print(f"  {m}  {int(r['count']):3d}t  ${r['sum']:+7,.0f}  win {r['win']:2.0f}%  {g}")
-    print(f"\n  >>> {green}/{len([m for m in MONTHS if m in by.index])} months green")
+            s = by.loc[m, "sum"]; green += s > 0
+            print(f"  {m}  {int(by.loc[m,'count']):3d}t  ${s:+7,.0f}  win {wins[m]:2.0f}%  {'GREEN' if s>0 else 'red'}")
+    print(f"  >>> {green}/{by.shape[0]} months green")
     J.to_csv("/tmp/claude-0/-home-user-AI-trading-agents/8f4cdd65-f942-532a-87f2-c9c07c27272a/scratchpad/cdr_v2_trades.csv", index=False)
 
 
