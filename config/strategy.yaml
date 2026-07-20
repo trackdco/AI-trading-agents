@@ -1,0 +1,48 @@
+# Strategy parameters — every value traces to a § of strategy-definition-v1.0.md.
+# FIRST-PASS starting values only (items marked CALIBRATE in the doc). No tuning.
+
+instrument:
+  point_value_nq: 20.0      # $/pt full NQ (glossary)
+  tick: 0.25
+
+session:
+  entry_window: W1          # §1 default; W1 = 08:00-11:00 ET (primary)
+  w1_start: "08:00"
+  w1_end: "11:00"
+  eod_flatten: "15:55"      # §1 Vault backstop
+
+indicators:
+  bb_period: 20             # §2
+  bb_std: 2.0
+  daily_vwap_anchor: "18:00"   # §2 CME session open (Asia)
+  ny_vwap_anchor: "09:30"      # §2 cash open
+  entry_tfs: [1, 2, 3, 5]      # §1
+
+cluster:
+  tolerance_pts: 10.0       # §3 CALIBRATE start ~10 NQ pts
+  min_confluence_with_trend: 2   # §7
+  min_confluence_counter: 3      # §7
+
+trigger:
+  b_min_body_ratio: 0.6     # §3 displacement CALIBRATE start
+  atr_floor_k: 1.0          # §3 optional size floor CALIBRATE
+
+entry:
+  variant: E1               # §5 default (limit at BB MA)
+  t_cancel_pts: 15.0        # §5.5 CALIBRATE placeholder
+
+target:
+  front_run_f_pts: 2.5      # §6.4 CALIBRATE start 2-3
+  rr_floor: 1.5             # §6.5
+
+management:
+  variant: V0               # §8 default (set-and-forget)
+
+vault:                       # §10
+  max_trades_per_day: 3
+  daily_halt_losses: 2
+  daily_halt_r: -2.0
+
+costs:
+  commission_per_side_usd: 0.85   # typical NQ RT ~ $1.70; first-pass estimate
+  slippage_pts: 0.5               # first-pass fill realism (entry+exit)

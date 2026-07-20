@@ -1,0 +1,7 @@
+# Spec 1 §Step 1: ignore raw data and generated outputs
+data/raw/
+data/nq_1m.parquet
+output/
+__pycache__/
+*.pyc
+.env
