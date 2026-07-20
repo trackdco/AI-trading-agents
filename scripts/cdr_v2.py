@@ -85,13 +85,14 @@ def run_tf(tf, bars1m, tol, cvd_mode, poc_by_day, delta_by_day, fibs_by_day, vwa
                 continue
             stage["bars"] += 1
             vw = vwap_map[k]   # [vwap,u1,l1,u2,l2]
-            levels = [vw[0], vw[1], vw[2], vw[3], vw[4], bas[i], up[i], lo_[i], poc[k]] + list(fibs.values())
-            vals = sorted(levels)
+            # (value, category) — a real A+ stack needs >=3 DISTINCT categories clustering tight
+            cat_levels = [(vw[1], "vwap"), (vw[2], "vwap"), (vw[3], "vwap"), (vw[4], "vwap"),
+                          (bas[i], "bb"), (poc[k], "poc")] + [(v, "fib") for v in fibs.values()]
             zone = None
-            for x in vals:
-                near = [y for y in vals if abs(y - x) <= tol]
-                if len(near) >= 2:
-                    zone = float(np.mean(near)); break
+            for x, _ in cat_levels:
+                near = [(y, c) for y, c in cat_levels if abs(y - x) <= tol]
+                if len({c for _, c in near}) >= 3:            # >=3 different level types
+                    zone = float(np.mean([y for y, _ in near])); break
             if zone is None:
                 continue
             stage["zone"] += 1
@@ -128,7 +129,7 @@ def run_tf(tf, bars1m, tol, cvd_mode, poc_by_day, delta_by_day, fibs_by_day, vwa
                 out = -risk
             else:
                 out = (tgt - entry) if direction == "long" else (entry - tgt)
-            trades.append(dict(day=day, month=day[:7], tf=tf, direction=direction,
+            trades.append(dict(day=day, month=day[:7], tf=tf, k=k, direction=direction,
                                risk=risk, R=out/risk, dollars=out*PV - 2*COMM, cvd_dir=cvd_dir))
     return pd.DataFrame(trades), stage
 
@@ -161,6 +162,9 @@ def main():
     J = pd.concat(allT) if any(len(t) for t in allT) else pd.DataFrame()
     if not len(J):
         print("no trades"); return
+    # dedupe across TFs + hard cap: the FIRST A+ setup of the day, then stand down (1/day)
+    CAP = int(sys.argv[3]) if len(sys.argv) > 3 else 1
+    J = J.sort_values("k").groupby("day", group_keys=False).head(CAP).reset_index(drop=True)
     print(f"\nALL TF: {len(J)}t  ${J.dollars.sum():+,.0f}  win {(J.dollars>0).mean()*100:.0f}%  avg {J.R.mean():+.2f}R")
     print("MONTH CONSISTENCY:")
     by = J.groupby("month").dollars.agg(["count", "sum"])
