@@ -18,6 +18,7 @@ TOL = CFG["cluster"]["tolerance_pts"]
 F = CFG["target"]["front_run_f_pts"]
 RRFLOOR = CFG["target"]["rr_floor"]
 TCANCEL = CFG["entry"]["t_cancel_pts"]
+MIN_STOP = CFG["entry"]["min_stop_pts"]
 SLIP = CFG["costs"]["slippage_pts"]
 COMM_PTS = 2 * CFG["costs"]["commission_per_side_usd"] / PV
 WIN_A, WIN_B = CFG["session"]["w1_start"], CFG["session"]["w1_end"]
@@ -234,7 +235,7 @@ def backtest(base1m, sigs):
             continue
         stop = (sig["trig_low"] - TICK) if d == "long" else (sig["trig_high"] + TICK)
         risk = abs(entry - stop)
-        if risk < 2 * TICK:
+        if risk < MIN_STOP:                         # realism floor (sub-noise wick stops)
             continue
         tgt = pick_target(sig, entry, stop)
         if tgt is None:
@@ -251,23 +252,24 @@ def backtest(base1m, sigs):
                 break
             lo, hi = loa[i], hia[i]; last_close = cla[i]
             if not filled:
+                # limit entry: fills AT the limit price (no adverse slippage)
                 if (d == "long" and lo <= entry) or (d == "short" and hi >= entry):
-                    filled = True
-                    entry_fill = entry + (SLIP if d == "long" else -SLIP)
+                    filled = True; entry_fill = entry
                 elif (d == "long" and lo <= entry - TCANCEL) or \
                      (d == "short" and hi >= entry + TCANCEL):
                     exit_reason = "cancelled"; break
                 continue
+            # stop = market order (adverse slip); target = limit (fills at price). stop-first.
             if d == "long":
                 if lo <= stop:
                     exit_px = stop - SLIP; exit_reason = "stop"; break
                 if hi >= tgt:
-                    exit_px = tgt - SLIP; exit_reason = "target"; break
+                    exit_px = tgt; exit_reason = "target"; break
             else:
                 if hi >= stop:
                     exit_px = stop + SLIP; exit_reason = "stop"; break
                 if lo <= tgt:
-                    exit_px = tgt + SLIP; exit_reason = "target"; break
+                    exit_px = tgt; exit_reason = "target"; break
         if exit_reason == "cancelled" or not filled:
             continue
         if exit_px is None:  # flattened at EOD

@@ -30,6 +30,7 @@ trigger:
 entry:
   variant: E1               # §5 default (limit at BB MA)
   t_cancel_pts: 15.0        # §5.5 CALIBRATE placeholder
+  min_stop_pts: 3.0         # realism floor: sub-noise wick stops untradeable on NQ (CALIBRATE)
 
 target:
   front_run_f_pts: 2.5      # §6.4 CALIBRATE start 2-3
@@ -45,4 +46,4 @@ vault:                       # §10
 
 costs:
   commission_per_side_usd: 0.85   # typical NQ RT ~ $1.70; first-pass estimate
-  slippage_pts: 0.5               # first-pass fill realism (entry+exit)
+  slippage_pts: 0.5               # applied to STOP (market) exits ONLY; limit entry/target fill at price
