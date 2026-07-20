@@ -95,6 +95,30 @@ Three independent verifiers dug into this. Reconciled:
 5. Re-run the E3/E4/management tournament on the fixed engine before locking a champion — the prior
    winner was chosen under buggy fills (this changes *rankings*, even if the aggregate edge holds).
 
+## 6b. Bonus: champion variant comparison on the FIXED engine (diagnostic, for Angus)
+Re-ran the tournament-relevant arms under correct fills (`scripts/_champion_variants.py`). Read R:
+
+| variant | n | win% | net$ (1-ct) | **net R** | exp |
+|---|--:|--:|--:|--:|--:|
+| mixed (current champion) | 145 | 29.0% | +$7,949 | +37.1 | +0.256 |
+| **mixed + 09:15–09:45 stand-out** | 132 | 31.1% | **+$10,392** | **+47.8** | **+0.362** |
+| E3-only (limit) | 175 | 38.3% | +$5,234 | +26.1 | +0.149 |
+| E3-only + 09:15–09:45 | 159 | 39.6% | +$6,876 | +31.2 | +0.196 |
+
+Two findings:
+1. **Do NOT drop the E4 (market/WAR-day) arm.** Mixed (+37.1R) beats E3-only (+26.1R) in net R AND $.
+   E3-only has a much higher win rate (38% vs 29%) but LOWER expectancy — the E4 WAR-day arm genuinely
+   adds net R. (This nuances §4: E4 is not "fake"; it contributes. Its per-trade $ is just small because
+   its stops are tight.)
+2. **The 09:15–09:45 stand-out robustly improves EVERY config** — it cleans up the dead 09:xx pocket
+   (−0.81R/−0.33R buckets) and the marginal fills the timing fix surfaced. Best = mixed + stand-out:
+   **+$10,392 / +47.8R / +0.362R** — recovers the dollars the fix "cost" AND lifts R.
+
+**Caveat:** these runs span Feb–Jul incl. the Jun/Jul **OOS** block. This is a DIAGNOSTIC PROPOSAL, not
+a locked change — the honest next step is to validate the 09:15–09:45 stand-out on the fixed engine
+with Jun/Jul held out, then Angus sign-off + doc bump (per the project's no-tuning rule). It extends
+the already-shipped 09:30–09:40 sit-out.
+
 ## 7. Artifacts
 - Full fix patch (engine timing + resting-fill gate + DST + tests): `patches/engine-entry-timing-fix.patch`
 - Measurement harness: `scripts/_measure_timing_fix.py`, `scripts/_diff_champion.py`
