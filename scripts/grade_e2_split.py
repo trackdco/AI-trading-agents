@@ -97,8 +97,9 @@ def main():
     for mo, r in gm.iterrows():
         print(f"    {mo}  {int(r['count']):3d}t  ${r['sum']:+8,.0f}  win {r['win']:2.0f}%")
 
-    # persist for the artifact
-    J.to_csv(f"/tmp/claude-0/-home-user-AI-trading-agents/8f4cdd65-f942-532a-87f2-c9c07c27272a/scratchpad/e2_{label}.csv", index=False)
+    # persist for the artifact (slash-safe label)
+    safe = label.replace("/", "_")
+    J.to_csv(f"/tmp/claude-0/-home-user-AI-trading-agents/8f4cdd65-f942-532a-87f2-c9c07c27272a/scratchpad/e2_{safe}.csv", index=False)
 
 
 if __name__ == "__main__":
