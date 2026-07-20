@@ -88,23 +88,23 @@ def main():
     share = dtv.type.eq("imbalanced").rolling(20, min_periods=5).mean()
     war = {d for d, s in zip(dtv.day, share) if pd.notna(s) and s >= 0.5}
 
-    print("=== BASELINE (current champion, full day 08:00-10:15, cap=2) ===")
-    report(run(allt, df, war, 2, dtime(10, 15), False), "baseline (full day)")
+    print("=== BASELINE (current champion, full day 08:00-10:15, cap=2) ===", flush=True)
+    base = run(allt, df, war, 2, dtime(10, 15), False)
+    report(base, "baseline (full day)")
 
-    print("\n=== ISOLATED POST-OPEN: sit out to 09:40, own 2-trade cap (Angus's test) ===")
-    post_1015 = run(allt, df, war, 2, dtime(10, 15), True, win_start=dtime(9, 40))
-    report(post_1015, "post-only 09:40-10:15, cap=2")
-    report(run(allt, df, war, 2, dtime(10, 30), True, win_start=dtime(9, 40)), "post-only 09:40-10:30, cap=2")
-    report(run(allt, df, war, 3, dtime(10, 15), True, win_start=dtime(9, 40)), "post-only 09:40-10:15, cap=3")
+    print("\n=== ISOLATED POST-OPEN: sit out to 09:40, own 2-trade cap (Angus's test) ===", flush=True)
+    post = run(allt, df, war, 2, dtime(10, 15), True, win_start=dtime(9, 40))
+    report(post, "post-only 09:40-10:15, cap=2")
 
-    print("\n=== PRE-MARKET ONLY (08:00-09:30, cap=2) for the combined ===")
+    print("\n=== PRE-MARKET ONLY (08:00-09:30, cap=2) ===", flush=True)
     pre = run(allt, df, war, 2, dtime(9, 30), False, win_start=dtime(8, 0))
     report(pre, "pre-only 08:00-09:30, cap=2")
 
-    print("\n=== COMBINED per-window caps (pre 2-cap + post 2-cap, sit out 09:30-09:40) ===")
-    combined = pd.concat([pre, post_1015], ignore_index=True)
+    print("\n=== COMBINED per-window (pre 2-cap + post 2-cap, sit out 09:30-09:40) ===", flush=True)
+    combined = pd.concat([pre, post], ignore_index=True)
     report(combined, "COMBINED (2 pre + 2 post)")
-    print(f"    vs baseline full-day cap=2: ${combined.dollars.sum() - run(allt, df, war, 2, dtime(10,15), False).dollars.sum():+,.0f} delta")
+    print(f"    baseline full-day cap=2: ${base.dollars.sum():+,.0f}  ->  combined: "
+          f"${combined.dollars.sum():+,.0f}  (delta ${combined.dollars.sum()-base.dollars.sum():+,.0f})", flush=True)
 
 
 if __name__ == "__main__":
