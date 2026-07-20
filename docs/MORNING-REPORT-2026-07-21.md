@@ -69,8 +69,21 @@ Mechanisms confirmed on real trades:
   chosen under buggy fills.
 - Everything here is in-sample Feb–Jul; treat as a strong lead pending the OOS discipline.
 
-## 5. Adversarial verification
-[to be filled in from the 3 independent verifiers: fix-correctness, raw-bar hand-trace, red-team refute]
+## 5. Adversarial verification (3 independent agents)
+**(a) Raw-bar hand-trace — CONFIRMED.** Independently traced fills against the raw 1-minute bars:
+- The baseline vs fixed fill is exactly ONE bar apart in 96.9% of matched E4 pairs; every fill price
+  is a real bar open + an identical ~1-tick adverse slippage — so the engines differ ONLY by which
+  bar they enter on.
+- The buggy engine's higher win rate is mechanical: entering one bar LATE **skips the trigger bar's
+  own adverse intrabar excursion.** All 3/3 stop→target outcome-flips are explained exactly (the
+  trigger bar's high/low hit the stop on the immediate fill; the late fill entered after the spike and
+  survived). 27 of 29 "extra" fills the fixed engine takes are stops — valid losing signals the bug
+  skipped.
+- Conclusion: the fixed engine correctly enters *into* the spike (realistic); the bug entered *after*
+  it (unrealistic). The E4 33% win rate was inflated; 25% is real.
+
+**(b) Fix code-correctness trace — [pending].**
+**(c) Red-team refutation attempt — [pending].**
 
 ## 6. Remaining engineering (status)
 - [ ] Update 4 E4/EC tests to the corrected `≥ ts` timing (they encoded the 1-bar-late bug).
