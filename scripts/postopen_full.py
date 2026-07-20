@@ -40,7 +40,8 @@ def run(allt, df, cfg, tight):
             trigs = [t for t in trigs if abs(t.close - t.stop_ref) <= 15.0]
         end = pd.Timestamp((pd.Timestamp(m + "-01", tz=NY) + pd.offsets.MonthBegin(1))
                            .tz_localize(None), tz=NY)
-        seg = df[df.ts_event <= end].reset_index(drop=True)
+        start = pd.Timestamp(m + "-01", tz=NY) - pd.Timedelta(days=12)   # bounded segment (speed)
+        seg = df[(df.ts_event >= start) & (df.ts_event <= end)].reset_index(drop=True)
         tr, _, _ = simulate(seg, trigs, cfg)
         for r in tr:
             ft = pd.Timestamp(r.fill_ts).tz_convert(NY).time()
