@@ -24,6 +24,10 @@ session:
   flat_time: "15:55"        # force-flat any open trade by this wall-clock time
   # CME daily session open — the anchor for the *session-anchored VWAP* (canon strategy).
   cme_open: "18:00"
+  # Golden-window study: take ENTRIES only in this window; trades already open at entry_end
+  # keep running to their stop/target/flat_time (winners run past the window).
+  entry_start: "09:40"
+  entry_end: "10:15"
 
 timeframes:
   # Signal timeframes — tested SEPARATELY, reported per TF (spec §Timeframes).
@@ -88,6 +92,7 @@ cvd:
 
 setups:
   A_reversal: true
+  A_include_bb: true    # include Bollinger bands as reversal levels (the "usual" VWAP+BB strategy)
   B_continuation: true
   B2_poc_limit: false   # KILLED — 15% win / PF 0.31 / -$33k; drags the whole strategy negative
 
@@ -138,6 +143,13 @@ targets:
 costs:
   slippage_ticks_per_side: 1      # 1 tick slippage each side (entry + exit)
   commission_per_micro: 0.17      # $ per micro per side (round-turn handled in code)
+
+heatmap:
+  # top-10 per-minute resting depth (08:00–10:29 ET). NEAR-TOUCH book only (~2.5pt), NOT
+  # far walls — used as an at-the-level book-imbalance confirmation. See heatmap.py scope note.
+  depth_dir: "/home/user/gs/data/reference/depth_2026"
+  near_points: 3.0          # book imbalance measured within this many points of entry
+  footprint_band: 3.0       # price band around the level for the at-level footprint read
 
 reporting:
   entry_time_buckets:             # entry-time buckets for the breakdown

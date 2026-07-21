@@ -241,8 +241,9 @@ def _tf_of(r):
 def detect(ctx: Context, tf: str, cfg: dict) -> pd.DataFrame:
     """Return one row per candidate signal on `tf`, with confluence factor set."""
     tol = cfg["confluence"]["proximity_points"]
-    open_t = _t(cfg["session"]["open"])
-    flat_t = _t(cfg["session"]["flat_time"])
+    # entry window: use the golden-window bounds if set, else the full session
+    open_t = _t(cfg["session"].get("entry_start") or cfg["session"]["open"])
+    flat_t = _t(cfg["session"].get("entry_end") or cfg["session"]["flat_time"])
     r = build_tf_frame(ctx.bars, tf, cfg)
     r["fib50"] = fib50_series(r, cfg)
     obs = order_blocks(r, cfg)
@@ -337,9 +338,11 @@ def detect(ctx: Context, tf: str, cfg: dict) -> pd.DataFrame:
                 f.add("volatility_band")
             return f
 
-        # -------- Setup A: reversal off a strong level (VWAP band / VAH / VAL / POC) --------
+        # -------- Setup A: reversal off a strong level (VWAP band / VAH / VAL / POC / BB) --------
         if cfg["setups"]["A_reversal"]:
             strong = {**vwap_levels, **prof_levels}
+            if cfg["setups"].get("A_include_bb"):
+                strong = {**strong, "bb_up": row.bb_up, "bb_lo": row.bb_lo, "bb_basis": row.bb_basis}
             for lname, L in strong.items():
                 if pd.isna(L):
                     continue
