@@ -110,6 +110,16 @@ class BacktestConfig(BaseModel):
     # (Both default off; the principled form is an ATR-scaled floor — this is the window-conditional stand-in.)
     post_open_after: dtime | None = None
     post_open_min_stop: float = 0.0
+    # Session actual-stop cap (Angus 21 Jul): evaluated at FILL time on the REAL fill price
+    # (|fill - stop|), so it captures displacement gap-through that the intended risk misses.
+    # If the actual stop would exceed this, SKIP the trade ("stop too big -> more likely to
+    # lose than win"). Causal: the fill bar's open is known the instant we'd enter, no future
+    # data. None = off (default); set per-session (pre-market only). Golden keeps wide stops.
+    max_stop_points: float | None = None
+    # When a max-stop skip fires, does the day's slot free up for the next valid setup?
+    # False = slot consumed (you passed, that's your look for the day); True = you keep watching
+    # and the next qualifying setup can fill. Run both to see which matches live behaviour.
+    max_stop_frees_slot: bool = False
     # Tier-2: sit out a volatile mid-session pocket (the 09:30-09:40 cash open bled 22% win, MFE 1.15).
     no_trade_start: dtime | None = None
     no_trade_end: dtime | None = None
@@ -750,6 +760,17 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                             st["fills"] -= 1
                             veto(t, "cancelled_gap_through_stop",
                                  f"market fill {fill_px} at/beyond stop {order.stop}")
+                            order = None
+                            fill_px = None
+                        # Session actual-stop cap (Angus 21 Jul): skip if the REAL fill puts the
+                        # stop beyond the cap. Uses fill_px (this bar's open) only -> causal.
+                        if (fill_px is not None and cfg.max_stop_points is not None
+                                and abs(fill_px - order.stop) > cfg.max_stop_points):
+                            if cfg.max_stop_frees_slot:
+                                st["fills"] -= 1
+                            veto(t, "vetoed_max_stop",
+                                 f"actual stop {abs(fill_px - order.stop):.1f} pts > "
+                                 f"{cfg.max_stop_points:g} cap (pre-market, §Angus)")
                             order = None
                             fill_px = None
                         if fill_px is not None:

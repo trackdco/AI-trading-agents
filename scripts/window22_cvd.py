@@ -6,11 +6,17 @@ the golden window looks like once un-starved AND filtered to CVD-confirmed trade
 
     python -m scripts.window22_cvd
 """
+import os
 import sys
 from datetime import time as dtime
 from pathlib import Path
 
 import pandas as pd
+
+# Pre-market actual-stop cap (Angus 21 Jul). None = off (control, reproduces +$15,381).
+# PRE_MAX_STOP=20 enables it; PRE_BACKFILL=1 lets a passed slot be taken by the next setup.
+PRE_MAX_STOP = float(os.environ["PRE_MAX_STOP"]) if os.environ.get("PRE_MAX_STOP") else None
+PRE_BACKFILL = os.environ.get("PRE_BACKFILL") == "1"
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.grade_window_cap import books, load                       # noqa: E402
@@ -28,7 +34,9 @@ GOLD = (dtime(9, 40), dtime(10, 15))
 def build(allt, war, df, delta, vec):
     cfg0 = load_backtest_config()
     base = cfg0.model_copy(update={"no_trade_start": None, "no_trade_end": None})
-    windows = [("pre", base.model_copy(update={"win_start": PRE[0], "win_end": PRE[1], "max_trades_per_day": 2}), PRE),
+    windows = [("pre", base.model_copy(update={"win_start": PRE[0], "win_end": PRE[1], "max_trades_per_day": 2,
+                                               "max_stop_points": PRE_MAX_STOP,
+                                               "max_stop_frees_slot": PRE_BACKFILL}), PRE),
                ("golden", base.model_copy(update={"win_start": GOLD[0], "win_end": GOLD[1], "max_trades_per_day": 2}), GOLD)]
     rows = []
     for m in MONTHS:
