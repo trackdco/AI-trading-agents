@@ -41,7 +41,7 @@ def condense_file(path):
 def main():
     src, outdir = sys.argv[1], Path(sys.argv[2])
     outdir.mkdir(parents=True, exist_ok=True)
-    files = sorted(glob.glob(f"{src}/condensed_GLBX-*.csv"))
+    files = sorted(glob.glob(f"{src}/condensed_GLBX-*.csv") + glob.glob(f"{src}/condensed_glbx-*.csv"))
     print(f"condensing {len(files)} files -> {outdir}", flush=True)
     n = 0
     for f in files:
