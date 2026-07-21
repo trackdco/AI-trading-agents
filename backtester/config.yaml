@@ -1,0 +1,148 @@
+# ============================================================================
+# NQ backtesting engine — configuration (Feb–Jul 2026)
+# Every rule the user specified is a toggle here. Nothing is hard-coded in code
+# that the spec said to make configurable. Read README.md for the assumptions.
+# ============================================================================
+
+data:
+  # Absolute paths — the raw parquet is gitignored / too big to commit, and lives
+  # in the sibling worktree. README documents how to relocate.
+  bars_1m: "/home/user/gs/data/reference/nq_1m_feb_jul2026.parquet"
+  cvd_glob: "/home/user/gs/data/reference/cvd/footprint_*2026.parquet"
+  tz: "America/New_York"
+
+instrument:
+  tick: 0.25            # NQ tick size (points)
+  point_value: 20.0     # $ per point, 1 full contract
+  micros_per_contract: 10
+  micro_point_value: 2.0   # $ per point, 1 micro (MNQ)
+
+session:
+  # RTH open; the strategy focuses on the first 90 min after the open.
+  open: "09:30"
+  focus_minutes: 90         # 09:30–11:00 is "prime"; later signals flagged late-session
+  flat_time: "15:55"        # force-flat any open trade by this wall-clock time
+  # CME daily session open — the anchor for the *session-anchored VWAP* (canon strategy).
+  cme_open: "18:00"
+
+timeframes:
+  # Signal timeframes — tested SEPARATELY, reported per TF (spec §Timeframes).
+  entry: ["3min", "5min"]
+  cvd_tf: "1min"            # CVD is computed on 1-min bars, session-anchored
+  htf: ["15min", "60min"]  # HTF bias structure timeframes
+
+indicators:
+  vwap:
+    # "session-anchored VWAP" = the canon daily VWAP anchored at the CME open (18:00 ET),
+    # volume-weighted SD bands. Bands 1/2/3 sigma. (README §VWAP explains the choice.)
+    anchor: "18:00"
+    bands_sigma: [1, 2, 3]
+  bollinger:
+    length: 20
+    stdev_mult: 2.0          # BB(20,2) incl. midline (basis) — a core confirmation, kept.
+  volume_profile:
+    bin_points: 0.25
+    value_area_pct: 70.0     # POC / VAH / VAL, developing session profile
+  fib:
+    swing_lookback_bars: 40  # recent significant swing on the entry TF
+    swing_min_points: 20.0   # a swing must span >= this to count as "significant"
+    level: 0.50              # track the 50% retracement
+  order_block:
+    impulse_min_points: 15.0 # last opposing candle before an impulse >= this move
+    track_mid: 0.50          # 50% of the order block
+  rejection:
+    wick_frac: 0.5           # wick must be >= this fraction of the candle range
+    large_range_points: 25.0 # a "large" rejection candle; track its 50% level
+  volatility_bands:
+    # Documented choice: Keltner Channels = EMA(length) +/- mult * ATR(atr_length).
+    # A volatility envelope distinct from Bollinger (which is stdev-based).
+    ema_length: 20
+    atr_length: 10
+    mult: 2.0
+  liquidity:
+    equal_tol_points: 3.0    # equal highs/lows within this tolerance cluster into one pool
+    swing_lookback_bars: 60  # window for untested swing highs/lows
+  htf_bias:
+    # MECHANICAL definition (spec §HTF bias). Documented exactly in README.
+    # bias = LONG  if close > 1H session-VWAP AND 15m structure is HH & HL
+    #        SHORT if close < 1H session-VWAP AND 15m structure is LH & LL
+    #        NEUTRAL otherwise (neutral => NO trade, bias is mandatory).
+    vwap_tf: "60min"
+    structure_tf: "15min"
+    swing_lookback: 3        # pivots use +/- this many bars
+
+cvd:
+  # TRUE aggressor-side footprint (B = aggressive buy, A = aggressive sell).
+  # Raw footprint sign is CORRECT (B positive). NOTE: the repo's legacy
+  # load_cvd_delta() returns the NEGATIVE of this — we compute fresh from raw, so
+  # no negation is applied here. (README §CVD-sign documents the landmine.)
+  anchor: "09:30"            # session-anchored: cumulative CVD resets at the RTH open
+  swing_lookback_min: 3      # "last 2-3 swings" — short-term window at the level (minutes)
+  initiative_delta_pct: 10.0 # entry-candle |delta%| threshold for an initiative trigger
+  # Confirmation MODES tested (spec §CVD test modes):
+  #   a = none          (no CVD filter)
+  #   b = divergence    (absorption/exhaustion divergence required)
+  #   c = initiative    (entry-candle delta% initiative required)
+  #   d = both          (b AND c)
+  modes: ["a", "b", "c", "d"]
+
+setups:
+  A_reversal: true
+  B_continuation: true
+  B2_poc_limit: true
+
+confluence:
+  # Factors tracked & counted (spec §Confluence). HTF bias is mandatory & counted.
+  factors:
+    - htf_bias
+    - rejection_candle
+    - bb_midline
+    - vwap
+    - poc
+    - ob_mid_50
+    - fib_50
+    - bb_reclaim
+    - liquidity
+    - rejection_50
+    - volatility_band
+    - cvd_divergence
+    - initiative_delta
+  proximity_points: 8.0            # two levels "confluent" if within this many points
+  min_confluence_grid: [3, 4, 5]   # tested 3 vs 4 vs 5
+  # Hard rules:
+  htf_bias_mandatory: true
+  closed_candles_only: true          # no anticipation entries
+  b_short_needs_extra: true          # Setup B shorts need 5m confirm OR CVD divergence extra
+
+risk:
+  hard_max_stop_points: 70.0   # NEVER take a trade whose logical stop > 70pt. No exceptions.
+  min_stop_points: 2.0         # sanity floor
+  # Sizing tiers (spec §Sizing):
+  #   0–40pt stop  -> 1.0 contract  (10 micros)
+  #   41–70pt stop -> 0.5 contract  (5 micros)
+  sizing_tiers:
+    - {max_stop: 40.0, contracts: 1.0, micros: 10}
+    - {max_stop: 70.0, contracts: 0.5, micros: 5}
+  one_trade_at_a_time: true
+  no_reentry_same_level_after_stop: true
+
+targets:
+  # Tested target modes (spec §TP). Default band 80–120pt.
+  modes: ["fixed80", "fixed100", "fixed120", "dynamic", "trail80"]
+  min_points: 80.0
+  cap_points: 120.0
+  trail_activate_points: 80.0     # for trail80: start trailing after +80pt
+  trail_distance_points: 30.0     # trail stop this far behind the extreme
+  liquidity_override: true        # if a liquidity draw is within reach, target it (even <80)
+
+costs:
+  slippage_ticks_per_side: 1      # 1 tick slippage each side (entry + exit)
+  commission_per_micro: 0.17      # $ per micro per side (round-turn handled in code)
+
+reporting:
+  entry_time_buckets:             # entry-time buckets for the breakdown
+    - {name: "open_0_30",   start: "09:30", end: "10:00"}
+    - {name: "mid_30_60",   start: "10:00", end: "10:30"}
+    - {name: "late_60_90",  start: "10:30", end: "11:00"}
+    - {name: "late_session","start": "11:00", end: "15:55"}
+  out_dir: "backtester/out"

@@ -5,3 +5,7 @@ output/
 __pycache__/
 *.pyc
 .env
+
+# backtester: ignore the large per-trade dump and logs (keep summary + evidence)
+backtester/out/all_trades.csv
+backtester/out/*.log
