@@ -473,6 +473,7 @@ SMT:                       n/a (NQ-only)
 """
     state = dict(bias=bias, tier=tier, score=score, direction=direction,
                  inval_px=inval_px, draw_px=(dws[0][0] if dws else None),
+                 draws=[(float(v), k) for v, k, _ in dws],   # all draws (≤3) for target selection
                  pdh=pools.get("PDH"), pdl=pools.get("PDL"))
     return block, state
 

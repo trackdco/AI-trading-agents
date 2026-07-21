@@ -1,0 +1,25 @@
+loading ...
+timelines: 921 days
+triggers: 50066 (2023-01-03 -> 2026-07-15)
+
+=== HEADLINE (2023-01 -> 2026-07) ===
+trades 1122 | win 30.7% | avgR -0.033 | totR -37.2 | pts -928 | $-22,332 | PF 0.90 | maxDD $-35,222 | streaks W7/L13
+  premarket                642t  win 30.5%  avgR +0.027  $     -2,025  PF 0.98
+  in-time 09:40-10:15      480t  win 31.0%  avgR -0.114  $    -20,308  PF 0.85
+  with-bias                902t  win 33.7%  avgR -0.003  $    -10,677  PF 0.94
+  counter-bias             220t  win 18.6%  avgR -0.156  $    -11,655  PF 0.79
+  de-risked (>40pt)         12t  win 41.7%  avgR -0.230  $     -1,838  PF 0.52
+
+by year:
+  2023    368t  win 31.8%  $    -13,862  PF 0.81
+  2024    346t  win 33.5%  $     +2,485  PF 1.04
+  2025    293t  win 26.3%  $    -17,735  PF 0.72
+  2026    115t  win 30.4%  $     +6,780  PF 1.31
+
+by conviction:
+  HIGH         6t  win 33.3%  avgR +0.503  $     +1,543
+  LOW        129t  win 34.1%  avgR +0.125  $     +7,670
+  MEDIUM     987t  win 30.3%  avgR -0.057  $    -31,545
+
+exit reasons: {'stop': 773, 'draw': 229, '4R cap': 66, '4R cap (no draw in dir)': 46, 'eod': 8}
+saved bt_v11_bias_3yr_trades.csv

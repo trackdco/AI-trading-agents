@@ -1,0 +1,1123 @@
+day,weekday,fill,window,branch,bias,conviction,counter,dir,pattern,entry,stop_dist,padded,derisk,target_kind,tgt_dist,reason,exit,exit_t,pts,R,dollars
+2023-01-09,Monday,08:04,premarket,E3bal,BULLISH,MEDIUM,True,short,B,11161.25,6.0,False,False,4R cap (no draw in dir),24.0,stop,11167.5,08:20,-6.25,-1.042,-130.0
+2023-01-10,Tuesday,08:02,premarket,E3bal,BEARISH,LOW,False,short,B,11107.0,9.75,False,False,draw:LondonL,13.0,stop,11117.0,08:06,-10.0,-1.026,-205.0
+2023-01-10,Tuesday,09:50,intime,E3bal,BEARISH,MEDIUM,True,long,A,11187.5,45.5,False,True,4R cap (no draw in dir),182.0,stop,11141.75,10:44,-45.75,-1.005,-460.0
+2023-01-11,Wednesday,08:00,premarket,E4war,BULLISH,LOW,False,long,A,11298.5,12.0,False,False,draw:LondonH,25.75,draw:LondonH,11324.25,08:24,25.75,2.146,510.0
+2023-01-11,Wednesday,08:36,premarket,E4war,BULLISH,LOW,True,short,B,11302.0,8.75,False,False,4R cap (no draw in dir),35.0,stop,11311.0,08:44,-9.0,-1.029,-185.0
+2023-01-11,Wednesday,10:04,intime,E4war,BULLISH,LOW,False,long,B,11335.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,11315.25,10:56,-20.25,-1.012,-410.0
+2023-01-12,Thursday,09:29,premarket,E4war,BULLISH,MEDIUM,False,long,A,11480.0,13.0,False,False,draw:equal-highs,11.25,draw:equal-highs,11491.25,09:29,11.25,0.865,220.0
+2023-01-16,Monday,08:06,premarket,E4war,BULLISH,MEDIUM,False,long,B,11576.0,9.0,False,False,draw:equal-highs,4.88,draw:equal-highs,11580.88,08:13,4.88,0.542,92.6
+2023-01-16,Monday,09:58,intime,E4war,BULLISH,MEDIUM,False,long,B2,11599.25,20.0,True,False,draw:AsiaL,2.5,draw:AsiaL,11601.75,10:00,2.5,0.125,45.0
+2023-01-16,Monday,10:00,intime,E4war,BULLISH,MEDIUM,False,long,B2,11599.75,20.0,True,False,draw:AsiaL,2.0,draw:AsiaL,11601.75,10:00,2.0,0.1,35.0
+2023-01-17,Tuesday,08:02,premarket,E4war,BULLISH,MEDIUM,True,short,B,11552.5,10.75,False,False,4R cap (no draw in dir),43.0,stop,11563.5,08:20,-11.0,-1.023,-225.0
+2023-01-17,Tuesday,08:20,premarket,E4war,BULLISH,MEDIUM,False,long,B2,11559.0,10.75,False,False,draw:equal-highs,17.88,draw:equal-highs,11576.88,08:30,17.88,1.663,352.6
+2023-01-17,Tuesday,09:44,intime,E4war,BULLISH,MEDIUM,False,long,A,11580.25,20.0,True,False,draw:PDH,39.25,draw:PDH,11619.5,09:54,39.25,1.962,780.0
+2023-01-18,Wednesday,09:40,intime,E3bal,BULLISH,MEDIUM,True,short,A,11691.0,26.0,False,False,4R cap (no draw in dir),104.0,stop,11717.25,09:51,-26.25,-1.01,-530.0
+2023-01-18,Wednesday,09:57,intime,E3bal,BULLISH,MEDIUM,True,short,A,11696.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,11716.25,09:58,-20.25,-1.012,-410.0
+2023-01-19,Thursday,09:43,intime,E4war,BULLISH,MEDIUM,False,long,A,11420.0,20.0,True,False,draw:PDL,26.5,stop,11399.75,09:44,-20.25,-1.012,-410.0
+2023-01-19,Thursday,10:01,intime,E4war,BULLISH,MEDIUM,False,long,A,11383.5,20.0,True,False,draw:PDL,63.0,stop,11363.25,10:12,-20.25,-1.012,-410.0
+2023-01-20,Friday,08:04,premarket,E3bal,BULLISH,MEDIUM,False,long,B,11440.5,7.5,False,False,4R cap,30.0,stop,11432.75,08:22,-7.75,-1.033,-160.0
+2023-01-20,Friday,08:43,premarket,E3bal,BULLISH,MEDIUM,False,long,B,11430.75,6.5,False,False,4R cap,26.0,stop,11424.0,08:48,-6.75,-1.038,-140.0
+2023-01-24,Tuesday,09:40,intime,E3bal,BEARISH,MEDIUM,True,long,A,11875.75,30.25,False,False,4R cap (no draw in dir),121.0,stop,11845.25,10:05,-30.5,-1.008,-615.0
+2023-01-25,Wednesday,08:01,premarket,E3bal,BEARISH,MEDIUM,False,short,B,11757.0,7.0,False,False,draw:LondonL,24.25,draw:LondonL,11732.75,08:36,24.25,3.464,480.0
+2023-01-26,Thursday,10:04,intime,E3bal,BULLISH,LOW,False,long,B,11995.5,35.0,False,False,4R cap (no draw in dir),140.0,stop,11960.25,10:07,-35.25,-1.007,-710.0
+2023-01-26,Thursday,10:13,intime,E3bal,BULLISH,LOW,False,long,B,11983.0,16.5,False,False,4R cap (no draw in dir),66.0,stop,11966.25,10:40,-16.75,-1.015,-340.0
+2023-02-02,Thursday,09:03,premarket,E4war,BULLISH,MEDIUM,False,long,A,12668.25,15.0,False,False,4R cap (no draw in dir),60.0,stop,12653.0,09:13,-15.25,-1.017,-310.0
+2023-02-02,Thursday,09:45,intime,E4war,BULLISH,MEDIUM,False,long,A,12708.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,12688.5,09:46,-20.25,-1.012,-410.0
+2023-02-02,Thursday,09:56,intime,E4war,BULLISH,MEDIUM,False,long,A,12694.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,12674.5,09:59,-20.25,-1.012,-410.0
+2023-02-09,Thursday,08:44,premarket,E4war,BEARISH,MEDIUM,True,long,B2,12696.5,8.75,False,False,4R cap (no draw in dir),35.0,stop,12687.5,09:31,-9.0,-1.029,-185.0
+2023-02-09,Thursday,09:54,intime,E4war,BULLISH,MEDIUM,False,long,B2,12682.5,20.0,True,False,4R cap,80.0,stop,12662.25,09:54,-20.25,-1.012,-410.0
+2023-02-09,Thursday,10:01,intime,E4war,BULLISH,MEDIUM,False,long,B2,12674.5,20.0,True,False,4R cap,80.0,stop,12654.25,10:04,-20.25,-1.012,-410.0
+2023-02-10,Friday,09:55,intime,E4war,BULLISH,MEDIUM,False,long,B2,12339.75,20.0,True,False,draw:PDL,26.75,stop,12319.5,10:00,-20.25,-1.012,-410.0
+2023-02-10,Friday,10:00,intime,E4war,BULLISH,MEDIUM,False,long,B2,12347.75,20.0,True,False,draw:PDL,18.75,stop,12327.5,10:00,-20.25,-1.012,-410.0
+2023-02-13,Monday,09:41,intime,E4war,BEARISH,MEDIUM,True,long,B2,12406.0,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),12486.0,10:49,80.0,4.0,1595.0
+2023-02-16,Thursday,08:01,premarket,E4war,BEARISH,MEDIUM,False,short,B2,12684.75,6.0,False,False,4R cap,24.0,4R cap,12660.75,08:20,24.0,4.0,475.0
+2023-02-16,Thursday,09:41,intime,E4war,BEARISH,MEDIUM,True,long,A,12556.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,12536.25,09:42,-20.25,-1.012,-410.0
+2023-02-16,Thursday,10:01,intime,E4war,BEARISH,MEDIUM,True,long,A,12555.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,12535.5,10:02,-20.25,-1.012,-410.0
+2023-02-17,Friday,08:02,premarket,E4war,BEARISH,MEDIUM,False,short,A,12375.75,10.5,False,False,draw:LondonL,37.75,stop,12386.5,08:32,-10.75,-1.024,-220.0
+2023-02-17,Friday,08:39,premarket,E4war,BEARISH,MEDIUM,False,short,B,12378.5,12.5,False,False,draw:LondonL,40.5,stop,12391.25,08:46,-12.75,-1.02,-260.0
+2023-02-20,Monday,08:02,premarket,E4war,BULLISH,MEDIUM,False,long,B2,12405.0,5.0,False,False,draw:LondonH,12.75,stop,12399.75,08:47,-5.25,-1.05,-110.0
+2023-02-20,Monday,08:50,premarket,E4war,BULLISH,MEDIUM,True,short,B,12397.5,6.0,False,False,4R cap (no draw in dir),24.0,stop,12403.75,08:58,-6.25,-1.042,-130.0
+2023-02-20,Monday,10:00,intime,E4war,BULLISH,MEDIUM,True,short,B,12386.5,20.0,True,False,4R cap (no draw in dir),80.0,eod,12367.0,12:59,19.5,0.975,385.0
+2023-02-21,Tuesday,08:18,premarket,E4war,BULLISH,MEDIUM,False,long,B,12258.0,7.75,False,False,4R cap,31.0,stop,12250.0,08:22,-8.0,-1.032,-165.0
+2023-02-21,Tuesday,08:31,premarket,E4war,BULLISH,MEDIUM,False,long,B,12261.0,11.0,False,False,4R cap,44.0,stop,12249.75,08:43,-11.25,-1.023,-230.0
+2023-02-22,Wednesday,08:18,premarket,E4war,BULLISH,MEDIUM,False,long,B,12142.0,13.25,False,False,4R cap,53.0,stop,12128.5,08:27,-13.5,-1.019,-275.0
+2023-02-22,Wednesday,08:34,premarket,E4war,BULLISH,MEDIUM,False,long,B,12132.25,10.75,False,False,4R cap,43.0,stop,12121.25,09:03,-11.0,-1.023,-225.0
+2023-02-23,Thursday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B,12214.25,11.25,False,False,draw:LondonH,12.0,draw:LondonH,12226.25,08:19,12.0,1.067,235.0
+2023-02-23,Thursday,08:56,premarket,E4war,BULLISH,MEDIUM,False,long,B,12215.25,8.25,False,False,draw:LondonH,11.0,draw:LondonH,12226.25,09:00,11.0,1.333,215.0
+2023-02-23,Thursday,10:01,intime,E4war,BULLISH,MEDIUM,False,long,B,12243.75,20.0,True,False,draw:PWL,22.0,stop,12223.5,10:02,-20.25,-1.012,-410.0
+2023-02-23,Thursday,10:04,intime,E4war,BULLISH,MEDIUM,False,long,B2,12217.25,20.0,True,False,draw:PWL,48.5,stop,12197.0,10:06,-20.25,-1.012,-410.0
+2023-02-24,Friday,09:12,premarket,E4war,BEARISH,MEDIUM,False,short,B2,11991.75,12.75,False,False,4R cap (no draw in dir),51.0,stop,12004.75,09:30,-13.0,-1.02,-265.0
+2023-02-24,Friday,09:42,intime,E4war,BEARISH,MEDIUM,True,long,A,12010.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,11990.5,09:44,-20.25,-1.012,-410.0
+2023-02-24,Friday,09:44,intime,E4war,BEARISH,MEDIUM,False,short,B2,11998.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,12018.5,11:50,-20.25,-1.012,-410.0
+2023-02-28,Tuesday,09:48,intime,E4war,BEARISH,MEDIUM,True,long,B2,12099.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,12079.0,09:49,-20.25,-1.012,-410.0
+2023-02-28,Tuesday,09:52,intime,E4war,BEARISH,MEDIUM,False,short,A,12075.25,15.0,False,False,draw:LondonL,45.75,stop,12090.5,09:53,-15.25,-1.017,-310.0
+2023-03-02,Thursday,08:00,premarket,E4war,BEARISH,MEDIUM,False,short,A,11879.5,6.25,False,False,4R cap,25.0,stop,11886.0,08:02,-6.5,-1.04,-135.0
+2023-03-02,Thursday,08:05,premarket,E4war,BEARISH,MEDIUM,False,short,A,11888.0,5.75,False,False,4R cap,23.0,4R cap,11865.0,08:30,23.0,4.0,455.0
+2023-03-09,Thursday,08:08,premarket,E4war,BEARISH,MEDIUM,False,short,B,12155.5,9.25,False,False,draw:equal-lows,5.38,stop,12165.0,08:24,-9.5,-1.027,-195.0
+2023-03-09,Thursday,08:24,premarket,E4war,BEARISH,MEDIUM,True,long,B,12162.25,6.0,False,False,4R cap (no draw in dir),24.0,4R cap (no draw in dir),12186.25,08:30,24.0,4.0,475.0
+2023-03-09,Thursday,09:43,intime,E4war,BULLISH,MEDIUM,False,long,A,12268.25,20.0,True,False,4R cap,80.0,4R cap,12348.25,10:06,80.0,4.0,1595.0
+2023-03-09,Thursday,10:09,intime,E4war,BULLISH,MEDIUM,False,long,A,12339.5,20.0,True,False,draw:equal-highs,22.0,stop,12319.25,10:11,-20.25,-1.012,-410.0
+2023-03-16,Thursday,09:17,premarket,E4war,BEARISH,MEDIUM,False,short,B2,12350.75,13.25,False,False,4R cap,53.0,stop,12364.25,09:17,-13.5,-1.019,-275.0
+2023-03-16,Thursday,09:26,premarket,E4war,BEARISH,MEDIUM,False,short,B2,12349.75,11.75,False,False,4R cap,47.0,stop,12361.75,09:30,-12.0,-1.021,-245.0
+2023-03-16,Thursday,09:48,intime,E4war,BEARISH,MEDIUM,False,short,B2,12343.25,20.0,True,False,4R cap,80.0,stop,12363.5,09:50,-20.25,-1.012,-410.0
+2023-03-16,Thursday,10:07,intime,E4war,BEARISH,MEDIUM,False,short,B2,12382.25,20.0,True,False,4R cap,80.0,stop,12402.5,10:11,-20.25,-1.012,-410.0
+2023-03-17,Friday,08:18,premarket,E4war,BEARISH,MEDIUM,False,short,B2,12724.75,6.5,False,False,draw:AsiaL,22.75,draw:AsiaL,12702.0,08:21,22.75,3.5,450.0
+2023-03-17,Friday,08:36,premarket,E4war,BEARISH,MEDIUM,False,short,B2,12685.0,7.0,False,False,4R cap,28.0,stop,12692.25,09:03,-7.25,-1.036,-150.0
+2023-03-21,Tuesday,08:54,premarket,E4war,BULLISH,LOW,False,long,B,12767.0,5.25,False,False,4R cap,21.0,stop,12761.5,08:56,-5.5,-1.048,-115.0
+2023-03-21,Tuesday,09:44,intime,E4war,BULLISH,MEDIUM,False,long,B2,12792.25,20.0,True,False,draw:PWH,19.0,stop,12772.0,09:48,-20.25,-1.012,-410.0
+2023-03-21,Tuesday,09:52,intime,E4war,BULLISH,MEDIUM,True,short,A,12783.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,12804.0,09:55,-20.25,-1.012,-410.0
+2023-03-22,Wednesday,08:28,premarket,E4war,BULLISH,MEDIUM,True,short,A,12837.5,6.75,False,False,4R cap (no draw in dir),27.0,stop,12844.5,08:32,-7.0,-1.037,-145.0
+2023-03-22,Wednesday,08:32,premarket,E4war,BULLISH,MEDIUM,False,long,B2,12843.0,5.25,False,False,4R cap,21.0,4R cap,12864.0,09:12,21.0,4.0,415.0
+2023-03-22,Wednesday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,B2,12874.75,20.0,True,False,draw:equal-highs,11.63,draw:equal-highs,12886.38,09:50,11.63,0.581,227.6
+2023-03-22,Wednesday,09:50,intime,E4war,BULLISH,MEDIUM,False,long,B2,12876.25,20.0,True,False,draw:equal-highs,10.13,draw:equal-highs,12886.38,09:50,10.13,0.506,197.6
+2023-03-23,Thursday,08:38,premarket,E4war,BULLISH,MEDIUM,False,long,A,12822.25,6.75,False,False,4R cap,27.0,stop,12815.25,09:02,-7.0,-1.037,-145.0
+2023-03-27,Monday,08:18,premarket,E4war,BULLISH,MEDIUM,True,short,B,12932.75,9.75,False,False,4R cap (no draw in dir),39.0,4R cap (no draw in dir),12893.75,09:31,39.0,4.0,775.0
+2023-03-27,Monday,09:41,intime,E4war,BULLISH,MEDIUM,True,short,A,12902.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,12923.0,09:42,-20.25,-1.012,-410.0
+2023-03-27,Monday,09:56,intime,E4war,BULLISH,MEDIUM,False,long,B2,12938.5,20.0,True,False,draw:equal-highs,20.38,stop,12918.25,09:57,-20.25,-1.012,-410.0
+2023-03-28,Tuesday,08:15,premarket,E4war,BULLISH,MEDIUM,False,long,B,12793.75,6.75,False,False,4R cap,27.0,stop,12786.75,08:22,-7.0,-1.037,-145.0
+2023-03-28,Tuesday,08:42,premarket,E4war,BULLISH,MEDIUM,True,short,B,12762.75,7.5,False,False,4R cap (no draw in dir),30.0,stop,12770.5,08:59,-7.75,-1.033,-160.0
+2023-03-28,Tuesday,10:11,intime,E4war,BULLISH,MEDIUM,False,long,B2,12714.75,20.0,True,False,draw:LondonL,36.5,stop,12694.5,10:28,-20.25,-1.012,-410.0
+2023-03-29,Wednesday,08:00,premarket,E4war,BULLISH,MEDIUM,True,short,B,12839.5,6.0,False,False,4R cap (no draw in dir),24.0,stop,12845.75,08:01,-6.25,-1.042,-130.0
+2023-03-29,Wednesday,08:02,premarket,E4war,BULLISH,MEDIUM,False,long,B,12846.25,8.25,False,False,draw:equal-highs,9.13,stop,12837.75,08:21,-8.5,-1.03,-175.0
+2023-03-29,Wednesday,10:08,intime,E4war,BULLISH,MEDIUM,True,short,B,12911.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,12931.5,13:28,-20.25,-1.012,-410.0
+2023-04-04,Tuesday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,B,13330.25,8.25,False,False,draw:LondonH,18.5,stop,13321.75,08:09,-8.5,-1.03,-175.0
+2023-04-06,Thursday,08:06,premarket,E4war,BULLISH,MEDIUM,False,long,B,13062.25,5.0,False,False,4R cap,20.0,stop,13057.0,08:07,-5.25,-1.05,-110.0
+2023-04-06,Thursday,08:46,premarket,E4war,BULLISH,MEDIUM,False,long,A,13031.0,5.75,False,False,4R cap,23.0,stop,13025.0,08:52,-6.0,-1.043,-125.0
+2023-04-10,Monday,08:02,premarket,E4war,BEARISH,MEDIUM,False,short,B,13100.75,10.5,False,False,draw:LondonL,8.5,draw:LondonL,13092.25,08:05,8.5,0.81,165.0
+2023-04-10,Monday,08:06,premarket,E4war,BEARISH,MEDIUM,False,short,B,13086.75,14.75,False,False,4R cap,59.0,4R cap,13027.75,09:31,59.0,4.0,1175.0
+2023-04-10,Monday,09:58,intime,E4war,BEARISH,LOW,False,short,B2,12981.5,20.0,True,False,draw:PWL,28.25,stop,13001.75,10:12,-20.25,-1.012,-410.0
+2023-04-11,Tuesday,08:30,premarket,E4war,BEARISH,MEDIUM,False,short,B,13142.25,8.25,False,False,draw:LondonL,16.75,stop,13150.75,08:36,-8.5,-1.03,-175.0
+2023-04-11,Tuesday,08:56,premarket,E4war,BEARISH,MEDIUM,False,short,B,13144.25,6.0,False,False,draw:LondonL,18.75,stop,13150.5,09:13,-6.25,-1.042,-130.0
+2023-04-11,Tuesday,10:00,intime,E4war,BEARISH,MEDIUM,False,short,B2,13106.75,20.0,True,False,4R cap,80.0,stop,13127.0,14:29,-20.25,-1.012,-410.0
+2023-04-12,Wednesday,08:46,premarket,E4war,BULLISH,LOW,False,long,A,13188.25,8.75,False,False,draw:PDH,20.5,stop,13179.25,08:46,-9.0,-1.029,-185.0
+2023-04-13,Thursday,08:19,premarket,E4war,BULLISH,MEDIUM,False,long,B,12975.75,6.25,False,False,4R cap,25.0,stop,12969.25,08:30,-6.5,-1.04,-135.0
+2023-04-13,Thursday,08:54,premarket,E4war,BULLISH,MEDIUM,False,long,A,13016.25,9.0,False,False,4R cap,36.0,stop,13007.0,09:24,-9.25,-1.028,-190.0
+2023-04-13,Thursday,10:04,intime,E4war,BULLISH,MEDIUM,False,long,B2,13066.25,20.0,True,False,draw:equal-highs,32.37,draw:equal-highs,13098.62,10:07,32.37,1.619,642.4
+2023-04-17,Monday,08:01,premarket,E4war,BULLISH,LOW,True,short,B,13174.25,5.5,False,False,4R cap (no draw in dir),22.0,stop,13180.0,08:01,-5.75,-1.045,-120.0
+2023-04-17,Monday,08:03,premarket,E4war,BULLISH,LOW,True,short,B,13175.0,5.25,False,False,4R cap (no draw in dir),21.0,stop,13180.5,08:09,-5.5,-1.048,-115.0
+2023-04-17,Monday,09:52,intime,E4war,BULLISH,MEDIUM,True,short,B2,13170.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,13190.75,10:21,-20.25,-1.012,-410.0
+2023-04-18,Tuesday,08:00,premarket,E4war,BULLISH,LOW,False,long,B2,13278.0,7.25,False,False,draw:LondonH,15.75,draw:LondonH,13293.75,08:33,15.75,2.172,310.0
+2023-04-18,Tuesday,08:45,premarket,E4war,BULLISH,LOW,False,long,B2,13295.5,10.0,False,False,4R cap (no draw in dir),40.0,stop,13285.25,09:00,-10.25,-1.025,-210.0
+2023-04-18,Tuesday,09:44,intime,E4war,BULLISH,LOW,False,long,B2,13278.25,20.0,True,False,draw:LondonH,15.5,draw:LondonH,13293.75,09:48,15.5,0.775,305.0
+2023-04-18,Tuesday,09:51,intime,E4war,BULLISH,LOW,False,long,B2,13279.25,20.0,True,False,draw:LondonH,14.5,stop,13259.0,09:58,-20.25,-1.012,-410.0
+2023-04-21,Friday,09:40,intime,E4war,BULLISH,MEDIUM,True,short,A,13050.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,13070.25,09:42,-20.25,-1.012,-410.0
+2023-04-21,Friday,09:43,intime,E4war,BULLISH,MEDIUM,False,long,B2,13066.5,20.0,True,False,draw:equal-highs,40.0,stop,13046.25,09:50,-20.25,-1.012,-410.0
+2023-04-24,Monday,08:03,premarket,E3bal,BULLISH,MEDIUM,True,short,B,13072.75,7.25,False,False,4R cap (no draw in dir),29.0,stop,13080.25,08:04,-7.5,-1.034,-155.0
+2023-04-24,Monday,08:14,premarket,E3bal,BULLISH,MEDIUM,True,short,B,13076.5,5.0,False,False,4R cap (no draw in dir),20.0,stop,13081.75,08:23,-5.25,-1.05,-110.0
+2023-04-24,Monday,09:58,intime,E3bal,BULLISH,MEDIUM,True,short,A,13111.25,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),13031.25,10:39,80.0,4.0,1595.0
+2023-04-25,Tuesday,08:07,premarket,E3bal,BEARISH,MEDIUM,False,short,B,13005.75,6.25,False,False,draw:PWL,23.25,stop,13012.25,08:18,-6.5,-1.04,-135.0
+2023-04-25,Tuesday,08:33,premarket,E3bal,BEARISH,MEDIUM,False,short,B,13004.0,10.25,False,False,draw:PWL,21.5,draw:PWL,12982.5,09:30,21.5,2.098,425.0
+2023-05-02,Tuesday,08:52,premarket,E3bal,BEARISH,MEDIUM,True,long,B,13301.0,5.5,False,False,4R cap (no draw in dir),22.0,stop,13295.25,09:08,-5.75,-1.045,-120.0
+2023-05-02,Tuesday,09:52,intime,E3bal,BEARISH,MEDIUM,True,long,A,13303.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,13283.0,09:58,-20.25,-1.012,-410.0
+2023-05-04,Thursday,10:06,intime,E3bal,BEARISH,MEDIUM,True,long,A,13053.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,13033.5,10:16,-20.25,-1.012,-410.0
+2023-05-08,Monday,08:26,premarket,E3bal,BULLISH,MEDIUM,True,short,B,13310.5,6.0,False,False,4R cap (no draw in dir),24.0,stop,13316.75,08:27,-6.25,-1.042,-130.0
+2023-05-08,Monday,08:34,premarket,E3bal,BULLISH,MEDIUM,True,short,B,13311.0,5.5,False,False,4R cap (no draw in dir),22.0,4R cap (no draw in dir),13289.0,08:47,22.0,4.0,435.0
+2023-05-08,Monday,10:06,intime,E3bal,BEARISH,MEDIUM,False,short,B,13280.5,20.0,True,False,4R cap,80.0,stop,13300.75,11:09,-20.25,-1.012,-410.0
+2023-05-09,Tuesday,09:43,intime,E3bal,BEARISH,MEDIUM,True,long,A,13290.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,13270.5,11:12,-20.25,-1.012,-410.0
+2023-05-10,Wednesday,09:58,intime,E3bal,BULLISH,MEDIUM,True,short,A,13368.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,13388.25,10:00,-20.25,-1.012,-410.0
+2023-05-11,Thursday,10:07,intime,E3bal,BULLISH,MEDIUM,True,short,B,13388.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,13408.5,10:16,-20.25,-1.012,-410.0
+2023-05-12,Friday,08:33,premarket,E4war,BULLISH,MEDIUM,False,long,B,13464.0,10.25,False,False,draw:equal-highs,3.0,draw:equal-highs,13467.0,08:35,3.0,0.293,55.0
+2023-05-12,Friday,08:35,premarket,E4war,BULLISH,MEDIUM,False,long,B,13466.25,12.5,False,False,draw:equal-highs,0.75,draw:equal-highs,13467.0,08:35,0.75,0.06,10.0
+2023-05-12,Friday,09:44,intime,E4war,BULLISH,MEDIUM,False,long,A,13477.25,20.0,True,False,draw:equal-highs,15.0,stop,13457.0,09:48,-20.25,-1.012,-410.0
+2023-05-15,Monday,08:03,premarket,E4war,BULLISH,MEDIUM,False,long,B,13434.75,5.25,False,False,draw:equal-highs,10.37,stop,13429.25,08:06,-5.5,-1.048,-115.0
+2023-05-15,Monday,08:10,premarket,E4war,BULLISH,MEDIUM,False,long,B,13436.0,7.0,False,False,draw:equal-highs,9.12,stop,13428.75,08:21,-7.25,-1.036,-150.0
+2023-05-17,Wednesday,08:00,premarket,E3bal,BULLISH,MEDIUM,False,long,B,13516.75,6.75,False,False,4R cap,27.0,stop,13509.75,08:06,-7.0,-1.037,-145.0
+2023-05-17,Wednesday,08:36,premarket,E3bal,BULLISH,MEDIUM,True,short,B,13498.0,6.5,False,False,4R cap (no draw in dir),26.0,stop,13504.75,08:43,-6.75,-1.038,-140.0
+2023-05-17,Wednesday,09:52,intime,E3bal,BULLISH,MEDIUM,True,short,A,13495.25,15.0,False,False,4R cap (no draw in dir),60.0,stop,13510.5,10:14,-15.25,-1.017,-310.0
+2023-05-22,Monday,08:12,premarket,E3bal,BULLISH,MEDIUM,True,short,B,13854.5,6.5,False,False,4R cap (no draw in dir),26.0,stop,13861.25,08:15,-6.75,-1.038,-140.0
+2023-05-22,Monday,08:16,premarket,E3bal,BULLISH,MEDIUM,False,long,B,13861.25,5.25,False,False,draw:PDH,12.75,stop,13855.75,08:46,-5.5,-1.048,-115.0
+2023-05-22,Monday,09:59,intime,E3bal,BULLISH,MEDIUM,False,long,A,13932.25,20.0,True,False,draw:PWH,28.0,stop,13912.0,10:04,-20.25,-1.012,-410.0
+2023-05-22,Monday,10:11,intime,E3bal,BULLISH,MEDIUM,False,long,B,13901.25,29.25,False,False,draw:equal-highs,29.13,stop,13871.75,13:15,-29.5,-1.009,-595.0
+2023-05-25,Thursday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,B2,13942.25,13.75,False,False,draw:equal-highs,2.5,draw:equal-highs,13944.75,08:05,2.5,0.182,45.0
+2023-05-25,Thursday,08:09,premarket,E4war,BULLISH,MEDIUM,False,long,B2,13935.25,5.0,False,False,draw:equal-highs,9.5,draw:equal-highs,13944.75,08:11,9.5,1.9,185.0
+2023-05-25,Thursday,09:55,intime,E4war,BULLISH,MEDIUM,False,long,B2,13879.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,13859.25,10:20,-20.25,-1.012,-410.0
+2023-05-29,Monday,08:00,premarket,E4war,BEARISH,MEDIUM,False,short,B,14380.25,5.75,False,False,4R cap,23.0,stop,14386.25,08:21,-6.0,-1.043,-125.0
+2023-05-29,Monday,08:34,premarket,E4war,BEARISH,MEDIUM,False,short,B,14379.5,8.0,False,False,4R cap,32.0,stop,14387.75,10:47,-8.25,-1.031,-170.0
+2023-05-30,Tuesday,08:34,premarket,E4war,BULLISH,LOW,False,long,B2,14531.5,7.25,False,False,4R cap (no draw in dir),29.0,stop,14524.0,08:45,-7.5,-1.034,-155.0
+2023-05-30,Tuesday,08:56,premarket,E4war,BULLISH,LOW,False,long,B,14532.0,7.0,False,False,4R cap (no draw in dir),28.0,stop,14524.75,08:59,-7.25,-1.036,-150.0
+2023-05-30,Tuesday,09:41,intime,E4war,BULLISH,LOW,False,long,B2,14545.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,14525.0,09:42,-20.25,-1.012,-410.0
+2023-05-30,Tuesday,09:43,intime,E4war,BULLISH,LOW,False,long,B2,14530.25,20.0,True,False,draw:LondonH,9.5,stop,14510.0,09:43,-20.25,-1.012,-410.0
+2023-05-31,Wednesday,09:27,premarket,E4war,BEARISH,MEDIUM,False,short,B2,14322.75,7.25,False,False,4R cap,29.0,stop,14330.25,09:29,-7.5,-1.034,-155.0
+2023-05-31,Wednesday,09:57,intime,E4war,BEARISH,MEDIUM,False,short,B2,14382.25,20.0,True,False,4R cap,80.0,4R cap,14302.25,10:19,80.0,4.0,1595.0
+2023-06-07,Wednesday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,A,14613.5,6.5,False,False,draw:PDH,10.25,stop,14606.75,08:01,-6.75,-1.038,-140.0
+2023-06-07,Wednesday,08:18,premarket,E4war,BULLISH,MEDIUM,False,long,B,14607.0,6.0,False,False,draw:PDH,16.75,stop,14600.75,08:28,-6.25,-1.042,-130.0
+2023-06-07,Wednesday,09:56,intime,E4war,BULLISH,MEDIUM,False,long,B2,14637.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,14617.25,09:56,-20.25,-1.012,-410.0
+2023-06-07,Wednesday,09:58,intime,E4war,BULLISH,MEDIUM,False,long,A,14625.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,14605.0,10:03,-20.25,-1.012,-410.0
+2023-06-08,Thursday,08:02,premarket,E4war,BULLISH,MEDIUM,False,long,B,14329.25,11.25,False,False,4R cap,45.0,stop,14317.75,08:05,-11.5,-1.022,-235.0
+2023-06-08,Thursday,08:34,premarket,E4war,BULLISH,MEDIUM,False,long,B2,14338.25,10.25,False,False,4R cap,41.0,stop,14327.75,09:35,-10.5,-1.024,-215.0
+2023-06-08,Thursday,09:46,intime,E4war,BULLISH,MEDIUM,False,long,B2,14366.75,20.0,True,False,4R cap,80.0,stop,14346.5,09:54,-20.25,-1.012,-410.0
+2023-06-08,Thursday,09:54,intime,E4war,BULLISH,MEDIUM,False,long,B2,14365.5,20.0,True,False,4R cap,80.0,stop,14345.25,09:54,-20.25,-1.012,-410.0
+2023-06-09,Friday,10:09,intime,E3bal,BULLISH,MEDIUM,True,short,B,14652.25,23.5,False,False,4R cap (no draw in dir),94.0,stop,14676.0,10:15,-23.75,-1.011,-480.0
+2023-06-12,Monday,08:46,premarket,E3bal,BULLISH,MEDIUM,False,long,B,14811.25,6.25,False,False,draw:LondonH,20.5,stop,14804.75,09:17,-6.5,-1.04,-135.0
+2023-06-12,Monday,09:44,intime,E3bal,BULLISH,MEDIUM,True,short,A,14799.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,14819.25,10:46,-20.25,-1.012,-410.0
+2023-06-13,Tuesday,09:17,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15122.5,7.25,False,False,4R cap,29.0,4R cap,15093.5,09:29,29.0,4.0,575.0
+2023-06-13,Tuesday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,A,15088.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,15068.0,09:45,-20.25,-1.012,-410.0
+2023-06-13,Tuesday,09:45,intime,E4war,BULLISH,MEDIUM,False,long,A,15087.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,15067.25,09:45,-20.25,-1.012,-410.0
+2023-06-14,Wednesday,08:02,premarket,E4war,BULLISH,MEDIUM,False,long,B,15124.25,5.75,False,False,4R cap,23.0,stop,15118.25,08:03,-6.0,-1.043,-125.0
+2023-06-14,Wednesday,08:03,premarket,E4war,BULLISH,MEDIUM,True,short,B,15119.0,6.75,False,False,4R cap (no draw in dir),27.0,stop,15126.0,08:19,-7.0,-1.037,-145.0
+2023-06-14,Wednesday,09:47,intime,E4war,BULLISH,MEDIUM,False,long,B2,15109.75,20.0,True,False,draw:AsiaH,1.25,draw:AsiaH,15111.0,09:47,1.25,0.062,20.0
+2023-06-14,Wednesday,09:48,intime,E4war,BULLISH,MEDIUM,False,long,B2,15109.25,20.0,True,False,draw:AsiaH,1.75,draw:AsiaH,15111.0,09:48,1.75,0.087,30.0
+2023-06-15,Thursday,09:18,premarket,E4war,BULLISH,LOW,False,long,A,15139.5,5.75,False,False,draw:equal-highs,12.12,stop,15133.5,09:25,-6.0,-1.043,-125.0
+2023-06-15,Thursday,09:26,premarket,E4war,BULLISH,LOW,False,long,A,15139.25,6.0,False,False,draw:equal-highs,12.37,stop,15133.0,09:30,-6.25,-1.042,-130.0
+2023-06-16,Friday,08:09,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15413.75,10.5,False,False,draw:LondonH,10.25,draw:LondonH,15424.0,08:11,10.25,0.976,200.0
+2023-06-16,Friday,08:55,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15430.75,12.25,False,False,draw:PDH,10.25,stop,15418.25,09:09,-12.5,-1.02,-255.0
+2023-06-16,Friday,09:53,intime,E4war,BULLISH,MEDIUM,False,long,B2,15368.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,15348.0,09:53,-20.25,-1.012,-410.0
+2023-06-16,Friday,10:02,intime,E4war,BULLISH,MEDIUM,False,long,B2,15364.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,15344.25,10:06,-20.25,-1.012,-410.0
+2023-06-23,Friday,08:02,premarket,E4war,BEARISH,MEDIUM,False,short,A,15118.5,10.5,False,False,draw:LondonL,27.75,draw:LondonL,15090.75,08:31,27.75,2.643,550.0
+2023-06-26,Monday,08:50,premarket,E4war,BULLISH,MEDIUM,False,long,B,15057.5,6.5,False,False,4R cap,26.0,stop,15050.75,09:06,-6.75,-1.038,-140.0
+2023-06-26,Monday,09:22,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15058.75,7.5,False,False,4R cap,30.0,stop,15051.0,09:25,-7.75,-1.033,-160.0
+2023-06-26,Monday,10:10,intime,E4war,BULLISH,LOW,False,long,B2,15139.25,20.0,True,False,draw:equal-highs,8.5,stop,15119.0,10:10,-20.25,-1.012,-410.0
+2023-06-27,Tuesday,08:01,premarket,E3bal,BEARISH,LOW,False,short,B,14897.75,9.5,False,False,draw:LondonL,1.5,draw:LondonL,14896.25,08:01,1.5,0.158,25.0
+2023-06-27,Tuesday,08:17,premarket,E3bal,BEARISH,LOW,True,long,B,14906.25,5.25,False,False,4R cap (no draw in dir),21.0,stop,14900.75,08:20,-5.5,-1.048,-115.0
+2023-06-27,Tuesday,10:08,intime,E3bal,BEARISH,LOW,False,short,B,14926.5,30.5,False,False,draw:LondonL,30.25,draw:LondonL,14896.25,10:12,30.25,0.992,600.0
+2023-06-27,Tuesday,10:12,intime,E3bal,BEARISH,LOW,False,short,B,14906.0,25.5,False,False,draw:LondonL,9.75,draw:LondonL,14896.25,10:12,9.75,0.382,190.0
+2023-06-29,Thursday,09:01,premarket,E4war,BEARISH,MEDIUM,False,short,A,15130.0,14.5,False,False,draw:LondonL,15.25,stop,15144.75,09:06,-14.75,-1.017,-300.0
+2023-06-29,Thursday,09:07,premarket,E4war,BEARISH,MEDIUM,False,short,A,15139.25,6.5,False,False,draw:LondonL,24.5,draw:LondonL,15114.75,09:13,24.5,3.769,485.0
+2023-06-29,Thursday,09:41,intime,E4war,BEARISH,MEDIUM,True,long,B2,15128.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,15108.5,09:44,-20.25,-1.012,-410.0
+2023-06-29,Thursday,09:49,intime,E4war,BEARISH,MEDIUM,False,short,A,15109.75,20.0,True,False,4R cap,80.0,stop,15130.0,10:06,-20.25,-1.012,-410.0
+2023-06-30,Friday,09:40,intime,E4war,BULLISH,LOW,False,long,B2,15269.75,20.0,True,False,draw:PWH,41.0,draw:PWH,15310.75,09:45,41.0,2.05,815.0
+2023-06-30,Friday,09:59,intime,E4war,BULLISH,LOW,False,long,B2,15319.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,15299.5,11:40,-20.25,-1.012,-410.0
+2023-07-04,Tuesday,08:05,premarket,E4war,BEARISH,MEDIUM,True,long,A,15352.25,5.25,False,False,4R cap (no draw in dir),21.0,stop,15346.75,10:36,-5.5,-1.048,-115.0
+2023-07-05,Wednesday,08:24,premarket,E4war,BULLISH,MEDIUM,False,long,B,15272.75,7.75,False,False,4R cap,31.0,4R cap,15303.75,09:30,31.0,4.0,615.0
+2023-07-05,Wednesday,10:05,intime,E4war,BULLISH,MEDIUM,True,short,B,15375.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,15395.5,10:15,-20.25,-1.012,-410.0
+2023-07-07,Friday,10:12,intime,E4war,BULLISH,MEDIUM,False,long,B,15264.5,20.0,True,False,draw:equal-highs,41.12,stop,15244.25,10:15,-20.25,-1.012,-410.0
+2023-07-10,Monday,10:13,intime,E4war,BEARISH,MEDIUM,False,short,A,15162.25,20.0,True,False,4R cap,80.0,stop,15182.5,10:20,-20.25,-1.012,-410.0
+2023-07-17,Monday,08:07,premarket,E4war,BEARISH,MEDIUM,False,short,B,15690.75,6.25,False,False,draw:equal-lows,11.37,stop,15697.25,08:27,-6.5,-1.04,-135.0
+2023-07-17,Monday,08:28,premarket,E4war,BEARISH,MEDIUM,True,long,B,15697.25,6.75,False,False,4R cap (no draw in dir),27.0,stop,15690.25,08:30,-7.0,-1.037,-145.0
+2023-07-17,Monday,09:47,intime,E4war,BULLISH,LOW,False,long,A,15726.25,20.0,True,False,4R cap,80.0,4R cap,15806.25,11:59,80.0,4.0,1595.0
+2023-07-19,Wednesday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,B,15997.75,7.25,False,False,draw:LondonH,12.0,draw:LondonH,16009.75,08:42,12.0,1.655,235.0
+2023-07-19,Wednesday,08:51,premarket,E4war,BULLISH,MEDIUM,False,long,A,16008.25,8.25,False,False,draw:PDH,21.5,draw:PDH,16029.75,09:31,21.5,2.606,425.0
+2023-07-19,Wednesday,09:46,intime,E4war,BULLISH,MEDIUM,False,long,A,16016.5,20.0,True,False,draw:PDH,13.25,stop,15996.25,09:47,-20.25,-1.012,-410.0
+2023-07-19,Wednesday,09:59,intime,E4war,BULLISH,MEDIUM,False,long,A,16002.75,20.0,True,False,draw:PDH,27.0,stop,15982.5,10:15,-20.25,-1.012,-410.0
+2023-07-20,Thursday,08:18,premarket,E4war,BULLISH,MEDIUM,True,short,B,15859.25,5.5,False,False,4R cap (no draw in dir),22.0,4R cap (no draw in dir),15837.25,08:40,22.0,4.0,435.0
+2023-07-20,Thursday,08:40,premarket,E4war,BULLISH,MEDIUM,True,short,A,15839.75,14.25,False,False,4R cap (no draw in dir),57.0,stop,15854.25,09:31,-14.5,-1.018,-295.0
+2023-07-21,Friday,09:42,intime,E4war,BULLISH,MEDIUM,False,long,B2,15665.25,20.0,True,False,4R cap,80.0,stop,15645.0,09:48,-20.25,-1.012,-410.0
+2023-07-21,Friday,09:48,intime,E4war,BULLISH,MEDIUM,False,long,B2,15666.0,20.0,True,False,4R cap,80.0,stop,15645.75,09:48,-20.25,-1.012,-410.0
+2023-07-24,Monday,08:01,premarket,E4war,BULLISH,MEDIUM,False,long,B,15585.0,5.25,False,False,draw:LondonH,9.25,stop,15579.5,08:02,-5.5,-1.048,-115.0
+2023-07-24,Monday,08:26,premarket,E4war,BULLISH,MEDIUM,False,long,A,15572.0,5.5,False,False,4R cap,22.0,stop,15566.25,08:42,-5.75,-1.045,-120.0
+2023-07-24,Monday,09:44,intime,E4war,BULLISH,MEDIUM,False,long,A,15601.75,15.25,False,False,4R cap,61.0,stop,15586.25,09:46,-15.5,-1.016,-315.0
+2023-07-24,Monday,09:46,intime,E4war,BULLISH,MEDIUM,False,long,A,15603.0,20.0,True,False,4R cap,80.0,stop,15582.75,09:46,-20.25,-1.012,-410.0
+2023-07-25,Tuesday,08:18,premarket,E4war,BEARISH,MEDIUM,False,short,B,15612.25,5.0,False,False,4R cap,20.0,4R cap,15592.25,09:15,20.0,4.0,395.0
+2023-07-25,Tuesday,09:22,premarket,E4war,BEARISH,MEDIUM,False,short,A,15584.75,10.0,False,False,draw:AsiaH,12.5,stop,15595.0,09:27,-10.25,-1.025,-210.0
+2023-07-25,Tuesday,09:40,intime,E4war,BEARISH,MEDIUM,False,short,A,15608.5,20.0,True,False,draw:AsiaH,36.25,stop,15628.75,09:45,-20.25,-1.012,-410.0
+2023-07-26,Wednesday,08:01,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15623.25,6.5,False,False,4R cap,26.0,stop,15630.0,08:28,-6.75,-1.038,-140.0
+2023-07-26,Wednesday,08:46,premarket,E4war,BEARISH,MEDIUM,False,short,B,15627.75,6.0,False,False,4R cap,24.0,stop,15634.0,09:09,-6.25,-1.042,-130.0
+2023-07-26,Wednesday,10:06,intime,E4war,BEARISH,LOW,True,long,B,15627.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,15607.5,10:10,-20.25,-1.012,-410.0
+2023-07-31,Monday,08:30,premarket,E4war,BULLISH,MEDIUM,False,long,B,15874.5,9.75,False,False,draw:AsiaH,14.0,draw:AsiaH,15888.5,08:45,14.0,1.436,275.0
+2023-08-02,Wednesday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,B,15708.0,8.25,False,False,draw:AsiaL,8.0,stop,15699.5,08:08,-8.5,-1.03,-175.0
+2023-08-02,Wednesday,08:10,premarket,E4war,BULLISH,MEDIUM,False,long,B,15707.75,8.0,False,False,draw:AsiaL,8.25,stop,15699.5,08:14,-8.25,-1.031,-170.0
+2023-08-04,Friday,09:44,intime,E4war,BULLISH,MEDIUM,False,long,A,15519.75,20.0,True,False,draw:AsiaH,16.0,stop,15499.5,09:44,-20.25,-1.012,-410.0
+2023-08-07,Monday,08:00,premarket,E4war,BEARISH,MEDIUM,False,short,B,15414.25,6.0,False,False,draw:equal-lows,9.5,stop,15420.5,08:01,-6.25,-1.042,-130.0
+2023-08-07,Monday,08:01,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15414.75,5.25,False,False,draw:equal-lows,10.0,stop,15420.25,08:01,-5.5,-1.048,-115.0
+2023-08-08,Tuesday,09:40,intime,E4war,BEARISH,MEDIUM,False,short,A,15365.25,20.0,True,False,draw:LondonL,16.75,draw:LondonL,15348.5,09:42,16.75,0.838,330.0
+2023-08-08,Tuesday,09:43,intime,E4war,BEARISH,MEDIUM,False,short,B2,15349.25,20.0,True,False,draw:LondonL,0.75,draw:LondonL,15348.5,09:43,0.75,0.037,10.0
+2023-08-09,Wednesday,08:14,premarket,E4war,BEARISH,MEDIUM,False,short,B,15388.25,8.5,False,False,draw:LondonL,25.0,stop,15397.0,08:36,-8.75,-1.029,-180.0
+2023-08-09,Wednesday,08:36,premarket,E4war,BEARISH,MEDIUM,True,long,B,15394.25,13.5,False,False,4R cap (no draw in dir),54.0,stop,15380.5,08:42,-13.75,-1.019,-280.0
+2023-08-11,Friday,08:02,premarket,E4war,BEARISH,MEDIUM,True,long,B,15182.5,13.5,False,False,4R cap (no draw in dir),54.0,stop,15168.75,08:07,-13.75,-1.019,-280.0
+2023-08-14,Monday,08:18,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15107.75,11.75,False,False,draw:LondonL,45.5,draw:LondonL,15062.25,08:49,45.5,3.872,905.0
+2023-08-14,Monday,09:16,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15066.25,9.5,False,False,draw:LondonL,4.0,draw:LondonL,15062.25,09:16,4.0,0.421,75.0
+2023-08-14,Monday,09:49,intime,E4war,BEARISH,MEDIUM,True,long,A,15085.25,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),15165.25,10:15,80.0,4.0,1595.0
+2023-08-15,Tuesday,09:50,intime,E4war,BEARISH,MEDIUM,False,short,B2,15196.5,20.0,True,False,draw:equal-lows,8.62,stop,15216.75,09:52,-20.25,-1.012,-410.0
+2023-08-15,Tuesday,09:52,intime,E4war,BEARISH,MEDIUM,False,short,B2,15198.25,20.0,True,False,draw:equal-lows,10.37,draw:equal-lows,15187.88,09:54,10.37,0.519,202.4
+2023-08-16,Wednesday,08:06,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15113.75,5.0,False,False,draw:equal-lows,14.25,draw:equal-lows,15099.5,08:21,14.25,2.85,280.0
+2023-08-16,Wednesday,08:21,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15100.25,7.0,False,False,draw:equal-lows,0.75,draw:equal-lows,15099.5,08:21,0.75,0.107,10.0
+2023-08-16,Wednesday,09:51,intime,E4war,BEARISH,MEDIUM,False,short,A,15115.25,20.0,True,False,draw:equal-lows,79.13,stop,15135.5,10:18,-20.25,-1.012,-410.0
+2023-08-18,Friday,09:27,premarket,E4war,BEARISH,MEDIUM,False,short,B2,14637.0,12.25,False,False,4R cap (no draw in dir),49.0,stop,14649.5,09:30,-12.5,-1.02,-255.0
+2023-08-18,Friday,09:54,intime,E4war,BEARISH,MEDIUM,True,long,A,14664.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,14643.75,09:55,-20.25,-1.012,-410.0
+2023-08-18,Friday,09:55,intime,E4war,BEARISH,MEDIUM,True,long,A,14665.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,14644.75,09:55,-20.25,-1.012,-410.0
+2023-08-23,Wednesday,08:05,premarket,E4war,BEARISH,MEDIUM,False,short,B,14979.25,9.75,False,False,draw:equal-lows,24.37,stop,14989.25,08:06,-10.0,-1.026,-205.0
+2023-08-23,Wednesday,08:20,premarket,E4war,BEARISH,MEDIUM,False,short,B,14985.75,9.0,False,False,draw:equal-lows,30.87,stop,14995.0,08:37,-9.25,-1.028,-190.0
+2023-08-24,Thursday,08:01,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15357.75,12.25,False,False,draw:LondonL,19.25,draw:LondonL,15338.5,08:16,19.25,1.571,380.0
+2023-08-24,Thursday,08:18,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15334.75,9.5,False,False,4R cap,38.0,stop,15344.5,08:27,-9.75,-1.026,-200.0
+2023-08-25,Friday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B,14877.0,12.75,False,False,draw:equal-highs,11.88,draw:equal-highs,14888.88,08:08,11.88,0.932,232.6
+2023-08-25,Friday,08:26,premarket,E4war,BULLISH,MEDIUM,False,long,B2,14902.0,5.75,False,False,4R cap,23.0,stop,14896.0,08:26,-6.0,-1.043,-125.0
+2023-08-25,Friday,09:51,intime,E4war,BULLISH,MEDIUM,False,long,B2,14942.75,20.0,True,False,draw:equal-highs,39.37,stop,14922.5,10:02,-20.25,-1.012,-410.0
+2023-08-25,Friday,10:06,intime,E4war,BULLISH,MEDIUM,False,long,B2,14940.75,20.0,True,False,draw:equal-highs,41.37,stop,14920.5,10:06,-20.25,-1.012,-410.0
+2023-08-28,Monday,08:07,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15040.0,6.75,False,False,4R cap,27.0,4R cap,15067.0,08:33,27.0,4.0,535.0
+2023-08-28,Monday,08:54,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15068.0,12.0,False,False,4R cap,48.0,4R cap,15116.0,09:35,48.0,4.0,955.0
+2023-08-28,Monday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,B2,15074.25,20.0,True,False,4R cap,80.0,stop,15054.0,09:42,-20.25,-1.012,-410.0
+2023-08-28,Monday,09:53,intime,E4war,BULLISH,MEDIUM,False,long,A,15015.0,20.0,True,False,4R cap,80.0,4R cap,15095.0,10:34,80.0,4.0,1595.0
+2023-08-30,Wednesday,08:01,premarket,E4war,BULLISH,MEDIUM,True,short,B,15388.75,5.25,False,False,4R cap (no draw in dir),21.0,stop,15394.25,08:02,-5.5,-1.048,-115.0
+2023-08-30,Wednesday,08:04,premarket,E4war,BULLISH,MEDIUM,False,long,B,15400.25,9.5,False,False,draw:PWH,17.75,draw:PWH,15418.0,08:15,17.75,1.868,350.0
+2023-08-30,Wednesday,09:46,intime,E4war,BULLISH,MEDIUM,True,short,A,15414.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,15434.25,09:51,-20.25,-1.012,-410.0
+2023-08-31,Thursday,08:46,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15506.5,8.5,False,False,draw:equal-highs,11.25,stop,15497.75,08:47,-8.75,-1.029,-180.0
+2023-08-31,Thursday,08:50,premarket,E4war,BULLISH,MEDIUM,True,short,A,15501.0,7.25,False,False,4R cap (no draw in dir),29.0,stop,15508.5,08:53,-7.5,-1.034,-155.0
+2023-08-31,Thursday,09:43,intime,E4war,BULLISH,MEDIUM,False,long,B2,15527.25,20.0,True,False,draw:LondonH,2.5,draw:LondonH,15529.75,09:43,2.5,0.125,45.0
+2023-08-31,Thursday,09:44,intime,E4war,BULLISH,MEDIUM,False,long,B2,15528.5,20.0,True,False,draw:LondonH,1.25,draw:LondonH,15529.75,09:44,1.25,0.062,20.0
+2023-09-05,Tuesday,10:07,intime,E4war,BULLISH,MEDIUM,True,short,A,15466.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,15486.25,10:11,-20.25,-1.012,-410.0
+2023-09-05,Tuesday,10:11,intime,E4war,BULLISH,MEDIUM,False,long,B2,15478.5,20.0,True,False,draw:PDL,9.5,draw:PDL,15488.0,10:11,9.5,0.475,185.0
+2023-09-07,Thursday,08:00,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15277.25,10.0,False,False,4R cap,40.0,4R cap,15237.25,08:30,40.0,4.0,795.0
+2023-09-07,Thursday,09:22,premarket,E4war,BEARISH,MEDIUM,False,short,B2,15199.25,5.75,False,False,4R cap,23.0,stop,15205.25,09:24,-6.0,-1.043,-125.0
+2023-09-07,Thursday,09:41,intime,E4war,BEARISH,MEDIUM,True,long,A,15212.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,15192.25,09:53,-20.25,-1.012,-410.0
+2023-09-07,Thursday,09:53,intime,E4war,BEARISH,MEDIUM,False,short,B2,15204.25,20.0,True,False,4R cap,80.0,stop,15224.5,10:11,-20.25,-1.012,-410.0
+2023-09-08,Friday,08:00,premarket,E4war,BEARISH,LOW,True,long,B,15247.0,8.5,False,False,4R cap (no draw in dir),34.0,4R cap (no draw in dir),15281.0,08:35,34.0,4.0,675.0
+2023-09-08,Friday,09:07,premarket,E4war,BEARISH,LOW,False,short,B2,15269.5,5.5,False,False,4R cap,22.0,stop,15275.25,09:10,-5.75,-1.045,-120.0
+2023-09-08,Friday,10:02,intime,E4war,BEARISH,LOW,False,short,B2,15333.25,20.0,True,False,draw:AsiaH,45.0,stop,15353.5,10:03,-20.25,-1.012,-410.0
+2023-09-12,Tuesday,08:52,premarket,E4war,BEARISH,MEDIUM,False,short,B,15623.0,8.0,False,False,4R cap,32.0,4R cap,15591.0,09:30,32.0,4.0,635.0
+2023-09-12,Tuesday,09:46,intime,E4war,BEARISH,MEDIUM,False,short,B2,15621.5,20.0,True,False,draw:equal-lows,59.5,stop,15641.75,09:47,-20.25,-1.012,-410.0
+2023-09-12,Tuesday,09:50,intime,E4war,BEARISH,MEDIUM,True,long,A,15627.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,15607.25,10:25,-20.25,-1.012,-410.0
+2023-09-13,Wednesday,10:14,intime,E4war,BULLISH,LOW,False,long,A,15483.0,20.0,True,False,4R cap,80.0,stop,15462.75,10:15,-20.25,-1.012,-410.0
+2023-09-14,Thursday,08:51,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15592.75,10.75,False,False,draw:equal-highs,21.0,draw:equal-highs,15613.75,08:52,21.0,1.953,415.0
+2023-09-14,Thursday,08:54,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15617.25,9.25,False,False,draw:AsiaH,6.0,draw:AsiaH,15623.25,08:54,6.0,0.649,115.0
+2023-09-18,Monday,09:47,intime,E4war,BULLISH,LOW,False,long,A,15378.75,20.0,True,False,draw:PDH,41.0,draw:PDH,15419.75,09:50,41.0,2.05,815.0
+2023-09-18,Monday,09:52,intime,E4war,BULLISH,LOW,False,long,A,15419.5,20.0,True,False,draw:PDH,0.25,draw:PDH,15419.75,09:52,0.25,0.013,0.0
+2023-09-19,Tuesday,08:03,premarket,E3bal,BULLISH,MEDIUM,True,short,B,15421.25,6.75,False,False,4R cap (no draw in dir),27.0,4R cap (no draw in dir),15394.25,08:41,27.0,4.0,535.0
+2023-09-19,Tuesday,09:47,intime,E3bal,BEARISH,LOW,False,short,A,15342.75,20.0,True,False,draw:PDL,12.25,draw:PDL,15330.5,09:50,12.25,0.613,240.0
+2023-09-19,Tuesday,09:50,intime,E3bal,BEARISH,LOW,False,short,A,15345.5,26.25,False,False,draw:PDL,15.0,draw:PDL,15330.5,09:50,15.0,0.571,295.0
+2023-09-21,Thursday,09:42,intime,E3bal,BEARISH,MEDIUM,True,long,A,15010.0,20.0,False,False,4R cap (no draw in dir),80.0,stop,14989.75,09:42,-20.25,-1.012,-410.0
+2023-09-25,Monday,09:21,premarket,E4war,BEARISH,MEDIUM,False,short,B2,14818.25,6.0,False,False,4R cap (no draw in dir),24.0,stop,14824.5,09:29,-6.25,-1.042,-130.0
+2023-09-25,Monday,09:29,premarket,E4war,BEARISH,MEDIUM,False,short,B2,14814.5,5.0,False,False,4R cap (no draw in dir),20.0,stop,14819.75,09:29,-5.25,-1.05,-110.0
+2023-09-25,Monday,09:54,intime,E4war,BEARISH,MEDIUM,True,long,A,14861.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,14841.25,10:08,-20.25,-1.012,-410.0
+2023-09-25,Monday,10:11,intime,E4war,BEARISH,MEDIUM,True,long,B,14858.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,14838.25,10:21,-20.25,-1.012,-410.0
+2023-09-26,Tuesday,09:00,premarket,E3bal,BEARISH,MEDIUM,False,short,A,14844.75,5.75,False,False,4R cap,23.0,4R cap,14821.75,09:28,23.0,4.0,455.0
+2023-09-26,Tuesday,09:44,intime,E3bal,BEARISH,MEDIUM,False,short,A,14823.25,17.5,False,False,draw:equal-lows,27.25,draw:equal-lows,14796.0,09:50,27.25,1.557,540.0
+2023-09-26,Tuesday,09:51,intime,E3bal,BEARISH,MEDIUM,False,short,A,14781.25,41.25,False,True,4R cap (no draw in dir),165.0,eod,14705.5,15:55,75.75,1.836,755.0
+2023-09-28,Thursday,08:28,premarket,E3bal,BEARISH,MEDIUM,False,short,A,14731.25,7.5,False,False,4R cap,30.0,stop,14739.0,08:30,-7.75,-1.033,-160.0
+2023-09-28,Thursday,08:41,premarket,E3bal,BEARISH,MEDIUM,False,short,B,14726.5,14.25,False,False,draw:LondonL,48.75,draw:LondonL,14677.75,09:30,48.75,3.421,970.0
+2023-09-28,Thursday,09:50,intime,E3bal,BEARISH,MEDIUM,False,short,A,14680.75,23.5,False,False,4R cap,94.0,stop,14704.5,09:51,-23.75,-1.011,-480.0
+2023-10-03,Tuesday,08:04,premarket,E3bal,BEARISH,MEDIUM,False,short,B,14887.5,17.5,False,False,draw:LondonL,2.75,draw:LondonL,14884.75,08:07,2.75,0.157,50.0
+2023-10-03,Tuesday,08:31,premarket,E3bal,BEARISH,MEDIUM,False,short,B,14889.75,6.25,False,False,draw:LondonL,5.0,draw:LondonL,14884.75,08:32,5.0,0.8,95.0
+2023-10-06,Friday,09:51,intime,E3bal,BEARISH,MEDIUM,True,long,A,14754.0,15.25,False,False,4R cap (no draw in dir),61.0,stop,14738.5,09:52,-15.5,-1.016,-315.0
+2023-10-06,Friday,09:54,intime,E3bal,BEARISH,MEDIUM,True,long,A,14755.0,19.25,False,False,4R cap (no draw in dir),77.0,stop,14735.5,09:56,-19.5,-1.013,-395.0
+2023-10-09,Monday,08:04,premarket,E3bal,BULLISH,MEDIUM,False,long,B,14993.0,6.0,False,False,4R cap,24.0,stop,14986.75,08:05,-6.25,-1.042,-130.0
+2023-10-09,Monday,08:07,premarket,E3bal,BULLISH,MEDIUM,False,long,B,14994.25,5.75,False,False,4R cap,23.0,4R cap,15017.25,08:27,23.0,4.0,455.0
+2023-10-09,Monday,09:47,intime,E3bal,BULLISH,MEDIUM,False,long,A,15030.25,20.0,True,False,4R cap,80.0,stop,15010.0,10:03,-20.25,-1.012,-410.0
+2023-10-09,Monday,10:09,intime,E3bal,BULLISH,MEDIUM,False,long,B,15012.5,15.75,False,False,4R cap,63.0,stop,14996.5,10:40,-16.0,-1.016,-325.0
+2023-10-11,Wednesday,08:08,premarket,E3bal,BULLISH,MEDIUM,False,long,B,15334.5,7.25,False,False,draw:LondonH,11.25,stop,15327.0,08:12,-7.5,-1.034,-155.0
+2023-10-11,Wednesday,09:51,intime,E3bal,BULLISH,MEDIUM,False,long,A,15333.25,20.0,True,False,draw:PDH,50.25,stop,15313.0,10:00,-20.25,-1.012,-410.0
+2023-10-11,Wednesday,10:01,intime,E3bal,BULLISH,MEDIUM,True,short,B,15312.25,19.25,False,False,4R cap (no draw in dir),77.0,stop,15331.75,10:22,-19.5,-1.013,-395.0
+2023-10-13,Friday,09:40,intime,E3bal,BULLISH,MEDIUM,False,long,A,15337.75,35.25,False,False,draw:equal-highs,45.5,stop,15302.25,10:00,-35.5,-1.007,-715.0
+2023-10-13,Friday,10:01,intime,E3bal,BULLISH,MEDIUM,True,short,B,15304.75,39.5,False,False,4R cap (no draw in dir),158.0,4R cap (no draw in dir),15146.75,11:30,158.0,4.0,3155.0
+2023-10-16,Monday,10:00,intime,E3bal,BULLISH,MEDIUM,False,long,B,15227.5,38.5,False,False,draw:equal-highs,113.25,eod,15316.5,15:55,89.0,2.312,1775.0
+2023-10-18,Wednesday,08:32,premarket,E3bal,BEARISH,MEDIUM,True,long,B,15171.5,9.75,False,False,4R cap (no draw in dir),39.0,stop,15161.5,08:33,-10.0,-1.026,-205.0
+2023-10-18,Wednesday,10:01,intime,E3bal,BEARISH,MEDIUM,False,short,B,15147.75,20.5,False,False,draw:equal-lows,65.37,stop,15168.5,10:06,-20.75,-1.012,-420.0
+2023-10-19,Thursday,08:02,premarket,E3bal,BULLISH,MEDIUM,False,long,B,15035.5,6.5,False,False,4R cap,26.0,stop,15028.75,08:02,-6.75,-1.038,-140.0
+2023-10-20,Friday,08:33,premarket,E3bal,BULLISH,MEDIUM,False,long,B,14824.5,14.0,False,False,draw:equal-highs,31.12,draw:equal-highs,14855.62,09:27,31.12,2.223,617.4
+2023-10-20,Friday,10:00,intime,E3bal,BEARISH,MEDIUM,False,short,B,14837.0,31.75,False,False,draw:equal-lows,14.5,draw:equal-lows,14822.5,10:08,14.5,0.457,285.0
+2023-10-20,Friday,10:08,intime,E3bal,BEARISH,MEDIUM,False,short,B,14829.5,26.25,False,False,draw:equal-lows,7.0,draw:equal-lows,14822.5,10:08,7.0,0.267,135.0
+2023-11-06,Monday,08:29,premarket,E4war,BULLISH,MEDIUM,False,long,B,15196.5,6.5,False,False,4R cap,26.0,4R cap,15222.5,09:30,26.0,4.0,515.0
+2023-11-06,Monday,09:43,intime,E4war,BULLISH,MEDIUM,False,long,A,15232.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,15212.25,09:43,-20.25,-1.012,-410.0
+2023-11-06,Monday,09:50,intime,E4war,BULLISH,LOW,False,long,A,15209.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,15189.5,10:13,-20.25,-1.012,-410.0
+2023-11-07,Tuesday,08:00,premarket,E4war,BULLISH,LOW,False,long,B,15223.5,9.75,False,False,draw:PDH,34.0,draw:PDH,15257.5,09:15,34.0,3.487,675.0
+2023-11-08,Wednesday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15384.25,8.25,False,False,draw:PDH,28.0,stop,15375.75,08:11,-8.5,-1.03,-175.0
+2023-11-08,Wednesday,08:19,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15372.75,6.0,False,False,4R cap,24.0,stop,15366.5,08:38,-6.25,-1.042,-130.0
+2023-11-08,Wednesday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,B2,15397.25,20.0,True,False,draw:PDH,15.0,draw:PDH,15412.25,09:53,15.0,0.75,295.0
+2023-11-08,Wednesday,09:53,intime,E4war,BULLISH,MEDIUM,False,long,B2,15406.5,20.0,True,False,draw:PDH,5.75,draw:PDH,15412.25,09:53,5.75,0.287,110.0
+2023-11-10,Friday,08:09,premarket,E3bal,BULLISH,MEDIUM,False,long,B,15279.25,10.0,False,False,4R cap,40.0,4R cap,15319.25,08:54,40.0,4.0,795.0
+2023-11-10,Friday,09:12,premarket,E3bal,BULLISH,MEDIUM,False,long,A,15318.5,8.25,False,False,4R cap,33.0,stop,15310.0,09:30,-8.5,-1.03,-175.0
+2023-11-10,Friday,10:01,intime,E3bal,BULLISH,MEDIUM,False,long,A,15369.0,16.0,False,False,draw:equal-highs,24.5,stop,15352.75,10:01,-16.25,-1.016,-330.0
+2023-11-10,Friday,10:02,intime,E3bal,BULLISH,MEDIUM,False,long,A,15358.25,20.0,True,False,draw:equal-highs,35.25,stop,15338.0,10:04,-20.25,-1.012,-410.0
+2023-11-13,Monday,08:09,premarket,E3bal,BULLISH,MEDIUM,False,long,B,15564.0,7.25,False,False,4R cap,29.0,stop,15556.5,08:15,-7.5,-1.034,-155.0
+2023-11-13,Monday,08:19,premarket,E3bal,BULLISH,MEDIUM,False,long,B,15563.5,5.5,False,False,4R cap,22.0,stop,15557.75,08:35,-5.75,-1.045,-120.0
+2023-11-15,Wednesday,09:40,intime,E3bal,BULLISH,MEDIUM,True,short,A,15954.0,19.5,False,False,4R cap (no draw in dir),78.0,stop,15973.75,10:51,-19.75,-1.013,-400.0
+2023-11-16,Thursday,09:00,premarket,E3bal,BULLISH,MEDIUM,False,long,A,15881.75,9.25,False,False,4R cap,37.0,stop,15872.25,09:01,-9.5,-1.027,-195.0
+2023-11-16,Thursday,09:10,premarket,E3bal,BULLISH,MEDIUM,False,long,A,15862.75,5.25,False,False,4R cap,21.0,stop,15857.25,09:17,-5.5,-1.048,-115.0
+2023-11-16,Thursday,09:40,intime,E3bal,BULLISH,MEDIUM,False,long,A,15847.5,17.0,False,False,draw:equal-highs,25.75,draw:equal-highs,15873.25,09:48,25.75,1.515,510.0
+2023-11-17,Friday,08:05,premarket,E3bal,BULLISH,MEDIUM,False,long,B,15912.75,11.75,False,False,draw:LondonH,6.0,draw:LondonH,15918.75,08:14,6.0,0.511,115.0
+2023-11-17,Friday,08:24,premarket,E3bal,BULLISH,MEDIUM,False,long,B,15919.0,9.5,False,False,draw:equal-highs,11.88,stop,15909.25,08:32,-9.75,-1.026,-200.0
+2023-11-20,Monday,10:14,intime,E3bal,BEARISH,MEDIUM,False,short,B,15974.25,18.5,False,False,draw:LondonH,42.25,stop,15993.0,10:57,-18.75,-1.014,-380.0
+2023-11-21,Tuesday,09:41,intime,E3bal,BEARISH,MEDIUM,True,long,A,16013.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,15992.75,09:45,-20.25,-1.012,-410.0
+2023-11-24,Friday,08:10,premarket,E3bal,BULLISH,MEDIUM,False,long,B,16037.5,10.5,False,False,draw:AsiaL,19.75,stop,16026.75,09:28,-10.75,-1.024,-220.0
+2023-11-24,Friday,09:43,intime,E3bal,BULLISH,MEDIUM,True,short,A,16026.0,20.0,True,False,4R cap (no draw in dir),80.0,eod,16011.25,13:14,14.75,0.738,290.0
+2023-11-27,Monday,08:56,premarket,E3bal,BULLISH,MEDIUM,True,short,B,16002.5,5.5,False,False,4R cap (no draw in dir),22.0,4R cap (no draw in dir),15980.5,09:09,22.0,4.0,435.0
+2023-11-27,Monday,09:56,intime,E3bal,BULLISH,MEDIUM,True,short,A,15995.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,16015.25,10:00,-20.25,-1.012,-410.0
+2023-11-28,Tuesday,08:24,premarket,E3bal,BULLISH,MEDIUM,False,long,B,15968.5,5.75,False,False,draw:AsiaL,22.5,draw:AsiaL,15991.0,09:31,22.5,3.913,445.0
+2023-11-28,Tuesday,09:40,intime,E3bal,BULLISH,MEDIUM,False,long,A,15988.75,20.0,True,False,draw:AsiaL,2.25,draw:AsiaL,15991.0,09:40,2.25,0.113,40.0
+2023-11-28,Tuesday,09:41,intime,E3bal,BULLISH,MEDIUM,False,long,A,15990.0,20.0,True,False,draw:AsiaL,1.0,draw:AsiaL,15991.0,09:41,1.0,0.05,15.0
+2023-11-29,Wednesday,08:30,premarket,E4war,BULLISH,LOW,False,long,B2,16159.75,6.5,False,False,draw:PWH,13.75,stop,16153.0,08:30,-6.75,-1.038,-140.0
+2023-11-29,Wednesday,08:41,premarket,E4war,BULLISH,LOW,False,long,B2,16146.0,5.5,False,False,4R cap,22.0,stop,16140.25,09:01,-5.75,-1.045,-120.0
+2023-11-29,Wednesday,09:54,intime,E4war,BULLISH,LOW,False,long,B2,16199.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,16179.25,10:03,-20.25,-1.012,-410.0
+2023-11-30,Thursday,09:17,premarket,E3bal,BULLISH,MEDIUM,True,short,A,16044.0,5.25,False,False,4R cap (no draw in dir),21.0,stop,16049.5,09:22,-5.5,-1.048,-115.0
+2023-11-30,Thursday,09:27,premarket,E3bal,BULLISH,MEDIUM,True,short,A,16042.5,8.0,False,False,4R cap (no draw in dir),32.0,stop,16050.75,09:32,-8.25,-1.031,-170.0
+2023-11-30,Thursday,09:54,intime,E3bal,BEARISH,MEDIUM,False,short,A,15979.5,20.0,True,False,draw:equal-lows,9.0,draw:equal-lows,15970.5,09:56,9.0,0.45,175.0
+2023-11-30,Thursday,10:01,intime,E3bal,BEARISH,MEDIUM,False,short,B,15955.5,24.25,False,False,draw:equal-lows,8.0,draw:equal-lows,15947.5,10:02,8.0,0.33,155.0
+2023-12-04,Monday,08:03,premarket,E3bal,BULLISH,MEDIUM,False,long,A,15959.25,5.0,False,False,4R cap,20.0,stop,15954.0,08:05,-5.25,-1.05,-110.0
+2023-12-04,Monday,08:18,premarket,E3bal,BULLISH,MEDIUM,False,long,A,15962.0,6.75,False,False,4R cap,27.0,stop,15955.0,08:24,-7.0,-1.037,-145.0
+2023-12-04,Monday,10:04,intime,E3bal,BEARISH,LOW,True,long,A,15851.25,23.75,False,False,4R cap (no draw in dir),95.0,stop,15827.25,10:15,-24.0,-1.011,-485.0
+2023-12-06,Wednesday,09:53,intime,E3bal,BULLISH,MEDIUM,False,long,A,15968.5,20.0,True,False,draw:equal-highs,17.88,stop,15948.25,09:54,-20.25,-1.012,-410.0
+2023-12-06,Wednesday,09:59,intime,E3bal,BULLISH,MEDIUM,False,long,A,15952.0,20.0,True,False,draw:equal-highs,10.38,stop,15931.75,10:00,-20.25,-1.012,-410.0
+2023-12-07,Thursday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15859.5,10.25,False,False,4R cap,41.0,stop,15849.0,08:30,-10.5,-1.024,-215.0
+2023-12-07,Thursday,08:34,premarket,E4war,BULLISH,MEDIUM,False,long,B2,15861.25,6.75,False,False,4R cap,27.0,4R cap,15888.25,08:43,27.0,4.0,535.0
+2023-12-07,Thursday,09:44,intime,E4war,BULLISH,HIGH,False,long,B2,15955.0,20.0,True,False,draw:equal-highs,31.38,stop,15934.75,09:46,-20.25,-1.012,-410.0
+2023-12-07,Thursday,09:59,intime,E4war,BULLISH,HIGH,False,long,B2,15922.75,20.0,True,False,draw:equal-highs,63.63,draw:equal-highs,15986.38,10:21,63.63,3.181,1267.6
+2023-12-08,Friday,09:58,intime,E3bal,BEARISH,LOW,True,long,A,15979.75,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),16059.75,10:07,80.0,4.0,1595.0
+2023-12-13,Wednesday,08:12,premarket,E4war,BULLISH,MEDIUM,True,short,B,16605.5,5.5,False,False,4R cap (no draw in dir),22.0,stop,16611.25,08:30,-5.75,-1.045,-120.0
+2023-12-13,Wednesday,08:33,premarket,E4war,BULLISH,MEDIUM,False,long,B,16621.25,14.0,False,False,4R cap (no draw in dir),56.0,stop,16607.0,09:28,-14.25,-1.018,-290.0
+2023-12-13,Wednesday,09:45,intime,E4war,BULLISH,MEDIUM,False,long,B2,16627.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,16607.0,09:50,-20.25,-1.012,-410.0
+2023-12-13,Wednesday,09:51,intime,E4war,BULLISH,MEDIUM,False,long,A,16610.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,16590.25,12:06,-20.25,-1.012,-410.0
+2023-12-14,Thursday,09:40,intime,E4war,BULLISH,MEDIUM,False,long,A,16835.5,20.0,True,False,draw:AsiaL,14.75,draw:AsiaL,16850.25,09:41,14.75,0.738,290.0
+2023-12-14,Thursday,09:56,intime,E4war,BULLISH,MEDIUM,False,long,A,16863.25,20.0,True,False,draw:LondonH,14.75,stop,16843.0,09:58,-20.25,-1.012,-410.0
+2023-12-15,Friday,08:28,premarket,E4war,BULLISH,MEDIUM,False,long,B,16802.75,8.75,False,False,draw:LondonH,10.75,stop,16793.75,08:32,-9.0,-1.029,-185.0
+2023-12-15,Friday,08:32,premarket,E4war,BULLISH,MEDIUM,False,long,B,16811.0,7.5,False,False,draw:LondonH,2.5,stop,16803.25,08:32,-7.75,-1.033,-160.0
+2023-12-15,Friday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,A,16813.0,20.0,True,False,draw:LondonH,0.5,draw:LondonH,16813.5,09:41,0.5,0.025,5.0
+2023-12-15,Friday,09:51,intime,E4war,BULLISH,MEDIUM,False,long,A,16813.25,20.0,True,False,draw:PDH,70.5,draw:PDH,16883.75,11:31,70.5,3.525,1405.0
+2023-12-18,Monday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B,16841.25,11.75,False,False,draw:PDH,12.0,draw:PDH,16853.25,08:49,12.0,1.021,235.0
+2023-12-18,Monday,08:51,premarket,E4war,BULLISH,MEDIUM,False,long,B2,16852.0,9.75,False,False,draw:PDH,1.25,draw:PDH,16853.25,08:51,1.25,0.128,20.0
+2023-12-18,Monday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,B2,16863.0,20.0,True,False,draw:equal-highs,21.38,draw:equal-highs,16884.38,10:01,21.38,1.069,422.6
+2023-12-18,Monday,10:14,intime,E4war,BULLISH,MEDIUM,False,long,B2,16877.75,20.0,True,False,draw:equal-highs,6.63,draw:equal-highs,16884.38,10:15,6.63,0.332,127.6
+2023-12-21,Thursday,09:41,intime,E3bal,BULLISH,MEDIUM,True,short,A,16915.0,19.0,False,False,4R cap (no draw in dir),76.0,4R cap (no draw in dir),16839.0,12:08,76.0,4.0,1515.0
+2023-12-22,Friday,10:04,intime,E3bal,BULLISH,MEDIUM,False,long,B,17028.5,21.5,False,False,draw:equal-highs,17.38,stop,17006.75,10:24,-21.75,-1.012,-440.0
+2023-12-26,Tuesday,08:21,premarket,E3bal,BEARISH,MEDIUM,True,long,B,17011.5,5.75,False,False,4R cap (no draw in dir),23.0,stop,17005.5,08:31,-6.0,-1.043,-125.0
+2023-12-26,Tuesday,09:56,intime,E3bal,BEARISH,MEDIUM,False,short,A,17032.0,20.0,True,False,draw:PDH,3.25,stop,17052.25,10:21,-20.25,-1.012,-410.0
+2023-12-27,Wednesday,08:40,premarket,E3bal,BEARISH,MEDIUM,False,short,B,17098.75,5.75,False,False,4R cap,23.0,stop,17104.75,08:46,-6.0,-1.043,-125.0
+2023-12-27,Wednesday,09:40,intime,E3bal,BULLISH,LOW,False,long,A,17105.5,20.0,True,False,draw:PDH,5.75,draw:PDH,17111.25,09:54,5.75,0.287,110.0
+2023-12-27,Wednesday,10:08,intime,E3bal,BULLISH,LOW,True,short,B,17098.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,17118.5,13:11,-20.25,-1.012,-410.0
+2023-12-28,Thursday,08:50,premarket,E3bal,BULLISH,LOW,True,short,B,17155.75,5.25,False,False,4R cap (no draw in dir),21.0,4R cap (no draw in dir),17134.75,09:33,21.0,4.0,415.0
+2023-12-28,Thursday,10:06,intime,E3bal,BEARISH,MEDIUM,False,short,B,17110.25,15.5,False,False,draw:equal-lows,35.75,stop,17126.0,10:25,-15.75,-1.016,-320.0
+2023-12-29,Friday,08:15,premarket,E3bal,BEARISH,MEDIUM,False,short,B,17079.25,11.75,False,False,draw:equal-lows,4.75,draw:equal-lows,17074.5,08:16,4.75,0.404,90.0
+2023-12-29,Friday,09:45,intime,E3bal,BEARISH,MEDIUM,True,long,A,17097.0,15.25,False,False,4R cap (no draw in dir),61.0,stop,17081.5,10:33,-15.5,-1.016,-315.0
+2024-01-08,Monday,08:13,premarket,E3bal,BULLISH,MEDIUM,False,long,B,16475.5,5.0,False,False,4R cap,20.0,4R cap,16495.5,08:25,20.0,4.0,395.0
+2024-01-09,Tuesday,08:14,premarket,E3bal,BULLISH,MEDIUM,False,long,B,16716.5,6.25,False,False,4R cap,25.0,stop,16710.0,08:16,-6.5,-1.04,-135.0
+2024-01-09,Tuesday,09:43,intime,E3bal,BEARISH,MEDIUM,True,long,A,16695.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,16675.5,09:44,-20.25,-1.012,-410.0
+2024-01-09,Tuesday,09:56,intime,E3bal,BEARISH,MEDIUM,True,long,A,16687.25,16.25,False,False,4R cap (no draw in dir),65.0,4R cap (no draw in dir),16752.25,11:02,65.0,4.0,1295.0
+2024-01-15,Monday,08:15,premarket,E3bal,BEARISH,MEDIUM,False,short,B,16952.25,9.5,False,False,draw:PDL,13.5,stop,16962.0,08:18,-9.75,-1.026,-200.0
+2024-01-15,Monday,08:42,premarket,E3bal,BEARISH,MEDIUM,False,short,B,16958.25,7.75,False,False,draw:PDL,19.5,stop,16966.25,09:31,-8.0,-1.032,-165.0
+2024-01-16,Tuesday,08:00,premarket,E3bal,BULLISH,MEDIUM,False,long,A,16912.0,5.0,False,False,4R cap,20.0,stop,16906.75,08:02,-5.25,-1.05,-110.0
+2024-01-16,Tuesday,08:13,premarket,E3bal,BULLISH,MEDIUM,False,long,A,16899.25,5.25,False,False,4R cap,21.0,stop,16893.75,08:14,-5.5,-1.048,-115.0
+2024-01-18,Thursday,10:02,intime,E3bal,BULLISH,LOW,True,short,A,17016.75,25.25,False,False,4R cap (no draw in dir),101.0,stop,17042.25,10:30,-25.5,-1.01,-515.0
+2024-01-22,Monday,09:54,intime,E4war,BEARISH,MEDIUM,True,long,B2,17541.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,17520.75,10:03,-20.25,-1.012,-410.0
+2024-01-22,Monday,10:07,intime,E4war,BEARISH,MEDIUM,False,short,A,17524.0,20.0,True,False,draw:PDL,58.0,draw:PDL,17466.0,10:32,58.0,2.9,1155.0
+2024-01-25,Thursday,08:48,premarket,E4war,BULLISH,MEDIUM,False,long,B2,17697.75,7.0,False,False,4R cap,28.0,4R cap,17725.75,09:29,28.0,4.0,555.0
+2024-01-26,Friday,09:22,premarket,E4war,BULLISH,MEDIUM,False,long,B2,17545.5,12.5,False,False,draw:PWH,23.5,draw:PWH,17569.0,09:30,23.5,1.88,465.0
+2024-01-26,Friday,09:42,intime,E4war,BULLISH,MEDIUM,False,long,B2,17551.5,20.0,True,False,draw:PWH,17.5,stop,17531.25,09:51,-20.25,-1.012,-410.0
+2024-01-26,Friday,10:04,intime,E4war,BULLISH,MEDIUM,True,short,A,17535.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,17555.5,10:21,-20.25,-1.012,-410.0
+2024-01-31,Wednesday,08:35,premarket,E4war,BULLISH,MEDIUM,False,long,B2,17431.75,13.5,False,False,4R cap,54.0,stop,17418.0,08:36,-13.75,-1.019,-280.0
+2024-01-31,Wednesday,08:41,premarket,E4war,BULLISH,MEDIUM,False,long,B,17415.25,12.0,False,False,4R cap,48.0,stop,17403.0,08:56,-12.25,-1.021,-250.0
+2024-02-02,Friday,09:47,intime,E4war,BEARISH,MEDIUM,False,short,A,17607.25,20.0,True,False,4R cap,80.0,stop,17627.5,10:40,-20.25,-1.012,-410.0
+2024-02-06,Tuesday,08:21,premarket,E4war,BEARISH,MEDIUM,True,long,A,17737.0,8.5,False,False,4R cap (no draw in dir),34.0,stop,17728.25,08:34,-8.75,-1.029,-180.0
+2024-02-06,Tuesday,08:34,premarket,E4war,BEARISH,MEDIUM,False,short,B,17728.5,8.0,False,False,4R cap,32.0,stop,17736.75,08:36,-8.25,-1.031,-170.0
+2024-02-06,Tuesday,09:40,intime,E4war,BULLISH,MEDIUM,True,short,B2,17715.0,15.75,False,False,4R cap (no draw in dir),63.0,stop,17731.0,09:43,-16.0,-1.016,-325.0
+2024-02-06,Tuesday,09:43,intime,E4war,BULLISH,MEDIUM,True,short,B2,17723.75,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),17643.75,10:00,80.0,4.0,1595.0
+2024-02-07,Wednesday,08:28,premarket,E4war,BULLISH,MEDIUM,False,long,B,17736.25,11.0,False,False,draw:equal-highs,6.87,draw:equal-highs,17743.12,08:31,6.87,0.625,132.4
+2024-02-08,Thursday,10:09,intime,E4war,BULLISH,MEDIUM,True,short,B,17841.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,17861.25,10:18,-20.25,-1.012,-410.0
+2024-02-09,Friday,08:00,premarket,E4war,BULLISH,MEDIUM,True,short,B,17915.5,9.5,False,False,4R cap (no draw in dir),38.0,stop,17925.25,08:31,-9.75,-1.026,-200.0
+2024-02-09,Friday,09:47,intime,E4war,BULLISH,MEDIUM,False,long,B2,17903.0,20.0,True,False,draw:LondonH,36.5,draw:LondonH,17939.5,09:59,36.5,1.825,725.0
+2024-02-09,Friday,10:08,intime,E4war,BULLISH,MEDIUM,False,long,B,17935.5,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),18015.5,12:52,80.0,4.0,1595.0
+2024-02-12,Monday,08:32,premarket,E4war,BULLISH,LOW,True,short,B,18037.0,6.25,False,False,4R cap (no draw in dir),25.0,4R cap (no draw in dir),18012.0,09:31,25.0,4.0,495.0
+2024-02-14,Wednesday,08:02,premarket,E4war,BULLISH,MEDIUM,False,long,B,17796.25,8.25,False,False,4R cap,33.0,stop,17787.75,08:20,-8.5,-1.03,-175.0
+2024-02-14,Wednesday,08:20,premarket,E4war,BULLISH,MEDIUM,True,short,B,17790.75,13.0,False,False,4R cap (no draw in dir),52.0,stop,17804.0,09:30,-13.25,-1.019,-270.0
+2024-02-15,Thursday,08:46,premarket,E4war,BEARISH,MEDIUM,False,short,B,17911.25,6.75,False,False,4R cap,27.0,4R cap,17884.25,08:49,27.0,4.0,535.0
+2024-02-15,Thursday,09:04,premarket,E4war,BEARISH,MEDIUM,False,short,A,17894.25,5.25,False,False,draw:LondonL,12.75,draw:LondonL,17881.5,09:05,12.75,2.429,250.0
+2024-02-15,Thursday,09:48,intime,E4war,BEARISH,LOW,False,short,A,17862.5,20.0,True,False,4R cap,80.0,4R cap,17782.5,11:09,80.0,4.0,1595.0
+2024-02-16,Friday,08:05,premarket,E4war,BEARISH,MEDIUM,False,short,A,18000.0,9.75,False,False,draw:PDH,31.75,draw:PDH,17968.25,08:30,31.75,3.256,630.0
+2024-02-16,Friday,08:57,premarket,E4war,BEARISH,MEDIUM,True,long,B,17934.5,11.0,False,False,4R cap (no draw in dir),44.0,stop,17923.25,09:24,-11.25,-1.023,-230.0
+2024-02-19,Monday,08:04,premarket,E4war,BEARISH,MEDIUM,False,short,B2,17759.5,6.0,False,False,draw:AsiaL,12.75,stop,17765.75,08:09,-6.25,-1.042,-130.0
+2024-02-19,Monday,08:09,premarket,E4war,BEARISH,MEDIUM,True,long,B,17763.5,8.25,False,False,4R cap (no draw in dir),33.0,4R cap (no draw in dir),17796.5,09:30,33.0,4.0,655.0
+2024-02-19,Monday,09:53,intime,E4war,BEARISH,MEDIUM,False,short,A,17797.0,20.0,True,False,draw:AsiaL,50.25,eod,17789.0,12:59,8.0,0.4,155.0
+2024-02-20,Tuesday,08:05,premarket,E4war,BULLISH,MEDIUM,True,short,B2,17668.75,12.0,False,False,4R cap (no draw in dir),48.0,stop,17681.0,08:12,-12.25,-1.021,-250.0
+2024-02-20,Tuesday,08:41,premarket,E4war,BULLISH,MEDIUM,False,long,B,17688.5,13.0,False,False,4R cap,52.0,stop,17675.25,08:50,-13.25,-1.019,-270.0
+2024-02-21,Wednesday,08:14,premarket,E4war,BEARISH,MEDIUM,False,short,B,17494.75,7.25,False,False,4R cap,29.0,stop,17502.25,08:16,-7.5,-1.034,-155.0
+2024-02-21,Wednesday,08:27,premarket,E4war,BEARISH,MEDIUM,False,short,B2,17485.0,12.5,False,False,draw:PDL,32.5,stop,17497.75,08:28,-12.75,-1.02,-260.0
+2024-02-21,Wednesday,09:41,intime,E4war,BEARISH,MEDIUM,False,short,B2,17494.25,20.0,True,False,draw:LondonL,10.25,draw:LondonL,17484.0,09:41,10.25,0.512,200.0
+2024-02-21,Wednesday,09:43,intime,E4war,BEARISH,MEDIUM,False,short,B2,17475.75,20.0,True,False,draw:PDL,23.25,draw:PDL,17452.5,09:47,23.25,1.163,460.0
+2024-02-22,Thursday,08:14,premarket,E4war,BULLISH,LOW,False,long,B,17901.75,10.25,False,False,draw:LondonH,24.0,stop,17891.25,08:25,-10.5,-1.024,-215.0
+2024-02-22,Thursday,08:27,premarket,E4war,BULLISH,LOW,False,long,B2,17895.0,6.25,False,False,4R cap,25.0,stop,17888.5,08:29,-6.5,-1.04,-135.0
+2024-02-26,Monday,08:01,premarket,E4war,BULLISH,MEDIUM,False,long,B,17983.75,5.75,False,False,draw:PDH,4.5,stop,17977.75,08:03,-6.0,-1.043,-125.0
+2024-02-26,Monday,08:07,premarket,E4war,BULLISH,MEDIUM,False,long,B,17984.25,8.5,False,False,draw:PDH,4.0,draw:PDH,17988.25,08:07,4.0,0.471,75.0
+2024-02-26,Monday,10:08,intime,E4war,BULLISH,MEDIUM,False,long,B,18007.0,20.0,True,False,draw:equal-highs,42.38,draw:equal-highs,18049.38,11:51,42.38,2.119,842.6
+2024-02-27,Tuesday,08:36,premarket,E4war,BULLISH,MEDIUM,False,long,B,18011.25,10.0,False,False,draw:LondonH,29.0,stop,18001.0,09:30,-10.25,-1.025,-210.0
+2024-02-27,Tuesday,10:00,intime,E4war,BULLISH,MEDIUM,False,long,A,17989.25,20.0,True,False,draw:LondonH,51.0,stop,17969.0,11:30,-20.25,-1.012,-410.0
+2024-02-28,Wednesday,08:20,premarket,E4war,BULLISH,MEDIUM,False,long,B,17937.25,14.75,False,False,draw:equal-highs,22.25,draw:equal-highs,17959.5,08:32,22.25,1.508,440.0
+2024-02-28,Wednesday,08:58,premarket,E4war,BULLISH,MEDIUM,False,long,B,17940.0,8.5,False,False,draw:equal-highs,19.5,stop,17931.25,09:05,-8.75,-1.029,-180.0
+2024-02-28,Wednesday,09:40,intime,E4war,BULLISH,MEDIUM,False,long,B2,17936.5,20.0,True,False,draw:equal-highs,23.0,stop,17916.25,09:43,-20.25,-1.012,-410.0
+2024-02-28,Wednesday,10:08,intime,E4war,BEARISH,MEDIUM,False,short,A,17890.0,20.0,True,False,4R cap,80.0,stop,17910.25,10:08,-20.25,-1.012,-410.0
+2024-03-04,Monday,08:12,premarket,E4war,BEARISH,MEDIUM,True,long,B,18343.5,9.0,False,False,4R cap (no draw in dir),36.0,stop,18334.25,08:27,-9.25,-1.028,-190.0
+2024-03-04,Monday,08:28,premarket,E4war,BEARISH,MEDIUM,False,short,B2,18335.25,7.0,False,False,draw:equal-lows,22.37,stop,18342.5,08:35,-7.25,-1.036,-150.0
+2024-03-04,Monday,09:40,intime,E4war,BEARISH,MEDIUM,False,short,A,18320.75,20.0,True,False,draw:equal-lows,7.87,draw:equal-lows,18312.88,09:43,7.87,0.393,152.4
+2024-03-04,Monday,10:13,intime,E4war,BEARISH,MEDIUM,True,long,B,18306.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,18285.75,10:21,-20.25,-1.012,-410.0
+2024-03-08,Friday,09:42,intime,E4war,BULLISH,MEDIUM,True,short,B2,18319.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,18339.25,09:46,-20.25,-1.012,-410.0
+2024-03-18,Monday,08:58,premarket,E4war,BULLISH,MEDIUM,False,long,B,18275.25,7.0,False,False,4R cap,28.0,4R cap,18303.25,09:31,28.0,4.0,555.0
+2024-03-18,Monday,09:51,intime,E4war,BULLISH,MEDIUM,False,long,B2,18333.25,20.0,True,False,draw:equal-highs,46.13,stop,18313.0,09:52,-20.25,-1.012,-410.0
+2024-03-18,Monday,09:52,intime,E4war,BULLISH,MEDIUM,True,short,A,18324.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,18344.75,10:11,-20.25,-1.012,-410.0
+2024-03-19,Tuesday,08:02,premarket,E4war,BEARISH,MEDIUM,False,short,B,18115.75,5.0,False,False,draw:LondonL,11.75,stop,18121.0,08:03,-5.25,-1.05,-110.0
+2024-03-19,Tuesday,08:07,premarket,E4war,BEARISH,MEDIUM,False,short,B,18114.0,6.5,False,False,draw:LondonL,10.0,draw:LondonL,18104.0,08:09,10.0,1.538,195.0
+2024-03-19,Tuesday,10:12,intime,E4war,BEARISH,LOW,False,short,B2,18102.75,20.0,True,False,4R cap,80.0,stop,18123.0,10:42,-20.25,-1.012,-410.0
+2024-03-20,Wednesday,09:49,intime,E4war,BEARISH,MEDIUM,False,short,A,18250.25,20.0,True,False,draw:equal-lows,15.63,stop,18270.5,09:55,-20.25,-1.012,-410.0
+2024-03-20,Wednesday,09:59,intime,E4war,BEARISH,MEDIUM,True,long,B2,18268.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,18248.25,13:41,-20.25,-1.012,-410.0
+2024-03-21,Thursday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B,18639.75,7.5,False,False,draw:LondonH,27.5,draw:LondonH,18667.25,08:27,27.5,3.667,545.0
+2024-03-21,Thursday,08:50,premarket,E4war,BULLISH,MEDIUM,False,long,B,18658.5,10.25,False,False,4R cap (no draw in dir),41.0,stop,18648.0,09:12,-10.5,-1.024,-215.0
+2024-03-21,Thursday,09:42,intime,E4war,BULLISH,MEDIUM,False,long,B2,18693.5,15.0,False,False,4R cap (no draw in dir),60.0,stop,18678.25,09:42,-15.25,-1.017,-310.0
+2024-03-21,Thursday,09:43,intime,E4war,BULLISH,MEDIUM,False,long,B2,18678.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,18658.0,09:47,-20.25,-1.012,-410.0
+2024-03-22,Friday,08:13,premarket,E4war,BEARISH,MEDIUM,False,short,B,18508.75,9.5,False,False,4R cap,38.0,stop,18518.5,08:43,-9.75,-1.026,-200.0
+2024-03-22,Friday,10:00,intime,E4war,BEARISH,MEDIUM,False,short,B2,18530.0,20.0,True,False,4R cap,80.0,stop,18550.25,10:02,-20.25,-1.012,-410.0
+2024-03-22,Friday,10:10,intime,E4war,BEARISH,MEDIUM,True,long,A,18541.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,18521.25,10:15,-20.25,-1.012,-410.0
+2024-03-26,Tuesday,08:09,premarket,E4war,BULLISH,MEDIUM,True,short,B,18602.75,6.75,False,False,4R cap (no draw in dir),27.0,4R cap (no draw in dir),18575.75,08:41,27.0,4.0,535.0
+2024-03-27,Wednesday,08:28,premarket,E4war,BULLISH,MEDIUM,True,short,A,18515.75,5.0,False,False,4R cap (no draw in dir),20.0,stop,18521.0,08:30,-5.25,-1.05,-110.0
+2024-03-27,Wednesday,08:30,premarket,E4war,BULLISH,MEDIUM,True,short,A,18514.0,7.0,False,False,4R cap (no draw in dir),28.0,stop,18521.25,08:30,-7.25,-1.036,-150.0
+2024-03-27,Wednesday,09:49,intime,E4war,BULLISH,MEDIUM,True,short,A,18505.5,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),18425.5,10:01,80.0,4.0,1595.0
+2024-03-28,Thursday,08:00,premarket,E4war,BEARISH,MEDIUM,True,long,A,18492.0,6.75,False,False,4R cap (no draw in dir),27.0,4R cap (no draw in dir),18519.0,08:30,27.0,4.0,535.0
+2024-03-28,Thursday,08:37,premarket,E4war,BEARISH,MEDIUM,False,short,B,18485.25,12.0,False,False,draw:AsiaL,5.75,stop,18497.5,08:38,-12.25,-1.021,-250.0
+2024-03-28,Thursday,10:00,intime,E4war,BEARISH,MEDIUM,False,short,B,18513.75,20.0,True,False,draw:equal-lows,30.87,stop,18534.0,10:01,-20.25,-1.012,-410.0
+2024-03-28,Thursday,10:12,intime,E4war,BEARISH,MEDIUM,False,short,B,18494.75,20.0,True,False,draw:equal-lows,11.87,draw:equal-lows,18482.88,10:13,11.87,0.593,232.4
+2024-04-02,Tuesday,08:12,premarket,E4war,BEARISH,MEDIUM,False,short,B,18400.75,9.25,False,False,draw:PWL,22.25,stop,18410.25,08:28,-9.5,-1.027,-195.0
+2024-04-02,Tuesday,08:34,premarket,E4war,BEARISH,MEDIUM,False,short,B,18400.5,14.0,False,False,draw:PWL,22.0,draw:PWL,18378.5,08:39,22.0,1.571,435.0
+2024-04-02,Tuesday,09:54,intime,E4war,BEARISH,MEDIUM,False,short,B2,18245.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,18266.0,10:02,-20.25,-1.012,-410.0
+2024-04-02,Tuesday,10:09,intime,E4war,BEARISH,MEDIUM,False,short,B2,18243.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,18263.75,11:18,-20.25,-1.012,-410.0
+2024-04-05,Friday,09:00,premarket,E4war,BEARISH,MEDIUM,False,short,A,18144.75,9.0,False,False,draw:AsiaH,34.0,stop,18154.0,09:00,-9.25,-1.028,-190.0
+2024-04-05,Friday,09:06,premarket,E4war,BEARISH,MEDIUM,False,short,A,18140.25,11.5,False,False,draw:AsiaH,29.5,stop,18152.0,09:06,-11.75,-1.022,-240.0
+2024-04-05,Friday,10:11,intime,E4war,BEARISH,MEDIUM,False,short,B,18201.25,20.0,True,False,4R cap,80.0,stop,18221.5,10:12,-20.25,-1.012,-410.0
+2024-04-11,Thursday,08:01,premarket,E4war,BEARISH,MEDIUM,False,short,B2,18120.5,7.0,False,False,draw:LondonL,8.5,stop,18127.75,08:01,-7.25,-1.036,-150.0
+2024-04-11,Thursday,08:17,premarket,E4war,BEARISH,MEDIUM,False,short,B2,18132.5,11.75,False,False,draw:LondonL,20.5,stop,18144.5,08:30,-12.0,-1.021,-245.0
+2024-04-12,Friday,08:11,premarket,E4war,BULLISH,MEDIUM,False,long,A,18414.0,6.75,False,False,4R cap,27.0,stop,18407.0,08:11,-7.0,-1.037,-145.0
+2024-04-12,Friday,08:15,premarket,E4war,BULLISH,MEDIUM,False,long,A,18406.25,6.25,False,False,4R cap,25.0,stop,18399.75,08:21,-6.5,-1.04,-135.0
+2024-04-12,Friday,09:40,intime,E4war,BEARISH,MEDIUM,False,short,B2,18306.0,20.0,True,False,4R cap,80.0,stop,18326.25,09:46,-20.25,-1.012,-410.0
+2024-04-12,Friday,09:46,intime,E4war,BEARISH,MEDIUM,True,long,A,18316.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,18296.0,10:03,-20.25,-1.012,-410.0
+2024-04-15,Monday,09:44,intime,E4war,BULLISH,MEDIUM,False,long,B2,18310.75,20.0,True,False,4R cap,80.0,stop,18290.5,09:47,-20.25,-1.012,-410.0
+2024-04-15,Monday,09:47,intime,E4war,BULLISH,MEDIUM,False,long,B2,18303.0,20.0,True,False,4R cap,80.0,stop,18282.75,09:47,-20.25,-1.012,-410.0
+2024-04-16,Tuesday,09:52,intime,E4war,BULLISH,MEDIUM,False,long,A,17869.25,20.0,True,False,draw:equal-highs,23.25,draw:equal-highs,17892.5,09:57,23.25,1.163,460.0
+2024-04-16,Tuesday,10:02,intime,E4war,BULLISH,MEDIUM,False,long,A,17892.75,20.0,True,False,draw:LondonH,25.75,stop,17872.5,10:07,-20.25,-1.012,-410.0
+2024-04-17,Wednesday,08:19,premarket,E4war,BULLISH,MEDIUM,False,long,B,17930.25,6.5,False,False,draw:equal-highs,6.87,stop,17923.5,08:21,-6.75,-1.038,-140.0
+2024-04-17,Wednesday,08:22,premarket,E4war,BULLISH,MEDIUM,True,short,B,17917.75,12.75,False,False,4R cap (no draw in dir),51.0,stop,17930.75,08:47,-13.0,-1.02,-265.0
+2024-04-17,Wednesday,09:46,intime,E4war,BULLISH,MEDIUM,False,long,B2,17940.5,20.0,True,False,draw:PDH,47.5,stop,17920.25,09:48,-20.25,-1.012,-410.0
+2024-04-18,Thursday,08:30,premarket,E4war,BEARISH,MEDIUM,False,short,A,17686.0,9.25,False,False,draw:AsiaL,7.0,stop,17695.5,08:30,-9.5,-1.027,-195.0
+2024-04-18,Thursday,08:34,premarket,E4war,BEARISH,MEDIUM,False,short,A,17682.25,8.25,False,False,draw:AsiaL,3.25,draw:AsiaL,17679.0,08:34,3.25,0.394,60.0
+2024-04-19,Friday,09:48,intime,E4war,BULLISH,MEDIUM,False,long,B2,17484.0,20.0,True,False,draw:LondonH,23.5,stop,17463.75,09:48,-20.25,-1.012,-410.0
+2024-04-22,Monday,08:10,premarket,E3bal,BEARISH,MEDIUM,False,short,B,17270.0,17.0,False,False,draw:equal-lows,35.62,stop,17287.25,08:38,-17.25,-1.015,-350.0
+2024-04-22,Monday,08:38,premarket,E3bal,BEARISH,MEDIUM,True,long,B,17278.5,17.25,False,False,4R cap (no draw in dir),69.0,stop,17261.0,10:14,-17.5,-1.014,-355.0
+2024-04-24,Wednesday,08:06,premarket,E4war,BULLISH,MEDIUM,False,long,A,17723.0,9.5,False,False,draw:LondonH,21.5,draw:LondonH,17744.5,08:31,21.5,2.263,425.0
+2024-04-24,Wednesday,08:32,premarket,E4war,BULLISH,MEDIUM,False,long,A,17744.25,13.75,False,False,draw:LondonH,0.25,draw:LondonH,17744.5,08:32,0.25,0.018,0.0
+2024-04-24,Wednesday,09:59,intime,E4war,BULLISH,LOW,False,long,B2,17736.25,20.0,True,False,4R cap,80.0,stop,17716.0,10:15,-20.25,-1.012,-410.0
+2024-04-25,Thursday,09:40,intime,E4war,BEARISH,MEDIUM,False,short,A,17334.25,20.0,True,False,4R cap,80.0,stop,17354.5,09:42,-20.25,-1.012,-410.0
+2024-04-25,Thursday,09:42,intime,E4war,BEARISH,MEDIUM,False,short,A,17335.75,20.0,True,False,4R cap,80.0,stop,17356.0,09:42,-20.25,-1.012,-410.0
+2024-04-29,Monday,08:06,premarket,E4war,BULLISH,MEDIUM,False,long,B,17912.75,5.75,False,False,4R cap (no draw in dir),23.0,stop,17906.75,08:30,-6.0,-1.043,-125.0
+2024-04-29,Monday,08:43,premarket,E4war,BULLISH,MEDIUM,False,long,B,17917.5,5.5,False,False,4R cap (no draw in dir),22.0,stop,17911.75,09:09,-5.75,-1.045,-120.0
+2024-04-29,Monday,09:59,intime,E4war,BULLISH,MEDIUM,False,long,B2,17859.5,20.0,True,False,draw:LondonL,5.5,draw:LondonL,17865.0,09:59,5.5,0.275,105.0
+2024-04-29,Monday,10:11,intime,E4war,BULLISH,MEDIUM,False,long,B2,17892.5,20.0,True,False,draw:PDH,20.5,draw:PDH,17913.0,10:32,20.5,1.025,405.0
+2024-04-30,Tuesday,09:01,premarket,E4war,BEARISH,LOW,False,short,B2,17818.75,9.75,False,False,draw:PDL,27.5,stop,17828.75,09:06,-10.0,-1.026,-205.0
+2024-04-30,Tuesday,10:08,intime,E4war,BEARISH,LOW,True,long,A,17877.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,17857.25,10:11,-20.25,-1.012,-410.0
+2024-04-30,Tuesday,10:11,intime,E4war,BEARISH,LOW,False,short,B2,17864.75,20.0,True,False,draw:PDL,73.5,draw:PDL,17791.25,11:09,73.5,3.675,1465.0
+2024-05-02,Thursday,08:00,premarket,E4war,BEARISH,LOW,False,short,A,17571.0,10.25,False,False,draw:AsiaH,9.75,stop,17581.5,08:07,-10.5,-1.024,-215.0
+2024-05-02,Thursday,08:11,premarket,E4war,BEARISH,LOW,True,long,B2,17590.25,6.25,False,False,4R cap (no draw in dir),25.0,stop,17583.75,08:18,-6.5,-1.04,-135.0
+2024-05-06,Monday,08:02,premarket,E4war,BULLISH,MEDIUM,True,short,A,18037.75,8.0,False,False,4R cap (no draw in dir),32.0,stop,18046.0,08:05,-8.25,-1.031,-170.0
+2024-05-06,Monday,08:06,premarket,E4war,BULLISH,MEDIUM,False,long,B2,18048.0,8.25,False,False,draw:LondonH,11.75,draw:LondonH,18059.75,08:21,11.75,1.424,230.0
+2024-05-06,Monday,09:42,intime,E4war,BULLISH,MEDIUM,False,long,B2,18074.75,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),18154.75,15:46,80.0,4.0,1595.0
+2024-05-07,Tuesday,08:04,premarket,E4war,BEARISH,MEDIUM,False,short,B2,18166.0,5.0,False,False,draw:LondonL,15.0,stop,18171.25,08:11,-5.25,-1.05,-110.0
+2024-05-07,Tuesday,08:30,premarket,E4war,BEARISH,MEDIUM,False,short,B,18160.0,9.0,False,False,draw:LondonL,9.0,stop,18169.25,08:39,-9.25,-1.028,-190.0
+2024-05-07,Tuesday,09:50,intime,E4war,BULLISH,LOW,False,long,A,18204.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,18184.5,10:01,-20.25,-1.012,-410.0
+2024-05-07,Tuesday,10:02,intime,E4war,BULLISH,LOW,False,long,A,18189.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,18169.5,14:34,-20.25,-1.012,-410.0
+2024-05-08,Wednesday,08:36,premarket,E4war,BEARISH,MEDIUM,False,short,B2,18093.75,10.0,False,False,draw:PWH,30.0,stop,18104.0,09:31,-10.25,-1.025,-210.0
+2024-05-08,Wednesday,10:09,intime,E4war,BEARISH,MEDIUM,True,long,A,18167.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,18147.0,13:01,-20.25,-1.012,-410.0
+2024-05-09,Thursday,08:18,premarket,E4war,BULLISH,MEDIUM,False,long,B,18149.75,9.0,False,False,draw:LondonH,14.75,draw:LondonH,18164.5,08:30,14.75,1.639,290.0
+2024-05-09,Thursday,09:01,premarket,E4war,BULLISH,MEDIUM,False,long,B2,18186.5,6.25,False,False,4R cap,25.0,stop,18180.0,09:33,-6.5,-1.04,-135.0
+2024-05-09,Thursday,09:53,intime,E4war,BULLISH,MEDIUM,False,long,B2,18135.75,20.0,True,False,draw:AsiaL,17.5,draw:AsiaL,18153.25,09:59,17.5,0.875,345.0
+2024-05-09,Thursday,10:01,intime,E4war,BULLISH,MEDIUM,False,long,B2,18160.5,20.0,True,False,draw:LondonH,4.0,draw:LondonH,18164.5,10:01,4.0,0.2,75.0
+2024-05-10,Friday,08:04,premarket,E4war,BULLISH,MEDIUM,True,short,B,18282.75,5.0,False,False,4R cap (no draw in dir),20.0,stop,18288.0,08:14,-5.25,-1.05,-110.0
+2024-05-10,Friday,08:15,premarket,E4war,BULLISH,MEDIUM,False,long,B,18289.5,9.5,False,False,draw:LondonH,17.25,stop,18279.75,08:37,-9.75,-1.026,-200.0
+2024-05-13,Monday,08:33,premarket,E4war,BULLISH,MEDIUM,False,long,B,18307.75,7.5,False,False,4R cap,30.0,stop,18300.0,09:34,-7.75,-1.033,-160.0
+2024-05-13,Monday,10:06,intime,E4war,BULLISH,MEDIUM,True,short,B,18290.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,18310.25,10:24,-20.25,-1.012,-410.0
+2024-05-15,Wednesday,08:49,premarket,E4war,BULLISH,MEDIUM,False,long,B,18506.5,11.75,False,False,4R cap (no draw in dir),47.0,stop,18494.5,09:00,-12.0,-1.021,-245.0
+2024-05-15,Wednesday,09:00,premarket,E4war,BULLISH,MEDIUM,False,long,A,18510.5,8.25,False,False,4R cap (no draw in dir),33.0,stop,18502.0,09:00,-8.5,-1.03,-175.0
+2024-05-16,Thursday,08:21,premarket,E4war,BULLISH,MEDIUM,False,long,B,18718.75,9.5,False,False,draw:equal-highs,12.13,stop,18709.0,08:30,-9.75,-1.026,-200.0
+2024-05-17,Friday,08:30,premarket,E4war,BULLISH,MEDIUM,False,long,B,18675.25,7.0,False,False,4R cap,28.0,stop,18668.0,09:24,-7.25,-1.036,-150.0
+2024-05-17,Friday,09:43,intime,E4war,BULLISH,MEDIUM,True,short,A,18655.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,18675.5,10:34,-20.25,-1.012,-410.0
+2024-05-20,Monday,08:34,premarket,E4war,BULLISH,MEDIUM,False,long,B2,18670.5,5.0,False,False,4R cap,20.0,stop,18665.25,08:35,-5.25,-1.05,-110.0
+2024-05-20,Monday,08:42,premarket,E4war,BULLISH,MEDIUM,True,short,A,18656.25,10.0,False,False,4R cap (no draw in dir),40.0,stop,18666.5,09:32,-10.25,-1.025,-210.0
+2024-05-21,Tuesday,08:10,premarket,E4war,BULLISH,MEDIUM,False,long,B,18752.0,7.0,False,False,draw:PWH,8.75,stop,18744.75,08:13,-7.25,-1.036,-150.0
+2024-05-21,Tuesday,08:13,premarket,E4war,BULLISH,MEDIUM,True,short,B,18750.0,7.0,False,False,4R cap (no draw in dir),28.0,4R cap (no draw in dir),18722.0,08:37,28.0,4.0,555.0
+2024-05-22,Wednesday,08:03,premarket,E4war,BULLISH,MEDIUM,False,long,B,18799.25,7.75,False,False,draw:AsiaL,7.25,stop,18791.25,08:12,-8.0,-1.032,-165.0
+2024-05-22,Wednesday,08:20,premarket,E4war,BULLISH,MEDIUM,False,long,B,18796.0,6.5,False,False,draw:AsiaL,10.5,stop,18789.25,08:35,-6.75,-1.038,-140.0
+2024-05-22,Wednesday,09:40,intime,E4war,BULLISH,MEDIUM,False,long,A,18811.5,20.0,True,False,draw:LondonH,9.25,stop,18791.25,09:41,-20.25,-1.012,-410.0
+2024-05-22,Wednesday,09:42,intime,E4war,BULLISH,MEDIUM,True,short,A,18799.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,18819.25,09:48,-20.25,-1.012,-410.0
+2024-05-24,Friday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B2,18759.75,5.25,False,False,4R cap,21.0,stop,18754.25,08:01,-5.5,-1.048,-115.0
+2024-05-24,Friday,08:29,premarket,E4war,BULLISH,MEDIUM,False,long,B2,18732.75,6.75,False,False,4R cap,27.0,stop,18725.75,08:30,-7.0,-1.037,-145.0
+2024-05-27,Monday,08:06,premarket,E4war,BULLISH,MEDIUM,True,short,B,18876.25,6.5,False,False,4R cap (no draw in dir),26.0,stop,18883.0,08:34,-6.75,-1.038,-140.0
+2024-05-27,Monday,08:36,premarket,E4war,BULLISH,MEDIUM,True,short,B,18876.5,6.25,False,False,4R cap (no draw in dir),25.0,stop,18883.0,09:30,-6.5,-1.04,-135.0
+2024-05-27,Monday,09:45,intime,E4war,BULLISH,MEDIUM,False,long,B2,18906.75,20.0,True,False,4R cap,80.0,stop,18886.5,09:53,-20.25,-1.012,-410.0
+2024-05-27,Monday,09:57,intime,E4war,BULLISH,MEDIUM,False,long,A,18882.75,20.0,True,False,4R cap,80.0,eod,18950.5,12:59,67.75,3.388,1350.0
+2024-05-30,Thursday,08:10,premarket,E4war,BULLISH,MEDIUM,False,long,B,18749.75,6.5,False,False,4R cap,26.0,4R cap,18775.75,08:30,26.0,4.0,515.0
+2024-06-06,Thursday,08:03,premarket,E4war,BEARISH,MEDIUM,True,long,A,19102.75,10.0,False,False,4R cap (no draw in dir),40.0,stop,19092.5,08:25,-10.25,-1.025,-210.0
+2024-06-06,Thursday,08:26,premarket,E4war,BEARISH,MEDIUM,False,short,B,19094.0,7.5,False,False,draw:equal-lows,20.88,stop,19101.75,08:30,-7.75,-1.033,-160.0
+2024-06-12,Wednesday,10:00,intime,E4war,BULLISH,MEDIUM,False,long,B2,19491.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,19471.0,14:00,-20.25,-1.012,-410.0
+2024-06-18,Tuesday,08:50,premarket,E4war,BULLISH,MEDIUM,True,short,B2,20204.75,8.75,False,False,4R cap (no draw in dir),35.0,stop,20213.75,08:53,-9.0,-1.029,-185.0
+2024-06-18,Tuesday,08:54,premarket,E4war,BULLISH,MEDIUM,False,long,B,20212.75,11.0,False,False,draw:LondonH,39.25,stop,20201.5,09:00,-11.25,-1.023,-230.0
+2024-06-19,Wednesday,08:40,premarket,E4war,BULLISH,MEDIUM,False,long,B,20237.25,5.25,False,False,4R cap,21.0,stop,20231.75,10:31,-5.5,-1.048,-115.0
+2024-06-21,Friday,08:19,premarket,E4war,BULLISH,MEDIUM,False,long,B,19997.75,10.75,False,False,4R cap,43.0,stop,19986.75,08:21,-11.0,-1.023,-225.0
+2024-06-21,Friday,08:24,premarket,E4war,BULLISH,MEDIUM,False,long,B,19990.25,6.75,False,False,4R cap,27.0,stop,19983.25,08:24,-7.0,-1.037,-145.0
+2024-06-25,Tuesday,08:06,premarket,E4war,BULLISH,MEDIUM,False,long,B,19830.75,12.25,False,False,4R cap,49.0,stop,19818.25,08:31,-12.5,-1.02,-255.0
+2024-06-25,Tuesday,08:37,premarket,E4war,BULLISH,MEDIUM,True,short,B,19826.75,5.5,False,False,4R cap (no draw in dir),22.0,stop,19832.5,08:37,-5.75,-1.045,-120.0
+2024-06-25,Tuesday,09:47,intime,E4war,BULLISH,MEDIUM,False,long,B2,19837.75,20.0,True,False,draw:LondonH,13.25,draw:LondonH,19851.0,09:48,13.25,0.662,260.0
+2024-06-25,Tuesday,09:50,intime,E4war,BULLISH,MEDIUM,False,long,B2,19834.5,20.0,True,False,draw:LondonH,16.5,draw:LondonH,19851.0,10:00,16.5,0.825,325.0
+2024-06-26,Wednesday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B,19999.25,10.0,False,False,draw:equal-highs,30.87,stop,19989.0,08:05,-10.25,-1.025,-210.0
+2024-06-26,Wednesday,08:10,premarket,E4war,BULLISH,MEDIUM,False,long,B,19992.5,5.0,False,False,4R cap,20.0,stop,19987.25,08:11,-5.25,-1.05,-110.0
+2024-06-27,Thursday,08:01,premarket,E4war,BULLISH,MEDIUM,False,long,B,19983.75,11.0,False,False,draw:equal-highs,2.0,stop,19972.5,08:04,-11.25,-1.023,-230.0
+2024-06-27,Thursday,08:09,premarket,E4war,BULLISH,MEDIUM,False,long,B,19979.0,8.75,False,False,draw:equal-highs,6.75,stop,19970.0,08:23,-9.0,-1.029,-185.0
+2024-06-27,Thursday,10:11,intime,E4war,BULLISH,LOW,False,long,B,20064.0,20.0,True,False,4R cap,80.0,stop,20043.75,10:45,-20.25,-1.012,-410.0
+2024-07-02,Tuesday,08:44,premarket,E4war,BEARISH,MEDIUM,False,short,B,19938.75,12.25,False,False,draw:LondonL,28.75,stop,19951.25,09:00,-12.5,-1.02,-255.0
+2024-07-04,Thursday,09:54,intime,E4war,BEARISH,MEDIUM,False,short,A,20383.75,20.0,True,False,4R cap,80.0,eod,20381.5,12:59,2.25,0.113,40.0
+2024-07-05,Friday,08:48,premarket,E4war,BEARISH,MEDIUM,False,short,B,20439.25,10.75,False,False,draw:LondonL,13.75,draw:LondonL,20425.5,08:49,13.75,1.279,270.0
+2024-07-05,Friday,08:49,premarket,E4war,BEARISH,MEDIUM,False,short,B,20429.5,10.25,False,False,draw:LondonL,4.0,draw:LondonL,20425.5,08:49,4.0,0.39,75.0
+2024-07-08,Monday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,B2,20629.5,5.25,False,False,draw:equal-highs,9.5,draw:equal-highs,20639.0,09:18,9.5,1.81,185.0
+2024-07-08,Monday,09:44,intime,E4war,BULLISH,MEDIUM,True,short,A,20623.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,20644.0,09:50,-20.25,-1.012,-410.0
+2024-07-08,Monday,09:50,intime,E4war,BULLISH,MEDIUM,False,long,B2,20623.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,20602.75,10:01,-20.25,-1.012,-410.0
+2024-07-11,Thursday,08:45,premarket,E4war,BULLISH,MEDIUM,False,long,B2,20949.5,6.5,False,False,4R cap (no draw in dir),26.0,stop,20942.75,08:45,-6.75,-1.038,-140.0
+2024-07-11,Thursday,08:51,premarket,E4war,BULLISH,MEDIUM,False,long,B2,20917.25,8.25,False,False,4R cap (no draw in dir),33.0,stop,20908.75,08:51,-8.5,-1.03,-175.0
+2024-07-12,Friday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,A,20444.0,5.0,False,False,4R cap,20.0,stop,20438.75,08:00,-5.25,-1.05,-110.0
+2024-07-12,Friday,08:03,premarket,E4war,BULLISH,MEDIUM,True,short,B,20429.25,14.5,False,False,4R cap (no draw in dir),58.0,4R cap (no draw in dir),20371.25,08:30,58.0,4.0,1155.0
+2024-07-16,Tuesday,09:00,premarket,E4war,BULLISH,MEDIUM,False,long,B2,20638.25,14.5,False,False,4R cap,58.0,stop,20623.5,09:01,-14.75,-1.017,-300.0
+2024-07-16,Tuesday,09:01,premarket,E4war,BULLISH,MEDIUM,False,long,B2,20637.25,6.5,False,False,4R cap,26.0,stop,20630.5,09:01,-6.75,-1.038,-140.0
+2024-07-17,Wednesday,09:48,intime,E4war,BEARISH,LOW,False,short,B2,20231.25,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),20151.25,10:03,80.0,4.0,1595.0
+2024-07-18,Thursday,09:21,premarket,E4war,BEARISH,MEDIUM,False,short,B2,20154.25,6.0,False,False,4R cap,24.0,4R cap,20130.25,09:30,24.0,4.0,475.0
+2024-07-19,Friday,09:45,intime,E4war,BULLISH,MEDIUM,False,long,B2,19902.0,20.0,True,False,draw:AsiaL,33.25,stop,19881.75,09:45,-20.25,-1.012,-410.0
+2024-07-19,Friday,10:12,intime,E4war,BULLISH,MEDIUM,False,long,B2,19899.75,20.0,True,False,draw:AsiaL,35.5,stop,19879.5,10:12,-20.25,-1.012,-410.0
+2024-07-29,Monday,08:46,premarket,E3bal,BEARISH,MEDIUM,False,short,A,19340.75,5.0,False,False,draw:PDH,10.75,draw:PDH,19330.0,08:50,10.75,2.15,210.0
+2024-07-29,Monday,08:50,premarket,E3bal,BEARISH,MEDIUM,False,short,A,19332.5,13.25,False,False,draw:PDH,2.5,draw:PDH,19330.0,08:50,2.5,0.189,45.0
+2024-07-29,Monday,10:08,intime,E3bal,BEARISH,MEDIUM,False,short,B,19314.25,50.25,False,True,draw:AsiaL,75.75,draw:AsiaL,19238.5,10:54,75.75,1.507,755.0
+2024-08-07,Wednesday,08:36,premarket,E4war,BULLISH,MEDIUM,False,long,B2,18429.0,8.75,False,False,draw:equal-highs,8.88,draw:equal-highs,18437.88,08:36,8.88,1.015,172.6
+2024-08-07,Wednesday,08:54,premarket,E4war,BULLISH,MEDIUM,False,long,B2,18430.0,7.0,False,False,4R cap,28.0,stop,18422.75,08:54,-7.25,-1.036,-150.0
+2024-08-08,Thursday,08:05,premarket,E4war,BEARISH,MEDIUM,False,short,B,17985.25,12.75,False,False,4R cap,51.0,stop,17998.25,08:08,-13.0,-1.02,-265.0
+2024-08-08,Thursday,08:11,premarket,E4war,BEARISH,MEDIUM,False,short,B,17987.0,7.75,False,False,4R cap,31.0,stop,17995.0,08:11,-8.0,-1.032,-165.0
+2024-08-12,Monday,08:01,premarket,E4war,BEARISH,MEDIUM,False,short,B,18661.75,5.5,False,False,4R cap,22.0,stop,18667.5,08:02,-5.75,-1.045,-120.0
+2024-08-12,Monday,08:44,premarket,E4war,BEARISH,MEDIUM,False,short,B,18660.25,11.5,False,False,4R cap,46.0,stop,18672.0,09:02,-11.75,-1.022,-240.0
+2024-08-13,Tuesday,08:30,premarket,E4war,BULLISH,LOW,False,long,A,18754.75,11.0,False,False,draw:PDH,10.5,draw:PDH,18765.25,08:30,10.5,0.955,205.0
+2024-08-13,Tuesday,08:48,premarket,E4war,BULLISH,LOW,False,long,A,18783.0,9.5,False,False,draw:LondonH,34.25,draw:LondonH,18817.25,08:59,34.25,3.605,680.0
+2024-08-14,Wednesday,08:52,premarket,E4war,BEARISH,MEDIUM,True,long,B2,19122.5,10.25,False,False,draw:LondonH,10.5,draw:LondonH,19133.0,08:53,10.5,1.024,205.0
+2024-08-14,Wednesday,09:01,premarket,E4war,BULLISH,LOW,False,long,B2,19138.75,13.75,False,False,draw:PDH,14.5,stop,19124.75,09:16,-14.0,-1.018,-285.0
+2024-08-15,Thursday,09:42,intime,E4war,BULLISH,MEDIUM,False,long,B2,19364.25,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),19444.25,09:56,80.0,4.0,1595.0
+2024-08-16,Friday,08:03,premarket,E4war,BEARISH,MEDIUM,False,short,B2,19557.25,5.75,False,False,4R cap,23.0,stop,19563.25,08:08,-6.0,-1.043,-125.0
+2024-08-16,Friday,08:43,premarket,E4war,BEARISH,MEDIUM,False,short,B2,19468.5,10.0,False,False,4R cap,40.0,stop,19478.75,08:58,-10.25,-1.025,-210.0
+2024-08-16,Friday,09:47,intime,E4war,BEARISH,MEDIUM,False,short,B2,19486.0,20.0,True,False,4R cap,80.0,stop,19506.25,09:49,-20.25,-1.012,-410.0
+2024-08-16,Friday,09:56,intime,E4war,BEARISH,MEDIUM,True,long,A,19501.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,19481.5,09:59,-20.25,-1.012,-410.0
+2024-08-19,Monday,08:03,premarket,E4war,BULLISH,MEDIUM,False,long,B2,19611.5,5.0,False,False,draw:AsiaL,15.75,draw:AsiaL,19627.25,08:17,15.75,3.15,310.0
+2024-08-19,Monday,09:44,intime,E4war,BULLISH,MEDIUM,False,long,B2,19601.75,20.0,True,False,draw:PDL,12.75,draw:PDL,19614.5,09:47,12.75,0.637,250.0
+2024-08-19,Monday,09:49,intime,E4war,BULLISH,MEDIUM,False,long,B2,19623.25,15.25,False,False,draw:equal-highs,19.37,stop,19607.75,09:50,-15.5,-1.016,-315.0
+2024-08-20,Tuesday,08:01,premarket,E4war,BEARISH,MEDIUM,True,long,B,19878.75,6.25,False,False,4R cap (no draw in dir),25.0,stop,19872.25,08:01,-6.5,-1.04,-135.0
+2024-08-20,Tuesday,08:15,premarket,E4war,BEARISH,MEDIUM,False,short,B2,19872.75,5.75,False,False,draw:LondonL,23.0,draw:LondonL,19849.75,08:52,23.0,4.0,455.0
+2024-08-20,Tuesday,10:04,intime,E4war,BULLISH,LOW,False,long,A,19895.25,20.0,True,False,draw:LondonH,35.75,stop,19875.0,10:11,-20.25,-1.012,-410.0
+2024-08-21,Wednesday,08:12,premarket,E4war,BULLISH,MEDIUM,False,long,B2,19834.5,9.0,False,False,draw:AsiaH,7.5,draw:AsiaH,19842.0,08:20,7.5,0.833,145.0
+2024-08-21,Wednesday,08:20,premarket,E4war,BULLISH,MEDIUM,False,long,B,19840.5,9.5,False,False,draw:AsiaH,1.5,draw:AsiaH,19842.0,08:20,1.5,0.158,25.0
+2024-08-21,Wednesday,09:48,intime,E4war,BULLISH,LOW,False,long,B2,19853.5,20.0,True,False,draw:PDH,77.5,draw:PDH,19931.0,10:36,77.5,3.875,1545.0
+2024-08-22,Thursday,08:36,premarket,E4war,BULLISH,LOW,False,long,B,19968.0,9.5,False,False,draw:LondonH,19.25,stop,19958.25,08:37,-9.75,-1.026,-200.0
+2024-08-22,Thursday,08:50,premarket,E4war,BULLISH,LOW,False,long,B,19968.5,6.25,False,False,draw:LondonH,18.75,draw:LondonH,19987.25,09:00,18.75,3.0,370.0
+2024-08-22,Thursday,09:43,intime,E4war,BULLISH,LOW,False,long,B2,19994.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,19974.25,09:43,-20.25,-1.012,-410.0
+2024-08-22,Thursday,09:54,intime,E4war,BULLISH,LOW,True,short,A,19982.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,20002.5,09:56,-20.25,-1.012,-410.0
+2024-08-23,Friday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B2,19737.75,12.25,False,False,4R cap,49.0,stop,19725.25,08:20,-12.5,-1.02,-255.0
+2024-08-23,Friday,08:28,premarket,E4war,BULLISH,MEDIUM,True,short,A,19724.75,5.5,False,False,4R cap (no draw in dir),22.0,stop,19730.5,08:30,-5.75,-1.045,-120.0
+2024-08-28,Wednesday,08:39,premarket,E4war,BEARISH,MEDIUM,False,short,B,19637.0,7.75,False,False,draw:equal-lows,13.75,stop,19645.0,08:42,-8.0,-1.032,-165.0
+2024-08-28,Wednesday,08:48,premarket,E4war,BEARISH,MEDIUM,False,short,B2,19634.75,5.25,False,False,draw:equal-lows,11.5,stop,19640.25,08:53,-5.5,-1.048,-115.0
+2024-08-28,Wednesday,10:14,intime,E4war,BULLISH,MEDIUM,False,long,A,19548.75,20.0,True,False,draw:equal-highs,74.5,stop,19528.5,10:41,-20.25,-1.012,-410.0
+2024-08-29,Thursday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B2,19466.0,7.5,False,False,4R cap,30.0,stop,19458.25,08:01,-7.75,-1.033,-160.0
+2024-08-29,Thursday,08:03,premarket,E4war,BULLISH,MEDIUM,False,long,B2,19463.75,9.25,False,False,4R cap,37.0,stop,19454.25,08:06,-9.5,-1.027,-195.0
+2024-08-29,Thursday,09:43,intime,E4war,BULLISH,MEDIUM,False,long,B2,19537.5,20.0,True,False,4R cap,80.0,4R cap,19617.5,09:49,80.0,4.0,1595.0
+2024-08-29,Thursday,09:51,intime,E4war,BULLISH,MEDIUM,False,long,B2,19574.75,20.0,True,False,draw:equal-highs,48.5,stop,19554.5,09:51,-20.25,-1.012,-410.0
+2024-09-04,Wednesday,08:36,premarket,E4war,BEARISH,MEDIUM,False,short,B,18858.25,12.75,False,False,draw:LondonL,28.0,stop,18871.25,08:40,-13.0,-1.02,-265.0
+2024-09-04,Wednesday,09:15,premarket,E4war,BEARISH,MEDIUM,False,short,A,18892.75,7.5,False,False,4R cap,30.0,4R cap,18862.75,09:30,30.0,4.0,595.0
+2024-09-11,Wednesday,10:10,intime,E3bal,BEARISH,MEDIUM,False,short,B,18771.75,30.5,False,False,draw:equal-lows,65.37,draw:equal-lows,18706.38,10:14,65.37,2.143,1302.4
+2024-09-12,Thursday,08:14,premarket,E3bal,BEARISH,MEDIUM,False,short,B,19296.0,7.0,False,False,4R cap,28.0,stop,19303.25,08:16,-7.25,-1.036,-150.0
+2024-09-12,Thursday,08:35,premarket,E3bal,BEARISH,MEDIUM,False,short,B,19268.75,60.75,False,False,draw:LondonL,9.0,draw:LondonL,19259.75,08:38,9.0,0.148,175.0
+2024-09-12,Thursday,09:40,intime,E3bal,BEARISH,MEDIUM,False,short,A,19256.25,32.5,False,False,draw:AsiaL,22.25,draw:AsiaL,19234.0,09:47,22.25,0.685,440.0
+2024-09-13,Friday,08:02,premarket,E3bal,BULLISH,MEDIUM,False,long,B,19459.0,9.75,False,False,draw:AsiaH,14.75,stop,19449.0,08:08,-10.0,-1.026,-205.0
+2024-09-13,Friday,08:14,premarket,E3bal,BULLISH,MEDIUM,False,long,B,19457.25,6.5,False,False,draw:AsiaH,16.5,stop,19450.5,08:26,-6.75,-1.038,-140.0
+2024-09-13,Friday,09:40,intime,E3bal,BULLISH,MEDIUM,False,long,A,19470.75,32.75,False,False,draw:AsiaH,3.0,draw:AsiaH,19473.75,09:40,3.0,0.092,55.0
+2024-09-13,Friday,09:50,intime,E3bal,BULLISH,LOW,False,long,A,19475.25,15.25,False,False,4R cap,61.0,stop,19459.75,10:00,-15.5,-1.016,-315.0
+2024-09-16,Monday,08:03,premarket,E4war,BEARISH,MEDIUM,False,short,B2,19684.75,10.5,False,False,draw:LondonL,4.5,draw:LondonL,19680.25,08:05,4.5,0.429,85.0
+2024-09-16,Monday,08:05,premarket,E4war,BEARISH,MEDIUM,False,short,B2,19682.25,13.0,False,False,draw:LondonL,2.0,draw:LondonL,19680.25,08:05,2.0,0.154,35.0
+2024-09-16,Monday,09:59,intime,E4war,BEARISH,MEDIUM,False,short,B2,19667.75,20.0,True,False,4R cap,80.0,stop,19688.0,10:00,-20.25,-1.012,-410.0
+2024-09-16,Monday,10:13,intime,E4war,BEARISH,MEDIUM,True,long,B,19673.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,19653.5,10:20,-20.25,-1.012,-410.0
+2024-09-17,Tuesday,09:46,intime,E4war,BULLISH,MEDIUM,False,long,B2,19790.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,19769.75,09:49,-20.25,-1.012,-410.0
+2024-09-17,Tuesday,10:03,intime,E4war,BULLISH,MEDIUM,True,short,A,19771.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,19791.75,10:04,-20.25,-1.012,-410.0
+2024-09-18,Wednesday,08:21,premarket,E4war,BULLISH,MEDIUM,False,long,B,19688.25,8.75,False,False,draw:equal-highs,8.25,draw:equal-highs,19696.5,08:24,8.25,0.943,160.0
+2024-09-18,Wednesday,08:25,premarket,E4war,BULLISH,MEDIUM,False,long,B,19698.25,11.5,False,False,draw:AsiaH,17.25,draw:AsiaH,19715.5,08:36,17.25,1.5,340.0
+2024-09-18,Wednesday,09:44,intime,E4war,BULLISH,MEDIUM,True,short,A,19698.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,19718.75,10:43,-20.25,-1.012,-410.0
+2024-09-19,Thursday,08:31,premarket,E4war,BULLISH,MEDIUM,False,long,B2,20006.5,7.25,False,False,4R cap (no draw in dir),29.0,stop,19999.0,08:37,-7.5,-1.034,-155.0
+2024-09-19,Thursday,08:41,premarket,E4war,BULLISH,MEDIUM,False,long,B,20011.5,8.75,False,False,4R cap (no draw in dir),35.0,stop,20002.5,08:43,-9.0,-1.029,-185.0
+2024-09-19,Thursday,09:45,intime,E4war,BULLISH,LOW,False,long,B2,20031.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,20011.25,09:49,-20.25,-1.012,-410.0
+2024-09-19,Thursday,09:49,intime,E4war,BULLISH,LOW,False,long,B2,20026.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,20006.25,09:50,-20.25,-1.012,-410.0
+2024-09-20,Friday,09:29,premarket,E4war,BULLISH,MEDIUM,False,long,A,20037.75,7.25,False,False,4R cap,29.0,4R cap,20066.75,09:32,29.0,4.0,575.0
+2024-09-20,Friday,09:46,intime,E4war,BULLISH,MEDIUM,False,long,B2,20049.5,20.0,True,False,draw:LondonH,20.25,draw:LondonH,20069.75,09:51,20.25,1.012,400.0
+2024-09-20,Friday,09:56,intime,E4war,BULLISH,MEDIUM,True,short,A,20034.0,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),19954.0,10:52,80.0,4.0,1595.0
+2024-09-24,Tuesday,08:11,premarket,E4war,BEARISH,MEDIUM,False,short,B,20100.75,12.25,False,False,4R cap,49.0,stop,20113.25,08:13,-12.5,-1.02,-255.0
+2024-09-24,Tuesday,08:27,premarket,E4war,BEARISH,MEDIUM,False,short,B,20110.5,7.75,False,False,4R cap,31.0,stop,20118.5,08:52,-8.0,-1.032,-165.0
+2024-09-25,Wednesday,08:14,premarket,E4war,BULLISH,MEDIUM,False,long,B2,20130.75,5.75,False,False,4R cap,23.0,4R cap,20153.75,08:40,23.0,4.0,455.0
+2024-09-25,Wednesday,09:43,intime,E4war,BULLISH,MEDIUM,False,long,A,20153.5,20.0,True,False,draw:AsiaH,29.5,draw:AsiaH,20183.0,09:45,29.5,1.475,585.0
+2024-09-25,Wednesday,09:48,intime,E4war,BULLISH,MEDIUM,False,long,B2,20187.75,20.0,True,False,draw:equal-highs,3.13,draw:equal-highs,20190.88,09:48,3.13,0.157,57.6
+2024-09-26,Thursday,08:15,premarket,E4war,BULLISH,LOW,False,long,B,20477.0,14.5,False,False,draw:LondonH,27.75,draw:LondonH,20504.75,08:27,27.75,1.914,550.0
+2024-09-26,Thursday,08:43,premarket,E4war,BULLISH,LOW,False,long,B,20501.25,8.75,False,False,draw:LondonH,3.5,draw:LondonH,20504.75,08:43,3.5,0.4,65.0
+2024-09-26,Thursday,09:59,intime,E4war,BULLISH,LOW,False,long,B2,20430.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,20410.0,10:04,-20.25,-1.012,-410.0
+2024-09-27,Friday,09:43,intime,E4war,BULLISH,LOW,False,long,B2,20333.25,20.0,True,False,4R cap,80.0,stop,20313.0,09:58,-20.25,-1.012,-410.0
+2024-09-27,Friday,10:07,intime,E4war,BULLISH,LOW,True,short,A,20333.0,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),20253.0,11:19,80.0,4.0,1595.0
+2024-10-02,Wednesday,08:07,premarket,E4war,BULLISH,MEDIUM,True,short,A,19928.0,5.5,False,False,4R cap (no draw in dir),22.0,stop,19933.75,08:11,-5.75,-1.045,-120.0
+2024-10-02,Wednesday,08:12,premarket,E4war,BULLISH,MEDIUM,False,long,B,19940.25,15.0,False,False,4R cap,60.0,4R cap,20000.25,08:40,60.0,4.0,1195.0
+2024-10-02,Wednesday,09:53,intime,E4war,BULLISH,MEDIUM,False,long,B2,19908.5,20.0,True,False,4R cap,80.0,4R cap,19988.5,10:19,80.0,4.0,1595.0
+2024-10-07,Monday,08:06,premarket,E4war,BEARISH,MEDIUM,False,short,B,20105.25,8.0,False,False,4R cap,32.0,stop,20113.5,08:07,-8.25,-1.031,-170.0
+2024-10-09,Wednesday,08:09,premarket,E4war,BEARISH,MEDIUM,False,short,B,20272.0,5.0,False,False,4R cap,20.0,stop,20277.25,08:37,-5.25,-1.05,-110.0
+2024-10-09,Wednesday,08:40,premarket,E4war,BEARISH,MEDIUM,True,long,B,20277.0,6.0,False,False,4R cap (no draw in dir),24.0,stop,20270.75,08:41,-6.25,-1.042,-130.0
+2024-10-11,Friday,08:10,premarket,E3bal,BEARISH,MEDIUM,True,long,B,20391.25,24.75,False,False,4R cap (no draw in dir),99.0,stop,20366.25,08:30,-25.0,-1.01,-505.0
+2024-10-11,Friday,08:40,premarket,E3bal,BEARISH,MEDIUM,False,short,B,20374.0,33.0,False,False,draw:equal-lows,19.5,draw:equal-lows,20354.5,09:26,19.5,0.591,385.0
+2024-10-11,Friday,09:40,intime,E3bal,BEARISH,MEDIUM,False,short,A,20318.75,26.25,False,False,draw:PDL,17.25,stop,20345.25,09:43,-26.5,-1.01,-535.0
+2024-10-11,Friday,09:43,intime,E3bal,BEARISH,MEDIUM,False,short,A,20336.25,20.0,True,False,draw:PDL,34.75,stop,20356.5,09:46,-20.25,-1.012,-410.0
+2024-10-15,Tuesday,08:45,premarket,E3bal,BULLISH,MEDIUM,True,short,B,20607.0,9.0,False,False,4R cap (no draw in dir),36.0,stop,20616.25,08:50,-9.25,-1.028,-190.0
+2024-10-15,Tuesday,09:40,intime,E3bal,BULLISH,MEDIUM,True,short,A,20621.25,38.0,False,False,4R cap (no draw in dir),152.0,4R cap (no draw in dir),20469.25,10:31,152.0,4.0,3035.0
+2024-10-21,Monday,09:40,intime,E3bal,BULLISH,LOW,False,long,A,20468.75,29.75,False,False,draw:AsiaH,54.75,draw:AsiaH,20523.5,10:06,54.75,1.84,1090.0
+2024-10-21,Monday,10:06,intime,E3bal,BULLISH,LOW,False,long,B,20512.25,19.5,False,False,draw:AsiaH,11.25,draw:AsiaH,20523.5,10:06,11.25,0.577,220.0
+2024-10-22,Tuesday,09:00,premarket,E3bal,BEARISH,MEDIUM,False,short,A,20394.25,6.0,False,False,draw:LondonL,18.5,draw:LondonL,20375.75,09:04,18.5,3.083,365.0
+2024-10-22,Tuesday,09:06,premarket,E3bal,BEARISH,MEDIUM,False,short,A,20376.25,15.0,False,False,draw:LondonL,0.5,draw:LondonL,20375.75,09:07,0.5,0.033,5.0
+2024-10-22,Tuesday,10:03,intime,E3bal,BEARISH,MEDIUM,False,short,B,20444.75,20.0,True,False,draw:LondonL,69.0,stop,20465.0,10:05,-20.25,-1.012,-410.0
+2024-10-23,Wednesday,09:45,intime,E3bal,BEARISH,MEDIUM,False,short,A,20427.25,24.25,False,False,draw:PDL,67.0,draw:PDL,20360.25,10:06,67.0,2.763,1335.0
+2024-10-25,Friday,08:05,premarket,E3bal,BULLISH,MEDIUM,False,long,B,20454.25,11.25,False,False,draw:LondonH,2.75,draw:LondonH,20457.0,08:06,2.75,0.244,50.0
+2024-10-25,Friday,08:07,premarket,E3bal,BULLISH,MEDIUM,False,long,A,20460.25,8.25,False,False,draw:equal-highs,25.87,stop,20451.75,08:30,-8.5,-1.03,-175.0
+2024-10-28,Monday,08:00,premarket,E3bal,BEARISH,MEDIUM,False,short,B,20619.0,11.0,False,False,draw:equal-lows,14.25,draw:equal-lows,20604.75,08:03,14.25,1.295,280.0
+2024-10-28,Monday,08:03,premarket,E3bal,BEARISH,MEDIUM,False,short,A,20608.0,16.25,False,False,draw:equal-lows,3.25,draw:equal-lows,20604.75,08:03,3.25,0.2,60.0
+2024-10-28,Monday,10:01,intime,E3bal,BULLISH,MEDIUM,False,long,A,20569.0,16.5,False,False,draw:AsiaL,23.0,draw:AsiaL,20592.0,10:09,23.0,1.394,455.0
+2024-10-28,Monday,10:09,intime,E3bal,BULLISH,MEDIUM,False,long,B,20584.75,31.25,False,False,draw:AsiaL,7.25,draw:AsiaL,20592.0,10:09,7.25,0.232,140.0
+2024-10-29,Tuesday,08:16,premarket,E3bal,BULLISH,MEDIUM,False,long,B,20492.5,15.25,False,False,draw:equal-highs,28.62,draw:equal-highs,20521.12,09:30,28.62,1.877,567.4
+2024-10-29,Tuesday,09:51,intime,E3bal,BULLISH,MEDIUM,False,long,A,20480.75,20.0,True,False,draw:equal-highs,40.37,draw:equal-highs,20521.12,09:59,40.37,2.018,802.4
+2024-10-29,Tuesday,10:00,intime,E3bal,BULLISH,MEDIUM,False,long,A,20515.25,23.25,False,False,draw:equal-highs,5.87,draw:equal-highs,20521.12,10:00,5.87,0.252,112.4
+2024-10-30,Wednesday,09:23,premarket,E3bal,BEARISH,MEDIUM,False,short,A,20651.0,8.5,False,False,4R cap,34.0,stop,20659.75,09:25,-8.75,-1.029,-180.0
+2024-10-30,Wednesday,09:25,premarket,E3bal,BEARISH,MEDIUM,False,short,A,20651.25,13.25,False,False,draw:equal-lows,46.5,stop,20664.75,09:25,-13.5,-1.019,-275.0
+2024-10-30,Wednesday,09:40,intime,E3bal,BEARISH,MEDIUM,False,short,A,20610.75,30.5,False,False,draw:equal-lows,6.0,draw:equal-lows,20604.75,09:40,6.0,0.197,115.0
+2024-10-30,Wednesday,10:00,intime,E3bal,BEARISH,MEDIUM,False,short,A,20631.5,20.0,True,False,4R cap,80.0,stop,20651.75,10:02,-20.25,-1.012,-410.0
+2024-11-04,Monday,08:17,premarket,E3bal,BULLISH,MEDIUM,False,long,B,20150.5,7.25,False,False,4R cap,29.0,stop,20143.0,08:54,-7.5,-1.034,-155.0
+2024-11-04,Monday,09:47,intime,E3bal,BULLISH,MEDIUM,False,long,A,20123.75,20.0,True,False,4R cap,80.0,stop,20103.5,09:50,-20.25,-1.012,-410.0
+2024-11-04,Monday,10:00,intime,E3bal,BULLISH,MEDIUM,False,long,B,20131.5,31.75,False,False,draw:LondonH,112.25,stop,20099.5,11:43,-32.0,-1.008,-645.0
+2024-11-06,Wednesday,08:00,premarket,E3bal,BULLISH,MEDIUM,False,long,A,20688.5,11.5,False,False,draw:LondonH,42.75,stop,20676.75,08:01,-11.75,-1.022,-240.0
+2024-11-06,Wednesday,08:01,premarket,E3bal,BULLISH,MEDIUM,False,long,A,20683.25,5.0,False,False,4R cap,20.0,stop,20678.0,08:01,-5.25,-1.05,-110.0
+2024-11-06,Wednesday,09:45,intime,E3bal,BULLISH,MEDIUM,False,long,A,20745.25,20.0,True,False,draw:PWH,43.25,stop,20725.0,09:46,-20.25,-1.012,-410.0
+2024-11-06,Wednesday,10:02,intime,E3bal,BULLISH,MEDIUM,False,long,B,20736.25,60.75,False,True,draw:PWH,52.25,stop,20675.25,10:07,-61.0,-1.004,-612.5
+2024-11-11,Monday,08:49,premarket,E4war,BULLISH,MEDIUM,True,short,B,21292.75,8.5,False,False,4R cap (no draw in dir),34.0,stop,21301.5,08:57,-8.75,-1.029,-180.0
+2024-11-13,Wednesday,09:42,intime,E4war,BULLISH,MEDIUM,True,short,A,21167.25,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),21087.25,10:06,80.0,4.0,1595.0
+2024-11-14,Thursday,08:15,premarket,E4war,BULLISH,MEDIUM,False,long,B,21169.5,10.5,False,False,draw:LondonH,20.75,stop,21158.75,08:30,-10.75,-1.024,-220.0
+2024-11-14,Thursday,08:43,premarket,E4war,BULLISH,MEDIUM,False,long,B,21152.25,14.25,False,False,draw:LondonH,38.0,stop,21137.75,08:46,-14.5,-1.018,-295.0
+2024-11-18,Monday,09:26,premarket,E4war,BEARISH,MEDIUM,False,short,B2,20572.0,11.5,False,False,4R cap,46.0,4R cap,20526.0,09:31,46.0,4.0,915.0
+2024-11-18,Monday,09:44,intime,E4war,BEARISH,MEDIUM,False,short,B2,20546.75,20.0,True,False,draw:LondonL,1.75,draw:LondonL,20545.0,09:44,1.75,0.087,30.0
+2024-11-19,Tuesday,10:02,intime,E3bal,BEARISH,MEDIUM,True,long,B,20552.0,26.0,False,False,4R cap (no draw in dir),104.0,stop,20525.75,10:02,-26.25,-1.01,-530.0
+2024-11-19,Tuesday,10:08,intime,E3bal,BEARISH,MEDIUM,True,long,A,20558.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,20537.75,10:15,-20.25,-1.012,-410.0
+2024-11-22,Friday,08:15,premarket,E3bal,BEARISH,MEDIUM,True,long,A,20788.5,5.0,False,False,4R cap (no draw in dir),20.0,stop,20783.25,08:15,-5.25,-1.05,-110.0
+2024-11-22,Friday,08:17,premarket,E3bal,BEARISH,MEDIUM,True,long,A,20794.0,9.5,False,False,4R cap (no draw in dir),38.0,stop,20784.25,08:32,-9.75,-1.026,-200.0
+2024-11-25,Monday,08:15,premarket,E4war,BEARISH,MEDIUM,False,short,B,20946.75,10.75,False,False,draw:LondonL,15.25,stop,20957.75,08:26,-11.0,-1.023,-225.0
+2024-11-25,Monday,08:28,premarket,E4war,BEARISH,MEDIUM,False,short,B2,20953.75,5.0,False,False,4R cap,20.0,stop,20959.0,08:29,-5.25,-1.05,-110.0
+2024-11-28,Thursday,08:39,premarket,E3bal,BULLISH,MEDIUM,False,long,B,20870.25,5.25,False,False,4R cap,21.0,stop,20864.75,09:07,-5.5,-1.048,-115.0
+2024-11-29,Friday,08:16,premarket,E3bal,BEARISH,MEDIUM,False,short,B,20850.25,11.5,False,False,draw:equal-lows,4.13,draw:equal-lows,20846.12,08:16,4.13,0.359,77.6
+2024-11-29,Friday,08:44,premarket,E3bal,BEARISH,LOW,False,short,B,20826.75,16.5,False,False,draw:PDL,4.0,draw:PDL,20822.75,08:44,4.0,0.242,75.0
+2024-11-29,Friday,09:46,intime,E3bal,BEARISH,LOW,True,long,A,20871.25,18.25,False,False,4R cap (no draw in dir),73.0,stop,20852.75,09:49,-18.5,-1.014,-375.0
+2024-12-03,Tuesday,08:20,premarket,E3bal,BEARISH,MEDIUM,False,short,B,21204.0,11.0,False,False,draw:LondonL,17.0,stop,21215.25,08:42,-11.25,-1.023,-230.0
+2024-12-03,Tuesday,08:54,premarket,E3bal,BEARISH,MEDIUM,False,short,B,21207.5,16.75,False,False,draw:LondonL,20.5,draw:LondonL,21187.0,09:05,20.5,1.224,405.0
+2024-12-03,Tuesday,09:44,intime,E3bal,BEARISH,MEDIUM,False,short,A,21180.25,20.0,True,False,4R cap,80.0,stop,21200.5,09:45,-20.25,-1.012,-410.0
+2024-12-03,Tuesday,09:58,intime,E3bal,BEARISH,MEDIUM,False,short,A,21191.5,20.0,True,False,4R cap,80.0,stop,21211.75,10:00,-20.25,-1.012,-410.0
+2024-12-05,Thursday,10:06,intime,E3bal,BULLISH,MEDIUM,True,short,A,21515.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,21535.25,10:19,-20.25,-1.012,-410.0
+2024-12-06,Friday,08:57,premarket,E3bal,BULLISH,MEDIUM,False,long,B,21502.5,10.5,False,False,draw:equal-highs,17.88,stop,21491.75,08:59,-10.75,-1.024,-220.0
+2024-12-06,Friday,10:12,intime,E3bal,BULLISH,MEDIUM,False,long,B,21626.25,22.25,False,False,4R cap (no draw in dir),89.0,stop,21603.75,10:51,-22.5,-1.011,-455.0
+2024-12-09,Monday,08:33,premarket,E3bal,BEARISH,MEDIUM,False,short,B,21613.75,10.5,False,False,draw:LondonL,27.75,stop,21624.5,08:40,-10.75,-1.024,-220.0
+2024-12-09,Monday,08:51,premarket,E3bal,BEARISH,MEDIUM,False,short,B,21619.25,10.75,False,False,draw:LondonL,33.25,stop,21630.25,09:21,-11.0,-1.023,-225.0
+2024-12-09,Monday,09:40,intime,E3bal,BEARISH,MEDIUM,False,short,A,21611.25,20.0,True,False,draw:LondonL,25.25,stop,21631.5,09:45,-20.25,-1.012,-410.0
+2024-12-09,Monday,09:59,intime,E3bal,BEARISH,MEDIUM,False,short,A,21615.75,20.0,True,False,draw:LondonL,29.75,draw:LondonL,21586.0,10:26,29.75,1.488,590.0
+2024-12-10,Tuesday,08:00,premarket,E3bal,BULLISH,MEDIUM,False,long,B,21528.75,7.25,False,False,draw:equal-highs,21.87,stop,21521.25,08:24,-7.5,-1.034,-155.0
+2024-12-10,Tuesday,09:53,intime,E3bal,BEARISH,MEDIUM,False,short,A,21545.25,20.0,True,False,draw:equal-lows,56.87,stop,21565.5,10:02,-20.25,-1.012,-410.0
+2024-12-11,Wednesday,09:40,intime,E3bal,BULLISH,MEDIUM,False,long,A,21606.25,20.0,True,False,draw:PDH,0.5,draw:PDH,21606.75,09:40,0.5,0.025,5.0
+2024-12-11,Wednesday,09:45,intime,E3bal,BULLISH,MEDIUM,False,long,A,21636.5,33.0,False,False,draw:equal-highs,10.5,draw:equal-highs,21647.0,09:45,10.5,0.318,205.0
+2024-12-13,Friday,10:12,intime,E3bal,BULLISH,MEDIUM,False,long,B,21865.5,30.25,False,False,4R cap (no draw in dir),121.0,stop,21835.0,10:19,-30.5,-1.008,-615.0
+2024-12-19,Thursday,08:00,premarket,E3bal,BULLISH,MEDIUM,False,long,B,21675.25,21.0,False,False,4R cap,84.0,stop,21654.0,08:06,-21.25,-1.012,-430.0
+2024-12-19,Thursday,10:12,intime,E3bal,BULLISH,MEDIUM,False,long,B,21593.75,61.0,False,True,4R cap,244.0,stop,21532.5,10:27,-61.25,-1.004,-615.0
+2024-12-20,Friday,09:48,intime,E4war,BULLISH,MEDIUM,False,long,A,21240.5,20.0,True,False,4R cap,80.0,stop,21220.25,09:48,-20.25,-1.012,-410.0
+2024-12-26,Thursday,08:20,premarket,E4war,BEARISH,MEDIUM,False,short,B,21954.0,6.5,False,False,4R cap,26.0,4R cap,21928.0,08:30,26.0,4.0,515.0
+2024-12-26,Thursday,08:48,premarket,E4war,BEARISH,MEDIUM,False,short,B,21943.0,9.75,False,False,4R cap,39.0,stop,21953.0,08:49,-10.0,-1.026,-205.0
+2024-12-26,Thursday,09:52,intime,E4war,BEARISH,MEDIUM,False,short,B2,21948.0,20.0,True,False,draw:LondonL,53.75,draw:LondonL,21894.25,09:53,53.75,2.688,1070.0
+2024-12-26,Thursday,10:03,intime,E4war,BEARISH,MEDIUM,True,long,A,21959.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,21939.0,10:09,-20.25,-1.012,-410.0
+2025-01-02,Thursday,08:10,premarket,E4war,BULLISH,MEDIUM,False,long,B2,21438.75,5.0,False,False,4R cap,20.0,stop,21433.5,08:11,-5.25,-1.05,-110.0
+2025-01-02,Thursday,08:35,premarket,E4war,BULLISH,MEDIUM,False,long,B2,21442.75,11.5,False,False,4R cap,46.0,stop,21431.0,08:36,-11.75,-1.022,-240.0
+2025-01-08,Wednesday,08:34,premarket,E3bal,BEARISH,MEDIUM,False,short,B,21348.25,45.25,False,False,draw:LondonL,126.75,stop,21393.75,10:02,-45.5,-1.006,-915.0
+2025-01-08,Wednesday,10:02,intime,E3bal,BULLISH,MEDIUM,False,long,A,21365.75,33.75,False,False,draw:AsiaL,18.75,draw:AsiaL,21384.5,10:02,18.75,0.556,370.0
+2025-01-08,Wednesday,10:03,intime,E3bal,BULLISH,MEDIUM,False,long,B,21392.75,60.75,False,True,draw:equal-highs,43.25,stop,21331.75,10:10,-61.0,-1.004,-612.5
+2025-01-09,Thursday,08:36,premarket,E3bal,BULLISH,MEDIUM,False,long,B,21328.0,17.5,False,False,draw:equal-highs,63.5,stop,21310.25,08:51,-17.75,-1.014,-360.0
+2025-01-10,Friday,09:06,premarket,E3bal,BULLISH,MEDIUM,False,long,A,21145.75,9.0,False,False,4R cap,36.0,4R cap,21181.75,09:13,36.0,4.0,715.0
+2025-01-13,Monday,08:30,premarket,E3bal,BEARISH,MEDIUM,False,short,B,20811.25,17.5,False,False,4R cap,70.0,stop,20829.0,08:32,-17.75,-1.014,-360.0
+2025-01-13,Monday,08:35,premarket,E3bal,BEARISH,MEDIUM,False,short,B,20819.25,8.25,False,False,4R cap,33.0,stop,20827.75,08:40,-8.5,-1.03,-175.0
+2025-01-13,Monday,09:53,intime,E3bal,BEARISH,MEDIUM,True,long,A,20772.75,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),20852.75,10:06,80.0,4.0,1595.0
+2025-01-16,Thursday,10:10,intime,E3bal,BEARISH,MEDIUM,True,long,A,21406.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,21386.0,10:11,-20.25,-1.012,-410.0
+2025-01-20,Monday,09:40,intime,E3bal,BULLISH,MEDIUM,False,long,A,21740.5,15.0,False,False,4R cap (no draw in dir),60.0,stop,21725.25,10:00,-15.25,-1.017,-310.0
+2025-01-20,Monday,10:00,intime,E3bal,BULLISH,MEDIUM,False,long,A,21742.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,21722.0,10:00,-20.25,-1.012,-410.0
+2025-01-21,Tuesday,08:32,premarket,E3bal,BULLISH,LOW,False,long,B,21699.75,11.5,False,False,draw:LondonH,31.0,draw:LondonH,21730.75,09:00,31.0,2.696,615.0
+2025-01-22,Wednesday,10:09,intime,E3bal,BULLISH,MEDIUM,False,long,B,22024.75,20.5,False,False,4R cap (no draw in dir),82.0,stop,22004.0,10:26,-20.75,-1.012,-420.0
+2025-01-24,Friday,08:00,premarket,E3bal,BULLISH,MEDIUM,False,long,B,22031.25,13.25,False,False,draw:LondonH,12.5,stop,22017.75,08:09,-13.5,-1.019,-275.0
+2025-01-24,Friday,08:35,premarket,E3bal,BULLISH,MEDIUM,True,short,B,22009.0,11.75,False,False,4R cap (no draw in dir),47.0,stop,22021.0,09:05,-12.0,-1.021,-245.0
+2025-01-27,Monday,10:04,intime,E3bal,BEARISH,LOW,False,short,B,21293.25,24.0,False,False,4R cap,96.0,stop,21317.5,10:07,-24.25,-1.01,-490.0
+2025-01-28,Tuesday,08:08,premarket,E3bal,BEARISH,MEDIUM,False,short,B,21291.25,14.75,False,False,draw:LondonL,33.5,stop,21306.25,08:11,-15.0,-1.017,-305.0
+2025-01-28,Tuesday,08:33,premarket,E3bal,BEARISH,LOW,False,short,B,21313.5,43.5,False,False,draw:LondonL,55.75,draw:LondonL,21257.75,09:31,55.75,1.282,1110.0
+2025-01-29,Wednesday,08:10,premarket,E3bal,BEARISH,MEDIUM,False,short,B,21615.75,27.0,False,False,draw:AsiaH,7.0,draw:AsiaH,21608.75,08:11,7.0,0.259,135.0
+2025-01-29,Wednesday,08:28,premarket,E3bal,BEARISH,MEDIUM,False,short,A,21586.5,6.25,False,False,4R cap,25.0,4R cap,21561.5,08:37,25.0,4.0,495.0
+2025-02-04,Tuesday,08:03,premarket,E4war,BULLISH,MEDIUM,False,long,B2,21431.5,5.0,False,False,4R cap,20.0,4R cap,21451.5,08:04,20.0,4.0,395.0
+2025-02-04,Tuesday,08:23,premarket,E4war,BULLISH,MEDIUM,False,long,B2,21466.75,7.25,False,False,draw:equal-highs,8.37,stop,21459.25,08:23,-7.5,-1.034,-155.0
+2025-02-06,Thursday,08:46,premarket,E4war,BULLISH,MEDIUM,False,long,A,21752.0,9.25,False,False,draw:AsiaL,6.25,draw:AsiaL,21758.25,08:46,6.25,0.676,120.0
+2025-02-06,Thursday,08:47,premarket,E4war,BULLISH,MEDIUM,False,long,A,21757.75,6.75,False,False,draw:AsiaL,0.5,draw:AsiaL,21758.25,08:47,0.5,0.074,5.0
+2025-02-10,Monday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B,21739.5,11.5,False,False,draw:LondonH,13.0,draw:LondonH,21752.5,08:15,13.0,1.13,255.0
+2025-02-10,Monday,09:42,intime,E4war,BULLISH,MEDIUM,False,long,B2,21773.75,20.0,True,False,draw:equal-highs,22.63,draw:equal-highs,21796.38,09:43,22.63,1.132,447.6
+2025-02-10,Monday,09:57,intime,E4war,BULLISH,MEDIUM,False,long,B2,21780.5,20.0,True,False,draw:equal-highs,49.88,draw:equal-highs,21830.38,10:05,49.88,2.494,992.6
+2025-02-14,Friday,10:08,intime,E4war,BEARISH,MEDIUM,True,long,B,22140.5,15.0,False,False,4R cap (no draw in dir),60.0,stop,22125.25,10:18,-15.25,-1.017,-310.0
+2025-02-17,Monday,09:46,intime,E4war,BEARISH,MEDIUM,False,short,A,22208.25,20.0,True,False,4R cap,80.0,stop,22228.5,10:29,-20.25,-1.012,-410.0
+2025-02-18,Tuesday,08:15,premarket,E4war,BULLISH,MEDIUM,False,long,B2,22279.75,10.5,False,False,draw:LondonH,40.0,stop,22269.0,09:28,-10.75,-1.024,-220.0
+2025-02-20,Thursday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,B2,22206.5,20.0,True,False,draw:LondonH,13.25,stop,22186.25,09:44,-20.25,-1.012,-410.0
+2025-02-21,Friday,08:12,premarket,E4war,BULLISH,MEDIUM,False,long,B,22217.75,7.25,False,False,draw:equal-highs,10.0,draw:equal-highs,22227.75,08:15,10.0,1.379,195.0
+2025-02-21,Friday,08:15,premarket,E4war,BULLISH,MEDIUM,False,long,A,22220.5,7.5,False,False,draw:equal-highs,7.25,draw:equal-highs,22227.75,08:15,7.25,0.967,140.0
+2025-02-24,Monday,08:24,premarket,E4war,BEARISH,LOW,True,long,A,21776.75,11.25,False,False,4R cap (no draw in dir),45.0,stop,21765.25,09:19,-11.5,-1.022,-235.0
+2025-02-26,Wednesday,08:06,premarket,E4war,BEARISH,MEDIUM,True,long,B2,21287.25,14.0,False,False,4R cap (no draw in dir),56.0,stop,21273.0,08:51,-14.25,-1.018,-290.0
+2025-02-28,Friday,08:46,premarket,E4war,BEARISH,MEDIUM,False,short,B2,20622.5,12.0,False,False,4R cap,48.0,stop,20634.75,08:47,-12.25,-1.021,-250.0
+2025-02-28,Friday,08:50,premarket,E4war,BEARISH,MEDIUM,False,short,B2,20627.25,11.0,False,False,4R cap,44.0,4R cap,20583.25,09:27,44.0,4.0,875.0
+2025-02-28,Friday,09:47,intime,E4war,BEARISH,MEDIUM,False,short,B2,20588.25,15.0,False,False,draw:LondonL,35.5,stop,20603.5,09:48,-15.25,-1.017,-310.0
+2025-02-28,Friday,10:00,intime,E4war,BEARISH,MEDIUM,False,short,B2,20591.5,20.0,True,False,draw:LondonL,38.75,stop,20611.75,10:00,-20.25,-1.012,-410.0
+2025-03-04,Tuesday,08:17,premarket,E4war,BEARISH,MEDIUM,False,short,B2,20303.75,10.75,False,False,4R cap (no draw in dir),43.0,stop,20314.75,08:31,-11.0,-1.023,-225.0
+2025-03-04,Tuesday,09:58,intime,E4war,BEARISH,MEDIUM,False,short,B2,20326.25,20.0,True,False,draw:PDL,9.5,draw:PDL,20316.75,09:58,9.5,0.475,185.0
+2025-03-04,Tuesday,09:59,intime,E4war,BEARISH,MEDIUM,False,short,B2,20313.5,20.0,True,False,draw:LondonL,8.25,draw:LondonL,20305.25,09:59,8.25,0.412,160.0
+2025-03-06,Thursday,08:36,premarket,E4war,BEARISH,MEDIUM,False,short,B2,20356.75,11.75,False,False,4R cap,47.0,stop,20368.75,08:36,-12.0,-1.021,-245.0
+2025-03-06,Thursday,08:43,premarket,E4war,BEARISH,MEDIUM,False,short,B2,20351.5,14.0,False,False,4R cap,56.0,stop,20365.75,09:08,-14.25,-1.018,-290.0
+2025-03-06,Thursday,09:47,intime,E4war,BEARISH,MEDIUM,False,short,B2,20263.0,20.0,True,False,draw:PDL,48.0,stop,20283.25,09:47,-20.25,-1.012,-410.0
+2025-03-10,Monday,08:20,premarket,E4war,BEARISH,MEDIUM,False,short,B2,19899.5,12.25,False,False,4R cap,49.0,stop,19912.0,08:20,-12.5,-1.02,-255.0
+2025-03-10,Monday,08:26,premarket,E4war,BEARISH,MEDIUM,False,short,B2,19903.25,6.25,False,False,4R cap,25.0,4R cap,19878.25,08:31,25.0,4.0,495.0
+2025-03-10,Monday,09:50,intime,E4war,BEARISH,MEDIUM,False,short,B2,19838.25,20.0,True,False,draw:PWL,72.75,stop,19858.5,09:50,-20.25,-1.012,-410.0
+2025-03-17,Monday,08:56,premarket,E4war,BULLISH,LOW,False,long,B2,19761.0,11.25,False,False,4R cap,45.0,stop,19749.5,08:57,-11.5,-1.022,-235.0
+2025-03-17,Monday,09:21,premarket,E4war,BULLISH,LOW,False,long,B2,19713.5,5.25,False,False,4R cap,21.0,stop,19708.0,09:22,-5.5,-1.048,-115.0
+2025-03-17,Monday,10:00,intime,E4war,BULLISH,MEDIUM,False,long,B2,19790.25,16.25,False,False,4R cap,65.0,stop,19773.75,10:01,-16.5,-1.015,-335.0
+2025-03-17,Monday,10:01,intime,E4war,BULLISH,MEDIUM,False,long,B2,19786.25,20.0,True,False,4R cap,80.0,stop,19766.0,10:01,-20.25,-1.012,-410.0
+2025-03-18,Tuesday,08:04,premarket,E4war,BEARISH,MEDIUM,False,short,B,19948.25,8.75,False,False,draw:LondonL,25.75,stop,19957.25,08:05,-9.0,-1.029,-185.0
+2025-03-18,Tuesday,08:07,premarket,E4war,BEARISH,MEDIUM,False,short,B,19945.25,9.5,False,False,draw:LondonL,22.75,stop,19955.0,08:26,-9.75,-1.026,-200.0
+2025-03-19,Wednesday,08:00,premarket,E4war,BULLISH,MEDIUM,True,short,B,19772.25,10.0,False,False,4R cap (no draw in dir),40.0,stop,19782.5,08:00,-10.25,-1.025,-210.0
+2025-03-19,Wednesday,08:02,premarket,E4war,BULLISH,MEDIUM,True,short,A,19767.75,16.0,False,False,4R cap (no draw in dir),64.0,stop,19784.0,09:28,-16.25,-1.016,-330.0
+2025-03-24,Monday,09:42,intime,E4war,BULLISH,MEDIUM,False,long,B2,20274.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,20254.0,09:42,-20.25,-1.012,-410.0
+2025-03-24,Monday,10:04,intime,E4war,BULLISH,MEDIUM,False,long,B2,20321.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,20300.75,10:06,-20.25,-1.012,-410.0
+2025-03-25,Tuesday,08:24,premarket,E3bal,BULLISH,MEDIUM,False,long,B,20413.25,6.0,False,False,4R cap (no draw in dir),24.0,4R cap (no draw in dir),20437.25,08:31,24.0,4.0,475.0
+2025-03-25,Tuesday,10:02,intime,E3bal,BULLISH,MEDIUM,True,short,A,20390.5,49.75,False,True,4R cap (no draw in dir),199.0,stop,20440.5,10:16,-50.0,-1.005,-502.5
+2025-03-26,Wednesday,08:16,premarket,E3bal,BULLISH,MEDIUM,True,short,B,20470.25,8.0,False,False,4R cap (no draw in dir),32.0,stop,20478.5,08:48,-8.25,-1.031,-170.0
+2025-03-26,Wednesday,08:50,premarket,E3bal,BULLISH,MEDIUM,False,long,B,20479.75,14.75,False,False,draw:equal-highs,15.25,stop,20464.75,09:17,-15.0,-1.017,-305.0
+2025-03-26,Wednesday,09:40,intime,E3bal,BULLISH,MEDIUM,True,short,A,20457.75,17.25,False,False,4R cap (no draw in dir),69.0,4R cap (no draw in dir),20388.75,09:50,69.0,4.0,1375.0
+2025-03-31,Monday,10:08,intime,E3bal,BULLISH,MEDIUM,False,long,B,19140.0,31.5,False,False,draw:PDL,20.0,draw:PDL,19160.0,10:08,20.0,0.635,395.0
+2025-03-31,Monday,10:09,intime,E3bal,BULLISH,MEDIUM,False,long,B,19162.5,54.0,False,True,draw:AsiaH,109.75,stop,19108.25,10:17,-54.25,-1.005,-545.0
+2025-04-09,Wednesday,08:40,premarket,E4war,BEARISH,MEDIUM,False,short,B2,16933.0,13.5,False,False,4R cap,54.0,stop,16946.75,08:40,-13.75,-1.019,-280.0
+2025-04-14,Monday,10:00,intime,E4war,BULLISH,MEDIUM,False,long,B2,19047.0,20.0,True,False,4R cap,80.0,4R cap,19127.0,10:03,80.0,4.0,1595.0
+2025-04-21,Monday,08:52,premarket,E4war,BEARISH,LOW,False,short,B,18123.0,13.5,False,False,draw:LondonL,43.0,stop,18136.75,09:30,-13.75,-1.019,-280.0
+2025-04-21,Monday,09:42,intime,E4war,BEARISH,LOW,False,short,B2,18109.75,20.0,True,False,draw:LondonL,29.75,draw:LondonL,18080.0,09:44,29.75,1.488,590.0
+2025-04-21,Monday,09:44,intime,E4war,BEARISH,LOW,False,short,B2,18095.25,20.0,True,False,draw:LondonL,15.25,draw:LondonL,18080.0,09:44,15.25,0.762,300.0
+2025-04-22,Tuesday,08:43,premarket,E4war,BULLISH,MEDIUM,False,long,A,18094.0,5.75,False,False,draw:PWL,22.25,draw:PWL,18116.25,08:50,22.25,3.87,440.0
+2025-04-25,Friday,09:49,intime,E4war,BEARISH,MEDIUM,False,short,B2,19281.25,20.0,True,False,draw:PWH,25.25,draw:PWH,19256.0,09:51,25.25,1.262,500.0
+2025-04-25,Friday,09:57,intime,E4war,BEARISH,MEDIUM,False,short,B2,19268.5,20.0,True,False,draw:PWH,12.5,stop,19288.75,10:00,-20.25,-1.012,-410.0
+2025-05-07,Wednesday,09:42,intime,E4war,BEARISH,MEDIUM,False,short,A,19914.5,20.0,True,False,4R cap,80.0,stop,19934.75,09:44,-20.25,-1.012,-410.0
+2025-05-08,Thursday,09:00,premarket,E4war,BEARISH,MEDIUM,False,short,A,20175.0,8.75,False,False,4R cap,35.0,stop,20184.0,09:21,-9.0,-1.029,-185.0
+2025-05-08,Thursday,09:25,premarket,E4war,BEARISH,MEDIUM,False,short,B2,20169.0,14.75,False,False,4R cap,59.0,4R cap,20110.0,09:35,59.0,4.0,1175.0
+2025-05-08,Thursday,09:44,intime,E4war,BEARISH,MEDIUM,False,short,B2,20127.25,20.0,True,False,4R cap,80.0,4R cap,20047.25,10:11,80.0,4.0,1595.0
+2025-05-12,Monday,08:19,premarket,E4war,BULLISH,MEDIUM,False,long,B2,20937.75,8.0,False,False,4R cap,32.0,stop,20929.5,08:38,-8.25,-1.031,-170.0
+2025-05-12,Monday,08:55,premarket,E4war,BULLISH,MEDIUM,False,long,B2,20931.0,10.0,False,False,4R cap,40.0,stop,20920.75,08:57,-10.25,-1.025,-210.0
+2025-05-13,Tuesday,09:50,intime,E4war,BULLISH,MEDIUM,False,long,B2,21056.75,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),21136.75,10:01,80.0,4.0,1595.0
+2025-05-16,Friday,08:49,premarket,E4war,BULLISH,MEDIUM,True,short,A,21452.25,5.5,False,False,4R cap (no draw in dir),22.0,4R cap (no draw in dir),21430.25,09:00,22.0,4.0,435.0
+2025-05-16,Friday,09:07,premarket,E4war,BULLISH,MEDIUM,False,long,B2,21456.25,7.25,False,False,4R cap,29.0,stop,21448.75,09:08,-7.5,-1.034,-155.0
+2025-05-20,Tuesday,08:08,premarket,E4war,BULLISH,MEDIUM,False,long,B,21470.75,7.75,False,False,draw:equal-highs,9.13,stop,21462.75,08:09,-8.0,-1.032,-165.0
+2025-05-20,Tuesday,08:57,premarket,E4war,BULLISH,MEDIUM,False,long,B2,21433.5,5.75,False,False,4R cap,23.0,4R cap,21456.5,09:21,23.0,4.0,455.0
+2025-05-21,Wednesday,08:18,premarket,E4war,BEARISH,MEDIUM,False,short,B2,21308.25,8.25,False,False,draw:PDL,10.25,stop,21316.75,08:20,-8.5,-1.03,-175.0
+2025-05-21,Wednesday,10:03,intime,E4war,BEARISH,MEDIUM,True,long,B2,21396.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,21375.75,10:13,-20.25,-1.012,-410.0
+2025-05-21,Wednesday,10:13,intime,E4war,BEARISH,MEDIUM,False,short,A,21381.5,20.0,True,False,4R cap,80.0,stop,21401.75,10:14,-20.25,-1.012,-410.0
+2025-05-22,Thursday,10:12,intime,E4war,BULLISH,MEDIUM,False,long,A,21292.25,20.0,True,False,4R cap,80.0,stop,21272.0,10:13,-20.25,-1.012,-410.0
+2025-05-29,Thursday,08:03,premarket,E4war,BEARISH,MEDIUM,False,short,B2,21659.75,14.0,False,False,4R cap,56.0,stop,21674.0,08:05,-14.25,-1.018,-290.0
+2025-05-29,Thursday,08:05,premarket,E4war,BEARISH,MEDIUM,False,short,B2,21663.5,10.25,False,False,4R cap,41.0,stop,21674.0,08:05,-10.5,-1.024,-215.0
+2025-06-03,Tuesday,08:52,premarket,E4war,BULLISH,HIGH,False,long,B,21518.75,14.5,False,False,draw:PDH,57.5,draw:PDH,21576.25,09:30,57.5,3.966,1145.0
+2025-06-03,Tuesday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,B2,21533.0,20.0,True,False,draw:PDH,43.25,draw:PDH,21576.25,09:42,43.25,2.163,860.0
+2025-06-05,Thursday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,B,21767.75,8.0,False,False,4R cap,32.0,stop,21759.5,08:30,-8.25,-1.031,-170.0
+2025-06-05,Thursday,08:37,premarket,E4war,BULLISH,MEDIUM,False,long,B,21773.0,13.0,False,False,draw:PDH,30.0,stop,21759.75,08:45,-13.25,-1.019,-270.0
+2025-06-06,Friday,10:03,intime,E4war,BULLISH,MEDIUM,False,long,B2,21823.25,20.0,True,False,draw:PWH,35.5,stop,21803.0,10:28,-20.25,-1.012,-410.0
+2025-06-09,Monday,09:12,premarket,E4war,BULLISH,MEDIUM,False,long,B2,21810.5,6.75,False,False,draw:PDH,10.25,stop,21803.5,09:15,-7.0,-1.037,-145.0
+2025-06-09,Monday,09:26,premarket,E4war,BULLISH,MEDIUM,False,long,B2,21809.75,8.75,False,False,draw:PDH,11.0,stop,21800.75,09:28,-9.0,-1.029,-185.0
+2025-06-09,Monday,09:47,intime,E4war,BULLISH,MEDIUM,False,long,B2,21785.75,20.0,True,False,draw:PDH,35.0,draw:PDH,21820.75,10:09,35.0,1.75,695.0
+2025-06-09,Monday,10:09,intime,E4war,BULLISH,MEDIUM,False,long,B2,21813.0,15.25,False,False,draw:PDH,7.75,draw:PDH,21820.75,10:09,7.75,0.508,150.0
+2025-06-11,Wednesday,09:58,intime,E4war,BULLISH,MEDIUM,False,long,B2,21979.0,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),22059.0,10:55,80.0,4.0,1595.0
+2025-06-12,Thursday,09:54,intime,E4war,BULLISH,MEDIUM,False,long,A,21881.0,20.0,True,False,draw:equal-highs,11.0,stop,21860.75,09:55,-20.25,-1.012,-410.0
+2025-06-12,Thursday,09:59,intime,E4war,BULLISH,MEDIUM,False,long,A,21856.0,20.0,True,False,draw:equal-highs,36.0,draw:equal-highs,21892.0,10:07,36.0,1.8,715.0
+2025-06-16,Monday,08:56,premarket,E4war,BULLISH,LOW,False,long,B,22042.5,7.0,False,False,4R cap,28.0,stop,22035.25,08:59,-7.25,-1.036,-150.0
+2025-06-16,Monday,10:11,intime,E4war,BULLISH,LOW,False,long,B,22159.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,22139.0,14:51,-20.25,-1.012,-410.0
+2025-06-17,Tuesday,09:41,intime,E4war,BULLISH,LOW,False,long,B2,22084.25,20.0,True,False,draw:PWH,21.75,stop,22064.0,09:42,-20.25,-1.012,-410.0
+2025-06-18,Wednesday,08:15,premarket,E4war,BULLISH,LOW,False,long,B,22010.0,9.0,False,False,4R cap,36.0,stop,22000.75,08:17,-9.25,-1.028,-190.0
+2025-06-18,Wednesday,08:30,premarket,E4war,BULLISH,LOW,False,long,B,22006.5,8.25,False,False,4R cap,33.0,stop,21998.0,08:30,-8.5,-1.03,-175.0
+2025-06-19,Thursday,09:01,premarket,E4war,BEARISH,MEDIUM,False,short,B2,21762.25,8.75,False,False,4R cap,35.0,stop,21771.25,09:05,-9.0,-1.029,-185.0
+2025-06-19,Thursday,09:58,intime,E4war,BEARISH,MEDIUM,False,short,B2,21694.75,20.0,True,False,4R cap,80.0,stop,21715.0,10:12,-20.25,-1.012,-410.0
+2025-06-20,Friday,08:07,premarket,E4war,BULLISH,MEDIUM,False,long,A,21991.5,14.25,False,False,draw:LondonH,14.5,stop,21977.0,08:08,-14.5,-1.018,-295.0
+2025-06-20,Friday,08:13,premarket,E4war,BULLISH,MEDIUM,False,long,A,21987.5,8.75,False,False,draw:LondonH,18.5,stop,21978.5,08:24,-9.0,-1.029,-185.0
+2025-06-23,Monday,08:57,premarket,E4war,BULLISH,MEDIUM,False,long,A,21883.0,10.0,False,False,4R cap,40.0,stop,21872.75,09:08,-10.25,-1.025,-210.0
+2025-06-23,Monday,09:08,premarket,E4war,BULLISH,MEDIUM,False,long,A,21888.5,6.25,False,False,4R cap,25.0,stop,21882.0,09:08,-6.5,-1.04,-135.0
+2025-06-23,Monday,09:42,intime,E4war,BULLISH,MEDIUM,False,long,A,21860.75,20.0,True,False,draw:equal-highs,68.37,draw:equal-highs,21929.12,10:00,68.37,3.418,1362.4
+2025-06-27,Friday,09:46,intime,E4war,BEARISH,MEDIUM,True,long,B2,22739.5,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),22819.5,10:12,80.0,4.0,1595.0
+2025-06-30,Monday,09:54,intime,E4war,BEARISH,MEDIUM,False,short,B2,22815.5,20.0,True,False,4R cap,80.0,stop,22835.75,10:00,-20.25,-1.012,-410.0
+2025-06-30,Monday,10:01,intime,E4war,BEARISH,MEDIUM,False,short,B2,22826.75,20.0,True,False,4R cap,80.0,stop,22847.0,10:11,-20.25,-1.012,-410.0
+2025-07-02,Wednesday,08:02,premarket,E4war,BEARISH,MEDIUM,False,short,B2,22650.5,12.75,False,False,draw:LondonL,12.25,stop,22663.5,08:05,-13.0,-1.02,-265.0
+2025-07-02,Wednesday,09:02,premarket,E4war,BEARISH,MEDIUM,False,short,B2,22629.5,8.5,False,False,4R cap,34.0,stop,22638.25,09:03,-8.75,-1.029,-180.0
+2025-07-02,Wednesday,09:54,intime,E4war,BEARISH,MEDIUM,True,long,A,22726.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,22706.5,09:57,-20.25,-1.012,-410.0
+2025-07-02,Wednesday,09:58,intime,E4war,BEARISH,MEDIUM,True,long,A,22715.25,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),22795.25,10:29,80.0,4.0,1595.0
+2025-07-07,Monday,08:12,premarket,E4war,BULLISH,MEDIUM,False,long,B2,22987.0,5.25,False,False,draw:AsiaH,12.75,draw:AsiaH,22999.75,08:19,12.75,2.429,250.0
+2025-07-07,Monday,08:24,premarket,E4war,BULLISH,MEDIUM,False,long,B2,22996.0,7.0,False,False,draw:AsiaH,3.75,stop,22988.75,08:26,-7.25,-1.036,-150.0
+2025-07-07,Monday,09:44,intime,E4war,BULLISH,MEDIUM,False,long,B2,22949.0,20.0,True,False,draw:LondonH,41.0,stop,22928.75,09:45,-20.25,-1.012,-410.0
+2025-07-07,Monday,09:55,intime,E4war,BULLISH,MEDIUM,False,long,B2,22961.5,20.0,True,False,draw:LondonH,28.5,stop,22941.25,10:00,-20.25,-1.012,-410.0
+2025-07-08,Tuesday,08:00,premarket,E4war,BULLISH,MEDIUM,True,short,B2,22938.75,5.25,False,False,4R cap (no draw in dir),21.0,stop,22944.25,08:13,-5.5,-1.048,-115.0
+2025-07-08,Tuesday,08:14,premarket,E4war,BULLISH,MEDIUM,False,long,B,22948.25,13.75,False,False,draw:LondonH,24.5,stop,22934.25,08:31,-14.0,-1.018,-285.0
+2025-07-08,Tuesday,09:44,intime,E4war,BULLISH,MEDIUM,True,short,A,22911.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,22932.0,10:37,-20.25,-1.012,-410.0
+2025-07-09,Wednesday,08:06,premarket,E4war,BULLISH,MEDIUM,False,long,B2,22937.75,6.75,False,False,draw:LondonH,14.5,draw:LondonH,22952.25,08:47,14.5,2.148,285.0
+2025-07-09,Wednesday,08:51,premarket,E4war,BULLISH,MEDIUM,False,long,B2,22948.0,7.75,False,False,draw:LondonH,4.25,draw:LondonH,22952.25,08:51,4.25,0.548,80.0
+2025-07-09,Wednesday,09:55,intime,E4war,BULLISH,LOW,False,long,B2,23088.0,20.0,True,False,draw:PWH,14.5,draw:PWH,23102.5,10:00,14.5,0.725,285.0
+2025-07-09,Wednesday,10:00,intime,E4war,BULLISH,LOW,False,long,B2,23086.25,20.0,True,False,draw:PWH,16.25,draw:PWH,23102.5,10:00,16.25,0.812,320.0
+2025-07-10,Thursday,08:15,premarket,E4war,BULLISH,LOW,False,long,B,23065.0,7.0,False,False,4R cap,28.0,stop,23057.75,08:16,-7.25,-1.036,-150.0
+2025-07-10,Thursday,08:20,premarket,E4war,BULLISH,LOW,False,long,B2,23061.5,6.0,False,False,4R cap,24.0,stop,23055.25,08:23,-6.25,-1.042,-130.0
+2025-07-10,Thursday,09:42,intime,E4war,BULLISH,LOW,True,short,A,23026.5,15.25,False,False,4R cap (no draw in dir),61.0,4R cap (no draw in dir),22965.5,09:57,61.0,4.0,1215.0
+2025-07-11,Friday,08:04,premarket,E4war,BULLISH,MEDIUM,False,long,B,22911.5,10.5,False,False,draw:equal-highs,29.25,stop,22900.75,08:22,-10.75,-1.024,-220.0
+2025-07-11,Friday,08:39,premarket,E4war,BULLISH,MEDIUM,False,long,B2,22898.5,14.25,False,False,draw:equal-highs,4.0,draw:equal-highs,22902.5,08:47,4.0,0.281,75.0
+2025-07-11,Friday,09:42,intime,E4war,BULLISH,MEDIUM,True,short,A,22889.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,22910.0,09:48,-20.25,-1.012,-410.0
+2025-07-11,Friday,10:07,intime,E4war,BULLISH,MEDIUM,False,long,B2,22954.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,22934.25,11:14,-20.25,-1.012,-410.0
+2025-07-14,Monday,08:01,premarket,E4war,BULLISH,MEDIUM,False,long,B2,22887.25,6.75,False,False,draw:equal-highs,15.25,stop,22880.25,08:07,-7.0,-1.037,-145.0
+2025-07-14,Monday,08:10,premarket,E4war,BULLISH,MEDIUM,False,long,B,22886.0,5.5,False,False,draw:equal-highs,16.5,draw:equal-highs,22902.5,08:21,16.5,3.0,325.0
+2025-07-14,Monday,09:56,intime,E4war,BULLISH,MEDIUM,False,long,B2,22917.75,20.0,True,False,4R cap,80.0,4R cap,22997.75,11:01,80.0,4.0,1595.0
+2025-07-15,Tuesday,10:11,intime,E4war,BULLISH,MEDIUM,False,long,B,23171.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,23151.0,10:32,-20.25,-1.012,-410.0
+2025-07-16,Wednesday,08:03,premarket,E4war,BEARISH,MEDIUM,False,short,B,23011.0,11.0,False,False,draw:equal-lows,14.88,stop,23022.25,08:10,-11.25,-1.023,-230.0
+2025-07-16,Wednesday,08:57,premarket,E4war,BEARISH,MEDIUM,False,short,B,23070.0,7.25,False,False,4R cap,29.0,stop,23077.5,09:25,-7.5,-1.034,-155.0
+2025-07-16,Wednesday,10:03,intime,E4war,BEARISH,MEDIUM,False,short,A,22973.75,20.0,True,False,draw:LondonL,44.75,stop,22994.0,10:10,-20.25,-1.012,-410.0
+2025-07-17,Thursday,09:43,intime,E4war,BULLISH,MEDIUM,False,long,B2,23123.75,20.0,True,False,draw:LondonH,28.0,draw:LondonH,23151.75,09:52,28.0,1.4,555.0
+2025-07-17,Thursday,10:10,intime,E4war,BULLISH,MEDIUM,False,long,B2,23167.0,20.0,True,False,draw:equal-highs,4.62,stop,23146.75,10:11,-20.25,-1.012,-410.0
+2025-07-22,Tuesday,08:50,premarket,E4war,BULLISH,MEDIUM,False,long,B,23332.5,7.25,False,False,draw:LondonH,15.0,stop,23325.0,09:30,-7.5,-1.034,-155.0
+2025-07-29,Tuesday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B,23601.0,8.25,False,False,4R cap (no draw in dir),33.0,stop,23592.5,08:27,-8.5,-1.03,-175.0
+2025-07-29,Tuesday,08:27,premarket,E4war,BULLISH,MEDIUM,True,short,B2,23595.25,6.5,False,False,4R cap (no draw in dir),26.0,stop,23602.0,09:29,-6.75,-1.038,-140.0
+2025-07-31,Thursday,09:05,premarket,E4war,BULLISH,MEDIUM,False,long,A,23800.25,5.75,False,False,4R cap,23.0,stop,23794.25,09:06,-6.0,-1.043,-125.0
+2025-07-31,Thursday,09:08,premarket,E4war,BULLISH,MEDIUM,False,long,A,23800.5,6.25,False,False,4R cap,25.0,stop,23794.0,09:10,-6.5,-1.04,-135.0
+2025-08-04,Monday,08:02,premarket,E4war,BULLISH,MEDIUM,False,long,B,23052.25,6.75,False,False,draw:LondonH,25.75,stop,23045.25,08:05,-7.0,-1.037,-145.0
+2025-08-04,Monday,08:17,premarket,E4war,BULLISH,MEDIUM,False,long,B,23057.25,13.25,False,False,draw:LondonH,20.75,draw:LondonH,23078.0,08:30,20.75,1.566,410.0
+2025-08-04,Monday,10:12,intime,E4war,BULLISH,MEDIUM,False,long,B,23241.25,20.0,True,False,4R cap,80.0,stop,23221.0,10:43,-20.25,-1.012,-410.0
+2025-08-06,Wednesday,08:19,premarket,E4war,BULLISH,MEDIUM,False,long,B,23167.25,10.0,False,False,4R cap,40.0,stop,23157.0,08:26,-10.25,-1.025,-210.0
+2025-08-06,Wednesday,08:36,premarket,E4war,BULLISH,MEDIUM,False,long,B,23173.0,12.75,False,False,4R cap,51.0,stop,23160.0,09:30,-13.0,-1.02,-265.0
+2025-08-06,Wednesday,09:43,intime,E4war,BULLISH,LOW,False,long,B2,23172.5,20.0,True,False,draw:LondonH,54.5,draw:LondonH,23227.0,09:48,54.5,2.725,1085.0
+2025-08-06,Wednesday,09:51,intime,E4war,BULLISH,LOW,False,long,B2,23195.5,20.0,True,False,draw:LondonH,31.5,stop,23175.25,09:52,-20.25,-1.012,-410.0
+2025-08-07,Thursday,08:07,premarket,E4war,BULLISH,MEDIUM,False,long,B,23587.0,9.0,False,False,4R cap,36.0,4R cap,23623.0,09:33,36.0,4.0,715.0
+2025-08-08,Friday,08:48,premarket,E4war,BULLISH,LOW,False,long,B2,23538.25,5.25,False,False,4R cap,21.0,stop,23532.75,08:52,-5.5,-1.048,-115.0
+2025-08-08,Friday,08:52,premarket,E4war,BULLISH,LOW,True,short,A,23535.25,12.25,False,False,4R cap (no draw in dir),49.0,stop,23547.75,09:30,-12.5,-1.02,-255.0
+2025-08-11,Monday,08:02,premarket,E4war,BEARISH,MEDIUM,True,long,A,23747.75,13.0,False,False,4R cap (no draw in dir),52.0,stop,23734.5,08:23,-13.25,-1.019,-270.0
+2025-08-11,Monday,08:28,premarket,E4war,BEARISH,MEDIUM,False,short,B,23729.5,8.75,False,False,draw:AsiaL,22.75,draw:AsiaL,23706.75,09:11,22.75,2.6,450.0
+2025-08-11,Monday,09:41,intime,E4war,BEARISH,MEDIUM,False,short,A,23711.0,20.0,True,False,draw:PDL,10.0,stop,23731.25,09:43,-20.25,-1.012,-410.0
+2025-08-11,Monday,09:48,intime,E4war,BEARISH,MEDIUM,True,long,B2,23726.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,23706.25,13:38,-20.25,-1.012,-410.0
+2025-08-13,Wednesday,08:12,premarket,E4war,BULLISH,MEDIUM,True,short,B,23994.0,7.25,False,False,4R cap (no draw in dir),29.0,stop,24001.5,08:21,-7.5,-1.034,-155.0
+2025-08-13,Wednesday,08:26,premarket,E4war,BULLISH,MEDIUM,False,long,A,24001.25,5.75,False,False,draw:equal-highs,13.63,draw:equal-highs,24014.88,08:34,13.63,2.37,267.6
+2025-08-13,Wednesday,09:40,intime,E4war,BULLISH,MEDIUM,False,long,A,24051.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,24031.0,09:45,-20.25,-1.012,-410.0
+2025-08-13,Wednesday,09:45,intime,E4war,BULLISH,MEDIUM,False,long,A,24045.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,24025.5,09:55,-20.25,-1.012,-410.0
+2025-08-14,Thursday,08:15,premarket,E4war,BULLISH,MEDIUM,False,long,B,23960.5,13.5,False,False,4R cap,54.0,stop,23946.75,08:26,-13.75,-1.019,-280.0
+2025-08-18,Monday,08:30,premarket,E4war,BULLISH,MEDIUM,False,long,A,23770.75,9.0,False,False,4R cap,36.0,stop,23761.5,08:31,-9.25,-1.028,-190.0
+2025-08-18,Monday,08:39,premarket,E4war,BULLISH,MEDIUM,True,short,B2,23759.5,7.75,False,False,4R cap (no draw in dir),31.0,stop,23767.5,08:44,-8.0,-1.032,-165.0
+2025-08-18,Monday,09:44,intime,E4war,BULLISH,MEDIUM,False,long,A,23775.0,20.0,True,False,4R cap,80.0,stop,23754.75,09:51,-20.25,-1.012,-410.0
+2025-08-22,Friday,08:03,premarket,E4war,BULLISH,MEDIUM,False,long,B2,23257.25,9.75,False,False,draw:LondonH,23.5,stop,23247.25,08:13,-10.0,-1.026,-205.0
+2025-08-22,Friday,08:13,premarket,E4war,BULLISH,MEDIUM,True,short,B,23248.5,8.5,False,False,4R cap (no draw in dir),34.0,stop,23257.25,08:15,-8.75,-1.029,-180.0
+2025-08-25,Monday,08:01,premarket,E4war,BEARISH,MEDIUM,False,short,B,23490.25,7.75,False,False,draw:LondonL,28.25,stop,23498.25,09:27,-8.0,-1.032,-165.0
+2025-08-26,Tuesday,08:00,premarket,E4war,BEARISH,MEDIUM,True,long,B,23469.25,12.5,False,False,4R cap (no draw in dir),50.0,stop,23456.5,08:06,-12.75,-1.02,-260.0
+2025-08-26,Tuesday,08:17,premarket,E4war,BEARISH,MEDIUM,True,long,B,23459.5,7.75,False,False,4R cap (no draw in dir),31.0,4R cap (no draw in dir),23490.5,09:31,31.0,4.0,615.0
+2025-08-27,Wednesday,08:08,premarket,E4war,BULLISH,MEDIUM,False,long,B,23612.5,6.5,False,False,draw:equal-highs,5.25,draw:equal-highs,23617.75,08:13,5.25,0.808,100.0
+2025-08-27,Wednesday,08:15,premarket,E4war,BULLISH,MEDIUM,False,long,B2,23617.0,6.25,False,False,draw:equal-highs,10.0,stop,23610.5,08:24,-6.5,-1.04,-135.0
+2025-08-27,Wednesday,09:41,intime,E4war,BEARISH,MEDIUM,False,short,A,23544.5,20.0,True,False,4R cap,80.0,stop,23564.75,10:14,-20.25,-1.012,-410.0
+2025-08-28,Thursday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,A,23625.25,10.25,False,False,draw:equal-highs,4.63,draw:equal-highs,23629.88,08:06,4.63,0.452,87.6
+2025-08-28,Thursday,08:12,premarket,E4war,BULLISH,MEDIUM,True,short,B2,23616.75,6.75,False,False,4R cap (no draw in dir),27.0,stop,23623.75,08:31,-7.0,-1.037,-145.0
+2025-09-08,Monday,08:12,premarket,E4war,BEARISH,MEDIUM,False,short,A,23750.5,8.0,False,False,draw:equal-lows,8.0,stop,23758.75,08:30,-8.25,-1.031,-170.0
+2025-09-08,Monday,08:41,premarket,E4war,BEARISH,MEDIUM,False,short,B,23756.0,6.0,False,False,draw:equal-lows,13.5,stop,23762.25,08:45,-6.25,-1.042,-130.0
+2025-09-08,Monday,10:11,intime,E4war,BEARISH,MEDIUM,False,short,B2,23852.0,20.0,True,False,draw:PDH,60.75,stop,23872.25,10:30,-20.25,-1.012,-410.0
+2025-09-09,Tuesday,08:06,premarket,E3bal,BEARISH,MEDIUM,True,long,B,23849.5,7.75,False,False,4R cap (no draw in dir),31.0,stop,23841.5,08:25,-8.0,-1.032,-165.0
+2025-09-09,Tuesday,08:28,premarket,E3bal,BEARISH,MEDIUM,True,long,B,23851.75,9.0,False,False,4R cap (no draw in dir),36.0,stop,23842.5,08:30,-9.25,-1.028,-190.0
+2025-09-09,Tuesday,09:46,intime,E3bal,BEARISH,MEDIUM,True,long,A,23840.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,23820.25,09:50,-20.25,-1.012,-410.0
+2025-09-10,Wednesday,09:47,intime,E3bal,BULLISH,LOW,True,short,A,23937.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,23958.0,10:02,-20.25,-1.012,-410.0
+2025-09-10,Wednesday,10:02,intime,E3bal,BULLISH,LOW,False,long,B,23952.0,27.25,False,False,4R cap (no draw in dir),109.0,stop,23924.5,11:25,-27.5,-1.009,-555.0
+2025-09-12,Friday,08:20,premarket,E3bal,BULLISH,MEDIUM,False,long,B,24044.0,11.0,False,False,4R cap (no draw in dir),44.0,stop,24032.75,08:28,-11.25,-1.023,-230.0
+2025-09-15,Monday,10:10,intime,E3bal,BULLISH,MEDIUM,True,short,B,24249.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,24269.75,11:00,-20.25,-1.012,-410.0
+2025-09-16,Tuesday,09:56,intime,E4war,BEARISH,MEDIUM,False,short,B2,24537.75,20.0,True,False,4R cap,80.0,stop,24558.0,10:18,-20.25,-1.012,-410.0
+2025-09-18,Thursday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B2,24742.75,12.5,False,False,draw:LondonH,13.0,stop,24730.0,08:10,-12.75,-1.02,-260.0
+2025-09-18,Thursday,08:14,premarket,E4war,BULLISH,MEDIUM,False,long,B,24736.25,9.75,False,False,draw:LondonH,19.5,draw:LondonH,24755.75,08:26,19.5,2.0,385.0
+2025-09-19,Friday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,B2,24743.5,12.0,False,False,draw:AsiaH,5.5,draw:AsiaH,24749.0,08:28,5.5,0.458,105.0
+2025-09-19,Friday,08:29,premarket,E4war,BULLISH,MEDIUM,False,long,B2,24752.75,6.25,False,False,4R cap,25.0,stop,24746.25,08:30,-6.5,-1.04,-135.0
+2025-09-19,Friday,10:00,intime,E4war,BULLISH,MEDIUM,False,long,B2,24790.75,20.0,True,False,draw:PDH,25.25,stop,24770.5,10:17,-20.25,-1.012,-410.0
+2025-09-23,Tuesday,08:11,premarket,E3bal,BULLISH,MEDIUM,False,long,B,25001.75,7.5,False,False,draw:LondonH,24.25,stop,24994.0,08:29,-7.75,-1.033,-160.0
+2025-09-23,Tuesday,08:33,premarket,E3bal,BULLISH,MEDIUM,False,long,A,24999.75,16.0,False,False,draw:LondonH,26.25,stop,24983.5,09:35,-16.25,-1.016,-330.0
+2025-09-23,Tuesday,10:06,intime,E3bal,BULLISH,MEDIUM,False,long,B,24955.75,22.5,False,False,draw:LondonL,17.25,stop,24933.0,10:25,-22.75,-1.011,-460.0
+2025-09-24,Wednesday,08:57,premarket,E3bal,BULLISH,MEDIUM,False,long,A,24878.25,7.25,False,False,4R cap,29.0,stop,24870.75,09:30,-7.5,-1.034,-155.0
+2025-09-24,Wednesday,10:00,intime,E3bal,BULLISH,MEDIUM,False,long,B,24821.25,18.75,False,False,draw:equal-highs,41.13,stop,24802.25,10:33,-19.0,-1.013,-385.0
+2025-09-26,Friday,09:56,intime,E3bal,BULLISH,MEDIUM,True,short,A,24679.5,20.0,True,False,draw:LondonH,7.25,stop,24699.75,09:56,-20.25,-1.012,-410.0
+2025-09-26,Friday,10:04,intime,E3bal,BULLISH,MEDIUM,True,short,B,24684.25,45.75,False,True,draw:LondonH,12.0,draw:LondonH,24672.25,10:05,12.0,0.262,117.5
+2025-09-29,Monday,08:02,premarket,E3bal,BEARISH,MEDIUM,False,short,A,24873.25,6.5,False,False,4R cap,26.0,stop,24880.0,08:10,-6.75,-1.038,-140.0
+2025-09-29,Monday,08:42,premarket,E3bal,BEARISH,MEDIUM,False,short,B,24887.25,8.75,False,False,4R cap,35.0,stop,24896.25,08:44,-9.0,-1.029,-185.0
+2025-09-29,Monday,09:40,intime,E3bal,BEARISH,MEDIUM,False,short,A,24873.0,19.5,False,False,draw:PDH,55.0,stop,24892.75,09:42,-19.75,-1.013,-400.0
+2025-09-30,Tuesday,08:18,premarket,E3bal,BULLISH,MEDIUM,False,long,B,24800.25,11.25,False,False,4R cap,45.0,stop,24788.75,09:33,-11.5,-1.022,-235.0
+2025-09-30,Tuesday,09:47,intime,E3bal,BULLISH,LOW,True,short,A,24794.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,24814.25,10:48,-20.25,-1.012,-410.0
+2025-10-06,Monday,09:49,intime,E3bal,BULLISH,MEDIUM,True,short,A,25159.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,25180.0,10:21,-20.25,-1.012,-410.0
+2025-10-07,Tuesday,10:05,intime,E3bal,BULLISH,MEDIUM,True,short,B,25219.25,30.75,False,False,4R cap (no draw in dir),123.0,stop,25250.25,10:10,-31.0,-1.008,-625.0
+2025-10-07,Tuesday,10:10,intime,E3bal,BULLISH,MEDIUM,False,long,B,25246.25,32.0,False,False,4R cap (no draw in dir),128.0,stop,25214.0,10:27,-32.25,-1.008,-650.0
+2025-10-08,Wednesday,08:05,premarket,E3bal,BULLISH,MEDIUM,True,short,B,25078.0,11.25,False,False,4R cap (no draw in dir),45.0,stop,25089.5,09:20,-11.5,-1.022,-235.0
+2025-10-10,Friday,08:00,premarket,E3bal,BULLISH,MEDIUM,False,long,B,25322.5,8.75,False,False,draw:equal-highs,17.0,stop,25313.5,08:38,-9.0,-1.029,-185.0
+2025-10-10,Friday,09:01,premarket,E3bal,BULLISH,MEDIUM,False,long,A,25305.0,7.75,False,False,draw:AsiaL,5.25,draw:AsiaL,25310.25,09:01,5.25,0.677,100.0
+2025-10-10,Friday,10:08,intime,E3bal,BULLISH,MEDIUM,False,long,B,25352.75,25.25,False,False,4R cap (no draw in dir),101.0,stop,25327.25,10:14,-25.5,-1.01,-515.0
+2025-10-16,Thursday,08:26,premarket,E3bal,BULLISH,MEDIUM,True,short,B,25035.0,10.5,False,False,4R cap (no draw in dir),42.0,stop,25045.75,08:29,-10.75,-1.024,-220.0
+2025-10-16,Thursday,09:45,intime,E3bal,BULLISH,MEDIUM,False,long,A,25092.0,54.0,False,True,draw:PDH,23.0,draw:PDH,25115.0,09:45,23.0,0.426,227.5
+2025-10-16,Thursday,10:06,intime,E3bal,BULLISH,MEDIUM,False,long,A,25081.75,46.75,False,True,draw:PDH,33.25,stop,25034.75,10:11,-47.0,-1.005,-472.5
+2025-10-17,Friday,09:05,premarket,E4war,BULLISH,MEDIUM,True,short,A,24749.75,11.75,False,False,4R cap (no draw in dir),47.0,stop,24761.75,09:08,-12.0,-1.021,-245.0
+2025-10-17,Friday,09:13,premarket,E4war,BULLISH,MEDIUM,False,long,B2,24763.5,11.0,False,False,4R cap,44.0,stop,24752.25,09:14,-11.25,-1.023,-230.0
+2025-10-20,Monday,08:55,premarket,E4war,BULLISH,MEDIUM,False,long,B2,25116.25,7.0,False,False,4R cap,28.0,4R cap,25144.25,09:03,28.0,4.0,555.0
+2025-10-20,Monday,09:53,intime,E4war,BULLISH,MEDIUM,False,long,B2,25222.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,25202.0,09:57,-20.25,-1.012,-410.0
+2025-10-20,Monday,09:57,intime,E4war,BULLISH,MEDIUM,False,long,B2,25218.5,15.25,False,False,4R cap (no draw in dir),61.0,stop,25203.0,09:57,-15.5,-1.016,-315.0
+2025-10-21,Tuesday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B,25307.0,9.25,False,False,4R cap,37.0,stop,25297.5,08:32,-9.5,-1.027,-195.0
+2025-10-21,Tuesday,08:45,premarket,E4war,BULLISH,MEDIUM,False,long,B,25306.0,14.5,False,False,draw:equal-highs,39.25,stop,25291.25,09:09,-14.75,-1.017,-300.0
+2025-10-21,Tuesday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,B2,25281.25,20.0,True,False,draw:equal-highs,64.0,stop,25261.0,09:41,-20.25,-1.012,-410.0
+2025-10-21,Tuesday,10:00,intime,E4war,BEARISH,MEDIUM,False,short,A,25234.75,20.0,True,False,draw:PWH,55.25,stop,25255.0,10:17,-20.25,-1.012,-410.0
+2025-10-22,Wednesday,08:15,premarket,E4war,BEARISH,MEDIUM,False,short,B2,25251.75,5.0,False,False,4R cap,20.0,stop,25257.0,08:16,-5.25,-1.05,-110.0
+2025-10-22,Wednesday,08:18,premarket,E4war,BEARISH,MEDIUM,False,short,B2,25252.0,8.0,False,False,4R cap,32.0,stop,25260.25,08:18,-8.25,-1.031,-170.0
+2025-10-22,Wednesday,09:43,intime,E4war,BULLISH,MEDIUM,False,long,A,25233.0,20.0,True,False,draw:AsiaH,57.0,stop,25212.75,10:14,-20.25,-1.012,-410.0
+2025-10-23,Thursday,08:00,premarket,E4war,BEARISH,MEDIUM,False,short,B2,24973.0,10.0,False,False,draw:LondonL,10.25,draw:LondonL,24962.75,08:00,10.25,1.025,200.0
+2025-10-23,Thursday,08:05,premarket,E4war,BEARISH,MEDIUM,False,short,B2,24959.75,14.25,False,False,draw:AsiaL,8.5,stop,24974.25,08:06,-14.5,-1.018,-295.0
+2025-10-24,Friday,08:59,premarket,E4war,BULLISH,MEDIUM,False,long,A,25452.75,6.5,False,False,4R cap (no draw in dir),26.0,4R cap (no draw in dir),25478.75,09:10,26.0,4.0,515.0
+2025-10-27,Monday,08:02,premarket,E4war,BULLISH,MEDIUM,False,long,B2,25827.75,10.5,False,False,draw:LondonH,24.75,stop,25817.0,09:21,-10.75,-1.024,-220.0
+2025-10-28,Tuesday,08:11,premarket,E4war,BULLISH,MEDIUM,False,long,B2,26004.25,6.5,False,False,draw:PDH,14.5,draw:PDH,26018.75,08:19,14.5,2.231,285.0
+2025-10-28,Tuesday,08:21,premarket,E4war,BULLISH,MEDIUM,False,long,B2,26020.25,9.5,False,False,4R cap (no draw in dir),38.0,stop,26010.5,08:33,-9.75,-1.026,-200.0
+2025-10-28,Tuesday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,B2,26067.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,26047.25,09:48,-20.25,-1.012,-410.0
+2025-10-28,Tuesday,10:00,intime,E4war,BULLISH,MEDIUM,False,long,B2,26065.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,26045.0,10:26,-20.25,-1.012,-410.0
+2025-10-29,Wednesday,08:10,premarket,E4war,BULLISH,MEDIUM,False,long,B,26282.75,11.0,False,False,draw:LondonH,27.0,stop,26271.5,08:21,-11.25,-1.023,-230.0
+2025-10-29,Wednesday,08:48,premarket,E4war,BULLISH,MEDIUM,False,long,B,26256.5,9.25,False,False,4R cap,37.0,4R cap,26293.5,09:51,37.0,4.0,735.0
+2025-10-29,Wednesday,10:04,intime,E4war,BULLISH,MEDIUM,False,long,A,26303.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,26283.25,10:05,-20.25,-1.012,-410.0
+2025-10-29,Wednesday,10:07,intime,E4war,BULLISH,MEDIUM,False,long,A,26286.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,26265.75,10:12,-20.25,-1.012,-410.0
+2025-10-31,Friday,08:48,premarket,E4war,BULLISH,MEDIUM,False,long,B,26224.25,8.25,False,False,draw:LondonH,8.0,stop,26215.75,08:49,-8.5,-1.03,-175.0
+2025-10-31,Friday,08:54,premarket,E4war,BULLISH,MEDIUM,False,long,B,26227.5,10.75,False,False,draw:LondonH,4.75,stop,26216.5,08:55,-11.0,-1.023,-225.0
+2025-10-31,Friday,10:11,intime,E4war,BULLISH,MEDIUM,False,long,B2,26102.25,20.0,True,False,draw:LondonL,41.75,stop,26082.0,10:14,-20.25,-1.012,-410.0
+2025-11-04,Tuesday,08:08,premarket,E4war,BULLISH,HIGH,False,long,B,25762.5,10.25,False,False,4R cap,41.0,stop,25752.0,08:09,-10.5,-1.024,-215.0
+2025-11-11,Tuesday,08:19,premarket,E4war,BEARISH,MEDIUM,False,short,B2,25611.75,11.25,False,False,4R cap,45.0,stop,25623.25,09:22,-11.5,-1.022,-235.0
+2025-11-11,Tuesday,09:43,intime,E4war,BEARISH,MEDIUM,False,short,B2,25594.25,20.0,True,False,draw:LondonL,12.0,stop,25614.5,09:44,-20.25,-1.012,-410.0
+2025-11-11,Tuesday,09:49,intime,E4war,BEARISH,MEDIUM,False,short,B2,25606.0,20.0,True,False,draw:LondonL,23.75,draw:LondonL,25582.25,09:49,23.75,1.188,470.0
+2025-11-18,Tuesday,09:17,premarket,E4war,BEARISH,MEDIUM,False,short,B2,24728.25,5.25,False,False,4R cap,21.0,stop,24733.75,09:17,-5.5,-1.048,-115.0
+2025-11-18,Tuesday,09:22,premarket,E4war,BEARISH,MEDIUM,False,short,B2,24724.5,14.25,False,False,4R cap,57.0,stop,24739.0,09:30,-14.5,-1.018,-295.0
+2025-11-26,Wednesday,08:03,premarket,E4war,BULLISH,MEDIUM,False,long,A,25175.5,7.0,False,False,draw:PDH,21.0,stop,25168.25,08:04,-7.25,-1.036,-150.0
+2025-11-26,Wednesday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,A,25173.75,5.75,False,False,draw:PDH,22.75,draw:PDH,25196.5,08:19,22.75,3.957,450.0
+2025-11-26,Wednesday,09:53,intime,E4war,BULLISH,MEDIUM,False,long,A,25238.25,20.0,True,False,4R cap,80.0,stop,25218.0,09:55,-20.25,-1.012,-410.0
+2025-11-26,Wednesday,09:55,intime,E4war,BULLISH,MEDIUM,False,long,A,25231.75,20.0,True,False,4R cap,80.0,stop,25211.5,09:55,-20.25,-1.012,-410.0
+2025-11-27,Thursday,08:27,premarket,E4war,BEARISH,MEDIUM,False,short,B,25295.25,6.75,False,False,4R cap,27.0,stop,25302.25,08:30,-7.0,-1.037,-145.0
+2025-11-27,Thursday,08:36,premarket,E4war,BEARISH,MEDIUM,False,short,B,25303.0,11.25,False,False,4R cap,45.0,stop,25314.5,09:31,-11.5,-1.022,-235.0
+2025-11-27,Thursday,10:11,intime,E4war,BEARISH,MEDIUM,False,short,B2,25298.5,20.0,True,False,4R cap,80.0,eod,25302.0,12:59,-3.5,-0.175,-75.0
+2025-12-02,Tuesday,08:10,premarket,E4war,BULLISH,MEDIUM,False,long,B2,25492.75,5.25,False,False,draw:LondonH,16.0,stop,25487.25,08:22,-5.5,-1.048,-115.0
+2025-12-02,Tuesday,08:23,premarket,E4war,BULLISH,MEDIUM,False,long,B2,25492.5,5.75,False,False,draw:LondonH,16.25,stop,25486.5,08:31,-6.0,-1.043,-125.0
+2025-12-08,Monday,08:43,premarket,E4war,BULLISH,MEDIUM,False,long,B,25798.75,6.0,False,False,draw:LondonH,22.5,draw:LondonH,25821.25,09:04,22.5,3.75,445.0
+2025-12-08,Monday,09:13,premarket,E4war,BULLISH,MEDIUM,False,long,B2,25817.75,5.0,False,False,draw:LondonH,3.5,stop,25812.5,09:15,-5.25,-1.05,-110.0
+2025-12-08,Monday,09:46,intime,E4war,BULLISH,MEDIUM,False,long,B2,25799.25,20.0,True,False,draw:LondonH,22.0,stop,25779.0,09:48,-20.25,-1.012,-410.0
+2025-12-10,Wednesday,08:55,premarket,E4war,BEARISH,MEDIUM,True,long,B,25681.0,8.0,False,False,4R cap (no draw in dir),32.0,stop,25672.75,08:59,-8.25,-1.031,-170.0
+2025-12-10,Wednesday,09:27,premarket,E4war,BEARISH,MEDIUM,True,long,B2,25659.75,8.25,False,False,4R cap (no draw in dir),33.0,stop,25651.25,09:28,-8.5,-1.03,-175.0
+2025-12-10,Wednesday,09:42,intime,E4war,BEARISH,MEDIUM,False,short,A,25626.0,20.0,True,False,draw:LondonL,10.0,stop,25646.25,09:43,-20.25,-1.012,-410.0
+2025-12-10,Wednesday,09:44,intime,E4war,BEARISH,MEDIUM,False,short,A,25643.75,20.0,True,False,draw:LondonL,27.75,stop,25664.0,09:47,-20.25,-1.012,-410.0
+2025-12-11,Thursday,09:18,premarket,E4war,BULLISH,LOW,True,short,A,25667.25,7.5,False,False,4R cap (no draw in dir),30.0,stop,25675.0,09:22,-7.75,-1.033,-160.0
+2025-12-15,Monday,08:14,premarket,E4war,BULLISH,MEDIUM,False,long,B2,25615.0,5.75,False,False,4R cap,23.0,stop,25609.0,08:17,-6.0,-1.043,-125.0
+2025-12-15,Monday,08:26,premarket,E4war,BULLISH,MEDIUM,False,long,B,25610.5,12.5,False,False,4R cap,50.0,4R cap,25660.5,09:28,50.0,4.0,995.0
+2025-12-16,Tuesday,08:47,premarket,E4war,BULLISH,MEDIUM,False,long,B,25304.5,11.25,False,False,4R cap,45.0,stop,25293.0,08:48,-11.5,-1.022,-235.0
+2025-12-16,Tuesday,09:09,premarket,E4war,BULLISH,MEDIUM,False,long,B2,25264.75,10.0,False,False,4R cap,40.0,stop,25254.5,09:10,-10.25,-1.025,-210.0
+2025-12-19,Friday,08:11,premarket,E4war,BEARISH,HIGH,False,short,B2,25300.75,5.0,False,False,4R cap,20.0,stop,25306.0,08:12,-5.25,-1.05,-110.0
+2025-12-19,Friday,08:12,premarket,E4war,BEARISH,HIGH,False,short,B2,25301.5,6.25,False,False,4R cap,25.0,stop,25308.0,08:12,-6.5,-1.04,-135.0
+2025-12-23,Tuesday,09:51,intime,E4war,BEARISH,MEDIUM,True,long,A,25726.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,25705.75,09:54,-20.25,-1.012,-410.0
+2025-12-23,Tuesday,09:54,intime,E4war,BEARISH,MEDIUM,True,long,A,25721.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,25701.5,09:54,-20.25,-1.012,-410.0
+2025-12-26,Friday,08:05,premarket,E4war,BULLISH,MEDIUM,False,long,B2,25892.75,6.0,False,False,draw:equal-highs,8.25,draw:equal-highs,25901.0,08:21,8.25,1.375,160.0
+2025-12-26,Friday,08:21,premarket,E4war,BULLISH,MEDIUM,False,long,B2,25900.25,7.25,False,False,draw:equal-highs,0.75,draw:equal-highs,25901.0,08:21,0.75,0.103,10.0
+2025-12-26,Friday,09:49,intime,E4war,BULLISH,MEDIUM,False,long,B2,25916.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,25895.75,09:50,-20.25,-1.012,-410.0
+2025-12-26,Friday,09:50,intime,E4war,BULLISH,MEDIUM,False,long,B2,25915.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,25895.0,09:50,-20.25,-1.012,-410.0
+2025-12-30,Tuesday,08:00,premarket,E4war,BULLISH,MEDIUM,False,long,B,25726.5,5.0,False,False,4R cap,20.0,stop,25721.25,08:31,-5.25,-1.05,-110.0
+2025-12-30,Tuesday,08:31,premarket,E4war,BULLISH,MEDIUM,True,short,B,25728.25,7.0,False,False,4R cap (no draw in dir),28.0,4R cap (no draw in dir),25700.25,08:38,28.0,4.0,555.0
+2025-12-30,Tuesday,09:47,intime,E4war,BULLISH,MEDIUM,True,short,A,25702.5,20.0,True,False,4R cap (no draw in dir),80.0,stop,25722.75,09:49,-20.25,-1.012,-410.0
+2025-12-30,Tuesday,10:03,intime,E4war,BULLISH,MEDIUM,False,long,B2,25743.5,20.0,True,False,draw:equal-highs,32.0,stop,25723.25,10:07,-20.25,-1.012,-410.0
+2025-12-31,Wednesday,08:14,premarket,E4war,BULLISH,MEDIUM,False,long,B,25630.25,5.0,False,False,4R cap,20.0,4R cap,25650.25,08:30,20.0,4.0,395.0
+2025-12-31,Wednesday,09:56,intime,E4war,BULLISH,MEDIUM,False,long,B2,25625.0,20.0,True,False,4R cap,80.0,stop,25604.75,09:56,-20.25,-1.012,-410.0
+2026-01-02,Friday,08:18,premarket,E4war,BULLISH,LOW,False,long,B,25704.75,7.5,False,False,4R cap,30.0,stop,25697.0,08:24,-7.75,-1.033,-160.0
+2026-01-02,Friday,08:48,premarket,E4war,BULLISH,LOW,False,long,B,25700.25,7.5,False,False,4R cap,30.0,stop,25692.5,08:48,-7.75,-1.033,-160.0
+2026-01-02,Friday,10:04,intime,E4war,BULLISH,MEDIUM,False,long,A,25762.0,20.0,True,False,draw:equal-highs,12.5,stop,25741.75,10:04,-20.25,-1.012,-410.0
+2026-01-12,Monday,08:13,premarket,E4war,BEARISH,MEDIUM,False,short,B,25731.75,13.25,False,False,draw:equal-lows,6.63,stop,25745.25,08:17,-13.5,-1.019,-275.0
+2026-01-12,Monday,08:32,premarket,E4war,BEARISH,MEDIUM,False,short,B,25740.0,15.0,False,False,draw:equal-lows,14.88,stop,25755.25,08:55,-15.25,-1.017,-310.0
+2026-01-13,Tuesday,09:21,premarket,E4war,BULLISH,LOW,False,long,B2,25987.5,14.75,False,False,draw:PDH,33.0,stop,25972.5,09:28,-15.0,-1.017,-305.0
+2026-01-13,Tuesday,09:47,intime,E4war,BULLISH,MEDIUM,False,long,B2,25989.5,20.0,True,False,draw:PDH,31.0,stop,25969.25,09:48,-20.25,-1.012,-410.0
+2026-01-13,Tuesday,09:48,intime,E4war,BULLISH,MEDIUM,False,long,B2,25987.25,20.0,True,False,draw:PDH,33.25,stop,25967.0,09:48,-20.25,-1.012,-410.0
+2026-01-15,Thursday,09:46,intime,E4war,BULLISH,MEDIUM,False,long,B2,25906.25,20.0,True,False,4R cap,80.0,stop,25886.0,09:50,-20.25,-1.012,-410.0
+2026-01-15,Thursday,09:50,intime,E4war,BULLISH,MEDIUM,False,long,B2,25903.75,20.0,True,False,4R cap,80.0,stop,25883.5,09:50,-20.25,-1.012,-410.0
+2026-01-16,Friday,08:08,premarket,E3bal,BEARISH,MEDIUM,False,short,B,25815.75,15.0,False,False,draw:AsiaH,4.75,draw:AsiaH,25811.0,08:20,4.75,0.317,90.0
+2026-01-16,Friday,08:21,premarket,E3bal,BEARISH,MEDIUM,False,short,A,25807.75,14.5,False,False,draw:equal-lows,4.5,draw:equal-lows,25803.25,08:24,4.5,0.31,85.0
+2026-01-16,Friday,09:44,intime,E3bal,BEARISH,MEDIUM,True,long,A,25843.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,25822.75,09:44,-20.25,-1.012,-410.0
+2026-01-19,Monday,08:17,premarket,E4war,BEARISH,MEDIUM,False,short,A,25307.75,8.0,False,False,4R cap,32.0,stop,25316.0,08:35,-8.25,-1.031,-170.0
+2026-01-19,Monday,09:15,premarket,E4war,BEARISH,MEDIUM,False,short,A,25309.25,11.75,False,False,4R cap,47.0,4R cap,25262.25,09:33,47.0,4.0,935.0
+2026-01-20,Tuesday,08:31,premarket,E4war,BEARISH,MEDIUM,False,short,B,25242.0,9.0,False,False,4R cap,36.0,4R cap,25206.0,08:33,36.0,4.0,715.0
+2026-01-20,Tuesday,09:25,premarket,E4war,BEARISH,MEDIUM,False,short,A,25212.25,12.25,False,False,4R cap,49.0,stop,25224.75,09:28,-12.5,-1.02,-255.0
+2026-01-21,Wednesday,08:20,premarket,E4war,BEARISH,MEDIUM,False,short,B2,25088.25,12.25,False,False,4R cap,49.0,stop,25100.75,08:54,-12.5,-1.02,-255.0
+2026-01-23,Friday,08:01,premarket,E4war,BEARISH,MEDIUM,False,short,B,25616.75,12.25,False,False,4R cap,49.0,stop,25629.25,08:03,-12.5,-1.02,-255.0
+2026-01-23,Friday,08:08,premarket,E4war,BEARISH,MEDIUM,False,short,B,25624.25,11.25,False,False,4R cap,45.0,4R cap,25579.25,08:28,45.0,4.0,895.0
+2026-01-26,Monday,08:01,premarket,E4war,BEARISH,MEDIUM,False,short,A,25687.5,5.5,False,False,draw:PDH,18.75,stop,25693.25,08:01,-5.75,-1.045,-120.0
+2026-01-26,Monday,08:05,premarket,E4war,BEARISH,MEDIUM,False,short,A,25683.0,15.75,False,False,draw:PDH,14.25,stop,25699.0,08:12,-16.0,-1.016,-325.0
+2026-01-27,Tuesday,08:06,premarket,E4war,BEARISH,MEDIUM,False,short,B,26002.5,9.75,False,False,4R cap,39.0,stop,26012.5,08:10,-10.0,-1.026,-205.0
+2026-01-27,Tuesday,08:14,premarket,E4war,BEARISH,MEDIUM,False,short,A,26012.0,6.0,False,False,4R cap,24.0,stop,26018.25,08:15,-6.25,-1.042,-130.0
+2026-01-28,Wednesday,08:45,premarket,E4war,BEARISH,MEDIUM,False,short,B2,26260.5,12.0,False,False,draw:LondonL,8.0,stop,26272.75,08:50,-12.25,-1.021,-250.0
+2026-01-28,Wednesday,09:08,premarket,E4war,BEARISH,MEDIUM,False,short,B2,26255.5,10.0,False,False,draw:LondonL,3.0,draw:LondonL,26252.5,09:08,3.0,0.3,55.0
+2026-01-28,Wednesday,09:40,intime,E4war,BEARISH,MEDIUM,False,short,B2,26244.0,20.0,True,False,draw:PDH,15.75,stop,26264.25,09:40,-20.25,-1.012,-410.0
+2026-01-28,Wednesday,09:43,intime,E4war,BEARISH,MEDIUM,True,long,A,26277.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,26257.5,09:47,-20.25,-1.012,-410.0
+2026-01-29,Thursday,08:39,premarket,E4war,BEARISH,MEDIUM,False,short,B2,26191.75,6.5,False,False,4R cap,26.0,stop,26198.5,08:41,-6.75,-1.038,-140.0
+2026-01-29,Thursday,08:50,premarket,E4war,BEARISH,MEDIUM,False,short,B,26193.25,5.75,False,False,4R cap,23.0,4R cap,26170.25,09:03,23.0,4.0,455.0
+2026-01-30,Friday,09:18,premarket,E3bal,BULLISH,MEDIUM,False,long,A,25836.25,9.75,False,False,4R cap,39.0,stop,25826.25,09:18,-10.0,-1.026,-205.0
+2026-01-30,Friday,09:19,premarket,E3bal,BULLISH,MEDIUM,False,long,A,25834.25,9.0,False,False,4R cap,36.0,stop,25825.0,09:21,-9.25,-1.028,-190.0
+2026-01-30,Friday,09:47,intime,E3bal,BULLISH,MEDIUM,False,long,A,25857.75,19.5,False,False,draw:LondonH,47.5,draw:LondonH,25905.25,09:50,47.5,2.436,945.0
+2026-01-30,Friday,09:50,intime,E3bal,BULLISH,MEDIUM,False,long,A,25892.25,54.0,False,True,draw:LondonH,13.0,draw:LondonH,25905.25,09:50,13.0,0.241,127.5
+2026-02-03,Tuesday,08:07,premarket,E4war,BULLISH,MEDIUM,False,long,A,25994.25,9.25,False,False,draw:LondonH,33.5,stop,25984.75,08:21,-9.5,-1.027,-195.0
+2026-02-03,Tuesday,08:21,premarket,E4war,BULLISH,MEDIUM,True,short,B,25988.5,6.75,False,False,4R cap (no draw in dir),27.0,stop,25995.5,08:26,-7.0,-1.037,-145.0
+2026-02-12,Thursday,08:15,premarket,E3bal,BEARISH,LOW,False,short,A,25328.25,20.5,False,False,draw:LondonL,15.25,stop,25349.0,08:30,-20.75,-1.012,-420.0
+2026-02-12,Thursday,08:32,premarket,E3bal,BEARISH,LOW,False,short,A,25347.5,5.75,False,False,4R cap,23.0,stop,25353.5,08:32,-6.0,-1.043,-125.0
+2026-02-12,Thursday,09:40,intime,E3bal,BULLISH,MEDIUM,False,long,A,25359.75,26.0,False,False,draw:equal-highs,11.87,draw:equal-highs,25371.62,09:40,11.87,0.457,232.4
+2026-02-17,Tuesday,08:31,premarket,E4war,BEARISH,MEDIUM,False,short,B2,24601.5,9.0,False,False,4R cap (no draw in dir),36.0,stop,24610.75,08:50,-9.25,-1.028,-190.0
+2026-02-17,Tuesday,09:28,premarket,E4war,BEARISH,MEDIUM,False,short,B2,24636.75,10.75,False,False,4R cap (no draw in dir),43.0,stop,24647.75,09:28,-11.0,-1.023,-225.0
+2026-02-18,Wednesday,09:52,intime,E4war,BEARISH,MEDIUM,False,short,B2,24813.5,20.0,True,False,draw:equal-lows,79.75,stop,24833.75,09:52,-20.25,-1.012,-410.0
+2026-02-19,Thursday,08:00,premarket,E4war,BEARISH,MEDIUM,False,short,B,24868.75,6.75,False,False,4R cap,27.0,stop,24875.75,08:02,-7.0,-1.037,-145.0
+2026-02-19,Thursday,09:17,premarket,E4war,BEARISH,MEDIUM,False,short,B2,24850.0,6.5,False,False,4R cap,26.0,stop,24856.75,09:19,-6.75,-1.038,-140.0
+2026-02-24,Tuesday,08:09,premarket,E4war,BULLISH,MEDIUM,False,long,B2,24837.5,14.75,False,False,draw:equal-highs,27.0,stop,24822.5,08:09,-15.0,-1.017,-305.0
+2026-02-24,Tuesday,08:11,premarket,E4war,BULLISH,MEDIUM,False,long,B2,24835.0,10.5,False,False,draw:equal-highs,29.5,stop,24824.25,08:13,-10.75,-1.024,-220.0
+2026-02-25,Wednesday,10:07,intime,E3bal,BULLISH,LOW,True,short,A,25321.25,22.75,False,False,4R cap (no draw in dir),91.0,stop,25344.25,12:47,-23.0,-1.011,-465.0
+2026-02-26,Thursday,08:03,premarket,E3bal,BEARISH,MEDIUM,False,short,A,25368.0,12.0,False,False,draw:LondonL,41.75,stop,25380.25,08:17,-12.25,-1.021,-250.0
+2026-02-26,Thursday,08:56,premarket,E3bal,BEARISH,MEDIUM,False,short,B,25383.25,17.75,False,False,draw:LondonL,57.0,draw:LondonL,25326.25,09:30,57.0,3.211,1135.0
+2026-02-26,Thursday,09:45,intime,E3bal,BEARISH,MEDIUM,False,short,A,25265.0,28.5,False,False,draw:AsiaL,0.25,draw:AsiaL,25264.75,09:45,0.25,0.009,0.0
+2026-02-26,Thursday,09:50,intime,E3bal,BEARISH,MEDIUM,False,short,A,25229.5,36.5,False,False,4R cap,146.0,4R cap,25083.5,10:14,146.0,4.0,2915.0
+2026-03-03,Tuesday,08:17,premarket,E3bal,BULLISH,MEDIUM,False,long,A,24554.5,14.75,False,False,4R cap,59.0,stop,24539.5,08:24,-15.0,-1.017,-305.0
+2026-03-03,Tuesday,08:57,premarket,E3bal,BULLISH,MEDIUM,False,long,A,24487.0,17.5,False,False,4R cap,70.0,stop,24469.25,09:03,-17.75,-1.014,-360.0
+2026-03-05,Thursday,09:41,intime,E3bal,BEARISH,MEDIUM,False,short,A,25063.25,33.75,False,False,draw:LondonL,90.0,stop,25097.25,09:41,-34.0,-1.007,-685.0
+2026-03-05,Thursday,09:42,intime,E3bal,BEARISH,MEDIUM,False,short,A,25084.5,19.0,False,False,4R cap,76.0,stop,25103.75,09:42,-19.25,-1.013,-390.0
+2026-03-06,Friday,09:44,intime,E4war,BEARISH,MEDIUM,True,long,A,24688.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,24667.75,09:45,-20.25,-1.012,-410.0
+2026-03-10,Tuesday,10:05,intime,E4war,BEARISH,MEDIUM,False,short,B2,24965.5,20.0,True,False,draw:LondonL,26.5,stop,24985.75,10:05,-20.25,-1.012,-410.0
+2026-03-10,Tuesday,10:06,intime,E4war,BEARISH,MEDIUM,False,short,B2,24988.25,20.0,True,False,draw:LondonL,49.25,draw:LondonL,24939.0,10:07,49.25,2.462,980.0
+2026-03-11,Wednesday,09:52,intime,E4war,BEARISH,MEDIUM,True,long,A,25023.75,20.0,True,False,draw:LondonH,29.5,draw:LondonH,25053.25,09:53,29.5,1.475,585.0
+2026-03-16,Monday,09:40,intime,E4war,BULLISH,LOW,False,long,B2,24899.0,20.0,True,False,4R cap,80.0,4R cap,24979.0,10:21,80.0,4.0,1595.0
+2026-03-17,Tuesday,08:25,premarket,E4war,BULLISH,MEDIUM,False,long,B2,24904.0,12.75,False,False,4R cap,51.0,4R cap,24955.0,09:06,51.0,4.0,1015.0
+2026-03-17,Tuesday,10:08,intime,E4war,BULLISH,MEDIUM,True,short,B,25065.0,20.0,True,False,4R cap (no draw in dir),80.0,stop,25085.25,10:35,-20.25,-1.012,-410.0
+2026-03-19,Thursday,10:11,intime,E4war,BEARISH,MEDIUM,False,short,B2,24490.25,20.0,True,False,4R cap,80.0,stop,24510.5,10:11,-20.25,-1.012,-410.0
+2026-03-26,Thursday,10:13,intime,E4war,BEARISH,MEDIUM,False,short,B2,24197.0,20.0,True,False,4R cap,80.0,stop,24217.25,10:15,-20.25,-1.012,-410.0
+2026-04-01,Wednesday,09:47,intime,E4war,BEARISH,MEDIUM,True,long,B2,24092.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,24072.5,09:47,-20.25,-1.012,-410.0
+2026-04-01,Wednesday,09:49,intime,E4war,BEARISH,MEDIUM,False,short,A,24071.75,15.25,False,False,draw:PDH,23.5,stop,24087.25,09:50,-15.5,-1.016,-315.0
+2026-04-06,Monday,08:15,premarket,E4war,BULLISH,LOW,False,long,B,24304.25,6.25,False,False,draw:PDH,22.5,stop,24297.75,08:20,-6.5,-1.04,-135.0
+2026-04-06,Monday,09:17,premarket,E4war,BULLISH,LOW,False,long,B2,24308.0,5.75,False,False,4R cap,23.0,stop,24302.0,09:18,-6.0,-1.043,-125.0
+2026-04-07,Tuesday,08:44,premarket,E4war,BEARISH,MEDIUM,False,short,B,24196.75,10.25,False,False,draw:equal-lows,39.13,stop,24207.25,08:44,-10.5,-1.024,-215.0
+2026-04-08,Wednesday,08:01,premarket,E4war,BULLISH,LOW,False,long,B,25220.25,11.0,False,False,draw:LondonH,25.0,draw:LondonH,25245.25,08:04,25.0,2.273,495.0
+2026-04-08,Wednesday,08:36,premarket,E4war,BULLISH,LOW,False,long,A,25197.75,6.0,False,False,4R cap (no draw in dir),24.0,stop,25191.5,08:36,-6.25,-1.042,-130.0
+2026-04-13,Monday,08:13,premarket,E4war,BEARISH,MEDIUM,False,short,A,25110.25,7.75,False,False,4R cap,31.0,stop,25118.25,08:14,-8.0,-1.032,-165.0
+2026-04-13,Monday,08:21,premarket,E4war,BEARISH,MEDIUM,False,short,A,25112.25,9.25,False,False,draw:PDH,18.5,stop,25121.75,08:23,-9.5,-1.027,-195.0
+2026-04-14,Tuesday,09:53,intime,E4war,BULLISH,MEDIUM,False,long,B2,25756.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,25736.5,09:55,-20.25,-1.012,-410.0
+2026-04-14,Tuesday,09:59,intime,E4war,BULLISH,MEDIUM,False,long,B2,25725.75,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),25805.75,10:29,80.0,4.0,1595.0
+2026-04-22,Wednesday,08:26,premarket,E4war,BULLISH,MEDIUM,False,long,B,26892.0,12.25,False,False,4R cap (no draw in dir),49.0,stop,26879.5,08:27,-12.5,-1.02,-255.0
+2026-04-29,Wednesday,09:17,premarket,E4war,BULLISH,MEDIUM,False,long,A,27240.25,5.75,False,False,4R cap,23.0,stop,27234.25,09:19,-6.0,-1.043,-125.0
+2026-04-29,Wednesday,09:41,intime,E4war,BULLISH,MEDIUM,False,long,A,27182.5,20.0,True,False,4R cap,80.0,stop,27162.25,09:45,-20.25,-1.012,-410.0
+2026-04-29,Wednesday,09:49,intime,E4war,BULLISH,MEDIUM,False,long,A,27180.5,20.0,True,False,4R cap,80.0,4R cap,27260.5,10:28,80.0,4.0,1595.0
+2026-05-01,Friday,09:02,premarket,E4war,BULLISH,MEDIUM,False,long,B2,27582.25,6.5,False,False,draw:AsiaL,8.75,draw:AsiaL,27591.0,09:03,8.75,1.346,170.0
+2026-05-01,Friday,09:03,premarket,E4war,BULLISH,MEDIUM,False,long,B2,27585.25,9.5,False,False,draw:AsiaL,5.75,draw:AsiaL,27591.0,09:03,5.75,0.605,110.0
+2026-05-06,Wednesday,09:17,premarket,E4war,BULLISH,MEDIUM,False,long,B2,28432.0,7.0,False,False,4R cap,28.0,stop,28424.75,09:17,-7.25,-1.036,-150.0
+2026-05-08,Friday,08:59,premarket,E4war,BULLISH,MEDIUM,False,long,B2,28918.25,10.25,False,False,4R cap (no draw in dir),41.0,stop,28907.75,08:59,-10.5,-1.024,-215.0
+2026-05-08,Friday,09:01,premarket,E4war,BULLISH,MEDIUM,False,long,B2,28915.75,11.5,False,False,4R cap (no draw in dir),46.0,stop,28904.0,09:04,-11.75,-1.022,-240.0
+2026-05-08,Friday,10:08,intime,E4war,BULLISH,MEDIUM,False,long,B2,29097.25,20.0,True,False,4R cap (no draw in dir),80.0,stop,29077.0,10:11,-20.25,-1.012,-410.0
+2026-05-11,Monday,08:35,premarket,E4war,BULLISH,MEDIUM,False,long,B2,29306.25,8.0,False,False,4R cap,32.0,stop,29298.0,08:38,-8.25,-1.031,-170.0
+2026-05-11,Monday,08:56,premarket,E4war,BULLISH,MEDIUM,False,long,B2,29293.5,13.25,False,False,4R cap,53.0,4R cap,29346.5,09:31,53.0,4.0,1055.0
+2026-05-12,Tuesday,08:56,premarket,E4war,BULLISH,MEDIUM,False,long,A,29223.0,5.75,False,False,draw:PDL,4.0,stop,29217.0,08:56,-6.0,-1.043,-125.0
+2026-05-12,Tuesday,08:58,premarket,E4war,BULLISH,MEDIUM,False,long,A,29222.25,8.25,False,False,draw:PDL,4.75,draw:PDL,29227.0,09:00,4.75,0.576,90.0
+2026-05-13,Wednesday,09:16,premarket,E4war,BULLISH,MEDIUM,False,long,A,29293.75,11.0,False,False,4R cap,44.0,stop,29282.5,09:29,-11.25,-1.023,-230.0
+2026-05-13,Wednesday,09:29,premarket,E4war,BULLISH,MEDIUM,False,long,A,29294.25,5.5,False,False,4R cap,22.0,stop,29288.5,09:29,-5.75,-1.045,-120.0
+2026-05-21,Thursday,08:52,premarket,E4war,BEARISH,MEDIUM,False,short,B2,29222.0,10.75,False,False,draw:LondonL,29.75,stop,29233.0,08:54,-11.0,-1.023,-225.0
+2026-05-21,Thursday,08:55,premarket,E4war,BEARISH,MEDIUM,False,short,B2,29223.75,9.75,False,False,draw:LondonL,31.5,draw:LondonL,29192.25,08:59,31.5,3.231,625.0
+2026-05-22,Friday,08:12,premarket,E4war,BEARISH,MEDIUM,False,short,B2,29499.25,7.75,False,False,4R cap,31.0,stop,29507.25,08:12,-8.0,-1.032,-165.0
+2026-05-22,Friday,08:30,premarket,E4war,BEARISH,MEDIUM,True,long,A,29550.0,14.75,False,False,4R cap (no draw in dir),59.0,4R cap (no draw in dir),29609.0,09:30,59.0,4.0,1175.0
+2026-05-27,Wednesday,10:07,intime,E4war,BEARISH,MEDIUM,True,long,B2,30070.75,20.0,True,False,4R cap (no draw in dir),80.0,stop,30050.5,10:07,-20.25,-1.012,-410.0
+2026-06-01,Monday,08:27,premarket,E4war,BULLISH,MEDIUM,False,long,B,30457.0,13.75,False,False,draw:AsiaL,13.25,stop,30443.0,08:30,-14.0,-1.018,-285.0
+2026-06-03,Wednesday,08:41,premarket,E4war,BULLISH,MEDIUM,False,long,B,30721.25,15.25,False,False,4R cap,61.0,stop,30705.75,08:55,-15.5,-1.016,-315.0
+2026-06-03,Wednesday,09:02,premarket,E4war,BULLISH,MEDIUM,False,long,B2,30720.75,8.25,False,False,4R cap,33.0,4R cap,30753.75,09:22,33.0,4.0,655.0
+2026-06-08,Monday,08:54,premarket,E4war,BULLISH,MEDIUM,False,long,B2,29474.0,11.75,False,False,4R cap,47.0,4R cap,29521.0,09:02,47.0,4.0,935.0
+2026-06-09,Tuesday,08:28,premarket,E4war,BULLISH,MEDIUM,False,long,B,29673.25,12.5,False,False,4R cap,50.0,4R cap,29723.25,08:32,50.0,4.0,995.0
+2026-06-09,Tuesday,09:18,premarket,E4war,BULLISH,LOW,False,long,B2,29707.25,5.25,False,False,draw:LondonH,20.25,stop,29701.75,09:18,-5.5,-1.048,-115.0
+2026-06-16,Tuesday,10:02,intime,E4war,BEARISH,MEDIUM,False,short,A,30820.0,20.0,True,False,draw:LondonL,22.25,draw:LondonL,30797.75,10:03,22.25,1.113,440.0
+2026-06-16,Tuesday,10:05,intime,E4war,BEARISH,MEDIUM,False,short,A,30830.75,20.0,True,False,draw:LondonL,33.0,stop,30851.0,10:08,-20.25,-1.012,-410.0
+2026-06-17,Wednesday,08:11,premarket,E4war,BEARISH,MEDIUM,True,long,A,30464.75,14.75,False,False,4R cap (no draw in dir),59.0,stop,30449.75,08:12,-15.0,-1.017,-305.0
+2026-06-17,Wednesday,08:12,premarket,E4war,BEARISH,MEDIUM,True,long,A,30455.0,8.0,False,False,4R cap (no draw in dir),32.0,stop,30446.75,08:12,-8.25,-1.031,-170.0
+2026-06-18,Thursday,09:06,premarket,E4war,BULLISH,LOW,False,long,A,30480.0,12.5,False,False,draw:LondonH,20.0,draw:LondonH,30500.0,09:11,20.0,1.6,395.0
+2026-06-18,Thursday,09:49,intime,E4war,BULLISH,LOW,False,long,A,30439.5,20.0,True,False,4R cap (no draw in dir),80.0,4R cap (no draw in dir),30519.5,09:52,80.0,4.0,1595.0
+2026-06-22,Monday,09:55,intime,E4war,BULLISH,LOW,False,long,B2,30852.75,20.0,True,False,4R cap,80.0,4R cap,30932.75,09:59,80.0,4.0,1595.0
+2026-06-22,Monday,10:12,intime,E4war,BULLISH,LOW,False,long,B2,30921.5,20.0,True,False,draw:PWH,54.0,stop,30901.25,10:14,-20.25,-1.012,-410.0
+2026-06-23,Tuesday,08:13,premarket,E4war,BEARISH,LOW,False,short,B2,29825.5,7.25,False,False,4R cap,29.0,4R cap,29796.5,08:17,29.0,4.0,575.0
+2026-06-26,Friday,08:03,premarket,E4war,BULLISH,MEDIUM,False,long,A,29375.75,11.75,False,False,4R cap,47.0,4R cap,29422.75,08:13,47.0,4.0,935.0
+2026-06-26,Friday,08:27,premarket,E4war,BULLISH,MEDIUM,False,long,A,29380.25,6.25,False,False,4R cap,25.0,stop,29373.75,08:27,-6.5,-1.04,-135.0
+2026-07-10,Friday,08:38,premarket,E4war,BEARISH,MEDIUM,False,short,B,29823.0,12.0,False,False,draw:AsiaL,18.75,stop,29835.5,08:39,-12.5,-1.042,-255.0
+2026-07-15,Wednesday,09:10,premarket,E4war,BEARISH,MEDIUM,False,short,B2,29970.5,9.5,False,False,4R cap,38.0,4R cap,29932.5,09:31,38.0,4.0,755.0
