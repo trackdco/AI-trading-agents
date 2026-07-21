@@ -4,8 +4,6 @@ month,date,window,fill_t,direction,dollars,win,risk_pts,cvd,open_vs_value,weekda
 2026-02,2026-02-10,pre,08:35,long,483.75,True,18.75,-232.0,in_value,Tuesday,True
 2026-02,2026-02-26,pre,08:09,short,18.75,True,8.5,44.0,in_value,Thursday,False
 2026-02,2026-02-26,pre,08:16,long,430.0,True,8.75,4.0,in_value,Thursday,False
-2026-02,2026-02-02,pre,08:01,short,-500.0,False,24.5,-26.0,in_value,Monday,True
-2026-02,2026-02-02,pre,08:17,short,-440.0,False,21.5,-55.0,in_value,Monday,True
 2026-02,2026-02-03,pre,08:20,long,-70.0,False,3.0,-4.0,in_value,Tuesday,True
 2026-02,2026-02-03,pre,08:21,long,-35.0,False,1.25,16.0,in_value,Tuesday,False
 2026-02,2026-02-17,pre,08:35,short,-310.0,False,14.25,-57.0,in_value,Tuesday,True
@@ -25,17 +23,14 @@ month,date,window,fill_t,direction,dollars,win,risk_pts,cvd,open_vs_value,weekda
 2026-03,2026-03-02,pre,08:35,short,917.5,True,10.0,-58.0,in_value,Monday,True
 2026-03,2026-03-05,pre,08:20,short,-25.0,False,1.5,4.0,in_value,Thursday,False
 2026-03,2026-03-05,pre,08:21,long,-260.0,False,11.75,-7.0,in_value,Thursday,True
-2026-03,2026-03-09,pre,08:55,short,-465.0,False,22.75,9.0,above_value,Monday,False
 2026-03,2026-03-12,pre,08:26,long,-405.0,False,19.0,10.0,in_value,Thursday,False
 2026-03,2026-03-12,pre,08:37,short,-400.0,False,18.75,-71.0,in_value,Thursday,True
 2026-03,2026-03-13,pre,09:13,long,-365.0,False,17.75,-56.0,in_value,Friday,True
 2026-03,2026-03-17,pre,08:26,long,2580.0,True,12.0,23.0,in_value,Tuesday,False
 2026-03,2026-03-19,pre,09:01,short,-260.0,False,12.5,-84.0,in_value,Thursday,True
-2026-03,2026-03-20,pre,08:06,long,1310.0,True,28.25,38.0,in_value,Friday,False
 2026-03,2026-03-24,pre,08:51,short,-240.0,False,11.5,39.0,in_value,Tuesday,False
 2026-03,2026-03-24,pre,08:59,long,-65.0,False,2.75,87.0,in_value,Tuesday,False
 2026-03,2026-03-25,pre,08:52,short,-230.0,False,11.0,48.0,in_value,Wednesday,False
-2026-03,2026-03-25,pre,08:55,long,-550.0,False,27.0,-97.0,in_value,Wednesday,True
 2026-03,2026-03-26,pre,09:28,short,-270.0,False,13.0,-3.0,below_value,Thursday,False
 2026-03,2026-03-31,pre,09:13,short,-65.0,False,2.75,37.0,in_value,Tuesday,False
 2026-03,2026-03-31,pre,09:16,short,-100.0,False,4.5,19.0,in_value,Tuesday,False
@@ -67,8 +62,6 @@ month,date,window,fill_t,direction,dollars,win,risk_pts,cvd,open_vs_value,weekda
 2026-04,2026-04-22,pre,08:29,short,-75.0,False,3.25,22.0,in_value,Wednesday,False
 2026-04,2026-04-22,pre,09:09,long,-15.0,False,0.25,-56.0,in_value,Wednesday,True
 2026-04,2026-04-23,pre,08:04,long,805.0,True,11.25,-42.0,above_value,Thursday,True
-2026-04,2026-04-23,pre,08:22,short,-495.0,False,23.5,-219.0,above_value,Thursday,True
-2026-04,2026-04-27,pre,08:25,short,420.0,True,25.5,-135.0,above_value,Monday,True
 2026-04,2026-04-29,pre,08:03,short,260.0,True,8.5,12.0,in_value,Wednesday,False
 2026-04,2026-04-29,pre,08:15,short,-305.0,False,14.75,-25.0,in_value,Wednesday,True
 2026-04,2026-04-30,pre,09:08,long,-170.0,False,8.0,75.0,above_value,Thursday,False
@@ -101,7 +94,6 @@ month,date,window,fill_t,direction,dollars,win,risk_pts,cvd,open_vs_value,weekda
 2026-05,2026-05-14,pre,09:18,long,-50.0,False,2.0,-53.0,in_value,Thursday,True
 2026-05,2026-05-15,pre,09:22,long,-125.0,False,5.75,109.0,in_value,Friday,False
 2026-05,2026-05-15,pre,09:24,short,-70.0,False,3.0,-111.0,in_value,Friday,True
-2026-05,2026-05-19,pre,09:08,short,30.0,True,47.0,-342.0,in_value,Tuesday,True
 2026-05,2026-05-21,pre,09:07,long,-150.0,False,7.0,11.0,below_value,Thursday,False
 2026-05,2026-05-21,pre,09:19,short,-280.0,False,13.5,60.0,below_value,Thursday,False
 2026-05,2026-05-22,pre,08:01,long,-185.0,False,8.75,39.0,in_value,Friday,False
@@ -126,7 +118,6 @@ month,date,window,fill_t,direction,dollars,win,risk_pts,cvd,open_vs_value,weekda
 2026-06,2026-06-01,pre,09:01,short,460.0,True,10.75,-16.0,in_value,Monday,True
 2026-06,2026-06-02,pre,08:05,long,-200.0,False,9.5,-30.0,in_value,Tuesday,True
 2026-06,2026-06-02,pre,08:10,long,-190.0,False,9.0,-39.0,in_value,Tuesday,True
-2026-06,2026-06-08,pre,08:55,long,475.0,True,21.75,66.0,above_value,Monday,False
 2026-06,2026-06-09,pre,08:29,long,1005.0,True,13.75,-85.0,in_value,Tuesday,True
 2026-06,2026-06-09,pre,09:20,short,-195.0,False,9.25,-16.0,in_value,Tuesday,True
 2026-06,2026-06-12,pre,08:15,short,1400.0,True,12.5,-9.0,in_value,Friday,True
@@ -139,7 +130,6 @@ month,date,window,fill_t,direction,dollars,win,risk_pts,cvd,open_vs_value,weekda
 2026-06,2026-06-19,pre,08:06,long,-15.0,False,0.25,4.0,in_value,Friday,False
 2026-06,2026-06-24,pre,08:06,short,-20.0,False,0.5,16.0,above_value,Wednesday,False
 2026-06,2026-06-24,pre,08:07,long,-260.0,False,12.5,-35.0,above_value,Wednesday,True
-2026-06,2026-06-25,pre,08:18,short,-430.0,False,20.25,-38.0,in_value,Thursday,True
 2026-06,2026-06-25,pre,09:08,short,550.0,True,19.25,-83.0,in_value,Thursday,True
 2026-06,2026-06-29,pre,08:53,short,-165.0,False,7.75,9.0,in_value,Monday,False
 2026-06,2026-06-29,pre,08:57,long,615.0,True,19.5,-18.0,in_value,Monday,True

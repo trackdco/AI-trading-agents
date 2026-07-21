@@ -13,9 +13,12 @@ from pathlib import Path
 
 import pandas as pd
 
-# Pre-market actual-stop cap (Angus 21 Jul). None = off (control, reproduces +$15,381).
-# PRE_MAX_STOP=20 enables it; PRE_BACKFILL=1 lets a passed slot be taken by the next setup.
-PRE_MAX_STOP = float(os.environ["PRE_MAX_STOP"]) if os.environ.get("PRE_MAX_STOP") else None
+# Pre-market actual-stop cap (Angus 21 Jul) — CANON: skip a pre-market trade whose REAL fill
+# puts the stop beyond 20pt ("stop too big -> more likely to lose than win"). Causal, fill-time.
+# Default 20; env PRE_MAX_STOP overrides (set "0"/off to reproduce the pre-cap +$15,381 control).
+# Backfill (a passed slot taken by the next setup) is verified moot — most days get no 2nd setup.
+_env = os.environ.get("PRE_MAX_STOP")
+PRE_MAX_STOP = (float(_env) if _env and float(_env) > 0 else None) if _env is not None else 20.0
 PRE_BACKFILL = os.environ.get("PRE_BACKFILL") == "1"
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
