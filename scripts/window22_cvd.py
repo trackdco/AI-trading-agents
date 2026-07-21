@@ -78,16 +78,31 @@ def main():
     delta = load_cvd_delta()
     J = build(allt, war, df, delta, vec)
     filt = load_selection_filters()
+    J["weekday"] = pd.to_datetime(J.date).dt.day_name()
+    J["gated_kept"] = J.index.isin(apply_selection_gate(J, filt).index)
+    J.to_csv("output/window22_trades.csv", index=False)
     print("\n### PER-WINDOW 2+2 CAPS, Feb-Jul 2026 ###")
     print("\n== ALL (pre-market 2 + golden 2), months-green ==")
     rep(J, "raw (no gate)")
     rep(J[J.cvd <= 0], "CVD absorption only (cvd<=0)")
-    rep(apply_selection_gate(J, filt), "shipped gate (below-val + cvd)")
+    G = apply_selection_gate(J, filt)
+    rep(G, "shipped gate (below-val + cvd)")
     print("\n== GOLDEN WINDOW 9:40-10:15 ONLY ==")
     g = J[J.window == "golden"]
     rep(g, "raw")
     rep(g[g.cvd <= 0], "CVD absorption only")
     rep(apply_selection_gate(g, filt), "shipped gate")
+
+    def dow(frame, title):
+        print(f"\n== DAY-OF-WEEK — {title} ==")
+        for wd in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
+            s = frame[frame.weekday == wd]
+            if len(s):
+                print(f"  {wd:9s} {len(s):3d}t  ${s.dollars.sum():+8,.0f}  win {s.win.mean() * 100:2.0f}%  "
+                      f"${s.dollars.mean():+5.0f}/t")
+    dow(G, "shipped gate, ALL (pre+golden)")
+    dow(G[G.window == "golden"], "shipped gate, GOLDEN 9:40-10:15 only")
+    dow(G[G.window == "pre"], "shipped gate, PRE-MARKET only")
 
 
 if __name__ == "__main__":
