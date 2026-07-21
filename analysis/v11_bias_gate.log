@@ -1,0 +1,32 @@
+v1.1 base: 100t  $+17,814  win 45.0%
+building bias timelines for 69 trade days ...
+  20/69 days
+  40/69 days
+  60/69 days
+
+=== CHAMPION v1.1 x NEW HTF BIAS ENGINE (bias in force at each fill) ===
+  v1.1 base (no bias gate)                   100t  win 45.0%  $ +17,814  green 5/6
+  GATE B soft: drop bias-OPPOSED trades       74t  win 43.2%  $ +10,637  green 4/6
+  GATE A hard: aligned only (no NEUTRAL)      23t  win 60.9%  $  +7,871  green 5/5
+
+  what the bias said at fill:
+      bias=BULLISH                            25t  win 64.0%  $  +9,947  green 5/5
+      bias=BEARISH                            24t  win 45.8%  $  +5,101  green 3/5
+      bias=NEUTRAL                            51t  win 35.3%  $  +2,766  green 3/6
+
+  informational splits:
+      OPPOSED trades (what B drops)           26t  win 50.0%  $  +7,178  green 4/5
+      aligned + HIGH/MEDIUM conviction        18t  win 61.1%  $  +6,601  green 5/5
+      aligned longs                           15t  win 66.7%  $  +7,192  green 5/5
+      aligned shorts                           8t  win 50.0%  $    +679  green 3/5
+
+  monthly, GATE B:
+month
+2026-02    3444.0
+2026-03     998.0
+2026-04    2770.0
+2026-05    -865.0
+2026-06    4805.0
+2026-07    -515.0
+
+saved v11_bias_gated.csv, bias_timelines.csv
