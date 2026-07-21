@@ -47,6 +47,7 @@ def build(allt, war, df, delta, vec):
                         continue
                     rows.append(dict(month=m, date=r.trade_date, window=_wname, fill_t=ft.strftime("%H:%M"),
                                      direction=r.direction, dollars=r.dollars, win=r.dollars > 0,
+                                     risk_pts=round(abs(r.entry - r.stop_initial), 2),
                                      # NEGATED: the repo's conviction() sign is inverted vs the
                                      # validated gate / committed journal (cvd<=0 == absorption).
                                      # Verified: negating reproduces 78t/+$14,351/41% exactly.
@@ -87,6 +88,16 @@ def main():
     rep(J[J.cvd <= 0], "CVD absorption only (cvd<=0)")
     G = apply_selection_gate(J, filt)
     rep(G, "shipped gate (below-val + cvd)")
+
+    # ANGUS 2026-07 (verbatim): "we should not be taking fucking trades with over a
+    # hundred points stop ... cut that from our dataset entirely." Structural stop only;
+    # this is an exclusion of the pathological wide stops, NOT a hard risk cap.
+    print("\n== >100pt STOP EXCLUSION (on the shipped gate) ==")
+    over = G[G.risk_pts > 100.0]
+    print(f"  cut {len(over)} trade(s) with stop >100pt  "
+          f"(${over.dollars.sum():+,.0f} removed)  stops: "
+          f"{sorted(over.risk_pts.round(0).astype(int).tolist(), reverse=True)}")
+    rep(G[G.risk_pts <= 100.0], "shipped gate + cut >100pt stops")
     print("\n== GOLDEN WINDOW 9:40-10:15 ONLY ==")
     g = J[J.window == "golden"]
     rep(g, "raw")
