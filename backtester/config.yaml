@@ -89,7 +89,7 @@ cvd:
 setups:
   A_reversal: true
   B_continuation: true
-  B2_poc_limit: true
+  B2_poc_limit: false   # KILLED — 15% win / PF 0.31 / -$33k; drags the whole strategy negative
 
 confluence:
   # Factors tracked & counted (spec §Confluence). HTF bias is mandatory & counted.
