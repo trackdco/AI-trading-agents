@@ -100,8 +100,14 @@ entry:
                                   #      Feb E1 +2.59R -> E3 +13.74R. E2 (wick 50%) barely fills.
                                   #      E1 = limit at BB MA / E2 = 50% of wick / E3 = penetrated level.
   min_stop_points: 6.0            # §5 — ANGUS pass-5 ruling 2026-07-17: was 10; too blunt once E3
-  post_open_min_stop: 10.0        # Tier-2 (Angus 20 Jul): post-open tape ~2.4x wider -> 10pt floor after
-                                  #   post_open_after. PENDING OOS validation. (ATR-scaled is the ideal form.)
+  post_open_min_stop: 30.0        # ANGUS 2026-07-21 CANON: golden-window (09:40+) MIN stop = 30 (was 10).
+                                  #   The 15-30pt golden band was an 8% win / -$7.7k bloodbath — too tight for
+                                  #   post-open volatility, gets wicked. Pre-market keeps its 6pt floor above.
+  # ANGUS 2026-07-21 CANON — HARD MAX STOP (never trade a stop you wouldn't; the missing max let the
+  # engine take 100-208pt stops at half size == the single biggest P&L leak). SESSION-SPECIFIC:
+  max_stop_points: 15.0           #   pre-market (before post_open_after) cap — tight, low-volatility session
+  post_open_max_stop: 50.0        #   golden window (09:40+) cap — 30-50 is profitable EVERY month; >70 bleeds.
+                                  #   [FAST-FOLLOW] 50-70 at HALF size on high-conviction (heatmap-defined) — pending.
                                   #      is active (reclaim entry sits near invalidation -> 7-9pt
                                   #      stops). 10 clipped his own tight-stop winners (Feb 20 08:06
                                   #      = 8.25pt; +12.98R Feb 25 monster = 9.0pt). 6 admits those;

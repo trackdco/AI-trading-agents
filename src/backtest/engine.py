@@ -110,6 +110,12 @@ class BacktestConfig(BaseModel):
     # (Both default off; the principled form is an ATR-scaled floor — this is the window-conditional stand-in.)
     post_open_after: dtime | None = None
     post_open_min_stop: float = 0.0
+    # ANGUS 2026-07-21 CANON: a HARD max stop (never trade a stop you wouldn't). max_stop_points
+    # caps before post_open_after (pre-market); post_open_max_stop caps the golden window after it.
+    # The missing max was the single biggest P&L leak — structural stops ran to 208pt (taken at half
+    # size instead of SKIPPED). Session-aware, exactly like the floor above.
+    max_stop_points: float | None = None
+    post_open_max_stop: float | None = None
     # Tier-2: sit out a volatile mid-session pocket (the 09:30-09:40 cash open bled 22% win, MFE 1.15).
     no_trade_start: dtime | None = None
     no_trade_end: dtime | None = None
@@ -170,6 +176,8 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         post_open_after=(_hhmm(c["sizing"]["post_open_after"])
                          if c.get("sizing", {}).get("post_open_after") else None),
         post_open_min_stop=c.get("entry", {}).get("post_open_min_stop", 0.0),
+        max_stop_points=c.get("entry", {}).get("max_stop_points"),
+        post_open_max_stop=c.get("entry", {}).get("post_open_max_stop"),
         no_trade_start=(_hhmm(c["session"]["no_trade_start"])
                         if c.get("session", {}).get("no_trade_start") else None),
         no_trade_end=(_hhmm(c["session"]["no_trade_end"])
@@ -874,6 +882,17 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             if risk < floor:
                 veto(t, "vetoed_min_stop",
                      f"stop {risk:.2f} pts < {floor:g} minimum (§5 v1.2)")
+                continue
+            # ANGUS 2026-07-21 CANON: HARD max stop — session-aware like the floor. The golden
+            # window's runaway 100-208pt structural stops were the single biggest P&L leak; they
+            # must be SKIPPED, never taken at half size. Pre-market caps tighter (its own session).
+            cap = cfg.max_stop_points
+            if (cfg.post_open_after is not None and tod >= cfg.post_open_after
+                    and cfg.post_open_max_stop is not None):
+                cap = cfg.post_open_max_stop
+            if cap is not None and risk > cap:
+                veto(t, "vetoed_max_stop",
+                     f"stop {risk:.2f} pts > {cap:g} maximum (ANGUS canon)")
                 continue
             tgt = resolve(t, limit, stop)
             if tgt is None:
