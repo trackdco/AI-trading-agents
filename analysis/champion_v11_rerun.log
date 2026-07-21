@@ -1,0 +1,39 @@
+triggers: 5141   war days: 690
+
+FRESH ENGINE RE-RUN, pre-cut superset: 143 trades  $+12,735  win 32.9%
+vs committed journal (146t): matched 139, only-in-rerun 4, only-in-frozen 7, $-mismatch among matched 0
+  only-in-rerun:
+        day  fill branch  dollars_new
+2026-02-02 08:01  E4war       -500.0
+2026-02-02 08:17  E4war       -440.0
+2026-02-03 08:20  E4war        -70.0
+2026-02-03 08:21  E4war        -35.0
+  only-in-frozen:
+        day  fill branch  dollars_frozen
+2026-02-02 08:22  E3bal         -165.00
+2026-02-03 08:21  E3bal          -30.00
+2026-02-03 08:26  E3bal         -135.00
+2026-02-04 09:31  E3bal          -10.00
+2026-02-04 09:39  E3bal          -95.00
+2026-02-13 09:57  E3bal          -10.00
+2026-02-13 10:04  E3bal          521.88
+
+=== CHAMPION v1.1 (fresh engine re-run + 3 cuts) ===
+trades 100 | win 44.0% | points +821.2 | dollars +16,518
+month
+2026-02    5302.0
+2026-03    4250.0
+2026-04    3705.0
+2026-05      10.0
+2026-06    3765.0
+2026-07    -515.0
+green months: 5/6
+
+FROZEN REFERENCE: 100t | 45.0% | +915.7 pts | +$17,814 | +6599/+4250/+3705/+10/+3765/-515 | 5/6
+
+ROUTING DRIFT (journal-implied book vs current regime vector): 4 day(s)
+   2026-02-02 journal=E3bal vector=WAR
+   2026-02-03 journal=E3bal vector=WAR
+   2026-02-04 journal=E3bal vector=WAR
+   2026-02-13 journal=E3bal vector=WAR
+saved champion_v11_rerun.csv
