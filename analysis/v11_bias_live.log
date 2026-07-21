@@ -1,0 +1,32 @@
+triggers 5141 over 117 days; building bias timelines ...
+  timelines 20/117
+  timelines 40/117
+  timelines 60/117
+  timelines 80/117
+  timelines 100/117
+gate pass rates: directional 2484/5141  aligned 1254/5141
+simulating DIRECTIONAL arm ...
+simulating ALIGNED arm ...
+
+=== TRUE RE-BACKTEST: v1.1 with LIVE bias gate on trigger flow (post-cuts) ===
+  BASE ungated (verified fresh re-run)         100t  win 44.0%  $ +16,518  green 5/6  $/t +165
+  LIVE GATE directional (any read, no NEUTRAL)  51t  win 51.0%  $ +13,481  green 5/5  $/t +264
+  LIVE GATE aligned-only                        32t  win 53.1%  $  +7,638  green 5/5  $/t +239
+
+  monthly, directional:
+  month
+  2026-02    2729.0
+  2026-03    6128.0
+  2026-04    2045.0
+  2026-05    1465.0
+  2026-06    1115.0
+
+  monthly, aligned:
+  month
+  2026-02     488.0
+  2026-03    2875.0
+  2026-04    1420.0
+  2026-05     275.0
+  2026-06    2580.0
+
+saved v11_live_directional.csv, v11_live_aligned.csv, bias_timelines_all.csv
