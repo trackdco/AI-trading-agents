@@ -1,0 +1,20 @@
+datetime_et,event,impact
+# Seed rows from the Feb 2026 reference journals (spec-1 §3). High-impact only.
+# The rest of 2026 is a TODO: fill from an economic-calendar export before live use.
+2026-02-02T10:00:00,ISM Manufacturing PMI,high
+2026-02-04T08:15:00,ADP Non-Farm Employment Change,high
+2026-02-04T10:00:00,ISM Services PMI,high
+2026-02-05T08:30:00,Unemployment Claims,high
+2026-02-05T10:00:00,JOLTS Job Openings,high
+2026-02-06T10:00:00,UoM Consumer Sentiment,high
+2026-02-10T08:30:00,Core Retail Sales,high
+2026-02-11T08:30:00,Non-Farm Employment Change,high
+2026-02-12T08:30:00,Unemployment Claims,high
+2026-02-13T08:30:00,CPI,high
+2026-02-17T08:30:00,Empire State Manufacturing Index,high
+2026-02-19T08:30:00,Unemployment Claims,high
+2026-02-20T08:30:00,Core PCE Price Index,high
+2026-02-20T09:45:00,Flash PMI,high
+2026-02-20T10:00:00,New Home Sales,high
+2026-02-26T08:30:00,Unemployment Claims,high
+2026-02-27T08:30:00,PPI,high

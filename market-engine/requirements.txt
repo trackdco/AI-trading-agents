@@ -1,0 +1,7 @@
+# Market Engine runtime deps. Pinned loosely; lock at deploy time.
+pandas>=2.2
+numpy>=1.26
+pydantic>=2.6
+PyYAML>=6.0
+zstandard>=0.22        # historical .csv.zst ingest
+databento>=0.34        # live GLBX.MDP3 feed (only imported when FEED=live)

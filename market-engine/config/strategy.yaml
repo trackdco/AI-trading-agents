@@ -1,0 +1,66 @@
+# Market Engine strategy config.
+# EVERY number here traces to a section (§) of strategy-definition-v1.0.md.
+# Values marked CALIBRATE are the documented STARTING values, NOT validated.
+# Nothing in this file has passed the §12 February calibration or the Step-4
+# parity sign-off. Treat all detections as uncalibrated until that happens.
+
+instrument:
+  symbol: "NQ"                 # §1
+  dataset: "GLBX.MDP3"         # CME Globex (Databento)
+  tick_size: 0.25              # glossary
+  point_value_nq: 20.0         # $/pt NQ (glossary)
+  point_value_mnq: 2.0         # $/pt MNQ (glossary)
+
+session:
+  tz: "America/New_York"       # spec-1 §0 — all timestamps tz-aware ET
+  entry_window:                # §1 W1 (primary)
+    start: "08:00"
+    end: "11:00"
+  ny_open: "09:30"             # NY session VWAP anchor (§2) — no NY VWAP before this
+  daily_anchor: "18:00"        # daily VWAP / profile anchor, CME daily open (§2)
+  kill_zone:                   # ICT NY AM kill zone (used for time-window field)
+    start: "09:30"
+    end: "11:00"
+
+entry_timeframes: [1, 2, 3, 5]  # minutes, §1
+context_timeframe: 15           # §1 HTF
+
+indicators:
+  bollinger:                    # §2
+    length: 20
+    stddev: 2.0
+  vwap_bands: [1.0, 2.0, 3.0]   # ±σ multiples, §2
+  volume_profile:
+    bin_pts: 1.0                # price-bin width for 1m-approximated profile (spec-1 §3)
+    value_area_pct: 0.70        # VAH/VAL 70% value area (glossary)
+
+clusters:
+  tolerance_pts: 10.0           # §3 CALIBRATE (start ~10 NQ pts / 0.04%)
+  min_confluence_with_trend: 2  # §7
+  min_confluence_counter_trend: 3  # §7
+
+triggers:
+  displacement_body_min: 0.60   # §3 B_min CALIBRATE (start 0.6)
+  displacement_atr_k: 1.0       # §3 optional size floor k×ATR(20) CALIBRATE
+  atr_length: 20
+  extreme_quartile: 0.25        # §3 close within extreme 25% of range
+
+structure:
+  swing_pivot_bars: 2           # fractal pivot half-width on 15m (documented rule)
+  overextension_band: 2.0       # §3 over-extension = touch of NY VWAP ±2σ
+  liquidity_equal_tol_pts: 3.0  # tolerance for "equal highs/lows" pooling
+
+targets:
+  front_run_pts: 2.5            # §6.4 F CALIBRATE (start 2-3 NQ pts)
+  rr_floor: 1.5                 # §6.5 CALIBRATE
+
+risk:
+  # These feed ONLY the null-by-default account fields; the Engine does not
+  # size trades (§11 — sizing/stops/targets are the Vault's job). Present so a
+  # downstream Vault can read a default, never applied by the Engine.
+  account_risk_percent_per_trade: null   # firewall: Engine does not know account
+  emit_sizing: false                     # keep §11 boundary; Vault fills sizing
+
+detection:
+  patterns: ["A", "B", "B2"]    # §4 mechanisms to detect
+  min_target_rr: 1.5            # skip candidates whose nearest valid target < floor

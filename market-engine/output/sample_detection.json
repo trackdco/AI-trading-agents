@@ -1,0 +1,110 @@
+{
+  "candidate_direction": "short",
+  "higher_timeframe_swing_sequence": [
+    {
+      "type": "swing_high",
+      "price": 25509.0,
+      "time": "2026-01-05T02:15:00-05:00"
+    },
+    {
+      "type": "swing_low",
+      "price": 25455.0,
+      "time": "2026-01-05T03:00:00-05:00"
+    },
+    {
+      "type": "swing_high",
+      "price": 25556.75,
+      "time": "2026-01-05T03:30:00-05:00"
+    },
+    {
+      "type": "swing_low",
+      "price": 25495.75,
+      "time": "2026-01-05T04:30:00-05:00"
+    },
+    {
+      "type": "swing_high",
+      "price": 25588.25,
+      "time": "2026-01-05T07:15:00-05:00"
+    },
+    {
+      "type": "swing_low",
+      "price": 25544.5,
+      "time": "2026-01-05T07:45:00-05:00"
+    }
+  ],
+  "price_position_in_range": {
+    "current": 25550.5,
+    "range_high": 25588.25,
+    "range_low": 25495.75
+  },
+  "upcoming_news_events": [],
+  "current_session": "NY",
+  "broad_risk_tone": {
+    "tone": "risk-on",
+    "derived_from": "NQ-internal proxy (15m HTF flag + session drift). Cross-asset inputs (yields/VIX/ES) not wired \u2014 pending a multi-instrument feed; treat as provisional.",
+    "htf_flag": "uptrend"
+  },
+  "liquidity_pool_swept": {
+    "pool": "buy-side liquidity at swept level",
+    "price": 25556.75,
+    "time": "2026-01-05T03:30:00-05:00",
+    "sweep_extreme": 25560.5
+  },
+  "liquidity_draw_target": {
+    "level": "VWAP mid",
+    "price": 25526.86
+  },
+  "entry_relative_to_sweep": "after",
+  "entry_trigger_type": "order_block",
+  "entry_price": 25557.1,
+  "trigger_zone": {
+    "low": 25559.5,
+    "high": 25560.5,
+    "coincident_levels": [
+      {
+        "type": "vwap_family",
+        "label": "daily VWAP +1\u03c3",
+        "price": 25557.59
+      },
+      {
+        "type": "poc",
+        "label": "daily POC",
+        "price": 25552.5
+      },
+      {
+        "type": "bb",
+        "label": "BB basis (MA)",
+        "price": 25557.1
+      }
+    ],
+    "distinct_confluence_types": 3
+  },
+  "spread_and_fill_data": {
+    "spread_pts": null,
+    "note": "Not observable from 1m OHLCV. Requires an L1/MBP feed (available in the live Databento path). Null by design."
+  },
+  "current_time_window": {
+    "time": "2026-01-05T08:06:00-05:00",
+    "kill_zone": "NY AM (09:30\u201311:00 ET)",
+    "in_kill_zone": false
+  },
+  "recent_volume_and_volatility": {
+    "volume_vs_avg": 1.15,
+    "regime": "directional",
+    "chop_flag": false
+  },
+  "setup_timing_alignment": {
+    "has_narrower_optimal_window": true,
+    "optimal_window": "09:30\u201310:30 ET AM impulse",
+    "current_matches": false
+  },
+  "stop_price": 25560.75,
+  "invalidation_price": 25560.5,
+  "target_price": 25526.86,
+  "playbook_match": {
+    "matched": true,
+    "pattern": "A",
+    "entry": "Pattern A \u2014 Reversal: over-extension / HTF range extreme \u2192 rejection block against the prior move \u2192 retest (strategy \u00a74).",
+    "with_trend": false
+  }
+}
