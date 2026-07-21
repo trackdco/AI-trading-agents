@@ -110,12 +110,6 @@ class BacktestConfig(BaseModel):
     # (Both default off; the principled form is an ATR-scaled floor — this is the window-conditional stand-in.)
     post_open_after: dtime | None = None
     post_open_min_stop: float = 0.0
-    # ANGUS 2026-07-21 CANON: a HARD max stop (never trade a stop you wouldn't). max_stop_points
-    # caps before post_open_after (pre-market); post_open_max_stop caps the golden window after it.
-    # The missing max was the single biggest P&L leak — structural stops ran to 208pt (taken at half
-    # size instead of SKIPPED). Session-aware, exactly like the floor above.
-    max_stop_points: float | None = None
-    post_open_max_stop: float | None = None
     # Tier-2: sit out a volatile mid-session pocket (the 09:30-09:40 cash open bled 22% win, MFE 1.15).
     no_trade_start: dtime | None = None
     no_trade_end: dtime | None = None
@@ -176,8 +170,6 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         post_open_after=(_hhmm(c["sizing"]["post_open_after"])
                          if c.get("sizing", {}).get("post_open_after") else None),
         post_open_min_stop=c.get("entry", {}).get("post_open_min_stop", 0.0),
-        max_stop_points=c.get("entry", {}).get("max_stop_points"),
-        post_open_max_stop=c.get("entry", {}).get("post_open_max_stop"),
         no_trade_start=(_hhmm(c["session"]["no_trade_start"])
                         if c.get("session", {}).get("no_trade_start") else None),
         no_trade_end=(_hhmm(c["session"]["no_trade_end"])
@@ -263,18 +255,6 @@ def _is_market_entry(cfg, trig) -> bool:
     50% (E5) instead of the E3 reclaim."""
     return cfg.entry_variant == "E4" or (
         cfg.entry_variant in ("EC", "EC2") and trig.kind == "displacement")
-
-
-def _stop_bounds(cfg, tod):
-    """Session-aware (floor, cap) for the structural stop, per ANGUS 2026-07-21 canon.
-    After post_open_after the golden-window floor/cap take over; before it, pre-market's."""
-    floor, cap = cfg.min_stop_points, cfg.max_stop_points
-    if cfg.post_open_after is not None and tod >= cfg.post_open_after:
-        if cfg.post_open_min_stop > floor:
-            floor = cfg.post_open_min_stop
-        if cfg.post_open_max_stop is not None:
-            cap = cfg.post_open_max_stop
-    return floor, cap
 
 
 def _round_tick(p: float, tick: float) -> float:
@@ -772,19 +752,6 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                                  f"market fill {fill_px} at/beyond stop {order.stop}")
                             order = None
                             fill_px = None
-                        if fill_px is not None and _is_market_entry(cfg, t):
-                            # ANGUS canon: cap the ACTUAL entry->stop risk (this bar's open is your
-                            # real entry, known when the bar opens — no lookahead). This is the cap
-                            # that matters for displacement entries, not the intended limit->stop.
-                            ar = abs(fill_px - order.stop)
-                            afloor, acap = _stop_bounds(cfg, tod)
-                            if ar < afloor or (acap is not None and ar > acap):
-                                st["fills"] -= 1
-                                veto(t, "vetoed_max_stop" if (acap is not None and ar > acap)
-                                     else "vetoed_min_stop",
-                                     f"actual stop {ar:.2f} pts outside [{afloor:g},{acap}] (market)")
-                                order = None
-                                fill_px = None
                         if fill_px is not None:
                             pos = _Pos(order=order, entry=fill_px, fill_ts=ts,
                                        stop=order.stop,
@@ -900,21 +867,14 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
             # §5 v1.2 (ANGUS calibration ruling 2026-07-17): structural stop must be at least
             # min_stop_points wide — tighter is a SKIP, never widened. Kills the 1-4 pt
             # coin-toss stops behind most of the Feb EXTRA losses ("give NQ breathing room").
-            # ANGUS 2026-07-21 CANON: session-aware min/max stop. For E3 (resting limit) the
-            # intended risk (limit->stop) == the actual fill risk, so cap it here. For a market/
-            # displacement entry the real entry is the NEXT bar's open (where Angus enters, giving
-            # the stop room) — the limit->stop here is the wrong reference, so its cap is applied on
-            # the ACTUAL fill->stop at fill time (see fill logic), not here.
-            floor, cap = _stop_bounds(cfg, tod)
-            if not _is_market_entry(cfg, t):
-                if risk < floor:
-                    veto(t, "vetoed_min_stop",
-                         f"stop {risk:.2f} pts < {floor:g} minimum (§5 v1.2)")
-                    continue
-                if cap is not None and risk > cap:
-                    veto(t, "vetoed_max_stop",
-                         f"stop {risk:.2f} pts > {cap:g} maximum (ANGUS canon)")
-                    continue
+            floor = cfg.min_stop_points
+            if (cfg.post_open_after is not None and tod >= cfg.post_open_after
+                    and cfg.post_open_min_stop > floor):
+                floor = cfg.post_open_min_stop        # Tier-2: wider floor for the volatile post-open
+            if risk < floor:
+                veto(t, "vetoed_min_stop",
+                     f"stop {risk:.2f} pts < {floor:g} minimum (§5 v1.2)")
+                continue
             tgt = resolve(t, limit, stop)
             if tgt is None:
                 veto(t, "vetoed_no_target", "no opposing level beyond entry (§6)")
