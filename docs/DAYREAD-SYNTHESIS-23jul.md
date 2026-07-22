@@ -74,3 +74,39 @@ and even that is +$858/+$0.
 - Chop features (`pm_eff_path`, `pm_crosses`) are non-stationary in level across years — use as
   within-day ranks, not fixed thresholds.
 - Portfolio runs both books concurrently (~2x capital).
+
+## ROUND 3 (24 Jul): the angles I had skipped — multivariate model + depth + sizing
+
+Angus called out that single-feature screens ≠ every angle. Correct. Three things I had not done:
+
+**1. Multivariate model.** HistGradientBoosting over all 60 flow features, walk-forward
+(TimeSeriesSplit, threshold/size decided on train only), target = sign of the portfolio's
+realized P&L per (day, window). The nonlinear combination beats every single feature:
+pre-window OOF-AUC **0.618** vs best single feature ~0.61 — and it climbs further with depth.
+
+**2. Order-book depth (the modality I ignored).** Extracted L2 book-imbalance / thickness /
+replenishment / thin-fraction per window from 174 days of 1-min snapshots
+(`scripts/depth_daywin.py`). Adding depth to the pre-window model lifts OOF-AUC **0.618 → 0.660**
+on the identical 106 days. Depth carries real, independent day-read signal — resting liquidity
+matters, exactly as expected.
+
+**3. The right eval (sizing, not a gate).** A binary skip@P≥0.5 still loses (overfits, too
+aggressive) — consistent with round 2. But using the model's probability as a **size multiplier**
+(full/0.6/0.25 by P(loss) tier, renormalized to avg 1 contract) beats ungated out-of-sample:
+
+| pre-window model | OOF-AUC | ungated | hard-skip | **sized** |
+|---|---|---|---|---|
+| flow-only, all days (n=148) | 0.580 | +$24,308 | +$11,985 | **+$27,802** |
+| flow-only, depth days (n=106) | 0.618 | +$10,426 | +$5,396 | +$15,908 |
+| **flow + depth, depth days (n=106)** | **0.660** | +$10,426 | +$5,836 | **+$18,578** |
+
+Depth-augmented sizing nearly **doubles** the pre-window P&L on its coverage (+$10.4k → +$18.6k),
+walk-forward. The correct use of the day-read is confirmed: **conviction sizing, not a skip
+switch** — and the richer the features (multivariate + depth), the more it pays.
+
+### Still open / honest limits
+- GOLD window is underpowered to model (only ~33-61 window-obs; the portfolio's B2 volume lives
+  in the pre window). Needs per-trade modeling or more data.
+- Depth covers 2025-H2 + Apr-2026 only; the 2026 depth folder for the rest of the year would let
+  this run full-span.
+- Small n (106-148 window-obs), walk-forward but not yet a true forward quarter.
