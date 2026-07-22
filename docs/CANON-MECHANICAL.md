@@ -108,8 +108,10 @@ hindsight. Every finding below verified by independent recompute + half-period s
 - Nulls: path efficiency dead; book-imbalance rotation dead; absorption does not rescue.
 
 **PRICED EXIT RULE (candidate, awaiting ruling): at 3min, if r ≤ −0.11R AND fw ≤ −13 → exit.**
-2025-fit thresholds frozen on 2026: +$1,624 (2025) / +$2,772 (2026) on the canon book;
-**flips Jul-Sep 2025 from −$1,698 to +$55**; over 2yrs cuts 47 losers, falsely cuts 6 winners.
+On the TRUE sized-canon basis (correction 25-Jul: the agents' first pricing used raw 1-lot
+dollars): +$1,494 (2025: 18,011→19,505) / +$2,369 (2026: 25,560→27,929); Jul-Sep −$1,157 → −$91
+(flat). Note: shipped canon Jul-Sep is −$1,157, not the pre-ship +$257 estimate — the Layer-0
+cap re-orders the daily ladder. Over 2yrs the rule cuts 47 losers, falsely cuts 6 winners.
 Flagged trades win 7%/11%. CRITICAL: only h=3 works — the same rule at 5/10min LOSES money
 (late exits lock in drawdown + forfeit recoveries). Exit P&L approximated as r_3-at-market;
 true engine implementation + holdout confirmation before full trust.
