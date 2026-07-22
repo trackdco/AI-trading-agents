@@ -22,7 +22,7 @@ DATA = Path("data/reference/nq_1m_feb_jul2026.parquet")
 def main():
     led = pd.read_csv("output/v07/chained2026/ledger.csv")
     act = dict(zip(led.day, led.act))  # day -> ROTATION/MOMENTUM/FLAT
-    allt = load(["output/triggers_feb_ob.csv", "output/triggers_marjul_ob.csv"])
+    allt = load(["output/triggers_feb_ob_v2.csv", "output/triggers_marjul_ob_v2.csv"])
     df = pd.read_parquet(DATA)
     base = load_backtest_config().model_copy(update={"win_start": dtime(8, 0), "win_end": dtime(10, 15),
                                                      "max_trades_per_day": 2})
