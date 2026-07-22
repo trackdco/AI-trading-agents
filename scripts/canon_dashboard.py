@@ -67,6 +67,31 @@ mm = T.groupby("mo").pl.sum()
 def fm(v): return f"{v:+,.0f}"
 def frac(s): return f"{s['w']}W-{s['l']}L"
 
+def qmetrics(d):
+    wins = d[d.pl > 0].pl; losses = d[d.pl < 0].pl
+    pf = wins.sum() / abs(losses.sum()) if len(losses) else float("inf")
+    rr = (d.dollars / (d.risk * 20)).replace([np.inf, -np.inf], np.nan)
+    aw = wins.mean() if len(wins) else 0; al = losses.mean() if len(losses) else 0
+    return pf, aw, al, (abs(aw / al) if al else 0), rr.mean(), d.pl.mean()
+
+qm_slices = [("ALL", T), ("2025", T[T.yr == 2025]), ("2026", T[T.yr == 2026]),
+             ("pre-market", T[T.win_ == "pre"]), ("golden", T[T.win_ == "gold"]),
+             ("Jul-Sep 25", JS), ("good months", good),
+             ("setup A", T[T.pattern == "A"]), ("setup B", T[T.pattern == "B"]),
+             ("setup B2", T[T.pattern == "B2"])]
+rows_qm = "\n".join(
+    (lambda pf, aw, al, po, r, ex:
+     f"<tr><td>{nm}</td><td class='mono'>{pf:.2f}</td><td class='mono gwin'>{aw:+.0f}</td>"
+     f"<td class='mono gloss'>{al:+.0f}</td><td class='mono'>{po:.2f}</td>"
+     f"<td class='mono'>{r:+.2f}</td><td class='mono {'gwin' if ex>=0 else 'gloss'}'>{ex:+.0f}</td></tr>")(*qmetrics(d))
+    for nm, d in qm_slices if len(d))
+
+jsd = JS.groupby("day").pl.sum().nsmallest(8)
+rows_jsd = "\n".join(
+    f"<tr><td class='mono'>{day}</td><td class='mono gloss'>{v:+,.0f}</td>"
+    f"<td>{'; '.join(f'{r.win_}/{r.pattern} s{int(r.score)} {r.direction} ${r.pl:+.0f}' for r in JS[JS.day==day].itertuples())}</td></tr>"
+    for day, v in jsd.items())
+
 BAR_MAX = max(abs(mm.min()), mm.max())
 def bar(v):
     pct = abs(v) / BAR_MAX * 100
@@ -211,6 +236,26 @@ problem (win small / lose big in dead tape), not a win-rate or window-selection 
 <tr><th>check</th><th class="mono">on: n @ WR</th><th class="mono">off: n @ WR</th><th class="mono">gap</th></tr>
 {rows_chk}
 </table></div>
+
+<h2>Quality metrics — profit factor, R, payoff</h2>
+<div class="tw"><table>
+<tr><th>slice</th><th class="mono">PF</th><th class="mono">avg win</th><th class="mono">avg loss</th><th class="mono">payoff</th><th class="mono">avg R</th><th class="mono">expectancy/t</th></tr>
+{rows_qm}
+</table></div>
+<div class="note">Golden's profit factor (1.73) trails pre-market (2.12) because golden losers are
+half again as big (−$459 vs −$241) — the payoff-shape issue localized above. Jul–Sep is the only
+slice with PF &lt; 1 (0.85). Setup B is the workhorse (PF 2.39, payoff 2.86); A has positive
+expectancy but inverted payoff (0.66) — small winners, occasional big losers, n=15.</div>
+
+<h2>Jul–Sep: the most unprofitable days (canon)</h2>
+<div class="tw"><table>
+<tr><th>day</th><th class="mono">$</th><th>trades</th></tr>
+{rows_jsd}
+</table></div>
+<div class="note"><b>The old nightmare is now a string of small cuts.</b> Worst Jul–Sep day under
+canon: −$915 (a single score-5 golden B short on Aug 6 — highest conviction, still lost; chop
+doesn't care). Second worst −$445. Nothing else reaches −$350. The bleed is no longer
+concentrated or rule-breaking — it's the residual cost of participating in dead tape.</div>
 
 <h2>Layer activity &amp; extremes</h2>
 <div class="note">Layer 2b (trade #2+ needs ≥4) skipped <b>{l2b}</b> trades ·
