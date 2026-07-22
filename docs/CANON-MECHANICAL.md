@@ -107,7 +107,7 @@ hindsight. Every finding below verified by independent recompute + half-period s
 - Winner mirror: in profit early, MAE <0.37R, book building — winners are never stressed.
 - Nulls: path efficiency dead; book-imbalance rotation dead; absorption does not rescue.
 
-**PRICED EXIT RULE (candidate, awaiting ruling): at 3min, if r ≤ −0.11R AND fw ≤ −13 → exit.**
+**PRICED EXIT RULE — SHIPPED 25-Jul as Layer 2d (Angus ruling): at 3min, if r ≤ −0.11R AND fw ≤ −13 → exit.**
 On the TRUE sized-canon basis (correction 25-Jul: the agents' first pricing used raw 1-lot
 dollars): +$1,494 (2025: 18,011→19,505) / +$2,369 (2026: 25,560→27,929); Jul-Sep −$1,157 → −$91
 (flat). Note: shipped canon Jul-Sep is −$1,157, not the pre-ship +$257 estimate — the Layer-0
@@ -115,3 +115,12 @@ cap re-orders the daily ladder. Over 2yrs the rule cuts 47 losers, falsely cuts 
 Flagged trades win 7%/11%. CRITICAL: only h=3 works — the same rule at 5/10min LOSES money
 (late exits lock in drawdown + forfeit recoveries). Exit P&L approximated as r_3-at-market;
 true engine implementation + holdout confirmation before full trust.
+
+## CANON AS SHIPPED (final stack, 25-Jul)
+
+Stop 7-60pt → 5-check validation → ladder sizing → trade#2+ needs ≥4 → **3-min in-trade cut**
+→ within-day escalation (structure required when red, A exempt; −$400 day stop) → governor.
+
+**2025 +$19,375 · 2026 +$27,711 · Jul-Sep −$91 · 11/13 months green · worst month −$981 ·
+maxDD $2.0k/$2.2k · WR 41%/46%.** In-trade cut fired 54 times. All layers results-based or
+2025-frozen; 2023/24 random-day holdout is the standing validation gate for everything.

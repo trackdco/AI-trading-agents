@@ -19,6 +19,11 @@ Layer 2c ESCALATION : within-day ladder (ANGUS 25-Jul ruling, results-based, no 
                       day running P&L < 0  -> entries require BOTH structure checks (W+T),
                       A-setups exempt (reversals thrive in bad tape);
                       day running P&L <= -$400 -> sit out the rest of the day.
+Layer 2d IN-TRADE   : 3-minute cut (ANGUS 25-Jul ruling): if at fill+3min the trade is
+                      >=0.11R underwater AND net delta since fill runs >=13 against the
+                      position -> exit at market (realized = r_3). Thresholds = 2025 q40,
+                      frozen. Flagged trades win 7%/11%; 47 losers vs 6 winners cut over 2yrs.
+                      ONLY the 3-min horizon works — 5/10min exits lose money.
 Layer 3  GOVERNOR   : trailing-15 confirmed-trade (score>=4) win rate < 0.35 -> all sizes x0.5
                       (results-based; uses only past trades)
 
@@ -47,9 +52,19 @@ def build_canon(T):
     T["C"] = np.where(T.win_ == "pre", (T.conf_PM == 1), (T.conf_LON == 1)).astype(float)
     T = T[(T.risk >= 7) & (T.risk <= 60)].sort_values("fill").reset_index(drop=True)
     T["score"] = T[["W", "F", "Tp", "G", "C"]].sum(axis=1)
+    # Layer 2d: 3-minute in-trade cut -> effective realized dollars for everything downstream
+    try:
+        I = pd.read_parquet("output/intrade_matrix.parquet")[["day", "book", "fill", "r_3", "fw_3"]]
+        T = T.merge(I, on=["day", "book", "fill"], how="left")
+        cut = (T.r_3 <= -0.1106) & (T.fw_3 <= -13)
+        T["cut3"] = cut.fillna(False)
+        T["eff_dollars"] = np.where(T.cut3, T.r_3 * T.risk * 20, T.dollars)
+    except FileNotFoundError:
+        T["cut3"] = False
+        T["eff_dollars"] = T.dollars
     T["size"] = np.select([T.score <= 2, T.score == 3, T.score == 4, T.score == 5], [0, .5, 1, 1.5])
     hi = T[T.score >= 4].reset_index()
-    hi["trailWR"] = hi.dollars.gt(0).rolling(15).mean().shift(1)
+    hi["trailWR"] = hi.eff_dollars.gt(0).rolling(15).mean().shift(1)
     trail = dict(zip(hi["index"], hi.trailWR))
     cur = np.nan
     gov = []
@@ -65,7 +80,7 @@ def build_canon(T):
     T["nth"] = nth.reindex(T.index)
     esc = (T["nth"] >= 2) & (T.score < 4)
     T.loc[esc.fillna(False), "size"] = 0.0
-    T["pl"] = T.dollars * T["size"] * T.governor
+    T["pl"] = T.eff_dollars * T["size"] * T.governor
     # Layer 2c: within-day escalation ladder (react to realized losses only)
     T["struct"] = T.W + T.Tp
     live = T[T["size"] > 0].sort_values("fill")
@@ -80,7 +95,7 @@ def build_canon(T):
             if daypl <= -400:
                 out = True
     T.loc[drop, "size"] = 0.0
-    T["pl"] = T.dollars * T["size"] * T.governor
+    T["pl"] = T.eff_dollars * T["size"] * T.governor
     return T
 
 
