@@ -253,14 +253,19 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
                 continue
             regime = _regime_from_ind(df_1m, t)
             htf = _htf_flag(regime, res["direction"])
+            # ANGUS 22-Jul taxonomy correction. A/B is NOT rejection-vs-displacement (candle
+            # shape); it is what price does at the structural level + trend context:
+            #   CLOSE-THROUGH (displacement): A = reversal — the close-through reverses a ±2
+            #     over-extension (the trade-direction candle reached the ±2 band) OR is
+            #     counter-trend; B = with-trend continuation otherwise.
+            #   REJECTION (wick in, close back): B2 — fade off the level, either HTF direction.
             if res["kind"] == "displacement":
-                pattern = "B"
-            elif _over_extended(fr.iloc[i], ind, res["direction"], oe_sigma) or htf == "counter_trend":
-                pattern = "A"
-            elif htf == "with_trend":
-                pattern = "B2"
+                if _over_extended(fr.iloc[i], ind, res["direction"], oe_sigma) or htf == "counter_trend":
+                    pattern = "A"     # counter-trend reversal / reversing a ±2 extension
+                else:
+                    pattern = "B"     # with-trend continuation
             else:
-                pattern = "unclassified"  # range regime, no over-extension — §4 silent (flagged)
+                pattern = "B2"        # rejection at a level = fade (with- or counter-HTF)
             g = res.get("cluster")
             center = round(sum(p for _, p, _ in g) / len(g), 4) if g else res["entry_ref"]
             ctypes = sorted({typ for _, _, typ in g}) if g else []
