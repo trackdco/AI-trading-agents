@@ -21,12 +21,14 @@ Definitions (strategy-definition §3/§4; interpretive choices flagged in progre
   * entry_ref: rejection block → near cluster edge; displacement → the penetrated cluster
     level NEAREST the candle's close (§5 E3). E1's BB MA and E2's wick-50% are derived by
     Step 7 from indicators / the wick fields — entry_ref is the E3 reference only.
-  * Pattern (§4): displacement → B (reclaim). Rejection block → A (reversal) if
-    over-extended IN THE REJECTED DIRECTION (short: high ≥ NY VWAP +kσ; long: low ≤ −kσ;
-    k = ``triggers.over_extension_sigma``) or counter-trend; B2 (continuation) when
-    with-trend; otherwise (range regime, no over-extension) → "unclassified" — §4
-    authorizes neither A nor B2 there, so the case is tagged explicitly for Angus
-    rather than silently folded into A.
+  * Pattern (§4, ANGUS 22-Jul taxonomy — NOT candle shape). Universal entry is a limit on the
+    RETEST of the closest structural level (POC / daily-VWAP dev band / BB MA). The tag is the
+    CONTEXT of the close-through, not rejection-vs-displacement:
+      A  = REVERSAL: a close-through that reverses a recent ±2 DAILY-VWAP over-extension
+           (counter-trend). See the ±2-touch logic in the classifier below.
+      B  = CONTINUATION: a with-trend close-through/displacement off a stacked confluence.
+      B2 = REJECTION / FADE: wick into a level, close back, fade off it (either HTF direction).
+    Order blocks are NOT part of the strategy. See docs/STRATEGY-SETUP-TAXONOMY.md.
   * HTF flag: with_trend / counter_trend / range, from the 15m regime vs trade direction.
   * No forming bars: resampled frames drop any trailing bin not fully covered by closed 1m
     data, so prefix replays can never evaluate a partial candle as closed (spec-1 §3).
