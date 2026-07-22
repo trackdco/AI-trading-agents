@@ -29,33 +29,42 @@ NY = "America/New_York"
 OUT = Path("output/fe_full"); OUT.mkdir(parents=True, exist_ok=True)
 
 GUIDE = """
-## HOW TO READ THIS BRIEFING (two-phase, READ CAREFULLY)
+## HOW TO READ THIS BRIEFING (two-phase; YOUR DEFAULT IS TO TRADE)
 
-Your decision time is 09:50 ET. Work in TWO PHASES and report both:
+Decision time is 09:40 ET. YOUR JOB IS TO PICK THE BOOK for the day, not to find reasons to sit
+out. On this desk the genuinely tradeable days already pay well; the single costliest mistake is
+hiding from them. So TRADE THE READ unless a specific, named no-trade signature is present.
 
-PHASE 1 -- PRE-MARKET THESIS (everything except `opening_tape`): form the regime read you would
-have committed to at 09:30. Record it in `premarket_regime` / `premarket_stand_down`.
+The book you pick is encoded in `regime`:
+  E3 book (reversal / limit at a level)     -> regime = "balance" or "trap"
+  E4 book (displacement / momentum thru lvl) -> regime = "war"
+Every day is an LTF reversal into HTF continuation; both books are reversals at a level, so
+"nothing is happening" is almost never the right read.
 
-PHASE 2 -- RE-READ AT 09:50 (`opening_tape`): the first 20 minutes of tape are evidence about
-whether your pre-market thesis is PLAYING OUT or FAILING. Do not carry a pre-market thesis into
-the day unchanged if the tape contradicts it. Set `revised=true` whenever the tape changed your
-regime, bias, stand-down, or size.
+PHASE 1 -- PRE-MARKET THESIS (everything EXCEPT `opening_tape`): commit the book you would arm at
+09:30 (`premarket_regime`, `premarket_stand_down`). Lean toward a book; do not default to flat.
 
-How to weigh the signals (validated on out-of-fit data):
-- `premarket_flow` flat / mid-pack vs recent -> no one committed pre-open -> chop risk, lean
-  stand-down or reduced size. Strong one-sided flow -> supports trading the aligned book.
-- `opening_tape.book_coil` HIGH percentile (balanced bid/ask depth) AND
-  `opening_tape.flow_price_absorption` HIGH percentile (aggressive flow NOT moving price) is the
-  single most reliable no-trade/chop signature we have measured. Both high -> stand down or 0.25.
-- `open_drive` CONFIRMING strong pre-market flow -> initiative continuation, supports the
-  momentum book. Open drive CONTRADICTING pre-market flow -> exhaustion/trap risk, cut size.
-- Developing value (`dev_profile`): price accepting inside a narrow developing value -> rotation
-  lean; price driving and holding outside developing value -> imbalance/momentum lean.
-- Conflicting evidence -> lower size_multiplier / confidence, do not average to a coin flip.
+PHASE 2 -- 09:40 RE-READ (`opening_tape`, first 10 min of RTH): use it to CONFIRM or FLIP the
+book and to set conviction. This is about direction and size, NOT about finding an excuse to
+stand down. Set `revised=true` if the tape changed your book, bias, or size.
 
-Final fields (`regime`, `directional_bias`, `stand_down`, `size_multiplier`, `confidence`) are
-your 09:50 verdict, sized by conviction: 1.0 only when evidence stacks one way; 0.5 mixed but
-tradeable; 0.25 thin; stand_down/0 when the day has no edge.
+STAND DOWN ONLY IF the one validated no-trade signature is present:
+    `opening_tape.book_coil.pctile_vs_recent` is HIGH (>= ~70)
+    AND `opening_tape.flow_price_absorption.pctile_vs_recent` is HIGH (>= ~70)
+  i.e. the book is balanced AND aggressive flow is NOT moving price = genuine two-sided chop.
+  BOTH must be high. A flat `premarket_flow`, a single soft signal, or a red-folder event is NOT
+  a stand-down -- those adjust DIRECTION or SIZE, they never flatten the day on their own.
+
+SIZE BY CONVICTION -- full size is the NORM, not the reward:
+  1.0  -> pre-market thesis and the 09:40 tape AGREE on a book (this is the default case)
+  0.5  -> thesis and tape genuinely conflict, or the read is mixed but still tradeable
+  0.25 -> only one book barely favoured, low conviction, but NOT the no-trade signature
+  0 / stand_down -> ONLY the coil-AND-absorption signature above
+Do not reflexively pick 0.25. If you have a book and no chop signature, size it 1.0.
+
+Pick DIRECTION with flow: strong one-sided `premarket_flow` + confirming `open_drive` = momentum
+(E4) aligned; flat flow = lean reversion (E3) or trim size, do NOT stand down. Developing value:
+price driving and holding outside value = E4/war; rotating inside narrow value = E3.
 """
 
 
@@ -120,21 +129,21 @@ def main():
     labels = []
     for day in days:
         lrow = L[L.day == day]
-        g = df[(df.d == day) & (df.hm >= 570) & (df.hm < 590)].sort_values("hm")   # 09:30-09:50 bars
-        if lrow.empty or len(g) < 15:
+        g = df[(df.d == day) & (df.hm >= 570) & (df.hm < 580)].sort_values("hm")   # 09:30-09:40 bars
+        if lrow.empty or len(g) < 8:
             continue
-        # --- opening tape features ---
+        # --- opening tape features (09:30-09:40 re-read) ---
         c = cvd[(cvd.index >= pd.Timestamp(f"{day} 09:30", tz=NY)) &
-                (cvd.index < pd.Timestamp(f"{day} 09:50", tz=NY))]
+                (cvd.index < pd.Timestamp(f"{day} 09:40", tz=NY))]
         cm = c.groupby(c.index.floor("min")).sum()
         ret = (g.close - g.open).values
         dlt = pd.Series(g.ny.dt.floor("min").values).map(cm).fillna(0).values
         absorp = (-np.corrcoef(ret, dlt)[0, 1]) if np.std(ret) > 0 and np.std(dlt) > 0 else 0.0
         coil = float(SF.coil.get(day, np.nan))
-        orange = float(g[g.hm < 580].high.max() - g[g.hm < 580].low.min())
+        orange = float(g.high.max() - g.low.min())
         premkt = float(pre_by_day.get(day, np.nan))
         drive = float(drv_by_day.get(day, 0.0))
-        g45 = g[g.hm < 585]
+        g45 = g
         try:
             P = volume_profile(g45[["ts_event", "high", "low", "volume"]], 0.25, 70)
             px45 = float(g45.close.iloc[-1])
@@ -155,7 +164,7 @@ def main():
         b["premarket_flow"] = {"window": "08:00-09:30 ET", "net_delta": int(premkt),
                                "vs_recent": rank_label(premkt, hist["premkt"])}
         b["opening_tape"] = {
-            "window": "09:30-09:50 ET (your re-read)",
+            "window": "09:30-09:40 ET (your re-read)",
             "open_drive_0930_0940_delta": int(drive),
             "book_coil": {"value": None if coil != coil else round(coil, 3),
                           "pctile_vs_recent": pct_rank(coil, hist["coil"]),
