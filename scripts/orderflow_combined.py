@@ -54,7 +54,7 @@ def main():
     dmed = fp.groupby(fp.index.strftime("%Y-%m-%d %H:%M")).volume.sum()
     dmed = dmed.groupby(dmed.index.str[:10]).median()
     pcvd = premkt_cvd()
-    S["fillmi"] = pd.to_datetime(S.fill, utc=True).dt.tz_convert(NY).dt.floor("min")
+    S["fillmi"] = pd.to_datetime(S.fill, utc=True, format="mixed").dt.tz_convert(NY).dt.floor("min")
     ab, dd, im = [], [], []
     for t in S.itertuples():
         try:
