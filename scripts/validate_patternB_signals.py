@@ -45,6 +45,8 @@ def stacked_imb(wf, direction):
 
 
 def reconstruct(months, trig_src, df):
+    # EXACT chained_trades.py method: full-context segment (seg = df up to month end), _ob triggers,
+    # both books, all pattern-B. No lookback truncation (that starved the engine last time).
     base = load_backtest_config().model_copy(update={"win_start": dtime(8,0), "win_end": dtime(10,15),
                                                      "max_trades_per_day": 2})
     cfg_e3, cfg_e4 = books(base)
@@ -53,8 +55,7 @@ def reconstruct(months, trig_src, df):
         trigs = [t for t in trig_src if t.ts[:7] == m]
         if not trigs: continue
         end = pd.Timestamp((pd.Timestamp(m+"-01", tz=NY)+pd.offsets.MonthBegin(1)).tz_localize(None), tz=NY)
-        start = pd.Timestamp((pd.Timestamp(m+"-01")-pd.Timedelta(days=25)), tz=NY)
-        seg = df[(df.ts_event>=start)&(df.ts_event<=end)].reset_index(drop=True)
+        seg = df[df.ts_event <= end].reset_index(drop=True)
         for book, cfg in (("E3",cfg_e3),("E4",cfg_e4)):
             tr,_,_ = simulate(seg, trigs, cfg)
             for r in tr:
@@ -100,25 +101,28 @@ def breakdown(B, label):
 
 
 def main():
-    df = pd.read_parquet("data/reference/nq_1m_master.parquet")
     fp = load_fp_all()
     dmed = fp.groupby(fp.index.strftime("%Y-%m-%d %H:%M")).volume.sum()
     dmed = dmed.groupby(dmed.index.str[:10]).median()
-    t2325 = load(["output/triggers_hist2326_ob.csv"])       # covers 2025
-    t26 = load(["output/triggers_fullsession.csv"])          # 2026-02..07
+    # CONSISTENT _ob trigger sources + full-context data, matching the real chained_trades substrate
+    df25 = pd.read_parquet("data/reference/nq_1m_master.parquet")
+    df25 = df25[df25.ts_event >= pd.Timestamp("2025-03-01", tz=NY)].reset_index(drop=True)
+    df26 = pd.read_parquet("data/reference/nq_1m_feb_jul2026.parquet")   # what chained_trades used
+    t2325 = load(["output/triggers_hist2326_ob.csv"])                     # _ob, covers 2025
+    t26 = load(["output/triggers_feb_ob.csv", "output/triggers_marjul_ob.csv"])  # _ob, matches chained
     M25 = [f"2025-{mm:02d}" for mm in range(6,13)]
     M26 = [f"2026-{mm:02d}" for mm in range(2,8)]
-    c25, c26 = Path("output/pB_raw_2025.parquet"), Path("output/pB_raw_2026.parquet")
+    c25, c26 = Path("output/pB_raw_2025b.parquet"), Path("output/pB_raw_2026b.parquet")
     if c25.exists():
         R25 = pd.read_parquet(c25)
     else:
-        print("reconstructing 2025 H2 pattern-B trades...")
-        R25 = reconstruct(M25, t2325, df); R25.to_parquet(c25)
+        print("reconstructing 2025 H2 pattern-B trades (full context, _ob)...")
+        R25 = reconstruct(M25, t2325, df25); R25.to_parquet(c25)
     if c26.exists():
         R26 = pd.read_parquet(c26)
     else:
-        print("reconstructing 2026 pattern-B trades...")
-        R26 = reconstruct(M26, t26, df); R26.to_parquet(c26)
+        print("reconstructing 2026 pattern-B trades (full context, _ob)...")
+        R26 = reconstruct(M26, t26, df26); R26.to_parquet(c26)
     print(f"raw pattern-B trades: 2025 {len(R25)}, 2026 {len(R26)} -> computing signals...")
     B25 = add_signals(R25, fp, dmed)
     B26 = add_signals(R26, fp, dmed)
