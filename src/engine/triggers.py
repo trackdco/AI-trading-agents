@@ -52,6 +52,8 @@ _TF_RANK = {"1min": 1, "2min": 2, "3min": 3, "5min": 5, "15min": 15}
 _ONE_MIN = pd.Timedelta(minutes=1)
 _VWAP_TOUCH_TOL = 0.5   # ANGUS pass-6: 2-tick tolerance for "the wick reached the VWAP band"
 _OB_LOOKBACK = 3        # ANGUS pass-22: bars scanned back for the opposite-colored OB partner
+_EXT_LOOKBACK = 10      # ANGUS 22-Jul: entry-TF bars scanned back for the ±2 over-extension that
+                        # a displacement must reverse to be tagged A (else B / continuation)
 
 
 def _order_block(fr: pd.DataFrame, i: int, direction: str) -> tuple[float | None, float | None]:
@@ -253,17 +255,25 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
                 continue
             regime = _regime_from_ind(df_1m, t)
             htf = _htf_flag(regime, res["direction"])
-            # ANGUS 22-Jul taxonomy correction. A/B is NOT rejection-vs-displacement (candle
-            # shape); it is what price does at the structural level + trend context:
-            #   CLOSE-THROUGH (displacement): A = reversal — the close-through reverses a ±2
-            #     over-extension (the trade-direction candle reached the ±2 band) OR is
-            #     counter-trend; B = with-trend continuation otherwise.
+            # ANGUS 22-Jul taxonomy. A/B is NOT rejection-vs-displacement (candle shape); it is
+            # what price does at the structural level + the ±2 extension context:
+            #   CLOSE-THROUGH (displacement): A = REVERSAL — the close-through reverses a recent
+            #     ±2 over-extension (price reached the NY-VWAP ±2σ band in the OPPOSITE direction
+            #     within the last _EXT_LOOKBACK entry-TF bars, then displaced back through);
+            #     B = with-trend CONTINUATION otherwise. The ±2 extension is REQUIRED for A —
+            #     counter-trend alone is not enough (Angus: "A would look like ±2 over extension,
+            #     then ... candle closes through ... i enter on the retest").
             #   REJECTION (wick in, close back): B2 — fade off the level, either HTF direction.
             if res["kind"] == "displacement":
-                if _over_extended(fr.iloc[i], ind, res["direction"], oe_sigma) or htf == "counter_trend":
-                    pattern = "A"     # counter-trend reversal / reversing a ±2 extension
+                nv = ind.get("ny_vwap") or {}
+                lb = fr.iloc[max(0, i - _EXT_LOOKBACK):i + 1]
+                if res["direction"] == "long":
+                    band = nv.get(f"lower_{oe_sigma}")
+                    reversed_ext = band is not None and float(lb["low"].min()) <= band
                 else:
-                    pattern = "B"     # with-trend continuation
+                    band = nv.get(f"upper_{oe_sigma}")
+                    reversed_ext = band is not None and float(lb["high"].max()) >= band
+                pattern = "A" if reversed_ext else "B"
             else:
                 pattern = "B2"        # rejection at a level = fade (with- or counter-HTF)
             g = res.get("cluster")
