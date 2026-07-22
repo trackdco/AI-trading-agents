@@ -13,10 +13,14 @@ Layer 1  VALIDATION : 5 checks at fill —
 Layer 2  SIZING     : score<=2 -> 0 | 3 -> 0.5 | 4 -> 1.0 | 5 -> 1.5
 Layer 2b ESCALATION : trade #2+ of the day requires score >= 4 (ANGUS 25-Jul ruling: the
                       follow-up entry needs full conviction; strict upgrade +$1.1k, never worse)
+Layer 2c ESCALATION : within-day ladder (ANGUS 25-Jul ruling, results-based, no forecasting):
+                      day running P&L < 0  -> entries require BOTH structure checks (W+T),
+                      A-setups exempt (reversals thrive in bad tape);
+                      day running P&L <= -$400 -> sit out the rest of the day.
 Layer 3  GOVERNOR   : trailing-15 confirmed-trade (score>=4) win rate < 0.35 -> all sizes x0.5
                       (results-based; uses only past trades)
 
-Validated 2025/2026 out-of-fit (with 2b): +$14,371 / +$30,862, ~2 tr/day.
+Validated 2025/2026 out-of-fit (full stack): +$18,171 / +$29,716, worst month -$789.
 Writes output/canon_book.parquet (one row per trade with score/size/governor/final P&L).
 
     python -m scripts.canon_mechanical
@@ -59,6 +63,21 @@ def build_canon(T):
     T["nth"] = nth.reindex(T.index)
     esc = (T["nth"] >= 2) & (T.score < 4)
     T.loc[esc.fillna(False), "size"] = 0.0
+    T["pl"] = T.dollars * T["size"] * T.governor
+    # Layer 2c: within-day escalation ladder (react to realized losses only)
+    T["struct"] = T.W + T.Tp
+    live = T[T["size"] > 0].sort_values("fill")
+    drop = []
+    for d, g in live.groupby("day"):
+        daypl = 0.0; out = False
+        for r in g.itertuples():
+            if out or (daypl < 0 and r.struct < 2 and r.pattern != "A"):
+                drop.append(r.Index)
+            else:
+                daypl += r.pl
+            if daypl <= -400:
+                out = True
+    T.loc[drop, "size"] = 0.0
     T["pl"] = T.dollars * T["size"] * T.governor
     return T
 

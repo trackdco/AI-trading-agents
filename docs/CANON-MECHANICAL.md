@@ -72,4 +72,5 @@ out the rest of the day.
 | **V5 full ladder** | **+18,171** | +29,716 | **−1,038** | +48,925 | 10/13 | **−789** |
 
 V5: +$2.7k total over canon, Jul-Sep bleed −$4.0k → −$1.0k, good months give up only $312,
-worst month −$789. Awaiting Angus ruling before shipping into canon.
+worst month −$789. **SHIPPED into canon 25-Jul (Angus ruling) as Layer 2c.** Canon full stack:
+**+$18,171 / +$29,716**, maxDD $2.8k/$3.3k, worst month −$789, ~1.3 tr/day.
