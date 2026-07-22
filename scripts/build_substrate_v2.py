@@ -9,6 +9,7 @@ correct A/B/B2 tag. This is the substrate the per-setup order-flow analysis runs
 
     python -m scripts.build_substrate_v2
 """
+import os
 import sys
 from datetime import time as dtime
 from pathlib import Path
@@ -17,6 +18,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.grade_window_cap import books, load
 from src.backtest.engine import load_backtest_config, simulate
 NY = "America/New_York"
+# 0 = full history (ground truth). >0 caps the per-month segment to that many days of lookback
+# (all management indicators are intraday/daily-anchored, so a generous cap is result-identical).
+LOOKBACK_DAYS = int(os.environ.get("SUBSTRATE_LOOKBACK_DAYS", "0"))
 
 
 def run(months, trig_src, df, base):
@@ -27,7 +31,11 @@ def run(months, trig_src, df, base):
         if not trigs:
             continue
         end = pd.Timestamp((pd.Timestamp(m + "-01", tz=NY) + pd.offsets.MonthBegin(1)).tz_localize(None), tz=NY)
-        seg = df[df.ts_event <= end].reset_index(drop=True)
+        if LOOKBACK_DAYS:
+            start = pd.Timestamp(m + "-01", tz=NY) - pd.Timedelta(days=LOOKBACK_DAYS)
+            seg = df[(df.ts_event >= start) & (df.ts_event <= end)].reset_index(drop=True)
+        else:
+            seg = df[df.ts_event <= end].reset_index(drop=True)
         for book, cfg in (("E3", cfg_e3), ("E4", cfg_e4)):
             tr, _, _ = simulate(seg, trigs, cfg)
             for r in tr:
@@ -56,8 +64,9 @@ def main():
     print(f"  2026 trades: {len(S26)}  {S26.pattern.value_counts().to_dict()}", flush=True)
     S = pd.concat([S25, S26], ignore_index=True)
     S["yr"] = S.day.str[:4].astype(int)
-    S.to_parquet("output/substrate_v2.parquet")
-    print(f"\nwrote output/substrate_v2.parquet  {len(S)} trades")
+    out = os.environ.get("SUBSTRATE_OUT", "output/substrate_v2.parquet")
+    S.to_parquet(out)
+    print(f"\nwrote {out}  {len(S)} trades")
     print("by year x pattern:")
     print(pd.crosstab(S.yr, S.pattern))
     print(f"\nby year x book: \n{pd.crosstab(S.yr, S.book)}")
