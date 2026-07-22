@@ -91,30 +91,52 @@ def walk(df, feats, tag):
           f"| $ ungated {base_test:+7,.0f}  skip@.5 {kept_test:+7,.0f}  sized {sized:+7,.0f}")
 
 
+DEPTH_ALL = DEPTH_PRE + ["d_op_imb_mean", "d_op_imb_std", "d_op_totsz_mean", "d_op_imb_flips",
+                         "d_op_thin_frac", "d_op_totsz_trend"]
+
+
+def oof(df, feats, tag):
+    """Strict out-of-fit: train 2025 -> test 2026, and train 2026 -> test 2025. Report AUC +
+    sized $ on the held-out year (avg-size-normalized)."""
+    df = df.dropna(subset=["pl"]).copy()
+    df["yr"] = df.day.str[:4]
+    feats = [c for c in feats if c in df and df[c].notna().sum() >= 30 and df[c].nunique() >= 3]
+    for train_yr, test_yr in (("2025", "2026"), ("2026", "2025")):
+        a, b = df[df.yr == train_yr], df[df.yr == test_yr]
+        if len(a) < 50 or len(b) < 40:
+            print(f"  {tag} [{train_yr}->{test_yr}]: too few ({len(a)}/{len(b)})"); continue
+        ya = (a.pl < 0).astype(int).values; yb = (b.pl < 0).astype(int).values
+        m = HistGradientBoostingClassifier(max_depth=3, max_iter=150, learning_rate=0.06,
+                                           l2_regularization=2.0, min_samples_leaf=12,
+                                           max_bins=64, early_stopping=False, random_state=0)
+        m.fit(a[feats].astype(float).values, ya)
+        pb = m.predict_proba(b[feats].astype(float).values)[:, 1]
+        auc = roc_auc_score(yb, pb) if yb.sum() and (1 - yb).sum() else float("nan")
+        plb = b.pl.values
+        sz = np.where(pb < 0.4, 1.0, np.where(pb < 0.6, 0.6, 0.25))
+        sized = (plb * sz).sum() / sz.mean()
+        print(f"  {tag} [{train_yr}->{test_yr}]: nte={len(b)} feats={len(feats)}  AUC={auc:.3f}  "
+              f"| ungated {plb.sum():+7,.0f}  sized {sized:+7,.0f}  (delta {sized-plb.sum():+,.0f})")
+
+
 def main():
     F, winpl, dep = build()
     Fd = F.reset_index()
-    W = winpl.merge(Fd, on="day", how="left")
-    Wd = W.merge(dep.reset_index(), on="day", how="left")
+    Wd = winpl.merge(Fd, on="day", how="left").merge(dep.reset_index(), on="day", how="left")
+    pre = Wd[Wd.win_ == "pre"].rename(columns={"dollars": "pl"})
+    gold = Wd[Wd.win_ == "gold"].rename(columns={"dollars": "pl"})
 
-    print("=== PRE window (decide 08:00, pre-08:00 features only) ===")
-    pre = W[W.win_ == "pre"].rename(columns={"dollars": "pl"})
-    walk(pre.assign(pl=pre.pl), [c for c in PRE8 if c in pre], "PRE flow-only (all days)")
+    print("=== WALK-FORWARD (all days, TimeSeriesSplit) ===")
+    walk(pre.copy(), [c for c in PRE8 if c in pre], "PRE flow-only")
+    walk(pre.copy(), [c for c in PRE8 + DEPTH_PRE if c in pre], "PRE flow+depth")
+    walk(gold.copy(), [c for c in THRU930 if c in gold], "GOLD flow-only")
+    walk(gold.copy(), [c for c in THRU930 + DEPTH_ALL if c in gold], "GOLD flow+depth")
 
-    print("\n=== GOLD window (decide 09:30, through-09:30 features) ===")
-    gold = W[W.win_ == "gold"].rename(columns={"dollars": "pl"})
-    walk(gold.assign(pl=gold.pl), [c for c in THRU930 if c in gold], "GOLD flow-only (all days)")
-
-    print("\n=== GOLD window + DEPTH (depth-covered days only) ===")
-    goldd = Wd[Wd.win_ == "gold"].rename(columns={"dollars": "pl"})
-    goldd = goldd.dropna(subset=["d_pre_imb_mean"])
-    walk(goldd.assign(pl=goldd.pl), [c for c in THRU930 + DEPTH_PRE if c in goldd], "GOLD flow (depth days)")
-    walk(goldd.assign(pl=goldd.pl), [c for c in THRU930 if c in goldd], "GOLD flow-only (same days, no depth)")
-
-    print("\n=== PRE window + DEPTH (depth-covered days) ===")
-    pred = Wd[Wd.win_ == "pre"].rename(columns={"dollars": "pl"}).dropna(subset=["d_pre_imb_mean"])
-    walk(pred.assign(pl=pred.pl), [c for c in PRE8 + DEPTH_PRE if c in pred], "PRE flow+depth")
-    walk(pred.assign(pl=pred.pl), [c for c in PRE8 if c in pred], "PRE flow-only (same days)")
+    print("\n=== STRICT OUT-OF-FIT (train one year, test the other) ===")
+    oof(pre.copy(), [c for c in PRE8 if c in pre], "PRE  flow ")
+    oof(pre.copy(), [c for c in PRE8 + DEPTH_PRE if c in pre], "PRE  flow+depth")
+    oof(gold.copy(), [c for c in THRU930 if c in gold], "GOLD flow ")
+    oof(gold.copy(), [c for c in THRU930 + DEPTH_ALL if c in gold], "GOLD flow+depth")
 
 
 if __name__ == "__main__":

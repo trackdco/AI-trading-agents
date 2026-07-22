@@ -110,3 +110,42 @@ switch** — and the richer the features (multivariate + depth), the more it pay
 - Depth covers 2025-H2 + Apr-2026 only; the 2026 depth folder for the rest of the year would let
   this run full-span.
 - Small n (106-148 window-obs), walk-forward but not yet a true forward quarter.
+
+## ROUND 4 (24 Jul): FULL 2026 depth + STRICT cross-year test — the round-3 gains were leakage
+
+Angus pointed out the full 2026 depth was already on disk (`data/reference/depth_2026`,
+Feb-Jul, 08:00-10:30). Rebuilt depth features on all **256 days** (152/104 per year) and ran the
+decisive test I owed: **train one year, test the other** (not walk-forward, which mixes years).
+
+Predicting the portfolio's window-level P&L sign — the decision-relevant stand-down target —
+does **NOT generalize across years**:
+
+| pre-window model | train2025→test2026 AUC | train2026→test2025 AUC | sized $ vs ungated |
+|---|---|---|---|
+| GBM flow-only | 0.576 | 0.476 | −$2,424 / +$2,253 |
+| GBM flow+depth | 0.452 | 0.367 | −$3,391 / −$1,671 |
+| logistic, 5 verified feats | 0.407 | 0.395 | −$3,052 / −$2,238 |
+| logistic verified+depth | 0.362 | 0.379 | −$440 / −$2,636 |
+
+Almost every cross-year AUC is **below 0.50** — the relationship *reverses* between years. Depth
+makes it worse, not better. The round-3 "0.618 → 0.660 with depth" was **walk-forward optimism**:
+TimeSeriesSplit's early folds test 2025-on-2025 (within-year), inflating the aggregate. Under a
+clean year split it collapses. Sizing on these predictions loses money out-of-fit.
+
+### Why (and what it means)
+The verified single features (`abs_cvd_ASIA` etc.) predict **raw-book red** ~0.58 — but the
+portfolio has *already* filtered trades with the CVD rules, and the residual "will the filtered
+trades lose this window" is not predictable cross-year. The easy signal was captured by the
+trade rules; what's left is noise-level.
+
+**The honest conclusion:** the edge lives in the ENTRY rules (window-split CVD), which DO
+generalize (verified 3-4/4 half-periods, portfolio +$9.9k/+$15.7k out-of-fit). The DAY-READ /
+stand-down layer does **not** generalize as a predictive model on the filtered portfolio. The
+oracle+stand-down ceiling is real but its gap is mostly **hindsight that can't be predicted
+pre-decision** — not a model we haven't built yet. The golden window remains unmodelable
+(only 61 portfolio window-obs).
+
+This is a negative result, stated plainly rather than dressed up. The productive levers that
+remain are: (1) the verified window-split entry rulebook, (2) modest conviction sizing from the
+handful of features that survive within-year, held loosely, (3) a true forward quarter as the
+real test — not more feature mining on these two years.

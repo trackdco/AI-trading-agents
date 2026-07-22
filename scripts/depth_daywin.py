@@ -56,18 +56,22 @@ def day_features(path):
 
 def main():
     rows = {}
-    for folder in ("depth_2025", "depth_apr2026"):
+    # depth_2026 is the full Feb-Jul 2026 set; depth_apr2026 overlaps it -> dedupe by day (first wins)
+    for folder in ("depth_2025", "depth_2026", "depth_apr2026"):
         base = Path(f"data/reference/{folder}")
         files = sorted(base.glob("*_ny.csv"))
+        added = 0
         for f in files:
             day = f.name.replace("nq_depth_", "").replace("_ny.csv", "")
+            if day in rows:
+                continue
             try:
                 feats = day_features(f)
             except Exception as e:
                 print(f"  skip {day}: {e}"); continue
             if feats:
-                rows[day] = feats
-        print(f"  {folder}: {len(files)} files done", flush=True)
+                rows[day] = feats; added += 1
+        print(f"  {folder}: {len(files)} files, +{added} new days", flush=True)
     D = pd.DataFrame(rows).T
     D.index.name = "day"
     D.to_parquet("output/depth_daywin.parquet")
