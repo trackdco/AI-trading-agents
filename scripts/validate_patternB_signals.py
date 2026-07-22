@@ -25,7 +25,7 @@ def load_fp_all():
         d = pd.read_parquet(p, columns=["ts_minute","price","side","volume"])
         ny = d.ts_minute.dt.tz_convert(NY); hm = ny.dt.hour.values*60+ny.dt.minute.values
         keep = (hm>=475)&(hm<=620)                      # 07:55-10:20 only -> small
-        d = d[keep].copy(); d["mi"] = ny[keep].dt.floor("min").values
+        d = d[keep].copy(); d["mi"] = ny[keep].dt.floor("min")   # keep tz-aware (NY)
         d["sd"] = np.where(d.side=="B", d.volume, -d.volume)
         fr.append(d[["mi","price","side","volume","sd"]])
     return pd.concat(fr, ignore_index=True).sort_values("mi").set_index("mi")
@@ -108,10 +108,20 @@ def main():
     t26 = load(["output/triggers_fullsession.csv"])          # 2026-02..07
     M25 = [f"2025-{mm:02d}" for mm in range(6,13)]
     M26 = [f"2026-{mm:02d}" for mm in range(2,8)]
-    print("reconstructing 2025 H2 pattern-B trades...")
-    B25 = add_signals(reconstruct(M25, t2325, df), fp, dmed)
-    print("reconstructing 2026 pattern-B trades...")
-    B26 = add_signals(reconstruct(M26, t26, df), fp, dmed)
+    c25, c26 = Path("output/pB_raw_2025.parquet"), Path("output/pB_raw_2026.parquet")
+    if c25.exists():
+        R25 = pd.read_parquet(c25)
+    else:
+        print("reconstructing 2025 H2 pattern-B trades...")
+        R25 = reconstruct(M25, t2325, df); R25.to_parquet(c25)
+    if c26.exists():
+        R26 = pd.read_parquet(c26)
+    else:
+        print("reconstructing 2026 pattern-B trades...")
+        R26 = reconstruct(M26, t26, df); R26.to_parquet(c26)
+    print(f"raw pattern-B trades: 2025 {len(R25)}, 2026 {len(R26)} -> computing signals...")
+    B25 = add_signals(R25, fp, dmed)
+    B26 = add_signals(R26, fp, dmed)
     breakdown(B25, "2025 H2 (OUT-OF-FIT)")
     breakdown(B26, "2026 (in-sample reference)")
 
