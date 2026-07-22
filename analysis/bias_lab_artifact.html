@@ -1,0 +1,122 @@
+<style>
+:root{color-scheme:light;
+ --bg:#f6f7f9;--surface-1:#ffffff;--surface-2:#fbfcfd;--border:#e5e8ee;
+ --text-primary:#13161c;--text-secondary:#5b6472;--text-muted:#939aa8;
+ --series-1:#2a78d6;--series-2:#eb6834;--pos:#0a7d33;--neg:#d63c3c;--warn-bg:#fdf3d8;--warn-tx:#7a5b00;
+ --mono:ui-monospace,"SF Mono",Menlo,"Cascadia Code",Consolas,monospace;
+ --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;
+ --bg:#111318;--surface-1:#1a1d24;--surface-2:#20242c;--border:#333944;
+ --text-primary:#eef1f6;--text-secondary:#a7b0be;--text-muted:#727b8a;
+ --series-1:#3987e5;--series-2:#e0703c;--pos:#3fb862;--neg:#ec6a6a;--warn-bg:#3a2f10;--warn-tx:#e8c96a}}
+:root[data-theme="dark"]{color-scheme:dark;
+ --bg:#111318;--surface-1:#1a1d24;--surface-2:#20242c;--border:#333944;
+ --text-primary:#eef1f6;--text-secondary:#a7b0be;--text-muted:#727b8a;
+ --series-1:#3987e5;--series-2:#e0703c;--pos:#3fb862;--neg:#ec6a6a;--warn-bg:#3a2f10;--warn-tx:#e8c96a}
+:root[data-theme="light"]{color-scheme:light;
+ --bg:#f6f7f9;--surface-1:#ffffff;--surface-2:#fbfcfd;--border:#e5e8ee;
+ --text-primary:#13161c;--text-secondary:#5b6472;--text-muted:#939aa8;
+ --series-1:#2a78d6;--series-2:#eb6834;--pos:#0a7d33;--neg:#d63c3c;--warn-bg:#fdf3d8;--warn-tx:#7a5b00}
+*{box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--text-primary);margin:0;
+ padding:clamp(16px,3vw,32px);line-height:1.5;font-variant-numeric:tabular-nums;max-width:1180px;margin-inline:auto}
+h1{font-size:clamp(19px,3vw,23px);margin:0 0 4px;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--text-secondary);font-size:13px;margin-bottom:20px;max-width:900px}
+.sub b{color:var(--text-primary)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:26px}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tile .k{font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.tile .v{font-size:22px;font-weight:650;margin-top:3px;font-family:var(--mono);letter-spacing:-.02em}
+.tile .s{font-size:11px;color:var(--text-secondary);margin-top:1px}
+.big{grid-column:span 2}
+section{margin-bottom:26px}h2{font-size:14px;color:var(--text-secondary);font-weight:600;margin:0 0 8px}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+svg text{fill:var(--text-secondary);font-size:11px;font-family:var(--mono)}
+.grid line{stroke:var(--border)}
+table{border-collapse:collapse;width:100%;font-size:12.5px;font-family:var(--mono)}
+th,td{padding:6px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:top}
+th:first-child,td:first-child,th.l,td.l{text-align:left}
+th{cursor:pointer;color:var(--text-secondary);position:sticky;top:0;background:var(--surface-1);
+ font-family:var(--sans);font-size:11px;letter-spacing:.03em;text-transform:uppercase}
+tr:hover td{background:color-mix(in srgb,var(--series-1) 6%,transparent)}
+td.note{white-space:normal;min-width:300px;max-width:540px;text-align:left;color:var(--text-secondary)}
+.chip{display:inline-block;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:600;font-family:var(--mono)}
+.ok{background:color-mix(in srgb,var(--pos) 16%,transparent);color:var(--pos)}
+.bad{background:color-mix(in srgb,var(--neg) 15%,transparent);color:var(--neg)}
+.fl,.na{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+.bull{color:var(--pos);font-weight:600}.bear{color:var(--neg);font-weight:600}.neu{color:var(--text-muted)}
+.bar{height:11px;border-radius:4px;display:inline-block;min-width:2px;vertical-align:middle}
+.note2{font-size:12px;color:var(--text-muted);margin-top:8px}
+.legend{font-size:12px;color:var(--text-secondary);margin-bottom:8px}
+.legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 4px 0 12px;vertical-align:-1px}
+.tt{position:fixed;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);
+ border-radius:6px;padding:6px 9px;font-size:12px;box-shadow:0 3px 10px rgba(0,0,0,.2);display:none;z-index:9}
+:focus-visible{outline:2px solid var(--series-1);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<h1>Bias Lab — can any concept predict NQ daily direction? (2023 → 2026)</h1>
+<div class="sub"><b>The honest screen.</b> 24 daily-bias concepts — ICT (session profiles, sweeps, judas, weekly bias), indicators (RSI, MACD, Bollinger, VWAP), momentum, seasonality, VIX regime, order-flow proxy — each a no-lookahead signal graded on whether the <b>NY session (09:30→16:00)</b> followed it. Split <b>TRAIN 2023–24</b> vs <b>TEST 2025–26</b>; edge = accuracy − base rate (P(up)). Plus a <b>walk-forward learning ensemble</b> that trusts/fades each concept by its own trailing record. Everything reproducible; the lookahead bug that made VIX look 70% (it collapsed to −7% once lagged) is the reason this is done as a strict screen, not a highlight reel.</div>
+<div class="tiles" id="tiles"></div>
+<section><h2>Every concept, ranked by out-of-sample edge over base rate</h2>
+<div class="card"><svg id="rank" width="100%" height="520" viewBox="0 0 960 520"></svg>
+<div class="note2">Zero line = base rate (predict-up). <b>Not one concept clears it by a meaningful margin out-of-sample.</b> The best (momentum_5d) is +0.5 — statistical zero.</div></div></section>
+<section class="grid3">
+<div class="card" style="grid-column:span 2"><h2>Train vs test accuracy — does any edge persist?</h2>
+<svg id="sc" width="100%" height="300" viewBox="0 0 620 300"></svg>
+<div class="note2">If concepts had real edge, points would sit top-right and hug the diagonal. They scatter around the base rate with no train→test persistence — the definition of noise.</div></div>
+<div class="card"><h2>Verdict</h2><table id="vd"></table><div class="note2">The learning ensemble did WORSE than a coin flip — it chases recent winners that then reverse.</div></div>
+</section>
+<section><h2>Why the learner fails — trusted/faded concepts flip month to month</h2>
+<div class="card" style="max-height:420px;overflow:auto"><table id="jr"></table>
+<div class="note2">A concept trusted (≥55%) one month is faded (≤45%) a few months later, repeatedly. The "edge" is non-stationary — so reusing what recently worked is whipsaw, not learning.</div></div></section>
+<section><h2>Full concept table (sortable)</h2>
+<div class="card" style="max-height:480px;overflow:auto"><table id="tbl"><thead></thead><tbody></tbody></table></div></section>
+<div class="tt" id="tt"></div>
+<script>
+const DATA={"base_tr":50.6,"base_te":49.4,"ens_all":40.4,"ens_te":41.1,"best":{"c":"momentum_5d","a":49.9},"n_concepts":24,"concepts":[{"concept":"momentum_5d","n":860,"acc":48.1,"train_acc":46.7,"test_acc":49.9,"test_n":395,"test_edge":0.5},{"concept":"turn_of_month","n":177,"acc":50.8,"train_acc":52.1,"test_acc":49.4,"test_n":81,"test_edge":0.0},{"concept":"london_reversal","n":856,"acc":45.7,"train_acc":43.0,"test_acc":48.9,"test_n":393,"test_edge":-0.5},{"concept":"macd","n":861,"acc":45.6,"train_acc":44.0,"test_acc":47.6,"test_n":395,"test_edge":-1.8},{"concept":"gap_fill","n":859,"acc":45.5,"train_acc":43.9,"test_acc":47.5,"test_n":394,"test_edge":-1.9},{"concept":"overnight_reversal","n":859,"acc":45.5,"train_acc":43.9,"test_acc":47.5,"test_n":394,"test_edge":-1.9},{"concept":"rsi_momentum","n":683,"acc":47.0,"train_acc":46.7,"test_acc":47.4,"test_n":289,"test_edge":-2.0},{"concept":"dow_seasonal","n":519,"acc":48.6,"train_acc":49.6,"test_acc":47.3,"test_n":237,"test_edge":-2.1},{"concept":"sweep_pdl_bull","n":374,"acc":43.9,"train_acc":40.6,"test_acc":47.3,"test_n":182,"test_edge":-2.1},{"concept":"vix_low_bull","n":430,"acc":47.4,"train_acc":47.7,"test_acc":47.0,"test_n":132,"test_edge":-2.4},{"concept":"premarket_judas","n":859,"acc":43.7,"train_acc":41.3,"test_acc":46.4,"test_n":394,"test_edge":-3.0},{"concept":"daily_trend_20_50","n":610,"acc":47.0,"train_acc":47.6,"test_acc":46.4,"test_n":280,"test_edge":-3.0},{"concept":"momentum_3d","n":861,"acc":44.5,"train_acc":43.1,"test_acc":46.1,"test_n":395,"test_edge":-3.3},{"concept":"weekly_bias","n":625,"acc":46.2,"train_acc":46.4,"test_acc":46.1,"test_n":293,"test_edge":-3.3},{"concept":"asia_dir","n":859,"acc":45.6,"train_acc":45.8,"test_acc":45.4,"test_n":394,"test_edge":-4.0},{"concept":"daily_hh_hl","n":642,"acc":45.0,"train_acc":44.8,"test_acc":45.2,"test_n":294,"test_edge":-4.2},{"concept":"bb_meanrev","n":104,"acc":46.2,"train_acc":46.8,"test_acc":45.2,"test_n":42,"test_edge":-4.2},{"concept":"bb_momentum","n":104,"acc":43.3,"train_acc":41.9,"test_acc":45.2,"test_n":42,"test_edge":-4.2},{"concept":"udv","n":861,"acc":46.7,"train_acc":48.5,"test_acc":44.6,"test_n":395,"test_edge":-4.8},{"concept":"momentum_1d","n":861,"acc":45.9,"train_acc":47.4,"test_acc":44.1,"test_n":395,"test_edge":-5.3},{"concept":"overnight_cont","n":859,"acc":44.2,"train_acc":44.9,"test_acc":43.4,"test_n":394,"test_edge":-6.0},{"concept":"vix_rising_bear","n":486,"acc":45.3,"train_acc":48.1,"test_acc":42.7,"test_n":255,"test_edge":-6.7},{"concept":"london_dir_cont","n":856,"acc":44.2,"train_acc":46.0,"test_acc":42.0,"test_n":393,"test_edge":-7.4},{"concept":"rsi_meanrev","n":350,"acc":41.7,"train_acc":43.5,"test_acc":39.2,"test_n":143,"test_edge":-10.2}],"scatter":[{"concept":"momentum_5d","train_acc":46.7,"test_acc":49.9},{"concept":"turn_of_month","train_acc":52.1,"test_acc":49.4},{"concept":"london_reversal","train_acc":43.0,"test_acc":48.9},{"concept":"macd","train_acc":44.0,"test_acc":47.6},{"concept":"gap_fill","train_acc":43.9,"test_acc":47.5},{"concept":"overnight_reversal","train_acc":43.9,"test_acc":47.5},{"concept":"rsi_momentum","train_acc":46.7,"test_acc":47.4},{"concept":"dow_seasonal","train_acc":49.6,"test_acc":47.3},{"concept":"sweep_pdl_bull","train_acc":40.6,"test_acc":47.3},{"concept":"vix_low_bull","train_acc":47.7,"test_acc":47.0},{"concept":"premarket_judas","train_acc":41.3,"test_acc":46.4},{"concept":"daily_trend_20_50","train_acc":47.6,"test_acc":46.4},{"concept":"momentum_3d","train_acc":43.1,"test_acc":46.1},{"concept":"weekly_bias","train_acc":46.4,"test_acc":46.1},{"concept":"asia_dir","train_acc":45.8,"test_acc":45.4},{"concept":"daily_hh_hl","train_acc":44.8,"test_acc":45.2},{"concept":"bb_meanrev","train_acc":46.8,"test_acc":45.2},{"concept":"bb_momentum","train_acc":41.9,"test_acc":45.2},{"concept":"udv","train_acc":48.5,"test_acc":44.6},{"concept":"momentum_1d","train_acc":47.4,"test_acc":44.1},{"concept":"overnight_cont","train_acc":44.9,"test_acc":43.4},{"concept":"vix_rising_bear","train_acc":48.1,"test_acc":42.7},{"concept":"london_dir_cont","train_acc":46.0,"test_acc":42.0},{"concept":"rsi_meanrev","train_acc":43.5,"test_acc":39.2}],"journal":[{"mo":"2025-10","trusted":[],"faded":["asia_dir(33%)","bb_momentum(38%)","daily_hh_hl(38%)","momentum_1d(38%)","rsi_meanrev(38%)"]},{"mo":"2025-11","trusted":[],"faded":["bb_momentum(37%)","london_dir_cont(38%)","macd(38%)","rsi_momentum(38%)","vix_rising_bear(38%)"]},{"mo":"2025-12","trusted":["sweep_pdl_bull(55%)","london_reversal(55%)"],"faded":["bb_momentum(37%)","daily_hh_hl(38%)","london_dir_cont(38%)","rsi_momentum(38%)","vix_low_bull(38%)"]},{"mo":"2026-01","trusted":["overnight_reversal(60%)","gap_fill(60%)","sweep_pdl_bull(58%)","london_reversal(58%)","premarket_judas(57%)"],"faded":["bb_momentum(35%)","overnight_cont(37%)","london_dir_cont(38%)","daily_hh_hl(42%)","dow_seasonal(42%)"]},{"mo":"2026-02","trusted":["premarket_judas(62%)","overnight_reversal(62%)","gap_fill(62%)","sweep_pdl_bull(58%)","london_reversal(58%)"],"faded":["overnight_cont(35%)","bb_momentum(37%)","rsi_momentum(37%)","london_dir_cont(38%)","weekly_bias(40%)"]},{"mo":"2026-03","trusted":["sweep_pdl_bull(55%)"],"faded":["asia_dir(38%)","bb_momentum(38%)","overnight_cont(38%)","udv(38%)","daily_hh_hl(42%)"]},{"mo":"2026-04","trusted":[],"faded":["london_dir_cont(38%)","asia_dir(40%)","bb_momentum(40%)","daily_trend_20_50(42%)","udv(43%)"]},{"mo":"2026-05","trusted":[],"faded":["gap_fill(37%)","overnight_reversal(37%)","premarket_judas(38%)","udv(38%)","sweep_pdl_bull(40%)"]},{"mo":"2026-06","trusted":["momentum_5d(62%)","daily_hh_hl(58%)","weekly_bias(57%)","rsi_momentum(57%)","dow_seasonal(57%)"],"faded":["sweep_pdl_bull(37%)","gap_fill(38%)","overnight_reversal(38%)","premarket_judas(38%)","bb_momentum(40%)"]},{"mo":"2026-07","trusted":["weekly_bias(55%)","asia_dir(55%)"],"faded":["sweep_pdl_bull(33%)","gap_fill(35%)","overnight_reversal(35%)","premarket_judas(35%)","london_reversal(37%)"]}]};const $=s=>document.querySelector(s);
+$("#tiles").innerHTML=[
+ ["Concepts screened",DATA.n_concepts,"no-lookahead"],
+ ["Base rate (test)",DATA.base_te+"%","P(NY up) 2025-26"],
+ ["Best concept OOS",DATA.best.a+"%",DATA.best.c],
+ ["Best OOS edge","+0.5 pts","over base rate"],
+ ["Learning ensemble",DATA.ens_te+"%","test — below coin flip"],
+ ["Verdict","NO EDGE","daily direction ~unpredictable"],
+].map(t=>`<div class="tile"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="s">${t[2]}</div></div>`).join("");
+// ranked horizontal bars of test_edge
+(function(){const C=DATA.concepts,W=960,rowH=19,P={l:150,r:30,t:6},H=C.length*rowH+P.t+10;
+ const mx=Math.max(5,...C.map(c=>Math.abs(c.test_edge)));const x0=P.l+(W-P.l-P.r)*0.5;
+ const sx=v=>x0+(W-P.l-P.r)*0.5*v/mx;
+ let s=`<line x1="${x0}" x2="${x0}" y1="${P.t}" y2="${H-10}" stroke="var(--text-muted)" stroke-dasharray="3,3"/>`;
+ C.forEach((c,i)=>{const y=P.t+i*rowH+rowH/2;const pos=c.test_edge>=0;const xe=sx(c.test_edge);
+  s+=`<text x="${P.l-8}" y="${y+3}" text-anchor="end" style="font-size:10.5px">${c.concept}</text>`;
+  s+=`<rect x="${pos?x0:xe}" y="${y-6}" width="${Math.abs(xe-x0)}" height="12" rx="3" fill="${pos?'var(--series-1)':'var(--neg)'}" data-t="${c.concept}: test ${c.test_acc}% (edge ${c.test_edge>0?'+':''}${c.test_edge}), train ${c.train_acc}%"/>`;
+  s+=`<text x="${(pos?xe:xe)+(pos?4:-4)}" y="${y+3}" text-anchor="${pos?'start':'end'}" style="font-size:10px;fill:var(--text-muted)">${c.test_edge>0?'+':''}${c.test_edge}</text>`;});
+ const svg=$("#rank");svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.innerHTML=s;bindtt("#rank");})();
+// train vs test scatter
+(function(){const D=DATA.scatter,W=620,H=300,P={l:44,r:12,t:12,b:34};
+ const sc=v=>[P.l+(W-P.l-P.r)*(v-35)/30, P.t+(H-P.t-P.b)*(1-(v-35)/30)];
+ let g='';for(const v of[40,45,50,55,60]){const[x,]=sc(v);const[,y]=sc(v);
+  g+=`<line x1="${x}" x2="${x}" y1="${P.t}" y2="${H-P.b}" stroke="var(--border)"/><text x="${x}" y="${H-P.b+14}" text-anchor="middle">${v}</text>`;
+  g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y}" y2="${y}" stroke="var(--border)"/><text x="${P.l-6}" y="${y+3}" text-anchor="end">${v}</text>`;}
+ const[dx0,dy0]=sc(35),[dx1,dy1]=sc(65);
+ g+=`<line x1="${sc(38)[0]}" y1="${sc(38)[1]}" x2="${sc(62)[0]}" y2="${sc(62)[1]}" stroke="var(--text-muted)" stroke-dasharray="4,3"/>`;
+ let pts='';D.forEach(d=>{const[x,y]=sc(Math.max(35,Math.min(65,d.train_acc)));const[,ty]=sc(Math.max(35,Math.min(65,d.test_acc)));
+  pts+=`<circle cx="${x}" cy="${ty}" r="4" fill="var(--series-1)" opacity="0.75" data-t="${d.concept}: train ${d.train_acc}% test ${d.test_acc}%"/>`;});
+ $("#sc").innerHTML=g+`<text x="${W/2}" y="${H-4}" text-anchor="middle" style="fill:var(--text-muted)">train accuracy %</text>`+pts;bindtt("#sc");})();
+$("#vd").innerHTML="<tr><th class='l'>read</th><th>test acc</th></tr>"+
+ `<tr><td class="l">base rate (up)</td><td>${DATA.base_te}%</td></tr>`+
+ `<tr><td class="l">best single concept</td><td>${DATA.best.a}%</td></tr>`+
+ `<tr><td class="l">learning ensemble</td><td class="bear">${DATA.ens_te}%</td></tr>`;
+$("#jr").innerHTML="<tr><th class='l'>month</th><th class='l'>trusted (≥55%)</th><th class='l'>faded (≤45%)</th></tr>"+
+ DATA.journal.map(j=>`<tr><td class="l">${j.mo}</td><td class="l" style="color:var(--pos)">${j.trusted.join(', ')||'—'}</td><td class="l" style="color:var(--neg)">${j.faded.join(', ')||'—'}</td></tr>`).join("");
+(function(){const cols=[["concept","concept"],["n","fires"],["acc","all%"],["train_acc","train%"],["test_acc","test%"],["test_edge","OOS edge"]];
+ const th=$("#tbl thead"),tb=$("#tbl tbody");
+ th.innerHTML="<tr>"+cols.map(c=>`<th class="${c[0]==='concept'?'l':''}" data-k="${c[0]}">${c[1]}</th>`).join("")+"</tr>";
+ let rows=DATA.concepts.slice(),asc=false,key="test_edge";
+ function r(){tb.innerHTML=rows.map(x=>`<tr><td class="l">${x.concept}</td><td>${x.n}</td><td>${x.acc}</td><td>${x.train_acc}</td><td>${x.test_acc}</td><td style="color:${x.test_edge>0?'var(--pos)':'var(--neg)'}">${x.test_edge>0?'+':''}${x.test_edge}</td></tr>`).join("");}
+ th.addEventListener("click",e=>{const k=e.target.dataset.k;if(!k)return;asc=(key===k)?!asc:false;key=k;rows.sort((a,b)=>{const p=a[k],q=b[k];return(p>q?1:p<q?-1:0)*(asc?1:-1);});r();});r();})();
+function bindtt(sel){const el=$(sel),tt=$("#tt");el.addEventListener("mousemove",e=>{const t=e.target.dataset.t;
+ if(!t){tt.style.display="none";return;}tt.style.display="block";tt.style.left=(e.clientX+14)+"px";tt.style.top=(e.clientY-10)+"px";tt.textContent=t;});
+ el.addEventListener("mouseleave",()=>tt.style.display="none");}
+</script>
