@@ -1,0 +1,8 @@
+component,n_te_events,n_te_changed,n_te_trades,book_te_R,base_te_R,delta_te,delta_ci,p,delta_tr,folds_pos,folds_valid,win_te,bh_41,ci_pass,fold_pass,PASS
+chop_skip,353,35,318,0.065,0.058,0.007,"[-0.036, 0.046]",0.3533,0.022,2,3,36.0,False,False,True,False
+conf_hold,353,192,178,0.053,0.058,-0.005,"[-0.13, 0.118]",0.5227,0.044,3,5,21.2,False,False,True,False
+sweep_first,353,283,70,0.037,0.058,-0.021,"[-0.161, 0.116]",0.6233,0.054,3,5,7.1,False,False,True,False
+be_stop_1R,353,77,353,0.031,0.058,-0.027,"[-0.124, 0.059]",0.7187,-0.016,2,5,33.7,False,False,False,False
+partial50_1R,353,146,353,0.029,0.058,-0.029,"[-0.13, 0.064]",0.719,0.014,3,5,55.5,False,False,True,False
+combo_A_C,353,150,353,0.019,0.058,-0.039,"[-0.142, 0.066]",0.7573,0.015,2,5,55.2,False,False,False,False
+time_stop_60,353,35,353,0.015,0.058,-0.043,"[-0.103, 0.015]",0.9243,-0.016,0,3,41.9,False,False,False,False
