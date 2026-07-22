@@ -89,3 +89,27 @@ deep. First-order tightening sweep (stop = k× current): k=0.8 IMPROVES total P&
 it degrades. **Stops are ~20-25% too wide across the board.** NOT shipped — true stop
 placement changes trade evolution (needs engine re-sim, and holdout confirmation to avoid
 tuning on two years). Logged as holdout candidate #2 behind the dead-tape W-weighting.
+
+## 25-Jul: IN-TRADE order-flow autopsy (3 workflows, 22 agents, all verified 4/4)
+
+Question: what do losers look like IN FLIGHT that winners never do? (Winners' median MAE = 37%
+of stop — they never get stressed.) Matrix: 713 trades, features at 3/5/10min after fill, no
+hindsight. Every finding below verified by independent recompute + half-period stress.
+
+**The loser-in-flight signature (readable at 3 minutes):**
+- Underwater at 3min: 18%/15% WR vs 49%/55% if in profit — the single strongest in-flight read.
+- Deep red (≤−0.36R) at 3min: **5%/11% WR** (Jul-Sep: 3%) — near-certain loss.
+- MAE ever ≥0.7R by 3min: 13%/19% even if price recovered — excursion depth itself is the tell.
+- Net delta against the position (fw_3<0): 22%/23% vs 47%/51%; the combo **underwater AND flow
+  against = 11–18% WR** (Jul-Sep h5: 8%). Sellers pressing while underwater corroborates.
+- FAILED ABSORPTION: price adverse + flow "with us" = loser flag (18%/26%), NOT defence. Depth
+  appearing behind the position after entry likewise. Comforting microstructure is the trap.
+- Winner mirror: in profit early, MAE <0.37R, book building — winners are never stressed.
+- Nulls: path efficiency dead; book-imbalance rotation dead; absorption does not rescue.
+
+**PRICED EXIT RULE (candidate, awaiting ruling): at 3min, if r ≤ −0.11R AND fw ≤ −13 → exit.**
+2025-fit thresholds frozen on 2026: +$1,624 (2025) / +$2,772 (2026) on the canon book;
+**flips Jul-Sep 2025 from −$1,698 to +$55**; over 2yrs cuts 47 losers, falsely cuts 6 winners.
+Flagged trades win 7%/11%. CRITICAL: only h=3 works — the same rule at 5/10min LOSES money
+(late exits lock in drawdown + forfeit recoveries). Exit P&L approximated as r_3-at-market;
+true engine implementation + holdout confirmation before full trust.
