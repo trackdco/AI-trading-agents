@@ -149,3 +149,24 @@ This is a negative result, stated plainly rather than dressed up. The productive
 remain are: (1) the verified window-split entry rulebook, (2) modest conviction sizing from the
 handful of features that survive within-year, held loosely, (3) a true forward quarter as the
 real test — not more feature mining on these two years.
+
+## ROUND 5 (24 Jul): fresh-eyes chop governor — 256 day-agents, graded
+
+Fresh-eyes walk: one agent per day, leakage-clean briefing (trailing-rank framing), only job =
+defensive size multipliers per window (1.0/0.5/0.25) on top of the frozen mechanical stack.
+
+| book | 2025 | 2026 | Jul-Sep 25 | maxDD 25/26 |
+|---|---|---|---|---|
+| baseline ladder | +11,817 | +30,343 | −6,903 | 8.4k/3.0k |
+| mech scoreboard governor | +14,349 | +30,343 | −4,614 | 5.6k/3.0k |
+| agent governor (as-run) | +9,641 | +25,315 | −3,378 | 4.2k/2.3k |
+| agent restricted to chop≥7 + mech | +15,825 | +29,154 | −4,146 | 4.9k/3.0k |
+
+Verdict, honestly: the raw agent **overdiagnosed** — de-risked the golden window on 229/256 days
+(89%), cutting the chop bleed best of anything but taxing winners harder than it saved losers;
+it loses to the mechanical scoreboard. Its EXTREME reads carry real signal (chop_score 7-10
+days: −$65/day, 27% green vs +$141-541 elsewhere), and restricted to those high-conviction
+calls + the scoreboard it edges 2025 (+$1.5k) and drawdowns at the cost of ~$1.2k in 2026 —
+a wash on total. **The mechanical stack stands as the core. The agent's chop seat is optional
+(drawdown smoothing at high conviction only), not required.** Design lesson for the live agent:
+act on high-conviction divergence, never ambient caution — the checklist already handles normal.
