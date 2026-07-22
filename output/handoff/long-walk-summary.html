@@ -1,0 +1,159 @@
+<title>The Long Walk — Summary & Leak Map</title>
+<style>
+  :root{
+    --bg:#0B0E14; --panel:#11161F; --line:#1E2633; --line2:#283345;
+    --ink:#DEE7F0; --muted:#8593A6; --faint:#5A6678;
+    --accent:#E3B341; --bar:#5B8DD9; --champ:#BA8A2E; --chained:#8E7CE8;
+    --fail:#F2555A; --pass:#4FB061; --up:#4FB061; --warn:#E3B341;
+    --mono:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme:light){:root{--bg:#F4F6FA;--panel:#FFFFFF;--line:#E1E6EF;--line2:#D0D7E4;
+    --ink:#141A24;--muted:#5A6678;--faint:#8996A8;--champ:#8A6420}}
+  :root[data-theme="dark"]{--bg:#0B0E14;--panel:#11161F;--line:#1E2633;--line2:#283345;--ink:#DEE7F0;--muted:#8593A6;--faint:#5A6678;--champ:#BA8A2E}
+  :root[data-theme="light"]{--bg:#F4F6FA;--panel:#FFFFFF;--line:#E1E6EF;--line2:#D0D7E4;--ink:#141A24;--muted:#5A6678;--faint:#8996A8;--champ:#8A6420}
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);margin:0;line-height:1.55;font-size:15px}
+  .wrap{max-width:1040px;margin:0 auto;padding:28px 20px 80px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+  h1{font-family:var(--mono);font-size:25px;margin:6px 0 2px;letter-spacing:-.01em;text-wrap:balance}
+  h2{font-family:var(--mono);font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);
+     margin:44px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  h3{font-size:14px;font-family:var(--mono);margin:18px 0 8px}
+  p{max-width:76ch}.muted{color:var(--muted)}.lede{font-size:16px;color:var(--muted);max-width:80ch}
+  .hero{background:linear-gradient(180deg,color-mix(in srgb,var(--up) 10%,var(--panel)),var(--panel));
+        border:1px solid var(--line2);border-left:4px solid var(--up);border-radius:8px;padding:20px 22px;margin:22px 0}
+  .hero .big{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--up);font-variant-numeric:tabular-nums;line-height:1.15}
+  .hero .sub{color:var(--muted);margin-top:8px;max-width:80ch}
+  table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:13.5px}
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;margin:14px 0}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);
+     text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);background:var(--panel)}
+  td{padding:8px 12px;border-bottom:1px solid var(--line)}tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-family:var(--mono)}
+  .pos{color:var(--up)}.neg{color:var(--fail)}
+  tr.hl td{background:color-mix(in srgb,var(--chained) 12%,transparent)}
+  .leak{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;margin:16px 0}
+  .lrow{display:grid;grid-template-columns:190px 1fr 96px;align-items:center;gap:12px;margin:12px 0}
+  .lrow .lbl{font-family:var(--mono);font-size:12.5px}
+  .lrow .lbl small{color:var(--faint);display:block;font-size:11px;margin-top:2px}
+  .lwrap{height:22px;background:color-mix(in srgb,var(--ink) 7%,transparent);border-radius:3px;overflow:hidden}
+  .lbar{height:100%;border-radius:3px}
+  .lbar.sd{background:var(--fail)}.lbar.bk{background:var(--warn)}.lbar.ms{background:var(--muted)}.lbar.cap{background:var(--up)}
+  .lrow .lv{font-family:var(--mono);font-size:13px;text-align:right;font-weight:700}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+  @media (max-width:640px){.compare{grid-template-columns:1fr}}
+  .compbox{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px}
+  .compbox.chained{border-left:4px solid var(--chained)}.compbox.fe{border-left:4px solid var(--bar)}
+  .compbox h3{margin:0 0 4px}.compbox .big2{font-family:var(--mono);font-size:22px;font-weight:700}
+  .compbox .stat{display:flex;justify-content:space-between;font-family:var(--mono);font-size:13px;margin:6px 0;color:var(--muted)}
+  .compbox .stat b{color:var(--ink)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin:14px 0}
+  .card.win{border-left:4px solid var(--up)}.card.watch{border-left:4px solid var(--accent)}
+  ol,ul{max-width:78ch}li{margin:7px 0}
+  code{font-family:var(--mono);font-size:12.5px;background:color-mix(in srgb,var(--ink) 8%,transparent);padding:1px 6px;border-radius:4px}
+  .foot{margin-top:46px;padding-top:14px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--faint)}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">NQ DESK · THE LONG WALK · 2023-2026 SUMMARY + WHERE WE LEAK</div>
+  <h1>Four years, 884 days — and a clean map of where the money is leaking</h1>
+  <p class="lede">The full v0.7 regime-dial simulation, fresh-eyes across all four years, plus the
+    fresh-eyes-vs-chained head-to-head in 2026. Below: the overall scorecard, then a dollar-precise
+    breakdown of exactly where the P&amp;L is bleeding and which lever fixes each pool.</p>
+
+  <div class="hero">
+    <div class="big">−$919 over 4 years &nbsp;vs&nbsp; the mechanical champion's −$20,877</div>
+    <div class="sub">The dial takes a strategy that bled −$20,877 to a near-breakeven −$919 across
+      2023-2026 — a <strong>+$19,958</strong> improvement. But "breakeven over four years" is the
+      honest headline: the ceiling for these same days was <strong>$259,422</strong>, so we're
+      capturing almost none of the theoretical max. The leak map below is where that gap lives.</div>
+  </div>
+
+  <h2>1 · Overall scorecard, year by year (fresh-eyes)</h2>
+  <div class="tblwrap"><table>
+    <tr><th>year</th><th class="num">net P&amp;L</th><th class="num">ceiling</th><th class="num">capture</th><th class="num">reads</th><th class="num">flat</th><th class="num">vs champion+floor</th></tr>
+    <tr><td>2023</td><td class="num neg">−$440</td><td class="num">$71,060</td><td class="num">−1%</td><td class="num">34%</td><td class="num">27%</td><td class="num pos">+$9,774</td></tr>
+    <tr><td>2024</td><td class="num pos">+$2,391</td><td class="num">$78,279</td><td class="num">+3%</td><td class="num">35%</td><td class="num">18%</td><td class="num pos">+$5,970</td></tr>
+    <tr><td>2025</td><td class="num neg">−$13,783</td><td class="num">$61,975</td><td class="num neg">−22%</td><td class="num">32%</td><td class="num">23%</td><td class="num pos">+$2,179</td></tr>
+    <tr><td>2026</td><td class="num pos">+$10,913</td><td class="num">$48,108</td><td class="num pos">+23%</td><td class="num">35%</td><td class="num">17%</td><td class="num pos">+$2,035</td></tr>
+    <tr><td><strong>total</strong></td><td class="num neg"><strong>−$919</strong></td><td class="num"><strong>$259,422</strong></td><td class="num"><strong>−0%</strong></td><td class="num"><strong>34%</strong></td><td class="num"><strong>21%</strong></td><td class="num pos"><strong>+$19,958</strong></td></tr>
+  </table></div>
+  <p class="muted">Beats the mechanical champion in <strong>all four years</strong>. 2025 is the anchor
+    dragging the total — one −22% year against three near-flat-to-good ones. The reads sit at ~34%
+    (3-way book/flat call) all four years — sticky regardless of regime, which is itself a clue.</p>
+
+  <h2>2 · THE LEAK MAP — where the $260k ceiling is going</h2>
+  <p class="muted">Every day falls into one bucket. Three of them are leaks (recoverable dollars if we
+    decided better), one is what's already working. Sized by dollars, full 2023-2026:</p>
+  <div class="leak">
+    <div class="lrow"><div class="lbl">STAND-DOWN leak<small>traded when BOTH books lost · 325 days</small></div>
+      <div class="lwrap"><div class="lbar sd" style="width:100%"></div></div><div class="lv neg">−$109,785</div></div>
+    <div class="lrow"><div class="lbl">BOOK leak<small>traded the wrong book · 160 days</small></div>
+      <div class="lwrap"><div class="lbar bk" style="width:92%"></div></div><div class="lv neg">−$101,425</div></div>
+    <div class="lrow"><div class="lbl">MISSED<small>stood flat when a book would've won · 98 days</small></div>
+      <div class="lwrap"><div class="lbar ms" style="width:45%"></div></div><div class="lv neg">−$49,131</div></div>
+    <div class="lrow"><div class="lbl">CAPTURED (working)<small>traded the best book, won · 206 days</small></div>
+      <div class="lwrap"><div class="lbar cap" style="width:124%"></div></div><div class="lv pos">+$135,759</div></div>
+  </div>
+  <div class="card watch"><h3 style="margin-top:0">Read this carefully — it's the whole game</h3>
+    <p style="margin:6px 0 0">The two biggest leaks are <strong>almost exactly equal</strong>:
+    <strong>~$110k</strong> from trading on days we should have sat out (a <em>when</em> problem), and
+    <strong>~$101k</strong> from picking the wrong book when we did trade (a <em>which</em> problem).
+    We've spent months attacking the <em>which</em> (features, agent book overrides) — and it's paying,
+    that's the +$136k captured column. But the <em>when</em> pool is just as large and we only just
+    found a lever for it: <strong>the inventory stand-down gate</strong> (separate report) directly
+    targets that $110k. The "missed" pool ($49k) is the smallest and is the cost of caution — pushing
+    stand-down harder trades some of the $110k leak for a bigger missed pool, so the inventory gate's
+    job is to cut the first without inflating the third.</p>
+    <p style="margin:8px 0 0;color:var(--faint);font-size:13px">Caveat: these pools are "recoverable
+    if we decided perfectly," which is unreachable (that's the oracle). They're a map of where the
+    money <em>sits</em>, not a promise of what we'll capture. But the relative sizes are the signal:
+    stand-down and book choice are the two big fronts, roughly equal.</p></div>
+
+  <h2>3 · Fresh-eyes vs Chained — the 2026 split</h2>
+  <div class="compare">
+    <div class="compbox fe"><h3>Fresh-eyes (stateless)</h3><div class="big2 pos">+$10,913</div>
+      <div class="stat">capture <b>23%</b></div><div class="stat">reads <b>35%</b></div>
+      <div class="stat">flat <b>17%</b></div>
+      <div class="stat">stand-down leak <b>−$17,168</b></div>
+      <div class="stat">book leak <b>−$2,790</b></div>
+    </div>
+    <div class="compbox chained"><h3>Chained (day-to-day memory)</h3><div class="big2 pos">+$14,465</div>
+      <div class="stat">capture <b>30%</b></div><div class="stat">reads <b>39%</b></div>
+      <div class="stat">flat <b>17%</b></div>
+      <div class="stat">stand-down leak <b>−$13,936</b></div>
+      <div class="stat">book leak <b>−$2,430</b></div>
+    </div>
+  </div>
+  <div class="card win"><h3 style="margin-top:0">Chained's +$3,552 edge is 100% better decisions on 22 days</h3>
+    <p style="margin:6px 0 0">Identical 127 days, identical books available. The two arms chose the
+    <strong>same action on 105 of 127 days</strong> (identical P&amp;L on those by construction). The
+    entire +$3,552 gap comes from the <strong>22 days they decided differently</strong> — chained won
+    12 of those, lost 7, and netted +$3,552. It reads 39% vs 35%, and it also trims the stand-down
+    leak (−$13,936 vs −$17,168: it sat out 4 more of the both-books-lose days). Memory doesn't change
+    <em>how often</em> it stands down (17% flat both) — it changes <em>which</em> book it picks and
+    <em>which specific days</em> it sits out. That's the carried playbook_notes doing real work.</p></div>
+  <p class="muted">One run each, not multiple seeds — the +7pp capture edge could carry some run-to-run
+    agent variance. What makes it credible: flat-rate and health-override numbers match exactly between
+    arms, so the only moving part really is the book/day reasoning. A repeat chained run on a second
+    year would bank it.</p>
+
+  <h2>4 · Where we make more money from here</h2>
+  <ol>
+    <li><strong>The $110k stand-down leak is the freshest, biggest front.</strong> The inventory gate
+      already showed +$12.7k mechanically by attacking exactly this pool — the obvious next build is
+      wiring it into the live v0.7 stack.</li>
+    <li><strong>The $101k book leak is the proven front</strong> — features + agent overrides, and
+      chained memory adds to it (+$3,552 on 2026 alone). Order-flow data (CVD) would attack this pool
+      if it survives a powered test.</li>
+    <li><strong>2025 remains the anchor</strong> — a single −22% year holding the 4-year total at
+      breakeven. It's a stand-down year (its losses are the "traded when both books lose" pool), which
+      is exactly why the inventory gate matters most here.</li>
+  </ol>
+
+  <div class="foot">
+    fresh-eyes: output/v07/walk_v07/ledger.csv (884 days) · chained: output/v07/chained2026/ledger.csv (127 days) ·
+    leak buckets: traded_should_flat / book_wrong / missed / captured · floored R1/R2 champion books
+  </div>
+</div>
