@@ -1,0 +1,178 @@
+<style>
+:root{color-scheme:light;
+ --bg:#f6f7f9;--surface-1:#ffffff;--surface-2:#fbfcfd;--border:#e5e8ee;
+ --text-primary:#13161c;--text-secondary:#5b6472;--text-muted:#939aa8;
+ --series-1:#2a78d6;--series-2:#eb6834;--pos:#0a7d33;--neg:#d63c3c;--warn-bg:#fdf3d8;--warn-tx:#7a5b00;
+ --mono:ui-monospace,"SF Mono",Menlo,"Cascadia Code",Consolas,monospace;
+ --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;
+ --bg:#111318;--surface-1:#1a1d24;--surface-2:#20242c;--border:#333944;
+ --text-primary:#eef1f6;--text-secondary:#a7b0be;--text-muted:#727b8a;
+ --series-1:#3987e5;--series-2:#e0703c;--pos:#3fb862;--neg:#ec6a6a;--warn-bg:#3a2f10;--warn-tx:#e8c96a}}
+:root[data-theme="dark"]{color-scheme:dark;
+ --bg:#111318;--surface-1:#1a1d24;--surface-2:#20242c;--border:#333944;
+ --text-primary:#eef1f6;--text-secondary:#a7b0be;--text-muted:#727b8a;
+ --series-1:#3987e5;--series-2:#e0703c;--pos:#3fb862;--neg:#ec6a6a;--warn-bg:#3a2f10;--warn-tx:#e8c96a}
+:root[data-theme="light"]{color-scheme:light;
+ --bg:#f6f7f9;--surface-1:#ffffff;--surface-2:#fbfcfd;--border:#e5e8ee;
+ --text-primary:#13161c;--text-secondary:#5b6472;--text-muted:#939aa8;
+ --series-1:#2a78d6;--series-2:#eb6834;--pos:#0a7d33;--neg:#d63c3c;--warn-bg:#fdf3d8;--warn-tx:#7a5b00}
+*{box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--text-primary);margin:0;
+ padding:clamp(16px,3vw,32px);line-height:1.5;font-variant-numeric:tabular-nums;max-width:1180px;margin-inline:auto}
+h1{font-size:clamp(19px,3vw,23px);margin:0 0 4px;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--text-secondary);font-size:13px;margin-bottom:20px;max-width:900px}
+.sub b{color:var(--text-primary)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:26px}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tile .k{font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.tile .v{font-size:22px;font-weight:650;margin-top:3px;font-family:var(--mono);letter-spacing:-.02em}
+.tile .s{font-size:11px;color:var(--text-secondary);margin-top:1px}
+.big{grid-column:span 2}
+section{margin-bottom:26px}h2{font-size:14px;color:var(--text-secondary);font-weight:600;margin:0 0 8px}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+svg text{fill:var(--text-secondary);font-size:11px;font-family:var(--mono)}
+.grid line{stroke:var(--border)}
+table{border-collapse:collapse;width:100%;font-size:12.5px;font-family:var(--mono)}
+th,td{padding:6px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:top}
+th:first-child,td:first-child,th.l,td.l{text-align:left}
+th{cursor:pointer;color:var(--text-secondary);position:sticky;top:0;background:var(--surface-1);
+ font-family:var(--sans);font-size:11px;letter-spacing:.03em;text-transform:uppercase}
+tr:hover td{background:color-mix(in srgb,var(--series-1) 6%,transparent)}
+td.note{white-space:normal;min-width:300px;max-width:540px;text-align:left;color:var(--text-secondary)}
+.chip{display:inline-block;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:600;font-family:var(--mono)}
+.ok{background:color-mix(in srgb,var(--pos) 16%,transparent);color:var(--pos)}
+.bad{background:color-mix(in srgb,var(--neg) 15%,transparent);color:var(--neg)}
+.fl,.na{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+.bull{color:var(--pos);font-weight:600}.bear{color:var(--neg);font-weight:600}.neu{color:var(--text-muted)}
+.bar{height:11px;border-radius:4px;display:inline-block;min-width:2px;vertical-align:middle}
+.note2{font-size:12px;color:var(--text-muted);margin-top:8px}
+.legend{font-size:12px;color:var(--text-secondary);margin-bottom:8px}
+.legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 4px 0 12px;vertical-align:-1px}
+.tt{position:fixed;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);
+ border-radius:6px;padding:6px 9px;font-size:12px;box-shadow:0 3px 10px rgba(0,0,0,.2);display:none;z-index:9}
+:focus-visible{outline:2px solid var(--series-1);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style><style>
+.p{font-size:13px;line-height:1.5;color:var(--text)}
+h3{font-size:13px;margin:0 0 8px;color:var(--text)}
+.verdict-no{font-size:16px;font-weight:700;color:var(--neg);margin-bottom:8px}
+.vlist{margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--text)}
+.vlist li{margin-bottom:4px}
+</style>
+<h1>Does a rolling bias help price reach the DOL? — 09:40–10:15 entries</h1>
+<div class="sub"><b>Question:</b> with a bias re-evaluated every bar up to the entry moment (≤-now), when a breakout initiates inside 09:40–10:15, does price reach the bias-side draw-on-liquidity <b>before</b> invalidation — resolution allowed after 10:15? Full 2023→Jul 2026 1-min NQ, same feature frame / DST / holiday / Wilson-CI / walk-forward discipline as the prior runs. <b>The headline reach-% looked like a win; it isn't — and this page shows exactly why.</b></div>
+
+<div class="tiles" id="tiles"></div>
+
+<section><h2>1 · The rolling bias genuinely rolls (not a frozen 08:00 snapshot)</h2>
+<div class="card"><table id="flips"></table>
+<div class="note2">The bias flips on ~half of days between 08:00 and the entry — it tracks premarket evidence and updates, exactly as required. Coverage: <b id="cov"></b> of eligible days produce an in-window breakout with a defined DOL. Median time-to-resolution <b id="ttr"></b> min; <b id="after"></b> of trades resolve <b>after</b> 10:15 (the no-timeout rule matters).</div></div></section>
+
+<section><h2>2 · The breakout→DOL reaction itself has no <i>directional</i> edge</h2>
+<div class="grid3">
+<div class="card"><h3>Reach vs its own mirror</h3><table id="mirror"></table>
+<div class="note2">From the breakout point, the breakout-direction pool is reached <b>no more often</b> than an equidistant pool the opposite way. Post-breakout momentum ≈ 0 — the reaction doesn't predict its own direction.</div></div>
+<div class="card"><h3>Reach across stop definitions</h3><svg id="stops" width="100%" height="180" viewBox="0 0 380 180"></svg>
+<div class="note2">Monotone with stop size, no special peak — not curve-fit to one stop. Structural (15–70) reach ≈ <b id="rte"></b>%.</div></div>
+<div class="card"><h3>Why reach looks "profitable"</h3><p class="p">Draws sit ~2.9R away, so even a 36% reach beats the 26% breakeven — <b>but this is symmetric</b> (works either side). It's "volatility eventually tags a far pool," not a tradeable direction. You still need something to tell you <i>which</i> side.</p></div>
+</div></section>
+
+<section><h2>3 · The trap: "aligned reaches +20pp more" is <span class="neg">nearer draws, not direction</span></h2>
+<div class="grid3">
+<div class="card"><h2>What it looks like</h2><table id="ctrlb"></table>
+<div class="note2">Breakouts <b>aligned</b> with the rolling bias reach their DOL 43.9% vs 23.9% for <b>counter</b> — a +20pp raw lift, CI clears zero. Looks decisive.</div></div>
+<div class="card"><h2>What's actually going on</h2><svg id="geo" width="100%" height="210" viewBox="0 0 380 210"></svg>
+<div class="note2">Aligned draws sit at <b>48pt</b>; counter draws at <b>122pt</b> — same ~40pt stop. The nearer target is reached more often <i>by construction</i>, and pays less.</div></div>
+<div class="card"><h2>R-adjusted: both breakeven</h2><table id="radj"></table>
+<div class="note2">Once you credit each win its actual R, aligned E[R] <b>+0.017</b> and counter <b>−0.025</b> — both straddle zero. R-matched within buckets the gap flips sign (+24 / −5 / +7pp). <b>No directional edge survives.</b></div></div>
+</div></section>
+
+<section><h2>4 · Real Campion money confirms it — the bias adds nothing to P&L</h2>
+<div class="card"><table id="m2"></table>
+<div class="note2">Under the real rules (pad-20 stop, &gt;40→5-micro derisk, nearest-draw target capped 4R, slip+commission): <b>aligned is breakeven (PF 1.00, E[R] +0.02)</b> and <i>no better than</i> counter (PF 1.07). Max drawdown dwarfs net P&L on both. The reach advantage evaporates because aligned setups carry unfavourable R.</div></div></section>
+
+<section class="grid3">
+<div class="card" style="grid-column:span 2"><h2>Walk-forward — the raw-reach lift is the geometry artifact repeating</h2>
+<div style="overflow:auto"><table id="folds"></table></div>
+<div class="note2">Aligned raw-reach is higher in all 5 folds (2 clear zero) — but that's the same "aligned = nearer draw" selection recurring, not an out-of-sample directional edge, as the R-adjusted and money views show.</div></div>
+<div class="card"><h2>By VIX regime</h2><table id="vix"></table>
+<div class="note2">The raw-reach lift persists across VIX because nearer draws are reached more in every regime — again geometry, not direction.</div></div>
+</section>
+
+<section><h2>Verdict</h2><div class="card"><div id="verdict"></div></div></section>
+<div class="tt" id="tt"></div>
+<script>
+const D={"eligible":861,"breakouts":756,"coverage_pct":87.8,"n_aligned":440,"n_counter":254,"n_nobias":62,"excl":{},"reach_all":{"n":756,"pct":37.2,"ci":[33.8,40.7]},"reach_te":{"n":353,"pct":36.3,"ci":[31.4,41.4]},"meanR_te":2.91,"be_te":25.5,"expR_te":0.421,"uncond_te":{"n":353,"pct":63.5,"ci":[58.3,68.3]},"mirror_te":{"n":353,"pct":37.4,"ci":[32.5,42.6]},"ctrlB":{"aligned_all":{"n":440,"pct":43.9,"ci":[39.3,48.5]},"counter_all":{"n":254,"pct":27.6,"ci":[22.4,33.4]},"aligned_te":{"n":205,"pct":43.9,"ci":[37.3,50.7]},"counter_te":{"n":113,"pct":23.9,"ci":[17.0,32.5]},"nobias_te":{"n":35,"pct":31.4,"ci":[18.6,48.0]},"lift_te":20.0,"lift_ci_te":[9.8,30.3]},"geometry":{"rows":[{"who":"aligned","n":205,"reach":43.9,"meanR":2.29,"dol_med":48.0,"stop_med":40.0,"expR":0.017,"lo":-0.173,"hi":0.233},{"who":"counter","n":113,"reach":23.9,"meanR":3.95,"dol_med":122.0,"stop_med":40.0,"expR":-0.025,"lo":-0.385,"hi":0.417}],"radj_diff":4.1,"radj_diff_ci":[-46.1,47.0],"rmatch":[{"bucket":"R[0,1.5)","a":58.8,"na":114,"c":35.0,"nc":20,"gap":23.8},{"bucket":"R[1.5,3)","a":31.1,"na":45,"c":36.4,"nc":33,"gap":-5.3},{"bucket":"R[3,20)","a":20.5,"na":44,"c":13.3,"nc":60,"gap":7.1}]},"fixed":[{"lbl":"structural","n":353,"pct":36.3,"ci":[31.4,41.4]},{"lbl":"fx15","n":353,"pct":21.5,"ci":[17.6,26.1]},{"lbl":"fx25","n":353,"pct":29.5,"ci":[24.9,34.4]},{"lbl":"fx40","n":353,"pct":34.8,"ci":[30.1,40.0]}],"bdir":[{"dir":"up","n":172,"pct":45.9,"ci":[38.7,53.4],"aligned":53.6,"counter":32.8},{"dir":"down","n":181,"pct":27.1,"ci":[21.1,34.0],"aligned":35.2,"counter":14.5}],"vix":[{"vix":"low","n":1,"reach":100.0,"aligned":100.0,"counter":0.0,"lift":100.0},{"vix":"mid","n":130,"reach":38.5,"aligned":46.3,"counter":21.1,"lift":25.2},{"vix":"high","n":222,"reach":34.7,"aligned":41.8,"counter":25.3,"lift":16.5}],"folds":[{"test":"2024-01->2024-07","n_al":72,"n_co":39,"a":41.7,"c":35.9,"lift":5.8,"lo":-12.8,"hi":24.8},{"test":"2024-07->2025-01","n_al":66,"n_co":32,"a":43.9,"c":25.0,"lift":18.9,"lo":-1.0,"hi":37.6},{"test":"2025-01->2025-07","n_al":62,"n_co":41,"a":50.0,"c":24.4,"lift":25.6,"lo":7.0,"hi":43.4},{"test":"2025-07->2026-01","n_al":76,"n_co":31,"a":43.4,"c":16.1,"lift":27.3,"lo":9.6,"hi":43.4},{"test":"2026-01->2026-07","n_al":67,"n_co":41,"a":38.8,"c":29.3,"lift":9.5,"lo":-9.0,"hi":28.1}],"pos_folds":2,"flips":{"chg_8_930":270,"n_all":861,"chg_930i":217,"chg_any":402,"n_init":860},"ttr_median":7,"res_after_1015":138,"still_open":10,"m2":{"aligned":{"n":205,"expR":0.023,"wr":45.9,"usd":22.0,"dd":10792.0,"pf":1.0,"winR":1.23},"counter":{"n":113,"expR":0.11,"wr":31.0,"usd":3312.0,"dd":7642.0,"pf":1.07,"winR":2.6},"nobias":{"n":35,"expR":0.098,"wr":34.3,"usd":1108.0,"dd":6252.0,"pf":1.08,"winR":2.21},"all":{"n":353,"expR":0.058,"wr":39.9,"usd":4442.0,"dd":14395.0,"pf":1.04,"winR":1.65}},"R_dist":[0.38,0.83,1.835,3.7175000000000002,6.165],"cond1":false,"cond2":false,"proven":false};const $=s=>document.querySelector(s);const g=D.geometry;
+const A=g.rows.find(r=>r.who==='aligned'),C=g.rows.find(r=>r.who==='counter');
+$("#tiles").innerHTML=[
+ ["Breakouts w/ DOL",D.breakouts,D.coverage_pct+"% of eligible days"],
+ ["Reaction reach",D.reach_te.pct+"%","test; but symmetric (no direction)"],
+ ["Aligned raw lift","+"+(D.ctrlB.aligned_te.pct-D.ctrlB.counter_te.pct).toFixed(1)+"pp","looks like edge…"],
+ ["…is nearer draws","48 vs 122pt","aligned vs counter DOL distance"],
+ ["R-adjusted edge","≈ 0 R","both sides breakeven"],
+ ["Verdict",D.proven?"PROVEN":"NOT PROVEN","bias adds no tradeable direction"],
+].map(t=>`<div class="tile"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="s">${t[2]}</div></div>`).join("");
+
+$("#cov").textContent=D.coverage_pct+"%";$("#ttr").textContent=D.ttr_median;
+$("#after").textContent=Math.round(100*D.res_after_1015/D.breakouts)+"%";$("#rte").textContent=D.reach_te.pct;
+const fl=D.flips;
+$("#flips").innerHTML="<tr><th class='l'>bias change</th><th>days</th><th>share</th></tr>"+
+ [["08:00 → 09:30",fl.chg_8_930,fl.n_all],["09:30 → breakout",fl.chg_930i,fl.n_init],["any 08:00 → breakout",fl.chg_any,fl.n_init]]
+ .map(r=>`<tr><td class="l">${r[0]}</td><td>${r[1]}/${r[2]}</td><td>${Math.round(100*r[1]/r[2])}%</td></tr>`).join("");
+
+$("#mirror").innerHTML="<tr><th class='l'>from the breakout point</th><th>reach</th></tr>"+
+ `<tr><td class="l">breakout-direction pool</td><td>${D.reach_te.pct}%</td></tr>`+
+ `<tr><td class="l">equidistant opposite pool</td><td>${D.mirror_te.pct}%</td></tr>`+
+ `<tr><td class="l" style="color:var(--text-muted)">momentum gap</td><td style="color:var(--text-muted)">${(D.reach_te.pct-D.mirror_te.pct>0?'+':'')}${(D.reach_te.pct-D.mirror_te.pct).toFixed(1)}pp</td></tr>`;
+
+(function(){const F=D.fixed,W=380,H=180,P={l:34,r:12,t:12,b:40};
+ const mx=Math.max(...F.map(f=>f.pct));const bw=(W-P.l-P.r)/F.length*0.6;
+ let s='';F.forEach((f,i)=>{const x=P.l+(W-P.l-P.r)*(i+0.5)/F.length;const h=(H-P.t-P.b)*f.pct/mx;
+  s+=`<rect x="${x-bw/2}" y="${H-P.b-h}" width="${bw}" height="${h}" rx="3" fill="var(--series-1)" data-t="${f.lbl}: ${f.pct}% (n${f.n})"/>`;
+  s+=`<text x="${x}" y="${H-P.b-h-4}" text-anchor="middle" style="font-size:10px">${f.pct}%</text>`;
+  s+=`<text x="${x}" y="${H-P.b+14}" text-anchor="middle" style="font-size:9px;fill:var(--text-muted)">${f.lbl.replace('structural','struct')}</text>`;});
+ $("#stops").innerHTML=s;bindtt("#stops");})();
+
+$("#ctrlb").innerHTML="<tr><th class='l'>breakout</th><th>reach</th><th>95% CI</th><th>n</th></tr>"+
+ [["aligned",D.ctrlB.aligned_te],["counter",D.ctrlB.counter_te],["no-bias",D.ctrlB.nobias_te]]
+ .map(([l,r])=>`<tr><td class="l">${l}</td><td>${r.pct}%</td><td>[${r.ci[0]},${r.ci[1]}]</td><td>${r.n}</td></tr>`).join("")+
+ `<tr><td class="l" style="color:var(--pos)">raw lift</td><td colspan="3" style="color:var(--pos)">+${(D.ctrlB.aligned_te.pct-D.ctrlB.counter_te.pct).toFixed(1)}pp (CI clears 0)</td></tr>`;
+
+// geometry bars: DOL distance aligned vs counter
+(function(){const rows=[["aligned DOL",A.dol_med,'var(--series-1)'],["counter DOL",C.dol_med,'var(--neg)'],["stop (both)",A.stop_med,'var(--text-muted)']];
+ const W=380,H=210,P={l:96,r:40,t:16,b:20};const mx=Math.max(...rows.map(r=>r[1]));
+ let s='';rows.forEach((r,i)=>{const y=P.t+i*52;const w=(W-P.l-P.r)*r[1]/mx;
+  s+=`<text x="${P.l-8}" y="${y+18}" text-anchor="end" style="font-size:11px">${r[0]}</text>`;
+  s+=`<rect x="${P.l}" y="${y+4}" width="${w}" height="26" rx="4" fill="${r[2]}"/>`;
+  s+=`<text x="${P.l+w+6}" y="${y+22}" style="font-size:12px;font-weight:600">${r[1]}pt</text>`;});
+ s+=`<text x="${P.l}" y="${H-2}" style="font-size:10px;fill:var(--text-muted)">nearer target → reached more often, pays less</text>`;
+ $("#geo").innerHTML=s;})();
+
+$("#radj").innerHTML="<tr><th class='l'>breakout</th><th>reach</th><th>meanR</th><th>E[R]/trade</th></tr>"+
+ g.rows.map(r=>`<tr><td class="l">${r.who}</td><td>${r.reach}%</td><td>${r.meanR}</td><td style="color:${r.expR>0.05?'var(--pos)':Math.abs(r.expR)<0.05?'var(--text-muted)':'var(--neg)'}">${r.expR>0?'+':''}${r.expR}</td></tr>`).join("");
+
+$("#m2").innerHTML="<tr><th class='l'>alignment</th><th>trades</th><th>E[R]</th><th>win%</th><th>win R</th><th>net $</th><th>maxDD $</th><th>PF</th></tr>"+
+ [["aligned",D.m2.aligned],["counter",D.m2.counter],["no-bias",D.m2.nobias],["ALL",D.m2.all]].filter(x=>x[1]).map(([l,m])=>
+ `<tr><td class="l">${l}</td><td>${m.n}</td><td style="color:${m.expR>0.1?'var(--pos)':'var(--text-muted)'}">${m.expR>0?'+':''}${m.expR}</td><td>${m.wr}%</td><td>${m.winR}</td><td>${m.usd}</td><td style="color:var(--neg)">${m.dd}</td><td>${m.pf}</td></tr>`).join("");
+
+$("#folds").innerHTML="<tr><th class='l'>test block</th><th>aligned</th><th>counter</th><th>raw lift</th><th>95% CI</th></tr>"+
+ D.folds.map(f=>`<tr><td class="l">${f.test}</td><td>${f.a}% <span style="font-size:9px;color:var(--text-muted)">n${f.n_al}</span></td><td>${f.c}% <span style="font-size:9px;color:var(--text-muted)">n${f.n_co}</span></td><td style="color:${f.lift>0?'var(--pos)':'var(--neg)'}">${f.lift>0?'+':''}${f.lift}pp</td><td style="color:${f.lo>0?'var(--pos)':'var(--text-muted)'}">[${f.lo},${f.hi}]</td></tr>`).join("");
+
+$("#vix").innerHTML="<tr><th class='l'>VIX</th><th>n</th><th>aligned</th><th>counter</th></tr>"+
+ D.vix.filter(v=>v.n>3).map(v=>`<tr><td class="l">${v.vix}</td><td>${v.n}</td><td>${v.aligned}%</td><td>${v.counter}%</td></tr>`).join("");
+
+$("#verdict").innerHTML=`<div class="verdict-no">NOT PROVEN — the rolling bias adds no tradeable directional edge to DOL reach.</div>
+<ul class="vlist">
+<li>The bias <b>does roll</b> (flips on ~half of days) and the harness is clean — no lookahead, resolution allowed past 10:15, holidays/DST handled.</li>
+<li>The breakout→DOL reaction reaches the pool ~36%, but <b>symmetric</b> (opposite pool 37%) — the reaction has <b>no direction</b> of its own.</li>
+<li>The eye-catching <b>+20pp "aligned reaches more"</b> is a <b>geometry artifact</b>: aligned draws sit at 48pt vs counter's 122pt. Nearer targets are hit more often and pay less.</li>
+<li>R-adjusted, <b>both sides are breakeven</b> (aligned +0.017R, counter −0.025R, CIs straddle zero); R-matched, the gap flips sign; and under <b>real Campion money the bias is no better than counter</b> (PF 1.00 vs 1.07, drawdown ≫ profit).</li>
+</ul>
+<div class="note2" style="margin-top:8px"><b>Actionable read:</b> the draw gets tagged often enough <i>both ways</i> that the DOL is best played <b>reactively from confirmation</b>, not predicted. The rolling bias is at most a mild <b>size/skip tilt</b> (lean lighter on counter-bias breakouts, whose draws are far) — it is <b>not</b> a P&L engine. This is the same conclusion the direction and window tests reached, now shown for the DOL-reach framing too.</div>`;
+
+function bindtt(sel){const el=$(sel),tt=$("#tt");el.addEventListener("mousemove",e=>{const t=e.target.dataset.t;
+ if(!t){tt.style.display="none";return;}tt.style.display="block";tt.style.left=(e.clientX+14)+"px";tt.style.top=(e.clientY-10)+"px";tt.textContent=t;});
+ el.addEventListener("mouseleave",()=>tt.style.display="none");}
+</script>
