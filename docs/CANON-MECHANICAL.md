@@ -55,3 +55,21 @@ Jul-Sep days were the bigger-range/bigger-gap "fake start" days, not the quietes
 Rule E is a free ~+$1.1k (never worse anywhere). Rule A is a consistency trade: erases the
 bleed months (worst month −$892 vs −$3,438) for ~$1.5k/2yr of total P&L, cost sitting in 2026
 good months. NOT shipped — canon unchanged pending Angus's ruling / 2023-24 holdout.
+
+## 25-Jul: Layer 2b SHIPPED + within-day escalation ladder (candidate V5)
+
+**Layer 2b now canon** (Angus ruling): trade #2+ of the day requires score ≥ 4.
+Canon = +$14,371 / +$30,862.
+
+**Escalation ladder tested (results-based, zero forecasting — reacts only to realized losses):**
+day running P&L < 0 → subsequent entries require BOTH structure checks (W wall-behind-absent +
+T not-fighting-tape), A-setups exempt (reversals thrive in bad tape) → day P&L ≤ −$400 → sit
+out the rest of the day.
+
+| | 2025 | 2026 | Jul-Sep | good months | green | worst month |
+|---|---|---|---|---|---|---|
+| canon-E | +14,371 | +30,862 | −4,004 | +49,237 | 9/13 | −2,591 |
+| **V5 full ladder** | **+18,171** | +29,716 | **−1,038** | +48,925 | 10/13 | **−789** |
+
+V5: +$2.7k total over canon, Jul-Sep bleed −$4.0k → −$1.0k, good months give up only $312,
+worst month −$789. Awaiting Angus ruling before shipping into canon.

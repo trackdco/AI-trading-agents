@@ -11,10 +11,12 @@ Layer 1  VALIDATION : 5 checks at fill —
                       G geometry aligned (dir-signed VWAP-side >= 2025-q25)
                       C window-correct CVD (PM conf if pre-fill, LON conf if gold-fill)
 Layer 2  SIZING     : score<=2 -> 0 | 3 -> 0.5 | 4 -> 1.0 | 5 -> 1.5
+Layer 2b ESCALATION : trade #2+ of the day requires score >= 4 (ANGUS 25-Jul ruling: the
+                      follow-up entry needs full conviction; strict upgrade +$1.1k, never worse)
 Layer 3  GOVERNOR   : trailing-15 confirmed-trade (score>=4) win rate < 0.35 -> all sizes x0.5
                       (results-based; uses only past trades)
 
-Validated 2025/2026 out-of-fit: +$14,349 / +$30,343, maxDD $5.6k/$3.0k, ~2 tr/day.
+Validated 2025/2026 out-of-fit (with 2b): +$14,371 / +$30,862, ~2 tr/day.
 Writes output/canon_book.parquet (one row per trade with score/size/governor/final P&L).
 
     python -m scripts.canon_mechanical
@@ -51,6 +53,12 @@ def build_canon(T):
             cur = twr[i]
         gov.append(0.5 if (not np.isnan(cur) and cur < 0.35) else 1.0)
     T["governor"] = gov
+    # Layer 2b: second-and-later trades of the day require score >= 4
+    taken = T[T["size"] > 0]
+    nth = taken.groupby("day").cumcount() + 1
+    T["nth"] = nth.reindex(T.index)
+    esc = (T["nth"] >= 2) & (T.score < 4)
+    T.loc[esc.fillna(False), "size"] = 0.0
     T["pl"] = T.dollars * T["size"] * T.governor
     return T
 
