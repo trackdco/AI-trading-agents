@@ -99,7 +99,9 @@ entry:
                                   #      12-53pt off the reclaim -> bad-geometry/tcancel misses;
                                   #      Feb E1 +2.59R -> E3 +13.74R. E2 (wick 50%) barely fills.
                                   #      E1 = limit at BB MA / E2 = 50% of wick / E3 = penetrated level.
-  min_stop_points: 6.0            # §5 — ANGUS pass-5 ruling 2026-07-17: was 10; too blunt once E3
+  min_stop_points: 7.0            # §5 — ANGUS 24-Jul: raised from 6.0. Autopsy verdict: risk<=6.75
+                                  #   wins 17%/12% (2025/2026), monotone by quartile both years —
+                                  #   the sub-7pt bucket is structurally toxic. (pass-5 had 6.0)
   post_open_min_stop: 10.0        # Tier-2 (Angus 20 Jul): post-open tape ~2.4x wider -> 10pt floor after
                                   #   post_open_after. PENDING OOS validation. (ATR-scaled is the ideal form.)
                                   #      is active (reclaim entry sits near invalidation -> 7-9pt
