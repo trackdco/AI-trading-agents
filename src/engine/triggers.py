@@ -265,14 +265,17 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
             #     then ... candle closes through ... i enter on the retest").
             #   REJECTION (wick in, close back): B2 — fade off the level, either HTF direction.
             if res["kind"] == "displacement":
-                nv = ind.get("ny_vwap") or {}
+                # ANGUS 22-Jul: "±2" is the DAILY (session-anchored) VWAP band, and "extension"
+                # just means price TOUCHED/wicked the ±2 band (within tolerance) before reversing
+                # — not a strict close beyond it.
+                dv = ind.get("daily_vwap") or {}
                 lb = fr.iloc[max(0, i - _EXT_LOOKBACK):i + 1]
                 if res["direction"] == "long":
-                    band = nv.get(f"lower_{oe_sigma}")
-                    reversed_ext = band is not None and float(lb["low"].min()) <= band
+                    band = dv.get(f"lower_{oe_sigma}")
+                    reversed_ext = band is not None and float(lb["low"].min()) <= band + _VWAP_TOUCH_TOL
                 else:
-                    band = nv.get(f"upper_{oe_sigma}")
-                    reversed_ext = band is not None and float(lb["high"].max()) >= band
+                    band = dv.get(f"upper_{oe_sigma}")
+                    reversed_ext = band is not None and float(lb["high"].max()) >= band - _VWAP_TOUCH_TOL
                 pattern = "A" if reversed_ext else "B"
             else:
                 pattern = "B2"        # rejection at a level = fade (with- or counter-HTF)
