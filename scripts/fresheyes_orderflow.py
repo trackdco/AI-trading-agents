@@ -29,11 +29,11 @@ def main():
     bt["fmin"] = bt.day + " " + bt.fill
     print(f"real fresh-eyes 2025 trades (chosen book, Jun-Dec): {len(bt)}  ${bt.dollars.sum():+,.0f}")
 
-    trg = load(["output/triggers_hist2326_ob_v2.csv"])
-    T = pd.DataFrame([{"day": t.ts[:10], "ts": pd.Timestamp(t.ts), "dir": t.direction,
-                       "entry_ref": t.entry_ref, "close": t.close, "stop": t.stop_ref,
-                       "pattern": t.pattern} for t in trg if t.ts[:7] >= "2025-06" and t.ts[:7] <= "2025-12"])
-    T["fill_hm"] = T.ts.dt.strftime("%H:%M")
+    trg = [t for t in load(["output/triggers_hist2326_ob_v2.csv"])
+           if "2025-06" <= t.ts[:7] <= "2025-12"]
+    T = pd.DataFrame([{"day": t.ts[:10], "dir": t.direction, "entry_ref": t.entry_ref,
+                       "close": t.close, "stop": t.stop_ref, "pattern": t.pattern} for t in trg])
+    T["ts"] = pd.to_datetime([t.ts for t in trg], utc=True).tz_convert(NY)
 
     rows = []
     for r in bt.itertuples():
