@@ -4,7 +4,7 @@ import json
 import pandas as pd
 
 S = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
-J = pd.read_csv(f"{S}/ict_bias_days.csv", dtype={"day": str})
+J = pd.read_csv(f"{S}/ict_bias_v2_days.csv", dtype={"day": str})
 J["mo"] = J.day.str.slice(0, 7)
 D = J[J.bias != "NEUTRAL"].copy()
 
@@ -98,8 +98,8 @@ td.note{white-space:normal;min-width:300px;max-width:540px;text-align:left;color
 </style>"""
 
 BODY = """
-<h1>ICT Weekly-Bias Accuracy — NQ, Jul 2025 → Jul 2026</h1>
-<div class="sub"><b>Top-down, calendar-driven, never counter-weekly.</b> Weekly bias set from completed weekly candles; the <b>red-folder economic calendar</b> picks which day places the week's low/high (the expansion days); daily bias is the weekly direction on expansion days and <b>NEUTRAL otherwise</b> — no shorts in a bullish week, and no read on quiet accumulation days. Graded on the <b>NY session (09:30→16:00)</b>: <b>strict</b> = session closed in the bias direction (±0.10%); <b>expansion</b> = NY swept against then expanded with the bias (the judas-swing shape you actually trade off a retracement + CISD).</div>
+<h1>ICT Weekly-Bias Accuracy (v2) — NQ, Jul 2025 → Jul 2026</h1>
+<div class="sub"><b>Top-down, calendar-driven, never counter-weekly.</b> Weekly bias set from completed weekly candles; the <b>red-folder economic calendar</b> picks which day places the week's low/high (the expansion days); daily bias is the weekly direction on expansion days and <b>NEUTRAL otherwise</b> — no shorts in a bullish week, and no read on quiet accumulation days. Graded on the <b>NY session (09:30→16:00)</b>: <b>strict</b> = session closed in the bias direction (±0.10%); <b>expansion</b> = NY swept against then expanded with the bias (the judas-swing shape you actually trade off a retracement + CISD). <b>v2 upgrades over v1:</b> trend-led weekly bias with a reversal-week veto, sweep-then-reclaim confirmation before calling expansion, and an HTF-array (4H/daily FVG) conviction factor — lifting HIGH-conviction from 50.9%→57.1% strict at the same ~123 directional days.</div>
 <div class="tiles" id="tiles"></div>
 <section><h2>Accuracy by day of week — testing the Tue/Wed/Thu expansion thesis</h2>
 <div class="card"><div class="legend">series:<span class="sw" style="background:var(--series-1)"></span>strict net-close<span class="sw" style="background:var(--series-2)"></span>ICT expansion</div>
