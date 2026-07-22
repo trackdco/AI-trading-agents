@@ -2,7 +2,9 @@
 """THE CANON MECHANICAL BOOK (Angus 25-Jul ruling: ship as default; do not divert unless
 explicitly asked).
 
-Layer 0  HARD GATES : stop >= 7pts (pre) / engine post-open floor (gold); universe = both books,
+Layer 0  HARD GATES : stop >= 7pts (pre) / engine post-open floor (gold); stop <= 60pts
+                      (ANGUS 25-Jul ruling: 29 trades carried 60-136pt stops, 0/12 wins ever
+                      reached 2R — structurally sub-doctrine, banned); universe = both books,
                       every day, no book choosing, no day forecasting.
 Layer 1  VALIDATION : 5 checks at fill —
                       W wall-behind absent (no visible depth behind entry)
@@ -43,7 +45,7 @@ def build_canon(T):
     T["Tp"] = (d15dir >= d15dir[T.yr == 2025].quantile(0.25)).astype(float)
     T["G"] = (T.ent_vs_vwap_sd_dir >= T[T.yr == 2025].ent_vs_vwap_sd_dir.quantile(0.25)).astype(float)
     T["C"] = np.where(T.win_ == "pre", (T.conf_PM == 1), (T.conf_LON == 1)).astype(float)
-    T = T[T.risk >= 7].sort_values("fill").reset_index(drop=True)
+    T = T[(T.risk >= 7) & (T.risk <= 60)].sort_values("fill").reset_index(drop=True)
     T["score"] = T[["W", "F", "Tp", "G", "C"]].sum(axis=1)
     T["size"] = np.select([T.score <= 2, T.score == 3, T.score == 4, T.score == 5], [0, .5, 1, 1.5])
     hi = T[T.score >= 4].reset_index()

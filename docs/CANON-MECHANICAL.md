@@ -74,3 +74,18 @@ out the rest of the day.
 V5: +$2.7k total over canon, Jul-Sep bleed −$4.0k → −$1.0k, good months give up only $312,
 worst month −$789. **SHIPPED into canon 25-Jul (Angus ruling) as Layer 2c.** Canon full stack:
 **+$18,171 / +$29,716**, maxDD $2.8k/$3.3k, worst month −$789, ~1.3 tr/day.
+
+## 25-Jul: stop-size ruling + MAE study
+
+**SHIPPED (Angus ruling): hard stop cap ≤ 60pts** (Layer 0). 29 trades carried 60-136pt stops;
+0 of their 12 wins ever reached 2R — invalid under the min-2R doctrine. Canon now:
+**+$18,011 / +$25,560**, maxDD $2.5k/$3.0k.
+
+**MAE study (275 canon trades, fill→exit, 1m bars):** winners barely use their stops —
+median MAE 5.6pts = **37% of stop**; 64% of winners never see half the stop; even 40-60pt-stop
+winners median just 17pts (35%). Confirms the retest-entry thesis: a working retest never goes
+deep. First-order tightening sweep (stop = k× current): k=0.8 IMPROVES total P&L
+(+$41.4k vs +$38.5k baseline) losing only 10/118 winners; k=0.7 roughly break-even; below that
+it degrades. **Stops are ~20-25% too wide across the board.** NOT shipped — true stop
+placement changes trade evolution (needs engine re-sim, and holdout confirmation to avoid
+tuning on two years). Logged as holdout candidate #2 behind the dead-tape W-weighting.
