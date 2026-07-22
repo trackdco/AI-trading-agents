@@ -1,0 +1,129 @@
+<style>
+:root{color-scheme:light;
+ --bg:#f6f7f9;--surface-1:#ffffff;--surface-2:#fbfcfd;--border:#e5e8ee;
+ --text-primary:#13161c;--text-secondary:#5b6472;--text-muted:#939aa8;
+ --series-1:#2a78d6;--series-2:#eb6834;--pos:#0a7d33;--neg:#d63c3c;--warn-bg:#fdf3d8;--warn-tx:#7a5b00;
+ --mono:ui-monospace,"SF Mono",Menlo,"Cascadia Code",Consolas,monospace;
+ --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;
+ --bg:#111318;--surface-1:#1a1d24;--surface-2:#20242c;--border:#333944;
+ --text-primary:#eef1f6;--text-secondary:#a7b0be;--text-muted:#727b8a;
+ --series-1:#3987e5;--series-2:#e0703c;--pos:#3fb862;--neg:#ec6a6a;--warn-bg:#3a2f10;--warn-tx:#e8c96a}}
+:root[data-theme="dark"]{color-scheme:dark;
+ --bg:#111318;--surface-1:#1a1d24;--surface-2:#20242c;--border:#333944;
+ --text-primary:#eef1f6;--text-secondary:#a7b0be;--text-muted:#727b8a;
+ --series-1:#3987e5;--series-2:#e0703c;--pos:#3fb862;--neg:#ec6a6a;--warn-bg:#3a2f10;--warn-tx:#e8c96a}
+:root[data-theme="light"]{color-scheme:light;
+ --bg:#f6f7f9;--surface-1:#ffffff;--surface-2:#fbfcfd;--border:#e5e8ee;
+ --text-primary:#13161c;--text-secondary:#5b6472;--text-muted:#939aa8;
+ --series-1:#2a78d6;--series-2:#eb6834;--pos:#0a7d33;--neg:#d63c3c;--warn-bg:#fdf3d8;--warn-tx:#7a5b00}
+*{box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--text-primary);margin:0;
+ padding:clamp(16px,3vw,32px);line-height:1.5;font-variant-numeric:tabular-nums;max-width:1180px;margin-inline:auto}
+h1{font-size:clamp(19px,3vw,23px);margin:0 0 4px;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--text-secondary);font-size:13px;margin-bottom:20px;max-width:900px}
+.sub b{color:var(--text-primary)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:26px}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tile .k{font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.tile .v{font-size:22px;font-weight:650;margin-top:3px;font-family:var(--mono);letter-spacing:-.02em}
+.tile .s{font-size:11px;color:var(--text-secondary);margin-top:1px}
+.big{grid-column:span 2}
+section{margin-bottom:26px}h2{font-size:14px;color:var(--text-secondary);font-weight:600;margin:0 0 8px}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+svg text{fill:var(--text-secondary);font-size:11px;font-family:var(--mono)}
+.grid line{stroke:var(--border)}
+table{border-collapse:collapse;width:100%;font-size:12.5px;font-family:var(--mono)}
+th,td{padding:6px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:top}
+th:first-child,td:first-child,th.l,td.l{text-align:left}
+th{cursor:pointer;color:var(--text-secondary);position:sticky;top:0;background:var(--surface-1);
+ font-family:var(--sans);font-size:11px;letter-spacing:.03em;text-transform:uppercase}
+tr:hover td{background:color-mix(in srgb,var(--series-1) 6%,transparent)}
+td.note{white-space:normal;min-width:300px;max-width:540px;text-align:left;color:var(--text-secondary)}
+.chip{display:inline-block;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:600;font-family:var(--mono)}
+.ok{background:color-mix(in srgb,var(--pos) 16%,transparent);color:var(--pos)}
+.bad{background:color-mix(in srgb,var(--neg) 15%,transparent);color:var(--neg)}
+.fl,.na{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+.bull{color:var(--pos);font-weight:600}.bear{color:var(--neg);font-weight:600}.neu{color:var(--text-muted)}
+.bar{height:11px;border-radius:4px;display:inline-block;min-width:2px;vertical-align:middle}
+.note2{font-size:12px;color:var(--text-muted);margin-top:8px}
+.legend{font-size:12px;color:var(--text-secondary);margin-bottom:8px}
+.legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 4px 0 12px;vertical-align:-1px}
+.tt{position:fixed;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);
+ border-radius:6px;padding:6px 9px;font-size:12px;box-shadow:0 3px 10px rgba(0,0,0,.2);display:none;z-index:9}
+:focus-visible{outline:2px solid var(--series-1);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style><style>
+.verdict-no{font-size:15px;font-weight:700;color:var(--neg);margin:10px 0 6px}
+.vlist{margin:0;padding-left:18px;font-size:13px;line-height:1.65;color:var(--text)}
+.vlist li{margin-bottom:8px}
+</style>
+<h1>Trend Pullback (stacked MA) — isolated setup: bare vs +confluence</h1>
+<div class="sub"><b>New setup, tested alone</b> (not blended into any other book). M15 stacked-MA trend pullback: 20&gt;50&gt;200 stack, price pulls back to <b>touch the 50MA</b> with <b>fading volume</b> and resumes. Run two ways — <b>(a) bare</b> trigger only, <b>(b) +confluence</b> (delta/VWAP/Bollinger/POC). Parameters chosen on <b>train 2023–24</b> only; <b>test 2025→now touched once</b>. Point-in-time throughout — session VWAP/POC built cumulatively with a hard time-guard (0 violations).</div>
+
+<div class="tiles" id="tiles"></div>
+
+<section><h2>(a) bare vs (b) +confluence — side by side, train vs test</h2>
+<div class="card"><table id="cmp"></table>
+<div class="note2">Every figure with 95% CI and N. <b id="lown"></b> Counter-baseline = the same triggers taken in the mirror direction. Both variants' test expectancy CIs are enormous and <b>include the counter-baseline</b> — neither clears it.</div></div></section>
+
+<section class="grid3">
+<div class="card" style="grid-column:span 2"><h2>The decider: placebo / label-shuffle</h2>
+<svg id="placebo" width="100%" height="200" viewBox="0 0 620 200"></svg>
+<div class="note2">Real entries vs 300 shuffles that pick <b>random bars inside the same stacked-MA uptrend</b>. Both variants score <b>no better than random</b> (bare p=0.59, +confluence p=0.54). Translation: the money that shows up is <b>"we're in an uptrend,"</b> not the 50MA-touch/volume-fade trigger. The specific setup adds nothing over just being long in a trend.</div></div>
+<div class="card"><h2>Parameters (logged, train-chosen)</h2><table id="params"></table></div>
+</section>
+
+<section><h2>Your three questions, answered</h2><div class="card"><div id="answers"></div></div></section>
+<div class="tt" id="tt"></div>
+<script>
+const D={"params":{"touch":"wick","n":10,"thr":1.0,"tgtR":3.0,"conf_k":2,"notes":["permission deviation logged: close>ma50&ma200 + stack order (strict above-all-three would forbid 50MA touches)","delta = tick-rule proxy (true delta div needs bid/ask, 2026-only)","RTH triggers 09:30-15:00, EOD flatten 15:55, risk clamp 5-70pt"]},"results":{"BARE":{"TRAIN":{"st":{"n":175,"expR":-0.021,"exp_ci":[-0.236,0.209],"wr":32.6,"wr_ci":[26.1,39.8],"pf":0.97,"mddR":31.3},"ctr":{"n":137,"expR":0.071,"exp_ci":[-0.166,0.33],"wr":38.7,"wr_ci":[30.9,47.0],"pf":1.12,"mddR":13.3},"folds":[0,0]},"TEST":{"st":{"n":86,"expR":-0.042,"exp_ci":[-0.355,0.307],"wr":30.2,"wr_ci":[21.5,40.6],"pf":0.94,"mddR":15.4},"ctr":{"n":50,"expR":-0.114,"exp_ci":[-0.508,0.323],"wr":26.0,"wr_ci":[15.9,39.6],"pf":0.83,"mddR":11.7},"folds":[2,5]}},"+CONFLUENCE":{"TRAIN":{"st":{"n":152,"expR":0.076,"exp_ci":[-0.159,0.326],"wr":36.2,"wr_ci":[29.0,44.1],"pf":1.13,"mddR":23.1},"ctr":{"n":124,"expR":0.046,"exp_ci":[-0.206,0.307],"wr":38.7,"wr_ci":[30.6,47.5],"pf":1.08,"mddR":12.0},"folds":[0,0]},"TEST":{"st":{"n":70,"expR":0.012,"exp_ci":[-0.342,0.405],"wr":31.4,"wr_ci":[21.8,43.0],"pf":1.02,"mddR":13.4},"ctr":{"n":47,"expR":-0.047,"exp_ci":[-0.466,0.391],"wr":29.8,"wr_ci":[18.7,44.0],"pf":0.93,"mddR":9.4},"folds":[2,5]}}},"placebo":{"BARE":0.59,"+CONFLUENCE":0.537}};const $=s=>document.querySelector(s);const p=D.params;
+const bt=D.results.BARE.TEST.st,ct=D.results["+CONFLUENCE"].TEST.st;
+const bc=D.results.BARE.TEST.ctr,cc=D.results["+CONFLUENCE"].TEST.ctr;
+$("#tiles").innerHTML=[
+ ["Setup","Trend Pullback","stacked-MA, isolated"],
+ ["(a) bare — test E[R]",bt.expR+" R","PF "+bt.pf+", n="+bt.n],
+ ["(b) +conf — test E[R]",ct.expR+" R","PF "+ct.pf+", n="+ct.n],
+ ["Confluence adds","+"+(ct.expR-bt.expR).toFixed(3)+" R","within noise"],
+ ["Clears counter?","NO","CI includes baseline"],
+ ["Beats random trend?","NO","placebo p≈0.5-0.6"],
+].map(t=>`<div class="tile"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="s">${t[2]}</div></div>`).join("");
+
+const rows=[["BARE","TRAIN"],["BARE","TEST"],["+CONFLUENCE","TRAIN"],["+CONFLUENCE","TEST"]];
+$("#cmp").innerHTML="<tr><th class='l'>variant</th><th class='l'>split</th><th>N</th><th>E[R]</th><th>95% CI</th><th>win%</th><th>PF</th><th>maxDD</th><th>counter E[R]</th><th>folds+</th></tr>"+
+ rows.map(([v,s])=>{const o=D.results[v][s];const st=o.st,c=o.ctr;const low=st.n<30;
+  return `<tr><td class="l">${v}</td><td class="l">${s}</td><td>${st.n}${low?' ⚠':''}</td>`+
+   `<td style="color:${st.expR>0?'var(--pos)':'var(--neg)'}">${st.expR>0?'+':''}${st.expR}</td>`+
+   `<td>[${st.exp_ci[0]}, ${st.exp_ci[1]}]</td><td>${st.wr}%</td><td>${st.pf}</td><td style="color:var(--neg)">${st.mddR}R</td>`+
+   `<td style="color:var(--text-muted)">${c.expR!==undefined?(c.expR>0?'+':'')+c.expR:'—'} (n${c.n||0})</td>`+
+   `<td>${s==='TEST'?o.folds[0]+'/'+o.folds[1]:'—'}</td></tr>`;}).join("");
+$("#lown").textContent = (bt.n<30||ct.n<30)?"⚠ = N<30, untrusted.":"All test N≥30.";
+
+(function(){const items=[["(a) bare",bt.expR,D.placebo.BARE,0.052],["(b) +confluence",ct.expR,D.placebo["+CONFLUENCE"],0.058]];
+ const W=620,H=200,P={l:110,r:20,t:20,b:34};const mn=-0.2,mx=0.35;
+ const sx=v=>P.l+(W-P.l-P.r)*(v-mn)/(mx-mn);
+ let s=`<line x1="${sx(0)}" x2="${sx(0)}" y1="${P.t}" y2="${H-P.b}" stroke="var(--text-muted)" stroke-dasharray="3,3"/>`;
+ items.forEach((it,i)=>{const y=P.t+i*66+20;
+  s+=`<text x="${P.l-10}" y="${y+4}" text-anchor="end" style="font-size:12px">${it[0]}</text>`;
+  s+=`<rect x="${sx(Math.min(0,it[3]))}" y="${y-14}" width="${Math.abs(sx(it[3])-sx(0))}" height="10" fill="var(--text-muted)" opacity="0.5"/>`;
+  s+=`<text x="${sx(it[3])+4}" y="${y-6}" style="font-size:9px;fill:var(--text-muted)">random ${it[3].toFixed(2)}</text>`;
+  const col=it[1]>0?'var(--series-1)':'var(--neg)';
+  s+=`<rect x="${sx(Math.min(0,it[1]))}" y="${y}" width="${Math.abs(sx(it[1])-sx(0))}" height="14" rx="2" fill="${col}"/>`;
+  s+=`<text x="${sx(it[1])+(it[1]>=0?4:-4)}" y="${y+11}" text-anchor="${it[1]>=0?'start':'end'}" style="font-size:10px">real ${it[1]>0?'+':''}${it[1]}  (shuffle p=${it[2]})</text>`;});
+ s+=`<text x="${W/2}" y="${H-6}" text-anchor="middle" style="fill:var(--text-muted)">E[R] per trade — real entry vs random bars in the same uptrend</text>`;
+ $("#placebo").innerHTML=s;})();
+
+$("#params").innerHTML=[["touch",p.touch],["fade","vol < "+p.thr+" × mean(prior "+p.n+")"],["target",p.tgtR+"R"],["confluence","≥ "+p.conf_k+" of 4"]]
+ .map(r=>`<tr><td class="l">${r[0]}</td><td class="l" style="font-family:monospace">${r[1]}</td></tr>`).join("");
+
+$("#answers").innerHTML=`<ul class="vlist">
+<li><b>1 · Does confluence beat bare OOS?</b> Marginally and within noise. Bare test E[R] <b>${bt.expR}R</b> (losing, PF ${bt.pf}); +confluence <b>${ct.expR}R</b> (breakeven, PF ${ct.pf}) — a +${(ct.expR-bt.expR).toFixed(3)}R nudge from losing to flat, but both CIs span roughly [−0.35, +0.4], so the difference is not significant. Confluence tidies, it doesn't rescue.</li>
+<li><b>2 · Does either clear the counter-baseline OOS at N≥30 with CI excluding it?</b> <b>No.</b> Bare CI [${bt.exp_ci[0]}, ${bt.exp_ci[1]}] and +confluence CI [${ct.exp_ci[0]}, ${ct.exp_ci[1]}] both include their counter-baselines. Neither is distinguishable from the mirror.</li>
+<li><b>3 · Train-vs-test gap (overfit alarm)?</b> Small — bare +0.021R, +confluence +0.064R. No overfitting alarm, but only because <b>there is no edge to overfit</b>: the setup is breakeven in both blocks.</li>
+</ul>
+<div class="verdict-no">Verdict: the Trend Pullback setup does not hold up in isolation.</div>
+<div class="note2">The placebo is the tell — real 50MA-touch entries score no better than random bars in the same stacked-MA uptrend (p≈0.5–0.6). What little positive expectancy appears is the <b>trend regime itself</b>, not the pullback trigger or the confluence. Isolated and honestly graded, it is not a standalone edge. (Other setups untouched; delta = tick-rule proxy, true delta-divergence needs 2026-only bid/ask.)</div>`;
+
+function bindtt(sel){}
+</script>
