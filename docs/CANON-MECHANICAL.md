@@ -165,3 +165,46 @@ RULE 2 (good-PA boost): netpath_30 ≥ 0.3328 (2025-q90), not R1-flagged → siz
 green · worst month −$312 · maxDD $1.7k/$2.3k.** The chop quarter that began this campaign
 at ~−$10k is now positive. Rule 1 is the lowest-evidence layer (state-conditional, post-hoc
 searched) — first to pull if the 2023/24 holdout disputes it; Rule 2 carries full verification.
+
+## 27-Jul: THE GOLDEN CAMPAIGN — window-native canon SHIPPED (Angus ruling)
+
+Trigger: "pre-market is optimized; go back to the raw trade data and qualify each trade,
+trade by trade, specifically in the golden window. Test every single variable."
+
+**Step 1 — the inherited ladder was pre-market's ladder.** Tested each shipped check on the
+218-trade gold universe (111/107 by yr): C (London CVD conf) DEAD (+4/+3pp), G weak (fails
+2026), F weak; only W and T carried. Gold was wearing pre's clothes.
+
+**Step 2 — gold-native rediscovery sweep** (every at-fill/pre-fill var, 2025-GOLD-frozen
+thresholds, both-years ≥10pp, 4-halves): 23 survivors collapse to 5 orthogonal checks:
+- **D** wall exists AHEAD (not pre's wall-behind-absent!). Toxic state = only wall is behind
+  you: WR 14%/12%, avg −$282/−$281 both years independently.
+- **Tc** d15_conf; **X** bbw_state ≥ g-q75 (vol expansion); **AGE** on_extreme_age ≥ g-q50;
+  **PAQ** netpath_30 ≥ g-q25. Ladder monotone both years; reject pile (≤2) = −$31k/2yr bleed.
+
+**Step 3 — the full 8-family campaign** (8 workflows, 37 agents, screen→adversarial-verify,
+must-ADD-beyond-incumbents rule). Confirmed: WALLSZ (wall ≥7 contracts ABSOLUTE — relative
+sign-flips), BIGFD (|fill-min delta|≥173; only reject-pile rescue found), FDCONF+BP5OPP=T2
+(fill-minute aligned OR absorption fill into counter-flow), TRIG (>11 trigs/30m GOOD in gold —
+inverts pooled chop lore), VWAPD (dir-signed ≥0.107 — the real signal inside weak G),
+LONSLOPE (London cum-delta OLS slope — London matters as trend+veto, not conf).
+Negatives confirmed but NOT shipped as vetoes: dollar decomposition showed the gscore ladder
+already rejects nearly all their damage; within sized g≥3 their fail cells are EV-neutral
+(payoff ratio carries 35% WR). Hard-vetoing all of them flags 80% of universe and destroys
+$12k — the great veto trap.
+Honest nulls: entire RTH-open-flow family, session voting, sweeps, calendar (DOM_EARLY
+soft/paper-track only), fill-time within window, all in-trade cuts (gold self-scratches at
+−0.5R; 3-min cut is EV-neutral in gold; 5-min time-stop → holdout).
+
+**Layer 2q SHIPPED:** Q = count{WALLSZ, BIGFD, T2, TRIG, VWAPD, LONSLOPE}.
+Q≤1 → NO TRADE (Angus: "why are we even taking them" — 12/16 losers incl. every 53-56pt
+monster; WATCH ITEM: 16-trade cell, first re-test on 2023/24 holdout).
+Q≥3 → one ladder step up, cap 1.5 (boost cell WR 83%/82%, avg +$805/+$699).
+
+**WINDOW-NATIVE CANON FULL STACK: 2025 +$31,175 · 2026 +$40,189 · Jul-Sep +$2,034/−$98 ·
+12/13 months green · worst month −$98 · maxDD $2,492/$1,872.** vs prior canon
++$22,532/+$28,844: +$20k/2yr, better in all 4 half-periods independently, threshold-grid
+stable (±$3k band across all Q boost/demote cut combos). Gold contribution 13k→33k.
+Superseded: the gold-B div15 veto (harmful under native ladder — same disease, worse cure).
+Holdout list: Q-tier mapping (esp Q≤1 cut), gold 5-min time-stop, DOM_EARLY, dead-tape
+W-weighting, 0.8x stops, netpath size-up replication, BADFLOW-B, cvddiv_30.

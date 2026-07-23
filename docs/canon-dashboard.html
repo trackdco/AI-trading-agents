@@ -1,173 +1,340 @@
 <title>Canon Book — Full Breakdown</title>
 <style>
-:root{--bg:#0b1216;--panel:#111c22;--line:#1d2c35;--ink:#d9e2e8;--dim:#8ba0ac;--faint:#5d7280;
---accent:#5ba8c4;--win:#3fb68b;--loss:#e0596b;}
-@media (prefers-color-scheme: light){:root{--bg:#f2f4f5;--panel:#fff;--line:#dde4e8;--ink:#1c2b33;
---dim:#54676f;--faint:#7e909a;--accent:#2e7d9c;--win:#178563;--loss:#c03a4e;}}
-:root[data-theme="dark"]{--bg:#0b1216;--panel:#111c22;--line:#1d2c35;--ink:#d9e2e8;--dim:#8ba0ac;--faint:#5d7280;--accent:#5ba8c4;--win:#3fb68b;--loss:#e0596b;}
-:root[data-theme="light"]{--bg:#f2f4f5;--panel:#fff;--line:#dde4e8;--ink:#1c2b33;--dim:#54676f;--faint:#7e909a;--accent:#2e7d9c;--win:#178563;--loss:#c03a4e;}
-*{box-sizing:border-box}body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,sans-serif;margin:0}
-.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 80px}
-.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
-.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
-h1{font-size:28px;margin:6px 0 4px}h2{font-size:18px;margin:38px 0 8px}
-.sub{color:var(--dim);max-width:70ch}
-.band{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 16px;min-width:120px}
-.stat .v{font-size:21px;font-weight:700}.stat .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
-table{border-collapse:collapse;width:100%;font-size:13px}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);text-align:left;padding:7px 9px;border-bottom:1px solid var(--line)}
-td{padding:6px 9px;border-bottom:1px solid var(--line)}
-.tw{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px 8px 10px;margin-top:10px}
-.gwin{color:var(--win)}.gloss{color:var(--loss)}
-.barwrap{width:120px;height:10px;background:var(--bg);border-radius:3px;overflow:hidden}
-.bw{height:100%;background:var(--win);border-radius:3px}.bl{height:100%;background:var(--loss);border-radius:3px}
-.note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:13px 17px;margin-top:14px;font-size:14px;color:var(--dim)}
-.note b{color:var(--ink)}
-svg{width:100%;height:auto;display:block}
-.eq{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:10px}
-footer{margin-top:50px;color:var(--faint);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px}
+:root{
+  --bg:#FAF9F6; --card:#FFFFFF; --ink:#1C1E22; --ink2:#5A5F66; --ink3:#8A8F96;
+  --line:#E4E2DC; --pre:#2E6FA3; --gold:#C07C10; --pos:#1E7A4B; --neg:#B23E36;
+  --chip:#F1EFE9; --hero:#22252A; --hero-ink:#F2F0EA;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#15171B; --card:#1D2025; --ink:#E6E4DF; --ink2:#A8ACB3; --ink3:#787D85;
+  --line:#2C3037; --pre:#4E8CC4; --gold:#C08A1E; --pos:#3E9A67; --neg:#D0655C;
+  --chip:#262A30; --hero:#101215; --hero-ink:#EDEBE5;
+}}
+:root[data-theme="dark"]{
+  --bg:#15171B; --card:#1D2025; --ink:#E6E4DF; --ink2:#A8ACB3; --ink3:#787D85;
+  --line:#2C3037; --pre:#4E8CC4; --gold:#C08A1E; --pos:#3E9A67; --neg:#D0655C;
+  --chip:#262A30; --hero:#101215; --hero-ink:#EDEBE5;
+}
+:root[data-theme="light"]{
+  --bg:#FAF9F6; --card:#FFFFFF; --ink:#1C1E22; --ink2:#5A5F66; --ink3:#8A8F96;
+  --line:#E4E2DC; --pre:#2E6FA3; --gold:#C07C10; --pos:#1E7A4B; --neg:#B23E36;
+  --chip:#F1EFE9; --hero:#22252A; --hero-ink:#F2F0EA;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;padding:0 20px 64px}
+.wrap{max-width:1180px;margin:0 auto}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+header{padding:36px 0 8px}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+h1{font-size:30px;font-weight:750;letter-spacing:-.02em;margin:6px 0 4px;text-wrap:balance}
+.sub{color:var(--ink2);max-width:72ch}
+h2{font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);font-weight:700;margin:0 0 14px}
+.grid{display:grid;gap:16px}
+.tiles{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin:22px 0 8px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.tile.hero{background:var(--hero);color:var(--hero-ink);border-color:transparent}
+.tile .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.tile.hero .k{color:#9BA0A8}
+.tile .v{font-size:26px;font-weight:700;margin-top:6px;letter-spacing:-.01em}
+.tile .d{font-size:12px;color:var(--ink3);margin-top:3px}
+.tile.hero .d{color:#9BA0A8}
+.pos{color:var(--pos)} .neg{color:var(--neg)}
+.cards{grid-template-columns:1fr 1fr;margin-top:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px 22px;min-width:0}
+.card.full{grid-column:1/-1}
+@media(max-width:860px){.cards{grid-template-columns:1fr}}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);font-weight:600;text-align:right;padding:6px 10px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;padding-left:0}
+td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right}
+tr:last-child td{border-bottom:none}
+.chip{display:inline-block;background:var(--chip);border-radius:4px;padding:1px 8px;font-size:11.5px;font-weight:600}
+.chip.pre{color:var(--pre)} .chip.gold{color:var(--gold)}
+.legend{display:flex;gap:18px;font-size:12px;color:var(--ink2);margin-bottom:10px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.legend .l-pre::before{background:var(--pre)} .legend .l-gold::before{background:var(--gold)}
+.chart{overflow-x:auto}
+svg text{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10.5px;fill:var(--ink3)}
+.playbook{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+@media(max-width:860px){.playbook{grid-template-columns:1fr}}
+.pb{padding:20px 22px;background:var(--card)}
+.pb+.pb{border-left:1px solid var(--line)}
+@media(max-width:860px){.pb+.pb{border-left:none;border-top:1px solid var(--line)}}
+.pb h3{margin:0 0 4px;font-size:16px}
+.pb h3 .chip{margin-left:8px}
+.pb .win-note{font-size:12px;color:var(--ink3);margin-bottom:12px}
+.pb ul{margin:8px 0 0;padding-left:18px;font-size:13.5px}
+.pb li{margin-bottom:5px}
+.pb .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-top:14px}
+.pb .lbl.good{color:var(--pos)} .pb .lbl.bad{color:var(--neg)}
+.tip{position:fixed;pointer-events:none;background:var(--hero);color:var(--hero-ink);border-radius:6px;padding:7px 10px;font-size:12px;line-height:1.45;opacity:0;transition:opacity .1s;z-index:9;max-width:240px}
+@media (prefers-reduced-motion: reduce){.tip{transition:none}}
+.foot{margin-top:26px;font-size:12.5px;color:var(--ink3);max-width:90ch}
+details{margin-top:10px}
+summary{cursor:pointer;font-size:12px;color:var(--ink2)}
+.bar-note{font-size:12px;color:var(--ink3);margin-top:8px}
 </style>
+
 <div class="wrap">
-<div class="eyebrow">Canon mechanical book · shipped 25 Jul 2026 · Jun 2025 – Jul 2026</div>
-<h1>Full Breakdown</h1>
-<p class="sub">Stop floor → 5-check validation → conviction ladder → trade #2+ needs score ≥ 4 →
-within-day escalation (day red → structure required, A exempt; −$400 → done) → scoreboard governor.
-No forecasting, no book choosing.</p>
-<div class="band mono">
-<div class="stat"><div class="v gwin">+47,887</div><div class="k">total P&amp;L</div></div>
-<div class="stat"><div class="v">+18,171</div><div class="k">2025</div></div>
-<div class="stat"><div class="v">+29,716</div><div class="k">2026</div></div>
-<div class="stat"><div class="v">43%</div><div class="k">win rate</div></div>
-<div class="stat"><div class="v">297</div><div class="k">trades</div></div>
-<div class="stat"><div class="v">41%</div><div class="k">green days</div></div>
-<div class="stat"><div class="v gloss">-789</div><div class="k">worst month</div></div>
-<div class="stat"><div class="v gloss">-3,346</div><div class="k">max drawdown</div></div>
+<header>
+  <div class="eyebrow">NQ intraday · mechanical book · shipped 27 Jul 2026</div>
+  <h1>The Canon — window-native edition</h1>
+  <p class="sub">Two windows, two books of confluences, one skeleton. Pre-market runs its original five checks;
+  the golden window runs its own five re-derived from raw gold trade data, plus a six-bit quality tier.
+  Every threshold is a frozen 2025 quantile — 2026 is out-of-fit. 1-lot ladder base, no day forecasting, no discretion.</p>
+</header>
+
+<div class="grid tiles">
+  <div class="tile hero"><div class="k">2025 (Jun–Dec)</div><div class="v mono">+$31,175</div><div class="d mono">PF 3.14 · WR 42% · 154 trades</div></div>
+  <div class="tile hero"><div class="k">2026 (Feb–Jul)</div><div class="v mono">+$40,189</div><div class="d mono">PF 3.85 · WR 47% · 110 trades</div></div>
+  <div class="tile"><div class="k">Run-rate</div><div class="v mono pos">≈$5.8k/mo</div><div class="d">$71.4k over 12.4 months</div></div>
+  <div class="tile"><div class="k">Green months</div><div class="v mono">12 / 13</div><div class="d mono">worst month −$98</div></div>
+  <div class="tile"><div class="k">Max drawdown</div><div class="v mono">$2,492</div><div class="d mono">2026: $1,872</div></div>
+  <div class="tile"><div class="k">Avg RR realized</div><div class="v mono">2.1 : 1</div><div class="d mono">win +2.0R/+2.4R · loss −1.0R</div></div>
 </div>
 
-<h2>Equity curve (cumulative, by traded day)</h2>
-<div class="eq"><svg viewBox="0 0 940 180" preserveAspectRatio="none">
-<polyline points="0.0,179.8 4.1,178.2 8.2,176.0 12.3,178.7 16.3,179.7 20.4,180.0 24.5,177.7 28.6,178.2 32.7,171.7 36.8,172.4 40.9,173.2 45.0,175.0 49.0,172.6 53.1,173.8 57.2,175.1 61.3,172.8 65.4,168.0 69.5,168.6 73.6,169.5 77.7,169.3 81.7,169.7 85.8,169.6 89.9,169.9 94.0,169.3 98.1,168.7 102.2,168.0 106.3,169.1 110.3,168.1 114.4,168.7 118.5,169.2 122.6,169.9 126.7,170.3 130.8,170.7 134.9,169.5 139.0,170.2 143.0,169.5 147.1,170.2 151.2,170.2 155.3,170.7 159.4,174.1 163.5,170.4 167.6,167.6 171.7,167.9 175.7,167.1 179.8,167.9 183.9,168.3 188.0,168.9 192.1,169.4 196.2,170.2 200.3,170.5 204.3,171.1 208.4,171.3 212.5,171.4 216.6,173.0 220.7,173.3 224.8,172.8 228.9,172.5 233.0,171.6 237.0,172.0 241.1,172.3 245.2,173.0 249.3,172.9 253.4,173.2 257.5,173.4 261.6,173.6 265.7,173.8 269.7,172.5 273.8,172.9 277.9,171.2 282.0,171.9 286.1,172.2 290.2,172.4 294.3,173.9 298.3,174.4 302.4,174.8 306.5,175.1 310.6,174.6 314.7,174.8 318.8,174.3 322.9,174.8 327.0,173.8 331.0,174.7 335.1,172.8 339.2,173.9 343.3,174.2 347.4,175.8 351.5,176.6 355.6,177.4 359.7,176.7 363.7,174.8 367.8,164.2 371.9,161.3 376.0,159.3 380.1,160.6 384.2,158.2 388.3,152.2 392.3,150.0 396.4,150.4 400.5,146.7 404.6,143.3 408.7,143.4 412.8,122.2 416.9,124.7 421.0,125.6 425.0,126.0 429.1,126.4 433.2,124.7 437.3,124.2 441.4,125.8 445.5,121.7 449.6,115.9 453.7,116.2 457.7,116.5 461.8,116.5 465.9,118.6 470.0,119.3 474.1,120.0 478.2,114.1 482.3,116.5 486.3,118.1 490.4,118.7 494.5,120.1 498.6,119.3 502.7,114.5 506.8,115.2 510.9,115.0 515.0,115.3 519.0,111.4 523.1,113.2 527.2,115.1 531.3,117.0 535.4,118.5 539.5,120.5 543.6,121.5 547.7,123.6 551.7,120.9 555.8,117.6 559.9,113.5 564.0,110.3 568.1,114.7 572.2,104.8 576.3,103.8 580.3,102.3 584.4,102.8 588.5,104.9 592.6,103.1 596.7,104.9 600.8,106.1 604.9,101.8 609.0,85.7 613.0,85.7 617.1,86.5 621.2,88.3 625.3,86.3 629.4,85.3 633.5,74.7 637.6,75.3 641.7,75.6 645.7,73.3 649.8,66.6 653.9,61.8 658.0,65.5 662.1,63.6 666.2,65.1 670.3,66.2 674.3,66.4 678.4,68.0 682.5,68.4 686.6,69.1 690.7,71.3 694.8,72.2 698.9,73.6 703.0,73.9 707.0,70.3 711.1,70.3 715.2,71.6 719.3,71.6 723.4,71.7 727.5,72.4 731.6,73.0 735.7,74.1 739.7,70.2 743.8,67.9 747.9,66.0 752.0,55.9 756.1,56.5 760.2,57.2 764.3,54.4 768.3,56.0 772.4,54.4 776.5,56.1 780.6,50.7 784.7,51.7 788.8,47.1 792.9,41.4 797.0,42.0 801.0,43.6 805.1,42.1 809.2,42.9 813.3,43.6 817.4,44.3 821.5,45.2 825.6,46.8 829.7,49.4 833.7,43.6 837.8,32.0 841.9,30.2 846.0,28.1 850.1,23.4 854.2,25.6 858.3,26.3 862.3,17.2 866.4,11.8 870.5,14.7 874.6,13.7 878.7,15.8 882.8,11.9 886.9,11.7 891.0,7.0 895.0,6.2 899.1,5.9 903.2,0.0 907.3,2.1 911.4,7.4 915.5,8.7 919.6,11.1 923.7,4.8 927.7,2.2 931.8,3.8 935.9,8.8 940.0,2.7" fill="none" stroke="var(--accent)" stroke-width="2"/>
-</svg><div class="mono" style="color:var(--faint);font-size:11px;margin-top:6px">Jun 2025 → Jul 2026 · low -578 · final +47,887</div></div>
-
-<h2>Month by month — total, pre-market, golden</h2>
-<div class="tw"><table>
-<tr><th>month</th><th></th><th class="mono">total $</th><th>n (WR)</th><th class="mono">pre $</th><th>pre W-L (WR)</th><th class="mono">gold $</th><th>gold W-L (WR)</th></tr>
-<tr><td class='mono'>2025-06</td><td><div class="barwrap"><div class="bw" style="width:21%"></div></div></td><td class='mono gwin'>+2,540</td><td class='mono'>21 (43%)</td><td class='mono gloss'>-400</td><td class='mono'>4W-10L (29%)</td><td class='mono gwin'>+2,940</td><td class='mono'>5W-2L (71%)</td></tr>
-<tr><td class='mono'>2025-07</td><td><div class="barwrap"><div class="bl" style="width:4%"></div></div></td><td class='mono gloss'>-427</td><td class='mono'>21 (38%)</td><td class='mono gwin'>+13</td><td class='mono'>5W-11L (31%)</td><td class='mono gloss'>-440</td><td class='mono'>3W-2L (60%)</td></tr>
-<tr><td class='mono'>2025-08</td><td><div class="barwrap"><div class="bl" style="width:7%"></div></div></td><td class='mono gloss'>-789</td><td class='mono'>20 (25%)</td><td class='mono gloss'>-78</td><td class='mono'>4W-13L (24%)</td><td class='mono gloss'>-711</td><td class='mono'>1W-2L (33%)</td></tr>
-<tr><td class='mono'>2025-09</td><td><div class="barwrap"><div class="bw" style="width:1%"></div></div></td><td class='mono gwin'>+178</td><td class='mono'>21 (38%)</td><td class='mono gwin'>+32</td><td class='mono'>4W-10L (29%)</td><td class='mono gwin'>+147</td><td class='mono'>4W-3L (57%)</td></tr>
-<tr><td class='mono'>2025-10</td><td><div class="barwrap"><div class="bw" style="width:25%"></div></div></td><td class='mono gwin'>+3,045</td><td class='mono'>30 (40%)</td><td class='mono gwin'>+2,810</td><td class='mono'>10W-15L (40%)</td><td class='mono gwin'>+235</td><td class='mono'>2W-3L (40%)</td></tr>
-<tr><td class='mono'>2025-11</td><td><div class="barwrap"><div class="bw" style="width:80%"></div></div></td><td class='mono gwin'>+9,701</td><td class='mono'>23 (48%)</td><td class='mono gwin'>+3,478</td><td class='mono'>8W-9L (47%)</td><td class='mono gwin'>+6,222</td><td class='mono'>3W-3L (50%)</td></tr>
-<tr><td class='mono'>2025-12</td><td><div class="barwrap"><div class="bw" style="width:32%"></div></div></td><td class='mono gwin'>+3,923</td><td class='mono'>27 (52%)</td><td class='mono gwin'>+3,478</td><td class='mono'>11W-10L (52%)</td><td class='mono gwin'>+446</td><td class='mono'>3W-3L (50%)</td></tr>
-<tr><td class='mono'>2026-02</td><td><div class="barwrap"><div class="bw" style="width:15%"></div></div></td><td class='mono gwin'>+1,776</td><td class='mono'>19 (42%)</td><td class='mono gwin'>+2,626</td><td class='mono'>6W-7L (46%)</td><td class='mono gloss'>-850</td><td class='mono'>2W-4L (33%)</td></tr>
-<tr><td class='mono'>2026-03</td><td><div class="barwrap"><div class="bw" style="width:87%"></div></div></td><td class='mono gwin'>+10,520</td><td class='mono'>28 (50%)</td><td class='mono gwin'>+10,031</td><td class='mono'>10W-7L (59%)</td><td class='mono gwin'>+489</td><td class='mono'>4W-7L (36%)</td></tr>
-<tr><td class='mono'>2026-04</td><td><div class="barwrap"><div class="bw" style="width:24%"></div></div></td><td class='mono gwin'>+2,881</td><td class='mono'>25 (44%)</td><td class='mono gwin'>+1,029</td><td class='mono'>8W-12L (40%)</td><td class='mono gwin'>+1,852</td><td class='mono'>3W-2L (60%)</td></tr>
-<tr><td class='mono'>2026-05</td><td><div class="barwrap"><div class="bw" style="width:26%"></div></div></td><td class='mono gwin'>+3,170</td><td class='mono'>22 (32%)</td><td class='mono gwin'>+2,781</td><td class='mono'>6W-12L (33%)</td><td class='mono gwin'>+389</td><td class='mono'>1W-3L (25%)</td></tr>
-<tr><td class='mono'>2026-06</td><td><div class="barwrap"><div class="bw" style="width:100%"></div></div></td><td class='mono gwin'>+12,104</td><td class='mono'>31 (61%)</td><td class='mono gwin'>+7,094</td><td class='mono'>14W-9L (61%)</td><td class='mono gwin'>+5,010</td><td class='mono'>5W-3L (62%)</td></tr>
-<tr><td class='mono'>2026-07</td><td><div class="barwrap"><div class="bl" style="width:6%"></div></div></td><td class='mono gloss'>-735</td><td class='mono'>9 (33%)</td><td class='mono gwin'>+1,228</td><td class='mono'>2W-2L (50%)</td><td class='mono gloss'>-1,962</td><td class='mono'>1W-4L (20%)</td></tr>
-</table></div>
-
-<h2>The Jul–Sep question: where did it bleed?</h2>
-<div class="note"><b>Answer (under the shipped canon): pre-market is now FLAT in Jul–Sep — the escalation
-ladder cleaned it. The remaining bleed sits in the golden window's loss sizes.</b>
-Jul–Sep pre-market: 13W-34L (28% WR), -33 —
-low win rate but the ladder cut it to break-even. Golden: 8W-7L
-(53% WR!), -1,004 — it WINS more than it loses in
-Jul–Sep golden, but the losers are bigger than the winners. Compare good months — pre:
-+34,154 (46%) · gold: +14,771
-(46%). By setup in Jul–Sep: A +471
-(83%) · B -567 (29%) ·
-B2 -942 (27%). The residual is a payoff-shape
-problem (win small / lose big in dead tape), not a win-rate or window-selection problem.</div>
-
-<h2>Day of week — total, pre-market, golden</h2>
-<div class="tw"><table>
-<tr><th>day</th><th class="mono">total $</th><th>W-L (WR)</th><th class="mono">pre $</th><th>pre W-L (WR)</th><th class="mono">gold $</th><th>gold W-L (WR)</th></tr>
-<tr><td>Monday</td><td class='mono gwin'>+15,469</td><td class='mono'>27W-34L (44%)</td><td class='mono gwin'>+12,588</td><td class='mono'>20W-31L (39%)</td><td class='mono gwin'>+2,881</td><td class='mono'>7W-3L (70%)</td></tr>
-<tr><td>Tuesday</td><td class='mono gwin'>+10,632</td><td class='mono'>28W-29L (49%)</td><td class='mono gwin'>+11,657</td><td class='mono'>22W-20L (52%)</td><td class='mono gloss'>-1,024</td><td class='mono'>6W-9L (40%)</td></tr>
-<tr><td>Wednesday</td><td class='mono gwin'>+11,336</td><td class='mono'>26W-34L (43%)</td><td class='mono gwin'>+2,103</td><td class='mono'>16W-24L (40%)</td><td class='mono gwin'>+9,232</td><td class='mono'>10W-10L (50%)</td></tr>
-<tr><td>Thursday</td><td class='mono gwin'>+8,124</td><td class='mono'>28W-35L (44%)</td><td class='mono gwin'>+7,704</td><td class='mono'>20W-27L (43%)</td><td class='mono gwin'>+420</td><td class='mono'>8W-8L (50%)</td></tr>
-<tr><td>Friday</td><td class='mono gwin'>+2,327</td><td class='mono'>20W-36L (36%)</td><td class='mono gwin'>+69</td><td class='mono'>14W-25L (36%)</td><td class='mono gwin'>+2,258</td><td class='mono'>6W-11L (35%)</td></tr>
-</table></div>
-
-<h2>Setup × window × year</h2>
-<div class="tw"><table>
-<tr><th>year</th><th>window</th><th>setup</th><th class="mono">$</th><th>W-L (WR)</th></tr>
-<tr><td class='mono'>2025</td><td>pre</td><td class='mono'>A</td><td class='mono gwin'>+1,528</td><td class='mono'>6W-0L (100%)</td></tr>
-<tr><td class='mono'>2025</td><td>pre</td><td class='mono'>B</td><td class='mono gwin'>+5,952</td><td class='mono'>21W-39L (35%)</td></tr>
-<tr><td class='mono'>2025</td><td>pre</td><td class='mono'>B2</td><td class='mono gwin'>+1,852</td><td class='mono'>19W-39L (33%)</td></tr>
-<tr><td class='mono'>2025</td><td>gold</td><td class='mono'>A</td><td class='mono gloss'>-336</td><td class='mono'>2W-2L (50%)</td></tr>
-<tr><td class='mono'>2025</td><td>gold</td><td class='mono'>B</td><td class='mono gwin'>+4,961</td><td class='mono'>8W-8L (50%)</td></tr>
-<tr><td class='mono'>2025</td><td>gold</td><td class='mono'>B2</td><td class='mono gwin'>+4,214</td><td class='mono'>11W-8L (58%)</td></tr>
-<tr><td class='mono'>2026</td><td>pre</td><td class='mono'>A</td><td class='mono gloss'>-564</td><td class='mono'>2W-3L (40%)</td></tr>
-<tr><td class='mono'>2026</td><td>pre</td><td class='mono'>B</td><td class='mono gwin'>+18,967</td><td class='mono'>23W-13L (64%)</td></tr>
-<tr><td class='mono'>2026</td><td>pre</td><td class='mono'>B2</td><td class='mono gwin'>+6,386</td><td class='mono'>21W-33L (39%)</td></tr>
-<tr><td class='mono'>2026</td><td>gold</td><td class='mono'>B</td><td class='mono gloss'>-1,215</td><td class='mono'>4W-7L (36%)</td></tr>
-<tr><td class='mono'>2026</td><td>gold</td><td class='mono'>B2</td><td class='mono gwin'>+6,142</td><td class='mono'>12W-16L (43%)</td></tr>
-</table></div>
-
-<h2>Conviction ladder (score → outcome)</h2>
-<div class="tw"><table>
-<tr><th>score</th><th class="mono">n</th><th class="mono">WR</th><th class="mono">$</th></tr>
-<tr><td class='mono'>3</td><td class='mono'>104</td><td class='mono'>28%</td><td class='mono gloss'>-1,338</td></tr>
-<tr><td class='mono'>4</td><td class='mono'>156</td><td class='mono'>51%</td><td class='mono gwin'>+37,001</td></tr>
-<tr><td class='mono'>5</td><td class='mono'>37</td><td class='mono'>54%</td><td class='mono gwin'>+12,225</td></tr>
-</table></div>
-
-<h2>The five checks (on vs off, canon trades)</h2>
-<div class="tw"><table>
-<tr><th>check</th><th class="mono">on: n @ WR</th><th class="mono">off: n @ WR</th><th class="mono">gap</th></tr>
-<tr><td>W heatmap</td><td class='mono'>141 @ 51%</td><td class='mono'>142 @ 36%</td><td class='mono'>+15pp</td></tr>
-<tr><td>F fill-delta</td><td class='mono'>240 @ 45%</td><td class='mono'>57 @ 39%</td><td class='mono'>+6pp</td></tr>
-<tr><td>T tape</td><td class='mono'>282 @ 43%</td><td class='mono'>15 @ 47%</td><td class='mono'>-3pp</td></tr>
-<tr><td>G geometry</td><td class='mono'>269 @ 44%</td><td class='mono'>28 @ 36%</td><td class='mono'>+9pp</td></tr>
-<tr><td>C window-CVD</td><td class='mono'>189 @ 46%</td><td class='mono'>108 @ 39%</td><td class='mono'>+7pp</td></tr>
-</table></div>
-
-<h2>Quality metrics — profit factor, R, payoff</h2>
-<div class="tw"><table>
-<tr><th>slice</th><th class="mono">PF</th><th class="mono">avg win</th><th class="mono">avg loss</th><th class="mono">payoff</th><th class="mono">avg R</th><th class="mono">expectancy/t</th></tr>
-<tr><td>ALL</td><td class='mono'>1.97</td><td class='mono gwin'>+754</td><td class='mono gloss'>-294</td><td class='mono'>2.56</td><td class='mono'>+0.34</td><td class='mono gwin'>+161</td></tr>
-<tr><td>2025</td><td class='mono'>1.88</td><td class='mono gwin'>+579</td><td class='mono gloss'>-215</td><td class='mono'>2.70</td><td class='mono'>+0.22</td><td class='mono gwin'>+111</td></tr>
-<tr><td>2026</td><td class='mono'>2.03</td><td class='mono gwin'>+944</td><td class='mono gloss'>-401</td><td class='mono'>2.36</td><td class='mono'>+0.48</td><td class='mono gwin'>+222</td></tr>
-<tr><td>pre-market</td><td class='mono'>2.12</td><td class='mono gwin'>+703</td><td class='mono gloss'>-241</td><td class='mono'>2.92</td><td class='mono'>+0.34</td><td class='mono gwin'>+156</td></tr>
-<tr><td>golden</td><td class='mono'>1.73</td><td class='mono gwin'>+881</td><td class='mono gloss'>-459</td><td class='mono'>1.92</td><td class='mono'>+0.33</td><td class='mono gwin'>+176</td></tr>
-<tr><td>Jul-Sep 25</td><td class='mono'>0.85</td><td class='mono gwin'>+288</td><td class='mono gloss'>-173</td><td class='mono'>1.67</td><td class='mono'>-0.02</td><td class='mono gloss'>-17</td></tr>
-<tr><td>good months</td><td class='mono'>2.16</td><td class='mono gwin'>+845</td><td class='mono gloss'>-333</td><td class='mono'>2.53</td><td class='mono'>+0.43</td><td class='mono gwin'>+208</td></tr>
-<tr><td>setup A</td><td class='mono'>1.32</td><td class='mono gwin'>+261</td><td class='mono gloss'>-396</td><td class='mono'>0.66</td><td class='mono'>+0.30</td><td class='mono gwin'>+42</td></tr>
-<tr><td>setup B</td><td class='mono'>2.39</td><td class='mono gwin'>+881</td><td class='mono gloss'>-308</td><td class='mono'>2.86</td><td class='mono'>+0.48</td><td class='mono gwin'>+233</td></tr>
-<tr><td>setup B2</td><td class='mono'>1.69</td><td class='mono gwin'>+720</td><td class='mono gloss'>-279</td><td class='mono'>2.58</td><td class='mono'>+0.23</td><td class='mono gwin'>+117</td></tr>
-</table></div>
-<div class="note">Golden's profit factor (1.73) trails pre-market (2.12) because golden losers are
-half again as big (−$459 vs −$241) — the payoff-shape issue localized above. Jul–Sep is the only
-slice with PF &lt; 1 (0.85). Setup B is the workhorse (PF 2.39, payoff 2.86); A has positive
-expectancy but inverted payoff (0.66) — small winners, occasional big losers, n=15.</div>
-
-<h2>Jul–Sep: the most unprofitable days (canon)</h2>
-<div class="tw"><table>
-<tr><th>day</th><th class="mono">$</th><th>trades</th></tr>
-<tr><td class='mono'>2025-08-06</td><td class='mono gloss'>-915</td><td>gold/B s5 short $-915</td></tr>
-<tr><td class='mono'>2025-08-29</td><td class='mono gloss'>-445</td><td>pre/B s4 short $-155; pre/B s4 long $-290</td></tr>
-<tr><td class='mono'>2025-07-15</td><td class='mono gloss'>-312</td><td>gold/B s3 short $-312</td></tr>
-<tr><td class='mono'>2025-07-02</td><td class='mono gloss'>-240</td><td>pre/B2 s4 short $-240</td></tr>
-<tr><td class='mono'>2025-08-14</td><td class='mono gloss'>-230</td><td>pre/B2 s4 long $-230</td></tr>
-<tr><td class='mono'>2025-07-29</td><td class='mono gloss'>-210</td><td>pre/B s4 long $-210</td></tr>
-<tr><td class='mono'>2025-08-21</td><td class='mono gloss'>-202</td><td>pre/B s4 short $+138; pre/B s4 short $-340</td></tr>
-<tr><td class='mono'>2025-09-11</td><td class='mono gloss'>-199</td><td>gold/A s4 short $+29; gold/A s4 short $-228</td></tr>
-</table></div>
-<div class="note"><b>The old nightmare is now a string of small cuts.</b> Worst Jul–Sep day under
-canon: −$915 (a single score-5 golden B short on Aug 6 — highest conviction, still lost; chop
-doesn't care). Second worst −$445. Nothing else reaches −$350. The bleed is no longer
-concentrated or rule-breaking — it's the residual cost of participating in dead tape.</div>
-
-<h2>Layer activity &amp; extremes</h2>
-<div class="note">Layer 2b (trade #2+ needs ≥4) skipped <b>115</b> trades ·
-Layer 2c ladder skipped <b>40</b> · governor active on <b>44</b> days ·
-avg 1.3 trades/day over 231 traded days.<br>
-Best days: 2025-11-19 <b>+5,810</b> · 2026-03-09 <b>+4,420</b> · 2026-06-05 <b>+3,168</b> · 2025-10-30 <b>+2,902</b> · 2026-03-17 <b>+2,890</b><br>
-Worst days: 2026-07-02 <b>-1,436</b> · 2026-07-14 <b>-1,368</b> · 2026-02-20 <b>-1,200</b> · 2026-03-25 <b>-1,012</b> · 2025-08-06 <b>-915</b></div>
-
-<footer>Generated from output/canon_book.parquet · scripts/canon_dashboard.py · both books, every
-footprint-covered day, 1-lot base sizing · 25 Jul 2026</footer>
+<div class="card full" style="margin-top:8px">
+<h2>The playbook — what a good vs bad setup looks like</h2>
+<div class="playbook">
+  <div class="pb">
+    <h3>Pre-market <span class="chip pre">04:00–09:30</span></h3>
+    <div class="win-note">universal limit-retest entry · A / B / B2 · stop 7–60pt · median stop ~14pt</div>
+    <div class="lbl good">A-grade (score 4–5 → 1.0–1.5 lots)</div>
+    <ul>
+      <li><b>No wall behind the entry</b> — the book is empty where you came from (flagship check)</li>
+      <li>Fill-bar delta agrees with the trade</li>
+      <li>Last-15-min tape not running against you</li>
+      <li>Entry on the right side of VWAP geometry</li>
+      <li>Pre-market window CVD confirms direction</li>
+    </ul>
+    <div class="lbl bad">No-trade</div>
+    <ul>
+      <li>Score ≤2 — two or fewer checks: 12% WR, pure bleed</li>
+      <li>Stop &lt;7pt (toxic noise) or &gt;60pt (0/12 ever reached 2R)</li>
+      <li>Trade #2+ of the day without score ≥4</li>
+    </ul>
+  </div>
+  <div class="pb">
+    <h3>Golden window <span class="chip gold">09:45–10:30</span></h3>
+    <div class="win-note">same entry &amp; patterns · median stop ~24–30pt · needs structure AND quality</div>
+    <div class="lbl good">A-grade (gscore ≥3 and Q ≥3 → step up, cap 1.5)</div>
+    <ul>
+      <li><b>A big wall (≥7 lots) sits AHEAD of the trade</b> — a magnet to trade into. Opposite of pre!</li>
+      <li>Volatility expanding at entry, overnight extreme old, clean 30-min approach, 15-min tape agrees</li>
+      <li>Quality stack: big impulse minute at fill, fill aligned <i>or</i> absorption fill into counter-flow, busy trigger tape (&gt;11/30m), VWAP extension, London delta-slope agrees</li>
+    </ul>
+    <div class="lbl bad">No-trade</div>
+    <ul>
+      <li>gscore ≤2 — the reject pile ran −$31k/2yr at 0–17% WR</li>
+      <li><b>Q ≤1 — structure without quality</b>: 12/16 losers incl. every 53–56pt monster</li>
+      <li>Only wall on the book is <i>behind</i> you: 14%/12% WR, −$282 avg both years</li>
+    </ul>
+  </div>
 </div>
+<p class="bar-note">Shared skeleton: trade #2+ needs score ≥4 · day P&L &lt;0 → both structure checks required (A-setups exempt) · −$400 day stop · 3-min in-trade cut · cold-streak governor ×0.5 · good-PA boost ×1.5.</p>
+</div>
+
+<div class="grid cards">
+  <div class="card full">
+    <h2>Monthly P&L by window</h2>
+    <div class="legend"><span class="l-pre">Pre-market</span><span class="l-gold">Golden window</span></div>
+    <div class="chart"><svg id="mchart" width="1120" height="300"></svg></div>
+    <details><summary>Monthly table</summary><table id="mtable"></table></details>
+  </div>
+
+  <div class="card full">
+    <h2>Equity curve — trading days, both years</h2>
+    <div class="chart"><svg id="echart" width="1120" height="260"></svg></div>
+  </div>
+
+  <div class="card">
+    <h2>Window × year</h2>
+    <table id="wtable"></table>
+    <p class="bar-note">Gold 2025 PF 11.5 is flattered by two big Dec trades — the payoff column is the honest lens.</p>
+  </div>
+
+  <div class="card">
+    <h2>Quality metrics</h2>
+    <table>
+      <tr><th></th><th>2025</th><th>2026</th></tr>
+      <tr><td>Profit factor</td><td class="mono">3.14</td><td class="mono">3.85</td></tr>
+      <tr><td>Payoff (avg win / avg loss)</td><td class="mono">4.4×</td><td class="mono">4.3×</td></tr>
+      <tr><td>Avg win / avg loss</td><td class="mono">+$715 / −$162</td><td class="mono">+$1,044 / −$243</td></tr>
+      <tr><td>Avg realized R (win / loss)</td><td class="mono">+1.96 / −1.01</td><td class="mono">+2.35 / −0.95</td></tr>
+      <tr><td>Expectancy per trade</td><td class="mono pos">+$202</td><td class="mono pos">+$365</td></tr>
+      <tr><td>Jul–Sep</td><td class="mono pos">+$2,034</td><td class="mono">−$98</td></tr>
+      <tr><td>Best / worst day</td><td class="mono">+$6,784 / −$862</td><td class="mono">+$4,751 / −$862</td></tr>
+      <tr><td>Green / red trading days</td><td class="mono">47 / 75</td><td class="mono">39 / 41</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Score ladders</h2>
+    <table id="ladtable"></table>
+    <p class="bar-note">Sized trades only (score ≥3). Score maps to size: 3 → 0.5 · 4 → 1.0 · 5 → 1.5 lots.</p>
+  </div>
+
+  <div class="card">
+    <h2>Gold quality tier (Q of 6)</h2>
+    <table id="qtable"></table>
+    <p class="bar-note">Q≤1 → no trade (16-trade cell — flagged watch item, first 2023/24 re-test). Q≥3 → one ladder step up.</p>
+  </div>
+
+  <div class="card">
+    <h2>Day of week</h2>
+    <table id="dtable"></table>
+  </div>
+
+  <div class="card">
+    <h2>Size distribution</h2>
+    <table id="stable"></table>
+    <p class="bar-note">Monotone: bigger size only where win rate earns it. 2.25 = score-5 × good-PA boost.</p>
+  </div>
+
+  <div class="card">
+    <h2>Best days</h2>
+    <table id="btable"></table>
+  </div>
+
+  <div class="card">
+    <h2>Worst days</h2>
+    <table id="xtable"></table>
+    <p class="bar-note">Worst single day −$862 vs best +$6,784 — the asymmetry <i>is</i> the system.</p>
+  </div>
+
+  <div class="card">
+    <h2>Gold checks — WR with vs without</h2>
+    <table id="gctable"></table>
+    <p class="bar-note">Full 218-trade gold universe (raw 1-lot).</p>
+  </div>
+
+  <div class="card">
+    <h2>Quality bits — WR within gscore ≥3</h2>
+    <table id="qctable"></table>
+  </div>
+</div>
+
+<p class="foot"><b>Data:</b> Jun 2 – Dec 31 2025 + Feb 2 – Jul 10 2026 · 713-trade universe (7–60pt stops), 264 sized. All thresholds frozen at 2025 quantiles (gold checks at 2025-golden-window quantiles) — 2026 is out-of-fit. <b>Holdout watch-list for 2023/24:</b> Q-tier mapping (especially the Q≤1 cut), gold 5-min time-stop, early-month calendar effect, dead-tape W-weighting, 0.8× stops.</p>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = {"years": {"2025": {"total": 31175, "n": 154, "days": 122, "wr": 0.416, "pf": 3.14, "avg_win": 715, "avg_loss": -162, "payoff": 4.42, "exp": 202, "maxdd": 2492, "avgR_win": 1.96, "avgR_loss": -1.01, "js": 2034, "green_days": 47, "red_days": 75, "best_day": 6784, "worst_day": -862}, "2026": {"total": 40189, "n": 110, "days": 80, "wr": 0.473, "pf": 3.85, "avg_win": 1044, "avg_loss": -243, "payoff": 4.3, "exp": 365, "maxdd": 1872, "avgR_win": 2.35, "avgR_loss": -0.95, "js": -98, "green_days": 39, "red_days": 41, "best_day": 4751, "worst_day": -862}}, "monthly": [{"mo": "2025-06", "total": 3676, "pre": -892, "gold": 4569, "n": 19}, {"mo": "2025-07", "total": 697, "pre": -165, "gold": 862, "n": 21}, {"mo": "2025-08", "total": 924, "pre": 246, "gold": 679, "n": 18}, {"mo": "2025-09", "total": 413, "pre": 451, "gold": -38, "n": 21}, {"mo": "2025-10", "total": 1418, "pre": 1676, "gold": -258, "n": 30}, {"mo": "2025-11", "total": 10014, "pre": 4326, "gold": 5688, "n": 19}, {"mo": "2025-12", "total": 14034, "pre": 4210, "gold": 9824, "n": 26}, {"mo": "2026-02", "total": 7071, "pre": 4198, "gold": 2872, "n": 16}, {"mo": "2026-03", "total": 9409, "pre": 9999, "gold": -590, "n": 18}, {"mo": "2026-04", "total": 4953, "pre": 1635, "gold": 3318, "n": 25}, {"mo": "2026-05", "total": 5044, "pre": 3551, "gold": 1492, "n": 21}, {"mo": "2026-06", "total": 13811, "pre": 9342, "gold": 4469, "n": 27}, {"mo": "2026-07", "total": -98, "pre": -98, "gold": 0, "n": 3}], "windows": [{"yr": 2025, "win": "pre", "n": 124, "wr": 0.355, "pl": 9851, "pf": 1.79, "avg_win": 509, "avg_loss": -157, "avgR_w": 2.03, "avgR_l": -1.02, "med_stop": 12.0}, {"yr": 2025, "win": "gold", "n": 30, "wr": 0.667, "pl": 21324, "pf": 11.45, "avg_win": 1168, "avg_loss": -204, "avgR_w": 1.81, "avgR_l": -0.93, "med_stop": 23.6}, {"yr": 2026, "win": "pre", "n": 90, "wr": 0.456, "pl": 28628, "pf": 3.66, "avg_win": 961, "avg_loss": -220, "avgR_w": 2.42, "avgR_l": -0.98, "med_stop": 18.1}, {"yr": 2026, "win": "gold", "n": 20, "wr": 0.55, "pl": 11562, "pf": 4.48, "avg_win": 1353, "avg_loss": -369, "avgR_w": 2.05, "avgR_l": -0.81, "med_stop": 30.4}], "dow": [{"dow": "Mon", "n": 55, "wr": 0.455, "pl": 22602, "pre": 11461, "gold": 11141}, {"dow": "Tue", "n": 49, "wr": 0.531, "pl": 16030, "pre": 14681, "gold": 1349}, {"dow": "Wed", "n": 56, "wr": 0.393, "pl": 12815, "pre": 3035, "gold": 9780}, {"dow": "Thu", "n": 55, "wr": 0.455, "pl": 12255, "pre": 8356, "gold": 3899}, {"dow": "Fri", "n": 49, "wr": 0.367, "pl": 7663, "pre": 946, "gold": 6718}], "ladder": [{"win": "pre", "score": 3, "n": 78, "wr": 0.205, "avg": -6, "pl": -489}, {"win": "pre", "score": 4, "n": 111, "wr": 0.486, "avg": 254, "pl": 28205}, {"win": "pre", "score": 5, "n": 25, "wr": 0.6, "avg": 430, "pl": 10762}, {"win": "gold", "score": 3, "n": 18, "wr": 0.444, "avg": 398, "pl": 7166}, {"win": "gold", "score": 4, "n": 25, "wr": 0.68, "avg": 459, "pl": 11474}, {"win": "gold", "score": 5, "n": 7, "wr": 0.857, "avg": 2035, "pl": 14246}], "qladder": [{"q": 2, "n": 19, "wr": 0.316, "avg": 29, "pl": 552}, {"q": 3, "n": 13, "wr": 0.615, "avg": 1075, "pl": 13972}, {"q": 4, "n": 13, "wr": 0.923, "avg": 1163, "pl": 15115}, {"q": 5, "n": 3, "wr": 1.0, "avg": 710, "pl": 2129}, {"q": 6, "n": 2, "wr": 1.0, "avg": 559, "pl": 1119}], "equity": [{"day": "2025-06-02", "cum": -535}, {"day": "2025-06-03", "cum": -82}, {"day": "2025-06-05", "cum": 522}, {"day": "2025-06-06", "cum": 28}, {"day": "2025-06-09", "cum": -238}, {"day": "2025-06-10", "cum": -330}, {"day": "2025-06-11", "cum": 935}, {"day": "2025-06-12", "cum": 808}, {"day": "2025-06-13", "cum": 3969}, {"day": "2025-06-17", "cum": 3756}, {"day": "2025-06-18", "cum": 3276}, {"day": "2025-06-19", "cum": 3906}, {"day": "2025-06-20", "cum": 3521}, {"day": "2025-06-23", "cum": 3326}, {"day": "2025-06-24", "cum": 3964}, {"day": "2025-06-27", "cum": 3931}, {"day": "2025-06-30", "cum": 3676}, {"day": "2025-07-02", "cum": 3436}, {"day": "2025-07-03", "cum": 3481}, {"day": "2025-07-07", "cum": 3448}, {"day": "2025-07-08", "cum": 3783}, {"day": "2025-07-09", "cum": 3734}, {"day": "2025-07-10", "cum": 4241}, {"day": "2025-07-11", "cum": 4406}, {"day": "2025-07-14", "cum": 4465}, {"day": "2025-07-15", "cum": 4553}, {"day": "2025-07-16", "cum": 4766}, {"day": "2025-07-17", "cum": 4688}, {"day": "2025-07-18", "cum": 4533}, {"day": "2025-07-21", "cum": 4343}, {"day": "2025-07-23", "cum": 4295}, {"day": "2025-07-24", "cum": 4281}, {"day": "2025-07-25", "cum": 4448}, {"day": "2025-07-29", "cum": 4238}, {"day": "2025-07-30", "cum": 4426}, {"day": "2025-07-31", "cum": 4373}, {"day": "2025-08-04", "cum": 4281}, {"day": "2025-08-07", "cum": 5288}, {"day": "2025-08-08", "cum": 6428}, {"day": "2025-08-11", "cum": 6343}, {"day": "2025-08-12", "cum": 7021}, {"day": "2025-08-14", "cum": 6791}, {"day": "2025-08-15", "cum": 6769}, {"day": "2025-08-18", "cum": 6621}, {"day": "2025-08-20", "cum": 6326}, {"day": "2025-08-21", "cum": 6124}, {"day": "2025-08-22", "cum": 6016}, {"day": "2025-08-25", "cum": 5866}, {"day": "2025-08-26", "cum": 5786}, {"day": "2025-08-27", "cum": 5743}, {"day": "2025-08-29", "cum": 5298}, {"day": "2025-09-01", "cum": 5260}, {"day": "2025-09-02", "cum": 5155}, {"day": "2025-09-03", "cum": 5019}, {"day": "2025-09-04", "cum": 5263}, {"day": "2025-09-05", "cum": 5161}, {"day": "2025-09-09", "cum": 5120}, {"day": "2025-09-10", "cum": 5100}, {"day": "2025-09-11", "cum": 5001}, {"day": "2025-09-12", "cum": 5010}, {"day": "2025-09-15", "cum": 4971}, {"day": "2025-09-16", "cum": 4962}, {"day": "2025-09-17", "cum": 4938}, {"day": "2025-09-18", "cum": 5256}, {"day": "2025-09-19", "cum": 5606}, {"day": "2025-09-23", "cum": 5553}, {"day": "2025-09-24", "cum": 5860}, {"day": "2025-09-25", "cum": 5796}, {"day": "2025-09-29", "cum": 5752}, {"day": "2025-09-30", "cum": 5710}, {"day": "2025-10-01", "cum": 5628}, {"day": "2025-10-03", "cum": 5554}, {"day": "2025-10-06", "cum": 5435}, {"day": "2025-10-07", "cum": 5398}, {"day": "2025-10-08", "cum": 5426}, {"day": "2025-10-09", "cum": 5405}, {"day": "2025-10-10", "cum": 5535}, {"day": "2025-10-13", "cum": 5462}, {"day": "2025-10-15", "cum": 5296}, {"day": "2025-10-16", "cum": 5602}, {"day": "2025-10-17", "cum": 5378}, {"day": "2025-10-20", "cum": 6032}, {"day": "2025-10-21", "cum": 5852}, {"day": "2025-10-22", "cum": 5777}, {"day": "2025-10-23", "cum": 5437}, {"day": "2025-10-24", "cum": 4739}, {"day": "2025-10-27", "cum": 4529}, {"day": "2025-10-28", "cum": 4624}, {"day": "2025-10-29", "cum": 4577}, {"day": "2025-10-30", "cum": 6028}, {"day": "2025-10-31", "cum": 7128}, {"day": "2025-11-03", "cum": 7663}, {"day": "2025-11-04", "cum": 7210}, {"day": "2025-11-05", "cum": 7758}, {"day": "2025-11-06", "cum": 10385}, {"day": "2025-11-11", "cum": 10980}, {"day": "2025-11-12", "cum": 10893}, {"day": "2025-11-13", "cum": 11255}, {"day": "2025-11-14", "cum": 11133}, {"day": "2025-11-19", "cum": 16943}, {"day": "2025-11-21", "cum": 16720}, {"day": "2025-11-24", "cum": 16552}, {"day": "2025-11-25", "cum": 16439}, {"day": "2025-11-26", "cum": 17167}, {"day": "2025-11-27", "cum": 17142}, {"day": "2025-12-01", "cum": 18257}, {"day": "2025-12-03", "cum": 19835}, {"day": "2025-12-04", "cum": 19743}, {"day": "2025-12-05", "cum": 20230}, {"day": "2025-12-09", "cum": 20352}, {"day": "2025-12-10", "cum": 19489}, {"day": "2025-12-11", "cum": 19294}, {"day": "2025-12-12", "cum": 19109}, {"day": "2025-12-15", "cum": 21524}, {"day": "2025-12-17", "cum": 21299}, {"day": "2025-12-19", "cum": 21059}, {"day": "2025-12-22", "cum": 21488}, {"day": "2025-12-23", "cum": 22803}, {"day": "2025-12-24", "cum": 22729}, {"day": "2025-12-26", "cum": 22794}, {"day": "2025-12-29", "cum": 29578}, {"day": "2025-12-31", "cum": 31175}, {"day": "2026-02-02", "cum": 30425}, {"day": "2026-02-06", "cum": 30170}, {"day": "2026-02-09", "cum": 29645}, {"day": "2026-02-10", "cum": 29518}, {"day": "2026-02-11", "cum": 30552}, {"day": "2026-02-12", "cum": 31328}, {"day": "2026-02-16", "cum": 32040}, {"day": "2026-02-17", "cum": 32940}, {"day": "2026-02-18", "cum": 34003}, {"day": "2026-02-19", "cum": 34898}, {"day": "2026-02-23", "cum": 37583}, {"day": "2026-02-24", "cum": 37859}, {"day": "2026-02-25", "cum": 38271}, {"day": "2026-02-26", "cum": 38246}, {"day": "2026-03-05", "cum": 37921}, {"day": "2026-03-09", "cum": 42341}, {"day": "2026-03-10", "cum": 42331}, {"day": "2026-03-12", "cum": 41836}, {"day": "2026-03-13", "cum": 41581}, {"day": "2026-03-17", "cum": 46324}, {"day": "2026-03-18", "cum": 45744}, {"day": "2026-03-19", "cum": 45976}, {"day": "2026-03-20", "cum": 46604}, {"day": "2026-03-24", "cum": 47909}, {"day": "2026-03-25", "cum": 47699}, {"day": "2026-03-26", "cum": 47611}, {"day": "2026-03-31", "cum": 47655}, {"day": "2026-04-01", "cum": 47517}, {"day": "2026-04-02", "cum": 47400}, {"day": "2026-04-06", "cum": 47275}, {"day": "2026-04-07", "cum": 46412}, {"day": "2026-04-08", "cum": 46657}, {"day": "2026-04-09", "cum": 46099}, {"day": "2026-04-10", "cum": 46036}, {"day": "2026-04-13", "cum": 47506}, {"day": "2026-04-15", "cum": 47515}, {"day": "2026-04-16", "cum": 47385}, {"day": "2026-04-17", "cum": 47377}, {"day": "2026-04-20", "cum": 47267}, {"day": "2026-04-21", "cum": 47179}, {"day": "2026-04-23", "cum": 47100}, {"day": "2026-04-24", "cum": 46797}, {"day": "2026-04-27", "cum": 48260}, {"day": "2026-04-28", "cum": 48890}, {"day": "2026-04-29", "cum": 48845}, {"day": "2026-04-30", "cum": 52608}, {"day": "2026-05-01", "cum": 52448}, {"day": "2026-05-04", "cum": 52243}, {"day": "2026-05-06", "cum": 53387}, {"day": "2026-05-11", "cum": 54122}, {"day": "2026-05-13", "cum": 55614}, {"day": "2026-05-14", "cum": 55344}, {"day": "2026-05-18", "cum": 56604}, {"day": "2026-05-19", "cum": 58429}, {"day": "2026-05-20", "cum": 58272}, {"day": "2026-05-22", "cum": 57827}, {"day": "2026-05-26", "cum": 58262}, {"day": "2026-05-27", "cum": 58042}, {"day": "2026-05-28", "cum": 57827}, {"day": "2026-05-29", "cum": 57652}, {"day": "2026-06-01", "cum": 57402}, {"day": "2026-06-02", "cum": 56972}, {"day": "2026-06-03", "cum": 56670}, {"day": "2026-06-05", "cum": 61422}, {"day": "2026-06-08", "cum": 61924}, {"day": "2026-06-09", "cum": 62507}, {"day": "2026-06-12", "cum": 62302}, {"day": "2026-06-15", "cum": 64788}, {"day": "2026-06-16", "cum": 67008}, {"day": "2026-06-17", "cum": 66918}, {"day": "2026-06-18", "cum": 67948}, {"day": "2026-06-19", "cum": 67887}, {"day": "2026-06-24", "cum": 67927}, {"day": "2026-06-25", "cum": 69227}, {"day": "2026-06-26", "cum": 69445}, {"day": "2026-06-29", "cum": 69565}, {"day": "2026-06-30", "cum": 71462}, {"day": "2026-07-01", "cum": 71272}, {"day": "2026-07-06", "cum": 70635}, {"day": "2026-07-10", "cum": 71365}], "worst_days": [{"day": "2025-12-10", "pl": -862}, {"day": "2026-04-07", "pl": -862}, {"day": "2026-02-02", "pl": -750}, {"day": "2025-10-24", "pl": -698}, {"day": "2026-07-06", "pl": -638}, {"day": "2026-03-18", "pl": -580}], "best_days": [{"day": "2025-12-29", "pl": 6784}, {"day": "2025-11-19", "pl": 5810}, {"day": "2026-06-05", "pl": 4751}, {"day": "2026-03-17", "pl": 4742}, {"day": "2026-03-09", "pl": 4420}, {"day": "2026-04-30", "pl": 3763}], "sizes": [{"size": 0.25, "n": 14, "pl": -276, "wr": 0.214}, {"size": 0.5, "n": 86, "pl": -331, "wr": 0.233}, {"size": 0.75, "n": 10, "pl": 2065, "wr": 0.6}, {"size": 1.0, "n": 94, "pl": 22726, "wr": 0.479}, {"size": 1.5, "n": 52, "pl": 33403, "wr": 0.673}, {"size": 2.25, "n": 8, "pl": 13777, "wr": 0.875}], "gchecks": [{"chk": "D wall ahead", "wr1": 0.44, "wr0": 0.13, "n1": 113, "n0": 85}, {"chk": "Tc tape 15m", "wr1": 0.39, "wr0": 0.16, "n1": 127, "n0": 91}, {"chk": "X vol expand", "wr1": 0.47, "wr0": 0.25, "n1": 43, "n0": 175}, {"chk": "AGE old extreme", "wr1": 0.41, "wr0": 0.22, "n1": 95, "n0": 107}, {"chk": "PAQ clean path", "wr1": 0.34, "wr0": 0.17, "n1": 159, "n0": 59}], "qchecks": [{"chk": "wall \u22657 lots", "wr1": 0.64, "wr0": 0.38, "n1": 44, "n0": 66}, {"chk": "big fill delta", "wr1": 0.59, "wr0": 0.45, "n1": 27, "n0": 83}, {"chk": "aligned/absorb", "wr1": 0.58, "wr0": 0.26, "n1": 76, "n0": 34}, {"chk": "busy triggers", "wr1": 0.64, "wr0": 0.39, "n1": 39, "n0": 71}, {"chk": "vwap extend", "wr1": 0.54, "wr0": 0.43, "n1": 56, "n0": 54}, {"chk": "London slope", "wr1": 0.57, "wr0": 0.41, "n1": 47, "n0": 63}]};
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fmt = n => (n<0?"−$":"+$") + Math.abs(n).toLocaleString();
+const tip = document.getElementById("tip");
+function showTip(e, html){ tip.innerHTML = html; tip.style.opacity = 1;
+  tip.style.left = Math.min(e.clientX+14, innerWidth-250)+"px"; tip.style.top = (e.clientY+14)+"px"; }
+function hideTip(){ tip.style.opacity = 0; }
+
+function draw(){
+  const PRE = css("--pre"), GOLD = css("--gold"), LINE = css("--line"), POS = css("--pos"), NEG = css("--neg"), BG = css("--card");
+  const M = DATA.monthly, svg = document.getElementById("mchart");
+  const Wd = Math.max(720, Math.min(1120, document.querySelector(".card.full").clientWidth-46));
+  svg.setAttribute("width", Wd);
+  const H = 300, padL = 56, padB = 30, padT = 16;
+  const lo = Math.min(0, ...M.map(m=>Math.min(m.pre,0)+Math.min(m.gold,0)));
+  const hi = Math.max(...M.map(m=>Math.max(m.pre,0)+Math.max(m.gold,0)));
+  const y = v => padT + (hi-v)/(hi-lo)*(H-padT-padB);
+  const bw = (Wd-padL-16)/M.length;
+  let s = "";
+  for (const g of [0, 5000, 10000, 15000]){
+    if (g>hi) break;
+    s += `<line x1="${padL}" x2="${Wd-8}" y1="${y(g)}" y2="${y(g)}" stroke="${LINE}" stroke-width="1"/>`;
+    s += `<text x="${padL-8}" y="${y(g)+3}" text-anchor="end">${g/1000}k</text>`;
+  }
+  M.forEach((m,i)=>{
+    const x = padL + i*bw + bw*0.16, w = bw*0.68;
+    let posBase = 0, negBase = 0;
+    for (const [key,col] of [["pre",PRE],["gold",GOLD]]){
+      const v = m[key]; if (!v) continue;
+      if (v>0){ s += `<rect data-i="${i}" x="${x}" y="${y(posBase+v)}" width="${w}" height="${Math.max(1.5,y(posBase)-y(posBase+v)-1)}" rx="2" fill="${col}" stroke="${BG}" stroke-width="1"/>`; posBase+=v; }
+      else { s += `<rect data-i="${i}" x="${x}" y="${y(negBase)+1}" width="${w}" height="${Math.max(1.5,y(negBase+v)-y(negBase)-1)}" rx="2" fill="${col}" opacity=".55" stroke="${BG}" stroke-width="1"/>`; negBase+=v; }
+    }
+    s += `<text x="${x+w/2}" y="${H-10}" text-anchor="middle">${m.mo.slice(2).replace("-","/")}</text>`;
+    s += `<text x="${x+w/2}" y="${y(Math.max(posBase,0))-5}" text-anchor="middle" style="fill:${m.total>=0?POS:NEG};font-weight:600">${(m.total/1000).toFixed(1)}k</text>`;
+  });
+  s += `<line x1="${padL}" x2="${Wd-8}" y1="${y(0)}" y2="${y(0)}" stroke="${css('--ink3')}" stroke-width="1"/>`;
+  svg.setAttribute("height", H);
+  svg.innerHTML = s;
+  svg.querySelectorAll("rect").forEach(r=>{
+    r.addEventListener("mousemove", e=>{
+      const m = M[+r.dataset.i];
+      showTip(e, `<b>${m.mo}</b><br>total ${fmt(m.total)}<br>pre ${fmt(m.pre)} · gold ${fmt(m.gold)}<br>${m.n} trades`);
+    });
+    r.addEventListener("mouseleave", hideTip);
+  });
+
+  const E = DATA.equity, es = document.getElementById("echart");
+  es.setAttribute("width", Wd);
+  const eH = 260, eL = 60, eB = 26, eT = 14;
+  const emax = Math.max(...E.map(p=>p.cum)), emin = Math.min(0,...E.map(p=>p.cum));
+  const ey = v => eT + (emax-v)/(emax-emin)*(eH-eT-eB);
+  const ex = i => eL + i/(E.length-1)*(Wd-eL-16);
+  let path = E.map((p,i)=>`${i?"L":"M"}${ex(i).toFixed(1)},${ey(p.cum).toFixed(1)}`).join("");
+  let e2 = "";
+  for (const g of [0,20000,40000,60000]){
+    e2 += `<line x1="${eL}" x2="${Wd-8}" y1="${ey(g)}" y2="${ey(g)}" stroke="${LINE}"/>`;
+    e2 += `<text x="${eL-8}" y="${ey(g)+3}" text-anchor="end">${g/1000}k</text>`;
+  }
+  e2 += `<path d="${path}L${ex(E.length-1)},${ey(emin)}L${ex(0)},${ey(emin)}Z" fill="${POS}" opacity="0.08"/>`;
+  e2 += `<path d="${path}" fill="none" stroke="${POS}" stroke-width="2"/>`;
+  const last = E[E.length-1];
+  e2 += `<circle cx="${ex(E.length-1)}" cy="${ey(last.cum)}" r="4" fill="${POS}"/>`;
+  e2 += `<text x="${ex(E.length-1)-6}" y="${Math.max(ey(last.cum)-8, 12)}" text-anchor="end" style="fill:${POS};font-weight:700">${fmt(last.cum)}</text>`;
+  const bIdx = E.findIndex(p=>p.day.startsWith("2026"));
+  if (bIdx>0){ e2 += `<line x1="${ex(bIdx)}" x2="${ex(bIdx)}" y1="${eT}" y2="${eH-eB}" stroke="${LINE}" stroke-dasharray="3,4"/>`;
+    e2 += `<text x="${ex(bIdx)+5}" y="${eT+10}">2026</text>`; }
+  e2 += `<rect id="ehit" x="${eL}" y="${eT}" width="${Wd-eL-16}" height="${eH-eT-eB}" fill="transparent"/>`;
+  es.setAttribute("height", eH);
+  es.innerHTML = e2;
+  const hit = document.getElementById("ehit");
+  hit.addEventListener("mousemove", e=>{
+    const r = es.getBoundingClientRect();
+    const i = Math.round((e.clientX-r.left-eL)/(Wd-eL-16)*(E.length-1));
+    if (i>=0 && i<E.length) showTip(e, `<b>${E[i].day}</b><br>cumulative ${fmt(E[i].cum)}`);
+  });
+  hit.addEventListener("mouseleave", hideTip);
+}
+
+function table(id, head, rows){
+  document.getElementById(id).innerHTML =
+    "<tr>"+head.map(h=>`<th>${h}</th>`).join("")+"</tr>" +
+    rows.map(r=>"<tr>"+r.map((c,i)=>`<td>${c}</td>`).join("")+"</tr>").join("");
+}
+const pct = v => (v*100).toFixed(0)+"%";
+const cls = v => v>=0 ? `<span class="mono pos">${fmt(v)}</span>` : `<span class="mono neg">${fmt(v)}</span>`;
+const chip = w => `<span class="chip ${w}">${w==="pre"?"pre":"gold"}</span>`;
+
+table("wtable", ["", "n", "WR", "P&L", "PF", "avg win", "avg loss", "med stop"],
+  DATA.windows.map(w=>[`${w.yr} ${chip(w.win)}`, w.n, pct(w.wr), cls(w.pl), w.pf,
+    `<span class="mono">+$${w.avg_win.toLocaleString()}</span>`, `<span class="mono">−$${Math.abs(w.avg_loss).toLocaleString()}</span>`, w.med_stop+"pt"]));
+
+table("mtable", ["month","total","pre","gold","trades"],
+  DATA.monthly.map(m=>[m.mo, cls(m.total), cls(m.pre), cls(m.gold), m.n]));
+
+table("ladtable", ["","score","n","WR","avg P&L","total"],
+  DATA.ladder.map(l=>[chip(l.win), l.score, l.n, pct(l.wr), cls(l.avg), cls(l.pl)]));
+
+table("qtable", ["Q","n sized","WR","avg P&L","total"],
+  DATA.qladder.map(q=>[q.q, q.n, pct(q.wr), cls(q.avg), cls(q.pl)]));
+
+table("dtable", ["","n","WR","P&L","pre","gold"],
+  DATA.dow.map(d=>[d.dow, d.n, pct(d.wr), cls(d.pl), cls(d.pre), cls(d.gold)]));
+
+table("stable", ["size","n","WR","P&L"],
+  DATA.sizes.map(z=>[`<span class="mono">${z.size}×</span>`, z.n, pct(z.wr), cls(z.pl)]));
+
+table("btable", ["day","P&L"], DATA.best_days.map(d=>[d.day, cls(d.pl)]));
+table("xtable", ["day","P&L"], DATA.worst_days.map(d=>[d.day, cls(d.pl)]));
+
+table("gctable", ["check","WR with","WR without","n"],
+  DATA.gchecks.map(c=>[c.chk, pct(c.wr1), pct(c.wr0), `${c.n1}/${c.n0}`]));
+table("qctable", ["quality bit","WR with","WR without","n"],
+  DATA.qchecks.map(c=>[c.chk, pct(c.wr1), pct(c.wr0), `${c.n1}/${c.n0}`]));
+
+draw();
+new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
+addEventListener("resize", ()=>{ clearTimeout(window.__rz); window.__rz=setTimeout(draw,150); });
+</script>
