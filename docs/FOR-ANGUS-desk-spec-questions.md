@@ -24,6 +24,41 @@ Full detail on every item below is in `docs/agent-blueprint.md` §8–9. This do
 the short version so you can rule quickly; ping back if any item needs the longer
 context.
 
+## ⛔ Blocking the Hermes rebuild right now — these ten, in one place (23 Jul)
+
+The live Hermes host currently runs an OLDER 7-agent desk (atlas, lumen, hydra,
+hermes-execution, apollo, hephaestus, mnemosyne + desk-coordinator). Replacing
+it with the v1.2 four-specialist desk is on hold until these ten are ruled on.
+Nothing has been deleted or overwritten; the live skills and their content are
+backed up.
+
+**Unresolved placeholders sitting in rule logic** (the skill docs literally
+contain `<<PLACEHOLDER>>` at these points — they cannot ship as-is):
+
+| # | Where | Question |
+|---|---|---|
+| Q-7 | `apollo-skill.md:136` | which VWAP is the "opposing ±1σ" |
+| Q-9 | `hephaestus-skill.md:81` | stop AT vs. BEYOND the wick extreme |
+| Q-11 | `hephaestus-skill.md:104` | correct definition of an "untaken" extreme |
+| Q-23 | `apollo-skill.md:105` | is counter-trend alone a valid pattern-A route |
+| Q-26 | `atlas-skill.md:125` | does the §7 location veto apply in every regime |
+
+**Coverage gaps from collapsing 7 agents into 4** (new — see section D):
+
+| # | Check being lost | From |
+|---|---|---|
+| Q-29 | risk-tone vs. direction agreement | `lumen` |
+| Q-30 | entry must come AFTER the liquidity sweep | `hydra` |
+| Q-31 | spread / fill-quality gating | `hermes-execution` |
+| Q-32 | setup must match a documented playbook entry | `mnemosyne` |
+| Q-33 | forward-looking news buffer — configured but unenforced | `helios` |
+
+**Why Q-29..Q-33 matter more than "we dropped some checks":** Q-30, Q-31 and
+Q-33 are all *vetoes* — they currently STOP trades. Dropping them makes the desk
+**looser**, not tighter, and it happens silently. Q-33 is the sharpest: Helios
+already accepts `filters.news_entry_buffer_enabled` / `news_entry_buffer_min` in
+its config block, so the buffer *looks* implemented, but no check consumes them.
+
 ## Recommended starting subset (if you want to unblock the most with the least)
 
 These four block an entire agent's checks from running AT ALL, so ruling these
@@ -123,17 +158,93 @@ choices (retry policy, config file layout, runner concurrency, etc.), except:
 or re-derive fully blind) touch strategy intent enough that your preference
 would help.
 
+## D. Coverage gaps from the 7→4 desk consolidation (Q-29..Q-33) — NEW, 23 Jul
+
+Context: the live Hermes desk has 7 specialists. The v1.2 design has 4. Reading
+the live skills' actual content (not just their names) against the four new
+skill docs, most checks do carry over — several more rigorously. These five do
+not. **Each needs a ruling: fold it into one of the four, accept the loss
+deliberately, or keep it somewhere else.** The default if you say nothing is
+that they silently disappear, which is what this section exists to prevent.
+
+For completeness, what DOES carry over cleanly (no ruling needed):
+`lumen.RIGHT_SESSION` → Helios 1+2 (wrap-aware, independently recomputed);
+`hermes-execution.VALID_TRIGGER` → Apollo 3/4/5; `hermes-execution.ENTRY_IS_EXACT`
+→ Apollo 7/8 + Hephaestus's entry construction; `hydra.CLEAR_DRAW_TO_TARGET` →
+Atlas 8 + Hephaestus's "nearest opposing-liquidity level" target rule.
+
+And two that are relocated rather than lost — **please confirm this is intended**:
+`mnemosyne.HAS_HISTORICAL_EDGE` and `mnemosyne.NOT_REVENGE_OR_FOMO` read
+`setup_historical_performance` and `recent_trade_history`, which are exactly two
+of the four fields `vault-injector` injects AFTER the Desk runs. All four new
+specialists explicitly state "you never see account state, P&L, prior trades,
+open positions" — so account-state judgment appears to have moved out of the
+Desk and into Python as the trust boundary. That looks deliberate. The open part
+is whether the *checks* move with the *fields*, since vault-injector is still a
+stub — if nobody implements them downstream, they're gone too.
+
+- **Q-29:** `lumen.RISK_TONE_AGREES` — the live desk fails a trade whose
+  direction disagrees with broad risk tone (long needs risk-on/neutral, short
+  needs risk-off/neutral). Nothing in the four new docs mentions risk tone at
+  all, and Helios structurally cannot own it — it never sees prices by design
+  (`data_high`/`data_low` are excluded from its allowlist on purpose). Does
+  macro risk tone still gate trades, and if so whose lane is it?
+- **Q-30:** `hydra.ENTRY_AFTER_GRAB` + `POOL_SWEPT` — the live desk requires a
+  specific identified liquidity pool to have been swept, and requires entry to
+  come strictly AFTER the sweep ("entering before or during the sweep fails
+  this check regardless of any other factor"). The *target* half of Hydra
+  survives via the target menu, but this **sequencing veto has no equivalent**
+  anywhere in the new four. Is sweep-then-enter still required?
+- **Q-31:** `hermes-execution.SPREAD_FILL_ACCEPTABLE` — the live desk gates on
+  spread against a defined maximum plus fill-quality indicators. The word
+  "spread" does not appear in any of the five new docs. Does execution-quality
+  gating leave the Desk entirely (e.g. become Python's job at fill time), or
+  should Hephaestus own it alongside sizing?
+- **Q-32:** `mnemosyne.IN_PLAYBOOK` — requires the setup to match a named,
+  documented playbook entry, failing novel/improvised setups. Unlike its two
+  siblings above, `playbook_match` is NOT among vault-injector's four injected
+  fields, so it isn't relocated downstream either — it has no home at all. Is
+  "must be in the playbook" still a gate, and if so where does it live?
+- **Q-33:** Helios's news buffer is configured but unenforced. Helios's config
+  block accepts `filters.news_entry_buffer_enabled` and
+  `filters.news_entry_buffer_min`, but **no check consumes them**. Its only
+  news vetoes are check 6 (`news_day_classification`) and check 7
+  (`high_impact_preopen_standdown`), and check 7 fires only for high-impact
+  events scheduled **before 09:30 ET**. So the live desk's forward-looking rule
+  — `lumen.NO_IMMINENT_NEWS`, "any high-impact release within the next 60
+  minutes fails" — is gone: a 14:00 ET release triggers no stand-down at all
+  under the new four. Should the buffer become a real Helios check (and at what
+  minutes), or is the pre-09:30 stand-down deliberately the whole news rule now?
+
 ## Where the build actually stands now
 
 Pat asked for the build to start in parallel rather than wait — the four
 specialist skill docs (`docs/desk-skills/{atlas,helios,apollo,hephaestus}-skill.md`)
 and the Hermes coordinator instructions (`docs/desk-skills/hermes-coordinator.md`)
-are written and ready for Pat to paste into the third-party Hermes product, along
-with the Python receiver (`src/desk/verdict.py`, `src/desk/receiver.py`, tested)
-that risk-gates and journals whatever Hermes decides. Every item this packet marks
-✅ RESOLVED is already built into those docs correctly. Every item still open is
-marked `<<PLACEHOLDER: ...>>` inline in the relevant skill doc — a plain
-find-and-replace once you rule, no rebuild needed.
+are written, along with the Python receiver (`src/desk/verdict.py`,
+`src/desk/receiver.py`, tested) that risk-gates and journals whatever Hermes
+decides. Every item this packet marks ✅ RESOLVED is already built into those
+docs correctly.
+
+**Updated 23 Jul — they are NOT ready to paste yet, for two different reasons:**
+
+1. Q-7/9/11/23/26 are marked `<<PLACEHOLDER: ...>>` inline in the relevant skill
+   doc. Those genuinely are a find-and-replace once you rule — no rebuild needed.
+2. Q-29..Q-33 (section D) are NOT placeholders and NOT find-and-replace. They
+   are checks the live 7-agent desk enforces today that have no home in the new
+   four. Each needs a design decision — fold in, drop deliberately, or house
+   elsewhere — before the swap, not after.
+
+Also discovered on 23 Jul: the live Hermes host is **already running a working
+7-agent desk** (atlas, lumen, hydra, hermes-execution, apollo, hephaestus,
+mnemosyne, plus a `desk-coordinator` that orchestrates them). It predates v1.2 —
+none of its skills reference the BB+VWAP confluence rule or the 2.0R floor — but
+it is real, used (6–8 invocations each), and carries operational knowledge the
+new docs did not: the coordinator's `delegate_task` concurrency-cap batching,
+which has since been folded into `hermes-coordinator.md` step 3a so it survives
+the swap. Nothing has been deleted or overwritten. When the swap does happen the
+plan is update-in-place for atlas/apollo/hephaestus rather than delete-and-
+recreate, so usage history is preserved and the desk is never half-built.
 
 ## What happens after your rulings land
 
