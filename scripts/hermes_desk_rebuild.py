@@ -12,15 +12,20 @@ Phases, in order. Each is opt-in; the default run is READ-ONLY recon.
                          docs/desk-skills/*.md.
   4. verify  (always, after any mutation)  re-enumerate and diff against intent.
 
-Credentials are prompted for interactively (the password via getpass, so it is
-never echoed and never lands in shell history). Nothing is hardcoded or logged.
-For non-interactive runs (CI, cron) HERMES_USER / HERMES_PASS are honored if
-set, but prefer the prompt on a workstation.
+Credentials are resolved in this order, and are never hardcoded or logged:
+
+  1. HERMES_USER / HERMES_PASS in the environment (for unattended runs)
+  2. the macOS Keychain, service "hermes-agent"
+  3. an interactive prompt (password via getpass, so it is never echoed and
+     never lands in shell history) — after which it offers to save to the
+     Keychain so later runs need no prompt at all
 
 Usage:
   python3 scripts/hermes_desk_rebuild.py                    # recon only
   python3 scripts/hermes_desk_rebuild.py --delete --create  # full rebuild
   python3 scripts/hermes_desk_rebuild.py --headed           # watch it run
+  python3 scripts/hermes_desk_rebuild.py --no-keychain      # ignore the Keychain
+  python3 scripts/hermes_desk_rebuild.py --forget           # drop the saved entry
 
 Note on case: the skills being deleted are lowercase ("atlas") and several of
 the skills being created differ only in case ("Atlas"). Deletes therefore run
@@ -35,6 +40,7 @@ import getpass
 import json
 import os
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -81,23 +87,96 @@ def outdir() -> Path:
 # auth
 # --------------------------------------------------------------------------
 
-def get_credentials() -> tuple[str, str]:
-    """Prompt for credentials, falling back to the environment.
+KEYCHAIN_SERVICE = "hermes-agent"
+_KC_NOT_FOUND = 44  # `security` exit code for "item not found"
 
-    The password is read with getpass so it is never echoed to the terminal
-    and never recorded in shell history. Env vars exist only so this can run
-    unattended; they are read but never printed.
+
+def _security(*argv: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["security", *argv], capture_output=True, text=True)
+
+
+def keychain_available() -> bool:
+    return sys.platform == "darwin"
+
+
+def keychain_load(service: str = KEYCHAIN_SERVICE) -> tuple[str, str] | None:
+    """Return (username, password) from the Keychain, or None if absent.
+
+    The username is stored as the item's account attribute, so a single
+    Keychain entry carries both halves of the credential.
+    """
+    if not keychain_available():
+        return None
+
+    probe = _security("find-generic-password", "-s", service)
+    if probe.returncode != 0:  # 44 = no such item; anything else = denied/locked
+        if probe.returncode != _KC_NOT_FOUND:
+            log(f"keychain lookup failed (rc={probe.returncode}); falling back to prompt")
+        return None
+
+    m = re.search(r'"acct"<blob>="([^"]*)"', probe.stdout)
+    if not m or not m.group(1):
+        return None
+    user = m.group(1)
+
+    got = _security("find-generic-password", "-s", service, "-a", user, "-w")
+    if got.returncode != 0:
+        return None
+    # `-w` emits the secret followed by a single newline.
+    return user, got.stdout.rstrip("\n")
+
+
+def keychain_save(user: str, password: str, service: str = KEYCHAIN_SERVICE) -> bool:
+    """Store the credential, replacing any existing entry for this service.
+
+    Caveat: `security` cannot read a password from stdin (with no value it
+    prompts on the TTY and demands a retype), so the secret is passed in argv
+    and is briefly visible via `ps` to other processes owned by this same user
+    during the one-time save. That is a narrower exposure than shell history,
+    which is what prompted using the Keychain in the first place, but it is not
+    zero — hence --no-keychain for anyone who would rather just retype.
+    """
+    if not keychain_available():
+        return False
+    r = _security("add-generic-password", "-U", "-s", service, "-a", user,
+                  "-w", password, "-l", f"Hermes Agent ({service})")
+    if r.returncode != 0:
+        log(f"could not save to keychain: {r.stderr.strip()}")
+        return False
+    return True
+
+
+def keychain_forget(service: str = KEYCHAIN_SERVICE) -> None:
+    if not keychain_available():
+        print("Keychain is macOS-only; nothing to forget.")
+        return
+    r = _security("delete-generic-password", "-s", service)
+    print("Removed the saved Hermes credential." if r.returncode == 0
+          else "No saved Hermes credential to remove.")
+
+
+def get_credentials(use_keychain: bool = True) -> tuple[str, str, str]:
+    """Resolve credentials: environment, then Keychain, then prompt.
+
+    The password is read with getpass so it is never echoed and never recorded
+    in shell history. Values are read but never printed.
     """
     user = os.environ.get("HERMES_USER") or ""
     password = os.environ.get("HERMES_PASS") or ""
     if user and password:
         log(f"using credentials from environment for {user!r}")
-        return user, password
+        return user, password, "env"
+
+    if use_keychain:
+        found = keychain_load()
+        if found:
+            log(f"using credentials from keychain for {found[0]!r}")
+            return found[0], found[1], "keychain"
 
     if not sys.stdin.isatty():
         raise SystemExit(
-            "No TTY to prompt on and HERMES_USER/HERMES_PASS are unset — "
-            "run this in an interactive terminal."
+            "No TTY to prompt on, no keychain entry, and HERMES_USER/HERMES_PASS "
+            "are unset — run this in an interactive terminal."
         )
 
     print(f"Sign in to {BASE}")
@@ -105,10 +184,12 @@ def get_credentials() -> tuple[str, str]:
         user = input("  username: ").strip()
     if not password:
         password = getpass.getpass("  password (not echoed): ")
-
     if not user or not password:
         raise SystemExit("username and password are both required")
-    return user, password
+
+    # Only offer to persist once we know the credential actually works, so a
+    # typo never gets cached — see the call site in main().
+    return user, password, "prompt"
 
 
 def login(page: Page, user: str, password: str) -> None:
@@ -259,7 +340,15 @@ def main() -> int:
     ap.add_argument("--delete", action="store_true", help="delete the 7 off-spec skills")
     ap.add_argument("--create", action="store_true", help="create the 4 specialists + coordinator")
     ap.add_argument("--headed", action="store_true", help="run with a visible browser")
+    ap.add_argument("--no-keychain", action="store_true",
+                    help="ignore the macOS Keychain and never offer to save")
+    ap.add_argument("--forget", action="store_true",
+                    help="delete the saved Keychain credential and exit")
     args = ap.parse_args()
+
+    if args.forget:
+        keychain_forget()
+        return 0
 
     # Fail before prompting for a password if any source doc is missing.
     missing = [f for _, f in TARGET if not (DOCS / f).exists()]
@@ -267,7 +356,7 @@ def main() -> int:
         print(f"missing source docs: {missing}", file=sys.stderr)
         return 2
 
-    user, password = get_credentials()
+    user, password, source = get_credentials(use_keychain=not args.no_keychain)
 
     out = outdir()
     log(f"artifacts -> {out}")
@@ -277,6 +366,13 @@ def main() -> int:
         page = browser.new_context().new_page()
 
         login(page, user, password)
+
+        # Offer to persist only now that the server has actually accepted the
+        # credential — caching a typo would be worse than not caching at all.
+        if source == "prompt" and not args.no_keychain and keychain_available():
+            if input("  save to keychain for next time? [y/N] ").strip().lower() in ("y", "yes"):
+                if keychain_save(user, password):
+                    log("saved; future runs will not prompt (--forget to undo)")
 
         log("=== PHASE 1: recon (read-only) ===")
         report = recon(page, out)
