@@ -208,3 +208,38 @@ stable (±$3k band across all Q boost/demote cut combos). Gold contribution 13k�
 Superseded: the gold-B div15 veto (harmful under native ladder — same disease, worse cure).
 Holdout list: Q-tier mapping (esp Q≤1 cut), gold 5-min time-stop, DOM_EARLY, dead-tape
 W-weighting, 0.8x stops, netpath size-up replication, BADFLOW-B, cvddiv_30.
+
+## 28-Jul: THE LONDON CANON SHIPPED (third canon — Angus ruling)
+
+Doctrine settled: sessions are structurally different; each window gets its own
+mechanically-derived book (pre / gold / London), one skeleton, agents execute per session.
+
+**Build**: 8,669 DST-correct triggers (first 2h London, 08:00-10:00 UK) -> 749-fill
+both-books substrate (raw −$842/+$502 ≈ breakeven blind — best raw start of any window)
+-> 30-feature matrix + 295-day MBP-10 heatmap depth (100% coverage) -> 8-family
+screen->adversarial-verify campaign -> integration.
+
+**THE LONDON BOOK**: gates risk>=9.5pt NO CAP (sub-7 kill; NY's 7-60 not inherited);
+checks W (no wall behind — pre-like), FAR (wall ahead >4.5pt), ROOM (2.48-9.56R to the
+target-side ON extreme — flagship construct), ASIA (dir*cvd_ASIA >= −748); ladder
+0/0.5/1/1.5; B needs score>=3 (4/4 halves); OF stack (ASIA + clean tape opp5<2):
+both->x1.5 boost (76%/80% cell), zero->x0.5 and score-2-zero-OF = NO TRADE (Angus:
+"remove it, we are trading more than enough"); trade #2+ needs >=3; NO in-trade layer
+(loss-cuts EV-null; stall exits EV-NEGATIVE — London stalls recover 31-52%; gold's
+5-min time-stop LOSES −$2.3k/−$1.3k here — three windows, three in-trade answers).
+
+**SHIPPED: 2025 +$21,825 · 2026 +$13,394 · WR 59%/60% · PF 3.33/2.55 · maxDD
+$1,578/$1,488 · all 4 halves positive.** Jul-Sep 2025 GREEN (+$2.3k) while NY bled —
+London skips the US summer doldrums. COMBINED with NY canon: ~+$106k/2yr, day-corr
++0.11, combined maxDD $2,230 < NY alone ($2,492) — adding London REDUCES peak DD.
+
+**Laws re-confirmed (3rd window)**: micro-stops toxic; winners-run-immediately (82%
+never see −0.75R); veto trap (all scoped vetoes +EV inside the sized book — findings
+become checks, never vetoes, unless fail cell is dollar-negative INSIDE the book);
+depth is a top family everywhere but the DETAILS invert (pre: nothing-behind; gold:
+big wall ahead; London: nothing-behind + far wall + room). Signals invert across
+windows: aligned-flow chase is a boost in gold, a fade in London; extension good in
+gold-B2, veto in London-B2. Nothing universal but the skeleton and the method.
+
+**Holdout list (2023/24)**: B>=3 + OF-stack recalibration, TAPE ablation, W/FAR
+collapse (r=0.86), ROOM band edges, DST weeks, early+tight-stop timing rule.
