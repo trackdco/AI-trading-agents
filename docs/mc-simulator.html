@@ -75,8 +75,15 @@ h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)
         <option value="eval">Eval — pass the $3k target</option>
         <option value="funded">Funded year — 250 days</option>
       </select></div>
-    <div class="ctl"><label>Pre-lock micros</label><input id="pre" type="number" value="5" min="1" max="40"></div>
-    <div class="ctl"><label>Post-lock micros</label><input id="post" type="number" value="10" min="1" max="40"></div>
+    <div class="ctl"><label>Sizing plan</label>
+      <select id="sizing">
+        <option value="twophase">Two-phase (pre / post lock)</option>
+        <option value="scale" selected>Buffer scaling (+step / $1k)</option>
+      </select></div>
+    <div class="ctl"><label>Base / pre-lock</label><input id="pre" type="number" value="5" min="1" max="50"></div>
+    <div class="ctl"><label>Post-lock (two-phase)</label><input id="post" type="number" value="10" min="1" max="50"></div>
+    <div class="ctl"><label>Step per $1k</label><input id="step" type="number" value="2" min="0" max="10"></div>
+    <div class="ctl"><label>Micro cap</label><input id="capm" type="number" value="20" min="2" max="50"></div>
     <div class="ctl"><label>Eval target $</label><input id="target" type="number" value="3000" step="500"></div>
     <div class="ctl"><label>Funded target $</label><input id="ftarget" type="number" value="4000" step="500"></div>
     <div class="ctl"><label>Trailing DD $</label><input id="trail" type="number" value="2000" step="250"></div>
@@ -104,10 +111,12 @@ h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)
   <div class="panel">
     <h2>Reading it</h2>
     <p class="note" style="margin-top:0">The danger zone is the left edge: before the floor locks, a $2k trailing
-    leash sits under a book whose normal annual drawdown is ~$2.2k at 10 micros. Sizing down pre-lock shrinks
-    volatility against a fixed-dollar barrier — that's why 5→10 beats flat 10 at nearly the same annual take.
-    Paths are resampled from our own backtest days: this measures sequencing risk, not model risk. Trailing is
-    tracked on trade-close equity; funders that trail unrealized intraday would clip these pass rates slightly.</p>
+    leash sits under a book whose normal annual drawdown is ~$2.2k at 10 micros. Buffer scaling sizes off
+    available drawdown itself — every $1k of headroom adds a step, and the same rule steps size back down as
+    the buffer thins, which is why busting all but disappears: approaching the floor mechanically shrinks the
+    bets that could reach it. Withdrawals shrink the buffer too, so payouts automatically de-risk the account.
+    Paths are resampled from our own backtest days: sequencing risk, not model risk. Trailing is tracked on
+    trade-close equity; funders that trail unrealized intraday would clip these rates slightly.</p>
   </div>
 </div>
 </div>
@@ -125,12 +134,20 @@ function rng(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0;
 
 function phaseSim(cfg, R, target, maxDays, path, offset){
   // one account phase; appends daily equity(+offset) to path.
-  const {pre, post, trail, lockat} = cfg;
+  const {pre, post, trail, lockat, sizing, step, capm} = cfg;
   let eq=0, hw=0, floor=-trail, locked=false;
   for (let d=0; d<maxDays; d++){
     const day = POOL[(R()*POOL.length)|0];
-    const sc = (locked ? post : pre)/10;
     for (const tr of day){
+      // size is decided BEFORE each fill from current state (fully mechanical)
+      let m;
+      if (sizing === "scale"){
+        const buf = eq - floor;
+        m = Math.max(2, Math.min(capm, pre + step * Math.floor((buf - trail)/1000)));
+      } else {
+        m = locked ? post : pre;
+      }
+      const sc = m/10;
       eq += tr*sc;
       if (eq <= floor){ path.push(offset+eq); return {out:"bust", days:d+1}; }
       if (eq > hw){ hw = eq;
@@ -168,6 +185,7 @@ function simulate(cfg, R){
 let seedBase = 42;
 function run(){
   const cfg = { mode: $("mode").value, pre:+$("pre").value, post:+$("post").value,
+    sizing: $("sizing").value, step:+$("step").value, capm:+$("capm").value,
     target:+$("target").value, ftarget:+$("ftarget").value,
     trail:+$("trail").value, lockat:+$("lockat").value };
   const N = +$("nsim").value;
@@ -206,9 +224,10 @@ function run(){
       + tile("5th percentile", fmt(q(.05)), q(.05)>=0?"pos":"neg")
       + tile("95th percentile", fmt(q(.95)), "pos");
   }
-  $("note").textContent = `${N.toLocaleString()} sims · pre-lock ${cfg.pre} micros → post-lock ${cfg.post} · `
-    + `target ${fmt(cfg.target)} · trailing ${fmt(cfg.trail).slice(1)} locks at ${fmt(cfg.lockat).slice(1)} profit · `
-    + `sized book equivalent: 1.0× ladder = ${cfg.post} micros post-lock`;
+  $("note").textContent = `${N.toLocaleString()} sims · ` + (cfg.sizing==="scale"
+      ? `buffer scaling: ${cfg.pre} micros base, +${cfg.step} per $1k of available drawdown above $${cfg.trail.toLocaleString()}, cap ${cfg.capm} (floor 2) — size steps DOWN the same way when the buffer thins`
+      : `two-phase: pre-lock ${cfg.pre} micros → post-lock ${cfg.post}`)
+    + ` · target ${fmt(cfg.target)} · trailing ${fmt(cfg.trail).slice(1)} locks at ${fmt(cfg.lockat).slice(1)} profit`;
 
   drawFan(sims, cfg);
   drawHist(finals);
@@ -315,7 +334,7 @@ function drawHist(finals){
 }
 
 $("run").addEventListener("click", run);
-for (const id of ["mode","pre","post","target","ftarget","trail","lockat","nsim"])
+for (const id of ["mode","sizing","pre","post","step","capm","target","ftarget","trail","lockat","nsim"])
   $(id).addEventListener("change", run);
 run();
 new MutationObserver(run).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
