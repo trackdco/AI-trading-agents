@@ -255,4 +255,71 @@ never Claude's paraphrase of it) plus `src/desk/runner.py` and the named test
 suite (§6.7). Nothing about the champion bot or your regime-agent work changes —
 the Desk is a separate, later live-trading path, not a replacement for either.
 
-## RULING (Angus): _pending_
+## RULING (Angus, 28 Jul — via Claude session; supersedes the frame of this packet)
+
+**META-RULING — read this first, it answers most of the packet.** The v1.2 strategy
+definition and the 4-specialist judgment desk it implies are SUPERSEDED. The strategy
+is now THE CANON: three mechanically-derived books — pre-market + golden window
+(`scripts/canon_mechanical.py`) and London (`scripts/london_canon.py`) — validated at
+~+$106k/2yr combined, 12/13 green months. Every check, threshold, score, and size is
+frozen deterministic code. **There is no LLM judgment anywhere in the trade path.**
+Agent intervention risks degrading performance (proven three times: chop-agent
+overdiagnosis, and the veto trap in all three windows). The agents' whole job:
+
+1. **Session routing (Hermes):** know what time it is and which rulebook applies —
+   London open → London canon; 04:00 ET → pre-market book; 09:45 ET → golden book.
+   That's the "what am I sticking to" question and it's a lookup, not a judgment.
+2. **Mechanical execution:** the ENGINE computes the canon verdict (checks, score,
+   OF stack, size). Agents relay and execute it. They never validate prices, never
+   re-derive setups, never veto beyond the canon's own rules. What validates a trade =
+   the canon checks. What dictates size = the canon ladder. Enter or not = score/gates.
+3. **JOURNALING (the new mandate — build this properly):** every trade the desk takes
+   gets a comprehensive journal record: session/book, every check bit AND its raw
+   value, score, OF confirmations, full size-multiplier path, fill/exit/exit_reason,
+   MAE/MFE, in-trade marks (r_3/r_5, flow), ambient context (news calendar state,
+   DST group, spread at fill, sweep state), engine version + threshold hash. Purpose:
+   accumulate live data so recalibration and future upgrades run on evidence. This
+   absorbs Mnemosyne. Journal EVERYTHING, gate NOTHING new.
+
+**Engine-vs-doc conflicts (all of section A): the engine as-it-ran WINS, docs amend.**
+The canon's +$106k was validated on this engine's actual behavior, warts included.
+Changing engine behavior now (E-1, E-4, E-5, E-6, E-7, E-8 stop-AT-wick, E-10)
+invalidates the calibration. Freeze behavior; amend docs to match. Exceptions:
+E-9 (add a retention bound — pure hygiene), E-12 (fix timestamp labeling — pure
+correctness; canon pipelines already normalize). E-3/E-11 are MOOT: the canon's
+window-native scores replaced the §7 confluence system entirely.
+
+**Priority three:**
+- **Q-30 (sweep-then-enter veto): DROP, deliberately.** Never part of the validated
+  canon; every unvalidated veto we tested in three windows was EV-negative inside the
+  sized book. Journal sweep state per trade so it can be tested on live data later.
+- **Q-31 (spread/fill-quality): moves to Python at order time, not an agent check.**
+  A mechanical guard (max spread ticks / slippage cap before placing) is execution
+  engineering. Note London 2026 spreads regime-shifted — make any guard relative,
+  never a frozen absolute. Journal spread-at-fill on every trade.
+- **Q-33 (forward news buffer): DROP the buffer; the pre-09:30 stand-down config dies
+  with v1.2 too.** The canons were validated on ALL days — 08:30 CPI/NFP releases are
+  inside the profitable sample. An untested news veto is exactly the kind of
+  mechanism that degrades a validated book. Journal the news-calendar state on every
+  trade; if live data shows a news bleed, we'll rule with evidence. (If a human wants
+  a manual FOMC-day stand-down as an operational choice, that's an operator decision
+  outside the mechanical spec.)
+
+**Rest of section D:** Q-29 (risk tone): DROP — day-level macro reads tested dead
+repeatedly (best AUC 0.58; yday/red-streak nulls in three windows). Q-32 (playbook
+match): MOOT — the canon IS the playbook; a trade only exists if the engine fired it
+under a canon book, so novel setups cannot occur. Mnemosyne's account-state checks:
+account state lives in Python (the funded buffer-scaling plan consumes it
+mechanically); no agent gets P&L-based discretion.
+
+**Section B (Q-4..Q-28): all MOOT** — they interpret the superseded v1.2 rulebook.
+The placeholders in the four skill docs don't get filled; those docs get rewritten
+against the canon (router + executor + journaler, above). I-4: ratified in spirit —
+engine proposes everything; nothing invents prices. Q-16/Q-20: specialists never
+re-derive blind; the engine's computed answers are the truth, guarded by the
+reconciliation-day parity test (live features vs historical pipeline to the decimal).
+
+**Pat's data ask:** Feb–Jul 2026 NQ 1-minute data is ALREADY in the repo on this
+branch: `data/reference/nq_1m_feb_jul2026.parquet` (plus `output/fp_minutes.parquet`
+for per-minute footprint). No new Databento pull, no platform export needed.
+
