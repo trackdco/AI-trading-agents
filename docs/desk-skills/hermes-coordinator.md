@@ -65,6 +65,32 @@ calling them at the same time, do that; if not, call them one after another in
 any order, but treat their outputs as if simultaneous (nobody's answer may
 depend on anybody else's).
 
+**3a. Respect the delegation concurrency cap — batch proactively, don't
+discover it by failing.** [Learned in production on the previous 7-agent desk;
+carried forward deliberately.] `delegate_task` enforces
+`delegation.max_concurrent_children` (commonly 3 on this deployment). A single
+call carrying more tasks than the cap is rejected outright with
+`"Too many tasks: N provided, but max_concurrent_children is M"` — the whole
+call fails, not just the excess. Do NOT fire one all-four call and react to the
+error.
+
+Split into `ceil(4 / max_concurrent_children)` batches — with a cap of 3, that
+is one batch of 3 and one of 1 (e.g. Atlas/Helios/Apollo, then Hephaestus) —
+and fire the batches as separate `delegate_task` calls **in the same assistant
+turn**, so they run concurrently as independent background dispatches. Do not
+wait for one batch to return before dispatching the next; that would serialize
+the desk for no reason.
+
+If the cap is raised, fewer and larger batches are fine — the rule is to stay
+at or under whatever `max_concurrent_children` actually reports, never to
+hardcode 3. Which specialist lands in which batch is irrelevant: they are
+independent by construction, so any split is equivalent.
+
+Because batches are dispatched as background delegations, their results
+re-enter the conversation asynchronously — one message per batch, each arriving
+once every task in it has completed. Collect **all** batches before step 4's
+tally; do not begin composing the verdict when only the first batch is back.
+
 **4. Collect every response, even after one fails.** Wait for all four, even
 if the first one back already failed — you need the complete picture for the
 audit trail (there's no cost to waiting since you weren't going to short-circuit
