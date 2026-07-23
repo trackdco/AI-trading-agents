@@ -42,6 +42,7 @@ import os
 import re
 import subprocess
 import sys
+import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -192,9 +193,26 @@ def get_credentials(use_keychain: bool = True) -> tuple[str, str, str]:
     return user, password, "prompt"
 
 
-def login(page: Page, user: str, password: str) -> None:
+def dump_state(page: Page, out: Path, tag: str) -> None:
+    """Best-effort forensic snapshot of the current page.
+
+    Every failure path calls this. A run that dies must never leave an empty
+    artifact directory — without a screenshot and the DOM there is nothing to
+    diagnose from, only a guess.
+    """
+    try:
+        out.mkdir(parents=True, exist_ok=True)
+        (out / f"{tag}.url.txt").write_text(page.url)
+        (out / f"{tag}.html").write_text(page.content())
+        page.screenshot(path=str(out / f"{tag}.png"), full_page=True)
+        log(f"  state dumped -> {tag}.{{png,html,url.txt}}")
+    except Exception as e:  # never let diagnostics mask the original error
+        log(f"  (could not dump state: {e})")
+
+
+def login(page: Page, user: str, password: str, out: Path) -> None:
     """Sign in via the basic username/password provider on /login."""
-    page.goto(f"{BASE}/login", wait_until="domcontentloaded")
+    page.goto(f"{BASE}/login", wait_until="domcontentloaded", timeout=45_000)
 
     form = page.locator('form[data-provider="basic"]')
     form.locator('input[name="username"]').fill(user)
@@ -207,9 +225,11 @@ def login(page: Page, user: str, password: str) -> None:
         # Still on /login: surface the app's own error text rather than a
         # generic timeout, so a bad password is obvious.
         err = " ".join(page.locator(".error, .alert, [role=alert]").all_text_contents())
+        dump_state(page, out, "login-failed")
         raise SystemExit(f"Login failed{': ' + err.strip() if err.strip() else ''}")
 
     log(f"authenticated as {user!r} -> {page.url}")
+    dump_state(page, out, "post-login")
 
 
 # --------------------------------------------------------------------------
@@ -225,7 +245,12 @@ def api(page: Page, path: str, method: str = "GET", payload: dict | None = None)
     opts = {"method": method}
     if payload is not None:
         opts["data"] = payload
-    r = page.request.fetch(f"{BASE}{path}", **opts)
+    try:
+        r = page.request.fetch(f"{BASE}{path}", **opts)
+    except Exception as e:
+        # A transport-level failure is a probe result, not a reason to abort
+        # the whole run — the caller decides whether to fall back.
+        return 0, f"request failed: {e}"
     try:
         return r.status, r.json()
     except Exception:
@@ -237,26 +262,44 @@ def discover_skills(page: Page, out: Path) -> tuple[list[dict], str | None]:
 
     Returns (skills, api_path_that_worked).
     """
+    probes = []
     for path in ("/api/skills", "/api/v1/skills", "/api/agents/skills"):
         status, body = api(page, path)
         log(f"probe {path} -> {status}")
+        probes.append({"path": path, "status": status,
+                       "body": body if isinstance(body, (list, dict)) else str(body)[:2000]})
         if status == 200 and isinstance(body, (list, dict)):
             items = body if isinstance(body, list) else (
                 body.get("skills") or body.get("items") or body.get("data") or []
             )
             if isinstance(items, list) and items:
                 (out / "skills_api_raw.json").write_text(json.dumps(body, indent=2))
+                (out / "api_probes.json").write_text(json.dumps(probes, indent=2))
                 return items, path
 
-    # DOM fallback: dump the skills page for selector discovery.
+    # Record what every probe actually returned before falling back, so a
+    # non-obvious response (200-but-empty, 403, HTML login page) is visible.
+    (out / "api_probes.json").write_text(json.dumps(probes, indent=2))
+
+    # DOM fallback: dump candidate pages for selector discovery. Each page is
+    # isolated — one slow or missing route must not abort discovery.
     log("no usable JSON API; falling back to DOM scrape")
-    for path in ("/skills", "/settings/skills", "/"):
-        page.goto(f"{BASE}{path}", wait_until="networkidle")
-        if "/login" in page.url:
+    for path in ("/skills", "/settings/skills", "/agents", "/"):
+        tag = "dom" + (path.replace("/", "_") or "_root")
+        try:
+            # domcontentloaded, not networkidle: this app holds connections
+            # open, and networkidle would time out waiting for quiet that
+            # never comes.
+            page.goto(f"{BASE}{path}", wait_until="domcontentloaded", timeout=30_000)
+            page.wait_for_timeout(1500)  # let client-side rendering settle
+        except Exception as e:
+            log(f"  {path} -> not reachable ({type(e).__name__})")
             continue
-        (out / f"dom{path.replace('/', '_') or '_root'}.html").write_text(page.content())
-        page.screenshot(path=str(out / f"dom{path.replace('/', '_') or '_root'}.png"),
-                        full_page=True)
+        if "/login" in page.url:
+            log(f"  {path} -> bounced to /login")
+            continue
+        log(f"  {path} -> captured")
+        dump_state(page, out, tag)
 
     names = page.locator("[data-skill-name], [data-skill-id], .skill-card, .skill-item")
     found = []
@@ -364,56 +407,73 @@ def main() -> int:
     with sync_playwright() as pw:
         browser = pw.chromium.launch(headless=not args.headed)
         page = browser.new_context().new_page()
-
-        login(page, user, password)
-
-        # Offer to persist only now that the server has actually accepted the
-        # credential — caching a typo would be worse than not caching at all.
-        if source == "prompt" and not args.no_keychain and keychain_available():
-            if input("  save to keychain for next time? [y/N] ").strip().lower() in ("y", "yes"):
-                if keychain_save(user, password):
-                    log("saved; future runs will not prompt (--forget to undo)")
-
-        log("=== PHASE 1: recon (read-only) ===")
-        report = recon(page, out)
-        log(f"  {report['total_existing']} skills present: {report['existing']}")
-        log(f"  off-spec present : {report['off_spec_present']}")
-        log(f"  off-spec missing : {report['off_spec_missing']}")
-        log(f"  targets already there: {report['targets_already_present']}")
-
-        if not (args.delete or args.create):
-            log("recon-only run (pass --delete --create to mutate). Nothing changed.")
+        try:
+            return run(page, args, user, password, source, out)
+        except SystemExit:
+            raise  # already diagnosed and dumped by the raiser
+        except Exception:
+            # Any unhandled failure still leaves a screenshot, the DOM and a
+            # traceback behind. An empty artifact directory is not a usable
+            # bug report.
+            (out / "traceback.txt").write_text(traceback.format_exc())
+            dump_state(page, out, "crash")
+            log(f"run failed — diagnostics in {out}")
+            raise
+        finally:
             browser.close()
-            return 0
 
-        skills, api_path = discover_skills(page, out)
-        by_name = {skill_name(s).lower(): s for s in skills}
 
-        if args.delete:
-            log("=== PHASE 2: delete off-spec ===")
-            for n in OFF_SPEC:
-                s = by_name.get(n.lower())
-                if not s:
-                    log(f"  skip {n} (not present)")
-                    continue
-                delete_skill(page, s, api_path)
+def run(page: Page, args, user: str, password: str, source: str, out: Path) -> int:
+    """The actual session. The browser is closed by main()'s finally block."""
+    login(page, user, password, out)
 
-        if args.create:
-            log("=== PHASE 3: create real desk ===")
-            for name, fname in TARGET:
-                create_skill(page, name, (DOCS / fname).read_text(), api_path)
+    # Offer to persist only now that the server has actually accepted the
+    # credential — caching a typo would be worse than not caching at all.
+    if source == "prompt" and not args.no_keychain and keychain_available():
+        if input("  save to keychain for next time? [y/N] ").strip().lower() in ("y", "yes"):
+            if keychain_save(user, password):
+                log("saved; future runs will not prompt (--forget to undo)")
 
-        log("=== PHASE 4: verify ===")
-        final = recon(page, out / "post")
-        log(f"  now present: {final['existing']}")
-        leftover = final["off_spec_present"]
-        absent = [n for n, _ in TARGET if n not in final["existing"]]
-        if leftover:
-            log(f"  WARNING off-spec still present: {leftover}")
-        if absent:
-            log(f"  WARNING target skills missing: {absent}")
-        browser.close()
-        return 1 if (leftover or absent) else 0
+    log("=== PHASE 1: recon (read-only) ===")
+    report = recon(page, out)
+    log(f"  {report['total_existing']} skills present: {report['existing']}")
+    log(f"  off-spec present : {report['off_spec_present']}")
+    log(f"  off-spec missing : {report['off_spec_missing']}")
+    log(f"  targets already there: {report['targets_already_present']}")
+
+    if not (args.delete or args.create):
+        log("recon-only run (pass --delete --create to mutate). Nothing changed.")
+        log(f"artifacts written to {out}")
+        return 0
+
+    skills, api_path = discover_skills(page, out)
+    by_name = {skill_name(s).lower(): s for s in skills}
+
+    if args.delete:
+        log("=== PHASE 2: delete off-spec ===")
+        for n in OFF_SPEC:
+            s = by_name.get(n.lower())
+            if not s:
+                log(f"  skip {n} (not present)")
+                continue
+            delete_skill(page, s, api_path)
+
+    if args.create:
+        log("=== PHASE 3: create real desk ===")
+        for name, fname in TARGET:
+            create_skill(page, name, (DOCS / fname).read_text(), api_path)
+
+    log("=== PHASE 4: verify ===")
+    final = recon(page, out / "post")
+    log(f"  now present: {final['existing']}")
+    leftover = final["off_spec_present"]
+    absent = [n for n, _ in TARGET if n not in final["existing"]]
+    if leftover:
+        log(f"  WARNING off-spec still present: {leftover}")
+    if absent:
+        log(f"  WARNING target skills missing: {absent}")
+    log(f"artifacts written to {out}")
+    return 1 if (leftover or absent) else 0
 
 
 if __name__ == "__main__":
