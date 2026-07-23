@@ -24,10 +24,17 @@ Layer 2d IN-TRADE   : 3-minute cut (ANGUS 25-Jul ruling): if at fill+3min the tr
                       position -> exit at market (realized = r_3). Thresholds = 2025 q40,
                       frozen. Flagged trades win 7%/11%; 47 losers vs 6 winners cut over 2yrs.
                       ONLY the 3-min horizon works — 5/10min exits lose money.
+Layer 2e SIZING MODS: (ANGUS 26-Jul ruling, both shipped)
+                      RULE 1 cold-grind cut: trailing-20 canon WR < 0.40 (past trades only)
+                        AND one-sided 30m flow into fill (churn_flow_30 > 0.0292, 2025 median)
+                        -> size x0.5. State-conditional; fires mostly in cold regimes.
+                      RULE 2 good-PA boost: efficient 30m path into fill
+                        (netpath_30 >= 0.3328, 2025 q90) and not Rule-1-flagged -> size x1.5.
 Layer 3  GOVERNOR   : trailing-15 confirmed-trade (score>=4) win rate < 0.35 -> all sizes x0.5
                       (results-based; uses only past trades)
 
-Validated 2025/2026 out-of-fit (full stack): +$18,171 / +$29,716, worst month -$789.
+Validated 2025/2026 out-of-fit (full stack): +$22,532 / +$28,844, Jul-Sep +$754,
+worst month -$312, maxDD $1.7k/$2.3k.
 Writes output/canon_book.parquet (one row per trade with score/size/governor/final P&L).
 
     python -m scripts.canon_mechanical
@@ -80,6 +87,29 @@ def build_canon(T):
     T["nth"] = nth.reindex(T.index)
     esc = (T["nth"] >= 2) & (T.score < 4)
     T.loc[esc.fillna(False), "size"] = 0.0
+    T["pl"] = T.eff_dollars * T["size"] * T.governor
+    # Layer 2e: state-conditional sizing mods (Rules 1+2, thresholds 2025-frozen)
+    try:
+        BP = pd.read_parquet("output/badpa_matrix.parquet")[["day", "book", "fill",
+                                                             "netpath_30", "churn_flow_30"]]
+        T = T.merge(BP, on=["day", "book", "fill"], how="left")
+        taken = T[T["size"] > 0].sort_values("fill")
+        wins = (taken.eff_dollars > 0).astype(float)
+        trail20 = wins.rolling(20).mean().shift(1)
+        t20 = dict(zip(taken.index, trail20))
+        cur = np.nan
+        coldc = []
+        for i in T.index:
+            if i in t20 and t20[i] == t20[i]:
+                cur = t20[i]
+            coldc.append(bool(cur == cur and cur < 0.40))
+        T["cold"] = coldc
+        r1 = T["cold"] & (T.churn_flow_30 > 0.0292)
+        r2 = (T.netpath_30 >= 0.3328) & ~r1
+        T.loc[r1.fillna(False), "size"] *= 0.5
+        T.loc[r2.fillna(False), "size"] *= 1.5
+    except FileNotFoundError:
+        pass
     T["pl"] = T.eff_dollars * T["size"] * T.governor
     # Layer 2c: within-day escalation ladder (react to realized losses only)
     T["struct"] = T.W + T.Tp

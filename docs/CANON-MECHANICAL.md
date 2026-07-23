@@ -155,3 +155,13 @@ crosses/slope, squeeze state, two-sided tape (sign flips), loss-stops (post-loss
 **Disposition:** the verified WR markers become the chop/PA agent's designated INPUTS if it
 ever activates (dormant, A/B-gated), and netpath-high size-up + BADFLOW-B veto + cvddiv_30 go
 to the 2023/24 holdout. Canon unchanged.
+
+## 26-Jul: Layer 2e SHIPPED (Angus ruling — both rules)
+
+RULE 1 (cold-grind cut): trailing-20 canon WR < 0.40 AND one-sided 30m flow → size ×0.5.
+RULE 2 (good-PA boost): netpath_30 ≥ 0.3328 (2025-q90), not R1-flagged → size ×1.5.
+
+**CANON FULL STACK: 2025 +$22,532 · 2026 +$28,844 · Jul-Sep +$754 (GREEN) · 11/13 months
+green · worst month −$312 · maxDD $1.7k/$2.3k.** The chop quarter that began this campaign
+at ~−$10k is now positive. Rule 1 is the lowest-evidence layer (state-conditional, post-hoc
+searched) — first to pull if the 2023/24 holdout disputes it; Rule 2 carries full verification.
