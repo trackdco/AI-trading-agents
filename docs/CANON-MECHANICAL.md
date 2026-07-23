@@ -124,3 +124,34 @@ Stop 7-60pt → 5-check validation → ladder sizing → trade#2+ needs ≥4 →
 **2025 +$19,375 · 2026 +$27,711 · Jul-Sep −$91 · 11/13 months green · worst month −$981 ·
 maxDD $2.0k/$2.2k · WR 41%/46%.** In-trade cut fired 54 times. All layers results-based or
 2025-frozen; 2023/24 random-day holdout is the standing validation gate for everything.
+
+## 26-Jul: bad-PA judgement layer — the full test (3 workflows, 20 agents, verified)
+
+Question: can a mechanical bad-price-action layer add selectivity on top of canon? 18 new
+pre-fill features (whipsaw, level churn, wick structure, indecision, squeeze, two-sided tape,
+trigger density, CVD divergence, sequencing) on 713 trades / 275 canon.
+
+**ECONOMIC VERDICT: NOTHING SHIPS — and that is the finding.** 18 rules cleared the win-rate
+bar on canon; ZERO corroborated on the full universe both years; every 2025-attractive veto
+lost $2-5k frozen on 2026. Structural reason: canon sizing concentrates P&L in a few large
+winners and WR-based vetoes clip exactly those. Half-size never rescues (linear). The canon
+has already consumed the mechanically recoverable losses; Jul-Sep's residual −$91 is not
+explained by any PA flag (flagged P&L there is positive).
+
+**Real (verified) bad-PA markers — WR-level, kept as inputs not vetoes:**
+- wicky_10 LOW (full-bodied bars driving into the level — the "retest" is a freight train,
+  not a rotation): −14/−16pp canon, −14/−8pp universe, sign-stable q10-q30. Strongest PA marker.
+- indec_30 HIGH (indecision bars): canon-confirmed, universe plausible; flagged = dead money.
+- BADFLOW-B (aggressive 15m delta into wicky bars = buy-climax into absorption): the only flag
+  with net-NEGATIVE flagged P&L both years (−$496/−$1,149); mostly longs.
+- GOOD-PA inverse: netpath_30 ≥ q90 (efficient path into fill) = +12-14pp everywhere,
+  39 canon trades +$15.4k — a SIZE-UP holdout candidate (1.5x would have added ~+$4.5k/2yr).
+
+**Hypotheses killed:** level churn (REJECTED — canon WR rises with churn), engine over-firing
+as chop (over-firing is a WINNER tell), whipsaw path (only the positive extreme matters), vwap
+crosses/slope, squeeze state, two-sided tape (sign flips), loss-stops (post-loss = best cell,
+66.7% WR — actively contraindicated), yesterday-red vetoes.
+
+**Disposition:** the verified WR markers become the chop/PA agent's designated INPUTS if it
+ever activates (dormant, A/B-gated), and netpath-high size-up + BADFLOW-B veto + cvddiv_30 go
+to the 2023/24 holdout. Canon unchanged.
