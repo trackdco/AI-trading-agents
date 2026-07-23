@@ -45,6 +45,7 @@ import sys
 import traceback
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import quote
 
 from playwright.sync_api import Page, TimeoutError as PWTimeout, sync_playwright
 
@@ -322,24 +323,41 @@ def skill_name(s: dict) -> str:
 
 def recon(page: Page, out: Path) -> dict:
     skills, api_path = discover_skills(page, out)
-    present = {skill_name(s).lower(): s for s in skills}
+    exact = {skill_name(s) for s in skills}
+    folded = {skill_name(s).lower(): skill_name(s) for s in skills}
 
+    # Distinguish an exact-name match from a case-only collision. Folding both
+    # sides made every target look "already present" when the only thing on the
+    # server was the lowercase off-spec skill it is meant to replace — which
+    # reads as "someone already built this", the exact opposite of the truth.
     report = {
         "fetched_at": datetime.now(timezone.utc).isoformat(),
         "api_path": api_path,
         "total_existing": len(skills),
-        "existing": [skill_name(s) for s in skills],
-        "off_spec_present": [n for n in OFF_SPEC if n.lower() in present],
-        "off_spec_missing": [n for n in OFF_SPEC if n.lower() not in present],
-        "targets_already_present": [n for n, _ in TARGET if n.lower() in present],
+        "existing": sorted(exact),
+        "off_spec_present": [n for n in OFF_SPEC if n in exact],
+        "off_spec_missing": [n for n in OFF_SPEC if n not in exact],
+        "targets_present_exact": [n for n, _ in TARGET if n in exact],
+        "targets_case_collision": {
+            n: folded[n.lower()]
+            for n, _ in TARGET
+            if n not in exact and n.lower() in folded
+        },
     }
 
-    # Full-content backup before anything is destroyed.
+    # Full-content backup before anything is destroyed. The list endpoint
+    # returns metadata only, so pull each skill's actual body too — a backup
+    # without the content is not a backup you could restore from.
     backup = out / "backup"
     backup.mkdir(exist_ok=True)
     for s in skills:
         n = skill_name(s) or "unnamed"
         safe = re.sub(r"[^A-Za-z0-9._-]", "_", n)
+        status, body = api(page, f"/api/skills/content?name={quote(n, safe='')}")
+        if status == 200 and isinstance(body, dict) and body.get("content"):
+            s = {**s, "content": body["content"], "path": body.get("path")}
+        else:
+            log(f"  WARNING no content retrieved for {n!r} (status {status})")
         (backup / f"{safe}.json").write_text(json.dumps(s, indent=2))
 
     (out / "recon.json").write_text(json.dumps(report, indent=2))
@@ -439,7 +457,9 @@ def run(page: Page, args, user: str, password: str, source: str, out: Path) -> i
     log(f"  {report['total_existing']} skills present: {report['existing']}")
     log(f"  off-spec present : {report['off_spec_present']}")
     log(f"  off-spec missing : {report['off_spec_missing']}")
-    log(f"  targets already there: {report['targets_already_present']}")
+    log(f"  targets present (exact): {report['targets_present_exact']}")
+    if report["targets_case_collision"]:
+        log(f"  CASE COLLISION — target vs existing: {report['targets_case_collision']}")
 
     if not (args.delete or args.create):
         log("recon-only run (pass --delete --create to mutate). Nothing changed.")
