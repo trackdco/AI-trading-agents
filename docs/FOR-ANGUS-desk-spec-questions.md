@@ -255,7 +255,9 @@ never Claude's paraphrase of it) plus `src/desk/runner.py` and the named test
 suite (§6.7). Nothing about the champion bot or your regime-agent work changes —
 the Desk is a separate, later live-trading path, not a replacement for either.
 
-## RULING (Angus, 28 Jul — via Claude session; supersedes the frame of this packet)
+## RULING (Angus, 23 Jul — via Claude session; supersedes the frame of this packet)
+
+Confirmed by Angus directly to Pat, 24 Jul 2026 — this ruling is authoritative.
 
 **META-RULING — read this first, it answers most of the packet.** The v1.2 strategy
 definition and the 4-specialist judgment desk it implies are SUPERSEDED. The strategy
