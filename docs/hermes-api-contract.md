@@ -107,10 +107,16 @@ and usage history.
 
 ---
 
-## Removal — ⚠️ OPEN FINDING: no confirmed removal route for agent-provenance skills
+## Removal — RESOLVED: no API route exists; removal is filesystem-level
 
-Two candidates were each tried **exactly once** against the throwaway. Neither
-removed it.
+**There is no HTTP API that removes an `agent`-provenance skill.** The whole
+skill-management surface in the dashboard bundle is: `createSkill` (POST),
+`updateSkillContent` (PUT), `toggleSkill` (PUT `/api/skills/toggle` — disable
+only, does not remove), and the `*FromHub` family (hub-installed skills only).
+No `delete`/`remove`/`archive`/`destroy` route or token exists anywhere in the
+bundle. The two API candidates below were each tried once and neither removed
+the throwaway (kept for the record). Removal is done on the filesystem instead —
+see "Confirmed removal mechanism" below.
 
 ### `DELETE /api/skills/<name>` — **HTTP 405 Method Not Allowed**
 
@@ -140,39 +146,86 @@ So `ok: true` from this route does **not** mean the skill is gone — it must
 always be confirmed with a read-back (expect 404), never trusted on the
 response alone.
 
-### Consequence
+### Confirmed removal mechanism (probed live, 24 Jul 2026)
 
-The correct removal mechanism for `provenance: "agent"` skills is **not yet
-known** — it is likely a different route (a `skill_manage` action, or a
-DELETE/POST shape not present in the dashboard bundle) and needs its own probe
-before any real deletion is attempted. Until then, the rebuild's delete phase
-cannot be trusted, and the update-in-place plan (which needs no deletes for the
-three mappable skills) is the safer path.
+Skills are files inside the Hermes **Docker container**, not on the host
+filesystem. The `path` the API returns (`/opt/data/skills/<category>/<name>/`)
+is a container-internal path — it does **not** exist on the VPS host directly.
 
-### Left behind by this probe
+- Host access: `ssh deploy-vps` (config already present: user `deploy`, host
+  `srv1842904` / 187.127.208.203).
+- Container: `hermes-agent-07ie-hermes-agent-1`, image
+  `ghcr.io/hostinger/hvps-hermes-agent:latest`. Reached via `docker exec`.
+- Layout inside the container: `/opt/data/skills/<category>/<name>/SKILL.md`,
+  owned `hermes:hermes`. Trading skills live under `…/trading/`; the throwaway
+  was under `…/testing/` — categories are separate directories.
 
-`zz-throwaway-rebuild-test` is **still live on the host** because neither
-removal route worked. It is inert (`enabled: true`, `usage: 0`, category
-`testing`) and harmless, but should be cleaned up once a working removal route
-is found. Per the test's no-retry rule, no further removal attempts were made.
+Removal that worked — delete the skill's own directory, then confirm via API:
+
+```bash
+C=hermes-agent-07ie-hermes-agent-1
+ssh deploy-vps "docker exec $C rm -rf /opt/data/skills/testing/zz-throwaway-rebuild-test"
+# then verify from the API side:
+#   GET /api/skills                    -> throwaway absent
+#   GET /api/skills/content?name=...    -> 404
+```
+
+**The API reflects the deletion immediately — no service restart or reload was
+needed.** After the `rm`, `GET /api/skills` dropped the skill and
+`GET /api/skills/content?name=zz-throwaway-rebuild-test` returned 404, with no
+restart of the Hermes container. (If a future removal does NOT show up in the
+API, that implies a cache and would need a reload — do not restart the service
+without an explicit decision; a restart interrupts the live desk.)
+
+**Danger — this is `rm -rf` against a real, irreversible path.** Safeguards used,
+and mandatory before ever pointing this at a real skill:
+
+1. Verify the exact directory exists and its `SKILL.md` content matches the
+   intended skill BEFORE the `rm` (a wrong name here is unrecoverable — there is
+   no undo, no soft-delete).
+2. Never interpolate a name into the `rm` from a list or variable that could
+   hold a real skill; the path must be the literal throwaway/target, checked by
+   eye. Real desk skills live under `…/trading/`; a removal command must never
+   reference that directory or any of the 8 names.
+3. Confirm the parent category dir isolates the target (here `testing/` held
+   only the throwaway) so a mistyped path can't glob a sibling.
+
+This mechanism is **filesystem-level and outside the API**, so it is NOT
+something the `hermes_desk_rebuild.py` HTTP flow can do. The script's invented
+`DELETE /api/skills/<name>` path (405, below) must be removed; if the rebuild
+ever needs to delete rather than update-in-place, it has to shell out over SSH
+with the safeguards above — which is a good reason to prefer update-in-place
+(`PUT /api/skills/content`) and delete nothing.
+
+### The throwaway (cleaned up)
+
+`zz-throwaway-rebuild-test` was created, read, updated, and **removed** by this
+probe. Final state confirmed: skill count back to 76 (baseline), throwaway
+absent from the API list and 404 on read, gone from disk, all 8 trading skills
+present. The now-empty `testing/` category directory was left in place (removing
+it was out of scope — "remove that one directory").
 
 ---
 
 ## Desk integrity after the probe
 
 Baseline before: **76 skills**. After create: **77** (the throwaway only).
-All 8 trading skills unchanged throughout:
+After filesystem removal: back to **76** — final set exactly equals baseline
+(zero net added, zero removed). All 8 trading skills unchanged throughout:
 `apollo, atlas, desk-coordinator, hephaestus, hermes-execution, hydra, lumen,
-mnemosyne`. No real skill was sent to any mutating call (enforced by a guard
-that aborts on any non-throwaway name).
+mnemosyne`. No real skill was sent to any mutating call or destructive command
+(enforced by a guard that aborts on any non-throwaway name, plus by-eye
+verification of the `rm` path against live `SKILL.md` content).
 
 ## Summary table
 
-| Op | Route | Method | Success | Notes |
+| Op | Route / mechanism | Method | Result | Notes |
 |----|-------|--------|---------|-------|
 | Create | `/api/skills` | POST | 200 | `{name, content, description, category}` |
 | Read   | `/api/skills/content?name=` | GET | 200 | only route returning `content` |
 | List   | `/api/skills` | GET | 200 | metadata only; `name=` filter ignored |
 | Update | `/api/skills/content` | PUT | 200 | `{name, content}`; full rewrite |
-| Delete | `/api/skills/<name>` | DELETE | **405** | not a real route — script must stop using it |
+| Disable | `/api/skills/toggle` | PUT | — | `{name, enabled, profile}`; disables, does NOT remove |
+| Delete (API) | `/api/skills/<name>` | DELETE | **405** | not a real route — script must stop using it |
 | Uninstall | `/api/skills/hub/uninstall` | POST | 200 | **hub-only**; no-op for `provenance: agent` |
+| **Remove (real)** | `docker exec … rm -rf …/<cat>/<name>` | SSH | ✓ | filesystem only; API reflects it immediately, no restart |
