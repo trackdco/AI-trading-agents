@@ -1,16 +1,50 @@
 #!/usr/bin/env python3
 """
-Rebuild the Hermes Desk skills via browser automation (headless Playwright).
+Mutate the Hermes Desk skills via the confirmed Skills API (headless Playwright
+supplies the authenticated session; all calls go through it).
 
-Phases, in order. Each is opt-in; the default run is READ-ONLY recon.
+The routes and their exact semantics are documented — and were probed live — in
+docs/hermes-api-contract.md, which is ground truth for this script.
 
-  1. recon   (always)  log in, enumerate every existing skill, back up its full
-                       content to disk, and report which of the 7 off-spec
-                       skills are actually present. Mutates nothing.
-  2. delete  (--delete)  remove the 7 off-spec skills.
-  3. create  (--create)  create the 4 specialists + the Hermes coordinator from
-                         docs/desk-skills/*.md.
-  4. verify  (always, after any mutation)  re-enumerate and diff against intent.
+Phases, in order. The default run is READ-ONLY recon; every mutating phase is
+opt-in AND explicitly targeted.
+
+  1. recon    (always)   log in, enumerate every skill, back up full content to
+                         disk, report counts / names / enabled state. Mutates
+                         nothing.
+  2. create   (--create) create each --only skill (POST /api/skills).
+  3. update   (--update) full-rewrite each --only skill in place
+                         (PUT /api/skills/content).
+  4. disable  (--disable) disable each --only skill (PUT /api/skills/toggle).
+  5. enable   (--enable)  enable each --only skill (PUT /api/skills/toggle).
+  6. verify   (always, after any mutation)  re-enumerate.
+
+READ-BACK IS MANDATORY. A 200 / ok:true response is treated as *nothing* until a
+follow-up GET proves the change landed:
+
+  * create / update -> GET /api/skills/content?name= returns 200 and the content
+    matches what was written;
+  * disable / enable -> the skill's `enabled` flag in GET /api/skills matches.
+
+This is deliberate. The Hermes API returns success-shaped responses for
+operations that do not take effect — e.g. POST /api/skills/hub/uninstall returns
+`{ok:true, pid:...}` yet removes nothing for an agent-provenance skill. The
+response alone is never trusted; see the contract doc.
+
+REMOVAL IS INTENTIONALLY NOT HERE. There is no API route that removes an
+agent-provenance skill: DELETE /api/skills/<name> is 405 (not a real route) and
+hub/uninstall is a no-op. Removal is filesystem-level (`docker exec … rm -rf`)
+over SSH with by-eye path safeguards, and lives entirely outside this HTTP flow.
+See "Confirmed removal mechanism" in docs/hermes-api-contract.md. This script
+never deletes.
+
+TARGETING IS EXPLICIT. There are no hardcoded skill-name lists. Every mutation
+acts only on the names passed via --only (repeatable). Any mutating phase with
+no --only target refuses to run, so a stray --create can never touch a skill it
+was not pointed at.
+
+Content for create / update comes from --content-file (single target) or from
+--content-dir/<name>.md (one file per target; default docs/desk-skills).
 
 Credentials are resolved in this order, and are never hardcoded or logged:
 
@@ -21,16 +55,17 @@ Credentials are resolved in this order, and are never hardcoded or logged:
      Keychain so later runs need no prompt at all
 
 Usage:
-  python3 scripts/hermes_desk_rebuild.py                    # recon only
-  python3 scripts/hermes_desk_rebuild.py --delete --create  # full rebuild
-  python3 scripts/hermes_desk_rebuild.py --headed           # watch it run
-  python3 scripts/hermes_desk_rebuild.py --no-keychain      # ignore the Keychain
-  python3 scripts/hermes_desk_rebuild.py --forget           # drop the saved entry
-
-Note on case: the skills being deleted are lowercase ("atlas") and several of
-the skills being created differ only in case ("Atlas"). Deletes therefore run
-to completion before any create starts, so a case-insensitive backend cannot
-collide a create against a not-yet-deleted skill.
+  python3 scripts/hermes_desk_rebuild.py
+      # recon only (read-only; the default)
+  python3 scripts/hermes_desk_rebuild.py --create --only zz-throwaway-v2 \
+      --content-file /tmp/body.md --category testing --description "throwaway"
+  python3 scripts/hermes_desk_rebuild.py --update --only zz-throwaway-v2 \
+      --content-file /tmp/body2.md
+  python3 scripts/hermes_desk_rebuild.py --disable --only zz-throwaway-v2
+  python3 scripts/hermes_desk_rebuild.py --enable  --only zz-throwaway-v2
+  python3 scripts/hermes_desk_rebuild.py --headed        # watch it run
+  python3 scripts/hermes_desk_rebuild.py --no-keychain   # ignore the Keychain
+  python3 scripts/hermes_desk_rebuild.py --forget        # drop the saved entry
 """
 
 from __future__ import annotations
@@ -52,27 +87,14 @@ from playwright.sync_api import Page, TimeoutError as PWTimeout, sync_playwright
 BASE = "https://hermes-agent-07ie.srv1842904.hstgr.cloud"
 
 REPO = Path(__file__).resolve().parent.parent
-DOCS = REPO / "docs" / "desk-skills"
+DEFAULT_CONTENT_DIR = REPO / "docs" / "desk-skills"
 
-# The 7 off-spec skills to remove.
-OFF_SPEC = [
-    "atlas",
-    "lumen",
-    "hydra",
-    "hermes-execution",
-    "apollo",
-    "hephaestus",
-    "mnemosyne",
-]
-
-# The real desk: 4 specialists + the coordinator. (display name -> source doc)
-TARGET = [
-    ("Atlas", "atlas-skill.md"),
-    ("Helios", "helios-skill.md"),
-    ("Apollo", "apollo-skill.md"),
-    ("Hephaestus", "hephaestus-skill.md"),
-    ("Hermes", "hermes-coordinator.md"),
-]
+# Confirmed routes (docs/hermes-api-contract.md). Mutations use these fixed
+# paths, not a discovered one — the contract is ground truth.
+LIST_ROUTE = "/api/skills"                 # GET  -> metadata array (incl. enabled)
+CONTENT_ROUTE = "/api/skills/content"      # GET  ?name= -> {content}; PUT -> full rewrite
+CREATE_ROUTE = "/api/skills"               # POST {name, content, description, category}
+TOGGLE_ROUTE = "/api/skills/toggle"        # PUT  {name, enabled, profile}
 
 
 def log(msg: str) -> None:
@@ -234,14 +256,13 @@ def login(page: Page, user: str, password: str, out: Path) -> None:
 
 
 # --------------------------------------------------------------------------
-# recon
+# transport + reads
 # --------------------------------------------------------------------------
 
 def api(page: Page, path: str, method: str = "GET", payload: dict | None = None):
     """Call the app's JSON API reusing the browser's authenticated session.
 
-    Returns (status, parsed_or_text). The API is preferred over DOM clicking
-    where it works; DOM is the fallback.
+    Returns (status, parsed_or_text).
     """
     opts = {"method": method}
     if payload is not None:
@@ -250,67 +271,12 @@ def api(page: Page, path: str, method: str = "GET", payload: dict | None = None)
         r = page.request.fetch(f"{BASE}{path}", **opts)
     except Exception as e:
         # A transport-level failure is a probe result, not a reason to abort
-        # the whole run — the caller decides whether to fall back.
+        # the whole run — the caller decides how to handle it.
         return 0, f"request failed: {e}"
     try:
         return r.status, r.json()
     except Exception:
         return r.status, r.text()
-
-
-def discover_skills(page: Page, out: Path) -> tuple[list[dict], str | None]:
-    """Enumerate existing skills. Tries the JSON API first, then the DOM.
-
-    Returns (skills, api_path_that_worked).
-    """
-    probes = []
-    for path in ("/api/skills", "/api/v1/skills", "/api/agents/skills"):
-        status, body = api(page, path)
-        log(f"probe {path} -> {status}")
-        probes.append({"path": path, "status": status,
-                       "body": body if isinstance(body, (list, dict)) else str(body)[:2000]})
-        if status == 200 and isinstance(body, (list, dict)):
-            items = body if isinstance(body, list) else (
-                body.get("skills") or body.get("items") or body.get("data") or []
-            )
-            if isinstance(items, list) and items:
-                (out / "skills_api_raw.json").write_text(json.dumps(body, indent=2))
-                (out / "api_probes.json").write_text(json.dumps(probes, indent=2))
-                return items, path
-
-    # Record what every probe actually returned before falling back, so a
-    # non-obvious response (200-but-empty, 403, HTML login page) is visible.
-    (out / "api_probes.json").write_text(json.dumps(probes, indent=2))
-
-    # DOM fallback: dump candidate pages for selector discovery. Each page is
-    # isolated — one slow or missing route must not abort discovery.
-    log("no usable JSON API; falling back to DOM scrape")
-    for path in ("/skills", "/settings/skills", "/agents", "/"):
-        tag = "dom" + (path.replace("/", "_") or "_root")
-        try:
-            # domcontentloaded, not networkidle: this app holds connections
-            # open, and networkidle would time out waiting for quiet that
-            # never comes.
-            page.goto(f"{BASE}{path}", wait_until="domcontentloaded", timeout=30_000)
-            page.wait_for_timeout(1500)  # let client-side rendering settle
-        except Exception as e:
-            log(f"  {path} -> not reachable ({type(e).__name__})")
-            continue
-        if "/login" in page.url:
-            log(f"  {path} -> bounced to /login")
-            continue
-        log(f"  {path} -> captured")
-        dump_state(page, out, tag)
-
-    names = page.locator("[data-skill-name], [data-skill-id], .skill-card, .skill-item")
-    found = []
-    for i in range(names.count()):
-        el = names.nth(i)
-        found.append({
-            "name": (el.get_attribute("data-skill-name") or el.inner_text()).strip(),
-            "id": el.get_attribute("data-skill-id"),
-        })
-    return found, None
 
 
 def skill_name(s: dict) -> str:
@@ -321,85 +287,222 @@ def skill_name(s: dict) -> str:
     return ""
 
 
-def recon(page: Page, out: Path) -> dict:
-    skills, api_path = discover_skills(page, out)
-    exact = {skill_name(s) for s in skills}
-    folded = {skill_name(s).lower(): skill_name(s) for s in skills}
+def list_skills(page: Page) -> tuple[int, list[dict]]:
+    """GET /api/skills -> (status, metadata list). Empty list on any non-array."""
+    status, body = api(page, LIST_ROUTE)
+    if status == 200 and isinstance(body, list):
+        return status, body
+    return status, []
 
-    # Distinguish an exact-name match from a case-only collision. Folding both
-    # sides made every target look "already present" when the only thing on the
-    # server was the lowercase off-spec skill it is meant to replace — which
-    # reads as "someone already built this", the exact opposite of the truth.
+
+def read_content(page: Page, name: str) -> tuple[int, str | None, str | None]:
+    """GET /api/skills/content?name= -> (status, content, path).
+
+    A 404 here is the canonical proof that a skill is absent (there is no
+    per-skill detail route; this query form is the only route that returns a
+    body). content/path are None unless status is 200.
+    """
+    status, body = api(page, f"{CONTENT_ROUTE}?name={quote(name, safe='')}")
+    if status == 200 and isinstance(body, dict):
+        return status, body.get("content"), body.get("path")
+    return status, None, None
+
+
+def read_meta(page: Page, name: str) -> tuple[int, dict | None]:
+    """Return the list-metadata dict for `name`, filtered client-side.
+
+    The list route's `name=` filter is ignored server-side, so we always fetch
+    the full list and match here.
+    """
+    status, items = list_skills(page)
+    if status != 200:
+        return status, None
+    for s in items:
+        if skill_name(s) == name:
+            return status, s
+    return status, None
+
+
+def content_matches(read_back: str | None, written: str) -> bool:
+    """True if the read-back body equals what we wrote.
+
+    Storage is verbatim (the contract confirms a full-rewrite PUT reads back
+    exactly), so this is an exact comparison — modulo a single trailing newline,
+    which some editors/servers normalise and which carries no meaning here.
+    """
+    return (read_back or "").rstrip("\n") == (written or "").rstrip("\n")
+
+
+# --------------------------------------------------------------------------
+# recon
+# --------------------------------------------------------------------------
+
+def recon(page: Page, out: Path) -> dict:
+    """Read-only enumeration + full-content backup. Mutates nothing."""
+    status, skills = list_skills(page)
+    if status != 200:
+        log(f"  WARNING list route {LIST_ROUTE} -> HTTP {status}")
+
+    names = sorted(skill_name(s) for s in skills)
+    enabled_map = {skill_name(s): s.get("enabled") for s in skills}
+
     report = {
         "fetched_at": datetime.now(timezone.utc).isoformat(),
-        "api_path": api_path,
+        "list_status": status,
         "total_existing": len(skills),
-        "existing": sorted(exact),
-        "off_spec_present": [n for n in OFF_SPEC if n in exact],
-        "off_spec_missing": [n for n in OFF_SPEC if n not in exact],
-        "targets_present_exact": [n for n, _ in TARGET if n in exact],
-        "targets_case_collision": {
-            n: folded[n.lower()]
-            for n, _ in TARGET
-            if n not in exact and n.lower() in folded
-        },
+        "existing": names,
+        "enabled": enabled_map,
     }
 
-    # Full-content backup before anything is destroyed. The list endpoint
-    # returns metadata only, so pull each skill's actual body too — a backup
-    # without the content is not a backup you could restore from.
+    # Full-content backup before any mutation. The list endpoint returns
+    # metadata only, so pull each skill's actual body too — a backup without the
+    # content is not a backup you could restore from. Reads only; safe.
     backup = out / "backup"
-    backup.mkdir(exist_ok=True)
+    backup.mkdir(parents=True, exist_ok=True)
     for s in skills:
         n = skill_name(s) or "unnamed"
         safe = re.sub(r"[^A-Za-z0-9._-]", "_", n)
-        status, body = api(page, f"/api/skills/content?name={quote(n, safe='')}")
-        if status == 200 and isinstance(body, dict) and body.get("content"):
-            s = {**s, "content": body["content"], "path": body.get("path")}
+        cstatus, content, path = read_content(page, n)
+        if cstatus == 200 and content is not None:
+            s = {**s, "content": content, "path": path}
         else:
-            log(f"  WARNING no content retrieved for {n!r} (status {status})")
+            log(f"  WARNING no content retrieved for {n!r} (status {cstatus})")
         (backup / f"{safe}.json").write_text(json.dumps(s, indent=2))
 
     (out / "recon.json").write_text(json.dumps(report, indent=2))
+    (out / "skills_list_raw.json").write_text(json.dumps(skills, indent=2))
     return report
 
 
 # --------------------------------------------------------------------------
-# mutations
+# mutations — each confirmed by read-back, never by the response alone
 # --------------------------------------------------------------------------
 
-def delete_skill(page: Page, skill: dict, api_path: str | None) -> bool:
-    ident = skill.get("id") or skill.get("slug") or skill_name(skill)
-    if api_path:
-        status, body = api(page, f"{api_path}/{ident}", method="DELETE")
-        ok = status in (200, 202, 204)
-        log(f"  DELETE {ident} -> {status} {'ok' if ok else body}")
-        return ok
-    raise SystemExit(
-        "DOM delete path not yet implemented — run recon first and wire the "
-        "selectors from .hermes-rebuild/*/dom_*.html"
-    )
+def create_skill(page: Page, name: str, content: str, description: str,
+                 category: str, profile: str | None = None) -> bool:
+    """POST /api/skills, then confirm by reading the content back."""
+    payload = {"name": name, "content": content,
+               "description": description, "category": category}
+    if profile:
+        payload["profile"] = profile
+    status, body = api(page, CREATE_ROUTE, method="POST", payload=payload)
+    log(f"  CREATE {name!r} ({len(content)} chars, category={category!r}) "
+        f"-> HTTP {status}")
+
+    # A 200 here counts as NOTHING until read-back confirms (see module docstring
+    # and the hub/uninstall no-op in the contract doc).
+    rstatus, rcontent, rpath = read_content(page, name)
+    if rstatus != 200 or rcontent is None:
+        log(f"  READ-BACK {name!r} -> HTTP {rstatus}: create NOT confirmed "
+            f"(response was {body!r})")
+        return False
+    if not content_matches(rcontent, content):
+        log(f"  READ-BACK {name!r} -> HTTP 200 but content differs from what was "
+            f"written: create NOT confirmed")
+        return False
+    log(f"  READ-BACK {name!r} -> HTTP 200, content matches "
+        f"({len(rcontent)} chars) at {rpath}")
+    return True
 
 
-def create_skill(page: Page, name: str, content: str, api_path: str | None) -> bool:
-    if api_path:
-        status, body = api(page, api_path, method="POST",
-                           payload={"name": name, "content": content})
-        ok = status in (200, 201)
-        log(f"  CREATE {name} ({len(content)} chars) -> {status} {'ok' if ok else body}")
-        return ok
-    raise SystemExit(
-        "DOM create path not yet implemented — run recon first and wire the "
-        "selectors from .hermes-rebuild/*/dom_*.html"
-    )
+def update_skill(page: Page, name: str, content: str,
+                 profile: str | None = None) -> bool:
+    """PUT /api/skills/content (full rewrite), then confirm by read-back."""
+    payload = {"name": name, "content": content}
+    if profile:
+        payload["profile"] = profile
+    status, body = api(page, CONTENT_ROUTE, method="PUT", payload=payload)
+    log(f"  UPDATE {name!r} ({len(content)} chars, full rewrite) -> HTTP {status}")
+
+    rstatus, rcontent, rpath = read_content(page, name)
+    if rstatus != 200 or rcontent is None:
+        log(f"  READ-BACK {name!r} -> HTTP {rstatus}: update NOT confirmed "
+            f"(response was {body!r})")
+        return False
+    if not content_matches(rcontent, content):
+        log(f"  READ-BACK {name!r} -> HTTP 200 but content still differs from the "
+            f"new body: update NOT confirmed")
+        return False
+    log(f"  READ-BACK {name!r} -> HTTP 200, new content confirmed "
+        f"({len(rcontent)} chars) at {rpath}")
+    return True
+
+
+def set_enabled(page: Page, name: str, enabled: bool,
+                profile: str | None = None) -> bool:
+    """PUT /api/skills/toggle, then confirm the `enabled` flag via the list."""
+    payload = {"name": name, "enabled": enabled}
+    if profile:
+        payload["profile"] = profile
+    status, body = api(page, TOGGLE_ROUTE, method="PUT", payload=payload)
+    verb = "ENABLE" if enabled else "DISABLE"
+    log(f"  {verb} {name!r} -> HTTP {status}")
+
+    rstatus, meta = read_meta(page, name)
+    if rstatus != 200 or meta is None:
+        log(f"  READ-BACK {name!r} -> not found in list (HTTP {rstatus}): "
+            f"toggle NOT confirmed (response was {body!r})")
+        return False
+    actual = meta.get("enabled")
+    if actual != enabled:
+        log(f"  READ-BACK {name!r} -> enabled={actual!r}, expected {enabled!r}: "
+            f"toggle NOT confirmed")
+        return False
+    log(f"  READ-BACK {name!r} -> enabled={actual!r} confirmed")
+    return True
+
+
+# --------------------------------------------------------------------------
+# content resolution for create / update targets
+# --------------------------------------------------------------------------
+
+def resolve_content_path(name: str, args) -> Path:
+    if args.content_file:
+        return Path(args.content_file)
+    return Path(args.content_dir) / f"{name}.md"
+
+
+def preflight_content(names: list[str], args) -> list[str]:
+    """Return a list of human-readable problems with the content sources."""
+    problems = []
+    if args.content_file and len(names) > 1:
+        problems.append(
+            f"--content-file takes a single body but {len(names)} --only targets "
+            f"were given; use --content-dir with one <name>.md per target instead"
+        )
+    for n in names:
+        p = resolve_content_path(n, args)
+        if not p.exists():
+            problems.append(f"missing content for {n!r}: {p}")
+    return problems
 
 
 # --------------------------------------------------------------------------
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--delete", action="store_true", help="delete the 7 off-spec skills")
-    ap.add_argument("--create", action="store_true", help="create the 4 specialists + coordinator")
+    ap.add_argument("--only", action="append", metavar="NAME", default=[],
+                    help="explicit mutation target (repeatable); required for any "
+                         "mutating phase")
+    ap.add_argument("--create", action="store_true",
+                    help="create each --only skill (POST /api/skills)")
+    ap.add_argument("--update", action="store_true",
+                    help="full-rewrite each --only skill (PUT /api/skills/content)")
+    ap.add_argument("--disable", action="store_true",
+                    help="disable each --only skill (PUT /api/skills/toggle)")
+    ap.add_argument("--enable", action="store_true",
+                    help="enable each --only skill (PUT /api/skills/toggle)")
+    ap.add_argument("--content-file", metavar="PATH",
+                    help="body for create/update of a single --only target")
+    ap.add_argument("--content-dir", metavar="DIR", default=str(DEFAULT_CONTENT_DIR),
+                    help="dir of <name>.md bodies for create/update "
+                         f"(default {DEFAULT_CONTENT_DIR})")
+    ap.add_argument("--description", default="",
+                    help="description metadata for --create")
+    ap.add_argument("--category", default=None,
+                    help="on-disk category for --create (required with --create)")
+    ap.add_argument("--profile", default=None,
+                    help="optional profile passed to mutating calls")
     ap.add_argument("--headed", action="store_true", help="run with a visible browser")
     ap.add_argument("--no-keychain", action="store_true",
                     help="ignore the macOS Keychain and never offer to save")
@@ -411,11 +514,26 @@ def main() -> int:
         keychain_forget()
         return 0
 
-    # Fail before prompting for a password if any source doc is missing.
-    missing = [f for _, f in TARGET if not (DOCS / f).exists()]
-    if args.create and missing:
-        print(f"missing source docs: {missing}", file=sys.stderr)
+    mutating = args.create or args.update or args.disable or args.enable
+
+    # Explicit-targeting guard: a mutating phase with no --only refuses to run.
+    if mutating and not args.only:
+        print("refusing to mutate without an explicit target: pass --only <name> "
+              "(repeatable). The default run is read-only recon.", file=sys.stderr)
         return 2
+
+    if args.create and not args.category:
+        print("--create requires --category (it sets the on-disk path); supply it.",
+              file=sys.stderr)
+        return 2
+
+    # Fail before prompting for a password if a create/update body is missing.
+    if args.create or args.update:
+        problems = preflight_content(args.only, args)
+        if problems:
+            for p in problems:
+                print(p, file=sys.stderr)
+            return 2
 
     user, password, source = get_credentials(use_keychain=not args.no_keychain)
 
@@ -455,45 +573,48 @@ def run(page: Page, args, user: str, password: str, source: str, out: Path) -> i
     log("=== PHASE 1: recon (read-only) ===")
     report = recon(page, out)
     log(f"  {report['total_existing']} skills present: {report['existing']}")
-    log(f"  off-spec present : {report['off_spec_present']}")
-    log(f"  off-spec missing : {report['off_spec_missing']}")
-    log(f"  targets present (exact): {report['targets_present_exact']}")
-    if report["targets_case_collision"]:
-        log(f"  CASE COLLISION — target vs existing: {report['targets_case_collision']}")
 
-    if not (args.delete or args.create):
-        log("recon-only run (pass --delete --create to mutate). Nothing changed.")
+    mutating = args.create or args.update or args.disable or args.enable
+    if not mutating:
+        log("recon-only run (pass a mutating phase with --only to change anything). "
+            "Nothing changed.")
         log(f"artifacts written to {out}")
         return 0
 
-    skills, api_path = discover_skills(page, out)
-    by_name = {skill_name(s).lower(): s for s in skills}
+    # Guard is enforced in main(), but re-assert here so run() is safe on its own.
+    if not args.only:
+        raise SystemExit("refusing to mutate without --only targets")
 
-    if args.delete:
-        log("=== PHASE 2: delete off-spec ===")
-        for n in OFF_SPEC:
-            s = by_name.get(n.lower())
-            if not s:
-                log(f"  skip {n} (not present)")
-                continue
-            delete_skill(page, s, api_path)
+    ok = True
 
     if args.create:
-        log("=== PHASE 3: create real desk ===")
-        for name, fname in TARGET:
-            create_skill(page, name, (DOCS / fname).read_text(), api_path)
+        log(f"=== PHASE 2: create {args.only} ===")
+        for n in args.only:
+            content = resolve_content_path(n, args).read_text()
+            ok = create_skill(page, n, content, args.description, args.category,
+                              args.profile) and ok
 
-    log("=== PHASE 4: verify ===")
+    if args.update:
+        log(f"=== PHASE 3: update {args.only} ===")
+        for n in args.only:
+            content = resolve_content_path(n, args).read_text()
+            ok = update_skill(page, n, content, args.profile) and ok
+
+    if args.disable:
+        log(f"=== PHASE 4: disable {args.only} ===")
+        for n in args.only:
+            ok = set_enabled(page, n, False, args.profile) and ok
+
+    if args.enable:
+        log(f"=== PHASE 5: enable {args.only} ===")
+        for n in args.only:
+            ok = set_enabled(page, n, True, args.profile) and ok
+
+    log("=== PHASE 6: verify (re-enumerate) ===")
     final = recon(page, out / "post")
-    log(f"  now present: {final['existing']}")
-    leftover = final["off_spec_present"]
-    absent = [n for n, _ in TARGET if n not in final["existing"]]
-    if leftover:
-        log(f"  WARNING off-spec still present: {leftover}")
-    if absent:
-        log(f"  WARNING target skills missing: {absent}")
+    log(f"  now {final['total_existing']} skills present")
     log(f"artifacts written to {out}")
-    return 1 if (leftover or absent) else 0
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":
