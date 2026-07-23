@@ -61,21 +61,24 @@ h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)
   <div class="eyebrow">Canon mechanical book · funded-account simulator</div>
   <h1>Monte Carlo — live paths</h1>
   <p class="sub">Every run resamples real trading days from the shipped canon book (268 sessions, Jun 25 – Jul 26,
-  at your micro map: 1.0× = 10 MNQ micros). Funded rules: hit the profit target before the trailing drawdown;
-  the floor locks at breakeven once you're past the lock threshold. Two-phase sizing runs the pre-lock size
-  until high-water crosses the lock, then switches to the post-lock size.</p>
+  at your micro map: 1.0× = 10 MNQ micros). Full cycle = the Lucid journey: pass the $3k eval (trailing $2k,
+  locks at +$2k), then a fresh funded account to the $4k max-payout target (trailing $2k, locks at $0 balance).
+  The chart stacks both phases into one journey — $7k of total climb. Two-phase sizing runs the pre-lock size
+  until each account's high-water crosses the lock, then switches to the post-lock size.</p>
 </header>
 
 <div class="panel">
   <div class="controls">
     <div class="ctl"><label>Mode</label>
       <select id="mode">
+        <option value="cycle" selected>Full cycle — eval then max payout</option>
         <option value="eval">Eval — pass the $3k target</option>
-        <option value="funded" selected>Funded year — 250 days</option>
+        <option value="funded">Funded year — 250 days</option>
       </select></div>
     <div class="ctl"><label>Pre-lock micros</label><input id="pre" type="number" value="5" min="1" max="40"></div>
     <div class="ctl"><label>Post-lock micros</label><input id="post" type="number" value="10" min="1" max="40"></div>
-    <div class="ctl"><label>Target $</label><input id="target" type="number" value="3000" step="500"></div>
+    <div class="ctl"><label>Eval target $</label><input id="target" type="number" value="3000" step="500"></div>
+    <div class="ctl"><label>Funded target $</label><input id="ftarget" type="number" value="4000" step="500"></div>
     <div class="ctl"><label>Trailing DD $</label><input id="trail" type="number" value="2000" step="250"></div>
     <div class="ctl"><label>Lock at $</label><input id="lockat" type="number" value="2000" step="250"></div>
     <div class="ctl"><label>Sims</label>
@@ -120,32 +123,53 @@ function rng(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0;
   let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t;
   return ((t^t>>>14)>>>0)/4294967296; } }
 
-function simulate(cfg, R){
-  // returns {path:[equity per day], outcome:'pass'|'bust'|'alive'|'timeout', days}
-  const {mode, pre, post, target, trail, lockat} = cfg;
-  const horizon = mode === "eval" ? 90 : 250;
+function phaseSim(cfg, R, target, maxDays, path, offset){
+  // one account phase; appends daily equity(+offset) to path.
+  const {pre, post, trail, lockat} = cfg;
   let eq=0, hw=0, floor=-trail, locked=false;
-  const path=[0];
-  for (let d=0; d<horizon; d++){
+  for (let d=0; d<maxDays; d++){
     const day = POOL[(R()*POOL.length)|0];
     const sc = (locked ? post : pre)/10;
     for (const tr of day){
       eq += tr*sc;
-      if (eq <= floor){ path.push(eq); return {path, outcome:"bust", days:d+1}; }
+      if (eq <= floor){ path.push(offset+eq); return {out:"bust", days:d+1}; }
       if (eq > hw){ hw = eq;
         if (!locked && hw >= lockat){ locked = true; floor = Math.max(floor, 0); }
         if (!locked) floor = hw - trail; }
-      if (mode==="eval" && eq >= target){ path.push(eq); return {path, outcome:"pass", days:d+1}; }
+      if (target !== null && eq >= target){ path.push(offset+eq); return {out:"hit", days:d+1}; }
     }
-    path.push(eq);
+    path.push(offset+eq);
   }
-  return {path, outcome: mode==="eval" ? "timeout" : "alive", days:horizon};
+  return {out:"timeout", days:maxDays, final:eq};
+}
+
+function simulate(cfg, R){
+  // returns {path:[equity per day], outcome:'pass'|'bust'|'alive'|'timeout', days, phase1}
+  const {mode, pre, post, target, ftarget, trail, lockat} = cfg;
+  if (mode === "cycle"){
+    const path=[0];
+    const ev = phaseSim(cfg, R, target, 120, path, 0);
+    if (ev.out !== "hit")
+      return {path, outcome: ev.out==="bust"?"bust":"timeout", days: ev.days, phase1: path.length};
+    const p1 = path.length;
+    const fd = phaseSim(cfg, R, ftarget, 250, path, target);
+    return {path, outcome: fd.out==="hit" ? "pass" : (fd.out==="bust"?"bust":"timeout"),
+            days: ev.days + fd.days, phase1: p1, evDays: ev.days, fdDays: fd.days};
+  }
+  const path=[0];
+  if (mode === "eval"){
+    const r = phaseSim(cfg, R, target, 90, path, 0);
+    return {path, outcome: r.out==="hit"?"pass":(r.out==="bust"?"bust":"timeout"), days: r.days};
+  }
+  const r = phaseSim(cfg, R, null, 250, path, 0);
+  return {path, outcome: r.out==="bust"?"bust":"alive", days: r.days};
 }
 
 let seedBase = 42;
 function run(){
   const cfg = { mode: $("mode").value, pre:+$("pre").value, post:+$("post").value,
-    target:+$("target").value, trail:+$("trail").value, lockat:+$("lockat").value };
+    target:+$("target").value, ftarget:+$("ftarget").value,
+    trail:+$("trail").value, lockat:+$("lockat").value };
   const N = +$("nsim").value;
   const R = rng(seedBase++);
   const sims = [];
@@ -159,7 +183,17 @@ function run(){
   const nTime = sims.filter(s=>s.outcome==="timeout").length;
   const passDays = sims.filter(s=>s.outcome==="pass").map(s=>s.days).sort((a,b)=>a-b);
   const st = $("stats");
-  if (cfg.mode==="eval"){
+  if (cfg.mode==="cycle"){
+    const wins = sims.filter(s=>s.outcome==="pass");
+    const evD = wins.map(s=>s.evDays).sort((a,b)=>a-b);
+    const fdD = wins.map(s=>s.fdDays).sort((a,b)=>a-b);
+    const totD = wins.map(s=>s.days).sort((a,b)=>a-b);
+    st.innerHTML = tile("P(max payout)", pct(nPass/N), nPass/N>=.95?"pos":"accent")
+      + tile("P(bust anywhere)", pct(nBust/N), nBust/N<=.03?"pos":"neg")
+      + tile("Median days — eval", evD.length?evD[evD.length>>1]:"—","")
+      + tile("Median days — funded", fdD.length?fdD[fdD.length>>1]:"—","")
+      + tile("Median days — total", totD.length?totD[totD.length>>1]:"—","accent");
+  } else if (cfg.mode==="eval"){
     st.innerHTML = tile("P(pass)", pct(nPass/N), nPass/N>=.95?"pos":"accent")
       + tile("P(bust)", pct(nBust/N), nBust/N<=.02?"pos":"neg")
       + tile("P(timeout 90d)", pct(nTime/N), "")
@@ -188,7 +222,8 @@ function drawFan(sims, cfg){
   ctx.clearRect(0,0,W,H);
   const horizon = Math.max(...sims.map(s=>s.path.length));
   let lo = Math.min(-cfg.trail*1.2, ...sims.map(s=>Math.min(...s.path)));
-  let hi = Math.max(cfg.mode==="eval"?cfg.target*1.25:1000, ...sims.map(s=>Math.max(...s.path)));
+  let hi = Math.max(cfg.mode==="eval"?cfg.target*1.25:(cfg.mode==="cycle"?(cfg.target+cfg.ftarget)*1.12:1000),
+    ...sims.map(s=>Math.max(...s.path)));
   const x = i => L + i/(horizon-1)*(W-L-Rp);
   const y = v => T + (hi-v)/(hi-lo)*(H-T-B);
   // grid
@@ -237,6 +272,10 @@ function drawFan(sims, cfg){
   // reference lines
   refline(ctx, y(0), L, W-Rp, css("--ink3"), "breakeven / locked floor");
   if (cfg.mode==="eval") refline(ctx, y(cfg.target), L, W-Rp, css("--pos"), "target "+fmt(cfg.target));
+  if (cfg.mode==="cycle"){
+    refline(ctx, y(cfg.target), L, W-Rp, css("--acc"), "eval passed -> funded starts ("+fmt(cfg.target)+")");
+    refline(ctx, y(cfg.target+cfg.ftarget), L, W-Rp, css("--pos"), "MAX PAYOUT ("+fmt(cfg.target+cfg.ftarget)+" journey)");
+  }
   refline(ctx, y(-cfg.trail), L, W-Rp, css("--neg"), "day-1 floor −$"+cfg.trail.toLocaleString());
   function refline(c, yy, x0, x1, col, label){
     c.save(); c.setLineDash([5,5]); c.strokeStyle = col; c.lineWidth = 1.2;
@@ -276,7 +315,7 @@ function drawHist(finals){
 }
 
 $("run").addEventListener("click", run);
-for (const id of ["mode","pre","post","target","trail","lockat","nsim"])
+for (const id of ["mode","pre","post","target","ftarget","trail","lockat","nsim"])
   $(id).addEventListener("change", run);
 run();
 new MutationObserver(run).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
