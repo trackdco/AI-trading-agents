@@ -23,7 +23,7 @@ def main():
 
     mb = pd.read_parquet("data/reference/nq_1m_master.parquet")
     mb = mb[mb.ts_event >= pd.Timestamp("2025-05-20", tz=NY)]
-    fb = pd.read_parquet("data/reference/nq_1m_feb_jul2026.parquet")
+    fb = pd.read_parquet("data/reference/nq_1m_feb_jul2026.parquet").drop(columns=["roll"], errors="ignore")
     bars = (pd.concat([mb, fb], ignore_index=True)
             .drop_duplicates("ts_event").sort_values("ts_event").reset_index(drop=True))
     ind = daily_vwap(bars, bands=[1, 2])
