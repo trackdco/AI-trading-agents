@@ -1,0 +1,283 @@
+<title>Funded Monte Carlo — Canon Book</title>
+<style>
+:root{
+  --bg:#15171B; --card:#1D2025; --ink:#E6E4DF; --ink2:#A8ACB3; --ink3:#787D85;
+  --line:#2C3037; --acc:#C08A1E; --pos:#3E9A67; --neg:#D0655C; --path:#4E8CC4;
+  --chip:#262A30; --hero:#101215;
+}
+@media (prefers-color-scheme: light){:root{
+  --bg:#FAF9F6; --card:#FFFFFF; --ink:#1C1E22; --ink2:#5A5F66; --ink3:#8A8F96;
+  --line:#E4E2DC; --acc:#C07C10; --pos:#1E7A4B; --neg:#B23E36; --path:#2E6FA3;
+  --chip:#F1EFE9; --hero:#22252A;
+}}
+:root[data-theme="dark"]{
+  --bg:#15171B; --card:#1D2025; --ink:#E6E4DF; --ink2:#A8ACB3; --ink3:#787D85;
+  --line:#2C3037; --acc:#C08A1E; --pos:#3E9A67; --neg:#D0655C; --path:#4E8CC4;
+  --chip:#262A30; --hero:#101215;
+}
+:root[data-theme="light"]{
+  --bg:#FAF9F6; --card:#FFFFFF; --ink:#1C1E22; --ink2:#5A5F66; --ink3:#8A8F96;
+  --line:#E4E2DC; --acc:#C07C10; --pos:#1E7A4B; --neg:#B23E36; --path:#2E6FA3;
+  --chip:#F1EFE9; --hero:#22252A;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);margin:0;padding:0 20px 60px;
+  font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1180px;margin:0 auto}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+header{padding:32px 0 6px}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{font-size:28px;font-weight:750;letter-spacing:-.02em;margin:6px 0 4px}
+.sub{color:var(--ink2);max-width:76ch;font-size:14px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-top:16px}
+.controls{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+.ctl label{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:700;margin-bottom:5px}
+.ctl input,.ctl select{background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:6px;
+  padding:7px 10px;font:14px ui-monospace,Menlo,monospace;width:92px}
+.ctl select{width:150px}
+button{background:var(--acc);color:#141414;border:none;border-radius:6px;padding:10px 22px;
+  font:700 14px system-ui;cursor:pointer;letter-spacing:.02em}
+button:hover{filter:brightness(1.08)}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
+.stat{background:var(--chip);border-radius:8px;padding:12px 14px}
+.stat .k{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.stat .v{font-size:22px;font-weight:750;margin-top:4px}
+.pos{color:var(--pos)} .neg{color:var(--neg)} .accent{color:var(--acc)}
+.chartbox{position:relative;margin-top:16px}
+canvas{width:100%;height:auto;display:block;border-radius:8px}
+.legend{display:flex;gap:18px;font-size:12px;color:var(--ink2);margin-top:10px;flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:3px}
+.l-pass::before{background:var(--pos)} .l-bust::before{background:var(--neg)}
+.l-med::before{background:var(--acc);height:4px} .l-band::before{background:var(--path);opacity:.35;height:8px}
+.note{font-size:12.5px;color:var(--ink3);margin-top:12px;max-width:90ch}
+h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);font-weight:700;margin:0 0 12px}
+.two{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Canon mechanical book · funded-account simulator</div>
+  <h1>Monte Carlo — live paths</h1>
+  <p class="sub">Every run resamples real trading days from the shipped canon book (268 sessions, Jun 25 – Jul 26,
+  at your micro map: 1.0× = 10 MNQ micros). Funded rules: hit the profit target before the trailing drawdown;
+  the floor locks at breakeven once you're past the lock threshold. Two-phase sizing runs the pre-lock size
+  until high-water crosses the lock, then switches to the post-lock size.</p>
+</header>
+
+<div class="panel">
+  <div class="controls">
+    <div class="ctl"><label>Mode</label>
+      <select id="mode">
+        <option value="eval">Eval — pass the $3k target</option>
+        <option value="funded" selected>Funded year — 250 days</option>
+      </select></div>
+    <div class="ctl"><label>Pre-lock micros</label><input id="pre" type="number" value="5" min="1" max="40"></div>
+    <div class="ctl"><label>Post-lock micros</label><input id="post" type="number" value="10" min="1" max="40"></div>
+    <div class="ctl"><label>Target $</label><input id="target" type="number" value="3000" step="500"></div>
+    <div class="ctl"><label>Trailing DD $</label><input id="trail" type="number" value="2000" step="250"></div>
+    <div class="ctl"><label>Lock at $</label><input id="lockat" type="number" value="2000" step="250"></div>
+    <div class="ctl"><label>Sims</label>
+      <select id="nsim"><option>500</option><option selected>2000</option><option>10000</option></select></div>
+    <div class="ctl"><button id="run">Run simulation</button></div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="chartbox"><canvas id="fan" width="1140" height="470"></canvas></div>
+  <div class="legend">
+    <span class="l-pass">passed / survived</span><span class="l-bust">busted (hit trailing floor)</span>
+    <span class="l-med">median path</span><span class="l-band">5–95% band</span>
+  </div>
+  <div class="note" id="note"></div>
+</div>
+
+<div class="two">
+  <div class="panel">
+    <h2>Final P&amp;L distribution</h2>
+    <canvas id="hist" width="720" height="240"></canvas>
+  </div>
+  <div class="panel">
+    <h2>Reading it</h2>
+    <p class="note" style="margin-top:0">The danger zone is the left edge: before the floor locks, a $2k trailing
+    leash sits under a book whose normal annual drawdown is ~$2.2k at 10 micros. Sizing down pre-lock shrinks
+    volatility against a fixed-dollar barrier — that's why 5→10 beats flat 10 at nearly the same annual take.
+    Paths are resampled from our own backtest days: this measures sequencing risk, not model risk. Trailing is
+    tracked on trade-close equity; funders that trail unrealized intraday would clip these pass rates slightly.</p>
+  </div>
+</div>
+</div>
+
+<script>
+const POOL = [[-535.0], [452.5], [], [605.0], [-495.0], [-265.0], [-92.5], [1265.0], [-127.5], [1529.0, 1562.0], [], [-212.5], [-480.0], [825.0, -195.0], [-385.0], [-195.0], [637.5], [], [], [-32.5], [-255.0], [], [-240.0], [42.0], [], [-26.5], [335.0], [-39.0], [37.38, 460.0], [165.0], [-36.0, 111.0], [87.5], [199.5], [-63.0], [-155.0], [-190.0], [], [-47.5], [-11.0], [166.88], [], [-210.0], [187.5], [-49.0], [], [-92.5], [], [], [885.0, 121.88], [1140.0], [-85.0], [678.75], [], [-230.0], [-22.5], [-147.5], [], [-295.0], [137.5, -340.0], [-107.5], [-150.0], [-80.0], [-35.0], [], [-155.0, -290.0], [-30.0], [-105.0], [-109.0], [227.5], [-81.0], [], [-33.0], [-16.0], [11.5, -91.0], [7.12], [-31.0], [-7.5], [-18.5], [254.0], [280.0], [], [-42.0], [-117.5, 452.0], [-51.0], [], [-35.5], [-33.0], [-82.5], [], [-59.0], [26.25, -147.5], [-29.0], [82.0, -75.0], [-17.0], [104.0], [-72.5], [], [-133.0], [-28.5, 341.88], [-80.0, -115.5], [257.5, 395.62], [-180.0], [-75.0], [125.0, -465.0], [-697.5], [-210.0], [95.0], [-38.0], [1211.0, 143.5], [-147.5, 955.0, 286.0], [-210.0, 745.0], [-245.0, -190.0], [667.5, -120.0], [-350.0, 2977.5], [], [], [595.0], [-87.5], [362.5], [-122.5], [], [], [5810.0], [], [-222.5], [367.5, -562.5], [-112.5], [727.5], [-25.0], [], [1115.0], [], [798.75, 780.0], [-92.5], [487.5], [], [-105.0, 226.25], [-122.5, -715.0], [-195.0], [-185.0], [2415.0], [], [-225.0], [], [-240.0], [428.75], [840.0, 65.0, 410.0], [-190.0, 116.25], [], [65.0], [-80.0, 1332.36, 5379.0], [], [427.5, 1144.0], [-750.0], [], [], [], [-255.0], [-525.0], [-127.5], [1033.75], [-255.0, 1031.25], [], [712.5], [900.0], [1062.5], [895.0], [], [2685.0], [275.62], [-102.5, 515.0], [-25.0], [], [], [], [], [-325.0], [], [2820.0, 1600.0], [-10.0], [], [-202.5, -292.5], [-255.0], [], [3870.0, 872.5], [-580.0], [667.5, -435.0], [627.5], [], [1305.0], [-210.0], [-87.5], [], [], [-42.5, 86.25], [-137.5], [-117.5], [], [-125.0], [97.5, -364.0, -570.0], [415.0, -170.0], [90.0, -648.75], [-62.5], [1470.0], [], [8.75], [-130.0], [-7.5], [-110.0], [-71.0], [], [-63.0], [-302.5], [493.5, 933.75], [630.0], [-45.0], [742.5, 2953.5], [-160.0], [-205.0], [], [1143.75], [], [], [1177.5, -442.5], [], [-337.5, 2220.0, -390.0], [-270.0], [], [1260.0], [-140.0, 1965.0], [-157.5], [], [-92.5, -352.5], [], [435.0], [-220.0], [-215.0], [235.0, -160.0, -250.0], [-250.0], [-430.0], [93.75, -395.0], [], [4751.25], [502.5], [582.5], [], [], [-205.0], [152.5, 603.75, 1730.0], [1132.5, 1087.5], [-90.0], [1030.0], [-80.0, 18.75], [], [], [40.62], [-20.0, 1320.0], [772.5, -555.0], [-22.5, 502.5, -360.0], [1080.0, 817.5], [-190.0], [], [], [-637.5], [], [], [], [730.0]];   // per-session trade P&L lists at 10-micro base
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const $ = id => document.getElementById(id);
+const fmt = n => (n<0?"−$":"+$") + Math.abs(Math.round(n)).toLocaleString();
+
+// deterministic RNG (mulberry32) so runs are reproducible per click
+function rng(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0;
+  let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t;
+  return ((t^t>>>14)>>>0)/4294967296; } }
+
+function simulate(cfg, R){
+  // returns {path:[equity per day], outcome:'pass'|'bust'|'alive'|'timeout', days}
+  const {mode, pre, post, target, trail, lockat} = cfg;
+  const horizon = mode === "eval" ? 90 : 250;
+  let eq=0, hw=0, floor=-trail, locked=false;
+  const path=[0];
+  for (let d=0; d<horizon; d++){
+    const day = POOL[(R()*POOL.length)|0];
+    const sc = (locked ? post : pre)/10;
+    for (const tr of day){
+      eq += tr*sc;
+      if (eq <= floor){ path.push(eq); return {path, outcome:"bust", days:d+1}; }
+      if (eq > hw){ hw = eq;
+        if (!locked && hw >= lockat){ locked = true; floor = Math.max(floor, 0); }
+        if (!locked) floor = hw - trail; }
+      if (mode==="eval" && eq >= target){ path.push(eq); return {path, outcome:"pass", days:d+1}; }
+    }
+    path.push(eq);
+  }
+  return {path, outcome: mode==="eval" ? "timeout" : "alive", days:horizon};
+}
+
+let seedBase = 42;
+function run(){
+  const cfg = { mode: $("mode").value, pre:+$("pre").value, post:+$("post").value,
+    target:+$("target").value, trail:+$("trail").value, lockat:+$("lockat").value };
+  const N = +$("nsim").value;
+  const R = rng(seedBase++);
+  const sims = [];
+  for (let i=0;i<N;i++) sims.push(simulate(cfg,R));
+
+  // stats
+  const finals = sims.map(s=>s.path[s.path.length-1]).sort((a,b)=>a-b);
+  const q = p => finals[Math.min(finals.length-1, Math.floor(p*finals.length))];
+  const nBust = sims.filter(s=>s.outcome==="bust").length;
+  const nPass = sims.filter(s=>s.outcome==="pass").length;
+  const nTime = sims.filter(s=>s.outcome==="timeout").length;
+  const passDays = sims.filter(s=>s.outcome==="pass").map(s=>s.days).sort((a,b)=>a-b);
+  const st = $("stats");
+  if (cfg.mode==="eval"){
+    st.innerHTML = tile("P(pass)", pct(nPass/N), nPass/N>=.95?"pos":"accent")
+      + tile("P(bust)", pct(nBust/N), nBust/N<=.02?"pos":"neg")
+      + tile("P(timeout 90d)", pct(nTime/N), "")
+      + tile("Median days to pass", passDays.length?passDays[passDays.length>>1]:"—", "")
+      + tile("Median final", fmt(q(.5)), q(.5)>=0?"pos":"neg");
+  } else {
+    st.innerHTML = tile("P(survive year)", pct(1-nBust/N), 1-nBust/N>=.97?"pos":"accent")
+      + tile("P(bust)", pct(nBust/N), nBust/N<=.02?"pos":"neg")
+      + tile("Median year", fmt(q(.5)), "pos")
+      + tile("5th percentile", fmt(q(.05)), q(.05)>=0?"pos":"neg")
+      + tile("95th percentile", fmt(q(.95)), "pos");
+  }
+  $("note").textContent = `${N.toLocaleString()} sims · pre-lock ${cfg.pre} micros → post-lock ${cfg.post} · `
+    + `target ${fmt(cfg.target)} · trailing ${fmt(cfg.trail).slice(1)} locks at ${fmt(cfg.lockat).slice(1)} profit · `
+    + `sized book equivalent: 1.0× ladder = ${cfg.post} micros post-lock`;
+
+  drawFan(sims, cfg);
+  drawHist(finals);
+}
+const tile = (k,v,cls) => `<div class="stat"><div class="k">${k}</div><div class="v mono ${cls}">${v}</div></div>`;
+const pct = v => (v*100).toFixed(1)+"%";
+
+function drawFan(sims, cfg){
+  const cv = $("fan"), ctx = cv.getContext("2d");
+  const W = cv.width, H = cv.height, L=64, Rp=16, T=16, B=30;
+  ctx.clearRect(0,0,W,H);
+  const horizon = Math.max(...sims.map(s=>s.path.length));
+  let lo = Math.min(-cfg.trail*1.2, ...sims.map(s=>Math.min(...s.path)));
+  let hi = Math.max(cfg.mode==="eval"?cfg.target*1.25:1000, ...sims.map(s=>Math.max(...s.path)));
+  const x = i => L + i/(horizon-1)*(W-L-Rp);
+  const y = v => T + (hi-v)/(hi-lo)*(H-T-B);
+  // grid
+  ctx.font = "10.5px ui-monospace,Menlo,monospace"; ctx.fillStyle = css("--ink3");
+  ctx.strokeStyle = css("--line"); ctx.lineWidth = 1;
+  const step = niceStep((hi-lo)/6);
+  for (let g=Math.ceil(lo/step)*step; g<=hi; g+=step){
+    ctx.beginPath(); ctx.moveTo(L,y(g)); ctx.lineTo(W-Rp,y(g)); ctx.stroke();
+    ctx.fillText((g/1000).toFixed(1).replace(".0","")+"k", 8, y(g)+3);
+  }
+  ctx.fillText("day", W-Rp-26, H-8);
+  for (const d of [0, Math.round(horizon/2), horizon-1])
+    ctx.fillText(String(d), x(d)-6, H-8);
+  // percentile band (5-95) computed per day
+  const band5=[], band95=[], med=[];
+  for (let d=0; d<horizon; d++){
+    const vals = sims.map(s=>s.path[Math.min(d, s.path.length-1)]).sort((a,b)=>a-b);
+    band5.push(vals[Math.floor(.05*vals.length)]);
+    band95.push(vals[Math.floor(.95*vals.length)]);
+    med.push(vals[vals.length>>1]);
+  }
+  ctx.beginPath();
+  band95.forEach((v,i)=> i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v)));
+  for (let i=horizon-1;i>=0;i--) ctx.lineTo(x(i), y(band5[i]));
+  ctx.closePath();
+  ctx.fillStyle = hexA(css("--path"), .16); ctx.fill();
+  // spaghetti: up to 140 paths
+  const show = sims.slice(0, 140);
+  for (const s of show){
+    ctx.beginPath();
+    s.path.forEach((v,i)=> i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v)));
+    ctx.strokeStyle = s.outcome==="bust" ? hexA(css("--neg"), .5)
+      : s.outcome==="pass" ? hexA(css("--pos"), .32) : hexA(css("--path"), .18);
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    if (s.outcome==="bust"){
+      const i=s.path.length-1;
+      ctx.fillStyle = css("--neg");
+      ctx.beginPath(); ctx.arc(x(i),y(s.path[i]),2.5,0,7); ctx.fill();
+    }
+  }
+  // median path on top
+  ctx.beginPath();
+  med.forEach((v,i)=> i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v)));
+  ctx.strokeStyle = css("--acc"); ctx.lineWidth = 2.5; ctx.stroke();
+  // reference lines
+  refline(ctx, y(0), L, W-Rp, css("--ink3"), "breakeven / locked floor");
+  if (cfg.mode==="eval") refline(ctx, y(cfg.target), L, W-Rp, css("--pos"), "target "+fmt(cfg.target));
+  refline(ctx, y(-cfg.trail), L, W-Rp, css("--neg"), "day-1 floor −$"+cfg.trail.toLocaleString());
+  function refline(c, yy, x0, x1, col, label){
+    c.save(); c.setLineDash([5,5]); c.strokeStyle = col; c.lineWidth = 1.2;
+    c.beginPath(); c.moveTo(x0,yy); c.lineTo(x1,yy); c.stroke(); c.setLineDash([]);
+    c.fillStyle = col; c.fillText(label, x0+6, yy-5); c.restore();
+  }
+}
+function niceStep(raw){ const p=Math.pow(10,Math.floor(Math.log10(raw)));
+  for (const m of [1,2,2.5,5,10]) if (m*p>=raw) return m*p; return 10*p; }
+function hexA(hex, a){ const h=hex.replace("#","");
+  const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+  return `rgba(${r},${g},${b},${a})`; }
+
+function drawHist(finals){
+  const cv=$("hist"), ctx=cv.getContext("2d");
+  const W=cv.width,H=cv.height,L=10,B=26,T=8;
+  ctx.clearRect(0,0,W,H);
+  const lo=finals[0], hi=finals[finals.length-1];
+  const nb=48, bw=(hi-lo)/nb||1, bins=new Array(nb).fill(0);
+  for (const v of finals) bins[Math.min(nb-1,Math.floor((v-lo)/bw))]++;
+  const mx=Math.max(...bins);
+  ctx.font="10.5px ui-monospace,Menlo,monospace";
+  for (let i=0;i<nb;i++){
+    const x0=L+i/nb*(W-2*L), w=(W-2*L)/nb-1.5;
+    const h=bins[i]/mx*(H-T-B);
+    const mid=lo+(i+.5)*bw;
+    ctx.fillStyle = mid<0? css("--neg") : css("--pos");
+    ctx.globalAlpha=.75;
+    ctx.fillRect(x0, H-B-h, w, h);
+    ctx.globalAlpha=1;
+  }
+  ctx.fillStyle=css("--ink3");
+  ctx.fillText(fmt(lo),L,H-8);
+  const md=finals[finals.length>>1];
+  ctx.fillText("median "+fmt(md), W/2-40, H-8);
+  ctx.fillText(fmt(hi),W-84,H-8);
+}
+
+$("run").addEventListener("click", run);
+for (const id of ["mode","pre","post","target","trail","lockat","nsim"])
+  $(id).addEventListener("change", run);
+run();
+new MutationObserver(run).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+</script>
