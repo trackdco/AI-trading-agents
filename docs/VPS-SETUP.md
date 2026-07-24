@@ -49,16 +49,38 @@ DTC, Python, repos — can be done **now**.
 
 ## Part 4 — Data + execution connections
 
-**4a — Denali data (MBO) — can do NOW (comes with Package 12):**
-14. Global Settings → **Data/Trade Service Settings** → select the **Denali Exchange Data Feed**.
-15. Enable the **CME real-time data** (non-pro) — this is where the ~$16/mo exchange fee + the MBO
-    depth live. Confirm you can see live NQ data + the market depth ladder.
+> **How Sierra combines the two feeds (verified 24-Jul on the live VPS).** You do **not**
+> select a separate "Denali" service. You keep **Rithmic Direct - DTC** as the selected service
+> (it carries the trade route) and **blank its Market Data + Historical Data username/password**
+> fields. With no data creds on the trading service, Sierra automatically falls back to the
+> **Denali (SC Data)** feed for market data + depth. Rithmic's own log confirms why this is
+> mandatory: `MarketDepthIsSupported: 0` — Lucid's Rithmic carries **no depth at all**, so the
+> ladder *must* come from Denali.
 
-**4b — Rithmic execution — DEFERRED until the Lucid account is funded:**
-16. Once Lucid is funded (after parity passes): Global Settings → Data/Trade Service Settings →
-    add a **Rithmic** *trade* connection → enter the **Lucid-provided Rithmic credentials + server/gateway**.
-17. Sierra then runs **Denali for data, Rithmic for the trade route** (two connections at once).
-18. **Verify 10-level DOM depth** shows on the Rithmic account (the wall checks need the full ladder).
+**4a — Rithmic execution connection — the trade route:**
+14. Global Settings → **Data/Trade Service Settings** → **Current Selected Service** = **Rithmic
+    Direct - DTC** → enter the **Lucid-provided Rithmic Trading Username/Password + server**. This
+    connects for *order routing*. (Data via Rithmic is the wrong path — no depth — so we turn it
+    off in 4b.)
+
+**4b — Point data at Denali (blank Rithmic's data creds):**
+15. Same window → **clear** these four fields, leave the two Trading fields filled:
+    Market Data Username, Market Data Password, Historical Data Username, Historical Data Password.
+16. OK → **File → Disconnect → Connect to Data Feed.** Sierra now uses **Denali for data,
+    Rithmic for the trade route.**
+
+**4c — CME real-time + depth data — DEFERRED until the Lucid account is FUNDED:**
+17. The Denali feed needs a **CME real-time exchange subscription** to actually stream. The
+    affordable **non-professional** rate (~**$40.50/mo** for CME Group *with market depth* — depth
+    is the pricey part, not the ~$16 top-of-book figure) **requires a verified live funded futures
+    account** that Sierra connects to at least once a month. Until Lucid is funded you'd be forced
+    onto pro rates for something not needed pre-go-live.
+18. **So don't buy data yet.** Everything before go-live (the parity gate) runs on committed
+    historical data — no live feed. Sequence: pass parity → fund Lucid → connect the funded account
+    → subscribe to CME real-time+depth at non-pro → live L1 + **full MBP-10 + MBO depth** floods in.
+19. At that point **verify the 10-level DOM depth** populates (the wall checks need the full ladder).
+    Until then, a blank DOM + `B: 0.00 A: 0.00` is the **expected** state — the wiring is proven,
+    the data tap is just deliberately off.
 
 ---
 
@@ -87,10 +109,15 @@ DTC, Python, repos — can be done **now**.
 |---|---|---|
 | 1–2 Get in + 24/5 hygiene | Angus | no |
 | 3 Install Sierra + Package 12 | Pat | no |
-| 4a Denali data (MBO) | Pat | no |
-| 4b Rithmic execution | Pat | **yes** (after funding) |
+| 4a Rithmic execution connection | Pat | **yes** (funded, after parity) |
+| 4b Point data at Denali (blank Rithmic data creds) | Pat | no |
+| 4c CME real-time+depth data (~$40.50/mo non-pro) | Pat | **yes** (needs funded acct to qualify) |
 | 5 DTC server | Pat | no |
 | 6 Python + engine + gates | Pat | no |
+
+**Net:** the whole data/trade *wiring* (Parts 3, 4b, 5, 6) can be built and proven now on Sim.
+The two money/live pieces — the Rithmic execution login (4a) and the CME depth subscription (4c) —
+both wait on a **funded** Lucid account, which waits on **parity passing**. Validate first, buy second.
 
 Everything except 4b can be done today. 4b is the last connect, once the account's funded and
 parity's passed.
