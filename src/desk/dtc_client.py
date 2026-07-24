@@ -31,6 +31,7 @@ LOGON_RESPONSE = 2
 HEARTBEAT = 3
 LOGOFF = 5
 MARKET_DATA_REQUEST = 101
+MARKET_DATA_REJECT = 103
 MARKET_DATA_SNAPSHOT = 104
 MARKET_DATA_UPDATE_TRADE = 107
 MARKET_DEPTH_REQUEST = 102
@@ -74,11 +75,13 @@ class DTCClient:
     on_depth: Callable[[dict], None] | None = None
     on_order_update: Callable[[dict], None] | None = None
     on_position: Callable[[dict], None] | None = None
+    on_reject: Callable[[dict], None] | None = None      # MARKET_DATA_REJECT etc.
 
     _sock: socket.socket | None = field(default=None, init=False)
     _rxbuf: bytes = field(default=b"", init=False)
     logged_on: bool = field(default=False, init=False)
     server_hb: int = field(default=0, init=False)          # count of server heartbeats seen
+    rejects: list[dict] = field(default_factory=list, init=False)   # MARKET_DATA_REJECT messages
     _subs: list[tuple[int, str]] = field(default_factory=list, init=False)
     _next_id: int = field(default=1, init=False)
 
@@ -238,6 +241,10 @@ class DTCClient:
         t = m["Type"]
         if t == HEARTBEAT:
             self.server_hb += 1
+        elif t == MARKET_DATA_REJECT:
+            self.rejects.append(m)
+            if self.on_reject:
+                self.on_reject(m)
         elif t in (MARKET_DATA_SNAPSHOT, MARKET_DATA_UPDATE_TRADE) and self.on_trade:
             self.on_trade(m)
         elif t in (MARKET_DEPTH_SNAPSHOT_LEVEL, MARKET_DEPTH_UPDATE_LEVEL) and self.on_depth:
