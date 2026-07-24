@@ -37,6 +37,7 @@ keeps every input file as forensic evidence.
 
 from __future__ import annotations
 
+import os
 import sys
 import time
 from dataclasses import dataclass, field
@@ -159,7 +160,10 @@ class DeskReceiver:
     def _move(self, path: Path, dest_dir: Path) -> None:
         try:
             dest_dir.mkdir(parents=True, exist_ok=True)
-            path.rename(dest_dir / path.name)
+            # os.replace, not Path.rename: on Windows os.rename raises if the target already
+            # exists (a re-processed same-named drop), while os.replace overwrites atomically
+            # on both POSIX and Windows.
+            os.replace(path, dest_dir / path.name)
         except Exception as e:
             self.failures += 1
             print(f"[desk-receiver] failed to move {path.name}: "
