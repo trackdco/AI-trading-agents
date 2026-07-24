@@ -34,10 +34,16 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .sw{width:24px;height:15px;border-radius:3px;border:1px solid var(--line2);cursor:pointer;padding:0;transition:transform .15s}
 .sw:hover{transform:translateY(-1px)}.sw.on{outline:2px solid var(--sys2);outline-offset:1px}.sw:focus-visible{outline:2px solid var(--sys);outline-offset:2px}
 
-.deck{display:grid;grid-template-columns:1fr 1.32fr 1fr;gap:14px;align-items:start}
+.deck{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:14px;align-items:start}
 @media(max-width:1120px){.deck{grid-template-columns:1fr 1fr}.cc{order:-1;grid-column:1/-1}}
 @media(max-width:720px){.deck{grid-template-columns:1fr}.cc{grid-column:auto}}
 .col{display:flex;flex-direction:column;gap:14px}
+.cc{align-self:center}
+.corefloat{position:relative;text-align:center;padding:4px 0}
+.corelbl{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}
+.corelbl .led{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--sys);box-shadow:0 0 7px var(--sys);margin-right:4px}
+.corefloat .verd{position:static;margin-top:-14px}
+.corefloat .det{position:static;margin-top:2px}
 .panel{background:var(--panel);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:10px;
   overflow:hidden;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .panel::before{content:"";position:absolute;left:12px;top:0;width:24px;height:2px;background:var(--sys);box-shadow:0 0 8px var(--sys)}
@@ -88,7 +94,7 @@ canvas{display:block;width:100%;height:auto}
   </div>
 
   <div class="deck">
-    <!-- LEFT -->
+    <!-- LEFT DETAILS -->
     <div class="col">
       <div class="panel"><div class="ph"><span class="led"></span> Account <span class="r">Lucid Flex 50k</span></div>
         <div class="tiles">
@@ -98,21 +104,20 @@ canvas{display:block;width:100%;height:auto}
           <div class="tile"><div class="k">1.0 risk</div><div class="v" id="risknow">$200</div><div class="s">+$75/$1k DD</div></div>
         </div></div>
       <div class="panel"><div class="ph"><span class="led"></span> Depth heatmap <span class="r">MBP-10</span></div>
-        <canvas id="depth" width="360" height="290"></canvas></div>
-      <div class="panel"><div class="ph"><span class="led"></span> Equity · today <span class="r" id="eqr">+$0</span></div>
-        <canvas id="eq" width="360" height="90"></canvas></div>
-    </div>
-
-    <!-- CENTER -->
-    <div class="col cc">
-      <div class="panel core-wrap"><div class="ph"><span class="led"></span> Hermes core <span class="r" id="netstat">idle</span></div>
-        <canvas id="core" width="480" height="430"></canvas>
-        <div class="verd v-eval" id="verd">EVALUATING</div><div class="det" id="det">London window · setup forming</div></div>
+        <canvas id="depth" width="360" height="300"></canvas></div>
       <div class="panel"><div class="ph"><span class="led"></span> MNQ · 1-min <span class="r" id="px">20355.25</span></div>
-        <canvas id="chart" width="640" height="300"></canvas></div>
+        <canvas id="chart" width="360" height="220"></canvas></div>
     </div>
 
-    <!-- RIGHT -->
+    <!-- CENTER — the core floats and owns the middle -->
+    <div class="col cc">
+      <div class="corefloat">
+        <div class="corelbl"><span class="led"></span> HERMES CORE · <span id="netstat">idle</span></div>
+        <canvas id="core" width="560" height="560"></canvas>
+        <div class="verd v-eval" id="verd">EVALUATING</div><div class="det" id="det">London window · setup forming</div></div>
+    </div>
+
+    <!-- RIGHT DETAILS -->
     <div class="col">
       <div class="panel"><div class="ph"><span class="led"></span> Position <span class="r" id="posstat">flat</span></div>
         <div class="flat" id="flat">no position — awaiting canon</div>
@@ -126,6 +131,8 @@ canvas{display:block;width:100%;height:auto}
         <div class="feed" id="feed"></div></div>
       <div class="panel"><div class="ph"><span class="led"></span> Cumulative delta <span class="r" id="cvdr">—</span></div>
         <canvas id="cvd" width="360" height="96"></canvas></div>
+      <div class="panel"><div class="ph"><span class="led"></span> Equity · today <span class="r" id="eqr">+$0</span></div>
+        <canvas id="eq" width="360" height="88"></canvas></div>
     </div>
   </div>
   <div class="foot"><b>THE DESK</b> · Hermes + subagents · mechanical NQ canon · dollar-risk sizing · EOD floor locked $50k · spine armed<br>
