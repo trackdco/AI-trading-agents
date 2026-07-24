@@ -17,12 +17,16 @@ Order matters: prove the depth feed exists before spending on the rest.
 2. **R\|Trader Pro** (free) — download, log in once, sign the CME **non-professional** data agreement. **VERIFY NOW:** the funded Rithmic plan includes full **10-level DOM depth**. Our wall/depth checks are a top-2 signal in every book and die without it. If depth is restricted, stop and sort it before buying anything else.
 3. **CNS Windows VPS** (Chicago / Aurora) — ~4 vCPU / 8 GB / 100 GB+ SSD.  ~$50–65/mo.
 4. **Sierra Chart** — the **trading package** (must include DTC Server + order routing + full DOM).  ~$36–56/mo.
-5. **Sierra Denali CME data with MBO** — **VERIFY** it's true order-by-order MBO, not just DOM.  ~$40/mo.
-6. **Backblaze B2** (or Wasabi) bucket — nightly raw-MBO offload.  ~$5–10/mo.
+5. **Sierra Denali CME data with MBO** — **OPTIONAL / research only** (see below). **VERIFY** it's true order-by-order MBO, not just DOM.  ~$40/mo.
+6. **Backblaze B2** (or Wasabi) bucket — nightly raw-MBO offload (only if #5).  ~$5–10/mo.
 
-All-in ≈ **$135–170/mo** + the funded account. (Runs on the Mac? No — all this lives on the VPS; the Mac is just the remote screen.)
+All-in ≈ **$95–125/mo** on the included feed, or **$135–170/mo** with the MBO research add-on, + the funded account. (Runs on the Mac? No — all this lives on the VPS; the Mac is just the remote screen.)
 
-**Depth data vs. Sierra:** the order-book/heatmap **data** is the Denali MBO subscription (#5); **Sierra** (#4) is the app that receives it, renders it, and re-serves the raw depth over DTC to our engine. Sierra with no MBO subscription = empty ladder; MBO with no Sierra = no bridge into Python. Both required. Our dashboard heatmap is drawn by *our* ingestor from the DTC depth, not Sierra's display.
+**What the strategy needs vs. what's optional — the data picture:**
+- **Lucid's account includes the Rithmic data feed** (real-time CME + **DOM depth / MBP-10**). The canon scores on MBP-10, so **this included feed runs the entire strategy** — no separate data purchase required for trading.
+- **Sierra** connects to Rithmic for **both data and order routing**, and re-serves the raw feed to our engine over DTC. It's the bridge/router, not a data source. Our dashboard heatmap is drawn by *our* ingestor from that DTC depth.
+- **Denali MBO (#5) is the only optional line** — Rithmic's funded feed gives aggregated DOM, *not* order-by-order MBO. Denali adds true MBO purely for the **journal/research substrate** (Angus's day-one choice). Drop it and the strategy is unaffected; the ~$40/mo just stops accumulating the deeper-depth research data.
+- **VERIFY at signup:** Lucid's Rithmic plan includes full **10-level DOM** (not throttled to top-of-book — our wall checks need the ladder), and whether they cover the CME non-pro data fee (~$16/mo) or pass it through.
 
 ---
 
