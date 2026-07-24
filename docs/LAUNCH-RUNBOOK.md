@@ -22,6 +22,8 @@ Order matters: prove the depth feed exists before spending on the rest.
 
 All-in ≈ **$135–170/mo** + the funded account. (Runs on the Mac? No — all this lives on the VPS; the Mac is just the remote screen.)
 
+**Depth data vs. Sierra:** the order-book/heatmap **data** is the Denali MBO subscription (#5); **Sierra** (#4) is the app that receives it, renders it, and re-serves the raw depth over DTC to our engine. Sierra with no MBO subscription = empty ladder; MBO with no Sierra = no bridge into Python. Both required. Our dashboard heatmap is drawn by *our* ingestor from the DTC depth, not Sierra's display.
+
 ---
 
 ## Phase 2 — Stand up the VPS
@@ -53,11 +55,20 @@ All-in ≈ **$135–170/mo** + the funded account. (Runs on the Mac? No — all 
 ## Phase 4 — THE TWO GATES (nothing live until both are green)
 
 14. **Reconciliation day** — point the ingestor at a historical day already in the repo and assert **every feature matches the backtest to the decimal**: CVD sign, VWAP anchor, and that our **MBO→MBP-10 aggregation reproduces the Databento MBP-10** the backtest scored on. If it fails, the thresholds are meaningless — fix before proceeding. **GATE.**
-15. **Parity harness** — replay Pat's agents over **Jun 2025 → Jul 2026** and diff the book they produce against the frozen baseline:
+15. **Parity harness** — replay Pat's agents and diff their book against the frozen baseline.
+    **This needs NO VPS and NO live feed** — it runs against the committed historical data, so
+    run it **early** (the moment the agents can consume the repo's data, before buying hardware).
+    Use a **staged, fail-fast ladder** — don't burn a full-year replay to find a week-2 divergence:
     ```
-    python -m scripts.parity_harness agent_replay.parquet
+    python -m scripts.parity_harness agent_replay.parquet 2025-06-01 2025-06-07   # 1 week
+    python -m scripts.parity_harness agent_replay.parquet 2025-06-01 2025-06-30   # 1 month
+    python -m scripts.parity_harness agent_replay.parquet                          # full 2yr
     ```
-    Must be an exact **PASS** — 400 trades, **+$56,065**, every conviction/stop/micro/P&L matching `baseline_book.parquet`. This proves the agents ARE the validated edge, not a lucky look-alike. Any MISSING/EXTRA/MISMATCH → Pat fixes, re-run. **GATE.**
+    Each stage must be an exact **PASS** before widening; the full run must reproduce 400 trades,
+    **+$56,065**, every conviction/stop/micro/P&L matching `baseline_book.parquet`. This proves the
+    agents ARE the validated edge, not a lucky look-alike. Any MISSING/EXTRA/MISMATCH → Pat fixes at
+    the smallest failing window, re-run. **GATE.** (Because it's feed-independent, this gate can and
+    should clear before Phase 1 — validate the agents, *then* buy the hardware.)
 
 ---
 

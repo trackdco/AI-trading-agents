@@ -14,8 +14,14 @@ Reports: MISSING (in baseline, not in candidate — agent skipped a canon trade)
 candidate, not in baseline — agent invented a trade), and MISMATCH (same trade, wrong
 size/stop/pl — drift or a feature-definition bug).
 
-    python -m scripts.parity_harness                      # self-test (proves it catches diffs)
-    python -m scripts.parity_harness agent_replay.parquet # gate a real candidate book
+    python -m scripts.parity_harness                                   # self-test
+    python -m scripts.parity_harness agent_replay.parquet              # gate the full 2yr book
+    python -m scripts.parity_harness agent_replay.parquet 2025-06-01 2025-06-30   # scope to a window
+
+Staged, fail-fast ladder (each must be an exact PASS before widening — don't burn a full-year
+replay to find a week-2 divergence): 1 week -> 1 month -> both full years. The parity replay
+runs against committed historical data, so it needs NO VPS and NO live feed — run it the moment
+the agents can consume the repo's data, before buying hardware.
 """
 import sys
 from pathlib import Path
@@ -65,6 +71,16 @@ def diff_books(ref, cand):
     return n_match, disc
 
 
+def scope(book, d0, d1):
+    """Restrict a book to [d0, d1] inclusive (YYYY-MM-DD) so a short-window replay compares
+    only that window instead of flagging every out-of-window baseline trade as MISSING."""
+    if not d0 and not d1:
+        return book
+    days = book.index.get_level_values("day")
+    m = ((days >= d0) if d0 else True) & ((days <= d1) if d1 else True)
+    return book[m]
+
+
 def report(ref, cand, label):
     n_match, disc = diff_books(ref, cand)
     n_ref = len(ref)
@@ -111,7 +127,11 @@ def self_test():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        ok = report(load(REF), load(sys.argv[1]), sys.argv[1])
+        cand = sys.argv[1]
+        d0 = sys.argv[2] if len(sys.argv) > 2 else None
+        d1 = sys.argv[3] if len(sys.argv) > 3 else None
+        win = f"  [window {d0 or '…'} → {d1 or '…'}]" if (d0 or d1) else ""
+        ok = report(scope(load(REF), d0, d1), scope(load(cand), d0, d1), cand + win)
         sys.exit(0 if ok else 1)
     else:
         sys.exit(0 if self_test() else 1)
