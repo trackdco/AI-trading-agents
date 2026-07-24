@@ -37,12 +37,15 @@ All-in ≈ **$95–125/mo** on the included feed, or **$135–170/mo** with the 
 | Item | Required? | $/mo |
 |---|---|---|
 | CNS Windows VPS (4vCPU/8GB, Chicago) | ✅ required | $50–65 |
-| Sierra Chart — software (trading package) | ✅ required | $36–56 |
-| Data feed for the strategy | ✅ required | **$0** — included in Lucid's Rithmic connection |
-| CME non-pro data fee | maybe | ~$16 (often covered by firm / bundled — verify) |
-| Sierra Denali data — **MBO** | ⭕ optional (research) | $40 |
-| Backblaze B2 (MBO offload) | ⭕ optional (only with Denali) | $5–10 |
+| **Sierra Chart — pick ONE package:** | | |
+| &nbsp;&nbsp;• Pkg 5 Base Advanced (no MBO; data from Lucid Rithmic) | option A | $36 ($23.4 annual) |
+| &nbsp;&nbsp;• **Pkg 12 Integrated Advanced MBO** (software + Denali data + MBO, all-in) | **option B (your plan)** | $56 ($36.40 annual) |
+| Data feed for the strategy | ✅ required | **$0** on Pkg 5 (Lucid's Rithmic) / **bundled** in Pkg 12 |
+| CME non-pro exchange fee | maybe | ~$16 (covered by Lucid on Rithmic path; on top of Denali — verify) |
+| Backblaze B2 (MBO offload) | ⭕ optional (only with Pkg 12/MBO) | $5–10 |
 | Lovable (if used for the dashboard) | ⭕ optional | $0–25 (self-host = $0) |
+
+*Note: Sierra Pkg 12 already includes the Denali MBO data — there is NO separate ~$40 Denali line. "Integrated" = data bundled. Execution still routes via Rithmic to Lucid.*
 
 **Funded account — Lucid Flex 50k (VERIFY exact numbers + discount codes at checkout):**
 
@@ -55,10 +58,10 @@ All-in ≈ **$95–125/mo** on the included feed, or **$135–170/mo** with the 
 **Free:** R\|Trader Pro · Microsoft Remote Desktop (Mac) · Python · self-hosted dashboard.
 
 **Two totals:**
-- **Minimum to trade** (DOM only, no MBO) — VPS + Sierra software, data from Lucid: **~$86–121/mo** + the account.
-- **With MBO research** (your day-one plan) — add Denali + Backblaze: **~$131–171/mo** + the account.
+- **Minimum to trade** (Pkg 5, DOM only, data from Lucid): VPS + Sierra Pkg 5 = **~$86–101/mo** + the account.
+- **With MBO research** (your day-one plan, Pkg 12): VPS + Sierra Pkg 12 + Backblaze (+~$16 CME) = **~$111–147/mo** + the account. On annual Sierra pricing, closer to **~$95–125/mo**.
 
-**Month-1 out-of-pocket to get running:** ~$130–165 eval + ~$86–121 infra (min) or ~$131–171 (with MBO) ≈ **~$220–335 to start**, then the monthly stack once funded (~$100/mo min, ~$150/mo with MBO), plus the one-time ~$100–140 activation when you pass.
+**Month-1 out-of-pocket to get running:** ~$130–165 eval + the infra (~$86–101 min / ~$111–147 with MBO) ≈ **~$215–310 to start**, then the monthly stack once funded, plus the one-time ~$100–140 activation when you pass.
 
 **At scale (5 accounts):** the infra (VPS + Sierra + Denali) is **shared** — one VPS runs all five copy-traded accounts, so it does *not* 5×. Only the **account fees** multiply (5 evals + 5 activations). Your recurring stack stays ~$130–170/mo total whether it's 1 account or 5.
 
