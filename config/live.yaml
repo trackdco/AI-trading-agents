@@ -1,0 +1,47 @@
+# config/live.yaml — OPERATIONAL settings for the paper-trading launcher
+# (scripts/paper_run.py). This file is runtime WIRING only; the trading RULES live in
+# config/strategy.yaml and are never duplicated here.
+#
+# The launcher assembles src/live/runner.py::LiveRunner exactly as the validated
+# full-stack drill does (scripts/runner_drill.py) and runs it in PAPER mode:
+#   * restart-safe   — restores the ledger, re-seeds the guard, re-fires nothing
+#   * KILL-aware      — the RiskGuard reads `paths.kill_file` on every gate
+#   * alerting        — Telegram on start / stop / trade / halt / daily summary
+#   * pluggable feed  — `feed.type` selects the bar source (replay today; live = seam)
+
+account:
+  starting_equity: 25000.0        # paper account seed (matches the drill + backtest)
+
+paths:
+  ledger:      output/live/ledger.csv      # paper broker ledger — the restart-safe state
+  journal_dir: output/live                 # journal.jsonl (trades) + decisions.jsonl (why)
+  kill_file:   output/live/KILL            # present => no new trades, every session
+  run_log:     output/live/paper_run.log   # launcher log (also echoed to stdout)
+
+risk:                              # RiskLimits — account-level backstops (src/live/risk.py)
+  daily_loss_dollars: 1500.0       # realized day P&L at/below -this => day halt
+  max_trades_per_day: 3            # hard backstop ABOVE the engine's own 2/day cap
+  equity_floor_dollars: null       # cumulative P&L floor => permanent stand-down (null = off)
+
+runner:
+  history_days: 20                 # warmup buffer (>= 16-day detector warmup + overnight)
+  ambient: true                    # journal per-trade ambient context (CANON ruling, 24 Jul)
+  spread_guard: false              # order-time spread guard OFF by default (it drops orders,
+                                   #   which would diverge live from the validated backtest)
+
+telegram:
+  enabled: true                    # true => alerts via .env creds; false => run silent
+                                   #   (the launcher still logs every alert to run_log)
+
+feed:
+  # ---- PLUGGABLE FEED SEAM -------------------------------------------------------
+  # type: replay  -> stream historical bars from parquet (today; validated path)
+  # type: live    -> a real-time BarFeed adapter (Stage-8; NOT built — see the seam
+  #                  marked "<<LIVE FEED ADAPTER>>" in scripts/paper_run.py)
+  type: replay
+  replay:
+    parquet: data/reference/nq_1m_feb_jul2026.parquet
+    session: "2026-03-17"          # the session day to paper-trade (one NY session)
+    warmup_days: 18                # history primed (detection OFF) before the session
+  live:
+    adapter: null                  # <<LIVE FEED ADAPTER>> config drops in here (Stage-8)

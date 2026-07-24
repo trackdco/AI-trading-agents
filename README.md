@@ -37,23 +37,50 @@ one commit per completed spec step (`step-N: ...`).
 
 ## Setup
 
-Python 3.11+. Approved dependencies: pandas, numpy, pydantic v2, PyYAML, pytest, ruff.
-Additional (flagged): **pyarrow** — required by Spec 1 Step 2's parquet output
-(`data/nq_1m.parquet`); logged in `context/progress-tracker.md`.
+Python 3.11+ (validated on 3.12). Approved dependencies: pandas, numpy, pydantic v2,
+PyYAML, pytest, ruff, plus **pyarrow** (parquet I/O). Exact versions are pinned in
+`requirements.txt`.
+
+Reproducible runtime — a repo-local venv (`.venv/` is gitignored):
 
 ```bash
-pip install pandas numpy "pydantic>=2" pyyaml pytest ruff pyarrow
+python3.12 -m venv .venv            # any interpreter >= 3.11
+source .venv/bin/activate           # (deactivate with `deactivate`)
+pip install -r requirements.txt     # exact pinned versions — no shims needed on 3.11+
 ```
 
-Databento API key lives in `.env` (gitignored, never committed). Historical NQ
-1-minute data goes in `data/raw/`.
+Databento API key and Telegram credentials live in `.env` (gitignored, never committed);
+see `.env.example`. Historical NQ 1-minute data goes in `data/raw/`.
 
 ## Running checks
 
 ```bash
-ruff check .   # must be clean before every commit
-pytest         # must be green before every commit
+source .venv/bin/activate
+pytest         # full suite — 352 tests, must be green before every commit
+ruff check .   # style gate
 ```
+
+## Paper trading (Phase 4 — the live/paper runner)
+
+`scripts/paper_run.py` assembles and runs the frozen champion as a paper bot
+(`src/live/runner.py::LiveRunner`), driven entirely by `config/live.yaml`. It is
+restart-safe, honors the kill switch (`output/live/KILL`), computes the E3/E4 book from
+live bars (`LiveVectorPolicy` — no precomputed CSV on the live path), and alerts via
+Telegram on start / stop / trade / halt / daily summary (also written to
+`output/live/paper_run.log`).
+
+```bash
+source .venv/bin/activate
+python -m scripts.paper_run                       # config/live.yaml (replay feed today)
+python -m scripts.paper_run --session 2026-03-17  # override the replay session
+python -m scripts.paper_run --telegram off        # run silent (log only, no network)
+```
+
+Feed is pluggable via `feed.type` in `config/live.yaml`: `replay` (historical parquet —
+the validated path today) or `live` (the real-time adapter seam, marked
+`<<LIVE FEED ADAPTER>>` in `scripts/paper_run.py` — not yet built). Kill switch:
+`touch output/live/KILL` halts new trades every session; delete the file (a deliberate
+human act) to resume — `/kill` from an allowed Telegram user does the same.
 
 ## Data ingest (Step 2)
 
