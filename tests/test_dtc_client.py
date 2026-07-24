@@ -33,6 +33,8 @@ class MockDTCServer:
                 conn, _ = self._srv.accept()
             except TimeoutError:
                 continue
+            except OSError:
+                break                       # server socket closed by stop() — exit cleanly
             threading.Thread(target=self._handle, args=(conn,), daemon=True).start()
 
     def _send(self, conn, mtype, **f):
