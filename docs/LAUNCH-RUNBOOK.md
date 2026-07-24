@@ -15,7 +15,7 @@ Order matters: prove the depth feed exists before spending on the rest.
 
 1. **Lucid Flex 50k eval** — at "Select Platform" choose the **Rithmic Data Feed** (NOT CQG). Sierra Chart is on Lucid's **Rithmic** supported list (confirmed: MotiveWave, Quantower, Tradesea, **Sierra Chart**, Jigsaw, Bookmap, ATAS, R\|Trader Pro, MultiCharts — "all work with all account types"). CQG only carries NinjaTrader/Tradovate/TradingView, so Sierra requires the Rithmic feed.  ~$100–165 (monthly until passed) + activation on funding.
 2. **R\|Trader Pro** (free) — download, log in once, sign the CME **non-professional** data agreement. **VERIFY NOW:** the funded Rithmic plan includes full **10-level DOM depth**. Our wall/depth checks are a top-2 signal in every book and die without it. If depth is restricted, stop and sort it before buying anything else.
-3. **CNS Windows VPS** (Chicago / Aurora) — ~4 vCPU / 8 GB / 100 GB+ SSD.  ~$50–65/mo.
+3. **CNS Trader's VPS — Standard Edition** (Windows Server 2022, **4 core / 4GB / 65GB**, Chicago). NOT the Value edition ($35, 2GB) — 2GB chokes once Sierra + Python + MBO all run. Do **windowed MBO capture + nightly Backblaze offload** to keep 4GB/65GB comfortable.  **$70/mo.**
 4. **Sierra Chart** — the **trading package** (must include DTC Server + order routing + full DOM).  ~$36–56/mo.
 5. **Sierra Denali CME data with MBO** — **OPTIONAL / research only** (see below). **VERIFY** it's true order-by-order MBO, not just DOM.  ~$40/mo.
 6. **Backblaze B2** (or Wasabi) bucket — nightly raw-MBO offload (only if #5).  ~$5–10/mo.
@@ -36,7 +36,7 @@ All-in ≈ **$95–125/mo** on the included feed, or **$135–170/mo** with the 
 
 | Item | Required? | $/mo |
 |---|---|---|
-| CNS Windows VPS (4vCPU/8GB, Chicago) | ✅ required | $50–65 |
+| CNS **Trader's VPS Standard** (Win2022, 4 core / 4GB / 65GB, Chicago) | ✅ required | $70 |
 | **Sierra Chart — pick ONE package:** | | |
 | &nbsp;&nbsp;• Pkg 5 Base Advanced (no MBO; data from Lucid Rithmic) | option A | $36 ($23.4 annual) |
 | &nbsp;&nbsp;• **Pkg 12 Integrated Advanced MBO** (software + Denali data + MBO, all-in) | **option B (your plan)** | $56 ($36.40 annual) |
@@ -57,11 +57,11 @@ All-in ≈ **$95–125/mo** on the included feed, or **$135–170/mo** with the 
 
 **Free:** R\|Trader Pro · Microsoft Remote Desktop (Mac) · Python · self-hosted dashboard.
 
-**Two totals:**
-- **Minimum to trade** (Pkg 5, DOM only, data from Lucid): VPS + Sierra Pkg 5 = **~$86–101/mo** + the account.
-- **With MBO research** (your day-one plan, Pkg 12): VPS + Sierra Pkg 12 + Backblaze (+~$16 CME) = **~$111–147/mo** + the account. On annual Sierra pricing, closer to **~$95–125/mo**.
+**Two totals** (CNS Standard VPS $70):
+- **Minimum to trade** (Pkg 5, DOM only, data from Lucid): $70 VPS + $36 Sierra = **~$106/mo** + the account.
+- **With MBO research** (your day-one plan, Pkg 12): $70 VPS + $56 Sierra Pkg 12 + ~$8 Backblaze (+~$16 CME) = **~$134–150/mo** + the account. On annual Sierra pricing (Pkg 12 = $36.40/mo), closer to **~$115–130/mo**.
 
-**Month-1 out-of-pocket to get running:** ~$130–165 eval + the infra (~$86–101 min / ~$111–147 with MBO) ≈ **~$215–310 to start**, then the monthly stack once funded, plus the one-time ~$100–140 activation when you pass.
+**Month-1 out-of-pocket to get running:** ~$130–165 eval + the infra (~$106 min / ~$134–150 with MBO) ≈ **~$235–315 to start**, then the monthly stack once funded, plus the one-time ~$100–140 activation when you pass.
 
 **At scale (5 accounts):** the infra (VPS + Sierra + Denali) is **shared** — one VPS runs all five copy-traded accounts, so it does *not* 5×. Only the **account fees** multiply (5 evals + 5 activations). Your recurring stack stays ~$130–170/mo total whether it's 1 account or 5.
 
