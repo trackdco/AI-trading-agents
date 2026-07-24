@@ -39,10 +39,10 @@ trailing. The distinction drives everything below:
 - 50k account: DD = **$2,000**. Verify the tier's exact DD, lock point, and contract limit
   at checkout.
 
-Monte-Carlo note: under EOD rules with the sizing below, the **naked** book busts a funded
-year ~2.3% of the time (early-sequence risk at base-7 before the buffer builds — not a
-top-end problem). **With the Tier-1 halts active that drops to ~0.5%** — a 5× reduction.
-The spine is not paperwork; it is the thing that clips that tail.
+Monte-Carlo note: under EOD rules with the dollar-risk sizing below, the **naked** book busts
+a funded year ~1.5% of the time (early-sequence risk before the buffer builds — not a top-end
+problem). **With the Tier-1 halts active that drops to ~0.18%** — an ~8× reduction. The spine
+is not paperwork; it is the thing that clips that tail.
 
 ---
 
@@ -53,8 +53,8 @@ These three keep the funded account from dying. They are the "retain all three" 
 1. **Available-drawdown halt.** Watch `available_dd = equity − EOD_line` continuously. If it
    falls to a hard buffer, **flatten and stop trading for the day.** Because the EOD line is
    fixed intraday, this is equivalently "today's losses have consumed the day's cushion."
-   It is the backstop below the buffer-scaling sizer — a floor the sizer can't undershoot.
-   In the MC this is the single largest contributor to cutting bust 2.3% → 0.5%. Config:
+   It is the backstop below the dollar-risk sizer — a floor the sizer can't undershoot.
+   In the MC this is the single largest contributor to cutting bust 1.5% → 0.18%. Config:
    `dd_halt_buffer` (default: halt at `available_dd <= $250`; 50k DD = $2,000).
 
 2. **Daily loss halt.** If realized P&L for the trading day `<=` a hard limit, **stop for
@@ -117,37 +117,58 @@ These three keep the funded account from dying. They are the "retain all three" 
 
 ---
 
-## Sizing — de-risk & scale on available drawdown (Angus ruling)
+## Sizing — conviction-based DOLLAR-RISK, scaled on available drawdown (Angus ruling, 24-Jul)
 
 Strategy-side risk *shaping* that sits above the spine (the spine is the hard floor below
-it). The canon ladder gives a conviction multiplier per trade (0.5 / 1.0 / 1.5, plus
-Q-boosts up to 2.25). That multiplier is applied to a **base** that scales with available
-drawdown:
+it). We size by **fixed dollar risk per conviction tier**, not by a fixed micro count. The
+canon ladder gives a conviction multiplier per trade (0.25 … 1.0 … 1.5, plus Q-boosts to
+2.25); that maps to a **dollar amount at risk**, and contracts are whatever makes the stop
+cost exactly that:
 
-- **Base = 7 micros for the 1.0 ladder unit** (everything scales off this).
-- **Below +$3k available drawdown: base stays 7.** (You build the eval / early funded buffer
-  at the floor size.)
-- **Past +$3k: +3 micros of base per additional $1k of available drawdown.**
-- **Hard cap 40 micros / 4 minis** on the final order (= the Tier-1 contract clamp).
+```
+risk_$   = base_dollar(available_dd) × min(2.0, conviction)      # 2.25 caps at 2× base
+micros   = round( risk_$ / (stop_pts × $2) )                     # MNQ = $2/pt
+final    = min(40, micros)                                       # 40-micro Tier-1 clamp
+```
 
-Final order micros = `min(40, round(base × ladder_multiplier))`, `base = 7 + 3·⌊(available_dd − 3000)/1000⌋`.
+- **base_dollar = $200 for the 1.0 tier at ≤ $3k available DD.** At the floor that gives
+  exactly Angus's schedule: **1.0 = $200, 1.5 = $300, 2.25 = $400** (the hard per-trade
+  ceiling at the floor). Interpolated tiers are linear: 0.25 = $50, 0.5 = $100, 0.75 = $150.
+- **Past +$3k available DD: +$50 to the 1.0-base per additional $1k of available DD**
+  (`base_dollar = 200 + 50·⌊(available_dd − 3000)/1000⌋`). Gentle on purpose — at $14k
+  available DD a max-conviction trade risks $1,500, so a single loss is 14k→12.5k, not a gut
+  punch. All tiers scale in proportion; the 40-micro clamp is still the absolute ceiling.
 
-| available DD | base | 1.0 trade | 1.5 trade | 2.25 trade |
-|---|---|---|---|---|
-| ≤ $3k | 7 | 7 | 10 | 16 |
-| $4k | 10 | 10 | 15 | 22 |
-| $5k | 13 | 13 | 20 | 29 |
-| $7k | 19 | 19 | 28 | **40** |
-| $10k | 28 | 28 | **40** | 40 |
-| $14k+ | 40 | **40** | 40 | 40 |
+**Why dollar-risk, not micro-count (the core reason):** under a fixed micro count, the same
+"1.0 average setup" actually risked **$98–$724** across the book purely because stop width
+varies 7–60 pts — you'd unknowingly risk $724 on an average setup on a fat-stop day, exactly
+the "brutally rinsed" failure mode. Dollar-risk pins every 1.0 to $200, every 2.25 to $400,
+**stop-width-normalized**: tight stops buy more contracts, fat stops fewer, dollars constant.
+Consistency is king — now true at the dollar level, not just the setup level.
 
-The same rule steps size **down** as available DD shrinks (a bad run or a withdrawal), so
-approaching the floor mechanically de-risks — exactly the reason the spine's Tier-1 halt is
-rarely reached. EOD MC on the combined NY+London book at this sizing: full Lucid cycle
-(eval → $4k max payout) **~95% success, median ~29 days**; funded year **median ~$282k**
-naked / **~$227k with the spine** halts active. The base-7 aggressiveness carries a ~2.3%
-naked funded-year bust tail (early-sequence, pre-buffer) that the spine clips to ~0.5%; if
-that tail is ever unwanted, the lever is a lower *early* base (ramp from 5), not the cap.
+Live schedule (per-trade $ at risk; steps **down** the same way as available DD shrinks, so a
+bad run mechanically de-risks toward the floor):
+
+| available DD | 0.25 | 0.5 | 0.75 | 1.0 | 1.5 | 2.25 |
+|---|---|---|---|---|---|---|
+| ≤ $3k (floor) | $50 | $100 | $150 | **$200** | **$300** | **$400** |
+| $5k | $75 | $150 | $225 | $300 | $450 | $600 |
+| $7k | $100 | $200 | $300 | $400 | $600 | $800 |
+| $10k | $138 | $275 | $412 | $550 | $825 | $1,100 |
+| $14k+ | $188 | $375 | $562 | $750 | $1,125 | $1,500 |
+
+EOD MC on the combined NY+London book at this sizing (Lucid 50k, 20k sims): full cycle
+(eval → $4k max payout) **94% success, median ~32 days**; funded year **median ~$302k naked /
+~$237k with the spine** halts active. Crucially the **naked funded-year bust is 1.5%, cut to
+0.18% with the spine** — vs 4.9% / 0.9% for the old static-micro sizing. The stop-width
+normalization removes most of the early-sequence tail *before* the spine even acts (a 3–5×
+reduction in bust risk at equal median profit), which is the whole point of the rule.
+
+**Baseline note:** the *frozen* combined baseline book (`output/baseline_book.parquet`, the
+agent-replay ground truth) is sized at the **floor schedule only** — deterministic per-trade,
+no DD-scaling — so it stays path-independent and reproducible to the dollar. The DD-scaling
+above is a live overlay applied identically by the baseline sim and the agents from the same
+account-state feed.
 
 ## What the spine is NOT
 
@@ -155,7 +176,7 @@ that tail is ever unwanted, the lever is a lower *early* base (ramp from 5), not
   ever says "no" or "smaller" or "flat." It cannot turn a canon no-trade into a trade.
 - It is **not discretion.** No judgment, no LLM, no tuning in the moment. Every threshold is
   a frozen config constant.
-- It is **not the buffer-scaling sizer.** The sizer is strategy-side risk *shaping* (how
+- It is **not the dollar-risk sizer.** The sizer is strategy-side risk *shaping* (how
   much, as the buffer grows); the spine is the *hard floor* below it that the sizer can
   never breach.
 

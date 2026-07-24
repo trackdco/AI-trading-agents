@@ -153,8 +153,9 @@ research, it never enters the live scoring path until a campaign earns it in.
 - Mechanical spread/slippage cap before placing an order (relative, not a frozen absolute
   — London 2026 spreads regime-shifted). This is Python's job at order time, not an agent
   check.
-- The buffer-scaling sizer reads live account state (equity vs trailing floor) and sets
-  micros: base + 2 per $1k of available drawdown above the leash, floor 2, capped. Account
+- The dollar-risk sizer reads live account state (equity vs EOD line) and sets each order's
+  contracts from a fixed $-at-risk per conviction tier (1.0=$200 … 2.25=$400 at floor, +$50/$1k
+  available DD past $3k), contracts = risk_$/(stop_pts×$2), 40-micro clamp. Account
   state lives in Python — no agent gets P&L-based discretion.
 
 ---
