@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import socket
+import struct
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
@@ -102,12 +103,32 @@ class DTCClient:
                 out.append(json.loads(raw.decode()))
         return out
 
+    def _recv_exact(self, n: int, timeout: float = 5.0) -> bytes:
+        self._sock.settimeout(timeout)
+        while len(self._rxbuf) < n:
+            chunk = self._sock.recv(65536)
+            if not chunk:
+                raise ConnectionError("DTC connection closed during handshake")
+            self._rxbuf += chunk
+        out, self._rxbuf = self._rxbuf[:n], self._rxbuf[n:]
+        return out
+
     # ---- connect / logon ---------------------------------------------------
     def connect(self) -> bool:
         self._sock = self.connector(self.cfg.host, self.cfg.port)
         self._rxbuf = b""
-        self._send(ENCODING_REQUEST, {"Encoding": JSON_ENCODING, "ProtocolType": "DTC"})
-        self._send(LOGON_REQUEST, {"Username": self.cfg.username, "Password": self.cfg.password,
+        # The ENCODING_REQUEST/RESPONSE are ALWAYS binary in DTC; only after the encoding is
+        # negotiated do subsequent messages use JSON. (Sierra drops the link if the encoding
+        # request arrives as JSON.) Binary layout: <u16 Size><u16 Type><i32 ProtoVer><i32
+        # Encoding><char[4] ProtocolType>.
+        self._sock.sendall(struct.pack("<HHii4s", 16, ENCODING_REQUEST, 8,
+                                       JSON_ENCODING, b"DTC\x00"))
+        _size, rtype, _ver, _enc = struct.unpack("<HHii", self._recv_exact(16)[:12])
+        if rtype != ENCODING_RESPONSE:
+            raise ConnectionError(f"expected ENCODING_RESPONSE, got type {rtype}")
+        # from here on, JSON:
+        self._send(LOGON_REQUEST, {"ProtocolVersion": 8, "Username": self.cfg.username,
+                                   "Password": self.cfg.password, "ClientName": "nqdesk",
                                    "HeartbeatIntervalInSeconds": self.cfg.heartbeat_s,
                                    "TradeAccount": self.cfg.trade_account})
         for msg in self._await(LOGON_RESPONSE, timeout=5.0):

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import socket
+import struct
 import threading
 
 from src.desk import dtc_client as D
@@ -43,16 +44,21 @@ class MockDTCServer:
     def _handle(self, conn):
         conn.settimeout(0.3)
         buf = b""
-        while not self._stop.is_set():
+        # DTC binary handshake first: read the 16-byte ENCODING_REQUEST, reply with a binary
+        # ENCODING_RESPONSE, then switch to the JSON (\0-terminated) protocol.
+        while len(buf) < 16 and not self._stop.is_set():
             try:
                 data = conn.recv(65536)
             except TimeoutError:
                 continue
             except OSError:
-                break
+                return
             if not data:
-                break
+                return
             buf += data
+        conn.sendall(struct.pack("<HHii4s", 16, D.ENCODING_RESPONSE, 8, D.JSON_ENCODING, b"DTC\x00"))
+        buf = buf[16:]
+        while not self._stop.is_set():
             while b"\x00" in buf:
                 raw, buf = buf.split(b"\x00", 1)
                 if raw:
@@ -60,6 +66,15 @@ class MockDTCServer:
                         self._respond(conn, json.loads(raw.decode()))
                     except OSError:
                         return          # client disconnected mid-response (Windows: WinError 10053)
+            try:
+                data = conn.recv(65536)
+            except TimeoutError:
+                continue
+            except OSError:
+                return
+            if not data:
+                return
+            buf += data
 
     def _respond(self, conn, m):
         t = m["Type"]

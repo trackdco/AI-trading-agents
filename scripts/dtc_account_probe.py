@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from src.desk.dtc_client import DTCClient, DTCConfig  # noqa: E402
+from src.desk.dtc_client import DTCClient, DTCConfig
 
 TRADE_ACCOUNTS_REQUEST = 400
 TRADE_ACCOUNT_RESPONSE = 401
@@ -18,7 +18,7 @@ TRADE_ACCOUNT_RESPONSE = 401
 def main(port: int = 11099) -> int:
     c = DTCClient(DTCConfig(host="127.0.0.1", port=port))
     if not c.connect():
-        print("LOGON FAILED — is Sierra's DTC server up on 127.0.0.1:%d?" % port)
+        print(f"LOGON FAILED — is Sierra's DTC server up on 127.0.0.1:{port}?")
         return 1
     print(f"logged on: {c.logged_on}")
 
