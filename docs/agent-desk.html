@@ -1,0 +1,338 @@
+<title>The Desk — live agent command center</title>
+<style>
+/* Deliberate single-world design: a dark mission-control terminal. The subject is a live
+   trading desk "speaking the language of the market" — so the identity is monospace data,
+   an amber command accent, and semantic long/short color. No webfonts (CSP-safe). */
+:root{
+  --bg:#0A0C10; --panel:#12151B; --panel2:#171B22; --inset:#0D1015;
+  --line:#232A36; --line2:#2E3644;
+  --ink:#E9ECF2; --ink2:#98A1B0; --ink3:#5B6472;
+  --amber:#E8A13A; --amber2:#F0B860; --amberdim:rgba(232,161,58,.14);
+  --long:#33C77C; --short:#E5645B; --cyan:#4FD1C5; --edge:#3B4658;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);
+  font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+body{padding:18px clamp(12px,3vw,34px) 48px}
+.wrap{max-width:1240px;margin:0 auto}
+.mono{font-family:var(--mono)}
+a{color:inherit}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  padding:11px 16px;margin-bottom:16px}
+.brand{font-family:var(--sans);font-weight:800;letter-spacing:.16em;font-size:12px;
+  text-transform:uppercase;color:var(--ink)}
+.brand b{color:var(--amber)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--long);display:inline-block;
+  box-shadow:0 0 8px var(--long);animation:bl 2.4s ease-in-out infinite}
+@keyframes bl{50%{opacity:.35}}
+.top .sp{flex:1}
+.pill{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);
+  border:1px solid var(--line2);border-radius:999px;padding:4px 11px}
+.pill.book{color:#0A0C10;background:var(--amber);border-color:var(--amber);font-weight:700}
+.clock{font-size:12.5px;color:var(--ink2);letter-spacing:.06em}
+
+h1{font-family:var(--sans);font-weight:850;letter-spacing:-.02em;font-size:clamp(20px,3.4vw,30px);
+  line-height:1.02;margin:6px 2px 2px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--amber)}
+.sub{color:var(--ink2);font-size:12.5px;letter-spacing:.02em;margin:0 2px 16px;max-width:74ch}
+
+/* main grid */
+.grid{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;align-items:start}
+@media(max-width:940px){.grid{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden}
+.card .hd{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.card .hd .r{margin-left:auto;color:var(--ink2)}
+
+/* node graph */
+.stagewrap{position:relative}
+#net{display:block;width:100%;height:auto;background:
+  radial-gradient(120% 90% at 50% 46%,rgba(232,161,58,.06),transparent 60%),var(--inset)}
+.callbar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line);
+  background:var(--panel2)}
+.callbar .lbl{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+.callbar .verdict{font-family:var(--sans);font-weight:800;letter-spacing:.02em;font-size:17px}
+.v-trade{color:var(--long)} .v-skip{color:var(--ink2)} .v-eval{color:var(--amber)}
+.callbar .detail{margin-left:auto;font-size:12px;color:var(--ink2)}
+
+/* feed */
+.feed{height:236px;overflow:hidden;padding:6px 0}
+.line{display:grid;grid-template-columns:64px 96px 1fr;gap:10px;padding:5px 15px;font-size:12px;
+  border-left:2px solid transparent;animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(4px)}}
+.line .t{color:var(--ink3)}
+.line .who{font-weight:700;letter-spacing:.02em}
+.line .msg{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.line .msg b{color:var(--ink);font-weight:600}
+.line .msg .ok{color:var(--long)} .line .msg .no{color:var(--short)}
+
+/* right rail */
+.rail{display:flex;flex-direction:column;gap:16px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.tile{background:var(--panel);padding:13px 15px}
+.tile .k{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3)}
+.tile .v{font-size:23px;font-weight:750;margin-top:5px;font-family:var(--sans);letter-spacing:-.01em}
+.tile .s{font-size:10.5px;color:var(--ink3);margin-top:2px}
+.pos{padding:14px 16px;display:none}
+.pos.on{display:block}
+.pos .row{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;color:var(--ink2)}
+.pos .row b{color:var(--ink);font-weight:600}
+.pos .side{font-family:var(--sans);font-weight:800;font-size:15px;letter-spacing:.03em}
+.posflat{padding:22px 16px;text-align:center;color:var(--ink3);font-size:12px;letter-spacing:.05em}
+.bar{height:5px;border-radius:3px;background:var(--line2);overflow:hidden;margin-top:9px}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--amber),var(--long));width:0;transition:width .5s}
+#eq{display:block;width:100%;height:auto;background:var(--inset)}
+.foot{color:var(--ink3);font-size:11px;letter-spacing:.03em;margin-top:18px;line-height:1.7;text-align:center}
+.foot b{color:var(--ink2);font-weight:600}
+@media(prefers-reduced-motion:reduce){.dot{animation:none}.line{animation:none}}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <span class="brand"><b>◆</b> THE&nbsp;DESK</span>
+    <span class="pill">NQ&nbsp;·&nbsp;mechanical canon</span>
+    <span class="pill book" id="bookPill">LONDON</span>
+    <span class="sp"></span>
+    <span class="clock" id="clock">—</span>
+    <span class="pill"><span class="dot"></span>&nbsp;Rithmic&nbsp;live</span>
+    <span class="pill" id="engver">eng v2.1 · θ 9f3c</span>
+  </div>
+
+  <h1>Seven agents, one <em>final call</em>.</h1>
+  <p class="sub">A live command center for the mechanical NQ desk. Each agent runs one job in the canon pipeline and reports a concrete result — no debate, no discretion. Claude takes the final call, Apollo places the bracket, Mnemosyne journals every bit. This is a working mockup driven by scripted data; wired to the live event stream it renders the real desk.</p>
+
+  <div class="grid">
+    <div class="card stagewrap">
+      <div class="hd">Agent network <span class="r" id="netstat">idle</span></div>
+      <canvas id="net" width="720" height="430"></canvas>
+      <div class="callbar">
+        <span class="lbl">Final call</span>
+        <span class="verdict v-eval" id="verdict">EVALUATING…</span>
+        <span class="detail" id="calldetail">London window · setup forming</span>
+      </div>
+    </div>
+
+    <div class="rail">
+      <div class="card">
+        <div class="hd">Account <span class="r">Lucid Flex 50k</span></div>
+        <div class="tiles">
+          <div class="tile"><div class="k">Balance</div><div class="v" id="bal">$52,000</div><div class="s">start $50,000</div></div>
+          <div class="tile"><div class="k">Day P&amp;L</div><div class="v" id="daypl">+$0</div><div class="s" id="daytr">0 trades today</div></div>
+          <div class="tile"><div class="k">Available DD</div><div class="v" id="add">$4,000</div><div class="s">floor locked $50,000</div></div>
+          <div class="tile"><div class="k">1.0 risk now</div><div class="v" id="risknow">$275</div><div class="s">base + $75/$1k</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd">Open position <span class="r" id="posstat">flat</span></div>
+        <div class="posflat" id="posflat">no position — waiting on the canon</div>
+        <div class="pos" id="pos">
+          <div class="row"><span class="side" id="posside">LONG MNQ</span><b id="possize">×18</b></div>
+          <div class="row"><span>entry</span><b id="posent">20355.25</b></div>
+          <div class="row"><span>stop / target</span><b><span id="posstop">20342.75</span> · <span id="postgt">20392.75</span></b></div>
+          <div class="row"><span>unrealized</span><b id="posun" style="color:var(--long)">+$0</b></div>
+          <div class="bar"><i id="posbar"></i></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd">Equity — today <span class="r" id="eqr">+$0</span></div>
+        <canvas id="eq" width="420" height="120"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="hd">Agent comms <span class="r">live event stream · newest at bottom</span></div>
+    <div class="feed" id="feed"></div>
+  </div>
+
+  <div class="foot">
+    <b>The Desk</b> · mechanical NQ canon (pre · golden · London) · dollar-risk sizing · safety spine active<br>
+    mockup data — the same layout renders live once the agent event stream is wired over the local socket
+  </div>
+</div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+/* ---- agent roster: each maps to one real canon-pipeline job ---- */
+const AGENTS=[
+  {id:"CHRONOS",   role:"session router",   col:"#5B8FF0"},
+  {id:"ATLAS",     role:"structure",        col:"#4FD1C5"},
+  {id:"LUMEN",     role:"setups",           col:"#E8A13A"},
+  {id:"HYDRA",     role:"risk & sizing",    col:"#C879E8"},
+  {id:"APOLLO",    role:"execution",        col:"#33C77C"},
+  {id:"MNEMOSYNE", role:"journal · MBO",    col:"#6FA0FF"},
+  {id:"HEPHAESTUS",role:"infra · safety",   col:"#E5645B"},
+];
+const CLAUDE={id:"CLAUDE",role:"CEO · final call",col:"#E8A13A"};
+
+/* ---- node graph ---- */
+const net=$("net"),nx=net.getContext("2d");
+let nodes=[],pulses=[],active=null,claudeGlow=0;
+function layout(){
+  const W=net.width,H=net.height,cx=W/2,cy=H/2,R=Math.min(W,H)*0.375;
+  nodes=AGENTS.map((a,i)=>{const ang=-Math.PI/2+i/AGENTS.length*Math.PI*2;
+    return{...a,x:cx+Math.cos(ang)*R,y:cy+Math.sin(ang)*R,glow:0,done:false};});
+  nodes.push({...CLAUDE,x:cx,y:cy,center:true,glow:0,done:false});
+}
+layout();
+const node=id=>nodes.find(n=>n.id===id);
+function firePulse(fromId){
+  const n=node(fromId),c=node("CLAUDE");if(!n)return;
+  n.glow=1;active=fromId;$("netstat").textContent=fromId+" active";
+  if(!reduce)pulses.push({a:n,b:c,t:0,col:n.col});
+}
+function drawNet(){
+  const W=net.width,H=net.height,c=node("CLAUDE");
+  nx.clearRect(0,0,W,H);
+  // edges
+  nodes.forEach(n=>{if(n.center)return;
+    nx.beginPath();nx.moveTo(n.x,n.y);nx.lineTo(c.x,c.y);
+    nx.strokeStyle=n.glow>.05?rgba(n.col,.35+n.glow*.4):"rgba(59,70,88,.5)";
+    nx.lineWidth=n.glow>.05?1.6:1;nx.stroke();});
+  // pulses travelling to Claude
+  pulses.forEach(p=>{p.t+=0.045;const x=p.a.x+(p.b.x-p.a.x)*p.t,y=p.a.y+(p.b.y-p.a.y)*p.t;
+    nx.beginPath();nx.arc(x,y,3.2,0,7);nx.fillStyle=p.col;nx.shadowBlur=10;nx.shadowColor=p.col;
+    nx.fill();nx.shadowBlur=0;if(p.t>=1)claudeGlow=1;});
+  pulses=pulses.filter(p=>p.t<1);
+  // Claude center
+  claudeGlow*=0.94;
+  ring(c,26,claudeGlow);
+  nx.fillStyle="#0A0C10";nx.beginPath();nx.arc(c.x,c.y,20,0,7);nx.fill();
+  nx.fillStyle=rgba(CLAUDE.col,.16);nx.beginPath();nx.arc(c.x,c.y,20,0,7);nx.fill();
+  glyph(c,CLAUDE.col,true);
+  // agents
+  nodes.forEach(n=>{if(n.center)return;n.glow*=0.93;
+    ring(n,15,n.glow);
+    nx.fillStyle="#0D1015";nx.beginPath();nx.arc(n.x,n.y,11,0,7);nx.fill();
+    if(n.done){nx.fillStyle=rgba("#33C77C",.18);nx.beginPath();nx.arc(n.x,n.y,11,0,7);nx.fill();}
+    glyph(n,n.done?"#33C77C":(n.glow>.1?n.col:"#5B6472"),false);
+    label(n);});
+}
+function ring(n,r,g){nx.beginPath();nx.arc(n.x,n.y,r,0,7);
+  nx.strokeStyle=rgba(n.col,.3+g*.6);nx.lineWidth=1.4+g*1.6;
+  if(g>.05){nx.shadowBlur=14*g;nx.shadowColor=n.col;}nx.stroke();nx.shadowBlur=0;}
+function glyph(n,col,center){nx.fillStyle=col;nx.font=(center?"700 12px ":"700 9px ")+"ui-monospace,Menlo,monospace";
+  nx.textAlign="center";nx.textBaseline="middle";nx.fillText(center?"C":n.id[0],n.x,n.y);}
+function label(n){const below=n.y>net.height/2;
+  nx.fillStyle="#98A1B0";nx.font="700 9.5px ui-monospace,Menlo,monospace";nx.textAlign="center";
+  nx.textBaseline=below?"top":"bottom";nx.fillText(n.id,n.x,below?n.y+19:n.y-19);
+  nx.fillStyle="#5B6472";nx.font="8.5px ui-monospace,Menlo,monospace";
+  nx.fillText(n.role,n.x,below?n.y+31:n.y-31);}
+function rgba(hex,a){const h=hex.replace("#","");return`rgba(${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},${parseInt(h.slice(4,6),16)},${a})`;}
+
+/* ---- equity sparkline ---- */
+const eqc=$("eq"),ex=eqc.getContext("2d");let eqpts=[0];
+function drawEq(){const W=eqc.width,H=eqc.height,p=10;ex.clearRect(0,0,W,H);
+  const lo=Math.min(0,...eqpts),hi=Math.max(120,...eqpts);
+  const X=i=>p+i/(Math.max(1,eqpts.length-1))*(W-2*p),Y=v=>H-p-(v-lo)/(hi-lo)*(H-2*p);
+  ex.strokeStyle="rgba(35,42,54,.9)";ex.lineWidth=1;
+  ex.beginPath();ex.moveTo(p,Y(0));ex.lineTo(W-p,Y(0));ex.stroke();
+  ex.beginPath();eqpts.forEach((v,i)=>i?ex.lineTo(X(i),Y(v)):ex.moveTo(X(i),Y(v)));
+  ex.strokeStyle="#E8A13A";ex.lineWidth=2;ex.stroke();
+  ex.lineTo(W-p,Y(lo));ex.lineTo(p,Y(lo));ex.closePath();
+  ex.fillStyle="rgba(232,161,58,.10)";ex.fill();
+  const lx=X(eqpts.length-1),ly=Y(eqpts[eqpts.length-1]);
+  ex.beginPath();ex.arc(lx,ly,3,0,7);ex.fillStyle="#E8A13A";ex.shadowBlur=8;ex.shadowColor="#E8A13A";ex.fill();ex.shadowBlur=0;}
+
+/* ---- feed ---- */
+function feedLine(t,who,col,html){
+  const el=document.createElement("div");el.className="line";
+  el.innerHTML=`<span class="t">${t}</span><span class="who" style="color:${col}">${who}</span><span class="msg">${html}</span>`;
+  const f=$("feed");f.appendChild(el);
+  while(f.children.length>9)f.removeChild(f.firstChild);
+  f.scrollTop=f.scrollHeight;
+}
+
+/* ---- account state ---- */
+let bal=2340, day=0, trades=0, addv=4340;
+const money=n=>(n<0?"−$":"+$")+Math.abs(Math.round(n)).toLocaleString();
+const dollars=n=>"$"+Math.round(n).toLocaleString();
+function renderAcct(){
+  $("bal").textContent=dollars(50000+bal);
+  $("daypl").textContent=money(day);$("daypl").style.color=day>=0?"var(--long)":"var(--short)";
+  $("daytr").textContent=trades+" trade"+(trades===1?"":"s")+" today";
+  $("add").textContent=dollars(addv);
+  $("risknow").textContent=dollars(200+75*Math.max(0,Math.floor((addv-3000)/1000)));
+  $("eqr").textContent=money(day);$("eqr").style.color=day>=0?"var(--long)":"var(--short)";
+}
+
+/* ---- scripted trade cycle (a real London evaluation → open → manage → close) ---- */
+const T0=Date.now();
+function et(){const d=new Date();return d.toTimeString().slice(0,8);}
+function step(ms){return new Promise(r=>setTimeout(r,reduce?Math.min(ms,120):ms));}
+function setVerdict(cls,txt,det){const v=$("verdict");v.className="verdict "+cls;v.textContent=txt;$("calldetail").textContent=det;}
+
+async function cycle(){
+  // reset nodes
+  nodes.forEach(n=>{n.done=false;n.glow=0;});
+  setVerdict("v-eval","EVALUATING…","London window · setup forming");
+  $("pos").classList.remove("on");$("posflat").style.display="block";$("posstat").textContent="flat";
+
+  const seq=[
+    ["CHRONOS","03:14 ET · <b>London</b> window active · routing <b>LONDON</b> book"],
+    ["ATLAS",`structure — wall behind <span class="ok">NO ✓</span> · ahead 6.2pt <span class="ok">✓</span> · room_R 3.8 <span class="ok">✓</span> · <b>score 3/4</b>`],
+    ["LUMEN",`ASIA flow aligned <span class="ok">✓</span> · tape clean opp5=1 <span class="ok">✓</span> · OF stack <b>BOTH → ×1.5</b>`],
+    ["HYDRA",`risk 12.5pt · conv <b>1.5 → $300</b> · availDD $4,340 · <b>18 micros</b>`],
+    ["HEPHAESTUS",`feed OK · spread 0.8 rel <span class="ok">✓</span> · parity locked · spine <span class="ok">clear</span>`],
+  ];
+  for(const [who,msg] of seq){
+    const a=node(who);feedLine(et(),who,a.col,msg);firePulse(who);a.done=true;
+    await step(760);
+  }
+  // final call
+  await step(300);claudeGlow=1;
+  setVerdict("v-trade","TRADE","long MNQ ×18 @ 20355.25 · 1.5 conviction");
+  feedLine(et(),"CLAUDE",CLAUDE.col,`<b>FINAL CALL → TRADE</b> · long MNQ ×18 @ 20355.25`);
+  await step(560);
+
+  // execution + open position
+  node("APOLLO").glow=1;firePulse("APOLLO");
+  feedLine(et(),"APOLLO",node("APOLLO").col,`limit <b>filled 20355.25</b> · stop 20342.75 · target 20392.75 · bracket live`);
+  const entry=20355.25,stop=20342.75,tgt=20392.75,size=18,riskD=300;
+  $("posflat").style.display="none";$("pos").classList.add("on");$("posstat").textContent="LONG · live";
+  $("posside").textContent="LONG MNQ";$("possize").textContent="×"+size;
+  $("posent").textContent=entry.toFixed(2);$("posstop").textContent=stop.toFixed(2);$("postgt").textContent=tgt.toFixed(2);
+  await step(500);
+  feedLine(et(),"MNEMOSYNE",node("MNEMOSYNE").col,`journaled trade #${47+trades} · <b>MBO window 2.1MB</b> · features hashed θ9f3c`);
+  node("MNEMOSYNE").glow=1;
+
+  // manage: walk R from 0 → +3 (target)
+  const steps=reduce?[3]:[0.4,0.9,0.6,1.3,1.8,1.5,2.2,2.7,3.0];
+  for(const R of steps){
+    const un=R*riskD;
+    $("posun").textContent=money(un);$("posun").style.color=un>=0?"var(--long)":"var(--short)";
+    $("posbar").style.width=Math.max(0,Math.min(100,(R/3)*100))+"%";
+    await step(620);
+  }
+  // close at +3R target
+  const pnl=3*riskD;day+=pnl;bal+=pnl;trades++;addv+=pnl;
+  eqpts.push(day);renderAcct();
+  feedLine(et(),"APOLLO",node("APOLLO").col,`<b>target hit</b> 20392.75 · +3.0R · closed <b>${money(pnl)}</b>`);
+  setVerdict("v-skip","FLAT","trade closed +3.0R · awaiting next setup");
+  $("pos").classList.remove("on");$("posflat").style.display="block";$("posflat").textContent="no position — waiting on the canon";
+  $("posstat").textContent="flat";node("APOLLO").glow=1;
+  await step(2200);
+}
+
+async function main(){
+  renderAcct();eqpts=[0];feedLine(et(),"SYSTEM","#98A1B0",`desk online · 8 agents · <b>London</b> book routed · spine armed`);
+  while(true){await cycle();}
+}
+
+/* animation loops */
+function raf(){drawNet();drawEq();requestAnimationFrame(raf);}
+requestAnimationFrame(raf);
+setInterval(()=>{$("clock").textContent=new Date().toUTCString().slice(17,25)+" UTC";},1000);
+$("clock").textContent=new Date().toUTCString().slice(17,25)+" UTC";
+main();
+</script>
