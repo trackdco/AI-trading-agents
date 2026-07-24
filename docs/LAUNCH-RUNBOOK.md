@@ -30,6 +30,40 @@ All-in ≈ **$95–125/mo** on the included feed, or **$135–170/mo** with the 
 
 ---
 
+## Cost summary (1 account)
+
+**Recurring monthly — the live stack:**
+
+| Item | Required? | $/mo |
+|---|---|---|
+| CNS Windows VPS (4vCPU/8GB, Chicago) | ✅ required | $50–65 |
+| Sierra Chart — software (trading package) | ✅ required | $36–56 |
+| Data feed for the strategy | ✅ required | **$0** — included in Lucid's Rithmic connection |
+| CME non-pro data fee | maybe | ~$16 (often covered by firm / bundled — verify) |
+| Sierra Denali data — **MBO** | ⭕ optional (research) | $40 |
+| Backblaze B2 (MBO offload) | ⭕ optional (only with Denali) | $5–10 |
+| Lovable (if used for the dashboard) | ⭕ optional | $0–25 (self-host = $0) |
+
+**Funded account — Lucid Flex 50k (VERIFY exact numbers + discount codes at checkout):**
+
+| Item | When | est. |
+|---|---|---|
+| Eval fee | upfront (one-time or monthly until passed) | ~$130–165 |
+| Activation fee | once, on funding | ~$100–140 |
+| Funded account monthly | after funding | usually $0 / small |
+
+**Free:** R\|Trader Pro · Microsoft Remote Desktop (Mac) · Python · self-hosted dashboard.
+
+**Two totals:**
+- **Minimum to trade** (DOM only, no MBO) — VPS + Sierra software, data from Lucid: **~$86–121/mo** + the account.
+- **With MBO research** (your day-one plan) — add Denali + Backblaze: **~$131–171/mo** + the account.
+
+**Month-1 out-of-pocket to get running:** ~$130–165 eval + ~$86–121 infra (min) or ~$131–171 (with MBO) ≈ **~$220–335 to start**, then the monthly stack once funded (~$100/mo min, ~$150/mo with MBO), plus the one-time ~$100–140 activation when you pass.
+
+**At scale (5 accounts):** the infra (VPS + Sierra + Denali) is **shared** — one VPS runs all five copy-traded accounts, so it does *not* 5×. Only the **account fees** multiply (5 evals + 5 activations). Your recurring stack stays ~$130–170/mo total whether it's 1 account or 5.
+
+---
+
 ## Phase 2 — Stand up the VPS
 
 7. Spin up the CNS VPS. From your **Mac**, install **Microsoft Remote Desktop** (free, App Store) and RDP into it. This is how you'll see/control the Windows side.
