@@ -56,7 +56,10 @@ class MockDTCServer:
             while b"\x00" in buf:
                 raw, buf = buf.split(b"\x00", 1)
                 if raw:
-                    self._respond(conn, json.loads(raw.decode()))
+                    try:
+                        self._respond(conn, json.loads(raw.decode()))
+                    except OSError:
+                        return          # client disconnected mid-response (Windows: WinError 10053)
 
     def _respond(self, conn, m):
         t = m["Type"]
