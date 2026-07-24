@@ -193,8 +193,9 @@ sits you just above the 50k floor after every payout, so a bad streak busts ~30%
 (2.15% vs 1.50%). **Build-6** gives up ~4% cash (~$10k/yr across 5 accounts) to keep a $4k
 cushion after each withdrawal — cheap insurance, since a busted account forfeits its entire
 ~$48k/yr stream plus the re-eval cost. Consistency is king. (These are *naked* rates; the
-Tier-1 spine halts clip them a further 5–8×.) **Open:** confirm Lucid's exact consistency
-rule — "5 winning days of 150%" — since it is the binding constraint on payout speed.
+Tier-1 spine halts clip them a further 5–8×.) Lucid's consistency rule = **5 positive days of
+≥ +$150 each between payouts** (confirmed); it barely bites — at the DD-scaled sizing our
+winning days almost always clear $150, so Build-6 still nets ~$48k/acct/yr with it enforced.
 
 ## What the spine is NOT
 

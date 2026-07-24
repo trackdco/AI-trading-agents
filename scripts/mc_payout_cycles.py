@@ -31,6 +31,7 @@ INC = 75.0            # +$ per $1k available DD past $3k (Angus sweet spot)
 BASE0 = 200.0
 PAYOUT = 2000.0       # max payout per withdrawal
 MIN_WIN_DAYS = 5      # winning days required between payouts
+MIN_WIN_PL = 150.0    # a "winning day" must clear >= +$150 (Lucid consistency rule)
 NSIM = 20000
 NDAYS = 252
 SEED = 20260724
@@ -70,7 +71,7 @@ def sim_account(rng, trigger):
             if bal + dpl <= line:      # intraday bust
                 return withdrawn, payouts, first, True
         bal += dpl
-        if dpl > 0:
+        if dpl >= MIN_WIN_PL:          # counts toward the payout gate only if >= +$150
             win_days += 1
         line = min(0.0, max(line, bal - DD))         # EOD line update, locks at 0
         # end-of-day withdrawal
