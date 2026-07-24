@@ -27,3 +27,4 @@ output/triggers_hist2326_days/
 # Hermes desk rebuild artifacts — recon dumps and full skill-content backups
 # (these contain live skill content pulled off the Hermes host)
 .hermes-rebuild/
+.venv-freeze/
