@@ -18,9 +18,10 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from src.canon.features import depth_at, load_depth_day
+from src.canon.features import depth_at, load_depth_day, tape_features
 
 MATRIX = Path("output/trade_matrix.parquet")
+FP_MINUTES = Path("output/fp_minutes.parquet")
 DEP_COLS = [
     "dep_thick", "dep_imb", "dep_spread", "dep_support", "dep_resist", "dep_sup_m_res",
     "dep_wall_above_d", "dep_wall_above_sz", "dep_thick_d5m",
@@ -71,5 +72,54 @@ def test_depth_features_reproduce_backtest_matrix():
     assert checked > 0, "no trades with on-disk depth were checked — data wiring is wrong"
     assert not mismatches, (
         f"{len(mismatches)} depth-feature mismatches across {checked} trades; "
+        f"first 5: {mismatches[:5]}"
+    )
+
+
+# tape/CVD columns that tape_features emits and trade_matrix stores
+TAPE_COLS = [
+    "pm_sofar_cvd", "pm_sofar_abscvd", "pm_sofar_eff", "pm_sofar_crosses",
+    "pm_sofar_patheff", "pm_sofar_conf", "op_sofar_cvd", "op_sofar_eff", "op_sofar_conf",
+    "d5", "d5_conf", "d15", "d15_conf", "d30", "d30_conf",
+    "pathpos", "fill_vol_rel", "fill_delta", "fill_delta_conf",
+]
+
+
+def _tape_prep():
+    """Replicate scripts/trade_matrix.py's fp_minutes preprocessing exactly."""
+    if not MATRIX.exists() or not FP_MINUTES.exists():
+        pytest.skip("output/trade_matrix.parquet or output/fp_minutes.parquet absent "
+                    "— tape parity gate runs where the data lives")
+    m = pd.read_parquet(FP_MINUTES)
+    m.index = pd.DatetimeIndex(m.index)
+    m = m.sort_index()
+    m["cum"] = m.groupby("sday").delta.cumsum()
+    m["runmin"] = m.groupby("sday").cum.cummin()
+    m["runmax"] = m.groupby("sday").cum.cummax()
+    daymed = m.groupby("sday").vol.median()
+    byday = {d: g for d, g in m.groupby("sday")}
+    return byday, daymed
+
+
+def test_tape_features_reproduce_backtest_matrix():
+    byday, daymed = _tape_prep()
+    trades = pd.read_parquet(MATRIX)
+    checked, mismatches = 0, []
+    for t in trades.itertuples():
+        g = byday.get(str(t.day))
+        if g is None:
+            continue
+        upto = g[g.index < t.fillmi]
+        got = tape_features(upto, t.direction, t.fillmi, float(daymed[str(t.day)]))
+        for col in TAPE_COLS:
+            if not hasattr(t, col):
+                continue
+            if not _eq(getattr(t, col), got.get(col, float("nan"))):
+                mismatches.append((str(t.day), str(t.fillmi), col,
+                                   getattr(t, col), got.get(col, float("nan"))))
+        checked += 1
+    assert checked > 0, "no trades checked — fp_minutes/trade_matrix day keys don't line up"
+    assert not mismatches, (
+        f"{len(mismatches)} tape-feature mismatches across {checked} trades; "
         f"first 5: {mismatches[:5]}"
     )
