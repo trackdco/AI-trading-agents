@@ -13,7 +13,7 @@ Reference docs: `LIVE-STACK.md` (stack), `SAFETY-SPINE.md` (guardrails + sizing)
 
 Order matters: prove the depth feed exists before spending on the rest.
 
-1. **Lucid Flex 50k eval** — choose the **Rithmic** connection option (not Tradovate).  ~$100–165 (monthly until passed) + activation on funding.
+1. **Lucid Flex 50k eval** — at "Select Platform" choose the **Rithmic Data Feed** (NOT CQG). Sierra Chart is on Lucid's **Rithmic** supported list (confirmed: MotiveWave, Quantower, Tradesea, **Sierra Chart**, Jigsaw, Bookmap, ATAS, R\|Trader Pro, MultiCharts — "all work with all account types"). CQG only carries NinjaTrader/Tradovate/TradingView, so Sierra requires the Rithmic feed.  ~$100–165 (monthly until passed) + activation on funding.
 2. **R\|Trader Pro** (free) — download, log in once, sign the CME **non-professional** data agreement. **VERIFY NOW:** the funded Rithmic plan includes full **10-level DOM depth**. Our wall/depth checks are a top-2 signal in every book and die without it. If depth is restricted, stop and sort it before buying anything else.
 3. **CNS Windows VPS** (Chicago / Aurora) — ~4 vCPU / 8 GB / 100 GB+ SSD.  ~$50–65/mo.
 4. **Sierra Chart** — the **trading package** (must include DTC Server + order routing + full DOM).  ~$36–56/mo.
