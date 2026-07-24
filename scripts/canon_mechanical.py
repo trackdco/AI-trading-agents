@@ -59,6 +59,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.live_thresholds import TH  # frozen thresholds (LIVE-STACK #1)  # noqa: E402
 
 
 def build_canon(T):
@@ -70,20 +71,19 @@ def build_canon(T):
     T["W"] = T["W"].where(T.dep_thick.notna())
     T["F"] = (T.fill_delta_conf == 1).astype(float)
     d15dir = T.d15 * np.where(long, 1, -1)
-    T["Tp"] = (d15dir >= d15dir[T.yr == 2025].quantile(0.25)).astype(float)
-    T["G"] = (T.ent_vs_vwap_sd_dir >= T[T.yr == 2025].ent_vs_vwap_sd_dir.quantile(0.25)).astype(float)
+    T["Tp"] = (d15dir >= TH.pre_Tp_d15dir_min).astype(float)
+    T["G"] = (T.ent_vs_vwap_sd_dir >= TH.pre_G_ent_vs_vwap_sd_dir_min).astype(float)
     T["C"] = np.where(T.win_ == "pre", (T.conf_PM == 1), (T.conf_LON == 1)).astype(float)
     # --- golden-native checks (thresholds = frozen 2025-GOLD quantiles) ---
     BP = pd.read_parquet("output/badpa_matrix.parquet")[
         ["day", "book", "fill", "netpath_30", "bbw_state", "churn_flow_30", "trigdens_30"]]
     T = T.merge(BP, on=["day", "book", "fill"], how="left")
-    g25 = T[(T.win_ == "gold") & (T.yr == 2025)]
     T["D"] = pd.Series(np.where(long, T.dep_wall_above_d.notna(), T.dep_wall_below_d.notna()),
                        index=T.index).astype(float).where(T.dep_thick.notna())
     T["Tc"] = (T.d15_conf == 1).astype(float)
-    T["X"] = (T.bbw_state >= g25.bbw_state.quantile(0.75)).astype(float).where(T.bbw_state.notna())
-    T["AGE"] = (T.on_extreme_age >= g25.on_extreme_age.quantile(0.50)).astype(float).where(T.on_extreme_age.notna())
-    T["PAQ"] = (T.netpath_30 >= g25.netpath_30.quantile(0.25)).astype(float).where(T.netpath_30.notna())
+    T["X"] = (T.bbw_state >= TH.gold_X_bbw_state_min).astype(float).where(T.bbw_state.notna())
+    T["AGE"] = (T.on_extreme_age >= TH.gold_AGE_on_extreme_age_min).astype(float).where(T.on_extreme_age.notna())
+    T["PAQ"] = (T.netpath_30 >= TH.gold_PAQ_netpath_30_min).astype(float).where(T.netpath_30.notna())
 
     T = T[(T.risk >= 7) & (T.risk <= 60)].sort_values("fill").reset_index(drop=True)
     pre_score = T[["W", "F", "Tp", "G", "C"]].sum(axis=1)
