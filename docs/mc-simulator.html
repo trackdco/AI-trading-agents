@@ -62,7 +62,7 @@ h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)
   <h1>Monte Carlo — live paths</h1>
   <p class="sub">Every run resamples real trading days from the COMBINED shipped canons — NY (pre + golden) AND London — 225 sessions, 400 sized trades, Jun 25 – Jul 26, sized by <b>conviction-based dollar risk</b>: each trade risks a fixed $ per conviction tier (1.0 = $200, 1.5 = $300, 2.25 = $400 at the floor), and contracts = risk&#36; / (stop × $2), so a tight stop buys more micros and a fat stop fewer — every trade of a tier risks the same dollars. Full cycle = the Lucid journey: pass the $3k eval, then a fresh funded account to the $4k max-payout target.
   EOD drawdown (not trailing): the floor updates at day-end and locks at start balance once the lock is banked. The
-  base $ scales up with available drawdown (+$ per $1k past $3k), so size grows as the buffer builds and steps back down when it thins.</p>
+  base $ scales up with available drawdown (+$75 per $1k past $3k), so size grows as the buffer builds and steps back down when it thins. Real Lucid economics — repeated $2k payout cycles and withdrawals — live in <code>scripts/mc_payout_cycles.py</code>.</p>
 </header>
 
 <div class="panel">
@@ -74,7 +74,7 @@ h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)
         <option value="funded">Funded year — 250 days</option>
       </select></div>
     <div class="ctl"><label>Base $ (1.0 tier)</label><input id="base0" type="number" value="200" min="50" max="1000" step="25"></div>
-    <div class="ctl"><label>+$ per $1k DD</label><input id="inc" type="number" value="50" min="0" max="300" step="25"></div>
+    <div class="ctl"><label>+$ per $1k DD</label><input id="inc" type="number" value="75" min="0" max="300" step="25"></div>
     <div class="ctl"><label>Micro cap</label><input id="capm" type="number" value="40" min="2" max="60"></div>
     <div class="ctl"><label>Eval target $</label><input id="target" type="number" value="3000" step="500"></div>
     <div class="ctl"><label>Funded target $</label><input id="ftarget" type="number" value="4000" step="500"></div>

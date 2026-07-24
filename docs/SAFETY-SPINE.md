@@ -134,10 +134,12 @@ final    = min(40, micros)                                       # 40-micro Tier
 - **base_dollar = $200 for the 1.0 tier at ≤ $3k available DD.** At the floor that gives
   exactly Angus's schedule: **1.0 = $200, 1.5 = $300, 2.25 = $400** (the hard per-trade
   ceiling at the floor). Interpolated tiers are linear: 0.25 = $50, 0.5 = $100, 0.75 = $150.
-- **Past +$3k available DD: +$50 to the 1.0-base per additional $1k of available DD**
-  (`base_dollar = 200 + 50·⌊(available_dd − 3000)/1000⌋`). Gentle on purpose — at $14k
-  available DD a max-conviction trade risks $1,500, so a single loss is 14k→12.5k, not a gut
-  punch. All tiers scale in proportion; the 40-micro clamp is still the absolute ceiling.
+- **Past +$3k available DD: +$75 to the 1.0-base per additional $1k of available DD**
+  (`base_dollar = 200 + 75·⌊(available_dd − 3000)/1000⌋`). This is the MC sweet spot —
+  it builds the operating buffer faster (which is where the account is safest) while
+  holding max-payout probability essentially flat vs the gentler +$50. On a 50k the working
+  band is ~$2k–$6k available DD (withdrawals keep pulling it back), so the 1.0-base runs
+  ~$200–$425 in practice. All tiers scale in proportion; the 40-micro clamp is the ceiling.
 
 **Why dollar-risk, not micro-count (the core reason):** under a fixed micro count, the same
 "1.0 average setup" actually risked **$98–$724** across the book purely because stop width
@@ -152,10 +154,11 @@ bad run mechanically de-risks toward the floor):
 | available DD | 0.25 | 0.5 | 0.75 | 1.0 | 1.5 | 2.25 |
 |---|---|---|---|---|---|---|
 | ≤ $3k (floor) | $50 | $100 | $150 | **$200** | **$300** | **$400** |
-| $5k | $75 | $150 | $225 | $300 | $450 | $600 |
-| $7k | $100 | $200 | $300 | $400 | $600 | $800 |
-| $10k | $138 | $275 | $412 | $550 | $825 | $1,100 |
-| $14k+ | $188 | $375 | $562 | $750 | $1,125 | $1,500 |
+| $4k | $69 | $138 | $206 | $275 | $412 | $550 |
+| $5k | $88 | $175 | $262 | $350 | $525 | $700 |
+| $6k | $106 | $212 | $319 | $425 | $638 | $850 |
+| $7k | $125 | $250 | $375 | $500 | $750 | $1,000 |
+| $10k | $181 | $362 | $544 | $725 | $1,088 | $1,450 |
 
 EOD MC on the combined NY+London book at this sizing (Lucid 50k, 20k sims): full cycle
 (eval → $4k max payout) **94% success, median ~32 days**; funded year **median ~$302k naked /
@@ -169,6 +172,29 @@ agent-replay ground truth) is sized at the **floor schedule only** — determini
 no DD-scaling — so it stays path-independent and reproducible to the dollar. The DD-scaling
 above is a live overlay applied identically by the baseline sim and the agents from the same
 account-state feed.
+
+## Withdrawal policy — build the buffer, then harvest (Lucid 50k, `scripts/mc_payout_cycles.py`)
+
+Lucid pays out **$2,000 max per withdrawal**, gated by **5 winning days between payouts**,
+and a withdrawal **reduces balance** (hence available DD, hence sizer base). Run 5 funded
+accounts per login, copy-traded off the identical book. Modeling the real cycle (not a
+one-shot target) over a funded year, 20k sims:
+
+| policy | withdraw when | back to | cash/acct/yr (median) | 1st payout | bust % | ×5 accounts |
+|---|---|---|---|---|---|---|
+| Harvest-min | bal ≥ $4k | $2k | **$50,000** | ~17d | 2.15% | ~$250k/yr |
+| **Build-6 (chosen)** | bal ≥ $6k | $4k | **$48,000** | ~23d | **1.50%** | ~$240k/yr |
+| Build-8 | bal ≥ $8k | $6k | $48,000 | ~28d | 1.51% | ~$240k/yr |
+
+The counter-intuitive finding: **the 5-winning-day rule — not the balance — caps payout
+frequency** (~24–25/yr either way), so building a bigger buffer does *not* meaningfully slow
+the cash and does *not* speed it up. What it changes is **survival**: harvesting down to $2k
+sits you just above the 50k floor after every payout, so a bad streak busts ~30% more often
+(2.15% vs 1.50%). **Build-6** gives up ~4% cash (~$10k/yr across 5 accounts) to keep a $4k
+cushion after each withdrawal — cheap insurance, since a busted account forfeits its entire
+~$48k/yr stream plus the re-eval cost. Consistency is king. (These are *naked* rates; the
+Tier-1 spine halts clip them a further 5–8×.) **Open:** confirm Lucid's exact consistency
+rule — "5 winning days of 150%" — since it is the binding constraint on payout speed.
 
 ## What the spine is NOT
 

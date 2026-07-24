@@ -4,7 +4,7 @@
 Sizing rule (replaces static micro-count):
   per-trade $ risk = base_dollar(available_dd) * tier_mult(conviction), capped by 40-micro clamp
     tier_mult = min(2.0, conviction)   # 0.25..1.0 linear; 1.5->1.5x; 2.25->2.0x (=$400 at floor)
-    base_dollar = $200 at <=$3k available DD; +$50 per $1k of available DD past $3k
+    base_dollar = $200 at <=$3k available DD; +$75 per $1k of available DD past $3k
   contracts(MNQ,$2/pt) = round( risk_$ / (stop_pts * 2) ), hard-clamped to 40 micros
   => every trade of a given tier risks a CONSTANT dollar amount, stop-width-normalized.
 
@@ -37,8 +37,8 @@ NDAY = len(DAYS)
 FLOOR = {0.25: 3, 0.5: 5, 0.75: 6, 1.0: 7, 1.5: 8, 2.25: 11}
 
 def base_dollar(ad):
-    # +$50 to the 1.0-base per $1k of available DD past $3k (Angus 24-Jul: gentle scale)
-    return 200.0 + 50.0 * max(0, int((ad - 3000) // 1000)) if ad > 3000 else 200.0
+    # +$75 to the 1.0-base per $1k of available DD past $3k (Angus 24-Jul: MC sweet spot)
+    return 200.0 + 75.0 * max(0, int((ad - 3000) // 1000)) if ad > 3000 else 200.0
 
 def micros_dollar_risk(conv, risk, ad):
     rb = base_dollar(ad) * min(2.0, conv)
@@ -123,7 +123,7 @@ def run(label, sizer):
 
 if __name__ == "__main__":
     print(f"funded-year survival + full cycle, {NSIM} sims each, EOD drawdown, Lucid 50k\n")
-    print("DOLLAR-RISK sizing (1.0=$200, 1.5=$300, 2.25=$400 at floor; +$50/$1k DD past $3k):")
+    print("DOLLAR-RISK sizing (1.0=$200, 1.5=$300, 2.25=$400 at floor; +$75/$1k DD past $3k):")
     run("dollar-risk", micros_dollar_risk)
     print("\nSTATIC micro sizing (base-5-floor, +3 micros/$1k DD past $3k):")
     run("static-micro", micros_static)
