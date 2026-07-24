@@ -17,7 +17,8 @@ numbers the backtest did, or the frozen thresholds are meaningless.** Sierra's b
 studies are NOT trusted — Python recomputes every canon feature from the raw feed, and a
 reconciliation day proves parity before a single funded order is placed.
 
-Cost: ~$50/month all-in (Sierra package + the funded firm provides Rithmic free).
+Cost: ~$90–145/month all-in (Sierra package + Denali MBO data from launch + optional VPS;
+the funded firm provides the Rithmic execution connection free). Full breakdown at the end.
 
 ---
 
@@ -157,6 +158,46 @@ research, it never enters the live scoring path until a campaign earns it in.
   contracts from a fixed $-at-risk per conviction tier (1.0=$200 … 2.25=$400 at floor, +$50/$1k
   available DD past $3k), contracts = risk_$/(stop_pts×$2), 40-micro clamp. Account
   state lives in Python — no agent gets P&L-based discretion.
+
+---
+
+## Software stack & costs (MBO from launch — Angus ruling)
+
+The whole system is short because the funded account and Sierra each do double duty. The
+chain: **Lucid Flex 50k** provides the Rithmic execution route + drawdown-of-record;
+**Sierra Chart** connects to the CME data (Denali, for MBO), draws the order flow, and bridges
+raw data + orders over DTC; **Python** (Pat's build) recomputes every feature, routes,
+sizes, guards, and journals; the **agent layer** routes/executes/journals with no LLM in the
+trade path.
+
+| # | Component | Role | Cost |
+|---|---|---|---|
+| 1 | **Lucid Flex 50k** | Execution route (Rithmic) + drawdown-of-record. Rithmic execution connection is **free** with the account. | eval ~$100–165 (monthly until passed) + one-time activation |
+| 2 | **Sierra Chart** (trading package) | Feed bridge, order router, DOM, order-flow charting. Must be the tier with **DTC Server + order routing + full DOM depth**. | ~$36–56/mo |
+| 3 | **Sierra Denali CME data — MBO** | The market-by-order feed, **from launch**. Single source, dual purpose: aggregate → MBP-10 for live scoring; retain raw MBO for the journal/research substrate. | ~$40/mo (non-pro CME) |
+| 4 | **R\|Trader Pro** | One-time CME non-pro data-agreement signup; then check the firm's drawdown. | free |
+| 5 | **24/5 machine** (Windows) | Runs Sierra + Python + agents continuously (needs the full overnight for London Asia-CVD / ON range). Own always-on PC, or a Windows trading VPS. | $0, or ~$25–50/mo VPS |
+| 6 | **Python stack** | Ingestor, feature library, router, dollar-risk sizer, safety spine, journaler. | free |
+| 7 | **Agent runtime** | Mechanical trade path (free compute). Optional Claude Agent SDK for orchestration/journaling — not per-tick, so a small API cost at most. | ~$0–50/mo |
+
+**All-in: ~$90–145/month** (own always-on PC → toward the low end; Windows VPS → high end),
+on top of the funded-account cost.
+
+**Why MBO from day one (not deferred):** every forward trade is journaled with full
+order-book *composition* — a big wall that HOLDS vs one that VANISHES, iceberg refresh,
+orders pulling as price approaches — all invisible to MBP-10. That is a direct upgrade to our
+single strongest signal (depth/walls). Capturing it from the first live day means we
+accumulate the forward substrate to run a full campaign on it in months, not years. It never
+enters the live scoring path until a campaign earns it in; until then it's pure research fuel.
+
+**Data-vs-execution split:** Denali provides the *data* (MBO); Rithmic remains the *execution*
+route and the firm's drawdown-of-record. Sierra runs data and trade connections from different
+sources — a standard setup. The reconciliation day (Cross-cutting A) must prove our MBO→MBP-10
+aggregation reproduces the Databento MBP-10 the backtest scored on.
+
+**Verify at signup:** the Sierra package tier includes DTC Server + Rithmic order routing +
+full 10-level DOM; the Denali CME subscription includes true order-by-order MBO (not just DOM);
+and the funded Rithmic execution plan isn't depth-restricted.
 
 ---
 
