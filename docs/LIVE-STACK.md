@@ -114,6 +114,15 @@ from the matrix scripts rather than re-deriving.
 
 ## Step 6 — Execution: limit brackets, not market orders
 
+- **Read NQ, route MNQ (Angus ruling — the sizing depends on it).** The canon features
+  (depth, walls, CVD, footprint) are computed on the **full E-mini NQ** ($20/pt) — the liquid
+  book the wall checks need. But orders route in **MNQ** (Micro, $2/pt), because the
+  dollar-risk sizing is in MNQ micros: `contracts = risk_$ / (stop_pts × $2)`. NQ at $20/pt is
+  too coarse for the $200/$300/$400 risk steps. Prices track 1:1 (NQ and MNQ are the same
+  index) — so the engine reads **NQ** depth/trades to compute the verdict + `entry_ref`/stop/
+  target, then submits **MNQ** limit brackets at those exact prices. Front month e.g.
+  `NQU26` (data) / `MNQU26` (orders). Sierra must have NQ subscribed for data AND MNQ routable
+  for orders.
 - Entries are **limit retests** — the entire canon was validated on limit fills at the
   retest level. Send a **limit order at the computed `entry_ref`**, bracketed with the
   stop and target, via DTC `SubmitNewSingleOrder` (include `TradeAccount`, `Quantity`,
