@@ -21,60 +21,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from src.canon.features import crosses, depth_at, load_depth_day, path_eff  # noqa: E402,F401
 from src.engine.indicators import daily_vwap
 NY = "America/New_York"
-
-
-def path_eff(p):
-    p = p.dropna()
-    if len(p) < 5:
-        return np.nan
-    return float(abs(p.iloc[-1] - p.iloc[0]) / max(p.diff().abs().sum(), 1e-9))
-
-
-def crosses(p):
-    p = p.dropna()
-    if len(p) < 5:
-        return np.nan
-    s = np.sign(p - p.mean())
-    return float((s.diff().abs() > 0).sum())
-
-
-def load_depth_day(day):
-    for folder in ("depth_2025", "depth_2026", "depth_apr2026"):
-        p = Path(f"data/reference/{folder}/nq_depth_{day}_ny.csv")
-        if p.exists():
-            d = pd.read_csv(p)
-            d["ts"] = pd.to_datetime(d.ts, utc=True).dt.tz_convert(NY)
-            return d
-    return None
-
-
-def depth_at(dep, minute, entry, direction):
-    sub = dep[dep.ts <= minute]
-    if sub.empty:
-        return {}
-    b = sub[sub.ts == sub.ts.max()]
-    bid, ask = b[b.side == "bid"], b[b.side == "ask"]
-    if bid.empty or ask.empty:
-        return {}
-    tb, ta = bid["size"].sum(), ask["size"].sum()
-    f = {"dep_thick": tb + ta, "dep_imb": (tb - ta) / max(tb + ta, 1),
-         "dep_spread": ask.price.min() - bid.price.max(),
-         "dep_support": tb if direction == "long" else ta,
-         "dep_resist": ta if direction == "long" else tb}
-    f["dep_sup_m_res"] = f["dep_support"] - f["dep_resist"]
-    above, below = b[b.price > entry], b[b.price < entry]
-    if len(above):
-        w = above.loc[above["size"].idxmax()]
-        f["dep_wall_above_d"] = float(w.price - entry); f["dep_wall_above_sz"] = float(w["size"])
-    if len(below):
-        w = below.loc[below["size"].idxmax()]
-        f["dep_wall_below_d"] = float(entry - w.price); f["dep_wall_below_sz"] = float(w["size"])
-    b5 = dep[dep.ts <= minute - pd.Timedelta(minutes=5)]
-    if not b5.empty:
-        f["dep_thick_d5m"] = f["dep_thick"] - b5[b5.ts == b5.ts.max()]["size"].sum()
-    return f
+# Feature definitions (path_eff / crosses / load_depth_day / depth_at) moved to
+# src/canon/features.py so the live ingestor scores on the IDENTICAL functions
+# (LIVE-STACK #2). tests/test_canon_features_parity.py proves parity vs this parquet.
 
 
 def main():
