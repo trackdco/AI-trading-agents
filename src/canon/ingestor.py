@@ -71,9 +71,13 @@ class CanonIngestor:
     """Rolling live state + on-trigger feature-row assembly. Push methods are what a feed
     calls; the same methods serve replay and (later) the live DTC feed."""
 
-    def __init__(self) -> None:
+    def __init__(self, book=None) -> None:
         self.tape = MinuteTape()
-        self.book = OrderBook()
+        # Book is pluggable so the same ingestor serves both data paths with no change to
+        # on_depth / feature_row: OrderBook (MBO, order-by-order — Databento/replay) or
+        # DepthBook (MBP level data — Sierra .depth file-tail, Route B). Both expose the
+        # same apply / long_form interface.
+        self.book = book if book is not None else OrderBook()
         self._bars: list[dict] = []
         self._vwap_cache: pd.DataFrame | None = None
 
@@ -158,9 +162,18 @@ class ReplaySource:
 
 
 # --------------------------------------------------------------------------- live feed seam
-def feed_seam() -> None:
-    """<<LIVE DTC FEED ADAPTER>> — Sierra Chart over DTC drops in HERE. A real-time source
-    calls ingestor.on_bar / on_minute_tape / on_depth as closed bars, footprint minutes, and
-    MBO events arrive. NOT built (needs the DTC client, src/desk/dtc_client.py). The ingestor
-    above is transport-agnostic, so only this adapter changes."""
-    raise NotImplementedError("live DTC feed not built — use ReplaySource (offline)")
+def live_feed(scid_path, depth_path=None, **kw):
+    """<<LIVE DATA ADAPTER — Route B: tail Sierra's .scid/.depth files>>.
+
+    Sierra's DTC server will not *serve* market data to an external client under the CME
+    non-pro / no-redistribution licence (orders route fine; data is rejected). So the live
+    data path reads the files Sierra itself persists to local disk — unambiguous local use,
+    no redistribution, no compiled study. This returns a `SierraFileFeed` (see
+    src/canon/sierra_files.py) that reads .scid bars + .depth level events and calls the
+    SAME on_bar / on_minute_tape / on_depth methods above — so the ingestor, canon, spine,
+    journaler and parity gate are all untouched; only this adapter is new.
+
+    Construct the ingestor with a level book for this path:  CanonIngestor(book=DepthBook()).
+    """
+    from src.canon.sierra_files import SierraFileFeed
+    return SierraFileFeed(scid_path, depth_path, **kw)

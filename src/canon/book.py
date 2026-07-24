@@ -107,3 +107,74 @@ class OrderBook:
 
     def best_ask(self) -> float | None:
         return min(self._ask_sz) if self._ask_sz else None
+
+
+class DepthBook:
+    """Level-based book for Sierra's Market Depth (`.depth`) file / DTC level updates.
+
+    Sierra's `.depth` feed is **MBP (per-price-level)**, NOT order-by-order: each event
+    sets/removes a whole price level, carrying total size AND the level's order count
+    (`ct`). So this book is keyed by price, not order id — it is the correct model for the
+    file-tail (Route B) data path, and it exposes the SAME read interface as `OrderBook`
+    (`apply` / `long_form` / `mbp10` / `best_bid` / `best_ask`) so `CanonIngestor` and
+    `src/canon/features.depth_at` consume it with zero change.
+
+    Event schema (one dict per event — see src/canon/sierra_files.DepthReader):
+
+        {"action": "R"|"B"|"A"|"b"|"a", "price": float, "size": int, "ct": int}
+
+      R clear   — wipe the whole book (session reset / snapshot boundary)
+      B set-bid — set the bid level at `price` to (size, ct); size 0 deletes the level
+      A set-ask — set the ask level at `price` to (size, ct); size 0 deletes the level
+      b del-bid — remove the bid level at `price`
+      a del-ask — remove the ask level at `price`
+
+    Unlike MBO, a set REPLACES the level (it is already the aggregate), so there is no
+    order-count composition beyond `ct`; the true MBO research substrate (iceberg/pull
+    detection) is NOT reconstructable from level data — that needs the order-by-order feed.
+    """
+
+    def __init__(self) -> None:
+        self._bids: dict[float, tuple[int, int]] = {}   # price -> (size, ct)
+        self._asks: dict[float, tuple[int, int]] = {}
+
+    def apply(self, ev: dict) -> None:
+        a = ev["action"]
+        if a == "R":
+            self._bids.clear()
+            self._asks.clear()
+            return
+        if a in ("B", "A"):
+            side = self._bids if a == "B" else self._asks
+            price, size, ct = float(ev["price"]), int(ev["size"]), int(ev.get("ct", 1))
+            if size <= 0:                      # a set-to-zero is a delete (no empty levels)
+                side.pop(price, None)
+            else:
+                side[price] = (size, ct)
+        elif a == "b":
+            self._bids.pop(float(ev["price"]), None)
+        elif a == "a":
+            self._asks.pop(float(ev["price"]), None)
+        else:
+            raise ValueError(f"unknown depth-level action {a!r}")
+
+    def mbp10(self, depth: int = 10) -> dict[str, list[Level]]:
+        bids = [Level(p, self._bids[p][0], self._bids[p][1])
+                for p in sorted(self._bids, reverse=True)[:depth]]
+        asks = [Level(p, self._asks[p][0], self._asks[p][1])
+                for p in sorted(self._asks)[:depth]]
+        return {"bids": bids, "asks": asks}
+
+    def long_form(self, depth: int = 10) -> list[dict]:
+        snap = self.mbp10(depth)
+        rows = [{"side": "bid", "price": lv.price, "size": lv.size, "ct": lv.ct}
+                for lv in snap["bids"]]
+        rows += [{"side": "ask", "price": lv.price, "size": lv.size, "ct": lv.ct}
+                 for lv in snap["asks"]]
+        return rows
+
+    def best_bid(self) -> float | None:
+        return max(self._bids) if self._bids else None
+
+    def best_ask(self) -> float | None:
+        return min(self._asks) if self._asks else None
