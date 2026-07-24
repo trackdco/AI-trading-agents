@@ -114,10 +114,10 @@ h1 em{font-style:normal;color:var(--amber)}
       <div class="card">
         <div class="hd">Account <span class="r">Lucid Flex 50k</span></div>
         <div class="tiles">
-          <div class="tile"><div class="k">Balance</div><div class="v" id="bal">$52,000</div><div class="s">start $50,000</div></div>
+          <div class="tile"><div class="k">Balance</div><div class="v" id="bal">$52,340</div><div class="s">start $50,000</div></div>
           <div class="tile"><div class="k">Day P&amp;L</div><div class="v" id="daypl">+$0</div><div class="s" id="daytr">0 trades today</div></div>
-          <div class="tile"><div class="k">Available DD</div><div class="v" id="add">$4,000</div><div class="s">floor locked $50,000</div></div>
-          <div class="tile"><div class="k">1.0 risk now</div><div class="v" id="risknow">$275</div><div class="s">base + $75/$1k</div></div>
+          <div class="tile"><div class="k">Available DD</div><div class="v" id="add">$2,340</div><div class="s">= balance − locked $50k floor</div></div>
+          <div class="tile"><div class="k">1.0 risk now</div><div class="v" id="risknow">$200</div><div class="s">base + $75/$1k</div></div>
         </div>
       </div>
 
@@ -241,15 +241,20 @@ function feedLine(t,who,col,html){
   f.scrollTop=f.scrollHeight;
 }
 
-let bal=2340, day=0, trades=0, addv=4340;
+let bal=2340, day=0, trades=0, withdrawn=0;
 const money=n=>(n<0?"−$":"+$")+Math.abs(Math.round(n)).toLocaleString();
 const dollars=n=>"$"+Math.round(n).toLocaleString();
+// EOD drawdown, 50k: floor trails up and LOCKS at $50,000 once balance reaches $52k.
+// Post-lock, available DD = balance − $50,000 (= profit above start), NOT a fixed $2k.
+// bal here is profit above the $50k start, so available DD === bal. Matches the MC exactly.
+const availDD=()=>bal;
+const baseNow=()=>200+75*Math.max(0,Math.floor((availDD()-3000)/1000));
 function renderAcct(){
   $("bal").textContent=dollars(50000+bal);
   $("daypl").textContent=money(day);$("daypl").style.color=day>=0?"var(--long)":"var(--short)";
   $("daytr").textContent=trades+" trade"+(trades===1?"":"s")+" today";
-  $("add").textContent=dollars(addv);
-  $("risknow").textContent=dollars(200+75*Math.max(0,Math.floor((addv-3000)/1000)));
+  $("add").textContent=dollars(availDD());
+  $("risknow").textContent=dollars(baseNow());
   $("eqr").textContent=money(day);$("eqr").style.color=day>=0?"var(--long)":"var(--short)";
 }
 
@@ -262,26 +267,32 @@ async function cycle(){
   setVerdict("v-eval","EVALUATING…","London window · setup forming");
   $("pos").classList.remove("on");$("posflat").style.display="block";$("posstat").textContent="flat";
 
+  // dollar-risk sizing off CURRENT available DD (= balance − locked $50k floor)
+  const avail=availDD(), stop=12.5, conv=1.5, entry=20355.25;
+  const base=baseNow();
+  const riskD=Math.min(2,conv)*base;                    // 1.5 conviction → 1.5 × base
+  const size=Math.min(40,Math.round(riskD/(stop*2)));   // contracts = risk$ / (stop × $2)
+  const stopP=entry-stop, tgt=entry+3*stop;             // +3R target
+
   const seq=[
     ["STRUCTURE",`wall behind <span class="ok">NO ✓</span> · ahead 6.2pt <span class="ok">✓</span> · room_R 3.8 <span class="ok">✓</span> · <b>3/4</b>`],
     ["ORDER FLOW",`ASIA aligned <span class="ok">✓</span> · tape clean opp5=1 <span class="ok">✓</span> · OF stack <b>BOTH → ×1.5</b>`],
-    ["SETUP",`London book · pattern B2 · score 3 · <b>conviction 1.5</b>`],
-    ["RISK",`risk 12.5pt · <b>1.5 → $300</b> · availDD $4,340 · <b>18 micros</b> · spine <span class="ok">clear</span>`],
+    ["SETUP",`London book · pattern B2 · score 3 · <b>conviction ${conv}</b>`],
+    ["RISK",`stop ${stop}pt · <b>${conv} → ${dollars(riskD)}</b> · availDD ${dollars(avail)} · <b>${size} micros</b> · spine <span class="ok">clear</span>`],
   ];
   for(const [who,msg] of seq){
     const a=node(who);feedLine(et(),who,a.col,msg);firePulse(who);a.done=true;
     await step(820);
   }
   await step(340);headGlow=1;
-  setVerdict("v-trade","TRADE","Hermes · long MNQ ×18 @ 20355.25 · 1.5 conviction");
-  feedLine(et(),"HERMES",HERMES.col,`<b>VERDICT → TRADE</b> · long MNQ ×18 @ 20355.25`);
+  setVerdict("v-trade","TRADE",`Hermes · long MNQ ×${size} @ ${entry} · ${conv} conviction`);
+  feedLine(et(),"HERMES",HERMES.col,`<b>VERDICT → TRADE</b> · long MNQ ×${size} @ ${entry}`);
   await step(560);
 
-  feedLine(et(),"HERMES",HERMES.col,`python API · limit <b>filled 20355.25</b> · stop 20342.75 · target 20392.75 · bracket live`);
-  const entry=20355.25,stop=20342.75,tgt=20392.75,size=18,riskD=300;
+  feedLine(et(),"HERMES",HERMES.col,`python API · limit <b>filled ${entry}</b> · stop ${stopP.toFixed(2)} · target ${tgt.toFixed(2)} · bracket live`);
   $("posflat").style.display="none";$("pos").classList.add("on");$("posstat").textContent="LONG · live";
   $("posside").textContent="LONG MNQ";$("possize").textContent="×"+size;
-  $("posent").textContent=entry.toFixed(2);$("posstop").textContent=stop.toFixed(2);$("postgt").textContent=tgt.toFixed(2);
+  $("posent").textContent=entry.toFixed(2);$("posstop").textContent=stopP.toFixed(2);$("postgt").textContent=tgt.toFixed(2);
   await step(500);
   feedLine(et(),"HERMES",HERMES.col,`journaled trade #${47+trades} · <b>MBO window 2.1MB</b> · features hashed θ9f3c`);
 
@@ -292,13 +303,20 @@ async function cycle(){
     $("posbar").style.width=Math.max(0,Math.min(100,(R/3)*100))+"%";
     await step(620);
   }
-  const pnl=3*riskD;day+=pnl;bal+=pnl;trades++;addv+=pnl;
+  const pnl=3*riskD;day+=pnl;bal+=pnl;trades++;
   eqpts.push(day);renderAcct();
-  feedLine(et(),"HERMES",HERMES.col,`<b>target hit</b> 20392.75 · +3.0R · closed <b>${money(pnl)}</b>`);
+  feedLine(et(),"HERMES",HERMES.col,`<b>target hit</b> ${tgt.toFixed(2)} · +3.0R · closed <b>${money(pnl)}</b>`);
   setVerdict("v-skip","FLAT","trade closed +3.0R · awaiting next setup");
   $("pos").classList.remove("on");$("posflat").style.display="block";$("posflat").textContent="no position — waiting on the canon";
   $("posstat").textContent="flat";
-  await step(2200);
+  await step(1600);
+
+  // Build-6 withdrawal: build to +$6k, take the $2k payout, keep the $4k cushion
+  if(bal>=6000){
+    bal-=2000;withdrawn+=2000;renderAcct();
+    feedLine(et(),"HERMES",HERMES.col,`<b>PAYOUT $2,000</b> withdrawn · balance → ${dollars(50000+bal)} · Build-6 · total banked ${dollars(withdrawn)}`);
+    await step(1400);
+  }
 }
 
 async function main(){
