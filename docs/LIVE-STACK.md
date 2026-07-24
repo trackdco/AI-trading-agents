@@ -1,0 +1,154 @@
+# Live Trading Stack — build spec
+
+How the canon goes from CME to a filled order. The chain is:
+
+```
+Rithmic (CME feed + account)
+   └─► Sierra Chart  ──DTC──►  Python ingestor  ──►  rolling feature state
+          ▲                         │
+          │                         ├─► session router → canon book (pre / gold / London)
+          │                         ├─► frozen thresholds → score → size
+          │                         └─► journaler
+          └──────DTC (limit bracket order)◄──── execution
+```
+
+**One principle governs everything below: the live system must produce the exact same
+numbers the backtest did, or the frozen thresholds are meaningless.** Sierra's built-in
+studies are NOT trusted — Python recomputes every canon feature from the raw feed, and a
+reconciliation day proves parity before a single funded order is placed.
+
+Cost: ~$50/month all-in (Sierra package + the funded firm provides Rithmic free).
+
+---
+
+## Step 1 — Data & account source: Rithmic (R|Trader Pro)
+
+- Buy the funded account with the **Rithmic** connection option (not Tradovate).
+- Download R|Trader Pro, log in once to sign the CME **non-professional** data agreement.
+  After that Sierra takes the feed over the same credentials; you only reopen R|Trader to
+  check the firm's daily drawdown state.
+- **VERIFY BEFORE PAYING FOR ANYTHING ELSE:** the funded Rithmic plan must include full
+  **10-level DOM depth**, not just top-of-book. Our depth checks (`WALLSZ`,
+  `dep_wall_above_d`, wall-behind, etc.) are a top-2 signal in every window and die
+  without the depth ladder. Some prop Rithmic feeds are restricted — confirm depth is on.
+
+## Step 2 — Feed bridge: Sierra Chart (Advanced package)
+
+- Sierra connects to Rithmic and is our **reliable raw-feed bridge and order router** —
+  NOT the calculator whose numbers we trust. (See Step 4 for why.)
+- We use **MBP-10** (aggregated size per price level, 10 deep) — exactly what Rithmic DOM
+  and our heatmap backtest used. We do **not** use MBO (individual order-level). Do not
+  buy an MBO subscription; we don't use it.
+- Confirm current package pricing; the raw feed (trades-with-aggressor + DOM depth) is all
+  we require from it.
+
+## Step 3 — The bridge protocol: DTC server
+
+- Sierra settings → enable **DTC Protocol Server** → it exposes a local port (e.g.
+  `127.0.0.1:11099`).
+- What DTC actually carries: **raw market data** (trades with aggressor side, quotes, DOM
+  depth), historical data, and **orders/positions**. It does **not** cleanly broadcast
+  Sierra's computed study values (VWAP-SD, footprint delta). This is why Step 4 recomputes.
+
+## Step 4 — The ingestor (Python) — the real work
+
+Connects to the DTC port, consumes the **raw** trade + depth stream, and **recomputes our
+exact canon features in Python**. This guarantees parity by construction — we own the math
+end to end — instead of trusting that Sierra's VWAP/CVD definitions happen to match ours
+(they don't by default; the repo already documents that a naive CVD is the *negative* of
+ours).
+
+Responsibilities:
+- **Maintain rolling state continuously**: footprint minutes (`fp_minutes` equivalent),
+  session VWAP + bands, per-minute depth snapshots, session CVDs (overnight / Asia / PM /
+  London), overnight range, trigger log. This is live state, not a file rewritten every
+  few seconds.
+- **On a trigger/fill candidate** (a limit-retest setup at a level), build that trade's
+  feature row with the same definitions as `scripts/trade_matrix.py` (NY) /
+  `scripts/london_matrix.py` + `scripts/london_depth.py` (London): `d15`, `fill_delta`,
+  `ent_vs_vwap_sd_dir`, `dep_wall_*`, `cvd_ASIA`, `room_R`, `opp5`, etc.
+- Hand that row to the router/brain (Step 5).
+- Post-fill (NY books only): track `r_3` / `fw_3` for the 3-minute cut. London has **no**
+  in-trade layer — nothing to track there.
+
+Definitions must match the backtest exactly. When in doubt, copy the feature code verbatim
+from the matrix scripts rather than re-deriving.
+
+## Step 5 — Router + brain (Hermes)
+
+**Two canon books, not one. Route by the clock, execute mechanically.**
+
+- **Session router** picks the book by ET time, DST-aware:
+  - pre-market window → `scripts/canon_mechanical.py` pre checks
+  - golden window (~09:45–10:30 ET) → `canon_mechanical.py` gold checks + Q tier
+  - London first-2h → `scripts/london_canon.py` (03:00–05:00 ET normally; **04:00–06:00
+    during UK/US DST-misalignment weeks** — carry the `win_et` logic from the backtest)
+- **Frozen thresholds.** Every quantile the canon uses (e.g. `d15` 2025-q25, `bbw` q75,
+  London `room_R` 2.48/9.56, `cvd_ASIA` −748) must be **baked constants loaded from a
+  config**, not recomputed live. The scripts currently derive quantiles from the 2025 slice
+  of the backtest at load — that has to be extracted into a frozen thresholds file for
+  production. (This is the first thing to build; see punch list.)
+- **Decision is pure lookup:** compute the book's checks → score → OF stack / Q tier →
+  size. Score/size ladders differ per book (NY tops at score 5; London at 4). No LLM
+  judgment anywhere in the path — agents route and relay, they never re-derive or veto
+  beyond the canon's own rules (ruled in the desk spec).
+
+## Step 6 — Execution: limit brackets, not market orders
+
+- Entries are **limit retests** — the entire canon was validated on limit fills at the
+  retest level. Send a **limit order at the computed `entry_ref`**, bracketed with the
+  stop and target, via DTC `SubmitNewSingleOrder` (include `TradeAccount`, `Quantity`,
+  `Price`). A market order takes a different price than the backtest assumed and bleeds a
+  real fraction of the edge on a 9.5–14pt-stop book.
+- Latency is irrelevant (minute-scale retests) — and keep order/modify chatter low so
+  Lucid's HFT detector never looks at us.
+
+---
+
+## Cross-cutting requirements (missing from the original plan)
+
+**A. Reconciliation day — the gate before any funded order.**
+Point the ingestor at a historical day already in the repo and assert every feature
+matches the backtest to the decimal (special attention to the CVD sign and the VWAP
+anchor). Nothing goes live until this passes. This is the single check that prevents a
+silent definition-mismatch from quietly un-tracking the +$106k book.
+
+**B. 24/5 continuous operation.**
+The machine runs from 18:00 ET every session. London needs the full overnight
+(`cvd_ASIA`, overnight range for `room_R`); NY-gold needs `AGE` and the ON range. This is
+not a "start it at 3am" system.
+
+**C. Comprehensive journaling (Angus mandate).**
+Every trade journals: session/book, every check bit AND its raw value, score, OF
+confirmations, full size-multiplier path, fill/exit/exit_reason, MAE/MFE, in-trade marks
+(`r_3`/`fw_3` for NY), ambient context (spread at fill, DST group, news-calendar state,
+sweep state), and an engine-version + threshold-hash. Purpose: accumulate live data so
+recalibration runs on evidence. Journal everything, gate nothing new.
+
+**D. Python-side execution guards + sizer.**
+- Mechanical spread/slippage cap before placing an order (relative, not a frozen absolute
+  — London 2026 spreads regime-shifted). This is Python's job at order time, not an agent
+  check.
+- The buffer-scaling sizer reads live account state (equity vs trailing floor) and sets
+  micros: base + 2 per $1k of available drawdown above the leash, floor 2, capped. Account
+  state lives in Python — no agent gets P&L-based discretion.
+
+---
+
+## Build punch list (order of operations)
+
+1. **Freeze thresholds** — extract every `.quantile()` in both canon scripts into
+   `config/live_thresholds.json`; make the scorers load constants.
+2. **Feature library parity** — factor the matrix feature code so the same functions serve
+   backtest and live ingestor.
+3. **Ingestor** — DTC raw-feed consumer + rolling state + trigger detection + feature row.
+4. **Reconciliation script** — replay a historical day, assert decimal parity. GATE.
+5. **Router + scorer** — session/DST routing → book → frozen-threshold score → size.
+6. **Execution** — limit-bracket order builder over DTC; spread guard; buffer sizer.
+7. **Journaler** — write the full per-trade record.
+8. **Paper/parallel run** — run live-shadow against the funded eval account before sizing up.
+
+Nothing here is a dead end; the stack is sound. The corrections are: recompute features in
+Python (don't trust Sierra's studies), place limit brackets (not market), freeze the
+thresholds, route two books with DST, run 24/5, journal everything, and gate on the
+reconciliation day.
