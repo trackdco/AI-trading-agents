@@ -43,6 +43,7 @@ from src.backtest.engine import (
     load_news_calendar,
     simulate,
 )
+from src.live import ambient
 from src.live.feed import BAR_COLS, Bar
 
 _SESSION_BOUNDARY = dtime(18, 0)
@@ -104,10 +105,23 @@ class Vault:
                  book: str = "champion", warmup_sessions: int = DEFAULT_WARMUP_SESSIONS,
                  sim_fn=simulate,
                  session_policy: Callable[[str], tuple | None] | None = None,
-                 on_sink_error: Callable[[Exception, TradeEvent], None] | None = None):
+                 on_sink_error: Callable[[Exception, TradeEvent], None] | None = None,
+                 ambient_fn: Callable | None = None,
+                 spread_guard=None,
+                 on_guard_trip: Callable | None = None):
         """session_policy: date 'YYYY-MM-DD' -> (book_name, cfg, trigger_predicate) or
         None to sit the session out entirely. When omitted, `cfg`/`book` apply to every
-        session (single-book mode)."""
+        session (single-book mode).
+
+        ambient_fn / spread_guard / on_guard_trip are the Angus 24 Jul CANON ruling's
+        additive instrumentation (all default OFF, so single-book/test wiring is unchanged):
+          * ambient_fn(tr, bars_df, calendar) -> dict — journaled ambient context per trade
+            (src/live/ambient.vault_ambient). When set, record sinks receive it as a 4th arg.
+          * spread_guard (src/live/spread_guard.SpreadGuard) — the order-time spread guard.
+            A trip means the order is NOT placed; the trade is journaled as a guard_trip
+            decision, not a taken trade. Requires ambient_fn for its spread source.
+          * on_guard_trip(tr, book, cfg, ambient, GuardResult) — the guard-trip audit sink.
+        """
         if cfg is None and session_policy is None:
             raise ValueError("Vault needs a cfg or a session_policy")
         self.cfg = cfg
@@ -117,6 +131,9 @@ class Vault:
         self._sim = sim_fn
         self._policy = session_policy
         self._on_sink_error = on_sink_error or self._default_sink_error
+        self._ambient_fn = ambient_fn
+        self._spread_guard = spread_guard
+        self._on_guard_trip = on_guard_trip
         self._triggers: dict[tuple, object] = {}       # identity key -> trigger (deduped)
         for t in triggers:
             self._triggers[_trig_key(t)] = t
@@ -188,7 +205,13 @@ class Vault:
             key = (str(tr.trade_date), str(tr.fill_ts))
             if key in self._emitted:
                 continue
-            self._emitted.add(key)
+            self._emitted.add(key)                     # decided once, trip or fill
+            amb = self._ambient(tr)                    # {} unless ambient_fn is wired
+            if self._spread_guard is not None:
+                res = self._check_spread(tr, amb)
+                if not res.ok:                         # order-time guard trip: no order placed
+                    self._guard_trip(tr, amb, res)
+                    continue
             ev = TradeEvent.from_record(tr, self.book)
             fresh.append(ev)
             for s in self._sinks:
@@ -198,10 +221,45 @@ class Vault:
                     self._on_sink_error(e, ev)
             for rs in self._record_sinks:
                 try:
-                    rs(tr, self.book, self.cfg)
+                    if self._ambient_fn is not None:
+                        rs(tr, self.book, self.cfg, amb)
+                    else:
+                        rs(tr, self.book, self.cfg)
                 except Exception as e:
                     self._on_sink_error(e, ev)
         return fresh
+
+    # ---- ambient instrumentation + order-time guard (CANON ruling, additive) ------------
+    def _ambient(self, tr) -> dict:
+        """Journaled ambient context for a completed trade. Fail-soft: instrumentation can
+        never raise into the loop, so an error yields an empty context, not a crash."""
+        if self._ambient_fn is None:
+            return {}
+        try:
+            return self._ambient_fn(tr, self._df(), self._calendar) or {}
+        except Exception as e:
+            print(f"[vault] ambient error on {tr.trade_date} {tr.fill_ts}: "
+                  f"{type(e).__name__}: {e}", file=sys.stderr)
+            return {}
+
+    def _check_spread(self, tr, amb):
+        """Evaluate the order-time spread guard against a RELATIVE trailing baseline."""
+        fill_spread = amb.get("spread_at_fill")
+        try:
+            recent = ambient.recent_spreads(self._df(), getattr(tr, "fill_ts", None),
+                                            window=self._spread_guard.window)
+        except Exception:
+            recent = []
+        return self._spread_guard.evaluate(fill_spread, recent)
+
+    def _guard_trip(self, tr, amb, res) -> None:
+        if self._on_guard_trip is None:
+            return
+        try:
+            self._on_guard_trip(tr, self.book, self.cfg, amb, res)
+        except Exception as e:                         # audit sink is isolated like any other
+            print(f"[vault] guard-trip sink error on {tr.trade_date} {tr.fill_ts}: "
+                  f"{type(e).__name__}: {e}", file=sys.stderr)
 
     def _run_sim(self, trigs):
         """Run the champion over a SLICED frame (current + SIM_PAD_SESSIONS sessions) for

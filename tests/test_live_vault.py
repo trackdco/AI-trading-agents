@@ -9,7 +9,9 @@ from types import SimpleNamespace
 import pandas as pd
 import pytest
 
+from src.live.ambient import vault_ambient
 from src.live.feed import Bar
+from src.live.spread_guard import SpreadGuard
 from src.live.vault import TradeEvent, Vault
 
 NY = "America/New_York"
@@ -243,6 +245,69 @@ def test_add_triggers_dedup_and_session_refresh():
     v.add_triggers([_trig("2026-02-10T08:40:00-05:00")])       # genuinely new -> included
     v.on_bar(_bar("2026-02-10 08:47"))
     assert captured["n"] == 2
+
+
+# ---- CANON ruling: ambient instrumentation + order-time spread guard ---------
+
+def _wide_bar(ts, c=25000.0, half=10.0):
+    t = pd.Timestamp(ts, tz=NY)
+    return Bar(ts_event=t, open=c, high=c + half, low=c - half, close=c, volume=100.0)
+
+
+def _sim_fill_at_0900(df, trigs, cfg, day_gate=None, target_resolver=None):
+    if any(b == "2026-02-10 09:00" for b in df["ts_event"].astype(str).str[:16]):
+        return [_rec("2026-02-10", "2026-02-10T09:00")], [], None
+    return [], [], None
+
+
+def _feed_tight_session(v, n=6):
+    """A trigger plus n tight (2pt) pre-fill bars, so the guard has a real baseline."""
+    for i in range(n):
+        v.on_bar(_bar(f"2026-02-10 08:{50 + i:02d}"))   # spread 2.0 each
+
+
+def test_spread_guard_trip_blocks_order_and_journals_reason():
+    trips, records, emitted = [], [], []
+    v = Vault(cfg="static", triggers=[_trig("2026-02-10T08:30:00-05:00")],
+              sim_fn=_sim_fill_at_0900, ambient_fn=vault_ambient,
+              spread_guard=SpreadGuard(mult=3.0, window=30, min_obs=5),
+              on_guard_trip=lambda tr, book, cfg, amb, res: trips.append((tr, amb, res)))
+    v.add_sink(emitted.append)
+    v.add_record_sink(lambda tr, book, cfg, amb: records.append((tr, amb)))
+    _feed_tight_session(v)                              # baseline = 2pt spreads
+    out = v.on_bar(_wide_bar("2026-02-10 09:00"))       # fill bar spread = 20pt -> TRIP
+
+    assert out == [] and emitted == [] and records == []   # no order placed anywhere
+    assert len(trips) == 1                                  # journaled once
+    _, amb, res = trips[0]
+    assert not res.ok and res.observed == 20.0 and res.baseline == 2.0
+    assert amb["spread_at_fill"] == 20.0                    # ambient still computed for audit
+    # decided once: a re-cover of the same bar does not re-trip
+    v.on_bar(_wide_bar("2026-02-10 09:01"))
+    assert len(trips) == 1
+
+
+def test_spread_guard_passes_normal_spread_and_passes_ambient_to_record_sink():
+    records, emitted = [], []
+    v = Vault(cfg="static", triggers=[_trig("2026-02-10T08:30:00-05:00")],
+              sim_fn=_sim_fill_at_0900, ambient_fn=vault_ambient,
+              spread_guard=SpreadGuard(mult=3.0, window=30, min_obs=5))
+    v.add_sink(emitted.append)
+    v.add_record_sink(lambda tr, book, cfg, amb: records.append((tr, amb)))
+    _feed_tight_session(v)
+    out = v.on_bar(_bar("2026-02-10 09:00"))            # fill bar spread = 2pt -> PASS
+    assert len(out) == 1 and len(emitted) == 1 and len(records) == 1
+    _, amb = records[0]
+    assert amb["spread_at_fill"] == 2.0                 # ambient reached the journal sink
+
+
+def test_ambient_without_guard_still_journals_context():
+    records = []
+    v = Vault(cfg="static", triggers=[_trig("2026-02-10T08:30:00-05:00")],
+              sim_fn=_sim_fill_at_0900, ambient_fn=vault_ambient)  # no guard
+    v.add_record_sink(lambda tr, book, cfg, amb: records.append(amb))
+    v.on_bar(_bar("2026-02-10 09:00"))
+    assert len(records) == 1 and "sweep_state" in records[0]
 
 
 def test_session_trim_bounds_the_buffer():

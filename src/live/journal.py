@@ -67,14 +67,39 @@ class LiveJournal:
                 self._sessions_logged.add((d.get("date"), d.get("book")))
 
     # ---- sinks --------------------------------------------------------------
-    def on_record(self, tr, book: str, cfg) -> None:
-        """Vault record sink: journal one completed trade with full context."""
+    def on_record(self, tr, book: str, cfg, ambient: dict | None = None) -> None:
+        """Vault record sink: journal one completed trade with full context. `ambient` is
+        the CANON ruling's per-trade instrumentation (sweep_state / spread_at_fill /
+        news_calendar_state, src/live/ambient.py) — optional and merged in only when the
+        Vault is wired with an ambient_fn, so a 3-arg caller journals exactly as before."""
         key = _trade_key(tr.trade_date, tr.fill_ts)
         if key in self._logged:
             return
-        rec = from_trade_record(tr, config_hash=cfg_hash(cfg), playbook=book)
+        ctx = {"playbook": book}
+        if ambient:
+            ctx.update({k: v for k, v in ambient.items() if v is not None})
+        rec = from_trade_record(tr, config_hash=cfg_hash(cfg), **ctx)
         if self._append(self.journal_path, rec.model_dump_json()):
             self._logged.add(key)
+
+    def on_guard_trip(self, tr, book: str, cfg, ambient: dict | None, res) -> None:
+        """Order-time spread-guard sink: journal WHY an order was not placed. This is a
+        decision-trail entry, never a trade row — a tripped order is not a taken trade, so
+        it must not enter journal.jsonl (that would break the Stage-7 reconcile)."""
+        amb = ambient or {}
+        self._decision({
+            "type": "guard_trip",
+            "date": str(getattr(tr, "trade_date", "")),
+            "fill_ts": str(getattr(tr, "fill_ts", "")),
+            "direction": getattr(tr, "direction", None),
+            "book": book,
+            "reason": getattr(res, "reason", None),
+            "spread_at_fill": getattr(res, "observed", None),
+            "spread_baseline": getattr(res, "baseline", None),
+            "spread_threshold": getattr(res, "threshold", None),
+            "sweep_state": amb.get("sweep_state"),
+            "news_calendar_state": amb.get("news_calendar_state"),
+        })
 
     def on_halt(self, date: str, reason: str) -> None:
         self._decision({"type": "halt", "date": date, "reason": reason})

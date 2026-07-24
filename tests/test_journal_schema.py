@@ -60,6 +60,37 @@ def test_from_trade_record_adapter():
     assert r.win is True and r.regime_call == "balance"
 
 
+def test_ambient_fields_optional_and_default_null():
+    # CANON ruling additive fields: absent on a pre-ruling row, still valid.
+    r = JournalRecord(**MIN)
+    assert r.sweep_state is None and r.spread_at_fill is None and r.news_calendar_state is None
+
+
+def test_ambient_fields_accepted_when_present():
+    r = JournalRecord(**MIN, sweep_state="swept_before_entry", spread_at_fill=6.25,
+                      news_calendar_state="CPI:T-5")
+    assert r.sweep_state == "swept_before_entry" and r.spread_at_fill == 6.25
+    assert r.news_calendar_state == "CPI:T-5"
+
+
+def test_from_trade_record_carries_ambient_context():
+    tr = TradeRecord(
+        trade_date="2026-02-04", trigger_ts="2026-02-04T09:48:00-05:00", tf="3min",
+        direction="short", kind="rejection_block", pattern="B2", htf_flag="with_trend",
+        confluence=3, entry_variant="E1", limit_price=25361.25, fill_ts="2026-02-04T09:49:00-05:00",
+        entry=25361.25, stop_initial=25376.5, target_name="prior_day_low", target_level=25200.0,
+        working_target=25202.5, exit_ts="2026-02-04T10:20:00-05:00", exit_price=25329.0,
+        exit_reason="target", points=32.25, r_multiple=2.1, size=1.0, dollars=645.0,
+        slippage_ticks=1, mgmt_variant="V0",
+    )
+    r = from_trade_record(tr, config_hash="c", sweep_state="no_sweep",
+                          spread_at_fill=5.0, news_calendar_state="none")
+    assert r.sweep_state == "no_sweep" and r.spread_at_fill == 5.0
+    # ambient fields ride the same desk_context path and never disturb the reconcile keys
+    assert (r.trade_date, r.fill_ts, r.direction, r.points, r.dollars) == \
+           ("2026-02-04", "2026-02-04T09:49:00-05:00", "short", 32.25, 645.0)
+
+
 def test_coverage_report_flags_engine_gaps():
     rep = coverage_report(list(TradeRecord.model_fields))
     # TradeRecord lacks config_hash, cluster_types, day_type, path MFE/MAE, review fields, etc.

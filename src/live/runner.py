@@ -36,6 +36,7 @@ from typing import Callable
 
 import pandas as pd
 
+from src.live.ambient import vault_ambient
 from src.live.detector import LiveDetector
 from src.live.feed import BAR_COLS, Bar
 from src.live.journal import LiveJournal
@@ -56,7 +57,8 @@ class LiveRunner:
                  strategy_gate: Callable[[str], dict | None] | None = None,
                  history_days: int = DEFAULT_HISTORY_DAYS,
                  detector: LiveDetector | None = None,
-                 sim_fn=None, session_policy=None):
+                 sim_fn=None, session_policy=None,
+                 ambient: bool = True, spread_guard=None):
         self.alerts = alerts
         self.history_days = history_days
         self.detect_enabled = True                   # off while feeding known-historical
@@ -88,8 +90,15 @@ class LiveRunner:
             self._frame, **({"daytypes_csv": daytypes_csv} if daytypes_csv else {}))
         policy = self.journal.wrap_policy(self.vector)
         vkw = {"sim_fn": sim_fn} if sim_fn is not None else {}
+        # CANON ruling (24 Jul): journal ambient context on EVERY trade ("journal
+        # EVERYTHING"). The order-time spread guard stays OPT-IN (spread_guard=None) — it
+        # drops orders, so arming it by default would diverge live from the validated
+        # backtest; an operator enables it deliberately.
         self.vault = Vault(session_policy=policy,
-                           day_gate=self.guard.wrap(strategy_gate), **vkw)
+                           day_gate=self.guard.wrap(strategy_gate),
+                           ambient_fn=(vault_ambient if ambient else None),
+                           spread_guard=spread_guard,
+                           on_guard_trip=self.journal.on_guard_trip, **vkw)
         self.vault.add_sink(self.guard.on_trade)     # BEFORE broker: fresh gate state
         self.vault.add_sink(self.broker.on_trade)
         if self.alerts is not None:

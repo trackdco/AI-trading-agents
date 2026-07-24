@@ -85,6 +85,46 @@ def test_cfg_hash_stable_and_distinct():
     assert cfg_hash(a) != cfg_hash(_Cfg('{"x":2}'))
 
 
+# ---- CANON ruling: ambient context + guard-trip audit -----------------------
+
+def test_on_record_merges_ambient_context(tmp_path):
+    j = LiveJournal(tmp_path)
+    amb = {"sweep_state": "swept_before_entry", "spread_at_fill": 6.25,
+           "news_calendar_state": "CPI:T-5"}
+    j.on_record(_tr(), "E4", _Cfg(), amb)
+    r = j.trades()[0]
+    assert r.sweep_state == "swept_before_entry" and r.spread_at_fill == 6.25
+    assert r.news_calendar_state == "CPI:T-5" and r.playbook == "E4"
+
+
+def test_on_record_without_ambient_is_unchanged(tmp_path):
+    j = LiveJournal(tmp_path)
+    j.on_record(_tr(), "E4", _Cfg())                    # 3-arg call, no ambient
+    r = j.trades()[0]
+    assert r.sweep_state is None and r.spread_at_fill is None
+
+
+def test_guard_trip_writes_decision_not_a_trade(tmp_path):
+    from src.live.spread_guard import GuardResult
+    j = LiveJournal(tmp_path)
+    res = GuardResult(ok=False, observed=20.0, baseline=2.0, threshold=6.0,
+                      reason="spread 20.00pt > 3x median baseline 2.00pt (= 6.00pt) over 6 bars")
+    amb = {"sweep_state": "no_sweep", "news_calendar_state": "none", "spread_at_fill": 20.0}
+    j.on_guard_trip(_tr(), "E4", _Cfg(), amb, res)
+    assert j.trades() == []                              # NOT a taken trade -> reconcile safe
+    d = j.decisions()
+    assert len(d) == 1 and d[0]["type"] == "guard_trip"
+    assert d[0]["spread_at_fill"] == 20.0 and d[0]["spread_threshold"] == 6.0
+    assert d[0]["book"] == "E4" and d[0]["sweep_state"] == "no_sweep" and "ts" in d[0]
+
+
+def test_reconcile_unaffected_by_ambient_context(tmp_path):
+    j = LiveJournal(tmp_path)
+    j.on_record(_tr(), "E4", _Cfg(), {"spread_at_fill": 9.9, "sweep_state": "no_sweep"})
+    ok = j.reconcile([_tr()])                            # batch record carries no ambient
+    assert ok["match"] and not ok["missing"] and not ok["unexpected"]
+
+
 # ---- Stage-6 review regressions ---------------------------------------------
 
 def test_torn_final_line_survives_restart(tmp_path):

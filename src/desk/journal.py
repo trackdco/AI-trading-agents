@@ -109,6 +109,19 @@ class JournalRecord(BaseModel, extra="forbid"):
     gates_applied: list[str] = Field(default_factory=list)  # which de-risks were live
     size_multiplier_applied: float | None = None            # agent size mult that scaled this
 
+    # --- ambient context (Angus 24 Jul CANON ruling — journal-only, gate NOTHING new) ---
+    # The ruling RETIRED three live-desk vetoes and mandated journaling the state each one
+    # read, on every trade, so they can be re-evaluated on live evidence. All optional
+    # (None) so pre-ruling rows still validate and the Stage-7 reconcile keys are untouched.
+    # See src/live/ambient.py and docs/ambient-instrumentation-choices.md.
+    sweep_state: str | None = None          # Q-30 (veto DROPPED): swept_before_entry |
+                                            #   swept_after_entry | no_sweep | unknown
+    spread_at_fill: float | None = None     # Q-31: execution spread at the fill, in points
+                                            #   (range proxy until a quote feed lands)
+    news_calendar_state: str | None = None  # Q-33 (buffer DROPPED): "{event}:T{+/-}{min}"
+                                            #   signed minutes to the nearest high-impact
+                                            #   release, or "none"
+
     # --- review (Angus-filled later) ----------------------------------------
     angus_verdict: str | None = None      # free text: "valid I'd take" | "wouldn't" | "missed context"
     would_angus_take: bool | None = None  # prefilled by the capture-matcher on a hand-log match
