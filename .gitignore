@@ -14,8 +14,10 @@ data/*.parquet
 # the bulky source PDFs are not. Extract with scripts/extract_news_calendar.py.
 data/reference/news_pdfs/
 
-# generated parity artifact — the agent replay book (scripts/agent_replay.py), regenerable
+# generated parity artifacts — the agent replay books (scripts/agent_replay.py,
+# src/desk/canon_runtime.py), regenerable
 agent_replay.parquet
+agent_replay_live.parquet
 
 # python
 __pycache__/
