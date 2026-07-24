@@ -1,8 +1,8 @@
-<title>The Desk — live agent command center</title>
+<title>The Desk — Hermes command center</title>
 <style>
 /* Deliberate single-world design: a dark mission-control terminal. The subject is a live
-   trading desk "speaking the language of the market" — so the identity is monospace data,
-   an amber command accent, and semantic long/short color. No webfonts (CSP-safe). */
+   trading desk "speaking the language of the market" — identity is monospace data, an amber
+   command accent, semantic long/short color. No webfonts (CSP-safe). */
 :root{
   --bg:#0A0C10; --panel:#12151B; --panel2:#171B22; --inset:#0D1015;
   --line:#232A36; --line2:#2E3644;
@@ -18,9 +18,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono)
 body{padding:18px clamp(12px,3vw,34px) 48px}
 .wrap{max-width:1240px;margin:0 auto}
 .mono{font-family:var(--mono)}
-a{color:inherit}
 
-/* top bar */
 .top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
   border:1px solid var(--line);border-radius:10px;background:var(--panel);
   padding:11px 16px;margin-bottom:16px}
@@ -39,9 +37,8 @@ a{color:inherit}
 h1{font-family:var(--sans);font-weight:850;letter-spacing:-.02em;font-size:clamp(20px,3.4vw,30px);
   line-height:1.02;margin:6px 2px 2px;text-wrap:balance}
 h1 em{font-style:normal;color:var(--amber)}
-.sub{color:var(--ink2);font-size:12.5px;letter-spacing:.02em;margin:0 2px 16px;max-width:74ch}
+.sub{color:var(--ink2);font-size:12.5px;letter-spacing:.02em;margin:0 2px 16px;max-width:76ch}
 
-/* main grid */
 .grid{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;align-items:start}
 @media(max-width:940px){.grid{grid-template-columns:1fr}}
 .card{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden}
@@ -49,7 +46,6 @@ h1 em{font-style:normal;color:var(--amber)}
   font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
 .card .hd .r{margin-left:auto;color:var(--ink2)}
 
-/* node graph */
 .stagewrap{position:relative}
 #net{display:block;width:100%;height:auto;background:
   radial-gradient(120% 90% at 50% 46%,rgba(232,161,58,.06),transparent 60%),var(--inset)}
@@ -60,10 +56,8 @@ h1 em{font-style:normal;color:var(--amber)}
 .v-trade{color:var(--long)} .v-skip{color:var(--ink2)} .v-eval{color:var(--amber)}
 .callbar .detail{margin-left:auto;font-size:12px;color:var(--ink2)}
 
-/* feed */
 .feed{height:236px;overflow:hidden;padding:6px 0}
-.line{display:grid;grid-template-columns:64px 96px 1fr;gap:10px;padding:5px 15px;font-size:12px;
-  border-left:2px solid transparent;animation:in .3s ease}
+.line{display:grid;grid-template-columns:64px 104px 1fr;gap:10px;padding:5px 15px;font-size:12px;animation:in .3s ease}
 @keyframes in{from{opacity:0;transform:translateY(4px)}}
 .line .t{color:var(--ink3)}
 .line .who{font-weight:700;letter-spacing:.02em}
@@ -71,7 +65,6 @@ h1 em{font-style:normal;color:var(--amber)}
 .line .msg b{color:var(--ink);font-weight:600}
 .line .msg .ok{color:var(--long)} .line .msg .no{color:var(--short)}
 
-/* right rail */
 .rail{display:flex;flex-direction:column;gap:16px}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
 .tile{background:var(--panel);padding:13px 15px}
@@ -103,15 +96,15 @@ h1 em{font-style:normal;color:var(--amber)}
     <span class="pill" id="engver">eng v2.1 · θ 9f3c</span>
   </div>
 
-  <h1>Seven agents, one <em>final call</em>.</h1>
-  <p class="sub">A live command center for the mechanical NQ desk. Each agent runs one job in the canon pipeline and reports a concrete result — no debate, no discretion. Claude takes the final call, Apollo places the bracket, Mnemosyne journals every bit. This is a working mockup driven by scripted data; wired to the live event stream it renders the real desk.</p>
+  <h1><em>Hermes</em> takes the call.</h1>
+  <p class="sub">A live command center for the mechanical NQ desk. Hermes is the head agent; a handful of subagents each own one part of the read and report up. When the canon says trade, Hermes makes the verdict and executes the limit bracket through the Python API — no debate, no discretion. Working mockup on scripted data; wired to the live event stream it renders the real desk.</p>
 
   <div class="grid">
     <div class="card stagewrap">
-      <div class="hd">Agent network <span class="r" id="netstat">idle</span></div>
+      <div class="hd">Hermes + subagents <span class="r" id="netstat">idle</span></div>
       <canvas id="net" width="720" height="430"></canvas>
       <div class="callbar">
-        <span class="lbl">Final call</span>
+        <span class="lbl">Hermes verdict</span>
         <span class="verdict v-eval" id="verdict">EVALUATING…</span>
         <span class="detail" id="calldetail">London window · setup forming</span>
       </div>
@@ -153,8 +146,8 @@ h1 em{font-style:normal;color:var(--amber)}
   </div>
 
   <div class="foot">
-    <b>The Desk</b> · mechanical NQ canon (pre · golden · London) · dollar-risk sizing · safety spine active<br>
-    mockup data — the same layout renders live once the agent event stream is wired over the local socket
+    <b>The Desk</b> · Hermes + subagents on the mechanical NQ canon (pre · golden · London) · dollar-risk sizing · safety spine active<br>
+    mockup data — the same layout renders live once Hermes emits its event stream over the local socket
   </div>
 </div>
 
@@ -163,74 +156,70 @@ h1 em{font-style:normal;color:var(--amber)}
 const $=id=>document.getElementById(id);
 const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
 
-/* ---- agent roster: each maps to one real canon-pipeline job ---- */
+/* ---- Hermes (head) + its specialist subagents. Each subagent owns one part of the canon
+   read and reports up to Hermes; Hermes makes the verdict and executes. Rename/retune to
+   match Pat's exact subagent list. ---- */
 const AGENTS=[
-  {id:"CHRONOS",   role:"session router",   col:"#5B8FF0"},
-  {id:"ATLAS",     role:"structure",        col:"#4FD1C5"},
-  {id:"LUMEN",     role:"setups",           col:"#E8A13A"},
-  {id:"HYDRA",     role:"risk & sizing",    col:"#C879E8"},
-  {id:"APOLLO",    role:"execution",        col:"#33C77C"},
-  {id:"MNEMOSYNE", role:"journal · MBO",    col:"#6FA0FF"},
-  {id:"HEPHAESTUS",role:"infra · safety",   col:"#E5645B"},
+  {id:"STRUCTURE",  role:"walls · room · depth",  col:"#4FD1C5"},
+  {id:"ORDER FLOW", role:"cvd · tape · OF stack",  col:"#5B8FF0"},
+  {id:"SETUP",      role:"score · pattern · Q",    col:"#E8A13A"},
+  {id:"RISK",       role:"dollar-risk · spine",    col:"#C879E8"},
 ];
-const CLAUDE={id:"CLAUDE",role:"CEO · final call",col:"#E8A13A"};
+const HERMES={id:"HERMES",role:"head · verdict + execution",col:"#E8A13A"};
 
-/* ---- node graph ---- */
 const net=$("net"),nx=net.getContext("2d");
-let nodes=[],pulses=[],active=null,claudeGlow=0;
+let nodes=[],pulses=[],headGlow=0;
 function layout(){
-  const W=net.width,H=net.height,cx=W/2,cy=H/2,R=Math.min(W,H)*0.375;
+  const W=net.width,H=net.height,cx=W/2,cy=H/2,R=Math.min(W,H)*0.34;
   nodes=AGENTS.map((a,i)=>{const ang=-Math.PI/2+i/AGENTS.length*Math.PI*2;
-    return{...a,x:cx+Math.cos(ang)*R,y:cy+Math.sin(ang)*R,glow:0,done:false};});
-  nodes.push({...CLAUDE,x:cx,y:cy,center:true,glow:0,done:false});
+    return{...a,x:cx+Math.cos(ang)*R*1.15,y:cy+Math.sin(ang)*R,glow:0,done:false};});
+  nodes.push({...HERMES,x:cx,y:cy,center:true,glow:0,done:false});
 }
 layout();
 const node=id=>nodes.find(n=>n.id===id);
 function firePulse(fromId){
-  const n=node(fromId),c=node("CLAUDE");if(!n)return;
-  n.glow=1;active=fromId;$("netstat").textContent=fromId+" active";
+  const n=node(fromId),c=node("HERMES");if(!n)return;
+  n.glow=1;$("netstat").textContent=fromId+" → Hermes";
   if(!reduce)pulses.push({a:n,b:c,t:0,col:n.col});
 }
 function drawNet(){
-  const W=net.width,H=net.height,c=node("CLAUDE");
+  const W=net.width,H=net.height,c=node("HERMES");
   nx.clearRect(0,0,W,H);
-  // edges
   nodes.forEach(n=>{if(n.center)return;
     nx.beginPath();nx.moveTo(n.x,n.y);nx.lineTo(c.x,c.y);
     nx.strokeStyle=n.glow>.05?rgba(n.col,.35+n.glow*.4):"rgba(59,70,88,.5)";
     nx.lineWidth=n.glow>.05?1.6:1;nx.stroke();});
-  // pulses travelling to Claude
   pulses.forEach(p=>{p.t+=0.045;const x=p.a.x+(p.b.x-p.a.x)*p.t,y=p.a.y+(p.b.y-p.a.y)*p.t;
     nx.beginPath();nx.arc(x,y,3.2,0,7);nx.fillStyle=p.col;nx.shadowBlur=10;nx.shadowColor=p.col;
-    nx.fill();nx.shadowBlur=0;if(p.t>=1)claudeGlow=1;});
+    nx.fill();nx.shadowBlur=0;if(p.t>=1)headGlow=1;});
   pulses=pulses.filter(p=>p.t<1);
-  // Claude center
-  claudeGlow*=0.94;
-  ring(c,26,claudeGlow);
-  nx.fillStyle="#0A0C10";nx.beginPath();nx.arc(c.x,c.y,20,0,7);nx.fill();
-  nx.fillStyle=rgba(CLAUDE.col,.16);nx.beginPath();nx.arc(c.x,c.y,20,0,7);nx.fill();
-  glyph(c,CLAUDE.col,true);
-  // agents
+  headGlow*=0.94;
+  ring(c,28,headGlow);
+  nx.fillStyle="#0A0C10";nx.beginPath();nx.arc(c.x,c.y,22,0,7);nx.fill();
+  nx.fillStyle=rgba(HERMES.col,.16);nx.beginPath();nx.arc(c.x,c.y,22,0,7);nx.fill();
+  nx.fillStyle=HERMES.col;nx.font="800 13px ui-monospace,Menlo,monospace";
+  nx.textAlign="center";nx.textBaseline="middle";nx.fillText("H",c.x,c.y);
+  nx.fillStyle="#98A1B0";nx.font="700 9.5px ui-monospace,Menlo,monospace";nx.textBaseline="top";
+  nx.fillText("HERMES",c.x,c.y+30);
   nodes.forEach(n=>{if(n.center)return;n.glow*=0.93;
-    ring(n,15,n.glow);
-    nx.fillStyle="#0D1015";nx.beginPath();nx.arc(n.x,n.y,11,0,7);nx.fill();
-    if(n.done){nx.fillStyle=rgba("#33C77C",.18);nx.beginPath();nx.arc(n.x,n.y,11,0,7);nx.fill();}
-    glyph(n,n.done?"#33C77C":(n.glow>.1?n.col:"#5B6472"),false);
+    ring(n,16,n.glow);
+    nx.fillStyle="#0D1015";nx.beginPath();nx.arc(n.x,n.y,12,0,7);nx.fill();
+    if(n.done){nx.fillStyle=rgba("#33C77C",.18);nx.beginPath();nx.arc(n.x,n.y,12,0,7);nx.fill();}
+    nx.fillStyle=n.done?"#33C77C":(n.glow>.1?n.col:"#5B6472");
+    nx.font="700 9px ui-monospace,Menlo,monospace";nx.textAlign="center";nx.textBaseline="middle";
+    nx.fillText(n.id[0],n.x,n.y);
     label(n);});
 }
 function ring(n,r,g){nx.beginPath();nx.arc(n.x,n.y,r,0,7);
   nx.strokeStyle=rgba(n.col,.3+g*.6);nx.lineWidth=1.4+g*1.6;
   if(g>.05){nx.shadowBlur=14*g;nx.shadowColor=n.col;}nx.stroke();nx.shadowBlur=0;}
-function glyph(n,col,center){nx.fillStyle=col;nx.font=(center?"700 12px ":"700 9px ")+"ui-monospace,Menlo,monospace";
-  nx.textAlign="center";nx.textBaseline="middle";nx.fillText(center?"C":n.id[0],n.x,n.y);}
 function label(n){const below=n.y>net.height/2;
   nx.fillStyle="#98A1B0";nx.font="700 9.5px ui-monospace,Menlo,monospace";nx.textAlign="center";
-  nx.textBaseline=below?"top":"bottom";nx.fillText(n.id,n.x,below?n.y+19:n.y-19);
+  nx.textBaseline=below?"top":"bottom";nx.fillText(n.id,n.x,below?n.y+20:n.y-20);
   nx.fillStyle="#5B6472";nx.font="8.5px ui-monospace,Menlo,monospace";
-  nx.fillText(n.role,n.x,below?n.y+31:n.y-31);}
+  nx.fillText(n.role,n.x,below?n.y+32:n.y-32);}
 function rgba(hex,a){const h=hex.replace("#","");return`rgba(${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},${parseInt(h.slice(4,6),16)},${a})`;}
 
-/* ---- equity sparkline ---- */
 const eqc=$("eq"),ex=eqc.getContext("2d");let eqpts=[0];
 function drawEq(){const W=eqc.width,H=eqc.height,p=10;ex.clearRect(0,0,W,H);
   const lo=Math.min(0,...eqpts),hi=Math.max(120,...eqpts);
@@ -244,7 +233,6 @@ function drawEq(){const W=eqc.width,H=eqc.height,p=10;ex.clearRect(0,0,W,H);
   const lx=X(eqpts.length-1),ly=Y(eqpts[eqpts.length-1]);
   ex.beginPath();ex.arc(lx,ly,3,0,7);ex.fillStyle="#E8A13A";ex.shadowBlur=8;ex.shadowColor="#E8A13A";ex.fill();ex.shadowBlur=0;}
 
-/* ---- feed ---- */
 function feedLine(t,who,col,html){
   const el=document.createElement("div");el.className="line";
   el.innerHTML=`<span class="t">${t}</span><span class="who" style="color:${col}">${who}</span><span class="msg">${html}</span>`;
@@ -253,7 +241,6 @@ function feedLine(t,who,col,html){
   f.scrollTop=f.scrollHeight;
 }
 
-/* ---- account state ---- */
 let bal=2340, day=0, trades=0, addv=4340;
 const money=n=>(n<0?"−$":"+$")+Math.abs(Math.round(n)).toLocaleString();
 const dollars=n=>"$"+Math.round(n).toLocaleString();
@@ -266,47 +253,38 @@ function renderAcct(){
   $("eqr").textContent=money(day);$("eqr").style.color=day>=0?"var(--long)":"var(--short)";
 }
 
-/* ---- scripted trade cycle (a real London evaluation → open → manage → close) ---- */
-const T0=Date.now();
-function et(){const d=new Date();return d.toTimeString().slice(0,8);}
+function et(){return new Date().toTimeString().slice(0,8);}
 function step(ms){return new Promise(r=>setTimeout(r,reduce?Math.min(ms,120):ms));}
 function setVerdict(cls,txt,det){const v=$("verdict");v.className="verdict "+cls;v.textContent=txt;$("calldetail").textContent=det;}
 
 async function cycle(){
-  // reset nodes
   nodes.forEach(n=>{n.done=false;n.glow=0;});
   setVerdict("v-eval","EVALUATING…","London window · setup forming");
   $("pos").classList.remove("on");$("posflat").style.display="block";$("posstat").textContent="flat";
 
   const seq=[
-    ["CHRONOS","03:14 ET · <b>London</b> window active · routing <b>LONDON</b> book"],
-    ["ATLAS",`structure — wall behind <span class="ok">NO ✓</span> · ahead 6.2pt <span class="ok">✓</span> · room_R 3.8 <span class="ok">✓</span> · <b>score 3/4</b>`],
-    ["LUMEN",`ASIA flow aligned <span class="ok">✓</span> · tape clean opp5=1 <span class="ok">✓</span> · OF stack <b>BOTH → ×1.5</b>`],
-    ["HYDRA",`risk 12.5pt · conv <b>1.5 → $300</b> · availDD $4,340 · <b>18 micros</b>`],
-    ["HEPHAESTUS",`feed OK · spread 0.8 rel <span class="ok">✓</span> · parity locked · spine <span class="ok">clear</span>`],
+    ["STRUCTURE",`wall behind <span class="ok">NO ✓</span> · ahead 6.2pt <span class="ok">✓</span> · room_R 3.8 <span class="ok">✓</span> · <b>3/4</b>`],
+    ["ORDER FLOW",`ASIA aligned <span class="ok">✓</span> · tape clean opp5=1 <span class="ok">✓</span> · OF stack <b>BOTH → ×1.5</b>`],
+    ["SETUP",`London book · pattern B2 · score 3 · <b>conviction 1.5</b>`],
+    ["RISK",`risk 12.5pt · <b>1.5 → $300</b> · availDD $4,340 · <b>18 micros</b> · spine <span class="ok">clear</span>`],
   ];
   for(const [who,msg] of seq){
     const a=node(who);feedLine(et(),who,a.col,msg);firePulse(who);a.done=true;
-    await step(760);
+    await step(820);
   }
-  // final call
-  await step(300);claudeGlow=1;
-  setVerdict("v-trade","TRADE","long MNQ ×18 @ 20355.25 · 1.5 conviction");
-  feedLine(et(),"CLAUDE",CLAUDE.col,`<b>FINAL CALL → TRADE</b> · long MNQ ×18 @ 20355.25`);
+  await step(340);headGlow=1;
+  setVerdict("v-trade","TRADE","Hermes · long MNQ ×18 @ 20355.25 · 1.5 conviction");
+  feedLine(et(),"HERMES",HERMES.col,`<b>VERDICT → TRADE</b> · long MNQ ×18 @ 20355.25`);
   await step(560);
 
-  // execution + open position
-  node("APOLLO").glow=1;firePulse("APOLLO");
-  feedLine(et(),"APOLLO",node("APOLLO").col,`limit <b>filled 20355.25</b> · stop 20342.75 · target 20392.75 · bracket live`);
+  feedLine(et(),"HERMES",HERMES.col,`python API · limit <b>filled 20355.25</b> · stop 20342.75 · target 20392.75 · bracket live`);
   const entry=20355.25,stop=20342.75,tgt=20392.75,size=18,riskD=300;
   $("posflat").style.display="none";$("pos").classList.add("on");$("posstat").textContent="LONG · live";
   $("posside").textContent="LONG MNQ";$("possize").textContent="×"+size;
   $("posent").textContent=entry.toFixed(2);$("posstop").textContent=stop.toFixed(2);$("postgt").textContent=tgt.toFixed(2);
   await step(500);
-  feedLine(et(),"MNEMOSYNE",node("MNEMOSYNE").col,`journaled trade #${47+trades} · <b>MBO window 2.1MB</b> · features hashed θ9f3c`);
-  node("MNEMOSYNE").glow=1;
+  feedLine(et(),"HERMES",HERMES.col,`journaled trade #${47+trades} · <b>MBO window 2.1MB</b> · features hashed θ9f3c`);
 
-  // manage: walk R from 0 → +3 (target)
   const steps=reduce?[3]:[0.4,0.9,0.6,1.3,1.8,1.5,2.2,2.7,3.0];
   for(const R of steps){
     const un=R*riskD;
@@ -314,25 +292,23 @@ async function cycle(){
     $("posbar").style.width=Math.max(0,Math.min(100,(R/3)*100))+"%";
     await step(620);
   }
-  // close at +3R target
   const pnl=3*riskD;day+=pnl;bal+=pnl;trades++;addv+=pnl;
   eqpts.push(day);renderAcct();
-  feedLine(et(),"APOLLO",node("APOLLO").col,`<b>target hit</b> 20392.75 · +3.0R · closed <b>${money(pnl)}</b>`);
+  feedLine(et(),"HERMES",HERMES.col,`<b>target hit</b> 20392.75 · +3.0R · closed <b>${money(pnl)}</b>`);
   setVerdict("v-skip","FLAT","trade closed +3.0R · awaiting next setup");
   $("pos").classList.remove("on");$("posflat").style.display="block";$("posflat").textContent="no position — waiting on the canon";
-  $("posstat").textContent="flat";node("APOLLO").glow=1;
+  $("posstat").textContent="flat";
   await step(2200);
 }
 
 async function main(){
-  renderAcct();eqpts=[0];feedLine(et(),"SYSTEM","#98A1B0",`desk online · 8 agents · <b>London</b> book routed · spine armed`);
+  renderAcct();eqpts=[0];feedLine(et(),"SYSTEM","#98A1B0",`desk online · Hermes + 4 subagents · <b>London</b> book routed · spine armed`);
   while(true){await cycle();}
 }
 
-/* animation loops */
 function raf(){drawNet();drawEq();requestAnimationFrame(raf);}
 requestAnimationFrame(raf);
-setInterval(()=>{$("clock").textContent=new Date().toUTCString().slice(17,25)+" UTC";},1000);
-$("clock").textContent=new Date().toUTCString().slice(17,25)+" UTC";
+function tick(){$("clock").textContent=new Date().toUTCString().slice(17,25)+" UTC";}
+setInterval(tick,1000);tick();
 main();
 </script>
