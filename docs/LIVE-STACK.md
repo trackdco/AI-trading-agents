@@ -34,13 +34,31 @@ Cost: ~$50/month all-in (Sierra package + the funded firm provides Rithmic free)
 
 ## Step 2 — Feed bridge: Sierra Chart (Advanced package)
 
-- Sierra connects to Rithmic and is our **reliable raw-feed bridge and order router** —
+- Sierra connects to the CME feed and is our **reliable raw-feed bridge and order router** —
   NOT the calculator whose numbers we trust. (See Step 4 for why.)
-- We use **MBP-10** (aggregated size per price level, 10 deep) — exactly what Rithmic DOM
-  and our heatmap backtest used. We do **not** use MBO (individual order-level). Do not
-  buy an MBO subscription; we don't use it.
-- Confirm current package pricing; the raw feed (trades-with-aggressor + DOM depth) is all
-  we require from it.
+- **Feed = MBO (Market By Order), single source, dual purpose** (Angus ruling). MBO is the
+  individual-order stream (every add / modify / cancel with an order ID) and is strictly
+  RICHER than MBP-10, so one MBO subscription serves both roles:
+  - **Aggregate MBO → MBP-10 for live canon scoring.** The canon was validated on MBP-10
+    (`WALLSZ`, `dep_wall_*`, thickness, imbalance); the frozen thresholds only mean
+    anything against MBP-10 definitions. The live scoring path consumes the *aggregated*
+    view. The reconciliation day (Cross-cutting A) must prove our MBO→MBP-10 aggregation
+    equals the Databento MBP-10 the backtest used.
+  - **Retain raw MBO for the journal/research layer.** It never touches the
+    frozen-threshold scoring path — it accumulates as the substrate for the next campaign.
+    MBO exposes what MBP-10 discards: wall *composition* (order count vs total size — one
+    whale or forty minnows), iceberg/refresh detection, order pulls/cancels as price
+    approaches, queue dynamics, order-size distribution. This is a direct future upgrade to
+    our strongest signal — a big wall that HOLDS vs one that VANISHES is invisible to
+    MBP-10. After a few months of forward MBO around every trade, mine it the way the
+    historical campaigns were mined.
+- **Verify the MBO source.** MBO is a premium CME feed and a firehose (millions of
+  events/day on NQ). Confirm how it's delivered in the funded setup — Rithmic's funded
+  connection typically provides DOM (MBP) depth, not full order-by-order; true CME MBO may
+  need Sierra's Denali/CME data feed (~$40/mo non-pro CME bundle) as the data source while
+  Rithmic remains the execution route + the firm's drawdown-of-record. Provision storage
+  and throughput for the raw MBO capture accordingly (capture a window around each trade
+  rather than the entire tape if storage is tight).
 
 ## Step 3 — The bridge protocol: DTC server
 
@@ -109,21 +127,27 @@ from the matrix scripts rather than re-deriving.
 
 **A. Reconciliation day — the gate before any funded order.**
 Point the ingestor at a historical day already in the repo and assert every feature
-matches the backtest to the decimal (special attention to the CVD sign and the VWAP
-anchor). Nothing goes live until this passes. This is the single check that prevents a
-silent definition-mismatch from quietly un-tracking the +$106k book.
+matches the backtest to the decimal (special attention to the CVD sign, the VWAP anchor,
+and — since the feed is MBO — that our MBO→MBP-10 aggregation reproduces the Databento
+MBP-10 depth the backtest scored on). Nothing goes live until this passes. This is the
+single check that prevents a silent definition-mismatch from quietly un-tracking the
++$106k book.
 
 **B. 24/5 continuous operation.**
 The machine runs from 18:00 ET every session. London needs the full overnight
 (`cvd_ASIA`, overnight range for `room_R`); NY-gold needs `AGE` and the ON range. This is
 not a "start it at 3am" system.
 
-**C. Comprehensive journaling (Angus mandate).**
+**C. Comprehensive journaling (Angus mandate) + MBO capture.**
 Every trade journals: session/book, every check bit AND its raw value, score, OF
 confirmations, full size-multiplier path, fill/exit/exit_reason, MAE/MFE, in-trade marks
 (`r_3`/`fw_3` for NY), ambient context (spread at fill, DST group, news-calendar state,
-sweep state), and an engine-version + threshold-hash. Purpose: accumulate live data so
-recalibration runs on evidence. Journal everything, gate nothing new.
+sweep state), and an engine-version + threshold-hash. PLUS the **raw MBO capture** in a
+window around each trade (order-level book events: adds/modifies/cancels with IDs, so wall
+composition, iceberg refresh, and pull/fade behaviour are reconstructable later). Purpose:
+accumulate live data so recalibration runs on evidence, and build the MBO substrate for the
+next campaign. Journal everything, gate nothing new — the MBO layer informs future
+research, it never enters the live scoring path until a campaign earns it in.
 
 **D. Python-side execution guards + sizer.**
 - Mechanical spread/slippage cap before placing an order (relative, not a frozen absolute
