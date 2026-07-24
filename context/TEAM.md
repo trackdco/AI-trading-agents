@@ -26,12 +26,19 @@ Git rules (keep it simple):
 absorption/exhaustion heat-map confluence (his MIG replacement). Feb–Mar first for cheap
 validation against his hand logs.
 
-## ⚠️ PAT: NEW ASSIGNMENT WAITING (18 Jul, from Angus)
+## ⚠️ SUPERSEDED (18 Jul assignment → 24 Jul canon ruling)
 
-**Read `docs/TASK-FOR-PAT-regime-agent.md` before anything else** — Angus has directed a
-regime-context agent (reads macro/war/narrative context, gates the engine's bias/structure/
-size). March's −$4,430 out-of-sample month is the motivating evidence; the brief has the
-mandate, contract strawman, constraints, and acceptance criteria.
+**The LLM regime-context *gate* is retired.** The 18 Jul brief
+(`docs/TASK-FOR-PAT-regime-agent.md`) directed a regime-context agent that *reads
+macro/war/narrative context and gates the engine's bias/structure/size* — i.e. an LLM in the
+trade path. Angus's authoritative canon ruling of **24 Jul** overrides it
+(`docs/FOR-ANGUS-desk-spec-questions.md:262-267`): *"the strategy is now THE CANON … frozen
+deterministic code … **There is no LLM judgment anywhere in the trade path.** Agent
+intervention risks degrading performance (proven three times)."* So **no agent gates the
+engine.** The only "regime" left on the live path is the deterministic pre-open E3/E4 switch
+computed from bars (`src/live/vector.py::LiveVectorPolicy`), and the desk agents route /
+relay / journal only (`docs/desk-skills/canon/*`). The old brief is kept for provenance but
+is **not an active assignment**.
 
 ## Who does what
 

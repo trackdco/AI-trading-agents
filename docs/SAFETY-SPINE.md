@@ -96,6 +96,15 @@ These three keep the funded account from dying. They are the "retain all three" 
    `entry_ref`** with the stop/target bracket. The spine rejects any market entry order —
    the canon was validated on limit fills, and a market entry silently changes the edge.
 
+8b. **Broker read-back verification.** After a submit, **read the order and the resulting
+   position back from the broker** (DTC order-status + position reports) and confirm they
+   match intent — side, quantity, account, and that **both bracket legs (stop + target)
+   actually rest** — before the order is treated as live; then reconcile position-vs-intent
+   on a timer. **Any mismatch → flatten + halt.** The submit ack is never trusted on its own
+   (a fill can differ from, or a bracket leg can silently fail to place against, what was
+   sent). This is the execution-side twin of the champion's "no arithmetic is load-bearing —
+   re-check independently." Implemented in `src/canon/spine.py` (`_verify_readback`).
+
 ---
 
 ## Tier 3 — System integrity — fail safe, not open
