@@ -264,14 +264,61 @@ constant.
 **Whatever value you pick, index it.** Every R value from −5R to −2R prices identically in the
 cycle model; every fixed-dollar value bleeds. The units are the decision; the number is taste.
 
-### D2 available-drawdown floor: **$400**
+### D2 available-drawdown floor: **leave it at $250**
 
-- Takes bust to **0.00%** in 20,000 simulated funded years, against 0.14% at the shipped $250
-  and 1.44% naked.
-- Costs $1,300 of funded-year median (0.4%) and — in the payout-cycle model, which is the one
-  that counts — nothing.
-- Your arming-gate proposal was $400 on the reasoning "one max-risk trade." That reasoning is
-  right and the measurement agrees. **Raise `dd_halt_buffer` from 250 to 400.**
+> **Corrected 2026-07-26 (same day).** This section first recommended $400 on the strength of
+> "0.00% bust at no cost in the payout model." That reading was wrong: annual cash is quantised
+> into $2,000 payouts, so the median and p25 physically cannot move for an effect this size.
+> `scripts/why_bust_falls.py` re-ran both policies on identical day sequences and priced it on
+> the **mean**. There is no corner and no free lunch — every dollar of buffer is a straight
+> trade of cash for bust. Original recommendation kept visible below the corrected one.
+
+| buffer | bust | frozen years | mean cash | cost | bust removed | **cost per point of bust** |
+|---|---|---|---|---|---|---|
+| none | 1.59% | 0.0% | $46,533 | — | — | — |
+| **$100** | 0.81% | 1.1% | $46,378 | −$155 | −0.78pp | **$199** |
+| **$250 (ships)** | **0.17%** | **2.7%** | **$45,974** | **−$404** | **−0.64pp** | **$631** |
+| $400 | 0.00% | 4.2% | $45,390 | −$584 | −0.17pp | **$3,435** |
+| $600 | 0.00% | 6.9% | $44,158 | −$1,232 | **0** | **∞** |
+
+*(naked bust reads 1.59% here against 1.44% in §3 — same quantity, different draw method: a
+pre-drawn sequence matrix so both policies see identical days. This table is internally
+consistent.)*
+
+**Pricing a point of bust.** The five accounts are copy-traded off the identical book, so they
+bust **together** — 1.59% is the probability of losing the whole ~$240k/yr stream in one year,
+not a per-account risk. That values one point of bust at roughly **$465** of expected annual
+cash per account, plus the re-eval and the lost weeks. Against that:
+
+- none -> $100: pay $155 for $363. Worth it.
+- $100 -> $250: pay $404 for $298. Break-even on cash, positive once keeping the account counts.
+- **$250 -> $400: pay $584 for $79.** Five times the value it buys.
+- $400 -> $600: pay $1,232 for nothing at all.
+
+**$250 already captures 89% of the total available bust reduction for 1.2% of cash.** It is also
+what ships, so Pat changes nothing.
+
+### Why this is a trade-off at all — and the shape that might beat it
+
+The available-DD halt is an **absorbing state**. Halted means no trades, so the balance does not
+move, so the EOD line does not move, so you are still under the buffer tomorrow. Median
+halt-days per firing path: **239 of 252.** It does not end your day, it ends your year. The
+paired decomposition:
+
+| group | count | outcome |
+|---|---|---|
+| untouched — never came within $400 of the line | 19,162 (95.8%) | $0 change |
+| rescued — busted naked | 319 (1.59%) | survives, **with $6 of cash** |
+| paid — survived naked, halted anyway | 519 (2.6%) | **−$44,058 each** |
+
+Naked bust is concentrated at the start: **median bust day 15 of 252**, before the buffer builds.
+
+It has to be a cliff because **`base_dollar` floors at $200 and never steps below it**. The spine
+doc says sizing "steps down the same way as available DD shrinks" — but it stops stepping at
+$3k. At $400 of remaining room the sizer still wants to risk $200 on a 1.0 setup, half the room,
+so the only available response is to stop entirely. **The missing piece is a ramp, not a bigger
+buffer** — see `scripts/dd_ramp_study.py`. That is a SIZING change and therefore Angus's call,
+not the spine's; it is measured, not adopted.
 
 ### Consecutive halt days: **keep 2 in a row -> stop and review**
 

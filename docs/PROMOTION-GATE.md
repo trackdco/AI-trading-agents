@@ -117,7 +117,7 @@ misbehaves."
 | trigger | value |
 |---|---|
 | Daily loss limit | **−4R**, indexed to the day's own `base_dollar` — **not** a fixed dollar figure. = −$800 at the eval floor, −$1,700 at $6k available DD. Measured in `docs/RULING-daily-loss-limit.md` |
-| Available-drawdown floor | halt at **$400** above the Lucid EOD line (one max-risk trade). 0.00% bust in 20k simulated funded years vs 1.44% naked, at zero cash cost |
+| Available-drawdown floor | **keep the shipped $250.** It captures 89% of the available bust reduction (1.59% → 0.17%) for 1.2% of mean cash. $400 buys the last 0.17pp at **$3,435 per point** when a point is worth ~$465 — corrected 2026-07-26 after the paired test; the payout median is quantised to $2,000 steps and hid the cost |
 | Consecutive halt days | 2 in a row → stop and review before re-arming |
 | ~~Loss-count halt~~ | **Not used.** "2 losing trades" costs $3,163 on the canon and halts 35 of 225 days — re-confirming Angus's 17-Jul `daily_halt_losses: 0` ruling. Damage, not attempts |
 
