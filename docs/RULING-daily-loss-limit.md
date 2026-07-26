@@ -9,7 +9,20 @@ performance."*
 **Answering the two `[ANGUS]` placeholders in `docs/PROMOTION-GATE.md` §D2.**
 
 Reproduce: `python -m scripts.daily_loss_limit_study`, `python -m scripts.dd_buffer_study`,
-`python -m scripts.payout_cycle_halts`.
+`python -m scripts.payout_cycle_halts`, `python -m scripts.dd_ramp_study`.
+
+---
+
+> ## WHICH BOOK EACH NUMBER CAME FROM — read this first
+>
+> §1–§6 below were measured on **`output/baseline_book.parquet`** (+$56,065.18 / 400), which was
+> the signed-off anchor at the time. It has since been superseded: the pre-window `C` check used
+> the look-ahead `conf_PM` (`docs/FINDING-conf_PM-lookahead-pre-window.md`). The **arming
+> reference is now `output/baseline_book_clean.parquet`, +$52,522.81 / 404.**
+>
+> **Everything was re-run on the clean book — see §9. The conclusions hold, with one instructive
+> exception.** All scripts now default to the clean book; `CANON_BOOK=output/baseline_book.parquet`
+> reproduces the older figures.
 
 ---
 
@@ -456,3 +469,82 @@ reduction.**
 **Fix the units, not the presence: −4R (= −$800 at the floor) and a $400 drawdown floor.** Both
 are free on history, both are free in the payout model, and the drawdown floor is the one
 actually buying the survival we have been attributing to the pair.
+
+---
+
+## 9. RE-RUN ON THE ARMING REFERENCE (`baseline_book_clean.parquet`, +$52,522.81 / 404)
+
+Everything above was measured on the pre-lookahead-fix book. Re-measured on the clean one.
+
+### The book itself
+
+| | leaky (400) | **clean (404)** |
+|---|---|---|
+| total | $56,065.18 | **$52,522.81** |
+| worst day | −3.09R / −$619 | **−3.18R / −$636** |
+| days ≤ −3R | 1 of 225 | 2 of 224 |
+| days ≤ −3.5R / ≤ −4R | 0 / 0 | **0 / 0** |
+| max drawdown | $1,404 | **$1,614** |
+| months green | 12/13, worst −$396 | **13/13, worst +$618** |
+
+The fix cost $3,542 of P&L and **removed the only red month.** Reshuffling the clean book's own
+days 200,000×: p90 max DD **$2,366**, p99 **$3,310**, **51.1%** of orderings worse than the one
+that happened, **23.25%** breaching $2,000. The drawdown case for the parameters is *stronger*
+on the clean book, not weaker.
+
+### Daily loss halt — replay
+
+| limit | total | vs canon | halt days | months green | worst day |
+|---|---|---|---|---|---|
+| none | $52,523 | — | 0 | 13/13 | −$636 |
+| **−4R (−$800 at floor)** | **$52,523** | **$0** | **0** | 13/13 | −$636 |
+| −3.5R | $52,523 | $0 | 0 | 13/13 | −$636 |
+| −3R | $52,523 | $0 | 2 | 13/13 | −$636 |
+| −2.5R | $52,625 | +$102 | 4 | 13/13 | −$636 |
+| **−2R** | $52,339 | **−$184** | 12 | 13/13 | −$580 |
+| −$300 | $49,871 | −$2,651 | 29 | 13/13 | −$580 |
+
+**The instructive exception: −2R was +$213 on the leaky book and is −$184 on the clean one.** It
+changed sign. It was always 10 halted days out of 225 — in-sample noise — and it did not survive
+a substrate correction. **−4R, chosen to sit strictly outside the validated distribution rather
+than to score well inside it, is unchanged at exactly $0.** That is the argument for picking a
+backstop by constraint instead of by curve, and it paid for itself here.
+
+### Cliff vs ramp
+
+| shape | bust | mean cash | median | p10 | years lost to stand-down |
+|---|---|---|---|---|---|
+| no halt at all | 1.75% | $47,788 | $48,000 | $42,000 | 0.0% |
+| cliff, buffer $100 | 0.90% | $47,574 | $48,000 | $42,000 | 1.3% |
+| **cliff, buffer $250 (ships)** | **0.19%** | **$47,100** | $48,000 | $42,000 | **3.1%** |
+| cliff, buffer $400 | 0.00% | $46,381 | $48,000 | $42,000 | 4.9% |
+| cliff, buffer $600 | 0.00% | $44,987 | $48,000 | $40,000 | 7.9% |
+| ramp from $3,000 | 0.00% | $46,616 | $48,000 | $40,000 | 0.0% |
+| ramp from $2,000 | 0.00% | $48,068 | $48,000 | $42,000 | 0.0% |
+| **ramp from $1,500** | **0.00%** | **$48,334** | **$48,000** | **$42,000** | **0.0%** |
+| ramp from $1,000 | 0.00% | $48,370 | $48,000 | $42,000 | 0.2% |
+| ramp from $750 | 0.00% | $48,112 | $48,000 | $42,000 | 0.9% |
+
+Same conclusion, wider margin. **Ramp from $1,500 beats doing nothing at all (+$546/acct) and
+beats the shipped $250 cliff by +$1,234/acct/yr — ~$6,170 across five accounts** — while taking
+bust to 0.00% and stranding nobody. $1,500 vs $1,000 is $36 apart on cash and 0.0% vs 0.2% on
+stranding, so $1,500 still wins. The $2,000–$750 plateau spans $302: still a plateau, not a spike.
+
+### Verdict, unchanged
+
+1. `max_contracts: 2` -> **40** — a unit bug, unaffected by any of this.
+2. `daily_loss_halt: -800.0` -> **−4R** — confirmed on the arming reference, $0 effect.
+3. **Ramp `base_dollar` from $1,500 down to $0 at $100** — confirmed, and the only one of the
+   three that makes money. Sizing change, so Angus's call.
+4. `dd_halt_buffer` **stays 250**. Loss-count halt **stays off**.
+
+```
+base_dollar(ad):
+    ad >= 3000 :  200 + 75·floor((ad − 3000)/1000)     # unchanged
+    ad >= 1500 :  200                                   # unchanged
+    ad <  1500 :  200 · (ad − 100) / 1400               # the ramp
+    ad <=  100 :  0  → no trade ("sized out", journalled distinctly from "halted")
+```
+
+Belongs in `dollar_risk_micros`, **not** the spine — the DD-scaling overlay must be applied
+identically by the baseline sim and the agents off the same account-state feed, or A2 fails.
