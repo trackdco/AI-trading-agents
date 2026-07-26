@@ -35,9 +35,13 @@ S = os.environ.get("LONDON_SCRATCH", os.path.expanduser("~/london_out"))
 WT = os.environ.get("LONDON_WT", f"{S}/canon_wt")
 NY = "America/New_York"
 PV = 20.0
+TICK = 0.25
+COMM = 5.0
 SPLIT = "2025-01-01"
 NPERM = 1000
 rng = np.random.default_rng(17)
+import sys
+RBASIS = sys.argv[sys.argv.index("--rbasis")+1] if "--rbasis" in sys.argv else "engine"
 BIN, VA = 1.0, 0.70
 
 # ---------------------------------------------------------------- load
@@ -49,6 +53,9 @@ F = F[F.risk >= 1.0].sort_values("fill_ts").reset_index(drop=True)
 F["R"] = F.dollars / (F.risk * PV)
 F["dir"] = np.where(F.direction == "long", 1, -1)
 F["sess"] = (F.fill_ts + pd.Timedelta(hours=6)).dt.strftime("%Y-%m-%d")
+_RBASIS_TGT = None
+if RBASIS.startswith("t"):
+    _RBASIS_TGT = float(RBASIS[1:])
 
 bars = pd.read_parquet(f"{WT}/data/reference/nq_1m_master.parquet")
 bars["ts"] = pd.to_datetime(bars.ts_event, utc=True).dt.tz_convert(NY)
@@ -153,6 +160,34 @@ sesss = F.sess.values
 
 atr14 = atr_v[kA]
 atr14 = np.where(np.isfinite(atr14) & (atr14 > 0), atr14, np.nan)
+
+if _RBASIS_TGT is not None:
+    # fixed-target R: keep engine initial stop (-1R), exit at +TGT*R if reached first, walk to
+    # session end (18:00 ET boundary). stop checked before target on the same bar (pessimistic).
+    print(f"  recompute R on {RBASIS} target basis ...", flush=True)
+    sess_last = {}
+    _bs = bars.sess.values
+    for _k in range(len(bars)):
+        sess_last[_bs[_k]] = _k
+    kf_ = np.searchsorted(bt, F.fill_ts.values, side="left")
+    newR = np.full(len(F), np.nan)
+    _en, _dr, _rk = F.entry.values, F["dir"].values, F.risk.values
+    for _n in range(len(F)):
+        _e, _d, _r = _en[_n], _dr[_n], _rk[_n]
+        _kf = int(kf_[_n]); _kl = sess_last.get(sesss[_n], _kf)
+        hi_run, lo_run, out = -np.inf, np.inf, None
+        for _k in range(_kf, min(_kl, len(bars) - 1) + 1):
+            lo_run = min(lo_run, (_d*(lo[_k]-_e)) if _d>0 else (_d*(hi[_k]-_e)))
+            hi_run = max(hi_run, (_d*(hi[_k]-_e)) if _d>0 else (_d*(lo[_k]-_e)))
+            if lo_run <= -_r:
+                out = -1.0 - TICK/_r; break
+            if hi_run >= _RBASIS_TGT*_r:
+                out = _RBASIS_TGT - TICK/_r; break
+        if out is None:
+            out = (_d*(cl[min(_kl,len(bars)-1)]-_e))/_r   # session-end mark
+        newR[_n] = out
+    F["R"] = newR
+    F["dollars"] = newR * _rk * PV - COMM
 
 
 def sget(series, keys):
