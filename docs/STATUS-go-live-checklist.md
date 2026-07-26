@@ -49,7 +49,13 @@ Updated 2026-07-26 (Sunday), second pass — now merged with Angus's on-box list
   (`-5586663580`), kill authority = Pat (6920156996) + Angus (1814673340), `--test`
   delivered to both. TLS root gap on the fresh VPS fixed the clean way (certifi +
   SSL_CERT_FILE; verification stays ON). ⚠ Token was shown in a screenshot — rotate via
-  BotFather when convenient.
+  BotFather when convenient. → *rotated 2026-07-26 (Angus), re-tested with the new creds.*
+  ⚠ **GAP FOUND + CLOSED (2026-07-26): nothing consumed /kill for the CANON stack** — the
+  old CommandListener trips the paper Vault's RiskGuard in-process; the canon spine halts
+  on the KILL FILE and no process wrote it. New: `scripts/kill_listener.py` (own process,
+  deliberately OUTSIDE the runner — a wedged runner must not take its off-switch down with
+  it). **Run it alongside canon_run from tonight onward**; it answers /kill (writes the
+  file, spine halts, no remote reset) and /status (kill state + runner-log freshness).
 - **News sentinel AUTOMATED (P12/A1-backup retired)**: on-box test run fetched 25 events
   ("premarket clear"), wrote the snapshot; scheduled task `NQDesk-NewsSentinel` daily at
   01:30 US Central (02:30 ET, pre-London). Fail-closed consumer wiring was already in.

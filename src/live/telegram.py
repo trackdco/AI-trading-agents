@@ -31,6 +31,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
@@ -205,6 +206,83 @@ class CommandListener:
                 self.guard.trip()
                 self._reply("⛔ kill switch ARMED — no new trades until a human removes "
                             "the kill file at the machine.")
+                handled += 1
+        return handled
+
+    def _reply(self, text: str) -> None:
+        try:
+            self._transport("sendMessage",
+                            {"chat_id": self.cfg.chat_id, "text": text}, self.cfg.token)
+        except Exception as e:
+            print(f"[telegram] reply failed: {type(e).__name__}: {e}", file=sys.stderr)
+
+
+class KillFileListener:
+    """The CANON stack's /kill + /status consumer (scripts/kill_listener.py runs it).
+
+    CommandListener above belongs to the paper Vault stack (its /kill trips a RiskGuard in
+    the same process). The canon spine halts on a KILL FILE (paths.kill_file), and the thing
+    that writes that file must be a SEPARATE PROCESS: a kill switch living inside the
+    process you may need to kill is a single point of failure — a wedged runner would take
+    its own off-switch down with it.
+
+    /kill   -> write the KILL file (who + when inside) and confirm. The spine halts on its
+               next check and STAYS halted; there is deliberately no /reset — removing the
+               file requires a human at the box.
+    /status -> kill-file state + how fresh the runner's log is (a stale log = the runner is
+               not writing = investigate).
+    Locked to allowed_user_ids; strangers and other text are silently ignored/counted."""
+
+    def __init__(self, cfg: TelegramConfig, kill_file, run_log=None,
+                 transport: Callable = _http_transport, clock: Callable = time.time):
+        self.cfg = cfg
+        self.kill_file = Path(kill_file)
+        self.run_log = Path(run_log) if run_log else None
+        self._transport = transport
+        self._clock = clock
+        self._offset = 0
+        self.ignored = 0
+
+    def _status_text(self) -> str:
+        killed = self.kill_file.exists()
+        lines = [f"{'⛔ KILLED' if killed else '🟢 not killed'} | kill file "
+                 f"{'PRESENT' if killed else 'absent'}: {self.kill_file}"]
+        if self.run_log is not None:
+            if self.run_log.exists():
+                age = max(0.0, self._clock() - self.run_log.stat().st_mtime)
+                lines.append(f"runner log last wrote {age:,.0f}s ago"
+                             + (" ⚠️ STALE" if age > 300 else ""))
+            else:
+                lines.append(f"⚠️ runner log missing ({self.run_log}) — runner never started?")
+        return "\n".join(lines)
+
+    def poll_once(self, timeout: int = 0) -> int:
+        try:
+            out = self._transport("getUpdates",
+                                  {"offset": self._offset, "timeout": timeout},
+                                  self.cfg.token)
+        except Exception as e:
+            print(f"[telegram] poll failed: {type(e).__name__}: {e}", file=sys.stderr)
+            return 0
+        handled = 0
+        for upd in out.get("result", []):
+            self._offset = max(self._offset, upd.get("update_id", 0) + 1)
+            msg = upd.get("message") or {}
+            user = (msg.get("from") or {}).get("id")
+            text = (msg.get("text") or "").strip().split("@")[0]
+            if user not in self.cfg.allowed_user_ids:
+                self.ignored += 1
+                continue
+            if text == "/kill":
+                self.kill_file.parent.mkdir(parents=True, exist_ok=True)
+                self.kill_file.write_text(
+                    f"killed via telegram by user {user} at epoch {self._clock():.0f}\n")
+                self._reply(f"⛔ KILL file set — the spine halts on its next check and stays "
+                            f"halted. Removing it requires a human at the box "
+                            f"({self.kill_file}).")
+                handled += 1
+            elif text == "/status":
+                self._reply(self._status_text())
                 handled += 1
         return handled
 

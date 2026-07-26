@@ -163,3 +163,52 @@ def test_config_from_env_requires_token(monkeypatch, tmp_path):
         "TELEGRAM_ALLOWED_USER_IDS=111, 222\n")
     cfg = TelegramConfig.from_env()
     assert cfg.chat_id == "-5356314891" and cfg.allowed_user_ids == (111, 222)
+
+
+# ------------------------------------------------------------------ KillFileListener (canon)
+def test_killfile_listener_kill_writes_the_spine_kill_file(tmp_path):
+    from src.live.telegram import KillFileListener
+    kf = tmp_path / "KILL"
+    tr = FakeTransport(updates=[_upd(111, "/kill", 5)])
+    lis = KillFileListener(_cfg(allowed=(111,)), kf, transport=tr, clock=lambda: 1_000.0)
+    assert lis.poll_once() == 1
+    assert kf.exists() and "user 111" in kf.read_text()        # who + when journaled inside
+    assert any("KILL file set" in p.get("text", "") for m, p in tr.calls if m == "sendMessage")
+
+
+def test_killfile_listener_locked_to_operators(tmp_path):
+    from src.live.telegram import KillFileListener
+    kf = tmp_path / "KILL"
+    tr = FakeTransport(updates=[_upd(999, "/kill", 1), _upd(999, "/status", 2)])
+    lis = KillFileListener(_cfg(allowed=(111,)), kf, transport=tr)
+    assert lis.poll_once() == 0 and lis.ignored == 2
+    assert not kf.exists()                                     # stranger can't kill
+    assert all(m != "sendMessage" for m, _ in tr.calls)        # and gets NO reply
+
+
+def test_killfile_listener_status_reports_kill_state_and_runner_freshness(tmp_path):
+    from src.live.telegram import KillFileListener
+    kf, log = tmp_path / "KILL", tmp_path / "run.log"
+    log.write_text("boot\n")
+    fresh = log.stat().st_mtime + 10.0                         # clock 10s after last write
+    tr = FakeTransport(updates=[_upd(111, "/status", 3)])
+    lis = KillFileListener(_cfg(allowed=(111,)), kf, run_log=log, transport=tr,
+                           clock=lambda: fresh)
+    assert lis.poll_once() == 1
+    reply = [p["text"] for m, p in tr.calls if m == "sendMessage"][0]
+    assert "not killed" in reply and "10s ago" in reply and "STALE" not in reply
+
+    kf.write_text("x")                                         # killed + stale runner
+    tr2 = FakeTransport(updates=[_upd(111, "/status", 4)])
+    lis2 = KillFileListener(_cfg(allowed=(111,)), kf, run_log=log, transport=tr2,
+                            clock=lambda: fresh + 3600)
+    assert lis2.poll_once() == 1
+    reply2 = [p["text"] for m, p in tr2.calls if m == "sendMessage"][0]
+    assert "KILLED" in reply2 and "STALE" in reply2
+
+
+def test_killfile_listener_poll_is_failsoft(tmp_path):
+    from src.live.telegram import KillFileListener
+    lis = KillFileListener(_cfg(), tmp_path / "KILL",
+                           transport=FakeTransport(raise_on="getUpdates"))
+    assert lis.poll_once() == 0                                # network down: no raise
