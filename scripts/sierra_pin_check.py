@@ -54,6 +54,21 @@ def check_scid(path: Path) -> bool:
             print(r); continue
         print(f"    {r.ts}  {r.open:.2f} {r.high:.2f} {r.low:.2f} {r.close:.2f}  "
               f"{r.num_trades} {r.total_volume} {r.bid_volume} {r.ask_volume}")
+
+    # ---- ORDER-FLOW SOURCE GATE -------------------------------------------------
+    # BidVolume/AskVolume are what the whole CVD family is built from (cvd_*, fill_delta,
+    # absorption, delta_div, stacked_imb, d5/d15/d30). Sierra only populates them when the
+    # feed carries per-trade aggressor side; if every record reads 0 the bytes still decode
+    # cleanly but there is NO SOURCE for those features — a silent, expensive failure. Fail
+    # loudly here rather than discovering it at the reconciliation gate.
+    if recs and not any(r.bid_volume or r.ask_volume for r in recs):
+        print("\n  ✗ ORDER FLOW MISSING: BidVolume/AskVolume are zero in every record.")
+        print("    The layout is fine, but the CVD feature family has no source on this feed.")
+        print("    Check the data service actually supplies per-trade bid/ask volume before")
+        print("    trusting any cvd_*/absorption/delta feature. This is a HARD stop.")
+        return False
+    nz = sum(1 for r in recs if r.bid_volume or r.ask_volume)
+    print(f"  order flow: {nz:,}/{len(recs):,} records carry BidVolume/AskVolume (CVD source OK)")
     return True
 
 

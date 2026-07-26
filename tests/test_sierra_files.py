@@ -272,3 +272,25 @@ def test_filetail_with_depth_populates_depth_family(tmp_path):
     # nearest/biggest wall below = the 400-lot bid at entry-2; above = the 500-lot ask at entry+3
     assert row["dep_wall_below_sz"] == 400 and row["dep_wall_below_d"] == 2.0
     assert row["dep_wall_above_sz"] == 500 and row["dep_wall_above_d"] == 3.0
+
+
+# --------------------------------------------------------------------------- pin-check gate
+def test_pin_check_fails_when_order_flow_missing(tmp_path):
+    """A .scid whose BidVolume/AskVolume are all zero must FAIL the pin check.
+
+    The bytes decode fine, so nothing else catches it — but the whole CVD family
+    (cvd_*, fill_delta, absorption, delta_div, stacked_imb, d5/d15/d30) has no source.
+    Silent + expensive, so the pin check treats it as a hard stop.
+    """
+    from scripts.sierra_pin_check import check_scid
+
+    base = dict(open=100.0, high=100.0, low=100.0, close=100.0, num_trades=1, total_volume=5)
+    ts = _ts("2026-07-24", "09:30:00")
+
+    ok = tmp_path / "ok.scid"
+    write_scid(ok, [dict(ts=ts, bid_volume=2, ask_volume=3, **base)])
+    assert check_scid(ok) is True
+
+    dead = tmp_path / "dead.scid"
+    write_scid(dead, [dict(ts=ts, bid_volume=0, ask_volume=0, **base)])
+    assert check_scid(dead) is False
