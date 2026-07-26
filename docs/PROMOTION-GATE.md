@@ -66,7 +66,9 @@ sends a parent entry + a **STOP child** carrying `ParentTriggerClientOrderID`, a
 just that submit returned). The mock server now models real Sierra (drops unknown keys; asserts
 parent+children). **A7 remains a hard ON-BOX gate:** submit one bracket against the live Sierra
 DTC server and confirm **two distinct broker order IDs** come back (entry + resting stop) with live
-status — the offline mock cannot prove the real Sierra accepts the linkage.
+status — the offline mock cannot prove the real Sierra accepts the linkage. The check is turnkey:
+`scripts/dtc_surface_forcetest.py` (resting mode) submits one far-from-market bracket, prints the
+two acknowledged order IDs with their ServerOrderIDs, and cancels it.
 
 ### A8 — the silent one
 
@@ -94,10 +96,16 @@ apply cancel-if-runs.** Every canon fill originates in `simulate()`, whose confi
 shipped `t_cancel = 22.0`; re-running March 2026 (E3) with the rule disabled moves **34 fills**
 (18 appear only without it, 16 only with it), because a cancelled order frees the day's trade
 slots for different later setups. So live **must** implement it to reproduce the arming
-reference. But `dtc_client.py`'s order surface is still `submit_bracket()` only — no
-`cancel_order`, no stop modification, no partial close — while `exit_driver.to_broker_actions()`
-emits exactly `modify_stop` / `partial_close` / `close`. **The same missing surface blocks both
-the cancel rule and the managed exit.** Both stay RED and both are on-box work.
+reference. The missing surface is now BUILT (2026-07-26): `dtc_client.py` carries
+`cancel_order` / `modify_order_price` / `submit_reduce` with server read-back (`order_state`),
+`dtc_broker.DTCBroker` implements the full spine Broker protocol over it, `order_watch.OrderWatch`
+mirrors the engine's cancel decisions boundary-for-boundary, and `exit_live.LiveExitExecutor`
+executes the driven managed exit fail-closed — all verified against the Sierra-strict mock
+(tests/test_dtc_*, test_order_watch, test_exit_live). **Both gates stay RED until the same
+sequences pass against the real Sierra DTC server**, and that run is turnkey:
+`python -m scripts.dtc_surface_forcetest --account <SIM> --symbol MNQ... --entry <far-below>
+--stop <lower>` covers A7 + B7 (resting mode) and adds the full B8 fill path with `--fill`
+(SIM-only by construction — the script refuses non-SIM accounts).
 
 ## C. Operations — FORCE-TESTED before arming, not waited for
 

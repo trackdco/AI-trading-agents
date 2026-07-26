@@ -125,8 +125,14 @@ class MockDTCServer:
             self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid, ServerOrderID=self._sid,
                        OrderStatus=D.ORDER_STATUS_OPEN)
             # market orders always fill regardless of mode (a reducing close must not
-            # depend on the scenario knob)
-            if m.get("OrderType") == D.ORDER_TYPE_MARKET or self.order_mode == "fill":
+            # depend on the scenario knob). "fill_entry" is the Sierra-faithful bracket
+            # fill: the entry fills but the protective STOP child stays WORKING — the
+            # state the B4/B8 stop_resting read-back is defined over.
+            fills = (m.get("OrderType") == D.ORDER_TYPE_MARKET
+                     or self.order_mode == "fill"
+                     or (self.order_mode == "fill_entry"
+                         and m.get("OrderType") != D.ORDER_TYPE_STOP))
+            if fills:
                 self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid, OrderStatus=D.ORDER_STATUS_FILLED,
                            FilledQuantity=m["Quantity"], AverageFillPrice=m.get("Price1", 100.0))
             elif self.order_mode == "partial":
