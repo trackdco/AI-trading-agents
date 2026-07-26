@@ -258,9 +258,12 @@ class KillFileListener:
 
     def poll_once(self, timeout: int = 0) -> int:
         try:
+            # The socket must outlive the LONG POLL: Telegram holds getUpdates open for up
+            # to `timeout` seconds, so the HTTP timeout must exceed it or every quiet poll
+            # dies with TimeoutError before Telegram answers (found live on the box).
             out = self._transport("getUpdates",
                                   {"offset": self._offset, "timeout": timeout},
-                                  self.cfg.token)
+                                  self.cfg.token, timeout=timeout + 15)
         except Exception as e:
             print(f"[telegram] poll failed: {type(e).__name__}: {e}", file=sys.stderr)
             return 0

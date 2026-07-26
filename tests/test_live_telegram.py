@@ -212,3 +212,19 @@ def test_killfile_listener_poll_is_failsoft(tmp_path):
     lis = KillFileListener(_cfg(), tmp_path / "KILL",
                            transport=FakeTransport(raise_on="getUpdates"))
     assert lis.poll_once() == 0                                # network down: no raise
+
+
+def test_killfile_listener_socket_timeout_outlives_the_long_poll(tmp_path):
+    """Found live on the box: a 25s long-poll against a 10s HTTP timeout dies with
+    TimeoutError on every quiet poll. The transport timeout must exceed the long-poll."""
+    from src.live.telegram import KillFileListener
+    seen = {}
+
+    def tx(method, params, token, timeout=10.0):
+        seen["poll"] = params.get("timeout")
+        seen["socket"] = timeout
+        return {"ok": True, "result": []}
+
+    lis = KillFileListener(_cfg(), tmp_path / "KILL", transport=tx)
+    lis.poll_once(timeout=25)
+    assert seen["poll"] == 25 and seen["socket"] > 25
