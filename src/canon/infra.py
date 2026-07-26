@@ -188,7 +188,11 @@ class SierraArchiver:
         out: list[tuple[str, Path]] = []
         depth_dir = self.data_dir / self.depth_subdir
         if depth_dir.exists():
-            for f in sorted(depth_dir.glob(f"{self.root}*{self.suffix}*.depth")):
+            # match on ROOT only, not root+suffix: Sierra's depth naming varies BY BOX and
+            # does not follow the .scid's (Pat's VPS writes NQU26-CME.scid but
+            # NQU6.CME.<date>.depth — found 2026-07-26 when a dry-run archived the .scid and
+            # silently skipped every .depth, the one file class that cannot be re-downloaded).
+            for f in sorted(depth_dir.glob(f"{self.root}*.depth")):
                 out.append((f"{self.offload.prefix}/depth/{f.name}", f))     # immutable per day
         day = pd.Timestamp(now).tz_convert("America/New_York").date()
         for f in sorted(self.data_dir.glob(f"{self.root}*{self.suffix}.scid")):

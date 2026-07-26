@@ -113,6 +113,21 @@ def test_sierra_archiver_uploads_depth_and_scid_idempotently(tmp_path):
     assert keys2 == ["sierra/scid/2026-09-10/NQU26-CME.scid"]
 
 
+def test_sierra_archiver_catches_the_box_depth_naming(tmp_path):
+    """Pat's VPS writes NQU6.CME.<date>.depth (dot separator, single-digit year) next to
+    NQU26-CME.scid — the old root+suffix glob silently skipped every depth file, the one
+    class that cannot be re-downloaded (found via dry-run on-box 2026-07-26). The archiver
+    must match depth files on ROOT alone."""
+    data = _sierra_dir(tmp_path)
+    (data / "MarketDepthData" / "NQU6.CME.2026-07-24.depth").write_bytes(b"depth-box")
+    uploaded = []
+    off = B2Offload("nq-mbo-archive", lambda b, k, d: uploaded.append(k), prefix="sierra")
+    keys = SierraArchiver(data, off, tmp_path / "m.json").archive(
+        now=pd.Timestamp("2026-07-26 12:00", tz=NY))
+    assert "sierra/depth/NQU6.CME.2026-07-24.depth" in keys
+    assert "sierra/depth/NQU26-CME.2026-09-10.depth" in keys       # default naming still works
+
+
 def test_sierra_archiver_pending_is_read_only(tmp_path):
     data = _sierra_dir(tmp_path)
     off = B2Offload("b", lambda *a: None)
