@@ -1,6 +1,6 @@
 # FOR ANGUS — gating rulings before the file-tail data path goes live
 
-**STATUS 2026-07-26: Q2 is RESOLVED (Lucid depth add-on; Denali deactivated). Only Q1 is open.**
+**STATUS 2026-07-26: BOTH RULINGS CLOSED. Q1 APPROVED by Angus; Q2 resolved (Lucid depth add-on; Denali deactivated). No decisions outstanding — Route B is cleared to build and go live.**
 
 Decisions needed from you before the Route-B data path goes live. Neither blocks building or
 offline testing — those are done (**432 tests green**; the on-box pin/replay steps are in
@@ -18,9 +18,19 @@ still go out over DTC unchanged.
 
 ---
 
-## Q1 — Does the data agreement permit reading Sierra's own on-disk `.scid`/`.depth` files?
+## Q1 — ✅ APPROVED (2026-07-26, Angus) — Route B on-disk own-use is authorised
 
-**The question:** is local **own-use** of the files Sierra persists to its own `Data\`
+> **RULING (Angus, 2026-07-26): "you can go ahead."**
+>
+> Route B is approved: our Python may read the `.scid`/`.depth` files Sierra writes to its own
+> `Data\` folder on the same VPS, for own-use trade computation. Build on this. No feed is
+> served to any external application and nothing leaves the machine as a feed.
+>
+> Scope of the approval: **local, same-machine, own-use reads only.** If the design ever needs
+> to move data off the box as a feed, or serve it to a third party, that is a NEW question and
+> must come back to Angus.
+
+**The question (as put):** is local **own-use** of the files Sierra persists to its own `Data\`
 folder — read by our Python process on the same VPS, purely to compute our trade decisions —
 within the CME non-pro + Sierra terms?
 
