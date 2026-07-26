@@ -19,7 +19,7 @@ HB = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(HB)
 
 NY = "America/New_York"
-OUT = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad/bias_timelines_3yr.csv"
+OUT = f"{S}/bias_timelines_3yr.csv"
 
 
 def draws_str(st):

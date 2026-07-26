@@ -170,5 +170,5 @@ Tc = T[T.cvd == True]
 for X in TARGETS:
     pnl = np.where(Tc[f"hit{X}"], X, np.where(Tc.stopped, -Tc.risk, 0.0))
     print(f"  target {X:3d}pt: hit {Tc[f'hit{X}'].mean()*100:3.0f}%  avg {pnl.mean():+6.1f} pts/trade ({len(Tc)}t)")
-T.to_csv("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad/ob_target_tally.csv", index=False)
+T.to_csv(f"{S}/ob_target_tally.csv", index=False)
 print("\nsaved")

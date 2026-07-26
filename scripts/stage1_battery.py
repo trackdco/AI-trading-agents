@@ -25,9 +25,12 @@ from datetime import time as dtime
 import numpy as np
 import pandas as pd
 
-S = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
+import os as _os
+S=_os.environ.get("LONDON_SCRATCH", _os.path.expanduser("~/london_out"))
+WT=_os.environ.get("LONDON_WT", f"{S}/canon_wt")
+_os.makedirs(S, exist_ok=True)
 TRAIN_END = "2024-12-31"
-PARQ = "/home/user/gs/data/reference/nq_1m_master.parquet"
+PARQ = f"{WT}/data/reference/nq_1m_master.parquet"
 rng = np.random.default_rng(42)
 B = 3000
 

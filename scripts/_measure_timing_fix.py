@@ -13,7 +13,7 @@ from src.engine.triggers import Trigger
 NY = "America/New_York"
 MONTHS = ["2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07"]
 DATA = "data/reference/nq_1m_feb_jul2026.parquet"
-SCRATCH = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
+SCRATCH = f"{S}"
 
 
 def load_triggers():

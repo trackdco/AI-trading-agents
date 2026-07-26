@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd, numpy as np, glob
 
 NY = "America/New_York"
-SC = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
+SC = f"{S}"
 
 # per-minute close/high/low + delta, whole span, NY tz
 b = pd.read_parquet("data/reference/nq_1m_feb_jul2026.parquet")

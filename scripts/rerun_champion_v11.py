@@ -20,7 +20,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-ROOT = Path("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad/gs29")
+ROOT = Path(f"{S}/gs29")
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
 from src.backtest.engine import load_backtest_config, simulate  # noqa: E402
@@ -113,7 +113,7 @@ m = V11.groupby("month").dollars.sum().round(0)
 print(m.to_string())
 print(f"green months: {int((m > 0).sum())}/{len(m)}")
 print("\nFROZEN REFERENCE: 100t | 45.0% | +915.7 pts | +$17,814 | +6599/+4250/+3705/+10/+3765/-515 | 5/6")
-J.to_csv("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad/champion_superset_rerun.csv", index=False)
+J.to_csv(f"{S}/champion_superset_rerun.csv", index=False)
 
 # routing-disagreement report: journal-implied branch per day vs current-vector routing
 jdays = C.groupby("day").branch.agg(lambda x: set(x)).to_dict()
@@ -127,5 +127,5 @@ print(f"\nROUTING DRIFT (journal-implied book vs current regime vector): {len(di
 for d_ in dis:
     print("  ", *d_)
 
-V11.to_csv("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad/champion_v11_rerun.csv", index=False)
+V11.to_csv(f"{S}/champion_v11_rerun.csv", index=False)
 print("saved champion_v11_rerun.csv")

@@ -22,8 +22,10 @@ from datetime import time as dtime
 import numpy as np
 import pandas as pd
 
-S = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
-WT = f"{S}/canon_wt"
+import os as _os
+S=_os.environ.get("LONDON_SCRATCH", _os.path.expanduser("~/london_out"))
+WT=_os.environ.get("LONDON_WT", f"{S}/canon_wt")
+_os.makedirs(S, exist_ok=True)
 TICK, PV, COMM = 0.25, 20.0, 5.0
 W0, W1, W2 = dtime(8, 0), dtime(14, 30), dtime(16, 30)      # UK segment bounds
 FLAT_CF = dtime(21, 0)                                       # counterfactual backstop (UK)
@@ -31,7 +33,7 @@ EXCLUDE = {"2025-11-28", "2026-04-03"}
 MISM = [("2025-10-26", "2025-11-01"), ("2026-03-08", "2026-03-28")]
 
 print("loading 1m + footprint ...", flush=True)
-b = pd.read_parquet("/home/user/gs/data/reference/nq_1m_master.parquet")
+b = pd.read_parquet(f"{WT}/data/reference/nq_1m_master.parquet")
 b["ts"] = pd.to_datetime(b["ts_event"], utc=True)
 b["uk"] = b.ts.dt.tz_convert("Europe/London")
 b = b.sort_values("ts").reset_index(drop=True)

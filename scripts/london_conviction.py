@@ -4,15 +4,20 @@ Conviction signals: CVD-confirm (verified best), Angus score (StopFloor+ROOM+ASI
 q4_2025 CVD loaded. Reports net + maxDD + per-year + 4-halves for each scheme; finds max-$ under $2000."""
 from datetime import time as dtime
 import numpy as np, pandas as pd
-S="/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"; WT=f"{S}/canon_wt"
+import os as _os
+S=_os.environ.get("LONDON_SCRATCH", _os.path.expanduser("~/london_out"))
+WT=_os.environ.get("LONDON_WT", f"{S}/canon_wt")
+_os.makedirs(S, exist_ok=True)
 TICK,PV,COMM=0.25,20.0,5.0
 print("load...",flush=True)
-b=pd.read_parquet("/home/user/gs/data/reference/nq_1m_master.parquet")
+b=pd.read_parquet(f"{WT}/data/reference/nq_1m_master.parquet")
 b["ts"]=pd.to_datetime(b.ts_event,utc=True); b["uk"]=b.ts.dt.tz_convert("Europe/London")
 b=b.sort_values("ts").reset_index(drop=True); b["ukt"]=b.uk.dt.time
 FILES=["footprint_q3_2025","footprint_q4_2025","footprint_feb_mar2026","footprint_apr2026","footprint_may_jul2026"]
 cvd_days=set(); dparts=[]; cvd_ASIA={}
-for f in FILES:
+MISSING_CVD=[f for f in FILES if not _os.path.exists(f"{WT}/data/reference/cvd/{f}.parquet")]
+if MISSING_CVD: print("WARN missing CVD (those days -> unconfirmed):", MISSING_CVD, flush=True)
+for f in [f for f in FILES if f not in MISSING_CVD]:
     d=pd.read_parquet(f"{WT}/data/reference/cvd/{f}.parquet",columns=["ts_minute","side","volume"])
     uk=pd.to_datetime(d.ts_minute,utc=True).dt.tz_convert("Europe/London"); dd_=uk.dt.strftime("%Y-%m-%d")
     cvd_days|=set(dd_.unique()); d["s"]=np.where(d.side=="B",d.volume,-d.volume)
@@ -69,7 +74,7 @@ def evalw(w,lab):
     y25=net[Sd.day.str[:4]=="2025"].sum(); y26=net[Sd.day.str[:4]=="2026"].sum()
     print(f"  {lab:42s} net ${net.sum():+8,.0f}  maxDD ${D:6,.0f}  {'<=2k' if D<=2000 else '    '}  25 ${y25:+,.0f} 26 ${y26:+,.0f} {'4/4' if ok4 else 'FAIL'}")
     return net.sum(),D
-conf=(Sd.cov&Sd.ok).values; covfail=(Sd.cov&~Sd.ok).values; uncov=(~Sd.cov).values; s4=(Sd.score>=4).values
+conf=(Sd["cov"]&Sd["ok"]).values; covfail=(Sd["cov"]&~Sd["ok"]).values; uncov=(~Sd["cov"]).values; s4=(Sd.score>=4).values
 print(f"\nday-stop book: {len(Sd)} trades, confirm={conf.sum()}, covered-fail={covfail.sum()}, uncov={uncov.sum()}, score>=4={s4.sum()}")
 print("=== conviction sizing grid (target maxDD<=$2000) ===")
 evalw(np.ones(len(Sd)),"flat 1.0x (base)")

@@ -24,14 +24,17 @@ from datetime import time as dtime
 import numpy as np
 import pandas as pd
 
-S = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
+import os as _os
+S=_os.environ.get("LONDON_SCRATCH", _os.path.expanduser("~/london_out"))
+WT=_os.environ.get("LONDON_WT", f"{S}/canon_wt")
+_os.makedirs(S, exist_ok=True)
 NY = "America/New_York"
 START, END = "2025-07-01", "2026-07-15"
 THR = 0.0010            # 0.10% of open = flat band
 DOW = {"Monday": 0, "Tuesday": 1, "Wednesday": 2, "Thursday": 3, "Friday": 4}
 
 # ---------------- data ----------------
-bars = pd.read_parquet("/home/user/gs/data/reference/nq_1m_master.parquet")
+bars = pd.read_parquet(f"{WT}/data/reference/nq_1m_master.parquet")
 bars["ts"] = pd.to_datetime(bars["ts_event"], utc=True).dt.tz_convert(NY)
 bars["day"] = bars["ts"].dt.strftime("%Y-%m-%d")
 

@@ -8,14 +8,19 @@ drop-wide-unconf (cut unconfirmed trades whose stop>median, an entry-observable 
 Reports net$, maxDD$, worst R-drawdown (blow proxy), WR, N. q4 CVD. No lookahead."""
 from datetime import time as dtime
 import numpy as np, pandas as pd
-S="/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"; WT=f"{S}/canon_wt"
+import os as _os
+S=_os.environ.get("LONDON_SCRATCH", _os.path.expanduser("~/london_out"))
+WT=_os.environ.get("LONDON_WT", f"{S}/canon_wt")
+_os.makedirs(S, exist_ok=True)
 TICK,PV,COMM=0.25,20.0,5.0; TG=3.0; BASE=300.0
 print("load...",flush=True)
-b=pd.read_parquet("/home/user/gs/data/reference/nq_1m_master.parquet")
+b=pd.read_parquet(f"{WT}/data/reference/nq_1m_master.parquet")
 b["ts"]=pd.to_datetime(b.ts_event,utc=True); b["uk"]=b.ts.dt.tz_convert("Europe/London"); b=b.sort_values("ts").reset_index(drop=True)
 FILES=["footprint_q3_2025","footprint_q4_2025","footprint_feb_mar2026","footprint_apr2026","footprint_may_jul2026"]
 cvd_days=set(); dparts=[]
-for f in FILES:
+MISSING_CVD=[f for f in FILES if not _os.path.exists(f"{WT}/data/reference/cvd/{f}.parquet")]
+if MISSING_CVD: print("WARN missing CVD (those days -> unconfirmed):", MISSING_CVD, flush=True)
+for f in [f for f in FILES if f not in MISSING_CVD]:
     d=pd.read_parquet(f"{WT}/data/reference/cvd/{f}.parquet",columns=["ts_minute","side","volume"])
     cvd_days|=set(pd.to_datetime(d.ts_minute,utc=True).dt.tz_convert("Europe/London").dt.strftime("%Y-%m-%d").unique())
     d["s"]=np.where(d.side=="B",d.volume,-d.volume); dparts.append(d.groupby("ts_minute")["s"].sum()); del d

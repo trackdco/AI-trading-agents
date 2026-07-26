@@ -25,7 +25,7 @@ sys.path.insert(0, "/home/user/AI-trading-agents")
 import htf_bias as HB  # noqa: E402
 
 NY = "America/New_York"
-OUT = Path("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad")
+OUT = Path(f"{S}")
 
 # ---- the exact frozen v1.1 trade set (journal + 3 cuts; verified +$17,814) ----
 J = pd.read_csv("/home/user/gs/output/journal_champion.csv")

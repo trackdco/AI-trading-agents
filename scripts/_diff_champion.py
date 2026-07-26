@@ -2,9 +2,10 @@
 """Compare baseline vs fixed champion journals to measure the entry-timing fix's impact."""
 import sys
 import pandas as pd
-S = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
-
-
+import os as _os
+S=_os.environ.get("LONDON_SCRATCH", _os.path.expanduser("~/london_out"))
+WT=_os.environ.get("LONDON_WT", f"{S}/canon_wt")
+_os.makedirs(S, exist_ok=True)
 def summ(J, label):
     w = (J.r > 0).mean() * 100
     print(f"  {label:9s} {len(J):3d}t  ${J.dollars.sum():+8,.0f}  win {w:4.1f}%  "

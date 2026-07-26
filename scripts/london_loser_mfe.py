@@ -10,7 +10,7 @@ M15 OHLC -> excursions are bar-level; I report both intrabar-high (upper bound) 
 from datetime import time as dtime
 import numpy as np, pandas as pd
 TICK,PV,COMM=0.25,20.0,5.0; TG=3.0; RISKD=300.0
-b=pd.read_parquet("/home/user/gs/data/reference/nq_1m_master.parquet")
+b=pd.read_parquet(f"{WT}/data/reference/nq_1m_master.parquet")
 b["ts"]=pd.to_datetime(b.ts_event,utc=True); b["uk"]=b.ts.dt.tz_convert("Europe/London"); b=b.sort_values("ts").reset_index(drop=True)
 m=b.set_index("ts").resample("15min",label="right",closed="right").agg(open=("open","first"),high=("high","max"),low=("low","min"),close=("close","last"),volume=("volume","sum")).dropna(subset=["close"])
 _uk=m.index.tz_convert("Europe/London"); m["ukt"]=_uk.time; m["ukday"]=_uk.strftime("%Y-%m-%d")
@@ -101,5 +101,5 @@ for X in (0.5,0.75,1.0,1.5,2.0):
     print(f"  BE at +{X:.2f}R{'':11s} sumR {sR:+6.1f}  ${sR*RISKD:+8,.0f}   targets {tgt} stops {stp} scratch {scr}   d$ {(sR-b0[0])*RISKD:+7,.0f}")
 print("  (fixed-$ risk lens: each target=+3R, stop=-1R, BE scratch~0. Raw 70 trades, flat, no day-stop.)")
 print("  NOTE: adverse-first is conservative for the rule; folding a winning X into the day-stop book needs a full re-run.")
-R.to_csv("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad/london_loser_mfe.csv",index=False)
+R.to_csv(f"{S}/london_loser_mfe.csv",index=False)
 print("\nsaved london_loser_mfe.csv")

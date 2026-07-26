@@ -167,5 +167,5 @@ for name, sub in [("IN-SAMPLE Feb-May", T[T.mo.isin(IS)]), ("OOS Jun-Jul", T[~T.
         print(f"  {name:18s} {len(sub):3d}t  win {(sub.r>0).mean()*100:3.0f}%  ${sub.dollars.sum():+7,.0f}  R {sub.r.sum():+6.1f}  exp {sub.r.mean():+.3f}")
 print("\n[by VWAP band n profile level]")
 print(T.groupby(["band", "prof"]).agg(n=("r", "size"), win=("r", lambda s: round((s > 0).mean()*100)), R=("r", "sum")).round(1).to_string())
-T.to_csv("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad/dvwap_variant.csv", index=False)
+T.to_csv(f"{S}/dvwap_variant.csv", index=False)
 print("\nsaved")

@@ -22,7 +22,7 @@ from pathlib import Path
 
 import pandas as pd
 
-SCRATCH = Path("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad")
+SCRATCH = Path(f"{S}")
 ROOT = SCRATCH / "gs29"
 import importlib.util
 _spec = importlib.util.spec_from_file_location("htf_bias", "/home/user/AI-trading-agents/htf_bias.py")

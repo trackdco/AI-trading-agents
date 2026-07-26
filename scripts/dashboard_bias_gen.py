@@ -5,7 +5,10 @@ import json
 
 import pandas as pd
 
-S = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
+import os as _os
+S=_os.environ.get("LONDON_SCRATCH", _os.path.expanduser("~/london_out"))
+WT=_os.environ.get("LONDON_WT", f"{S}/canon_wt")
+_os.makedirs(S, exist_ok=True)
 J = pd.read_csv(f"{S}/bias_accuracy_days.csv", dtype={"day": str})
 L = pd.read_csv(f"{S}/bias_learning_log.csv") if pd.io.common.file_exists(f"{S}/bias_learning_log.csv") else pd.DataFrame()
 J["mo"] = J.day.str.slice(0, 7)

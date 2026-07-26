@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Trend Pullback (stacked MA) dashboard: bare vs +confluence -> Artifact HTML."""
 import json
-S = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
+import os as _os
+S=_os.environ.get("LONDON_SCRATCH", _os.path.expanduser("~/london_out"))
+WT=_os.environ.get("LONDON_WT", f"{S}/canon_wt")
+_os.makedirs(S, exist_ok=True)
 raw = open(f"{S}/trend_pullback.json").read().replace("Infinity", "999")
 D = json.loads(raw)
 CSS = open(f"{S}/_css_block.txt").read().replace('CSS = """', "").rstrip('"')

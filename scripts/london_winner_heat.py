@@ -8,7 +8,7 @@ bar-level UPPER bound (intrabar order unknown; conservative). Same trigger/stop/
 from datetime import time as dtime
 import numpy as np, pandas as pd
 TICK,PV,COMM=0.25,20.0,3.0*0+5.0; TG=3.0; RISKD=300.0
-b=pd.read_parquet("/home/user/gs/data/reference/nq_1m_master.parquet")
+b=pd.read_parquet(f"{WT}/data/reference/nq_1m_master.parquet")
 b["ts"]=pd.to_datetime(b.ts_event,utc=True); b["uk"]=b.ts.dt.tz_convert("Europe/London"); b=b.sort_values("ts").reset_index(drop=True)
 m=b.set_index("ts").resample("15min",label="right",closed="right").agg(open=("open","first"),high=("high","max"),low=("low","min"),close=("close","last"),volume=("volume","sum")).dropna(subset=["close"])
 _uk=m.index.tz_convert("Europe/London"); m["ukt"]=_uk.time; m["ukday"]=_uk.strftime("%Y-%m-%d")
@@ -81,5 +81,5 @@ print(f"  losers' MAE in R: {q(L.mae_R.values)}  (->1.0 = rode to the stop)")
 dw=W.loc[W.mae_R.idxmax()]
 print(f"\n-- deepest-heat WINNER: {dw.day} {'long' if dw.dir>0 else 'short'}  risk {dw.risk:.0f}pt, "
       f"went {dw.mae_R:.2f}R (${dw.mae_R*RISKD:.0f}) against before paying 3R  <- a stop tighter than {dw.mae_R:.2f}R loses this one")
-R.to_csv("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad/london_winner_heat.csv",index=False)
+R.to_csv(f"{S}/london_winner_heat.csv",index=False)
 print("\nsaved london_winner_heat.csv")

@@ -4,7 +4,7 @@
 from datetime import time as dtime
 import numpy as np, pandas as pd
 NY="America/New_York"; TICK,PV,COMM=0.25,20.0,5.0
-bars=pd.read_parquet("/home/user/gs/data/reference/nq_1m_master.parquet")
+bars=pd.read_parquet(f"{WT}/data/reference/nq_1m_master.parquet")
 bars["ts"]=pd.to_datetime(bars["ts_event"],utc=True).dt.tz_convert(NY)
 bars=bars.sort_values("ts").reset_index(drop=True)
 m=bars.set_index("ts").resample("15min",label="right",closed="right").agg(

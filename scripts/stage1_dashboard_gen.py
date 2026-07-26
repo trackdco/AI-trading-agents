@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Stage-1 component edge gate dashboard -> Artifact HTML (no wrapper tags)."""
 import json
-S = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
+import os as _os
+S=_os.environ.get("LONDON_SCRATCH", _os.path.expanduser("~/london_out"))
+WT=_os.environ.get("LONDON_WT", f"{S}/canon_wt")
+_os.makedirs(S, exist_ok=True)
 D = json.load(open(f"{S}/stage1_battery.json"))
 CSS = open(f"{S}/_css_block.txt").read().replace('CSS = """', "").rstrip('"')
 DATA = json.dumps(D, separators=(",", ":"))

@@ -4,7 +4,10 @@ import json
 import numpy as np
 import pandas as pd
 
-S = "/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad"
+import os as _os
+S=_os.environ.get("LONDON_SCRATCH", _os.path.expanduser("~/london_out"))
+WT=_os.environ.get("LONDON_WT", f"{S}/canon_wt")
+_os.makedirs(S, exist_ok=True)
 R = pd.read_csv(f"{S}/bias_lab_concepts.csv")
 lab = json.load(open(f"{S}/_lab.json")); OUT = np.array(lab["out"]); is_train = np.array(lab["is_train"])
 jr = json.load(open(f"{S}/ensemble_journal.json"))

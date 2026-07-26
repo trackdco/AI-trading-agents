@@ -3,7 +3,7 @@
 from datetime import time as dtime
 import numpy as np, pandas as pd
 TICK,PV,COMM=0.25,20.0,5.0
-b=pd.read_parquet("/home/user/gs/data/reference/nq_1m_master.parquet")
+b=pd.read_parquet(f"{WT}/data/reference/nq_1m_master.parquet")
 b["ts"]=pd.to_datetime(b.ts_event,utc=True); b["uk"]=b.ts.dt.tz_convert("Europe/London"); b=b.sort_values("ts").reset_index(drop=True)
 m=b.set_index("ts").resample("15min",label="right",closed="right").agg(open=("open","first"),high=("high","max"),low=("low","min"),close=("close","last"),volume=("volume","sum")).dropna(subset=["close"])
 _uk=m.index.tz_convert("Europe/London"); m["ukt"]=_uk.time; m["ukday"]=_uk.strftime("%Y-%m-%d")

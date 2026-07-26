@@ -22,7 +22,7 @@ TRAIN_END = "2024-12-31"
 LON_START, LON_END, FLAT = dtime(3, 0), dtime(7, 45), dtime(9, 25)
 TG = 3.0
 
-bars = pd.read_parquet("/home/user/gs/data/reference/nq_1m_master.parquet")
+bars = pd.read_parquet(f"{WT}/data/reference/nq_1m_master.parquet")
 bars["ts"] = pd.to_datetime(bars["ts_event"], utc=True).dt.tz_convert(NY)
 bars = bars.sort_values("ts").reset_index(drop=True)
 m = bars.set_index("ts").resample("15min", label="right", closed="right").agg(
@@ -141,6 +141,6 @@ for yr in ("2023", "2024", "2025", "2026"):
     sub = RC[RC.day.str[:4] == yr]
     if len(sub):
         print(f"  {yr}: {len(sub):3d} trades  net ${sub.net.sum():+,.0f}  WR {100*(sub.R>0).mean():.0f}%")
-RC.to_csv("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad/london_tp_trades.csv", index=False)
+RC.to_csv(f"{S}/london_tp_trades.csv", index=False)
 print("\nNOTE: raw price-only test (no depth/heatmap in London). Costs net. Exploratory -> "
       "any edge needs the same holdout discipline as the desk's canon.")

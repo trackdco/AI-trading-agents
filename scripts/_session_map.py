@@ -45,7 +45,7 @@ def main():
                 ft = pd.Timestamp(x.fill_ts).tz_convert(NY)
                 rows.append(dict(mo=m, b=ft.floor("15min").strftime("%H:%M"), r=x.r_multiple, d=x.dollars))
     J = pd.DataFrame(rows)
-    J.to_csv("/tmp/claude-0/-home-user-AI-trading-agents/69c9097f-44f3-585b-817f-a315126d0dbb/scratchpad/session_map.csv", index=False)
+    J.to_csv(f"{S}/session_map.csv", index=False)
     print("SESSION-WIDE expectancy by 15-min entry bucket (fixed engine, 08:00-11:00, uncapped):")
     print(f"{'bucket':7s} | {'IS n':>4} {'IS win':>6} {'IS R':>6} {'IS exp':>7} | {'OOS n':>5} {'OOS win':>7} {'OOS R':>6} {'OOS exp':>7}")
     for b in sorted(J.b.unique()):
