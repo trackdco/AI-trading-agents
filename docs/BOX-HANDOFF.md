@@ -23,10 +23,37 @@ Sierra writes these continuously while connected; you do not "export" anything �
 locate the files it already maintains.
 
 1. In Sierra, open the **NQU26** (front-month E-mini NQ) chart so Sierra is writing its
-   intraday file. For depth, market-depth storage must be ON:
-   **Global Settings → Data/Trade Service Settings → check "Store Market Depth Data"**
-   (and the chart's DOM must be populating — see the depth caveat in
-   `docs/FOR-ANGUS-golive-questions.md`).
+   intraday file. Depth recording is a **PER-SYMBOL** setting, not a global one
+   (confirmed on the box, SC build 2930, 2026-07-24):
+
+   **Global Settings → Symbol Settings →** select the symbol pattern **`NQ?#.CME`**
+   (service code `rithmic.trading`) **→ set "Record Market Depth Data" = Yes.**
+
+   > This corrects the earlier instruction, which pointed at *Data/Trade Service
+   > Settings → "Store Market Depth Data"* — that is the WRONG dialog and would leave
+   > depth unrecorded. The switch lives on the **symbol pattern**, so it must be set on
+   > the `NQ?#.CME` pattern that the front-month NQU26 resolves through.
+
+   On the same symbol pattern, set **"Number of Depth Levels to Subscribe" = 10**.
+   Note: **`0` does NOT mean "unlimited"** — it means *defer to the global default*.
+   Pin it to `10` explicitly so this symbol always subscribes the full MBP-10 ladder
+   our depth checks (`WALLSZ`, `dep_wall_*`) need. (The chart's DOM must also be
+   populating — see the depth caveat in `docs/FOR-ANGUS-golive-questions.md`.)
+
+   Two more box findings that affect the capture (no action needed beyond noting them):
+   - **Intraday Data Storage Time Unit** was already **`1 Tick`** on this install — the
+     `.scid` is tick-resolution as the parser assumes; **no re-download needed**.
+   - The connected server is **`LucidTrading-Chicago Area-Aggregated`**. *Aggregated* =
+     **MBP-10** (level-aggregated depth), confirming the feed spec from the box itself:
+     the `.depth` ladder is MBP-10, the exact view the canon was validated on.
+
+   **Flush latency (affects the reconciliation-day lag measurement):** the
+   **"Intraday File Flush Time in Milliseconds"** setting lives at **Global Settings →
+   Advanced Service Settings → General**. A value of **`0` is the Sierra default = ~5 s
+   flush**; it was set to **`1000`** (1 s) on the box to tighten the file-append latency
+   floor the file-tail path reads through. Route B measures this observed lag per bar
+   (Step C) rather than assuming it away — see `docs/LIVE-STACK.md` for the configured
+   value the reconciliation gate reports against.
 
 2. Find the two files (PowerShell):
 
@@ -50,6 +77,19 @@ locate the files it already maintains.
 RecordSize, and — for `.depth` — that **every Command byte decodes to a known action**,
 against the constants pinned at the top of `src/canon/sierra_files.py`. It prints the header
 and sample records so you can eyeball prices/sizes/times against Sierra's chart + DOM.
+
+> **Build note (from the box):** this install is **SC build 2930**. Sierra switched the
+> intraday `SCDateTime` field from `double` to `int64` at build **2151**, so 2930 > 2151
+> ⇒ times are **int64 microseconds** — exactly the `<q` (int64) the pinned `SCID_REC` /
+> `DEPTH_REC` formats assume. The header/record sizes the box session read (`.scid` header
+> 56 / `.depth` header 64 / record 24) all match the pinned constants, so the pin check is
+> *expected* to PASS on this build — but it still MUST be run against a real file; the spec
+> matching is not proof the bytes do.
+>
+> The check now ALSO enforces two order-flow guarantees beyond layout (see the two loud
+> assertions it prints on FAIL): `.scid` Bid/Ask volumes must be non-zero across the sample
+> (or CVD and the whole order-flow family are blind), and `.depth` must yield **10** ladder
+> levels per side, not 5 (5 ⇒ Denali depth not fully subscribed).
 
 ```powershell
 cd C:\ai-trading-agents

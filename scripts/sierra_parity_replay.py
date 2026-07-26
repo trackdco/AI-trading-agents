@@ -19,7 +19,9 @@ a fresh live day has no reference and only the sanity replay applies.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -71,6 +73,52 @@ def sanity_replay(scid: Path, depth: Path | None) -> CanonIngestor:
     return ing
 
 
+def measure_feed_lag(scid: Path, depth: Path | None, seconds: int, flush_ms: int,
+                     journal: Path) -> dict:
+    """LIVE-tail feed-lag measurement (FEED-LAG directive). Polls a CURRENTLY-RECORDING
+    Sierra .scid for `seconds`, timing the wall-clock delta between each bar's close and the
+    moment its record is first read, journals it per bar to `journal`, and returns the
+    summary. Run this against a live file (Sierra streaming NOW) — on a static/historical
+    file the wall clock is unrelated to the bars, so it will report only stale/no samples.
+    We REPORT the lag; we never correct for it."""
+    journal.parent.mkdir(parents=True, exist_ok=True)
+    jf = journal.open("a")
+
+    def _sink(rec: dict) -> None:
+        jf.write(json.dumps(rec) + "\n")
+        jf.flush()
+
+    feed = SierraFileFeed(scid, depth, on_lag=_sink, flush_ms=flush_ms)
+    ing = CanonIngestor(book=DepthBook())
+    deadline = time.monotonic() + seconds
+    polls = 0
+    try:
+        while time.monotonic() < deadline:
+            feed.poll(ing)
+            polls += 1
+            time.sleep(1.0)          # ~1 Hz, matching the box's 1000 ms flush cadence
+    finally:
+        jf.close()
+    s = feed.lag_summary()
+    print(f"  polls                 : {polls} over ~{seconds}s (journal: {journal})")
+    _print_lag(s)
+    return s
+
+
+def _print_lag(s: dict) -> None:
+    """Print the feed-lag summary as a REPORTED (never corrected) line item."""
+    base = f"configured flush {s.get('flush_ms')} ms" if s.get("flush_ms") is not None \
+        else "flush unknown"
+    if s.get("n", 0) == 0:
+        print(f"  FEED LAG (reported)   : no live samples — {base}. Live append-lag is "
+              f"measured on the live tail; run with --measure-lag N against a file Sierra "
+              f"is CURRENTLY recording to capture real numbers.")
+        return
+    print(f"  FEED LAG (reported, NOT corrected) — {base}:")
+    print(f"    n={s['n']}  min={s['min_s']:.3f}s  median={s['median_s']:.3f}s  "
+          f"mean={s['mean_s']:.3f}s  p95={s['p95_s']:.3f}s  max={s['max_s']:.3f}s")
+
+
 def parity_check(depth: Path, day: str) -> int:
     ref = load_depth_day(day)
     if ref is None:
@@ -118,11 +166,27 @@ def main(argv: list[str]) -> int:
     ap.add_argument("depth", nargs="?", default=None)
     ap.add_argument("--parity", action="store_true", help="also diff .depth vs the reference day")
     ap.add_argument("--day", default=None, help="session date YYYY-MM-DD for --parity")
+    ap.add_argument("--measure-lag", type=int, default=0, metavar="SECONDS",
+                    help="poll a LIVE (currently-recording) .scid for N seconds and report "
+                         "observed per-bar file-append latency (reported, not corrected)")
+    ap.add_argument("--flush-ms", type=int, default=1000,
+                    help="configured Sierra 'Intraday File Flush Time' (ms) — the lag baseline "
+                         "(box: 1000; SC default 0 ≈ 5000)")
+    ap.add_argument("--lag-journal", default="output/live/feed_lag.jsonl",
+                    help="per-bar lag journal path for --measure-lag")
     a = ap.parse_args(argv[1:])
     scid = Path(a.scid)
     depth = Path(a.depth) if a.depth else None
     print(f"Route-B replay — scid={scid}  depth={depth}")
     sanity_replay(scid, depth)
+
+    # FEED LAG — a reported line item on the reconciliation-day gate (FEED-LAG directive).
+    print("\nFeed lag (Route-B write-latency floor — reported, never corrected):")
+    if a.measure_lag > 0:
+        measure_feed_lag(scid, depth, a.measure_lag, a.flush_ms, Path(a.lag_journal))
+    else:
+        _print_lag({"n": 0, "flush_ms": a.flush_ms})
+
     rc = 0
     if a.parity:
         if depth is None or not a.day:

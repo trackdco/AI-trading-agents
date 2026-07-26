@@ -194,6 +194,42 @@ def test_live_tail_resumes_and_never_emits_forming_minute(tmp_path):
     assert [b["ts_event"] for b in ing._bars] == [_ts("2026-03-17", f"08:0{i}") for i in (0, 1, 2)]
 
 
+# --------------------------------------------------------------------------- feed lag (Route B)
+def test_feed_lag_measured_per_bar_on_poll(tmp_path):
+    """poll() records wall-clock file-append latency per closed bar (FEED-LAG directive):
+    lag = readable-at (injected clock) − bar close (minute + 1min). Reported, not corrected."""
+    p = tmp_path / "nq.scid"
+    write_scid(p, [
+        {"ts": _ts("2026-03-17", "08:00:05"), "close": 100.0, "total_volume": 10, "ask_volume": 10},
+        {"ts": _ts("2026-03-17", "08:01:05"), "close": 100.5, "total_volume": 10, "ask_volume": 10},
+        {"ts": _ts("2026-03-17", "08:02:05"), "close": 101.0, "total_volume": 10, "ask_volume": 10},
+    ])
+    journaled: list[dict] = []
+    # clock returns a fixed "now" at the poll: 08:02:05 UTC (the same day/tz as the bars).
+    now = _ts("2026-03-17", "08:02:05")
+    feed = SierraFileFeed(p, clock=lambda: now, on_lag=journaled.append, flush_ms=1000)
+    ing = CanonIngestor(book=DepthBook())
+    feed.poll(ing)                                     # closes 08:00 and 08:01 (08:02 forming)
+
+    # 08:00 bar closes at 08:01:00 -> lag 65s;  08:01 bar closes at 08:02:00 -> lag 5s.
+    assert feed.lag.samples == [65.0, 5.0]
+    assert [r["lag_s"] for r in journaled] == [65.0, 5.0]
+    s = feed.lag_summary()
+    assert s["n"] == 2 and s["flush_ms"] == 1000
+    assert s["min_s"] == 5.0 and s["max_s"] == 65.0 and s["median_s"] in (5.0, 65.0)
+
+
+def test_feed_lag_absent_in_batch_mode(tmp_path):
+    """drive_batch (historical replay / parity) does NOT record lag — the wall clock is
+    unrelated to historical bar times, so a lag number there would be meaningless."""
+    p = tmp_path / "nq.scid"
+    write_scid(p, [{"ts": _ts("2026-03-17", "08:00:05"), "close": 100.0, "total_volume": 10},
+                   {"ts": _ts("2026-03-17", "08:01:05"), "close": 100.5, "total_volume": 10}])
+    feed = SierraFileFeed(p, flush_ms=1000)
+    feed.drive_batch(CanonIngestor(book=DepthBook()))
+    assert feed.lag_summary() == {"n": 0, "flush_ms": 1000}
+
+
 # --------------------------------------------------------------------------- PARITY vs ReplaySource
 def _synth_day():
     """One session's worth of 1-minute bars (08:00–09:59 ET, 2026-03-17), each minute a single
@@ -280,9 +316,12 @@ def test_pin_check_fails_when_order_flow_missing(tmp_path):
 
     The bytes decode fine, so nothing else catches it — but the whole CVD family
     (cvd_*, fill_delta, absorption, delta_div, stacked_imb, d5/d15/d30) has no source.
-    Silent + expensive, so the pin check treats it as a hard stop.
+    Silent + expensive, so the pin check treats it as a hard stop. (check_scid RAISES
+    OrderFlowFail on the blind case — the unified contract, see test_sierra_pin_check.py.)
     """
-    from scripts.sierra_pin_check import check_scid
+    import pytest
+
+    from scripts.sierra_pin_check import OrderFlowFail, check_scid
 
     base = dict(open=100.0, high=100.0, low=100.0, close=100.0, num_trades=1, total_volume=5)
     ts = _ts("2026-07-24", "09:30:00")
@@ -293,4 +332,5 @@ def test_pin_check_fails_when_order_flow_missing(tmp_path):
 
     dead = tmp_path / "dead.scid"
     write_scid(dead, [dict(ts=ts, bid_volume=0, ask_volume=0, **base)])
-    assert check_scid(dead) is False
+    with pytest.raises(OrderFlowFail):
+        check_scid(dead)

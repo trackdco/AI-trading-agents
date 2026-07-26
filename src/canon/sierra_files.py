@@ -31,7 +31,7 @@ so the canon, spine, journaler and parity gate are all untouched.
 from __future__ import annotations
 
 import struct
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -114,6 +114,8 @@ class ScidReader:
         self._validated = True
 
     def records(self, offset: int | None = None) -> Iterator[ScidRecord]:
+        if not self.path.exists():
+            return                                       # live tail: file not present yet -> no records
         with self.path.open("rb") as f:
             if not self._validated:
                 self._validate(f)
@@ -205,6 +207,8 @@ class DepthReader:
         return DepthEvent(scdt_to_ts(dt), action, float(price), int(qty), int(num_orders))
 
     def records(self, offset: int | None = None) -> Iterator[DepthEvent]:
+        if not self.path.exists():
+            return                                       # live tail: file not present yet -> no records
         with self.path.open("rb") as f:
             if not self._validated:
                 self._validate(f)
@@ -292,6 +296,45 @@ class MinuteAggregator:
         return [closed]
 
 
+# =========================================================================== feed-lag meter
+@dataclass
+class FeedLag:
+    """Observed file-append latency for the Route-B live tail (arch §2.2; FEED-LAG directive).
+
+    Route B reads bars from the file Sierra flushes to disk, so a bar's record only becomes
+    readable AFTER Sierra flushes it — a write-latency floor (the configured
+    'Intraday File Flush Time in Milliseconds', 1000 on the box; the SC default 0 ≈ 5 s) with
+    NO backtest equivalent. We MEASURE the wall-clock delta between a bar's close instant and
+    the moment its record is first read on a live poll, journal it per bar, and report a
+    summary. We deliberately do NOT 'correct' for it: a time-shifted feed would silently
+    diverge from the frozen backtest — the honest move is to surface the number and gate on it.
+    """
+    flush_ms: int | None = None                        # configured Sierra flush (report baseline)
+    samples: list[float] = field(default_factory=list)  # per-bar lag, seconds
+
+    def add(self, lag_s: float) -> None:
+        self.samples.append(float(lag_s))
+
+    def summary(self) -> dict:
+        """Compact stat for the reconciliation-day gate's reported line item."""
+        s = self.samples
+        if not s:
+            return {"n": 0, "flush_ms": self.flush_ms}
+        ss = sorted(s)
+
+        def _pct(p: float) -> float:
+            return ss[min(len(ss) - 1, int(round(p * (len(ss) - 1))))]
+
+        return {"n": len(s), "flush_ms": self.flush_ms,
+                "min_s": round(ss[0], 4), "median_s": round(_pct(0.5), 4),
+                "mean_s": round(sum(s) / len(s), 4), "p95_s": round(_pct(0.95), 4),
+                "max_s": round(ss[-1], 4)}
+
+
+def _utc_now() -> pd.Timestamp:
+    return pd.Timestamp.now(tz="UTC")
+
+
 # =========================================================================== the feed (shim)
 @dataclass
 class SierraFileFeed:
@@ -309,22 +352,50 @@ class SierraFileFeed:
     """
     scid_path: str | Path
     depth_path: str | Path | None = None
+    # --- feed-lag instrumentation (live tail only; see FeedLag) -------------------------
+    clock: Callable[[], pd.Timestamp] | None = None    # wall-clock source, injectable for tests
+    on_lag: Callable[[dict], None] | None = None        # per-bar lag journal sink (fail-soft)
+    flush_ms: int | None = None                         # configured Sierra flush, for the report
     _scid: ScidReader = field(init=False)
     _depth: DepthReader | None = field(init=False, default=None)
     _agg: MinuteAggregator = field(init=False, default_factory=MinuteAggregator)
+    lag: FeedLag = field(init=False)
 
     def __post_init__(self):
         self._scid = ScidReader(self.scid_path)
         if self.depth_path is not None:
             self._depth = DepthReader(self.depth_path)
+        self.lag = FeedLag(flush_ms=self.flush_ms)
+        self._clock = self.clock or _utc_now
+
+    # ---- feed-lag: wall-clock delta between a bar's close and when its record is read -----
+    def _record_lag(self, minute_ts, now: pd.Timestamp) -> None:
+        """A closed minute became readable at `now`. Its bar CLOSES one minute after the
+        minute's open label (the instant the last second of the minute elapses), so the
+        observed append latency is `now − (minute + 1min)`. Journal per bar; accumulate for
+        the summary. Measured on the live tail only (poll) — in batch replay the wall clock
+        is unrelated to the historical bar times, so lag there is meaningless and not taken."""
+        close_ts = pd.Timestamp(minute_ts) + pd.Timedelta(minutes=1)
+        lag_s = (now - close_ts).total_seconds()
+        self.lag.add(lag_s)
+        if self.on_lag is not None:
+            try:
+                self.on_lag({"bar_close": close_ts.isoformat(), "readable_at": now.isoformat(),
+                             "lag_s": round(lag_s, 4)})
+            except Exception:  # noqa: BLE001 — lag journaling never breaks the feed
+                pass
 
     # ---- one merged, time-ordered pass over whatever records are available now ----------
-    def _pull(self, flush: bool) -> list[dict]:
+    def _pull(self, flush: bool, measure_lag: bool = False) -> list[dict]:
         """Read available records from both files, return merged time-ordered events:
-        {'kind':'depth', 'ts', 'event':{...}} and {'kind':'minute', 'ts', 'bar', 'tape'}."""
+        {'kind':'depth', 'ts', 'event':{...}} and {'kind':'minute', 'ts', 'bar', 'tape'}.
+        `measure_lag` records per-bar file-append latency (live tail; poll only)."""
         events: list[tuple] = []
+        now = self._clock() if measure_lag else None
         for rec in self._scid.records():
             for closed in self._agg.push(rec):
+                if measure_lag:
+                    self._record_lag(closed["ts"], now)
                 events.append((closed["ts"], 1, {"kind": "minute", **closed}))
         if flush:
             for closed in self._agg.flush():
@@ -351,5 +422,37 @@ class SierraFileFeed:
         return self._apply(ing, self._pull(flush=True))
 
     def poll(self, ing: CanonIngestor) -> int:
-        """Consume records appended since the last poll (live tail). Returns events applied."""
-        return self._apply(ing, self._pull(flush=False))
+        """Consume records appended since the last poll (live tail). Returns events applied.
+        Records per-bar file-append latency (FeedLag) against the wall clock as it goes."""
+        return self._apply(ing, self._pull(flush=False, measure_lag=True))
+
+    def poll_events(self) -> list[dict]:
+        """Live-tail poll returning the merged, time-ordered closed-minute + depth events
+        (recording per-bar lag) WITHOUT applying them to an ingestor. A fan-out loop uses this
+        to dispatch each event to MULTIPLE consumers (champion Bar path + canon ingestor) from
+        a single read of the files. Event dicts: {'kind':'minute','ts','bar','tape'} and
+        {'kind':'depth','ts','event'}."""
+        return self._pull(flush=False, measure_lag=True)
+
+    # ---- roll / per-day retargeting (Route-B live loop) ---------------------------------
+    def retarget_depth(self, depth_path) -> None:
+        """Point at a new `.depth` file. `.depth` is per-DAY, so the live loop calls this at
+        every session boundary (fresh reader/offset for the new day's file). The `.scid`
+        reader and the minute aggregator are untouched — the intraday file spans days."""
+        self.depth_path = depth_path
+        self._depth = DepthReader(depth_path) if depth_path is not None else None
+
+    def retarget_scid(self, scid_path, depth_path=None) -> None:
+        """Point at a new `.scid` (and optionally `.depth`) — a CONTRACT ROLL. The `.scid` is
+        per-contract, so a roll is a whole new file: reset the reader AND the minute aggregator
+        (any forming minute belonged to the old contract). Lag stats carry over."""
+        self.scid_path = scid_path
+        self._scid = ScidReader(scid_path)
+        self._agg = MinuteAggregator()
+        if depth_path is not None:
+            self.retarget_depth(depth_path)
+
+    def lag_summary(self) -> dict:
+        """Observed file-append latency summary for the reconciliation-day report (FeedLag).
+        Reported, never corrected. Empty (n=0) until the live tail has polled at least one bar."""
+        return self.lag.summary()

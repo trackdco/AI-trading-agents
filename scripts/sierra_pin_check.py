@@ -23,11 +23,20 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from src.canon.book import DepthBook  # noqa: E402
 from src.canon.sierra_files import (  # noqa: E402
     DEPTH_HEADER, DEPTH_HEADER_SIZE, DEPTH_MAGIC, DEPTH_REC_SIZE,
     SCID_HEADER, SCID_HEADER_SIZE, SCID_MAGIC, SCID_REC_SIZE,
     DepthReader, ScidReader,
 )
+
+REQUIRED_DEPTH_LEVELS = 10          # "Number of Depth Levels to Subscribe" pinned to 10 on box
+
+
+class OrderFlowFail(Exception):
+    """A layout-valid file that nonetheless can't feed the canon: the order-flow families
+    (CVD/tape) or the depth ladder are blind. Distinct from a byte-layout mismatch — the fix
+    is a Sierra subscription/recording setting, not a constant in sierra_files.py."""
 
 
 def _sample(seq, first: int = 5, last: int = 3) -> list:
@@ -55,18 +64,27 @@ def check_scid(path: Path) -> bool:
         print(f"    {r.ts}  {r.open:.2f} {r.high:.2f} {r.low:.2f} {r.close:.2f}  "
               f"{r.num_trades} {r.total_volume} {r.bid_volume} {r.ask_volume}")
 
-    # ---- ORDER-FLOW SOURCE GATE -------------------------------------------------
-    # BidVolume/AskVolume are what the whole CVD family is built from (cvd_*, fill_delta,
-    # absorption, delta_div, stacked_imb, d5/d15/d30). Sierra only populates them when the
-    # feed carries per-trade aggressor side; if every record reads 0 the bytes still decode
-    # cleanly but there is NO SOURCE for those features — a silent, expensive failure. Fail
-    # loudly here rather than discovering it at the reconciliation gate.
-    if recs and not any(r.bid_volume or r.ask_volume for r in recs):
-        print("\n  ✗ ORDER FLOW MISSING: BidVolume/AskVolume are zero in every record.")
-        print("    The layout is fine, but the CVD feature family has no source on this feed.")
-        print("    Check the data service actually supplies per-trade bid/ask volume before")
-        print("    trusting any cvd_*/absorption/delta feature. This is a HARD stop.")
-        return False
+    # --- Angus check #1: order-flow must not be blind -----------------------------------
+    # Bid/Ask volume is the ONLY source of aggressor side. If it's all-zero, Sierra recorded
+    # bars/ticks WITHOUT the at-bid/at-ask split, and CVD (delta = askVol − bidVol) plus the
+    # whole tape/order-flow family (cvd_*, fill_delta, absorption, delta_div, stacked_imb,
+    # d5/d15/d30) degenerate to zero — silently. Fail loudly instead. (Supersedes the earlier
+    # all-zero-both-sides check: this also catches a single blind side.)
+    tot_bid = sum(r.bid_volume for r in recs)
+    tot_ask = sum(r.ask_volume for r in recs)
+    tot_vol = sum(r.total_volume for r in recs)
+    print(f"  order flow: Σ bidVol={tot_bid:,}  Σ askVol={tot_ask:,}  (Σ vol={tot_vol:,})")
+    if recs and (tot_bid == 0 or tot_ask == 0):
+        blind = ("both sides" if tot_bid == 0 and tot_ask == 0 else
+                 "bid (sell-aggressor)" if tot_bid == 0 else "ask (buy-aggressor)")
+        raise OrderFlowFail(
+            f"ANGUS CHECK #1 FAILED — .scid order-flow volume is all-zero on {blind}.\n"
+            f"    CVD (delta = askVol − bidVol) and the ENTIRE tape/order-flow family are "
+            f"BLIND: every delta collapses to zero.\n"
+            f"    Cause: Sierra is storing trade volume without the at-bid/at-ask split. "
+            f"REMEDIATION: ensure the intraday data source records bid/ask volume per record "
+            f"(a real trade feed does; a 1-Tick .scid from the Rithmic/Denali feed carries it) "
+            f"— re-record a sample and re-run this check before trusting any CVD number.")
     nz = sum(1 for r in recs if r.bid_volume or r.ask_volume)
     print(f"  order flow: {nz:,}/{len(recs):,} records carry BidVolume/AskVolume (CVD source OK)")
     return True
@@ -88,6 +106,39 @@ def check_depth(path: Path) -> bool:
         if isinstance(e, str):
             print(e); continue
         print(f"    {e.ts}  {e.action}  {e.price:.2f}  {e.size}  {e.ct}")
+
+    # --- Angus check #2: the ladder must be 10 deep per side, not 5 ----------------------
+    # Replay every event and track the DEEPEST book reached on each side. Our wall checks
+    # (WALLSZ, dep_wall_above/below, wall-behind) read the full MBP-10 ladder; a 5-deep feed
+    # silently truncates them. "Number of Depth Levels to Subscribe" was pinned to 10 on box;
+    # if the feed only delivers 5, Denali depth isn't fully subscribed.
+    book = DepthBook()
+    max_bid = max_ask = 0
+    for e in evs:
+        book.apply({"action": e.action, "price": e.price, "size": e.size, "ct": e.ct})
+        lf = book.long_form()
+        max_bid = max(max_bid, sum(1 for r in lf if r["side"] == "bid"))
+        max_ask = max(max_ask, sum(1 for r in lf if r["side"] == "ask"))
+    print(f"  ladder    : deepest {max_bid} bid / {max_ask} ask levels reached "
+          f"(need {REQUIRED_DEPTH_LEVELS} per side)")
+    if min(max_bid, max_ask) < REQUIRED_DEPTH_LEVELS:
+        if max_bid == 0 and max_ask == 0:
+            cause = ("the book never populated — CME depth is not subscribed at all "
+                     "(a blank DOM; expected pre-funding, but NOT acceptable for the gate)")
+        else:
+            cause = (f"the ladder tops out at {min(max_bid, max_ask)} per side. Likely cause: "
+                     f"the DENALI CME depth subscription is delivering only top-{min(max_bid, max_ask)} "
+                     f"depth, or 'Number of Depth Levels to Subscribe' on the NQ?#.CME symbol "
+                     f"pattern is below {REQUIRED_DEPTH_LEVELS}")
+        raise OrderFlowFail(
+            f"ANGUS CHECK #2 FAILED — .depth yields fewer than {REQUIRED_DEPTH_LEVELS} ladder "
+            f"levels per side ({max_bid} bid / {max_ask} ask).\n"
+            f"    {cause}.\n"
+            f"    The depth family (WALLSZ, dep_wall_above/below, wall-behind — a top-2 signal "
+            f"in every window) reads the full MBP-10 ladder and is truncated/blind below 10.\n"
+            f"    REMEDIATION: confirm the DENALI CME depth feed provides 10-level MBP, set "
+            f"'Number of Depth Levels to Subscribe = 10' on the NQ?#.CME symbol pattern "
+            f"(0 means defer-to-global, NOT unlimited), re-record, and re-run this check.")
     return True
 
 
@@ -107,6 +158,11 @@ def main(argv: list[str]) -> int:
     print(f"PIN-ON-BOX check — detected {kind.upper()} file")
     try:
         ok = check_scid(path) if kind == "scid" else check_depth(path) if kind == "depth" else False
+    except OrderFlowFail as e:
+        # Layout is fine; the feed itself can't drive the canon. This is a Sierra
+        # subscription/recording setting, NOT a constant to edit — do not point at the .py.
+        print(f"\nFAIL (order-flow / depth blind): {e}")
+        return 1
     except ValueError as e:
         print(f"\nFAIL (layout/enum mismatch): {e}")
         print("→ Adjust the corresponding PIN-ON-BOX constant in src/canon/sierra_files.py "
