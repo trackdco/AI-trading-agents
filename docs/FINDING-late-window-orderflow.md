@@ -133,3 +133,45 @@ model, not entry admission, is where golden bleeds. NOTE: the live canon path is
 exits (exit_manager, no fixed target), so this finding primarily indicts the BACKTEST substrate
 that generated the canon universe and its dollars. Changing rr_floor there = full re-validation
 (new signed-off book). Workflow adversarial verification still in flight as the independent check.
+
+---
+
+## ADDENDUM 2026-07-26c — management dissection: MAE, dead stop width, target optimism, and the 3-min cut at rr 1.5
+
+Angus's three hypotheses (`scripts/mgmt_dissect.py`, corrected run — the first pass wrongly
+applied the 3-min cut to trades already dead by minute 3; canon Layer-2d conditions on
+alive-at-3, so does this).
+
+**H1 — the 1.5R wins are NOT scrapes.** Winner MAE is identical at both floors (median
+0.39–0.40R, ~12% ≥0.8R). The geometry saves specifically: median MAE 0.41R, 11% scrape rate —
+same quality as the general winner population. 17 clean saves averaging ~1.5R, plus ONE 29.2R
+outlier (6.0pt stop that slipped under the 7pt floor at fill × a sparse level menu whose first
+qualifying target sat 175pt away — quarantined from all headlines).
+
+**H3 — stops carry real dead width, but the counterfactual is hindsight.** The median winner
+uses 40% of its stop; p90 ≈ 0.82. Re-measuring the same winning moves against stops at
+1.25×realized-MAE gives median 1.55R → 4.62R — but realized MAE is unknowable at entry, so
+this BOUNDS the prize; it is not a rule. The implementable version is a forward stop-placement
+study (structure + k ticks) inside the re-derivation. Note: engine stop WIDTH ≈ Angus's
+hand-log width (34pt vs ~32pt median) — his 3–6R came from FURTHER TARGETS (90–180pt vs the
+engine's ~50–70pt picks), which feeds H2, not from thinner stops.
+
+**H2 — targets leave money at BOTH floors.** Of target-hit wins, ~half run ≥1R beyond the
+exit (median +0.94R post-exit extension). Combined with the round-trip saves (the 2.0 reach
+turning winners into stops), fixed targets are wrong in both directions: too far to get hit
+reliably, too near to capture the run. Both errors point at the exit FAMILY — partial+trail
+(Angus's actual style; V8; the live exit_manager direction) — not at the floor constant.
+
+**3-min cut (r_3≤−0.1106 & fw_3≤−13), alive-at-3 only:** the SEPARATION survives at both
+floors and both years (flagged lose 85/88% at rr2.0, 79/76% at rr1.5) — but ACTING on it
+flips sign: **+1.1R at rr2.0 → −7.9R at rr1.5** (it sacrifices 13 flagged winners worth
++24.5R — largely the very trades the nearer target rescues). Angus's suspicion confirmed: the
+rule does not transfer across floors; Layer-2d thresholds must be RE-DERIVED jointly with any
+floor change. (Caveat: champion-path population and an approximated r_3 convention — the
+canon's own intrade_matrix conventions must be used for the real re-calibration.)
+
+**Consolidated:** rr 1.5's geometry gain is now supported by two independent measurements
+(per-fill decomposition +37.8R; MAE-clean saves), the admission veto at 2R stays (sub-2R-only
+trades lose both years), and the correct adoption is ONE mechanical package — floor + cut
+re-calibration + stop/target-family study — two-way OOS, new signed-off number, all frozen
+constants per docs/RULING-mechanical-only.md. Pending: the workflow's adversarial rr verdict.
