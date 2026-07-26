@@ -140,3 +140,89 @@ Open questions for Angus:
 5. **Fail-closed** — if the calendar is stale on the day, does the desk stand down or trade on?
    Recommendation: **stand down.** A missing calendar is a missing required context, which is
    already Tier-2 rule 5 behaviour ("missing data → skip the trade, never guess").
+
+---
+
+## 6. THE RULE ANGUS SPECIFIED, MEASURED (2026-07-26)
+
+> *"If a high-conviction trade fires at 8:00 to 8:28, when it's two minutes away from NFP, I
+> don't really want it to be in that trade. I'm not gonna bet on the high-impact news event
+> going in favor of our trade."*
+
+**128 of the 214 high-impact releases in the book's span print at 08:30 ET.** 135 land before
+09:30, on 68 calendar days; **40 of the book's 224 trading days (18%) carry one.**
+
+Applied to the clean book, NY-scoped:
+
+| rule | trades blocked | book after | vs canon | win rate of what it blocked | months green |
+|---|---|---|---|---|---|
+| block NY entries ≤15 min before the release | 4 | $53,299 | **+$776** | **0%** | 13/13 |
+| block NY entries ≤30 min before | 15 | $54,730 | **+$2,208** | **7%** | 13/13 |
+| block NY entries ≤45 min before | 15 | $54,730 | +$2,208 | 7% | 13/13 |
+| **block ALL NY entries before the release** | **16** | **$54,845** | **+$2,322** | **6%** | 13/13 |
+| *champion rule: block whole pre-market to 09:30* | *26* | *$54,475* | *+$1,952* | *23%* | *13/13* |
+
+**Every trade the 30-minute rule blocks:**
+
+```
+2025-06-17  08:01   29 min before 08:30   -$212.50
+2025-07-17  08:01   29 min                -$220.50
+2025-07-31  08:13   17 min                -$335.00
+2025-08-15  08:06   24 min                -$111.00
+2025-08-29  08:05   25 min                -$155.00
+2025-09-26  08:13   17 min                 -$51.00
+2025-11-25  08:04   26 min                -$202.50
+2026-02-10  08:18   12 min                -$212.00
+2026-03-05  08:25    5 min                -$227.50
+2026-03-12  08:26    4 min                -$121.50
+2026-03-19  08:01   29 min                +$178.00   <- the only winner
+2026-03-19  08:03   27 min                 -$98.00
+2026-05-14  08:01   29 min                -$216.00
+2026-05-28  08:21    9 min                -$215.00
+2026-06-25  08:07   23 min                  -$8.00
+                                   1 winner of 15, -$2,208
+```
+
+### Three things this settles
+
+**1. It is not a tuned window.** "Block all NY entries before the release" and "block within
+30–60 min before" select **the same trades**, because the NY pre window opens at 08:00 and the
+prints land at 08:30. There is no parameter to fit. The rule is simply **"do not be in a position
+going into the print"** and the session structure bounds it automatically. That is the version to
+adopt — the one with no free parameter.
+
+**2. The champion's rule is too broad, and measurably worse.** Blocking the *whole* pre-market to
+09:30 blocks 26 trades for **+$1,952**, against **+$2,322** for blocking only pre-release. The
+difference is the **10 trades entered AFTER the print but before 09:30: +$370, 50% win.** Trading
+the post-release move is fine; being in the position across it is what kills. That also matches
+what Angus actually said, which was about betting on the outcome, not about the morning being bad.
+
+**3. London needs a different calendar, not this one.** The window 03:00–08:00 ET contains
+**zero** high-impact releases in our files — not because London is safe, but because the backfill
+is **USD-only**. UK CPI (02:00 ET), BOE (07:00 ET) and ECB (08:15 ET) are simply not in the data.
+**London is currently unprotected and we cannot even see the exposure.**
+
+### Coverage gap: Unemployment Claims
+
+Angus named claims as high-impact. The calendar barely has them:
+
+| file | Unemployment Claims rows | impact tagging |
+|---|---|---|
+| `news_calendar_hist.csv` (2023-01→2026-01) | **0** | — |
+| `news_calendar.csv` (2026-02→07) | 24 | **19 medium, 5 high** |
+
+Claims print 08:30 ET every Thursday; **43 of the book's 224 days are Thursdays**, so ~43 days
+should carry one and almost none do. **The +$2,322 above is therefore a floor** — measured against
+a calendar blind to most Thursdays.
+
+But the counter-datapoint is worth recording, because it argues against over-reacting:
+
+| NY pre-window trades | count | P&L | win |
+|---|---|---|---|
+| on a Thursday (claims day) | 49 | **+$2,387** | 43% |
+| every other day | 167 | +$15,989 | 40% |
+
+**Thursday pre-window trades outperform.** So weekly claims do not look like the thing doing the
+damage — the tier-1 prints do (CPI, PPI, NFP, PCE, retail sales). That is an argument for the
+**named list** (question 2 in §5) rather than blacking out every red folder, and against paying
+to close the claims gap first.
