@@ -30,8 +30,16 @@ from scripts.grade_window_cap import books, load                      # noqa: E4
 from src.backtest.engine import load_backtest_config, simulate        # noqa: E402
 
 NY = "America/New_York"
-MONTHS = ["2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07"]
-DATA = Path("data/reference/nq_1m_feb_jul2026.parquet")
+# ANGUS 2026-07-26: "run this from H2 2025 to july 2026 ... we cut the window way before we
+# even looked at the order flow checklist that has made the rest of the strategy so
+# profitable." 13 months — the full span the canon itself is validated over.
+MONTHS = ["2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12",
+          "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07"]
+DATA = Path("data/reference/nq_1m_master.parquet")   # 2023-01 -> 2026-07-15
+WARMUP_FROM = "2025-04-01"      # ~2 months of bars before the first scored month
+TRIGGERS = ["output/triggers_hist2326_ob.csv",      # 2023-01 -> 2026-01-30
+            "output/triggers_feb_ob.csv",           # 2026-02
+            "output/triggers_marjul_ob.csv"]        # 2026-03 -> 2026-07-15
 WINDOWS = {
     "pre     08:00-09:30": (dtime(8, 0), dtime(9, 30)),
     "golden  09:40-10:15": (dtime(9, 40), dtime(10, 15)),
@@ -42,11 +50,12 @@ WINDOWS = {
 
 
 def main() -> None:
-    allt = load(["output/triggers_feb_ob.csv", "output/triggers_marjul_ob.csv"])
+    allt = load(TRIGGERS)
     vec = pd.read_csv("output/regime_vector.csv")
     war = {r.day for _, r in vec.iterrows()
            if pd.notna(r.imbal_share_20) and r.imbal_share_20 >= 0.5}
     df = pd.read_parquet(DATA)
+    df = df[df.ts_event >= pd.Timestamp(WARMUP_FROM, tz=NY)].reset_index(drop=True)
 
     rows = []
     for wname, (ws, we) in WINDOWS.items():
@@ -76,7 +85,7 @@ def main() -> None:
          .sort_values("fill_ts"))
     J.to_csv("output/late_window_probe.csv", index=False)
 
-    print(f"2026-02 -> 2026-07, champion engine, E3/E4 split, no stop cap. "
+    print(f"{MONTHS[0]} -> {MONTHS[-1]}, champion engine, E3/E4 split, no stop cap. "
           f"UNFILTERED — no window-specific rules.\n")
     print(f"{'window':<22}{'trades':>7}{'$':>10}{'win%':>7}{'avg $':>8}{'med R':>7}"
           f"{'med stop':>9}{'months green':>14}")
