@@ -126,6 +126,34 @@ banner:
 
 ---
 
+## Step B.2 — Measure Sierra's disk-flush cadence (Angus, 2026-07-26)
+
+**Why:** the whole Route-B data path assumes Sierra commits `.scid`/`.depth` writes to disk
+promptly. Our tail polls every 1s; the canon decides on CLOSED 1-min bars, so we have a ~60s
+budget. If Sierra buffers for a few seconds that is fine; if it buffers for tens of seconds the
+bot would be scoring a stale tape. **Measured, not assumed.**
+
+During a LIVE session (Sierra connected and streaming), run this and watch the cadence:
+
+```powershell
+$f = "C:\SierraChart\Data\NQU26-CME.scid"
+1..30 | ForEach-Object {
+  $i = Get-Item $f
+  "{0:HH:mm:ss.fff}  size={1}  modified={2:HH:mm:ss.fff}" -f (Get-Date), $i.Length, $i.LastWriteTime
+  Start-Sleep -Milliseconds 500
+}
+```
+
+**Record:** how often `size` actually increases. Report the typical gap.
+- **< 2s** — ideal, no action.
+- **2–10s** — fine against a 60s bar; note it and move on.
+- **> 15s** — flag it, do not arm. We would need to shorten Sierra's flush interval
+  (Global Settings → Data/Trade Service Settings) or reconsider the poll design.
+
+Repeat for the `.depth` file.
+
+---
+
 ## Step C — Replay the captured day through the real pipeline
 
 `scripts\sierra_parity_replay.py` drives the real files through `SierraFileFeed →
