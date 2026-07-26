@@ -62,8 +62,22 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.live_thresholds import TH  # frozen thresholds (LIVE-STACK #1)  # noqa: E402
 
 
-def build_canon(T):
-    """T = trade_matrix rows. Returns the canon book with score, Q, size, governor, pl."""
+def build_canon(T, news_gate=None):
+    """T = trade_matrix rows. Returns the canon book with score, Q, size, governor, pl.
+
+    news_gate: optional object exposing `.blocks(ts_et) -> bool`, True where a PRE-OPEN
+    HIGH-IMPACT RELEASE lands after the fill (ANGUS RULING 2026-07-26 — "it should not be
+    trading from 8-8:30 when there is high impact news at 8:30"). Applied as size -> 0
+    AFTER the ladder and BEFORE the Layer-2b nth escalation, which is the live-faithful
+    ordering: the detector still fires the signal (so the Layer-3 governor's rolling state
+    is unchanged), the order is simply never placed (so a vetoed trade does not consume
+    the day's first-trade slot). Default None = pre-ruling behaviour, bit-identical.
+
+    Deliberately a GATE OBJECT, not a precomputed mask: the merges below drop rows and
+    reset the index, so any mask built against the caller's `T` silently misaligns here.
+    The mask is derived from this frame's own `fill` column at the point of use.
+    See src/canon/news_gate.py and docs/FINDING-canon-has-no-news-blackout.md.
+    """
     T = T.copy()
     long = T.direction == "long"
     # --- pre-market checks (frozen as originally shipped; thresholds pooled-2025) ---
@@ -122,6 +136,11 @@ def build_canon(T):
     T.loc[gold_live & (T.Q <= 1), "size"] = 0.0          # structure without quality: no trade
     bq = gold_live & (T.Q >= 3) & (T["size"] > 0)
     T.loc[bq, "size"] = np.minimum(T.loc[bq, "size"] + 0.5, 1.5)   # quality stack: step up
+
+    # Pre-open news blackout (ANGUS 2026-07-26) — veto before the nth escalation counts.
+    if news_gate is not None:
+        _et = pd.to_datetime(T["fill"], utc=True).dt.tz_convert("America/New_York").dt.tz_localize(None)
+        T.loc[_et.map(news_gate.blocks).fillna(False).astype(bool), "size"] = 0.0
 
     # Layer 3 governor (window-native confirmed trades)
     hi = T[T.score >= 4].reset_index()

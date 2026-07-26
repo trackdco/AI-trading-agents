@@ -29,8 +29,10 @@ The question this document answers:
 > **Is the live plumbing provably doing what the backtested system did — and if it stops doing
 > that at 03:00 on a Tuesday, does the bot stop itself?**
 
-The edge is validated: the leakage-clean canon (`output/baseline_book_clean.parquet`) is
-**+$52,522.81 over 404 trades** — the arming reference. (The original **+$56,065.18 / 400** was
+The edge is validated: the leakage-clean canon **plus the pre-open news blackout**
+(`output/baseline_book_news.parquet`) is **+$55,617.56 over 386 trades** — the arming reference
+(ANGUS 2026-07-26; `scripts/canon_news_clean.py`, `docs/FINDING-canon-has-no-news-blackout.md`).
+The leakage-fix-only step was +$52,522.81 / 404. (The original **+$56,065.18 / 400** was
 the *pre-lookahead-fix* figure; it was inflated ~$3.5k by a look-ahead in the pre-window `C`
 check — `docs/FINDING-conf_PM-lookahead-pre-window.md` — and is retained only as that historical
 baseline.) The edge survives the fix; only the plumbing is unproven.
@@ -43,8 +45,8 @@ Every one of these is a **one-off check**, not a multi-week observation. There i
 
 | # | Gate | Pass condition |
 |---|---|---|
-| A1 | Feature parity | Live features == the **leakage-clean backtest** (`baseline_book_clean.parquet`) to the decimal on the reconciliation day, re-checked daily thereafter |
-| A2 | Verdict fidelity | Every signal matches what the canon scorer produces on the same journaled inputs, **diffed against the clean book**. Replayable |
+| A1 | Feature parity | Live features == the **arming reference** (`baseline_book_news.parquet`) to the decimal on the reconciliation day, re-checked daily thereafter |
+| A2 | Verdict fidelity | Every signal matches what the canon scorer produces on the same journaled inputs, **diffed against the arming reference**. Replayable |
 | A3 | Relay integrity | `canon-relay` output == Python verdict, byte-for-byte. Zero divergences |
 | A4 | No missed trades | Every candidate the canon would take is seen and acted on. Misses journaled with cause |
 | A5 | Both books wired | NY **and** London paths both proven to fire — force a signal through each if needed |
