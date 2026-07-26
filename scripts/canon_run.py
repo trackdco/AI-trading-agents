@@ -48,6 +48,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.canon.infra import SpineJournalSink
 from src.canon.sierra_files import SierraFileFeed
 from src.canon.sierra_symbol import resolve_depth_path, resolve_scid_path
+from src.canon.spine import load_spine_config
 from src.desk.canon_lane import ScriptVerdictSource
 from src.live.route_b import (
     JsonlSink,
@@ -155,8 +156,14 @@ def build_canon_live(cfg: dict, alerts: LaunchAlerts, log: logging.Logger) -> Ro
     feed = SierraFileFeed(scid, depth if depth.exists() else None,
                           flush_ms=int(sc.get("flush_ms", 1000)), on_lag=lambda r: None)
     acct = cfg.get("account", {})
+    # Tier-1 limits come from config and are asserted against the signed-off set BEFORE the
+    # spine is built (§D2 blocker 3). Fails closed: a drifted or missing limit raises here
+    # rather than reaching an order. Previously these rode on dataclass defaults.
+    spine_cfg = load_spine_config()
+    log.info("spine Tier-1 pinned | clamp=%d micros | daily halt=%.1fR | dd buffer=$%.0f",
+             spine_cfg.max_contracts, spine_cfg.daily_loss_halt_r, spine_cfg.dd_halt_buffer)
     instrument = build_shadow_instrument(out_dir, account=sc.get("account", "FUNDED"),
-                                         kill_file=kill_file)
+                                         cfg=spine_cfg, kill_file=kill_file)
     live = RouteBLive(
         feed=feed, data_dir=data_dir, root=root, suffix=suffix, alerts=alerts,
         verdict_source=ScriptVerdictSource(),

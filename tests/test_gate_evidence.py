@@ -120,7 +120,8 @@ def test_guard_report_all_pass():
 def test_guard_report_records_every_fired_not_just_first():
     # stale feed AND crossed book AND daily-loss breach: check() would stop at the first,
     # guard_report must show all three fired while the rest passed.
-    e = SpineExecutor(SpineConfig(daily_loss_halt=-500.0), MockBroker(),
+    # -2.5R at the eval-floor base_dollar ($200) = a -$500 halt threshold
+    e = SpineExecutor(SpineConfig(daily_loss_halt_r=-2.5), MockBroker(),
                       kill_file_present=lambda: False)
     acct = AccountState(equity=52_000, trailing_floor=50_000, day_pnl=-900, open_positions=0)
     feed = FeedHealth(last_tick_age_ms=9000, crossed_or_locked=True,

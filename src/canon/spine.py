@@ -33,18 +33,97 @@ import math
 from collections import deque
 from collections.abc import Callable
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Protocol
+
+from src.canon.gate_evidence import MICRO_CLAMP, base_dollar
 
 
 # --------------------------------------------------------------------------- config/state
 @dataclass(frozen=True)
 class SpineConfig:
     dd_halt_buffer: float = 250.0          # halt when equity within this of the trailing floor
-    daily_loss_halt: float = -800.0        # account-wide day P&L halt (<=)
-    max_contracts: int = 2                 # hard clamp (Lucid 50k tier; minis)
+    # Day P&L halt as an R MULTIPLE of the day's own base_dollar, never a fixed dollar figure
+    # (PROMOTION-GATE §D2 blocker 1). The sizer is drawdown-scaled: base_dollar is $200 at the
+    # eval floor and steps +$75 per $1k of available DD past $3k, so a constant -$800 tightens
+    # as the account grows — at $6k available DD it is tighter than ONE max-conviction trade,
+    # priced by the payout-cycle MC at -$6,000/account/year for zero bust reduction. As an R
+    # multiple the halt tracks the risk unit instead: -4R = -$800 at the floor, -$1,700 at $6k.
+    # The VALUE (-4R) awaits Angus's sign-off; the UNITS are not a preference.
+    daily_loss_halt_r: float = -4.0
+    # Hard size clamp, in MICROS — the unit `OrderIntent.size` actually carries (canon_lane.py
+    # and route_b.py both build it via `int(micros)`). Imported from the sizing schedule rather
+    # than restated, because the previous local literal `2` (commented "minis") silently
+    # clamped every live order to 2 micros — gate B5 fails on trade one (§D2 blocker 2).
+    max_contracts: int = MICRO_CLAMP
     max_spread_rel: float = 2.5            # spread ceiling as a multiple of the trailing baseline
     feed_stale_ms: int = 3000              # no order if last tick older than this
     max_orders_per_min: int = 10           # order-rate cap
+
+
+def daily_loss_halt_dollars(cfg: SpineConfig, acct: "AccountState") -> float:
+    """The day's loss-halt threshold in DOLLARS: the configured R multiple times the day's own
+    base_dollar, where available drawdown = equity - trailing_floor. Recomputed per check, so
+    the halt re-indexes as the account's available DD moves."""
+    return cfg.daily_loss_halt_r * base_dollar(acct.equity - acct.trailing_floor)
+
+
+# ------------------------------------------------------------------- Tier-1 pin (§D2 blocker 3)
+# The signed-off Tier-1 values. These are duplicated ON PURPOSE: config/live.yaml carries the
+# operator-visible copy, this carries the reviewed copy, and `assert_tier1_pinned` refuses to
+# start when they disagree. A single source would let one silent edit change live risk; two
+# sources plus a boot assertion make any change a deliberate, reviewable act — which is what
+# PROMOTION-GATE §E ("any code change to canon, sizer, spine, or relay -> stop and review")
+# requires. Changing a limit means editing both and re-running the gate, never one file.
+TIER1_PINNED: dict[str, float | int] = {
+    "dd_halt_buffer": 250.0,
+    "daily_loss_halt_r": -4.0,
+    "max_contracts": MICRO_CLAMP,
+    "max_spread_rel": 2.5,
+    "feed_stale_ms": 3000,
+    "max_orders_per_min": 10,
+}
+
+
+class SpinePinError(RuntimeError):
+    """Raised at boot when the live spine config does not match the signed-off Tier-1 set."""
+
+
+def spine_config_from_mapping(m: dict | None) -> SpineConfig:
+    """Build a SpineConfig from a config mapping (the `spine:` block of config/live.yaml).
+    Unknown keys are an ERROR, not a warning — a typo'd limit that silently falls back to a
+    default is exactly the failure this exists to stop."""
+    m = dict(m or {})
+    known = set(TIER1_PINNED)
+    unknown = sorted(set(m) - known)
+    if unknown:
+        raise SpinePinError(f"unknown spine config key(s): {unknown}; expected {sorted(known)}")
+    return SpineConfig(**m)
+
+
+def assert_tier1_pinned(cfg: SpineConfig, *, pinned: dict | None = None) -> None:
+    """Boot assertion: every Tier-1 constant must equal its signed-off value. Fails CLOSED —
+    a mismatch raises rather than warning, so a drifted limit cannot reach a live order."""
+    exp = dict(TIER1_PINNED if pinned is None else pinned)
+    drift = {k: (getattr(cfg, k), v) for k, v in exp.items() if getattr(cfg, k) != v}
+    if drift:
+        detail = ", ".join(f"{k}: config={got!r} pinned={want!r}" for k, (got, want) in drift.items())
+        raise SpinePinError(f"Tier-1 spine constants drifted from the signed-off set — {detail}")
+
+
+def load_spine_config(path: str | Path = "config/live.yaml", *,
+                      assert_pinned: bool = True) -> SpineConfig:
+    """Load the Tier-1 spine constants from the live config and (by default) assert they match
+    the signed-off set. An ABSENT `spine:` block is an error, not a silent fall-back to the
+    dataclass defaults — 'the limits ride on defaults' is the defect being fixed."""
+    import yaml
+    raw = yaml.safe_load(Path(path).read_text()) or {}
+    if "spine" not in raw:
+        raise SpinePinError(f"{path} has no `spine:` block — Tier-1 limits must be explicit")
+    cfg = spine_config_from_mapping(raw["spine"])
+    if assert_pinned:
+        assert_tier1_pinned(cfg)
+    return cfg
 
 
 @dataclass(frozen=True)
@@ -187,8 +266,9 @@ class SpineExecutor:
             ("limit_only", intent.order_type != "limit", f"order_type={intent.order_type!r}"),
             ("dd_proximity", acct.equity - acct.trailing_floor <= c.dd_halt_buffer,
              f"equity {acct.equity} within {c.dd_halt_buffer} of floor {acct.trailing_floor}"),
-            ("daily_loss", acct.day_pnl <= c.daily_loss_halt,
-             f"day P&L {acct.day_pnl} <= {c.daily_loss_halt}"),
+            ("daily_loss", acct.day_pnl <= daily_loss_halt_dollars(c, acct),
+             f"day P&L {acct.day_pnl} <= {daily_loss_halt_dollars(c, acct)} "
+             f"({c.daily_loss_halt_r}R)"),
             ("feed_stale", feed.last_tick_age_ms > c.feed_stale_ms,
              f"tick age {feed.last_tick_age_ms}ms > {c.feed_stale_ms}ms"),
             ("book_crossed", feed.crossed_or_locked, "book crossed/locked"),
@@ -239,10 +319,12 @@ class SpineExecutor:
                 return SpineDecision("halt", "dd_proximity",
                                      f"equity {acct.equity} within {self.cfg.dd_halt_buffer} "
                                      f"of floor {acct.trailing_floor}")
-            # Tier 1 (2): daily-loss halt
-            if acct.day_pnl <= self.cfg.daily_loss_halt:
+            # Tier 1 (2): daily-loss halt — threshold re-indexed to the day's own risk unit
+            halt_at = daily_loss_halt_dollars(self.cfg, acct)
+            if acct.day_pnl <= halt_at:
                 return SpineDecision("halt", "daily_loss",
-                                     f"day P&L {acct.day_pnl} <= {self.cfg.daily_loss_halt}")
+                                     f"day P&L {acct.day_pnl} <= {halt_at} "
+                                     f"({self.cfg.daily_loss_halt_r}R)")
 
             # Tier 2 (5): feed health / staleness
             if feed.last_tick_age_ms > self.cfg.feed_stale_ms:

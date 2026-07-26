@@ -15,6 +15,28 @@ account:
   equity: 50000.0                 # funded-account equity for the spine's AccountState
                                   #   (placeholder until the DTC account read-back is wired)
 
+spine:                            # TIER-1 SAFETY LIMITS (PROMOTION-GATE §D2 blocker 3).
+                                  # These are NOT dataclass defaults any more: the runner loads
+                                  # them from here and `assert_tier1_pinned` refuses to start if
+                                  # they disagree with the signed-off copy in src/canon/spine.py.
+                                  # Changing a limit = edit BOTH + re-run the gate (§E: any spine
+                                  # change is a stop-and-review). An unknown key here is a hard
+                                  # error, never a silent fall-back to a default.
+  dd_halt_buffer: 250.0           # halt when equity comes within $250 of the trailing floor.
+                                  #   Keeps 89% of the available bust reduction (1.59%->0.17%)
+                                  #   for 1.2% of mean cash; $400 buys the last 0.17pp at
+                                  #   $3,435/point when a point is worth ~$465.
+  daily_loss_halt_r: -4.0         # day P&L halt as an R MULTIPLE of the day's own base_dollar,
+                                  #   NOT a fixed dollar figure: -$800 at the eval floor,
+                                  #   -$1,700 at $6k available DD. AWAITING ANGUS SIGN-OFF on
+                                  #   the value; the units (R, not $) are not a preference.
+  max_contracts: 40               # hard clamp in MICROS — the unit OrderIntent.size carries.
+                                  #   Must equal gate_evidence.MICRO_CLAMP (the sizing schedule's
+                                  #   own cap). The old value 2 clamped every order to 2 micros.
+  max_spread_rel: 2.5             # spread ceiling as a multiple of the trailing baseline
+  feed_stale_ms: 3000             # no order if the last tick is older than this
+  max_orders_per_min: 10          # order-rate cap
+
 archive:                          # nightly Sierra .scid/.depth offload (scripts/archive_sierra.py)
   data_dir: C:/SierraChart/Data   # Sierra Data dir (front-month .scid + MarketDepthData/*.depth)
   bucket:   nq-sierra-book        # Backblaze B2 bucket (creds from B2_KEY_ID / B2_APP_KEY env)
