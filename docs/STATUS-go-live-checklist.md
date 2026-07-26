@@ -60,6 +60,15 @@ Updated 2026-07-26 (Sunday), second pass — now merged with Angus's on-box list
 - Sentinel launcher .bat committed; certifi/cloudscraper/beautifulsoup4 pinned in
   requirements (all three were on-box discoveries).
 
+## DONE ✅ (fourth pass — ALL CONNECTIONS/SETUP COMPLETE, Sunday ~11:00 CT)
+
+- **Nightly Sierra archive wired and scheduled**: existing B2 bucket `nq-mbo-archive`
+  (config repointed), B2 keys in `.env`, dry-run listed BOTH file classes after the
+  archiver's depth-glob fix (the box naming's third casualty — it was silently skipping
+  every `.depth`), task `SierraArchive` daily 17:30 CT registered.
+- Housekeeping owed (tomorrow, 5 min): rotate the Telegram bot token AND the B2 app key —
+  both appeared in shared screenshots during setup.
+
 ## NEXT — TONIGHT (Sunday after 6:00 PM ET, market reopen; ~20 min total)
 
 0. `git pull` on the VPS first — today's fixes + the dead-zone adoption.
