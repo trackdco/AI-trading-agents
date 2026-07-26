@@ -24,7 +24,15 @@ from src.engine.triggers import Trigger  # noqa: E402
 NY = "America/New_York"
 MONTHS = ["2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07"]
 DATA = Path("data/reference/nq_1m_feb_jul2026.parquet")
-CVD = ["footprint_feb_mar2026", "footprint_apr2026", "footprint_may_jul2026"]
+# BUG FIX 2026-07-26 (Angus: "wtf we have cvd data for 2025"): footprint_q3_2025 and
+# footprint_q4_2025 have been ON DISK since Jul 22 (orderflow_combined.py already reads
+# them) but this list was never extended past the original Feb-Jul 2026 champion study.
+# Every consumer of load_cvd_delta() (selection-gate cvd, book_oracle, premarket cap) was
+# silently 2026-only: 2025 trades got NaN cvd, and selection.py DROPS NaN -> the gate
+# deleted every pre-2026 trade for missing data, not signal (leak-hunt finding, +28.5R).
+# KNOWN REMAINING GAP: 2026-01 (no footprint file covers Jan 2026 - needs a pull).
+CVD = ["footprint_q3_2025", "footprint_q4_2025",
+       "footprint_feb_mar2026", "footprint_apr2026", "footprint_may_jul2026"]
 KMIN = 3   # conviction window: entry minute + 2 prior
 
 
