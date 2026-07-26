@@ -10,13 +10,27 @@ import socket
 import struct
 import threading
 
+import pytest
+
 from src.desk import dtc_client as D
 from src.desk.dtc_client import DTCClient, DTCConfig
+
+
+# The fields a real Sierra s_SubmitNewSingleOrder actually reads. Anything else (e.g. "Stop",
+# "Target") is an UNKNOWN key that Sierra's JSON decoder DROPS silently — so the mock models
+# that by keeping only these, exposing the naked-entry bug the old permissive mock hid.
+_VALID_SUBMIT_FIELDS = {
+    "Symbol", "TradeAccount", "ClientOrderID", "OrderType", "BuySell", "Price1", "Price2",
+    "Quantity", "TimeInForce", "GoodTillDateTime", "IsAutomated", "OpenOrClose",
+    "ParentTriggerClientOrderID", "FreeFormText",
+}
 
 
 class MockDTCServer:
     def __init__(self, order_mode: str = "fill"):
         self.order_mode = order_mode
+        self.orders: list[dict] = []      # single orders received, DTC-valid fields only
+        self.ocos: list[dict] = []        # SUBMIT_NEW_OCO_ORDER messages received
         self._srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._srv.bind(("127.0.0.1", 0))
@@ -95,7 +109,13 @@ class MockDTCServer:
             for i in range(3):
                 self._send(conn, D.MARKET_DEPTH_SNAPSHOT_LEVEL, Side=1, Price=100.0 - i * 0.25,
                            Quantity=10 + i, NumOrders=1 + i, Level=i + 1)
+        elif t == D.SUBMIT_NEW_OCO_ORDER:
+            self.ocos.append({k: v for k, v in m.items() if k != "Type"})
+            return
         elif t == D.SUBMIT_NEW_SINGLE_ORDER:
+            # model Sierra: keep only DTC-valid fields; unknown keys (Stop/Target) are DROPPED.
+            kept = {k: v for k, v in m.items() if k in _VALID_SUBMIT_FIELDS}
+            self.orders.append(kept)
             oid = m["ClientOrderID"]
             self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid, OrderStatus=D.ORDER_STATUS_OPEN)
             if self.order_mode == "fill":
@@ -116,6 +136,22 @@ class MockDTCServer:
     def stop(self):
         self._stop.set()
         self._srv.close()
+
+    # ---- bracket-structure inspection (models real Sierra) ---------------------------
+    def order_by_oid(self, oid):
+        return next((o for o in self.orders if o.get("ClientOrderID") == oid), None)
+
+    def children_of(self, oid):
+        return [o for o in self.orders if o.get("ParentTriggerClientOrderID") == oid]
+
+    def has_protective_stop(self, entry_oid) -> bool:
+        """True iff a resting protective STOP is attached to the entry — a child order linked
+        by ParentTriggerClientOrderID, or a SUBMIT_NEW_OCO_ORDER referencing the entry. A single
+        SUBMIT_NEW_SINGLE_ORDER carrying `Stop`/`Target` fields does NOT qualify (Sierra drops
+        them), which is exactly the naked-entry bug."""
+        child_stop = any(o.get("OrderType") == D.ORDER_TYPE_STOP for o in self.children_of(entry_oid))
+        oco_stop = any(o.get("ParentTriggerClientOrderID") == entry_oid for o in self.ocos)
+        return child_stop or oco_stop
 
 
 def _client(server, **kw):
@@ -191,6 +227,46 @@ def test_order_partial_fill():
 
 def test_order_rejected():
     assert D.ORDER_STATUS_REJECTED in _order_result("reject")
+
+
+def test_submit_bracket_drops_non_dtc_stop_target_fields():
+    """Documents the mechanism: `Stop`/`Target` are NOT s_SubmitNewSingleOrder fields, so a real
+    Sierra (and now the mock) drops them silently. This passes TODAY and proves the entry order
+    carries no protective information on the wire."""
+    s = MockDTCServer(order_mode="fill")
+    try:
+        c = _client(s)
+        c.connect()
+        oid = c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, target=103.0, qty=2)
+        for _ in range(10):
+            c.pump(timeout=0.2)
+        c.close()
+        entry = s.order_by_oid(oid)
+        assert entry is not None
+        assert "Stop" not in entry and "Target" not in entry     # silently dropped by Sierra
+    finally:
+        s.stop()
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "AUDIT (Angus): submit_bracket sends ONE SUBMIT_NEW_SINGLE_ORDER with Stop/Target as non-DTC "
+    "fields (Sierra drops them), so NO protective stop is attached — a NAKED ENTRY. A DTC bracket "
+    "is parent+children via ParentTriggerClientOrderID or SUBMIT_NEW_OCO_ORDER. Un-xfail when the "
+    "order path is fixed to attach a real resting stop (exit-model work)."))
+def test_submit_bracket_attaches_a_resting_protective_stop():
+    s = MockDTCServer(order_mode="fill")
+    try:
+        c = _client(s)
+        c.connect()
+        oid = c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, target=103.0, qty=2)
+        for _ in range(10):
+            c.pump(timeout=0.2)
+        c.close()
+        # THE INVARIANT (Angus B4): every entry must have a resting protective stop attached.
+        assert s.has_protective_stop(oid), (
+            "NAKED ENTRY: no resting protective stop attached to the entry order")
+    finally:
+        s.stop()
 
 
 def test_heartbeat_roundtrip():
