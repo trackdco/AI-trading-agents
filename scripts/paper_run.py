@@ -49,6 +49,7 @@ from src.live.telegram import (
     fmt_daily,
     fmt_halt,
     fmt_trade,
+    kill_switch_redundancy_warning,
 )
 
 NY = "America/New_York"
@@ -116,13 +117,32 @@ def build_alerts(cfg: dict, log: logging.Logger, force_off: bool) -> LaunchAlert
         log.info("telegram DISABLED — running silent (alerts are logged only)")
         return LaunchAlerts(log, tg=None)
     try:
-        tg = TelegramAlerts(TelegramConfig.from_env())
+        tgcfg = TelegramConfig.from_env()
+        tg = TelegramAlerts(tgcfg)
         log.info("telegram ENABLED — alerts will broadcast to the group")
-        return LaunchAlerts(log, tg=tg)
+        alerts = LaunchAlerts(log, tg=tg)
+        _check_kill_switch_redundancy(tgcfg, log, tg)
+        return alerts
     except Exception as e:  # noqa: BLE001 — missing .env creds etc.: degrade to log-only, never crash
         log.warning("telegram requested but unavailable (%s: %s) — running silent",
                     type(e).__name__, e)
         return LaunchAlerts(log, tg=None)
+
+
+def _check_kill_switch_redundancy(tgcfg: TelegramConfig, log: logging.Logger,
+                                  tg: TelegramAlerts) -> None:
+    """Warn (loudly, and over Telegram) if fewer than 2 humans can reach the /kill switch.
+    A 24/5 autonomous system with one reachable operator is a design fault. WARN, never
+    block startup (Angus ruling)."""
+    warn = kill_switch_redundancy_warning(tgcfg)
+    if warn is None:
+        log.info("kill-switch reachability OK — %d authorized Telegram operators",
+                 len(tgcfg.allowed_user_ids))
+        return
+    log.warning("=" * 70)
+    log.warning("%s", warn)
+    log.warning("=" * 70)
+    tg.say(warn)                                        # broadcast to the group on launch
 
 
 def build_runner(cfg: dict, alerts: LaunchAlerts) -> LiveRunner:
@@ -196,14 +216,59 @@ def stream_replay(runner: LiveRunner, feed_cfg: dict, log: logging.Logger,
 
 def stream_live(runner: LiveRunner, feed_cfg: dict, log: logging.Logger,
                 should_stop) -> None:
-    # <<LIVE FEED ADAPTER>> ---------------------------------------------------------
-    # Drop a real-time BarFeed here (a stream() that yields closed 1-minute Bars as they
-    # complete). Then warm up via runner.prime(<recent history>) and call
-    # runner.serve(live_feed, listener=<CommandListener>) so /status and /kill respond
-    # between bars. NOT built — Stage-8 deliverable. See docs for the feed contract.
-    raise NotImplementedError(
-        "live feed adapter not built — set feed.type: replay (Stage-8 seam in "
-        "scripts/paper_run.py::stream_live)")
+    """Route-B live tail: drive the paper desk off Sierra's own .scid/.depth files.
+
+    Fans each closed minute to the champion (journal.jsonl) AND a shadow canon/spine that
+    emits the promotion-gate evidence (spine.jsonl / rejects.jsonl / sizing.jsonl). The spine
+    is DISARMED (no broker call possible); the champion uses the PaperBroker. See
+    src/live/route_b.py. Config block `feed.sierra`:
+        data_dir       Sierra Data dir (e.g. C:/SierraChart/Data)   [required]
+        scid           explicit .scid path override                 [optional]
+        root/suffix    symbol root / exchange tag (NQ / -CME)        [default NQ / -CME]
+        trailing_floor EOD drawdown line for AccountState            [default account floor]
+        flush_ms       configured Sierra flush (report baseline)     [default 1000]
+        poll_interval_s / warmup.{parquet,session,warmup_days}
+    """
+    import time
+
+    from src.canon.sierra_files import SierraFileFeed
+    from src.canon.sierra_symbol import resolve_depth_path, resolve_scid_path
+    from src.live.route_b import RouteBLive, build_shadow_instrument
+
+    sc = feed_cfg.get("sierra", {})
+    data_dir = sc.get("data_dir")
+    if not data_dir:
+        raise NotImplementedError("feed.sierra.data_dir not set — point it at Sierra's Data dir")
+    root, suffix = sc.get("root", "NQ"), sc.get("suffix", "-CME")
+    now = pd.Timestamp.now(tz="UTC")
+    today = str(now.tz_convert(NY).date())
+    scid = Path(sc["scid"]) if sc.get("scid") else resolve_scid_path(data_dir, now, root, suffix)
+    depth = resolve_depth_path(data_dir, now, day=today, root=root, suffix=suffix)
+    log.info("Route-B live | scid=%s depth=%s", scid, depth)
+
+    out_dir = Path(runner.journal.dir)
+    feed = SierraFileFeed(scid, depth if depth.exists() else None,
+                          flush_ms=int(sc.get("flush_ms", 1000)),
+                          on_lag=lambda r: None)
+    instrument = build_shadow_instrument(out_dir, account=sc.get("account", "PAPER"))
+    live = RouteBLive(runner=runner, feed=feed, data_dir=data_dir, root=root, suffix=suffix,
+                      instrument=instrument, alerts=runner.alerts)
+
+    # warm start from recent history (bars only; footprint optional via warmup.footprint)
+    warm = sc.get("warmup", {})
+    if warm.get("parquet"):
+        df = pd.read_parquet(warm["parquet"])
+        session = str(warm.get("session", today))
+        wlo = pd.Timestamp(session, tz=NY) - pd.Timedelta(days=int(warm.get("warmup_days", 20)))
+        hist = df[(df.ts_event >= wlo) & (df.ts_event < pd.Timestamp(session, tz=NY))]
+        fp = pd.read_parquet(warm["footprint"]) if warm.get("footprint") else None
+        live.warm(hist, fp)
+        log.info("warm start | %d history bars", len(hist))
+
+    log.info("Route-B live tail serving (poll every %ss) — Ctrl-C / /kill to stop",
+             sc.get("poll_interval_s", 1.0))
+    live.serve(sleep_fn=time.sleep, stop_fn=should_stop,
+               poll_interval_s=float(sc.get("poll_interval_s", 1.0)))
 
 
 # ------------------------------------------------------------------------------- main
@@ -248,10 +313,10 @@ def main(argv=None) -> int:
     try:
         if ftype == "replay":
             stream_replay(runner, cfg["feed"], log, lambda: state["stop"])
-        elif ftype == "live":
+        elif ftype in ("live", "sierra"):
             stream_live(runner, cfg["feed"], log, lambda: state["stop"])
         else:
-            raise ValueError(f"unknown feed.type {ftype!r} (expected replay|live)")
+            raise ValueError(f"unknown feed.type {ftype!r} (expected replay|sierra|live)")
     except NotImplementedError as e:
         log.error("%s", e)
         return 2

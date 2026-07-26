@@ -123,6 +123,20 @@ from the matrix scripts rather than re-deriving.
   target, then submits **MNQ** limit brackets at those exact prices. Front month e.g.
   `NQU26` (data) / `MNQU26` (orders). Sierra must have NQ subscribed for data AND MNQ routable
   for orders.
+- **Contract rollover (Route B).** The front month rolls on the CME quarterly cycle — **4
+  calendar days before the 3rd Friday** of the contract month (box Rollover Method). NQU26
+  rolls to **NQZ26 on ~Sep 14, 2026**, inside the paper window. Sierra then writes a *new*
+  file (`NQZ26-CME.scid`/`.depth`) and stops appending to the old one, so a file-tail feed
+  pinned to the old path goes **silently stale**. `src/canon/sierra_symbol.py` resolves the
+  active front-month symbol/file for a date (`resolve_scid_path`/`resolve_depth_path`) and a
+  `RollWatcher` detects the switch. **Now wired:** the Route-B live loop
+  (`src/live/route_b.RouteBLive`, driven by `paper_run` `feed.type: sierra`) re-points the
+  `.scid` at the roll and the `.depth` every session (per-day file) via `resolve_*_path`, and
+  fires `format_roll_alert` over Telegram. **Still deferred:** a live `roll` tag on the
+  *multi-day* buffers (champion warmup + canon prior-week levels span the unspliced price gap
+  until they age out — the live twin of `src/engine/data.tag_rolls`); until then §E's rule
+  stands — a rollover inside the paper window resets the promotion clock unless the rollover
+  handling was itself part of the tested period.
 - Entries are **limit retests** — the entire canon was validated on limit fills at the
   retest level. Send a **limit order at the computed `entry_ref`**, bracketed with the
   stop and target, via DTC `SubmitNewSingleOrder` (include `TradeAccount`, `Quantity`,
@@ -142,6 +156,18 @@ and — since the feed is MBO — that our MBO→MBP-10 aggregation reproduces t
 MBP-10 depth the backtest scored on). Nothing goes live until this passes. This is the
 single check that prevents a silent definition-mismatch from quietly un-tracking the
 +$106k book.
+
+> **Feed-append latency floor (Route B — file-tail path).** Because the live DATA path
+> reads the files Sierra writes to disk (Route B; DTC won't serve data under the non-pro
+> licence), there is a **write-latency floor with no backtest equivalent**: a bar's record
+> is only readable once Sierra flushes it. On the box (SC build 2930) the
+> **"Intraday File Flush Time in Milliseconds"** (Global Settings → Advanced Service
+> Settings → General) was set to **`1000` (1 s)**; the Sierra default of **`0` means ~5 s**.
+> The reconciliation day must therefore **measure observed file-append lag against this
+> configured `1000 ms`**, not assume zero. `SierraFileFeed` instruments this per bar and
+> emits a summary stat; the reconciliation-day gate carries the measured lag as a
+> **reported line item** (we measure it, we do not "correct" for it). If the flush setting
+> on the box changes, update this value so the gate compares against the real configuration.
 
 **B. 24/5 continuous operation.**
 The machine runs from 18:00 ET every session. London needs the full overnight

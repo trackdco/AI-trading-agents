@@ -36,12 +36,23 @@ telegram:
 feed:
   # ---- PLUGGABLE FEED SEAM -------------------------------------------------------
   # type: replay  -> stream historical bars from parquet (today; validated path)
-  # type: live    -> a real-time BarFeed adapter (Stage-8; NOT built — see the seam
-  #                  marked "<<LIVE FEED ADAPTER>>" in scripts/paper_run.py)
+  # type: sierra  -> Route-B live tail of Sierra's .scid/.depth files (src/live/route_b.py):
+  #                  champion journal + shadow canon/spine evidence. Spine DISARMED, no broker.
   type: replay
   replay:
     parquet: data/reference/nq_1m_feb_jul2026.parquet
     session: "2026-03-17"          # the session day to paper-trade (one NY session)
     warmup_days: 18                # history primed (detection OFF) before the session
-  live:
-    adapter: null                  # <<LIVE FEED ADAPTER>> config drops in here (Stage-8)
+  sierra:                          # used when type: sierra (the on-box live data path)
+    data_dir: C:/SierraChart/Data  # Sierra's Data dir (front-month .scid + MarketDepthData/)
+    # scid: C:/SierraChart/Data/NQU26-CME.scid   # optional explicit override; else resolved
+    root: NQ                       # symbol root (data reads NQ; orders would route MNQ)
+    suffix: "-CME"                 # exchange/service tag Sierra appends to the file name
+    account: PAPER                 # account label on the shadow OrderIntent
+    trailing_floor: 0.0            # EOD drawdown line for AccountState (set the tier's line)
+    flush_ms: 1000                 # configured Sierra flush (feed-lag report baseline)
+    poll_interval_s: 1.0           # live-tail poll cadence (match the flush)
+    warmup:                        # warm start before going live (day-one levels correct)
+      parquet: data/reference/nq_1m_feb_jul2026.parquet
+      warmup_days: 20
+      # footprint: output/fp_minutes.parquet     # optional: also warm tape/CVD
