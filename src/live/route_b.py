@@ -491,15 +491,22 @@ class RouteBLive:
 # --------------------------------------------------------------------------- builder
 def build_shadow_instrument(out_dir: str | Path, account: str = "FUNDED",
                             cfg: SpineConfig | None = None,
-                            kill_file: str | Path | None = None) -> ShadowSpineInstrument:
-    """Assemble the shadow spine instrument with all three evidence sinks under out_dir. When
+                            kill_file: str | Path | None = None,
+                            broker=None, arm_token: str | None = None) -> ShadowSpineInstrument:
+    """Assemble the spine instrument with all three evidence sinks under out_dir. When
     `kill_file` is given, the spine halts while that file is present (the manual /kill switch —
-    it still halts even a DISARMED spine, so the wiring is verified before arming)."""
+    it still halts even a DISARMED spine, so the wiring is verified before arming).
+
+    Default = SHADOW: `broker=None` wires _NoBroker, so an order route is structurally
+    impossible. The ARMED path passes a real Broker + the arm token — the spine still boots
+    DISARMED either way; only `spine.arm(<the exact token>)` flips it (src/live/arming.py
+    verifies the token against Angus's committed authorization before the caller does that)."""
     out = Path(out_dir)
     spine_sink = SpineJournalSink(out / "spine.jsonl")
     kfp = (lambda: Path(kill_file).exists()) if kill_file is not None else (lambda: False)
-    spine = SpineExecutor(cfg or SpineConfig(), _NoBroker(), journal=spine_sink,
-                          kill_file_present=kfp)
+    spine_kw = {} if arm_token is None else {"arm_token": arm_token}
+    spine = SpineExecutor(cfg or SpineConfig(), broker if broker is not None else _NoBroker(),
+                          journal=spine_sink, kill_file_present=kfp, **spine_kw)
     return ShadowSpineInstrument(
         spine=spine, sizing_sink=JsonlSink(out / "sizing.jsonl"),
         rejects=RejectLedger(path=out / "rejects.jsonl"), account=account,

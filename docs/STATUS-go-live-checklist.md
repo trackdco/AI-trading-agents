@@ -112,7 +112,15 @@ Updated 2026-07-26 (Sunday), second pass — now merged with Angus's on-box list
    now **100** in both copies; a box `live.yaml` still saying 250 fails the boot assertion.
 6. **Pat's written confirmation** that every PROMOTION-GATE item is green.
 7. **Angus's arming token** → arm the spine on the funded Lucid account. Neither person
-   can arm it alone.
+   can arm it alone — and as of tonight that is MECHANICAL, not just procedural:
+   `canon_run --arm` (new; review the wiring on the box before trusting it) verifies the
+   typed phrase against a HASH Angus's side commits in `config/arming.yaml`, verifies
+   HEAD == the certified commit (only the authorization file may differ — any other diff
+   refuses with "re-certify"), connects the real DTC order route (`dtc:` block in
+   live.yaml, account taken from the AUTHORIZATION, not the config), and arms the spine.
+   Any failed check = hard exit. Flow: Pat's confirmation names the SHA → Angus sends
+   Claude a phrase + that SHA + the funded account → Claude commits the authorization →
+   Pat pulls, `python -m scripts.canon_run --arm`, types the phrase.
 8. Calendar note: **contract roll ≈ Sept 16, 2026** — watch that morning live, kill
    switch ready (gate A8 / §E).
 

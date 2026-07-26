@@ -51,6 +51,16 @@ archive:                          # nightly Sierra .scid/.depth offload (scripts
   # Register the nightly Windows task once on the VPS:
   #   python scripts/archive_sierra.py --register   (prints the schtasks command; default 17:30 CT)
 
+dtc:                              # ORDER ROUTE — read only by an ARMED run (canon_run --arm).
+                                  # A disarmed run never opens this connection. The trade
+                                  # account is NOT set here: it comes from Angus's committed
+                                  # authorization (config/arming.yaml), so the account the
+                                  # token authorizes is the account orders route to.
+  host: 127.0.0.1                 # Sierra's DTC server (same box)
+  port: 11099                     # Sierra default DTC port
+  order_symbol: MNQU26-CME        # micros contract orders route to (canon = micros only;
+                                  #   re-point at the Sept-16 roll, per gate A8 / §E.4)
+
 paths:
   journal_dir: output/live                 # verdicts.jsonl + spine/sizing/rejects + decisions.jsonl
   kill_file:   output/live/KILL            # present => the spine halts

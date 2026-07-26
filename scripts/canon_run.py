@@ -153,9 +153,43 @@ def _check_kill_switch_redundancy(tgcfg: TelegramConfig, log: logging.Logger,
     tg.say(warn)
 
 
+# --------------------------------------------------------------------------- arming (opt-in)
+def build_armed_broker(cfg: dict, auth, log: logging.Logger):
+    """Connect the real DTC order route for an ARMED run. Every precondition is a hard exit —
+    a refused arm must never degrade into a run the operator believes is armed."""
+    from src.desk.dtc_broker import DTCBroker
+    from src.desk.dtc_client import DTCClient, DTCConfig
+    dtc = cfg.get("dtc") or {}
+    symbol = str(dtc.get("order_symbol", "")).strip()
+    if not symbol.upper().startswith("MNQ"):
+        raise SystemExit(f"ARM REFUSED: dtc.order_symbol {symbol!r} is not a micros (MNQ*) "
+                         "contract — the canon routes micros only")
+    client = DTCClient(DTCConfig(host=str(dtc.get("host", "127.0.0.1")),
+                                 port=int(dtc.get("port", 11099)),
+                                 trade_account=auth.account))
+    if not client.connect():
+        raise SystemExit(f"ARM REFUSED: DTC logon failed on {dtc.get('host', '127.0.0.1')}:"
+                         f"{dtc.get('port', 11099)} — is Sierra's DTC server up?")
+    log.info("DTC order route up | %s:%s | account=%s | symbol=%s",
+             dtc.get("host", "127.0.0.1"), dtc.get("port", 11099), auth.account, symbol)
+    return DTCBroker(client=client, symbol=symbol, account=auth.account), client
+
+
+def _collect_arm_token() -> str:
+    """The phrase Angus issued: ARM_TOKEN env var, else an interactive prompt (never argv —
+    a secret on the command line outlives the process in shell history)."""
+    import getpass
+    import os
+    return os.environ.get("ARM_TOKEN") or getpass.getpass("arming token: ")
+
+
 # --------------------------------------------------------------------------- the canon lane
-def build_canon_live(cfg: dict, alerts: LaunchAlerts, log: logging.Logger) -> RouteBLive:
-    """Assemble the authoritative canon-lane loop from config. Spine DISARMED (_NoBroker)."""
+def build_canon_live(cfg: dict, alerts: LaunchAlerts, log: logging.Logger,
+                     arm: bool = False) -> RouteBLive:
+    """Assemble the authoritative canon-lane loop from config. Spine DISARMED (_NoBroker)
+    unless `arm=True` AND every check in src/live/arming.py passes (Angus's committed token
+    hash, the certified-commit provenance rule, DTC logon) — then, and only then, the spine
+    is armed with the real order route."""
     paths = cfg["paths"]
     out_dir = Path(paths["journal_dir"])
     kill_file = Path(paths["kill_file"])
@@ -180,14 +214,33 @@ def build_canon_live(cfg: dict, alerts: LaunchAlerts, log: logging.Logger) -> Ro
     spine_cfg = load_spine_config()
     log.info("spine Tier-1 pinned | clamp=%d micros | daily halt=%.1fR | dd buffer=$%.0f",
              spine_cfg.max_contracts, spine_cfg.daily_loss_halt_r, spine_cfg.dd_halt_buffer)
-    instrument = build_shadow_instrument(out_dir, account=sc.get("account", "FUNDED"),
-                                         cfg=spine_cfg, kill_file=kill_file)
-    # shadow lifecycle via the SAME assembly the armed path will use (build_lifecycle):
-    # order-watch decisions journal as would-be cancels with executed=False and the exit
-    # binder is wired but broker-less — §D evidence, zero broker calls possible.
+
+    broker = client = None
+    token = ""
+    account = sc.get("account", "FUNDED")
+    if arm:
+        from src.live.arming import ArmingError, verify_for_arming
+        token = _collect_arm_token()
+        try:
+            auth = verify_for_arming(token)
+        except ArmingError as e:
+            raise SystemExit(f"ARM REFUSED: {e}") from e
+        broker, client = build_armed_broker(cfg, auth, log)
+        account = auth.account
+
+    instrument = build_shadow_instrument(out_dir, account=account, cfg=spine_cfg,
+                                         kill_file=kill_file, broker=broker,
+                                         arm_token=(token if arm else None))
+    if arm:
+        if not instrument.spine.arm(token):
+            raise SystemExit("ARM REFUSED: spine rejected the token at arm() — "
+                             "this should be impossible after verify_for_arming; investigate")
+        log.info("SPINE ARMED | account=%s", account)
+    # lifecycle via the SAME assembly both modes use (build_lifecycle): disarmed it journals
+    # would-be actions with executed=False and is broker-less — §D evidence, zero broker
+    # calls possible; armed it drives the managed exit through the real order route.
     ingestor = CanonIngestor(book=DepthBook())
-    lifecycle = build_lifecycle(None, sc.get("account", "FUNDED"), ingestor, out_dir,
-                                armed=False)
+    lifecycle = build_lifecycle(broker, account, ingestor, out_dir, armed=arm)
     # corrections 2+3 live: news blackout + 09:55-10:00 dead zone + the sentinel's
     # fail-closed snapshot requirement (no board today -> no pre-open entries).
     guard = PremarketGuard()
@@ -222,12 +275,19 @@ def main(argv=None) -> int:
     ap.add_argument("--config", default="config/live.yaml")
     ap.add_argument("--telegram", choices=["on", "off"], default="on",
                     help="off => force silent (log only), overrides config")
+    ap.add_argument("--arm", action="store_true",
+                    help="ARM the spine: requires Angus's committed authorization "
+                         "(config/arming.yaml), the token phrase (ARM_TOKEN env or prompt), "
+                         "HEAD == the certified commit, and a live DTC logon. Any failed "
+                         "check is a hard exit — no silent fallback to shadow")
     args = ap.parse_args(argv)
 
     cfg = load_config(Path(args.config))
     log = setup_logging(Path(cfg["paths"]["run_log"]))
     log.info("=" * 70)
-    log.info("canon_run START | config=%s (canon lane, DISARMED — zero orders)", args.config)
+    log.info("canon_run START | config=%s (canon lane, %s)", args.config,
+             "ARM REQUESTED — verifying authorization" if args.arm
+             else "DISARMED — zero orders")
     # Boot provenance (Angus 2026-07-26): journal the exact commit this run executes, so
     # the arming token can NAME the commit it arms and any journal row is attributable.
     sha = _git_sha()
@@ -240,7 +300,7 @@ def main(argv=None) -> int:
         log.warning("KILL FILE PRESENT (%s) — the spine will halt until a human removes it", kill)
 
     alerts = build_alerts(cfg, log, force_off=(args.telegram == "off"))
-    live = build_canon_live(cfg, alerts, log)
+    live = build_canon_live(cfg, alerts, log, arm=args.arm)
 
     state = {"stop": False}
 
@@ -252,7 +312,9 @@ def main(argv=None) -> int:
     signal.signal(signal.SIGTERM, _handle)
 
     sc = cfg.get("feed", {}).get("sierra", {})
-    alerts.say("▶️ canon runner up (DISARMED — zero orders until the arming token)")
+    alerts.say(f"🔴 canon runner up — ARMED, live orders enabled (commit {sha[:12]})"
+               if args.arm else
+               "▶️ canon runner up (DISARMED — zero orders until the arming token)")
     live.serve(sleep_fn=time.sleep, stop_fn=lambda: state["stop"],
                poll_interval_s=float(sc.get("poll_interval_s", 1.0)))
     alerts.say("⏹️ canon runner STOPPED")
