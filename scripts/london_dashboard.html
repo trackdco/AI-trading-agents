@@ -1,0 +1,374 @@
+<title>London Pullback Book — Funded Dashboard</title>
+<style>
+  :root{
+    --bg:#F5F6F8; --surface:#FFFFFF; --surface-2:#FBFCFD; --ink:#14171C; --ink-2:#49505F;
+    --muted:#868E9D; --line:#E6E9EF; --line-2:#EEF1F5;
+    --accent:#4C6EF5; --accent-soft:rgba(76,110,245,.10); --accent-line:rgba(76,110,245,.28);
+    --pos:#099268; --pos-soft:rgba(9,146,104,.12); --neg:#E03131; --neg-soft:rgba(224,49,49,.12);
+    --shadow:0 1px 2px rgba(20,23,28,.04),0 6px 20px rgba(20,23,28,.05);
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#0C0F13; --surface:#151A20; --surface-2:#1A1F27; --ink:#E8EBF1; --ink-2:#A6AEBD;
+    --muted:#69727F; --line:#252B35; --line-2:#1F252E;
+    --accent:#748FFC; --accent-soft:rgba(116,143,252,.14); --accent-line:rgba(116,143,252,.35);
+    --pos:#12BE8E; --pos-soft:rgba(18,190,142,.15); --neg:#F76D6D; --neg-soft:rgba(247,109,109,.15);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
+  }}
+  :root[data-theme="light"]{
+    --bg:#F5F6F8; --surface:#FFFFFF; --surface-2:#FBFCFD; --ink:#14171C; --ink-2:#49505F;
+    --muted:#868E9D; --line:#E6E9EF; --line-2:#EEF1F5;
+    --accent:#4C6EF5; --accent-soft:rgba(76,110,245,.10); --accent-line:rgba(76,110,245,.28);
+    --pos:#099268; --pos-soft:rgba(9,146,104,.12); --neg:#E03131; --neg-soft:rgba(224,49,49,.12);
+    --shadow:0 1px 2px rgba(20,23,28,.04),0 6px 20px rgba(20,23,28,.05);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0C0F13; --surface:#151A20; --surface-2:#1A1F27; --ink:#E8EBF1; --ink-2:#A6AEBD;
+    --muted:#69727F; --line:#252B35; --line-2:#1F252E;
+    --accent:#748FFC; --accent-soft:rgba(116,143,252,.14); --accent-line:rgba(116,143,252,.35);
+    --pos:#12BE8E; --pos-soft:rgba(18,190,142,.15); --neg:#F76D6D; --neg-soft:rgba(247,109,109,.15);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;line-height:1.45}
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 22px 60px}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+  .pos{color:var(--pos)} .neg{color:var(--neg)}
+  a{color:var(--accent)}
+
+  /* header */
+  header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:18px;
+    padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:26px}
+  .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    font-weight:650;margin:0 0 8px}
+  h1{font-size:clamp(26px,4vw,38px);line-height:1.06;margin:0;font-weight:680;letter-spacing:-.015em;
+    text-wrap:balance}
+  .sub{color:var(--ink-2);margin:10px 0 0;max-width:58ch;font-size:14.5px}
+  .tag{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--ink-2);
+    background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 13px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .chip{font-size:11.5px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);
+    border-radius:7px;padding:5px 10px}
+
+  /* kpi */
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:22px 0 24px}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:15px 15px 14px;
+    box-shadow:var(--shadow);min-width:0}
+  .kpi .lab{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+    font-weight:600;margin-bottom:9px}
+  .kpi .big{font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1}
+  .kpi .note{font-size:11.5px;color:var(--ink-2);margin-top:7px}
+
+  /* cards + grid */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:20px 20px 18px;
+    box-shadow:var(--shadow)}
+  .grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}
+  .grid2b{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  .ctitle{font-size:14.5px;font-weight:650;margin:0;letter-spacing:-.01em}
+  .csub{font-size:12px;color:var(--muted);margin:3px 0 0}
+  .chead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+
+  /* charts */
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .axlab{font-family:var(--mono);font-size:10.5px;fill:var(--muted)}
+  .gridline{stroke:var(--line-2);stroke-width:1}
+  .barlab{font-family:var(--mono);font-size:11.5px;font-variant-numeric:tabular-nums;font-weight:600}
+  .barname{font-size:12.5px;fill:var(--ink-2)}
+  .barnote{font-size:10.5px;fill:var(--muted);font-family:var(--mono)}
+
+  /* tooltip */
+  #tip{position:fixed;pointer-events:none;z-index:50;background:var(--ink);color:var(--bg);
+    font-family:var(--mono);font-size:11.5px;padding:7px 9px;border-radius:7px;opacity:0;
+    transition:opacity .08s;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+  #tip b{color:var(--bg);font-weight:700}
+
+  /* ladder table */
+  table{width:100%;border-collapse:collapse}
+  .ladder th,.ladder td{text-align:left;padding:9px 10px;font-size:13px;border-bottom:1px solid var(--line-2)}
+  .ladder th{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .ladder td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+  .ladder th.n{text-align:right}
+  .ladder tr:last-child td{border-bottom:none}
+
+  /* trades */
+  .scroll{max-height:430px;overflow:auto;border:1px solid var(--line);border-radius:11px}
+  .trades{width:100%;border-collapse:collapse;font-size:12.5px}
+  .trades thead th{position:sticky;top:0;background:var(--surface-2);z-index:2;text-align:left;
+    padding:9px 12px;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+    font-weight:600;border-bottom:1px solid var(--line)}
+  .trades td{padding:8px 12px;border-bottom:1px solid var(--line-2);white-space:nowrap}
+  .trades tbody tr:hover{background:var(--surface-2)}
+  .trades .num{font-variant-numeric:tabular-nums}
+  .tr-r{text-align:right;font-family:var(--mono);font-weight:600}
+  .pill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;letter-spacing:.02em;
+    padding:2px 8px;border-radius:6px}
+  .pill.win{background:var(--pos-soft);color:var(--pos)} .pill.loss{background:var(--neg-soft);color:var(--neg)}
+  .pill.long{background:var(--accent-soft);color:var(--accent)}
+  .pill.short{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+  .cf{font-family:var(--mono);font-size:11px}
+  .cf.y{color:var(--accent);font-weight:700} .cf.n{color:var(--muted)}
+
+  /* footnote */
+  .foot{margin-top:22px;padding:18px 20px;background:var(--surface-2);border:1px solid var(--line);
+    border-radius:13px;font-size:12.5px;color:var(--ink-2);line-height:1.6}
+  .foot b{color:var(--ink)}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:10px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+  @media (max-width:900px){
+    .kpis{grid-template-columns:repeat(3,1fr)}
+    .grid2,.grid2b{grid-template-columns:1fr}
+  }
+  @media (max-width:520px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Mechanical Trading Book · Backtest</p>
+      <h1>London 10:00–13:00 Pullback</h1>
+      <p class="sub">NQ (Nasdaq-100) futures. Stacked-MA pullback to the 50-period, sized by CVD conviction, day-stopped. Modelled on a $50k funded account at $300 base risk per trade.</p>
+    </div>
+    <div style="text-align:right">
+      <span class="tag"><span class="dot"></span>Jul 2025 – Jul 2026 · 12.5 mo</span>
+      <div class="chips" style="justify-content:flex-end">
+        <span class="chip">Net of costs</span>
+        <span class="chip">No lookahead</span>
+        <span class="chip">q4-2025 CVD live</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="card">
+    <div class="chead">
+      <div>
+        <p class="ctitle">Equity curve</p>
+        <p class="csub">Cumulative net P&amp;L · Scheme A sizing · $300 base risk</p>
+      </div>
+      <div style="text-align:right"><div class="num" id="eqnet" style="font-size:20px;font-weight:600"></div>
+        <div class="csub" id="eqdd"></div></div>
+    </div>
+    <div id="equity"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="chead"><div><p class="ctitle">Every quarter green</p>
+        <p class="csub">Net P&amp;L by quarter · trade count in tooltip</p></div></div>
+      <div id="quarters"></div>
+    </div>
+    <div class="card">
+      <div class="chead"><div><p class="ctitle">Sizing choice</p>
+        <p class="csub">Same edge — how hard you press unconfirmed trades</p></div></div>
+      <div id="sizing"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="chead"><div><p class="ctitle">Robustness — every attempt to improve trims profit</p>
+      <p class="csub">Six interventions tested (tighter stop, breakeven, trailing, entry filters, target caps). Baseline wins them all — the edge is the uncapped 3R tail.</p></div></div>
+    <div id="interventions"></div>
+  </div>
+
+  <div class="grid2b">
+    <div class="card">
+      <div class="chead"><div><p class="ctitle">Funded scaling ladder</p>
+        <p class="csub">Base risk scales with locked buffer (balance − $50k). Confirmed = full, unconfirmed = half.</p></div></div>
+      <table class="ladder">
+        <thead><tr><th>Locked buffer</th><th class="n">Confirmed</th><th class="n">Unconfirmed</th></tr></thead>
+        <tbody>
+          <tr><td>&lt; $750 &nbsp;<span style="color:var(--muted)">(eval, pre-lock)</span></td><td class="n">$250</td><td class="n">$125</td></tr>
+          <tr><td>$750 – $2,000</td><td class="n">$350</td><td class="n">$175</td></tr>
+          <tr><td>$2,000 – $4,000</td><td class="n">$500</td><td class="n">$250</td></tr>
+          <tr><td>≥ $4,000</td><td class="n">$700</td><td class="n">$350</td></tr>
+        </tbody>
+      </table>
+      <p class="csub" style="margin-top:12px">Backtested on this ladder: <b class="pos num">+$36,978</b> / 12.5 mo · P(blow) <span class="num">0.16%</span> · 5th-pctile <span class="num pos">+$22,151</span>.</p>
+    </div>
+    <div class="card">
+      <div class="chead"><div><p class="ctitle">How the size is placed</p>
+        <p class="csub">Fixed-dollar risk → contracts come off the stop (MNQ micros, $2/pt), $250 rung</p></div></div>
+      <table class="ladder">
+        <thead><tr><th>Stop distance</th><th class="n">Contracts</th><th class="n">Actual risk</th></tr></thead>
+        <tbody>
+          <tr><td>15 pt</td><td class="n">8 MNQ</td><td class="n">$240</td></tr>
+          <tr><td>25 pt</td><td class="n">5 MNQ</td><td class="n">$250</td></tr>
+          <tr><td>36 pt <span style="color:var(--muted)">(median)</span></td><td class="n">3 MNQ</td><td class="n">$216</td></tr>
+          <tr><td>50 pt</td><td class="n">2 MNQ</td><td class="n">$200</td></tr>
+          <tr><td>70 pt <span style="color:var(--muted)">(cap)</span></td><td class="n">2 MNQ</td><td class="n">$280</td></tr>
+        </tbody>
+      </table>
+      <p class="csub" style="margin-top:12px">Unconfirmed trades take half the contracts. Stop is structural (swing-low / 50-MA), never tightened.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="chead"><div><p class="ctitle">Trade log</p>
+      <p class="csub" id="tradesub"></p></div>
+      <div class="legend">
+        <span><span class="sw" style="background:var(--pos)"></span>Win</span>
+        <span><span class="sw" style="background:var(--neg)"></span>Loss</span>
+        <span><span class="cf y">Y</span>CVD-confirmed (1.0×)</span>
+      </div>
+    </div>
+    <div class="scroll">
+      <table class="trades">
+        <thead><tr><th>#</th><th>Date</th><th>UK</th><th>ET</th><th>Dir</th><th>Stop</th><th>CVD</th><th>Result</th><th class="tr-r">R</th><th class="tr-r">Cum $</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="foot">
+    <b>Read this honestly.</b> One book, <b>55 trades over 12.5 months</b>, a single favourable regime — there is <b>no 2023–24 London holdout</b>, so out-of-sample behaviour is unproven. The 3.06R max equity drawdown is <i>historical</i>; the ~0.16% blow-probability is a Monte-Carlo estimate (8k–20k resampled paths incl. bootstrap-with-replacement) and is still an in-sample distribution — real forward streaks can be worse. Jan-2026 has no CVD (one missing file) so those trades size at the unconfirmed half-rung. Thresholds were frozen on 2025 and the book has been sliced many ways — treat any refinement as a holdout candidate, not a ship. Start at the bottom rung; the buffer is the protection.
+  </div>
+</div>
+
+<div id="tip"></div>
+
+<script>
+const DASH = __DASH__;
+const $=s=>document.querySelector(s);
+const tip=$("#tip");
+const money=v=>(v<0?"-$":"+$")+Math.abs(Math.round(v)).toLocaleString();
+const money0=v=>"$"+Math.abs(Math.round(v)).toLocaleString();
+const SVGNS="http://www.w3.org/2000/svg";
+function el(n,a){const e=document.createElementNS(SVGNS,n);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function showTip(html,x,y){tip.innerHTML=html;tip.style.opacity=1;
+  const w=tip.offsetWidth,h=tip.offsetHeight;let L=x+14,Tp=y-h-10;
+  if(L+w>innerWidth-8)L=x-w-14; if(Tp<8)Tp=y+16; tip.style.left=L+"px";tip.style.top=Tp+"px";}
+function hideTip(){tip.style.opacity=0;}
+
+/* ---------- KPIs ---------- */
+(function(){
+  const s=DASH.stats;
+  const items=[
+    {lab:"Net P&L",big:money(s.net),cls:"pos",note:s.spanStart+" – "+s.spanEnd},
+    {lab:"Max drawdown",big:money0(s.maxdd),cls:"",note:"vs $2,000 limit"},
+    {lab:"Worst R-streak",big:s.worstRdd.toFixed(2)+"R",cls:"",note:"drives blow-prob"},
+    {lab:"Win rate",big:s.wr+"%",cls:"",note:s.wins+"W · "+s.losses+"L"},
+    {lab:"Trades",big:String(s.n),cls:"",note:s.confN+" CVD-confirmed"},
+    {lab:"Quarters green",big:s.qGreen+"/"+s.qTotal,cls:"pos",note:"avg win "+s.avgWin+"R"},
+  ];
+  $("#kpis").innerHTML=items.map(i=>
+    `<div class="kpi"><div class="lab">${i.lab}</div><div class="big num ${i.cls}">${i.big}</div><div class="note">${i.note}</div></div>`).join("");
+  $("#eqnet").innerHTML=`<span class="pos">${money(s.net)}</span>`;
+  $("#eqdd").textContent="max drawdown "+money0(s.maxdd)+" · "+s.worstRdd.toFixed(2)+"R";
+  $("#tradesub").textContent=s.n+" trades · "+s.wins+" win / "+s.losses+" loss · avg win "+s.avgWin+"R, avg loss "+s.avgLoss+"R";
+})();
+
+/* ---------- Equity line ---------- */
+(function(){
+  const d=DASH.equity, W=820,H=300,P={l:46,r:16,t:16,b:26};
+  const xs=i=>P.l+(W-P.l-P.r)*(i/(d.length-1));
+  const max=Math.max(...d.map(p=>p.cum)), min=Math.min(0,...d.map(p=>p.cum));
+  const ys=v=>P.t+(H-P.t-P.b)*(1-(v-min)/(max-min));
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Equity curve"});
+  // grid + y labels
+  const ticks=4;
+  for(let k=0;k<=ticks;k++){const v=min+(max-min)*k/ticks;const y=ys(v);
+    svg.appendChild(el("line",{class:"gridline",x1:P.l,y1:y,x2:W-P.r,y2:y}));
+    const t=el("text",{class:"axlab",x:P.l-8,y:y+3.5,"text-anchor":"end"});t.textContent=(v/1000).toFixed(0)+"k";svg.appendChild(t);}
+  // area
+  const grad=el("linearGradient",{id:"eqg",x1:0,y1:0,x2:0,y2:1});
+  grad.appendChild(el("stop",{offset:"0%","stop-color":css("--accent"),"stop-opacity":".22"}));
+  grad.appendChild(el("stop",{offset:"100%","stop-color":css("--accent"),"stop-opacity":"0"}));
+  svg.appendChild(grad);
+  let ln=`M ${xs(0)} ${ys(d[0].cum)}`; d.forEach((p,i)=>{if(i)ln+=` L ${xs(i)} ${ys(p.cum)}`;});
+  svg.appendChild(el("path",{d:`${ln} L ${xs(d.length-1)} ${ys(min)} L ${xs(0)} ${ys(min)} Z`,fill:"url(#eqg)"}));
+  svg.appendChild(el("path",{d:ln,fill:"none",stroke:css("--accent"),"stroke-width":2,"stroke-linejoin":"round","stroke-linecap":"round"}));
+  // zero baseline
+  svg.appendChild(el("line",{x1:P.l,y1:ys(0),x2:W-P.r,y2:ys(0),stroke:css("--line"),"stroke-width":1}));
+  // endpoint
+  svg.appendChild(el("circle",{cx:xs(d.length-1),cy:ys(d[d.length-1].cum),r:4,fill:css("--accent"),stroke:css("--surface"),"stroke-width":2}));
+  // hover
+  const cl=el("line",{x1:0,y1:P.t,x2:0,y2:H-P.b,stroke:css("--accent-line"),"stroke-width":1,opacity:0});
+  const cd=el("circle",{r:4,fill:css("--accent"),stroke:css("--surface"),"stroke-width":2,opacity:0});
+  svg.appendChild(cl);svg.appendChild(cd);
+  const hit=el("rect",{x:0,y:0,width:W,height:H,fill:"transparent"});svg.appendChild(hit);
+  hit.addEventListener("mousemove",ev=>{const r=svg.getBoundingClientRect();
+    const px=(ev.clientX-r.left)/r.width*W; let i=Math.round((px-P.l)/(W-P.l-P.r)*(d.length-1));
+    i=Math.max(0,Math.min(d.length-1,i)); const X=xs(i),Y=ys(d[i].cum);
+    cl.setAttribute("x1",X);cl.setAttribute("x2",X);cl.setAttribute("opacity",1);
+    cd.setAttribute("cx",X);cd.setAttribute("cy",Y);cd.setAttribute("opacity",1);
+    const t=DASH.trades[i];
+    showTip(`trade <b>#${i+1}</b> · ${t.date}<br>cum <b>${money(d[i].cum)}</b> · this ${t.R>0?'<b style="color:'+css('--pos')+'">+'+t.R+'R</b>':'<b style="color:'+css('--neg')+'">'+t.R+'R</b>'}`,ev.clientX,ev.clientY);});
+  hit.addEventListener("mouseleave",()=>{hideTip();cl.setAttribute("opacity",0);cd.setAttribute("opacity",0);});
+  $("#equity").appendChild(svg);
+})();
+
+/* ---------- Quarters (vertical bars) ---------- */
+(function(){
+  const d=DASH.quarters, W=440,H=210,P={l:8,r:8,t:22,b:26};
+  const max=Math.max(...d.map(q=>q.net))*1.14;
+  const bw=(W-P.l-P.r)/d.length, iw=Math.min(64,bw*0.56);
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Net P&L by quarter"});
+  svg.appendChild(el("line",{x1:P.l,y1:H-P.b,x2:W-P.r,y2:H-P.b,stroke:css("--line"),"stroke-width":1}));
+  d.forEach((q,i)=>{const cx=P.l+bw*i+bw/2, h=(H-P.t-P.b)*(q.net/max), y=H-P.b-h;
+    const bar=el("rect",{x:cx-iw/2,y:y,width:iw,height:h,rx:4,fill:css("--pos")});svg.appendChild(bar);
+    const v=el("text",{class:"barlab",x:cx,y:y-7,"text-anchor":"middle",fill:css("--pos")});v.textContent=money(q.net);svg.appendChild(v);
+    const nm=el("text",{class:"barname",x:cx,y:H-P.b+16,"text-anchor":"middle"});nm.textContent=q.name;svg.appendChild(nm);
+    bar.addEventListener("mousemove",ev=>showTip(`<b>${q.name}</b> · ${q.n} trades<br>net <b>${money(q.net)}</b>`,ev.clientX,ev.clientY));
+    bar.addEventListener("mouseleave",hideTip);});
+  $("#quarters").appendChild(svg);
+})();
+
+/* ---------- Horizontal bar helper ---------- */
+function hbars(mount,data,opt){
+  const W=440,rowH=opt.rowH||46,P={l:8,r:8,t:6,b:6};
+  const H=P.t+P.b+data.length*rowH;
+  const max=Math.max(...data.map(d=>d.net))*1.02;
+  const barX=8, barW=W-16;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":opt.label});
+  data.forEach((d,i)=>{const y=P.t+i*rowH;
+    // track
+    svg.appendChild(el("rect",{x:barX,y:y+22,width:barW,height:9,rx:4.5,fill:css("--line-2")}));
+    const w=barW*(d.net/max);
+    const fill=d.base?css("--accent"):(opt.hue||css("--accent"));
+    const bar=el("rect",{x:barX,y:y+22,width:Math.max(w,3),height:9,rx:4.5,fill:fill,opacity:d.base?1:(opt.dim?.5:.85)});
+    svg.appendChild(bar);
+    const nm=el("text",{class:"barname",x:barX,y:y+15,"font-weight":d.base?700:500});nm.textContent=d.name;svg.appendChild(nm);
+    const vl=el("text",{class:"barlab",x:barX+barW,y:y+15,"text-anchor":"end",fill:d.base?css("--accent"):css("--ink")});
+    vl.textContent=money(d.net);svg.appendChild(vl);
+    if(opt.deltaBase!=null && !d.base){const dl=el("text",{class:"barnote",x:barX+w+7,y:y+30,fill:css("--neg")});
+      dl.textContent=money(d.net-opt.deltaBase);dl.setAttribute("dominant-baseline","middle");svg.appendChild(dl);}
+    if(d.note){const nt=el("text",{class:"barnote",x:barX+barW,y:y+30,"text-anchor":"end"});nt.textContent=d.note;svg.appendChild(nt);}
+    bar.addEventListener("mousemove",ev=>showTip(`<b>${d.name}</b><br>net <b>${money(d.net)}</b>${d.dd!=null?" · DD "+money0(d.dd):""}`,ev.clientX,ev.clientY));
+    bar.addEventListener("mouseleave",hideTip);
+  });
+  mount.appendChild(svg);
+}
+
+/* ---------- Sizing ---------- */
+hbars($("#sizing"),DASH.sizing.map(s=>({name:s.name,net:s.net,dd:s.dd,note:money0(s.dd)+" DD",base:s.name==="Scheme A"})),
+  {label:"Sizing comparison",rowH:52});
+
+/* ---------- Interventions ---------- */
+(function(){
+  const base=DASH.interventions.find(d=>d.base).net;
+  hbars($("#interventions"),DASH.interventions,{label:"Interventions vs baseline",rowH:46,dim:true,deltaBase:base});
+})();
+
+/* ---------- Trades table ---------- */
+(function(){
+  const rows=DASH.trades.map((t,i)=>`<tr>
+    <td class="num" style="color:var(--muted)">${i+1}</td>
+    <td>${t.date} <span style="color:var(--muted)">${t.dow}</span></td>
+    <td class="num">${t.uk}</td><td class="num" style="color:var(--ink-2)">${t.et}</td>
+    <td><span class="pill ${t.dir==='LONG'?'long':'short'}">${t.dir}</span></td>
+    <td class="num">${t.stop}pt</td>
+    <td class="cf ${t.conf?'y':'n'}">${t.conf?'Y':'—'}</td>
+    <td><span class="pill ${t.outcome==='WIN'?'win':'loss'}">${t.outcome}</span></td>
+    <td class="tr-r ${t.R>0?'pos':'neg'}">${t.R>0?'+':''}${t.R}</td>
+    <td class="tr-r num" style="color:var(--ink-2)">${money(t.cum)}</td></tr>`).join("");
+  $("#tbody").innerHTML=rows;
+})();
+</script>
