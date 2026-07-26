@@ -107,8 +107,10 @@ Updated 2026-07-26 (Sunday), second pass — now merged with Angus's on-box list
    DISARMED — it journals every decision, places nothing. Its journals get diffed against
    the research books; that evidence closes gates A1–A6 + C6.
 4. **Stage 5: break-it tests** (one session, on purpose): kill the process mid-session
-   (C2), cut the feed (C3), both phones' /kill (C4), spine force-test (C5), kill the
-   engine with a SIM position open → must flatten (C7).
+   (C2), cut the feed (C3), ~~both phones' /kill (C4)~~ **C4 ✅ DONE EARLY pre-market
+   2026-07-26** (kill listener on `ec31848`, both operators' /kill + /status verified
+   end-to-end; cert also re-passed at `ec31848`: 383/383, $+55,989.81 both sides),
+   spine force-test (C5), kill the engine with a SIM position open → must flatten (C7).
 
 ## FINALLY — HUMANS, THEN LIVE
 
