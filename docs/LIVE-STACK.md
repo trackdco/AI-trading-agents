@@ -130,7 +130,7 @@ from the matrix scripts rather than re-deriving.
   pinned to the old path goes **silently stale**. `src/canon/sierra_symbol.py` resolves the
   active front-month symbol/file for a date (`resolve_scid_path`/`resolve_depth_path`) and a
   `RollWatcher` detects the switch. **Wired:** the Route-B live loop
-  (`src/live/route_b.RouteBLive`, driven by `paper_run` `feed.type: sierra`) re-points the
+  (`src/live/route_b.RouteBLive`, run by `scripts/canon_run.py`) re-points the
   `.scid` at the roll and the `.depth` every session (per-day file) via `resolve_*_path`, and
   fires `format_roll_alert` over Telegram.
 - **Live roll TAG (`RollTagger`/`RollState`, the twin of `src/engine/data.tag_rolls`).** The

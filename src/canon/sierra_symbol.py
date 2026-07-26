@@ -13,9 +13,9 @@ contract month.** NQ trades the quarterly cycle H(Mar)/M(Jun)/U(Sep)/Z(Dec). On 
 the front contract becomes the next quarter; prices are NOT back-adjusted, so a gap appears
 across the roll (the reason the backtest tags rolls — src/engine/data.tag_rolls).
 
-Scope: resolver + roll watcher + alert text, all pure/offline-testable. Re-pointing the live
-feed and adding a live roll TAG to the ingestor's rolling buffers wait on the live file-tail
-adapter (scripts/paper_run.stream_live, not yet built) — see docs/LIVE-STACK.md.
+Scope: resolver + roll watcher + alert text, all pure/offline-testable. The live feed re-point
+and the live roll TAG are wired in the canon-lane loop (src/live/route_b.py, run by
+scripts/canon_run.py) — see docs/LIVE-STACK.md.
 """
 from __future__ import annotations
 

@@ -1,24 +1,23 @@
-"""Route-B live loop — SierraFileFeed → the champion paper stack + shadow canon/spine.
+"""Route-B live loop — SierraFileFeed → the AUTHORITATIVE canon lane (shape i) + disarmed spine.
 
-This is the real body of `paper_run.stream_live`: it drives the paper desk off the files
-Sierra writes to disk (Route B — Sierra won't serve data over DTC under the non-pro licence).
-A SINGLE poll of `SierraFileFeed` fans each closed minute out to two consumers:
+The operational entry point is `scripts/canon_run.py`. It drives the desk off the files Sierra
+writes to disk (Route B — Sierra won't serve data over DTC under the non-pro licence). A SINGLE
+poll of `SierraFileFeed` fans each closed minute to the CanonIngestor (on_bar/on_minute_tape/
+on_depth) so live canon features/book are maintained; each session's canon verdicts (a
+`VerdictSource`) drive the verdict journal + the disarmed spine, emitted at their fill time.
 
-  1. champion path  — the closed bar → LiveRunner.on_bar → the validated Vault/champion sim,
-                      which journals completed trades (output/live/journal.jsonl), alerts, and
-                      the paper ledger. Unchanged; it just gets live Sierra bars now.
-  2. canon path     — the same bar + footprint → CanonIngestor (on_bar/on_minute_tape) and
-                      depth events → on_depth, so live canon features/book are maintained.
+The champion (`comparator`, a LiveRunner) is OPTIONAL and NON-AUTHORITATIVE — structurally OUT
+of the journal/spine/trade path; if wired (with an isolated journal dir) its trades go only to
+the champion-vs-canon divergence canary.
 
-Per completed champion trade, a SHADOW spine step emits the promotion-gate evidence the
-journal alone could not (docs/PROMOTION-GATE.md B/C): per-trade sizing (sizing.jsonl), the
-spine's per-guard evaluation + decision (spine.jsonl via SpineJournalSink), and every
-rejection normalized into one ledger (rejects.jsonl via RejectLedger).
+Per canon verdict, a SHADOW spine step emits the promotion-gate evidence: per-trade sizing
+(sizing.jsonl), the spine's per-guard evaluation + decision (spine.jsonl via SpineJournalSink),
+and every rejection normalized into one ledger (rejects.jsonl via RejectLedger). Roll events go
+to decisions.jsonl.
 
 NOTHING TOUCHES A BROKER, ARMING STAYS GATED. The spine runs DISARMED — `place()` returns a
-`shadow` decision before any `submit_bracket`, and the injected broker raises if called at all,
-so a coding error can never route an order. The champion uses the PaperBroker. There is no DTC
-order path here.
+`shadow` decision before any `submit_bracket`, and the injected `_NoBroker` raises if called at
+all, so a coding error can never route an order. There is no DTC order path here.
 
 Robustness (feed_guard): dedup / strict ordering / gap record / stall halt. Warm start preloads
 recent history so day-one levels are right. The CommandListener (/status, /kill) is polled
@@ -430,11 +429,16 @@ class RouteBLive:
 
 # --------------------------------------------------------------------------- builder
 def build_shadow_instrument(out_dir: str | Path, account: str = "FUNDED",
-                            cfg: SpineConfig | None = None) -> ShadowSpineInstrument:
-    """Assemble the shadow spine instrument with all three evidence sinks under out_dir."""
+                            cfg: SpineConfig | None = None,
+                            kill_file: str | Path | None = None) -> ShadowSpineInstrument:
+    """Assemble the shadow spine instrument with all three evidence sinks under out_dir. When
+    `kill_file` is given, the spine halts while that file is present (the manual /kill switch —
+    it still halts even a DISARMED spine, so the wiring is verified before arming)."""
     out = Path(out_dir)
     spine_sink = SpineJournalSink(out / "spine.jsonl")
-    spine = SpineExecutor(cfg or SpineConfig(), _NoBroker(), journal=spine_sink)
+    kfp = (lambda: Path(kill_file).exists()) if kill_file is not None else (lambda: False)
+    spine = SpineExecutor(cfg or SpineConfig(), _NoBroker(), journal=spine_sink,
+                          kill_file_present=kfp)
     return ShadowSpineInstrument(
         spine=spine, sizing_sink=JsonlSink(out / "sizing.jsonl"),
         rejects=RejectLedger(path=out / "rejects.jsonl"), account=account,
