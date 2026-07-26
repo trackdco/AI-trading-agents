@@ -114,6 +114,41 @@ def test_depth_reader_inverts_writer(tmp_path):
     assert (out[2].price, out[2].size, out[2].ct) == (100.25, 60, 6)
 
 
+def test_depth_command_enum_is_pinned_to_the_real_sierra_numbering(tmp_path):
+    """PINNED ON THE BOX 2026-07-26 (SC build 2930, real NQU6.CME .depth + Sierra's file-
+    format doc): 1 clear, 2/3 add, 4/5 MODIFY, 6/7 DELETE. The original offline guess had
+    deletes at 4/5 — a real file FAILED the pin check on Command 6, and modifies would have
+    silently decoded as deletes. This test freezes the corrected mapping."""
+    from src.canon.sierra_files import (
+        DCMD_ADD_ASK,
+        DCMD_ADD_BID,
+        DCMD_DEL_ASK,
+        DCMD_DEL_BID,
+        DCMD_MOD_ASK,
+        DCMD_MOD_BID,
+    )
+    assert (DCMD_CLEAR, DCMD_ADD_BID, DCMD_ADD_ASK) == (1, 2, 3)
+    assert (DCMD_MOD_BID, DCMD_MOD_ASK, DCMD_DEL_BID, DCMD_DEL_ASK) == (4, 5, 6, 7)
+    p = tmp_path / "nq.depth"
+    write_depth(p, [
+        {"ts": _ts("2026-03-17", "08:00"), "command": DCMD_ADD_BID, "price": 100.0,
+         "qty": 50, "num_orders": 4},
+        {"ts": _ts("2026-03-17", "08:00"), "command": DCMD_MOD_BID, "price": 100.0,
+         "qty": 75, "num_orders": 5},
+        {"ts": _ts("2026-03-17", "08:00"), "command": DCMD_DEL_BID, "price": 100.0},
+        {"ts": _ts("2026-03-17", "08:00"), "command": DCMD_MOD_ASK, "price": 100.25,
+         "qty": 20, "num_orders": 2},
+        {"ts": _ts("2026-03-17", "08:00"), "command": DCMD_DEL_ASK, "price": 100.25},
+    ])
+    out = list(DepthReader(p).records())
+    assert [e.action for e in out] == ["B", "B", "b", "A", "a"]   # modify SETS, never deletes
+    assert (out[1].size, out[1].ct) == (75, 5)
+    b = DepthBook()
+    for e in out:
+        b.apply({"action": e.action, "price": e.price, "size": e.size, "ct": e.ct})
+    assert b.best_bid() is None and b.best_ask() is None          # add+mod+del leaves empty
+
+
 # --------------------------------------------------------------------------- DepthBook (level)
 def test_depth_book_levels_and_delete():
     b = DepthBook()

@@ -143,16 +143,26 @@ DEPTH_REC = struct.Struct("<qBBHfII")               # DateTime, Command, Flags, 
 DEPTH_REC_SIZE = 24
 assert DEPTH_HEADER.size == DEPTH_HEADER_SIZE and DEPTH_REC.size == DEPTH_REC_SIZE
 
-# Command byte -> DepthBook action. PIN-ON-BOX: confirm these values against the installed
-# build (the .depth Command enum is the least-documented part of the format, arch §2.2). The
-# side-in-command layout is one documented variant; if the real build carries side in `Flags`
-# instead, only this table + `DepthReader._decode` change.
+# Command byte -> DepthBook action. PINNED ON THE BOX 2026-07-26 against SC build 2930
+# (Pat's VPS, NQU6.CME.2026-07-24.depth) + Sierra's Market Depth Data File Format doc:
+#   0 NO_COMMAND, 1 CLEAR_BOOK, 2 ADD_BID_LEVEL, 3 ADD_ASK_LEVEL,
+#   4 MODIFY_BID_LEVEL, 5 MODIFY_ASK_LEVEL, 6 DELETE_BID_LEVEL, 7 DELETE_ASK_LEVEL.
+# The original offline guess put deletes at 4/5 — the on-box pin check FAILED on a real
+# Command 6, which also means 4/5 (modifies) would have been decoded as deletes. ADD and
+# MODIFY both map to the book's set-level action ("B"/"A": set qty at price), which is
+# exactly Sierra's semantics for those two commands.
 DCMD_CLEAR = 1
-DCMD_SET_BID = 2        # insert/update a bid level (Price, Qty, NumOrders)
-DCMD_SET_ASK = 3        # insert/update an ask level
-DCMD_DEL_BID = 4        # remove the bid level at Price
-DCMD_DEL_ASK = 5        # remove the ask level at Price
-_DCMD_ACTION = {DCMD_CLEAR: "R", DCMD_SET_BID: "B", DCMD_SET_ASK: "A",
+DCMD_ADD_BID = 2        # insert a bid level (Price, Qty, NumOrders)
+DCMD_ADD_ASK = 3        # insert an ask level
+DCMD_MOD_BID = 4        # update the bid level at Price
+DCMD_MOD_ASK = 5        # update the ask level at Price
+DCMD_DEL_BID = 6        # remove the bid level at Price
+DCMD_DEL_ASK = 7        # remove the ask level at Price
+# kept as aliases: "set" = add-or-update, the action the book actually applies
+DCMD_SET_BID = DCMD_ADD_BID
+DCMD_SET_ASK = DCMD_ADD_ASK
+_DCMD_ACTION = {DCMD_CLEAR: "R", DCMD_ADD_BID: "B", DCMD_ADD_ASK: "A",
+                DCMD_MOD_BID: "B", DCMD_MOD_ASK: "A",
                 DCMD_DEL_BID: "b", DCMD_DEL_ASK: "a"}
 
 
