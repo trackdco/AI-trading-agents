@@ -1,9 +1,10 @@
-# FOR ANGUS — two gating rulings before the file-tail data path goes live
+# FOR ANGUS — gating rulings before the file-tail data path goes live
 
-**Decisions needed from you before the Route-B data path (and the funded feed) go live.**
-Neither blocks building or offline testing — both are done (431 tests green; the on-box
-pin/replay steps are in `docs/BOX-HANDOFF.md`). These are the two things only you can settle,
-plus one heads-up that shapes the research roadmap.
+**STATUS 2026-07-26: Q2 is RESOLVED (Lucid depth add-on; Denali deactivated). Only Q1 is open.**
+
+Decisions needed from you before the Route-B data path goes live. Neither blocks building or
+offline testing — those are done (**432 tests green**; the on-box pin/replay steps are in
+`docs/BOX-HANDOFF.md`), plus one heads-up that shapes the research roadmap.
 
 ## Background in one paragraph
 
@@ -37,24 +38,36 @@ still gets us the data. If you read it as **not** permitted, the fallback is the
 CME data subscription feeding Sierra's own charting only, with us consuming via a mechanism you
 bless — flag it and I'll re-plan.
 
-## Q2 — Does the Lucid / Rithmic plan deliver full 10-level DOM, not throttled?
+## Q2 — ✅ RESOLVED (2026-07-26, Angus) — depth comes from the Lucid add-on, NOT Denali
 
-**The question:** does the funded execution plan actually deliver the **full 10-level DOM
-depth** for NQ, un-throttled — or is depth top-of-book / restricted?
+**Answered by events. Do not act on the superseded plan below.**
 
-**Why it's load-bearing:** the canon's depth signals (`WALLSZ`, `dep_wall_above/below`,
-thickness, imbalance) are a **top-2 signal in every window** and die without the full ladder.
-`docs/VPS-SETUP.md` Part 4 already found the answer for the *data source*: **Rithmic carries
-no depth at all** (`MarketDepthIsSupported: 0`), so the ladder **must** come from **Denali (SC
-Data)** — the funded CME real-time+depth subscription (~$40.50/mo non-pro, Part 4c), which
-needs the funded account to qualify for non-pro rates. Rithmic stays the execution route +
-drawdown-of-record.
+Angus bought Lucid's **Market Depth add-on** (~$27.30, full bundle) on the existing Rithmic
+connection. Sierra now reports **`MarketDepthIsSupported: 1`** (was `0`) and **MBP-10 is
+confirmed flowing**. The **Denali/CME trial has been DEACTIVATED** — confirmed by Angus
+2026-07-26; nothing further to buy, no anchor/dormant live account, no monthly ritual.
 
-**What I need from you:** confirmation that (a) the plan is **Rithmic-execution + Denali-data**
-as Part 4 describes, and (b) the Denali CME subscription you'll buy includes **full 10-level
-DOM** (depth is the pricey part of the non-pro bundle, not the ~$16 top-of-book figure). The
-on-box replay (`BOX-HANDOFF.md` Step C) will show `10 bid / 10 ask` when depth is live; a thin
-or empty book is the tell that depth is throttled or not yet subscribed.
+**Current wiring: Rithmic for BOTH data and execution.** All four Sierra credential fields
+(Market Data + Historical Data + Trading) are filled with `LT-QJ26R3G6` + the Rithmic
+password. Monthly run cost ≈ VPS $80 + Sierra Pkg12 $56 + Lucid depth $27 ≈ **$163/mo**.
+
+**Still to verify on the box (the one part of Q2 that remains):** that the ladder really is
+**~10 levels a side and not throttled**. Count populated levels on the NQU6 Trade DOM, or read
+it out of the `.depth` sample — `BOX-HANDOFF.md` Step C.1 prints `N bid / N ask`. A thin book
+is the tell.
+
+<details><summary>Superseded reasoning (kept for the record — this was WRONG)</summary>
+
+> `docs/VPS-SETUP.md` Part 4 concluded **Rithmic carries no depth at all**
+> (`MarketDepthIsSupported: 0`), so the ladder **must** come from **Denali (SC Data)** — the
+> funded CME real-time+depth subscription (~$40.50/mo non-pro), which needs a funded account
+> for non-pro rates.
+>
+> **Why it was wrong:** Rithmic's *base* plan carries no depth, but Lucid sells a depth add-on
+> that enables Level 2 on the same Rithmic feed. The stack was tunnel-visioned on Denali
+> instead of checking for a simpler path. Angus caught it.
+
+</details>
 
 ---
 
