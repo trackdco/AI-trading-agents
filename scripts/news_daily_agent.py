@@ -37,6 +37,40 @@ from scripts.scrape_ff_calendar import parse_html_table, parse_json_blob   # noq
 NY = ZoneInfo("America/New_York")
 OUT = Path("data/reference/news_daily")
 URL = "https://www.forexfactory.com/calendar?week=this"
+# FF's own machine-readable weekly feed (faireconomy media = FF's parent company). Plain
+# CDN JSON with no Cloudflare browser challenge, so it is the source that can run
+# UNATTENDED on the VPS where the website itself blocks datacenter IPs. Not verifiable
+# from the research container (its network allowlist rejects the domain outright) — the
+# first VPS run is the proof; the site scrape and --html stay as fallbacks either way.
+FEED_URL = "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
+
+
+def rows_from_feed(events: list[dict]) -> list[dict]:
+    """Feed entries -> the snapshot row schema {datetime_ET, event, impact} (USD releases
+    only; Holiday/Non-Economic markers are not releases and are dropped). Name drift vs the
+    site's spelling is tolerated by construction: the gate re-derives its promoted-high set
+    from every snapshot it loads, so a feed row tagged high triggers its own blackout even
+    under a name the historical calendar has never seen."""
+    rows = []
+    for ev in events:
+        if str(ev.get("country", "")).strip().upper() != "USD":
+            continue
+        imp = str(ev.get("impact", "")).strip().lower()
+        if imp not in ("high", "medium", "low"):
+            continue
+        ts = pd.Timestamp(ev["date"])
+        ts = ts.tz_convert(NY) if ts.tzinfo is not None else ts.tz_localize(NY)
+        rows.append(dict(datetime_ET=ts.strftime("%Y-%m-%d %H:%M"),
+                         event=str(ev.get("title", "")).strip(), impact=imp))
+    return rows
+
+
+def fetch_feed_rows() -> list[dict]:
+    import json
+    import urllib.request
+    req = urllib.request.Request(FEED_URL, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return rows_from_feed(json.loads(r.read().decode("utf-8")))
 
 
 def fetch_html() -> str:
@@ -50,9 +84,18 @@ def fetch_html() -> str:
 
 def main() -> int:
     today = datetime.now(NY).date()
-    html = (Path(sys.argv[sys.argv.index("--html") + 1]).read_text()
-            if "--html" in sys.argv else fetch_html())
-    rows = parse_json_blob(html) or parse_html_table(html, today.year)
+    if "--html" in sys.argv:                       # manual fallback: a browser-saved page
+        html = Path(sys.argv[sys.argv.index("--html") + 1]).read_text()
+        rows = parse_json_blob(html) or parse_html_table(html, today.year)
+    else:
+        try:                                       # primary: the machine-readable feed
+            rows = fetch_feed_rows()
+        except Exception as e:  # noqa: BLE001 — any feed failure falls through to the scrape
+            print(f"feed source failed ({type(e).__name__}: {e}) — trying the site scrape")
+            rows = []
+        if not rows:                               # fallback: the website via cloudscraper
+            html = fetch_html()
+            rows = parse_json_blob(html) or parse_html_table(html, today.year)
     if not rows:
         print("SENTINEL FAIL: page parsed to zero events — board unknown, gate must fail closed")
         return 2
