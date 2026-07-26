@@ -1,7 +1,8 @@
 """The live canon decision lane (shape i) — the AUTHORITATIVE trade path.
 
 Pat ruling (this session): the canon-scripts lane is the sole live decision-maker — the lane
-that produced the signed-off `baseline_book.parquet` (400/400, +$56,065.18). NO champion in
+that produced the signed-off baseline. ARMING REFERENCE = the leakage-clean +$52,522.81 / 404
+(baseline_book_clean.parquet); the pre-lookahead-fix figure was +$56,065.18 / 400. NO champion in
 the trade path, NO LLM proposing verdicts. The chain is exactly:
 
     hermes-router (clock lookup) -> SHELL OUT canon_mechanical.py + london_canon.py (frozen,
@@ -19,11 +20,11 @@ P1 = the loop SKELETON. `ScriptVerdictSource` shells out the frozen scripts over
 matrices (the covered feature families); P2 swaps the matrix inputs from batch to a live
 assembly behind the SAME `VerdictSource` interface. Until then the verdict source is a seam.
 
-FLAGGED, not papered over:
-  * The canon scripts emit NO bracket target — the canon exit is MANAGED (V8 etc.), not a fixed
-    target. The spine's OrderIntent needs one, so `target_rr` derives a PROVISIONAL R-multiple
-    target purely so the disarmed spine can evaluate. The fixed-bracket-vs-managed-exit
-    execution model must be resolved before arming.
+EXIT MODEL (Angus RESOLVED, docs/FOR-ANGUS-managed-exit-question.md): the canon has NO fixed
+bracket target — the exit is MANAGED (V8 50% partial + prior-5m trail + break-even + 3-min cut +
+EOD flatten, src/canon/exit_manager.py). The OrderIntent carries entry + STOP only (the stop is
+the invariant that must never fail, B4); target is None. The earlier provisional 2R placeholder
+is removed.
 """
 from __future__ import annotations
 
@@ -36,8 +37,6 @@ import pandas as pd
 from scripts.baseline_dollar_risk import size_book
 from src.canon.spine import OrderIntent
 from src.desk.canon_runtime import drop_verdicts, relay, run_canon_engine
-
-PROVISIONAL_TARGET_RR = 2.0        # §6.5 RR floor — provisional bracket target (see module doc)
 
 
 class VerdictSource(Protocol):
@@ -52,9 +51,8 @@ class ScriptVerdictSource:
     the full shape-i chain — returning the RELAYED verdicts for a session day. The engine is
     run once and cached; `session_verdicts` filters it. `engine_fn` is injectable for tests."""
 
-    def __init__(self, engine_fn=run_canon_engine, target_rr: float = PROVISIONAL_TARGET_RR):
+    def __init__(self, engine_fn=run_canon_engine):
         self._engine = engine_fn
-        self._target_rr = target_rr
         self._book: pd.DataFrame | None = None
 
     @staticmethod
@@ -80,8 +78,6 @@ class ScriptVerdictSource:
                 if any(not p.empty for p in parts) else parts[0]
             if not b.empty:
                 b = b.sort_values("fill").reset_index(drop=True)
-                sign = b["direction"].map({"long": 1.0, "short": -1.0}).fillna(0.0)
-                b["target"] = b["entry"] + sign * self._target_rr * b["risk_pts"]
             self._book = b
         return self._book
 
@@ -114,10 +110,14 @@ def verdict_record(v: dict, roll_ctx: dict | None = None) -> dict:
 
 def verdict_to_intent(v: dict, account: str = "FUNDED") -> OrderIntent:
     """Build the disarmed spine OrderIntent from a relayed verdict. size = the verdict's own
-    micros (the PRODUCTION dollar-risk sizer already sized the canon book — not recomputed)."""
+    micros (the PRODUCTION dollar-risk sizer already sized the canon book — not recomputed).
+    target is None — the canon has no fixed target (managed exit); the entry rests with a
+    protective STOP, and the exit manager runs the partial/trail/cut/EOD."""
+    tgt = v.get("target")
     return OrderIntent(
         side="B" if v.get("direction") == "long" else "S",
         order_type="limit",
-        entry_ref=float(v["entry"]), stop=float(v["stop"]), target=float(v["target"]),
+        entry_ref=float(v["entry"]), stop=float(v["stop"]),
+        target=(float(tgt) if tgt is not None else None),
         size=max(1, int(v.get("micros", 0) or 0)),
         setup_id=f"{v.get('day')}:{v.get('fill')}", account=account)

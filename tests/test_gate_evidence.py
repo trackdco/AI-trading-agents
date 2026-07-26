@@ -40,7 +40,7 @@ class MockBroker:
     def __init__(self, position=0):
         self.submitted, self.flattened, self.cancelled = [], [], []
         self._position = position
-        self.legs_resting = True
+        self.stop_resting = True
 
     def submit_bracket(self, i):
         self.submitted.append(i)
@@ -49,7 +49,7 @@ class MockBroker:
     def order_status(self, ref):
         i = self.submitted[-1]
         return {"side": i.side, "size": i.size, "account": i.account, "entry": i.entry_ref,
-                "stop": i.stop, "target": i.target, "legs_resting": self.legs_resting}
+                "stop": i.stop, "target": i.target, "stop_resting": self.stop_resting}
 
     def position(self, account):
         return self._position
@@ -158,7 +158,7 @@ def test_reconcile_flat_is_noop():
 def test_reconcile_healthy_open_position_ok():
     b = MockBroker(position=1)
     e = _armed(b)
-    b.legs_resting = True
+    b.stop_resting = True
     assert e.reconcile("ACC", now=1.0) is None
     assert b.flattened == []
 
@@ -166,7 +166,7 @@ def test_reconcile_healthy_open_position_ok():
 def test_reconcile_naked_when_legs_not_resting_flattens_and_halts():
     b = MockBroker(position=1)
     e = _armed(b)
-    b.legs_resting = False                                # bracket silently dropped
+    b.stop_resting = False                                # bracket silently dropped
     d = e.reconcile("ACC", now=1.0)
     assert d is not None and d.action == "flatten" and d.rule == "naked_position"
     assert b.flattened == ["ACC"] and b.cancelled == ["ACC"]

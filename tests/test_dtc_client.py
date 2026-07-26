@@ -248,23 +248,22 @@ def test_submit_bracket_drops_non_dtc_stop_target_fields():
         s.stop()
 
 
-@pytest.mark.xfail(strict=True, reason=(
-    "AUDIT (Angus): submit_bracket sends ONE SUBMIT_NEW_SINGLE_ORDER with Stop/Target as non-DTC "
-    "fields (Sierra drops them), so NO protective stop is attached — a NAKED ENTRY. A DTC bracket "
-    "is parent+children via ParentTriggerClientOrderID or SUBMIT_NEW_OCO_ORDER. Un-xfail when the "
-    "order path is fixed to attach a real resting stop (exit-model work)."))
 def test_submit_bracket_attaches_a_resting_protective_stop():
+    """THE INVARIANT (Angus B4): every entry has a resting protective stop attached at the broker.
+    submit_bracket now sends a parent entry + a STOP child linked by ParentTriggerClientOrderID."""
     s = MockDTCServer(order_mode="fill")
     try:
         c = _client(s)
         c.connect()
-        oid = c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, target=103.0, qty=2)
+        oid = c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, qty=2)
         for _ in range(10):
             c.pump(timeout=0.2)
         c.close()
-        # THE INVARIANT (Angus B4): every entry must have a resting protective stop attached.
         assert s.has_protective_stop(oid), (
             "NAKED ENTRY: no resting protective stop attached to the entry order")
+        # the stop child is on the opposite side (a long entry protects with a sell stop)
+        stop = next(o for o in s.children_of(oid) if o["OrderType"] == D.ORDER_TYPE_STOP)
+        assert stop["BuySell"] == 2 and stop["Price1"] == 99.0
     finally:
         s.stop()
 

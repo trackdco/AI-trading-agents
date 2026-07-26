@@ -28,7 +28,12 @@ decisions already made below — they're settled.
 
 ## 2. THE CANON — validated baseline (DO NOT RECOMPUTE)
 
-`output/baseline_book.parquet` = the frozen ground truth, **400 trades, +$56,065.18**,
+> **SUPERSEDED 2026-07-26:** the numbers in this section are the **pre-lookahead-fix** figures.
+> A look-ahead was found in the pre-window `C` check (`docs/FINDING-conf_PM-lookahead-pre-window.md`);
+> the ARMING REFERENCE is now the leakage-clean **+$52,522.81 / 404 trades**
+> (`output/baseline_book_clean.parquet`). The figures below are retained as the historical baseline.
+
+`output/baseline_book.parquet` = the frozen ground truth, **400 trades, +$56,065.18** *(pre-fix)*,
 2025-06-02 → 2026-07-10 (combined NY + LONDON books, every qualifying setup every day).
 
 | Metric | Value |

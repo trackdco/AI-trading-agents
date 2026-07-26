@@ -122,8 +122,8 @@ def test_D3_fails_without_dst():
 
 # --------------------------------------------------------------------------- E. Roll / §E
 def test_E_roll_tagged_and_reset_required():
-    trades = [_trade(trade_date="2026-09-14")]              # a trade in the roll session
-    decisions = [{"type": "roll", "date": "2026-09-14", "from": "NQU26", "to": "NQZ26"}]
+    trades = [_trade(trade_date="2026-09-16")]              # a trade in the roll session
+    decisions = [{"type": "roll", "date": "2026-09-16", "from": "NQU26", "to": "NQZ26"}]
     g = _by_id(gr.eval_E_roll({"trades": trades, "decisions": decisions}))
     assert g["E1"].status == gr.PASS                        # roll was tagged
     assert g["E2"].status == gr.INCONCLUSIVE                # roll-day trade -> §E reset, confirm
@@ -131,7 +131,7 @@ def test_E_roll_tagged_and_reset_required():
 
 
 def test_E_roll_untagged_fails():
-    trades = [_trade(trade_date="2026-09-14")]
+    trades = [_trade(trade_date="2026-09-16")]
     g = _by_id(gr.eval_E_roll({"trades": trades, "decisions": []}))   # roll not journaled
     assert g["E1"].status == gr.FAIL and "MISSING" in g["E1"].detail
 

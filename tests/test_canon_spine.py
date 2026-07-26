@@ -41,7 +41,7 @@ class MockBroker:
             return self._override
         i = self.submitted[-1]
         return {"side": i.side, "size": i.size, "account": i.account, "entry": i.entry_ref,
-                "stop": i.stop, "target": i.target, "legs_resting": True}
+                "stop": i.stop, "target": i.target, "stop_resting": True}
 
     def position(self, account):
         return self._position
@@ -149,7 +149,7 @@ def test_armed_place_reads_back_ok():
 def test_readback_mismatch_flattens_and_halts():
     # broker reports a different size than we sent -> flatten + halt
     bad = {"side": "B", "size": 9, "account": "ACC", "entry": 100.0, "stop": 99.0,
-           "target": 103.0, "legs_resting": True}
+           "target": 103.0, "stop_resting": True}
     b = MockBroker(status_override=bad)
     e = _exe(b)
     e.arm(ARM)
@@ -162,7 +162,7 @@ def test_readback_mismatch_flattens_and_halts():
 
 def test_readback_missing_bracket_legs_halts():
     bad = {"side": "B", "size": 1, "account": "ACC", "entry": 100.0, "stop": 99.0,
-           "target": 103.0, "legs_resting": False}
+           "target": 103.0, "stop_resting": False}
     b = MockBroker(status_override=bad)
     e = _exe(b)
     e.arm(ARM)

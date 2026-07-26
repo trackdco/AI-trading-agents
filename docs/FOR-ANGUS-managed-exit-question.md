@@ -1,8 +1,18 @@
 # FOR ANGUS — the managed-exit vs limit-bracket question (rulebook call)
 
-**STATUS: OPEN — needs Angus's ruling before the executor's exit path is built.** This is a
-strategy/execution rulebook decision, not an engineering one. No recommendation below —
-options with trade-offs only.
+**STATUS: ✅ RESOLVED (Angus, 2026-07-26).** RULING: **implement the canon exit as specified** —
+V8 50% partial + prior-5m trail + break-even + 3-min cut + EOD flatten (this is Option A). **§B2
+is scoped to ENTRIES only** (entries limit-only, always); **exits may be marketable** where the
+canon exits at the market — the B1 ruling ("track stop-exit slippage separately, those genuinely
+slip") confirms it. **§B4 reworded:** the invariant is a **resting protective STOP** attached at
+the broker; there is no fixed target, so stop-attachment is the thing that must never fail. Built:
+`src/canon/exit_manager.py` (decision engine), the order path now sends parent + stop child
+(`dtc_client.submit_bracket`) and the spine read-back verifies the resting stop. Force-test added
+(§C7): engine-death-mid-trade must fail-closed flatten. Document kept as the record of the call.
+
+*(Original question preserved below.)*
+
+---
 
 ## The problem in one paragraph
 

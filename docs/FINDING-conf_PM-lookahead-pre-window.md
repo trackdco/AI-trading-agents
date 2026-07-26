@@ -102,3 +102,22 @@ Until this is ruled, I am not building the live pre-window feature assembly (P2)
 build against a leaky reference would either fail A-section fidelity (if I compute C cleanly) or
 propagate the lookahead (if I reproduce `conf_PM` — impossible live, since the future isn't
 knowable). Gold and London paths are unaffected and could proceed independently if desired.
+
+## Ruling + status (2026-07-26)
+
+**Angus accepted the clean re-derivation.** The swap `conf_PM → pm_sofar_conf` (canon scripts and
+thresholds UNCHANGED) gives **+$52,522.81 / 404 trades** vs the leaky **+$56,065.18 / 400** —
+**−$3,542 (−6.3%)**, all in NY, 120/400 trades changed (`scripts/leakage_clean_compare.py`,
+`output/baseline_book_clean.parquet`). **The edge survives.** The clean book is now the **arming
+reference**; A1/A2 parity targets it (`docs/PROMOTION-GATE.md`). Pre-window P2 build proceeds
+against the clean book.
+
+### OPEN post-eval research question — do NOT re-fit now
+
+This re-derivation swapped one input; it did **not** re-fit the frozen thresholds (`live_thresholds.TH`)
+to the clean signal. **Deliberately.** An un-refitted **+$52.5k** is *stronger* evidence than a
+refitted number would be, precisely because **nothing was optimised against the clean signal** — it
+is out-of-fit on the clean input, so the surviving edge is not a curve-fit artifact. Re-fitting the
+pre-window thresholds to `pm_sofar_conf` is a **post-eval research question**: it might recover some
+of the −$3.5k, but only at the cost of the out-of-fit property that makes this number trustworthy.
+Left open, on purpose, until after the eval.

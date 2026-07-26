@@ -69,7 +69,7 @@ class OrderIntent:
     order_type: str                        # must be "limit"
     entry_ref: float
     stop: float
-    target: float
+    target: float | None                   # no fixed target in the canon (managed exit); may be None
     size: int
     setup_id: str                          # unique per candidate — duplicate guard key
     account: str
@@ -91,7 +91,7 @@ class Broker(Protocol):
     """Minimal broker surface the executor drives. A real DTC client and the test
     MockBroker both implement it. The executor NEVER assumes success — it reads back."""
     def submit_bracket(self, intent: OrderIntent) -> str: ...
-    def order_status(self, ref: str) -> dict: ...        # {entry, stop, target, size, side, account, legs_resting}
+    def order_status(self, ref: str) -> dict: ...        # {entry, stop, size, side, account, stop_resting}
     def position(self, account: str) -> int: ...
     def flatten(self, account: str) -> None: ...
     def cancel_all(self, account: str) -> None: ...
@@ -157,11 +157,11 @@ class SpineExecutor:
             naked = ref is None
             if not naked:
                 st = self.broker.order_status(ref)
-                naked = not st.get("legs_resting", False)
+                naked = not st.get("stop_resting", False)     # protective stop must still rest
             if naked:
                 self._emit({"event": "naked_position", "account": account, "position": pos,
                             "ref": ref})
-                detail = (f"open position {pos} on {account} with no resting bracket "
+                detail = (f"open position {pos} on {account} with no resting protective stop "
                           f"(ref={ref})")
                 return self.flatten_and_halt(account, "naked_position", detail)
             return None
@@ -307,19 +307,24 @@ class SpineExecutor:
     # ---- internals ---------------------------------------------------------
     def _verify_readback(self, intent: OrderIntent, ref: str) -> str:
         """Read the order + position back from the broker and confirm they match intent.
-        Returns '' on match, or a mismatch description (which triggers flatten+halt)."""
+        Returns '' on match, or a mismatch description (which triggers flatten+halt).
+
+        THE INVARIANT (Angus B4): the RESTING PROTECTIVE STOP must exist at the broker. The
+        canon has no fixed target (managed exit), so the target is NOT verified here — but the
+        stop is checked to actually rest, not merely that the submit call returned. A silent
+        Stop-field drop (the naked-entry bug) is exactly what this catches now."""
         st = self.broker.order_status(ref)
         for field_name, want in (("side", intent.side), ("size", intent.size),
                                  ("account", intent.account)):
             if st.get(field_name) != want:
                 return f"{field_name}: broker {st.get(field_name)!r} != intent {want!r}"
-        for field_name, want in (("entry", intent.entry_ref), ("stop", intent.stop),
-                                 ("target", intent.target)):
+        for field_name, want in (("entry", intent.entry_ref), ("stop", intent.stop)):
             got = st.get(field_name)
             if got is None or not math.isclose(float(got), want, rel_tol=1e-9, abs_tol=1e-9):
                 return f"{field_name}: broker {got!r} != intent {want!r}"
-        if not st.get("legs_resting", False):
-            return "bracket legs (stop/target) not resting after submit"
+        # the protective stop must be RESTING at the broker (a child order, read back), else NAKED.
+        if not st.get("stop_resting", False):
+            return "protective stop not resting at broker after submit — NAKED ENTRY"
         pos = self.broker.position(intent.account)
         if abs(pos) > intent.size:
             return f"position {pos} exceeds intended size {intent.size}"
@@ -327,10 +332,14 @@ class SpineExecutor:
 
     @staticmethod
     def _malformed(i: OrderIntent) -> str:
-        for name in ("entry_ref", "stop", "target"):
+        # entry_ref + stop are load-bearing (stop is the invariant); target is optional (the
+        # canon has no fixed target — managed exit), but if present it must be finite.
+        for name in ("entry_ref", "stop"):
             v = getattr(i, name)
             if v is None or (isinstance(v, float) and math.isnan(v)):
                 return f"{name} is NaN/None"
+        if i.target is not None and isinstance(i.target, float) and math.isnan(i.target):
+            return "target is NaN"
         if i.size is None or i.size <= 0:
             return f"size {i.size} not positive"
         if i.side not in ("B", "S"):

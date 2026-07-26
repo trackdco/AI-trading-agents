@@ -110,7 +110,7 @@ def test_poll_events_returns_merged_and_records_lag(tmp_path):
 def test_retarget_depth_and_scid(tmp_path):
     sp1, sp2 = tmp_path / "u.scid", tmp_path / "z.scid"
     _scid(sp1)
-    _scid(sp2, day="2026-09-14")
+    _scid(sp2, day="2026-09-16")
     feed = SierraFileFeed(sp1)
     feed.retarget_scid(sp2)
     assert Path(feed.scid_path) == sp2 and feed._depth is None
@@ -203,11 +203,11 @@ def test_roll_bar_writes_decision(tmp_path):
                       ingestor=CanonIngestor(book=DepthBook()),
                       roll_state=RollState(), alerts=SimpleNamespace(say=lambda s: None))
     live.dispatch([
-        {"kind": "minute", "ts": _ts("12:00", "2026-09-13"), "bar": _bar(_ts("12:00", "2026-09-13")),
+        {"kind": "minute", "ts": _ts("12:00", "2026-09-15"), "bar": _bar(_ts("12:00", "2026-09-15")),
          "tape": _tape()},
-        {"kind": "minute", "ts": _ts("12:00", "2026-09-14"), "bar": _bar(_ts("12:00", "2026-09-14")),
+        {"kind": "minute", "ts": _ts("12:00", "2026-09-16"), "bar": _bar(_ts("12:00", "2026-09-16")),
          "tape": _tape()},
-    ], now=_ts("12:00", "2026-09-14"))
+    ], now=_ts("12:00", "2026-09-16"))
     decs = [json.loads(x) for x in (tmp_path / "decisions.jsonl").read_text().splitlines()]
     roll = next(d for d in decs if d.get("type") == "roll")
     assert roll["to"] == "NQZ26" and roll["from"] == "NQU26"
@@ -216,11 +216,11 @@ def test_roll_bar_writes_decision(tmp_path):
 # --------------------------------------------------------------------------- roll state
 def test_roll_state_tracks_sessions_and_context():
     rs = RollState()
-    assert rs.on_bar(_ts("12:00", "2026-09-13"))["roll"] is False
-    b = rs.on_bar(_ts("12:00", "2026-09-14"))
+    assert rs.on_bar(_ts("12:00", "2026-09-15"))["roll"] is False
+    b = rs.on_bar(_ts("12:00", "2026-09-16"))
     assert b["roll"] is True and b["from"] == "NQU26"
-    assert rs.roll_sessions == {"2026-09-14"}
-    assert rs.context_for_day("2026-09-14") == {"roll": True, "contract": "NQZ26"}
+    assert rs.roll_sessions == {"2026-09-16"}
+    assert rs.context_for_day("2026-09-16") == {"roll": True, "contract": "NQZ26"}
 
 
 # --------------------------------------------------------------------------- serve stop/stall

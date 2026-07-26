@@ -183,16 +183,29 @@ class DTCClient:
 
     # ---- orders ------------------------------------------------------------
     def submit_bracket(self, *, symbol: str, buy: bool, entry: float, stop: float,
-                       target: float, qty: int) -> str:
-        """LIMIT-bracket: entry limit + attached stop + target. Returns the client order id."""
-        oid = f"desk-{self._next_id}"
+                       qty: int, target: float | None = None) -> str:
+        """LIMIT entry + a RESTING PROTECTIVE STOP attached as a real child order.
+
+        FIX (Angus audit): the old version sent one SUBMIT_NEW_SINGLE_ORDER with `Stop`/`Target`
+        as fields that are NOT on s_SubmitNewSingleOrder — Sierra dropped them silently, leaving a
+        NAKED ENTRY. A DTC bracket is parent + child, linked by `ParentTriggerClientOrderID`. The
+        protective stop is the invariant that must never fail (B4); the canon has NO fixed target
+        (managed exit), so `target` is accepted but NOT rested here — the partial/trail/cut/EOD are
+        the exit manager's job. Returns the PARENT (entry) client order id."""
+        entry_oid = f"desk-{self._next_id}"
         self._next_id += 1
-        self._send(SUBMIT_NEW_SINGLE_ORDER, {
+        stop_oid = f"desk-{self._next_id}"
+        self._next_id += 1
+        self._send(SUBMIT_NEW_SINGLE_ORDER, {                        # parent: the limit entry
             "Symbol": symbol, "TradeAccount": self.cfg.trade_account,
-            "ClientOrderID": oid, "OrderType": ORDER_TYPE_LIMIT,
-            "BuySell": 1 if buy else 2, "Price1": entry, "Quantity": qty,
-            "IsAutomated": True, "Stop": stop, "Target": target})   # bracket legs (OCO on the real box)
-        return oid
+            "ClientOrderID": entry_oid, "OrderType": ORDER_TYPE_LIMIT,
+            "BuySell": 1 if buy else 2, "Price1": entry, "Quantity": qty, "IsAutomated": True})
+        self._send(SUBMIT_NEW_SINGLE_ORDER, {                        # child: protective stop (opp side)
+            "Symbol": symbol, "TradeAccount": self.cfg.trade_account,
+            "ClientOrderID": stop_oid, "OrderType": ORDER_TYPE_STOP,
+            "BuySell": 2 if buy else 1, "Price1": stop, "Quantity": qty, "IsAutomated": True,
+            "ParentTriggerClientOrderID": entry_oid})
+        return entry_oid
 
     # ---- heartbeat / liveness ---------------------------------------------
     def send_heartbeat(self) -> None:

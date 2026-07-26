@@ -29,7 +29,11 @@ The question this document answers:
 > **Is the live plumbing provably doing what the backtested system did — and if it stops doing
 > that at 03:00 on a Tuesday, does the bot stop itself?**
 
-The edge is validated: 400/400 exact, +$56,065.18. Only the plumbing is unproven.
+The edge is validated: the leakage-clean canon (`output/baseline_book_clean.parquet`) is
+**+$52,522.81 over 404 trades** — the arming reference. (The original **+$56,065.18 / 400** was
+the *pre-lookahead-fix* figure; it was inflated ~$3.5k by a look-ahead in the pre-window `C`
+check — `docs/FINDING-conf_PM-lookahead-pre-window.md` — and is retained only as that historical
+baseline.) The edge survives the fix; only the plumbing is unproven.
 
 ---
 
@@ -39,13 +43,13 @@ Every one of these is a **one-off check**, not a multi-week observation. There i
 
 | # | Gate | Pass condition |
 |---|---|---|
-| A1 | Feature parity | Live features == backtest to the decimal on the reconciliation day, re-checked daily thereafter |
-| A2 | Verdict fidelity | Every signal matches what the canon scorer produces on the same journaled inputs. Replayable |
+| A1 | Feature parity | Live features == the **leakage-clean backtest** (`baseline_book_clean.parquet`) to the decimal on the reconciliation day, re-checked daily thereafter |
+| A2 | Verdict fidelity | Every signal matches what the canon scorer produces on the same journaled inputs, **diffed against the clean book**. Replayable |
 | A3 | Relay integrity | `canon-relay` output == Python verdict, byte-for-byte. Zero divergences |
 | A4 | No missed trades | Every candidate the canon would take is seen and acted on. Misses journaled with cause |
 | A5 | Both books wired | NY **and** London paths both proven to fire — force a signal through each if needed |
 | A6 | Journal completeness | Zero trades with missing/malformed journal records |
-| **A7** | **Bracket integrity proven on the box** | **Submit one bracket, read back THREE distinct order IDs (entry + stop + target) with live status — see note** |
+| **A7** | **Bracket integrity proven on the box** | **Submit one bracket, read back TWO distinct order IDs (entry + resting protective stop) with live status — the canon has no fixed target (managed exit), see note** |
 | **A8** | **Roll alignment** | **RollWatcher's roll date == the backtest's volume-roll date (`docs/CONTRACT-ROLL-DATES.md`)** |
 
 **Any A-failure is disqualifying, not a deduction.** One byte of divergence in A3 means the relay
@@ -53,12 +57,14 @@ computed something, and the "no LLM in the trade path" guarantee is void.
 
 ### A7 — do this one first
 
-`src/desk/dtc_client.py::submit_bracket()` sends `"Stop"` and `"Target"` as fields on
-`SUBMIT_NEW_SINGLE_ORDER`. **Those are not DTC fields.** DTC brackets are parent + children carrying
-`ParentTriggerClientOrderID`, or `SUBMIT_NEW_OCO_ORDER`. A JSON decoder silently drops unknown keys.
-The mock server reads only `ClientOrderID`, `Quantity`, `Price1` — so **every order test passes
-whether or not the legs exist.** If they don't, we are placing naked entries with real money.
-Nothing else on this list matters until A7 is green.
+The bug is FIXED in code (2026-07-26): `submit_bracket()` used to send `"Stop"`/`"Target"` as
+fields on `SUBMIT_NEW_SINGLE_ORDER` — **not DTC fields**, silently dropped → naked entries. It now
+sends a parent entry + a **STOP child** carrying `ParentTriggerClientOrderID`, and
+`spine._verify_readback` confirms the **protective stop is actually resting at the broker** (not
+just that submit returned). The mock server now models real Sierra (drops unknown keys; asserts
+parent+children). **A7 remains a hard ON-BOX gate:** submit one bracket against the live Sierra
+DTC server and confirm **two distinct broker order IDs** come back (entry + resting stop) with live
+status — the offline mock cannot prove the real Sierra accepts the linkage.
 
 ### A8 — the silent one
 
@@ -72,9 +78,9 @@ calendar spread. **A1 fails and nothing crashes.** Next roll ≈ **2026-09-16**.
 | # | Gate | Pass condition |
 |---|---|---|
 | B1 | Fill vs intent | **Median 0 ticks on entries.** These are limits — you get your price or better. Any entry filled *worse* than the limit is a bug, not market movement. Stop-exit slippage tracked separately |
-| B2 | No market orders | Zero. Ever. Structural, not statistical |
+| B2 | No market orders **on ENTRIES** | Entries are limit-only. Zero, ever, structural. Exits **may** be marketable where the canon exits at the market (3-min cut, EOD flatten, stop-outs — Angus B1: those genuinely slip, tracked separately) |
 | B3 | Rejection rate | Below **2%**, each rejection explained |
-| B4 | Bracket integrity | Every entry has its stop and target attached. **Zero naked positions, any duration** |
+| B4 | Protective stop attached | Every entry has a **resting protective STOP** at the broker — the invariant that must never fail. The canon has **no fixed target** (managed exit), so stop-attachment is the thing verified. **Zero positions without a resting stop, any duration** (spine read-back + timer reconcile) |
 | B5 | Sizing | Micros placed == dollar-risk schedule, every trade, exact |
 | B6 | Feed lag characterised | Sierra file-flush lag **measured, not assumed**, written down as a number (`BOX-HANDOFF.md` Step B.2) |
 | **B7** | **Working-order cancellation** | **A resting limit can be cancelled, and `cancel_if_runs_points` is enforced live — see `FINDING-live-path-cannot-cancel-a-resting-limit.md`** |
@@ -92,6 +98,7 @@ stronger evidence than hoping an event happens inside an arbitrary window.
 | C4 | Kill switch | Drilled live. Both Pat's and **Angus's** `/kill` verified from their own devices |
 | C5 | Spine guards | Every Tier-1/2/3 rule force-tripped on the live setup (`scripts/spine_forcetest.py`) |
 | C6 | Alerting | Every halt and trade reaches Telegram. Zero silent failures |
+| **C7** | **Engine dies mid-trade** | **Kill the engine while a position is OPEN. The managed exit (trail, 3-min cut, EOD flatten) all need the engine alive — confirm it FAIL-CLOSES: flatten the position, do NOT leave it running on the resting stop alone** |
 
 ## D. KILL CRITERIA — the bot stops itself, automatically, no discretion
 
@@ -104,7 +111,10 @@ misbehaves."
 | trigger | why |
 |---|---|
 | Any A-gate failure detected live | the system is no longer the validated system |
-| **Any naked position — entry without both legs, any duration** | unbounded loss |
+| **Any naked position — an open position without a resting protective stop, any duration** | unbounded loss |
+| **Engine dead while a position is open** (managed exit can't run) | the trail/cut/EOD are unmanaged → fail-closed flatten |
+| **Newly discovered look-ahead in a scored column** | the validated edge was measured on different information |
+| **Live-vs-backtest contract mismatch at a roll** (A8) | scoring a different instrument than the backtest |
 | Any order the canon did not authorise | the trade path has a second author |
 | Sizing mismatch vs the dollar-risk schedule | risk is not what we think it is |
 | Entry filled **worse than the limit price** | structurally impossible — means a bug or a market order |

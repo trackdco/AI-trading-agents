@@ -8,7 +8,8 @@ There is NO paper stage. The account is the FUNDED one; the sequence is:
 This runs the AUTHORITATIVE canon lane (shape i, src/live/route_b.RouteBLive): the frozen canon
 scripts (canon_mechanical.py + london_canon.py) shelled out via canon_runtime, sized by the
 dollar-risk sizer, dropped atomically, and relayed byte-for-byte — the lane that produced the
-signed-off baseline_book (400/400, +$56,065.18). No champion in the trade path, no LLM verdicts.
+signed-off baseline (arming reference = leakage-clean +$52,522.81/404, baseline_book_clean.parquet;
+pre-lookahead-fix figure was +$56,065.18/400). No champion in the trade path, no LLM verdicts.
 
 Until the arming token is presented, the spine is DISARMED (`_NoBroker`): it evaluates and
 journals every decision but CANNOT route an order — the shadow run emits zero orders. Each

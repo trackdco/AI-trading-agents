@@ -28,7 +28,23 @@ import pandas as pd
 _MONTH_CODE = {1: "F", 2: "G", 3: "H", 4: "J", 5: "K", 6: "M",
                7: "N", 8: "Q", 9: "U", 10: "V", 11: "X", 12: "Z"}
 _QUARTERLY = (3, 6, 9, 12)          # Mar / Jun / Sep / Dec
-ROLL_DAYS_BEFORE = 4                # "4 calendar days before the 3rd Friday" (box ruling)
+
+# The backtest consumed Databento NQ.v.0 — a VOLUME roll, not a calendar rule. Aligning to it is
+# mandatory: a calendar rule rolls up to 6 sessions EARLY, putting live on the back month while
+# the backtest still scored the front → gate A1 fails silently (docs/CONTRACT-ROLL-DATES.md).
+# OBSERVED volume-roll dates (first day on the new contract), keyed by the OUTGOING contract's
+# (year, month) — these are config constants from that table, not a rule:
+KNOWN_ROLL_DATES: dict[tuple[int, int], date] = {
+    (2025, 6): date(2025, 6, 18),    # NQM25 -> NQU25  (Wed, 2 before expiry)
+    (2025, 9): date(2025, 9, 18),    # NQU25 -> NQZ25  (Thu, 1 before — the one exception)
+    (2025, 12): date(2025, 12, 17),  # NQZ25 -> NQH26  (Wed, 2 before)
+    (2026, 3): date(2026, 3, 18),    # NQH26 -> NQM26  (Wed, 2 before)
+    (2026, 6): date(2026, 6, 17),    # NQM26 -> NQU26  (Wed, 2 before)
+    (2026, 9): date(2026, 9, 16),    # NQU26 -> NQZ26  (Wed, 2 before) — next roll, paper window
+}
+# Forward rule for quarters beyond the table: the observed pattern is the WEDNESDAY 2 calendar
+# days before the 3rd-Friday expiry (4 of 5 rolls). Pin new observed dates into KNOWN as they land.
+VOLUME_ROLL_DAYS_BEFORE = 2
 
 
 def third_friday(year: int, month: int) -> date:
@@ -39,9 +55,13 @@ def third_friday(year: int, month: int) -> date:
 
 
 def roll_date(year: int, month: int) -> date:
-    """The day the front month rolls OUT of the (year, month) quarterly contract:
-    ROLL_DAYS_BEFORE calendar days before that contract's 3rd-Friday expiry."""
-    return third_friday(year, month) - timedelta(days=ROLL_DAYS_BEFORE)
+    """The day the front month rolls OUT of the (year, month) quarterly contract — the Databento
+    VOLUME roll. Uses the observed date from KNOWN_ROLL_DATES when available, else the forward
+    pattern (Wednesday, VOLUME_ROLL_DAYS_BEFORE calendar days before the 3rd-Friday expiry)."""
+    known = KNOWN_ROLL_DATES.get((year, month))
+    if known is not None:
+        return known
+    return third_friday(year, month) - timedelta(days=VOLUME_ROLL_DAYS_BEFORE)
 
 
 def _as_date(d) -> date:

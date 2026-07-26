@@ -34,7 +34,7 @@ def _fixture_engine():
     return ny, lon
 
 
-def test_session_verdicts_size_level_target_and_relay():
+def test_session_verdicts_size_level_and_relay():
     src = ScriptVerdictSource(engine_fn=_fixture_engine)
     vs = src.session_verdicts("2026-03-17")
     assert len(vs) == 3
@@ -42,10 +42,9 @@ def test_session_verdicts_size_level_target_and_relay():
     assert [v["session"] for v in vs] == ["LONDON", "NY", "NY"]
     ny_long = next(v for v in vs if v["fill"].startswith("2026-03-17T13:00"))
     assert ny_long["entry"] == 18000.0 and ny_long["stop"] == 17990.0
-    assert ny_long["target"] == 18020.0            # long: entry + 2R*risk (10) = +20
+    assert ny_long.get("target") is None           # no fixed target — managed exit
     assert ny_long["micros"] == 10                 # conv 1.0, risk 10 -> 200/20
     ny_short = next(v for v in vs if v["fill"].startswith("2026-03-17T14:00"))
-    assert ny_short["target"] == 18030.0           # short: entry - 2R*risk = 18050-20
     assert ny_short["micros"] == 15                # conv 1.5 -> 300/20
 
 
@@ -61,7 +60,8 @@ def test_verdict_to_intent_uses_verdict_micros():
     assert isinstance(intent, OrderIntent)
     assert intent.side == "S" and intent.order_type == "limit"
     assert intent.size == v["micros"] and intent.account == "FUNDED"
-    assert intent.entry_ref == v["entry"] and intent.target == v["target"]
+    assert intent.entry_ref == v["entry"] and intent.stop == v["stop"]
+    assert intent.target is None                    # no fixed target — managed exit
 
 
 def test_verdict_record_carries_roll_ctx():

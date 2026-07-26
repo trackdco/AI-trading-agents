@@ -9,7 +9,8 @@ reconciles them and states plainly what goes live.
 | Figure | Source (file:line) | What it is |
 |---|---|---|
 | **~+$106k / 2yr** | `docs/CANON-MECHANICAL.md:233` ("COMBINED with NY canon: ~+$106k/2yr"), `docs/LIVE-STACK.md:135` ("+$106k book") | Legacy headline under a **larger, pre-dollar-risk sizing** (old static micro counts — see `scripts/baseline_dollar_risk.py:2-7`). ≈1.89× the floor figure. **Not what trades.** |
-| **+$56,065.18 / 2yr** (400 trades) | `output/baseline_book.parquet`; `docs/PARITY-CHECK.md:24,67`; `docs/LAUNCH-RUNBOOK.md:109` | The same trades sized at the **dollar-risk FLOOR schedule only** ($200 per 1.0-conviction, no DD-scaling). Deterministic, path-independent → the **agent-replay parity ground truth**. 2025 +$28,949 / 2026 +$27,117. |
+| **+$52,522.81 / 2yr** (404 trades) — **ARMING REFERENCE** | `output/baseline_book_clean.parquet`; `scripts/leakage_clean_compare.py` | The leakage-clean canon: the pre-window `C` check uses `pm_sofar_conf` (truncated at fill) instead of the look-ahead `conf_PM` (`docs/FINDING-conf_PM-lookahead-pre-window.md`). Floor schedule, deterministic. **A1/A2 parity targets THIS book.** NY +$31,016 / London +$21,506. |
+| ~~+$56,065.18 / 2yr (400 trades)~~ — **PRE-LOOKAHEAD-FIX** | `output/baseline_book.parquet`; `docs/PARITY-CHECK.md:24,67`; `docs/LAUNCH-RUNBOOK.md:109` | Superseded. The same trades but with the look-ahead `conf_PM` in the pre-window `C` check — inflated ~$3.5k. Retained as the historical baseline only; do NOT use as the live reference. 2025 +$28,949 / 2026 +$27,117. |
 | **DD-scaled live P&L** (MC: funded-year median **~$237k with the spine**, ~$302k naked) | `docs/SAFETY-SPINE.md:146-165` | The **actual live sizing**: the dollar-risk schedule that scales the per-trade $-at-risk **up** as available drawdown grows and **down** toward the floor on a bad run. |
 
 ## What the live system will actually trade — plainly
