@@ -43,12 +43,18 @@ WARMUP_DAYS = 45     # per-month segment = [month - 45d, month end].
 TRIGGERS = ["output/triggers_hist2326_ob.csv",      # 2023-01 -> 2026-01-30
             "output/triggers_feb_ob.csv",           # 2026-02
             "output/triggers_marjul_ob.csv"]        # 2026-03 -> 2026-07-15
-WINDOWS = {                                   # late windows FIRST — they are the question
-    "late-a  10:15-10:30": (dtime(10, 15), dtime(10, 30)),   # the part depth still covers
+# ANGUS 2026-07-26: "i only need it for late a and b." The pre and golden reference rows
+# are already measured in scripts/window_expanded.py; re-running them here costs 23 minutes
+# of compute to reproduce numbers we have. Split at 10:30 because that is where the depth
+# data stops (see docs/FINDING-canon-has-no-news-blackout.md and the depth README) — late-a
+# is the only half the order-flow checklist could ever score.
+#
+# NOTE: late-a + late-b is NOT the same experiment as one 10:15-11:00 window. The engine's
+# max_trades_per_day cap applies per run, so the halves can take up to 2 trades EACH. Read
+# them as two separate windows, not as a partition of one.
+WINDOWS = {
+    "late-a  10:15-10:30": (dtime(10, 15), dtime(10, 30)),   # depth available
     "late-b  10:30-11:00": (dtime(10, 30), dtime(11, 0)),    # flow only, no heatmap
-    "LATE    10:15-11:00": (dtime(10, 15), dtime(11, 0)),
-    "golden  09:40-10:15": (dtime(9, 40), dtime(10, 15)),    # reference
-    "pre     08:00-09:30": (dtime(8, 0), dtime(9, 30)),      # reference
 }
 
 
@@ -115,8 +121,8 @@ def main() -> None:
     print(piv.reindex(columns=[w for w in WINDOWS if w in piv.columns])
           .to_string(float_format=lambda x: f"{x:+,.0f}"))
 
-    print("\nexit reasons in the late window:")
-    late = J[J.window == "LATE    10:15-11:00"]
+    print("\nexit reasons, late-b:")
+    late = J[J.window == "late-b  10:30-11:00"]
     if len(late):
         print(late.exit_reason.value_counts().to_string())
     print("\nwrote output/late_window_probe.csv")
