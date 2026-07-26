@@ -84,6 +84,7 @@ and 2 of 33 winners went to ~0.95R (nearly the stop) and still hit 3R.
 ## 6. WHAT THIS IS BUILT ON — read before risking money
 
 - **55 trades · 12.5 months (Jul 2025 – Jul 2026) · one favourable regime.**
+- Reproduced bit-exactly from the repo on 2026-07-26 with the full CVD set (29/55 confirmed).
 - Backtest, net of costs: **+$17,763**, max DD **$917**, **56% WR** (31W/24L),
   avg win +2.98R / avg loss −1.02R, every quarter green.
 - On the ladder above: **+$36,978**, modelled P(blow) **0.16%**, 5th-percentile **+$22,151**.
@@ -111,14 +112,15 @@ not just inside the first $2k). Same 55-trade book, 8,000 Monte-Carlo paths each
 | Sizing | LOCK P(blow) | **NO-LOCK P(blow)** |
 |---|---|---|
 | flat $150 | 0.00% | 0.00% |
-| flat $250 | 0.00% | 0.06 – 1.4% |
-| flat $300 | 0.00 – 0.65% | 2.0 – 3.9% |
-| flat $400 | 0.14 – 2.8% | 1.1 – 20% |
-| **userB ladder** | **0.03 – 0.64%** | **23 – 75%** |
+| flat $250 | 0.00 – 0.07% | 0.05 – 0.40% |
+| flat $300 | 0.05 – 0.24% | 0.44 – 1.05% |
+| flat $400 | 0.59 – 1.04% | **5.6 – 8.6%** |
+| **userB ladder** | **0.03 – 0.15%** | **49.9%** |
 
-Ranges bracket the missing-CVD uncertainty (see §8). On the optimistic end of that bracket
-the ladder **blew the account on the actual historical 55-trade path** — not a simulated
-tail, the real sequence.
+Ranges are shuffle→bootstrap Monte-Carlo (8,000 paths each). Under NO-LOCK the ladder is a
+**coin flip — 49.9% — and it blew the account on the actual historical 55-trade path**
+(+$8,888 instead of +$36,978). That is not a simulated tail; it is what the real sequence did.
+5th-percentile outcome collapses from +$35,868 (lock) to +$5,035 (no-lock).
 
 **Why:** the ladder scales risk *up* with the buffer. Under a lock, that buffer is banked
 safety. Without a lock the floor keeps rising with your peak, so you are taking $700 risk
@@ -138,9 +140,36 @@ python3 scripts/funded_sim.py           # LOCK model + ladders
 python3 scripts/funded_nolock.py        # LOCK vs NO-LOCK
 ```
 
-**Known data gap:** `footprint_q3_2025` / `footprint_q4_2025` are not in the repo, so
-Jul–Dec 2025 trades carry no CVD flag and size at the unconfirmed half-rung — **15 confirms
-here vs 29 in the original run**. Trade *geometry* is unaffected and reproduces exactly
-(55 trades, 31W/24L, 56% WR, +2.98R / −1.02R), because CVD only sets the sizing multiplier.
-Every sizing-dependent figure above is therefore given as a **bracket**: lower = as-is,
-upper = those days all counted as confirmed. Restore the two parquets to collapse it.
+**Verified reproduction (2026-07-26).** With all five CVD footprints present the pipeline
+reproduces the original run **bit-exactly**: 55 trades, 31W/24L, 56% WR, +2.98R/−1.02R,
+**29/55 confirmed**, fixed-contract V1 **+$75,668**, funded base-$300 **+$17,763 / DD $917**,
+ladder **+$36,978 / DD $2,139**. Every figure matches the handoff.
+
+**Remaining data notes:**
+- `nq_1m_master.parquet` (bars) is on the **canon** branch only, not brake — point `LONDON_WT`
+  at a canon worktree (as above) or copy the file. Brake is self-contained for CVD, not bars.
+- **Jan 2026** is the one genuine CVD hole (2 trades); they size at the unconfirmed half-rung.
+
+## 9. SCALE-OUT — tested, FAILS (do not use)
+
+`scripts/london_scaleout.py`. Bank a fraction at +XR, let the rest run to 3R, stop unchanged.
+Nine variants (25/50/75% banked at +1R/+1.5R/+2R). **Every one loses:**
+
+| banked at | 25% | 50% | 75% |
+|---|---|---|---|
+| +1.0R | −12.2R | −24.2R | −36.2R |
+| +1.5R | −8.7R | −17.2R | −25.7R |
+| +2.0R | **−4.9R** | −9.7R | −14.4R |
+
+vs a **+67.95R** baseline. Best case still sheds 4.9R.
+
+**Mechanism — the ratio is fatal:** **31 of 31 winners** touch +1R, so every winner pays the
+tax. Only **7 of 24 losers** touch +1R, so only 7 get rescued. You are trading 31 taxes for
+7 rescues. Win rate *rises* (56% → 69%) while money *falls* — the exact vanity-metric trap the
+tail law predicts.
+
+Conservative and optimistic intrabar readings were **identical in all nine variants**, so the
+verdict does not depend on stop-vs-scale ordering within a bar.
+
+**Scale-out now joins the tested-and-failed list** (tighter stop, breakeven, armed trail, entry
+filters, ROOM-target). Six interventions tested, six losses. The uncapped 3R tail is the edge.
