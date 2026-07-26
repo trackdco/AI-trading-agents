@@ -103,3 +103,33 @@ the monthly profile Angus's objective demands, and it is not tail-driven (top mo
   the reverse) → re-derive the canon gold book with time-conditioned checks → new signed-off
   number → A1/A2 re-point. A canon change, same class as the news blackout.
 - 2026-01 has no trades in any sub-window table (trigger-cache seam month).
+
+---
+
+## ADDENDUM 2026-07-26b — rr_floor deep-dive: the floor is right as a VETO, wrong as a TARGET-PICKER
+
+Angus: *"rr floor should be looked at deeper."* He was right to distrust the ablation's −33R
+headline — it conflated two mechanically different effects, because `rr_floor` is not a veto:
+`walk_menu` picks the FIRST target level clearing the floor, so the floor also sets target
+distance on every trade that trades anyway. `scripts/rr_floor_decomp.py` separates them
+(golden 09:40–10:15, otherwise-canon, 13 months, per-fill diff):
+
+| effect | rr 1.5 vs 2.0 | rr 1.0 vs 2.0 | verdict |
+|---|---|---|---|
+| **A. target geometry** (same fills, nearer first target) | **+37.8R** (2025 +13.2 / 2026 +24.5) | +36.3R | **the leak — robust both years** |
+| **B. admission** (fills that only exist at the lower floor) | **−15.9R** (−8.7 / −7.2) | −18.7R (−8.2 / −10.5) | the veto is CORRECT both years |
+| C. slot reshuffle | −1.5R | +12.9R | noise |
+| **net book** | 377t +36.7R → **397t +60.1R** (win 31→36%, 8/13 green) | 411t +41.4R | **1.5 is the corner** |
+
+Mechanism (asymmetric): of 68 shared fills whose target moved, only 40% improved — but the
+improvements are round-trip saves (a winner that reached +1.5R but not +2R books the win instead
+of stopping out: ~+2.5R per save) while the costs are small give-ups (−0.5R of extra reach).
+Geometry gain PLATEAUS below 1.5 (+37.8 → +36.3) while admission losses grow — so 1.5 is a
+mechanical corner, not a fitted sweep point.
+
+**Interpretation:** the golden book's fixed-target exits overreach. This is the same story as
+Angus's 3R+ winners (trailed, not fixed-target) vs the engine's 2.05R median winner — the exit
+model, not entry admission, is where golden bleeds. NOTE: the live canon path is now MANAGED
+exits (exit_manager, no fixed target), so this finding primarily indicts the BACKTEST substrate
+that generated the canon universe and its dollars. Changing rr_floor there = full re-validation
+(new signed-off book). Workflow adversarial verification still in flight as the independent check.
