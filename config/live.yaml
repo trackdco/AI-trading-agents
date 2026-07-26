@@ -12,6 +12,16 @@
 account:
   starting_equity: 25000.0        # paper account seed (matches the drill + backtest)
 
+archive:                          # nightly Sierra .scid/.depth offload (scripts/archive_sierra.py)
+  data_dir: C:/SierraChart/Data   # Sierra Data dir (front-month .scid + MarketDepthData/*.depth)
+  bucket:   nq-sierra-book        # Backblaze B2 bucket (creds from B2_KEY_ID / B2_APP_KEY env)
+  manifest: output/live/archive_manifest.json   # {key: size} — makes the nightly run idempotent
+  prefix:   sierra                # B2 key prefix (repointed from the old "mbo" prefix)
+  root:     NQ                    # symbol root
+  suffix:   "-CME"               # exchange/service tag Sierra appends to the file name
+  # Register the nightly Windows task once on the VPS:
+  #   python scripts/archive_sierra.py --register   (prints the schtasks command; default 17:30 CT)
+
 paths:
   ledger:      output/live/ledger.csv      # paper broker ledger — the restart-safe state
   journal_dir: output/live                 # journal.jsonl (trades) + decisions.jsonl (why)

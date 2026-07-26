@@ -4,13 +4,19 @@ from __future__ import annotations
 
 import pandas as pd
 
+import importlib.util
+from pathlib import Path
+
 from src.canon.infra import (
     B2Offload,
     Heartbeat,
     MBOCapture,
+    SierraArchiver,
     SpineJournalSink,
     StartupParityGate,
 )
+
+NY = "America/New_York"
 
 
 def test_startup_gate_read_only_until_green():
@@ -68,5 +74,69 @@ def test_b2_offload_uses_injected_uploader(tmp_path):
     uploaded = []
     off = B2Offload("nq-mbo", lambda bucket, key, data: uploaded.append((bucket, key, len(data))))
     keys = off.offload(tmp_path)
-    assert keys == ["mbo/a.jsonl", "mbo/b.jsonl"]
+    assert keys == ["sierra/a.jsonl", "sierra/b.jsonl"]     # prefix repointed mbo -> sierra
     assert [u[0] for u in uploaded] == ["nq-mbo", "nq-mbo"] and all(u[2] > 0 for u in uploaded)
+
+
+def test_b2_upload_path_single_file(tmp_path):
+    f = tmp_path / "x.scid"
+    f.write_bytes(b"abc")
+    up = []
+    off = B2Offload("bkt", lambda b, k, d: up.append((b, k, len(d))), prefix="sierra")
+    key = off.upload_path(f, "sierra/scid/x.scid")
+    assert key == "sierra/scid/x.scid" and up == [("bkt", "sierra/scid/x.scid", 3)]
+
+
+# --------------------------------------------------------------------------- Sierra archiver
+def _sierra_dir(tmp_path):
+    data = tmp_path / "Data"
+    (data / "MarketDepthData").mkdir(parents=True)
+    (data / "NQU26-CME.scid").write_bytes(b"scid-day1")
+    (data / "MarketDepthData" / "NQU26-CME.2026-09-10.depth").write_bytes(b"depth10")
+    return data
+
+
+def test_sierra_archiver_uploads_depth_and_scid_idempotently(tmp_path):
+    data = _sierra_dir(tmp_path)
+    uploaded = []
+    off = B2Offload("nq-sierra-book", lambda b, k, d: uploaded.append(k), prefix="sierra")
+    arch = SierraArchiver(data, off, tmp_path / "manifest.json")
+    now = pd.Timestamp("2026-09-10 12:00", tz=NY)
+    keys = arch.archive(now=now)
+    assert "sierra/depth/NQU26-CME.2026-09-10.depth" in keys       # per-day depth (immutable)
+    assert "sierra/scid/2026-09-10/NQU26-CME.scid" in keys         # nightly date-stamped .scid
+    # idempotent: a second run sends nothing
+    assert arch.archive(now=now) == []
+    # .scid grows -> re-archived; the depth is unchanged so it is NOT re-sent
+    (data / "NQU26-CME.scid").write_bytes(b"scid-day1-grown")
+    keys2 = arch.archive(now=now)
+    assert keys2 == ["sierra/scid/2026-09-10/NQU26-CME.scid"]
+
+
+def test_sierra_archiver_pending_is_read_only(tmp_path):
+    data = _sierra_dir(tmp_path)
+    off = B2Offload("b", lambda *a: None)
+    arch = SierraArchiver(data, off, tmp_path / "m.json")
+    p = arch.pending(now=pd.Timestamp("2026-09-10 12:00", tz=NY))
+    assert len(p) == 2 and not (tmp_path / "m.json").exists()      # no upload, no manifest write
+
+
+def test_sierra_archiver_catches_up_multiple_depth_days(tmp_path):
+    data = _sierra_dir(tmp_path)
+    # a second (older, un-archived) depth day still present in Sierra's ~30-day window
+    (data / "MarketDepthData" / "NQU26-CME.2026-09-09.depth").write_bytes(b"depth09")
+    off = B2Offload("b", lambda *a: None, prefix="sierra")
+    arch = SierraArchiver(data, off, tmp_path / "m.json")
+    keys = arch.archive(now=pd.Timestamp("2026-09-10 12:00", tz=NY))
+    assert "sierra/depth/NQU26-CME.2026-09-09.depth" in keys       # caught up before ageout
+    assert "sierra/depth/NQU26-CME.2026-09-10.depth" in keys
+
+
+def test_archive_sierra_register_command():
+    spec = importlib.util.spec_from_file_location(
+        "archive_sierra", Path(__file__).resolve().parents[1] / "scripts" / "archive_sierra.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    cmd = mod.register_command("config/live.yaml", time_ct="17:30", task="SierraArchive")
+    assert cmd.startswith("schtasks /Create /SC DAILY") and "SierraArchive" in cmd
+    assert "/ST 17:30" in cmd and "archive_sierra.py" in cmd

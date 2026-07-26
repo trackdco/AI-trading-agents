@@ -18,7 +18,7 @@ Order matters: prove the depth feed exists before spending on the rest.
 3. **ChartVPS — Alpha Mark-2** (Windows, Ryzen 9 9950X, **3 cores / 8GB DDR5 / 256GB Gen4 NVMe**). The 8GB removes the RAM tightness that a 4GB box (CNS Value/Standard, ChartVPS Mark-1) hits under Sierra + Python + MBO. Confirm **Chicago/US-central location** + Sierra/Rithmic support at signup.  **$80/mo ($880/yr = ~$73/mo).**
 4. **Sierra Chart** — the **trading package** (must include DTC Server + order routing + full DOM).  ~$36–56/mo.
 5. **Sierra Denali CME data with MBO** — **OPTIONAL / research only** (see below). **VERIFY** it's true order-by-order MBO, not just DOM.  ~$40/mo.
-6. **Backblaze B2** (or Wasabi) bucket — nightly raw-MBO offload (only if #5).  ~$5–10/mo.
+6. **Backblaze B2** (or Wasabi) bucket — nightly **.depth + .scid** offload (`scripts/archive_sierra.py`, repointed from the old raw-MBO offload). **REQUIRED before paper starts, not optional:** the feed is MBP-10 (no raw MBO to capture) and Sierra retains historical **.depth only ~30 days** — once a day's file ages out it **cannot be re-downloaded**, so during paper this is the ONLY durable copy of the live book. Register the nightly Windows task once: `python scripts/archive_sierra.py --register`.  ~$5–10/mo.
 
 All-in ≈ **$95–125/mo** on the included feed, or **$135–170/mo** with the MBO research add-on, + the funded account. (Runs on the Mac? No — all this lives on the VPS; the Mac is just the remote screen.)
 
