@@ -13,7 +13,18 @@ cannot know the order from OHLC. The book builder already checks stop before tar
 mirror that and report BOTH readings:
   conservative = stop assumed first (scale did NOT fill)   <- headline
   optimistic   = scale assumed first (scale filled)
-The truth is between; if the two agree on the sign of the verdict, the verdict is robust.
+The truth is between. NOTE (adversarial audit, 2026-07-26): cons==opt is NOT strong evidence
+on its own -- because `if hs: break` ends the loop, cons and opt can only diverge for a
+stop-exit whose stop bar is the FIRST bar to reach the scale level. Target and time exits are
+structurally immune. On this book the genuine-ambiguity count is 0 at every scale_R tested
+(verified by an independent from-scratch MFE walk), so the agreement is real -- but do not
+read cons==opt as a general robustness proof.
+
+PATH DEPENDENCY (known simplification): the day-stop ("first loss ends the day") is derived
+from BASELINE net inside build(), then scaleout_R is applied post-hoc. Scale-out flips some
+baseline losers to ~0R, which would not have tripped the day-stop, so a live scale-out book
+would take some trades this test skips. Audited bound: <= +0.87R in scale-out's favour, and
+exactly 0.00R at the best cell -- far short of the 4.90R deficit.
 
     LONDON_SCRATCH=<dir> LONDON_WT=<worktree> python3 scripts/london_scaleout.py
 """

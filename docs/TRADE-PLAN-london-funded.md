@@ -168,8 +168,22 @@ tax. Only **7 of 24 losers** touch +1R, so only 7 get rescued. You are trading 3
 7 rescues. Win rate *rises* (56% → 69%) while money *falls* — the exact vanity-metric trap the
 tail law predicts.
 
-Conservative and optimistic intrabar readings were **identical in all nine variants**, so the
-verdict does not depend on stop-vs-scale ordering within a bar.
+**Why it is structural, not a close call.** At the *best* cell (bank 25% at +2R) the deficit
+decomposes exactly: 31 winners each taxed 0.25R = **−7.75R**, against 4 rescued losers each
+gaining 0.75R = **+3.00R**, less ~0.15R commission → **−4.90R**. To reach breakeven you would
+need roughly **11 of 24 losers** to touch +2R instead of 4 — and the nearest additional
+candidate misses by **67 ticks**. This is not a rounding error away from working.
+
+**Independently audited** (three adversarial lenses, 2026-07-26): trade set token-identical to
+the book builder; per-trade touch flags re-derived by a from-scratch walk sharing no code
+(identical counts, zero conservative/optimistic divergences); every cost assumption stacked in
+scale-out's favour — including a physically impossible one — moves the best cell only
+−4.90R → −4.60R. All nine still lose.
+
+**Two disclosed simplifications** (neither reverses it): the day-stop is frozen from the
+baseline book rather than re-derived on scaled P&L (bound: ≤ +0.87R, and 0.00R at the best
+cell); and the 16:30 / next-day fallback branches are untested here because this book has
+**zero time exits** — the exit mix is 37 stop / 33 target.
 
 **Scale-out now joins the tested-and-failed list** (tighter stop, breakeven, armed trail, entry
 filters, ROOM-target). Six interventions tested, six losses. The uncapped 3R tail is the edge.
