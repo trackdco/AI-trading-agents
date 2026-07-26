@@ -43,6 +43,23 @@ Updated 2026-07-26 (Sunday), second pass — now merged with Angus's on-box list
   3rd-Friday expiry — the Databento volume-roll pattern; a test pins the next roll to
   **2026-09-16** matching `docs/CONTRACT-ROLL-DATES.md`.
 
+## DONE ✅ (third pass, Sunday daytime — GO-NOGO Block 1 + connections COMPLETE)
+
+- **Telegram wired, both operators**: bot created, alerts to the shared group
+  (`-5586663580`), kill authority = Pat (6920156996) + Angus (1814673340), `--test`
+  delivered to both. TLS root gap on the fresh VPS fixed the clean way (certifi +
+  SSL_CERT_FILE; verification stays ON). ⚠ Token was shown in a screenshot — rotate via
+  BotFather when convenient.
+- **News sentinel AUTOMATED (P12/A1-backup retired)**: on-box test run fetched 25 events
+  ("premarket clear"), wrote the snapshot; scheduled task `NQDesk-NewsSentinel` daily at
+  01:30 US Central (02:30 ET, pre-London). Fail-closed consumer wiring was already in.
+- **P3 CERTIFIED ON-BOX, both halves**: `canon_news_clean` printed **+$55,989.81 / 383**
+  to the cent, and the A1/A2 chain (`agent_replay --news` → `parity_harness --ref
+  output/baseline_book_news.parquet`) returned **383/383 exact matches, PASS** on the VPS.
+  (The chain itself was repaired first — it had still targeted the old baseline.)
+- Sentinel launcher .bat committed; certifi/cloudscraper/beautifulsoup4 pinned in
+  requirements (all three were on-box discoveries).
+
 ## NEXT — TONIGHT (Sunday after 6:00 PM ET, market reopen; ~20 min total)
 
 0. `git pull` on the VPS first — today's fixes + the dead-zone adoption.
