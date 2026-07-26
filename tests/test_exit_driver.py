@@ -263,3 +263,49 @@ def test_three_min_cut_fires_only_when_both_frozen_conditions_hold():
     assert three_min_cut(None, CUT_FW3_MAX) is False
     assert three_min_cut(CUT_R3_MAX, None) is False
     assert three_min_cut(None, None) is False
+
+
+def test_live_executor_replays_a_real_trade_through_a_recording_broker(sim):
+    """End-to-end item 3: the REAL driver on REAL bars, executed through the broker
+    surface bar-by-bar. The executed record must contain every driven action in order,
+    and the broker must have been called once per action (with the stop-fired
+    verification path exercised by the real 'stop'/'partial+stop' exits)."""
+    from src.canon.exit_live import LiveExitExecutor
+
+    class _RecBroker:
+        def __init__(self):
+            self.calls = []
+
+        def modify_stop(self, ref, price):
+            self.calls.append(("modify_stop", price))
+
+        def close_partial(self, account, qty, *, price=None):
+            self.calls.append(("close_partial", qty, price))
+            return "x"
+
+        def cancel_order(self, ref):
+            self.calls.append(("cancel_order",))
+
+        def flatten(self, account):
+            self.calls.append(("flatten",))
+
+        def position(self, account):
+            return 0                       # stop exits read back FLAT (the stop fired)
+
+    bars, window, cfg, trades, _e, groups = sim
+    idx = max(range(len(groups)), key=lambda i: len(groups[i]))   # richest real trade
+    trade, group = trades[idx], groups[idx]
+    trigger = next(t for t in window if t.ts == trade.trigger_ts)
+    broker = _RecBroker()
+    exe = LiveExitExecutor(broker=broker, ref="entry-1", account="FUNDED",
+                           trigger=trigger, cfg=cfg, canon_entry=trade.entry,
+                           canon_stop=trade.stop_initial, size=4, armed=True)
+    # step through the real action timestamps as if bars closed at each
+    for ts in sorted({a["ts"] for a in group if a["kind"] != "fill"}):
+        exe.on_bar(bars, ts)
+    assert exe.done and not exe.halted
+    driven = [a for a in group if a["kind"] != "fill"]
+    assert [a["kind"] for a in exe.executed] == [a["kind"] for a in driven]
+    n_moves = sum(1 for a in driven if a["kind"] == "stop_move")
+    assert sum(1 for c in broker.calls if c[0] == "modify_stop") == n_moves
+    assert all(a["executed"] for a in exe.executed)
