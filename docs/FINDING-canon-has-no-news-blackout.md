@@ -226,3 +226,100 @@ But the counter-datapoint is worth recording, because it argues against over-rea
 damage — the tier-1 prints do (CPI, PPI, NFP, PCE, retail sales). That is an argument for the
 **named list** (question 2 in §5) rather than blacking out every red folder, and against paying
 to close the claims gap first.
+
+---
+
+## 7. FOMC DAYS — Angus's instinct, measured (n=10, and that is the headline)
+
+Angus, 2026-07-26: *"i dont usually trade at all on fomc days because price is comically bad."*
+
+The book stops at **10:12 ET** and the decision prints at **14:00**, so every trade on these days
+happens 4+ hours *before* the announcement — this is the pre-announcement drift, not the reaction.
+
+| | days | total | mean/day | **median/day** | green |
+|---|---|---|---|---|---|
+| FOMC decision days | 10 | **+$4,897** | **+$490** | **−$99** | **4/10 (40%)** |
+| every other day | 214 | +$47,625 | +$223 | +$70 | 118/214 (55%) |
+
+**The mean and the median disagree, and the median is the honest one.** Every FOMC decision day:
+
+```
+2025-06-18   -$192      2026-03-17  +$4,318   <- carries the entire result
+2025-07-30   +$381      2026-03-18    -$232
+2025-09-17   -$382      2026-04-28    +$151
+2025-10-29   -$114      2026-06-16  +$1,482
+2025-12-10   -$430      2026-06-17     -$84
+```
+
+- drop the single best day: 9 days, **+$580**, median −$114, 3/9 green
+- drop the best two: 8 days, **−$902**, 2/8 green
+
+So the +$4,897 is **one session**. Six of ten days are red and the median day loses money, against
+a +$70 median elsewhere. That is consistent with what Angus describes — chop, thin, everyone
+waiting — punctuated by the occasional session where something actually breaks.
+
+**But it is not significant and must not be traded as a finding.** Bootstrapping 10-day samples
+from the other 214 days: **7.1%** beat the FOMC mean and **10.3%** have a median at least as low.
+At n=10 neither tail clears anything. A filter built on this is the −2R mistake again — an
+in-sample number that flipped sign the moment the substrate changed.
+
+*Curiosity, explicitly not a claim:* both two-day meetings split the same way — day 1 the big
+winner (+$4,318, +$1,482), day 2 negative (−$232, −$84). n=2 pairs. Worth watching live, worth
+nothing today.
+
+**Recommendation: do not code an FOMC filter.** If Angus wants to stand down on decision days as
+a doctrinal choice — same class as "no PM session" — that is his call and entirely reasonable;
+the in-sample cost is ~$4,897, which is really one lucky day. But it should be recorded as a
+preference, not justified as an edge.
+
+## 8. WHY A STATIC CALENDAR CANNOT WORK — the daily-refresh requirement
+
+Angus, 2026-07-26: *"why we cannot have a static news forecast. something needs to check whats on
+the board THAT DAY, but only take note of it, not let it actually act upon. if i were to upload
+the forecasted 6 months, the actual days would be different because events shift, like cpi has
+multiple times this year, and also things pop up, such as trump speaking."*
+
+Correct, and it changes the design. Two distinct failure modes a static dump cannot cover:
+
+1. **Scheduled events move.** A release date/time set six months out is a forecast, not a fact.
+2. **Unscheduled events appear.** Pressers, emergency statements, Fed speakers added days ahead.
+   These have no forward-dated row to load at all.
+
+### The architecture that follows
+
+**Refresh daily, freeze before the session, journal what was frozen.**
+
+```
+  pre-session job  ->  fetch today's board  ->  output/news/YYYY-MM-DD.csv  (immutable)
+                                                        |
+                                                        v
+                              NewsGate.load(snapshot)  ->  deterministic lookup at trade time
+```
+
+The split Angus described — *"only take note of it, not let it actually act upon"* — is exactly
+the right boundary, and it is also what makes the thing reproducible:
+
+- the **fetcher** observes and records. It never decides. It may be an agent.
+- the **gate** acts, on a frozen file, by table lookup. Never an agent.
+
+**The snapshot must be frozen before the session opens and journaled with the trades.** If the
+calendar can change mid-session, the same day replays differently and **A1/A2 parity is
+unreproducible** — you could never prove after the fact which board the bot was looking at. Dated
+immutable snapshots make a live day replayable to the byte, which is the whole point of A2.
+
+### Open operational question — where does the fetch run?
+
+`scripts/scrape_ff_calendar.py` cannot run in this container: Forex Factory's Cloudflare blocks
+datacenter IPs. **The VPS running Sierra is also a datacenter IP**, so it will very likely be
+blocked too — this needs testing on the box before anyone designs around it. If it is blocked,
+the options are:
+
+1. fetch on Angus's or Brake's machine, push the dated CSV to the repo, VPS pulls it — reliable
+   but needs a human every trading day, which is a daily single point of failure;
+2. an economic-calendar API that permits datacenter access (Trading Economics, Finnhub, FMP) —
+   costs money, needs a name-mapping layer to our `event` strings so the promotion rule still works;
+3. a scheduled job on a residential-IP box that pushes to the repo.
+
+**Whatever the source, the fail-closed rule stands:** no fresh snapshot for today -> the desk
+stands down. `NewsGate.is_stale()` exists for exactly this. A calendar that has run out cannot
+clear a day, and "no news found" must never be inferred from "no data fetched."
