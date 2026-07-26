@@ -62,6 +62,25 @@ def _http_transport(method: str, params: dict, token: str, timeout: float = 10.0
         return json.loads(r.read().decode())
 
 
+# A 24/5 autonomous desk must have at least this many humans able to hit the /kill switch.
+# One reachable operator (asleep, no signal, dead phone) is a single point of failure.
+MIN_KILL_OPERATORS = 2
+
+
+def kill_switch_redundancy_warning(cfg: "TelegramConfig") -> str | None:
+    """Return a warning string when fewer than MIN_KILL_OPERATORS operators can reach the
+    Telegram /kill switch, else None. Advisory: callers WARN and broadcast, they never block
+    startup (Angus ruling — a single reachable human is a design fault, not a launch gate)."""
+    n = len(cfg.allowed_user_ids)
+    if n >= MIN_KILL_OPERATORS:
+        return None
+    return (f"⚠️ KILL-SWITCH SINGLE POINT OF FAILURE: {n} authorized Telegram operator"
+            f"{'' if n == 1 else 's'} configured (need ≥{MIN_KILL_OPERATORS}). A 24/5 "
+            f"autonomous desk with one reachable human cannot be halted if that person is "
+            f"unreachable. Add more ids to TELEGRAM_ALLOWED_USER_IDS in .env "
+            f"(find them with `python -m src.live.telegram --whoami`).")
+
+
 @dataclass(frozen=True)
 class TelegramConfig:
     token: str

@@ -6,10 +6,12 @@ import pytest
 from src.live.paper_broker import PaperBroker
 from src.live.risk import RiskGuard, RiskLimits
 from src.live.telegram import (
+    MIN_KILL_OPERATORS,
     CommandListener,
     TelegramAlerts,
     TelegramConfig,
     fmt_trade,
+    kill_switch_redundancy_warning,
     whoami,
 )
 from src.live.vault import TradeEvent
@@ -17,6 +19,14 @@ from src.live.vault import TradeEvent
 
 def _cfg(allowed=(111,)):
     return TelegramConfig(token="tok", chat_id="-500", allowed_user_ids=allowed)
+
+
+def test_kill_switch_redundancy_warns_below_two_operators():
+    assert kill_switch_redundancy_warning(_cfg(allowed=())) is not None       # zero operators
+    one = kill_switch_redundancy_warning(_cfg(allowed=(111,)))
+    assert one is not None and "SINGLE POINT OF FAILURE" in one               # one operator
+    assert kill_switch_redundancy_warning(_cfg(allowed=(111, 222))) is None   # two -> ok
+    assert MIN_KILL_OPERATORS == 2
 
 
 def _ev(dollars=250.0):
