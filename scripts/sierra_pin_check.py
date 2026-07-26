@@ -127,9 +127,11 @@ def check_depth(path: Path) -> bool:
                      "(a blank DOM; expected pre-funding, but NOT acceptable for the gate)")
         else:
             cause = (f"the ladder tops out at {min(max_bid, max_ask)} per side. Likely cause: "
-                     f"the DENALI CME depth subscription is delivering only top-{min(max_bid, max_ask)} "
-                     f"depth, or 'Number of Depth Levels to Subscribe' on the NQ?#.CME symbol "
-                     f"pattern is below {REQUIRED_DEPTH_LEVELS}")
+                     f"'Number of Depth Levels to Subscribe' on the NQ?#.CME symbol pattern is "
+                     f"below {REQUIRED_DEPTH_LEVELS}, or the Lucid Market Depth add-on is "
+                     f"delivering only top-{min(max_bid, max_ask)} depth on the Rithmic feed "
+                     f"(NOT Denali — Denali was deactivated 2026-07-26; depth comes from the "
+                     f"Lucid add-on, see docs/FOR-ANGUS-golive-questions.md Q2)")
         raise OrderFlowFail(
             f"ANGUS CHECK #2 FAILED — .depth yields fewer than {REQUIRED_DEPTH_LEVELS} ladder "
             f"levels per side ({max_bid} bid / {max_ask} ask).\n"
