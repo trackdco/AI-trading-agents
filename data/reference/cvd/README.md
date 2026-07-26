@@ -4,7 +4,13 @@ Per-minute, per-price, per-aggressor-side footprint condensed from raw Databento
 `GLBX.MDP3` `trades` ticks (aggressor-tagged tape). This is the source the engine derives
 CVD (cumulative volume delta), footprints, delta, and absorption grading from.
 
-## Files — full champion span (2026-02-01 → 2026-07-19, contiguous)
+## Files — FULL CONTIGUOUS TAPE 2025-06-01 → 2026-07-19 (six files, zero dup minutes)
+- `footprint_q3_2025.parquet` / `footprint_q4_2025.parquet` — 2025-06 → 2026-01-01.
+- `footprint_jan2026.parquet` — **2026-01-02 → 2026-01-30** (Angus pull 2026-07-26; 0.11%
+  spread volume band-cleaned; trimmed to the exact q4/feb boundaries so concat never
+  double-counts a minute). Closes the gap that made selection-gate `cvd` NaN for Jan.
+
+## Original champion-span files (2026-02-01 → 2026-07-19)
 - `footprint_feb_mar2026.parquet` — 2026-02-01 → 2026-03-31, **13.4 MB** (51 days).
 - `footprint_apr2026.parquet` — 2026-04-01 → 2026-04-30, **5.1 MB** (~7.7 M ticks).
 - `footprint_may_jul2026.parquet` — 2026-05-01 → 2026-07-19, **19.2 MB** (68 days).

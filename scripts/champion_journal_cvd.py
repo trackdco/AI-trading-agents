@@ -30,8 +30,9 @@ DATA = Path("data/reference/nq_1m_feb_jul2026.parquet")
 # Every consumer of load_cvd_delta() (selection-gate cvd, book_oracle, premarket cap) was
 # silently 2026-only: 2025 trades got NaN cvd, and selection.py DROPS NaN -> the gate
 # deleted every pre-2026 trade for missing data, not signal (leak-hunt finding, +28.5R).
-# KNOWN REMAINING GAP: 2026-01 (no footprint file covers Jan 2026 - needs a pull).
-CVD = ["footprint_q3_2025", "footprint_q4_2025",
+# 2026-01 gap CLOSED 2026-07-26: footprint_jan2026.parquet (Angus pull, band-cleaned,
+# trimmed to the exact q4_2025/feb_mar2026 boundary to prevent double-counted minutes).
+CVD = ["footprint_q3_2025", "footprint_q4_2025", "footprint_jan2026",
        "footprint_feb_mar2026", "footprint_apr2026", "footprint_may_jul2026"]
 KMIN = 3   # conviction window: entry minute + 2 prior
 
