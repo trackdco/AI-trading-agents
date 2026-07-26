@@ -357,6 +357,48 @@ floor is too large against the room that remains.
 **Effect on the canon: zero.** The ramp only engages below $1,500 available DD, and
 `baseline_book.parquet` has no equity path at all. +$56,065.18 either way.
 
+#### Fine sweep of the start point, and how often the thing even engages
+
+| ramp start | bust | mean cash | median | p10 | years lost to stand-down |
+|---|---|---|---|---|---|
+| **$1,500** | 0.00% | $47,052 | $48,000 | $42,000 | **0.0%** |
+| $1,250 | 0.00% | $47,082 | $48,000 | $42,000 | 0.1% |
+| $1,000 | 0.00% | $47,074 | $48,000 | $42,000 | 0.2% |
+| $900 | 0.00% | $47,040 | $48,000 | $42,000 | 0.3% |
+| $800 | 0.00% | $46,944 | $48,000 | $42,000 | 0.5% |
+| *cliff $250 (ships)* | *0.17%* | *$45,974* | *$48,000* | *$42,000* | *2.7%* |
+
+Mean cash across the whole start range spans **$142** — flat. The only thing that moves
+monotonically is stand-down, and it moves the wrong way as you start later: **0.0% -> 0.5%.**
+Starting later does not make the rule rarer, it makes it *steeper*. From $1,500 the taper is
+spread over $1,400 of room ($200 -> $186 at the top, barely a change); from $800, the same
+descent is crammed into $700, so once inside it, size collapses fast enough that days round down
+to zero micros and strand the year. **$1,500 gets the same money and never strands anyone.**
+
+**How often we are actually down there** (measured on the shipped cliff, so it describes today's
+behaviour, not the ramp's):
+
+| available DD below | share of all trading days | share of years touching it at least once |
+|---|---|---|
+| $1,500 | 3.39% | **48.2%** |
+| $1,000 | 2.73% | 15.7% |
+| $600 | 2.58% | 6.1% |
+| $250 | 2.54% | **2.7%** |
+
+Read the right-hand column; the day-shares are distorted by the freeze (a stranded path sits
+below $250 for hundreds of days, which is why all four day-figures collapse toward the same
+number, and why the $250 row is exactly the 2.7% frozen-year rate from the decomposition above).
+
+**Nearly half of all funded years dip below $1,500 of room at least once** — this is not a rare
+backstop, it is a regularly-visited region. But only **6.1%** get below $600 and **2.7%** below
+$250. So the shallow part of the ramp is common and nearly weightless, and the steep part is
+rare. That is exactly the shape you want, and it is why the rule costs nothing.
+
+For context on the exposure: the canon's max drawdown is **$1,404** at floor sizing. From a cold
+start you open with $2,000 of room, so that run-down alone lands you at **$596**. Once a couple
+of grand is banked and the line locks, the same drawdown leaves you well above $1,500 — which is
+why the exposure, like the bust risk, is concentrated in the first few weeks.
+
 **Still Angus's call — this is a SIZING change, not a spine constant.** It is also safely
 deferrable: the shipped $250 cliff already reaches 0.17% bust, so nothing is blocked on it.
 
