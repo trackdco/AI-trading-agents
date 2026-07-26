@@ -49,22 +49,29 @@ def base_cliff(ad):
     return BASE0 + INC * max(0, int((ad - RAMP_TOP) // 1000)) if ad > RAMP_TOP else BASE0
 
 
-def base_ramp(ad, hard):
-    """Same above $3k; below it, scale the base linearly to zero at the hard halt."""
+def base_ramp(ad, hard, ramp_from=RAMP_TOP):
+    """Unchanged above $3k. Below `ramp_from`, scale the base linearly to zero at `hard`.
+
+    `ramp_from` matters more than it looks: a funded account STARTS at $2,000 available DD,
+    inside the ramp if ramp_from is $3k — which de-risks every account's whole build-up
+    phase, not just the ones in trouble. Lower tops leave the healthy start alone.
+    """
     if ad > RAMP_TOP:
         return BASE0 + INC * int((ad - RAMP_TOP) // 1000)
-    span = RAMP_TOP - hard
+    if ad >= ramp_from:
+        return BASE0
+    span = ramp_from - hard
     return BASE0 * max(0.0, min(1.0, (ad - hard) / span)) if span > 0 else BASE0
 
 
-def sim(seq, buf, ramp_hard=None):
+def sim(seq, buf, ramp_hard=None, ramp_from=RAMP_TOP):
     """ramp_hard=None -> today's cliff schedule. Otherwise ramp down to `ramp_hard`."""
     bal, line, cash, win_days = 0.0, -DD, 0.0, 0
     frozen_days, traded_days = 0, 0
     for _, di in enumerate(seq, 1):
         day = DAYS[di]
         avail = bal - line
-        base = base_cliff(avail) if ramp_hard is None else base_ramp(avail, ramp_hard)
+        base = base_cliff(avail) if ramp_hard is None else base_ramp(avail, ramp_hard, ramp_from)
         dpl, took = 0.0, False
         for conv, risk, Rm in day:
             if buf is not None and (bal - line) + dpl <= buf:
@@ -89,8 +96,8 @@ def sim(seq, buf, ramp_hard=None):
     return cash, False, frozen_days, traded_days
 
 
-def run(label, seqs, buf, ramp_hard=None):
-    R = [sim(s, buf, ramp_hard) for s in seqs]
+def run(label, seqs, buf, ramp_hard=None, ramp_from=RAMP_TOP):
+    R = [sim(s, buf, ramp_hard, ramp_from) for s in seqs]
     cash = np.array([r[0] for r in R])
     bust = np.array([r[1] for r in R])
     froz = np.array([r[2] for r in R])
@@ -119,6 +126,13 @@ def main() -> None:
     print("\nC. RAMP + the shipped buffer, i.e. keep the $250 halt and add the ramp above it:")
     run("ramp to $0 at $250, halt $250", seqs, 250.0, 250.0)
     run("ramp to $0 at $100, halt $250", seqs, 250.0, 100.0)
+
+    print("\nD. WHERE THE RAMP SHOULD START (hard halt $100 underneath):")
+    print("   A funded account starts at $2,000 available DD. A ramp beginning at $3k is")
+    print("   therefore taxing every healthy account's whole build-up, not just the ones")
+    print("   in trouble — which is what costs the median a payout in B.")
+    for rf in (3000.0, 2000.0, 1500.0, 1000.0, 750.0):
+        run(f"ramp from ${rf:,.0f} -> $0 at $100", seqs, 100.0, 100.0, rf)
 
     print(f"\n(baseline for comparison: no halt at all, mean ${base_mean:,.0f})")
 
