@@ -109,9 +109,10 @@ delivered by Route B alone. Two ways to go, your call — no action needed now:
 
 | Item | Blocks | Status |
 |---|---|---|
-| Q1 on-disk own-use ruling | trusting Route B live | **needs your ruling** |
-| Q2 full 10-level DOM (Denali) | the depth signal family working live | **needs confirm at signup** (funded) |
-| MBO substrate (heads-up) | the *next* research campaign, not go-live | **your roadmap call** |
+| Q1 on-disk own-use ruling | trusting Route B live | ✅ **APPROVED** (Angus, 2026-07-26) |
+| Q2 depth source | the depth signal family working live | ✅ **RESOLVED** — Lucid add-on on Rithmic, MBP-10 confirmed; Denali deactivated |
+| 10-level ladder not throttled | depth signal quality | ⏳ **verify on box** — count DOM levels / `BOX-HANDOFF.md` Step C.1 |
+| MBO substrate (heads-up) | the *next* research campaign, NOT go-live | ⏳ roadmap call — recommendation: option 1 (go live on MBP-10 now) |
 
 Building + offline validation are done. Engine places nothing until the `StartupParityGate`
 is human-cleared green (`src/canon/infra.py`).
