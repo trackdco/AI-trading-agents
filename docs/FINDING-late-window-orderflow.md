@@ -242,3 +242,29 @@ contradict Angus's live retest success: his A-grade retests score 0–2 on the e
 i.e. the engine's "rejection_block" population is not his retest population. Calm-vs-war-day
 split is suggestive (calm-day golden −14.5R in 2025) but YEARS DISAGREE (+3.5R on n=16 in
 2026) → parked, unconfirmed.
+
+---
+
+## ADDENDUM 2026-07-26f — rr_floor 1.5 RETRACTED: 80% of the gain was one degenerate fill
+
+The adversarial pass the workflow owed us, run by hand. The 2026-02-19 09:46 fill (6.0pt stop
+that slipped the 7pt floor on fill improvement; sparse level menu) is the SAME entry at both
+floors — at 2.0 the walk demanded a 245pt/41R target and stopped out (−1.0R); at 1.5 it picked
+175pt/29R and hit (+29.2R). A coin-flip between two lottery tickets, carrying the finding:
+
+| | with freak | ex-freak |
+|---|---|---|
+| shared-fill geometry gain | +37.8R | **+7.5R** (2025 +13.2 / 2026 **−5.7** — years disagree) |
+| net book 1.5 vs 2.0 | +23.4R | **−6.9R** |
+
+**rr_floor stays 2.0.** Angus's own floor rule survives its audit. Process note: the "two
+independent confirmations" (decomp + dissection) shared the same sims and therefore the same
+freak — measurement independence was overstated; true independence requires disjoint substrates.
+
+SURVIVES (measured at the 2.0 floor, unaffected): the 10-minute dead-trade cut (+6.7R both
+years), the post-target-extension case for the partial+trail study, the early-golden d15+wall
+OOS result, and the admission finding (sub-2R-only trades lose — reinforcing the 2.0 floor).
+
+NEW MECHANICAL GUARDS from the freak (for the package): (1) walk_menu sanity clamp — reject
+targets demanding more than K·R (a 41R demand on a 6pt stop is a malfunction); (2) re-check
+min_stop_points at FILL (structural 7pt floor can be slipped by fill improvement).

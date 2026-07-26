@@ -22,7 +22,8 @@ CHANGE PROCESS itself:
 | change | mechanical form |
 |---|---|
 | news blackout (ADOPTED) | table lookup on a frozen dated calendar snapshot; fetcher observes only |
-| rr_floor 1.5 (pending verdict + MAE dissection) | one frozen config constant + full re-derivation |
+| ~~rr_floor 1.5~~ **RETRACTED 2026-07-26** — 80% of the gain was one degenerate 6pt-stop fill; ex-freak the 1.5 book is −6.9R worse. Floor stays 2.0 | (no change; two new guards below) |
+| walk_menu target sanity clamp (≤ K·R) + fill-time min-stop recheck | two frozen constants |
 | stop-width fix, if H3 wins instead | frozen stop-sizing rule (e.g. k×structure), re-derived book |
 | 3-min cut re-calibration at the new floor | two frozen thresholds (r_3, fw_3), re-derived like Layer 2d |
 | post_open_min_stop review (verify CONFIRMED +14.1R) | keep / change / delete one frozen constant — Angus ruling |
