@@ -464,7 +464,12 @@ def _trigger_class(t: Trigger) -> str:
 def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
              target_resolver=None, entry_price_fn=None,
              calendar: pd.DataFrame | None = None,
-             day_gate=None):
+             day_gate=None, on_manage=None):
+    """on_manage: optional Callable[[dict], None] — fires ONE event per management action as
+    this same code decides it, so the LIVE exit driver (src/canon/exit_driver.py) can mirror
+    engine.py's exits into broker orders WITHOUT re-implementing them (the Vault-reuses-simulate
+    pattern, for exits). Events: {kind: 'fill'|'stop_move'|'partial'|'exit', ...}. None (default)
+    = byte-identical backtest (asserted in tests)."""
     """Replay closed 1m bars against triggers. Returns (trades, verdicts, equity_df).
 
     day_gate: optional Callable[[str], dict | None] — given a session date 'YYYY-MM-DD'
@@ -578,6 +583,9 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
         f = p.frac_open if frac is None else frac
         p.legs.append((f, exit_price, reason, ts))
         p.frac_open = round(p.frac_open - f, 10)
+        if on_manage is not None:                            # emit the exit action for the live driver
+            on_manage({"kind": "partial" if p.frac_open > 0 else "exit", "reason": reason,
+                       "price": float(exit_price), "frac": float(f), "ts": ts.isoformat()})
         if p.frac_open > 0:
             return                                           # partial leg booked; runner continues
         sign = 1 if p.order.trig.direction == "long" else -1
@@ -625,6 +633,9 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
         if pos is not None:
             sign = 1 if pos.order.trig.direction == "long" else -1
             if pos.pending_stop is not None:                 # BE move applies from this bar on
+                if on_manage is not None:                    # emit the stop move (BE + V8/V9 trail)
+                    on_manage({"kind": "stop_move", "price": float(pos.pending_stop),
+                               "ts": ts.isoformat()})
                 pos.stop = pos.pending_stop
                 pos.pending_stop = None
             if past_eod(tod):                                # §10 EOD flatten: market at open
@@ -781,6 +792,12 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                                                  else abs(order.limit - order.stop)))
                             pos.partial_level = order.partial_level
                             pos.v2_band = order.v2_band
+                            if on_manage is not None:        # emit the FILL (entry-pinning check)
+                                on_manage({"kind": "fill", "entry": float(pos.entry),
+                                           "stop": float(pos.stop), "fill_ts": ts.isoformat(),
+                                           "risk_pts": float(pos.risk_pts), "direction": t.direction,
+                                           "partial_level": (None if pos.partial_level is None
+                                                             else float(pos.partial_level))})
                             verdicts.append(Verdict(ts=t.ts, tf=t.tf, direction=t.direction,
                                                     pattern=t.pattern, status="taken",
                                                     reason=f"filled {fill_px}"))
