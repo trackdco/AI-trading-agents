@@ -362,6 +362,14 @@ class SierraFileFeed:
     """
     scid_path: str | Path
     depth_path: str | Path | None = None
+    # --- depth price scale (found on Pat's VPS 2026-07-26): the SAME box writes .scid
+    # prices in points (28480.75) but .depth prices 100x scaled (2848075.00). Depth prices
+    # are compared against bar/entry prices (wall distances), so an unhandled scale poisons
+    # every depth feature silently. None = detect from the files themselves: median depth
+    # price vs the latest .scid trade price must sit within 5% of a power of ten, which
+    # becomes the divisor; anything else RAISES (never guess). Until a .scid reference
+    # price exists, depth events are held back rather than emitted unscaled.
+    depth_price_scale: float | None = None
     # --- feed-lag instrumentation (live tail only; see FeedLag) -------------------------
     clock: Callable[[], pd.Timestamp] | None = None    # wall-clock source, injectable for tests
     on_lag: Callable[[dict], None] | None = None        # per-bar lag journal sink (fail-soft)
@@ -369,7 +377,11 @@ class SierraFileFeed:
     _scid: ScidReader = field(init=False)
     _depth: DepthReader | None = field(init=False, default=None)
     _agg: MinuteAggregator = field(init=False, default_factory=MinuteAggregator)
+    _last_trade_px: float | None = field(init=False, default=None)
+    _pending_depth: list = field(init=False, default_factory=list)
     lag: FeedLag = field(init=False)
+
+    _SCALE_CANDIDATES = (0.01, 0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0)
 
     def __post_init__(self):
         self._scid = ScidReader(self.scid_path)
@@ -403,6 +415,8 @@ class SierraFileFeed:
         events: list[tuple] = []
         now = self._clock() if measure_lag else None
         for rec in self._scid.records():
+            if rec.close > 0:
+                self._last_trade_px = float(rec.close)   # depth-scale reference
             for closed in self._agg.push(rec):
                 if measure_lag:
                     self._record_lag(closed["ts"], now)
@@ -411,13 +425,40 @@ class SierraFileFeed:
             for closed in self._agg.flush():
                 events.append((closed["ts"], 1, {"kind": "minute", **closed}))
         if self._depth is not None:
-            for de in self._depth.records():
-                ev = {"action": de.action, "price": de.price, "size": de.size, "ct": de.ct}
-                # depth ordered before a same-timestamp minute close (0 < 1) so the book is
-                # current as-of the bar; feature_row reads the latest book snapshot anyway.
-                events.append((de.ts, 0, {"kind": "depth", "ts": de.ts, "event": ev}))
+            self._pending_depth.extend(self._depth.records())
+            if self._pending_depth and self.depth_price_scale is None:
+                self.depth_price_scale = self._detect_depth_scale()
+            if self._pending_depth and self.depth_price_scale is not None:
+                s = self.depth_price_scale
+                for de in self._pending_depth:
+                    ev = {"action": de.action, "price": de.price / s, "size": de.size,
+                          "ct": de.ct}
+                    # depth ordered before a same-timestamp minute close (0 < 1) so the book
+                    # is current as-of the bar; feature_row reads the latest book snapshot.
+                    events.append((de.ts, 0, {"kind": "depth", "ts": de.ts, "event": ev}))
+                self._pending_depth.clear()
         events.sort(key=lambda e: (e[0], e[1]))
         return [e[2] for e in events]
+
+    def _detect_depth_scale(self) -> float | None:
+        """Depth-vs-trade price scale, decided by evidence only: median pending depth price
+        over the latest .scid trade price must land within 5% of a known power of ten.
+        No reference price yet -> None (events stay held). A ratio that is NOT a clean
+        power of ten raises — scoring on mis-scaled depth is the silent-poison case."""
+        if self._last_trade_px is None or self._last_trade_px <= 0:
+            return None
+        px = sorted(de.price for de in self._pending_depth
+                    if de.action in ("B", "A", "b", "a") and de.price > 0)
+        if not px:
+            return None
+        ratio = px[len(px) // 2] / self._last_trade_px
+        for s in self._SCALE_CANDIDATES:
+            if abs(ratio / s - 1.0) <= 0.05:
+                return s
+        raise ValueError(
+            f".depth/.scid price scale ratio {ratio:.6g} is not a power of ten — refusing "
+            f"to guess a divisor (PIN-ON-BOX; depth px sample {px[len(px) // 2]:.6g} vs "
+            f"trade px {self._last_trade_px:.6g})")
 
     def _apply(self, ing: CanonIngestor, merged: list[dict]) -> int:
         for e in merged:

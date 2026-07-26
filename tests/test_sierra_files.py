@@ -13,6 +13,7 @@ from __future__ import annotations
 import math
 
 import pandas as pd
+import pytest
 
 from src.canon.book import DepthBook
 from src.canon.ingestor import CanonIngestor, ReplaySource
@@ -147,6 +148,79 @@ def test_depth_command_enum_is_pinned_to_the_real_sierra_numbering(tmp_path):
     for e in out:
         b.apply({"action": e.action, "price": e.price, "size": e.size, "ct": e.ct})
     assert b.best_bid() is None and b.best_ask() is None          # add+mod+del leaves empty
+
+
+def _feed_files(tmp_path, *, depth_scale=1.0, close=28480.75):
+    """A tiny scid (two records) + depth (clear, one bid, one ask) pair; depth prices
+    written at `depth_scale` x the true price, as Pat's box does at 100x."""
+    sp, dp = tmp_path / "nq.scid", tmp_path / "nq.depth"
+    ts = _ts("2026-03-17", "08:00")
+    write_scid(sp, [
+        {"ts": ts, "close": close, "total_volume": 5, "bid_volume": 2, "ask_volume": 3},
+        {"ts": _ts("2026-03-17", "08:02"), "close": close + 0.25, "total_volume": 5,
+         "bid_volume": 2, "ask_volume": 3},
+    ])
+    write_depth(dp, [
+        {"ts": ts, "command": DCMD_CLEAR},
+        {"ts": ts, "command": DCMD_SET_BID, "price": (close - 0.25) * depth_scale,
+         "qty": 50, "num_orders": 4},
+        {"ts": ts, "command": DCMD_SET_ASK, "price": (close + 0.25) * depth_scale,
+         "qty": 60, "num_orders": 6},
+    ])
+    return sp, dp
+
+
+def test_depth_price_scale_100x_is_detected_and_divided_out(tmp_path):
+    """Pat's VPS (2026-07-26): .scid prices in points, .depth prices 100x. The feed must
+    detect the factor from the files themselves and emit UNSCALED depth prices, or every
+    wall-distance feature is silently wrong by 100x."""
+    from src.canon.ingestor import CanonIngestor
+    sp, dp = _feed_files(tmp_path, depth_scale=100.0)
+    feed = SierraFileFeed(sp, dp)
+    ing = CanonIngestor(book=DepthBook())
+    feed.drive_batch(ing)
+    assert feed.depth_price_scale == 100.0
+    assert ing.book.best_bid() == pytest.approx(28480.50)
+    assert ing.book.best_ask() == pytest.approx(28481.00)
+
+
+def test_depth_price_scale_1x_stays_untouched(tmp_path):
+    from src.canon.ingestor import CanonIngestor
+    sp, dp = _feed_files(tmp_path, depth_scale=1.0)
+    feed = SierraFileFeed(sp, dp)
+    ing = CanonIngestor(book=DepthBook())
+    feed.drive_batch(ing)
+    assert feed.depth_price_scale == 1.0
+    assert ing.book.best_bid() == pytest.approx(28480.50)
+
+
+def test_depth_price_scale_not_a_power_of_ten_refuses(tmp_path):
+    from src.canon.ingestor import CanonIngestor
+    sp, dp = _feed_files(tmp_path, depth_scale=37.0)
+    feed = SierraFileFeed(sp, dp)
+    with pytest.raises(ValueError, match="not a power of ten"):
+        feed.drive_batch(CanonIngestor(book=DepthBook()))
+
+
+def test_depth_events_are_held_until_a_trade_reference_exists(tmp_path):
+    """Depth before any .scid record: no reference to judge the scale against, so events
+    are HELD (never emitted unscaled) and released once the first trade price arrives."""
+    from src.canon.ingestor import CanonIngestor
+    sp, dp = tmp_path / "nq.scid", tmp_path / "nq.depth"
+    write_scid(sp, [])                                   # header only, no trades yet
+    ts = _ts("2026-03-17", "08:00")
+    write_depth(dp, [
+        {"ts": ts, "command": DCMD_SET_BID, "price": 2848050.0, "qty": 50, "num_orders": 4},
+    ])
+    feed = SierraFileFeed(sp, dp)
+    ing = CanonIngestor(book=DepthBook())
+    feed.poll(ing)
+    assert feed.depth_price_scale is None and ing.book.best_bid() is None   # held
+    write_scid(sp, [{"ts": ts, "close": 28480.75, "total_volume": 5,
+                     "bid_volume": 2, "ask_volume": 3}])
+    feed.poll(ing)
+    assert feed.depth_price_scale == 100.0
+    assert ing.book.best_bid() == pytest.approx(28480.50)                   # released
 
 
 # --------------------------------------------------------------------------- DepthBook (level)
