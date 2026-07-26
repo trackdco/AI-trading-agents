@@ -89,7 +89,7 @@ throttles our book −23%).
 | **Chart** | Live, current, heatmap study ("Market Depth Historical Graph") added |
 | **DTC server** | Enabled, **Listening: Yes**, port **11099** (realtime+orders), **11098** (historical), Allowed IPs = **Local Computer Only**, no auth, no TLS |
 | **Allow Trading** | **No** — deliberate seatbelt until go-live. Does NOT block data reads. |
-| **Denali/CME sub** | Activated then **should be DEACTIVATED** — ⚠️ **UNCONFIRMED, see open items** |
+| **Denali/CME sub** | **DEACTIVATED ✅** (confirmed by Angus 24-Jul) — not billed, not used |
 
 **Monthly run cost:** VPS $80 + Sierra Pkg12 $56 + Lucid depth ~$27 ≈ **$163/mo**.
 
@@ -201,9 +201,7 @@ Report P&L but explicitly **not** as a criterion.
 ## 7. OPEN ITEMS / NEXT ACTIONS
 
 **Blocking-ish:**
-1. ⚠️ **CONFIRM the Denali/CME trial was DEACTIVATED** on sierrachart.com (Exchanges →
-   CME/CBOT/NYMEX/COMEX → Activate/Deactivate → off). Cost should read **0.00 USD**.
-   Angus asked how; never confirmed done. Services Balance was $0 so risk is low, but verify.
+1. ~~Deactivate Denali/CME trial~~ — **DONE ✅** (confirmed 24-Jul). No further action.
 2. **Confirm depth is truly 10-level, not throttled** — open Trade DOM on NQU6 and count
    populated levels each side (want ~10). Or read it out of the `.depth` sample.
 3. **Capture the `.scid`/`.depth` samples** (PowerShell above) → verify byte constants →
