@@ -157,13 +157,16 @@ misbehaves."
 | trigger | value |
 |---|---|
 | Daily loss limit | **−4R**, indexed to the day's own `base_dollar` — **not** a fixed dollar figure. = −$800 at the eval floor, −$1,700 at $6k available DD. Measured in `docs/RULING-daily-loss-limit.md` |
-| Available-drawdown floor | **keep the shipped $250.** It captures 89% of the available bust reduction (1.59% → 0.17%) for 1.2% of mean cash. $400 buys the last 0.17pp at **$3,435 per point** when a point is worth ~$465 — corrected 2026-07-26 after the paired test; the payout median is quantised to $2,000 steps and hid the cost |
+| DD ramp + hard halt | **Ramp from $1,500 → $0 at $100** (ADOPTED 2026-07-26, replacing the $250 cliff): below $1,500 of available DD the $200 base scales linearly to zero, so the account de-risks instead of freezing; a trade sizing to 0 micros is not taken (`dd_ramp_zero` reject). The spine keeps a **$100 token hard halt** underneath. Strictly dominates the cliff: 0.00% bust, 0.0% frozen years, +$1,078/account/yr; starts below the $2,000 a funded account opens with, so the healthy build-up is untouched. Implemented: `gate_evidence.base_dollar` + `route_b._ramped_micros` (remove-risk-only) + `dd_halt_buffer: 100` in both Tier-1 copies |
 | Consecutive halt days | 2 in a row → stop and review before re-arming |
 | ~~Loss-count halt~~ | **Not used.** "2 losing trades" costs $3,163 on the canon and halts 35 of 225 days — re-confirming Angus's 17-Jul `daily_halt_losses: 0` ruling. Damage, not attempts |
 
 Both numbers are measured, not assumed — see `docs/RULING-daily-loss-limit.md` for the
-replay, the funded-year MC and the payout-cycle MC. **Awaiting Angus's sign-off on the two
-values;** the *units* finding (R, not dollars) is not a preference and holds at any value.
+replay, the funded-year MC and the payout-cycle MC. **SIGNED (Angus, 2026-07-26):** *"we
+have a maximum daily loss of $800"* (= the −4R value at today's ≤$3k cushion; it stays an
+R multiple, re-indexing as the account grows) *"and obviously the ramp of the position
+size declining as per ratio of dd under 1.5k of available dd."* The *units* finding
+(R, not dollars) is not a preference and holds at any value.
 
 **D1 is automatic and absolute. D2 is automatic, with human review before re-arming.**
 

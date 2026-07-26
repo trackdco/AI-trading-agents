@@ -42,7 +42,10 @@ from src.canon.gate_evidence import MICRO_CLAMP, base_dollar
 # --------------------------------------------------------------------------- config/state
 @dataclass(frozen=True)
 class SpineConfig:
-    dd_halt_buffer: float = 250.0          # halt when equity within this of the trailing floor
+    # Token hard halt under the DD RAMP (ANGUS 2026-07-26): sizing itself now scales the base
+    # linearly to zero between $1,500 and $100 of available DD (gate_evidence.base_dollar), so
+    # the halt is a backstop under a taper, not the primary protection the $250 cliff was.
+    dd_halt_buffer: float = 100.0          # halt when equity within this of the trailing floor
     # Day P&L halt as an R MULTIPLE of the day's own base_dollar, never a fixed dollar figure
     # (PROMOTION-GATE §D2 blocker 1). The sizer is drawdown-scaled: base_dollar is $200 at the
     # eval floor and steps +$75 per $1k of available DD past $3k, so a constant -$800 tightens
@@ -76,7 +79,7 @@ def daily_loss_halt_dollars(cfg: SpineConfig, acct: "AccountState") -> float:
 # PROMOTION-GATE §E ("any code change to canon, sizer, spine, or relay -> stop and review")
 # requires. Changing a limit means editing both and re-running the gate, never one file.
 TIER1_PINNED: dict[str, float | int] = {
-    "dd_halt_buffer": 250.0,
+    "dd_halt_buffer": 100.0,
     "daily_loss_halt_r": -4.0,
     "max_contracts": MICRO_CLAMP,
     "max_spread_rel": 2.5,

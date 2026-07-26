@@ -331,7 +331,14 @@ doc says sizing "steps down the same way as available DD shrinks" — but it sto
 $3k. At $400 of remaining room the sizer still wants to risk $200 on a 1.0 setup, half the room,
 so the only available response is to stop entirely.
 
-### The ramp — `scripts/dd_ramp_study.py`
+### The ramp — `scripts/dd_ramp_study.py` — **ADOPTED (ANGUS 2026-07-26)**
+
+> Signed in-thread: *"we have a maximum daily loss of $800, and obviously the ramp of the
+> position size declining as per ratio of dd under 1.5k of available dd."* Shipped same day:
+> `gate_evidence.base_dollar` carries the $1,500 → $0-at-$100 taper, `route_b` applies it
+> remove-risk-only at intent build (a 0-micro trade is a `dd_ramp_zero` reject), and
+> `dd_halt_buffer` is now the **$100 token hard halt** in both Tier-1 copies. The $250
+> cliff below is retained as the measured baseline it was.
 
 Keep stepping down instead of stopping: below a start point, scale the 1.0-tier base linearly to
 zero, with a token hard halt underneath. A trade that sizes to 0 micros simply isn't taken, so

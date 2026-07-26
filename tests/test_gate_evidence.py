@@ -80,6 +80,19 @@ def test_expected_micros_dd_scaled():
     assert expected_micros(1.0, 10.0, available_dd=5000) == 18   # 350/20 = 17.5 -> 18
 
 
+def test_base_dollar_ramp_below_1500():
+    """ANGUS 2026-07-26: linear taper $1,500 -> $0 at $100 replaces the $250 cliff
+    (docs/RULING-daily-loss-limit.md 'The ramp'). Untouched at and above $1,500."""
+    assert base_dollar(2000) == 200.0 and base_dollar(1500) == 200.0
+    assert base_dollar(800) == 100.0             # midpoint of the $1,400 span
+    assert base_dollar(450) == 50.0
+    assert base_dollar(100) == 0.0 and base_dollar(50) == 0.0
+    # and the sized consequence: at $800 of room a 1.0-conviction 10pt stop halves to 5 micros
+    assert expected_micros(1.0, 10.0, available_dd=800) == 5
+    # deep in the ramp the schedule rounds to zero -> the trade is simply not taken
+    assert expected_micros(1.0, 10.0, available_dd=150) == 0
+
+
 def test_check_sizing_pass_and_fail():
     ok = check_sizing(1.0, 10.0, actual_micros=10)
     assert ok["ok"] and ok["expected"] == 10 and ok["delta"] == 0

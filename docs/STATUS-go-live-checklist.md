@@ -73,7 +73,10 @@ Updated 2026-07-26 (Sunday), second pass — now merged with Angus's on-box list
 
 ## FINALLY — HUMANS, THEN LIVE
 
-5. **Angus signs off** the two risk numbers: −4R daily loss, $250 drawdown buffer.
+5. ~~Angus signs off the two risk numbers~~ **DONE 2026-07-26, signed in-thread**: −4R
+   daily loss (indexed) + the **DD ramp** ($1,500 → $0 at $100, $100 token hard halt) which
+   **replaces the $250 buffer** — shipped same day. ⚠ Tier-1 change: `dd_halt_buffer` is
+   now **100** in both copies; a box `live.yaml` still saying 250 fails the boot assertion.
 6. **Pat's written confirmation** that every PROMOTION-GATE item is green.
 7. **Angus's arming token** → arm the spine on the funded Lucid account. Neither person
    can arm it alone.
@@ -86,4 +89,6 @@ Updated 2026-07-26 (Sunday), second pass — now merged with Angus's on-box list
   recording depth 2026-07-24 and the archived reference days are from February. The
   equivalent evidence comes from the shadow-run reconciliation diffs (A1/A2) on freshly
   captured days.
-- Angus's −4R / $250 sign-off is still outstanding (values measured, units settled).
+- ~~Angus's −4R / $250 sign-off~~ CLOSED 2026-07-26 — signed (−4R + the DD ramp replacing
+  the $250 cliff), implemented, 632 tests green. See PROMOTION-GATE §D2 +
+  `docs/RULING-daily-loss-limit.md` "The ramp".

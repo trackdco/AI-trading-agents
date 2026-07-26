@@ -82,9 +82,14 @@ def test_market_order_rejected():
 
 # ---- Tier 1 -----------------------------------------------------------------
 def test_dd_proximity_halt():
-    acct = AccountState(equity=50_200, trailing_floor=50_000, day_pnl=0, open_positions=0)
-    d = _exe().check(intent(), acct, GOOD_FEED, 0.0)              # 200 <= 250 buffer
+    acct = AccountState(equity=50_080, trailing_floor=50_000, day_pnl=0, open_positions=0)
+    d = _exe().check(intent(), acct, GOOD_FEED, 0.0)              # 80 <= the $100 hard halt
     assert d.action == "halt" and d.rule == "dd_proximity"
+
+    # $200 of room is INSIDE the DD ramp but above the hard halt: the spine no longer halts
+    # there — sizing has already scaled the base toward zero (the ramp replaced the $250 cliff).
+    in_ramp = AccountState(equity=50_200, trailing_floor=50_000, day_pnl=0, open_positions=0)
+    assert _exe().check(intent(), in_ramp, GOOD_FEED, 0.0).action == "place"
 
 
 def test_daily_loss_halt():

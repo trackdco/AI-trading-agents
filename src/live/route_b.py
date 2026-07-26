@@ -61,6 +61,19 @@ from src.live.feed import BAR_COLS, Bar
 # frozen dollar-risk sizer (the parity anchor — floor schedule; the DD overlay is applied
 # identically by baseline and agents from the same account feed, so floor is the check anchor).
 from scripts.baseline_dollar_risk import dollar_risk_micros
+from src.canon.gate_evidence import expected_micros
+
+
+def _ramped_micros(micros_anchor: int, conviction: float, stop_pts: float,
+                   available_dd: float) -> int:
+    """Remove-risk-only merge of the anchor size with the live DD schedule (ANGUS 2026-07-26,
+    docs/RULING-daily-loss-limit.md "The ramp"): below $1,500 of available DD the base scales
+    linearly to zero at $100, so the ramp can SHRINK a trade — the min() means it can never
+    grow one past the anchor (the +$75/$1k growth steps stay inert until deliberately armed).
+    0 micros = the trade is not taken, journaled as a dd_ramp_zero reject, spine untouched."""
+    if micros_anchor <= 0 or stop_pts <= 0 or conviction <= 0:
+        return max(0, int(micros_anchor))
+    return min(int(micros_anchor), expected_micros(conviction, stop_pts, available_dd))
 
 NY = "America/New_York"
 
@@ -154,16 +167,24 @@ class ShadowSpineInstrument:
         entry = float(tr.entry)
         stop = float(tr.stop_initial)
         stop_pts = abs(entry - stop)
-        micros = dollar_risk_micros(conv, stop_pts) if stop_pts > 0 else 0
+        micros_anchor = dollar_risk_micros(conv, stop_pts) if stop_pts > 0 else 0
         available_dd = acct.equity - acct.trailing_floor
+        micros = _ramped_micros(micros_anchor, conv, stop_pts, available_dd)
         setup_id = f"{tr.trade_date}:{tr.fill_ts}"
         rc = roll_ctx or {}
 
         self.sizing_sink({"trade_date": str(tr.trade_date), "fill_ts": str(tr.fill_ts),
                           "direction": tr.direction, "conviction": conv, "stop_pts": stop_pts,
                           "micros": int(micros), "available_dd": None,  # floor schedule = anchor
+                          "micros_anchor": int(micros_anchor),
                           "available_dd_live": round(available_dd, 2),
                           "roll": rc.get("roll"), "contract": rc.get("contract")})
+        if micros < 1:                                     # DD ramp sized it to zero: not taken
+            self.rejects.record(normalize_spine_reject(
+                {"action": "reject", "rule": "dd_ramp_zero",
+                 "detail": f"available_dd {available_dd:.0f} ramps size to 0 micros",
+                 "setup": setup_id}), ts=str(tr.fill_ts))
+            return {"sizing_micros": 0, "decision": "dd_ramp_zero", "guards": {}}
 
         intent = OrderIntent(
             side="B" if tr.direction == "long" else "S", order_type="limit",
@@ -192,16 +213,26 @@ class ShadowSpineInstrument:
         from src.desk.canon_lane import verdict_to_intent
         rc = roll_ctx or {}
         stop_pts = abs(float(v["entry"]) - float(v["stop"]))
-        micros = int(v.get("micros", 0) or 0)
+        micros_anchor = int(v.get("micros", 0) or 0)
+        conv = float(v.get("conviction", 0) or 0)
         setup_id = f"{v.get('day')}:{v.get('fill')}"
         available_dd = acct.equity - acct.trailing_floor
+        micros = _ramped_micros(micros_anchor, conv, stop_pts, available_dd)
         self.sizing_sink({"trade_date": str(v.get("day")), "fill_ts": str(v.get("fill")),
                           "direction": v.get("direction"),
-                          "conviction": float(v.get("conviction", 0) or 0), "stop_pts": stop_pts,
+                          "conviction": conv, "stop_pts": stop_pts,
                           "micros": micros, "available_dd": None,   # floor schedule = anchor
+                          "micros_anchor": micros_anchor,
                           "available_dd_live": round(available_dd, 2),
                           "roll": rc.get("roll"), "contract": rc.get("contract")})
-        intent = verdict_to_intent(v, self.account)
+        if micros < 1:                                     # DD ramp sized it to zero: not taken
+            self.rejects.record(normalize_spine_reject(
+                {"action": "reject", "rule": "dd_ramp_zero",
+                 "detail": f"available_dd {available_dd:.0f} ramps size to 0 micros",
+                 "setup": setup_id}), ts=str(v.get("fill")))
+            return {"sizing_micros": 0, "decision": "dd_ramp_zero",
+                    "action": "reject", "ref": None, "intent": None}
+        intent = verdict_to_intent({**v, "micros": micros}, self.account)
         rep = self.spine.guard_report(intent, acct, feed, now_epoch)
         if self.guard_report_sink is not None:
             self.guard_report_sink({"event": "guard_report", "setup": setup_id, **rep})

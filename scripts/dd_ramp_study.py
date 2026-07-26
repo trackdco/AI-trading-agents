@@ -16,8 +16,10 @@ instead of freezing, and can grind back.
 
     python -m scripts.dd_ramp_study
 
-NOTE: this is a SIZING change, which is Angus's call, not the spine's. Measured here so
-the decision has numbers under it; nothing is adopted.
+ADOPTED (ANGUS 2026-07-26): the $1,500 -> $0-at-$100 ramp, replacing the $250 cliff.
+Shipped in gate_evidence.base_dollar (schedule), route_b._ramped_micros (remove-risk-only
+live merge) and dd_halt_buffer=100 (both Tier-1 copies). PROMOTION-GATE §D2 records the
+sign-off.
 """
 from __future__ import annotations
 

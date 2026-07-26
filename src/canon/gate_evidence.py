@@ -33,6 +33,16 @@ from pathlib import Path
 BASE_DOLLAR_FLOOR = 200.0
 DD_FLOOR = 3000.0
 DD_STEP_DOLLARS = 75.0
+# DD ramp (ANGUS 2026-07-26 — ADOPTED, replacing the $250 cliff; measured in
+# docs/RULING-daily-loss-limit.md "The ramp" / scripts/dd_ramp_study.py): below $1,500 of
+# available DD the 1.0-tier base scales LINEARLY to zero at $100, with only a token hard
+# halt underneath (spine dd_halt_buffer = $100). A trade that sizes to 0 micros is simply
+# not taken — the account de-risks instead of freezing, and can grind back. The $1,500
+# start is a plateau, not a spike ($2k/$1.5k/$1k/$750 all land within $250 of each other),
+# and sits BELOW the $2,000 a funded account opens with, so the healthy build-up is
+# untouched: 0.00% bust, 0.0% frozen years, +$1,078/account/year over the cliff.
+RAMP_FROM = 1500.0
+RAMP_HARD = 100.0
 CONVICTION_CAP = 2.0
 MNQ_DOLLARS_PER_PT = 2.0
 MICRO_CLAMP = 40
@@ -40,10 +50,13 @@ MICRO_CLAMP = 40
 
 def base_dollar(available_dd: float | None) -> float:
     """The 1.0-tier dollar risk for the current available drawdown. None => floor schedule."""
-    if available_dd is None or available_dd <= DD_FLOOR:
+    if available_dd is None:
         return BASE_DOLLAR_FLOOR
-    steps = int((available_dd - DD_FLOOR) // 1000)
-    return BASE_DOLLAR_FLOOR + DD_STEP_DOLLARS * steps
+    if available_dd > DD_FLOOR:
+        return BASE_DOLLAR_FLOOR + DD_STEP_DOLLARS * int((available_dd - DD_FLOOR) // 1000)
+    if available_dd >= RAMP_FROM:
+        return BASE_DOLLAR_FLOOR
+    return BASE_DOLLAR_FLOOR * max(0.0, (available_dd - RAMP_HARD) / (RAMP_FROM - RAMP_HARD))
 
 
 def expected_micros(conviction: float, stop_pts: float,

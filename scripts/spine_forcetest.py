@@ -60,8 +60,8 @@ def _exe(**cfg):
 # each case: (label, expected action, expected rule, callable -> SpineDecision)
 CASES = [
     ("Tier1 dd-proximity halt", "halt", "dd_proximity",
-     lambda: _exe().check(_intent(),
-              AccountState(50_200, 50_000, 0, 0), GOOD_FEED, 0.0)),
+     lambda: _exe().check(_intent(),                       # $80 of room <= the $100 hard halt
+              AccountState(50_080, 50_000, 0, 0), GOOD_FEED, 0.0)),   # under the DD ramp
     ("Tier1 daily-loss halt", "halt", "daily_loss",
      lambda: _exe().check(_intent(),
               AccountState(52_000, 50_000, -800, 0), GOOD_FEED, 0.0)),

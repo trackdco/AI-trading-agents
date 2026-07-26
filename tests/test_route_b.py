@@ -134,6 +134,31 @@ def test_observe_verdict_emits_sizing_and_spine(tmp_path):
     assert any(e.get("event") == "shadow_place" for e in spine)   # disarmed
 
 
+def test_dd_ramp_shrinks_size_and_skips_at_zero(tmp_path):
+    """ANGUS 2026-07-26 DD ramp: below $1,500 of available DD the verdict's anchor size is
+    scaled down by the live schedule (remove-risk-only), and a trade that sizes to 0 micros
+    is not taken — journaled as a dd_ramp_zero reject, the spine never sees it."""
+    inst = build_shadow_instrument(tmp_path)
+    # $800 of room: base halves ($200 -> $100), so 10 anchor micros become 5
+    in_ramp = AccountState(equity=50_800, trailing_floor=50_000, day_pnl=0, open_positions=0)
+    out = inst.observe_verdict(_verdict(_ts("08:20")), in_ramp, _good_feed(), now_epoch=0.0)
+    assert out["sizing_micros"] == 5
+    sizing = [json.loads(x) for x in (tmp_path / "sizing.jsonl").read_text().splitlines()]
+    assert sizing[-1]["micros"] == 5 and sizing[-1]["micros_anchor"] == 10
+
+    # $150 of room: schedule rounds to zero -> skipped, rejected, no spine decision
+    deep = AccountState(equity=50_150, trailing_floor=50_000, day_pnl=0, open_positions=0)
+    out0 = inst.observe_verdict(_verdict(_ts("08:25")), deep, _good_feed(), now_epoch=0.0)
+    assert out0["sizing_micros"] == 0 and out0["decision"] == "dd_ramp_zero"
+    rej = [json.loads(x) for x in (tmp_path / "rejects.jsonl").read_text().splitlines()]
+    assert any(r.get("code") == "dd_ramp_zero" for r in rej)
+
+    # at/above $1,500 the ramp is inert: the anchor passes through untouched
+    healthy = AccountState(equity=52_000, trailing_floor=50_000, day_pnl=0, open_positions=0)
+    out2 = inst.observe_verdict(_verdict(_ts("08:30")), healthy, _good_feed(), now_epoch=0.0)
+    assert out2["sizing_micros"] == 10
+
+
 def test_observe_verdict_records_reject_on_bad_feed(tmp_path):
     inst = build_shadow_instrument(tmp_path)
     stale = FeedHealth(last_tick_age_ms=9_000, crossed_or_locked=False,
