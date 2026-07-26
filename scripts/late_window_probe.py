@@ -36,16 +36,19 @@ NY = "America/New_York"
 MONTHS = ["2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12",
           "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07"]
 DATA = Path("data/reference/nq_1m_master.parquet")   # 2023-01 -> 2026-07-15
-WARMUP_FROM = "2025-04-01"      # ~2 months of bars before the first scored month
+WARMUP_DAYS = 45     # per-month segment = [month - 45d, month end].
+# The harness used to hand simulate() every bar from 2025-04 forward to score ONE month
+# (353k bars, 81s/call). Trimming to 45 days of warmup is trade-for-trade IDENTICAL --
+# verified at 45/60/90d on 2026-03 (13/13) and 2025-09 (22/22) -- and 4.5x faster.
 TRIGGERS = ["output/triggers_hist2326_ob.csv",      # 2023-01 -> 2026-01-30
             "output/triggers_feb_ob.csv",           # 2026-02
             "output/triggers_marjul_ob.csv"]        # 2026-03 -> 2026-07-15
-WINDOWS = {
-    "pre     08:00-09:30": (dtime(8, 0), dtime(9, 30)),
-    "golden  09:40-10:15": (dtime(9, 40), dtime(10, 15)),
-    "LATE    10:15-11:00": (dtime(10, 15), dtime(11, 0)),
+WINDOWS = {                                   # late windows FIRST — they are the question
     "late-a  10:15-10:30": (dtime(10, 15), dtime(10, 30)),   # the part depth still covers
     "late-b  10:30-11:00": (dtime(10, 30), dtime(11, 0)),    # flow only, no heatmap
+    "LATE    10:15-11:00": (dtime(10, 15), dtime(11, 0)),
+    "golden  09:40-10:15": (dtime(9, 40), dtime(10, 15)),    # reference
+    "pre     08:00-09:30": (dtime(8, 0), dtime(9, 30)),      # reference
 }
 
 
@@ -55,7 +58,6 @@ def main() -> None:
     war = {r.day for _, r in vec.iterrows()
            if pd.notna(r.imbal_share_20) and r.imbal_share_20 >= 0.5}
     df = pd.read_parquet(DATA)
-    df = df[df.ts_event >= pd.Timestamp(WARMUP_FROM, tz=NY)].reset_index(drop=True)
 
     rows = []
     for wname, (ws, we) in WINDOWS.items():
@@ -67,7 +69,9 @@ def main() -> None:
             trigs = [t for t in allt if t.ts[:7] == m]
             end = pd.Timestamp((pd.Timestamp(m + "-01", tz=NY) + pd.offsets.MonthBegin(1))
                                .tz_localize(None), tz=NY)
-            seg = df[df.ts_event <= end].reset_index(drop=True)
+            start = pd.Timestamp((pd.Timestamp(m + "-01")
+                                  - pd.Timedelta(days=WARMUP_DAYS)).strftime("%Y-%m-%d"), tz=NY)
+            seg = df[(df.ts_event >= start) & (df.ts_event <= end)].reset_index(drop=True)
             for tt, cfg in (([t for t in trigs if t.ts[:10] not in war], cfg_e3),
                             ([t for t in trigs if t.ts[:10] in war], cfg_e4)):
                 tr, _, _ = simulate(seg, tt, cfg)
@@ -80,6 +84,13 @@ def main() -> None:
                                      risk_pts=abs(r.entry - r.stop_initial),
                                      dollars=r.dollars, win=r.dollars > 0,
                                      exit_reason=r.exit_reason, r_multiple=r.r_multiple))
+
+        # flush after each window so the late-window answer is readable before the run ends
+        _p = pd.DataFrame(rows)
+        if len(_p):
+            _s = _p[_p.window == wname]
+            print(f"[done] {wname}  {len(_s):>3}t  ${_s.dollars.sum():+9,.0f}  "
+                  f"win {_s.win.mean()*100:.0f}%", flush=True)
 
     J = (pd.DataFrame(rows).drop_duplicates(subset=["window", "fill_ts", "direction"])
          .sort_values("fill_ts"))

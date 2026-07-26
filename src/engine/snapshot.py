@@ -150,6 +150,25 @@ def _include_ote() -> bool:
     return _INCLUDE_OTE_CACHE
 
 
+_CLUSTER_CFG_CACHE: dict | None = None
+
+
+def _cluster_cfg() -> dict:
+    """`config/strategy.yaml["cluster"]`, parsed once per process.
+
+    `build_snapshot()` runs once per trade day and used to re-read and re-parse the whole
+    strategy YAML from disk on every call — **149 `yaml.safe_load`s and 5.9s of a 35s
+    month-long backtest (17%)**, for a file that cannot change mid-run. Same memo pattern
+    as `_INCLUDE_OTE_CACHE` above. Pure read, no behaviour change; trade-for-trade output
+    verified identical.
+    """
+    global _CLUSTER_CFG_CACHE
+    if _CLUSTER_CFG_CACHE is None:
+        import yaml
+        _CLUSTER_CFG_CACHE = yaml.safe_load(open("config/strategy.yaml"))["cluster"]
+    return _CLUSTER_CFG_CACHE
+
+
 _OTE_FIBS = (0.382, 0.5, 0.618, 0.705, 0.786)   # ANGUS pass-22: 0.382 aggressive-continuation
                                                 # (with-trend only, enforced at the engine gate),
                                                 # 0.5 equilibrium, 0.705 his favourite
@@ -294,8 +313,7 @@ def build_snapshot(df_1m: pd.DataFrame, ts: pd.Timestamp,
     ind_cfg = ind_cfg or load_indicators_config()
     boxes = boxes if boxes is not None else load_session_boxes()
     if cluster_tol is None or cluster_min_types is None:
-        import yaml
-        _cl = yaml.safe_load(open("config/strategy.yaml"))["cluster"]
+        _cl = _cluster_cfg()
         cluster_tol = float(_cl["tolerance_points"]) if cluster_tol is None else cluster_tol
         cluster_min_types = (int(_cl["min_level_types"]) if cluster_min_types is None
                              else cluster_min_types)
