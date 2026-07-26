@@ -160,6 +160,7 @@ class SpineDecision:
     rule: str                              # which rule fired ("ok" when placing)
     detail: str = ""
     clamped_size: int | None = None        # set when a clamp changed the size
+    ref: str | None = None                 # broker order ref, ONLY on an armed placement
 
     @property
     def allowed(self) -> bool:
@@ -394,7 +395,8 @@ class SpineExecutor:
             return self.flatten_and_halt(intent.account, "readback_mismatch", mismatch)
         self._resting[intent.account] = ref            # track for the naked-position reconcile
         self._emit({"event": "placed", "setup": intent.setup_id, "ref": ref, "size": size})
-        return SpineDecision("place", d.rule, f"ref={ref}", clamped_size=d.clamped_size)
+        return SpineDecision("place", d.rule, f"ref={ref}", clamped_size=d.clamped_size,
+                             ref=ref)
 
     # ---- internals ---------------------------------------------------------
     def _verify_readback(self, intent: OrderIntent, ref: str) -> str:

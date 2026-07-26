@@ -210,7 +210,8 @@ class ShadowSpineInstrument:
             self.rejects.record(normalize_spine_reject(
                 {"action": decision.action, "rule": decision.rule,
                  "detail": decision.detail, "setup": setup_id}), ts=str(v.get("fill")))
-        return {"sizing_micros": micros, "decision": decision.rule}
+        return {"sizing_micros": micros, "decision": decision.rule,
+                "action": decision.action, "ref": decision.ref, "intent": intent}
 
 
 # --------------------------------------------------------------------------- default providers
@@ -258,6 +259,7 @@ class RouteBLive:
     watcher: RollWatcher = None
     roll_state: RollState = None                      # live roll tag (span-preserving)
     instrument: ShadowSpineInstrument | None = None
+    lifecycle: object | None = None                  # TradeLifecycle (watch/fill/exit assembly)
     comparator: object = None                        # optional champion LiveRunner (diagnostic)
     comparator_sink: Callable[[dict], None] | None = None
     listener: object | None = None                   # Telegram CommandListener
@@ -324,6 +326,10 @@ class RouteBLive:
                         self._cur_sess = ri["session"]
                         self._load_verdicts(ri["session"])
                     emitted += self._emit_due(bts, now)       # verdicts whose fill has passed
+                    if self.lifecycle is not None:            # watch/fill/exit, per closed bar
+                        self.lifecycle.on_bar(
+                            gbar, bars_df=self.ingestor.bars_frame(),
+                            tape_df=self.ingestor.tape.frame())
                     self._run_comparator(gbar)                # non-authoritative canary
             else:                                             # depth
                 self.ingestor.on_depth(e["event"])
@@ -349,8 +355,18 @@ class RouteBLive:
             if self.instrument is not None:
                 if acct is None:
                     acct, feed = self.acct_fn(now), self.feed_fn(now)
-                self.instrument.observe_verdict(v, acct, feed,
-                                                pd.Timestamp(now).timestamp(), roll_ctx=rc)
+                res = self.instrument.observe_verdict(v, acct, feed,
+                                                      pd.Timestamp(now).timestamp(),
+                                                      roll_ctx=rc)
+                # hand every placement to the lifecycle: armed -> the broker ref; shadow ->
+                # a synthetic ref so the watch's would-be cancels become §D evidence.
+                if self.lifecycle is not None and res.get("action") == "place":
+                    intent = res["intent"]
+                    ref = res.get("ref") or f"shadow:{intent.setup_id}"
+                    self.lifecycle.on_placed(ref, side=intent.side,
+                                             entry=float(intent.entry_ref),
+                                             stop=float(intent.stop),
+                                             size=int(intent.size))
             out.append(v)
         return out
 

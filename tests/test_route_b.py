@@ -7,7 +7,6 @@ makes any order route impossible."""
 from __future__ import annotations
 
 import json
-from datetime import date
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -17,7 +16,6 @@ import pytest
 from src.canon.book import DepthBook
 from src.canon.ingestor import CanonIngestor
 from src.canon.sierra_files import SierraFileFeed, write_scid
-from src.canon.sierra_symbol import RollWatcher, resolve_scid_path
 from src.canon.spine import AccountState, FeedHealth
 from src.live.route_b import (
     JsonlSink,
@@ -193,6 +191,32 @@ def test_comparator_writes_only_canary_never_journal_or_spine(tmp_path):
     assert canary and canary[0]["lane"] == "champion" and canary[0]["dollars"] == 42.0
     assert not (tmp_path / "verdicts.jsonl").exists()  # champion never touches the verdict journal
     assert not (tmp_path / "sizing.jsonl").exists()    # nor the spine
+
+
+def test_shadow_placement_reaches_the_lifecycle_with_a_synthetic_ref(tmp_path):
+    """The armed-path assembly seam: a verdict the disarmed spine would PLACE is handed to
+    the TradeLifecycle under a synthetic shadow ref, so the order-watch's would-be cancels
+    become §D evidence — with the broker still a _NoBroker (zero calls possible)."""
+    from src.live.trade_lifecycle import TradeLifecycle
+    rows = []
+    lc = TradeLifecycle(armed=False, account="FUNDED", journal=rows.append)
+    fill = _ts("08:01")
+    src = FixtureVerdictSource({"2026-03-17": [_verdict(fill)]})
+    live = _live(tmp_path, src)
+    live.lifecycle = lc
+    live.dispatch([
+        {"kind": "minute", "ts": _ts("08:00"), "bar": _bar(_ts("08:00")), "tape": _tape()},
+        {"kind": "minute", "ts": _ts("08:01"), "bar": _bar(_ts("08:01")), "tape": _tape()},
+    ], now=_ts("08:01"))
+    resting = [r for r in rows if r["event"] == "entry_resting"]
+    assert len(resting) == 1
+    assert resting[0]["ref"].startswith("shadow:") and resting[0]["executed"] is False
+    assert resting[0]["entry"] == 18000.0 and resting[0]["side"] == "B"
+    # 08:01 NY is in-window and the bar (high 100) never ran above the long limit, so the
+    # watch keeps watching — this also pins that UTC-stamped live bars evaluate as NY
+    # wall-clock (the naive read made 12:01Z look past the window's end).
+    assert [r for r in rows if r["event"] == "order_watch"] == []
+    assert lc.watch.watching == [resting[0]["ref"]] and not lc.halted
 
 
 # --------------------------------------------------------------------------- roll tag

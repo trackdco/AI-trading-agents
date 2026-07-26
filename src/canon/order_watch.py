@@ -102,7 +102,9 @@ class OrderWatch:
         if its fill landed on a bar that ALSO satisfies the cancel condition, that is the
         engine-vs-live race (engine cancels, exchange filled first): reported with
         raced_fill=True so it reaches the journal as a divergence, never silently."""
-        tod = pd.Timestamp(ts).time()
+        ts = pd.Timestamp(ts)
+        # the engine's windows are NY WALL-CLOCK; live bars arrive UTC-stamped (.scid feed).
+        tod = (ts.tz_convert(NY) if ts.tzinfo is not None else ts).time()
         out: list[dict] = []
         for ref, o in list(self._orders.items()):
             sign = 1 if o.side == "B" else -1

@@ -106,6 +106,12 @@ class CanonIngestor:
         """One MBO/depth event (see src/canon/book.OrderBook.apply)."""
         self.book.apply(event)
 
+    # ---- frame accessors (for the trade lifecycle / exit driver) -------------
+    def bars_frame(self) -> pd.DataFrame:
+        """The accumulated engine-shaped 1m bars (ts_event/open/high/low/close/volume) —
+        the frame the exit driver drives simulate() over."""
+        return pd.DataFrame(self._bars)
+
     # ---- VWAP bands (computed on the accumulated bars) ----------------------
     def _bars_with_vwap(self) -> pd.DataFrame:
         if self._vwap_cache is None:

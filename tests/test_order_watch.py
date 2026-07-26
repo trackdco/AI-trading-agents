@@ -78,6 +78,16 @@ def test_overnight_window_wrap():
     assert out and out[0]["reason"] == "cancelled_window_end"
 
 
+def test_utc_stamped_bars_evaluate_against_ny_wall_clock():
+    """Live bars arrive UTC-stamped (.scid feed); the engine's windows are NY wall-clock.
+    A 09:00 NY bar expressed in UTC (13:00/14:00Z) must NOT read as past the window."""
+    w = _watch()
+    w.register("r1", "B", 100.0)
+    assert w.on_bar(_ts("09:00").tz_convert("UTC"), high=100.5, low=99.5) == []
+    out = w.on_bar(_ts("10:15").tz_convert("UTC"), high=100.5, low=99.5)
+    assert out and out[0]["reason"] == "cancelled_window_end"
+
+
 def test_filled_order_is_released_without_cancelling():
     w = _watch()
     w.register("r1", "B", 100.0)
