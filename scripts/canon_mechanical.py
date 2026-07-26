@@ -62,7 +62,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.live_thresholds import TH  # frozen thresholds (LIVE-STACK #1)  # noqa: E402
 
 
-def build_canon(T, news_gate=None):
+def build_canon(T, news_gate=None, dead_zones=None):
     """T = trade_matrix rows. Returns the canon book with score, Q, size, governor, pl.
 
     news_gate: optional object exposing `.blocks(ts_et) -> bool`, True where a PRE-OPEN
@@ -72,6 +72,12 @@ def build_canon(T, news_gate=None):
     ordering: the detector still fires the signal (so the Layer-3 governor's rolling state
     is unchanged), the order is simply never placed (so a vetoed trade does not consume
     the day's first-trade slot). Default None = pre-ruling behaviour, bit-identical.
+
+    dead_zones: optional list of (start_hm, end_hm) minute-of-day ET intervals; fills
+    inside any zone are vetoed (size -> 0) at the same stage as the news gate. ANGUS RULING
+    2026-07-26: [(595, 600)] — "guess we're gonna cut trade entries from 9:55 till 10:00."
+    Evidence: docs/GOLDEN-WINDOW-DISSECTION.md §4 (champion pop: −23.0R raw, 0% win under the
+    refinement, negative both years) + the canon's own zone trades (3 taken, 0 wins, −$372).
 
     Deliberately a GATE OBJECT, not a precomputed mask: the merges below drop rows and
     reset the index, so any mask built against the caller's `T` silently misaligns here.
@@ -136,6 +142,11 @@ def build_canon(T, news_gate=None):
     T.loc[gold_live & (T.Q <= 1), "size"] = 0.0          # structure without quality: no trade
     bq = gold_live & (T.Q >= 3) & (T["size"] > 0)
     T.loc[bq, "size"] = np.minimum(T.loc[bq, "size"] + 0.5, 1.5)   # quality stack: step up
+
+    # Dead-zone entry cut (ANGUS 2026-07-26) — same live-faithful ordering as the news veto.
+    if dead_zones:
+        for z0, z1 in dead_zones:
+            T.loc[(T.fillhm >= z0) & (T.fillhm < z1), "size"] = 0.0
 
     # Pre-open news blackout (ANGUS 2026-07-26) — veto before the nth escalation counts.
     if news_gate is not None:

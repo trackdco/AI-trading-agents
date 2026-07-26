@@ -52,8 +52,9 @@ the engine checklist). Calm-vs-war-day split does NOT survive per-year (parked).
 
 ## 6. Package items from this dissection (all frozen constants, canon-convention revalidation)
 1. **Early-golden refinement**: d15_conf ∧ wall-ahead (blind-OOS confirmed)
-2. **09:55–10:00 entry skip** (dead zone, both years, survives the refinement — n=30, needs
-   canon-convention confirmation before shipping)
+2. **09:55–10:00 entry skip** — **RULED & ADOPTED (Angus, 2026-07-26)**: canon's own zone
+   trades were 0-for-3 (−$372), confirming the champion evidence. In `build_canon`
+   `dead_zones=[(595,600)]`; arming reference now +$55,989.81/383
 3. 10:10–10:15 review (bleeds both years; the regime turn starts here)
 4. 10-min dead-trade cut (from the frontier study) — exit rule, unaffected by rr retraction
 

@@ -30,7 +30,8 @@ The question this document answers:
 > that at 03:00 on a Tuesday, does the bot stop itself?**
 
 The edge is validated: the leakage-clean canon **plus the pre-open news blackout**
-(`output/baseline_book_news.parquet`) is **+$55,617.56 over 386 trades** — the arming reference
+(`output/baseline_book_news.parquet`) is **+$55,989.81 over 383 trades** — the arming reference
+(now incl. the 09:55–10:00 dead-zone cut, ANGUS 2026-07-26; news-blackout-only step was +$55,617.56/386)
 (ANGUS 2026-07-26; `scripts/canon_news_clean.py`, `docs/FINDING-canon-has-no-news-blackout.md`).
 The leakage-fix-only step was +$52,522.81 / 404. (The original **+$56,065.18 / 400** was
 the *pre-lookahead-fix* figure; it was inflated ~$3.5k by a look-ahead in the pre-window `C`

@@ -55,7 +55,8 @@ def main() -> None:
     T_clean = T.copy()
     T_clean["conf_PM"] = T_clean["pm_sofar_conf"]           # correction 1: the look-ahead fix
     clean = _sized(build_canon(T_clean), lon)               # arming reference today
-    news = _sized(build_canon(T_clean, news_gate=gate), lon)   # + correction 2
+    news = _sized(build_canon(T_clean, news_gate=gate,
+                          dead_zones=[(595, 600)]), lon)   # + corrections 2 & 3
 
     def stats(b):
         d = b.groupby("day").pl.sum()
@@ -70,7 +71,7 @@ def main() -> None:
 
     a, z = stats(clean), stats(news)
     lines = [
-        "# The new canon standard — leakage-clean C + pre-open news blackout", "",
+        "# The new canon standard — leakage-clean C + news blackout + 09:55-10:00 dead-zone cut", "",
         "ANGUS RULING 2026-07-26. Correction 1 (`conf_PM` -> `pm_sofar_conf`) was already the",
         f"arming reference at +${CLEAN_ANCHOR:,.2f}. Correction 2 is the news blackout.", "",
         "| metric | clean only (today's reference) | **+ news blackout** | delta |",

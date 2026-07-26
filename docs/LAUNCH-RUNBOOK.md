@@ -106,7 +106,7 @@ All-in ≈ **$95–125/mo** on the included feed, or **$135–170/mo** with the 
     python -m scripts.parity_harness agent_replay.parquet                          # full 2yr
     ```
     Each stage must be an exact **PASS** before widening; the full run must reproduce the
-    **CURRENT ARMING REFERENCE — +$55,617.56 / 386 trades, `baseline_book_news.parquet`**
+    **CURRENT ARMING REFERENCE — +$55,989.81 / 383 trades, `baseline_book_news.parquet`**
     (regenerate on the box: `python -m scripts.canon_news_clean`; see HEADLINE-NUMBERS.md —
     the +$56,065/400 and +$52,522/404 figures are superseded), every conviction/stop/micro/P&L
     matching exactly. This proves the
