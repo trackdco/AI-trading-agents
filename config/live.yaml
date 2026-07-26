@@ -41,7 +41,9 @@ spine:                            # TIER-1 SAFETY LIMITS (PROMOTION-GATE §D2 bl
 
 archive:                          # nightly Sierra .scid/.depth offload (scripts/archive_sierra.py)
   data_dir: C:/SierraChart/Data   # Sierra Data dir (front-month .scid + MarketDepthData/*.depth)
-  bucket:   nq-sierra-book        # Backblaze B2 bucket (creds from B2_KEY_ID / B2_APP_KEY env)
+  bucket:   nq-mbo-archive        # Backblaze B2 bucket (creds from B2_KEY_ID / B2_APP_KEY env)
+                                  #   Pat's existing bucket (created 2026-07-24, confirmed on
+                                  #   the box 2026-07-26) — supersedes the planned nq-sierra-book
   manifest: output/live/archive_manifest.json   # {key: size} — makes the nightly run idempotent
   prefix:   sierra                # B2 key prefix (repointed from the old "mbo" prefix)
   root:     NQ                    # symbol root
