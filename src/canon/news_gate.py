@@ -34,13 +34,15 @@ from pathlib import Path
 import pandas as pd
 
 CALENDARS = ("config/news_calendar_hist.csv", "config/news_calendar.csv")
+DAILY_DIR = Path("data/reference/news_daily")   # sentinel snapshots (scripts/news_daily_agent.py)
 PRE_OPEN_CUTOFF = _time(9, 30)      # "pre-market" = anything printing before the cash open
 DAY_MARKER = _time(0, 0)            # 00:00 rows are all-day markers (holidays, OPEC), not prints
 
 
 def _load_raw(paths=CALENDARS) -> pd.DataFrame:
     frames = []
-    for p in paths:
+    daily = sorted(DAILY_DIR.glob("news_*.csv")) if DAILY_DIR.exists() else []
+    for p in list(paths) + daily:
         if not Path(p).exists():
             continue
         d = pd.read_csv(p, comment="#")
@@ -52,7 +54,9 @@ def _load_raw(paths=CALENDARS) -> pd.DataFrame:
     c["ts"] = pd.to_datetime(c["datetime_ET"], errors="coerce")
     c["event"] = c["event"].astype(str).str.strip()
     c["impact"] = c["impact"].astype(str).str.strip().str.lower()
-    return c.dropna(subset=["ts"]).sort_values("ts").reset_index(drop=True)
+    # daily sentinel rows are appended last -> keep the FRESHEST row per (minute, event)
+    c = c.dropna(subset=["ts"]).drop_duplicates(subset=["ts", "event"], keep="last")
+    return c.sort_values("ts").reset_index(drop=True)
 
 
 def ever_high(cal: pd.DataFrame) -> set[str]:
@@ -93,6 +97,12 @@ class NewsGate:
         """
         rel = self.releases.get(ts_et.date())
         return rel is not None and ts_et < rel
+
+    def snapshot_present(self, day: _date) -> bool:
+        """True if the sentinel wrote a snapshot for `day`. FAIL-CLOSED CONTRACT (Angus
+        2026-07-26): no snapshot for today -> block ALL pre-09:30 entries. A missing board
+        is a red-folder day, never "no news"."""
+        return (DAILY_DIR / f"news_{day}.csv").exists()
 
     def is_stale(self, day: _date) -> bool:
         """A calendar that has run out cannot clear a day. Callers must FAIL CLOSED:
