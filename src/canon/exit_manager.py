@@ -17,11 +17,18 @@ Rules, faithful to src/backtest/engine.py's V8 arm (cited inline):
                   exit NOW at the market (canon_mechanical.py Layer 2d).
   * EOD FLATTEN — flatten any remainder at `eod_flatten`.
 
-FIDELITY GATE (not optional): this is a decision component, NOT a second source of truth. Before
-arming, it MUST reproduce engine.py's exits trade-for-trade on the CLEAN book
-(baseline_book_clean.parquet) — the A-section reconciliation. A hand-maintained copy of engine.py
-management is a drift risk (the champion-vs-canon lesson); the intended end state is driving
-engine.py's own management. Until the A-parity check is green this must not go live armed.
+STATUS — DEMOTED TO COMPARATOR (superseded). This module is NO LONGER the production exit path
+and must not be armed. `src/canon/exit_driver.py` is: it drives engine.py's OWN management via
+the `on_manage` hook, so its exits are engine.py's by construction rather than by re-statement
+(proved in tests/test_exit_driver.py — the emitted events reconstruct every TradeRecord, and an
+isolated re-run reproduces the in-context position's actions byte-for-byte).
+
+The reason for the demotion is the risk this module always carried and could never retire: it is
+a HAND-MAINTAINED COPY of engine.py's management, so every future engine edit silently forks it
+(the champion-vs-canon lesson — a faithful-to-spec re-write shared 14% of its trades with the
+thing it re-wrote). Its remaining job is to be the second opinion: run it alongside the driver in
+shadow and journal any divergence, which is a cheap standing check on both. If it ever disagrees
+with the driver, the DRIVER is right by definition and this module is the thing to fix or delete.
 """
 from __future__ import annotations
 

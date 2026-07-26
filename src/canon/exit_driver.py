@@ -9,7 +9,7 @@ surfaced verbatim through the `on_manage` callback and translated into broker or
 
   drive()            run simulate() with on_manage; return the FILL + ordered exit actions.
   entry pinned       the FILL event's entry/stop MUST match the canon's to the tick before ANY
-                     exit is trusted (verified in scripts/exit_driver_verify.py).
+                     exit is trusted (held to real bars in tests/test_exit_driver.py).
   3-min cut          canon_mechanical Layer 2d overlay (NOT in simulate): reuse the frozen
                      condition, applied at t+3min as an early MARKET exit, precedence over simulate.
   to_broker_actions  stop_move → modify the resting stop; partial → partial-close; exit → the
