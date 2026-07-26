@@ -129,14 +129,22 @@ from the matrix scripts rather than re-deriving.
   file (`NQZ26-CME.scid`/`.depth`) and stops appending to the old one, so a file-tail feed
   pinned to the old path goes **silently stale**. `src/canon/sierra_symbol.py` resolves the
   active front-month symbol/file for a date (`resolve_scid_path`/`resolve_depth_path`) and a
-  `RollWatcher` detects the switch. **Now wired:** the Route-B live loop
+  `RollWatcher` detects the switch. **Wired:** the Route-B live loop
   (`src/live/route_b.RouteBLive`, driven by `paper_run` `feed.type: sierra`) re-points the
   `.scid` at the roll and the `.depth` every session (per-day file) via `resolve_*_path`, and
-  fires `format_roll_alert` over Telegram. **Still deferred:** a live `roll` tag on the
-  *multi-day* buffers (champion warmup + canon prior-week levels span the unspliced price gap
-  until they age out — the live twin of `src/engine/data.tag_rolls`); until then §E's rule
-  stands — a rollover inside the paper window resets the promotion clock unless the rollover
-  handling was itself part of the tested period.
+  fires `format_roll_alert` over Telegram.
+- **Live roll TAG (`RollTagger`/`RollState`, the twin of `src/engine/data.tag_rolls`).** The
+  backtest **spans** rolls — its `roll` column is diagnostic-only (consumed solely by
+  `diagnostics.py` to partition roll-day trades; `snapshot.py`/level logic ignore it and
+  compute prior-week H/L across the unspliced gap). So the live buffers **also span** (they are
+  NOT trimmed at a roll) — trimming would diverge from the validated book and fail the fidelity
+  gate. What the live path adds is the TAG: `RollState` marks the first post-roll bar, stamps
+  `roll`/`contract` onto the champion journal (via `LiveRunner(ambient_extra=…)`) and the
+  shadow `sizing.jsonl`, and journals a `roll` decision. `gate_report.py` §E then verifies the
+  roll was tagged (E1), flags the §E clock-reset when roll-day trades exist (E2), and leaves
+  roll-timing parity (calendar-roll vs the backtest's volume-roll) for a reference date (E3).
+  Net: a rollover inside the paper window is now **detected and reset mechanically** (§E),
+  span-preserving, rather than silently spanning untracked.
 - Entries are **limit retests** — the entire canon was validated on limit fills at the
   retest level. Send a **limit order at the computed `entry_ref`**, bracketed with the
   stop and target, via DTC `SubmitNewSingleOrder` (include `TradeAccount`, `Quantity`,

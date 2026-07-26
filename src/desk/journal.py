@@ -122,6 +122,14 @@ class JournalRecord(BaseModel, extra="forbid"):
                                             #   signed minutes to the nearest high-impact
                                             #   release, or "none"
 
+    # --- contract roll (v1.1; live twin of engine.data.tag_rolls, src/canon/sierra_symbol) ---
+    # Diagnostic, NOT corrective: the backtest SPANS rolls (roll is consumed only by
+    # diagnostics.py to partition roll-day trades) so the live buffers span too — this flag
+    # just lets the gate/diagnostics partition roll-day trades identically and lets §E reset the
+    # promotion clock across a roll. Both optional so pre-roll rows still validate.
+    roll: bool | None = None              # True if this trade's session saw a contract roll
+    contract: str | None = None           # the front-month symbol in force (e.g. "NQU26")
+
     # --- review (Angus-filled later) ----------------------------------------
     angus_verdict: str | None = None      # free text: "valid I'd take" | "wouldn't" | "missed context"
     would_angus_take: bool | None = None  # prefilled by the capture-matcher on a hand-log match

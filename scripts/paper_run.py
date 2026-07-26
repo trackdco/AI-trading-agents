@@ -145,7 +145,7 @@ def _check_kill_switch_redundancy(tgcfg: TelegramConfig, log: logging.Logger,
     tg.say(warn)                                        # broadcast to the group on launch
 
 
-def build_runner(cfg: dict, alerts: LaunchAlerts) -> LiveRunner:
+def build_runner(cfg: dict, alerts: LaunchAlerts, ambient_extra=None) -> LiveRunner:
     paths = cfg["paths"]
     risk = cfg.get("risk", {})
     runner_cfg = cfg.get("runner", {})
@@ -164,6 +164,7 @@ def build_runner(cfg: dict, alerts: LaunchAlerts) -> LiveRunner:
         alerts=alerts,
         history_days=int(runner_cfg.get("history_days", 20)),
         ambient=bool(runner_cfg.get("ambient", True)),
+        ambient_extra=ambient_extra,   # roll/contract stamp on the champion journal (sierra path)
         # spread_guard stays None unless a real guard is constructed; config flag is
         # advisory only here (arming it changes fills — deliberately opt-in).
     )
@@ -215,7 +216,7 @@ def stream_replay(runner: LiveRunner, feed_cfg: dict, log: logging.Logger,
 
 
 def stream_live(runner: LiveRunner, feed_cfg: dict, log: logging.Logger,
-                should_stop) -> None:
+                should_stop, roll_state=None) -> None:
     """Route-B live tail: drive the paper desk off Sierra's own .scid/.depth files.
 
     Fans each closed minute to the champion (journal.jsonl) AND a shadow canon/spine that
@@ -252,6 +253,7 @@ def stream_live(runner: LiveRunner, feed_cfg: dict, log: logging.Logger,
                           on_lag=lambda r: None)
     instrument = build_shadow_instrument(out_dir, account=sc.get("account", "PAPER"))
     live = RouteBLive(runner=runner, feed=feed, data_dir=data_dir, root=root, suffix=suffix,
+                      roll_state=roll_state,   # shared with the runner's ambient_extra stamp
                       instrument=instrument, alerts=runner.alerts)
 
     # warm start from recent history (bars only; footprint optional via warmup.footprint)
@@ -295,7 +297,15 @@ def main(argv=None) -> int:
                     "until a human removes it", kill)
 
     alerts = build_alerts(cfg, log, force_off=(args.telegram == "off"))
-    runner = build_runner(cfg, alerts)
+    # Route-B paths get a shared live roll tag (RollState): the runner's ambient stamps
+    # roll/contract on the champion journal, the loop tags bars + journals roll events.
+    ftype = cfg["feed"]["type"]
+    roll_state = None
+    if ftype in ("live", "sierra"):
+        from src.live.route_b import RollState
+        roll_state = RollState(root=cfg["feed"].get("sierra", {}).get("root", "NQ"))
+    runner = build_runner(cfg, alerts,
+                          ambient_extra=(roll_state.context if roll_state is not None else None))
     log.info("runner assembled | equity=$%.0f ledger=%s journal=%s",
              runner.broker.equity(), cfg["paths"]["ledger"], cfg["paths"]["journal_dir"])
 
@@ -309,12 +319,11 @@ def main(argv=None) -> int:
     signal.signal(signal.SIGINT, _handle)
     signal.signal(signal.SIGTERM, _handle)
 
-    ftype = cfg["feed"]["type"]
     try:
         if ftype == "replay":
             stream_replay(runner, cfg["feed"], log, lambda: state["stop"])
         elif ftype in ("live", "sierra"):
-            stream_live(runner, cfg["feed"], log, lambda: state["stop"])
+            stream_live(runner, cfg["feed"], log, lambda: state["stop"], roll_state)
         else:
             raise ValueError(f"unknown feed.type {ftype!r} (expected replay|sierra|live)")
     except NotImplementedError as e:

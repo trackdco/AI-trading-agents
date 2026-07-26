@@ -104,6 +104,12 @@ class LiveJournal:
     def on_halt(self, date: str, reason: str) -> None:
         self._decision({"type": "halt", "date": date, "reason": reason})
 
+    def on_roll(self, event: dict) -> None:
+        """Journal a contract-roll event (live twin of engine.data.tag_rolls). Gives the gate a
+        roll-day date-set to partition trades by (as diagnostics.py does) and the §E clock-reset
+        key. `event`: {date, from, to, bar_ts}."""
+        self._decision({"type": "roll", **event})
+
     def note(self, text: str) -> None:
         self._decision({"type": "note", "text": text})
 

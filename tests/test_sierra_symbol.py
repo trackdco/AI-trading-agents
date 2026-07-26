@@ -9,6 +9,7 @@ from datetime import date
 import pandas as pd
 
 from src.canon.sierra_symbol import (
+    RollTagger,
     RollWatcher,
     format_roll_alert,
     front_contract,
@@ -74,3 +75,17 @@ def test_roll_watcher_seeds_without_event():
     w = RollWatcher()                                      # no start → first check seeds
     assert w.check(pd.Timestamp("2026-09-13", tz="UTC")) is None
     assert w.current == "NQU26"
+
+
+def test_roll_tagger_marks_first_post_roll_bar():
+    """The live twin of tag_rolls: first bar is never a roll; roll=True once, on the first bar
+    whose front-month contract differs from the previous bar's."""
+    tg = RollTagger()
+    d13 = pd.Timestamp("2026-09-13 12:00", tz="America/New_York")
+    d14 = pd.Timestamp("2026-09-14 12:00", tz="America/New_York")
+    a = tg.tag(d13)
+    assert a == {"contract": "NQU26", "roll": False}       # first bar, never a roll
+    assert tg.tag(d13) == {"contract": "NQU26", "roll": False}   # same contract, no roll
+    b = tg.tag(d14)
+    assert b == {"contract": "NQZ26", "roll": True}         # crossed the roll -> tagged once
+    assert tg.tag(d14) == {"contract": "NQZ26", "roll": False}   # already rolled, no re-tag

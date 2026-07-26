@@ -30,6 +30,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from datetime import time as dtime
 from pathlib import Path
 
 import pandas as pd
@@ -41,11 +42,13 @@ from src.canon.infra import SpineJournalSink
 from src.canon.ingestor import CanonIngestor
 from src.canon.sierra_files import SierraFileFeed
 from src.canon.sierra_symbol import (
+    RollTagger,
     RollWatcher,
     format_roll_alert,
     resolve_depth_path,
     resolve_scid_path,
 )
+from src.engine.data import _session_date
 from src.canon.spine import (
     AccountState,
     FeedHealth,
@@ -88,6 +91,44 @@ class JsonlSink:
             self.failures += 1
 
 
+# --------------------------------------------------------------------------- roll state
+@dataclass
+class RollState:
+    """Live roll-tag state (the loop-side wrapper around RollTagger). Tracks the active
+    front-month contract and the SET of session-dates that saw a roll — the live twin of the
+    backtest's roll-day partition (diagnostics.py). Buffers are NOT trimmed at a roll: the
+    backtest SPANS the gap on the unspliced continuous series, so live must span too or diverge.
+    This state only TAGS (for the journal/gate partition) and lets §E reset the clock."""
+    root: str = "NQ"
+    tagger: RollTagger = None
+    contract: str | None = None
+    roll_sessions: set = field(default_factory=set)
+    rolls: list = field(default_factory=list)
+
+    def __post_init__(self):
+        if self.tagger is None:
+            self.tagger = RollTagger(root=self.root)
+
+    def on_bar(self, ts) -> dict:
+        """Tag a bar; update state; return {contract, roll, session}. `roll` is True once, on
+        the first bar of the new contract (matches engine.data.tag_rolls)."""
+        t = self.tagger.tag(ts)
+        prev, self.contract = self.contract, t["contract"]
+        session = str(_session_date(pd.Series([pd.Timestamp(ts)]), dtime(18, 0)).iloc[0])
+        bar_ts = str(pd.Timestamp(ts))
+        if t["roll"]:
+            self.roll_sessions.add(session)
+            self.rolls.append({"session": session, "from": prev, "to": t["contract"],
+                               "bar_ts": bar_ts})
+        return {**t, "session": session, "from": prev, "bar_ts": bar_ts}
+
+    def context(self, tr) -> dict:
+        """Per-trade roll context for the journal ambient (roll = did this trade's session see
+        a roll; contract = the front month in force)."""
+        return {"roll": str(getattr(tr, "trade_date", "")) in self.roll_sessions,
+                "contract": self.contract}
+
+
 # --------------------------------------------------------------------------- shadow spine
 @dataclass
 class ShadowSpineInstrument:
@@ -104,7 +145,8 @@ class ShadowSpineInstrument:
     account: str = "PAPER"
     guard_report_sink: Callable[[dict], None] | None = None
 
-    def observe(self, tr, acct: AccountState, feed: FeedHealth, now_epoch: float) -> dict:
+    def observe(self, tr, acct: AccountState, feed: FeedHealth, now_epoch: float,
+                roll_ctx: dict | None = None) -> dict:
         conv = float(getattr(tr, "size", 1.0))            # champion conviction (§9 size)
         entry = float(tr.entry)
         stop = float(tr.stop_initial)
@@ -112,11 +154,13 @@ class ShadowSpineInstrument:
         micros = dollar_risk_micros(conv, stop_pts) if stop_pts > 0 else 0
         available_dd = acct.equity - acct.trailing_floor
         setup_id = f"{tr.trade_date}:{tr.fill_ts}"
+        rc = roll_ctx or {}
 
         self.sizing_sink({"trade_date": str(tr.trade_date), "fill_ts": str(tr.fill_ts),
                           "direction": tr.direction, "conviction": conv, "stop_pts": stop_pts,
                           "micros": int(micros), "available_dd": None,  # floor schedule = anchor
-                          "available_dd_live": round(available_dd, 2)})
+                          "available_dd_live": round(available_dd, 2),
+                          "roll": rc.get("roll"), "contract": rc.get("contract")})
 
         intent = OrderIntent(
             side="B" if tr.direction == "long" else "S", order_type="limit",
@@ -174,6 +218,7 @@ class RouteBLive:
     ingestor: CanonIngestor = None                   # canon features (built if None)
     guard: FeedGuard = None
     watcher: RollWatcher = None
+    roll_state: RollState = None                      # live roll tag (span-preserving)
     instrument: ShadowSpineInstrument | None = None
     listener: object | None = None                   # Telegram CommandListener
     alerts: object | None = None                     # LaunchAlerts / TelegramAlerts (.say)
@@ -192,6 +237,8 @@ class RouteBLive:
             self.guard = FeedGuard()
         if self.watcher is None:
             self.watcher = RollWatcher(root=self.root)
+        if self.roll_state is None:
+            self.roll_state = RollState(root=self.root)
         if self.clock is None:
             self.clock = lambda: pd.Timestamp.now(tz="UTC")
         if self.acct_fn is None:
@@ -218,6 +265,12 @@ class RouteBLive:
         for e in events:
             if e["kind"] == "minute":
                 for gbar in self.guard.accept(e["bar"]):     # dedup / order / gap
+                    # roll tag BEFORE the champion sees the bar, so a trade completing on this
+                    # bar journals with the correct roll/contract via ambient_extra. Buffers are
+                    # NOT trimmed — the backtest spans the gap, so live spans it too.
+                    ri = self.roll_state.on_bar(pd.Timestamp(gbar["ts_event"]))
+                    if ri["roll"]:
+                        self._on_roll_bar(ri)
                     self.ingestor.on_bar(gbar)
                     t = e["tape"]
                     self.ingestor.on_minute_tape(e["ts"], t["delta"], t["vol"], t["vwp"])
@@ -229,8 +282,22 @@ class RouteBLive:
             now_epoch = pd.Timestamp(now).timestamp()
             acct, feed = self.acct_fn(now), self.feed_fn(now)
             for tr in completed:
-                self.instrument.observe(tr, acct, feed, now_epoch)
+                self.instrument.observe(tr, acct, feed, now_epoch,
+                                        roll_ctx=self.roll_state.context(tr))
         return completed
+
+    def _on_roll_bar(self, ri: dict) -> None:
+        """A roll bar arrived intraday (tag_rolls twin). Journal the roll event (so the gate can
+        partition roll-day trades and §E can reset the clock) and alert. This complements the
+        RollWatcher session-boundary re-point — same roll, finer granularity."""
+        journal = getattr(self.runner, "journal", None)
+        if journal is not None and hasattr(journal, "on_roll"):
+            journal.on_roll({"date": ri["session"], "from": ri.get("from"),
+                             "to": ri["contract"], "bar_ts": ri.get("bar_ts")})
+        if self.alerts is not None:
+            self.alerts.say(f"🔁 ROLL TAG {ri['session']}: now {ri['contract']} — §E resets "
+                            f"the promotion clock for this session (buffers span the gap, "
+                            f"matching the backtest).")
 
     # ---- roll / per-day depth swap ----------------------------------------------------
     def _maybe_retarget(self, now: pd.Timestamp) -> None:

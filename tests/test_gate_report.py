@@ -120,6 +120,33 @@ def test_D3_fails_without_dst():
     assert g["D3"].status == gr.FAIL
 
 
+# --------------------------------------------------------------------------- E. Roll / §E
+def test_E_roll_tagged_and_reset_required():
+    trades = [_trade(trade_date="2026-09-14")]              # a trade in the roll session
+    decisions = [{"type": "roll", "date": "2026-09-14", "from": "NQU26", "to": "NQZ26"}]
+    g = _by_id(gr.eval_E_roll({"trades": trades, "decisions": decisions}))
+    assert g["E1"].status == gr.PASS                        # roll was tagged
+    assert g["E2"].status == gr.INCONCLUSIVE                # roll-day trade -> §E reset, confirm
+    assert g["E3"].status == gr.INCONCLUSIVE                # timing parity needs backtest date
+
+
+def test_E_roll_untagged_fails():
+    trades = [_trade(trade_date="2026-09-14")]
+    g = _by_id(gr.eval_E_roll({"trades": trades, "decisions": []}))   # roll not journaled
+    assert g["E1"].status == gr.FAIL and "MISSING" in g["E1"].detail
+
+
+def test_E_roll_no_roll_in_window():
+    trades = [_trade(trade_date="2026-06-01"), _trade(trade_date="2026-06-02")]
+    g = _by_id(gr.eval_E_roll({"trades": trades, "decisions": []}))
+    assert g["E1"].status == gr.INCONCLUSIVE and g["E2"].status == gr.INCONCLUSIVE
+
+
+def test_journal_record_accepts_roll_and_contract():
+    rec = _make_record("ny", "E4")                          # helper now sets roll/contract
+    assert rec.roll is True and rec.contract == "NQZ26"
+
+
 # --------------------------------------------------------------------------- end-to-end
 def _make_record(session, playbook):
     return JournalRecord(
@@ -128,7 +155,7 @@ def _make_record(session, playbook):
         kind="rejection_block", pattern="A", htf_flag="with_trend", confluence_count=2,
         entry=18000.0, stop_initial=17990.0, size=1.0, exit_ts="2026-03-06T10:00:00-05:00",
         exit_price=18050.0, exit_reason="target", points=50.0, r_multiple=2.0, dollars=100.0,
-        slippage_ticks=1, session=session, playbook=playbook)
+        slippage_ticks=1, session=session, playbook=playbook, roll=True, contract="NQZ26")
 
 
 def test_build_report_end_to_end(tmp_path):
@@ -139,7 +166,7 @@ def test_build_report_end_to_end(tmp_path):
     (tmp_path / "spine.jsonl").write_text('{"event": "placed", "setup": "s1"}\n')
 
     report, all_pass = gr.build_report(tmp_path, expected_path=None)
-    assert "A. Correctness" in report and "D. Sample" in report
+    assert "A. Correctness" in report and "D. Sample" in report and "E. Roll" in report
     assert "Both books exercised" in report
     # A1-A3 are INCONCLUSIVE without parity artifacts, so overall must NOT promote.
     assert all_pass is False

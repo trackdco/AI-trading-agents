@@ -58,7 +58,8 @@ class LiveRunner:
                  history_days: int = DEFAULT_HISTORY_DAYS,
                  detector: LiveDetector | None = None,
                  sim_fn=None, session_policy=None,
-                 ambient: bool = True, spread_guard=None):
+                 ambient: bool = True, spread_guard=None,
+                 ambient_extra: Callable[[object], dict] | None = None):
         self.alerts = alerts
         self.history_days = history_days
         self.detect_enabled = True                   # off while feeding known-historical
@@ -94,9 +95,19 @@ class LiveRunner:
         # EVERYTHING"). The order-time spread guard stays OPT-IN (spread_guard=None) — it
         # drops orders, so arming it by default would diverge live from the validated
         # backtest; an operator enables it deliberately.
+        # ambient_extra (e.g. the live roll tag) is MERGED into vault_ambient so extra per-trade
+        # context (roll/contract) lands on the journaled record without touching the Vault.
+        base_ambient = vault_ambient if ambient else None
+        if ambient_extra is not None:
+            def _ambient_fn(tr, df, cal, _base=base_ambient, _extra=ambient_extra):
+                d = dict(_base(tr, df, cal) or {}) if _base is not None else {}
+                d.update(_extra(tr) or {})
+                return d
+        else:
+            _ambient_fn = base_ambient
         self.vault = Vault(session_policy=policy,
                            day_gate=self.guard.wrap(strategy_gate),
-                           ambient_fn=(vault_ambient if ambient else None),
+                           ambient_fn=_ambient_fn,
                            spread_guard=spread_guard,
                            on_guard_trip=self.journal.on_guard_trip, **vkw)
         self.vault.add_sink(self.guard.on_trade)     # BEFORE broker: fresh gate state

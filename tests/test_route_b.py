@@ -24,6 +24,7 @@ from src.canon.sierra_files import (
 from src.canon.sierra_symbol import RollWatcher, resolve_scid_path
 from src.canon.spine import AccountState, FeedHealth
 from src.live.route_b import (
+    RollState,
     RouteBLive,
     _NoBroker,
     build_shadow_instrument,
@@ -55,13 +56,24 @@ def _cand(**kw):
     return SimpleNamespace(**base)
 
 
+def _bar(ts, close=100.0):
+    return {"ts_event": ts, "open": close, "high": close, "low": close, "close": close,
+            "volume": 10.0}
+
+
+def _tape():
+    return {"delta": 1.0, "vol": 10.0, "vwp": 100.0}
+
+
 class FakeRunner:
     def __init__(self, journal_dir, trades_on=None):
         self.primed = None
         self.finalized = False
         self.alerts = None
         self.broker = SimpleNamespace(equity=lambda: 52_000.0)
-        self.journal = SimpleNamespace(dir=Path(journal_dir))
+        self.rolls_journaled = []
+        self.journal = SimpleNamespace(dir=Path(journal_dir),
+                                       on_roll=self.rolls_journaled.append)
         self._trades_on = trades_on or {}
         self.bars_seen = []
 
@@ -189,6 +201,54 @@ def test_maybe_retarget_swaps_depth_daily_without_roll(tmp_path):
     live._maybe_retarget(_ts("09:00", day="2026-03-18"))    # next day, same contract
     d2 = str(feed.depth_path)
     assert d1 != d2 and Path(feed.scid_path) == sp          # depth swapped, scid unchanged
+
+
+# --------------------------------------------------------------------------- roll tag
+def test_roll_state_tracks_sessions_and_context():
+    rs = RollState()
+    a = rs.on_bar(_ts("12:00", "2026-09-13"))
+    assert a["contract"] == "NQU26" and a["roll"] is False
+    b = rs.on_bar(_ts("12:00", "2026-09-14"))               # crosses the roll
+    assert b["contract"] == "NQZ26" and b["roll"] is True and b["from"] == "NQU26"
+    assert rs.roll_sessions == {"2026-09-14"} and len(rs.rolls) == 1
+    # a trade in the roll session gets roll=True; one before does not
+    assert rs.context(_cand(trade_date="2026-09-14"))["roll"] is True
+    assert rs.context(_cand(trade_date="2026-09-13"))["roll"] is False
+    assert rs.context(_cand(trade_date="2026-09-14"))["contract"] == "NQZ26"
+
+
+def test_dispatch_tags_roll_journals_event_and_stamps_sizing(tmp_path):
+    # two bars either side of the Sep-14 roll; the champion completes a trade on the roll bar.
+    roll_bar_ts = _ts("12:00", "2026-09-14")
+    events = [
+        {"kind": "minute", "ts": _ts("12:00", "2026-09-13"),
+         "bar": _bar(_ts("12:00", "2026-09-13")), "tape": _tape()},
+        {"kind": "minute", "ts": roll_bar_ts, "bar": _bar(roll_bar_ts), "tape": _tape()},
+    ]
+    runner = FakeRunner(tmp_path, trades_on={str(roll_bar_ts): [_cand(trade_date="2026-09-14")]})
+    said = []
+    live = RouteBLive(runner=runner, feed=SierraFileFeed(tmp_path / "none.scid"),
+                      data_dir=tmp_path, instrument=build_shadow_instrument(tmp_path),
+                      ingestor=CanonIngestor(book=DepthBook()),
+                      alerts=SimpleNamespace(say=said.append))
+    live.dispatch(events, now=roll_bar_ts)
+
+    # roll event journaled once, with from/to contracts, + a roll-tag alert
+    assert len(runner.rolls_journaled) == 1
+    assert runner.rolls_journaled[0]["to"] == "NQZ26" and runner.rolls_journaled[0]["from"] == "NQU26"
+    assert any("ROLL TAG" in s for s in said)
+    # sizing.jsonl row for the roll-session trade is stamped roll=True / contract=NQZ26
+    sizing = [json.loads(x) for x in (tmp_path / "sizing.jsonl").read_text().splitlines()]
+    assert sizing[-1]["roll"] is True and sizing[-1]["contract"] == "NQZ26"
+
+
+def test_dispatch_no_roll_no_event(tmp_path):
+    ts = _ts("12:00", "2026-03-17")
+    runner = FakeRunner(tmp_path)
+    live = RouteBLive(runner=runner, feed=SierraFileFeed(tmp_path / "none.scid"),
+                      data_dir=tmp_path, ingestor=CanonIngestor(book=DepthBook()))
+    live.dispatch([{"kind": "minute", "ts": ts, "bar": _bar(ts), "tape": _tape()}], now=ts)
+    assert runner.rolls_journaled == []                     # first bar is never a roll
 
 
 # --------------------------------------------------------------------------- serve stop/stall

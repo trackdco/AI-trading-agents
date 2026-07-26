@@ -35,7 +35,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from datetime import timedelta  # noqa: E402
+
 from src.canon.gate_evidence import check_sizing  # noqa: E402
+from src.canon.sierra_symbol import front_month_symbol  # noqa: E402
 
 PASS, FAIL, INCONCLUSIVE, UNSET = "PASS", "FAIL", "INCONCLUSIVE", "UNSET"
 
@@ -310,6 +313,68 @@ def eval_D(a: dict) -> list[Gate]:
     return g
 
 
+# --------------------------------------------------------------------------- E. Roll / §E
+def _journaled_roll_sessions(decisions: list[dict]) -> set[str]:
+    return {d.get("date") for d in decisions if d.get("type") == "roll" and d.get("date")}
+
+
+def _expected_roll_sessions(days: list[date]) -> set[str]:
+    """Session-dates in the trade window on which the front-month contract changes (the live
+    twin of the backtest's roll days). Uses the same calendar rule as RollTagger."""
+    if not days:
+        return set()
+    out = set()
+    lo, hi = days[0], days[-1]
+    for o in range(lo.toordinal(), hi.toordinal() + 1):
+        d = date.fromordinal(o)
+        if front_month_symbol(d) != front_month_symbol(d - timedelta(days=1)):
+            out.add(str(d))
+    return out
+
+
+def eval_E_roll(a: dict) -> list[Gate]:
+    """Contract-roll handling (§E). The backtest SPANS rolls (roll is diagnostic-only) so live
+    spans too; these gates verify the roll was TAGGED (so trades can be partitioned identically)
+    and surface §E's clock-reset — a roll inside the sample resets the promotion clock unless the
+    rollover handling was itself the tested period."""
+    trades, decisions = a["trades"], a["decisions"]
+    days = sorted({d for d in _trade_dates(trades)})
+    journaled = _journaled_roll_sessions(decisions)
+    expected = _expected_roll_sessions(days)
+    g: list[Gate] = []
+
+    # E1 — every roll in the window was tagged/journaled (the tag_rolls twin actually fired).
+    if not expected:
+        g.append(Gate("E1", "Rolls tagged", INCONCLUSIVE,
+                      "trade window spans no contract roll — nothing to tag yet"))
+    else:
+        missing = sorted(expected - journaled)
+        g.append(Gate("E1", "Rolls tagged", PASS if not missing else FAIL,
+                      f"expected rolls {sorted(expected)}; journaled {sorted(journaled)}"
+                      + (f"; MISSING {missing} (roll not tagged)" if missing else "")))
+
+    # E2 — §E clock-reset: trades inside a roll session force a reset (can't auto-confirm the
+    # restart, so this BLOCKS until a human confirms the sample restarted across the roll).
+    roll_sessions = journaled | expected
+    roll_trades = [t for t in trades if str(t.trade_date) in roll_sessions]
+    if not roll_sessions:
+        g.append(Gate("E2", "§E clock-reset", INCONCLUSIVE, "no roll in the sample window"))
+    elif not roll_trades:
+        g.append(Gate("E2", "§E clock-reset", PASS,
+                      f"roll session(s) {sorted(roll_sessions)} carried no trades — no reset triggered"))
+    else:
+        g.append(Gate("E2", "§E clock-reset", INCONCLUSIVE,
+                      f"{len(roll_trades)} trade(s) in roll session(s) {sorted(roll_sessions)} — "
+                      f"§E resets the clock; confirm the sample restarts after the roll"))
+
+    # E3 — roll-timing parity: live rolls on a CALENDAR rule, the backtest on VOLUME; they must
+    # roll on the same day or near-roll levels diverge. Needs the backtest roll dates to confirm.
+    g.append(Gate("E3", "Roll-timing parity (calendar vs volume)", INCONCLUSIVE,
+                  "provide the backtest volume-roll date(s) to confirm live calendar-roll aligns "
+                  + (f"(live rolled {sorted(journaled)})" if journaled else "(no live roll yet)")))
+    return g
+
+
 # --------------------------------------------------------------------------- render
 def _emoji(status: str) -> str:
     return {PASS: "✅", FAIL: "❌", INCONCLUSIVE: "⬜", UNSET: "⏳"}.get(status, "?")
@@ -320,8 +385,9 @@ def render(sections: dict[str, list[Gate]]) -> tuple[str, bool]:
              "Status legend: ✅ PASS · ❌ FAIL · ⬜ INCONCLUSIVE (no evidence) · "
              "⏳ UNSET ([SET] threshold pending). Promotion requires **every** gate ✅.", ""]
     all_pass = True
-    titles = {"A": "A. Correctness", "B": "B. Execution", "C": "C. Operations", "D": "D. Sample"}
-    for sec in ("A", "B", "C", "D"):
+    titles = {"A": "A. Correctness", "B": "B. Execution", "C": "C. Operations",
+              "D": "D. Sample", "E": "E. Roll / clock-reset"}
+    for sec in ("A", "B", "C", "D", "E"):
         lines += [f"## {titles[sec]}", "", "| # | Gate | Status | Evidence |",
                   "|---|---|---|---|"]
         for g in sections[sec]:
@@ -332,9 +398,9 @@ def render(sections: dict[str, list[Gate]]) -> tuple[str, bool]:
     verdict = "PROMOTE ✅ — every gate PASS" if all_pass else \
         "DO NOT PROMOTE — one or more gates are not PASS (FAIL / INCONCLUSIVE / UNSET all block)"
     lines += ["---", "", f"**Overall: {verdict}**", "",
-              "E (reset conditions) and F (explicit non-gates) are policy, not computed here; "
-              "note that any code change to canon/sizer/spine/relay, any A-failure, any naked "
-              "position, any box config change, or an untested rollover resets the clock (§E)."]
+              "§E roll handling (E1–E3) is computed above from the live roll tag; the remaining "
+              "§E reset conditions (code changes to canon/sizer/spine/relay, any A-failure, any "
+              "naked position, any box config change) and §F non-gates are policy, not computed."]
     return "\n".join(lines), all_pass
 
 
@@ -355,7 +421,8 @@ def _load_expected(path: Path) -> list[tuple]:
 def build_report(d: Path, expected_path: Path | None) -> tuple[str, bool]:
     a = load_artifacts(d)
     expected = _load_expected(expected_path) if expected_path else None
-    sections = {"A": eval_A(a, expected), "B": eval_B(a), "C": eval_C(a), "D": eval_D(a)}
+    sections = {"A": eval_A(a, expected), "B": eval_B(a), "C": eval_C(a), "D": eval_D(a),
+                "E": eval_E_roll(a)}
     return render(sections)
 
 

@@ -145,3 +145,24 @@ def format_roll_alert(ev: RollEvent) -> str:
             f"Route-B feed must re-point at the new .scid/.depth files. Prices gap across the "
             f"roll (unspliced) — multi-day levels/warmup buffers span the gap until they age "
             f"out; verify the first post-roll session before trusting cross-roll levels.")
+
+
+@dataclass
+class RollTagger:
+    """Per-bar contract tag — the LIVE twin of `src/engine/data.tag_rolls`.
+
+    `tag(ts)` returns `{contract, roll}` for a bar at `ts`: `roll=True` on the FIRST bar whose
+    front-month contract differs from the previous bar's (the first bar is never a roll, exactly
+    like `tag_rolls`). This is diagnostic, NOT corrective: the backtest only TAGS rolls (the tag
+    is consumed solely by `diagnostics.py` to partition roll-day trades) and its level/trade
+    logic SPANS the gap on the unspliced continuous series — so the live buffers must span too,
+    or live diverges from the validated book. The tag lets the journal/gate partition roll-day
+    trades the same way and lets §E reset the promotion clock across a roll."""
+    root: str = "NQ"
+    _last: str | None = None
+
+    def tag(self, ts) -> dict:
+        sym = front_month_symbol(ts, self.root)
+        roll = self._last is not None and sym != self._last
+        self._last = sym
+        return {"contract": sym, "roll": roll}
