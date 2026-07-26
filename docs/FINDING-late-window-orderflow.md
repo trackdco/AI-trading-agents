@@ -175,3 +175,46 @@ canon's own intrade_matrix conventions must be used for the real re-calibration.
 trades lose both years), and the correct adoption is ONE mechanical package — floor + cut
 re-calibration + stop/target-family study — two-way OOS, new signed-off number, all frozen
 constants per docs/RULING-mechanical-only.md. Pending: the workflow's adversarial rr verdict.
+
+---
+
+## ADDENDUM 2026-07-26d — the cut frontier: dead-trade detection evens out at TEN minutes
+
+Angus: *"id like to see where the flagged loss evens out... i still think we can prevent a
+lot of losers from fully losing."* Full sweep (`scripts/loser_forensics.py`): horizon
+{3,5,10}min × mark {−0.05..−0.45R} × flow {off,−13,−60,−150}, both books, alive-at-h only.
+
+**The horizon is the whole answer — the grid is monotone:**
+
+| horizon | verdict | why |
+|---|---|---|
+| 3 min | NO cell survives both years (incl. the canon's own −0.11/−13) | 21–27% of underwater trades still recover; the cut kills 1-in-4 recoverers worth ~1.5R each |
+| 5 min | worst of all — every cell negative | same, plus the marks are deeper |
+| **10 min** | **EVERY cell positive with both-years agreement, both books** | recover rate has fallen to 15%, and flow-qualified to ~5% |
+
+Best cells (13-month dR, exit at the +10min mark):
+
+| book | rule | flagged | lose% | winners sacrificed | dR | 25/26 |
+|---|---|---|---|---|---|---|
+| rr1.5 | r_10 ≤ −0.05 & fw_10 ≤ −13 | 19 | **95%** | **1** | **+8.2R** | +4.4/+3.9 |
+| rr2.0 | r_10 ≤ −0.11 & fw_10 ≤ −13 | 17 | 94% | 1 | +6.7R | +3.0/+3.6 |
+
+**Candidate mechanical rule for the adoption package: still ≤ −0.05..−0.11R at 10 minutes
+AND 10-min flow against (fw_10 ≤ −13) → exit.** ~+7–8R/13mo per book (~+$1.5k @floor),
+one winner sacrificed, precision 94–95%. This REPLACES Layer-2d's 3-minute horizon, which
+on this population costs money even at its home floor (+1.1R with years disagreeing at
+rr2.0; −7.9R at rr1.5). Angus's instinct is confirmed with a twist: losers can be
+prevented from fully losing — but the tape needs ten minutes to prove death, and acting
+at three kills the quarter of underwater trades that were coming back.
+
+Caveats: n=12–19 per cell (small; the credible part is the monotone horizon structure,
+not any single cell); exit-at-mark approximation; exploratory — re-derive under
+intrade_matrix's own conventions, jointly with the floor, inside the one-package ritual.
+
+**Part B (flow while underwater)** is underpowered at per-year granularity (few cells reach
+n≥10/year) but the medians agree with Part A's mechanism: at 10min, recoverers show flow
+FLIPPED BACK positive (fw_10 median +271 vs −83/−103 for the dead) and heavy adverse
+pressing that price ABSORBED (−356 pressing yet alive = defense), while the dead drift down
+under modest pressing (no defense required). To power Part B properly, run the same
+forensics on the full canon both-books universe (~970+ trades) where intrade_matrix already
+has the conventions.
