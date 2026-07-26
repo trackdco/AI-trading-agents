@@ -148,6 +148,41 @@ So where did the 8× bust reduction come from? **Rule #1, alone:**
 
 The available-drawdown halt does all of the work, and does it essentially for free.
 
+**The proposal's exact cell, run rather than inferred from the two halves:**
+
+| configuration | bust | median | p10 |
+|---|---|---|---|
+| buffer $250, day stop off | 0.14% | $309,736 | $224,088 |
+| buffer $250 + −4R | 0.14% | **$309,736** | **$224,088** |
+| buffer $400, day stop off | 0.00% | $308,407 | $219,763 |
+| **buffer $400 + −4R** | **0.00%** | **$308,407** | **$219,763** |
+
+−4R is not "approximately free" — it is **identical to the decimal** at both buffer settings.
+The entire cost of the proposal is the buffer move $250 -> $400: $1,329 of median (0.4%) and
+$4,325 of p10 (1.9%), in exchange for the last 0.14% of bust. In the payout-cycle model that
+same move costs nothing at all.
+
+### How the two numbers were chosen
+
+**$400** — two independent derivations agreeing. *A priori:* max per-trade risk at the floor is
+2.25 conviction capped at 2× base = **$400**, so the buffer is exactly one max-risk trade of
+headroom above the line; the worst possible next trade still cannot touch it. *Empirical:* it is
+the **first** buffer where bust reaches 0.00% and the **last** before p10 erodes ($600 keeps
+0.00% but costs $20k of p10; $800 collapses p10 to $635). A corner, not a fitted point.
+
+**−4R** — the MC cannot choose this: −5R, −4R, −3R, −2.5R and −2R all return identical results.
+So it was chosen by constraint — *the halt must not touch validated behaviour* — and the
+historical day-loss distribution fixes it:
+
+| worst days in the canon, in R | | | | |
+|---|---|---|---|---|
+| −3.09R (2025-11-24) | −2.90R (2026-03-12) | −2.90R (2025-12-10) | −2.71R (2025-06-10) | −2.66R (2026-02-09) |
+
+Out of 225 days: 10 reach −2R, 5 reach −2.5R, **1 reaches −3R, 0 reach −3.5R, 0 reach −4R.**
+−4R is the first round number strictly outside the whole validated distribution — 0.91R of clear
+air above the worst day we have ever produced — and it equals −$800 at the floor, i.e. the value
+already shipping. Pat changes a unit, not a number.
+
 ---
 
 ## 4. Payout-cycle MC — the realistic band, the KPI that matters
