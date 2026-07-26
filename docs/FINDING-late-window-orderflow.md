@@ -218,3 +218,27 @@ pressing that price ABSORBED (−356 pressing yet alive = defense), while the de
 under modest pressing (no defense required). To power Part B properly, run the same
 forensics on the full canon both-books universe (~970+ trades) where intrade_matrix already
 has the conventions.
+
+---
+
+## ADDENDUM 2026-07-26e — two-way OOS: early-golden CONFIRMED, transition weak, late-a RETRACTED
+
+`scripts/golden_deep_oos.py` — derive greedily on one year, freeze, test blind on the other:
+
+| sub-window | derive 2025 → blind 2026 | derive 2026 → blind 2025 | verdict |
+|---|---|---|---|
+| **09:40–10:00** | d15∧wall-ahead → **+21.4R, 44% win, 6/6 green** | REJ-off∧d15∧d30 → +13.0R, 4/6 | **CONFIRMED** (d15 core in both) |
+| 10:00–10:15 | d15 → +0.8R, 5/6 | d5∧F → +14.0R | weak-positive, thin (n=79) |
+| **10:15–10:30** | → **−4.1R** | → **−16.1R** | **DEAD. The +$10.5k fade subset was in-sample fit — RETRACTED** |
+
+The late-a retraction closes the window-extension question: no tradeable rule set transfers
+across years there. (The individual wall-check survival stats stand as description; nothing
+tradeable.) The 10-minute dead-trade cut is unaffected — it is an exit rule on existing
+windows, not a window extension.
+
+Splits (per-year checked): **displacement carries golden** — +13.3R (2025) / +34.2R (2026),
+both years, while the engine's rejection_blocks net ~0 both years (+1.1/−4.6). This does not
+contradict Angus's live retest success: his A-grade retests score 0–2 on the engine checklist,
+i.e. the engine's "rejection_block" population is not his retest population. Calm-vs-war-day
+split is suggestive (calm-day golden −14.5R in 2025) but YEARS DISAGREE (+3.5R on n=16 in
+2026) → parked, unconfirmed.
