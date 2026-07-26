@@ -63,6 +63,13 @@ Updated 2026-07-26 (Sunday), second pass — now merged with Angus's on-box list
 ## NEXT — TONIGHT (Sunday after 6:00 PM ET, market reopen; ~20 min total)
 
 0. `git pull` on the VPS first — today's fixes + the dead-zone adoption.
+0b. **Re-certify at the FINAL armed SHA (ANGUS, relayed via Pat 2026-07-26)** — the book
+   regeneration is part of TONIGHT'S table even though it passed this afternoon, because
+   commits landed after that run and the token names the commit:
+   `python -m scripts.canon_news_clean` → **+$55,989.81 / 383 exactly**, then
+   `python -m scripts.agent_replay agent_replay_news.parquet --news` →
+   `python -m scripts.parity_harness agent_replay_news.parquet --ref output/baseline_book_news.parquet`
+   → **383/383 PASS**. **That number goes verbatim into Pat's written confirmation.**
 1. **Finish Stage 2:** measure the file-write delay on the live feed (needs data flowing):
    `python scripts\sierra_parity_replay.py "C:\SierraChart\Data\NQU26-CME.scid" --measure-lag 60`
    Record the number (want median well under a few seconds; gate B6). (Angus item 8a.)
