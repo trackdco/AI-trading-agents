@@ -1,8 +1,9 @@
 # GO-LIVE STATUS — the plain-language checklist (Pat's copy)
 
-Updated 2026-07-26 (Sunday) after the first on-box session. Companion to
-`docs/PROMOTION-GATE.md` (the authoritative gate list) — this file tracks where we ARE,
-in order, in plain words. Update it as steps complete.
+Updated 2026-07-26 (Sunday), second pass — now merged with Angus's on-box list and the
+09:55–10:00 dead-zone adoption. **ARMING REFERENCE: +$55,989.81 / 383** (corrections
+1+2+3; the old +$55,617.56/386 and the 400/400 A1/A2 pass are void). Companion to
+`docs/PROMOTION-GATE.md` (authoritative) — this file tracks where we ARE, in plain words.
 
 ## DONE ✅
 
@@ -24,15 +25,41 @@ in order, in plain words. Update it as steps complete.
     auto-detects); depth recording started 2026-07-24; the `.scid` stopped updating
     Friday 11:33 ET — **keep Sierra + the NQU26 chart open continuously from tonight**.
 
-## NEXT — TONIGHT (Sunday after 6:00 PM ET, market reopen; ~15 min total)
+## DONE ✅ (second pass, after Angus's list arrived)
 
+- **Dead-zone adoption mirrored everywhere it must live**: the sequential scorer takes
+  `dead_zones`, and the live loop now applies corrections 2+3 per verdict via
+  `PremarketGuard` (news blackout + dead zone + the sentinel's fail-closed snapshot rule:
+  no news board today → no pre-open entries). Wired into the shadow runner.
+- **Angus item 2 PRE-VERIFIED from the stored matrices**: the full corrections-1+2+3
+  construction reproduces **exactly +$55,989.81 / 383**, asserted in the test suite
+  (630 tests green). The box re-run remains the certification; the number is confirmed
+  reproducible.
+- **Angus item 5 (boot assertions)**: Tier-1 config load+assert was already in; the boot
+  **git SHA journal** is now in (`canon_run` logs + journals the commit at start, so the
+  arming token can name the commit).
+- **Angus item 6 (A8 statement)**: RollWatcher's exact rule = observed roll dates table
+  (`KNOWN_ROLL_DATES`) when known, else Wednesday `VOLUME_ROLL_DAYS_BEFORE` days before
+  3rd-Friday expiry — the Databento volume-roll pattern; a test pins the next roll to
+  **2026-09-16** matching `docs/CONTRACT-ROLL-DATES.md`.
+
+## NEXT — TONIGHT (Sunday after 6:00 PM ET, market reopen; ~20 min total)
+
+0. `git pull` on the VPS first — today's fixes + the dead-zone adoption.
 1. **Finish Stage 2:** measure the file-write delay on the live feed (needs data flowing):
    `python scripts\sierra_parity_replay.py "C:\SierraChart\Data\NQU26-CME.scid" --measure-lag 60`
-   Record the number (want median well under a few seconds; gate B6).
-2. **Stage 3: Sim-account order tests** (place/verify/modify/cancel on Sierra's SIM —
-   refuses to run on any non-SIM account):
-   - resting mode → gates A7 + B7;
+   Record the number (want median well under a few seconds; gate B6). (Angus item 8a.)
+2. **Stage 3: Sim-account order tests** (Angus items 3+4 — "nothing else matters until
+   A7 is green"): place/verify/modify/cancel on Sierra's SIM — refuses non-SIM accounts:
+   - resting mode → gates A7 + B7 (two distinct ServerOrderIDs back);
    - `--fill` mode → gate B8 (opens+closes a small SIM position).
+3. **Angus item 2 on-box certification:** `python -m scripts.canon_news_clean` on the VPS
+   must print **+$55,989.81 / 383**, then re-run the agent replay → A1/A2 certify 383/383.
+4. **Angus item 5 on-box:** `python -m scripts.spine_forcetest` (corrected constants:
+   clamp 40 micros, −4R halt) — every rule fires ✓.
+5. **Angus item 7:** one test run of `python -m scripts.news_daily_agent` from the VPS
+   (if Cloudflare blocks it, fall back to a cron on a home machine). The fail-closed
+   wiring on the consuming side is DONE (PremarketGuard).
 
 ## THEN — WEEKDAYS (the shadow week)
 

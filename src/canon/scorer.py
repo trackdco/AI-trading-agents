@@ -155,8 +155,14 @@ class NYVerdict:
 @dataclass
 class NYScorer:
     """Sequential build_canon. Feed signals in strict fill order; settle each before the
-    next decide (the trails and the day ladder are defined over settled prior trades)."""
+    next decide (the trails and the day ladder are defined over settled prior trades).
+
+    `dead_zones`: list of (start_hm, end_hm) minute-of-day ET intervals; a fill inside any
+    zone is vetoed at the same stage as build_canon's dead-zone cut (after the quality
+    tier, before the news gate and before the day slot is consumed). ANGUS RULING
+    2026-07-26: [(595, 600)] — no entries 09:55–10:00."""
     news_gate: object | None = None
+    dead_zones: tuple = ()
     _gov: deque = field(default_factory=lambda: deque(maxlen=GOV_WINDOW), init=False)
     _gov_cur: float = field(default=math.nan, init=False)
     _cold: deque = field(default_factory=lambda: deque(maxlen=COLD_WINDOW), init=False)
@@ -191,6 +197,18 @@ class NYScorer:
                 size, _ = 0.0, vetoes.append("gold_q_low")
             elif Q >= 3:
                 size = min(size + 0.5, 1.5)
+        # dead-zone entry cut (ANGUS 2026-07-26) — same stage/order as build_canon
+        if self.dead_zones:
+            hm = _f(row, "fillhm")
+            if math.isnan(hm):
+                et = pd.to_datetime(row["fill"], utc=True).tz_convert(NY_TZ)
+                hm = et.hour * 60 + et.minute
+            for z0, z1 in self.dead_zones:
+                if z0 <= hm < z1:
+                    if size > 0:
+                        vetoes.append("dead_zone")
+                    size = 0.0
+                    break
         # news blackout — after the ladder, before the nth slot is consumed
         if self.news_gate is not None and size >= 0:
             et = pd.to_datetime(row["fill"], utc=True).tz_convert(NY_TZ).tz_localize(None)

@@ -48,6 +48,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.canon.infra import SpineJournalSink
+from src.canon.premarket_guard import PremarketGuard
 from src.canon.sierra_files import SierraFileFeed
 from src.canon.sierra_symbol import resolve_depth_path, resolve_scid_path
 from src.canon.spine import load_spine_config
@@ -87,6 +88,18 @@ class LaunchAlerts:
 
 
 # --------------------------------------------------------------------------- config / logging
+def _git_sha() -> str:
+    """The commit this process runs, for the boot journal. Fail-soft: a box without git
+    context still boots — 'unknown' is itself a journaled fact."""
+    import subprocess
+    try:
+        r = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True,
+                           cwd=Path(__file__).resolve().parents[1], timeout=10)
+        return r.stdout.strip() if r.returncode == 0 and r.stdout.strip() else "unknown"
+    except Exception:  # noqa: BLE001
+        return "unknown"
+
+
 def load_config(path: Path) -> dict:
     with path.open() as f:
         return yaml.safe_load(f)
@@ -175,13 +188,18 @@ def build_canon_live(cfg: dict, alerts: LaunchAlerts, log: logging.Logger) -> Ro
     ingestor = CanonIngestor(book=DepthBook())
     lifecycle = build_lifecycle(None, sc.get("account", "FUNDED"), ingestor, out_dir,
                                 armed=False)
+    # corrections 2+3 live: news blackout + 09:55-10:00 dead zone + the sentinel's
+    # fail-closed snapshot requirement (no board today -> no pre-open entries).
+    guard = PremarketGuard()
+    log.info("premarket guard | %d blackout days on calendar | snapshot required: %s",
+             len(guard.gate.releases), guard.require_snapshot)
     live = RouteBLive(
         feed=feed, data_dir=data_dir, root=root, suffix=suffix, alerts=alerts,
         verdict_source=ScriptVerdictSource(),
         verdict_sink=JsonlSink(out_dir / "verdicts.jsonl"),
         decision_sink=SpineJournalSink(out_dir / "decisions.jsonl"),
         instrument=instrument, ingestor=ingestor, lifecycle=lifecycle,
-        roll_state=RollState(root=root),
+        premarket_guard=guard, roll_state=RollState(root=root),
         account_equity=float(acct.get("equity", 50_000.0)))
 
     # warm start from recent history so day-one levels/tape are correct
@@ -210,6 +228,12 @@ def main(argv=None) -> int:
     log = setup_logging(Path(cfg["paths"]["run_log"]))
     log.info("=" * 70)
     log.info("canon_run START | config=%s (canon lane, DISARMED — zero orders)", args.config)
+    # Boot provenance (Angus 2026-07-26): journal the exact commit this run executes, so
+    # the arming token can NAME the commit it arms and any journal row is attributable.
+    sha = _git_sha()
+    log.info("boot | git=%s", sha)
+    SpineJournalSink(Path(cfg["paths"]["journal_dir"]) / "decisions.jsonl")(
+        {"type": "boot", "git_sha": sha, "config": str(args.config)})
 
     kill = Path(cfg["paths"]["kill_file"])
     if kill.exists():

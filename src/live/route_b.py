@@ -260,6 +260,7 @@ class RouteBLive:
     roll_state: RollState = None                      # live roll tag (span-preserving)
     instrument: ShadowSpineInstrument | None = None
     lifecycle: object | None = None                  # TradeLifecycle (watch/fill/exit assembly)
+    premarket_guard: object | None = None            # PremarketGuard (corrections 2+3, live)
     comparator: object = None                        # optional champion LiveRunner (diagnostic)
     comparator_sink: Callable[[dict], None] | None = None
     listener: object | None = None                   # Telegram CommandListener
@@ -350,6 +351,18 @@ class RouteBLive:
         while self._pending and pd.Timestamp(self._pending[0]["fill"]) <= bts:
             v = self._pending.pop(0)
             rc = self.roll_state.context_for_day(str(v.get("day")))
+            # corrections 2+3 live (news blackout / dead zone / sentinel fail-closed):
+            # a vetoed verdict is journaled as a veto and NEVER reaches the verdict
+            # journal, the spine, or the lifecycle — same as batch size->0 (the day's
+            # trade slot is not consumed; the shell-out books never saw these vetoes).
+            if self.premarket_guard is not None:
+                reason = self.premarket_guard.veto(v)
+                if reason is not None:
+                    if self.decision_sink is not None:
+                        self.decision_sink({"type": "verdict_veto", "reason": reason,
+                                            "day": v.get("day"), "fill": str(v.get("fill")),
+                                            "session": v.get("session")})
+                    continue
             if self.verdict_sink is not None:
                 self.verdict_sink(verdict_record(v, roll_ctx=rc))
             if self.instrument is not None:

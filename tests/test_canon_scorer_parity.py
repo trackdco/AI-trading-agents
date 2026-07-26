@@ -106,6 +106,38 @@ def test_ny_news_gated_rebuild_parity():
     assert n_vetoed > 0
 
 
+def test_full_arming_construction_headline_and_sequential_replay():
+    """The CURRENT arming reference (ANGUS 2026-07-26, corrections 1+2+3: conf_PM fix +
+    news blackout + 09:55-10:00 dead zone) must reproduce EXACTLY +$55,989.81 / 383 from
+    the stored matrices — the same regeneration Angus asked to be certified on the box —
+    and the sequential scorer with the same gate + dead zones must replay the corrected
+    NY frame row-for-row."""
+    from scripts.baseline_dollar_risk import size_book
+    from scripts.canon_mechanical import build_canon
+    from src.canon.news_gate import NewsGate
+
+    T = pd.read_parquet("output/trade_matrix.parquet")
+    T["conf_PM"] = T["pm_sofar_conf"]
+    gate = NewsGate.load()
+    ny = build_canon(T, news_gate=gate, dead_zones=[(595, 600)])
+    lon = pd.read_parquet("output/london_canon_book.parquet")
+    book = pd.concat([size_book(ny, "NY"), size_book(lon, "LONDON")], ignore_index=True)
+    assert len(book) == 383, f"arming reference trade count moved: {len(book)}"
+    assert book.pl.sum() == pytest.approx(55_989.81, abs=0.01), \
+        f"arming reference P&L moved: {book.pl.sum():.2f}"
+
+    s = NYScorer(news_gate=gate, dead_zones=((595, 600),))
+    n_zone = 0
+    for i, row in enumerate(ny.to_dict("records")):
+        v = s.decide(row)
+        pl = s.settle(v, r_3=row["r_3"], fw_3=row["fw_3"], dollars=row["dollars"])
+        assert v.size == row["size"], (i, "size", v.size, row["size"], v.vetoes)
+        assert v.governor == row["governor"], (i, "governor")
+        assert pl == pytest.approx(row["pl"], abs=1e-9), (i, "pl")
+        n_zone += "dead_zone" in v.vetoes
+    assert n_zone > 0                     # the zone veto actually fired, or this proves nothing
+
+
 def test_london_full_stack_parity_every_row(lonbook):
     s = LondonScorer()
     for i, row in enumerate(lonbook.to_dict("records")):
