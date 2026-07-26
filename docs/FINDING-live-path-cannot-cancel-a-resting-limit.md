@@ -67,3 +67,59 @@ Either way this must be resolved, not assumed.
 Angus's point stands that **frequency is fine** — 400 trades in 12.5 months, ~4/week, is a
 selective book and a few missed fills are not a threat. The threat is the opposite: an
 un-cancelled stale limit **adds** trades the edge was never measured on.
+
+---
+
+## RESOLUTION of step 1 — traced and measured (2026-07-26)
+
+**Answer: the substrate DID apply cancel-if-runs. Case 1. The gap is confirmed and the live
+path must implement it.** This was traced, then proved by running the engine both ways rather
+than by reading the chain alone.
+
+### The provenance chain, end to end
+
+`scripts/_regen_build_substrate_v2.py` → **`simulate(seg, trigs, cfg)`** → `substrate_v2.parquet`
+→ `scripts/orderflow_by_setup.py` → `substrate_v2_signals.parquet` → `scripts/universal_orderflow.py`
+→ `scripts/trade_angles.py` → `trade_angles.parquet` → `scripts/trade_matrix.py` →
+`scripts/canon_mechanical.py` → `canon_book.parquet`.
+
+Every canon fill therefore originates in `simulate()`. The substrate's config is
+`load_backtest_config().model_copy(update={win_start, win_end, max_trades_per_day})` — it does
+**not** override `t_cancel`, so it carries the shipped `cancel_if_runs_points: 22.0`, and
+`simulate()` enforces it at `src/backtest/engine.py:731-737`. (One caveat worth keeping in
+view: E4/EC-displacement entries are MARKET entries, which the engine explicitly exempts —
+"no resting limit, no T_cancel". The rule binds the limit-entry books only.)
+
+### The measurement (why "it's in the config" wasn't enough)
+
+Re-ran March 2026, E3 book, identical inputs, changing only `t_cancel`:
+
+| | trades | P&L |
+|---|---|---|
+| shipped (`t_cancel = 22`) | 33 | +$1,943 |
+| rule disabled | 35 | +$6,697 |
+
+**18 fills exist only with the rule disabled; 16 exist only with it enabled** — fills *shift*,
+they do not merely accumulate, because a cancelled order frees the day's trade slots for
+different later setups. Trade-set divergence of that size in a single month on a single book
+settles it: a live bot that cannot cancel does **not** reproduce the arming reference.
+
+Note the P&L moved *up* without the rule in this sample. That is not an argument for dropping
+it — it is one month of one book, and the canon's own selection layer sits above this. The
+requirement is fidelity to the validated book, whichever way the sign happens to fall on a
+sample. Deciding the rule is unprofitable would be a strategy change requiring its own
+re-validation and Angus's sign-off, not a live-build shortcut.
+
+### What this does NOT resolve
+
+Steps 2–4 stand and remain **on-box work**: `dtc_client.py` still has no `cancel_order()` (its
+order surface is `submit_bracket()` only), nothing tracks a working order's lifecycle, and the
+force-test cannot run without a live Sierra DTC server. Gate **B7** stays RED.
+
+**Related, and worse in the same area:** the exit driver (`src/canon/exit_driver.py`) now
+faithfully reproduces engine.py's managed exits and emits `modify_stop` / `partial_close` /
+`close` actions — but the `Broker` protocol (`spine.py`) exposes only `submit_bracket`,
+`order_status`, `position`, `flatten`, `cancel_all`. **There is no way to modify a stop or
+partially close a position through the live order path.** The canon has no fixed target; the
+exit IS managed. So the same missing-order-surface defect that blocks B7 also blocks the
+managed exit from ever running live. Both need the DTC client extended and verified on the box.
