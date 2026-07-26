@@ -55,7 +55,7 @@ for i in range(1,N-1):
     en=a["open"][i+1]+dr*TICK; rf=min(a["slo"][i],a["ma50"][i]) if dr>0 else max(a["shi"][i],a["ma50"][i]); rk=abs(en-rf)+TICK
     if rk<5 or rk>70: continue
     g,mfe=walk(i,dr,en,rk); Rr=(g*PV-COMM)/(rk*PV)
-    em=pd.Timestamp(a["uts"][i+1]); em=em.tz_localize("UTC") if em.tzinfo is None else em.tz_convert("UTC")
+    em=pd.Timestamp(a["uts"][i]); em=em.tz_localize("UTC") if em.tzinfo is None else em.tz_convert("UTC")
     v3=delta3.get(em-pd.Timedelta(minutes=1),np.nan); cov=(d in cvd_days) and not np.isnan(v3); conf=bool((v3>0) if dr>0 else (v3<0)) if cov else False
     rows.append(dict(day=d,ent=str(utt[i]),rk=rk,R=Rr,win=Rr>0,conf=conf,mfe_R=mfe/rk,never_green=(mfe/rk)<0.5))
 T=pd.DataFrame(rows).sort_values(["day","ent"]).reset_index(drop=True)

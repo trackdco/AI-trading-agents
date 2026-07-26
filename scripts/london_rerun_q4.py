@@ -48,7 +48,7 @@ for i in range(1,len(M)-1):
         if ht: gg=3*rk-TICK; break
         j+=1
     if gg is None: gg=dr*(a["close"][min(j,len(M)-1)]-en)
-    em=pd.Timestamp(a["uts"][i+1]); em=em.tz_localize("UTC") if em.tzinfo is None else em.tz_convert("UTC")
+    em=pd.Timestamp(a["uts"][i]); em=em.tz_localize("UTC") if em.tzinfo is None else em.tz_convert("UTC")
     v3=delta3.get(em-pd.Timedelta(minutes=1),np.nan); cov=(d in cvd_days) and not np.isnan(v3)
     ok=bool((v3>0) if dr>0 else (v3<0)) if cov else False
     rows.append(dict(day=d,ent=str(utt[i]),dir=dr,net=gg*PV-COMM,R=(gg*PV-COMM)/(rk*PV),win=gg>0,cvd_cov=cov,cvd_ok=ok))

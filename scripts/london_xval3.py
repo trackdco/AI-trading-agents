@@ -88,7 +88,7 @@ def build(trig):
         onh = ONH.get(d, np.nan); onl = ONL.get(d, np.nan)
         room = ((onh - entry) if dr > 0 else (entry - onl)) / risk
         # real-CVD 3-min confirm at entry (strictly before entry minute)
-        em = pd.Timestamp(A["uts"][i + 1])
+        em = pd.Timestamp(A["uts"][i])
         em = em.tz_localize("UTC") if em.tzinfo is None else em.tz_convert("UTC")
         v3 = delta3.get(em - pd.Timedelta(minutes=1), np.nan)
         cvd_cov = (d in cvd_days) and not np.isnan(v3)

@@ -80,7 +80,7 @@ for i in range(1,N-1):
         rk2=max(abs(lvl-wick_rf)+TICK,5.0); g2,ex2=walk(i,dr,lvl,rk2,fillk); net2,R2=net_of(g2,rk2); win2=g2>0; filled=True
     else:
         rk2,net2,R2,win2,filled=np.nan,0.0,0.0,False,False
-    em=pd.Timestamp(a["uts"][i+1]); em=em.tz_localize("UTC") if em.tzinfo is None else em.tz_convert("UTC")
+    em=pd.Timestamp(a["uts"][i]); em=em.tz_localize("UTC") if em.tzinfo is None else em.tz_convert("UTC")
     v3=delta3.get(em-pd.Timedelta(minutes=1),np.nan); cov=(d in cvd_days) and not np.isnan(v3)
     conf=bool((v3>0) if dr>0 else (v3<0)) if cov else False
     rows.append(dict(day=d,ent=str(utt[i]),dir=int(dr),conf=conf,

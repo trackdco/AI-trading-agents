@@ -37,8 +37,37 @@ and 2 of 33 winners went to ~0.95R (nearly the stop) and still hit 3R.
 
 ## 3. SIZING — buffer ladder
 
+> ### ⛔ CORRECTION (2026-07-26) — "CONFIRM" DOES NOT EXIST. DO NOT SPLIT SIZE ON IT.
+>
+> The CVD confirm flag was computed at `scripts/london_conviction.py:54` as
+> `em = uts[i+1]`, then `delta3.get(em − 1min)`. The M15 frame is built `label="right"`, so
+> `uts[i+1]` is the **next bar's close** — and the fill is that bar's **open, 15 minutes
+> earlier**. The "3-minute pre-entry delta" was therefore reading the tape from **13–15 minutes
+> AFTER the fill**. It was a partial peek at the outcome, not a signal.
+>
+> `scripts/london_cvd_lookahead.py` computes all three windows on the same trades:
+>
+> | window | n conf | WR conf | WR unconf | gap | perm p |
+> |---|---|---|---|---|---|
+> | **as shipped** (+13–15 min *after* fill) | 34 | **65%** | 31% | **+1.37R** | **0.007** |
+> | ending at signal close (still contains the fill minute) | 38 | 55% | 38% | +0.71R | 0.116 |
+> | **strictly pre-fill** (the honest one) | 35 | **49%** | **46%** | **+0.12R** | **0.666** |
+>
+> On the leakage-clean book C the honest flag is *negative*: 41% WR confirmed vs 54%
+> unconfirmed, gap −0.51R. As a 1.0×/0.5× sizing rule it returns **+24.44R against +38.15R
+> flat**, i.e. **−2.54R versus flat at the same average exposure**.
+>
+> Note the middle row: contaminating the window by a **single minute** — the one containing the
+> fill — recovers most of the apparent edge. That is the signature of a peek, not an edge.
+> Delta right after entry correlates with price right after entry, which correlates with winning.
+>
+> **Consequence: the confirmed/unconfirmed split below has no evidential basis.** Until a
+> replacement conviction signal is validated, size the **same on every trade** and use the
+> *unconfirmed* (lower) column as the flat rung. Fixed in ten `london_*.py` scripts; every
+> number in §6 and §7 predates the fix.
+
 **Buffer = account balance − $50,000.** Recheck the rung *before every trade*.
-**Confirm** = 3-min CVD delta at entry agrees with trade direction. No CVD data → treat as **unconfirmed**.
+**Confirm** = ~~3-min CVD delta at entry agrees with trade direction~~ — **VOID, see box above.**
 
 | Buffer | Confirmed risk | Unconfirmed risk |
 |---|---|---|

@@ -45,7 +45,7 @@ for i in range(1,N-1):
     if rk<5 or rk>70: continue
     g=walk(i,dr,en,rk); Rr=(g*PV-COMM)/(rk*PV)
     tu=pd.Timestamp(a["uts"][i]).tz_localize("UTC")
-    em=pd.Timestamp(a["uts"][i+1]).tz_localize("UTC"); v3=delta3.get(em-pd.Timedelta(minutes=1),np.nan)
+    em=pd.Timestamp(a["uts"][i]).tz_localize("UTC"); v3=delta3.get(em-pd.Timedelta(minutes=1),np.nan)
     cov=(d in cvd_days) and not np.isnan(v3); conf=bool((v3>0) if dr>0 else (v3<0)) if cov else False
     rows.append(dict(_o=(d,str(utt[i])),utc=tu,rk=rk,dir=dr,conf=conf,R=Rr))
 T=pd.DataFrame(rows).sort_values("_o").reset_index(drop=True); T["day"]=[o[0] for o in T._o]

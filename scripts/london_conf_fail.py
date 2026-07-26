@@ -55,7 +55,7 @@ for i in range(1,N-1):
     en=a["open"][i+1]+dr*TICK; rf=min(a["slo"][i],a["ma50"][i]) if dr>0 else max(a["shi"][i],a["ma50"][i]); rk=abs(en-rf)+TICK
     if rk<5 or rk>70: continue
     g,mfe=walk(i,dr,en,rk); Rr=(g*PV-COMM)/(rk*PV)
-    em=pd.Timestamp(a["uts"][i+1]); em=em.tz_localize("UTC") if em.tzinfo is None else em.tz_convert("UTC")
+    em=pd.Timestamp(a["uts"][i]); em=em.tz_localize("UTC") if em.tzinfo is None else em.tz_convert("UTC")
     v3=delta3.get(em-pd.Timedelta(minutes=1),np.nan); cov=(d in cvd_days) and not np.isnan(v3); conf=bool((v3>0) if dr>0 else (v3<0)) if cov else False
     onh=ONH.get(d,np.nan); onl=ONL.get(d,np.nan); room=((onh-en) if dr>0 else (en-onl))/rk
     ca=cvd_ASIA.get(d,np.nan); asia_ok=bool(np.isnan(ca) or (dr*ca>=-748))
