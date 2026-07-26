@@ -174,3 +174,34 @@ class TradeLifecycle:
             self._note({"event": "lifecycle_halted_by_executor", "executed": self.armed})
         if getattr(self._exe, "done", False):
             self._exe = None
+
+
+# --------------------------------------------------------------------------- assembly
+class _NoteSink:
+    """Adapts a dict sink (JsonlSink) to the executor/binder `.note(str)` journal."""
+
+    def __init__(self, sink: Callable[[dict], None]):
+        self._sink = sink
+
+    def note(self, text: str) -> None:
+        self._sink({"event": "exit_note", "note": text})
+
+
+def build_lifecycle(broker, account: str, ingestor, out_dir, *, session: str = "NY",
+                    armed: bool = False) -> TradeLifecycle:
+    """The complete post-placement assembly in one call: OrderWatch decisions journaled to
+    order_watch.jsonl, the exit binder (trigger resolution over the ingestor's live bars)
+    journaling to exit_exec.jsonl, everything fail-closed. This is the ONLY construction
+    the armed path should use — hand its result to RouteBLive.lifecycle; arming remains the
+    spine's token, never a flag here alone."""
+    from pathlib import Path
+
+    from src.live.exit_binder import ExitBinder
+    from src.live.route_b import JsonlSink
+    out = Path(out_dir)
+    binder = ExitBinder(broker=broker, account=account, armed=armed, session=session,
+                        bars_fn=ingestor.bars_frame,
+                        journal=_NoteSink(JsonlSink(out / "exit_exec.jsonl")))
+    return TradeLifecycle(broker=broker, account=account, armed=armed,
+                          journal=JsonlSink(out / "order_watch.jsonl"),
+                          exit_factory=binder.factory)

@@ -107,6 +107,13 @@ sequences pass against the real Sierra DTC server**, and that run is turnkey:
 --stop <lower>` covers A7 + B7 (resting mode) and adds the full B8 fill path with `--fill`
 (SIM-only by construction — the script refuses non-SIM accounts).
 
+The in-repo armed path is now COMPLETE (2026-07-26): `src/live/exit_binder.ExitBinder`
+resolves a fill to its engine trigger by unanimous entry-pinning (re-detect over live bars →
+simulate per book → isolated re-drive; no match or disagreement → flatten), and
+`trade_lifecycle.build_lifecycle` assembles watch + binder + executor in one call — verified
+end-to-end on a real Mar-2026 trade (tests/test_exit_binder.py). What remains for B7/B8 is
+on-box verification only.
+
 ## C. Operations — FORCE-TESTED before arming, not waited for
 
 The old version asked us to observe these over weeks. **Cause them instead** — deliberate testing is

@@ -35,7 +35,19 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+import pandas as pd
+
 from src.canon.exit_driver import DriveResult, ExitDriver, three_min_cut
+
+
+def _due(action_ts, bar_ts) -> bool:
+    """Engine actions stamp ISO-T strings ('2026-03-02T08:38:00-05:00') while live bar
+    stamps render with a space — comparing the raw strings silently never matures a
+    same-day action. Compare as timestamps; opaque labels (tests) fall back to string."""
+    try:
+        return pd.Timestamp(action_ts) <= pd.Timestamp(bar_ts)
+    except (ValueError, TypeError):
+        return str(action_ts) <= str(bar_ts)
 
 
 @dataclass
@@ -104,7 +116,7 @@ class LiveExitExecutor:
             self._fail_closed(f"entry pin broke mid-trade: {res.detail}")
             return list(self.executed[-1:])
 
-        due = [a for a in res.actions if a["ts"] <= str(bar_ts)]
+        due = [a for a in res.actions if _due(a["ts"], bar_ts)]
         # the already-executed actions must be a PREFIX of the freshly-driven stream —
         # anything else means the re-derived management no longer matches what we did.
         keys = ("kind", "reason", "price", "frac", "ts")

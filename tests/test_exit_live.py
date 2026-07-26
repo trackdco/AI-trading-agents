@@ -163,6 +163,18 @@ def test_three_min_cut_healthy_trade_does_not_fire():
     assert b.calls == [] and not e.done
 
 
+def test_iso_t_action_timestamps_mature_against_space_format_bar_stamps():
+    """Engine actions stamp '2026-03-02T08:38' (ISO-T); a live bar stamp renders
+    '2026-03-02 23:59'. Raw string compare never matures the action — the due filter
+    must compare TIMESTAMPS (regression: found binding a real Mar-2026 trade)."""
+    a = {"kind": "exit", "reason": "eod", "price": 101.0, "frac": 1.0,
+         "ts": "2026-03-02T08:38:00-05:00"}
+    e, b, _ = _exe([a])
+    import pandas as pd
+    out = e.on_bar(None, pd.Timestamp("2026-03-02 23:59:00-05:00"))
+    assert [x["kind"] for x in out] == ["exit"] and e.done
+
+
 def test_partial_quantity_rounds_from_fraction_of_filled_size():
     e, b, _ = _exe([{**A_PARTIAL, "frac": 0.5}], position=5)
     e.size = 5

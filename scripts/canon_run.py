@@ -58,7 +58,9 @@ from src.live.route_b import (
     RouteBLive,
     build_shadow_instrument,
 )
-from src.live.trade_lifecycle import TradeLifecycle
+from src.canon.book import DepthBook
+from src.canon.ingestor import CanonIngestor
+from src.live.trade_lifecycle import build_lifecycle
 from src.live.telegram import (
     TelegramAlerts,
     TelegramConfig,
@@ -167,16 +169,19 @@ def build_canon_live(cfg: dict, alerts: LaunchAlerts, log: logging.Logger) -> Ro
              spine_cfg.max_contracts, spine_cfg.daily_loss_halt_r, spine_cfg.dd_halt_buffer)
     instrument = build_shadow_instrument(out_dir, account=sc.get("account", "FUNDED"),
                                          cfg=spine_cfg, kill_file=kill_file)
-    # shadow lifecycle: the engine-mirrored order-watch decisions (B7) journal as would-be
-    # cancels with executed=False — §D evidence, zero broker calls (no broker is even wired).
-    lifecycle = TradeLifecycle(armed=False, account=sc.get("account", "FUNDED"),
-                               journal=JsonlSink(out_dir / "order_watch.jsonl"))
+    # shadow lifecycle via the SAME assembly the armed path will use (build_lifecycle):
+    # order-watch decisions journal as would-be cancels with executed=False and the exit
+    # binder is wired but broker-less — §D evidence, zero broker calls possible.
+    ingestor = CanonIngestor(book=DepthBook())
+    lifecycle = build_lifecycle(None, sc.get("account", "FUNDED"), ingestor, out_dir,
+                                armed=False)
     live = RouteBLive(
         feed=feed, data_dir=data_dir, root=root, suffix=suffix, alerts=alerts,
         verdict_source=ScriptVerdictSource(),
         verdict_sink=JsonlSink(out_dir / "verdicts.jsonl"),
         decision_sink=SpineJournalSink(out_dir / "decisions.jsonl"),
-        instrument=instrument, lifecycle=lifecycle, roll_state=RollState(root=root),
+        instrument=instrument, ingestor=ingestor, lifecycle=lifecycle,
+        roll_state=RollState(root=root),
         account_equity=float(acct.get("equity", 50_000.0)))
 
     # warm start from recent history so day-one levels/tape are correct

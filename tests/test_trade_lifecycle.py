@@ -158,6 +158,28 @@ def test_armed_requires_a_broker():
         TradeLifecycle(broker=None, armed=True)
 
 
+def test_build_lifecycle_assembles_watch_binder_and_journals(tmp_path):
+    """The one-call armed assembly: exit_factory is the ExitBinder's, both journals land
+    under out_dir, and shadow construction (broker=None, armed=False) is legal."""
+    import json
+
+    from src.live.exit_binder import ExitBinder
+    from src.live.trade_lifecycle import build_lifecycle
+
+    class FakeIngestor:
+        def bars_frame(self):
+            return pd.DataFrame()
+
+    lc = build_lifecycle(None, "FUNDED", FakeIngestor(), tmp_path, armed=False)
+    assert isinstance(lc.exit_factory.__self__, ExitBinder)
+    assert lc.exit_factory.__self__.bars_fn().empty      # bound to the ingestor's frame
+    lc.on_placed("shadow:x", side="B", entry=100.0, stop=99.0, size=2)
+    rows = [json.loads(x) for x in (tmp_path / "order_watch.jsonl").read_text().splitlines()]
+    assert rows[0]["event"] == "entry_resting" and rows[0]["executed"] is False
+    with pytest.raises(ValueError):                      # armed still requires a broker
+        build_lifecycle(None, "FUNDED", FakeIngestor(), tmp_path, armed=True)
+
+
 # --------------------------------------------------------------------------- cut_inputs parity
 def test_cut_inputs_parity_against_the_stored_intrade_matrix():
     """r_3/fw_3 recomputed live must equal the batch's (scripts/intrade_matrix.py) on real
