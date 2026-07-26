@@ -112,6 +112,8 @@ class SpineExecutor:
         self._halted = False
         self._order_times: deque[float] = deque()      # epoch-seconds of recent submits
         self._seen_setups: set[str] = set()
+        self._resting: dict[str, str] = {}             # account -> last placed order ref
+                                                       # (naked-position reconcile, rule 8b)
 
     # ---- arming (deliberate; represents Angus's written yes) ----------------
     def arm(self, token: str) -> bool:
@@ -131,6 +133,7 @@ class SpineExecutor:
     # ---- the halt / flatten path (Tier 3 + manual kill) --------------------
     def flatten_and_halt(self, account: str, rule: str, detail: str = "") -> SpineDecision:
         self._halted = True
+        self._resting.pop(account, None)               # position is being flattened
         try:
             self.broker.cancel_all(account)
             self.broker.flatten(account)
@@ -138,6 +141,74 @@ class SpineExecutor:
             self._emit({"event": "flatten_halt", "rule": rule, "detail": detail,
                         "account": account})
         return SpineDecision("flatten", rule, detail)
+
+    # ---- naked-position reconcile (SAFETY-SPINE 8b: reconcile on a TIMER, any duration) ---
+    def reconcile(self, account: str, now: float) -> SpineDecision | None:
+        """Timer-driven position-vs-bracket check — the periodic twin of the submit-time
+        read-back. An open position whose bracket legs are NOT resting is NAKED (an unbounded
+        loss): flatten + halt immediately, at any duration. Returns the flatten decision when
+        naked, else None. Call on a timer from the run loop; fail-closed on any broker error."""
+        try:
+            pos = self.broker.position(account)
+            if pos == 0:
+                self._resting.pop(account, None)       # flat: nothing to protect
+                return None
+            ref = self._resting.get(account)
+            naked = ref is None
+            if not naked:
+                st = self.broker.order_status(ref)
+                naked = not st.get("legs_resting", False)
+            if naked:
+                self._emit({"event": "naked_position", "account": account, "position": pos,
+                            "ref": ref})
+                detail = (f"open position {pos} on {account} with no resting bracket "
+                          f"(ref={ref})")
+                return self.flatten_and_halt(account, "naked_position", detail)
+            return None
+        except Exception as e:  # noqa: BLE001 — a failed reconcile fails closed (rule 9)
+            return self.flatten_and_halt(account, "fail_closed", f"reconcile: {type(e).__name__}: {e}")
+
+    # ---- all-guards evidence (PROMOTION-GATE: per-guard fired/not-fired, not just the trip) ---
+    def guard_report(self, intent: OrderIntent, acct: AccountState, feed: FeedHealth,
+                     now: float, parity_ok: bool = True) -> dict:
+        """Evaluate EVERY guard independently (read-only — no rate/dup state mutation) and
+        return each one's fired/not-fired outcome, plus the terminal decision `check()` would
+        reach. `check()` short-circuits on the first failure, so the journal alone can't show
+        that guards 2..N were evaluated; this is the evidence the promotion gate's per-guard
+        table needs. Kept adjacent to `check()` so the two stay in lockstep."""
+        c = self.cfg
+        bad = self._malformed(intent)
+        recent_orders = sum(1 for t in self._order_times if now - t <= 60.0)
+        guards = [
+            ("halted", self._halted, "spine already halted"),
+            ("manual_kill", self._kill_present(), "KILL file present"),
+            ("startup_parity", not parity_ok, "parity gate not green"),
+            ("fail_closed", bool(bad), bad),
+            ("limit_only", intent.order_type != "limit", f"order_type={intent.order_type!r}"),
+            ("dd_proximity", acct.equity - acct.trailing_floor <= c.dd_halt_buffer,
+             f"equity {acct.equity} within {c.dd_halt_buffer} of floor {acct.trailing_floor}"),
+            ("daily_loss", acct.day_pnl <= c.daily_loss_halt,
+             f"day P&L {acct.day_pnl} <= {c.daily_loss_halt}"),
+            ("feed_stale", feed.last_tick_age_ms > c.feed_stale_ms,
+             f"tick age {feed.last_tick_age_ms}ms > {c.feed_stale_ms}ms"),
+            ("book_crossed", feed.crossed_or_locked, "book crossed/locked"),
+            ("context_incomplete", not feed.context_complete, "required context missing"),
+            ("spread", feed.spread_rel > c.max_spread_rel,
+             f"spread_rel {feed.spread_rel} > {c.max_spread_rel}"),
+            ("duplicate", intent.setup_id in self._seen_setups,
+             f"setup {intent.setup_id} already sent"),
+            ("order_rate", recent_orders >= c.max_orders_per_min,
+             f"{recent_orders} orders in the last 60s >= {c.max_orders_per_min}"),
+            ("contract_clamp", intent.size > c.max_contracts,
+             f"size {intent.size} -> {c.max_contracts}"),
+        ]
+        report = [{"rule": name, "fired": bool(fired), "detail": (detail if fired else "")}
+                  for name, fired, detail in guards]
+        # terminal decision mirrors check(): first firing HALT/REJECT rule; clamp is not fatal.
+        fatal = next((g for g in report if g["fired"] and g["rule"] != "contract_clamp"), None)
+        decision = fatal["rule"] if fatal else "ok"
+        return {"decision": decision, "setup": intent.setup_id, "guards": report,
+                "n_fired": sum(1 for g in report if g["fired"])}
 
     # ---- the deterministic order-time check (pure; no side effects) --------
     def check(self, intent: OrderIntent, acct: AccountState, feed: FeedHealth,
@@ -229,6 +300,7 @@ class SpineExecutor:
         mismatch = self._verify_readback(placed, ref)
         if mismatch:
             return self.flatten_and_halt(intent.account, "readback_mismatch", mismatch)
+        self._resting[intent.account] = ref            # track for the naked-position reconcile
         self._emit({"event": "placed", "setup": intent.setup_id, "ref": ref, "size": size})
         return SpineDecision("place", d.rule, f"ref={ref}", clamped_size=d.clamped_size)
 
