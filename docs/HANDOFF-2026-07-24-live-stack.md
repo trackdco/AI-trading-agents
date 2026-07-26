@@ -167,9 +167,25 @@ Write-Host "DEPTH: $($depth.FullName)  (modified $($depth.LastWriteTime))"
 ```
 First thing to check in the sample: **BidVolume/AskVolume non-zero** (proves CVD path real).
 
-**NOTE:** this repo has NO `.scid`/`.depth` reader yet. `src/canon/ingestor.py` has the live
-source as a seam (`<<LIVE DTC FEED>>`, not built). The reader lives in **Pat's repo**.
-Offer to build it here against the ingestor seam if wanted.
+### ⚠️ THE READER ALREADY EXISTS — DO NOT BUILD A SECOND ONE
+Pat built it in `91c8dc6` (2026-07-25). **`git pull` before touching any of this.**
+Two implementations of the byte layout = nobody knows which one the money is riding on.
+
+- `src/canon/sierra_files.py` — `ScidReader`, `DepthReader`, `MinuteAggregator`, `SierraFileFeed`
+- `src/canon/ingestor.py` → `live_feed(scid_path, depth_path=None, **kw)` — **seam is FILLED**
+- `tests/test_sierra_files.py` — 11 tests, green
+- `scripts/sierra_pin_check.py` — the Step-B on-box check
+- `scripts/sierra_parity_replay.py` — replay a captured day through parity
+
+**Why Route B (files) and not DTC:** Sierra's DTC server will **not serve market data** to an
+external client under the CME non-pro / no-redistribution licence — *orders* route fine,
+*data* is rejected. Reading Sierra's own on-disk files is unambiguous local use. (This is
+the real reason; my earlier "localhost binding" guess was wrong.)
+
+**Order-flow assertion (added `e5e6fe0`):** the pin check now reports how many records carry
+non-zero BidVolume/AskVolume and **hard-fails if none do** — otherwise a feed with no
+per-trade aggressor side decodes perfectly, passes the check, and silently leaves the entire
+CVD family with no source until the reconciliation gate. Regression test covers both directions.
 
 ---
 
@@ -204,9 +220,12 @@ Report P&L but explicitly **not** as a criterion.
 1. ~~Deactivate Denali/CME trial~~ — **DONE ✅** (confirmed 24-Jul). No further action.
 2. **Confirm depth is truly 10-level, not throttled** — open Trade DOM on NQU6 and count
    populated levels each side (want ~10). Or read it out of the `.depth` sample.
-3. **Capture the `.scid`/`.depth` samples** (PowerShell above) → verify byte constants →
-   replay through parity.
-4. **Engine must run ON the VPS** (localhost-only binding).
+3. **STEP B — the on-box pin check. NOT RUN YET; this is the first thing to do.**
+   Reader + check script already exist (see §5). Gated purely on one human RDPing into the
+   VPS for ~2 min: capture a live `.scid`/`.depth` sample (PowerShell above), then run
+   `python scripts/sierra_pin_check.py <file>` on the box. Green = the file-tail path reads
+   live Sierra data correctly → then `sierra_parity_replay.py` on the captured day.
+   Monday is only "comfortable" once this is green.
 
 **Non-blocking housekeeping:** close PR #9 · send `/status` to the bot · Angus DM the bot
 so his `/kill` works · confirm max position size on a 50k account.
