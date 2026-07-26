@@ -548,3 +548,55 @@ base_dollar(ad):
 
 Belongs in `dollar_risk_micros`, **not** the spine — the DD-scaling overlay must be applied
 identically by the baseline sim and the agents off the same account-state feed, or A2 fails.
+
+---
+
+## 10. THE ACTUAL PROPOSED CONFIGURATION, END TO END
+
+Everything above tested one knob at a time. This is the real head-to-head — same harness, same
+20,000 pre-drawn day sequences, clean book, Build-6.
+
+| configuration | bust | mean cash/acct | ×5 accounts | stranded years | day-halts |
+|---|---|---|---|---|---|
+| **SHIPS TODAY** — cliff $250 + −$800 flat | 0.19% (39/20,000) | **$40,853** | $204,265 | 3.1% | **42.3/yr** |
+| fix #2 only — cliff $250 + **−4R** | 0.19% (39/20,000) | **$47,100** | $235,500 | 3.1% | 0.0/yr |
+| **fix #2 + #3** — ramp $1,500→$100, halt **$100**, −4R | **0.00% (0/20,000)** | **$48,334** | **$241,670** | **0.0%** | 0.0/yr |
+| ...same but hard halt left at $250 | 0.00% (0/20,000) | $48,261 | $241,305 | 0.2% | 0.0/yr |
+
+**Just fixing the units is worth +$6,247/account/year — +$31,235 across five.** The shipped
+−$800 flat blocks a trade on **42 days a year**; −4R blocks **zero**, because it never fires on
+days this system has produced.
+
+**Adding the ramp takes it to +$7,481/account/year (+$37,405 across five) and bust to 0.00%.**
+
+### The buffer is COUPLED to the ramp — correction to §5
+
+§5 said "keep `dd_halt_buffer` at 250" as a standalone. That holds **only if the ramp is not
+adopted.** Row 4 shows keeping the $250 hard halt underneath the ramp costs **$73/acct and
+strands 0.2% of years for no benefit** — by $250 of room the ramp has already sized the account
+down to ~$21 a trade, so the halt only freezes accounts the ramp would have carried through.
+
+| | `dd_halt_buffer` |
+|---|---|
+| ramp adopted | **$100** |
+| ramp not adopted | **$250** |
+
+Do not ship the ramp and leave the buffer at 250 — that pays for the ramp and keeps the freeze.
+
+### −4R contributes nothing measurable on top of the ramp, and that is correct
+
+Identical to the dollar with or without it (row 3 vs the no-day-stop run: both $48,334, 0 busts).
+−3R is also identical. The daily halt's job is the tail the day-bootstrap **structurally cannot
+generate** — it can only resample days the canon already survived, worst of which is −3.18R.
+A backstop showing zero benefit in the model and zero cost on the book is behaving correctly.
+
+### What 0.00% does and does not mean
+
+It means: **no ordering of the canon's own 224 days kills the account.** That is sequence risk,
+and 23.25% of reshuffles were breaching $2,000 before. Eliminating it is worth having.
+
+It does **not** mean bust is impossible. Not modelled: gaps, slippage past the stop beyond the
+backtest's 1-tick/4-tick assumption, a protective stop that never rested at the broker, a feed
+scoring garbage, an engine death mid-position, or **any day worse than −3.18R** — the model
+cannot produce one because we have never had one. That residual now lives in gates **A7**
+(stop provably resting) and **C7** (engine dies mid-trade), not in sequencing.
