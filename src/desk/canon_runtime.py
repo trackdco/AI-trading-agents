@@ -84,6 +84,11 @@ def drop_verdicts(sized: pd.DataFrame, drop_dir: Path) -> int:
             "micros": int(row.micros), "dollars_1lot": float(row.dollars_1lot),
             "pl": float(row.pl), "yr": int(row.yr),
         }
+        # Execution levels for the LIVE lane's spine intent — added only when present, so the
+        # research/parity callers (baseline sizing, agent_replay) drop the exact same schema.
+        for k in ("entry", "stop", "target"):
+            if hasattr(row, k) and getattr(row, k) is not None:
+                rec[k] = float(getattr(row, k))
         tmp = drop_dir / f".{i:05d}.json.tmp"
         final = drop_dir / f"{i:05d}.json"
         tmp.write_text(json.dumps(rec))

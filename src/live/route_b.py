@@ -56,6 +56,7 @@ from src.canon.spine import (
     SpineConfig,
     SpineExecutor,
 )
+from src.desk.canon_lane import verdict_record
 from src.live.feed import BAR_COLS, Bar
 
 # frozen dollar-risk sizer (the parity anchor — floor schedule; the DD overlay is applied
@@ -125,8 +126,10 @@ class RollState:
     def context(self, tr) -> dict:
         """Per-trade roll context for the journal ambient (roll = did this trade's session see
         a roll; contract = the front month in force)."""
-        return {"roll": str(getattr(tr, "trade_date", "")) in self.roll_sessions,
-                "contract": self.contract}
+        return self.context_for_day(str(getattr(tr, "trade_date", "")))
+
+    def context_for_day(self, day: str) -> dict:
+        return {"roll": str(day) in self.roll_sessions, "contract": self.contract}
 
 
 # --------------------------------------------------------------------------- shadow spine
@@ -181,14 +184,43 @@ class ShadowSpineInstrument:
                 ts=str(tr.fill_ts))
         return {"sizing_micros": int(micros), "decision": decision.rule, "guards": rep}
 
+    def observe_verdict(self, v: dict, acct: AccountState, feed: FeedHealth, now_epoch: float,
+                        roll_ctx: dict | None = None) -> dict:
+        """The AUTHORITATIVE canon-lane path: drive the disarmed spine from a relayed canon
+        verdict. Unlike observe(), micros come from the verdict (the PRODUCTION dollar-risk
+        sizer already sized the canon book) — not recomputed. Emits sizing/spine/rejects."""
+        from src.desk.canon_lane import verdict_to_intent
+        rc = roll_ctx or {}
+        stop_pts = abs(float(v["entry"]) - float(v["stop"]))
+        micros = int(v.get("micros", 0) or 0)
+        setup_id = f"{v.get('day')}:{v.get('fill')}"
+        available_dd = acct.equity - acct.trailing_floor
+        self.sizing_sink({"trade_date": str(v.get("day")), "fill_ts": str(v.get("fill")),
+                          "direction": v.get("direction"),
+                          "conviction": float(v.get("conviction", 0) or 0), "stop_pts": stop_pts,
+                          "micros": micros, "available_dd": None,   # floor schedule = anchor
+                          "available_dd_live": round(available_dd, 2),
+                          "roll": rc.get("roll"), "contract": rc.get("contract")})
+        intent = verdict_to_intent(v, self.account)
+        rep = self.spine.guard_report(intent, acct, feed, now_epoch)
+        if self.guard_report_sink is not None:
+            self.guard_report_sink({"event": "guard_report", "setup": setup_id, **rep})
+        decision = self.spine.place(intent, acct, feed, now_epoch)   # -> shadow (disarmed)
+        if decision.action in ("reject", "halt", "flatten"):
+            self.rejects.record(normalize_spine_reject(
+                {"action": decision.action, "rule": decision.rule,
+                 "detail": decision.detail, "setup": setup_id}), ts=str(v.get("fill")))
+        return {"sizing_micros": micros, "decision": decision.rule}
+
 
 # --------------------------------------------------------------------------- default providers
-def default_account_fn(runner, trailing_floor: float) -> Callable[[pd.Timestamp], AccountState]:
-    """AccountState from the paper broker's live equity. trailing_floor is the EOD line the
-    50k tier fixes intraday (SAFETY-SPINE); available_dd = equity − floor."""
+def constant_account_fn(equity: float = 50_000.0,
+                        trailing_floor: float = 0.0) -> Callable[[pd.Timestamp], AccountState]:
+    """AccountState from a fixed equity — a P1 placeholder. The funded account's real state
+    (equity/EOD line) comes from the broker read-back (DTC account probe) once wired; until then
+    the disarmed spine evaluates against this constant. available_dd = equity − trailing_floor."""
     def acct(_now) -> AccountState:
-        eq = float(runner.broker.equity())
-        return AccountState(equity=eq, trailing_floor=trailing_floor,
+        return AccountState(equity=equity, trailing_floor=trailing_floor,
                             day_pnl=0.0, open_positions=0)
     return acct
 
@@ -212,23 +244,34 @@ def default_feed_fn(ingestor: CanonIngestor, get_last_bar_ts,
 # --------------------------------------------------------------------------- the loop
 @dataclass
 class RouteBLive:
-    runner: object                                   # LiveRunner (champion paper stack)
+    """The AUTHORITATIVE canon-lane live loop (shape i). Canon verdicts (from a VerdictSource)
+    drive the verdict journal + the disarmed spine. The champion (`comparator`, a LiveRunner) is
+    OPTIONAL and NON-AUTHORITATIVE — it is structurally OUT of the journal/spine/trade path; if
+    wired, its trades go only to `comparator_sink` (the champion-vs-canon divergence canary)."""
     feed: SierraFileFeed
     data_dir: str | Path
+    verdict_source: object = None                    # VerdictSource (canon lane) — authoritative
+    verdict_sink: Callable[[dict], None] | None = None   # verdicts.jsonl (§D shadow evidence)
+    decision_sink: Callable[[dict], None] | None = None  # roll / note decisions
     ingestor: CanonIngestor = None                   # canon features (built if None)
     guard: FeedGuard = None
     watcher: RollWatcher = None
     roll_state: RollState = None                      # live roll tag (span-preserving)
     instrument: ShadowSpineInstrument | None = None
+    comparator: object = None                        # optional champion LiveRunner (diagnostic)
+    comparator_sink: Callable[[dict], None] | None = None
     listener: object | None = None                   # Telegram CommandListener
     alerts: object | None = None                     # LaunchAlerts / TelegramAlerts (.say)
     acct_fn: Callable[[pd.Timestamp], AccountState] | None = None
     feed_fn: Callable[[pd.Timestamp], FeedHealth] | None = None
     clock: Callable[[], pd.Timestamp] | None = None
+    account_equity: float = 50_000.0
     root: str = "NQ"
     suffix: str = "-CME"
     _cur_depth_day: object = field(default=None, init=False)
     _last_bar_ts: pd.Timestamp | None = field(default=None, init=False)
+    _cur_sess: str | None = field(default=None, init=False)
+    _pending: list = field(default_factory=list, init=False)   # session verdicts, fill-sorted
 
     def __post_init__(self):
         if self.ingestor is None:
@@ -242,17 +285,17 @@ class RouteBLive:
         if self.clock is None:
             self.clock = lambda: pd.Timestamp.now(tz="UTC")
         if self.acct_fn is None:
-            self.acct_fn = default_account_fn(self.runner, trailing_floor=0.0)
+            self.acct_fn = constant_account_fn(self.account_equity)
         if self.feed_fn is None:
             self.feed_fn = default_feed_fn(self.ingestor, lambda: self._last_bar_ts)
 
     # ---- warm start -------------------------------------------------------------------
     def warm(self, bars_df: pd.DataFrame, footprint_df: pd.DataFrame | None = None) -> None:
-        """Preload recent history into BOTH stacks (champion Vault buffer + canon ingestor)
-        without trading it, so day-one levels/tape are correct (the live prime()). Footprint is
-        optional: with it, tape/CVD is warmed too; without, bars-only (a thinner but valid warm)."""
-        if hasattr(self.runner, "prime"):
-            self.runner.prime(bars_df[list(BAR_COLS)])
+        """Preload recent history into the canon ingestor (and the comparator, if wired) without
+        trading it, so day-one levels/tape are correct. Footprint optional: with it tape/CVD is
+        warmed too; without, bars-only."""
+        if self.comparator is not None and hasattr(self.comparator, "prime"):
+            self.comparator.prime(bars_df[list(BAR_COLS)])
         if footprint_df is not None and not footprint_df.empty:
             warm_start(self.ingestor, bars_df, footprint_df)
         else:
@@ -261,39 +304,73 @@ class RouteBLive:
 
     # ---- per-poll dispatch ------------------------------------------------------------
     def dispatch(self, events: list[dict], now: pd.Timestamp) -> list:
-        completed: list = []
+        """Fan bars to the canon ingestor + roll tag; load each session's canon verdicts and
+        emit them at their fill time into the verdict journal + disarmed spine. The champion
+        comparator (if any) is driven in parallel but only writes the divergence canary."""
+        emitted: list = []
         for e in events:
             if e["kind"] == "minute":
                 for gbar in self.guard.accept(e["bar"]):     # dedup / order / gap
-                    # roll tag BEFORE the champion sees the bar, so a trade completing on this
-                    # bar journals with the correct roll/contract via ambient_extra. Buffers are
-                    # NOT trimmed — the backtest spans the gap, so live spans it too.
-                    ri = self.roll_state.on_bar(pd.Timestamp(gbar["ts_event"]))
+                    bts = pd.Timestamp(gbar["ts_event"])
+                    # roll tag first (buffers are NOT trimmed — the backtest spans the gap).
+                    ri = self.roll_state.on_bar(bts)
                     if ri["roll"]:
                         self._on_roll_bar(ri)
                     self.ingestor.on_bar(gbar)
                     t = e["tape"]
                     self.ingestor.on_minute_tape(e["ts"], t["delta"], t["vol"], t["vwp"])
-                    self._last_bar_ts = pd.Timestamp(gbar["ts_event"])
-                    completed += self.runner.on_bar(Bar.from_row(gbar))
-            else:                                            # depth
+                    self._last_bar_ts = bts
+                    if ri["session"] != self._cur_sess:       # session roll -> load verdicts
+                        self._cur_sess = ri["session"]
+                        self._load_verdicts(ri["session"])
+                    emitted += self._emit_due(bts, now)       # verdicts whose fill has passed
+                    self._run_comparator(gbar)                # non-authoritative canary
+            else:                                             # depth
                 self.ingestor.on_depth(e["event"])
-        if completed and self.instrument is not None:
-            now_epoch = pd.Timestamp(now).timestamp()
-            acct, feed = self.acct_fn(now), self.feed_fn(now)
-            for tr in completed:
-                self.instrument.observe(tr, acct, feed, now_epoch,
-                                        roll_ctx=self.roll_state.context(tr))
-        return completed
+        return emitted
+
+    def _load_verdicts(self, session: str) -> None:
+        if self.verdict_source is None:
+            self._pending = []
+            return
+        vs = list(self.verdict_source.session_verdicts(session) or [])
+        self._pending = sorted(vs, key=lambda v: pd.Timestamp(v["fill"]))
+
+    def _emit_due(self, bts: pd.Timestamp, now: pd.Timestamp) -> list:
+        """Emit every pending verdict whose fill time is at/ before this bar — journal it (§D
+        evidence) and drive the disarmed spine. Removes them from the pending queue."""
+        out: list = []
+        acct = feed = None
+        while self._pending and pd.Timestamp(self._pending[0]["fill"]) <= bts:
+            v = self._pending.pop(0)
+            rc = self.roll_state.context_for_day(str(v.get("day")))
+            if self.verdict_sink is not None:
+                self.verdict_sink(verdict_record(v, roll_ctx=rc))
+            if self.instrument is not None:
+                if acct is None:
+                    acct, feed = self.acct_fn(now), self.feed_fn(now)
+                self.instrument.observe_verdict(v, acct, feed,
+                                                pd.Timestamp(now).timestamp(), roll_ctx=rc)
+            out.append(v)
+        return out
+
+    def _run_comparator(self, gbar: dict) -> None:
+        """Drive the champion in parallel (if wired) and record its trades to the divergence
+        canary ONLY — never the authoritative journal or the spine."""
+        if self.comparator is None:
+            return
+        for tr in self.comparator.on_bar(Bar.from_row(gbar)):
+            if self.comparator_sink is not None:
+                self.comparator_sink({"lane": "champion", "trade_date": str(tr.trade_date),
+                                      "fill_ts": str(tr.fill_ts), "direction": tr.direction,
+                                      "entry": float(tr.entry), "dollars": float(tr.dollars)})
 
     def _on_roll_bar(self, ri: dict) -> None:
-        """A roll bar arrived intraday (tag_rolls twin). Journal the roll event (so the gate can
-        partition roll-day trades and §E can reset the clock) and alert. This complements the
-        RollWatcher session-boundary re-point — same roll, finer granularity."""
-        journal = getattr(self.runner, "journal", None)
-        if journal is not None and hasattr(journal, "on_roll"):
-            journal.on_roll({"date": ri["session"], "from": ri.get("from"),
-                             "to": ri["contract"], "bar_ts": ri.get("bar_ts")})
+        """A roll bar arrived intraday (tag_rolls twin). Journal the roll decision (so the gate
+        can partition roll-day verdicts and §E can reset the clock) and alert."""
+        if self.decision_sink is not None:
+            self.decision_sink({"type": "roll", "date": ri["session"], "from": ri.get("from"),
+                                "to": ri["contract"], "bar_ts": ri.get("bar_ts")})
         if self.alerts is not None:
             self.alerts.say(f"🔁 ROLL TAG {ri['session']}: now {ri['contract']} — §E resets "
                             f"the promotion clock for this session (buffers span the gap, "
@@ -347,12 +424,12 @@ class RouteBLive:
                     self.alerts.say("⛔ Route-B feed STALLED — halting the live tail.")
                 break
             sleep_fn(poll_interval_s)
-        if hasattr(self.runner, "finalize"):
-            self.runner.finalize()
+        if self.comparator is not None and hasattr(self.comparator, "finalize"):
+            self.comparator.finalize()
 
 
 # --------------------------------------------------------------------------- builder
-def build_shadow_instrument(out_dir: str | Path, account: str = "PAPER",
+def build_shadow_instrument(out_dir: str | Path, account: str = "FUNDED",
                             cfg: SpineConfig | None = None) -> ShadowSpineInstrument:
     """Assemble the shadow spine instrument with all three evidence sinks under out_dir."""
     out = Path(out_dir)

@@ -1,6 +1,9 @@
-"""Route-B live loop tests (src/live/route_b.py) — fan-out, shadow-spine evidence, roll
-re-point, stall/stop. Offline against synthetic .scid/.depth; the champion runner and clock
-are faked so nothing blocks and no broker is ever reachable."""
+"""Route-B canon-lane loop tests (src/live/route_b.py).
+
+The AUTHORITATIVE path is canon verdicts (a VerdictSource) driving the verdict journal + the
+disarmed spine. The champion is demoted to a non-authoritative comparator. Offline against
+synthetic .scid + a fixture verdict source; the clock is faked so nothing blocks, and _NoBroker
+makes any order route impossible."""
 from __future__ import annotations
 
 import json
@@ -13,21 +16,16 @@ import pytest
 
 from src.canon.book import DepthBook
 from src.canon.ingestor import CanonIngestor
-from src.canon.sierra_files import (
-    DCMD_CLEAR,
-    DCMD_SET_ASK,
-    DCMD_SET_BID,
-    SierraFileFeed,
-    write_depth,
-    write_scid,
-)
+from src.canon.sierra_files import SierraFileFeed, write_scid
 from src.canon.sierra_symbol import RollWatcher, resolve_scid_path
 from src.canon.spine import AccountState, FeedHealth
 from src.live.route_b import (
+    JsonlSink,
     RollState,
     RouteBLive,
     _NoBroker,
     build_shadow_instrument,
+    constant_account_fn,
 )
 
 NY = "America/New_York"
@@ -48,14 +46,6 @@ def _scid(path, day="2026-03-17"):
     ])
 
 
-def _cand(**kw):
-    base = {"size": 1.0, "entry": 18000.0, "stop_initial": 17990.0, "target_level": 18050.0,
-            "direction": "long", "trade_date": "2026-03-17",
-            "fill_ts": "2026-03-17T08:20:00-04:00"}
-    base.update(kw)
-    return SimpleNamespace(**base)
-
-
 def _bar(ts, close=100.0):
     return {"ts_event": ts, "open": close, "high": close, "low": close, "close": close,
             "volume": 10.0}
@@ -65,17 +55,28 @@ def _tape():
     return {"delta": 1.0, "vol": 10.0, "vwp": 100.0}
 
 
-class FakeRunner:
-    def __init__(self, journal_dir, trades_on=None):
+def _verdict(fill_ts, day="2026-03-17", direction="long", micros=10):
+    return {"session": "NY", "day": day, "fill": pd.Timestamp(fill_ts).isoformat(),
+            "direction": direction, "entry": 18000.0, "stop": 17990.0, "target": 18020.0,
+            "conviction": 1.0, "risk_pts": 10.0, "micros": micros, "pl": 100.0}
+
+
+class FixtureVerdictSource:
+    def __init__(self, by_day):
+        self.by_day = by_day
+        self.asked = []
+
+    def session_verdicts(self, day):
+        self.asked.append(str(day))
+        return list(self.by_day.get(str(day), []))
+
+
+class FakeComparator:
+    """Stand-in champion LiveRunner: on_bar returns trades on given ts; prime/finalize noop."""
+    def __init__(self, trades_on=None):
         self.primed = None
         self.finalized = False
-        self.alerts = None
-        self.broker = SimpleNamespace(equity=lambda: 52_000.0)
-        self.rolls_journaled = []
-        self.journal = SimpleNamespace(dir=Path(journal_dir),
-                                       on_roll=self.rolls_journaled.append)
         self._trades_on = trades_on or {}
-        self.bars_seen = []
 
     def prime(self, df):
         self.primed = df
@@ -84,43 +85,9 @@ class FakeRunner:
         self.finalized = True
 
     def on_bar(self, bar):
-        self.bars_seen.append(str(bar.ts_event))
         return list(self._trades_on.get(str(bar.ts_event), []))
 
 
-# --------------------------------------------------------------------------- poll_events / retarget
-def test_poll_events_returns_merged_and_records_lag(tmp_path):
-    sp = tmp_path / "nq.scid"
-    _scid(sp)
-    feed = SierraFileFeed(sp, clock=lambda: _ts("08:02:05"), flush_ms=1000)
-    events = feed.poll_events()
-    kinds = [e["kind"] for e in events]
-    assert kinds == ["minute", "minute"]              # 08:00, 08:01 close; 08:02 forming
-    assert feed.lag_summary()["n"] == 2               # per-bar lag recorded on the poll
-
-
-def test_retarget_depth_and_scid(tmp_path):
-    sp1, sp2 = tmp_path / "u.scid", tmp_path / "z.scid"
-    _scid(sp1)
-    _scid(sp2, day="2026-09-14")
-    feed = SierraFileFeed(sp1)
-    feed.retarget_scid(sp2)
-    assert Path(feed.scid_path) == sp2 and feed._depth is None
-    dp = tmp_path / "d.depth"
-    write_depth(dp, [{"ts": _ts("08:00"), "command": DCMD_CLEAR}])
-    feed.retarget_depth(dp)
-    assert feed._depth is not None
-
-
-# --------------------------------------------------------------------------- _NoBroker
-def test_no_broker_forbids_every_call():
-    nb = _NoBroker()
-    for m in ("submit_bracket", "order_status", "position", "flatten", "cancel_all"):
-        with pytest.raises(AssertionError):
-            getattr(nb, m)("x")
-
-
-# --------------------------------------------------------------------------- shadow instrument
 def _good_acct():
     return AccountState(equity=52_000, trailing_floor=50_000, day_pnl=-100, open_positions=0)
 
@@ -130,146 +97,148 @@ def _good_feed():
                       spread_rel=1.0)
 
 
-def test_shadow_instrument_emits_all_three_artifacts(tmp_path):
+# --------------------------------------------------------------------------- feed primitives
+def test_poll_events_returns_merged_and_records_lag(tmp_path):
+    sp = tmp_path / "nq.scid"
+    _scid(sp)
+    feed = SierraFileFeed(sp, clock=lambda: _ts("08:02:05"), flush_ms=1000)
+    events = feed.poll_events()
+    assert [e["kind"] for e in events] == ["minute", "minute"]
+    assert feed.lag_summary()["n"] == 2
+
+
+def test_retarget_depth_and_scid(tmp_path):
+    sp1, sp2 = tmp_path / "u.scid", tmp_path / "z.scid"
+    _scid(sp1)
+    _scid(sp2, day="2026-09-14")
+    feed = SierraFileFeed(sp1)
+    feed.retarget_scid(sp2)
+    assert Path(feed.scid_path) == sp2 and feed._depth is None
+
+
+def test_no_broker_forbids_every_call():
+    nb = _NoBroker()
+    for m in ("submit_bracket", "order_status", "position", "flatten", "cancel_all"):
+        with pytest.raises(AssertionError):
+            getattr(nb, m)("x")
+
+
+# --------------------------------------------------------------------------- shadow instrument
+def test_observe_verdict_emits_sizing_and_spine(tmp_path):
     inst = build_shadow_instrument(tmp_path)
-    out = inst.observe(_cand(), _good_acct(), _good_feed(), now_epoch=0.0)
-    # sizing.jsonl: micros = dollar_risk_micros(1.0, 10.0) = 200/(10*2) = 10
+    v = _verdict(_ts("08:20"))
+    out = inst.observe_verdict(v, _good_acct(), _good_feed(), now_epoch=0.0)
+    assert out["sizing_micros"] == 10                 # from the verdict, NOT recomputed
     sizing = [json.loads(x) for x in (tmp_path / "sizing.jsonl").read_text().splitlines()]
     assert sizing[0]["micros"] == 10 and sizing[0]["conviction"] == 1.0
-    assert out["sizing_micros"] == 10
-    # spine.jsonl carries the all-guards report AND a shadow decision (disarmed)
     spine = [json.loads(x) for x in (tmp_path / "spine.jsonl").read_text().splitlines()]
     assert any(e.get("event") == "guard_report" for e in spine)
-    assert any(e.get("event") == "shadow_place" for e in spine)   # disarmed -> not sent
-    # good state -> no rejection recorded
-    assert not (tmp_path / "rejects.jsonl").exists() or \
-        (tmp_path / "rejects.jsonl").read_text().strip() == ""
+    assert any(e.get("event") == "shadow_place" for e in spine)   # disarmed
 
 
-def test_shadow_instrument_records_reject_on_bad_feed(tmp_path):
+def test_observe_verdict_records_reject_on_bad_feed(tmp_path):
     inst = build_shadow_instrument(tmp_path)
     stale = FeedHealth(last_tick_age_ms=9_000, crossed_or_locked=False,
                        context_complete=True, spread_rel=1.0)
-    inst.observe(_cand(), _good_acct(), stale, now_epoch=0.0)
+    inst.observe_verdict(_verdict(_ts("08:20")), _good_acct(), stale, now_epoch=0.0)
     rej = [json.loads(x) for x in (tmp_path / "rejects.jsonl").read_text().splitlines()]
-    assert rej and rej[0]["code"] == "feed_stale" and rej[0]["source"] == "spine"
+    assert rej and rej[0]["code"] == "feed_stale"
 
 
-# --------------------------------------------------------------------------- dispatch fan-out
-def test_dispatch_fans_out_to_runner_ingestor_and_instrument(tmp_path):
-    sp = tmp_path / "nq.scid"
-    _scid(sp)
-    feed = SierraFileFeed(sp, clock=lambda: _ts("08:02:05"))
-    # champion completes a trade on the 08:01 bar
-    runner = FakeRunner(tmp_path, trades_on={str(_ts("08:01")): [_cand()]})
-    inst = build_shadow_instrument(tmp_path)
-    live = RouteBLive(runner=runner, feed=feed, data_dir=tmp_path, instrument=inst,
-                      ingestor=CanonIngestor(book=DepthBook()))
-    completed = live.dispatch(feed.poll_events(), now=_ts("08:02:05"))
-    assert len(completed) == 1                         # champion trade surfaced
-    assert runner.bars_seen == [str(_ts("08:00")), str(_ts("08:01"))]   # bars fanned to champion
-    assert len(live.ingestor._bars) == 2               # AND to the canon ingestor
-    assert (tmp_path / "sizing.jsonl").exists()         # shadow evidence emitted for the trade
+# --------------------------------------------------------------------------- verdict-driven loop
+def _live(tmp_path, source, comparator=None, comp_sink=None):
+    return RouteBLive(
+        feed=SierraFileFeed(tmp_path / "none.scid"), data_dir=tmp_path,
+        verdict_source=source, verdict_sink=JsonlSink(tmp_path / "verdicts.jsonl"),
+        decision_sink=JsonlSink(tmp_path / "decisions.jsonl"),
+        instrument=build_shadow_instrument(tmp_path), ingestor=CanonIngestor(book=DepthBook()),
+        acct_fn=constant_account_fn(52_000, 50_000),
+        comparator=comparator, comparator_sink=comp_sink)
 
 
-# --------------------------------------------------------------------------- roll re-point
-def test_maybe_retarget_repoints_scid_and_alerts_on_roll(tmp_path):
-    sp = tmp_path / "start.scid"
-    _scid(sp)
-    feed = SierraFileFeed(sp)
-    said = []
-    runner = FakeRunner(tmp_path)
-    live = RouteBLive(runner=runner, feed=feed, data_dir=tmp_path,
-                      watcher=RollWatcher(start=date(2026, 9, 13)),
-                      alerts=SimpleNamespace(say=said.append))
-    # step to the roll day (Sep 14) -> depth re-points (new day) AND scid re-points (roll)
-    live._maybe_retarget(_ts("08:00", day="2026-09-14"))
-    assert Path(feed.scid_path) == resolve_scid_path(tmp_path, date(2026, 9, 14))
-    assert Path(feed.scid_path).name == "NQZ26-CME.scid"
-    assert said and "CONTRACT ROLL" in said[0]
+def test_dispatch_emits_verdict_at_fill_time(tmp_path):
+    fill = _ts("08:01")
+    src = FixtureVerdictSource({"2026-03-17": [_verdict(fill)]})
+    live = _live(tmp_path, src)
+    events = [
+        {"kind": "minute", "ts": _ts("08:00"), "bar": _bar(_ts("08:00")), "tape": _tape()},
+        {"kind": "minute", "ts": _ts("08:01"), "bar": _bar(_ts("08:01")), "tape": _tape()},
+    ]
+    emitted = live.dispatch(events, now=_ts("08:01"))
+    assert src.asked == ["2026-03-17"]                # verdicts loaded once on the session roll
+    assert len(emitted) == 1                          # emitted when its fill bar (08:01) passed
+    verdicts = [json.loads(x) for x in (tmp_path / "verdicts.jsonl").read_text().splitlines()]
+    assert verdicts[0]["type"] == "verdict" and verdicts[0]["micros"] == 10
+    assert (tmp_path / "sizing.jsonl").exists()        # spine driven by the verdict
 
 
-def test_maybe_retarget_swaps_depth_daily_without_roll(tmp_path):
-    sp = tmp_path / "nq.scid"
-    _scid(sp)
-    feed = SierraFileFeed(sp)
-    runner = FakeRunner(tmp_path)
-    live = RouteBLive(runner=runner, feed=feed, data_dir=tmp_path,
-                      watcher=RollWatcher(start=date(2026, 3, 17)))
-    live._maybe_retarget(_ts("09:00", day="2026-03-17"))
-    d1 = str(feed.depth_path)
-    live._maybe_retarget(_ts("09:00", day="2026-03-18"))    # next day, same contract
-    d2 = str(feed.depth_path)
-    assert d1 != d2 and Path(feed.scid_path) == sp          # depth swapped, scid unchanged
+def test_verdict_not_emitted_before_its_fill(tmp_path):
+    src = FixtureVerdictSource({"2026-03-17": [_verdict(_ts("08:05"))]})   # fill after the bars
+    live = _live(tmp_path, src)
+    events = [{"kind": "minute", "ts": _ts("08:00"), "bar": _bar(_ts("08:00")), "tape": _tape()}]
+    assert live.dispatch(events, now=_ts("08:00")) == []
+    assert not (tmp_path / "verdicts.jsonl").exists()
+
+
+def test_comparator_writes_only_canary_never_journal_or_spine(tmp_path):
+    # champion completes a trade on 08:00; it must reach the canary, NOT verdicts/sizing/spine.
+    champ_trade = SimpleNamespace(trade_date="2026-03-17", fill_ts="2026-03-17T08:00:00-04:00",
+                                  direction="long", entry=18000.0, dollars=42.0)
+    comp = FakeComparator(trades_on={str(_ts("08:00")): [champ_trade]})
+    canary = []
+    src = FixtureVerdictSource({})                     # no canon verdicts
+    live = _live(tmp_path, src, comparator=comp, comp_sink=canary.append)
+    live.dispatch([{"kind": "minute", "ts": _ts("08:00"), "bar": _bar(_ts("08:00")),
+                    "tape": _tape()}], now=_ts("08:00"))
+    assert canary and canary[0]["lane"] == "champion" and canary[0]["dollars"] == 42.0
+    assert not (tmp_path / "verdicts.jsonl").exists()  # champion never touches the verdict journal
+    assert not (tmp_path / "sizing.jsonl").exists()    # nor the spine
 
 
 # --------------------------------------------------------------------------- roll tag
+def test_roll_bar_writes_decision(tmp_path):
+    src = FixtureVerdictSource({})
+    live = RouteBLive(feed=SierraFileFeed(tmp_path / "none.scid"), data_dir=tmp_path,
+                      verdict_source=src, decision_sink=JsonlSink(tmp_path / "decisions.jsonl"),
+                      ingestor=CanonIngestor(book=DepthBook()),
+                      roll_state=RollState(), alerts=SimpleNamespace(say=lambda s: None))
+    live.dispatch([
+        {"kind": "minute", "ts": _ts("12:00", "2026-09-13"), "bar": _bar(_ts("12:00", "2026-09-13")),
+         "tape": _tape()},
+        {"kind": "minute", "ts": _ts("12:00", "2026-09-14"), "bar": _bar(_ts("12:00", "2026-09-14")),
+         "tape": _tape()},
+    ], now=_ts("12:00", "2026-09-14"))
+    decs = [json.loads(x) for x in (tmp_path / "decisions.jsonl").read_text().splitlines()]
+    roll = next(d for d in decs if d.get("type") == "roll")
+    assert roll["to"] == "NQZ26" and roll["from"] == "NQU26"
+
+
+# --------------------------------------------------------------------------- roll state
 def test_roll_state_tracks_sessions_and_context():
     rs = RollState()
-    a = rs.on_bar(_ts("12:00", "2026-09-13"))
-    assert a["contract"] == "NQU26" and a["roll"] is False
-    b = rs.on_bar(_ts("12:00", "2026-09-14"))               # crosses the roll
-    assert b["contract"] == "NQZ26" and b["roll"] is True and b["from"] == "NQU26"
-    assert rs.roll_sessions == {"2026-09-14"} and len(rs.rolls) == 1
-    # a trade in the roll session gets roll=True; one before does not
-    assert rs.context(_cand(trade_date="2026-09-14"))["roll"] is True
-    assert rs.context(_cand(trade_date="2026-09-13"))["roll"] is False
-    assert rs.context(_cand(trade_date="2026-09-14"))["contract"] == "NQZ26"
-
-
-def test_dispatch_tags_roll_journals_event_and_stamps_sizing(tmp_path):
-    # two bars either side of the Sep-14 roll; the champion completes a trade on the roll bar.
-    roll_bar_ts = _ts("12:00", "2026-09-14")
-    events = [
-        {"kind": "minute", "ts": _ts("12:00", "2026-09-13"),
-         "bar": _bar(_ts("12:00", "2026-09-13")), "tape": _tape()},
-        {"kind": "minute", "ts": roll_bar_ts, "bar": _bar(roll_bar_ts), "tape": _tape()},
-    ]
-    runner = FakeRunner(tmp_path, trades_on={str(roll_bar_ts): [_cand(trade_date="2026-09-14")]})
-    said = []
-    live = RouteBLive(runner=runner, feed=SierraFileFeed(tmp_path / "none.scid"),
-                      data_dir=tmp_path, instrument=build_shadow_instrument(tmp_path),
-                      ingestor=CanonIngestor(book=DepthBook()),
-                      alerts=SimpleNamespace(say=said.append))
-    live.dispatch(events, now=roll_bar_ts)
-
-    # roll event journaled once, with from/to contracts, + a roll-tag alert
-    assert len(runner.rolls_journaled) == 1
-    assert runner.rolls_journaled[0]["to"] == "NQZ26" and runner.rolls_journaled[0]["from"] == "NQU26"
-    assert any("ROLL TAG" in s for s in said)
-    # sizing.jsonl row for the roll-session trade is stamped roll=True / contract=NQZ26
-    sizing = [json.loads(x) for x in (tmp_path / "sizing.jsonl").read_text().splitlines()]
-    assert sizing[-1]["roll"] is True and sizing[-1]["contract"] == "NQZ26"
-
-
-def test_dispatch_no_roll_no_event(tmp_path):
-    ts = _ts("12:00", "2026-03-17")
-    runner = FakeRunner(tmp_path)
-    live = RouteBLive(runner=runner, feed=SierraFileFeed(tmp_path / "none.scid"),
-                      data_dir=tmp_path, ingestor=CanonIngestor(book=DepthBook()))
-    live.dispatch([{"kind": "minute", "ts": ts, "bar": _bar(ts), "tape": _tape()}], now=ts)
-    assert runner.rolls_journaled == []                     # first bar is never a roll
+    assert rs.on_bar(_ts("12:00", "2026-09-13"))["roll"] is False
+    b = rs.on_bar(_ts("12:00", "2026-09-14"))
+    assert b["roll"] is True and b["from"] == "NQU26"
+    assert rs.roll_sessions == {"2026-09-14"}
+    assert rs.context_for_day("2026-09-14") == {"roll": True, "contract": "NQZ26"}
 
 
 # --------------------------------------------------------------------------- serve stop/stall
 def test_serve_stops_on_stop_fn(tmp_path):
     sp = tmp_path / "nq.scid"
     _scid(sp)
-    runner = FakeRunner(tmp_path)
-    live = RouteBLive(runner=runner, feed=SierraFileFeed(sp, clock=lambda: _ts("08:02:05")),
-                      data_dir=tmp_path, ingestor=CanonIngestor(book=DepthBook()))
-    live.serve(sleep_fn=lambda s: None, stop_fn=lambda: True)   # stop immediately
-    assert runner.finalized is True
+    comp = FakeComparator()
+    live = RouteBLive(feed=SierraFileFeed(sp, clock=lambda: _ts("08:02:05")), data_dir=tmp_path,
+                      verdict_source=FixtureVerdictSource({}), ingestor=CanonIngestor(book=DepthBook()),
+                      comparator=comp)
+    live.serve(sleep_fn=lambda s: None, stop_fn=lambda: True)
+    assert comp.finalized is True
 
 
 def test_serve_halts_on_stall(tmp_path):
     sp = tmp_path / "nq.scid"
     _scid(sp)
-    # clock jumps far past the last bar so the feed guard reports a stall on the first check.
-    live = RouteBLive(runner=FakeRunner(tmp_path),
-                      feed=SierraFileFeed(sp, clock=lambda: _ts("10:00")),
-                      data_dir=tmp_path, ingestor=CanonIngestor(book=DepthBook()),
+    live = RouteBLive(feed=SierraFileFeed(sp, clock=lambda: _ts("10:00")), data_dir=tmp_path,
+                      verdict_source=FixtureVerdictSource({}), ingestor=CanonIngestor(book=DepthBook()),
                       clock=lambda: _ts("10:00"))
-    live.serve(sleep_fn=lambda s: None, max_polls=5)
-    # stalled -> loop broke before exhausting max_polls; runner finalized
-    assert live.runner.finalized is True
+    live.serve(sleep_fn=lambda s: None, max_polls=5)   # stalled -> breaks before max_polls

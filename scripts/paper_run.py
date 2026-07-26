@@ -251,10 +251,21 @@ def stream_live(runner: LiveRunner, feed_cfg: dict, log: logging.Logger,
     feed = SierraFileFeed(scid, depth if depth.exists() else None,
                           flush_ms=int(sc.get("flush_ms", 1000)),
                           on_lag=lambda r: None)
-    instrument = build_shadow_instrument(out_dir, account=sc.get("account", "PAPER"))
-    live = RouteBLive(runner=runner, feed=feed, data_dir=data_dir, root=root, suffix=suffix,
-                      roll_state=roll_state,   # shared with the runner's ambient_extra stamp
-                      instrument=instrument, alerts=runner.alerts)
+    # AUTHORITATIVE lane = the canon scripts (shape i). The champion is STRUCTURALLY ABSENT from
+    # the live path here — it is NOT wired as the comparator, because its LiveRunner journals to
+    # the same dir and would collide with the canon verdict journal. The comparator canary (with
+    # an ISOLATED journal dir) is wired in the dedicated canon entry point (P3), not paper_run
+    # (which is itself being retired — no paper stage; the funded account is the target).
+    from src.canon.infra import SpineJournalSink
+    from src.desk.canon_lane import ScriptVerdictSource
+    from src.live.route_b import JsonlSink
+    instrument = build_shadow_instrument(out_dir, account=sc.get("account", "FUNDED"))
+    live = RouteBLive(
+        feed=feed, data_dir=data_dir, root=root, suffix=suffix, roll_state=roll_state,
+        verdict_source=ScriptVerdictSource(),
+        verdict_sink=JsonlSink(out_dir / "verdicts.jsonl"),
+        decision_sink=SpineJournalSink(out_dir / "decisions.jsonl"),
+        instrument=instrument, alerts=runner.alerts)
 
     # warm start from recent history (bars only; footprint optional via warmup.footprint)
     warm = sc.get("warmup", {})
