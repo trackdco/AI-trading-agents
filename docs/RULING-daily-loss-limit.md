@@ -316,9 +316,49 @@ Naked bust is concentrated at the start: **median bust day 15 of 252**, before t
 It has to be a cliff because **`base_dollar` floors at $200 and never steps below it**. The spine
 doc says sizing "steps down the same way as available DD shrinks" — but it stops stepping at
 $3k. At $400 of remaining room the sizer still wants to risk $200 on a 1.0 setup, half the room,
-so the only available response is to stop entirely. **The missing piece is a ramp, not a bigger
-buffer** — see `scripts/dd_ramp_study.py`. That is a SIZING change and therefore Angus's call,
-not the spine's; it is measured, not adopted.
+so the only available response is to stop entirely.
+
+### The ramp — `scripts/dd_ramp_study.py`
+
+Keep stepping down instead of stopping: below a start point, scale the 1.0-tier base linearly to
+zero, with a token hard halt underneath. A trade that sizes to 0 micros simply isn't taken, so
+the account **de-risks and can grind back** rather than freezing.
+
+| shape | bust | mean cash | median | p10 | years lost to stand-down |
+|---|---|---|---|---|---|
+| no halt at all | 1.59% | $46,533 | $48,000 | $42,000 | 0.0% |
+| cliff, buffer $250 *(ships)* | 0.17% | $45,974 | $48,000 | $42,000 | 2.7% |
+| cliff, buffer $400 | 0.00% | $45,390 | $48,000 | $40,000 | 4.2% |
+| ramp from $3,000 -> $0 at $100 | 0.00% | $45,530 | $46,000 | $40,000 | 0.0% |
+| ramp from $2,000 -> $0 at $100 | 0.00% | $46,833 | $48,000 | $42,000 | 0.0% |
+| **ramp from $1,500 -> $0 at $100** | **0.00%** | **$47,052** | **$48,000** | **$42,000** | **0.0%** |
+| ramp from $1,000 -> $0 at $100 | 0.00% | $47,074 | $48,000 | $42,000 | 0.2% |
+| ramp from $750 -> $0 at $100 | 0.00% | $46,900 | $48,000 | $42,000 | 0.6% |
+
+**Where the ramp starts is the whole game.** A funded account opens at **$2,000** available DD, so
+a ramp beginning at $3k is inside the healthy build-up of every account from day one — that is
+what costs section B's variants a payout off the median. Start it *below* the opening balance and
+the tax disappears.
+
+**The $1,500 start strictly dominates every other row**, including doing nothing: more mean cash
+than the naked book (+$519), zero bust, zero frozen years, median and p10 both untouched. It
+beats the shipped $250 cliff by **+$1,078/account/year (+2.3%), ~$5,390 across five accounts**,
+and removes the 2.7% frozen-year rate entirely.
+
+It reads as a free lunch and mostly is one, for a boring reason: the naked mean is dragged down
+by the 1.59% of paths that bust with nothing, and the ramp converts those into paths that keep
+earning — for less than that conversion is worth.
+
+Two things that make it credible rather than fitted: **$2,000 / $1,500 / $1,000 / $750 all land
+within $250 of each other**, so it is a plateau, not a spike; and the mechanism is principled —
+don't de-risk above where the account started, do de-risk below it, because the sizer's $200
+floor is too large against the room that remains.
+
+**Effect on the canon: zero.** The ramp only engages below $1,500 available DD, and
+`baseline_book.parquet` has no equity path at all. +$56,065.18 either way.
+
+**Still Angus's call — this is a SIZING change, not a spine constant.** It is also safely
+deferrable: the shipped $250 cliff already reaches 0.17% bust, so nothing is blocked on it.
 
 ### Consecutive halt days: **keep 2 in a row -> stop and review**
 
