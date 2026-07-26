@@ -105,8 +105,11 @@ All-in ≈ **$95–125/mo** on the included feed, or **$135–170/mo** with the 
     python -m scripts.parity_harness agent_replay.parquet 2025-06-01 2025-06-30   # 1 month
     python -m scripts.parity_harness agent_replay.parquet                          # full 2yr
     ```
-    Each stage must be an exact **PASS** before widening; the full run must reproduce 400 trades,
-    **+$56,065**, every conviction/stop/micro/P&L matching `baseline_book.parquet`. This proves the
+    Each stage must be an exact **PASS** before widening; the full run must reproduce the
+    **CURRENT ARMING REFERENCE — +$55,617.56 / 386 trades, `baseline_book_news.parquet`**
+    (regenerate on the box: `python -m scripts.canon_news_clean`; see HEADLINE-NUMBERS.md —
+    the +$56,065/400 and +$52,522/404 figures are superseded), every conviction/stop/micro/P&L
+    matching exactly. This proves the
     agents ARE the validated edge, not a lucky look-alike. Any MISSING/EXTRA/MISMATCH → Pat fixes at
     the smallest failing window, re-run. **GATE.** (Because it's feed-independent, this gate can and
     should clear before Phase 1 — validate the agents, *then* buy the hardware.)
