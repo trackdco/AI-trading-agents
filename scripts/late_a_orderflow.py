@@ -148,7 +148,7 @@ def add_features(J: pd.DataFrame) -> pd.DataFrame:
 
 
 # ------------------------------------------------------------------ 3. analysis
-def analyse(X: pd.DataFrame) -> None:
+def analyse(X: pd.DataFrame, label: str = "10:15-10:30") -> None:
     X = X.copy()
     X["win"] = X.dollars > 0
     X["yr"] = X.month.str[:4]
@@ -181,7 +181,7 @@ def analyse(X: pd.DataFrame) -> None:
         "DISP kind=displacement": X.kind == "displacement",
     }
 
-    print("\n================ 1. what order flow says at 10:15-10:30 entries ================")
+    print(f"\n================ 1. what order flow says at {label} entries ================")
     print(f"{'check':<26}{'n_on':>6}{'$/t on':>9}{'win on':>8}{'n_off':>7}{'$/t off':>9}"
           f"{'win off':>8}{'gap $/t':>9}{'25 dir':>7}{'26 dir':>7}{'SURVIVES':>10}")
     surv = {}
@@ -209,7 +209,7 @@ def analyse(X: pd.DataFrame) -> None:
           f"({X.r_multiple.sum():+.1f}R = ${X.r_multiple.sum()*200:+,.0f} @floor)")
     print(f"depth coverage: {has_depth.sum()}/{len(X)} trades have book data")
 
-    print("\n================ 2. survivors -> the kept subset ================")
+    print(f"\n================ 2. survivors -> the kept subset ({label}) ================")
     if not surv:
         print("NO check survives the both-years rule. The window has no honest flow edge "
               "at n=292 — report that, do not fit one.")
