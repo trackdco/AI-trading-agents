@@ -126,12 +126,19 @@ def self_test():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        cand = sys.argv[1]
-        d0 = sys.argv[2] if len(sys.argv) > 2 else None
-        d1 = sys.argv[3] if len(sys.argv) > 3 else None
+    argv = list(sys.argv[1:])
+    ref_path = REF
+    if "--ref" in argv:                    # e.g. --ref output/baseline_book_news.parquet
+        i = argv.index("--ref")            # (the ARMING reference: corrections 1+2+3,
+        ref_path = argv[i + 1]             #  +$55,989.81 / 383 — the A1/A2 target)
+        del argv[i:i + 2]
+    if argv:
+        cand = argv[0]
+        d0 = argv[1] if len(argv) > 1 else None
+        d1 = argv[2] if len(argv) > 2 else None
         win = f"  [window {d0 or '…'} → {d1 or '…'}]" if (d0 or d1) else ""
-        ok = report(scope(load(REF), d0, d1), scope(load(cand), d0, d1), cand + win)
+        ok = report(scope(load(ref_path), d0, d1), scope(load(cand), d0, d1),
+                    f"{cand} vs {ref_path}{win}")
         sys.exit(0 if ok else 1)
     else:
         sys.exit(0 if self_test() else 1)
