@@ -17,6 +17,7 @@ Sweeps, on top of scripts/mc_payout_cycles.py (Build-6, $2k/withdrawal, 5 winnin
 """
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -24,6 +25,10 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+# The ARMING REFERENCE is the leakage-clean book (+$52,522.81 / 404 trades). Set
+# CANON_BOOK=output/baseline_book.parquet to reproduce the pre-lookahead-fix figures.
+BOOK = os.environ.get("CANON_BOOK", "output/baseline_book_clean.parquet")
 
 DD = 2000.0
 INC = 75.0
@@ -36,7 +41,7 @@ NSIM = 20000
 NDAYS = 252
 SEED = 20260726
 
-d = pd.read_parquet("output/baseline_book.parquet")
+d = pd.read_parquet(BOOK)
 _b = pd.DataFrame({"day": d["day"].astype(str), "conv": d["conviction"].astype(float),
                    "risk": d["risk_pts"].astype(float),
                    "Rm": (d["dollars_1lot"] / (d["risk_pts"] * 20.0)).astype(float)})

@@ -11,6 +11,7 @@ R limit is invariant to the sizing schedule.
 """
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -19,6 +20,10 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+# The ARMING REFERENCE is the leakage-clean book (+$52,522.81 / 404 trades). Set
+# CANON_BOOK=output/baseline_book.parquet to reproduce the pre-lookahead-fix figures.
+BOOK = os.environ.get("CANON_BOOK", "output/baseline_book_clean.parquet")
+
 DD = 2000.0
 NSIM = 20000
 NDAYS = 252
@@ -26,7 +31,7 @@ SEED = 20260726
 
 
 def load_days():
-    d = pd.read_parquet("output/baseline_book.parquet")
+    d = pd.read_parquet(BOOK)
     b = pd.DataFrame({
         "day": d["day"].astype(str),
         "conv": d["conviction"].astype(float),

@@ -15,6 +15,7 @@ Reports the rescued paths, the untouched paths, and the paths that merely paid.
 """
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -23,13 +24,17 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+# The ARMING REFERENCE is the leakage-clean book (+$52,522.81 / 404 trades). Set
+# CANON_BOOK=output/baseline_book.parquet to reproduce the pre-lookahead-fix figures.
+BOOK = os.environ.get("CANON_BOOK", "output/baseline_book_clean.parquet")
+
 DD = 2000.0
 BASE0, INC = 200.0, 75.0
 PAYOUT, MIN_WIN_DAYS, MIN_WIN_PL = 2000.0, 5, 150.0
 TRIGGER = 6000.0          # Build-6
 NSIM, NDAYS, SEED = 20000, 252, 20260726
 
-d = pd.read_parquet("output/baseline_book.parquet")
+d = pd.read_parquet(BOOK)
 _b = pd.DataFrame({"day": d["day"].astype(str), "conv": d["conviction"].astype(float),
                    "risk": d["risk_pts"].astype(float),
                    "Rm": (d["dollars_1lot"] / (d["risk_pts"] * 20.0)).astype(float)})

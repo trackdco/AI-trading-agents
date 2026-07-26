@@ -19,6 +19,7 @@ This answers it two ways:
 """
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -26,6 +27,10 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+# The ARMING REFERENCE is the leakage-clean book (+$52,522.81 / 404 trades). Set
+# CANON_BOOK=output/baseline_book.parquet to reproduce the pre-lookahead-fix figures.
+BOOK = os.environ.get("CANON_BOOK", "output/baseline_book_clean.parquet")
 
 DD = 2000.0
 NSIM = 20000
@@ -38,7 +43,7 @@ LIMITS = [None, -1600, -1200, -1000, -800, -600, -500, -400, -300]
 def load() -> pd.DataFrame:
     """The frozen canon: output/baseline_book.parquet — 400 trades, +$56,065.18, both
     books, sized at the dollar-risk FLOOR schedule (path-independent, reproducible)."""
-    d = pd.read_parquet("output/baseline_book.parquet")
+    d = pd.read_parquet(BOOK)
     return pd.DataFrame({
         "day": d["day"].astype(str),
         "fill": pd.to_datetime(d["fill"], utc=True),
