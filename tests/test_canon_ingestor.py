@@ -77,3 +77,50 @@ def test_replay_source_drives_bars_and_tape():
     ReplaySource(bars, fp).drive(ing)
     assert len(ing._bars) == 2
     assert list(ing.tape.frame().cum) == [10.0, 6.0]
+
+
+# --------------------------------------------------------------- gold + London wiring (P2)
+
+def _push_session(ing, day="2026-03-17", *, minutes=420, start_hm=18, prev_day="2026-03-16"):
+    """Push a contiguous 18:00-onward session of bars+tape so the gold/London windows have
+    enough history to evaluate (badpa needs 30+ bars, London needs 90+)."""
+    t0 = pd.Timestamp(f"{prev_day} {start_hm:02d}:00", tz=NY)
+    for i in range(minutes):
+        ts = (t0 + pd.Timedelta(minutes=i)).tz_convert("UTC")
+        px = 100.0 + (i % 17) * 0.25                       # some structure, not a flat line
+        ing.on_bar({"ts_event": ts, "open": px, "high": px + 1, "low": px - 1,
+                    "close": px, "volume": 100.0})
+        ing.on_minute_tape(ts, delta=(1.0 if i % 3 else -2.0), vol=100.0, vwp=px)
+    return t0 + pd.Timedelta(minutes=minutes)
+
+
+def test_feature_row_emits_the_gold_and_london_families():
+    """The P2 wiring: one call must now also carry the gold/London inputs, and must expose
+    BOTH on_extreme_age forms under distinct keys (the two scorers disagree on that name)."""
+    ing = CanonIngestor()
+    fill = _push_session(ing)
+    f = ing.feature_row(fill.tz_convert("UTC"), entry=105.0, direction="long")
+    for k in ("netpath_30", "bbw_state", "churn_flow_30", "bp5opp", "opp5",
+              "lon_slope_d", "on_extreme_age_day", "on_extreme_age_trade",
+              "cvd_ASIA", "on_range", "ent_on_pos"):
+        assert k in f, f"missing {k}"
+    assert "on_extreme_age" not in f            # the ambiguous name is never emitted bare
+
+
+def test_trigdens_is_absent_without_trigger_times_and_counted_with_them():
+    """The ingestor does not detect triggers, so trigdens_30 is opt-in: absent (-> the gold
+    TRIG check reads NaN and stands down) unless the caller supplies the day's stamps."""
+    ing = CanonIngestor()
+    fill = _push_session(ing)
+    assert "trigdens_30" not in ing.feature_row(fill.tz_convert("UTC"), 105.0, "long")
+    stamps = pd.to_datetime([fill - pd.Timedelta(minutes=m) for m in (5, 10, 40)]).values
+    f = ing.feature_row(fill.tz_convert("UTC"), 105.0, "long", trigger_times=stamps)
+    assert f["trigdens_30"] == 2               # the 40-min-old stamp is outside the window
+
+
+def test_gold_london_families_are_skipped_cleanly_on_a_cold_start():
+    """A trigger arriving before any state exists must not raise — a live process restarting
+    mid-session has to degrade to 'no features', never to an exception in the trading path."""
+    ing = CanonIngestor()
+    f = ing.feature_row(_ts("2026-03-17", "08:03"), entry=101.0, direction="long")
+    assert isinstance(f, dict)

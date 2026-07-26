@@ -24,7 +24,18 @@ from datetime import time as dtime
 import pandas as pd
 
 from src.canon.book import OrderBook
-from src.canon.features import depth_at, tape_features, vwap_geometry
+from src.canon.features import (
+    badpa_features,
+    bp5opp,
+    depth_at,
+    london_session_features,
+    lon_slope_d,
+    on_extreme_age_day,
+    on_extreme_age_trade,
+    opp5,
+    tape_features,
+    vwap_geometry,
+)
 from src.engine.data import _session_date
 from src.engine.indicators import daily_vwap
 
@@ -107,10 +118,15 @@ class CanonIngestor:
         return self._vwap_cache
 
     # ---- on a trigger: assemble the feature row ----------------------------
-    def feature_row(self, fill_ts, entry: float, direction: str) -> dict:
+    def feature_row(self, fill_ts, entry: float, direction: str,
+                    trigger_times=None) -> dict:
         """Feature row for a candidate fill — tape/CVD + VWAP-geometry + depth families,
-        all via src/canon/features.py (identical definitions to the backtest). Uses only
-        state up to `fill_ts` — no lookahead."""
+        plus the gold/London families, all via src/canon/features.py (identical definitions
+        to the backtest). Uses only state up to `fill_ts` — no lookahead.
+
+        `trigger_times`: the day's engine trigger stamps, for `trigdens_30`. Omitted (None)
+        simply leaves that key absent — the ingestor does not own trigger detection, so the
+        caller supplies them or the gold TRIG check reads NaN and stands itself down."""
         fill = pd.Timestamp(fill_ts)
         f: dict = {}
 
@@ -129,6 +145,49 @@ class CanonIngestor:
         if not book.empty:
             book["ts"] = fill                        # current snapshot is as-of the fill
             f.update(depth_at(book, fill, entry, direction))
+
+        f.update(self._gold_london_features(fill, entry, direction, trigger_times))
+        return f
+
+    def _gold_london_features(self, fill: pd.Timestamp, entry: float, direction: str,
+                              trigger_times) -> dict:
+        """The gold + London families (P2). Every window ends at fill-1min, same as above.
+
+        Kept separate from the three core families because these need frames the others
+        don't (session-anchored bars, the overnight tape, the day's trigger stamps) and any
+        of them may legitimately be unavailable early in a session — a missing input yields
+        a missing key here rather than a fabricated number, so a scorer sees NaN and its
+        `.where(...notna())` guard stands the check down instead of scoring on a guess.
+
+        BOTH `on_extreme_age` forms are emitted under DISTINCT keys: the gold scorer and the
+        London scorer were fit against different definitions that share that column name
+        upstream (see src/canon/features.py). Callers pick the one their lane needs; nothing
+        here silently chooses for them."""
+        f: dict = {}
+        tape = self.tape.frame()
+        if tape.empty or not self._bars:
+            return f
+        upto_tape = tape[tape.index < fill]
+        bars = self._bars_with_vwap().set_index("mi").sort_index()
+        upto_bars = bars.loc[: fill - pd.Timedelta(minutes=1)]
+
+        f.update(badpa_features(upto_bars, upto_tape, entry, fill,
+                                trigger_times=trigger_times))
+        f["bp5opp"] = bp5opp(upto_tape, direction, fill)
+        f["opp5"] = opp5(upto_tape, direction, fill)
+
+        sday = str(_session_date(pd.Series([fill]), _BOUNDARY).iloc[0])
+        sess_tape = upto_tape[upto_tape.get("sday", sday) == sday] \
+            if "sday" in upto_tape else upto_tape
+        f["lon_slope_d"] = lon_slope_d(sess_tape, direction)
+
+        hm = upto_tape.index.hour * 60 + upto_tape.index.minute
+        f["on_extreme_age_day"] = on_extreme_age_day(upto_tape[(hm >= 1080) | (hm < 480)])
+
+        sess0 = (fill - pd.Timedelta(hours=18)).normalize() + pd.Timedelta(hours=18)
+        sess_bars = upto_bars.loc[sess0:]
+        f["on_extreme_age_trade"] = on_extreme_age_trade(sess_bars, entry, fill)
+        f.update(london_session_features(upto_tape.loc[sess0:], sess_bars, entry, sess0))
         return f
 
 
