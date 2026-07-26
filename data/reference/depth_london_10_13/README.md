@@ -4,8 +4,9 @@ Per-minute top-10 order-book snapshots for the **10:00–13:00 Europe/London** w
 from raw Databento `GLBX.MDP3` `mbp-10` exports Angus pulled (298 daily files, 9.29 GB raw →
 ~0.15 MB per month here). For **Brake's London-session strategy work**.
 
-**Status: Jun 2025 → Apr 2026 committed (11 months, 237 trading days, 849,640 rows).
-May–Jul 2026 still to come.**
+**Status: ✅ COMPLETE — Jun 2025 → Jul 2026 (14 months, 298 trading days, 1,069,240 rows, 2.2 MB).**
+Spans 2025-06-02 → 2026-07-24. All 298 source days condensed; only the two entries in
+`KNOWN_GAPS.csv` are anything other than a full 180-minute session.
 
 ## This does NOT duplicate `depth_london/` — it extends it
 
