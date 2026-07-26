@@ -25,7 +25,8 @@ Trade **only** 10:00–13:00 UK. Outside the window: no entries, ever.
 | **Stop** | `min(swing-low-5, 50-MA) − 1 tick` (long; mirror short), **clamped 5–70 pt**. |
 | **Target** | **3R**, fixed at entry. **Never move it. Never cap it.** |
 | **Time exit** | Flat at **16:30 UK** if neither hit. |
-| **Day-stop** | **First loss of the day = done trading that day.** No exceptions. |
+| **One at a time** | **Never hold two positions at once.** No new entry while a trade is open. |
+| **Day-stop** | **First *closed* loss of the day = done trading that day.** No exceptions. |
 
 **DO NOT:** move to breakeven · trail the stop · tighten the stop · take partials ·
 exit early on a "weak" wall. Every one of these was tested and every one **lost money**
@@ -74,8 +75,9 @@ and 2 of 33 winners went to ~0.95R (nearly the stop) and still hit 3R.
 
 1. Pre-open: note balance → compute buffer → fix today's rung.
 2. 10:00 UK: start watching M15 closes. No entries before 10:00.
-3. On a valid signal: enter next bar open, place stop + 3R target **immediately**, then leave it alone.
-4. On a loss: **stop for the day.**
+3. On a valid signal: **only if flat** — enter next bar open, place stop + 3R target
+   **immediately**, then leave it alone. If a position is already open, **skip the signal.**
+4. On a **closed** loss: **stop for the day.**
 5. 13:00 UK: no new entries. 16:30 UK: flat anything open.
 6. Skip DST-transition days entirely (e.g. 2025-11-28, 2026-04-03).
 
@@ -89,7 +91,35 @@ and 2 of 33 winners went to ~0.95R (nearly the stop) and still hit 3R.
   avg win +2.98R / avg loss −1.02R, every quarter green.
 - On the ladder above: **+$36,978**, modelled P(blow) **0.16%**, 5th-percentile **+$22,151**.
 
+> ### ⚠ CORRECTION (2026-07-26) — the 55-trade book above contains LOOKAHEAD
+>
+> The day-stop was implemented as *"walk the day's signals in order, stop once a trade's
+> **final net** is negative."* Signals fire every 15 min but trades take a **median ~2 h** to
+> resolve, so when a second signal fired while the first was **still open**, the backtest
+> declined it using a result that did not exist yet. `scripts/london_daystop_lookahead.py`
+> rebuilds all three readings at flat $300/R:
+>
+> | Day-stop rule | trades | netR | P&L | max DD |
+> |---|---|---|---|---|
+> | **A** as-written (the 55-trade book) | 55 | +67.95 | +$20,384 | $1,256 |
+> | **B** realtime, stacking allowed — *what the old §2 wording actually produced* | 65 | +57.77 | +$17,330 | **$2,152 — BREACHES** |
+> | **C** realtime **+ one position at a time** — *the rule now in §2* | 41 | +38.15 | +$11,445 | $1,256 |
+>
+> The 10 trades A hides are **all losers** (−10.18R) — same-day, same-direction signals firing
+> into the adverse move that is busy stopping out the first trade.
+>
+> **B also stacks up to 5 positions at once** (15 of 41 days stack) and contains **7 correlated
+> multi-stop clusters**; the worst is **−4.10R in a single bar** (2025-10-20 12:00) = **$2,052
+> at the $500 rung, $2,873 at the $700 rung** — account-ending in one minute against a $2,000
+> trailing DD. Book A contains **zero** such clusters *by construction*, which is why none of
+> the §6/§7 drawdown or P(blow) figures see them.
+>
+> **Treat §6 and §7 numbers below, and the whole of §3/§4, as computed on book A.** The honest
+> expectation under the corrected rules is **book C: 41 trades, +38.15R** — roughly **56% of the
+> headline P&L** for the same drawdown. Everything downstream needs re-deriving on C.
+
 **Caveats — these are not optional context:**
+- **The figures in this section are book A (lookahead).** See the correction box. Re-derive on C.
 - **No 2023–24 holdout. Out-of-sample is UNPROVEN.** Thresholds were frozen on 2025 and the
   book was sliced many ways; treat any future tweak as a holdout candidate, not a ship.
 - The $917 DD, 3.06R worst streak and 0.16% blow-probability are **in-sample / Monte-Carlo**,
