@@ -95,10 +95,16 @@ def slope_perm(D):
 
 
 SIZE_LADDERS = {
+    # 4-5 check ladders (Angus's, for when a score has that many rungs)
     "angus_ny":  {0: 0.0, 1: 0.0, 2: 0.0, 3: 0.5, 4: 1.0, 5: 1.5},
     "angus_lon": {0: 0.0, 1: 0.0, 2: 0.5, 3: 1.0, 4: 1.5},
     "gentle":    {0: 0.5, 1: 0.5, 2: 0.75, 3: 1.0, 4: 1.25, 5: 1.5},
     "no_veto":   {0: 0.5, 1: 0.5, 2: 1.0, 3: 1.0, 4: 1.5, 5: 1.5},
+    # 2-check ladders -- a 3-rung score cannot use the ones above, which zero out
+    # everything below 3 and would flatten the whole book to no size at all.
+    "2ck_soft":  {0: 0.5, 1: 1.0, 2: 1.5},
+    "2ck_veto":  {0: 0.0, 1: 1.0, 2: 1.5},
+    "2ck_flat1": {0: 0.5, 1: 1.0, 2: 1.0},
 }
 
 
