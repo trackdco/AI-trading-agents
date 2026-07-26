@@ -63,15 +63,26 @@ df = df[~df.ts.dt.tz_convert("Europe/London").dt.date.isin(drop)]
 | date | minutes | status | note |
 |---|---|---|---|
 | 2025-09-09 | 181 | EXTRA | extra boundary minute at 09:59 London; harmless |
-| 2025-11-28 | **1** | **MISSING** | day after US Thanksgiving; only 1 snapshot |
+| 2025-11-28 | **1** | **DEGRADED** | **Databento flags this session degraded — upstream, unfixable** |
 
 **2025-11-28 is the dangerous one:** a day with a single snapshot still looks like a valid day to
 `groupby(date)`, so it will silently skew any per-day statistic. Treat it as absent.
-**TODO: re-pull 2025-11-28 from Databento and replace** — the gap is in the source extraction,
-so a fresh pull for that date should fix it.
 
-`KNOWN_GAPS.csv` is regenerated from the data itself (any day whose minute-count != 180), so it
-stays correct as new months are added. Every other day is exactly 180 minutes.
+**Re-pull attempted 2026-07-26 and CLOSED — do not try again.** Databento's own dataset-condition
+API raises `BentoWarning: ... 2025-11-28 (degraded)` on any request for that date. The gap is in
+their source data, not in our export, so no re-pull can recover it. Precedent: `2026-04-10` is
+degraded the same way in `depth_apr2026/` (that README says "use with care"; the Brake task doc
+says "skip Apr 10").
+
+### Regenerating the gaps file
+
+`python -m scripts.depth_gaps` rebuilds `KNOWN_GAPS.csv`. It merges two sources:
+- **DERIVED** — counted from the parquets (any session != 180 minutes). Cannot drift.
+- **CURATED** — `SOURCE_FLAGGED` in `scripts/depth_gaps.py`: days Databento marks degraded. These
+  are invisible in the data (a degraded day just looks quiet), so they must be carried in code —
+  and merging them on every run means a regeneration can never silently drop the knowledge.
+
+Every other day of the 298 is exactly 180 minutes.
 
 ## DST verified across both switches
 
