@@ -72,6 +72,7 @@ class _NoBroker:
     def _forbid(self, *_a, **_k):
         raise AssertionError("Route-B live loop is disarmed — no broker call is permitted")
     submit_bracket = order_status = position = flatten = cancel_all = _forbid
+    cancel_order = modify_stop = close_partial = _forbid          # B7/B8 surface: also forbidden
 
 
 # --------------------------------------------------------------------------- jsonl sink

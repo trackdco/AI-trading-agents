@@ -39,6 +39,8 @@ MARKET_DEPTH_SNAPSHOT_LEVEL = 122
 MARKET_DEPTH_UPDATE_LEVEL = 123
 SUBMIT_NEW_SINGLE_ORDER = 208
 SUBMIT_NEW_OCO_ORDER = 201          # the two exit legs as a linked OCO pair (DTC bracket path)
+CANCEL_ORDER = 203                  # s_CancelOrder — pull ONE working order (B7)
+CANCEL_REPLACE_ORDER = 204          # s_CancelReplaceOrder — modify a working order in place (B8)
 ORDER_UPDATE = 301
 CURRENT_POSITIONS_REQUEST = 305
 POSITION_UPDATE = 306
@@ -49,7 +51,9 @@ ACCOUNT_BALANCE_UPDATE = 600
 ORDER_STATUS_OPEN = 1
 ORDER_STATUS_FILLED = 5
 ORDER_STATUS_PARTIALLY_FILLED = 4
+ORDER_STATUS_CANCELED = 6
 ORDER_STATUS_REJECTED = 8
+ORDER_TYPE_MARKET = 1
 ORDER_TYPE_LIMIT = 2
 ORDER_TYPE_STOP = 3                 # protective stop child (attached via ParentTriggerClientOrderID)
 JSON_ENCODING = 2
@@ -86,6 +90,9 @@ class DTCClient:
     rejects: list[dict] = field(default_factory=list, init=False)   # MARKET_DATA_REJECT messages
     _subs: list[tuple[int, str]] = field(default_factory=list, init=False)
     _next_id: int = field(default=1, init=False)
+    # last ORDER_UPDATE per ClientOrderID — the read-back surface (B4/A7) and the source of
+    # ServerOrderID for cancel/modify (Sierra keys cancels on the SERVER id when it has one).
+    order_state: dict = field(default_factory=dict, init=False)
 
     # ---- framing -----------------------------------------------------------
     def _send(self, mtype: int, fields: dict) -> None:
@@ -191,11 +198,14 @@ class DTCClient:
         NAKED ENTRY. A DTC bracket is parent + child, linked by `ParentTriggerClientOrderID`. The
         protective stop is the invariant that must never fail (B4); the canon has NO fixed target
         (managed exit), so `target` is accepted but NOT rested here — the partial/trail/cut/EOD are
-        the exit manager's job. Returns the PARENT (entry) client order id."""
+        the exit manager's job. Returns the PARENT (entry) client order id; the pair is also
+        exposed as `self.last_bracket = (entry_oid, stop_oid)` so an adapter can track the
+        stop child for B8 modification without guessing at id arithmetic."""
         entry_oid = f"desk-{self._next_id}"
         self._next_id += 1
         stop_oid = f"desk-{self._next_id}"
         self._next_id += 1
+        self.last_bracket = (entry_oid, stop_oid)
         self._send(SUBMIT_NEW_SINGLE_ORDER, {                        # parent: the limit entry
             "Symbol": symbol, "TradeAccount": self.cfg.trade_account,
             "ClientOrderID": entry_oid, "OrderType": ORDER_TYPE_LIMIT,
@@ -206,6 +216,47 @@ class DTCClient:
             "BuySell": 2 if buy else 1, "Price1": stop, "Quantity": qty, "IsAutomated": True,
             "ParentTriggerClientOrderID": entry_oid})
         return entry_oid
+
+    def cancel_order(self, client_order_id: str) -> None:
+        """Pull ONE working order (DTC CANCEL_ORDER) — the primitive gate B7 needs for the
+        cancel-if-runs rule. Sends the ServerOrderID when a prior ORDER_UPDATE supplied one
+        (Sierra keys cancels on it); the ClientOrderID rides along always. Confirmation is an
+        ORDER_UPDATE with ORDER_STATUS_CANCELED — the caller VERIFIES via order_state, never
+        trusts the send (same no-trust rule as submit)."""
+        f = {"ClientOrderID": client_order_id, "TradeAccount": self.cfg.trade_account}
+        srv = self.order_state.get(client_order_id, {}).get("ServerOrderID")
+        if srv is not None:
+            f["ServerOrderID"] = srv
+        self._send(CANCEL_ORDER, f)
+
+    def modify_order_price(self, client_order_id: str, new_price: float, qty: int) -> None:
+        """Modify a WORKING order in place (DTC CANCEL_REPLACE_ORDER) — the primitive gate B8
+        needs so the managed exit can move the protective stop (BE move, V8 trail) without a
+        cancel+resubmit gap during which the position would sit unprotected. `qty` must restate
+        the working quantity (DTC requires it; a modify never changes size here)."""
+        f = {"ClientOrderID": client_order_id, "TradeAccount": self.cfg.trade_account,
+             "Price1": new_price, "Quantity": qty}
+        srv = self.order_state.get(client_order_id, {}).get("ServerOrderID")
+        if srv is not None:
+            f["ServerOrderID"] = srv
+        self._send(CANCEL_REPLACE_ORDER, f)
+
+    def submit_reduce(self, *, symbol: str, sell: bool, qty: int,
+                      price: float | None = None) -> str:
+        """A position-REDUCING order (OpenOrClose=close): market when `price` is None (3-min
+        cut, EOD flatten, stop-outs — the exits the canon takes at market), else a limit (a
+        target-style partial rests). This is the B8 partial-close / close primitive; it can
+        only reduce, the spine never uses it to open risk."""
+        oid = f"desk-{self._next_id}"
+        self._next_id += 1
+        f = {"Symbol": symbol, "TradeAccount": self.cfg.trade_account,
+             "ClientOrderID": oid, "BuySell": 2 if sell else 1, "Quantity": qty,
+             "IsAutomated": True, "OpenOrClose": 2,
+             "OrderType": ORDER_TYPE_MARKET if price is None else ORDER_TYPE_LIMIT}
+        if price is not None:
+            f["Price1"] = price
+        self._send(SUBMIT_NEW_SINGLE_ORDER, f)
+        return oid
 
     # ---- heartbeat / liveness ---------------------------------------------
     def send_heartbeat(self) -> None:
@@ -264,7 +315,11 @@ class DTCClient:
             self.on_trade(m)
         elif t in (MARKET_DEPTH_SNAPSHOT_LEVEL, MARKET_DEPTH_UPDATE_LEVEL) and self.on_depth:
             self.on_depth(m)
-        elif t == ORDER_UPDATE and self.on_order_update:
-            self.on_order_update(m)
+        elif t == ORDER_UPDATE:
+            oid = m.get("ClientOrderID")
+            if oid is not None:                # merge: later updates may omit ServerOrderID
+                self.order_state.setdefault(oid, {}).update(m)
+            if self.on_order_update:
+                self.on_order_update(m)
         elif t == POSITION_UPDATE and self.on_position:
             self.on_position(m)

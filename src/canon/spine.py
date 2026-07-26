@@ -168,12 +168,22 @@ class SpineDecision:
 
 class Broker(Protocol):
     """Minimal broker surface the executor drives. A real DTC client and the test
-    MockBroker both implement it. The executor NEVER assumes success — it reads back."""
+    MockBroker both implement it. The executor NEVER assumes success — it reads back.
+
+    The B7/B8 additions (cancel_order / modify_stop / close_partial) are RISK-REDUCING
+    ONLY: cancel pulls a working entry (the cancel-if-runs rule), modify_stop moves the
+    resting protective stop in place (BE move / V8 trail — never cancel+resubmit, that
+    gap would leave the position unprotected), close_partial reduces an open position
+    (V8 partial, 3-min cut, EOD flatten). None of them can open or increase risk."""
     def submit_bracket(self, intent: OrderIntent) -> str: ...
     def order_status(self, ref: str) -> dict: ...        # {entry, stop, size, side, account, stop_resting}
     def position(self, account: str) -> int: ...
     def flatten(self, account: str) -> None: ...
     def cancel_all(self, account: str) -> None: ...
+    def cancel_order(self, ref: str) -> None: ...        # B7: pull ONE working order (+ its children)
+    def modify_stop(self, ref: str, price: float) -> None: ...   # B8: move the resting stop in place
+    def close_partial(self, account: str, qty: int, *,
+                      price: float | None = None) -> str: ...    # B8: reduce; market iff price None
 
 
 # --------------------------------------------------------------------------- the executor

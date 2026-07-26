@@ -10,7 +10,6 @@ import socket
 import struct
 import threading
 
-import pytest
 
 from src.desk import dtc_client as D
 from src.desk.dtc_client import DTCClient, DTCConfig
@@ -31,6 +30,10 @@ class MockDTCServer:
         self.order_mode = order_mode
         self.orders: list[dict] = []      # single orders received, DTC-valid fields only
         self.ocos: list[dict] = []        # SUBMIT_NEW_OCO_ORDER messages received
+        self.cancelled: list[str] = []    # ClientOrderIDs cancelled (incl. bracket children)
+        self.cancel_rejects: list[str] = []   # cancels of unknown/filled orders
+        self.replaced: list[dict] = []    # CANCEL_REPLACE messages applied
+        self._sid = 7000                  # ServerOrderIDs, echoed like real Sierra
         self._srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._srv.bind(("127.0.0.1", 0))
@@ -115,12 +118,17 @@ class MockDTCServer:
         elif t == D.SUBMIT_NEW_SINGLE_ORDER:
             # model Sierra: keep only DTC-valid fields; unknown keys (Stop/Target) are DROPPED.
             kept = {k: v for k, v in m.items() if k in _VALID_SUBMIT_FIELDS}
+            self._sid += 1
+            kept["ServerOrderID"] = self._sid
             self.orders.append(kept)
             oid = m["ClientOrderID"]
-            self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid, OrderStatus=D.ORDER_STATUS_OPEN)
-            if self.order_mode == "fill":
+            self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid, ServerOrderID=self._sid,
+                       OrderStatus=D.ORDER_STATUS_OPEN)
+            # market orders always fill regardless of mode (a reducing close must not
+            # depend on the scenario knob)
+            if m.get("OrderType") == D.ORDER_TYPE_MARKET or self.order_mode == "fill":
                 self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid, OrderStatus=D.ORDER_STATUS_FILLED,
-                           FilledQuantity=m["Quantity"], AverageFillPrice=m["Price1"])
+                           FilledQuantity=m["Quantity"], AverageFillPrice=m.get("Price1", 100.0))
             elif self.order_mode == "partial":
                 self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid,
                            OrderStatus=D.ORDER_STATUS_PARTIALLY_FILLED,
@@ -128,6 +136,37 @@ class MockDTCServer:
             elif self.order_mode == "reject":
                 self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid,
                            OrderStatus=D.ORDER_STATUS_REJECTED, InfoText="risk rejected")
+        elif t == D.CANCEL_ORDER:
+            # model Sierra: a cancel of an unknown/never-seen order is REJECTED with text,
+            # not silently absorbed; cancelling a working parent cancels its bracket
+            # children too (Sierra tears the linked stop down with the entry).
+            oid = m.get("ClientOrderID")
+            order = self.order_by_oid(oid)
+            if order is None or oid in self.cancelled:
+                self.cancel_rejects.append(oid)
+                self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid,
+                           InfoText="cancel rejected: no working order")
+                return
+            for victim in [order, *self.children_of(oid)]:
+                voi = victim["ClientOrderID"]
+                if voi not in self.cancelled:
+                    self.cancelled.append(voi)
+                    self._send(conn, D.ORDER_UPDATE, ClientOrderID=voi,
+                               ServerOrderID=victim.get("ServerOrderID"),
+                               OrderStatus=D.ORDER_STATUS_CANCELED)
+        elif t == D.CANCEL_REPLACE_ORDER:
+            oid = m.get("ClientOrderID")
+            order = self.order_by_oid(oid)
+            if order is None or oid in self.cancelled:
+                self.cancel_rejects.append(oid)
+                self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid,
+                           InfoText="cancel/replace rejected: no working order")
+                return
+            order["Price1"] = m["Price1"]
+            self.replaced.append({k: v for k, v in m.items() if k != "Type"})
+            self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid,
+                       ServerOrderID=order.get("ServerOrderID"),
+                       OrderStatus=D.ORDER_STATUS_OPEN, Price1=m["Price1"])
         elif t == D.CURRENT_POSITIONS_REQUEST:
             self._send(conn, D.POSITION_UPDATE, Symbol="NQ", Quantity=2, AveragePrice=100.0)
         elif t == D.ACCOUNT_BALANCE_REQUEST:
@@ -293,5 +332,135 @@ def test_reconnect_after_drop():
         assert c.ensure_connected() is True and c.logged_on is True
         assert ("NQ" in [sym for _, sym in c._subs])                 # re-subscribed
         c.close()
+    finally:
+        s.stop()
+
+
+# ---------------------------------------------------------------- B7/B8 order surface
+
+def _pump(c, n=10):
+    for _ in range(n):
+        c.pump(timeout=0.2)
+
+
+def test_cancel_order_tears_down_the_whole_bracket():
+    """B7: cancelling the unfilled entry must also cancel its attached protective stop —
+    Sierra tears down bracket children with the parent, and a live cancel that left the
+    stop child resting would leave a naked stop that can fire with no position."""
+    s = MockDTCServer(order_mode="none")           # stays OPEN, never fills
+    try:
+        c = _client(s)
+        c.connect()
+        oid = c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, qty=2)
+        _pump(c)
+        c.cancel_order(oid)
+        _pump(c)
+        c.close()
+        stop_oid = s.children_of(oid)[0]["ClientOrderID"]
+        assert oid in s.cancelled and stop_oid in s.cancelled
+        # the client's read-back surface saw both CANCELED updates
+        assert c.order_state[oid]["OrderStatus"] == D.ORDER_STATUS_CANCELED
+        assert c.order_state[stop_oid]["OrderStatus"] == D.ORDER_STATUS_CANCELED
+    finally:
+        s.stop()
+
+
+def test_cancel_sends_the_server_order_id_from_readback():
+    """Sierra keys cancels on the ServerOrderID; the client must remember it from the
+    ORDER_UPDATE and send it, not just the client id."""
+    s = MockDTCServer(order_mode="none")
+    try:
+        c = _client(s)
+        c.connect()
+        oid = c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, qty=2)
+        _pump(c)
+        assert c.order_state[oid].get("ServerOrderID") is not None
+        c.cancel_order(oid)
+        _pump(c)
+        c.close()
+        assert oid in s.cancelled
+    finally:
+        s.stop()
+
+
+def test_cancel_of_unknown_order_is_rejected_loudly_not_absorbed():
+    s = MockDTCServer(order_mode="none")
+    updates = []
+    try:
+        c = _client(s, on_order_update=updates.append)
+        c.connect()
+        c.cancel_order("desk-does-not-exist")
+        _pump(c)
+        c.close()
+        assert "desk-does-not-exist" in s.cancel_rejects
+        assert any("cancel rejected" in u.get("InfoText", "") for u in updates)
+    finally:
+        s.stop()
+
+
+def test_modify_order_price_moves_the_resting_stop_in_place():
+    """B8: the managed exit's BE move / V8 trail = CANCEL_REPLACE on the stop child —
+    modified in place, never cancel-then-resubmit (that gap would leave the position
+    unprotected, violating B4)."""
+    s = MockDTCServer(order_mode="none")
+    try:
+        c = _client(s)
+        c.connect()
+        oid = c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, qty=2)
+        _pump(c)
+        stop_oid = s.children_of(oid)[0]["ClientOrderID"]
+        c.modify_order_price(stop_oid, 99.75, qty=2)      # BE-ward move
+        _pump(c)
+        c.close()
+        assert s.order_by_oid(stop_oid)["Price1"] == 99.75
+        assert s.replaced and s.replaced[0]["ClientOrderID"] == stop_oid
+        assert c.order_state[stop_oid]["Price1"] == 99.75  # read-back confirms the move
+    finally:
+        s.stop()
+
+
+def test_modify_of_unknown_order_is_rejected():
+    s = MockDTCServer(order_mode="none")
+    try:
+        c = _client(s)
+        c.connect()
+        c.modify_order_price("desk-ghost", 101.0, qty=1)
+        _pump(c)
+        c.close()
+        assert "desk-ghost" in s.cancel_rejects
+    finally:
+        s.stop()
+
+
+def test_submit_reduce_market_closes_and_always_fills():
+    """The 3-min cut / EOD flatten path: a MARKET reducing order (OpenOrClose=close) must
+    fill regardless of the server's scenario mode — an exit can never depend on the same
+    luck as an entry."""
+    s = MockDTCServer(order_mode="reject")          # entries would reject in this mode...
+    try:
+        c = _client(s)
+        c.connect()
+        oid = c.submit_reduce(symbol="NQ", sell=True, qty=2)   # ...but the market close fills
+        _pump(c)
+        c.close()
+        row = s.order_by_oid(oid)
+        assert row["OrderType"] == D.ORDER_TYPE_MARKET and row["OpenOrClose"] == 2
+        assert c.order_state[oid]["OrderStatus"] == D.ORDER_STATUS_FILLED
+    finally:
+        s.stop()
+
+
+def test_submit_reduce_with_price_rests_as_a_limit():
+    """A target-style partial rests as a limit (B2: entries limit-only; exits may rest)."""
+    s = MockDTCServer(order_mode="none")
+    try:
+        c = _client(s)
+        c.connect()
+        oid = c.submit_reduce(symbol="NQ", sell=True, qty=1, price=104.5)
+        _pump(c)
+        c.close()
+        row = s.order_by_oid(oid)
+        assert row["OrderType"] == D.ORDER_TYPE_LIMIT and row["Price1"] == 104.5
+        assert row["OpenOrClose"] == 2
     finally:
         s.stop()
