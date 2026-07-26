@@ -86,6 +86,18 @@ calendar spread. **A1 fails and nothing crashes.** Next roll ≈ **2026-09-16**.
 | B5 | Sizing | Micros placed == dollar-risk schedule, every trade, exact |
 | B6 | Feed lag characterised | Sierra file-flush lag **measured, not assumed**, written down as a number (`BOX-HANDOFF.md` Step B.2) |
 | **B7** | **Working-order cancellation** | **A resting limit can be cancelled, and `cancel_if_runs_points` is enforced live — see `FINDING-live-path-cannot-cancel-a-resting-limit.md`** |
+| **B8** | **Managed-exit order surface** | **A resting stop can be MODIFIED and a position PARTIALLY closed through the live path — the canon has no fixed target, so the exit is managed and needs both. See the B7/B8 note below** |
+
+**B7 + B8 — one missing order surface, two gates (updated 2026-07-26).** The provenance
+question B7's finding said "must be resolved, not assumed" is now **resolved: the substrate DID
+apply cancel-if-runs.** Every canon fill originates in `simulate()`, whose config carries the
+shipped `t_cancel = 22.0`; re-running March 2026 (E3) with the rule disabled moves **34 fills**
+(18 appear only without it, 16 only with it), because a cancelled order frees the day's trade
+slots for different later setups. So live **must** implement it to reproduce the arming
+reference. But `dtc_client.py`'s order surface is still `submit_bracket()` only — no
+`cancel_order`, no stop modification, no partial close — while `exit_driver.to_broker_actions()`
+emits exactly `modify_stop` / `partial_close` / `close`. **The same missing surface blocks both
+the cancel rule and the managed exit.** Both stay RED and both are on-box work.
 
 ## C. Operations — FORCE-TESTED before arming, not waited for
 
@@ -139,13 +151,17 @@ values;** the *units* finding (R, not dollars) is not a preference and holds at 
 
 **D1 is automatic and absolute. D2 is automatic, with human review before re-arming.**
 
-### D2 blockers in the code today
+### D2 blockers in the code — ALL THREE FIXED 2026-07-26
 
-| # | defect | fix |
+| # | defect | resolution |
 |---|---|---|
-| 1 | `SpineConfig.daily_loss_halt = -800.0` is a fixed dollar constant while the sizer is DD-scaled. At $6k available DD it is tighter than one max-conviction trade; the payout-cycle MC prices that at **−$6,000/account/year for zero bust reduction** | make it an R multiple of the day's `base_dollar` |
-| 2 | `SpineConfig.max_contracts = 2` is commented "minis" but `intent.size` is **micros** (`canon_lane.py:121`, `route_b.py:171`). `route_b.py:437` uses the default. Live, every order clamps to 2 micros → **gate B5 fails on trade one** | set to **40** |
-| 3 | No config file or boot assertion pins any Tier-1 constant — they ride on dataclass defaults | load from config, assert at startup like the parity gate |
+| 1 | `SpineConfig.daily_loss_halt = -800.0` was a fixed dollar constant while the sizer is DD-scaled. At $6k available DD it is tighter than one max-conviction trade; the payout-cycle MC priced that at **−$6,000/account/year for zero bust reduction** | ✅ replaced by `daily_loss_halt_r` — an R multiple of the day's own `base_dollar`, recomputed per check from `equity − trailing_floor`. −4R reproduces this doc's two reference points exactly (−$800 at the eval floor, −$1,700 at $6k available DD). The fixed-dollar field is **removed, not kept as an override**, and a test asserts it stays removed. **The VALUE still awaits Angus's sign-off; the units do not.** |
+| 2 | `SpineConfig.max_contracts = 2` was commented "minis" but `intent.size` is **micros** (`canon_lane.py`, `route_b.py`). `route_b.py` used the default. Live, every order clamped to 2 micros → **gate B5 fails on trade one** | ✅ now imports `gate_evidence.MICRO_CLAMP` (**40**) — the sizing schedule's own cap — so the clamp and the sizer cannot drift apart again |
+| 3 | No config file or boot assertion pinned any Tier-1 constant — they rode on dataclass defaults, and `canon_run.py` never passed a config at all | ✅ Tier-1 limits now live in the `spine:` block of `config/live.yaml`, loaded by `load_spine_config()` and checked by `assert_tier1_pinned()` **before the spine is built**. Fails closed on a drifted value, a missing block, or an unknown key (a typo'd limit silently defaulting). Config/code duplication is deliberate: two copies + a boot assertion make any limit change a reviewable act, per §E |
+
+Regression-tested (`tests/test_canon_spine.py`). **These were code defects, not gates** —
+fixing them does not turn any A/B/C gate green; it removes three known-wrong behaviours that
+would have corrupted those gates' evidence.
 
 ## E. What forces a STOP-AND-REVIEW mid-eval
 

@@ -1,8 +1,10 @@
 """The live canon decision lane (shape i) — the AUTHORITATIVE trade path.
 
 Pat ruling (this session): the canon-scripts lane is the sole live decision-maker — the lane
-that produced the signed-off baseline. ARMING REFERENCE = the leakage-clean +$52,522.81 / 404
-(baseline_book_clean.parquet); the pre-lookahead-fix figure was +$56,065.18 / 400. NO champion in
+that produced the signed-off baseline. ARMING REFERENCE = leakage-clean + pre-open news blackout,
++$55,617.56 / 386 (`output/baseline_book_news.parquet`, ANGUS 2026-07-26; docs/PROMOTION-GATE.md
+is authoritative). Superseded steps, kept only as history: leakage-fix-only +$52,522.81 / 404
+(baseline_book_clean.parquet), and the pre-lookahead-fix +$56,065.18 / 400. NO champion in
 the trade path, NO LLM proposing verdicts. The chain is exactly:
 
     hermes-router (clock lookup) -> SHELL OUT canon_mechanical.py + london_canon.py (frozen,
