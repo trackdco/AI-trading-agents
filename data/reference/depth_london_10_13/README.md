@@ -4,7 +4,8 @@ Per-minute top-10 order-book snapshots for the **10:00–13:00 Europe/London** w
 from raw Databento `GLBX.MDP3` `mbp-10` exports Angus pulled (298 daily files, 9.29 GB raw →
 ~0.15 MB per month here). For **Brake's London-session strategy work**.
 
-**Status: PARTIAL — Jun–Nov 2025 committed so far. Dec 2025 → Jul 2026 still to come.**
+**Status: Jun 2025 → Apr 2026 committed (11 months, 237 trading days, 849,640 rows).
+May–Jul 2026 still to come.**
 
 ## This does NOT duplicate `depth_london/` — it extends it
 
@@ -48,15 +49,38 @@ Checked on ingest — all months pass unless noted:
 - no nulls
 - median spread 0.75pt (1.00pt in Nov-25)
 
-## ⚠ KNOWN DATA GAPS — read before drawing conclusions
+## ⚠ KNOWN DATA GAPS — machine-readable in `KNOWN_GAPS.csv`
 
-- **2025-11-28 has only 1 minute of data** (12:45 London) instead of 180. This is the day after
-  US Thanksgiving. Treat 2025-11-28 as a **missing day**, not a quiet one — do not compute daily
-  statistics from it, and exclude it from any per-day aggregation.
-- **2025-09-09 has 181 minutes**, starting 09:59 London (one extra minute at the boundary).
-  Harmless — extra data, not missing — but it breaks a strict `== 180` assertion.
+**Exclude these programmatically — do not rely on reading this prose.**
 
-Every other day in the committed months is exactly 180 minutes.
+```python
+gaps = pd.read_csv("data/reference/depth_london_10_13/KNOWN_GAPS.csv", parse_dates=["date"])
+drop = set(gaps.loc[gaps.status == "MISSING", "date"].dt.date)
+df = df[~df.ts.dt.tz_convert("Europe/London").dt.date.isin(drop)]
+```
+
+| date | minutes | status | note |
+|---|---|---|---|
+| 2025-09-09 | 181 | EXTRA | extra boundary minute at 09:59 London; harmless |
+| 2025-11-28 | **1** | **MISSING** | day after US Thanksgiving; only 1 snapshot |
+
+**2025-11-28 is the dangerous one:** a day with a single snapshot still looks like a valid day to
+`groupby(date)`, so it will silently skew any per-day statistic. Treat it as absent.
+**TODO: re-pull 2025-11-28 from Databento and replace** — the gap is in the source extraction,
+so a fresh pull for that date should fix it.
+
+`KNOWN_GAPS.csv` is regenerated from the data itself (any day whose minute-count != 180), so it
+stays correct as new months are added. Every other day is exactly 180 minutes.
+
+## DST verified across both switches
+
+| switch | date | UTC start before → after | London window |
+|---|---|---|---|
+| BST → GMT | 2025-10-26 | 09:00 → 10:00 | 10:00–12:59 (unchanged) |
+| GMT → BST | 2026-03-29 | 10:00 → 09:00 | 10:00–12:59 (unchanged) |
+
+Both months contain both UTC start hours, confirming the extraction is **London-anchored**. Had it
+been UTC-anchored, the session would have silently shifted by an hour at each switch.
 
 ## The book is genuinely thin
 
