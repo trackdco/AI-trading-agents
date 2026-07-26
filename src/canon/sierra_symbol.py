@@ -119,12 +119,35 @@ def resolve_scid_path(data_dir, d, root: str = "NQ", suffix: str = "-CME"):
 
 
 def resolve_depth_path(data_dir, d, day=None, root: str = "NQ", suffix: str = "-CME"):
-    """Path to Sierra's market-depth file for the front month on `d`, e.g.
-    <data_dir>/MarketDepthData/NQU26-CME.2026-07-27.depth. `.depth` files are per-day; `day`
-    defaults to `d`'s date (pass an explicit YYYY-MM-DD to target a stored day)."""
+    """Path to Sierra's market-depth file for the front month on `d`. `.depth` files are
+    per-day; `day` defaults to `d`'s date (pass an explicit YYYY-MM-DD for a stored day).
+
+    Sierra's depth-file naming varies BY BOX and does not necessarily match the .scid's
+    own naming on the same install — Pat's VPS (SC build 2930, Rithmic) writes
+    `NQU26-CME.scid` but `NQU6.CME.2026-07-24.depth` (single-digit year, dot separator;
+    found on-box 2026-07-26). So instead of assuming one pattern, build the known naming
+    variants and pick by evidence: the day's file that EXISTS wins; failing that, the
+    variant with existing sibling days in MarketDepthData (the box's demonstrated
+    convention — tonight's file will appear under it); failing that, the default pattern."""
     from pathlib import Path
     day = str(_as_date(day if day is not None else d))
-    return Path(data_dir) / "MarketDepthData" / f"{front_month_symbol(d, root)}{suffix}.{day}.depth"
+    contract = front_month_symbol(d, root)              # e.g. NQU26
+    single = contract[:-2] + contract[-1]               # e.g. NQU6 (single-digit year)
+    tag = suffix.lstrip("-.")                           # e.g. CME
+    stems = []                                          # ordered, deduped naming variants
+    for s in (f"{contract}{suffix}", f"{single}.{tag}", f"{contract}.{tag}",
+              f"{single}-{tag}"):
+        if s not in stems:
+            stems.append(s)
+    mdd = Path(data_dir) / "MarketDepthData"
+    candidates = [mdd / f"{s}.{day}.depth" for s in stems]
+    for c in candidates:
+        if c.exists():
+            return c
+    for s, c in zip(stems, candidates):                 # convention shown by sibling days
+        if any(mdd.glob(f"{s}.*.depth")):
+            return c
+    return candidates[0]
 
 
 # --------------------------------------------------------------------------- roll watcher

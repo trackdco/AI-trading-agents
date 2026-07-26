@@ -62,6 +62,28 @@ def test_resolve_paths():
     assert dep.name == "NQZ26-CME.2026-09-16.depth" and dep.parent.name == "MarketDepthData"
 
 
+def test_resolve_depth_path_detects_the_box_naming(tmp_path):
+    """Pat's VPS names depth files NQU6.CME.<date>.depth (single-digit year, dot separator)
+    while the .scid on the SAME box is NQU26-CME.scid (on-box finding 2026-07-26). The
+    resolver must pick by evidence: exact existing file first; else the variant with
+    existing sibling days (tonight's file will appear under the box's convention); else
+    the default pattern."""
+    mdd = tmp_path / "MarketDepthData"
+    mdd.mkdir()
+    # 1) exact file for the day exists under the box convention -> picked
+    (mdd / "NQU6.CME.2026-07-24.depth").write_bytes(b"")
+    got = resolve_depth_path(tmp_path, date(2026, 7, 24), day="2026-07-24")
+    assert got.name == "NQU6.CME.2026-07-24.depth"
+    # 2) day's file absent, but a sibling day shows the convention -> same stem, new day
+    got = resolve_depth_path(tmp_path, date(2026, 7, 26), day="2026-07-26")
+    assert got.name == "NQU6.CME.2026-07-26.depth"
+    # 3) empty dir -> the default pattern
+    for f in mdd.iterdir():
+        f.unlink()
+    got = resolve_depth_path(tmp_path, date(2026, 7, 26), day="2026-07-26")
+    assert got.name == "NQU26-CME.2026-07-26.depth"
+
+
 def test_roll_watcher_fires_once_on_roll():
     w = RollWatcher(start=date(2026, 9, 15))
     assert w.check(date(2026, 9, 15)) is None              # same day, no event
