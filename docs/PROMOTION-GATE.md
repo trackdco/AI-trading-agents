@@ -116,11 +116,24 @@ misbehaves."
 
 | trigger | value |
 |---|---|
-| Daily loss limit | `[ANGUS]` — proposal: **2 losing trades or −2R**, matching the §10 backtest halt |
-| Available-drawdown floor | halt within `[ANGUS]` of the Lucid EOD line — proposal **$400**, one max-risk trade |
+| Daily loss limit | **−4R**, indexed to the day's own `base_dollar` — **not** a fixed dollar figure. = −$800 at the eval floor, −$1,700 at $6k available DD. Measured in `docs/RULING-daily-loss-limit.md` |
+| Available-drawdown floor | halt at **$400** above the Lucid EOD line (one max-risk trade). 0.00% bust in 20k simulated funded years vs 1.44% naked, at zero cash cost |
 | Consecutive halt days | 2 in a row → stop and review before re-arming |
+| ~~Loss-count halt~~ | **Not used.** "2 losing trades" costs $3,163 on the canon and halts 35 of 225 days — re-confirming Angus's 17-Jul `daily_halt_losses: 0` ruling. Damage, not attempts |
+
+Both numbers are measured, not assumed — see `docs/RULING-daily-loss-limit.md` for the
+replay, the funded-year MC and the payout-cycle MC. **Awaiting Angus's sign-off on the two
+values;** the *units* finding (R, not dollars) is not a preference and holds at any value.
 
 **D1 is automatic and absolute. D2 is automatic, with human review before re-arming.**
+
+### D2 blockers in the code today
+
+| # | defect | fix |
+|---|---|---|
+| 1 | `SpineConfig.daily_loss_halt = -800.0` is a fixed dollar constant while the sizer is DD-scaled. At $6k available DD it is tighter than one max-conviction trade; the payout-cycle MC prices that at **−$6,000/account/year for zero bust reduction** | make it an R multiple of the day's `base_dollar` |
+| 2 | `SpineConfig.max_contracts = 2` is commented "minis" but `intent.size` is **micros** (`canon_lane.py:121`, `route_b.py:171`). `route_b.py:437` uses the default. Live, every order clamps to 2 micros → **gate B5 fails on trade one** | set to **40** |
+| 3 | No config file or boot assertion pins any Tier-1 constant — they ride on dataclass defaults | load from config, assert at startup like the parity gate |
 
 ## E. What forces a STOP-AND-REVIEW mid-eval
 

@@ -1,0 +1,294 @@
+# Daily loss limit — measurement, not opinion
+
+**Angus's question, 2026-07-26:** *"the canon (+$56k since June last year across London + New
+York) was made with risk-adjusted sizing we manufactured specifically for the funded, and Monte
+Carlo says max-payout probability was 97% from the risk spine we built. There was no daily loss
+limit in those tests, idk if adding one now would be beneficial, perhaps it would even degrade
+performance."*
+
+**Answering the two `[ANGUS]` placeholders in `docs/PROMOTION-GATE.md` §D2.**
+
+Reproduce: `python -m scripts.daily_loss_limit_study`, `python -m scripts.dd_buffer_study`,
+`python -m scripts.payout_cycle_halts`.
+
+---
+
+## 0. First, correct the premise — in both directions
+
+**You are right about the book.** `scripts/canon_mechanical.py` and `scripts/london_canon.py`
+carry **no daily loss halt.** The only day-level rule in the canon is the escalation gate
+(`nth >= 2 & score < threshold -> size 0`). So the +$56,065.18 in
+`output/baseline_book.parquet` is genuinely a no-day-limit number.
+
+*(The champion-era engine is a different system and does have one —
+`config/strategy.yaml: daily_halt_r: -2.0`, `src/backtest/engine.py:547`. That is not the canon
+path. Neither is `config/live.yaml: daily_loss_dollars: 1500.0`, which belongs to the paper
+Vault stack on a $25k seed. Don't let either govern the funded account.)*
+
+**You are not right about the Monte Carlo.** `scripts/mc_dollar_risk.py:65` hard-codes
+`if day_pl <= -800: break`. **Every "+spine" number we have ever quoted — the 1.5% -> 0.18%
+bust reduction, the ~$237k funded year, the cycle success rate — was computed with a −$800
+daily loss halt already switched on.** The recorded cycle figure is **94%**, not 97%
+(`docs/SAFETY-SPINE.md:173`); the 97% is not in any file.
+
+And a third correction: **a daily loss halt is not something we would be "adding."**
+`SpineConfig.daily_loss_halt = -800.0` is Tier-1 rule #2, implemented and wired at
+`src/canon/spine.py:43,190,243`. It ships today. The live question is not *whether* — it is
+**what value, and in what units.**
+
+---
+
+## 1. The historical book: a −$800 halt is inert. Full stop.
+
+225 trading days, 400 trades, both books, walked in fill order.
+
+| threshold | days touching it intraday | days closing below |
+|---|---|---|
+| −$300 | 30 (13.3%) | 24 (10.7%) |
+| −$400 | 10 (4.4%) | 10 (4.4%) |
+| −$500 | 5 (2.2%) | 5 (2.2%) |
+| −$600 | 1 (0.4%) | 1 (0.4%) |
+| **−$800** | **0 (0.0%)** | **0 (0.0%)** |
+
+**The worst day in fourteen months is −$619.** A −$800 halt would not have fired once. It
+cannot have degraded the +$56,065.18, because it never had the chance to.
+
+Replaying the book with the halt actually enforced:
+
+| limit | total | vs canon | trades | skipped | halt days | months green | worst day | maxDD |
+|---|---|---|---|---|---|---|---|---|
+| none (canon) | $56,065 | — | 400 | 0 | 0 | 12/13 | −$619 | $1,404 |
+| −$800 | $56,065 | **$0** | 400 | 0 | 0 | 12/13 | −$619 | $1,404 |
+| −$600 | $56,065 | $0 | 400 | 0 | 1 | 12/13 | −$619 | $1,404 |
+| −$500 | $56,167 | +$102 | 398 | 2 | 5 | 12/13 | −$580 | $1,404 |
+| **−$400** | **$56,278** | **+$213** | 397 | 3 | 10 | 12/13 | **−$580** | $1,404 |
+| −$300 | $51,756 | **−$4,309** | 383 | 17 | 30 | 12/13 | −$580 | $1,468 |
+| 2 losers | $52,902 | −$3,163 | 386 | 14 | 35 | 12/13 | −$580 | $1,215 |
+
+Three readings:
+
+1. **−$400 is free, and slightly better than free.** +$213, worst day improves −$619 -> −$580,
+   months-green unchanged. At floor sizing 1.0 conviction = $200 risk, so **−$400 is exactly
+   −2R** — the same halt §10 already specifies. We would not be introducing new behaviour.
+2. **−$300 is where it turns into a strategy filter** and costs $4.3k. That is the overfit
+   cliff; stay off it.
+3. **Drop the loser-count shape.** "2 losing trades" costs $3,163 and halts 35 days —
+   re-confirming your 17-Jul ruling that set `daily_halt_losses: 0`. Damage, not attempts.
+
+**Months green is 12/13 under every single variant.** No daily loss limit at any value changes
+the consistency record on this book. Your objective function is untouched either way.
+
+*(2026-01 is absent from all month tables — no trades in the book that month.)*
+
+---
+
+## 2. The trap: a fixed-dollar limit does not scale, and the sizer does
+
+This is the part that matters, and it is why the shipped −$800 is the wrong number even though
+it looks harmless above.
+
+The book was sized at the **floor** schedule: 1.0 conviction = $200 risk. Live, `base_dollar`
+scales with available drawdown (`SAFETY-SPINE.md`, Angus 24-Jul). So a fixed dollar limit means
+a different thing every day:
+
+| available DD | 1R = | −$800 means | −$400 means |
+|---|---|---|---|
+| $3,000 (floor) | $200 | −4.00R | −2.00R |
+| $4,000 | $275 | −2.91R | −1.45R |
+| $5,000 | $350 | −2.29R | −1.14R |
+| **$6,000** | **$425** | **−1.88R** | −0.94R |
+| $7,000 | $500 | −1.60R | −0.80R |
+
+Under the chosen **Build-6** withdrawal policy the balance cycles $4k -> $6k, so this is the band
+we will actually live in. At the top of it, one 2.25-conviction trade risks **$850** —
+**more than the −$800 halt.** The halt stops the day before the first trade has finished losing.
+
+That is the exact opposite of the intended behaviour: the limit is loosest when the cushion is
+thinnest and tightest when the cushion is fattest. It is a backstop at the floor and a
+strategy filter at the ceiling, and nobody chose the second thing.
+
+**A limit expressed in R is invariant.** −2R is −$400 at the floor and −$850 at $6k available
+DD — the same relationship to the day's own risk unit at every balance.
+
+---
+
+## 3. Funded-year MC: fixed-dollar day stops cost money and buy nothing
+
+20,000 sims, DD-scaled live sizing, available-DD halt held at $250 so the day stop is isolated.
+
+| daily limit | bust % | median | p10 |
+|---|---|---|---|
+| **none** | **0.14%** | **$309,736** | $224,088 |
+| −$1,600 | 0.14% | $297,429 | $213,749 |
+| −$1,200 | 0.14% | $248,317 | $171,914 |
+| −$1,000 | 0.14% | $240,068 | $164,723 |
+| **−$800 (shipped)** | **0.14%** | **$242,066** | $166,441 |
+| −$600 | 0.14% | $229,910 | $155,839 |
+| −$500 | 0.14% | $228,069 | $154,508 |
+| −$400 | 0.14% | $226,999 | $153,832 |
+| −$300 | **0.17%** | $222,447 | $148,392 |
+
+**Bust does not move.** Not at any value. The −$800 halt we have been crediting for the
+1.5% -> 0.18% improvement contributes **zero** of it — and it costs $67,670 of median. Tighten to
+−$300 and bust gets *worse*, because the account stops booking the recoveries.
+
+*(Caveat, stated plainly: this MC compounds for 252 days with no withdrawals, so available DD
+runs to six figures and the sizer pins at the 40-micro clamp. The magnitudes are inflated. §4
+prices the same question in the band we will actually trade.)*
+
+So where did the 8× bust reduction come from? **Rule #1, alone:**
+
+| available-DD halt buffer | bust % | median |
+|---|---|---|
+| $0 (off) | **1.44%** | $309,820 |
+| $100 | 0.66% | $309,939 |
+| $250 (shipped) | 0.14% | $309,736 |
+| **$400** | **0.00%** | $308,407 |
+| $600 | 0.00% | $306,497 |
+
+The available-drawdown halt does all of the work, and does it essentially for free.
+
+---
+
+## 4. Payout-cycle MC — the realistic band, the KPI that matters
+
+Available DD under Build-6 cycles roughly $4k -> $6k, so `base_dollar` runs $275–$425. This is
+the regime we will actually trade. Build-6, $2,000 per withdrawal, 5 winning days between
+payouts, 20,000 sims. **Cash withdrawn per account per year is the number**; ×5 accounts is the
+business.
+
+| configuration | cash/acct | ×5 accounts | bust % | p25 cash | 1st payout |
+|---|---|---|---|---|---|
+| naked — no halts at all | $48,000 | $240,000 | 1.44% | $44,000 | 23d |
+| buffer $250, no day stop | $48,000 | $240,000 | 0.14% | $44,000 | 23d |
+| **buffer $400, no day stop** | **$48,000** | **$240,000** | **0.00%** | $44,000 | 23d |
+| buffer $600, no day stop | $48,000 | $240,000 | 0.00% | $44,000 | 23d |
+
+**Fixed-dollar day stop** (buffer held at $250):
+
+| day stop | cash/acct | ×5 | bust % | p25 | days a trade was blocked |
+|---|---|---|---|---|---|
+| −$1,600 | $46,000 | $230,000 | 0.14% | $44,000 | 20/yr |
+| −$1,200 | $44,000 | $220,000 | 0.14% | $40,000 | 33/yr |
+| **−$800 (shipped)** | **$42,000** | **$210,000** | **0.14%** | **$38,000** | **46/yr** |
+| −$600 | $40,000 | $200,000 | 0.14% | $38,000 | 52/yr |
+
+**R-indexed day stop** (buffer held at $250):
+
+| day stop | cash/acct | ×5 | bust % | p25 | days a trade was blocked |
+|---|---|---|---|---|---|
+| −5.0R | $48,000 | $240,000 | 0.14% | $44,000 | 6/yr |
+| **−4.0R** | **$48,000** | **$240,000** | **0.14%** | $44,000 | 6/yr |
+| −3.0R | $48,000 | $240,000 | 0.14% | $44,000 | 6/yr |
+| −2.5R | $48,000 | $240,000 | 0.14% | $44,000 | 6/yr |
+| −2.0R | $48,000 | $240,000 | 0.14% | $44,000 | 7/yr |
+| −1.5R | $46,000 | $230,000 | **0.17%** | $44,000 | 10/yr |
+
+**Head to head:**
+
+| pair | cash/acct | ×5 | bust % |
+|---|---|---|---|
+| shipped: buffer $250 + −$800 | $42,000 | $210,000 | 0.14% |
+| **proposal: buffer $400 + −4R** | **$48,000** | **$240,000** | **0.00%** |
+| alternative: buffer $400 + −2R | $48,000 | $240,000 | 0.00% |
+
+**The shipped pair costs $6,000 per account per year — $30,000 across five accounts — and is
+worse on bust than the proposal.** Every R value from −5R down to −2R is indistinguishable from
+having no day stop at all. −1.5R is where it starts to bite, and it bites in both directions
+(less cash *and* more bust).
+
+Don't over-widen the buffer either: $600 is still free in the cycle model but in the funded-year
+MC p10 drops $224k -> $204k, and $800 collapses it to $635 — the halt fires so often the account
+stops trading. **$400 is the corner.**
+
+---
+
+## 5. The ruling I recommend
+
+### D2 daily loss limit: **−4R — same number at the floor, but indexed**
+
+**Change the units, not the value.** `-800.0` becomes `-4.0` R, evaluated against the day's own
+`base_dollar`.
+
+- At the eval floor, −4R **is −$800**. Nothing about day one changes. The number Pat has already
+  built to, and every "+spine" MC we have ever quoted, stays exactly where it is.
+- It never fires on the validated book — **0 halt days in 225** — so it cannot have degraded the
+  +$56k and cannot degrade it going forward. The worst day we have ever produced is −3.09R.
+- It stays a **backstop** as the buffer grows: −$1,100 at $4k available DD, −$1,700 at $6k.
+  Because `base_dollar` tracks available DD, −4R is a near-constant **~27–28% of the buffer** at
+  every balance. That is precisely what §Tier-1(2) says the rule is for — *"sized so one bad day
+  can't consume the EOD buffer"* — and a fixed dollar figure cannot deliver it.
+
+**Why not −2R, even though it made +$213 on history.** That +$213 comes from 10 halted days out
+of 225 — an in-sample selection on 4% of the sample, worth 0.4% of the book. It is exactly the
+kind of micro-gain this project has killed repeatedly, and it converts a survival rule into a
+trade filter. The spine "is not strategy." −2.5R and −2R are also free in the payout model, so
+if you want it tighter the cost is genuinely zero — but I would not buy noise with a Tier-1
+constant.
+
+**Whatever value you pick, index it.** Every R value from −5R to −2R prices identically in the
+cycle model; every fixed-dollar value bleeds. The units are the decision; the number is taste.
+
+### D2 available-drawdown floor: **$400**
+
+- Takes bust to **0.00%** in 20,000 simulated funded years, against 0.14% at the shipped $250
+  and 1.44% naked.
+- Costs $1,300 of funded-year median (0.4%) and — in the payout-cycle model, which is the one
+  that counts — nothing.
+- Your arming-gate proposal was $400 on the reasoning "one max-risk trade." That reasoning is
+  right and the measurement agrees. **Raise `dd_halt_buffer` from 250 to 400.**
+
+### Consecutive halt days: **keep 2 in a row -> stop and review**
+
+Not a modelled number and it does not need to be. It is a human circuit breaker, and the cost
+of being wrong about it is one day of not trading.
+
+---
+
+## 6. Two defects found while measuring this — both block arming
+
+**1. `SpineConfig.max_contracts = 2` is in the wrong unit.** The comment says minis; `intent.size`
+is **micros** (`src/desk/canon_lane.py:121`, `src/live/route_b.py:171` — both pass the sizer's
+micro count). `src/live/route_b.py:437` constructs `SpineConfig()` with the default, and nothing
+in the tree overrides it. **Live, the spine clamps every order to 2 micros** — a 4–20× under-size
+on every trade, and gate **B5 (sizing exact) fails on trade one**. It fails safe rather than
+dangerous, but the live book would bear no resemblance to the canon. Set it to **40**.
+
+**2. Nothing pins the Tier-1 constants.** `dd_halt_buffer`, `daily_loss_halt` and `max_contracts`
+all ride on dataclass defaults with no config file and no assertion at boot. The launch
+checklist's first unchecked box is "Tier-1 constants set to confirmed Lucid 50k numbers" — that
+box cannot be checked against defaults nobody set. Load them from config and assert them at
+startup, the same way the parity gate asserts features.
+
+---
+
+## 7. What the model cannot tell you, and why the rule stays anyway
+
+Every MC here bootstraps whole days **out of the canon's own 225 days**. By construction it can
+only ever produce days the strategy has already survived. The tail a daily loss halt exists to
+catch — a broken feature, a stale feed scoring garbage, a news day outside anything in the
+sample, a bracket leg that silently didn't rest — **is not in the sample and never will be.**
+
+So "the MC shows no bust benefit" is not an argument for removing the rule. It is an argument
+for setting it **wide enough that it never touches validated behaviour**, which is what −4R does
+(0 fires in 225 days), and then trusting it to catch the thing the data cannot show us. A
+backstop that never fires in the backtest is a backstop working correctly.
+
+---
+
+## 8. Direct answer
+
+**No — it will not degrade performance, and it would not have degraded the +$56k.** The worst
+day in fourteen months is −$619, so the shipped −$800 never fires on this path. Your instinct
+that tightening would cost money is also right: −$300 costs $4.3k on history and makes bust
+*worse* in the MC.
+
+**But the shipped rule is still wrong**, for a reason the historical replay cannot show: it is
+denominated in dollars while the sizer is denominated in available drawdown. By the time the
+account is at $6k available DD, −$800 is less than a single max-conviction trade's risk, and the
+cycle model prices that at **$6,000/account/year — $30,000 across five accounts — for zero bust
+reduction.**
+
+**Fix the units, not the presence: −4R (= −$800 at the floor) and a $400 drawdown floor.** Both
+are free on history, both are free in the payout model, and the drawdown floor is the one
+actually buying the survival we have been attributing to the pair.
