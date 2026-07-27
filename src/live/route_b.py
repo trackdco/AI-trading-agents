@@ -356,7 +356,7 @@ class RouteBLive:
                     self._last_bar_ts = bts
                     if ri["session"] != self._cur_sess:       # session roll -> load verdicts
                         self._cur_sess = ri["session"]
-                        self._load_verdicts(ri["session"])
+                        self._load_verdicts(ri["session"], now)
                     emitted += self._emit_due(bts, now)       # verdicts whose fill has passed
                     if self.lifecycle is not None:            # watch/fill/exit, per closed bar
                         self.lifecycle.on_bar(
@@ -367,10 +367,23 @@ class RouteBLive:
                 self.ingestor.on_depth(e["event"])
         return emitted
 
-    def _load_verdicts(self, session: str) -> None:
+    def _load_verdicts(self, session: str, now: pd.Timestamp | None = None) -> None:
         if self.verdict_source is None:
             self._pending = []
             return
+        # A verdict source SHELLS a full scorer run per session. During a boot catch-up
+        # the backlog file replays EVERY historical session through here — hundreds of
+        # scorer runs; the on-box boot ground for 4.5h and never reached live (2026-07-27).
+        # Only the CURRENT wall-clock session is worth loading: older sessions' verdicts
+        # would be dropped by the STALE_VERDICT_S emit guard anyway. Journal the skip.
+        if now is not None:
+            today_sess = str(_session_date(pd.Series([pd.Timestamp(now)]), dtime(18, 0)).iloc[0])
+            if session != today_sess:
+                self._pending = []
+                if self.decision_sink is not None:
+                    self.decision_sink({"type": "verdict_load_skipped_stale",
+                                        "session": session, "current_session": today_sess})
+                return
         vs = list(self.verdict_source.session_verdicts(session) or [])
         self._pending = sorted(vs, key=lambda v: pd.Timestamp(v["fill"]))
 

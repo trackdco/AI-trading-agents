@@ -310,9 +310,13 @@ def test_stale_verdicts_skipped_on_catchup_never_reach_the_spine(tmp_path):
     assert emitted == []                                # nothing acted on
     assert not (tmp_path / "verdicts.jsonl").exists()   # never reached the verdict journal
     assert not (tmp_path / "sizing.jsonl").exists()     # never reached the spine
+    # the guard is now TWO layers deep: a stale SESSION is skipped at LOAD time — the
+    # verdict source (a full scorer shell-out per session; the 4.5h boot grind) is never
+    # even invoked for it. The 120s emit guard remains for intraday restarts.
+    assert src.asked == []                              # scorer never shelled for old days
     dec = [json.loads(x) for x in (tmp_path / "decisions.jsonl").read_text().splitlines()]
-    skips = [d for d in dec if d.get("type") == "verdict_stale_skipped"]
-    assert len(skips) == 1 and skips[0]["age_s"] > RouteBLive.STALE_VERDICT_S
+    skips = [d for d in dec if d.get("type") == "verdict_load_skipped_stale"]
+    assert skips and skips[0]["session"] == "2026-03-17"
 
 
 def test_historical_roll_bars_journal_but_do_not_alert(tmp_path):
