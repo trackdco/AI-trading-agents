@@ -214,10 +214,13 @@ def _front_only(df):
     return df
 
 
-print(f"sanity - 2023-03-01 ny  window (UTC): {utc_window('2023-03-01', NY,  (8,0), (11,0))}")
-print(f"sanity - 2023-03-01 lon window (UTC): {utc_window('2023-03-01', LON, (8,0), (10,0))}")
-print(f"sanity - 2023-03-01 trades   (UTC): {trades_window('2023-03-01')}")
-print("note the March gap: US is already on DST, UK is not - hence the differing offsets")
+for _d in ("2023-01-11", "2023-03-15", "2023-07-12"):
+    _ny = utc_window(_d, *DEPTH_WINDOWS["ny"])
+    _lo = utc_window(_d, *DEPTH_WINDOWS["london"])
+    print(f"{_d}  ny {_ny[0][11:16]}-{_ny[1][11:16]}Z   london {_lo[0][11:16]}-{_lo[1][11:16]}Z   "
+          f"trades {trades_window(_d)[0][5:16]} -> {trades_window(_d)[1][5:16]}Z")
+print("\\n2023-03-15 is the DST gap week: US already on EDT, UK still on GMT, so the two")
+print("windows sit 4h apart instead of 5h. Declaring them in native tz handles that.")
 ''')),
 
         md(*_src("""

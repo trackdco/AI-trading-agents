@@ -33,18 +33,27 @@ pytestmark = pytest.mark.skipif(not NB.exists(), reason="notebook not built")
 @pytest.fixture(scope="module")
 def nbfn():
     """Exec the notebook's pure helper cells; no network, no databento import."""
+    import ast
+
     nb = json.loads(NB.read_text())
     g = {"datetime": datetime, "timedelta": timedelta, "ZoneInfo": ZoneInfo,
-         "np": np, "pd": pd, "NY": NY, "LON": LON, "UTC": UTC, "print": lambda *a, **k: None}
+         "np": np, "pd": pd, "NY": NY, "LON": LON, "UTC": UTC}
     for cell in nb["cells"]:
         if cell["cell_type"] != "code":
             continue
         src = "".join(cell["source"])
-        if "def utc_window" in src or "def condense_ny" in src:
-            # S102 is suppressed deliberately: the notebook IS the artifact under test and
-            # its helpers exist only as cell source, so exec is the only way to exercise
-            # them without duplicating the implementation — which would defeat the test.
-            exec("\n".join(ln for ln in src.split("\n") if not ln.startswith("print(")), g)  # noqa: S102
+        if "def utc_window" not in src and "def condense_ny" not in src:
+            continue
+        # Keep ONLY the function definitions. The cells also carry demo/print code that
+        # depends on notebook-level config; extracting the defs makes this independent
+        # of whatever illustration code sits alongside them.
+        tree = ast.parse(src)
+        defs = ast.Module(body=[n for n in tree.body if isinstance(n, ast.FunctionDef)],
+                          type_ignores=[])
+        # S102 is suppressed deliberately: the notebook IS the artifact under test and its
+        # helpers exist only as cell source, so exec is the only way to exercise them
+        # without duplicating the implementation — which would defeat the test.
+        exec(compile(defs, "<notebook>", "exec"), g)  # noqa: S102
     return g
 
 
