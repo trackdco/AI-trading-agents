@@ -47,12 +47,28 @@ POSITION_UPDATE = 306
 ACCOUNT_BALANCE_REQUEST = 601
 ACCOUNT_BALANCE_UPDATE = 600
 
-# order-status / update-reason values we care about (DTC standard)
-ORDER_STATUS_OPEN = 1
-ORDER_STATUS_FILLED = 5
-ORDER_STATUS_PARTIALLY_FILLED = 4
-ORDER_STATUS_CANCELED = 6
-ORDER_STATUS_REJECTED = 8
+# DTC OrderStatusEnum — the REAL protocol numbering (DTCProtocol.h). Pinned 2026-07-27
+# pre-London after the on-box forcetest read an entry cancel as status 8 while our guessed
+# CANCELED was 6 — the depth Command-enum bug's twin. PENDING_CHILD is the state a bracket's
+# protective-stop child is HELD in at the server until its parent fills; it counts as
+# resting (the server releases it on fill), and the old constants had no such state at all.
+ORDER_STATUS_ORDER_SENT = 1
+ORDER_STATUS_PENDING_OPEN = 2
+ORDER_STATUS_PENDING_CHILD = 3
+ORDER_STATUS_OPEN = 4
+ORDER_STATUS_PENDING_CANCEL_REPLACE = 5
+ORDER_STATUS_PENDING_CANCEL = 6
+ORDER_STATUS_FILLED = 7
+ORDER_STATUS_CANCELED = 8
+ORDER_STATUS_REJECTED = 9
+ORDER_STATUS_PARTIALLY_FILLED = 10
+#: statuses meaning the order EXISTS at (or is en route to) the broker — the set the
+#: stop_resting read-back and every "still working?" check is defined over. Filled,
+#: canceled, rejected and pending-cancel are OUT (gone or deliberately dying).
+ORDER_ALIVE_STATUSES = frozenset({
+    ORDER_STATUS_ORDER_SENT, ORDER_STATUS_PENDING_OPEN, ORDER_STATUS_PENDING_CHILD,
+    ORDER_STATUS_OPEN, ORDER_STATUS_PENDING_CANCEL_REPLACE, ORDER_STATUS_PARTIALLY_FILLED,
+})
 ORDER_TYPE_MARKET = 1
 ORDER_TYPE_LIMIT = 2
 ORDER_TYPE_STOP = 3                 # protective stop child (attached via ParentTriggerClientOrderID)
@@ -225,7 +241,7 @@ class DTCClient:
         trusts the send (same no-trust rule as submit)."""
         f = {"ClientOrderID": client_order_id, "TradeAccount": self.cfg.trade_account}
         srv = self.order_state.get(client_order_id, {}).get("ServerOrderID")
-        if srv is not None:
+        if srv:                                  # "" from an early sparse update is missing
             f["ServerOrderID"] = srv
         self._send(CANCEL_ORDER, f)
 
@@ -237,7 +253,7 @@ class DTCClient:
         f = {"ClientOrderID": client_order_id, "TradeAccount": self.cfg.trade_account,
              "Price1": new_price, "Quantity": qty}
         srv = self.order_state.get(client_order_id, {}).get("ServerOrderID")
-        if srv is not None:
+        if srv:                                  # "" from an early sparse update is missing
             f["ServerOrderID"] = srv
         self._send(CANCEL_REPLACE_ORDER, f)
 
@@ -317,8 +333,13 @@ class DTCClient:
             self.on_depth(m)
         elif t == ORDER_UPDATE:
             oid = m.get("ClientOrderID")
-            if oid is not None:                # merge: later updates may omit ServerOrderID
-                self.order_state.setdefault(oid, {}).update(m)
+            if oid is not None:
+                # MERGE, skipping null/empty: real Sierra sends SPARSE updates — a later
+                # update carrying Price1/ServerOrderID as JSON null (or "") must never
+                # clobber a real value learned earlier (on-box 2026-07-27: Price1=None
+                # after CANCEL_REPLACE, ServerOrderIDs read back as '').
+                self.order_state.setdefault(oid, {}).update(
+                    {k: v for k, v in m.items() if v is not None and v != ""})
             if self.on_order_update:
                 self.on_order_update(m)
         elif t == POSITION_UPDATE and self.on_position:

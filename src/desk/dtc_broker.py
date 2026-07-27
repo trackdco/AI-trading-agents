@@ -60,7 +60,11 @@ class DTCBroker:
 
     @staticmethod
     def _working(st: dict) -> bool:
-        return st.get("OrderStatus") in (D.ORDER_STATUS_OPEN, D.ORDER_STATUS_PARTIALLY_FILLED)
+        """Alive at the broker — includes PENDING_CHILD: a bracket's protective-stop child
+        is HELD server-side until its parent fills, and that held stop IS the resting
+        protection B4 verifies (on-box 2026-07-27: it read False under the old two-status
+        check and the spine would have flatten+halted a perfectly protected bracket)."""
+        return st.get("OrderStatus") in D.ORDER_ALIVE_STATUSES
 
     # ---- Broker protocol ----------------------------------------------------
     def submit_bracket(self, intent) -> str:

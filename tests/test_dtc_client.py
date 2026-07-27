@@ -125,8 +125,12 @@ class MockDTCServer:
             # Real Sierra sends FilledQuantity/AverageFillPrice PRESENT with JSON null on a
             # resting order (found on-box 2026-07-27: int(None) crash in order_status).
             # dict.get's default only covers ABSENT keys — model the nulls faithfully.
+            # And a bracket CHILD (ParentTriggerClientOrderID) is HELD server-side until
+            # its parent fills: it acks as PENDING_CHILD, never OPEN (on-box 2026-07-27).
+            ack = (D.ORDER_STATUS_PENDING_CHILD if m.get("ParentTriggerClientOrderID")
+                   else D.ORDER_STATUS_OPEN)
             self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid, ServerOrderID=self._sid,
-                       OrderStatus=D.ORDER_STATUS_OPEN,
+                       OrderStatus=ack,
                        FilledQuantity=None, AverageFillPrice=None,
                        Price1=kept.get("Price1"), Quantity=kept.get("Quantity"))
             # market orders always fill regardless of mode (a reducing close must not

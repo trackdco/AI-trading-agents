@@ -61,9 +61,9 @@ class Row:
     detail: str = ""
 
 
-def _working(client: DTCClient, oid: str) -> bool:
+def _working(client: DTCClient, oid: str) -> bool:  # alive at the broker, incl. held children
     st = client.order_state.get(oid, {})
-    return st.get("OrderStatus") in (D.ORDER_STATUS_OPEN, D.ORDER_STATUS_PARTIALLY_FILLED)
+    return st.get("OrderStatus") in D.ORDER_ALIVE_STATUSES
 
 
 def _wait_fill(client: DTCClient, oid: str, rounds: int = 60) -> bool:
