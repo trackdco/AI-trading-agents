@@ -95,9 +95,14 @@ def measure_feed_lag(scid: Path, depth: Path | None, seconds: int, flush_ms: int
     # file history, not flush latency (a freshly BACKFILLED file makes the median read as
     # months; observed on-box 2026-07-27). Only appends AFTER priming are live samples.
     t0 = time.monotonic()
-    feed.poll(ing)
-    primed = len(feed.lag.samples)
-    feed.lag.samples.clear()
+    primed = 0
+    while True:                       # drain until fully caught up: a big file takes minutes
+        feed.poll(ing)                # to parse, and bars that CLOSE during that read would
+        n_new = len(feed.lag.samples)  # otherwise be scored as minutes-late (seen on-box:
+        feed.lag.samples.clear()       # median 79s from prime-period bars; live min 1.7s)
+        primed += n_new
+        if n_new == 0:
+            break
     feed.on_lag = _sink
     print(f"  primed                : {primed} backlog bars in {time.monotonic() - t0:.1f}s "
           f"(catch-up read — excluded from lag stats)")
