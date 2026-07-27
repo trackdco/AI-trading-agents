@@ -183,6 +183,18 @@ def implied_partial(trade: dict, cx_px: float) -> float | None:
     return pp if lead > 0 else None
 
 
+def _apply_plan(state, act, s, stop):
+    """Fold a ("plan", target_px, stop_px) decision in. A stop only ever tightens; a target
+    only ever replaces the previous one. Either may be None."""
+    if not (isinstance(act, tuple) and act and act[0] == "plan"):
+        return
+    _, tgt, new_stop = act
+    if new_stop is not None:
+        state["stop"] = max(stop, new_stop) if s > 0 else min(stop, new_stop)
+    if tgt is not None:
+        state["target"] = tgt
+
+
 def simulate(trade: dict, path: pd.DataFrame, decide, canon_exit) -> dict:
     """Walk the path minute by minute. `decide(minute, state, bar)` returns an action string
     (or None). Stop checks run BEFORE the decision, so no arm can rescue a position the
@@ -194,7 +206,7 @@ def simulate(trade: dict, path: pd.DataFrame, decide, canon_exit) -> dict:
     state = {"stop": float(trade["stop"]), "extended": False, "peak": entry,
              "force_exit": False, "canon_exit_here": False, "reason": "start",
              "booked": 0.0, "part_px": None, "canon_exit": canon_exit,
-             "has_partial": pp is not None}
+             "has_partial": pp is not None, "target": None}
     for minute, bar in path.iterrows():
         hi, lo = float(bar.high), float(bar.low)
         stop = state["stop"]
@@ -208,8 +220,7 @@ def simulate(trade: dict, path: pd.DataFrame, decide, canon_exit) -> dict:
                 return _out(trade, state, minute, cx_px, "canon")
             if act == "exit_now":
                 return _out(trade, state, minute, float(bar.close), "agent_exit")
-            if isinstance(act, tuple):
-                state["stop"] = max(stop, act[1]) if s > 0 else min(stop, act[1])
+            _apply_plan(state, act, s, stop)
             state["extended"] = True
             state["peak"] = max(state["peak"], hi) if s > 0 else min(state["peak"], lo)
             continue
@@ -222,8 +233,10 @@ def simulate(trade: dict, path: pd.DataFrame, decide, canon_exit) -> dict:
         act = decide(minute, state, bar)
         if act == "exit_now":
             return _out(trade, state, minute, float(bar.close), "agent_exit")
-        if isinstance(act, tuple):                    # ("stop", new_level)
-            state["stop"] = max(stop, act[1]) if s > 0 else min(stop, act[1])
+        _apply_plan(state, act, s, stop)
+        tgt = state.get("target")
+        if tgt is not None and ((s > 0 and hi >= tgt) or (s < 0 and lo <= tgt)):
+            return _out(trade, state, minute, tgt, "agent_target")
     last = path.index[-1] if len(path) else trade["fill"]
     px = float(path.close.iloc[-1]) if len(path) else entry
     return _out(trade, state, last, px, "eod")
@@ -435,15 +448,7 @@ def reachable_points(trade, path, cx, verdicts):
                 if v is None:
                     done["stop"] = True          # unanswered: stop here, this is the frontier
                     return "take_canon" if st["canon_exit_here"] else "exit_now"
-                if v.action == "exit_now":
-                    return "exit_now"
-                if v.action == "stop_to_be":
-                    return ("stop", float(trade["entry"]))
-                if v.action == "stop_lock":
-                    r = 0.0 if v.lock_r is None else float(v.lock_r)
-                    return ("stop", float(trade["entry"])
-                            + sgn(trade["direction"]) * r * float(trade["risk"]))
-                return None
+                return _plan_from(v, trade)
         return "take_canon" if st["canon_exit_here"] else None
 
     simulate(trade, path, probe, cx)
@@ -462,15 +467,7 @@ def replay_with_verdicts(t, path, cx, verdicts):
                 v = verdicts.get((t["trade_id"], m.isoformat()))
                 if v is None:
                     return "take_canon" if st["canon_exit_here"] else None
-                if v.action == "exit_now":
-                    return "exit_now"
-                if v.action == "stop_to_be":
-                    return ("stop", float(t["entry"]))
-                if v.action == "stop_lock":
-                    r = 0.0 if v.lock_r is None else float(v.lock_r)
-                    return ("stop", float(t["entry"])
-                            + sgn(t["direction"]) * r * float(t["risk"]))
-                return None
+                return _plan_from(v, t)
         return "take_canon" if st["canon_exit_here"] else None
 
     return simulate(t, path, decide, cx), seen
@@ -521,17 +518,16 @@ def cmd_plan(trades, bars, week=None) -> int:
     ver, total = agent_version(), 0
     index = []
 
-    digest = {"decisions_recorded": 0}
+    jrows: list = []
     if week:
         wk_start = pd.Timestamp(week, tz=NY)
         wk_end = wk_start + pd.Timedelta(days=7)
-        rows = build_journal(trades, bars, tape, verdicts, wk_start, cache)
-        digest = journal_digest(rows)
+        jrows = build_journal(trades, bars, tape, verdicts, wk_start, cache)
         (ROOT / "output/intrade_journal.jsonl").write_text(
-            "\n".join(json.dumps(r, default=str) for r in rows))
+            "\n".join(json.dumps(r, default=str) for r in jrows))
         trades = [t for t in trades if wk_start <= t["fill"] < wk_end]
-        print(f"week {week}: {len(trades)} trades | journal carries "
-              f"{digest['decisions_recorded']} completed decisions\n")
+        print(f"week {week}: {len(trades)} trades | journal carries {len(jrows)} "
+              f"completed decisions\n")
 
     for t in trades:
         path = day_path(t, bars)
@@ -547,11 +543,17 @@ def cmd_plan(trades, bars, week=None) -> int:
                 continue                       # already answered in an earlier round
             state["reason"] = why
             state["canon_exit_here"] = minute == cx[0]
-            b = build_briefing(t, minute, state, bars, tape, dep, journal=digest)
+            b = build_briefing(t, minute, state, bars, tape, dep)
+            # The digest is matched to THIS briefing, not computed once per week: "situations
+            # like this one" is the question, and it has a different answer at +1R than it
+            # does sitting on the mechanical target.
+            b["journal"] = journal_digest(jrows, like=b)
             b["agent_version"] = ver
             stem = f"{t['trade_id']}__{minute.strftime('%H%M')}"
-            (BLOBS / f"{stem}.briefing.json").write_text(json.dumps(b, indent=1, sort_keys=True))
-            (BLOBS / f"{stem}.request.txt").write_text(briefing_prompt(b))
+            # compact, not pretty-printed: these are read by a model, and the indentation was
+            # a third of the payload.
+            (BLOBS / f"{stem}.briefing.json").write_text(
+                json.dumps(b, sort_keys=True, separators=(",", ":")))
             index.append({"trade_id": t["trade_id"], "day": str(t["day"])[:10],
                           "decision_minute": minute.isoformat(), "reason": why, "stem": stem})
             total += 1
@@ -588,6 +590,16 @@ def read_verdicts() -> dict:
     return out
 
 
+def _plan_from(v, trade):
+    """An IntradeVerdict as the replay sees it: exit, or a plan of (target, stop) in prices."""
+    if v.action == "exit_now":
+        return "exit_now"
+    s_, e, risk = sgn(trade["direction"]), float(trade["entry"]), float(trade["risk"])
+    tgt = e + s_ * float(v.target_r) * risk if v.target_r is not None else None
+    stp = e + s_ * float(v.stop_r) * risk if v.stop_r is not None else None
+    return ("plan", tgt, stp)
+
+
 def arm_agent(trade, canon_exit, verdicts, points):
     """The canon plan, overridden only where a valid verdict says otherwise."""
     by_min = {m: why for m, why in points}
@@ -597,15 +609,7 @@ def arm_agent(trade, canon_exit, verdicts, points):
             v = verdicts.get((trade["trade_id"], m.isoformat()))
             if v is not None:
                 st["_acted"] = True
-                if v.action == "exit_now":
-                    return "exit_now"
-                if v.action == "stop_to_be":
-                    return ("stop", float(trade["entry"]))
-                if v.action == "stop_lock":
-                    r = 0.0 if v.lock_r is None else float(v.lock_r)
-                    return ("stop", float(trade["entry"])
-                            + sgn(trade["direction"]) * r * float(trade["risk"]))
-                return None                      # hold: fall through, ignore the canon exit
+                return _plan_from(v, trade)
         return "take_canon" if st["canon_exit_here"] else None
     return decide
 

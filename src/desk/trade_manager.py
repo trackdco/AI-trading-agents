@@ -30,7 +30,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 
 NY = "America/New_York"
 SCHEMA_VERSION = "intrade-1.0"
@@ -41,7 +41,13 @@ RECHECK_MIN = 20                     # re-evaluate this often once the agent has
 MAX_DECISIONS = 6                    # per trade, so one runner cannot eat the whole budget
 RATIONALE_MAX = 300
 
-ACTIONS = ("hold", "exit_now", "stop_to_be", "stop_lock")
+# ANGUS (28-Jul): *"im gonna target x instead and trail the stop into profits at a level i
+# dont think it should come down to if my thesis is correct"*. That is one decision with two
+# numbers in it, so the verdict carries both rather than forcing a choice between them.
+# `hold` + target_r 4.0 + stop_r 1.5 says: I think this runs to 4R, and if it trades back
+# through 1.5R my read was wrong. stop_to_be is just stop_r 0.0; there is no separate action
+# for it. `exit_now` covers taking the mechanical exit when sitting on it.
+ACTIONS = ("hold", "exit_now")
 
 
 # ------------------------------------------------------------------ verdict schema
@@ -55,8 +61,10 @@ class IntradeVerdict(BaseModel, extra="forbid"):
     trade_id: str                       # must echo the briefing
     decision_minute: str                # must echo the briefing, ISO with ET offset
     action: str
-    lock_r: float | None = None         # required for stop_lock, ignored otherwise
+    target_r: float | None = None       # hold only: the new objective, in R
+    stop_r: float | None = None         # hold only: where the stop goes, in R (0 = break-even)
     conviction: float                   # 0.0-1.0, journaled for the learning curve
+    thesis: str                         # WHY this should keep running — scored later
     flow_read: str                      # what the tape is saying, in the agent's words
     rationale: str
 
@@ -74,7 +82,18 @@ class IntradeVerdict(BaseModel, extra="forbid"):
             raise ValueError(f"conviction must be in [0,1], got {v}")
         return v
 
-    @field_validator("rationale", "flow_read")
+    @model_validator(mode="after")
+    def _plan_is_coherent(self):
+        """A target below where the trade already is, or a stop above the target, is not a
+        thesis — it is a typo, and fail-closed means the mechanical plan stands."""
+        if self.action == "exit_now" and (self.target_r is not None or self.stop_r is not None):
+            raise ValueError("exit_now cannot carry a target or a stop")
+        if (self.target_r is not None and self.stop_r is not None
+                and self.stop_r >= self.target_r):
+            raise ValueError(f"stop_r {self.stop_r} must sit below target_r {self.target_r}")
+        return self
+
+    @field_validator("rationale", "flow_read", "thesis")
     @classmethod
     def _capped(cls, v: str) -> str:
         if len(v) > RATIONALE_MAX:
@@ -130,6 +149,37 @@ def build_briefing(trade: dict, minute: pd.Timestamp, state: dict,
     vol5 = float(tape.vol.tail(5).mean()) if len(tape) >= 5 else float("nan")
     volmed = float(tape.vol.median()) if len(tape) else float("nan")
 
+    # GEOMETRY / CLOCK / VOLATILITY — the angles flow alone cannot see. A trade 3 SD extended
+    # into the close with a dead 30-minute range is a different hold from the same CVD reading
+    # at 09:50 with the range expanding, and only these columns tell the two apart.
+    sess = bars.loc[bars.index >= (minute.normalize() + pd.Timedelta(hours=18) -
+                                   pd.Timedelta(days=1))]
+    day_bars = bars.loc[bars.index >= minute.normalize()]
+    w30 = bars.tail(30)
+    hm = minute.hour * 60 + minute.minute
+    rng30 = float(w30.high.max() - w30.low.min()) if len(w30) else float("nan")
+    rngmed = float((bars.high.rolling(30).max() - bars.low.rolling(30).min()).median()) \
+        if len(bars) > 60 else float("nan")
+    c30 = w30.close
+    geom = {
+        "minute_of_day_et": hm,
+        "minutes_to_eod_flatten": EOD_FLATTEN_HM - hm,
+        "pts_to_session_high": (round(float(sess.high.max()) - last, 2) if len(sess) else None),
+        "pts_to_session_low": (round(last - float(sess.low.min()), 2) if len(sess) else None),
+        "position_in_session_range": (
+            round((last - float(sess.low.min()))
+                  / max(float(sess.high.max() - sess.low.min()), 1e-9), 3) if len(sess) else None),
+        "range_30m_vs_typical": (round(rng30 / rngmed, 2)
+                                 if rngmed and rngmed == rngmed else None),
+        "path_efficiency_30m": (
+            round(abs(float(c30.iloc[-1] - c30.iloc[0]))
+                  / max(float(c30.diff().abs().sum()), 1e-9), 3) if len(c30) > 2 else None),
+        "vwap_distance_sd_signed": None,
+    }
+    if "vw" in bars.columns and "up1" in bars.columns and len(bars):
+        vw, up1 = float(bars.vw.iloc[-1]), float(bars.up1.iloc[-1])
+        geom["vwap_distance_sd_signed"] = round(sgn * (last - vw) / max(up1 - vw, 1e-9), 2)
+
     b = {
         "schema_version": SCHEMA_VERSION,
         "trade_id": trade["trade_id"],
@@ -164,11 +214,11 @@ def build_briefing(trade: dict, minute: pd.Timestamp, state: dict,
             "volume_last_5m_vs_day_median": (round(vol5 / volmed, 2)
                                              if volmed and volmed == volmed else None),
         },
+        "geometry": geom,
         "journal": journal,
-        "recent_bars_oldest_first": [
-            {"t": t.strftime("%H:%M"), "o": round(r.open, 2), "h": round(r.high, 2),
-             "l": round(r.low, 2), "c": round(r.close, 2)}
-            for t, r in bars.tail(10).iterrows()],
+        "recent_bars_oldest_first_time_high_low_close": [
+            [t.strftime("%H:%M"), round(r.high, 2), round(r.low, 2), round(r.close, 2)]
+            for t, r in bars.tail(8).iterrows()],
     }
 
     if depth is not None and len(depth):
@@ -247,7 +297,10 @@ def _tighten(cur: float, proposed: float, sgn: float) -> float:
 FLOW_KEYS = ("cvd_5m_signed", "cvd_15m_signed", "cvd_30m_signed",
              "opposed_of_last_5_minutes", "volume_last_5m_vs_day_median")
 BOOK_KEYS = ("imbalance_signed", "wall_ahead_points_away", "wall_ahead_size",
-             "wall_behind_points_away")
+             "wall_behind_points_away", "wall_behind_size", "thickness")
+GEOM_KEYS = ("minute_of_day_et", "minutes_to_eod_flatten", "pts_to_session_high",
+             "pts_to_session_low", "position_in_session_range", "range_30m_vs_typical",
+             "path_efficiency_30m", "vwap_distance_sd_signed")
 
 
 def journal_row(briefing: dict, verdict: "IntradeVerdict | None", outcome: dict) -> dict:
@@ -275,12 +328,21 @@ def journal_row(briefing: dict, verdict: "IntradeVerdict | None", outcome: dict)
         "minutes_in_trade": t["minutes_in_trade"],
         "canon_exits_here": briefing["mechanical_plan"]["canon_exits_at_this_minute"],
         "action": verdict.action if verdict else "unanswered",
-        "lock_r": verdict.lock_r if verdict else None,
+        "target_r": verdict.target_r if verdict else None,
+        "stop_r": verdict.stop_r if verdict else None,
         "conviction": verdict.conviction if verdict else None,
+        "thesis": verdict.thesis if verdict else "",
         "flow_read": verdict.flow_read if verdict else "",
     }
     row |= {k: briefing["flow"].get(k) for k in FLOW_KEYS}
     row |= {f"book_{k}": briefing.get("book", {}).get(k) for k in BOOK_KEYS}
+    row |= {k: briefing.get("geometry", {}).get(k) for k in GEOM_KEYS}
+    f5, f15 = briefing["flow"].get("cvd_5m_signed"), briefing["flow"].get("cvd_15m_signed")
+    # is the flow accelerating into this minute or fading? the 5m share of the 15m tells you.
+    row["cvd_accel_5_over_15"] = (round(f5 / f15, 2)
+                                  if f5 is not None and f15 not in (None, 0) else None)
+    row["r_worst_so_far"] = briefing["trade"]["R_worst_so_far"]
+    row["risk_points"] = briefing["trade"]["risk_points"]
     # forward outcome, in R, measured from THIS decision onward
     row |= {
         "r_ran_further": outcome.get("r_peak_after") is not None
@@ -290,9 +352,25 @@ def journal_row(briefing: dict, verdict: "IntradeVerdict | None", outcome: dict)
                          if outcome.get("r_peak_after") is not None else None),
         "delta_vs_canon": round(outcome.get("delta_vs_canon", 0.0), 2),
         "held_minutes_total": outcome.get("held_minutes"),
+        "minutes_from_decision_to_peak": outcome.get("minutes_to_peak_after"),
         "exit_reason": outcome.get("exit_reason"),
     }
+    # Did the THESIS hold, separately from whether the trade made money? A target that was
+    # reached on a trade that then gave it all back still means the read was right; a target
+    # missed on a trade that stopped out for a small win still means it was wrong. Scoring
+    # only P&L teaches the agent nothing about its own reasoning.
+    if row["target_r"] is not None and outcome.get("r_peak_after") is not None:
+        row["thesis_target_reached"] = bool(outcome["r_peak_after"] >= row["target_r"])
+        row["thesis_error_R"] = round(outcome["r_peak_after"] - row["target_r"], 2)
+    else:
+        row["thesis_target_reached"] = None
+        row["thesis_error_R"] = None
     return row
+
+
+def _median(xs):
+    xs = sorted(x for x in xs if x is not None)
+    return round(xs[len(xs) // 2], 1) if xs else None
 
 
 def _bucket(rows: list[dict], key: str, edges: list[float], labels: list[str]) -> list[dict]:
@@ -316,7 +394,89 @@ def _bucket(rows: list[dict], key: str, edges: list[float], labels: list[str]) -
     return out
 
 
-def journal_digest(rows: list[dict], recent: int = 6) -> dict:
+def _pcts(xs):
+    xs = sorted(x for x in xs if x is not None)
+    if not xs:
+        return None
+    def q(f):
+        return round(xs[min(int(f * len(xs)), len(xs) - 1)], 2)
+    return {"p25": q(0.25), "median": q(0.5), "p75": q(0.75), "best": round(xs[-1], 2)}
+
+
+def matched_cohort(rows: list[dict], like: dict, min_n: int = 4) -> dict:
+    """The past decisions that looked like THIS one, and how far those trades then ran.
+
+    ANGUS (28-Jul): *"the last 6 out of 8 times the trade hit its mechanical target but the
+    flow or book or anything along those lines were still supporting my trade direction this
+    much, it ran x further, so im gonna target x instead."*
+
+    Global base rates cannot answer that — "delta >= 250 ran 2.4R" pools the moment a trade
+    first goes green with the moment it is sitting on its target, and those are different
+    questions. So the cohort is matched on the decision point AND on the flow being at least
+    as supportive as it is right now, and it RELAXES in steps until it has enough rows to
+    mean anything. The label says which filter survived, so a thin cohort cannot masquerade
+    as a strong one.
+    """
+    reason = like.get("reason_for_decision")
+    f15 = like.get("flow", {}).get("cvd_15m_signed")
+    imb = like.get("book", {}).get("imbalance_signed")
+    pe = like.get("geometry", {}).get("path_efficiency_30m")
+
+    def flow_at_least_as_good(r):
+        v = r.get("cvd_15m_signed")
+        return v is not None and f15 is not None and v >= f15 if f15 is not None else False
+
+    def book_on_side(r):
+        v = r.get("book_imbalance_signed")
+        return v is not None and imb is not None and v > 0 and imb > 0
+
+    def path_as_clean(r):
+        v = r.get("path_efficiency_30m")
+        return v is not None and pe is not None and v >= pe
+
+    steps = [
+        ("same decision point + flow at least this supportive + book on side + path as clean",
+         lambda r: r["reason"] == reason and flow_at_least_as_good(r) and book_on_side(r)
+         and path_as_clean(r)),
+        ("same decision point + flow at least this supportive + book on side",
+         lambda r: r["reason"] == reason and flow_at_least_as_good(r) and book_on_side(r)),
+        ("same decision point + flow at least this supportive",
+         lambda r: r["reason"] == reason and flow_at_least_as_good(r)),
+        ("same decision point, any flow",
+         lambda r: r["reason"] == reason),
+    ]
+    usable = [r for r in rows if r.get("r_ran_further") is not None]
+    for label, f in steps:
+        sel = [r for r in usable if f(r)]
+        if len(sel) >= min_n:
+            fwd = [r["r_ran_further"] for r in sel]
+            held = [r for r in sel if r["action"] == "hold"]
+            theses = [r for r in sel if r.get("thesis_target_reached") is not None]
+            return {
+                "matched_on": label,
+                "n": len(sel),
+                "ran_further_at_all": f"{sum(x > 0 for x in fwd)}/{len(sel)}",
+                "ran_a_further_1R": f"{sum(x >= 1 for x in fwd)}/{len(sel)}",
+                "ran_a_further_2R": f"{sum(x >= 2 for x in fwd)}/{len(sel)}",
+                "further_R": _pcts(fwd),
+                "median_minutes_to_that_peak": _median(
+                    [r.get("minutes_from_decision_to_peak") for r in sel]),
+                "median_R_given_back_after_the_peak": _median(
+                    [r.get("r_given_back") for r in sel]),
+                "when_you_held_these": {
+                    "n": len(held),
+                    "mean_dollars_vs_canon": (round(sum(r["delta_vs_canon"] for r in held)
+                                                    / len(held), 2) if held else None)},
+                "your_targets_here": ({
+                    "set": len(theses),
+                    "reached": sum(bool(r["thesis_target_reached"]) for r in theses),
+                    "median_overshoot_or_shortfall_R": _median(
+                        [r.get("thesis_error_R") for r in theses])} if theses else None),
+            }
+    return {"matched_on": "nothing comparable yet", "n": 0}
+
+
+def journal_digest(rows: list[dict], recent: int = 6, like: dict | None = None) -> dict:
     """What the agent gets to carry forward: its own record, plus forward-run base rates
     bucketed on the flow variables it will see again."""
     if not rows:
@@ -343,6 +503,19 @@ def journal_digest(rows: list[dict], recent: int = 6) -> dict:
         "forward_run_by_opposed_minutes": _bucket(
             rows, "opposed_of_last_5_minutes", [2, 4],
             ["0-1 of 5 opposed (clean)", "2-3 of 5", "4-5 of 5 (tape turned)"]),
+        "forward_run_by_path_efficiency_30m": _bucket(
+            rows, "path_efficiency_30m", [0.25, 0.5],
+            ["< 0.25 (churning)", "0.25-0.5", ">= 0.5 (trending cleanly)"]),
+        "forward_run_by_vwap_distance_sd": _bucket(
+            rows, "vwap_distance_sd_signed", [0.0, 1.5],
+            ["behind VWAP", "0 to 1.5 SD extended", ">= 1.5 SD extended"]),
+        "forward_run_by_minutes_left_in_session": _bucket(
+            rows, "minutes_to_eod_flatten", [90, 240],
+            ["< 90 min to the flatten", "90-240 min", "> 240 min"]),
+        "median_minutes_from_decision_to_peak": _median(
+            [r["minutes_from_decision_to_peak"] for r in rows
+             if r.get("minutes_from_decision_to_peak") is not None]),
+        "situations_like_this_one": matched_cohort(rows, like) if like else None,
         "most_recent": [
             {k: r[k] for k in ("decision_minute", "reason", "r_now", "cvd_15m_signed",
                                "opposed_of_last_5_minutes", "action", "r_ran_further",
