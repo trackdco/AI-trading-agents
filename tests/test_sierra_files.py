@@ -443,3 +443,31 @@ def test_pin_check_fails_when_order_flow_missing(tmp_path):
     write_scid(dead, [dict(ts=ts, bid_volume=0, ask_volume=0, **base)])
     with pytest.raises(OrderFlowFail):
         check_scid(dead)
+
+
+def test_seek_to_starts_the_tail_after_a_timestamp(tmp_path):
+    """Binary seek over the fixed-size, time-ordered records: a live tail starts near NOW
+    instead of parsing the whole history (14M records / ~270s on the box — the C3 stall
+    drill found a fresh boot still reading January, 2026-07-27)."""
+    import pandas as pd
+
+    from src.canon.sierra_files import ScidReader, SierraFileFeed, write_scid
+
+    p = tmp_path / "NQU6.CME.scid"
+    days = ["2026-07-20", "2026-07-24", "2026-07-27"]
+    write_scid(p, [
+        {"ts": pd.Timestamp(f"{d} 08:0{i}:05", tz="UTC"), "close": 100.0 + i,
+         "total_volume": 10, "bid_volume": 4, "ask_volume": 6}
+        for d in days for i in range(3)
+    ])
+    r = ScidReader(p)
+    idx = r.seek_to(pd.Timestamp("2026-07-27", tz="UTC"))
+    assert idx == 6                                     # first record of the last day
+    got = [rec.ts for rec in r.records()]
+    assert len(got) == 3 and all(t.date().isoformat() == "2026-07-27" for t in got)
+
+    # feed-level: start_after(warm end) -> only post-warm minutes emitted
+    feed = SierraFileFeed(p, clock=lambda: pd.Timestamp("2026-07-27 09:00", tz="UTC"))
+    feed.start_after(pd.Timestamp("2026-07-24 08:02:05", tz="UTC"))
+    events = feed.poll_events()
+    assert events and all(str(e["ts"]).startswith("2026-07-27") for e in events)

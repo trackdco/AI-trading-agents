@@ -281,6 +281,13 @@ def build_canon_live(cfg: dict, alerts: LaunchAlerts, log: logging.Logger,
         fp = pd.read_parquet(warm["footprint"]) if warm.get("footprint") else None
         live.warm(hist, fp)
         log.info("warm start | %d history bars", len(hist))
+        if len(hist):
+            # The tail only needs the gap AFTER the warm data — binary-seek the .scid there
+            # instead of parsing the whole file (a fresh boot was still reading January when
+            # the C3 drill needed it live; found 2026-07-27).
+            idx = feed.start_after(hist["ts_event"].max())
+            log.info("scid tail seek | starting at record %d (after warm end %s)",
+                     idx, hist["ts_event"].max())
     return live
 
 

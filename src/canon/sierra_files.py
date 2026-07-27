@@ -133,6 +133,32 @@ class ScidReader:
                 yield ScidRecord(scdt_to_ts(dt), o, h, lo, c, nt, tv, bv, av)
             self.offset = f.tell()
 
+    def seek_to(self, ts) -> int:
+        """Set the resume offset to the FIRST record with DateTime >= ts (binary search —
+        records are fixed-size and time-ordered) and return that record's index. Lets a
+        live tail START near now instead of parsing the whole history: the box's 559MB /
+        14M-record file costs ~270s to parse, and a fresh boot was still reading January
+        when the C3 stall drill needed it live (found 2026-07-27)."""
+        if not self.path.exists():
+            return 0
+        target = ts_to_scdt(ts)
+        with self.path.open("rb") as f:
+            if not self._validated:
+                self._validate(f)
+            f.seek(0, 2)
+            n = (f.tell() - SCID_HEADER_SIZE) // SCID_REC_SIZE
+            lo, hi = 0, n
+            while lo < hi:
+                mid = (lo + hi) // 2
+                f.seek(SCID_HEADER_SIZE + mid * SCID_REC_SIZE)
+                (dt,) = struct.unpack("<q", f.read(8))
+                if dt < target:
+                    lo = mid + 1
+                else:
+                    hi = mid
+        self.offset = SCID_HEADER_SIZE + lo * SCID_REC_SIZE
+        return lo
+
 
 # =========================================================================== .depth (order book)
 # Header 64 bytes; record 24 bytes (s_MarketDepthRecord). PIN-ON-BOX (esp. the Command enum).
@@ -389,6 +415,13 @@ class SierraFileFeed:
             self._depth = DepthReader(self.depth_path)
         self.lag = FeedLag(flush_ms=self.flush_ms)
         self._clock = self.clock or _utc_now
+
+    def start_after(self, ts) -> int:
+        """Skip .scid records at/ before `ts` (binary seek, no parsing). The live runner
+        calls this after the WARM START: history through `ts` is already loaded from the
+        warmup parquet, so the tail only needs the gap from there to now — minutes, not
+        the whole file. Depth is per-day and untouched (today's book must build in full)."""
+        return self._scid.seek_to(pd.Timestamp(ts) + pd.Timedelta(microseconds=1))
 
     # ---- feed-lag: wall-clock delta between a bar's close and when its record is read -----
     def _record_lag(self, minute_ts, now: pd.Timestamp) -> None:
