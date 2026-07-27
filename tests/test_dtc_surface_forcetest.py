@@ -32,7 +32,7 @@ def test_resting_sequence_all_checks_pass_on_the_mock():
         b, c = _broker(s)
         rows = run_resting(b, c, account="Sim1", entry=23000.0, stop=22990.0)
         assert [r.label for r in rows if not r.ok] == []
-        assert len(rows) == 5
+        assert len(rows) == 7                      # 5 checks + 2 raw-state diagnostic rows
         # and the bracket really is dead server-side
         assert len(s.cancelled) >= 1
     finally:
