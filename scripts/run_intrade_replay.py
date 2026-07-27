@@ -46,15 +46,13 @@ from scripts.canon_mechanical import build_canon  # noqa: E402
 from src.canon.news_gate import NewsGate  # noqa: E402
 from src.desk.trade_manager import (  # noqa: E402
     EOD_FLATTEN_HM,
-    journal_digest,
-    journal_row,
     MAX_DECISIONS,
     RECHECK_MIN,
     IntradeVerdict,
     agent_version,
-    apply_action,
-    briefing_prompt,
     build_briefing,
+    journal_digest,
+    journal_row,
 )
 
 NY = "America/New_York"
@@ -183,16 +181,26 @@ def implied_partial(trade: dict, cx_px: float) -> float | None:
     return pp if lead > 0 else None
 
 
-def _apply_plan(state, act, s, stop):
-    """Fold a ("plan", target_px, stop_px) decision in. A stop only ever tightens; a target
-    only ever replaces the previous one. Either may be None."""
+def _apply_plan(state, act, s, stop, px):
+    """Fold a ("plan", target_px, stop_px, partial_pct) decision in at price `px`.
+
+    A stop only ever tightens; a target replaces the previous one; a partial books that
+    fraction of WHAT IS STILL OPEN and shrinks the runner. Scaling out twice therefore
+    compounds — 0.75 then 0.5 leaves an eighth running, which is the point: conviction can
+    be expressed in size rather than only reported as a number.
+    """
     if not (isinstance(act, tuple) and act and act[0] == "plan"):
         return
-    _, tgt, new_stop = act
+    _, tgt, new_stop, pct = act
     if new_stop is not None:
         state["stop"] = max(stop, new_stop) if s > 0 else min(stop, new_stop)
     if tgt is not None:
         state["target"] = tgt
+    if pct:
+        closed = state["runner"] * float(pct)
+        state["agent_booked"] += closed * s * (px - state["anchor_px"]) * 20.0
+        state["runner"] -= closed
+        state["partials"].append(round(float(pct), 3))
 
 
 def simulate(trade: dict, path: pd.DataFrame, decide, canon_exit) -> dict:
@@ -200,13 +208,15 @@ def simulate(trade: dict, path: pd.DataFrame, decide, canon_exit) -> dict:
     (or None). Stop checks run BEFORE the decision, so no arm can rescue a position the
     market already took out. The V8 half-off leg books the first time its price trades,
     whatever the arm later does with the runner."""
-    s, entry, risk = sgn(trade["direction"]), float(trade["entry"]), float(trade["risk"])
+    s, entry = sgn(trade["direction"]), float(trade["entry"])
     cx_min, cx_px = canon_exit
     pp = implied_partial(trade, cx_px)
     state = {"stop": float(trade["stop"]), "extended": False, "peak": entry,
              "force_exit": False, "canon_exit_here": False, "reason": "start",
              "booked": 0.0, "part_px": None, "canon_exit": canon_exit,
-             "has_partial": pp is not None, "target": None}
+             "has_partial": pp is not None, "target": None,
+             "runner": 1.0 - (PARTIAL_PCT if pp is not None else 0.0),
+             "anchor_px": entry, "agent_booked": 0.0, "partials": []}
     for minute, bar in path.iterrows():
         hi, lo = float(bar.high), float(bar.low)
         stop = state["stop"]
@@ -220,7 +230,10 @@ def simulate(trade: dict, path: pd.DataFrame, decide, canon_exit) -> dict:
                 return _out(trade, state, minute, cx_px, "canon")
             if act == "exit_now":
                 return _out(trade, state, minute, float(bar.close), "agent_exit")
-            _apply_plan(state, act, s, stop)
+            # from here the book's `dollars` covers everything up to this price, so the
+            # agent's own P&L is measured from the canon exit onward.
+            state["anchor_px"] = cx_px
+            _apply_plan(state, act, s, stop, cx_px)
             state["extended"] = True
             state["peak"] = max(state["peak"], hi) if s > 0 else min(state["peak"], lo)
             continue
@@ -233,7 +246,7 @@ def simulate(trade: dict, path: pd.DataFrame, decide, canon_exit) -> dict:
         act = decide(minute, state, bar)
         if act == "exit_now":
             return _out(trade, state, minute, float(bar.close), "agent_exit")
-        _apply_plan(state, act, s, stop)
+        _apply_plan(state, act, s, stop, float(bar.close))
         tgt = state.get("target")
         if tgt is not None and ((s > 0 and hi >= tgt) or (s < 0 and lo <= tgt)):
             return _out(trade, state, minute, tgt, "agent_target")
@@ -269,18 +282,19 @@ def _out(trade: dict, state: dict, minute, px: float, reason: str) -> dict:
     cx_min, cx_px = state["canon_exit"]
     book = float(trade["dollars"])
     half = float(trade["risk"]) > 42          # sizing.oversized_stop_points -> half size in $
-    runner = 1.0 - (PARTIAL_PCT if state["has_partial"] else 0.0)
     early = minute < cx_min
 
+    open_frac = state["runner"]
+    agent_booked = state["agent_booked"]
     if early:
-        booked = state["booked"]
-        gross = booked + (1.0 - (PARTIAL_PCT if state["part_px"] is not None else 0.0)) \
-            * s_ * (px - entry) * 20.0
+        gross = (state["booked"]
+                 + agent_booked
+                 + open_frac * s_ * (px - entry) * 20.0)
         if half:
             gross /= 2.0
         net = gross - COMMISSION - (STOP_SLIP if reason == "stop" else 0.0)
     else:
-        carry = runner * s_ * (px - cx_px) * 20.0
+        carry = agent_booked + open_frac * s_ * (px - cx_px) * 20.0
         if half:
             carry /= 2.0
         # the canon's own exit costs are already inside `book`; holding past it only adds the
@@ -290,6 +304,10 @@ def _out(trade: dict, state: dict, minute, px: float, reason: str) -> dict:
     return {"exit_minute": minute, "exit_price": px, "exit_reason": reason,
             "points": s_ * (px - entry), "R": net / (risk * 20.0), "dollars": net,
             "canon_dollars": book, "delta_vs_canon": net - book,
+            "partials_taken": list(state["partials"]),
+            "r_banked": round(agent_booked / (risk * 20.0), 2) if agent_booked else None,
+            "r_runner": (round(open_frac * s_ * (px - cx_px) / risk, 2)
+                         if not early else None),
             "early_deviation": bool(early), "partial_booked": state["has_partial"],
             "extended": state["extended"],
             "held_minutes": int((minute - trade["fill"]).total_seconds() // 60)}
@@ -565,7 +583,7 @@ def cmd_plan(trades, bars, week=None) -> int:
     df.to_csv(idx_path, index=False)
     print(f"{len(trades)} trades -> {total} NEW decision points this round")
     print(f"  briefings + prompts: {BLOBS.relative_to(ROOT)}")
-    print(f"  index: output/intrade_decision_index.csv")
+    print("  index: output/intrade_decision_index.csv")
     print(f"  agent_version: {ver}")
     return 0
 
@@ -591,13 +609,13 @@ def read_verdicts() -> dict:
 
 
 def _plan_from(v, trade):
-    """An IntradeVerdict as the replay sees it: exit, or a plan of (target, stop) in prices."""
+    """An IntradeVerdict as the replay sees it: exit, or a plan of (target, stop, partial)."""
     if v.action == "exit_now":
         return "exit_now"
     s_, e, risk = sgn(trade["direction"]), float(trade["entry"]), float(trade["risk"])
     tgt = e + s_ * float(v.target_r) * risk if v.target_r is not None else None
     stp = e + s_ * float(v.stop_r) * risk if v.stop_r is not None else None
-    return ("plan", tgt, stp)
+    return ("plan", tgt, stp, v.partial_pct)
 
 
 def arm_agent(trade, canon_exit, verdicts, points):

@@ -42,11 +42,15 @@ MAX_DECISIONS = 6                    # per trade, so one runner cannot eat the w
 RATIONALE_MAX = 300
 
 # ANGUS (28-Jul): *"im gonna target x instead and trail the stop into profits at a level i
-# dont think it should come down to if my thesis is correct"*. That is one decision with two
-# numbers in it, so the verdict carries both rather than forcing a choice between them.
-# `hold` + target_r 4.0 + stop_r 1.5 says: I think this runs to 4R, and if it trades back
-# through 1.5R my read was wrong. stop_to_be is just stop_r 0.0; there is no separate action
-# for it. `exit_now` covers taking the mechanical exit when sitting on it.
+# dont think it should come down to if my thesis is correct"* and *"if its conviction score
+# isnt too high, it can be like okay i will take 75% out here, trail the rest, and let the
+# runners run higher."*
+#
+# So a verdict is a PLAN, not a switch: `hold` carrying target_r 4.0, stop_r 1.5 and
+# partial_pct 0.75 says — book three quarters here, run the last quarter at 4R, and if it
+# trades back through 1.5R my read was wrong. Conviction stops being a number the agent
+# merely reports and becomes something it can act on with size. stop_to_be is just stop_r 0.0;
+# `exit_now` covers taking the mechanical exit whole when sitting on it.
 ACTIONS = ("hold", "exit_now")
 
 
@@ -63,6 +67,7 @@ class IntradeVerdict(BaseModel, extra="forbid"):
     action: str
     target_r: float | None = None       # hold only: the new objective, in R
     stop_r: float | None = None         # hold only: where the stop goes, in R (0 = break-even)
+    partial_pct: float | None = None    # hold only: fraction of what is STILL OPEN to book now
     conviction: float                   # 0.0-1.0, journaled for the learning curve
     thesis: str                         # WHY this should keep running — scored later
     flow_read: str                      # what the tape is saying, in the agent's words
@@ -86,8 +91,12 @@ class IntradeVerdict(BaseModel, extra="forbid"):
     def _plan_is_coherent(self):
         """A target below where the trade already is, or a stop above the target, is not a
         thesis — it is a typo, and fail-closed means the mechanical plan stands."""
-        if self.action == "exit_now" and (self.target_r is not None or self.stop_r is not None):
-            raise ValueError("exit_now cannot carry a target or a stop")
+        if self.action == "exit_now" and any(
+                x is not None for x in (self.target_r, self.stop_r, self.partial_pct)):
+            raise ValueError("exit_now cannot carry a target, a stop or a partial")
+        if self.partial_pct is not None and not 0.0 < self.partial_pct < 1.0:
+            raise ValueError(f"partial_pct must be strictly between 0 and 1, got "
+                             f"{self.partial_pct} — use exit_now to close the whole position")
         if (self.target_r is not None and self.stop_r is not None
                 and self.stop_r >= self.target_r):
             raise ValueError(f"stop_r {self.stop_r} must sit below target_r {self.target_r}")
@@ -154,7 +163,6 @@ def build_briefing(trade: dict, minute: pd.Timestamp, state: dict,
     # at 09:50 with the range expanding, and only these columns tell the two apart.
     sess = bars.loc[bars.index >= (minute.normalize() + pd.Timedelta(hours=18) -
                                    pd.Timedelta(days=1))]
-    day_bars = bars.loc[bars.index >= minute.normalize()]
     w30 = bars.tail(30)
     hm = minute.hour * 60 + minute.minute
     rng30 = float(w30.high.max() - w30.low.min()) if len(w30) else float("nan")
@@ -330,6 +338,7 @@ def journal_row(briefing: dict, verdict: "IntradeVerdict | None", outcome: dict)
         "action": verdict.action if verdict else "unanswered",
         "target_r": verdict.target_r if verdict else None,
         "stop_r": verdict.stop_r if verdict else None,
+        "partial_pct": verdict.partial_pct if verdict else None,
         "conviction": verdict.conviction if verdict else None,
         "thesis": verdict.thesis if verdict else "",
         "flow_read": verdict.flow_read if verdict else "",
@@ -354,6 +363,9 @@ def journal_row(briefing: dict, verdict: "IntradeVerdict | None", outcome: dict)
         "held_minutes_total": outcome.get("held_minutes"),
         "minutes_from_decision_to_peak": outcome.get("minutes_to_peak_after"),
         "exit_reason": outcome.get("exit_reason"),
+        # what the SPLIT earned, so partial sizing is learnable and not just a habit
+        "r_banked_on_partials": outcome.get("r_banked"),
+        "r_from_the_runner": outcome.get("r_runner"),
     }
     # Did the THESIS hold, separately from whether the trade made money? A target that was
     # reached on a trade that then gave it all back still means the read was right; a target
@@ -392,6 +404,26 @@ def _bucket(rows: list[dict], key: str, edges: list[float], labels: list[str]) -
             "went_nowhere_under_0.5R": f"{sum(f < 0.5 for f in fwd)}/{len(sel)}",
         })
     return out
+
+
+def _partial_record(rows: list[dict]) -> dict | None:
+    """Did scaling out help? Split by whether a partial was taken at all, because the
+    interesting comparison is not partial-vs-nothing but partial-vs-holding-it-whole."""
+    took = [r for r in rows if r.get("partial_pct")]
+    whole = [r for r in rows if r["action"] == "hold" and not r.get("partial_pct")]
+    if not took:
+        return None
+    return {
+        "decisions_with_a_partial": len(took),
+        "median_fraction_taken": _median([r["partial_pct"] for r in took]),
+        "median_R_result": _median([r["r_at_exit"] for r in took]),
+        "median_R_result_when_you_held_it_whole": _median([r["r_at_exit"] for r in whole]),
+        "median_R_the_runner_added": _median([r.get("r_from_the_runner") for r in took]),
+        "mean_dollars_vs_canon": round(
+            sum(r["delta_vs_canon"] for r in took) / len(took), 2),
+        "your_median_conviction_when_scaling_out": _median(
+            [r.get("conviction") for r in took]),
+    }
 
 
 def _pcts(xs):
@@ -503,6 +535,7 @@ def journal_digest(rows: list[dict], recent: int = 6, like: dict | None = None) 
         "forward_run_by_opposed_minutes": _bucket(
             rows, "opposed_of_last_5_minutes", [2, 4],
             ["0-1 of 5 opposed (clean)", "2-3 of 5", "4-5 of 5 (tape turned)"]),
+        "when_you_took_partials_here": _partial_record(rows),
         "forward_run_by_path_efficiency_30m": _bucket(
             rows, "path_efficiency_30m", [0.25, 0.5],
             ["< 0.25 (churning)", "0.25-0.5", ">= 0.5 (trending cleanly)"]),

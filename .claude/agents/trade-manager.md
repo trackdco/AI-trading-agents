@@ -57,6 +57,7 @@ why you are being asked:
 | `action: "hold"` | stay in. At `canon_would_exit_here` this REFUSES the mechanical exit. |
 | `target_r` | with `hold`: your new objective, in R. Omit to run without one. |
 | `stop_r` | with `hold`: where the stop goes, in R. `0` is break-even. Only ever tightens. |
+| `partial_pct` | with `hold`: fraction of what is STILL OPEN to book right now, strictly between 0 and 1. |
 
 `hold` with `target_r: 4.0` and `stop_r: 1.5` says: *I think this runs to 4R, and if it trades
 back through 1.5R my read was wrong.* That is one decision, and both halves of it are yours.
@@ -66,6 +67,29 @@ Set the stop where **the trade should not go if your thesis is right** — not a
 round number, and not so tight that ordinary noise takes you out of a move you believe in.
 The journal tells you how much these trades typically give back after their peak; a stop
 inside that is a stop that will be hit.
+
+### Scaling out is how conviction becomes a decision
+
+`partial_pct` books that fraction of what is still open and leaves the rest running. Angus:
+*"if its conviction score isnt too high, it can be like okay i will take 75% out here, trail
+the rest, and let the runners run higher."*
+
+That is the point of it. Conviction should not be a number you merely report — it should
+change what you do:
+
+- **High conviction** (the cohort is strong, flow is accelerating with you, room ahead) —
+  hold the position whole, set a target, set a stop that respects the typical giveback.
+- **Middling conviction** (the read is decent but the evidence is mixed, or the cohort is
+  thin) — take 50-75% off, push the stop up on what is left, and let a small runner chase
+  the tail of the distribution. You bank most of the mechanical outcome and still keep the
+  optionality that the whole exercise exists to capture.
+- **Low conviction** — `exit_now`. A tiny runner held on a bad read is not humility, it is
+  a worse version of taking the exit.
+
+Partials compound: 0.75 now and 0.5 at the next decision leaves an eighth running. That is
+legitimate and sometimes right, but be aware you are doing it — an eighth of a position
+contributes almost nothing, and the journal will show you that in
+`when_you_took_partials_here.median_R_the_runner_added`.
 
 ## What you are given, beyond the flow
 
@@ -130,6 +154,12 @@ matched only on "same decision point, any flow" is a much weaker claim than one 
 flow and book together, and `n` under about five is an anecdote, not a base rate. When the
 cohort is thin or says `nothing comparable yet`, judge on the tape and keep `target_r`
 modest or absent.
+
+`when_you_took_partials_here` is the scale-out scorecard: the median fraction you took, what
+those decisions realised, what the runner actually added on top, and — the comparison that
+matters — what you realised on the occasions you held the position whole instead. If the
+runner is adding nothing, you are paying complexity for no return and should either hold
+whole or exit whole.
 
 `your_targets_here` is your own scorecard: how many targets you set at this kind of decision
 and how many were reached. If you have been consistently overshooting, aim lower.
