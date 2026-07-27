@@ -122,8 +122,13 @@ class MockDTCServer:
             kept["ServerOrderID"] = self._sid
             self.orders.append(kept)
             oid = m["ClientOrderID"]
+            # Real Sierra sends FilledQuantity/AverageFillPrice PRESENT with JSON null on a
+            # resting order (found on-box 2026-07-27: int(None) crash in order_status).
+            # dict.get's default only covers ABSENT keys — model the nulls faithfully.
             self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid, ServerOrderID=self._sid,
-                       OrderStatus=D.ORDER_STATUS_OPEN)
+                       OrderStatus=D.ORDER_STATUS_OPEN,
+                       FilledQuantity=None, AverageFillPrice=None,
+                       Price1=kept.get("Price1"), Quantity=kept.get("Quantity"))
             # market orders always fill regardless of mode (a reducing close must not
             # depend on the scenario knob). "fill_entry" is the Sierra-faithful bracket
             # fill: the entry fills but the protective STOP child stays WORKING — the

@@ -48,6 +48,17 @@ class DTCBroker:
         return self.client.order_state.get(oid, {})
 
     @staticmethod
+    def _coalesce(*vals):
+        """First non-None value. Real Sierra sends fields PRESENT with JSON null on resting
+        orders (FilledQuantity, AverageFillPrice — found on-box 2026-07-27, int(None)
+        crash); dict.get's default only covers ABSENT keys, so nulls must be skipped
+        explicitly."""
+        for v in vals:
+            if v is not None:
+                return v
+        return None
+
+    @staticmethod
     def _working(st: dict) -> bool:
         return st.get("OrderStatus") in (D.ORDER_STATUS_OPEN, D.ORDER_STATUS_PARTIALLY_FILLED)
 
@@ -74,9 +85,15 @@ class DTCBroker:
         self._pump()
         entry_st, stop_st = self._state(ref), self._state(b["stop_oid"])
         return {
-            "entry": entry_st.get("AverageFillPrice", entry_st.get("Price1", b["entry"])),
-            "stop": stop_st.get("Price1", b["stop"]),
-            "size": int(entry_st.get("FilledQuantity", entry_st.get("Quantity", b["size"]))),
+            # the readback verifies the ORDER AS PLACED (intent.entry_ref == the limit
+            # price == Price1); AverageFillPrice is null while resting and can differ on
+            # an IMPROVED fill, which must never read as a mismatch
+            "entry": self._coalesce(entry_st.get("Price1"),
+                                    entry_st.get("AverageFillPrice"), b["entry"]),
+            "stop": self._coalesce(stop_st.get("Price1"), stop_st.get("Price2"), b["stop"]),
+            # order quantity, not filled quantity — a resting entry has FilledQuantity 0/null
+            "size": int(self._coalesce(entry_st.get("Quantity"),
+                                       entry_st.get("FilledQuantity"), b["size"])),
             "side": b["side"], "account": b["account"],
             "stop_resting": self._working(stop_st),
         }
@@ -85,7 +102,7 @@ class DTCBroker:
         """Net position from a live CURRENT_POSITIONS query. The request is scoped to the
         configured TradeAccount, so this is the account's net — the one-position-at-a-time
         rule means account net == this symbol's net; the spine's reconcile keeps it honest."""
-        return sum(int(p.get("Quantity", 0)) for p in self.client.positions())
+        return sum(int(self._coalesce(p.get("Quantity"), 0)) for p in self.client.positions())
 
     def cancel_order(self, ref: str) -> None:
         """B7: pull one working bracket. The server tears children down with the parent
@@ -109,7 +126,7 @@ class DTCBroker:
         if b is None:
             raise KeyError(f"modify_stop: unknown bracket ref {ref!r}")
         st = self._state(b["stop_oid"])
-        qty = int(st.get("RemainingQuantity", st.get("Quantity", b["size"])))
+        qty = int(self._coalesce(st.get("RemainingQuantity"), st.get("Quantity"), b["size"]))
         self.client.modify_order_price(b["stop_oid"], float(price), qty=qty)
         self._pump()
 
