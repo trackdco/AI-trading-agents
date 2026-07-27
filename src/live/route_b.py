@@ -349,7 +349,7 @@ class RouteBLive:
                     # roll tag first (buffers are NOT trimmed — the backtest spans the gap).
                     ri = self.roll_state.on_bar(bts)
                     if ri["roll"]:
-                        self._on_roll_bar(ri)
+                        self._on_roll_bar(ri, now)
                     self.ingestor.on_bar(gbar)
                     t = e["tape"]
                     self.ingestor.on_minute_tape(e["ts"], t["delta"], t["vol"], t["vwp"])
@@ -374,13 +374,35 @@ class RouteBLive:
         vs = list(self.verdict_source.session_verdicts(session) or [])
         self._pending = sorted(vs, key=lambda v: pd.Timestamp(v["fill"]))
 
+    #: a verdict older than this vs the WALL CLOCK is never acted on — journaled as a skip.
+    #: Catch-up ingest of a backlog file replays months of bars through dispatch(); without
+    #: this guard every historical session's verdicts re-emit at boot (found live
+    #: 2026-07-27: a disarmed boot journaled ghost decisions from March). ARMED, the first
+    #: ~rate-limit of stale intents would have reached the broker. A4's contract is kept:
+    #: the miss is journaled with cause.
+    STALE_VERDICT_S = 120.0
+
     def _emit_due(self, bts: pd.Timestamp, now: pd.Timestamp) -> list:
         """Emit every pending verdict whose fill time is at/ before this bar — journal it (§D
         evidence) and drive the disarmed spine. Removes them from the pending queue."""
         out: list = []
         acct = feed = None
+        now_utc = pd.Timestamp(now)
+        if now_utc.tzinfo is None:
+            now_utc = now_utc.tz_localize("UTC")
         while self._pending and pd.Timestamp(self._pending[0]["fill"]) <= bts:
             v = self._pending.pop(0)
+            fill_ts = pd.Timestamp(v["fill"])
+            if fill_ts.tzinfo is None:
+                fill_ts = fill_ts.tz_localize("UTC")
+            age_s = (now_utc - fill_ts).total_seconds()
+            if age_s > self.STALE_VERDICT_S:
+                if self.decision_sink is not None:
+                    self.decision_sink({"type": "verdict_stale_skipped",
+                                        "age_s": round(age_s, 1), "day": v.get("day"),
+                                        "fill": str(v.get("fill")),
+                                        "session": v.get("session")})
+                continue
             rc = self.roll_state.context_for_day(str(v.get("day")))
             # corrections 2+3 live (news blackout / dead zone / sentinel fail-closed):
             # a vetoed verdict is journaled as a veto and NEVER reaches the verdict
@@ -425,13 +447,19 @@ class RouteBLive:
                                       "fill_ts": str(tr.fill_ts), "direction": tr.direction,
                                       "entry": float(tr.entry), "dollars": float(tr.dollars)})
 
-    def _on_roll_bar(self, ri: dict) -> None:
+    def _on_roll_bar(self, ri: dict, now: pd.Timestamp | None = None) -> None:
         """A roll bar arrived intraday (tag_rolls twin). Journal the roll decision (so the gate
-        can partition roll-day verdicts and §E can reset the clock) and alert."""
+        can partition roll-day verdicts and §E can reset the clock); ALERT only when the roll
+        is from the CURRENT session — catch-up ingest replays historical rolls through this
+        path and announced March's roll at boot as if live (found on-box 2026-07-27)."""
         if self.decision_sink is not None:
             self.decision_sink({"type": "roll", "date": ri["session"], "from": ri.get("from"),
                                 "to": ri["contract"], "bar_ts": ri.get("bar_ts")})
-        if self.alerts is not None:
+        current = True
+        if now is not None:
+            today_sess = str(_session_date(pd.Series([pd.Timestamp(now)]), dtime(18, 0)).iloc[0])
+            current = ri["session"] == today_sess
+        if self.alerts is not None and current:
             self.alerts.say(f"🔁 ROLL TAG {ri['session']}: now {ri['contract']} — §E resets "
                             f"the promotion clock for this session (buffers span the gap, "
                             f"matching the backtest).")

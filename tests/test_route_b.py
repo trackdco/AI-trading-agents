@@ -291,3 +291,49 @@ def test_serve_halts_on_stall(tmp_path):
                       verdict_source=FixtureVerdictSource({}), ingestor=CanonIngestor(book=DepthBook()),
                       clock=lambda: _ts("10:00"))
     live.serve(sleep_fn=lambda s: None, max_polls=5)   # stalled -> breaks before max_polls
+
+
+def test_stale_verdicts_skipped_on_catchup_never_reach_the_spine(tmp_path):
+    """THE ARMING-SAFETY GUARD (found live 2026-07-27): a boot catch-up over a backlog file
+    replays months of bars through dispatch; every historical session's verdicts would
+    re-emit as if fresh — armed, stale intents reach the broker. A verdict whose fill is
+    older than STALE_VERDICT_S vs the WALL CLOCK is journaled as a skip and acts on nothing."""
+    fill = _ts("08:01")
+    src = FixtureVerdictSource({"2026-03-17": [_verdict(fill)]})
+    live = _live(tmp_path, src)
+    events = [
+        {"kind": "minute", "ts": _ts("08:00"), "bar": _bar(_ts("08:00")), "tape": _tape()},
+        {"kind": "minute", "ts": _ts("08:01"), "bar": _bar(_ts("08:01")), "tape": _tape()},
+    ]
+    months_later = pd.Timestamp("2026-07-27 06:00", tz=NY).tz_convert("UTC")
+    emitted = live.dispatch(events, now=months_later)
+    assert emitted == []                                # nothing acted on
+    assert not (tmp_path / "verdicts.jsonl").exists()   # never reached the verdict journal
+    assert not (tmp_path / "sizing.jsonl").exists()     # never reached the spine
+    dec = [json.loads(x) for x in (tmp_path / "decisions.jsonl").read_text().splitlines()]
+    skips = [d for d in dec if d.get("type") == "verdict_stale_skipped"]
+    assert len(skips) == 1 and skips[0]["age_s"] > RouteBLive.STALE_VERDICT_S
+
+
+def test_historical_roll_bars_journal_but_do_not_alert(tmp_path):
+    """Catch-up ingest announced MARCH's contract roll at boot as if live (on-box
+    2026-07-27). Historical roll bars journal for the gate partition; only a roll in the
+    CURRENT session alerts."""
+    class _Say:
+        def __init__(self):
+            self.msgs = []
+
+        def say(self, text):
+            self.msgs.append(text)
+
+    say = _Say()
+    live = _live(tmp_path, FixtureVerdictSource({}))
+    live.alerts = say
+    # March roll day bars replayed at a July wall clock: journal yes, alert no
+    d1 = _ts("08:00", day="2026-03-17")
+    d2 = _ts("08:00", day="2026-03-18")
+    events = [{"kind": "minute", "ts": t, "bar": _bar(t), "tape": _tape()} for t in (d1, d2)]
+    live.dispatch(events, now=pd.Timestamp("2026-07-27 06:00", tz=NY).tz_convert("UTC"))
+    dec = [json.loads(x) for x in (tmp_path / "decisions.jsonl").read_text().splitlines()]
+    assert any(d.get("type") == "roll" for d in dec)    # journaled for the partition
+    assert say.msgs == []                               # but not announced as live
