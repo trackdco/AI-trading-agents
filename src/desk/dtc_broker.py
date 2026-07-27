@@ -76,6 +76,19 @@ class DTCBroker:
                                "size": int(intent.size), "entry": float(intent.entry_ref),
                                "stop": float(intent.stop), "account": intent.account}
         self._pump()
+        # PAIRING ENFORCEMENT (the one hole in the independent-pair geometry): the pair is
+        # only safe if BOTH legs live. A REJECTED leg with a working partner is either a
+        # naked entry (no protection) or a naked stop (can open a position from flat) —
+        # cancel the survivor immediately. REJECTED only: a FILLED entry is a healthy pair
+        # (position + protective stop), never a reason to pull the stop.
+        entry_st, stop_st = self._state(ref), self._state(stop_oid)
+        rejected = D.ORDER_STATUS_REJECTED
+        if entry_st.get("OrderStatus") == rejected and self._working(stop_st):
+            self.client.cancel_order(stop_oid)
+            self._pump()
+        elif stop_st.get("OrderStatus") == rejected and self._working(entry_st):
+            self.client.cancel_order(ref)
+            self._pump()
         return ref
 
     def order_status(self, ref: str) -> dict:

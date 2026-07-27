@@ -302,22 +302,28 @@ def test_submit_bracket_drops_non_dtc_stop_target_fields():
         s.stop()
 
 
-def test_submit_bracket_attaches_a_resting_protective_stop():
-    """THE INVARIANT (Angus B4): every entry has a resting protective stop attached at the broker.
-    submit_bracket now sends a parent entry + a STOP child linked by ParentTriggerClientOrderID."""
+def test_submit_bracket_rests_a_protective_stop_alongside_the_entry():
+    """THE INVARIANT (Angus B4): every entry has a resting protective stop at the broker.
+    Contract v4 (on-box 2026-07-27): an INDEPENDENT pair — Sierra's DTC attach semantics are
+    unusable on the live path, and the pair is geometrically safe (the stop sits on the loss
+    side of the entry, so it cannot trigger without the entry filling first)."""
     s = MockDTCServer(order_mode="fill")
     try:
         c = _client(s)
         c.connect()
         oid = c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, qty=2)
+        entry_oid, stop_oid = c.last_bracket
+        assert entry_oid == oid
         for _ in range(10):
             c.pump(timeout=0.2)
         c.close()
-        assert s.has_protective_stop(oid), (
-            "NAKED ENTRY: no resting protective stop attached to the entry order")
-        # the stop child is on the opposite side (a long entry protects with a sell stop)
-        stop = next(o for o in s.children_of(oid) if o["OrderType"] == D.ORDER_TYPE_STOP)
+        stop = next(o for o in s.orders if o["ClientOrderID"] == stop_oid)
+        assert stop["OrderType"] == D.ORDER_TYPE_STOP, (
+            "NAKED ENTRY: no protective stop submitted alongside the entry order")
+        # opposite side (a long entry protects with a sell stop), on the loss side
         assert stop["BuySell"] == 2 and stop["Price1"] == 99.0
+        entry = next(o for o in s.orders if o["ClientOrderID"] == entry_oid)
+        assert stop["Price1"] < entry["Price1"]        # the geometric-safety precondition
     finally:
         s.stop()
 
@@ -358,23 +364,30 @@ def _pump(c, n=10):
         c.pump(timeout=0.2)
 
 
-def test_cancel_order_tears_down_the_whole_bracket():
-    """B7: cancelling the unfilled entry must also cancel its attached protective stop —
-    Sierra tears down bracket children with the parent, and a live cancel that left the
-    stop child resting would leave a naked stop that can fire with no position."""
+def test_broker_cancel_tears_down_the_whole_bracket():
+    """B7: cancelling the unfilled entry must also cancel the protective stop. Under the
+    independent-pair contract the teardown lives in DTCBroker.cancel_order (nothing at the
+    server links the legs) — a cancel that left the stop resting would leave a naked stop
+    that can open a position from flat."""
+    from src.desk.dtc_broker import DTCBroker
+
+    class _I:
+        side, order_type, entry_ref, stop, target, size, setup_id, account = \
+            "B", "limit", 100.0, 99.0, None, 2, "s1", "ACC"
+
     s = MockDTCServer(order_mode="none")           # stays OPEN, never fills
     try:
         c = _client(s)
         c.connect()
-        oid = c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, qty=2)
-        _pump(c)
-        c.cancel_order(oid)
+        b = DTCBroker(client=c, symbol="NQ", account="ACC")
+        ref = b.submit_bracket(_I())
+        stop_oid = c.last_bracket[1]
+        b.cancel_order(ref)
         _pump(c)
         c.close()
-        stop_oid = s.children_of(oid)[0]["ClientOrderID"]
-        assert oid in s.cancelled and stop_oid in s.cancelled
+        assert ref in s.cancelled and stop_oid in s.cancelled
         # the client's read-back surface saw both CANCELED updates
-        assert c.order_state[oid]["OrderStatus"] == D.ORDER_STATUS_CANCELED
+        assert c.order_state[ref]["OrderStatus"] == D.ORDER_STATUS_CANCELED
         assert c.order_state[stop_oid]["OrderStatus"] == D.ORDER_STATUS_CANCELED
     finally:
         s.stop()
@@ -421,9 +434,9 @@ def test_modify_order_price_moves_the_resting_stop_in_place():
     try:
         c = _client(s)
         c.connect()
-        oid = c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, qty=2)
+        c.submit_bracket(symbol="NQ", buy=True, entry=100.0, stop=99.0, qty=2)
         _pump(c)
-        stop_oid = s.children_of(oid)[0]["ClientOrderID"]
+        stop_oid = c.last_bracket[1]
         c.modify_order_price(stop_oid, 99.75, qty=2)      # BE-ward move
         _pump(c)
         c.close()

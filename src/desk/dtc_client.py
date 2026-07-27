@@ -207,35 +207,35 @@ class DTCClient:
     # ---- orders ------------------------------------------------------------
     def submit_bracket(self, *, symbol: str, buy: bool, entry: float, stop: float,
                        qty: int, target: float | None = None) -> str:
-        """LIMIT entry + a RESTING PROTECTIVE STOP attached as a real child order.
+        """LIMIT entry + a SIMULTANEOUSLY-RESTING protective stop — two plain orders.
 
-        FIX (Angus audit): the old version sent one SUBMIT_NEW_SINGLE_ORDER with `Stop`/`Target`
-        as fields that are NOT on s_SubmitNewSingleOrder — Sierra dropped them silently, leaving a
-        NAKED ENTRY. A DTC bracket is parent + child, linked by `ParentTriggerClientOrderID`. The
-        protective stop is the invariant that must never fail (B4); the canon has NO fixed target
-        (managed exit), so `target` is accepted but NOT rested here — the partial/trail/cut/EOD are
-        the exit manager's job. Returns the PARENT (entry) client order id; the pair is also
-        exposed as `self.last_bracket = (entry_oid, stop_oid)` so an adapter can track the
-        stop child for B8 modification without guessing at id arithmetic."""
+        HISTORY (all found on-box): v1 sent Stop/Target as fields Sierra silently dropped —
+        naked entry. v2 linked a child via ParentTriggerClientOrderID — not a DTC single-order
+        field; Sierra routed the stop INDEPENDENTLY. v3 added IsParentOrder=1 — Sierra held
+        the parent forever (no ack) and still routed the stop independently. Sierra-side
+        attach semantics over DTC are not usable on this path (2026-07-27, Rithmic).
+
+        v4 (this): embrace the independent pair, whose safety is GEOMETRIC — the protective
+        stop always sits on the LOSS side of the entry (buy: stop < entry; sell: stop >
+        entry), so the market cannot reach the stop's trigger without first trading THROUGH
+        the entry limit, filling it. The stop can never fire while flat. The one non-
+        geometric hole — ONE leg rejected — is closed by the caller (DTCBroker.submit_bracket
+        pumps and cancels the survivor). Uses only primitives PROVEN against live Rithmic
+        paper: single limit, single stop, cancel, modify. `target` accepted but never rested
+        (the canon's exit is managed). Returns the entry oid; pair on `self.last_bracket`."""
         entry_oid = f"desk-{self._next_id}"
         self._next_id += 1
         stop_oid = f"desk-{self._next_id}"
         self._next_id += 1
         self.last_bracket = (entry_oid, stop_oid)
-        self._send(SUBMIT_NEW_SINGLE_ORDER, {                        # parent: the limit entry
+        self._send(SUBMIT_NEW_SINGLE_ORDER, {                        # the limit entry
             "Symbol": symbol, "TradeAccount": self.cfg.trade_account,
             "ClientOrderID": entry_oid, "OrderType": ORDER_TYPE_LIMIT,
-            "BuySell": 1 if buy else 2, "Price1": entry, "Quantity": qty, "IsAutomated": True,
-            # Sierra's attached-order contract: the parent DECLARES itself a parent, or the
-            # child's ParentTriggerClientOrderID is ignored and the stop goes to market as an
-            # INDEPENDENT working order (observed live 2026-07-27: stop OPEN while the entry
-            # was rejected — a naked stop, the exact opposite of a bracket).
-            "IsParentOrder": 1})
-        self._send(SUBMIT_NEW_SINGLE_ORDER, {                        # child: protective stop (opp side)
+            "BuySell": 1 if buy else 2, "Price1": entry, "Quantity": qty, "IsAutomated": True})
+        self._send(SUBMIT_NEW_SINGLE_ORDER, {                        # the protective stop (opp side)
             "Symbol": symbol, "TradeAccount": self.cfg.trade_account,
             "ClientOrderID": stop_oid, "OrderType": ORDER_TYPE_STOP,
-            "BuySell": 2 if buy else 1, "Price1": stop, "Quantity": qty, "IsAutomated": True,
-            "ParentTriggerClientOrderID": entry_oid})
+            "BuySell": 2 if buy else 1, "Price1": stop, "Quantity": qty, "IsAutomated": True})
         return entry_oid
 
     def cancel_order(self, client_order_id: str) -> None:
