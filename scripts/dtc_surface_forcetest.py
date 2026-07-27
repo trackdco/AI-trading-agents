@@ -150,6 +150,10 @@ def main(argv=None) -> int:
     ap.add_argument("--entry", type=float, required=True)
     ap.add_argument("--stop", type=float, required=True)
     ap.add_argument("--fill", action="store_true", help="also run the fill-path B8 checks")
+    ap.add_argument("--price-scale", type=float, default=1.0,
+                    help="service price units per display point (Pat's VPS: 100 — the "
+                         "Rithmic feed runs 100x display; keep in lockstep with "
+                         "config/live.yaml dtc.price_scale)")
     a = ap.parse_args(argv)
 
     # Non-production naming, either convention: Sierra's internal sim accounts carry "sim";
@@ -180,7 +184,8 @@ def main(argv=None) -> int:
     if not logged_on:
         print(f"LOGON FAILED — is Sierra's DTC server up on {a.host}:{a.port}?")
         return 1
-    broker = DTCBroker(client=client, symbol=a.symbol, account=a.account)
+    broker = DTCBroker(client=client, symbol=a.symbol, account=a.account,
+                       price_scale=a.price_scale)
     rows = [Row("DTC logon", True, f"{a.host}:{a.port} account={a.account}")]
     try:
         rows += run_resting(broker, client, account=a.account, entry=a.entry, stop=a.stop)

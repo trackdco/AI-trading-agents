@@ -153,3 +153,26 @@ def test_flatten_cancels_working_orders_before_market_closing():
         c.close()
     finally:
         s.stop()
+
+
+def test_price_scale_multiplies_out_and_divides_back():
+    """Pat's VPS: the Rithmic service runs at 100x display prices (depth files first, then
+    the ORDER path — DTC Price1=28690 landed at Sierra as 286.90, 'bad price' on every
+    limit, 2026-07-27). With price_scale=100 the broker sends service prices and reads
+    back display prices; the spine and forcetest keep speaking display throughout."""
+    s = MockDTCServer(order_mode="none")
+    try:
+        b, c = _broker(s)
+        b.price_scale = 100.0
+        ref = b.submit_bracket(_intent(entry_ref=28690.0, stop=28670.0, size=1))
+        stop_oid = c.last_bracket[1]
+        sent_entry = next(o for o in s.orders if o["ClientOrderID"] == ref)
+        sent_stop = next(o for o in s.orders if o["ClientOrderID"] == stop_oid)
+        assert sent_entry["Price1"] == 2869000.0 and sent_stop["Price1"] == 2867000.0
+        st = b.order_status(ref)                       # read-back is DISPLAY prices again
+        assert st["entry"] == 28690.0 and st["stop"] == 28670.0 and st["stop_resting"]
+        b.modify_stop(ref, 28680.0)                    # outbound modify scales too
+        assert s.order_by_oid(stop_oid)["Price1"] == 2868000.0
+        c.close()
+    finally:
+        s.stop()

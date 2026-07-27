@@ -35,6 +35,12 @@ class DTCBroker:
     symbol: str                                   # ORDER symbol (micros contract)
     account: str
     pump_rounds: int = 6                          # socket pumps after each send (mock+box safe)
+    # ORDER price scale, service units per display point. Pat's VPS runs its Rithmic feed at
+    # 100x display (first found in the .depth files, then confirmed on the ORDER path
+    # 2026-07-27: DTC Price1=28690 landed at Sierra as 286.90 -> Rithmic 'bad price' on
+    # every limit). All broker inputs/outputs are DISPLAY prices; this adapter multiplies
+    # on the way out and divides on the way back. 1.0 = pass-through (mock, normal boxes).
+    price_scale: float = 1.0
 
     # entry ref -> {stop_oid, intent-side/size/prices} — the bracket book this adapter placed
     _brackets: dict = field(default_factory=dict, init=False)
@@ -46,6 +52,10 @@ class DTCBroker:
 
     def _state(self, oid: str) -> dict:
         return self.client.order_state.get(oid, {})
+
+    def _unscale(self, v, fallback):
+        """Server price -> display price; None -> the tracked fallback (already display)."""
+        return fallback if v is None else float(v) / self.price_scale
 
     @staticmethod
     def _coalesce(*vals):
@@ -70,7 +80,8 @@ class DTCBroker:
     def submit_bracket(self, intent) -> str:
         ref = self.client.submit_bracket(
             symbol=self.symbol, buy=(intent.side == "B"),
-            entry=float(intent.entry_ref), stop=float(intent.stop), qty=int(intent.size))
+            entry=float(intent.entry_ref) * self.price_scale,
+            stop=float(intent.stop) * self.price_scale, qty=int(intent.size))
         entry_oid, stop_oid = self.client.last_bracket
         self._brackets[ref] = {"stop_oid": stop_oid, "side": intent.side,
                                "size": int(intent.size), "entry": float(intent.entry_ref),
@@ -105,9 +116,10 @@ class DTCBroker:
             # the readback verifies the ORDER AS PLACED (intent.entry_ref == the limit
             # price == Price1); AverageFillPrice is null while resting and can differ on
             # an IMPROVED fill, which must never read as a mismatch
-            "entry": self._coalesce(entry_st.get("Price1"),
-                                    entry_st.get("AverageFillPrice"), b["entry"]),
-            "stop": self._coalesce(stop_st.get("Price1"), stop_st.get("Price2"), b["stop"]),
+            "entry": self._unscale(self._coalesce(entry_st.get("Price1"),
+                                                  entry_st.get("AverageFillPrice")), b["entry"]),
+            "stop": self._unscale(self._coalesce(stop_st.get("Price1"), stop_st.get("Price2")),
+                                  b["stop"]),
             # order quantity, not filled quantity — a resting entry has FilledQuantity 0/null.
             # Real Sierra's ORDER_UPDATE names it OrderQuantity (observed 2026-07-27).
             "size": int(self._coalesce(entry_st.get("OrderQuantity"), entry_st.get("Quantity"),
@@ -145,7 +157,7 @@ class DTCBroker:
             raise KeyError(f"modify_stop: unknown bracket ref {ref!r}")
         st = self._state(b["stop_oid"])
         qty = int(self._coalesce(st.get("RemainingQuantity"), st.get("Quantity"), b["size"]))
-        self.client.modify_order_price(b["stop_oid"], float(price), qty=qty)
+        self.client.modify_order_price(b["stop_oid"], float(price) * self.price_scale, qty=qty)
         self._pump()
 
     def close_partial(self, account: str, qty: int, *, price: float | None = None) -> str:
@@ -158,7 +170,9 @@ class DTCBroker:
         q = min(int(qty), abs(pos))
         if q <= 0:
             return ""
-        oid = self.client.submit_reduce(symbol=self.symbol, sell=(pos > 0), qty=q, price=price)
+        oid = self.client.submit_reduce(symbol=self.symbol, sell=(pos > 0), qty=q,
+                                        price=(None if price is None
+                                               else float(price) * self.price_scale))
         self._pump()
         return oid
 

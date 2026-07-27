@@ -62,6 +62,11 @@ dtc:                              # ORDER ROUTE — read only by an ARMED run (c
                                   #   BOX naming convention (single-digit year, dot tag),
                                   #   mirrors the live data symbol NQU6.CME observed
                                   #   2026-07-27; re-point at the Sept-16 roll (A8 / §E.4)
+  price_scale: 100.0              # service price units per display point. THIS BOX's
+                                  #   Rithmic feed runs 100x display (depth files first,
+                                  #   then the order path: Price1=28690 landed as 286.90,
+                                  #   'bad price' on every limit — 2026-07-27). The broker
+                                  #   multiplies outbound order prices and divides read-backs
 
 paths:
   journal_dir: output/live                 # verdicts.jsonl + spine/sizing/rejects + decisions.jsonl

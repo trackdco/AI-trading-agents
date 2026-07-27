@@ -176,9 +176,11 @@ def build_armed_broker(cfg: dict, auth, log: logging.Logger):
     if not logged_on:
         raise SystemExit(f"ARM REFUSED: DTC logon failed on {dtc.get('host', '127.0.0.1')}:"
                          f"{dtc.get('port', 11099)} — is Sierra's DTC server up?")
-    log.info("DTC order route up | %s:%s | account=%s | symbol=%s",
-             dtc.get("host", "127.0.0.1"), dtc.get("port", 11099), auth.account, symbol)
-    return DTCBroker(client=client, symbol=symbol, account=auth.account), client
+    scale = float(dtc.get("price_scale", 1.0))
+    log.info("DTC order route up | %s:%s | account=%s | symbol=%s | price_scale=%g",
+             dtc.get("host", "127.0.0.1"), dtc.get("port", 11099), auth.account, symbol, scale)
+    return DTCBroker(client=client, symbol=symbol, account=auth.account,
+                     price_scale=scale), client
 
 
 def _collect_arm_token() -> str:
