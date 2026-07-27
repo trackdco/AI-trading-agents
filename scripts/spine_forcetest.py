@@ -45,8 +45,11 @@ class _Mock:
 
     def order_status(self, r):
         i = self.last
+        # stop_resting is the key _verify_readback checks (B4). The old legs_resting name
+        # made the spine flatten+halt the armed cases — correctly! — and report 'halted'
+        # for duplicate/order-rate (on-box 2026-07-27).
         return {"side": i.side, "size": i.size, "account": i.account, "entry": i.entry_ref,
-                "stop": i.stop, "target": i.target, "legs_resting": True}
+                "stop": i.stop, "target": i.target, "stop_resting": True}
 
     def position(self, a): return 0
     def flatten(self, a): pass
