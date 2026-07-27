@@ -575,6 +575,26 @@ def cmd_plan(trades, bars, week=None) -> int:
             index.append({"trade_id": t["trade_id"], "day": str(t["day"])[:10],
                           "decision_minute": minute.isoformat(), "reason": why, "stem": stem})
             total += 1
+    # LOOKAHEAD FIREWALL. Two briefings from the SAME DAY cannot be judged together: the
+    # later one carries price, flow and geometry from minutes the earlier one has not lived
+    # through yet, so showing both in one prompt hands the earlier decision its own future.
+    # Colour the round by day — each group holds at most one decision per day — and the
+    # caller issues one judge call per group. Groups are small (the count equals the busiest
+    # day in the round, usually 1-3) and the total briefing volume is unchanged.
+    groups: list[list[str]] = []
+    for row in sorted(index, key=lambda r: r["decision_minute"]):
+        for g in groups:
+            if row["day"] not in {d for d, _ in g}:
+                g.append((row["day"], row["stem"]))
+                break
+        else:
+            groups.append([(row["day"], row["stem"])])
+    stems = [[st for _, st in g] for g in groups]
+    (ROOT / "output/intrade_round_groups.json").write_text(json.dumps(stems, indent=1))
+    if stems:
+        print(f"  lookahead firewall: {len(stems)} group(s), sizes "
+              f"{[len(g) for g in stems]} — no group shares a day")
+
     idx_path = ROOT / "output/intrade_decision_index.csv"
     df = pd.DataFrame(index)
     if idx_path.exists() and len(df):
