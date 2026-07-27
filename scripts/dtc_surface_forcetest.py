@@ -89,6 +89,11 @@ def run_resting(broker: DTCBroker, client: DTCClient, *, account: str,
     st = broker.order_status(ref)
     rows.append(Row("spine read-back shape (all six keys)", READBACK_KEYS <= set(st),
                     f"{st}"))
+    # Diagnostic (always-on): the RAW stored server state for both legs — InfoText carries
+    # Sierra's rejection reason verbatim (on-box 2026-07-27: the stop child came back
+    # OrderStatus=9 REJECTED and nothing printed why).
+    rows.append(Row("raw server state: entry", True, f"{client.order_state.get(ref)}"))
+    rows.append(Row("raw server state: stop", True, f"{client.order_state.get(stop_oid)}"))
     new_entry = entry - 1.0                                # further from market, still safe
     client.modify_order_price(ref, new_entry, qty=1)
     broker._pump()
