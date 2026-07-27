@@ -111,7 +111,15 @@ def setup_logging(run_log: Path) -> logging.Logger:
     log.setLevel(logging.INFO)
     log.handlers.clear()
     fmt = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-    fh = logging.FileHandler(run_log)
+    # Windows consoles default to cp1252, which cannot encode the alert emoji — every
+    # Telegram alert then dumps a UnicodeEncodeError traceback into the console (cosmetic
+    # but deafening; on-box 2026-07-27). Log the FILE as UTF-8 and let the console replace
+    # what it can't draw.
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:  # noqa: BLE001 — a non-reconfigurable stream keeps the old behavior
+        pass
+    fh = logging.FileHandler(run_log, encoding="utf-8")
     fh.setFormatter(fmt)
     sh = logging.StreamHandler(sys.stdout)
     sh.setFormatter(fmt)
