@@ -36,8 +36,12 @@ def nbfn():
     import ast
 
     nb = json.loads(NB.read_text())
+    import glob as _glob
+    import os as _os
+
     g = {"datetime": datetime, "timedelta": timedelta, "ZoneInfo": ZoneInfo,
-         "np": np, "pd": pd, "NY": NY, "LON": LON, "UTC": UTC}
+         "np": np, "pd": pd, "NY": NY, "LON": LON, "UTC": UTC,
+         "os": _os, "glob": _glob, "print": lambda *a, **k: None}
     for cell in nb["cells"]:
         if cell["cell_type"] != "code":
             continue
@@ -271,3 +275,74 @@ def test_band_clean_drops_back_month_prints(nbfn, synthetic_trades):
     fp, dropped = nbfn["condense_trades"](tr, "2023-03-15")
     assert 25000.0 not in set(fp.price)
     assert dropped > 0
+
+
+# ------------------------------------------------- rolling monthly CVD flush ---
+
+def _fp(day, price=13000.0):
+    """One minimal footprint row for `day`."""
+    return pd.DataFrame({
+        "ts_minute": pd.to_datetime([f"{day}T12:00:00Z"], utc=True).astype("datetime64[ns, UTC]"),
+        "price": [price], "side": ["B"], "volume": [10], "trades": [2]})
+
+
+def test_flush_month_merges_and_cleans_up(nbfn, tmp_path):
+    """A completed month must become one parquet, and its per-day files must be removed."""
+    out = tmp_path / "holdout_out"
+    (out / "cvd" / "_days").mkdir(parents=True)
+    nbfn["OUTDIR"] = str(out)
+
+    for day in ("2023-07-03", "2023-07-04", "2023-07-05"):
+        _fp(day).to_parquet(out / "cvd" / "_days" / f"footprint_{day}.parquet", index=False)
+
+    nbfn["flush_month"]("2023-07")
+
+    monthly = out / "cvd" / "footprint_holdout_2023-07.parquet"
+    assert monthly.exists(), "monthly file not written"
+    got = pd.read_parquet(monthly)
+    assert len(got) == 3
+    assert got.volume.dtype == np.int64 and got.trades.dtype == np.int64
+    assert got.volume.sum() == 30
+    assert not list((out / "cvd" / "_days").glob("*.parquet")), "per-day files not cleaned up"
+
+
+def test_flush_month_only_touches_its_own_month(nbfn, tmp_path):
+    """Flushing July must not consume September's days — the glob is month-scoped."""
+    out = tmp_path / "holdout_out"
+    (out / "cvd" / "_days").mkdir(parents=True)
+    nbfn["OUTDIR"] = str(out)
+
+    _fp("2023-07-31").to_parquet(out / "cvd" / "_days" / "footprint_2023-07-31.parquet", index=False)
+    _fp("2023-09-01").to_parquet(out / "cvd" / "_days" / "footprint_2023-09-01.parquet", index=False)
+
+    nbfn["flush_month"]("2023-07")
+
+    assert (out / "cvd" / "footprint_holdout_2023-07.parquet").exists()
+    assert not (out / "cvd" / "footprint_holdout_2023-09.parquet").exists()
+    left = [p.name for p in (out / "cvd" / "_days").glob("*.parquet")]
+    assert left == ["footprint_2023-09-01.parquet"], f"September was consumed: {left}"
+
+
+def test_flush_month_is_a_noop_when_nothing_pending(nbfn, tmp_path):
+    """Re-flushing an already-merged month must not blow up or truncate it."""
+    out = tmp_path / "holdout_out"
+    (out / "cvd" / "_days").mkdir(parents=True)
+    nbfn["OUTDIR"] = str(out)
+    _fp("2023-07-03").to_parquet(out / "cvd" / "_days" / "footprint_2023-07-03.parquet", index=False)
+
+    nbfn["flush_month"]("2023-07")
+    before = pd.read_parquet(out / "cvd" / "footprint_holdout_2023-07.parquet")
+    nbfn["flush_month"]("2023-07")          # nothing left to merge
+    after = pd.read_parquet(out / "cvd" / "footprint_holdout_2023-07.parquet")
+    pd.testing.assert_frame_equal(before, after)
+
+
+def test_month_boundary_triggers_flush_in_the_loop():
+    """The pull loop must flush the previous month when the day's month changes."""
+    src = "\n".join("".join(c["source"])
+                    for c in json.loads(NB.read_text())["cells"] if c["cell_type"] == "code")
+    assert "if cur_month and day[:7] != cur_month:" in src
+    assert "flush_month(cur_month)" in src
+    # and the trades resume check must accept an already-merged month
+    assert 'mo_path  = f"{OUTDIR}/cvd/footprint_holdout_{day[:7]}.parquet"' in src
+    assert "if os.path.exists(mo_path) or os.path.exists(day_path):" in src
