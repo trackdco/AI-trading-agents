@@ -159,6 +159,35 @@ def main() -> None:
           f"{(~win.stopped_out).mean()*100:.0f}%")
     print(f"  median minutes the position stayed alive                  : {win.alive_min.median():.0f}m")
 
+    # ---- the two discretion rules Angus described, priced separately -------------
+    print("\n" + "=" * 66)
+    print("RULE 1 — cut when flow turns on a trade that WAS in profit (losers)")
+    print(f"{'was up >=':<12}{'n':>5}{'% of losers':>13}{'ceiling swing @1lot':>22}")
+    print("-" * 52)
+    for lvl in (0.5, 1.0, 1.5, 2.0):
+        sub = loss[loss.mfe_R_eod >= lvl]
+        if not len(sub):
+            continue
+        swing = (lvl * sub.risk * 20 - sub.dollars).sum()
+        print(f"{lvl:<12.1f}{len(sub):>5}{len(sub) / len(loss) * 100:>12.1f}%{swing:>22,.0f}")
+    up1 = loss[loss.mfe_R_eod >= 1.0]
+    print(f"  those {len(up1)} losers actually realized ${up1.dollars.sum():,.0f}")
+
+    print("\nRULE 2 — extend the runners (winners)")
+    print(f"{'left behind >=':<16}{'n':>5}{'% of winners':>14}{'ceiling @1lot':>16}")
+    print("-" * 51)
+    for lvl in (1.0, 2.0, 3.0):
+        sub = win[win.mfe_R_eod >= win.realized_R + lvl]
+        if not len(sub):
+            continue
+        extra = ((sub.mfe_R_eod - sub.realized_R) * sub.risk * 20).sum()
+        print(f"{lvl:<16.1f}{len(sub):>5}{len(sub) / len(win) * 100:>13.1f}%{extra:>16,.0f}")
+
+    print("\nRULE 1's CEILING IS THE MORE CREDIBLE ONE. Cutting at +1R exits at a price the")
+    print("trade actually traded through — you only have to decide to do it. Rule 2's number")
+    print("assumes exiting at the exact high of every winner, which nobody achieves. The")
+    print("smaller figure is the closer approximation to reachable money.")
+
     print("\n" + "=" * 66)
     print("CEILING, NOT A TARGET. Max-excursion is hindsight — nobody exits at the high, and")
     print("docs/FINDING-oracle-is-hindsight-books-dont-generalize.md is the standing warning")
