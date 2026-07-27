@@ -22,6 +22,16 @@ that number and the broker, and every one of them is path-dependent:
 
   DD HALT      available_dd <= $100 stops the day outright.
 
+DEFAULT IS --account flat, AND THAT IS DELIBERATE. Angus (29-Jul): *"do not optimise the out
+of fit test for a funded account that makes no sense, but you get what i was trying to say."*
+Letting base_dollar compound turns the out-of-fit number into a function of the equity curve:
+one strong early month inflates every trade after it, and fit-vs-holdout stops measuring the
+strategy at all. The first run of this script did exactly that — $285,091 on a $50k account,
+clamped at 40 micros on 231 of 422 trades. So `flat` pins base_dollar to the $200 floor
+schedule for every trade while keeping the RULES fully active: the -4R day halt, the DD halt,
+the 40-micro clamp, and the canon's own Layer 2b/2c escalation upstream. `funded` restores
+the DD-scaled sizing for when the question really is "what would the account have done".
+
 DRAWDOWN IS END-OF-DAY, not trailing: `line = min(start_balance, max(prior_line, EOD_balance
 - DD))`. It trails EOD gains up and locks at the starting balance once clear; it does NOT
 ratchet against an intraday spike. available_dd = equity - line, fixed at each day's start
@@ -39,7 +49,6 @@ import argparse
 import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,15 +89,21 @@ def load_book(ny_path: str, lon_path: str | None) -> pd.DataFrame:
     return B.sort_values("fill").reset_index(drop=True)
 
 
-def walk(B: pd.DataFrame, cfg: SpineConfig) -> pd.DataFrame:
-    """Trade by trade, in time order, with the account state carried forward."""
+def walk(B: pd.DataFrame, cfg: SpineConfig, account: str = "flat") -> pd.DataFrame:
+    """Trade by trade, in time order, with the account state carried forward.
+
+    `account="flat"` sizes every trade off the floor schedule regardless of equity, so the
+    result measures the strategy rather than the compounding. The halts still watch the real
+    equity curve — a day can still be stopped out, and the DD floor can still be reached.
+    """
+    flat = account == "flat"
     equity = START_BALANCE
     line = START_BALANCE - ACCOUNT_DD
     rows = []
     for day, g in B.groupby("day", sort=True):
         day_open_equity = equity
         avail_at_open = equity - line
-        halt_at = cfg.daily_loss_halt_r * base_dollar(avail_at_open)
+        halt_at = cfg.daily_loss_halt_r * base_dollar(None if flat else avail_at_open)
         day_pl, halted = 0.0, None
         for t in g.itertuples():
             avail = equity - line
@@ -99,7 +114,7 @@ def walk(B: pd.DataFrame, cfg: SpineConfig) -> pd.DataFrame:
             if halted:
                 rows.append(_row(t, day, 0, 0.0, avail, halt_at, halted, equity))
                 continue
-            base = base_dollar(avail)
+            base = base_dollar(None if flat else avail)
             risk_d = base * min(CONVICTION_CAP, float(t.size))
             micros = min(MICRO_CLAMP,
                          int(round(risk_d / (float(t.risk) * MNQ_DOLLARS_PER_PT))))
@@ -161,11 +176,17 @@ def main() -> None:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--book", required=True, help="NY canon book parquet")
     ap.add_argument("--london", default=None, help="London canon book parquet")
+    ap.add_argument("--account", choices=["flat", "funded"], default="flat",
+                    help="flat pins base risk to the $200 floor (measures the strategy); "
+                         "funded lets it scale with available drawdown (measures the account)")
     ap.add_argument("--tag", default=None)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
 
     cfg = SpineConfig()
+    print(f"account basis: {a.account}"
+          + ("  (base risk pinned to the $200 floor — no compounding)" if a.account == "flat"
+             else "  (base risk scales with available drawdown)"))
     print(f"spine: day halt {cfg.daily_loss_halt_r:g}R of base_dollar "
           f"(${cfg.daily_loss_halt_r * base_dollar(START_BALANCE - (START_BALANCE - ACCOUNT_DD)):,.0f} "
           f"at the ${ACCOUNT_DD:,.0f} opening buffer) | dd halt <= ${cfg.dd_halt_buffer:,.0f} "
@@ -173,7 +194,7 @@ def main() -> None:
     B = load_book(a.book, a.london)
     print(f"book: {len(B)} taken trades, {B.day.nunique()} days, "
           f"{B.session.value_counts().to_dict()}")
-    W = walk(B, cfg)
+    W = walk(B, cfg, a.account)
     out = ROOT / (a.out or f"output/spine_walk_{Path(a.book).stem}.parquet")
     W.to_parquet(out, index=False)
     report(W, a.tag or Path(a.book).stem)

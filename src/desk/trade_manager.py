@@ -37,8 +37,13 @@ SCHEMA_VERSION = "intrade-1.0"
 AGENT_FILE = Path(".claude/agents/trade-manager.md")
 
 EOD_FLATTEN_HM = 15 * 60 + 55        # engine's eod_flatten, the hard backstop for every arm
-RECHECK_MIN = 20                     # re-evaluate this often once the agent has extended
-MAX_DECISIONS = 6                    # per trade, so one runner cannot eat the whole budget
+# Measured on the smoke run: a judge call costs ~3 minutes, and every extra decision point is
+# another SEQUENTIAL round — round k+1 cannot be emitted until k is answered. At 6 decisions
+# and a 20-minute recheck the 53-week chain projects to ~10 hours; at 4 and 30 it lands near 6.
+# The trims come off the tail: a position still open 90 minutes past its mechanical exit has
+# already made the decision this test is about.
+RECHECK_MIN = 30                     # re-evaluate this often once the agent has extended
+MAX_DECISIONS = 4                    # per trade, so one runner cannot eat the whole budget
 RATIONALE_MAX = 300
 
 # ANGUS (28-Jul): *"im gonna target x instead and trail the stop into profits at a level i
