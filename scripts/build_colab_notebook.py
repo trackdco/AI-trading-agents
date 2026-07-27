@@ -152,7 +152,7 @@ DEPTH_WINDOWS = {{
     "london": (LON, (8, 0), (10, 0)),    # first 2h London
 }}
 
-for sub in ("depth_ny", "depth_london", "cvd"):
+for sub in ("depth_ny", "depth_london", "cvd", "cvd/_days"):
     os.makedirs(f"{{OUTDIR}}/{{sub}}", exist_ok=True)
 
 # ---- the sealed, pre-registered day list -------------------------------------
@@ -356,7 +356,7 @@ to check the plumbing before committing to the whole run.
 
         code(*_src('''
 todo = DAYS[:LIMIT_DAYS] if LIMIT_DAYS else DAYS
-manifest, fp_by_month, t0 = [], {}, time.time()
+manifest, t0 = [], time.time()
 print(f"pulling {len(todo)} of {len(DAYS)} sealed days\\n")
 
 for n, day in enumerate(todo, 1):
@@ -407,12 +407,13 @@ for n, day in enumerate(todo, 1):
         print("    london  skip (exists)")
 
     # ---- trades / footprint ----
+    # Written PER DAY, not accumulated in RAM. A Colab disconnect must not cost a re-pull
+    # of the tape: these are merged into the monthly files only after every day is on disk.
     if PULL_TRADES:
-        mo = day[:7]
-        mo_path = f"{OUTDIR}/cvd/footprint_holdout_{mo}.parquet"
-        done = os.path.exists(mo_path) and mo not in fp_by_month
-        if done:
-            print("    trades  skip (month file exists)")
+        day_path = f"{OUTDIR}/cvd/_days/footprint_{day}.parquet"
+        if os.path.exists(day_path):
+            rec["fp_rows"] = -1
+            print("    trades  skip (exists)")
         else:
             try:
                 s, e = trades_window(day)
@@ -420,7 +421,7 @@ for n, day in enumerate(todo, 1):
                 out, dropped = condense_trades(df, day) if len(df) else (None, 0.0)
                 del df; gc.collect()
                 if out is not None:
-                    fp_by_month.setdefault(mo, []).append(out)
+                    out.to_parquet(day_path, index=False)
                     rec["fp_rows"] = len(out)
                     rec["dropped_pct"] = round(dropped * 100, 3)
                     print(f"    trades  {len(out):>7,} minute-rows "
@@ -434,18 +435,29 @@ for n, day in enumerate(todo, 1):
     manifest.append(rec)
     time.sleep(0.5)   # be polite to the rate limiter
 
-# ---- flush monthly footprint files ----
-for mo, parts in fp_by_month.items():
+# ---- merge the per-day footprints into monthly files ----
+# Only reached once every day is safely on disk. The per-day files are removed only
+# after their month has been written, so an interrupt here still leaves a resumable state.
+import glob as _glob
+
+day_files = sorted(_glob.glob(f"{OUTDIR}/cvd/_days/footprint_*.parquet"))
+by_month = {}
+for f in day_files:
+    by_month.setdefault(os.path.basename(f)[10:17], []).append(f)
+
+for mo, files in sorted(by_month.items()):
     p = f"{OUTDIR}/cvd/footprint_holdout_{mo}.parquet"
-    allp = pd.concat(parts, ignore_index=True)
-    if os.path.exists(p):
-        allp = pd.concat([pd.read_parquet(p), allp], ignore_index=True)
+    allp = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
     allp = (allp.groupby(["ts_minute", "price", "side"], as_index=False)
                 .agg(volume=("volume", "sum"), trades=("trades", "sum")))
     allp["volume"] = allp["volume"].astype("int64")
     allp["trades"] = allp["trades"].astype("int64")
     allp.to_parquet(p, index=False)
-    print(f"wrote {os.path.basename(p)}: {len(allp):,} rows")
+    print(f"wrote {os.path.basename(p)}: {len(allp):,} rows from {len(files)} days")
+    for f in files:
+        os.remove(f)
+if not day_files and PULL_TRADES:
+    print("no per-day footprints found to merge")
 
 pd.DataFrame(manifest).to_csv(f"{OUTDIR}/MANIFEST.csv", index=False)
 print(f"\\ndone in {(time.time()-t0)/60:.1f} min")
