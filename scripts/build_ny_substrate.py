@@ -27,8 +27,23 @@ available and both get reported:
   --stop-gate on              engine skips them, the slot passes to the next candidate.
                               Faithful to the LIVE config (min_stop_points 7.0).
 
+THE CAP. `max_trades_per_day` is enforced per simulate() call, so with one 08:00-10:15 window
+the two sections SHARE two slots. Measured on the shipped substrate: 0 of 521 day-books ever
+carry 2 pre-market fills AND a golden-window fill, and pre+gold never exceeds 2. Pre-market
+fires first chronologically, so it takes the slots and the golden window trades on leftovers.
+
+Angus (28-Jul) states the intended shape is 2 per SECTION, not 2 shared. Those are different
+systems, so both are buildable here and the answer is measured, not argued:
+
+  --cap-mode section  (default)  08:00-09:30 cap 2 AND 09:40-10:15 cap 2, simulated separately
+                                 and concatenated. London is already capped 2 in its own run.
+                                 This is the ruling; it is also the shape `grade_window_cap`
+                                 calls C and `premarket_actualcap_run` uses.
+  --cap-mode day                 one 08:00-10:15 window, cap 2 — what the shipped substrate
+                                 happens to contain. Kept only so the difference is measurable.
+
     python -m scripts.build_ny_substrate --span fit
-    python -m scripts.build_ny_substrate --span holdout
+    python -m scripts.build_ny_substrate --span holdout --cap-mode section
 """
 from __future__ import annotations
 
@@ -74,17 +89,33 @@ SEGMENTS = {
 LOOKBACK_DAYS = 120
 
 
-def canon_config(stop_gate: bool):
-    """win 08:00-10:15, cap 2 PER BOOK — the canon universe's shape."""
-    upd = {"win_start": dtime(8, 0), "win_end": dtime(10, 15), "max_trades_per_day": 2}
+PRE = (dtime(8, 0), dtime(9, 30))
+GOLD = (dtime(9, 40), dtime(10, 15))
+
+
+def canon_windows(stop_gate: bool, cap_mode: str):
+    """[(tag, cfg, keep_window)] — one entry per independently-capped window.
+
+    `keep_window` discards fills that landed outside the segment they were simulated for; the
+    engine can fill a pending order slightly past win_end, and without the filter the same
+    trade could be claimed by two segments.
+    """
+    upd = {"max_trades_per_day": 2}
     if not stop_gate:
         upd |= {"min_stop_points": 0.0, "post_open_min_stop": 0.0}
-    return load_backtest_config().model_copy(update=upd)
+    base = load_backtest_config().model_copy(update=upd)
+    if cap_mode == "day":
+        return [("all", base.model_copy(update={"win_start": dtime(8, 0),
+                                                "win_end": dtime(10, 15)}), None)]
+    # The 09:30-09:40 gap between the segments IS the cash-open cut, so the config's own
+    # no_trade veto would double-count it — disabled here exactly as grade_window_cap does.
+    sec = base.model_copy(update={"no_trade_start": None, "no_trade_end": None})
+    return [("pre", sec.model_copy(update={"win_start": PRE[0], "win_end": PRE[1]}), PRE),
+            ("gold", sec.model_copy(update={"win_start": GOLD[0], "win_end": GOLD[1]}), GOLD)]
 
 
-def run_months(months, trigs, bars, base) -> pd.DataFrame:
+def run_months(months, trigs, bars, wins) -> pd.DataFrame:
     """Both books, every day, nothing selected — the canon universe."""
-    cfg_e3, cfg_e4 = books(base)
     rows = []
     for m in sorted(months):
         seg_trigs = [t for t in trigs if t.ts[:7] == m]
@@ -96,14 +127,18 @@ def run_months(months, trigs, bars, base) -> pd.DataFrame:
         start = pd.Timestamp(m + "-01", tz=NY) - pd.Timedelta(days=LOOKBACK_DAYS)
         seg = bars[(bars.ts_event >= start) & (bars.ts_event <= end)].reset_index(drop=True)
         n0 = len(rows)
-        for book, cfg in (("E3", cfg_e3), ("E4", cfg_e4)):
-            tr, _, _ = simulate(seg, seg_trigs, cfg)
-            for r in tr:
-                rows.append({
-                    "day": r.trade_date, "book": book, "fill": str(r.fill_ts),
-                    "exit": str(r.exit_ts), "direction": r.direction, "entry": r.entry,
-                    "stop": r.stop_initial, "exit_price": r.exit_price,
-                    "dollars": r.dollars, "pattern": r.pattern, "tf": getattr(r, "tf", "")})
+        for tag, wcfg, keep in wins:
+            cfg_e3, cfg_e4 = books(wcfg)
+            for book, cfg in (("E3", cfg_e3), ("E4", cfg_e4)):
+                tr, _, _ = simulate(seg, seg_trigs, cfg)
+                for r in tr:
+                    if keep and not (keep[0] <= pd.Timestamp(r.fill_ts).time() < keep[1]):
+                        continue
+                    rows.append({
+                        "day": r.trade_date, "book": book, "seg": tag, "fill": str(r.fill_ts),
+                        "exit": str(r.exit_ts), "direction": r.direction, "entry": r.entry,
+                        "stop": r.stop_initial, "exit_price": r.exit_price,
+                        "dollars": r.dollars, "pattern": r.pattern, "tf": getattr(r, "tf", "")})
         print(f"  {m}: {len(seg_trigs):>5} triggers -> {len(rows) - n0:>4} fills", flush=True)
     return pd.DataFrame(rows)
 
@@ -114,13 +149,16 @@ def main() -> None:
     ap.add_argument("--span", choices=sorted(SEGMENTS), required=True)
     ap.add_argument("--stop-gate", choices=["on", "off"], default="off",
                     help="engine-level min_stop_points; Layer 0 gates 7-60pt regardless")
+    ap.add_argument("--cap-mode", choices=["section", "day"], default="section",
+                    help="2 per section (Angus 28-Jul ruling), or 2 shared across 08:00-10:15")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
 
-    base = canon_config(a.stop_gate == "on")
-    print(f"span {a.span} | win {base.win_start}-{base.win_end} | cap "
-          f"{base.max_trades_per_day}/book | engine stop floor {base.min_stop_points:g}pt "
-          f"(post-open {base.post_open_min_stop:g}) | lookback {LOOKBACK_DAYS}d\n", flush=True)
+    wins = canon_windows(a.stop_gate == "on", a.cap_mode)
+    shape = " + ".join(f"{t} {c.win_start:%H:%M}-{c.win_end:%H:%M} cap {c.max_trades_per_day}"
+                       for t, c, _ in wins)
+    print(f"span {a.span} | cap-mode {a.cap_mode}: {shape} | engine stop floor "
+          f"{wins[0][1].min_stop_points:g}pt | lookback {LOOKBACK_DAYS}d\n", flush=True)
 
     sealed = set(pd.read_csv(SEALED, dtype=str)["day"]) if a.span == "holdout" else None
     parts = []
@@ -131,7 +169,7 @@ def main() -> None:
         trigs = load([str(ROOT / t) for t in trigfiles])
         print(f"{barfile}: {len(bars):,} bars | {len(trigs):,} triggers | "
               f"{len(months)} months {months[0]}..{months[-1]}", flush=True)
-        parts.append(run_months(months, trigs, bars, base))
+        parts.append(run_months(months, trigs, bars, wins))
 
     S = pd.concat(parts, ignore_index=True)
     if sealed is not None:
@@ -139,10 +177,13 @@ def main() -> None:
     S["yr"] = S.day.astype(str).str[:4].astype(int)
     S["risk"] = (S.entry - S.stop).abs()
 
-    out = Path(a.out) if a.out else ROOT / f"output/ny_substrate_{a.span}.parquet"
+    suffix = "" if a.cap_mode == "section" else "_daycap"
+    out = Path(a.out) if a.out else ROOT / f"output/ny_substrate_{a.span}{suffix}.parquet"
     S.to_parquet(out, index=False)
     print(f"\nwrote {out.relative_to(ROOT)} — {len(S)} candidate fills on {S.day.nunique()} days")
     print(f"\nby year x book:\n{pd.crosstab(S.yr, S.book)}")
+    if "seg" in S:
+        print(f"\nby section: {S.seg.value_counts().to_dict()}")
     print(f"\npattern: {S.pattern.value_counts().to_dict()}")
     print(f"risk pts: median {S.risk.median():.2f}, "
           f"{(S.risk < 7).sum()} below Layer-0 floor, {(S.risk > 60).sum()} above its cap")
