@@ -21,6 +21,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 DAYS_CSV = ROOT / "data/reference/holdout_2023_24_days.csv"
 OUT = ROOT / "notebooks/colab_holdout_pull.ipynb"
+OUT_SINGLE = ROOT / "notebooks/colab_holdout_pull_single.ipynb"
 
 
 def md(*lines: str) -> dict:
@@ -530,6 +531,35 @@ Raw data never enters the repo; only these condensed artifacts do.
     }
 
 
+def build_single(nb: dict) -> dict:
+    """One-cell edition, concatenated FROM the multi-cell notebook.
+
+    Derived rather than re-authored on purpose: the two versions cannot drift, because
+    this is literally the same source text joined together. `tests/` asserts both define
+    byte-identical functions.
+    """
+    blocks = ["".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code"]
+    banner = [
+        "# =============================================================================",
+        "# NQ HOLDOUT PULL — 2023/2024 out-of-regime canon validation.  ONE CELL, RUN IT.",
+        "#",
+        "# Edit only the CONFIG block below. Everything after it is machinery.",
+        "# Resumable: re-running skips days already on disk, so a Colab disconnect costs",
+        "# only the day in flight.",
+        "# =============================================================================",
+        "",
+    ]
+    src = "\n".join(banner) + "\n\n".join(blocks)
+    return {
+        "cells": [{"cell_type": "code", "execution_count": None, "metadata": {},
+                   "outputs": [], "source": _src(src)}],
+        "metadata": {"colab": {"provenance": []},
+                     "kernelspec": {"display_name": "Python 3", "name": "python3"},
+                     "language_info": {"name": "python"}},
+        "nbformat": 4, "nbformat_minor": 0,
+    }
+
+
 def main() -> None:
     if not DAYS_CSV.exists():
         raise SystemExit(f"missing {DAYS_CSV.relative_to(ROOT)} — run scripts/sample_holdout_days.py first")
@@ -538,6 +568,11 @@ def main() -> None:
     OUT.write_text(json.dumps(nb, indent=1) + "\n")
     n_code = sum(1 for c in nb["cells"] if c["cell_type"] == "code")
     print(f"wrote {OUT.relative_to(ROOT)} ({len(nb['cells'])} cells, {n_code} code)")
+
+    single = build_single(nb)
+    OUT_SINGLE.write_text(json.dumps(single, indent=1) + "\n")
+    n_lines = len("".join(single["cells"][0]["source"]).split("\n"))
+    print(f"wrote {OUT_SINGLE.relative_to(ROOT)} (1 cell, {n_lines} lines)")
 
 
 if __name__ == "__main__":
