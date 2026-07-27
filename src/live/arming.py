@@ -14,6 +14,20 @@ module is the MECHANICAL half, built so neither procedure can be skipped or fake
     differ from it ONLY in `config/arming.yaml` itself (the authorization commit necessarily
     lands after the certified one). Any other file in that diff means code changed after
     certification -> refuse to arm (PROMOTION-GATE §E: any code change is a stop-and-review).
+  * The WORKING TREE is enforced too. `git diff <sha>..HEAD` compares COMMITS, so a tracked
+    file edited on the box and never committed is invisible to it: HEAD still equals
+    armed_sha, the provenance check passes, and the process arms while running code nobody
+    certified. Python loads the edited file at import, so the edit IS what trades. This is
+    the one path by which uncertified code could reach an armed run, and it is closed here
+    (`working_tree_changes`) rather than left to operator discipline.
+
+    Scope, stated rather than implied: this refuses on any change to a TRACKED file
+    (modified, staged, deleted, renamed, unmerged). Untracked files are NOT a refusal —
+    build outputs, logs and journals are untracked by design on the box and refusing on
+    them would make the check so noisy an operator would route around it. A new untracked
+    module that shadows an import therefore remains a residual hole; it is a much narrower
+    one than editing a tracked file in place, and closing it belongs with a packaging
+    change, not here.
 
 Every check fails CLOSED with a distinct, human-readable reason. A refused arm never falls
 back to a shadow run — an operator who typed --arm must not believe a disarmed process is
@@ -82,13 +96,46 @@ def files_changed_since(sha: str, repo: str | Path = ".") -> list[str]:
     return [line.strip() for line in out.splitlines() if line.strip()]
 
 
+def working_tree_changes(repo: str | Path = ".") -> list[str]:
+    """Tracked files that differ from HEAD right now — staged, unstaged, deleted or renamed.
+
+    `git status --porcelain` reports `XY <path>`; `??` is untracked and is deliberately
+    excluded (see the module docstring). Renames appear as `R  old -> new`; the destination
+    is the informative half, so that is what is reported.
+
+    Parsed by SPLITTING, not by column offset: `_git` strips its stdout, which silently eats
+    the leading space of an unstaged `' M path'` line and shifts every column by one. A
+    fixed-offset parse looks correct against staged changes and truncates unstaged ones."""
+    out = _git(["status", "--porcelain"], Path(repo))
+    changed: list[str] = []
+    for line in out.splitlines():
+        parts = line.split(maxsplit=1)
+        if len(parts) != 2 or parts[0] == "??":
+            continue
+        path = parts[1].strip()
+        if " -> " in path:                      # rename: report the destination
+            path = path.split(" -> ", 1)[1].strip()
+        changed.append(path.strip('"'))
+    return changed
+
+
 def provenance_error(auth: ArmingAuthorization, *, head: str,
-                     changed_files: list[str]) -> str:
+                     changed_files: list[str], dirty_files: list[str] | None = None) -> str:
     """'' when the running code IS the certified code; otherwise the refusal reason.
 
-    head == armed_sha is the clean case. Otherwise the only tolerated difference is the
-    authorization file itself — the commit that carries Angus's token hash necessarily lands
-    after the certified commit, and must touch nothing else."""
+    head == armed_sha is the clean case FOR THE COMMIT. Otherwise the only tolerated
+    difference is the authorization file itself — the commit that carries Angus's token hash
+    necessarily lands after the certified commit, and must touch nothing else.
+
+    `dirty_files` is checked FIRST and admits no exemption, not even config/arming.yaml: an
+    uncommitted authorization means someone typed a hash into the box, which is precisely the
+    two-party mechanic being bypassed. A clean commit history says nothing about what is on
+    disk, and what is on disk is what Python imports and trades."""
+    dirty = list(dirty_files or [])
+    if dirty:
+        return (f"the working tree has uncommitted changes to {len(dirty)} tracked file(s): "
+                f"{dirty[:10]} — the running code is NOT the certified commit even though "
+                f"HEAD says {head[:12]}. Commit and re-certify, or `git checkout --` them")
     if head == auth.armed_sha:
         return ""
     smuggled = [f for f in changed_files if f not in _ALLOWED_POST_CERT_PATHS]
@@ -107,7 +154,9 @@ def verify_for_arming(token: str, *, repo: str | Path = ".",
     if not token_matches(token, auth):
         raise ArmingError("token phrase does not match the committed authorization")
     head = head_sha(repo)
-    err = provenance_error(auth, head=head, changed_files=files_changed_since(auth.armed_sha, repo))
+    err = provenance_error(auth, head=head,
+                           changed_files=files_changed_since(auth.armed_sha, repo),
+                           dirty_files=working_tree_changes(repo))
     if err:
         raise ArmingError(err)
     return auth
