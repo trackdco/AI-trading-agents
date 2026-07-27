@@ -119,11 +119,20 @@ for _, r in df.iterrows():
     if not np.isfinite(a) or a <= 0:
         continue
     d = int(r.d)
-    # path shape: MAE / MFE over the life of the trade
+    # path shape: MAE / MFE ONLY WHILE THE TRADE IS OPEN.
+    # BUG FIXED 2026-07-27: this previously walked the full MAX_HOLD horizon regardless of when
+    # the trade actually exited, so it counted price action AFTER the stop was hit. That
+    # inflated loser MFE from +0.83R to +2.54R and produced the false headline "80% of losers
+    # reached +0.75R first" (true figure: 37%). The exit sweep's negative result is what exposed
+    # it -- if losers really banked +2.5R first, a 1R target would have printed money.
     horizon = min(k + grt.MAX_HOLD, n - 1)
-    seg = slice(k, horizon + 1)
-    adv_hi = np.max(d * (H[seg] - C[k])) if d > 0 else np.max(d * (L[seg] - C[k]))
-    adv_lo = np.min(d * (L[seg] - C[k])) if d > 0 else np.min(d * (H[seg] - C[k]))
+    adv_hi, adv_lo, _stop_hit = 0.0, 0.0, False
+    for _k in range(k + 1, horizon + 1):
+        _f = d * (H[_k] - C[k]) if d > 0 else d * (L[_k] - C[k])
+        _a = d * (L[_k] - C[k]) if d > 0 else d * (H[_k] - C[k])
+        adv_hi, adv_lo = max(adv_hi, _f), min(adv_lo, _a)
+        if _a <= -r.risk:                      # stopped out -> stop measuring
+            break
     # choppiness of the 60 min before entry: net move / summed absolute move
     p0 = C[max(k - 60, 0):k + 1]
     path = np.abs(np.diff(p0)).sum()
