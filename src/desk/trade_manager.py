@@ -96,12 +96,15 @@ def _sgn(direction: str) -> float:
 
 def build_briefing(trade: dict, minute: pd.Timestamp, state: dict,
                    bars: pd.DataFrame, tape: pd.DataFrame,
-                   depth: pd.DataFrame | None) -> dict:
+                   depth: pd.DataFrame | None, journal: dict | None = None) -> dict:
     """One decision point. `bars`/`tape` are indexed on ET minute; `state` carries the
     management so far (current stop, whether the agent has already extended).
 
-    Everything the agent sees is derived from the three truncated frames below.
+    Everything the agent sees is derived from the three truncated frames below. `journal`, if
+    given, is the digest of decisions on trades that CLOSED before this one opened — the
+    agent's own memory, never anything concurrent.
     """
+    journal = journal or {"decisions_recorded": 0}
     bars = bars.loc[bars.index < minute]
     tape = tape.loc[tape.index < minute]
     depth = depth[depth.ts < minute] if depth is not None and len(depth) else None
@@ -161,6 +164,7 @@ def build_briefing(trade: dict, minute: pd.Timestamp, state: dict,
             "volume_last_5m_vs_day_median": (round(vol5 / volmed, 2)
                                              if volmed and volmed == volmed else None),
         },
+        "journal": journal,
         "recent_bars_oldest_first": [
             {"t": t.strftime("%H:%M"), "o": round(r.open, 2), "h": round(r.high, 2),
              "l": round(r.low, 2), "c": round(r.close, 2)}
@@ -234,3 +238,115 @@ def apply_action(state: dict, v: IntradeVerdict, trade: dict) -> dict:
 def _tighten(cur: float, proposed: float, sgn: float) -> float:
     """A stop only ever moves toward price."""
     return max(cur, proposed) if sgn > 0 else min(cur, proposed)
+
+
+# ------------------------------------------------------------------ journal
+
+# The flow variables carried on every journal row. These are the columns the digest buckets
+# on, so adding one here makes it queryable; describing it in prose does not.
+FLOW_KEYS = ("cvd_5m_signed", "cvd_15m_signed", "cvd_30m_signed",
+             "opposed_of_last_5_minutes", "volume_last_5m_vs_day_median")
+BOOK_KEYS = ("imbalance_signed", "wall_ahead_points_away", "wall_ahead_size",
+             "wall_behind_points_away")
+
+
+def journal_row(briefing: dict, verdict: "IntradeVerdict | None", outcome: dict) -> dict:
+    """One decision, its flow state, and WHAT THE TRADE DID AFTERWARDS.
+
+    ANGUS: *"so for example it can look back and be like okay the last 3 times the delta has
+    been this positive the trade ran another 2r+ minimum so i can hold it for longer."*
+
+    That question is only answerable if the forward outcome is stored next to the flow
+    reading that preceded it — which is why `r_ran_further` (MFE from THIS minute onward,
+    minus where the trade already was) sits on the same row as `cvd_15m_signed`. A row is
+    only ever written after the trade has closed, so nothing here can leak into a live
+    decision; the digest then filters to trades closed before the current week.
+    """
+    t = briefing["trade"]
+    row = {
+        "trade_id": briefing["trade_id"],
+        "decision_minute": briefing["decision_minute"],
+        "session": t["session"],
+        "reason": briefing["reason_for_decision"],
+        "direction": t["direction"],
+        "pattern": t["pattern"],
+        "r_now": t["R_now"],
+        "r_best_so_far": t["R_best_so_far"],
+        "minutes_in_trade": t["minutes_in_trade"],
+        "canon_exits_here": briefing["mechanical_plan"]["canon_exits_at_this_minute"],
+        "action": verdict.action if verdict else "unanswered",
+        "lock_r": verdict.lock_r if verdict else None,
+        "conviction": verdict.conviction if verdict else None,
+        "flow_read": verdict.flow_read if verdict else "",
+    }
+    row |= {k: briefing["flow"].get(k) for k in FLOW_KEYS}
+    row |= {f"book_{k}": briefing.get("book", {}).get(k) for k in BOOK_KEYS}
+    # forward outcome, in R, measured from THIS decision onward
+    row |= {
+        "r_ran_further": outcome.get("r_peak_after") is not None
+        and round(outcome["r_peak_after"] - t["R_now"], 2) or None,
+        "r_at_exit": round(outcome["R"], 2),
+        "r_given_back": (round(outcome["r_peak_after"] - outcome["R"], 2)
+                         if outcome.get("r_peak_after") is not None else None),
+        "delta_vs_canon": round(outcome.get("delta_vs_canon", 0.0), 2),
+        "held_minutes_total": outcome.get("held_minutes"),
+        "exit_reason": outcome.get("exit_reason"),
+    }
+    return row
+
+
+def _bucket(rows: list[dict], key: str, edges: list[float], labels: list[str]) -> list[dict]:
+    """Base rates for the forward run, split on one flow variable."""
+    out = []
+    for i, lab in enumerate(labels):
+        lo = edges[i - 1] if i else -float("inf")
+        hi = edges[i] if i < len(edges) else float("inf")
+        sel = [r for r in rows
+               if r.get(key) is not None and r.get("r_ran_further") is not None
+               and lo <= r[key] < hi]
+        if len(sel) < 3:                     # below this a "base rate" is an anecdote
+            continue
+        fwd = sorted(r["r_ran_further"] for r in sel)
+        out.append({
+            key: lab, "n": len(sel),
+            "ran_further_median_R": round(fwd[len(fwd) // 2], 2),
+            "ran_a_further_2R_or_more": f"{sum(f >= 2 for f in fwd)}/{len(sel)}",
+            "went_nowhere_under_0.5R": f"{sum(f < 0.5 for f in fwd)}/{len(sel)}",
+        })
+    return out
+
+
+def journal_digest(rows: list[dict], recent: int = 6) -> dict:
+    """What the agent gets to carry forward: its own record, plus forward-run base rates
+    bucketed on the flow variables it will see again."""
+    if not rows:
+        return {"decisions_recorded": 0,
+                "note": "no completed decisions yet — judge on the tape alone"}
+    holds = [r for r in rows if r["action"] == "hold" and r["canon_exits_here"]]
+    takes = [r for r in rows if r["action"] == "exit_now" and r["canon_exits_here"]]
+    gained = [r for r in holds if r["delta_vs_canon"] > 0]
+    left = [r["r_given_back"] for r in takes if r.get("r_given_back") is not None]
+    d = {
+        "decisions_recorded": len(rows),
+        "your_record_at_the_mechanical_exit": {
+            "held": len(holds),
+            "holds_that_beat_the_mechanical_exit": f"{len(gained)}/{len(holds)}" if holds else "0/0",
+            "mean_dollars_per_hold": (round(sum(r["delta_vs_canon"] for r in holds) / len(holds), 2)
+                                      if holds else None),
+            "took_the_exit": len(takes),
+            "median_R_left_behind_when_taking": (round(sorted(left)[len(left) // 2], 2)
+                                                 if left else None),
+        },
+        "forward_run_by_15m_delta": _bucket(
+            rows, "cvd_15m_signed", [0, 250],
+            ["negative (flow against)", "0 to +250", ">= +250 (flow strongly with)"]),
+        "forward_run_by_opposed_minutes": _bucket(
+            rows, "opposed_of_last_5_minutes", [2, 4],
+            ["0-1 of 5 opposed (clean)", "2-3 of 5", "4-5 of 5 (tape turned)"]),
+        "most_recent": [
+            {k: r[k] for k in ("decision_minute", "reason", "r_now", "cvd_15m_signed",
+                               "opposed_of_last_5_minutes", "action", "r_ran_further",
+                               "delta_vs_canon")}
+            for r in rows[-recent:]],
+    }
+    return d

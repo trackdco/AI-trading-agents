@@ -46,6 +46,8 @@ from scripts.canon_mechanical import build_canon  # noqa: E402
 from src.canon.news_gate import NewsGate  # noqa: E402
 from src.desk.trade_manager import (  # noqa: E402
     EOD_FLATTEN_HM,
+    journal_digest,
+    journal_row,
     MAX_DECISIONS,
     RECHECK_MIN,
     IntradeVerdict,
@@ -448,7 +450,67 @@ def reachable_points(trade, path, cx, verdicts):
     return reached
 
 
-def cmd_plan(trades, bars) -> int:
+def replay_with_verdicts(t, path, cx, verdicts):
+    """Replay one trade under the agent arm and return (outcome, [(minute, reason)])."""
+    pts = decision_points(t, path, cx)
+    seen = []
+
+    def decide(m, st, bar):
+        for pm, why in pts:
+            if pm == m:
+                seen.append((m, why))
+                v = verdicts.get((t["trade_id"], m.isoformat()))
+                if v is None:
+                    return "take_canon" if st["canon_exit_here"] else None
+                if v.action == "exit_now":
+                    return "exit_now"
+                if v.action == "stop_to_be":
+                    return ("stop", float(t["entry"]))
+                if v.action == "stop_lock":
+                    r = 0.0 if v.lock_r is None else float(v.lock_r)
+                    return ("stop", float(t["entry"])
+                            + sgn(t["direction"]) * r * float(t["risk"]))
+                return None
+        return "take_canon" if st["canon_exit_here"] else None
+
+    return simulate(t, path, decide, cx), seen
+
+
+def build_journal(trades, bars, tape, verdicts, before, cache) -> list[dict]:
+    """Journal rows for every trade that CLOSED strictly before `before`.
+
+    The cutoff is the whole point: a decision in week W may only ever look back at trades
+    already finished when week W began. Rows carry the flow state at the decision AND the
+    forward excursion after it, because "the last 3 times delta was this positive the trade
+    ran another 2R" is only answerable when those two live on the same row.
+    """
+    rows = []
+    for t in trades:
+        if t["fill"] >= before:
+            continue
+        path = day_path(t, bars)
+        if not len(path):
+            continue
+        cx = derive_canon_exit(t, path)
+        out, seen = replay_with_verdicts(t, path, cx, verdicts)
+        if out["exit_minute"] >= before:
+            continue                      # still open when the week started
+        s_, entry, risk = sgn(t["direction"]), float(t["entry"]), float(t["risk"])
+        dep = load_depth(str(t["day"])[:10], t["session"], cache)
+        st = {"stop": float(t["stop"]), "extended": False, "peak": entry,
+              "canon_exit_here": False, "reason": ""}
+        for minute, why in seen:
+            st["reason"], st["canon_exit_here"] = why, minute == cx[0]
+            b = build_briefing(t, minute, st, bars, tape, dep)
+            seg = path.loc[minute:out["exit_minute"]]
+            peak = (s_ * (seg.high.max() - entry) if s_ > 0
+                    else s_ * (seg.low.min() - entry)) if len(seg) else 0.0
+            rows.append(journal_row(b, verdicts.get((t["trade_id"], minute.isoformat())),
+                                    {**out, "r_peak_after": peak / risk}))
+    return rows
+
+
+def cmd_plan(trades, bars, week=None) -> int:
     verdicts = read_verdicts()
     print(f"{len(verdicts)} verdicts already answered — emitting only the next frontier\n")
     tape = pd.read_parquet(TAPE)
@@ -458,6 +520,19 @@ def cmd_plan(trades, bars) -> int:
     cache: dict = {}
     ver, total = agent_version(), 0
     index = []
+
+    digest = {"decisions_recorded": 0}
+    if week:
+        wk_start = pd.Timestamp(week, tz=NY)
+        wk_end = wk_start + pd.Timedelta(days=7)
+        rows = build_journal(trades, bars, tape, verdicts, wk_start, cache)
+        digest = journal_digest(rows)
+        (ROOT / "output/intrade_journal.jsonl").write_text(
+            "\n".join(json.dumps(r, default=str) for r in rows))
+        trades = [t for t in trades if wk_start <= t["fill"] < wk_end]
+        print(f"week {week}: {len(trades)} trades | journal carries "
+              f"{digest['decisions_recorded']} completed decisions\n")
+
     for t in trades:
         path = day_path(t, bars)
         if not len(path):
@@ -472,7 +547,7 @@ def cmd_plan(trades, bars) -> int:
                 continue                       # already answered in an earlier round
             state["reason"] = why
             state["canon_exit_here"] = minute == cx[0]
-            b = build_briefing(t, minute, state, bars, tape, dep)
+            b = build_briefing(t, minute, state, bars, tape, dep, journal=digest)
             b["agent_version"] = ver
             stem = f"{t['trade_id']}__{minute.strftime('%H%M')}"
             (BLOBS / f"{stem}.briefing.json").write_text(json.dumps(b, indent=1, sort_keys=True))
@@ -594,6 +669,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("mode", choices=["check", "plan", "grade"])
+    ap.add_argument("--week", default=None,
+                    help="ISO date of a Monday: emit only that week, with a journal built "
+                         "from trades that closed before it (the chronological chain)")
     a = ap.parse_args()
     book = load_canon()
     trades = trade_rows(book)
@@ -601,8 +679,9 @@ def main() -> None:
     n = book.session.value_counts().to_dict()
     print(f"arming canon: {len(trades)} taken trades ({n}) on {book.day.nunique()} days, "
           f"1-lot ${book.dollars.sum():+,.0f}\n")
-    raise SystemExit({"check": cmd_check, "plan": cmd_plan, "grade": cmd_grade}[a.mode](
-        trades, bars))
+    if a.mode == "plan":
+        raise SystemExit(cmd_plan(trades, bars, week=a.week))
+    raise SystemExit({"check": cmd_check, "grade": cmd_grade}[a.mode](trades, bars))
 
 
 if __name__ == "__main__":
