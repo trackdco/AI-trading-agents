@@ -256,9 +256,14 @@ def score(F: pd.DataFrame) -> pd.DataFrame:
 
 
 def report(C: pd.DataFrame, span: str) -> None:
+    """`pl` here is dollars x ladder size x governor — the 1-LOT NQ basis, not the funded
+    account. The arming +$55,989.81 is funded micros (`scripts.baseline_dollar_risk.size_book`:
+    risk_$ = min(400, conviction x 200), micros = round(risk_$ / (stop_pts x $2))), which runs
+    about 1.56x smaller. Both spans are reported on the same basis so the comparison holds;
+    `scripts.holdout_verdict` restates it in funded dollars."""
     taken = C[C["size"] > 0]
     print("\n" + "=" * 74)
-    print(f"NY CANON — {span.upper()} SPAN — funded sizing basis")
+    print(f"NY CANON — {span.upper()} SPAN — 1-lot x ladder size (see holdout_verdict for funded)")
     print("=" * 74)
     print(f"universe {len(C)} candidates | TAKEN {len(taken)} on {taken.day.nunique()} days")
     for w in ("pre", "gold"):

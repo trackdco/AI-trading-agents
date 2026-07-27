@@ -29,6 +29,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from scripts.baseline_dollar_risk import size_book  # noqa: E402
+
 NY_CHECKS = {"pre": ["W", "F", "Tp", "G", "C"], "gold": ["D", "Tc", "X", "AGE", "PAQ"]}
 LON_CHECKS = ["W", "FAR", "ROOM", "ASIA"]
 
@@ -37,6 +39,23 @@ BOOKS = {
     "holdout": {"ny": "output/ny_canon_holdout.parquet",
                 "lon": "output/london_canon_book_holdout.parquet"},
 }
+
+
+def funded(C: pd.DataFrame, session: str) -> pd.DataFrame:
+    """Restate a canon book in FUNDED dollars — the sizing the account actually trades.
+
+    ANGUS: *"make sure its going off of the conviction based sizing things too like the 0.25
+    trades shouldnt be sized off the same static sizing as the 2.25."* `size_book` does exactly
+    that: risk_$ = min($400, conviction x $200), micros = round(risk_$ / (stop_pts x $2)),
+    so a 0.25-conviction trade risks $50 and a 2.25 risks the $400 cap. Every arm and every
+    span uses the identical rule, which is what keeps the P&L comparable.
+    """
+    C = C.copy()
+    if "yr" not in C.columns:
+        C["yr"] = pd.to_datetime(C.day.astype(str).str[:10]).dt.year
+    b = size_book(C, session)
+    b["day"] = b.day.astype(str).str[:10]
+    return b
 
 
 def stats(C: pd.DataFrame) -> dict:
