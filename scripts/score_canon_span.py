@@ -324,10 +324,10 @@ def main() -> None:
                   for d, g in tr[tr.day.isin(days)].groupby("day")}
     print(f"trigger stamps for {len(trig_times)} days (for the gold TRIG check)\n")
 
+    tag = a.span + ("_daycap" if a.sub and "daycap" in a.sub else "")
     print("computing canon features ...", flush=True)
     F = build_features(S, M, bars, trig_times, spec["depth"])
-    F.to_parquet(ROOT / f"output/ny_matrix_{a.span}"
-                 + ("_daycap" if a.sub and "daycap" in a.sub else "") + ".parquet", index=False)
+    F.to_parquet(ROOT / f"output/ny_matrix_{tag}.parquet", index=False)
     print(f"\nfeature matrix: {F.shape[0]} rows x {F.shape[1]} cols")
     print(f"  coverage: depth {F.dep_thick.notna().mean()*100:.0f}%, "
           f"d15 {F.d15.notna().mean()*100:.0f}%, "
@@ -335,7 +335,6 @@ def main() -> None:
           f"AGE-fires {F.on_extreme_age.notna().mean()*100:.0f}%")
 
     C = score(F)
-    tag = a.span + ("_daycap" if a.sub and "daycap" in a.sub else "")
     C.to_parquet(ROOT / f"output/ny_canon_{tag}.parquet", index=False)
     report(C, tag)
     print(f"\nwrote output/ny_canon_{tag}.parquet")

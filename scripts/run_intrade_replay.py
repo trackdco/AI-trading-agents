@@ -189,9 +189,18 @@ def _apply_plan(state, act, s, stop, px):
     compounds — 0.75 then 0.5 leaves an eighth running, which is the point: conviction can
     be expressed in size rather than only reported as a number.
     """
-    if not (isinstance(act, tuple) and act and act[0] == "plan"):
+    if not (isinstance(act, tuple) and act):
         return
-    _, tgt, new_stop, pct = act
+    if act[0] == "stop":
+        # the mechanical arms speak ("stop", level). Once the agent arm gained targets and
+        # partials the tuple grew to ("plan", target, stop, pct), and this guard silently
+        # dropped every mechanical stop move — which is why be1r and trail_1r graded
+        # byte-identical, both collapsing to plain canon-with-holds.
+        tgt, new_stop, pct = None, act[1], None
+    elif act[0] == "plan":
+        _, tgt, new_stop, pct = act
+    else:
+        return
     if new_stop is not None:
         state["stop"] = max(stop, new_stop) if s > 0 else min(stop, new_stop)
     if tgt is not None:
