@@ -62,10 +62,37 @@ next input — not just "what did similar days do" but "what did I decide, and w
 cost me". Whether the agent amplifies that curve or wastes it is the open question, and it
 is measurable rather than arguable.
 
-Counter-evidence already on record, so nobody sells this as a certainty: June's sequential
-run found chained memory *hurt* reads (24%) while improving discipline, and the fresh-eyes
-twin beat the incumbent 45% to 38%. Memory has been a net drag once already. Outcome
-visibility is a new input, not a fix for that.
+### What the old agent evidence does NOT bear on (Angus, 27 Jul — correcting this doc)
+
+A first draft cited June's sequential run — chained memory "hurt reads" (24%), fresh-eyes
+beat the incumbent 45–38 — as caution. **That citation was wrong twice and is withdrawn.**
+
+1. **It measures a task that no longer exists.** That agent picked ONE book per day, or stood
+   down. The canon trades *both books, every day, no book choosing, no day forecasting*
+   (`CANON-MECHANICAL.md`). There is no stand-down. An agent's future job is not "which book
+   today" but per-trade judgment inside a book that is always live.
+2. **It scores on a metric this repo has since retired.** `FINDING-standdown-is-capture-
+   negative.md` concluded that read accuracy and dollar capture are ANTI-correlated —
+   "reads is the wrong target" — and that every agent version captured LESS than simply
+   always-trading the champion (21%), with capture falling as the FLAT rate rose (v0.6, 35%
+   flat → 19%; v0.6.1, 78% flat → 11%). Quoting a read score as evidence about money
+   contradicts the finding that killed the stand-down layer.
+
+Angus's framing, which the data supports: the agent *should not be scared to trade* —
+opportunities exist most sessions, and the measured cost of caution was the entire leak
+(wrong-FLATs = 78% of $38,137 regret). None of that era's evidence was gathered with depth
+or CVD available, which is now central to every canon check.
+
+### The honest bar, restated against the CURRENT system
+
+The useful caution is not historical, it is arithmetic. The canon's ladder is already good at
+skipping: across the fit window its rejects run **19% WR / −$73,806** against **46% / +$49,277**
+on what it takes, and `scripts/canon_attribution.py` shows every layer is dollar-negative on
+what it discarded bar one 5-trade cell. So the margin an agent has to beat is a layer that is
+demonstrably competent, on a task where the flow data it would reason from is the same data
+the checks already consume.
+
+That is the measurement to run — not a re-litigation of the book-selection era.
 
 ## The bar for unlocking ACT
 
