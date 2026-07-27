@@ -191,7 +191,14 @@ def main(argv=None) -> int:
                        price_scale=a.price_scale)
     rows = [Row("DTC logon", True, f"{a.host}:{a.port} account={a.account}")]
     try:
-        rows += run_resting(broker, client, account=a.account, entry=a.entry, stop=a.stop)
+        # The two halves need OPPOSITE prices: resting wants an entry that CANNOT fill,
+        # fill wants one that fills instantly. In --fill mode the caller's prices are
+        # marketable, so the resting half parks 100 points lower (inside the price band,
+        # proven on-box 2026-07-27; same-price runs filled the "parked" order and then
+        # failed its cancel check — you can't cancel a completed purchase).
+        rest_off = 100.0 if a.fill else 0.0
+        rows += run_resting(broker, client, account=a.account,
+                            entry=a.entry - rest_off, stop=a.stop - rest_off)
         if a.fill:
             rows += run_fill(broker, client, account=a.account, entry=a.entry, stop=a.stop)
     finally:
