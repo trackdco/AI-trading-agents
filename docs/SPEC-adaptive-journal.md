@@ -142,10 +142,14 @@ Items 1-3 and 5 never touch the trade path. Only item 4 does, and it waits.
 
 ## 5. Open decisions for Angus
 
-1. **The C1/C2 contract.** The frozen desk contract forbids showing an agent outcome/P&L
-   data about its own verdicts (`src/desk/v04.py`, flagged pass-31 and never ruled on).
-   Tier 2 is exactly that data. This spec assumes the answer is now "yes, for learning" —
-   but it is his ruling to make explicitly, not mine to infer from enthusiasm for the idea.
+1. ~~**The C1/C2 contract.**~~ **RULED 2026-07-27 — see `docs/RULING-agent-outcome-visibility.md`.**
+   Agents may SEE outcomes, P&L and counterfactuals, for learning only; they may not ACT on
+   them until Angus judges they beat the mechanical baseline. Tier 2 is authorized. One
+   engineering condition attaches: every outcome record carries a `resolved_ts` and the
+   briefing builder filters on it, so an agent reasoning about day D can never see an
+   outcome resolved at or after its own decision time. Learning from the past is the point;
+   reading your own answers is the failure mode, and in a walk-forward run it would look
+   like brilliance.
 2. **Retention.** The full feature vector per candidate is ~95 columns × ~3 candidates/day.
    Trivial for years. Confirm we keep everything rather than a curated subset — the whole
    point is that the question nobody anticipated is answerable later.
