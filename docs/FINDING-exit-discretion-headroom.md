@@ -96,6 +96,41 @@ where judgment could beat a constant, and it is a measurable claim:
 Anything that does not beat the canon's exit on the same fills is not discretion worth
 unlocking.
 
+## What the agent can actually see — MBP, not MBO (checked 27 Jul)
+
+Angus: *"the agents have MBO data because we configured for it specifically."* Close, and the
+distinction matters for what can be built and validated.
+
+- **Live (Route B) is MBP, per price level.** `src/canon/book.py`: *"Sierra's `.depth` feed is
+  MBP (per-price-level), NOT order-by-order."* `src/canon/ingestor.py` splits the two
+  explicitly — `OrderBook` (MBO, order-by-order) is the **Databento/replay** path;
+  `DepthBook` (MBP levels) is the **Sierra `.depth` file-tail**, which is the live one.
+- The `nq-mbo-archive` bucket name is legacy; `config/live.yaml` records the prefix being
+  *"repointed from the old `mbo` prefix"*. The name says MBO, the contents are Sierra depth.
+- **But the live book does carry `NumOrders` per level.** Not queue position, not order IDs —
+  yet enough to tell one order of 500 from fifty of 10, which behave nothing alike.
+
+**So the AUC 0.69 above is a FLOOR, not a ceiling.** It was computed from 1-minute aggregated
+aggressor delta with no book at all. Angus's argument that an agent sees more than this
+measurement did is correct.
+
+### The `ct` gap, and why it is not urgent
+
+| format | order count kept? |
+|---|---|
+| NY long (`depth_2025/2026`, read by `trade_matrix`) | NO — `ts,side,price,size` |
+| London wide (`depth_london/`) | yes, 20 `_ct_` columns |
+| `depth_london_10_13/` parquet | yes |
+| 2023/24 holdout pull | NO for NY, yes for London |
+
+NY discards exactly the field that separates book structure from book size. The gap is
+**symmetric** though: 2025/26 NY lacks `ct` as well, so re-pulling only the holdout would
+give the field out-of-fit and not in-fit — useless for deriving anything. Using `ct` for NY
+means re-pulling both spans; a deliberate decision, not a mid-run correction.
+
+London already has `ct` across the full history AND the holdout, so whether order count
+carries signal can be answered there first, with no new data.
+
 ## Status
 
 Measurement only. No trading behaviour changed; `RULING-mechanical-only.md` stands. This
