@@ -598,8 +598,13 @@ def cmd_plan(trades, bars, week=None) -> int:
     idx_path = ROOT / "output/intrade_decision_index.csv"
     df = pd.DataFrame(index)
     if idx_path.exists() and len(df):
-        df = (pd.concat([pd.read_csv(idx_path), df], ignore_index=True)
-              .drop_duplicates(["trade_id", "decision_minute"]))
+        try:
+            prev = pd.read_csv(idx_path)
+        except pd.errors.EmptyDataError:   # blank/whitespace-only index from an aborted round
+            prev = None
+        if prev is not None and len(prev):
+            df = (pd.concat([prev, df], ignore_index=True)
+                  .drop_duplicates(["trade_id", "decision_minute"]))
     df.to_csv(idx_path, index=False)
     print(f"{len(trades)} trades -> {total} NEW decision points this round")
     print(f"  briefings + prompts: {BLOBS.relative_to(ROOT)}")

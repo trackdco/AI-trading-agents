@@ -292,10 +292,13 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--span", choices=sorted(SPANS), required=True)
+    ap.add_argument("--sub", default=None,
+                    help="substrate parquet override (e.g. the day-cap build, which is the "
+                         "construction the 13/13 arming canon was actually scored on)")
     a = ap.parse_args()
     spec = SPANS[a.span]
 
-    sub = ROOT / spec["sub"]
+    sub = ROOT / (a.sub or spec["sub"])
     if not sub.exists():
         raise SystemExit(f"missing {sub} — run scripts.build_ny_substrate --span {a.span} first")
     S = pd.read_parquet(sub)
@@ -323,7 +326,8 @@ def main() -> None:
 
     print("computing canon features ...", flush=True)
     F = build_features(S, M, bars, trig_times, spec["depth"])
-    F.to_parquet(ROOT / f"output/ny_matrix_{a.span}.parquet", index=False)
+    F.to_parquet(ROOT / f"output/ny_matrix_{a.span}"
+                 + ("_daycap" if a.sub and "daycap" in a.sub else "") + ".parquet", index=False)
     print(f"\nfeature matrix: {F.shape[0]} rows x {F.shape[1]} cols")
     print(f"  coverage: depth {F.dep_thick.notna().mean()*100:.0f}%, "
           f"d15 {F.d15.notna().mean()*100:.0f}%, "
@@ -331,9 +335,10 @@ def main() -> None:
           f"AGE-fires {F.on_extreme_age.notna().mean()*100:.0f}%")
 
     C = score(F)
-    C.to_parquet(ROOT / f"output/ny_canon_{a.span}.parquet", index=False)
-    report(C, a.span)
-    print(f"\nwrote output/ny_canon_{a.span}.parquet")
+    tag = a.span + ("_daycap" if a.sub and "daycap" in a.sub else "")
+    C.to_parquet(ROOT / f"output/ny_canon_{tag}.parquet", index=False)
+    report(C, tag)
+    print(f"\nwrote output/ny_canon_{tag}.parquet")
 
 
 if __name__ == "__main__":
