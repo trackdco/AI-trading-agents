@@ -484,8 +484,6 @@ download. Send the zip back to Claude.
 """)),
 
         code(*_src('''
-import glob
-
 ny_have  = {os.path.basename(f).split("_")[2] for f in glob.glob(f"{OUTDIR}/depth_ny/nq_depth_*_ny.csv")}
 lon_have = {os.path.basename(f).split(".")[0].split("-")[-1] for f in glob.glob(f"{OUTDIR}/depth_london/*.csv")}
 lon_have = {f"{d[:4]}-{d[4:6]}-{d[6:]}" for d in lon_have if len(d) == 8}
