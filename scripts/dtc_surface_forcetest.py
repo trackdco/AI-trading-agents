@@ -147,10 +147,15 @@ def main(argv=None) -> int:
     ap.add_argument("--fill", action="store_true", help="also run the fill-path B8 checks")
     a = ap.parse_args(argv)
 
-    if "sim" not in a.account.lower():
-        print(f"REFUSED: account {a.account!r} does not look like a SIM account. "
-              "This script only ever runs against SIM — the funded account is armed "
-              "through the spine (docs/PROMOTION-GATE.md), never by a test script.")
+    # Non-production naming, either convention: Sierra's internal sim accounts carry "sim";
+    # Rithmic's paper environment mirrors the real account id with a -TESTnnn suffix (the
+    # box's actual paper account, found 2026-07-27: LFE050-9YSC047M-TEST001). A funded
+    # account carries neither.
+    if not any(tag in a.account.lower() for tag in ("sim", "test")):
+        print(f"REFUSED: account {a.account!r} does not look like a SIM/paper account "
+              "(no 'sim' or 'test' in the name). This script only ever runs against "
+              "SIM/paper — the funded account is armed through the spine "
+              "(docs/PROMOTION-GATE.md), never by a test script.")
         return 2
     if not a.symbol.upper().startswith("MNQ"):
         print(f"REFUSED: symbol {a.symbol!r} is not a micros (MNQ*) contract. "
@@ -161,7 +166,13 @@ def main(argv=None) -> int:
         return 2
 
     client = DTCClient(DTCConfig(host=a.host, port=a.port, trade_account=a.account))
-    if not client.connect():
+    try:
+        logged_on = client.connect()
+    except Exception as e:  # noqa: BLE001 — dead server raises (ConnectionRefused etc.)
+        print(f"LOGON FAILED — {type(e).__name__}: {e}. "
+              f"Is Sierra's DTC server up on {a.host}:{a.port}?")
+        return 1
+    if not logged_on:
         print(f"LOGON FAILED — is Sierra's DTC server up on {a.host}:{a.port}?")
         return 1
     broker = DTCBroker(client=client, symbol=a.symbol, account=a.account)

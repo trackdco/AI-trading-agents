@@ -58,8 +58,10 @@ dtc:                              # ORDER ROUTE — read only by an ARMED run (c
                                   # token authorizes is the account orders route to.
   host: 127.0.0.1                 # Sierra's DTC server (same box)
   port: 11099                     # Sierra default DTC port
-  order_symbol: MNQU26-CME        # micros contract orders route to (canon = micros only;
-                                  #   re-point at the Sept-16 roll, per gate A8 / §E.4)
+  order_symbol: MNQU6.CME         # micros contract orders route to (canon = micros only) —
+                                  #   BOX naming convention (single-digit year, dot tag),
+                                  #   mirrors the live data symbol NQU6.CME observed
+                                  #   2026-07-27; re-point at the Sept-16 roll (A8 / §E.4)
 
 paths:
   journal_dir: output/live                 # verdicts.jsonl + spine/sizing/rejects + decisions.jsonl

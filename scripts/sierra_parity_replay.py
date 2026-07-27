@@ -88,8 +88,19 @@ def measure_feed_lag(scid: Path, depth: Path | None, seconds: int, flush_ms: int
         jf.write(json.dumps(rec) + "\n")
         jf.flush()
 
-    feed = SierraFileFeed(scid, depth, on_lag=_sink, flush_ms=flush_ms)
+    feed = SierraFileFeed(scid, depth, on_lag=None, flush_ms=flush_ms)
     ing = CanonIngestor(book=DepthBook())
+    # PRIME outside the measured window: the FIRST poll ingests the whole existing file, and
+    # every backlog bar "becomes readable" at prime time — lag vs the wall clock there is
+    # file history, not flush latency (a freshly BACKFILLED file makes the median read as
+    # months; observed on-box 2026-07-27). Only appends AFTER priming are live samples.
+    t0 = time.monotonic()
+    feed.poll(ing)
+    primed = len(feed.lag.samples)
+    feed.lag.samples.clear()
+    feed.on_lag = _sink
+    print(f"  primed                : {primed} backlog bars in {time.monotonic() - t0:.1f}s "
+          f"(catch-up read — excluded from lag stats)")
     deadline = time.monotonic() + seconds
     polls = 0
     try:
@@ -102,6 +113,9 @@ def measure_feed_lag(scid: Path, depth: Path | None, seconds: int, flush_ms: int
     s = feed.lag_summary()
     print(f"  polls                 : {polls} over ~{seconds}s (journal: {journal})")
     _print_lag(s)
+    if s.get("n", 0) == 0:
+        print("  NOTE: 0 live bars appended during the window — lengthen --measure-lag "
+              "(a 1-min chart appends at most one closed bar per minute; try 180+).")
     return s
 
 

@@ -167,7 +167,13 @@ def build_armed_broker(cfg: dict, auth, log: logging.Logger):
     client = DTCClient(DTCConfig(host=str(dtc.get("host", "127.0.0.1")),
                                  port=int(dtc.get("port", 11099)),
                                  trade_account=auth.account))
-    if not client.connect():
+    try:
+        logged_on = client.connect()
+    except Exception as e:  # noqa: BLE001 — dead server raises (ConnectionRefused etc.)
+        raise SystemExit(f"ARM REFUSED: DTC logon failed on {dtc.get('host', '127.0.0.1')}:"
+                         f"{dtc.get('port', 11099)} ({type(e).__name__}: {e}) — is Sierra's "
+                         f"DTC server up?") from e
+    if not logged_on:
         raise SystemExit(f"ARM REFUSED: DTC logon failed on {dtc.get('host', '127.0.0.1')}:"
                          f"{dtc.get('port', 11099)} — is Sierra's DTC server up?")
     log.info("DTC order route up | %s:%s | account=%s | symbol=%s",
