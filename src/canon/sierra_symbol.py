@@ -111,11 +111,34 @@ def next_roll(d) -> tuple[date, str, str]:
 
 
 # --------------------------------------------------------------------------- file resolution
+def _naming_stems(contract: str, suffix: str) -> list[str]:
+    """The box-naming variants seen for one contract, ordered, deduped — e.g. for NQU26 with
+    suffix -CME: NQU26-CME, NQU6.CME, NQU26.CME, NQU6-CME. Sierra's file naming varies BY BOX
+    and even by file class on the SAME install (Pat's VPS wrote NQU26-CME.scid for months,
+    then a re-opened chart started NQU6.CME.scid — the box's FOURTH naming casualty,
+    2026-07-27 pre-London)."""
+    single = contract[:-2] + contract[-1]               # e.g. NQU6 (single-digit year)
+    tag = suffix.lstrip("-.")                           # e.g. CME
+    stems = []
+    for s in (f"{contract}{suffix}", f"{single}.{tag}", f"{contract}.{tag}", f"{single}-{tag}"):
+        if s not in stems:
+            stems.append(s)
+    return stems
+
+
 def resolve_scid_path(data_dir, d, root: str = "NQ", suffix: str = "-CME"):
-    """Path to Sierra's intraday file for the front month on `d`, e.g.
-    <data_dir>/NQU26-CME.scid. `suffix` is the exchange/service tag Sierra appends (box: -CME)."""
+    """Path to Sierra's intraday file for the front month on `d`. Evidence-based, same policy
+    as resolve_depth_path: among the naming variants that EXIST, the most recently WRITTEN
+    file wins — the live chart is whichever file Sierra is writing right now, and a stale
+    twin under the old naming must never shadow it. Falls back to the default pattern when
+    nothing exists (fresh box)."""
     from pathlib import Path
-    return Path(data_dir) / f"{front_month_symbol(d, root)}{suffix}.scid"
+    candidates = [Path(data_dir) / f"{s}.scid"
+                  for s in _naming_stems(front_month_symbol(d, root), suffix)]
+    existing = [c for c in candidates if c.exists()]
+    if existing:
+        return max(existing, key=lambda c: c.stat().st_mtime)
+    return candidates[0]
 
 
 def resolve_depth_path(data_dir, d, day=None, root: str = "NQ", suffix: str = "-CME"):
@@ -131,14 +154,7 @@ def resolve_depth_path(data_dir, d, day=None, root: str = "NQ", suffix: str = "-
     convention — tonight's file will appear under it); failing that, the default pattern."""
     from pathlib import Path
     day = str(_as_date(day if day is not None else d))
-    contract = front_month_symbol(d, root)              # e.g. NQU26
-    single = contract[:-2] + contract[-1]               # e.g. NQU6 (single-digit year)
-    tag = suffix.lstrip("-.")                           # e.g. CME
-    stems = []                                          # ordered, deduped naming variants
-    for s in (f"{contract}{suffix}", f"{single}.{tag}", f"{contract}.{tag}",
-              f"{single}-{tag}"):
-        if s not in stems:
-            stems.append(s)
+    stems = _naming_stems(front_month_symbol(d, root), suffix)
     mdd = Path(data_dir) / "MarketDepthData"
     candidates = [mdd / f"{s}.{day}.depth" for s in stems]
     for c in candidates:

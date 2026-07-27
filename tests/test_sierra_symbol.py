@@ -111,3 +111,29 @@ def test_roll_tagger_marks_first_post_roll_bar():
     b = tg.tag(d16)
     assert b == {"contract": "NQZ26", "roll": True}         # crossed the roll -> tagged once
     assert tg.tag(d16) == {"contract": "NQZ26", "roll": False}   # already rolled, no re-tag
+
+
+def test_resolve_scid_path_prefers_the_freshest_existing_variant(tmp_path):
+    """The box's FOURTH naming casualty (2026-07-27 pre-London): a re-opened chart started
+    writing NQU6.CME.scid while the resolver pointed at the months-old NQU26-CME.scid,
+    frozen at Friday. The LIVE file is whichever Sierra is writing NOW — pick the freshest
+    existing variant, never let a stale twin shadow it."""
+    import os
+    import time
+    old = tmp_path / "NQU26-CME.scid"
+    new = tmp_path / "NQU6.CME.scid"
+    old.write_bytes(b"x" * 10)
+    new.write_bytes(b"y" * 10)
+    past = time.time() - 3 * 86400
+    os.utime(old, (past, past))                          # old naming: last written Friday
+    got = resolve_scid_path(tmp_path, date(2026, 7, 27))
+    assert got.name == "NQU6.CME.scid"
+
+    os.utime(old, None)                                  # old naming freshens again -> wins
+    os.utime(new, (past, past))
+    assert resolve_scid_path(tmp_path, date(2026, 7, 27)).name == "NQU26-CME.scid"
+
+    # nothing exists (fresh box): fall back to the default pattern
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    assert resolve_scid_path(empty, date(2026, 7, 27)).name == "NQU26-CME.scid"
