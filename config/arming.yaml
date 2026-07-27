@@ -1,0 +1,7 @@
+# Two-party arming authorization (src/live/arming.py) — issued by Angus 2026-07-27.
+# token_sha256 is the SHA-256 fingerprint of the arming phrase; the phrase itself is
+# NEVER in this repo. armed_sha is the certified commit this authorization covers —
+# canon_run --arm refuses if HEAD differs from it by anything except this file.
+token_sha256: 2c8929ca43e34a5b90a848d6da59508846536f60ca34a2e0c20758ff2dadc6b1
+armed_sha: 8150b9526a9e310b91283703453f87e96bd9364d
+account: LFE050-9YSC047M-TEST001
