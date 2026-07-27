@@ -49,3 +49,54 @@ the complete Feb–Jul 2026 CVD/footprint history.
   give-back / entry-miss loser pools from winners.
 - Unlike order-book depth, CVD is **causally replayable** and is a legitimate
   engine-feature candidate (not human-study-only).
+
+---
+
+## 2023/2024 HOLDOUT TAPE (added 2026-07-27)
+
+Six monthly files for the pre-registered out-of-regime holdout
+(`docs/HOLDOUT-2023-24-PREREGISTRATION.md`, seal `f4e17f17…`, 128 days):
+
+| file | rows | ET days | volume |
+|---|---|---|---|
+| `footprint_holdout_2023-07.parquet` | 563,192 | 26 | 5,719,612 |
+| `footprint_holdout_2023-09.parquet` | 619,941 | 26 | 5,833,598 |
+| `footprint_holdout_2023-11.parquet` | 533,380 | 26 | 6,174,403 |
+| `footprint_holdout_2024-03.parquet` | 623,699 | 25 | 5,836,644 |
+| `footprint_holdout_2024-04.parquet` | 822,741 | 27 | 7,384,510 |
+| `footprint_holdout_2024-10.parquet` | 847,165 | 28 | 5,470,783 |
+
+Identical schema and dtypes to the fit-window files. Pulled and condensed by
+`notebooks/colab_holdout_pull.ipynb`; per-day fetch record in
+`MANIFEST_holdout_2023_24.csv` (128 days, **zero** with no data).
+
+**Window is 18:00 ET (prior day) → 11:00 ET**, not the full session — the span every CVD
+feature reaches back over (`cvd_ON` / `cvd_ASIA` / `cvd_LON` / `cvd_PM`) plus the forward
+room the in-trade layer needs. That is why density is ~74% of the fit-window files
+(811-838 minutes/day vs 1107-1135): 17h of 23h, exactly. The remaining difference is real —
+2023/24 NQ traded 195-273k contracts/day against 400-420k in 2025/26, at roughly half the
+index level.
+
+ET day count exceeds the 128 sealed days (158) because each day's window opens at 18:00 ET
+the previous evening, so Sundays appear. Every sealed day is present; verified by
+`tests/test_holdout_cvd_integrity.py`.
+
+### Known issue in the FIT-window files — not the holdout
+
+`footprint_q3_2025.parquet` and `footprint_q4_2025.parquet` carry calendar-spread prints at
+prices 200–493 that the band-clean removed from the 2026 files:
+
+| file | off-band rows | volume | share |
+|---|---|---|---|
+| `footprint_q3_2025` | 71,516 | 795,211 | 1.90% |
+| `footprint_q4_2025` | 55,345 | 539,335 | ~1.3% |
+| jan/feb-mar/apr/may-jul 2026 | 0 | 0 | clean |
+
+Impact measured: per-minute delta is unchanged on 82% of minutes, and where it moves the
+median shift is ~40 contracts against a typical daily net delta of ~2,050 — about **2%**.
+Noise-level, not distorting.
+
+**NOT fixed, deliberately.** Cleaning it changes the CVD features, which changes the canon's
+checks, which changes the arming reference — a Tier-1 change (`PROMOTION-GATE` §E). Post-
+launch, behind freeze → OOS → sign-off. The holdout files above are clean by construction
+and are asserted so by test.
