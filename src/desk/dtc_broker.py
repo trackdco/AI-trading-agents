@@ -95,8 +95,9 @@ class DTCBroker:
             "entry": self._coalesce(entry_st.get("Price1"),
                                     entry_st.get("AverageFillPrice"), b["entry"]),
             "stop": self._coalesce(stop_st.get("Price1"), stop_st.get("Price2"), b["stop"]),
-            # order quantity, not filled quantity — a resting entry has FilledQuantity 0/null
-            "size": int(self._coalesce(entry_st.get("Quantity"),
+            # order quantity, not filled quantity — a resting entry has FilledQuantity 0/null.
+            # Real Sierra's ORDER_UPDATE names it OrderQuantity (observed 2026-07-27).
+            "size": int(self._coalesce(entry_st.get("OrderQuantity"), entry_st.get("Quantity"),
                                        entry_st.get("FilledQuantity"), b["size"])),
             "side": b["side"], "account": b["account"],
             "stop_resting": self._working(stop_st),

@@ -225,7 +225,12 @@ class DTCClient:
         self._send(SUBMIT_NEW_SINGLE_ORDER, {                        # parent: the limit entry
             "Symbol": symbol, "TradeAccount": self.cfg.trade_account,
             "ClientOrderID": entry_oid, "OrderType": ORDER_TYPE_LIMIT,
-            "BuySell": 1 if buy else 2, "Price1": entry, "Quantity": qty, "IsAutomated": True})
+            "BuySell": 1 if buy else 2, "Price1": entry, "Quantity": qty, "IsAutomated": True,
+            # Sierra's attached-order contract: the parent DECLARES itself a parent, or the
+            # child's ParentTriggerClientOrderID is ignored and the stop goes to market as an
+            # INDEPENDENT working order (observed live 2026-07-27: stop OPEN while the entry
+            # was rejected — a naked stop, the exact opposite of a bracket).
+            "IsParentOrder": 1})
         self._send(SUBMIT_NEW_SINGLE_ORDER, {                        # child: protective stop (opp side)
             "Symbol": symbol, "TradeAccount": self.cfg.trade_account,
             "ClientOrderID": stop_oid, "OrderType": ORDER_TYPE_STOP,

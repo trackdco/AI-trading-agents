@@ -21,7 +21,7 @@ from src.desk.dtc_client import DTCClient, DTCConfig
 _VALID_SUBMIT_FIELDS = {
     "Symbol", "TradeAccount", "ClientOrderID", "OrderType", "BuySell", "Price1", "Price2",
     "Quantity", "TimeInForce", "GoodTillDateTime", "IsAutomated", "OpenOrClose",
-    "ParentTriggerClientOrderID", "FreeFormText",
+    "ParentTriggerClientOrderID", "FreeFormText", "IsParentOrder",
 }
 
 
