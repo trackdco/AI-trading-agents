@@ -94,12 +94,15 @@ def run_resting(broker: DTCBroker, client: DTCClient, *, account: str,
     # OrderStatus=9 REJECTED and nothing printed why).
     rows.append(Row("raw server state: entry", True, f"{client.order_state.get(ref)}"))
     rows.append(Row("raw server state: stop", True, f"{client.order_state.get(stop_oid)}"))
-    new_entry = entry - 1.0                                # further from market, still safe
-    client.modify_order_price(ref, new_entry, qty=1)
-    broker._pump()
-    got = client.order_state.get(ref, {}).get("Price1")
-    rows.append(Row("CANCEL_REPLACE: entry re-priced in place", got == new_entry,
-                    f"Price1={got} expected {new_entry}"))
+    # B8's real primitive: move the PROTECTIVE STOP in place (BE move / trail). The live
+    # engine never re-prices an entry (cancel-if-runs CANCELS it), so that's what we test —
+    # and through the BROKER, which owns the price scaling (the old direct client call
+    # bypassed it and sent an unscaled price; found on-box 2026-07-27, read back 286.25).
+    new_stop = stop - 1.0                                  # further from market, still safe
+    broker.modify_stop(ref, new_stop)
+    st2 = broker.order_status(ref)
+    rows.append(Row("CANCEL_REPLACE: protective stop re-priced in place",
+                    st2.get("stop") == new_stop, f"stop={st2.get('stop')} expected {new_stop}"))
     broker.cancel_order(ref)
     dead_entry = client.order_state.get(ref, {}).get("OrderStatus") == D.ORDER_STATUS_CANCELED
     rows.append(Row("B7 cancel: entry reads back CANCELED", dead_entry,
@@ -125,9 +128,9 @@ def run_fill(broker: DTCBroker, client: DTCClient, *, account: str,
                     f"{st}"))
     new_stop = stop + 1.0                                  # a BE-style move toward entry
     broker.modify_stop(ref, new_stop)
-    got = client.order_state.get(stop_oid, {}).get("Price1")
+    got = broker.order_status(ref).get("stop")             # display units (broker unscales)
     rows.append(Row("B8 modify_stop: stop re-priced IN PLACE", got == new_stop,
-                    f"Price1={got} expected {new_stop}"))
+                    f"stop={got} expected {new_stop}"))
     oid = broker.close_partial(account, 1)
     part_filled = bool(oid) and _wait_fill(client, oid)
     rows.append(Row("B8 close_partial(1): reducing market order filled", part_filled,
