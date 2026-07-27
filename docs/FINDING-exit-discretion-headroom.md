@@ -114,6 +114,33 @@ distinction matters for what can be built and validated.
 aggressor delta with no book at all. Angus's argument that an agent sees more than this
 measurement did is correct.
 
+### HARD LIMIT: MBP-10 sees ~5 points of book, so "structural level" reads are impossible
+
+Angus, 27 Jul, correcting a proposed test: *"you cant see that because you have mbp 10 data
+not mbo."* Correct, and the magnitude matters. Measured on real snapshots
+(`depth_2026/nq_depth_2026-02-02_ny.csv`, 150 snapshots):
+
+| | points |
+|---|---|
+| bid side depth | median **2.25** |
+| ask side depth | median **2.25** |
+| full book width | median **5.25** (max 18.5) |
+
+His worked example — *"theres a massive heatmap level 40 points away, im gonna trail my
+stops and target there"* — is **~8x beyond what MBP-10 can represent**. Any attempt to test
+"did price run to the big resting level ahead" on this data is fitting noise, and a test to
+that effect was abandoned rather than run.
+
+This also reframes the canon's own depth checks: observed `dep_wall_above_d` runs at a
+median 3.50 pts from entry. `WALLSZ` / `D` read immediate microstructure AT THE TOUCH. They
+are not structural-level reads and should never be described as such.
+
+**Consequence for the discretion design:** the level-selection half of Angus's judgment
+(pick a further structural target) cannot be validated on any historical data we hold. Only
+the flow half can. Either the agent is given a level source that is not the MBP-10 book
+(volume profile / prior-session structure from bars, which we DO have), or that half stays
+unvalidated until a richer book feed is recorded.
+
 ### The `ct` gap, and why it is not urgent
 
 | format | order count kept? |
@@ -130,6 +157,25 @@ means re-pulling both spans; a deliberate decision, not a mid-run correction.
 
 London already has `ct` across the full history AND the holdout, so whether order count
 carries signal can be answered there first, with no new data.
+
+## Why R-expansion, not win rate — Angus's framing, priced
+
+*"our win rate is already around 50%, im far more worried about taking 50% win rate 2rr to
+50% win rate average 3rr then taking it from 50 to 70% at the same average r."*
+
+Canon as it stands: 46% WR, avg winner +2.14R, avg loser −0.99R, **expectancy +0.455R/trade**.
+
+| route | expectancy | vs now | what it needs | evidence it is reachable |
+|---|---|---|---|---|
+| **A** 50% WR @ 3.0R | +1.006R | 2.21x | winners 1.41x bigger | median MFE 5.08R available vs 1.82R realized |
+| **B** 70% WR @ 2.14R | +1.198R | 2.63x | win rate 1.51x higher | none — see below |
+
+Stated honestly: **B is worth marginally more if achievable.** The case for A is not that it
+pays better, it is that it is the only one with demonstrated headroom. Against B: the canon's
+skip layer already discards at 19% WR / −$73,806, every attribution layer is dollar-negative
+on what it rejected, and the 26-Jul bad-PA campaign put 18 candidate entry filters through
+the bar with ZERO surviving out of sample. One route has measured room; the other has a
+record of failed attempts.
 
 ## Status
 
