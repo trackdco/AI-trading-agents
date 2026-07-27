@@ -170,12 +170,24 @@ Canon as it stands: 46% WR, avg winner +2.14R, avg loser −0.99R, **expectancy 
 | **A** 50% WR @ 3.0R | +1.006R | 2.21x | winners 1.41x bigger | median MFE 5.08R available vs 1.82R realized |
 | **B** 70% WR @ 2.14R | +1.198R | 2.63x | win rate 1.51x higher | none — see below |
 
-Stated honestly: **B is worth marginally more if achievable.** The case for A is not that it
-pays better, it is that it is the only one with demonstrated headroom. Against B: the canon's
-skip layer already discards at 19% WR / −$73,806, every attribution layer is dollar-negative
-on what it rejected, and the 26-Jul bad-PA campaign put 18 candidate entry filters through
-the bar with ZERO surviving out of sample. One route has measured room; the other has a
-record of failed attempts.
+Stated honestly: **B is worth marginally more if achievable.** But ceiling is the wrong
+comparison, and Angus's correction is the better frame:
+
+> *"route b has been exhausted and far more optimised than route a has been, so although
+> the ceiling is higher, the gap is wider."*
+
+**The canon IS the accumulated output of route B.** Every campaign in this repo — E-2, the
+don't-trade filter, the 5-check ladder, Q-tier, the bad-PA sweep, the golden and London
+rediscoveries — has been grinding entry quality and win rate. That work is largely spent:
+the skip layer already discards at 19% WR / −$73,806, every attribution layer is
+dollar-negative on what it rejected, and 18 candidate entry filters cleared the in-sample
+bar with ZERO surviving out of sample.
+
+Route A has had **almost nothing pointed at it**. Exits are still a 2R floor plus a managed
+tail, and the first eight trailing policies ever tested against them are in this document.
+
+So the comparison that matters is not ceiling-vs-ceiling, it is **unclaimed headroom per
+unit of remaining effort** — and on that, A is wide open and B is nearly closed.
 
 ## Status
 
