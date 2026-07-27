@@ -14,6 +14,7 @@ where US and UK daylight-saving disagree must produce different UTC offsets.
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -106,6 +107,27 @@ def test_us_uk_dst_divergence_week(nbfn):
 def test_window_offsets(nbfn, day, tz, hm, expect):
     start, _ = nbfn["utc_window"](day, tz, hm, (23, 0))
     assert start.endswith(expect)
+
+
+def test_ny_depth_window_covers_every_canon_fill():
+    """The NY depth window was trimmed 11:00 -> 10:30 (Angus, golden = 09:40-10:15).
+
+    Depth is read AT the fill minute, so the window must outlast the latest fill the canon
+    has ever taken. Guards against trimming it below a real fill to save data.
+    """
+    src = "\n".join("".join(c["source"]) for c in json.loads(NB.read_text())["cells"]
+                    if c["cell_type"] == "code")
+    m = re.search(r'"ny":\s*\(NY,\s*\((\d+),\s*(\d+)\),\s*\((\d+),\s*(\d+)\)\)', src)
+    assert m, "could not find the ny depth window in the notebook"
+    start_min = int(m.group(1)) * 60 + int(m.group(2))
+    end_min = int(m.group(3)) * 60 + int(m.group(4))
+
+    book = pd.read_parquet(ROOT / "output/canon_book.parquet")
+    fills = book.loc[book["size"] > 0, "fillhm"]
+    assert start_min <= fills.min(), f"window starts {start_min} after earliest fill {fills.min()}"
+    assert end_min >= fills.max(), f"window ends {end_min} before latest fill {fills.max()}"
+    # the whole candidate universe, not just what got taken
+    assert end_min >= book["fillhm"].max(), "window ends before the latest candidate fill"
 
 
 def test_trades_window_spans_overnight_without_overlap(nbfn):

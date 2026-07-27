@@ -106,8 +106,8 @@ print("authenticated")
         md(*_src("""
 ## 2 — Configuration
 
-`DRY_RUN = True` costs nothing and spends nothing — it only prices the pull. Leave it on for
-the first pass, read the estimate, then set it to `False`.
+Three toggles for which artifacts to build, and `LIMIT_DAYS` for a smoke test. Edit anything
+here and **re-run this cell** before continuing — editing alone changes nothing.
 """)),
 
         code(*_src(f"""
@@ -120,7 +120,9 @@ PULL_NY_DEPTH     = True    # canon pre + golden books
 PULL_LONDON_DEPTH = True    # london canon book
 PULL_TRADES       = True    # CVD / footprint - feeds checks F, C, Tc, BIGFD, LONSLOPE
 
-DRY_RUN = True              # True = price it only, no data pulled, nothing billed
+# Smoke-test knob: set to 3 to pull only the first 3 days and check the plumbing,
+# then set back to 0 and re-run - already-downloaded days are skipped, not re-fetched.
+LIMIT_DAYS = 0              # 0 = all {len(days)} sealed days
 
 OUTDIR = "/content/holdout_out"
 ZIPOUT = "/content/nq_holdout_2023_24_condensed.zip"
@@ -138,8 +140,14 @@ LON = ZoneInfo("Europe/London")
 UTC = ZoneInfo("UTC")
 
 # (name, tz, start, end) - localized per day, so DST is handled by the calendar not by hand.
+# NY ends 10:30, not 11:00 (ANGUS 2026-07-27): golden window is 09:40-10:15 and depth is only
+# ever read AT the fill minute. Verified against output/canon_book.parquet - pre fills run
+# 08:01-09:23, gold 09:41-10:12, and ZERO fills land at or after 10:15 anywhere in the
+# universe including rejected candidates. 10:30 leaves 18 min of headroom and cuts ~17% off
+# the MBP-10 bill. Trades below still run to 11:00 - the in-trade layer reads forward flow
+# (fw_3) up to 10 minutes AFTER the fill, so the tape must outlast the book.
 DEPTH_WINDOWS = {{
-    "ny":     (NY,  (8, 0), (11, 0)),    # pre-market + golden
+    "ny":     (NY,  (8, 0), (10, 30)),   # pre-market + golden (09:40-10:15) + headroom
     "london": (LON, (8, 0), (10, 0)),    # first 2h London
 }}
 
@@ -213,68 +221,10 @@ print("note the March gap: US is already on DST, UK is not - hence the differing
 ''')),
 
         md(*_src("""
-## 4 — Cost estimate
+## 4 — The three condensers
 
-Prices three representative days and extrapolates. Metadata calls are free. **Read this before
-setting `DRY_RUN = False`.**
-""")),
-
-        code(*_src('''
-def probe_cost(days_sample):
-    rows = []
-    for day in days_sample:
-        if PULL_NY_DEPTH:
-            s, e = utc_window(day, *DEPTH_WINDOWS["ny"])
-            rows.append(("mbp-10 ny", day, s, e, "mbp-10"))
-        if PULL_LONDON_DEPTH:
-            s, e = utc_window(day, *DEPTH_WINDOWS["london"])
-            rows.append(("mbp-10 london", day, s, e, "mbp-10"))
-        if PULL_TRADES:
-            s, e = trades_window(day)
-            rows.append(("trades", day, s, e, "trades"))
-
-    agg = {}
-    for label, day, s, e, schema in rows:
-        try:
-            c = client.metadata.get_cost(dataset=DATASET, symbols=[SYMBOL], stype_in=STYPE,
-                                         schema=schema, start=s, end=e,
-                                         mode="historical-streaming")
-            b = client.metadata.get_billable_size(dataset=DATASET, symbols=[SYMBOL],
-                                                  stype_in=STYPE, schema=schema,
-                                                  start=s, end=e, mode="historical-streaming")
-            a = agg.setdefault(label, {"cost": 0.0, "bytes": 0, "n": 0})
-            a["cost"] += float(c); a["bytes"] += int(b); a["n"] += 1
-        except Exception as ex:
-            print(f"  probe failed {label} {day}: {ex}")
-    return agg
-
-
-probe_days = DAYS[:: max(1, len(DAYS) // 3)][:3]
-print(f"pricing {probe_days} ...\\n")
-agg = probe_cost(probe_days)
-
-total_cost = total_gb = 0.0
-print(f"{'stream':<16}{'$/day':>10}{'GB/day':>10}{'$ x %d days' % len(DAYS):>16}{'GB total':>12}")
-print("-" * 64)
-for label, a in agg.items():
-    per_day_cost = a["cost"] / a["n"]
-    per_day_gb = a["bytes"] / a["n"] / 1e9
-    print(f"{label:<16}{per_day_cost:>10.3f}{per_day_gb:>10.3f}"
-          f"{per_day_cost * len(DAYS):>16.2f}{per_day_gb * len(DAYS):>12.1f}")
-    total_cost += per_day_cost * len(DAYS)
-    total_gb += per_day_gb * len(DAYS)
-print("-" * 64)
-print(f"{'ESTIMATED TOTAL':<16}{'':>10}{'':>10}{total_cost:>16.2f}{total_gb:>12.1f}")
-print("\\nEstimate from 3 probe days extrapolated across the sample - volatile days cost more.")
-print("Condensed output on disk will be ~0.15 MB/day regardless; the GB above is transfer only.")
-''')),
-
-        md(*_src("""
-## 5 — Pull and condense
-
-One pass. Each day is fetched, condensed to its committable form, and the raw frame is dropped
-before the next request. Already-written days are skipped, so a disconnect costs only the day
-in flight.
+Definitions only, nothing runs. Each turns one raw Databento frame into the exact shape its
+consumer in the repo expects — the formats are pinned by `tests/test_colab_holdout_notebook.py`.
 """)),
 
         code(*_src('''
@@ -389,108 +339,119 @@ def condense_trades(df, day):
     return g, dropped
 ''')),
 
+        md(*_src("""
+## 5 — Pull and condense
+
+The long cell. Each day is fetched, condensed immediately, and the raw frame freed before the
+next request — so ~150 KB/day lands on disk instead of ~1 GB. Days already written are skipped,
+so a disconnect costs only the day in flight: just re-run this cell.
+
+Budget roughly 2-4 hours for the full sample. Set `LIMIT_DAYS = 3` in step 2 first if you want
+to check the plumbing before committing to the whole run.
+""")),
+
         code(*_src('''
-if DRY_RUN:
-    print("DRY_RUN is True - nothing pulled. Read the estimate above, then set DRY_RUN = False.")
-else:
-    manifest, fp_by_month, t0 = [], {}, time.time()
+todo = DAYS[:LIMIT_DAYS] if LIMIT_DAYS else DAYS
+manifest, fp_by_month, t0 = [], {}, time.time()
+print(f"pulling {len(todo)} of {len(DAYS)} sealed days\\n")
 
-    for n, day in enumerate(DAYS, 1):
-        ny_path  = f"{OUTDIR}/depth_ny/nq_depth_{day}_ny.csv"
-        lon_path = f"{OUTDIR}/depth_london/glbx-mdp3-{day.replace('-', '')}.mbp-10_condensed.csv"
-        rec = {"day": day, "ny_rows": 0, "london_rows": 0, "fp_rows": 0, "dropped_pct": np.nan}
-        el = time.time() - t0
-        print(f"[{n:>3}/{len(DAYS)}] {day}  ({el/60:.1f}m elapsed)", flush=True)
+for n, day in enumerate(todo, 1):
+    ny_path  = f"{OUTDIR}/depth_ny/nq_depth_{day}_ny.csv"
+    lon_path = f"{OUTDIR}/depth_london/glbx-mdp3-{day.replace('-', '')}.mbp-10_condensed.csv"
+    rec = {"day": day, "ny_rows": 0, "london_rows": 0, "fp_rows": 0, "dropped_pct": np.nan}
+    el = time.time() - t0
+    print(f"[{n:>3}/{len(DAYS)}] {day}  ({el/60:.1f}m elapsed)", flush=True)
 
-        # ---- NY depth ----
-        if PULL_NY_DEPTH and not os.path.exists(ny_path):
-            try:
-                s, e = utc_window(day, *DEPTH_WINDOWS["ny"])
-                df = fetch("mbp-10", s, e).to_df()
-                out = condense_ny(df, day) if len(df) else None
-                del df; gc.collect()
-                if out is not None:
-                    out.to_csv(ny_path, index=False)
-                    rec["ny_rows"] = len(out)
-                    print(f"    ny      {len(out):>7,} rows -> {os.path.basename(ny_path)}")
-                else:
-                    print("    ny      no data (holiday?)")
-                del out; gc.collect()
-            except Exception as ex:
-                print(f"    ny      FAILED: {type(ex).__name__}: {ex}")
-        elif os.path.exists(ny_path):
-            rec["ny_rows"] = -1
-            print("    ny      skip (exists)")
-
-        # ---- London depth ----
-        if PULL_LONDON_DEPTH and not os.path.exists(lon_path):
-            try:
-                s, e = utc_window(day, *DEPTH_WINDOWS["london"])
-                df = fetch("mbp-10", s, e).to_df()
-                out = condense_london(df, day) if len(df) else None
-                del df; gc.collect()
-                if out is not None:
-                    out.to_csv(lon_path, index=False)
-                    rec["london_rows"] = len(out)
-                    print(f"    london  {len(out):>7,} rows -> {os.path.basename(lon_path)}")
-                else:
-                    print("    london  no data (holiday?)")
-                del out; gc.collect()
-            except Exception as ex:
-                print(f"    london  FAILED: {type(ex).__name__}: {ex}")
-        elif os.path.exists(lon_path):
-            rec["london_rows"] = -1
-            print("    london  skip (exists)")
-
-        # ---- trades / footprint ----
-        if PULL_TRADES:
-            mo = day[:7]
-            mo_path = f"{OUTDIR}/cvd/footprint_holdout_{mo}.parquet"
-            done = os.path.exists(mo_path) and mo not in fp_by_month
-            if done:
-                print("    trades  skip (month file exists)")
+    # ---- NY depth ----
+    if PULL_NY_DEPTH and not os.path.exists(ny_path):
+        try:
+            s, e = utc_window(day, *DEPTH_WINDOWS["ny"])
+            df = fetch("mbp-10", s, e).to_df()
+            out = condense_ny(df, day) if len(df) else None
+            del df; gc.collect()
+            if out is not None:
+                out.to_csv(ny_path, index=False)
+                rec["ny_rows"] = len(out)
+                print(f"    ny      {len(out):>7,} rows -> {os.path.basename(ny_path)}")
             else:
-                try:
-                    s, e = trades_window(day)
-                    df = fetch("trades", s, e).to_df()
-                    out, dropped = condense_trades(df, day) if len(df) else (None, 0.0)
-                    del df; gc.collect()
-                    if out is not None:
-                        fp_by_month.setdefault(mo, []).append(out)
-                        rec["fp_rows"] = len(out)
-                        rec["dropped_pct"] = round(dropped * 100, 3)
-                        print(f"    trades  {len(out):>7,} minute-rows "
-                              f"(band-dropped {dropped*100:.2f}%)")
-                    else:
-                        print("    trades  no data")
-                    del out; gc.collect()
-                except Exception as ex:
-                    print(f"    trades  FAILED: {type(ex).__name__}: {ex}")
+                print("    ny      no data (holiday?)")
+            del out; gc.collect()
+        except Exception as ex:
+            print(f"    ny      FAILED: {type(ex).__name__}: {ex}")
+    elif os.path.exists(ny_path):
+        rec["ny_rows"] = -1
+        print("    ny      skip (exists)")
 
-        manifest.append(rec)
-        time.sleep(0.5)   # be polite to the rate limiter
+    # ---- London depth ----
+    if PULL_LONDON_DEPTH and not os.path.exists(lon_path):
+        try:
+            s, e = utc_window(day, *DEPTH_WINDOWS["london"])
+            df = fetch("mbp-10", s, e).to_df()
+            out = condense_london(df, day) if len(df) else None
+            del df; gc.collect()
+            if out is not None:
+                out.to_csv(lon_path, index=False)
+                rec["london_rows"] = len(out)
+                print(f"    london  {len(out):>7,} rows -> {os.path.basename(lon_path)}")
+            else:
+                print("    london  no data (holiday?)")
+            del out; gc.collect()
+        except Exception as ex:
+            print(f"    london  FAILED: {type(ex).__name__}: {ex}")
+    elif os.path.exists(lon_path):
+        rec["london_rows"] = -1
+        print("    london  skip (exists)")
 
-    # ---- flush monthly footprint files ----
-    for mo, parts in fp_by_month.items():
-        p = f"{OUTDIR}/cvd/footprint_holdout_{mo}.parquet"
-        allp = pd.concat(parts, ignore_index=True)
-        if os.path.exists(p):
-            allp = pd.concat([pd.read_parquet(p), allp], ignore_index=True)
-        allp = (allp.groupby(["ts_minute", "price", "side"], as_index=False)
-                    .agg(volume=("volume", "sum"), trades=("trades", "sum")))
-        allp["volume"] = allp["volume"].astype("int64")
-        allp["trades"] = allp["trades"].astype("int64")
-        allp.to_parquet(p, index=False)
-        print(f"wrote {os.path.basename(p)}: {len(allp):,} rows")
+    # ---- trades / footprint ----
+    if PULL_TRADES:
+        mo = day[:7]
+        mo_path = f"{OUTDIR}/cvd/footprint_holdout_{mo}.parquet"
+        done = os.path.exists(mo_path) and mo not in fp_by_month
+        if done:
+            print("    trades  skip (month file exists)")
+        else:
+            try:
+                s, e = trades_window(day)
+                df = fetch("trades", s, e).to_df()
+                out, dropped = condense_trades(df, day) if len(df) else (None, 0.0)
+                del df; gc.collect()
+                if out is not None:
+                    fp_by_month.setdefault(mo, []).append(out)
+                    rec["fp_rows"] = len(out)
+                    rec["dropped_pct"] = round(dropped * 100, 3)
+                    print(f"    trades  {len(out):>7,} minute-rows "
+                          f"(band-dropped {dropped*100:.2f}%)")
+                else:
+                    print("    trades  no data")
+                del out; gc.collect()
+            except Exception as ex:
+                print(f"    trades  FAILED: {type(ex).__name__}: {ex}")
 
-    pd.DataFrame(manifest).to_csv(f"{OUTDIR}/MANIFEST.csv", index=False)
-    print(f"\\ndone in {(time.time()-t0)/60:.1f} min")
+    manifest.append(rec)
+    time.sleep(0.5)   # be polite to the rate limiter
+
+# ---- flush monthly footprint files ----
+for mo, parts in fp_by_month.items():
+    p = f"{OUTDIR}/cvd/footprint_holdout_{mo}.parquet"
+    allp = pd.concat(parts, ignore_index=True)
+    if os.path.exists(p):
+        allp = pd.concat([pd.read_parquet(p), allp], ignore_index=True)
+    allp = (allp.groupby(["ts_minute", "price", "side"], as_index=False)
+                .agg(volume=("volume", "sum"), trades=("trades", "sum")))
+    allp["volume"] = allp["volume"].astype("int64")
+    allp["trades"] = allp["trades"].astype("int64")
+    allp.to_parquet(p, index=False)
+    print(f"wrote {os.path.basename(p)}: {len(allp):,} rows")
+
+pd.DataFrame(manifest).to_csv(f"{OUTDIR}/MANIFEST.csv", index=False)
+print(f"\\ndone in {(time.time()-t0)/60:.1f} min")
 ''')),
 
         md(*_src("""
-## 6 — Verify and zip
+## 6 — Verify, zip, download
 
-Coverage check first — a silently missing day is worse than a loud failure. Then zip.
+Coverage check first — a silently missing day is worse than a loud failure — then zip and
+download. Send the zip back to Claude.
 """)),
 
         code(*_src('''
@@ -521,9 +482,7 @@ for f in fps:
 size_mb = sum(os.path.getsize(f) for f in glob.glob(f"{OUTDIR}/**/*", recursive=True)
               if os.path.isfile(f)) / 1e6
 print(f"\\ntotal condensed on disk: {size_mb:.1f} MB")
-''')),
 
-        code(*_src('''
 with zipfile.ZipFile(ZIPOUT, "w", zipfile.ZIP_DEFLATED) as z:
     for f in glob.glob(f"{OUTDIR}/**/*", recursive=True):
         if os.path.isfile(f):
