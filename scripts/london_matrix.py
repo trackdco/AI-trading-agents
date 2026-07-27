@@ -4,34 +4,71 @@ pre-fill feature family EXCEPT depth (heatmap not yet purchased). Zero lookahead
 all windows end strictly before the fill; session context is overnight-so-far only
 (no US pre-market exists at London fill time).
 
+`--span holdout` runs the identical feature loop over the sealed 2023/24 substrate. The only
+things that change are the file paths: the tape comes from the holdout footprint parquets
+folded to minutes (fp_minutes covers the fit window only) and the triggers from the holdout
+detection. Every window, threshold and formula below is untouched.
+
     python -m scripts.london_matrix
+    python -m scripts.london_matrix --span holdout
 """
+import argparse
 import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.score_canon_span import minute_tape  # noqa: E402
 from src.engine.indicators import daily_vwap
 NY = "America/New_York"
 
+SPANS = {
+    "fit": {
+        "sub": "output/london_substrate.parquet",
+        "tape": "output/fp_minutes.parquet",
+        "bars": [("data/reference/nq_1m_master.parquet", "2025-05-20"),
+                 ("data/reference/nq_1m_feb_jul2026.parquet", None)],
+        "trigs": "output/triggers_london.csv",
+        "out": "output/london_matrix.parquet",
+        "years": (2025, 2026),
+    },
+    "holdout": {
+        "sub": "output/london_substrate_holdout.parquet",
+        "tape": "data/reference/cvd/footprint_holdout_*.parquet",
+        "bars": [("data/reference/nq_1m_master.parquet", "2023-05-01")],
+        "trigs": "output/triggers_london_holdout.csv",
+        "out": "output/london_matrix_holdout.parquet",
+        "years": (2023, 2024),
+    },
+}
+
 
 def main():
-    S = pd.read_parquet("output/london_substrate.parquet")
-    M = pd.read_parquet("output/fp_minutes.parquet")
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--span", choices=sorted(SPANS), default="fit")
+    a = ap.parse_args()
+    spec = SPANS[a.span]
+
+    S = pd.read_parquet(spec["sub"])
+    M = minute_tape({"tape": spec["tape"]})
     M.index = pd.DatetimeIndex(M.index)
     M = M.sort_index()
 
-    mb = pd.read_parquet("data/reference/nq_1m_master.parquet")
-    mb = mb[mb.ts_event >= pd.Timestamp("2025-05-20", tz=NY)]
-    fb = pd.read_parquet("data/reference/nq_1m_feb_jul2026.parquet").drop(columns=["roll"], errors="ignore")
-    bars = (pd.concat([mb, fb], ignore_index=True)
+    frames = []
+    for path, since in spec["bars"]:
+        b = pd.read_parquet(path).drop(columns=["roll"], errors="ignore")
+        if since:
+            b = b[b.ts_event >= pd.Timestamp(since, tz=NY)]
+        frames.append(b)
+    bars = (pd.concat(frames, ignore_index=True)
             .drop_duplicates("ts_event").sort_values("ts_event").reset_index(drop=True))
     ind = daily_vwap(bars, bands=[1, 2])
     bars = bars.assign(mi=bars.ts_event.dt.tz_convert(NY), vw=ind["vwap"].values,
                        sd1u=ind["upper_1"].values, sd1d=ind["lower_1"].values)
     B = bars.set_index("mi").sort_index()
 
-    trig = pd.read_csv("output/triggers_london.csv")
+    trig = pd.read_csv(spec["trigs"])
     tts = pd.to_datetime(trig.ts, utc=True, format="mixed").dt.tz_convert(NY)
     tby = {d: g.sort_values().values for d, g in tts.groupby(tts.dt.strftime("%Y-%m-%d"))}
 
@@ -109,9 +146,9 @@ def main():
     out["win"] = out.dollars > 0
     out["mo"] = out.day.str[:7]
     out["win_et"] = out.wgroup
-    out.to_parquet("output/london_matrix.parquet")
-    print(f"wrote output/london_matrix.parquet: {len(out)} trades x {X.shape[1]} features")
-    for yr in (2025, 2026):
+    out.to_parquet(spec["out"])
+    print(f"wrote {spec['out']}: {len(out)} trades x {X.shape[1]} features")
+    for yr in spec["years"]:
         d = out[out.yr == yr]
         print(f"  {yr}: n={len(d)} WR {(d.dollars>0).mean()*100:.0f}% raw ${d.dollars.sum():+,.0f}")
 

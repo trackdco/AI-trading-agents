@@ -8,18 +8,30 @@ scripts/trade_matrix.py: thickness, imbalance, spread, support/resist, wall
 above/below (max-size visible level) distance+size, 5-min thickness delta.
 Adds dep_* columns to output/london_matrix.parquet in place.
 
+`--span holdout` points the same loader at data/reference/depth_london_2023_24 (identical
+Databento condensed layout, identical column names) and the holdout matrix. Nothing about
+the depth semantics changes between spans.
+
     python -m scripts.london_depth
+    python -m scripts.london_depth --span holdout
 """
+import argparse
 import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 NY = "America/New_York"
-DIR = Path("data/reference/depth_london")
+
+SPANS = {
+    "fit": {"dir": "data/reference/depth_london",
+            "matrix": "output/london_matrix.parquet", "years": (2025, 2026)},
+    "holdout": {"dir": "data/reference/depth_london_2023_24",
+                "matrix": "output/london_matrix_holdout.parquet", "years": (2023, 2024)},
+}
 
 
-def load_day(day: str):
+def load_day(day: str, DIR: Path):
     """day 'YYYY-MM-DD' -> long frame (ts, side, price, size) or None."""
     f = DIR / f"glbx-mdp3-{day.replace('-', '')}.mbp-10_condensed.csv"
     if not f.exists():
@@ -67,13 +79,20 @@ def depth_at(dep, minute, entry, direction):
 
 
 def main():
-    L = pd.read_parquet("output/london_matrix.parquet")
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--span", choices=sorted(SPANS), default="fit")
+    a = ap.parse_args()
+    spec = SPANS[a.span]
+    DIR = Path(spec["dir"])
+
+    L = pd.read_parquet(spec["matrix"])
     L = L.drop(columns=[c for c in L.columns if c.startswith("dep_")], errors="ignore")
     cache = {}
     rows = []
     for i, t in enumerate(L.itertuples()):
         if t.day not in cache:
-            cache[t.day] = load_day(t.day)
+            cache[t.day] = load_day(t.day, DIR)
         dep = cache[t.day]
         if dep is None:
             rows.append({})
@@ -84,14 +103,14 @@ def main():
             print(f"  {i+1}/{len(L)}", flush=True)
     X = pd.DataFrame(rows, index=L.index)
     out = pd.concat([L, X], axis=1)
-    out.to_parquet("output/london_matrix.parquet")
+    out.to_parquet(spec["matrix"])
     cov = out.dep_thick.notna().sum()
-    print(f"wrote output/london_matrix.parquet: {len(out)} trades, depth on {cov} "
+    print(f"wrote {spec['matrix']}: {len(out)} trades, depth on {cov} "
           f"({cov/len(out)*100:.0f}%), {X.shape[1]} dep_ cols")
     long = out.direction == "long"
     D = pd.Series(np.where(long, out.dep_wall_above_d.notna(), out.dep_wall_below_d.notna()),
                   index=out.index).astype(float).where(out.dep_thick.notna())
-    for yr in (2025, 2026):
+    for yr in spec["years"]:
         d = out[(out.yr == yr) & D.notna()]
         dd = D[d.index]
         a, b = d[dd == 1], d[dd == 0]

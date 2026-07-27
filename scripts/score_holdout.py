@@ -34,7 +34,7 @@ from src.canon.features import (
     bp5opp,
     depth_at,
     lon_slope_d,
-    on_extreme_age_trade,
+    on_extreme_age_day,
     tape_features,
     vwap_geometry,
 )
@@ -131,8 +131,12 @@ def build_features(S: pd.DataFrame, M: pd.DataFrame, bars: pd.DataFrame,
             r.update(vwap_geometry(pre_bars.reset_index(), entry, direction))
             r.update(badpa_features(pre_bars, upto, entry, fill,
                                     trigger_times=trig_times.get(day)))
-            sess0 = (fill - pd.Timedelta(hours=18)).normalize() + pd.Timedelta(hours=18)
-            r["on_extreme_age"] = on_extreme_age_trade(pre_bars.loc[sess0:], entry, fill)
+        # GOLD's AGE input is on_extreme_age_DAY over the COMPLETED 18:00-08:00 overnight
+        # tape — NOT on_extreme_age_trade, which is London's per-trade wall-clock form.
+        # src/canon/features.py warns they disagree on 60/60 days; calling the wrong one
+        # made AGE fire at 14% here against 47% in fit, and that was the bug.
+        hm_s = sday_m.index.hour * 60 + sday_m.index.minute
+        r["on_extreme_age"] = on_extreme_age_day(sday_m[(hm_s >= 1080) | (hm_s < 480)])
 
         # --- 15-minute tape momentum: Tp (d15) and Tc (d15_conf) ---
         w15 = upto[upto.index >= fill - pd.Timedelta(minutes=15)]

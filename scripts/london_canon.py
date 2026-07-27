@@ -40,14 +40,29 @@ W/FAR collapse (r=0.86), ROOM band edges, DST-week behavior.
 Inputs: output/london_matrix.parquet (needs london_substrate + london_matrix +
 london_depth), output/fp_minutes.parquet. Writes output/london_canon_book.parquet.
 
+`--span holdout` scores the sealed 2023/24 matrix through the SAME build_london — every
+threshold above is 2025-frozen and none is re-derived here, which is the whole point of the
+holdout. The only substitution is the minute tape build_london reads for the opp5 clean-tape
+bit: fp_minutes covers the fit window only.
+
     python -m scripts.london_canon
+    python -m scripts.london_canon --span holdout
 """
+import argparse
 import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 NY = "America/New_York"
+
+SPANS = {
+    "fit": {"matrix": "output/london_matrix.parquet", "tape": "output/fp_minutes.parquet",
+            "out": "output/london_canon_book.parquet", "years": (2025, 2026)},
+    "holdout": {"matrix": "output/london_matrix_holdout.parquet",
+                "tape": "data/reference/cvd/footprint_holdout_*.parquet",
+                "out": "output/london_canon_book_holdout.parquet", "years": (2023, 2024)},
+}
 
 
 def build_london(L, fp=None):
@@ -101,10 +116,18 @@ def build_london(L, fp=None):
 
 
 def main():
-    M = pd.read_parquet("output/london_matrix.parquet")
-    C = build_london(M)
-    C.to_parquet("output/london_canon_book.parquet")
-    for yr in (2025, 2026):
+    from scripts.score_canon_span import minute_tape
+
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--span", choices=sorted(SPANS), default="fit")
+    a = ap.parse_args()
+    spec = SPANS[a.span]
+
+    M = pd.read_parquet(spec["matrix"])
+    C = build_london(M, fp=minute_tape({"tape": spec["tape"]}))
+    C.to_parquet(spec["out"])
+    for yr in spec["years"]:
         d = C[C.yr == yr]
         t = d[d["size"] > 0]
         cum = t.groupby("day").pl.sum().cumsum()
@@ -115,7 +138,7 @@ def main():
               f"WR {(t.dollars>0).mean()*100:.0f}%, PF {gw/max(gl,1):.2f}, maxDD ${dd:,.0f})")
     mo = C.groupby(C.day.str[:7]).pl.sum()
     print(f"green months {int((mo>0).sum())}/{len(mo)}, worst ${mo.min():+,.0f}")
-    print(f"\nwrote output/london_canon_book.parquet ({len(C)} rows)")
+    print(f"\nwrote {spec['out']} ({len(C)} rows)")
 
 
 if __name__ == "__main__":
