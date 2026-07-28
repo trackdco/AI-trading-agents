@@ -2,19 +2,33 @@
 """NY candidate substrate — ONE forward path, run identically over the fit window and the
 sealed 2023/24 holdout.
 
-WHY THIS EXISTS. `output/trade_matrix.parquet` (the 970-trade universe the armed canon was
-scored on) cannot be reproduced by any single engine config. Its own stop distribution runs
-smoothly down to 0.25pt — so the engine's `min_stop_points` floor was inactive when those
-rows were made — yet re-running with the floor OFF matches it *worse* (57%) than leaving
-today's floor ON (81%). Both facts are only consistent if the file was accumulated across
-weeks as the config evolved, which is exactly what a research artifact assembled from three
-merged upstream parquets (all since deleted) looks like. It is not a reproducible target.
+WHY THIS EXISTS. The holdout has to run on the substrate the armed canon was actually scored
+on (`output/trade_matrix.parquet`, 970 rows), or it is not testing the canon. Finding that
+construction took several wrong turns, recorded here so they are not repeated:
 
-So the holdout is not validated against it. It is validated the way Angus framed it — *"to
-see if our mechanical strategy fits out of fit you have to trade exactly the same as our
-mechanical canon"* — by running THIS code over BOTH spans and comparing fit to holdout. Same
-detector, same engine, same config, same canon. Any pipeline quirk that inflates or deflates
-the holdout inflates or deflates the fit number identically, so the comparison survives it.
+  * Chasing an EXACT fill match was the wrong target and sent me the wrong way. v2 triggers
+    matched 81% of fills against v1's 55%, so v2 looked right — but trade_matrix was
+    assembled over weeks from three now-deleted upstream parquets, so no single config
+    reproduces it fill-for-fill and a fill-match score is mostly noise.
+  * The RISK DISTRIBUTION is the honest signal, because Layer 0 gates on it and therefore the
+    whole ladder downstream is shaped by it. Measured on 2025-06 (trade_matrix: n=78,
+    sub-7pt 33%, median 10.88):
+
+        v1, no floor    n=80  sub-7pt 36%  median 11.25   <- this one
+        v1, floor 4     n=79          30%         11.75
+        v2, no floor    n=83          57%          6.25
+        v2, floor 7     n=79          18%         12.75
+
+    v1 is `output/triggers_hist2326_ob.csv`, whose 16,783 `unclassified` rows `load()` drops.
+    v2 reclassified every one of them into A/B/B2, so nothing is dropped — and those 16,783
+    are overwhelmingly tiny-stop rejection blocks. Building on v2 flooded the substrate with
+    candidates Layer 0 then killed: 1,017 raw -> 530 surviving, against the canon's
+    970 -> 713. A ladder fed a different population produces a different book, which is why
+    the v2 fit column came out 9/13 green instead of the canon's 13/13.
+
+Both spans are then run through THIS code so any residual pipeline quirk moves the fit number
+and the holdout number together — *"to see if our mechanical strategy fits out of fit you have
+to trade exactly the same as our mechanical canon"* (Angus).
 
 THE STOP GATE. The canon's Layer 0 is a 7-60pt hard gate applied in `src/canon/scorer.py`,
 downstream of here. Whether the ENGINE should also refuse sub-7pt triggers is not cosmetic:
@@ -149,6 +163,11 @@ def main() -> None:
     ap.add_argument("--span", choices=sorted(SEGMENTS), required=True)
     ap.add_argument("--stop-gate", choices=["on", "off"], default="off",
                     help="engine-level min_stop_points; Layer 0 gates 7-60pt regardless")
+    ap.add_argument("--triggers", choices=["v1", "v2"], default="v2",
+                    help="v1 = triggers_hist2326_ob.csv, whose 16,783 'unclassified' rows "
+                         "load() drops. That drop is what the canon's substrate was built "
+                         "on: v1 reproduces its risk distribution (sub-7pt 36% vs 33%, "
+                         "median 11.25 vs 10.88 on 2025-06) where v2 floods it (57%, 6.25).")
     ap.add_argument("--cap-mode", choices=["section", "day"], default="section",
                     help="2 per section (Angus 28-Jul ruling), or 2 shared across 08:00-10:15")
     ap.add_argument("--out", default=None)
@@ -163,6 +182,8 @@ def main() -> None:
     sealed = set(pd.read_csv(SEALED, dtype=str)["day"]) if a.span == "holdout" else None
     parts = []
     for months, barfile, trigfiles in SEGMENTS[a.span]:
+        if a.triggers == "v1":
+            trigfiles = [t.replace("_ob_v2.csv", "_ob.csv") for t in trigfiles]
         if months is None:
             months = sorted({d[:7] for d in sealed})
         bars = pd.read_parquet(ROOT / barfile).drop(columns=["roll"], errors="ignore")
@@ -177,7 +198,7 @@ def main() -> None:
     S["yr"] = S.day.astype(str).str[:4].astype(int)
     S["risk"] = (S.entry - S.stop).abs()
 
-    suffix = "" if a.cap_mode == "section" else "_daycap"
+    suffix = ("" if a.cap_mode == "section" else "_daycap") + ("_v1" if a.triggers == "v1" else "")
     out = Path(a.out) if a.out else ROOT / f"output/ny_substrate_{a.span}{suffix}.parquet"
     S.to_parquet(out, index=False)
     print(f"\nwrote {out.relative_to(ROOT)} — {len(S)} candidate fills on {S.day.nunique()} days")
