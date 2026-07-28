@@ -109,8 +109,8 @@ def day_outcomes(args) -> list[dict]:
 
 
 def run(trigs: pd.DataFrame, procs: int, lookback: int = LOOKBACK_DAYS) -> pd.DataFrame:
-    ts = pd.to_datetime(trigs.ts, format="mixed", utc=False)
-    ts = ts.dt.tz_convert(NY) if ts.dt.tz is not None else ts.dt.tz_localize(NY)
+    # trigger ts are ET ISO strings whose UTC offset flips across DST — parse via UTC
+    ts = pd.to_datetime(trigs.ts, format="mixed", utc=True).dt.tz_convert(NY)
     trigs = trigs.assign(day=ts.dt.strftime("%Y-%m-%d"))
     jobs = [(day, g.drop(columns=["day"]).to_dict("records"), lookback)
             for day, g in trigs.groupby("day", sort=True)]

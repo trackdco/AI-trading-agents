@@ -135,8 +135,8 @@ def walk_one(bars: dict, t: dict) -> dict:
 
 
 def run(trigs: pd.DataFrame, bars: pd.DataFrame) -> pd.DataFrame:
-    ts = pd.to_datetime(trigs.ts, format="mixed", utc=False)
-    ts = ts.dt.tz_convert(NY) if ts.dt.tz is not None else ts.dt.tz_localize(NY)
+    # trigger ts are ET ISO strings whose UTC offset flips across DST — parse via UTC
+    ts = pd.to_datetime(trigs.ts, format="mixed", utc=True).dt.tz_convert(NY)
     trigs = trigs.assign(ts_et=ts, day=ts.dt.strftime("%Y-%m-%d"),
                          trig_hm=ts.dt.hour * 60 + ts.dt.minute)
     bday = bars.mi.dt.strftime("%Y-%m-%d")
