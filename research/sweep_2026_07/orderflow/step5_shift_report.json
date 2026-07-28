@@ -1,0 +1,93 @@
+{
+ "cvd_5": {
+  "n": 216,
+  "shift1_differs": 212,
+  "leaky15_differs": 215,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "cvd_15": {
+  "n": 216,
+  "shift1_differs": 216,
+  "leaky15_differs": 216,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "cvd_30": {
+  "n": 216,
+  "shift1_differs": 214,
+  "leaky15_differs": 216,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "cvd_norm_15": {
+  "n": 216,
+  "shift1_differs": 216,
+  "leaky15_differs": 216,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "delta_div_15": {
+  "n": 216,
+  "shift1_differs": 29,
+  "leaky15_differs": 78,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "fp_imb_15": {
+  "n": 216,
+  "shift1_differs": 216,
+  "leaky15_differs": 216,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "absorp_15": {
+  "n": 216,
+  "shift1_differs": 214,
+  "leaky15_differs": 216,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "stack_bid": {
+  "n": 216,
+  "shift1_differs": 154,
+  "leaky15_differs": 166,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "stack_ask": {
+  "n": 216,
+  "shift1_differs": 176,
+  "leaky15_differs": 168,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "vol_15": {
+  "n": 216,
+  "shift1_differs": 213,
+  "leaky15_differs": 216,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "vol_30": {
+  "n": 216,
+  "shift1_differs": 216,
+  "leaky15_differs": 216,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "abs_cvd_15": {
+  "n": 216,
+  "shift1_differs": 216,
+  "leaky15_differs": 216,
+  "verdict": "PASS",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ },
+ "two_sided_share_30": {
+  "n": 216,
+  "shift1_differs": 0,
+  "leaky15_differs": 0,
+  "verdict": "DEGENERATE",
+  "knowable_at": "fill_min:00 (inputs end at close of fill_min-1; margin 0 s, see header)"
+ }
+}
