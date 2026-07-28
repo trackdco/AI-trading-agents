@@ -36,8 +36,8 @@ NY = "America/New_York"
 
 def load_census() -> pd.DataFrame:
     T = pd.read_parquet(ROOT / "output/l0_triggers_fit.parquet")
-    ts = pd.to_datetime(T.ts, format="mixed", utc=False)
-    ts = ts.dt.tz_convert(NY) if ts.dt.tz is not None else ts.dt.tz_localize(NY)
+    # trigger ts are ET ISO strings whose UTC offset changes across DST — parse via UTC
+    ts = pd.to_datetime(T.ts, format="mixed", utc=True).dt.tz_convert(NY)
     return T.assign(ts_et=ts, day=ts.dt.strftime("%Y-%m-%d"))
 
 
