@@ -103,3 +103,20 @@ signature — leakage would make a twin agree suspiciously with strict, and both
 >70%. Both control twins move the data hard; the shift test's purpose is served.
 Book extension over Jul 13-15 REJECTED by Brake (recorded in Amendment 1). STOPPED after these
 four per instruction: baseline ruling first, then H0. Nothing scored.
+
+## 2026-07-28 · Three pre-ruling checks (Brake) — band fixed, stamps hold, drift flag raised
+C1: zero-tol containment 207/216; the 8 new misses are all EXACTLY one tick outside the stamped
+bar (rounding predicts ~50% outside; observed 3.7%) — FLOORED stands, tolerance convention
+recorded, exclusion set unchanged. C2: the +/-25 band was a chosen constant, so it was swept at
++/-10/+/-50 with the materiality line stated BEFORE the numbers (>5% of trades changing bin =>
+free parameter): worst bin movement 4/215 = 1.9%, band registered FIXED; the +/-25 rebuild
+reproduced committed v2 exactly. C3 is the finding: the IS/OOS halves are exchangeable for all
+normalized/signed features (KS p 0.41-0.82) but NOT for level features — absorp_15 (p=0.000,
+OOS tercile occupancy 63/22/15), vol_15 (0.001, 15/32/53), vol_30 (0.000, 12/28/60), and both
+binary stacks (+17pp present-rate, p 0.008-0.012). v1-vs-v2 KS attribution shows the drift
+lives in the RAW tape (market: price 21k->30k inflates point ranges; 2026 volume ~+50%), not in
+the cleaning. IS-calibrated terciles would mis-bin OOS on exactly those five features —
+manufacturing or destroying an edge on their own — so their Q1 scoring is BLOCKED in Amendment
+2 pending Brake's remedy ruling; the seven exchangeable features are unaffected. Also recorded:
+fp_imb_15 == cvd_norm_15/2 exactly — counts as ONE test for family-wise pricing. No outcomes
+examined; still stopped.

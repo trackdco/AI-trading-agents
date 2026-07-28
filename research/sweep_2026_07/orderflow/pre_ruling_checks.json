@@ -1,0 +1,425 @@
+{
+ "check1_tol0.25": {
+  "res": {
+   "stamped": 215,
+   "prior_only": 1,
+   "next_only": 0,
+   "both_adjacent_only": 0,
+   "nowhere": 0,
+   "nobar": 0
+  },
+  "exceptions": [
+   [
+    "2026-03-13",
+    "2026-03-13 12:31:00+00:00",
+    24673.0,
+    "prior_only"
+   ]
+  ]
+ },
+ "check1_tol0.0": {
+  "res": {
+   "stamped": 207,
+   "prior_only": 8,
+   "next_only": 0,
+   "both_adjacent_only": 1,
+   "nowhere": 0,
+   "nobar": 0
+  },
+  "exceptions": [
+   [
+    "2025-08-26",
+    "2025-08-26 12:01:00+00:00",
+    23467.0,
+    "prior_only"
+   ],
+   [
+    "2025-09-01",
+    "2025-09-01 12:16:00+00:00",
+    23470.0,
+    "prior_only"
+   ],
+   [
+    "2025-09-15",
+    "2025-09-15 12:35:00+00:00",
+    24152.75,
+    "prior_only"
+   ],
+   [
+    "2025-10-03",
+    "2025-10-03 12:42:00+00:00",
+    25119.5,
+    "prior_only"
+   ],
+   [
+    "2025-12-04",
+    "2025-12-04 13:01:00+00:00",
+    25657.5,
+    "both_adjacent_only"
+   ],
+   [
+    "2025-12-24",
+    "2025-12-24 13:04:00+00:00",
+    25807.0,
+    "prior_only"
+   ],
+   [
+    "2026-03-13",
+    "2026-03-13 12:31:00+00:00",
+    24673.0,
+    "prior_only"
+   ],
+   [
+    "2026-06-17",
+    "2026-06-17 12:11:00+00:00",
+    30464.75,
+    "prior_only"
+   ],
+   [
+    "2026-06-19",
+    "2026-06-19 12:01:00+00:00",
+    30594.0,
+    "prior_only"
+   ]
+  ]
+ },
+ "check2": {
+  "drops": {
+   "10": {
+    "rows": 493955,
+    "vol": 2183009
+   },
+   "25": {
+    "rows": 458178,
+    "vol": 2075486
+   },
+   "50": {
+    "rows": 402885,
+    "vol": 1933338
+   }
+  },
+  "per_feature": {
+   "cvd_5": {
+    "10": {
+     "changed": 4,
+     "bin_changed": 0,
+     "med_absdelta": 3.5
+    },
+    "50": {
+     "changed": 11,
+     "bin_changed": 0,
+     "med_absdelta": 2.0
+    }
+   },
+   "cvd_15": {
+    "10": {
+     "changed": 7,
+     "bin_changed": 0,
+     "med_absdelta": 3.0
+    },
+    "50": {
+     "changed": 12,
+     "bin_changed": 0,
+     "med_absdelta": 2.5
+    }
+   },
+   "cvd_30": {
+    "10": {
+     "changed": 12,
+     "bin_changed": 0,
+     "med_absdelta": 3.0
+    },
+    "50": {
+     "changed": 17,
+     "bin_changed": 2,
+     "med_absdelta": 2.0
+    }
+   },
+   "cvd_norm_15": {
+    "10": {
+     "changed": 7,
+     "bin_changed": 0,
+     "med_absdelta": 0.001808014885619491
+    },
+    "50": {
+     "changed": 12,
+     "bin_changed": 0,
+     "med_absdelta": 0.0005817611465623804
+    }
+   },
+   "delta_div_15": {
+    "10": {
+     "changed": 0,
+     "bin_changed": 0,
+     "med_absdelta": 0.0
+    },
+    "50": {
+     "changed": 2,
+     "bin_changed": 2,
+     "med_absdelta": 1.0
+    }
+   },
+   "fp_imb_15": {
+    "10": {
+     "changed": 7,
+     "bin_changed": 0,
+     "med_absdelta": 0.0009040074428097178
+    },
+    "50": {
+     "changed": 12,
+     "bin_changed": 0,
+     "med_absdelta": 0.00029088057328119366
+    }
+   },
+   "absorp_15": {
+    "10": {
+     "changed": 7,
+     "bin_changed": 2,
+     "med_absdelta": 0.24460431654676285
+    },
+    "50": {
+     "changed": 12,
+     "bin_changed": 0,
+     "med_absdelta": 0.10250344963531788
+    }
+   },
+   "stack_bid_bin": {
+    "10": {
+     "changed": 2,
+     "bin_changed": 2,
+     "med_absdelta": 1.0
+    },
+    "50": {
+     "changed": 0,
+     "bin_changed": 0,
+     "med_absdelta": 0.0
+    }
+   },
+   "stack_ask_bin": {
+    "10": {
+     "changed": 1,
+     "bin_changed": 1,
+     "med_absdelta": 1.0
+    },
+    "50": {
+     "changed": 1,
+     "bin_changed": 1,
+     "med_absdelta": 1.0
+    }
+   },
+   "vol_15": {
+    "10": {
+     "changed": 7,
+     "bin_changed": 0,
+     "med_absdelta": 17.0
+    },
+    "50": {
+     "changed": 12,
+     "bin_changed": 0,
+     "med_absdelta": 3.0
+    }
+   },
+   "vol_30": {
+    "10": {
+     "changed": 13,
+     "bin_changed": 4,
+     "med_absdelta": 8.0
+    },
+    "50": {
+     "changed": 18,
+     "bin_changed": 0,
+     "med_absdelta": 3.0
+    }
+   },
+   "abs_cvd_15": {
+    "10": {
+     "changed": 7,
+     "bin_changed": 2,
+     "med_absdelta": 3.0
+    },
+    "50": {
+     "changed": 12,
+     "bin_changed": 1,
+     "med_absdelta": 2.5
+    }
+   }
+  },
+  "worst_bin_changed": 4
+ },
+ "check3": {
+  "cvd_5": {
+   "kind": "cont",
+   "med_is": -10.0,
+   "med_oos": 12.0,
+   "ks": 0.11232260297680863,
+   "p_perm": 0.4607696151924038,
+   "ks_v1": 0.10946694357909312,
+   "oos_terc_occ": [
+    27.102803738317753,
+    35.51401869158878,
+    37.38317757009346
+   ],
+   "clean_changed_is": 64,
+   "clean_changed_oos": 8,
+   "clean_med_absdelta_is": 2.5,
+   "clean_med_absdelta_oos": 3.0
+  },
+  "cvd_15": {
+   "kind": "cont",
+   "med_is": -11.0,
+   "med_oos": -8.0,
+   "ks": 0.08705434406368995,
+   "p_perm": 0.7996001999000499,
+   "ks_v1": 0.07788161993769471,
+   "oos_terc_occ": [
+    32.71028037383177,
+    27.102803738317753,
+    40.18691588785047
+   ],
+   "clean_changed_is": 86,
+   "clean_changed_oos": 9,
+   "clean_med_absdelta_is": 4.0,
+   "clean_med_absdelta_oos": 3.0
+  },
+  "cvd_30": {
+   "kind": "cont",
+   "med_is": -18.0,
+   "med_oos": -36.0,
+   "ks": 0.12400484596746275,
+   "p_perm": 0.4142928535732134,
+   "ks_v1": 0.10548632744894426,
+   "oos_terc_occ": [
+    39.25233644859813,
+    28.971962616822427,
+    31.775700934579437
+   ],
+   "clean_changed_is": 89,
+   "clean_changed_oos": 12,
+   "clean_med_absdelta_is": 4.0,
+   "clean_med_absdelta_oos": 2.5
+  },
+  "cvd_norm_15": {
+   "kind": "cont",
+   "med_is": -0.0050481774226608,
+   "med_oos": -0.0016017084890549,
+   "ks": 0.1008999653859467,
+   "p_perm": 0.6531734132933533,
+   "ks_v1": 0.1008999653859467,
+   "oos_terc_occ": [
+    26.168224299065418,
+    36.44859813084112,
+    37.38317757009346
+   ],
+   "clean_changed_is": 93,
+   "clean_changed_oos": 10,
+   "clean_med_absdelta_is": 0.0015830680547190973,
+   "clean_med_absdelta_oos": 0.001358070116220243
+  },
+  "delta_div_15": {
+   "kind": "binary",
+   "rate_is": 0.18518518518518517,
+   "rate_oos": 0.21495327102803738,
+   "absdiff": 0.029768085842852204,
+   "p_perm": 0.6291854072963519
+  },
+  "fp_imb_15": {
+   "kind": "cont",
+   "med_is": -0.0025240887113304,
+   "med_oos": -0.0008008542445274,
+   "ks": 0.1008999653859467,
+   "p_perm": 0.6521739130434783,
+   "ks_v1": 0.1008999653859467,
+   "oos_terc_occ": [
+    26.168224299065418,
+    36.44859813084112,
+    37.38317757009346
+   ],
+   "clean_changed_is": 93,
+   "clean_changed_oos": 10,
+   "clean_med_absdelta_is": 0.0007915340273595001,
+   "clean_med_absdelta_oos": 0.0006790350581101501
+  },
+  "absorp_15": {
+   "kind": "cont",
+   "med_is": 95.6986301369863,
+   "med_oos": 73.94174757281553,
+   "ks": 0.32113187954309447,
+   "p_perm": 0.0004997501249375312,
+   "ks_v1": 0.3303911388023537,
+   "oos_terc_occ": [
+    62.616822429906534,
+    22.429906542056074,
+    14.953271028037381
+   ],
+   "clean_changed_is": 93,
+   "clean_changed_oos": 10,
+   "clean_med_absdelta_is": 0.26229508196719564,
+   "clean_med_absdelta_oos": 0.13247863247863378
+  },
+  "stack_bid_bin": {
+   "kind": "binary",
+   "rate_is": 0.5555555555555556,
+   "rate_oos": 0.7289719626168224,
+   "absdiff": 0.17341640706126682,
+   "p_perm": 0.01249375312343828
+  },
+  "stack_ask_bin": {
+   "kind": "binary",
+   "rate_is": 0.6111111111111112,
+   "rate_oos": 0.7850467289719626,
+   "absdiff": 0.17393561786085143,
+   "p_perm": 0.00849575212393803
+  },
+  "vol_15": {
+   "kind": "cont",
+   "med_is": 2093.5,
+   "med_oos": 3114.0,
+   "ks": 0.30399792315680163,
+   "p_perm": 0.0009995002498750624,
+   "ks_v1": 0.28547940463828314,
+   "oos_terc_occ": [
+    14.953271028037381,
+    31.775700934579437,
+    53.271028037383175
+   ],
+   "clean_changed_is": 93,
+   "clean_changed_oos": 10,
+   "clean_med_absdelta_is": 6.0,
+   "clean_med_absdelta_oos": 4.0
+  },
+  "vol_30": {
+   "kind": "cont",
+   "med_is": 3958.5,
+   "med_oos": 5811.0,
+   "ks": 0.30295950155763246,
+   "p_perm": 0.0004997501249375312,
+   "ks_v1": 0.28444098303911386,
+   "oos_terc_occ": [
+    12.149532710280374,
+    28.037383177570092,
+    59.813084112149525
+   ],
+   "clean_changed_is": 98,
+   "clean_changed_oos": 12,
+   "clean_med_absdelta_is": 10.5,
+   "clean_med_absdelta_oos": 3.5
+  },
+  "abs_cvd_15": {
+   "kind": "cont",
+   "med_is": 90.5,
+   "med_oos": 108.0,
+   "ks": 0.08471789546555908,
+   "p_perm": 0.8185907046476761,
+   "ks_v1": 0.09787123572170303,
+   "oos_terc_occ": [
+    31.775700934579437,
+    34.57943925233645,
+    33.64485981308411
+   ],
+   "clean_changed_is": 85,
+   "clean_changed_oos": 9,
+   "clean_med_absdelta_is": 4.0,
+   "clean_med_absdelta_oos": 3.0
+  }
+ }
+}
