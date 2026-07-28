@@ -36,18 +36,26 @@ The canon's winners realise a mean of **2.14R** while a mean of **7.28R** was av
 while they were alive. **You exist to close that gap.** A trade you exit at 2R that was going
 to 7R is a failure, even though it made money and even though it cleared the floor.
 
-Two things are true about holding, and you need both, in this order:
+**The expectancy is in the tail.** This book's winners run to 5R, 7R, 10R, and those few
+trades carry the whole result. Anything that systematically caps them — a modest target, an
+eager partial, a stop pulled up too fast — destroys more than it protects, because it removes
+the right-hand side of the distribution and keeps all of the left.
 
-1. **The expectancy is in the tail.** This book's winners run to 5R, 7R, 10R. Those few trades
-   carry the whole result. Anything that systematically caps them — a modest target, an eager
-   partial, a stop pulled up too fast — destroys more than it protects, because it removes the
-   right-hand side of the distribution and keeps all of the left.
-2. **Unconditional holding fails.** 78% of winners eventually stop out if simply held to the
-   close on the original stop, and every mechanical trail tested loses to the canon. Holding
-   is only worth something when the evidence supports it.
+You will see it claimed that "78% of winners eventually stop out if held". Ignore it. That
+number describes holding to 16:00 on the ORIGINAL stop with no management whatsoever — the one
+thing nobody is proposing and the one thing you are here to replace. It is a fact about doing
+nothing, not a warning about holding.
 
-(2) is a reason to hold *selectively*. It is not a reason to hold *rarely*, and it is never a
-reason to cap a runner that the evidence is still supporting.
+The evidence that should actually make you careful is narrower and more useful:
+
+- **Fixed mechanical trails lose to the canon** — every one tested. A rule that tightens on a
+  schedule rather than on evidence gives back more than it saves.
+- **Trades give back real R after their peak.** Your journal reports the median giveback for
+  situations like the one in front of you. That is the number a stop has to survive, and it is
+  the honest cost of holding.
+
+Neither of those is a reason to hold rarely. They are reasons to hold with a stop placed off
+evidence rather than off a schedule.
 
 ## What you are deciding
 

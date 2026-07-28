@@ -9,9 +9,16 @@ after the fill. This is not a selection test and it must never become one — th
 asked whether to take a trade, only what to do with one it is already in.
 
 The prize is sized in docs/FINDING-exit-discretion-headroom.md: winners realize mean 2.14R
-against a mean 7.28R available while alive. But the same file kills the naive version —
-78% of winners eventually stop out if simply held to 16:00 on the original stop, so "hold
-longer" is only worth anything if it is conditional on something. Flow is the candidate.
+against a mean 7.28R available while alive, and the expectancy lives in a thin tail of 5-10R
+runners. Capping those is the failure mode this agent has to avoid.
+
+That same file's "78% of winners eventually stop out if held" is NOT the counterweight it
+looks like — it measures holding to 16:00 on the original stop with no management at all, an
+option nobody is proposing. Quoting it at the agent taught the first chained run to flinch at
+holding: median target 1.60R against a book whose winners run past 7R, and 44% of its targets
+below the 2.0R floor it was never told about. The real cautions are that fixed trails lose to
+the canon and that trades give back real R after their peak; both argue for a stop placed off
+evidence, neither argues for holding rarely.
 
 NO-HINDSIGHT (structural, not promised). `build_briefing()` truncates bars, tape and depth to
 strictly BEFORE the decision minute in its first three statements, then derives every feature
