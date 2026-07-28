@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from multiprocessing import Pool
 from pathlib import Path
 
 import pandas as pd
@@ -68,18 +69,35 @@ SEGMENTS = {
 }
 
 
-def run_days(bars: pd.DataFrame, days: list[str]) -> pd.DataFrame:
+_BARS: pd.DataFrame | None = None       # per-process cache for the Pool path
+
+
+def _one_day(d: str) -> list[dict]:
+    start = pd.Timestamp(f"{d} {BAND[0]}", tz=NY)
+    end = pd.Timestamp(f"{d} {BAND[1]}", tz=NY)
+    seg = _BARS[(_BARS.ts_event >= start - pd.Timedelta(days=LOOKBACK_DAYS))
+                & (_BARS.ts_event <= end)].reset_index(drop=True)
+    if seg[(seg.ts_event >= start) & (seg.ts_event <= end)].empty:
+        return []
+    return [t.model_dump() for t in detect_triggers(seg, start=start, end=end)]
+
+
+def run_days(bars: pd.DataFrame, days: list[str], procs: int = 1) -> pd.DataFrame:
+    """Days are independent (each reads its own lookback slice, writes its own rows), so
+    the Pool changes wall-clock only — per-day output is bit-identical to procs=1."""
+    global _BARS
+    _BARS = bars
     rows = []
-    for d in days:
-        start = pd.Timestamp(f"{d} {BAND[0]}", tz=NY)
-        end = pd.Timestamp(f"{d} {BAND[1]}", tz=NY)
-        seg = bars[(bars.ts_event >= start - pd.Timedelta(days=LOOKBACK_DAYS))
-                   & (bars.ts_event <= end)].reset_index(drop=True)
-        if seg[(seg.ts_event >= start) & (seg.ts_event <= end)].empty:
-            continue
-        trigs = detect_triggers(seg, start=start, end=end)
-        rows.extend(t.model_dump() for t in trigs)
-        print(f"  {d}: {len(trigs):>3} triggers", flush=True)
+    if procs <= 1:
+        for d in days:
+            got = _one_day(d)
+            rows.extend(got)
+            print(f"  {d}: {len(got):>3} triggers", flush=True)
+    else:
+        with Pool(procs) as p:                      # fork inherits _BARS read-only
+            for d, got in zip(days, p.imap(_one_day, days)):
+                rows.extend(got)
+                print(f"  {d}: {len(got):>3} triggers", flush=True)
     return pd.DataFrame(rows)
 
 
@@ -128,6 +146,7 @@ def main() -> None:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--span", choices=sorted(SEGMENTS))
     ap.add_argument("--parity", action="store_true")
+    ap.add_argument("--procs", type=int, default=3)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     if a.parity:
@@ -141,8 +160,8 @@ def main() -> None:
         bars = pd.read_parquet(ROOT / barfile).drop(columns=["roll"], errors="ignore")
         days = sealed if months is None else weekdays(months, bars)
         print(f"{barfile}: {len(bars):,} bars | {len(days)} days "
-              f"{days[0]}..{days[-1]}", flush=True)
-        parts.append(run_days(bars, days))
+              f"{days[0]}..{days[-1]} | procs {a.procs}", flush=True)
+        parts.append(run_days(bars, days, procs=a.procs))
 
     T = pd.concat(parts, ignore_index=True)
     out = Path(a.out) if a.out else ROOT / f"output/l0_triggers_{a.span}.parquet"
