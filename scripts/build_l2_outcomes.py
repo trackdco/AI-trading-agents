@@ -56,12 +56,17 @@ BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul
 _BARS: pd.DataFrame | None = None       # per-process cache (fork inherits the parent's copy)
 
 
+_MGMT = "V8"        # module-level so Pool workers inherit it (exit-model arms: V5/V6
+                     # walk the SAME fills with deeper structural targets — ANGUS 30-Jul,
+                     # 2R floor hard, targets structural only, menu depth is the lever)
+
+
 def l2_cfg(t_cancel: float = 100000.0):
     return load_backtest_config().model_copy(update={
         "win_start": dtime(7, 45), "win_end": dtime(11, 0), "max_trades_per_day": 99,
         "min_stop_points": 0.0, "post_open_min_stop": 0.0, "max_stop_points": None,
         "no_trade_start": None, "no_trade_end": None, "t_cancel": t_cancel,
-        "mgmt_variant": "V8"})
+        "mgmt_variant": _MGMT})
 
 
 def load_bars() -> pd.DataFrame:
@@ -171,15 +176,19 @@ def main() -> None:
     ap.add_argument("--lb", type=int, default=LOOKBACK_DAYS,
                     help="lookback days: gated variant for --gate, override for full runs")
     ap.add_argument("--procs", type=int, default=3)
+    ap.add_argument("--mgmt", default="V8", help="management/exit variant (V8 shipped; V5/V6 = partial at first structure, runner to deeper structural level)")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     if a.gate:
         return gate(a.lb)
     if not a.span:
         raise SystemExit("--span or --gate required")
+    global _MGMT
+    _MGMT = a.mgmt
     trigs = pd.read_parquet(ROOT / f"output/l0_triggers_{a.span}.parquet")
     F = run(trigs, procs=a.procs, lookback=a.lb)
-    out = Path(a.out) if a.out else ROOT / f"output/l2_outcomes_{a.span}.parquet"
+    suffix = "" if a.mgmt == "V8" else f"_{a.mgmt.lower()}"
+    out = Path(a.out) if a.out else ROOT / f"output/l2_outcomes_{a.span}{suffix}.parquet"
     F.to_parquet(out, index=False)
     oc = F[F.status == "outcome"]
     print(f"\nwrote {out.relative_to(ROOT)} — {len(F)} candidates, {len(oc)} outcomes")
