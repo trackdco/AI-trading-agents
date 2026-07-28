@@ -1,0 +1,387 @@
+{
+ "conditional_on_h0": true,
+ "split_day": "2025-12-11",
+ "oos_n": 108,
+ "is_n": 108,
+ "effective_sample": {
+  "plus4R_cohort_n": 26,
+  "plus4R_cohort_pl": 18035.875,
+  "plus4R_share_of_window_pl": 0.9814908032215934,
+  "plus4R_in_OOS_half": 15,
+  "top5_pl_share_of_OOS": 0.5602195312624643,
+  "note": "every funded-P&L criterion below is effectively a test on the OOS members of this cohort"
+ },
+ "H1": {
+  "label": "OOS-legitimate (walk-forward, expanding monthly)",
+  "picks": [
+   [
+    "2025-12",
+    4.0
+   ],
+   [
+    "2026-02",
+    4.0
+   ],
+   [
+    "2026-03",
+    4.0
+   ],
+   [
+    "2026-04",
+    4.0
+   ],
+   [
+    "2026-05",
+    4.0
+   ],
+   [
+    "2026-06",
+    4.0
+   ],
+   [
+    "2026-07",
+    4.0
+   ]
+  ],
+  "cells": {
+   "1.5R": {
+    "oos_funded": {
+     "terminal": 6744.459999999999,
+     "busted": false,
+     "min_available_dd": 1278.2,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    },
+    "is_funded": {
+     "terminal": 2511.36,
+     "busted": false,
+     "min_available_dd": 532.44,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    },
+    "oos_drop5": 4455.039999999999
+   },
+   "2R": {
+    "oos_funded": {
+     "terminal": 7092.959999999999,
+     "busted": false,
+     "min_available_dd": 1386.96,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    },
+    "is_funded": {
+     "terminal": 3332.3599999999988,
+     "busted": false,
+     "min_available_dd": 518.82,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    },
+    "oos_drop5": 4083.2000000000003
+   },
+   "2.5R": {
+    "oos_funded": {
+     "terminal": 9917.21,
+     "busted": false,
+     "min_available_dd": 1217.55,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    },
+    "is_funded": {
+     "terminal": 3097.859999999999,
+     "busted": false,
+     "min_available_dd": 29.18,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    },
+    "oos_drop5": 6139.2
+   },
+   "3R": {
+    "oos_funded": {
+     "terminal": 9904.960000000001,
+     "busted": false,
+     "min_available_dd": 1436.42,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    },
+    "is_funded": {
+     "terminal": 3065.859999999999,
+     "busted": false,
+     "min_available_dd": 396.7,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    },
+    "oos_drop5": 5465.920000000001
+   },
+   "4R": {
+    "oos_funded": {
+     "terminal": 11771.46,
+     "busted": false,
+     "min_available_dd": 681.38,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    },
+    "is_funded": {
+     "terminal": 6762.860000000002,
+     "busted": false,
+     "min_available_dd": 997.88,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    },
+    "oos_drop5": 5860.9
+   }
+  },
+  "incumbent_oos": {
+   "terminal": 15669.75,
+   "busted": false,
+   "min_available_dd": 978.0,
+   "halted_days": 0,
+   "trades_skipped_by_halt": 0,
+   "n": 108
+  },
+  "incumbent_oos_drop5": 6891.25,
+  "walkforward_oos": {
+   "terminal": 11771.46,
+   "busted": false,
+   "min_available_dd": 681.38,
+   "halted_days": 0,
+   "trades_skipped_by_halt": 0,
+   "n": 108
+  },
+  "walkforward_oos_drop5": 5860.9,
+  "bust_oos_incumbent": 2.92,
+  "bust_oos_walkforward": 23.04
+ },
+ "H2": {
+  "label": "IN-SAMPLE (A1: selected from Phase-1 on these same 216 trades; confirmation requires sessions after 2026-07-10)",
+  "cells": {
+   "no_gate": {
+    "n": 216,
+    "funded": {
+     "terminal": 18376.0,
+     "busted": false,
+     "min_available_dd": 762.75,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 216
+    },
+    "mean_R": 0.37009529580771483,
+    "mean_R_ci": [
+     0.08398203482256274,
+     0.6671322115503294
+    ],
+    "by_half": {
+     "2025": {
+      "n": 121,
+      "pl": 3691.25,
+      "mean_R": 0.09059692947809217
+     },
+     "2026": {
+      "n": 95,
+      "pl": 14684.75,
+      "mean_R": 0.7260879518696552
+     }
+    }
+   },
+   "skip_with_bias": {
+    "n": 155,
+    "funded": {
+     "terminal": 17019.5,
+     "busted": false,
+     "min_available_dd": 1193.38,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 155
+    },
+    "mean_R": 0.5226976284842667,
+    "mean_R_ci": [
+     0.1735295766974485,
+     0.8846865279310752
+    ],
+    "by_half": {
+     "2025": {
+      "n": 88,
+      "pl": 2592.75,
+      "mean_R": 0.12042021723893727
+     },
+     "2026": {
+      "n": 67,
+      "pl": 14426.75,
+      "mean_R": 1.0510619895229085
+     }
+    }
+   },
+   "skip_against_bias": {
+    "n": 166,
+    "funded": {
+     "terminal": 10682.75,
+     "busted": false,
+     "min_available_dd": 684.25,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 166
+    },
+    "mean_R": 0.24647102507498192,
+    "mean_R_ci": [
+     -0.0511438535243338,
+     0.5571523193595773
+    ],
+    "by_half": {
+     "2025": {
+      "n": 95,
+      "pl": 3631.25,
+      "mean_R": 0.11343142997041715
+     },
+     "2026": {
+      "n": 71,
+      "pl": 7051.5,
+      "mean_R": 0.4244817509191179
+     }
+    }
+   },
+   "alignment_counts": {
+    "no_bias": 105,
+    "with": 61,
+    "against": 50
+   }
+  }
+ },
+ "H4": {
+  "label": "IN-SAMPLE (A1: theta range chosen from the 0.98R global max, which includes the OOS half \u2014 the falsifier is partly pre-answered; confirmation requires fresh sessions)",
+  "cells": {
+   "theta_0.6": {
+    "funded_all": {
+     "terminal": 15439.265000000001,
+     "busted": true,
+     "min_available_dd": -427.95,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 216
+    },
+    "n_cut": 119,
+    "winners_cut": 6,
+    "drop5": 6518.264999999999,
+    "oos_only": {
+     "terminal": 15210.189999999999,
+     "busted": false,
+     "min_available_dd": 1092.04,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    }
+   },
+   "theta_0.7": {
+    "funded_all": {
+     "terminal": 17090.5,
+     "busted": false,
+     "min_available_dd": 1034.02,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 216
+    },
+    "n_cut": 110,
+    "winners_cut": 2,
+    "drop5": 8130.999999999999,
+    "oos_only": {
+     "terminal": 14642.43,
+     "busted": false,
+     "min_available_dd": 1072.04,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    }
+   },
+   "theta_0.8": {
+    "funded_all": {
+     "terminal": 16351.740000000002,
+     "busted": false,
+     "min_available_dd": 690.73,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 216
+    },
+    "n_cut": 103,
+    "winners_cut": 1,
+    "drop5": 7392.239999999999,
+    "oos_only": {
+     "terminal": 14028.530000000002,
+     "busted": false,
+     "min_available_dd": 861.96,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    }
+   },
+   "theta_0.9": {
+    "funded_all": {
+     "terminal": 14715.72,
+     "busted": true,
+     "min_available_dd": -40.13,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 216
+    },
+    "n_cut": 91,
+    "winners_cut": 1,
+    "drop5": 5756.219999999998,
+    "oos_only": {
+     "terminal": 13488.43,
+     "busted": false,
+     "min_available_dd": 861.96,
+     "halted_days": 0,
+     "trades_skipped_by_halt": 0,
+     "n": 108
+    }
+   }
+  },
+  "winner_close_MAE_max_IS": 0.7037037037037037,
+  "winner_close_MAE_max_OOS": 0.9119496855345912,
+  "incumbent_all": {
+   "terminal": 18376.0,
+   "busted": false,
+   "min_available_dd": 762.75,
+   "halted_days": 0,
+   "trades_skipped_by_halt": 0,
+   "n": 216
+  },
+  "incumbent_drop5": 9416.5
+ },
+ "H5": {
+  "exposed_days_found": 22,
+  "n_exposed": 23,
+  "n_clean": 193,
+  "exposed_pl": 8548.75,
+  "clean_pl": 9827.25,
+  "exposed_share_of_pl": 0.4652127775359164,
+  "mean_R_clean": 0.22730779779396654,
+  "mean_R_exposed": 1.5682686487056896,
+  "diff_clean_minus_exposed_ci": [
+   -2.9023042397406424,
+   0.09519622313116591
+  ]
+ },
+ "H6": {
+  "floor_nohalt": 12.16,
+  "floor_halt": 5.12,
+  "ddscale_nohalt": 0.0,
+  "ddscale_halt": 0.0
+ },
+ "comparisons": {
+  "H1": 5,
+  "H2": 3,
+  "H4": 4,
+  "H5": 1,
+  "H6": 4,
+  "total": 17,
+  "note": "A5: H3 removed; expected min p under a global null at 17 ~ 0.06"
+ }
+}

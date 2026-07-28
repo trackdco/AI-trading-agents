@@ -1,0 +1,124 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NY pre-market sweep — Phase 2 results</title><style>
+:root{color-scheme:light;--s0:#f6f6f4;--s1:#fcfcfb;--bd:#e3e2dd;--tp:#0b0b0b;--ts:#52514e;--tm:#82817c;
+--c1:#2a78d6;--c2:#eb6834;--ok:#1baf7a;--bad:#d64545;--warn:#eda100;--gr:#eceae5}
+@media(prefers-color-scheme:dark){:root:where(:not([data-theme=light])){color-scheme:dark;--s0:#121211;--s1:#1a1a19;
+--bd:#33322e;--tp:#fff;--ts:#c3c2b7;--tm:#8d8c84;--c1:#3987e5;--c2:#d95926;--ok:#199e70;--bad:#e06666;--warn:#c98500;--gr:#2a2926}}
+:root[data-theme=dark]{color-scheme:dark;--s0:#121211;--s1:#1a1a19;--bd:#33322e;--tp:#fff;--ts:#c3c2b7;--tm:#8d8c84;
+--c1:#3987e5;--c2:#d95926;--ok:#199e70;--bad:#e06666;--warn:#c98500;--gr:#2a2926}
+*{box-sizing:border-box}body{margin:0;background:var(--s0);color:var(--tp);
+font:14px/1.55 ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1150px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:20px;font-weight:650;margin:0 0 4px}h2{font-size:15px;font-weight:640;margin:36px 0 6px}
+.sub,.note{color:var(--ts);font-size:12.5px}.note{margin:0 0 12px;max-width:80ch}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:15px 18px;margin-bottom:12px}
+table{border-collapse:collapse;width:100%;font-size:12.3px;font-variant-numeric:tabular-nums}
+th{text-align:right;font-weight:600;color:var(--ts);padding:6px 9px;border-bottom:1px solid var(--bd);
+font-size:11px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+td{padding:6px 9px;border-bottom:1px solid var(--gr);text-align:right;white-space:nowrap}
+.scroll{overflow-x:auto}.pos{color:var(--ok)}.neg{color:var(--bad)}
+.alert{border-left:3px solid var(--bad);padding:12px 16px;margin:12px 0;background:var(--s1);border-radius:0 10px 10px 0}
+.alert.w{border-left-color:var(--warn)}.alert.g{border-left-color:var(--ok)}
+.badge{display:inline-block;padding:1px 8px;border-radius:20px;font-size:10.5px;font-weight:650;text-transform:uppercase}
+.b-fail{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
+.b-pass{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.b-inc{background:color-mix(in srgb,var(--tm) 18%,transparent);color:var(--ts)}
+.b-wn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.chip{display:inline-block;background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn);
+border-radius:7px;padding:3px 9px;font-size:11.5px;margin:4px 0}
+code{font:11.5px ui-monospace,Menlo,monospace;background:var(--s0);padding:1px 5px;border-radius:4px;border:1px solid var(--bd)}
+.btn{background:var(--s1);border:1px solid var(--bd);color:var(--ts);border-radius:7px;padding:6px 12px;cursor:pointer;font-size:12px}
+</style></head><body><div class="w">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap">
+<div><h1>NY pre-market sweep — Phase 0 gate · Phase 1 · Phase 2 results</h1>
+<div class="sub">08:00–09:29 ET · n=216 · +$18,376.00 · clean book (404 / +$52,522.81) · commit 14ac690 ·
+17 pre-registered comparisons (A5)</div></div>
+<button class="btn" onclick="const r=document.documentElement,c=r.getAttribute('data-theme');
+r.setAttribute('data-theme',(c?c==='dark':matchMedia('(prefers-color-scheme: dark)').matches)?'light':'dark')">◐ theme</button></div>
+
+<div class="alert"><b>H0 CONDITIONALITY (Amendment 2).</b> The 40 leaky columns didn't only score
+features — they <b>selected these 216 trades</b>. Every result on this page is conditional on a
+trade population that may not survive re-derivation with clean inputs. H0 (re-derive the book
+without the leaky columns) is a rulebook call for Brake/Pat and is not answered here.</div>
+<div class="chip">effective sample: +4R cohort n=26 carries 98.1% of window P&L; 15 of them are OOS; top-5 = 56.0% of OOS P&L — every funded-P&L figure below is effectively a ~15-observation OOS test (A3)</div>
+
+<h2>1 · Validity gate (unchanged from Phase 0 report)</h2>
+<div class="card scroll"><table><thead><tr><th>item</th><th>status</th><th>evidence</th></tr></thead><tbody>
+<tr><td>0a order-flow source</td><td><span class="badge b-wn">no data</span></td><td>0 .scid files; Databento substitute awaiting ruling</td></tr>
+<tr><td>0c lookahead</td><td><span class="badge b-fail">fail</span></td><td>40/161 columns; W flips 41.6% re-read pre-fill</td></tr>
+<tr><td>0d clock</td><td><span class="badge b-pass">pass</span></td><td>1-hour slip arithmetically excluded</td></tr>
+<tr><td>0d contract</td><td><span class="badge b-fail">fail</span></td><td>23/216 trades = 46.5% of window P&L on wrong-contract days</td></tr>
+<tr><td>0e census</td><td><span class="badge b-inc">binding</span></td><td>OOS 69/24/16; floor 30 (sourced to the brief, A6)</td></tr>
+</tbody></table></div>
+
+<h2>2 · Phase 1 headlines (detail in the v1 dashboard already delivered)</h2>
+<div class="card scroll"><h3 style="font-size:13px;color:var(--ts);margin:0 0 6px">Time-of-day (fixed 30-min grid)</h3>
+<table><thead><tr><th>bucket</th><th>n</th><th>OOS n</th><th>P&L</th><th>mean R [boot 95]</th><th>hit [Wilson 95]</th></tr></thead>
+<tbody><tr><td>08:00-08:29</td><td>138</td><td>64</td><td>+$9,090</td><td>+0.255 [-0.09,+0.62]</td><td>37.0% [29.4,45.3]</td></tr><tr><td>08:30-08:59</td><td>47</td><td>22</td><td>+$4,568</td><td>+0.380 [-0.09,+0.91]</td><td>42.6% [29.5,56.7]</td></tr><tr><td>09:00-09:29</td><td>31</td><td>22</td><td>+$4,718</td><td>+0.867 [+0.17,+1.62]</td><td>54.8% [37.8,70.8]</td></tr></tbody></table>
+<div class="note" style="margin-top:8px">All pairwise difference-of-means CIs include zero (Phase 1).
+09:00 sign-flips by year. Only 08:00–08:29 clears the 30-OOS floor (A4: 69/24/16 correct; 138 was total n).</div></div>
+<div class="card scroll" style="display:flex;gap:24px;flex-wrap:wrap">
+<div style="flex:1;min-width:260px"><h3 style="font-size:13px;color:var(--ts);margin:0 0 6px">Continuation hazard</h3>
+<table><thead><tr><th>rung</th><th>n</th><th>P(X | X−1)</th></tr></thead><tbody><tr><td>+1R</td><td>123/216</td><td>0.569</td></tr><tr><td>+2R</td><td>79/123</td><td>0.642</td></tr><tr><td>+3R</td><td>46/79</td><td>0.582</td></tr><tr><td>+4R</td><td>26/46</td><td>0.565</td></tr></tbody></table></div>
+<div style="flex:2;min-width:340px"><h3 style="font-size:13px;color:var(--ts);margin:0 0 6px">Give-back (inclusive MFE)</h3>
+<table><thead><tr><th>touched</th><th>n</th><th>% book</th><th>held</th><th>finished red</th><th>med give-back</th></tr></thead>
+<tbody><tr><td>+1R</td><td>123</td><td>56.9%</td><td>72</td><td class='neg'>42 (-$6,735)</td><td>+1.43R</td></tr><tr><td>+2R</td><td>79</td><td>36.6%</td><td>40</td><td class='neg'>15 (-$2,576)</td><td>+1.08R</td></tr><tr><td>+3R</td><td>46</td><td>21.3%</td><td>22</td><td class='neg'>8 (-$1,402)</td><td>+1.64R</td></tr><tr><td>+4R</td><td>26</td><td>12.0%</td><td>11</td><td class='neg'>4 (-$646)</td><td>+3.13R</td></tr></tbody></table></div></div>
+
+<h2>3 · H1 — fixed targets vs canon <span class="badge b-pass">OOS-legitimate</span></h2>
+<p class="note">Walk-forward, expanding monthly, selection on train terminal funded P&L only.
+OOS = 108 trades from 2025-12-11. Costs: $1.24 RT/micro + 1-tick slip on marketable exits
+(incumbent uses recorded pl — cost models differ at the margin). Monthly picks: 2025-12→4.0R, 2026-02→4.0R, 2026-03→4.0R, 2026-04→4.0R, 2026-05→4.0R, 2026-06→4.0R, 2026-07→4.0R.</p>
+<div class="card scroll"><table><thead><tr><th>variant</th><th>OOS funded P&L</th><th>OOS drop-5</th>
+<th>halted days</th><th>busted</th></tr></thead><tbody><tr><td>fixed 1.5R</td><td>+$6,744</td><td>+$4,455</td><td>0</td><td>no</td></tr><tr><td>fixed 2R</td><td>+$7,093</td><td>+$4,083</td><td>0</td><td>no</td></tr><tr><td>fixed 2.5R</td><td>+$9,917</td><td>+$6,139</td><td>0</td><td>no</td></tr><tr><td>fixed 3R</td><td>+$9,905</td><td>+$5,466</td><td>0</td><td>no</td></tr><tr><td>fixed 4R</td><td>+$11,771</td><td>+$5,861</td><td>0</td><td>no</td></tr><tr><td><b>incumbent (canon)</b></td><td><b>+$15,670</b></td><td><b>+$6,891</b></td><td>0</td><td>no</td></tr><tr><td><b>walk-forward selected</b></td><td><b>+$11,771</b></td><td><b>+$5,861</b></td><td>0</td><td>no</td></tr></tbody></table>
+<div class="note" style="margin-top:8px">Bust probability (day-block bootstrap over the OOS window):
+incumbent 2.92% vs walk-forward 23.04%.</div></div>
+
+<h2>4 · H2 — bias-of-day gate <span class="badge b-wn">IN-SAMPLE (A1)</span></h2>
+<p class="note">Bias from the committed artefact <code>output/amt_daytypes.csv</code> (the frozen
+build_daytypes definition; Phase 1 verified it re-derives 912/912 from raw bars). Alignment counts:
+{'no_bias': 105, 'with': 61, 'against': 50}. Selected FROM Phase-1 results on these same trades — the year columns
+are a descriptive split, NOT confirmation; confirmation needs sessions after 2026-07-10.</p>
+<div class="card scroll"><table><thead><tr><th>cell</th><th>n</th><th>funded P&L</th><th>mean R [day-clust 95]</th>
+<th>2025 half</th><th>2026 half</th></tr></thead><tbody><tr><td>no_gate</td><td>216</td><td>+$18,376</td><td>+0.370 [+0.08,+0.67]</td><td>+$3,691 (n=121)</td><td>+$14,685 (n=95)</td></tr><tr><td>skip_with_bias</td><td>155</td><td>+$17,020</td><td>+0.523 [+0.17,+0.88]</td><td>+$2,593 (n=88)</td><td>+$14,427 (n=67)</td></tr><tr><td>skip_against_bias</td><td>166</td><td>+$10,683</td><td>+0.246 [-0.05,+0.56]</td><td>+$3,631 (n=95)</td><td>+$7,052 (n=71)</td></tr></tbody></table></div>
+
+<h2>5 · H4 — MAE cut at bar close <span class="badge b-wn">IN-SAMPLE (A1)</span></h2>
+<p class="note">θ range descends from the 0.98R global max winner heat, which INCLUDES the OOS half —
+the "no winner ever dug past θ" falsifier is partly pre-answered (A1). Winner close-MAE max:
+IS 0.70R · OOS 0.91R.</p>
+<div class="card scroll"><table><thead><tr><th>cell</th><th>funded P&L (all 216)</th><th>trades cut</th>
+<th>winners cut</th><th>drop-5</th></tr></thead><tbody><tr><td>θ=0.6</td><td>+$15,439</td><td>119</td><td class='neg'>6</td><td>+$6,518</td></tr><tr><td>θ=0.7</td><td>+$17,090</td><td>110</td><td class='neg'>2</td><td>+$8,131</td></tr><tr><td>θ=0.8</td><td>+$16,352</td><td>103</td><td class='neg'>1</td><td>+$7,392</td></tr><tr><td>θ=0.9</td><td>+$14,716</td><td>91</td><td class='neg'>1</td><td>+$5,756</td></tr><tr><td><b>incumbent</b></td><td><b>+$18,376</b></td><td>—</td><td>—</td><td><b>+$9,416</b></td></tr></tbody></table></div>
+
+<h2>6 · H5 — contract stratum <span class="badge b-inc">integrity</span></h2>
+<div class="card"><p class="note" style="margin:0">
+Exposed days found: 22 · exposed trades n=23 carrying
++$8,549 = 46.5% of window P&L. Mean R clean
++0.227 vs exposed +1.568; day-block CI on the difference
+[-2.90, +0.10] — includes zero, but n=23 makes this null <b>weak
+evidence of safety</b>, stated per registration.</p></div>
+
+<h2>7 · H6 — standalone viability <span class="badge b-wn">constraint</span></h2>
+<div class="card scroll"><table><thead><tr><th>sizing × halts</th><th>bust % (day-block bootstrap, 4 cells)</th></tr></thead>
+<tbody><tr><td>floor · no halts</td><td class="neg">12.16%</td></tr>
+<tr><td>floor · Tier-1 halts</td><td class="neg">5.12%</td></tr>
+<tr><td>DD-scaled · no halts</td><td>0.00%</td></tr>
+<tr><td>DD-scaled · Tier-1 halts</td><td class="pos">0.00%</td></tr></tbody></table></div>
+
+<h2>8 · Verdicts against pre-committed criteria</h2>
+<div class="card scroll"><table><thead><tr><th>hypothesis</th><th>result</th><th>verdict</th></tr></thead>
+<tbody><tr><td style='text-align:left'>H1 bigger fixed target beats canon (OOS, walk-forward)</td><td style='text-align:left'>FAIL — walk-forward +$11,771 vs incumbent +$15,670; selection also flips targets mid-stream (2025-12→4.0R, 2026-02→4.0R, 2026-03→4.0R…), and bust-prob 23.0% vs 2.9%</td><td><span class='badge b-fail'>fail</span></td></tr><tr><td style='text-align:left'>H2 skip-with-bias beats no-gate (IN-SAMPLE; needs both halves)</td><td style='text-align:left'>NOT ESTABLISHED — pooled +$17,020 vs +$18,376, but 2025 half: gate +$2,593 vs no-gate +$3,691; 2026 half: +$14,427 vs +$14,685 — the criterion required reproduction in BOTH halves</td><td><span class='badge b-inc'>inconclusive</span></td></tr><tr><td style='text-align:left'>H4 MAE-cut beats canon (IN-SAMPLE; θ grid best = θ=0.7)</td><td style='text-align:left'>FAIL — best cell +$17,090 vs incumbent +$18,376; cut 110 trades incl. 2 winners; drop-5 +$8,131 vs incumbent drop-5 +$9,416. Winner close-MAE max: IS 0.70R / OOS 0.91R — confirmation requires fresh sessions (A1)</td><td><span class='badge b-fail'>fail</span></td></tr><tr><td style='text-align:left'>H5 contract stratum indistinguishable (integrity)</td><td style='text-align:left'>PASS (weak) — no detectable difference: clean mean R +0.227 vs exposed +1.568, day-block CI on diff [-2.90, +0.10], n_exposed=23 carrying 46.5% of window P&L — thin n makes a null weak evidence</td><td><span class='badge b-inc'>inconclusive</span></td></tr><tr><td style='text-align:left'>H6 pre-market cannot carry itself (constraint)</td><td style='text-align:left'>CONFIRMED naked / OVERTURNED with spine — bust%: floor/no-halt 12.2%, floor/halt 5.1%, DD-scaled/no-halt 0.0%, DD-scaled/halt 0.0%. Both answers are true and describe different systems</td><td><span class='badge b-wn'>mixed</span></td></tr></tbody></table>
+<div class="note" style="margin-top:8px">17 comparisons run (A5). Under a global null the expected minimum
+p ≈ 0.06, so no single unadjusted p near 0.05 in this study means anything. Not tested: H3 (structurally
+INCONCLUSIVE, A5), fast-loser filters, order-flow conviction, depth rules, 09:00-specific rules,
+spread/VWAP filters — reasons in <code>01_hypotheses.md</code>.</div></div>
+
+<h2>9 · Open questions</h2>
+<div class="card"><ul style="margin:4px 0 0;padding-left:20px;color:var(--ts);font-size:12.5px">
+<li><b>H0</b> — re-derive the book without the 40 leaky columns (rulebook call; everything above is conditional on it).</li>
+<li>The 23 contract-exposed trades (46.5% of window P&L) — H5 could not distinguish the strata at n=23.</li>
+<li>Order-flow source ruling (Databento tape vs absent .scid).</li>
+<li>Baseline ruling — the clean book is marked superseded by <code>baseline_book_news.parquet</code> (+$55,989.81/383).</li>
+<li>H2/H4 confirmation requires sessions after 2026-07-10 (fresh data), per A1.</li>
+</ul></div>
+</div></body></html>
