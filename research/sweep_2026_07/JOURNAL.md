@@ -73,3 +73,33 @@ H5 INCONCLUSIVE, uncomfortable — the 23 wrong-contract trades are the BEST in 
 H6 CONFIRMED naked / OVERTURNED with the full spine — 12.16% -> 5.12% -> 0.00%/0.00%. Engine
   validated against the independent Phase-1 lane (12.85/5.91/0.00).
 Net: 0 tradeable rules produced; 2 rule-outs locked; 1 integrity flag (H5) escalated to Brake.
+
+## 2026-07-28 · Brake's four pre-scoring tasks resolved (no outcomes examined)
+T1 census: the 138/47/31 vs 139/47/30 split is bin-edge convention; exactly TWO boundary
+trades move (2025-10-08 08:30:00 b2->b1; 2025-12-26 09:00:00 b3->b2), summing to the observed
+(+1,0,-1). Standardized to Phase-1 half-open bins: 138/47/31. My earlier "one 08:30 trade"
+explanation was arithmetically impossible — Brake caught it; resolved at trade level.
+T2 stamps: FLOORED, proven by limit-price containment — 215/216 entries trade inside their
+stamped minute's bar. The exception (2026-03-13 08:31 ET, long 24673.00; stamped bar high
+24672.00; prior bar spans it) is a boundary-instant print stamped next-minute: flagged
+stamp_edge=1, primary scoring excludes it (n=215), fixed in Amendment 1 BEFORE scoring.
+T3 rebuild: all features rebuilt from a SOURCE-band-cleaned tape (row outside its ET-day bar
+band +/-25 dropped before ANY aggregation): 458,178 rows / 2,075,486 contracts = 1.325% of
+volume; IS(2025h) 320,894 rows vs OOS(2026h) 137,284 — the contaminated half loses ~2.3x more.
+Footprint on features: cvd_15 changes on 95/216 trades, vol_15 and absorp_15 on 105/216.
+Stacks demoted to BINARY (frozen 3:1 x >=3 constant; no tercile edge ever calibrated).
+two_sided_share_30 dropped (DEGENERATE). v2 supersedes v1. Clean-build shift table: 12/12 PASS
+both twins; delta_div_15 28/79 carries its LOW-POWER tag.
+T4b stack asymmetry: the v1 "backwards" gap (ask differs 176 under +1 vs 168 under +15)
+REPLICATES EXACTLY on the clean build — and the near-trap is journaled: I almost wrote
+"cleaning touched none of the stack minutes"; a direct check found 582 dropped rows sitting in
+the 621 stack minutes. The true reason is that v1's stacked() already band-cleaned internally,
+so v1 and v2 compute stacks on identical data — exact match is cross-implementation agreement,
+not absence of change. Mechanics of the asymmetry: ask-stack present rate is 69.9% at fill-1,
+70.8% at the fill minute, but 63.4% at fill+14 (se ~2.7pp) — approaching the open, one-sided
+ask stacks thin out, so the +15 twin gets more both-absent agreements. The differ gap (81.5% vs
+77.8%, ~3.7pp) is ~1 se of a paired difference: compositional drift plus noise, NOT a leakage
+signature — leakage would make a twin agree suspiciously with strict, and both twins differ
+>70%. Both control twins move the data hard; the shift test's purpose is served.
+Book extension over Jul 13-15 REJECTED by Brake (recorded in Amendment 1). STOPPED after these
+four per instruction: baseline ruling first, then H0. Nothing scored.
