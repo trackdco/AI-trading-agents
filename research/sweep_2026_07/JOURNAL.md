@@ -120,3 +120,40 @@ manufacturing or destroying an edge on their own — so their Q1 scoring is BLOC
 2 pending Brake's remedy ruling; the seven exchangeable features are unaffected. Also recorded:
 fp_imb_15 == cvd_norm_15/2 exactly — counts as ONE test for family-wise pricing. No outcomes
 examined; still stopped.
+
+## 2026-07-28 · JOB 1 (IS descriptives) + JOB 2 (H0 dual derivation) — Brake's two jobs
+JOB 1, IS half only (108 trades, 2025-06-02..2025-12-10; OOS never loaded into a statistic).
+Give-back: of the 11 IS trades that reached +4R, post-+1R-touch drawdown runs min +1.03 / med
++5.97 / max +12.15 R; floors after the +1R touch: 6/11 went below entry, 3 below -1R — the
+sub- -1R floors are EXIT-BAR overshoot (the stop-out bar's low), not realized loss. BE@+1R
+counterfactual (frictionless, active from the bar after the touch): 59/108 touch +1R; 27
+BE-stop pre-exit and their ACTUAL outcomes sum to just +$1,140 (mean R +0.014: 20 losses
+-$3,110 saved vs 7 winners +$4,249 forgone); 23 never touch entry again (mean R +2.324); 5
+exit-bar-ambiguous; 4 exited on the touch bar; 9 same-bar ambiguity bound. Open split: only
+11/108 IS exits land after 09:30 (mean R +0.641 vs -0.006 for the 97 before); fills 74/25/9
+across the half-open buckets; the 09:00-09:29 fills are the weak cell (n=9, mean -0.184,
+dragged by before-open exits at -0.593 over 7). DESCRIPTIVE ONLY — nothing scored or proposed.
+JOB 2, H0 evidence. Pre-run report: certified book = baseline_book_clean.parquet 404 /
++$52,522.81, 2025-06-02 -> 2026-07-10, PM slice 216 / +$18,376.00; bars reach 2023-01-02 so
+Jul-Sep 2025 is fully covered; the window carries the known Jan-2026 hole (no depth exists;
+footprint_jan2026 never wired into FP_FILES). THE 40-COLUMN FAIL LIST DOES NOT EXIST — the
+lane artifacts were destroyed with the containers and never committed (LANE-MAP.md); of the
+named FAILs only C (conf_PM) has a committed clean counterpart (pm_sofar_conf,
+leakage_clean_compare.py:45), so the two arms isolate the C leak, NOT all 40; W and the dep_*
+family sit leaky in BOTH arms. Harness = build_canon/size_book/NewsGate verbatim; anchors
+passed to the cent (A1 canon_book 713/+$71,364.83; A2 clean sized 404/+$52,522.81) BEFORE any
+windowed number. Window 2025-07-01..2026-07-10 (884/970 candidates, 244 days, fresh state).
+Mechanical layer: L_nonews 245 taken +$69,328.43 (PM 200/+$39,941.41) vs C_nonews 247 taken
++$46,526.08 (PM 200/+$22,809.69) — 43% of the leaky PM P&L is not there under pre-fill C.
+Sized layer (dollar-risk + windowed London): L_nonews +$54,040.31 (PM +$21,151.75) vs
+C_nonews +$50,347.93 (PM +$18,113.12) — sizing normalization compresses the gap (mech dollars
+scale with stop width; size_book caps risk at $400). Overlap nonews: 204 shared of 245/247
+(115 of the shared differ in size/pl through governor/cold-state cascade), only-L 32 trades
++$5,793, only-C 33 trades -$2,466 — the leaky book's EXCLUSIVE trades made money, the clean
+book's exclusive trades lost. PM slice: 161 shared, 39 swapped each way. News produced BOTH
+ways (certified clean book has NO news filter): with gate+deadzone, L 224/+$66,703 vs C
+227/+$49,230, overlap 187 shared (102 differ), only-L 27/+$5,976, only-C 30/-$1,731.
+Boundary-state check: fresh-start vs certified-slice = SAME 245 trades, pl differs only via
+sizing state (+$69,328 vs +$67,689). OF features rebuilt v2-style against all four books:
+union 229 unique PM fills, 229/229 full pre-fill coverage, exactly one stamp_edge (the known
+2026-03-13 trade; the 13 new fills all pass containment). STOPPED — no scoring, per brief.

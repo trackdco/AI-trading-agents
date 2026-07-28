@@ -1,0 +1,132 @@
+{
+ "window": [
+  "2025-07-01",
+  "2026-07-10"
+ ],
+ "candidates": {
+  "rows": 884,
+  "days": 244
+ },
+ "mech_L_nonews": {
+  "taken": 245,
+  "pl": 69328.43,
+  "pl_2025": 29139.05,
+  "pl_2026": 40189.38,
+  "days": 185,
+  "pm_n": 200,
+  "pm_pl": 39941.41,
+  "pm_wr": 41.0
+ },
+ "mech_L_news": {
+  "taken": 224,
+  "pl": 66703.43,
+  "pl_2025": 29394.68,
+  "pl_2026": 37308.75,
+  "days": 171,
+  "pm_n": 183,
+  "pm_pl": 39153.91,
+  "pm_wr": 43.7
+ },
+ "mech_C_nonews": {
+  "taken": 247,
+  "pl": 46526.08,
+  "pl_2025": 18022.96,
+  "pl_2026": 28503.12,
+  "days": 187,
+  "pm_n": 200,
+  "pm_pl": 22809.69,
+  "pm_wr": 39.5
+ },
+ "mech_C_news": {
+  "taken": 227,
+  "pl": 49230.15,
+  "pl_2025": 19890.15,
+  "pl_2026": 29340.0,
+  "days": 173,
+  "pm_n": 182,
+  "pm_pl": 25181.25,
+  "pm_wr": 42.9
+ },
+ "sized_L_nonews": {
+  "n": 369,
+  "pl": 54040.31,
+  "ny_n": 245,
+  "ny_pl": 32056.81,
+  "lon_n": 124,
+  "lon_pl": 21983.5,
+  "pm_n": 200,
+  "pm_pl": 21151.75
+ },
+ "sized_L_news": {
+  "n": 348,
+  "pl": 55582.43,
+  "ny_n": 224,
+  "ny_pl": 33598.93,
+  "lon_n": 124,
+  "lon_pl": 21983.5,
+  "pm_n": 183,
+  "pm_pl": 23017.88
+ },
+ "sized_C_nonews": {
+  "n": 371,
+  "pl": 50347.93,
+  "ny_n": 247,
+  "ny_pl": 28364.43,
+  "lon_n": 124,
+  "lon_pl": 21983.5,
+  "pm_n": 200,
+  "pm_pl": 18113.12
+ },
+ "sized_C_news": {
+  "n": 351,
+  "pl": 53672.43,
+  "ny_n": 227,
+  "ny_pl": 31688.93,
+  "lon_n": 124,
+  "lon_pl": 21983.5,
+  "pm_n": 182,
+  "pm_pl": 21097.88
+ },
+ "overlap_nonews": {
+  "n_L": 245,
+  "n_C": 247,
+  "shared": 204,
+  "shared_pl_diff": 115,
+  "only_L": 32,
+  "only_L_pl": 5793.28,
+  "only_C": 33,
+  "only_C_pl": -2465.94,
+  "pm_L": 200,
+  "pm_C": 200,
+  "pm_shared": 161,
+  "pm_only_L": 39,
+  "pm_only_C": 39
+ },
+ "overlap_news": {
+  "n_L": 224,
+  "n_C": 227,
+  "shared": 187,
+  "shared_pl_diff": 102,
+  "only_L": 27,
+  "only_L_pl": 5976.41,
+  "only_C": 30,
+  "only_C_pl": -1730.62,
+  "pm_L": 183,
+  "pm_C": 182,
+  "pm_shared": 148,
+  "pm_only_L": 35,
+  "pm_only_C": 34
+ },
+ "boundary_state": {
+  "full_slice_n": 245,
+  "full_slice_pl": 67688.58,
+  "fresh_n": 245,
+  "fresh_pl": 69328.43,
+  "sym_diff_trades": 0
+ },
+ "news_gate": {
+  "releases": 206,
+  "promoted": 39,
+  "stale_after": "2026-07-16"
+ }
+}
