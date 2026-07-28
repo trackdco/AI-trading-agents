@@ -46,6 +46,20 @@ RECHECK_MIN = 30                     # re-evaluate this often once the agent has
 MAX_DECISIONS = 4                    # per trade, so one runner cannot eat the whole budget
 RATIONALE_MAX = 300
 
+# THE RR FLOOR IS BAKED IN. config/strategy.yaml targets.rr_floor = 2.0 — "ANGUS 2026-07-17:
+# HARD 2R minimum every trade (was 1.5)". The engine has never placed a target below it, and
+# an agent that names one is not exercising discretion, it is breaking the rulebook.
+#
+# The first chained run did exactly that: median target_r 1.60, and the five worst trades
+# against canon were all agent_target — 1.40 against a 7.31R run, 1.18 against 10.75R. Those
+# targets were illegal, not merely timid, and nothing in the doctrine or the schema said so.
+# Enforced here rather than requested in prose, because a rule the model can forget is not a
+# rule.
+RR_FLOOR = 2.0
+# targets.rr_floor_partial = 1.5 — the FIRST profit leg may book at 1.5R, the runner rides
+# free of the floor. So scaling out at 1.5R is legal; naming 1.5R as the whole objective is not.
+RR_FLOOR_PARTIAL = 1.5
+
 # ANGUS (28-Jul): *"im gonna target x instead and trail the stop into profits at a level i
 # dont think it should come down to if my thesis is correct"* and *"if its conviction score
 # isnt too high, it can be like okay i will take 75% out here, trail the rest, and let the
@@ -105,6 +119,14 @@ class IntradeVerdict(BaseModel, extra="forbid"):
         if (self.target_r is not None and self.stop_r is not None
                 and self.stop_r >= self.target_r):
             raise ValueError(f"stop_r {self.stop_r} must sit below target_r {self.target_r}")
+        if self.target_r is not None:
+            floor = RR_FLOOR_PARTIAL if self.partial_pct else RR_FLOOR
+            if self.target_r < floor:
+                raise ValueError(
+                    f"target_r {self.target_r} is below the {floor}R floor "
+                    f"(config/strategy.yaml targets.rr_floor"
+                    + (" _partial, first profit leg" if self.partial_pct else "")
+                    + ") — the engine has never placed a target there and neither may you")
         return self
 
     @field_validator("rationale", "flow_read", "thesis")
