@@ -40,6 +40,8 @@ comparison against the hand log (Step-8 matcher, spot-checks) must apply this +T
 """
 from __future__ import annotations
 
+import json
+
 import numpy as np
 import pandas as pd
 from pydantic import BaseModel, field_validator
@@ -103,6 +105,17 @@ class Trigger(BaseModel):
                                     # HIGH for shorts) — E5's structural stop sits beyond the
                                     # BLOCK, not just the trigger wick (can be wider than stop_ref)
     close: float
+    cluster_members: str = ""       # ANGUS 30-Jul (L0 rebuild): the crossed cluster's MEMBER
+                                    # levels as JSON [[name, price, type], ...]. cluster_center
+                                    # is their MEAN, which destroys exactly the distinction his
+                                    # structural-cancel rule needs ("limit at bb MA stacked on
+                                    # vwap -1" — the components sit at DIFFERENT prices, and the
+                                    # far one is what price tests first).
+    level_stack: str = ""           # the FULL level stack at trigger time, JSON same shape,
+                                    # sorted by price. Feeds "what did price touch while away
+                                    # from the limit, and did it fail there" — the structural
+                                    # cancel/confirm rule (vwap mid rejection etc.). Both fields
+                                    # default "" so cached pre-L0 CSVs round-trip unchanged.
 
     @field_validator("ob_mid", "ob_stop", mode="before")
     @classmethod
@@ -301,7 +314,12 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
                                confluence_count=res["count"], cluster_types=ctypes,
                                vwap_touched=bool(vwap_touched),
                                ob_mid=ob_mid, ob_stop=ob_stop,
-                               close=round(float(fr["close"].iloc[i]), 4)))
+                               close=round(float(fr["close"].iloc[i]), 4),
+                               cluster_members=json.dumps(
+                                   [[n, round(float(p), 4), typ] for n, p, typ in (g or [])]),
+                               level_stack=json.dumps(
+                                   [[n, round(float(p), 4), typ] for n, p, typ
+                                    in sorted(levels, key=lambda x: x[1])])))
     return _mtf_arbitrate(raw)
 
 
