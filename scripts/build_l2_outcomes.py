@@ -128,17 +128,24 @@ def run(trigs: pd.DataFrame, procs: int, lookback: int = LOOKBACK_DAYS) -> pd.Da
     return pd.DataFrame(rows)
 
 
-def gate() -> None:
-    """Outcome invariance vs a 30-day lookback, on days with real fills. Any difference in
-    fill/exit/dollars fails — a lookback that changes outcomes would corrupt every number
-    downstream of L2."""
-    from scripts.build_l0_triggers import run_days
+def gate(lb: int = LOOKBACK_DAYS) -> None:
+    """Outcome invariance of lookback `lb` vs 30 days, on days with real fills. Any
+    difference in fill/exit/dollars fails — a lookback that changes outcomes would corrupt
+    every number downstream of L2. Reuses the L0 census when it exists (the gate days are
+    parity-verified against it); regenerates only as a fallback."""
     days = ["2025-06-10", "2025-09-17"]
-    raw = pd.read_parquet(ROOT / "data/reference/nq_1m_master.parquet").drop(
-        columns=["roll"], errors="ignore")
-    trigs = run_days(raw, days)
-    a = run(trigs, procs=1, lookback=LOOKBACK_DAYS)
-    b = run(trigs, procs=1, lookback=30)
+    census = ROOT / "output/l0_triggers_fit.parquet"
+    if census.exists():
+        T = pd.read_parquet(census)
+        tday = pd.to_datetime(T.ts, format="mixed", utc=True).dt.tz_convert(NY)
+        trigs = T[tday.dt.strftime("%Y-%m-%d").isin(days)].reset_index(drop=True)
+    else:
+        from scripts.build_l0_triggers import run_days
+        raw = pd.read_parquet(ROOT / "data/reference/nq_1m_master.parquet").drop(
+            columns=["roll"], errors="ignore")
+        trigs = run_days(raw, days)
+    a = run(trigs, procs=2, lookback=lb)
+    b = run(trigs, procs=2, lookback=30)
     cols = ["ts", "status", "fill_ts", "exit_ts"]
     fa, fb = a[a.status == "outcome"], b[b.status == "outcome"]
     same = (a[cols].reset_index(drop=True).equals(b[cols].reset_index(drop=True))
@@ -149,10 +156,10 @@ def gate() -> None:
     if not same:
         m = a[cols].compare(b[cols]) if len(a) == len(b) else None
         print(m)
-        raise SystemExit(f"GATE FAILED — {LOOKBACK_DAYS}d lookback is not outcome-invariant")
+        raise SystemExit(f"GATE FAILED — {lb}d lookback is not outcome-invariant")
     if len(fa) == 0:
         raise SystemExit("GATE INCONCLUSIVE — no filled outcomes on the sample days")
-    print(f"gate OK — {LOOKBACK_DAYS}d lookback outcome-identical to 30d on "
+    print(f"gate OK — {lb}d lookback outcome-identical to 30d on "
           f"{len(fa)} real outcomes")
 
 
@@ -161,15 +168,17 @@ def main() -> None:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--span", choices=["fit", "holdout"])
     ap.add_argument("--gate", action="store_true")
+    ap.add_argument("--lb", type=int, default=LOOKBACK_DAYS,
+                    help="lookback days: gated variant for --gate, override for full runs")
     ap.add_argument("--procs", type=int, default=3)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     if a.gate:
-        return gate()
+        return gate(a.lb)
     if not a.span:
         raise SystemExit("--span or --gate required")
     trigs = pd.read_parquet(ROOT / f"output/l0_triggers_{a.span}.parquet")
-    F = run(trigs, procs=a.procs)
+    F = run(trigs, procs=a.procs, lookback=a.lb)
     out = Path(a.out) if a.out else ROOT / f"output/l2_outcomes_{a.span}.parquet"
     F.to_parquet(out, index=False)
     oc = F[F.status == "outcome"]
