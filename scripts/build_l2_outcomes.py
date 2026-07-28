@@ -102,6 +102,7 @@ def day_outcomes(args) -> list[dict]:
                     "stop": float(r.stop_initial), "risk": risk,
                     "exit_ts": str(r.exit_ts), "exit_price": float(r.exit_price),
                     "exit_reason": str(r.exit_reason), "target": str(r.target_name),
+                    "target_level": float(r.target_level), "working_target": float(r.working_target),
                     "pts": float(r.points), "R": float(r.r_multiple),
                     "size_engine": float(r.size), "dollars_1lot": float(r.dollars),
                     "fill_hm": pd.Timestamp(r.fill_ts).hour * 60 + pd.Timestamp(r.fill_ts).minute}
