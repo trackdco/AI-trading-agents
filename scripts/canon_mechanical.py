@@ -62,7 +62,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.live_thresholds import TH  # frozen thresholds (LIVE-STACK #1)  # noqa: E402
 
 
-def build_canon(T, news_gate=None, dead_zones=None):
+def build_canon(T, news_gate=None, dead_zones=None, escalation_keys=("day",)):
     """T = trade_matrix rows. Returns the canon book with score, Q, size, governor, pl.
 
     news_gate: optional object exposing `.blocks(ts_et) -> bool`, True where a PRE-OPEN
@@ -165,9 +165,16 @@ def build_canon(T, news_gate=None, dead_zones=None):
             cur = twr[i]
         gov.append(0.5 if (not np.isnan(cur) and cur < 0.35) else 1.0)
     T["governor"] = gov
-    # Layer 2b: second-and-later trades of the day require score >= 4
+    # Layer 2b: second-and-later trades require score >= 4.
+    # ANGUS 29-Jul: *"the trade cap i wanted to implement for live was 2 trades in london, 2 in
+    # pre market, 2 in golden window. if it lost the first, the second needed extra conviction."*
+    # Grouping on "day" alone makes pre-market and gold share one counter, and since pre fires
+    # at 08:00 and gold at 09:40, gold's genuine FIRST trade is scored as the day's 3rd or 4th
+    # and held to the score-4 bar. escalation_keys=("day","win_") is the per-session form he
+    # asked for. Default stays ("day",) so the armed book is bit-identical.
+    ek = list(escalation_keys)
     taken = T[T["size"] > 0]
-    nth = taken.groupby("day").cumcount() + 1
+    nth = taken.groupby(ek).cumcount() + 1
     T["nth"] = nth.reindex(T.index)
     esc = (T["nth"] >= 2) & (T.score < 4)
     T.loc[esc.fillna(False), "size"] = 0.0
@@ -193,7 +200,7 @@ def build_canon(T, news_gate=None, dead_zones=None):
     T["struct"] = np.where(T.win_ == "pre", T.W + T.Tp, T.D.fillna(0) + T.Tc)
     live = T[T["size"] > 0].sort_values("fill")
     drop = []
-    for d, g in live.groupby("day"):
+    for _, g in live.groupby(ek):
         daypl = 0.0
         out = False
         for r in g.itertuples():
