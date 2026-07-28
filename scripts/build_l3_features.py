@@ -121,14 +121,29 @@ def feature_all(S: pd.DataFrame, procs: int) -> pd.DataFrame:
     return pd.concat(parts, ignore_index=True)
 
 
-# columns shared with the cached matrices, compared to 1e-6 on matched fills.
-# EXCLUDED with reasons: trigdens_30 (census stamps vs v2 CSVs — expected differ),
-# conf_PM/pm_* family vs trade_matrix.conf_PM (cached form is the LEAKY full-window
-# variant; the arming build replaced it with pm_sofar_conf — we compare against THAT),
-# r_3/fw_3 (post-fill layer-2d inputs, not selection features).
+# columns shared with the cached matrices, compared to 1e-6 on matched SAME-TRADE fills
+# (join includes ENTRY where the cached matrix carries it: 95 census keys are multi-trigger
+# fill-minutes whose siblings have different limits — comparing wall distances across
+# different trades is meaningless, and was the first gate run's false FAIL).
+#
+# EXCLUDED with reasons, all diagnosed on the joined artifact 2026-07-30:
+#   trigdens_30     census stamps vs the old v2 CSVs — expected to differ, that's the point
+#   pm_sofar_conf   the CACHED column is provenance-broken: it agrees with the clean
+#                   truncated-at-fill form 46% and the full-window leaky form 55% (coin
+#                   flip both ways, and gold fills — where the two forms coincide — still
+#                   disagree 45%). It came from the dead universal_orderflow/trade_angles
+#                   assembly. Our tape is proven byte-exact by d15/fill_delta matching
+#                   560/560 off the same minute stream, so the clean recomputation stands
+#                   and the old C check's input is a DOCUMENTED DEFECT of the old canon.
+#   r_3/fw_3        post-fill layer-2d inputs, not selection features
+#
+# TOLERATED, direction-checked: on_extreme_age rows where CACHED is NaN and ours has a
+# value (old dayflow lacked those days' overnight tape; 8 rows, 0 value diffs) — the
+# reverse direction (ours NaN, cached valued) FAILS. d15_conf rows with |d15| < 1e-9
+# (zero-delta sign convention; 1 row) are skipped.
 TM_COLS = ["dep_thick", "dep_imb", "dep_wall_above_d", "dep_wall_above_sz",
            "dep_wall_below_d", "dep_wall_below_sz", "fill_delta", "fill_delta_conf",
-           "ent_vs_vwap_sd_dir", "d15", "d15_conf", "on_extreme_age", "pm_sofar_conf"]
+           "ent_vs_vwap_sd_dir", "d15", "d15_conf", "on_extreme_age"]
 BP_COLS = ["netpath_30", "bbw_state", "churn_flow_30"]
 GQ_COLS = ["bp5opp", "lon_slope_d"]
 
@@ -136,23 +151,38 @@ GQ_COLS = ["bp5opp", "lon_slope_d"]
 def gate(procs: int) -> None:
     S, _ = candidates(gate_only=True)
     F = feature_all(S, procs)
-    F["k"] = list(zip(F.day, pd.to_datetime(F["fill"]).dt.strftime("%Y-%m-%d %H:%M"),
-                      F.direction))
+    F["fmin"] = pd.to_datetime(F["fill"]).dt.strftime("%Y-%m-%d %H:%M")
 
     def matched(cached: pd.DataFrame, cols: list[str], label: str) -> bool:
         c = cached[cached.book == "E3"].copy() if "book" in cached else cached.copy()
         cf = pd.to_datetime(c.fill, format="mixed", utc=True).dt.tz_convert(NY)
-        c["k"] = list(zip(c.day.astype(str), cf.dt.strftime("%Y-%m-%d %H:%M"), c.direction))
-        j = F.merge(c[["k"] + [x for x in cols if x in c]], on="k",
-                    suffixes=("", "_ref"))
+        c["fmin"] = cf.dt.strftime("%Y-%m-%d %H:%M")
+        c["day"] = c.day.astype(str)
+        keys = ["day", "fmin"]
+        if "direction" in c:
+            keys.append("direction")
+        if "entry" in c:                     # same-trade join: entry disambiguates siblings
+            c["entry"] = c.entry.round(4)
+            j = F.assign(entry=F.entry.round(4)).merge(
+                c[keys + ["entry"] + [x for x in cols if x in c]],
+                on=keys + ["entry"], suffixes=("", "_ref"))
+        else:
+            j = F.merge(c[keys + [x for x in cols if x in c]], on=keys,
+                        suffixes=("", "_ref"))
         ok = True
         for col in cols:
             if f"{col}_ref" not in j:
                 continue
             a, b = j[col].astype(float), j[f"{col}_ref"].astype(float)
+            if col == "d15_conf":            # zero-delta sign convention: skip |d15|<eps
+                keep = j["d15"].astype(float).abs() > 1e-9
+                a, b = a[keep], b[keep]
             both = a.notna() & b.notna()
             diff = (a[both] - b[both]).abs()
-            nan_mismatch = int((a.isna() != b.isna()).sum())
+            if col == "on_extreme_age":      # cached-NaN/ours-valued tolerated (see header)
+                nan_mismatch = int((a.isna() & b.notna()).sum())
+            else:
+                nan_mismatch = int((a.isna() != b.isna()).sum())
             bad = int((diff > 1e-6).sum())
             state = "OK " if bad == 0 and nan_mismatch == 0 else "FAIL"
             ok &= state == "OK "
@@ -165,9 +195,9 @@ def gate(procs: int) -> None:
     ok &= matched(pd.read_parquet(ROOT / "output/gold_quality.parquet"), GQ_COLS, "gold_quality")
     if not ok:
         raise SystemExit("GATE FAILED — L3 features diverge from the cached matrices "
-                         "on matched fills; do not run Stage B on this")
-    print("gate OK — every shared feature reproduces on the matched fills "
-          "(trigdens_30/conf_PM excluded by design, reasons in the module docstring)")
+                         "on matched same-trade fills; do not run Stage B on this")
+    print("gate OK — every shared feature reproduces on matched same-trade fills "
+          "(exclusions and tolerances documented at TM_COLS)")
 
 
 def main() -> None:
