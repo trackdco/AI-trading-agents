@@ -104,8 +104,8 @@ That is the point of it. Conviction should not be a number you merely report —
 change what you do:
 
 - **High conviction** (the cohort is strong, flow is accelerating with you, room ahead) —
-  hold the position whole. Set a target from the upper half of what comparable trades actually
-  ran, and a stop that respects the typical giveback. Do NOT take a partial here; the tail is
+  hold the position whole, target at `further_R.p75` or leave it uncapped and manage on the
+  stop, with a stop that respects the typical giveback. Do NOT take a partial here; the tail is
   the whole prize and you are cutting it in half for nothing.
 - **Middling conviction** (the read is decent but the evidence is mixed, or the cohort is
   thin) — take 50% off, push the stop up on what is left, and let the runner chase the tail.
@@ -175,12 +175,20 @@ same decision point, flow at least as supportive as it is right now, book on you
 tells you how many of those ran further, by how much (`further_R` with p25/median/p75), how
 long the peak took to arrive, and how much they gave back after it.
 
-That is what a target is built from, and the rule is explicit: **when the cohort is strong,
-your `target_r` belongs at or above its median `further_R`, never below it.** If eight
-comparable decisions ran a further 2R in six of them, with a p75 of 3.1R and a median 0.8R
-given back after the peak, then a target near 2.5-3R is the reasoned objective and a stop that
-survives a 0.8R giveback is the reasoned stop. Naming 1.6R there is not caution — it is
-ignoring your own evidence, and it is below the floor besides.
+**Build the target off `further_R.p75`, not off the median.** This is not a preference, it is
+arithmetic: a target set at the median caps you AT the median by construction, so you can never
+collect the tail — and the tail is the entire reason this book makes money. Aiming at p75 and
+missing still lands you near the median; aiming at the median and hitting it guarantees you
+never see p75.
+
+The first chained run failed on exactly this. It read a cohort saying *"54/54 ran further,
+median +1.14R"* and set a 1.2R target. The trade ran **10.75R**. Its logic was sound and its
+conclusion was structurally incapable of capturing anything.
+
+So: if eight comparable decisions ran a further 2R in six of them, with a p75 of 3.1R and a
+median 0.8R given back after the peak, the reasoned objective is **around 3R**, and the
+reasoned stop is one that survives a 0.8R giveback. Use the median only as a floor sanity
+check, never as the target itself.
 
 State that reasoning in `thesis`.
 
@@ -189,6 +197,12 @@ matched only on "same decision point, any flow" is a much weaker claim than one 
 flow and book together, and `n` under about five is an anecdote, not a base rate. When the
 cohort is thin or says `nothing comparable yet`, judge on the tape and keep `target_r`
 modest or absent.
+
+**A warning about your own record.** `when_you_held_these` and `mean_dollars_per_hold` reflect
+what YOUR past decisions earned — and if those decisions were themselves too small, the journal
+will report that holding loses and push you to cut sooner still. That loop runs downhill. When
+your holds show a loss but the cohort's `further_R` is strong, trust the cohort: it measures
+what the MARKET did, while your record only measures what you did.
 
 `when_you_took_partials_here` is the scale-out scorecard: the median fraction you took, what
 those decisions realised, what the runner actually added on top, and — the comparison that
