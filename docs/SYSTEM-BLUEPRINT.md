@@ -92,8 +92,13 @@ no Angus token, no orders, structurally.
 
 ## Layer 6 — HERMES: the ever-improving intelligence, and Obsidian as its memory
 
-Hermes is not one program — it's a **team of Claude agents** (Claude Code sessions on the
-VPS/cloud) with distinct jobs, all reading and writing ONE shared memory.
+**Hermes is a THIRD-PARTY AI** (its own platform, not part of this codebase and not the
+coding AI) — the desk's tireless research analyst. It plugs into the system through three
+plain interfaces: file access to this repo (its memory), the ability to run the Python
+study harnesses, and Telegram (to reach the humans). The CODING AI (Claude) is a separate
+role: it builds and maintains the machinery Hermes and the humans direct. The roles below
+are the jobs Hermes runs, all reading and writing ONE shared memory.
+(Corrected 2026-07-26 — an earlier revision wrongly described Hermes as Claude sessions.)
 
 **The memory: an Obsidian vault = this repo's `docs/` folder.**
 - **Obsidian** (free) opens `C:\ai-trading-agents\docs` as a vault directly — every
