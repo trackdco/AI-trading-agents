@@ -75,9 +75,12 @@ def walk_one(bars: dict, t: dict) -> dict:
     bars: dict of numpy arrays (mi, o, h, l, c) for the trigger's day band.
     Returns fill facts + the event record every cancel policy keys on."""
     s = 1 if t["direction"] == "long" else -1
-    lim, close = t["entry_ref"], t["close"]
+    # engine parity (gate-discovered): the limit is tick-rounded at order placement, and the
+    # working order is first evaluated on the bar AFTER the trigger bar — searchsorted 'right'.
+    lim = round(round(t["entry_ref"] / TICK) * TICK, 10)
+    close = t["close"]
     mi, o, h, lo = bars["mi"], bars["o"], bars["h"], bars["l"]
-    i0 = int(np.searchsorted(mi, np.datetime64(t["ts64"])))   # first bar labeled >= close time
+    i0 = int(np.searchsorted(mi, np.datetime64(t["ts64"]), side="right"))
 
     # away-side structural levels: at/beyond the trigger close in the run-away direction
     levels = [(n, p, ty) for n, p, ty in json.loads(t["level_stack"] or "[]")
@@ -153,9 +156,11 @@ def run(trigs: pd.DataFrame, bars: pd.DataFrame) -> pd.DataFrame:
             rows.append({
                 "day": day, "ts": r.ts, "tf": r.tf, "direction": r.direction,
                 "kind": r.kind, "pattern": r.pattern, "htf_flag": r.htf_flag,
-                "trig_hm": int(r.trig_hm), "limit": float(r.entry_ref),
-                "stop_ref": float(r.stop_ref),
-                "risk_intended": round(abs(r.entry_ref - r.stop_ref), 2),
+                "trig_hm": int(r.trig_hm),
+                "limit": round(round(r.entry_ref / TICK) * TICK, 10),
+                "stop": round(round(r.stop_ref / TICK) * TICK, 10),
+                "risk_intended": round(abs(round(round(r.entry_ref / TICK) * TICK, 10)
+                                           - round(round(r.stop_ref / TICK) * TICK, 10)), 2),
                 "close": float(r.close), "confluence_count": r.confluence_count,
                 "cluster_members": r.cluster_members, "level_stack": r.level_stack,
                 **walk_one(arrs, t)})
