@@ -134,7 +134,7 @@ def walk_one(bars: dict, t: dict) -> dict:
 def run(trigs: pd.DataFrame, bars: pd.DataFrame) -> pd.DataFrame:
     ts = pd.to_datetime(trigs.ts, format="mixed", utc=False)
     ts = ts.dt.tz_convert(NY) if ts.dt.tz is not None else ts.dt.tz_localize(NY)
-    trigs = trigs.assign(_ts=ts, day=ts.dt.strftime("%Y-%m-%d"),
+    trigs = trigs.assign(ts_et=ts, day=ts.dt.strftime("%Y-%m-%d"),
                          trig_hm=ts.dt.hour * 60 + ts.dt.minute)
     bday = bars.mi.dt.strftime("%Y-%m-%d")
     rows = []
@@ -149,7 +149,7 @@ def run(trigs: pd.DataFrame, bars: pd.DataFrame) -> pd.DataFrame:
         for r in g.itertuples():
             t = {"direction": r.direction, "entry_ref": float(r.entry_ref),
                  "close": float(r.close), "level_stack": r.level_stack,
-                 "ts64": r._ts.tz_convert("UTC").tz_localize(None)}
+                 "ts64": r.ts_et.tz_convert("UTC").tz_localize(None)}
             rows.append({
                 "day": day, "ts": r.ts, "tf": r.tf, "direction": r.direction,
                 "kind": r.kind, "pattern": r.pattern, "htf_flag": r.htf_flag,
