@@ -110,7 +110,7 @@ are the jobs Hermes runs, all reading and writing ONE shared memory.
   every number carries provenance (which study, which data, which date); superseded notes
   are marked, never deleted (the dead ends are as valuable as the wins).
 
-**The Hermes roles (each is an agent session; several already ran today):**
+**The Hermes roles:**
 1. **Journal auditor** (nightly) — reads the day's live journals, diffs live behavior vs
    the book (A1 daily re-check), flags anomalies to Telegram.
 2. **Research analyst** (nightly/weekly) — re-runs the standing study harnesses over the
