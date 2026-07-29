@@ -1,0 +1,124 @@
+<title>Golden-Window Stand-Down — Heatmap Coil Detector</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --ink:#e8ecf3; --mut:#98a2b3;
+    --line:#2a2f3a; --grn:#39d98a; --red:#ff6b6b; --amb:#ffb454; --acc:#5b9dff;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f6f7f9; --panel:#fff; --panel2:#f0f2f5; --ink:#161a20; --mut:#5b6472;
+           --line:#e2e6ec; --grn:#0f9d58; --red:#d64545; --amb:#c07a0d; --acc:#2f6fed; }
+  }
+  :root[data-theme="dark"]{ --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --ink:#e8ecf3;
+    --mut:#98a2b3; --line:#2a2f3a; --grn:#39d98a; --red:#ff6b6b; --amb:#ffb454; --acc:#5b9dff; }
+  :root[data-theme="light"]{ --bg:#f6f7f9; --panel:#fff; --panel2:#f0f2f5; --ink:#161a20;
+    --mut:#5b6472; --line:#e2e6ec; --grn:#0f9d58; --red:#d64545; --amb:#c07a0d; --acc:#2f6fed; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:32px 20px 80px}
+  h1{font-size:26px;margin:0 0 4px;letter-spacing:-.02em}
+  h2{font-size:18px;margin:34px 0 12px;letter-spacing:-.01em}
+  .sub{color:var(--mut);margin:0 0 22px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  .card{flex:1 1 180px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .card .k{color:var(--mut);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+  .card .v{font-size:23px;font-weight:650;margin-top:3px}
+  .grn{color:var(--grn)} .red{color:var(--red)} .amb{color:var(--amb)} .acc{color:var(--acc)}
+  table{width:100%;border-collapse:collapse;margin-top:6px;font-variant-numeric:tabular-nums}
+  th,td{text-align:right;padding:9px 12px;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--mut);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em}
+  tbody tr:last-child td{border-bottom:none}
+  .hi{background:color-mix(in srgb,var(--grn) 12%,transparent)}
+  .tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:20px;border:1px solid var(--line);color:var(--mut);margin-left:8px;vertical-align:middle}
+  .lead{font-size:15.5px}
+  ul{margin:8px 0 0;padding-left:20px} li{margin:5px 0}
+  .foot{color:var(--mut);font-size:12.5px;margin-top:30px;border-top:1px solid var(--line);padding-top:14px}
+  code{background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px}
+  .mut{color:var(--mut)}
+</style>
+
+<div class="wrap">
+  <h1>Golden-Window Stand-Down — Heatmap Coil Detector</h1>
+  <p class="sub">NQ, 2026 (Feb–Jul) · read the order book at 09:30–09:40 to decide whether to trade the golden window · updated 21 Jul 2026</p>
+
+  <div class="panel">
+    <div class="row">
+      <div class="card"><div class="k">Canon baseline</div><div class="v grn">+$17,346</div><div class="mut" style="font-size:12.5px">2+2 caps · CVD gate · 20pt pre cap</div></div>
+      <div class="card"><div class="k">Golden oracle+SD</div><div class="v">≈+$20.9k</div><div class="mut" style="font-size:12.5px">perfect book + stand-down (hindsight)</div></div>
+      <div class="card"><div class="k">Coil precision</div><div class="v acc">90%</div><div class="mut" style="font-size:12.5px">85% train → 96% test (held)</div></div>
+      <div class="card"><div class="k">Test-half E3</div><div class="v grn">−$1,354 → +$1,465</div><div class="mut" style="font-size:12.5px">flipped green, out-of-fit</div></div>
+    </div>
+  </div>
+
+  <h2>The reframe — golden isn't under-traded, it's mis-traded</h2>
+  <div class="panel lead">
+    Across all 99 depth days, <b>80% of golden days are stand-down</b> (both the retest book E3 and
+    the displacement book E4 lose, or no clean setup exists). Every golden day already trades — the
+    engine isn't <i>missing</i> setups. The entire golden edge is <b>not trading the chop days</b>.
+    That reconciles with how Angus trades it live: 3–5 wins/week because the <i>read</i> keeps him out
+    of the trap days — the exact stand-down the mechanical books don't do.
+  </div>
+
+  <h2>The signal — a coiled book = a chop day</h2>
+  <div class="panel">
+    <p style="margin-top:0">At the open, sum the resting size on each side of the book (MBP-10, 09:30–09:40).
+    A <b>balanced / coiled</b> book (low <code>abs_imbal</code>) means liquidity is stacked evenly both
+    sides → price chops between it → both books get sawn off → <b>stand down</b>. A one-sided book says a
+    real move is coming → trade. Threshold set on the train half only, then frozen.</p>
+    <table>
+      <thead><tr><th>window</th><th>days</th><th>actual SD</th><th>coil fires</th><th>precision</th><th>recall</th></tr></thead>
+      <tbody>
+        <tr><td>Train (Feb–Apr)</td><td>52</td><td>71%</td><td>26</td><td>85%</td><td>59%</td></tr>
+        <tr class="hi"><td>Test (May–Jul) <span class="mut">out-of-fit</span></td><td>47</td><td>89%</td><td>26</td><td>96%</td><td>60%</td></tr>
+        <tr><td>All</td><td>99</td><td>80%</td><td>52</td><td>90%</td><td>59%</td></tr>
+      </tbody>
+    </table>
+    <p class="mut" style="margin-bottom:0">Precision = when the coil fires, how often the books really lose.
+    It <b>held from 85% (train) to 96% (test)</b> — the signal did not fall apart out-of-sample.</p>
+  </div>
+
+  <h2>P&amp;L — stand down when the coil fires (causal, no lookahead)</h2>
+  <div class="panel">
+    <table>
+      <thead><tr><th>golden book</th><th>no filter</th><th>coil stand-down</th><th>perfect SD (hindsight)</th></tr></thead>
+      <tbody>
+        <tr><td>E3 (retest) — all</td><td>+$3,671</td><td class="grn">+$5,301</td><td class="mut">+$12,186</td></tr>
+        <tr class="hi"><td>E3 (retest) — <b>test May–Jul</b></td><td class="red">−$1,354</td><td class="grn">+$1,465</td><td class="mut">+$4,766</td></tr>
+        <tr><td>E4 (displacement) — all</td><td>+$1,605</td><td class="grn">+$2,700</td><td class="mut">+$3,880</td></tr>
+        <tr><td>E4 (displacement) — test</td><td class="red">−$1,905</td><td class="amb">−$590</td><td class="mut">+$370</td></tr>
+      </tbody>
+    </table>
+    <p class="mut" style="margin-bottom:0">The coil filter improves every cell, and on the held-out half it
+    turns the E3 retest book from a loser into a winner. It recovers ~40% of the hindsight ceiling —
+    E3 responds far more than E4, because chop punishes retests hardest.</p>
+  </div>
+
+  <h2>Honest read</h2>
+  <div class="panel">
+    <ul>
+      <li><b>What's solid:</b> the coil signal held its precision out-of-fit (85%→96%), improved P&amp;L on
+        both halves causally, and flipped the test-half E3 book green. Mechanism is sound (balanced book = chop).</li>
+      <li><b>What's not proven:</b> 2026-only (99 days, no cross-year test); base rate is already 80% stand-down
+        so the edge is ~10pp, not night-and-day; it captures ~40% of the hindsight ceiling, not all of it.</li>
+      <li><b>Not yet canon.</b> Strongest lever found, but I want Brake's bias definition layered on top —
+        direction + a sharper chop read — before wiring it into the engine.</li>
+    </ul>
+  </div>
+
+  <h2>Where the session landed</h2>
+  <div class="panel">
+    <ul>
+      <li><b>Shipped to canon:</b> pre-market 20pt actual-stop cap → <span class="grn">+$15,381 → +$17,346</span>,
+        44% win, 5/6 green, verified every way.</li>
+      <li><b>Reframed:</b> golden window is mis-traded (chop days), not under-traded.</li>
+      <li><b>Found:</b> the heatmap coil read — a causal, out-of-fit stand-down signal. Harness ready for Brake's read.</li>
+      <li><b>Killed cleanly:</b> the 8am static bias, pre-open stand-down features, and my price/CVD open-character
+        features — all noise or curve-fit; not re-chased.</li>
+    </ul>
+  </div>
+
+  <p class="foot">Reproduce: <code>python -m scripts.coil_full</code> (full coil test) ·
+    <code>python -m scripts.window22_cvd</code> (canon baseline) · thresholds fit on Feb–Apr, frozen for May–Jul.
+    2026 in-sample by design.</p>
+</div>

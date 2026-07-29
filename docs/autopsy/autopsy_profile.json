@@ -1,0 +1,142 @@
+{
+ "family": "profile-interactions",
+ "summary": "Winner profile that generalizes 2025->2026: the fill itself must be with the tape, on a committed book, without fighting the last 15 min. (1) PROFILING (top-vs-bottom $ quartile, stable both years): PRE winners = cvd_conf/conf_PM=1, after a green day, on QUIET overnights (low |cvd_ON|, |cvd_LON|, on_range, |gap|); GOLD winners = fill_delta_conf/delta_div_y=1, premarket tape NOT aligned (pm_sofar_conf=0, contrarian), thicker/supported depth, expanded 20d range. (2) The single strongest separator is fill_delta_conf (fill-bar delta agrees with direction): ~+18pp win rate in BOTH years in every slice. Best frozen 2-feature AND combo: fill_delta_conf==1 & |dep_imb|>=0.154 (2025 q75) -> 2025 50.7%/$+126 (n=69), out-of-sample 2026 42.6%/$+89 (n=54) vs 28.2%/-$14 base; also surviving: gold d15_conf&conf_last15 (+20.5/+12.2pp) and gold d15_conf&d30_ds>=382 (2026 34%/$+160). Combos leaning on 2025 volatility-regime features (patheff, rel_range, gap, thin-depth-delta) died in 2026 via n-collapse or lift-collapse. (3) Quality score (5 components, all 2025-frozen params): monotone-ish; score>=4 gives 34.4%/$+68 (2025, n=125) and 44.9%/$+91 (2026, n=69), gaps +11.4pp/$145 and +20.1pp/$125 vs rest \u2014 passes both evidence rules; the >=3 cut does NOT generalize. Loser tail is equally stable: adverse fill delta (pre bottom-quartile fill_delta_ds: 6.6%/18.8% wr), fighting the 15-min tape in gold (9.6% wr 2026), score<=1 (18% both years). Caveat: 2026 gold base decayed to 25.0%/-$89 while pre improved to 30.2%/+$32; the surviving signals hold within both windows.",
+ "nulls": [
+  "absorption_y: never passes any slice/threshold",
+  "stacked_imb_y: never passes",
+  "conf_ON: pre quartile z +2.0 in 2025 flips to -2.0 in 2026; never passes rules",
+  "conf_sess: never passes",
+  "op_sofar_conf (gold): never passes",
+  "op_sofar_eff: never passes",
+  "pm_sofar_abscvd: never passes",
+  "pm_sofar_patheff: 2025-promising (<=q25 +6.6pp) but 2026 distribution shifted so hard that combo cells have n26=0-1; untestable/dead",
+  "on_eff_path: same regime shift, never passes; combo pm_sofar_patheff&on_eff_path n26=0",
+  "path_hi: never passes",
+  "lon_hi_swept / lon_lo_swept: never pass; lon_lo_swept pre quartile gap is 2025-only",
+  "trap_rate_10: never passes",
+  "dep_spread: never passes",
+  "ent_vs_vwap_sd (unsigned): never passes; _dir version passes only in pattern-B slice (>=q25 -0.689: +13.5/+22.0pp)",
+  "fill_vol_rel alone: never passes any rule (only contributes inside quality score)",
+  "dep_imb_ds>0 alone: weak (gold 2025 +0.6pp); only |dep_imb| extreme works, and only ANDed with fill_delta_conf",
+  "pm_sofar_conf: pre quartile +2.0 in 2025 flips -1.0 in 2026; gold direction is NEGATIVE (contrarian) and passes $ only",
+  "cvd_conf: strong in pre both years but flips/zeroes in gold \u2014 window-dependent",
+  "yday_red / red_streak: huge pre $-quartile gap both years (z -2.0) but NO win-rate edge in 2025 (23.1% vs 23.5%) \u2014 $-tail phenomenon, fails as rule",
+  "delta_div_y (gold): quartile z +1.0/+2.0 but fails win/loss evidence (wr gap negative both years, $ gap $55 in 2026)",
+  "pathpos: pre quartile gap stable but rule fails; gold flips sign",
+  "rel_vol / rel_range low-is-good: 2025 candidate, 2026 inconsistent \u2014 fails",
+  "cvd_ASIA_ds: pre flips sign; only abs version (high |cvd_ASIA| bad) shows partial 2026-heavy signal, fails 2025 wr",
+  "dep_imb_ds pre quartile gap +0.34 in 2025 flips -0.13 in 2026",
+  "dow, pos_800, pdc_loc, imbal_share_20, on_extreme_age, range_pctl_20: pass only via marginal $-rule cells in single slices, wr direction unstable \u2014 treat as noise",
+  "score>=3 cut of quality score FAILS 2025 (+3.6pp); only >=4 generalizes; score-5 cell n=22/10 below floor",
+  "Frozen combo failures (top-5 by 2025 that died): dep_thick_d5m>=q75 & fill_delta_ds>=q50 (2026 n=23 < floor); fill_delta_conf & dep_thick_d5m>=q75 (n26=22); fill_delta_conf & gap_open_pts_ds>=q75 (2026 wr 28.3%, lift +0.1pp); fill_delta_ds>=q50 & gap_open_pts_ds>=q75 (2026 -1.9pp); pre fill_delta_conf & dep_sup_m_res_abs>=q75 (n26=14); pre fill_delta_conf & rel_range<=q25 (n26=24)",
+  "d5_conf: passes only in pattern-B ($-rule fails 2025); d30_conf: marginal, fails wr rule overall"
+ ],
+ "confirmed": [
+  {
+   "name": "fill_delta_conf==1 (fill-bar delta agrees with trade direction)",
+   "slice": "all (also passes in pre, gold, B, B2)",
+   "metric25": "wr 35.1% vs 17.3% (+17.8pp), $-gap +$79/t, n=259/300",
+   "metric26": "wr 37.9% vs 19.9% (+18.0pp), $-gap +$187/t, n=190/221",
+   "direction": "confirming fill delta -> higher win rate",
+   "note": "Strongest universal single separator; passes both wr and $ rules in every slice tested. 99.6% identical to sign(fill_delta*direction)>0.",
+   "family": "profile-interactions",
+   "real": true,
+   "halves_pass": 4,
+   "evidence": "Recomputed from output/trade_matrix.parquet: fill_delta_conf==1 vs 0 \u2014 2025 wr 35.1% vs 17.3% (+17.8pp), $-gap +$79/t, n=259/300; 2026 wr 37.9% vs 19.9% (+18.0pp), $-gap +$187/t, n=190/221 \u2014 exact match to claim. Identity with sign(fill_delta*direction)>0 = 99.6% as stated. Slices pass wr rule (>=8pp, n>=25 both years): pre +16.9/+17.7pp, gold +21.0/+17.6pp, B +15.4/+18.0pp, B2 +18.1/+19.9pp. Stre"
+  },
+  {
+   "name": "COMBO (frozen): fill_delta_conf==1 AND |dep_imb|>=0.154 (2025 q75)",
+   "slice": "all",
+   "metric25": "wr 50.7%, $+126/t, n=69 (vs complement 22.0%, $-69)",
+   "metric26": "wr 42.6%, $+89/t, n=54 (vs complement 26.1%, $-29); +14.4pp / +$103 vs 2026 base",
+   "direction": "confirming delta + strongly imbalanced depth book (either side) -> winners",
+   "note": "Top surviving 2-feature AND combo; fit and thresholds 2025-only, frozen, 2026 out-of-sample. Mix: ~70% pre, all patterns, both directions.",
+   "family": "profile-interactions",
+   "real": true,
+   "halves_pass": 4,
+   "evidence": "Recomputed from output/trade_matrix.parquet: threshold 0.154 confirmed as 2025-only q75 of |dep_imb| (0.153846). Combo (fill_delta_conf==1 AND |dep_imb|>=0.153846): 2025 n=69 wr 50.7% $+126/t vs complement n=490 wr 22.0% $-69; 2026 n=54 wr 42.6% $+89/t vs complement n=357 wr 26.1% $-29; +14.4pp/+$103 vs 2026 base 28.2% \u2014 all stated numbers reproduce exactly. Mix confirmed: 71.5% pre, all patterns,"
+  },
+  {
+   "name": "Quality score >=4 of 5 {d15_conf, window-conf(PM/LON), dep_imb_ds>0, fill_vol_rel>2.19, ent_vs_vwap_sd_dir in [-0.573,1.050]}",
+   "slice": "all (mix ~55/45 pre/gold)",
+   "metric25": "score>=4: wr 34.4%, $+68/t, n=125 (vs <4: +11.4pp, +$145)",
+   "metric26": "score>=4: wr 44.9%, $+91/t, n=69 (vs <4: +20.1pp, +$125)",
+   "direction": "more stacked conditions -> better; only the >=4 cut generalizes",
+   "note": "By-score (wr 2025/2026): 0-1: 18%/18%; 2: 27%/27%; 3: 22%/26%; 4: 33%/44%; 5: 41%/50% (n=22/10). Cut>=3 FAILS 2025 (+3.6pp only); score 3 dips below 2 in 2025. All params 2025-only.",
+   "family": "profile-interactions",
+   "real": true,
+   "halves_pass": 4,
+   "evidence": "RECOMPUTE (exact match): Reconstructed score from output/trade_matrix.parquet with 5 binaries: (1) d15_conf==1; (2) window-conf = conf_PM==1 for win_=='pre', conf_LON==1 for win_=='gold'; (3) dep_imb_ds>0 where dep_imb_ds = dep_imb signed + for longs / - for shorts, NaN dep -> condition fails; (4) fill_vol_rel>2.19; (5) ent_vs_vwap_sd_dir in [-0.573,1.050] inclusive. This is the unique definition "
+  },
+  {
+   "name": "d15_ds >= -231 (2025 gold q25): 15-min delta not strongly against trade",
+   "slice": "gold",
+   "metric25": "wr 37.0% vs 20.6% (+16.4pp), $-gap +$189/t, n=100/34",
+   "metric26": "wr 32.7% vs 9.6% (+23.1pp), $-gap +$271/t, n=104/52",
+   "direction": "heavy 15-min tape against the trade -> losers",
+   "note": "Gold trades fighting a >=q75-magnitude adverse 15-min delta win ~10-20%. d15_conf==1 alone also passes (+22.7/+12.3pp, +$261/$161).",
+   "family": "profile-interactions",
+   "real": true,
+   "halves_pass": 4,
+   "evidence": "Recomputed independently from output/trade_matrix.parquet: d15_ds = d15 * (+1 long / -1 short); threshold = 2025-gold-only q25 = -231.25 (matches claimed -231; confirmed computed solely from 2025 win_=='gold' rows, no 2026 data). Gold slice, d15_ds >= thr vs < thr: 2025 wr 37.0% vs 20.6% (+16.4pp), $-gap +$189/t ($2 vs -$187), n=100/34; 2026 wr 32.7% vs 9.6% (+23.1pp), $-gap +$271/t ($2 vs -$269),"
+  },
+  {
+   "name": "fill_delta_ds >= -23 (2025 pre q25): fill delta not heavily adverse",
+   "slice": "pre",
+   "metric25": "wr 28.8% vs 6.6% (+22.2pp), $-gap +$76/t, n=319/106",
+   "metric26": "wr 34.4% vs 18.8% (+15.6pp), $-gap +$115/t, n=186/69",
+   "direction": "bottom-quartile adverse fill delta -> near-zero win rate in pre",
+   "note": "The loser tail: pre fills taken directly into >=q75 opposing delta won 6.6% in 2025, 18.8% in 2026.",
+   "family": "profile-interactions",
+   "real": true,
+   "halves_pass": 4,
+   "evidence": "Independent recompute from output/trade_matrix.parquet matches the claim exactly. Derived fill_delta_ds = fill_delta * (+1 long / -1 short); threshold = q25 of fill_delta_ds over 2025 pre fills only = -23.0 (confirmed 2025-only quantile, matches claimed -23). Pre slice, split at >= -23 vs < -23: 2025 wr 28.8% vs 6.6% (+22.2pp), mean-$ gap +$76/t, n=319/106; 2026 wr 34.4% vs 18.8% (+15.6pp), $ gap "
+  },
+  {
+   "name": "COMBO (frozen): d15_conf==1 AND conf_last15==1",
+   "slice": "gold",
+   "metric25": "wr 41.6% vs 21.1% (+20.5pp), $+65 vs $-196, n=77/57",
+   "metric26": "wr 31.2% vs 19.0% (+12.2pp), $-10 vs $-165 (+$155), n=77/79",
+   "direction": "last-15-min tape aligned + 15-min delta confirming -> gold winners",
+   "note": "Passes both rules both years. Inverse fade_last15==1 is symmetric loser flag (-21.8/-10.9pp). Gold combo d15_conf & d30_ds>=382 also survives frozen: 2026 wr 34.0% $+160 n=50 (+9.0pp wr both yrs).",
+   "family": "profile-interactions",
+   "real": true,
+   "halves_pass": 4,
+   "evidence": "Independent recompute from output/trade_matrix.parquet matches claim exactly. Gold slice (win_=='gold', n=290), combo = (d15_conf==1 & conf_last15==1): 2025 combo n=77 wr=41.6% mean$=+65 vs rest n=57 wr=21.1% mean$=-196 (+20.5pp, +$261); 2026 combo n=77 wr=31.2% mean$=-10 vs rest n=79 wr=19.0% mean$=-165 (+12.2pp, +$155). Both years meet rule (a) wr gap >=8pp with n>=25/cell AND rule (b) $ gap >=$"
+  },
+  {
+   "name": "cvd_conf==1 (session CVD confirms direction)",
+   "slice": "pre",
+   "metric25": "wr 27.1% vs 19.5% (+7.6pp), $-gap +$77/t, n=210/215",
+   "metric26": "wr 42.6% vs 17.5% (+25.2pp), $-gap +$295/t, n=129/126",
+   "direction": "CVD-confirmed pre fills -> winners",
+   "note": "Passes on $ rule ($77/$295); wr gap misses 8pp in 2025 (7.6pp). Same story for conf_PM/wconf in pre (+$74/+$272). Top-quartile-$ pre trades have median cvd_conf=1, bottom-quartile 0, both years (|z|~2.0). NULL in gold (flips).",
+   "family": "profile-interactions",
+   "real": true,
+   "halves_pass": 4,
+   "evidence": "Recompute (pre slice, cvd_conf==1 vs 0): 2025 wr 27.1% vs 19.5% (+7.6pp), $-gap +$77/t, n=210/215; 2026 wr 42.6% vs 17.5% (+25.2pp), $-gap +$295/t, n=129/126 \u2014 matches claim exactly. Passes rule (b): mean-$ gap >= $60/t both years with n>=25 per cell (wr rule (a) fails 2025 at 7.6pp, as claim honestly notes). Stress halves ($-gap, cvd_conf==1 minus 0): 2025 Jun-Sep +$42 (n=124/120), 2025 Oct-Dec +"
+  },
+  {
+   "name": "COMBO (frozen): fill_delta_abs<=9 (2025 pre q25) AND fill_delta_conf==1",
+   "slice": "pre",
+   "metric25": "wr 48.0%, $+97/t, n=50 (base 23.3%, $-45)",
+   "metric26": "wr 36.4%, $+140/t, n=33 (+6.2pp, +$108 vs 2026 base)",
+   "direction": "small-but-confirming fill delta -> winners",
+   "note": "Survives on $ rule only (2026 wr lift 6.2pp < 8). Best pre combo by 2025; other pre top-5 combos die on 2026 n-floors (see nulls).",
+   "family": "profile-interactions",
+   "real": true,
+   "halves_pass": 3,
+   "evidence": "Recompute EXACT MATCH from output/trade_matrix.parquet, slice win_=='pre', combo = abs(fill_delta)<=9 AND fill_delta_conf==1: 2025 n=50, wr 48.0%, $+97/t (pre base n=425, wr 23.3%, $-45/t); 2026 n=33, wr 36.4% (+6.2pp vs 2026 pre base 30.2%), $+140/t (+$108 vs base $32/t). Threshold check: 2025-pre q25 of abs(fill_delta) = 9.0 exactly, so the frozen cut is a pure 2025 quantile, not tuned on 2026. "
+  }
+ ],
+ "killed": [
+  {
+   "name": "Quiet-overnight profile: cvd_ON_abs low; low on_range",
+   "why": "Recomputed from output/trade_matrix.parquet, slice win_=='pre', thresholds as 2025-only quantiles (cvd_ON_abs q25=453 exactly matches claim; on_range q50=129.75~=130 matches). Leg 1 (cvd_ON_abs<=453) "
+  },
+  {
+   "name": "Gold top-vs-bottom $ quartile profile (6 largest stable z-gaps)",
+   "why": "RECOMPUTE MISMATCH on headline metric. Gold (n=290; 2025 n=134, 2026 n=156), top-vs-bottom dollar quartile per year, z vs per-year gold sd: 2025 actual z-gaps = delta_div_y +0.06, fill_delta_conf +0.2"
+  }
+ ]
+}

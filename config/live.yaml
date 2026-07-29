@@ -1,0 +1,92 @@
+# config/live.yaml — OPERATIONAL settings for the LIVE CANON runner
+# (scripts/canon_run.py). Runtime WIRING only; the trading RULES live in
+# config/strategy.yaml and are never duplicated here.
+#
+# There is NO paper stage. This runs the AUTHORITATIVE canon lane (shape i,
+# src/live/route_b.py::RouteBLive) off Sierra's own .scid/.depth files, DISARMED
+# (zero orders) until the arming token. Sequence:
+#   gates -> shadow run (zero orders) -> gate_report PASS -> arming token -> live on funded
+#   * disarmed        — _NoBroker; the spine evaluates + journals but cannot route an order
+#   * KILL-aware      — the spine reads `paths.kill_file`; present => the spine halts
+#   * alerting        — Telegram on start / stop / roll (also logged to run_log)
+#   * Route-B data    — tails Sierra .scid/.depth (DTC won't serve data), roll re-point, stall
+
+account:
+  equity: 50000.0                 # funded-account equity for the spine's AccountState
+                                  #   (placeholder until the DTC account read-back is wired)
+
+spine:                            # TIER-1 SAFETY LIMITS (PROMOTION-GATE §D2 blocker 3).
+                                  # These are NOT dataclass defaults any more: the runner loads
+                                  # them from here and `assert_tier1_pinned` refuses to start if
+                                  # they disagree with the signed-off copy in src/canon/spine.py.
+                                  # Changing a limit = edit BOTH + re-run the gate (§E: any spine
+                                  # change is a stop-and-review). An unknown key here is a hard
+                                  # error, never a silent fall-back to a default.
+  dd_halt_buffer: 100.0           # token hard halt under the DD RAMP (ANGUS 2026-07-26):
+                                  #   sizing scales the $200 base linearly to zero between
+                                  #   $1,500 and $100 of available DD (gate_evidence), so a
+                                  #   troubled account de-risks instead of freezing. Replaces
+                                  #   the $250 cliff: 0.00% bust, 0.0% frozen years,
+                                  #   +$1,078/account/yr (docs/RULING-daily-loss-limit.md).
+  daily_loss_halt_r: -4.0         # day P&L halt as an R MULTIPLE of the day's own base_dollar,
+                                  #   NOT a fixed dollar figure: -$800 at the eval floor,
+                                  #   -$1,700 at $6k available DD. AWAITING ANGUS SIGN-OFF on
+                                  #   the value; the units (R, not $) are not a preference.
+  max_contracts: 40               # hard clamp in MICROS — the unit OrderIntent.size carries.
+                                  #   Must equal gate_evidence.MICRO_CLAMP (the sizing schedule's
+                                  #   own cap). The old value 2 clamped every order to 2 micros.
+  max_spread_rel: 2.5             # spread ceiling as a multiple of the trailing baseline
+  feed_stale_ms: 3000             # no order if the last tick is older than this
+  max_orders_per_min: 10          # order-rate cap
+
+archive:                          # nightly Sierra .scid/.depth offload (scripts/archive_sierra.py)
+  data_dir: C:/SierraChart/Data   # Sierra Data dir (front-month .scid + MarketDepthData/*.depth)
+  bucket:   nq-mbo-archive        # Backblaze B2 bucket (creds from B2_KEY_ID / B2_APP_KEY env)
+                                  #   Pat's existing bucket (created 2026-07-24, confirmed on
+                                  #   the box 2026-07-26) — supersedes the planned nq-sierra-book
+  manifest: output/live/archive_manifest.json   # {key: size} — makes the nightly run idempotent
+  prefix:   sierra                # B2 key prefix (repointed from the old "mbo" prefix)
+  root:     NQ                    # symbol root
+  suffix:   "-CME"               # exchange/service tag Sierra appends to the file name
+  # Register the nightly Windows task once on the VPS:
+  #   python scripts/archive_sierra.py --register   (prints the schtasks command; default 17:30 CT)
+
+dtc:                              # ORDER ROUTE — read only by an ARMED run (canon_run --arm).
+                                  # A disarmed run never opens this connection. The trade
+                                  # account is NOT set here: it comes from Angus's committed
+                                  # authorization (config/arming.yaml), so the account the
+                                  # token authorizes is the account orders route to.
+  host: 127.0.0.1                 # Sierra's DTC server (same box)
+  port: 11099                     # Sierra default DTC port
+  order_symbol: MNQU6.CME         # micros contract orders route to (canon = micros only) —
+                                  #   BOX naming convention (single-digit year, dot tag),
+                                  #   mirrors the live data symbol NQU6.CME observed
+                                  #   2026-07-27; re-point at the Sept-16 roll (A8 / §E.4)
+  price_scale: 100.0              # service price units per display point. THIS BOX's
+                                  #   Rithmic feed runs 100x display (depth files first,
+                                  #   then the order path: Price1=28690 landed as 286.90,
+                                  #   'bad price' on every limit — 2026-07-27). The broker
+                                  #   multiplies outbound order prices and divides read-backs
+
+paths:
+  journal_dir: output/live                 # verdicts.jsonl + spine/sizing/rejects + decisions.jsonl
+  kill_file:   output/live/KILL            # present => the spine halts
+  run_log:     output/live/canon_run.log   # runner log (also echoed to stdout)
+
+telegram:
+  enabled: true                    # true => alerts via .env creds; false => run silent
+                                   #   (the runner still logs every alert to run_log)
+
+feed:
+  sierra:                          # the on-box Route-B live data path
+    data_dir: C:/SierraChart/Data  # Sierra's Data dir (front-month .scid + MarketDepthData/)
+    # scid: C:/SierraChart/Data/NQU26-CME.scid   # optional explicit override; else resolved
+    root: NQ                       # symbol root (data reads NQ; orders would route MNQ)
+    suffix: "-CME"                 # exchange/service tag Sierra appends to the file name
+    account: FUNDED                # account label on the (disarmed) spine OrderIntent
+    flush_ms: 1000                 # configured Sierra flush (feed-lag report baseline)
+    poll_interval_s: 1.0           # live-tail poll cadence (match the flush)
+    warmup:                        # warm start before going live (day-one levels correct)
+      parquet: data/reference/nq_1m_feb_jul2026.parquet
+      warmup_days: 20
+      # footprint: output/fp_minutes.parquet     # optional: also warm tape/CVD

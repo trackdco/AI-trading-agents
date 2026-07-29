@@ -1,0 +1,73 @@
+{
+  "_meta": {
+    "purpose": "Frozen production thresholds for the mechanical canon (canon_mechanical.py NY pre/gold + london_canon.py).",
+    "derived_from": "2025 slice of output/trade_matrix.parquet merged with badpa_matrix.parquet (pre-risk-filter population, as build_canon).",
+    "generated_by": "scripts/freeze_thresholds.py",
+    "warning": "Do NOT hand-edit `derived`; regenerate with freeze_thresholds.py. Changing any threshold is a rule change \u2014 Angus sign-off required (proposals-only). Literals below are lifted verbatim from the validated scorers; parity is enforced by tests."
+  },
+  "derived": {
+    "pre": {
+      "Tp_d15dir_min": -61.0,
+      "G_ent_vs_vwap_sd_dir_min": -0.7682291464908397
+    },
+    "gold": {
+      "X_bbw_state_min": 4.11729554353788,
+      "AGE_on_extreme_age_min": 136.5,
+      "PAQ_netpath_30_min": 0.060694519129820865
+    }
+  },
+  "hard_gates": {
+    "ny_stop_min": 7,
+    "ny_stop_max": 60,
+    "london_stop_min": 9.5
+  },
+  "gold_quality": {
+    "WALLSZ_min_contracts": 7,
+    "BIGFD_fill_delta_abs_min": 173,
+    "TRIG_trigdens_30_min_exclusive": 11,
+    "VWAPD_ent_vs_vwap_sd_dir_min": 0.107,
+    "LONSLOPE_lon_slope_d_min": -0.0961,
+    "Q_no_trade_max": 1,
+    "Q_boost_min": 3
+  },
+  "sizing": {
+    "pre_gold_ladder": {
+      "le2": 0.0,
+      "s3": 0.5,
+      "s4": 1.0,
+      "s5": 1.5
+    },
+    "london_ladder": {
+      "le1": 0.0,
+      "s2": 0.5,
+      "s3": 1.0,
+      "s4": 1.5
+    },
+    "size_cap": 1.5
+  },
+  "escalation": {
+    "second_trade_min_score_ny": 4,
+    "second_trade_min_score_london": 3,
+    "day_loss_stop_dollars": -400
+  },
+  "intrade": {
+    "cut3_r3_max": -0.1106,
+    "cut3_fw3_max": -13
+  },
+  "sizing_mods": {
+    "R1_churn_flow_30_min_exclusive": 0.0292,
+    "R2_netpath_30_min": 0.3328,
+    "cold_trail20_wr_max": 0.4
+  },
+  "governor": {
+    "trail15_confirmed_wr_min": 0.35
+  },
+  "london": {
+    "FAR_wall_ahead_d_min_exclusive": 4.5,
+    "ROOM_room_R_low_exclusive": 2.48,
+    "ROOM_room_R_high": 9.56,
+    "ASIA_dir_cvd_min": -748,
+    "OF_opp5_max_exclusive": 2,
+    "B_continuation_min_score": 3
+  }
+}

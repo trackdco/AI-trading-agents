@@ -1,0 +1,910 @@
+"""Tests for src/backtest/engine.py — event-driven backtester (Spec 1, Step 7).
+
+Hand-built 1m bar sequences + synthetic Triggers with a stub target resolver and pinned
+entry prices, so fill/stop/target/management/vault mechanics are tested in isolation
+(detect_triggers is NOT called here except in one integration test on the committed slice).
+
+Mandatory named tests (code-standards): test_no_lookahead, test_single_position_invariant,
+test_fill_requires_trade_through.
+"""
+from datetime import time
+from pathlib import Path
+
+import pandas as pd
+import pytest
+
+from src.backtest.engine import BacktestConfig, simulate
+from src.engine.triggers import Trigger
+
+NY = "America/New_York"
+FIX = Path(__file__).parent / "fixtures"
+
+
+def cfg(**over) -> BacktestConfig:
+    base = dict(timezone=NY, win_start=time(0, 1), win_end=time(23, 58),
+                eod_flatten=time(15, 55), entry_variant="E3", t_cancel=15.0,
+                front_run=2.5, rr_floor=1.5, news_override=False,
+                min_conf_counter=3, min_conf_with=2, mgmt_variant="V0",
+                v1_be_at_r=1.0, v4_partial_pct=50, max_trades_per_day=3,
+                halt_losses=2, halt_r=-2.0,
+                oversized_stop=42.0, late_window_after=time(10, 30),
+                vwap_warmup_min=60, no_premarket_high_impact=True,
+                require_bb_vwap=True,
+                # min-stop disabled by default so hand-built geometry fixtures stay valid;
+                # the §5 v1.2 rule has its own dedicated tests below (min_stop_points=10)
+                min_stop_points=0.0,
+                tick=0.25, through_ticks=1,
+                slip_normal=1, slip_news=4, news_window_min=15,
+                commission_side=2.5, point_value=20.0)
+    base.update(over)
+    return BacktestConfig(**base)
+
+
+def mk_bars(start: str, rows: list[tuple]) -> pd.DataFrame:
+    idx = pd.date_range(pd.Timestamp(start, tz=NY), periods=len(rows), freq="1min")
+    o, h, lo, c = zip(*rows)
+    return pd.DataFrame({"ts_event": idx, "open": o, "high": h, "low": lo, "close": c,
+                         "volume": [100] * len(rows)})
+
+
+def trig(ts: str, direction="long", conf=3, htf="counter_trend", pattern="A",
+         entry_ref=25000.0, stop_ref=None, tf="3min", cluster_types=("bb", "vwap", "poc")) -> Trigger:
+    stop = stop_ref if stop_ref is not None else (entry_ref - 10 if direction == "long"
+                                                  else entry_ref + 10)
+    wl, wh = (stop, entry_ref) if direction == "long" else (entry_ref, stop)
+    return Trigger(ts=pd.Timestamp(ts, tz=NY).isoformat(), tf=tf, direction=direction,
+                   kind="rejection_block", pattern=pattern, htf_flag=htf,
+                   entry_ref=entry_ref, stop_ref=stop, wick_low=wl, wick_high=wh,
+                   cluster_center=entry_ref, confluence_count=conf,
+                   cluster_types=list(cluster_types), close=entry_ref + 2)
+
+
+def stub_resolver(level: float):
+    return lambda t, entry, stop: ("stub_level", level)
+
+
+def pin_entry(price: float):
+    return lambda t: price
+
+
+EMPTY_CAL = pd.DataFrame(columns=["datetime_ET", "event", "impact"])
+
+
+def run(bars, triggers, c=None, resolver=None, entry=None, calendar=None):
+    return simulate(bars, triggers, c or cfg(), target_resolver=resolver,
+                    entry_price_fn=entry, calendar=EMPTY_CAL if calendar is None else calendar)
+
+
+# ------------------------------------------------------------- fills
+
+def test_fill_requires_trade_through():
+    # long limit 25000: a bar whose low EXACTLY touches 25000 must NOT fill;
+    # a bar trading through by 1 tick (low 24999.75) MUST fill.
+    t = trig("2026-02-11 09:48")
+    touch = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                         (25004, 25005, 25000.0, 25002)])
+    tr, vd, _ = run(touch, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert not any(v.status == "taken" for v in vd) and tr == []
+
+    through = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                           (25004, 25005, 24999.75, 25002),
+                                           (25003, 25101, 25002, 25100)])  # then target
+    tr, vd, _ = run(through, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert any(v.status == "taken" for v in vd)
+    assert len(tr) == 1 and tr[0].entry == 25000.0
+
+
+def test_order_cannot_fill_before_activation():
+    # fillable prices BEFORE the trigger's close ts must not fill the order
+    t = trig("2026-02-11 09:50")
+    bars = mk_bars("2026-02-11 09:48", [(25004, 25005, 24999.0, 25002),   # pre-trigger dip
+                                        (25003, 25004, 25002, 25003),
+                                        (25003, 25004, 25002.5, 25003),   # trigger bar: no dip
+                                        (25003, 25004, 25002.5, 25003)])
+    tr, vd, _ = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert not any(v.status == "taken" for v in vd) and tr == []
+
+
+def test_t_cancel_wins_and_blocks_fill():
+    # price runs t_cancel (15) beyond the limit without a prior fill -> cancelled
+    t = trig("2026-02-11 09:48")
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25010, 25016.0, 25009, 25015),    # 25016 >= 25000+15+... run-away
+                                        (25003, 25004, 24999.0, 25002)])   # would-be fill after cancel
+    tr, vd, _ = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert any(v.status == "cancelled_tcancel" for v in vd)
+    assert tr == [] and not any(v.status == "taken" for v in vd)
+
+
+def test_stop_touch_with_adverse_slippage_and_gap_through():
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    # fill at 25000, then bar touches stop 24990 -> exit 24990 - 1 tick
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),
+                                        (24996, 24997, 24990.0, 24992)])
+    tr, _, _ = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert len(tr) == 1 and tr[0].exit_reason == "stop"
+    assert tr[0].exit_price == pytest.approx(24990.0 - 0.25)
+    # gap-through: next-day style open BELOW the stop -> fill at the worse open - slip
+    bars2 = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                         (25004, 25005, 24999.75, 25002),
+                                         (24985.0, 24986, 24980, 24982)])
+    tr2, _, _ = run(bars2, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert tr2[0].exit_price == pytest.approx(24985.0 - 0.25)
+
+
+def test_same_bar_stop_and_target_resolves_to_stop():
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),
+                                        (25000, 25101.0, 24989.0, 25050)])  # spans both
+    tr, _, _ = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert len(tr) == 1 and tr[0].exit_reason == "stop"
+
+
+def test_target_fills_via_trade_through_at_working_target():
+    # target level 25100, front-run 2.5 -> working 25097.5; fills when high >= 25097.75
+    t = trig("2026-02-11 09:48")
+    no = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                      (25004, 25005, 24999.75, 25002),
+                                      (25050, 25097.5, 25040, 25090)])      # touch only
+    tr, _, _ = run(no, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert tr == []                                                        # still open at end
+    yes = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                       (25004, 25005, 24999.75, 25002),
+                                       (25050, 25097.75, 25040, 25090)])
+    tr, _, _ = run(yes, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert len(tr) == 1 and tr[0].exit_reason == "target"
+    assert tr[0].exit_price == pytest.approx(25097.5)
+    assert tr[0].r_multiple == pytest.approx(9.75, abs=0.01)               # 97.5 / 10
+
+
+# ------------------------------------------------------------- invariants
+
+def test_no_lookahead():
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005), (25004, 25005, 24999.75, 25002),
+            (25003, 25004, 25001, 25002), (24996, 24997, 24990.0, 24992),   # stop at 09:51
+            (25000, 25200, 24900, 25100), (25000, 25200, 24900, 25100)]
+    bars = mk_bars("2026-02-11 09:48", rows)
+    T = pd.Timestamp("2026-02-11 09:52", tz=NY)
+    tr_a, vd_a, _ = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    pert = bars.copy()
+    fut = pert["ts_event"] >= T
+    pert.loc[fut, ["open", "high", "low", "close"]] += 500.0
+    tr_b, vd_b, _ = run(pert, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    upto = lambda trs: [x.model_dump() for x in trs if pd.Timestamp(x.exit_ts) < T]  # noqa: E731
+    assert upto(tr_a) == upto(tr_b)
+    assert [v.model_dump() for v in vd_a if pd.Timestamp(v.ts) < T] == \
+           [v.model_dump() for v in vd_b if pd.Timestamp(v.ts) < T]
+
+
+def test_single_position_invariant():
+    t1 = trig("2026-02-11 09:48")
+    t2 = trig("2026-02-11 09:49", entry_ref=25001.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),
+                                        (25003, 25004, 25001, 25002),
+                                        (25050, 25101.0, 25040, 25090)])
+    tr, vd, _ = run(bars, [t1, t2], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert len(tr) <= 1
+    assert any(v.status in ("skipped_position_open", "skipped_order_working") for v in vd)
+    spans = [(pd.Timestamp(x.fill_ts), pd.Timestamp(x.exit_ts)) for x in tr]
+    for i in range(len(spans)):
+        for j in range(i + 1, len(spans)):
+            assert spans[i][1] <= spans[j][0] or spans[j][1] <= spans[i][0]
+
+
+# ------------------------------------------------------------- vetoes & vault
+
+def test_window_and_confluence_vetoes():
+    c = cfg(win_start=time(9, 30), win_end=time(11, 0))
+    early = trig("2026-02-11 08:00")
+    weak = trig("2026-02-11 09:48", conf=2, htf="counter_trend")
+    ok_wt = trig("2026-02-11 09:49", conf=2, htf="with_trend")
+    bars = mk_bars("2026-02-11 08:00", [(25005, 25006, 25004, 25005)] * 130)
+    _, vd, _ = run(bars, [early, weak, ok_wt], c=c,
+                   resolver=stub_resolver(25100), entry=pin_entry(25000))
+    st = {v.ts: v.status for v in vd}
+    assert st[early.ts] == "vetoed_window"
+    assert st[weak.ts] == "vetoed_confluence"          # counter-trend needs 3
+    # with-trend needs only 2 -> passes filters and becomes a working order (no veto verdict)
+    assert st.get(ok_wt.ts) != "vetoed_confluence"
+
+
+def test_rr_floor_veto():
+    t = trig("2026-02-11 09:48")                        # risk 10 pts
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005)] * 3)
+    _, vd, _ = run(bars, [t], resolver=stub_resolver(25010.0), entry=pin_entry(25000))
+    assert any(v.status == "vetoed_rr_floor" for v in vd)  # (10-2.5)/10 = 0.75 < 1.5
+
+
+def _quick_loss_day(n_triggers: int, c: BacktestConfig):
+    """n triggers, each fills next bar and stops the bar after (loss cycle of 3 bars)."""
+    rows, trigs = [], []
+    t0 = pd.Timestamp("2026-02-11 09:00", tz=NY)
+    for k in range(n_triggers):
+        base = t0 + pd.Timedelta(minutes=3 * k)
+        trigs.append(trig(str(base.tz_localize(None)), stop_ref=24995.0))
+        rows += [(25005, 25006, 25004, 25005),
+                 (25004, 25005, 24999.75, 25002),          # fill 25000
+                 (24996, 24997, 24994.0, 24996)]           # stop 24995 -> loss ~-0.5R... risk 5
+    bars = mk_bars("2026-02-11 09:00", rows)
+    return run(bars, trigs, c=c, resolver=stub_resolver(25100), entry=pin_entry(25000))
+
+
+def test_max_trades_per_day():
+    c = cfg(halt_losses=99, halt_r=-99.0, max_trades_per_day=3)
+    tr, vd, _ = _quick_loss_day(5, c)
+    assert len(tr) == 3
+    assert sum(1 for v in vd if v.status in ("vetoed_vault_max",)) >= 1
+
+
+def test_daily_halt_after_losses():
+    c = cfg(halt_losses=2, halt_r=-99.0, max_trades_per_day=99)
+    tr, vd, _ = _quick_loss_day(4, c)
+    assert len(tr) == 2                                    # halted after 2 losses
+    assert any(v.status == "vetoed_halt" for v in vd)
+
+
+def test_v12_halt_loss_counter_disabled():
+    # §10 v1.2 (ANGUS option a): halt_losses=0 disables the counter — losses alone never
+    # halt the day; only the -R damage threshold does.
+    c = cfg(halt_losses=0, halt_r=-99.0, max_trades_per_day=99)
+    tr, vd, _ = _quick_loss_day(4, c)
+    assert len(tr) == 4                                    # all four lose, nobody halts
+    assert not any(v.status == "vetoed_halt" for v in vd)
+    c2 = cfg(halt_losses=0, halt_r=-2.0, max_trades_per_day=99)
+    tr2, vd2, _ = _quick_loss_day(4, c2)
+    assert len(tr2) < 4                                    # -2R damage still halts
+    assert any(v.status == "vetoed_halt" for v in vd2)
+
+
+def test_eod_flatten():
+    t = trig("2026-02-11 15:50")
+    bars = mk_bars("2026-02-11 15:50", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 15:51
+                                        (25003, 25004, 25002, 25003),
+                                        (25003, 25004, 25002, 25003),
+                                        (25003, 25004, 25002, 25003),
+                                        (25010.0, 25011, 25009, 25010)])   # 15:55 flatten bar
+    tr, _, _ = run(bars, [t], resolver=stub_resolver(25200), entry=pin_entry(25000))
+    assert len(tr) == 1 and tr[0].exit_reason == "eod"
+    assert tr[0].exit_price == pytest.approx(25010.0 - 0.25)               # open - slip
+
+
+# ------------------------------------------------------------- management & slippage
+
+def test_v1_be_at_1r_touch_then_be_stop():
+    c = cfg(mgmt_variant="V1")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)         # risk 10
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25005, 25010.0, 25000.1, 25008),  # touches +1R AND near entry: no exit this bar
+                                        (25005, 25006, 25000.0, 25003)])   # BE stop (25000) touched next bar
+    tr, _, _ = run(bars, [t], c=c, resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert len(tr) == 1 and tr[0].exit_reason == "be_stop"
+    assert tr[0].exit_price == pytest.approx(25000.0 - 0.25)               # BE stop + slippage
+
+
+def test_news_window_slippage():
+    cal = pd.DataFrame({"datetime_ET": [pd.Timestamp("2026-02-11 09:50", tz=NY)],
+                        "event": ["CPI"], "impact": ["high"]})
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),
+                                        (24996, 24997, 24990.0, 24992)])
+    tr, _, _ = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000),
+                   calendar=cal)
+    assert tr[0].slippage_ticks == 4                                       # news window
+    assert tr[0].exit_price == pytest.approx(24990.0 - 4 * 0.25)
+
+
+def test_v4_partial_legs_weighted_r():
+    c = cfg(mgmt_variant="V4")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)         # risk 10
+    tr_, vd, _ = None, None, None
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),    # fill 25000
+                                        (25030, 25050.25, 25020, 25045),    # partial at 25050? no: level 25050 needs 25050.25 through
+                                        (25060, 25097.75, 25050, 25090)])   # runner target
+    tr_, vd, _ = simulate(bars, [t], c,
+                          target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    # partial level comes from order attr; engine only books it when set -> with stub resolver
+    # there is no partial level, so the trade exits fully at target (documented: V4 needs the
+    # snapshot menu; stub-resolver runs behave like V0). This asserts the degraded behavior.
+    assert len(tr_) == 1 and tr_[0].exit_reason == "target"
+
+
+def _v56_resolver(partial=25020.0, s2=25050.0, s3=25080.0, pick=25100.0):
+    """3-tuple resolver with the structural sequence V5/V6 consume."""
+    aux = {"partial_level": partial, "structural_2": ("s2", s2), "structural_3": ("s3", s3)}
+    return lambda t, entry, stop: ("model_pick", pick, dict(aux))
+
+
+def test_v5_books_75_at_first_structure_runner_to_next_structural():
+    # ANGUS pass-7: 75% at first structure (25020), 25% runner to s2 (25050; working 25047.5)
+    c = cfg(mgmt_variant="V5")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)                    # risk 10
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25010, 25020.25, 25008, 25018),   # partial through 25020
+                                        (25030, 25047.75, 25028, 25045)])  # runner target through
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.target_name == "s2" and rec.target_level == 25050.0
+    assert rec.exit_reason == "partial+target"
+    # legs: 0.75 * (25020-25000)/10 + 0.25 * (25047.5-25000)/10 = 1.5 + 1.1875
+    assert rec.r_multiple == pytest.approx(2.6875, abs=1e-4)
+
+
+def test_v6_runner_targets_structural_3():
+    c = cfg(mgmt_variant="V6")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25010, 25020.25, 25008, 25018),   # partial through 25020
+                                        (25030, 25077.75, 25028, 25070)])  # s3 working 25077.5
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.target_name == "s3" and rec.target_level == 25080.0
+    # 0.75 * 2.0 + 0.25 * (25077.5-25000)/10 = 1.5 + 1.9375
+    assert rec.r_multiple == pytest.approx(3.4375, abs=1e-4)
+
+
+def test_v5_first_target_floor_vetoes_thin_first_structure():
+    # first structure at +10 pts on a 10-pt risk = RR 1.0 < rr_floor_partial 1.5 -> veto
+    c = cfg(mgmt_variant="V5")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005)] * 3)
+    _, vd, _ = simulate(bars, [t], c, target_resolver=_v56_resolver(partial=25010.0),
+                        entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert any(v.status == "vetoed_rr_floor" and "partial floor" in v.reason for v in vd)
+
+
+def test_v5_partial_books_then_runner_stops_out():
+    # partial fills at 25020, runner then reverses to the stop: net = 0.75*2R + 0.25*(-1R)
+    c = cfg(mgmt_variant="V5")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25010, 25020.25, 25008, 25018),   # partial through 25020
+                                        (25010, 25012, 24989.5, 24991)])   # stop 24990 hit
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+stop"
+    # slippage 1 tick on the stop leg: 0.75*2.0 + 0.25*((24989.75-25000)/10)
+    assert rec.r_multiple == pytest.approx(0.75 * 2.0 + 0.25 * (-10.25 / 10), abs=1e-3)
+
+
+def test_v7_books_75_at_fixed_r_milestone_runner_to_target():
+    # V7: 75% at +1.5R (= 25015 on risk 10 from 25000), runner to the model target (25100;
+    # working 25097.5). Trade set is V0's — no partial-floor gate.
+    c = cfg(mgmt_variant="V7")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)                    # risk 10
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25008, 25015.25, 25007, 25014),   # +1.5R milestone through
+                                        (25030, 25097.75, 25028, 25090)])  # target
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+target"
+    # 0.75 * 1.5R + 0.25 * (25097.5-25000)/10 = 1.125 + 2.4375
+    assert rec.r_multiple == pytest.approx(3.5625, abs=1e-4)
+
+
+def test_v7_partial_then_stop_is_net_winner():
+    # the MFE case: reaches +1.5R, banks 75%, runner returns to stop -> net POSITIVE
+    c = cfg(mgmt_variant="V7")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25008, 25015.25, 25007, 25014),   # +1.5R banked
+                                        (25010, 25012, 24989.5, 24991)])   # stop hit
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+stop"
+    # 0.75*1.5 + 0.25*((24989.75-25000)/10) = 1.125 - 0.256 -> a WIN
+    assert rec.r_multiple == pytest.approx(1.125 + 0.25 * (-10.25 / 10), abs=1e-3)
+    assert rec.r_multiple > 0
+
+
+# ------------------------------------------------------------- pass-17 V8 trail management
+
+def test_v8_books_partial_then_trails_prior_5m_swing():
+    # 50% at first structure (25020), then the runner trails the prior completed 5m low:
+    # 09:50-09:54 bin low 25008 becomes the stop from 09:56; the 09:57 dip exits the runner
+    # WELL above entry instead of round-tripping to 24990.
+    c = cfg(mgmt_variant="V8")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),      # 09:48
+            (25004, 25005, 24999.75, 25002),   # 09:49 fill 25000
+            (25010, 25020.25, 25008, 25018),   # 09:50 partial through 25020
+            (25018, 25022, 25012, 25020),      # 09:51
+            (25020, 25024, 25015, 25022),      # 09:52
+            (25022, 25026, 25016, 25024),      # 09:53
+            (25024, 25028, 25018, 25026),      # 09:54  (5m bin 09:50-09:54: low 25008)
+            (25026, 25030, 25020, 25028),      # 09:55  prior-5m available -> pending 25008
+            (25028, 25030, 25022, 25026),      # 09:56  stop now 25008
+            (25024, 25025, 25006, 25010)]      # 09:57  dips through 25008 -> runner out
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+stop"
+    assert rec.exit_price == pytest.approx(25008 - 0.25)   # trailed 5m low, 1 tick slip
+    assert rec.r_multiple > 1.0                            # runner banked profit, not -1R
+
+
+def test_v8_premarket_fill_goes_be_at_0929():
+    c = cfg(mgmt_variant="V8")
+    t = trig("2026-02-11 09:18", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005)]                  # 09:18 trigger bar
+    rows += [(25004, 25005, 24999.75, 25002)]              # 09:19 fill 25000
+    rows += [(25005, 25008, 25002, 25006)] * 10            # 09:20-09:29 drift
+    rows += [(25004, 25005, 24998.0, 24999)]               # 09:30 dips -> BE stop
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:18", rows), [t], c,
+                          target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    assert tr_[0].exit_reason == "be_stop"
+    assert abs(tr_[0].r_multiple) < 0.1
+
+
+# ------------------------------------------------------------- pass-17 EC contextual entry
+
+def test_ec_displacement_market_fills_but_rejection_rests_limit():
+    # EC: a displacement trigger market-fills next bar open+slip even when price runs away;
+    # a rejection trigger with the same tape rests an E3 limit and gets t_cancelled instead.
+    c = cfg(entry_variant="EC")
+    runaway = [(25005, 25006, 25004, 25005),
+               (25006, 25030, 25005, 25028),
+               (25030, 25101, 25028, 25100)]
+    t_disp = trig("2026-02-11 09:48", stop_ref=24995.0)
+    t_disp = t_disp.model_copy(update={"kind": "displacement"})
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", runaway), [t_disp], c,
+                          target_resolver=stub_resolver(25100),
+                          entry_price_fn=None, calendar=EMPTY_CAL)
+    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(25006 + 0.25)
+
+    t_rej = trig("2026-02-11 09:48", stop_ref=24995.0)   # kind=rejection_block, entry_ref 25000
+    tr2, vd2, _ = simulate(mk_bars("2026-02-11 09:48", runaway), [t_rej], c,
+                           target_resolver=stub_resolver(25100),
+                           entry_price_fn=None, calendar=EMPTY_CAL)
+    assert tr2 == []
+    assert any(v.status == "cancelled_tcancel" for v in vd2)
+
+
+# ------------------------------------------------------------- pass-26 V9 giveback trail
+
+def test_v9_rescues_extreme_excursion_round_trip():
+    # +8R excursion then full round-trip: V0 would exit at the stop for -1R; V9 arms at +6R
+    # and locks max(3R, 0.5*8R)=4R -> exits positive on the way back.
+    c = cfg(mgmt_variant="V9")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)         # risk 10 pts from 25000
+    rows = [(25005, 25006, 25004, 25005),                  # 09:48 trigger bar
+            (25004, 25005, 24999.75, 25002),               # 09:49 fill 25000
+            (25010, 25080.5, 25008, 25078),                # 09:50 +8R excursion -> arms, lock 4R
+            (25070, 25072, 25035, 25040)]                  # 09:51 collapses through 25040 lock
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=stub_resolver(25200),   # target far away (never hit)
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "stop"
+    assert rec.exit_price >= 25039.0                       # locked ~+4R, not the original stop
+    assert rec.r_multiple > 3.0
+
+
+def test_v9_inert_below_arm_threshold():
+    # +4R excursion then round-trip: V9 never arms -> identical to V0 (-1R at original stop)
+    c = cfg(mgmt_variant="V9")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),
+            (25004, 25005, 24999.75, 25002),               # fill 25000
+            (25010, 25040.5, 25008, 25038),                # +4R only — below the 6R arm
+            (25030, 25032, 24989.5, 24991)]                # round-trips to the original stop
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=stub_resolver(25200),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    assert tr_[0].exit_price <= 24990.0                    # original stop, 1-tick slip allowed
+    assert tr_[0].r_multiple < 0
+
+
+def test_v9_does_not_block_target():
+    c = cfg(mgmt_variant="V9")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),
+            (25004, 25005, 24999.75, 25002),               # fill 25000
+            (25030, 25101, 25028, 25100)]                  # straight to target
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1 and tr_[0].exit_reason == "target"
+
+
+# ------------------------------------------------------------- pass-22 E5 order-block entry
+
+def test_e5_rests_limit_at_ob_mid_with_block_stop():
+    # E5: resting limit at the two-candle block's 50% (ob_mid), stop beyond the BLOCK
+    # (ob_stop), even though entry_ref/stop_ref carry the E3 geometry.
+    c = cfg(entry_variant="E5")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0).model_copy(
+        update={"ob_mid": 24995.0, "ob_stop": 24985.0})
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25000, 25001, 24994.75, 24998),   # trades through 24995
+                                        (25003, 25101, 25002, 25100)])     # target
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=None, calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    assert tr_[0].entry == pytest.approx(24995.0)          # ob_mid, not entry_ref 25000
+    assert tr_[0].stop_initial == pytest.approx(24985.0)   # block stop, not stop_ref 24990
+
+
+def test_e5_falls_back_to_e3_when_no_ob_partner():
+    # detector found no opposite-colored candle -> ob fields None -> E3 reclaim + wick stop
+    c = cfg(entry_variant="E5")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)          # ob_mid/ob_stop default None
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # through 25000
+                                        (25003, 25101, 25002, 25100)])
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=None, calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    assert tr_[0].entry == pytest.approx(25000.0)
+    assert tr_[0].stop_initial == pytest.approx(24990.0)
+
+
+def test_ec2_displacement_market_but_rejection_rests_ob_limit():
+    # EC2: displacement -> market next open+slip (like EC); rejection -> E5 order-block limit
+    c = cfg(entry_variant="EC2")
+    runaway = [(25005, 25006, 25004, 25005),
+               (25006, 25030, 25005, 25028),
+               (25030, 25101, 25028, 25100)]
+    t_disp = trig("2026-02-11 09:48", stop_ref=24995.0).model_copy(
+        update={"kind": "displacement", "ob_mid": 24995.0, "ob_stop": 24985.0})
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", runaway), [t_disp], c,
+                          target_resolver=stub_resolver(25100),
+                          entry_price_fn=None, calendar=EMPTY_CAL)
+    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(25006 + 0.25)   # market, not OB
+
+    t_rej = trig("2026-02-11 09:48", stop_ref=24990.0).model_copy(
+        update={"ob_mid": 24995.0, "ob_stop": 24985.0})
+    dip = [(25005, 25006, 25004, 25005),
+           (25000, 25001, 24994.75, 24998),    # trades through the OB mid
+           (25003, 25101, 25002, 25100)]
+    tr2, vd2, _ = simulate(mk_bars("2026-02-11 09:48", dip), [t_rej], c,
+                           target_resolver=stub_resolver(25100),
+                           entry_price_fn=None, calendar=EMPTY_CAL)
+    assert len(tr2) == 1 and tr2[0].entry == pytest.approx(24995.0)
+    assert tr2[0].stop_initial == pytest.approx(24985.0)
+
+
+# ------------------------------------------------------------- pass-12 overnight window
+
+def test_overnight_window_wraps_midnight_and_eod_flatten_spares_overnight_positions():
+    # window 18:00->10:15 (wraps): a 20:00 trigger is IN window; its position must NOT be
+    # flattened by the 15:55 eod check (20:00 > 15:55 was the old bug); it rides to target.
+    c = cfg(win_start=time(18, 0), win_end=time(10, 15), vwap_warmup_min=0)
+    t = trig("2026-02-11 20:00")
+    bars = mk_bars("2026-02-11 20:00", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),   # fill 25000
+                                        (25030, 25101, 25028, 25100)])     # target
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1 and tr_[0].exit_reason == "target"
+
+    # and a 10:20 trigger is OUTSIDE the wrapped window
+    t2 = trig("2026-02-12 10:20")
+    bars2 = mk_bars("2026-02-12 10:20", [(25005, 25006, 25004, 25005)] * 3)
+    _, vd2, _ = simulate(bars2, [t2], c, target_resolver=stub_resolver(25100),
+                         entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert any(v.status == "vetoed_window" for v in vd2)
+
+
+# ------------------------------------------------------------- pass-9 rulings (Angus)
+
+def test_walk_out_picks_first_level_clearing_floor():
+    from src.backtest.engine import _walk_out
+
+    class L:
+        def __init__(self, name, price):
+            self.name, self.price, self.type = name, price, "structural"
+
+    beyond = [L("near", 25010.0), L("mid", 25025.0), L("far", 25100.0)]
+    # long from 25000 stop 24990 (risk 10, floor 2.0, front_run 2.5):
+    # near working 25007.5 -> RR 0.75; mid working 25022.5 -> RR 2.25 -> first clear
+    lv = _walk_out(beyond, 25000.0, 24990.0, 1, 2.0, 2.5)
+    assert lv is not None and lv.name == "mid"
+    # floor nothing can clear -> None
+    assert _walk_out(beyond, 25000.0, 24990.0, 1, 50.0, 2.5) is None
+
+
+def test_named_high_impact_list():
+    from src.backtest.engine import _is_named_high
+    pats = ["CPI", "PPI", "non.?farm|payroll|NFP", "JOLTS"]
+    assert _is_named_high("CPI y/y", pats)
+    assert _is_named_high("Non-Farm Employment Change", pats)
+    assert not _is_named_high("Core PCE Price Index m/m", pats)
+    assert _is_named_high("Core PCE Price Index m/m", [])   # empty list = strict red-folder
+
+
+def test_named_list_unblocks_pce_premarket_but_not_cpi():
+    # a high-impact 08:30 release blocks the whole pre-market ONLY if it matches the named list
+    for event, expect_block in (("Core PCE Price Index", False), ("CPI y/y", True)):
+        cal = pd.DataFrame({"datetime_ET": [pd.Timestamp("2026-02-20 08:30", tz=NY)],
+                            "event": [event], "impact": ["high"]})
+        t = trig("2026-02-20 08:06")
+        bars = mk_bars("2026-02-20 08:00", [(25005, 25006, 25004, 25005)] * 10)
+        c = cfg()
+        c = c.model_copy(update={"named_high_impact": ["CPI", "PPI", "NFP", "JOLTS"]})
+        _, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                            entry_price_fn=pin_entry(25000), calendar=cal)
+        blocked = any(v.status == "vetoed_news_preopen" for v in vd)
+        assert blocked == expect_block, f"{event}: blocked={blocked} expected {expect_block}"
+
+
+def test_e4_market_entry_fills_next_open_with_slippage_and_ignores_tcancel():
+    # price runs away immediately (t_cancel would kill an E3 limit); E4 fills at next open+slip
+    c = cfg(entry_variant="E4")
+    t = trig("2026-02-11 09:48", stop_ref=24995.0)
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25006, 25030, 25005, 25028),    # E4 fills at open 25006+slip
+                                        (25030, 25101, 25028, 25100)])   # runs to target
+    tr_, vd, _ = simulate(bars, [t], c, target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.entry == pytest.approx(25006 + 1 * 0.25)      # open + 1 tick adverse slip
+    # R currency = ACTUAL fill->stop distance (not the build reference)
+    assert rec.r_multiple == pytest.approx(
+        (rec.exit_price - rec.entry) / (rec.entry - rec.stop_initial), abs=1e-3)
+    assert not any(v.status == "cancelled_tcancel" for v in vd)
+
+
+def test_e4_short_fill_slips_down_and_gap_through_stop_is_cancelled():
+    # short market entry slips DOWN (adverse); if the next bar opens beyond the stop, cancel
+    c = cfg(entry_variant="E4")
+    t_ok = trig("2026-02-11 09:48", direction="short", entry_ref=25000.0, stop_ref=25010.0)
+    bars = mk_bars("2026-02-11 09:48", [(24998, 24999, 24996, 24997),
+                                        (24996, 24997, 24895, 24900),    # fill 24996-0.25
+                                        (24900, 24901, 24870, 24875)])
+    tr_, vd, _ = simulate(bars, [t_ok], c, target_resolver=stub_resolver(24880),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1 and tr_[0].entry == pytest.approx(24996 - 0.25)
+
+    t_gap = trig("2026-02-11 09:48", direction="short", entry_ref=25000.0, stop_ref=25010.0)
+    bars2 = mk_bars("2026-02-11 09:48", [(24998, 24999, 24996, 24997),
+                                         (25015, 25016, 25010, 25012)])  # opens beyond stop
+    tr2, vd2, _ = simulate(bars2, [t_gap], c, target_resolver=stub_resolver(24880),
+                           entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert tr2 == []
+    assert any(v.status == "cancelled_gap_through_stop" for v in vd2)
+
+
+# ------------------------------------------------------------- Angus 2026-07-17 rules
+
+def test_vwap_warmup_veto():
+    # trigger 18:30 (within 60min of the 18:00 anchor) -> vetoed; 19:05 -> allowed
+    t_in = trig("2026-02-11 18:30")
+    t_out = trig("2026-02-11 19:05")
+    bars = mk_bars("2026-02-11 18:00", [(25005, 25006, 25004, 25005)] * 90)
+    _, vd, _ = run(bars, [t_in, t_out], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    st = {v.ts: v.status for v in vd}
+    assert st[t_in.ts] == "vetoed_vwap_warmup"
+    assert st.get(t_out.ts) != "vetoed_vwap_warmup"
+
+
+def test_high_impact_preopen_news_blocks_until_open():
+    # ANGUS 2026-07-17 (TIGHTENED): on a high-impact pre-open release day the ENTIRE pre-market
+    # is blocked -> both pre-release and post-release pre-open triggers are vetoed; 09:30+ allowed.
+    cal = pd.DataFrame({"datetime_ET": [pd.Timestamp("2026-02-20 08:30", tz=NY)],
+                        "event": ["Core Price Index"], "impact": ["high"]})
+    pre_release = trig("2026-02-20 08:06")     # BEFORE the release -> now vetoed (whole pre-market)
+    post_release = trig("2026-02-20 08:45")    # after release, before 09:30 -> vetoed
+    after_open = trig("2026-02-20 09:35")      # after the open -> allowed
+    rows = [(25005, 25006, 25004, 25005)] * 120
+    bars = mk_bars("2026-02-20 08:00", rows)
+    _, vd, _ = run(bars, [pre_release, post_release, after_open],
+                   resolver=stub_resolver(25100), entry=pin_entry(25000), calendar=cal)
+    st = {v.ts: v.status for v in vd}
+    assert st[pre_release.ts] == "vetoed_news_preopen"
+    assert st[post_release.ts] == "vetoed_news_preopen"
+    assert st.get(after_open.ts) != "vetoed_news_preopen"
+
+
+def test_oversized_stop_half_size():
+    t = trig("2026-02-11 09:48", stop_ref=24950.0)          # 50-pt risk > 42 -> half
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),
+                                        (25050, 25200.0, 25040, 25150)])
+    tr, _, _ = run(bars, [t], resolver=stub_resolver(25150), entry=pin_entry(25000))
+    assert len(tr) == 1 and tr[0].size == 0.5
+
+
+def test_late_window_half_size():
+    t = trig("2026-02-11 10:31", pattern="A", conf=3)       # fill after 10:30 -> half
+    bars = mk_bars("2026-02-11 10:31", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),
+                                        (25050, 25101.0, 25040, 25090)])
+    tr, _, _ = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    assert len(tr) == 1 and tr[0].size == 0.5
+
+
+def test_gap_through_entry_is_a_scratch_not_a_phantom_loss():
+    # A short limit whose FILL bar opens past both the entry and the stop must fill at the open
+    # (gap), not the limit — otherwise entry@limit + stop@open books a phantom multi-R loss.
+    t = trig("2026-02-11 09:48", direction="short", entry_ref=25000.0, stop_ref=25002.0)
+    bars = mk_bars("2026-02-11 09:48", [
+        (24998, 24999, 24997, 24998),      # 09:48: order placed, no fill (price below entry)
+        (25010, 25012, 25008, 25011),      # 09:49: opens 25010 past entry+stop -> fill@open, scratch
+    ])
+    tr, _, _ = run(bars, [t], resolver=stub_resolver(24900), entry=pin_entry(25000))
+    assert len(tr) == 1 and tr[0].exit_reason == "stop"
+    assert tr[0].r_multiple > -1.0     # scratch (entry≈exit), not the ~-5R phantom of the old bug
+
+
+def test_bb_vwap_gate_vetoes_cluster_without_both():
+    # §9 v1.1: a cluster missing BB or VWAP -> NO TRADE, even at high confluence.
+    t = trig("2026-02-11 09:48", conf=3, cluster_types=("vwap", "poc"))   # no BB
+    bars = mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),
+                                        (25050, 25101.0, 25040, 25090)])
+    tr, vd, _ = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    st = {v.ts: v.status for v in vd}
+    assert len(tr) == 0
+    assert st[t.ts] == "vetoed_bb_vwap"
+
+
+def test_v12_full_size_default_even_counter_trend_two_types():
+    # §9 v1.2 (ANGUS calibration ruling): FULL size is the default — a 2-type BB+VWAP
+    # COUNTER-TREND trade is full size; POC adds nothing to sizing any more.
+    rows = [(25005, 25006, 25004, 25005), (25004, 25005, 24999.75, 25002),
+            (25050, 25101.0, 25040, 25090)]
+    for ctypes in (("bb", "vwap"), ("bb", "vwap", "poc")):
+        t = trig("2026-02-11 09:48", conf=2, htf="counter_trend", pattern="B",
+                 cluster_types=ctypes)
+        tr, _, _ = run(mk_bars("2026-02-11 09:48", rows), [t],
+                       resolver=stub_resolver(25100), entry=pin_entry(25000),
+                       c=cfg(min_conf_counter=2))
+        assert len(tr) == 1 and tr[0].size == 1.0, ctypes
+
+
+def test_v12_counter_trend_two_confluence_enters():
+    # §7 v1.2: confluence minimum is 2 everywhere — conf=2 counter-trend must NOT be
+    # vetoed_confluence (this was the gate on 13 of the 24 Feb MISSED trades).
+    t = trig("2026-02-11 09:48", conf=2, htf="counter_trend", pattern="A",
+             cluster_types=("bb", "vwap"))
+    rows = [(25005, 25006, 25004, 25005), (25004, 25005, 24999.75, 25002),
+            (25050, 25101.0, 25040, 25090)]
+    tr, verdicts, _ = run(mk_bars("2026-02-11 09:48", rows), [t],
+                          resolver=stub_resolver(25100), entry=pin_entry(25000),
+                          c=cfg(min_conf_counter=2))
+    assert not any(v.status == "vetoed_confluence" for v in verdicts)
+    assert len(tr) == 1
+
+
+def test_v12_min_stop_veto():
+    # §5 v1.2 (ANGUS): structural stop narrower than min_stop_points -> skip, never widen.
+    tight = trig("2026-02-11 09:48", stop_ref=24996.0)   # 4-pt stop vs pinned 25000 entry
+    rows = [(25005, 25006, 25004, 25005), (25004, 25005, 24999.75, 25002),
+            (25050, 25101.0, 25040, 25090)]
+    tr, verdicts, _ = run(mk_bars("2026-02-11 09:48", rows), [tight],
+                          resolver=stub_resolver(25100), entry=pin_entry(25000),
+                          c=cfg(min_stop_points=10.0))
+    assert len(tr) == 0
+    assert any(v.status == "vetoed_min_stop" for v in verdicts)
+    ok = trig("2026-02-11 09:48", stop_ref=24990.0)      # exactly 10 pts -> allowed
+    tr2, v2, _ = run(mk_bars("2026-02-11 09:48", rows), [ok],
+                     resolver=stub_resolver(25100), entry=pin_entry(25000),
+                     c=cfg(min_stop_points=10.0))
+    assert len(tr2) == 1 and not any(v.status == "vetoed_min_stop" for v in v2)
+
+
+# ------------------------------------------------------------- integration (slice)
+
+def test_integration_slice_runs_and_is_consistent():
+    df = pd.read_csv(FIX / "snapshot_slice.csv")
+    df["ts_event"] = pd.to_datetime(df["ts_event"], utc=True).dt.tz_convert(NY)
+    from src.engine.indicators import IndicatorsConfig
+    from src.engine.triggers import detect_triggers
+    icfg = IndicatorsConfig(bb_length=20, bb_mult=2.0,
+                            entry_tfs=["1min", "2min", "3min", "5min"],
+                            ny_anchor=time(9, 30), ny_bands=[1, 2, 3],
+                            daily_anchor=time(18, 0), daily_bands=[1, 2, 3],
+                            vwap_source="hlc3", vp_bin_points=0.25,
+                            vp_value_area_pct=70, vp_weekly_enabled=False)
+    trigs = detect_triggers(df, cfg=icfg,
+                            start=pd.Timestamp("2026-02-11 09:30", tz=NY),
+                            end=pd.Timestamp("2026-02-11 10:00", tz=NY), tol=10.0)
+    c = cfg(win_start=time(8, 0), win_end=time(11, 0), entry_variant="E3")
+    trades, verdicts, equity = simulate(df, trigs, c)
+    assert len(verdicts) == len(trigs)                     # every trigger got a verdict
+    for tr in trades:
+        sign = 1 if tr.direction == "long" else -1
+        # intended geometry is on the ORDER (limit vs stop/target); the actual fill may gap past
+        # a level on a gap-through bar, so assert the invariants on limit_price, not the fill.
+        assert sign * (tr.limit_price - tr.stop_initial) > 0     # stop beyond entry order
+        assert sign * (tr.working_target - tr.limit_price) > 0   # target beyond entry order
+        seg = df[(df["ts_event"] >= pd.Timestamp(tr.fill_ts)) &
+                 (df["ts_event"] <= pd.Timestamp(tr.exit_ts))]
+        assert not seg.empty
+    if len(trades) > 1:
+        spans = sorted((pd.Timestamp(x.fill_ts), pd.Timestamp(x.exit_ts)) for x in trades)
+        for a, b in zip(spans, spans[1:]):
+            assert a[1] <= b[0]                            # one position at a time
+
+
+# ------------------------------------------------------------- regime de-risk gate (replay B/C)
+
+def _filling_bars():
+    # a long that fills at 25000 and hits target 25100 (working 25097.5); reused across gate tests
+    return mk_bars("2026-02-11 09:48", [(25005, 25006, 25004, 25005),
+                                        (25004, 25005, 24999.75, 25002),
+                                        (25050, 25097.75, 25040, 25090)])
+
+
+def _gate(**over):
+    g = dict(stand_down=False, allow_reversion=True, allow_continuation=True, size_multiplier=1.0)
+    g.update(over)
+    return lambda d: g
+
+
+def test_day_gate_none_is_byte_identical_to_arm_a():
+    # the whole point: day_gate=None must not perturb arm A at all
+    t = trig("2026-02-11 09:48")
+    bars = _filling_bars()
+    base = run(bars, [t], resolver=stub_resolver(25100), entry=pin_entry(25000))
+    gated = simulate(bars, [t], cfg(), target_resolver=stub_resolver(25100),
+                     entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL, day_gate=None)
+    assert [x.model_dump() for x in base[0]] == [x.model_dump() for x in gated[0]]
+    assert [v.model_dump() for v in base[1]] == [v.model_dump() for v in gated[1]]
+
+
+def test_gate_stand_down_removes_all_trades():
+    t = trig("2026-02-11 09:48")
+    tr, vd, _ = simulate(_filling_bars(), [t], cfg(), target_resolver=stub_resolver(25100),
+                         entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL,
+                         day_gate=_gate(stand_down=True))
+    assert tr == []
+    assert any(v.status == "skipped_regime_standdown" for v in vd)
+
+
+def test_gate_blocks_reversion_keeps_continuation():
+    # pattern A = reversion; a reversion-blocked day must skip it...
+    t_a = trig("2026-02-11 09:48", pattern="A")
+    tr, vd, _ = simulate(_filling_bars(), [t_a], cfg(), target_resolver=stub_resolver(25100),
+                         entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL,
+                         day_gate=_gate(allow_reversion=False))
+    assert tr == [] and any(v.status == "skipped_regime_no_reversion" for v in vd)
+    # ...but a continuation (B2, with_trend) still trades on the same gate
+    t_b2 = trig("2026-02-11 09:48", pattern="B2", htf="with_trend", conf=2)
+    tr2, _, _ = simulate(_filling_bars(), [t_b2], cfg(), target_resolver=stub_resolver(25100),
+                         entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL,
+                         day_gate=_gate(allow_reversion=False))
+    assert len(tr2) == 1
+
+
+def test_gate_size_multiplier_halves_dollars_not_r():
+    t = trig("2026-02-11 09:48")
+    full, _, _ = simulate(_filling_bars(), [t], cfg(), target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL, day_gate=_gate())
+    half, _, _ = simulate(_filling_bars(), [t], cfg(), target_resolver=stub_resolver(25100),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL,
+                          day_gate=_gate(size_multiplier=0.5))
+    assert half[0].r_multiple == pytest.approx(full[0].r_multiple)     # R unchanged
+    assert half[0].size == pytest.approx(full[0].size * 0.5)           # unit halved
+    assert half[0].dollars < full[0].dollars                          # dollars scale with size

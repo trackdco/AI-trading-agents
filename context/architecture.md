@@ -43,7 +43,7 @@ In **backtest mode**, the Desk is bypassed: triggers.py IS the mechanical rule s
 2. All timestamps are tz-aware America/New_York. DST is handled by the tz library, never by offset arithmetic.
 3. Signals compute on closed candles; orders activate next bar. A no-lookahead test must exist and pass.
 4. One open position maximum, ever.
-5. Every configurable number lives in `config/strategy.yaml` with a comment tracing it to a § of strategy-definition-v1.0.md.
+5. Every configurable number lives in `config/strategy.yaml` with a comment tracing it to a § of strategy-definition-v1.2.md.
 6. The Vault has no import path from any module that calls an LLM.
 
 ## Environments
@@ -53,6 +53,10 @@ In **backtest mode**, the Desk is bypassed: triggers.py IS the mechanical rule s
 
 ## External services
 
-- Databento — historical (later live) NQ data. Key in `.env`, never committed.
+- Databento — historical (later live) NQ data. Key in `.env`, never committed. Exports may arrive
+  as a "parent" pull (all NQ outrights + calendar spreads, many rows/minute); `src/engine/data.py`
+  derives the single volume-based, unspliced continuous front-month series from it (front = highest
+  daily-volume outright per 18:00-ET session; roll on front-month change; no price adjustment).
+  Equivalent to Databento's NQ.v.0 but computed in-repo so the roll is auditable.
 - Anthropic (Claude Code) — build tooling now; Desk runtime in Phase 3.
 - Telegram Bot API — Phase 4 alerting. Token in `.env`.

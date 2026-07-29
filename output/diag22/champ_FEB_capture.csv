@@ -1,0 +1,29 @@
+hand,hand_win,verdict,gates
+2026-02-02 10:52 short,False,MISSED,vetoed_window x8
+2026-02-03 10:52 long,False,MISSED,vetoed_window x6
+2026-02-04 9:48 short,True,TAKEN,
+2026-02-04 10:30 short,True,MISSED,vetoed_window x16
+2026-02-05 9:36 long,True,MISSED,cancelled_tcancel x4
+2026-02-06 10:10 short,False,MISSED,vetoed_window x4; vetoed_bb_vwap x3
+2026-02-06 10:20 long,True,MISSED,vetoed_window x7; vetoed_bb_vwap x1
+2026-02-09 9:36 long,True,TAKEN,
+2026-02-10 10:34 long,False,MISSED,vetoed_window x4
+2026-02-11 9:48 short,True,MISSED,vetoed_vault_max x12
+2026-02-12 9:40 short,True,TAKEN,
+2026-02-13 9:33 long,False,TAKEN,
+2026-02-17 9:32 long,True,MISSED,vetoed_vault_max x8
+2026-02-17 9:50 short,True,MISSED,vetoed_vault_max x6
+2026-02-18 8:35 short,True,MISSED,vetoed_bb_vwap x1
+2026-02-18 9:42 short,False,MISSED,vetoed_bb_vwap x7; skipped_position_open x3; vetoed_min_stop x2; cancelled_tcancel x1
+2026-02-18 9:53 long,True,TAKEN,
+2026-02-19 9:00 short,False,MISSED,vetoed_halt x6
+2026-02-20 8:06 long,True,TAKEN,
+2026-02-20 9:31 long,True,MISSED,vetoed_vault_max x7; cancelled_tcancel x1
+2026-02-20 10:33 long,True,MISSED,vetoed_window x13; vetoed_vault_max x3
+2026-02-23 10:20 short,True,TAKEN,
+2026-02-24 8:20 long,True,TAKEN,
+2026-02-24 10:10 long,True,MISSED,vetoed_window x5; vetoed_vault_max x4; skipped_position_open x3; cancelled_tcancel x1
+2026-02-25 9:25 long,True,MISSED,skipped_order_working x2; cancelled_tcancel x2; vetoed_min_stop x2
+2026-02-26 9:18 short,True,TAKEN,
+2026-02-27 9:40 long,False,TAKEN,
+2026-02-27 9:54 long,True,TAKEN,

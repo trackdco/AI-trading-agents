@@ -1,0 +1,18 @@
+hand,hand_win,verdict,gates
+2026-03-02 09:45 long,True,MISSED,vetoed_vault_max x6
+2026-03-03 10:00 short,True,MISSED,vetoed_vault_max x6; vetoed_window x4
+2026-03-04 09:45 short,False,TAKEN,
+2026-03-04 10:15 long,True,MISSED,vetoed_vault_max x8; vetoed_window x3
+2026-03-05 09:45 long,False,TAKEN,
+2026-03-06 09:50 short,False,MISSED,vetoed_confluence x6; vetoed_min_stop x2; cancelled_tcancel x1
+2026-03-09 10:15 long,False,MISSED,vetoed_window x11; vetoed_confluence x2
+2026-03-09 10:45 long,True,MISSED,vetoed_window x9
+2026-03-10 09:55 short,False,MISSED,vetoed_confluence x11; cancelled_tcancel x8; vetoed_min_stop x4; vetoed_window x2
+2026-03-10 10:20 long,True,MISSED,vetoed_window x9
+2026-03-11 08:45 long,True,MISSED,vetoed_news_preopen x10
+2026-03-11 10:05 short,True,MISSED,vetoed_confluence x2; vetoed_window x2
+2026-03-12 10:00 short,True,MISSED,vetoed_halt x6; vetoed_window x3
+2026-03-13 08:40 long,True,MISSED,cancelled_tcancel x3
+2026-03-13 09:40 long,False,TAKEN,
+2026-03-13 10:05 short,False,MISSED,vetoed_confluence x4; cancelled_tcancel x2; skipped_position_open x1; vetoed_window x1
+2026-03-16 08:40 short,False,NO_TRIGGER,detector saw nothing here

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NQ Golden-Window Study — 2+2 Caps + CVD Gate</title>
+<style>
+  :root{
+    --bg:#f4f6f8; --panel:#ffffff; --panel2:#fafbfc; --ink:#1b232e; --muted:#66727f;
+    --line:#e4e8ed; --accent:#b0781c; --accent-soft:#f0e6d2;
+    --good:#2f9e6a; --bad:#cf4f4a; --good-ink:#1c6f48; --bad-ink:#a83b37;
+    --shadow:0 1px 2px rgba(20,30,45,.06),0 8px 24px -12px rgba(20,30,45,.12);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0c1015; --panel:#161c24; --panel2:#12171e; --ink:#cdd6e0; --muted:#7d8998;
+      --line:#242c37; --accent:#e0a94a; --accent-soft:#2a2418;
+      --good:#4fbe86; --bad:#e5706b; --good-ink:#7fd6a5; --bad-ink:#f0938e;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -14px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f4f6f8; --panel:#ffffff; --panel2:#fafbfc; --ink:#1b232e; --muted:#66727f;
+    --line:#e4e8ed; --accent:#b0781c; --accent-soft:#f0e6d2;
+    --good:#2f9e6a; --bad:#cf4f4a; --good-ink:#1c6f48; --bad-ink:#a83b37;
+    --shadow:0 1px 2px rgba(20,30,45,.06),0 8px 24px -12px rgba(20,30,45,.12);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0c1015; --panel:#161c24; --panel2:#12171e; --ink:#cdd6e0; --muted:#7d8998;
+    --line:#242c37; --accent:#e0a94a; --accent-soft:#2a2418;
+    --good:#4fbe86; --bad:#e5706b; --good-ink:#7fd6a5; --bad-ink:#f0938e;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -14px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.5;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+  .wrap{max-width:1060px;margin:0 auto;padding:32px 24px 72px}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .pos{color:var(--good-ink)} .neg{color:var(--bad-ink)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent);font-weight:600}
+  h1{font-size:clamp(24px,4vw,34px);line-height:1.1;margin:.35em 0 .15em;letter-spacing:-.01em;
+    text-wrap:balance;font-weight:680}
+  .lede{color:var(--muted);max-width:64ch;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .tag{font-family:var(--mono);font-size:11px;padding:4px 9px;border:1px solid var(--line);
+    border-radius:100px;color:var(--muted);background:var(--panel)}
+  .tag.warn{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));color:var(--accent)}
+  section{margin-top:34px}
+  h2{font-size:15px;letter-spacing:.02em;margin:0 0 3px;font-weight:660}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow)}
+  /* stat band */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .stat{padding:18px 18px 16px;position:relative;overflow:hidden}
+  .stat .k{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .stat .v{font-family:var(--mono);font-size:clamp(22px,3.4vw,30px);font-weight:600;margin-top:6px;letter-spacing:-.01em}
+  .stat .d{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:4px}
+  .stat.hero{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+  .stat.hero::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent)}
+  /* monthly bars */
+  .rows{display:flex;flex-direction:column}
+  .row{display:grid;grid-template-columns:52px 1fr 128px;align-items:center;gap:14px;
+    padding:11px 18px;border-top:1px solid var(--line)}
+  .row:first-child{border-top:0}
+  .row .mo{font-family:var(--mono);font-size:13px;font-weight:600}
+  .bar{position:relative;height:22px}
+  .bar .axis{position:absolute;top:-4px;bottom:-4px;left:50%;width:1px;background:var(--line)}
+  .bar .fill{position:absolute;top:2px;height:18px;border-radius:4px}
+  .row .fig{font-family:var(--mono);font-size:13px;text-align:right;display:flex;gap:10px;justify-content:flex-end;align-items:baseline}
+  .row .fig .w{color:var(--muted);font-size:11px}
+  .pill{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:100px;font-weight:600;letter-spacing:.03em}
+  .pill.g{color:var(--good-ink);background:color-mix(in srgb,var(--good) 16%,transparent)}
+  .pill.r{color:var(--bad-ink);background:color-mix(in srgb,var(--bad) 18%,transparent)}
+  /* heatmap */
+  .heat-scroll{overflow-x:auto}
+  .heat{border-collapse:separate;border-spacing:6px;width:100%;min-width:520px;padding:8px}
+  .heat th{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;padding:4px 6px;text-align:center}
+  .heat th.rowh{text-align:left}
+  .heat td{border-radius:10px;padding:10px 8px;text-align:center;border:1px solid var(--line);min-width:120px}
+  .heat td.rowh{font-family:var(--mono);font-weight:600;font-size:13px;text-align:left;
+    background:var(--panel2);min-width:96px}
+  .cell .pt{font-family:var(--mono);font-size:17px;font-weight:600;letter-spacing:-.02em}
+  .cell .sub2{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px}
+  .callout{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:14px 16px;
+    background:var(--accent-soft);border-radius:10px;font-size:13.5px;line-height:1.55}
+  .callout b{color:var(--ink)}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:6px;background:var(--accent)}
+  /* two-col */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .mini{width:100%;border-collapse:collapse}
+  .mini th,.mini td{font-family:var(--mono);font-size:12.5px;padding:7px 6px;text-align:right;border-top:1px solid var(--line)}
+  .mini th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em;border-top:0}
+  .mini td:first-child,.mini th:first-child{text-align:left}
+  .prose{font-size:14px;line-height:1.62;color:var(--ink)}
+  .prose p{margin:0 0 12px}
+  .prose .muted{color:var(--muted)}
+  .k-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+  .k-list li{display:flex;gap:12px;font-size:13.5px;line-height:1.5}
+  .k-list .mark{font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;flex:none;height:fit-content;margin-top:1px}
+  .mark.up{color:var(--good-ink);background:color-mix(in srgb,var(--good) 15%,transparent)}
+  .mark.dn{color:var(--bad-ink);background:color-mix(in srgb,var(--bad) 16%,transparent)}
+  .mark.eq{color:var(--accent);background:var(--accent-soft)}
+  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);
+    font-size:12px;font-family:var(--mono);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media(max-width:720px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .grid2{grid-template-columns:1fr}
+    .row{grid-template-columns:44px 1fr 108px}
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">NQ · Feb–Jul 2026 · shipped selection gate</div>
+    <h1>Golden-window study: 2+2 caps&nbsp;+&nbsp;CVD absorption</h1>
+    <p class="lede">Un-starve the 9:40–10:15 window (its own 2-trade budget, pre-market keeps its own 2) and keep only CVD-confirmed trades. Here's the current best shape, where the money comes from by month, and — the question of the day — by day of week.</p>
+    <div class="meta">
+      <span class="tag">89 gated trades</span>
+      <span class="tag">real engine · same detected cache</span>
+      <span class="tag warn">2026 in-sample by design</span>
+    </div>
+  </header>
+
+  <!-- STAT BAND -->
+  <section>
+    <div class="stats">
+      <div class="stat panel hero">
+        <div class="k">Net P&amp;L</div>
+        <div class="v pos">+$15,381</div>
+        <div class="d">+$1,030 vs single-cap gate</div>
+      </div>
+      <div class="stat panel">
+        <div class="k">Win rate</div>
+        <div class="v">43%</div>
+        <div class="d">from 33% ungated</div>
+      </div>
+      <div class="stat panel">
+        <div class="k">Months green</div>
+        <div class="v">5<span style="color:var(--muted)">/6</span></div>
+        <div class="d">July the lone red</div>
+      </div>
+      <div class="stat panel">
+        <div class="k">Trades kept</div>
+        <div class="v">89<span style="color:var(--muted);font-size:16px"> /154</span></div>
+        <div class="d">gate cut 65 hollow/below-value</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MONTHLY -->
+  <section>
+    <h2>Monthly P&amp;L &amp; frequency</h2>
+    <p class="sub">Gated 2+2 shape. Bars diverge from center; trade count and win% at right.</p>
+    <div class="panel rows">
+      <!-- fills scaled: max |$|=6268 -> 50% half-width -->
+      <div class="row"><span class="mo">Feb</span>
+        <div class="bar"><span class="axis"></span><span class="fill" style="left:50%;width:49.8%;background:var(--good)"></span></div>
+        <div class="fig"><span class="num pos">+$6,268</span><span class="w">15t · 47%</span><span class="pill g">green</span></div></div>
+      <div class="row"><span class="mo">Mar</span>
+        <div class="bar"><span class="axis"></span><span class="fill" style="left:50%;width:1.2%;background:var(--good)"></span></div>
+        <div class="fig"><span class="num pos">+$98</span><span class="w">9t · 22%</span><span class="pill g">green</span></div></div>
+      <div class="row"><span class="mo">Apr</span>
+        <div class="bar"><span class="axis"></span><span class="fill" style="left:50%;width:47.0%;background:var(--good)"></span></div>
+        <div class="fig"><span class="num pos">+$5,910</span><span class="w">27t · 56%</span><span class="pill g">green</span></div></div>
+      <div class="row"><span class="mo">May</span>
+        <div class="bar"><span class="axis"></span><span class="fill" style="left:50%;width:5.1%;background:var(--good)"></span></div>
+        <div class="fig"><span class="num pos">+$645</span><span class="w">17t · 35%</span><span class="pill g">green</span></div></div>
+      <div class="row"><span class="mo">Jun</span>
+        <div class="bar"><span class="axis"></span><span class="fill" style="left:50%;width:24.7%;background:var(--good)"></span></div>
+        <div class="fig"><span class="num pos">+$3,110</span><span class="w">17t · 47%</span><span class="pill g">green</span></div></div>
+      <div class="row"><span class="mo">Jul</span>
+        <div class="bar"><span class="axis"></span><span class="fill" style="right:50%;width:5.2%;background:var(--bad)"></span></div>
+        <div class="fig"><span class="num neg">−$650</span><span class="w">4t · 0%</span><span class="pill r">red</span></div></div>
+    </div>
+  </section>
+
+  <!-- HEATMAP -->
+  <section>
+    <h2>Day of week × window — where it's really made and lost</h2>
+    <p class="sub">Cell = P&amp;L per trade (color) with total &amp; win% below. This is the answer to "some days carry it."</p>
+    <div class="panel heat-scroll">
+      <table class="heat">
+        <thead><tr><th class="rowh"></th><th>Pre-market<br>08:00–09:30</th><th>Golden<br>09:40–10:15</th><th>All</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="rowh">Mon</td>
+            <td style="background:color-mix(in srgb,var(--good) 55%,transparent)"><div class="cell"><div class="pt">+$199</div><div class="sub2">+$3,578 · 44% · 18t</div></div></td>
+            <td style="background:color-mix(in srgb,var(--good) 42%,transparent)"><div class="cell"><div class="pt">+$151</div><div class="sub2">+$1,055 · 57% · 7t</div></div></td>
+            <td style="background:color-mix(in srgb,var(--good) 50%,transparent)"><div class="cell"><div class="pt">+$185</div><div class="sub2">+$4,632 · 48% · 25t</div></div></td>
+          </tr>
+          <tr>
+            <td class="rowh">Tue</td>
+            <td style="background:color-mix(in srgb,var(--good) 34%,transparent)"><div class="cell"><div class="pt">+$123</div><div class="sub2">+$1,719 · 36% · 14t</div></div></td>
+            <td style="background:color-mix(in srgb,var(--good) 30%,transparent)"><div class="cell"><div class="pt">+$109</div><div class="sub2">+$547 · 60% · 5t</div></div></td>
+            <td style="background:color-mix(in srgb,var(--good) 33%,transparent)"><div class="cell"><div class="pt">+$119</div><div class="sub2">+$2,266 · 42% · 19t</div></div></td>
+          </tr>
+          <tr>
+            <td class="rowh">Wed</td>
+            <td style="background:color-mix(in srgb,var(--bad) 46%,transparent)"><div class="cell"><div class="pt neg">−$144</div><div class="sub2">−$1,005 · 14% · 7t</div></div></td>
+            <td style="background:color-mix(in srgb,var(--good) 90%,transparent)"><div class="cell"><div class="pt">+$516</div><div class="sub2">+$4,128 · 62% · 8t</div></div></td>
+            <td style="background:color-mix(in srgb,var(--good) 58%,transparent)"><div class="cell"><div class="pt">+$208</div><div class="sub2">+$3,122 · 40% · 15t</div></div></td>
+          </tr>
+          <tr>
+            <td class="rowh">Thu</td>
+            <td style="background:color-mix(in srgb,var(--good) 33%,transparent)"><div class="cell"><div class="pt">+$120</div><div class="sub2">+$1,560 · 31% · 13t</div></div></td>
+            <td style="background:color-mix(in srgb,var(--good) 92%,transparent)"><div class="cell"><div class="pt">+$522</div><div class="sub2">+$1,565 · 67% · 3t</div></div></td>
+            <td style="background:color-mix(in srgb,var(--good) 55%,transparent)"><div class="cell"><div class="pt">+$195</div><div class="sub2">+$3,125 · 38% · 16t</div></div></td>
+          </tr>
+          <tr>
+            <td class="rowh">Fri</td>
+            <td style="background:color-mix(in srgb,var(--good) 82%,transparent)"><div class="cell"><div class="pt">+$302</div><div class="sub2">+$2,720 · 56% · 9t</div></div></td>
+            <td style="background:color-mix(in srgb,var(--bad) 38%,transparent)"><div class="cell"><div class="pt neg">−$97</div><div class="sub2">−$485 · 20% · 5t</div></div></td>
+            <td style="background:color-mix(in srgb,var(--good) 44%,transparent)"><div class="cell"><div class="pt">+$160</div><div class="sub2">+$2,235 · 43% · 14t</div></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout"><span class="dot"></span><div>
+      <b>Your hunch is right — but it's per-window, not per-day.</b> At the aggregate every weekday is green, so nothing looks broken. Split by window and two pockets bleed and hide each other: <b>Wednesday pre-market</b> (−$1,005, 14% win) and <b>Friday golden</b> (−$485, 20%). They're masked because the <b>same days</b> run the opposite way in the other window — <b>Wednesday golden</b> is the single best cell (+$4,128, 62%) and <b>Friday pre-market</b> is strong (+$2,720, 56%). The windows have <b>inverted day profiles</b>.
+    </div></div>
+  </section>
+
+  <!-- GOLDEN + GATE -->
+  <section>
+    <div class="grid2">
+      <div>
+        <h2>Golden window alone, by month</h2>
+        <p class="sub">The gate lifts it to 54% win / +$6,809 — but only 3/6 green.</p>
+        <div class="panel" style="padding:6px 16px 10px">
+          <table class="mini">
+            <thead><tr><th>Mo</th><th>Trades</th><th>P&amp;L</th><th>Win</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>Feb</td><td>4</td><td class="pos">+$4,564</td><td>100%</td><td><span class="pill g">grn</span></td></tr>
+              <tr><td>Mar</td><td>3</td><td class="pos">+$1,015</td><td>33%</td><td><span class="pill g">grn</span></td></tr>
+              <tr><td>Apr</td><td>13</td><td class="pos">+$3,135</td><td>69%</td><td><span class="pill g">grn</span></td></tr>
+              <tr><td>May</td><td>3</td><td class="neg">−$990</td><td>0%</td><td><span class="pill r">red</span></td></tr>
+              <tr><td>Jun</td><td>3</td><td class="neg">−$400</td><td>33%</td><td><span class="pill r">red</span></td></tr>
+              <tr><td>Jul</td><td>2</td><td class="neg">−$515</td><td>0%</td><td><span class="pill r">red</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="prose muted" style="margin-top:12px;font-size:13px">Feb + Apr carry it; May/Jun/Jul leak even after gating. Same fragility as everything else, just shifted forward.</p>
+      </div>
+      <div>
+        <h2>What "gated" means</h2>
+        <p class="sub">Golden window, raw 29 trades → what the gate does.</p>
+        <ul class="k-list" style="margin-top:4px">
+          <li><span class="mark dn">CUT 12</span><div><b>Hollow / below-value.</b> −$1,710 at 17% win. Positive CVD — price poked the level, flow didn't back it.</div></li>
+          <li><span class="mark up">KEEP 17</span><div><b>Absorption-confirmed.</b> +$5,779 at 53% win. Negative CVD — flow leaning into the level.</div></li>
+          <li><span class="mark eq">NET</span><div>Fewer trades, more money, higher win — the gate throws away the coin-flips. That's the whole idea.</div></li>
+        </ul>
+        <p class="prose muted" style="margin-top:14px;font-size:13px">CVD is a <b>selectivity</b> lever, not a P&amp;L multiplier: the +$1,030 over single-cap is mostly the extra golden trades in strong months; the win-rate jump is where the real value sits.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAKEAWAYS -->
+  <section>
+    <h2>Read it straight</h2>
+    <div class="panel" style="padding:20px 22px">
+      <ul class="k-list">
+        <li><span class="mark up">✓</span><div><b>2+2 + CVD gate is the best 2026 shape yet</b> — +$15,381, 43% win, 5/6 green — beating the shipped single-cap on every axis. Un-starving the golden window <em>and</em> gating it both help.</div></li>
+        <li><span class="mark up">✓</span><div><b>The golden window works when flow confirms it</b> — 41%→54% win once gated. Your sweet spot is real; it was just buried under hollow trades that cancelled it out.</div></li>
+        <li><span class="mark dn">!</span><div><b>Day×window pockets bleed:</b> Wednesday pre-market and Friday golden. A day-aware filter is the obvious next test — but the cells are 3–9 trades each, so treat it as a <em>hypothesis</em>, not a proven edge.</div></li>
+        <li><span class="mark dn">!</span><div><b>July still won't crack</b> (−$650, 4 trades, all absorption losers) and the golden window is only 3/6 green. Consistency across <em>every</em> month is the open problem — the incoming full-year heatmap magnet is the next filter to throw at it.</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>Source: window22_cvd · real engine · CVD sign-verified</span>
+    <span>Champion is the floor — baseline is the chained agent</span>
+  </footer>
+</div>
+
+</body>
+</html>
