@@ -1,0 +1,100 @@
+{
+ "arms": {
+  "shared_news": 152,
+  "n_L_news": 183,
+  "n_C_news": 182,
+  "shared_pct": 0.8306010928961749,
+  "avoided_days_L": 24,
+  "avoided_days_C": 21,
+  "avoided_days_shared": 20,
+  "same_largest_avoided": true,
+  "framing": "sensitivity check, NOT independent replication"
+ },
+ "decomposition": {
+  "C": {
+   "delta": 2984.75,
+   "avoided_pl_removed": 2743.75,
+   "resize": 405.375,
+   "added": -164.375,
+   "n_avoided": 23,
+   "n_resized": 13,
+   "n_shared": 177,
+   "n_added": 5,
+   "check_ok": true,
+   "pct_avoided": 0.9192562191138286,
+   "pct_resize": 0.135815394924198,
+   "pct_added": -0.055071614038026635
+  },
+  "L": {
+   "delta": 1866.125,
+   "avoided_pl_removed": 2196.25,
+   "resize": -233.5,
+   "added": -96.625,
+   "n_avoided": 26,
+   "n_resized": 6,
+   "n_shared": 174,
+   "n_added": 9,
+   "check_ok": true,
+   "pct_avoided": 1.176904012325005,
+   "pct_resize": -0.12512559448054122,
+   "pct_added": -0.0517784178444638
+  }
+ },
+ "funded_risk": {
+  "C_nonews": {
+   "final_eq": 100347.933,
+   "pl": 50347.933000000005,
+   "busted": false,
+   "min_available": 1572.5,
+   "max_dd": 1721.25,
+   "breach_days": 0,
+   "n_days": 206,
+   "bust_naked": 0.98,
+   "bust_spine": 0.0
+  },
+  "C_news": {
+   "final_eq": 103672.433,
+   "pl": 53672.433000000005,
+   "busted": false,
+   "min_available": 1780.25,
+   "max_dd": 1569.0,
+   "breach_days": 0,
+   "n_days": 197,
+   "bust_naked": 0.42,
+   "bust_spine": 0.0
+  },
+  "L_nonews": {
+   "final_eq": 104040.308,
+   "pl": 54040.308000000005,
+   "busted": false,
+   "min_available": 1396.5,
+   "max_dd": 1511.0,
+   "breach_days": 0,
+   "n_days": 207,
+   "bust_naked": 0.92,
+   "bust_spine": 0.0
+  },
+  "L_news": {
+   "final_eq": 105582.433,
+   "pl": 55582.433000000005,
+   "busted": false,
+   "min_available": 1593.625,
+   "max_dd": 1346.5,
+   "breach_days": 0,
+   "n_days": 198,
+   "bust_naked": 0.22,
+   "bust_spine": 0.0
+  }
+ },
+ "resume": {
+  "n_events": 113,
+  "resume_life": 0.8495575221238938,
+  "resume_tradeable": 0.6017699115044248,
+  "n_resume_life": 96,
+  "n_resume_tradeable": 68,
+  "events_before_exit": 85,
+  "resume_tradeable_before_exit": 0.8,
+  "exact_stop_exits": 0.24778761061946902,
+  "bound": "first-touch of exit price = LOWER bound on true exit -> conservative"
+ }
+}

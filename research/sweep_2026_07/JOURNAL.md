@@ -198,3 +198,29 @@ LARGER (+$3,521.75); 0 of 23 (C) and 0 of 26 (L) single removals flip the sign; 
 stays [+$2,634, +$3,522]. The benefit is diffuse across many small avoided losses, not one day.
 Dashboard: research/sweep_2026_07/orderflow/dashboard_premarket_of.html, regenerable from the
 JSON artefacts, provenance + cost assumptions embedded, both dead numbers listed as forbidden.
+
+## 2026-07-29 · Brake's four follow-ups — three corrections to what I reported
+1. FRAMING CORRECTED. I called the leaky arm an "independent replication" of the news filter.
+It is not: the two news-filtered arms share 152/183 trades (83%), the no-news arms share 82%,
+they veto 20 of ~24 the same days (83%), and their largest avoided trade is THE SAME TRADE
+(2026-02-19, +$537). The C arm is the L arm with one check re-sourced. It is a SENSITIVITY
+CHECK on the C remediation, not independent evidence. The leaky arm's CI [-$294, +$3,925]
+SPANS ZERO and on its own establishes nothing. Corrected on the dashboard.
+2. DECOMPOSITION. C arm delta +$2,984.75 = +$2,743.75 avoided-trade P&L (92%) + $405.38
+resizing of surviving trades through the nth/governor/day-ladder cascade (14%) - $164.38 from
+5 trades newly appearing in freed nth slots (-6%); sums exactly. L arm: 118% / -13% / -5%.
+The benefit is overwhelmingly the DIRECT avoided-trade effect, not cascade side-effects —
+which is the cleaner mechanism and makes the result easier to trust, not harder.
+3. FUNDED RISK. Full sized book. C arm: naked bust 0.98% -> 0.42%, maxDD $1,721 -> $1,569,
+min available DD $1,572 -> $1,780, daily-loss breach days 0 -> 0. L arm: 0.92% -> 0.22%,
+maxDD $1,511 -> $1,346. With the full safety spine both are 0.00% before and after, so the
+filter's risk benefit is real but only visible on the naked account. The -$800 daily limit was
+never breached in either book.
+4. RESUME RATE CORRECTED — this materially changes Part 2's headline. Restricting to bars
+at/before the canon's actual exit (lower-bounded by first touch of the recorded exit price,
+exact for the 25% of trades exiting at the stop): 85.0% (96/113) over full trade life falls to
+60.2% (68/113) TRADEABLE. 28 of 113 events fire after the canon had already closed the trade.
+Of events that occur before the exit, 80.0% resume. The bound is conservative (biased low).
+The honest statement is 60.2%, not 85% — a resume after the position is flat is not tradeable.
+Registered AMENDMENT 5: gap size gets its own lane next round (G1/G2/G3), with the
+non-monotone tercile pattern and the mid-cell overfitting trap flagged in advance.

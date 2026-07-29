@@ -62,7 +62,7 @@ code{background:var(--surf2);padding:1px 5px;border-radius:4px;font-size:12px}
 <div class="wrap">
 <h1>NY pre-market order-flow study &mdash; Parts 0&ndash;3</h1>
 <div class="sub">Scored on the partially-remediated, news-filtered book &middot;
-generated 20260729T023552Z &middot; commit <code>873c338</code></div>
+generated 20260729T025010Z &middot; commit <code>b0f088b</code></div>
 
 <div class="cond">
 <b>STANDING CONDITIONALITY &mdash; applies to every panel below.</b><br>
@@ -94,12 +94,13 @@ no feature survives family-wise correction out-of-sample.</p>
 nothing survives once |gap| is known &mdash; and |gap| alone carries &rho; +0.153 (p 0.036), larger than every order-flow feature tested.</p>
 <p class="verdict">Part 2 &mdash; in-trade flow at a retrace, resume vs reverse:
 <span class="pill bad">NULL</span> &nbsp;
-every AUC sits on 0.5. But the base rate is the finding: <b>85% of retraces resume</b>.</p>
+every AUC sits on 0.5. The base rate is the finding, and the <b>tradeable</b> number is <b>60.2% of retraces resume before the canon's own exit</b> &mdash; 85.0% over full trade life, but a resume after the position is flat is not tradeable.</p>
 <p class="verdict">Part 3 &mdash; the news filter:
 <span class="pill ok">SURVIVES</span> &nbsp;
-$+2,985 on the working baseline (p 0.005),
-positive in both arms and both halves; 0 of
-23 single removals flip the sign.</p>
+$+2,985 on the working baseline (p 0.005, CI
+[$+894, $+4,970]);
+0 of 23 single removals flip the sign.
+The second arm is a <b>sensitivity check, not a replication</b>.</p>
 </div>
 
 <h2>Part 0 &mdash; the resolved book</h2>
@@ -329,16 +330,42 @@ are never used as an inference sample size.</p>
 <tr><td><code>absorp_roll</code></td><td>0.375</td><td class='muted'>[0.185, 0.584]</td><td>0.209</td><td><span class="pill bad">ns</span></td></tr>
 <tr><td><code>delta_div_roll</code></td><td>0.543</td><td class='muted'>[0.510, 0.590]</td><td>0.038</td><td><span class="pill bad">ns</span></td></tr>
 </tbody></table></div><p class="muted">n = 54 events.</p></div>
+<div class="cond"><b>Corrected: the tradeable resume rate is
+60.2%, not 85.0%.</b>
+The 85% figure counts resumes anywhere in trade life &mdash; but a resume after the canon has
+already closed the position is <b>not tradeable</b>. Restricting to bars at or before the
+canon's exit:
+<b>68/113 = 60.2%</b>.
+28 of 113 events fire
+after the trade was already flat; of the 85 that fire while the
+position is still open, 80.0% resume.<br>
+<b>Bound direction:</b> the canon's exit timestamp is destroyed, so the exit bar is
+lower-bounded by the first bar containing the recorded exit price. That makes this number
+<b>conservative (biased low)</b>; for the 25% of trades
+exiting at the stop it is exact.</div>
 <p class='muted'>Power: at this out-of-sample event count the smallest detectable |AUC&minus;0.5| is about 0.147 (AUC 0.647). Anything smaller is invisible at this sample &mdash; absence of a result here is not evidence of absence of an effect.</p>
 <h2>Part 3 &mdash; the news filter</h2>
-<p>The strongest lead in the study: it improved the sized pre-market slice in the leaky
-arm <b>and</b> the partially-remediated arm independently, it is <b>not fitted</b> to this book,
-and the economic calendar is published in advance &mdash; so it is knowable at fill time by
-construction, with no threshold estimated from outcomes.</p>
+<p>The strongest lead in the study, and the only rule that survived. It is <b>not
+fitted</b> to this book &mdash; the veto is a published economic calendar, so it is knowable at
+fill time by construction, with no threshold estimated from outcomes. It improves the sized
+pre-market slice in both arms, but those arms are <b>not independent</b> (see below), so that
+is corroboration of robustness to the C remediation, not a second experiment.</p>
 <p><b>The test that can kill it:</b> it drops trades in a window where a handful carry nearly all
 the P&amp;L. If the whole benefit is one bad day in fourteen months, it is an anecdote. So the
 benefit is recomputed with the single largest avoided trade removed, then jackknifed over
 <i>every</i> avoided trade.</p>
+<div class="cond"><b>The two arms are NOT independent &mdash; this is a sensitivity
+check, not a replication.</b> The news-filtered arms share <b>152 of
+183 trades
+(83%)</b>, they veto
+<b>20 of 24
+of the same days</b>, and their largest avoided trade is
+<b>the same trade</b>. The C arm is the
+L arm with one check re-sourced. The leaky arm's 95% CI
+[$-294,
+$+3,925] <b>spans zero</b> &mdash; on its own it
+establishes nothing. It is shown to demonstrate that the result is not an artefact of the C
+remediation, and for no stronger purpose.</div>
 <div class="card oos"><h3>Partially-remediated arm (C only) &mdash; the working baseline</h3>
 <div class="tiles">
  <div class="tile"><div class="k">No news</div><div class="v">$+18,113</div>
@@ -366,7 +393,7 @@ $+3,522]. The benefit is
 <p class='muted'>In-sample half: $+2,044 &rarr; $+3,030 (delta $+986, 6 avoided)</p>
 <p class='muted'>Out-of-sample half: $+16,069 &rarr; $+18,068 (delta $+1,999, 17 avoided)</p>
 </div>
-<div class="card is-panel"><h3>Leaky arm (conf_PM) &mdash; independent replication</h3>
+<div class="card is-panel"><h3>Leaky arm (conf_PM) &mdash; sensitivity check only, CI spans zero</h3>
 <div class="tiles">
  <div class="tile"><div class="k">No news</div><div class="v">$+21,152</div>
    <div class="n">200 trades</div></div>
@@ -396,6 +423,37 @@ $+2,403]. The benefit is
 <p class="muted">Because the filter is not fitted to either half, neither half is
 privileged by construction &mdash; but the out-of-sample half remains the headline for
 consistency with the rest of the study.</p>
+<h3>Where the money comes from</h3>
+<p>The delta is not one mechanism. It splits into P&amp;L that simply never happened (avoided
+trades), P&amp;L that changed because surviving trades were <i>resized</i> when the veto shifted
+the nth-escalation counter, governor state and day ladder, and P&amp;L from trades that newly
+appear in freed nth slots. The three sum to the delta exactly.</p>
+<div class="scroll"><table><thead><tr><th>Arm</th><th>Total delta</th>
+<th>(a) avoided-trade P&amp;L</th><th>(b) resizing cascade</th><th>(c) newly appearing</th>
+<th>Sum check</th></tr></thead><tbody>
+<tr><td>C arm</td><td>$+2,985</td><td>$+2,744 <span class='muted'>(92%, 23 trades)</span></td><td>$+405 <span class='muted'>(14%, 13/177 shared trades change)</span></td><td>$-164 <span class='muted'>(-6%, 5 trades)</span></td><td><span class="pill ok">exact</span></td></tr>
+<tr><td>L arm</td><td>$+1,866</td><td>$+2,196 <span class='muted'>(118%, 26 trades)</span></td><td>$-234 <span class='muted'>(-13%, 6/174 shared trades change)</span></td><td>$-97 <span class='muted'>(-5%, 9 trades)</span></td><td><span class="pill ok">exact</span></td></tr>
+</tbody></table></div>
+<p class="verdict">The benefit is overwhelmingly the <b>direct avoided-trade effect</b>, not the
+resizing cascade &mdash; which makes it easier to trust, not harder: it does not depend on
+second-order interactions with the escalation logic.</p>
+<h3>Funded risk, with and without the filter</h3>
+<p>Full sized book (NY + London, windowed), committed engine constants: $50k start, $2,000
+EOD-trailing drawdown locked at the $50k floor, Tier-1 = the &minus;$800 daily-loss halt
+<b>plus</b> the $100 drawdown-proximity halt. Bust probability is a day-block bootstrap
+(5,000 paths); &ldquo;spine&rdquo; adds the DD-scaling ramp.</p>
+<div class="scroll"><table><thead><tr><th>Book</th><th>Final P&amp;L</th><th>Bust % (naked)</th>
+<th>Bust % (full spine)</th><th>Max drawdown</th><th>Min available DD</th>
+<th>Daily-limit breach days</th></tr></thead><tbody>
+<tr><td>C arm &mdash; no filter</td><td>$+50,348</td><td>0.98%</td><td>0.00%</td><td>$1,721</td><td>$1,572</td><td>0</td></tr>
+<tr><td>C arm &mdash; WITH filter</td><td>$+53,672</td><td>0.42%</td><td>0.00%</td><td>$1,569</td><td>$1,780</td><td>0</td></tr>
+<tr><td>L arm &mdash; no filter</td><td>$+54,040</td><td>0.92%</td><td>0.00%</td><td>$1,511</td><td>$1,396</td><td>0</td></tr>
+<tr><td>L arm &mdash; WITH filter</td><td>$+55,582</td><td>0.22%</td><td>0.00%</td><td>$1,346</td><td>$1,594</td><td>0</td></tr>
+</tbody></table></div>
+<p class="verdict">The filter roughly <b>halves naked bust probability</b> and cuts max drawdown
+in both arms. With the full safety spine engaged, bust is 0.00% before and after &mdash; so the
+risk benefit is real but only visible on the naked account. The &minus;$800 daily limit was
+<b>never breached</b> in any book.</p>
 <h2>Numbers that are dead and must not reappear</h2>
 <div class="dead">
 <b>1. The trail-0.5R-from-1.5R sweep (+$35,980, 214 trades, 51.4% WR).</b> Superseded. It was
@@ -409,8 +467,8 @@ mechanical</b> number. The pre-market portion is roughly <b>$17k mechanical</b> 
 
 <h2>Provenance</h2>
 <div class="prov">
-run_id &nbsp; 20260729T023552Z<br>
-commit &nbsp; 873c338<br>
+run_id &nbsp; 20260729T025010Z<br>
+commit &nbsp; b0f088b<br>
 config_hash (part0&ndash;3 scripts, sha256/16) &nbsp; dc91e5a253022f84<br>
 book_mech &nbsp; 4b6331982a6e7169 &nbsp;(job2_books/mech_C_news.parquet)<br>
 book_sized &nbsp; 448482553e483b9f &nbsp;(job2_books/sized_C_news.parquet)<br>

@@ -20,6 +20,7 @@ def load(n):
 
 P0, P1, P1B = load("part0_report.json"), load("part1_report.json"), load("part1b_results.json")
 P2, P3 = load("part2_results.json"), load("part3_results.json")
+FU = load("followups.json")
 commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True,
                         text=True).stdout.strip()
 run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
@@ -157,13 +158,16 @@ A(f"""<h2>Verdicts</h2>
 <p class="verdict">Part 2 &mdash; in-trade flow at a retrace, resume vs reverse:
 {pill(_p2any, 'SIGNAL', 'NULL')} &nbsp;
 {'a feature survives.' if _p2any else
- 'every AUC sits on 0.5. But the base rate is the finding: <b>'
- + f"{(P2.get('base_rate_resume') or 0)*100:.0f}% of retraces resume</b>."}</p>
+ 'every AUC sits on 0.5. The base rate is the finding, and the <b>tradeable</b> number is <b>'
+ + f"{(FU.get('resume',{}).get('resume_tradeable') or 0)*100:.1f}% of retraces resume before the "
+   f"canon's own exit</b> &mdash; {(FU.get('resume',{}).get('resume_life') or 0)*100:.1f}% over "
+   f"full trade life, but a resume after the position is flat is not tradeable."}</p>
 <p class="verdict">Part 3 &mdash; the news filter:
 {pill(_c.get('survives_kill_test'), 'SURVIVES', 'ANECDOTE')} &nbsp;
-{money(_c.get('delta'))} on the working baseline (p {f2(_c.get('p'), 3, False)}),
-positive in both arms and both halves; {_c.get('jackknife_flips','—')} of
-{_c.get('n_avoided','—')} single removals flip the sign.</p>
+{money(_c.get('delta'))} on the working baseline (p {f2(_c.get('p'), 3, False)}, CI
+[{money((_c.get('ci') or [None,None])[0])}, {money((_c.get('ci') or [None,None])[1])}]);
+{_c.get('jackknife_flips','—')} of {_c.get('n_avoided','—')} single removals flip the sign.
+The second arm is a <b>sensitivity check, not a replication</b>.</p>
 </div>
 
 <h2>Part 0 &mdash; the resolved book</h2>
@@ -427,6 +431,21 @@ are never used as an inference sample size.</p>""")
                   f"<td>{f2(r.get('p'),3,False)}</td>"
                   f"<td>{pill(ok,'survives','ns')}</td></tr>")
             A(f'</tbody></table></div><p class="muted">n = {rows[0][1].get("n")} events.</p></div>')
+        rs = FU.get("resume", {})
+        if rs:
+            A(f"""<div class="cond"><b>Corrected: the tradeable resume rate is
+{(rs.get('resume_tradeable') or 0)*100:.1f}%, not {(rs.get('resume_life') or 0)*100:.1f}%.</b>
+The 85% figure counts resumes anywhere in trade life &mdash; but a resume after the canon has
+already closed the position is <b>not tradeable</b>. Restricting to bars at or before the
+canon's exit:
+<b>{rs.get('n_resume_tradeable')}/{rs.get('n_events')} = {(rs.get('resume_tradeable') or 0)*100:.1f}%</b>.
+{rs.get('n_events',0) - rs.get('events_before_exit',0)} of {rs.get('n_events')} events fire
+after the trade was already flat; of the {rs.get('events_before_exit')} that fire while the
+position is still open, {(rs.get('resume_tradeable_before_exit') or 0)*100:.1f}% resume.<br>
+<b>Bound direction:</b> the canon's exit timestamp is destroyed, so the exit bar is
+lower-bounded by the first bar containing the recorded exit price. That makes this number
+<b>conservative (biased low)</b>; for the {(rs.get('exact_stop_exits') or 0)*100:.0f}% of trades
+exiting at the stop it is exact.</div>""")
         if P2.get("detectable_auc_oos"):
             A(f"<p class='muted'>Power: at this out-of-sample event count the smallest detectable "
               f"|AUC&minus;0.5| is about {P2['detectable_auc_oos']-0.5:.3f} (AUC "
@@ -438,16 +457,31 @@ A('<h2>Part 3 &mdash; the news filter</h2>')
 if not P3:
     A('<p class="muted">Results artefact not present.</p>')
 else:
-    A("""<p>The strongest lead in the study: it improved the sized pre-market slice in the leaky
-arm <b>and</b> the partially-remediated arm independently, it is <b>not fitted</b> to this book,
-and the economic calendar is published in advance &mdash; so it is knowable at fill time by
-construction, with no threshold estimated from outcomes.</p>
+    A("""<p>The strongest lead in the study, and the only rule that survived. It is <b>not
+fitted</b> to this book &mdash; the veto is a published economic calendar, so it is knowable at
+fill time by construction, with no threshold estimated from outcomes. It improves the sized
+pre-market slice in both arms, but those arms are <b>not independent</b> (see below), so that
+is corroboration of robustness to the C remediation, not a second experiment.</p>
 <p><b>The test that can kill it:</b> it drops trades in a window where a handful carry nearly all
 the P&amp;L. If the whole benefit is one bad day in fourteen months, it is an anecdote. So the
 benefit is recomputed with the single largest avoided trade removed, then jackknifed over
 <i>every</i> avoided trade.</p>""")
+    _ar = FU.get("arms", {})
+    if _ar:
+        A(f"""<div class="cond"><b>The two arms are NOT independent &mdash; this is a sensitivity
+check, not a replication.</b> The news-filtered arms share <b>{_ar.get('shared_news')} of
+{max(_ar.get('n_L_news',0), _ar.get('n_C_news',0))} trades
+({(_ar.get('shared_pct') or 0)*100:.0f}%)</b>, they veto
+<b>{_ar.get('avoided_days_shared')} of {max(_ar.get('avoided_days_L',0), _ar.get('avoided_days_C',0))}
+of the same days</b>, and their largest avoided trade is
+<b>{'the same trade' if _ar.get('same_largest_avoided') else 'different'}</b>. The C arm is the
+L arm with one check re-sourced. The leaky arm's 95% CI
+[{money((P3.get('L',{}).get('ci') or [None,None])[0])},
+{money((P3.get('L',{}).get('ci') or [None,None])[1])}] <b>spans zero</b> &mdash; on its own it
+establishes nothing. It is shown to demonstrate that the result is not an artefact of the C
+remediation, and for no stronger purpose.</div>""")
     for arm, label in (("C", "Partially-remediated arm (C only) &mdash; the working baseline"),
-                       ("L", "Leaky arm (conf_PM) &mdash; independent replication")):
+                       ("L", "Leaky arm (conf_PM) &mdash; sensitivity check only, CI spans zero")):
         r = P3.get(arm)
         if not r:
             continue
@@ -489,6 +523,58 @@ delta <i>larger</i>, not smaller: {money(r.get('delta_excl_largest'))}.
     A("""<p class="muted">Because the filter is not fitted to either half, neither half is
 privileged by construction &mdash; but the out-of-sample half remains the headline for
 consistency with the rest of the study.</p>""")
+    dec = FU.get("decomposition", {})
+    if dec:
+        A("""<h3>Where the money comes from</h3>
+<p>The delta is not one mechanism. It splits into P&amp;L that simply never happened (avoided
+trades), P&amp;L that changed because surviving trades were <i>resized</i> when the veto shifted
+the nth-escalation counter, governor state and day ladder, and P&amp;L from trades that newly
+appear in freed nth slots. The three sum to the delta exactly.</p>
+<div class="scroll"><table><thead><tr><th>Arm</th><th>Total delta</th>
+<th>(a) avoided-trade P&amp;L</th><th>(b) resizing cascade</th><th>(c) newly appearing</th>
+<th>Sum check</th></tr></thead><tbody>""")
+        for arm in ("C", "L"):
+            d = dec.get(arm)
+            if not d:
+                continue
+            A(f"<tr><td>{arm} arm</td><td>{money(d.get('delta'))}</td>"
+              f"<td>{money(d.get('avoided_pl_removed'))} "
+              f"<span class='muted'>({(d.get('pct_avoided') or 0)*100:.0f}%, "
+              f"{d.get('n_avoided')} trades)</span></td>"
+              f"<td>{money(d.get('resize'))} <span class='muted'>({(d.get('pct_resize') or 0)*100:.0f}%, "
+              f"{d.get('n_resized')}/{d.get('n_shared')} shared trades change)</span></td>"
+              f"<td>{money(d.get('added'))} <span class='muted'>({(d.get('pct_added') or 0)*100:.0f}%, "
+              f"{d.get('n_added')} trades)</span></td>"
+              f"<td>{pill(d.get('check_ok'),'exact','MISMATCH')}</td></tr>")
+        A("""</tbody></table></div>
+<p class="verdict">The benefit is overwhelmingly the <b>direct avoided-trade effect</b>, not the
+resizing cascade &mdash; which makes it easier to trust, not harder: it does not depend on
+second-order interactions with the escalation logic.</p>""")
+    fr = FU.get("funded_risk", {})
+    if fr:
+        A("""<h3>Funded risk, with and without the filter</h3>
+<p>Full sized book (NY + London, windowed), committed engine constants: $50k start, $2,000
+EOD-trailing drawdown locked at the $50k floor, Tier-1 = the &minus;$800 daily-loss halt
+<b>plus</b> the $100 drawdown-proximity halt. Bust probability is a day-block bootstrap
+(5,000 paths); &ldquo;spine&rdquo; adds the DD-scaling ramp.</p>
+<div class="scroll"><table><thead><tr><th>Book</th><th>Final P&amp;L</th><th>Bust % (naked)</th>
+<th>Bust % (full spine)</th><th>Max drawdown</th><th>Min available DD</th>
+<th>Daily-limit breach days</th></tr></thead><tbody>""")
+        for arm in ("C", "L"):
+            for tag, nm in (("nonews", "no filter"), ("news", "WITH filter")):
+                v = fr.get(f"{arm}_{tag}")
+                if not v:
+                    continue
+                A(f"<tr><td>{arm} arm &mdash; {nm}</td><td>{money(v.get('pl'))}</td>"
+                  f"<td>{f2(v.get('bust_naked'),2,False)}%</td>"
+                  f"<td>{f2(v.get('bust_spine'),2,False)}%</td>"
+                  f"<td>${v.get('max_dd',0):,.0f}</td><td>${v.get('min_available',0):,.0f}</td>"
+                  f"<td>{v.get('breach_days')}</td></tr>")
+        A("""</tbody></table></div>
+<p class="verdict">The filter roughly <b>halves naked bust probability</b> and cuts max drawdown
+in both arms. With the full safety spine engaged, bust is 0.00% before and after &mdash; so the
+risk benefit is real but only visible on the naked account. The &minus;$800 daily limit was
+<b>never breached</b> in any book.</p>""")
 
 # ---------------------------------------------------------------- dead numbers + provenance
 A(f"""<h2>Numbers that are dead and must not reappear</h2>

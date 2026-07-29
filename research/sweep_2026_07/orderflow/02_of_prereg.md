@@ -206,3 +206,40 @@ sample size. Multiplicity is priced on the effective number of independent tests
 **Insufficiency rule.** Fewer than 10 events in a cell renders it "insufficient", never a
 number. If the event count is under 20 the study reports as underpowered with the detectable
 effect size stated.
+
+---
+
+# AMENDMENT 5 — 2026-07-29. GAP SIZE registered as its own hypothesis for the NEXT round.
+# NOT tested here. Registered before any gap-specific test is run.
+
+**Why it earns a lane.** In this round |gap| (08:00 ET price − prior 15:59 close) carried
+Spearman **ρ +0.153 (p 0.036)** against realized R out-of-sample — **larger than every one of
+the eleven order-flow features tested**, none of which survived family-wise correction (best
+|ρ| 0.093). It is knowable at 08:00 with **no tape, no depth, no order flow at all**, so its
+leakage surface is zero — the opposite of `conf_PM`, which is why it is worth a clean test.
+
+**The H5 connection.** The expiry-week / wrong-contract stratum keeps outperforming (OOS n=11,
+mean R +3.08 vs +0.62). Expiry weeks are exactly when contract-roll dislocations produce large
+opening gaps. G2 below asks whether H5 has been a gap effect the whole time.
+
+**Registered questions:**
+* **G1** — does gap size predict realized R out-of-sample on a book where gap was never used
+  for selection?
+* **G2** — does controlling for |gap| remove the expiry-week (H5) outperformance? If it does,
+  H5 is not a contract-integrity finding but a gap finding, and the integrity flag changes
+  meaning.
+* **G3** — does any gap-conditional sizing or skip rule beat the incumbent under funded sizing
+  and walk-forward? (Only reached if G1 survives.)
+
+**Frozen now, before any gap test:**
+1. Tercile edges computed on the IS half **only**, on whatever trade set the next round's book
+   ruling produces.
+2. **The relationship observed this round is NON-MONOTONE** — OOS gap terciles ran small +0.117
+   (n=14), mid **+1.642** (n=25), large +0.819 (n=47). A monotone hypothesis is therefore NOT
+   supported by what we have. The next round must declare in advance whether it tests
+   monotonicity across terciles or a specific cell, and if a specific cell, must price the
+   multiplicity of having chosen it from three.
+3. The mid-gap cell is the obvious overfitting trap (it is the best cell, at n=25). It may not
+   be reported as a finding without a day-block permutation noise floor and a direction-blind
+   twin.
+4. Gap is computable on 175/182 trades; the 7 missing must be reported, not dropped silently.
