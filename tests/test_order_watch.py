@@ -24,10 +24,20 @@ def _ts(hm: str):
     return pd.Timestamp(f"2026-03-17 {hm}", tz=NY)
 
 
-def test_defaults_come_from_the_engine_config_not_a_restated_number():
+def test_windows_come_from_the_engine_config_not_a_restated_number():
     w = OrderWatch()
-    assert w.t_cancel == 22.0                     # config/strategy.yaml cancel_if_runs_points
     assert w.win_end is not None and w.eod_flatten is not None
+
+
+def test_rebuilt_canon_has_no_distance_cancel_by_default():
+    """ANGUS 2026-07-30: the 22pt cancel measured INVERTED on the rebuilt population — it
+    kept -0.180R of trades and killed +0.015R. A resting entry now lives until its own
+    session window ends. Defaulting this back to 22.0 trades an unmeasured book."""
+    w = OrderWatch()
+    assert w.t_cancel is None
+    w.register("r1", "B", 100.0)
+    assert w.on_bar(_ts("09:00"), high=500.0, low=99.0) == [], "price ran 400pts — must hold"
+    assert w.watching == ["r1"]
 
 
 def test_long_cancels_when_high_runs_t_cancel_beyond_limit_inclusive():
@@ -123,3 +133,52 @@ def test_multiple_orders_decided_independently():
     out = w.on_bar(_ts("09:00"), high=122.0, low=180.0)
     assert [d["ref"] for d in out] == ["long"]
     assert w.watching == ["short"]
+
+
+# ---- rebuilt canon: per-session expiry and the structural observation ----------------
+def test_each_order_expires_on_its_own_session_window():
+    """Pre-market orders die at 09:30, golden-window orders at 10:30. One global window
+    cannot serve both — an order outliving its session is an unmeasured trade."""
+    w = OrderWatch(win_start=dtime(8, 0), win_end=dtime(11, 0), eod_flatten=dtime(15, 55))
+    w.register("pre", "B", 100.0, win_end=dtime(9, 30))
+    w.register("gold", "B", 100.0, win_end=dtime(10, 30))
+    assert w.on_bar(_ts("09:29"), high=101.0, low=99.5) == []
+    out = w.on_bar(_ts("09:31"), high=101.0, low=99.5)
+    assert [d["ref"] for d in out] == ["pre"] and out[0]["reason"] == "cancelled_window_end"
+    assert w.watching == ["gold"], "the gold order must survive its own window"
+    out2 = w.on_bar(_ts("10:31"), high=101.0, low=99.5)
+    assert [d["ref"] for d in out2] == ["gold"]
+
+
+def test_struct_event_broke_and_rejected_mirror_the_l1_walk():
+    """STRUCT_ACCEPT=5 beyond a touched level is 'broke'; STRUCT_REJECT=8 back off it is
+    'rejected'. These feed the elite 2.0x tier, so the thresholds are load-bearing."""
+    w = OrderWatch(win_start=dtime(8, 0), win_end=dtime(11, 0), eod_flatten=dtime(15, 55))
+    # long entry at 100, away-side level at 110 (above the trigger close)
+    w.register("a", "B", 100.0, levels=[("vwap_mid", 110.0, "vwap")], close=105.0)
+    w.on_bar(_ts("09:00"), high=110.5, low=104.0)          # touches, only 0.5 beyond
+    assert w.struct_event("a") == ""
+    w.on_bar(_ts("09:01"), high=115.0, low=109.0)          # 5.0 beyond -> broke
+    assert w.struct_event("a") == "broke"
+
+    w.register("b", "B", 100.0, levels=[("vwap_mid", 110.0, "vwap")], close=105.0)
+    w.on_bar(_ts("09:02"), high=110.2, low=102.0)          # touched, 8.0 back off -> rejected
+    assert w.struct_event("b") == "rejected"
+
+
+def test_struct_only_considers_away_side_levels():
+    """L1 filters the stack to levels at/beyond the trigger close in the run-away direction;
+    a level behind the trade can never produce an event."""
+    w = OrderWatch(win_start=dtime(8, 0), win_end=dtime(11, 0), eod_flatten=dtime(15, 55))
+    w.register("a", "B", 100.0, levels=[("below", 90.0, "sr")], close=105.0)
+    w.on_bar(_ts("09:00"), high=106.0, low=80.0)
+    assert w.struct_event("a") == ""
+
+
+def test_first_struct_event_is_final():
+    w = OrderWatch(win_start=dtime(8, 0), win_end=dtime(11, 0), eod_flatten=dtime(15, 55))
+    w.register("a", "B", 100.0, levels=[("L", 110.0, "sr")], close=105.0)
+    w.on_bar(_ts("09:00"), high=116.0, low=109.0)
+    assert w.struct_event("a") == "broke"
+    w.on_bar(_ts("09:01"), high=110.0, low=100.0)          # would be a rejection
+    assert w.struct_event("a") == "broke", "the first event wins and is final"

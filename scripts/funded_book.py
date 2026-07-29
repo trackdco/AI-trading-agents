@@ -41,10 +41,13 @@ RISK SPINE (all causal: decisions see only realized-by-fill P&L + in-flight risk
   micro clamp 40 · micros = round(risk$/(stop_pts*2)), min 1
 
 REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k):
-  lucid      fit  +$89,925 ($6,917/mo)   worst day -$762    maxDD $1,603  13/13 green
-             holdout +$56,408 ($9,401/mo)  worst day -$780  maxDD $1,503   6/6 green
-  scaled600  fit +$320,150 ($24,627/mo)  worst day -$3,242  maxDD $5,844  13/13 green
-             holdout +$188,324 ($31,387/mo) worst day -$3,092 maxDD $3,618  6/6 green
+  lucid      fit  +$90,015 ($6,924/mo)   worst day -$762    maxDD $1,603  13/13 green
+             holdout +$56,409 ($9,401/mo)  worst day -$780  maxDD $1,503   6/6 green
+  scaled600  fit +$320,662 ($24,666/mo)  worst day -$3,242  maxDD $5,844  13/13 green
+             holdout +$188,325 ($31,388/mo) worst day -$3,092 maxDD $3,618  6/6 green
+  (these supersede the pre-2026-07-29 figures +$89,925 / +$56,408 / +$320,150 / +$188,324,
+   which were computed under an UNSTABLE tie sort — see load_book. The delta is +$90 and
+   +$512 on fit, +$1 on holdout, and no risk metric moved at all.)
              MC funded-yr (both-span pool, 2000 sims): P(bust) 1.0%, median 28 payouts
              NOTE fit worst day -$3,242 vs that day's $3,200 budget: one day, $42 through
              (last fill's stop-out landed after the budget check passed) — known, accepted
@@ -88,7 +91,12 @@ def load_book(span: str) -> pd.DataFrame:
                          np.where(s <= 2, 0.5, np.where(s == 3, 1.0, 1.5)))
     V["elite"] = ((V.sess == "gold") & (V.TRIG == 1) & (V.LONSLOPE == 1)
                   & (V.struct_event == "broke"))
-    return V.sort_values("fill")
+    # STABLE sort, deliberately. Same-minute fills are common (sibling triggers off one
+    # cluster), and pandas' default quicksort orders those ties arbitrarily — which silently
+    # decides WHICH trade of a tied group gets the day's single elite 2.0x slot. Caught by
+    # tests/test_canon_scorer_ny.py when the live twin could not reproduce 4 rows out of
+    # 1,534. Ties now resolve to detection order, which is what the live feed sees.
+    return V.sort_values("fill", kind="mergesort")
 
 
 def base_for_buffer(buf: float, p: dict) -> float:

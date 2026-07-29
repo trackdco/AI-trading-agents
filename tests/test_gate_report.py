@@ -73,7 +73,8 @@ def test_B4_naked_position_fails_else_pass():
 
 
 def test_B5_sizing_pass_and_fail():
-    ok = gr.eval_B(_base_b(sizing=[{"conviction": 1.0, "stop_pts": 10.0, "micros": 10}]))
+    # canon schedule at the $150 lucid base: 1.0 tier, 10pt stop -> 150/(10*2) = 7.5 -> 8
+    ok = gr.eval_B(_base_b(sizing=[{"conviction": 1.0, "stop_pts": 10.0, "micros": 8}]))
     assert _by_id(ok)["B5"].status == gr.PASS
     bad = gr.eval_B(_base_b(sizing=[{"conviction": 1.0, "stop_pts": 10.0, "micros": 15}]))
     assert _by_id(bad)["B5"].status == gr.FAIL

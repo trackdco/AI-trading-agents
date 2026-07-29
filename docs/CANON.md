@@ -18,10 +18,15 @@ treat it as truth; do not trust any number produced before the rebuild.
 | Canon dataset (validated trades, scores, L1 events, valid flag) | `output/aikido_{fit,holdout}.parquet` (committed) |
 | Scored candidate population | `output/l3_scored_{fit,holdout}.parquet` (committed) |
 | Sealed-holdout law | `docs/HOLDOUT-2023-24-PREREGISTRATION.md` |
+| Live decision core (the twin of `funded_book.py`) | `src/canon/scorer_ny.py` + `tests/test_canon_scorer_ny.py` |
+| Live re-arm status, behavioural diff, open rulings | `docs/ARMING-REFERENCE.md` |
+| Why each ruling exists (session Q&A) | `docs/CANON-QA-LOG.md` |
 
-Headline (reproduce with `python -m scripts.funded_book`): **lucid** profile fit +$89,925 /
-holdout +$56,408; **scaled600** fit +$320,150 / holdout +$188,324; every month green in
-both spans under both profiles.
+Headline (reproduce with `python -m scripts.funded_book`): **lucid** profile fit +$90,015 /
+holdout +$56,409; **scaled600** fit +$320,662 / holdout +$188,325; every month green in
+both spans under both profiles. (These supersede +$89,925 / +$56,408 / +$320,150 /
++$188,324, computed before an unstable tie-sort in `load_book` was fixed — see
+`docs/ARMING-REFERENCE.md` §2. No risk metric moved.)
 
 ## What survived from before (kept deliberately, NOT canon claims)
 

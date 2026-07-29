@@ -12,6 +12,7 @@ from src.canon.gate_evidence import (
     base_dollar,
     check_sizing,
     expected_micros,
+    micros_for,
     normalize_dtc_reject,
     normalize_spine_reject,
 )
@@ -62,42 +63,59 @@ class MockBroker:
 
 
 # --------------------------------------------------------------------------- sizing (gap c)
-def test_base_dollar_floor_and_scaling():
-    assert base_dollar(None) == 200.0 and base_dollar(3000) == 200.0
-    assert base_dollar(5000) == 350.0            # +$75 per $1k past $3k: 200 + 75*2
-    assert base_dollar(6000) == 425.0
+# REBUILT CANON schedule. These assertions and src/canon/scorer_ny.py must agree by
+# construction — gate_evidence imports the profile rather than restating it — and the scorer
+# is in turn conformance-tested against scripts/funded_book.py on both spans.
+def test_base_dollar_is_the_lucid_base_by_default():
+    assert base_dollar(None) == 150.0 and base_dollar(3000) == 150.0
+    assert base_dollar(50_000) == 150.0, "lucid never scales with buffer"
 
 
-def test_expected_micros_floor_schedule():
-    # SAFETY-SPINE anchor: 1.0=$200, 1.5=$300, 2.25=$400 at the floor; /(stop*2), clamp 40
-    assert expected_micros(1.0, 10.0) == 10       # 200 / (10*2)
-    assert expected_micros(1.5, 10.0) == 15       # 300 / 20
-    assert expected_micros(2.25, 10.0) == 20      # 400 / 20  (2.25 caps at 2x base)
-    assert expected_micros(1.0, 2.0) == 40        # 200/(2*2)=50 -> clamped to 40
+def test_base_dollar_scaled_profile_steps_and_caps():
+    assert base_dollar(3000, "scaled600") == 150.0
+    assert base_dollar(4999, "scaled600") == 150.0    # first step lands at +$5k
+    assert base_dollar(5000, "scaled600") == 225.0    # +$75 per $2k past $3k
+    assert base_dollar(7000, "scaled600") == 300.0
+    assert base_dollar(99_000, "scaled600") == 600.0  # hard cap
 
 
-def test_expected_micros_dd_scaled():
-    assert expected_micros(1.0, 10.0, available_dd=5000) == 18   # 350/20 = 17.5 -> 18
+def test_expected_micros_ladder():
+    # lucid ladder: 0.5=$75, 1.0=$150, 1.5=$225, 2.0=$300; micros = risk$/(stop x $2)
+    assert expected_micros(0.5, 10.0) == 4        # 75 / 20 = 3.75 -> 4
+    assert expected_micros(1.0, 10.0) == 8        # 150 / 20 = 7.5 -> 8
+    assert expected_micros(1.5, 10.0) == 11       # 225 / 20 = 11.25 -> 11
+    assert expected_micros(2.0, 10.0) == 15       # 300 / 20 = 15 (the elite tier)
+    assert expected_micros(1.0, 1.0) == 40        # 150/2 = 75 -> clamped to 40
 
 
-def test_base_dollar_ramp_below_1500():
-    """ANGUS 2026-07-26: linear taper $1,500 -> $0 at $100 replaces the $250 cliff
-    (docs/RULING-daily-loss-limit.md 'The ramp'). Untouched at and above $1,500."""
-    assert base_dollar(2000) == 200.0 and base_dollar(1500) == 200.0
-    assert base_dollar(800) == 100.0             # midpoint of the $1,400 span
-    assert base_dollar(450) == 50.0
-    assert base_dollar(100) == 0.0 and base_dollar(50) == 0.0
-    # and the sized consequence: at $800 of room a 1.0-conviction 10pt stop halves to 5 micros
-    assert expected_micros(1.0, 10.0, available_dd=800) == 5
-    # deep in the ramp the schedule rounds to zero -> the trade is simply not taken
-    assert expected_micros(1.0, 10.0, available_dd=150) == 0
+def test_micros_never_round_to_zero():
+    """The canon takes a trade at >=1 micro or does not take it. A 0-micro 'trade' is a
+    phantom fill in the journal and a divergence from the measured book."""
+    assert micros_for(75.0, 60.0) == 1            # 75/120 = 0.625 -> 1, not 0
+    assert expected_micros(0.5, 60.0) == 1
+
+
+def test_dd_ramp_halves_the_base_below_1k_buffer():
+    """ANGUS: half size below $1,000 of buffer. Dormant across all 19 months of history —
+    pure insurance for a worse-than-history future, so it must actually be wired."""
+    assert base_dollar(1000) == 150.0
+    assert base_dollar(999) == 75.0
+    assert expected_micros(1.0, 10.0, available_dd=999) == 4     # 75/20 = 3.75 -> 4
 
 
 def test_check_sizing_pass_and_fail():
-    ok = check_sizing(1.0, 10.0, actual_micros=10)
-    assert ok["ok"] and ok["expected"] == 10 and ok["delta"] == 0
+    ok = check_sizing(1.0, 10.0, actual_micros=8)
+    assert ok["ok"] and ok["expected"] == 8 and ok["delta"] == 0
     bad = check_sizing(1.0, 10.0, actual_micros=15)
-    assert not bad["ok"] and bad["expected"] == 10 and bad["delta"] == 5
+    assert not bad["ok"] and bad["expected"] == 8 and bad["delta"] == 7
+
+
+def test_check_sizing_prefers_the_verdicts_own_risk_dollars():
+    """The schedule cannot see the day's soft de-risk; the verdict's risk_dollars can. When
+    supplied it is authoritative, so a correctly halved trade is not flagged as mis-sized."""
+    halved = check_sizing(1.0, 10.0, actual_micros=4, risk_dollars=75.0)
+    assert halved["ok"] and halved["expected"] == 4
+    assert not check_sizing(1.0, 10.0, actual_micros=8, risk_dollars=75.0)["ok"]
 
 
 def test_expected_micros_rejects_bad_stop():

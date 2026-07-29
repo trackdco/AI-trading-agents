@@ -42,18 +42,23 @@ from src.canon.gate_evidence import MICRO_CLAMP, base_dollar
 # --------------------------------------------------------------------------- config/state
 @dataclass(frozen=True)
 class SpineConfig:
-    # Token hard halt under the DD RAMP (ANGUS 2026-07-26): sizing itself now scales the base
-    # linearly to zero between $1,500 and $100 of available DD (gate_evidence.base_dollar), so
-    # the halt is a backstop under a taper, not the primary protection the $250 cliff was.
+    # Token hard halt under the DD RAMP: sizing itself halves below $1,000 of buffer
+    # (gate_evidence.base_dollar), so this is a backstop under a de-risk, not the primary
+    # protection the old $250 cliff was.
     dd_halt_buffer: float = 100.0          # halt when equity within this of the trailing floor
     # Day P&L halt as an R MULTIPLE of the day's own base_dollar, never a fixed dollar figure
-    # (PROMOTION-GATE §D2 blocker 1). The sizer is drawdown-scaled: base_dollar is $200 at the
-    # eval floor and steps +$75 per $1k of available DD past $3k, so a constant -$800 tightens
-    # as the account grows — at $6k available DD it is tighter than ONE max-conviction trade,
-    # priced by the payout-cycle MC at -$6,000/account/year for zero bust reduction. As an R
-    # multiple the halt tracks the risk unit instead: -4R = -$800 at the floor, -$1,700 at $6k.
-    # The VALUE (-4R) awaits Angus's sign-off; the UNITS are not a preference.
-    daily_loss_halt_r: float = -4.0
+    # (PROMOTION-GATE §D2 blocker 1) — as an R multiple it tracks the risk unit as the base
+    # scales with buffer, instead of tightening as the account grows.
+    #
+    # REBUILT CANON (2026-07-29): the VALUE is now pinned to the canon's own daily budget
+    # rather than chosen. The canon budget is base x 800/150 = 5.333R, and the spine is an
+    # account-level BACKSTOP that must sit ABOVE it — a halt below the budget front-runs the
+    # canon's own risk spine and truncates the measured book, which is the one thing an
+    # outer guard must never do. -8R is exactly 1.5x the budget at every base: $1,200 at the
+    # $150 base, $4,800 at the $600 cap. The old -4R was calibrated against the broken
+    # canon's $200 base ($800); against the $150 base it is $600 — BELOW the $800 budget,
+    # so it would have halted days the shipped book trades through.
+    daily_loss_halt_r: float = -8.0
     # Hard size clamp, in MICROS — the unit `OrderIntent.size` actually carries (canon_lane.py
     # and route_b.py both build it via `int(micros)`). Imported from the sizing schedule rather
     # than restated, because the previous local literal `2` (commented "minis") silently
@@ -62,13 +67,16 @@ class SpineConfig:
     max_spread_rel: float = 2.5            # spread ceiling as a multiple of the trailing baseline
     feed_stale_ms: int = 3000              # no order if last tick older than this
     max_orders_per_min: int = 10           # order-rate cap
+    #: which shipped sizing profile this account runs. MUST match the profile the scorer was
+    #: constructed with, or the backstop is indexed to a base the sizer never uses.
+    profile: str = "lucid"
 
 
 def daily_loss_halt_dollars(cfg: SpineConfig, acct: "AccountState") -> float:
     """The day's loss-halt threshold in DOLLARS: the configured R multiple times the day's own
     base_dollar, where available drawdown = equity - trailing_floor. Recomputed per check, so
     the halt re-indexes as the account's available DD moves."""
-    return cfg.daily_loss_halt_r * base_dollar(acct.equity - acct.trailing_floor)
+    return cfg.daily_loss_halt_r * base_dollar(acct.equity - acct.trailing_floor, cfg.profile)
 
 
 # ------------------------------------------------------------------- Tier-1 pin (§D2 blocker 3)
@@ -80,7 +88,8 @@ def daily_loss_halt_dollars(cfg: SpineConfig, acct: "AccountState") -> float:
 # requires. Changing a limit means editing both and re-running the gate, never one file.
 TIER1_PINNED: dict[str, float | int] = {
     "dd_halt_buffer": 100.0,
-    "daily_loss_halt_r": -4.0,
+    "daily_loss_halt_r": -8.0,      # rebuilt canon: 1.5x the canon budget at every base
+
     "max_contracts": MICRO_CLAMP,
     "max_spread_rel": 2.5,
     "feed_stale_ms": 3000,
