@@ -1,0 +1,41 @@
+{
+ "shortfall_late": 9.907003258973806,
+ "days_needed": 79.80641514173344,
+ "n_days_book": 145,
+ "observed": {
+  "early 08:00-08:29": {
+   "n": 108,
+   "n_reached": 68,
+   "cond": 0.3235294117647059,
+   "uncond": 0.2037037037037037,
+   "insufficient": false
+  },
+  "mid 08:30-08:59": {
+   "n": 45,
+   "n_reached": 29,
+   "cond": 0.27586206896551724,
+   "uncond": 0.17777777777777778,
+   "insufficient": false
+  },
+  "late 09:00-09:29": {
+   "n": 29,
+   "n_reached": 18,
+   "cond": 0.1111111111111111,
+   "uncond": 0.06896551724137931,
+   "insufficient": false
+  }
+ },
+ "stat_primary": 0.2124183006535948,
+ "stat_secondary": 0.2124183006535948,
+ "p_primary": 0.08495752123938032,
+ "p_secondary": 0.1934032983508246,
+ "ci": [
+  0.020270270270270285,
+  0.380968045112782
+ ],
+ "p_boot": 0.0335,
+ "n_required_per_group": 27.907003258973806,
+ "verdict": "INCONCLUSIVE",
+ "nperm": 2000,
+ "reached1R_rate": 0.6318681318681318
+}
