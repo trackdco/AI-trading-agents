@@ -59,7 +59,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.run_triggers_london import london_window_et  # noqa: E402
+import scripts.build_l0_triggers_london as L0M  # noqa: E402
+from scripts.build_l0_triggers_london import window_et  # noqa: E402
 from src.backtest.engine import load_backtest_config, simulate  # noqa: E402
 from src.engine.triggers import Trigger  # noqa: E402
 
@@ -77,7 +78,7 @@ GATE_DAYS = ["2025-09-17", "2025-10-28"]
 def l2_cfg(day: str, t_cancel: float = 100000.0):
     """Config for ONE day. win_start/win_end are wall-clock times and cannot express a window
     that shifts with DST, so the window is resolved per day rather than hardcoded."""
-    start, end = london_window_et(day)
+    start, end = window_et(day)
     return load_backtest_config().model_copy(update={
         "win_start": dtime(start.hour, start.minute),
         "win_end": dtime(end.hour, end.minute),
@@ -105,7 +106,7 @@ def day_outcomes(args) -> list[dict]:
                  - pd.Timedelta(days=lookback))
                 & (_BARS.ts_event <= pd.Timestamp(f"{day} 16:10", tz=NY))].reset_index(drop=True)
     cfg = l2_cfg(day)
-    _, win_end = london_window_et(day)
+    _, win_end = window_et(day)
     out = []
     for rec in recs:
         t = Trigger(**{k: v for k, v in rec.items() if k in Trigger.model_fields})
@@ -171,7 +172,7 @@ def gate(lb: int = LOOKBACK_DAYS) -> None:
     tday = pd.to_datetime(T.ts, format="mixed", utc=True).dt.tz_convert(NY)
     trigs = T[tday.dt.strftime("%Y-%m-%d").isin(GATE_DAYS)].reset_index(drop=True)
     print(f"gate days {GATE_DAYS}: {len(trigs)} candidates "
-          f"(DST-shifted: {[d for d in GATE_DAYS if london_window_et(d)[0].hour != 3]})\n")
+          f"(DST-shifted: {[d for d in GATE_DAYS if window_et(d)[0].hour != 3]})\n")
 
     a = run(trigs, procs=2, lookback=lb)
     b = run(trigs, procs=2, lookback=30)
@@ -199,8 +200,12 @@ def main() -> None:
     ap.add_argument("--lb", type=int, default=LOOKBACK_DAYS)
     ap.add_argument("--procs", type=int, default=3)
     ap.add_argument("--mgmt", default="V8")
+    ap.add_argument("--win", default="08:00-10:00",
+                    help="London-local window HH:MM-HH:MM. Must match the census being read.")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
+    L0M.WINDOW = tuple(a.win.split("-"))          # set before any Pool fork
+    tag = "" if L0M.WINDOW == ("08:00", "10:00") else "_" + a.win.replace(":", "")
     if a.gate:
         return gate(a.lb)
     if not a.span:
@@ -208,11 +213,11 @@ def main() -> None:
     global _MGMT
     _MGMT = a.mgmt
 
-    trigs = pd.read_parquet(ROOT / f"output/l0_triggers_london_{a.span}.parquet")
+    trigs = pd.read_parquet(ROOT / f"output/l0_triggers_london{tag}_{a.span}.parquet")
     F = run(trigs, procs=a.procs, lookback=a.lb)
     suffix = "" if a.mgmt == "V8" else f"_{a.mgmt.lower()}"
     out = Path(a.out) if a.out else \
-        ROOT / f"output/l2_outcomes_london_{a.span}{suffix}.parquet"
+        ROOT / f"output/l2_outcomes_london{tag}_{a.span}{suffix}.parquet"
     F.to_parquet(out, index=False)
 
     oc = F[F.status == "outcome"]

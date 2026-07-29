@@ -60,10 +60,29 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from zoneinfo import ZoneInfo  # noqa: E402
+
 from scripts.run_triggers_london import london_window_et  # noqa: E402
 from src.engine.triggers import detect_triggers  # noqa: E402
 
 NY = "America/New_York"
+LON = ZoneInfo("Europe/London")
+
+# The London window, in LONDON LOCAL time. Default 08:00-10:00 is the canon window and is
+# asserted below to be bit-identical to run_triggers_london.london_window_et. Set via --win to
+# census a different slice (e.g. 10:00-12:00, the second two hours) — module-level so Pool
+# workers inherit it across the fork.
+WINDOW = ("08:00", "10:00")
+
+
+def window_et(day: str):
+    """Resolve WINDOW for `day` into ET. Same DST discipline as london_window_et: the window
+    is defined in Europe/London and converted per day, never hardcoded to ET hours."""
+    s = pd.Timestamp(f"{day} {WINDOW[0]}", tz=LON).tz_convert(NY)
+    e = pd.Timestamp(f"{day} {WINDOW[1]}", tz=LON).tz_convert(NY)
+    if WINDOW == ("08:00", "10:00"):        # self-check: default must match the shipped fn
+        assert (s, e) == london_window_et(day), f"window drift on {day}"
+    return s, e
 MASTER = ROOT / "data/reference/nq_1m_master.parquet"
 SEALED = ROOT / "data/reference/holdout_2023_24_days.csv"
 CACHED = ROOT / "output/triggers_london.csv"
@@ -89,7 +108,7 @@ _BARS: pd.DataFrame | None = None       # per-process cache for the Pool path
 
 
 def _one_day(d: str) -> list[dict]:
-    start, end = london_window_et(d)
+    start, end = window_et(d)
     seg = _BARS[(_BARS.ts_event >= start - pd.Timedelta(days=LOOKBACK_DAYS))
                 & (_BARS.ts_event <= end)].reset_index(drop=True)
     if seg.empty or seg[(seg.ts_event >= start) & (seg.ts_event <= end)].empty:
@@ -160,7 +179,7 @@ def parity() -> None:
 
     ok = True
     for d in days:
-        start, _ = london_window_et(d)
+        start, _ = window_et(d)
         a = new[new.day == d].copy()
         b = cached[cached.day == d].copy()
         for f in (a, b):
@@ -196,8 +215,15 @@ def main() -> None:
     ap.add_argument("--span", choices=["fit", "holdout"])
     ap.add_argument("--parity", action="store_true")
     ap.add_argument("--procs", type=int, default=3)
+    ap.add_argument("--win", default="08:00-10:00",
+                    help="London-local window, HH:MM-HH:MM (default 08:00-10:00, the canon "
+                         "window). Use e.g. 10:00-12:00 to census a different slice; the "
+                         "output filename is suffixed so artifacts never collide.")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
+    global WINDOW
+    WINDOW = tuple(a.win.split("-"))
+    tag = "" if WINDOW == ("08:00", "10:00") else "_" + a.win.replace(":", "")
     if a.parity:
         return parity()
     if not a.span:
@@ -209,15 +235,16 @@ def main() -> None:
     else:
         days = weekdays(FIT_MONTHS, bars)
     print(f"{MASTER.name}: {len(bars):,} bars | {len(days)} days "
-          f"{days[0]}..{days[-1]} | lookback {LOOKBACK_DAYS}d | procs {a.procs}", flush=True)
+          f"{days[0]}..{days[-1]} | lookback {LOOKBACK_DAYS}d | procs {a.procs}\n"
+          f"window {WINDOW[0]}-{WINDOW[1]} Europe/London", flush=True)
 
     T = run_days(bars, days, procs=a.procs)
-    out = Path(a.out) if a.out else ROOT / f"output/l0_triggers_london_{a.span}.parquet"
+    out = Path(a.out) if a.out else ROOT / f"output/l0_triggers_london{tag}_{a.span}.parquet"
     T.to_parquet(out, index=False)
 
     ts = pd.to_datetime(T.ts, format="mixed", utc=True).dt.tz_convert(NY)
     hm = ts.dt.hour + ts.dt.minute / 60
-    shifted = sorted({d for d in days if london_window_et(d)[0].hour != 3})
+    shifted = sorted({d for d in days if window_et(d)[0].hour != 3})
     print(f"\nwrote {out.relative_to(ROOT)} — {len(T)} triggers on {ts.dt.date.nunique()} days")
     print(f"ET hour range: {hm.min():.2f} -> {hm.max():.2f}  "
           f"(DST-shifted days in span: {len(shifted)})")
