@@ -317,3 +317,35 @@ READING: entry-candle flow, tested for the first time, is the weakest group in t
 (ec_delta +0.0092 is the worst single feature of all 13). Three rounds have now each produced a
 null on order flow at entry. The one thing that keeps out-associating it is the canon's own
 internal state, which is not order flow at all.
+
+## 2026-07-29 · PRE-MARKET MICROSTRUCTURE — three premises tested, two overturned
+Raw MBP-10 depth SURVIVED the wipes, so wall features were REBUILT CLEAN at the fill-1 snapshot
+(provably pre-fill regardless of intra-minute fill timing). Side benefit: the dep_* leak is now
+MEASURED not asserted — at-fill vs pre-fill wall distance disagrees on a material share of
+trades. This does not repair the book's own selection path, which is still leaky.
+Q-A (does it stall at +1-2R at certain times?) NO TIME PATTERN. Stall rate (reached +1R, never
++2R) is 14%/13%/14% early/mid/late; median MFE 1.82/2.08/1.98R. What DOES vary is GIVE-BACK:
+20% early vs 7% late — early trades more often reach +1R and lose it. That is a give-back
+difference, not a ceiling difference. Every 5-min cell below 10 trades marked insufficient.
+Q-B (heatmap magnet) NOT ANSWERABLE WITH THIS DATA, and said so. MBP-10 = 10 levels/side spans
+~2 points; median wall-ahead sits 1.8pt = 0.12R from entry. A magnet 20-50pt out is INVISIBLE
+here. What is testable: walls do not cap moves (Spearman wall-distance vs MFE +0.015, n=33; 88%
+of trades push at least as far as the wall) and do not sort outcomes (big vs small wall +0.422
+vs +0.307R on 85/81). And the "early is thin" premise FAILS at book level — thickness 79/64/78,
+early is the DEEPEST. Answering the real question needs full-depth or volume-profile data the
+archive does not contain.
+Q-C (late chop / sweep) PREMISE OVERTURNED. Late is the LEAST choppy: efficiency 0.222 vs 0.166
+early; median 30-min MFE 5.93R vs 1.63R; SL-without-1R 34% vs 37% (flat); best mean R in the
+book (+0.999). The one supporting signal: adverse-first 17% late vs 6% early — late entries are
+~3x more likely to be swept against first — but that is 5 of 29 trades and the window still
+earns the most. The ugly cell 09:20-09:24 (71% SL-no-1R, -$578) is 7 trades, insufficient.
+Q-D (variables test) NULL, with the selection cost quantified. 68 configs (17 rules x 4 scopes),
+selected on IS only: best = target 4.0R all-trades, +$4,273 IS -> -$3,826 OOS. Only 18/68 beat
+canon OOS (fewer than half). BEST-OF-68 NULL over 500 day-block-permuted splits: picking the
+best of 68 on ANY random half yields median +$6,006 IS by construction — the real +$4,273 is
+BELOW that (21st pct) — and shrinks to median -$1,045 OOS with only 38% of splits profitable.
+Real OOS sits at the 21st percentile; gate was >95th. MEDIAN IS->OOS SHRINKAGE -$7,050: that is
+the price of sweeping, measured.
+Third independent confirmation on this book (H1 flat targets FAIL, H4 MAE cuts FAIL, Job-1
+breakeven a wash). Structural reason restated: the winners that carry the book retrace a median
+5.97R after first touching +1R, so any rule tight enough to cut losers amputates them.

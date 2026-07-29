@@ -1,0 +1,231 @@
+<title>Pre-market microstructure &mdash; ceilings, walls, chop, exits</title>
+<style>
+:root{--bg:#fbfbfa;--surf:#fff;--surf2:#f4f4f2;--ink:#1a1a19;--ink2:#55554f;--ink3:#86867e;
+--line:#e3e3df;--ok:#1f6f43;--okbg:#e7f3ec;--bad:#a3231d;--badbg:#fbeae9;--warn:#8a5a00;
+--warnbg:#fdf2dd;--accent:#2c5aa0;}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--surf:#1e1e1c;--surf2:#26261f;
+--ink:#f2f2ee;--ink2:#b9b9b0;--ink3:#8a8a80;--line:#33332e;--ok:#6fcf97;--okbg:#17301f;
+--bad:#f08c86;--badbg:#331917;--warn:#e0b25e;--warnbg:#2e2410;--accent:#8fb4e8;}}
+:root[data-theme="dark"]{--bg:#161614;--surf:#1e1e1c;--surf2:#26261f;--ink:#f2f2ee;
+--ink2:#b9b9b0;--ink3:#8a8a80;--line:#33332e;--ok:#6fcf97;--okbg:#17301f;--bad:#f08c86;
+--badbg:#331917;--warn:#e0b25e;--warnbg:#2e2410;--accent:#8fb4e8;}
+:root[data-theme="light"]{--bg:#fbfbfa;--surf:#fff;--surf2:#f4f4f2;--ink:#1a1a19;
+--ink2:#55554f;--ink3:#86867e;--line:#e3e3df;--ok:#1f6f43;--okbg:#e7f3ec;--bad:#a3231d;
+--badbg:#fbeae9;--warn:#8a5a00;--warnbg:#fdf2dd;--accent:#2c5aa0;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 ui-sans-serif,
+-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:28px 20px 80px}
+.wrap{max-width:1100px;margin:0 auto}
+h1{font-size:25px;margin:0 0 4px}
+h2{font-size:19px;margin:34px 0 10px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--ink2);text-transform:uppercase;
+letter-spacing:.06em;font-weight:600}
+p{margin:9px 0;color:var(--ink2)}
+.sub{color:var(--ink3);font-size:13px;margin-bottom:16px}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0}
+.cond{background:var(--warnbg);border:1px solid var(--warn);border-radius:8px;padding:11px 14px;
+margin:12px 0;font-size:13px;color:var(--ink)}
+.cond b{color:var(--warn)}
+.ans{background:var(--surf);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;
+padding:12px 16px;margin:12px 0}
+.ans .q{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3)}
+.ans .a{font-size:16px;font-weight:640;margin-top:3px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.tile{background:var(--surf);border:1px solid var(--line);border-radius:9px;padding:12px 14px}
+.tile .k{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3)}
+.tile .v{font-size:21px;font-weight:650;margin-top:3px}
+.tile .n{font-size:12px;color:var(--ink3);margin-top:2px}
+.scroll{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:540px}
+th,td{text-align:right;padding:6px 9px;border-bottom:1px solid var(--line);
+font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+th{color:var(--ink3);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+tbody tr:hover{background:var(--surf2)}
+.pill{display:inline-block;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:650}
+.pill.ok{background:var(--okbg);color:var(--ok)}
+.pill.bad{background:var(--badbg);color:var(--bad)}
+.pill.warn{background:var(--warnbg);color:var(--warn)}
+.muted{color:var(--ink3)}
+code{background:var(--surf2);padding:1px 5px;border-radius:4px;font-size:12px}
+.prov{font-size:12px;color:var(--ink3);font-family:ui-monospace,Menlo,monospace;
+background:var(--surf2);border-radius:8px;padding:12px 14px;word-break:break-all}
+</style>
+<div class="wrap">
+<h1>Pre-market microstructure &mdash; ceilings, walls, chop and exits</h1>
+<div class="sub">182 pre-market trades &middot; 20260729T070939Z &middot; commit <code>6b5a2c0</code></div>
+
+<div class="cond"><b>STANDING CONDITIONS.</b> Book is <b>partially remediated (C only)</b> &mdash;
+the <code>W</code> check and the whole <code>dep_*</code> family failed the Phase-0 lookahead
+audit and <b>remain in the book's selection path</b>. The wall features on this page were
+<b>rebuilt clean</b> from the raw MBP-10 archive at the <b>fill&minus;1</b> snapshot, so the
+ANALYSIS here is pre-fill; that does not repair the book's own selection. Cells under 10 trades
+are marked <span class="pill warn">insufficient</span> and must not be read as edge. IS and OOS
+are different regimes &mdash; one transition, observed once.</div>
+
+<h2>Answers, up front</h2>
+<div class="ans"><div class="q">Do trades at particular times only reach +1&ndash;2R then come back?</div>
+<div class="a">No time-of-day pattern. The stall rate is flat: 14% / 13% / 14% across
+early / mid / late.</div></div>
+<div class="ans"><div class="q">Is early pre-market thin, with no liquidity wall to target?</div>
+<div class="a">Not testable as asked &mdash; and what is testable says no. The 10-level book spans
+~2 points, so a &ldquo;magnet&rdquo; 20&ndash;50 points out is invisible in this data.
+Book thickness is <b>not</b> lower early (79 vs 64 vs 78).</div></div>
+<div class="ans"><div class="q">Do late trades get chopped or swept, so only the stop fills?</div>
+<div class="a">The opposite. Late trades are the <b>cleanest</b> (efficiency 0.222 vs 0.166) with
+the <b>highest</b> 30-minute MFE (5.93R vs 1.63R) and the same stop-out rate.</div></div>
+<div class="ans"><div class="q">Can a management rule remove losses while keeping winners?</div>
+<div class="a">No. The best of 68 rules gained $+4,273 in-sample and lost
+<b>$-3,826</b> out-of-sample.</div></div>
+<h2>1 &mdash; The +1&ndash;2R ceiling question</h2>
+<p>&ldquo;Stall&rdquo; = reached +1R but never +2R. &ldquo;Gave back&rdquo; = reached +1R or
+better and still finished a loss. &ldquo;SL, no 1R&rdquo; = stopped out having never reached
++1R.</p>
+<div class="scroll"><table><thead><tr><th>Segment</th><th>n</th><th>Median MFE</th>
+<th>Stalled 1&ndash;2R</th><th>Gave back</th><th>SL, no 1R</th><th>Mean R</th><th>Net</th>
+</tr></thead><tbody>
+<tr><td>early 08:00-08:29</td><td>108</td><td>1.82R</td><td>14%</td><td>20%</td><td>37%</td><td>+0.452</td><td>$+10,835</td></tr>
+<tr><td>mid 08:30-08:59</td><td>45</td><td>2.08R</td><td>13%</td><td>18%</td><td>36%</td><td>+0.466</td><td>$+5,134</td></tr>
+<tr><td>late 09:00-09:29</td><td>29</td><td>1.98R</td><td>14%</td><td>7%</td><td>34%</td><td>+0.999</td><td>$+5,129</td></tr>
+</tbody></table></div>
+<p><b>The pattern you suspected is not in the data by time of day.</b> The stall rate is
+essentially identical across the window, and median MFE is flat (1.82 / 2.08 / 1.98R). What
+does vary is give-back &mdash; 20% early vs <b>7% late</b> &mdash; i.e. early trades are more
+likely to reach +1R and then lose it. That is a give-back difference, not a ceiling
+difference.</p>
+<div class="scroll"><table><thead><tr><th>Bucket</th><th>n</th><th>Median MFE</th>
+<th>&lt;1R</th><th>1&ndash;2R</th><th>2&ndash;4R</th><th>4R+</th><th>Gave back</th>
+<th>Net</th></tr></thead><tbody>
+<tr><td>08:00</td><td>43</td><td>1.41R</td><td>44%</td><td>14%</td><td>23%</td><td>19%</td><td>21%</td><td>$+598</td></tr>
+<tr><td>08:05</td><td>20</td><td>2.31R</td><td>30%</td><td>10%</td><td>20%</td><td>40%</td><td>15%</td><td>$+5,707</td></tr>
+<tr><td>08:10</td><td>16</td><td>1.31R</td><td>44%</td><td>12%</td><td>0%</td><td>44%</td><td>19%</td><td>$+431</td></tr>
+<tr><td>08:15 <span class="pill warn">insufficient</span></td><td>8</td><td>2.75R</td><td>25%</td><td>12%</td><td>25%</td><td>38%</td><td>38%</td><td>$+406</td></tr>
+<tr><td>08:20</td><td>10</td><td>1.57R</td><td>30%</td><td>30%</td><td>10%</td><td>30%</td><td>30%</td><td>$-81</td></tr>
+<tr><td>08:25</td><td>11</td><td>4.25R</td><td>27%</td><td>9%</td><td>9%</td><td>55%</td><td>9%</td><td>$+3,774</td></tr>
+<tr><td>08:30</td><td>14</td><td>2.53R</td><td>36%</td><td>7%</td><td>21%</td><td>36%</td><td>7%</td><td>$+1,170</td></tr>
+<tr><td>08:35</td><td>11</td><td>1.22R</td><td>45%</td><td>27%</td><td>18%</td><td>9%</td><td>27%</td><td>$-135</td></tr>
+<tr><td>08:40 <span class="pill warn">insufficient</span></td><td>7</td><td>3.08R</td><td>14%</td><td>14%</td><td>43%</td><td>29%</td><td>29%</td><td>$+1,950</td></tr>
+<tr><td>08:45 <span class="pill warn">insufficient</span></td><td>2</td><td>2.43R</td><td>50%</td><td>0%</td><td>0%</td><td>50%</td><td>0%</td><td>$+117</td></tr>
+<tr><td>08:50 <span class="pill warn">insufficient</span></td><td>2</td><td>3.91R</td><td>50%</td><td>0%</td><td>0%</td><td>50%</td><td>0%</td><td>$+56</td></tr>
+<tr><td>08:55 <span class="pill warn">insufficient</span></td><td>9</td><td>2.87R</td><td>33%</td><td>11%</td><td>22%</td><td>33%</td><td>22%</td><td>$+1,975</td></tr>
+<tr><td>09:00 <span class="pill warn">insufficient</span></td><td>5</td><td>2.60R</td><td>0%</td><td>40%</td><td>20%</td><td>40%</td><td>20%</td><td>$+1,402</td></tr>
+<tr><td>09:05 <span class="pill warn">insufficient</span></td><td>7</td><td>1.98R</td><td>29%</td><td>29%</td><td>14%</td><td>29%</td><td>14%</td><td>$+1,198</td></tr>
+<tr><td>09:10 <span class="pill warn">insufficient</span></td><td>5</td><td>17.11R</td><td>40%</td><td>0%</td><td>0%</td><td>60%</td><td>0%</td><td>$+1,269</td></tr>
+<tr><td>09:15 <span class="pill warn">insufficient</span></td><td>5</td><td>7.63R</td><td>20%</td><td>0%</td><td>0%</td><td>80%</td><td>0%</td><td>$+1,838</td></tr>
+<tr><td>09:20 <span class="pill warn">insufficient</span></td><td>7</td><td>0.68R</td><td>86%</td><td>0%</td><td>0%</td><td>14%</td><td>0%</td><td>$-578</td></tr>
+</tbody></table></div>
+<h2>2 &mdash; Liquidity walls (heatmap magnet)</h2>
+<div class="cond"><b>The honest limitation, before the numbers.</b> The archive is
+<b>MBP-10</b> &mdash; ten price levels per side. In practice that spans about <b>2 points</b>
+of price. The median &ldquo;wall ahead&rdquo; sits <b>1.8 points away, i.e. 0.12R</b>. A
+liquidity magnet in the sense you mean &mdash; a large resting block 20&ndash;50 points out that
+price travels toward &mdash; <b>is not visible in this data at all</b>. What is measured below is
+top-of-book shape, not a heatmap. Answering the question you actually asked needs full-depth or
+volume-profile data that this archive does not contain.</div>
+<p class="muted">Walls rebuilt at the fill&minus;1 snapshot (strictly pre-fill). Measured
+side-effect: the at-fill convention the canon used differs from the pre-fill one on
+<b>92.8%</b> of trades &mdash; a direct measurement of the
+<code>dep_*</code> leak, previously only asserted. Depth coverage
+176/182 trades.</p>
+<div class="scroll"><table><thead><tr><th>Group</th><th>n</th><th>Median MFE</th>
+<th>Gave back</th><th>SL, no 1R</th><th>Mean R</th><th>Net</th></tr></thead><tbody>
+<tr><td>wall ahead WITHIN 2R</td><td>160</td><td>1.73R</td><td>20%</td><td>36%</td><td>+0.325</td><td>$+10,857</td></tr>
+<tr><td>wall ahead BEYOND 2R</td><td>6</td><td colspan='5' class='muted'><span class='pill warn'>insufficient</span></td></tr>
+<tr><td>wall ahead nearer than 1R</td><td>158</td><td>1.66R</td><td>20%</td><td>37%</td><td>+0.313</td><td>$+10,396</td></tr>
+<tr><td>big wall (size >= median)</td><td>85</td><td>1.67R</td><td>19%</td><td>36%</td><td>+0.422</td><td>$+5,879</td></tr>
+<tr><td>small wall (size < median)</td><td>81</td><td>1.95R</td><td>20%</td><td>36%</td><td>+0.307</td><td>$+6,627</td></tr>
+</tbody></table></div>
+<p><b>Walls do not cap moves and do not sort outcomes.</b> Correlation between wall distance and
+MFE is <b>+0.015</b> (n=33), and <b>88%</b> of trades push
+at least as far as the wall &mdash; if the wall were a barrier that number would be low. Big
+walls vs small walls give +0.422R vs +0.307R on 85 and 81 trades, a difference well inside
+noise at this sample.</p>
+<p><b>And early pre-market is not thinner.</b> Median book thickness by segment:
+early <b>79</b> &middot; mid <b>64</b> &middot; late <b>78</b>
+&mdash; the early window is if anything the deepest. The &ldquo;lack of volume&rdquo; premise
+does not hold at the order-book level.</p>
+<h2>3 &mdash; Chop and sweeps near the open</h2>
+<p><code>eff30</code> = |net move| &divide; total distance travelled over 30 minutes. 1.0 is a
+clean one-way move; near 0 is chop. &ldquo;Adverse first&rdquo; = the worst excursion happened
+before the best one, i.e. price swept against the trade before working.</p>
+<div class="scroll"><table><thead><tr><th>Segment</th><th>n</th><th>Efficiency (30m)</th>
+<th>Mean crossings</th><th>Adverse first</th><th>SL, no 1R</th><th>Median MFE (30m)</th>
+</tr></thead><tbody>
+<tr><td>early 08:00-08:29</td><td>108</td><td>0.166</td><td>4.0</td><td>6%</td><td>37%</td><td>1.63R</td></tr>
+<tr><td>mid 08:30-08:59</td><td>45</td><td>0.145</td><td>6.0</td><td>7%</td><td>36%</td><td>1.64R</td></tr>
+<tr><td>late 09:00-09:29</td><td>29</td><td>0.222</td><td>6.0</td><td>17%</td><td>34%</td><td>5.93R</td></tr>
+</tbody></table></div>
+<p><b>This overturns the premise.</b> The late window is the <i>least</i> choppy by efficiency
+(0.222 vs 0.166 early), carries by far the largest 30-minute excursion (5.93R vs 1.63R), and
+stops out without reaching +1R at the <i>same</i> rate as everywhere else (34% vs 37%). It also
+has the best mean R in the book (+0.999).</p>
+<p>The one thing that does support your read: <b>adverse-first rises to 17% late</b> against 6%
+early &mdash; late entries are nearly three times more likely to be swept against before they
+work. But that is 5 trades out of 29, and the same window still produces the best returns, so
+the sweep is not costing money. The single ugly cell is <b>09:20&ndash;09:24</b> (71% stopped
+without reaching 1R, &minus;$578) &mdash; <b>7 trades</b>, insufficient.</p>
+<h2>4 &mdash; The variables test: can a rule cut losses and keep winners?</h2>
+<p>68 configurations &mdash; 17 management rules (fixed targets 1&ndash;4R,
+breakeven at 1/1.5/2R, trail-from-peak, time stops at 15/30/45/60 min) &times; 4 scopes (all
+trades, or applied only to early / mid / late). The rule is chosen on the <b>in-sample half
+only</b> and judged out-of-sample. Costs: $1.24/micro round trip, +$0.50/micro on marketable
+exits.</p>
+<div class="tiles">
+ <div class="tile"><div class="k">IS-selected rule</div>
+  <div class="v" style="font-size:16px">target4.0</div>
+  <div class="n">scope: all</div></div>
+ <div class="tile"><div class="k">In-sample gain</div>
+  <div class="v" style="color:var(--ok)">$+4,273</div>
+  <div class="n">the number that is NOT evidence</div></div>
+ <div class="tile"><div class="k">Out-of-sample</div>
+  <div class="v" style="color:var(--bad)">$-3,826</div>
+  <div class="n">the number that matters</div></div>
+ <div class="tile"><div class="k">Beat canon OOS</div>
+  <div class="v">18/68</div>
+  <div class="n">fewer than half &mdash; worse than a coin</div></div>
+</div>
+<h3>Best-of-68 selection null &mdash; 500 day-block-permuted splits</h3>
+<p>Running the same select-then-evaluate procedure on random half-splits shows what the
+procedure produces from noise alone.</p>
+<div class="scroll"><table><thead><tr><th></th><th>In-sample gain</th><th>Out-of-sample</th>
+</tr></thead><tbody>
+<tr><td><b>Real split</b></td><td>$+4,273</td>
+<td><b>$-3,826</b></td></tr>
+<tr><td>Null median</td><td>$+6,006</td><td>$-1,045</td></tr>
+<tr><td>Null p5 / p95 (OOS)</td><td class="muted">p90 $+10,217</td>
+<td>$-8,970 / $+3,620</td></tr>
+<tr><td>Real percentile</td><td>21th</td>
+<td>21th &nbsp;<span class="pill bad">FAIL &mdash; gate was &gt;95th</span></td></tr>
+</tbody></table></div>
+<p class="verdict"><b>The selection is worth nothing, and the null proves it.</b> Picking the
+best of 68 rules on <i>any</i> random half yields a median in-sample gain of
+$+6,006 <i>by construction</i> &mdash; the real split's
+$+4,273 is actually <b>below</b> that, at the 21th
+percentile. Out-of-sample the same procedure shrinks to a median of
+$-1,045, and only 38% of null splits make
+money. The real out-of-sample result, $-3,826, sits at the
+21th percentile &mdash; ordinary noise. <b>Median shrinkage from
+in-sample to out-of-sample is $-7,050.</b> That number
+is the price of sweeping.</p>
+<p>This is the third independent confirmation on this book: H1 (flat targets 1.5&ndash;4R) and
+H4 (bar-close MAE cuts) already failed under walk-forward, and Job 1 showed breakeven-at-+1R is
+a wash (+$1,140 across 27 affected trades). The reason is structural &mdash; the winners that
+carry the book retrace a median <b>5.97R</b> after first touching +1R, so any rule tight enough
+to cut losers also amputates them.</p>
+<h2>Provenance</h2>
+<div class="prov">
+run_id &nbsp; 20260729T070939Z<br>
+commit &nbsp; 6b5a2c0<br>
+book &nbsp; job2_books/sized_C_news &mdash; PARTIALLY REMEDIATED (C only); W and dep_* leaky<br>
+trades &nbsp; 182 pre-market, 08:00&ndash;09:29 ET half-open bins<br>
+walls &nbsp; rebuilt from raw MBP-10 at the fill&minus;1 snapshot; coverage
+176/182; at-fill vs pre-fill disagreement 92.8%<br>
+sweep &nbsp; 68 configurations; selection on IS half only; null =
+500 day-block-permuted splits<br>
+costs &nbsp; $1.24/micro round trip; $0.50/micro slippage on marketable exits; resting-limit
+target fills unslipped; canon baseline carries its own cost convention (stated, not merged)<br>
+regenerate &nbsp; python3 research/sweep_2026_07/micro/build_dashboard.py
+</div>
+</div>
+<script>(function(){var t=localStorage.getItem('theme');
+if(t)document.documentElement.setAttribute('data-theme',t);})();</script>

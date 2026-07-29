@@ -1,0 +1,14 @@
+{
+ "n": 500,
+ "real_is": 4272.730000000001,
+ "real_oos": -3825.824999999999,
+ "null_is_med": 6005.5025000000005,
+ "null_is_p90": 10217.365,
+ "null_oos_p5": -8970.294750000001,
+ "null_oos_med": -1044.94,
+ "null_oos_p95": 3619.822749999995,
+ "real_is_pct": 21.4,
+ "real_oos_pct": 21.0,
+ "pct_null_positive_oos": 38.0,
+ "passes": false
+}
