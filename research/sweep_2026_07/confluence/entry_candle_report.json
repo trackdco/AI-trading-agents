@@ -1,0 +1,58 @@
+{
+ "shift": {
+  "ec_delta": {
+   "n": 182,
+   "shift1": 182,
+   "leak15": 181,
+   "passes": true
+  },
+  "ec_fp_imb": {
+   "n": 182,
+   "shift1": 182,
+   "leak15": 181,
+   "passes": true
+  },
+  "ec_delta_hi_lo": {
+   "n": 182,
+   "shift1": 181,
+   "leak15": 179,
+   "passes": true
+  },
+  "ec_aggr_flip": {
+   "n": 182,
+   "shift1": 89,
+   "leak15": 87,
+   "passes": true
+  }
+ },
+ "exchangeability": {
+  "ec_delta": {
+   "ks": 0.08791208791208793,
+   "p": 0.8465767116441779,
+   "passes": true
+  },
+  "ec_fp_imb": {
+   "ks": 0.13186813186813184,
+   "p": 0.4052973513243378,
+   "passes": true
+  },
+  "ec_delta_hi_lo": {
+   "ks": 0.26373626373626374,
+   "p": 0.0079960019990005,
+   "passes": false
+  },
+  "ec_aggr_flip": {
+   "ks": 0.06593406593406592,
+   "p": 0.36431784107946025,
+   "passes": true
+  }
+ },
+ "admitted": [
+  "ec_delta",
+  "ec_fp_imb",
+  "ec_aggr_flip"
+ ],
+ "excluded": [
+  "ec_delta_hi_lo"
+ ]
+}
