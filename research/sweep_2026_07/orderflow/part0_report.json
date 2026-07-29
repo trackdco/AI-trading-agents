@@ -1,0 +1,49 @@
+{
+ "provenance": {
+  "commit": "1e0103e",
+  "book_mech_sha": "4b6331982a6e7169",
+  "book_sized_sha": "448482553e483b9f",
+  "bars_sha": "0e6d4b9ca6dfb9b1",
+  "arm": "C_news = partially remediated (C only; W + dep_* STILL LEAKY) + news filter",
+  "window": "2025-07-01..2026-07-10, Jan-2026 absent (no book variant has it)",
+  "anchor_monotone_ge": "177/177",
+  "anchor_identical": 103,
+  "excursion_convention": "fill -> first stop touch, else 15:55 ET (AMENDMENT 3)",
+  "split_day": "2025-12-23",
+  "n_is": 91,
+  "n_oos": 91,
+  "expiry_vs_exposed_agreement": 0.9792746113989638
+ },
+ "summary": {
+  "n": 182,
+  "pl_sized": 21097.875,
+  "pl_mech": 25181.25,
+  "wr": 0.46153846153846156,
+  "meanR": 0.5425566861123242,
+  "is_pl": 3030.25,
+  "oos_pl": 18067.625,
+  "n_bigR2": 37,
+  "bigR2_pl_share": 1.248929098309664,
+  "n_reach4": 60,
+  "top10pct_n": 19,
+  "top10pct_pl_share": 0.9459661221805513,
+  "day_range": [
+   "2025-07-02",
+   "2026-07-10"
+  ],
+  "months": [
+   "2025-07",
+   "2025-08",
+   "2025-09",
+   "2025-10",
+   "2025-11",
+   "2025-12",
+   "2026-02",
+   "2026-03",
+   "2026-04",
+   "2026-05",
+   "2026-06",
+   "2026-07"
+  ]
+ }
+}
