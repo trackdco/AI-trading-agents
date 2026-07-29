@@ -45,7 +45,7 @@ day_idx = {d: np.flatnonzero(days == d) for d in u_days}
 
 # ---------------------------------------------------------------- effective number of tests
 Z = X[SCORED].apply(lambda s: s.rank(na_option="keep"))
-C = Z.corr(method="pearson").fillna(0).to_numpy()
+C = np.array(Z.corr(method="pearson").fillna(0).to_numpy(), dtype=float, copy=True)
 np.fill_diagonal(C, 1.0)
 ev = np.linalg.eigvalsh(C)
 ev = np.clip(ev, 0, None)

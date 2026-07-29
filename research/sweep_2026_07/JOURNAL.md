@@ -157,3 +157,44 @@ Boundary-state check: fresh-start vs certified-slice = SAME 245 trades, pl diffe
 sizing state (+$69,328 vs +$67,689). OF features rebuilt v2-style against all four books:
 union 229 unique PM fills, 229/229 full pre-fill coverage, exactly one stamp_edge (the known
 2026-03-13 trade; the 13 new fills all pass containment). STOPPED — no scoring, per brief.
+
+## 2026-07-29 · PARTS 0-3 SCORED (Brake: build and deliver, no stopping for rulings)
+Third container wipe. Recovered: bars bit-exact from e6cc277, footprint_jan2026 from 71fbe5f
+(tape contiguous 2025-06..2026-07 — the Jan-2026 hole is a BOOK hole, not a data hole),
+books from the committed job2_books. UNRECOVERABLE: output/substrate_v2_signals.parquet, so
+the canon's realized exit timestamps are gone; excursion moved to a rule-independent trade-life
+window (fill -> first stop touch, else 15:55 ET), validated monotone vs the certified frame on
+177/177 shared trades. Recorded as Amendment 3, not silently.
+PART 0. Baseline = C_news, 182 PM trades, sized +$21,097.88, mech +$25,181.25, WR 46.2%,
+meanR +0.543. NOT CLEAN — C only; W and dep_* still leaky. IS/OOS re-fixed 91/91 at 2025-12-23
+(the certified 216-trade split and all its tercile edges VOID, not carried). Top 19 trades =
+94.6% of P&L. Q1 re-registered threshold-free (the life-window +4R cohort was unusable: it
+sweeps in trades that reached +4R only after the canon exited them at a loss, cohort share
+>100%).
+PART 1. Remedy 3/5. absorp_rel PASSES (KS .099 p .81); vol_15_rel/vol_30_rel PASS. Brake's
+literal ATR spec absorp_atr FAILS (p .035) — reported, not hidden. Both stacks FAIL WORSE after
+remedy (KS .462/.495) for a structural reason: a binary's distribution IS its base rate, which
+moved ~17pp, so no monotone transform of 0/1 restores exchangeability; subtracting a drifting
+baseline imports the drift. Would need redefining the frozen 3:1x>=3 constant = out of scope.
+Carried with FAIL flags. M_eff 8.00 of 11 nominal (Li&Ji), per-test alpha 0.0064.
+Q1 = NULL. Best OOS |rho| 0.093 (cvd_30); NO feature survives family-wise. Falsifier
+essentially a tie: best signed 0.093 vs best direction-blind 0.091. Every tercile transfer
+CI spans zero; delta_div_15 and both stacks insufficient. This is the honest re-test of
+conf_PM — an OF entry-conviction signal that only worked because it leaked.
+Q2 = NO. |gap| alone carries rho +0.153 (p .036) — LARGER than every order-flow feature. After
+rank-residualising on |gap|, nothing survives family-wise. Gap terciles OOS: small n=14 +0.117,
+mid n=25 +1.642, large n=47 +0.819. Expiry-week OOS still hot (n=11, +3.08 vs +0.62) — H5
+unresolved, n too small.
+PART 2 (pre-registered as Amendment 4 BEFORE scoring). 113/182 trades produced a retrace event;
+shift tests PASS at every bar bucket (20/20). NULL: every OOS AUC on 0.5 (0.464-0.551), none
+survives. BUT the base rate is the finding: 96/113 = 85% of retraces RESUME to a new peak.
+Underpowered for anything smaller than |AUC-0.5| = 0.147 at n=59; absence is not evidence of
+absence, and only 17 reversals exist in the whole sample.
+PART 3 = THE ONE THAT SURVIVES. News filter, sized PM slice: partially-remediated arm
++$2,984.75 (day-clustered CI [+894, +4,970], p=0.005); leaky arm +$1,866.12 (CI [-294, +3,925],
+p=0.088) — independent replication. Positive in BOTH halves of BOTH arms. Kill test passes
+decisively: the single largest avoided trade is a WINNER (+$537), so removing it makes the delta
+LARGER (+$3,521.75); 0 of 23 (C) and 0 of 26 (L) single removals flip the sign; jackknife range
+stays [+$2,634, +$3,522]. The benefit is diffuse across many small avoided losses, not one day.
+Dashboard: research/sweep_2026_07/orderflow/dashboard_premarket_of.html, regenerable from the
+JSON artefacts, provenance + cost assumptions embedded, both dead numbers listed as forbidden.

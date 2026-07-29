@@ -1,0 +1,438 @@
+<title>NY Pre-Market Order-Flow Study &mdash; Parts 0&ndash;3</title>
+<style>
+:root{
+  --bg:#fbfbfa; --surf:#ffffff; --surf2:#f4f4f2; --ink:#1a1a19; --ink2:#55554f;
+  --ink3:#86867e; --line:#e3e3df; --ok:#1f6f43; --okbg:#e7f3ec; --bad:#a3231d;
+  --badbg:#fbeae9; --warn:#8a5a00; --warnbg:#fdf2dd; --accent:#2c5aa0;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#161614; --surf:#1e1e1c; --surf2:#26261f; --ink:#f2f2ee; --ink2:#b9b9b0;
+    --ink3:#8a8a80; --line:#33332e; --ok:#6fcf97; --okbg:#17301f; --bad:#f08c86;
+    --badbg:#331917; --warn:#e0b25e; --warnbg:#2e2410; --accent:#8fb4e8; }
+}
+:root[data-theme="dark"]{ --bg:#161614; --surf:#1e1e1c; --surf2:#26261f; --ink:#f2f2ee;
+  --ink2:#b9b9b0; --ink3:#8a8a80; --line:#33332e; --ok:#6fcf97; --okbg:#17301f;
+  --bad:#f08c86; --badbg:#331917; --warn:#e0b25e; --warnbg:#2e2410; --accent:#8fb4e8; }
+:root[data-theme="light"]{ --bg:#fbfbfa; --surf:#ffffff; --surf2:#f4f4f2; --ink:#1a1a19;
+  --ink2:#55554f; --ink3:#86867e; --line:#e3e3df; --ok:#1f6f43; --okbg:#e7f3ec;
+  --bad:#a3231d; --badbg:#fbeae9; --warn:#8a5a00; --warnbg:#fdf2dd; --accent:#2c5aa0; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font:15px/1.55 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+ padding:28px 20px 80px}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-size:25px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:19px;margin:36px 0 10px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:14px;margin:22px 0 8px;color:var(--ink2);text-transform:uppercase;
+ letter-spacing:.06em;font-weight:600}
+p{margin:9px 0;color:var(--ink2)}
+.sub{color:var(--ink3);font-size:13px;margin-bottom:18px}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:10px;
+ padding:16px 18px;margin:14px 0}
+.cond{background:var(--warnbg);border:1px solid var(--warn);border-radius:8px;
+ padding:11px 14px;margin:12px 0;font-size:13px;color:var(--ink)}
+.cond b{color:var(--warn)}
+.dead{background:var(--badbg);border:1px solid var(--bad);border-radius:8px;
+ padding:11px 14px;margin:12px 0;font-size:13px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin:14px 0}
+.tile{background:var(--surf);border:1px solid var(--line);border-radius:9px;padding:12px 14px}
+.tile .k{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3)}
+.tile .v{font-size:22px;font-weight:650;margin-top:3px;letter-spacing:-.01em}
+.tile .n{font-size:12px;color:var(--ink3);margin-top:2px}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:560px}
+th,td{text-align:right;padding:6px 9px;border-bottom:1px solid var(--line);
+ font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+th{color:var(--ink3);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+tbody tr:hover{background:var(--surf2)}
+.oos{border-left:3px solid var(--accent)}
+.is-panel{opacity:.72;border-left:3px dashed var(--ink3)}
+.pill{display:inline-block;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:650}
+.pill.ok{background:var(--okbg);color:var(--ok)}
+.pill.bad{background:var(--badbg);color:var(--bad)}
+.pill.warn{background:var(--warnbg);color:var(--warn)}
+.muted{color:var(--ink3)}
+code{background:var(--surf2);padding:1px 5px;border-radius:4px;font-size:12px}
+.prov{font-size:12px;color:var(--ink3);font-family:ui-monospace,Menlo,monospace;
+ background:var(--surf2);border-radius:8px;padding:12px 14px;margin-top:10px;
+ word-break:break-all}
+.verdict{font-size:15px;font-weight:600;margin:6px 0}
+</style>
+<div class="wrap">
+<h1>NY pre-market order-flow study &mdash; Parts 0&ndash;3</h1>
+<div class="sub">Scored on the partially-remediated, news-filtered book &middot;
+generated 20260729T023552Z &middot; commit <code>873c338</code></div>
+
+<div class="cond">
+<b>STANDING CONDITIONALITY &mdash; applies to every panel below.</b><br>
+<b>1. Partial remediation only.</b> This book is <b>NOT clean</b>. Only the <code>C</code>
+check was remediated (<code>conf_PM</code> &rarr; <code>pm_sofar_conf</code>). The
+<code>W</code> depth check and the <b>entire <code>dep_*</code> family</b> failed the Phase-0
+lookahead audit and <b>remain in this book's selection path</b>. Every number here inherits
+that unquantified leak.<br>
+<b>2. Conditional on H0.</b> These results stand only under Brake's H0 ruling that made this
+arm the working baseline. They are not conditional on the certified 216-trade book, whose
+registration was voided and whose IS/OOS split and tercile edges were <b>re-fixed</b> against
+this trade set (see Part&nbsp;0).<br>
+<b>3. January 2026 is a BOOK hole, not a data hole.</b> Bars are complete for every month
+2023-01&hellip;2026-07 and the footprint tape is contiguous 2025-06-01&hellip;2026-07-19. No book
+variant contains Jan-2026 <i>trades</i> because the generation chain never wired that tape in
+and no depth data exists for the month. Traded window:
+<b>2025-07&hellip;2025-12 + 2026-02&hellip;2026-07</b>.<br>
+<b>4. One regime transition, not a general result.</b> IS and OOS are different market regimes
+&mdash; NQ ran 21k&rarr;30k and pre-market volume rose ~50% across the split. Every
+walk-forward statement here is a single regime transition observed once.
+</div>
+<h2>Verdicts</h2>
+<div class="card">
+<p class="verdict">Q1 &mdash; entry order flow vs the trades that pay:
+<span class="pill bad">NULL</span> &nbsp;
+no feature survives family-wise correction out-of-sample.</p>
+<p class="verdict">Q2 &mdash; does flow add anything beyond gap size?
+<span class="pill bad">NO</span> &nbsp;
+nothing survives once |gap| is known &mdash; and |gap| alone carries &rho; +0.153 (p 0.036), larger than every order-flow feature tested.</p>
+<p class="verdict">Part 2 &mdash; in-trade flow at a retrace, resume vs reverse:
+<span class="pill bad">NULL</span> &nbsp;
+every AUC sits on 0.5. But the base rate is the finding: <b>85% of retraces resume</b>.</p>
+<p class="verdict">Part 3 &mdash; the news filter:
+<span class="pill ok">SURVIVES</span> &nbsp;
+$+2,985 on the working baseline (p 0.005),
+positive in both arms and both halves; 0 of
+23 single removals flip the sign.</p>
+</div>
+
+<h2>Part 0 &mdash; the resolved book</h2>
+<p>Q1 and Q2 were registered against a different trade set (the certified 216-trade book).
+That registration's split and every tercile edge are <b>void and not carried</b>; both were
+re-fixed against the 182-trade baseline below and the change is recorded in Amendment&nbsp;3.</p>
+<div class="tiles">
+  <div class="tile"><div class="k">Pre-market trades</div><div class="v">182</div>
+    <div class="n">08:00&ndash;09:29 ET, half-open bins</div></div>
+  <div class="tile"><div class="k">Sized P&amp;L</div><div class="v">$+21,098</div>
+    <div class="n">funded dollar-risk sizing</div></div>
+  <div class="tile"><div class="k">Mechanical P&amp;L</div><div class="v">$+25,181</div>
+    <div class="n">canon-native</div></div>
+  <div class="tile"><div class="k">Win rate</div>
+    <div class="v">46.2%</div><div class="n">mean R +0.543</div></div>
+  <div class="tile"><div class="k">IS / OOS split</div><div class="v">2025-12-23</div>
+    <div class="n">91 / 91 trades (re-fixed)</div></div>
+  <div class="tile"><div class="k">Concentration</div>
+    <div class="v">95%</div>
+    <div class="n">of P&amp;L in the top 19 trades</div></div>
+</div>
+<div class="card">
+<h3>Forced convention change &mdash; excursion window</h3>
+<p>The canon's realized exit timestamps lived in <code>output/substrate_v2_signals.parquet</code>,
+destroyed in the container wipe and rebuildable only by re-running the entire upstream chain.
+Reconstructing exits from the recorded exit price fails: the level frequently sits inside the
+fill bar, so a first-touch rule resolves early (83.9% agreement with the certified frame, every
+disagreement biased low). Excursion is therefore measured over
+<b>trade life = fill bar &rarr; first bar touching the recorded stop, else 15:55&nbsp;ET</b> &mdash;
+both bounds known at fill, reconstructible from bars alone, and the correct window for an exit
+study. Validated: life-window MFE &ge; certified MFE on
+<b>177/177</b> shared trades, identical on
+103. Realized R and P&amp;L are the book's own and are unchanged.</p>
+<p class="muted">Consequence, recorded before scoring: the life-window &ldquo;+4R cohort&rdquo; is
+<b>not</b> usable alone &mdash; it sweeps in trades whose price reached +4R only after the canon
+had exited them at a loss (cohort P&amp;L share exceeds 100%). Q1's target was therefore
+re-registered as a threshold-free primary plus two labelled binaries.</p>
+</div>
+<h2>Part 1 &mdash; five-feature remedy, then Q1 &amp; Q2</h2>
+<h3>The remedy &mdash; exchangeability before and after</h3>
+<p>Every normalizer is built from a trailing window of the prior 20 trading days, same
+time-of-day bucket, closing <b>strictly before the fill day</b> &mdash; never full-sample, never
+within-half. Test is a day-block permutation of the KS statistic across the re-fixed 91/91
+split; <code>p &ge; 0.05</code> means the halves are exchangeable (what we want).</p>
+<div class="scroll"><table><thead><tr><th>Feature</th><th>KS</th><th>p (perm)</th>
+<th>Verdict</th><th>Role</th></tr></thead><tbody>
+<tr><td><code>absorp_15</code></td><td>0.308</td><td>0.0015</td><td><span class="pill bad">FAIL</span></td><td class='muted'>pre-remedy</td></tr>
+<tr><td><code>absorp_atr</code></td><td>0.220</td><td>0.0350</td><td><span class="pill bad">FAIL</span></td><td class='muted'>remedy A &mdash; ATR (Brake's literal spec)</td></tr>
+<tr><td><code>absorp_rel</code></td><td>0.099</td><td>0.8126</td><td><span class="pill ok">PASS</span></td><td class='muted'>remedy B &mdash; trailing median</td></tr>
+<tr><td><code>vol_15</code></td><td>0.319</td><td>0.0005</td><td><span class="pill bad">FAIL</span></td><td class='muted'>pre-remedy</td></tr>
+<tr><td><code>vol_15_rel</code></td><td>0.099</td><td>0.7776</td><td><span class="pill ok">PASS</span></td><td class='muted'>remedied</td></tr>
+<tr><td><code>vol_30</code></td><td>0.363</td><td>0.0005</td><td><span class="pill bad">FAIL</span></td><td class='muted'>pre-remedy</td></tr>
+<tr><td><code>vol_30_rel</code></td><td>0.110</td><td>0.6922</td><td><span class="pill ok">PASS</span></td><td class='muted'>remedied</td></tr>
+<tr><td><code>stack_bid_bin</code></td><td>0.187</td><td>0.0145</td><td><span class="pill bad">FAIL</span></td><td class='muted'>pre-remedy</td></tr>
+<tr><td><code>stack_bid_exc</code></td><td>0.462</td><td>0.0005</td><td><span class="pill bad">FAIL</span></td><td class='muted'>remedy attempt</td></tr>
+<tr><td><code>stack_ask_bin</code></td><td>0.143</td><td>0.0460</td><td><span class="pill bad">FAIL</span></td><td class='muted'>pre-remedy</td></tr>
+<tr><td><code>stack_ask_exc</code></td><td>0.495</td><td>0.0005</td><td><span class="pill bad">FAIL</span></td><td class='muted'>remedy attempt</td></tr>
+<tr><td><code>cvd_5</code></td><td>0.154</td><td>0.2439</td><td><span class="pill ok">PASS</span></td><td class='muted'>unchanged</td></tr>
+<tr><td><code>cvd_15</code></td><td>0.165</td><td>0.1929</td><td><span class="pill ok">PASS</span></td><td class='muted'>unchanged</td></tr>
+<tr><td><code>cvd_30</code></td><td>0.121</td><td>0.5277</td><td><span class="pill ok">PASS</span></td><td class='muted'>unchanged</td></tr>
+<tr><td><code>cvd_norm_15</code></td><td>0.143</td><td>0.3458</td><td><span class="pill ok">PASS</span></td><td class='muted'>unchanged</td></tr>
+<tr><td><code>abs_cvd_15</code></td><td>0.110</td><td>0.6237</td><td><span class="pill ok">PASS</span></td><td class='muted'>unchanged</td></tr>
+<tr><td><code>delta_div_15</code></td><td>0.011</td><td>0.8666</td><td><span class="pill ok">PASS</span></td><td class='muted'>unchanged &middot; LOW-POWER</td></tr>
+</tbody></table></div>
+<p><b>Result: three of five remedied, two not.</b> Absorption is fixed by the trailing-median
+normalizer (KS 0.099,
+p&nbsp;0.813) but <b>not</b> by ATR alone
+(p&nbsp;0.035); both volume features pass comfortably.
+The scored absorption variant was chosen on the exchangeability test <b>alone</b> &mdash; an
+outcome-blind criterion &mdash; and is <code>absorp_rel</code>.</p>
+<div class="cond"><b>The two stack features could not be remedied, and the attempt made them
+worse</b> (<code>stack_bid_exc</code> KS 0.462,
+<code>stack_ask_exc</code> KS 0.495, both
+p&nbsp;&le;&nbsp;0.0005 &mdash; worse than the raw binaries). The reason is structural: a
+binary's distribution <i>is</i> its base rate, and that rate shifted ~17pp across the split, so
+no monotone transform of a 0/1 variable can restore exchangeability. Subtracting a drifting
+continuous baseline simply imports the drift directly. Fixing it would require redefining the
+frozen 3:1&times;&ge;3 textbook constant &mdash; a threshold change, which is out of scope. Both
+are carried <b>with the FAIL flag</b> and any finding resting on them is discounted, not
+reported as clean.</div>
+<h3>Correlation and the effective number of tests</h3>
+<p>Multiplicity is priced on the <b>effective</b> number of independent tests, not the nominal
+feature count: <code>fp_imb_15</code> was <b>dropped</b> as an exact algebraic duplicate of
+<code>cvd_norm_15</code> (it is that series &divide;&nbsp;2), and the CVD family are all
+functions of one delta series.</p>
+<div class="tiles">
+ <div class="tile"><div class="k">Nominal tests</div><div class="v">11</div>
+   <div class="n">scored features</div></div>
+ <div class="tile"><div class="k">Effective tests</div>
+   <div class="v">8.00</div><div class="n">Li &amp; Ji eigenvalue method</div></div>
+ <div class="tile"><div class="k">Per-test &alpha;</div>
+   <div class="v">0.0064</div>
+   <div class="n">&Scaron;id&aacute;k on M<sub>eff</sub>, family-wise 0.05</div></div>
+</div>
+<p class="muted">Rank-correlation pairs at |r|&nbsp;&ge;&nbsp;0.6:
+cvd_5&ndash;cvd_15 (+0.72), cvd_5&ndash;cvd_norm_15 (+0.71), cvd_15&ndash;cvd_30 (+0.70), cvd_15&ndash;cvd_norm_15 (+0.96), cvd_30&ndash;cvd_norm_15 (+0.67), vol_15_rel&ndash;vol_30_rel (+0.90).</p>
+<h3>Q1 &mdash; does strictly pre-fill entry flow separate the trades that pay?</h3>
+<p><code>conf_PM</code> was itself an order-flow entry-conviction signal, and it was the leak
+that made this baseline necessary. <b>Q1 is the honest, strictly-pre-fill re-test of that same
+idea</b> &mdash; so a null here is an informative result, not a failed search. Primary measure
+is threshold-free: Spearman rank association between each feature and <b>realized R</b>. All
+intervals are day-cluster bootstraps (4000 draws); <code>p_day</code> is an exact permutation
+at day level.</p>
+<div class="card oos"><h3>OOS &mdash; out-of-sample &mdash; <b>the headline</b></h3><div class="scroll"><table><thead><tr><th>Feature</th><th>&rho; vs R</th><th>95% CI</th><th>p</th><th>p (day)</th><th>AUC R&ge;2</th><th>AUC mfe&ge;4</th><th>n needed</th></tr></thead><tbody>
+<tr><td><code>cvd_5</code></td><td>+0.017</td><td class='muted'>[-0.178, +0.202]</td><td>0.857</td><td>0.550</td><td>0.488</td><td>0.518</td><td class='muted'>28,027</td></tr>
+<tr><td><code>cvd_15</code></td><td>+0.048</td><td class='muted'>[-0.138, +0.242]</td><td>0.585</td><td>0.803</td><td>0.448</td><td>0.505</td><td class='muted'>3,354</td></tr>
+<tr><td><code>cvd_30</code></td><td>-0.093</td><td class='muted'>[-0.293, +0.125]</td><td>0.390</td><td>0.451</td><td>0.364</td><td>0.461</td><td class='muted'>898</td></tr>
+<tr><td><code>cvd_norm_15</code></td><td>+0.083</td><td class='muted'>[-0.112, +0.276]</td><td>0.404</td><td>0.694</td><td>0.498</td><td>0.519</td><td class='muted'>1,128</td></tr>
+<tr><td><code>abs_cvd_15</code></td><td>+0.091</td><td class='muted'>[-0.127, +0.305]</td><td>0.423</td><td>0.162</td><td>0.425</td><td>0.543</td><td class='muted'>942</td></tr>
+<tr><td><code>delta_div_15</code></td><td>+0.042</td><td class='muted'>[-0.183, +0.259]</td><td>0.658</td><td>0.869</td><td>0.533</td><td>0.496</td><td class='muted'>4,365</td></tr>
+<tr><td><code>absorp_rel</code></td><td>-0.044</td><td class='muted'>[-0.266, +0.176]</td><td>0.720</td><td>0.577</td><td>0.546</td><td>0.514</td><td class='muted'>4,003</td></tr>
+<tr><td><code>vol_15_rel</code></td><td>+0.044</td><td class='muted'>[-0.182, +0.262]</td><td>0.735</td><td>0.356</td><td>0.457</td><td>0.506</td><td class='muted'>3,984</td></tr>
+<tr><td><code>vol_30_rel</code></td><td>+0.079</td><td class='muted'>[-0.166, +0.320]</td><td>0.520</td><td>0.363</td><td>0.491</td><td>0.532</td><td class='muted'>1,242</td></tr>
+<tr><td><code>stack_bid_exc</code> &#9888;</td><td>-0.041</td><td class='muted'>[-0.252, +0.172]</td><td>0.738</td><td>0.501</td><td>0.434</td><td>0.448</td><td class='muted'>4,659</td></tr>
+<tr><td><code>stack_ask_exc</code> &#9888;</td><td>-0.079</td><td class='muted'>[-0.280, +0.142]</td><td>0.493</td><td>0.525</td><td>0.507</td><td>0.544</td><td class='muted'>1,260</td></tr>
+</tbody></table></div><p class="muted">n = 91 trades. &#9888; = still fails exchangeability; discount accordingly. &ldquo;n needed&rdquo; is the sample this effect size would have required for 80% power &mdash; where it exceeds the sample, the cell is underpowered by construction.</p></div>
+<div class="card is-panel"><h3>IS &mdash; in-sample &mdash; reference only, not evidence</h3><div class="scroll"><table><thead><tr><th>Feature</th><th>&rho; vs R</th><th>95% CI</th><th>p</th><th>p (day)</th><th>AUC R&ge;2</th><th>AUC mfe&ge;4</th><th>n needed</th></tr></thead><tbody>
+<tr><td><code>cvd_5</code></td><td>-0.111</td><td class='muted'>[-0.293, +0.090]</td><td>0.260</td><td>0.329</td><td>0.438</td><td>0.464</td><td class='muted'>637</td></tr>
+<tr><td><code>cvd_15</code></td><td>-0.157</td><td class='muted'>[-0.325, +0.033]</td><td>0.102</td><td>0.262</td><td>0.499</td><td>0.515</td><td class='muted'>316</td></tr>
+<tr><td><code>cvd_30</code></td><td>+0.074</td><td class='muted'>[-0.136, +0.282]</td><td>0.469</td><td>0.612</td><td>0.585</td><td>0.614</td><td class='muted'>1,417</td></tr>
+<tr><td><code>cvd_norm_15</code></td><td>-0.172</td><td class='muted'>[-0.359, +0.039]</td><td>0.115</td><td>0.141</td><td>0.463</td><td>0.513</td><td class='muted'>262</td></tr>
+<tr><td><code>abs_cvd_15</code></td><td>+0.107</td><td class='muted'>[-0.099, +0.301]</td><td>0.309</td><td>0.410</td><td>0.501</td><td>0.436</td><td class='muted'>682</td></tr>
+<tr><td><code>delta_div_15</code></td><td>-0.059</td><td class='muted'>[-0.238, +0.122]</td><td>0.545</td><td>0.694</td><td>0.456</td><td>0.465</td><td class='muted'>2,266</td></tr>
+<tr><td><code>absorp_rel</code></td><td>-0.002</td><td class='muted'>[-0.203, +0.203]</td><td>0.973</td><td>0.995</td><td>0.422</td><td>0.439</td><td class='muted'>1,895,581</td></tr>
+<tr><td><code>vol_15_rel</code></td><td>+0.137</td><td class='muted'>[-0.084, +0.343]</td><td>0.232</td><td>0.300</td><td>0.410</td><td>0.458</td><td class='muted'>413</td></tr>
+<tr><td><code>vol_30_rel</code></td><td>+0.193</td><td class='muted'>[-0.035, +0.405]</td><td>0.092</td><td>0.194</td><td>0.507</td><td>0.547</td><td class='muted'>208</td></tr>
+<tr><td><code>stack_bid_exc</code> &#9888;</td><td>-0.051</td><td class='muted'>[-0.241, +0.156]</td><td>0.622</td><td>0.716</td><td>0.476</td><td>0.553</td><td class='muted'>3,024</td></tr>
+<tr><td><code>stack_ask_exc</code> &#9888;</td><td>-0.121</td><td class='muted'>[-0.308, +0.072]</td><td>0.214</td><td>0.281</td><td>0.458</td><td>0.418</td><td class='muted'>538</td></tr>
+</tbody></table></div><p class="muted">n = 91 trades. &#9888; = still fails exchangeability; discount accordingly. &ldquo;n needed&rdquo; is the sample this effect size would have required for 80% power &mdash; where it exceeds the sample, the cell is underpowered by construction.</p></div>
+<div class="card"><h3>Falsifier and family-wise outcome</h3>
+<p>Direction-blind twins (unsigned magnitude: <code>abs_cvd_15</code>, the volume and absorption
+features) are the falsifier that killed the London and NY-window campaigns: if unsigned features
+match or beat signed ones, any apparent &ldquo;edge&rdquo; is not directional information.</p>
+<p class="verdict">Best signed |&rho;| 0.093 vs best
+direction-blind |&rho;| 0.091 &mdash;
+<span class="pill ok">signed exceeds blind</span></p>
+<p class="verdict">Features surviving family-wise correction out-of-sample:
+<b>NONE</b></p></div>
+<h3>Tercile transfer &mdash; edges fixed on the re-fixed IS half, applied to OOS</h3>
+<div class="scroll"><table><thead><tr><th>Feature</th><th>OOS low n</th><th>low mean R</th>
+<th>OOS high n</th><th>high mean R</th><th>high &minus; low</th><th>95% CI</th><th>p</th>
+</tr></thead><tbody>
+<tr><td><code>cvd_5</code></td><td>20</td><td>+0.518</td><td>35</td><td>+0.989</td><td>+0.472</td><td class='muted'>[-0.663, +1.581]</td><td>0.440</td></tr>
+<tr><td><code>cvd_15</code></td><td>26</td><td>+0.437</td><td>43</td><td>+1.240</td><td>+0.803</td><td class='muted'>[-0.303, +1.943]</td><td>0.172</td></tr>
+<tr><td><code>cvd_30</code></td><td>30</td><td>+1.327</td><td>35</td><td>+0.917</td><td>-0.410</td><td class='muted'>[-1.773, +0.906]</td><td>0.545</td></tr>
+<tr><td><code>cvd_norm_15</code></td><td>24</td><td>+0.224</td><td>40</td><td>+1.128</td><td>+0.904</td><td class='muted'>[-0.148, +2.036]</td><td>0.097</td></tr>
+<tr><td><code>abs_cvd_15</code></td><td>26</td><td>+0.612</td><td>34</td><td>+0.662</td><td>+0.050</td><td class='muted'>[-1.089, +1.353]</td><td>0.925</td></tr>
+<tr><td><code>delta_div_15</code></td><td colspan='7' class='muted'><span class='pill warn'>insufficient</span> n_low=0, n_high=91 (floor 10 per cell)</td></tr>
+<tr><td><code>absorp_rel</code></td><td>31</td><td>+0.768</td><td>35</td><td>+1.334</td><td>+0.566</td><td class='muted'>[-0.737, +1.920]</td><td>0.418</td></tr>
+<tr><td><code>vol_15_rel</code></td><td>34</td><td>+0.942</td><td>30</td><td>+0.530</td><td>-0.413</td><td class='muted'>[-1.472, +0.712]</td><td>0.442</td></tr>
+<tr><td><code>vol_30_rel</code></td><td>36</td><td>+0.804</td><td>26</td><td>+0.577</td><td>-0.227</td><td class='muted'>[-1.401, +0.968]</td><td>0.690</td></tr>
+<tr><td><code>stack_bid_exc</code></td><td colspan='7' class='muted'><span class='pill warn'>insufficient</span> n_low=22, n_high=0 (floor 10 per cell)</td></tr>
+<tr><td><code>stack_ask_exc</code></td><td colspan='7' class='muted'><span class='pill warn'>insufficient</span> n_low=22, n_high=0 (floor 10 per cell)</td></tr>
+</tbody></table></div>
+<h3>Q2 &mdash; does entry flow add anything beyond gap size?</h3>
+<p>Gap (08:00&nbsp;ET price &minus; prior 15:59 close) is knowable at 08:00 with <b>no tape
+whatsoever</b>. The question is therefore not &ldquo;does flow correlate with outcome&rdquo; but
+&ldquo;does flow survive once gap size is already known&rdquo;. Association is rank-residualised
+against |gap| and re-tested out-of-sample.</p>
+<p class='muted'><code>|gap|</code> vs realized R: &rho; +0.153, CI [+0.010, +0.297], p 0.036</p>
+<p class='muted'><code>signed gap</code> vs realized R: &rho; +0.018, CI [-0.130, +0.170], p 0.810</p>
+<div class="scroll"><table><thead><tr><th>Feature</th><th>&rho; raw (OOS)</th>
+<th>&rho; | gap</th><th>95% CI</th><th>p</th><th>Reading</th></tr></thead><tbody>
+<tr><td><code>cvd_5</code></td><td>+0.026</td><td>+0.023</td><td class='muted'>[-0.175, +0.226]</td><td>0.762</td><td class='muted'>retains</td></tr>
+<tr><td><code>cvd_15</code></td><td>+0.048</td><td>+0.047</td><td class='muted'>[-0.155, +0.251]</td><td>0.650</td><td class='muted'>retains</td></tr>
+<tr><td><code>cvd_30</code></td><td>-0.088</td><td>-0.087</td><td class='muted'>[-0.311, +0.123]</td><td>0.412</td><td class='muted'>retains</td></tr>
+<tr><td><code>cvd_norm_15</code></td><td>+0.081</td><td>+0.082</td><td class='muted'>[-0.125, +0.294]</td><td>0.449</td><td class='muted'>retains</td></tr>
+<tr><td><code>abs_cvd_15</code></td><td>+0.100</td><td>+0.093</td><td class='muted'>[-0.142, +0.314]</td><td>0.443</td><td class='muted'>retains</td></tr>
+<tr><td><code>delta_div_15</code></td><td>+0.042</td><td>+0.046</td><td class='muted'>[-0.144, +0.212]</td><td>0.691</td><td class='muted'>retains</td></tr>
+<tr><td><code>absorp_rel</code></td><td>-0.037</td><td>-0.031</td><td class='muted'>[-0.261, +0.200]</td><td>0.810</td><td class='muted'>retains</td></tr>
+<tr><td><code>vol_15_rel</code></td><td>+0.048</td><td>+0.042</td><td class='muted'>[-0.187, +0.277]</td><td>0.750</td><td class='muted'>retains</td></tr>
+<tr><td><code>vol_30_rel</code></td><td>+0.083</td><td>+0.077</td><td class='muted'>[-0.159, +0.328]</td><td>0.511</td><td class='muted'>retains</td></tr>
+<tr><td><code>stack_bid_exc</code></td><td>-0.078</td><td>-0.024</td><td class='muted'>[-0.252, +0.229]</td><td>0.887</td><td class='muted'>attenuates</td></tr>
+<tr><td><code>stack_ask_exc</code></td><td>-0.110</td><td>-0.114</td><td class='muted'>[-0.319, +0.117]</td><td>0.343</td><td class='muted'>retains</td></tr>
+</tbody></table></div>
+<p class="verdict">Features retaining an OOS association after controlling for gap and surviving
+family-wise correction: <b>NONE</b></p>
+<h2>Part 2 &mdash; exit-side order flow (pre-registered before scoring)</h2>
+<p>The untested angle, and the one that targets the actual failure mode: every exit rule
+so far is flow-blind and clips the winners that carry the book. <b>Question:</b> read during the
+trade, does order flow distinguish a retrace that <b>resumes</b> from one that <b>reverses</b>?
+Constants frozen in Amendment&nbsp;4 before any outcome was computed &mdash; eligibility
++1.0R, trigger 0.5R give-back, resume = a new
+peak before the stop, 15-minute windows, one event per trade, split
+2025-12-23. No sweeps.</p>
+<h3>Shift test at every bar, not just the fill</h3>
+<div class="scroll"><table><thead><tr><th>Feature &middot; bar bucket</th><th>bars</th>
+<th>differs vs +1</th><th>differs vs +15</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>cvd_roll_dir</code> &middot; <span class='muted'>bars 0-5</span></td><td>964</td><td>99.3%</td><td>99.9%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>cvd_roll_dir</code> &middot; <span class='muted'>bars 6-15</span></td><td>1,258</td><td>99.4%</td><td>99.8%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>cvd_roll_dir</code> &middot; <span class='muted'>bars 16-30</span></td><td>1,535</td><td>99.7%</td><td>99.5%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>cvd_roll_dir</code> &middot; <span class='muted'>bars 31+</span></td><td>9,701</td><td>99.6%</td><td>99.9%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>cvd_since_dir</code> &middot; <span class='muted'>bars 0-5</span></td><td>964</td><td>98.9%</td><td>100.0%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>cvd_since_dir</code> &middot; <span class='muted'>bars 6-15</span></td><td>1,258</td><td>98.3%</td><td>99.8%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>cvd_since_dir</code> &middot; <span class='muted'>bars 16-30</span></td><td>1,535</td><td>99.1%</td><td>99.6%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>cvd_since_dir</code> &middot; <span class='muted'>bars 31+</span></td><td>9,701</td><td>99.4%</td><td>99.9%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>imb_roll_dir</code> &middot; <span class='muted'>bars 0-5</span></td><td>964</td><td>100.0%</td><td>100.0%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>imb_roll_dir</code> &middot; <span class='muted'>bars 6-15</span></td><td>1,258</td><td>100.0%</td><td>100.0%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>imb_roll_dir</code> &middot; <span class='muted'>bars 16-30</span></td><td>1,535</td><td>100.0%</td><td>100.0%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>imb_roll_dir</code> &middot; <span class='muted'>bars 31+</span></td><td>9,701</td><td>100.0%</td><td>100.0%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>absorp_roll</code> &middot; <span class='muted'>bars 0-5</span></td><td>964</td><td>99.6%</td><td>100.0%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>absorp_roll</code> &middot; <span class='muted'>bars 6-15</span></td><td>1,258</td><td>99.5%</td><td>100.0%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>absorp_roll</code> &middot; <span class='muted'>bars 16-30</span></td><td>1,535</td><td>99.3%</td><td>99.9%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>absorp_roll</code> &middot; <span class='muted'>bars 31+</span></td><td>9,701</td><td>99.8%</td><td>100.0%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>delta_div_roll</code> &middot; <span class='muted'>bars 0-5</span></td><td>964</td><td>7.2%</td><td>41.5%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>delta_div_roll</code> &middot; <span class='muted'>bars 6-15</span></td><td>1,258</td><td>7.2%</td><td>46.1%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>delta_div_roll</code> &middot; <span class='muted'>bars 16-30</span></td><td>1,535</td><td>11.0%</td><td>47.7%</td><td><span class="pill ok">PASS</span></td></tr>
+<tr><td><code>delta_div_roll</code> &middot; <span class='muted'>bars 31+</span></td><td>9,701</td><td>9.9%</td><td>49.1%</td><td><span class="pill ok">PASS</span></td></tr>
+</tbody></table></div>
+<h3>Scoring &mdash; resume vs reverse</h3>
+<p class="muted">Base rate: 85.0% of retraces resume, so
+AUC&nbsp;0.5 means flow adds nothing. Effective tests M<sub>eff</sub>
+4.00, per-test &alpha; 0.0127. Intervals
+are <b>trade-clustered</b> bootstraps &mdash; bar counts above are for the shift test only and
+are never used as an inference sample size.</p>
+<div class="card oos"><h3>OOS &mdash; out-of-sample &mdash; <b>the headline</b></h3><div class="scroll"><table><thead><tr><th>Feature</th><th>AUC</th><th>95% CI</th><th>p</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>cvd_roll_dir</code></td><td>0.470</td><td class='muted'>[0.211, 0.726]</td><td>0.801</td><td><span class="pill bad">ns</span></td></tr>
+<tr><td><code>cvd_since_dir</code></td><td>0.498</td><td class='muted'>[0.244, 0.756]</td><td>1.000</td><td><span class="pill bad">ns</span></td></tr>
+<tr><td><code>imb_roll_dir</code></td><td>0.551</td><td class='muted'>[0.336, 0.768]</td><td>0.639</td><td><span class="pill bad">ns</span></td></tr>
+<tr><td><code>absorp_roll</code></td><td>0.536</td><td class='muted'>[0.328, 0.734]</td><td>0.739</td><td><span class="pill bad">ns</span></td></tr>
+<tr><td><code>delta_div_roll</code></td><td>0.464</td><td class='muted'>[0.339, 0.541]</td><td>0.744</td><td><span class="pill bad">ns</span></td></tr>
+</tbody></table></div><p class="muted">n = 59 events.</p></div>
+<div class="card is-panel"><h3>IS &mdash; in-sample &mdash; reference only</h3><div class="scroll"><table><thead><tr><th>Feature</th><th>AUC</th><th>95% CI</th><th>p</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>cvd_roll_dir</code></td><td>0.365</td><td class='muted'>[0.188, 0.558]</td><td>0.165</td><td><span class="pill bad">ns</span></td></tr>
+<tr><td><code>cvd_since_dir</code></td><td>0.432</td><td class='muted'>[0.245, 0.626]</td><td>0.488</td><td><span class="pill bad">ns</span></td></tr>
+<tr><td><code>imb_roll_dir</code></td><td>0.478</td><td class='muted'>[0.243, 0.717]</td><td>0.875</td><td><span class="pill bad">ns</span></td></tr>
+<tr><td><code>absorp_roll</code></td><td>0.375</td><td class='muted'>[0.185, 0.584]</td><td>0.209</td><td><span class="pill bad">ns</span></td></tr>
+<tr><td><code>delta_div_roll</code></td><td>0.543</td><td class='muted'>[0.510, 0.590]</td><td>0.038</td><td><span class="pill bad">ns</span></td></tr>
+</tbody></table></div><p class="muted">n = 54 events.</p></div>
+<p class='muted'>Power: at this out-of-sample event count the smallest detectable |AUC&minus;0.5| is about 0.147 (AUC 0.647). Anything smaller is invisible at this sample &mdash; absence of a result here is not evidence of absence of an effect.</p>
+<h2>Part 3 &mdash; the news filter</h2>
+<p>The strongest lead in the study: it improved the sized pre-market slice in the leaky
+arm <b>and</b> the partially-remediated arm independently, it is <b>not fitted</b> to this book,
+and the economic calendar is published in advance &mdash; so it is knowable at fill time by
+construction, with no threshold estimated from outcomes.</p>
+<p><b>The test that can kill it:</b> it drops trades in a window where a handful carry nearly all
+the P&amp;L. If the whole benefit is one bad day in fourteen months, it is an anecdote. So the
+benefit is recomputed with the single largest avoided trade removed, then jackknifed over
+<i>every</i> avoided trade.</p>
+<div class="card oos"><h3>Partially-remediated arm (C only) &mdash; the working baseline</h3>
+<div class="tiles">
+ <div class="tile"><div class="k">No news</div><div class="v">$+18,113</div>
+   <div class="n">200 trades</div></div>
+ <div class="tile"><div class="k">With news filter</div><div class="v">$+21,098</div>
+   <div class="n">182 trades</div></div>
+ <div class="tile"><div class="k">Delta</div><div class="v">$+2,985</div>
+   <div class="n">p = 0.005</div></div>
+ <div class="tile"><div class="k">95% CI (day-clustered)</div>
+   <div class="v" style="font-size:15px">[$+894, $+4,970]</div>
+   <div class="n">4000 draws</div></div>
+</div>
+<p>Avoided 23 trades summing $-2,744;
+5 newly appear from freed nth-escalation slots
+($-164).</p>
+<p class="verdict">Kill test: the single largest avoided trade is
+<b>2026-02-19 at $+537</b> &mdash; a <b>winner</b>, so removing it makes the
+delta <i>larger</i>, not smaller: $+3,522.
+<span class="pill ok">SURVIVES</span></p>
+<p>Jackknife over all 23 avoided trades:
+<b>0</b> single removals flip the sign; delta stays within
+[$+2,634,
+$+3,522]. The benefit is
+<b>diffuse across many small avoided losses</b>, not one bad day.</p>
+<p class='muted'>In-sample half: $+2,044 &rarr; $+3,030 (delta $+986, 6 avoided)</p>
+<p class='muted'>Out-of-sample half: $+16,069 &rarr; $+18,068 (delta $+1,999, 17 avoided)</p>
+</div>
+<div class="card is-panel"><h3>Leaky arm (conf_PM) &mdash; independent replication</h3>
+<div class="tiles">
+ <div class="tile"><div class="k">No news</div><div class="v">$+21,152</div>
+   <div class="n">200 trades</div></div>
+ <div class="tile"><div class="k">With news filter</div><div class="v">$+23,018</div>
+   <div class="n">183 trades</div></div>
+ <div class="tile"><div class="k">Delta</div><div class="v">$+1,866</div>
+   <div class="n">p = 0.088</div></div>
+ <div class="tile"><div class="k">95% CI (day-clustered)</div>
+   <div class="v" style="font-size:15px">[$-294, $+3,925]</div>
+   <div class="n">4000 draws</div></div>
+</div>
+<p>Avoided 26 trades summing $-2,196;
+9 newly appear from freed nth-escalation slots
+($-97).</p>
+<p class="verdict">Kill test: the single largest avoided trade is
+<b>2026-02-19 at $+537</b> &mdash; a <b>winner</b>, so removing it makes the
+delta <i>larger</i>, not smaller: $+2,403.
+<span class="pill ok">SURVIVES</span></p>
+<p>Jackknife over all 26 avoided trades:
+<b>0</b> single removals flip the sign; delta stays within
+[$+1,515,
+$+2,403]. The benefit is
+<b>diffuse across many small avoided losses</b>, not one bad day.</p>
+<p class='muted'>In-sample half: $+3,139 &rarr; $+3,753 (delta $+614, 7 avoided)</p>
+<p class='muted'>Out-of-sample half: $+18,012 &rarr; $+19,265 (delta $+1,252, 19 avoided)</p>
+</div>
+<p class="muted">Because the filter is not fitted to either half, neither half is
+privileged by construction &mdash; but the out-of-sample half remains the headline for
+consistency with the rest of the study.</p>
+<h2>Numbers that are dead and must not reappear</h2>
+<div class="dead">
+<b>1. The trail-0.5R-from-1.5R sweep (+$35,980, 214 trades, 51.4% WR).</b> Superseded. It was
+computed on the <b>leaky</b> book at 1 lot in R-space. Re-run on a remediated book with funded
+sizing and walk-forward, every fixed target 1.5R&ndash;4R <i>loses</i> to the canon's own
+management. It is not a live result and must never be quoted as one.<br><br>
+<b>2. The ~$23k <code>conf_PM</code> figure quoted alone.</b> That is a <b>whole-book
+mechanical</b> number. The pre-market portion is roughly <b>$17k mechanical</b> and about
+<b>$3k sized</b>. Quoting $23k as a pre-market or funded figure overstates it by several times.
+</div>
+
+<h2>Provenance</h2>
+<div class="prov">
+run_id &nbsp; 20260729T023552Z<br>
+commit &nbsp; 873c338<br>
+config_hash (part0&ndash;3 scripts, sha256/16) &nbsp; dc91e5a253022f84<br>
+book_mech &nbsp; 4b6331982a6e7169 &nbsp;(job2_books/mech_C_news.parquet)<br>
+book_sized &nbsp; 448482553e483b9f &nbsp;(job2_books/sized_C_news.parquet)<br>
+bars &nbsp; 0e6d4b9ca6dfb9b1 &nbsp;(data/reference/nq_1m_master.parquet)<br>
+arm &nbsp; C_news = partially remediated (C only; W + dep_* STILL LEAKY) + news filter<br>
+window &nbsp; 2025-07-01..2026-07-10, Jan-2026 absent (no book variant has it)<br>
+excursion &nbsp; fill -> first stop touch, else 15:55 ET (AMENDMENT 3)<br>
+split &nbsp; 2025-12-23 &nbsp; (91 IS / 91 OOS)<br>
+cost assumptions &nbsp; sizing = funded dollar-risk (risk capped at $400/trade, &le;40 micros);
+book P&amp;L carries the canon's own fills; the exit-side study re-simulates no fills and adds
+no cost; commissions/slippage are the book's, not re-applied here<br>
+band &nbsp; tape source-cleaned to the ET-day bar band &plusmn;25pt (registered FIXED; swept at
+&plusmn;10/&plusmn;50, worst bin movement 1.9%)<br>
+regenerate &nbsp; python3 research/sweep_2026_07/orderflow/build_dashboard.py
+</div>
+<p class="sub" style="margin-top:22px">Every panel is conditional on the standing caveats at the
+top: partial remediation (C only; W and <code>dep_*</code> still leaky), Brake's H0 ruling, the
+January-2026 book hole, and a single observed regime transition.</p>
+</div>
+<script>
+(function(){
+  var t = localStorage.getItem('theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>

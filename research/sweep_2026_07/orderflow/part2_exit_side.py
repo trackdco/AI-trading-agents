@@ -212,7 +212,7 @@ else:
                 float(min(2 * min((o <= 0.5).mean(), (o >= 0.5).mean()), 1.0)))
 
     Z = E[FEATS].apply(lambda s: s.rank(na_option="keep"))
-    C = Z.corr().fillna(0).to_numpy()
+    C = np.array(Z.corr().fillna(0).to_numpy(), dtype=float, copy=True)
     np.fill_diagonal(C, 1.0)
     ev_ = np.clip(np.linalg.eigvalsh(C), 0, None)
     M_eff = float(sum((e >= 1) + (e - np.floor(e)) for e in ev_))
