@@ -35,8 +35,8 @@ PRE = (480, 570)
 GOLD = (580, 630)          # ANGUS 2026-07-30: extended to 10:30
 
 
-def load() -> pd.DataFrame:
-    F = pd.read_parquet(ROOT / "output/l3_features_fit.parquet")
+def load(span: str = "fit") -> pd.DataFrame:
+    F = pd.read_parquet(ROOT / f"output/l3_features_{span}.parquet")
     F = F[(F.risk >= 7) & (F.risk <= 60)].copy()
     F["sess"] = np.select([F.fill_hm.between(*PRE, inclusive="left"),
                            F.fill_hm.between(*GOLD, inclusive="left")],

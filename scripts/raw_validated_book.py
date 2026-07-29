@@ -31,8 +31,8 @@ sys.path.insert(0, str(ROOT))
 from scripts.l4_select import L4Policy, select  # noqa: E402
 
 
-def load() -> pd.DataFrame:
-    S = pd.read_parquet(ROOT / "output/l3_scored_fit.parquet")
+def load(span: str = "fit") -> pd.DataFrame:
+    S = pd.read_parquet(ROOT / f"output/l3_scored_{span}.parquet")
     S = S[(S.risk >= 7) & (S.risk <= 60) & S.sess.isin(["pre", "gold"])].copy()
     S["valid"] = np.where(S.sess == "pre", S.W == 1, S.D == 1)
     S["month"] = S.day.str[:7]
@@ -62,7 +62,11 @@ def maxdd(d: pd.DataFrame) -> float:
 
 
 def main() -> None:
-    S = load()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--span", default="fit", choices=["fit", "holdout"])
+    a = ap.parse_args()
+    S = load(a.span)
     weeks = S.day.nunique() / 5.0
     V = S[S.valid]
     print(f"span: {S.day.nunique()} days ({weeks:.1f} wk) | candidates in-band {len(S)} "
@@ -101,7 +105,7 @@ def main() -> None:
     B = select(C, pol, dollars_col="dollars_1lot")
     t = B[B.taken]
     monthly(t, "CAPPED gold>=4 book")
-    out = ROOT / "output/raw_validated_book.parquet"
+    out = ROOT / f"output/raw_validated_book_{a.span}.parquet"
     B.to_parquet(out, index=False)
     print(f"\nwrote {out.relative_to(ROOT)}")
 

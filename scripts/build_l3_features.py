@@ -50,22 +50,26 @@ sys.path.insert(0, str(ROOT))
 from scripts.score_canon_span import SPANS, build_features, depth_file, minute_tape  # noqa: E402
 
 NY = "America/New_York"
-DEPTH_DIRS = ["data/reference/depth_2025", "data/reference/depth_2026",
-              "data/reference/depth_apr2026"]
+DEPTH_BY_SPAN = {
+    "fit": ["data/reference/depth_2025", "data/reference/depth_2026",
+            "data/reference/depth_apr2026"],
+    "holdout": ["data/reference/depth_2023_24"],
+}
+DEPTH_DIRS = DEPTH_BY_SPAN["fit"]          # kept for the fit gate path
 KEY = ["day", "fill", "direction", "entry", "stop"]
 
 _CTX: dict = {}          # fork-inherited read-only inputs for the Pool
 
 
-def load_inputs():
-    spec = dict(SPANS["fit"])
+def load_inputs(span: str = "fit"):
+    spec = dict(SPANS[span])
     M = minute_tape(spec)
     parts = [pd.read_parquet(ROOT / f).drop(columns=["roll"], errors="ignore")
              for f in spec["bars"]]
     bars = (pd.concat(parts, ignore_index=True)
             .drop_duplicates("ts_event").sort_values("ts_event").reset_index(drop=True))
     # trigger stamps for trigdens_30 — from the L0 census, tz-naive UTC (features.py contract)
-    L0 = pd.read_parquet(ROOT / "output/l0_triggers_fit.parquet")
+    L0 = pd.read_parquet(ROOT / f"output/l0_triggers_{span}.parquet")
     t_utc = pd.to_datetime(L0.ts, format="mixed", utc=True)
     tday = t_utc.dt.tz_convert(NY).dt.strftime("%Y-%m-%d")
     trig_times = {d: g.dt.tz_localize(None).to_numpy(dtype="datetime64[ns]")
@@ -73,13 +77,13 @@ def load_inputs():
     return M, bars, trig_times
 
 
-def candidates(gate_only: bool = False) -> tuple[pd.DataFrame, pd.DataFrame]:
+def candidates(gate_only: bool = False, span: str = "fit") -> tuple[pd.DataFrame, pd.DataFrame]:
     """(S_unique, L2-outcome rows kept) — depth-less days excluded, S shaped for
     build_features (needs day/book/fill/direction/entry/stop/exit_price/dollars/pattern/tf)."""
-    O = pd.read_parquet(ROOT / "output/l2_outcomes_fit.parquet")
+    O = pd.read_parquet(ROOT / f"output/l2_outcomes_{span}.parquet")
     oc = O[O.status == "outcome"].copy()
     have = {os.path.basename(f).split("_")[2]
-            for d in DEPTH_DIRS for f in glob.glob(str(ROOT / d / "nq_depth_*_ny.csv"))}
+            for d in DEPTH_BY_SPAN[span] for f in glob.glob(str(ROOT / d / "nq_depth_*_ny.csv"))}
     dropped = sorted(set(oc.day) - have)
     oc = oc[oc.day.isin(have)].copy()
     print(f"outcomes kept {len(oc)} | EXCLUDED {len(dropped)} depth-less days "
@@ -105,13 +109,14 @@ def candidates(gate_only: bool = False) -> tuple[pd.DataFrame, pd.DataFrame]:
 def _chunk(days: list[str]) -> pd.DataFrame:
     S = _CTX["S"]
     return build_features(S[S.day.isin(days)], _CTX["M"], _CTX["bars"],
-                          _CTX["trig_times"], DEPTH_DIRS)
+                          _CTX["trig_times"], _CTX["depth_dirs"])
 
 
-def feature_all(S: pd.DataFrame, procs: int) -> pd.DataFrame:
+def feature_all(S: pd.DataFrame, procs: int, span: str = "fit") -> pd.DataFrame:
     global _CTX
-    M, bars, trig_times = load_inputs()
-    _CTX = {"S": S, "M": M, "bars": bars, "trig_times": trig_times}
+    M, bars, trig_times = load_inputs(span)
+    _CTX = {"S": S, "M": M, "bars": bars, "trig_times": trig_times,
+            "depth_dirs": DEPTH_BY_SPAN[span]}
     days = sorted(S.day.unique())
     if procs <= 1:
         return _chunk(days)
@@ -205,20 +210,21 @@ def main() -> None:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--gate", action="store_true")
     ap.add_argument("--run", action="store_true")
+    ap.add_argument("--span", default="fit", choices=["fit", "holdout"])
     ap.add_argument("--procs", type=int, default=3)
     a = ap.parse_args()
     if a.gate:
         return gate(a.procs)
     if not a.run:
         raise SystemExit("--gate or --run required")
-    S, oc = candidates()
-    F = feature_all(S, a.procs)
+    S, oc = candidates(span=a.span)
+    F = feature_all(S, a.procs, span=a.span)
     # join features back onto the per-trigger L2 rows (dedup-then-join, see docstring)
     F2 = F.drop(columns=["book", "exit_price", "dollars", "pattern", "tf", "risk", "R",
                          "yr"], errors="ignore")
     out_rows = oc.merge(F2, left_on=["day", "fill", "direction", "entry", "stop"],
                         right_on=KEY, how="left")
-    out = ROOT / "output/l3_features_fit.parquet"
+    out = ROOT / f"output/l3_features_{a.span}.parquet"
     out_rows.to_parquet(out, index=False)
     feat_cols = [c for c in F2.columns if c not in KEY]
     cov = out_rows[feat_cols].notna().mean().sort_values()
