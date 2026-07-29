@@ -10,20 +10,22 @@ So: **500 randomized day-level splits**. In each, the ENTIRE selection procedure
 
 Splits are **by day**, never by row: same-day trades share regime and tape, so a row-level split would leak and understate shrinkage.
 
-## Result — 500 valid splits
+## Result — shrinkage as a function of how hard you searched
 
-| | median | mean | p10 | p90 |
-|---|---|---|---|---|
-| best in-sample mean R | +1.378 | +1.401 | +1.127 | +1.704 |
-| same rule out-of-sample | +0.260 | +0.288 | -0.200 | +0.799 |
-| shrinkage (IS - OOS) | +1.138 | +1.113 | +0.421 | +1.775 |
+| selection breadth | splits | IS median | OOS median | shrinkage | OOS/IS |
+|---|---|---|---|---|---|
+| exhaustive (all singles+pairs) | 500 | +1.378 | +0.260 | +1.138 | 0.19 |
+| 4-check (the actual L3 breadth) | 500 | +0.587 | +0.600 | -0.014 | 1.02 |
+| wall arm fixed (no selection) | 500 | +0.478 | +0.488 | -0.010 | 1.02 |
 
-**Median IS->OOS shrinkage: +1.138 R** (83% of the in-sample figure evaporates out-of-sample for a rule chosen this way).
+The exhaustive row is the **upper bound** on selection cost, not the wall arm's. Searching 29k combinations manufactures +1.378 mean R in-sample out of this population and keeps only +0.260 of it — 81% evaporates. That is what unconstrained search does here, and it is the number to remember whenever a mined rule is proposed.
 
 ## Where the wall arm actually sits
 
-The shipped rule (W or FAR) scores **+0.483 mean R** on the full fit population. Against the distribution of *out-of-sample* results from rules selected by search, it sits at the **69th percentile**.
+The wall arm scores **+0.483 mean R** on the full fit population — far BELOW the +1.378 that exhaustive search achieves in-sample. That gap is itself evidence: if the wall arm were a search artifact it would look like one, and it does not. It was chosen from four pre-existing checks at frozen thresholds, and the matching 4-check null shows a median shrinkage of **-0.014 R**, not the exhaustive +1.138.
 
-**Read: partly real, materially inflated.** The wall arm beats the typical searched rule but sits inside the range search can reach. Expect the holdout to come in meaningfully below the fit figure — roughly the shrinkage above.
+Held fixed with no selection at all, the wall arm's own split-half behaviour is IS +0.478 -> OOS +0.488 (shrinkage -0.010), which is pure sampling noise rather than selection bias.
 
-**Practical consequence:** subtract roughly 1.14 R from any fit-span expectation before believing it live. Applied to the wall arm's fit mean R of +0.483, the honest forward expectation is about -0.654 R.
+**Honest forward expectation: about +0.483 mean R** — the fit figure less the shrinkage measured at the wall arm's OWN selection breadth. Not -0.654, which would wrongly charge it the cost of a 29,161-combination search it never ran.
+
+**What this does NOT establish.** The 4-check null still assumes the four checks were specified independently of this data — they were not; they were fitted on 2025 by the original canon. The sealed 2023/24 holdout remains the only test that owes nothing to any choice made here.
