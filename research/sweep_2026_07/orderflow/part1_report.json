@@ -1,0 +1,125 @@
+{
+ "anchor_vs_job2": "198/198",
+ "exchangeability": {
+  "absorp_15": {
+   "ks": 0.3076923076923077,
+   "p": 0.0014992503748125937,
+   "passes": false,
+   "remedied": false
+  },
+  "absorp_atr": {
+   "ks": 0.21978021978021983,
+   "p": 0.03498250874562719,
+   "passes": false,
+   "remedied": true
+  },
+  "absorp_rel": {
+   "ks": 0.09890109890109888,
+   "p": 0.8125937031484258,
+   "passes": true,
+   "remedied": true
+  },
+  "vol_15": {
+   "ks": 0.31868131868131866,
+   "p": 0.0004997501249375312,
+   "passes": false,
+   "remedied": false
+  },
+  "vol_15_rel": {
+   "ks": 0.0989010989010989,
+   "p": 0.7776111944027986,
+   "passes": true,
+   "remedied": true
+  },
+  "vol_30": {
+   "ks": 0.3626373626373627,
+   "p": 0.0004997501249375312,
+   "passes": false,
+   "remedied": false
+  },
+  "vol_30_rel": {
+   "ks": 0.10989010989010994,
+   "p": 0.6921539230384808,
+   "passes": true,
+   "remedied": true
+  },
+  "stack_bid_bin": {
+   "ks": 0.1868131868131868,
+   "p": 0.014492753623188406,
+   "passes": false,
+   "remedied": false
+  },
+  "stack_bid_exc": {
+   "ks": 0.46153846153846156,
+   "p": 0.0004997501249375312,
+   "passes": false,
+   "remedied": true
+  },
+  "stack_ask_bin": {
+   "ks": 0.14285714285714288,
+   "p": 0.04597701149425287,
+   "passes": false,
+   "remedied": false
+  },
+  "stack_ask_exc": {
+   "ks": 0.49450549450549447,
+   "p": 0.0004997501249375312,
+   "passes": false,
+   "remedied": true
+  },
+  "cvd_5": {
+   "ks": 0.15384615384615374,
+   "p": 0.24387806096951525,
+   "passes": true,
+   "remedied": false
+  },
+  "cvd_15": {
+   "ks": 0.1648351648351648,
+   "p": 0.19290354822588707,
+   "passes": true,
+   "remedied": false
+  },
+  "cvd_30": {
+   "ks": 0.1208791208791209,
+   "p": 0.527736131934033,
+   "passes": true,
+   "remedied": false
+  },
+  "cvd_norm_15": {
+   "ks": 0.1428571428571428,
+   "p": 0.3458270864567716,
+   "passes": true,
+   "remedied": false
+  },
+  "abs_cvd_15": {
+   "ks": 0.1098901098901099,
+   "p": 0.623688155922039,
+   "passes": true,
+   "remedied": false
+  },
+  "delta_div_15": {
+   "ks": 0.01098901098901095,
+   "p": 0.8665667166416792,
+   "passes": true,
+   "remedied": false
+  }
+ },
+ "absorption_choice": "absorp_rel",
+ "scored_features": [
+  "cvd_5",
+  "cvd_15",
+  "cvd_30",
+  "cvd_norm_15",
+  "abs_cvd_15",
+  "delta_div_15",
+  "absorp_rel",
+  "vol_15_rel",
+  "vol_30_rel",
+  "stack_bid_exc",
+  "stack_ask_exc"
+ ],
+ "scored_failing_exchangeability": [
+  "stack_bid_exc",
+  "stack_ask_exc"
+ ]
+}

@@ -1,0 +1,126 @@
+{
+ "split": "2025-12-23",
+ "baseline_caveat": "C arm is PARTIALLY REMEDIATED (C only); W and dep_* remain leaky in all books here",
+ "L": {
+  "n_nonews": 200,
+  "pl_nonews": 21151.75,
+  "n_news": 183,
+  "pl_news": 23017.875,
+  "delta": 1866.125,
+  "ci": [
+   -294.05625,
+   3925.2312500000003
+  ],
+  "p": 0.0885,
+  "n_avoided": 26,
+  "pl_avoided": -2196.25,
+  "n_added": 9,
+  "pl_added": -96.625,
+  "largest_avoided": {
+   "day": "2026-02-19",
+   "pl": 537.0
+  },
+  "delta_excl_largest": 2403.125,
+  "jackknife_flips": 0,
+  "jackknife_range": [
+   1515.125,
+   2403.125
+  ],
+  "survives_kill_test": true,
+  "top5_avoided": [
+   [
+    "2026-02-19",
+    537.0
+   ],
+   [
+    "2026-03-12",
+    -351.0
+   ],
+   [
+    "2026-02-10",
+    -318.0
+   ],
+   [
+    "2026-06-17",
+    -235.5
+   ],
+   [
+    "2026-07-01",
+    -230.0
+   ]
+  ],
+  "half_IS": {
+   "pl_nonews": 3139.375,
+   "pl_news": 3753.125,
+   "delta": 613.75,
+   "n_avoided": 7
+  },
+  "half_OOS": {
+   "pl_nonews": 18012.375,
+   "pl_news": 19264.75,
+   "delta": 1252.375,
+   "n_avoided": 19
+  }
+ },
+ "C": {
+  "n_nonews": 200,
+  "pl_nonews": 18113.125,
+  "n_news": 182,
+  "pl_news": 21097.875,
+  "delta": 2984.75,
+  "ci": [
+   893.603125,
+   4970.38125
+  ],
+  "p": 0.005,
+  "n_avoided": 23,
+  "pl_avoided": -2743.75,
+  "n_added": 5,
+  "pl_added": -164.375,
+  "largest_avoided": {
+   "day": "2026-02-19",
+   "pl": 537.0
+  },
+  "delta_excl_largest": 3521.75,
+  "jackknife_flips": 0,
+  "jackknife_range": [
+   2633.75,
+   3521.75
+  ],
+  "survives_kill_test": true,
+  "top5_avoided": [
+   [
+    "2026-02-19",
+    537.0
+   ],
+   [
+    "2026-03-12",
+    -351.0
+   ],
+   [
+    "2025-07-31",
+    -335.0
+   ],
+   [
+    "2026-06-17",
+    -235.5
+   ],
+   [
+    "2026-02-12",
+    -229.5
+   ]
+  ],
+  "half_IS": {
+   "pl_nonews": 2044.375,
+   "pl_news": 3030.25,
+   "delta": 985.875,
+   "n_avoided": 6
+  },
+  "half_OOS": {
+   "pl_nonews": 16068.75,
+   "pl_news": 18067.625,
+   "delta": 1998.875,
+   "n_avoided": 17
+  }
+ }
+}
