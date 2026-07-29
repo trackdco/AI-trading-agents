@@ -349,3 +349,35 @@ the price of sweeping, measured.
 Third independent confirmation on this book (H1 flat targets FAIL, H4 MAE cuts FAIL, Job-1
 breakeven a wash). Structural reason restated: the winners that carry the book retrace a median
 5.97R after first touching +1R, so any rule tight enough to cut losers amputates them.
+
+## 2026-07-29 · EXIT-TIMING STUDY — premise CONFIRMED, timer under-evidenced, audit caught me
+Anchors reproduced to the cent first (certified 216/+$18,376.00; working baseline
+182/+$21,097.875).
+PART 1 — THE PREMISE IS TRUE AND LARGE. Canon banks a median 23% of available excursion at 15
+min, falling to 7% over full life; captures >=80% on only 4-28% of trades. Trades reaching +1R
+(n=115) realise +1.449 against a 60-min ALIVE MFE of +4.837. Gap rises monotonically with
+horizon; largest late (gap@60 +4.512). Methodological note: MFE must be measured ALIVE (clipped
+at the stop bar) — 54/182 trades are stopped before the 60m horizon, so the naive assertion
+mfe60 <= mfe_life is FALSE. Both quantities now computed and kept separate.
+PART 2 — TIMER MEASURED, AND THE VARIANCE COST IS REAL. Naked bust 0.40% -> 2.02% at 45m (5x)
+-> 10.66% at 90m (27x); maxDD $1,569 -> $2,441; breach days 0 -> 2. Full 1R on 55% of trades,
+no trailing. 0.00% with the full spine, so the cost shows only naked. SHAPE IS A HUMP NOT A
+PLATEAU: +$21,485/+$29,598/+$29,026/+$17,630 at 30/45/60/90 — spread 49% of level, BELOW canon
+at 90m. Money concentrated in 2026 (+$7,693 of +$8,500), OOS (+$9,075 vs -$575 IS), late
+segment (+$5,736 on 29 trades). Raises expectancy AND bust probability = worse, as registered.
+PART 3 — GIVE-BACK: INCONCLUSIVE, reported as registered. Conditional give-back 32.4/27.6/11.1%
+early/mid/late; early-late +21.2pp; CI [+2.0,+38.1]pp and bootstrap p=0.034 would pass, but the
+2,000-draw day-block permutation gives p=0.0850 and the rule required BOTH. Late segment needs
+~28 +1R trades, has 18 — ~80 more trading days.
+PART 4 — SHADOW HARNESS committed and runnable daily. 728 backfill records, idempotent, and it
+correctly reports the forward-only slice as EMPTY.
+INDEPENDENT AUDIT CAUGHT A REAL OVERSTATEMENT. Four extractors + two adversarial auditors read
+the committed artefacts. They refused my WORKS tag on the news filter because its calendar-shift
+placebo used only 10 shifts — floor-limited at p=1/11=0.091, unable to clear 0.05 BY
+CONSTRUCTION. Correct challenge. Re-ran the placebo at 40 shifts (+/-1..20 trading days): real
++$2,392.75 still beats ALL 40, p=0.0244, gate cleared, 6/40 placebos positive. Only the placebo
+COUNT changed — statistic, real value and gate identical. WORKS now holds on its own evidence.
+Second upheld challenge: in-trade flow at retrace re-tagged DEAD -> NEEDS MORE WORK; with 17
+reversals it cannot detect below |AUC-0.5|=0.147, so its null is uninformative, and DEAD is
+reserved for things actually tested and failed.
+FINAL: 1 WORKS (news filter), 3 NEEDS MORE WORK (give-back, timer, in-trade flow), 8 DEAD.
