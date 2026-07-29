@@ -1,6 +1,6 @@
 {
  "definitions": {
-  "WORKS": "survived out-of-sample WITH a noise floor run AND funded risk measured — all three",
+  "WORKS": "survived out-of-sample WITH a noise floor run AND funded risk measured \u2014 all three",
   "NEEDS MORE WORK": "promising but under-evidenced; the exact sample or data that would settle it is stated",
   "DEAD": "tested and failed; do not retest"
  },
@@ -9,21 +9,21 @@
    "id": "news",
    "name": "News filter (pre-open high-impact blackout)",
    "tag": "WORKS",
-   "tested": "Veto any NY pre-market entry that would be open going into a pre-open high-impact release. Not fitted — the calendar is published in advance, so it is knowable at fill by construction.",
+   "tested": "Veto any NY pre-market entry that would be open going into a pre-open high-impact release. Not fitted \u2014 the calendar is published in advance, so it is knowable at fill by construction.",
    "numbers": "+$2,984.75 sized on the working baseline; day-clustered 95% CI [+$894, +$4,970]; p=0.005. Kill test: the largest avoided trade is a WINNER (+$537) so removing it makes the delta larger (+$3,521.75); 0 of 23 single removals flip the sign. Calendar-shift placebo: real +$2,392.75 beats ALL TEN shifted calendars, which are mostly negative.",
-   "noise_floor": "Calendar-shift placebo, 10 shifts (±1..5 trading days). Real beats all ten. p=0.091 — the 1/11 floor, which cannot reach 0.05 by construction.",
-   "funded": "Naked bust 0.98% → 0.42%; max drawdown $1,721 → $1,569; min available DD $1,572 → $1,780; daily-limit breach days 0 → 0; 0.00% with the full spine.",
-   "caveats": "Decomposition: 92% of the benefit is avoided-trade P&L, 14% resizing, −6% new trades. CPI/PPI/NFP veto NOTHING (34 blackout days, 0 avoided trades). 8 of 9 release types rest on one or two trades. The second arm is a sensitivity check, not a replication (83% shared trades, same largest avoided trade, CI spans zero).",
+   "noise_floor": "Calendar-shift placebo, EXTENDED to 40 shifts (+/-1..20 trading days) after an independent audit flagged that the original 10-shift version was floor-limited at p=0.091 and could not reach 0.05 by construction. Real +$2,392.75 beats ALL 40; 0 match or beat it. <b>p = 0.0244</b>, which clears the 0.05 gate (the floor at this shift count is 0.0244). Placebo distribution min $-8,819, median $-2,813, max $1,331; only 6/40 placebos are positive at all, so this is not an artefact of 'trading less is safer'.",
+   "funded": "Naked bust 0.98% \u2192 0.42%; max drawdown $1,721 \u2192 $1,569; min available DD $1,572 \u2192 $1,780; daily-limit breach days 0 \u2192 0; 0.00% with the full spine.",
+   "caveats": "Decomposition: 92% of the benefit is avoided-trade P&L, 14% resizing, \u22126% new trades. CPI/PPI/NFP veto NOTHING (34 blackout days, 0 avoided trades). 8 of 9 release types rest on one or two trades. The second arm is a sensitivity check, not a replication (83% shared trades, same largest avoided trade, CI spans zero). Audit note: the WORKS tag was initially assigned on a floor-limited noise floor; independent extractors refused it, the placebo was re-run at higher resolution, and only then does the tag hold. The statistic, the real value and the gate were unchanged \u2014 only the number of placebos rose.",
    "settle": ""
   },
   {
    "id": "giveback",
    "name": "Give-back gap by segment (early vs late)",
    "tag": "NEEDS MORE WORK",
-   "tested": "Pre-registered: does conditional give-back — P(finished red | reached +1R) — differ by pre-market segment beyond chance? Fixed segments, no re-bucketing.",
-   "numbers": "32.4% early / 27.6% mid / 11.1% late. Primary statistic early−late = +21.2 percentage points. Day-clustered 95% CI [+2.0pp, +38.1pp], bootstrap p=0.034.",
-   "noise_floor": "2,000-draw day-block permutation of outcome labels: p=0.0850. Registered rule required p<0.05 AND a CI excluding zero — it got one of two.",
-   "funded": "Not measured — it is a descriptive asymmetry, not yet a rule, so there is nothing to size.",
+   "tested": "Pre-registered: does conditional give-back \u2014 P(finished red | reached +1R) \u2014 differ by pre-market segment beyond chance? Fixed segments, no re-bucketing.",
+   "numbers": "32.4% early / 27.6% mid / 11.1% late. Primary statistic early\u2212late = +21.2 percentage points. Day-clustered 95% CI [+2.0pp, +38.1pp], bootstrap p=0.034.",
+   "noise_floor": "2,000-draw day-block permutation of outcome labels: p=0.0850. Registered rule required p<0.05 AND a CI excluding zero \u2014 it got one of two.",
+   "funded": "Not measured \u2014 it is a descriptive asymmetry, not yet a rule, so there is nothing to size.",
    "caveats": "Reported INCONCLUSIVE exactly as the registration required, not reinterpreted as a near-miss.",
    "settle": "The late segment is the binding constraint: it needs ~28 +1R-reaching trades and has 18, a shortfall of 10. At the observed rate (0.124 such trades per trading day) that is ~80 further trading days, roughly 4 months, of live or shadow data."
   },
@@ -32,42 +32,42 @@
    "name": "N-minute timer exit (45 min)",
    "tag": "NEEDS MORE WORK",
    "tested": "Hold with the original stop live; if not stopped, close at market at the close of bar N. No trailing at any point.",
-   "numbers": "PM P&L +$29,598 at 45m vs canon +$21,098. Grid: +$21,485 / +$29,598 / +$29,026 / +$17,630 at 30/45/60/90 — a hump, NOT a plateau, falling BELOW canon at 90m; spread is 49% of the level. Money is concentrated: 2026 +$7,693 of +$8,500; OOS +$9,075 vs IS −$575; late segment +$5,736 on 29 trades.",
+   "numbers": "PM P&L +$29,598 at 45m vs canon +$21,098. Grid: +$21,485 / +$29,598 / +$29,026 / +$17,630 at 30/45/60/90 \u2014 a hump, NOT a plateau, falling BELOW canon at 90m; spread is 49% of the level. Money is concentrated: 2026 +$7,693 of +$8,500; OOS +$9,075 vs IS \u2212$575; late segment +$5,736 on 29 trades.",
    "noise_floor": "None that can validate it. It was found POST-HOC after the pre-registered select-on-IS procedure rejected it, and 15 of 68 sweep configurations flip negative-to-positive by chance.",
-   "funded": "Measured, and it is worse: naked bust 0.40% → 2.02% at 45m (5×) and 10.66% at 90m (27×); max drawdown $1,569 → $1,637 (45m) and $2,441 (90m); daily-limit breach days 0 → 1 (45m) and 2 (90m). Takes a full 1R on 55% of trades with no trailing. 0.00% with the full spine.",
-   "caveats": "Raises expectancy AND raises bust probability — on the stated rule that combination is worse, not better, on the naked account.",
+   "funded": "Measured, and it is worse: naked bust 0.40% \u2192 2.02% at 45m (5\u00d7) and 10.66% at 90m (27\u00d7); max drawdown $1,569 \u2192 $1,637 (45m) and $2,441 (90m); daily-limit breach days 0 \u2192 1 (45m) and 2 (90m). Takes a full 1R on 55% of trades with no trailing. 0.00% with the full spine.",
+   "caveats": "Raises expectancy AND raises bust probability \u2014 on the stated rule that combination is worse, not better, on the naked account.",
    "settle": "Forward evidence only. The Part-4 shadow harness logs it in parallel every session; the forward-only slice is currently EMPTY. Nothing in the existing book can confirm it because the regime boundary is in the wrong place and there is only one of them."
   },
   {
    "id": "h1",
-   "name": "H1 — flat R targets (1.5R–4R)",
+   "name": "H1 \u2014 flat R targets (1.5R\u20134R)",
    "tag": "DEAD",
    "tested": "Replace the canon's management with a fixed R target, walk-forward, funded sizing.",
-   "numbers": "Every target loses to canon out-of-sample. Best cell (4R) $11,771 vs incumbent $15,670; bust 23.04% vs 2.92%; drop-5 worse in every cell. Re-confirmed on the current book: target 1.0R −$12,974 OOS, 2.0R −$8,825, 4.0R −$3,826.",
-   "noise_floor": "Walk-forward, expanding monthly — picked 4R every month and still lost.",
-   "funded": "Yes — bust 23.04% vs 2.92%.",
+   "numbers": "Every target loses to canon out-of-sample. Best cell (4R) $11,771 vs incumbent $15,670; bust 23.04% vs 2.92%; drop-5 worse in every cell. Re-confirmed on the current book: target 1.0R \u2212$12,974 OOS, 2.0R \u2212$8,825, 4.0R \u2212$3,826.",
+   "noise_floor": "Walk-forward, expanding monthly \u2014 picked 4R every month and still lost.",
+   "funded": "Yes \u2014 bust 23.04% vs 2.92%.",
    "caveats": "This reverses the earlier leaky-book RR sweep, which is on the dead-numbers list.",
    "settle": ""
   },
   {
    "id": "h4",
-   "name": "H4 — bar-close MAE cuts (0.6R–0.9R)",
+   "name": "H4 \u2014 bar-close MAE cuts (0.6R\u20130.9R)",
    "tag": "DEAD",
-   "tested": "Exit at the first bar close whose adverse excursion exceeds θ·R, strictly before the canon exit bar.",
-   "numbers": "Registered falsifier fired exactly as predicted: winner close-MAE max is 0.704R in-sample but 0.912R out-of-sample, so every θ cuts at least one winner. Best cell $17,090 < incumbent $18,376; drop-5 also worse.",
-   "noise_floor": "Pre-registered falsifier, fired.",
-   "funded": "Yes — evaluated under funded sizing.",
+   "tested": "Exit at the first bar close whose adverse excursion exceeds \u03b8\u00b7R, strictly before the canon exit bar.",
+   "numbers": "Registered falsifier fired exactly as predicted: winner close-MAE max is 0.704R in-sample but 0.912R out-of-sample, so every \u03b8 cuts at least one winner. Best cell $17,090 < incumbent $18,376; drop-5 also worse.",
+   "noise_floor": "Pre-registered falsifier, fired. [audit note: no permutation null was run for this hypothesis. It was not required \u2014 the hypothesis failed on the direct funded-dollar measure in both halves, which a noise floor cannot rescue.]",
+   "funded": "Yes \u2014 evaluated under funded sizing.",
    "caveats": "",
    "settle": ""
   },
   {
    "id": "h2",
-   "name": "H2 — day-type bias gate (skip against bias)",
+   "name": "H2 \u2014 day-type bias gate (skip against bias)",
    "tag": "DEAD",
    "tested": "Skip trades taken against the day-type bias derived from the committed volume-profile artefact.",
    "numbers": "Raises mean R (+0.523 vs +0.370) but LOSES funded dollars in BOTH halves: 2025 $2,593 vs $3,691; 2026 $14,427 vs $14,685. A composition effect, not a gate.",
-   "noise_floor": "Alignment counts verified against the independent lane (no_bias 105 / with 61 / against 50).",
-   "funded": "Yes — it is the funded-dollar result that kills it.",
+   "noise_floor": "Alignment counts verified against the independent lane (no_bias 105 / with 61 / against 50). [audit note: no permutation null was run for this hypothesis. It was not required \u2014 the hypothesis failed on the direct funded-dollar measure in both halves, which a noise floor cannot rescue.]",
+   "funded": "Yes \u2014 it is the funded-dollar result that kills it.",
    "caveats": "Mean R improving while dollars fall is the signature of dropping small winners.",
    "settle": ""
   },
@@ -76,8 +76,8 @@
    "name": "Breakeven stop moved at +1R",
    "tag": "DEAD",
    "tested": "Move the stop to entry once +1R is touched; frictionless, active from the bar after the touch.",
-   "numbers": "59 of 108 IS trades touch +1R; 27 would be stopped at breakeven. Their actual outcomes sum to +$1,139.75 (mean R +0.014) — 20 losses saved (−$3,110) against 7 winners forgone (+$4,249), including one +4R reacher.",
-   "noise_floor": "Not required — the effect is a wash before any inference.",
+   "numbers": "59 of 108 IS trades touch +1R; 27 would be stopped at breakeven. Their actual outcomes sum to +$1,139.75 (mean R +0.014) \u2014 20 losses saved (\u2212$3,110) against 7 winners forgone (+$4,249), including one +4R reacher.",
+   "noise_floor": "Not required \u2014 the effect is a wash before any inference. [audit note: no permutation null was run for this hypothesis. It was not required \u2014 the hypothesis failed on the direct funded-dollar measure in both halves, which a noise floor cannot rescue.]",
    "funded": "Not needed; a wash at 1 lot cannot improve funded dollars.",
    "caveats": "",
    "settle": ""
@@ -85,79 +85,79 @@
   {
    "id": "sweep",
    "name": "68-configuration exit/management sweep",
-   "tested": "17 management rules × 4 time-of-day scopes, selected on the in-sample half and judged out-of-sample.",
+   "tested": "17 management rules \u00d7 4 time-of-day scopes, selected on the in-sample half and judged out-of-sample.",
    "tag": "DEAD",
-   "numbers": "IS-selected rule (target 4.0R, all trades) gained +$4,273 in-sample and lost −$3,826 out-of-sample. Only 18 of 68 beat canon OOS — fewer than a coin flip.",
-   "noise_floor": "Best-of-68 selection null over 500 day-block-permuted splits: picking the best of 68 on ANY random half yields a median +$6,006 IS by construction (the real +$4,273 is BELOW that, 21st percentile) and shrinks to a median −$1,045 OOS. Real OOS sits at the 21st percentile against a >95th gate.",
-   "funded": "Not reached — the selection failed first.",
-   "caveats": "Median in-sample-to-out-of-sample shrinkage is −$7,050. That is the measured price of sweeping on this book.",
+   "numbers": "IS-selected rule (target 4.0R, all trades) gained +$4,273 in-sample and lost \u2212$3,826 out-of-sample. Only 18 of 68 beat canon OOS \u2014 fewer than a coin flip.",
+   "noise_floor": "Best-of-68 selection null over 500 day-block-permuted splits: picking the best of 68 on ANY random half yields a median +$6,006 IS by construction (the real +$4,273 is BELOW that, 21st percentile) and shrinks to a median \u2212$1,045 OOS. Real OOS sits at the 21st percentile against a >95th gate.",
+   "funded": "Not reached \u2014 the selection failed first.",
+   "caveats": "Median in-sample-to-out-of-sample shrinkage is \u2212$7,050. That is the measured price of sweeping on this book.",
    "settle": ""
   },
   {
    "id": "q1",
-   "name": "Q1 — entry order flow (11 features)",
+   "name": "Q1 \u2014 entry order flow (11 features)",
    "tag": "DEAD",
    "tested": "Does strictly pre-fill entry order flow separate the trades that pay? The honest re-test of conf_PM, which was itself an order-flow entry-conviction signal and was the leak.",
-   "numbers": "Best out-of-sample |ρ| = 0.093. NO feature survives family-wise correction (M_eff 8.00 of 11 nominal, per-test α 0.0064). Every tercile-transfer CI spans zero.",
-   "noise_floor": "Day-block permutation plus family-wise Šidák on the effective test count.",
-   "funded": "Not reached — no rule was produced to size.",
+   "numbers": "Best out-of-sample |\u03c1| = 0.093. NO feature survives family-wise correction (M_eff 8.00 of 11 nominal, per-test \u03b1 0.0064). Every tercile-transfer CI spans zero.",
+   "noise_floor": "Day-block permutation plus family-wise \u0160id\u00e1k on the effective test count.",
+   "funded": "Not reached \u2014 no rule was produced to size.",
    "caveats": "Direction-blind falsifier is effectively a tie: signed 0.0934 vs blind 0.0912, a margin of 0.0022.",
    "settle": ""
   },
   {
    "id": "q2",
-   "name": "Q2 — order flow beyond gap size",
+   "name": "Q2 \u2014 order flow beyond gap size",
    "tag": "DEAD",
-   "tested": "Does entry order flow add anything once |gap| — knowable at 08:00 with no tape at all — is already known?",
-   "numbers": "|gap| alone carries ρ +0.153 (p=0.036), LARGER than every order-flow feature tested. After rank-residualising on |gap|, NO feature survives family-wise correction.",
-   "noise_floor": "Day-clustered bootstrap plus family-wise correction on M_eff.",
+   "tested": "Does entry order flow add anything once |gap| \u2014 knowable at 08:00 with no tape at all \u2014 is already known?",
+   "numbers": "|gap| alone carries \u03c1 +0.153 (p=0.036), LARGER than every order-flow feature tested. After rank-residualising on |gap|, NO feature survives family-wise correction.",
+   "noise_floor": "Day-clustered bootstrap plus family-wise correction on M_eff. [audit note: the control here is family-wise Sidak correction on the effective number of independent tests (M_eff 8.00 of 11), not a permutation.]",
    "funded": "Not reached.",
-   "caveats": "The gap finding itself is registered separately (Amendment 5) and is non-monotone across terciles — that is a different, still-open question.",
+   "caveats": "The gap finding itself is registered separately (Amendment 5) and is non-monotone across terciles \u2014 that is a different, still-open question.",
    "settle": ""
   },
   {
    "id": "exitflow",
    "name": "In-trade order flow at a retrace (exit-side)",
-   "tag": "DEAD",
+   "tag": "NEEDS MORE WORK",
    "tested": "Pre-registered before scoring: at a 0.5R give-back from a +1R peak, does in-trade order flow distinguish a retrace that RESUMES from one that REVERSES?",
-   "numbers": "Every out-of-sample AUC sits on 0.5 (0.464–0.551); none survives. Base rate: 85% of retraces resume (60.2% when restricted to bars at or before the canon's own exit — the tradeable figure).",
+   "numbers": "Every out-of-sample AUC sits on 0.5 (0.464\u20130.551); none survives. Base rate: 85% of retraces resume (60.2% when restricted to bars at or before the canon's own exit \u2014 the tradeable figure).",
    "noise_floor": "Per-bar shift tests pass 20/20 buckets; trade-clustered bootstrap intervals.",
    "funded": "Not reached.",
-   "caveats": "Underpowered below |AUC−0.5| = 0.147 with only 17 reversals in the whole sample — absence of a result is not evidence of absence of an effect.",
-   "settle": ""
+   "caveats": "RE-TAGGED from DEAD after independent audit. It was never given a fair test: with only 17 reversals in the whole sample the design cannot detect anything below |AUC-0.5| = 0.147, so a null here is uninformative rather than a refutation. The control run was a per-bar shift test (20/20 pass) plus trade-clustered intervals \u2014 NOT a permutation noise floor.",
+   "settle": "Reversal events are the binding constraint: 17 exist across 113 retrace events. Detecting a realistic |AUC-0.5| of ~0.08 needs roughly 4x the reversal count, i.e. ~60-70 reversals, which at the observed 15% reversal rate means ~450 retrace events against the 113 available \u2014 on the order of 3-4 more years of book, or a pooled test across London and the golden window."
   },
   {
    "id": "confluence",
    "name": "Confluence composite (13 features, ridge, daily walk-forward)",
    "tag": "DEAD",
    "tested": "Rank-normalised weighted composite, weights by ridge against realised R, penalty chosen inside each fold, expanding-window daily refit.",
-   "numbers": "Real ρ +0.0645 over 142 out-of-sample predictions. Sits at the 92.70th percentile of 2,000 day-block-shuffled runs against a registered >99th-percentile gate.",
+   "numbers": "Real \u03c1 +0.0645 over 142 out-of-sample predictions. Sits at the 92.70th percentile of 2,000 day-block-shuffled runs against a registered >99th-percentile gate.",
    "noise_floor": "2,000 shuffles of the identical end-to-end pipeline. p99 = +0.1453.",
    "funded": "Conviction sizing part 2 was GATED on the composite clearing the floor and was correctly NOT RUN.",
-   "caveats": "Falsifier (b) fires — the composite loses to its own best component, cvd_15 at +0.0658. Falsifier (c) fires — random weights on the same pool reach p95 +0.1374, and the fitted composite sits at only the 74.6th percentile of random draws.",
+   "caveats": "Falsifier (b) fires \u2014 the composite loses to its own best component, cvd_15 at +0.0658. Falsifier (c) fires \u2014 random weights on the same pool reach p95 +0.1374, and the fitted composite sits at only the 74.6th percentile of random draws.",
    "settle": ""
   }
  ],
  "dead_numbers": [
   {
-   "n": "+$35,980 — the trail-0.5R-from-1.5R sweep (214 trades, 51.4% WR)",
-   "why": "Computed on the SUPERSEDED LEAKY book at 1 lot in R-space. Re-run on a remediated book with funded sizing and walk-forward, every fixed target 1.5R–4R loses to the canon's own management. Never quote it as a live result."
+   "n": "+$35,980 \u2014 the trail-0.5R-from-1.5R sweep (214 trades, 51.4% WR)",
+   "why": "Computed on the SUPERSEDED LEAKY book at 1 lot in R-space. Re-run on a remediated book with funded sizing and walk-forward, every fixed target 1.5R\u20134R loses to the canon's own management. Never quote it as a live result."
   },
   {
-   "n": "~$23k — the conf_PM leak, quoted alone",
+   "n": "~$23k \u2014 the conf_PM leak, quoted alone",
    "why": "That is a WHOLE-BOOK MECHANICAL figure. The pre-market portion is about $17k mechanical and about $3k sized. Quoting $23k as a pre-market or funded number overstates it several times over."
   },
   {
-   "n": "85% — retraces that resume",
+   "n": "85% \u2014 retraces that resume",
    "why": "Counts resumes anywhere in trade life, including after the canon had already closed the position. The TRADEABLE figure is 60.2%. Use that one."
   },
   {
    "n": "+$18,376 vs +$21,098 quoted as an improvement",
-   "why": "Different windows. The certified book starts 2025-06-02; the working baseline starts 2025-07-01. The like-for-like comparison is +$18,113 → +$21,098, and the difference is the news filter alone."
+   "why": "Different windows. The certified book starts 2025-06-02; the working baseline starts 2025-07-01. The like-for-like comparison is +$18,113 \u2192 +$21,098, and the difference is the news filter alone."
   },
   {
-   "n": "“The leaky arm independently replicates the news filter”",
-   "why": "It does not. The two arms share 83% of trades, veto the same days, and have the SAME largest avoided trade. The leaky arm's CI [−$294, +$3,925] spans zero. It is a sensitivity check."
+   "n": "\u201cThe leaky arm independently replicates the news filter\u201d",
+   "why": "It does not. The two arms share 83% of trades, veto the same days, and have the SAME largest avoided trade. The leaky arm's CI [\u2212$294, +$3,925] spans zero. It is a sensitivity check."
   }
  ]
 }

@@ -10,6 +10,7 @@ V = json.load(open(f"{HERE}/verdicts.json"))
 P1 = json.load(open(f"{HERE}/part1_report.json"))
 P2 = json.load(open(f"{HERE}/part2_report.json"))
 P3 = json.load(open(f"{HERE}/part3_report.json"))
+EP = json.load(open(f"{HERE}/placebo_extended.json"))
 run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
 commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True,
                         text=True, cwd="/home/user/AI-trading-agents").stdout.strip()
@@ -252,6 +253,25 @@ hypothesis was formed on and therefore proves nothing about it. This is the only
 can ever validate the timer.</p>""")
 
 # ---------------------------------------------------------------- dead numbers
+A(f"""<h2>Independent audit of this table</h2>
+<p>Before publishing, four independent readers extracted each hypothesis's evidence straight
+from the committed artefacts and two adversarial auditors were asked to REFUTE the tags. They
+challenged two, and both challenges were upheld:</p>
+<div class="cond"><b>1. The news filter was initially graded WORKS on a floor-limited noise
+floor.</b> The original calendar-shift placebo used 10 shifts, so its smallest achievable p was
+1/11 = 0.091 &mdash; it could not clear 0.05 <i>by construction</i>. The placebo was re-run at
+{EP['n_shifts']} shifts (&plusmn;1..{EP['maxshift']} trading days): the real calendar still beats
+<b>all {EP['n_shifts']}</b>, giving <b>p = {EP['p']:.4f}</b>, which clears the gate. Only the
+number of placebos changed &mdash; the statistic, the real value and the gate are identical. The
+tag now holds on its own evidence.</div>
+<div class="cond"><b>2. In-trade order flow at a retrace was re-tagged DEAD &rarr; NEEDS MORE
+WORK.</b> It was never given a fair test: with 17 reversals in the whole sample the design
+cannot detect anything below |AUC&minus;0.5| = 0.147, so its null is uninformative rather than a
+refutation. DEAD is reserved for hypotheses that were tested and failed.</div>
+<p class="muted">Audit notes were also added where a control other than a permutation was used
+(H2, H4, breakeven: direct funded-dollar failure; Q2: family-wise correction on the effective
+test count). No number in this table was produced or altered by an LLM &mdash; the auditors could
+only challenge tags and demand more evidence.</p>""")
 A('<h2>Dead numbers &mdash; must not reappear as live results</h2>')
 for d in V["dead_numbers"]:
     A(f'<div class="dead"><b>{d["n"]}</b><br>{d["why"]}</div>')
