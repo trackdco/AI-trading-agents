@@ -381,3 +381,35 @@ Second upheld challenge: in-trade flow at retrace re-tagged DEAD -> NEEDS MORE W
 reversals it cannot detect below |AUC-0.5|=0.147, so its null is uninformative, and DEAD is
 reserved for things actually tested and failed.
 FINAL: 1 WORKS (news filter), 3 NEEDS MORE WORK (give-back, timer, in-trade flow), 8 DEAD.
+
+## 2026-07-29 · ADVERSARIAL AUDIT — three of my own claims corrected, all re-verified first
+Two adversarial auditors finished after I had already published the verdict table. They
+challenged 7 and 5 tags respectively. I re-verified every load-bearing claim against the
+artefacts before accepting any of it; three were CONFIRMED and are corrections to what I had
+told Brake directly.
+1. THE GAP RHO WAS NOT OUT-OF-SAMPLE. I reported "|gap| carries rho +0.153 out-of-sample,
+larger than every order-flow feature" repeatedly. part1b_score_q1q2.py computes it on
+ok = np.isfinite(g) — ALL gap-finite trades, no OOS mask (the partial-correlation block below
+DOES use oos & ok, which is what misled me). Verified: pooled +0.1529 (n=175), OOS-only +0.1231
+(n=86), IS-only +0.0805 (n=89). The ORDERING claim survives (OOS +0.123 > best order-flow 0.093)
+but the basis was wrong and the effect is weaker. Corrected everywhere.
+2. THE 45-MINUTE TIMER IS THE ARGMAX OF THE TEST HALF. exit_sweep_table.csv: time45/all is
+IS rank 54/68 (-$575) and OOS rank 1/68 (+$9,075). ALL EIGHT top-OOS configs are negative
+in-sample. Its entire evidence is a max-of-68 pick on the half that is supposed to be the test —
+the identical selection error that killed the sweep, run backwards. I had flagged it post-hoc
+but never reported the rank, which is the damning fact. RE-TAGGED NEEDS MORE WORK -> DEAD.
+The selection-free part (Part 1: canon captures 7-23% of available excursion, nothing chosen or
+fitted) is now split out as its own NEEDS MORE WORK row, which is where it belongs.
+3. IN-TRADE FLOW AT RETRACE: DEAD -> NEEDS MORE WORK -> DEAD. The auditors split. My own
+definition decides it: NEEDS MORE WORK requires something PROMISING and all five OOS AUCs
+straddle 0.5. Recorded as a null WITH a stated blind spot (|AUC-0.5| < 0.147 undetectable at 17
+reversals), not a strong refutation. I had over-corrected on the first audit pass.
+Also applied: give-back's post-hoc status (registration froze the statistic and the rule but NOT
+the data — the confirmatory run re-used the same 182 trades that produced the observation);
+confluence pool contains gap_abs so it is not a pure order-flow pool, struct runs n=176;
+the headline-print clause of the news decomposition is DEFINITIVELY dead (34 blackout days, 0
+avoided trades) rather than merely unevidenced.
+Rejected one auditor claim after checking: the H4 "apples-to-oranges" charge applies to the
+extractor's summary, not to my table — my H4 row compares funded_all 17,090.5 to incumbent_all
+18,376.0, both n=216, which is like-for-like.
+FINAL: 1 WORKS, 2 NEEDS MORE WORK, 10 DEAD.

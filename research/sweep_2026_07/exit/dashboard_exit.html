@@ -62,8 +62,8 @@ border-radius:9px;padding:12px 14px}
 </style>
 <div class="wrap">
 <h1>Exit-timing study &mdash; verdict table</h1>
-<div class="sub">Every hypothesis this project has tested &middot; 20260729T075102Z &middot; commit
-<code>93eaca5</code></div>
+<div class="sub">Every hypothesis this project has tested &middot; 20260729T075534Z &middot; commit
+<code>075d1ba</code></div>
 
 <div class="cond"><b>STANDING CONDITIONS.</b> Book is <b>partially remediated (C only)</b> &mdash;
 the <code>W</code> check and the whole <code>dep_*</code> family failed the Phase-0 lookahead
@@ -77,10 +77,10 @@ path are untouched.</div>
 <div class="v" style="color:var(--ok)">1</div>
 <div class="muted" style="font-size:12px">survived OOS + noise floor + funded risk</div></div>
 <div class="cbox"><div class="muted" style="font-size:11px;text-transform:uppercase">Needs more work</div>
-<div class="v" style="color:var(--warn)">3</div>
+<div class="v" style="color:var(--warn)">2</div>
 <div class="muted" style="font-size:12px">under-evidenced; settling condition stated</div></div>
 <div class="cbox"><div class="muted" style="font-size:11px;text-transform:uppercase">Dead</div>
-<div class="v" style="color:var(--bad)">8</div>
+<div class="v" style="color:var(--bad)">10</div>
 <div class="muted" style="font-size:12px">tested and failed; do not retest</div></div>
 </div>
 <p class="muted"><b>Definitions applied strictly.</b> WORKS = survived out-of-sample WITH a noise floor run AND funded risk measured — all three.
@@ -93,7 +93,7 @@ NEEDS MORE WORK = promising but under-evidenced; the exact sample or data that w
 <div class="kv"><span class="k">Numbers</span> +$2,984.75 sized on the working baseline; day-clustered 95% CI [+$894, +$4,970]; p=0.005. Kill test: the largest avoided trade is a WINNER (+$537) so removing it makes the delta larger (+$3,521.75); 0 of 23 single removals flip the sign. Calendar-shift placebo: real +$2,392.75 beats ALL TEN shifted calendars, which are mostly negative.</div>
 <div class="kv"><span class="k">Noise floor</span> Calendar-shift placebo, EXTENDED to 40 shifts (+/-1..20 trading days) after an independent audit flagged that the original 10-shift version was floor-limited at p=0.091 and could not reach 0.05 by construction. Real +$2,392.75 beats ALL 40; 0 match or beat it. <b>p = 0.0244</b>, which clears the 0.05 gate (the floor at this shift count is 0.0244). Placebo distribution min $-8,819, median $-2,813, max $1,331; only 6/40 placebos are positive at all, so this is not an artefact of 'trading less is safer'.</div>
 <div class="kv"><span class="k">Funded risk</span> Naked bust 0.98% → 0.42%; max drawdown $1,721 → $1,569; min available DD $1,572 → $1,780; daily-limit breach days 0 → 0; 0.00% with the full spine.</div>
-<div class="kv"><span class="k">Caveats</span> Decomposition: 92% of the benefit is avoided-trade P&L, 14% resizing, −6% new trades. CPI/PPI/NFP veto NOTHING (34 blackout days, 0 avoided trades). 8 of 9 release types rest on one or two trades. The second arm is a sensitivity check, not a replication (83% shared trades, same largest avoided trade, CI spans zero). Audit note: the WORKS tag was initially assigned on a floor-limited noise floor; independent extractors refused it, the placebo was re-run at higher resolution, and only then does the tag hold. The statistic, the real value and the gate were unchanged — only the number of placebos rose.</div>
+<div class="kv"><span class="k">Caveats</span> Decomposition: 92% of the benefit is avoided-trade P&L, 14% resizing, −6% new trades. CPI/PPI/NFP veto NOTHING (34 blackout days, 0 avoided trades). 8 of 9 release types rest on one or two trades. The second arm is a sensitivity check, not a replication (83% shared trades, same largest avoided trade, CI spans zero). Audit note: the WORKS tag was initially assigned on a floor-limited noise floor; independent extractors refused it, the placebo was re-run at higher resolution, and only then does the tag hold. The statistic, the real value and the gate were unchanged — only the number of placebos rose. Audit split: the sub-claim that headline prints drive the benefit is DEFINITIVELY DEAD, not merely unevidenced — CPI/PPI/NFP account for 34 blackout days and ZERO avoided trades. Per-type attribution is un-evidenced and no realistic sample fixes it.</div>
 </div></div>
 <div class="vrow warn">
 <div class="vhead"><span class="vname">Give-back gap by segment (early vs late)</span>
@@ -103,30 +103,30 @@ NEEDS MORE WORK = promising but under-evidenced; the exact sample or data that w
 <div class="kv"><span class="k">Numbers</span> 32.4% early / 27.6% mid / 11.1% late. Primary statistic early−late = +21.2 percentage points. Day-clustered 95% CI [+2.0pp, +38.1pp], bootstrap p=0.034.</div>
 <div class="kv"><span class="k">Noise floor</span> 2,000-draw day-block permutation of outcome labels: p=0.0850. Registered rule required p<0.05 AND a CI excluding zero — it got one of two.</div>
 <div class="kv"><span class="k">Funded risk</span> Not measured — it is a descriptive asymmetry, not yet a rule, so there is nothing to size.</div>
-<div class="kv"><span class="k">Caveats</span> Reported INCONCLUSIVE exactly as the registration required, not reinterpreted as a near-miss.</div>
+<div class="kv"><span class="k">Caveats</span> Reported INCONCLUSIVE exactly as registered. <b>Post-hoc status, added after audit:</b> the effect was first seen descriptively on these same 182 trades, and the confirmatory test then re-used them. The registration froze the statistic and the decision rule, but NOT the data — so this is a same-sample confirmation, which is weaker than a clean pre-registration and is part of why the permutation p sits at 0.085.</div>
 <div class="kv"><span class="k">To settle</span> <b>The late segment is the binding constraint: it needs ~28 +1R-reaching trades and has 18, a shortfall of 10. At the observed rate (0.124 such trades per trading day) that is ~80 further trading days, roughly 4 months, of live or shadow data.</b></div>
 </div></div>
 <div class="vrow warn">
-<div class="vhead"><span class="vname">N-minute timer exit (45 min)</span>
+<div class="vhead"><span class="vname">Premise: the canon exits winners too early</span>
 <span class="pill warn">NEEDS MORE WORK</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Descriptive, selection-free: realised R at the canon's exit against ALIVE maximum favourable excursion (clipped at the stop bar) at 15/30/45/60 minutes and full life.</div>
+<div class="kv"><span class="k">Numbers</span> Median capture ratio 0.23 at 15 min falling to 0.07 over full trade life; only 4-28% of trades capture >=80% of what was available. Trades reaching +1R (n=115) realise +1.449 against a 60-minute alive-MFE of +4.837. Gap rises monotonically with horizon and is largest late (gap@60 +4.512).</div>
+<div class="kv"><span class="k">Noise floor</span> Not applicable and not needed — nothing is selected, fitted or chosen here. This is a measurement of the incumbent, not a candidate rule.</div>
+<div class="kv"><span class="k">Funded risk</span> Not applicable — no rule is proposed.</div>
+<div class="kv"><span class="k">Caveats</span> This is the ONE part of the exit work that carries no selection error. It says a capture problem exists; it does NOT say any particular rule fixes it. Every specific rule tried so far (flat targets, MAE cuts, breakeven, trails, timers) is DEAD.</div>
+<div class="kv"><span class="k">To settle</span> <b>A hold-longer rule pre-registered BEFORE seeing its own result, with a fixed horizon chosen on the premise rather than on outcomes, evaluated on data after 2026-07-10 via the shadow harness, with the full funded-risk suite attached.</b></div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">45-minute timer exit — the specific rule</span>
+<span class="pill bad">DEAD</span></div>
 <div class="vbody">
 <div class="kv"><span class="k">Tested</span> Hold with the original stop live; if not stopped, close at market at the close of bar N. No trailing at any point.</div>
-<div class="kv"><span class="k">Numbers</span> PM P&L +$29,598 at 45m vs canon +$21,098. Grid: +$21,485 / +$29,598 / +$29,026 / +$17,630 at 30/45/60/90 — a hump, NOT a plateau, falling BELOW canon at 90m; spread is 49% of the level. Money is concentrated: 2026 +$7,693 of +$8,500; OOS +$9,075 vs IS −$575; late segment +$5,736 on 29 trades.</div>
-<div class="kv"><span class="k">Noise floor</span> None that can validate it. It was found POST-HOC after the pre-registered select-on-IS procedure rejected it, and 15 of 68 sweep configurations flip negative-to-positive by chance.</div>
+<div class="kv"><span class="k">Numbers</span> <b>It is the argmax of the test half.</b> Verified from exit_sweep_table.csv: time45/all ranks <b>1 of 68 by out-of-sample</b> P&L (+$9,075) and <b>54 of 68 by in-sample</b> (-$575). All eight of the top-8-by-OOS configurations are NEGATIVE in-sample. Its +$9,075 is a max-of-68 pick on the very half that is supposed to be the test — the same selection error, run in the opposite direction, that killed the sweep. Grid shape is a hump (+$21,485/+$29,598/+$29,026/+$17,630 at 30/45/60/90), below canon at 90m.</div>
+<div class="kv"><span class="k">Noise floor</span> None, and none is possible on this book: the pre-registered select-on-IS procedure REJECTED it (IS rank 54/68), and its only favourable number comes from maximising over the test half.</div>
 <div class="kv"><span class="k">Funded risk</span> Measured, and it is worse: naked bust 0.40% → 2.02% at 45m (5×) and 10.66% at 90m (27×); max drawdown $1,569 → $1,637 (45m) and $2,441 (90m); daily-limit breach days 0 → 1 (45m) and 2 (90m). Takes a full 1R on 55% of trades with no trailing. 0.00% with the full spine.</div>
-<div class="kv"><span class="k">Caveats</span> Raises expectancy AND raises bust probability — on the stated rule that combination is worse, not better, on the naked account.</div>
-<div class="kv"><span class="k">To settle</span> <b>Forward evidence only. The Part-4 shadow harness logs it in parallel every session; the forward-only slice is currently EMPTY. Nothing in the existing book can confirm it because the regime boundary is in the wrong place and there is only one of them.</b></div>
-</div></div>
-<div class="vrow warn">
-<div class="vhead"><span class="vname">In-trade order flow at a retrace (exit-side)</span>
-<span class="pill warn">NEEDS MORE WORK</span></div>
-<div class="vbody">
-<div class="kv"><span class="k">Tested</span> Pre-registered before scoring: at a 0.5R give-back from a +1R peak, does in-trade order flow distinguish a retrace that RESUMES from one that REVERSES?</div>
-<div class="kv"><span class="k">Numbers</span> Every out-of-sample AUC sits on 0.5 (0.464–0.551); none survives. Base rate: 85% of retraces resume (60.2% when restricted to bars at or before the canon's own exit — the tradeable figure).</div>
-<div class="kv"><span class="k">Noise floor</span> Per-bar shift tests pass 20/20 buckets; trade-clustered bootstrap intervals.</div>
-<div class="kv"><span class="k">Funded risk</span> Not reached.</div>
-<div class="kv"><span class="k">Caveats</span> RE-TAGGED from DEAD after independent audit. It was never given a fair test: with only 17 reversals in the whole sample the design cannot detect anything below |AUC-0.5| = 0.147, so a null here is uninformative rather than a refutation. The control run was a per-bar shift test (20/20 pass) plus trade-clustered intervals — NOT a permutation noise floor.</div>
-<div class="kv"><span class="k">To settle</span> <b>Reversal events are the binding constraint: 17 exist across 113 retrace events. Detecting a realistic |AUC-0.5| of ~0.08 needs roughly 4x the reversal count, i.e. ~60-70 reversals, which at the observed 15% reversal rate means ~450 retrace events against the 113 available — on the order of 3-4 more years of book, or a pooled test across London and the golden window.</b></div>
+<div class="kv"><span class="k">Caveats</span> RE-TAGGED from NEEDS MORE WORK to DEAD after an adversarial audit surfaced the rank-1-of-68-by-OOS fact, which I had not reported. Funded risk is also worse: naked bust 0.40% -> 2.02% at 45m and 10.66% at 90m; full 1R on 55% of trades with no trailing.</div>
+<div class="kv"><span class="k">To settle</span> <b>Nothing on this book can rehabilitate it. The Part-4 shadow harness logs it forward purely so a future, genuinely out-of-sample record exists; the forward slice is EMPTY today and the rule carries no evidential weight until it is not.</b></div>
 </div></div>
 <div class="vrow bad">
 <div class="vhead"><span class="vname">H1 — flat R targets (1.5R–4R)</span>
@@ -191,10 +191,21 @@ NEEDS MORE WORK = promising but under-evidenced; the exact sample or data that w
 <span class="pill bad">DEAD</span></div>
 <div class="vbody">
 <div class="kv"><span class="k">Tested</span> Does entry order flow add anything once |gap| — knowable at 08:00 with no tape at all — is already known?</div>
-<div class="kv"><span class="k">Numbers</span> |gap| alone carries ρ +0.153 (p=0.036), LARGER than every order-flow feature tested. After rank-residualising on |gap|, NO feature survives family-wise correction.</div>
+<div class="kv"><span class="k">Numbers</span> Order flow adds nothing once |gap| is known: after rank-residualising on |gap|, NO feature survives family-wise correction. <b>CORRECTION:</b> the gap correlation itself was reported by me as out-of-sample; it is not. Verified from part1_features.csv: <b>pooled rho +0.153 (n=175)</b>, <b>OOS-only +0.123 (n=86)</b>, IS-only +0.081 (n=89). The ordering claim survives — OOS +0.123 still exceeds the best order-flow |rho| of 0.093 — but it is weaker than I stated and the basis was wrong.</div>
 <div class="kv"><span class="k">Noise floor</span> Day-clustered bootstrap plus family-wise correction on M_eff. [audit note: the control here is family-wise Sidak correction on the effective number of independent tests (M_eff 8.00 of 11), not a permutation.]</div>
 <div class="kv"><span class="k">Funded risk</span> Not reached.</div>
-<div class="kv"><span class="k">Caveats</span> The gap finding itself is registered separately (Amendment 5) and is non-monotone across terciles — that is a different, still-open question.</div>
+<div class="kv"><span class="k">Caveats</span> The gap lane itself is SEPARATE and is NOT established: pooled +0.153 but OOS-only +0.123, non-monotone across terciles (small +0.117 / mid +1.642 / large +0.819 mean R), and NO noise floor has ever been run on it. Registered as Amendment 5 for a future round; it is a candidate, not a finding.</div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">In-trade order flow at a retrace (exit-side)</span>
+<span class="pill bad">DEAD</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Pre-registered before scoring: at a 0.5R give-back from a +1R peak, does in-trade order flow distinguish a retrace that RESUMES from one that REVERSES?</div>
+<div class="kv"><span class="k">Numbers</span> Every out-of-sample AUC sits on 0.5 (0.464–0.551); none survives. Base rate: 85% of retraces resume (60.2% when restricted to bars at or before the canon's own exit — the tradeable figure).</div>
+<div class="kv"><span class="k">Noise floor</span> Per-bar shift tests pass 20/20 buckets; trade-clustered bootstrap intervals.</div>
+<div class="kv"><span class="k">Funded risk</span> Not reached.</div>
+<div class="kv"><span class="k">Caveats</span> Tag history, stated because it changed twice: I first tagged DEAD, re-tagged to NEEDS MORE WORK on an underpowering argument, then reverted to DEAD when the two auditors split and my own definition settled it — NEEDS MORE WORK requires something PROMISING, and all five out-of-sample AUCs straddle 0.5 (0.464-0.551). The only p<0.05 is in-sample and sits above its own per-test alpha of 0.0127. The control was a per-bar shift test (20/20 pass, though delta_div_roll passes only marginally at differ1 0.072-0.110 against a 0.05 floor) plus trade-clustered intervals — NOT a permutation noise floor.</div>
+<div class="kv"><span class="k">To settle</span> <b>Do not retest on this book. The power bound stands: with 17 reversals nothing below |AUC-0.5| = 0.147 is detectable, so this is a null WITH a stated blind spot, not a strong refutation.</b></div>
 </div></div>
 <div class="vrow bad">
 <div class="vhead"><span class="vname">Confluence composite (13 features, ridge, daily walk-forward)</span>
@@ -204,7 +215,7 @@ NEEDS MORE WORK = promising but under-evidenced; the exact sample or data that w
 <div class="kv"><span class="k">Numbers</span> Real ρ +0.0645 over 142 out-of-sample predictions. Sits at the 92.70th percentile of 2,000 day-block-shuffled runs against a registered >99th-percentile gate.</div>
 <div class="kv"><span class="k">Noise floor</span> 2,000 shuffles of the identical end-to-end pipeline. p99 = +0.1453.</div>
 <div class="kv"><span class="k">Funded risk</span> Conviction sizing part 2 was GATED on the composite clearing the floor and was correctly NOT RUN.</div>
-<div class="kv"><span class="k">Caveats</span> Falsifier (b) fires — the composite loses to its own best component, cvd_15 at +0.0658. Falsifier (c) fires — random weights on the same pool reach p95 +0.1374, and the fitted composite sits at only the 74.6th percentile of random draws.</div>
+<div class="kv"><span class="k">Caveats</span> Falsifier (b) fires — the composite loses to its own best component, cvd_15 at +0.0658. Falsifier (c) fires — random weights on the same pool reach p95 +0.1374, and the fitted composite sits at only the 74.6th percentile of random draws. Audit corrections: the 13-feature pool is order-flow plus entry-candle plus ONE non-flow feature (gap_abs), not a pure order-flow pool; and the conviction-state diagnostics run at n=182 except struct at n=176.</div>
 </div></div>
 <h2>Part 1 &mdash; is the canon exiting winners too early?</h2>
 <p>Descriptive only; no rule chosen, no threshold fitted. MFE is measured <b>ALIVE</b> &mdash;
@@ -326,10 +337,32 @@ tag now holds on its own evidence.</div>
 WORK.</b> It was never given a fair test: with 17 reversals in the whole sample the design
 cannot detect anything below |AUC&minus;0.5| = 0.147, so its null is uninformative rather than a
 refutation. DEAD is reserved for hypotheses that were tested and failed.</div>
-<p class="muted">Audit notes were also added where a control other than a permutation was used
-(H2, H4, breakeven: direct funded-dollar failure; Q2: family-wise correction on the effective
-test count). No number in this table was produced or altered by an LLM &mdash; the auditors could
-only challenge tags and demand more evidence.</p>
+<div class="dead"><b>3. The 45-minute timer was re-tagged NEEDS MORE WORK &rarr; DEAD.</b>
+An auditor surfaced a fact I had not reported: <code>time45/all</code> ranks <b>1 of 68 by
+out-of-sample</b> P&amp;L and <b>54 of 68 by in-sample</b>, and <b>all eight</b> top-OOS
+configurations are negative in-sample. Its +$9,075 is a max-of-68 pick on the test half &mdash;
+the same selection error that killed the sweep, run in the opposite direction. The selection-free
+part of the finding (Part 1: the canon captures 7&ndash;23% of available excursion) is now carried
+as its own separate row.</div>
+<div class="dead"><b>4. The gap correlation was NOT out-of-sample, and I reported it as if it
+were.</b> Verified from <code>part1_features.csv</code>: the &rho;&nbsp;+0.153 figure is
+<b>pooled across both halves</b> (n=175). Out-of-sample alone it is <b>+0.123</b> (n=86);
+in-sample +0.081. The ordering claim survives &mdash; +0.123 still exceeds the best order-flow
+|&rho;| of 0.093 &mdash; but the basis I gave was wrong and the effect is weaker than stated.</div>
+<div class="cond"><b>5. In-trade flow at a retrace went DEAD &rarr; NEEDS MORE WORK &rarr; DEAD.</b>
+The two auditors split. My own definition settles it: NEEDS MORE WORK requires something
+<i>promising</i>, and all five out-of-sample AUCs straddle 0.5. It is a null <b>with a stated
+blind spot</b> (nothing below |AUC&minus;0.5| = 0.147 is detectable at 17 reversals), not a
+strong refutation.</div>
+<p class="muted">Further audit corrections applied: give-back's post-hoc status (the confirmatory
+test re-used the same 182 trades that generated the observation); the confluence pool contains one
+non-flow feature (gap_abs) and struct runs at n=176; the headline-print clause of the news
+decomposition is definitively DEAD (34 blackout days, zero avoided trades). Notes were added
+wherever a control other than a permutation was used (H2, H4, breakeven: direct funded-dollar
+failure; Q2: family-wise correction on the effective test count). <b>No number in this table was
+produced or altered by an LLM</b> &mdash; auditors could only challenge tags and demand evidence,
+and every challenge above was independently re-verified against the artefacts before being
+accepted.</p>
 <h2>Dead numbers &mdash; must not reappear as live results</h2>
 <div class="dead"><b>+$35,980 — the trail-0.5R-from-1.5R sweep (214 trades, 51.4% WR)</b><br>Computed on the SUPERSEDED LEAKY book at 1 lot in R-space. Re-run on a remediated book with funded sizing and walk-forward, every fixed target 1.5R–4R loses to the canon's own management. Never quote it as a live result.</div>
 <div class="dead"><b>~$23k — the conf_PM leak, quoted alone</b><br>That is a WHOLE-BOOK MECHANICAL figure. The pre-market portion is about $17k mechanical and about $3k sized. Quoting $23k as a pre-market or funded number overstates it several times over.</div>
@@ -338,8 +371,8 @@ only challenge tags and demand more evidence.</p>
 <div class="dead"><b>“The leaky arm independently replicates the news filter”</b><br>It does not. The two arms share 83% of trades, veto the same days, and have the SAME largest avoided trade. The leaky arm's CI [−$294, +$3,925] spans zero. It is a sensitivity check.</div>
 <h2>Provenance</h2>
 <div class="prov">
-run_id &nbsp; 20260729T075102Z<br>
-commit &nbsp; 93eaca5<br>
+run_id &nbsp; 20260729T075534Z<br>
+commit &nbsp; 075d1ba<br>
 anchors &nbsp; certified book 216 / $+18,376.00 &middot; working baseline 182 / $+21,097.875
 &middot; both reproduced to the cent before any new number<br>
 book &nbsp; job2_books/sized_C_news &mdash; PARTIALLY REMEDIATED (C only); W and dep_* leaky<br>

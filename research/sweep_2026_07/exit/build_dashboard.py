@@ -268,10 +268,32 @@ tag now holds on its own evidence.</div>
 WORK.</b> It was never given a fair test: with 17 reversals in the whole sample the design
 cannot detect anything below |AUC&minus;0.5| = 0.147, so its null is uninformative rather than a
 refutation. DEAD is reserved for hypotheses that were tested and failed.</div>
-<p class="muted">Audit notes were also added where a control other than a permutation was used
-(H2, H4, breakeven: direct funded-dollar failure; Q2: family-wise correction on the effective
-test count). No number in this table was produced or altered by an LLM &mdash; the auditors could
-only challenge tags and demand more evidence.</p>""")
+<div class="dead"><b>3. The 45-minute timer was re-tagged NEEDS MORE WORK &rarr; DEAD.</b>
+An auditor surfaced a fact I had not reported: <code>time45/all</code> ranks <b>1 of 68 by
+out-of-sample</b> P&amp;L and <b>54 of 68 by in-sample</b>, and <b>all eight</b> top-OOS
+configurations are negative in-sample. Its +$9,075 is a max-of-68 pick on the test half &mdash;
+the same selection error that killed the sweep, run in the opposite direction. The selection-free
+part of the finding (Part 1: the canon captures 7&ndash;23% of available excursion) is now carried
+as its own separate row.</div>
+<div class="dead"><b>4. The gap correlation was NOT out-of-sample, and I reported it as if it
+were.</b> Verified from <code>part1_features.csv</code>: the &rho;&nbsp;+0.153 figure is
+<b>pooled across both halves</b> (n=175). Out-of-sample alone it is <b>+0.123</b> (n=86);
+in-sample +0.081. The ordering claim survives &mdash; +0.123 still exceeds the best order-flow
+|&rho;| of 0.093 &mdash; but the basis I gave was wrong and the effect is weaker than stated.</div>
+<div class="cond"><b>5. In-trade flow at a retrace went DEAD &rarr; NEEDS MORE WORK &rarr; DEAD.</b>
+The two auditors split. My own definition settles it: NEEDS MORE WORK requires something
+<i>promising</i>, and all five out-of-sample AUCs straddle 0.5. It is a null <b>with a stated
+blind spot</b> (nothing below |AUC&minus;0.5| = 0.147 is detectable at 17 reversals), not a
+strong refutation.</div>
+<p class="muted">Further audit corrections applied: give-back's post-hoc status (the confirmatory
+test re-used the same 182 trades that generated the observation); the confluence pool contains one
+non-flow feature (gap_abs) and struct runs at n=176; the headline-print clause of the news
+decomposition is definitively DEAD (34 blackout days, zero avoided trades). Notes were added
+wherever a control other than a permutation was used (H2, H4, breakeven: direct funded-dollar
+failure; Q2: family-wise correction on the effective test count). <b>No number in this table was
+produced or altered by an LLM</b> &mdash; auditors could only challenge tags and demand evidence,
+and every challenge above was independently re-verified against the artefacts before being
+accepted.</p>""")
 A('<h2>Dead numbers &mdash; must not reappear as live results</h2>')
 for d in V["dead_numbers"]:
     A(f'<div class="dead"><b>{d["n"]}</b><br>{d["why"]}</div>')
