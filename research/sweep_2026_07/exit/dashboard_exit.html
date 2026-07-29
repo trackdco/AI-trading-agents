@@ -1,0 +1,339 @@
+<title>Exit-timing study &mdash; verdict table</title>
+<style>
+:root{--bg:#fbfbfa;--surf:#fff;--surf2:#f4f4f2;--ink:#1a1a19;--ink2:#55554f;--ink3:#86867e;
+--line:#e3e3df;--ok:#1f6f43;--okbg:#e7f3ec;--bad:#a3231d;--badbg:#fbeae9;--warn:#8a5a00;
+--warnbg:#fdf2dd;--accent:#2c5aa0;}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--surf:#1e1e1c;--surf2:#26261f;
+--ink:#f2f2ee;--ink2:#b9b9b0;--ink3:#8a8a80;--line:#33332e;--ok:#6fcf97;--okbg:#17301f;
+--bad:#f08c86;--badbg:#331917;--warn:#e0b25e;--warnbg:#2e2410;--accent:#8fb4e8;}}
+:root[data-theme="dark"]{--bg:#161614;--surf:#1e1e1c;--surf2:#26261f;--ink:#f2f2ee;
+--ink2:#b9b9b0;--ink3:#8a8a80;--line:#33332e;--ok:#6fcf97;--okbg:#17301f;--bad:#f08c86;
+--badbg:#331917;--warn:#e0b25e;--warnbg:#2e2410;--accent:#8fb4e8;}
+:root[data-theme="light"]{--bg:#fbfbfa;--surf:#fff;--surf2:#f4f4f2;--ink:#1a1a19;
+--ink2:#55554f;--ink3:#86867e;--line:#e3e3df;--ok:#1f6f43;--okbg:#e7f3ec;--bad:#a3231d;
+--badbg:#fbeae9;--warn:#8a5a00;--warnbg:#fdf2dd;--accent:#2c5aa0;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 ui-sans-serif,
+-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:28px 20px 80px}
+.wrap{max-width:1150px;margin:0 auto}
+h1{font-size:26px;margin:0 0 4px}
+h2{font-size:19px;margin:34px 0 10px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--ink2);text-transform:uppercase;
+letter-spacing:.06em;font-weight:600}
+p{margin:9px 0;color:var(--ink2)}
+.sub{color:var(--ink3);font-size:13px;margin-bottom:16px}
+.cond{background:var(--warnbg);border:1px solid var(--warn);border-radius:8px;padding:11px 14px;
+margin:12px 0;font-size:13px;color:var(--ink)}
+.cond b{color:var(--warn)}
+.dead{background:var(--badbg);border:1px solid var(--bad);border-radius:8px;padding:12px 15px;
+margin:12px 0;font-size:13px}
+.vrow{background:var(--surf);border:1px solid var(--line);border-left-width:5px;
+border-radius:0 10px 10px 0;padding:14px 16px;margin:10px 0}
+.vrow.ok{border-left-color:var(--ok)}
+.vrow.warn{border-left-color:var(--warn)}
+.vrow.bad{border-left-color:var(--bad)}
+.vhead{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.vname{font-size:16px;font-weight:660}
+.vbody{font-size:13px;color:var(--ink2);margin-top:7px}
+.vbody b{color:var(--ink)}
+.kv{margin-top:5px}
+.kv span.k{display:inline-block;min-width:96px;color:var(--ink3);font-size:11px;
+text-transform:uppercase;letter-spacing:.05em;vertical-align:top}
+.scroll{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+th,td{text-align:right;padding:6px 9px;border-bottom:1px solid var(--line);
+font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+th{color:var(--ink3);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+tbody tr:hover{background:var(--surf2)}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;
+letter-spacing:.03em}
+.pill.ok{background:var(--okbg);color:var(--ok)}
+.pill.bad{background:var(--badbg);color:var(--bad)}
+.pill.warn{background:var(--warnbg);color:var(--warn)}
+.muted{color:var(--ink3)}
+code{background:var(--surf2);padding:1px 5px;border-radius:4px;font-size:12px}
+.prov{font-size:12px;color:var(--ink3);font-family:ui-monospace,Menlo,monospace;
+background:var(--surf2);border-radius:8px;padding:12px 14px;word-break:break-all}
+.counts{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap}
+.cbox{flex:1;min-width:150px;background:var(--surf);border:1px solid var(--line);
+border-radius:9px;padding:12px 14px}
+.cbox .v{font-size:24px;font-weight:680}
+</style>
+<div class="wrap">
+<h1>Exit-timing study &mdash; verdict table</h1>
+<div class="sub">Every hypothesis this project has tested &middot; 20260729T073719Z &middot; commit
+<code>e7f7b45</code></div>
+
+<div class="cond"><b>STANDING CONDITIONS.</b> Book is <b>partially remediated (C only)</b> &mdash;
+the <code>W</code> check and the whole <code>dep_*</code> family failed the Phase-0 lookahead
+audit and <b>remain in the selection path</b>. 182 pre-market trades over 145 days,
+2025-07-01&ndash;2026-07-10, Jan-2026 absent from the book (not from the data). IS and OOS are
+different market regimes (NQ 21k&rarr;30k, pre-market volume +~50%) &mdash; a single transition,
+observed once. Cells under 10 trades are marked insufficient. Research only: canon and the live
+path are untouched.</div>
+<div class="counts">
+<div class="cbox"><div class="muted" style="font-size:11px;text-transform:uppercase">Works</div>
+<div class="v" style="color:var(--ok)">1</div>
+<div class="muted" style="font-size:12px">survived OOS + noise floor + funded risk</div></div>
+<div class="cbox"><div class="muted" style="font-size:11px;text-transform:uppercase">Needs more work</div>
+<div class="v" style="color:var(--warn)">2</div>
+<div class="muted" style="font-size:12px">under-evidenced; settling condition stated</div></div>
+<div class="cbox"><div class="muted" style="font-size:11px;text-transform:uppercase">Dead</div>
+<div class="v" style="color:var(--bad)">9</div>
+<div class="muted" style="font-size:12px">tested and failed; do not retest</div></div>
+</div>
+<p class="muted"><b>Definitions applied strictly.</b> WORKS = survived out-of-sample WITH a noise floor run AND funded risk measured — all three.
+NEEDS MORE WORK = promising but under-evidenced; the exact sample or data that would settle it is stated. DEAD = tested and failed; do not retest.</p>
+<div class="vrow ok">
+<div class="vhead"><span class="vname">News filter (pre-open high-impact blackout)</span>
+<span class="pill ok">WORKS</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Veto any NY pre-market entry that would be open going into a pre-open high-impact release. Not fitted — the calendar is published in advance, so it is knowable at fill by construction.</div>
+<div class="kv"><span class="k">Numbers</span> +$2,984.75 sized on the working baseline; day-clustered 95% CI [+$894, +$4,970]; p=0.005. Kill test: the largest avoided trade is a WINNER (+$537) so removing it makes the delta larger (+$3,521.75); 0 of 23 single removals flip the sign. Calendar-shift placebo: real +$2,392.75 beats ALL TEN shifted calendars, which are mostly negative.</div>
+<div class="kv"><span class="k">Noise floor</span> Calendar-shift placebo, 10 shifts (±1..5 trading days). Real beats all ten. p=0.091 — the 1/11 floor, which cannot reach 0.05 by construction.</div>
+<div class="kv"><span class="k">Funded risk</span> Naked bust 0.98% → 0.42%; max drawdown $1,721 → $1,569; min available DD $1,572 → $1,780; daily-limit breach days 0 → 0; 0.00% with the full spine.</div>
+<div class="kv"><span class="k">Caveats</span> Decomposition: 92% of the benefit is avoided-trade P&L, 14% resizing, −6% new trades. CPI/PPI/NFP veto NOTHING (34 blackout days, 0 avoided trades). 8 of 9 release types rest on one or two trades. The second arm is a sensitivity check, not a replication (83% shared trades, same largest avoided trade, CI spans zero).</div>
+</div></div>
+<div class="vrow warn">
+<div class="vhead"><span class="vname">Give-back gap by segment (early vs late)</span>
+<span class="pill warn">NEEDS MORE WORK</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Pre-registered: does conditional give-back — P(finished red | reached +1R) — differ by pre-market segment beyond chance? Fixed segments, no re-bucketing.</div>
+<div class="kv"><span class="k">Numbers</span> 32.4% early / 27.6% mid / 11.1% late. Primary statistic early−late = +21.2 percentage points. Day-clustered 95% CI [+2.0pp, +38.1pp], bootstrap p=0.034.</div>
+<div class="kv"><span class="k">Noise floor</span> 2,000-draw day-block permutation of outcome labels: p=0.0850. Registered rule required p<0.05 AND a CI excluding zero — it got one of two.</div>
+<div class="kv"><span class="k">Funded risk</span> Not measured — it is a descriptive asymmetry, not yet a rule, so there is nothing to size.</div>
+<div class="kv"><span class="k">Caveats</span> Reported INCONCLUSIVE exactly as the registration required, not reinterpreted as a near-miss.</div>
+<div class="kv"><span class="k">To settle</span> <b>The late segment is the binding constraint: it needs ~28 +1R-reaching trades and has 18, a shortfall of 10. At the observed rate (0.124 such trades per trading day) that is ~80 further trading days, roughly 4 months, of live or shadow data.</b></div>
+</div></div>
+<div class="vrow warn">
+<div class="vhead"><span class="vname">N-minute timer exit (45 min)</span>
+<span class="pill warn">NEEDS MORE WORK</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Hold with the original stop live; if not stopped, close at market at the close of bar N. No trailing at any point.</div>
+<div class="kv"><span class="k">Numbers</span> PM P&L +$29,598 at 45m vs canon +$21,098. Grid: +$21,485 / +$29,598 / +$29,026 / +$17,630 at 30/45/60/90 — a hump, NOT a plateau, falling BELOW canon at 90m; spread is 49% of the level. Money is concentrated: 2026 +$7,693 of +$8,500; OOS +$9,075 vs IS −$575; late segment +$5,736 on 29 trades.</div>
+<div class="kv"><span class="k">Noise floor</span> None that can validate it. It was found POST-HOC after the pre-registered select-on-IS procedure rejected it, and 15 of 68 sweep configurations flip negative-to-positive by chance.</div>
+<div class="kv"><span class="k">Funded risk</span> Measured, and it is worse: naked bust 0.40% → 2.02% at 45m (5×) and 10.66% at 90m (27×); max drawdown $1,569 → $1,637 (45m) and $2,441 (90m); daily-limit breach days 0 → 1 (45m) and 2 (90m). Takes a full 1R on 55% of trades with no trailing. 0.00% with the full spine.</div>
+<div class="kv"><span class="k">Caveats</span> Raises expectancy AND raises bust probability — on the stated rule that combination is worse, not better, on the naked account.</div>
+<div class="kv"><span class="k">To settle</span> <b>Forward evidence only. The Part-4 shadow harness logs it in parallel every session; the forward-only slice is currently EMPTY. Nothing in the existing book can confirm it because the regime boundary is in the wrong place and there is only one of them.</b></div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">H1 — flat R targets (1.5R–4R)</span>
+<span class="pill bad">DEAD</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Replace the canon's management with a fixed R target, walk-forward, funded sizing.</div>
+<div class="kv"><span class="k">Numbers</span> Every target loses to canon out-of-sample. Best cell (4R) $11,771 vs incumbent $15,670; bust 23.04% vs 2.92%; drop-5 worse in every cell. Re-confirmed on the current book: target 1.0R −$12,974 OOS, 2.0R −$8,825, 4.0R −$3,826.</div>
+<div class="kv"><span class="k">Noise floor</span> Walk-forward, expanding monthly — picked 4R every month and still lost.</div>
+<div class="kv"><span class="k">Funded risk</span> Yes — bust 23.04% vs 2.92%.</div>
+<div class="kv"><span class="k">Caveats</span> This reverses the earlier leaky-book RR sweep, which is on the dead-numbers list.</div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">H4 — bar-close MAE cuts (0.6R–0.9R)</span>
+<span class="pill bad">DEAD</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Exit at the first bar close whose adverse excursion exceeds θ·R, strictly before the canon exit bar.</div>
+<div class="kv"><span class="k">Numbers</span> Registered falsifier fired exactly as predicted: winner close-MAE max is 0.704R in-sample but 0.912R out-of-sample, so every θ cuts at least one winner. Best cell $17,090 < incumbent $18,376; drop-5 also worse.</div>
+<div class="kv"><span class="k">Noise floor</span> Pre-registered falsifier, fired.</div>
+<div class="kv"><span class="k">Funded risk</span> Yes — evaluated under funded sizing.</div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">H2 — day-type bias gate (skip against bias)</span>
+<span class="pill bad">DEAD</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Skip trades taken against the day-type bias derived from the committed volume-profile artefact.</div>
+<div class="kv"><span class="k">Numbers</span> Raises mean R (+0.523 vs +0.370) but LOSES funded dollars in BOTH halves: 2025 $2,593 vs $3,691; 2026 $14,427 vs $14,685. A composition effect, not a gate.</div>
+<div class="kv"><span class="k">Noise floor</span> Alignment counts verified against the independent lane (no_bias 105 / with 61 / against 50).</div>
+<div class="kv"><span class="k">Funded risk</span> Yes — it is the funded-dollar result that kills it.</div>
+<div class="kv"><span class="k">Caveats</span> Mean R improving while dollars fall is the signature of dropping small winners.</div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">Breakeven stop moved at +1R</span>
+<span class="pill bad">DEAD</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Move the stop to entry once +1R is touched; frictionless, active from the bar after the touch.</div>
+<div class="kv"><span class="k">Numbers</span> 59 of 108 IS trades touch +1R; 27 would be stopped at breakeven. Their actual outcomes sum to +$1,139.75 (mean R +0.014) — 20 losses saved (−$3,110) against 7 winners forgone (+$4,249), including one +4R reacher.</div>
+<div class="kv"><span class="k">Noise floor</span> Not required — the effect is a wash before any inference.</div>
+<div class="kv"><span class="k">Funded risk</span> Not needed; a wash at 1 lot cannot improve funded dollars.</div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">68-configuration exit/management sweep</span>
+<span class="pill bad">DEAD</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> 17 management rules × 4 time-of-day scopes, selected on the in-sample half and judged out-of-sample.</div>
+<div class="kv"><span class="k">Numbers</span> IS-selected rule (target 4.0R, all trades) gained +$4,273 in-sample and lost −$3,826 out-of-sample. Only 18 of 68 beat canon OOS — fewer than a coin flip.</div>
+<div class="kv"><span class="k">Noise floor</span> Best-of-68 selection null over 500 day-block-permuted splits: picking the best of 68 on ANY random half yields a median +$6,006 IS by construction (the real +$4,273 is BELOW that, 21st percentile) and shrinks to a median −$1,045 OOS. Real OOS sits at the 21st percentile against a >95th gate.</div>
+<div class="kv"><span class="k">Funded risk</span> Not reached — the selection failed first.</div>
+<div class="kv"><span class="k">Caveats</span> Median in-sample-to-out-of-sample shrinkage is −$7,050. That is the measured price of sweeping on this book.</div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">Q1 — entry order flow (11 features)</span>
+<span class="pill bad">DEAD</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Does strictly pre-fill entry order flow separate the trades that pay? The honest re-test of conf_PM, which was itself an order-flow entry-conviction signal and was the leak.</div>
+<div class="kv"><span class="k">Numbers</span> Best out-of-sample |ρ| = 0.093. NO feature survives family-wise correction (M_eff 8.00 of 11 nominal, per-test α 0.0064). Every tercile-transfer CI spans zero.</div>
+<div class="kv"><span class="k">Noise floor</span> Day-block permutation plus family-wise Šidák on the effective test count.</div>
+<div class="kv"><span class="k">Funded risk</span> Not reached — no rule was produced to size.</div>
+<div class="kv"><span class="k">Caveats</span> Direction-blind falsifier is effectively a tie: signed 0.0934 vs blind 0.0912, a margin of 0.0022.</div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">Q2 — order flow beyond gap size</span>
+<span class="pill bad">DEAD</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Does entry order flow add anything once |gap| — knowable at 08:00 with no tape at all — is already known?</div>
+<div class="kv"><span class="k">Numbers</span> |gap| alone carries ρ +0.153 (p=0.036), LARGER than every order-flow feature tested. After rank-residualising on |gap|, NO feature survives family-wise correction.</div>
+<div class="kv"><span class="k">Noise floor</span> Day-clustered bootstrap plus family-wise correction on M_eff.</div>
+<div class="kv"><span class="k">Funded risk</span> Not reached.</div>
+<div class="kv"><span class="k">Caveats</span> The gap finding itself is registered separately (Amendment 5) and is non-monotone across terciles — that is a different, still-open question.</div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">In-trade order flow at a retrace (exit-side)</span>
+<span class="pill bad">DEAD</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Pre-registered before scoring: at a 0.5R give-back from a +1R peak, does in-trade order flow distinguish a retrace that RESUMES from one that REVERSES?</div>
+<div class="kv"><span class="k">Numbers</span> Every out-of-sample AUC sits on 0.5 (0.464–0.551); none survives. Base rate: 85% of retraces resume (60.2% when restricted to bars at or before the canon's own exit — the tradeable figure).</div>
+<div class="kv"><span class="k">Noise floor</span> Per-bar shift tests pass 20/20 buckets; trade-clustered bootstrap intervals.</div>
+<div class="kv"><span class="k">Funded risk</span> Not reached.</div>
+<div class="kv"><span class="k">Caveats</span> Underpowered below |AUC−0.5| = 0.147 with only 17 reversals in the whole sample — absence of a result is not evidence of absence of an effect.</div>
+</div></div>
+<div class="vrow bad">
+<div class="vhead"><span class="vname">Confluence composite (13 features, ridge, daily walk-forward)</span>
+<span class="pill bad">DEAD</span></div>
+<div class="vbody">
+<div class="kv"><span class="k">Tested</span> Rank-normalised weighted composite, weights by ridge against realised R, penalty chosen inside each fold, expanding-window daily refit.</div>
+<div class="kv"><span class="k">Numbers</span> Real ρ +0.0645 over 142 out-of-sample predictions. Sits at the 92.70th percentile of 2,000 day-block-shuffled runs against a registered >99th-percentile gate.</div>
+<div class="kv"><span class="k">Noise floor</span> 2,000 shuffles of the identical end-to-end pipeline. p99 = +0.1453.</div>
+<div class="kv"><span class="k">Funded risk</span> Conviction sizing part 2 was GATED on the composite clearing the floor and was correctly NOT RUN.</div>
+<div class="kv"><span class="k">Caveats</span> Falsifier (b) fires — the composite loses to its own best component, cvd_15 at +0.0658. Falsifier (c) fires — random weights on the same pool reach p95 +0.1374, and the fitted composite sits at only the 74.6th percentile of random draws.</div>
+</div></div>
+<h2>Part 1 &mdash; is the canon exiting winners too early?</h2>
+<p>Descriptive only; no rule chosen, no threshold fitted. MFE is measured <b>ALIVE</b> &mdash;
+clipped at the stop bar, because excursion after you have been stopped out cannot be banked.
+Gap = MFE minus realised R.</p>
+<div class="scroll"><table><thead><tr><th>Horizon</th><th>Mean MFE</th><th>Median MFE</th>
+<th>Mean gap</th><th>Median gap</th><th>Gap &gt; 1R</th><th>Gap &gt; 2R</th></tr></thead><tbody>
+<tr><td>15 min</td><td>1.579</td><td>1.075</td><td>+1.036</td><td>+1.265</td><td>66%</td><td>19%</td></tr>
+<tr><td>30 min</td><td>2.312</td><td>1.524</td><td>+1.769</td><td>+1.552</td><td>80%</td><td>33%</td></tr>
+<tr><td>45 min</td><td>2.855</td><td>1.635</td><td>+2.312</td><td>+1.647</td><td>84%</td><td>38%</td></tr>
+<tr><td>60 min</td><td>3.211</td><td>1.730</td><td>+2.668</td><td>+1.765</td><td>88%</td><td>43%</td></tr>
+<tr><td>full life</td><td>4.298</td><td>1.964</td><td>+3.756</td><td>+1.955</td><td>91%</td><td>49%</td></tr>
+</tbody></table></div><h3>Capture ratio &mdash; realised R divided by MFE at that horizon</h3><div class="scroll"><table><thead><tr><th>Horizon</th><th>n</th><th>Median capture</th><th>Captured &ge;80%</th><th>Captured &le;25%</th></tr></thead><tbody>
+<tr><td>15 min</td><td>156</td><td>0.23</td><td>28%</td><td>51%</td></tr>
+<tr><td>30 min</td><td>157</td><td>0.15</td><td>13%</td><td>55%</td></tr>
+<tr><td>45 min</td><td>157</td><td>0.12</td><td>9%</td><td>58%</td></tr>
+<tr><td>60 min</td><td>157</td><td>0.09</td><td>8%</td><td>61%</td></tr>
+<tr><td>full life</td><td>157</td><td>0.07</td><td>4%</td><td>65%</td></tr>
+</tbody></table></div>
+<p><b>The premise is true and the effect is large.</b> The canon banks a median of
+<b>23%</b> of what was available within 15 minutes, falling to <b>7%</b> over full trade life,
+and captures 80% or more on only 4&ndash;28% of trades. Trades that reach +1R (n=115) realise
++1.449 against a 60-minute alive-MFE of +4.837. Give-back rises monotonically with horizon and
+is largest in the late segment.</p>
+<div class="scroll"><table><thead><tr><th>Segment</th><th>n</th><th>Realised R</th>
+<th>gap@15</th><th>gap@30</th><th>gap@45</th><th>gap@60</th><th>gap@life</th></tr></thead><tbody>
+<tr><td>early 08:00-08:29</td><td>108</td><td>+0.452</td><td>+0.878</td><td>+1.421</td><td>+1.772</td><td>+2.013</td><td>+3.315</td></tr>
+<tr><td>mid 08:30-08:59</td><td>45</td><td>+0.466</td><td>+1.409</td><td>+1.835</td><td>+2.351</td><td>+3.054</td><td>+3.829</td></tr>
+<tr><td>late 09:00-09:29</td><td>29</td><td>+0.999</td><td>+1.047</td><td>+2.964</td><td>+4.265</td><td>+4.512</td><td>+5.284</td></tr>
+</tbody></table></div>
+<h2>Part 2 &mdash; the timer, measured completely</h2>
+<div class="dead"><b>THIS RULE CANNOT BE CONFIRMED ON THIS BOOK.</b> It was found
+<b>post-hoc</b>, after the pre-registered select-on-in-sample procedure had already rejected it.
+It <b>lost in-sample (&minus;$575)</b> and gained everything <b>out-of-sample (+$9,075)</b> —
+a sign flip across the single regime boundary this book contains. <b>15 of 68</b> configurations
+in that sweep flip negative-to-positive by chance. Measuring it completely is not the same as
+validating it; only the Part-4 forward shadow log can do that.</div>
+<div class="scroll"><table><thead><tr><th>Variant</th><th>PM P&amp;L</th><th>Book P&amp;L</th>
+<th>Max DD</th><th>Min avail DD</th><th>Breach days</th><th>Bust (naked)</th>
+<th>Bust (spine)</th><th>Stop share</th></tr></thead><tbody>
+<tr><td>canon (reference)</td><td>$+21,098</td><td>$+53,672</td><td>$1,569</td><td>$1,780</td><td>0</td><td>0.40%</td><td>0.00%</td><td>&mdash;</td></tr>
+<tr><td>timer 30m</td><td>$+21,485</td><td>$+54,060</td><td>$1,637</td><td>$1,822</td><td>0</td><td>1.40%</td><td>0.00%</td><td>48%</td></tr>
+<tr><td>timer 45m</td><td>$+29,598</td><td>$+62,173</td><td>$1,637</td><td>$1,822</td><td>1</td><td>2.02%</td><td>0.00%</td><td>55%</td></tr>
+<tr><td>timer 60m</td><td>$+29,026</td><td>$+61,600</td><td>$1,971</td><td>$1,822</td><td>1</td><td>2.76%</td><td>0.00%</td><td>62%</td></tr>
+<tr><td>timer 90m</td><td>$+17,630</td><td>$+50,205</td><td>$2,441</td><td>$785</td><td>2</td><td>10.66%</td><td>0.00%</td><td>80%</td></tr>
+</tbody></table></div>
+<p><b>The variance cost is real and it is the answer to the question you asked.</b> Naked bust
+probability goes 0.40% &rarr; 2.02% at 45 minutes (<b>5&times;</b>) and 10.66% at 90 minutes
+(<b>27&times;</b>); max drawdown rises to $2,441 and daily-limit breach days from 0 to 2. The
+rule takes a full 1R on 55% of trades with no trailing. With the full safety spine every variant
+is 0.00%, so the cost is visible only on the naked account &mdash; but a variant that raises
+expectancy <i>and</i> raises bust probability is worse, and this one does.</p>
+<p><b>Shape: a hump, not a plateau.</b> PM P&amp;L across 30/45/60/90 runs
+$+21,485 &rarr; $+29,598 &rarr; $+29,026 &rarr; $+17,630, a spread of $+11,968 on a mean of
+$+24,435 &mdash; <b>49% of the level</b> &mdash;
+and it falls <b>below canon</b> at 90 minutes. Two adjacent horizons work and both neighbours
+fail. That is closer to fitting than to structure.</p>
+<h3>Where the money is (timer 45m vs canon, PM slice)</h3>
+<div class="scroll"><table><thead><tr><th>Cut</th><th>n</th><th>Canon</th><th>Timer 45m</th>
+<th>Delta</th></tr></thead><tbody>
+<tr><td>2025</td><td>100</td><td>$+4,414</td><td>$+5,221</td><td>$+807</td></tr>
+<tr><td>2026</td><td>82</td><td>$+16,684</td><td>$+24,377</td><td>$+7,693</td></tr>
+<tr><td>early 08:00-08:29</td><td>108</td><td>$+10,835</td><td>$+11,465</td><td>$+630</td></tr>
+<tr><td>mid 08:30-08:59</td><td>45</td><td>$+5,134</td><td>$+7,268</td><td>$+2,134</td></tr>
+<tr><td>late 09:00-09:29</td><td>29</td><td>$+5,129</td><td>$+10,865</td><td>$+5,736</td></tr>
+<tr><td>IS half</td><td>91</td><td>$+3,030</td><td>$+2,455</td><td>$-575</td></tr>
+<tr><td>OOS half</td><td>91</td><td>$+18,068</td><td>$+27,143</td><td>$+9,075</td></tr>
+</tbody></table></div>
+<p>The benefit is concentrated in <b>2026</b>, <b>out-of-sample</b>, and the <b>late segment on
+29 trades</b>. That is a regime-specific, small-sample concentration, not a broad effect.</p>
+<h2>Part 3 &mdash; the give-back gap, pre-registered</h2>
+<p>Registration committed <b>before</b> any statistic was computed
+(<code>PART3_PREREG.md</code>). Primary = conditional give-back, P(finished red | reached +1R);
+statistic = early minus late; noise floor = 2,000-draw day-block permutation; rule = p&lt;0.05
+<b>and</b> a CI excluding zero.</p>
+<div class="scroll"><table><thead><tr><th>Segment</th><th>n</th><th>n reached +1R</th>
+<th>Conditional give-back</th><th>Unconditional</th></tr></thead><tbody>
+<tr><td>early 08:00-08:29</td><td>108</td><td>68</td><td>32.4%</td><td>20.4%</td></tr>
+<tr><td>mid 08:30-08:59</td><td>45</td><td>29</td><td>27.6%</td><td>17.8%</td></tr>
+<tr><td>late 09:00-09:29</td><td>29</td><td>18</td><td>11.1%</td><td>6.9%</td></tr>
+</tbody></table></div>
+<div class="cond"><b>VERDICT: INCONCLUSIVE</b> — reported exactly as registered, not
+reinterpreted. Effect size <b>+21.2 percentage points</b>; day-clustered
+95% CI <b>[+2.0pp, +38.1pp]</b> and bootstrap p =
+0.034 would both pass &mdash; but the day-block permutation gives
+<b>p = 0.0850</b>, and the registered rule required both. One of two is not
+established.<br><br>
+<b>What would settle it:</b> the late segment is binding. It needs
+~28 +1R-reaching trades and has
+18 &mdash; a shortfall of
+10. At the observed rate that is <b>~80 further
+trading days (about 4 months)</b> of live or shadow data. The early segment is already
+sufficient at 68.</div>
+<h2>Part 4 &mdash; shadow-tracking harness</h2>
+<p>Pure parallel logging: no orders, no canon change, nothing on the live path. For every
+pre-market trade it records side by side what the canon did and what the timer would have done,
+at 30/45/60/90 minutes, append-only, idempotent (a re-run adds zero records).</p>
+<pre style="background:var(--surf2);padding:12px 14px;border-radius:8px;font-size:12px;
+overflow-x:auto"><code>python3 research/sweep_2026_07/exit/shadow_timer.py --backfill
+python3 research/sweep_2026_07/exit/shadow_timer.py --day 2026-07-13   # the daily call
+python3 research/sweep_2026_07/exit/shadow_timer.py --report</code></pre>
+<p>Backfilled: <b>182 trades &times; 4 horizons = 728 records</b>. The report separates a
+<b>forward-only slice</b> (sessions after 2026-07-10) from the backfill, and currently states
+plainly that the forward slice is <b>empty</b> &mdash; every record so far is over the book the
+hypothesis was formed on and therefore proves nothing about it. This is the only mechanism that
+can ever validate the timer.</p>
+<h2>Dead numbers &mdash; must not reappear as live results</h2>
+<div class="dead"><b>+$35,980 — the trail-0.5R-from-1.5R sweep (214 trades, 51.4% WR)</b><br>Computed on the SUPERSEDED LEAKY book at 1 lot in R-space. Re-run on a remediated book with funded sizing and walk-forward, every fixed target 1.5R–4R loses to the canon's own management. Never quote it as a live result.</div>
+<div class="dead"><b>~$23k — the conf_PM leak, quoted alone</b><br>That is a WHOLE-BOOK MECHANICAL figure. The pre-market portion is about $17k mechanical and about $3k sized. Quoting $23k as a pre-market or funded number overstates it several times over.</div>
+<div class="dead"><b>85% — retraces that resume</b><br>Counts resumes anywhere in trade life, including after the canon had already closed the position. The TRADEABLE figure is 60.2%. Use that one.</div>
+<div class="dead"><b>+$18,376 vs +$21,098 quoted as an improvement</b><br>Different windows. The certified book starts 2025-06-02; the working baseline starts 2025-07-01. The like-for-like comparison is +$18,113 → +$21,098, and the difference is the news filter alone.</div>
+<div class="dead"><b>“The leaky arm independently replicates the news filter”</b><br>It does not. The two arms share 83% of trades, veto the same days, and have the SAME largest avoided trade. The leaky arm's CI [−$294, +$3,925] spans zero. It is a sensitivity check.</div>
+<h2>Provenance</h2>
+<div class="prov">
+run_id &nbsp; 20260729T073719Z<br>
+commit &nbsp; e7f7b45<br>
+anchors &nbsp; certified book 216 / $+18,376.00 &middot; working baseline 182 / $+21,097.875
+&middot; both reproduced to the cent before any new number<br>
+book &nbsp; job2_books/sized_C_news &mdash; PARTIALLY REMEDIATED (C only); W and dep_* leaky<br>
+engine &nbsp; $50k start, $2,000 EOD-trailing DD locked at the floor, Tier-1 daily halt &minus;$800
+plus $100 proximity halt; spine adds the DD-scaling ramp; 5,000 bootstrap paths<br>
+costs &nbsp; $1.24/micro round trip, $0.50/micro slippage on marketable exits; the canon
+reference carries its own cost convention, stated not merged<br>
+part 3 &nbsp; 2,000-draw day-block permutation, 4,000-draw day-clustered bootstrap<br>
+regenerate &nbsp; python3 research/sweep_2026_07/exit/build_dashboard.py
+</div>
+<p class="sub" style="margin-top:20px">Deterministic throughout: no sweep, no configuration
+search, no best-of selection &mdash; that procedure has failed three times and its cost is
+measured at &minus;$7,050 median in-sample-to-out-of-sample shrinkage. No LLM adjusted a
+threshold or selected a variant at any point.</p>
+</div>
+<script>(function(){var t=localStorage.getItem('theme');
+if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
