@@ -1,0 +1,130 @@
+{
+ "canon": {
+  "pm_pl": 21097.875,
+  "book_pl": 53672.433000000005,
+  "pl": 53672.433000000005,
+  "busted": false,
+  "min_available": 1780.25,
+  "max_dd": 1569.0,
+  "breach_days": 0.0,
+  "bust_naked": 0.4,
+  "bust_spine": 0.0,
+  "stop_share": null
+ },
+ "timer30": {
+  "pm_pl": 21485.279999999995,
+  "book_pl": 54059.83799999999,
+  "pl": 54059.83799999999,
+  "busted": false,
+  "min_available": 1822.0800000000017,
+  "max_dd": 1637.4199999999983,
+  "breach_days": 0.0,
+  "bust_naked": 1.4,
+  "bust_spine": 0.0,
+  "stop_share": 0.47802197802197804
+ },
+ "timer45": {
+  "pm_pl": 29598.28,
+  "book_pl": 62172.83799999999,
+  "pl": 62172.83799999999,
+  "busted": false,
+  "min_available": 1822.0800000000017,
+  "max_dd": 1637.4199999999983,
+  "breach_days": 1.0,
+  "bust_naked": 2.02,
+  "bust_spine": 0.0,
+  "stop_share": 0.554945054945055
+ },
+ "timer60": {
+  "pm_pl": 29025.78,
+  "book_pl": 61600.337999999996,
+  "pl": 61600.33799999996,
+  "busted": false,
+  "min_available": 1822.0800000000017,
+  "max_dd": 1971.0899999999965,
+  "breach_days": 1.0,
+  "bust_naked": 2.76,
+  "bust_spine": 0.0,
+  "stop_share": 0.6208791208791209
+ },
+ "timer90": {
+  "pm_pl": 17630.280000000002,
+  "book_pl": 50204.838,
+  "pl": 50204.837999999974,
+  "busted": false,
+  "min_available": 784.7200000000012,
+  "max_dd": 2441.0899999999965,
+  "breach_days": 2.0,
+  "bust_naked": 10.66,
+  "bust_spine": 0.0,
+  "stop_share": 0.8021978021978022
+ },
+ "shape": {
+  "values": [
+   21485.279999999995,
+   29598.28,
+   29025.78,
+   17630.280000000002
+  ],
+  "spread": 11967.999999999996,
+  "mean": 24434.905,
+  "all_above_canon": false
+ },
+ "where": {
+  "2025": {
+   "n": 100,
+   "canon": 4414.25,
+   "timer": 5221.380000000002,
+   "delta": 807.1300000000019,
+   "insufficient": false
+  },
+  "2026": {
+   "n": 82,
+   "canon": 16683.625,
+   "timer": 24376.899999999998,
+   "delta": 7693.274999999998,
+   "insufficient": false
+  },
+  "early 08:00-08:29": {
+   "n": 108,
+   "canon": 10834.75,
+   "timer": 11465.120000000004,
+   "delta": 630.3700000000044,
+   "insufficient": false
+  },
+  "mid 08:30-08:59": {
+   "n": 45,
+   "canon": 5134.125,
+   "timer": 7267.959999999999,
+   "delta": 2133.834999999999,
+   "insufficient": false
+  },
+  "late 09:00-09:29": {
+   "n": 29,
+   "canon": 5129.0,
+   "timer": 10865.2,
+   "delta": 5736.200000000001,
+   "insufficient": false
+  },
+  "IS half": {
+   "n": 91,
+   "canon": 3030.25,
+   "timer": 2455.4800000000005,
+   "delta": -574.7699999999995,
+   "insufficient": false
+  },
+  "OOS half": {
+   "n": 91,
+   "canon": 18067.625,
+   "timer": 27142.799999999996,
+   "delta": 9075.174999999996,
+   "insufficient": false
+  }
+ },
+ "provenance": {
+  "warning": "POST-HOC. Rejected by the pre-registered selection. Lost in-sample (-$575), gained out-of-sample (+$9,075). 15/68 sweep configs flip negative-to-positive by chance. CANNOT BE CONFIRMED ON THIS BOOK.",
+  "costs": "$1.24/micro RT + $0.50/micro slippage on marketable exits; canon reference carries its own cost convention",
+  "engine": "$50k start, $2,000 EOD-trailing DD locked at the floor, Tier-1 daily halt -$800 plus $100 proximity halt; spine adds the DD-scaling ramp",
+  "nboot": 5000
+ }
+}
