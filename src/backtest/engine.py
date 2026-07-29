@@ -89,6 +89,13 @@ class BacktestConfig(BaseModel):
                                   # 2-4pt risks (far targets unreachable at that scale); the big
                                   # winners V9 was clipping have 9-12pt risks. Condition the trail
                                   # on the class it exists to fix.
+    v8_be_at_open: bool = True    # V8's "premarket fills -> BE at 09:29" belt. Default True keeps
+                                  # NY byte-identical. LONDON SETS THIS FALSE (ANGUS 29-Jul: "don't
+                                  # do break even at 9:30"): the rule was written for NY premarket
+                                  # fills, but every London fill is 03:00-06:00 ET so it qualifies
+                                  # by construction, forcing BE on any London trade still alive
+                                  # ~4.5h later. Measured on the old book: 8 of 445 trades (1.8%),
+                                  # but those 8 averaged $216 vs $12 — rare, and squarely on the tail.
     v8_partial_pct: float = 50.0  # pass-17 V8 (ANGUS March style): % booked at first structure;
                                   # runner TRAILS the prior completed 5m swing; premarket fills
                                   # go BE at 09:29 ("BE before the open for volatility")
@@ -692,7 +699,8 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                     # pass-17 V8 (ANGUS March style): premarket fills -> BE at 09:29; once the
                     # partial is booked, TRAIL the runner behind the prior completed 5m swing.
                     if cfg.mgmt_variant == "V8" and pos is not None:
-                        if (not pos.be_done and pos.fill_ts.time() < dtime(9, 29)
+                        if (cfg.v8_be_at_open and not pos.be_done
+                                and pos.fill_ts.time() < dtime(9, 29)
                                 and tod >= dtime(9, 29)):
                             pos.pending_stop, pos.be_done = pos.entry, True
                         if pos.partial_done and v8_fm is not None:
