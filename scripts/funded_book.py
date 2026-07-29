@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""THE FUNDED BOOK — the official rebuilt-canon configuration. ANGUS sign-off 2026-07-31.
+"""THE FUNDED BOOK — the official rebuilt-canon configuration. ANGUS sign-off 2026-07-29.
 
 Every parameter below was measured before it was chosen, on the fit span (2025-06..2026-07,
 discovery restricted to 2025) and confirmed on the sealed 2023/24 holdout. Nothing here is
@@ -13,30 +13,43 @@ ENTRIES (uncapped — the 2/session cap measured as pure cost once the wall cut 
   risk 7-60pt Layer-0 · E3 limits · orders die at session-window end (no distance cancel)
   · news blackout · V8 exits (nothing mechanical beat them; capture gap = agent layer)
 
-CONVICTION LADDER (risk $ per trade; tiers from era-consistent score cells):
-  0.5x $80    gold score<=3 · pre score 2      (the streaky tier; half for DD, not EV)
-  1.0x $160   gold score 4  · pre score 3
-  1.5x $240   gold score>=5 · pre score 4
-  2.0x $320   ELITE: gold TRIG & LONSLOPE & struct_event=='broke' — 70%+ WR in every era
-              (pooled 72%, Wilson floor 64%) — MAX ONE PER DAY
+CONVICTION TIERS (multipliers on the profile base; cells era-consistent):
+  0.5x  gold score<=3 · pre score 2      (the streaky tier; half for DD, not EV)
+  1.0x  gold score 4  · pre score 3
+  1.5x  gold score>=5 · pre score 4
+  2.0x  ELITE: gold TRIG & LONSLOPE & struct_event=='broke' — 70%+ WR in every era
+        (pooled 72%, Wilson floor 64%) — MAX ONE PER DAY
+
+PROFILES (risk $ = base_eff x tier; budget and soft de-risk scale WITH the base —
+ANGUS 2026-07-29: "with more buffer, we have more of a daily budget... the daily loss
+should scale with the increased sizing"):
+  lucid      base $150 fixed -> ladder $75/150/225/300, budget $800, soft -$280
+             [ANGUS 2026-07-29: "static 150 is now the lucid" — supersedes the $80/160
+              ladder tested earlier]
+  scaled600  base $150 + $75 per full $2k of buffer past +$3k, capped $600
+             (first step lands at buffer $5k) -> budget $800..$3,200, soft 35% of it
 
 RISK SPINE (all causal: decisions see only realized-by-fill P&L + in-flight risk):
-  daily budget $800     realized losses + in-flight risk + new risk <= 800, else skip
+  daily budget          realized losses + in-flight risk + new risk <= budget, else skip
+                        budget = base_eff x 16/3 ($800 at base $150)
                         [bounds worst day structurally; realized-loss halts alone fail
                          under overlap — the losses aren't realized when the next fills hit]
-                        NOTE worst fit day -$795: five dollars under an $800 hard DLL.
-                        budget=750 buys real margin for ~$4k of fit net if ever needed.
-  soft de-risk          realized day P&L <= -$280 -> half size (validated both spans)
+  soft de-risk          realized day P&L <= -35% of budget -> half size (both spans)
   live ramp             buffer above the trailing line < $1,000 -> half size
                         [dormant in 19 months of history — pure insurance for a
                          worse-than-history future; ANGUS: required for live]
   micro clamp 40 · micros = round(risk$/(stop_pts*2)), min 1
 
-REFERENCE RESULTS (50k account, $2k EOD-trailing):
-  fit      net +$93,935  ($7,226/mo)  worst day -$795  maxDD $1,722  min buffer $1,621  13/13
-  holdout  net +$61,158 ($10,193/mo)  worst day -$779  maxDD $1,587  min buffer $1,756   6/6
+REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k):
+  lucid      fit  +$89,925 ($6,917/mo)   worst day -$762    maxDD $1,603  13/13 green
+             holdout +$56,408 ($9,401/mo)  worst day -$780  maxDD $1,503   6/6 green
+  scaled600  fit +$320,150 ($24,627/mo)  worst day -$3,242  maxDD $5,844  13/13 green
+             holdout +$188,324 ($31,387/mo) worst day -$3,092 maxDD $3,618  6/6 green
+             MC funded-yr (both-span pool, 2000 sims): P(bust) 1.0%, median 28 payouts
+             NOTE fit worst day -$3,242 vs that day's $3,200 budget: one day, $42 through
+             (last fill's stop-out landed after the budget check passed) — known, accepted
 
-    python -m scripts.funded_book [--span fit|holdout] [--budget 800]
+    python -m scripts.funded_book [--span fit|holdout] [--profile lucid|scaled600]
 """
 from __future__ import annotations
 
@@ -50,8 +63,13 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-RISK = {0.5: 80.0, 1.0: 160.0, 1.5: 240.0, 2.0: 320.0}
-SOFT_DERISK_AT = 280.0
+PROFILES = {
+    # base fixed: cap == base disables scaling entirely
+    "lucid": dict(base=150.0, per=0.0, step=2000.0, after=3000.0, cap=150.0),
+    "scaled600": dict(base=150.0, per=75.0, step=2000.0, after=3000.0, cap=600.0),
+}
+BUDGET_PER_BASE = 800.0 / 150.0     # $800 daily budget at the $150 base
+SOFT_FRAC = 280.0 / 800.0           # soft de-risk at 35% of that day's budget
 RAMP_BUFFER = 1000.0
 START, TRAIL = 50_000.0, 2_000.0
 MICRO_CLAMP = 40
@@ -73,11 +91,21 @@ def load_book(span: str) -> pd.DataFrame:
     return V.sort_values("fill")
 
 
-def run(V: pd.DataFrame, budget: float) -> pd.DataFrame:
+def base_for_buffer(buf: float, p: dict) -> float:
+    if p["per"] <= 0 or buf <= p["after"]:
+        return p["base"]
+    return min(p["cap"], p["base"] + np.floor((buf - p["after"]) / p["step"]) * p["per"])
+
+
+def run(V: pd.DataFrame, profile: str) -> pd.DataFrame:
+    p = PROFILES[profile]
     rows = []
     bal, line = START, START - TRAIL
     for day, g in V.groupby("day", sort=True):
         buf = bal - line
+        base = base_for_buffer(buf, p)
+        budget = base * BUDGET_PER_BASE
+        soft = budget * SOFT_FRAC
         ramp = 0.5 if buf < RAMP_BUFFER else 1.0
         taken: list[tuple] = []
         elite_used = False
@@ -85,7 +113,7 @@ def run(V: pd.DataFrame, budget: float) -> pd.DataFrame:
             tier = 2.0 if (r.elite and not elite_used) else r.tier
             realized = sum(t[1] for t in taken if t[0] <= r.fill)
             inflight = sum(t[2] for t in taken if t[0] > r.fill)
-            rd = RISK[tier] * ramp * (0.5 if realized <= -SOFT_DERISK_AT else 1.0)
+            rd = base * tier * ramp * (0.5 if realized <= -soft else 1.0)
             if max(0.0, -realized) + inflight + rd > budget:
                 continue
             if tier == 2.0:
@@ -94,7 +122,8 @@ def run(V: pd.DataFrame, budget: float) -> pd.DataFrame:
             pl = micros * r.dollars_1lot / 10.0
             taken.append((r.exit, pl, rd))
             rows.append({"day": day, "ts": r.ts, "sess": r.sess, "tier": tier,
-                         "risk_d": rd, "micros": micros, "pl": pl, "month": r.month})
+                         "base": base, "budget": budget, "risk_d": rd,
+                         "micros": micros, "pl": pl, "month": r.month})
         bal += sum(t[1] for t in taken)
         line = min(START, max(line, bal - TRAIL))
     return pd.DataFrame(rows)
@@ -103,9 +132,9 @@ def run(V: pd.DataFrame, budget: float) -> pd.DataFrame:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--span", default="fit", choices=["fit", "holdout"])
-    ap.add_argument("--budget", type=float, default=800.0)
+    ap.add_argument("--profile", default="lucid", choices=sorted(PROFILES))
     a = ap.parse_args()
-    B = run(load_book(a.span), a.budget)
+    B = run(load_book(a.span), a.profile)
     D = B.groupby("day").pl.sum()
     mo = B.groupby("month").pl.sum()
     cum = D.cumsum()
@@ -114,12 +143,16 @@ def main() -> None:
         bal += p
         mb = min(mb, bal - line)
         line = min(START, max(line, bal - TRAIL))
-    print(f"FUNDED BOOK [{a.span}] budget ${a.budget:g}: {len(B)} trades on {len(D)} days")
+    print(f"FUNDED BOOK [{a.span} · {a.profile}]: {len(B)} trades on {len(D)} days")
     print(f"  net ${B.pl.sum():+,.0f} (${B.pl.sum() / len(mo):,.0f}/mo) | worst day ${D.min():+,.0f} "
           f"| maxDD ${(cum.cummax() - cum).max():,.0f} | min buffer ${mb:,.0f}")
     print(f"  months green {(mo > 0).sum()}/{len(mo)} | worst month ${mo.min():+,.0f} | "
           f"tier mix {B.tier.value_counts(normalize=True).round(2).to_dict()}")
-    out = ROOT / f"output/funded_book_{a.span}.parquet"
+    if a.profile != "lucid":
+        db = B.groupby("day").base.first()
+        print(f"  base: median ${db.median():,.0f} | at cap {(db >= PROFILES[a.profile]['cap']).mean() * 100:.0f}% "
+              f"| at floor {(db <= PROFILES[a.profile]['base']).mean() * 100:.0f}%")
+    out = ROOT / f"output/funded_book_{a.profile}_{a.span}.parquet"
     B.to_parquet(out, index=False)
     print(f"  wrote {out.relative_to(ROOT)}")
 
