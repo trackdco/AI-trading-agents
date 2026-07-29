@@ -1,0 +1,503 @@
+{
+ "zero": {
+  "blackout_days": 39,
+  "in_window": 37,
+  "outside_window": 2,
+  "jan_hole": 2,
+  "release_times": [
+   "08:15",
+   "08:30"
+  ],
+  "base_cand_per_day": 1.434782608695652,
+  "base_taken_per_day": 0.6211180124223602,
+  "expected_cand": 53.086956521739125,
+  "expected_taken": 22.981366459627328,
+  "actual_cand": 6,
+  "actual_cand_in_window": 3,
+  "actual_taken": 2,
+  "actual_taken_in_window": 2,
+  "conv_big3": 0.3333333333333333,
+  "conv_overall": 0.4329004329004329,
+  "per_day": [
+   {
+    "day": "2025-07-03",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Non-Farm E",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2025-07-15",
+    "release": "08:30",
+    "names": "CPI m/m + CPI y/y + Core CPI m/m",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2025-08-01",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Non-Farm E",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2025-08-12",
+    "release": "08:30",
+    "names": "CPI m/m + CPI y/y + Core CPI m/m",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2025-09-05",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Non-Farm E",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2025-09-11",
+    "release": "08:30",
+    "names": "CPI m/m + CPI y/y + Core CPI m/m",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2025-10-24",
+    "release": "08:30",
+    "names": "CPI m/m + CPI y/y + Core CPI m/m",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2025-11-20",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Non-Farm E",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2025-12-16",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Core Retai",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2025-12-18",
+    "release": "08:30",
+    "names": "CPI y/y",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-01-09",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Non-Farm E",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-01-13",
+    "release": "08:30",
+    "names": "CPI m/m + CPI y/y + Core CPI m/m",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-02-04",
+    "release": "08:15",
+    "names": "Non-Farm Employment Change",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-02-11",
+    "release": "08:30",
+    "names": "Non-Farm Employment Change",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-02-13",
+    "release": "08:30",
+    "names": "CPI",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-02-27",
+    "release": "08:30",
+    "names": "PPI",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-03-04",
+    "release": "08:15",
+    "names": "ADP Non-Farm Employment Change",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-03-06",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Core Retai",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-03-10",
+    "release": "08:30",
+    "names": "Core CPI m/m",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-03-11",
+    "release": "08:30",
+    "names": "CPI m/m + CPI y/y + Core CPI y/y",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-03-18",
+    "release": "08:30",
+    "names": "Core PPI m/m + PPI m/m",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-04-01",
+    "release": "08:15",
+    "names": "ADP Non-Farm Employment Change",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-04-03",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Non-Farm E",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-04-09",
+    "release": "08:30",
+    "names": "Core CPI m/m + Core CPI y/y + Core PCE P",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-04-14",
+    "release": "08:30",
+    "names": "Core PPI m/m + PPI m/m",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-05-06",
+    "release": "08:15",
+    "names": "ADP Non-Farm Employment Change",
+    "cand": 3,
+    "cand_in": 1,
+    "cand_out": 2,
+    "taken": 1,
+    "taken_in": 1,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-05-08",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Non-Farm E",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-05-12",
+    "release": "08:30",
+    "names": "CPI m/m + CPI y/y + Core CPI y/y",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-05-13",
+    "release": "08:30",
+    "names": "Core PPI m/m + PPI m/m",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-06-03",
+    "release": "08:15",
+    "names": "ADP Non-Farm Employment Change",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-06-05",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Non-Farm E",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-06-07",
+    "release": "08:30",
+    "names": "Core CPI m/m",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-06-10",
+    "release": "08:30",
+    "names": "CPI m/m + CPI y/y + Core CPI y/y",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-06-11",
+    "release": "08:30",
+    "names": "Core PPI m/m + PPI m/m + Unemployment Cl",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-07-01",
+    "release": "08:15",
+    "names": "ADP Non-Farm Employment Change",
+    "cand": 3,
+    "cand_in": 2,
+    "cand_out": 1,
+    "taken": 1,
+    "taken_in": 1,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-07-02",
+    "release": "08:30",
+    "names": "Average Hourly Earnings m/m + Non-Farm E",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   },
+   {
+    "day": "2026-07-09",
+    "release": "08:30",
+    "names": "Core CPI m/m + Unemployment Claims",
+    "cand": 0,
+    "cand_in": 0,
+    "cand_out": 0,
+    "taken": 0,
+    "taken_in": 0,
+    "taken_out": 0
+   }
+  ]
+ },
+ "placebo": {
+  "real": 2392.75,
+  "n_real": 22,
+  "shifts": [
+   {
+    "shift": -5,
+    "benefit": 1058.75,
+    "n": 20
+   },
+   {
+    "shift": -4,
+    "benefit": -2174.0,
+    "n": 14
+   },
+   {
+    "shift": -3,
+    "benefit": -3875.375,
+    "n": 27
+   },
+   {
+    "shift": -2,
+    "benefit": -5020.375,
+    "n": 26
+   },
+   {
+    "shift": -1,
+    "benefit": -2662.375,
+    "n": 33
+   },
+   {
+    "shift": 1,
+    "benefit": 352.5,
+    "n": 24
+   },
+   {
+    "shift": 2,
+    "benefit": -1310.375,
+    "n": 22
+   },
+   {
+    "shift": 3,
+    "benefit": -8819.375,
+    "n": 31
+   },
+   {
+    "shift": 4,
+    "benefit": -6894.875,
+    "n": 28
+   },
+   {
+    "shift": 5,
+    "benefit": -3949.75,
+    "n": 39
+   }
+  ],
+  "n_ge": 0,
+  "p": 0.09090909090909091,
+  "p_floor": 0.09090909090909091,
+  "note": "p floor 0.091 with 10 shifts; cannot reach 0.05 by construction"
+ },
+ "signs": {
+  "n_types": 9,
+  "n_positive": 9,
+  "n_negative": 0,
+  "sum_positive": 2743.75,
+  "sum_negative": 0.0,
+  "n_losers": 20,
+  "n_winners": 3,
+  "sum_losers": -3535.0,
+  "sum_winners": 791.25,
+  "allpos_by_chance": 0.21845
+ }
+}

@@ -249,3 +249,36 @@ READING: the aggregate filter result survived its kill test because the benefit 
 across TYPES, but within every type except one it is one or two trades deep. The filter is not
 refuted; it is under-evidenced per mechanism. No per-type rule can be justified from this.
 Scope held: no new features, no new hypotheses.
+
+## 2026-07-29 · Three news-filter checks — one self-correction, one strong placebo result
+SELF-CORRECTION FIRST. My Part-3 decomposition labelled the whole set-difference bucket
+(+$2,743.75, 23 trades) "avoided-trade P&L". It is not all vetoes. gate.blocks() is true for 22
+of them worth +$2,392.75 (87%); the 23rd (2026-03-12 08:42, -$351) is a CASCADE DROPOUT — it
+vanished because the day ladder saw a different running P&L, not because it was vetoed. The
+directly-vetoed component is +$2,392.75. The decomposition remains a valid partition of the
+delta; the label was wrong and is fixed.
+1. THE ZERO EXPLAINED. Gate window = session open -> the release; entries AT OR AFTER the print
+are allowed (blocks: ts_et < rel), so for an 08:30 print the blocked band is 08:00-08:29.
+Of 34 CPI/PPI/NFP blackout days, 37 fall in the window set (labels overlap days); on those days
+the book generated SIX pre-market candidate rows total (3 inside the band, 3 outside) and took
+TWO (both inside). Base rate is 1.43 candidates/day and 0.60 entries/day over all 244 trading
+days, so ~53 candidates were "expected" and 6 appeared — a ~9x suppression. The zero is
+therefore NOT a scoring/selection effect: it is upstream, at TRIGGER GENERATION. The canon
+mostly does not produce pre-market setups on major-release mornings; the tape sits still waiting
+for the print. Caveat recorded: depth data for the period is destroyed, so I cannot separate
+"no trigger formed" from "trigger suppressed by missing depth" with certainty — but the absence
+of candidate ROWS (not merely of taken trades) points at trigger generation, which is upstream
+of the dep_* checks.
+2. CALENDAR-SHIFT PLACEBO — the strongest evidence the filter has produced. Shifting every
+release +/-1..5 trading days and recomputing on SIZED P&L: real +$2,392.75 vs placebos ranging
+-$8,819 to +$1,059 (median -$3,269, mean -$3,330). The real calendar beats ALL TEN shifts.
+Note the placebos are mostly NEGATIVE — vetoing an arbitrary pre-08:30 band on non-release days
+destroys money, which is what makes the real result meaningful rather than an artifact of
+"trading less is safer". p = 0.091, and that is the FLOOR with ten shifts (1/11) — it cannot
+reach 0.05 by construction, so this is suggestive, not significant, and must be reported that
+way.
+3. SIGN COUNT. 9 of 9 release types net positive, sum +$2,743.75; zero negative. But this is
+close to arithmetically forced: 20 of the 23 avoided trades were losers (-$3,535) against 3
+winners (+$791), and shuffling those 23 trades into the SAME group sizes yields all-9-positive
+in 21.8% of 20,000 draws. The unanimous sign count is therefore NOT independent corroboration —
+one draw in five would show it by chance. Reported as such.
