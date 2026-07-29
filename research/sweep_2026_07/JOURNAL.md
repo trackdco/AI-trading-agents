@@ -224,3 +224,28 @@ Of events that occur before the exit, 80.0% resume. The bound is conservative (b
 The honest statement is 60.2%, not 85% — a resume after the position is flat is not tradeable.
 Registered AMENDMENT 5: gap size gets its own lane next round (G1/G2/G3), with the
 non-monotone tercile pattern and the mid-cell overfitting trap flagged in advance.
+
+## 2026-07-29 · News filter decomposed by release type (Brake) — the result weakens the finding
+Fourth container reset; recovered from origin (3171963) + bars from e6cc277 + gate/calendars
+from 9f21fd9. Attribution follows NewsGate's own logic (earliest promoted-high pre-09:30 print;
+co-printing names grouped so P&L stays additive). Scope = the avoided-trade component only,
++$2,743.75 of the +$2,984.75 delta (92%); resizing and new-trade components are cascade effects
+and are not attributable to any release.
+THE HEADLINE PRINTS VETO NOTHING. CPI, PPI and NFP account for 34 blackout days in the window
+and ZERO avoided pre-market trades — the book generated no pre-release entry on any of them.
+The gate fires there; there is simply nothing to block. So the entire measured benefit comes
+from the SECOND TIER: Retail Sales, Core PCE, Unemployment Claims, ADP, GDP.
+By type (n, benefit, IS/OOS): Core Retail Sales + Retail Sales 4, +$770 (IS 3/+534, OOS 1/+236);
+Core PCE 3, +$541 (IS 3/+541, OOS 0); Core PCE + Claims 2, +$472 (OOS only); Unemployment
+Claims 8, +$271 (OOS only); then five types of 1-2 trades each totalling +$690.
+DOMINANT TYPE holds direction in both halves but on n=3 IS / n=1 OOS — "holds" is not
+meaningful at n=1 and must not be quoted as confirmation.
+FRAGILITY IS THE FINDING: 8 of 9 types rest on one or two trades or flip sign on a single
+removal, and those 8 carry $1,974 of the $2,744 (72%). Only Retail Sales (n=4, largest trade
+31% of its benefit) survives its own jackknife. Unemployment Claims is the most frequent
+trigger (14 days, 13.7/yr) yet nets only +$271 because it also avoided the +$537 winner of
+2026-02-19 — its largest single |trade| is 198% of its net.
+READING: the aggregate filter result survived its kill test because the benefit is diffuse
+across TYPES, but within every type except one it is one or two trades deep. The filter is not
+refuted; it is under-evidenced per mechanism. No per-type rule can be justified from this.
+Scope held: no new features, no new hypotheses.

@@ -1,0 +1,424 @@
+{
+ "scope": "avoided-trade component only (92% of the delta); resizing/new-trade components are cascade effects and are not attributable to a release type",
+ "baseline": "C arm = PARTIALLY REMEDIATED (C only); W and dep_* still leaky",
+ "by_type": [
+  {
+   "label": "Core Retail Sales m/m + Retail Sales m/m",
+   "n": 4,
+   "benefit": 769.5,
+   "n_is": 3,
+   "benefit_is": 534.0,
+   "n_oos": 1,
+   "benefit_oos": 235.5,
+   "blackout_days_in_window": 6,
+   "per_year": 5.8596256684491985,
+   "trades": [
+    [
+     "2025-07-17",
+     -220.5
+    ],
+    [
+     "2025-08-15",
+     -111.0
+    ],
+    [
+     "2025-11-25",
+     -202.5
+    ],
+    [
+     "2026-06-17",
+     -235.5
+    ]
+   ],
+   "jack_flips": 0,
+   "jack_min": 534.0,
+   "jack_max": 658.5,
+   "largest_share": 0.3060428849902534,
+   "reading": "no single trade carries it"
+  },
+  {
+   "label": "Core PCE Price Index m/m",
+   "n": 3,
+   "benefit": 541.0,
+   "n_is": 3,
+   "benefit_is": 541.0,
+   "n_oos": 0,
+   "benefit_oos": 0.0,
+   "blackout_days_in_window": 4,
+   "per_year": 3.9064171122994655,
+   "trades": [
+    [
+     "2025-07-31",
+     -335.0
+    ],
+    [
+     "2025-08-29",
+     -155.0
+    ],
+    [
+     "2025-09-26",
+     -51.0
+    ]
+   ],
+   "jack_flips": 0,
+   "jack_min": 206.0,
+   "jack_max": 490.0,
+   "largest_share": 0.6192236598890942,
+   "reading": "one trade is >=50% of it \u2014 fragile"
+  },
+  {
+   "label": "Core PCE Price Index m/m + Unemployment Claims",
+   "n": 2,
+   "benefit": 472.5,
+   "n_is": 0,
+   "benefit_is": 0.0,
+   "n_oos": 2,
+   "benefit_oos": 472.5,
+   "blackout_days_in_window": 1,
+   "per_year": 0.9766042780748664,
+   "trades": [
+    [
+     "2026-03-12",
+     -121.5
+    ],
+    [
+     "2026-03-12",
+     -351.0
+    ]
+   ],
+   "jack_flips": 0,
+   "jack_min": 121.5,
+   "jack_max": 351.0,
+   "largest_share": 0.7428571428571429,
+   "reading": "RESTS ON 2 TRADES \u2014 not distinguishable from luck"
+  },
+  {
+   "label": "Unemployment Claims",
+   "n": 8,
+   "benefit": 271.0,
+   "n_is": 0,
+   "benefit_is": 0.0,
+   "n_oos": 8,
+   "benefit_oos": 271.0,
+   "blackout_days_in_window": 14,
+   "per_year": 13.67245989304813,
+   "trades": [
+    [
+     "2026-02-12",
+     -229.5
+    ],
+    [
+     "2026-02-19",
+     537.0
+    ],
+    [
+     "2026-02-26",
+     -224.0
+    ],
+    [
+     "2026-03-05",
+     -227.5
+    ],
+    [
+     "2026-03-19",
+     178.0
+    ],
+    [
+     "2026-03-19",
+     -98.0
+    ],
+    [
+     "2026-04-16",
+     -108.0
+    ],
+    [
+     "2026-04-23",
+     -99.0
+    ]
+   ],
+   "jack_flips": 0,
+   "jack_min": 41.5,
+   "jack_max": 808.0,
+   "largest_share": 1.981549815498155,
+   "reading": "one trade is >=50% of it \u2014 fragile"
+  },
+  {
+   "label": "Core Retail Sales m/m + Retail Sales m/m + Unemployment Claims",
+   "n": 1,
+   "benefit": 216.0,
+   "n_is": 0,
+   "benefit_is": 0.0,
+   "n_oos": 1,
+   "benefit_oos": 216.0,
+   "blackout_days_in_window": 1,
+   "per_year": 0.9766042780748664,
+   "trades": [
+    [
+     "2026-05-14",
+     -216.0
+    ]
+   ],
+   "jack_flips": 1,
+   "jack_min": 0.0,
+   "jack_max": 0.0,
+   "largest_share": 1.0,
+   "reading": "RESTS ON 1 TRADE \u2014 not distinguishable from luck"
+  },
+  {
+   "label": "Prelim GDP q/q + Unemployment Claims",
+   "n": 1,
+   "benefit": 215.0,
+   "n_is": 0,
+   "benefit_is": 0.0,
+   "n_oos": 1,
+   "benefit_oos": 215.0,
+   "blackout_days_in_window": 1,
+   "per_year": 0.9766042780748664,
+   "trades": [
+    [
+     "2026-05-28",
+     -215.0
+    ]
+   ],
+   "jack_flips": 1,
+   "jack_min": 0.0,
+   "jack_max": 0.0,
+   "largest_share": 1.0,
+   "reading": "RESTS ON 1 TRADE \u2014 not distinguishable from luck"
+  },
+  {
+   "label": "Core Retail Sales",
+   "n": 1,
+   "benefit": 212.0,
+   "n_is": 0,
+   "benefit_is": 0.0,
+   "n_oos": 1,
+   "benefit_oos": 212.0,
+   "blackout_days_in_window": 1,
+   "per_year": 0.9766042780748664,
+   "trades": [
+    [
+     "2026-02-10",
+     -212.0
+    ]
+   ],
+   "jack_flips": 1,
+   "jack_min": 0.0,
+   "jack_max": 0.0,
+   "largest_share": 1.0,
+   "reading": "RESTS ON 1 TRADE \u2014 not distinguishable from luck"
+  },
+  {
+   "label": "ADP Non-Farm Employment Change",
+   "n": 2,
+   "benefit": 38.75,
+   "n_is": 0,
+   "benefit_is": 0.0,
+   "n_oos": 2,
+   "benefit_oos": 38.75,
+   "blackout_days_in_window": 5,
+   "per_year": 4.883021390374332,
+   "trades": [
+    [
+     "2026-05-06",
+     76.25
+    ],
+    [
+     "2026-07-01",
+     -115.0
+    ]
+   ],
+   "jack_flips": 1,
+   "jack_min": -76.25,
+   "jack_max": 115.0,
+   "largest_share": 2.967741935483871,
+   "reading": "RESTS ON 2 TRADES \u2014 not distinguishable from luck"
+  },
+  {
+   "label": "Core PCE Price Index m/m + Final GDP q/q + Unemployment Claims",
+   "n": 1,
+   "benefit": 8.0,
+   "n_is": 0,
+   "benefit_is": 0.0,
+   "n_oos": 1,
+   "benefit_oos": 8.0,
+   "blackout_days_in_window": 1,
+   "per_year": 0.9766042780748664,
+   "trades": [
+    [
+     "2026-06-25",
+     -8.0
+    ]
+   ],
+   "jack_flips": 1,
+   "jack_min": 0.0,
+   "jack_max": 0.0,
+   "largest_share": 1.0,
+   "reading": "RESTS ON 1 TRADE \u2014 not distinguishable from luck"
+  }
+ ],
+ "total_benefit": 2743.75,
+ "window_years": 1.0239561943874058,
+ "zero_veto_types": [
+  {
+   "label": "Average Hourly Earnings m/m + Non-Farm Employment Change + Unemployment Rate",
+   "blackout_days": 8,
+   "per_year": 7.812834224598931,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "CPI m/m + CPI y/y + Core CPI m/m",
+   "blackout_days": 5,
+   "per_year": 4.883021390374332,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Core CPI m/m",
+   "blackout_days": 3,
+   "per_year": 2.9298128342245993,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "CPI m/m + CPI y/y + Core CPI y/y",
+   "blackout_days": 3,
+   "per_year": 2.9298128342245993,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Core PPI m/m + PPI m/m",
+   "blackout_days": 3,
+   "per_year": 2.9298128342245993,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Average Hourly Earnings m/m + Core Retail Sales m/m + Non-Farm Employment Change + Retail Sales m/m + Unemployment Rate",
+   "blackout_days": 2,
+   "per_year": 1.9532085561497328,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Non-Farm Employment Change",
+   "blackout_days": 2,
+   "per_year": 1.9532085561497328,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Advance GDP q/q",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 1
+  },
+  {
+   "label": "CPI y/y",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "CPI",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Core Price Index",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "PPI",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Prelim GDP q/q",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 1
+  },
+  {
+   "label": "ISM Services PMI",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Core CPI m/m + Core CPI y/y + Core PCE Price Index m/m + Final GDP q/q + Unemployment Claims",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "CPI m/m + CPI y/y",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "President Trump Speaks",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 1
+  },
+  {
+   "label": "Core Retail Sales m/m",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "President Trump Speaks + Retail Sales m/m",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Advance GDP q/q + Core PCE Price Index m/m + Employment Cost Index q/q + Unemployment Claims",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 1
+  },
+  {
+   "label": "Core PPI m/m + PPI m/m + Unemployment Claims",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Average Hourly Earnings m/m + Non-Farm Employment Change + Unemployment Claims + Unemployment Rate",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  },
+  {
+   "label": "Core CPI m/m + Unemployment Claims",
+   "blackout_days": 1,
+   "per_year": 0.9766042780748664,
+   "pm_trades_on_those_days": 0
+  }
+ ],
+ "big3_days": 34,
+ "big3_pm_trades": 0,
+ "dominant": {
+  "label": "Core Retail Sales m/m + Retail Sales m/m",
+  "holds_both_halves": true,
+  "n_is": 3,
+  "n_oos": 1,
+  "benefit_is": 534.0,
+  "benefit_oos": 235.5,
+  "share_of_component": 0.2804555808656036
+ },
+ "fragile_types": [
+  "Core PCE Price Index m/m",
+  "Core PCE Price Index m/m + Unemployment Claims",
+  "Unemployment Claims",
+  "Core Retail Sales m/m + Retail Sales m/m + Unemployment Claims",
+  "Prelim GDP q/q + Unemployment Claims",
+  "Core Retail Sales",
+  "ADP Non-Farm Employment Change",
+  "Core PCE Price Index m/m + Final GDP q/q + Unemployment Claims"
+ ],
+ "fragile_benefit": 1974.25
+}

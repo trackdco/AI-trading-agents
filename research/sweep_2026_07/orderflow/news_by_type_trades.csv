@@ -1,0 +1,24 @@
+day,ft,direction,pl,benefit,label,half
+2025-07-17,2025-07-17 12:01:00+00:00,long,-220.5,220.5,Core Retail Sales m/m + Retail Sales m/m,IS
+2025-07-31,2025-07-31 12:13:00+00:00,long,-335.0,335.0,Core PCE Price Index m/m,IS
+2025-08-15,2025-08-15 12:06:00+00:00,short,-111.0,111.0,Core Retail Sales m/m + Retail Sales m/m,IS
+2025-08-29,2025-08-29 12:05:00+00:00,short,-155.0,155.0,Core PCE Price Index m/m,IS
+2025-09-26,2025-09-26 12:13:00+00:00,short,-51.0,51.0,Core PCE Price Index m/m,IS
+2025-11-25,2025-11-25 13:04:00+00:00,long,-202.5,202.5,Core Retail Sales m/m + Retail Sales m/m,IS
+2026-02-10,2026-02-10 13:18:00+00:00,long,-212.0,212.0,Core Retail Sales,OOS
+2026-02-12,2026-02-12 13:04:00+00:00,short,-229.5,229.5,Unemployment Claims,OOS
+2026-02-19,2026-02-19 13:04:00+00:00,short,537.0,-537.0,Unemployment Claims,OOS
+2026-02-26,2026-02-26 13:04:00+00:00,short,-224.0,224.0,Unemployment Claims,OOS
+2026-03-05,2026-03-05 13:25:00+00:00,short,-227.5,227.5,Unemployment Claims,OOS
+2026-03-12,2026-03-12 12:26:00+00:00,long,-121.5,121.5,Core PCE Price Index m/m + Unemployment Claims,OOS
+2026-03-12,2026-03-12 12:42:00+00:00,short,-351.0,351.0,Core PCE Price Index m/m + Unemployment Claims,OOS
+2026-03-19,2026-03-19 12:01:00+00:00,short,178.0,-178.0,Unemployment Claims,OOS
+2026-03-19,2026-03-19 12:03:00+00:00,short,-98.0,98.0,Unemployment Claims,OOS
+2026-04-16,2026-04-16 12:09:00+00:00,long,-108.0,108.0,Unemployment Claims,OOS
+2026-04-23,2026-04-23 12:22:00+00:00,short,-99.0,99.0,Unemployment Claims,OOS
+2026-05-06,2026-05-06 12:06:00+00:00,short,76.25,-76.25,ADP Non-Farm Employment Change,OOS
+2026-05-14,2026-05-14 12:01:00+00:00,short,-216.0,216.0,Core Retail Sales m/m + Retail Sales m/m + Unemployment Claims,OOS
+2026-05-28,2026-05-28 12:21:00+00:00,short,-215.0,215.0,Prelim GDP q/q + Unemployment Claims,OOS
+2026-06-17,2026-06-17 12:11:00+00:00,long,-235.5,235.5,Core Retail Sales m/m + Retail Sales m/m,OOS
+2026-06-25,2026-06-25 12:07:00+00:00,long,-8.0,8.0,Core PCE Price Index m/m + Final GDP q/q + Unemployment Claims,OOS
+2026-07-01,2026-07-01 12:06:00+00:00,short,-115.0,115.0,ADP Non-Farm Employment Change,OOS
