@@ -82,8 +82,12 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--span", choices=sorted(SPANS), default="fit")
+    # L3 override: point the identical depth semantics at the rebuild's matrix.
+    ap.add_argument("--matrix", default=None, help="override the matrix parquet to annotate")
     a = ap.parse_args()
-    spec = SPANS[a.span]
+    spec = dict(SPANS[a.span])
+    if a.matrix:
+        spec["matrix"] = a.matrix
     DIR = Path(spec["dir"])
 
     L = pd.read_parquet(spec["matrix"])

@@ -47,8 +47,17 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--span", choices=sorted(SPANS), default="fit")
+    # L3 overrides: the rebuild feeds this loop the L2 outcomes and the L0 census instead of
+    # the old substrate/trigger caches. The feature code below is untouched — that is the
+    # point, since the L3 gate reproduces the cached matrix to 1e-6 on matched fills.
+    ap.add_argument("--sub", default=None, help="override the substrate parquet")
+    ap.add_argument("--trigs", default=None, help="override the trigger stream (csv or parquet)")
+    ap.add_argument("--out", default=None, help="override the output matrix path")
     a = ap.parse_args()
-    spec = SPANS[a.span]
+    spec = dict(SPANS[a.span])
+    for _k, _v in (("sub", a.sub), ("trigs", a.trigs), ("out", a.out)):
+        if _v:
+            spec[_k] = _v
 
     S = pd.read_parquet(spec["sub"])
     M = minute_tape({"tape": spec["tape"]})
@@ -68,7 +77,8 @@ def main():
                        sd1u=ind["upper_1"].values, sd1d=ind["lower_1"].values)
     B = bars.set_index("mi").sort_index()
 
-    trig = pd.read_csv(spec["trigs"])
+    trig = (pd.read_parquet(spec["trigs"]) if str(spec["trigs"]).endswith(".parquet")
+            else pd.read_csv(spec["trigs"]))
     tts = pd.to_datetime(trig.ts, utc=True, format="mixed").dt.tz_convert(NY)
     tby = {d: g.sort_values().values for d, g in tts.groupby(tts.dt.strftime("%Y-%m-%d"))}
 

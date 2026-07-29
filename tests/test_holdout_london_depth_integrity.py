@@ -67,17 +67,20 @@ def test_prices_are_decoded_floats_not_fixed_point(frames):
 
 
 def test_london_depth_loader_reads_the_holdout(frames):
-    """The real integration: london_depth.load_day pointed at the holdout folder."""
+    """The real integration: london_depth.load_day pointed at the holdout folder.
+
+    The loader takes its directory as an ARGUMENT (`load_day(day, DIR)`) since the script was
+    span-generalized behind `SPANS`; it no longer carries a module-level `DIR` to monkeypatch.
+    This test asserted the old shape and had been failing on AttributeError, which meant the
+    holdout depth path had no live coverage at all — the opposite of what it exists for.
+    """
     import scripts.london_depth as L
 
-    original = L.DIR
-    try:
-        L.DIR = DEPTH
-        day = min(frames)
-        d = L.load_day(day)
-        assert d is not None and len(d) == 2400, f"{day}: {0 if d is None else len(d)} rows"
-        assert set(d.side.unique()) == {"bid", "ask"}
-        f = L.depth_at(d, d.ts.iloc[len(d) // 2], float(d.price.median()), "long")
-        assert f and f["dep_thick"] > 0
-    finally:
-        L.DIR = original
+    assert L.SPANS["holdout"]["dir"] == str(DEPTH.relative_to(ROOT)), \
+        "holdout span no longer points at the sealed depth folder"
+    day = min(frames)
+    d = L.load_day(day, DEPTH)
+    assert d is not None and len(d) == 2400, f"{day}: {0 if d is None else len(d)} rows"
+    assert set(d.side.unique()) == {"bid", "ask"}
+    f = L.depth_at(d, d.ts.iloc[len(d) // 2], float(d.price.median()), "long")
+    assert f and f["dep_thick"] > 0
