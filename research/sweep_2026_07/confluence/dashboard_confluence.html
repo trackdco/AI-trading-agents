@@ -1,0 +1,214 @@
+<title>Confluence study &mdash; adaptive daily walk-forward</title>
+<style>
+:root{--bg:#fbfbfa;--surf:#fff;--surf2:#f4f4f2;--ink:#1a1a19;--ink2:#55554f;--ink3:#86867e;
+--line:#e3e3df;--ok:#1f6f43;--okbg:#e7f3ec;--bad:#a3231d;--badbg:#fbeae9;--warn:#8a5a00;
+--warnbg:#fdf2dd;--accent:#2c5aa0;}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--surf:#1e1e1c;--surf2:#26261f;
+--ink:#f2f2ee;--ink2:#b9b9b0;--ink3:#8a8a80;--line:#33332e;--ok:#6fcf97;--okbg:#17301f;
+--bad:#f08c86;--badbg:#331917;--warn:#e0b25e;--warnbg:#2e2410;--accent:#8fb4e8;}}
+:root[data-theme="dark"]{--bg:#161614;--surf:#1e1e1c;--surf2:#26261f;--ink:#f2f2ee;
+--ink2:#b9b9b0;--ink3:#8a8a80;--line:#33332e;--ok:#6fcf97;--okbg:#17301f;--bad:#f08c86;
+--badbg:#331917;--warn:#e0b25e;--warnbg:#2e2410;--accent:#8fb4e8;}
+:root[data-theme="light"]{--bg:#fbfbfa;--surf:#fff;--surf2:#f4f4f2;--ink:#1a1a19;
+--ink2:#55554f;--ink3:#86867e;--line:#e3e3df;--ok:#1f6f43;--okbg:#e7f3ec;--bad:#a3231d;
+--badbg:#fbeae9;--warn:#8a5a00;--warnbg:#fdf2dd;--accent:#2c5aa0;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 ui-sans-serif,
+-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:28px 20px 80px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-size:25px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:19px;margin:34px 0 10px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--ink2);text-transform:uppercase;
+letter-spacing:.06em;font-weight:600}
+p{margin:9px 0;color:var(--ink2)}
+.sub{color:var(--ink3);font-size:13px;margin-bottom:16px}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:10px;
+padding:16px 18px;margin:14px 0}
+.cond{background:var(--warnbg);border:1px solid var(--warn);border-radius:8px;
+padding:11px 14px;margin:12px 0;font-size:13px;color:var(--ink)}
+.cond b{color:var(--warn)}
+.hero{background:var(--surf);border:2px solid var(--bad);border-radius:10px;
+padding:18px 20px;margin:16px 0}
+.hero .v{font-size:30px;font-weight:680;letter-spacing:-.02em}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.tile{background:var(--surf);border:1px solid var(--line);border-radius:9px;padding:12px 14px}
+.tile .k{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3)}
+.tile .v{font-size:21px;font-weight:650;margin-top:3px}
+.tile .n{font-size:12px;color:var(--ink3);margin-top:2px}
+.scroll{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+th,td{text-align:right;padding:6px 9px;border-bottom:1px solid var(--line);
+font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+th{color:var(--ink3);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+tbody tr:hover{background:var(--surf2)}
+.pill{display:inline-block;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:650}
+.pill.ok{background:var(--okbg);color:var(--ok)}
+.pill.bad{background:var(--badbg);color:var(--bad)}
+.pill.warn{background:var(--warnbg);color:var(--warn)}
+.muted{color:var(--ink3)}
+code{background:var(--surf2);padding:1px 5px;border-radius:4px;font-size:12px}
+.bar{height:9px;background:var(--surf2);border-radius:5px;position:relative;margin:8px 0 2px}
+.bar i{position:absolute;top:0;bottom:0;background:var(--accent);border-radius:5px}
+.bar u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--bad)}
+.prov{font-size:12px;color:var(--ink3);font-family:ui-monospace,Menlo,monospace;
+background:var(--surf2);border-radius:8px;padding:12px 14px;word-break:break-all}
+</style>
+<div class="wrap">
+<h1>Confluence study &mdash; adaptive daily walk-forward</h1>
+<div class="sub">Rank-normalised ridge composite, expanding-window daily refit &middot;
+20260729T041035Z &middot; commit <code>87481e2</code></div>
+
+<div class="cond">
+<b>STANDING CONDITIONS.</b>
+<b>Partial remediation only</b> &mdash; this book is <b>NOT clean</b>. Only the <code>C</code>
+check was remediated; the <code>W</code> depth check and the entire <code>dep_*</code> family
+failed the Phase-0 lookahead audit and <b>remain in its selection path</b>. Everything below
+inherits that unquantified leak.
+Sample: <b>182 trades over 145 days</b>; the walk-forward
+issues predictions only once 40 training trades exist. IS and OOS are
+different market regimes (NQ 21k&rarr;30k, pre-market volume +~50%) &mdash; a single regime
+transition, observed once. Cells below the count floor are marked
+<span class="pill warn">insufficient</span> rather than given numbers.
+</div>
+<div class="hero">
+<div class="k muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.07em">
+Headline &mdash; the noise floor</div>
+<div class="v">92.70th percentile <span class="pill bad">NULL</span></div>
+<p>The real composite scores <b>rho +0.0645</b> out-of-sample. Run end to end on
+<b>2000 day-block-shuffled outcome vectors</b>, the identical pipeline produces
+a distribution whose 99th percentile is <b>+0.1453</b>. The registered gate was
+&ldquo;beyond the 99th percentile or the answer is null&rdquo;.
+<b>It did not clear. The answer is NULL and is reported as null.</b></p>
+<div class="bar">
+  <i style="left:0;width:92.7%"></i>
+  <u style="left:99%"></u>
+</div>
+<p class="muted" style="font-size:12px">blue = where the real result sits in the shuffled
+distribution &middot; red line = the 99th-percentile gate &middot; empirical p =
+0.0735</p>
+</div>
+
+<div class="tiles">
+ <div class="tile"><div class="k">Real metric</div><div class="v">+0.0645</div>
+  <div class="n">Spearman, 142 OOS predictions</div></div>
+ <div class="tile"><div class="k">Shuffled median</div><div class="v">-0.0702</div>
+  <div class="n">2000 runs</div></div>
+ <div class="tile"><div class="k">Shuffled p95 / p99</div>
+  <div class="v" style="font-size:16px">+0.0829 / +0.1453</div>
+  <div class="n">gate is p99</div></div>
+ <div class="tile"><div class="k">Shuffled max</div><div class="v">+0.2376</div>
+  <div class="n">best noise run</div></div>
+ <div class="tile"><div class="k">Configurations</div>
+  <div class="v">15</div>
+  <div class="n">model specifications examined</div></div>
+</div>
+<p class="muted">1 ridge composite + 1 direction-blind composite + 13 single-feature baselines = 15 model specifications. The penalty grid (6 values) is selected INSIDE each fold by 3-fold CV on training trades only and is part of the fitting, not a study-level search. 500 random-weight draws and 2000 block-shuffled runs are nulls, not configurations. No model family other than ridge was examined; none was added after registration.</p>
+<h2>Registered falsifiers</h2>
+<div class="scroll"><table><thead><tr><th>Falsifier</th><th>Value</th><th>Real</th>
+<th>Outcome</th></tr></thead><tbody>
+<tr><td>(a) direction-blind twin <span class="muted">&mdash; unsigned magnitudes only</span></td>
+<td>+0.0585</td><td>+0.0645</td>
+<td><span class="pill ok">does not fire</span></td></tr>
+<tr><td>(b) single-best-feature baseline <span class="muted">&mdash;
+<code>cvd_15</code></span></td>
+<td>+0.0658</td><td>+0.0645</td>
+<td><span class="pill bad">FIRES</span></td></tr>
+<tr><td>(c) random-weights composite <span class="muted">&mdash; same pool, p95 of
+500 draws</span></td>
+<td>+0.1374</td><td>+0.0645</td>
+<td><span class="pill bad">FIRES</span></td></tr>
+</tbody></table></div>
+<p class="verdict"><b>Falsifier (b) is the decisive one.</b> The fitted composite scores
++0.0645 and its own best single component <code>cvd_15</code>
+scores +0.0658. Combining thirteen features does not beat using one of them alone
+&mdash; <b>confluence adds nothing here</b>. The direction-blind twin sits at
++0.0585, within
+0.0060 of the signed composite,
+so what little signal exists is not distinguishably directional.</p>
+
+<h3>Single-feature baselines &mdash; identical walk-forward, one feature at a time</h3>
+<div class="scroll"><table><thead><tr><th>Feature</th><th>Walk-forward rho</th>
+<th>vs composite</th></tr></thead><tbody>
+<tr><td><code>cvd_15</code></td><td>+0.0658</td><td class='muted'>+0.0013</td></tr>
+<tr><td><code>delta_div_15</code> <span class='muted'>LOW-POWER</span></td><td>+0.0626</td><td class='muted'>-0.0020</td></tr>
+<tr><td><code>cvd_norm_15</code></td><td>+0.0600</td><td class='muted'>-0.0045</td></tr>
+<tr><td><code>vol_30_rel</code></td><td>+0.0598</td><td class='muted'>-0.0047</td></tr>
+<tr><td><code>cvd_30</code></td><td>+0.0562</td><td class='muted'>-0.0083</td></tr>
+<tr><td><code>cvd_5</code></td><td>+0.0505</td><td class='muted'>-0.0140</td></tr>
+<tr><td><code>gap_abs</code></td><td>+0.0431</td><td class='muted'>-0.0215</td></tr>
+<tr><td><code>ec_aggr_flip</code></td><td>+0.0390</td><td class='muted'>-0.0255</td></tr>
+<tr><td><code>ec_fp_imb</code></td><td>+0.0356</td><td class='muted'>-0.0290</td></tr>
+<tr><td><code>absorp_rel</code></td><td>+0.0337</td><td class='muted'>-0.0308</td></tr>
+<tr><td><code>vol_15_rel</code></td><td>+0.0305</td><td class='muted'>-0.0341</td></tr>
+<tr><td><code>abs_cvd_15</code></td><td>+0.0254</td><td class='muted'>-0.0391</td></tr>
+<tr><td><code>ec_delta</code></td><td>+0.0092</td><td class='muted'>-0.0553</td></tr>
+</tbody></table></div>
+<h2>New entry-candle features &mdash; the ones never previously tested</h2>
+<p>Every feature built before this round used 5-minute windows or longer. These four are single
+bar, computed on the bar at <b>fill&minus;1</b> (the last completed bar before the fill minute,
+so strictly pre-fill), shift-tested against the same contaminated twins as the rest of the
+study, and exchangeability-tested across the split <b>before</b> being allowed into the pool.</p>
+<div class="scroll"><table><thead><tr><th>Feature</th><th>+1 differs</th><th>+15 differs</th>
+<th>Shift</th><th>KS</th><th>p (perm)</th><th>Exchangeability</th><th>Pool</th>
+</tr></thead><tbody>
+<tr><td><code>ec_delta</code></td><td>182</td><td>181</td><td><span class="pill ok">PASS</span></td><td>0.088</td><td>0.8466</td><td><span class="pill ok">PASS</span></td><td><span class="pill ok">ADMITTED</span></td></tr>
+<tr><td><code>ec_fp_imb</code></td><td>182</td><td>181</td><td><span class="pill ok">PASS</span></td><td>0.132</td><td>0.4053</td><td><span class="pill ok">PASS</span></td><td><span class="pill ok">ADMITTED</span></td></tr>
+<tr><td><code>ec_delta_hi_lo</code></td><td>181</td><td>179</td><td><span class="pill ok">PASS</span></td><td>0.264</td><td>0.0080</td><td><span class="pill bad">FAIL</span></td><td><span class="pill bad">EXCLUDED</span></td></tr>
+<tr><td><code>ec_aggr_flip</code></td><td>89</td><td>87</td><td><span class="pill ok">PASS</span></td><td>0.066</td><td>0.3643</td><td><span class="pill ok">PASS</span></td><td><span class="pill ok">ADMITTED</span></td></tr>
+</tbody></table></div>
+<p><code>ec_delta_hi_lo</code> failed exchangeability and was <b>excluded, not remedied</b> &mdash;
+per the brief, no feature is repaired mid-run. Pool frozen at
+<b>13 features</b>; nothing was added after that point.</p>
+<h2>Conviction sizing</h2>
+<h3>Part 1 &mdash; diagnostic on code already running</h3>
+<p>Conditional on a trade being taken, do the canon's own escalation and governor states predict
+realised R? Day-clustered bootstrap, 4,000 draws. &ldquo;n needed&rdquo; is the sample this
+effect size would require for 80% power &mdash; where it exceeds
+182, the cell is underpowered by construction.</p>
+<div class="scroll"><table><thead><tr><th>State variable</th><th>rho</th><th>95% CI</th>
+<th>p</th><th>rho (OOS half)</th><th>n needed</th><th>Levels</th></tr></thead><tbody>
+<tr><td><code>nth</code></td><td>+0.158</td><td class='muted'>[+0.010, +0.295]</td><td>0.038</td><td>+0.128</td><td class='muted'>311</td><td class='muted'>4 levels, <span class='pill warn'>2 insufficient</span></td></tr>
+<tr><td><code>governor</code></td><td>+0.057</td><td class='muted'>[-0.085, +0.203]</td><td>0.451</td><td>-0.006</td><td class='muted'>2,406</td><td class='muted'>2 levels</td></tr>
+<tr><td><code>cold</code></td><td>-0.179</td><td class='muted'>[-0.318, -0.035]</td><td>0.015</td><td>-0.131</td><td class='muted'>243</td><td class='muted'>2 levels</td></tr>
+<tr><td><code>day_pos</code></td><td>+0.168</td><td class='muted'>[+0.019, +0.302]</td><td>0.025</td><td>+0.144</td><td class='muted'>277</td><td class='muted'>3 levels, <span class='pill warn'>1 insufficient</span></td></tr>
+<tr><td><code>struct</code></td><td>+0.168</td><td class='muted'>[+0.022, +0.308]</td><td>0.025</td><td>+0.163</td><td class='muted'>275</td><td class='muted'>3 levels, <span class='pill warn'>1 insufficient</span></td></tr>
+<tr><td><code>score</code></td><td>+0.158</td><td class='muted'>[+0.025, +0.288]</td><td>0.019</td><td>+0.143</td><td class='muted'>311</td><td class='muted'>3 levels</td></tr>
+</tbody></table></div>
+<p class="verdict">Surviving Bonferroni over 6 state variables:
+<b>NONE</b>. Worth noting against
+the rest of this study: these internal-state associations
+(|rho| up to 0.179) are
+<b>several times larger</b> than anything the order-flow pool produced &mdash; but every one of
+them needs 243+ trades for 80% power
+against the 182 available, and none survives correction.</p>
+
+<h3>Part 2 &mdash; score-proportional vs flat sizing under funded rules</h3>
+<div class="cond"><b>NOT RUN &mdash; and that is the registered outcome, not an
+omission.</b> Part 2 was registered as conditional on the composite clearing its noise floor.
+It did not clear it (92.70th percentile against a 99th-percentile
+gate), so sizing proportional to composite score would be <b>sizing by noise</b>. Running it
+anyway would be the search widening itself &mdash; exactly what the brief forbids.</div>
+<h2>Provenance</h2>
+<div class="prov">
+run_id &nbsp; 20260729T041035Z<br>
+commit &nbsp; 87481e2<br>
+pipeline.py sha256/16 &nbsp; b249fe2e582b81a6<br>
+run_shard.py sha256/16 &nbsp; a866c86846cb5938<br>
+feature pool (13) &nbsp; cvd_5, cvd_15, cvd_30, cvd_norm_15, abs_cvd_15, delta_div_15, absorp_rel, vol_15_rel, vol_30_rel, gap_abs, ec_delta, ec_fp_imb, ec_aggr_flip<br>
+direction-blind pool &nbsp; abs_cvd_15, absorp_rel, vol_15_rel, vol_30_rel, gap_abs<br>
+min_train &nbsp; 40 trades &nbsp;|&nbsp; penalty grid &nbsp;
+[0.01, 0.1, 1.0, 10.0, 100.0, 1000.0] (selected inside each fold, 3-fold CV on training trades only)<br>
+shuffles &nbsp; 2000 day-block permutations &nbsp;|&nbsp; duplicate shard keys
+&nbsp; 0<br>
+shard files (one writer each, append-only) &nbsp; perm_00.jsonl, perm_01.jsonl, perm_02.jsonl, perm_03.jsonl, random_00.jsonl<br>
+baseline &nbsp; PARTIALLY REMEDIATED (C only) + news filter; W and dep_* STILL LEAKY<br>
+sample &nbsp; 182 trades / 145 days<br>
+regenerate &nbsp; python3 research/sweep_2026_07/confluence/build_dashboard.py
+</div>
+<p class="sub" style="margin-top:20px">Deterministic throughout: no LLM adjusted weights,
+thresholds, or feature selection at any point. Shard workers ran one frozen command each and
+wrote to disjoint append-only files; a single non-agent aggregator merged them.</p>
+</div>
+<script>(function(){var t=localStorage.getItem('theme');
+if(t)document.documentElement.setAttribute('data-theme',t);})();</script>

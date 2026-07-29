@@ -167,9 +167,11 @@ so what little signal exists is not distinguishably directional.</p>
 <div class="scroll"><table><thead><tr><th>Feature</th><th>Walk-forward rho</th>
 <th>vs composite</th></tr></thead><tbody>""")
 singles = FAL.get("singles", {})
+LOWP = " <span class='muted'>LOW-POWER</span>"
 for f, v in sorted(singles.items(), key=lambda kv: -(kv[1] or -9)):
     d = (v or 0) - (NF.get("real") or 0)
-    A(f"<tr><td><code>{f}</code>{' <span class=\"muted\">LOW-POWER</span>' if f=='delta_div_15' else ''}</td>"
+    tag = LOWP if f == "delta_div_15" else ""
+    A(f"<tr><td><code>{f}</code>{tag}</td>"
       f"<td>{f4(v)}</td><td class='muted'>{f4(d)}</td></tr>")
 A("</tbody></table></div>")
 

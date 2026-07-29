@@ -282,3 +282,38 @@ close to arithmetically forced: 20 of the 23 avoided trades were losers (-$3,535
 winners (+$791), and shuffling those 23 trades into the SAME group sizes yields all-9-positive
 in 21.8% of 20,000 draws. The unanimous sign count is therefore NOT independent corroboration —
 one draw in five would show it by chance. Reported as such.
+
+## 2026-07-29 · CONFLUENCE STUDY (adaptive daily walk-forward) — NULL, on every axis
+Fifth container reset before starting; recovered from origin + e6cc277 bars + 9f21fd9 gate.
+NEW ENTRY-CANDLE FEATURES (the ones never previously built — everything prior used 5-min+
+windows). Four built on the bar at fill-1: ec_delta, ec_fp_imb (level-count footprint
+imbalance, deliberately NOT (B-A)/(B+A) which would duplicate delta), ec_delta_hi_lo,
+ec_aggr_flip. All four PASS the shift test. ec_delta_hi_lo FAILS exchangeability (KS 0.264,
+p 0.008) and is EXCLUDED, not remedied. Pool frozen at 13.
+PIPELINE frozen before first fit: rank-normalised ridge composite (rank map fitted on TRAIN
+only), penalty from a fixed 6-value grid chosen by 3-fold CV inside each fold, expanding-window
+DAILY walk-forward, MIN_TRAIN 40. Deterministic — no LLM touched weights, thresholds or feature
+selection at any point. Shard workers ran one frozen command each into disjoint append-only
+files; a single non-agent aggregator merged them (0 duplicate keys across 2,500 records).
+RESULT: real composite rho +0.0645 over 142 OOS predictions. Noise floor = the IDENTICAL
+pipeline on 2,000 day-block-shuffled outcome vectors: median -0.0702, p95 +0.0829, p99 +0.1453,
+max +0.2376. THE REAL RESULT SITS AT THE 92.70th PERCENTILE (empirical p 0.0735). The
+registered gate was ">99th percentile or null". IT DID NOT CLEAR. NULL.
+FALSIFIERS: (b) FIRES — composite +0.0645 does not beat its own best component cvd_15 +0.0658;
+confluence adds nothing. (c) FIRES — random weights on the same pool have p95 +0.1374, more
+than double the fitted composite, which sits at only the 74.6th percentile of random weights.
+(a) does not formally fire (signed +0.0645 vs blind +0.0585) but the margin is 0.0060, so what
+little there is is not distinguishably directional. 15 model specifications examined; the
+penalty grid is inside-fold, not a study-level search.
+CONVICTION PART 2 NOT RUN — registered as conditional on clearing the noise floor. It did not,
+so sizing by composite score would be sizing by noise. Not running it is the result.
+CONVICTION PART 1 (diagnostic, ran regardless): the canon's OWN state variables associate with
+realised R far more strongly than any order-flow feature — cold -0.179 (p .015), day_pos +0.168
+(p .025), struct +0.168 (p .025), nth +0.158 (p .038), score +0.158 (p .019) vs a best
+order-flow single of +0.0658. But NONE survives Bonferroni over 6, every one needs 243-311
+trades for 80% power against 182 available, and governor is flat (+0.057, p .451). Recorded as
+the most interesting open thread in the study, explicitly NOT as a finding.
+READING: entry-candle flow, tested for the first time, is the weakest group in the pool
+(ec_delta +0.0092 is the worst single feature of all 13). Three rounds have now each produced a
+null on order flow at entry. The one thing that keeps out-associating it is the canon's own
+internal state, which is not order flow at all.

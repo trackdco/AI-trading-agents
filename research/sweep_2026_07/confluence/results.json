@@ -1,0 +1,229 @@
+{
+ "noise_floor": {
+  "real": 0.06451893457557135,
+  "n_perm": 2000,
+  "percentile": 92.7,
+  "p_empirical": 0.0734632683658171,
+  "p99": 0.14531206566566648,
+  "p95": 0.08285787518219793,
+  "median": -0.0702194314700421,
+  "minv": -0.34071764150792977,
+  "maxv": 0.23764474187007337,
+  "passes": false,
+  "dup_keys": 0
+ },
+ "random_weights": {
+  "n": 500,
+  "median": 0.004647185861002452,
+  "p95": 0.13743717455025684,
+  "maxv": 0.27283224770203235,
+  "percentile": 74.6,
+  "fires": true
+ },
+ "configurations": {
+  "model_specs_examined": 15,
+  "detail": "1 ridge composite + 1 direction-blind composite + 13 single-feature baselines = 15 model specifications. The penalty grid (6 values) is selected INSIDE each fold by 3-fold CV on training trades only and is part of the fitting, not a study-level search. 500 random-weight draws and 2000 block-shuffled runs are nulls, not configurations. No model family other than ridge was examined; none was added after registration.",
+  "pool_size": 13,
+  "min_train": 40,
+  "penalties": [
+   0.01,
+   0.1,
+   1.0,
+   10.0,
+   100.0,
+   1000.0
+  ]
+ },
+ "verdict": {
+  "overall": "NULL",
+  "noise_floor_passes": false,
+  "fal_a": false,
+  "fal_b": true,
+  "fal_c": true
+ },
+ "conviction_part2": {
+  "run": false,
+  "reason": "gated on the composite clearing its noise floor; it did not"
+ },
+ "provenance": {
+  "commit": "87481e2",
+  "pipeline_sha": "b249fe2e582b81a6",
+  "shard_sha": "a866c86846cb5938",
+  "pool": [
+   "cvd_5",
+   "cvd_15",
+   "cvd_30",
+   "cvd_norm_15",
+   "abs_cvd_15",
+   "delta_div_15",
+   "absorp_rel",
+   "vol_15_rel",
+   "vol_30_rel",
+   "gap_abs",
+   "ec_delta",
+   "ec_fp_imb",
+   "ec_aggr_flip"
+  ],
+  "blind": [
+   "abs_cvd_15",
+   "absorp_rel",
+   "vol_15_rel",
+   "vol_30_rel",
+   "gap_abs"
+  ],
+  "baseline": "PARTIALLY REMEDIATED (C only) + news filter; W and dep_* STILL LEAKY",
+  "n_trades": 182,
+  "n_days": 145,
+  "shard_files": [
+   "perm_00.jsonl",
+   "perm_01.jsonl",
+   "perm_02.jsonl",
+   "perm_03.jsonl",
+   "random_00.jsonl"
+  ]
+ },
+ "falsifiers": {
+  "baseline": "PARTIALLY REMEDIATED (C only) + news filter; W and dep_* STILL LEAKY",
+  "real": {
+   "rho": 0.06451893457557135,
+   "n_pred": 142,
+   "n_trades": 182,
+   "n_days": 145
+  },
+  "blind": {
+   "rho": 0.05852945493296882,
+   "features": [
+    "abs_cvd_15",
+    "absorp_rel",
+    "vol_15_rel",
+    "vol_30_rel",
+    "gap_abs"
+   ],
+   "fires": false
+  },
+  "singles": {
+   "cvd_5": 0.05050825756522474,
+   "cvd_15": 0.06580568772482187,
+   "cvd_30": 0.05624847408786371,
+   "cvd_norm_15": 0.06003206406653985,
+   "abs_cvd_15": 0.02537363636433718,
+   "delta_div_15": 0.06256202079633393,
+   "absorp_rel": 0.033715623976685365,
+   "vol_15_rel": 0.030463985592964222,
+   "vol_30_rel": 0.0597744821971346,
+   "gap_abs": 0.043051135537206846,
+   "ec_delta": 0.00921369742781737,
+   "ec_fp_imb": 0.035552318893257766,
+   "ec_aggr_flip": 0.038980308661176126
+  },
+  "best_single": {
+   "feature": "cvd_15",
+   "rho": 0.06580568772482187,
+   "composite_beats": false
+  },
+  "conviction_state": {
+   "nth": {
+    "rho": 0.15820050413255182,
+    "ci": [
+     0.010372247445610798,
+     0.29516680399485395
+    ],
+    "p": 0.0385,
+    "rho_oos": 0.12768851121715702,
+    "n_required": 311.45694131683746,
+    "n": 182,
+    "thin_levels": 2,
+    "levels": {
+     "1.0": 145,
+     "2.0": 27,
+     "3.0": 6,
+     "4.0": 4
+    }
+   },
+   "governor": {
+    "rho": 0.05709179801053944,
+    "ci": [
+     -0.08543351276931523,
+     0.2025187772306564
+    ],
+    "p": 0.4505,
+    "rho_oos": -0.006377308254936548,
+    "n_required": 2406.498032134079,
+    "n": 182,
+    "thin_levels": 0,
+    "levels": {
+     "1.0": 137,
+     "0.5": 45
+    }
+   },
+   "cold": {
+    "rho": -0.17893852221548448,
+    "ci": [
+     -0.3175523426910595,
+     -0.03544425471014504
+    ],
+    "p": 0.015,
+    "rho_oos": -0.13079455485707586,
+    "n_required": 242.95340174740747,
+    "n": 182,
+    "thin_levels": 0,
+    "levels": {
+     "0.0": 125,
+     "1.0": 57
+    }
+   },
+   "day_pos": {
+    "rho": 0.16778091727771544,
+    "ci": [
+     0.01850906629620666,
+     0.30181708266197155
+    ],
+    "p": 0.025,
+    "rho_oos": 0.1439107565982066,
+    "n_required": 276.6525969550352,
+    "n": 182,
+    "thin_levels": 1,
+    "levels": {
+     "1.0": 145,
+     "2.0": 34,
+     "3.0": 3
+    }
+   },
+   "struct": {
+    "rho": 0.16835618245358736,
+    "ci": [
+     0.021787534802445687,
+     0.3084362048361599
+    ],
+    "p": 0.025,
+    "rho_oos": 0.16279589187707433,
+    "n_required": 274.74976117465076,
+    "n": 176,
+    "thin_levels": 1,
+    "levels": {
+     "1.0": 103,
+     "2.0": 70,
+     "0.0": 3
+    }
+   },
+   "score": {
+    "rho": 0.1584390231172378,
+    "ci": [
+     0.024886160008589914,
+     0.28783085629219435
+    ],
+    "p": 0.0195,
+    "rho_oos": 0.14332473752342487,
+    "n_required": 310.51309134292944,
+    "n": 182,
+    "thin_levels": 0,
+    "levels": {
+     "4.0": 87,
+     "3.0": 73,
+     "5.0": 22
+    }
+   }
+  },
+  "conviction_survivors": []
+ }
+}
