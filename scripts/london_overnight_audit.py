@@ -352,6 +352,54 @@ def stage2() -> None:
                      f"{'PASS' if c['passes_fwer'] else 'fails'} |\n")
         L.append(f"\n**{len(survivors)} of {len(prelim)} survive family-wise correction.**\n")
 
+    # WHICH CONSTRAINT BOUND. A bare "nothing found" hides whether the bar was missed on
+    # evidence or on sample size. These two floors are in structural tension: ~1 trade/week
+    # admits n≈39-70, but a 95% Wilson lower bound of 60% off a ~65% point estimate needs
+    # n≈150. Report the cells that met the WR bar in both eras so the reader can see which
+    # floor did the killing. This does not move the bar — those cells remain rejected.
+    near = []
+    for combo in cells():
+        m = M[:, combo[0]].copy()
+        for j in combo[1:]:
+            m &= M[:, j]
+        n = int(m.sum())
+        if n < min_n_pooled:
+            continue
+        per = {}
+        ok = True
+        for e in ERAS:
+            em = m & (era == e)
+            if int(em.sum()) < S2_MIN_N_ERA:
+                ok = False
+                break
+            per[e] = (int(em.sum()), float(win[em].mean()))
+        if ok and all(v[1] >= S2_MIN_WR_ERA for v in per.values()):
+            k = int(win[m].sum())
+            near.append({"lab": " AND ".join(names[i] for i in combo), "n": n,
+                         "wr": k / n, "wilson": wilson_lo(k, n), "per": per})
+    L.append("\n## Which floor bound the result\n")
+    if near:
+        L.append(f"\n{len(near)} cell(s) met the >= {S2_MIN_WR_ERA * 100:.0f}% WR bar in BOTH "
+                 f"eras but were rejected by the pooled Wilson floor — a SAMPLE-SIZE objection, "
+                 f"not evidence against:\n\n"
+                 "| cell | n | pooled WR | Wilson lo | 2025 | 2026 |\n|---|---|---|---|---|---|\n")
+        for c in sorted(near, key=lambda x: -x["wilson"]):
+            L.append(f"| `{c['lab']}` | {c['n']} | {c['wr'] * 100:.1f}% | "
+                     f"**{c['wilson'] * 100:.1f}%** | {c['per']['2025'][0]}/"
+                     f"{c['per']['2025'][1] * 100:.1f}% | {c['per']['2026'][0]}/"
+                     f"{c['per']['2026'][1] * 100:.1f}% |\n")
+        L.append(f"\nThe two floors cannot both be satisfied at this population size: ~1 "
+                 f"trade/week admits n≈{min_n_pooled}-70, while a 95% Wilson lower bound of "
+                 f"{S2_MIN_WILSON * 100:.0f}% off a ~65% point estimate needs n≈150. Any cell "
+                 f"rare enough to be 'low-frequency' is too small to prove itself to 95% "
+                 f"confidence. **These cells are not findings** — they are the reason the null "
+                 f"is 'unproven at this sample', not 'disproven'. Note that two of them invert "
+                 f"or ignore ASIA, consistent with the L3 trial finding ASIA backwards in 2026.\n")
+    else:
+        L.append(f"\nNo cell reached {S2_MIN_WR_ERA * 100:.0f}% WR in both eras even before "
+                 f"the Wilson floor was applied. The null is on the evidence, not on sample "
+                 f"size.\n")
+
     if not prelim or not survivors:
         L.append("\n**CLEAN NULL.** No feature combination reaches 65% win rate in both eras "
                  "at ~1 trade/week with a pooled Wilson floor of 60% and a family-wise-corrected "
