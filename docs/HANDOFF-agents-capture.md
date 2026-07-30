@@ -118,9 +118,22 @@ trade) and the MFE join both exist. Headlines:
 - **The old canon's drawdown-at-t cut is INVERTED here**: still-open shallow-drawdown trades
   finish +0.01R (pre) / +0.32R (gold) at t+3, and the deep-drawdown bucket is nearly empty
   (V8 + wall gates already removed it). Era-unstable too. Do not resurrect the cut.
-- The strong, monotone, era-worthy signal is IN-PROFIT persistence: gold still-open-and-green
-  WR climbs 69%→85% from t+2 to t+10; pre 48%→61% with +1.47R mean at t+10. Agent alpha =
-  pressing/holding green, banking partials on losers that flash +1R — NOT cutting red.
+- The strong signal is IN-PROFIT persistence, and it is now **triple-era grade**
+  (`output/time_segments2_{fit,holdout}.parquet`, per-trade path states at t+2/3/5/8/10):
+  **at +0.5R or better by t+3–5 the trade wins 79–88% of the time in every era** — fit 2025
+  (gold 81–82%), fit 2026 (81–83%), sealed holdout (pre 79/84%, gold 82/88%) — and "pressing
+  highs" (within 0.25R of its own MFE, green) runs 83–90% on holdout. That is above the elite
+  combo's bar. It cannot add size post-entry mechanically; it is the agents' PRESS/HOLD
+  mandate, precisely quantified. The natural first experiment: defer/shrink the V8 50%
+  partial on confirmed runners and let the trail work — tested causally, holdout-confirmed.
+- **Angus's old-canon time-cut has NO population here**: "in drawdown and never green by
+  t+3/5" is n=0–2 in fit-2025, fit-2026 AND holdout. Limit-at-rejection entries either go
+  green within minutes or stop out before the checkpoint; the grinding-red population the
+  11%/18% rule was built on belonged to the broken canon. The retrace-to-red state
+  ("was green, red now") is era-INCONSISTENT (sign flips 2025 vs 2026) and finishes
+  breakeven-to-positive — cutting it realizes ~−0.25R and burns 0.26–0.57R per trigger.
+  No time-based cut ships, in either direction, and the burden of proof for ever adding one
+  is a triple-era result at least as strong as what killed it here.
 - Pre and gold need different management (pre winners run to 3.8R mean MFE and hold-to-close
   4.29R; gold peaks fast and shallower).
 
