@@ -161,6 +161,7 @@ def load_pop(span: str) -> pd.DataFrame:
                          f"expected subset of {sorted(cfg['years'])}")
     F = pd.concat([F, F.apply(london_checks, axis=1, result_type="expand")], axis=1)
     F["era"] = pd.to_datetime(F.day).dt.year.astype(str)
+    F["session"] = "london"
     F["fill_ts"] = pd.to_datetime(F.fill, format="mixed", utc=True).dt.tz_convert(ET)
     F["exit_ts"] = pd.to_datetime(F["exit"], format="mixed", utc=True).dt.tz_convert(ET)
     F["dollars"] = F.dollars / F.get("size_engine", 1.0)
@@ -182,18 +183,21 @@ def guard_holdout_days(book: pd.DataFrame) -> None:
 
 # ------------------------------------------------------------------ report pieces
 def book_stats(t: pd.DataFrame, pop_days: pd.Series) -> dict:
-    d = t.groupby("day").dollars.sum()
+    # maxDD is TRADE-LEVEL chronological equity (sorted day, fill_ts) — the prereg §2 fit
+    # reference's own convention ($1,720/$2,550; verified: the grid audit and loser autopsy
+    # match it). Day-level daily sums give $2,440 for 2026-fit — that is the late-bucket
+    # doc's convention, NOT this report's. Pinned by the rehearsal anchor gate.
+    t = t.sort_values(["day", "fill_ts"], kind="mergesort")
     mo = t.assign(mo=t.day.astype(str).str[:7]).groupby("mo").dollars.sum()
     span_days = (pd.to_datetime(pop_days.max()) - pd.to_datetime(pop_days.min())).days + 1
     per_era = {}
     for era, g in t.groupby("era"):
-        de = g.groupby("day").dollars.sum()
         per_era[era] = dict(n=len(g), net=float(g.dollars.sum()),
                             wr=float((g.R > 0).mean()), mean_r=float(g.R.mean()),
-                            dd=maxdd(de))
+                            dd=maxdd(g.dollars))
     return dict(n=len(t), days=int(t.day.nunique()), net=float(t.dollars.sum()),
                 wr=float((t.R > 0).mean()), mean_r=float(t.R.mean()),
-                dd=maxdd(d), green=int((mo > 0).sum()), months=len(mo),
+                dd=maxdd(t.dollars), green=int((mo > 0).sum()), months=len(mo),
                 worst_mo=float(mo.min()), worst_mo_name=str(mo.idxmin()),
                 tpw=len(t) / (span_days / 7.0), per_era=per_era)
 
@@ -273,8 +277,9 @@ def check_anchors(bs: dict, lifts: dict, band_stats: dict, buckets: pd.DataFrame
 # ------------------------------------------------------------------ report body
 def fmt_gate(name: str, res: dict) -> str:
     verdict = "PASS" if (res["mean"] > 0 and res["p"] <= ALPHA) else "FAIL"
+    p = f"{res['p']:.4f}" if res["p"] >= 1e-4 else f"{res['p']:.1e}"
     return (f"| {name} | {res['n']} | {res['mean']:+.3f} | {res['se']:.3f} | "
-            f"{res['t']:+.2f} | {res['p']:.4f} | {ALPHA} | **{verdict}** |\n")
+            f"{res['t']:+.2f} | {p} | {ALPHA} | **{verdict}** |\n")
 
 
 def build_report(span: str, authorized_by: str, bs: dict, primary: dict, s1: dict,
