@@ -158,7 +158,7 @@ svg text{{font:10px system-ui;fill:var(--ink2)}}
 </style>
 <div class="wrap">
 <header><h1>Run 2 — desk-live chain, phase 1 (fit span)</h1>
-<p class="sub">v3 spec · two-rule canon baseline · updated {now} · refreshes hourly at this URL</p></header>
+<p class="sub">v3 spec · three-rule canon baseline · updated {now} · refreshes hourly at this URL</p></header>
 <div class="bar"><i style="width:{len(D) / TOTAL * 100:.1f}%"></i></div>
 <p class="sub">{len(D)} of ~{TOTAL} trades · {D.day.nunique()} days · through {D.day.max()}</p>
 <div class="tiles">
