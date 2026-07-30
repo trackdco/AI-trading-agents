@@ -27,6 +27,7 @@ reconstruct anything from git history and treat it as truth. Any number produced
 |---|---|
 | Decision core | `src/canon/scorer_ny.py::NYScorerV2` |
 | Live lane (features → verdict) | `src/canon/ny_lane.py::NYLane` |
+| **Live orchestrator (what you wire)** | `src/live/ny_runner.py::NYRunner` — detector → orders → lane → verdicts, decided per bar |
 | Order lifecycle | `src/canon/order_watch.py` |
 | Sizing schedule | `src/canon/gate_evidence.py` (imports the profile — never restates it) |
 | Account backstops | `src/live/risk.py`, `src/canon/spine.py` |
@@ -69,6 +70,9 @@ python -m scripts.depth_parity --day 2026-04-20 --self-test               # PASS
   proves the live re-derivation of W, D, the wall cut, the scores and the tiers.
 - **The live lane reproduces the book on 25/25 real fit days** — real bars and tape streamed
   through `CanonIngestor`, features built by the live code path, scored live.
+- **The runner orchestration is pinned by 16 tests** — the resting rule, gap dormancy and
+  gold revival, replace-with-freshest sizing, the struct-event→elite join, budget-gates-fills
+  semantics, the scratch race, and the hard drop at 10:30.
 - **The depth harness is clean on both book models** — 180 archive minutes through
   `DepthBook`, and an MBO capture through `OrderBook`, both at 100% gate agreement. MBO
   aggregated to price levels *does* reproduce the archive's wall features.
@@ -87,7 +91,7 @@ python -m scripts.depth_parity --day 2026-04-20 --self-test               # PASS
 | B | `RiskLimits.max_trades_per_day` **3 → None** | The old 3 backstopped a 2/day engine cap that no longer exists. Left at 3 it would announce a halt and stand the account down mid-session on most days. This was the most dangerous stale default in the repo. |
 | C | Spine `daily_loss_halt_r` **−4R → −8R** | At the $150 base, −4R is −$600 — *below* the canon's own $800 budget. An outer guard that fires before the inner one truncates the validated book. −8R is exactly 1.5× the budget at every base. |
 | D | **No distance cancel.** Orders live to their session window end. | The 22pt `t_cancel` measured inverted: it kept −0.180R and killed +0.015R. `OrderWatch.t_cancel` now defaults to `None`; setting a float trades a book nobody measured. |
-| E | **Per-order session window** (pre 09:30, gold 10:30) | One global window cannot serve both; an order outliving its session is an unmeasured trade. Pass `win_end=` per order. |
+| E | **The resting rule** supersedes fixed per-order windows: an order rests exactly while a fill right now would be admissible — dormant through the 09:30–09:40 gap, may revive in gold (the book counts a pre trigger's gold fill as a gold trade), hard-dropped at 10:30. | `NYRunner` enforces this; do not re-impose a birth-window cutoff, it removes trades the book counted. |
 | F | Gold window **09:40–10:30**, and **no 09:55–10:00 dead zone** | The rebuilt canon was validated without one. |
 | G | Sizing base **$200 → $150** | Every order size changes. |
 | H | De-risk ladder replaces the linear taper to zero | Between $100 and $1,000 of buffer the canon now takes half/quarter-size trades where the old canon refused. Angus's ruling; the spine's $100 halt is the floor. |
@@ -107,24 +111,28 @@ Do these in order. Each is a gate; a red gate stops the sequence.
    Requires **100% gate agreement** and wall distances within a tick. This is the one gate
    that cannot be satisfied offline, and it is the one that fails *silently* if skipped — a
    wrong wall distance still produces a plausible verdict, so nothing alerts.
-3. **Wire the runner to the lane.** `NYLane` is event-driven by necessity: the budget, the
-   elite slot and `struct_event` only exist at fill time. `RouteBLive._load_verdicts` loads a
-   whole day up front, which is the wrong shape — you need a per-candidate hook:
+3. **Wire `NYRunner` to your loop.** The orchestration is BUILT and tested
+   (`src/live/ny_runner.py`, 16 tests) — the struct-event join included, so the elite 2.0×
+   fires without further work. Your side is four calls plus executing the actions it returns
+   (`place` / `cancel` / `modify_size` / `scratch`), each through the spine as today:
    ```python
-   lane.start_day(day, buffer=equity - trailing_line)     # once per session
-   v = lane.on_candidate(fill_ts=..., entry=..., stop=..., direction=...,
-                         risk_pts=<the PLACED bracket's stop distance>,
-                         trigger_times=<the day's census stamps>,
-                         struct_event=watch.struct_event(ref))
-   if v["take"]: route it, then lane.confirm(v)           # on FILL
-   lane.on_exit(v, pl=realized)                           # on CLOSE
+   runner = NYRunner(lane=NYLane(ingestor=ing, profile=LUCID, news_gate=gate))
+   runner.start_day(day, buffer=equity - trailing_line)   # once per session
+   acts = runner.on_trigger(t)          # every LiveDetector.on_bar trigger
+   acts = runner.on_bar(ts, high, low)  # every closed 1m bar, after the ingestor ate it
+   res  = runner.on_fill(ref, fill_ts, filled_size)       # broker fill event
+   runner.on_position_closed(ref, pl=realized)            # exit manager's realized $
    ```
-   `evaluate` is pure, so re-ask it on every bar while an entry rests — budget room consumed
-   by an earlier fill **must** cancel a resting order, and that is the only way to notice.
-4. **Join `struct_event` through.** `OrderWatch` tracks it (L1-mirrored, tested) and the lane
-   accepts it, but nothing connects them yet. Until it is joined the elite 2.0× never fires:
-   safe degradation (absent evidence never escalates size) at the cost of ~6% of trades
-   sizing below the validated book.
+   Contracts you must honour, all pinned by tests: a `scratch` result means CLOSE THE
+   POSITION NOW and journal it (the fill-minute evaluation refused a fill that landed —
+   the book gated at fill with zero cost; the scratch is that idealisation's honest live
+   price). Orders rest exactly while a fill right now would be admissible — they go dormant
+   through the 09:30–09:40 gap and may revive in gold, because the book counts a pre
+   trigger's gold fill as a gold trade. The budget gates FILLS, not resting orders — that is
+   the book's own semantics, so do not "fix" jointly-over-budget resting orders; the runner
+   pulls survivors after each fill and scratches the race.
+4. ~~Join `struct_event`~~ — **done inside `NYRunner`** (`watch.struct_event(ref)` feeds the
+   fill-minute verdict; a scratched elite fill does not burn the day's 2.0× slot).
 5. **Shadow a full session** disarmed. Confirm against `docs/ARMING-REFERENCE.md` §4: no
    trade-count halt, no distance cancels, per-session expiry, sizes matching
    `check_sizing(..., risk_dollars=v["risk_dollars"])`.

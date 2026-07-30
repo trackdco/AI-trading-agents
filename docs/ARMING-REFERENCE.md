@@ -68,7 +68,7 @@ Each of these is a live-visible change and is why this document exists.
 | B | `RiskLimits.max_trades_per_day` default **3 → None**. | The old 3 was a backstop above a 2/day engine cap that no longer exists. Against a ~4/day book it would announce a halt on most days and stand the account down mid-session. | **This was the single most dangerous stale default.** |
 | C | Spine `daily_loss_halt_r` **−4R → −8R**. | −4R against the $150 base is −$600, *below* the canon's own $800 budget — an outer guard that front-runs the inner one truncates the measured book. −8R is exactly 1.5× the budget at every base. | A halt inside the budget silently trades a smaller book than the one validated. |
 | D | **No distance cancel.** Orders live until their session window ends. | The 22pt `t_cancel` measured inverted: kept −0.180R, killed +0.015R. | Orders rest longer; more fills. |
-| E | **Per-session window end** (pre 09:30, gold 10:30). | One global window cannot serve both. | An order outliving its session is an unmeasured trade. |
+| E | **The resting rule**: an order rests exactly while a fill right now would be admissible — dormant through the 09:30–09:40 gap, may revive in gold, hard-dropped at 10:30. | The book counts a pre trigger's gold fill as a GOLD trade, so a birth-window cutoff would remove measured trades. | `NYRunner` enforces it. |
 | F | Gold window **09:40–10:30** (was 09:40–10:00); **no 09:55–10:00 dead zone**. | The rebuilt canon was validated without one. | — |
 | G | Sizing base **$200 → $150**, ladder is now tier × base. | The $200 schedule belonged to the broken canon. | Every order size changes. |
 | H | De-risk ladder near the line: **half size below $1,000 of buffer, half again below $500** (ANGUS 2026-07-30), instead of a linear taper to zero between $1,500 and $100. | Angus's ruling. Both steps are dormant across all 19 months (min buffer $1,621 / $1,720), so no measured number changes; the spine's $100 hard halt is the floor beneath them. | Resolved. |
@@ -90,7 +90,7 @@ Each of these is a live-visible change and is why this document exists.
 | R9 | Live LANE exists and reproduces the book on real days | ✅ `src/canon/ny_lane.py`, 25/25 fit days via `scripts/ny_lane_replay.py` |
 | R10 | Depth parity HARNESS exists and is self-clean | ✅ `scripts/depth_parity.py` — 180 archive minutes via `DepthBook` and an MBO capture via `OrderBook`, both 100% gate agreement |
 | R10b | Depth parity run against a REAL captured session | ❌ needs one capture — Pat, `docs/HANDOVER-pat-arming.md` §4.2 |
-| R11 | Runner wired to the lane (`VerdictSource` → `NYLane`) | ❌ not written |
+| R11 | Runner orchestration (detector → orders → lane, struct_event joined) | ✅ `src/live/ny_runner.py`, 16 tests — Pat wires four calls + action execution |
 | R12 | Angus's token against a certified commit | ❌ yours to issue |
 
 ---
@@ -124,20 +124,19 @@ ANGUS is right that MBO is not a problem, and that is now demonstrated rather th
 What remains is feed-specific and cannot be faked offline: one real captured session, to catch
 units, tick alignment and timing. Pat's runbook: `docs/HANDOVER-pat-arming.md` §4.
 
-### 5.2 The runner is not wired to the lane
+### 5.2 RESOLVED — `NYRunner` is the per-candidate orchestrator
 
-Nothing calls `NYLane` yet: `canon_runtime` still shells out to the old canon scripts and
-`route_b` consumes those verdicts. Note also that `RouteBLive._load_verdicts` loads a whole
-day's verdicts **up front**, which is the wrong shape for the new canon — the budget, the
-elite slot and `struct_event` all only exist at fill time. The lane is event-driven by
-design; the runner needs a per-candidate hook, not a day-batch one.
+`src/live/ny_runner.py` joins detector → orders (OrderWatch) → lane (NYLane) per closed bar,
+including the struct_event join, so the elite 2.0x fires. It decides and never touches a
+broker: every output is an action (`place`/`cancel`/`modify_size`/`scratch`) the executing
+loop runs through the spine. The old day-batch `_load_verdicts` path in `route_b` remains for
+the OLD canon only and must not carry the new one. What remains for Pat is executing those
+actions and honouring the scratch contract — `docs/HANDOVER-pat-arming.md` §4.3.
 
-### 5.3 The elite tier will not fire until `struct_event` is plumbed through
+### 5.3 RESOLVED — struct_event joined inside the runner
 
-`OrderWatch` tracks it (mirroring L1 expression-for-expression, tested) and `NYLane` accepts
-it, but nothing joins the two. Degradation is safe and deliberate — absent evidence sizes at
-the trade's own tier, never 2.0x — but the live book is slightly smaller than the validated
-one until connected. ~6% of trades.
+The order's observed structural event feeds the fill-minute verdict; a scratched elite fill
+leaves the day's 2.0x slot available (commit is what spends it). Pinned by tests.
 
 ### 5.4 Risk must be taken from the bracket as PLACED, not from trigger levels
 

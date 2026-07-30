@@ -127,6 +127,8 @@ class NYLane:
 
     def start_day(self, day: str, *, buffer: float) -> None:
         self.scorer.start_day(str(day), buffer=float(buffer))
+        # un-confirmed verdicts from prior days are dead state, never a carry-over
+        self._verdicts.clear()
 
     def on_candidate(self, *, fill_ts, entry: float, stop: float, direction: str,
                      trigger_times=None, struct_event: str = "",
