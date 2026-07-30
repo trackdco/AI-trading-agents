@@ -38,7 +38,14 @@ elite × struct_event, plus the press-signal state (+0.5R by t+3–5) from
 The +0.5R-by-t+3–5 press signal is IN the briefing (it is triple-era, bar-derived), so the
 agent can act on the strongest known state without us hard-coding a rule.
 
-## 4. Input tiers — the fp_minutes constraint, planned for from day one
+## 4. Input tiers — the fp_minutes constraint (CORRECTED 2026-07-30, late session)
+
+**CORRECTION (ANGUS caught it):** minute-level flow DOES exist for the sealed holdout —
+`data/reference/cvd/footprint_holdout_*.parquet` covers all 128 sealed days (the same
+source the holdout aikido flow features were built from). `output/fp_minutes_holdout.parquet`
+now carries delta/vol per minute, so the holdout confirmation chain runs FULL-TIER, same
+inputs as fit. The bar-tier arm remains useful only as an ablation. The original text
+below stands as the historical record of the (wrong) planning assumption.
 
 - **Tier BAR (both spans):** bars, excursion state, geometry (VWAP SD, session range,
   path efficiency, clock), level stack, MBP-10 depth block (129 holdout day-files exist),
