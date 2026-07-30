@@ -15,18 +15,22 @@ into `scripts/`: `sweep_v8_partial.py`, `sweep_rr_floor.py`, `sweep_holdout_ones
 **Done and holdout-CONFIRMED:** `v8_partial_pct` 50→25 (see §7). Awaiting Angus's ship
 ruling only.
 
-**In flight when the session died — the rr_floor sweep** (structural target with a higher
-minimum R; Angus: "over 50% of trades hit 2r minimum... a structural target but minimum x r
-COULD be the course of action"). State:
-  * floor 2.5 COMPLETE (`output/rrfloor_sweep_fit_25.parquet`, committed): n 956→944 (12
-    trades VETOED — a higher floor is partly an ENTRY change), funded $88,893 vs $90,015,
-    meanR flat, win-days 120→115. **First data point: flat-to-negative.**
-  * floors 3.0 / 4.0 were still simulating — regenerate with
-    `python scripts/sweep_rr_floor.py` (~15 min) if wanted, but expect worse: the veto count
-    grows with the floor and 2.5 already lost money. The reach ladder (§7) caps the upside:
-    only 54-58% touch 2R, 40-42% touch 3R.
-  * Preliminary verdict to confirm or kill: **the target floor is already right at 2.0; the
-    PARTIAL is the live lever.** If 3.0/4.0 confirm, write the tombstone and move on.
+**TOMBSTONE — the rr_floor question (CLOSED 2026-07-30, fit-only, no holdout look spent).**
+Angus's idea ("a structural target but minimum x r COULD be the course of action") ran the
+full ladder through the real engine on the canon fills. Monotone worse at every step:
+
+  floor   n(entries)  funded net   win-days   win meanR
+  2.0        956       $90,015       150        1.75     <- shipped, already right
+  2.5        944       $88,893       144        1.78
+  3.0        922       $86,248       139        1.82     maxDD worsens $1,603->$1,711
+  4.0        884       $81,463       136        1.89     WR 50%->47%
+
+Deeper floors DO pay more per winner (win meanR 1.75->1.89) but the reach ladder caps it
+(48% touch 2R in-trade, 23% touch 3R) and the veto contamination grows 12->34->72 entries —
+a higher floor is increasingly an ENTRY change wearing an exit costume. Funded net and
+win-day count fall monotonically. **The 2.0 floor was already right; the first-leg PARTIAL
+is the live lever.** Burden for ever reopening: a triple-era result at least as strong as
+this monotone ladder. Artifacts: `output/rrfloor_sweep_fit_{25,30,40}.parquet`.
 
 **Angus's queued idea, not yet built — the fixed-R partial family:** X% partial at +1R (not
 at first structure), stop-to-BE variants, runner policies (V8 trail / hold to 2R / hold to
