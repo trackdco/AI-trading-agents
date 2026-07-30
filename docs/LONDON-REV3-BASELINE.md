@@ -1,27 +1,48 @@
-# Rev 3 baseline proposal — window 08:00–09:30, adopted as a RULING
+# Rev 3 baseline proposal — window 08:00–09:45, adopted as a RULING
 
 **Status: DRAFT. Changes prereg §1. Requires ANGUS signature before the sealed set opens
 under it. Until signed, rev 2a (window 08:00–10:00) remains the strategy of record and the
 rehearsed holdout runner reports that book.**
 
+## Boundary revision + full disclosure (2026-07-30, late session)
+
+The ruling was revised same-day from 09:30 to **09:45** (Brake: "just go to 9:45") after
+the robustness perturbation showed 09:45 DOMINATES 09:30 as a cut: identical stack
+maxDD ($958 — all drawdown damage lives in 09:45–10:00), +$1,000 net, +19 trades, both
+eras improve. On the record: **the window boundary has now been examined three times on
+the same fit data** (the session-2 bucket analysis, the 09:30 adoption, the perturbation
+suite — whose own header declared its results non-actionable). This is disclosed so the
+signature is made with eyes open, and **the boundary is closed to further fit-side
+moves**: the remaining window evidence comes from the holdout bucket profile and forward
+data only.
+
+| stack (veto + one-at-a-time) | n | net | maxDD |
+|---|---|---|---|
+| cut 09:30 | 110 | +$17,941 | $958 |
+| **cut 09:45 (ruling)** | 129 | **+$18,941** | **$958** |
+| full 10:00 | 147 | +$18,121 | $2,036 |
+
 ## The ruling and its honest basis
 
-Brake, 2026-07-30: *"we'll go with cutting trades at 9:30, and use that as our baseline."*
+Brake, 2026-07-30: *"we'll go with cutting trades at 9:30, and use that as our baseline"*
+— revised same day to 09:45 per the disclosure above.
 
 Recorded as a **risk ruling, not a finding**, because the evidence status is on the record
 and unchanged: the late-bucket cut FAILED its worst-of-4-buckets permutation guard
 (p=0.076, `docs/LONDON-LATE-BUCKET.md`). What is being bought is not expectancy — it is
 drawdown and capital efficiency, at a known price:
 
-| | rev 2a (08:00–10:00) | rev 3 (08:00–09:30) |
+| PLAIN BOOK (no veto/serial overlay) | rev 2a (08:00–10:00) | rev 3 (08:00–09:45) |
 |---|---|---|
-| trades / days | 187 / 107 | 144 / 85 |
-| net | +$22,795 | +$21,801 (−$994, −4.4%) |
-| WR / mean R | 57% / +0.513 | 62% / +0.630 |
-| maxDD trade-level | $2,550 | **$1,435 (−44%)** |
-| maxDD day-level | $2,440 | $1,325 |
-| months green | 11/14 | 12/14 |
-| per-era mean R | +0.434 / +0.570 | +0.570 / +0.671 (both improve) |
+| trades / days | 187 / 107 | 167 / 99 |
+| net | +$22,795 | +$23,065 (+$270) |
+| WR / mean R | 57% / +0.513 | 60% / +0.581 |
+| maxDD trade-level | $2,550 | **$1,555 (−39%)** |
+| months green | 11/14 | 11/14 |
+| per-era mean R | +0.434 / +0.570 | +0.505 / +0.638 (both improve) |
+
+(At 09:45 the cut is better than free on the plain book: +$270 net AND −39% maxDD —
+the removed 09:45–10:00 slice was net-negative on its own.)
 
 Precedent: the no-distance-cancel rule entered §1 the same way — "a ruling, not a finding" —
 against a measurement that mildly favoured the cancel. Authority is Angus's; this document
