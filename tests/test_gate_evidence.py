@@ -95,12 +95,17 @@ def test_micros_never_round_to_zero():
     assert expected_micros(0.5, 60.0) == 1
 
 
-def test_dd_ramp_halves_the_base_below_1k_buffer():
-    """ANGUS: half size below $1,000 of buffer. Dormant across all 19 months of history —
-    pure insurance for a worse-than-history future, so it must actually be wired."""
-    assert base_dollar(1000) == 150.0
-    assert base_dollar(999) == 75.0
+def test_dd_ramp_ladder_halves_at_1k_and_again_at_500():
+    """ANGUS 2026-07-30: half size from $1,000 of remaining drawdown, half again from $500.
+    Dormant across all 19 months of history — pure insurance — so it must actually be wired,
+    and the TIGHTEST applicable step must win."""
+    assert base_dollar(1000) == 150.0                 # at the boundary: not yet ramped
+    assert base_dollar(999) == 75.0                   # first step
+    assert base_dollar(500) == 75.0                   # at the boundary: still first step
+    assert base_dollar(499) == 37.5                   # second step, not 75
+    assert base_dollar(120) == 37.5                   # stays quartered to the spine's halt
     assert expected_micros(1.0, 10.0, available_dd=999) == 4     # 75/20 = 3.75 -> 4
+    assert expected_micros(1.0, 10.0, available_dd=499) == 2     # 37.5/20 = 1.875 -> 2
 
 
 def test_check_sizing_pass_and_fail():

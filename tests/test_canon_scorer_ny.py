@@ -271,3 +271,28 @@ def test_no_trade_count_cap_exists():
         s.on_exit(v, pl=1.0)                 # closes immediately: no in-flight risk
         n += 1
     assert n > 3, f"only {n} trades admitted — a trade-count cap is still in force"
+
+
+def test_ramp_ladder_is_two_steps_and_dormant_in_history():
+    """ANGUS 2026-07-30: half from $1,000 of remaining DD, half again from $500. The ladder
+    must never fire on the validated spans — min buffer is $1,621 fit / $1,720 holdout — so it
+    changes no measured number, which is exactly why it is safe to carry into live."""
+    from src.canon.scorer_ny import ramp_for
+    assert ramp_for(5_000.0) == 1.0
+    assert ramp_for(1_000.0) == 1.0                 # boundary: not yet ramped
+    assert ramp_for(999.0) == 0.5
+    assert ramp_for(500.0) == 0.5                   # boundary: still the first step
+    assert ramp_for(499.0) == 0.25                  # tightest applicable step wins
+    assert ramp_for(0.0) == 0.25
+
+    # dormancy: both spans keep their minimum buffer clear of the outer step
+    for span, floor in (("fit", 1_621.0), ("holdout", 1_720.0)):
+        B = fb.run(fb.load_book(span), "lucid")
+        D = B.groupby("day").pl.sum()
+        bal, line, mb = fb.START, fb.START - fb.TRAIL, 1e9
+        for p in D:
+            bal += p
+            mb = min(mb, bal - line)
+            line = min(fb.START, max(line, bal - fb.TRAIL))
+        assert mb == pytest.approx(floor, abs=1.0)
+        assert ramp_for(mb) == 1.0, f"{span}: the ramp fired on validated history"

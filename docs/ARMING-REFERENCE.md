@@ -71,7 +71,7 @@ Each of these is a live-visible change and is why this document exists.
 | E | **Per-session window end** (pre 09:30, gold 10:30). | One global window cannot serve both. | An order outliving its session is an unmeasured trade. |
 | F | Gold window **09:40–10:30** (was 09:40–10:00); **no 09:55–10:00 dead zone**. | The rebuilt canon was validated without one. | — |
 | G | Sizing base **$200 → $150**, ladder is now tier × base. | The $200 schedule belonged to the broken canon. | Every order size changes. |
-| H | DD ramp: **half size below $1k buffer**, instead of a linear taper to zero between $1,500 and $100. | The half-size ramp is what the rebuilt book was validated with (and it is dormant across all 19 months). | **Needs your ruling — see §5.** |
+| H | De-risk ladder near the line: **half size below $1,000 of buffer, half again below $500** (ANGUS 2026-07-30), instead of a linear taper to zero between $1,500 and $100. | Angus's ruling. Both steps are dormant across all 19 months (min buffer $1,621 / $1,720), so no measured number changes; the spine's $100 hard halt is the floor beneath them. | Resolved. |
 
 ---
 
@@ -88,7 +88,8 @@ Each of these is a live-visible change and is why this document exists.
 | R7 | Absent `struct_event` never escalates size | ✅ |
 | R8 | Full suite green | ⚠️ 739 pass, 2 fail — both long-standing and unrelated (`london_depth.DIR`, `build_ny_substrate.canon_config` attribute drift), confirmed failing before any of this work |
 | R9 | Live LANE exists and reproduces the book on real days | ✅ `src/canon/ny_lane.py`, 25/25 fit days via `scripts/ny_lane_replay.py` |
-| R10 | **Live DepthBook parity** (`.depth` → `long_form` vs the batch depth archive) | ❌ **NOT VERIFIED — see §5.1. This is the blocker.** |
+| R10 | Depth parity HARNESS exists and is self-clean | ✅ `scripts/depth_parity.py` — 180 archive minutes via `DepthBook` and an MBO capture via `OrderBook`, both 100% gate agreement |
+| R10b | Depth parity run against a REAL captured session | ❌ needs one capture — Pat, `docs/HANDOVER-pat-arming.md` §4.2 |
 | R11 | Runner wired to the lane (`VerdictSource` → `NYLane`) | ❌ not written |
 | R12 | Angus's token against a certified commit | ❌ yours to issue |
 
@@ -96,7 +97,7 @@ Each of these is a live-visible change and is why this document exists.
 
 ## 5. What is NOT done
 
-### 5.1 THE BLOCKER: the live depth book has never been checked against the batch archive
+### 5.1 Depth parity — harness done, one real capture still needed
 
 `src/canon/ny_lane.py` now runs the whole chain — real bars and tape streamed through
 `CanonIngestor`, features assembled by the live code, scored by `NYScorerV2` — and
@@ -114,9 +115,14 @@ differently, or carries a different price convention, or lags, then the live boo
 becomes a different book — and it fails *silently*, because a wrong wall distance still
 produces a plausible verdict.
 
-Required: capture one live `.depth` session, build the book through `DepthBook`, and diff
-`depth_at()` against the same day's archive CSV — wall distances and sizes, per candidate
-minute. Until that diff is clean, the depth gates are unverified in production form.
+**Now runnable:** `scripts/depth_parity.py` builds the book from a captured session and diffs
+every canon depth GATE (W, D, WALLSZ, the wall-quality cut) plus the underlying wall distances
+and sizes against the archive, per minute and per direction. It is self-clean on 180 archive
+minutes through `DepthBook`, and an MBO capture through `OrderBook` also lands at 100% — so
+ANGUS is right that MBO is not a problem, and that is now demonstrated rather than assumed.
+
+What remains is feed-specific and cannot be faked offline: one real captured session, to catch
+units, tick alignment and timing. Pat's runbook: `docs/HANDOVER-pat-arming.md` §4.
 
 ### 5.2 The runner is not wired to the lane
 
@@ -145,13 +151,12 @@ are the trigger's reference levels while the canon used the engine's realized br
 place the same stop the engine would have**, or both the gate and the sizing shift. That
 engine-vs-live stop parity is unproven and belongs with §5.1.
 
-### 5.6 Your ruling needed: the deep-buffer ramp (change H)
+### 5.6 RESOLVED — the de-risk ladder near the line
 
-Between **$100 and $1,000** of remaining drawdown the rebuilt canon takes **half-size**
-trades; the old canon tapered to zero and refused. Below $100 the spine hard-halts either
-way. The half-size rule is what was validated — but it is untested in that region because it
-never fired in 19 months of history. If you want the old refusal behaviour near the floor,
-say so and it becomes a one-line floor in `base_dollar`.
+ANGUS 2026-07-30: **half size from $1,000 of remaining drawdown, half again from $500.**
+Implemented as `scorer_ny.RAMP_STEPS`, checked tightest-step-first, with one implementation
+shared by the scorer, the book and the spine's sizing check. Both steps are dormant across
+all 19 months of history, so every reference number is unchanged — verified.
 
 ### 5.5 London
 

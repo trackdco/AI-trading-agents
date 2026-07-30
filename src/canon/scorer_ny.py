@@ -74,7 +74,21 @@ ELITE_PER_DAY = 1
 # ---- sizing spine (scripts/funded_book.py) ----------------------------------------------
 BUDGET_PER_BASE = 800.0 / 150.0         # $800 daily budget at the $150 base
 SOFT_FRAC = 280.0 / 800.0               # soft de-risk at 35% of that day's budget
-RAMP_BUFFER = 1000.0                    # buffer below this -> half size (live insurance)
+#: ANGUS 2026-07-30: a two-step de-risk ladder near the trailing line — half size from $1,000
+#: of remaining drawdown, half again from $500. Checked LOW-TO-HIGH, so the tightest step that
+#: applies wins. Both steps are dormant across all 19 months of history (min buffer $1,621 fit
+#: / $1,720 holdout), so this changes no measured number — it is insurance for a
+#: worse-than-history future, and the spine's $100 hard halt sits underneath it.
+RAMP_STEPS: tuple[tuple[float, float], ...] = ((500.0, 0.25), (1000.0, 0.5))
+RAMP_BUFFER = RAMP_STEPS[-1][0]         # the outermost step, for callers that want one number
+
+
+def ramp_for(buffer: float) -> float:
+    """The size multiplier for a given buffer above the trailing line. 1.0 when clear."""
+    for below, mult in RAMP_STEPS:
+        if buffer < below:
+            return mult
+    return 1.0
 MICRO_CLAMP = 40
 MNQ_DOLLARS_PER_PT = 2.0
 
@@ -239,7 +253,7 @@ class NYScorerV2:
         self._base = self.profile.base_for(float(buffer))
         self._budget = self._base * BUDGET_PER_BASE
         self._soft = self._budget * SOFT_FRAC
-        self._ramp = 0.5 if float(buffer) < RAMP_BUFFER else 1.0
+        self._ramp = ramp_for(float(buffer))
         self._realized = 0.0
         self._open.clear()
         self._elite_used = 0

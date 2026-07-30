@@ -34,15 +34,16 @@ from pathlib import Path
 # $1,500->$100 taper belonged to the broken canon and is gone; the shipped profiles are:
 #   lucid      base $150 flat            -> ladder $75 / $150 / $225 / $300
 #   scaled600  base $150 +$75 per $2k of buffer past +$3k, capped $600
-# with a HALF-SIZE ramp (not a taper to zero) below $1,000 of buffer, and micros floored at
-# 1: the canon either takes a trade at >=1 micro or does not take it at all.
+# with a two-step de-risk ladder near the line (half below $1,000 of buffer, half again below
+# $500 — ANGUS 2026-07-30) rather than a taper to zero, and micros floored at 1: the canon
+# either takes a trade at >=1 micro or does not take it at all.
 from src.canon.scorer_ny import (  # noqa: E402
     LUCID,
     MICRO_CLAMP,
     MNQ_DOLLARS_PER_PT,
     PROFILES,
-    RAMP_BUFFER,
     Profile,
+    ramp_for,
 )
 
 CONVICTION_CAP = 2.0        # the elite tier; nothing above it exists in the rebuilt canon
@@ -55,7 +56,7 @@ def base_dollar(available_dd: float | None, profile: Profile | str = LUCID) -> f
     if available_dd is None:
         return p.base
     base = p.base_for(float(available_dd))
-    return base * (0.5 if float(available_dd) < RAMP_BUFFER else 1.0)
+    return base * ramp_for(float(available_dd))
 
 
 def expected_micros(conviction: float, stop_pts: float,

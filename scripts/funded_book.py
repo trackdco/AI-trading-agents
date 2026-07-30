@@ -35,9 +35,10 @@ RISK SPINE (all causal: decisions see only realized-by-fill P&L + in-flight risk
                         [bounds worst day structurally; realized-loss halts alone fail
                          under overlap — the losses aren't realized when the next fills hit]
   soft de-risk          realized day P&L <= -35% of budget -> half size (both spans)
-  live ramp             buffer above the trailing line < $1,000 -> half size
-                        [dormant in 19 months of history — pure insurance for a
-                         worse-than-history future; ANGUS: required for live]
+  live ramp             half size below $1,000 of buffer above the trailing line, half
+                        again below $500 (ANGUS 2026-07-30, checked tightest-step-first)
+                        [both steps dormant in 19 months — min buffer $1,621 fit / $1,720
+                         holdout — so they change no measured number; pure insurance]
   micro clamp 40 · micros = round(risk$/(stop_pts*2)), min 1
 
 REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k):
@@ -66,6 +67,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from src.canon.scorer_ny import ramp_for  # noqa: E402  (one implementation of the ramp)
+
 PROFILES = {
     # base fixed: cap == base disables scaling entirely
     "lucid": dict(base=150.0, per=0.0, step=2000.0, after=3000.0, cap=150.0),
@@ -73,7 +76,6 @@ PROFILES = {
 }
 BUDGET_PER_BASE = 800.0 / 150.0     # $800 daily budget at the $150 base
 SOFT_FRAC = 280.0 / 800.0           # soft de-risk at 35% of that day's budget
-RAMP_BUFFER = 1000.0
 START, TRAIL = 50_000.0, 2_000.0
 MICRO_CLAMP = 40
 
@@ -114,7 +116,7 @@ def run(V: pd.DataFrame, profile: str) -> pd.DataFrame:
         base = base_for_buffer(buf, p)
         budget = base * BUDGET_PER_BASE
         soft = budget * SOFT_FRAC
-        ramp = 0.5 if buf < RAMP_BUFFER else 1.0
+        ramp = ramp_for(buf)
         taken: list[tuple] = []
         elite_used = False
         for r in g.itertuples():
