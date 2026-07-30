@@ -72,6 +72,15 @@ SEGMENTS = {
 _BARS: pd.DataFrame | None = None       # per-process cache for the Pool path
 
 
+def _init_pool(bars: pd.DataFrame) -> None:
+    """Pool initializer: hand each worker its own _BARS. REQUIRED on Windows, where
+    multiprocessing SPAWNS (re-imports the module, module globals reset to None) instead of
+    forking — the bare Pool crashed every worker with `'NoneType' has no attribute
+    'ts_event'` on Pat's VPS (2026-07-30). Under Linux fork this is a no-op-equivalent."""
+    global _BARS
+    _BARS = bars
+
+
 def _one_day(d: str) -> list[dict]:
     start = pd.Timestamp(f"{d} {BAND[0]}", tz=NY)
     end = pd.Timestamp(f"{d} {BAND[1]}", tz=NY)
@@ -94,7 +103,7 @@ def run_days(bars: pd.DataFrame, days: list[str], procs: int = 1) -> pd.DataFram
             rows.extend(got)
             print(f"  {d}: {len(got):>3} triggers", flush=True)
     else:
-        with Pool(procs) as p:                      # fork inherits _BARS read-only
+        with Pool(procs, initializer=_init_pool, initargs=(bars,)) as p:
             for d, got in zip(days, p.imap(_one_day, days)):
                 rows.extend(got)
                 print(f"  {d}: {len(got):>3} triggers", flush=True)
