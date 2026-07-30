@@ -99,8 +99,9 @@ def ny_book() -> pd.DataFrame:
     t["session"] = "ny"
     t["fill_ts"] = pd.to_datetime(t.fill, format="mixed", utc=True).dt.tz_convert(ET)
     t["conv"] = t["size"].astype(float)
-    t["risk_$"] = t.conv.map(ladder_risk)
-    t["pnl_ladder"] = t.R * t["risk_$"]
+    # NOT "risk_$": itertuples() mangles non-identifier column names (burn list #2)
+    t["risk_usd"] = t.conv.map(ladder_risk)
+    t["pnl_ladder"] = t.R * t["risk_usd"]
     t["pnl_1lot"] = t.dollars.astype(float)
     return t.reset_index(drop=True)
 
@@ -280,7 +281,7 @@ def _events(N, Lo, lon_ladder: bool):
     rows = []
     for r in N.itertuples():
         rows.append({"day": r.day, "ts": r.fill_ts, "session": "ny", "conv": r.conv,
-                     "risk": r._asdict()["risk_$"], "pnl": r.pnl_ladder})
+                     "risk": r.risk_usd, "pnl": r.pnl_ladder})
     for r in Lo.itertuples():
         conv = 1.0
         risk = ladder_risk(conv) if lon_ladder else float(r.risk) * 20.0
