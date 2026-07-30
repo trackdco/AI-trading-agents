@@ -137,7 +137,22 @@ trade) and the MFE join both exist. Headlines:
 - Pre and gold need different management (pre winners run to 3.8R mean MFE and hold-to-close
   4.29R; gold peaks fast and shallower).
 
-## 7. Definition of done
+## 7. Mechanical exit result (2026-07-30, holdout-CONFIRMED, awaiting Angus's ship ruling)
+
+`v8_partial_pct` sweep on the canon fills through the real engine (artifacts
+`output/partial_sweep_fit_{0,25}.parquet`, `output/partial_sweep_holdout_25.parquet`; 75/100
+complete the curve when their run finishes). Monotone: every dollar not partialed at first
+structure adds expectancy (~45% of runners reach targets worth +2.3 to +3.6R). The frozen
+candidate **25% partial** (chosen on fit, era-clean in all four era×session cells) PASSED the
+sealed holdout one-shot: funded +$60,017 vs +$56,409 shipped (+6.4%), meanR 0.516→0.562,
+winners +1.48R→+1.80R, maxDD $1,503→$1,517, months 6/6, worst day identical; costs 6pp of
+trade-level WR (57→51%) and 2 win-days (71→69). NOT shipped — it changes the book, so it is
+Angus's call; if shipped it re-runs the funded reference and notifies Pat
+(`v8_partial_pct` is engine config). Context for the 1R-family lab: ~80% of canon trades
+touch +1R before the original stop (95% touch +0.5R), both spans — a fixed-R partial family
+(X% at 1R, BE variants, runner policies) is queued as the next grid, same discipline.
+
+## 8. Definition of done
 
 A frozen agent exit policy with: (a) per-trade fit results vs V8 on identical fills, (b) the
 one-shot holdout confirmation, (c) permutation-null clearance for anything mined, (d) the
