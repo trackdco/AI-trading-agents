@@ -95,6 +95,7 @@ python -m scripts.depth_parity --day 2026-04-20 --self-test               # PASS
 | F | Gold window **09:40–10:30**, and **no 09:55–10:00 dead zone** | The rebuilt canon was validated without one. |
 | G | Sizing base **$200 → $150** | Every order size changes. |
 | H | De-risk ladder replaces the linear taper to zero | Between $100 and $1,000 of buffer the canon now takes half/quarter-size trades where the old canon refused. Angus's ruling; the spine's $100 halt is the floor. |
+| I | **The legacy 3-minute cut must NOT fire** (`CUT_R3`/`CUT_FW3` in the exit manager / lifecycle `maybe_cut`). | The rebuilt book was measured WITHOUT it, and the time-segment study (`output/time_segments_fit.parquet`, 2026-07-30) shows the trades it would cut finish breakeven-to-POSITIVE on this canon (+0.01R pre, +0.32R gold at t+3) — armed as-is it silently underperforms the measured book. Disable it on the canon lane, or re-certify with it and accept a different book. |
 
 ---
 

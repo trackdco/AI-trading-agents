@@ -105,7 +105,26 @@ untouched, and this time there is a real holdout to demand that of.
 - 756 tests pass; the 2 failures named in §1 are pre-existing. If your work breaks a third,
   that one IS yours.
 
-## 6. Definition of done
+## 6. Pre-measured terrain (2026-07-30, fit span — start here, don't re-derive)
+
+`output/time_segments_fit.parquet` (per-trade minute-close R at t+2/3/5/8/10 for every canon
+trade) and the MFE join both exist. Headlines:
+
+- Realized +0.55R vs MFE +2.32R mean — giveback ~1.77R/trade (~$50k 1-lot over fit).
+- Winners/losers separate on MAE instantly: winners' median MAE −0.28/−0.33R, losers'
+  −1.19/−1.20R; losers peak at minute 0–1, winners at 4–9.
+- ~60% of losers showed >=+1R MFE before dying (a quarter showed +2R) — the partial-banking
+  pool.
+- **The old canon's drawdown-at-t cut is INVERTED here**: still-open shallow-drawdown trades
+  finish +0.01R (pre) / +0.32R (gold) at t+3, and the deep-drawdown bucket is nearly empty
+  (V8 + wall gates already removed it). Era-unstable too. Do not resurrect the cut.
+- The strong, monotone, era-worthy signal is IN-PROFIT persistence: gold still-open-and-green
+  WR climbs 69%→85% from t+2 to t+10; pre 48%→61% with +1.47R mean at t+10. Agent alpha =
+  pressing/holding green, banking partials on losers that flash +1R — NOT cutting red.
+- Pre and gold need different management (pre winners run to 3.8R mean MFE and hold-to-close
+  4.29R; gold peaks fast and shallower).
+
+## 7. Definition of done
 
 A frozen agent exit policy with: (a) per-trade fit results vs V8 on identical fills, (b) the
 one-shot holdout confirmation, (c) permutation-null clearance for anything mined, (d) the
