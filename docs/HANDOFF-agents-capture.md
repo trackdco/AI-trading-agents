@@ -46,9 +46,12 @@ are exhausted BY MEASUREMENT; what remains is CONDITIONAL management — the age
 Artifacts: `output/fixedr_fit_*.parquet`; report via `scripts/sweep_fixed_r_report.py`.
 
 **HOLDOUT LEDGER — count every look.** Spent so far (each declared before looking):
-(1) time-segment state confirmation, (2) the 25%-partial referendum. The sealed holdout only
-stays meaningful if looks are rationed: freeze combined candidates and spend ONE look per
-family, never one per knob.
+(1) time-segment state confirmation, (2) the 25%-partial referendum, (3) the
+execution-semantics referendum (2026-07-30: flatten-only vs close-and-reverse, both arms
+defined from Angus's netting-broker question before computing — flatten-only $49,880 /
+close-and-reverse $59,407 vs shipped $56,409 on holdout). The sealed holdout only stays
+meaningful if looks are rationed: freeze combined candidates and spend ONE look per family,
+never one per knob.
 
 **ANGUS RULINGS (2026-07-30, this session):** (1) **base V8 stays shipped** — the 25%
 partial's +$3.3k funded is not worth 4pp of WR and 6 win-days ("the profit difference is
