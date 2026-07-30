@@ -6,6 +6,18 @@ ANGUS 2026-07-30, switching accounts at the weekly limit. Next session picks up 
 
 ## 0. RESUME HERE — mid-flight state (2026-07-30, end of session)
 
+> **UPDATE 2026-07-30 late (overnight run): DESK RUN 2 PHASE 1 IS COMPLETE AND GRADED.**
+> Full fit span, 763 trades on the three-rule canon: agent +488.7R vs mech +388.6R
+> (**delta +100.1R**, p = 0.003, 12/13 months green); funded lucid $95,194 vs $77,202
+> with maxDD $810 vs $1,268. Avg winner unchanged, avg loser cut −0.708→−0.576, +27 wins.
+> BUT pre-registered kill criterion 4 trips: the conviction shuffle FAILS (p = 0.978) —
+> the delta is policy shape (cut losers fast, refuse canon exits on runners), not
+> per-trade discrimination; lock1r_2r alone captures 92% of it at 3× the drawdown.
+> Read `docs/REPORT-desk-run-2.md` first. Grader: `scripts/grade_desk_run2.py`.
+> Journal/state: `runs/desk2/`. **The phase-2 HOLDOUT chain was NOT launched — that
+> one-shot look waits for Angus's explicit go; per PLAN §8 only a frozen policy earns
+> it, and post-shuffle the natural candidate is a mechanical distillate, not the chain.**
+
 The session ended inside an exit-mechanics lab Angus was driving live. Finish it FIRST, then
 run the agents test (§1 onward). The lab scripts were rescued from the ephemeral scratchpad
 into `scripts/`: `sweep_v8_partial.py`, `sweep_rr_floor.py`, `sweep_holdout_oneshot.py`,
