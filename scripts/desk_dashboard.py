@@ -67,6 +67,9 @@ def funded_month_table(rows: list[dict]) -> str:
         vR = pd.Series([r["v8_R"] for r in g])
         d = pa.get(m, 0) - pm.get(m, 0)
         cls = "pos" if d > 0 else "neg" if d < 0 else ""
+        dfn = sum(r["agent_R"] - r["v8_R"] for r in g if r["v8_R"] < -0.1)
+        off = sum(r["agent_R"] - r["v8_R"] for r in g if r["v8_R"] > 0.1)
+        oc = "pos" if off > 0 else "neg" if off < -0.5 else ""
         out_rows.append(
             f"<tr><td>{m}</td><td>{len(g)}</td>"
             f"<td class='a'>${pa.get(m, 0):+,.0f}</td><td class='v8'>${pm.get(m, 0):+,.0f}</td>"
@@ -74,18 +77,20 @@ def funded_month_table(rows: list[dict]) -> str:
             f"<td class='a'>{(aR > 0).mean() * 100:.0f}%</td><td class='v8'>{(vR > 0).mean() * 100:.0f}%</td>"
             f"<td class='a'>{aR.mean():+.2f}</td><td class='v8'>{vR.mean():+.2f}</td>"
             f"<td class='a'>{aR[aR > 0].mean():+.2f}</td><td class='v8'>{vR[vR > 0].mean():+.2f}</td>"
-            f"<td class='a'>{aR[aR <= 0].mean():+.2f}</td><td class='v8'>{vR[vR <= 0].mean():+.2f}</td></tr>")
+            f"<td class='a'>{aR[aR <= 0].mean():+.2f}</td><td class='v8'>{vR[vR <= 0].mean():+.2f}</td>"
+            f"<td class='pos'>{dfn:+.1f}</td><td class='{oc}'>{off:+.1f}</td></tr>")
     tot_d = pa.sum() - pm.sum()
     out_rows.append(
         f"<tr style='font-weight:650;border-top:1px solid var(--line)'><td>TOTAL</td>"
         f"<td>{int(canon_n[complete].sum())}</td>"
         f"<td class='a'>${pa.sum():+,.0f}</td><td class='v8'>${pm.sum():+,.0f}</td>"
         f"<td class='{'pos' if tot_d > 0 else 'neg'}'>${tot_d:+,.0f}</td>"
-        f"<td colspan='8'></td></tr>")
+        f"<td colspan='10'></td></tr>")
     return ("<div class='scroll'><table><thead>"
             "<tr><th>month</th><th>n</th><th>funded agent</th><th>funded mech</th><th>Δ $</th>"
             "<th>WR a</th><th>WR m</th><th>avg R a</th><th>avg R m</th>"
-            "<th>win x̄ a</th><th>win x̄ m</th><th>loss x̄ a</th><th>loss x̄ m</th></tr>"
+            "<th>win x̄ a</th><th>win x̄ m</th><th>loss x̄ a</th><th>loss x̄ m</th>"
+            "<th>defense R</th><th>offense R</th></tr>"
             "</thead><tbody>" + "".join(out_rows) + "</tbody></table></div>")
 
 
