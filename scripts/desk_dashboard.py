@@ -15,7 +15,64 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts import funded_book as fb  # noqa: E402
+
+NY = "America/New_York"
 TOTAL = 956
+
+
+def funded_month_table(rows: list[dict]) -> str:
+    """Completed-month funded comparison under the static lucid sizing: the canon book's
+    rows with agent exits/dollars substituted, run through the REAL funded sim, vs the
+    mechanical (two-rule) book on the same months. Fills up as months complete."""
+    V = fb.load_book("fit")             # CR law applied — the mechanical baseline
+    V = V.reset_index(drop=True)
+    V["trade_id"] = [f"{r.day}_{r.fill.tz_convert(NY).strftime('%H%M')}_{r.direction[0]}_{i}"
+                     for i, r in enumerate(V.itertuples())]
+    jmap = {r["trade_id"]: r for r in rows}
+    canon_n = V.groupby("month").size()
+    done_n = pd.Series([r["day"][:7] for r in rows]).value_counts()
+    complete = [m for m in canon_n.index
+                if done_n.get(m, 0) >= canon_n[m]]
+    if not complete:
+        return "<div style='padding:12px 16px;color:var(--ink2);font-size:13px'>fills up as months complete…</div>"
+    W = V[V.month.isin(complete)].copy()
+    Wa = W.copy()
+    Wa["dollars_1lot"] = [jmap[t]["agent_dollars"] for t in Wa.trade_id]
+    Wa["exit"] = pd.to_datetime([jmap[t]["exit_ts"] for t in Wa.trade_id], utc=True)
+    out_rows = []
+    Bm = fb.run(W.sort_values("fill", kind="mergesort"), "lucid")
+    Ba = fb.run(Wa.sort_values("fill", kind="mergesort"), "lucid")
+    pm = Bm.groupby("month").pl.sum()
+    pa = Ba.groupby("month").pl.sum()
+    for m in complete:
+        g = [jmap[t] for t in W[W.month == m].trade_id]
+        aR = pd.Series([r["agent_R"] for r in g])
+        vR = pd.Series([r["v8_R"] for r in g])
+        d = pa.get(m, 0) - pm.get(m, 0)
+        cls = "pos" if d > 0 else "neg" if d < 0 else ""
+        out_rows.append(
+            f"<tr><td>{m}</td><td>{len(g)}</td>"
+            f"<td class='a'>${pa.get(m, 0):+,.0f}</td><td class='v8'>${pm.get(m, 0):+,.0f}</td>"
+            f"<td class='{cls}'>${d:+,.0f}</td>"
+            f"<td class='a'>{(aR > 0).mean() * 100:.0f}%</td><td class='v8'>{(vR > 0).mean() * 100:.0f}%</td>"
+            f"<td class='a'>{aR.mean():+.2f}</td><td class='v8'>{vR.mean():+.2f}</td>"
+            f"<td class='a'>{aR[aR > 0].mean():+.2f}</td><td class='v8'>{vR[vR > 0].mean():+.2f}</td>"
+            f"<td class='a'>{aR[aR <= 0].mean():+.2f}</td><td class='v8'>{vR[vR <= 0].mean():+.2f}</td></tr>")
+    tot_d = pa.sum() - pm.sum()
+    out_rows.append(
+        f"<tr style='font-weight:650;border-top:1px solid var(--line)'><td>TOTAL</td>"
+        f"<td>{int(canon_n[complete].sum())}</td>"
+        f"<td class='a'>${pa.sum():+,.0f}</td><td class='v8'>${pm.sum():+,.0f}</td>"
+        f"<td class='{'pos' if tot_d > 0 else 'neg'}'>${tot_d:+,.0f}</td>"
+        f"<td colspan='8'></td></tr>")
+    return ("<div class='scroll'><table><thead>"
+            "<tr><th>month</th><th>n</th><th>funded agent</th><th>funded mech</th><th>Δ $</th>"
+            "<th>WR a</th><th>WR m</th><th>avg R a</th><th>avg R m</th>"
+            "<th>win x̄ a</th><th>win x̄ m</th><th>loss x̄ a</th><th>loss x̄ m</th></tr>"
+            "</thead><tbody>" + "".join(out_rows) + "</tbody></table></div>")
 
 
 def main(out: str) -> None:
@@ -121,7 +178,9 @@ svg text{{font:10px system-ui;fill:var(--ink2)}}
 <section><div class="cap"><h2>Cumulative R</h2><span class="legend">
 <i style="background:var(--agent)"></i>agent<i style="background:var(--v8)"></i>mechanical</span></div>
 <div style="padding:8px 10px 4px"><svg width="100%" height="200" viewBox="0 0 860 200" preserveAspectRatio="none">{_chart(xs, list(cum_a), list(cum_v))}</svg></div></section>
-<section><div class="cap"><h2>By month</h2></div><div class="scroll"><table>
+<section><div class="cap"><h2>Completed months — static funded sizing (lucid)</h2>
+<span>a = agent · m = mechanical</span></div>{funded_month_table(rows)}</section>
+<section><div class="cap"><h2>All months, running R</h2><span>incl. in-progress</span></div><div class="scroll"><table>
 <thead><tr><th>month</th><th>n</th><th>agent R</th><th>mech R</th><th>Δ</th><th>agent WR</th><th>mech WR</th></tr></thead>
 <tbody>{month_rows()}</tbody></table></div></section>
 <section><div class="cap"><h2>Cut scorecard</h2><span>early exits, by flow at exit</span></div>
