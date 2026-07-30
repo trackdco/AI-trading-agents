@@ -127,6 +127,22 @@ Zero-edge column = same weights applied to outcome-shuffled trades (mean of 5000
 | 0.5-2.0 by score | $+25,200 | $1,479 | 17.0 | $+22,296 |
 | 1.5/0.5 both-wall only | $+25,168 | $1,640 | 15.4 | $+21,931 |
 
+## 6b. The A+ cell — B2 rejection-block x both-wall (the two strongest axes crossed; asked by Brake 2026-07-30)
+
+| cell | n | WR | mean R | Wilson LB | 2025 | 2026 | grade |
+|---|---|---|---|---|---|---|---|
+| A+: B2 & both-wall | 48 | 69% | +1.007 | 55% | 16/69%/+0.77 | 32/69%/+1.13 | hypothesis |
+| both-wall, not B2 | 54 | 57% | +0.538 | 44% | 21/62%/+0.66 | 33/55%/+0.46 | hypothesis |
+| B2, not both-wall | 11 | 73% | +0.615 | 43% | 4/100%/+0.87 | 7/57%/+0.47 | below-floor |
+| neither (the average trade) | 31 | 55% | +0.214 | 38% | 17/59%/+0.20 | 14/50%/+0.23 | hypothesis |
+
+| ladder | net | maxDD (trade) | net/maxDD | zero-edge net |
+|---|---|---|---|---|
+| flat 1.0 | $+21,801 | $1,435 | 15.2 | $+21,801 |
+| A+ 2.0/1.5/1.0/0.5 | $+26,742 | $1,525 | 17.5 | $+22,159 |
+
+Status, stated plainly: the wall axis carries prior validated evidence (tier test permutation p=0.0085, predates this sweep); the B2 axis is era-consistent but never guard-tested; their CROSS was priced today on the same fit data that suggested it — declared candidate, adopted nowhere. The A+ cell projects to ~22 holdout trades: the holdout cannot judge it; forward data can.
+
 ## 7. Robustness — same survivors measured on the FULL 08:00-10:00 book
 
 | condition | cut book (n/WR/R) | full book (n/WR/R) | fragile? |

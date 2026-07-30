@@ -352,6 +352,43 @@ def main() -> None:
         L.append(f"| {name} | ${pnl.sum():+,.0f} | ${maxdd(eq):,.0f} | "
                  f"{pnl.sum() / max(maxdd(eq), 1):.1f} | ${ze.mean():+,.0f} |\n")
 
+    # ---------------- 6b. the A+ cell: the two strongest axes crossed, and its ladder
+    b["b2"] = (b.pattern == "B2").values
+    L.append("\n## 6b. The A+ cell — B2 rejection-block x both-wall (the two strongest "
+             "axes crossed; asked by Brake 2026-07-30)\n\n"
+             "| cell | n | WR | mean R | Wilson LB | 2025 | 2026 | grade |\n"
+             "|---|---|---|---|---|---|---|---|\n")
+    apc = [("A+: B2 & both-wall", (b.b2 & (b.both_wall == 1)).values),
+           ("both-wall, not B2", ((b.both_wall == 1) & ~b.b2).values),
+           ("B2, not both-wall", (b.b2 & (b.both_wall == 0)).values),
+           ("neither (the average trade)", (~b.b2 & (b.both_wall == 0)).values)]
+    for name, m in apc:
+        c = era_cells(b, m)
+        L.append(f"| {name} | {fmt_cell(c)} | {grade(c)} |\n")
+    wl = np.where(b.b2 & (b.both_wall == 1), 2.0,
+                  np.where(b.both_wall == 1, 1.5, np.where(b.b2, 1.0, 0.5)))
+    L.append("\n| ladder | net | maxDD (trade) | net/maxDD | zero-edge net |\n"
+             "|---|---|---|---|---|\n")
+    rng3 = np.random.default_rng(SEED + 2)
+    for name, w in [("flat 1.0", np.ones(len(b))), ("A+ 2.0/1.5/1.0/0.5", wl)]:
+        wn = w * total_risk / (w * risk).sum()
+        pnl = dollars * wn
+        ze = np.empty(N_PERM)
+        dp = dollars.copy()
+        for i in range(N_PERM):
+            dp[idx25] = dollars[idx25][rng3.permutation(len(idx25))]
+            dp[idx26] = dollars[idx26][rng3.permutation(len(idx26))]
+            ze[i] = (dp * wn).sum()
+        eq = pd.Series(pnl[order])
+        L.append(f"| {name} | ${pnl.sum():+,.0f} | ${maxdd(eq):,.0f} | "
+                 f"{pnl.sum() / max(maxdd(eq), 1):.1f} | ${ze.mean():+,.0f} |\n")
+    L.append("\nStatus, stated plainly: the wall axis carries prior validated evidence "
+             "(tier test permutation p=0.0085, predates this sweep); the B2 axis is "
+             "era-consistent but never guard-tested; their CROSS was priced today on the "
+             "same fit data that suggested it — declared candidate, adopted nowhere. The "
+             "A+ cell projects to ~22 holdout trades: the holdout cannot judge it; "
+             "forward data can.\n")
+
     # ---------------- 7. robustness: does the picture survive on the full 187 book?
     L.append("\n## 7. Robustness — same survivors measured on the FULL 08:00-10:00 book\n\n"
              "| condition | cut book (n/WR/R) | full book (n/WR/R) | fragile? |\n"
