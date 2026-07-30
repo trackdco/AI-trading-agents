@@ -1,6 +1,51 @@
-# HANDOFF — chained-agents capture test on the NEW canon
+# HANDOFF — exit-mechanics lab (RESUME HERE) → then the chained-agents capture test
 
 ANGUS 2026-07-30, switching accounts at the weekly limit. Next session picks up here.
+
+---
+
+## 0. RESUME HERE — mid-flight state (2026-07-30, end of session)
+
+The session ended inside an exit-mechanics lab Angus was driving live. Finish it FIRST, then
+run the agents test (§1 onward). The lab scripts were rescued from the ephemeral scratchpad
+into `scripts/`: `sweep_v8_partial.py`, `sweep_rr_floor.py`, `sweep_holdout_oneshot.py`,
+`sweep_report.py`, `time_segment_walk.py` — all run from repo root, all patch
+`build_l2_outcomes.l2_cfg` and re-simulate the canon triggers through the REAL engine.
+
+**Done and holdout-CONFIRMED:** `v8_partial_pct` 50→25 (see §7). Awaiting Angus's ship
+ruling only.
+
+**In flight when the session died — the rr_floor sweep** (structural target with a higher
+minimum R; Angus: "over 50% of trades hit 2r minimum... a structural target but minimum x r
+COULD be the course of action"). State:
+  * floor 2.5 COMPLETE (`output/rrfloor_sweep_fit_25.parquet`, committed): n 956→944 (12
+    trades VETOED — a higher floor is partly an ENTRY change), funded $88,893 vs $90,015,
+    meanR flat, win-days 120→115. **First data point: flat-to-negative.**
+  * floors 3.0 / 4.0 were still simulating — regenerate with
+    `python scripts/sweep_rr_floor.py` (~15 min) if wanted, but expect worse: the veto count
+    grows with the floor and 2.5 already lost money. The reach ladder (§7) caps the upside:
+    only 54-58% touch 2R, 40-42% touch 3R.
+  * Preliminary verdict to confirm or kill: **the target floor is already right at 2.0; the
+    PARTIAL is the live lever.** If 3.0/4.0 confirm, write the tombstone and move on.
+
+**Angus's queued idea, not yet built — the fixed-R partial family:** X% partial at +1R (not
+at first structure), stop-to-BE variants, runner policies (V8 trail / hold to 2R / hold to
+structural target). Motivation: ~80% of canon trades touch +1R before the original stop in
+BOTH spans (95% touch +0.5R), so a 1R partial banks on 4 of 5 trades — and it is simpler to
+execute live (no structure detection on the partial leg). Grid it on fit, era-split, freeze
+ONE candidate (possibly jointly with the 25% partial), ONE holdout look.
+
+**HOLDOUT LEDGER — count every look.** Spent so far (each declared before looking):
+(1) time-segment state confirmation, (2) the 25%-partial referendum. The sealed holdout only
+stays meaningful if looks are rationed: freeze combined candidates and spend ONE look per
+family, never one per knob.
+
+**Also open:** Angus has NOT yet ruled on shipping the 25% partial. If he ships it, re-run
+the funded references, update funded_book.py + conformance tests, and notify Pat
+(`v8_partial_pct` is engine config; HANDOVER-pat-arming already flags the related change I —
+the legacy 3-min cut must not fire).
+
+---
 
 **The mission:** run a chained-agents test to see whether an agent layer can capture more of
 each trade than the mechanical V8 exits do — **on the rebuilt canon**, which for the first
