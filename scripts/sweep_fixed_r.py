@@ -15,7 +15,6 @@ Discovery on FIT only. Resumable: existing output parquets are skipped.
     python scripts/sweep_fixed_r.py [--procs 4]
 """
 import argparse
-import itertools
 import sys
 from pathlib import Path
 
@@ -27,12 +26,24 @@ from scripts import funded_book as fb           # noqa: E402
 
 
 def arms() -> list[tuple[str, dict]]:
+    """ANGUS 2026-07-30 (this session): "we found 25% was most profitable, but id say our
+    first target is too short looking at the % of trades that ran atleast 1.5r, 2r and 3r".
+    Primary axis: the R-LADDER of the first profit leg — how deep the partial books —
+    with the shipped trail/BE behavior held fixed. Secondary: the 1R banking variants
+    (BE-at-partial, no-trail hold) from the original queue, in case shallow-and-protect
+    beats deep. Reach context (capture_mfe_fit): 95% touch 0.5R, 75% touch 1R, 48% touch
+    2R in-trade; 58%/40% reach 2R/3R to-EOD."""
     out = [('base_v8', {})]
-    for pct, be, runner in itertools.product([25.0, 50.0], [False, True],
-                                             ['trail', 'hold', 'hold2r']):
-        name = f'r1p{int(pct)}{"be" if be else ""}_{runner}'
-        out.append((name, dict(v8_partial_at_r=1.0, v8_partial_pct=pct,
-                               v8_be_at_partial=be, v8_runner=runner)))
+    for pr in (1.0, 1.5, 2.0, 3.0):
+        for pct in (25.0, 50.0):
+            tag = str(pr).replace('.', '')
+            out.append((f'p{int(pct)}_at{tag}r_trail',
+                        dict(v8_partial_at_r=pr, v8_partial_pct=pct)))
+    for pct in (25.0, 50.0):
+        out.append((f'p{int(pct)}_at10r_be_trail',
+                    dict(v8_partial_at_r=1.0, v8_partial_pct=pct, v8_be_at_partial=True)))
+        out.append((f'p{int(pct)}_at10r_hold',
+                    dict(v8_partial_at_r=1.0, v8_partial_pct=pct, v8_runner='hold')))
     return out
 
 
