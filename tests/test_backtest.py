@@ -463,6 +463,102 @@ def test_v8_premarket_fill_goes_be_at_0929():
     assert abs(tr_[0].r_multiple) < 0.1
 
 
+# ------------------------------------------------------------- exit-lab fixed-R V8 family
+# (ANGUS queued 2026-07-30: "X% partial at +1R, BE variants, runner policies". All knobs
+# default OFF — the shipped V8 path above must stay byte-identical, which the V8 tests and
+# the conformance suites assert.)
+
+def test_v8_fixed_r_partial_books_at_1r_not_structure():
+    # v8_partial_at_r=1.0: the 50% partial books at entry+1R (25010), NOT the first
+    # structure (25020). Points math separates the two: 1R-partial gives
+    # 0.5*10 + 0.5*97.5 = 53.75 pts; a structure partial would give 58.75.
+    c = cfg(mgmt_variant="V8", v8_partial_at_r=1.0)
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),        # 09:48
+            (25004, 25005, 24999.75, 25002),     # 09:49 fill 25000, risk 10
+            (25004, 25010.25, 25003, 25008),     # 09:50 through 25010 -> 1R partial
+            (25008, 25097.75, 25007, 25090)]     # 09:51 runner exits at working target
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+target"
+    assert rec.points == pytest.approx(53.75)
+    assert rec.r_multiple == pytest.approx(5.375)
+
+
+def test_v8_be_at_partial_moves_stop_to_entry_next_bar():
+    # v8_be_at_partial: booking the 1R partial moves the stop to entry (pending, next bar);
+    # the 09:51 dip to 24998 exits the runner as a BE stop. Without the knob the same tape
+    # leaves the position open (stop still 24990).
+    base = dict(mgmt_variant="V8", v8_partial_at_r=1.0, v8_runner="hold")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),        # 09:48
+            (25004, 25005, 24999.75, 25002),     # 09:49 fill 25000
+            (25004, 25010.25, 25003, 25008),     # 09:50 1R partial; stop -> entry pending
+            (25002, 25003, 24998.0, 24999)]      # 09:51 dips through 25000 -> BE stop
+    bars = mk_bars("2026-02-11 09:48", rows)
+    tr_, vd, _ = simulate(bars, [t], cfg(**base, v8_be_at_partial=True),
+                          target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+be_stop"
+    assert rec.points == pytest.approx(0.5 * 10 + 0.5 * -0.25)
+    tr_off, _, _ = simulate(bars, [t], cfg(**base),
+                            target_resolver=_v56_resolver(),
+                            entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert tr_off == []                          # knob off: 24998 never touches the 24990 stop
+
+
+def test_v8_hold2r_runner_banks_at_2r_same_bar_as_partial():
+    # v8_runner="hold2r": once the partial books, the runner's target becomes entry+2R when
+    # nearer than the structural target. Same-bar trade-through of both 1R and 2R books the
+    # partial at 25010 then the runner at 25020 (price-ordered), structural 25097.5 untouched.
+    c = cfg(mgmt_variant="V8", v8_partial_at_r=1.0, v8_runner="hold2r")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),        # 09:48
+            (25004, 25005, 24999.75, 25002),     # 09:49 fill 25000
+            (25004, 25020.5, 25003, 25018)]      # 09:50 through 1R AND 2R -> both legs book
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+target"
+    assert rec.exit_price == pytest.approx(25020.0)
+    assert rec.points == pytest.approx(0.5 * 10 + 0.5 * 20)
+    assert rec.r_multiple == pytest.approx(1.5)
+
+
+def test_v8_hold_runner_does_not_trail():
+    # v8_runner="hold": the same tape that stops the trailed runner at the prior 5m swing
+    # (25008, see test_v8_books_partial_then_trails_prior_5m_swing) rides through the 09:57
+    # dip to 25006 and exits at the structural working target instead.
+    c = cfg(mgmt_variant="V8", v8_partial_at_r=1.0, v8_runner="hold")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),        # 09:48
+            (25004, 25005, 24999.75, 25002),     # 09:49 fill 25000
+            (25010, 25020.25, 25008, 25018),     # 09:50 1R partial (through 25010.25)
+            (25018, 25022, 25012, 25020),        # 09:51
+            (25020, 25024, 25015, 25022),        # 09:52
+            (25022, 25026, 25016, 25024),        # 09:53
+            (25024, 25028, 25018, 25026),        # 09:54  (5m bin 09:50-09:54: low 25008)
+            (25026, 25030, 25020, 25028),        # 09:55  trail would arm 25008 here
+            (25028, 25030, 25022, 25026),        # 09:56
+            (25024, 25025, 25006, 25010),        # 09:57  dip through 25008: hold survives
+            (25012, 25097.75, 25010, 25090)]     # 09:58 runner exits at working target
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+target"
+    assert rec.exit_price == pytest.approx(25097.5)
+    assert rec.r_multiple == pytest.approx(5.375)
+
+
 # ------------------------------------------------------------- pass-17 EC contextual entry
 
 def test_ec_displacement_market_fills_but_rejection_rests_limit():
