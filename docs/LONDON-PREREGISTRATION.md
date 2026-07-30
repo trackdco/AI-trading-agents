@@ -1,6 +1,10 @@
 # London holdout pre-registration
 
-**Status: DRAFT — requires Angus sign-off before the sealed set is opened.**
+**Status: SIGNED OFF AS DRAFT (Brake, 2026-07-30). Fit-side work authorised to proceed.**
+**The sealed set may NOT be opened on this signature** — §1 (frozen config), §3 (single
+secondary) and §4 (multiplicity) are strategy-authority decisions and still require Angus.
+Draft sign-off exists so the fit-side combined-book job can run against a fixed configuration
+rather than a moving one; it does not promote any recommendation to a ruling.
 Written 2026-07-30, before any holdout evidence was examined. The sealed 2023/24 days
 (`data/reference/holdout_2023_24_days.csv`, 128 days) have been used ONLY to build the trigger
 census and feature matrix; no outcome, check lift, or book figure has been read from them.
@@ -111,5 +115,6 @@ secondaries). Each additional question dilutes the primary one, and the holdout 
 | | |
 |---|---|
 | Written by | engineering (Claude Code), 2026-07-30 |
-| Requires | **Angus sign-off on §1 (frozen config), §3 (single secondary), §4 (multiplicity)** |
-| Holdout may be opened | only after sign-off, once, frozen |
+| Draft sign-off | **Brake, 2026-07-30** — authorises fit-side work against this frozen config |
+| Still requires | **Angus** on §1 (frozen config), §3 (single secondary), §4 (multiplicity) |
+| Holdout may be opened | only after ANGUS sign-off, once, frozen. Draft sign-off is NOT sufficient |
