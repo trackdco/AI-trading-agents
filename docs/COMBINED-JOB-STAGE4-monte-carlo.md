@@ -8,17 +8,17 @@ Funded rules: start $50,000, $2,000 trailing EOD DD locking at start once equity
 
 ## Sanity check
 
-**NY-alone P(bust) = 11.8%** (must be near 1%, not 39% — 39% would mean the wrong book was loaded).
+**NY-alone P(bust) = 2.4%** — must land in 0.5%-4%. PASS
 
 ## Headline
 
 | config | P(bust) | cycles med/p90 | net payout p10/med/p90 |
 |---|---|---|---|
-| NY alone | **11.8%** | 47/57 | $66,000/$94,000/$114,000 |
-| NY + London (window-end x uncapped, clock) | **12.1%** | 53/62 | $78,000/$106,000/$124,000 |
-| NY + London (22pt x 2/session, clock) | **14.0%** | 54/64 | $71,800/$108,000/$128,000 |
-| London separate account (window-end x uncapped) | **35.5%** | 23/31 | $4,000/$46,000/$62,000 |
-| London separate account (22pt x 2/session) | **37.0%** | 20/28 | $4,000/$40,000/$56,000 |
+| NY alone | **2.4%** | 27/30 | $73,805/$92,552/$111,011 |
+| NY + London (window-end x uncapped, clock) | **1.6%** | 28/31 | $86,347/$105,021/$122,790 |
+| NY + London (22pt x 2/session, clock) | **1.7%** | 29/31 | $86,621/$106,922/$126,399 |
+| London separate account (window-end x uncapped) | **9.1%** | 24/27 | $30,013/$47,966/$60,852 |
+| London separate account (22pt x 2/session) | **10.3%** | 23/26 | $23,179/$42,148/$53,983 |
 
 ## Sensitivity 1 — haircut London's mean R
 
@@ -41,17 +41,17 @@ Daily blocks assume no week-scale autocorrelation. Repeat at 5-day blocks.
 
 | config | P(bust) daily | P(bust) weekly | med payout daily | med payout weekly |
 |---|---|---|---|---|
-| NY alone | 11.8% | 5.5% | $94,000 | $94,000 |
-| NY+London (window-end x uncapped) | 12.1% | 5.9% | $106,000 | $106,000 |
-| NY+London (22pt x 2/session) | 14.0% | 6.9% | $108,000 | $108,000 |
+| NY alone | 2.4% | 0.7% | $92,552 | $92,613 |
+| NY+London (window-end x uncapped) | 1.6% | 1.1% | $105,021 | $103,897 |
+| NY+London (22pt x 2/session) | 1.7% | 0.9% | $106,922 | $106,485 |
 
 ## Sensitivity 3 — second NY profile (scaled600)
 
-scaled600 NY-alone: 927 trades, $+320,662, P(bust) 97.2%, med payout $30,000
+scaled600 NY-alone: 927 trades, $+320,662, P(bust) 84.1%, med payout $102,515
 
 | arm | combined net | vs NY-alone | P(bust) |
 |---|---|---|---|
-| window-end x uncapped | $+101,193 | **$-219,469** | 83.8% |
-| 22pt x 2/session | $+118,672 | **$-201,991** | 80.5% |
+| window-end x uncapped | $+101,193 | **$-219,469** | 30.9% |
+| 22pt x 2/session | $+118,672 | **$-201,991** | 27.7% |
 
 scaled600's budget scales with buffer, so contention behaves differently — a larger NY risk unit crowds London harder under one shared budget.
