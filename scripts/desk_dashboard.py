@@ -27,10 +27,24 @@ def funded_month_table(rows: list[dict]) -> str:
     """Completed-month funded comparison under the static lucid sizing: the canon book's
     rows with agent exits/dollars substituted, run through the REAL funded sim, vs the
     mechanical (two-rule) book on the same months. Fills up as months complete."""
-    V = fb.load_book("fit")             # CR law applied — the mechanical baseline
-    V = V.reset_index(drop=True)
-    V["trade_id"] = [f"{r.day}_{r.fill.tz_convert(NY).strftime('%H%M')}_{r.direction[0]}_{i}"
-                     for i, r in enumerate(V.itertuples())]
+    # IDs must be built EXACTLY the driver's way (raw-book enumeration, then suppression
+    # drop) — enumerating the deduped book diverges after the first suppressed row.
+    from scripts.capture_replay import load_trades
+    T = load_trades("fit")
+    O = pd.read_parquet(ROOT / "output/aikido_cr_fit.parquet").set_index(["ts", "direction"])
+    if "cr_suppressed" in O.columns:
+        sup = set(O[O.cr_suppressed].index)
+        T = [t for t in T if (t["ts"], t["direction"]) not in sup]
+        O = O[~O.cr_suppressed]
+    for t in T:
+        k = (t["ts"], t["direction"])
+        if k in O.index:
+            t["dollars"] = float(O.loc[k].cr_dollars_1lot)
+            t["exit"] = pd.to_datetime(O.loc[k].cr_exit_ts)
+    V = pd.DataFrame([{"trade_id": t["trade_id"], "day": t["day"], "ts": t["ts"],
+                       "month": t["day"][:7], "fill": t["fill"], "exit": t["exit"],
+                       "risk": t["risk"], "tier": t["tier"], "elite": t["elite"],
+                       "dollars_1lot": t["dollars"], "sess": t["sess"]} for t in T])
     jmap = {r["trade_id"]: r for r in rows}
     canon_n = V.groupby("month").size()
     done_n = pd.Series([r["day"][:7] for r in rows]).value_counts()
