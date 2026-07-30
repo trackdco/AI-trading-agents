@@ -18,8 +18,10 @@ the depth semantics changes between spans.
 import argparse
 import sys
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 NY = "America/New_York"
 
@@ -65,11 +67,15 @@ def depth_at(dep, minute, entry, direction):
     f["dep_sup_m_res"] = f["dep_support"] - f["dep_resist"]
     above, below = b[b.price > entry], b[b.price < entry]
     if len(above):
-        w = above.loc[above["size"].idxmax()]
+        # explicit tie-break: largest size, then NEAREST price. idxmax alone resolves
+        # ties by row position, which is input-order dependent.
+        w = above.sort_values(["size", "price"], ascending=[False, True],
+                             kind="mergesort").iloc[0]
         f["dep_wall_above_d"] = float(w.price - entry)
         f["dep_wall_above_sz"] = float(w["size"])
     if len(below):
-        w = below.loc[below["size"].idxmax()]
+        w = below.sort_values(["size", "price"], ascending=[False, False],
+                             kind="mergesort").iloc[0]
         f["dep_wall_below_d"] = float(entry - w.price)
         f["dep_wall_below_sz"] = float(w["size"])
     b5 = dep[dep.ts <= minute - pd.Timedelta(minutes=5)]

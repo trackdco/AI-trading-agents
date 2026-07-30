@@ -88,11 +88,27 @@ def substrate_frame(oc: pd.DataFrame) -> pd.DataFrame:
     })
 
 
-def key(df: pd.DataFrame, fill_col: str = "fill") -> pd.Series:
-    """(day, fill-minute, direction, entry) — entry included on purpose (burn list #4)."""
+def key(df: pd.DataFrame, fill_col: str = "fill", full: bool = True) -> pd.Series:
+    """The trade identity key.
+
+    (day, fill-minute, direction, entry) is NOT sufficient: the determinism audit
+    (docs/LONDON-AUDIT-DETERMINISM.md) found 581 tied groups / 1,321 rows sharing those four
+    fields whose `stop` differs in 325 groups, `exit` in 222 and `risk` in 335. So `stop` and
+    `exit` are part of identity — without them `drop_duplicates` picks an arbitrary sibling
+    whose outcome differs, and only an accident of which columns PASSTHRU excludes kept that
+    from changing the book.
+
+    `full=False` yields the legacy 4-field form, used ONLY for the gate join against the cached
+    london_matrix, which predates this fix and carries no `stop` column.
+    """
     f = pd.to_datetime(df[fill_col], format="mixed", utc=True).dt.tz_convert(NY).dt.floor("min")
-    return (df.day.astype(str) + "|" + f.dt.strftime("%H:%M") + "|"
-            + df.direction.astype(str) + "|" + df.entry.astype(float).round(2).astype(str))
+    k = (df.day.astype(str) + "|" + f.dt.strftime("%H:%M") + "|"
+         + df.direction.astype(str) + "|" + df.entry.astype(float).round(2).astype(str))
+    if not full:
+        return k
+    x = pd.to_datetime(df["exit"], format="mixed", utc=True).dt.tz_convert(NY)
+    return (k + "|" + df.stop.astype(float).round(2).astype(str)
+            + "|" + x.dt.strftime("%Y-%m-%dT%H:%M:%S"))
 
 
 def build(span: str, procs_note: str = "") -> Path:
@@ -102,7 +118,12 @@ def build(span: str, procs_note: str = "") -> Path:
 
     S = substrate_frame(oc)
     S["_k"] = key(S)
-    uniq = S.drop_duplicates("_k").reset_index(drop=True)
+    # ORDERED dedup, mergesort: which row survives must be DEFINED, not whatever order the
+    # input happened to arrive in. Ties in _k now imply identical inputs AND identical outcome,
+    # so the choice is immaterial — but it is pinned anyway so a future column change cannot
+    # silently reintroduce order-dependence.
+    uniq = (S.sort_values(["_k", "ts"], kind="mergesort")
+            .drop_duplicates("_k", keep="first").reset_index(drop=True))
     print(f"unique feature inputs: {len(uniq)} "
           f"({len(S) - len(uniq)} duplicate (day,fill,dir,entry) rows collapsed)")
 
@@ -149,7 +170,8 @@ def gate(span: str) -> None:
     new = pd.read_parquet(dest)
     old = pd.read_parquet(CACHED_MATRIX)
     old = old[old.book == "E3"] if "book" in old else old
-    new["_k"], old["_k"] = key(new), key(old)
+    # legacy 4-field key: the cached matrix predates the identity fix
+    new["_k"], old["_k"] = key(new, full=False), key(old, full=False)
 
     shared = [c for c in new.columns
               if c in old.columns and c not in PASSTHRU and c not in GATE_EXCLUDE
