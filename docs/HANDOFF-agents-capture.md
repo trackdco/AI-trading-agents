@@ -61,6 +61,17 @@ trade whose tape turned — inside hard guardrails (stops inviolate, no re-entry
 direction changes, RR floors on named targets, partials only shrink, max 4 decisions,
 fail-closed verdicts fall back to the mechanical plan).
 
+**OPEN FINDING — the canon overlaps (measured 2026-07-30, Angus not yet ruled).** The
+uncapped book holds up to 8 simultaneous positions; 397 same-direction overlapping pairs on
+fit (sibling/scale-in fills) and 79 fit / 107 holdout trades (8% / 17%) filled AGAINST an
+open position — the reversal-flip class. No phantom P&L (linear instruments net at the
+broker; both commissions charged), and the flips are the best trades in the book (WR 52/60%,
+meanR +0.61/+0.63); banning them costs funded $90,015->$81,216 fit and $56,409->$42,550
+holdout (-25%, worse maxDD). TWO ACTIONS REGARDLESS OF RULING: (1) Pat's arming track must
+SPECIFY live handling of an opposing signal while in a position (net/flip vs block) or live
+diverges from the book; (2) the desk agent should receive "opposing canon signal fired" as
+an in-trade event — the book's strongest exit signal, currently consumed by nobody.
+
 ---
 
 **The mission:** run a chained-agents test to see whether an agent layer can capture more of
