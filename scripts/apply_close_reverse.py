@@ -1,33 +1,32 @@
 #!/usr/bin/env python3
-"""CLOSE-AND-REVERSE — the canon's execution semantics. ANGUS ruling 2026-07-30.
+"""EXECUTION SEMANTICS — the canon's two rulings (ANGUS 2026-07-30), built as ONE overlay.
 
-  "when we're in a valid long, and a short position fires, close it right then and there"
+1. TWO SESSIONS — pre flat by the open: "i want all pre market trades to be flattened by
+   market open. 2 different sessions basically." Every pre-session position is
+   market-flattened on the first bar at/after 09:30 (engine knob `pre_flatten_at`, the
+   REAL engine re-simulates every pre trigger — no re-implementation).
+2. CLOSE-AND-REVERSE: "when we're in a valid long, and a short position fires, close it
+   right then and there." An OPPOSING canon fill flattens the open trade at that fill
+   (maker price, no slip) and reverses. An opposing signal that never fills changes
+   nothing; same-direction adds stack untouched.
 
-At a netting broker one account holds one net position. Every trade keeps its own full
-bracket; an OPPOSING canon fill is an ADDITIONAL exit: the moment trade B fills against an
-open trade A, the same limit fill flattens A (at B's entry price — maker fill, no slip) and
-opens B as its own trade. An opposing signal that never fills changes nothing. Same-direction
-overlaps (sibling/scale-in fills) are untouched — they stack, they do not contradict.
+Order matters and is sequential per day: pre-flatten first reshapes exits, then the CR pass
+runs over the spliced book (a pre trade flattened at 09:30 cannot flip a gold trade after
+it). Priced before ruling (holdout ledger looks #3 and #4, both declared):
+shipped $90,015/$56,409 -> CR $97,327/$59,407 -> CR+two-session $94,695/$56,756 (lucid).
 
-Priced before ruling (holdout ledger look #3, declared): shipped $90,015/$56,409 ->
-close-and-reverse $97,327/$59,407 (lucid), holdout maxDD $1,503 -> $1,429. The opposing fill
-is the book's strongest exit signal; this harvests it and eliminates simultaneous
-opposite-direction positions entirely.
-
-Truncation math per flipped trade A (engine cost conventions): the V8 partial leg stands if
-its price traded before the flip minute (recovered by inverting the book's own dollars,
-never re-resolved); the remaining fraction closes at B's entry; commission charged once as
-always; no slip on the flip close (it IS B's limit fill).
-
-Writes output/aikido_cr_{span}.parquet — the overlay funded_book.load_book applies as LAW.
-Sequential: a flipped trade is closed and cannot flip anything later; the flipping trade
-lives with its ORIGINAL exit until (possibly) flipped itself.
+Writes output/aikido_cr_{span}.parquet — every trade whose exit/dollars differ from the
+engine's V8 walk, with final (post-both-rules) values. funded_book.load_book applies it as
+LAW. Truncation math per flipped trade: the V8 partial leg stands if its price traded
+before the flip minute (inverted from the book's own dollars); the rest closes at the
+flipping trade's entry; commission once; no slip on the flip close (it IS the limit fill).
 
     python -m scripts.apply_close_reverse
 """
 from __future__ import annotations
 
 import sys
+from datetime import time as dtime
 from pathlib import Path
 
 import pandas as pd
@@ -35,21 +34,52 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+import scripts.build_l2_outcomes as m  # noqa: E402
 from scripts import funded_book as fb  # noqa: E402
 from scripts.capture_replay import (  # noqa: E402
     COMMISSION, PARTIAL_PCT, day_path, implied_partial, load_bars_ny, load_trades, sgn)
 
+PRE_FLATTEN = dtime(9, 30)
+
+
+def resim_pre(span: str) -> pd.DataFrame:
+    """Every pre-session canon trigger through the REAL engine with the 09:30 flatten."""
+    T = load_trades(span)
+    pre_keys = {(t["ts"], t["direction"]) for t in T if t["sess"] == "pre"}
+    C = pd.read_parquet(ROOT / f"output/l0_triggers_{span}.parquet")
+    C = C[[(t, d) in pre_keys for t, d in zip(C.ts, C.direction)]].drop_duplicates(
+        ["ts", "direction"])
+    base_cfg = m.l2_cfg
+    m.l2_cfg = lambda t_cancel=100000.0: base_cfg(t_cancel).model_copy(
+        update={"pre_flatten_at": PRE_FLATTEN})
+    out = m.run(C.copy(), procs=4)
+    m.l2_cfg = base_cfg
+    oc = out[out.status == "outcome"].drop_duplicates(["ts", "direction"])
+    assert len(oc) == len(pre_keys), f"{span}: pre re-sim {len(oc)} != {len(pre_keys)}"
+    return oc.set_index(["ts", "direction"])
+
 
 def build_span(span: str, bars) -> pd.DataFrame:
-    T = load_trades(span)               # canon book rows with parsed NY stamps
+    T = load_trades(span)               # V8-anchored book rows, parsed NY stamps
     keys = [(t["ts"], t["direction"]) for t in T]
     assert len(keys) == len(set(keys)), f"{span}: (ts, direction) not unique in the book"
+    orig = {(t["ts"], t["direction"]): (t["dollars"], t["exit"]) for t in T}
 
-    rows = []
+    P = resim_pre(span)
+    for t in T:                         # splice rule 1
+        k = (t["ts"], t["direction"])
+        if k in P.index:
+            r = P.loc[k]
+            t["dollars"] = float(r.dollars_1lot)
+            t["exit_price"] = float(r.exit_price)
+            t["exit_reason"] = str(r.exit_reason)
+            t["exit"] = pd.to_datetime(r.exit_ts).tz_convert("America/New_York")
+
     by_day: dict[str, list[dict]] = {}
     for t in T:
         by_day.setdefault(t["day"], []).append(t)
-    for day in sorted(by_day):
+    flips = 0
+    for day in sorted(by_day):          # rule 2, sequential per day
         todays = sorted(by_day[day], key=lambda x: x["fill"])
         open_list: list[dict] = []
         for b in todays:
@@ -65,19 +95,23 @@ def build_span(span: str, bars) -> pd.DataFrame:
                         legs.append((PARTIAL_PCT, pp))
                 legs.append((1.0 - sum(f for f, _ in legs), b["entry"]))
                 pts = sum(f * s * (px - a["entry"]) for f, px in legs)
-                rows.append({
-                    "ts": a["ts"], "direction": a["direction"],
-                    "cr_exit_ts": _fill_ts_str(b),
-                    "cr_exit_price": float(b["entry"]),
-                    "cr_dollars_1lot": round(pts * 20.0 * a["size"] - COMMISSION, 2),
-                    "flipped_by_ts": b["ts"]})
+                a["dollars"] = round(pts * 20.0 * a["size"] - COMMISSION, 2)
+                a["exit_price"] = float(b["entry"])
+                a["exit_reason"] = "flip"
+                a["exit"] = b["fill"]
+                flips += 1
             open_list = [a for a in open_list if a["direction"] == b["direction"]]
             open_list.append(b)
+
+    rows = [{"ts": t["ts"], "direction": t["direction"],
+             "cr_exit_ts": t["exit"].isoformat(),
+             "cr_exit_price": float(t["exit_price"]),
+             "cr_dollars_1lot": float(t["dollars"]),
+             "cr_exit_reason": t["exit_reason"]}
+            for t in T
+            if (t["dollars"], t["exit"]) != orig[(t["ts"], t["direction"])]]
+    print(f"{span}: {flips} flips | {len(rows)} trades differ from the V8 walk")
     return pd.DataFrame(rows)
-
-
-def _fill_ts_str(t: dict) -> str:
-    return t["fill"].isoformat()
 
 
 def main() -> None:
@@ -86,10 +120,9 @@ def main() -> None:
         O = build_span(span, bars)
         out = ROOT / f"output/aikido_cr_{span}.parquet"
         O.to_parquet(out, index=False)
-        print(f"{span}: {len(O)} trades flipped -> {out.relative_to(ROOT)}")
+        print(f"  wrote {out.relative_to(ROOT)}")
         for profile in ("lucid", "scaled600"):
-            V = fb.load_book(span)          # overlay applied if load_book already patched
-            B = fb.run(V, profile)
+            B = fb.run(fb.load_book(span), profile)
             D = B.groupby("day").pl.sum()
             mo = B.groupby("month").pl.sum()
             cum = D.cumsum()

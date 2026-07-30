@@ -13,12 +13,15 @@ ENTRIES (uncapped — the 2/session cap measured as pure cost once the wall cut 
   risk 7-60pt Layer-0 · E3 limits · orders die at session-window end (no distance cancel)
   · news blackout · V8 exits (nothing mechanical beat them; capture gap = agent layer)
 
-EXECUTION SEMANTICS — CLOSE-AND-REVERSE (ANGUS ruling 2026-07-30, holdout look #3):
-  one net position per direction-conflict: an OPPOSING canon fill flattens the open trade
-  at that fill (maker price, no slip) and reverses — the flip is the book's strongest exit
-  signal. An opposing signal that never fills changes nothing; same-direction overlaps
-  (sibling/scale-in fills) stack untouched. Overlay output/aikido_cr_{span}.parquet is LAW
-  (scripts/apply_close_reverse.py regenerates); 86 fit / 97 holdout trades flip.
+EXECUTION SEMANTICS (ANGUS rulings 2026-07-30; overlay output/aikido_cr_{span}.parquet is
+LAW, scripts/apply_close_reverse.py regenerates; holdout ledger looks #3 and #4):
+  1. TWO SESSIONS — every pre-session position is market-flattened on the first bar at/
+     after 09:30 ("2 different sessions basically"); engine knob pre_flatten_at, re-run
+     through the real engine.
+  2. CLOSE-AND-REVERSE — an OPPOSING canon fill flattens the open trade at that fill
+     (maker price, no slip) and reverses; the flip is the book's strongest exit signal.
+     An opposing signal that never fills changes nothing; same-direction adds stack.
+  86 fit / 97 holdout trades flip; 132/111 total rows differ from the raw V8 walk.
 
 CONVICTION TIERS (multipliers on the profile base; cells era-consistent):
   0.5x  gold score<=3 · pre score 2      (the streaky tier; half for DD, not EV)
@@ -48,15 +51,16 @@ RISK SPINE (all causal: decisions see only realized-by-fill P&L + in-flight risk
                          holdout — so they change no measured number; pure insurance]
   micro clamp 40 · micros = round(risk$/(stop_pts*2)), min 1
 
-REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k; CLOSE-AND-REVERSE):
-  lucid      fit  +$97,327 ($7,487/mo)   worst day -$762    maxDD $1,603  13/13 green
-             holdout +$59,407 ($9,901/mo)  worst day -$780  maxDD $1,429   6/6 green
-  scaled600  fit +$349,231 ($26,864/mo)  worst day -$3,242  maxDD $5,844  13/13 green
-             holdout +$198,583 ($33,097/mo) worst day -$3,092 maxDD $4,061  6/6 green
-  (supersede the pre-CR 2026-07-29 figures +$90,015 / +$56,409 / +$320,662 / +$188,325.
-   CR improves every net and lucid holdout maxDD $1,503->$1,429; the one metric that
-   WORSENS is scaled600 holdout maxDD $3,618->$4,061 — stated, not hidden.
-   MC funded-yr line below is PRE-CR and pending re-run.)
+REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k; BOTH execution rules):
+  lucid      fit  +$94,695 ($7,284/mo)   worst day -$762    maxDD $1,603  13/13 green
+             holdout +$56,756 ($9,459/mo)  worst day -$780  maxDD $1,506   6/6 green
+  scaled600  fit +$339,518 ($26,117/mo)  worst day -$3,242  maxDD $5,844  13/13 green
+             holdout +$187,274 ($31,212/mo) worst day -$3,092 maxDD $4,061  6/6 green
+  (Ladder: shipped 2026-07-29 $90,015/$56,409 -> +CR $97,327/$59,407 -> +two-session
+   $94,695/$56,756 lucid. The 09:30 pre flatten COSTS ~3-6% of net vs CR-only — ANGUS
+   ruled the session discipline worth it ("idgaf about the EOD r ceiling"). scaled600
+   holdout maxDD $3,618->$4,061 under CR — stated, not hidden. MC funded-yr line below is
+   PRE-CR and pending re-run.)
              MC funded-yr (both-span pool, 2000 sims): P(bust) 1.0%, median 28 payouts
              NOTE fit worst day -$3,242 vs that day's $3,200 budget: one day, $42 through
              (last fill's stop-out landed after the budget check passed) — known, accepted

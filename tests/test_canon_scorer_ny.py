@@ -114,7 +114,7 @@ def test_live_scorer_reproduces_the_shipped_book(span, profile_name):
 @pytest.mark.parametrize("span", SPANS)
 def test_reference_net_is_reproduced(span):
     """The headline numbers in the funded_book docstring, from the LIVE path."""
-    expect = {"fit": 97_327, "holdout": 59_407}[span]
+    expect = {"fit": 94_695, "holdout": 56_756}[span]
     assert round(replay(span, LUCID).pl.sum()) == pytest.approx(expect, abs=1)
 
 

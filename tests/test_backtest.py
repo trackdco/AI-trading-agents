@@ -623,6 +623,25 @@ def test_v8_eod_runner_ignores_target_and_flattens():
     assert rec.points == pytest.approx(0.5 * 10 + 0.5 * 79.75)
 
 
+def test_pre_flatten_at_closes_premarket_position_at_open():
+    # ANGUS two-session rule: a position filled before 09:30 is market-flattened on the
+    # first bar at/after 09:30, open - slip, reason open_flatten. A post-09:30 fill is
+    # untouched by the knob.
+    c = cfg(mgmt_variant="V8", pre_flatten_at=time(9, 30))
+    t = trig("2026-02-11 09:18", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005)]                # 09:18 trigger bar
+    rows += [(25004, 25005, 24999.75, 25002)]            # 09:19 fill 25000
+    rows += [(25005, 25008, 25002, 25006)] * 10          # 09:20-09:29 drift
+    rows += [(25010, 25012, 25008, 25011)]               # 09:30 -> flatten at open
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:18", rows), [t], c,
+                          target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "open_flatten"
+    assert rec.exit_price == pytest.approx(25010 - 0.25)
+
+
 # ------------------------------------------------------------- pass-17 EC contextual entry
 
 def test_ec_displacement_market_fills_but_rejection_rests_limit():

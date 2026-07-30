@@ -110,6 +110,11 @@ class BacktestConfig(BaseModel):
                                   # walking past shallower ones; none clears -> no partial
                                   # leg (the trade runs whole to the target). Mutually
                                   # exclusive with v8_partial_at_r (fixed-R wins if both).
+    pre_flatten_at: dtime | None = None  # ANGUS 2026-07-30: "i want all pre market trades
+                                  # to be flattened by market open. 2 different sessions" —
+                                  # a position FILLED before this time is market-flattened
+                                  # on the first bar at/after it (open +/- slip, like the
+                                  # EOD flatten). None = off, byte-identical.
     max_trades_per_day: int       # §10
     halt_losses: int
     halt_r: float
@@ -182,6 +187,8 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         v8_be_at_partial=c["management"].get("v8_be_at_partial", False),
         v8_runner=c["management"].get("v8_runner", "trail"),
         v8_partial_min_r=c["management"].get("v8_partial_min_r"),
+        pre_flatten_at=(_hhmm(c["management"]["pre_flatten_at"])
+                        if c.get("management", {}).get("pre_flatten_at") else None),
         oversized_stop=c["sizing"]["oversized_stop_points"],
         late_window_after=_hhmm(c["sizing"]["late_window_after"]),
         require_bb_vwap=c["sizing"].get("require_bb_vwap", True),
@@ -667,6 +674,12 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                 sl = slip.ticks(ts)
                 px = o - sign * sl * cfg.tick
                 close_trade(pos, px, "eod", ts, sl)
+            elif (cfg.pre_flatten_at is not None
+                    and pos.fill_ts.time() < cfg.pre_flatten_at
+                    and tod >= cfg.pre_flatten_at):          # ANGUS two-session rule: pre
+                sl = slip.ticks(ts)                          # positions die at the open
+                px = o - sign * sl * cfg.tick
+                close_trade(pos, px, "open_flatten", ts, sl)
             else:
                 through = cfg.through_ticks * cfg.tick
                 stop_hit = (lo <= pos.stop) if sign == 1 else (h >= pos.stop)
