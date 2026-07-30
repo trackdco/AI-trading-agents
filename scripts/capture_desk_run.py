@@ -174,6 +174,29 @@ def journal_digest(rows: list[dict]) -> str:
         if g:
             lines.append(f"  {sess}: n{len(g)} you {sum(r['agent_R'] for r in g):+.1f}R "
                          f"vs V8 {sum(r['v8_R'] for r in g):+.1f}R")
+    # the gauges: dying vs winning trades, and the cutting-early scorecard
+    dying = [r for r in rows if r["v8_R"] < -0.1]
+    winning = [r for r in rows if r["v8_R"] > 0.1]
+    if dying:
+        lines.append(f"  defense (mech losers, n{len(dying)}): you "
+                     f"{sum(r['agent_R'] - r['v8_R'] for r in dying):+.1f}R vs mech")
+    if winning:
+        lines.append(f"  offense (mech winners, n{len(winning)}): you "
+                     f"{sum(r['agent_R'] - r['v8_R'] for r in winning):+.1f}R vs mech")
+    cuts = [r for r in rows if r["exit_reason"] == "agent_exit"
+            and r.get("left_peak_R") is not None]
+    if cuts:
+        lp = sorted(r["left_peak_R"] for r in cuts)
+        died = sum(1 for r in cuts if r["would_have_stopped"])
+        lines.append(
+            f"  your early exits (n{len(cuts)}): {died} would have hit the stop anyway "
+            f"(good cuts); median left on the table after you left: "
+            f"{lp[len(lp) // 2]:+.1f}R (before stop/session end)")
+    caps = [r["capture"] for r in rows if r.get("capture") is not None]
+    if caps:
+        caps.sort()
+        lines.append(f"  capture (realized/peak, trades that reached +0.5R): median "
+                     f"{caps[len(caps) // 2]:+.2f}")
     lines.append("last trades (you vs V8):")
     for r in rows[-5:]:
         lines.append(f"  {r['day']} {r['sess']} {r['direction']}: {r['agent_R']:+.2f}R vs "
@@ -251,6 +274,30 @@ def manage_trade(t, bars, tape, dep, thesis, reread, journal, log) -> dict:
     def settle(reason_final, ts):
         pts = sum(fr * s * (px - entry) for fr, px, _ in legs)
         net = pts * PV * size - COMMISSION
+        # WHAT THE TRADE DID AFTER THE EXIT — the cutting-early detector (ANGUS: "so it
+        # knows after a while if its likely its cutting trades early"). Post-exit path on
+        # the ORIGINAL stop to the session boundary, stop-first. Computed at close, read
+        # only by LATER trades — causal by the journal cutoff.
+        after = path.loc[ts:]
+        after = after[after.index > ts]
+        bound = flatten
+        left_peak, would_stop, end_after = 0.0, False, 0.0
+        for mi2, b2 in after.iterrows():
+            if mi2 >= bound:
+                break
+            if (s > 0 and b2.low <= t["stop"]) or (s < 0 and b2.high >= t["stop"]):
+                would_stop = True
+                end_after = r_of(t["stop"])
+                break
+            fav2 = (b2.high - float(legs[-1][1])) if s > 0 else (float(legs[-1][1]) - b2.low)
+            left_peak = max(left_peak, float(fav2) / risk)
+            end_after = r_of(float(b2.close))
+        w = tape.loc[:ts]
+        fx = {}
+        if len(w) >= 5:
+            fx = {"cvd5_at_exit": round(float(w.delta.tail(5).sum()) * s, 0),
+                  "cvd15_at_exit": round(float(w.delta.tail(15).sum()) * s, 0),
+                  "opposed_at_exit": int((np.sign(w.delta.tail(5).to_numpy() * s) < 0).sum())}
         return {"trade_id": t["trade_id"], "day": day, "sess": t["sess"],
                 "direction": t["direction"], "risk": risk,
                 "agent_R": round(net / (risk * PV), 4), "agent_dollars": round(net, 2),
@@ -258,6 +305,10 @@ def manage_trade(t, bars, tape, dep, thesis, reread, journal, log) -> dict:
                 "exit_reason": reason_final, "exit_ts": str(ts), "turns": turns,
                 "partials": sum(1 for _, _, r in legs if r == "partial"),
                 "extended": extended, "held_min": int((ts - t["fill"]).total_seconds() // 60),
+                "mfe_R": round(peak_r, 3),
+                "capture": round(net / (risk * PV) / peak_r, 3) if peak_r > 0.5 else None,
+                "left_peak_R": round(left_peak, 3), "would_have_stopped": bool(would_stop),
+                "settle_after_R": round(end_after, 3), **fx,
                 "last_note": last_note, "legs": [(f, p, r) for f, p, r in legs]}
 
     def send(minute, why, bar):
