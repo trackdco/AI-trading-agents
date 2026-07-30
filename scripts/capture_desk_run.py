@@ -524,6 +524,10 @@ def main() -> None:
     # V8 walk for flipped/pre-flattened trades — the agent is measured against the book as
     # it would actually execute, and the "mechanical exit" marker is the real one.
     O = pd.read_parquet(ROOT / "output/aikido_cr_fit.parquet").set_index(["ts", "direction"])
+    if "cr_suppressed" in O.columns:      # rule 3: one-per-level — these trades don't exist
+        sup = set(O[O.cr_suppressed].index)
+        T = [t for t in T if (t["ts"], t["direction"]) not in sup]
+        O = O[~O.cr_suppressed]
     for t in T:
         k = (t["ts"], t["direction"])
         if k in O.index:

@@ -14,14 +14,19 @@ ENTRIES (uncapped — the 2/session cap measured as pure cost once the wall cut 
   · news blackout · V8 exits (nothing mechanical beat them; capture gap = agent layer)
 
 EXECUTION SEMANTICS (ANGUS rulings 2026-07-30; overlay output/aikido_cr_{span}.parquet is
-LAW, scripts/apply_close_reverse.py regenerates; holdout ledger looks #3 and #4):
+LAW, scripts/apply_close_reverse.py regenerates; holdout ledger looks #3, #4, #5):
   1. TWO SESSIONS — every pre-session position is market-flattened on the first bar at/
      after 09:30 ("2 different sessions basically"); engine knob pre_flatten_at, re-run
      through the real engine.
   2. CLOSE-AND-REVERSE — an OPPOSING canon fill flattens the open trade at that fill
      (maker price, no slip) and reverses; the flip is the book's strongest exit signal.
-     An opposing signal that never fills changes nothing; same-direction adds stack.
-  86 fit / 97 holdout trades flip; 132/111 total rows differ from the raw V8 walk.
+     An opposing signal that never fills changes nothing.
+  3. ONE PER LEVEL — a same-direction fill is SUPPRESSED while an open same-direction
+     position sits within 3pt of its entry or shares its stop ("im all for trades in the
+     same direction and all but not double entering off the same level"). Adds at
+     genuinely different points still stack. Suppressed trades never existed.
+  ONE sequential pass per day applies 3 then 2 on pre-flattened exits. Fit: 68 flips,
+  193 suppressed (book 956->763). Holdout: 82 flips, 122 suppressed (637->515).
 
 CONVICTION TIERS (multipliers on the profile base; cells era-consistent):
   0.5x  gold score<=3 · pre score 2      (the streaky tier; half for DD, not EV)
@@ -51,16 +56,19 @@ RISK SPINE (all causal: decisions see only realized-by-fill P&L + in-flight risk
                          holdout — so they change no measured number; pure insurance]
   micro clamp 40 · micros = round(risk$/(stop_pts*2)), min 1
 
-REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k; BOTH execution rules):
-  lucid      fit  +$94,695 ($7,284/mo)   worst day -$762    maxDD $1,603  13/13 green
-             holdout +$56,756 ($9,459/mo)  worst day -$780  maxDD $1,506   6/6 green
-  scaled600  fit +$339,518 ($26,117/mo)  worst day -$3,242  maxDD $5,844  13/13 green
-             holdout +$187,274 ($31,212/mo) worst day -$3,092 maxDD $4,061  6/6 green
-  (Ladder: shipped 2026-07-29 $90,015/$56,409 -> +CR $97,327/$59,407 -> +two-session
-   $94,695/$56,756 lucid. The 09:30 pre flatten COSTS ~3-6% of net vs CR-only — ANGUS
-   ruled the session discipline worth it ("idgaf about the EOD r ceiling"). scaled600
-   holdout maxDD $3,618->$4,061 under CR — stated, not hidden. MC funded-yr line below is
-   PRE-CR and pending re-run.)
+REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k; ALL THREE rules):
+  lucid      fit  +$77,202 ($5,939/mo)   worst day -$670    maxDD $1,268  13/13 green
+             holdout +$44,844 ($7,474/mo)  worst day -$685  maxDD $1,398   6/6 green
+  scaled600  fit +$271,653 ($20,896/mo)  worst day -$2,319  maxDD $4,892  13/13 green
+             holdout +$141,389 ($23,565/mo) worst day -$2,740 maxDD $4,986  6/6 green
+  (Ladder, lucid: 2026-07-29 shipped $90,015/$56,409 -> +CR $97,327/$59,407 ->
+   +two-session $94,695/$56,756 -> +one-per-level $77,202/$44,844. ANGUS on the
+   one-per-level cost: "its fine sacrifcing the profit a bit, big deal" — the multi-TF
+   sibling stack was the book's best per-trade cohort (meanR 0.68) and its removal buys
+   maxDD $1,603->$1,268 fit, worst days -$762->-$670 / -$780->-$685, and scaled600 worst
+   day -$3,242->-$2,319. The one metric that WORSENS: scaled600 holdout maxDD
+   $4,061->$4,986 — stated, not hidden. MC funded-yr line below is PRE-rules, pending
+   re-run.)
              MC funded-yr (both-span pool, 2000 sims): P(bust) 1.0%, median 28 payouts
              NOTE fit worst day -$3,242 vs that day's $3,200 budget: one day, $42 through
              (last fill's stop-out landed after the budget check passed) — known, accepted
@@ -107,6 +115,10 @@ def load_book(span: str, cr: bool = True) -> pd.DataFrame:
                 f"{f} missing — run `python -m scripts.apply_close_reverse` (canon "
                 f"execution semantics, ANGUS 2026-07-30)")
         O = pd.read_parquet(f).set_index(["ts", "direction"])
+        if "cr_suppressed" in O.columns:      # rule 3: one-per-level — these never existed
+            sup = O[O.cr_suppressed].index
+            V = V[~pd.MultiIndex.from_arrays([V.ts, V.direction]).isin(sup)].copy()
+            O = O[~O.cr_suppressed]
         idx = pd.MultiIndex.from_arrays([V.ts, V.direction])
         hit = idx.isin(O.index)
         V["flipped"] = hit

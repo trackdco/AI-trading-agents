@@ -78,12 +78,23 @@ def build_span(span: str, bars) -> pd.DataFrame:
     by_day: dict[str, list[dict]] = {}
     for t in T:
         by_day.setdefault(t["day"], []).append(t)
-    flips = 0
-    for day in sorted(by_day):          # rule 2, sequential per day
+    flips, suppressed = 0, []
+    for day in sorted(by_day):          # rules 2+3, ONE sequential pass per day
         todays = sorted(by_day[day], key=lambda x: x["fill"])
         open_list: list[dict] = []
         for b in todays:
             open_list = [a for a in open_list if a["exit"] > b["fill"]]
+            # rule 3 — ONE PER LEVEL (ANGUS: "im all for trades in the same direction and
+            # all but not double entering off the same level"): a same-direction fill is
+            # SUPPRESSED while an open same-direction position sits within 3pt of its
+            # entry or shares its stop. Suppressed trades never existed: they cannot flip,
+            # be flipped, or hold a level open for later dedupe.
+            if any(a["direction"] == b["direction"]
+                   and (abs(a["entry"] - b["entry"]) <= 3.0 or a["stop"] == b["stop"])
+                   for a in open_list):
+                suppressed.append(b)
+                b["suppressed"] = True
+                continue
             for a in [x for x in open_list if x["direction"] != b["direction"]]:
                 s = sgn(a["direction"])
                 pp = implied_partial(a)
@@ -107,10 +118,13 @@ def build_span(span: str, bars) -> pd.DataFrame:
              "cr_exit_ts": t["exit"].isoformat(),
              "cr_exit_price": float(t["exit_price"]),
              "cr_dollars_1lot": float(t["dollars"]),
-             "cr_exit_reason": t["exit_reason"]}
+             "cr_exit_reason": t["exit_reason"],
+             "cr_suppressed": bool(t.get("suppressed"))}
             for t in T
-            if (t["dollars"], t["exit"]) != orig[(t["ts"], t["direction"])]]
-    print(f"{span}: {flips} flips | {len(rows)} trades differ from the V8 walk")
+            if t.get("suppressed")
+            or (t["dollars"], t["exit"]) != orig[(t["ts"], t["direction"])]]
+    print(f"{span}: {flips} flips | {len(suppressed)} suppressed (one-per-level) | "
+          f"{len(rows)} overlay rows")
     return pd.DataFrame(rows)
 
 

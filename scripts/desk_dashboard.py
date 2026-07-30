@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 from scripts import funded_book as fb  # noqa: E402
 
 NY = "America/New_York"
-TOTAL = 956
+TOTAL = 763
 
 
 def funded_month_table(rows: list[dict]) -> str:

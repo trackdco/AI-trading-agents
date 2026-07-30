@@ -59,6 +59,12 @@ def replay(span: str, profile) -> pd.DataFrame:
     S = pd.read_parquet(ROOT / f"output/aikido_{span}.parquet").copy()
     O = pd.read_parquet(ROOT / f"output/aikido_cr_{span}.parquet").set_index(
         ["ts", "direction"])
+    if "cr_suppressed" in O.columns:
+        # rule 3 (one-per-level): the live runner never places these orders — they are
+        # not part of the feed the scorer sees.
+        sup = O[O.cr_suppressed].index
+        S = S[~pd.MultiIndex.from_arrays([S.ts, S.direction]).isin(sup)].copy()
+        O = O[~O.cr_suppressed]
     idx = pd.MultiIndex.from_arrays([S.ts, S.direction])
     hit = idx.isin(O.index)
     for col, src in (("dollars_1lot", "cr_dollars_1lot"), ("exit_ts", "cr_exit_ts")):
@@ -114,7 +120,7 @@ def test_live_scorer_reproduces_the_shipped_book(span, profile_name):
 @pytest.mark.parametrize("span", SPANS)
 def test_reference_net_is_reproduced(span):
     """The headline numbers in the funded_book docstring, from the LIVE path."""
-    expect = {"fit": 94_695, "holdout": 56_756}[span]
+    expect = {"fit": 77_202, "holdout": 44_844}[span]
     assert round(replay(span, LUCID).pl.sum()) == pytest.approx(expect, abs=1)
 
 
@@ -297,9 +303,9 @@ def test_ramp_ladder_is_two_steps_and_dormant_in_history():
     assert ramp_for(0.0) == 0.25
 
     # dormancy: both spans keep their minimum buffer clear of the outer step
-    # CR references (2026-07-30): flips lift both floors ($1,621->$1,724, $1,720->$1,774) —
-    # the ladder is even further from ever firing on the validated spans.
-    for span, floor in (("fit", 1_724.0), ("holdout", 1_774.0)):
+    # Three-rule references (2026-07-30): floors $1,710 fit / $1,724 holdout — the ladder
+    # stays dormant on both validated spans.
+    for span, floor in (("fit", 1_710.0), ("holdout", 1_724.0)):
         B = fb.run(fb.load_book(span), "lucid")
         D = B.groupby("day").pl.sum()
         bal, line, mb = fb.START, fb.START - fb.TRAIL, 1e9
