@@ -105,6 +105,12 @@ def ny_book() -> pd.DataFrame:
     return t.reset_index(drop=True)
 
 
+def _spearman(a: pd.Series, b: pd.Series) -> float:
+    """Pearson on ranks — identical to Spearman, and avoids adding scipy, which is not on the
+    approved dependency list in code-standards.md."""
+    return float(a.rank().corr(b.rank()))
+
+
 def maxdd(pnl: pd.Series) -> float:
     eq = pnl.cumsum()
     return float((eq.cummax() - eq).max()) if len(eq) else 0.0
@@ -225,9 +231,9 @@ def stage1() -> None:
     L.append(f"\n## Day-level P&L correlation\n\n"
              f"| basis | n days | Pearson r | Spearman |\n|---|---|---|---|\n"
              f"| all days in either book (absent = $0) | {len(j)} | {r_all:+.3f} | "
-             f"{j.ny.corr(j.lon, method='spearman'):+.3f} |\n"
+             f"{_spearman(j.ny, j.lon):+.3f} |\n"
              f"| days BOTH traded | {len(both)} | {r_both:+.3f} | "
-             f"{both.ny.corr(both.lon, method='spearman'):+.3f} |\n")
+             f"{_spearman(both.ny, both.lon):+.3f} |\n")
 
     nl, ll = both.ny < 0, both.lon < 0
     obs = float((nl & ll).mean())
