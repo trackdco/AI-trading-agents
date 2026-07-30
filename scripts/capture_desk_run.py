@@ -58,7 +58,7 @@ MAX_TURNS = 10
 CLI_TIMEOUT = 240
 
 DEPTH_DIRS = ["data/reference/depth_2025", "data/reference/depth_2026",
-              "data/reference/depth_apr2026"]
+              "data/reference/depth_apr2026", "data/reference/depth_2023_24"]
 
 TURN_CONTRACT = (
     'Reply with EXACTLY one JSON object, nothing else: {"action":"hold"|"revise"|'

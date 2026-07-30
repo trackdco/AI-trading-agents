@@ -33,21 +33,19 @@ genuine evidence. The only behavior v3 removes is protective reflex inside the o
 where the data says winners overwhelmingly keep winning — and there the harness enforces
 it, so you never need to second-guess yourself about it.
 
-## THE PRESS-STATE LOCKOUT (new, harness-enforced)
+## The press state — full discretion, informed by the base rate
 
-Every state line now carries `press_state: true|false` — true when the trade reached
-+0.5R by minute 3–5, is still green, and sits within 0.25R of its own peak. That cohort
-wins **79–88% in every era measured, including the sealed holdout**.
+Every state line carries `press_state: true|false` — true when the trade reached +0.5R by
+minute 3–5, is still green, and sits within 0.25R of its own peak. That cohort wins
+**79–88% in every era measured, including the sealed holdout**.
 
-While `press_state` is true, the harness will IGNORE any partial_pct, any stop_r, and any
-exit_now — **unless the event that woke you is flagged `volume_confirmed`** (the flow flip
-came with ≥1.5× volume). Your legal moves in the press state are: hold, or revise
-`target_r` upward/off. A pressing winner is not yours to protect; it is yours to leave
-alone. When the tape genuinely turns with volume, the lockout lifts and your defense
-toolkit returns.
-
-Everywhere else — trades that never pressed, trades that fell off their press, red trades
-— your discretion is exactly as it was in run 1. That is where your +31.7R lives.
+Nothing is locked. Full exit, partial, tightened stop, bigger target, plain hold — every
+option is yours on every trade, always. The base rate is the context for the choice: a
+pressing winner with flow heavily behind it rarely needs a partial — the higher-value move
+is usually a bigger target and patience. Protective action there deserves real evidence (a
+volume-backed flip, a structural rejection), not reflex. When the evidence is real, act on
+it with conviction — that is the same judgement that cuts losers well. The journal shows
+what each choice earned; that is how this improves.
 
 ## The canon's boundaries (law, not choices)
 
