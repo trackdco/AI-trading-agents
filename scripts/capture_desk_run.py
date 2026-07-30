@@ -186,12 +186,18 @@ def journal_digest(rows: list[dict]) -> str:
     cuts = [r for r in rows if r["exit_reason"] == "agent_exit"
             and r.get("left_peak_R") is not None]
     if cuts:
-        lp = sorted(r["left_peak_R"] for r in cuts)
-        died = sum(1 for r in cuts if r["would_have_stopped"])
-        lines.append(
-            f"  your early exits (n{len(cuts)}): {died} would have hit the stop anyway "
-            f"(good cuts); median left on the table after you left: "
-            f"{lp[len(lp) // 2]:+.1f}R (before stop/session end)")
+        # CONDITIONED on the state at exit — so the read is "when it looks like THIS,
+        # it usually runs X more" rather than one blended number (ANGUS).
+        for label, sel in (
+                ("flow still WITH you", [r for r in cuts if r.get("cvd5_at_exit", 0) > 0]),
+                ("flow AGAINST you", [r for r in cuts if r.get("cvd5_at_exit", 0) <= 0])):
+            if not sel:
+                continue
+            lp = sorted(r["left_peak_R"] for r in sel)
+            died = sum(1 for r in sel if r["would_have_stopped"])
+            lines.append(
+                f"  your exits with {label} (n{len(sel)}): {died} would have hit the "
+                f"stop anyway; median run AFTER you left: {lp[len(lp) // 2]:+.1f}R")
     caps = [r["capture"] for r in rows if r.get("capture") is not None]
     if caps:
         caps.sort()
