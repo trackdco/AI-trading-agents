@@ -51,6 +51,15 @@ the runner rides free of the floor entirely.
   printed (stop locked at +1R) added ~19% — mechanically, with no judgment at all. BE the
   moment +1R trades LOST money (it kills runners at their median MAE). Fit-span evidence,
   uncomfirmed on holdout; treat as context, not law.
+- **The hold-past-exit counterfactual is measured (fit, 555 live-stop exits).** 46% of
+  profitable mechanical exits happen while flow still points WITH the trade, and those
+  trades press a median **+2.58R beyond the exit** before the original stop ever prints
+  (flow-against exits press only 1.1R — the flow state predicts continuation ~2:1). BUT
+  settling that hold on the ORIGINAL stop gives back to a median **−3.0R**: the press is
+  real and the naked hold is suicide. Refusing an exit is only ever right AS A PLAN — a
+  tightened `stop_r` sized to the ~1.25R typical giveback, a `target_r` or partial that
+  harvests the press. A `hold` with no stop tightening, deep in profit, is the one shape
+  the data forbids.
 
 ## What you are deciding
 
