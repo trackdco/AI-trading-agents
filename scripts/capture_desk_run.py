@@ -50,9 +50,12 @@ sys.path.insert(0, str(ROOT))
 from scripts.capture_replay import load_trades, load_bars_ny, sgn  # noqa: E402
 
 NY = "America/New_York"
-SPEC = ROOT / ".claude/agents/trade-manager-v2.md"
-RUNS = ROOT / "runs/desk"
-MONTHS = ["2025-06", "2025-09", "2025-12", "2026-02", "2026-04", "2026-06"]
+SPEC = ROOT / ".claude/agents/trade-manager-v3.md"
+RUNS = ROOT / "runs/desk2"
+# Phase 1 (ANGUS: "im happy to run a bigger chained run"): the ENTIRE fit span,
+# chronological. Phase 2 = the sealed 2023/24 holdout, full-tier, policy frozen — LAST,
+# so the untouched span stays the proof.
+MONTHS = [f"2025-{m:02d}" for m in range(6, 13)] + [f"2026-{m:02d}" for m in range(2, 8)]
 TICK, SLIP, COMMISSION, PV = 0.25, 1, 5.0, 20.0
 MAX_TURNS = 10
 CLI_TIMEOUT = 240
@@ -222,8 +225,17 @@ def day_reads(day, bars, journal, state) -> tuple[str, str | None, str | None]:
     pd_day = (prior[prior.index >= prior.index[-1] - pd.Timedelta("24h")]
               if len(prior) else on)
     last = float(on.close.iloc[-1])
+    gap_note = ""
+    if journal:
+        last_day = max(r["day"] for r in journal)
+        gap = (pd.Timestamp(day) - pd.Timestamp(last_day)).days
+        if gap > 4:
+            gap_note = (f"NOTE: {gap} calendar days since your last journaled day "
+                        f"({last_day}) — a sample/time gap. The regime may have shifted; "
+                        f"weight your older journal entries accordingly.\n")
     ctx = (f"PRE-MARKET READ, {day} 07:45 ET. You trade NQ pullback rejections: pre "
-           f"08:00-09:30, gold 09:40-10:30, mechanical entries, you manage them.\n"
+           f"08:00-09:30 (ALL pre positions flattened at 09:30 — two sessions), gold "
+           f"09:40-10:30, mechanical entries, you manage them.\n{gap_note}"
            f"prior day: O {pd_day.open.iloc[0]:.0f} H {pd_day.high.max():.0f} "
            f"L {pd_day.low.min():.0f} C {pd_day.close.iloc[-1]:.0f}\n"
            f"overnight (18:00->07:40): H {on.high.max():.0f} L {on.low.min():.0f} "
@@ -259,7 +271,9 @@ def manage_trade(t, bars, tape, dep, thesis, reread, journal, log) -> dict:
     day = t["day"]
     path = bars.loc[t["fill"]:t["fill"].normalize() + pd.Timedelta(hours=16, minutes=10)]
     path = path[path.index.strftime("%Y-%m-%d") == day]
-    flatten = pd.Timestamp(f"{day} 15:55", tz=NY)
+    # TWO-SESSION LAW: pre positions die at 09:30; everything at 15:55.
+    flatten = pd.Timestamp(f"{day} 09:30" if t["sess"] == "pre" else f"{day} 15:55", tz=NY)
+    flip_at, flip_px, flip_by = t.get("flip_at"), t.get("flip_px"), t.get("flip_by")
     cx_min = t["exit"]
 
     legs, frac = [], 1.0
@@ -267,6 +281,7 @@ def manage_trade(t, bars, tape, dep, thesis, reread, journal, log) -> dict:
     turns, transcript = 0, []
     partial_done, extended, last_note = False, False, ""
     peak_r, seen_r, last_turn_min = 0.0, set(), None
+    r3, r5 = None, None                  # minute-close R at fill+3 / fill+5 (press state)
     sid = None
 
     def r_of(px):
@@ -322,20 +337,26 @@ def manage_trade(t, bars, tape, dep, thesis, reread, journal, log) -> dict:
         if turns >= MAX_TURNS or (last_turn_min is not None and minute <= last_turn_min):
             return
         last = float(bar.close)
+        press = bool((((r3 or 0) >= 0.5) or ((r5 or 0) >= 0.5))
+                     and r_of(last) > 0 and (peak_r - r_of(last)) <= 0.25)
         state = (f"[{minute.strftime('%H:%M')}] EVENT: {why}\n"
                  f"bar {bar.open:.2f}/{bar.high:.2f}/{bar.low:.2f}/{bar.close:.2f} | "
-                 f"R_now {r_of(last):+.2f} peak {peak_r:+.2f} | open {frac:.2f} | "
-                 f"stop {r_of(stop):+.2f}R target "
+                 f"R_now {r_of(last):+.2f} peak {peak_r:+.2f} | press_state {press} | "
+                 f"open {frac:.2f} | stop {r_of(stop):+.2f}R target "
                  f"{'none' if target is None else f'{r_of(target):+.2f}R'} | "
                  f"{flow_line(tape, minute, s)} | {book_line(dep, minute, last, s)} | "
-                 f"mins_to_flatten {int((flatten - minute).total_seconds() // 60)}")
+                 f"mins_to_session_end {int((flatten - minute).total_seconds() // 60)}")
         if turns == 0:
             state = (f"NEW POSITION {t['direction'].upper()} {t['sess']} | entry {entry} "
                      f"risk {risk}pt | engine stop {stop} (-1R, INVIOLATE FLOOR) | "
                      f"structural target {target} "
                      f"({'n/a' if target is None else f'{r_of(target):+.1f}R'}) | "
-                     f"pattern {t.get('pattern', '?')}\n"
-                     f"day thesis: {thesis}\n"
+                     f"pattern {t.get('pattern', '?')} | session ends "
+                     f"{'09:30 HARD (pre)' if t['sess'] == 'pre' else '15:55'}\n"
+                     + ("reversal context: this entry CLOSED an opposing position — you "
+                        "are trading the book's strongest signal\n"
+                        if t.get("is_reversal") else "")
+                     + f"day thesis: {thesis}\n"
                      + (f"open re-read: {reread}\n" if reread and t["sess"] == "gold" else "")
                      + f"{journal_digest(journal)}\n{TURN_CONTRACT}\n\n" + state)
         txt, sid2 = call_claude(state, sid)
@@ -382,10 +403,24 @@ def manage_trade(t, bars, tape, dep, thesis, reread, journal, log) -> dict:
     start = ix.searchsorted(t["fill"], side="right")
     for i in range(start, len(ix)):
         minute, bar = ix[i], path.iloc[i]
-        # 1. EOD flatten at the bar's open
+        # 1. session flatten at the bar's open (09:30 for pre — two-session law; else 15:55)
         if minute >= flatten:
-            close(frac, float(bar.open) - s * SLIP * TICK, "eod")
-            return settle("eod", minute) | {"transcript": transcript}
+            reason = "open_flatten" if t["sess"] == "pre" else "eod"
+            close(frac, float(bar.open) - s * SLIP * TICK, reason)
+            return settle(reason, minute) | {"transcript": transcript}
+        # 1b. CLOSE-AND-REVERSE LAW: an opposing canon fill this minute closes the position
+        # at that fill. Stop still checks first on this bar (conservative), then the flip.
+        if flip_at is not None and minute >= flip_at and frac > 0:
+            if (s > 0 and bar.low <= stop) or (s < 0 and bar.high >= stop):
+                px = (min(stop, float(bar.open)) if s > 0 else max(stop, float(bar.open)))
+                close(frac, px - s * SLIP * TICK, "stop")
+                return settle("stop", minute) | {"transcript": transcript}
+            close(frac, float(flip_px), "flip")
+            transcript.append({"minute": str(minute), "why": "OPPOSING SIGNAL FILLED",
+                               "sent": f"harness: opposing canon signal ({flip_by}) filled "
+                                       f"at {flip_px} — position closed and reversed (law)",
+                               "reply": "(no reply — mechanical)"})
+            return settle("flip", minute) | {"transcript": transcript}
         # 2. pending market actions at this bar's open
         for kind, val in pending:
             px = float(bar.open) - s * SLIP * TICK
@@ -412,6 +447,10 @@ def manage_trade(t, bars, tape, dep, thesis, reread, journal, log) -> dict:
         peak_r = max(peak_r, fav)
         why = None
         mins_in = int((minute - t["fill"]).total_seconds() // 60)
+        if mins_in == 3:
+            r3 = r_of(float(bar.close))
+        elif mins_in == 5:
+            r5 = r_of(float(bar.close))
         if turns == 0 and mins_in >= 1:
             why = "position opened — read the tape and set your initial plan"
         elif mins_in == 3:
@@ -481,6 +520,31 @@ def main() -> None:
     wt = {(r.ts, r.direction): float(r.working_target) for r in L2.itertuples()}
     for t in T:
         t["working_target"] = wt.get((t["ts"], t["direction"]))
+    # THE MECHANICAL BASELINE IS THE TWO-RULE CANON: overlay exits/dollars replace the raw
+    # V8 walk for flipped/pre-flattened trades — the agent is measured against the book as
+    # it would actually execute, and the "mechanical exit" marker is the real one.
+    O = pd.read_parquet(ROOT / "output/aikido_cr_fit.parquet").set_index(["ts", "direction"])
+    for t in T:
+        k = (t["ts"], t["direction"])
+        if k in O.index:
+            r = O.loc[k]
+            t["dollars"] = float(r.cr_dollars_1lot)
+            t["exit_price"] = float(r.cr_exit_price)
+            t["exit"] = pd.to_datetime(r.cr_exit_ts).tz_convert(NY)
+    # CLOSE-AND-REVERSE boundaries from the FIXED entry stream: a trade's first opposing
+    # fill (same day, after its own fill) is its hard horizon if still open there.
+    by_day: dict[str, list[dict]] = {}
+    for t in T:
+        by_day.setdefault(t["day"], []).append(t)
+    for day_, g in by_day.items():
+        g.sort(key=lambda x: x["fill"])
+        for i, ta in enumerate(g):
+            ta["flip_at"] = ta["flip_px"] = ta["flip_by"] = None
+            for b in g[i + 1:]:
+                if b["direction"] != ta["direction"]:
+                    ta["flip_at"], ta["flip_px"] = b["fill"], float(b["entry"])
+                    ta["flip_by"] = b["trade_id"]
+                    break
     if a.demo_day:
         days = [a.demo_day]
     else:
@@ -496,10 +560,14 @@ def main() -> None:
         journal = journal_rows()
         thesis, reread, _ = day_reads(day, bars, journal, None)
         print(f"== {day}: {len(todays)} trades", flush=True)
+        flipped_by_agent: set = set()
         for t in sorted(todays, key=lambda x: x["fill"]):
+            t["is_reversal"] = t["trade_id"] in flipped_by_agent
             journal = journal_rows()
             dep = load_depth(day, dcache)
             out = manage_trade(t, bars, tape, dep, thesis, reread, journal, None)
+            if out["exit_reason"] == "flip" and t.get("flip_by"):
+                flipped_by_agent.add(t["flip_by"])
             tr = out.pop("transcript")
             (RUNS / "transcripts" / f"{t['trade_id']}.json").write_text(
                 json.dumps({"thesis": thesis, "reread": reread, "turns": tr}, indent=1))
