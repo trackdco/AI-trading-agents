@@ -559,6 +559,70 @@ def test_v8_hold_runner_does_not_trail():
     assert rec.r_multiple == pytest.approx(5.375)
 
 
+def _menu_resolver(menu, pick=25100.0):
+    """Stub with a full structural ladder in aux, as default_target_resolver now emits."""
+    return lambda t, entry, stop: ("stub_level", pick,
+                                   {"partial_level": menu[0], "structural_menu": list(menu)})
+
+
+def test_v8_partial_min_r_walks_past_shallow_structure():
+    # first-leg floor 1.5R: the 1.0R structure at 25010 is skipped, the partial books at
+    # the 2.5R structure at 25025 instead (ANGUS: "minimum r for the first structural target").
+    c = cfg(mgmt_variant="V8", v8_partial_min_r=1.5, v8_runner="hold")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),        # 09:48
+            (25004, 25005, 24999.75, 25002),     # 09:49 fill 25000, risk 10
+            (25004, 25012, 25003, 25008),        # 09:50 through 25010 — must NOT book
+            (25012, 25025.25, 25010, 25020),     # 09:51 through 25025 -> partial books
+            (25020, 25097.75, 25018, 25090)]     # 09:52 runner exits at working target
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=_menu_resolver([25010.0, 25025.0]),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+target"
+    assert rec.points == pytest.approx(0.5 * 25 + 0.5 * 97.5)
+
+
+def test_v8_partial_min_r_none_clears_means_no_partial():
+    # No structure clears the 2.0R floor -> no partial leg at all; the whole position exits
+    # at the target with a single-leg "target" reason.
+    c = cfg(mgmt_variant="V8", v8_partial_min_r=2.0, v8_runner="hold")
+    t = trig("2026-02-11 09:48", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),
+            (25004, 25005, 24999.75, 25002),     # 09:49 fill 25000
+            (25004, 25015, 25003, 25012),        # 09:50 through the 1.0R structure — ignored
+            (25015, 25097.75, 25012, 25090)]     # 09:51 whole position exits at target
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 09:48", rows), [t], c,
+                          target_resolver=_menu_resolver([25010.0]),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "target"
+    assert rec.points == pytest.approx(97.5)
+
+
+def test_v8_eod_runner_ignores_target_and_flattens():
+    # v8_runner="eod": after the 1R partial the runner has NO target — the 15:43 bar crosses
+    # the working target and nothing happens; the 15:55 flatten closes it at the open - slip.
+    c = cfg(mgmt_variant="V8", v8_partial_at_r=1.0, v8_runner="eod")
+    t = trig("2026-02-11 15:40", stop_ref=24990.0)
+    rows = [(25005, 25006, 25004, 25005),        # 15:40
+            (25004, 25005, 24999.75, 25002),     # 15:41 fill 25000
+            (25004, 25010.25, 25003, 25008),     # 15:42 1R partial
+            (25010, 25099.0, 25008, 25090)]      # 15:43 crosses target 25097.5 — must hold
+    rows += [(25090, 25092, 25088, 25090)] * 11  # 15:44-15:54 drift
+    rows += [(25080, 25082, 25078, 25081)]       # 15:55 EOD flatten at open
+    tr_, vd, _ = simulate(mk_bars("2026-02-11 15:40", rows), [t], c,
+                          target_resolver=_v56_resolver(),
+                          entry_price_fn=pin_entry(25000), calendar=EMPTY_CAL)
+    assert len(tr_) == 1
+    rec = tr_[0]
+    assert rec.exit_reason == "partial+eod"
+    assert rec.exit_price == pytest.approx(25080 - 0.25)
+    assert rec.points == pytest.approx(0.5 * 10 + 0.5 * 79.75)
+
+
 # ------------------------------------------------------------- pass-17 EC contextual entry
 
 def test_ec_displacement_market_fills_but_rejection_rests_limit():

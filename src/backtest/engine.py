@@ -102,7 +102,14 @@ class BacktestConfig(BaseModel):
     v8_runner: str = "trail"      # runner policy after the partial: "trail" (shipped prior-
                                   # 5m-swing trail) | "hold" (no trail, structural target)
                                   # | "hold2r" (no trail; runner banks at entry+2R when that
-                                  # is nearer than the structural target)
+                                  # is nearer than the structural target) | "eod" (no trail,
+                                  # NO target — the runner rides to stop/BE/EOD-flatten only)
+    v8_partial_min_r: float | None = None  # exit-lab (ANGUS: "minimum r for the first
+                                  # structural target"): the V8 partial books at the FIRST
+                                  # STRUCTURE whose RR vs the limit clears this floor,
+                                  # walking past shallower ones; none clears -> no partial
+                                  # leg (the trade runs whole to the target). Mutually
+                                  # exclusive with v8_partial_at_r (fixed-R wins if both).
     max_trades_per_day: int       # §10
     halt_losses: int
     halt_r: float
@@ -174,6 +181,7 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         v8_partial_at_r=c["management"].get("v8_partial_at_r"),
         v8_be_at_partial=c["management"].get("v8_be_at_partial", False),
         v8_runner=c["management"].get("v8_runner", "trail"),
+        v8_partial_min_r=c["management"].get("v8_partial_min_r"),
         oversized_stop=c["sizing"]["oversized_stop_points"],
         late_window_after=_hhmm(c["sizing"]["late_window_after"]),
         require_bb_vwap=c["sizing"].get("require_bb_vwap", True),
@@ -446,6 +454,9 @@ def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None,
         sts = [lv for lv in beyond if lv.type in _STRUCTURAL]   # distance-ordered structurals
         if sts:
             aux["partial_level"] = float(sts[0].price)     # V4/V5/V6 first structure (§8)
+            # exit-lab: the FULL structural ladder, so order-build can walk past shallow
+            # structures when a first-leg floor (v8_partial_min_r) is configured.
+            aux["structural_menu"] = [float(lv.price) for lv in sts]
         if len(sts) > 1:                                   # V5 runner -> NEXT structural (ANGUS)
             aux["structural_2"] = (sts[1].name, float(sts[1].price))
         if len(sts) > 2:                                   # V6 runner -> the one BEYOND (ANGUS)
@@ -713,6 +724,11 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                         if sign * (tgt - cand) > 0:
                             tgt = cand
                             tgt_fill = (h >= tgt + through) if sign == 1 else (lo <= tgt - through)
+                    # exit-lab eod runner: once the partial books, the runner has NO target —
+                    # it rides to stop/BE/EOD-flatten only.
+                    if (pos is not None and cfg.mgmt_variant == "V8"
+                            and cfg.v8_runner == "eod" and pos.partial_done):
+                        tgt_fill = False
                     if pos is not None and tgt_fill:
                         close_trade(pos, tgt, "target", ts, 0)
                     elif pos is not None and not pos.be_done:
@@ -981,6 +997,17 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                     veto(t, "vetoed_rr_floor",
                          f"RR {reward / risk:.2f} < {cfg.rr_floor} (target {name})")
                     continue
+            # exit-lab first-leg floor (ANGUS): the V8 partial books at the FIRST structure
+            # clearing v8_partial_min_r vs the limit, walking past shallower ones. None
+            # clears, or the survivor sits at/beyond the working target -> no partial leg.
+            if (cfg.mgmt_variant == "V8" and cfg.v8_partial_min_r is not None
+                    and cfg.v8_partial_at_r is None):
+                plvl = None
+                for sp in aux.get("structural_menu", []):
+                    if (sgn * (sp - limit) / risk >= cfg.v8_partial_min_r
+                            and sgn * (working - sp) > 0):
+                        plvl = sp
+                        break
             order = _Order(trig=t, limit=limit, stop=stop, target_name=name,
                            target_level=level, working_target=working, placed=ts,
                            partial_level=plvl,
