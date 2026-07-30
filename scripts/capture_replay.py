@@ -61,7 +61,8 @@ def load_trades(span: str) -> list[dict]:
             "stop": float(r.stop), "risk": float(r.risk),
             "exit_price": float(r.exit_price), "exit_reason": str(r.exit_reason),
             "dollars": float(r.dollars_1lot), "size": float(r.size_engine),
-            "tier": float(r.tier), "elite": bool(r.elite), "era": str(r.era)})
+            "tier": float(r.tier), "elite": bool(r.elite), "era": str(r.era),
+            "pattern": str(r.pattern)})
     return rows
 
 
