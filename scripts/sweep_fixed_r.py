@@ -47,9 +47,26 @@ def arms() -> list[tuple[str, dict]]:
     return out
 
 
+def arms_stage2() -> list[tuple[str, dict]]:
+    """Stage 2 after the static ladder lost to the incumbent: ANGUS's structural-min-R
+    formulation (first STRUCTURE clearing a floor — fixes shallow bookings without taxing
+    the 494 no-structure trades that run whole), the book-more-later fraction, and the
+    no-target runner (does the structural target cap the tail the trail would ride?)."""
+    out = []
+    for mr in (1.5, 2.0):
+        for pct in (25.0, 50.0):
+            tag = str(mr).replace('.', '')
+            out.append((f'p{int(pct)}_minr{tag}_trail',
+                        dict(v8_partial_min_r=mr, v8_partial_pct=pct)))
+    out.append(('p75_minr20_trail', dict(v8_partial_min_r=2.0, v8_partial_pct=75.0)))
+    out.append(('p25_struct_eod', dict(v8_partial_pct=25.0, v8_runner='eod')))
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--procs', type=int, default=4)
+    ap.add_argument('--stage', type=int, default=1, choices=[1, 2])
     a = ap.parse_args()
 
     V = fb.load_book('fit')
@@ -60,7 +77,7 @@ def main() -> None:
     print(f'canon triggers to re-simulate: {len(C)} of {len(V)} trades', flush=True)
 
     base_cfg = m.l2_cfg
-    for name, upd in arms():
+    for name, upd in (arms() if a.stage == 1 else arms_stage2()):
         path = Path(f'output/fixedr_fit_{name}.parquet')
         if path.exists():
             print(f'{name}: exists, skipped', flush=True)
