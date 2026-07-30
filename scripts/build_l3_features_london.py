@@ -117,6 +117,9 @@ def build(span: str, procs_note: str = "") -> Path:
     print(f"L2 outcomes ({span}): {len(oc)} rows on {oc.day.nunique()} days")
 
     S = substrate_frame(oc)
+    # `ts` (the per-trigger key) must exist on S BEFORE the dedup: it is the tiebreak that makes
+    # survivor selection deterministic, and it also has to survive the merge back.
+    S["ts"] = oc.ts.values
     S["_k"] = key(S)
     # ORDERED dedup, mergesort: which row survives must be DEFINED, not whatever order the
     # input happened to arrive in. Ties in _k now imply identical inputs AND identical outcome,
@@ -147,7 +150,7 @@ def build(span: str, procs_note: str = "") -> Path:
     feats["_k"] = key(feats)
     fcols = [c for c in feats.columns if c not in PASSTHRU and c != "_k"]
     out = S.merge(feats[["_k", *fcols]], on="_k", how="left").drop(columns=["_k"])
-    out.insert(0, "ts", oc.ts.values)              # per-trigger key survives the dedup
+    out.insert(0, "ts", out.pop("ts"))             # per-trigger key survives the dedup
     for c in ("kind", "htf_flag", "confluence_count", "target", "R"):
         out[c] = oc[c].values
 
