@@ -64,6 +64,15 @@ LON_RISK_MIN = 9.5                      # London Layer 0 (no upper cap — Londo
 LON_FAR_MIN = 4.5                       # wall AHEAD farther than this = magnet not choke
 LON_ROOM_LO, LON_ROOM_HI = 2.48, 9.56   # room_ahead_R band
 LON_ASIA_MIN = -748.0                   # dir-signed Asia CVD floor
+# London score-0 veto (Brake ruling 2026-07-30, rev-3 bundle): conviction = both-wall
+# + (dep_thick > THICK) + (dep_resist > RESIST) + (trigdens_30 > TRIGDENS); a taken
+# candidate with conviction 0 is VETOED — its only wall check disagrees with its twin
+# (W/FAR r=0.834) and nothing in the book backs the level. Values are the medians of
+# the declared 09:30-cut book, FROZEN HERE AS ABSOLUTES (perturbation +/-10% flat —
+# docs/LONDON-ROBUSTNESS.md); they do not float with future books.
+LON_VETO_THICK = 57.0
+LON_VETO_RESIST = 29.0
+LON_VETO_TRIGDENS = 8.0
 
 
 def _f(row: Mapping, key: str) -> float:

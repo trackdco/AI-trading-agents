@@ -1,8 +1,10 @@
-# London holdout — REHEARSAL on the fit span (anchor verification only)
+# London holdout — REHEARSAL on the fit span [rev2a]
 
-**This is not a result. It is the dress rehearsal required before the sealed run: the same script, pointed at the fit span, gated on exact reproduction of every committed anchor.** The sealed run is `--span holdout --authorized-by "..."` with zero code changes.
+**Config: rev 2a: 08:00-10:00 / V8 / no veto / no serialization.**
 
-## Items 1-8 — the book (frozen config, flat 1 NQ lot)
+**This is not a result — it is the dress rehearsal: the same script, pointed at the fit span, gated on exact reproduction of every committed anchor.** The sealed run is `--span holdout --config rev2a --authorized-by "..."` with zero code changes.
+
+## Items 1-8 — the book (flat 1 NQ lot)
 
 | item | value |
 |---|---|
@@ -10,7 +12,7 @@
 | 2. net P&L | $+22,795 |
 | 3. win rate | 57% |
 | 4. mean R | +0.513 |
-| 5. maxDD (chronological) | $2,550 |
+| 5. maxDD (chronological, trade-level) | $2,550 |
 | 6. months green | 11/14 |
 | 7. worst month | $-1,108 (2026-02) |
 | 8. trades per week | 3.2 |
@@ -34,7 +36,7 @@ Per era:
 
 both W+FAR: n=133, mean R +0.682 · exactly one: n=54, mean R +0.096
 
-Prereg §4: no decision may be taken on this number in this run — doing so retroactively makes the family 3 tests. It exists so the post-holdout sizing decision is judged against a pre-declared value.
+Prereg §4: no decision may be taken on this number in this run — doing so retroactively makes the family 3 tests.
 
 ## The two gated tests (two-sided Student t, PASS = mean > 0 and p <= alpha)
 
@@ -43,7 +45,7 @@ Prereg §4: no decision may be taken on this number in this run — doing so ret
 | PRIMARY — book mean R | 187 | +0.513 | 0.115 | +4.47 | 1.4e-05 | 0.0253 | **PASS** |
 | S1 — sub-9.5 band mean R | 300 | +0.590 | 0.111 | +5.33 | 1.9e-07 | 0.0253 | **PASS** |
 
-S1 is **reported, not acted on** (standing ANGUS ruling — the floor stays 9.5 regardless of this cell; the era crossing already rejected floor 5).
+S1 is **reported, not acted on** (standing ANGUS ruling — the floor stays 9.5 regardless; the era crossing already rejected floor 5).
 
 S1 band per era:
 
@@ -52,7 +54,7 @@ S1 band per era:
 | 2025 | 164 | $+18,746 | 61% | +0.904 |
 | 2026 | 136 | $+3,085 | 39% | +0.211 |
 
-## Bucket profile (DESCRIPTIVE — declared prior: 09:30-10:00 weakest on fit)
+## Bucket profile (DESCRIPTIVE)
 
 | bucket | n | share | WR | mean R | net | R 2025 | R 2026 |
 |---|---|---|---|---|---|---|---|

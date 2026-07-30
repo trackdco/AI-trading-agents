@@ -1,52 +1,56 @@
 #!/usr/bin/env python3
-"""The pre-registered London holdout report — and its dress rehearsal.
+"""The pre-registered London holdout report — and its dress rehearsals.
 
-ONE SCRIPT, TWO SPANS, IDENTICAL CODE PATH. `--span fit` is the rehearsal: it computes every
-number `docs/LONDON-PREREGISTRATION.md` §2 commits to, on the fit span where each has a known
-anchor, and HARD-FAILS unless all anchors reproduce exactly. `--span holdout` is the sealed
-run itself: same functions, same selection code (`lon_book` imported from
-`scripts/london_combined_job.py`, never copied), only the input paths change. The rehearsal
-exists so the sealed run is one command with zero debugging on sealed data — any bug is found
-here, on fit data, where bugs are free.
+ONE SCRIPT, TWO SPANS, TWO CONFIGS, IDENTICAL CODE PATHS. `--span fit` is the
+rehearsal: it computes every number the prereg commits to, on the fit span where each
+has a committed anchor, and HARD-FAILS unless all reproduce exactly. `--span holdout`
+is the sealed run: same functions, only input paths change.
+
+`--config` selects which strategy revision is reported (Angus signs exactly one):
+  rev2a   prereg rev 2a as written: window 08:00-10:00, wall gate, V8 management,
+          no veto, no serialization — the 187-trade book.
+  rev3    the rev-3 bundle (docs/LONDON-REV3-BUNDLE.md): window 08:00-09:45, wall
+          gate, score-0 veto at the FROZEN literals (src/canon/scorer.py
+          LON_VETO_*), one-position-at-a-time, V1 management (BE at +1R) — the
+          130-trade stack. Requires the holdout V1 L2 arm
+          (build_l2_outcomes_london --span holdout --mgmt V1) at sealed-run time.
 
 SEALED-SPAN GUARDS, in order:
-  1. `--span holdout` refuses to run without `--authorized-by "<name, date>"`. Prereg §6: the
-     holdout may be opened only after ANGUS sign-off; a draft signature is NOT sufficient. The
-     flag records who authorised in the report header. This script cannot check a signature —
-     it can only make silent opening impossible.
-  2. The holdout report is written ONCE. If `docs/LONDON-HOLDOUT-REPORT.md` already exists the
-     script refuses — the prereg says the holdout opens once, and a re-run over an existing
-     report is exactly the "quiet second look" the discipline forbids.
-  3. Span/year cross-checks: fit inputs must contain only 2025/2026, holdout inputs only
-     2023/2024 with every day in `data/reference/holdout_2023_24_days.csv`. Either violation
-     is a hard exit — wrong artifact wiring, nothing downstream is valid.
+  1. `--span holdout` refuses to run without `--authorized-by "<name, date>"`
+     (prereg §6: ANGUS signature; draft is NOT sufficient).
+  2. The holdout report is written ONCE — one file, whichever config was signed. If
+     `docs/LONDON-HOLDOUT-REPORT.md` exists the script refuses; a second run over the
+     sealed span is the "quiet second look" the discipline forbids.
+  3. Span/year cross-checks: fit inputs must be 2025/2026 only, holdout inputs
+     2023/2024 only with every day in the sealed list. Violation = hard exit.
 
-WHAT IS REPORTED (prereg §2 items 1-10, plus the two gated tests and the declared
-descriptives — nothing else; adding a number here after sign-off is a prereg violation):
-  items 1-8   book counts, net, WR, mean R, maxDD, months green, worst month, trades/week
-  item 9      W/FAR lift: mean R `either` vs `neither` on the floor-passing candidate
-              population, per era and pooled
-  item 10     the `either` cell split both-W+FAR vs exactly-one, on the BOOK (S2, DESCRIPTIVE
-              — no inference, no decision; prereg §4 makes acting on it a retroactive
-              3-test family)
-  PRIMARY     book mean R > 0, gated at Sidak alpha = 0.0253
-  S1          sub-9.5 wall-passing band mean R > 0, gated at the same alpha ("reported, not
-              acted on" — ANGUS ruling; the floor is not moving on this run)
-  buckets     the four half-hour fill-time buckets (declared prior from
-              docs/LONDON-LATE-BUCKET.md: 09:30-10:00 weakest on fit, +0.119; checked here
-              descriptively at zero alpha cost)
+WHAT IS REPORTED (prereg §2 items 1-10 + the two gated tests + declared
+descriptives; adding a number after sign-off is a prereg violation):
+  items 1-8   book counts, net, WR, mean R, maxDD (TRADE-level chronological — the
+              prereg reference convention, pinned by rehearsal), months green,
+              worst month, trades/week
+  item 9      W/FAR lift on the floor-passing candidate population (per config's
+              window/management), either vs neither, per era
+  item 10     the either-cell split both-W+FAR vs exactly-one, on the BOOK (S2,
+              DESCRIPTIVE — prereg §4 makes acting on it a 3-test family)
+  PRIMARY     book mean R > 0, two-sided Student-t, Sidak alpha 0.0253
+  S1          sub-9.5 wall-passing band mean R > 0, same test ("reported, not acted
+              on" — standing ANGUS ruling). Under rev3 the band keeps its original
+              definition (floor-5 lon_book, no veto/serial) on the rev-3
+              window+management, declared in the bundle.
+  buckets     half-hour fill-time profile (declared prior: the late window is the
+              weak one on fit)
 
-DECLARED TEST RESOLUTION (fixing an ambiguity BEFORE the sealed run, which is the only time
-it can be fixed): the prereg's power arithmetic (78% primary) matches a TWO-SIDED test at
-alpha 0.0253 on the normal approximation. This script gates on the two-sided Student-t
-p-value with n-1 df (exact, slightly conservative vs the normal), PASS requiring mean R > 0
-AND p <= 0.0253. S1 identical. No scipy: t CDF via the incomplete-beta continued fraction.
+DECLARED TEST RESOLUTION (fixed before the sealed run): two-sided Student-t with
+n-1 df (exact, via incomplete beta — no scipy), PASS = mean R > 0 AND p <= 0.0253,
+matching the prereg power arithmetic.
 
-trades/week (item 8) = book trades / (calendar span of the POPULATION's days / 7) — calendar
-weeks, not weeks-with-a-trade, so thin stretches lower the number instead of hiding.
+trades/week = book trades / (calendar span of the population's days / 7).
 
-    python -m scripts.london_holdout_report --span fit
-    python -m scripts.london_holdout_report --span holdout --authorized-by "ANGUS, YYYY-MM-DD"
+    python -m scripts.london_holdout_report --span fit --config rev2a
+    python -m scripts.london_holdout_report --span fit --config rev3
+    python -m scripts.london_holdout_report --span holdout --config <signed> \
+        --authorized-by "ANGUS, YYYY-MM-DD"
 """
 from __future__ import annotations
 
@@ -60,39 +64,64 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.london_combined_job import lon_book, maxdd  # frozen selection path, never copied
-from src.canon.scorer import london_checks
+from scripts.london_combined_job import lon_book, maxdd  # frozen selection path
+from src.canon.scorer import (LON_VETO_RESIST, LON_VETO_THICK, LON_VETO_TRIGDENS,
+                              london_checks)
 
 ET = "America/New_York"
 LON = "Europe/London"
 NQ_PT = 20.0
 ALPHA = 0.0253                    # Sidak over 2 gated tests, prereg §4
-EXPECT_FWD = 0.48                 # declared forward expectation, prereg §2
+EXPECT_FWD = 0.48                 # declared forward expectation (BOTH configs — a
+                                  # guard-failed cut may not inherit into the prior)
 
 SPANS = {
     "fit": dict(features="output/l3_features_london_fit.parquet",
                 fills="output/l1_fills_london_fit.parquet",
-                years={2025, 2026}, out="LONDON-HOLDOUT-REHEARSAL.md"),
+                v1="output/l2_outcomes_london_fit_v1.parquet",
+                years={2025, 2026}),
     "holdout": dict(features="output/l3_features_london_holdout.parquet",
                     fills="output/l1_fills_london_holdout.parquet",
-                    years={2023, 2024}, out="LONDON-HOLDOUT-REPORT.md"),
+                    v1="output/l2_outcomes_london_holdout_v1.parquet",
+                    years={2023, 2024}),
 }
 
-BUCKETS = [(480, 510, "08:00-08:30"), (510, 540, "08:30-09:00"),
-           (540, 570, "09:00-09:30"), (570, 600, "09:30-10:00")]
+CONFIGS = {
+    "rev2a": dict(cut_min=None, mgmt="V8", veto=False, serial=False,
+                  rehearsal="LONDON-HOLDOUT-REHEARSAL.md",
+                  buckets=[(480, 510, "08:00-08:30"), (510, 540, "08:30-09:00"),
+                           (540, 570, "09:00-09:30"), (570, 600, "09:30-10:00")]),
+    "rev3": dict(cut_min=585, mgmt="V1", veto=True, serial=True,
+                 rehearsal="LONDON-HOLDOUT-REHEARSAL-REV3.md",
+                 buckets=[(480, 510, "08:00-08:30"), (510, 540, "08:30-09:00"),
+                          (540, 570, "09:00-09:30"), (570, 585, "09:30-09:45")]),
+}
 
-# ---- fit anchors: every number below is already on the record in a committed doc.
-# book: prereg §2 fit reference. lift: prereg §2 item-9 reference. band: prereg §3 S1 table
-# (= docs/LONDON-ERA-DIAGNOSIS.md). buckets: docs/LONDON-LATE-BUCKET.md profile table.
-ANCHORS = dict(
-    n=187, days=107, net=22795, wr_pct=57, mean_r=0.513, green=11, months=14,
-    dd_era={"2025": 1720, "2026": 2550},
-    lift_era={"2025": 0.444, "2026": 0.637},
-    band_n={"2025": 164, "2026": 136},
-    band_r={"2025": 0.904, "2026": 0.211},
-    band_net={"2025": 18746, "2026": 3085},
-    bucket_r=[0.371, 0.759, 0.734, 0.119],
-)
+# ---- rev 2a fit anchors: prereg §2 reference / era-diagnosis / late-bucket doc.
+ANCHORS = {
+    "rev2a": dict(
+        n=187, days=107, net=22795, wr_pct=57, mean_r=0.513, green=11, months=14,
+        dd_era={"2025": 1720, "2026": 2550},
+        lift_era={"2025": 0.444, "2026": 0.637},
+        band_n={"2025": 164, "2026": 136},
+        band_r={"2025": 0.904, "2026": 0.211},
+        band_net={"2025": 18746, "2026": 3085},
+        bucket_r=[0.371, 0.759, 0.734, 0.119],
+    ),
+    # rev 3 fit anchors: committed from this pipeline's own verified fit run
+    # (2026-07-30). Consistency cross-checks: n=130 matches the tournament/MC stack;
+    # maxDD $1,310 matches the V1 tournament; WR 29% is the V1 scratch optic
+    # (BE exits book as ~-0.02R).
+    "rev3": dict(
+        n=130, days=93, net=22665, wr_pct=29, mean_r=0.758, green=10, months=14,
+        dd_era={"2025": 775, "2026": 1310},
+        lift_era={"2025": 0.584, "2026": 0.874},
+        band_n={"2025": 153, "2026": 122},
+        band_r={"2025": 0.751, "2026": 0.237},
+        band_net={"2025": 14705, "2026": 2875},
+        bucket_r=[0.349, 0.967, 1.252, 0.077],
+    ),
+}
 
 
 # ------------------------------------------------------------------ stats, no scipy
@@ -172,21 +201,82 @@ def load_pop(span: str) -> pd.DataFrame:
     return F
 
 
+def swap_v1(P: pd.DataFrame, span: str) -> pd.DataFrame:
+    """Replace V8 outcomes with the V1 (BE at +1R) engine arm's, by trigger key."""
+    apath = ROOT / SPANS[span]["v1"]
+    if not apath.exists():
+        raise SystemExit(f"MISSING ARTIFACT: {apath} — run "
+                         f"build_l2_outcomes_london --span {span} --mgmt V1 first")
+    A = pd.read_parquet(apath).rename(columns={"dollars_1lot": "dollars"})
+    A["exit_ts"] = pd.to_datetime(A.exit_ts, format="mixed", utc=True)
+    key = ["ts", "tf", "direction"]
+    out = ["dollars", "R", "exit_ts", "exit_reason"]
+    P = P.drop(columns=out, errors="ignore").merge(
+        A[key + out].drop_duplicates(key), on=key, how="left", validate="1:1")
+    if P.dollars.isna().any():
+        raise SystemExit(f"V1 SWAP FAILURE: {int(P.dollars.isna().sum())} rows "
+                         f"without outcomes from {apath.name} — investigate before "
+                         "anything downstream is trusted")
+    return P
+
+
+def lonmins(s: pd.Series):
+    f = pd.to_datetime(s, format="mixed", utc=True).dt.tz_convert(LON)
+    return (f.dt.hour * 60 + f.dt.minute).values
+
+
+def serial_walk(cand: pd.DataFrame, day_stop: float = 400.0) -> pd.DataFrame:
+    """One position at a time, chronological, causal — same realized day-stop
+    accounting as the L4 walk. (Self-contained mirror of the audited
+    london_tf_conviction implementation; kept inline so the frozen runner has no
+    dependency on analysis scripts.)"""
+    rows = cand.sort_values(["day", "fill_ts"], kind="mergesort").reset_index(drop=True)
+    f = pd.to_datetime(rows.fill_ts, utc=True)
+    x = pd.to_datetime(rows.exit_ts, utc=True)
+    taken = [False] * len(rows)
+    for day, g in rows.groupby("day", sort=False):
+        open_until = pd.Timestamp.min.tz_localize("UTC")
+        pl = 0.0
+        for i in g.index:
+            if pl <= -day_stop or f[i] < open_until:
+                continue
+            taken[i] = True
+            open_until = x[i]
+            pl += rows.at[i, "dollars"]
+    return rows[taken].reset_index(drop=True)
+
+
+def build_book(P: pd.DataFrame, config: str) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Returns (book, floor-passing population) for the config's pipeline."""
+    c = CONFIGS[config]
+    if c["cut_min"] is not None:
+        P = P[lonmins(P.fill) < c["cut_min"]]
+    b = lon_book(P, floor=9.5, lifetime=math.inf, cap=999).reset_index(drop=True)
+    if c["veto"]:
+        conv = ((b.W == 1) & (b.FAR == 1)).astype(int)
+        for f, t in (("dep_thick", LON_VETO_THICK), ("dep_resist", LON_VETO_RESIST),
+                     ("trigdens_30", LON_VETO_TRIGDENS)):
+            conv = conv + (b[f].astype(float) > t).astype(int)
+        b = b[conv.values > 0].reset_index(drop=True)
+    if c["serial"]:
+        b = serial_walk(b)
+    return b, P
+
+
 def guard_holdout_days(book: pd.DataFrame) -> None:
     sealed = set(pd.read_csv(ROOT / "data/reference/holdout_2023_24_days.csv",
                              dtype=str)["day"])
     extra = set(book.day.astype(str).str[:10]) - sealed
     if extra:
-        raise SystemExit(f"SPAN VIOLATION: {len(extra)} book days outside the sealed list, "
-                         f"e.g. {sorted(extra)[:3]}")
+        raise SystemExit(f"SPAN VIOLATION: {len(extra)} book days outside the sealed "
+                         f"list, e.g. {sorted(extra)[:3]}")
 
 
 # ------------------------------------------------------------------ report pieces
 def book_stats(t: pd.DataFrame, pop_days: pd.Series) -> dict:
-    # maxDD is TRADE-LEVEL chronological equity (sorted day, fill_ts) — the prereg §2 fit
-    # reference's own convention ($1,720/$2,550; verified: the grid audit and loser autopsy
-    # match it). Day-level daily sums give $2,440 for 2026-fit — that is the late-bucket
-    # doc's convention, NOT this report's. Pinned by the rehearsal anchor gate.
+    # maxDD is TRADE-LEVEL chronological equity — the prereg §2 reference's own
+    # convention (grid audit and loser autopsy match it); day-level is the
+    # late-bucket doc's convention, NOT this report's. Pinned by rehearsal.
     t = t.sort_values(["day", "fill_ts"], kind="mergesort")
     mo = t.assign(mo=t.day.astype(str).str[:7]).groupby("mo").dollars.sum()
     span_days = (pd.to_datetime(pop_days.max()) - pd.to_datetime(pop_days.min())).days + 1
@@ -194,10 +284,11 @@ def book_stats(t: pd.DataFrame, pop_days: pd.Series) -> dict:
     for era, g in t.groupby("era"):
         per_era[era] = dict(n=len(g), net=float(g.dollars.sum()),
                             wr=float((g.R > 0).mean()), mean_r=float(g.R.mean()),
-                            dd=maxdd(g.dollars))
+                            dd=maxdd(g.dollars.reset_index(drop=True)))
     return dict(n=len(t), days=int(t.day.nunique()), net=float(t.dollars.sum()),
                 wr=float((t.R > 0).mean()), mean_r=float(t.R.mean()),
-                dd=maxdd(t.dollars), green=int((mo > 0).sum()), months=len(mo),
+                dd=maxdd(t.dollars.reset_index(drop=True)),
+                green=int((mo > 0).sum()), months=len(mo),
                 worst_mo=float(mo.min()), worst_mo_name=str(mo.idxmin()),
                 tpw=len(t) / (span_days / 7.0), per_era=per_era)
 
@@ -222,13 +313,12 @@ def both_one_split(t: pd.DataFrame) -> dict:
                 n_o=len(one), r_o=float(one.R.mean()) if len(one) else float("nan"))
 
 
-def bucket_profile(t: pd.DataFrame) -> pd.DataFrame:
-    f = pd.to_datetime(t.fill_ts, utc=True).dt.tz_convert(LON)
-    mins = f.dt.hour * 60 + f.dt.minute
-    lab = pd.cut(mins, [b[0] for b in BUCKETS] + [600], right=False,
-                 labels=[b[2] for b in BUCKETS])
+def bucket_profile(t: pd.DataFrame, buckets) -> pd.DataFrame:
+    mins = pd.Series(lonmins(t.fill), index=t.index)
+    lab = pd.cut(mins, [b[0] for b in buckets] + [buckets[-1][1]], right=False,
+                 labels=[b[2] for b in buckets])
     rows = []
-    for name in [b[2] for b in BUCKETS]:
+    for name in [b[2] for b in buckets]:
         g = t[lab == name]
         row = dict(bucket=name, n=len(g),
                    share=len(g) / len(t) if len(t) else float("nan"),
@@ -242,30 +332,33 @@ def bucket_profile(t: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-# ------------------------------------------------------------------ anchor gate (fit only)
-def check_anchors(bs: dict, lifts: dict, band_stats: dict, buckets: pd.DataFrame) -> list:
+# ------------------------------------------------------------------ anchor gate (fit)
+def check_anchors(config: str, bs: dict, lifts: dict, band_stats: dict,
+                  buckets: pd.DataFrame) -> list:
+    A = ANCHORS[config]
     got = {
-        "book trades": (bs["n"], ANCHORS["n"]),
-        "book days": (bs["days"], ANCHORS["days"]),
-        "net $": (round(bs["net"]), ANCHORS["net"]),
-        "WR %": (round(bs["wr"] * 100), ANCHORS["wr_pct"]),
-        "mean R": (round(bs["mean_r"], 3), ANCHORS["mean_r"]),
-        "months green": (bs["green"], ANCHORS["green"]),
-        "months total": (bs["months"], ANCHORS["months"]),
+        "book trades": (bs["n"], A["n"]),
+        "book days": (bs["days"], A["days"]),
+        "net $": (round(bs["net"]), A["net"]),
+        "WR %": (round(bs["wr"] * 100), A["wr_pct"]),
+        "mean R": (round(bs["mean_r"], 3), A["mean_r"]),
+        "months green": (bs["green"], A["green"]),
+        "months total": (bs["months"], A["months"]),
     }
     for era in ("2025", "2026"):
-        got[f"maxDD {era} $"] = (round(bs["per_era"][era]["dd"]), ANCHORS["dd_era"][era])
-        got[f"W/FAR lift {era}"] = (round(lifts[era]["lift"], 3), ANCHORS["lift_era"][era])
-        got[f"S1 band n {era}"] = (band_stats[era]["n"], ANCHORS["band_n"][era])
+        got[f"maxDD {era} $"] = (round(bs["per_era"][era]["dd"]), A["dd_era"][era])
+        got[f"W/FAR lift {era}"] = (round(lifts[era]["lift"], 3), A["lift_era"][era])
+        got[f"S1 band n {era}"] = (band_stats[era]["n"], A["band_n"][era])
         got[f"S1 band mean R {era}"] = (round(band_stats[era]["mean_r"], 3),
-                                        ANCHORS["band_r"][era])
+                                        A["band_r"][era])
         got[f"S1 band net {era} $"] = (round(band_stats[era]["net"]),
-                                       ANCHORS["band_net"][era])
-    for i, (_, _, name) in enumerate(BUCKETS):
+                                       A["band_net"][era])
+    for i, name in enumerate(buckets.bucket):
         got[f"bucket {name} mean R"] = (round(float(buckets.iloc[i].mean_r), 3),
-                                        ANCHORS["bucket_r"][i])
+                                        A["bucket_r"][i])
     fails = []
-    print("\nREHEARSAL ANCHOR GATE (every number must reproduce a committed figure)")
+    print(f"\nREHEARSAL ANCHOR GATE [{config}] (every number must reproduce a "
+          "committed figure)")
     for k, (g, e) in got.items():
         ok = g == e
         if not ok:
@@ -282,33 +375,41 @@ def fmt_gate(name: str, res: dict) -> str:
             f"{res['t']:+.2f} | {p} | {ALPHA} | **{verdict}** |\n")
 
 
-def build_report(span: str, authorized_by: str, bs: dict, primary: dict, s1: dict,
-                 band_stats: dict, lifts: dict, split: dict,
+def build_report(span: str, config: str, authorized_by: str, bs: dict, primary: dict,
+                 s1: dict, band_stats: dict, lifts: dict, split: dict,
                  buckets: pd.DataFrame) -> str:
     is_fit = span == "fit"
-    title = ("London holdout — REHEARSAL on the fit span (anchor verification only)"
-             if is_fit else "London holdout — THE sealed 2023/24 run (opens once)")
-    L = [f"# {title}\n\n"]
+    cdesc = ("rev 2a: 08:00-10:00 / V8 / no veto / no serialization" if config == "rev2a"
+             else "rev 3: 08:00-09:45 / V1 BE@1R / score-0 veto (frozen literals) / "
+                  "one-position-at-a-time")
+    title = (f"London holdout — REHEARSAL on the fit span [{config}]" if is_fit
+             else f"London holdout — THE sealed 2023/24 run [{config}] (opens once)")
+    L = [f"# {title}\n\n**Config: {cdesc}.**\n\n"]
     if is_fit:
-        L.append("**This is not a result. It is the dress rehearsal required before the "
-                 "sealed run: the same script, pointed at the fit span, gated on exact "
-                 "reproduction of every committed anchor.** The sealed run is "
-                 "`--span holdout --authorized-by \"...\"` with zero code changes.\n\n")
+        L.append("**This is not a result — it is the dress rehearsal: the same "
+                 "script, pointed at the fit span, gated on exact reproduction of "
+                 "every committed anchor.** The sealed run is `--span holdout "
+                 f"--config {config} --authorized-by \"...\"` with zero code "
+                 "changes.\n\n")
     else:
         L.append(f"**Authorized by: {authorized_by}.** Prereg: "
-                 "`docs/LONDON-PREREGISTRATION.md` rev 2a. Frozen config §1; two gated "
-                 "tests at Sidak alpha 0.0253 (§4). Declared resolution: a near-miss on "
-                 f"mean R +{EXPECT_FWD} is not decay; a sign flip is.\n\n")
-    L.append("## Items 1-8 — the book (frozen config, flat 1 NQ lot)\n\n")
-    L.append("| item | value |\n|---|---|\n")
+                 "`docs/LONDON-PREREGISTRATION.md` rev 2a + the signed revision "
+                 "(`docs/LONDON-REV3-BUNDLE.md` if rev3). Two gated tests at Sidak "
+                 "alpha 0.0253. Declared resolution: a near-miss on mean R "
+                 f"+{EXPECT_FWD} is not decay; a sign flip is.\n\n")
+    L.append("## Items 1-8 — the book (flat 1 NQ lot)\n\n| item | value |\n|---|---|\n")
     L.append(f"| 1. trades / days with a take | {bs['n']} / {bs['days']} |\n")
     L.append(f"| 2. net P&L | ${bs['net']:+,.0f} |\n")
     L.append(f"| 3. win rate | {bs['wr'] * 100:.0f}% |\n")
     L.append(f"| 4. mean R | {bs['mean_r']:+.3f} |\n")
-    L.append(f"| 5. maxDD (chronological) | ${bs['dd']:,.0f} |\n")
+    L.append(f"| 5. maxDD (chronological, trade-level) | ${bs['dd']:,.0f} |\n")
     L.append(f"| 6. months green | {bs['green']}/{bs['months']} |\n")
     L.append(f"| 7. worst month | ${bs['worst_mo']:+,.0f} ({bs['worst_mo_name']}) |\n")
     L.append(f"| 8. trades per week | {bs['tpw']:.1f} |\n")
+    if config == "rev3":
+        L.append("\n(Under rev 3 the WR optic is structural, not a health metric: "
+                 "V1 scratches ~40% of trades at BE, so wins concentrate — mean R "
+                 "and net are the health metrics.)\n")
     L.append("\nPer era:\n\n| era | n | net | WR | mean R | maxDD |\n|---|---|---|---|---|---|\n")
     for era, e in sorted(bs["per_era"].items()):
         L.append(f"| {era} | {e['n']} | ${e['net']:+,.0f} | {e['wr'] * 100:.0f}% | "
@@ -322,21 +423,20 @@ def build_report(span: str, authorized_by: str, bs: dict, primary: dict, s1: dic
     L.append("\n## Item 10 / S2 — the either cell split (DESCRIPTIVE, no inference)\n\n")
     L.append(f"both W+FAR: n={split['n_b']}, mean R {split['r_b']:+.3f} · exactly one: "
              f"n={split['n_o']}, mean R {split['r_o']:+.3f}\n\n"
-             "Prereg §4: no decision may be taken on this number in this run — doing so "
-             "retroactively makes the family 3 tests. It exists so the post-holdout sizing "
-             "decision is judged against a pre-declared value.\n")
+             "Prereg §4: no decision may be taken on this number in this run — doing "
+             "so retroactively makes the family 3 tests.\n")
     L.append("\n## The two gated tests (two-sided Student t, PASS = mean > 0 and p <= alpha)\n\n")
     L.append("| test | n | mean R | SE | t | p | alpha | verdict |\n"
              "|---|---|---|---|---|---|---|---|\n")
     L.append(fmt_gate("PRIMARY — book mean R", primary))
     L.append(fmt_gate("S1 — sub-9.5 band mean R", s1))
-    L.append("\nS1 is **reported, not acted on** (standing ANGUS ruling — the floor stays "
-             "9.5 regardless of this cell; the era crossing already rejected floor 5).\n")
+    L.append("\nS1 is **reported, not acted on** (standing ANGUS ruling — the floor "
+             "stays 9.5 regardless; the era crossing already rejected floor 5).\n")
     L.append("\nS1 band per era:\n\n| era | n | net | WR | mean R |\n|---|---|---|---|---|\n")
     for era, e in sorted(band_stats.items()):
         L.append(f"| {era} | {e['n']} | ${e['net']:+,.0f} | {e['wr'] * 100:.0f}% | "
                  f"{e['mean_r']:+.3f} |\n")
-    L.append("\n## Bucket profile (DESCRIPTIVE — declared prior: 09:30-10:00 weakest on fit)\n\n")
+    L.append("\n## Bucket profile (DESCRIPTIVE)\n\n")
     era_cols = [c for c in buckets.columns if c.startswith("r_")]
     L.append("| bucket | n | share | WR | mean R | net |" +
              "".join(f" R {c[2:]} |" for c in era_cols) + "\n")
@@ -346,10 +446,9 @@ def build_report(span: str, authorized_by: str, bs: dict, primary: dict, s1: dic
                  f"{r.mean_r:+.3f} | ${r.net:+,.0f} |" +
                  "".join(f" {r[c]:+.3f} |" for c in era_cols) + "\n")
     if not is_fit:
-        L.append("\nIf 09:30-10:00 is again the weakest bucket here — on data owing nothing "
-                 "to the fit-side analysis — that is properly evidenced grounds to raise a "
-                 "window-change hypothesis LATER, on its own prereg. Nothing is gated on it "
-                 "in this run.\n")
+        L.append("\nIf the late window is again the weakest here — on data owing "
+                 "nothing to the fit-side analysis — that is properly evidenced "
+                 "grounds for the window question, later, on its own prereg.\n")
     return "".join(L)
 
 
@@ -357,61 +456,69 @@ def build_report(span: str, authorized_by: str, bs: dict, primary: dict, s1: dic
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--span", required=True, choices=["fit", "holdout"])
+    ap.add_argument("--config", default="rev2a", choices=["rev2a", "rev3"])
     ap.add_argument("--authorized-by", default="",
-                    help="required for --span holdout: who authorised opening the sealed "
-                         "set, e.g. \"ANGUS, 2026-08-02\"")
+                    help="required for --span holdout: who authorised opening the "
+                         "sealed set, e.g. \"ANGUS, 2026-08-02\"")
     a = ap.parse_args()
+    c = CONFIGS[a.config]
 
-    out_path = ROOT / "docs" / SPANS[a.span]["out"]
     if a.span == "holdout":
         if not a.authorized_by.strip():
             raise SystemExit(
-                "SEALED SPAN REFUSED. The holdout opens once, only after ANGUS signs off on "
-                "prereg §1/§3/§4 (draft signature is NOT sufficient — prereg §6). If that "
+                "SEALED SPAN REFUSED. The holdout opens once, only after ANGUS signs "
+                "off (draft signature is NOT sufficient — prereg §6). If that "
                 "sign-off exists, re-run with --authorized-by \"<name, date>\".")
+        out_path = ROOT / "docs" / "LONDON-HOLDOUT-REPORT.md"
         if out_path.exists():
             raise SystemExit(
-                f"REFUSED: {out_path.name} already exists — the holdout has been opened. "
-                "A second run over the sealed span is exactly what the prereg forbids. If "
-                "this is a genuine re-issue (e.g. the first run crashed BEFORE reading "
-                "outcomes), delete the file manually and record why in the session log.")
+                f"REFUSED: {out_path.name} already exists — the holdout has been "
+                "opened. A second run over the sealed span is exactly what the "
+                "prereg forbids. If this is a genuine re-issue (first run crashed "
+                "BEFORE reading outcomes), delete the file manually and record why "
+                "in the session log.")
+    else:
+        out_path = ROOT / "docs" / c["rehearsal"]
 
     P = load_pop(a.span)
-    book = lon_book(P, floor=9.5, lifetime=math.inf, cap=999)
-    band = lon_book(P[(P.risk >= 5.0) & (P.risk < 9.5)], floor=5.0,
+    if c["mgmt"] == "V1":
+        P = swap_v1(P, a.span)
+    book, Pw = build_book(P, a.config)
+    band = lon_book(Pw[(Pw.risk >= 5.0) & (Pw.risk < 9.5)], floor=5.0,
                     lifetime=math.inf, cap=999)
     if a.span == "holdout":
         guard_holdout_days(book)
 
-    bs = book_stats(book, P.day)
-    lifts = wfar_lift(P)
+    bs = book_stats(book, Pw.day)
+    lifts = wfar_lift(Pw)
     split = both_one_split(book)
-    buckets = bucket_profile(book)
+    buckets = bucket_profile(book, c["buckets"])
     band_stats = {era: dict(n=len(g), net=float(g.dollars.sum()),
                             wr=float((g.R > 0).mean()), mean_r=float(g.R.mean()))
                   for era, g in band.groupby("era")}
     primary = t_test_two_sided(book.R)
     s1 = t_test_two_sided(band.R)
 
-    print(f"[{a.span}] book: {bs['n']} trades / {bs['days']} days / net ${bs['net']:+,.0f} / "
-          f"WR {bs['wr'] * 100:.0f}% / mean R {bs['mean_r']:+.3f} / maxDD ${bs['dd']:,.0f}")
-    print(f"[{a.span}] PRIMARY p={primary['p']:.4f}  S1 p={s1['p']:.4f}  (alpha {ALPHA})")
+    print(f"[{a.span}/{a.config}] book: {bs['n']} trades / {bs['days']} days / net "
+          f"${bs['net']:+,.0f} / WR {bs['wr'] * 100:.0f}% / mean R {bs['mean_r']:+.3f} "
+          f"/ maxDD ${bs['dd']:,.0f}")
+    print(f"[{a.span}/{a.config}] PRIMARY p={primary['p']:.2e}  S1 p={s1['p']:.2e}  "
+          f"(alpha {ALPHA})")
+
+    body = build_report(a.span, a.config, a.authorized_by, bs, primary, s1,
+                        band_stats, lifts, split, buckets)
+    out_path.write_text(body)
+    print(f"\nwrote docs/{out_path.name} ({len(body):,} chars)")
 
     if a.span == "fit":
-        fails = check_anchors(bs, lifts, band_stats, buckets)
-        body = build_report(a.span, "", bs, primary, s1, band_stats, lifts, split, buckets)
-        out_path.write_text(body)
-        print(f"\nwrote docs/{out_path.name} ({len(body):,} chars)")
+        fails = check_anchors(a.config, bs, lifts, band_stats, buckets)
         if fails:
-            raise SystemExit(f"\nREHEARSAL FAIL — {len(fails)} anchor(s) did not reproduce: "
-                             f"{fails}. Fix on FIT data; the sealed run stays shut.")
-        print("\nREHEARSAL PASS — every committed anchor reproduced. The sealed run is "
-              "one command away and requires no code changes.")
+            raise SystemExit(f"\nREHEARSAL FAIL [{a.config}] — {len(fails)} anchor(s) "
+                             f"did not reproduce: {fails}. Fix on FIT data; the "
+                             "sealed run stays shut.")
+        print(f"\nREHEARSAL PASS [{a.config}] — every committed anchor reproduced. "
+              "The sealed run is one command away and requires no code changes.")
     else:
-        body = build_report(a.span, a.authorized_by, bs, primary, s1, band_stats, lifts,
-                            split, buckets)
-        out_path.write_text(body)
-        print(f"\nwrote docs/{out_path.name} ({len(body):,} chars)")
         print("\nHOLDOUT REPORTED. Read at the declared resolution: a near-miss on "
               f"+{EXPECT_FWD} is not decay; a sign flip is.")
 
