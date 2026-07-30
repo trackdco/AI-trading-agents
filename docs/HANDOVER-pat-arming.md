@@ -59,7 +59,7 @@ tightest applicable step wins, and the spine's $100 hard halt sits underneath. M
 
 ```bash
 python -m pytest tests/test_canon_scorer_ny.py tests/test_ny_lane.py -q   # 35 tests
-python -m scripts.funded_book --span fit --profile lucid                  # +$90,015
+python -m scripts.funded_book --span fit --profile lucid                  # +$97,327 (CR)
 python -m scripts.ny_lane_replay --span fit --days 25                     # 25/25 days
 python -m scripts.depth_parity --day 2026-04-20 --self-test               # PASS
 ```
@@ -76,10 +76,11 @@ python -m scripts.depth_parity --day 2026-04-20 --self-test               # PASS
 - **The depth harness is clean on both book models** — 180 archive minutes through
   `DepthBook`, and an MBO capture through `OrderBook`, both at 100% gate agreement. MBO
   aggregated to price levels *does* reproduce the archive's wall features.
-- Reference results (50k account, $2k EOD-trailing): `lucid` fit **+$90,015** / holdout
-  **+$56,409**; `scaled600` fit **+$320,662** / holdout **+$188,325**. Every month green in
-  both spans under both profiles. The de-risk ladder is dormant across all 19 months
-  (min buffer $1,621 fit / $1,720 holdout), so it changes no measured number.
+- Reference results (50k account, $2k EOD-trailing; CLOSE-AND-REVERSE): `lucid` fit
+  **+$97,327** / holdout **+$59,407**; `scaled600` fit **+$349,231** / holdout
+  **+$198,583**. Every month green in both spans under both profiles. The de-risk ladder is
+  dormant across all 19 months (min buffer $1,724 fit / $1,774 holdout), so it changes no
+  measured number.
 
 ---
 
@@ -96,6 +97,7 @@ python -m scripts.depth_parity --day 2026-04-20 --self-test               # PASS
 | G | Sizing base **$200 → $150** | Every order size changes. |
 | H | De-risk ladder replaces the linear taper to zero | Between $100 and $1,000 of buffer the canon now takes half/quarter-size trades where the old canon refused. Angus's ruling; the spine's $100 halt is the floor. |
 | I | **The legacy 3-minute cut must NOT fire** (`CUT_R3`/`CUT_FW3` in the exit manager / lifecycle `maybe_cut`). | The rebuilt book was measured WITHOUT it, and the time-segment study (`output/time_segments_fit.parquet`, 2026-07-30) shows the trades it would cut finish breakeven-to-POSITIVE on this canon (+0.01R pre, +0.32R gold at t+3) — armed as-is it silently underperforms the measured book. Disable it on the canon lane, or re-certify with it and accept a different book. |
+| J | **CLOSE-AND-REVERSE is canon execution semantics** (ANGUS 2026-07-30). When a validated opposing signal's limit FILLS while a position is open, that fill flattens the position at the fill price and the reversal runs as its own trade — size the opposing order to close + open in one ticket. An opposing signal that never fills changes nothing; every trade keeps its own full bracket; same-direction adds stack as before. | The book's references (+$97,327/+$59,407 lucid) are measured UNDER this. A runner that blocks the opposing entry while in a position, or that only flattens without reversing, silently trades a DIFFERENT and worse book (flatten-only measured $49,880 holdout vs $59,407). 86 fit / 97 holdout trades flip; the flip is the book's strongest exit signal. Overlay: `output/aikido_cr_{span}.parquet`. |
 
 ---
 

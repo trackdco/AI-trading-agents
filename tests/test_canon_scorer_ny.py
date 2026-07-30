@@ -50,8 +50,19 @@ def _row(r) -> dict:
 
 
 def replay(span: str, profile) -> pd.DataFrame:
-    """Drive the live scorer over a span through the real protocol and return its book."""
+    """Drive the live scorer over a span through the real protocol and return its book.
+
+    CLOSE-AND-REVERSE (ANGUS 2026-07-30): the live feed's settlement view of a flipped
+    trade is the flip itself — exit at the opposing fill, P&L truncated there. The overlay
+    is merged onto the raw rows exactly as the broker's netting would produce them; entry
+    evaluation and scoring stay raw-feature-driven, untouched."""
     S = pd.read_parquet(ROOT / f"output/aikido_{span}.parquet").copy()
+    O = pd.read_parquet(ROOT / f"output/aikido_cr_{span}.parquet").set_index(
+        ["ts", "direction"])
+    idx = pd.MultiIndex.from_arrays([S.ts, S.direction])
+    hit = idx.isin(O.index)
+    for col, src in (("dollars_1lot", "cr_dollars_1lot"), ("exit_ts", "cr_exit_ts")):
+        S.loc[hit, col] = O.loc[idx[hit], src].to_numpy()
     S["fill"] = pd.to_datetime(S.fill_ts, format="mixed", utc=True)
     S["exit"] = pd.to_datetime(S.exit_ts, format="mixed", utc=True)
     S = S.sort_values("fill", kind="mergesort")   # stable: ties resolve to detection order
@@ -103,7 +114,7 @@ def test_live_scorer_reproduces_the_shipped_book(span, profile_name):
 @pytest.mark.parametrize("span", SPANS)
 def test_reference_net_is_reproduced(span):
     """The headline numbers in the funded_book docstring, from the LIVE path."""
-    expect = {"fit": 90_015, "holdout": 56_409}[span]
+    expect = {"fit": 97_327, "holdout": 59_407}[span]
     assert round(replay(span, LUCID).pl.sum()) == pytest.approx(expect, abs=1)
 
 
@@ -286,7 +297,9 @@ def test_ramp_ladder_is_two_steps_and_dormant_in_history():
     assert ramp_for(0.0) == 0.25
 
     # dormancy: both spans keep their minimum buffer clear of the outer step
-    for span, floor in (("fit", 1_621.0), ("holdout", 1_720.0)):
+    # CR references (2026-07-30): flips lift both floors ($1,621->$1,724, $1,720->$1,774) —
+    # the ladder is even further from ever firing on the validated spans.
+    for span, floor in (("fit", 1_724.0), ("holdout", 1_774.0)):
         B = fb.run(fb.load_book(span), "lucid")
         D = B.groupby("day").pl.sum()
         bal, line, mb = fb.START, fb.START - fb.TRAIL, 1e9

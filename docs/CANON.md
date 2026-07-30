@@ -22,11 +22,14 @@ treat it as truth; do not trust any number produced before the rebuild.
 | Live re-arm status, behavioural diff, open rulings | `docs/ARMING-REFERENCE.md` |
 | Why each ruling exists (session Q&A) | `docs/CANON-QA-LOG.md` |
 
-Headline (reproduce with `python -m scripts.funded_book`): **lucid** profile fit +$90,015 /
-holdout +$56,409; **scaled600** fit +$320,662 / holdout +$188,325; every month green in
-both spans under both profiles. (These supersede +$89,925 / +$56,408 / +$320,150 /
-+$188,324, computed before an unstable tie-sort in `load_book` was fixed — see
-`docs/ARMING-REFERENCE.md` §2. No risk metric moved.)
+Headline (reproduce with `python -m scripts.funded_book`; CLOSE-AND-REVERSE execution
+semantics, ANGUS ruling 2026-07-30): **lucid** profile fit +$97,327 / holdout +$59,407;
+**scaled600** fit +$349,231 / holdout +$198,583; every month green in both spans under
+both profiles. An opposing canon fill flattens the open trade at that fill and reverses
+(overlay `output/aikido_cr_{span}.parquet`, built by `scripts/apply_close_reverse.py`;
+86 fit / 97 holdout trades flip). These supersede the pre-CR +$90,015 / +$56,409 /
++$320,662 / +$188,325; lucid holdout maxDD improves $1,503→$1,429, scaled600 holdout
+maxDD worsens $3,618→$4,061 — stated, not hidden.
 
 ## What survived from before (kept deliberately, NOT canon claims)
 

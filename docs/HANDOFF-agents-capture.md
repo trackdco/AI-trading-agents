@@ -100,9 +100,10 @@ untouched, and this time there is a real holdout to demand that of.
 ## 1. State of the world (read once, trust it)
 
 - **The canon is shipped and law.** `docs/CANON.md` is the orientation doc;
-  `scripts/funded_book.py`'s docstring is the spec. Reference results: `lucid` fit
-  **+$90,015** / holdout **+$56,409**; `scaled600` fit **+$320,662** / holdout **+$188,325**;
-  every month green in both spans. The old canon is deleted — do not resurrect anything from
+  `scripts/funded_book.py`'s docstring is the spec. CLOSE-AND-REVERSE execution semantics
+  shipped 2026-07-30 (ANGUS ruling; overlay `output/aikido_cr_{span}.parquet`, conformance
+  suite green). Reference results: `lucid` fit **+$97,327** / holdout **+$59,407**;
+  `scaled600` fit **+$349,231** / holdout **+$198,583**; every month green in both spans. The old canon is deleted — do not resurrect anything from
   git history.
 - **The live re-arm is Pat's parallel track** (`docs/HANDOVER-pat-arming.md`,
   `docs/ARMING-REFERENCE.md`). It does not block this work and this work must not touch it:

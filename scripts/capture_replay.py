@@ -48,7 +48,10 @@ def sgn(direction: str) -> float:
 
 
 def load_trades(span: str) -> list[dict]:
-    V = fb.load_book(span)
+    # cr=False DELIBERATELY: this harness is anchored on the ENGINE'S OWN exits and dollars
+    # (implied_partial inverts V8 arithmetic) — the close-and-reverse overlay is applied
+    # downstream by funded_book, never here. apply_close_reverse.py builds FROM this.
+    V = fb.load_book(span, cr=False)
     # load_book parses stamps as UTC; the path walk anchors EOD at 15:55 NEW YORK, so
     # convert here or day_path truncates every path at 10:55 ET (caught by check mode).
     rows = []
