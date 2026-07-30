@@ -41,6 +41,8 @@ BUDGET = 800.0
 N_PATHS = 2000
 START, TRAIL, LOCK_AT, PAYOUT_AT, PAYOUT = 50_000.0, 2_000.0, 52_000.0, 54_000.0, 2_000.0
 SEED = 20260730
+ELIG_DAYS, ELIG_MIN = 5, 100.0   # ANGUS: 5 trading days of +$100 before a payout
+RETAIN = 4_000.0                  # lucid optimum from docs/PAYOUT-BUFFER-SWEEP.md
 EXPECT = dict(trades=920, days=230, net=90015, worst=-762, dd=1603, green=13)
 
 FLOORS = [7.0, 9.5, 12.0]
@@ -320,22 +322,32 @@ def stage2() -> None:
 
 
 # ------------------------------------------------------------------ MC engine
-def mc(daymap: dict, keys: list, seed=SEED, block=1) -> dict:
+def mc(daymap: dict, keys: list, seed=SEED, block=1, retain=RETAIN) -> dict:
+    """CORRECTED payout model. The first attempt withdrew on every touch of $54k, which pinned
+    the account $2k above a locked floor permanently and inflated NY-alone P(bust) to 11.8%
+    against an expected ~1%. Two fixes, both measured in docs/PAYOUT-BUFFER-SWEEP.md:
+
+      cadence  a withdrawal requires ELIG_DAYS trading days of +$ELIG_MIN or better since the
+               last one (ANGUS 2026-07-30). Not "whenever eligible".
+      retain   withdraw down to a RETAINED BUFFER, not to $2k. The sweep showed $2k is the
+               worst choice available on both profiles (18.4% / 14.3% bust vs ~2% at $4k+):
+               retaining only $2k above a locked floor means one bad cluster ends the account.
+    """
     rng = np.random.default_rng(seed)
     busts, cycles, payouts = 0, [], []
     K = np.array(keys, dtype=object)
     nblocks = max(1, 252 // block)
     for _ in range(N_PATHS):
-        eq, floor, locked, paid, cyc = START, START - TRAIL, False, 0.0, 0
+        eq, floor, locked, paid, cyc, good = START, START - TRAIL, False, 0.0, 0, 0
         starts = rng.integers(0, max(1, len(K) - block + 1), size=nblocks)
         seq = [K[i + o] for i in starts for o in range(block) if i + o < len(K)]
         for k in seq:
+            dpl = 0.0
             for p in daymap[k]:
                 eq += p
-            if eq >= PAYOUT_AT:
-                eq -= PAYOUT
-                paid += PAYOUT
-                cyc += 1
+                dpl += p
+            if dpl >= ELIG_MIN:
+                good += 1
             if not locked:
                 floor = max(floor, eq - TRAIL)
                 if floor >= START:
@@ -343,6 +355,12 @@ def mc(daymap: dict, keys: list, seed=SEED, block=1) -> dict:
             if eq <= floor:
                 busts += 1
                 break
+            if good >= ELIG_DAYS and eq - floor > retain:
+                w = eq - floor - retain
+                eq -= w
+                paid += w
+                cyc += 1
+                good = 0
         cycles.append(cyc)
         payouts.append(paid)
     return {"bust": busts / N_PATHS, "cyc": np.array(cycles), "pay": np.array(payouts)}
@@ -393,8 +411,12 @@ def stage4() -> None:
          "combined distribution.\n",
          f"\nFunded rules: start ${START:,.0f}, ${TRAIL:,.0f} trailing EOD DD locking at start "
          f"once equity reaches ${LOCK_AT:,.0f}, full ${PAYOUT:,.0f} payout at ${PAYOUT_AT:,.0f}.\n"]
+    sane = 0.005 <= base["bust"] <= 0.04
     L.append(f"\n## Sanity check\n\n**NY-alone P(bust) = {base['bust'] * 100:.1f}%** "
-             f"(must be near 1%, not 39% — 39% would mean the wrong book was loaded).\n")
+             f"— must land in 0.5%-4%. {'PASS' if sane else 'FAIL'}\n")
+    if not sane:
+        raise SystemExit(f"SANITY FAILED: NY-alone P(bust) {base['bust'] * 100:.1f}% outside "
+                         f"0.5-4%. Wrong book or wrong payout model — no stage-4 number is valid.")
     L.append("\n## Headline\n\n| config | P(bust) | cycles med/p90 | net payout p10/med/p90 |\n"
              "|---|---|---|---|\n")
 

@@ -37,7 +37,7 @@ DOCS = ROOT / "docs"
 ET = "America/New_York"
 START, TRAIL = 50_000.0, 2_000.0
 ELIG_DAYS, ELIG_MIN = 5, 100.0          # 5 trading days of +$100 or better
-BUFFERS = [2_000.0, 3_000.0, 4_000.0, 5_000.0, 6_000.0, 8_000.0]
+BUFFERS = [2_000.0, 3_000.0, 4_000.0, 5_000.0, 6_000.0, 8_000.0, 10_000.0, 12_000.0, 16_000.0]
 N_PATHS, NDAYS, SEED = 2000, 252, 20260730
 
 
