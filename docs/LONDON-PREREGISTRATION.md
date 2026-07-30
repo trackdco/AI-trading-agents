@@ -11,7 +11,8 @@ moving one; it does not promote any recommendation to a ruling.
 **What changed in rev 2** (all driven by `docs/LONDON-PREREG-TRADEOFF.md`, a power analysis that
 projects the sealed span's size from the fit rate without reading it):
 - §2 gains reporting item 10 — the both-W+FAR vs exactly-one split.
-- §3 keeps S1 as the single INFERENTIAL secondary, and adds S2 as a DESCRIPTIVE report carrying
+- §3 keeps S1 as the single INFERENTIAL secondary — still **reported, not acted on**; floor 5
+  stays rejected in §1 and rev 2 does NOT reopen it — and adds S2 as a DESCRIPTIVE report carrying
   no inference and no decision. Two new candidates (S3/S4) are explicitly declined, with reasons.
 - §4 restates multiplicity as **2 gated tests**, and says why the descriptive report does not
   consume family-wise alpha.
@@ -91,20 +92,37 @@ on n=155) because sub-9.5 candidates that PASS the wall check are profitable —
 bleeding only on the UNSELECTED population. So the floor and the wall check are partially
 redundant.
 
-**The question, stated as the decision it drives:** should the risk floor drop from 9.5 to 5?
-Operationally — **does the incremental sub-9.5 wall-passing band have mean R > 0 on the sealed
-days?**
+**Floor 5 remains REJECTED in §1 and this secondary does NOT reopen it. Reported, not acted on.**
+ANGUS ruling, standing: *"Floor stays 9.5 if it survives; the era crossing already rejects floor 5
+and I'm not relitigating it."*
 
-That framing is deliberate and it is the difference between a usable test and a wasted slot.
-Framed instead as "is the floor-5 book better than the floor-9.5 book", the test has **2% power**:
-the two books' means are nearly identical (+0.590 vs +0.513) and the sets heavily OVERLAP, since
-the floor-5 book *contains* the floor-9.5 book. Framed as a one-sample expectancy test on the
-band the change actually admits, the same data gives **91% power**. Same run, same numbers,
-different question.
+**The question:** does the incremental sub-9.5 wall-passing band have mean R > 0 on the sealed
+days? Asked as a one-sample expectancy test on the band the floor change would admit, which is
+the only form with usable power (**91%**, vs **2%** for "is the floor-5 book better than the
+floor-9.5 book" — those two books' pooled means are nearly identical, +0.590 vs +0.513, and the
+sets heavily OVERLAP since the floor-5 book *contains* the floor-9.5 book).
 
-Kept as the inferential secondary because it is both the best-powered question available — better
-powered than the primary — and the one that would most change the shipped configuration: the
-sub-9.5 band is **300 fit trades against the main book's 187**, so floor-5 roughly triples volume.
+**Why it is a diagnostic and not a lever — the era split that pooling hides:**
+
+| | n | mean R | win rate | net (1 lot) |
+|---|---|---|---|---|
+| sub-9.5 band, 2025 | 164 | **+0.904** | 61% | +$18,746 |
+| sub-9.5 band, 2026 | 136 | **+0.211** | **39%** | +$3,085 |
+| shipped >=9.5, 2025 | 78 | +0.434 | 62% | +$8,178 |
+| shipped >=9.5, 2026 | 109 | **+0.570** | 53% | +$14,618 |
+
+The band **collapses in 2026** — win rate 61% -> 39%, mean R to under a quarter — while the shipped
+book **improves**. The two move in opposite directions, which IS the era crossing §1 rejects it on.
+A rev-2 draft of this section quoted only the pooled +0.590 and called floor-5 "the biggest lever
+on the table"; that was wrong, and wrong by exactly the mechanism this project keeps auditing for —
+a pooled mean averaging a strong regime with a weak one. Corrected here.
+
+Kept as the single inferential secondary because it is the best-**powered** question available, and
+because the band's forward behaviour is worth knowing even though the floor is not moving: if the
+band is profitable on 2023/24 as well, the era crossing looks like 2026-specific decay in tight
+stops and the question can be reopened LATER on forward evidence; if it is flat or negative there
+too, the 9.5 floor is confirmed on data owing nothing to the rebuild and the matter is closed.
+**Best-powered is not the same as most valuable, and this slot buys information, not a change.**
 
 ### S2 (DESCRIPTIVE, no inference). The both-W+FAR vs exactly-one split
 
@@ -180,6 +198,12 @@ and from the 4 that this week's new findings could have pushed it to. Each addit
 dilutes the primary, and the holdout opens once.
 
 ## 5. Known residuals, recorded not fixed
+
+- **Correction on record (rev 2a).** A rev-2 draft described floor-5 as "the biggest lever on the
+  table", on a POOLED sub-9.5 mean R of +0.590. Split by era the band runs +0.904 (2025) against
+  +0.211 with a 39% win rate (2026) while the shipped book improves over the same span — the era
+  crossing §1 rejects it on. The pooled figure averaged a strong regime with a weak one and hid a
+  4x degradation. The claim is withdrawn; §3 S1 is a diagnostic, not a proposed change.
 
 - **THE BINDING CONSTRAINT: this holdout is small.** At the fit trade rate (187 trades over 284
   session days) the 128 sealed days project to a book of only **~84 trades**. R's standard
