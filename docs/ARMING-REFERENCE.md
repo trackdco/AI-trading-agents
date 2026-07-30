@@ -86,34 +86,66 @@ Each of these is a live-visible change and is why this document exists.
 | R5 | No distance cancel by default | ✅ pinned in `order_watch` and `trade_lifecycle` |
 | R6 | Micros never round to zero | ✅ |
 | R7 | Absent `struct_event` never escalates size | ✅ |
-| R8 | Full suite green | ⚠️ 720 pass, 2 fail — both long-standing and unrelated (`london_depth.DIR`, `build_ny_substrate.canon_config` attribute drift), confirmed failing before any of this work |
-| R9 | **Runner cut over to the new scorer** | ❌ **NOT DONE — see §5.1** |
-| R10 | Angus's token against a certified commit | ❌ yours to issue |
+| R8 | Full suite green | ⚠️ 739 pass, 2 fail — both long-standing and unrelated (`london_depth.DIR`, `build_ny_substrate.canon_config` attribute drift), confirmed failing before any of this work |
+| R9 | Live LANE exists and reproduces the book on real days | ✅ `src/canon/ny_lane.py`, 25/25 fit days via `scripts/ny_lane_replay.py` |
+| R10 | **Live DepthBook parity** (`.depth` → `long_form` vs the batch depth archive) | ❌ **NOT VERIFIED — see §5.1. This is the blocker.** |
+| R11 | Runner wired to the lane (`VerdictSource` → `NYLane`) | ❌ not written |
+| R12 | Angus's token against a certified commit | ❌ yours to issue |
 
 ---
 
 ## 5. What is NOT done
 
-### 5.1 The runner still sources verdicts from the OLD canon — blocking
+### 5.1 THE BLOCKER: the live depth book has never been checked against the batch archive
 
-`src/desk/canon_runtime.py` shells out to the old canon scripts and reads
-`output/canon_book.parquet`. `route_b` consumes those verdicts. **Nothing in the live path
-calls `NYScorerV2` yet.** The decision core is built and proven; the cut-over is not written.
+`src/canon/ny_lane.py` now runs the whole chain — real bars and tape streamed through
+`CanonIngestor`, features assembled by the live code, scored by `NYScorerV2` — and
+`scripts/ny_lane_replay.py` reproduces the shipped book on **25 of 25** fit days.
 
-Until that lands, arming would arm the *old* canon. The stack must stay disarmed.
+But replay feeds the depth family from the **batch archive**, because `ReplaySource` never
+calls `on_depth` and the archive is per-snapshot CSVs rather than an event stream. In
+production, `dep_thick` / `dep_wall_*` come from Sierra's `.depth` files through
+`DepthBook.long_form()` — **a path no test compares against the archive the canon was
+measured on.**
 
-Remaining work: a `VerdictSource` that runs `NYScorerV2` off the live feature stream, plus
-per-day `start_day(buffer)` from the account's trailing line, plus `commit` / `on_exit` wired
-to fills and exits.
+That is not a nice-to-have. `W` (pre) and `D` (gold) are the *only* entry gates, plus the
+wall-quality cut, and all three are pure depth features. If `long_form()` bins levels
+differently, or carries a different price convention, or lags, then the live book quietly
+becomes a different book — and it fails *silently*, because a wrong wall distance still
+produces a plausible verdict.
 
-### 5.2 The elite tier will not fire until `struct_event` is plumbed through
+Required: capture one live `.depth` session, build the book through `DepthBook`, and diff
+`depth_at()` against the same day's archive CSV — wall distances and sizes, per candidate
+minute. Until that diff is clean, the depth gates are unverified in production form.
 
-`OrderWatch` now tracks it (mirroring L1 expression-for-expression, tested), but nothing
-passes it into the verdict the scorer sees. Degradation is safe and deliberate — absent
-evidence sizes at the trade's own tier, never 2.0x — but the live book will be slightly
-smaller than the validated one until this is connected. ~6% of trades.
+### 5.2 The runner is not wired to the lane
 
-### 5.3 Your ruling needed: the deep-buffer ramp (change H)
+Nothing calls `NYLane` yet: `canon_runtime` still shells out to the old canon scripts and
+`route_b` consumes those verdicts. Note also that `RouteBLive._load_verdicts` loads a whole
+day's verdicts **up front**, which is the wrong shape for the new canon — the budget, the
+elite slot and `struct_event` all only exist at fill time. The lane is event-driven by
+design; the runner needs a per-candidate hook, not a day-batch one.
+
+### 5.3 The elite tier will not fire until `struct_event` is plumbed through
+
+`OrderWatch` tracks it (mirroring L1 expression-for-expression, tested) and `NYLane` accepts
+it, but nothing joins the two. Degradation is safe and deliberate — absent evidence sizes at
+the trade's own tier, never 2.0x — but the live book is slightly smaller than the validated
+one until connected. ~6% of trades.
+
+### 5.4 Risk must be taken from the bracket as PLACED, not from trigger levels
+
+Found while building the replay: `|entry − stop|` disagrees with the risk the canon actually
+sized on for **28% of validated trades** (by up to tens of points), because `entry`/`stop`
+are the trigger's reference levels while the canon used the engine's realized bracket
+(`limit_price` vs `stop_initial`). Risk drives *both* the 7–60pt gate and the micros count.
+
+`NYLane.on_candidate(..., risk_pts=...)` now takes it explicitly and records
+`risk_source="explicit"|"bracket"` on every verdict. **Whatever places the live bracket must
+place the same stop the engine would have**, or both the gate and the sizing shift. That
+engine-vs-live stop parity is unproven and belongs with §5.1.
+
+### 5.6 Your ruling needed: the deep-buffer ramp (change H)
 
 Between **$100 and $1,000** of remaining drawdown the rebuilt canon takes **half-size**
 trades; the old canon tapered to zero and refused. Below $100 the spine hard-halts either
@@ -121,7 +153,7 @@ way. The half-size rule is what was validated — but it is untested in that reg
 never fired in 19 months of history. If you want the old refusal behaviour near the floor,
 say so and it becomes a one-line floor in `base_dollar`.
 
-### 5.4 London
+### 5.5 London
 
 Still the old canon, still Brake's rebuild. `LondonScorer` is untouched and must not be
 armed. If the live stack would trade London, it stays disarmed until Brake's book lands.
