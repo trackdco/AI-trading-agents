@@ -16,7 +16,7 @@ Concurring = triggers on the same day, same direction, within the same 5-minute 
 | 2 | 13/69%/+0.80 | 25/28%/-0.14 | +0.179 | **+0.193** |
 | 3+ | 1/100%/+0.68 | 5/60%/+0.98 | +0.931 | **+0.945** |
 
-**H1 verdict: monotone in both eras — SUPPORTED.** 3+ agreeing beats 1 in both 2025 and 2026.
+**H1 verdict: UNDERPOWERED — reported as NULL.** The ordering is monotone in both eras, but the smallest compared bucket holds n=1 per era against a floor of 25. At that size a bucket's win rate is 0% or 100% by construction, so monotonicity carries no information. The direction is worth re-testing when the sample supports it; it is not a finding now.
 
 ## H2 — is the book symmetric long vs short?
 

@@ -309,8 +309,23 @@ def stageC() -> None:
         L.append(f"| {b} | {c['2025']} | {c['2026']} | {s.R.mean():+.3f} | "
                  f"**{s.R.mean() - sh:+.3f}** |\n")
     mono = all(h1.get("3+", {}).get(e, -9) > h1.get("1", {}).get(e, 9) for e in ERAS) if h1 else False
-    L.append(f"\n**H1 verdict: {'monotone in both eras — SUPPORTED' if mono else 'NOT era-consistent — NULL'}.** "
-             f"{'3+ agreeing beats 1 in both 2025 and 2026.' if mono else 'The ordering does not hold in both eras, so the hypothesis is not supported regardless of the pooled figure.'}\n")
+    # POWER FLOOR. Monotonicity across buckets is worthless if a bucket holds a handful of
+    # trades: with n=1 the "win rate" is 0% or 100% by construction. Require >=25 per era in
+    # each compared bucket — the same floor stage 2 of the overnight job used, and for the same
+    # reason.
+    nmin = min(len(tt[(tt.bucket == b) & (tt.era == e)]) for b in ("1", "3+") for e in ERAS) \
+        if "3+" in h1 else 0
+    powered = nmin >= 25
+    if mono and powered:
+        L.append("\n**H1 verdict: SUPPORTED** — monotone in both eras with adequate n.\n")
+    elif mono:
+        L.append(f"\n**H1 verdict: UNDERPOWERED — reported as NULL.** The ordering is monotone "
+                 f"in both eras, but the smallest compared bucket holds n={nmin} per era against "
+                 f"a floor of 25. At that size a bucket's win rate is 0% or 100% by "
+                 f"construction, so monotonicity carries no information. The direction is worth "
+                 f"re-testing when the sample supports it; it is not a finding now.\n")
+    else:
+        L.append("\n**H1 verdict: NOT era-consistent — NULL.**\n")
 
     # H2 — long/short symmetry
     L.append("\n## H2 — is the book symmetric long vs short?\n\n"
