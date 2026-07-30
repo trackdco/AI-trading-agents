@@ -93,9 +93,15 @@ def test_dd_proximity_halt():
 
 
 def test_daily_loss_halt():
-    acct = AccountState(equity=52_000, trailing_floor=50_000, day_pnl=-800, open_positions=0)
+    # -8R of the $150 lucid base = -$1,200 (1.5x the canon's own $800 daily budget)
+    acct = AccountState(equity=52_000, trailing_floor=50_000, day_pnl=-1_200,
+                        open_positions=0)
     d = _exe().check(intent(), acct, GOOD_FEED, 0.0)
     assert d.action == "halt" and d.rule == "daily_loss"
+    # and it does NOT fire inside the canon's own budget — that is the canon's job
+    inside = AccountState(equity=52_000, trailing_floor=50_000, day_pnl=-800,
+                          open_positions=0)
+    assert _exe().check(intent(), inside, GOOD_FEED, 0.0).action == "place"
 
 
 def test_contract_clamp_shrinks_not_rejects():
@@ -201,23 +207,41 @@ def test_contract_clamp_still_shrinks_above_the_schedule_cap():
     assert b.submitted[-1].size == 40
 
 
-def test_daily_loss_halt_reindexes_to_the_days_own_risk_unit():
-    """§D2 blocker 1. The halt is an R multiple of the day's base_dollar, so it tracks the
-    drawdown-scaled sizer instead of tightening as the account grows. The two reference
-    points are PROMOTION-GATE's own: -$800 at the eval floor, -$1,700 at $6k available DD."""
+def test_daily_loss_halt_sits_above_the_canon_budget_at_every_base():
+    """§D2 blocker 1, re-derived for the rebuilt canon. The spine is an ACCOUNT-level
+    backstop above the canon's own daily budget; a halt below the budget would front-run the
+    canon's risk spine and truncate the measured book. Budget = base x 800/150 = 5.333R, so
+    -8R is exactly 1.5x the budget at every base — the property that must hold, not the
+    dollar figure."""
+    from src.canon.scorer_ny import BUDGET_PER_BASE, PROFILES
     from src.canon.spine import daily_loss_halt_dollars
-    cfg = SpineConfig()                                        # -4R
+    for profile in ("lucid", "scaled600"):
+        cfg = SpineConfig(profile=profile)
+        for avail in (2_000, 6_000, 20_000):
+            acct = AccountState(equity=50_000 + avail, trailing_floor=50_000,
+                                day_pnl=0, open_positions=0)
+            base = PROFILES[profile].base_for(avail)
+            budget = base * BUDGET_PER_BASE
+            halt = daily_loss_halt_dollars(cfg, acct)
+            assert halt == pytest.approx(-1.5 * budget)
+            assert abs(halt) > budget, "the backstop must never fire before the budget"
+
+
+def test_daily_loss_halt_reindexes_as_the_base_scales():
+    """Under a scaling profile the halt tracks the risk unit instead of tightening as the
+    account grows — the original §D2 property, still required."""
+    from src.canon.spine import daily_loss_halt_dollars
+    cfg = SpineConfig(profile="scaled600")
     at_floor = AccountState(equity=52_000, trailing_floor=50_000,   # $2k available DD
                             day_pnl=0, open_positions=0)
-    grown = AccountState(equity=56_000, trailing_floor=50_000,      # $6k available DD
+    grown = AccountState(equity=57_000, trailing_floor=50_000,      # $7k available DD
                          day_pnl=0, open_positions=0)
-    assert daily_loss_halt_dollars(cfg, at_floor) == -800.0
-    assert daily_loss_halt_dollars(cfg, grown) == -1_700.0
-
-    # and the guard actually fires at the re-indexed level, not the old fixed -$800
-    just_under = AccountState(equity=56_000, trailing_floor=50_000,
-                              day_pnl=-1_699, open_positions=0)
-    assert _exe().check(intent(), just_under, GOOD_FEED, 0.0).action == "place"
+    assert daily_loss_halt_dollars(cfg, at_floor) == -1_200.0       # base $150
+    assert daily_loss_halt_dollars(cfg, grown) == -2_400.0          # base $300
+    just_under = AccountState(equity=57_000, trailing_floor=50_000,
+                              day_pnl=-2_399, open_positions=0)
+    assert _exe(profile="scaled600").check(intent(), just_under, GOOD_FEED,
+                                          0.0).action == "place"
     breached = AccountState(equity=56_000, trailing_floor=50_000,
                             day_pnl=-1_700, open_positions=0)
     d = _exe().check(intent(), breached, GOOD_FEED, 0.0)
@@ -236,7 +260,7 @@ def test_tier1_config_loads_from_live_yaml_and_matches_the_pin():
     shipped config must agree with the signed-off set."""
     from src.canon.spine import load_spine_config
     cfg = load_spine_config("config/live.yaml")
-    assert cfg.max_contracts == 40 and cfg.daily_loss_halt_r == -4.0
+    assert cfg.max_contracts == 40 and cfg.daily_loss_halt_r == -8.0
 
 
 def test_boot_assertion_fails_closed_on_a_drifted_limit(tmp_path):

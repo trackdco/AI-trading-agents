@@ -37,12 +37,27 @@ NY = "America/New_York"
 _SESSION_CLOSE = dtime(18, 0)
 
 
+STRUCT_ACCEPT = 5.0    # pts traded beyond a touched level = acceptance ("broke")
+STRUCT_REJECT = 8.0    # pts back off a touched level = "rejects hard"
+
+
 @dataclass
 class WorkingOrder:
     ref: str                     # broker ref (the bracket's entry ClientOrderID)
     side: str                    # "B" | "S"
     limit: float
     filled: bool = False
+    #: session window this order belongs to; None = the watch's global window. REBUILT CANON:
+    #: pre-market orders die at 09:30 and golden-window orders at 10:30, so a single global
+    #: window cannot serve both — an order outliving its own session is an unmeasured trade.
+    win_end: dtime | None = None
+    #: away-side structural levels [(name, price, type)] and the running struct observation.
+    #: Mirrors scripts/build_l1_fills.py::walk_one expression-for-expression; feeds the elite
+    #: 2.0x tier, which requires struct_event == "broke".
+    levels: list = field(default_factory=list)
+    touched: list = field(default_factory=list)
+    struct_event: str = ""       # "" | "broke" | "rejected"
+    struct_level: str = ""
 
 
 @dataclass
@@ -50,6 +65,10 @@ class OrderWatch:
     """Feed it every closed 1m bar; it returns the cancel decisions the engine would have
     made. The caller (route_b armed path) executes + journals them — this class decides,
     it never touches a broker."""
+    #: REBUILT CANON DEFAULT: None = NO distance cancel. The engine's 22pt t_cancel measured
+    #: INVERTED on the rebuilt population — it kept -0.180R of trades and killed +0.015R — so
+    #: the canon replaced it with plain session-window expiry (ANGUS 2026-07-30). Set a float
+    #: ONLY to reproduce the old book; arming with one set trades a book nobody measured.
     t_cancel: float | None = None
     win_start: dtime | None = None
     win_end: dtime | None = None
@@ -57,20 +76,33 @@ class OrderWatch:
     _orders: dict[str, WorkingOrder] = field(default_factory=dict, init=False)
 
     def __post_init__(self):
-        if None in (self.t_cancel, self.win_start, self.win_end, self.eod_flatten):
+        if None in (self.win_start, self.win_end, self.eod_flatten):
             from src.backtest.engine import load_backtest_config
             cfg = load_backtest_config()
-            self.t_cancel = cfg.t_cancel if self.t_cancel is None else self.t_cancel
             self.win_start = cfg.win_start if self.win_start is None else self.win_start
             self.win_end = cfg.win_end if self.win_end is None else self.win_end
             self.eod_flatten = (cfg.eod_flatten if self.eod_flatten is None
                                 else self.eod_flatten)
 
     # ---- lifecycle ----------------------------------------------------------
-    def register(self, ref: str, side: str, limit: float) -> None:
-        """Track a LIMIT entry that is now resting at the broker. Market entries never rest
-        and must not be registered."""
-        self._orders[ref] = WorkingOrder(ref=ref, side=side, limit=float(limit))
+    def register(self, ref: str, side: str, limit: float, *,
+                 win_end: dtime | None = None, levels: list | None = None,
+                 close: float | None = None) -> None:
+        """Track a LIMIT entry now resting at the broker. Market entries never rest and must
+        not be registered.
+
+        `win_end` is this order's OWN session end (pre 09:30 / gold 10:30). `levels` is the
+        trigger's level stack [(name, price, type)]; with `close` (the trigger bar's close)
+        it is filtered to the away side, exactly as L1 does, and the structural event is then
+        tracked bar by bar for the elite tier."""
+        sign = 1 if side == "B" else -1
+        away = []
+        if levels and close is not None:
+            away = [(n, float(p), ty) for n, p, ty in levels
+                    if sign * (float(p) - float(close)) >= 0]
+        self._orders[ref] = WorkingOrder(ref=ref, side=side, limit=float(limit),
+                                         win_end=win_end, levels=away,
+                                         touched=[False] * len(away))
 
     def mark_filled(self, ref: str) -> None:
         """Broker ORDER_UPDATE said filled — stop watching (management takes over)."""
@@ -87,10 +119,37 @@ class OrderWatch:
         return [r for r, o in self._orders.items() if not o.filled]
 
     # ---- the per-bar decision (mirrors engine.py's working-order block) ------
-    def _in_window(self, tod: dtime) -> bool:
-        if self.win_start <= self.win_end:
-            return self.win_start <= tod < self.win_end
-        return tod >= self.win_start or tod < self.win_end     # overnight wrap
+    def _in_window(self, tod: dtime, win_end: dtime | None = None) -> bool:
+        end = win_end or self.win_end
+        if self.win_start <= end:
+            return self.win_start <= tod < end
+        return tod >= self.win_start or tod < end              # overnight wrap
+
+    def struct_event(self, ref: str) -> str:
+        """The structural observation for a resting/just-filled order: '' | 'broke' |
+        'rejected'. Feeds NYScorerV2's elite tier; absent evidence never escalates size."""
+        o = self._orders.get(ref)
+        return o.struct_event if o is not None else ""
+
+    def _track_struct(self, o: WorkingOrder, high: float, low: float) -> None:
+        """Mirror of scripts/build_l1_fills.py::walk_one's structural block, one bar at a
+        time. First event wins and is final; evaluated BEFORE the fill check on the same
+        bar, exactly as the batch walk orders it."""
+        if o.struct_event or not o.levels:
+            return
+        s = 1 if o.side == "B" else -1
+        for j, (n, p, _ty) in enumerate(o.levels):
+            if not o.touched[j] and low <= p <= high:
+                o.touched[j] = True
+            if o.touched[j]:
+                beyond = (high - p) if s == 1 else (p - low)
+                back = (p - low) if s == 1 else (high - p)
+                if beyond >= STRUCT_ACCEPT:
+                    o.struct_event, o.struct_level = "broke", n
+                elif back >= STRUCT_REJECT:
+                    o.struct_event, o.struct_level = "rejected", n
+                if o.struct_event:
+                    return
 
     def _past_eod(self, tod: dtime) -> bool:
         return self.eod_flatten <= tod < _SESSION_CLOSE
@@ -107,9 +166,11 @@ class OrderWatch:
         tod = (ts.tz_convert(NY) if ts.tzinfo is not None else ts).time()
         out: list[dict] = []
         for ref, o in list(self._orders.items()):
+            self._track_struct(o, high, low)
             sign = 1 if o.side == "B" else -1
-            ran = (high >= o.limit + self.t_cancel) if sign == 1 else \
-                  (low <= o.limit - self.t_cancel)
+            ran = False if self.t_cancel is None else (
+                (high >= o.limit + self.t_cancel) if sign == 1
+                else (low <= o.limit - self.t_cancel))
             if o.filled:
                 if ran:                        # the physical race: journal it, don't act
                     out.append({"ref": ref, "reason": "tcancel_raced_fill",
@@ -122,9 +183,10 @@ class OrderWatch:
             if self._past_eod(tod):
                 decision = {"ref": ref, "reason": "cancelled_eod",
                             "detail": "order cancelled before fill", "raced_fill": False}
-            elif not self._in_window(tod):
+            elif not self._in_window(tod, o.win_end):
                 decision = {"ref": ref, "reason": "cancelled_window_end",
-                            "detail": f"unfilled at {self.win_end}", "raced_fill": False}
+                            "detail": f"unfilled at {o.win_end or self.win_end}",
+                            "raced_fill": False}
             elif ran:
                 decision = {"ref": ref, "reason": "cancelled_tcancel",
                             "detail": f"price ran {self.t_cancel} pts beyond limit unfilled",

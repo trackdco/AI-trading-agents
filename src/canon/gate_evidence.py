@@ -27,54 +27,73 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 # --------------------------------------------------------------------------- sizing assertion
-# SAFETY-SPINE dollar-risk schedule. Floor (available_dd <= $3k): base $200/1.0 tier; past
-# +$3k, +$75 per additional $1k of available DD. risk_$ = base × min(2.0, conviction); the
-# 2.25 tier caps at 2× base. micros = round(risk_$ / (stop_pts × $2)), clamped to 40.
-BASE_DOLLAR_FLOOR = 200.0
-DD_FLOOR = 3000.0
-DD_STEP_DOLLARS = 75.0
-# DD ramp (ANGUS 2026-07-26 — ADOPTED, replacing the $250 cliff; measured in
-# docs/RULING-daily-loss-limit.md "The ramp" / scripts/dd_ramp_study.py): below $1,500 of
-# available DD the 1.0-tier base scales LINEARLY to zero at $100, with only a token hard
-# halt underneath (spine dd_halt_buffer = $100). A trade that sizes to 0 micros is simply
-# not taken — the account de-risks instead of freezing, and can grind back. The $1,500
-# start is a plateau, not a spike ($2k/$1.5k/$1k/$750 all land within $250 of each other),
-# and sits BELOW the $2,000 a funded account opens with, so the healthy build-up is
-# untouched: 0.00% bust, 0.0% frozen years, +$1,078/account/year over the cliff.
-RAMP_FROM = 1500.0
-RAMP_HARD = 100.0
-CONVICTION_CAP = 2.0
-MNQ_DOLLARS_PER_PT = 2.0
-MICRO_CLAMP = 40
+# REBUILT CANON (2026-07-29). The schedule is NOT restated here — it is imported from
+# src/canon/scorer_ny.py, which is itself conformance-tested against scripts/funded_book.py
+# on both spans. One implementation, so the spine's "was this order the right size?" check
+# can never drift from the sizer that produced it. The old $200-floor / +$75-per-$1k / linear
+# $1,500->$100 taper belonged to the broken canon and is gone; the shipped profiles are:
+#   lucid      base $150 flat            -> ladder $75 / $150 / $225 / $300
+#   scaled600  base $150 +$75 per $2k of buffer past +$3k, capped $600
+# with a HALF-SIZE ramp (not a taper to zero) below $1,000 of buffer, and micros floored at
+# 1: the canon either takes a trade at >=1 micro or does not take it at all.
+from src.canon.scorer_ny import (  # noqa: E402
+    LUCID,
+    MICRO_CLAMP,
+    MNQ_DOLLARS_PER_PT,
+    PROFILES,
+    RAMP_BUFFER,
+    Profile,
+)
+
+CONVICTION_CAP = 2.0        # the elite tier; nothing above it exists in the rebuilt canon
 
 
-def base_dollar(available_dd: float | None) -> float:
-    """The 1.0-tier dollar risk for the current available drawdown. None => floor schedule."""
+def base_dollar(available_dd: float | None, profile: Profile | str = LUCID) -> float:
+    """The 1.0-tier dollar risk for the current available drawdown, INCLUDING the half-size
+    ramp. `None` => the profile's floor base (a fresh account at the trailing line)."""
+    p = PROFILES[profile] if isinstance(profile, str) else profile
     if available_dd is None:
-        return BASE_DOLLAR_FLOOR
-    if available_dd > DD_FLOOR:
-        return BASE_DOLLAR_FLOOR + DD_STEP_DOLLARS * int((available_dd - DD_FLOOR) // 1000)
-    if available_dd >= RAMP_FROM:
-        return BASE_DOLLAR_FLOOR
-    return BASE_DOLLAR_FLOOR * max(0.0, (available_dd - RAMP_HARD) / (RAMP_FROM - RAMP_HARD))
+        return p.base
+    base = p.base_for(float(available_dd))
+    return base * (0.5 if float(available_dd) < RAMP_BUFFER else 1.0)
 
 
 def expected_micros(conviction: float, stop_pts: float,
-                    available_dd: float | None = None) -> int:
-    """The size the sizer SHOULD have produced for this trade under the frozen schedule."""
+                    available_dd: float | None = None,
+                    profile: Profile | str = LUCID) -> int:
+    """The size the sizer SHOULD have produced under the canon schedule.
+
+    NOTE this cannot see the day's SOFT de-risk (realized P&L <= -35% of budget halves size),
+    which is day state the spine does not carry. Where the verdict supplies the risk dollars
+    it actually used, prefer `check_sizing(..., risk_dollars=...)` — that compares against the
+    decision itself and is exact."""
     if stop_pts <= 0:
         raise ValueError(f"stop_pts must be positive, got {stop_pts}")
-    risk_d = base_dollar(available_dd) * min(CONVICTION_CAP, float(conviction))
-    return min(MICRO_CLAMP, int(round(risk_d / (stop_pts * MNQ_DOLLARS_PER_PT))))
+    risk_d = base_dollar(available_dd, profile) * min(CONVICTION_CAP, float(conviction))
+    return micros_for(risk_d, stop_pts)
+
+
+def micros_for(risk_dollars: float, stop_pts: float) -> int:
+    """The canon's contract arithmetic, in one place: round(risk$ / (stop x $2)), min 1,
+    clamped to 40. Identical to NYScorerV2.evaluate."""
+    if stop_pts <= 0:
+        raise ValueError(f"stop_pts must be positive, got {stop_pts}")
+    return int(min(MICRO_CLAMP,
+                   max(1, round(float(risk_dollars) / (stop_pts * MNQ_DOLLARS_PER_PT)))))
 
 
 def check_sizing(conviction: float, stop_pts: float, actual_micros: int,
-                 available_dd: float | None = None) -> dict:
+                 available_dd: float | None = None, profile: Profile | str = LUCID,
+                 risk_dollars: float | None = None) -> dict:
     """Assert an executed trade's size matches the schedule. Returns a gate-ready row:
     {ok, expected, actual, delta, conviction, stop_pts, available_dd}. `ok=False` means the
     order that went out was NOT the schedule size — a sizer bug, stale available_dd, or a
-    misapplied clamp — which is a promotion-gate FAIL, not a rounding nicety."""
-    exp = expected_micros(conviction, stop_pts, available_dd)
+    misapplied clamp — which is a promotion-gate FAIL, not a rounding nicety.
+
+    Pass `risk_dollars` (the verdict's own figure) whenever it is available: it is the exact
+    comparison and is immune to day-state the schedule cannot reconstruct."""
+    exp = (micros_for(risk_dollars, stop_pts) if risk_dollars is not None
+           else expected_micros(conviction, stop_pts, available_dd, profile))
     return {"ok": int(actual_micros) == exp, "expected": exp, "actual": int(actual_micros),
             "delta": int(actual_micros) - exp, "conviction": float(conviction),
             "stop_pts": float(stop_pts), "available_dd": available_dd}

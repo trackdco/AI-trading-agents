@@ -8,10 +8,12 @@ is parity-checked against the stored intrade_matrix rows the batch computed."""
 from __future__ import annotations
 
 import math
+from datetime import time as dtime
 
 import pandas as pd
 import pytest
 
+from src.canon.order_watch import OrderWatch
 from src.live.trade_lifecycle import TradeLifecycle, cut_inputs
 
 NY = "America/New_York"
@@ -58,10 +60,25 @@ def _bar(hm, high=100.5, low=99.5, day="2026-03-17"):
 def _lc(*, armed=False, position=0, exit_factory=None, cut_fn=None):
     broker = FakeBroker(position=position) if armed else None
     rows = []
+    # An EXPLICIT distance cancel, only so these plumbing tests have a cheap way to make the
+    # watch emit a decision. The rebuilt canon's DEFAULT is no distance cancel at all
+    # (OrderWatch.t_cancel is None) — pinned by test_default_watch_has_no_distance_cancel
+    # below and by test_order_watch.py. What these tests check is the wiring: a decision
+    # reaches the broker when armed, the journal always, and never a filled entry.
     lc = TradeLifecycle(broker=broker, account="FUNDED", armed=armed,
+                        watch=OrderWatch(t_cancel=22.0, win_start=dtime(8, 0),
+                                         win_end=dtime(10, 15), eod_flatten=dtime(15, 55)),
                         journal=rows.append, exit_factory=exit_factory,
                         cut_inputs_fn=cut_fn or (lambda *a, **k: (math.nan, math.nan)))
     return lc, broker, rows
+
+
+def test_default_watch_has_no_distance_cancel():
+    """The lifecycle's own default must be the canon's: a resting entry lives until its
+    session window ends. If this ever reverts, the live book silently stops matching the
+    measured one."""
+    lc = TradeLifecycle(broker=None, armed=False)
+    assert lc.watch.t_cancel is None
 
 
 def test_shadow_journals_wouldbe_cancel_with_no_broker_at_all():

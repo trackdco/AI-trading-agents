@@ -66,11 +66,12 @@ from src.canon.gate_evidence import expected_micros
 
 def _ramped_micros(micros_anchor: int, conviction: float, stop_pts: float,
                    available_dd: float) -> int:
-    """Remove-risk-only merge of the anchor size with the live DD schedule (ANGUS 2026-07-26,
-    docs/RULING-daily-loss-limit.md "The ramp"): below $1,500 of available DD the base scales
-    linearly to zero at $100, so the ramp can SHRINK a trade — the min() means it can never
-    grow one past the anchor (the +$75/$1k growth steps stay inert until deliberately armed).
-    0 micros = the trade is not taken, journaled as a dd_ramp_zero reject, spine untouched."""
+    """Remove-risk-only merge of the anchor size with the live DD schedule. REBUILT CANON:
+    below $1,000 of available DD the base HALVES (it no longer tapers linearly to zero at
+    $100 — that was the old canon's rule), and canon micros floor at 1, so this can SHRINK a
+    trade but the schedule itself never returns 0. The min() means it can never grow one past
+    the anchor. The 0-micros branch is kept as a defensive floor: if any future schedule ever
+    yields 0, the trade is skipped and journaled as dd_ramp_zero rather than sent."""
     if micros_anchor <= 0 or stop_pts <= 0 or conviction <= 0:
         return max(0, int(micros_anchor))
     return min(int(micros_anchor), expected_micros(conviction, stop_pts, available_dd))

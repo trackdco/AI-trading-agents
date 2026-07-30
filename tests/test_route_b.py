@@ -126,37 +126,42 @@ def test_observe_verdict_emits_sizing_and_spine(tmp_path):
     inst = build_shadow_instrument(tmp_path)
     v = _verdict(_ts("08:20"))
     out = inst.observe_verdict(v, _good_acct(), _good_feed(), now_epoch=0.0)
-    assert out["sizing_micros"] == 10                 # from the verdict, NOT recomputed
+    # The verdict's anchor (10) is merged remove-risk-only with the canon schedule, which at
+    # the $150 lucid base and a 10pt stop is 8 micros. Live, the verdict's own micros ARE the
+    # canon's, so this min() is a no-op; the fixture's arbitrary anchor makes it visible.
+    assert out["sizing_micros"] == 8
     sizing = [json.loads(x) for x in (tmp_path / "sizing.jsonl").read_text().splitlines()]
-    assert sizing[0]["micros"] == 10 and sizing[0]["conviction"] == 1.0
+    assert sizing[0]["micros"] == 8 and sizing[0]["conviction"] == 1.0
     spine = [json.loads(x) for x in (tmp_path / "spine.jsonl").read_text().splitlines()]
     assert any(e.get("event") == "guard_report" for e in spine)
     assert any(e.get("event") == "shadow_place" for e in spine)   # disarmed
 
 
-def test_dd_ramp_shrinks_size_and_skips_at_zero(tmp_path):
-    """ANGUS 2026-07-26 DD ramp: below $1,500 of available DD the verdict's anchor size is
-    scaled down by the live schedule (remove-risk-only), and a trade that sizes to 0 micros
-    is not taken — journaled as a dd_ramp_zero reject, the spine never sees it."""
+def test_dd_ramp_halves_size_below_1k_of_room(tmp_path):
+    """REBUILT CANON ramp: below $1,000 of available DD the base HALVES (remove-risk-only).
+    It no longer tapers linearly to zero at $100 — that was the old canon's rule, measured on
+    the broken book. The floor beneath this ramp is now the spine's $100 hard DD halt."""
     inst = build_shadow_instrument(tmp_path)
-    # $800 of room: base halves ($200 -> $100), so 10 anchor micros become 5
+    # $800 of room: base halves ($150 -> $75) -> 75/(10*2) = 3.75 -> 4 micros
     in_ramp = AccountState(equity=50_800, trailing_floor=50_000, day_pnl=0, open_positions=0)
     out = inst.observe_verdict(_verdict(_ts("08:20")), in_ramp, _good_feed(), now_epoch=0.0)
-    assert out["sizing_micros"] == 5
+    assert out["sizing_micros"] == 4
     sizing = [json.loads(x) for x in (tmp_path / "sizing.jsonl").read_text().splitlines()]
-    assert sizing[-1]["micros"] == 5 and sizing[-1]["micros_anchor"] == 10
+    assert sizing[-1]["micros"] == 4 and sizing[-1]["micros_anchor"] == 10
 
-    # $150 of room: schedule rounds to zero -> skipped, rejected, no spine decision
-    deep = AccountState(equity=50_150, trailing_floor=50_000, day_pnl=0, open_positions=0)
-    out0 = inst.observe_verdict(_verdict(_ts("08:25")), deep, _good_feed(), now_epoch=0.0)
-    assert out0["sizing_micros"] == 0 and out0["decision"] == "dd_ramp_zero"
-    rej = [json.loads(x) for x in (tmp_path / "rejects.jsonl").read_text().splitlines()]
-    assert any(r.get("code") == "dd_ramp_zero" for r in rej)
-
-    # at/above $1,500 the ramp is inert: the anchor passes through untouched
+    # at/above $1,000 the ramp is inert; the schedule (not the ramp) sets the size
     healthy = AccountState(equity=52_000, trailing_floor=50_000, day_pnl=0, open_positions=0)
     out2 = inst.observe_verdict(_verdict(_ts("08:30")), healthy, _good_feed(), now_epoch=0.0)
-    assert out2["sizing_micros"] == 10
+    assert out2["sizing_micros"] == 8          # $150 / (10 * $2) = 7.5 -> 8
+
+
+def test_schedule_never_sizes_a_trade_to_zero(tmp_path):
+    """Canon micros floor at 1: a trade is taken at >=1 micro or not at all. The dd_ramp_zero
+    path stays as a defensive floor but the schedule can no longer reach it."""
+    inst = build_shadow_instrument(tmp_path)
+    deep = AccountState(equity=50_150, trailing_floor=50_000, day_pnl=0, open_positions=0)
+    out = inst.observe_verdict(_verdict(_ts("08:25")), deep, _good_feed(), now_epoch=0.0)
+    assert out["sizing_micros"] >= 1 and out["decision"] != "dd_ramp_zero"
 
 
 def test_observe_verdict_records_reject_on_bad_feed(tmp_path):

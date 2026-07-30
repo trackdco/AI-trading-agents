@@ -59,13 +59,35 @@ def fanout(*fns: Callable[[str, str], None]) -> Callable[[str, str], None]:
 
 @dataclass(frozen=True)
 class RiskLimits:
-    daily_loss_dollars: float = 1500.0        # realized day P&L at/below -this -> day halt
-    max_trades_per_day: int = 3               # backstop STRICTLY ABOVE the engine's own cap
-    #   (engine already stops at 2/day; a backstop equal to the cap would announce a
-    #   "halt" on every normal 2-trade day — alert noise that trains humans to ignore
-    #   the real one. 3 fires only if the engine's own cap somehow failed.)
+    """Account-level backstops that sit ABOVE the canon's own daily risk budget.
+
+    REBUILT CANON (2026-07-29): entries are UNCAPPED — capacity is bounded by the scorer's
+    daily budget (realized losses + in-flight risk + new risk <= budget), not by a trade
+    count. Two consequences, both load-bearing:
+
+      * `max_trades_per_day` now defaults to None (no count cap). The old default of 3 was a
+        backstop above a 2/day engine cap that NO LONGER EXISTS; against a book that averages
+        ~4 trades/day and legitimately runs into double digits, it would have announced a
+        halt on most days and stood the account down mid-session. Leaving it at 3 is the
+        single most dangerous stale default in this file.
+      * `daily_loss_dollars` must be set ABOVE the canon budget, never below it. Below, this
+        guard front-runs the budget and truncates the measured book; the shipped numbers
+        assume the budget is what stops the day. Use `for_budget()` rather than a literal.
+    """
+    daily_loss_dollars: float = 1_200.0        # realized day P&L at/below -this -> day halt
+    max_trades_per_day: int | None = None      # None = no count cap (uncapped canon)
     equity_floor_dollars: float | None = None  # cumulative P&L at/below this -> full stop
     kill_file: Path = KILL_FILE
+
+    @classmethod
+    def for_budget(cls, budget: float, *, headroom: float = 1.5, **kw) -> "RiskLimits":
+        """Backstop derived from the canon's own daily budget, so it can only ever fire
+        AFTER the budget has failed to hold. `headroom` is how far above the budget the
+        account-level halt sits — 1.5x means the guard is silent in every day the scorer
+        handles correctly, and catches the case where the scorer itself is wrong."""
+        if budget <= 0:
+            raise ValueError(f"budget must be positive, got {budget}")
+        return cls(daily_loss_dollars=float(budget) * float(headroom), **kw)
 
 
 @dataclass
@@ -137,7 +159,8 @@ class RiskGuard:
         if st is not None:
             if st.dollars <= -self.limits.daily_loss_dollars:
                 return "daily_loss_limit"
-            if st.trades >= self.limits.max_trades_per_day:
+            cap = self.limits.max_trades_per_day
+            if cap is not None and st.trades >= cap:
                 return "max_trades"
         return None
 
