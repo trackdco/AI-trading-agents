@@ -108,6 +108,8 @@ real funded sim per base · whole-day bootstrap, intraday order preserved · see
 <div class="ctl"><label>payout trigger +$</label><input id="ptrig" type="number" value="4000" step="500"></div>
 <div class="ctl"><label>payout amount $</label><input id="pamt" type="number" value="2000" step="500"></div>
 <div class="ctl"><label>payout cap (0=∞)</label><input id="pcap" type="number" value="0" step="1"></div>
+<div class="ctl"><label>win days / cycle</label><input id="wreq" type="number" value="5" step="1"></div>
+<div class="ctl"><label>win day min $</label><input id="wmin" type="number" value="0" step="50"></div>
 <div class="ctl"><label>horizon days</label><input id="hor" type="number" value="252" step="21"></div>
 <div class="ctl"><label>sims</label><input id="sims" type="number" value="2000" step="500"></div>
 <div class="ctl"><label>seed</label><input id="seed" type="number" value="42" step="1"></div>
@@ -129,7 +131,9 @@ real funded sim per base · whole-day bootstrap, intraday order preserved · see
 <p class="sub">Whole-day bootstrap from the fit-span agent book — regime mix is the fit span's.
 The vectors carry the real sim's budget gates, soft de-risk, ramp and micro rounding at each
 base. Trailing line ratchets on EOD balance, never down, and freezes at the lock. Payout:
-whenever EOD balance ≥ start+trigger (and funded), withdraw the amount. Bust: EOD balance ≤ line.</p>
+whenever EOD balance ≥ start+trigger (and funded), AND the winning-day clock has ≥ the required count since the last
+payout (a winning day = day P&amp;L above the min $; the clock resets on each payout and runs in
+the funded stage only), withdraw the amount. Bust: EOD balance ≤ line.</p>
 </div>
 <script>
 const DATA = __DATA__;
@@ -144,25 +148,30 @@ const fmt$=x=>(x<0?"-$":"$")+Math.abs(Math.round(x)).toLocaleString();
 function simulate(){
   const P={mode:$("mode").value,base:+bsel.value,dd:+$("dd").value,lock:+$("lock").value,
     start:+$("start").value,target:+$("target").value,ptrig:+$("ptrig").value,
-    pamt:+$("pamt").value,pcap:+$("pcap").value,H:+$("hor").value,S:+$("sims").value,seed:+$("seed").value};
+    pamt:+$("pamt").value,pcap:+$("pcap").value,wreq:+$("wreq").value,wmin:+$("wmin").value,
+    H:+$("hor").value,S:+$("sims").value,seed:+$("seed").value};
   const pl=Float64Array.from(DATA.base[String(P.base)]), N=pl.length;
   const rng=mulberry32(P.seed);
   const paths=new Float32Array(P.S*P.H);
   const payouts=new Int32Array(P.S), withdrawn=new Float64Array(P.S);
   const busted=new Uint8Array(P.S), passDay=new Int32Array(P.S).fill(-1), fundDay=new Int32Array(P.S).fill(-1);
   for(let s=0;s<P.S;s++){
-    let bal=P.start, line=P.start-P.dd, funded=(P.mode==="funded"), dead=false, passed=(P.mode==="funded");
+    let bal=P.start, line=P.start-P.dd, funded=(P.mode==="funded"), dead=false, passed=(P.mode==="funded"), wins=0;
     for(let t=0;t<P.H;t++){
       if(!dead){
-        bal+=pl[(rng()*N)|0];
+        const p=pl[(rng()*N)|0];
+        bal+=p;
         if(bal<=line){dead=true;busted[s]=1;bal=line;}
         else{
           if(!passed && bal>=P.start+P.target){passed=true;passDay[s]=t+1;
             if(P.mode==="eval"){dead=true;}                    // eval account done
-            else{funded=true;fundDay[s]=t+1;bal=P.start;line=P.start-P.dd;} // fresh funded acct
+            else{funded=true;fundDay[s]=t+1;bal=P.start;line=P.start-P.dd;wins=0;} // fresh funded acct
           }
-          if(funded && bal>=P.start+P.ptrig && (P.pcap===0||payouts[s]<P.pcap)){
-            bal-=P.pamt;payouts[s]++;withdrawn[s]+=P.pamt;}
+          else if(funded){
+            if(p>P.wmin)wins++;                                // winning-day clock (funded only)
+            if(bal>=P.start+P.ptrig && wins>=P.wreq && (P.pcap===0||payouts[s]<P.pcap)){
+              bal-=P.pamt;payouts[s]++;withdrawn[s]+=P.pamt;wins=0;}
+          }
           line=Math.min(P.lock,Math.max(line,bal-P.dd));
         }
       }
