@@ -5,8 +5,17 @@ against a certified commit (`src/live/arming.py`, two-party). What follows is th
 that has to be signed off *before* that step, plus an explicit list of what is still
 unwired — read §5 before deciding anything.
 
+> **UPDATED 2026-07-31 (was stale — Pat caught it).** Since this doc was first written the
+> canon shipped THREE execution rulings (close-and-reverse J / two-session pre-flatten K /
+> one-per-level L), the AGENT MANAGEMENT LAYER (row M), and the sizing base moved
+> **$150 → $160** (row N). Rows I–N of `docs/HANDOVER-pat-arming.md` §3 are LAW and part
+> of this sign-off package. All reference numbers below are refreshed to the three-rule
+> canon at the $160 base; anything citing $90,015/$56,409 or a $150 base was the pre-rules
+> book and must not be certified against.
+
 Companion docs: `docs/CANON.md` (what the canon is), `scripts/funded_book.py` docstring
-(the spec), `docs/CANON-QA-LOG.md` (why each rule exists).
+(the spec), `docs/CANON-QA-LOG.md` (why each rule exists), `docs/HANDOVER-pat-arming.md`
+(rows I–N + the agent layer arming detail), `docs/REPORT-desk-run-2.md` (agent-layer grading).
 
 ---
 
@@ -22,8 +31,9 @@ Companion docs: `docs/CANON.md` (what the canon is), `scripts/funded_book.py` do
 | Order life | `src/canon/order_watch.py` | **no distance cancel**; each order dies at its own session end; struct event tracked bar-by-bar |
 | Backstops | `src/live/risk.py`, `src/canon/spine.py` | account-level, above the canon budget (§3) |
 
-Profiles: **`lucid`** (base $150 → $75/150/225/300, budget $800) and **`scaled600`**
-(base $150 +$75 per $2k of buffer past +$3k, cap $600; budget and soft scale with the base).
+Profiles: **`lucid`** (base $160 → $80/160/240/320, budget $853.33) and **`scaled600`**
+(base $160 +$75 per $2k of buffer past +$3k, cap $600; budget and soft scale with the
+base). Base $150 → $160 ANGUS 2026-07-31 (row N of the handover).
 
 ---
 
@@ -40,7 +50,9 @@ rather than reading the parquet's precomputed `valid` / `gold_score` / `pre_scor
 therefore proves the live re-derivation of W, D, the wall-quality cut, the scores and the
 tiers — not merely the arithmetic downstream of them.
 
-Reproduced from the live path: fit **+$90,015**, holdout **+$56,409** (lucid).
+Reproduced from the live path (three-rule canon, base $160): fit **+$82,543**, holdout
+**+$48,211** (lucid). The suite also pins the CR overlay replay (suppressed rows dropped,
+flip/pre-flatten exits merged) and the $160 tier ladders, spine halts and ramp floors.
 
 ### Two defects this conformance work found
 
@@ -66,12 +78,12 @@ Each of these is a live-visible change and is why this document exists.
 |---|---|---|---|
 | A | **Entries uncapped.** No 2/day slot, no nth-escalation, no day ladder, no governor, no cold trail. | The shared cap was the original defect; uncapped measured strictly better once the wall cut landed. | More trades/day than the old stack ever placed. Capacity is now the budget. |
 | B | `RiskLimits.max_trades_per_day` default **3 → None**. | The old 3 was a backstop above a 2/day engine cap that no longer exists. Against a ~4/day book it would announce a halt on most days and stand the account down mid-session. | **This was the single most dangerous stale default.** |
-| C | Spine `daily_loss_halt_r` **−4R → −8R**. | −4R against the $150 base is −$600, *below* the canon's own $800 budget — an outer guard that front-runs the inner one truncates the measured book. −8R is exactly 1.5× the budget at every base. | A halt inside the budget silently trades a smaller book than the one validated. |
+| C | Spine `daily_loss_halt_r` **−4R → −8R**. | −4R against the base is *below* the canon's own daily budget (at the $160 base: −$640 vs $853.33) — an outer guard that front-runs the inner one truncates the measured book. −8R is exactly 1.5× the budget at every base, and tracks the base automatically ($−1,280 at $160). | A halt inside the budget silently trades a smaller book than the one validated. |
 | D | **No distance cancel.** Orders live until their session window ends. | The 22pt `t_cancel` measured inverted: kept −0.180R, killed +0.015R. | Orders rest longer; more fills. |
 | E | **The resting rule**: an order rests exactly while a fill right now would be admissible — dormant through the 09:30–09:40 gap, may revive in gold, hard-dropped at 10:30. | The book counts a pre trigger's gold fill as a GOLD trade, so a birth-window cutoff would remove measured trades. | `NYRunner` enforces it. |
 | F | Gold window **09:40–10:30** (was 09:40–10:00); **no 09:55–10:00 dead zone**. | The rebuilt canon was validated without one. | — |
-| G | Sizing base **$200 → $150**, ladder is now tier × base. | The $200 schedule belonged to the broken canon. | Every order size changes. |
-| H | De-risk ladder near the line: **half size below $1,000 of buffer, half again below $500** (ANGUS 2026-07-30), instead of a linear taper to zero between $1,500 and $100. | Angus's ruling. Both steps are dormant across all 19 months (min buffer $1,621 / $1,720), so no measured number changes; the spine's $100 hard halt is the floor beneath them. | Resolved. |
+| G | Sizing base **$200 → $150**, ladder is now tier × base. **Superseded: $150 → $160** (ANGUS 2026-07-31, handover row N). | The $200 schedule belonged to the broken canon. | Every order size changes — certify against the $160 ladder ($80/160/240/320). |
+| H | De-risk ladder near the line: **half size below $1,000 of buffer, half again below $500** (ANGUS 2026-07-30), instead of a linear taper to zero between $1,500 and $100. | Angus's ruling. Both steps are dormant across all 19 months at the $160 base (min buffer $1,642 fit / $1,698 holdout), so no measured number changes; the spine's $100 hard halt is the floor beneath them. | Resolved. |
 
 ---
 
@@ -79,7 +91,7 @@ Each of these is a live-visible change and is why this document exists.
 
 | Gate | Requirement | State |
 |---|---|---|
-| R1 | Live scorer reproduces the shipped book on both spans, both profiles | ✅ 18/18 |
+| R1 | Live scorer reproduces the shipped book on both spans, both profiles | ✅ 19/19 (three-rule overlay + $160 base pins) |
 | R2 | Sizing schedule has exactly one implementation | ✅ `gate_evidence` imports the profile |
 | R3 | No trade-count cap anywhere in the risk path | ✅ pinned by test |
 | R4 | Account backstops sit above the canon budget | ✅ pinned by test, both profiles |
@@ -92,6 +104,9 @@ Each of these is a live-visible change and is why this document exists.
 | R10b | Depth parity run against a REAL captured session | ❌ needs one capture — Pat, `docs/HANDOVER-pat-arming.md` §4.2 |
 | R11 | Runner orchestration (detector → orders → lane, struct_event joined) | ✅ `src/live/ny_runner.py`, 16 tests — Pat wires four calls + action execution |
 | R12 | Angus's token against a certified commit | ❌ yours to issue |
+| R13 | Three-rule execution semantics enforced by the runner (handover rows J/K/L: close-and-reverse in one ticket · pre flat at 09:30 · one-per-level dedupe) | ❌ Pat wires + certifies — the book's references do not exist without them |
+| R14 | Checkout reproduces the $160-base references (this doc §2) — the suite FAILS on a $150 checkout by design | ⬜ run `pytest tests/test_canon_scorer_ny.py -q` on the arming checkout |
+| R15 | Agent layer (handover row M): frozen v3 spec deployed, `runs/live/journal.jsonl` seed in place, V8 shadow-exit wired for journal counterfactuals — OR the arm is explicitly declared MECH-ONLY (legal, trades the $82,543 book not the $100,297 one) | ❌ Pat decides + wires |
 
 ---
 
