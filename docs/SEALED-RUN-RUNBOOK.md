@@ -223,6 +223,47 @@ down before anyone sees P&L is evidence. The same characterisation produced afte
 number is an excuse. If Angus declines the pre-run measurement, it must then be run
 **simultaneously with** the report and interpreted with that weakness stated.
 
+### 4.3.1 MEASURED RESULT — sealed span, inputs only, 2026-07-31
+
+**Run BEFORE any outcome was read.** `scripts/sealed_era_inputs.py --span holdout`;
+3,947 candidate rows over 116 session days; six outcome-bearing columns dropped on load
+and asserted absent. No P&L, R, win rate, or book trade count was computed.
+
+| metric | fit (candidate basis) | **sealed 2023/24** | deviation | threshold |
+|---|---|---|---|---|
+| session range, median | 179 pt | **92 pt** (p25 72 / p75 113) | **−48.3%** | OUTSIDE ±25% |
+| stop/range, median | 7.38% | **13.06%** | **+76.9%** | OUTSIDE ±25% |
+| candidate density | 3.76 /day | 2.88 /day | −23.4% | within ±33% |
+| wall pass rate | 24.1% | **24.3%** (W 23.7 / FAR 18.0) | **+0.2pp** | within ±10pp |
+
+**→ BRANCH (B): inputs MATERIALLY DIFFERENT.**
+
+**What this says, and it is not subtle.** The 2023/24 London session ran at **half the
+point range** of the fit span — 92pt against 179pt. That is almost exactly the "roughly
+half the index level" the CVD README recorded at data-pull time, which means **the
+prediction made in advance was correct**. The strategy's stop floor is fixed in
+**points** (9.5pt), so against half the range the stop consumes **nearly double** the
+session's available travel: 13.06% vs 7.38%.
+
+This is precisely the axis `docs/LONDON-ERA-DIAGNOSIS.md` identified as this system's
+one known structural fragility — stops fixed in points while range moves — and it is
+now measured, on the sealed span, **before any outcome exists**.
+
+**The mechanical consequence, stated before results.** Targets are set in R multiples
+(`rr_floor` 2.0, menu targets ~3R). At a 11.75pt median stop in a 92pt range, a 2R
+target is **26% of the entire session range** and a 3R target is **38%**. In fit those
+same targets were ~13% and ~20% of range. **Trades in this regime must traverse roughly
+twice as much of the day's range to reach the same R multiple.** A depressed hit rate
+here is a geometric consequence of fixed-point stops meeting a smaller-range market —
+not, on its own, evidence that the signal stopped working.
+
+**The one thing that is NOT different — and it matters.** The wall check fires at
+**24.3% vs 24.1%**, a 0.2pp difference. Branch (C) is firmly ruled out: the detector is
+seeing this market the same way it saw the fit market, W and FAR both hold their rates
+(23.7/18.0 vs 23.2/18.2), and the feature pipeline is healthy on sealed data. **The
+signal-detection layer travelled; the geometry did not.** This cleanly separates the two
+failure modes the era gap otherwise confounds.
+
 ### 4.4 The decision rule — committed in advance
 
 | sealed-span inputs (measured per 4.3) | a WEAK result must be read as |
