@@ -148,6 +148,44 @@ can distinguish "the edge is real" from "the edge is absent". It cannot resolve 
 from +0.30, and it cannot finely grade subsets.** Read it at that resolution and no
 finer.
 
+## 3.1 RECALIBRATED READING — fixed after the era measurement, BEFORE any outcome
+
+**Committed before the report was run. Its git timestamp precedes every sealed outcome
+figure.** Authorized by Brake at the decision point the §4.3 protocol exists to create,
+after seeing §4.3.1's inputs and before seeing any P&L.
+
+The era measurement changed what this run can and cannot establish. That is recorded
+here **in advance**, so the interpretation is a pre-commitment rather than a
+post-result rationalisation:
+
+**1. Item 9 (W/FAR lift) is now the PRIMARY SIGNAL EVIDENCE.** It compares
+wall-passing candidates against non-wall candidates *within the same sealed span* —
+both arms face identical geometry, identical range, identical stop/range. The
+geometric handicap cancels. If the lift survives at a comparable magnitude to fit
+(+0.444 / +0.637 per era), the signal travelled across a two-year gap and a halved
+range. That is the strongest single claim this run can support.
+
+**2. The PRIMARY test (book mean R > 0) is read as a STRESS TEST.** It is now known in
+advance to be handicapped: 2R targets sit at 26% of session range here versus ~13% in
+fit. A depressed mean R is a **predicted geometric consequence**, not evidence of
+signal death. The declared +0.48 forward expectation was set against fit-like geometry
+and **does not apply to this regime** — it is not the yardstick here.
+
+**3. The pre-committed asymmetry stands and is unchanged.** A strong result is
+meaningful — surviving doubled stop/range is a harder test than fit ever posed. A weak
+result is **"untested in this regime"**, never "validated", and **promotion stays
+blocked either way** (§4.4 branch B, committed before the measurement).
+
+**4. Nothing is added to the figure list.** Both items 9 and the primary are already in
+§2's fixed set. No new slice, no new test, no new subset. The recalibration changes
+*which figure carries the weight*, not *what gets computed*.
+
+**5. What this run cannot do, stated plainly.** It cannot validate the strategy for
+live deployment. It cannot resolve whether a regime-matched config (e.g. the parked
+vol-scaled floor, which would address the stop/range mismatch directly) would have
+performed better here — that is a different hypothesis needing its own pre-registration
+and its own sealed data, which no longer exists for 2023/24.
+
 ## 4. ERA-GAP DECLARATION — written before results exist
 
 **The problem, stated plainly.** The sealed span is **2023-07 .. 2024-10**. The fit span
