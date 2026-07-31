@@ -41,13 +41,26 @@ def day_vectors() -> dict:
                        "dollars_1lot": jmap[t["trade_id"]]["agent_dollars"],
                        "sess": t["sess"]} for t in T]).sort_values("fill", kind="mergesort")
     alldays = sorted(V.day.unique())
-    out = {"days": alldays, "base": {}}
+    # Per base: full-size vector plus HALF and QUARTER vectors through the REAL sim —
+    # the live de-risk ramp (half below $1,000 of buffer, quarter below $500, ANGUS
+    # 2026-07-30) is applied by the browser engine by picking the vector that matches
+    # the path's own buffer each day. Re-simulating at the ramped base keeps micro
+    # rounding exact where linear scaling would lie (small rd rounds to whole micros).
+    out = {"days": alldays, "base": {}, "grid": {}}
+
+    def vec(eff: float) -> list:
+        key = f"_mc{eff:g}"
+        fb.PROFILES[key] = dict(base=eff, per=0.0, step=2000.0, after=3000.0, cap=eff)
+        B = fb.run(V, key)
+        return [round(x, 2)
+                for x in B.groupby("day").pl.sum().reindex(alldays).fillna(0.0).tolist()]
+
     for b in BASES:
-        fb.PROFILES[f"_mc{b}"] = dict(base=float(b), per=0.0, step=2000.0,
-                                      after=3000.0, cap=float(b))
-        B = fb.run(V, f"_mc{b}")
-        dd = B.groupby("day").pl.sum().reindex(alldays).fillna(0.0)
-        out["base"][str(b)] = [round(x, 2) for x in dd.tolist()]
+        out["base"][str(b)] = {"f": vec(float(b)), "h": vec(b / 2.0), "q": vec(b / 4.0)}
+    # $40 grid for SCALED plans: the browser walks base_for(buffer) x ramp along the
+    # ladder and snaps to the nearest grid vector — every step re-simulated for real.
+    for g in range(40, 641, 40):
+        out["grid"][str(g)] = vec(float(g))
     return out
 
 
@@ -100,7 +113,14 @@ real funded sim per base · whole-day bootstrap, intraday order preserved · see
 <div class="ctl"><label>mode</label><select id="mode">
 <option value="funded">funded year</option><option value="eval">eval only</option>
 <option value="cycle">full cycle (eval → funded)</option></select></div>
+<div class="ctl"><label>sizing plan</label><select id="plan">
+<option value="fixed">fixed base</option>
+<option value="scaled" selected>scaled ladder</option></select></div>
 <div class="ctl"><label>base sizing $</label><select id="base"></select></div>
+<div class="ctl"><label>scale +$ / step</label><input id="sper" type="number" value="80" step="10"></div>
+<div class="ctl"><label>scale step $</label><input id="sstep" type="number" value="2000" step="500"></div>
+<div class="ctl"><label>scale after +$</label><input id="safter" type="number" value="3000" step="500"></div>
+<div class="ctl"><label>base cap $</label><input id="scap" type="number" value="640" step="40"></div>
 <div class="ctl"><label>trailing EOD DD $</label><input id="dd" type="number" value="2000" step="100"></div>
 <div class="ctl"><label>line locks at $</label><input id="lock" type="number" value="50000" step="100"></div>
 <div class="ctl"><label>start balance $</label><input id="start" type="number" value="50000" step="1000"></div>
@@ -109,7 +129,7 @@ real funded sim per base · whole-day bootstrap, intraday order preserved · see
 <div class="ctl"><label>payout amount $</label><input id="pamt" type="number" value="2000" step="500"></div>
 <div class="ctl"><label>payout cap (0=∞)</label><input id="pcap" type="number" value="0" step="1"></div>
 <div class="ctl"><label>win days / cycle</label><input id="wreq" type="number" value="5" step="1"></div>
-<div class="ctl"><label>win day min $</label><input id="wmin" type="number" value="0" step="50"></div>
+<div class="ctl"><label>win day min $</label><input id="wmin" type="number" value="150" step="50"></div>
 <div class="ctl"><label>horizon days</label><input id="hor" type="number" value="252" step="21"></div>
 <div class="ctl"><label>sims</label><input id="sims" type="number" value="2000" step="500"></div>
 <div class="ctl"><label>seed</label><input id="seed" type="number" value="42" step="1"></div>
@@ -129,8 +149,11 @@ real funded sim per base · whole-day bootstrap, intraday order preserved · see
 <div class="chart" id="h2wrap"><svg id="hist2" height="230"></svg><div class="tip" id="h2tip"></div></div></section>
 </div>
 <p class="sub">Whole-day bootstrap from the fit-span agent book — regime mix is the fit span's.
-The vectors carry the real sim's budget gates, soft de-risk, ramp and micro rounding at each
-base. Trailing line ratchets on EOD balance, never down, and freezes at the lock. Payout:
+The vectors carry the real sim's budget gates, soft de-risk and micro rounding at each base,
+and the LIVE DE-RISK RAMP is enforced path-by-path: below $1,000 of buffer the day runs the
+half-size vector, below $500 the quarter-size vector — each re-simulated through the real
+funded sim, not linearly scaled. Trailing line ratchets on EOD balance, never down, and
+freezes at the lock. Payout:
 whenever EOD balance ≥ start+trigger (and funded), AND the winning-day clock has ≥ the required count since the last
 payout (a winning day = day P&amp;L above the min $; the clock resets on each payout and runs in
 the funded stage only), withdraw the amount. Bust: EOD balance ≤ line.</p>
@@ -146,11 +169,29 @@ t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
 const fmt$=x=>(x<0?"-$":"$")+Math.abs(Math.round(x)).toLocaleString();
 
 function simulate(){
-  const P={mode:$("mode").value,base:+bsel.value,dd:+$("dd").value,lock:+$("lock").value,
-    start:+$("start").value,target:+$("target").value,ptrig:+$("ptrig").value,
-    pamt:+$("pamt").value,pcap:+$("pcap").value,wreq:+$("wreq").value,wmin:+$("wmin").value,
+  const P={mode:$("mode").value,plan:$("plan").value,base:+bsel.value,dd:+$("dd").value,
+    lock:+$("lock").value,start:+$("start").value,target:+$("target").value,
+    ptrig:+$("ptrig").value,pamt:+$("pamt").value,pcap:+$("pcap").value,
+    sper:+$("sper").value,sstep:+$("sstep").value,safter:+$("safter").value,scap:+$("scap").value,
+    wreq:+$("wreq").value,wmin:+$("wmin").value,
     H:+$("hor").value,S:+$("sims").value,seed:+$("seed").value};
-  const pl=Float64Array.from(DATA.base[String(P.base)]), N=pl.length;
+  const V=DATA.base[String(P.base)];
+  const plF=Float64Array.from(V.f),plH=Float64Array.from(V.h),plQ=Float64Array.from(V.q);
+  const N=plF.length;
+  const gkeys=Object.keys(DATA.grid).map(Number).sort((a,b)=>a-b);
+  const gvec={};for(const k of gkeys)gvec[k]=Float64Array.from(DATA.grid[String(k)]);
+  const snap=e=>{let best=gkeys[0];for(const k of gkeys)if(Math.abs(k-e)<Math.abs(best-e))best=k;return best;};
+  // day P&L for a given buffer: scaled ladder (base_for x ramp, snapped to the $40 grid)
+  // or the fixed base's exact full/half/quarter vectors.
+  const dayPl=(buf,i)=>{
+    if(P.plan==="scaled"){
+      let b=P.base;
+      if(buf>P.safter)b=Math.min(P.scap,P.base+Math.floor((buf-P.safter)/P.sstep)*P.sper);
+      const m=buf<500?0.25:buf<1000?0.5:1;
+      return gvec[snap(b*m)][i];
+    }
+    return buf<500?plQ[i]:buf<1000?plH[i]:plF[i];
+  };
   const rng=mulberry32(P.seed);
   const paths=new Float32Array(P.S*P.H);
   const payouts=new Int32Array(P.S), withdrawn=new Float64Array(P.S);
@@ -159,7 +200,8 @@ function simulate(){
     let bal=P.start, line=P.start-P.dd, funded=(P.mode==="funded"), dead=false, passed=(P.mode==="funded"), wins=0;
     for(let t=0;t<P.H;t++){
       if(!dead){
-        const p=pl[(rng()*N)|0];
+        const i=(rng()*N)|0;
+        const p=dayPl(bal-line,i);               // sizing plan + de-risk ramp, per path
         bal+=p;
         if(bal<=line){dead=true;busted[s]=1;bal=line;}
         else{
@@ -307,7 +349,8 @@ function run(){
       const ok=vals.filter(d=>d>0);const mx=Math.max(...ok,1);
       const bins=new Array(mx+1).fill(0);for(const v of ok)bins[v]++;
       return{bins,x0:0,bw:1,label:i=>i};},(i,c)=>`pass on day ${i}<br><b>${c}</b> sims`);}
-  $("status").textContent=`${R.P.S} sims × ${R.P.H} days in ${(performance.now()-t0).toFixed(0)}ms — pool: 230 days @ $${R.P.base} base`;
+  $("status").textContent=`${R.P.S} sims × ${R.P.H} days in ${(performance.now()-t0).toFixed(0)}ms — pool: 230 days @ $${R.P.base} `+
+    (R.P.plan==="scaled"?`+$${R.P.sper}/$${R.P.sstep} past +$${R.P.safter}, cap $${R.P.scap} (elite max risk $${2*R.P.scap})`:"fixed");
 }
 $("run").onclick=run;
 for(const el of document.querySelectorAll("input,select"))el.addEventListener("keydown",e=>{if(e.key==="Enter")run()});
