@@ -42,8 +42,45 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.depth_parity import FEATS, gates, load_archive          # noqa: E402
+# STANDALONE ON PURPOSE: this runs on whatever machine holds the raw vendor file,
+# which may carry an older Python than the engine requires (the box's laptop runs 3.9;
+# the engine uses 3.10+ syntax). Only src.canon.features (numpy/pandas-clean) is imported;
+# the two gate constants are pinned from src/canon/scorer_ny.py:67-68 and the gates()
+# predicate is copied verbatim from scripts/depth_parity.py — if either drifts there,
+# re-pin here.
 from src.canon.features import depth_at                              # noqa: E402
+
+WALL_D_MIN = 2.75                      # scorer_ny.py:67 — aikido wall-quality cut (gold)
+Q_WALLSZ_MIN = 7.0                     # scorer_ny.py:68 — wall-ahead size for WALLSZ
+FEATS = ["dep_thick", "dep_wall_above_d", "dep_wall_below_d",
+         "dep_wall_above_sz", "dep_wall_below_sz"]
+DEPTH_DIRS = ["data/reference/depth_2025", "data/reference/depth_2026",
+              "data/reference/depth_apr2026", "data/reference/depth_2023_24"]
+
+
+def gates(f, direction):
+    """Verbatim from scripts/depth_parity.py — the booleans the canon gates on."""
+    long = direction == "long"
+    thick = f.get("dep_thick", np.nan)
+    behind = f.get("dep_wall_below_d" if long else "dep_wall_above_d", np.nan)
+    ahead = f.get("dep_wall_above_d" if long else "dep_wall_below_d", np.nan)
+    ahead_sz = f.get("dep_wall_above_sz" if long else "dep_wall_below_sz", np.nan)
+    below_d = f.get("dep_wall_below_d", np.nan)
+    W = np.nan if pd.isna(thick) else float(pd.isna(behind))
+    D = np.nan if pd.isna(thick) else float(not pd.isna(ahead))
+    wallsz = float(D == 1 and not pd.isna(ahead_sz) and ahead_sz >= Q_WALLSZ_MIN)
+    quality_cut = ((not pd.isna(below_d) and below_d < WALL_D_MIN) or wallsz == 0)
+    return {"W": W, "D": D, "WALLSZ": wallsz, "gold_cut": float(quality_cut)}
+
+
+def load_archive(day):
+    for d in DEPTH_DIRS:
+        p = ROOT / d / f"nq_depth_{day}_ny.csv"
+        if p.exists():
+            df = pd.read_csv(p)
+            df["ts"] = pd.to_datetime(df.ts, utc=True).dt.tz_convert(NY)
+            return df
+    raise SystemExit(f"no archive depth for {day}")
 
 NY = "America/New_York"
 WINDOW = (dtime(8, 0), dtime(11, 0))
