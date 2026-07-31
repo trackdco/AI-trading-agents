@@ -13,15 +13,48 @@ is fixed below, in advance.
 
 ## 0. Preconditions — every one must hold before the command is typed
 
-| # | precondition | verified 2026-07-31 |
+| # | precondition | status |
 |---|---|---|
-| 1 | `docs/LONDON-HOLDOUT-REPORT.md` does not exist | ✓ absent |
-| 2 | Brake re-confirms prereg rev-2a draft changes (§2/§3/§4) | ☐ PENDING |
-| 3 | ANGUS signs ONE config: rev 2a **or** rev 3 (`docs/LONDON-REV3-BUNDLE.md` §6) | ☐ PENDING |
-| 4 | ANGUS rules the three engine questions (bundle §3: twins, day-stop units, far-target) | ☐ PENDING |
-| 5 | ANGUS yes/no on the pre-run era measurement (§4 below) | ☐ PENDING |
-| 6 | Sealed L0→L3 artifacts built for `--span holdout` (+ `--mgmt V1` arm if rev 3) | ☐ not built |
+| 1 | `docs/LONDON-HOLDOUT-REPORT.md` does not exist | ✓ absent at authorization time |
+| 2 | Brake re-confirms prereg rev-2a draft changes (§2/§3/§4) | ✓ **GIVEN** (see §0.1) |
+| 3 | ANGUS signs ONE config: rev 2a **or** rev 3 (`docs/LONDON-REV3-BUNDLE.md` §6) | ✓ **rev 3** (see §0.1) |
+| 4 | ANGUS rules the three engine questions (bundle §3: twins, day-stop units, far-target) | ☐ **STILL OPEN** — see §0.1 |
+| 5 | ANGUS yes/no on the pre-run era measurement (§4 below) | ✓ **YES, measure first** |
+| 6 | Sealed L0→L3 artifacts built for `--span holdout` (+ `--mgmt V1` arm) | ☐ building |
 | 7 | Fit rehearsal PASSES for the signed config on the same commit | ✓ both pass |
+
+## 0.1 AUTHORIZATION RECORD — written BEFORE any sealed artifact was built
+
+**This section was committed before the sealed span was read. Its timestamp in git
+history precedes every sealed figure in this repository.**
+
+| field | value |
+|---|---|
+| Authorization | **Angus, verbal, 2026-07-31** |
+| Form | spoken in person; **relayed by Brake**, who was present |
+| Config signed | **rev 3** (08:00–09:45 · wall gate + score-0 veto · one-position-at-a-time · V1 BE@1R) |
+| Pre-run era measurement | **AUTHORIZED** — inputs measured before outcomes are opened |
+| Brake re-confirmation (precondition 2) | given by the same instruction directing the run |
+| Recorded by | engineering (Claude Code), on `claude/sealed-run-prep` |
+
+**Recorded honestly, including its weaknesses:**
+
+1. **The authorization is verbal and relayed, not a written signature.** The prereg
+   contemplated a written sign-off. This is a weaker instrument and is labelled as such
+   here rather than dressed up. Anyone auditing this run later sees exactly what was
+   claimed, by whom, and through whom.
+2. **Precondition 4 was NOT satisfied.** The three engine rulings (twin double-count,
+   day-stop units, far-target rule) remain open. They do not mechanically affect this
+   report — it is 1-lot, and rev 3's serialization subsumes the twin question — but they
+   were required by the bundle before promotion, and they are still required. **A PASS
+   here does not carry them.**
+3. **The run proceeded under time pressure**, at Brake's direction, with Angus present.
+   That is recorded because it is true and because it bears on how much weight the
+   authorization should carry if this run is ever re-examined.
+
+**What this authorization does NOT license:** a second sealed run, a config change taken
+on these results, any decision on S2 (prereg §4), or promotion to live. Those need the
+engine rulings and their own sign-offs.
 
 **Precondition 6 is deliberately unmet.** No sealed derived artifact exists in the repo
 (`l0/l1/l2/l3_*_holdout*.parquet` — all absent, verified). Building them is a separate,
