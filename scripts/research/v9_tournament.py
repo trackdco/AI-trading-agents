@@ -150,9 +150,18 @@ def main() -> None:
             Pc = P.drop(columns=OUTCOLS, errors="ignore").merge(
                 cell[KEY + OUTCOLS].drop_duplicates(KEY), on=KEY, how="left",
                 validate="1:1")
-            if Pc.dollars.isna().any():
+            nan = Pc.dollars.isna()
+            if nan.sum() > 1:
                 raise SystemExit(f"GRID CELL {arm_r}/{lock_frac}: "
-                                 f"{int(Pc.dollars.isna().sum())} unmatched rows")
+                                 f"{int(nan.sum())} unmatched rows")
+            if nan.any():
+                # same disclosed single case as swap_arm: 2025-11-27 Thanksgiving 5min
+                # short never resolves under any set-and-forget-style (V0/V9) management
+                # before the holiday session's bars end. Dropped from THIS CELL only.
+                print(f"NOTE: dropping {int(nan.sum())} unresolved candidate from grid "
+                      f"cell {arm_r}/{lock_frac}: "
+                      f"{Pc[nan][['day', 'tf', 'direction']].to_dict('records')}")
+                Pc = Pc[~nan]
             b, _ = build_book(Pc, "rev3")
             grid_rows.append(stats(f"V9 arm={arm_r} lock={lock_frac}", b))
         print_table(grid_rows)
