@@ -175,13 +175,31 @@ is a **pre-existing, documented prediction** about where this strategy is fragil
 
 ### 4.2 Fit-side baselines (computed 2026-07-31 from FIT data only)
 
-| metric | 2025 | 2026 | pooled fit |
-|---|---|---|---|
-| London session range (`on_range`), median pts | 173 | 220 | **186** |
-| stop/range fraction, median | 7.92% | 5.69% | **6.83%** |
-| median stop size, pts | — | — | **12.50** |
-| floor-passing candidates per session day | — | — | **3.76** |
-| wall-check pass rate (on floor-passing) | — | — | **24.1%** (W 23.2% / FAR 18.2%) |
+**BASIS CORRECTION, made before the sealed measurement ran.** The first draft of this
+table was measured on the **book** (the 130 taken trades). The sealed measurement must
+use the **floor-passing candidate population** instead, for two reasons: it is not
+conditioned on selection, and — decisively — computing the book requires the L4 day-stop
+walk, which consumes *realized dollars*. On the sealed span that would be an outcome
+look. The candidate basis touches no outcome at all.
+
+Both bases are shown so the correction is auditable. **The candidate column is the
+comparison basis; the §4.4 thresholds are applied to it.**
+
+| metric | book basis (first draft) | **candidate basis (BINDING)** |
+|---|---|---|
+| London session range (`on_range`), median pts | 186 | **179** (p25 130 / p75 269) |
+| stop/range fraction, median | 6.83% | **7.38%** |
+| median stop size, pts | 12.50 | **12.75** |
+| floor-passing candidates per session day | 3.76 | **3.76** (same — already candidate-basis) |
+| wall-check pass rate | 24.1% | **24.1%** (W 23.2% / FAR 18.2%) |
+
+Per-era, book basis, retained as context only: session range 173 (2025) / 220 (2026);
+stop/range 7.92% (2025) / 5.69% (2026).
+
+This correction was found by rehearsing `scripts/sealed_era_inputs.py` on **fit** data
+before pointing it at the sealed span — which is what the rehearsal is for. It changes
+the comparison basis, not the thresholds (±25% / ±25% / ±33% / ±10pp are unchanged from
+the pre-authorization commit).
 
 ### 4.3 The pre-registered discriminator — measure INPUTS before opening OUTCOMES
 
