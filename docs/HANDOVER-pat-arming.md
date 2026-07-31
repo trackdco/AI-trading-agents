@@ -206,6 +206,13 @@ wiring map.
 
 ## 7. R15 wiring map — the agent layer, component by component
 
+> **PHASING (ANGUS 2026-07-31, final): mech-only arms FIRST (gate R15a); this section is
+> the PHASE-2 map, target Monday (gate R15b).** Record the first live sessions' minute CVD
+> and MBP-10 streams — they are the fixtures this wiring is built and dry-run against.
+> Phase-2 switch-on re-runs the two-party step: fresh written confirmation + a fresh token
+> against the new certified SHA. Running mech-only trades the $82,543 reference book;
+> nothing about phase 1 changes if phase 2 slips.
+
 Everything below has a certified reference implementation in
 `scripts/capture_desk_run.py`. Your job is transport (live feeds in, broker out), not
 design — diff your port against the reference, behavior for behavior. The spec file

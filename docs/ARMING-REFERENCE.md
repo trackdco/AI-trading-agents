@@ -106,7 +106,8 @@ Each of these is a live-visible change and is why this document exists.
 | R12 | Angus's token against a certified commit | ❌ yours to issue |
 | R13 | Three-rule execution semantics enforced by the runner (handover rows J/K/L: close-and-reverse in one ticket · pre flat at 09:30 · one-per-level dedupe) | ❌ Pat wires + certifies — the book's references do not exist without them |
 | R14 | Checkout reproduces the $160-base references (this doc §2) — the suite FAILS on a $150 checkout by design | ⬜ run `pytest tests/test_canon_scorer_ny.py -q` on the arming checkout |
-| R15 | Agent layer (handover row M): frozen v3 spec deployed, `runs/live/journal.jsonl` seed in place, V8 shadow-exit wired for journal counterfactuals, isolation law certified. **ANGUS 2026-07-31: the arm SHIPS WITH the agent layer** — mech-only sequencing was offered and declined ("id rather just set up the agent layer now"); the certified book is the $100,297 agent book. Wiring map: handover §7. | ❌ Pat wires |
+| R15a | **PHASE 1 — MECH-ONLY ARM** (ANGUS 2026-07-31, final ruling — supersedes the same-day "ship with agents now"): the first arm is the mechanical canon alone; certified book = $82,543 fit / $48,211 holdout references. The first live session(s) double as the DATA CAPTURE for phase 2: depth capture for R10b, plus recorded minute CVD + MBP-10 streams to wire and dry-run the agent briefings against. | ❌ Pat wires + certifies |
+| R15b | **PHASE 2 — AGENT LAYER ON (target: Monday)**: wire per handover §7 against the captured live feeds, certify with the dry-run day + agent kill-test, then switch on. Certified book becomes the $100,297 agent book. Switch-on is a BEHAVIOR CHANGE and re-runs the two-party step: fresh written confirmation from Pat + Angus's token re-committed against the new certified SHA. The journal seed sits ready and untouched until this phase. | ❌ after R15a is live |
 
 ---
 
