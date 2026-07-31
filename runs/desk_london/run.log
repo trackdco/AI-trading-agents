@@ -1,0 +1,17 @@
+holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping 708,412 row(s) from year(s) [2023, 2024] — keeping frozenset({2025, 2026}) only
+== 2025-06-02: 2 candidates
+  2025-06-02_0400_s_0: agent -0.08R vs V1 -0.05R | stop | turns 2
+  2025-06-02_0404_l_1: agent +2.18R vs V1 +2.20R | target | turns 5
+== 2025-06-04: 1 candidates
+  2025-06-04_0436_l_2: agent -1.05R vs V1 -1.02R | stop | turns 2
+== 2025-06-10: 2 candidates
+  2025-06-10_0301_s_3: agent -0.04R vs V1 -0.02R | stop | turns 4
+  2025-06-10_0417_s_4: agent -1.04R vs V1 -1.02R | stop | turns 2
+== 2025-06-17: 1 candidates
+  2025-06-17_0352_s_5: agent -0.78R vs V1 -0.76R | stop | turns 1
+== 2025-06-19: 3 candidates
+== 2025-06-25: 1 candidates
+  2025-06-25_0436_s_9: agent -1.05R vs V1 -1.03R | stop | turns 2
+== 2025-06-26: 1 candidates
+  2025-06-26_0440_s_10: agent -0.05R vs V1 -0.03R | stop | turns 5
+== 2025-07-01: 2 candidates
