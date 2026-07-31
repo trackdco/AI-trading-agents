@@ -190,3 +190,33 @@ holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping
 == 2026-04-08: 1 candidates
   2026-04-08_0321_l_122: agent -0.03R vs V1 -0.02R | stop | turns 3
 == 2026-04-16: 1 candidates
+  2026-04-16_0332_l_123: agent +0.14R vs V1 -0.02R | agent_exit | turns 5
+== 2026-04-20: 2 candidates
+  2026-04-20_0330_l_124: agent +0.75R vs V1 -1.02R | agent_exit | turns 1
+  2026-04-20_0414_s_125: agent -1.03R vs V1 -1.01R | stop | turns 3
+== 2026-04-23: 4 candidates
+  2026-04-23_0340_s_126: agent -1.05R vs V1 -1.03R | stop | turns 1
+  2026-04-23_0346_l_127: agent +0.60R vs V1 -0.02R | agent_exit | turns 6
+  2026-04-23_0346_l_128: SKIPPED (agent still in a position until 2026-04-23 04:01:00-04:00)
+  2026-04-23_0426_s_129: agent +5.59R vs V1 +5.61R | target | turns 6
+== 2026-04-29: 2 candidates
+  2026-04-29_0402_s_130: agent +2.46R vs V1 +2.49R | target | turns 2
+  2026-04-29_0443_s_131: agent -1.03R vs V1 -1.01R | stop | turns 1
+== 2026-05-04: 1 candidates
+  2026-05-04_0337_l_132: agent +2.05R vs V1 +2.07R | target | turns 4
+== 2026-05-07: 1 candidates
+  2026-05-07_0347_s_133: agent -0.85R vs V1 -1.02R | agent_exit | turns 3
+== 2026-05-14: 2 candidates
+  2026-05-14_0421_s_134: agent +2.66R vs V1 -0.02R | target | turns 6
+  2026-05-14_0436_s_135: SKIPPED (agent still in a position until 2026-05-14 04:41:00-04:00)
+== 2026-05-18: 2 candidates
+  2026-05-18_0343_l_136: agent +2.89R vs V1 +2.91R | target | turns 3
+  2026-05-18_0343_l_137: SKIPPED (agent still in a position until 2026-05-18 03:48:00-04:00)
+== 2026-05-20: 1 candidates
+  2026-05-20_0347_s_138: agent -0.05R vs V1 -0.03R | agent_exit | turns 5
+== 2026-05-21: 1 candidates
+  2026-05-21_0435_s_139: agent +0.91R vs V1 -0.02R | agent_exit | turns 2
+== 2026-05-22: 3 candidates
+  2026-05-22_0317_l_140: agent +2.00R vs V1 +2.02R | target | turns 3
+  2026-05-22_0346_l_141: agent +2.73R vs V1 +2.74R | target | turns 5
+  2026-05-22_0346_l_142: SKIPPED (agent still in a position until 2026-05-22 04:02:00-04:00)
