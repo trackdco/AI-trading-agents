@@ -196,8 +196,9 @@ function simulate(){
   const paths=new Float32Array(P.S*P.H);
   const payouts=new Int32Array(P.S), withdrawn=new Float64Array(P.S);
   const busted=new Uint8Array(P.S), passDay=new Int32Array(P.S).fill(-1), fundDay=new Int32Array(P.S).fill(-1);
+  const firstPay=new Int32Array(P.S).fill(-1), gaps=[];
   for(let s=0;s<P.S;s++){
-    let bal=P.start, line=P.start-P.dd, funded=(P.mode==="funded"), dead=false, passed=(P.mode==="funded"), wins=0;
+    let bal=P.start, line=P.start-P.dd, funded=(P.mode==="funded"), dead=false, passed=(P.mode==="funded"), wins=0, lastPay=-1;
     for(let t=0;t<P.H;t++){
       if(!dead){
         const i=(rng()*N)|0;
@@ -212,7 +213,9 @@ function simulate(){
           else if(funded){
             if(p>P.wmin)wins++;                                // winning-day clock (funded only)
             if(bal>=P.start+P.ptrig && wins>=P.wreq && (P.pcap===0||payouts[s]<P.pcap)){
-              bal-=P.pamt;payouts[s]++;withdrawn[s]+=P.pamt;wins=0;}
+              bal-=P.pamt;payouts[s]++;withdrawn[s]+=P.pamt;wins=0;
+              if(firstPay[s]<0)firstPay[s]=t+1;else gaps.push(t+1-lastPay);
+              lastPay=t+1;}
           }
           line=Math.min(P.lock,Math.max(line,bal-P.dd));
         }
@@ -220,7 +223,7 @@ function simulate(){
       paths[s*P.H+t]=bal+withdrawn[s];   // total value incl. withdrawals
     }
   }
-  return {P,paths,payouts,withdrawn,busted,passDay,fundDay};
+  return {P,paths,payouts,withdrawn,busted,passDay,fundDay,firstPay,gaps};
 }
 
 function pct(sorted,q){const i=(sorted.length-1)*q;const lo=Math.floor(i);
@@ -242,6 +245,11 @@ function tiles(R){
     const wd=Array.from(R.withdrawn).sort((a,b)=>a-b);
     add("P(bust)",(pb*100).toFixed(1)+"%",P.mode==="cycle"?"across the whole cycle":"funded year");
     add("payouts",Math.round(pct(po,.5)),"median · p5 "+Math.round(pct(po,.05))+" · p95 "+Math.round(pct(po,.95)));
+    const fp=Array.from(R.firstPay).filter(d=>d>0).sort((a,b)=>a-b);
+    if(fp.length)add("1st payout",Math.round(pct(fp,.5))+"d",
+      (P.mode==="cycle"?"from eval start":"from day 1")+" · p95 "+Math.round(pct(fp,.95))+"d");
+    if(R.gaps.length){const g=R.gaps.slice().sort((a,b)=>a-b);
+      add("days / cycle",Math.round(pct(g,.5)),"median between payouts · p95 "+Math.round(pct(g,.95)));}
     add("withdrawn",fmt$(pct(wd,.5)),"median over sims");
     if(P.pcap>0){const hit=po.filter(x=>x>=P.pcap).length;
       add("P(max payout)",(hit/P.S*100).toFixed(1)+"%","hit the "+P.pcap+"-payout cap");}
