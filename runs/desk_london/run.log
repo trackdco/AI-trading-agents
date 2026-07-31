@@ -89,3 +89,104 @@ holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping
   2025-11-17_0421_s_53: agent +1.46R vs V1 +5.10R | stop | turns 6
 == 2025-11-19: 2 candidates
   2025-11-19_0305_s_54: agent +1.22R vs V1 -0.02R | stop | turns 5
+  2025-11-19_0324_l_55: agent -0.16R vs V1 -0.01R | agent_exit | turns 4
+== 2025-11-21: 2 candidates
+  2025-11-21_0337_l_56: agent +1.17R vs V1 +2.18R | stop | turns 1
+  2025-11-21_0337_l_57: SKIPPED (agent still in a position until 2025-11-21 03:40:00-05:00)
+== 2025-11-24: 2 candidates
+  2025-11-24_0438_l_58: agent -0.26R vs V1 -0.24R | stop | turns 0
+  2025-11-24_0439_s_59: agent -0.02R vs V1 -0.01R | stop | turns 3
+== 2025-11-25: 1 candidates
+  2025-11-25_0321_l_60: agent -1.02R vs V1 -1.01R | stop | turns 3
+== 2025-11-26: 2 candidates
+  2025-11-26_0330_s_61: agent +0.95R vs V1 +2.32R | stop | turns 4
+  2025-11-26_0330_s_62: SKIPPED (agent still in a position until 2025-11-26 03:46:00-05:00)
+== 2025-11-27: 1 candidates
+  2025-11-27_0351_s_63: agent +0.56R vs V1 -0.02R | stop | turns 6
+== 2025-12-01: 2 candidates
+  2025-12-01_0336_s_64: agent +0.02R vs V1 -0.02R | agent_exit | turns 3
+  2025-12-01_0337_l_65: SKIPPED (agent still in a position until 2025-12-01 03:44:00-05:00)
+== 2025-12-15: 1 candidates
+  2025-12-15_0441_s_66: agent -0.63R vs V1 -0.61R | stop | turns 6
+== 2025-12-29: 1 candidates
+  2025-12-29_0404_l_67: agent +0.14R vs V1 -0.02R | agent_exit | turns 6
+== 2025-12-31: 1 candidates
+  2025-12-31_0428_l_68: agent -0.04R vs V1 -0.02R | stop | turns 10
+== 2026-01-05: 2 candidates
+  2026-01-05_0428_s_69: agent -1.04R vs V1 -1.02R | stop | turns 3
+  2026-01-05_0428_s_70: SKIPPED (agent still in a position until 2026-01-05 04:40:00-05:00)
+== 2026-01-08: 2 candidates
+  2026-01-08_0406_l_71: agent -1.05R vs V1 -1.02R | stop | turns 3
+  2026-01-08_0406_l_72: SKIPPED (agent still in a position until 2026-01-08 04:16:00-05:00)
+== 2026-01-14: 1 candidates
+  2026-01-14_0438_l_73: agent -1.04R vs V1 -1.02R | stop | turns 2
+== 2026-01-19: 2 candidates
+  2026-01-19_0309_l_74: agent +3.46R vs V1 +3.47R | target | turns 4
+  2026-01-19_0355_s_75: agent +3.54R vs V1 +3.56R | target | turns 6
+== 2026-01-23: 2 candidates
+  2026-01-23_0346_s_76: agent +3.00R vs V1 +3.02R | target | turns 4
+  2026-01-23_0428_s_77: agent +2.30R vs V1 +2.33R | target | turns 3
+== 2026-02-02: 1 candidates
+  2026-02-02_0415_s_78: agent -0.51R vs V1 -0.03R | stop | turns 1
+== 2026-02-05: 1 candidates
+  2026-02-05_0326_s_79: agent -0.03R vs V1 -0.01R | agent_exit | turns 4
+== 2026-02-09: 1 candidates
+  2026-02-09_0401_s_80: agent -0.76R vs V1 -0.75R | stop | turns 1
+== 2026-02-10: 3 candidates
+  2026-02-10_0309_l_81: agent +2.02R vs V1 +2.05R | target | turns 1
+  2026-02-10_0331_s_82: agent -0.60R vs V1 -0.67R | agent_exit | turns 4
+  2026-02-10_0346_s_83: SKIPPED (agent still in a position until 2026-02-10 04:05:00-05:00)
+== 2026-02-23: 2 candidates
+  2026-02-23_0307_s_84: agent -0.96R vs V1 -0.94R | stop | turns 3
+  2026-02-23_0316_l_85: agent -1.03R vs V1 -1.02R | stop | turns 2
+== 2026-02-24: 1 candidates
+  2026-02-24_0400_s_86: agent -1.04R vs V1 -1.02R | stop | turns 1
+== 2026-03-02: 1 candidates
+  2026-03-02_0405_l_87: agent +4.46R vs V1 +8.15R | stop | turns 7
+== 2026-03-05: 1 candidates
+  2026-03-05_0318_l_88: agent -1.04R vs V1 -1.02R | stop | turns 0
+== 2026-03-09: 6 candidates
+  2026-03-09_0404_s_89: agent -0.27R vs V1 -0.01R | agent_exit | turns 3
+  2026-03-09_0414_s_90: agent -0.12R vs V1 -0.01R | agent_exit | turns 3
+  2026-03-09_0507_l_91: agent +1.45R vs V1 +3.86R | stop | turns 2
+  2026-03-09_0511_l_92: agent +3.41R vs V1 n/a | target | turns 0
+  2026-03-09_0511_l_93: SKIPPED (agent still in a position until 2026-03-09 05:12:00-04:00)
+  2026-03-09_0511_l_94: SKIPPED (agent still in a position until 2026-03-09 05:12:00-04:00)
+== 2026-03-16: 1 candidates
+  2026-03-16_0423_s_95: agent +0.25R vs V1 -0.01R | agent_exit | turns 8
+== 2026-03-17: 5 candidates
+  2026-03-17_0408_s_96: agent +2.86R vs V1 -0.36R | target | turns 8
+  2026-03-17_0413_s_97: SKIPPED (agent still in a position until 2026-03-17 04:36:00-04:00)
+  2026-03-17_0413_s_98: SKIPPED (agent still in a position until 2026-03-17 04:36:00-04:00)
+  2026-03-17_0433_s_99: SKIPPED (agent still in a position until 2026-03-17 04:36:00-04:00)
+  2026-03-17_0500_s_100: agent -1.05R vs V1 -1.02R | stop | turns 0
+== 2026-03-19: 9 candidates
+  2026-03-19_0415_l_101: agent -0.43R vs V1 -0.02R | stop | turns 1
+  2026-03-19_0416_s_102: SKIPPED (agent still in a position until 2026-03-19 04:17:00-04:00)
+  2026-03-19_0419_l_103: agent +0.69R vs V1 -0.02R | agent_exit | turns 1
+  2026-03-19_0421_s_104: agent -0.46R vs V1 -0.01R | agent_exit | turns 2
+  2026-03-19_0425_s_105: agent +3.76R vs V1 n/a | target | turns 0
+  2026-03-19_0454_s_106: agent -0.03R vs V1 n/a | stop | turns 3
+  2026-03-19_0454_s_107: SKIPPED (agent still in a position until 2026-03-19 05:01:00-04:00)
+  2026-03-19_0516_l_108: agent -0.03R vs V1 -0.02R | stop | turns 5
+  2026-03-19_0542_l_109: agent -1.05R vs V1 -0.02R | stop | turns 1
+== 2026-03-20: 4 candidates
+  2026-03-20_0433_l_110: agent +3.08R vs V1 +3.10R | target | turns 0
+  2026-03-20_0433_l_111: SKIPPED (agent still in a position until 2026-03-20 04:34:00-04:00)
+  2026-03-20_0443_l_112: agent -1.05R vs V1 -0.03R | stop | turns 1
+  2026-03-20_0503_l_113: agent +0.56R vs V1 -0.05R | agent_exit | turns 1
+== 2026-03-24: 2 candidates
+  2026-03-24_0530_l_114: agent -1.04R vs V1 -1.02R | stop | turns 0
+  2026-03-24_0536_l_115: agent +5.08R vs V1 +5.10R | target | turns 8
+== 2026-03-25: 2 candidates
+  2026-03-25_0435_l_116: agent -1.04R vs V1 -1.02R | stop | turns 0
+  2026-03-25_0438_s_117: agent +0.25R vs V1 +7.58R | stop | turns 3
+== 2026-03-27: 3 candidates
+  2026-03-27_0404_s_118: agent +2.39R vs V1 +2.40R | target | turns 4
+  2026-03-27_0404_s_119: SKIPPED (agent still in a position until 2026-03-27 04:18:00-04:00)
+  2026-03-27_0519_s_120: agent -0.05R vs V1 -0.03R | stop | turns 3
+== 2026-03-31: 1 candidates
+  2026-03-31_0421_s_121: agent +1.74R vs V1 +10.37R | stop | turns 10
+== 2026-04-08: 1 candidates
+  2026-04-08_0321_l_122: agent -0.03R vs V1 -0.02R | stop | turns 3
+== 2026-04-16: 1 candidates
