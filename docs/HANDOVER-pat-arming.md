@@ -197,6 +197,31 @@ Do these in order. Each is a gate; a red gate stops the sequence.
 `LondonScorer` is untouched and **must not be armed**. If the live stack would trade London,
 it stays disarmed until Brake's book lands.
 
-The **agent discretion layer** is quantified but unbuilt: measured MFE headroom above V8 is
-roughly +0.4R/trade on pre-market. That is a mandate for a later layer, not something to
-improvise at the execution boundary.
+~~The **agent discretion layer** is quantified but unbuilt.~~ **SUPERSEDED (2026-07-31):
+the agent layer is BUILT, graded on the full fit span, and SHIPS WITH THIS ARM** (ANGUS
+ruling; rows M/N, gate R15, grading in `docs/REPORT-desk-run-2.md`). §7 below is your
+wiring map.
+
+---
+
+## 7. R15 wiring map — the agent layer, component by component
+
+Everything below has a certified reference implementation in
+`scripts/capture_desk_run.py`. Your job is transport (live feeds in, broker out), not
+design — diff your port against the reference, behavior for behavior. The spec file
+`.claude/agents/trade-manager-v3.md` is FROZEN; deploy it byte-identical.
+
+| # | Component | Reference | What your stack must supply |
+|---|---|---|---|
+| 1 | Agent process call: `claude -p --system-prompt-file <spec> --disallowedTools "*" --output-format json`, `--resume <session>` per-trade continuation, 240s timeout, one retry, then treat as hold | `call_claude()` (~line 78) | outbound network to the CLI; nothing else — the process gets NO tools, NO filesystem |
+| 2 | Verdict parsing, fail-closed: non-JSON → hold; action ∉ {hold, revise, exit_now} → hold; stop may only TIGHTEN, target RR floor 2.0 pre-partial / 0.1 after, partials only shrink | `parse_reply()` + the guard blocks in `manage_trade()` | nothing — pure logic, port verbatim |
+| 3 | Event detection (when to call the agent): position opened (fill+1m), press check (fill+3m), whole-R touches, flow flip on a green position, giveback ≥0.75R off a ≥1R peak, 10-min extended rechecks, EOD warning; MAX_TURNS 10; one turn max per minute | the `send()` triggers in `manage_trade()` | closed 1m bars for the open position, live |
+| 4 | Briefing state lines: bar OHLC, R_now/peak, press_state, open fraction, stop/target in R, flow line (CVD 5/15m, opposed count), book line (MBP-10 walls), mins to session end | `flow_line()`, `book_line()`, the `state` f-string in `send()` | minute CVD from your tape; MBP-10 snapshot at the decision minute. If either feed is missing the briefing degrades silently — treat both as REQUIRED (the graded edge was full-tier) |
+| 5 | Day reads: 07:45 thesis, 09:30 re-read, each carrying the journal digest; every trade's turn 0 carries the thesis | `day_reads()`, `journal_digest()` | overnight/session bars for the day so far |
+| 6 | Execution semantics: agent actions become market orders at the NEXT bar boundary; stop-first on every bar; session flattens (09:30 pre / 15:55) and the flip law OVERRIDE the agent unconditionally | the bar loop in `manage_trade()` | your broker; note live "next bar open ± 1 tick slip" = a market order sent at the minute roll |
+| 7 | Journal append at every exit: the full row schema INCLUDING `v8_R` — run the V8 exit logic in shadow per trade to log what mech would have done — plus MFE, flow-at-exit, post-exit settle | `settle()` in `manage_trade()`; schema = any row of `runs/live/journal.jsonl` | the shadow V8 walk (engine exit rules on the same fills) |
+| 8 | Isolation law (row M): a hung/dead/malformed agent NEVER blocks orders, stops, flattens, or flips — the mech path runs to completion regardless | the whole driver, by construction | certify by test: kill the agent process mid-trade in a dry run; the trade must complete mechanically |
+
+Certification for R15 = a dry-run day (shadow fills, real feeds) where (a) every component
+above matches the reference's behavior, (b) the kill-test in #8 passes, and (c) the journal
+rows written are schema-identical to the seed's. Then written confirmation to Angus.
