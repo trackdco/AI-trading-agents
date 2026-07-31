@@ -72,9 +72,13 @@ BASE $160, ANGUS 2026-07-31 — the $150-base ladder below is the historical rec
    per-trade cohort (meanR 0.68) and its removal buys maxDD $1,603->$1,268 fit at 150
    ($1,375 at 160), worst days -$762->-$670 / -$780->-$685 at 150, and scaled600 worst
    day -$3,242->-$2,319. The one metric that WORSENS: scaled600 holdout maxDD
-   $4,061->$4,986 — stated, not hidden. MC funded-yr line below is PRE-rules, pending
-   re-run.)
-             MC funded-yr (both-span pool, 2000 sims): P(bust) 1.0%, median 28 payouts
+   $4,061->$4,986 — stated, not hidden.)
+             MC funded-yr, AGENT book at base $160 (scripts/mc_funded_lab.py, whole-day
+             bootstrap, 2000 sims, 2k trailing locking at 50k, 54k->2k payouts):
+             P(bust) 0.1% | median 53 payouts (~$106k withdrawn) | eval +3k passes
+             100.0% in median 8 days. Interactive lab with every knob live (sizing,
+             DD, lock, targets, payout rule) published from that script.
+             [historical, PRE-rules mech pool: P(bust) 1.0%, median 28 payouts]
              NOTE fit worst day -$3,242 vs that day's $3,200 budget: one day, $42 through
              (last fill's stop-out landed after the budget check passed) — known, accepted
 
