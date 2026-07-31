@@ -42,10 +42,11 @@ pre score 2 → 0.5, 3 → 1.0, 4 → 1.5. **Elite 2.0×** when gold **and** TRI
 **and** `struct_event=="broke"` — max one per day, and the slot is spent on a FILL, not on a
 refusal.
 
-**Profiles.** `lucid` = base $150 flat (ladder $75/150/225/300, budget $800).
-`scaled600` = base $150, +$75 per full $2k of buffer past +$3k, capped $600, with budget and
-soft de-risk scaling *with* the base. Pick one at construction and give the spine the same
-one (`SpineConfig.profile`) or the backstop is indexed to a base the sizer never uses.
+**Profiles.** `lucid` = base $160 flat (ladder $80/160/240/320, budget $853.33) — base
+$150→$160 ANGUS 2026-07-31, row N. `scaled600` = base $160, +$75 per full $2k of buffer past
++$3k, capped $600, with budget and soft de-risk scaling *with* the base. Pick one at
+construction and give the spine the same one (`SpineConfig.profile`) or the backstop is
+indexed to a base the sizer never uses.
 
 **Risk spine.** Daily budget: `realized losses + in-flight risk + new risk ≤ budget`, where
 budget = base × 16/3. Soft de-risk to half at −35% of budget. **De-risk ladder near the line
@@ -59,7 +60,7 @@ tightest applicable step wins, and the spine's $100 hard halt sits underneath. M
 
 ```bash
 python -m pytest tests/test_canon_scorer_ny.py tests/test_ny_lane.py -q   # 35 tests
-python -m scripts.funded_book --span fit --profile lucid                  # +$97,327 (CR)
+python -m scripts.funded_book --span fit --profile lucid       # +$82,543 (3 rules, $160)
 python -m scripts.ny_lane_replay --span fit --days 25                     # 25/25 days
 python -m scripts.depth_parity --day 2026-04-20 --self-test               # PASS
 ```
@@ -76,11 +77,12 @@ python -m scripts.depth_parity --day 2026-04-20 --self-test               # PASS
 - **The depth harness is clean on both book models** — 180 archive minutes through
   `DepthBook`, and an MBO capture through `OrderBook`, both at 100% gate agreement. MBO
   aggregated to price levels *does* reproduce the archive's wall features.
-- Reference results (50k account, $2k EOD-trailing; CLOSE-AND-REVERSE): `lucid` fit
-  **+$97,327** / holdout **+$59,407**; `scaled600` fit **+$349,231** / holdout
-  **+$198,583**. Every month green in both spans under both profiles. The de-risk ladder is
-  dormant across all 19 months (min buffer $1,724 fit / $1,774 holdout), so it changes no
-  measured number.
+- Reference results (50k account, $2k EOD-trailing; ALL THREE rules, base $160 — rows
+  J/K/L/N): `lucid` fit **+$82,543** / holdout **+$48,211**; `scaled600` fit **+$272,847**
+  / holdout **+$142,565**. Every month green in both spans under both profiles. The de-risk
+  ladder is dormant across all 19 months (min buffer $1,642 fit / $1,698 holdout), so it
+  changes no measured number. WITH the shipped agent management layer (rows M/N), fit:
+  `lucid` **+$100,297** (worst day −$542, maxDD $878), `scaled600` **+$327,421**.
 
 ---
 
@@ -94,13 +96,14 @@ python -m scripts.depth_parity --day 2026-04-20 --self-test               # PASS
 | D | **No distance cancel.** Orders live to their session window end. | The 22pt `t_cancel` measured inverted: it kept −0.180R and killed +0.015R. `OrderWatch.t_cancel` now defaults to `None`; setting a float trades a book nobody measured. |
 | E | **The resting rule** supersedes fixed per-order windows: an order rests exactly while a fill right now would be admissible — dormant through the 09:30–09:40 gap, may revive in gold (the book counts a pre trigger's gold fill as a gold trade), hard-dropped at 10:30. | `NYRunner` enforces this; do not re-impose a birth-window cutoff, it removes trades the book counted. |
 | F | Gold window **09:40–10:30**, and **no 09:55–10:00 dead zone** | The rebuilt canon was validated without one. |
-| G | Sizing base **$200 → $150** | Every order size changes. |
+| G | Sizing base **$200 → $150** (superseded by row N: **$150 → $160**, ANGUS 2026-07-31) | Every order size changes. |
 | H | De-risk ladder replaces the linear taper to zero | Between $100 and $1,000 of buffer the canon now takes half/quarter-size trades where the old canon refused. Angus's ruling; the spine's $100 halt is the floor. |
 | I | **The legacy 3-minute cut must NOT fire** (`CUT_R3`/`CUT_FW3` in the exit manager / lifecycle `maybe_cut`). | The rebuilt book was measured WITHOUT it, and the time-segment study (`output/time_segments_fit.parquet`, 2026-07-30) shows the trades it would cut finish breakeven-to-POSITIVE on this canon (+0.01R pre, +0.32R gold at t+3) — armed as-is it silently underperforms the measured book. Disable it on the canon lane, or re-certify with it and accept a different book. |
 | J | **CLOSE-AND-REVERSE is canon execution semantics** (ANGUS 2026-07-30). When a validated opposing signal's limit FILLS while a position is open, that fill flattens the position at the fill price and the reversal runs as its own trade — size the opposing order to close + open in one ticket. An opposing signal that never fills changes nothing; every trade keeps its own full bracket; same-direction adds stack as before. | The book's references are measured UNDER this. A runner that blocks the opposing entry while in a position, or that only flattens without reversing, silently trades a DIFFERENT and worse book (flatten-only measured $49,880 holdout). 86 fit / 97 holdout trades flip; the flip is the book's strongest exit signal. Overlay: `output/aikido_cr_{span}.parquet`. |
 | K | **TWO SESSIONS: every pre-market position is FLATTENED at 09:30** (ANGUS 2026-07-30: "i want all pre market trades to be flattened by market open. 2 different sessions basically"). Market order on the first bar at/after 09:30 for any position filled before 09:30; the engine knob is `pre_flatten_at`. The legacy premarket BE-at-09:29 is subsumed (one minute of BE, then flat). | The references are measured UNDER this. A runner that lets pre positions ride into RTH trades a richer but DIFFERENT book than the one validated — and re-opens the open-volatility exposure ANGUS ruled out. |
 | L | **ONE PER LEVEL** (ANGUS 2026-07-30: "im all for trades in the same direction and all but not double entering off the same level"). Do NOT place a same-direction order while an open same-direction position's entry sits within 3pt of the new limit, or shares the same stop. Multi-TF sibling triggers off one cluster are ONE position, first by detection order; adds at genuinely different levels still stack. | The references (+$77,202/+$44,844 lucid) are measured UNDER this. A runner that stacks siblings trades a ~18% richer but DIFFERENT book with ~21% deeper maxDD than the one validated — 193 fit / 122 holdout entries do not exist in the canon. |
 | M | **THE AGENT MANAGEMENT LAYER IS SHIPPED** (ANGUS 2026-07-31: "whatever we gave the agents here id be happy to ship to the live agents, i've seen enough"). In-trade management of every canon fill is delegated to the frozen `trade-manager-v3` spec (Sonnet), under the desk-live semantics of `scripts/capture_desk_run.py::manage_trade`: event-driven turns (position open, press check at fill+3m, whole-R touches, flow flips on green positions, giveback ≥0.75R off a ≥1R peak, EOD warning), MAX_TURNS 10, next-bar-open execution with 1-tick slip, the engine stop an INVIOLATE floor (the agent may tighten, never widen; press-state doctrine advises against protecting winners but is NOT a lockout — full discretion stands), rows J/K/L remain law above the agent. The agent reads/appends `runs/live/journal.jsonl`, SEEDED with the full 763-row fit-span history — live day one starts with 13 months of its own decision memory (ANGUS: "thats what i want"). | Graded book UNDER this layer (fit, desk run 2): agent $95,194 vs mech $77,202 lucid, **maxDD $810 vs $1,268, worst day −$479 vs −$670**, WR 59% vs 56%, avg winner unchanged. The ship rationale is the funded risk shape — loss prevention, not winner capture. Running the canon lane WITHOUT the agent layer is the measured mech book — legal but leaves the validated improvement unarmed. Grading + caveats (conviction-shuffle null; gold-only edge; no learning trend): `docs/REPORT-desk-run-2.md`. |
+| N | **SIZING BASE $150 → $160** (ANGUS 2026-07-31, on the agent-layer ship: "the agents are very good at doing this"). One value, THREE conformance-locked homes, all updated together: `funded_book.PROFILES` (both profiles), `scorer_ny.LUCID`/`SCALED600`, and the test pins. The daily budget scales WITH the base by design ($853.33/day now); the −8R spine halt is base-relative so it stays exactly 1.5× budget; the de-risk ladder stays dormant on all validated history (min buffers $1,642 fit / $1,698 holdout). | New references, ALL rules, base $160 — mech canon: lucid fit +$82,543 (worst day −$690, maxDD $1,375), holdout +$48,211 (−$737, $1,548), 19/19 months green; scaled600 +$272,847 / +$142,565. WITH the shipped agent layer (fit): lucid +$100,297 (worst day −$542, maxDD $878), scaled600 +$327,421 (maxDD $3,158). Arming with $150 sizing now trades an unmeasured book — the conformance suite will catch it. |
 
 ---
 

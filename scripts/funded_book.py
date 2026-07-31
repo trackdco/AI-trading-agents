@@ -38,34 +38,39 @@ CONVICTION TIERS (multipliers on the profile base; cells era-consistent):
 PROFILES (risk $ = base_eff x tier; budget and soft de-risk scale WITH the base —
 ANGUS 2026-07-29: "with more buffer, we have more of a daily budget... the daily loss
 should scale with the increased sizing"):
-  lucid      base $150 fixed -> ladder $75/150/225/300, budget $800, soft -$280
-             [ANGUS 2026-07-29: "static 150 is now the lucid" — supersedes the $80/160
-              ladder tested earlier]
-  scaled600  base $150 + $75 per full $2k of buffer past +$3k, capped $600
-             (first step lands at buffer $5k) -> budget $800..$3,200, soft 35% of it
+  lucid      base $160 fixed -> ladder $80/160/240/320, budget $853, soft -$299
+             [ANGUS 2026-07-31: base $150 -> $160 on the agent-layer ship; 2026-07-29
+              "static 150 is now the lucid" superseded the $80/160 ladder before it]
+  scaled600  base $160 + $75 per full $2k of buffer past +$3k, capped $600
+             (first step lands at buffer $5k) -> budget $853..$3,200, soft 35% of it
 
 RISK SPINE (all causal: decisions see only realized-by-fill P&L + in-flight risk):
   daily budget          realized losses + in-flight risk + new risk <= budget, else skip
-                        budget = base_eff x 16/3 ($800 at base $150)
+                        budget = base_eff x 16/3 ($853.33 at base $160)
                         [bounds worst day structurally; realized-loss halts alone fail
                          under overlap — the losses aren't realized when the next fills hit]
   soft de-risk          realized day P&L <= -35% of budget -> half size (both spans)
   live ramp             half size below $1,000 of buffer above the trailing line, half
                         again below $500 (ANGUS 2026-07-30, checked tightest-step-first)
-                        [both steps dormant in 19 months — min buffer $1,621 fit / $1,720
-                         holdout — so they change no measured number; pure insurance]
+                        [both steps dormant in 19 months — min buffer $1,642 fit / $1,698
+                         holdout at base $160 — so they change no measured number;
+                         pure insurance]
   micro clamp 40 · micros = round(risk$/(stop_pts*2)), min 1
 
-REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k; ALL THREE rules):
-  lucid      fit  +$77,202 ($5,939/mo)   worst day -$670    maxDD $1,268  13/13 green
-             holdout +$44,844 ($7,474/mo)  worst day -$685  maxDD $1,398   6/6 green
-  scaled600  fit +$271,653 ($20,896/mo)  worst day -$2,319  maxDD $4,892  13/13 green
-             holdout +$141,389 ($23,565/mo) worst day -$2,740 maxDD $4,986  6/6 green
-  (Ladder, lucid: 2026-07-29 shipped $90,015/$56,409 -> +CR $97,327/$59,407 ->
-   +two-session $94,695/$56,756 -> +one-per-level $77,202/$44,844. ANGUS on the
-   one-per-level cost: "its fine sacrifcing the profit a bit, big deal" — the multi-TF
-   sibling stack was the book's best per-trade cohort (meanR 0.68) and its removal buys
-   maxDD $1,603->$1,268 fit, worst days -$762->-$670 / -$780->-$685, and scaled600 worst
+REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k; ALL THREE rules;
+BASE $160, ANGUS 2026-07-31 — the $150-base ladder below is the historical record):
+  lucid      fit  +$82,543 ($6,350/mo)   worst day -$690    maxDD $1,375  13/13 green
+             holdout +$48,211 ($8,035/mo)  worst day -$737  maxDD $1,548   6/6 green
+  scaled600  fit +$272,847 ($20,988/mo)  worst day -$2,319  maxDD $4,892  13/13 green
+             holdout +$142,565 ($23,761/mo) worst day -$2,740 maxDD $4,986  6/6 green
+  WITH THE SHIPPED AGENT LAYER (trade-manager-v3, row M/N of the Pat handover), fit:
+  lucid +$100,297 worst day -$542 maxDD $878; scaled600 +$327,421 maxDD $3,158.
+  (Ladder, lucid AT THE OLD $150 BASE: 2026-07-29 shipped $90,015/$56,409 -> +CR
+   $97,327/$59,407 -> +two-session $94,695/$56,756 -> +one-per-level $77,202/$44,844
+   -> base $160 $82,543/$48,211. ANGUS on the one-per-level cost: "its fine sacrifcing
+   the profit a bit, big deal" — the multi-TF sibling stack was the book's best
+   per-trade cohort (meanR 0.68) and its removal buys maxDD $1,603->$1,268 fit at 150
+   ($1,375 at 160), worst days -$762->-$670 / -$780->-$685 at 150, and scaled600 worst
    day -$3,242->-$2,319. The one metric that WORSENS: scaled600 holdout maxDD
    $4,061->$4,986 — stated, not hidden. MC funded-yr line below is PRE-rules, pending
    re-run.)
@@ -91,10 +96,12 @@ from src.canon.scorer_ny import ramp_for  # noqa: E402  (one implementation of t
 
 PROFILES = {
     # base fixed: cap == base disables scaling entirely
-    "lucid": dict(base=150.0, per=0.0, step=2000.0, after=3000.0, cap=150.0),
-    "scaled600": dict(base=150.0, per=75.0, step=2000.0, after=3000.0, cap=600.0),
+    # ANGUS 2026-07-31: base $150 -> $160 ("the agents are very good at doing this").
+    "lucid": dict(base=160.0, per=0.0, step=2000.0, after=3000.0, cap=160.0),
+    "scaled600": dict(base=160.0, per=75.0, step=2000.0, after=3000.0, cap=600.0),
 }
-BUDGET_PER_BASE = 800.0 / 150.0     # $800 daily budget at the $150 base
+BUDGET_PER_BASE = 800.0 / 150.0     # budget RATIO anchored $800/$150; scales with base
+                                    # ($853.33/day at the $160 base — by design, see tests)
 SOFT_FRAC = 280.0 / 800.0           # soft de-risk at 35% of that day's budget
 START, TRAIL = 50_000.0, 2_000.0
 MICRO_CLAMP = 40

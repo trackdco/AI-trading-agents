@@ -26,6 +26,11 @@ ANGUS 2026-07-30, switching accounts at the weekly limit. Next session picks up 
 > shape (maxDD $810 vs the distillate's $2,476) is the binding criterion for a fund.
 > **The one-shot HOLDOUT look remains UNSPENT and sealed** — shipped on fit + funded
 > evidence; the look stays available if ever wanted before live capital scales.
+>
+> **ANGUS 2026-07-31 (follow-up): SIZING BASE $150 → $160.** Shipped through all three
+> conformance-locked homes (funded_book PROFILES, scorer_ny LUCID/SCALED600, test pins).
+> New references: mech lucid $82,543 fit / $48,211 holdout; WITH the agent layer
+> $100,297 fit (worst day −$542, maxDD $878). Pat handover row N.
 
 The session ended inside an exit-mechanics lab Angus was driving live. Finish it FIRST, then
 run the agents test (§1 onward). The lab scripts were rescued from the ephemeral scratchpad

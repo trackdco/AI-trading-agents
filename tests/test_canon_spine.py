@@ -93,8 +93,8 @@ def test_dd_proximity_halt():
 
 
 def test_daily_loss_halt():
-    # -8R of the $150 lucid base = -$1,200 (1.5x the canon's own $800 daily budget)
-    acct = AccountState(equity=52_000, trailing_floor=50_000, day_pnl=-1_200,
+    # -8R of the $160 lucid base = -$1,280 (1.5x the canon's own $853.33 daily budget)
+    acct = AccountState(equity=52_000, trailing_floor=50_000, day_pnl=-1_280,
                         open_positions=0)
     d = _exe().check(intent(), acct, GOOD_FEED, 0.0)
     assert d.action == "halt" and d.rule == "daily_loss"
@@ -236,8 +236,8 @@ def test_daily_loss_halt_reindexes_as_the_base_scales():
                             day_pnl=0, open_positions=0)
     grown = AccountState(equity=57_000, trailing_floor=50_000,      # $7k available DD
                          day_pnl=0, open_positions=0)
-    assert daily_loss_halt_dollars(cfg, at_floor) == -1_200.0       # base $150
-    assert daily_loss_halt_dollars(cfg, grown) == -2_400.0          # base $300
+    assert daily_loss_halt_dollars(cfg, at_floor) == pytest.approx(-1_280.0)  # base $160
+    assert daily_loss_halt_dollars(cfg, grown) == pytest.approx(-2_480.0)     # base $310
     just_under = AccountState(equity=57_000, trailing_floor=50_000,
                               day_pnl=-2_399, open_positions=0)
     assert _exe(profile="scaled600").check(intent(), just_under, GOOD_FEED,
