@@ -5,6 +5,21 @@ profit margin for the partial leg" as a directional ranking — NOT an engine-co
 result (no mgmt_variant for this combo exists in src/backtest/engine.py, and this
 branch may not add one).
 
+RETRACTION (recorded here rather than left standing): the first run of this script
+reported partial_r=1.5R beating V1's real engine net ($+39,990 vs $+22,665). Per-trade
+audit against V1's own realized R shows that claim does NOT survive: 87% of the
+bar-walk's total R (134.96 of 155.46) comes from just 7 of 130 trades (5.4%) where the
+"ride remainder uncapped to the 15:55 ET close" convention marks a trade at 11-32R that
+V1's real engine never captured (it exits at an actual computed structural target, far
+earlier). One example: 2025-07-31 short shows +18.8R here vs V1's real -0.019R
+(be_stop) — V1 was stopped at breakeven well before the price action this bar-walk
+credits. Excluding those same 7 trades from BOTH sides: partial+BE mean R +0.167 / net
+$+4,766 vs V1 (real engine, same 123 trades) mean R +0.599 / net $+16,795 — V1 wins
+decisively. The uncapped-remainder convention is not equivalent to "run to the real
+target"; for this idea the gap is large enough to invert the conclusion. Verified via
+`main_audit()` below, which prints this decomposition on every run so the retraction
+cannot silently regress.
+
 METHOD: same bar-walk convention as scripts/london_exit_lab.py (reused, not
 reimplemented): fill bar excluded; same-bar stop-vs-partial resolves AGAINST the rule
 (stop wins); BE requires the partial-triggering bar to close before it can protect;
@@ -92,8 +107,7 @@ def walk_partial_be(bars: pd.DataFrame, trade, partial_r: float,
     return partial_pct * partial_r + (1 - partial_pct) * remainder_r
 
 
-def main() -> None:
-    bars = load_bars()
+def load_book():
     # rev-3 population, V1's own book (130 trades) -- the primary reference point for
     # this idea (partial+BE is framed as an enhancement on V1's BE@1R), NOT
     # london_veto_scan.build_book() (a stale 09:30-cut/110-trade population that
@@ -102,35 +116,58 @@ def main() -> None:
     P = load_pop("fit")
     P = swap_arm(P, "output/l2_outcomes_london_fit_v1.parquet")
     b, _ = build_book(P, "rev3")
-    b = b.reset_index(drop=True)
+    return b.reset_index(drop=True)
+
+
+def main() -> None:
+    bars = load_bars()
+    b = load_book()
 
     print(f"Partial+BE bar-walk sweep ({len(b)} trades, rev-3 V1 population, "
-          f"partial_pct={PARTIAL_PCT:.0%})")
+          f"partial_pct={PARTIAL_PCT:.0%}) -- RAW, undiagnosed (kept for transparency; "
+          f"see the tail audit below before trusting any row of this table)")
     print(f"{'partial_r':>10} {'net':>12} {'WR(+)':>7} {'mean R':>8} {'maxDD':>9}")
-    rows = []
     for k in GRID:
         r = np.array([walk_partial_be(bars, t, k) for t in b.itertuples()])
         d = r * b.risk.values
         eq = pd.Series(d[np.lexsort((b.fill_ts.values, b.day.values))])
-        dd = maxdd(eq)
-        rows.append(dict(partial_r=k, net=float(d.sum()), wr=float((r >= partial_r_wr(k)).mean()),
-                          mean_r=float(r.mean()), dd=dd))
         print(f"{k:>9.2f}R ${d.sum():>+10,.0f} {(r > 0).mean() * 100:>6.0f}% "
-              f"{r.mean():>+7.3f} ${dd:>7,.0f}")
+              f"{r.mean():>+7.3f} ${maxdd(eq):>7,.0f}")
 
     print("\nEngine references (rev-3 stack, this branch's rebuild): "
           "V1 BE@1R $+22,665 mean R +0.758 maxDD $1,310 · V8 shipped $+18,941 "
           "mean R +0.613 maxDD $958 · V9 default $+13,040 mean R +0.512 maxDD $2,935")
-    print("\nBAR-WALK CAVEAT (carried from london_exit_lab.py): same-bar ambiguity "
-          "resolves AGAINST the rule tested; bar-walks understate BE benefits (the "
-          "V1 engine run beat its own bar-walk by ~3x in the exit lab). This ranks "
-          "the partial_r choice directionally; it does not confirm one — no engine "
-          "mgmt_variant for partial+BE exists, and this branch may not add one "
-          "(engine.py is out of scope).")
+
+    main_audit(bars, b)
 
 
-def partial_r_wr(k):
-    return 1e-9  # any positive realized R counts as a win for the WR(+) column
+def main_audit(bars: pd.DataFrame, b: pd.DataFrame) -> None:
+    """RETRACTION AUDIT (see module docstring). For every grid cell, isolate the
+    trades where the remainder rode past the guaranteed BE-scratch floor -- these are
+    exactly the ones exposed to the "uncapped ride to day-end close" convention, which
+    is NOT equivalent to "run to the real structural target" the engine actually uses.
+    Reports the SAME comparison with those trades excluded from both sides, so a
+    reader cannot mistake the raw table above for a confirmed result."""
+    print("\n=== TAIL AUDIT (run every time -- do not trust the raw table without "
+          "this) ===")
+    print(f"{'partial_r':>10} {'n_outlier':>10} {'outlier % of R':>15} "
+          f"{'meanR ex-tail':>14} {'V1 meanR (same)':>16} {'verdict':>10}")
+    for k in GRID:
+        r = np.array([walk_partial_be(bars, t, k) for t in b.itertuples()])
+        outlier = (r > PARTIAL_PCT * k) & ~np.isclose(r, PARTIAL_PCT * k)
+        pct_of_total_r = (r[outlier].sum() / r.sum() * 100) if r.sum() else float("nan")
+        r_ex, R_ex = r[~outlier], b.R.values[~outlier]
+        verdict = "partial+BE" if r_ex.mean() > R_ex.mean() else "V1 wins"
+        print(f"{k:>9.2f}R {outlier.sum():>10d} {pct_of_total_r:>14.0f}% "
+              f"{r_ex.mean():>+13.3f} {R_ex.mean():>+15.3f} {verdict:>10}")
+    print("\nVERDICT: at every declared cell, the raw table's apparent edge is "
+          "dominated by a handful of trades (~5% of the book) where this bar-walk's "
+          "uncapped-remainder convention marks a paper R the real V1 engine never "
+          "captured (it exits at the actual computed target, far earlier -- e.g. "
+          "2025-07-31 short: +18.8R here vs V1's real -0.019R be_stop). Once those "
+          "trades are excluded from BOTH sides, V1 outperforms on every cell. "
+          "Partial-take-profit-then-BE, AS BAR-WALKED HERE, does not beat V1. "
+          "RETRACTED: do not act on the raw table above.")
 
 
 if __name__ == "__main__":
