@@ -67,3 +67,33 @@ This is a ruling, not an engineering fix, and it waits for §3's number:
 
 Nothing here relaxes any gate by itself. The DO NOT ARM verdict stands until the floor
 number exists and Angus rules on it.
+
+## 5. RESULT of the noise-floor experiment (run 2026-07-31, Pat's Mac, raw vendor file)
+
+    == NOISE FLOOR vendor-vs-itself, 500ms sampling skew ==
+      probes 362 | GATE AGREEMENT: 88.12%
+      dep_thick            max|Δ|   31.0000  median   3.0000
+      dep_wall_above_d     max|Δ|    4.7500  median   0.6250
+      dep_wall_below_d     max|Δ|    6.5000  median   0.7500
+      dep_wall_above_sz    max|Δ|   24.0000  median   0.0000
+      dep_wall_below_sz    max|Δ|   15.0000  median   1.0000
+
+**The vendor disagrees with itself (88.12%) MORE than the box disagrees with the vendor
+(93.06%).** The box's wall-distance medians vs the vendor (0.25pt) are TIGHTER than the
+vendor's own 500ms self-skew (0.625–0.75pt) — the live feed sits well inside the gate's
+own sampling noise. The three numbers together:
+
+| comparison | gate agreement |
+|---|---|
+| probe mechanics self-check (archive vs itself, same instant) | 100.00% |
+| **box capture vs vendor archive (the R10b run)** | **93.06%** |
+| vendor vs itself, 500ms sampling skew (the noise floor) | 88.12% |
+
+Conclusion per §4: the live feed is clean; the FAIL was the gate's 100% bar being
+unachievable by construction against any second clock. The measured book's edge already
+contains this same sampling noise from the vendor side. **Proposed re-spec for ANGUS:**
+R10b passes when (a) gate agreement ≥ the same-day vendor self-skew floor, AND (b) the
+§1 bias checks hold at full strictness — majority of matched levels byte-identical, size
+ratio ≈ 1.00, minute alignment best at lag 0, price scale exact. On 2026-07-29 the box
+clears (a) by 5 points and (b) on every check. DO NOT ARM remains in force until Angus
+rules; nothing here self-authorizes.
