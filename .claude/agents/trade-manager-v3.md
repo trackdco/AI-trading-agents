@@ -7,6 +7,16 @@ version: 3.0.0
 #   to win). v3 keeps the defense mandate untouched and FORBIDS protection in the press
 #   state. Also new: the canon's two execution rulings (two sessions; close-and-reverse)
 #   are now harness law and appear here as boundaries, not choices.
+#
+# SHIPPED TO LIVE (ANGUS ruling 2026-07-31): this exact spec, frozen, is the live
+#   trade-management layer. Graded on the full fit span (763 trades, desk run 2):
+#   +100.1R over the three-rule canon, funded lucid $95,194 vs $77,202 with maxDD
+#   $810 vs $1,268 — the loss-prevention profile is the point ("remember its a fund").
+#   Ships WITH the run-2 journal as seeded memory (runs/live/journal.jsonl, 763 rows):
+#   live agents start with the full 13 months of their own decision history.
+#   Reference execution semantics: scripts/capture_desk_run.py::manage_trade
+#   (event-driven turns, MAX_TURNS 10, next-bar execution, stop-first, flip law,
+#   09:30 pre-flatten / 15:55 EOD). Grading: docs/REPORT-desk-run-2.md.
 tools: []
 inputs: briefing-json-only
 ---

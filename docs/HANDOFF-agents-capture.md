@@ -14,9 +14,18 @@ ANGUS 2026-07-30, switching accounts at the weekly limit. Next session picks up 
 > the delta is policy shape (cut losers fast, refuse canon exits on runners), not
 > per-trade discrimination; lock1r_2r alone captures 92% of it at 3× the drawdown.
 > Read `docs/REPORT-desk-run-2.md` first. Grader: `scripts/grade_desk_run2.py`.
-> Journal/state: `runs/desk2/`. **The phase-2 HOLDOUT chain was NOT launched — that
-> one-shot look waits for Angus's explicit go; per PLAN §8 only a frozen policy earns
-> it, and post-shuffle the natural candidate is a mechanical distillate, not the chain.**
+> Journal/state: `runs/desk2/`.
+>
+> **ANGUS SHIP RULING 2026-07-31 (morning after): the agent layer SHIPS to live as-is.**
+> "95k with $800 dd is insanely good... remember its a fundd — it prevented lots more
+> losses than where it didnt capture winners fully, and thats completely fine." Frozen
+> v3 spec + desk-live semantics + the 763-row journal seeded as live memory
+> (`runs/live/journal.jsonl` — "live agents will have this 12 months of their own
+> decision making as a head start"). Pat handover row M carries the arming detail.
+> The shuffle caveat is documented, Angus ruled with it on the table: the funded risk
+> shape (maxDD $810 vs the distillate's $2,476) is the binding criterion for a fund.
+> **The one-shot HOLDOUT look remains UNSPENT and sealed** — shipped on fit + funded
+> evidence; the look stays available if ever wanted before live capital scales.
 
 The session ended inside an exit-mechanics lab Angus was driving live. Finish it FIRST, then
 run the agents test (§1 onward). The lab scripts were rescued from the ephemeral scratchpad

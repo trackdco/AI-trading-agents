@@ -5,6 +5,14 @@ pre-registered protocol in `docs/PLAN-agents-capture-run.md` §6–§9. Phase 2
 (the one-shot holdout chain) has NOT been launched — that look waits for an
 explicit go.
 
+> **POSTSCRIPT — ANGUS SHIP RULING (2026-07-31).** Shipped to live as-is: frozen v3
+> spec, desk-live semantics, journal seeded (`runs/live/journal.jsonl`). Rationale is
+> the funded criterion, with the shuffle result on the table: "remember its a fundd —
+> it prevented lots more losses than where it didnt capture winners fully, and thats
+> completely fine." The agent's advantage over the mechanical distillate is precisely
+> the risk shape (maxDD $810 vs $2,476), which is what a funded account is graded on.
+> The holdout look stays sealed and unspent. Arming detail: HANDOVER-pat-arming row M.
+
 ## Verdict in one paragraph
 
 The desk-live agent beat the three-rule mechanical canon by **+100.1R over 763
