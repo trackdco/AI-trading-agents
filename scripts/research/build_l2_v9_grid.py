@@ -16,8 +16,18 @@ per-cell v9_arm_r/v9_lock_frac override to l2_cfg and nothing else. One bar-segm
 per day serves all 5 cells (amortizes the load; simulate() cost itself is irreducible
 per cell, since a different management config walks a genuinely different exit path).
 
-FIT SPAN ONLY. Holdout guard: src/research/holdout_guard.py is applied to every bar
-load in this file.
+FIT SPAN ONLY. Three-layer holdout guard (src/research/holdout_guard.py):
+  1. the input census path is asserted fit-only BEFORE any Pool work starts
+  2. every trigger day is verified in {2025, 2026} before jobs are built (catches a
+     bad census even if #1's path-name check were somehow bypassed)
+  3. the raw master bars file is EXPLICITLY, LOUDLY filtered to fit years on load —
+     `assert_fit_only` cannot be used directly on that file (it is a shared,
+     unpartitioned 2023-2026 source by design, not a span-specific artifact); see
+     `holdout_guard.filter_to_fit_years`'s docstring for why this is the one place a
+     filter-and-continue pattern is correct rather than a violation of "raise, don't
+     filter". (This three-way split was itself discovered by the guard doing its job:
+     the first version of this script called assert_fit_only on the raw master and
+     correctly hard-failed — see commit history.)
 
     python -m scripts.research.build_l2_v9_grid --procs 3
 """
@@ -38,7 +48,8 @@ import scripts.build_l0_triggers_london as L0M  # noqa: E402
 from scripts.build_l0_triggers_london import window_et  # noqa: E402
 from src.backtest.engine import load_backtest_config, simulate  # noqa: E402
 from src.engine.triggers import Trigger  # noqa: E402
-from src.research.holdout_guard import assert_fit_only  # noqa: E402
+from src.research.holdout_guard import (assert_path_fit_only,  # noqa: E402
+                                        filter_to_fit_years)
 
 NY = "America/New_York"
 LOOKBACK_DAYS = 7
@@ -63,10 +74,12 @@ def l2_cfg(day: str, arm_r: float, lock_frac: float):
 
 
 def load_bars() -> pd.DataFrame:
+    """MASTER is the shared, unpartitioned raw file (2023-2026) — filtered here to
+    fit years explicitly and loudly (see holdout_guard.filter_to_fit_years), not
+    hard-asserted, since it always contains sealed rows by design."""
     df = (pd.read_parquet(ROOT / MASTER).drop(columns=["roll"], errors="ignore")
           .sort_values("ts_event").reset_index(drop=True))
-    assert_fit_only(df, "ts_event", str(MASTER))
-    return df
+    return filter_to_fit_years(df, "ts_event", str(MASTER))
 
 
 def day_outcomes(args) -> list[dict]:
@@ -107,6 +120,11 @@ def day_outcomes(args) -> list[dict]:
 def run(trigs: pd.DataFrame, procs: int, lookback: int = LOOKBACK_DAYS) -> pd.DataFrame:
     ts = pd.to_datetime(trigs.ts, format="mixed", utc=True).dt.tz_convert(NY)
     trigs = trigs.assign(day=ts.dt.strftime("%Y-%m-%d"))
+    bad_years = sorted(set(pd.to_datetime(trigs.day).dt.year.unique().tolist())
+                       - {2025, 2026})
+    if bad_years:
+        raise RuntimeError(f"SEALED SPAN IN CENSUS: trigger days include year(s) "
+                           f"{bad_years} — the input census is not fit-only")
     jobs = [(day, g.drop(columns=["day"]).to_dict("records"), lookback)
             for day, g in trigs.groupby("day", sort=True)]
     rows = []
@@ -124,7 +142,9 @@ def main() -> None:
     ap.add_argument("--procs", type=int, default=3)
     a = ap.parse_args()
     L0M.WINDOW = ("08:00", "10:00")     # census window; rev-3 09:45 cut applied downstream
-    trigs = pd.read_parquet(ROOT / "output/l0_triggers_london_fit.parquet")
+    census_path = "output/l0_triggers_london_fit.parquet"
+    assert_path_fit_only(census_path)
+    trigs = pd.read_parquet(ROOT / census_path)
     F = run(trigs, procs=a.procs)
     out = ROOT / "output/research/l2_outcomes_london_fit_v9grid.parquet"
     out.parent.mkdir(exist_ok=True)
