@@ -56,3 +56,36 @@ holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping
 == 2025-10-07: 1 candidates
   2025-10-07_0405_l_33: agent -0.11R vs V1 -0.03R | agent_exit | turns 5
 == 2025-10-13: 1 candidates
+  2025-10-13_0442_s_34: agent +0.25R vs V1 -0.03R | stop | turns 5
+== 2025-10-14: 1 candidates
+  2025-10-14_0336_s_35: agent +2.47R vs V1 +2.49R | target | turns 0
+== 2025-10-15: 2 candidates
+  2025-10-15_0350_l_36: agent +2.68R vs V1 +2.71R | target | turns 4
+  2025-10-15_0351_l_37: SKIPPED (agent still in a position until 2025-10-15 04:02:00-04:00)
+== 2025-10-20: 1 candidates
+  2025-10-20_0306_l_38: agent +3.33R vs V1 +3.35R | target | turns 8
+== 2025-10-22: 1 candidates
+  2025-10-22_0322_l_39: agent +0.71R vs V1 -0.02R | stop | turns 10
+== 2025-10-30: 1 candidates
+  2025-10-30_0519_s_40: agent +2.97R vs V1 -0.02R | stop | turns 10
+== 2025-10-31: 2 candidates
+  2025-10-31_0426_s_41: agent -1.03R vs V1 -1.01R | stop | turns 5
+  2025-10-31_0447_l_42: SKIPPED (agent still in a position until 2025-10-31 04:54:00-04:00)
+== 2025-11-04: 3 candidates
+  2025-11-04_0329_s_43: agent -0.53R vs V1 -0.51R | stop | turns 1
+  2025-11-04_0336_l_44: agent -0.05R vs V1 -0.02R | stop | turns 3
+  2025-11-04_0412_s_45: agent +0.97R vs V1 +5.44R | stop | turns 6
+== 2025-11-05: 5 candidates
+  2025-11-05_0317_l_46: agent +0.27R vs V1 -0.01R | stop | turns 9
+  2025-11-05_0329_l_47: SKIPPED (agent still in a position until 2025-11-05 03:58:00-05:00)
+  2025-11-05_0348_s_48: SKIPPED (agent still in a position until 2025-11-05 03:58:00-05:00)
+  2025-11-05_0359_s_49: agent -0.79R vs V1 n/a | stop | turns 2
+  2025-11-05_0426_s_50: agent -0.26R vs V1 -0.03R | agent_exit | turns 3
+== 2025-11-06: 1 candidates
+  2025-11-06_0348_l_51: agent +2.40R vs V1 +2.42R | target | turns 4
+== 2025-11-14: 1 candidates
+  2025-11-14_0442_s_52: agent -0.04R vs V1 -0.02R | stop | turns 1
+== 2025-11-17: 1 candidates
+  2025-11-17_0421_s_53: agent +1.46R vs V1 +5.10R | stop | turns 6
+== 2025-11-19: 2 candidates
+  2025-11-19_0305_s_54: agent +1.22R vs V1 -0.02R | stop | turns 5
