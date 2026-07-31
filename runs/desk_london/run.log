@@ -15,3 +15,42 @@ holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping
 == 2025-06-26: 1 candidates
   2025-06-26_0440_s_10: agent -0.05R vs V1 -0.03R | stop | turns 5
 == 2025-07-01: 2 candidates
+  2025-07-01_0433_l_11: agent -0.05R vs V1 -0.02R | stop | turns 3
+  2025-07-01_0433_l_12: SKIPPED (agent still in a position until 2025-07-01 04:39:00-04:00)
+== 2025-07-02: 1 candidates
+  2025-07-02_0409_l_13: agent -0.49R vs V1 -0.47R | stop | turns 3
+== 2025-07-07: 2 candidates
+  2025-07-07_0312_l_14: agent -1.05R vs V1 -1.02R | stop | turns 3
+  2025-07-07_0316_l_15: SKIPPED (agent still in a position until 2025-07-07 03:30:00-04:00)
+== 2025-07-18: 1 candidates
+  2025-07-18_0414_l_16: agent +0.11R vs V1 -0.03R | agent_exit | turns 5
+== 2025-07-31: 1 candidates
+  2025-07-31_0405_s_17: agent -0.04R vs V1 -0.02R | stop | turns 4
+== 2025-08-05: 1 candidates
+  2025-08-05_0407_s_18: agent -0.56R vs V1 -0.02R | stop | turns 4
+== 2025-08-08: 1 candidates
+  2025-08-08_0402_l_19: agent +3.18R vs V1 +3.20R | target | turns 10
+== 2025-08-18: 1 candidates
+  2025-08-18_0406_s_20: agent +2.36R vs V1 +2.38R | target | turns 3
+== 2025-08-22: 1 candidates
+  2025-08-22_0302_l_21: agent +2.85R vs V1 +2.87R | target | turns 5
+== 2025-08-26: 2 candidates
+  2025-08-26_0334_l_22: agent -0.68R vs V1 -0.99R | agent_exit | turns 3
+  2025-08-26_0404_l_23: agent +0.87R vs V1 +2.98R | agent_exit | turns 7
+== 2025-09-02: 1 candidates
+  2025-09-02_0406_l_24: agent -1.01R vs V1 -1.01R | stop | turns 5
+== 2025-09-04: 1 candidates
+  2025-09-04_0341_l_25: agent -0.05R vs V1 -0.02R | stop | turns 4
+== 2025-09-12: 1 candidates
+  2025-09-12_0404_s_26: agent +1.25R vs V1 -0.02R | stop | turns 8
+== 2025-09-15: 1 candidates
+  2025-09-15_0431_s_27: agent -0.05R vs V1 -0.02R | stop | turns 5
+== 2025-09-24: 1 candidates
+  2025-09-24_0306_s_28: agent +0.52R vs V1 -0.02R | agent_exit | turns 8
+== 2025-09-29: 2 candidates
+  2025-09-29_0313_l_29: agent +2.07R vs V1 +2.09R | target | turns 4
+  2025-09-29_0316_l_30: SKIPPED (agent still in a position until 2025-09-29 03:35:00-04:00)
+== 2025-09-30: 2 candidates
+  2025-09-30_0353_l_31: agent -0.04R vs V1 -0.02R | agent_exit | turns 4
+  2025-09-30_0427_l_32: agent +0.95R vs V1 -0.03R | stop | turns 5
+== 2025-10-07: 1 candidates
