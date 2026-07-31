@@ -97,3 +97,28 @@ R10b passes when (a) gate agreement ≥ the same-day vendor self-skew floor, AND
 ratio ≈ 1.00, minute alignment best at lag 0, price scale exact. On 2026-07-29 the box
 clears (a) by 5 points and (b) on every check. DO NOT ARM remains in force until Angus
 rules; nothing here self-authorizes.
+
+## 6. RULING (ANGUS 2026-07-31, relayed via Pat) + verdict-level materiality
+
+**R10b re-specced and CLOSED for the current feed config.** Passes when (a) gate
+agreement ≥ the same-day vendor-vs-itself noise floor at a permanently fixed 500ms skew,
+and (b) every §1 bias check holds at full strictness (majority of matched levels
+byte-identical, size ratio median ≈ 1.00, alignment best at lag 0, exact price scale,
+full 10 levels both sides). The 100% bar is retired as unachievable by construction
+across clocks. 2026-07-29: 93.06% vs 88.12% floor (+5pts clear), all bias checks clean —
+**PASS**. Any feed or config change reopens the gate with a fresh same-day capture and
+floor.
+
+**Materiality check (Angus: "expected ~zero"):** entry-decision flips between the two
+books, evaluated with the window-decisive gates (pre 08:00–09:30: W; gold 09:40–10:30:
+D ∧ ¬quality-cut), per minute per direction:
+
+    pre  window:  0 flips / 180 probes  (0.0%)  — the W gate is fully noise-immune
+    gold window:  3 flips / 100 probes  (3.0%)  — 09:58 long, 10:05 short, 10:17 long
+    TOTAL: 3/280 (1.07%); at the book's ~4 candidates/day, expected differing
+    TRADES per session ≈ 0.04 — one trade per ~25 sessions.
+
+Caveat: probes are at the archive mid per minute, not at actual trigger entries (no
+2026-07-29 bars in the repo — the reference parquet ends 07-15). The exact trigger-level
+replay runs on the box during the R13/R15 weekend certification, where the day's bars
+exist; expected to confirm ~zero.
