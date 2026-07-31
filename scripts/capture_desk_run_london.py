@@ -61,12 +61,23 @@ from src.research.holdout_guard import assert_path_fit_only  # noqa: E402
 
 NY = "America/New_York"
 LON = "Europe/London"
-SPEC = ROOT / ".claude/agents/trade-manager-london.md"
-RUNS = ROOT / "runs/desk_london"
+SPEC = ROOT / ".claude/agents/trade-manager-london-v2.md"
+RUNS = ROOT / "runs/desk_london2"
 TICK, SLIP, COMMISSION, PV = 0.25, 1, 5.0, 20.0
 MAX_TURNS = 10
 CLI_TIMEOUT = 240
 MASTER = "data/reference/nq_1m_master.parquet"
+# v2 (run 1 finding, docs/REPORT-desk-london-1.md): the worst 5 paired deltas alone
+# totaled -27.8R, all the identical mechanism -- the agent tightened/partialed a
+# genuine +5R-10R runner off a single flow-flip read. Defense (V1 scratches/losers,
+# n=91) was +17.8R; offense (V1 winners, n=37) was -35.2R, concentrated almost
+# entirely in V1 winners >4R (-27.8R of it on just 7 trades). HARNESS-ENFORCED (not
+# spec-guided -- the v1 spec already told it to be patient at shallow depth and it
+# still clipped at +1.67R peak on one trade): once a trade's peak reaches this many
+# R, no more tightening, partials, or exit_now -- only hold, or a target_r that
+# EXTENDS the current target. Threshold matches London's own measured signal (this
+# session's terrain work): win rate genuinely shifts at +2R reached (29% -> 60%).
+LOCKOUT_PEAK_R = 2.0
 
 BUCKETS = [(480, 510, "08:00-08:30"), (510, 540, "08:30-09:00"),
            (540, 570, "09:00-09:30"), (570, 585, "09:30-09:45")]
@@ -397,13 +408,19 @@ def manage_trade(t, bars, tape, dep, thesis, journal) -> dict:
             return
         last = float(bar.close)
         press = bool((r3 or 0) >= 0.5 and r_of(last) > 0 and (peak_r - r_of(last)) <= 0.25)
+        locked = peak_r >= LOCKOUT_PEAK_R
         state = (f"[{minute.strftime('%H:%M')}] EVENT: {why}\n"
                  f"bar {bar.open:.2f}/{bar.high:.2f}/{bar.low:.2f}/{bar.close:.2f} | "
                  f"R_now {r_of(last):+.2f} peak {peak_r:+.2f} | pressing {press} | "
                  f"open {frac:.2f} | stop {r_of(stop):+.2f}R target "
                  f"{'none' if target is None else f'{r_of(target):+.2f}R'} | "
                  f"{flow_line(tape, minute, s)} | {book_line(dep, minute, last, s)} | "
-                 f"mins_to_session_end {int((flatten - minute).total_seconds() // 60)}")
+                 f"mins_to_session_end {int((flatten - minute).total_seconds() // 60)}"
+                 + (f"\nLOCKED: peak has reached +{peak_r:.1f}R (>= {LOCKOUT_PEAK_R:.0f}R). "
+                    "Protective actions (stop tighten, partial, exit_now) are DISABLED by "
+                    "the harness for this trade from here on -- your reply may only hold "
+                    "or extend target_r further. Don't propose protection; it will be "
+                    "silently ignored." if locked else ""))
         if turns == 0:
             state = (f"NEW POSITION {t['direction'].upper()} | entry {entry} "
                      f"risk {risk_pts:.2f}pt | engine stop {stop} (-1R, INVIOLATE FLOOR) | "
@@ -422,11 +439,14 @@ def manage_trade(t, bars, tape, dep, thesis, journal) -> dict:
         last_note = str(rep.get("note", ""))[:120]
         act = rep["action"]
         if act == "exit_now":
-            pending.append(("exit", None))
+            if locked:
+                last_note = (last_note + " [HARNESS: exit_now blocked, locked >=2R]")[:160]
+            else:
+                pending.append(("exit", None))
             return
         if act != "revise":
             return
-        if rep.get("stop_r") is not None:
+        if rep.get("stop_r") is not None and not locked:
             try:
                 cand = entry + s * float(rep["stop_r"]) * risk_pts
                 if s * (cand - stop) > 0:
@@ -436,16 +456,21 @@ def manage_trade(t, bars, tape, dep, thesis, journal) -> dict:
         if "target_r" in rep:
             tr = rep.get("target_r")
             if tr is None:
-                target = None
+                if not locked:
+                    target = None
             else:
                 try:
                     tr = float(tr)
                     floor = 0.1 if partial_done else 2.0
-                    if tr >= floor:
+                    cur_r = r_of(target) if target is not None else float("inf")
+                    if locked:
+                        if tr > cur_r:          # only a genuine EXTENSION passes while locked
+                            target = round(round((entry + s * tr * risk_pts) / TICK) * TICK, 10)
+                    elif tr >= floor:
                         target = round(round((entry + s * tr * risk_pts) / TICK) * TICK, 10)
                 except Exception:
                     pass
-        if rep.get("partial_pct") is not None:
+        if rep.get("partial_pct") is not None and not locked:
             try:
                 p = float(rep["partial_pct"])
                 if 0.0 < p < 1.0:
