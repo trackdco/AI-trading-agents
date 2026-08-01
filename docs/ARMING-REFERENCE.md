@@ -101,7 +101,7 @@ Each of these is a live-visible change and is why this document exists.
 | R8 | Full suite green | ⚠️ 739 pass, 2 fail — both long-standing and unrelated (`london_depth.DIR`, `build_ny_substrate.canon_config` attribute drift), confirmed failing before any of this work |
 | R9 | Live LANE exists and reproduces the book on real days | ✅ `src/canon/ny_lane.py`, 25/25 fit days via `scripts/ny_lane_replay.py` |
 | R10 | Depth parity HARNESS exists and is self-clean | ✅ `scripts/depth_parity.py` — 180 archive minutes via `DepthBook` and an MBO capture via `OrderBook`, both 100% gate agreement |
-| R10b | Depth parity run against a REAL captured session | ❌ needs one capture — Pat, `docs/HANDOVER-pat-arming.md` §4.2 |
+| R10b | Depth parity run against a REAL captured session | ✅ CLOSED (ANGUS 2026-07-31, relayed via Pat): capture 2026-07-29 at 93.06% vs the 88.12% same-day 500ms vendor self-skew floor, all bias checks clean — bar re-specced per `docs/REPORT-parity-2026-07-29.md` §6; any feed/config change REOPENS with a fresh capture + floor |
 | R11 | Runner orchestration (detector → orders → lane, struct_event joined) | ✅ `src/live/ny_runner.py`, 16 tests — Pat wires four calls + action execution |
 | R12 | Angus's token against a certified commit | ❌ yours to issue |
 | R13 | Three-rule execution semantics enforced by the runner (handover rows J/K/L: close-and-reverse in one ticket · pre flat at 09:30 · one-per-level dedupe) | ❌ Pat wires + certifies — the book's references do not exist without them |
