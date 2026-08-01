@@ -457,3 +457,42 @@ def test_detector_frame_is_trimmed_to_warmup_horizon(live):
     df = seen["df"]
     assert len(df)                                          # the fresh bar is present
     assert pd.to_datetime(df.ts_event).min() >= _ts("09:45") - FRAME_WARMUP
+
+
+# ------------------------------------------------------- cancel/fill same-bar race (ny:20)
+def test_same_bar_fill_beats_gate_cancel_and_scratches_flat(tmp_path):
+    """Practice day 3, ny:2026-07-31:20 done right: the bar that touches the resting
+    limit is the same bar whose re-evaluation withdraws the candidate. Fills are
+    processed FIRST in dispatch, so the fill routes to the runner's fill-minute gate,
+    which refuses -> scratch -> broker flat. Nothing is orphaned, everything journaled."""
+    from src.live.ny_execution import DryRunBroker, NYExecution
+    ing = FakeIngestor()
+    lane = NYLane(ingestor=ing, profile=LUCID)
+    runner = NYRunner(lane=lane)
+    instrument = build_shadow_instrument(tmp_path, account="FUNDED", cfg=SpineConfig(),
+                                         kill_file=tmp_path / "KILL", broker=None)
+    det = StubDetector()
+    bk = DryRunBroker()
+    exe = NYExecution(mode="dryrun", broker=bk)
+    lv = NYLive(feed=FakeFeed(), data_dir=tmp_path, runner=runner, detector=det,
+                ingestor=ing, instrument=instrument, buffer=5_000.0,
+                execution=exe,
+                decision_sink=Sink(), action_sink=Sink(), verdict_sink=Sink(),
+                fixture_sink=Sink(), clock=lambda: lv._wall)
+    lv._wall = _ts("09:45") + pd.Timedelta(minutes=1)
+
+    det.script["09:45"] = [_trigger()]                 # long, limit 18000.10 -> 18000.0
+    _drive(lv, "09:45", [_minute_event("09:45", low=18_002.0)])   # rests, no touch
+    assert len(bk._orders) == 1 and bk.position("FUNDED") == 0
+
+    # next bar: price trades through the limit AND the evaluation flips to refuse
+    ing.feats = _feats(dep_wall_below_sz=0.1, dep_wall_above_sz=0.1,
+                       dep_wall_below_d=0.1)
+    _drive(lv, "09:46", [_minute_event("09:46", low=17_999.0)])
+
+    types = [r.get("type") for r in lv.decision_sink]
+    assert "scratch" in types or "rule_l_scratch" in types or "scratched" in types
+    assert bk.position("FUNDED") == 0                  # flat, never naked
+    assert not any(t == "dispatch_error" for t in types)
+    # the fill was SEEN (routed), not silently dropped
+    assert any(r.get("type") == "scratched" for r in lv.decision_sink)

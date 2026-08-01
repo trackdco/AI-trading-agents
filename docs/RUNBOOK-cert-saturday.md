@@ -33,6 +33,18 @@ quote extremes never contaminate bars), priceless records skipped, test-pinned. 
 bar dump now also writes a 2026-07-14 window for bar-level parity against the repo's
 Databento-built reference parquet.
 
+**ATTEMPT 3 (2026-08-01 09:28–09:58): geometry clean, one wiring bug caught + fixed.**
+33 triggers, 26 verdicts, ZERO wrong-side stops, zero errors — bars certified against
+the reference (2026-07-14: high/low 100% identical over 600 session minutes, triggers
+72=72, sub-tick level noise only). One genuine find: `ny:2026-07-31:20` (short 28193.75)
+was TOUCHED at 10:21 and gate-cancelled the same minute — the cancel popped the order
+record, orphaning the queued fill: naked, stopless, unjournaled broker position. Fixed
+two ways, both test-pinned: (1) dispatch processes fills BEFORE the runner's per-bar
+cancels/resizes, so a bar-quantized cancel can never race a fill; (2) NYExecution keeps
+a cancelled-order graveyard so a racing fill (armed path: broker fills between our poll
+and our cancel) still attributes, routes to the runner, and the refusal scratches it
+flat. Practice day 4 = the certification run.
+
 ## 1. Pull + suite (expect ~800 passed, 2 known unrelated failures)
 
     cd C:\Users\Administrator\AI-trading-agents

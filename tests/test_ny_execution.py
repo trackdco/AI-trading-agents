@@ -132,3 +132,33 @@ def test_shadow_mode_touches_nothing():
     assert e.poll_fills() == []
     e.cancel("ny:1", "x")
     assert e.close_now("ny:1", "x") == 0.0             # no such position, no crash
+
+
+# ------------------------------------------------------------- cancel/fill race (ny:20)
+def test_cancel_that_loses_the_race_to_a_fill_still_surfaces_the_fill(ex):
+    """R13 practice day 3, ny:2026-07-31:20: the bar touched the limit and the runner's
+    gate-cancel landed in the same minute. The old cancel popped the order record, so
+    the queued fill could not attribute and was silently dropped — leaving a naked,
+    stopless, unjournaled position in the broker. The graveyard keeps attribution:
+    the racing fill surfaces, and the scratch path can flatten it."""
+    e, bk, _ = ex
+    e.place("ny:1", _intent(side="S", entry=18_020.0, stop=18_030.0), None)
+    _bar(bk, "10:21", 18_022, 18_010, 18_015)          # trades through the short limit
+    e.cancel("ny:1", "gold_wall_quality")              # cancel AFTER the broker filled
+    fills = e.poll_fills()
+    assert [f["ref"] for f in fills] == ["ny:1"]       # the racing fill is NOT dropped
+    assert bk.position("FUNDED") == -11                # position exists and is known
+    e.scratch_unconfirmed("ny:1", 11, "gate:gold_wall_quality")
+    assert bk.position("FUNDED") == 0                  # flattened, not naked
+    assert not bk.order_status("dry:1")["stop_resting"]
+
+
+def test_cancel_with_no_fill_keeps_nothing_behind(ex):
+    e, bk, _ = ex
+    e.place("ny:1", _intent(side="S", entry=18_020.0, stop=18_030.0), None)
+    _bar(bk, "10:21", 18_015, 18_010, 18_012)          # never reaches the limit
+    e.cancel("ny:1", "no_window_ahead")
+    assert e.poll_fills() == []
+    assert e._graveyard == {} and "ny:1" not in e._orders
+    _bar(bk, "10:22", 18_030, 18_010, 18_020)          # cancelled: can never fill later
+    assert e.poll_fills() == [] and bk.position("FUNDED") == 0

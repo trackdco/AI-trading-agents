@@ -428,6 +428,15 @@ class NYLive:
                     self.fixture_sink({"type": "book", "ts": str(bts),
                                        "levels": self.ingestor.book.long_form(10)})
                 try:
+                    # FILLS FIRST (R13 practice day 3, ny:20): the broker saw this bar
+                    # before any of the decisions below. Processing fills before the
+                    # runner's per-bar cancels/resizes means a cancel can never race a
+                    # fill the broker has already made — the fill commits (or scratches)
+                    # here, the runner marks the candidate filled, and its re-evaluation
+                    # below skips it. The execution-layer graveyard covers the residual
+                    # armed-path race (broker fills between our poll and our cancel).
+                    for f in self.execution.poll_fills():
+                        self.on_fill(f["ref"], f["ts"], int(f["size"]))
                     self._rule_k_flatten(bts, bar_open=float(gbar["open"]))
                     # LiveDetector's 07:45-11:00 band is ET WALL TIME (proven against
                     # NY-tz reference frames); Sierra bars arrive UTC. Convert at this
@@ -461,8 +470,6 @@ class NYLive:
                         self._execute(acts, bts)
                     self._execute(self.runner.on_bar(bts, float(gbar["high"]),
                                                      float(gbar["low"])), bts)
-                    for f in self.execution.poll_fills():
-                        self.on_fill(f["ref"], f["ts"], int(f["size"]))
                     if self.execution.live:
                         self.execution.on_bar(df, bts_ny)   # same trimmed NY frame
                 except Exception as e:         # noqa: BLE001 — capture night: a crashed

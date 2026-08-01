@@ -122,6 +122,10 @@ class DryRunBroker:
         return self._pos
 
     def cancel_order(self, ref: str) -> None:
+        """Bracket cancel: pulls whatever remains — the working entry+stop, or (entry
+        already filled) the protective stop child. The FILLED position itself is never
+        undone by a cancel; surfacing and flattening that race-filled position is the
+        execution layer's job (poll_fills graveyard -> runner scratch), not the broker's."""
         o = self._orders.get(ref)
         if o is None:
             return
@@ -172,6 +176,13 @@ class NYExecution:
 
     _orders: dict = field(default_factory=dict, init=False)     # ref -> order record
     _positions: dict = field(default_factory=dict, init=False)  # ref -> position record
+    # broker_ref -> runner ref for CANCELLED orders whose fill may still surface — a
+    # cancel can lose the race to a fill inside the same bar (R13 practice day 3, ny:20:
+    # touched and cancelled in the same minute; the dropped mapping orphaned the fill and
+    # the broker position sat naked, stopless and unjournaled). Fills matched here route
+    # to the runner like any other; the runner refuses (candidate long gone) and the
+    # scratch path flattens the position immediately.
+    _graveyard: dict = field(default_factory=dict, init=False)
 
     def _note(self, row: dict) -> None:
         if self.journal is not None:
@@ -199,11 +210,18 @@ class NYExecution:
         return True
 
     def cancel(self, ref: str, why: str) -> None:
+        """Request cancel — fill-race safe. The broker cancel still goes out, but the
+        broker_ref -> ref mapping moves to the graveyard instead of vanishing: if the
+        entry filled in the same bar (before our cancel could reach it), the fill still
+        attributes in poll_fills and routes to the runner, whose refusal scratches the
+        position flat. Without this, the fill is orphaned and the position sits naked
+        (R13 practice day 3, ny:20)."""
         rec = self._orders.pop(ref, None)
         if rec is None:
             return
         rec["cancelled"] = True
         if self.live and rec["broker_ref"] is not None:
+            self._graveyard[rec["broker_ref"]] = {"ref": ref, "rec": rec}
             try:
                 self.broker.cancel_order(rec["broker_ref"])
             except Exception as e:                 # noqa: BLE001
@@ -225,12 +243,25 @@ class NYExecution:
         if hasattr(self.broker, "take_fills"):     # dry-run: exact attribution
             by_broker = {r["broker_ref"]: ref for ref, r in self._orders.items()
                          if r["broker_ref"] is not None}
+            # cancelled orders can still fill in the same bar as the cancel — the
+            # graveyard keeps their attribution so the racing fill surfaces (and the
+            # runner's refusal scratches it flat) instead of orphaning a naked position
+            for bref, g in self._graveyard.items():
+                by_broker.setdefault(bref, g["ref"])
             for f in self.broker.take_fills():
                 if f.get("closing"):
                     continue
                 ref = by_broker.get(f["ref"])
                 if ref is not None:
+                    g = self._graveyard.get(f["ref"])
+                    if g is not None and ref not in self._orders:
+                        # resurrect the cancelled order's record: the scratch/confirm
+                        # path downstream needs broker_ref + intent to act on the fill
+                        self._orders[ref] = g["rec"]
                     out.append({"ref": ref, "ts": f["ts"], "size": f["size"]})
+            # dry-run fills land in the same drain as their bar; after one drain a
+            # cancelled order is terminally cancelled — the graveyard never grows
+            self._graveyard.clear()
             return out
         # DTC path: an entry that stopped working which we did not cancel is a fill.
         for ref, rec in list(self._orders.items()):
