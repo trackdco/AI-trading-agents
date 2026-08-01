@@ -107,7 +107,7 @@ def walk_partial_be(bars: pd.DataFrame, trade, partial_r: float,
     return partial_pct * partial_r + (1 - partial_pct) * remainder_r
 
 
-def load_book():
+def v1_candidate_book():
     # rev-3 population, V1's own book (130 trades) -- the primary reference point for
     # this idea (partial+BE is framed as an enhancement on V1's BE@1R), NOT
     # london_veto_scan.build_book() (a stale 09:30-cut/110-trade population that
@@ -121,7 +121,7 @@ def load_book():
 
 def main() -> None:
     bars = load_bars()
-    b = load_book()
+    b = v1_candidate_book()
 
     print(f"Partial+BE bar-walk sweep ({len(b)} trades, rev-3 V1 population, "
           f"partial_pct={PARTIAL_PCT:.0%}) -- RAW, undiagnosed (kept for transparency; "
