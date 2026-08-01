@@ -1,117 +1,47 @@
-{"action": "place", "ref": "ny:2026-07-31:9", "side": "B", "limit": 28500.5, "stop": 28508.25, "size": 10, "verdict": null, "ts": "2026-07-31 13:11:00+00:00", "armed": false, "vid": 173}
-{"action": "place", "ref": "ny:2026-07-31:6", "side": "B", "limit": 28500.25, "stop": 28493.0, "size": 11, "verdict": null, "ts": "2026-07-31 13:11:00+00:00", "armed": false, "vid": 179}
-{"action": "place", "ref": "ny:2026-07-31:7", "side": "B", "limit": 28500.25, "stop": 28493.0, "size": 11, "verdict": null, "ts": "2026-07-31 13:11:00+00:00", "armed": false, "vid": 180}
-{"action": "place", "ref": "ny:2026-07-31:8", "side": "B", "limit": 28500.25, "stop": 28486.75, "size": 6, "verdict": null, "ts": "2026-07-31 13:11:00+00:00", "armed": false, "vid": 181}
-{"action": "modify_size", "ref": "ny:2026-07-31:6", "size": 17, "was": 11, "verdict": null, "ts": "2026-07-31 13:14:00+00:00", "armed": false, "vid": 206}
-{"action": "modify_size", "ref": "ny:2026-07-31:7", "size": 17, "was": 11, "verdict": null, "ts": "2026-07-31 13:14:00+00:00", "armed": false, "vid": 207}
-{"action": "modify_size", "ref": "ny:2026-07-31:8", "size": 9, "was": 6, "verdict": null, "ts": "2026-07-31 13:14:00+00:00", "armed": false, "vid": 208}
-{"action": "modify_size", "ref": "ny:2026-07-31:9", "size": 15, "was": 10, "verdict": null, "ts": "2026-07-31 13:14:00+00:00", "armed": false, "vid": 209}
-{"action": "place", "ref": "ny:2026-07-31:10", "side": "B", "limit": 28500.5, "stop": 28508.25, "size": 10, "verdict": null, "ts": "2026-07-31 13:15:00+00:00", "armed": false, "vid": 210}
-{"action": "modify_size", "ref": "ny:2026-07-31:6", "size": 11, "was": 17, "verdict": null, "ts": "2026-07-31 13:15:00+00:00", "armed": false, "vid": 216}
-{"action": "modify_size", "ref": "ny:2026-07-31:7", "size": 11, "was": 17, "verdict": null, "ts": "2026-07-31 13:15:00+00:00", "armed": false, "vid": 217}
-{"action": "modify_size", "ref": "ny:2026-07-31:8", "size": 6, "was": 9, "verdict": null, "ts": "2026-07-31 13:15:00+00:00", "armed": false, "vid": 218}
-{"action": "modify_size", "ref": "ny:2026-07-31:9", "size": 10, "was": 15, "verdict": null, "ts": "2026-07-31 13:15:00+00:00", "armed": false, "vid": 219}
-{"action": "place", "ref": "ny:2026-07-31:11", "side": "B", "limit": 28500.75, "stop": 28517.25, "size": 5, "verdict": null, "ts": "2026-07-31 13:16:00+00:00", "armed": false, "vid": 221}
-{"action": "place", "ref": "ny:2026-07-31:12", "side": "B", "limit": 28500.75, "stop": 28536.25, "size": 2, "verdict": null, "ts": "2026-07-31 13:17:00+00:00", "armed": false, "vid": 233}
-{"action": "modify_size", "ref": "ny:2026-07-31:6", "size": 17, "was": 11, "verdict": null, "ts": "2026-07-31 13:21:00+00:00", "armed": false, "vid": 287}
-{"action": "modify_size", "ref": "ny:2026-07-31:7", "size": 17, "was": 11, "verdict": null, "ts": "2026-07-31 13:21:00+00:00", "armed": false, "vid": 288}
-{"action": "modify_size", "ref": "ny:2026-07-31:8", "size": 9, "was": 6, "verdict": null, "ts": "2026-07-31 13:21:00+00:00", "armed": false, "vid": 289}
-{"action": "modify_size", "ref": "ny:2026-07-31:9", "size": 15, "was": 10, "verdict": null, "ts": "2026-07-31 13:21:00+00:00", "armed": false, "vid": 290}
-{"action": "modify_size", "ref": "ny:2026-07-31:10", "size": 15, "was": 10, "verdict": null, "ts": "2026-07-31 13:21:00+00:00", "armed": false, "vid": 291}
-{"action": "modify_size", "ref": "ny:2026-07-31:11", "size": 7, "was": 5, "verdict": null, "ts": "2026-07-31 13:21:00+00:00", "armed": false, "vid": 292}
-{"action": "modify_size", "ref": "ny:2026-07-31:12", "size": 3, "was": 2, "verdict": null, "ts": "2026-07-31 13:21:00+00:00", "armed": false, "vid": 293}
-{"action": "place", "ref": "ny:2026-07-31:13", "side": "B", "limit": 28501.25, "stop": 28531.5, "size": 4, "verdict": null, "ts": "2026-07-31 13:22:00+00:00", "armed": false, "vid": 294}
-{"action": "cancel", "ref": "ny:2026-07-31:6", "why": "pre_wall_behind", "ts": "2026-07-31 13:23:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "place", "ref": "ny:2026-07-31:7", "side": "B", "limit": 28500.25, "stop": 28486.25, "size": 6, "verdict": null, "ts": "2026-07-31 13:11:00+00:00", "armed": false, "vid": 176}
+{"action": "modify_size", "ref": "ny:2026-07-31:7", "size": 9, "was": 6, "verdict": null, "ts": "2026-07-31 13:14:00+00:00", "armed": false, "vid": 197}
+{"action": "modify_size", "ref": "ny:2026-07-31:7", "size": 6, "was": 9, "verdict": null, "ts": "2026-07-31 13:15:00+00:00", "armed": false, "vid": 204}
+{"action": "modify_size", "ref": "ny:2026-07-31:7", "size": 9, "was": 6, "verdict": null, "ts": "2026-07-31 13:21:00+00:00", "armed": false, "vid": 246}
 {"action": "cancel", "ref": "ny:2026-07-31:7", "why": "pre_wall_behind", "ts": "2026-07-31 13:23:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:8", "why": "pre_wall_behind", "ts": "2026-07-31 13:23:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:9", "why": "pre_wall_behind", "ts": "2026-07-31 13:23:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:10", "why": "pre_wall_behind", "ts": "2026-07-31 13:23:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:11", "why": "pre_wall_behind", "ts": "2026-07-31 13:23:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:12", "why": "pre_wall_behind", "ts": "2026-07-31 13:23:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:13", "why": "pre_wall_behind", "ts": "2026-07-31 13:23:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "place", "ref": "ny:2026-07-31:6", "side": "B", "limit": 28500.25, "stop": 28493.0, "size": 11, "verdict": null, "ts": "2026-07-31 13:24:00+00:00", "armed": false, "vid": 328}
-{"action": "place", "ref": "ny:2026-07-31:7", "side": "B", "limit": 28500.25, "stop": 28493.0, "size": 11, "verdict": null, "ts": "2026-07-31 13:24:00+00:00", "armed": false, "vid": 329}
-{"action": "place", "ref": "ny:2026-07-31:8", "side": "B", "limit": 28500.25, "stop": 28486.75, "size": 6, "verdict": null, "ts": "2026-07-31 13:24:00+00:00", "armed": false, "vid": 330}
-{"action": "place", "ref": "ny:2026-07-31:9", "side": "B", "limit": 28500.5, "stop": 28508.25, "size": 10, "verdict": null, "ts": "2026-07-31 13:24:00+00:00", "armed": false, "vid": 331}
-{"action": "place", "ref": "ny:2026-07-31:10", "side": "B", "limit": 28500.5, "stop": 28508.25, "size": 10, "verdict": null, "ts": "2026-07-31 13:24:00+00:00", "armed": false, "vid": 332}
-{"action": "place", "ref": "ny:2026-07-31:11", "side": "B", "limit": 28500.75, "stop": 28517.25, "size": 5, "verdict": null, "ts": "2026-07-31 13:24:00+00:00", "armed": false, "vid": 333}
-{"action": "place", "ref": "ny:2026-07-31:12", "side": "B", "limit": 28500.75, "stop": 28536.25, "size": 2, "verdict": null, "ts": "2026-07-31 13:24:00+00:00", "armed": false, "vid": 334}
-{"action": "place", "ref": "ny:2026-07-31:13", "side": "B", "limit": 28501.25, "stop": 28531.5, "size": 3, "verdict": null, "ts": "2026-07-31 13:24:00+00:00", "armed": false, "vid": 335}
-{"action": "place", "ref": "ny:2026-07-31:14", "side": "B", "limit": 28501.5, "stop": 28529.25, "size": 3, "verdict": null, "ts": "2026-07-31 13:24:00+00:00", "armed": false, "vid": 336}
-{"action": "modify_size", "ref": "ny:2026-07-31:6", "size": 17, "was": 11, "verdict": null, "ts": "2026-07-31 13:25:00+00:00", "armed": false, "vid": 342}
-{"action": "modify_size", "ref": "ny:2026-07-31:7", "size": 17, "was": 11, "verdict": null, "ts": "2026-07-31 13:25:00+00:00", "armed": false, "vid": 343}
-{"action": "modify_size", "ref": "ny:2026-07-31:8", "size": 9, "was": 6, "verdict": null, "ts": "2026-07-31 13:25:00+00:00", "armed": false, "vid": 344}
-{"action": "modify_size", "ref": "ny:2026-07-31:9", "size": 15, "was": 10, "verdict": null, "ts": "2026-07-31 13:25:00+00:00", "armed": false, "vid": 345}
-{"action": "modify_size", "ref": "ny:2026-07-31:10", "size": 15, "was": 10, "verdict": null, "ts": "2026-07-31 13:25:00+00:00", "armed": false, "vid": 346}
-{"action": "modify_size", "ref": "ny:2026-07-31:11", "size": 7, "was": 5, "verdict": null, "ts": "2026-07-31 13:25:00+00:00", "armed": false, "vid": 347}
-{"action": "modify_size", "ref": "ny:2026-07-31:12", "size": 3, "was": 2, "verdict": null, "ts": "2026-07-31 13:25:00+00:00", "armed": false, "vid": 348}
-{"action": "modify_size", "ref": "ny:2026-07-31:13", "size": 4, "was": 3, "verdict": null, "ts": "2026-07-31 13:25:00+00:00", "armed": false, "vid": 349}
-{"action": "modify_size", "ref": "ny:2026-07-31:14", "size": 4, "was": 3, "verdict": null, "ts": "2026-07-31 13:25:00+00:00", "armed": false, "vid": 350}
-{"action": "place", "ref": "ny:2026-07-31:15", "side": "B", "limit": 28503.0, "stop": 28536.5, "size": 2, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 351}
-{"action": "modify_size", "ref": "ny:2026-07-31:6", "size": 11, "was": 17, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 357}
-{"action": "modify_size", "ref": "ny:2026-07-31:7", "size": 11, "was": 17, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 358}
-{"action": "modify_size", "ref": "ny:2026-07-31:8", "size": 6, "was": 9, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 359}
-{"action": "modify_size", "ref": "ny:2026-07-31:9", "size": 10, "was": 15, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 360}
-{"action": "modify_size", "ref": "ny:2026-07-31:10", "size": 10, "was": 15, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 361}
-{"action": "modify_size", "ref": "ny:2026-07-31:11", "size": 5, "was": 7, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 362}
-{"action": "modify_size", "ref": "ny:2026-07-31:12", "size": 2, "was": 3, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 363}
-{"action": "modify_size", "ref": "ny:2026-07-31:13", "size": 3, "was": 4, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 364}
-{"action": "modify_size", "ref": "ny:2026-07-31:14", "size": 3, "was": 4, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 365}
-{"action": "cancel", "ref": "ny:2026-07-31:6", "why": "pre_wall_behind", "ts": "2026-07-31 13:28:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "place", "ref": "ny:2026-07-31:7", "side": "B", "limit": 28500.25, "stop": 28486.25, "size": 6, "verdict": null, "ts": "2026-07-31 13:24:00+00:00", "armed": false, "vid": 267}
+{"action": "modify_size", "ref": "ny:2026-07-31:7", "size": 9, "was": 6, "verdict": null, "ts": "2026-07-31 13:25:00+00:00", "armed": false, "vid": 274}
+{"action": "modify_size", "ref": "ny:2026-07-31:7", "size": 6, "was": 9, "verdict": null, "ts": "2026-07-31 13:26:00+00:00", "armed": false, "vid": 281}
 {"action": "cancel", "ref": "ny:2026-07-31:7", "why": "pre_wall_behind", "ts": "2026-07-31 13:28:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:8", "why": "pre_wall_behind", "ts": "2026-07-31 13:28:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:9", "why": "pre_wall_behind", "ts": "2026-07-31 13:28:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:10", "why": "pre_wall_behind", "ts": "2026-07-31 13:28:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:11", "why": "pre_wall_behind", "ts": "2026-07-31 13:28:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:12", "why": "pre_wall_behind", "ts": "2026-07-31 13:28:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:13", "why": "pre_wall_behind", "ts": "2026-07-31 13:28:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:14", "why": "pre_wall_behind", "ts": "2026-07-31 13:28:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:15", "why": "pre_wall_behind", "ts": "2026-07-31 13:28:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "place", "ref": "ny:2026-07-31:23", "side": "S", "limit": 28558.0, "stop": 28573.5, "size": 8, "verdict": null, "ts": "2026-07-31 13:53:00+00:00", "armed": false, "vid": 989}
-{"action": "place", "ref": "ny:2026-07-31:25", "side": "S", "limit": 28529.75, "stop": 28542.75, "size": 9, "verdict": null, "ts": "2026-07-31 13:53:00+00:00", "armed": false, "vid": 991}
-{"action": "place", "ref": "ny:2026-07-31:26", "side": "S", "limit": 28529.75, "stop": 28542.75, "size": 9, "verdict": null, "ts": "2026-07-31 13:53:00+00:00", "armed": false, "vid": 992}
-{"action": "place", "ref": "ny:2026-07-31:27", "side": "S", "limit": 28528.0, "stop": 28579.25, "size": 2, "verdict": null, "ts": "2026-07-31 13:53:00+00:00", "armed": false, "vid": 993}
-{"action": "cancel", "ref": "ny:2026-07-31:23", "why": "gold_wall_quality", "ts": "2026-07-31 13:54:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:25", "why": "gold_wall_quality", "ts": "2026-07-31 13:54:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:26", "why": "gold_wall_quality", "ts": "2026-07-31 13:54:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:27", "why": "gold_wall_quality", "ts": "2026-07-31 13:54:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "place", "ref": "ny:2026-07-31:23", "side": "S", "limit": 28558.0, "stop": 28573.5, "size": 8, "verdict": null, "ts": "2026-07-31 13:55:00+00:00", "armed": false, "vid": 1043}
-{"action": "place", "ref": "ny:2026-07-31:25", "side": "S", "limit": 28529.75, "stop": 28542.75, "size": 9, "verdict": null, "ts": "2026-07-31 13:55:00+00:00", "armed": false, "vid": 1045}
-{"action": "place", "ref": "ny:2026-07-31:26", "side": "S", "limit": 28529.75, "stop": 28542.75, "size": 9, "verdict": null, "ts": "2026-07-31 13:55:00+00:00", "armed": false, "vid": 1046}
-{"action": "place", "ref": "ny:2026-07-31:27", "side": "S", "limit": 28528.0, "stop": 28579.25, "size": 2, "verdict": null, "ts": "2026-07-31 13:55:00+00:00", "armed": false, "vid": 1047}
-{"action": "cancel", "ref": "ny:2026-07-31:23", "why": "gold_wall_quality", "ts": "2026-07-31 13:56:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:25", "why": "gold_wall_quality", "ts": "2026-07-31 13:56:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:26", "why": "gold_wall_quality", "ts": "2026-07-31 13:56:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:27", "why": "gold_wall_quality", "ts": "2026-07-31 13:56:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "place", "ref": "ny:2026-07-31:23", "side": "S", "limit": 28558.0, "stop": 28573.5, "size": 8, "verdict": null, "ts": "2026-07-31 14:06:00+00:00", "armed": false, "vid": 1347}
-{"action": "place", "ref": "ny:2026-07-31:25", "side": "S", "limit": 28529.75, "stop": 28542.75, "size": 9, "verdict": null, "ts": "2026-07-31 14:06:00+00:00", "armed": false, "vid": 1349}
-{"action": "place", "ref": "ny:2026-07-31:26", "side": "S", "limit": 28529.75, "stop": 28542.75, "size": 9, "verdict": null, "ts": "2026-07-31 14:06:00+00:00", "armed": false, "vid": 1350}
-{"action": "place", "ref": "ny:2026-07-31:27", "side": "S", "limit": 28528.0, "stop": 28579.25, "size": 2, "verdict": null, "ts": "2026-07-31 14:06:00+00:00", "armed": false, "vid": 1351}
-{"action": "place", "ref": "ny:2026-07-31:28", "side": "S", "limit": 28396.5, "stop": 28413.0, "size": 7, "verdict": null, "ts": "2026-07-31 14:06:00+00:00", "armed": false, "vid": 1352}
-{"action": "cancel", "ref": "ny:2026-07-31:23", "why": "gold_wall_quality", "ts": "2026-07-31 14:08:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:25", "why": "gold_wall_quality", "ts": "2026-07-31 14:08:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:26", "why": "gold_wall_quality", "ts": "2026-07-31 14:08:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:27", "why": "gold_wall_quality", "ts": "2026-07-31 14:08:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:28", "why": "gold_wall_quality", "ts": "2026-07-31 14:08:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "place", "ref": "ny:2026-07-31:23", "side": "S", "limit": 28558.0, "stop": 28573.5, "size": 5, "verdict": null, "ts": "2026-07-31 14:09:00+00:00", "armed": false, "vid": 1431}
-{"action": "place", "ref": "ny:2026-07-31:25", "side": "S", "limit": 28529.75, "stop": 28542.75, "size": 6, "verdict": null, "ts": "2026-07-31 14:09:00+00:00", "armed": false, "vid": 1433}
-{"action": "place", "ref": "ny:2026-07-31:26", "side": "S", "limit": 28529.75, "stop": 28542.75, "size": 6, "verdict": null, "ts": "2026-07-31 14:09:00+00:00", "armed": false, "vid": 1434}
-{"action": "place", "ref": "ny:2026-07-31:27", "side": "S", "limit": 28528.0, "stop": 28579.25, "size": 2, "verdict": null, "ts": "2026-07-31 14:09:00+00:00", "armed": false, "vid": 1435}
-{"action": "place", "ref": "ny:2026-07-31:28", "side": "S", "limit": 28396.5, "stop": 28413.0, "size": 5, "verdict": null, "ts": "2026-07-31 14:09:00+00:00", "armed": false, "vid": 1436}
-{"action": "cancel", "ref": "ny:2026-07-31:23", "why": "gold_wall_quality", "ts": "2026-07-31 14:10:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:25", "why": "gold_wall_quality", "ts": "2026-07-31 14:10:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:26", "why": "gold_wall_quality", "ts": "2026-07-31 14:10:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:27", "why": "gold_wall_quality", "ts": "2026-07-31 14:10:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:28", "why": "gold_wall_quality", "ts": "2026-07-31 14:10:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "place", "ref": "ny:2026-07-31:23", "side": "S", "limit": 28558.0, "stop": 28573.5, "size": 8, "verdict": null, "ts": "2026-07-31 14:19:00+00:00", "armed": false, "vid": 1711}
-{"action": "place", "ref": "ny:2026-07-31:25", "side": "S", "limit": 28529.75, "stop": 28542.75, "size": 9, "verdict": null, "ts": "2026-07-31 14:19:00+00:00", "armed": false, "vid": 1713}
-{"action": "place", "ref": "ny:2026-07-31:26", "side": "S", "limit": 28529.75, "stop": 28542.75, "size": 9, "verdict": null, "ts": "2026-07-31 14:19:00+00:00", "armed": false, "vid": 1714}
-{"action": "place", "ref": "ny:2026-07-31:27", "side": "S", "limit": 28528.0, "stop": 28579.25, "size": 2, "verdict": null, "ts": "2026-07-31 14:19:00+00:00", "armed": false, "vid": 1715}
-{"action": "place", "ref": "ny:2026-07-31:28", "side": "S", "limit": 28396.5, "stop": 28413.0, "size": 7, "verdict": null, "ts": "2026-07-31 14:19:00+00:00", "armed": false, "vid": 1716}
-{"action": "place", "ref": "ny:2026-07-31:29", "side": "S", "limit": 28193.75, "stop": 28214.25, "size": 6, "verdict": null, "ts": "2026-07-31 14:20:00+00:00", "armed": false, "vid": 1717}
-{"action": "cancel", "ref": "ny:2026-07-31:23", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:25", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:26", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:27", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:28", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
-{"action": "cancel", "ref": "ny:2026-07-31:29", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "place", "ref": "ny:2026-07-31:16", "side": "S", "limit": 28529.75, "stop": 28542.5, "size": 9, "verdict": null, "ts": "2026-07-31 13:53:00+00:00", "armed": false, "vid": 669}
+{"action": "place", "ref": "ny:2026-07-31:17", "side": "S", "limit": 28529.75, "stop": 28542.5, "size": 9, "verdict": null, "ts": "2026-07-31 13:53:00+00:00", "armed": false, "vid": 670}
+{"action": "place", "ref": "ny:2026-07-31:18", "side": "S", "limit": 28528.0, "stop": 28578.25, "size": 2, "verdict": null, "ts": "2026-07-31 13:53:00+00:00", "armed": false, "vid": 671}
+{"action": "cancel", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "ts": "2026-07-31 13:54:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "ts": "2026-07-31 13:54:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "ts": "2026-07-31 13:54:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "place", "ref": "ny:2026-07-31:16", "side": "S", "limit": 28529.75, "stop": 28542.5, "size": 9, "verdict": null, "ts": "2026-07-31 13:55:00+00:00", "armed": false, "vid": 705}
+{"action": "place", "ref": "ny:2026-07-31:17", "side": "S", "limit": 28529.75, "stop": 28542.5, "size": 9, "verdict": null, "ts": "2026-07-31 13:55:00+00:00", "armed": false, "vid": 706}
+{"action": "place", "ref": "ny:2026-07-31:18", "side": "S", "limit": 28528.0, "stop": 28578.25, "size": 2, "verdict": null, "ts": "2026-07-31 13:55:00+00:00", "armed": false, "vid": 707}
+{"action": "cancel", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "ts": "2026-07-31 13:56:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "ts": "2026-07-31 13:56:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "ts": "2026-07-31 13:56:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "place", "ref": "ny:2026-07-31:16", "side": "S", "limit": 28529.75, "stop": 28542.5, "size": 9, "verdict": null, "ts": "2026-07-31 14:06:00+00:00", "armed": false, "vid": 910}
+{"action": "place", "ref": "ny:2026-07-31:17", "side": "S", "limit": 28529.75, "stop": 28542.5, "size": 9, "verdict": null, "ts": "2026-07-31 14:06:00+00:00", "armed": false, "vid": 911}
+{"action": "place", "ref": "ny:2026-07-31:18", "side": "S", "limit": 28528.0, "stop": 28578.25, "size": 2, "verdict": null, "ts": "2026-07-31 14:06:00+00:00", "armed": false, "vid": 912}
+{"action": "place", "ref": "ny:2026-07-31:19", "side": "S", "limit": 28396.5, "stop": 28414.5, "size": 7, "verdict": null, "ts": "2026-07-31 14:06:00+00:00", "armed": false, "vid": 913}
+{"action": "cancel", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "ts": "2026-07-31 14:08:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "ts": "2026-07-31 14:08:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "ts": "2026-07-31 14:08:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:19", "why": "gold_wall_quality", "ts": "2026-07-31 14:08:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "place", "ref": "ny:2026-07-31:16", "side": "S", "limit": 28529.75, "stop": 28542.5, "size": 6, "verdict": null, "ts": "2026-07-31 14:09:00+00:00", "armed": false, "vid": 967}
+{"action": "place", "ref": "ny:2026-07-31:17", "side": "S", "limit": 28529.75, "stop": 28542.5, "size": 6, "verdict": null, "ts": "2026-07-31 14:09:00+00:00", "armed": false, "vid": 968}
+{"action": "place", "ref": "ny:2026-07-31:18", "side": "S", "limit": 28528.0, "stop": 28578.25, "size": 2, "verdict": null, "ts": "2026-07-31 14:09:00+00:00", "armed": false, "vid": 969}
+{"action": "place", "ref": "ny:2026-07-31:19", "side": "S", "limit": 28396.5, "stop": 28414.5, "size": 4, "verdict": null, "ts": "2026-07-31 14:09:00+00:00", "armed": false, "vid": 970}
+{"action": "cancel", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "ts": "2026-07-31 14:10:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "ts": "2026-07-31 14:10:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "ts": "2026-07-31 14:10:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:19", "why": "gold_wall_quality", "ts": "2026-07-31 14:10:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "place", "ref": "ny:2026-07-31:16", "side": "S", "limit": 28529.75, "stop": 28542.5, "size": 9, "verdict": null, "ts": "2026-07-31 14:19:00+00:00", "armed": false, "vid": 1157}
+{"action": "place", "ref": "ny:2026-07-31:17", "side": "S", "limit": 28529.75, "stop": 28542.5, "size": 9, "verdict": null, "ts": "2026-07-31 14:19:00+00:00", "armed": false, "vid": 1158}
+{"action": "place", "ref": "ny:2026-07-31:18", "side": "S", "limit": 28528.0, "stop": 28578.25, "size": 2, "verdict": null, "ts": "2026-07-31 14:19:00+00:00", "armed": false, "vid": 1159}
+{"action": "place", "ref": "ny:2026-07-31:19", "side": "S", "limit": 28396.5, "stop": 28414.5, "size": 7, "verdict": null, "ts": "2026-07-31 14:19:00+00:00", "armed": false, "vid": 1160}
+{"action": "place", "ref": "ny:2026-07-31:20", "side": "S", "limit": 28193.75, "stop": 28214.5, "size": 6, "verdict": null, "ts": "2026-07-31 14:20:00+00:00", "armed": false, "vid": 1161}
+{"action": "cancel", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:19", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
+{"action": "cancel", "ref": "ny:2026-07-31:20", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00", "armed": false, "verdict": null, "vid": null}
