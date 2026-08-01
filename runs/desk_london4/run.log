@@ -1,0 +1,3 @@
+holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping 708,412 row(s) from year(s) [2023, 2024] — keeping frozenset({2025, 2026}) only
+== 2025-06-02: 2 candidates
+  2025-06-02_0400_s_0: agent -0.05R vs V1 -0.05R | mech_exit_mirror | turns 2
