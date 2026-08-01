@@ -259,15 +259,31 @@ class MinuteAggregator:
     _delta: int = 0
     _pxvol: float = 0.0
 
+    # --- TICK-record semantics (R13 practice-day-2 forensics, Pat's VPS 2026-08-01):
+    # Sierra tick files use the record's Open as a FLAG (0.0); High/Low hold the ASK/BID
+    # quotes and Close holds the trade. The box's NQU6.CME.scid is such a file: 6519 of
+    # 6784 practice-window bars aggregated with open=0.0, which made the detector read
+    # every candle as a displacement through every level below its close — phantom longs
+    # with entries below price and "stops" at the candle low ABOVE them (the wrong-side
+    # brackets that failed cert). A tick record contributes its TRADE price to OHLC —
+    # quote extremes would widen bars by the spread vs the Databento-trades reference.
+    @staticmethod
+    def _ohl(rec: ScidRecord) -> tuple[float, float, float]:
+        if rec.open == 0.0:                     # tick record: Open is a flag, H/L are quotes
+            return rec.close, rec.close, rec.close
+        return rec.open, rec.high, rec.low      # summary record: real OHLC
+
     def _reset(self, rec: ScidRecord, minute: pd.Timestamp) -> None:
         self._cur_min = minute
-        self._o, self._h, self._l, self._c = rec.open, rec.high, rec.low, rec.close
+        o, h, l = self._ohl(rec)
+        self._o, self._h, self._l, self._c = o, h, l, rec.close
         self._vol, self._delta, self._pxvol = 0, 0, 0.0
         self._accum(rec)
 
     def _accum(self, rec: ScidRecord) -> None:
-        self._h = max(self._h, rec.high)
-        self._l = min(self._l, rec.low)
+        _, h, l = self._ohl(rec)
+        self._h = max(self._h, h)
+        self._l = min(self._l, l)
         self._c = rec.close
         self._vol += rec.total_volume
         self._delta += rec.ask_volume - rec.bid_volume
@@ -433,6 +449,8 @@ class SierraFileFeed:
         events: list[tuple] = []
         now = self._clock() if measure_lag else None
         for rec in self._scid.records():
+            if rec.close <= 0:
+                continue                        # priceless record (flag/heartbeat) — no bar
             if self.bar_price_scale is None and rec.close > 0:
                 self.bar_price_scale = self._detect_bar_scale(float(rec.close))
             if self.bar_price_scale not in (None, 1.0):

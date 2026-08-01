@@ -30,6 +30,10 @@ from src.canon.sierra_symbol import resolve_scid_path
 
 OUT = Path("data/debug/box_bars_2026-07-27_08-01.csv")
 LO, HI = "2026-07-27", "2026-08-02"          # UTC day span covering the practice session
+# a REFERENCE-overlap window too: the repo's Databento-built parquet covers 2026-07-14,
+# so the box's aggregation can be paritied bar-for-bar against known-good data
+OUT_REF = Path("data/debug/box_bars_2026-07-13_07-16.csv")
+LO_REF, HI_REF = "2026-07-13", "2026-07-16"
 
 
 def main() -> int:
@@ -50,16 +54,17 @@ def main() -> int:
 
     df = ing.bars_frame()
     ts = pd.to_datetime(df["ts_event"], utc=True)
-    win = df[(ts >= pd.Timestamp(LO, tz="UTC")) & (ts < pd.Timestamp(HI, tz="UTC"))]
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    win.to_csv(OUT, index=False)
-    bad = win[(win["low"] > win[["open", "close"]].min(axis=1))
-              | (win["high"] < win[["open", "close"]].max(axis=1))]
-    print(f"wrote {len(win)} bars -> {OUT}")
-    print(f"malformed bars (low>min(o,c) or high<max(o,c)): {len(bad)}")
-    if len(bad):
-        print(bad.head(10).to_string())
-    return 0
+    rc = 0
+    for out, lo, hi in ((OUT, LO, HI), (OUT_REF, LO_REF, HI_REF)):
+        win = df[(ts >= pd.Timestamp(lo, tz="UTC")) & (ts < pd.Timestamp(hi, tz="UTC"))]
+        out.parent.mkdir(parents=True, exist_ok=True)
+        win.to_csv(out, index=False)
+        bad = win[(win["low"] > win[["open", "close"]].min(axis=1))
+                  | (win["high"] < win[["open", "close"]].max(axis=1))]
+        print(f"wrote {len(win)} bars -> {out}")
+        print(f"  malformed (low>min(o,c) or high<max(o,c)): {len(bad)}")
+        rc |= 1 if len(bad) else 0
+    return rc
 
 
 if __name__ == "__main__":

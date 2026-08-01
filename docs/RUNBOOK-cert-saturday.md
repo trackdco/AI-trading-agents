@@ -20,6 +20,19 @@ all fixed + test-pinned in the follow-up commit:
      trimmed to 14 days — trigger-identical to deeper frames on 3 reference days
      (`python -m scripts.check_trim_parity`).
 
+**ATTEMPT 2 (2026-08-01 07:55–08:35): FAIL — wiring clean, data path caught again.**
+Detector fired (45 triggers), 75 placements each matched by a cancel, gate cancels
+named, both price scales journaled, zero errors, 32-minute runtime. But 30/75 verdicts
+were LONG brackets with stops ABOVE their limits. Forensics (`scripts/dump_box_bars.py`):
+6519/6784 practice-window bars had **open = 0.0** — the box's `NQU6.CME.scid` is a TICK
+file (record Open is a flag; High/Low are ask/bid quotes; Close is the trade), and the
+minute aggregator trusted the zero open. A zero open reads as "displacement through
+every level below the close" → phantom longs, stops at the candle low above the entry.
+Fixed: per-record tick semantics in `MinuteAggregator` (OHLC from TRADE prices;
+quote extremes never contaminate bars), priceless records skipped, test-pinned. The
+bar dump now also writes a 2026-07-14 window for bar-level parity against the repo's
+Databento-built reference parquet.
+
 ## 1. Pull + suite (expect ~800 passed, 2 known unrelated failures)
 
     cd C:\Users\Administrator\AI-trading-agents
