@@ -180,3 +180,12 @@ holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping
   2026-03-20_0503_l_113: agent -0.07R vs V1 -0.05R | stop | turns 1
 == 2026-03-24: 2 candidates
   2026-03-24_0530_l_114: agent -1.04R vs V1 -1.02R | stop | turns 0
+  2026-03-24_0536_l_115: agent -1.04R vs V1 +5.10R | stop | turns 10
+== 2026-03-25: 2 candidates
+  2026-03-25_0435_l_116: agent -1.04R vs V1 -1.02R | stop | turns 0
+  2026-03-25_0438_s_117: agent +7.56R vs V1 +7.58R | target | turns 10
+== 2026-03-27: 3 candidates
+  2026-03-27_0404_s_118: agent +2.39R vs V1 +2.40R | target | turns 4
+  2026-03-27_0404_s_119: SKIPPED (agent still in a position until 2026-03-27 04:18:00-04:00)
+  2026-03-27_0519_s_120: agent -1.05R vs V1 -0.03R | stop | turns 3
+== 2026-03-31: 1 candidates
