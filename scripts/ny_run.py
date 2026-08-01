@@ -567,18 +567,11 @@ class NYLive:
 def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
                   config_path: str | Path = "config/live.yaml",
                   dryrun: bool = False, replay_day: str | None = None) -> NYLive:
-    if arm:
-        # R13 WIRING IS BUILT (src/live/ny_execution.py: cancel routing, scratch
-        # close, rule J/K order submission, canon exit engine binding, dry-run broker)
-        # but NOT YET CERTIFIED on the box. The gate comes off in the certified commit,
-        # after the practice day (`--dryrun --replay-day <d>`) and the DTC fill-detection
-        # pin (`_entry_working`) pass on real Sierra order updates. Refused BY
-        # CONSTRUCTION until then.
-        raise SystemExit(
-            "ARM REFUSED: R13 wiring built but not certified on the box. Run the "
-            "practice day (--dryrun --replay-day <day>) per docs/ARMING-REFERENCE.md "
-            "R13; the refusal comes off in the certified commit.")
-
+    # R13 CERTIFIED 2026-08-01 (this commit): four practice-day replays of 2026-07-31 on
+    # the box surfaced and closed — 100x bar scale, 1pm-ET day roll, tick records
+    # aggregated as bars, and the cancel/fill same-bar race (ny:2026-07-31:20, whose
+    # day-4 journal shows the fill surfaced and scratched flat). The arm path below
+    # remains two-party fail-closed: no config/arming.yaml -> no token verify -> no arm.
     ny = cfg.get("ny", {}) or {}
     sc = (cfg.get("feed", {}) or {}).get("sierra", {}) or {}
     paths = cfg.get("paths", {}) or {}
@@ -658,6 +651,15 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
     if dryrun:
         from scripts.build_l2_outcomes import l2_cfg    # the canon exit config (V8)
         execution = NYExecution(mode="dryrun", broker=DryRunBroker(),
+                                account=sc.get("account", "FUNDED"),
+                                exit_cfg=l2_cfg())
+    elif arm:
+        # ARMED: the same execution layer the practice days certified, pointed at the
+        # real DTC route. Without this branch an "armed" run would silently fall back
+        # to shadow execution (journal-only placements) — the operator believing money
+        # is routing while nothing is. Wired in the certified commit, never before it.
+        from scripts.build_l2_outcomes import l2_cfg
+        execution = NYExecution(mode="armed", broker=broker,
                                 account=sc.get("account", "FUNDED"),
                                 exit_cfg=l2_cfg())
     live = NYLive(

@@ -45,6 +45,15 @@ a cancelled-order graveyard so a racing fill (armed path: broker fills between o
 and our cancel) still attributes, routes to the runner, and the refusal scratches it
 flat. Practice day 4 = the certification run.
 
+**ATTEMPT 4 (2026-08-01 10:26–10:55): PASS — R13 CERTIFIED.**
+Deterministic replay, byte-identical to attempt 3 except exactly the race fix's rows:
+ny:2026-07-31:20's same-minute touch now runs fill -> fill-minute gate refusal ->
+`scratch` -> `scratched` (flattened, stop down first) instead of a blind cancel that
+orphaned the fill. Zero errors, zero wrong-side stops, both price scales journaled,
+every placement/cancel matched. The `--arm` R13 refusal comes off in the certified
+commit; the two-party gate (config/arming.yaml + token, `verify_for_arming`) remains
+fail-closed and is what stands between this commit and money.
+
 ## 1. Pull + suite (expect ~800 passed, 2 known unrelated failures)
 
     cd C:\Users\Administrator\AI-trading-agents

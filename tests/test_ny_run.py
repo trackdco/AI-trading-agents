@@ -353,16 +353,24 @@ def test_naive_fill_timestamp_is_refused(live):
         lv.on_fill(ref, pd.Timestamp("2026-04-20 09:46:00"), 11)
 
 
-def test_arm_is_refused_until_r13_is_certified(tmp_path):
-    """--arm must hard-exit BY CONSTRUCTION while the execution wiring is incomplete
-    (review D1/D2/D5). A refused arm never falls back to a shadow run."""
+def test_arm_without_angus_file_is_refused_never_shadow(tmp_path, monkeypatch):
+    """R13 is certified (practice day 4) so the wiring gate is gone — but --arm remains
+    two-party fail-closed: without config/arming.yaml (Angus's commit) the token can
+    never verify and the build hard-exits. A refused arm never falls back to shadow."""
     from scripts.ny_run import build_ny_live
     import logging
-    with pytest.raises(SystemExit, match="R13"):
-        build_ny_live({"feed": {"sierra": {"data_dir": str(tmp_path)}},
+    monkeypatch.setenv("ARM_TOKEN", "not-the-phrase")
+
+    class _Alerts:
+        def say(self, text):
+            pass
+
+    with pytest.raises(SystemExit, match="ARM REFUSED"):
+        build_ny_live({"feed": {"sierra": {"data_dir": str(tmp_path),
+                                           "scid": str(tmp_path / "x.scid")}},
                        "paths": {}, "account": {"equity": 50_000.0},
                        "ny": {"buffer": 2_000.0}},
-                      alerts=None, log=logging.getLogger("t"), arm=True)
+                      alerts=_Alerts(), log=logging.getLogger("t"), arm=True)
 
 
 # ---------------------------------------------------------------- dry-run end to end
