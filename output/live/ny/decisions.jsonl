@@ -1,4 +1,4 @@
-{"type": "boot", "git_sha": "342293c593cea94150ad07b39b8291b5641fface", "armed": false, "entry": "ny_run"}
+{"type": "boot", "git_sha": "6a36945904b0b5d166a9fe1a8ade4724c621d51b", "armed": false, "entry": "ny_run"}
 {"type": "ny_day_start", "day": "2026-01-20", "buffer": 2000.0, "bar_ts": "2026-01-20 08:35:00+00:00"}
 {"type": "ny_day_start", "day": "2026-01-21", "buffer": 2000.0, "bar_ts": "2026-01-21 01:13:00+00:00"}
 {"type": "ny_day_start", "day": "2026-01-22", "buffer": 2000.0, "bar_ts": "2026-01-22 13:16:00+00:00"}
@@ -202,12 +202,13 @@
 {"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:19", "broker_ref": "dry:25", "mode": "dryrun"}
 {"type": "trigger_seen", "ts": "2026-07-31T10:20:00-04:00", "direction": "short", "entry_ref": 28193.6875, "placed": true}
 {"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-31:20", "broker_ref": "dry:26", "mode": "dryrun"}
+{"type": "scratch", "ref": "ny:2026-07-31:20", "why": "gold_wall_quality", "ts": "2026-07-31 14:21:00+00:00"}
+{"layer": "ny_execution", "type": "scratched", "ref": "ny:2026-07-31:20", "why": "gate:gold_wall_quality", "mode": "dryrun"}
 {"type": "trigger_seen", "ts": "2026-07-31T10:21:00-04:00", "direction": "long", "entry_ref": 28191.8742, "placed": false}
 {"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:16", "why": "gold_wall_quality", "mode": "dryrun"}
 {"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:17", "why": "gold_wall_quality", "mode": "dryrun"}
 {"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:18", "why": "gold_wall_quality", "mode": "dryrun"}
 {"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:19", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-31:20", "why": "gold_wall_quality", "mode": "dryrun"}
 {"type": "trigger_seen", "ts": "2026-07-31T10:22:00-04:00", "direction": "long", "entry_ref": 28189.3634, "placed": false}
 {"type": "trigger_seen", "ts": "2026-07-31T10:24:00-04:00", "direction": "long", "entry_ref": 28186.4409, "placed": false}
 {"type": "trigger_seen", "ts": "2026-07-31T10:25:00-04:00", "direction": "long", "entry_ref": 28184.1347, "placed": false}
