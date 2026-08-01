@@ -201,3 +201,55 @@ holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping
   2026-04-23_0340_s_126: agent -1.05R vs V1 -1.03R | stop | turns 1
   2026-04-23_0346_l_127: agent -0.04R vs V1 -0.02R | stop | turns 5
   2026-04-23_0346_l_128: SKIPPED (agent still in a position until 2026-04-23 04:01:00-04:00)
+  2026-04-23_0426_s_129: agent +5.61R vs V1 +5.61R | mech_exit_mirror | turns 7
+== 2026-04-29: 2 candidates
+  2026-04-29_0402_s_130: agent +2.46R vs V1 +2.49R | target | turns 2
+  2026-04-29_0443_s_131: agent -1.03R vs V1 -1.01R | stop | turns 1
+== 2026-05-04: 1 candidates
+  2026-05-04_0337_l_132: agent +2.05R vs V1 +2.07R | target | turns 4
+== 2026-05-07: 1 candidates
+  2026-05-07_0347_s_133: agent -1.04R vs V1 -1.02R | stop | turns 4
+== 2026-05-14: 2 candidates
+  2026-05-14_0421_s_134: agent -0.03R vs V1 -0.02R | stop | turns 4
+  2026-05-14_0436_s_135: agent +2.52R vs V1 +2.54R | target | turns 2
+== 2026-05-18: 2 candidates
+  2026-05-18_0343_l_136: agent +2.89R vs V1 +2.91R | target | turns 3
+  2026-05-18_0343_l_137: SKIPPED (agent still in a position until 2026-05-18 03:48:00-04:00)
+== 2026-05-20: 1 candidates
+  2026-05-20_0347_s_138: agent -0.03R vs V1 -0.03R | mech_exit_mirror | turns 4
+== 2026-05-21: 1 candidates
+  2026-05-21_0435_s_139: agent -0.02R vs V1 -0.02R | mech_exit_mirror | turns 1
+== 2026-05-22: 3 candidates
+  2026-05-22_0317_l_140: agent +2.00R vs V1 +2.02R | target | turns 3
+  2026-05-22_0346_l_141: agent +2.73R vs V1 +2.74R | target | turns 6
+  2026-05-22_0346_l_142: SKIPPED (agent still in a position until 2026-05-22 04:02:00-04:00)
+== 2026-05-28: 2 candidates
+  2026-05-28_0351_s_143: agent -1.04R vs V1 -1.02R | stop | turns 1
+  2026-05-28_0352_l_144: SKIPPED (agent still in a position until 2026-05-28 03:54:00-04:00)
+== 2026-06-01: 1 candidates
+  2026-06-01_0435_s_145: agent -0.02R vs V1 -0.02R | mech_exit_mirror | turns 3
+== 2026-06-02: 1 candidates
+  2026-06-02_0422_s_146: agent -0.02R vs V1 -0.02R | mech_exit_mirror | turns 2
+== 2026-06-04: 1 candidates
+  2026-06-04_0304_l_147: agent -0.02R vs V1 -0.02R | mech_exit_mirror | turns 2
+== 2026-06-08: 4 candidates
+  2026-06-08_0305_l_148: agent +2.50R vs V1 +2.52R | target | turns 1
+  2026-06-08_0306_l_149: SKIPPED (agent still in a position until 2026-06-08 03:08:00-04:00)
+  2026-06-08_0340_l_150: agent -0.01R vs V1 -0.01R | mech_exit_mirror | turns 7
+  2026-06-08_0409_l_151: agent +2.33R vs V1 +2.35R | target | turns 0
+== 2026-06-09: 1 candidates
+  2026-06-09_0350_l_152: agent -1.04R vs V1 -0.02R | stop | turns 1
+== 2026-06-16: 1 candidates
+  2026-06-16_0313_s_153: agent -1.01R vs V1 -1.00R | stop | turns 4
+== 2026-06-17: 1 candidates
+  2026-06-17_0301_l_154: agent -0.02R vs V1 -0.02R | mech_exit_mirror | turns 6
+== 2026-06-18: 1 candidates
+  2026-06-18_0429_l_155: agent +0.27R vs V1 +2.04R | agent_exit | turns 2
+== 2026-06-22: 1 candidates
+  2026-06-22_0343_s_156: agent -0.02R vs V1 -0.02R | mech_exit_mirror | turns 10
+== 2026-06-26: 1 candidates
+  2026-06-26_0412_s_157: agent -0.01R vs V1 -0.01R | mech_exit_mirror | turns 2
+== 2026-07-06: 3 candidates
+  2026-07-06_0307_l_158: agent -0.02R vs V1 -0.02R | mech_exit_mirror | turns 2
+  2026-07-06_0325_s_159: agent -0.04R vs V1 -0.02R | stop | turns 3
+  2026-07-06_0400_l_160: agent +2.84R vs V1 +2.87R | target | turns 0
