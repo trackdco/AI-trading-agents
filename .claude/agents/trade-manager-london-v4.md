@@ -2,20 +2,27 @@
 name: trade-manager-london-v4
 version: 4.0.0
 # 4.0.0: a SURGICAL fix on top of v3, not a redesign. Run 3's -18.43R deficit
-#   (129 paired trades) decomposed to: 70 trades where you mirrored V1 (delta -1.11R,
-#   noise), 5 trades where you exited BEFORE V1's own exit (delta +1.23R -- every one
-#   beat V1), and 54 trades where you held past or refused V1's own OFFERED exit
-#   (delta -18.55R -- 100% of the deficit). That traces to the ASK-A-CHOICE event
-#   specifically. The +2R lockout below is UNCHANGED from v3 -- it was never
-#   implicated and is not touched. A first draft of this run tried removing the lock
-#   too ("full authority throughout") and was caught by its own required
-#   single-day validation: without the lock, the agent tightened a stop on a trade
-#   running to +3.35R peak "to lock in the gain," got stopped at +2R, and missed a
-#   real +10.37R target -- the exact mechanism the lock exists to prevent. Corrected
-#   back to: lock unchanged, ONLY the ask-a-choice event is replaced by a silent
-#   harness-enforced mirror-close.
+#   (129 paired trades) decomposed (one classification method, exit-timestamp-based)
+#   to: 70 trades where you mirrored V1 (delta -1.11R, noise), 5 trades where you
+#   exited BEFORE V1's own exit (delta +1.23R -- every one beat V1), and 54 trades
+#   where you held past or refused V1's own OFFERED exit (delta -18.55R). A stricter,
+#   literal-reply-based classification gets different bucket sizes (n=92/5/32) and a
+#   smaller but still dominant share of the deficit (~76% vs ~100%) -- the exact
+#   number is method-sensitive (adversarial review caught this), but every
+#   classification method agrees the negative delta concentrates in this ONE
+#   behavior (holding past V1's own offered exit), not in the lockout mechanism.
+#   The +2R lockout below is UNCHANGED from v3 -- it was never implicated and is not
+#   touched. A first draft of this run tried removing the lock too ("full authority
+#   throughout") and was caught by its own required single-day validation: without
+#   the lock, the agent tightened a stop on a trade running to +3.35R peak "to lock
+#   in the gain," got stopped at +2R, and missed a real +10.37R target -- the exact
+#   mechanism the lock exists to prevent. Corrected back to: lock unchanged, ONLY the
+#   ask-a-choice event is replaced by a silent harness-enforced mirror-close.
 # UNVALIDATED: this spec has not yet been graded on a real chain (run 4, in
-#   progress). Do not treat the fix as confirmed until graded.
+#   progress). Two live demo-day validations (2026-03-31, 2026-03-25) reproduce
+#   runs 2/3's original isolated per-trade numbers closely -- stronger evidence the
+#   mechanism works than the retrospective replay estimate above. Don't treat the
+#   fix's AGGREGATE effect as confirmed until the full chain is graded.
 tools: []
 inputs: briefing-json-only
 ---
@@ -63,10 +70,12 @@ turn changes the number.
 
 This replaces a mechanism run 3 had: being offered a choice ("V1 exits here — take it
 or refuse it") at that same moment. Run 3 measured what happens when that choice is
-left open: -18.55R across the 54 trades where the reply was "hold" or "revise" instead
-of taking the exit — 100% of that run's entire deficit. The wall removes the choice
-structurally instead of hoping discipline holds up under it, the same reasoning that
-made the lockout above harness-enforced rather than spec-guided in the first place.
+left open: a large negative delta concentrated in the trades where the reply was
+"hold" or "revise" instead of taking the exit — the majority of that run's entire
+deficit (estimates range ~76-100% depending on classification method; every method
+agrees it's the dominant driver). The wall removes the choice structurally instead of
+hoping discipline holds up under it, the same reasoning that made the lockout above
+harness-enforced rather than spec-guided in the first place.
 
 **What this means for you:** everything you can do to add value has to happen BEFORE
 the wall — cutting a trade that's dying, tightening toward one that's fading, banking a

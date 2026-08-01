@@ -12,7 +12,15 @@ mechanical exit when offered. Run 3's graded result: agent +80.58R vs V1 +99.01R
   held PAST / refused V1's offered exit (n=54): agent +0.50R vs V1 +19.05R (delta -18.55R)
 100% of the deficit is the third bucket, and it traces to the ASK-A-CHOICE event
 specifically -- the +2R lockout itself was never implicated (defense stayed
-+17.8R-shaped across every prior run, untouched by this decomposition).
++17.8R-shaped across every prior run, untouched by this decomposition). NOTE
+(added post-review): the exact bucket sizes above depend on classification
+method -- a stricter reconstruction using the literal per-turn reply at the
+MECHANICAL EXIT NOW event (rather than exit-timestamp proximity) gets n=92/5/32
+and only ~76% deficit recovery from the substitution, not the ~100% first
+estimated here. Real, substantial, and the correct direction either way -- just
+don't read "100%" as a precise, reproduced number. The two live demo-day
+validations below (not a retrospective estimate) are the stronger evidence this
+design works.
 
 FIRST DRAFT'S MISTAKE (kept here rather than silently corrected, matching this
 project's retraction convention): it over-generalized "remove the choice" into
@@ -540,9 +548,17 @@ def manage_trade(t, bars, tape, dep, thesis, journal) -> dict:
         # is still open closes HERE, at V1's own realized price -- no hold, no
         # refusal, no target-extension channel past this line. The mirror price is
         # solved so that, when frac is still 1.0 (no earlier partial/tighten leg),
-        # the resulting agent_R is EXACTLY t["v1_R"] (commission included once, not
-        # double-counted): pts = v1_R*risk_pts + COMMISSION/PV  =>  net = pts*PV -
-        # COMMISSION = v1_R*risk_pts*PV.
+        # the resulting agent_R is EXACTLY t["v1_R"]: pts = v1_R*risk_pts +
+        # COMMISSION/PV  =>  net = pts*PV - COMMISSION = v1_R*risk_pts*PV.
+        # DELIBERATE (flagged in adversarial review, kept on reflection): t["v1_R"]
+        # is gross (src/backtest/engine.py's r_multiple never nets commission,
+        # only dollars does) while agent_R elsewhere in this file IS net of the
+        # $5 COMMISSION via settle() -- dropping the +COMMISSION/PV term would make
+        # mirrored trades pay commission twice relative to how v1_R has been used as
+        # the reference baseline in every "agent vs V1" comparison since run 1. This
+        # keeps the mirror internally consistent with that established convention
+        # rather than "more correct" but inconsistent with everything else in the
+        # project. Magnitude is ~$5/trade either way, immaterial to any verdict here.
         if cx_min is not None and minute >= cx_min:
             v1_price = entry + s * (t["v1_R"] * risk_pts + COMMISSION / PV)
             close(frac, v1_price, "mech_exit_mirror")
