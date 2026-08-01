@@ -463,6 +463,8 @@ class NYLive:
 
     # ---------------------------------------------------------------- loop
     def _maybe_retarget(self, now: pd.Timestamp) -> None:
+        if self.replay_day is not None:
+            return                             # the feed was pinned to the replay day
         today = now.tz_convert(NY).strftime("%Y-%m-%d")
         # Latch _depth_day only once today's file was FOUND: a 07:00 boot predates
         # Sierra creating the day's .depth, and a latch-on-miss would leave the whole
@@ -497,8 +499,10 @@ class NYLive:
         return self.guard.check_stale(now)
 
     def serve(self, sleep_fn, poll_interval_s: float = 1.0, max_polls=None, stop_fn=None):
-        self._say(f"NY canon loop {'ARMED' if self.armed else 'DISARMED (shadow)'} — "
-                  f"git {_git_sha()}")
+        mode = ("ARMED" if self.armed else
+                f"DRYRUN practice day {self.replay_day}" if self.replay_day
+                else "DISARMED (shadow)")
+        self._say(f"NY canon loop {mode} — git {_git_sha()}")
         polls, boot, warned_no_bars = 0, self.clock(), False
         while max_polls is None or polls < max_polls:
             if stop_fn is not None and stop_fn():
@@ -562,15 +566,20 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
 
     now = pd.Timestamp.now(tz="UTC")
     today = now.tz_convert(NY).strftime("%Y-%m-%d")
+    # a practice-day replay reads the REPLAY day's depth file — today's may not exist
+    # (Saturday) and would leave the depth gates blind for the whole rehearsal
+    depth_day = replay_day or today
+    depth_ref = pd.Timestamp(depth_day, tz=NY) if replay_day else now
     scid = Path(sc["scid"]) if sc.get("scid") else resolve_scid_path(
         data_dir, now, root, suffix)
-    depth = resolve_depth_path(data_dir, now, day=today, root=root, suffix=suffix)
+    depth = resolve_depth_path(data_dir, depth_ref, day=depth_day,
+                               root=root, suffix=suffix)
     depth_ok = depth is not None and Path(depth).exists()
     feed = SierraFileFeed(scid, depth if depth_ok else None,
                           flush_ms=int(sc.get("flush_ms", 1000)))
     if not depth_ok:
-        alerts.say(f"no .depth file for {today} yet — depth features stand down until "
-                   "it appears (retargeted automatically each poll)")
+        alerts.say(f"no .depth file for {depth_day} yet — depth features stand down "
+                   "until it appears (retargeted automatically each poll)")
 
     ingestor = CanonIngestor(book=DepthBook())
     lane = NYLane(ingestor=ingestor, profile=_profile(ny.get("profile", "lucid")),
