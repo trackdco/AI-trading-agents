@@ -102,7 +102,9 @@ from src.live.route_b import (
 NY = "America/New_York"
 PRE_FLATTEN = dtime(9, 30)             # rule K: two sessions, pre flat at the open
 RULE_L_PTS = 3.0                       # rule L: same-level band (apply_close_reverse.py)
-STALE_BAR_S = 120.0                    # catch-up guard, same constant as route_b's verdict wall
+STALE_BAR_S = 300.0                    # catch-up guard. 120s clipped 17 REAL session
+                                       # minutes on 2026-07-31 (loop lag spikes 120-132s);
+                                       # 300s still kills restart ghost-order replays cold.
 
 
 def _profile(name: str):
@@ -360,13 +362,23 @@ class NYLive:
     def _start_day_if_new(self, ts: pd.Timestamp) -> None:
         day = session_day(ts)
         if day != self._day:
+            # Sierra writes settlement/close records with future stamps; session_day on
+            # one of those rolled the live day to 2026-08-01 mid-afternoon on 07-31. A
+            # spurious roll CLEARS position/candidate state — refuse any roll driven by
+            # a bar stamped in the future relative to the wall clock.
+            if (self._day is not None
+                    and (ts - self.clock()).total_seconds() > 3600):
+                self._journal({"type": "day_roll_refused_future_bar", "bar_ts": str(ts),
+                               "would_be_day": day, "current_day": self._day})
+                return
             self._day = day
             self._seen.clear()
             self._positions.clear()
             # R13: armed multi-day use must replace this with the broker account
             # read-back (equity - trailing_line per session), not the boot-time value.
             self.runner.start_day(day, buffer=float(self.buffer))
-            self._journal({"type": "ny_day_start", "day": day, "buffer": self.buffer})
+            self._journal({"type": "ny_day_start", "day": day, "buffer": self.buffer,
+                           "bar_ts": str(ts)})
             self._say(f"NY canon day {day} — buffer ${self.buffer:,.0f}")
 
     def dispatch(self, events: list[dict], now: pd.Timestamp) -> None:
@@ -425,7 +437,12 @@ class NYLive:
                         if key in self._seen:
                             continue
                         self._seen.add(key)
-                        self._execute(self.runner.on_trigger(trig), bts)
+                        acts = self.runner.on_trigger(trig)
+                        self._journal({"type": "trigger_seen", "ts": str(trig.ts),
+                                       "direction": trig.direction,
+                                       "entry_ref": float(trig.entry_ref),
+                                       "placed": bool(acts)})
+                        self._execute(acts, bts)
                     self._execute(self.runner.on_bar(bts, float(gbar["high"]),
                                                      float(gbar["low"])), bts)
                     for f in self.execution.poll_fills():

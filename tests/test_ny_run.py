@@ -393,3 +393,31 @@ def test_dryrun_place_fill_and_rule_k_flatten_reach_the_broker(live):
     assert ref not in lv._positions and ref not in lv.execution._positions
     assert any(r.get("type") == "closed_now" and r.get("why") == "rule_k_flatten"
                for r in lv.decision_sink)
+
+
+# ---------------------------------------------------------------- session findings 08-01
+def test_future_stamped_bar_never_rolls_the_day(live):
+    """A settlement record stamped hours ahead must not clear live day state
+    (found in the 2026-07-31 shadow session: day rolled to 08-01 mid-afternoon)."""
+    lv, det = live
+    _drive(lv, "09:45")
+    assert lv._day == "2026-04-20"
+    future = _minute_event("09:46")
+    fts = _ts("09:46") + pd.Timedelta(hours=9)          # stamped way in the future
+    future["ts"] = fts
+    future["bar"]["ts_event"] = fts
+    lv._wall = _ts("09:46") + pd.Timedelta(minutes=1)
+    lv.dispatch([future], lv._wall)
+    assert lv._day == "2026-04-20"                       # day did NOT roll
+    assert any(r["type"] == "day_roll_refused_future_bar" for r in lv.decision_sink)
+
+
+def test_two_minute_late_bar_still_acts(live):
+    """120-132s lag spikes clipped 17 real session minutes on 07-31 — the widened
+    threshold must let a 2.5-minute-old bar act."""
+    lv, det = live
+    det.script["09:45"] = [_trigger()]
+    lv._wall = _ts("09:45") + pd.Timedelta(seconds=150 + 60)
+    lv.dispatch([_minute_event("09:45")], lv._wall)
+    assert any(a["action"] == "place" for a in lv.action_sink)
+    assert any(r["type"] == "trigger_seen" and r["placed"] for r in lv.decision_sink)
