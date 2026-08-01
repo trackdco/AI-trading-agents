@@ -1,0 +1,45 @@
+holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping 708,412 row(s) from year(s) [2023, 2024] — keeping frozenset({2025, 2026}) only
+== POPULATION == 132 managed trades (130 paired vs V1, 2 agent-only -- admitted only under the agent's own timing, no V1 anchor)
+
+== PAIRED STATS (n=130) ==
+agent +92.33R vs V1 +98.54R | delta -6.21R (mean -0.0478, median -0.0154, sd 0.259)
+t = -2.10 | sign-flip permutation p = 0.03196 (100k, two-sided)
+fragility: top-3 deltas [0.31 0.42 0.67] | delta without them -7.60R (FAIL)
+win rate: agent 31.5% vs V1 29.2%
+
+agent-only trades (no V1 baseline, n=2): agent +0.18R, WR 50% -- reported, not part of the paired delta above
+
+== ERA SPLIT (kill: sign flip) ==
+  fit-2025: n=57 delta +1.06R (mean +0.0185)
+  fit-2026: n=73 delta -7.27R (mean -0.0995)
+== BUCKET SPLIT ==
+  08:00-08:30: n=36 delta +0.70R (mean +0.0195)
+  08:30-09:00: n=33 delta -1.09R (mean -0.0331)
+  09:00-09:30: n=42 delta -4.63R (mean -0.1101)
+  09:30-09:45: n=19 delta -1.19R (mean -0.0629)
+
+== MECHANICAL CONTROL lock1r_2r (paired trades only, n=130, commission-netted) ==
+control +30.52R (locked on 42 trades) | V1 +98.54R | agent +92.33R
+agent - control = +61.80R (agent BEATS best mechanical control)
+
+== ORACLE CEILING (report-only, paired trades) ==
+hindsight-optimal +730.64R | agent captures 12.6% of ceiling (V1 13.5%)
+
+== CONVICTION SHUFFLE (timing reassigned within era x V1-sign strata, 1000 draws) ==
+timing-only replay of agent exits: +102.08R (actual agent +92.33R adds partials/targets on top)
+null: mean +112.93R sd 10.37 max +146.54R | p(null >= real) = 0.8590 (FAIL — coin with commentary)
+
+== FUNDED (flat $250 risk/trade, MNQ micros -- london_funded_test.py convention, paired trades) ==
+  V1        : net $+24,639 | worst day $-505 | maxDD $931
+  agent     : net $+23,088 | worst day $-630 | maxDD $978
+  lock1r_2r : net $+7,694 | worst day $-577 | maxDD $1,320
+
+== FUNDED, CONVICTION-WEIGHTED ($200 base x grade weight, same MNQ-micro formula as the validated V1 conviction ladder, paired trades) ==
+  V1        : net $+33,191 | worst day $-595 | maxDD $1,080 | avg micros 10.1 (2-21)
+  agent     : net $+31,195 | worst day $-598 | maxDD $1,117 | avg micros 10.1 (2-21)
+  lock1r_2r : net $+14,267 | worst day $-607 | maxDD $1,209 | avg micros 10.1 (2-21)
+
+  by grade (conviction-weighted funded, agent vs V1):
+    A+       (n=45, avg micros 16.5): agent $+27,420 vs V1 $+28,650 (delta $-1,230)
+    mid      (n=62, avg micros 7.5): agent $+2,697 vs V1 $+3,609 (delta $-912)
+    neither  (n=23, avg micros 4.2): agent $+1,078 vs V1 $+933 (delta $+146)
