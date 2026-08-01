@@ -6,7 +6,21 @@ all route to a Broker; a DryRunBroker simulates fills off real bars for rehearsa
 `--arm` stays refused until this certification passes and the gate comes off in the
 certified commit.
 
-## 1. Pull + suite (expect ~793 passed, 2 known unrelated failures)
+**ATTEMPT 1 (2026-08-01 03:22–06:55): FAIL — and that failure is why the cert exists.**
+Zero triggers all day, in the replay AND in Friday's live shadow. Three root causes,
+all fixed + test-pinned in the follow-up commit:
+  1. The box's Rithmic-named `NQU6.CME.scid` writes bar prices **100x** (2857526.00);
+     the detector's point-based geometry goes blind at 100x (reproduced on reference
+     days: 72/32/69 triggers at 1x -> 1/0/0 at 100x). Bars now normalize at the feed,
+     evidence-anchored, refusing on ambiguity; journals a `price_scale` row.
+  2. `session_day` on raw UTC stamps rolled the trading day at **1pm ET**, clearing
+     position state mid-session (Friday's shadow "started 2026-08-01" on Friday
+     afternoon). Boundary now converts to ET: rolls at 17:00 ET.
+  3. Full-history frame rebuild per bar made the replay ~1 min/bar (3.5h). Frame now
+     trimmed to 14 days — trigger-identical to deeper frames on 3 reference days
+     (`python -m scripts.check_trim_parity`).
+
+## 1. Pull + suite (expect ~800 passed, 2 known unrelated failures)
 
     cd C:\Users\Administrator\AI-trading-agents
     git pull origin claude/agents-capture-handoff-26rnvp
@@ -14,11 +28,16 @@ certified commit.
 
 ## 2. The practice day — replay Friday's session with simulated fills
 
+Move attempt 1's journals aside first (they are committed; the rerun starts clean):
+
+    Rename-Item output\live\ny ny_practice1_fail
     python -m scripts.ny_run --dryrun --replay-day 2026-07-31
 
-Let it run until it goes quiet past the replay day (it replays the box's own .scid),
-then Ctrl+C. PASS = in `output\live\ny\`:
-  - `placed` rows with broker refs in decisions.jsonl (orders actually reached the broker)
+Runs to the `feed STALLED — halting (fail closed)` + `ny_run STOP` pair on its own
+(no Ctrl+C). Expected much faster than attempt 1. PASS = in `output\live\ny\`:
+  - a `price_scale` row: `bars / 100` (and `depth / 100` once the day's depth loads)
+  - `trigger_seen` rows during the 07:45–11:00 ET band (the detector actually firing)
+  - `placed` rows with broker refs (orders actually reached the broker)
   - every `cancel` matched by a `cancelled` row (the resting rule executes)
   - any fill followed by `position_closed` or `closed_now` with a `pl` (exit engine ran)
   - any pre-window fill closed by `rule_k_flatten` on the 09:30 bar

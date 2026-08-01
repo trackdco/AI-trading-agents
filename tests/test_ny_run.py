@@ -421,3 +421,39 @@ def test_two_minute_late_bar_still_acts(live):
     lv.dispatch([_minute_event("09:45")], lv._wall)
     assert any(a["action"] == "place" for a in lv.action_sink)
     assert any(r["type"] == "trigger_seen" and r["placed"] for r in lv.decision_sink)
+
+
+# ---------------------------------------------------------------- session-day boundary
+def test_session_day_rolls_at_17_et_not_13_et(live):
+    """R13 practice-day finding (2026-08-01): session_day fed raw UTC stamps rolled the
+    trading day at 17:00 UTC = 1pm ET — Friday's live shadow started 'day 2026-08-01'
+    mid-Friday-afternoon, clearing position state while the session was still trading.
+    The boundary must be 17:00 ET (the real CME maintenance break)."""
+    lv, det = live
+    _drive(lv, "09:45")
+    assert lv._day == DAY
+    _drive(lv, "13:30")                     # 17:30 UTC — the OLD bug's roll instant
+    assert lv._day == DAY                   # same session: NO roll at 1pm ET
+    _drive(lv, "16:59")
+    assert lv._day == DAY
+    _drive(lv, "17:05")                     # past the maintenance break: real roll
+    assert lv._day == "2026-04-21"
+
+
+# ---------------------------------------------------------------- per-bar frame trim
+def test_detector_frame_is_trimmed_to_warmup_horizon(live):
+    """The full-history rebuild cost ~1 real minute per in-band bar on the box (3.5h
+    replay). The frame handed to the detector starts at bar_ts - FRAME_WARMUP; trim
+    parity vs the full frame is pinned empirically in scripts/check_trim_parity.py."""
+    from scripts.ny_run import FRAME_WARMUP
+    lv, det = live
+    seen = {}
+    orig = det.on_bar
+    det.on_bar = lambda df, bar: seen.update(df=df, bar=bar) or orig(df, bar)
+    old = _ts("09:00") - pd.Timedelta(days=30)
+    lv.ingestor.bars.append({"ts_event": old, "open": 1.0, "high": 1.0,
+                             "low": 1.0, "close": 1.0, "volume": 1.0})
+    _drive(lv, "09:45")
+    df = seen["df"]
+    assert len(df)                                          # the fresh bar is present
+    assert pd.to_datetime(df.ts_event).min() >= _ts("09:45") - FRAME_WARMUP

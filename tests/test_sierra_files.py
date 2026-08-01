@@ -443,3 +443,105 @@ def test_pin_check_fails_when_order_flow_missing(tmp_path):
     write_scid(dead, [dict(ts=ts, bid_volume=0, ask_volume=0, **base)])
     with pytest.raises(OrderFlowFail):
         check_scid(dead)
+
+
+# --------------------------------------------------------------------------- bar price scale
+# Pat's VPS (2026-08-01, R13 practice-day cert): the Rithmic-named NQU6.CME.scid writes
+# BAR prices 100x (2857526.00) — same box whose NQU26-CME.scid writes points. Both runs
+# over 2026-07-31 produced ZERO triggers: level clustering and every point-based
+# tolerance in detect_triggers breaks at 100x, silently. Bars are normalized at the
+# source, anchored to a known-good reference price, refusing when no clean decade fits.
+
+def _feed_100x_files(tmp_path, *, bar_scale=100.0, depth_scale=100.0, close=28480.75):
+    """scid AND depth both written scaled — the NQU6.CME.* state found on the box."""
+    sp, dp = tmp_path / "nq6.scid", tmp_path / "nq6.depth"
+    ts = _ts("2026-03-17", "08:00")
+    write_scid(sp, [
+        {"ts": ts, "close": close * bar_scale, "total_volume": 5,
+         "bid_volume": 2, "ask_volume": 3},
+        {"ts": _ts("2026-03-17", "08:02"), "close": (close + 0.25) * bar_scale,
+         "total_volume": 5, "bid_volume": 2, "ask_volume": 3},
+    ])
+    write_depth(dp, [
+        {"ts": ts, "command": DCMD_CLEAR},
+        {"ts": ts, "command": DCMD_SET_BID, "price": (close - 0.25) * depth_scale,
+         "qty": 50, "num_orders": 4},
+        {"ts": ts, "command": DCMD_SET_ASK, "price": (close + 0.25) * depth_scale,
+         "qty": 60, "num_orders": 6},
+    ])
+    return sp, dp
+
+
+def test_bar_price_scale_100x_detected_bars_and_depth_end_in_points(tmp_path):
+    from src.canon.ingestor import CanonIngestor
+    sp, dp = _feed_100x_files(tmp_path)
+    feed = SierraFileFeed(sp, dp, reference_px=23_364.0)   # repo reference last close
+    ing = CanonIngestor(book=DepthBook())
+    feed.drive_batch(ing)
+    assert feed.bar_price_scale == 100.0
+    # bars in points at the ingestor…
+    assert ing.bars_frame()["close"].iloc[0] == pytest.approx(28480.75)
+    # …and the depth detection COMPOSES: raw 100x depth vs the now-scaled trade price
+    assert feed.depth_price_scale == 100.0
+    assert ing.book.best_bid() == pytest.approx(28480.50)
+    assert ing.book.best_ask() == pytest.approx(28481.00)
+
+
+def test_bar_price_scale_without_anchor_is_todays_behavior(tmp_path):
+    """No reference_px -> scale 1.0, untouched — consumers that never see scaled files
+    (parity replays over known-good captures, tests) keep their exact behavior."""
+    from src.canon.ingestor import CanonIngestor
+    sp, dp = _feed_100x_files(tmp_path)
+    feed = SierraFileFeed(sp, dp)
+    ing = CanonIngestor(book=DepthBook())
+    feed.drive_batch(ing)
+    assert feed.bar_price_scale == 1.0
+    assert ing.bars_frame()["close"].iloc[0] == pytest.approx(2_848_075.0)
+
+
+def test_bar_price_scale_points_file_with_anchor_stays_1x(tmp_path):
+    from src.canon.ingestor import CanonIngestor
+    sp, dp = _feed_files(tmp_path, depth_scale=100.0)      # scid already in points
+    feed = SierraFileFeed(sp, dp, reference_px=23_364.0)
+    ing = CanonIngestor(book=DepthBook())
+    feed.drive_batch(ing)
+    assert feed.bar_price_scale == 1.0
+    assert feed.depth_price_scale == 100.0
+    assert ing.bars_frame()["close"].iloc[0] == pytest.approx(28480.75)
+
+
+def test_bar_price_scale_no_clean_decade_refuses(tmp_path):
+    """37x off the anchor: nothing lands within sqrt(10) of a power of ten — RAISE,
+    never trade on implausible prices (the zero-triggers-forever failure mode)."""
+    from src.canon.ingestor import CanonIngestor
+    sp, dp = _feed_100x_files(tmp_path, bar_scale=37.0, depth_scale=1.0)
+    feed = SierraFileFeed(sp, dp, reference_px=23_364.0)
+    with pytest.raises(ValueError, match="refusing to guess"):
+        feed.drive_batch(CanonIngestor(book=DepthBook()))
+
+
+def test_bar_price_scale_explicit_pin_wins_without_anchor(tmp_path):
+    from src.canon.ingestor import CanonIngestor
+    sp, dp = _feed_100x_files(tmp_path)
+    feed = SierraFileFeed(sp, dp, bar_price_scale=100.0)   # PIN-ON-BOX config
+    ing = CanonIngestor(book=DepthBook())
+    feed.drive_batch(ing)
+    assert ing.bars_frame()["close"].iloc[0] == pytest.approx(28480.75)
+
+
+def test_retarget_scid_redetects_both_scales(tmp_path):
+    """A contract roll can swap naming variants (NQU26-CME points <-> NQU6.CME 100x) —
+    the new file's evidence decides, not the old file's."""
+    from src.canon.ingestor import CanonIngestor
+    sp1, dp1 = _feed_files(tmp_path, depth_scale=1.0)          # points file
+    feed = SierraFileFeed(sp1, dp1, reference_px=23_364.0)
+    ing = CanonIngestor(book=DepthBook())
+    feed.drive_batch(ing)
+    assert feed.bar_price_scale == 1.0
+    sp2, dp2 = _feed_100x_files(tmp_path)                      # roll onto the 100x variant
+    feed.retarget_scid(sp2, depth_path=dp2)
+    assert feed.bar_price_scale is None                        # re-detect from new evidence
+    ing2 = CanonIngestor(book=DepthBook())
+    feed.drive_batch(ing2)
+    assert feed.bar_price_scale == 100.0
+    assert ing2.bars_frame()["close"].iloc[0] == pytest.approx(28480.75)

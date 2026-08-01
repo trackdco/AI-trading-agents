@@ -32,7 +32,7 @@ from __future__ import annotations
 
 import struct
 from collections.abc import Callable, Iterator
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace as dc_replace
 from pathlib import Path
 
 import pandas as pd
@@ -345,6 +345,10 @@ def _utc_now() -> pd.Timestamp:
     return pd.Timestamp.now(tz="UTC")
 
 
+_SQRT10 = 10.0 ** 0.5    # decade midpoint: within sqrt(10) of a power of ten <=> that
+                         # power is the unique nearest candidate (candidates are 10x apart)
+
+
 # =========================================================================== the feed (shim)
 @dataclass
 class SierraFileFeed:
@@ -370,6 +374,19 @@ class SierraFileFeed:
     # becomes the divisor; anything else RAISES (never guess). Until a .scid reference
     # price exists, depth events are held back rather than emitted unscaled.
     depth_price_scale: float | None = None
+    # --- BAR price scale (found on Pat's VPS 2026-08-01, R13 practice-day cert): the
+    # Rithmic-named NQU6.CME.scid writes bar prices 100x scaled (2857526.00) while the
+    # older NQU26-CME.scid writes points (28480.75) — the SAME box, different scale per
+    # file. Mis-scaled bars blind the trigger detector completely (level clustering and
+    # every point-based tolerance breaks), so bars are normalized AT THE SOURCE, decided
+    # by evidence: the first trade price against `reference_px` (a known-good real price
+    # for the instrument, e.g. the repo reference data's last close) must land within
+    # sqrt(10) of exactly one power-of-ten divisor. No anchor -> scale 1.0 (unchanged
+    # behavior for consumers that don't pass one); an anchor with no clean decade RAISES
+    # (never trade on implausible prices). `_last_trade_px` is stored SCALED, so the
+    # depth-scale detection above composes: 100x bars + 100x depth -> both end in points.
+    bar_price_scale: float | None = None
+    reference_px: float | None = None
     # --- feed-lag instrumentation (live tail only; see FeedLag) -------------------------
     clock: Callable[[], pd.Timestamp] | None = None    # wall-clock source, injectable for tests
     on_lag: Callable[[dict], None] | None = None        # per-bar lag journal sink (fail-soft)
@@ -382,6 +399,7 @@ class SierraFileFeed:
     lag: FeedLag = field(init=False)
 
     _SCALE_CANDIDATES = (0.01, 0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0)
+
 
     def __post_init__(self):
         self._scid = ScidReader(self.scid_path)
@@ -415,8 +433,14 @@ class SierraFileFeed:
         events: list[tuple] = []
         now = self._clock() if measure_lag else None
         for rec in self._scid.records():
+            if self.bar_price_scale is None and rec.close > 0:
+                self.bar_price_scale = self._detect_bar_scale(float(rec.close))
+            if self.bar_price_scale not in (None, 1.0):
+                s = self.bar_price_scale
+                rec = dc_replace(rec, open=rec.open / s, high=rec.high / s,
+                                 low=rec.low / s, close=rec.close / s)
             if rec.close > 0:
-                self._last_trade_px = float(rec.close)   # depth-scale reference
+                self._last_trade_px = float(rec.close)   # depth-scale reference (scaled)
             for closed in self._agg.push(rec):
                 if measure_lag:
                     self._record_lag(closed["ts"], now)
@@ -439,6 +463,24 @@ class SierraFileFeed:
                 self._pending_depth.clear()
         events.sort(key=lambda e: (e[0], e[1]))
         return [e[2] for e in events]
+
+    def _detect_bar_scale(self, first_px: float) -> float:
+        """Bar-vs-reality price scale, decided by evidence only: the first trade price over
+        `reference_px` must sit within sqrt(10) of exactly one power-of-ten candidate
+        (decade-spaced candidates make that divisor unique when it exists). No reference
+        anchor -> 1.0, today's behavior, for consumers that never see scaled files. An
+        anchor with NO clean decade raises — a detector fed implausible prices returns
+        zero triggers forever, silently (the R13 practice-day failure mode)."""
+        if self.reference_px is None or self.reference_px <= 0:
+            return 1.0
+        for s in self._SCALE_CANDIDATES:
+            ratio = (first_px / s) / self.reference_px
+            if (1.0 / _SQRT10) < ratio < _SQRT10:
+                return s
+        raise ValueError(
+            f".scid bar price {first_px:.6g} has no power-of-ten scale landing within "
+            f"sqrt(10) of reference price {self.reference_px:.6g} — refusing to guess "
+            f"(PIN-ON-BOX: check the .scid variant and pin feed.sierra.price_scale)")
 
     def _detect_depth_scale(self) -> float | None:
         """Depth-vs-trade price scale, decided by evidence only: median pending depth price
@@ -500,6 +542,11 @@ class SierraFileFeed:
         self.scid_path = scid_path
         self._scid = ScidReader(scid_path)
         self._agg = MinuteAggregator()
+        # a different file can carry a different scale (NQU6.CME.scid is 100x where
+        # NQU26-CME.scid is points — same box); re-detect both from the new evidence
+        self.bar_price_scale = None
+        self.depth_price_scale = None
+        self._last_trade_px = None
         if depth_path is not None:
             self.retarget_depth(depth_path)
 

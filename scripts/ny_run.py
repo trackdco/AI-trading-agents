@@ -105,6 +105,8 @@ RULE_L_PTS = 3.0                       # rule L: same-level band (apply_close_re
 STALE_BAR_S = 300.0                    # catch-up guard. 120s clipped 17 REAL session
                                        # minutes on 2026-07-31 (loop lag spikes 120-132s);
                                        # 300s still kills restart ghost-order replays cold.
+FRAME_WARMUP = pd.Timedelta(days=14)   # per-bar frame horizon: covers detect_triggers'
+                                       # 10-day OTE lookback with slack (parity pinned)
 
 
 def _profile(name: str):
@@ -169,6 +171,8 @@ class NYLive:
     _last_bar_ts: pd.Timestamp | None = field(default=None, init=False)
     _acct_fn: object = field(default=None, init=False)
     _feed_fn: object = field(default=None, init=False)
+    _bar_scale_journaled: bool = field(default=False, init=False)
+    _depth_scale_journaled: bool = field(default=False, init=False)
 
     def __post_init__(self):
         if self.execution is None:
@@ -360,7 +364,11 @@ class NYLive:
 
     # ---------------------------------------------------------------- per-bar dispatch
     def _start_day_if_new(self, ts: pd.Timestamp) -> None:
-        day = session_day(ts)
+        # session_day's 17:00 maintenance boundary reads the timestamp's OWN wall time.
+        # Sierra bars are UTC — fed raw, the "day" rolled at 17:00 UTC = 1pm ET, clearing
+        # position state mid-session (seen live on 07-31 and in the R13 replay). Convert
+        # to ET here so the roll lands at the real CME boundary (17:00 ET).
+        day = session_day(ts.tz_convert(NY))
         if day != self._day:
             # Sierra writes settlement/close records with future stamps; session_day on
             # one of those rolled the live day to 2026-08-01 mid-afternoon on 07-31. A
@@ -407,7 +415,7 @@ class NYLive:
                 # PRACTICE-DAY replay the guard is the day match instead: the certified
                 # rehearsal must act on historical bars, but only the chosen day's.
                 if self.replay_day is not None:
-                    if session_day(bts) != self.replay_day:
+                    if session_day(bts.tz_convert(NY)) != self.replay_day:
                         continue
                 else:
                     age = (self.clock() - (bts + pd.Timedelta(minutes=1))).total_seconds()
@@ -428,10 +436,18 @@ class NYLive:
                     bar = Bar(ts_event=bts_ny, open=float(gbar["open"]),
                               high=float(gbar["high"]), low=float(gbar["low"]),
                               close=float(gbar["close"]), volume=float(gbar["volume"]))
+                    # ONE frame per bar, trimmed to the detector's warmup horizon.
+                    # The full-history rebuild (x2, plus a full tz-convert) cost ~1 real
+                    # minute per in-band bar on the box — the R13 replay took 3.5h and a
+                    # live bar would flirt with the 60s budget. detect_triggers' deepest
+                    # lookback is the 10-day OTE window; 14 days keeps it whole
+                    # (trim parity pinned in tests/test_ny_run.py).
                     df = self.ingestor.bars_frame()
                     if len(df):
-                        df = df.assign(
-                            ts_event=pd.to_datetime(df.ts_event).dt.tz_convert(NY))
+                        ts_col = pd.to_datetime(df.ts_event)
+                        df = (df[ts_col >= bts - FRAME_WARMUP]
+                              .assign(ts_event=lambda d: pd.to_datetime(d.ts_event)
+                                      .dt.tz_convert(NY)))
                     for trig in self.detector.on_bar(df, bar):
                         key = _trigger_key(trig)
                         if key in self._seen:
@@ -448,11 +464,7 @@ class NYLive:
                     for f in self.execution.poll_fills():
                         self.on_fill(f["ref"], f["ts"], int(f["size"]))
                     if self.execution.live:
-                        df_all = self.ingestor.bars_frame()
-                        if len(df_all):
-                            df_all = df_all.assign(ts_event=pd.to_datetime(
-                                df_all.ts_event).dt.tz_convert(NY))
-                        self.execution.on_bar(df_all, bts_ny)
+                        self.execution.on_bar(df, bts_ny)   # same trimmed NY frame
                 except Exception as e:         # noqa: BLE001 — capture night: a crashed
                     # loop at 09:00 loses the session's evidence; journal loudly, keep
                     # ingesting. Runner state may be inconsistent for THIS candidate —
@@ -482,6 +494,8 @@ class NYLive:
                 resolve_scid_path(self.data_dir, now, self.root, self.suffix),
                 depth_path=resolve_depth_path(self.data_dir, now,
                                               root=self.root, suffix=self.suffix))
+            # a new file re-detects both price scales — journal the fresh decisions too
+            self._bar_scale_journaled = self._depth_scale_journaled = False
             self._say(f"contract ROLL: {ev}")
 
     def warm(self, bars_df: pd.DataFrame, footprint_df: pd.DataFrame | None = None):
@@ -492,10 +506,26 @@ class NYLive:
             for _, row in bars_df.iterrows():
                 self.ingestor.on_bar(dict(row))
 
+    def _journal_scales(self) -> None:
+        """One loud row per detected divisor — the R13 practice day ran an entire session
+        on 100x prices with zero console evidence; the scale decision is never silent again."""
+        bar_s = getattr(self.feed, "bar_price_scale", None)
+        depth_s = getattr(self.feed, "depth_price_scale", None)
+        if not self._bar_scale_journaled and bar_s is not None:
+            self._bar_scale_journaled = True
+            self._journal({"type": "price_scale", "which": "bars", "scale": float(bar_s)})
+            self._say(f"price scale: .scid bars / {bar_s:g}")
+        if not self._depth_scale_journaled and depth_s is not None:
+            self._depth_scale_journaled = True
+            self._journal({"type": "price_scale", "which": "depth",
+                           "scale": float(depth_s)})
+            self._say(f"price scale: .depth levels / {depth_s:g}")
+
     def poll_once(self, now: pd.Timestamp | None = None) -> bool:
         now = self.clock() if now is None else now
         self._maybe_retarget(now)
         self.dispatch(self.feed.poll_events(), now)
+        self._journal_scales()
         return self.guard.check_stale(now)
 
     def serve(self, sleep_fn, poll_interval_s: float = 1.0, max_polls=None, stop_fn=None):
@@ -575,8 +605,24 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
     depth = resolve_depth_path(data_dir, depth_ref, day=depth_day,
                                root=root, suffix=suffix)
     depth_ok = depth is not None and Path(depth).exists()
+    # --- bar price scale (R13 practice-day finding 2026-08-01): the box's Rithmic-named
+    # NQU6.CME.scid writes prices 100x (2857526.00 for 28575.26). An explicit
+    # feed.sierra.price_scale pin wins; otherwise the feed detects the divisor against
+    # the repo reference data's last close and REFUSES to run if no clean power of ten
+    # fits. The NY loop never runs unanchored — mis-scaled bars mean zero triggers, silently.
+    scale_pin = sc.get("price_scale")
+    ref_px = None
+    if scale_pin is None:
+        ref_pq = Path(sc.get("reference_parquet", "data/reference/nq_1m_master.parquet"))
+        if not ref_pq.exists():
+            raise SystemExit(f"{ref_pq} missing — the bar price-scale check needs the "
+                             "reference anchor (or pin feed.sierra.price_scale)")
+        ref_px = float(pd.read_parquet(ref_pq, columns=["close"])["close"].iloc[-1])
     feed = SierraFileFeed(scid, depth if depth_ok else None,
-                          flush_ms=int(sc.get("flush_ms", 1000)))
+                          flush_ms=int(sc.get("flush_ms", 1000)),
+                          bar_price_scale=(float(scale_pin) if scale_pin is not None
+                                           else None),
+                          reference_px=ref_px)
     if not depth_ok:
         alerts.say(f"no .depth file for {depth_day} yet — depth features stand down "
                    "until it appears (retargeted automatically each poll)")
