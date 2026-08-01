@@ -88,3 +88,4 @@ holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping
   2025-11-06_0348_l_51: agent +2.40R vs V1 +2.42R | target | turns 4
 == 2025-11-14: 1 candidates
   2025-11-14_0442_s_52: agent -0.02R vs V1 -0.02R | mech_exit_mirror | turns 1
+== 2025-11-17: 1 candidates
