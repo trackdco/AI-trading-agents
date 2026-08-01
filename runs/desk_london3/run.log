@@ -83,3 +83,6 @@ holdout_guard.filter_to_fit_years(data/reference/nq_1m_master.parquet): dropping
   2025-11-05_0329_l_47: SKIPPED (agent still in a position until 2025-11-05 04:01:00-05:00)
   2025-11-05_0348_s_48: SKIPPED (agent still in a position until 2025-11-05 04:01:00-05:00)
   2025-11-05_0359_s_49: SKIPPED (agent still in a position until 2025-11-05 04:01:00-05:00)
+  2025-11-05_0426_s_50: agent -1.05R vs V1 -0.03R | stop | turns 8
+== 2025-11-06: 1 candidates
+  2025-11-06_0348_l_51: agent +2.40R vs V1 +2.42R | target | turns 4
