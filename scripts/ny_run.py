@@ -89,6 +89,7 @@ from src.canon.spine import OrderIntent, load_spine_config
 from src.live.arming import ArmingError, verify_for_arming
 from src.live.detector import LiveDetector
 from src.live.feed import Bar
+from src.live.ny_execution import DryRunBroker, NYExecution
 from src.live.ny_runner import NYRunner
 from src.live.route_b import (
     JsonlSink,
@@ -152,6 +153,8 @@ class NYLive:
     verdict_sink: object | None = None          # ny_verdicts.jsonl
     fixture_sink: object | None = None          # fixtures.jsonl (phase-2 agent streams)
     armed: bool = False
+    execution: NYExecution = None               # R13 layer; shadow-mode default
+    replay_day: str | None = None               # practice day: act on this historical day
     kill_file: str | Path | None = None         # shared with canon_run: one kill, both loops
     clock: object = None                        # Callable[[], pd.Timestamp], injectable
 
@@ -166,6 +169,10 @@ class NYLive:
     _feed_fn: object = field(default=None, init=False)
 
     def __post_init__(self):
+        if self.execution is None:
+            self.execution = NYExecution(mode="shadow")
+        self.execution.journal = self._journal
+        self.execution.on_closed = self._on_execution_closed
         if self.guard is None:
             self.guard = FeedGuard()
         if self.watcher is None:
@@ -195,6 +202,9 @@ class NYLive:
                     abs(p.entry - limit) <= RULE_L_PTS or p.stop == stop):
                 return p.ref
         return None
+
+    def _on_execution_closed(self, ref: str, pl: float) -> None:
+        self._close_position(ref, pl=pl, reason="execution")
 
     def _close_position(self, ref: str, *, pl: float, reason: str) -> None:
         self._positions.pop(ref, None)
@@ -226,10 +236,10 @@ class NYLive:
                 self._journal({"type": "rule_k_flatten", "ref": ref, "ts": str(ts),
                                "pl_estimated": round(pl, 2), "executed": False})
                 self._say(f"RULE K: pre position {ref} flat at the open")
-                # shadow estimate only — the armed path (real market flatten + realized
-                # $ read-back) is R13 wiring, and --arm is refused until it exists.
-                assert not self.armed
-                self._close_position(ref, pl=pl, reason="rule_k_flatten")
+                if self.execution.live:
+                    self.execution.close_now(ref, "rule_k_flatten")
+                else:
+                    self._close_position(ref, pl=pl, reason="rule_k_flatten")
 
     # ---------------------------------------------------------------- action execution
     def _execute(self, actions: list[dict], now: pd.Timestamp) -> None:
@@ -242,8 +252,22 @@ class NYLive:
             v = a.get("verdict")
             if v is not None and self.verdict_sink is not None:
                 self.verdict_sink(v)
+            if kind == "cancel":
+                self.execution.cancel(a["ref"], a.get("why", ""))
+                continue
+            if kind == "modify_size":
+                v = a.get("verdict") or {}
+                c = self.runner._cands.get(a["ref"])
+                if c is not None:
+                    intent = OrderIntent(side=c.side, order_type="limit",
+                                         entry_ref=float(c.limit), stop=float(c.stop),
+                                         target=None, size=int(a["size"]),
+                                         setup_id=f"{a['ref']}:r{int(a['size'])}",
+                                         account=self.account)
+                    self.execution.modify_size(a["ref"], intent, c.trigger)
+                continue
             if kind != "place":
-                continue                       # cancel/modify/scratch: journal-only shadow
+                continue                       # scratch results ride on_fill, not here
             block = self._rule_l_conflict(
                 "long" if a["side"] == "B" else "short", a["limit"], a["stop"])
             if block is not None:
@@ -270,6 +294,16 @@ class NYLive:
                 self._journal({"type": "spine_error", "ref": a["ref"], "error": str(e),
                                "ts": str(now)})
                 self._say(f"WARN spine error on {a['ref']}: {e}")
+                continue
+            trig = self.runner._cands[a["ref"]].trigger \
+                if a["ref"] in self.runner._cands else None
+            if not self.execution.place(a["ref"], intent, trig):
+                # submission failed: un-rest the candidate so a later bar re-places it
+                c = self.runner._cands.get(a["ref"])
+                if c is not None:
+                    c.resting, c.size = False, 0
+                    self.runner.watch.mark_gone(a["ref"])
+                self._journal({"type": "placement_failed_unrested", "ref": a["ref"]})
 
     # ---------------------------------------------------------------- fills (armed loop)
     def on_fill(self, ref: str, fill_ts, filled_size: int) -> dict:
@@ -282,6 +316,8 @@ class NYLive:
         if res.get("action") == "scratch":
             self._journal({"type": "scratch", **{k: res[k] for k in ("ref", "why")},
                            "ts": str(ts)})
+            self.execution.scratch_unconfirmed(ref, int(filled_size),
+                                               f"gate:{res.get('why', '')[:40]}")
             return res
         v = res["verdict"]
         direction = v["direction"]
@@ -289,6 +325,8 @@ class NYLive:
         if block is not None:                  # fill landed inside the conflict window
             self._journal({"type": "rule_l_scratch", "ref": ref, "blocking": block,
                            "ts": str(ts)})
+            self.execution.scratch_unconfirmed(ref, int(filled_size),
+                                               f"one_per_level:{block}")
             # the runner already committed this fill (budget + possibly the elite slot).
             # Release the risk immediately — a scratched trade "never existed" and must
             # not hold budget room all session. KNOWN CONSERVATIVE DEVIATION: an elite
@@ -303,15 +341,16 @@ class NYLive:
                 self._journal({"type": "rule_j_flip", "closed": pref, "by": ref,
                                "at": float(v["entry"]), "pl_estimated": round(pl, 2),
                                "ts": str(ts)})
-                # shadow estimate (flip closes at the flipping trade's entry, per the
-                # reference); the armed close+reverse ticket is R13 wiring.
-                assert not self.armed
-                self._close_position(pref, pl=pl, reason="rule_j_flip")
+                if self.execution.live:
+                    self.execution.close_now(pref, "rule_j_flip")
+                else:
+                    self._close_position(pref, pl=pl, reason="rule_j_flip")
         et = ts.tz_convert(NY)
+        pre = et.time() < PRE_FLATTEN
         self._positions[ref] = _Position(ref=ref, direction=direction,
                                          entry=float(v["entry"]), stop=float(v["stop"]),
-                                         size=int(filled_size), fill_ts=ts,
-                                         pre=et.time() < PRE_FLATTEN)
+                                         size=int(filled_size), fill_ts=ts, pre=pre)
+        self.execution.confirm_fill(ref, v, int(filled_size), pre)
         return res
 
     def on_position_closed(self, ref: str, *, pl: float) -> None:
@@ -346,14 +385,24 @@ class NYLive:
                 t = ev["tape"]
                 self.ingestor.on_minute_tape(bts, t["delta"], t["vol"], t["vwp"])
                 self._last_bar_ts = bts
+                if self.execution.live and hasattr(self.execution.broker, "on_bar"):
+                    self.execution.broker.on_bar(bts, float(gbar["high"]),
+                                                 float(gbar["low"]),
+                                                 float(gbar["close"]))
                 self._start_day_if_new(bts)
                 # catch-up guard: an old bar builds state but must never act — and
-                # fixture rows for a boot backlog are noise, so they wait too.
-                age = (self.clock() - (bts + pd.Timedelta(minutes=1))).total_seconds()
-                if age > STALE_BAR_S:
-                    self._journal({"type": "catchup_bar_skipped", "ts": str(bts),
-                                   "age_s": round(age, 1)})
-                    continue
+                # fixture rows for a boot backlog are noise, so they wait too. In
+                # PRACTICE-DAY replay the guard is the day match instead: the certified
+                # rehearsal must act on historical bars, but only the chosen day's.
+                if self.replay_day is not None:
+                    if session_day(bts) != self.replay_day:
+                        continue
+                else:
+                    age = (self.clock() - (bts + pd.Timedelta(minutes=1))).total_seconds()
+                    if age > STALE_BAR_S:
+                        self._journal({"type": "catchup_bar_skipped", "ts": str(bts),
+                                       "age_s": round(age, 1)})
+                        continue
                 if self.fixture_sink is not None:
                     self.fixture_sink({"type": "tape", "ts": str(bts), **t})
                     self.fixture_sink({"type": "book", "ts": str(bts),
@@ -379,6 +428,14 @@ class NYLive:
                         self._execute(self.runner.on_trigger(trig), bts)
                     self._execute(self.runner.on_bar(bts, float(gbar["high"]),
                                                      float(gbar["low"])), bts)
+                    for f in self.execution.poll_fills():
+                        self.on_fill(f["ref"], f["ts"], int(f["size"]))
+                    if self.execution.live:
+                        df_all = self.ingestor.bars_frame()
+                        if len(df_all):
+                            df_all = df_all.assign(ts_event=pd.to_datetime(
+                                df_all.ts_event).dt.tz_convert(NY))
+                        self.execution.on_bar(df_all, bts_ny)
                 except Exception as e:         # noqa: BLE001 — capture night: a crashed
                     # loop at 09:00 loses the session's evidence; journal loudly, keep
                     # ingesting. Runner state may be inconsistent for THIS candidate —
@@ -450,19 +507,19 @@ class NYLive:
 # -------------------------------------------------------------------- assembly
 
 def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
-                  config_path: str | Path = "config/live.yaml") -> NYLive:
+                  config_path: str | Path = "config/live.yaml",
+                  dryrun: bool = False, replay_day: str | None = None) -> NYLive:
     if arm:
-        # R13 IS NOT CERTIFIED. The armed execution wiring is incomplete in ways that
-        # would trade a different book than the measured one: cancel/modify_size actions
-        # are not routed to the broker (the resting rule breaks), a scratch does not
-        # close the position, rule J/K flattens submit no orders, and there is no broker
-        # state reconciliation on restart. Until each is implemented and dry-run on the
-        # box, arming this entrypoint is refused BY CONSTRUCTION — not by prose.
+        # R13 WIRING IS BUILT (src/live/ny_execution.py: cancel routing, scratch
+        # close, rule J/K order submission, canon exit engine binding, dry-run broker)
+        # but NOT YET CERTIFIED on the box. The gate comes off in the certified commit,
+        # after the practice day (`--dryrun --replay-day <d>`) and the DTC fill-detection
+        # pin (`_entry_working`) pass on real Sierra order updates. Refused BY
+        # CONSTRUCTION until then.
         raise SystemExit(
-            "ARM REFUSED: R13 execution wiring is not certified for scripts/ny_run.py "
-            "(cancel routing, scratch close, rule J/K order submission, exit-manager "
-            "binding, broker reconciliation). Run disarmed; certify per "
-            "docs/ARMING-REFERENCE.md R13 before removing this gate.")
+            "ARM REFUSED: R13 wiring built but not certified on the box. Run the "
+            "practice day (--dryrun --replay-day <day>) per docs/ARMING-REFERENCE.md "
+            "R13; the refusal comes off in the certified commit.")
 
     ny = cfg.get("ny", {}) or {}
     sc = (cfg.get("feed", {}) or {}).get("sierra", {}) or {}
@@ -518,11 +575,18 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
     if arm and not instrument.spine.arm(token):
         raise SystemExit("ARM REFUSED: spine token mismatch")
 
+    execution = None
+    if dryrun:
+        from scripts.build_l2_outcomes import l2_cfg    # the canon exit config (V8)
+        execution = NYExecution(mode="dryrun", broker=DryRunBroker(),
+                                account=sc.get("account", "FUNDED"),
+                                exit_cfg=l2_cfg())
     live = NYLive(
         feed=feed, data_dir=data_dir, runner=runner, detector=LiveDetector(),
         ingestor=ingestor, instrument=instrument, account=sc.get("account", "FUNDED"),
         buffer=buffer, equity=equity, root=root, suffix=suffix, alerts=alerts,
         kill_file=kill_file,
+        execution=execution, replay_day=replay_day,
         decision_sink=JsonlSink(out / "decisions.jsonl"),
         action_sink=JsonlSink(out / "ny_actions.jsonl"),
         verdict_sink=JsonlSink(out / "ny_verdicts.jsonl"),
@@ -550,14 +614,24 @@ def main(argv=None) -> int:
     ap.add_argument("--config", default="config/live.yaml")
     ap.add_argument("--telegram", choices=("on", "off"), default="on")
     ap.add_argument("--arm", action="store_true")
+    ap.add_argument("--dryrun", action="store_true",
+                    help="R13 practice mode: real feed, simulated fills (DryRunBroker)")
+    ap.add_argument("--replay-day", default=None,
+                    help="with --dryrun: act on this historical day (YYYY-MM-DD) from "
+                         "the box's own .scid — the certification practice day")
     a = ap.parse_args(argv)
+    if a.replay_day and not a.dryrun:
+        raise SystemExit("--replay-day requires --dryrun")
+    if a.arm and a.dryrun:
+        raise SystemExit("--arm and --dryrun are mutually exclusive")
 
     cfg = load_config(Path(a.config))
     paths = cfg.get("paths", {}) or {}
     log = setup_logging(Path(paths.get("run_log", "runs/ny_run.log")))
     alerts = build_alerts(cfg, log, force_off=(a.telegram == "off"))
 
-    live = build_ny_live(cfg, alerts, log, arm=a.arm, config_path=a.config)
+    live = build_ny_live(cfg, alerts, log, arm=a.arm, config_path=a.config,
+                         dryrun=a.dryrun, replay_day=a.replay_day)
     live.decision_sink({"type": "boot", "git_sha": _git_sha(), "armed": a.arm,
                         "entry": "ny_run"})
 

@@ -363,3 +363,33 @@ def test_arm_is_refused_until_r13_is_certified(tmp_path):
                        "paths": {}, "account": {"equity": 50_000.0},
                        "ny": {"buffer": 2_000.0}},
                       alerts=None, log=logging.getLogger("t"), arm=True)
+
+
+# ---------------------------------------------------------------- dry-run end to end
+def test_dryrun_place_fill_and_rule_k_flatten_reach_the_broker(live):
+    """The practice-day loop: a placement reaches the DryRunBroker, its fill comes back
+    through poll_fills into the runner's fill-minute gate, and the 09:30 flatten
+    actually closes the position at the broker (R13's whole point)."""
+    from src.live.ny_execution import DryRunBroker, NYExecution
+    lv, det = live
+    bk = DryRunBroker()
+    lv.execution = NYExecution(mode="dryrun", broker=bk, journal=lv.decision_sink)
+    lv.execution.on_closed = lv._on_execution_closed
+    lv._wall = _ts("08:30") + pd.Timedelta(minutes=1)
+    lv.ingestor.feats = _feats(dep_wall_below_d=float("nan"))   # pre window: W==1
+    det.script["08:30"] = [_trigger(hm="08:30")]
+    _drive(lv, "08:30", events=[_minute_event("08:30", low=18_002.0)])  # rests, no fill
+    assert len(bk._orders) == 1 and bk.position("FUNDED") == 0
+    # next bar trades through the limit -> broker fill -> poll -> runner commit
+    _drive(lv, "08:31", events=[_minute_event("08:31", low=17_999.0)])
+    placed_size = list(bk._orders.values())[0]["size"]
+    assert bk.position("FUNDED") == placed_size > 0
+    assert len(lv._positions) == 1 and len(lv.execution._positions) == 1
+    ref = next(iter(lv._positions))
+    assert lv._positions[ref].pre is True
+    # the bar whose close is 09:30 flattens the pre position AT THE BROKER
+    _drive(lv, "09:29", events=[_minute_event("09:29", low=18_003.0)])
+    assert bk.position("FUNDED") == 0
+    assert ref not in lv._positions and ref not in lv.execution._positions
+    assert any(r.get("type") == "closed_now" and r.get("why") == "rule_k_flatten"
+               for r in lv.decision_sink)
