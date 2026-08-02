@@ -173,6 +173,8 @@ class NYLive:
     _feed_fn: object = field(default=None, init=False)
     _bar_scale_journaled: bool = field(default=False, init=False)
     _depth_scale_journaled: bool = field(default=False, init=False)
+    desk: object | None = None                  # R15 AgentDesk (None = mech-only)
+    _last_flip_by: str | None = field(default=None, init=False)
 
     def __post_init__(self):
         if self.execution is None:
@@ -246,6 +248,10 @@ class NYLive:
                     self.execution.close_now(ref, "rule_k_flatten")
                 else:
                     self._close_position(ref, pl=pl, reason="rule_k_flatten")
+                if self.desk is not None and bar_open is not None:
+                    self.desk.on_position_closed_externally(
+                        ref, "rule_k_flatten", ts.tz_convert(NY), float(bar_open),
+                        self.desk.tape_frame())
 
     # ---------------------------------------------------------------- action execution
     def _execute(self, actions: list[dict], now: pd.Timestamp) -> None:
@@ -347,6 +353,11 @@ class NYLive:
                 self._journal({"type": "rule_j_flip", "closed": pref, "by": ref,
                                "at": float(v["entry"]), "pl_estimated": round(pl, 2),
                                "ts": str(ts)})
+                self._last_flip_by = ref
+                if self.desk is not None:
+                    self.desk.on_position_closed_externally(
+                        pref, "rule_j_flip", ts, float(v["entry"]),
+                        getattr(self.desk, "_tape", None))
                 if self.execution.live:
                     self.execution.close_now(pref, "rule_j_flip")
                 else:
@@ -357,6 +368,14 @@ class NYLive:
                                          entry=float(v["entry"]), stop=float(v["stop"]),
                                          size=int(filled_size), fill_ts=ts, pre=pre)
         self.execution.confirm_fill(ref, v, int(filled_size), pre)
+        if self.desk is not None:
+            # R15: the agent inherits the mechanical plan at commit. is_reversal =
+            # this fill flattened an opposing position via rule J this same minute
+            # (the book's strongest signal — reference NEW-POSITION context line).
+            self.desk.on_committed_fill(
+                ref, v, int(filled_size), ts,
+                trigger=self.runner.trigger_for(ref), pre=pre,
+                is_reversal=bool(self._last_flip_by == ref))
         return res
 
     def on_position_closed(self, ref: str, *, pl: float) -> None:
@@ -404,6 +423,9 @@ class NYLive:
                 self.ingestor.on_bar(gbar)
                 t = ev["tape"]
                 self.ingestor.on_minute_tape(bts, t["delta"], t["vol"], t["vwp"])
+                if self.desk is not None:
+                    self.desk.push_tape(bts.tz_convert(NY), float(t["delta"]),
+                                        float(t["vol"]))
                 self._last_bar_ts = bts
                 if self.execution.live and hasattr(self.execution.broker, "on_bar"):
                     self.execution.broker.on_bar(bts, float(gbar["high"]),
@@ -472,6 +494,10 @@ class NYLive:
                                                      float(gbar["low"])), bts)
                     if self.execution.live:
                         self.execution.on_bar(df, bts_ny)   # same trimmed NY frame
+                    if self.desk is not None:
+                        self.desk.on_bar(bts_ny, bar, df,
+                                         self.desk.tape_frame(),
+                                         self.ingestor.book.long_form(10))
                 except Exception as e:         # noqa: BLE001 — capture night: a crashed
                     # loop at 09:00 loses the session's evidence; journal loudly, keep
                     # ingesting. Runner state may be inconsistent for THIS candidate —
@@ -566,7 +592,9 @@ class NYLive:
 
 def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
                   config_path: str | Path = "config/live.yaml",
-                  dryrun: bool = False, replay_day: str | None = None) -> NYLive:
+                  dryrun: bool = False, replay_day: str | None = None,
+                  agents: bool | None = None,
+                  agent_kill_test: bool = False) -> NYLive:
     # R13 CERTIFIED 2026-08-01 (this commit): four practice-day replays of 2026-07-31 on
     # the box surfaced and closed — 100x bar scale, 1pm-ET day roll, tick records
     # aggregated as bars, and the cancel/fill same-bar race (ny:2026-07-31:20, whose
@@ -647,12 +675,16 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
     if arm and not instrument.spine.arm(token):
         raise SystemExit("ARM REFUSED: spine token mismatch")
 
+    # R15: agents on by config (ny.agents) or the --agents flag. In agent mode the
+    # execution layer does NOT bind the live V8 exit engine — the AgentDesk owns the
+    # standing plan and runs V8 in shadow for the counterfactual (HANDOVER §7 row 7).
+    agents_on = bool(agents if agents is not None else ny.get("agents", False))
     execution = None
     if dryrun:
         from scripts.build_l2_outcomes import l2_cfg    # the canon exit config (V8)
         execution = NYExecution(mode="dryrun", broker=DryRunBroker(),
                                 account=sc.get("account", "FUNDED"),
-                                exit_cfg=l2_cfg())
+                                exit_cfg=l2_cfg(), agent_managed=agents_on)
     elif arm:
         # ARMED: the same execution layer the practice days certified, pointed at the
         # real DTC route. Without this branch an "armed" run would silently fall back
@@ -661,7 +693,7 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
         from scripts.build_l2_outcomes import l2_cfg
         execution = NYExecution(mode="armed", broker=broker,
                                 account=sc.get("account", "FUNDED"),
-                                exit_cfg=l2_cfg())
+                                exit_cfg=l2_cfg(), agent_managed=agents_on)
     live = NYLive(
         feed=feed, data_dir=data_dir, runner=runner, detector=LiveDetector(),
         ingestor=ingestor, instrument=instrument, account=sc.get("account", "FUNDED"),
@@ -673,6 +705,51 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
         verdict_sink=JsonlSink(out / "ny_verdicts.jsonl"),
         fixture_sink=JsonlSink(out / "fixtures.jsonl"),
         armed=arm)
+
+    if agents_on and execution is not None:
+        from src.live.agent_desk import AgentDesk, call_claude
+        runs_live = Path("runs/live")
+        runs_live.mkdir(parents=True, exist_ok=True)
+        # LIVE appends to the real journal (the seed grows — that IS the learning
+        # loop). A REPLAY must never pollute the seed: it journals to the cert
+        # evidence dir, primed with a copy of the seed so the digest context is real.
+        jpath, tdir = runs_live / "journal.jsonl", runs_live / "transcripts"
+        if replay_day is not None:
+            jpath, tdir = out / "agent_journal.jsonl", out / "agent_transcripts"
+            seed = runs_live / "journal.jsonl"
+            if not jpath.exists() and seed.exists():
+                import shutil
+                jpath.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(seed, jpath)
+        call_fn = call_claude
+        if agent_kill_test:
+            # R15 kill-test (§7 row 8): from the SECOND agent call on, the CLI process
+            # is killed ~1s after launch — a genuinely dead brain mid-trade. The trade
+            # must complete mechanically; the parse degrades to hold by construction.
+            import subprocess as _sp
+            calls = {"n": 0}
+
+            def call_fn(prompt, session, *, cwd, spec=None, timeout=None):
+                calls["n"] += 1
+                if calls["n"] <= 1:
+                    return call_claude(prompt, session, cwd=cwd)
+                cmd = ["claude", "-p", "--disallowedTools", "*",
+                       "--output-format", "json", prompt]
+                try:
+                    pr = _sp.Popen(cmd, stdout=_sp.PIPE, stderr=_sp.PIPE, cwd=str(cwd))
+                    import time as _t
+                    _t.sleep(1.0)
+                    pr.kill()                       # the agent process DIES mid-call
+                except Exception:                   # noqa: BLE001
+                    pass
+                return "__ERROR__ agent process killed (kill-test)", session
+        live.desk = AgentDesk(
+            execution=execution, exit_cfg=execution.exit_cfg,
+            journal_path=jpath, transcripts_dir=tdir,
+            runs_cwd=runs_live, journal_sink=live.decision_sink,
+            sync=(replay_day is not None), call_fn=call_fn)
+        log.info("R15 agent desk ON (sync=%s, kill_test=%s)",
+                 replay_day is not None, agent_kill_test)
 
     wu = sc.get("warmup", {}) or {}
     if wu.get("parquet"):
@@ -697,6 +774,11 @@ def main(argv=None) -> int:
     ap.add_argument("--arm", action="store_true")
     ap.add_argument("--dryrun", action="store_true",
                     help="R13 practice mode: real feed, simulated fills (DryRunBroker)")
+    ap.add_argument("--agents", action="store_true",
+                    help="R15: agent trade management ON (also via ny.agents in config)")
+    ap.add_argument("--agent-kill-test", action="store_true",
+                    help="R15 cert: kill the agent process mid-trade; the trade must "
+                         "complete mechanically (with --dryrun --agents)")
     ap.add_argument("--replay-day", default=None,
                     help="with --dryrun: act on this historical day (YYYY-MM-DD) from "
                          "the box's own .scid — the certification practice day")
@@ -712,7 +794,9 @@ def main(argv=None) -> int:
     alerts = build_alerts(cfg, log, force_off=(a.telegram == "off"))
 
     live = build_ny_live(cfg, alerts, log, arm=a.arm, config_path=a.config,
-                         dryrun=a.dryrun, replay_day=a.replay_day)
+                         dryrun=a.dryrun, replay_day=a.replay_day,
+                         agents=(True if a.agents else None),
+                         agent_kill_test=a.agent_kill_test)
     live.decision_sink({"type": "boot", "git_sha": _git_sha(), "armed": a.arm,
                         "entry": "ny_run"})
 
@@ -724,6 +808,8 @@ def main(argv=None) -> int:
                poll_interval_s=float((cfg.get("feed", {}).get("sierra", {})
                                       or {}).get("poll_interval_s", 1.0)),
                stop_fn=lambda: state["stop"])
+    if live.desk is not None:
+        live.desk.finalize()                  # flush pending agent journal rows
     alerts.say("ny_run STOP")
     return 0
 

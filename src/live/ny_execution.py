@@ -173,6 +173,7 @@ class NYExecution:
     exit_cfg: object | None = None                  # l2_cfg() — the canon exit config
     journal: Callable[[dict], None] | None = None
     on_closed: Callable[[str, float], None] | None = None   # (ref, realized $)
+    agent_managed: bool = False                     # R15: the AgentDesk owns exits
 
     _orders: dict = field(default_factory=dict, init=False)     # ref -> order record
     _positions: dict = field(default_factory=dict, init=False)  # ref -> position record
@@ -292,10 +293,16 @@ class NYExecution:
                                                    # runner's fill-minute gate re-checks
 
     def confirm_fill(self, ref: str, verdict: dict, filled_size: int, pre: bool) -> None:
-        """The runner committed this fill — bind the canon exit engine to the position."""
+        """The runner committed this fill — bind the canon exit engine to the position.
+
+        AGENT MODE (`agent_managed=True`): the V8 engine is NOT bound to the live
+        broker — the AgentDesk owns the standing plan (its shadow V8 runs the same
+        engine on a private book for the counterfactual). The broker's resting
+        protective stop stays; the desk tightens it via modify_agent_stop."""
         rec = self._orders.pop(ref, None)
         exe = None
-        if self.live and rec is not None and self.exit_cfg is not None:
+        if (self.live and rec is not None and self.exit_cfg is not None
+                and not self.agent_managed):
             exe = LiveExitExecutor(
                 broker=self.broker, ref=rec["broker_ref"], account=self.account,
                 trigger=rec["trigger"], cfg=self.exit_cfg,
@@ -310,6 +317,46 @@ class NYExecution:
             self._note({"type": "stacked_positions",
                         "note": "stop-exit verification is account-level in "
                                 "LiveExitExecutor — fails toward flat (known limitation)"})
+
+    # ---- agent-mode plan surface (R15: the desk's standing plan -> the broker) ----
+    def modify_agent_stop(self, ref: str, price: float) -> None:
+        """Desk stop-tighten -> the broker's resting protective stop."""
+        p = self._positions.get(ref)
+        if p is None:
+            return
+        p["stop"] = float(price)
+        if self.live and p.get("broker_ref") is not None:
+            try:
+                self.broker.modify_stop(p["broker_ref"], float(price))
+            except Exception as e:                 # noqa: BLE001
+                self._note({"type": "modify_stop_failed", "ref": ref, "error": repr(e)})
+
+    def close_partial_qty(self, ref: str, qty: int) -> None:
+        """Desk partial -> market-close qty micros of the position, position stays open."""
+        p = self._positions.get(ref)
+        if p is None or qty <= 0:
+            return
+        qty = min(int(qty), int(p["size"]) - sum(q for q, _ in p["legs"]))
+        if qty <= 0:
+            return
+        if self.live:
+            try:
+                self.broker.close_partial(self.account, qty)
+                last = getattr(self.broker, "_last", {})
+                px = float(last.get("close", p["entry"]))
+                p["legs"].append((qty, px))
+            except Exception as e:                 # noqa: BLE001
+                self._note({"type": "partial_failed", "ref": ref, "error": repr(e)})
+                return
+        self._note({"type": "agent_partial", "ref": ref, "qty": qty, "mode": self.mode})
+
+    def on_agent_stop(self, ref: str) -> None:
+        """The protective stop fired at the broker for an agent-managed position:
+        realize it (the broker already flattened; nothing to send)."""
+        p = self._positions.get(ref)
+        if p is None:
+            return
+        self._realize(ref, p, {"kind": "exit", "reason": "stop", "price": p["stop"]})
 
     def scratch_unconfirmed(self, ref: str, filled_size: int, why: str) -> None:
         """A fill landed but the runner REFUSED it (fill-minute gate or rule L) before

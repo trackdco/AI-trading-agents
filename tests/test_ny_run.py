@@ -504,3 +504,51 @@ def test_same_bar_fill_beats_gate_cancel_and_scratches_flat(tmp_path):
     assert not any(t == "dispatch_error" for t in types)
     # the fill was SEEN (routed), not silently dropped
     assert any(r.get("type") == "scratched" for r in lv.decision_sink)
+
+
+# ---------------------------------------------------------------- R15: agents in the loop
+def test_agent_desk_manages_a_dryrun_fill_end_to_end(tmp_path):
+    """Full wiring: trigger -> place -> fill -> commit -> desk opens the trade ->
+    scripted agent exits -> broker flat -> journal row written. The certified
+    mechanical laws (fills-first, scratch, flatten) are untouched around it."""
+    from src.live.agent_desk import AgentDesk
+    from src.live.ny_execution import DryRunBroker, NYExecution
+    ing = FakeIngestor()
+    lane = NYLane(ingestor=ing, profile=LUCID)
+    runner = NYRunner(lane=lane)
+    instrument = build_shadow_instrument(tmp_path, account="FUNDED", cfg=SpineConfig(),
+                                         kill_file=tmp_path / "KILL", broker=None)
+    det = StubDetector()
+    bk = DryRunBroker()
+    exe = NYExecution(mode="dryrun", broker=bk, agent_managed=True)
+    lv = NYLive(feed=FakeFeed(), data_dir=tmp_path, runner=runner, detector=det,
+                ingestor=ing, instrument=instrument, buffer=5_000.0,
+                execution=exe,
+                decision_sink=Sink(), action_sink=Sink(), verdict_sink=Sink(),
+                fixture_sink=Sink(), clock=lambda: lv._wall)
+    lv._wall = _ts("09:45") + pd.Timedelta(minutes=1)
+
+    def call_fn(prompt, session, *, cwd, spec=None, timeout=None):
+        return '{"action":"exit_now","note":"scripted"}', "s1"
+
+    lv.desk = AgentDesk(execution=exe, exit_cfg=None,
+                        journal_path=tmp_path / "journal.jsonl",
+                        transcripts_dir=tmp_path / "tr", runs_cwd=tmp_path,
+                        journal_sink=lv.decision_sink, sync=True, call_fn=call_fn)
+
+    det.script["09:45"] = [_trigger()]
+    _drive(lv, "09:45", [_minute_event("09:45", low=18_002.0)])   # places, no touch
+    _drive(lv, "09:46", [_minute_event("09:46", low=17_999.0)])   # fills -> commit
+    assert "ny:2026-04-20:1" in lv.desk.trades                    # desk took the trade
+    _drive(lv, "09:47", [_minute_event("09:47", low=18_001.0)])   # turn 0 -> exit pends
+    _drive(lv, "09:48", [_minute_event("09:48", low=18_001.0)])   # executes
+    t = lv.desk.trades.get("ny:2026-04-20:1")
+    assert t is not None and t.done
+    assert bk.position("FUNDED") == 0                             # broker flat
+    lv.desk.finalize()
+    import json as _json
+    rows = [_json.loads(x) for x in (tmp_path / "journal.jsonl").read_text().splitlines()]
+    assert rows and rows[0]["exit_reason"] == "agent_exit"
+    types = [r.get("type") for r in lv.decision_sink]
+    assert "agent_trade_open" in types and "agent_trade_settled" in types
+    assert "dispatch_error" not in types
