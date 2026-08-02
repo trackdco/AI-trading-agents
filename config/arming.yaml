@@ -1,0 +1,24 @@
+# ARMING AUTHORIZATION — Angus's half of the two-party gate (src/live/arming.py).
+#
+# Issued 2026-08-02 after Pat's written confirmation that R13 (the armed execution
+# layer) is certified. This file authorizes ONE account against ONE commit; it is not
+# a general permission and it does not arm anything by itself. Pat must still present
+# the token phrase at the box (`--arm`), and the runtime refuses if the running HEAD
+# differs from armed_sha in any file other than this one.
+#
+# SCOPE OF THIS AUTHORIZATION (read before assuming more):
+#   * MECHANICAL canon only — the agent management layer (gate R15b) is NOT wired at
+#     this commit. The certified book is lucid fit +$82,543 / holdout +$48,211 at the
+#     $160 base, three execution rules (close-and-reverse, 09:30 pre-flatten,
+#     one-per-level). Turning the agent layer on is a behaviour change: new
+#     certification, new SHA, new authorization.
+#   * The account below is the EVAL account, not a funded account. When the eval
+#     passes and the firm issues the funded account, that arm needs its own
+#     authorization — new account string, and a FRESH token phrase (this one will
+#     have been spoken at the box by then).
+#
+# Revoking is deleting this file: absence is the disarmed state, never a default.
+
+token_sha256: f95a8d08410ee9f702128461a4c490208cfff641bab010c4b0ede20a9bb675c5
+armed_sha: 4c8685ce7429c63120c5d55993edce777ce11647
+account: LFE050-9YSC047M-TEST001
