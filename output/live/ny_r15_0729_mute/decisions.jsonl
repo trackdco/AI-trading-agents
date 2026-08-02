@@ -1,4 +1,4 @@
-{"type": "boot", "git_sha": "42149a398ccf5b004422c9cc25248bc7352c814f", "armed": false, "entry": "ny_run"}
+{"type": "boot", "git_sha": "7cd273ba1e92389dc730a6e6e36b645ed21fef83", "armed": false, "entry": "ny_run"}
 {"type": "ny_day_start", "day": "2026-01-20", "buffer": 2000.0, "bar_ts": "2026-01-20 08:35:00+00:00"}
 {"type": "ny_day_start", "day": "2026-01-21", "buffer": 2000.0, "bar_ts": "2026-01-21 01:13:00+00:00"}
 {"type": "ny_day_start", "day": "2026-01-22", "buffer": 2000.0, "bar_ts": "2026-01-22 13:16:00+00:00"}
@@ -133,9 +133,8 @@
 {"type": "ny_day_start", "day": "2026-07-27", "buffer": 2000.0, "bar_ts": "2026-07-26 22:00:00+00:00"}
 {"type": "ny_day_start", "day": "2026-07-28", "buffer": 2000.0, "bar_ts": "2026-07-27 22:00:00+00:00"}
 {"type": "ny_day_start", "day": "2026-07-29", "buffer": 2000.0, "bar_ts": "2026-07-28 22:00:00+00:00"}
-{"type": "agent_day_read", "day": "2026-07-28", "which": "thesis", "text": "{\"bias\":\"short\",\"day_type\":\"gap-down trend continuation\",\"thesis\":\"Prior day closed near lows after 800pt break; -338 gap and steady lower highs into 07:40 keep sellers in control. Fade pullbacks toward 27920-27960 for a push through 27840.\",\"invalidates\":\"Reclaim and hold above 27960; acceptance >28030 flips to gap-fill bid\"}"}
-{"type": "agent_day_read", "day": "2026-07-28", "which": "reread", "text": "__ERROR__ agent process killed (kill-test)"}
-{"type": "agent_day_read", "day": "2026-07-29", "which": "thesis", "text": "__ERROR__ agent process killed (kill-test)"}
+{"type": "agent_day_read", "day": "2026-07-28", "which": "thesis", "text": "__ERROR__ list index out of range"}
+{"type": "agent_day_read", "day": "2026-07-29", "which": "thesis", "text": "__ERROR__ list index out of range"}
 {"type": "trigger_seen", "ts": "2026-07-29T08:17:00-04:00", "direction": "short", "entry_ref": 27900.375, "placed": true}
 {"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:1", "broker_ref": "dry:1", "mode": "dryrun"}
 {"type": "scratch", "ref": "ny:2026-07-29:1", "why": "pre_wall_behind", "ts": "2026-07-29 12:18:00+00:00"}
