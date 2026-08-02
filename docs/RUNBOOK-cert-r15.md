@@ -63,3 +63,28 @@ PASS criteria (read against the journals):
 
 Then the certified commit + Pat's written confirmation naming the NEW SHA + Angus's
 fresh arming.yaml (the current authorization dies with the agent code landing) + phrase.
+
+---
+
+## VERDICT (2026-08-02): R15 CERTIFIED — PASS
+
+Three on-box runs of 2026-07-29 (this commit's history holds all journals):
+
+1. **ny_r15_0729_mute** — first attempt: every agent call silently dead (relative spec
+   path, found + fixed in 42149a3). The isolation law carried the whole day clean —
+   which is also why the failure was invisible; the fix makes the desk refuse to boot
+   without its spec and surfaces stderr in every error.
+2. **ny_r15_0729_live** — agents SPEAKING: real gap-down thesis + re-read; TWO trades
+   managed. ny:2026-07-29:4 — six turns, exited +0.26R on a flow-flip read
+   ("Flow 4/5 opposed, 15m cvd flipped hard") where the mech path rode the same trade
+   to −0.43R at the flatten: the graded edge, reproduced live on the box.
+   ny:2026-07-29:18 — stopped −1.05R before its first turn (honest, stop-first law).
+   Journal 763 → 765 rows, schema-identical, v8_R shadow present, seed untouched.
+3. **ny (kill test)** — first call real, all subsequent agent processes KILLED
+   mid-trade: 7/7 turns dead, trade completed mechanically (open_flatten on time),
+   agent_R == v8_R exactly, zero dispatch errors. §7 row 8 proven with live fire.
+
+All eight §7 components exercised on the box. Guardrails additionally pinned by 13
+tests (stop-tighten-only, target floors, partial bounds, MAX_TURNS, schema-vs-seed,
+loop integration, same-bar races). THIS commit is the R15-certified SHA; Pat's written
+confirmation names it, Angus re-issues arming.yaml against it, then the Monday arm.
