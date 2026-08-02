@@ -46,7 +46,10 @@ PV = 2.0                       # $/pt per MICRO (MNQ) — the live account trade
 COMMISSION = 5.0
 MAX_TURNS = 10
 CLI_TIMEOUT = 240
-SPEC = Path(".claude/agents/trade-manager-v3.md")    # FROZEN — deploy byte-identical
+# FROZEN spec, deployed byte-identical. ABSOLUTE: agent calls run with cwd=runs/live
+# (the reference's convention) — a relative path resolved there silently muted every
+# call on the box (R15 practice day 1: __ERROR__ empty stdout, "spec not found").
+SPEC = Path(__file__).resolve().parents[2] / ".claude/agents/trade-manager-v3.md"
 
 TURN_CONTRACT = (
     'Reply with EXACTLY one JSON object, nothing else: {"action":"hold"|"revise"|'
@@ -70,6 +73,7 @@ def call_claude(prompt: str, session: str | None, *, cwd: Path,
         cmd += ["--resume", session]
     cmd.append(prompt)
     for attempt in (1, 2):
+        r = None
         try:
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
                                cwd=str(cwd))
@@ -77,7 +81,8 @@ def call_claude(prompt: str, session: str | None, *, cwd: Path,
             return out.get("result", ""), out.get("session_id") or session
         except Exception as e:                     # noqa: BLE001 — fail closed to hold
             if attempt == 2:
-                return f"__ERROR__ {e}", session
+                err = (r.stderr.strip()[-300:] if r is not None and r.stderr else "")
+                return f"__ERROR__ {e} | stderr: {err}", session
     return "__ERROR__", session
 
 
@@ -440,6 +445,10 @@ class AgentDesk:
         self.runs_cwd = Path(runs_cwd)
         self.sync = sync
         self.call = call_fn
+        # fail CLOSED AT BOOT, not silently at 07:45: a missing spec means every call
+        # dies to stderr and the whole day runs mech-only without anyone knowing
+        if call_fn is call_claude and not SPEC.exists():
+            raise SystemExit(f"agent spec missing: {SPEC} — refusing to start the desk")
         # `if ... is not None`, NOT `or`: the live sink is a list-like that is FALSY
         # while empty — `or` silently discarded it (caught by the integration test)
         self.note = journal_sink if journal_sink is not None else (lambda row: None)
