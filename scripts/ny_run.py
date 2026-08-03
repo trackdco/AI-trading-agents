@@ -114,6 +114,12 @@ FRAME_WARMUP = pd.Timedelta(days=14)   # per-bar frame horizon: covers detect_tr
 # socket pages once loudly, then reminds every 5 minutes, not every 10 seconds.
 DTC_KEEPALIVE_S = 10.0
 DTC_ALERT_REPEAT_S = 300.0
+# 2026-08-03 review finding: reconciliation originally ran ONLY right after a
+# reconnect — a session with zero disconnects never checked for drift at all, from
+# ANY cause (not just a reconnect-caused one), and a mismatch flagged by a one-off
+# transient query hiccup had no path to ever clear itself if the connection then
+# stayed healthy. Now genuinely periodic, always, whenever the connection is up.
+RECONCILE_INTERVAL_S = 60.0
 
 
 def _profile(name: str):
@@ -137,7 +143,14 @@ def _market_should_be_open(now: pd.Timestamp) -> bool:
     for an unmodeled case, not a regression."""
     from src.engine.data import _is_closed
     ts = pd.Timestamp(now)
-    ts = ts.tz_convert(NY) if ts.tzinfo is not None else ts.tz_localize(NY)
+    if ts.tzinfo is None:
+        # never guess a wall clock — the same convention FeedGuard.accept already
+        # enforces on bars. Silently treating a naive value AS NY time could misjudge
+        # market hours by several hours if the real caller meant UTC (self.clock()'s
+        # actual contract) — a wrong answer here means either a false halt or, worse,
+        # a false "expected closure" masking a genuine feed failure.
+        raise ValueError("_market_should_be_open needs a tz-aware timestamp")
+    ts = ts.tz_convert(NY)
     return not bool(_is_closed(pd.DatetimeIndex([ts])).iloc[0])
 
 
@@ -204,6 +217,7 @@ class NYLive:
     _last_dtc_alert: pd.Timestamp | None = field(default=None, init=False)
     _announced_closure: bool = field(default=False, init=False)
     _position_mismatch: bool = field(default=False, init=False)
+    _last_reconcile: pd.Timestamp | None = field(default=None, init=False)
 
     def __post_init__(self):
         if self.execution is None:
@@ -641,6 +655,17 @@ class NYLive:
         self._position_mismatch = not ok
         return ok
 
+    def _maybe_reconcile(self, now: pd.Timestamp) -> None:
+        """Position reconciliation on a flat periodic cadence whenever the DTC
+        connection is up — independent of whether it JUST reconnected. Called from
+        the keepalive's throttled cadence; self-throttles again to
+        RECONCILE_INTERVAL_S so it does not query the broker every single poll."""
+        if (self._last_reconcile is not None
+                and (now - self._last_reconcile).total_seconds() < RECONCILE_INTERVAL_S):
+            return
+        self._last_reconcile = now
+        self._reconcile_position(now)
+
     def _dtc_keepalive(self, now: pd.Timestamp) -> None:
         """Idle-independent liveness check on the ORDER connection (2026-08-02/03 fix).
         Runs every poll but self-throttles to DTC_KEEPALIVE_S — a dead socket is caught
@@ -661,7 +686,9 @@ class NYLive:
                 self._journal({"type": "dtc_reconnected", "ts": str(now),
                                "downtime_s": round(downtime, 1)})
                 self._dtc_down_since = self._last_dtc_alert = None
-                self._reconcile_position(now)      # state may have drifted while blind
+                self._last_reconcile = None    # force an IMMEDIATE reconcile below —
+                                               # state most likely drifted while blind
+            self._maybe_reconcile(now)
             return
         first = self._dtc_down_since is None
         if first:

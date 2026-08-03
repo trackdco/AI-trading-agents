@@ -617,6 +617,15 @@ def test_dtc_keepalive_is_a_noop_for_dryrun_and_shadow(live):
 
 
 # ---------------------------------------------------------------- market-calendar guard
+def test_market_should_be_open_refuses_a_naive_timestamp():
+    """2026-08-03 review: never GUESS a wall clock — matches FeedGuard.accept's own
+    convention. A wrong guess here means a false halt or, worse, a false "expected
+    closure" masking a genuine feed failure."""
+    from scripts.ny_run import _market_should_be_open
+    with pytest.raises(ValueError, match="tz-aware"):
+        _market_should_be_open(pd.Timestamp("2026-04-20 09:30"))
+
+
 def test_market_should_be_open_matches_real_cme_hours():
     from scripts.ny_run import _market_should_be_open
     NY_ = "America/New_York"
@@ -856,3 +865,74 @@ def test_placement_failure_alerts_regardless_of_armed_state(live):
     det.script["09:45"] = [_trigger()]
     _drive(lv, "09:45")
     assert any("FAILED to place" in s for s in said)
+
+
+def test_position_reconciliation_is_genuinely_periodic_not_reconnect_only(live):
+    """2026-08-03 review finding: reconciliation originally ran ONLY right after a
+    reconnect — a session with a perfectly stable connection never checked for drift at
+    all. Now it must run on its own periodic cadence regardless of connection history."""
+    lv, det = live
+    checks = []
+
+    class _StableButChecked:
+        def ensure_connected(self):
+            return True                     # never once drops the whole session
+
+        def position(self, account):
+            checks.append(1)
+            return 0
+
+    lv.execution = SimpleNamespace(live=True, account="FUNDED", broker=_StableButChecked())
+    lv.poll_once(_ts("09:00"))
+    assert len(checks) == 1, "must reconcile even with zero disconnects, ever"
+    lv.poll_once(_ts("09:00") + pd.Timedelta(seconds=11))    # inside RECONCILE_INTERVAL_S
+    assert len(checks) == 1, "must throttle to RECONCILE_INTERVAL_S, not every keepalive"
+    lv.poll_once(_ts("09:00") + pd.Timedelta(seconds=61))    # past RECONCILE_INTERVAL_S
+    assert len(checks) == 2
+
+
+def test_transient_mismatch_self_heals_on_the_next_periodic_check(live):
+    """A mismatch flagged by a ONE-OFF query hiccup must clear itself once the periodic
+    recheck sees the broker actually agrees — no new disconnect required."""
+    lv, det = live
+
+    class _FlakyThenFine:
+        def __init__(self):
+            self.calls = 0
+
+        def ensure_connected(self):
+            return True                     # connection itself is fine throughout
+
+        def position(self, account):
+            self.calls += 1
+            if self.calls == 1:
+                raise RuntimeError("transient blip")   # one-off, not a real drift
+            return 0                                    # every call after: genuinely flat
+
+    lv.execution = SimpleNamespace(live=True, account="FUNDED", broker=_FlakyThenFine())
+    said = []
+    lv._say = said.append
+    lv.poll_once(_ts("09:00"))
+    assert lv._position_mismatch is True                # the transient blip flags it
+    lv.poll_once(_ts("09:00") + pd.Timedelta(seconds=61))   # next periodic recheck
+    assert lv._position_mismatch is False                # self-healed, no new disconnect needed
+    assert any("reconciled" in s for s in said)
+
+
+def test_genuine_mismatch_keeps_reconfirming_and_stays_blocked(live):
+    """The other half: a REAL, persistent mismatch must never auto-clear just because
+    time passes — it stays blocked until the broker actually agrees again."""
+    from scripts.ny_run import _Position
+    lv, det = live
+    lv._positions["ny:1"] = _Position(ref="ny:1", direction="long", entry=18_000.0,
+                                      stop=17_990.0, size=10, fill_ts=_ts("09:00"), pre=False)
+    lv.execution = SimpleNamespace(live=True, account="FUNDED",
+                                   broker=_FakeBrokerWithPosition(0))  # persistently wrong
+    said = []
+    lv._say = said.append
+    lv.poll_once(_ts("09:00"))
+    assert lv._position_mismatch is True
+    lv.poll_once(_ts("09:00") + pd.Timedelta(seconds=61))
+    lv.poll_once(_ts("09:00") + pd.Timedelta(seconds=122))
+    assert lv._position_mismatch is True                # never self-clears without agreement
+    assert sum("mismatch" in s for s in said) == 1       # but doesn't spam a new alert each retry

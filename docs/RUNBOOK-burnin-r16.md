@@ -128,5 +128,20 @@ block and how the watchdog dry-run went.
 
 Same two-party close as every gate before this one: I read the evidence, cut the
 certified commit, you send Angus written confirmation naming the new SHA (mechanical +
-agent + R16 resilience), he re-issues `config/arming.yaml` (this commit already voids
-his current one, same as R15 voided R13's) with the phrase, then — and only then — arm.
+agent + R16 resilience), he re-issues `config/arming.yaml` with the phrase, then — and
+only then — arm.
+
+**One thing Angus needs to know explicitly**: this batch adds a REQUIRED `entrypoint`
+field to `config/arming.yaml` (closes a real gap — `canon_run.py`, a different live
+script trading a different account, shared the exact same lock; a phrase for one could
+silently arm the other). His new file must include a fourth line or `load_authorization`
+refuses with "missing ['entrypoint']" — a different error than the expected commit-hash
+mismatch, easy to misread as something broken rather than one more line needed:
+
+    token_sha256: <hash>
+    armed_sha: <the new certified SHA>
+    account: <the account>
+    entrypoint: scripts.ny_run
+
+The currently-committed authorization (`f6b297e`) predates this field and is already
+void by commit hash alone — this only matters for the NEXT file he writes.
