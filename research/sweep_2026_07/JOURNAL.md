@@ -446,3 +446,28 @@ READING: the components are not nonsense and the geometry is internally consiste
 produces a fair coin with a 3:1 payoff, which is exactly what a driftless random walk produces.
 The video's three winning chart replays are consistent with a 24% win rate; at that rate you
 would expect to be able to find winners easily and show them.
+
+## 2026-08-03 · Order-flow refinement of the third-party strategy — NULL, and it makes it WORSE
+Pre-registered in OF_FILTER_PREREG.md and committed BEFORE any filtered outcome was computed.
+Sample: CP primary cell (NY RTH, fib 0.75, score>=3) restricted to tape coverage = 465 trades
+over 209 days, 2025-06-02..2026-07-15. Unfiltered WR 22.6%, mean R -0.097 (breakeven 25.0%).
+Depth available on 407/465 (depth files span 08:00-10:29 ET only).
+RESULTS — every filter LOWERS the win rate below the unfiltered baseline:
+  CVD aligned         n=66   WR 19.7%  CI [10.9, 29.0]  meanR -0.212  binom p 0.874  perm 0.778
+  Delta divergence    n=56   WR 17.9%  CI [ 8.8, 27.3]  meanR -0.286  binom p 0.922  perm 0.864
+  Heatmap wall ahead  n=407  WR 22.6%  CI [17.9, 27.6]  meanR -0.096  binom p 0.881  perm 0.551
+  All three combined  n=43   WR 18.6%  CI [ 7.3, 30.8]  meanR -0.256  binom p 0.876  perm 0.792
+FILTERS THAT PASS THE REGISTERED RULE: NONE. Not one beats 25.0%; every one is below the 22.6%
+unfiltered baseline; and the registered FALSIFIER fires on all three — each filter's COMPLEMENT
+does BETTER than the filtered set (23.1% vs 19.7%, 23.2% vs 17.9%, 23.1% vs 18.6%). When the
+anti-aligned trades outperform the aligned ones, the filter is not merely uninformative, it is
+pointing the wrong way at this sample size.
+"Heatmap wall ahead" is degenerate: 407/407 depth-covered trades have a wall on the target side,
+because MBP-10 always shows ten levels each way. There is no discrimination to be had — the
+complement is EMPTY. That is the same limitation found in the microstructure round: a 10-level
+book spans ~2 points and cannot see a magnet 20-50 points out.
+READING: this is the SIXTH independent null on order flow at entry in this project, and the
+first on a trade population whose selection contains no order flow at all — which was the one
+remaining excuse for the previous five. The result is not "order flow needs better features";
+it is that a coin-flip strategy stays a coin flip and filtering only shrinks the sample. n=43-66
+on the narrow filters is also too small to detect anything below roughly a 15pp lift.
