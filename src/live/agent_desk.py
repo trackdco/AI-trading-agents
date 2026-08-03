@@ -436,7 +436,7 @@ class AgentDesk:
 
     def __init__(self, *, execution, exit_cfg, journal_path: Path,
                  transcripts_dir: Path, runs_cwd: Path, journal_sink=None,
-                 sync: bool = True, call_fn=call_claude):
+                 sync: bool = True, call_fn=call_claude, alert_sink=None):
         self.execution = execution
         self.exit_cfg = exit_cfg
         self.journal_path = Path(journal_path)
@@ -452,6 +452,10 @@ class AgentDesk:
         # `if ... is not None`, NOT `or`: the live sink is a list-like that is FALSY
         # while empty — `or` silently discarded it (caught by the integration test)
         self.note = journal_sink if journal_sink is not None else (lambda row: None)
+        # 2026-08-03 audit: trade-level alerts, separate from the journal — the journal
+        # already got every one of these rows, but nobody's phone buzzed. alert_sink is
+        # LaunchAlerts.say (or any str->None callable); defaults to silent for replay/cert.
+        self.alert = alert_sink if alert_sink is not None else (lambda text: None)
         self.trades: dict[str, ManagedTrade] = {}
         self.shadows: dict[str, ShadowV8] = {}
         self.post_exit: dict[str, _PostExit] = {}
@@ -568,6 +572,8 @@ class AgentDesk:
             self.note({"type": "agent_shadow_failed", "ref": ref, "error": repr(e)})
         self.note({"type": "agent_trade_open", "ref": ref, "sess": sess,
                    "entry": entry, "stop": stop, "size": int(filled_size)})
+        self.alert(f"AGENT MANAGING {t.direction.upper()} {ref} ({sess}) — entry {entry} "
+                  f"stop {stop} x{int(filled_size)}")
 
     def on_position_closed_externally(self, ref: str, reason: str, ts, px: float,
                                       tape) -> None:
@@ -782,6 +788,9 @@ class AgentDesk:
         self.note({"type": "agent_trade_settled", "ref": t.ref,
                    "exit_reason": reason, "agent_R": row["agent_R"],
                    "v8_R": row["v8_R"], "turns": t.turns})
+        vs = (f" (V8 would have: {row['v8_R']:+.2f}R)" if row.get("v8_R") is not None else "")
+        self.alert(f"AGENT SETTLED {t.ref} ({reason}): {row['agent_R']:+.2f}R / "
+                  f"${row['agent_dollars']:+,.2f} in {t.turns} turns{vs}")
 
     def _write_row(self, ref: str, row: dict) -> None:
         self.journal_path.parent.mkdir(parents=True, exist_ok=True)

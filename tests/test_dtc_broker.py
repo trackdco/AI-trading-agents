@@ -176,3 +176,30 @@ def test_price_scale_multiplies_out_and_divides_back():
         c.close()
     finally:
         s.stop()
+
+
+# --------------------------------------------------------------------------- keepalive
+def test_ensure_connected_survives_a_true_idle_drop():
+    """The 2026-08-02/03 incident, reproduced: a socket that dies during a QUIET stretch
+    (nothing calls _pump — no submit/cancel/status) must still be caught. ensure_connected
+    is the standalone entry point the live loop's idle-independent keepalive calls."""
+    s = MockDTCServer(order_mode="none")
+    try:
+        b, c = _broker(s)
+        assert b.ensure_connected() is True             # freshly connected: trivially alive
+        c._sock.close()                                 # simulate the reaped idle socket
+        assert b.ensure_connected() is True              # heals itself, no order needed
+        assert c.logged_on is True
+        c.close()
+    finally:
+        s.stop()
+
+
+def test_ensure_connected_never_raises_when_the_server_is_gone():
+    """A keepalive failure must degrade to False, never an exception — this runs on every
+    poll cycle of the live loop and must never be the thing that crashes it."""
+    s = MockDTCServer(order_mode="none")
+    b, c = _broker(s)
+    s.stop()                                            # server gone entirely
+    c._sock.close()
+    assert b.ensure_connected() is False                # no server to reconnect to: False

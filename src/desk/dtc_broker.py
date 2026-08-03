@@ -50,6 +50,23 @@ class DTCBroker:
         for _ in range(self.pump_rounds):
             self.client.pump(timeout=0.2)
 
+    def ensure_connected(self) -> bool:
+        """Idle keepalive — the fix for the 2026-08-02/03 armed-session incidents. Every
+        `_pump()` above only fires from ORDER ACTIVITY (submit/cancel/status/position), so
+        a quiet market leaves the socket completely untouched: no heartbeat out, nothing
+        read back, for as long as nothing trades. Whatever reaps idle sockets on the box
+        (Sierra's own idle timeout, a firewall, the OS) does so with nobody watching, and
+        the NEXT real order discovers a corpse. `DTCClient.ensure_connected()` already
+        exists and is already tested (test_reconnect_after_drop) — it was simply never
+        called on a cadence independent of trading. The live loop calls THIS every few
+        seconds regardless of activity; that's the entire fix. Returns False on a failed
+        reconnect attempt (caller alerts; never raises — a dead socket must never crash
+        the loop, only slow it down to journaled warnings)."""
+        try:
+            return self.client.ensure_connected()
+        except Exception:                          # noqa: BLE001 — never crash the loop
+            return False
+
     def _state(self, oid: str) -> dict:
         return self.client.order_state.get(oid, {})
 

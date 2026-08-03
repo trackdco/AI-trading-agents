@@ -237,3 +237,31 @@ def test_journal_schema_matches_the_seed(tmp_path):
     # flow-at-exit fields are conditional in the reference too (need >=5 tape minutes)
     missing -= {"cvd5_at_exit", "cvd15_at_exit", "opposed_at_exit"}
     assert not missing, f"journal row missing seed fields: {missing}"
+
+
+# ---------------------------------------------------------------- trade-level alerts
+def test_agent_open_and_settle_alert_when_a_sink_is_given(tmp_path):
+    alerts = []
+    replies = ['{"action":"exit_now","note":"done"}']
+
+    def call_fn(prompt, session, *, cwd, spec=None, timeout=None):
+        return (replies.pop(0) if replies else '{"action":"hold"}'), "s1"
+
+    desk = AgentDesk(execution=_Exec(), exit_cfg=None,
+                     journal_path=tmp_path / "journal.jsonl",
+                     transcripts_dir=tmp_path / "tr", runs_cwd=tmp_path,
+                     sync=True, call_fn=call_fn, alert_sink=alerts.append)
+    t = _open_trade(desk)
+    assert any("AGENT MANAGING" in a for a in alerts)
+    _drive(desk, "09:46", 18_002, 18_004, 18_001, 18_003)
+    _drive(desk, "09:47", 18_004, 18_005, 18_002, 18_004)
+    assert t.done
+    assert any("AGENT SETTLED" in a for a in alerts)   # exit_cfg=None here -> no shadow V8
+
+
+def test_agent_desk_defaults_to_silent_alerts(tmp_path):
+    """No alert_sink given (the cert-replay default) -> nothing raises, nothing sent."""
+    desk = _desk(tmp_path, ['{"action":"exit_now"}'])
+    _open_trade(desk)
+    _drive(desk, "09:46", 18_002, 18_004, 18_001, 18_003)
+    _drive(desk, "09:47", 18_004, 18_005, 18_002, 18_004)   # must not raise

@@ -107,6 +107,13 @@ STALE_BAR_S = 300.0                    # catch-up guard. 120s clipped 17 REAL se
                                        # 300s still kills restart ghost-order replays cold.
 FRAME_WARMUP = pd.Timedelta(days=14)   # per-bar frame horizon: covers detect_triggers'
                                        # 10-day OTE lookback with slack (parity pinned)
+# 2026-08-02/03 incident: two armed sessions found the order socket dead on the first
+# real order because nothing touched it during a quiet market. DTC_KEEPALIVE_S drives
+# an idle-independent ensure_connected() every ~10s (matches the negotiated heartbeat
+# interval); DTC_ALERT_REPEAT_S caps how often a sustained outage re-alerts so a dead
+# socket pages once loudly, then reminds every 5 minutes, not every 10 seconds.
+DTC_KEEPALIVE_S = 10.0
+DTC_ALERT_REPEAT_S = 300.0
 
 
 def _profile(name: str):
@@ -115,6 +122,23 @@ def _profile(name: str):
     if name == "scaled600":
         return SCALED600
     raise SystemExit(f"ny.profile must be lucid or scaled600, got {name!r}")
+
+
+def _market_should_be_open(now: pd.Timestamp) -> bool:
+    """CME equity-index session calendar (reuses the same closed-session mask the gap
+    reporter trusts, src.engine.data._is_closed): False during the daily 17:00-18:00 ET
+    maintenance break and the weekend. For 24/7 unattended operation (2026-08-03 audit):
+    the feed-staleness guard cannot tell 'the market is closed, this silence is normal'
+    from 'the feed broke' without this — and without the distinction, the loop fail-halts
+    at 17:00 ET EVERY SINGLE DAY, which is the entire reason a human had to manually
+    restart it before every session. Holidays are NOT modeled (matches the gap reporter's
+    own documented limitation) — an exchange holiday still reads as 'should be open' and
+    a quiet feed on one will still halt for a human to eyeball, which is the safe default
+    for an unmodeled case, not a regression."""
+    from src.engine.data import _is_closed
+    ts = pd.Timestamp(now)
+    ts = ts.tz_convert(NY) if ts.tzinfo is not None else ts.tz_localize(NY)
+    return not bool(_is_closed(pd.DatetimeIndex([ts])).iloc[0])
 
 
 def _trigger_key(t) -> tuple:
@@ -175,6 +199,11 @@ class NYLive:
     _depth_scale_journaled: bool = field(default=False, init=False)
     desk: object | None = None                  # R15 AgentDesk (None = mech-only)
     _last_flip_by: str | None = field(default=None, init=False)
+    _last_keepalive: pd.Timestamp | None = field(default=None, init=False)
+    _dtc_down_since: pd.Timestamp | None = field(default=None, init=False)
+    _last_dtc_alert: pd.Timestamp | None = field(default=None, init=False)
+    _announced_closure: bool = field(default=False, init=False)
+    _position_mismatch: bool = field(default=False, init=False)
 
     def __post_init__(self):
         if self.execution is None:
@@ -215,7 +244,10 @@ class NYLive:
         self._close_position(ref, pl=pl, reason="execution")
 
     def _close_position(self, ref: str, *, pl: float, reason: str) -> None:
-        self._positions.pop(ref, None)
+        p = self._positions.pop(ref, None)
+        if self.armed:
+            side = f"{p.direction.upper()} " if p is not None else ""
+            self._say(f"CLOSED {side}{ref} ({reason}): ${pl:+,.2f}")
         try:
             self.runner.on_position_closed(ref, pl=pl)
         except RuntimeError as e:
@@ -280,6 +312,16 @@ class NYLive:
                 continue
             if kind != "place":
                 continue                       # scratch results ride on_fill, not here
+            if self._position_mismatch:
+                # 2026-08-03 audit: a broker/tracking disagreement blocks NEW risk only —
+                # cancels above and existing positions' resting stops are untouched.
+                self._journal({"type": "place_blocked_position_mismatch", "ref": a["ref"],
+                               "ts": str(now)})
+                c = self.runner._cands.get(a["ref"])
+                if c is not None:
+                    c.resting, c.size = False, 0
+                    self.runner.watch.mark_gone(a["ref"])
+                continue
             block = self._rule_l_conflict(
                 "long" if a["side"] == "B" else "short", a["limit"], a["stop"])
             if block is not None:
@@ -310,12 +352,22 @@ class NYLive:
             trig = self.runner._cands[a["ref"]].trigger \
                 if a["ref"] in self.runner._cands else None
             if not self.execution.place(a["ref"], intent, trig):
-                # submission failed: un-rest the candidate so a later bar re-places it
+                # submission failed: un-rest the candidate so a later bar re-places it.
+                # 2026-08-02/03 audit: this is EXACTLY the event that went unnoticed for
+                # 9 hours overnight and again mid-session — a failed placement now pages
+                # immediately, armed or not, instead of waiting to be discovered in a
+                # journal nobody was tailing.
+                self._say(f"WARN order FAILED to place: {a['ref']} {a['side']} "
+                          f"{size + pad}@{a['limit']:.2f} — see decisions.jsonl for the "
+                          "broker error; the candidate will re-place on a later bar")
                 c = self.runner._cands.get(a["ref"])
                 if c is not None:
                     c.resting, c.size = False, 0
                     self.runner.watch.mark_gone(a["ref"])
                 self._journal({"type": "placement_failed_unrested", "ref": a["ref"]})
+            elif self.armed:
+                self._say(f"PLACED {a['side']} {a['ref']} x{size + pad}@{a['limit']:.2f} "
+                          f"stop {a['stop']:.2f}")
 
     # ---------------------------------------------------------------- fills (armed loop)
     def on_fill(self, ref: str, fill_ts, filled_size: int) -> dict:
@@ -368,6 +420,9 @@ class NYLive:
                                          entry=float(v["entry"]), stop=float(v["stop"]),
                                          size=int(filled_size), fill_ts=ts, pre=pre)
         self.execution.confirm_fill(ref, v, int(filled_size), pre)
+        if self.armed:
+            self._say(f"FILLED {direction.upper()} {ref} x{int(filled_size)} @ "
+                      f"{float(v['entry']):.2f} (stop {float(v['stop']):.2f})")
         if self.desk is not None:
             # R15: the agent inherits the mechanical plan at commit. is_reversal =
             # this fill flattened an opposing position via rule J this same minute
@@ -554,8 +609,74 @@ class NYLive:
                            "scale": float(depth_s)})
             self._say(f"price scale: .depth levels / {depth_s:g}")
 
+    def _reconcile_position(self, now: pd.Timestamp) -> bool:
+        """Compare in-process position bookkeeping against the broker's own live
+        read-back. Called after every DTC reconnect recovery (the exact moment state may
+        have silently drifted while the socket was dead — a resting order could have
+        filled, or a stop fired, with nobody watching). Soft: blocks NEW entries only —
+        an existing position's protection is the real resting stop AT THE BROKER, which
+        needs no cooperation from this process to keep working. Never guesses a fix."""
+        broker = getattr(self.execution, "broker", None)
+        if broker is None or not hasattr(broker, "position"):
+            return True                            # dry-run/shadow: nothing to reconcile
+        expected = sum(p.size if p.direction == "long" else -p.size
+                       for p in self._positions.values())
+        try:
+            actual = int(broker.position(self.account))
+        except Exception as e:                     # noqa: BLE001 — can't verify = not ok
+            self._journal({"type": "position_reconcile_error", "error": repr(e),
+                           "ts": str(now)})
+            self._position_mismatch = True
+            return False
+        ok = actual == expected
+        if not ok and not self._position_mismatch:
+            self._say(f"WARN position mismatch: tracking {expected}, broker reports "
+                      f"{actual} — blocking new entries until reconciled (existing "
+                      "stops are still live at the broker)")
+            self._journal({"type": "position_mismatch", "expected": expected,
+                           "actual": actual, "ts": str(now)})
+        elif ok and self._position_mismatch:
+            self._say(f"position reconciled: {actual} matches tracking — new entries resume")
+            self._journal({"type": "position_reconciled", "actual": actual, "ts": str(now)})
+        self._position_mismatch = not ok
+        return ok
+
+    def _dtc_keepalive(self, now: pd.Timestamp) -> None:
+        """Idle-independent liveness check on the ORDER connection (2026-08-02/03 fix).
+        Runs every poll but self-throttles to DTC_KEEPALIVE_S — a dead socket is caught
+        and either healed or loudly alerted within ~10s of going stale, never discovered
+        only when the next real order needs it."""
+        broker = getattr(self.execution, "broker", None)
+        if broker is None or not hasattr(broker, "ensure_connected"):
+            return                                  # dry-run / shadow: nothing to keep alive
+        if (self._last_keepalive is not None
+                and (now - self._last_keepalive).total_seconds() < DTC_KEEPALIVE_S):
+            return
+        self._last_keepalive = now
+        ok = broker.ensure_connected()
+        if ok:
+            if self._dtc_down_since is not None:
+                downtime = (now - self._dtc_down_since).total_seconds()
+                self._say(f"DTC order route RECOVERED after {downtime:.0f}s downtime")
+                self._journal({"type": "dtc_reconnected", "ts": str(now),
+                               "downtime_s": round(downtime, 1)})
+                self._dtc_down_since = self._last_dtc_alert = None
+                self._reconcile_position(now)      # state may have drifted while blind
+            return
+        first = self._dtc_down_since is None
+        if first:
+            self._dtc_down_since = now
+        self._journal({"type": "dtc_keepalive_failed", "ts": str(now)})
+        if first or (self._last_dtc_alert is not None
+                     and (now - self._last_dtc_alert).total_seconds() >= DTC_ALERT_REPEAT_S):
+            self._last_dtc_alert = now
+            downtime = (now - self._dtc_down_since).total_seconds()
+            self._say(f"WARN DTC order route DOWN {downtime:.0f}s — orders cannot reach "
+                      f"the broker; retrying every {DTC_KEEPALIVE_S:.0f}s")
+
     def poll_once(self, now: pd.Timestamp | None = None) -> bool:
         now = self.clock() if now is None else now
+        self._dtc_keepalive(now)
         self._maybe_retarget(now)
         self.dispatch(self.feed.poll_events(), now)
         self._journal_scales()
@@ -574,9 +695,24 @@ class NYLive:
                 self._say("KILL file present — stopping the NY loop")
                 self._journal({"type": "kill_file_stop"})
                 break
-            if self.poll_once():
-                self._say("feed STALLED — halting (fail closed)")
-                break
+            now = self.clock()
+            if self.poll_once(now):
+                if _market_should_be_open(now):
+                    self._say("feed STALLED — halting (fail closed)")
+                    self._journal({"type": "feed_stall_halt", "ts": str(now)})
+                    break
+                # 2026-08-03 audit: an expected closure (daily 17:00-18:00 ET break,
+                # weekend) is NOT a fault — idle through it instead of halting. The DTC
+                # keepalive above keeps running every poll regardless, so the order
+                # connection is proven alive (or healed) well before bars resume, not
+                # discovered dead at the worst possible moment: the reopen.
+                if not self._announced_closure:
+                    self._announced_closure = True
+                    self._say("feed quiet during an expected market closure — idling, "
+                              "not halting (resumes automatically when bars return)")
+                    self._journal({"type": "expected_closure_idle", "ts": str(now)})
+            else:
+                self._announced_closure = False
             # a feed that never produced a single bar never trips the stall guard —
             # a wrong .scid naming variant would otherwise run silently all day.
             if (not warned_no_bars and self.guard._last is None
@@ -664,10 +800,33 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
     if arm:
         token = _collect_arm_token()
         try:
-            auth = verify_for_arming(token)
+            auth = verify_for_arming(token, entrypoint="scripts.ny_run")
         except ArmingError as e:
             raise SystemExit(f"ARM REFUSED: {e}")
         broker, _client = build_armed_broker(cfg, auth, log)
+        # 2026-08-03 audit: a fresh process starts believing it is flat (empty
+        # _positions) — if it crashed mid-trade, or a prior session's process died
+        # without a clean flatten, the BROKER may disagree. Continuing to run in that
+        # state is dangerous: the mechanical laws (09:30/15:55 flatten, rule J/K) are
+        # blind to a position they don't know exists. This process never GUESSES a
+        # recovery (rebuilding entry/stop/direction from partial broker data is worse
+        # than refusing) — it refuses to arm and tells the operator to look, the same
+        # fail-closed posture as every other refusal in this file.
+        acct_label = sc.get("account", "FUNDED")
+        try:
+            existing = int(broker.position(acct_label))
+        except Exception as e:                     # noqa: BLE001 — can't verify = refuse
+            raise SystemExit(
+                f"ARM REFUSED: could not verify the broker is flat before arming "
+                f"({type(e).__name__}: {e}) — a fresh process must never start managing "
+                "a position it cannot first confirm is zero.")
+        if existing != 0:
+            raise SystemExit(
+                f"ARM REFUSED: broker reports an existing {acct_label} position of "
+                f"{existing} that this fresh process has no record of (crash-restart "
+                "while in a trade, or a stale prior session). This process does not "
+                "auto-adopt unknown positions — flatten it manually (Sierra Trade "
+                "Positions Window), confirm flat, then arm.")
     spine_cfg = load_spine_config(config_path)     # pinned Tier-1 (F6: honour --config)
     instrument = build_shadow_instrument(out, account=sc.get("account", "FUNDED"),
                                          cfg=spine_cfg, kill_file=kill_file,
@@ -747,7 +906,10 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
             execution=execution, exit_cfg=execution.exit_cfg,
             journal_path=jpath, transcripts_dir=tdir,
             runs_cwd=runs_live, journal_sink=live.decision_sink,
-            sync=(replay_day is not None), call_fn=call_fn)
+            sync=(replay_day is not None), call_fn=call_fn,
+            # trade-level alerts only for a REAL armed session — a practice-day cert
+            # replay shouldn't page anyone's phone for a simulated trade
+            alert_sink=(alerts.say if arm else None))
         log.info("R15 agent desk ON (sync=%s, kill_test=%s)",
                  replay_day is not None, agent_kill_test)
 

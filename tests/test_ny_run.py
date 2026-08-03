@@ -552,3 +552,307 @@ def test_agent_desk_manages_a_dryrun_fill_end_to_end(tmp_path):
     types = [r.get("type") for r in lv.decision_sink]
     assert "agent_trade_open" in types and "agent_trade_settled" in types
     assert "dispatch_error" not in types
+
+
+# ---------------------------------------------------------------- DTC idle keepalive
+class _FakeDTCBroker:
+    """A minimal live broker double that models the dead-socket incident: ensure_connected
+    returns whatever the test script says, independent of any order call."""
+    def __init__(self, script):
+        self.script = list(script)          # list of bool results, consumed in order
+        self.calls = 0
+
+    def ensure_connected(self):
+        self.calls += 1
+        return self.script.pop(0) if self.script else self.script and self.script[-1]
+
+
+def test_dtc_keepalive_fires_on_a_quiet_market_and_alerts_once_then_recovers(live):
+    """The exact incident: the market is quiet (no dispatch calls the broker at all), the
+    socket dies, and NOTHING before this fix would have noticed. Now poll_once's own
+    cadence catches it, alerts once (not spammed), and alerts again on recovery."""
+    lv, det = live
+    lv.execution = SimpleNamespace(live=True, broker=_FakeDTCBroker([True, False, False, True]))
+    said = []
+    lv._say = said.append
+
+    t0 = _ts("09:00")
+    lv.poll_once(t0)                                    # connected: silent
+    assert lv.execution.broker.calls == 1 and said == []
+
+    t1 = t0 + pd.Timedelta(seconds=11)                   # past DTC_KEEPALIVE_S: checks again
+    lv.poll_once(t1)                                     # -> False: goes down
+    assert lv.execution.broker.calls == 2
+    assert any("DOWN" in s for s in said)
+    down_alerts = len(said)
+
+    t2 = t1 + pd.Timedelta(seconds=11)                    # still down, but well under the
+    lv.poll_once(t2)                                      # 5-minute repeat window -> no spam
+    assert lv.execution.broker.calls == 3
+    assert len(said) == down_alerts                       # no new alert
+
+    t3 = t2 + pd.Timedelta(seconds=11)                     # recovers
+    lv.poll_once(t3)
+    assert lv.execution.broker.calls == 4
+    assert any("RECOVERED" in s for s in said)
+    assert any(r.get("type") == "dtc_reconnected" for r in lv.decision_sink)
+
+
+def test_dtc_keepalive_throttles_to_its_own_cadence(live):
+    """Two polls inside the same second must not double-hit the socket — the keepalive
+    self-throttles to DTC_KEEPALIVE_S regardless of how often poll_once is called."""
+    lv, det = live
+    lv.execution = SimpleNamespace(live=True, broker=_FakeDTCBroker([True] * 10))
+    lv.poll_once(_ts("09:00"))
+    lv.poll_once(_ts("09:00") + pd.Timedelta(seconds=1))
+    assert lv.execution.broker.calls == 1
+
+
+def test_dtc_keepalive_is_a_noop_for_dryrun_and_shadow(live):
+    """DryRunBroker/no-broker execution has no socket to keep alive — the check must not
+    error or do anything when the object has no ensure_connected."""
+    lv, det = live
+    lv.poll_once(_ts("09:00"))          # default fixture execution: shadow, no broker attr
+    lv.poll_once(_ts("09:00") + pd.Timedelta(seconds=20))   # nothing raises
+
+
+# ---------------------------------------------------------------- market-calendar guard
+def test_market_should_be_open_matches_real_cme_hours():
+    from scripts.ny_run import _market_should_be_open
+    NY_ = "America/New_York"
+    cases = [
+        ("2026-04-20 16:59", True), ("2026-04-20 17:05", False),
+        ("2026-04-20 18:05", True), ("2026-04-24 17:30", False),
+        ("2026-04-25 12:00", False), ("2026-04-26 17:00", False),
+        ("2026-04-26 18:30", True), ("2026-04-20 09:30", True),
+    ]
+    for ts, expect in cases:
+        assert _market_should_be_open(pd.Timestamp(ts, tz=NY_)) is expect, ts
+
+
+def test_serve_idles_through_expected_closure_instead_of_halting(live):
+    """The 24/7 audit finding: without the calendar check, ANY stale feed halts the loop
+    — including the guaranteed-daily 17:00 ET maintenance break, which is why a human had
+    to restart it every single session. Now: idle through it, one announcement, no halt."""
+    lv, det = live
+    lv.feed = FakeFeed()
+    lv.guard.accept({"ts_event": _ts("16:55")})       # a bar just before the break
+    said = []
+    lv._say = said.append
+    # 17:05 ET Monday: 10 min past that bar, inside the daily maintenance break -> expected
+    lv.clock = lambda: _ts("17:05")
+    stops = {"n": 0}
+
+    def stop_fn():
+        stops["n"] += 1
+        return stops["n"] > 3
+    lv.serve(sleep_fn=lambda s: None, stop_fn=stop_fn)
+    assert not any("halting (fail closed)" in s for s in said)
+    assert any("expected market closure" in s for s in said)
+    assert sum("expected market closure" in s for s in said) == 1   # announced once, not spammed
+
+
+def test_serve_still_halts_on_a_real_stall_during_market_hours(live):
+    """The other half of the same fix: a stale feed WHILE the market should be open is
+    still fatal — the calendar check narrows the exception, it does not remove the guard."""
+    lv, det = live
+    lv.feed = FakeFeed()
+    lv.guard.accept({"ts_event": _ts("09:30")})       # a bar, then silence
+    said = []
+    lv._say = said.append
+    lv.clock = lambda: _ts("09:35")     # 5 min later, well past stale_after, market open
+    lv.serve(sleep_fn=lambda s: None, stop_fn=lambda: False)
+    assert any("halting (fail closed)" in s for s in said)
+    assert any(r.get("type") == "feed_stall_halt" for r in lv.decision_sink)
+
+
+# ---------------------------------------------------------------- position reconciliation
+class _FakeBrokerWithPosition:
+    def __init__(self, position, ensure_ok=True):
+        self._position = position
+        self._ensure_ok = ensure_ok
+
+    def position(self, account):
+        if isinstance(self._position, Exception):
+            raise self._position
+        return self._position
+
+    def ensure_connected(self):
+        return self._ensure_ok
+
+
+def test_reconcile_position_matches_is_silent(live):
+    lv, det = live
+    lv.execution = SimpleNamespace(live=True, account="FUNDED",
+                                   broker=_FakeBrokerWithPosition(0))
+    said = []
+    lv._say = said.append
+    assert lv._reconcile_position(_ts("09:00")) is True
+    assert said == [] and lv._position_mismatch is False
+
+
+def test_reconcile_position_mismatch_blocks_new_entries_not_existing_ones(live):
+    from scripts.ny_run import _Position
+    lv, det = live
+    lv._positions["ny:1"] = _Position(ref="ny:1", direction="long", entry=18_000.0,
+                                      stop=17_990.0, size=10, fill_ts=_ts("09:00"), pre=False)
+    lv.execution = SimpleNamespace(live=True, account="FUNDED",
+                                   broker=_FakeBrokerWithPosition(15))  # tracked 10, broker 15
+    said = []
+    lv._say = said.append
+    ok = lv._reconcile_position(_ts("09:05"))
+    assert ok is False and lv._position_mismatch is True
+    assert any("mismatch" in s for s in said)
+    types = [r.get("type") for r in lv.decision_sink]
+    assert "position_mismatch" in types
+
+    # a NEW placement is blocked...
+    lv._execute([{"action": "place", "ref": "ny:new", "side": "B", "limit": 18_010.0,
+                 "stop": 18_000.0, "size": 5}], _ts("09:06"))
+    assert any(r.get("type") == "place_blocked_position_mismatch" for r in lv.decision_sink)
+
+    # ...but a cancel still goes through (risk-reducing actions are never blocked)
+    lv.execution.cancel = lambda ref, why: said.append(f"cancelled:{ref}")
+    lv._execute([{"action": "cancel", "ref": "ny:1", "why": "test"}], _ts("09:07"))
+    assert "cancelled:ny:1" in said
+
+
+def test_reconcile_position_query_error_fails_closed(live):
+    lv, det = live
+    lv.execution = SimpleNamespace(live=True, account="FUNDED",
+                                   broker=_FakeBrokerWithPosition(RuntimeError("DTC down")))
+    ok = lv._reconcile_position(_ts("09:00"))
+    assert ok is False and lv._position_mismatch is True
+    assert any(r.get("type") == "position_reconcile_error" for r in lv.decision_sink)
+
+
+def test_reconnect_recovery_triggers_reconciliation(live):
+    """The exact incident-adjacent risk: the socket dies, something fills or stops while
+    we're blind, it reconnects — reconciliation must run automatically at that moment."""
+    lv, det = live
+    from scripts.ny_run import _Position
+    lv._positions["ny:1"] = _Position(ref="ny:1", direction="long", entry=18_000.0,
+                                      stop=17_990.0, size=10, fill_ts=_ts("09:00"), pre=False)
+
+    class _Flaky:
+        def __init__(self):
+            self.calls = 0
+
+        def ensure_connected(self):
+            self.calls += 1
+            return self.calls > 1              # down once, then recovers
+
+        def position(self, account):
+            return 0                           # broker now shows FLAT (the stop fired blind)
+
+    lv.execution = SimpleNamespace(live=True, account="FUNDED", broker=_Flaky())
+    said = []
+    lv._say = said.append
+    lv.poll_once(_ts("09:00"))                                          # down
+    lv.poll_once(_ts("09:00") + pd.Timedelta(seconds=11))               # recovers -> reconcile
+    assert lv._position_mismatch is True        # tracked 10, broker 0 -> caught immediately
+    assert any("RECOVERED" in s for s in said)
+    assert any("mismatch" in s for s in said)
+
+
+def test_arm_refused_when_broker_shows_an_untracked_position(tmp_path, monkeypatch):
+    """2026-08-03 audit: a fresh process must never start managing money it can't first
+    prove is flat. A crash-restart-while-in-a-trade (or a stale prior session) leaves an
+    orphaned position at the broker; this process refuses rather than guessing at its
+    entry/stop/direction from partial data."""
+    import logging
+
+    import scripts.ny_run as nr
+
+    monkeypatch.setattr(nr, "verify_for_arming", lambda token, entrypoint=None: object())
+    monkeypatch.setattr(nr, "build_armed_broker",
+                        lambda cfg, auth, log: (_FakeBrokerWithPosition(3), None))
+    monkeypatch.setenv("ARM_TOKEN", "whatever")
+
+    class _Alerts:
+        def say(self, text):
+            pass
+
+    with pytest.raises(SystemExit, match="existing FUNDED position"):
+        nr.build_ny_live({"feed": {"sierra": {"data_dir": str(tmp_path),
+                                              "scid": str(tmp_path / "x.scid")}},
+                          "paths": {}, "account": {"equity": 50_000.0},
+                          "ny": {"buffer": 2_000.0}},
+                         alerts=_Alerts(), log=logging.getLogger("t"), arm=True)
+
+
+def test_arm_proceeds_when_broker_confirms_flat(tmp_path, monkeypatch):
+    """The non-error path: position() reports 0, arming continues past the check."""
+    import logging
+
+    import scripts.ny_run as nr
+
+    monkeypatch.setattr(nr, "verify_for_arming", lambda token, entrypoint=None: object())
+    monkeypatch.setattr(nr, "build_armed_broker",
+                        lambda cfg, auth, log: (_FakeBrokerWithPosition(0), None))
+    monkeypatch.setenv("ARM_TOKEN", "whatever")
+
+    class _Alerts:
+        def say(self, text):
+            pass
+
+    live = nr.build_ny_live(
+        {"feed": {"sierra": {"data_dir": str(tmp_path), "scid": str(tmp_path / "x.scid")}},
+         "paths": {}, "account": {"equity": 50_000.0}, "ny": {"buffer": 2_000.0}},
+        alerts=_Alerts(), log=logging.getLogger("t"), arm=True)
+    assert live.armed is True
+
+
+# ---------------------------------------------------------------- trade-level alerts
+def test_disarmed_run_stays_silent_on_placements_and_fills(live):
+    """Shadow/practice runs must not page anyone's phone — only a placement FAILURE is
+    loud unconditionally (that's the exact thing that went unnoticed for 9 hours)."""
+    lv, det = live
+    assert lv.armed is False
+    said = []
+    lv._say = said.append
+    det.script["09:45"] = [_trigger()]
+    _drive(lv, "09:45")
+    ref = lv.action_sink[-1]["ref"]
+    assert not any(s.startswith("PLACED") for s in said)
+    lv.on_fill(ref, _ts("09:46"), 11)
+    assert not any(s.startswith("FILLED") for s in said)
+    lv._close_position(ref, pl=42.0, reason="test")
+    assert not any(s.startswith("CLOSED") for s in said)
+
+
+def test_armed_run_alerts_on_placed_filled_and_closed(live):
+    lv, det = live
+    lv.armed = True
+    said = []
+    lv._say = said.append
+    det.script["09:45"] = [_trigger()]
+    _drive(lv, "09:45")
+    assert any(s.startswith("PLACED") for s in said)
+    ref = lv.action_sink[-1]["ref"]
+    lv.on_fill(ref, _ts("09:46"), 11)
+    assert any(s.startswith("FILLED") and "LONG" in s for s in said)
+    lv._close_position(ref, pl=137.5, reason="test")
+    assert any(s.startswith("CLOSED") and "+137.50" in s for s in said)
+
+
+def test_placement_failure_alerts_regardless_of_armed_state(live):
+    """The exact incident: a failed order must page immediately, armed or not — it was
+    silently journaled for 9 hours overnight and again mid-session before this fix."""
+    lv, det = live
+    said = []
+    lv._say = said.append
+
+    class _FailingExecution:
+        live = False
+
+        def place(self, ref, intent, trig):
+            return False
+
+        def poll_fills(self):
+            return []
+
+    lv.execution = _FailingExecution()
+    det.script["09:45"] = [_trigger()]
+    _drive(lv, "09:45")
+    assert any("FAILED to place" in s for s in said)
