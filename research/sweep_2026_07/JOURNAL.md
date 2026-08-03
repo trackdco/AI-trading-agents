@@ -413,3 +413,36 @@ Rejected one auditor claim after checking: the H4 "apples-to-oranges" charge app
 extractor's summary, not to my table — my H4 row compares funded_all 17,090.5 to incumbent_all
 18,376.0, both n=216, which is like-for-like.
 FINAL: 1 WORKS, 2 NEEDS MORE WORK, 10 DEAD.
+
+## 2026-08-03 · THIRD-PARTY TEST: the "Currency Pros" 15m strategy on NQ. NULL — it is a coin flip.
+Research only; canon and live path untouched. Sixth container reset before starting; restored
+from origin + e6cc277 bars.
+Coded from the video transcript. All ~7 unspecified parameters FROZEN before the first run at
+textbook defaults (fractal swing N=2 with confirmation lag, BOS on close, sweep lookback 20,
+3-bar FVG, FVG within 10% of leg range of entry, 4H range lookback 60, min score 3/4) and never
+touched afterwards. Fills and outcomes resolved on 1-MINUTE bars so stop-vs-target sequencing
+inside a 15m bar is real, not assumed.
+THE KEY STRUCTURAL POINT: entry at a fib of the range with stop/target at the range extremes
+FORCES the payoff to fib/(1-fib). So "1:3 R:R" is arithmetic, not a finding, and breakeven win
+rate is exactly (1-fib) = 25.0% at the 75% level. That makes the whole strategy testable with
+one number.
+RESULT over 2023-01 .. 2026-07 (8,386 setups, 11,621 filled+resolved trades):
+  NY RTH, fib 0.75, score>=3: n=1,631 over 648 days. WR 24.2% vs 25.0% breakeven. Mean R
+  -0.034, total -55.0R. Day-clustered 95% CI on WR [21.6%, 26.6%] — straddles breakeven.
+  Binomial p (WR > breakeven) = 0.79. NOT above breakeven.
+  Every one of the 12 window x fib x score cells lands within 3pp of its own breakeven; the
+  best is +0.1pp (NY 08:00-16:00, 0.75, score>=3, mean R +0.003 on n=2,046).
+SCORE CALIBRATION IS THE MOST DAMNING PART — his central claim. WR by trade score: 1/4 21.3%,
+2/4 24.5%, 3/4 25.3%, 4/4 22.1%. NON-MONOTONE, and 4/4 is the WORST cell (mean R -0.116,
+-67.0R on n=579). 4/4 vs 3/4 Fisher exact p=0.164. Stacking all four confluences does not
+improve outcomes; on this data it slightly hurts.
+STABILITY: negative in 3 of 4 years (2023 +0.026, 2024 -0.063, 2025 -0.048, 2026 -0.078).
+HIS OWN CLAIM "sessions and timing do not matter" is the one thing that CHECKS OUT — WR 24.2 /
+25.1 / 25.0% across NY RTH / NY 08-16 / all hours. It does not matter, because there is no edge
+anywhere to be modulated.
+COSTS: median leg span 132pts -> risk 33pts = $66/micro; $1.74 round trip = 2.64% of 1R.
+Mean R after costs -0.060, i.e. costs turn a coin flip into a slow bleed.
+READING: the components are not nonsense and the geometry is internally consistent — it simply
+produces a fair coin with a 3:1 payoff, which is exactly what a driftless random walk produces.
+The video's three winning chart replays are consistent with a 24% win rate; at that rate you
+would expect to be able to find winners easily and show them.

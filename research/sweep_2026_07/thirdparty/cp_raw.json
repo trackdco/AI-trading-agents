@@ -1,0 +1,16 @@
+{
+ "n_setups": 8386,
+ "n_trades": 11621,
+ "params": {
+  "SWING_N": 2,
+  "SWEEP_LOOKBACK": 20,
+  "FVG_NEAR": 0.1,
+  "HTF_LOOKBACK": 60,
+  "MIN_SCORE": 3,
+  "VALID_HOURS": 48,
+  "FIBS": [
+   0.75,
+   0.71
+  ]
+ }
+}
