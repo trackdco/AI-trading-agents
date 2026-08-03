@@ -30,6 +30,11 @@ SPANS = {
             "matrix": "output/london_matrix.parquet", "years": (2025, 2026)},
     "holdout": {"dir": "data/reference/depth_london_2023_24",
                 "matrix": "output/london_matrix_holdout.parquet", "years": (2023, 2024)},
+    # Forward shadow log: the SAME live depth directory as `fit` — new condensed MBP-10
+    # files land there as sessions complete. Only the day set differs, and that is
+    # carried by the matrix handed in via --matrix, never by this dict.
+    "forward": {"dir": "data/reference/depth_london",
+                "matrix": "output/london_matrix_forward.parquet", "years": (2026, 2027)},
 }
 
 

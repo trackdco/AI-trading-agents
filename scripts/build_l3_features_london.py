@@ -206,7 +206,7 @@ def gate(span: str) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--span", choices=["fit", "holdout"], default="fit")
+    ap.add_argument("--span", choices=["fit", "holdout", "forward"], default="fit")
     ap.add_argument("--gate", action="store_true")
     a = ap.parse_args()
     if a.gate:

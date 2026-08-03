@@ -51,6 +51,7 @@ and deduped, meaning its 2026 bars came from master anyway.
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from multiprocessing import Pool
 from pathlib import Path
@@ -212,7 +213,12 @@ def parity() -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--span", choices=["fit", "holdout"])
+    ap.add_argument("--span", choices=["fit", "holdout", "forward"])
+    ap.add_argument("--days-file", default=None,
+                    help="explicit day list, one YYYY-MM-DD per line (the forward shadow "
+                         "log's mechanism). Overrides the span's own day derivation; --span "
+                         "then only names the output artifact. Sealed 2023/24 days are "
+                         "refused outright.")
     ap.add_argument("--parity", action="store_true")
     ap.add_argument("--procs", type=int, default=3)
     ap.add_argument("--win", default="08:00-10:00",
@@ -230,7 +236,18 @@ def main() -> None:
         raise SystemExit("--span or --parity required")
 
     bars = pd.read_parquet(MASTER)
-    if a.span == "holdout":
+    if a.days_file:
+        days = sorted({x.strip() for x in Path(a.days_file).read_text().split() if x.strip()})
+        sealed = set(pd.read_csv(SEALED, dtype=str)["day"])
+        if bad := sorted(set(days) & sealed):
+            raise SystemExit(f"SEALED DAY REFUSED: --days-file contains {len(bad)} holdout "
+                             f"day(s), e.g. {bad[:3]}. The 2023/24 span was spent once.")
+        have = set(weekdays([d[:7] for d in days], bars))
+        if miss := sorted(set(days) - have):
+            raise SystemExit(f"NO BARS: {len(miss)} requested day(s) absent from "
+                             f"{MASTER.name}, e.g. {miss[:3]}. Extend the tape first — a "
+                             "shadow log may not skip days silently.")
+    elif a.span == "holdout":
         days = sorted(pd.read_csv(SEALED, dtype=str)["day"])
     else:
         days = weekdays(FIT_MONTHS, bars)
@@ -245,7 +262,10 @@ def main() -> None:
     ts = pd.to_datetime(T.ts, format="mixed", utc=True).dt.tz_convert(NY)
     hm = ts.dt.hour + ts.dt.minute / 60
     shifted = sorted({d for d in days if window_et(d)[0].hour != 3})
-    print(f"\nwrote {out.relative_to(ROOT)} — {len(T)} triggers on {ts.dt.date.nunique()} days")
+    # os.path.relpath, not Path.relative_to: an --out outside the repo is legitimate
+    # (scratch probes) and must not crash the run AFTER the artifact is already written.
+    shown = os.path.relpath(out, ROOT)
+    print(f"\nwrote {shown} — {len(T)} triggers on {ts.dt.date.nunique()} days")
     print(f"ET hour range: {hm.min():.2f} -> {hm.max():.2f}  "
           f"(DST-shifted days in span: {len(shifted)})")
     print(f"pattern: {T.pattern.value_counts().to_dict()}")

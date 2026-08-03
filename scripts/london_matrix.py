@@ -40,6 +40,21 @@ SPANS = {
         "out": "output/london_matrix_holdout.parquet",
         "years": (2023, 2024),
     },
+    # Forward span — days AFTER the fit span, for forward/shadow logging. Same tape and
+    # bar sources as `fit`: they are the LIVE files, appended to as new sessions land, so
+    # the only thing distinguishing a forward run is WHICH DAYS are fed in (via
+    # build_l0_triggers_london --days-file). sub/trigs/out are supplied by
+    # build_l3_features_london's overrides. NOTE: unexercised as of this commit — the bar
+    # tape ends 2026-07-15, so no post-fit day is buildable yet.
+    "forward": {
+        "sub": "output/london_substrate_forward.parquet",
+        "tape": "output/fp_minutes.parquet",
+        "bars": [("data/reference/nq_1m_master.parquet", "2025-05-20"),
+                 ("data/reference/nq_1m_feb_jul2026.parquet", None)],
+        "trigs": "output/l0_triggers_london_forward.parquet",
+        "out": "output/london_matrix_forward.parquet",
+        "years": (2026, 2027),
+    },
 }
 
 
