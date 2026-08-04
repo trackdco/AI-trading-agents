@@ -1,0 +1,81 @@
+{
+  "fit": {
+    "days": 230,
+    "trades": 956,
+    "span": [
+      "2025-06-02",
+      "2026-07-08"
+    ],
+    "trial_books": 18496,
+    "eligible": 18488,
+    "canon": {
+      "day_sharpe": 0.42112073422867896,
+      "total_1lot": 148766.25,
+      "psr_zero": 1.0,
+      "sr0": 0.3564245538592353,
+      "dsr": 0.925177924137978,
+      "significant": false,
+      "skew": 2.8228506424994673,
+      "kurt": 15.672041051691677
+    },
+    "best_mined_alternative": {
+      "cell": "pre:WALLSZ&T2 | gold:W&G",
+      "day_sharpe": 0.4841403744018734,
+      "n": 573
+    },
+    "pbo": {
+      "pbo": 0.021756021756021756,
+      "n_trials": 18488,
+      "splits": 12870,
+      "slope": -0.594809392740876,
+      "prob_oos_loss": 0.0,
+      "days_used": 224,
+      "days_dropped": 6
+    }
+  },
+  "breadth_ladder": {
+    "16 checks, per session (the actual L3 trial)": {
+      "n_trials": 30,
+      "trial_sr_sd": 0.1111116267041741,
+      "sr0": 0.23037799213224044,
+      "dsr": 0.9999892087636086,
+      "significant": true
+    },
+    "singles + pairs, per session": {
+      "n_trials": 240,
+      "trial_sr_sd": 0.10215553139983162,
+      "sr0": 0.28854783415895935,
+      "dsr": 0.9984234798958775,
+      "significant": true
+    },
+    "full pre x gold cross product (mined)": {
+      "n_trials": 18488,
+      "trial_sr_sd": 0.08891983038448503,
+      "sr0": 0.3564245538592353,
+      "dsr": 0.925177924137978,
+      "significant": false
+    }
+  },
+  "holdout": {
+    "days": 122,
+    "trades": 637,
+    "span": [
+      "2023-07-03",
+      "2024-10-31"
+    ],
+    "canon": {
+      "day_sharpe": 0.6028589383899782,
+      "total_1lot": 86324.37000000001,
+      "psr_zero": 1.0
+    }
+  },
+  "predictive_check": {
+    "fit_day_sharpe": 0.42112073422867896,
+    "holdout_day_sharpe": 0.6028589383899782,
+    "shrinkage": -0.1817382041612992,
+    "retained_fraction": 1.431558432985185,
+    "gate_said_real_on_fit": true,
+    "gate_said_real_at_inflated_breadth": false,
+    "holdout_confirmed": true
+  }
+}
