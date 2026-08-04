@@ -78,7 +78,13 @@ def main(argv=None) -> int:
                 elif cycles % max(1, int(300 / a.interval_s)) == 0:   # ~every 5 min
                     try:
                         pos = client.positions()
-                        print(f"[{ts}] cycle {cycles}: alive, positions={len(pos)}")
+                        # NET signed size (DTCBroker.position()'s own math) — NOT len(pos).
+                        # Sierra sends one position REPORT per instrument even when flat
+                        # (Quantity 0), so len(pos)==1 reads as "1 contract open" when the
+                        # account is actually flat. Caught 2026-08-04 when this printed
+                        # positions=1 for 10+ minutes against a genuinely empty account.
+                        net = sum(int(p.get("Quantity") or 0) for p in pos)
+                        print(f"[{ts}] cycle {cycles}: alive, net_position={net}")
                     except Exception as e:           # noqa: BLE001 — log-only, keep going
                         print(f"[{ts}] cycle {cycles}: alive "
                               f"(positions query failed: {e!r})")
