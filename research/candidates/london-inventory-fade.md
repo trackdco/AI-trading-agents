@@ -43,3 +43,25 @@ at the London-side extreme.
   it doesn't.
 - NY-canon input-family overlap: MEDIUM (overnight structure).
 - Pairs with the open-type gate (fade only on non-drive opens).
+
+## Trial ledger — LDN-INV-01
+
+### Trial 1 — L0 census (2026-08-04, per PREREG spec exactly)
+
+396 census days (2025: 257, 2026: 139). Mean NQ points by prior-US-RTH quintile
+(q0 = worst days), era-local quintiles, no costs (L0):
+
+- **2025**: q0 02:00→06:00 **+20.7 pts** (t≈1.7), concentrated 03:00→04:00
+  (+17.6, t≈2.0); q4 **−3.8** (03:00→04:00 −13.0). Textbook inventory signature:
+  Europe buys back bad US closes, fades good ones. The classic 02:00→03:00 hour
+  is DEAD (−0.3) — consistent with the published post-2021 decay; the residual
+  sits after the 03:00 open.
+- **2026 (validate)**: q0 +17.9 (t≈0.65, n=28) — direction agrees, power weak —
+  but **q4 +42.0**: the asymmetry is ABSENT; everything drifted up in the euro
+  window in H1-2026 regardless of the prior day. Kill criterion 2 is live.
+
+Status: NOT killed, NOT validated. The naive form fails the asymmetry test in
+2026. Refinement (the actual thesis: condition on inv_skew_0255 AND σ-location
+jointly, not prior-return alone) proceeds under the same family; inverse pass
+and permutation null pending. If the joint conditioning cannot restore the
+asymmetry in both eras, criterion 2 kills the candidate.
