@@ -213,9 +213,14 @@ implements; Angus judges the implementation. Proposed bars:
   one degenerate 6pt-stop fill (`docs/RULING-mechanical-only.md`).
 - **Oracle ≠ policy:** a hindsight-optimal book is a CEILING for reporting, never a
   target (rule 5, `docs/HANDOFF-agents-capture.md` §3).
-- **Design-target check:** the book must trade — shipped canon verified at ~4
-  trades/day against a ~3/day minimum, gold ≥ 1 every month, zero zero-trade days
-  across 352 days (QA-LOG entry 17).
+- **Design-target check — RE-SCOPED to the portfolio** [ANGUS 2026-08-04:
+  "when we have 10 different strategies, I'm not worried if it takes only a
+  trade a week... if performance is there, it's there"]: per-strategy minimum
+  frequency is a canon-legacy bar and does NOT apply to portfolio candidates.
+  A strategy's only sample constraints are statistical (§2.2 minimum n for its
+  claims). Frequency floors apply to the combined BOOK (does the portfolio
+  trade enough to compound?), judged at the portfolio stage. The canon's own
+  ~3/day check (QA-LOG entry 17) remains valid for the canon.
 - **Cost realism is a bar, not an accounting detail** [NEW — education round
   2026-08-04]: taker pricing by default (full spread both ways + commission);
   limit fills count only when price trades THROUGH the level, never on a touch;
@@ -468,6 +473,14 @@ rung already exists in practice; this section names them in order.
    boundary. [EXISTING]
 2. **Holdout** — one declared look per §4, frozen policy, canon unchanged. A PASS
    does not auto-ship (§4.1). [EXISTING]
+2b. **Chained agents vs mechanical baseline** [ANGUS 2026-08-04 — standard rung
+   for every candidate]: after optimization, run the chained-agent management
+   layer over the candidate's book (Pat's replay methodology) and grade it
+   against the mechanical baseline exactly as desk-run-2 did for the canon —
+   the agent layer must EARN its seat per strategy, with the shuffle test
+   distinguishing policy-shape gains from discrimination. The winner of this
+   comparison fixes the candidate's EXIT OWNERSHIP (ship contract: declared
+   here, immutable at ship).
 3. **Funded-rules MC** — the candidate under the funded shell (50k account, $2k
    EOD-trailing, budget = base × 16/3 = $853.33 at $160, rules J/K/L) through
    `scripts/mc_funded_lab.py`: P(bust), maxDD, worst day, payout frequency.
