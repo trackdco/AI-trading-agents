@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: thesis-pending
+status: greenlit
 tags: [ny-pre, news, overnight-structure]
 sources: ["articles/sweep-2026-08-04-nypre-macro.md#M4"]
 ---

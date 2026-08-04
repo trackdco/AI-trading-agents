@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: thesis-pending
+status: greenlit
 tags: [ny-pre, news, order-flow]
 sources: ["articles/sweep-2026-08-04-nypre-macro.md#M2", "articles/sweep-2026-08-04-nypre-macro.md#M3", "articles/sweep-2026-08-04-nypre-macro.md#M5", "articles/sweep-2026-08-04-nypre-structure.md#S4", "articles/sweep-2026-08-04-nypre-stats.md#T5"]
 ---
