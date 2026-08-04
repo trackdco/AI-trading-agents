@@ -73,15 +73,26 @@ def main() -> None:
 
     srs = np.array([r[4] for r in rows], float)
     best_label, best_era, best_mean, best_n, best_sr = max(rows, key=lambda r: r[4])
-    trial_sr_var = float(srs.var(ddof=1))
+
+    # Prefer the RECORDED ledger over the six-cell estimate this script originally used.
+    try:
+        from src.validation.trial_ledger import load, trial_effect_variance
+        led = load()
+        trial_sr_var = trial_effect_variance(led)
+        src_note = (f"recorded ledger — {int(led.effect.notna().sum())} standardised "
+                    f"of {len(led)} trials")
+    except Exception as exc:                     # ledger absent or too thin
+        trial_sr_var = float(srs.var(ddof=1))
+        src_note = f"FALLBACK six-cell estimate ({exc})"
 
     print("\n" + "=" * 63)
     print("THE MACHINE ON OUR OWN RESULTS")
     print("=" * 63)
     print(f"best observed            : {best_label} {best_era}  "
           f"SR/event {best_sr:+.4f}  (mean {best_mean:+.2f} pts, n {best_n})")
-    print(f"spread of trial Sharpes  : sd {np.sqrt(trial_sr_var):.4f} "
-          f"(var {trial_sr_var:.6f}) across {len(srs)} measured cells")
+    print(f"trial-effect variance    : sd {np.sqrt(trial_sr_var):.4f} "
+          f"(var {trial_sr_var:.6f})")
+    print(f"  source                 : {src_note}")
     print(f"declared trials          : {TRIALS}")
 
     bar = expected_max_sharpe(TRIALS, trial_sr_var)
