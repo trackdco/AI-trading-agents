@@ -119,16 +119,26 @@ Remove-Item -Path (Join-Path $RepoDir "output\live\watchdog_tripped") -ErrorActi
 
 Push-Location $RepoDir
 try {
-    $spArgs = @{
-        FilePath              = "python"
-        ArgumentList          = "-m scripts.ny_run --arm"
-        WorkingDirectory      = $RepoDir
-        WindowStyle           = "Hidden"
-        RedirectStandardOutput = $RunLogOut
-        RedirectStandardError  = "$RunLogOut.err"
+    try {
+        # No -WindowStyle here: combined with redirected streams it's a known
+        # Start-Process failure mode ("the parameter is incorrect"), especially
+        # under Task Scheduler's non-interactive session - and it's redundant,
+        # since redirected output already keeps no console window from appearing.
+        $spArgs = @{
+            FilePath               = "python"
+            ArgumentList           = "-m scripts.ny_run --arm"
+            WorkingDirectory       = $RepoDir
+            RedirectStandardOutput = $RunLogOut
+            RedirectStandardError  = "$RunLogOut.err"
+        }
+        Start-Process @spArgs
+        Send-Telegram "WATCHDOG: ny_run was down - restart attempt $($recent.Count)/$MaxRestartsPerHour issued."
+    } catch {
+        # A restart that fails to even LAUNCH must never fail silently - that is
+        # exactly the failure mode this whole script exists to prevent.
+        Write-Log "ERROR restart attempt failed to launch: $_"
+        Send-Telegram "WATCHDOG ERROR: restart attempt $($recent.Count)/$MaxRestartsPerHour FAILED TO LAUNCH ($_). ny_run is still down. Check the box now."
     }
-    Start-Process @spArgs
-    Send-Telegram "WATCHDOG: ny_run was down - restart attempt $($recent.Count)/$MaxRestartsPerHour issued."
 } finally {
     Pop-Location
 }
