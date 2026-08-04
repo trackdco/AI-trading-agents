@@ -226,6 +226,33 @@ imposed last, at L4, where they can be measured rather than assumed."
   same-minute sibling triggers exist (burn list item 4). Then the trial bars of §2.
 - L4: causal walks only; first-N-clearing, never best-of-day.
 
+### 3.1 The refinement loop — what L1–L4 are actually for [EXISTING practice, named per ANGUS 2026-08-04]
+
+The expected starting state of a discretionary strategy's raw substrate is
+**unprofitable**. The NY precedent is the method: the raw census was nowhere near the
+hand edge — the shipped canon is what remained after the conditioning search (flow
+confirmations, wall features, windows, exit mechanics: the exit-lab's rr_floor
+tombstone; the 25-arm profit-taking family, measured and closed, live HANDOFF §5).
+"The raw data behind this strategy is unprofitable — what can we do to make it
+profitable?" is the job description of layers L1–L4, and it is **agent work**: agents
+sweep the conditioning space over the substrate the way the NY sessions did by hand.
+The success metric at each layer is **distance to the discretionary baseline** (the
+hand-log P&L where one exists; stated as unmeasurable where it does not — brief §6),
+not absolute profit at L0.
+
+Two disciplines make that search an engine instead of an overfitting machine:
+
+1. **The search space is pre-registered by family** (§1: mechanism family, input
+   columns). Agents explore freely inside declared families; a new family mid-search
+   is a new pre-registration, not an improvisation.
+2. **The trial ledger is mandatory and agents cannot skip it**: every arm tested —
+   winner, loser, abandoned — is logged as a vault `job` record
+   (docs/VAULT-SCHEMA.md §3.2). The §2.3 family-wise null and §2.4 DSR/PBO
+   denominators are the TOTAL count of arms tried, not the survivors shown. The bar
+   rises with the size of the search; an unlogged trial silently lowers the bar for
+   every result after it, which makes skipping the ledger a §0 violation, not an
+   oversight.
+
 Everything downstream (§6 promotion) consumes only what survived a layer gate.
 
 ---
@@ -341,7 +368,13 @@ rung already exists in practice; this section names them in order.
    does not auto-ship (§4.1). [EXISTING]
 3. **Funded-rules MC** — the candidate under the funded shell (50k account, $2k
    EOD-trailing, budget = base × 16/3 = $853.33 at $160, rules J/K/L) through
-   `scripts/mc_funded_lab.py`: P(bust), maxDD, worst day, payout frequency. Existing
+   `scripts/mc_funded_lab.py`: P(bust), maxDD, worst day, payout frequency.
+   **MC is never evidence of edge** (ANGUS critique 2026-08-04): a fit-span
+   bootstrap resamples the very dataset the candidate was optimized on — circular
+   as a proficiency grade. Rungs 1–2 (era split, permutation nulls, DSR/PBO, the
+   holdout look) establish whether the edge is real; this rung only converts an
+   already-established edge into funded-account arithmetic — sizing, ruin, payout
+   cadence. Where a holdout day series exists, feed it alongside fit. Existing
    reference: the agent book runs P(bust) 0.1%, median 53 payouts (funded_book
    docstring). Proposed bar: **P(bust) ≤ 1.0%** standalone and combined [PROPOSED —
    Angus to ratify; the combined figure matches `docs/REPORT-correlation-2026-08-04.md`
