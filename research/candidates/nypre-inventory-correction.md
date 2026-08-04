@@ -63,3 +63,15 @@ full-2025 +910 was carried by Jan–May). True shape: profitable H1-2025 and
 losing half-years are a real feature to price) but the verdict must carry the
 half-year decomposition and grading must weigh it. Status: to grading with the
 H2-2025 hole on the label.
+
+### Trial 4 — MANDATORY loser autopsy (2026-08-04, §3.2)
+Halves: H1-25 +1321 / H2-25 −411 / H1-26 +1294 pts. Losers vs winners on the
+declared features: statistically indistinguishable (t20 +.018/+.026, ext
+.72/.75, event 7%/11%, skew .990/.995; only far-stop trades win slightly
+more). NO cut passes the every-era precedent; none fixes H2-25. Cold-streak
+de-risk (half size on trailing-10 R<0): WORSE everywhere (total $4,782→$2,930,
+H2-25 unimproved) — the streak signal lags the regime. AUTOPSY VERDICT: the
+losing stretch is environmental, not conditional on the trade's own features —
+the hole gets PRICED, not explained away. Ship decision rests on the funded-
+shell MC carrying a −411pt six-month stretch inside the $2k trailing line at
+target sizing. To Brake's grading as-is.

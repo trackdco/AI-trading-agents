@@ -60,3 +60,13 @@ Jan–May). Same two conclusions as the inventory fade: naive delta overlay
 era-inconsistent (dies as tested); half-year decomposition shows a losing
 H2-2025. Status: to grading with the H2-2025 hole on the label; deeper flow
 features optional future trials.
+
+### Trial 4 — MANDATORY loser autopsy (2026-08-04, §3.2)
+Losers vs winners indistinguishable on declared features. The one cut that
+"fixes" H2-25 (far-stop tercile: kept H2-25 +82) REMOVES +264 pts of 2026
+profit and its cut-cohort is not bad in both eras → REFUSED per the
+wall-quality-cut precedent (that is what fitting the hole away looks like).
+METHODOLOGY NOTE: the cold-streak de-risk quick-test for this candidate was
+built WITHOUT the inside-prior-range condition — invalid, not evidence, rerun
+required if de-risk is pursued. AUTOPSY VERDICT: same as inventory — the hole
+is environmental; priced, not cut. To grading with it on the label.
