@@ -32,11 +32,16 @@ NY active 230 days, London active 109, both-active 99.
 Reading: on returns, the two books are indistinguishable from independent — slightly
 negative point estimates, CIs spanning zero, tail behaviour exactly at the
 independence floor, zero clock overlap (the only contention channel is the shared
-budget, confirming the HANDOFF's claim from fills 08:02–10:20 ET vs 03:02–05:54 ET).
+budget, confirming the HANDOFF's zero-overlap claim; measured clocks below).
 On **inputs**, they are cousins: both gate on depth walls, overnight structure, and
 order-flow families. The brief's own warning applies verbatim — structural overlap is
 the leading indicator; return correlation is the lagging one. Today's clean return
 numbers do not retire the structural caution.
+
+Fill clocks, measured from the taken trades this session (these supersede the
+HANDOFF/brief's quoted 08:02–10:20 / 03:02–05:54 ranges, which were approximate):
+NY 08:00–10:29 ET (762 trades, funded lucid fit book); London 03:01–05:50 ET
+(136 taken trades, `output/london_canon_book.parquet`). Zero overlap either way.
 
 **Supersedes:** the `day-corr +0.11` figure in the `scripts/london_canon.py`
 docstring (measured pre-rules, against a pre-J/K/L NY accounting). Against the
