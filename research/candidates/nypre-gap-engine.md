@@ -70,3 +70,16 @@ METHODOLOGY NOTE: the cold-streak de-risk quick-test for this candidate was
 built WITHOUT the inside-prior-range condition — invalid, not evidence, rerun
 required if de-risk is pursued. AUTOPSY VERDICT: same as inventory — the hole
 is environmental; priced, not cut. To grading with it on the label.
+
+### Trial 5 — flow-at-entry autopsy per §3.2 (2026-08-04) — CONFIRMATION GATE FOUND
+Last-5-min pre-open delta leaning toward the fill (the tape already selling a
+gap-up / buying a gap-down at 09:25–09:29): CONFIRMED n=51 WR 63% avg +9.8
+pts vs UNCONFIRMED n=34 WR 44% avg −8.6. Era test on the flow span: confirmed
++20 pts in H2-2025 (the hole REMOVED) and +468 in 2026H1; unconfirmed −256
+and −96 — **the excluded cohort is bad in BOTH eras → passes the
+wall-quality-cut precedent cleanly.** Mechanism prior: canon W-gate pattern —
+at-entry flow confirmation as quality filter. Declared spec upgrade: gap fade
+ships WITH the d5-confirmation gate. Caveats on the label: flow span only
+(14 mo), n=51 confirmed, found under §3.2 while investigating H2-25 (era
+consistency of BOTH cohorts + mechanism prior are the defense); family arm
+count incremented for DSR.

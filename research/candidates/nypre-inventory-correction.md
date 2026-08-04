@@ -75,3 +75,14 @@ losing stretch is environmental, not conditional on the trade's own features —
 the hole gets PRICED, not explained away. Ship decision rests on the funded-
 shell MC carrying a −411pt six-month stretch inside the $2k trailing line at
 target sizing. To Brake's grading as-is.
+
+### Trial 5 — flow-at-entry autopsy per §3.2 (2026-08-04) — ABSORPTION SIGNAL, TRADE-OFF
+Absorption at the overnight high (net selling delta on 08:00–09:29 minutes
+tagging ONH): CONFIRMED n=22 WR 41% avg +15.6 pts vs UNCONFIRMED n=67 WR 25%
+avg +0.7. H2-2025: confirmed +186 vs unconfirmed −473 — the hole again lives
+in the unconfirmed cohort. BUT unconfirmed 2026H1 = +556 → the excluded
+cohort is NOT bad in both eras → fails the strict exclusion precedent. Honest
+framing: this is a QUALITY-vs-QUANTITY trade-off (steadier small book vs
+bigger era-dependent book), i.e. the funded-risk-shape decision — same class
+as the agent-layer ship call. n=22 is thin (§2.2 warning). Both variants go
+to grading; the confirmation variant is the risk-shape candidate.
