@@ -96,3 +96,14 @@ ONH (median risk ~60-80 pts) while winners never see 10 pts of heat → a
 tighter-stop arm (~15-20 pts) is the obvious declared next trial; 69% of
 losers showed ≥5 pts favorable first → BE-family arm declared too. n=22
 remains the caveat on everything.
+
+### Trial 7 — declared exit arms (2026-08-04, 5 arms, gated spec, flow span)
+A0 current (ONH stop): $+753, PF 1.59. A1 20pt stop no BE: **$+2,362, PF 1.94,
+halves +23/+271/+1 (era-clean)** — the MAE finding converts: winners' 8pt
+median heat means a 20pt stop keeps the economics and triples $-at-fixed-risk
+(1/risk sizing). A4 20pt+BE@15: $+2,452, PF 2.41, DD $520 but 2025H1 −22.
+A2/A3 inferior. LEADING SPEC: A1 (simpler, era-consistent); A4 alternative.
+HONESTY: 5 arms selected on n=22 — the arm choice itself is in-sample; the
+sealed holdout adjudicates it out-of-fit and all 5 arms count in DSR. NOTE:
+sims standardized to conservative intrabar tie-break (stop checked before
+target within a bar) from this trial forward.

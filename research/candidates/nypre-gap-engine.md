@@ -92,3 +92,11 @@ winners barely breathe against entry; losers grind. 74% of losers showed ≥5
 pts favorable first → declared next arms: tighter-stop family and BE/partial
 mechanics (exit-ownership: arms tested then frozen). Capture 75% of winners'
 MFE — time-exit already harvests well.
+
+### Trial 7 — declared exit arms (2026-08-04, 3 new arms, gated spec)
+Every modification HURTS: 0.5×gap stop PF 0.90; BE@10 PF 0.95; both PF 0.70.
+The MFE hint did not convert — BE clips eventual winners in a mean-reversion
+trade (price commonly retests against entry before filling; the canon's own
+BE-vs-V8 lesson repeating). EXIT SPEC FREEZES AS-IS per ship contract: 1×gap
+stop, prior-close target, 10:00 time-stop, no BE. Three arms ledgered as
+negative results; current spec confirmed by tournament rather than assumption.
