@@ -265,3 +265,89 @@ def test_agent_desk_defaults_to_silent_alerts(tmp_path):
     _open_trade(desk)
     _drive(desk, "09:46", 18_002, 18_004, 18_001, 18_003)
     _drive(desk, "09:47", 18_004, 18_005, 18_002, 18_004)   # must not raise
+
+
+# ------------------------------------------------------------------ call_claude subprocess
+# 2026-08-04 incident: a replay's first agent turn hung the box 3+ hours despite
+# call_claude passing timeout=240 — plain subprocess.run(timeout=) only kills the
+# immediate process; on Windows `claude` is an npm .cmd shim over a node.exe child
+# that survives and keeps the output pipes open, so communicate() never sees EOF.
+# These pin the Popen + hard tree-kill replacement so that class of hang can't recur
+# silently (nothing in this file exercised the real subprocess path before).
+
+import subprocess as _subprocess  # noqa: E402 — grouped with the section it tests
+
+from src.live.agent_desk import call_claude, _kill_process_tree  # noqa: E402
+
+
+class _FakeProc:
+    def __init__(self, communicate_effects):
+        self.pid = 4242
+        self._effects = list(communicate_effects)
+        self.killed_via_tree = False
+
+    def communicate(self, timeout=None):
+        effect = self._effects.pop(0)
+        if isinstance(effect, Exception):
+            raise effect
+        return effect
+
+
+def test_call_claude_returns_the_result_on_a_clean_call(tmp_path, monkeypatch):
+    reply = json.dumps({"result": '{"action":"hold"}', "session_id": "s9"})
+    proc = _FakeProc([(reply, "")])
+    monkeypatch.setattr(_subprocess, "Popen", lambda *a, **k: proc)
+    txt, sid = call_claude("prompt", None, cwd=tmp_path)
+    assert txt == '{"action":"hold"}'
+    assert sid == "s9"
+
+
+def test_call_claude_hard_kills_the_process_tree_on_timeout_not_just_the_pid(
+        tmp_path, monkeypatch):
+    """The exact 2026-08-04 failure: both attempts time out. Must call the tree-kill
+    helper (not proc.kill()) and degrade to __ERROR__ (-> hold) rather than hang."""
+    proc = _FakeProc([
+        _subprocess.TimeoutExpired(cmd="claude", timeout=240),
+        ("", ""),                                       # reap after the tree-kill
+        _subprocess.TimeoutExpired(cmd="claude", timeout=240),
+        ("", ""),
+    ])
+    killed = []
+    monkeypatch.setattr(_subprocess, "Popen", lambda *a, **k: proc)
+    monkeypatch.setattr("src.live.agent_desk._kill_process_tree",
+                        lambda pid: killed.append(pid))
+    txt, sid = call_claude("prompt", "s1", cwd=tmp_path, timeout=1)
+    assert killed == [4242, 4242]                       # one hard kill per attempt
+    assert txt.startswith("__ERROR__")
+    assert "Timeout" in txt
+    assert sid == "s1"                                  # session preserved for the retry
+
+
+def test_call_claude_recovers_if_the_retry_succeeds_after_a_timeout(tmp_path, monkeypatch):
+    reply = json.dumps({"result": '{"action":"hold"}', "session_id": "s1"})
+    proc = _FakeProc([
+        _subprocess.TimeoutExpired(cmd="claude", timeout=240),
+        ("", ""),
+        (reply, ""),
+    ])
+    monkeypatch.setattr(_subprocess, "Popen", lambda *a, **k: proc)
+    monkeypatch.setattr("src.live.agent_desk._kill_process_tree", lambda pid: None)
+    txt, sid = call_claude("prompt", "s1", cwd=tmp_path, timeout=1)
+    assert txt == '{"action":"hold"}'
+
+
+def test_kill_process_tree_uses_taskkill_with_the_force_and_tree_flags_on_windows(
+        monkeypatch):
+    calls = []
+    monkeypatch.setattr(_subprocess, "run", lambda cmd, **k: calls.append(cmd))
+    monkeypatch.setattr("src.live.agent_desk.sys.platform", "win32")
+    _kill_process_tree(4242)
+    assert calls == [["taskkill", "/F", "/T", "/PID", "4242"]]
+
+
+def test_kill_process_tree_never_raises_even_if_the_pid_is_already_gone(monkeypatch):
+    def _boom(cmd, **k):
+        raise OSError("no such process")
+    monkeypatch.setattr(_subprocess, "run", _boom)
+    monkeypatch.setattr("src.live.agent_desk.sys.platform", "win32")
+    _kill_process_tree(999999)                          # must not raise

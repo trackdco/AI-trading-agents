@@ -31,6 +31,7 @@ from __future__ import annotations
 import json
 import re
 import subprocess
+import sys
 import threading
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -63,25 +64,67 @@ TURN_CONTRACT = (
 
 # ------------------------------------------------------------------ CLI conversations
 
+def _kill_process_tree(pid: int) -> None:
+    """2026-08-04 incident: a replay's first agent turn hung the whole box for 3+
+    hours despite call_claude passing timeout=240 to subprocess. Root cause: on
+    Windows `claude` resolves to an npm .cmd shim that execs a node.exe child;
+    Popen.kill()/subprocess.run's own timeout handling only signals the shim, not
+    that child — the grandchild keeps running and keeps the stdout/stderr pipes
+    open, so communicate() never sees EOF and blocks forever regardless of the
+    timeout we asked for. Killing the whole process tree is the actual fix."""
+    try:
+        if sys.platform == "win32":
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(pid)],
+                           capture_output=True, timeout=10)
+        else:
+            import os
+            import signal
+            try:
+                os.killpg(os.getpgid(pid), signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+    except Exception:                                   # noqa: BLE001 — best-effort
+        pass
+
+
 def call_claude(prompt: str, session: str | None, *, cwd: Path,
                 spec: Path = SPEC, timeout: int = CLI_TIMEOUT) -> tuple[str, str | None]:
     """The reference's call, verbatim semantics: spec as system prompt, ALL tools
-    disabled, JSON output, --resume per trade, one retry, then __ERROR__ (-> hold)."""
+    disabled, JSON output, --resume per trade, one retry, then __ERROR__ (-> hold).
+
+    Uses Popen + communicate(timeout=) instead of subprocess.run(timeout=) so a
+    timeout can hard-kill the WHOLE process tree (see _kill_process_tree) — plain
+    subprocess.run's timeout only kills the immediate process, which is not
+    enough on Windows (see incident note above)."""
     cmd = ["claude", "-p", "--system-prompt-file", str(spec),
            "--disallowedTools", "*", "--output-format", "json"]
     if session:
         cmd += ["--resume", session]
     cmd.append(prompt)
+    creationflags = subprocess.CREATE_NEW_PROCESS_GROUP if sys.platform == "win32" else 0
     for attempt in (1, 2):
-        r = None
+        proc, out_text, err_text = None, "", ""
         try:
-            r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
-                               cwd=str(cwd))
-            out = json.loads(r.stdout.strip().splitlines()[-1])
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                    text=True, cwd=str(cwd), creationflags=creationflags)
+            out_text, err_text = proc.communicate(timeout=timeout)
+            out = json.loads(out_text.strip().splitlines()[-1])
             return out.get("result", ""), out.get("session_id") or session
-        except Exception as e:                     # noqa: BLE001 — fail closed to hold
+        except subprocess.TimeoutExpired:
+            if proc is not None:
+                _kill_process_tree(proc.pid)
+                try:                                     # reap now the tree is dead
+                    out_text, err_text = proc.communicate(timeout=10)
+                except Exception:                         # noqa: BLE001
+                    pass
             if attempt == 2:
-                err = (r.stderr.strip()[-300:] if r is not None and r.stderr else "")
+                return (f"__ERROR__ TimeoutExpired after {timeout}s x2 (process tree "
+                        "killed)", session)
+        except Exception as e:                     # noqa: BLE001 — fail closed to hold
+            if proc is not None:
+                _kill_process_tree(proc.pid)
+            if attempt == 2:
+                err = err_text.strip()[-300:] if err_text else ""
                 return f"__ERROR__ {e} | stderr: {err}", session
     return "__ERROR__", session
 
