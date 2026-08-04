@@ -50,3 +50,16 @@ above settlement, stop ON high, exit 10:00. 2025: +910 pts (n=111, WR 37%,
 BOTH eras at BOTH friction levels; survives drop-top-3 (gross +2488 → +1017).
 Low WR / big-win profile as expected for a fade. Status: STRONGEST CANDIDATE —
 to grading (permutation/DSR, Brake's stage) + portfolio checks.
+
+### Trial 3 — flow conditioning, naive pre-open delta (2026-08-04)
+Flow span only (2025-06..2026-07). Two findings: (1) the naive condition
+(pre-open delta ≤ 0) ERA-FLIPS — 2025H2 flow-yes −640 pts vs flow-no +190;
+2026 flow-yes +1071 vs +106 — the simple overlay dies as tested (more
+sophisticated flow features remain untried options, each a fresh ledgered
+trial). (2) MORE IMPORTANT: the span restriction exposes time-clustering the
+calendar-year split hid — 2025H2 is NEGATIVE overall (−451 pts, n=69; the
+full-2025 +910 was carried by Jan–May). True shape: profitable H1-2025 and
+2026, losing H2-2025. Not a kill (both calendar years positive full-span;
+losing half-years are a real feature to price) but the verdict must carry the
+half-year decomposition and grading must weigh it. Status: to grading with the
+H2-2025 hole on the label.

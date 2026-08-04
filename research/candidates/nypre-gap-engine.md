@@ -52,3 +52,11 @@ Inside-range small-gap fade to prior close, stop 1×gap, TS 10:00: 2025 +78 pts
 gross). Era-consistent positive at base; 2025 marginal at the strict bar —
 refinement targets 2025 (size/vol conditioning) before grading. Status:
 ADVANCING — strongest gap result.
+
+### Trial 3 — flow conditioning, naive pre-open delta (2026-08-04)
+Flow span only: 2026 flow-yes +425 pts vs flow-no −50 (helps); 2025H2 no
+discrimination and negative overall (−168 pts; full-2025 +78 was carried by
+Jan–May). Same two conclusions as the inventory fade: naive delta overlay
+era-inconsistent (dies as tested); half-year decomposition shows a losing
+H2-2025. Status: to grading with the H2-2025 hole on the label; deeper flow
+features optional future trials.
