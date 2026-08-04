@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: greenlit
+status: killed
 tags: [ny-pre, session-structure]
 sources: ["articles/sweep-2026-08-04-nypre-stats.md#T2", "articles/sweep-2026-08-04-nypre-structure.md#S7"]
 ---
@@ -62,3 +62,12 @@ $160-risk) — wins are small relative to the enormous far-extreme stop. The
 race odds are real; this expression's geometry is uneconomic. Status:
 REFINING — next trials: stop at London mid (not far extreme), pullback
 entries, partial targets. Expectancy kill fires if geometry trials fail.
+
+### Trial 4 — geometry refit (2026-08-04) — FAMILY KILLED
+London-mid stop, on-side entries: −$1,261/−$1,885 at $160-risk base friction —
+negative dollars both eras again (second failed expression). Declared
+expectancy kill fires. TOMBSTONE: the 66–77% pattern-side race odds are real
+but priced at any post-08:00 entry; wins pay too little per unit risk under
+every geometry tried. Same lesson as polarity: published base rates without a
+trapped counterparty don't convert. Reopening burden: a fresh-declared
+expression positive in both eras net of costs (family trial count stands).

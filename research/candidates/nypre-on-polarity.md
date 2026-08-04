@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: greenlit
+status: killed
 tags: [ny-pre, overnight-structure]
 sources: ["articles/sweep-2026-08-04-nypre-structure.md#S1", "articles/sweep-2026-08-04-nypre-stats.md#T1"]
 ---
@@ -55,3 +55,13 @@ stop. Base rate ≠ edge. Status: REFINING within family — next trials must fi
 geometry (reward/risk ≥1 filter; pullback entries toward mid; earlier
 measurement), each ledgered. Expectancy-below-cost kill fires if geometry
 trials fail both eras.
+
+### Trial 3 — geometry refit (2026-08-04) — FAMILY KILLED
+Reward≥risk filter: 2025 +191 pts but 2026 −500 pts — era flip. Two
+expressions tried, both fail era-consistent expectancy; the declared kill
+fires. TOMBSTONE: the 74–77% first-break odds are REAL but PRICED — by the
+time location is measurable, price sits near the predicted extreme and the
+remaining risk/reward eats the edge. A public statistic with no trapped
+counterparty is not a trade. Reopening burden: an expression with
+demonstrated positive expectancy in both eras under the standard cost stack,
+declared fresh (the trial count against this family stands).
