@@ -86,3 +86,13 @@ framing: this is a QUALITY-vs-QUANTITY trade-off (steadier small book vs
 bigger era-dependent book), i.e. the funded-risk-shape decision — same class
 as the agent-layer ship call. n=22 is thin (§2.2 warning). Both variants go
 to grading; the confirmation variant is the risk-shape candidate.
+
+### Trial 6 — full metrics pack, gated spec (2026-08-04, flow span)
+GATED (absorption): n=22, WR 41%, +344 pts, $+753 @$160-risk, PF 1.59,
+sequence DD $575 (vs ungated $196 / DD $2,437 — 4× the money at a quarter of
+the drawdown; the risk-shape argument in numbers). MFE/MAE: winners' median
+MAE 8.0 pts vs losers' 42.8 — the starkest stop-asymmetry yet; stop sits at
+ONH (median risk ~60-80 pts) while winners never see 10 pts of heat → a
+tighter-stop arm (~15-20 pts) is the obvious declared next trial; 69% of
+losers showed ≥5 pts favorable first → BE-family arm declared too. n=22
+remains the caveat on everything.

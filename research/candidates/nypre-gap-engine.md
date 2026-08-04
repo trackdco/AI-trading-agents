@@ -83,3 +83,12 @@ ships WITH the d5-confirmation gate. Caveats on the label: flow span only
 (14 mo), n=51 confirmed, found under §3.2 while investigating H2-25 (era
 consistency of BOTH cohorts + mechanism prior are the defense); family arm
 count incremented for DSR.
+
+### Trial 6 — full metrics pack, gated spec (2026-08-04, flow span)
+GATED (d5-confirmation): n=51, WR 63%, +498 pts, $+1,797 @$160-risk, PF 1.80,
+sequence DD $680, EVERY half positive (+11/+20/+468). Ungated same span: PF
+1.15, DD $1,688. MFE/MAE: winners' median MAE 14.2 pts vs losers' 28.2 —
+winners barely breathe against entry; losers grind. 74% of losers showed ≥5
+pts favorable first → declared next arms: tighter-stop family and BE/partial
+mechanics (exit-ownership: arms tested then frozen). Capture 75% of winners'
+MFE — time-exit already harvests well.
