@@ -309,6 +309,22 @@ Three disciplines make that search an engine instead of an overfitting machine
    uses purged/embargoed splits (`quant-math-canon.md` §1.1) — era-splits protect
    the macro boundary, not the inner loop.
 
+### 3.2 The loser autopsy is MANDATORY for every L1-profitable candidate [ANGUS 2026-08-04]
+
+Elevated from expected move (§3.1) to required stage: no candidate reaches
+grading without a completed loser autopsy — "what do the losers have in common
+that the winners don't share? If we cut off that subset, or if we de-risk, does
+that outcome look better?" Procedure: (1) declare a SMALL feature set before
+looking (regime, structure, sizing-geometry, calendar — from the substrate);
+(2) compare loser vs winner distributions per era, with special attention to
+any time-clustered losing stretch; (3) candidate cut-sets obey the
+wall-quality-cut precedent — the cut cohort must be bad in EVERY era, not just
+the discovery era; (4) every cut tried is a ledgered arm; (5) de-risk (half
+size) is tested alongside hard cuts — sometimes the answer is smaller, not
+none. Trigger event for this rule: the H2-2025 losing stretch both pre-market
+winners shared, invisible at calendar-year granularity — half-year (or finer)
+decomposition is now part of the standard autopsy.
+
 Everything downstream (§6 promotion) consumes only what survived a layer gate.
 
 ---
