@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: killed
+status: greenlit
 tags: [ny-pre, overnight-structure]
 sources: ["articles/sweep-2026-08-04-nypre-structure.md#S1", "articles/sweep-2026-08-04-nypre-stats.md#T1"]
 ---
@@ -65,3 +65,12 @@ remaining risk/reward eats the edge. A public statistic with no trapped
 counterparty is not a trade. Reopening burden: an expression with
 demonstrated positive expectancy in both eras under the standard cost stack,
 declared fresh (the trial count against this family stands).
+
+### Trial 4 — KILL VACATED, process correction (ANGUS 2026-08-04)
+The trial-3 expectancy kill fired before flow-at-entry conditioning was tried
+— premature under the amended §3.2 kill-class rule (the same standard would
+have killed the canon at raw triggers). PREMISE stands (74–77% base rate,
+both eras). Status: REOPENED — the owed search: flow-at-entry variables
+(delta, absorption at the target extreme, wall state when depth lands) ×
+geometry, declared arms, era discipline. Expectancy kill becomes legal again
+only when that search completes.

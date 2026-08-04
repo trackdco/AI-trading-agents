@@ -325,6 +325,25 @@ none. Trigger event for this rule: the H2-2025 losing stretch both pre-market
 winners shared, invisible at calendar-year granularity — half-year (or finer)
 decomposition is now part of the standard autopsy.
 
+**Two kill classes, and only one is legal early** [ANGUS 2026-08-04 — "raw
+data is never meant to look good. we can't cut things off the raw data when
+not trying anything else... our own canon looked like shit off of the raw
+triggers"]:
+
+- **PREMISE kills (legal at L0):** the claimed base rate/asymmetry is absent
+  or inverted in both eras — the pattern itself does not exist. These die
+  early and cheap (correct examples: quiet-hours reversion at 43–53% vs a
+  claimed 76–83%; pre-release drift measured negative).
+- **EXPECTANCY kills (legal ONLY after the conditioning search is COMPLETE):**
+  a candidate whose premise holds may not be killed for unprofitable raw or
+  first-expression economics until the declared search has run — candle
+  features AND flow-at-entry features AND geometry variants, per the canon
+  precedent (the canon's raw triggers were unprofitable; the W gate and
+  variable search made it). An expectancy kill that predates the flow
+  cross-check is PREMATURE and gets vacated on review. Discipline stands on
+  the other side too: every arm ledgered, era-consistency on every cut, and
+  the holdout untouched until one declared look.
+
 **Flow state at entry is a MANDATORY autopsy dimension** [ANGUS 2026-08-04 —
 "we cross check against every order flow variable upon entry too... when
 validating my canon, this was a pivotal thing"]: wherever flow data covers the

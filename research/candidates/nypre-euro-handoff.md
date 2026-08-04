@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: killed
+status: greenlit
 tags: [ny-pre, session-structure]
 sources: ["articles/sweep-2026-08-04-nypre-stats.md#T2", "articles/sweep-2026-08-04-nypre-structure.md#S7"]
 ---
@@ -71,3 +71,9 @@ but priced at any post-08:00 entry; wins pay too little per unit risk under
 every geometry tried. Same lesson as polarity: published base rates without a
 trapped counterparty don't convert. Reopening burden: a fresh-declared
 expression positive in both eras net of costs (family trial count stands).
+
+### Trial 5 — KILL VACATED, process correction (ANGUS 2026-08-04)
+Trial-4 expectancy kill predated the flow cross-check — premature under the
+amended §3.2 kill-class rule. PREMISE stands (68–77% engulf-up both eras;
+redundancy gate passed). Status: REOPENED — owed search: flow-at-entry
+conditioning (does the 08:00 tape confirm the pattern side?) × geometry.
