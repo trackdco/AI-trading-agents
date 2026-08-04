@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: thesis-pending
+status: greenlit
 tags: [london, session-structure, amt]
 sources: ["articles/sweep-2026-08-04-orderflow.md#OF4", "articles/sweep-2026-08-04-amt.md#AMT3", "articles/sweep-2026-08-04-session-vwap.md#SS6"]
 ---

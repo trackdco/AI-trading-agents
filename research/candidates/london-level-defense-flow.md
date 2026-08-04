@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: thesis-pending
+status: greenlit
 tags: [london, order-flow, depth]
 sources: ["articles/sweep-2026-08-04-orderflow.md#OF5", "articles/sweep-2026-08-04-orderflow.md#OF6", "articles/sweep-2026-08-04-orderflow.md#OF7"]
 ---

@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: thesis-pending
+status: greenlit
 tags: [london, volume-profile, amt]
 sources: ["articles/sweep-2026-08-04-amt.md#AMT5", "articles/sweep-2026-08-04-amt.md#AMT6", "articles/sweep-2026-08-04-amt.md#AMT8"]
 ---

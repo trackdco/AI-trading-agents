@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: thesis-pending
+status: greenlit
 tags: [london, vwap, session-structure]
 sources: ["articles/sweep-2026-08-04-session-vwap.md#SS4", "articles/sweep-2026-08-04-session-vwap.md#SS5", "articles/sweep-2026-08-04-session-vwap.md#SS7"]
 ---

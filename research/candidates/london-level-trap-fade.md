@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: thesis-pending
+status: greenlit
 tags: [london, overnight-structure, amt]
 sources: ["articles/sweep-2026-08-04-orderflow.md#OF3", "articles/sweep-2026-08-04-amt.md#AMT4"]
 ---
