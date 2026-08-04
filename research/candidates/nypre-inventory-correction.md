@@ -33,3 +33,12 @@ target settlement, stop at new ON extreme, hard exit 09:50.
 - **May hold through 09:30** — semantics ruling needed.
 - Canon redundancy: LOW-MEDIUM (fade logic vs the canon's with-trend pullbacks).
 - Post-2021 re-verification mandatory (the regime the academic result predates).
+
+## Trial ledger — NYP-INV-01
+### Trial 1 — L0 census (2026-08-04)
+Relative to mixed-day base (+12.1/+23.4 pts first 30 min): 90%-LONG overnight
+days open weak BOTH eras (−3.8/−24.1 raw; ≈−16/−48 vs base) — the long-side
+correction is consistent. 90%-SHORT days ERA-FLIP (−8.3 in 2025 = continuation,
++18.3 in 2026 = correction) → short side DEAD per kill 2. Status: SPLIT —
+long-side sub-claim only proceeds to refinement (fade one-sided-LONG overnights
+at the open); short side closed.

@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: greenlit
+status: killed
 tags: [ny-pre, session-structure]
 sources: ["articles/sweep-2026-08-04-nypre-stats.md#T4", "articles/sweep-2026-08-04-nypre-structure.md#S5"]
 ---
@@ -35,3 +35,15 @@ time-stop end of hour. Skip when a tier-1 08:30 release is <30 min away.
   two of three hours; the 08:00 hour overlaps — test exclusion).
 - Sister of the London hourly family — if both survive, they're cousins by
   construction (input-family accounting applies).
+
+## Trial ledger — NYP-QH-01
+### Trial 1 — L0 census (2026-08-04) — KILLED
+Reversion-to-mid after prior-hour false breaks, our definition (1-min close
+beyond → close back inside → mid touch before hour end): 43–53% across all
+three hour-slots in BOTH eras (n=87–178 per cell) — nowhere near the published
+76–83.5%, below the 60% kill floor everywhere. Popularization split flat
+(49/49/48%) — no decay because no edge existed in our sample. Kill 1 executes.
+TOMBSTONE: the Magic Hours stat does not replicate on 2025–26 NQ under a
+mechanical trigger. Reopening burden: evidence our trigger definition
+materially differs from the source's AND a re-census under the source's exact
+definition clearing 65% in both eras.

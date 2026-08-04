@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: greenlit
+status: killed
 tags: [ny-pre, news, overnight-structure]
 sources: ["articles/sweep-2026-08-04-nypre-macro.md#M4"]
 ---
@@ -33,3 +33,14 @@ through the print.
 - Canon redundancy: LOW (time-based premium harvest, no setup logic).
 - The famous FOMC cousin is dead unconditionally — test only as the
   high-uncertainty conditional; expectation modest by design.
+
+## Trial ledger — NYP-PRE-01
+### Trial 1 — L0 census (2026-08-04) — KILLED
+Claim was POSITIVE 04:00→08:25 drift on event days. Measured: −12.5 pts (2025,
+n=27) and −32.0 pts (2026, n=12; median −45.8) — negative both eras, vs −3.3/
++5.4 on non-event days. Kill 1 executes. TOMBSTONE: the published risk-premium
+channel does not appear long in our era — if anything the sample shows
+pre-release DE-RISKING (drift down into prints). Reopening burden: a
+calendar-based test with proper n showing positive conditional drift in two
+eras; the inverse (short-into-print) observation is a NEW claim requiring its
+own prereg, not a resurrection of this one.

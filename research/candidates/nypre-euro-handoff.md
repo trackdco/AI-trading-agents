@@ -37,3 +37,12 @@ stop under London low; invalidate/flip if the wrong side breaks first.
   the first gate, before any other work.
 - Stats are public with TradingView tooling (2024–26 audience growth) —
   recency-weighted decay check mandatory.
+
+## Trial ledger — NYP-EUR-01
+### Trial 1 — L0 census (2026-08-04)
+ALN base rates re-based on 2025–26: engulf-up → pattern-high first 68.6%
+(n=105) / 76.9% (n=65) — PASSES both eras. Engulf-down → 66.2% (n=74) / 60.5%
+(n=38) — 2026 marginal, survives the 60% kill by half a point. Published
+80.8/75.0 → measured lower but well above coin. Status: census PASSED →
+MANDATORY next gate: pairwise redundancy vs the canon's actual pre fills
+before any L1 work (highest-overlap candidate by design).

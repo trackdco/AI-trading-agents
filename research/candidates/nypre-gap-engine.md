@@ -34,3 +34,13 @@ Outside-range/news-held → no fade, optionally join.
 - **Holds through 09:30** in most branches — semantics ruling needed.
 - Canon redundancy: LOW (different logic entirely).
 - Expect much of the value as AVOIDED losses (not fading the wrong gaps).
+
+## Trial ledger — NYP-GAP-01
+### Trial 1 — L0 census (2026-08-04)
+LOCATION leg PASSES both eras: inside-prior-range opens fill-by-EOD 70%/72%
+(2025 n=143 / 2026 n=75) vs outside 47%/35%. CLOCK leg PASSES: fill-by-10:00
+37%/39%; gaps unfilled at 10:00 fill later only 36%/26% — the survival flip is
+real. CAUSE leg (event-day conditioning) ERA-FLIPS (2025: 44% vs 62% as
+claimed; 2026: 67% vs 54% inverted, n=12) → dropped per prereg kill 2; may
+only return via the calendar build with proper n and a fresh declaration.
+Status: ADVANCING on location+clock to L1 mechanics.
