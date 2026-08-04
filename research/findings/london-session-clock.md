@@ -13,6 +13,12 @@ sources: []
   03:00–05:00/04:00–06:00 ET depending on DST (scripts/london_canon.py).
 - **DST trap:** UK BST/GMT vs US EDT/EST diverge for ~2–3 weeks a year around the
   change dates, so the 08:00 UK cash open MOVES in ET terms during those weeks.
+  **Measured 2026-08-04** (scripts/london_day_features.py over 912 days, 69
+  mismatch days): during mismatch weeks the UK 08:00 open lands at **04:00 ET**
+  (offset shrinks 5h→4h — both transitions push the same way). This SUPERSEDES
+  the sweep record's claim of "02:00 ET" (sweep-2026-08-04-session-vwap.md SS#8),
+  which was wrong in direction. Volume-surge detection confirms the 04:00 mode on
+  mismatch days.
   Rule: mechanisms anchored to the *European cash open* (LSE 08:00 UK / Xetra
   09:00 CET) must key off the UK/CET clock, converted per-day — never a hardcoded
   ET time. Mechanisms anchored to *Globex structure* (Asian range, overnight
