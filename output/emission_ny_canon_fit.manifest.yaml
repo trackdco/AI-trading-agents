@@ -1,0 +1,64 @@
+schema: emission-v0.1-proposed
+strategy: ny_canon
+vault_id: strategy:ny-canon
+span: fit
+key:
+- strategy
+- ts
+- direction
+sessions:
+- ny-pre
+- ny-gold
+session_window: pre 08:00-09:30 ET, gold 09:40-10:30 ET (src/canon/scorer_ny.py PRE_WIN/GOLD_WIN)
+signal_ts_is_fill: false
+mechanism_families:
+- depth-walls
+- overnight-structure
+- order-flow
+- vwap
+- trigger-density
+- structural-events
+input_columns:
+- dep_wall_below_d
+- WALLSZ
+- on_extreme_age
+- fill_delta_conf
+- d15_conf
+- bp5opp
+- lon_slope_d
+- ent_vs_vwap_sd_dir
+- trigdens_30
+- struct_event
+sizing_regime: funded-governed (profile lucid, base 160, budget 853.33)
+execution_semantics:
+  two_sessions: true
+  close_reverse: true
+  one_per_level: true
+commission_included: true
+exit_reason_vocab:
+- be_stop
+- flip
+- open_flatten
+- partial+be_stop
+- partial+open_flatten
+- partial+stop
+- partial+target
+- stop
+- target
+counts:
+  rows: 762
+  days: 230
+  span_days: 2025-06-02..2026-07-08
+  net_pl: 82543
+provenance:
+  commit: 601153f
+  book:
+    generator: scripts/funded_book.py
+    artifact: output/funded_book_lucid_fit.parquet
+    span: fit
+    profile: lucid
+    base: 160
+    overlay: cr
+  reproduce: python -m scripts.funded_book --span fit --profile lucid
+  expected: +$82,543
+  holdout_looks_spent: 0

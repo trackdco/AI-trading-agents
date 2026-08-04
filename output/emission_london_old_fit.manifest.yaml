@@ -1,0 +1,52 @@
+schema: emission-v0.1-proposed
+strategy: london_old
+vault_id: strategy:london-old-book
+span: fit
+key:
+- strategy
+- ts
+- direction
+- entry
+sessions:
+- london
+session_window: 08:00-10:00 Europe/London -> ET per-day via scripts.run_triggers_london.london_window_et
+  (03:00-05:00 or 04:00-06:00 ET; never hardcode)
+signal_ts_is_fill: true
+mechanism_families:
+- depth-walls
+- overnight-structure
+- order-flow
+- pattern-taxonomy
+input_columns:
+- dep_wall_below_d
+- dep_wall_above_d
+- ent_on_pos
+- on_range
+- cvd_ASIA
+- pattern
+- score
+sizing_regime: research-native (Layer-2 size 0.5/1.0/1.5; NOT budget-governed)
+execution_semantics: none
+commission_included: '[OPEN — needs Brake]'
+exit_reason_vocab:
+- partial+stop
+- partial+target
+- stop
+- target
+counts:
+  rows: 136
+  days: 109
+  span_days: 2025-06-02..2026-07-08
+  net_pl: 35219
+provenance:
+  commit: 601153f
+  book:
+    generator: scripts/london_canon.py
+    artifact: output/london_canon_book.parquet
+    span: fit
+    profile: native
+    base: n/a
+    overlay: none
+  reproduce: python -m scripts.london_canon
+  expected: 136 taken, net +$35,219
+  holdout_looks_spent: 0
