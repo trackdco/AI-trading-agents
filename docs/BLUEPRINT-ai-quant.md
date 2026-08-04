@@ -61,6 +61,17 @@ validation layer that lifts raw entries ("order flow is a massive thing that I
 think can validate trade entries"). Entry position relative to VWAP is a standing
 conditioning variable (longing at +2σ is a different trade than longing at −1σ).
 
+**The research memory (ANGUS 2026-08-04):** all research is actively documented in
+`research/` on the working branch — article summaries, cross-cutting findings,
+candidate theses — one centralized place, markdown + frontmatter so it migrates
+into Pat's Obsidian vault as-is. Two-stage flow: broad sweep → theses → Angus
+picks; on greenlight, a deep-dive research round on that specific mechanism runs
+before and alongside testing. See `research/README.md`. Stage-5 note made explicit
+by Angus: when a candidate's red days coincide with the NY canon's, the finding
+routes to a RISK RECONFIGURATION question (the combined worst day is what the
+trailing line feels — sizing may need reworking for both books), not just a
+pass/fail verdict.
+
 ### 1. Pre-register
 
 The §1 template: mechanism, family, input columns, session, entry type, acceptance
