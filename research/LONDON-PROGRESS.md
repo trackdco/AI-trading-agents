@@ -54,3 +54,12 @@ Pipeline stages: thesis → greenlit → **prereg** → census (L0) → refine (
   LDN-INV-01 declared and census run same day (results above); NY↔old-London
   correlation measured; emission/redundancy/battery instruments built and
   self-tested. Handoff to Brake written.
+
+## Program expansion — NY PRE-MARKET (ANGUS 2026-08-04)
+
+Goal: apply the same research → prereg → validation pipeline to the NY
+pre-market window, with a named bar — **outperform the shipped canon's pre
+leg** (the canon's measured weak spot: desk-run-2 agent edge was entirely gold;
+pre flat, −1.1R over 227). Status: research sweep running; thesis sheet to
+Angus for greenlight next. Redundancy vs the incumbent canon's pre entries is a
+first-class check from day one (same clock, same account).
