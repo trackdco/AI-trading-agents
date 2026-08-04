@@ -1,4 +1,4 @@
-{"type": "boot", "git_sha": "981602b636ddb1a788549a46e17e7e38e25ce0a6", "armed": false, "entry": "ny_run"}
+{"type": "boot", "git_sha": "6515400e689fad560c66aba738e14a68279e6449", "armed": false, "entry": "ny_run"}
 {"type": "ny_day_start", "day": "2026-01-20", "buffer": 2000.0, "bar_ts": "2026-01-20 08:35:00+00:00"}
 {"type": "ny_day_start", "day": "2026-01-21", "buffer": 2000.0, "bar_ts": "2026-01-21 01:13:00+00:00"}
 {"type": "ny_day_start", "day": "2026-01-22", "buffer": 2000.0, "bar_ts": "2026-01-22 13:16:00+00:00"}
@@ -312,54 +312,30 @@
 {"type": "trigger_seen", "ts": "2026-07-29T10:13:00-04:00", "direction": "short", "entry_ref": 27735.1057, "placed": false}
 {"type": "trigger_seen", "ts": "2026-07-29T10:14:00-04:00", "direction": "short", "entry_ref": 27727.7657, "placed": false}
 {"type": "trigger_seen", "ts": "2026-07-29T10:15:00-04:00", "direction": "short", "entry_ref": 27722.5957, "placed": true}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:52", "broker_ref": "dry:63", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:28", "broker_ref": "dry:64", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:34", "broker_ref": "dry:65", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:35", "broker_ref": "dry:66", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:41", "broker_ref": "dry:67", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:42", "broker_ref": "dry:68", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:43", "broker_ref": "dry:69", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:46", "broker_ref": "dry:70", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:47", "broker_ref": "dry:71", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:49", "broker_ref": "dry:72", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:50", "broker_ref": "dry:73", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:51", "broker_ref": "dry:74", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:28", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:34", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:35", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:41", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:42", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:43", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:46", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:47", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:49", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:50", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:51", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:52", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:28", "broker_ref": "dry:75", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:34", "broker_ref": "dry:76", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:35", "broker_ref": "dry:77", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:41", "broker_ref": "dry:78", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:42", "broker_ref": "dry:79", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:43", "broker_ref": "dry:80", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:46", "broker_ref": "dry:81", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:47", "broker_ref": "dry:82", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:49", "broker_ref": "dry:83", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:50", "broker_ref": "dry:84", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:51", "broker_ref": "dry:85", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:52", "broker_ref": "dry:86", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:28", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:34", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:35", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:41", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:42", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:43", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:46", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:47", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:49", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:50", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:51", "why": "gold_wall_quality", "mode": "dryrun"}
-{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:52", "why": "gold_wall_quality", "mode": "dryrun"}
+{"type": "spine_error", "ref": "ny:2026-07-29:52", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:28", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:34", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:35", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:41", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:42", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:43", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:46", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:47", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:49", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:50", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:51", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:15:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:28", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:34", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:35", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:41", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:42", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:43", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:46", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:47", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:49", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:50", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:51", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
+{"type": "spine_error", "ref": "ny:2026-07-29:52", "error": "Route-B live loop is disarmed \u2014 no broker call is permitted", "ts": "2026-07-29 14:18:00+00:00"}
 {"type": "trigger_seen", "ts": "2026-07-29T10:25:00-04:00", "direction": "short", "entry_ref": 27691.644, "placed": false}
 {"type": "trigger_seen", "ts": "2026-07-29T10:54:00-04:00", "direction": "long", "entry_ref": 27596.8125, "placed": false}
 {"type": "trigger_seen", "ts": "2026-07-29T10:55:00-04:00", "direction": "long", "entry_ref": 27596.8125, "placed": false}
