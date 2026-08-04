@@ -68,8 +68,8 @@ first-class check from day one (same clock, same account).
 
 | # | Candidate | Core evidence | Key flag |
 |---|---|---|---|
-| P1 | nypre-on-polarity | 76–84% first-break stat, 2,827 days | holds through 09:30 (ruling) |
-| P2 | nypre-open-sweep-fade | unpublished wrong-side-sweep conditional | post-09:30 (ruling); flow-strong |
+| P1 | nypre-on-polarity | **census PASSED: 77.2%/74.4% by era** | → L1 mechanics; 09:30 ruling for carry |
+| P2 | nypre-open-sweep-fade | **PARKED: 9 events/19mo — data-starved** | recondition needs fresh prereg |
 | P3 | nypre-inventory-correction | academic + Dalton convergence, unquantified | fade family; matrix slice |
 | P4 | nypre-gap-engine | fill-timing + news-minted split + survival flip | most branches cross 09:30 |
 | P5 | nypre-0830-event-tree | hold/fail branches; falsification paper = null | release-day slippage honesty |

@@ -33,3 +33,15 @@ extreme on a 1-min close holding the midpoint side. Target: ON extreme, runner
 - Stat published late 2025 → 2026 out-of-sample decay check mandatory.
 - Canon redundancy: MEDIUM-HIGH (same clock; different logic — level-run vs
   wall-backed pullback). Pairwise vs canon pre fills at census.
+
+## Trial ledger — NYP-POL-01
+
+### Trial 1 — L0 census (2026-08-04, per PREREG spec)
+
+**The published stat REPLICATES on post-regime data.** 2025: 94% of days break
+an ON extreme; predicted side first **77.2%** (n=241; upper→ONH 77.0%,
+lower→ONL 77.4%). 2026: **74.4%** (n=129; 74.0%/75.0%). Kill 1 (<60%) passed
+comfortably both eras; no era flip; symmetric both directions; 2026 is the only
+clean post-publication read and shows minimal degradation (76%→74%). Status:
+census PASSED → proceed to L1 (entry/exit mechanics + costs, both the
+flat-by-09:29 and carry-through variants).
