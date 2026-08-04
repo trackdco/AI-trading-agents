@@ -54,3 +54,11 @@ on engulf-up days canon long-share is 40% vs 47% base (leans AGAINST the
 pattern, not with it); engulf-dn short-share 66% (moderate alignment — flag
 for concurrent-risk check at L1). The handoff is NOT the canon rediscovered.
 Status: ADVANCING to L1 mechanics (both flat-by-09:29 and carry variants).
+
+### Trial 3 — L1 mechanics, first expression (2026-08-04)
+08:00 entry, target pattern extreme, stop opposite extreme, carry: WR 66/69%
+and POSITIVE POINTS (+130/+164) but NEGATIVE R and dollars (−$871/−$1,184 at
+$160-risk) — wins are small relative to the enormous far-extreme stop. The
+race odds are real; this expression's geometry is uneconomic. Status:
+REFINING — next trials: stop at London mid (not far extreme), pullback
+entries, partial targets. Expectancy kill fires if geometry trials fail.

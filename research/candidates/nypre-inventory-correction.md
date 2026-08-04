@@ -42,3 +42,11 @@ correction is consistent. 90%-SHORT days ERA-FLIP (−8.3 in 2025 = continuation
 +18.3 in 2026 = correction) → short side DEAD per kill 2. Status: SPLIT —
 long-side sub-claim only proceeds to refinement (fade one-sided-LONG overnights
 at the open); short side closed.
+
+### Trial 2 — L1 mechanics (2026-08-04) — PROFITABLE both eras INCL. strict friction
+Long-side fade as directed by trial 1: short 09:30 open when overnight ≥90%
+above settlement, stop ON high, exit 10:00. 2025: +910 pts (n=111, WR 37%,
++$573 at $160-risk strict). 2026: +1409 pts (n=58, +$3,344 strict). Positive
+BOTH eras at BOTH friction levels; survives drop-top-3 (gross +2488 → +1017).
+Low WR / big-win profile as expected for a fade. Status: STRONGEST CANDIDATE —
+to grading (permutation/DSR, Brake's stage) + portfolio checks.

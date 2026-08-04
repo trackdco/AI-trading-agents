@@ -45,3 +45,13 @@ comfortably both eras; no era flip; symmetric both directions; 2026 is the only
 clean post-publication read and shows minimal degradation (76%→74%). Status:
 census PASSED → proceed to L1 (entry/exit mechanics + costs, both the
 flat-by-09:29 and carry-through variants).
+
+### Trial 2 — L1 mechanics, first expression (2026-08-04)
+09:20 entry toward predicted extreme, stop ON-mid, target extreme, TS 10:30,
+1pt friction: LOSES both eras (−472 pts n=238; −404 pts n=136; −$843/−$3,744
+at $160-risk). The 77/74% race odds are real but the geometry is uneconomic:
+by 09:20 price sits near the predicted extreme — small reward, huge midpoint
+stop. Base rate ≠ edge. Status: REFINING within family — next trials must fix
+geometry (reward/risk ≥1 filter; pullback entries toward mid; earlier
+measurement), each ledgered. Expectancy-below-cost kill fires if geometry
+trials fail both eras.

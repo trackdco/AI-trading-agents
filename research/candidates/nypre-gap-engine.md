@@ -44,3 +44,11 @@ real. CAUSE leg (event-day conditioning) ERA-FLIPS (2025: 44% vs 62% as
 claimed; 2026: 67% vs 54% inverted, n=12) → dropped per prereg kill 2; may
 only return via the calendar build with proper n and a fresh declaration.
 Status: ADVANCING on location+clock to L1 mechanics.
+
+### Trial 2 — L1 mechanics (2026-08-04) — PROFITABLE both eras (base friction)
+Inside-range small-gap fade to prior close, stop 1×gap, TS 10:00: 2025 +78 pts
+(n=87, +0.89/t, WR 54%; dies at 2pt strict friction −9); 2026 +461 pts (n=34,
++13.55/t, WR 68%; robust at strict +427). Concentration OK (top-3 = 33% of
+gross). Era-consistent positive at base; 2025 marginal at the strict bar —
+refinement targets 2025 (size/vol conditioning) before grading. Status:
+ADVANCING — strongest gap result.
