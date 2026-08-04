@@ -124,6 +124,26 @@ the whole portfolio.
 One declared look per §4 (the ledger is sacred; agents request a look, they never
 take one). Then the funded shell converts the surviving edge into money terms.
 
+### The ship contract (ANGUS rulings 2026-08-04 — three design consequences)
+
+1. **The shelf's deliverable is fully mechanical entry criteria.** The knowledge
+   base expresses itself as COMPILED conditioning — news-tier gates, regime
+   filters, session windows, structural rules — baked into entry code and
+   validated with it. Intelligence at research time, determinism at fire time.
+   A candidate's L1 spec IS its ship spec.
+2. **Multi-strategy arbitration is deterministic and causal.** Code decides
+   collisions, never an agent. "Higher-conviction-first" is a lookahead and is
+   banned. Default: the existing clock-ordered, in-flight-inclusive budget
+   accumulator (scripts/funded_book.py spine) extended across strategies;
+   reserved sub-budgets only if the combined MC measures budget starvation.
+3. **Exit ownership is declared at validation and never changes at ship.**
+   Validated under engine exits → ships with engine exits; validated under
+   agent management (measured via Pat's replay methodology) → ships with agent
+   management. Mixing is a parity break through the back door. Current pre
+   advancers validate mechanical → ship mechanical; agent management for any
+   of them would be a fresh re-validation, not a toggle. The prereg template
+   carries an "exit ownership" field from now on.
+
 ### 8 → 9. The shelf, and the human pick
 
 Survivors sit at `available-unshipped` with their full paper trail. **The dispatch
