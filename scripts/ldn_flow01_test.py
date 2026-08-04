@@ -194,7 +194,7 @@ def main() -> None:
             print(f"{m:<9}{era:<6}{len(s):>5}{r:>+8.3f}"
                   f"{f'[{lo:+.3f}, {hi:+.3f}]':>18}{p:>8.3f}{a:>8.3f}   {read}")
 
-    print(f"\nminimum detectable rho @80% power, one-sided: "
+    print("\nminimum detectable rho @80% power, one-sided: "
           + ", ".join(f"{e} (n={int((d.era == e).sum())}) {min_detectable_rho(int((d.era == e).sum())):.3f}"
                       for e in ERAS))
 
