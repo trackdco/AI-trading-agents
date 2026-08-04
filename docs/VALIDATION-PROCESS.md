@@ -148,6 +148,11 @@ defaults:
   — the existing instrument: the elite 2.0x combo shipped on pooled 72% with Wilson
   lower bound 64% against Angus's pre-set "wouldn't want to do double sizing on
   anything less than 70–75%" (QA-LOG entries 37–38).
+- **Overlapping trades count less than trade count suggests** [NEW — education round
+  2026-08-04]: when positions overlap in time, the effective sample size is smaller
+  than n (concurrent labels are partial photocopies of one bet). Significance math
+  on per-trade statistics uses effective N (average-uniqueness correction,
+  `research/findings/quant-math-canon.md` §1.4), not raw trade count.
 
 ### 2.3 Permutation null, family-wise [EXISTING core, NEW — brief numbers]
 
@@ -176,6 +181,24 @@ implements; Angus judges the implementation. Proposed bars:
   **PBO ≥ 0.50 condemns the selection procedure, not the candidate** (brief §7) —
   the search design gets the tombstone, and re-running it with a new candidate is
   not a fix.
+- **Effective trials, both directions** [NEW — education round 2026-08-04, for
+  Brake]: the ledger records EVERYTHING including abandoned trials (they were
+  lottery tickets too), then DSR's N deflates to *effective* independent trials by
+  clustering correlated configurations (lookback 20 vs 21 is not two draws) —
+  `research/findings/quant-math-canon.md` §1.6. Under-recording rigs the grade;
+  over-counting correlated arms wastes power. Both corrections are mandatory.
+- **Two-tier gate policy** [PROPOSED — education round 2026-08-04]: at the
+  discover→validate promotion, control the false-discovery RATE (Benjamini–Hochberg,
+  q = 0.10 proposed) — tolerate some duds to keep power in the funnel. At the
+  validate→holdout→live gate, family-wise-grade evidence (DSR + the §2.3 family
+  null) — a false go-live is the expensive error. One error philosophy per gate,
+  stated on the verdict.
+- **Search-program audit** [PROPOSED — education round 2026-08-04]: periodically
+  (per session per quarter proposed), run a family-level test (SPA-style: is the
+  BEST of everything we searched distinguishable from noise?) over the whole trial
+  ledger. This is the health metric of the self-learning loop itself — a research
+  program whose family max stops clearing the audit is mining noise regardless of
+  how its individual candidates grade.
 
 ### 2.5 The rest of the standard battery [EXISTING]
 
@@ -193,6 +216,16 @@ implements; Angus judges the implementation. Proposed bars:
 - **Design-target check:** the book must trade — shipped canon verified at ~4
   trades/day against a ~3/day minimum, gold ≥ 1 every month, zero zero-trade days
   across 352 days (QA-LOG entry 17).
+- **Cost realism is a bar, not an accounting detail** [NEW — education round
+  2026-08-04]: taker pricing by default (full spread both ways + commission);
+  limit fills count only when price trades THROUGH the level, never on a touch;
+  slippage modeled as a vol-conditioned distribution, with headline results also
+  reported at a pessimistic slippage percentile. Rationale on record: a published
+  falsification study on MNQ itself found zero naive OHLCV signals surviving
+  honest friction (`research/findings/strategy-classes-evidence.md`), and a
+  generous fill model makes the refinement search EVOLVE TOWARD strategies that
+  harvest imaginary spread — cost fiction corrupts selection pressure, not just
+  reported P&L.
 - **Holdout:** §4. One look, declared, frozen.
 
 ---
@@ -252,7 +285,8 @@ The success metric at each layer is **distance to the discretionary baseline** (
 hand-log P&L where one exists; stated as unmeasurable where it does not — brief §6),
 not absolute profit at L0.
 
-Two disciplines make that search an engine instead of an overfitting machine:
+Three disciplines make that search an engine instead of an overfitting machine
+(third added by the education round, 2026-08-04):
 
 1. **The search space is pre-registered by family** (§1: mechanism family, input
    columns). Agents explore freely inside declared families; a new family mid-search
@@ -264,6 +298,16 @@ Two disciplines make that search an engine instead of an overfitting machine:
    rises with the size of the search; an unlogged trial silently lowers the bar for
    every result after it, which makes skipping the ledger a §0 violation, not an
    oversight.
+3. **The refiner never grades itself** [NEW — education round 2026-08-04]: the
+   documented institutional rule (López de Prado; the firms' practice in
+   `research/findings/how-elite-quants-operate.md` §6) is that the researcher who
+   invents a strategy must not be its validator — researchers unconsciously leak
+   the holdout into their choices. Agent version: the context/agent that ran the
+   conditioning search hands a FROZEN spec to a separate grading run that has
+   never seen the search history; validation-era and holdout scoring execute from
+   the frozen spec only. Within the search itself, any inner-loop model tuning
+   uses purged/embargoed splits (`quant-math-canon.md` §1.1) — era-splits protect
+   the macro boundary, not the inner loop.
 
 Everything downstream (§6 promotion) consumes only what survived a layer gate.
 
@@ -503,6 +547,25 @@ Proposed defaults for when a *session* stops being worked:
   `docs/HANDOFF-agents-capture.md` §6).
 
 ---
+
+### 7.3 Live decay monitoring [NEW — education round 2026-08-04; PROPOSED — Angus to ratify]
+
+Edges decay as their normal life path (measured post-publication decay is ~25–50%
+even for real effects — `research/findings/strategy-classes-evidence.md`). Two
+additions at certification time, so retirement is mechanical rather than an
+argument:
+
+- **The era-decay slope is a certification statistic**: performance in later vs
+  earlier eras is already computed by the split — report it on the verdict. A
+  measured half-life shorter than the validation window blocks promotion (the
+  pass was already stale when graded).
+- **Probation rules are written before going live**: CUSUM on realized-vs-expected
+  per-trade P&L against the certified MC distribution; trailing-N expectancy below
+  the certified 5th percentile → probation (half size); CUSUM alarm → demote to
+  paper pending review. Drawdown *within* the certified distribution is expressly
+  NOT evidence of death (the MC percentile bands say which is which) — kill-speed
+  matches the signal's half-life, and deciding kill rules after the drawdown
+  starts is overfitting in reverse.
 
 ## 8. Re-speccing a gate — the R10b pattern [EXISTING, canonized]
 
