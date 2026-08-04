@@ -18,7 +18,6 @@ SEALED-SPAN GUARD: 2023/24 dropped via fit_only(). No holdout look.
 from __future__ import annotations
 
 import sys
-from collections import defaultdict
 from pathlib import Path
 from statistics import NormalDist
 
