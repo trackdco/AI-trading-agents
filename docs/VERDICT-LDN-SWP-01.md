@@ -23,6 +23,43 @@ not on where a p-value bar sits.
 
 ---
 
+## 0. CORRECTION — the first run used the wrong session window
+
+**Superseding the numbers in §1–§3 below.** The declared prereg hardcoded the outcome
+window as 03:00–06:00 ET. That is not the London session:
+
+- London is **08:00–10:00 Europe/London** = 03:00–05:00 ET normally, 04:00–06:00 ET in
+  DST-mismatch weeks. The authority is `run_triggers_london.london_window_et(day)`.
+- 03:00–06:00 ET is 08:00–**11:00** London — a three-hour window running an hour past the
+  close.
+- Hardcoding ET hours is item 1 on the burn list (`HANDOFF-london-rebuild.md` §7):
+  *"the DST offsets between the two zones do not move together."*
+
+Corrected re-run: `python -m scripts.ldn_swp01_london_only`. Same claim, same groups, same
+decision rule, session boundary fixed and group P measured causally from the breach. The
+converter also **recovers 30 DST-mismatch days** that the first run excluded (314 events,
+up from 293). Windows actually used: 03:00–05:00 ET on 284 days, 04:00–06:00 ET on 30.
+
+| era | n(D) | n(P) | mean D | mean P | Δ | p |
+|---|---|---|---|---|---|---|
+| 2025 | 134 | 71 | **+0.74** | **+4.89** | −4.15 | 0.583 |
+| 2026 | 66 | 43 | **+4.39** | **+15.25** | −10.86 | 0.464 |
+
+2026 95% CI on Δ: **[−39.91, +18.20]** — contains zero comfortably. Fragility gate
+**fires** on 2025 (Δ −4.15 → +1.54 at drop-3), which is what a null looks like: noise
+changes sign when you remove a few days.
+
+**The verdict is unchanged, but the reason is now clean.** Both theses are refuted directly
+by their own group means, on the correct window, with no artifact involved:
+
+- **#3 continuation** needs `mean D` materially **positive**: it is **+0.74 and +4.39**
+  points, against a session that moves tens of points. Nothing.
+- **#2 reversal** needs `mean P` materially **negative**: it is **+4.89 and +15.25** —
+  wrong sign and immaterial. Nothing.
+
+Sections 1–3 are retained as the record of what was declared and what went wrong with it.
+Their numbers should not be quoted.
+
 ## 1. What was declared, and what happened
 
 The prereg (`PREREG-london-asia-sweep-pair.md`, committed 13:14:39Z) tested one question:
