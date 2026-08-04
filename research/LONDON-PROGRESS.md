@@ -63,3 +63,22 @@ leg** (the canon's measured weak spot: desk-run-2 agent edge was entirely gold;
 pre flat, −1.1R over 227). Status: research sweep running; thesis sheet to
 Angus for greenlight next. Redundancy vs the incumbent canon's pre entries is a
 first-class check from day one (same clock, same account).
+
+## NY pre-market candidates (as of 2026-08-04 — thesis-pending, awaiting Angus)
+
+| # | Candidate | Core evidence | Key flag |
+|---|---|---|---|
+| P1 | nypre-on-polarity | 76–84% first-break stat, 2,827 days | holds through 09:30 (ruling) |
+| P2 | nypre-open-sweep-fade | unpublished wrong-side-sweep conditional | post-09:30 (ruling); flow-strong |
+| P3 | nypre-inventory-correction | academic + Dalton convergence, unquantified | fade family; matrix slice |
+| P4 | nypre-gap-engine | fill-timing + news-minted split + survival flip | most branches cross 09:30 |
+| P5 | nypre-0830-event-tree | hold/fail branches; falsification paper = null | release-day slippage honesty |
+| P6 | nypre-prerelease-premium | JFE risk-premium channel, uncertainty-gated | low-Sharpe tilt by design |
+| P7 | nypre-euro-handoff | ALN 75–81%, two independent datasets | HIGHEST canon-redundancy risk |
+| P8 | nypre-quiet-hours-reversion | 76–83.5% hourly reversion 06:00–08:00 | popularized 2025 — decay split |
+
+Parked pending event studies: opening-cross-echo (09:28 NOII tape echo),
+0400-mini-open. Spec layers: release-tier gate (+ FREE canon pre-leg audit by
+tier — never been done), FOMC-morning compression (+ canon FOMC audit),
+premarket-range vol switch, day-classification matrix. Program bar: outperform
+the canon's pre leg. Sweeps + merge map in research/articles + findings.
