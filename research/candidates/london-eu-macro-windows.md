@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: thesis-pending
+status: greenlit
 tags: [london, session-structure, news]
 sources: ["findings/strategy-classes-evidence.md#10", "findings/strategy-classes-evidence.md#shortlist-3"]
 ---
