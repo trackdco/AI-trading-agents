@@ -51,6 +51,16 @@ this mechanism family in this session?* (VAULT-SCHEMA §5's acceptance test). A 
 tombstone on the same question kills the claim at intake unless its reopening burden
 is met. This is the cheapest gate in the loop and the first thing memory buys.
 
+**The thesis gate (ANGUS 2026-08-04):** before any sourced candidate advances to
+pre-registration, Angus receives a thesis per candidate — the market logic in
+trading terms (what the strategy is about, who is on the wrong side, why it should
+pay), not indicator recipes. Angus picks which candidates proceed. Entries are not
+restricted to the shop's current indicator set — auction-market-theory and
+order-flow mechanisms are explicitly in scope, and order flow is expected to be the
+validation layer that lifts raw entries ("order flow is a massive thing that I
+think can validate trade entries"). Entry position relative to VWAP is a standing
+conditioning variable (longing at +2σ is a different trade than longing at −1σ).
+
 ### 1. Pre-register
 
 The §1 template: mechanism, family, input columns, session, entry type, acceptance
