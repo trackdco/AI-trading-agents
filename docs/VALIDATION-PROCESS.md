@@ -119,6 +119,11 @@ Two rules of use, both [EXISTING]:
   `docs/CANON-QA-LOG.md` entry 27).
 - **Discover on 2025 ONLY. Validate on 2026** as the out-of-era check
   (`docs/HANDOFF-london-rebuild.md` §3; QA-LOG entry 27).
+- **The inverse pass is also required** (ANGUS 2026-08-04): re-run the search with
+  the eras swapped — discover on 2026, validate on 2025 — and a check survives only
+  if it holds in BOTH directions. A rule that discovers one way but not the other is
+  era-fragile, not an edge. The swap doubles the trial count; the ledger records
+  both passes and the §2.4 denominators include them.
 - **Triple-era survival:** "A check/cut/threshold survives only if it points the same
   way in 2025, 2026, AND holdout" (`docs/HANDOFF-london-rebuild.md` §3). Precedents:
   the wall-quality cut (cut set 37–41% WR in all three eras; book WR +7pp, maxDD
@@ -236,6 +241,13 @@ tombstone; the 25-arm profit-taking family, measured and closed, live HANDOFF §
 "The raw data behind this strategy is unprofitable — what can we do to make it
 profitable?" is the job description of layers L1–L4, and it is **agent work**: agents
 sweep the conditioning space over the substrate the way the NY sessions did by hand.
+The **loser autopsy** is a named, expected move in that search (ANGUS 2026-08-04):
+"what do the losers have in common that the winners don't share? If we cut off that
+subset, or if we de-risk, does that outcome look better?" — acknowledged in-sample
+conditioning, legal precisely because it is policed downstream: the resulting rule
+ships as FROZEN code to the sealed holdout months, and DSR/PBO absorb the trials it
+took to find (§2.4). Cut-sets follow the wall-quality-cut precedent: the cut cohort
+must be bad in every era, not just the discovery era.
 The success metric at each layer is **distance to the discretionary baseline** (the
 hand-log P&L where one exists; stated as unmeasurable where it does not — brief §6),
 not absolute profit at L0.

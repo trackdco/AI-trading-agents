@@ -106,7 +106,15 @@ shared-budget re-run, the data contract's funded-profile London book, and the
 promotion criterion in `docs/VALIDATION-PROCESS.md` §6 rung 3 are all parked on this
 line.
 
-**RULING:** ____________________________________________
+**RULING: SAME ACCOUNT** (ANGUS 2026-08-04, overriding the recommendation above —
+"once we validate these, they will be shipped to the live agents that are currently
+trading my New York Canon Strategy... they are trading on the same account").
+Consequences now active: the correlation thresholds are co-ship law; every London
+candidate is measured against the NY canon (pairwise + battery) as part of
+validation, not after it; the shared-budget MC under one DLL is mandatory before any
+co-ship; and the input-family veto requires an explicit Angus waiver per pair —
+NY↔old-London already trips it at 3/7 shared families
+(`docs/REPORT-correlation-2026-08-04.md`).
 
 ---
 
