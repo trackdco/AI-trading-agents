@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: greenlit
+status: killed
 tags: [ny-pre, session-structure]
 sources: ["articles/sweep-2026-08-04-nypre-stats.md#T2", "articles/sweep-2026-08-04-nypre-structure.md#S7"]
 ---
@@ -77,3 +77,14 @@ Trial-4 expectancy kill predated the flow cross-check — premature under the
 amended §3.2 kill-class rule. PREMISE stands (68–77% engulf-up both eras;
 redundancy gate passed). Status: REOPENED — owed search: flow-at-entry
 conditioning (does the 08:00 tape confirm the pattern side?) × geometry.
+
+### Trial 6 — flow search complete (2026-08-04) — FINAL KILL, legally earned
+London-delta flow gate finds REAL signal: far-stop confirmed n=143, WR 78%,
++1,765 pts, PF 1.52 (against: PF 0.58) — but R-economics stay ~zero ($+465 at
+$160-risk; avg R +0.02) because the pattern's natural stop is the far side of
+a wide two-session range. Mid-stop confirmed: $−422. Risk-capped final arm:
+n=5 (structurally empty). Search complete → expectancy kill executes.
+TOMBSTONE (final): the handoff is a fact, not a trade — its natural geometry
+cannot pay per unit risk. Residue worth keeping: London-delta pattern
+agreement (78% WR as a FACT) is a candidate FEATURE for other strategies'
+conditioning, not a standalone system. Family arm count (8) stands.

@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: greenlit
+status: killed
 tags: [ny-pre, overnight-structure]
 sources: ["articles/sweep-2026-08-04-nypre-structure.md#S1", "articles/sweep-2026-08-04-nypre-stats.md#T1"]
 ---
@@ -74,3 +74,12 @@ both eras). Status: REOPENED — the owed search: flow-at-entry variables
 (delta, absorption at the target extreme, wall state when depth lands) ×
 geometry, declared arms, era discipline. Expectancy kill becomes legal again
 only when that search completes.
+
+### Trial 5 — flow search complete (2026-08-04) — FINAL KILL, legally earned
+Flow gate (09:15–19 delta agreement): confirmed cohort WORSE (−745 pts, PF
+0.76) than against (+22, PF 1.01) — delta agreement at 09:15 means the move
+already happened; the gate selects chases. Flow × both geometries all
+negative. Search complete per §3.2 kill-class law → expectancy kill executes.
+TOMBSTONE (final): real 74–77% base rate, fully priced; no expression
+(2 geometries × flow gate) converts. Reopening burden: a structurally new
+expression class, fresh-declared; family arm count (7) stands.
