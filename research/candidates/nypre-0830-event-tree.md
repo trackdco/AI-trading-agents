@@ -1,6 +1,6 @@
 ---
 date: 2026-08-04
-status: greenlit
+status: killed
 tags: [ny-pre, news, order-flow]
 sources: ["articles/sweep-2026-08-04-nypre-macro.md#M2", "articles/sweep-2026-08-04-nypre-macro.md#M3", "articles/sweep-2026-08-04-nypre-macro.md#M5", "articles/sweep-2026-08-04-nypre-structure.md#S4", "articles/sweep-2026-08-04-nypre-stats.md#T5"]
 ---
@@ -42,3 +42,17 @@ days: no trade.
 - Canon redundancy: MEDIUM (canon trades these mornings unconditioned — the
   release-tier audit of the canon's own pre leg is this candidate's free gift).
 - Regime split mandatory (2022-23 CPI vol is gone).
+
+## Trial ledger — NYP-830-01
+### Trial 1 — L0 census (2026-08-04) — KILLED
+Reaction gate k≥4× same-slot baseline: 59 gated days (39/20 by era). HOLD
+branch (the main claim): impulse-signed 08:45→09:25 return NEGATIVE both eras
+(−6.1 pts n=22; −15.2 pts n=13) — the continuation claim is INVERTED, not just
+unconfirmed. FAIL branch sign-consistent with its claim but n=4/2 → kill 3
+(data-starved). Kills 1+3 execute. TOMBSTONE: post-impulse continuation into
+the open does not exist in 2025–26; big 8:30 impulses that break the
+pre-market extreme REVERT into the open — consistent with the published
+falsification and overshoot-correction literature. Reopening burden: none for
+the continuation form. The INVERSE (fade the held impulse into 09:25) is the
+second inversion observed today (with pre-release drift) — a possible new
+"pre-open mean-reversion around news" family requiring its own prereg.

@@ -46,3 +46,11 @@ ALN base rates re-based on 2025–26: engulf-up → pattern-high first 68.6%
 80.8/75.0 → measured lower but well above coin. Status: census PASSED →
 MANDATORY next gate: pairwise redundancy vs the canon's actual pre fills
 before any L1 work (highest-overlap candidate by design).
+
+### Trial 2 — canon-redundancy gate (2026-08-04) — PASSED
+Against the canon's actual 227 pre fills (fit span): canon trades on only
+44/126 engulf-up and 34/85 engulf-dn days (the handoff fires ~3× more often);
+on engulf-up days canon long-share is 40% vs 47% base (leans AGAINST the
+pattern, not with it); engulf-dn short-share 66% (moderate alignment — flag
+for concurrent-risk check at L1). The handoff is NOT the canon rediscovered.
+Status: ADVANCING to L1 mechanics (both flat-by-09:29 and carry variants).
