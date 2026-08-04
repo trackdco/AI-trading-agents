@@ -325,6 +325,17 @@ none. Trigger event for this rule: the H2-2025 losing stretch both pre-market
 winners shared, invisible at calendar-year granularity — half-year (or finer)
 decomposition is now part of the standard autopsy.
 
+**Flow state at entry is a MANDATORY autopsy dimension** [ANGUS 2026-08-04 —
+"we cross check against every order flow variable upon entry too... when
+validating my canon, this was a pivotal thing"]: wherever flow data covers the
+span, every tagged trade in a candidate's book carries its at-entry order-flow
+state (delta at entry, pre-entry delta window, absorption at the reference
+extreme, wall state where depth is available), and the loser autopsy compares
+these between winners and losers ALONGSIDE the candle features — the canon
+precedent (the W wall gate materially lifting win rate) is the standing reason
+this is first-class, not optional. Candles-only autopsies are legal only for
+spans with no flow coverage, and must say so on the verdict.
+
 Everything downstream (§6 promotion) consumes only what survived a layer gate.
 
 ---
