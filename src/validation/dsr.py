@@ -115,8 +115,10 @@ def expected_max_sharpe(n_trials: int, trial_sr_var: float) -> float:
     """
     if n_trials < 1:
         raise ValueError(f"n_trials must be >= 1, got {n_trials}")
-    if trial_sr_var < 0.0:
-        raise ValueError(f"trial_sr_var must be >= 0, got {trial_sr_var}")
+    if not math.isfinite(trial_sr_var) or trial_sr_var < 0.0:
+        # NaN slips past a bare `< 0` check and would come back as a NaN DSR with
+        # significant=False — a silent wrong answer, not an error
+        raise ValueError(f"trial_sr_var must be finite and >= 0, got {trial_sr_var}")
     if n_trials == 1 or trial_sr_var == 0.0:
         return 0.0
     n = float(n_trials)

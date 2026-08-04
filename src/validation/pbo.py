@@ -128,6 +128,8 @@ def pbo_cscv(
         raise ValueError("returns contain NaN/inf — clean the matrix before scoring it")
     if n_blocks < 2 or n_blocks % 2:
         raise ValueError(f"n_blocks must be even and >= 2, got {n_blocks}")
+    if batch_size < 1:
+        raise ValueError(f"batch_size must be >= 1, got {batch_size}")
 
     rows_per_block = t_all // n_blocks
     if rows_per_block < 1:
@@ -163,12 +165,30 @@ def pbo_cscv(
             hi = lo + len(batch)
             star_is[lo:hi], star_oos[lo:hi], rank[lo:hi] = _winner_stats(sr_is, sr_oos)
     else:
+        # A NaN from the metric would silently poison everything downstream: np.argmax
+        # crowns the first NaN the IS winner of EVERY split (NaN comparisons are False,
+        # so the running max sticks), the tie count goes negative, and prob_oos_loss
+        # reads a NaN as no-loss. Refuse it; +/-inf is allowed (the fast path's own
+        # sentinel for flat columns), NaN never.
+        def checked(perf: np.ndarray) -> np.ndarray:
+            p = np.asarray(perf, dtype=float).ravel()
+            if p.shape != (n_trials,):
+                raise ValueError(
+                    f"metric must return one value per trial ({n_trials}), got {p.shape}"
+                )
+            if np.isnan(p).any():
+                raise ValueError(
+                    "metric returned NaN — map degenerate columns to -inf/+inf "
+                    "explicitly (the built-in Sharpe path does)"
+                )
+            return p
+
         row_ix = np.arange(used).reshape(n_blocks, rows_per_block)
         all_blocks = frozenset(range(n_blocks))
         for i, c in enumerate(combos):
             oos = sorted(all_blocks - set(c))
-            p_is = np.asarray(metric(m[row_ix[list(c)].ravel()]), dtype=float)
-            p_oos = np.asarray(metric(m[row_ix[oos].ravel()]), dtype=float)
+            p_is = checked(metric(m[row_ix[list(c)].ravel()]))
+            p_oos = checked(metric(m[row_ix[oos].ravel()]))
             s_i, s_o, rk = _winner_stats(p_is[None, :], p_oos[None, :])
             star_is[i], star_oos[i], rank[i] = s_i[0], s_o[0], rk[0]
 

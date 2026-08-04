@@ -71,6 +71,11 @@ def test_expected_max_sharpe_monotone_and_limits():
         expected_max_sharpe(0, 1.0)
     with pytest.raises(ValueError):
         expected_max_sharpe(10, -0.1)
+    # NaN slips past a bare `< 0` check — it must raise, not return a NaN DSR
+    with pytest.raises(ValueError):
+        expected_max_sharpe(10, float("nan"))
+    with pytest.raises(ValueError):
+        expected_max_sharpe(10, float("inf"))
 
 
 def test_deflation_is_strict_when_search_happened():
@@ -98,7 +103,7 @@ def test_true_edge_survives_deflation():
     # one genuinely good strategy among 100 noise trials keeps its significance
     rng = np.random.default_rng(5)
     trials = rng.normal(0.0, 0.01, size=(400, 100))
-    trials[:, 17] = rng.normal(0.003, 0.01, 400)  # daily SR ~0.3, T=400
+    trials[:, 17] = rng.normal(0.004, 0.01, 400)  # daily SR ~0.4, T=400
     sharpes = np.array([sharpe_ratio(trials[:, i]) for i in range(100)])
     assert int(np.argmax(sharpes)) == 17
     res = deflated_sharpe_ratio(trials[:, 17], trial_sharpes=sharpes)
@@ -114,6 +119,48 @@ def test_trial_sharpes_and_explicit_null_agree():
     b = deflated_sharpe_ratio(r, n_trials=500, trial_sr_var=float(ts.var(ddof=1)))
     assert a.dsr == pytest.approx(b.dsr)
     assert a.sr0 == pytest.approx(b.sr0)
+    # result-field wiring: every reported number must be the thing its name claims
+    d = r - r.mean()
+    m2 = (d**2).mean()
+    assert a.sr == pytest.approx(r.mean() / r.std(ddof=1))
+    assert a.n_obs == 300
+    assert a.n_trials == 500
+    assert a.trial_sr_var == pytest.approx(float(ts.var(ddof=1)))
+    assert a.skew == pytest.approx((d**3).mean() / m2**1.5)
+    assert a.kurt == pytest.approx((d**4).mean() / m2**2)
+
+
+def test_single_trial_sharpe_means_no_deflation():
+    # a length-1 trial_sharpes list is the no-search case: SR0 = 0, DSR = PSR(0)
+    rng = np.random.default_rng(21)
+    r = rng.normal(0.05, 1.0, 300)
+    res = deflated_sharpe_ratio(r, trial_sharpes=[0.3])
+    assert res.n_trials == 1
+    assert res.sr0 == 0.0
+    assert res.dsr == res.psr_zero
+
+
+def test_kurtosis_convention_is_pinned_non_excess():
+    # the PSR variance formula needs NON-excess kurtosis (normal = 3). An
+    # excess-kurtosis regression is second-order in SR, so no behavioural test
+    # catches it — pin the convention through the public result instead.
+    rng = np.random.default_rng(17)
+    res = deflated_sharpe_ratio(rng.normal(0.05, 1.0, 20_000), n_trials=1, trial_sr_var=0.0)
+    assert res.kurt == pytest.approx(3.0, abs=0.25)
+    assert abs(res.skew) < 0.1
+
+
+def test_psr_matches_reference_formula_on_fat_tails():
+    # independent recomputation of the full PSR formula on a fat-tailed series —
+    # any silent change to the moment estimators or the variance term breaks this
+    rng = np.random.default_rng(19)
+    r = 0.02 + rng.standard_t(5, 3000)
+    sr = r.mean() / r.std(ddof=1)
+    d = r - r.mean()
+    m2 = (d**2).mean()
+    skew, kurt = (d**3).mean() / m2**1.5, (d**4).mean() / m2**2
+    z = sr * math.sqrt(len(r) - 1) / math.sqrt(1 - skew * sr + (kurt - 1) / 4 * sr**2)
+    assert probabilistic_sharpe_ratio(r) == pytest.approx(NormalDist().cdf(z), abs=1e-12)
 
 
 def test_min_track_record_length():
@@ -124,6 +171,14 @@ def test_min_track_record_length():
     assert 0 < m10 < m05 < float("inf")
     # a Sharpe at/below the benchmark can never clear it, at any length
     assert min_track_record_length(r, sr_benchmark=10.0) == float("inf")
+    # pin the formula itself: 1 + var_term * (z_alpha / SR)^2, independently recomputed
+    sr = r.mean() / r.std(ddof=1)
+    d = r - r.mean()
+    m2 = (d**2).mean()
+    skew, kurt = (d**3).mean() / m2**1.5, (d**4).mean() / m2**2
+    var_term = 1 - skew * sr + (kurt - 1) / 4 * sr**2
+    expected = 1 + var_term * (NormalDist().inv_cdf(0.95) / sr) ** 2
+    assert m05 == pytest.approx(expected, abs=1e-9)
 
 
 def test_input_validation():

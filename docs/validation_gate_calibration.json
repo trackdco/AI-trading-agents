@@ -1,0 +1,79 @@
+{
+  "population": {
+    "n": 884,
+    "days": 195,
+    "day_span": [
+      "2025-06-02",
+      "2026-07-13"
+    ],
+    "atoms": 241,
+    "combinations": 29161
+  },
+  "eligible": {
+    "floor_n": 25,
+    "count": 28570
+  },
+  "winner_by_sharpe": {
+    "cell": "dep_resist>23 AND FAR==1",
+    "n": 119,
+    "mean_R_per_trade": 0.7542722689075627,
+    "day_sharpe": 0.3060845320150423,
+    "psr_zero": 0.9999999987113065,
+    "sr0": 0.2831275920172783,
+    "dsr": 0.6724712007830931,
+    "dsr_all_combo_null": 0.6678370155013759,
+    "significant": false
+  },
+  "winner_by_meanR": {
+    "cell": "lvl_churn_30>6 AND FAR==1",
+    "n": 33,
+    "mean_R_per_trade": 1.2242333333333333,
+    "day_sharpe": 0.17883861518596164,
+    "psr_zero": 0.9999969816662744,
+    "sr0": 0.2831275920172783,
+    "dsr": 0.004160083850898,
+    "significant": false
+  },
+  "pbo": {
+    "eligible": {
+      "pbo": 0.17505827505827506,
+      "n_trials": 28570,
+      "splits": 12870,
+      "slope": -0.07005899680575037,
+      "prob_oos_loss": 0.1337995337995338,
+      "days_used": 192,
+      "days_dropped": 3
+    },
+    "all_combos": {
+      "pbo": 0.17474747474747473,
+      "n_trials": 28902,
+      "slope": -0.07005899680575037,
+      "prob_oos_loss": 0.1337995337995338
+    }
+  },
+  "wall_arm": {
+    "mean_R_per_trade": 0.48318075117370884,
+    "day_sharpe": 0.27091206190147293,
+    "n": 213,
+    "dsr_at_own_breadth": {
+      "n_trials": 4,
+      "sr0": 0.1654195969067509,
+      "psr_zero": 0.999999741398305,
+      "dsr": 0.9746910196046634,
+      "significant": true
+    },
+    "dsr_charged_at_29k": {
+      "n_trials": 28570,
+      "sr0": 0.2831275920172783,
+      "dsr": 0.410466331497273
+    }
+  },
+  "stage3_shrinkage_model": {
+    "splits": 500,
+    "median_shrinkage_4check": -0.013902077294686066,
+    "median_shrinkage_exhaustive": 1.1375887688237687,
+    "actual_meanR": 0.48318075117370884,
+    "honest_forward": 0.48318075117370884,
+    "percentile_vs_exhaustive_oos": 69.39999999999999
+  }
+}
