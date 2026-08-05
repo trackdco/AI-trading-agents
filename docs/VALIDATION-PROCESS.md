@@ -478,6 +478,16 @@ of these answers.
    included. Raw profitability, decayed edges, ugly win rates: none of these
    kill at census; they wait for the complete variable search (the canon
    would have died at raw triggers under any other rule).
+   TIGHTENED [ANGUS 2026-08-05b]: no deterministic bin decision is EVER made
+   off the raw trigger set. Order-flow confirmations and the variable search
+   run BEFORE any dismissal; the bin happens only when the variables test
+   cannot save the strategy. Census-stage kills are reserved for structural
+   absence alone (the taught trigger never fires / the claimed event never
+   occurs) — even an apparently dead base rate gets its flow search first,
+   because the taught claim may only exist conditioned. Precedent: the IVB
+   breakout's kill became legal only AFTER the flow+wall search failed to
+   save it; the IVB range fade survived only BECAUSE the raw-set kill was
+   vacated and the search ran.
 2. **The deep search is earned — but never by pretty raw P&L.** Census +
    trapped-counterparty story is the whole ticket. Raw-data ugliness cannot
    deny entry to the deep search (Angus: "imagine i didnt go through that
