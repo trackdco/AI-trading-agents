@@ -44,7 +44,8 @@ def run_window(FL, bars, w0: str, label: str):
         op = rth[rth.clock >= "09:30"]
         mid = rth[(rth.clock >= "10:30")]
         eod = rth[rth.clock >= "15:59"]
-        if len(win) < 100 or not len(op) or not len(mid):
+        w_minutes = (int("09:30"[:2]) * 60 + 30) - (int(w0[:2]) * 60 + int(w0[3:]))
+        if len(win) < 0.8 * w_minutes or not len(op) or not len(mid):
             continue
         dsum = float(win.delta.sum())
         base = np.median(np.abs(hist[-20:])) if len(hist) >= 5 else np.nan
@@ -64,6 +65,9 @@ def run_window(FL, bars, w0: str, label: str):
                          gdir=int(np.sign(press)),
                          am=m - o, day_move=(e - o) if e == e else np.nan))
     T = pd.DataFrame(rows)
+    if not len(T):
+        print(f"== window {label}: 0 usable sessions ==")
+        return T, T
     g = T[T.gate == 1]
     print(f"== window {label}: {len(T)} sessions, gate fires {len(g)} ({len(g)/max(len(T),1):.0%}) ==")
     base_up = (T.am > 0).mean()
