@@ -223,6 +223,29 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   Priority argument against the slate, not a kill.
 
 ## QUEUE (cards open at census)
+- INTAKE ROUND 3 (2026-08-05) — **THRAXX / Christopher Creamer**, order-flow
+  futures trader (youtube.com/@thraxxtrades). Spec:
+  research/transcripts/thraxx/SPEC-as-taught.md; credibility:
+  research/findings/thraxx-credibility.md; candidate seed:
+  research/candidates/nya-orderflow-continuation.md (NYA-OFC-01). 15
+  teaching transcripts pulled + catalogued; 126 live NQ sessions catalogued,
+  not transcribed. NO prereg, NO data touched — awaiting Angus's slot call.
+  - **nya-orderflow-continuation (NYA-OFC-01)** — two footprint continuation
+    entry models (big-trade acceptance; stacked-imbalance acceptance), both
+    two-candle "aggression then acceptance" sequences, gated by his
+    mandatory four-layer context. FIRST intake whose primitives land on the
+    footprint/CVD substrate rather than on candle geometry, and the first
+    where the STOP is taught rather than invented by us.
+  - Fully specified thresholds as taught: 400% diagonal imbalance ratio,
+    10-contract level floor, big trade ≥300 MNQ, 5-min execution.
+  - DECLARED TRAP: he states both models are edgeless standalone. An
+    ungated census returns a meaningless negative — the exact strawman that
+    killed nya-ivb twice before it was vacated. Gate or don't run it.
+  - BLOCKERS for the prereg: gamma/GEX not computable (no options data,
+    document as N/A per §5.11-6); MNQ→NQ scaling is a 10× trap; his BE
+    management must defeat our thrice-beaten BE null (§5.12-6); big-trade
+    detection off aggregated footprint cells is a PROXY, not exact
+    per-trade size.
 - INTAKE ROUND 2 (2026-08-05, specs in research/transcripts/*/SPEC-as-taught.md,
   credibility in research/findings/intake2-credibility.md):
   - nya-ivb-fade first-formed-extreme arm — RUN AND REFUTED same day

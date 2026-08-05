@@ -34,3 +34,6 @@ output/triggers_hist2326_days/
 .hermes-rebuild/
 .venv-freeze/
 data/depth/
+
+# raw subtitle files — transcripts are kept as converted markdown
+research/transcripts/**/*.vtt
