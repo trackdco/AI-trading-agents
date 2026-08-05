@@ -59,13 +59,18 @@ magnitude.
 *measured* European open produced a **flatter** profile than the wall clock
 (peak-to-trough 1.90 vs 2.06 in 2025; 1.48 vs 1.82 in 2026). The clock wins.
 
-Two readings, and I cannot separate them with this study: either London
-structure is genuinely calendar-driven (fixed session times, so the wall clock
-*is* the event), or `euro_open_det` is too noisy to anchor on — its detected
-values scatter from 01:45 to 03:00, and anchoring on a noisy detector blurs any
-real peak. **The second is the more likely explanation and it is a flag on the
-substrate, not a finding about the market.** Worth a look before anything else
-leans on `euro_open_det`.
+I left this as two competing readings — either London structure is genuinely
+calendar-driven, or the detector is noise. **Followed up the same session and it
+is settled: the detector is broken.** `euro_open_det` fires on the first minute
+clearing a volume z-score in a 90-minute window, which finds the earliest noise
+spike rather than the largest event; 54% of days "detect" before 02:30 and its
+biggest non-fallback value is 01:45, the window's own first minute. Full
+diagnosis in `docs/FINDING-euro-open-det-is-noise.md`.
+
+So H2 failed because the event anchor was noise, **not** because London
+structure is calendar-driven. That question is still genuinely open and needs a
+working detector to answer. Use `euro_open_clock` (pure timezone arithmetic,
+sound) until the detector is rebuilt.
 
 ## What this changes
 

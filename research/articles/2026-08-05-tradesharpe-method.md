@@ -42,9 +42,13 @@ ours is still running.** If his edge is real and concentrated where he says it
 is, our current window would capture its back half and miss its front.
 
 That is a cheap, high-value thing to check against the substrate we already
-have — `euro_open_det` gives us the measured European open per day (including
-the DST-mismatch weeks where it lands at 04:00 ET), so "just after Frankfurt
-open" is a computable anchor, not a vibe.
+have. **Measured — see `research/findings/london-window-LDN-WIN-01.md`.** He is
+directionally right, and the correction is at the back end: the measured core is
+03:00–05:00 ET, and our window's last hour (05:00–06:00) carries the worst
+efficiency readings in the whole session.
+
+Use `euro_open_clock` for the anchor, not `euro_open_det` — the latter turned
+out to be noise (`docs/FINDING-euro-open-det-is-noise.md`).
 
 ---
 
@@ -152,7 +156,7 @@ The wait is not caution — it is what makes the geometry work.
 
 | Component | Status | Our proxy |
 |---|---|---|
-| Session window | **mechanical** — clock rule, ±1h around the open | `euro_open_det` in the substrate |
+| Session window | **mechanical** — clock rule, ±1h around the open | `euro_open_clock` in the substrate (**not** `euro_open_det`) |
 | LTA / zone location | **discretionary** — "clean candles", eyeballed | candle-run detector; cross-check vs LVN and footprint zero prints |
 | Trigger | **mechanical** — candle closes beyond range | 1-min/5-min bars |
 | Entry | **mechanical** — stop order at break of trigger candle | trivially codable |
