@@ -33,7 +33,14 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 
 ---
 
-## NYA-LVL-01 — level-interaction family (London 50 seed) — RAW SET BUILT, awaiting Angus
+## NYA-LVL-01 — level-interaction family (London 50 seed) — **ALL P&L VOID, rebuilding**
+- **VOID NOTICE 2026-08-05:** the simulation filled at the level mid-bar but did not start
+  watching until the 15-minute bar CLOSED — a median 12 minutes later, during which price
+  moves a median 21 pts against the trade. **A 10pt stop was already hit before the sim
+  began on 72.9% of trades.** Every P&L number below and in stages 2/3a/3b is withdrawn.
+  Event counts stand. Full notice: `research/findings/NYA-LVL-01-VOID-entry-bar-skipped.md`.
+  Fix: detect the touch on 1-minute bars and start the path at the touch minute.
+  Caught because Angus said the numbers looked 'almost suspiciously good'.
 - STAGE: stage 1 complete — prereg + raw uncapped trigger set. **STOPPED for Angus's
   read before any optimisation**, per his order. Nothing filtered, nothing selected.
 - RAW TRIGGERS: **4,808 touches / 286 sessions, 4,759 filled = 16.6 per session**
