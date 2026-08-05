@@ -89,7 +89,13 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   0.75 sleeve floor — both eligible as book components pending the book
   grading. Full history in research/candidates/nypre-*.md.
 
-## nyo-rotation — overnight composite rotation (dual-sourced) — census done, conditioning owed
+## nyo-rotation — overnight composite rotation (dual-sourced) — corrected retest ran WORSE; conditioning owed before verdict
+- TRIAL 3 (2026-08-05, corrected as-taught grammar per RESPEC Spec 5):
+  V-A shift-out n=63 PF 0.92 ($-1,060, only 2025 positive); V-B
+  doubled-edge hold n=74 PF 0.82 ($-129, scratch-truncated). BOTH worse
+  than the vacated touch-fade baseline below. Testing the RIGHT trade did
+  not help. No bin yet (§5.9.1) — declared conditioning owed on the
+  corrected events; flow-span overlap thin (~20), will be reported honestly.
 - RAW TRIGGERS: 145 first-touch / 156 all-touch events over 548 composite-live
   overnight sessions (~3/month — overnight touches of day-built balances are
   structurally rare).
