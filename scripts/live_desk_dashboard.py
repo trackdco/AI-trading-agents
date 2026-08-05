@@ -139,8 +139,29 @@ def discretion(R: list[dict]) -> str:
     cuts = sum(1 for t in trades if t["exit_reason"] == "agent_exit")
     ext = sum(1 for t in trades if t.get("extended"))
     passes = sum(len(r["passes"]) for r in R)
-    warn = (f'<div class="warn" style="margin-top:6px;">⚠ {best_streak}-day identical '
-            f'streak — discretion may not be showing up</div>' if best_streak >= 7 else "")
+    # deviation rate by month — the learning curve (Angus: expect the first
+    # month(s) near-identical while the journal builds; canon precedent was
+    # ~3 flat months, then consistent month-on-month outperformance)
+    bym: dict[str, list[int]] = {}
+    for r in R:
+        m = bym.setdefault(r["day"][:7], [0, 0])
+        m[1] += 1
+        if abs(r["agent_dollars"] - r["b0_dollars"]) >= 0.01:
+            m[0] += 1
+    months_seen = sorted(bym)
+    devline = " · ".join(f"{m[5:]}: {bym[m][0]}/{bym[m][1]}" for m in months_seen)
+    # streak warning only once the desk has a month of journal behind it
+    in_first_month = len(months_seen) <= 1
+    if best_streak >= 7 and in_first_month:
+        warn = ('<div class="sub" style="margin-top:6px;">journal-building phase — '
+                'near-identical days expected until the first month of record exists</div>')
+    elif best_streak >= 7:
+        warn = (f'<div class="warn" style="margin-top:6px;">⚠ {best_streak}-day identical '
+                f'streak with a journal behind it — discretion may not be showing up</div>')
+    else:
+        warn = ""
+    warn = (f'<div class="sub" style="margin-top:8px;">deviated days by month — '
+            f'{devline}</div>' + warn)
     return f'''<div class="card">
   <div class="eyebrow">Discretion — is the desk actually trading?</div>
   <div class="cells">{cells}</div>
