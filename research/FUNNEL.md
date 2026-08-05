@@ -63,7 +63,9 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   fail events on flow span.
 - RAW P&L (L1, full span): n=248, WR 35%, −1,025 pts, PF 0.83 — ugly as the
   law expects.
-- VARIABLE LIFT: depth tercile WR 12%→59% (the trapped-mass variable);
+- VARIABLE LIFT: extension-depth tercile WR 12%→59% (how far price
+  stretched beyond the edge — candle geometry, NOT order-book depth;
+  renamed 2026-08-05 per §5.12.1-15);
   flow gate (tape-didn't-pay) + depth + fixed geometry: n=28, WR 46%, +647
   pts, +$984, PF 2.06 (strict-cost 1.99).
 - SPLITS (conditioned): 25H1(June) −109 / 25H2 +364 / 26H1 +392.
@@ -120,12 +122,17 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - level-interaction trigger family (canon-frequency substrate, ~10-15 raw
   triggers/day) — prereg after.
 - sweep-reclaim — awaiting Brake dedup vs london-level-trap-fade.
-- §5.12.1-15 FEATURE SEMANTICS AUDIT owed on OUR depth features
-  (scripts/depth_walls.py wall ratios + the failed-auction depth tercile):
-  verify what the columns actually compute vs the "wall" prose, cross-tab
-  NaN/edge cases from raw, before any further verdict cites them. (The
-  canon's W/D bits turned out to be displacement geometry, not walls —
-  same audit must clear ours.)
+- §5.12.1-15 FEATURE SEMANTICS AUDIT on our depth features — RUN 2026-08-05,
+  first pass CAUGHT A REAL BUG: the depth archive's second file family
+  stores already-decimal prices; the blanket 1e-9 decode corrupted
+  wall_dist/best_bid/best_ask on 52.5% of rows (295 days). FIXED
+  (per-file scale detection in scripts/depth_walls.py, re-extracted,
+  0% wrong-scale). NO VERDICT CONTAMINATED: every consumer (nya_fa_deep,
+  nya_ivb_retest) read only wall_ratio, which is size-based and
+  scale-free — verified identical pre/post fix. Price-based depth reads
+  (wall_dist, book-vs-level joins) only became usable TODAY. Naming
+  collision also fixed: the failed-auction card's "depth tercile" is
+  EXTENSION depth (candle geometry), not order-book depth — renamed.
 
 ---
 

@@ -42,8 +42,14 @@ def main() -> None:
         if "bid_px_00" not in df.columns:
             continue
         ts = pd.to_datetime(df["ts_event"], utc=True, errors="coerce")
-        bpx = df[[f"bid_px_0{i}" for i in range(10)]].to_numpy(float) * 1e-9
-        apx = df[[f"ask_px_0{i}" for i in range(10)]].to_numpy(float) * 1e-9
+        bpx = df[[f"bid_px_0{i}" for i in range(10)]].to_numpy(float)
+        apx = df[[f"ask_px_0{i}" for i in range(10)]].to_numpy(float)
+        # The archive holds two file families: fixed-point 1e-9 prices
+        # (~2e13 raw) and already-decimal prices (~2e4). A blanket 1e-9
+        # decode corrupted the decimal family (caught 2026-08-05, §5.12.1-15
+        # audit). Scale is detected per file from the best-bid magnitude.
+        if np.nanmedian(bpx[:, 0]) > 1e7:
+            bpx, apx = bpx * 1e-9, apx * 1e-9
         bsz = df[[f"bid_sz_0{i}" for i in range(10)]].to_numpy(float)
         asz = df[[f"ask_sz_0{i}" for i in range(10)]].to_numpy(float)
         with np.errstate(invalid="ignore"):
