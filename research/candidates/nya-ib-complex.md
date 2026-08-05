@@ -329,3 +329,26 @@ OUTPUT: per-variable WR splits + AUC table -> the conviction-ladder
 candidates. This scan produces EVIDENCE for a pre-declared conviction
 prereg (tiers monotonicity-tested per §5.12.1-14) — not gates; thin-cell
 honesty at n=112 (terciles ~37).
+
+STAGE 2H RESULTS (at-entry scan, final shape, n=112, base WR 72%):
+UP-SHIFTERS (WR by tercile/half, mechanism-coherent):
+- SESSION CVD AGAINST the fade (stretched flow): 86% vs 60% when flow
+  already agrees (AUC 0.36 inverted) — the reversion pays when the
+  session is stretched; the single most coherent conviction variable.
+- EARLY TOUCH (entry <= ~10:10): 81% vs 60% late (AUC 0.36 inv) —
+  immediate-rejection setups come early; late touches grind.
+- ENTRY DELTA with the fade at the touch minute: 83% vs 66% (AUC 0.59).
+- BAND DISTANCE hi (more available RR): 81% vs 71% (AUC 0.59) — wide-band
+  (high-vol) sessions snap harder; conviction AND payoff rise together.
+- VWAP SLOPE against the fade: 76% vs 65% — reversion-coherent.
+- Wall-ahead hi: 86% but n=14 — thin, noted only.
+DOWN-SHIFTERS: late entries (60%), session flow already agreeing (60%),
+slope-with (65%). NOISE FLAGGED, NOT USED: weekday cells (Wed 50% / Thu
+94% at n=17-24 — classic multiplicity bait), trailing-5 (dead, 74/70).
+DISCIPLINE: 15 variables scanned on 112 trades — individual splits carry
+multiplicity risk; the ladder is built as ONE pre-declared construct and
+monotonicity-tested (§5.12.1-14), not cherry-picked cells.
+PROPOSED CONVICTION LADDER (for Angus + next-round prereg): score 0-4 =
+early-touch + session-cvd-stretched + entry-delta-with + band-dist-hi;
+size tiers by score after monotonicity test; higher-risk shipping rides
+the tiers (his call on unit scaling). Ledger row 254.
