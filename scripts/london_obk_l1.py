@@ -93,6 +93,7 @@ def sim(direction: int, entry: float, stop: float, target: float, bars) -> tuple
 def run(bars: pd.DataFrame) -> pd.DataFrame:
     days = sorted(set(pd.bdate_range(SPAN_START, SPAN_END).strftime("%Y-%m-%d")))
     trades = []
+    width_hist: list[tuple[str, float]] = []
 
     for day in days:
         t_start, t_end = lon_window(day, *TRIGGER)
@@ -111,6 +112,18 @@ def run(bars: pd.DataFrame) -> pd.DataFrame:
             continue
         mid = (hi + lo) / 2.0
         era = day[:4]
+
+        # --- conditioning columns, declared in PREREG-london-open-break-conditioning
+        # V3: where the last pre-open close sits inside the range -> the drift the
+        # candidate's thesis says the losing side committed to
+        last_close = float(rng.iloc[-1]["close"])
+        pos = (last_close - lo) / width
+        drift = 1 if pos > 0.66 else (-1 if pos < 0.33 else 0)
+        # V2: width vs its own trailing 20-session median. Computed from history
+        # BEFORE today is appended, so no same-day information leaks in.
+        prior = [w for _, w in width_hist[-20:]]
+        width_rel = width / (pd.Series(prior).median()) if len(prior) >= 10 else float("nan")
+        width_hist.append((day, width))
 
         for side, level in ((1, hi), (-1, lo)):
             beyond = trig["close"] > level if side > 0 else trig["close"] < level
@@ -159,7 +172,10 @@ def run(bars: pd.DataFrame) -> pd.DataFrame:
                     pts, why = sim(side, entry, stop, target, sub)
                     trades.append(dict(day=day, era=era, branch="OBK", arm=f"{ea}/{sa}",
                                        side=side, pts=pts, risk=risk, why=why,
-                                       disp_frac=disp_frac, width=width))
+                                       disp_frac=disp_frac, width=width,
+                                       lon_hour=int(tc["ts_event"].tz_convert(LON).hour),
+                                       width_rel=width_rel,
+                                       with_drift=(drift != 0 and drift == side)))
 
             # --- failure arms -------------------------------------------------
             inside = (tail["close"] <= hi) if side > 0 else (tail["close"] >= lo)
@@ -185,7 +201,10 @@ def run(bars: pd.DataFrame) -> pd.DataFrame:
                 pts, why = sim(dirn, entry, extreme, target, post_bars)
                 trades.append(dict(day=day, era=era, branch="PO3", arm=arm,
                                    side=side, pts=pts, risk=risk, why=why,
-                                   disp_frac=disp_frac, width=width))
+                                   disp_frac=disp_frac, width=width,
+                                   lon_hour=int(tc["ts_event"].tz_convert(LON).hour),
+                                   width_rel=width_rel,
+                                   with_drift=(drift != 0 and drift == side)))
 
     return pd.DataFrame(trades)
 
