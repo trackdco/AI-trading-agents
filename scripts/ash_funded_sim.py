@@ -149,7 +149,8 @@ def main() -> None:
         report("FLAT $250 everywhere — the comparator", walk(flat, **p), p["target"])
         # the obvious follow-up: the B-arm is a losing arm. What if you only take A?
         a_only = size_trades(load().pipe(lambda x: x[x.arm == "A"]).reset_index(drop=True))
-        report("A-ARM ONLY ($375, skip the other 22) — for reference", walk(a_only, **p),
+        report(f"A-ARM ONLY ($375, skip the other {len(d)-len(a_only)}) — for reference",
+               walk(a_only, **p),
                p["target"])
 
     # ------------------------------------------------------------------ the null
@@ -191,11 +192,11 @@ def main() -> None:
     print(f"  blow-up rate, random      {100*blows/20_000:.1f}%")
 
     # --------------------------------------------- the risk question the null can't answer
-    # The permutation above holds the 37 outcomes fixed and only moves the labels. It cannot
-    # say what a WORSE RUN OF THE SAME EDGE does to the account. Bootstrap does: resample 37
+    # The permutation above holds the observed outcomes fixed and only moves the labels. It
+    # cannot say what a WORSE RUN OF THE SAME EDGE does to the account. Bootstrap does: resample
     # trades with replacement, so streaks form and break differently each run.
     print("\n" + "=" * 74)
-    print("SAME EDGE, DIFFERENT LUCK — 20,000 bootstrap runs of 37 trades")
+    print(f"SAME EDGE, DIFFERENT LUCK — 20,000 bootstrap runs of {len(d)} trades")
     print("=" * 74)
     print(f"{'scenario':<34}{'P(blow up)':>12}{'P(hit $3k)':>12}{'median P&L':>14}"
           f"{'5th pct':>11}")

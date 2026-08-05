@@ -8,6 +8,29 @@ log: f2-oos-trades.csv
 verdict: BOTH HYPOTHESES FAILED
 ---
 
+> ## 🔄 REV B — 2026-08-07, re-run after the same-bar fill-and-stop fix
+> `zxck_keyopen_baseline.py` (and this script, which duplicates its walk) carried a same-bar
+> fill-and-stop bias worth **−5.0R** across the 146-trade book. Both are fixed and this test was
+> re-run. **Both hypotheses still fail, by the same margins and for the same reasons.** Corrected
+> figures, superseding the numbers in the body below:
+>
+> | | rev a | **rev b (current)** |
+> |---|---|---|
+> | H2 medians (win / loss / BE) | 0.319 / 0.226 / 0.262 | **0.301 / 0.233 / 0.267** |
+> | H2 ordering as pre-registered | NO | **NO** |
+> | H2 Jonckheere–Terpstra one-sided p | 0.9393 | **0.9105** |
+> | H2 win-vs-loss Cliff's δ | +0.281 | **+0.235** (in-sample was **−0.635**) |
+> | H2 filter at threshold 1.0 | −0.127R → −0.151R | **−0.162R → −0.160R** |
+> | H1-magnitude medians (win / loss) | 0.095 / 0.072 | **0.080 / 0.072** |
+> | H1 Mann–Whitney p_raw / p_holm | 0.0733 / 0.1466 | **0.0947 / 0.1895** |
+> | H1 Cliff's δ | +0.196 | **+0.178** (in-sample was **+0.596**) |
+> | buckets | 27 W / 59 L / 29 BE | **26 W / 61 L / 28 BE** |
+>
+> One thing genuinely changed: **the rejected arm is no longer profitable.** In rev a the trades
+> H2 threw away made +2.0R (which was the sharpest form of the failure); corrected, they make
+> **−1.0R**. So H2 is now simply *uninformative here* rather than *actively inverted* — a weaker
+> statement, and the honest one. **The retirement of both hypotheses stands.**
+
 # H2 and H1-magnitude — tested out-of-sample. **Both failed.**
 
 ## HEADLINE

@@ -80,7 +80,8 @@ def main() -> None:
         print("\nRECOVERABLE TRADES — build derivations for these:")
         print(gap[["date", "time", "outcome"]].to_string(index=False))
     else:
-        print("\nSAMPLE TERMINAL WITHIN OWNED DATA — 29 flow-covered is the ceiling;")
+        print(f"\nSAMPLE TERMINAL WITHIN OWNED DATA — {int((m.in_owned & m.has_flow).sum())} "
+              "flow-covered is the ceiling;")
         print("only forward accumulation grows it. No Stage 4/5 re-run is warranted.")
     if len(unrec):
         print(f"\nUnrecoverable window needed: {unrec.date.min()} -> {unrec.date.max()} "

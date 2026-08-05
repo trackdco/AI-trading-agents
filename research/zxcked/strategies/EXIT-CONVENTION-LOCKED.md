@@ -2,7 +2,9 @@
 date: 2026-08-07
 kind: locked exit convention — binds every zxck- card so its trades pool with ash-unicorn-sb
 authority: scripts/ash_raw_baseline.py (the code that produced ash-unicorn-sb-raw-trades.csv)
-verified against: research/ash10hazard/strategies/ash-unicorn-sb-raw-trades.csv (n=37)
+verified against: research/ash10hazard/strategies/ash-unicorn-sb-raw-trades.csv (n=24 after the
+  2026-08-07 sweep-gate fix; originally verified at n=37 — the convention itself is unchanged,
+  every checked property still holds, and rule 5 is now enforced in code on every card)
 ---
 
 # The locked exit convention
@@ -12,18 +14,19 @@ exit**. Otherwise a difference in outcome is a difference in bookkeeping, not in
 
 ## What `ash-unicorn-sb` was actually scored on
 
-Read from `scripts/ash_raw_baseline.py` and **verified against its 37-row trade log**:
+Read from `scripts/ash_raw_baseline.py` and **verified against its trade log** — re-verified
+2026-08-07 on the corrected 24-row log; **every property below still holds**:
 
 | # | rule | verification |
 |---|---|---|
-| 1 | **Target = entry ± 2 × risk** (A3) | `target` matches `entry ± 2·risk_pts` on all 37 rows, **max deviation 0.0** |
+| 1 | **Target = entry ± 2 × risk** (A3) | `target` matches `entry ± 2·risk_pts` on all 24 rows, **max deviation 0.0** |
 | 2 | **Stop = the card's own structural invalidation**, and it defines R | `risk_pts = \|entry − stop\|` |
-| 3 | **Break-even at 1R** — once price reaches entry ± 1 × risk, the stop moves to entry (A4) | `be_moved` is True on all 10 BE rows and 14 of 15 wins; False on all 12 losses |
+| 3 | **Break-even at 1R** — once price reaches entry ± 1 × risk, the stop moves to entry (A4) | `be_moved` is True on all 5 BE rows and 11 of 12 wins; False on all 7 losses |
 | 4 | **No trailing** beyond that single move (A5) | R takes only three values: **−1.0, 0.0, +2.0** |
-| 5 | **Same-bar stop and target → the STOP fills first** (A8) | conservative by construction |
+| 5 | **Same-bar stop and target → the STOP fills first** (A8) | **now enforced in code on every card** — the fill bar is checked against the stop before the walk starts (fixed 2026-08-07) |
 | 6 | **Horizon capped at 16:00 ET**; anything unresolved marked to that close as fractional R (A7) | latest actual exit **11:43**; the cap never bound in this sample |
 | 7 | `R = (exit − entry) / risk`, signed by direction | |
-| 8 | **Costs are NOT baked into R.** $25/round-turn NQ ($5 commission + 1 tick slippage each way) is reported as a separate `expectancy net` line | median stop 25.5pt ⇒ 0.053R/trade |
+| 8 | **Costs are NOT baked into R.** $25/round-turn NQ ($5 commission + 1 tick slippage each way) is reported as a separate `expectancy net` line | median stop 26.2pt ⇒ 0.054R/trade |
 
 **Outcome vocabulary: `win` = +2R · `BE` = 0R · `loss` = −1R · `timeout` = fractional R at the cap.**
 
@@ -60,7 +63,7 @@ scored.** Two consequences, stated in advance so nobody discovers them later:
 ### Why lock at 2R rather than at his band
 
 Because the purpose of this pass is **pooling**, and `ash-unicorn-sb` is already scored, already
-in the trial ledger, and already carries the AM1 narrowing. Re-scoring 37 existing trades to
+in the trial ledger, and already carries the AM1 narrowing. Re-scoring the existing ash trades to
 match Powell would spend a fresh look on a sealed result. **The book that has not been tested
 moves to the convention of the book that has.**
 

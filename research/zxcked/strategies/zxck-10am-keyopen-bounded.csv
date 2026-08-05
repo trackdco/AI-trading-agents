@@ -157,7 +157,7 @@ date,kind,day_range,R,entry_min,direction,skip,R_if_up_first,R_if_down_first,ski
 2026-01-26,decidable,420.75,-1.0,13.0,short,,,,,
 2026-01-27,decidable,311.0,-1.0,3.0,long,,,,,
 2026-01-29,decidable,744.5,,,,no close through the level,,,,
-2026-01-30,decidable,371.25,0.0,3.0,short,,,,,
+2026-01-30,decidable,371.25,-1.0,3.0,short,,,,,
 2026-02-02,ambiguous,810.5,,,,,,,no close through the level,limit never filled
 2026-02-03,ambiguous,808.75,,,,,2.0,,,no close through the level
 2026-02-04,decidable,730.75,2.0,14.0,long,,,,,
@@ -171,7 +171,7 @@ date,kind,day_range,R,entry_min,direction,skip,R_if_up_first,R_if_down_first,ski
 2026-02-16,decidable,349.0,,,,limit never filled,,,,
 2026-02-17,ambiguous,440.5,,,,,-1.0,2.0,,
 2026-02-18,decidable,376.25,,,,no close through the level,,,,
-2026-02-19,decidable,305.0,2.0,12.0,long,,,,,
+2026-02-19,decidable,305.0,-1.0,12.0,long,,,,,
 2026-02-20,ambiguous,461.0,,,,,-1.0,-1.0,,
 2026-02-23,decidable,372.0,-1.0,3.0,long,,,,,
 2026-02-24,decidable,420.0,-1.0,13.0,long,,,,,
@@ -184,11 +184,11 @@ date,kind,day_range,R,entry_min,direction,skip,R_if_up_first,R_if_down_first,ski
 2026-03-05,decidable,437.25,2.0,2.0,short,,,,,
 2026-03-09,ambiguous,971.75,,,,,-1.0,0.0,,
 2026-03-10,decidable,354.25,2.0,5.0,long,,,,,
-2026-03-11,ambiguous,484.5,,,,,2.0,2.0,,
+2026-03-11,ambiguous,484.5,,,,,-1.0,-1.0,,
 2026-03-12,decidable,436.75,,,,no close through the level,,,,
 2026-03-13,decidable,471.5,2.0,5.0,short,,,,,
 2026-03-16,decidable,345.25,0.0,9.0,long,,,,,
-2026-03-19,ambiguous,364.75,,,,,0.0,0.0,,
+2026-03-19,ambiguous,364.75,,,,,-1.0,0.0,,
 2026-03-20,ambiguous,651.25,,,,,-1.0,2.0,,
 2026-03-23,decidable,990.5,-1.0,3.0,long,,,,,
 2026-03-24,decidable,416.0,-1.0,6.0,short,,,,,
@@ -249,7 +249,7 @@ date,kind,day_range,R,entry_min,direction,skip,R_if_up_first,R_if_down_first,ski
 2026-06-19,decidable,317.0,,,,no close through the level,,,,
 2026-06-22,ambiguous,667.0,,,,,2.0,-1.0,,
 2026-06-23,decidable,840.0,,,,no close through the level,,,,
-2026-06-24,ambiguous,903.75,,,,,-1.0,2.0,,
+2026-06-24,ambiguous,903.75,,,,,-1.0,-1.0,,
 2026-06-25,ambiguous,1103.25,,,,,,,no close through the level,limit never filled
 2026-06-26,ambiguous,534.5,,,,,,,no close through the level,limit never filled
 2026-06-29,ambiguous,857.0,,,,,,,limit never filled,no close through the level

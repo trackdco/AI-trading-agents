@@ -7,6 +7,14 @@ features written to: ash-unicorn-sb-autopsy-features.csv
 script: scripts/ash_autopsy.py
 ---
 
+> ## ⛔ SUPERSEDED IN PART — 2026-08-07 code fix. n 37 → 24.
+> An adversarial audit found the **liquidity-sweep gate in `scripts/ash_raw_baseline.py` tested
+> where price *was*, not whether it *crossed*** a level. 30 of the 37 trades below took that
+> path. The baseline is now **n=24, 12W/5BE/7L, 50.0% WR, +0.708 avg R, +17.0R, maxDD 3.0R**,
+> and flow coverage is **19**, not 29. The 24 survivors are a strict subset of the 37 and no
+> surviving trade's R changed, so the *reasoning* here still applies — the *counts do not*.
+> Current numbers: `research/_shared/baseline-comparison.md` and the card.
+
 # Autopsy — what separates winners from losers in `ash-unicorn-sb`
 
 ## HEADLINE: nothing does. Not after correction, and not by a distance.

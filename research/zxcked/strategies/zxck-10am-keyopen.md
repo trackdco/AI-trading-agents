@@ -224,23 +224,32 @@ Sundays + 5 holidays) · exit = the locked convention, identical to `ash-unicorn
 
 ### Result
 
-| | |
-|---|---|
-| n | **146** |
-| win / BE / loss | **38 / 35 / 73** |
-| **win rate** | **26.0%** |
-| avg R | +0.021 |
-| cost | 0.083R/trade (15pt stop) |
-| **expectancy** | **−0.063R net** |
-| total | +3.0R gross / **−9.2R net** |
-| **max drawdown** | **18.0R** |
-| direction | 75 long / 71 short |
-| flow-covered | **115 / 146** (computed, **not applied**) |
+> ### ⚠️ 2026-08-07 — SAME-BAR FILL-AND-STOP FIXED. Every number here moved by −5.0R.
+> The exit walk started at the bar *after* the fill, so a minute that filled the limit **and**
+> traded through the stop was carried forward as a live trade. **24 of the 146 fill bars were
+> already through the stop; 3 trades were scored wrongly** — 2025-05-05 and 2026-01-30 as BE
+> when they were losses, and **2026-02-19 as a +2R win when it was −1R**. Total error **−5.0R,
+> −0.034R/trade**. R11 always said stop-first on a same-bar conflict; the code now obeys it.
+> This makes the card **worse**, and it does not change the verdict — which was already *the
+> null*.
+
+| | corrected | ~~before the fix~~ |
+|---|---|---|
+| n | **146** | 146 |
+| win / BE / loss | **37 / 33 / 76** | ~~38 / 35 / 73~~ |
+| **win rate** | **25.3%** | ~~26.0%~~ |
+| avg R | **−0.014** | ~~+0.021~~ |
+| cost | 0.083R/trade (15pt stop) | 0.083R |
+| **expectancy** | **−0.097R net** | ~~−0.063R~~ |
+| total | **−2.0R gross / −14.2R net** | ~~+3.0R / −9.2R~~ |
+| **max drawdown** | **18.0R** | ~~18.0R~~ |
+| direction | 75 long / 71 short | 75 / 71 |
+| flow-covered | **115 / 146** (computed, **not applied**) | 115 / 146 |
 
 | era | n | WR | avg R | total |
 |---|---|---|---|---|
-| 2025 | 95 | 22.1% | −0.084 | −8.0R |
-| 2026 | 51 | 33.3% | +0.216 | +11.0R |
+| 2025 | 95 | 22.1% | −0.095 | −9.0R |
+| 2026 | 51 | 31.4% | +0.137 | +7.0R |
 
 ### ⚠️ THE RESULT IS THE NULL, EXACTLY
 
@@ -318,13 +327,20 @@ convention. **Flow coverage is 100% by construction** — the span *is* the flow
 
 ### The bounded result
 
+**Re-run 2026-08-07 after the same-bar fix. The bound is unchanged in sign: still entirely at
+or below zero.**
+
 | arm | n | win/BE/loss | avg R | expectancy | total | maxDD |
 |---|---|---|---|---|---|---|
-| **decidable only** | 115 | 23.5 / 25.2 / 51.3 | −0.043 | **−0.127R** | −5.0R | 16.0R |
-| ambiguous, *if up first* | 44 | 40.9 / 9.1 / 50.0 | +0.318 | +0.235R | +14.0R | 5.0R |
-| ambiguous, *if down first* | 45 | 24.4 / 17.8 / 57.8 | −0.089 | −0.172R | −4.0R | 8.0R |
-| **BOUND LOW** | 160 | 23.8 / 23.1 / 53.1 | −0.056 | **−0.140R** | −9.0R | 16.0R |
-| **BOUND HIGH** | 159 | 28.3 / 20.8 / 50.9 | +0.057 | **−0.027R** | +9.0R | 16.0R |
+| **decidable only** | 115 | 22.6 / 24.3 / 53.0 | −0.078 | **−0.162R** | −9.0R | 16.0R |
+| ambiguous, *if up first* | 44 | 38.6 / 6.8 / 54.5 | +0.227 | +0.144R | +10.0R | 9.0R |
+| ambiguous, *if down first* | 45 | 20.0 / 17.8 / 62.2 | −0.222 | −0.306R | −10.0R | 12.0R |
+| **BOUND LOW** | 160 | 21.9 / 22.5 / 55.6 | −0.119 | **−0.202R** | −19.0R | 18.0R |
+| **BOUND HIGH** | 159 | 27.0 / 19.5 / 53.5 | +0.006 | **−0.077R** | +1.0R | 16.0R |
+
+~~Pre-fix: decidable −0.127R, bound [−0.140R, −0.027R].~~ The upper bound is now **−0.077R** —
+i.e. **even the most favourable resolution of the 73 ambiguous sessions loses money after
+costs.** Before the fix that was already true but by a smaller margin.
 
 *Random-walk null for a 2R target with break-even at 1R: **25.0 / 25.0 / 50.0**.*
 

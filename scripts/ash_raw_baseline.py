@@ -122,6 +122,20 @@ def run(session: str, bars: pd.DataFrame) -> pd.DataFrame:
             for lv, side in cands:
                 if bias != side:                       # A6 daily bias must agree
                     continue
+                # ⚠️ DEFECT FIXED 2026-08-07 (found by adversarial audit, confirmed
+                # independently). The old test was `w.high > lv` / `w.low < lv`, which asks
+                # WHERE PRICE IS, not WHETHER IT CROSSED. If price was already beyond the level
+                # when the macro opened, hit was True on bar 0 -> s=0 -> the MSS lookback
+                # `seg = w.iloc[max(0,s-20):s+1]` collapsed to a SINGLE bar, so `ref` became that
+                # bar's own extreme and any small move past it scored as a structure shift.
+                # Measured on the shipped 37 rows: s==0 on 30 of 37, and on 25 of 37 price was
+                # already beyond the level BEFORE 09:45. Card conditions #2 (liquidity sweep) and
+                # #3 (market structure shift) did not bind on the majority of the sample.
+                # A sweep requires price to START the window on the unswept side and then take
+                # the level. This is a fix to match the card, not a spec change.
+                o0 = float(w.open.iloc[0])
+                if (o0 > lv) if side < 0 else (o0 < lv):
+                    continue                       # already swept before the macro -> not a sweep
                 hit = (w.high > lv) if side < 0 else (w.low < lv)
                 if not hit.any():
                     continue
@@ -152,10 +166,20 @@ def run(session: str, bars: pd.DataFrame) -> pd.DataFrame:
                     continue
                 target = entry - 2 * risk if side < 0 else entry + 2 * risk
                 half = entry - risk if side < 0 else entry + risk   # A4 50% to target
+                # ⚠️ SAME-BAR FILL-AND-STOP, fixed 2026-08-07. The walk used to start at t+1,
+                # so a bar that filled the entry AND ran through the stop within the same
+                # minute was scored as if the trade were still open at the next bar's open.
+                # A8 already says stop-first on a same-bar conflict; this makes the code obey
+                # it. Identical to walk_exit() in zxck_remaining_baselines.py, so both books
+                # stay poolable.
+                fb = w.iloc[t]
+                same_bar_stop = (fb.high >= stop) if side < 0 else (fb.low <= stop)
                 tail = pd.concat([w.iloc[t + 1:],
                                   g[(g.mins > m1) & (g.mins <= RTH_END)]])
                 cur_stop, be, out, ex_px, ex_ts = stop, False, None, None, None
-                for _, bar in tail.iterrows():
+                if same_bar_stop:
+                    out, ex_px, ex_ts = -1.0, stop, fb.ts
+                for _, bar in (tail.iterrows() if out is None else iter([])):
                     if side < 0:
                         if bar.high >= cur_stop:
                             out, ex_px, ex_ts = (0.0 if be else -1.0), cur_stop, bar.ts; break

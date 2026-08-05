@@ -128,8 +128,9 @@ convention `F1_disp_delta` assumes. No inversion.
    clock therefore comes from Brake's standing macro rule, and **it is OURS, not either trader's**
    — tag it `[stated-by-user]` on both cards and in any result. See `zxck-COMPONENTS.md` §F000.
 
-2. **`ash-unicorn-sb`'s log starts 2025-03-07 — three months before flow.** 8 of 37 trades sit
-   outside the footprint span and can never be flow-covered from held data.
+2. **`ash-unicorn-sb`'s log starts 2025-03-07 — three months before flow.** 5 of its 24 trades
+   sit outside the footprint span and can never be flow-covered from held data.
+   *(Was 8 of 37 before the 2026-08-07 sweep-gate fix — see the card.)*
 
 3. **`zxck-10am-keyopen`'s rev-c log spans 2025-01-06 → 2026-07-15, but its rev-d baseline is
    restricted to the footprint span** so conventions are not mixed. **Do not pool the rev-c log** —

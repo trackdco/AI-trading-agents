@@ -290,36 +290,47 @@ pick first and our result second — the two agreeing is corroboration, not sele
 
 **AM1-only baseline, span extended to the full non-sealed range (2025-01-01 → 2026-07-15):**
 
-| | |
-|---|---|
-| n | **37** (2025-03-07 → 2026-07-15) |
-| win / BE / loss | 15 / 10 / 12 |
-| **win rate** | **40.5%** |
-| **avg R** | **+0.486** |
-| cost | 0.053R/trade (median stop 25.5 pts) |
-| **expectancy net** | **+0.434R** |
-| total | +18.0R gross / **+16.1R net** |
-| **max drawdown** | **3.0R** |
-| direction | 29 long / 8 short |
+> ### ⚠️ 2026-08-07 — REVISED BY A CODE FIX. n 37 → 24. Read the defect note below first.
+> An adversarial audit found that the **liquidity-sweep gate tested where price *was*, not
+> whether it *crossed*** — see "SWEEP-GATE DEFECT" at the end of this section. Every number in
+> this table changed. The old figures are kept alongside so nothing is quietly restated.
+
+| | corrected | ~~before the fix~~ |
+|---|---|---|
+| n | **24** (2025-03-07 → 2026-07-13) | ~~37~~ |
+| win / BE / loss | **12 / 5 / 7** | ~~15 / 10 / 12~~ |
+| **win rate** | **50.0%** | ~~40.5%~~ |
+| **avg R** | **+0.708** | ~~+0.486~~ |
+| cost | 0.054R/trade (median stop 26.2 pts) | ~~0.053R (25.5 pts)~~ |
+| **expectancy net** | **+0.655R** | ~~+0.434R~~ |
+| total | +17.0R gross / **+15.7R net** | ~~+18.0R / +16.1R~~ |
+| **max drawdown** | **3.0R** | ~~3.0R~~ |
+| direction | 21 long / 3 short | ~~29 long / 8 short~~ |
+| effect (t/√n) | **+0.518** gross, **+0.480** net | ~~+0.367~~ |
 
 | era | n | WR | avg R | total |
 |---|---|---|---|---|
-| 2025 | 27 | 37.0% | +0.333 | +9.0R |
-| 2026 | 10 | 50.0% | +0.900 | +9.0R |
+| 2025 | 18 | 44.4% | +0.500 | +9.0R |
+| 2026 | 6 | 66.7% | +1.333 | +8.0R |
 
-**Both eras positive** — the first candidate in this repo to manage that. But **n=37 is
-above the n≥30 floor and below the 50-setup target**, and 2026 holds only 10 trades.
+**Both eras still positive** — the only candidate in this repo to manage that. But **n=24 is now
+BELOW the n≥30 floor**, and 2026 holds only 6 trades. The direction split is
+**21 long / 3 short**, which is close to one-sided and is not a property he claims.
 
-**Median stop 25.5 pts now sits squarely inside his stated 27/28/51/53 range** — the
-AM1-only sample is the closest match to his own trade geometry yet.
+**Median stop 26.2 pts sits squarely inside his stated 27/28/51/53 range** — the AM1-only sample
+remains the closest match to his own trade geometry yet.
 
-**ORDER-FLOW ENHANCEMENT (2026-08-06)** — see `ash-unicorn-sb-orderflow.md`.
-Retracement-participation filter (fill volume < displacement volume) on the 29 flow-covered
-trades: **44.8% → 73.3% WR, +0.621 → +1.333 avg R**, keeps 52% of setups, both eras agree
-(2025 64%, 2026 100% on n=4), binomial p=0.0247. **But it adds only +2.0R of total profit** —
-it concentrates the edge rather than creating one — and the filtered arm is **n=15**.
-Displacement-delta was **vacuous** (removed 0 of 29), which also shows NQ delta cannot
-substitute for his ES check.
+**ORDER-FLOW ENHANCEMENT (2026-08-06, re-run 2026-08-07 after the fix)** — see
+`ash-unicorn-sb-orderflow.md`. Retracement-participation filter (fill volume < displacement
+volume) on the **19** flow-covered trades: **52.6% → 72.7% WR, +0.842 → +1.364 avg R**, keeps 58%
+of setups, filtered arm **n=11** (was 15). Displacement-delta remains **vacuous** (removes 0 of
+19), which still shows NQ delta cannot substitute for his ES check.
+
+⚠️ **The filter no longer adds profit.** On the corrected sample it takes total R from **+16.0R
+down to +15.0R** while cutting max DD from 1.0R to 0.0R. Before the fix it added +2.0R. So its
+only remaining claim is drawdown smoothing on n=11 — and **H2, the hypothesis behind it, already
+failed out-of-sample on 115 independent trades** (see the Stage-4 entry below). It is not applied
+to the baseline and should now be regarded as retired rather than promising.
 
 **WINNER/LOSER AUTOPSY (2026-08-06)** — see `ash-unicorn-sb-autopsy.md`.
 Ten context features tested on 15 winners vs 12 losers. **Nothing survives Holm correction.**
@@ -354,10 +365,64 @@ The H1/H2 hypotheses stay untested for the same reason: the backfill produced **
 out-of-sample trades to test them on. Ceiling within owned data is 29; the power bar is ~49,
 which is **~9 months of forward accumulation** at 27.3 trades/year.
 
-⚠️ **Not yet graded.** No DSR/PBO applied; the deflation bar at N=58 is +0.5636 and this has
-not been put through it. The ES leading trigger is still missing. **No autopsy-derived filter
-has been applied to the baseline** — anything found in these 37 trades is circular on them.
-**Verdict unchanged: plausible but unconfirmed, needs forward data.**
+⚠️ **Not yet graded.** No DSR/PBO applied. The ES leading trigger is still missing. **No
+autopsy-derived filter has been applied to the baseline** — anything found in these trades is
+circular on them. **Verdict unchanged: plausible but unconfirmed, needs forward data.**
+
+---
+
+### 🔴 SWEEP-GATE DEFECT — found 2026-08-07, fixed, n 37 → 24
+
+**What the code did.** The liquidity-sweep test was `w.high > lv` (shorts) / `w.low < lv`
+(longs), evaluated across the whole macro window. That asks **where price is**, not **whether it
+crossed**. If price was *already* beyond the level when the macro opened, `hit` was True on bar 0.
+
+**Why that was not merely cosmetic.** `s = 0` also collapsed the structure-shift lookback,
+`seg = w.iloc[max(0, s-20) : s+1]`, to a **single bar** — so `ref` became that bar's own extreme,
+and essentially any move past it scored as a market structure shift.
+
+**Measured on the shipped 37 rows, before the fix:**
+
+| | |
+|---|---|
+| trades with `s == 0` | **30 of 37** |
+| trades where price was already beyond the level before 09:45 | **25 of 37** |
+
+**Card conditions #2 (liquidity sweep) and #3 (market structure shift) did not bind on the
+majority of the sample.** Those are two of his six stated key factors.
+
+**The fix.** Require the window to *open* on the unswept side of the level before looking for the
+cross:
+```python
+o0 = float(w.open.iloc[0])
+if (o0 > lv) if side < 0 else (o0 < lv):
+    continue                # already swept before the macro -> not a sweep
+```
+
+**This is a bug fix, not a spec change.** The card has always said "liquidity sweep"; the code
+tested position instead of crossing.
+
+**Effect, verified as strictly subtractive:** the 24 survivors are a **strict subset** of the old
+37, **no new trade appeared**, and **not one surviving trade's R changed**. The 13 removed trades
+were **3 wins / 5 BE / 5 losses, net +1.0R** — approximately the null as a group.
+
+**A second defect, checked and not binding here.** The same audit found a *same-bar
+fill-and-stop* bias (a minute that filled the entry and traded through the stop was carried
+forward as live). It was real on `zxck-10am-keyopen` (24 of 146 fill bars, 3 trades mis-scored,
+−5.0R). On this card it is **0 of 24** — the FVG-edge entry and order-block stop are rarely
+inside one minute of each other. The check is now in the code regardless.
+
+**Downstream re-runs after the fix** (all recomputed, none hand-edited): window robustness (the
+extension slice is still negative — 1 win in 8, −3.0R), autopsy, flow-coverage audit, order-flow
+filters, funded-account sim.
+
+**What did not change:** the direction of every conclusion. AM1 still carries the card, both eras
+are still positive, the widened window still loses, no feature survives Holm correction, and H1/H2
+are still retired on out-of-sample evidence.
+
+**What did change, and it is not in our favour:** **n=24 is below the n≥30 floor.** At ~1.5
+trades/month the ~49-trade power target is now roughly **17 months** of forward accumulation, not
+the ~9 estimated at n=37.
 
 ---
 
@@ -516,13 +581,15 @@ The extra 15 minutes fall in a period **he explicitly does not name as a macro.*
 
 ### Result
 
+**Re-run 2026-08-07 after the sweep-gate fix. The conclusion is unchanged; the counts moved.**
+
 | arm | n | win / BE / loss | avg R | expectancy | total | maxDD |
 |---|---|---|---|---|---|---|
-| **09:45–10:15** (committed baseline) | 37 | 40.5 / 27.0 / 32.4 | +0.486 | **+0.434R** | **+18.0R** | 3.0R |
-| 09:45–10:30 (robustness arm) | 47 | 34.0 / 25.5 / 40.4 | +0.277 | +0.226R | +13.0R | 4.0R |
-| **the extension alone (entries >10:15)** | **10** | **10.0 / 20.0 / 70.0** | **−0.500** | **−0.543R** | **−5.0R** | 4.0R |
+| **09:45–10:15** (committed baseline) | 24 | 50.0 / 20.8 / 29.2 | +0.708 | **+0.655R** | **+17.0R** | 3.0R |
+| 09:45–10:30 (robustness arm) | 32 | 40.6 / 21.9 / 37.5 | +0.438 | +0.386R | +14.0R | 3.0R |
+| **the extension alone (entries >10:15)** | **8** | **12.5 / 25.0 / 62.5** | **−0.375** | **−0.420R** | **−3.0R** | 3.0R |
 
-**The 37 baseline trades are byte-identical under both windows** — 0 outcome changes, 0 trades
+**The baseline trades are byte-identical under both windows** — 0 outcome changes, 0 trades
 present in one and not the other. The wider window is purely additive, and everything it adds
 loses money.
 

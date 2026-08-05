@@ -111,9 +111,14 @@ def zxck_trades(bars: pd.DataFrame, fp: pd.DataFrame) -> pd.DataFrame:
         entry = P
         stop, target, half = entry - side * STOP_PTS, entry + side * 2 * STOP_PTS, \
             entry + side * STOP_PTS
+        # SAME-BAR FILL-AND-STOP (fixed 2026-08-07, mirrors zxck_keyopen_baseline.py).
+        fb = w.iloc[t]
+        same_bar_stop = (fb.low <= stop) if side > 0 else (fb.high >= stop)
         tail = pd.concat([w.iloc[t + 1:], g[(g.mins > WIN_END) & (g.mins <= RTH_END)]])
         cur, be, out = stop, False, None
-        for _, bar in tail.iterrows():
+        if same_bar_stop:
+            out = -1.0
+        for _, bar in (tail.iterrows() if out is None else iter([])):
             if side > 0:
                 if bar.low <= cur:
                     out = 0.0 if be else -1.0; break

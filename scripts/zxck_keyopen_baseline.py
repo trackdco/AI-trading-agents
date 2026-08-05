@@ -180,9 +180,19 @@ def run(bars: pd.DataFrame, cal: pd.DataFrame) -> pd.DataFrame:
         target = entry + side * TARGET_R * STOP_PTS             # R8
         half = entry + side * STOP_PTS                          # R9 break-even at 1R
 
+        # ⚠️ SAME-BAR FILL-AND-STOP, fixed 2026-08-07. The walk started at t+1, so a minute
+        # that filled the limit AND traded through the stop was carried into the next bar as
+        # a live trade. Measured on this card: 24 of 146 fill bars were already through the
+        # stop, 3 of them scored wrongly (2025-05-05 and 2026-01-30 as BE, 2026-02-19 as a
+        # +2R win that is really -1R) — total error -5.0R, -0.034R/trade.
+        # R11 already says stop-first on a same-bar conflict; this makes the code obey it.
+        fb = w.iloc[t]
+        same_bar_stop = (fb.low <= stop) if side > 0 else (fb.high >= stop)
         tail = pd.concat([w.iloc[t + 1:], g[(g.mins > WIN_END) & (g.mins <= RTH_END)]])
         cur, be, out, ex_px, ex_ts = stop, False, None, None, None
-        for _, bar in tail.iterrows():
+        if same_bar_stop:
+            out, ex_px, ex_ts = -1.0, stop, fb.ts
+        for _, bar in (tail.iterrows() if out is None else iter([])):
             if side > 0:
                 if bar.low <= cur:                              # R11 stop first
                     out, ex_px, ex_ts = (0.0 if be else -1.0), cur, bar.ts; break

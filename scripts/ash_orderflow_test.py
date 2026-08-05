@@ -13,8 +13,9 @@ Two filters, both declared in ash-unicorn-sb-orderflow.md BEFORE running:
 
 Both read only minutes AT OR BEFORE the entry bar. Asserted at runtime.
 
-Flow span 2025-06-01+ covers 29 of 37 baseline trades, so the honest comparator is the raw
-baseline RESTRICTED TO THE SAME 29. Both are reported.
+Flow span 2025-06-01+ covers 19 of the 24 baseline trades, so the honest comparator is the raw
+baseline RESTRICTED TO THE SAME 19. Both are reported. (Was 29 of 37 before the 2026-08-07
+sweep-gate fix; the counts below are computed, not written down.)
 
     python -m scripts.ash_orderflow_test
 """
@@ -65,6 +66,12 @@ def run(bars: pd.DataFrame, fp: pd.DataFrame) -> pd.DataFrame:
             for lv, side in cands:
                 if bias != side:
                     continue
+                # ⚠️ SWEEP GATE, fixed 2026-08-07 — same defect as ash_raw_baseline.py, which
+                # this file duplicates. The test used to ask WHERE PRICE IS, not WHETHER IT
+                # CROSSED, so a level already breached before 09:45 scored a sweep on bar 0.
+                o0 = float(w.open.iloc[0])
+                if (o0 > lv) if side < 0 else (o0 < lv):
+                    continue
                 hit = (w.high > lv) if side < 0 else (w.low < lv)
                 if not hit.any():
                     continue
@@ -109,9 +116,14 @@ def run(bars: pd.DataFrame, fp: pd.DataFrame) -> pd.DataFrame:
 
                 target = entry - 2 * risk if side < 0 else entry + 2 * risk
                 half = entry - risk if side < 0 else entry + risk
+                # SAME-BAR FILL-AND-STOP (fixed 2026-08-07, mirrors ash_raw_baseline.py).
+                fb = w.iloc[t]
+                same_bar_stop = (fb.high >= stop) if side < 0 else (fb.low <= stop)
                 tail = pd.concat([w.iloc[t + 1:], g[(g.mins > m1) & (g.mins <= RTH_END)]])
                 cur, be, out = stop, False, None
-                for _, bar in tail.iterrows():
+                if same_bar_stop:
+                    out = -1.0
+                for _, bar in (tail.iterrows() if out is None else iter([])):
                     if side < 0:
                         if bar.high >= cur:
                             out = 0.0 if be else -1.0; break
@@ -161,8 +173,8 @@ def main() -> None:
     print("ORDER-FLOW FILTERS on ash-unicorn-sb (AM1 09:45-10:15 ET)")
     print(f"baseline trades {len(d)}   with flow data {len(cov)}   "
           f"(flow starts 2025-06-01)\n")
-    rows = [summarise(d, "RAW baseline (all 37)"),
-            summarise(cov, "RAW baseline (29 flow-covered) <- comparator"),
+    rows = [summarise(d, f"RAW baseline (all {len(d)})"),
+            summarise(cov, f"RAW baseline ({len(cov)} flow-covered) <- comparator"),
             summarise(cov[cov.F1_disp_delta > 0], "F1 displacement delta > 0"),
             summarise(cov[cov.F2_retrace_ratio < 1.0], "F2 retrace vol < displacement vol"),
             summarise(cov[(cov.F1_disp_delta > 0) & (cov.F2_retrace_ratio < 1.0)],
