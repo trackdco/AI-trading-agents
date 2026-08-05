@@ -13,10 +13,12 @@ R1  THE LEVEL [S]  P = the OPEN of the 10:00:00 ET one-minute bar.
     10:00 ET is the 4-hour candle open on an 18:00-ET (CME session) grid:
     18/22/02/06/10/14. [Y-oqSZmNo4U 00:49] "the 10:00 a.m. is the 4hour candle open"
 
-R2  THE WINDOW [A]  10:00 -> 14:00 ET, i.e. the 4-hour candle itself. His whole mechanism is
-    a statement about that candle ("all these candles on the 4hour time frame... they all have
-    wicks on the top and on the bottom"), so the candle is the natural window. He never names
-    an expiry. ASSUMPTION: the setup is live for the 4H candle and no longer.
+R2  THE WINDOW [U]  10:00 -> 10:15 ET. He never names an expiry.
+    CORRECTED 2026-08-07: rev-a used 10:00->14:00 (the 4H candle). That was MY assumption and it
+    violated Brake's standing instruction -- "from here onwards we only will stick to 9:45-10:15
+    macro" -- and broke like-for-like comparison with ash-unicorn-sb, which is scored on a
+    30-minute window with a hard 10:15 cutoff. 10:00-10:15 is the honest intersection of his
+    level and that macro. The error was mine and it was caught by Brake, not by me.
 
 R3  MANIPULATION [S/I]  the first excursion of >= 10.0 points beyond P, either side.
     Four labelled examples: 2pt "No" [5pL41Pl7GM4 01:58]; 8pt "gray area" [09:26];
@@ -94,7 +96,7 @@ from scripts.nya_sb01_feasibility import load_bars  # noqa: E402
 
 NY = "America/New_York"
 OPEN_MIN = 10 * 60           # 10:00 ET — the 4H candle open
-WIN_END = 14 * 60            # R2 — the 4H candle closes
+WIN_END = 10 * 60 + 15       # R2 — AM1 OVERLAP 10:00-10:15 ET (Brake standing rule)
 RTH_END = 16 * 60            # R12
 MANIP_PTS = 10.0             # R3 — FIXED, ratified. Never ATR-scaled.
 STOP_PTS = 15.0              # R7 — static
@@ -122,7 +124,7 @@ def run(bars: pd.DataFrame, cal: pd.DataFrame) -> pd.DataFrame:
 
     rows = []
     for day, g in by_day.items():
-        rec = {"date": day, "session": "NY", "window": "10:00-14:00",
+        rec = {"date": day, "session": "NY", "window": "10:00-10:15",
                "news_day": int(day in news_days)}
         if day in fomc_days:                                    # R14
             rows.append({**rec, "taken": "n", "skip_reason": "FOMC/Powell session"})
@@ -133,7 +135,7 @@ def run(bars: pd.DataFrame, cal: pd.DataFrame) -> pd.DataFrame:
             continue
         P = float(o.open.iloc[0])
         w = g[(g.mins >= OPEN_MIN) & (g.mins <= WIN_END)].reset_index(drop=True)  # R2
-        if len(w) < 30:
+        if len(w) < 5:
             rows.append({**rec, "taken": "n", "skip_reason": "short window"})
             continue
 
@@ -272,7 +274,7 @@ def main() -> None:
     print("RAW BASELINE — zxck-10am-keyopen. Exactly as carded, no filters.\n")
     print(f"instrument NQ 1-min   range {bars.day.min()} -> {bars.day.max()}"
           f"   sessions {bars.day.nunique()}")
-    print(f"window 10:00-14:00 ET   manipulation floor {MANIP_PTS:.0f}pt (FIXED)"
+    print(f"window 10:00-10:15 ET   manipulation floor {MANIP_PTS:.0f}pt (FIXED)"
           f"   stop {STOP_PTS:.0f}pt   target 2R = {2*STOP_PTS:.0f}pt\n")
 
     print("GATE FUNNEL — every qualifying event logged, taken or not")

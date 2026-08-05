@@ -201,3 +201,89 @@ the same missing **ES** data.
 Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
 the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
 convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.
+
+
+---
+
+## RAW BASELINE — 2026-08-07 (rev c)
+
+`scripts/zxck_keyopen_baseline.py` · trades `zxck-10am-keyopen-raw-trades.csv` (480 rows, all
+sessions logged with skip reasons)
+
+### ⚠️ WINDOW CORRECTION — my error, caught by Brake
+rev-a of this card left the window unstated; my first mechanization used **10:00–14:00 ET** (the
+4-hour candle) as an assumption. That **violated Brake's standing instruction** — *"from here
+onwards we only will stick to 9:45–10:15 macro"* — and broke like-for-like comparison with
+`ash-unicorn-sb`, which is scored on a 30-minute window with a hard 10:15 cutoff.
+**Corrected to 10:00–10:15 ET**, the honest intersection of his level and that macro.
+The 240-minute run is retained below only as a robustness check.
+
+### Spec
+NQ 1-min · **10:00–10:15 ET** · 2025-01-01 → 2026-07-15 · 480 sessions (396 real; 84 are 79
+Sundays + 5 holidays) · exit = the locked convention, identical to `ash-unicorn-sb`.
+
+### Result
+
+| | |
+|---|---|
+| n | **146** |
+| win / BE / loss | **38 / 35 / 73** |
+| **win rate** | **26.0%** |
+| avg R | +0.021 |
+| cost | 0.083R/trade (15pt stop) |
+| **expectancy** | **−0.063R net** |
+| total | +3.0R gross / **−9.2R net** |
+| **max drawdown** | **18.0R** |
+| direction | 75 long / 71 short |
+| flow-covered | **115 / 146** (computed, **not applied**) |
+
+| era | n | WR | avg R | total |
+|---|---|---|---|---|
+| 2025 | 95 | 22.1% | −0.084 | −8.0R |
+| 2026 | 51 | 33.3% | +0.216 | +11.0R |
+
+### ⚠️ THE RESULT IS THE NULL, EXACTLY
+
+A 2R target with break-even at 1R has a known random-walk signature: **25% win / 25% BE / 50%
+loss** (reach +1R before −1R with p≈0.5, then +2R before entry with p≈0.5).
+
+| | win | BE | loss |
+|---|---|---|---|
+| random-walk expectation | 25.0% | 25.0% | 50.0% |
+| **observed** | **26.0%** | **24.0%** | **50.0%** |
+
+**There is no detectable edge.** The setup selects *when* to be in the market; it does not appear
+to select *which way price goes*.
+
+### Robustness — the conclusion does not depend on the open questions
+
+| variant | n | win | BE | loss | expectancy |
+|---|---|---|---|---|---|
+| **10:00–10:15, scan includes the 10:00 bar** (locked) | 146 | 26.0% | 24.0% | 50.0% | −0.063R |
+| 10:00–10:15, scan starts 10:01 | 159 | 25.2% | 22.6% | 52.2% | −0.102R |
+| 10:00–14:00, includes the 10:00 bar | 218 | 24.8% | 24.3% | 50.9% | −0.089R |
+| 10:00–14:00, starts 10:01 | — | — | — | — | — |
+
+**The A/B manipulation-bar question I raised as a blocker turns out not to matter** — both
+readings land on the null, and so does the wrong window. The blocker is therefore withdrawn: it
+was a real ambiguity, but not one that changes the answer.
+
+### Comparison to his claims — directional only
+He claims *"pretty much all of these days… you would have gotten a juicy take profit"*
+`[5pL41Pl7GM4 @ 25:30]` and a 1:4–1:6 working band `[WEeXKMzaJjY @ 15:56]`, on **trailed** exits.
+**Ours is a fixed 2R with break-even at 1R.** These are not measuring the same thing and the
+comparison is directional only. What can be said: at a 2R fixed target this setup does not
+separate winners from losers at all.
+
+### What this does NOT establish
+- It does not test his 1:4–1:6 trailed exit. A `zxck-10am-keyopen-hisexit` arm remains a
+  legitimate separate trial with its own prereg.
+- It does not test the bonus confluences (PD array, fib, rejection block) — those were correctly
+  excluded as bonuses, and adding them would be a filter search, not a baseline.
+- **4 arms are now owed to the merged trial ledger** (2 windows × 2 readings), and none has been
+  graded against the deflation bar.
+
+### Revision log
+- **2026-08-07 rev c** — raw baseline run. Window corrected from my 10:00–14:00 assumption to
+  10:00–10:15 per Brake's standing macro rule. Result is the random-walk null under all four
+  variants.
