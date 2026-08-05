@@ -118,6 +118,22 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   yet. Remaining declared variables (absorption at edge, composite age/width,
   all-touch expansion) owed before any verdict — no bin off this.
 
+## nya-daily-sweep — JadeCap 1H raid + SFP (NYA-DS-01) — census done, search owed
+- STAGE: census + first declared splits (2026-08-05); full search owed.
+- RAW TRIGGERS: 381 first-signal days / 845 biased days (~2.3/wk, matches
+  teaching).
+- RAW P&L: n=381, WR 38%, -1,132pts, $-454, PF 0.90 — ugly raw per law.
+- YEARS: 2023 PF 1.11 / 2024 1.15 / 2025 0.87 / 2026 0.64 — DECAY shape
+  (inverse of canon regime profile; book-diversification interest, live
+  suspicion).
+- FIRST SPLITS: PM window PF 1.56 (permnull p=0.030) but 2025 flips to
+  0.32 — evidence not gate. Deep-penetration raids negative ALL 4 years —
+  every-era-bad cut candidate for L1 (canon wall-cut precedent).
+- NEXT: SFP close strength, level age, distance-from-open, gap context,
+  flow-at-raid (flow span), depth-at-level (morning overlap) → L1.
+- CANON SHAPE: raw-negative start is lawful; needs a variable that lifts
+  like depth did for canon. Watch the decay.
+
 ## QUEUE (cards open at census)
 - INTAKE ROUND 2 (2026-08-05, specs in research/transcripts/*/SPEC-as-taught.md,
   credibility in research/findings/intake2-credibility.md):
