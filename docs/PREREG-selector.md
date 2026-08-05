@@ -453,3 +453,17 @@ run — the substrate is part of the policy. [EXISTING pattern]
 **And the standing rule, restated once more because it is the point of the
 document: NOTHING IS BUILT — no selector code, prompt, harness, or briefing —
 until Angus ratifies this document's bars by signing the block at the top.**
+
+## AMENDMENT 2026-08-05 (ANGUS) — simultaneous-opposite-signals semantics
+
+Declared execution-semantics case, to be resolved MECHANICALLY before any
+agent selection discretion is tested: sleeve A fires long while sleeve B
+fires short (or an open long coexists with a new short signal). Candidate
+mechanical rules, each a declared arm for the selector trial: (R1) both
+taken, netted at the account (pay both costs, book both P&Ls per sleeve);
+(R2) higher PRE-DECLARED conviction score wins (causal at-signal scores
+only — canon-tier style; post-hoc conviction stays BANNED per the ship
+contract); (R3) first-signal-wins, later opposite signal skipped; (R4) both
+skipped (conflict veto). Agent selection discretion is a LATER rung that
+must beat the best mechanical rule on the declared funded statistic via the
+replay harness — same earn-your-seat law as trade management (§6 rung 2b).
