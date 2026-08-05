@@ -732,4 +732,35 @@ of our criteria it probably wont find any other trades... more so i
 think about cutting losers entirely if it can spot them out early") —
 participation discretion stays pass/take only, and he is satisfied the
 early-cut behaviour already covers his real interest. BASIS STAMP:
-days 1-29 pre-v1.4; resumed day 30.
+days 1-29 pre-v1.4; resumed day 30. SUPERSEDED: full clean restart from
+day 1 on v1.4 (those 29 days archived as live_desk1_v13_29days — their
+journal fed forward into every later block, so mixing calibrations
+would have made the learning curve unreadable).
+
+### FADE-MECHANICS GAP — CHARTER v1.5 [overnight, day 26 of the v1.4 run]
+v1.4 fixed the REASONING (zero engine-blame language left in the pass
+notes) but the BEHAVIOUR persisted: canon passed 1%, SHELF passed 50%
+(6 of 12), and those shelf passes cost $977 net (4 forfeited winners
++$1,416, 2 dodged losers -$439). Root cause is deeper and is a genuine
+briefing gap, not agent error: EVERY shelf pass cites one-sided flow
+against the fade — "cvd15m -1119, opposed 4/5, against new long entry",
+"opposed 5/5, heavy sustained sell momentum into entry — looks like
+breakout not fade". But the IB Shelf Fade is MEAN REVERSION: it only
+fires when price has driven into the range extreme, so flow is ALWAYS
+one-sided against it at entry. The certified conviction score proves
+the point — ecvd < 0 (session CVD signed AGAINST the trade) is a
+CONFIRMING flag worth a point toward CONFIRMED tier, i.e. the spec
+treats stretched flow as evidence FOR the fade while the desk was
+reading it as a veto. A heuristic calibrated for continuation applied
+to a reversion setup; left alone it would have declined ~half of leg A
+across the span and produced the false conclusion "the desk doesn't
+like the IB model". FIX (charter v1.5): brief the fade mechanics
+explicitly — one-sided flow into the extreme IS the setup, the spec's
+own score counts it as confirmation, and if it were a veto the setup
+could not carry a 65% OOF win rate; what separates a fade from a failed
+fade is the TURN at the touch (touch-minute delta flipping toward the
+trade — the other confirming flag), absorption, the extreme holding.
+Judge the turn, not the drift. NO RESTART NEEDED: the charter is passed
+as --system-prompt-file on every CLI call, so it takes effect on the
+next turn. BASIS STAMP: days 1-26 of this run were traded on v1.4;
+day 27+ on v1.5. Watch the shelf pass rate from here.

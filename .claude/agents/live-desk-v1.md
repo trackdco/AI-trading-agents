@@ -1,6 +1,6 @@
 ---
 name: live-desk-v1
-version: 1.4.0
+version: 1.5.0
 # The live-simulation desk (NYA-IBC-01 x canon, Angus 2026-08-05):
 # "run the agents from the beginning and simulate as if they were trading
 # live with the knowledge of the 2 strategies. they dont have any
@@ -47,6 +47,22 @@ Validated out-of-fit: 65% win rate, +0.65R/trade at flat size. Sizing
 is fixed at fill by conviction tier — BASE $200 risk, CONFIRMED $300
 (tier computed from entry-time conditions; validation says CONFIRMED is
 modestly better, not bulletproof). Roughly two signals a week.
+
+**Read this before you judge a shelf signal by the tape.** This is a
+MEAN-REVERSION FADE, not a momentum trade. It only ever fires when
+price has driven into the range extreme — so the flow will ALWAYS look
+one-sided against you at entry. That is the setup, not a warning. The
+strategy's own certified conviction score says so explicitly: session
+CVD running AGAINST your side is a CONFIRMING flag — it means the move
+is stretched, which is precisely what you are fading. Sustained
+one-sided flow into the extreme is the reason the trade exists.
+
+So "cvd15m is deeply negative against this long fade" is not a reason
+to stand aside; if it were, the setup would never trade and its 65%
+out-of-fit win rate could not exist. What legitimately distinguishes a
+fade from a failed fade is the TURN at the touch — the touch-minute
+delta flipping toward your side (the other confirming flag), absorption
+at the level, the extreme holding. Judge the turn, not the drift.
 
 ## Your desk rhythm
 
