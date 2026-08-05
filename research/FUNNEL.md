@@ -84,6 +84,28 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - ROLE IN THE AUDIT: the negative control — the funnel lifts real edges
   (cards above) and fails to lift dead ones. Both behaviors are required.
 
+## london-asian-trend-continuation (LDN-ATC-01) — pre-London pullback — ALIVE, census passed
+- STAGE: L0 census done (`docs/PREREG-london-atc-census.md`). L1 owed.
+- RAW TRIGGERS: 108 of 396 sessions complete the taught chain — **27% (2025) / 28% (2026)**
+  vs a declared 15% census floor. Half-year 29/25/26/(55% on 11 sessions, noise).
+- RAW P&L: **not computed.** Census counts events; §5.9.1 forbids a P&L kill here.
+- FUNNEL (§5.12.1, no silent drops): no-bias 22% / bias-no-pullback 2% /
+  **pullback-no-LTA 40%** / LTA-no-trigger 8% / fallback-only 1% / triggered 27%.
+  The LTA requirement is the binding constraint, not the trend and not the trigger.
+- TRIGGER GRID IS 30-MINUTE, NOT 15: '15m and 30m closing together' can only occur on
+  30m boundaries. Observed clock is exactly 07:30/08:00/08:30/09:00 and nothing between.
+  Opportunity set is half what a naive reading implies. 27% of triggers fire BEFORE the
+  08:00 open — mechanically a different trade from both dead London candidates.
+- SEMANTICS SELF-CHECK (§5.12.15): the '>=2 consecutive closes' LTA rule is MY
+  mechanisation, and it is loose — the pullback window holds a median 4 bars, and 47% of
+  sessions reaching it clear the bar. The column is not as selective as the name suggests.
+  Stricter LTA is a declared L1 arm.
+- EVENT CEILING (§5.11.2, declared before economics): all-triggers = 1.55x/1.51x.
+- NEXT: L1 at as-taught geometry with the time-segment/MFE-MAE schema built in from the
+  start, plus the declared randomised-bias control so 'continuation' must beat 'any
+  direction', not merely beat zero.
+- CANON SHAPE: too early — no P&L yet. Census arc normal (premise clears, ~2x the floor).
+
 ## london-nq-open-break (LDN-OBK-01) — continuation branch — **DEAD** (earned, search complete)
 - STAGE: **complete** — census -> L1 -> conditioning -> L3 flow -> autopsy -> killed.
 - RAW TRIGGERS: 425 breaks / 396 London sessions (~1.1/day); 92% of 2025 days and

@@ -1,6 +1,6 @@
 ---
 date: 2026-08-05
-status: PROPOSED — as-taught spec written, awaiting greenlight before any test
+status: census PASSED (27%/28% vs 15% floor) — L1 owed
 tags: [london, asian-session, continuation, lta, pullback]
 sources: ["https://www.youtube.com/watch?v=ci24AdpcRaA", "https://www.youtube.com/watch?v=A8KDclHRpGc", "https://www.youtube.com/watch?v=WYq7A8rggmg", "research/findings/london-window-LDN-WIN-01.md"]
 ---
@@ -139,3 +139,91 @@ discretionary gap** — he never says how to know in advance. See flags.
   the densest file in the corpus), forex-framed, not yet read in full.
 
 **Nothing above has been tested. No trials, no ledger entries, no looks.**
+
+---
+
+## Trial 1 — L0 census (2026-08-05) — **PASSED on premise, advances to L1**
+
+`docs/PREREG-london-atc-census.md` (committed before the run).
+`scripts/london_atc_census.py`. 396 London sessions, 2025 discover / 2026 validate.
+**2023/24 untouched — no holdout look spent.** No P&L computed; none may kill here.
+
+### The taught sequence happens, and it is era-stable
+
+| era | sessions | completed the chain | rate | floor was 15% |
+|---|---:|---:|---:|---|
+| 2025 | 257 | 69 | **27%** | PASS |
+| 2026 | 139 | 39 | **28%** | PASS |
+
+Half-year: 29% / 25% / 26% / 55%. The last is 2026H2 on 11 sessions — noise, flagged
+rather than quoted. The first three are flat, which is what a structural feature should
+look like.
+
+### The funnel — every session accounted for (§5.12.1)
+
+| stage | share |
+|---|---:|
+| no Asian trend at all | 22% |
+| trend, but no pullback | 2% |
+| pullback, but no LTA | **40%** |
+| LTA, but no aligned trigger | 8% |
+| fallback arm only (30m+1h) | 1% |
+| **triggered** | **27%** |
+
+**The LTA requirement is the binding constraint**, not the trend and not the trigger.
+Four sessions in ten have the bias and the pullback and then fail the low-traffic test.
+That is where the taught setup does its selecting.
+
+### Two things the census found that the source does not say
+
+**1. The trigger grid is 30-minute, not 15-minute.** He asks for *"a bearish candle close
+on the 15 and 30 minute together."* A 15m bar closing at 08:15 has no 30m bar closing at
+08:15 — 30m closes fall at 08:00 and 08:30. So "together" can only occur on 30-minute
+boundaries, and the observed trigger clock confirms it exactly: **07:30, 08:00, 08:30,
+09:00 and nothing between.** The opportunity set is half what a naive reading implies.
+This is faithful to what he said; it is just not what it sounds like.
+
+**2. 27% of triggers fire BEFORE the 08:00 open.** Consistent with the taught setup —
+he enters on the pullback, not at the open. Worth stating because both dead London
+candidates entered *at* the open, and this is mechanically a different trade.
+
+### Semantics check on my own mechanisation (§5.12.15)
+
+The prereg flagged that "≥2 consecutive 15m closes in the pullback direction" is **my**
+translation of his LTA rule, not his words. The cross-tab says it is a **loose** test:
+
+| longest run | share |
+|---|---:|
+| 0–1 (fails) | 53% |
+| 2 | 28% |
+| 3 | 15% |
+| 4 | 4% |
+
+The pullback window holds a median of **4** fifteen-minute bars, so "≥2 consecutive"
+is being cleared inside a 4-bar window by 47% of sessions that get that far. **The column
+is not measuring anything as selective as the phrase "low traffic area" suggests**, and
+the verdict records that rather than letting the name carry weight it has not earned. A
+stricter LTA definition is a declared L1 arm, not a census revision.
+
+### Event-universe ceiling, declared before economics (§5.11.2)
+
+All-triggers rather than first-per-day gives **1.55×** (2025) and **1.51×** (2026) more
+events — 107 and 59. The fallback arm (30m+1h with a weak opposite 15m) adds only 5
+sessions across both eras and is close to irrelevant.
+
+### Lookahead — certified, not assumed (§5.11.7)
+
+Bias fixed at 07:00 from 03:30–07:00 data. Pullback measured against the 07:00 close.
+Resampling is right-closed and right-labelled, so a bar labelled `T` contains only data
+strictly before `T`. No column reads a bar closing after its decision minute.
+
+**Recorded:** `LDN-ATC-01` × 2 eras in `output/trial_ledger.parquet` (premise frequency,
+no effect charged — a trigger count is not an edge claim).
+
+### Next rung — L1
+
+As-taught geometry: entry on the break of the trigger candle's extreme, stop beyond its
+opposite side, target 1:1 then next support, hard flat 10:00 London. Built with the
+time-segment / MFE-MAE schema in from the start (§5.12.5) rather than bolted on, and with
+the randomised-bias control declared in the candidate proposal so "continuation" must beat
+"any direction" rather than merely beat zero.
