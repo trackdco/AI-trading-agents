@@ -468,6 +468,69 @@ Gauntlet → holdout → funded-rules MC → shadow → live at minimum size →
 evidence, **with a human sign-off at the paper-to-live step** (brief §2a-6). Every
 rung already exists in practice; this section names them in order.
 
+### 5.9 The five framework rulings [ANGUS 2026-08-05 — answers on the record]
+
+Settled in plain words before mass intake; every number below traces to one
+of these answers.
+
+1. **The census kill line.** A candidate dies at census ONLY if the claimed
+   behavior literally does not happen — tested AS TAUGHT, mandatory triggers
+   included. Raw profitability, decayed edges, ugly win rates: none of these
+   kill at census; they wait for the complete variable search (the canon
+   would have died at raw triggers under any other rule).
+2. **The deep search is earned — but never by pretty raw P&L.** Census +
+   trapped-counterparty story is the whole ticket. Raw-data ugliness cannot
+   deny entry to the deep search (Angus: "imagine i didnt go through that
+   shit [with the canon], it wouldve just been fully cooked"). The earn-gate
+   exists only to keep the program's total search honest, not to filter on
+   looks.
+3. **Certification is BOOK-LEVEL.** A 2-3-trades-a-month sleeve with genuine
+   positive EV ships as a book component; the live agents recognize its
+   setup when it occurs. Sleeve-level bars are pre-registered per candidate
+   (era consistency, cost realism, PSR floor per §5.9.5); the deflated
+   ≥0.95 screen applies to the BOOK — the search is charged once, at the
+   decision point.
+4. **The 23/24 candle holdout: ONE corrective iteration, maximum.** Look
+   once; on failure, diagnose and rebalance (that thesis is the quant's to
+   make); retest once. Fails again → the family does not ship. Look counts
+   live in the machine ledger. The six sealed FLOW months remain strict
+   single-look by written declaration, unchanged.
+5. **Dud tolerance: 2-3 per 10 shipped.** Accepted failure mode: live
+   shadow + agent journaling catch decay, and the desk cuts when the time
+   is right (§7.3). Calibration consequence: the per-sleeve confidence
+   floor is set at PSR(0) ≥ 0.75 (≈ tolerating ~1-in-4 sleeve duds before
+   book-level deflation and live monitoring), with the exact
+   sleeve/book statistical split to be ratified by Brake against his
+   graders. Every shipped strategy carries its validation-era agent
+   journals as live reference memory (the desk-run record is part of the
+   shipped artifact).
+
+### 6.0 The promotion law [BRAKE 2026-08-05, ratified into process]
+
+**Rank-and-promote-the-top-scorer is a condemned procedure.** Selecting the
+in-sample best of N variants and shipping it is the exact failure PBO's CSCV
+measures — it is what refused the inventory fade's A1 exit arm (PBO 0.57), and
+it does not become legal by changing sessions. Three binding rules:
+
+1. **Per-candidate pre-registered bars.** A candidate (or arm) is promoted
+   because IT passed ITS OWN declared bars — never because it out-ranked its
+   siblings. Every prereg MUST declare its promotion rule BEFORE the tournament
+   that could exploit it: the mechanism-prior default spec, and the conditions
+   under which any alternative arm may displace it (PBO on the arm matrix
+   below 0.5 AND holdout adjudication — in-sample rank alone never suffices).
+2. **The bar reads from the MERGED machine ledger.** DSR's denominator (trial
+   count + effect variance) comes from `output/trial_ledger.parquet`
+   (src/validation/trial_ledger.py, append-only) — merged across ALL programs
+   and BOTH researchers' sessions (NY-AM, pre-market, London, Brake's NY).
+   Prose ledgers in candidate files remain the narrative record; the parquet
+   is the number the gate reads. Trials recorded in prose only do not exist
+   for deflation purposes — record both, at trial time.
+3. **Live promotion mechanisms inherit the law.** Any sorter/selector on the
+   live box (incl. Pat's green/red sorter) must promote on the pre-registered
+   per-candidate rules of docs/PREREG-selector.md §2.5/§6 and read bars from
+   the merged ledger. A live mechanism that ranks live scores and promotes the
+   top is the condemned procedure running in production and must not ship.
+
 1. **Gauntlet** — §1 pre-registration + §3 layer gates + §2 acceptance bars, discover
    2025 / validate 2026. Output: a frozen candidate with a verdict at every layer
    boundary. [EXISTING]
