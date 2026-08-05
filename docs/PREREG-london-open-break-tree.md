@@ -118,9 +118,28 @@ spent by this census. The 128 sealed days of
 declaration is unaffected. The 23/24 candle era check is a later rung under §5.9.4
 (one corrective iteration, maximum) and will be declared separately when earned.
 
-**Inverse pass** is run at census: the same event counts computed with the branch
-labels swapped, to confirm the fail/continue split is not an artifact of which side
-we called first.
+### Controls — declared, and one of them amended before the run
+
+**AMENDMENT, committed before any data was touched.** The first draft of this file
+declared an "inverse pass = the same counts with the branch labels swapped." That is
+not a control: continue-rate is exactly `1 − fail-rate`, so swapping the labels
+re-prints the same number and tests nothing. Replaced, before running, with two
+controls that can actually fail:
+
+1. **Placebo range (the real control).** Rebuild the whole census against a range
+   taken from **04:00–06:00 Europe/London** — same two-hour width, same break, fail
+   and traverse logic, same 08:00–10:00 trigger window, but a range with no claim on
+   the open. If breaks of an arbitrary earlier range fail at the same rate as breaks
+   of the pre-open range, then nothing about the *pre-open* range is special and both
+   branches are just measuring ordinary mean reversion. **This control is capable of
+   killing the family's premise and is the reason it is here.**
+2. **Side symmetry.** Up-break and down-break statistics reported separately. A fail
+   rate that exists only on one side is a directional drift artifact, not a sweep.
+
+Neither control has a pre-set kill threshold, because neither is the census kill line
+of §5.9.1 — they qualify the reading of the fail rate rather than replace it. The
+placebo margin is reported with the headline number, always, so the fail rate is
+never quoted alone.
 
 ## Seed / day list
 
