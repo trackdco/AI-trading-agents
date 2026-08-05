@@ -321,8 +321,27 @@ it concentrates the edge rather than creating one — and the filtered arm is **
 Displacement-delta was **vacuous** (removed 0 of 29), which also shows NQ delta cannot
 substitute for his ES check.
 
+**WINNER/LOSER AUTOPSY (2026-08-06)** — see `ash-unicorn-sb-autopsy.md`.
+Ten context features tested on 15 winners vs 12 losers. **Nothing survives Holm correction.**
+Best raw p = 0.017 (`F2_retrace_ratio`) → **0.169** adjusted; a null simulation returns a
+best-of-10 p ≤ 0.017 **15% of the time**, so the top row is the expected shape of noise at
+this sample size. `htf_aligned` is **33% vs 33%** — identical. ATR regime, distance to level,
+entry timing, stop size, direction and the news calendar all sit in the negligible band
+(|Cliff's δ| ≤ 0.12).
+
+**But the power floor is d = 1.09** (beyond Cohen's "large"), and a binary feature at a 33%
+base would need to reach **87%** to be seen. *No huge effect is present* — that is not the
+same as *no useful effect is present*, and this sample cannot tell the two apart.
+
+The only large effect sizes are the two **Stage-4 order-flow features**, which is confirmation
+of a known result, not discovery. One genuinely new observation: **F1 separates on magnitude
+(δ = +0.596), not sign** — the sign test was vacuous, the magnitude test was never run. And
+**F2 sorts stalls, not losses**: median 0.60 (win) < 1.27 (loss) < **2.35 (break-even)**,
+which is why it removed 14 trades for only +2R.
+
 ⚠️ **Not yet graded.** No DSR/PBO applied; the deflation bar at N=58 is +0.5636 and this has
-not been put through it. The ES leading trigger is still missing.
+not been put through it. The ES leading trigger is still missing. **No autopsy-derived filter
+has been applied to the baseline** — anything found in these 37 trades is circular on them.
 
 ---
 
