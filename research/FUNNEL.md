@@ -141,9 +141,12 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   (76-100% good here — hourly rotation, declared for the agent playbook);
   exit tournament — default stands (PBO 0.50, displacement bar unmet),
   no_target/cap30/t3r/hold1555 banked, BE null defeated third time.
-- NEXT: PSR grading vs 0.75 sleeve floor + correlation battery → Angus.
-  Redundancy vs Brake's sweep-reclaim blocked on his trade file (owed
-  before BOOK admission, not grading).
+- TRIAL 6 GRADING: PSR(0) 0.986 vs 0.75 floor — PASS; MTRL 512d vs 915
+  held; MC bust 0.1%, median +$1,032/yr (additive sleeve); correlation
+  ~zero-to-negative vs canon AND fade; regime profile inverts the canon's
+  — genuine diversifier. DSR carries the known ledger-denominator caveat.
+- STATUS: SLEEVE-CERTIFIED pending Brake redundancy gate (blocked on his
+  trade file) + Angus's book decision. 2026 n=7 on the label.
 - CANON SHAPE: raw 0.90 → legal cuts → 1.89 era-consistent — the textbook
   arc, second family to show it.
 
