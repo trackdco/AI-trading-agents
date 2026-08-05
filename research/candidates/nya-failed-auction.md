@@ -94,3 +94,14 @@ S2 + min(POC, 0.5w) + TS 15:55); remaining before grading: accept-branch
 conditioning, canon correlation battery. Sealed-holdout note: the six
 sealed months HAVE footprint data — a declared look could add ~6mo of gated
 events; banked, Angus's call at grading time.
+
+### Trial 5 — accept-branch conditioning (2026-08-05, flow span) — PARKED, too few events
+scripts/nya_fa_accept.py (events in output/nya_fa_accept_events.parquet).
+Only 15 accept-then-retest events exist on the whole flow span — accepted
+breaks rarely return to the broken edge (which is itself consistent with
+trial 1's finding that accept days run: median 1.26 widths of continuation).
+Gated cells are n=1-4: nothing is gradeable at any honesty standard. VERDICT:
+PARKED (open-sweep-fade precedent — insufficient events is not a kill).
+Reopening: more span, or an entry expression that does not require the edge
+retest (would be a fresh declared arm). Arms this trial: 4 (A1 gates; family
+count 20). FAMILY TO GRADING on the fail-branch frozen spec alone.
