@@ -101,6 +101,12 @@ _load_dotenv(REPO_ROOT / ".env")
 # and buys a corpus that actually completes.
 _THROTTLE_SECONDS = float(os.environ.get("YOUTUBE_TRANSCRIPT_DELAY", "1.5"))
 
+# Per-fetch retry on the primary path only. Short on purpose — when the primary
+# is throttled the yt-dlp fallback is what gets the transcript, so the job here
+# is to reach it quickly, not to out-wait YouTube. Long waits belong in
+# pull_queue.py, which backs off between videos.
+_RETRY_BACKOFF = (2.0, 8.0)
+
 _cache_env = os.environ.get("YOUTUBE_MCP_CACHE_DIR", "").strip()
 CACHE_DIR = (
     Path(_cache_env)
@@ -358,7 +364,12 @@ def _fetch_transcript(video_id: str, languages: list[str], refresh: bool) -> Cac
             if type(exc).__name__ not in _BLOCKED:
                 break
             if attempt < 2:
-                time.sleep(_THROTTLE_SECONDS * (4 ** (attempt + 1)))
+                # Fixed, short, and deliberately NOT scaled off _THROTTLE_SECONDS:
+                # inter-video pacing and per-fetch retry are different problems.
+                # Coupling them meant raising the pace to avoid the throttle also
+                # made each blocked video take minutes to reach the fallback that
+                # actually works.
+                time.sleep(_RETRY_BACKOFF[attempt])
 
     # Fallback chain, cheapest first. The yt-dlp/android path is the one that
     # survives a hard IP throttle, so it is last but it is the workhorse.
