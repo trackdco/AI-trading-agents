@@ -34,3 +34,6 @@ output/triggers_hist2326_days/
 .hermes-rebuild/
 .venv-freeze/
 data/depth/
+
+# desk-run single-instance lock (runtime artifact)
+runs/*/.lock
