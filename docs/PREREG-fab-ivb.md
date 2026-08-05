@@ -95,3 +95,23 @@ correlation battery vs canon (clock overlap known).
 Every arm above counts. Narrative in research/candidates/nya-ivb.md; numbers
 in output/trial_ledger.parquet via src/validation/trial_ledger.py (§6.0).
 Program-level deflation merged with Brake's NY program.
+
+## SEARCH EXPANSION — declared 2026-08-05c (ANGUS: "we really arent testing enough")
+
+Branch B search space widened BEFORE running, all arms ledgered:
+- EVENT EXPANSION: E-all = every touch (incl. re-touches after a rejected
+  touch) until the IB first breaks; window arms 10:00-11:00 and 10:00-12:00;
+  per-day multi-trade allowed (one open position at a time).
+- STOP CAPS: absolute caps 20/30 pts on the 0.25xIB stop (large-IB days
+  currently risk 40+ pts).
+- STATE-CONDITIONAL FLOW (the drawdown question): flow-at-entry re-tested
+  WITHIN states — strategy trailing-5-trade P&L negative/positive; day
+  one-timeframing state at entry (no-lookahead); entry after a prior same-day
+  loser.
+- FLOW DEFINITION VARIANTS: absorption at eff_z >= 1.5 (looser), delta lean
+  windows 5m and 10m, CVD session-side agreement.
+- CANON VARIABLE MAP: on receipt of the canon build's full variable list
+  (Angus, from the rebuild chat), each canon variable class gets a declared
+  analog arm here. Placeholder classes now: vwap-sd position at entry,
+  prior-day close relationship, gap state, trigger-density analog
+  (touch count so far today).
