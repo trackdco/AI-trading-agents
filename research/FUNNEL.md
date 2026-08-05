@@ -9,15 +9,16 @@ quicker now, and findings will be documented."
   next stage); everything else PARKS at its current stage, state
   documented on its card. No new intakes/censuses until the active
   family resolves (ship, shelve, or kill).
-- PARKED STAGES (as of this ruling): nya-ivb-fadeB = agent rung paused on
-  baseline ruling (ship-ladder step 1); nya-daily-sweep =
+- PARKED STAGES: nya-ivb-fadeB + NYA-IB50-01 = folded into the ACTIVE
+  IB COMPLEX (NYA-IBC-01, card below); nya-daily-sweep =
   sleeve-certified, awaiting Brake redundancy + book decision;
-  nya-failed-auction hours-clock = earned grading, not yet run;
-  NYA-IB50-01 = search complete, frozen-spec + OOF proposal drafted,
-  stop-cap arm owed; nyo-rotation = park recommended; nypre pair =
-  shelved-eligible; queue preregs (vwap-pair RTH, level-interaction) =
-  not started.
-- ACTIVE FAMILY: set by Angus.
+  nya-failed-auction hours-clock = SHELVED BY ANGUS (frequency too low
+  to be worth the slot, ~0.9/wk; history stands in the candidate file);
+  nyo-rotation = park recommended; nypre pair = shelved-eligible.
+- ACTIVE FAMILY (this chat): NYA-IBC-01 the IB Complex.
+- SECOND CHAT (Angus): level-interaction family seeded with the
+  MrZincx London-50/PD level set — the high-frequency substrate
+  (~10-15 raw triggers/day); fit-span universe, uncapped from birth.
 
 Standing rule (ANGUS 2026-08-05): every strategy past step 1 gets a data card
 here, updated at EVERY stage boundary — raw trigger counts and frequency, raw
