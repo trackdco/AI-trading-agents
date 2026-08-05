@@ -141,7 +141,122 @@ Survivors are promoted to **forward accumulation**, not declared edges.
 
 ## PART 1 — CANDIDATES
 
-*(populated at Stage 2; every proposal listed, including pre-test discards with reasons)*
+**LEDGER N = 12.** Three generator agents, distinct lenses, capped at 4 each. Every proposal is
+listed, including the 12 discarded before testing — those cost no statistical power but they are
+recorded so nobody rediscovers them.
+
+### 1.1 The 12 trials
+
+| # | id | lens | role | events | disc | hold | med stop | intrabar |
+|---|---|---|---|---|---|---|---|---|
+| 1 | `sw-onx-reclaim` | A | **primary** | 172 | 119 (115s) | 53 (52s) | 34.0pt | close |
+| 2 | `sw-gap-nopart` | A | **primary** | 66 | 40 | 26 | 23.4pt | close |
+| 3 | `sw-gap-nopart-INV` | A | *diagnostic* — the gate INVERTED | 86 | 59 | 27 | 29.9pt | close |
+| 4 | `sw-open-drive-pcr` | A | **primary** | 101 | 75 | 26 | 51.5pt | close |
+| 5 | `sw-cvd-div-reclaim` | B | **primary** | 312 | 215 (162s) | 97 (76s) | 16.7pt | close |
+| 6 | `sw-thinbook-surprise` | B | **primary** | 194 | 132 | 62 | 17.2pt | close |
+| 7 | `sw-precash-value-migration` | B | **primary** | 141 | 90 | 51 | 42.2pt | close |
+| 8 | `sw-precash-price-migration-CTL` | B | *control* — price instead of VPOC | 122 | 73 | 49 | 39.4pt | close |
+| 9 | `sw-0830-secondleg` | C | **primary** | 64 | 39 | 25 | 31.9pt | **limit** |
+| 10 | `sw-0930-cashopen-carry` | C | **primary** | 67 | 45 | 22 | 61.5pt | close |
+| 11 | `sw-0830-secondleg-CANON` | C | *consistency arm* | 28 | 17 | 11 | 41.6pt | limit |
+| 12 | `sw-0930-carry-CANON` | C | *consistency arm* | 25 | 18 | 7 | 63.5pt | close |
+
+Every count above was produced independently twice — once by the generator during design, once by
+the harness implementation — and they agree exactly, including median stops to 0.1pt.
+
+### 1.2 ⛔ PROMOTION RULE — fixed here, before any discovery outcome was computed
+
+**Only the 8 PRIMARY candidates are eligible for the top-K=3 holdout.** The 4 diagnostic/control/
+consistency arms (#3, #8, #11, #12) exist to falsify or contextualise their parents; promoting one
+would be meaningless. **They still count as trials** — all 12 enter the noise floor's best-of-K and
+all 12 count toward multiplicity.
+
+**Effective-n floor for promotion: ≥30 discovery SESSIONS.** Sessions, not trades. #2 (40 sessions)
+and #9 (39) clear it narrowly; nothing is excluded by it a priori.
+
+### 1.3 Declared deviations, recorded rather than done quietly
+
+**Lens C keys on the TAPE, not the canonical whitelist**, against §0.5. Reasons, with numbers:
+the canonical-only version yields 17 discovery / 11 holdout events and is untestable; the
+whitelist is an intersection of two incomplete files (the newer carries PPI, Unemployment Claims,
+Philly Fed, Empire State and Durable Goods at 08:30, the older carries **none** of them); and the
+tape gate is **more** split-stable than the canonical flag (26.6%→30.9% across the boundary vs
+13.5%→19.6%). It is computed strictly from 08:00–08:30 bars, so it cannot carry a calendar-file
+artefact by construction. External validation that it detects releases and not noise: it fires on
+**16 of 37 discovery Thursdays** (weekly jobless claims, 08:30, calendar-certain) and **1 of 39
+discovery Mondays** (no Monday 08:30 release exists). Trials #11 and #12 are the canonical-only
+consistency arms, reported alongside and explicitly underpowered.
+
+### 1.4 ⚠️ #9 AND #10 ARE NOT INDEPENDENT — declared before testing
+
+85 distinct sessions fire at least one; **46 fire both** (28 discovery / 18 holdout); on every
+shared session the two take the **same directional side**. Their logs are not independent
+evidence. **If both reach the top-3 they are one bet with two geometries, not two bets**, and must
+be reported that way.
+
+### 1.5 ⚠️ A SECOND DATA DEFECT, found by Lens B and independently confirmed
+
+`data/reference/cvd/README.md` describes a **day-level** price-band clean. That cannot separate
+contracts during a quarterly roll, because the continuous 1-minute master switches contract inside
+the day and the day band spans both.
+
+Measured independently on the 06:00–11:00 ET slice: **4.53% of footprint rows and 2.42% of volume
+sit outside their own minute's bar range**, concentrated on quarterly roll dates —
+**2025-09-15 54.4% · 2025-12-15 51.1% · 2025-06-16 50.3% · 2026-03-16 40.3%**; 107 of 291 sessions
+exceed 1%. Un-cleaned, a roll-week volume profile is roughly half back-month and its VPOC can land
+hundreds of points outside the session's own range.
+
+**Every volume-at-price computation in this sweep applies a MINUTE-level band clean**
+(`price ∈ [bar.low − 1 tick, bar.high + 1 tick]` of that same minute). Aggregate per-minute
+vol/delta are affected by <1% of volume, so `flow_frame()` is NOT retroactively changed — that
+would silently alter already-committed results.
+
+### 1.6 Pre-test discards — 12 of them, zero statistical cost
+
+**Lens A (1).** `sw-thinsweep-openreclaim` — sweep of an Asia/London/PDH-PDL level in the thin
+08:00–09:29 book, reclaimed after the cash open. Good mechanism, adequate count (92 sessions).
+**Dies on geometry**: the thin book permits a 54.9pt median overshoot, so a stop just beyond the
+level puts 43% of events under 15pt (the `zxck-ifvg-50` failure mode), while a stop beyond the
+post-open extreme leaves the overnight-range draw at only **1.9 × risk** — i.e. **the locked 2R
+target sits beyond the mechanism's own draw**. Adding a ≥2R draw gate leaves 25 disc / 19 hold.
+*The pre-cash thin-book sweep is structurally incompatible with a fixed 2R exit on NQ.*
+
+**Lens B (4).** Thin-vs-thick pre-cash extreme break — **278 of 289 sessions (96%) close through a
+pre-cash extreme**, so the break is the norm, not an event, and both directional readings are
+available, which means neither is a hypothesis. · Low-volume-node traversal — median vacuum width
+**8.75pt**, smaller than any viable stop. · Average trade size — mean 1.396, sd 0.149, **no dynamic
+range at all**. · Absorption in any form — LDN-FLOW-01 (AUC 0.462–0.557) and LDN-DEF-01 (AUC
+0.451–0.515, all three measures sign-flip on the band ladder) already killed it at both
+resolutions; no differentiator beyond "different session".
+
+**Lens C (7).** 10:00 releases — canonical 20 disc / **8 hold**, and tape detection *fails* at
+10:00 (ratio 2.24 non-release vs 2.64 release — no separation, the release is drowned by ambient
+RTH volume). **This also explains why `zxck-10am-keyopen` landed exactly on the null: 10:00 is not
+a liquidity event once the cash market is open.** · 09:30 auction-concession fade — degenerates
+into "be in the market at 09:35" (90% of fills in 3 minutes), the `zxck-10am-keyopen` null. ·
+Opening-range continuation — `orb-fvg-nyopen` already sampled it at n=1558 across 4 arms; a new arm
+is a filter search on a retired card. · PDH/PDL sweep 08:00–10:30 — 20 disc / 8 hold after a risk
+floor. · Pre-release drift reversal — median |drift| 10.8pt, needs a sub-10pt stop. · Turn-of-month
+— n is fine (36/20) but direction is a constant LONG while NQ ran 21,304 → 29,690; **against a
+random-direction noise floor an always-long candidate earns the drift, not the mechanism**. · OPEX
+/ quarter-end / FOMC / roll week — 4–9 sessions each, dead on count. Roll is also undetectable:
+`nq_1m_master.parquet` carries **no contract identifier**.
+
+### 1.7 The binding arithmetic Lens C found, which explains its thin yield
+
+| sub-window | median 1-min range |
+|---|---|
+| 08:00–08:29 | **6.8 pt** |
+| 08:35–09:29 | 8.2 pt |
+| 09:30–10:30 | 20.8 pt |
+| the 08:30 bar, release day | **55.5 pt** (8.8× volume) |
+| the 09:30 bar | **46.0 pt** (13.6× volume) |
+
+A pre-09:30 entry needs ≥40pt of travel to make 2R; a post-09:30 entry with a noise-respecting stop
+needs ≥90pt. **Every calendar *return* anomaly is 5–25pt on NQ — an order of magnitude too small
+for this exit.** Only liquidity events displace price enough, and there are exactly two in the
+window: 08:30 and 09:30. That is why Lens C collapsed to 2 candidates rather than 4.
 
 ---
 
