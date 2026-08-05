@@ -176,6 +176,46 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - CANON SHAPE: raw 0.90 → legal cuts → 1.89 era-consistent — the textbook
   arc, second family to show it.
 
+## nya-vwr-rotation — VWAP sd2 rotation fade RTH (Orochi, as taught) — STAGE 1 CENSUS DONE, awaiting Angus's stage-2 call
+- STAGE: prereg (docs/PREREG-vwap-rotation.md, +4 amendments) → uncapped
+  raw census → carded → STOPPED. No holdout look spent. Ledger rows 241-255.
+- RAW TRIGGERS: 2,168 distinct sd2 reaches / 290 RTH sessions (7.48/sess,
+  first-reach-only 446 = 1.54/sess); reaches on 289/290 sessions.
+  THE EVENT EXISTS — no §5.9.1 census kill is available.
+- GATE ATTRITION: G1 (default, 2 closes beyond a ±1σ edge = acceptance)
+  removes 89%, 2,168 → 242 (0.83/sess — matches his taught 0-2/day cadence,
+  though RESPEC §8 expected only ~half removed). G2 325 / G3 626 / G4 113 /
+  G5 161.
+- RAW P&L (default E-a/S1cap20/T1-mean/developing/G1): n=242, WR 27.7%,
+  −392 pts, +$4,397, PF 1.14, mean +0.114R. Strict cost +$927, PF 1.03.
+- THE HEADLINE IS NOT EVIDENCE — three diagnostics void it:
+  (1) CAUSALITY — S1 stops beyond the trigger bar's own extreme, unknowable
+  at an intrabar limit fill. Strictly causal sibling S1c = **−$58, PF 1.00**.
+  The edge IS the leak. (2) FRAGILITY — total +27.5R, top 3 trades +26.0R,
+  remaining 239 trades **+1.5R = +$242** (drop-top-3, the rr_floor
+  precedent). (3) RISK SKEW — winners 10.8pt risk vs losers 13.9pt, which is
+  why the arm is −392 points but +27.5R.
+- SPLITS: 25H1 +$280 (n=17) / 25H2 +$958 (n=104) / 26H1 +$4,378 (n=114) /
+  26H2 −$1,219 (n=7). Years 2025 PF 1.08 / 2026 PF 1.21.
+- ARMS (15, all ledgered, NO arm t-stat above 1.1): entries E-b +$1,415 /
+  E-c −$5,151 / E-d (SPEC-3 compound grammar) −$1,652; stops S1c −$58 /
+  S2 +$756 / S3 −$2,349 / S4cap30 −$4,691 (monotone worse as cap widens);
+  targets T2 +$3,853 / T1-frozen +$5,916 (both inherit the S1 leak); gates
+  G2 +$3,413 / G3 −$7,553 / G4 −$69 / G5 +$2,558; warm-up 10min +$1,093.
+- IN-TRADE (§5.12-5 from birth): mean R t+2 +0.030 / t+3 +0.247 / t+5
+  +0.438 / t+8 −0.011 / t+10 +0.057 / t+15 +0.037 / t+30 +0.480 — peaks at
+  t+5, given back by t+8. MFE median +1.15R, MAE median −1.00R.
+- FLAG: stops modelled at the stop price, but price travels a median 0.79R
+  beyond it inside the stopping minute — stage-2 economics need a slippage
+  assumption.
+- NEXT RUNG: flow/depth/conviction/in-trade variable search per §5.11-9c —
+  ANGUS'S CALL, not started. Depth covers only 08:00-10:29 ET, i.e. the
+  first hour of RTH.
+- CANON SHAPE: at the canon's starting point (raw unprofitable) but weaker
+  than the IVB fade was — the causal raw set is FLAT, not merely ugly, and
+  the overnight cousin NYO-ROT-01 failed its corrected retest the same day.
+  Priority argument against the slate, not a kill.
+
 ## QUEUE (cards open at census)
 - INTAKE ROUND 2 (2026-08-05, specs in research/transcripts/*/SPEC-as-taught.md,
   credibility in research/findings/intake2-credibility.md):

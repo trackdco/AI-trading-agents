@@ -124,6 +124,66 @@ def inside_and_both_sides(C, vwap, up1, dn1, start=0):
     return out
 
 
+# ------------------------------------------- the raw trigger set proper
+def census_taps(r, day, warm="09:45", slope_max=3.0):
+    """THE RAW TRIGGER SET. Counts every distinct sd2 reach, independent of
+    any entry/stop/target arm.
+
+    A distinct 'tap' opens when price reaches the band having last been
+    inside it, and closes when price returns inside -- so a thrust that sits
+    beyond the band for twenty minutes is ONE reach, not twenty. This number
+    must not depend on trade outcomes: in the arm sims the scan resumes
+    after each trade resolves, which makes their event counts a function of
+    how long trades last (120 to 1055 across arms). That is a property of
+    the sim, not of the market. This function is the honest denominator.
+    """
+    r = r.sort_values("ts").reset_index(drop=True)
+    if len(r) < 200:
+        return []
+    H, L, C = r.high.to_numpy(), r.low.to_numpy(), r.close.to_numpy()
+    clock = r.clock.to_numpy()
+    vwap, sd = bands(r)
+    up1, dn1 = vwap + sd, vwap - sd
+    up2, dn2 = vwap + 2 * sd, vwap - 2 * sd
+    wi = int(np.argmax(clock >= warm)) if (clock >= warm).any() else len(r)
+    slope = np.nan_to_num(pd.Series(vwap).diff(15).to_numpy())
+
+    gates = {
+        "G1": gate_alive(C, up1, dn1, "G1", 2, start=wi),
+        "G2": gate_alive(C, up1, dn1, "G2", 3, start=wi),
+        "G3": gate_alive(C, up1, dn1, "G3", start=wi),
+        "G4": inside_and_both_sides(C, vwap, up1, dn1, start=wi),
+    }
+    gates["G5"] = gates["G1"] & (np.abs(slope) < slope_max)
+
+    # A new reach is counted only after at least one bar fails to reach the
+    # band. A thrust that camps beyond sd2 for twenty minutes is ONE reach;
+    # price oscillating across the band is genuinely several approaches.
+    rows = []
+    beyond_l = {-1: False, 1: False}
+    tap = {-1: 0, 1: 0}
+    for k in range(max(wi, 1), len(r)):
+        if clock[k] >= FLAT:
+            break
+        p = k - 1
+        for side, reached in ((-1, H[k] >= up2[p]), (1, L[k] <= dn2[p])):
+            if reached and not beyond_l[side]:
+                tap[side] += 1
+                rows.append(dict(
+                    day=day, year=day[:4], half=half_label(day),
+                    side=side, clock=clock[k], tap_n=tap[side],
+                    band_w_pts=float(2 * sd[p]),
+                    sd2_dist_sigma=float(
+                        abs((H[k] if side < 0 else L[k]) - vwap[p]) / max(sd[p], 1e-9)),
+                    vwap_slope15=float(slope[p]),
+                    **{g: bool(a[p]) for g, a in gates.items()}))
+            if reached:
+                beyond_l[side] = True
+            else:
+                beyond_l[side] = False
+    return rows
+
+
 # ------------------------------------------------------------- the sim
 def resolve(side, entry, stop, k0, H, L, C, vwap, up1, dn1, target, developing):
     """Walk forward from bar k0+1. Stop is checked before target within a
@@ -232,7 +292,14 @@ def run_session(r, day, cfg):
         # ---- stop arm (all capped; stop is OUR invention, never taught)
         cap = cfg["cap"]
         if cfg["stop"] == "S1":
+            # NOTE (causality): uses the TRIGGER bar's own extreme, which is
+            # not known when the limit fills intrabar. The level is knowable
+            # at that bar's close, and the stop is never tested before k+1,
+            # but the trade still survives the trigger bar's adverse move for
+            # free. S1c below is the strictly causal sibling.
             raw = abs((H[k] if side < 0 else L[k]) - entry) + 1.0
+        elif cfg["stop"] == "S1c":
+            raw = abs((H[p] if side < 0 else L[p]) - entry) + 1.0
         elif cfg["stop"] == "S2":
             raw = abs(lvl - entry) + 0.5 * sd[p]
         else:
@@ -250,7 +317,7 @@ def run_session(r, day, cfg):
             pts, jx, reason = resolve(side, entry, stop, k_ent, H, L, C,
                                       vwap, up1, dn1, cfg["target"], cfg["developing"])
             net_r = (pts - FR) / risk
-            mfe, mae, ck = excursions(side, entry, risk, k_ent, jx, H, L, C)
+            mfe, mae, ck = excursions(side, entry, risk, k_ent, jx, H, L, C, reason)
 
         rec.update(status="filled", entry=float(entry), stop=float(stop),
                    risk_pts=risk, exit_reason=reason,
@@ -262,16 +329,25 @@ def run_session(r, day, cfg):
     return out
 
 
-def excursions(side, entry, risk, k0, jx, H, L, C):
-    """MFE/MAE in R plus the §5.12-5 time-segment checkpoints."""
+def excursions(side, entry, risk, k0, jx, H, L, C, reason="time"):
+    """MFE/MAE in R plus the §5.12-5 time-segment checkpoints.
+
+    `mae_raw_r` includes the full range of the EXIT bar. On a stop exit that
+    overstates what the trade actually suffered -- the position was already
+    out at the stop price -- so `mae_r` is clamped to -1R there. The two are
+    both carried: their gap is how far price travelled beyond the stop
+    inside the stopping minute, i.e. how optimistic the
+    stop-fills-at-the-stop assumption is.
+    """
     hi = H[k0 + 1:jx + 1]; lo = L[k0 + 1:jx + 1]
     if not len(hi):
-        mfe = mae = 0.0
+        mfe = mae_raw = 0.0
     else:
         fav = (hi.max() - entry) if side > 0 else (entry - lo.min())
         adv = (entry - lo.min()) if side > 0 else (hi.max() - entry)
-        mfe, mae = float(fav / risk), float(-adv / risk)
-    ck = {}
+        mfe, mae_raw = float(fav / risk), float(-adv / risk)
+    mae = max(mae_raw, -1.0) if reason.startswith("stop") else mae_raw
+    ck = {"mae_raw_r": mae_raw}
     for t in CHECKPOINTS:
         idx = min(k0 + t, len(C) - 1)
         ck[f"r_t{t}"] = float(side * (C[idx] - entry) / risk)
@@ -327,7 +403,7 @@ def spec3(side, k, entry1, stop, risk, H, L, C, clock, vwap, up1, dn1, sd, cfg):
     r1 = (pts1 - FR) / risk
     if add is None:
         net = (1 / 3) * r1
-        mfe, mae, ck = excursions(side, e1, risk, k1, jx1, H, L, C)
+        mfe, mae, ck = excursions(side, e1, risk, k1, jx1, H, L, C, why1)
         return net, jx1, why1 + "_notrancheB", mfe, mae, ck
     e2 = C[add]
     risk2 = max(abs(e2 - stop), 2.0)
@@ -336,7 +412,7 @@ def spec3(side, k, entry1, stop, risk, H, L, C, clock, vwap, up1, dn1, sd, cfg):
     r2 = (pts2 - FR) / risk2
     net = (1 / 3) * r1 + (2 / 3) * r2
     jx = max(jx1, jx2)
-    mfe, mae, ck = excursions(side, e1, risk, k1, jx, H, L, C)
+    mfe, mae, ck = excursions(side, e1, risk, k1, jx, H, L, C, why1)
     return net, jx, f"{why1}+{why2}", mfe, mae, ck
 
 
@@ -380,6 +456,28 @@ def main() -> None:
     print(f"NYA-VWR-01 stage 1 — uncapped raw census")
     print(f"span {FIT0} -> {FIT1} | {len(days)} RTH sessions | "
           f"prereg docs/PREREG-vwap-rotation.md\n")
+    sessions_pre = {d: g for d, g in R[R.day.isin(days)].groupby("day")}
+
+    # ---------------- THE RAW TRIGGER SET (arm-independent) ----------------
+    taps = pd.DataFrame([x for d in days
+                         for x in census_taps(sessions_pre[d], d)])
+    taps.to_parquet(ROOT / "output/nya_vwr_taps.parquet", index=False)
+    st = taps[taps.tap_n == 1]        # first reach per session per side
+    print("RAW TRIGGER SET — every distinct sd2 reach, 09:45-15:55, no arm applied")
+    print(f"  ALL reaches:        {len(taps):5d} ({len(taps)/len(days):.2f}/session)")
+    print(f"  FIRST-reach only:   {len(st):5d} ({len(st)/len(days):.2f}/session)"
+          f"  <- one per session per side, the conservative count")
+    for g in ("G1", "G2", "G3", "G4", "G5"):
+        n, ns = int(taps[g].sum()), int(st[g].sum())
+        print(f"  gate {g} survivors:   all {n:5d} ({n/len(days):.2f}/sess, "
+              f"{n/len(taps):5.1%} of reaches) | first-only {ns:4d}")
+    print(f"  sides: short {int((taps.side<0).sum())} / long {int((taps.side>0).sum())}"
+          f" | tap #1 {int((taps.tap_n==1).sum())}, #2 {int((taps.tap_n==2).sum())},"
+          f" #3+ {int((taps.tap_n>=3).sum())}")
+    print("  reaches per half: " +
+          " ".join(f"{h}={n}" for h, n in taps.groupby('half').size().items()))
+    print("  sessions with >=1 reach: "
+          f"{taps.day.nunique()}/{len(days)} ({taps.day.nunique()/len(days):.0%})")
 
     default = dict(name="DEFAULT E-a/S1cap20/T1/dev/G1/09:30/15m",
                    entry="E-a", stop="S1", cap=20.0, target="T1",
@@ -387,7 +485,7 @@ def main() -> None:
     arms = [default]
     for e in ("E-b", "E-c", "E-d"):
         arms.append({**default, "name": f"entry {e}", "entry": e})
-    for s, c in (("S2", 20.0), ("S3", 20.0), ("S4", 30.0)):
+    for s, c in (("S1c", 20.0), ("S2", 20.0), ("S3", 20.0), ("S4", 30.0)):
         arms.append({**default, "name": f"stop {s}cap{int(c)}", "stop": s, "cap": c})
     arms.append({**default, "name": "target T2 (far edge)", "target": "T2"})
     arms.append({**default, "name": "target T1 frozen", "developing": False})
@@ -395,7 +493,7 @@ def main() -> None:
         arms.append({**default, "name": f"gate {g}", "gate": g})
     arms.append({**default, "name": "warm-up 10min", "warmup": "09:40"})
 
-    sessions = {d: g for d, g in R[R.day.isin(days)].groupby("day")}
+    sessions = sessions_pre
     allrows = []
     for cfg in arms:
         rows = []
@@ -423,6 +521,18 @@ def main() -> None:
         print(f"strict cost (2pt): ${BASE*f.net_r_strict.sum():+,.0f} "
               f"PF {f.net_r_strict[f.net_r_strict>0].sum()/max(-f.net_r_strict[f.net_r_strict<=0].sum(),1e-9):.2f}")
         print(f"MFE median {f.mfe_r.median():+.2f}R | MAE median {f.mae_r.median():+.2f}R")
+        # fragility (§2.5 drop-top-3) and the R-vs-points divergence
+        top3 = f.net_r.nlargest(3).sum()
+        print(f"drop-top-3: total {f.net_r.sum():+.1f}R, "
+              f"top 3 = {top3:+.1f}R, remainder {f.net_r.sum()-top3:+.1f}R "
+              f"-> ${BASE*(f.net_r.sum()-top3):+,.0f}")
+        print(f"RISK SKEW (why points and dollars disagree): "
+              f"winners avg risk {f[f.net_r>0].risk_pts.mean():.1f}pt vs "
+              f"losers {f[f.net_r<=0].risk_pts.mean():.1f}pt "
+              f"— net {f.pts_net.sum():+.0f}pts but {f.net_r.sum():+.1f}R")
+        beyond = (f.mae_raw_r - f.mae_r).abs()
+        print(f"STOP-FILL OPTIMISM: median travel beyond the stop inside the "
+              f"stopping minute = {beyond[f.exit_reason=='stop'].median():.2f}R")
         print("checkpoints (mean R): " +
               " ".join(f"t+{t}={f[f'r_t{t}'].mean():+.3f}" for t in CHECKPOINTS))
         print("\nby year:")

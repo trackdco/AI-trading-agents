@@ -258,6 +258,16 @@ developing target the mean can rise to meet a short (or fall to meet a
 long): price and the mean still converge, but the exit books a loss.
 These are reported as their own exit reason rather than as "target".
 
+**Amendment 4 — stop arm S1 is not strictly causal; S1c added.** S1 places
+the stop beyond the TRIGGER BAR's own extreme. With entry E-a the limit
+fills intrabar, so that extreme is not yet known: the level is knowable at
+the bar's close and the stop is never tested before the following bar, but
+the trade survives the trigger bar's own adverse move for free. Arm **S1c**
+is the strictly causal sibling — stop beyond the PRIOR bar's extreme, fully
+known at entry. S2/S3/S4 were already causal (S2 reads only the band and
+sigma as of the prior bar; S3/S4 are fixed caps). Both S1 and S1c are
+reported; the causal reading of any S1 number is S1c.
+
 **Contamination disclosure (§0 law 4).** The defective run printed partial
 numbers for three gate arms (G2/G3/G4) before the bug was found. Those
 numbers are **VOID** and were used for nothing except diagnosing the
