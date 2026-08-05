@@ -220,6 +220,28 @@ def journal_digest(rows: list[dict]) -> str:
             lines.append(f"  your early cuts with {label} (n{len(sel)}): {died} would "
                          f"have stopped anyway; median run after you left "
                          f"{lp[len(lp) // 2]:+.2f}R")
+    # THE TRAIL GAUGE. The dominant discretionary behaviour on this desk is
+    # tightening a stop until it catches the trade — invisible to the cut gauge
+    # above (those are 'agent_exit'; these die as 'stop' above -1R). Split by the
+    # flow you tightened into, so the lesson is "when it looked like THIS",
+    # not a blanket "stop trailing".
+    trail = [t for t in tr_all if t.get("touched") and t["exit_reason"] == "stop"
+             and t.get("agent_R", -1) > -0.95]
+    if trail:
+        d = sum(t["agent_dollars"] - t["mech_dollars"] for t in trail)
+        lines.append(f"  YOUR TRAILED STOPS caught {len(trail)} trades, net "
+                     f"${d:+,.0f} vs letting the engine run them")
+        for label, sel in (
+                ("flow still WITH you", [t for t in trail
+                                         if t.get("cvd5_at_exit", 0) > 0]),
+                ("flow AGAINST you", [t for t in trail
+                                      if t.get("cvd5_at_exit", 0) <= 0])):
+            if not sel:
+                continue
+            lp = sorted(t.get("left_peak_R") or 0.0 for t in sel)
+            dd = sum(t["agent_dollars"] - t["mech_dollars"] for t in sel)
+            lines.append(f"    tightened with {label} (n{len(sel)}): ${dd:+,.0f}; "
+                         f"median {lp[len(lp) // 2]:+.2f}R ran on AFTER your stop hit")
     caps = sorted(t["capture"] for t in tr_all if t.get("capture") is not None)
     if caps:
         lines.append(f"  capture (realized/peak, trades that reached +0.5R): "

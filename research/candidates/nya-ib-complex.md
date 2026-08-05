@@ -668,3 +668,24 @@ case, and the honest reason daily is out of reach. Charter v1.3 tells
 the desk its book rolls fortnightly; dashboard deviation-rate now
 buckets per journal block instead of per calendar month. Passive==B0
 re-validated at the new settings.
+
+### DIGEST GAUGE FIX — THE TRAIL LEAK WAS INVISIBLE [2026-08-05, day 29]
+Angus, on the block-2 giveback: "id like to think the agents will learn
+from that give back." CHECKED RATHER THAN ASSUMED — and the feedback
+loop was aimed at the wrong behaviour. The digest carried the canon
+run-1 gauge for EARLY CUTS (exit_reason 'agent_exit'): n=2 in 29 days,
+i.e. noise. The desk's actual dominant behaviour is TIGHTENING A STOP
+UNTIL IT CATCHES THE TRADE — those die as exit_reason 'stop' above
+-0.95R and were counted nowhere: n=32, net -$378 vs letting the engine
+run them. The single biggest leak was absent from the desk's own
+feedback; it could only see it through the last-2 rotating debrief
+quotes. FIX: added a TRAIL GAUGE to the digest, split by the flow state
+the desk tightened into (same conditioning convention as run-1), so the
+lesson reads "when it looked like THIS" rather than a blanket "stop
+trailing" — important because trailing is NOT uniformly bad here
+(several trails beat the machine: +$300 saving a loser, +$332, +$258).
+First reading, day 29: trailed with flow still WITH you n12 -$150,
+median +2.36R ran on after the stop hit; with flow AGAINST you n20
+-$227, median +2.10R ran on. BASIS STAMP: days 1-29 ran without the
+trail gauge; run restarted from day 30 so the desk reads it. Completed
+days are preserved (resume by state.json) — no re-simulation.
