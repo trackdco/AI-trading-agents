@@ -21,7 +21,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.nya_sb01_feasibility import (  # noqa: E402
-    MACROS, MSS_LOOKBACK, find_fvg, load_bars, session_extremes, swing_levels,
+    MACROS, MSS_LOOKBACK, find_fvg, load_bars, order_block, session_extremes, swing_levels,
 )
 
 PHI = NormalDist()
@@ -42,6 +42,7 @@ def build(offset_min: int = 0) -> pd.DataFrame:
             if losses >= 2:
                 break
             m0, m1 = m0 + offset_min, m1 + offset_min
+            m1_abs = m1
             w = g[(g.mins >= m0) & (g.mins <= m1)].reset_index(drop=True)
             if len(w) < 20:
                 continue
@@ -66,24 +67,32 @@ def build(offset_min: int = 0) -> pd.DataFrame:
                 fv = find_fvg(w, m, side)
                 if fv is None:
                     continue
-                edge, far = fv
+                edge, far, fstart = fv
+                ob, _ = order_block(w, fstart, side)
+                if ob is None:
+                    continue
                 fwd = w.iloc[m + 1:]
                 fill = ((fwd.high >= edge) if side < 0 else (fwd.low <= edge))
                 if not len(fwd) or not fill.any():
                     continue
                 t = int(fill.idxmax())
-                # PREREG AMENDMENT 2026-08-06 (see docs/PREREG-nya-silver-bullet.md §3a):
-                # stop is the FVG's FAR edge — the structural invalidation of the
-                # displacement — NOT the swept level. The swept level gave a median 58pt /
-                # mean 93pt risk against his stated 27-53pt stops, so it contradicted source.
-                entry, stop = edge, far
+                # AMENDMENT v3 (Brake, 2026-08-06): stop at the ORDER BLOCK EDGE.
+                # Validated against an external anchor BEFORE any outcome was read: median
+                # 19.2pt / mean 25.5pt risk vs his stated 27/28/51/53. v1 (swept level, 58pt)
+                # and v2 (FVG edge, 3.75pt) both contradicted source and are void.
+                entry, stop = edge, ob
                 risk = abs(entry - stop)
                 if risk <= 0:
                     continue
                 target = entry - 2 * risk if side < 0 else entry + 2 * risk
                 # resolve bar by bar; stop assumed first on same-bar ambiguity
+                # EXIT HORIZON (amendment): his targets exceed some windows' whole range,
+                # so trades cannot be resolving inside 30 min. Resolve forward to the RTH
+                # close instead of truncating at the window edge.
+                fwd_all = g[(g.mins > m1_abs) | (g.index.isin([]))]
+                tail = pd.concat([w.iloc[t + 1:], g[(g.mins > m1_abs) & (g.mins <= 16 * 60)]])
                 out = None
-                for _, bar in w.iloc[t + 1:].iterrows():
+                for _, bar in tail.iterrows():
                     hit_stop = bar.high >= stop if side < 0 else bar.low <= stop
                     hit_tgt = bar.low <= target if side < 0 else bar.high >= target
                     if hit_stop:

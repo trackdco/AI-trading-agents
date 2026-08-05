@@ -95,10 +95,29 @@ def find_fvg(w: pd.DataFrame, i: int, side: int) -> float | None:
     for j in range(max(2, i - 6), i + 1):
         a, c = w.iloc[j - 2], w.iloc[j]
         if side < 0 and a.low > c.high:
-            return float(c.high), float(a.low)   # (entry edge, far edge = invalidation)
+            return float(c.high), float(a.low), j - 2
         if side > 0 and a.high < c.low:
-            return float(c.low), float(a.high)
+            return float(c.low), float(a.high), j - 2
     return None
+
+
+def order_block(w, fvg_start: int, side: int, max_back: int = 12):
+    """OUR definition, NOT his — he never specifies identification (8 transcripts).
+
+    ICT canon: the last candle opposing the displacement, immediately before the leg that
+    broke structure. Short setup -> the last UP candle before the down-displacement.
+
+    Returns (level, idx): the level is the OB's protective extreme — its HIGH for a short,
+    LOW for a long. A stop sits just beyond it.
+    """
+    for j in range(fvg_start, max(-1, fvg_start - max_back), -1):
+        if j < 0:
+            break
+        bar = w.iloc[j]
+        up = bar.close > bar.open
+        if (side < 0 and up) or (side > 0 and not up):
+            return (float(bar.high) if side < 0 else float(bar.low)), j
+    return None, None
 
 
 def scan() -> pd.DataFrame:
