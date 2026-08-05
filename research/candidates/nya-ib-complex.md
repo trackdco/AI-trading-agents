@@ -454,3 +454,28 @@ own shadow receipts. Ledger row 259.
   right of way; zero integration complexity). Angus to rule; then the
   ship package goes to the standard two-party arming with Pat (currently
   gated on his certification).
+
+### BOOK-SELECTOR AGENT RUN (DECLARED 2026-08-05, per docs/PREREG-selector.md)
+ANGUS: "an agent run where it now has this strategy and the canon encoded
+... what trades it takes, how it manages them ... what happens when theres
+an overlapping setup opposing eachother." THE SELECTION-DISCRETION
+EXPERIMENT (his long-standing rule: selection discretion must be EARNED
+vs mechanical arbitration baselines; conviction tie-breaks only as
+pre-declared causal scores).
+DESIGN (scoped to isolate SELECTION):
+- One conversation per DAY (desk view), all 112 shelf fit days (canon
+  active on 51, all 8 opposite-direction conflicts included; canon-only
+  days excluded — they carry no interaction information).
+- Events: canon fill (take/skip), shelf touch (take/skip; tier + $200/
+  $300 sizing shown), CONFLICT event when an opposing signal arrives
+  while a position is open (options: net both / skip new / cut old +
+  take new).
+- MANAGEMENT IS MECHANICAL BOTH ENGINES this run (canon = its shipped
+  two-rule walk at 1-lot dollars; shelf = frozen spec walk at 200/300) —
+  per-engine management was already tested; this run tests the BOOK.
+- BASELINES: B0 = take everything (net conflicts); B1 = canon precedence
+  (shelf skips opposite-entry). Agent must beat BOTH to claim selection
+  alpha. Skips forfeit that trade's mechanical P&L — the only lever is
+  judgment.
+- Spec: .claude/agents/book-selector-v1.md; harness:
+  scripts/nya_book_desk_run.py; journal = day rows with every decision.
