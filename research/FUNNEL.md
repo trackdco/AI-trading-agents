@@ -94,8 +94,12 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   V-A shift-out n=63 PF 0.92 ($-1,060, only 2025 positive); V-B
   doubled-edge hold n=74 PF 0.82 ($-129, scratch-truncated). BOTH worse
   than the vacated touch-fade baseline below. Testing the RIGHT trade did
-  not help. No bin yet (§5.9.1) — declared conditioning owed on the
-  corrected events; flow-span overlap thin (~20), will be reported honestly.
+  not help.
+- TRIAL 4 (conditioning, corrected events): no era-consistent positive
+  gate; only consistent cell is NEGATIVE (V-A 18-22 PF 0.17 all 4 years);
+  flow cells n=6-15 unclaimable; absorption structurally absent.
+  RECOMMENDATION TO ANGUS: PARK as-taught (no verdict — too thin past the
+  raw negatives); reopen when the flow span ~doubles. Awaiting his ruling.
 - RAW TRIGGERS: 145 first-touch / 156 all-touch events over 548 composite-live
   overnight sessions (~3/month — overnight touches of day-built balances are
   structurally rare).
