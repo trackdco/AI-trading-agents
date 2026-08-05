@@ -33,8 +33,13 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   race than the taught trade), vacated on canon-parity, alive on retest —
   the correction that proved the framework audit mattered.
 
-## nya-failed-auction — balance-break fail branch (dual-sourced) — ALIVE, deep pass
-- STAGE: conditioning found; deep pass (walls, day/open type) + 23/24 loop owed.
+## nya-failed-auction — balance-break fail branch (dual-sourced) — ON HOLD: 23/24 look failed, retest banked
+- STAGE: deep pass complete; §5.9.4 look #1 SPENT and FAILED (deep skeleton
+  PF 0.68 / with cut 0.76 on 147 events, negative both years); the single
+  rebalance-retest is BANKED — no rebalance candidate has credible in-fit
+  support yet (participation proxy: n=7, PF 5.66 — promising, too thin).
+  Cannot ship until a successful retest. Regime note: thrives 25-26, starves
+  23-24 — inverse of the canon's regime profile.
 - RAW TRIGGERS: 457 breaks / 911 sessions (~2.5/wk); 248 in-window fails; 71
   fail events on flow span.
 - RAW P&L (L1, full span): n=248, WR 35%, −1,025 pts, PF 0.83 — ugly as the

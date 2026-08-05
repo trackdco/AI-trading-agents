@@ -155,7 +155,30 @@ Arms this trial: 4 (test_drive cut, wall>=3, wall<3, day-type diagnostic).
 Family count 24. NEXT: 23/24 candle look (the ONE §5.9.4 iteration),
 graders re-run with the test_drive-cut arm included.
 
-### Trial 5 — accept-branch conditioning (2026-08-05, flow span) — PARKED, too few events
+### Trial 9 — THE 23/24 CANDLE LOOK (2026-08-05, §5.9.4) — FAILED; retest BANKED
+scripts/nya_fa_2324_look.py (output/nya_fa_2324_look.parquet). Look #1 of
+the family's allowance, spent on the conditioned candle skeleton (deep
+cohort, frozen flow-span threshold 0.117, with/without test_drive cut):
+147 fail events 2023-24 — deep PF 0.68 (n=73, −456 pts), deep+cut PF 0.76
+(n=63), negative BOTH years (2023 worse than 2024). Depth still
+discriminates directionally (WR 29% deep vs 12% shallow) but does not pay
+out-of-fit. DIAGNOSIS (in-fit, flow span, legal): the missing half of the
+trapped-mass mechanism is PARTICIPATION — a candle-legal excursion-volume
+proxy separates the spec cohort in-fit (evr>=1.3: n=7, WR 71%, PF 5.66 vs
+low-participation PF 1.22) but n=7 is too thin to bet the single retest on,
+the 1.3 threshold is ad hoc, and the proxy disagrees with G2 on 62% of
+events (different variable, not a stand-in). Composite age: noise-shaped
+(2.61/1.02/7.26 on 16/9/3). Very-deep: worse (1.45).
+RULING APPLIED: the ONE rebalance-retest is BANKED, not spent — no
+candidate rebalance has credible in-fit support at meaningful n, and
+spending the family's last out-of-fit bullet on a 7-trade cell is the
+exact gamble §6.0 exists to prevent. STATUS: family CANNOT SHIP until a
+successful retest (§5.9.4); stays shelved with the participation thesis
+maturing as flow-span events accrue (live + Brake's data). Honest regime
+note: 25-26 success + 23-24 failure may be genuine regime dependence — the
+mean-reversion fade thrives where the canon's with-trend logic starves,
+and vice versa; a book story, but not one that overrides the ruling.
+Arms this trial: 4 (look cells + evr proxy + age + very-deep). Family 28.
 scripts/nya_fa_accept.py (events in output/nya_fa_accept_events.parquet).
 Only 15 accept-then-retest events exist on the whole flow span — accepted
 breaks rarely return to the broken edge (which is itself consistent with
