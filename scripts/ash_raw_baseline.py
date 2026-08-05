@@ -57,9 +57,14 @@ from scripts.nya_sb01_feasibility import (  # noqa: E402
 
 NY = "America/New_York"
 RTH_END = 16 * 60
+# NARROWED 2026-08-06 (Brake): AM1 ONLY from here on.
+# Legitimacy note — this is NOT rank-and-promote. He names AM1 as highest-probability
+# BEFORE any test, with a stated mechanism: "that's because it's 15 minutes after the New
+# York open... it injects high liquidity and therefore makes it high probability"
+# [qngA8aIfV0M 01:46]. §6.0 permits a mechanism-prior default spec; it forbids picking the
+# in-sample winner. AM1 was his pick first and ours second.
 SESSIONS = {
-    "NY": [("AM1", 585, 615), ("AM2", 645, 675), ("LUNCH", 705, 735), ("PM", 825, 855)],
-    "LONDON": [("LDN1", 165, 195), ("LDN2", 225, 255)],
+    "NY": [("AM1", 585, 615)],
 }
 
 
@@ -206,7 +211,7 @@ def main() -> None:
     out_dir = ROOT / "research/ash10hazard/strategies"
     out_dir.mkdir(parents=True, exist_ok=True)
     allt = []
-    for sess in ("NY", "LONDON"):
+    for sess in SESSIONS:
         d = run(sess, bars)
         allt.append(d)
         s = stats(d)

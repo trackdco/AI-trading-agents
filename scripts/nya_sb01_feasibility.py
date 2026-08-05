@@ -38,7 +38,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 NY = "America/New_York"
-START, END = "2025-07-01", "2026-07-15"
+START, END = "2025-01-01", "2026-07-15"
 FLOOR = 30
 # his macro schedule, ET local (qngA8aIfV0M 00:27-01:46). 12:45-13:15 is SKIPPED by him.
 MACROS = [("AM1", 9 * 60 + 45, 10 * 60 + 15), ("AM2", 10 * 60 + 45, 11 * 60 + 15),

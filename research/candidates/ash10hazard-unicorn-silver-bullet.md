@@ -278,7 +278,47 @@ See `research/ash10hazard/channel-overview.md`.
 
 ## Backtest / forward-test notes
 
-### RAW BASELINE — 2026-08-06, exactly as taught, no enhancements
+### ⬛ SCOPE NARROWED 2026-08-06 (Brake): AM1 09:45–10:15 ET ONLY from here on
+
+**Why this is not rank-and-promote.** AM1 was named by *him* as highest-probability, with a
+mechanism, before any test: *"which session actually has the highest probability? And that
+would be the first day macro, and that's because it's 15 minutes after the New York open,
+which is when the stock exchange actually opens up. So, it injects high liquidity and
+therefore makes it high probability"* `[qngA8aIfV0M @ 01:46]`. §6.0 permits a
+**mechanism-prior default spec**; it forbids promoting the in-sample winner. AM1 was his
+pick first and our result second — the two agreeing is corroboration, not selection.
+
+**AM1-only baseline, span extended to the full non-sealed range (2025-01-01 → 2026-07-15):**
+
+| | |
+|---|---|
+| n | **37** (2025-03-07 → 2026-07-15) |
+| win / BE / loss | 15 / 10 / 12 |
+| **win rate** | **40.5%** |
+| **avg R** | **+0.486** |
+| cost | 0.053R/trade (median stop 25.5 pts) |
+| **expectancy net** | **+0.434R** |
+| total | +18.0R gross / **+16.1R net** |
+| **max drawdown** | **3.0R** |
+| direction | 29 long / 8 short |
+
+| era | n | WR | avg R | total |
+|---|---|---|---|---|
+| 2025 | 27 | 37.0% | +0.333 | +9.0R |
+| 2026 | 10 | 50.0% | +0.900 | +9.0R |
+
+**Both eras positive** — the first candidate in this repo to manage that. But **n=37 is
+above the n≥30 floor and below the 50-setup target**, and 2026 holds only 10 trades.
+
+**Median stop 25.5 pts now sits squarely inside his stated 27/28/51/53 range** — the
+AM1-only sample is the closest match to his own trade geometry yet.
+
+⚠️ **Not yet graded.** No DSR/PBO applied; the deflation bar at N=58 is +0.5636 and this has
+not been put through it. The ES leading trigger is still missing.
+
+---
+
+### RAW BASELINE (all 6 windows) — 2026-08-06, superseded by the narrowing above
 
 `scripts/ash_raw_baseline.py` · trades: `research/ash10hazard/strategies/ash-unicorn-sb-raw-trades.csv`
 
