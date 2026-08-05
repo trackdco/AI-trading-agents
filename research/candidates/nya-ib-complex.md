@@ -710,3 +710,26 @@ trades taken were BASE tier (no CONFIRMED yet — sample, ~26% base rate).
 BASIS STAMP: days 1-29 ran on the old engine-split wording; resumed
 from day 30 (completed days preserved). Watch: does shelf pass-rate
 fall toward canon's after day 30?
+
+### SAMPLE DISCIPLINE — CHARTER v1.4 [ANGUS, the deeper diagnosis]
+He reframed the engine-blame finding as the general disease: "it takes
+what a dozen trades and draws the conclusion, thats way too
+inconclusive to draw conclusions around... it should be trading like
+that for the first couple months minimum and using the journal as
+DOCUMENTATION rather than RULING, just like i wouldnt take 5 trades,
+see one part underperform and just burn it." RULED INTO THE CHARTER:
+(a) new section "Your journal is a logbook, not a verdict" — both
+engines were certified on hundreds of trades; the desk's own record is
+a handful and cannot rule on a strategy or even on its own handling at
+that size; trade the book and document in the early months. (b) A pass
+must be justified by what is IN FRONT OF IT (flow against, conflicting
+position, session read) — NEVER by a thin or red logbook on that
+engine. (c) Digest now stamps every per-engine handling number with its
+n and marks it "LOGBOOK ONLY" under SAMPLE_FLOOR=40 of the desk's own
+trades on that engine. He also settled the entry-origination question:
+self-originated trades outside both rulebooks are NOT wanted ("outside
+of our criteria it probably wont find any other trades... more so i
+think about cutting losers entirely if it can spot them out early") —
+participation discretion stays pass/take only, and he is satisfied the
+early-cut behaviour already covers his real interest. BASIS STAMP:
+days 1-29 pre-v1.4; resumed day 30.

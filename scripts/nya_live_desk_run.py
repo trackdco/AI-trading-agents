@@ -66,6 +66,11 @@ SHELF_TIER = {"CONFIRMED": 300.0, "BASE": 200.0}
 # Going below 10 does cost: 5-day batches cap parallelism at 5 (~16h), daily
 # chaining is fully sequential (~80h).
 BATCH_DAYS = 10
+# Angus: "it takes what a dozen trades and draws the conclusion, thats way too
+# inconclusive... it should be trading like that for the first couple months
+# minimum and using the journal as documentation rather than ruling, just like i
+# wouldnt take 5 trades, see one part underperform and just burn it."
+SAMPLE_FLOOR = 40
 MAX_TURNS_DAY = 600
 CLI_TIMEOUT = 240
 WORKERS = 10
@@ -201,12 +206,17 @@ def journal_digest(rows: list[dict]) -> str:
             f"({len(ps) / fired:.0%})")
         lines.append(f"    the ENGINE earned ${dm:+,.0f} on the ones you took — that is "
                      f"the strategy's own record, and it is not in question")
+        verdict = ("LOGBOOK ONLY — n is far too small to mean anything yet"
+                   if len(tr) < SAMPLE_FLOOR else "sample is getting usable")
         lines.append(f"    YOUR HANDLING of them: ${da:+,.0f} (${da - dm:+,.0f} vs the "
-                     f"engine) — this number is about YOU, not the strategy")
-    lines.append("  NOTE: a negative handling number is a reason to manage differently, "
-                 "NOT a reason to stop taking that engine's signals. Both engines are "
-                 "certified; passing them because your own management lagged just "
-                 "starves the book.")
+                     f"engine) on n={len(tr)} — {verdict}")
+    lines.append(f"  SAMPLE DISCIPLINE: both engines were certified on hundreds of "
+                 f"trades. Under ~{SAMPLE_FLOOR} of your own trades on an engine you "
+                 f"have NO basis to judge it — that is a logbook entry, not a verdict. "
+                 f"A run of bad handling means manage differently; it never means stop "
+                 f"taking that engine's signals. Pass a signal only for what the TAPE "
+                 f"and your BOOK say right now (flow against it, a conflicting "
+                 f"position), never because your record on that engine looks thin.")
     ps = [p for r in rows for p in r["passes"]]
     if ps:
         forf = sum(p["mech_dollars"] for p in ps)
