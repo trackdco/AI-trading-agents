@@ -170,6 +170,38 @@ London-window range and efficiency by month. That is a cheap measurement that
 either kills the concern or turns it into a regime filter we would want anyway.
 Not run: it needs its own prereg and Angus should see the changed picture first.
 
+## The swing vote landed — EzTrades' London Po3, fully specified but instrument-silent
+
+[`uGE_GP9-nxU`] states a complete, time-anchored model in **Eastern time**,
+which maps straight onto our substrate:
+
+| Component | Rule |
+|---|---|
+| **Accumulation** | a range forms roughly **01:00–02:00 ET** — *"a lot of times London just accumulates, which is why the strategy works"* |
+| **Manipulation** | the sweep of that range at **~03:00 ET** — *"you are only trading the 3:00 a.m. manipulation"*; *"most of the time you will see manipulation in that 3:00 a.m."*, sometimes 02:30, usually 03:00–04:00 |
+| **Entry trigger** | **inverse fair value gap (IFVG) on a 1–3 minute chart**, *"ideally a V-shaped inverse within a few candles"* |
+| **Direction** | catch the distribution leg after the manipulation |
+
+**Third independent source pointing at 03:00 ET.** Brandan's 08:00 UK is 03:00
+ET; EzTrades' "3:00 a.m. manipulation" is 03:00 ET; LDN-WIN-01 measured 03:00 ET
+as the volume peak in both eras. Three sources and one measurement on the same
+clock is the strongest agreement in this round.
+
+**But the instrument is unresolved, and that was the whole point of this video.**
+The transcript never names one — no "nasdaq", no "NQ", no "gold", no "futures".
+He shows it on the chart, and captions do not carry chart content. Attempts to
+pull the description for a hint hit the bot-check on every client.
+
+So the swing vote is **still open**. It has to be settled visually or from his
+other London video (`v7tdhjW84Ho`, queued), not from this transcript. Recording
+the limitation rather than assuming NQ because it would be convenient.
+
+**Worth noting what this model is.** PO3 + IFVG is ICT vocabulary. The
+accumulation-manipulation-distribution frame is the same object as the
+`london-asia-sweep-reversal` thesis the programme already greenlit — a sweep of
+an overnight range that fails and reverses. The novel parts here are the tight
+clock (03:00) and the IFVG entry trigger, not the mechanism.
+
 ### Where this leaves the sources
 
 | Source | London? | NQ? | Net |
