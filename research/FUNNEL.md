@@ -33,6 +33,39 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 
 ---
 
+## NYA-LVL-01 — level-interaction family (London 50 seed) — RAW SET BUILT, awaiting Angus
+- STAGE: stage 1 complete — prereg + raw uncapped trigger set. **STOPPED for Angus's
+  read before any optimisation**, per his order. Nothing filtered, nothing selected.
+- RAW TRIGGERS: **4,808 touches / 286 sessions, 4,759 filled = 16.6 per session**
+  (2025: 17.4, 2026: 15.8) vs the ~10-15/day design intent. Kill line was <2/session —
+  cleared by 8x. Fill rate 99% under the §2.5 limit rule.
+- BY LEVEL: PM_50 21% / PM_HIGH 20% / PM_LOW 18% / PD_HIGH 15% / PD_50 15% / PD_LOW 11%.
+- RAW P&L (base cost, Version B raw touch, ALL SIX ARMS, nothing selected):
+  S_LEVEL/T_LADDER n=4,310 WR 39% PF 0.79 | S_LEVEL/T_SCALP n=4,759 WR 61% PF 0.43 |
+  S_LEVEL/T_TIME n=4,759 WR 39% PF 0.91 | S_FAR/T_LADDER n=2,539 WR 59% PF 0.96 |
+  S_FAR/T_SCALP n=2,988 WR 79% PF 0.50 | S_FAR/T_TIME n=2,988 WR 50% PF 0.94.
+  **Every arm negative at both cost levels.** Ugly raw is the expected shape (§5.9.1).
+- **THE HEADLINE — REALISED STOP DISTANCE.** He teaches the stop as ~16 points. Measured
+  as taught (a 15-minute CLOSE beyond the level), it costs a **median 48.4 pts, p90 87.9**.
+  S_FAR is a **median 121 pts, p90 334**. His win rate is roughly real (61-79%); the stop
+  is ~3x what he says, which is why a 61% win rate still runs PF 0.43.
+- HALF-YEARS: 2025H1 PF 0.70 / 2025H2 0.47 / 2026H1 0.38 / 2026H2 0.30 — negative every
+  half, and drifting worse. No calendar pooling hiding anything.
+- VERSION A vs B (both taught, neither picked): break-then-retest n=1,133 WR 63% PF 0.87
+  vs raw touch n=4,759 WR 61% PF 0.43. **Reported, not acted on** — selecting here would
+  be a bin decision off the raw set (§5.9.1).
+- RECORDED FROM BIRTH (§5.12-5): level type, tap number (2 timeframes), clock, level age,
+  gap context, distance from open, MFE/MAE, t+5/15/30. His own filters (opening candle,
+  three-tap, 80/20 bias, 11:00 stop) are declared ARMS, none applied.
+- TWO BUGS CAUGHT AND FIXED BEFORE REPORTING: the far-extreme stop sat on the wrong side
+  of a fade (simulator read it as an instant target — produced a fake PF 9.18/90% WR);
+  and break-tracking skipped bars that touched the level, so Version A armed only twice
+  instead of 1,133 times.
+- NEXT: **Angus's call.** Stage 2 options per §5.11-9c are flow/depth/conviction; the
+  depth archive covers 08:00-10:29 ET, overlapping level formation and his prime window.
+- CANON SHAPE: canon-like so far — very high raw frequency, raw economics negative, all
+  the discriminating variables recorded and untouched.
+
 ## nya-ivb-fadeB — IVB range fade (Fabervaale, as taught) — ALIVE, mid-funnel
 - STAGE: geometry validated on flow span; era discipline + exit arms owed.
 - RAW TRIGGERS: 356 touches / 911 sessions full span (~2/wk); 105 on flow span.
