@@ -313,6 +313,14 @@ above the n≥30 floor and below the 50-setup target**, and 2026 holds only 10 t
 **Median stop 25.5 pts now sits squarely inside his stated 27/28/51/53 range** — the
 AM1-only sample is the closest match to his own trade geometry yet.
 
+**ORDER-FLOW ENHANCEMENT (2026-08-06)** — see `ash-unicorn-sb-orderflow.md`.
+Retracement-participation filter (fill volume < displacement volume) on the 29 flow-covered
+trades: **44.8% → 73.3% WR, +0.621 → +1.333 avg R**, keeps 52% of setups, both eras agree
+(2025 64%, 2026 100% on n=4), binomial p=0.0247. **But it adds only +2.0R of total profit** —
+it concentrates the edge rather than creating one — and the filtered arm is **n=15**.
+Displacement-delta was **vacuous** (removed 0 of 29), which also shows NQ delta cannot
+substitute for his ES check.
+
 ⚠️ **Not yet graded.** No DSR/PBO applied; the deflation bar at N=58 is +0.5636 and this has
 not been put through it. The ES leading trigger is still missing.
 
