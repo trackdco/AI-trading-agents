@@ -2,12 +2,12 @@
 id: ash-unicorn-sb
 name: "Unicorn Model / ICT Silver Bullet — his names, both used in the same video"
 trader: ash10hazard
-sources: [1cMWnAxElA0 @ 00:00–14:29, pD5l_gEje9I @ 00:00–08:54, UBIHB1oB784 @ 00:00–07:40]
-sessions: [New York]
+sources: [1cMWnAxElA0, pD5l_gEje9I, UBIHB1oB784, qngA8aIfV0M, 01xGCvuY3p8, N1EXytfVsiI, Ee_tC5P-F20]
+sessions: [New York, London]
 instruments: [NQ (traded), ES (confirmation only, not traded)]
 timeframes: [HTF: 15m for sweeps/structure, entry: 1m–5m]
 components: [liquidity-sweep, momentum-shift, fvg-fill, order-block-tap, multi-tf-alignment, session-timing, structure-stop, fixed-r, runner]
-maturity: core
+maturity: core (7 videos, rev d)
 ---
 
 ## Edge thesis
@@ -28,11 +28,25 @@ and this one genuinely does not.
 > *"The New York open, which happens at 9:30 a.m. New York local time… And then you'll be
 > trading until the end of the PM macro… till 2:15 p.m."* `[@ 00:00–00:21]`
 
-**Macro windows — status DISPUTED between his own videos.** Do not treat either reading as
-settled; see Contradictions #1.
-> `1cMWnAxElA0 @ 00:45–01:26`: *"Macro entries are obviously an added confluence"* … *"just
-> trading the full session completely eliminates the fact that you missed those trades."*
-> `pD5l_gEje9I @ 00:00`: *"the key factors are one, you need to be inside a macro."*
+**✅ MACRO IS A MANDATORY GATE — resolved rev d.** `[stated]`
+> *"if there is a good setup outside of macro, even by 5 minutes, should you take it? **No,
+> you shouldn't.**"* `[qngA8aIfV0M @ 03:00]`; *"**Even if it's 1 minute outside**, you should
+> not take that trade."* `[@ 03:48]`
+
+He argues against full-session trading `[qngA8aIfV0M @ 03:23]`, and treats a 30-second
+overrun as a rule break `[N1EXytfVsiI @ 00:49]`. **`1cMWnAxElA0 @ 01:26` is superseded.**
+
+| window (ET) | status |
+|---|---|
+| 09:45–10:15 | **highest probability** |
+| 10:45–11:15 | traded |
+| 11:45–12:15 | traded |
+| 12:45–13:15 | **skipped — "low probability macro"** |
+| 13:45–14:15 | traded, last of day |
+| **London** 02:45–03:15, 03:45–04:15 | *"both very high probability"*; his own stated expectancy **1–2R per MONTH** `[qngA8aIfV0M @ 02:10]` |
+
+**Daily stop:** two losing trades before the last session ends the day; wins never stop it
+`[qngA8aIfV0M @ 00:52]`. `[stated]`
 
 **Directional bias — two layers.**
 
@@ -313,3 +327,38 @@ no stated checklist existed in that video.
 and vlogs rather than tutorials. Next highest-value targets if the team wants more:
 `bnVKxbOokBQ` (Silver Bullet breakdown) and `01xGCvuY3p8` (trade management / break-even /
 trailing — likely to resolve Contradiction #5).
+
+---
+
+**2026-08-05d** — revised from `qngA8aIfV0M`, `01xGCvuY3p8`, `N1EXytfVsiI`, `Ee_tC5P-F20`.
+Full detail in `research/transcripts/ash10hazard/EXTRACTION-B-macros-management.md`.
+
+**Both major contradictions resolved:**
+- **#1 macro** → **mandatory gate**, with reasoning and behavioural corroboration. Schedule
+  now explicit, including a *skipped* 12:45–13:15 window. `1cMWnAxElA0 @ 01:26` superseded.
+- **#4 trailing** → **structure-based**: *"you trail your stop loss to the next point where
+  your trade becomes invalidated"* `[01xGCvuY3p8 @ 03:28]`. He explicitly rejects mechanical
+  early break-even `[@ 03:08]`. The R-multiple ladder is superseded and IS specifiable.
+
+**Refined:**
+- **Bias** — *"straight imbalances, no PD arrays, no order blocks on the high time frame"*
+  `[qngA8aIfV0M @ 04:39]`; state machine (out-of-gap → directional, swing taken → neutral)
+  across daily/4H/1H/15m/5m. **Mixed bias is tradeable** — he trades 5m+15m bullish against a
+  bearish 1H `[@ 06:21]`. Aggregation rule still unstated.
+- **Break-even** — 50% mark **AND** an FVG printing in the trade's direction
+  `[01xGCvuY3p8 @ 06:24]`. Batch A had only the 50% half.
+- **Target** — *"a 1 to 2 or 1 to 3 is perfect. You wouldn't really want to look for anything
+  more than that"* `[qngA8aIfV0M @ 08:35]`. Contradiction #3 resolves to a 1:2–1:3 band.
+- **ES is a LEADING trigger** — entry fires on ES tapping its FVG *before* NQ taps its own
+  `[qngA8aIfV0M @ 08:01]`. Deepens the ES data blocker: ES is part of the entry, not decoration.
+- **Sizing** — fixed dollar risk, contracts varied to match stop distance `[Ee_tC5P-F20 @ 00:29]`.
+- **London** — the same model on London macro windows; **not a separate card**
+  `[Ee_tC5P-F20 @ 00:01]`. `sessions` updated to [New York, London].
+
+**Reliability — highlight-reel characterisation formally withdrawn.** `N1EXytfVsiI` discloses
+an active losing streak, attributes losses to his own rule breaks, states an anti-guarantee
+(*"Anyone who's… guaranteeing you 100% win rate, that's not how it is"* `[@ 04:28]`), and
+discloses losing £10k at 16 `[@ 05:19]`.
+
+**Still unspecifiable after all seven videos:** order-block identification; bias aggregation;
+the *"clear where price is drawing to"* gate. Everything else is now mechanical.
