@@ -70,7 +70,7 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - ROLE IN THE AUDIT: the negative control — the funnel lifts real edges
   (cards above) and fails to lift dead ones. Both behaviors are required.
 
-## london-nq-open-break (LDN-OBK-01) — continuation branch — **DEAD** (earned)
+## london-nq-open-break (LDN-OBK-01) — continuation branch — KILL VACATED, search incomplete
 - STAGE: **complete** — census -> L1 -> conditioning -> L3 flow -> autopsy -> killed.
 - RAW TRIGGERS: 425 breaks / 396 London sessions (~1.1/day); 92% of 2025 days and
   93% of 2026 days carry at least one. Declared census floor was 30%.
@@ -100,9 +100,16 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   V2 and V3 flip sign between eras).
 - **L3 FLOW: 0 of 6 declared features confirmed.** Autopsy: 16 cut-sets, 5 legal,
   **none** positive at strict cost; de-risk also negative on all.
-- **VERDICT: KILLED on expectancy after the complete declared search (§5.9.2).** The
-  clock was right and the trade was not — same sentence as `nypre-euro-handoff`, second
-  session to teach it.
+- ~~VERDICT: KILLED on expectancy~~ — **VACATED**, see below.
+- **VERDICT WITHDRAWN same day.** §5.11/§5.12 landed after the kill. The L3 pass was
+  four tape features AT ENTRY plus two thin book features — §5.12.10 records that on the
+  shipped canon depth carried the entire edge (+0.5 to +1.3R) and flow at entry was a
+  rounding error. Weakest class, weakest moment, null treated as decisive. `W`/`D`/`WALLSZ`
+  never built. Plus: pooled flow nulls cannot close a gate (§5.11.4), no event-universe
+  sensitivity (§5.11.2), no stop-cap arm class (§5.11.3), no MFE/MAE pack so in-trade flow
+  untested (§5.12.5), no permutation null on the carried combination (§5.12.4).
+  Full reasoning: `research/findings/LDN-kill-vacated-under-511-512.md`.
+
 - SURVIVES: the 09:00 London / 04:00 ET macro hour, the only confirmed variable and the
   only London clock finding that came from our own measurement rather than a trader's
   claim. No live candidate uses it.
@@ -110,7 +117,7 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   difference from canon so far: **canon's first variable lifted, this one's didn't.**
   One variable is not a search, but it is not a good start either.
 
-## london-po3-ifvg (LDN-PO3-01) — failure branch — **DEAD** (earned)
+## london-po3-ifvg (LDN-PO3-01) — failure branch — KILL VACATED, search incomplete
 - STAGE: **complete** — census -> L1 -> conditioning -> interaction -> L3 flow -> autopsy -> killed.
 - RAW TRIGGERS: same 425 breaks. Fail-within-120m on **85% (2025) / 84% (2026)** vs
   the declared 15% census floor. The strong "the break is usually the trap" form

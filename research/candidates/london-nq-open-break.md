@@ -1,6 +1,6 @@
 ---
 date: 2026-08-05
-status: KILLED — expectancy, after the complete declared search (§5.9.2)
+status: KILL VACATED — search incomplete under §5.11/§5.12 (see findings/LDN-kill-vacated-under-511-512.md)
 tags: [london, session-structure, trigger-density]
 sources: ["articles/2026-08-05-channel-map-four-traders.md", "findings/london-nq-what-three-traders-agree-on.md", "findings/london-window-LDN-WIN-01.md", "https://www.youtube.com/watch?v=hcVhQBAGGFw", "https://www.youtube.com/watch?v=JySO8cOWOIs", "https://www.youtube.com/watch?v=1noM1ogc5zM"]
 ---
@@ -286,3 +286,30 @@ is now the second time this programme has learned it in a different session.
    is supposed to do to a bad idea, and it is worth having next to the canon's arc.
 
 **Never looked at:** 2023/24 candles, sealed flow months. No holdout look spent.
+
+### VERDICT WITHDRAWN (2026-08-05, same day) — §5.11/§5.12 landed after the kill
+
+The canon rebuild ratified §5.11 (pre-ship checklist) and §5.12 (canon map) after this
+verdict was written. **The kill does not survive them and is vacated.** Full reasoning:
+`research/findings/LDN-kill-vacated-under-511-512.md`.
+
+The short version: §5.12.10 records that on the shipped canon, **depth carried the
+entire edge (+0.5 to +1.3R) while order flow at entry was a rounding error** — and my
+L3 pass was four tape features at entry plus two thin book features. I ran the weakest
+variable class at the weakest moment and treated the null as decisive. The canon's
+actual edge carriers (`W` = no wall behind, `D` = wall ahead, `WALLSZ`) were never
+built here.
+
+Five further gaps, each with a rule and an NY-lane precedent: pooled flow nulls cannot
+close a gate question (§5.11.4); no event-universe sensitivity (§5.11.2); no stop-cap
+arm class (§5.11.3); no time-segment/MFE-MAE pack, so in-trade flow — where the canon
+says flow actually works — was never tested (§5.12.5); no permutation null on the
+carried V1×V3 combination (§5.12.4).
+
+**This is not a claim that the strategy works.** The L1 economics are poor and the
+tight-stop claim genuinely failed 0/4. It is a claim that under §5.9.2 the expectancy
+kill was not yet legal, on the same precedent that twice vacated `nya-ivb-fadeB`'s
+kills — a candidate now running PF 1.56/1.57/1.20 and PSR 0.994.
+
+Census, L1 and the conditioning search all stand and are not re-run. No holdout look
+was spent, so nothing is lost by re-opening.
