@@ -1,0 +1,16 @@
+{
+ "turns": [
+  {
+   "minute": "2025-08-25 10:01:00-04:00",
+   "why": "position opened \u2014 read it and set your plan",
+   "sent": "NEW POSITION SHORT shelf-fade | tier BASE ($180 risk, fixed) | entry 23519.5 risk 9.53pt | engine stop 23529.03125 (-1R, INVIOLATE) | mechanical target = the developing near band | mechanical scratch at t+10 if red | session ends 15:55\njournal: 23 trades | you $+7,615 vs mech $+4,409 (delta $+3,206)\n  defense (mech losers, n6): $-27\n  offense (mech winners, n17): $+3,233\n  band-exit refusals: 17, net vs mech $+3,233\nlast trades (you vs mech):\n  2025-08-07 short BASE: +0.68R vs +1.81R (stop; Pulled back from peak but well above trailed stop )\n  2025-08-11 short BASE: +0.25R vs +1.37R (stop; Pressing past band, cvd surging with us\u2014refuse exi)\n  2025-08-15 long CONFIRMED: +3.92R vs +1.48R (stop; Pulled back from peak 6.29 to 4.90; tighten trail )\n  2025-08-18 short BASE: +5.88R vs +1.41R (stop; Pulled back from peak 9.56 to 7.73, cvd still surg)\n  2025-08-21 long CONFIRMED: +7.41R vs +2.27R (stop; Pulled back from peak 12.05 to 8.56 but CVD still )\nReply with EXACTLY one JSON object, nothing else: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"stop_r\":<num,optional>,\"target_r\":<num or null,optional>,\"partial_pct\":<0-1,optional>,\"note\":\"<=120 chars\"}. R units are TRUE risk (engine stop = -1R). \"hold\"=no change (mechanical exits execute when due). \"revise\": stop_r only TIGHTENS (0=entry); target_r >= 0.3 replaces the target, null = ride on the stop (extension mode); partial_pct books that fraction of what is OPEN at next bar. \"exit_now\" flattens at next bar. Rule-breaking fields are ignored by the harness.\n\n[10:01] EVENT: position opened \u2014 read it and set your plan\nbar 23514.75/23525.00/23505.00/23519.00 | R_now +0.05 peak +1.52 | open 1.00 | stop -1.00R | target developing band +1.53R | cvd_since_entry -108 | mins_to_EOD 354",
+   "reply": "{\"action\":\"hold\",\"note\":\"Fresh position, mechanical stop/target intact, no band-touch event yet.\"}"
+  },
+  {
+   "minute": "2025-08-25 10:02:00-04:00",
+   "why": "t+2 check: the decisive minute on this clock",
+   "sent": "[10:02] EVENT: t+2 check: the decisive minute on this clock\nbar 23518.50/23527.75/23512.00/23527.25 | R_now -0.81 peak +1.52 | open 1.00 | stop -1.00R | target developing band +1.37R | cvd_since_entry -86 | mins_to_EOD 353",
+   "reply": "{\"action\":\"hold\",\"note\":\"Underwater -0.81R near stop; mechanical stop is close behind, let it work.\"}"
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "turns": [
+  {
+   "minute": "2025-09-02 10:01:00-04:00",
+   "why": "position opened \u2014 read it and set your plan",
+   "sent": "NEW POSITION SHORT shelf-fade | tier CONFIRMED ($360 risk, fixed) | entry 23260.75 risk 29.44pt | engine stop 23290.1875 (-1R, INVIOLATE) | mechanical target = the developing near band | mechanical scratch at t+10 if red | session ends 15:55\njournal: 25 trades | you $+7,568 vs mech $+4,715 (delta $+2,853)\n  defense (mech losers, n7): $-31\n  offense (mech winners, n18): $+2,885\n  band-exit refusals: 18, net vs mech $+2,885\nlast trades (you vs mech):\n  2025-08-15 long CONFIRMED: +3.92R vs +1.48R (stop; Pulled back from peak 6.29 to 4.90; tighten trail )\n  2025-08-18 short BASE: +5.88R vs +1.41R (stop; Pulled back from peak 9.56 to 7.73, cvd still surg)\n  2025-08-21 long CONFIRMED: +7.41R vs +2.27R (stop; Pulled back from peak 12.05 to 8.56 but CVD still )\n  2025-08-25 short BASE: -1.13R vs -1.10R (stop; Underwater -0.81R near stop; mechanical stop is cl)\n  2025-08-29 long CONFIRMED: +0.44R vs +1.40R (stop; Stop locked at +0.5R already protects gain; normal)\nReply with EXACTLY one JSON object, nothing else: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"stop_r\":<num,optional>,\"target_r\":<num or null,optional>,\"partial_pct\":<0-1,optional>,\"note\":\"<=120 chars\"}. R units are TRUE risk (engine stop = -1R). \"hold\"=no change (mechanical exits execute when due). \"revise\": stop_r only TIGHTENS (0=entry); target_r >= 0.3 replaces the target, null = ride on the stop (extension mode); partial_pct books that fraction of what is OPEN at next bar. \"exit_now\" flattens at next bar. Rule-breaking fields are ignored by the harness.\n\n[10:01] EVENT: position opened \u2014 read it and set your plan\nbar 23254.25/23267.50/23244.50/23246.00 | R_now +0.50 peak +0.55 | open 1.00 | stop -1.00R | target developing band +1.33R | cvd_since_entry +51 | mins_to_EOD 354",
+   "reply": "{\"action\":\"hold\",\"note\":\"Fresh position, +0.5R, low heat, let mechanical stop/target run per plan.\"}"
+  },
+  {
+   "minute": "2025-09-02 10:02:00-04:00",
+   "why": "BAND TOUCH: the mechanical exit is here at 23223.82 (+1.25R). Take it (hold/exit_now) or refuse with a plan (revise: null target to ride, or fixed target + tighter stop).",
+   "sent": "[10:02] EVENT: BAND TOUCH: the mechanical exit is here at 23223.82 (+1.25R). Take it (hold/exit_now) or refuse with a plan (revise: null target to ride, or fixed target + tighter stop).\nbar 23245.75/23250.00/23222.25/23224.25 | R_now +1.24 peak +0.55 | open 1.00 | stop -1.00R | target developing band +1.25R | cvd_since_entry +400 | mins_to_EOD 353",
+   "reply": "{\"action\":\"revise\",\"stop_r\":0.5,\"target_r\":null,\"note\":\"Fast strong push, CVD surging with trade; lock +0.5R, ride the trail for the walkout.\"}"
+  }
+ ]
+}
