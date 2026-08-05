@@ -83,3 +83,21 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - level-interaction trigger family (canon-frequency substrate, ~10-15 raw
   triggers/day) — prereg after.
 - sweep-reclaim — awaiting Brake dedup vs london-level-trap-fade.
+
+---
+
+## THE BOOK — first portfolio grading (2026-08-05, scripts/nya_book_grade.py)
+- COMPONENTS: live canon + IVB range fade (sleeve-passed) + pre-market pair
+  (shelved-eligible under §5.9 bars).
+- CORRELATION MATRIX: max |0.084| across all pairs — four independent
+  P&L streams, no vetoes.
+- FUNDED MC (12mo): canon alone P(bust) 0.2% / median +$77,882; FULL BOOK
+  P(bust) 0.5% / median +$82,354 (+$4.5k/yr from the sleeves, maxDD
+  $1,222→$1,460). New sleeves WITHOUT the canon: P(bust) 13.9% — the
+  sleeves are additives, not a standalone account.
+- BOOK PSR(0) 1.000 vs the 0.95 screen — PASS (canon-dominated; sleeve
+  merit was established at sleeve level). Ledger-DSR still carries the
+  denominator-inflation caveat (Brake fix pending).
+- STATUS: book gates PASSED. Ship-track remaining for the range fade:
+  chained-agents-vs-mechanical rung → shadow → Angus sign-off → two-party
+  arming. Pre-market pair: same track at smaller weight, Angus's pick.
