@@ -203,3 +203,22 @@ manufactured-regime-edge failure §5.12-9 exists to catch. The declared
 state-gate arm CLOSES; no state conditioning enters this family. The
 harness killing our own finding on its first run is the §5.12 ratification
 working as law, not as prose. Family arm count 27.
+
+### Trial 13 — first-formed-extreme conditioning (2026-08-05, intake round 2) — REFUTED
+docs/PREREG-ivb-firstformed.md; scripts/nya_ivb_firstformed.py. Source:
+MrZincx/Edgeful "IB by rejection" (first-formed IB extreme holds ~73%).
+Hypothesis: fading the first-formed extreme is the aligned half of our fade.
+RESULT — the split is noise, and the point estimate runs the WRONG WAY:
+fade-first-formed n=83, WR 39%, PF 1.02, $+1,428 (2024 and 2026 negative);
+fade-second-formed n=273, WR 42%, PF 1.52, $+9,437 (carries the family's
+whole edge; only 2024 negative, per the known label). Permnull within-year:
+lift −0.035R, p=0.579; Welch t −0.59. Raw-touch superset (n=769, veto
+dropped) agrees: first-formed PF 0.75 vs second-formed PF 1.00. Ties: 0.
+No contradiction with his stat — his clock is 60-min IB with a
+to-the-close break horizon on QQQ; our fade needs only a rotation to mid
+inside a 0.25xIB stop before any later break. Different questions.
+Per prereg decision rule: NO GATE, default stands, evidence banked, no
+further first-formed arms without new prereg. Ledger row 95 (effect
+−0.0312). Structural note kept for the selector: most tradeable touches
+(273/356) are of the second-formed extreme — the recency of the
+second-formed side is where the fade lives. Family arm count 28.

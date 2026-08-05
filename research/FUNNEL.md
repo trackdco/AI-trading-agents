@@ -43,6 +43,11 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   HARNESS: adapting scripts/capture_desk_run.py (the desk-run code in this
   repo) to the fade myself — no Pat dependency for the backtest rung; Pat
   owns live-box integration only.
+- FIRST-FORMED SPLIT (trial 13, intake round 2, prereg'd): REFUTED — the
+  MrZincx/Edgeful 73% stat does NOT transfer as a gate. Fade-first-formed
+  n=83 PF 1.02 vs fade-second-formed n=273 PF 1.52; permnull p=0.579.
+  Default untouched; structural note: 273/356 tradeable touches are of the
+  second-formed extreme, and that side carries the family's edge.
 - HISTORY NOTE: killed twice by strawman censuses (missing trigger; harsher
   race than the taught trade), vacated on canon-parity, alive on retest —
   the correction that proved the framework audit mattered.
@@ -97,9 +102,8 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 ## QUEUE (cards open at census)
 - INTAKE ROUND 2 (2026-08-05, specs in research/transcripts/*/SPEC-as-taught.md,
   credibility in research/findings/intake2-credibility.md):
-  - nya-ivb-fade first-formed-extreme arm (MrZincx/Edgeful 73% rejection
-    stat applied as a conditioning split on OUR validated fade's 356/478
-    events) — highest-value, prereg first.
+  - nya-ivb-fade first-formed-extreme arm — RUN AND REFUTED same day
+    (trial 13, card above); no gate, default stands.
   - nya-ib50-continuation (MrZincx Model 1 as taught: enter IB midpoint
     toward predicted second-formed-extreme break; opposite vector to our
     fade) — new candidate, full funnel.
