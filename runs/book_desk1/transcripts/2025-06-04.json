@@ -1,0 +1,14 @@
+{
+ "turns": [
+  {
+   "event": "CANON LONG @ 09:35",
+   "sent": "DESK OPEN 2025-06-04. Two engines live; mechanical specs fixed; you choose what the book takes.\njournal: day one \u2014 no history yet.\n\n[09:35] SIGNAL: CANON LONG @ 09:35\nbook: flat\nDecision: take or skip.",
+   "reply": "{\"action\":\"take\",\"note\":\"CANON core system, flat book, no conflict or reason to skip default entry.\"}"
+  },
+  {
+   "event": "SHELF LONG [BASE] risk $200 @ 10:00",
+   "sent": "[10:00] SIGNAL: SHELF LONG [BASE] risk $200 @ 10:00\nbook: flat\nDecision: take or skip.",
+   "reply": "{\"action\":\"take\",\"note\":\"SHELF base-tier signal, book flat, no conflict\u2014take per mechanical edge.\"}"
+  }
+ ]
+}
