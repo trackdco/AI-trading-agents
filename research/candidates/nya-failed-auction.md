@@ -48,3 +48,31 @@ excursion extreme) and accept-branch (edge-retest continuation) — each with
 declared cost stacks. Flow-at-entry discriminator search (delta at break,
 absorption at edge on re-entry, CVD divergence outside, trapped-volume
 estimate) follows L1, on the flow span. Family arm count: 1 (census).
+
+### Trial 2 — L1 mechanics + depth cut (2026-08-05) — raw ugly as expected, depth separates
+scripts/nya_fa_l1.py (window-partition bug found and fixed mid-trial —
+first run mis-assigned late re-entries to the fail branch; corrected run is
+the record). Raw fail branch (n=248, full span): PF 0.80-0.88, negative all
+eras — NO KILL LEGAL (§3.2; raw substrate expected ugly). Accept branch raw
+(n=62): flat (PF 1.02-1.04). Depth tercile on F2: WR 12% shallow → 59% deep;
+deep points-positive but fixed-risk dollars negative — the euro-handoff
+geometry disease (natural stop at the excursion extreme too wide). Declared
+cures queued: tighter-stop arms + flow gates. Arms this trial: F1, F2, A1
+(+3; family count 4).
+
+### Trial 3 — flow-at-entry discriminator search (2026-08-05, flow span) — LIVE CELLS FOUND
+scripts/nya_fa_flow.py (events in output/nya_fa_flow_events.parquet). 71
+fail events, 2025-06..2026-07. Gates as declared: G1 edge-absorption fires
+1% — dead as defined (looser variants would be NEW declared arms, not
+silent retuning); G2 excursion-delta-opposes-break fires 66% and improves
+every stop; G3 CVD-divergence fires 89%, mild help. Depth again the
+strongest single conditioner. Stop geometry: S2 (0.5x excursion) fixes the
+dollars. LEADING CELLS: deep+G2/S2 — n=28, WR 46%, +647 pts, $+984,
+PF 2.06, survives strict friction (PF 1.99); deep+G3/S2 — n=34, +755 pts,
+$+1,893, PF 2.14. Halves −109/+364..373/+392..492: the negative leg is
+June-2025 only (partial month, tiny n) — flagged, not hidden. CAVEATS: n=28-34
+(§2.2); flow gates exist only on the 13.5-month flow span; depth replicates
+on the full candle span (census trial 1) which is the family's structural
+anchor. Arms this trial: G1/G2/G3 x S1/S2/S3 + deep-combos = 9 (family
+count 13; all count in DSR). NEXT: exit-arm tournament on the leading
+cells, accept-branch conditioning, then grading.
