@@ -54,13 +54,21 @@ SHELF_TIER = {"CONFIRMED": 300.0, "BASE": 200.0}
 # CADENCE (Angus, two rulings): minute-by-minute intraday adaptation WHERE THE
 # MONEY IS — one call EVERY MINUTE a position is open; while flat in the entry
 # window (08:00-10:30, the only window either engine can enter) a 5-minute pulse
-# plus every signal minute; flat after 10:30 = off the desk. PARALLELISM: days
-# within a calendar month run concurrently, the journal chains month-to-month
-# ("closest we can get while still being quick" — his call, on the record).
-# MAX_TURNS_DAY is a runaway safety ceiling, not a budget.
+# plus every signal minute; flat after 10:30 = off the desk.
+#
+# CHAINING (Angus: "what if we did every 2 trading weeks for higher frequency...
+# the closer we can get to a day the better, just dont want to wait a million
+# years"): days inside a BATCH run concurrently and the journal chains
+# batch-to-batch, so batch size IS the learning granularity. Wall clock is
+# 254/min(BATCH, WORKERS) waves — so a finer batch only costs time if it drops
+# below the worker count. BATCH 10 with WORKERS 10 gives fortnightly learning at
+# 26 waves (~8h), FASTER than the old 21-day/6-worker setup (43 waves, ~14h).
+# Going below 10 does cost: 5-day batches cap parallelism at 5 (~16h), daily
+# chaining is fully sequential (~80h).
+BATCH_DAYS = 10
 MAX_TURNS_DAY = 600
 CLI_TIMEOUT = 240
-WORKERS = 6
+WORKERS = 10
 MODEL = "sonnet"        # Angus: the desk runs on Sonnet — don't burn the plan
 
 DEPTH_DIRS = ["data/reference/depth_2025", "data/reference/depth_2026",
@@ -891,8 +899,8 @@ def main() -> None:
     tape = pd.read_parquet(ROOT / "output/fp_minutes.parquet").sort_index()
     dcache: dict = {}
     print(f"live-sim desk: {len(sel)} days, {sum(len(days[d]) for d in sel)} "
-          f"signals | {WORKERS} workers, month-parallel, journal chains monthly",
-          flush=True)
+          f"signals | {WORKERS} workers, {BATCH_DAYS}-day batches, journal chains "
+          f"every {BATCH_DAYS} trading days", flush=True)
 
     def one(d, journal):
         t0 = pd.Timestamp(f"{d} 00:00", tz=NY)
@@ -900,12 +908,13 @@ def main() -> None:
                           dcache.get(d), journal)
 
     from concurrent.futures import ThreadPoolExecutor, as_completed
-    for mo in sorted({d[:7] for d in sel}):
-        batch = [d for d in sel if d[:7] == mo]
+    batches = [sel[i:i + BATCH_DAYS] for i in range(0, len(sel), BATCH_DAYS)]
+    for batch in batches:
         for d in batch:                       # depth pre-loaded serially; workers read only
             dcache[d] = load_depth(d, {})
-        journal = journal_rows()              # frozen at month start (month-chained memory)
-        print(f"== {mo}: {len(batch)} days | journal {len(journal)} days", flush=True)
+        journal = journal_rows()              # frozen at batch start = the chained memory
+        print(f"== {batch[0]}..{batch[-1]}: {len(batch)} days | "
+              f"journal {len(journal)} days", flush=True)
         with ThreadPoolExecutor(max_workers=WORKERS) as ex:
             futs = [ex.submit(one, d, journal) for d in batch]
             for fut in as_completed(futs):

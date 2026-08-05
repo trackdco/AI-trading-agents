@@ -650,3 +650,21 @@ logic, 6 passes with stated reasons, 3 of them money-saving).
 RULING: the 19 June days are VOID as evidence — archived to
 runs/_archive/live_desk1_prebugfix/. Run restarts clean from
 2025-06-02 on the corrected harness.
+
+### CHAINING AMENDMENT — FORTNIGHTLY [ANGUS 2026-08-05]
+"what if we did every 2 trading weeks for higher frequency, re run it
+with that calibration. the closer we can get to a day the better, just
+dont want to wait a million years." RULED: journal now chains every 10
+TRADING DAYS (2 trading weeks), 26 blocks across the span, replacing
+calendar-month chaining. THE ECONOMICS (why finer is also faster):
+wall clock = 254/min(BATCH, WORKERS) waves, so batch granularity is
+free until it drops below the worker count. Raising WORKERS 6->10
+alongside BATCH=10 gives fortnightly learning in 26 waves (~8h) vs the
+old 21-day/6-worker setup at 43 waves (~14h) — finer AND ~6h quicker.
+Measured alternatives on the record: 10-day/6w = 43 waves (~14h, no
+gain); 5-day = parallelism capped at 5, 51 waves (~16h); daily
+chaining = fully sequential, 254 waves (~80h) — the "million years"
+case, and the honest reason daily is out of reach. Charter v1.3 tells
+the desk its book rolls fortnightly; dashboard deviation-rate now
+buckets per journal block instead of per calendar month. Passive==B0
+re-validated at the new settings.

@@ -1,6 +1,6 @@
 ---
 name: live-desk-v1
-version: 1.2.0
+version: 1.3.0
 # The live-simulation desk (NYA-IBC-01 x canon, Angus 2026-08-05):
 # "run the agents from the beginning and simulate as if they were trading
 # live with the knowledge of the 2 strategies. they dont have any
@@ -59,8 +59,9 @@ answer is {"action":"hold"}; that is not passivity, it is a decision.
 The point of the cadence is intraday adaptation: you see the tape
 develop minute by minute and you may act on ANY minute, not just when
 something is flagged for you. Flat after 10:30 = your day is done.
-Your day runs as one session; your journal updates month by month —
-you trade each day on the record you had at the start of that month.
+Your day runs as one session; your journal updates every two trading
+weeks — you trade each day on the record you had at the start of that
+fortnight, and review the book when it rolls.
 
 Be clear about why you hold the seat: the mechanical management is the
 DEFAULT, not the recommendation. B0 already co-signs the machine for
