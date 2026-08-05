@@ -38,6 +38,9 @@ from __future__ import annotations
 import json
 import os
 import re
+import subprocess
+import time
+import urllib.parse
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -92,6 +95,11 @@ def _load_dotenv(path: Path) -> None:
 
 
 _load_dotenv(REPO_ROOT / ".env")
+
+# Pause between transcript fetches. A channel dive is a burst of dozens of
+# requests, which is precisely what YouTube rate-limits; pacing costs seconds
+# and buys a corpus that actually completes.
+_THROTTLE_SECONDS = float(os.environ.get("YOUTUBE_TRANSCRIPT_DELAY", "1.5"))
 
 _cache_env = os.environ.get("YOUTUBE_MCP_CACHE_DIR", "").strip()
 CACHE_DIR = (
@@ -207,6 +215,60 @@ def _cache_paths(video_id: str) -> tuple[Path, Path]:
     return base / f"{video_id}.txt", base / f"{video_id}.json"
 
 
+def _timedtext_fallback(video_id: str, languages: list[str]) -> list[tuple[float, str]] | None:
+    """Pull captions straight off the watch page's player response.
+
+    youtube-transcript-api and this path hit different endpoints, and in practice
+    they are not rate-limited together — when a channel dive trips
+    `RequestBlocked`, this usually still works. Returns [(start_seconds, text)]
+    or None if the video genuinely has no captions.
+    """
+    html = _scrape(f"https://www.youtube.com/watch?v={video_id}")
+    api_key = re.search(r'"INNERTUBE_API_KEY":"(.*?)"', html)
+    if not api_key:
+        return None
+    # The watch page itself no longer embeds captionTracks; the player endpoint
+    # still returns them.
+    payload = _scrape(
+        f"https://www.youtube.com/youtubei/v1/player?key={api_key.group(1)}",
+        json.dumps({"context": {"client": _INNERTUBE_CLIENT}, "videoId": video_id}),
+    )
+    try:
+        tracks = (
+            json.loads(payload)
+            .get("captions", {})
+            .get("playerCaptionsTracklistRenderer", {})
+            .get("captionTracks", [])
+        )
+    except json.JSONDecodeError:
+        return None
+    if not tracks:
+        return None
+
+    chosen = next(
+        (t for lang in languages for t in tracks if t.get("languageCode", "").startswith(lang)),
+        tracks[0],
+    )
+    url = chosen.get("baseUrl", "").replace("\\u0026", "&")
+    if not url:
+        return None
+    body = _scrape(f"{url}&fmt=json3")
+    try:
+        events = json.loads(body).get("events", [])
+    except json.JSONDecodeError:
+        return None
+
+    out: list[tuple[float, str]] = []
+    for event in events:
+        text = "".join(seg.get("utf8", "") for seg in event.get("segs", []) or []).strip()
+        if text:
+            out.append((event.get("tStartMs", 0) / 1000.0, text))
+    return out or None
+
+
+_BLOCKED = ("RequestBlocked", "IpBlocked", "TooManyRequests")
+
+
 def _fetch_transcript(video_id: str, languages: list[str], refresh: bool) -> CachedTranscript:
     text_path, meta_path = _cache_paths(video_id)
     if not refresh and text_path.exists() and meta_path.exists():
@@ -221,11 +283,34 @@ def _fetch_transcript(video_id: str, languages: list[str], refresh: bool) -> Cac
             from_cache=True,
         )
 
-    fetched = _transcript_api().fetch(video_id, languages=languages)
-    lines: list[str] = []
-    for snippet in fetched:
-        stamp = _hms(snippet.start)
-        lines.append(f"[{stamp}] {snippet.text.strip()}")
+    language = languages[0]
+    snippets: list[tuple[float, str]] | None = None
+    last_error: Exception | None = None
+
+    # Primary path, with backoff — YouTube rate-limits bursts, which is exactly
+    # what a channel dive is.
+    for attempt in range(3):
+        try:
+            fetched = _transcript_api().fetch(video_id, languages=languages)
+            snippets = [(s.start, s.text) for s in fetched]
+            language = getattr(fetched, "language_code", languages[0])
+            break
+        except Exception as exc:  # noqa: BLE001 - classified below
+            last_error = exc
+            if type(exc).__name__ not in _BLOCKED:
+                break
+            if attempt < 2:
+                time.sleep(_THROTTLE_SECONDS * (4 ** (attempt + 1)))
+
+    # Fallback path: different endpoint, usually still alive when the first is
+    # throttled.
+    if snippets is None:
+        snippets = _timedtext_fallback(video_id, languages)
+
+    if snippets is None:
+        raise last_error or RuntimeError(f"No transcript available for {video_id}")
+
+    lines = [f"[{_hms(start)}] {text.strip()}" for start, text in snippets]
     text = "\n".join(lines)
 
     text_path.parent.mkdir(parents=True, exist_ok=True)
@@ -234,7 +319,7 @@ def _fetch_transcript(video_id: str, languages: list[str], refresh: bool) -> Cac
     meta = {
         "video_id": video_id,
         "url": f"https://www.youtube.com/watch?v={video_id}",
-        "language": getattr(fetched, "language_code", languages[0]),
+        "language": language,
         "segments": len(lines),
         "characters": len(text),
         "cached_at": cached_at,
@@ -275,14 +360,186 @@ def _rule_density(text: str) -> int:
 
 
 # --------------------------------------------------------------------------
+# keyless scraping — search and channel enumeration without a Data API key
+#
+# The Data API needs a key and costs 100 quota units per search. The public
+# pages carry the same listing data in an embedded JSON blob. We parse that
+# instead, so every tool here works with no key at all; the API path is kept
+# for the richer per-video statistics.
+#
+# YouTube moved channel listings to `lockupViewModel` in 2025; the older
+# `videoRenderer` shape is still handled so this survives either.
+# --------------------------------------------------------------------------
+
+_BROWSER_UA = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+)
+_INITIAL_DATA = re.compile(r"ytInitialData\s*=\s*(\{.*?\});</script>", re.DOTALL)
+_INNERTUBE_CLIENT = {"clientName": "WEB", "clientVersion": "2.20240101.00.00"}
+
+
+def _scrape(url: str, post_body: str | None = None) -> str:
+    cmd = ["curl", "-sSL", "--max-time", "60", "-A", _BROWSER_UA,
+           "-H", "Accept-Language: en-US,en;q=0.9"]
+    if post_body is not None:
+        cmd += ["-H", "Content-Type: application/json", "-X", "POST", "-d", post_body]
+    return subprocess.run(
+        [*cmd, url], capture_output=True, text=True, errors="replace", check=False
+    ).stdout
+
+
+def _lockup_to_video(lockup: dict) -> dict | None:
+    if lockup.get("contentType") != "LOCKUP_CONTENT_TYPE_VIDEO":
+        return None
+    meta = lockup.get("metadata", {}).get("lockupMetadataViewModel", {})
+    parts = [
+        part.get("text", {}).get("content", "")
+        for row in meta.get("metadata", {})
+        .get("contentMetadataViewModel", {})
+        .get("metadataRows", [])
+        for part in row.get("metadataParts", [])
+    ]
+    duration = ""
+    for overlay in lockup.get("contentImage", {}).get("thumbnailViewModel", {}).get("overlays", []):
+        for badge in overlay.get("thumbnailBottomOverlayViewModel", {}).get("badges", []):
+            text = badge.get("thumbnailBadgeViewModel", {}).get("text", "")
+            if re.fullmatch(r"[\d:]+", text or ""):
+                duration = text
+    return {
+        "video_id": lockup.get("contentId"),
+        "title": meta.get("title", {}).get("content", ""),
+        "duration": duration,
+        "views": next((p for p in parts if "view" in p.lower()), ""),
+        "published": next((p for p in parts if "ago" in p.lower()), ""),
+    }
+
+
+def _harvest(node: Any, out: list, seen: set, continuations: list) -> None:
+    if isinstance(node, dict):
+        if "lockupViewModel" in node:
+            video = _lockup_to_video(node["lockupViewModel"])
+            if video and video["video_id"] and video["video_id"] not in seen:
+                seen.add(video["video_id"])
+                out.append(video)
+        renderer = node.get("videoRenderer") or node.get("gridVideoRenderer")
+        if renderer and renderer.get("videoId") and renderer["videoId"] not in seen:
+            seen.add(renderer["videoId"])
+            out.append(
+                {
+                    "video_id": renderer["videoId"],
+                    "title": "".join(
+                        r.get("text", "") for r in renderer.get("title", {}).get("runs", [])
+                    ),
+                    "duration": renderer.get("lengthText", {}).get("simpleText", ""),
+                    "views": renderer.get("viewCountText", {}).get("simpleText", ""),
+                    "published": renderer.get("publishedTimeText", {}).get("simpleText", ""),
+                    "channel": "".join(
+                        r.get("text", "") for r in renderer.get("ownerText", {}).get("runs", [])
+                    ),
+                }
+            )
+        command = node.get("continuationCommand")
+        if isinstance(command, dict) and command.get("token"):
+            continuations.append(command["token"])
+        for value in node.values():
+            _harvest(value, out, seen, continuations)
+    elif isinstance(node, list):
+        for value in node:
+            _harvest(value, out, seen, continuations)
+
+
+def _duration_to_minutes(text: str) -> float:
+    parts = (text or "").split(":")
+    try:
+        nums = [int(p) for p in parts]
+    except ValueError:
+        return 0.0
+    if len(nums) == 3:
+        return nums[0] * 60 + nums[1] + nums[2] / 60
+    if len(nums) == 2:
+        return nums[0] + nums[1] / 60
+    return 0.0
+
+
+def _views_to_int(text: str) -> int:
+    match = re.match(r"([\d.,]+)\s*([KMB]?)", (text or "").replace(",", ""))
+    if not match:
+        return 0
+    value = float(match.group(1) or 0)
+    return int(value * {"": 1, "K": 1_000, "M": 1_000_000, "B": 1_000_000_000}[match.group(2)])
+
+
+def _scrape_search(query: str, limit: int) -> list[dict]:
+    url = "https://www.youtube.com/results?" + urllib.parse.urlencode(
+        {"search_query": query, "sp": "EgIQAQ%3D%3D"}  # filter: videos only
+    )
+    match = _INITIAL_DATA.search(_scrape(url)) or re.search(
+        r"var ytInitialData = (\{.*?\});</script>", _scrape(url), re.DOTALL
+    )
+    if not match:
+        return []
+    out, seen, continuations = [], set(), []
+    _harvest(json.loads(match.group(1)), out, seen, continuations)
+    return out[:limit]
+
+
+def _scrape_channel(channel: str, max_videos: int) -> dict:
+    handle = channel.strip().rstrip("/")
+    if handle.startswith("http"):
+        base = handle.split("?")[0]
+        base = base if base.endswith("/videos") else f"{base}/videos"
+    else:
+        base = f"https://www.youtube.com/{handle if handle.startswith('@') else '@' + handle}/videos"
+
+    html = _scrape(base)
+    match = _INITIAL_DATA.search(html)
+    if not match:
+        raise RuntimeError(
+            f"Could not parse the channel page at {base}. Check the handle — pass it as "
+            "'@handle' or a full channel URL."
+        )
+    api_key = re.search(r'"INNERTUBE_API_KEY":"(.*?)"', html)
+    name = re.search(r'"channelMetadataRenderer":\{"title":"(.*?)"', html)
+    subs = re.search(r'"content":"([\d.,KMB]+ subscribers)"', html)
+
+    out, seen, continuations = [], set(), []
+    _harvest(json.loads(match.group(1)), out, seen, continuations)
+
+    while continuations and len(out) < max_videos and api_key:
+        body = json.dumps(
+            {"context": {"client": _INNERTUBE_CLIENT}, "continuation": continuations.pop(0)}
+        )
+        try:
+            payload = json.loads(
+                _scrape(f"https://www.youtube.com/youtubei/v1/browse?key={api_key.group(1)}", body)
+            )
+        except json.JSONDecodeError:
+            break
+        before = len(out)
+        continuations.clear()
+        _harvest(payload, out, seen, continuations)
+        if len(out) == before:
+            break
+
+    return {
+        "channel": name.group(1) if name else handle,
+        "subscribers": subs.group(1) if subs else "?",
+        "url": base,
+        "videos": out[:max_videos],
+    }
+
+
+# --------------------------------------------------------------------------
 # tools
 # --------------------------------------------------------------------------
 
 
 @server.tool(
     description=(
-        "Search YouTube for videos. Requires YOUTUBE_API_KEY. Returns titles, "
-        "channels, dates and IDs — no transcripts. Costs 100 API quota units."
+        "Search YouTube for videos. Works with NO API key (scrapes the results "
+        "page); a key adds view counts and duration filtering. Returns titles, "
+        "channels, dates and IDs — no transcripts."
     )
 )
 def youtube_search(
@@ -299,13 +556,28 @@ def youtube_search(
     Args:
         query: Search terms, e.g. "NQ opening range breakout order flow".
         max_results: 1-50.
-        published_after: RFC3339 date, e.g. "2024-01-01T00:00:00Z".
-        published_before: RFC3339 date.
-        channel_id: Restrict to one channel (use youtube_find_channel first).
-        order: relevance | date | viewCount | rating.
+        published_after: RFC3339 date, e.g. "2024-01-01T00:00:00Z". API path only.
+        published_before: RFC3339 date. API path only.
+        channel_id: Restrict to one channel. API path only.
+        order: relevance | date | viewCount | rating. API path only.
         min_duration_minutes: Drop results shorter than this. Strategy
             explanations under ~8 minutes are usually hype, not rules.
     """
+    if not os.environ.get("YOUTUBE_API_KEY", "").strip():
+        rows = _scrape_search(query, max_results)
+        results = [
+            {
+                **row,
+                "url": f"https://www.youtube.com/watch?v={row['video_id']}",
+                "views_estimate": _views_to_int(row.get("views", "")),
+            }
+            for row in rows
+            if not min_duration_minutes
+            or _duration_to_minutes(row.get("duration", "")) >= min_duration_minutes
+        ]
+        return {"query": query, "count": len(results), "results": results,
+                "source": "scraped (no YOUTUBE_API_KEY set)"}
+
     payload = _get(
         "search",
         {
@@ -579,6 +851,149 @@ def youtube_research_sweep(
             "Do NOT read these all. Use youtube_grep_transcripts to find where "
             "rules are stated, read the top one or two cache_path files, then "
             "youtube_article_record to write the research/articles/ file."
+        ),
+    }
+
+
+@server.tool(
+    description=(
+        "List a channel's entire upload catalogue — no API key needed. Pass an "
+        "'@handle' or a channel URL. Returns every video with duration, views "
+        "and age, newest first. Use this to see what a trader actually covers "
+        "before spending transcript budget on them."
+    )
+)
+def youtube_channel_videos(channel: str, max_videos: int = 500) -> dict:
+    """Args:
+        channel: "@OrochiTrading", or https://www.youtube.com/@OrochiTrading.
+        max_videos: Safety cap on how deep to page.
+    """
+    info = _scrape_channel(channel, max_videos)
+    for row in info["videos"]:
+        row["url"] = f"https://www.youtube.com/watch?v={row['video_id']}"
+        row["minutes"] = round(_duration_to_minutes(row.get("duration", "")), 1)
+        row["views_estimate"] = _views_to_int(row.get("views", ""))
+    return {
+        "channel": info["channel"],
+        "subscribers": info["subscribers"],
+        "count": len(info["videos"]),
+        "videos": info["videos"],
+    }
+
+
+@server.tool(
+    description=(
+        "THE CHANNEL DEEP-DIVE. Enumerate a whole channel, transcribe every "
+        "video that passes the filters, and return a ranked index — never the "
+        "text. This is how you get a comprehensive read on one trader's method "
+        "rather than a single video's slice. Then grep the corpus."
+    )
+)
+def youtube_channel_deep_dive(
+    channel: str,
+    max_videos: int = 60,
+    min_duration_minutes: float = 5.0,
+    exclude_title_pattern: str | None = None,
+    languages: list[str] | None = None,
+    label: str | None = None,
+) -> dict:
+    """Args:
+        channel: "@handle" or channel URL.
+        max_videos: Cap on transcripts fetched (newest first after filtering).
+        min_duration_minutes: Skip shorts and teasers.
+        exclude_title_pattern: Regex of titles to skip — e.g. mindset/psychology
+            content on an otherwise technical channel.
+        languages: Preferred transcript languages.
+        label: Sweep manifest name. Defaults to the channel slug.
+    """
+    info = _scrape_channel(channel, 500)
+    exclude = re.compile(exclude_title_pattern, re.IGNORECASE) if exclude_title_pattern else None
+
+    shortlist, skipped = [], []
+    for row in info["videos"]:
+        minutes = _duration_to_minutes(row.get("duration", ""))
+        if minutes < min_duration_minutes:
+            skipped.append({**row, "why": f"under {min_duration_minutes} min"})
+            continue
+        if exclude and exclude.search(row.get("title", "")):
+            skipped.append({**row, "why": "title excluded"})
+            continue
+        shortlist.append({**row, "minutes": round(minutes, 1)})
+    shortlist = shortlist[:max_videos]
+
+    index, failures = [], []
+    for position, row in enumerate(shortlist):
+        if position:
+            time.sleep(_THROTTLE_SECONDS)
+        try:
+            cached = _fetch_transcript(row["video_id"], languages or ["en"], False)
+        except Exception as exc:  # noqa: BLE001 - one bad video must not kill the dive
+            failures.append(
+                {
+                    "video_id": row["video_id"],
+                    "title": row["title"],
+                    "url": f"https://www.youtube.com/watch?v={row['video_id']}",
+                    "reason": f"{type(exc).__name__}: {str(exc)[:160]}",
+                }
+            )
+            continue
+        index.append(
+            {
+                **row,
+                "channel": info["channel"],
+                "url": f"https://www.youtube.com/watch?v={row['video_id']}",
+                "published_at": row.get("published", ""),
+                "characters": len(cached.text),
+                "estimated_tokens": len(cached.text) // 4,
+                "rule_keyword_hits": _rule_density(cached.text),
+                "cache_path": _rel(cached.path),
+            }
+        )
+
+    index.sort(key=lambda r: r["rule_keyword_hits"], reverse=True)
+
+    slug = _slugify(label or info["channel"])
+    manifest_dir = CACHE_DIR / "sweeps"
+    manifest_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path = manifest_dir / f"{slug}.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "query": f"channel deep-dive: {info['channel']} ({info['url']})",
+                "label": slug,
+                "swept_at": datetime.now(UTC).isoformat(timespec="seconds"),
+                "parameters": {
+                    "channel": channel,
+                    "subscribers": info["subscribers"],
+                    "catalogue_size": len(info["videos"]),
+                    "max_videos": max_videos,
+                    "min_duration_minutes": min_duration_minutes,
+                    "exclude_title_pattern": exclude_title_pattern,
+                },
+                "transcribed": index,
+                "failed": failures,
+                "skipped": skipped,
+            },
+            indent=2,
+        )
+    )
+
+    return {
+        "channel": info["channel"],
+        "subscribers": info["subscribers"],
+        "catalogue_size": len(info["videos"]),
+        "shortlisted": len(shortlist),
+        "transcribed": len(index),
+        "failed": len(failures),
+        "skipped": len(skipped),
+        "manifest_path": _rel(manifest_path),
+        "total_estimated_tokens": sum(r["estimated_tokens"] for r in index),
+        "index": index,
+        "failures": failures,
+        "next_step": (
+            "Do NOT read these. Grep the corpus for where rules are stated "
+            "(youtube_grep_transcripts, scoped with sweep_label), then read in "
+            "full only the two or three with the highest rule_keyword_hits."
         ),
     }
 

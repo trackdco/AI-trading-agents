@@ -40,12 +40,15 @@ YOUTUBE_API_KEY=AIza...
 **YouTube Data API v3** → Credentials → API key. Restrict the key to that API.
 Free tier is 10,000 units/day; a search costs 100, so ~100 searches/day.
 
-**Transcripts don't need the key** — only search and metadata do.
+**Nothing here needs the key any more.** Search and channel listing scrape the
+public pages; transcripts never needed it. A key only adds exact view counts and
+server-side duration/date filtering on `youtube_search`.
 
 | Optional var | Purpose |
 |---|---|
 | `YOUTUBE_MCP_CACHE_DIR` | Cache root. Default `research/youtube/`. |
-| `YOUTUBE_TRANSCRIPT_PROXY` | HTTP proxy for transcript fetches. YouTube blocks datacenter IPs, so this is required anywhere but a workstation — including this repo's remote sessions, where `www.youtube.com` is denied at the egress proxy. |
+| `YOUTUBE_TRANSCRIPT_PROXY` | HTTP proxy for transcript fetches. **The durable fix for datacenter IPs** — see below. |
+| `YOUTUBE_TRANSCRIPT_DELAY` | Seconds between transcript fetches in a dive. Default `1.5`. Raise it if you are getting blocked. |
 
 ## Verify
 
@@ -59,11 +62,13 @@ Then `/mcp` in Claude Code should list `youtube-research` as connected.
 
 | Tool | Key? | What it's for |
 |---|---|---|
-| `youtube_research_sweep` | yes | **Start here.** Search, cache every transcript, return a ranked index — never the text. |
+| `youtube_channel_deep_dive` | no | **Start here for a trader.** Enumerate a whole channel, transcribe everything passing the filters, return a ranked index. |
+| `youtube_channel_videos` | no | A channel's full upload catalogue — titles, durations, views, ages. Triage before spending transcript budget. |
+| `youtube_research_sweep` | no | Topic sweep: search, cache every transcript, return a ranked index — never the text. |
 | `youtube_grep_transcripts` | no | Regex across cached transcripts with timestamps. Extract stated rules from twelve videos without loading twelve videos. |
 | `youtube_get_transcript` | no | One transcript. Excerpt + cache path by default; `full=True` when you mean it. |
 | `youtube_article_record` | no | Writes the `research/articles/` file with correct frontmatter and the source table filled in. |
-| `youtube_search` | yes | Plain search, no transcripts. |
+| `youtube_search` | no | Plain search, no transcripts. Scrapes when no key is set. |
 | `youtube_video_details` | yes | Duration/views/likes/description — credibility triage. |
 | `youtube_find_channel` | yes | Find a trusted trader's channel ID, then search within it only. |
 | `youtube_list_transcript_languages` | no | Diagnostic when a fetch fails. |
@@ -98,8 +103,16 @@ than to write a file that breaks retrieval later.
   records it under `failures` and carries on; `youtube_article_record` lists
   those videos in a "No transcript available" section so the gap is visible
   rather than silent.
-- **`RequestBlocked` / IP ban** — YouTube blocks datacenter IPs. Fine on a
-  workstation, broken in a remote session unless `YOUTUBE_TRANSCRIPT_PROXY` is
-  set.
+- **`RequestBlocked` / `IpBlocked`** — the big one, and it is *rate*-driven as
+  much as IP-driven. A channel dive is a burst of dozens of requests, which is
+  exactly what YouTube throttles; once tripped, every client context returns
+  *"Sign in to confirm you're not a bot"* and the block persists for a cooldown.
+  Three mitigations, all in place: `YOUTUBE_TRANSCRIPT_DELAY` paces the dive,
+  each fetch retries with exponential backoff, and a second caption path (the
+  innertube player endpoint) is tried when the first is throttled. On a
+  datacenter IP none of that is sufficient on its own — set
+  `YOUTUBE_TRANSCRIPT_PROXY` (a residential proxy) and it stops being an issue.
+  Cached transcripts are never affected: the cache is read before any network
+  call, so a dive resumes cleanly and only re-fetches what is missing.
 - **403 from the API** — quota exhausted (~100 searches/day) or the API isn't
   enabled on the key's project.

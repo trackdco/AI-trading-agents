@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 
 import pytest
+
 import server
 
 
@@ -185,15 +186,90 @@ class TestGrep:
 
 
 class TestApiKeyGuard:
-    def test_search_without_key_explains_itself(self, monkeypatch):
+    """Search and channel listing fall back to scraping the public pages, so
+    they need no key. Only the tools that read per-video *statistics* still
+    require one, and those must say so clearly rather than failing obscurely."""
+
+    @pytest.mark.parametrize(
+        ("call", "kwargs"),
+        [("youtube_video_details", {"videos": ["dQw4w9WgXcQ"]}), ("youtube_find_channel", {"query": "x"})],
+    )
+    def test_api_only_tools_explain_the_missing_key(self, monkeypatch, call, kwargs):
         monkeypatch.delenv("YOUTUBE_API_KEY", raising=False)
         with pytest.raises(RuntimeError, match="YOUTUBE_API_KEY is not set"):
-            server.youtube_search("anything")
+            getattr(server, call)(**kwargs)
+
+    def test_search_takes_the_scrape_path_without_a_key(self, monkeypatch):
+        monkeypatch.delenv("YOUTUBE_API_KEY", raising=False)
+        monkeypatch.setattr(
+            server, "_scrape_search",
+            lambda q, n: [{"video_id": "AAAAAAAAAAA", "title": "t", "duration": "12:00",
+                           "views": "1.2K views", "published": "1 day ago"}])
+        result = server.youtube_search("anything")
+        assert "no YOUTUBE_API_KEY" in result["source"]
+        assert result["results"][0]["views_estimate"] == 1200
+        assert result["results"][0]["url"].endswith("AAAAAAAAAAA")
+
+    def test_scrape_search_respects_min_duration(self, monkeypatch):
+        monkeypatch.delenv("YOUTUBE_API_KEY", raising=False)
+        monkeypatch.setattr(
+            server, "_scrape_search",
+            lambda q, n: [{"video_id": "AAAAAAAAAAA", "title": "short", "duration": "3:00",
+                           "views": "5 views", "published": "1 day ago"}])
+        assert server.youtube_search("x", min_duration_minutes=8)["count"] == 0
 
     def test_transcript_tools_do_not_need_a_key(self, isolated_cache, monkeypatch):
         monkeypatch.delenv("YOUTUBE_API_KEY", raising=False)
         _seed(isolated_cache, "AAAAAAAAAAA", RULES)
         assert server.youtube_get_transcript("AAAAAAAAAAA")["segments"] == 4
+
+
+class TestScrapeParsers:
+    """The channel listing moved to lockupViewModel in 2025. Both shapes are
+    parsed, because YouTube will move it again."""
+
+    def test_parses_lockup_view_model(self):
+        lockup = {
+            "contentType": "LOCKUP_CONTENT_TYPE_VIDEO",
+            "contentId": "AAAAAAAAAAA",
+            "contentImage": {"thumbnailViewModel": {"overlays": [
+                {"thumbnailBottomOverlayViewModel": {"badges": [
+                    {"thumbnailBadgeViewModel": {"text": "16:08"}}]}}]}},
+            "metadata": {"lockupMetadataViewModel": {
+                "title": {"content": "Opening Range Breakout with AMT"},
+                "metadata": {"contentMetadataViewModel": {"metadataRows": [
+                    {"metadataParts": [{"text": {"content": "3.6K views"}},
+                                       {"text": {"content": "10 days ago"}}]}]}}}},
+        }
+        v = server._lockup_to_video(lockup)
+        assert v == {"video_id": "AAAAAAAAAAA", "title": "Opening Range Breakout with AMT",
+                     "duration": "16:08", "views": "3.6K views", "published": "10 days ago"}
+
+    def test_ignores_non_video_lockups(self):
+        assert server._lockup_to_video({"contentType": "LOCKUP_CONTENT_TYPE_PLAYLIST"}) is None
+
+    def test_harvest_handles_both_shapes_and_dedupes(self):
+        tree = {"a": [{"lockupViewModel": {"contentType": "LOCKUP_CONTENT_TYPE_VIDEO",
+                                           "contentId": "AAAAAAAAAAA", "metadata": {}}},
+                      {"videoRenderer": {"videoId": "BBBBBBBBBBB",
+                                         "title": {"runs": [{"text": "Second"}]}}},
+                      {"videoRenderer": {"videoId": "BBBBBBBBBBB", "title": {"runs": []}}}],
+                "b": {"continuationCommand": {"token": "TOKEN123"}}}
+        out, seen, conts = [], set(), []
+        server._harvest(tree, out, seen, conts)
+        assert [v["video_id"] for v in out] == ["AAAAAAAAAAA", "BBBBBBBBBBB"]
+        assert conts == ["TOKEN123"]
+
+    @pytest.mark.parametrize(("text", "minutes"),
+                            [("16:08", 16.13), ("3:49:37", 229.62), ("", 0.0), ("bad", 0.0)])
+    def test_duration_to_minutes(self, text, minutes):
+        assert round(server._duration_to_minutes(text), 2) == minutes
+
+    @pytest.mark.parametrize(("text", "count"),
+                            [("3.6K views", 3600), ("1,583,686 views", 1583686),
+                             ("2.67M subscribers", 2670000), ("", 0)])
+    def test_views_to_int(self, text, count):
+        assert server._views_to_int(text) == count
 
 
 class TestDotenvLoading:
