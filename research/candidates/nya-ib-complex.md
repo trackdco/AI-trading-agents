@@ -125,3 +125,23 @@ baseline ruling (§5.11-8, Angus: default/cap20-W120/dual — NOTE the
 leg-A cap20 challenger now carries a caution flag from leg B's cap
 collapse, though its own evidence is separate) -> agent rung (paused
 run) -> shadow -> ship decision. Ledger rows 241-243.
+
+### Stage 2c — in-trade diagnosis + management levers (DECLARED 2026-08-05 before run)
+ANGUS: "we can see the diagnosis between trade setups themselves but then
+also intra trade things that might help us capture more from winners and
+cut losers shorter." Fit span, both legs (leg B diagnostic — parked as a
+standalone, informs the complex's future and the agent playbook).
+MEASUREMENTS: winners-vs-losers MFE/MAE profiles (medians/quartiles),
+time-to-exit, checkpoint states t+3/5/10/15/30 with in-trade cvd,
+POST-EXIT WALKOUT for winners (how far price ran beyond the target before
+EOD — the capture-more question).
+DECLARED LEVER ARMS (causal, evaluated on the shared minute path):
+- Leg A (fast clock): A-cut3 (exit t+3 close if MAE>=0.5R); A-cut5-flow
+  (exit t+5 if red AND cvd-against); A-partial (50% off at +1R, rest to
+  mid); A-trail (after MFE>=1.5R stop to peak-0.75R); A-extend (at mid
+  take 50%, let rest run with stop at entry to EOD — the walkout
+  harvester).
+- Leg B (B0 basis): B-cut15 (dying OR cvd-against — known); B-partial
+  (50% at +0.5R full-risk basis); B-trail (after +1R stop to peak-0.5R).
+BE remains a defeated null on both legs — no BE arm re-enters without new
+prereg. All arms base friction, $160/unit-risk, ledger rows each.
