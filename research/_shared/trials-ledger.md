@@ -313,4 +313,22 @@ problem — the mechanism is.
 
 ## PART 3 — OUTCOMES
 
-*(written after the single holdout run)*
+Full report: **`research/_shared/synthesis-sweep-2026-08-07.md`**
+
+### ⛔ NOTHING SURVIVED.
+
+| candidate | disc exp | hold exp | t_clus | p_holm | verdict |
+|---|---|---|---|---|---|
+| `sw-precash-value-migration` | +0.097 | **−0.068** | −0.18 | 1.000 | FAILED — sign flipped |
+| `sw-onx-reclaim` | +0.059 | **+0.064** | +0.56 | 0.858 | FAILED |
+| `sw-open-drive-pcr` | +0.033 | **−0.217** | −0.77 | 1.000 | FAILED — sign flipped |
+
+**Best-of-12 noise floor: median +0.3097, p95 +0.5611. Our best discovery candidate reached
++0.0968 — the 1.5th percentile.**
+
+**Order flow: no improvement.** Every clustered 95% CI straddles zero in both periods, and the
+flow-based group is worse than the price/structure group in both (disc −0.070 vs −0.037; hold
+−0.111 vs −0.102).
+
+**No candidate promoted to forward accumulation.** Four new hypotheses logged as UNTESTED, none
+testable on the 289 sessions used here.
