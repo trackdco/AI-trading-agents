@@ -1,6 +1,6 @@
 ---
 date: 2026-08-05
-status: thesis-pending
+status: census PASSED — L1 owed
 tags: [london, session-structure, trigger-density]
 sources: ["articles/2026-08-05-channel-map-four-traders.md", "findings/london-nq-what-three-traders-agree-on.md", "findings/london-window-LDN-WIN-01.md", "https://www.youtube.com/watch?v=hcVhQBAGGFw", "https://www.youtube.com/watch?v=JySO8cOWOIs", "https://www.youtube.com/watch?v=1noM1ogc5zM"]
 ---
@@ -140,4 +140,56 @@ promoted by being the better of two losers.
 
 ## Trial ledger — LDN-OBK-01
 
-_Awaiting Angus greenlight. No trials run._
+### Trial 1 — L0 census (2026-08-05) — **PASSED on premise, advances to L1**
+
+`docs/PREREG-london-open-break-tree.md` (committed before the run, plus one
+pre-run amendment replacing a null control with a real one).
+`scripts/london_obk_census.py`. 396 London sessions, 2025 discover / 2026 validate,
+**2023/24 untouched — no holdout look spent.**
+
+**1. The break happens, overwhelmingly.** The pre-open range (06:00–08:00 London) is
+broken inside 08:00–10:00 on **92% of 2025 days and 93% of 2026 days** — 425 break
+events, about 1.1 per session. The declared census floor was 30%. There is no
+question that the event exists.
+
+**2. The event is bimodal, and that is the finding.** Splitting breaks by whether
+they closed back inside within 120 minutes:
+
+| era | outcome | n | median excursion beyond level |
+|---|---|---:|---:|
+| 2025 | failed | 234 | 8.6 pts |
+| 2025 | **continued** | 42 | **63.9 pts** |
+| 2026 | failed | 125 | 11.5 pts |
+| 2026 | **continued** | 24 | **96.5 pts** |
+
+Roughly a **7–8× separation** in both eras. This is the number that justifies the
+whole event-tree framing: a break either dies within about ten points or it runs
+most of a session's range. There is no meaningful middle. **A discriminator is worth
+building here; picking a side without one is not.**
+
+**3. The continuation branch is the rare one.** Only **15% (2025) / 16% (2026)** of
+breaks continue. That is the honest shape of this candidate: it is a low-frequency
+trade — roughly 42 and 24 events per era — hunting a large move. Under §5.9.3 that
+ships as a book component if it pays, which is exactly what the frequency-floor
+abolition was for. It also means **the trigger-candle stop is not a refinement here,
+it is the entire candidate**: paying ~10 points to find out you are in the 15% is the
+only version of this that can work, and that is the axis `nypre-euro-handoff` died on.
+
+**4. Break quality — the as-taught definition admits noise.** 27% (2025) / 9% (2026)
+of breaks extend less than 5 points. The prereg froze a bare 1-minute close beyond
+the level because neither source states a minimum displacement, so that is as-taught
+per §5.9.1. **Minimum displacement is the first L1 declared variable**, and the era
+gap (27% vs 9%) is itself worth a look — 2026's ranges are wider, so a fixed
+point-threshold is probably the wrong shape and a fraction-of-range threshold the
+right one.
+
+**No P&L was computed and none was needed.** §5.9.1 forbids a census expectancy kill
+and the prereg declared no P&L at this stage.
+
+**Recorded:** `LDN-OBK-01` × 2 eras in `output/trial_ledger.parquet` (frequency
+premise, no effect charged — a trigger count is not an edge claim).
+
+**Next rung — L1.** Trigger-candle stop vs structural stop, arm A (close-confirmed)
+as the declared default per the promotion rule above, 2R fixed target with
+next-structural-level as the declared alternative, costs at 1× and 2×. Minimum
+displacement enters as the first declared variable, expressed as a fraction of range.

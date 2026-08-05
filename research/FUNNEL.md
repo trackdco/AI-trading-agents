@@ -54,6 +54,42 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - ROLE IN THE AUDIT: the negative control — the funnel lifts real edges
   (cards above) and fails to lift dead ones. Both behaviors are required.
 
+## london-nq-open-break (LDN-OBK-01) — continuation branch — ALIVE, census passed
+- STAGE: L0 census done (`docs/PREREG-london-open-break-tree.md`). L1 owed.
+- RAW TRIGGERS: 425 breaks / 396 London sessions (~1.1/day); 92% of 2025 days and
+  93% of 2026 days carry at least one. Declared census floor was 30%.
+- RAW P&L: **not computed.** Census counts events; §5.9.1 forbids a P&L kill here
+  and the prereg declared no P&L at this stage. First P&L is L1.
+- THE EVENT: continued breaks extend a median **63.9 pts (2025) / 96.5 pts (2026)**
+  beyond the level vs 8.6 / 11.5 for failed ones. ~7-8x separation — the tree is
+  bimodal, which is what makes a discriminator worth building.
+- SPLITS: break freq 92% (2025) / 93% (2026). Continuation share 15% / 16%.
+- BREAK QUALITY: 27% (2025) / 9% (2026) of breaks extend < 5 pts — bare touches
+  admitted because the prereg froze the as-taught definition with no minimum
+  displacement. Minimum-displacement is the obvious first L1 declared variable.
+- NEXT: L1 with the trigger-candle stop (the whole reason this candidate exists —
+  `nypre-euro-handoff` died at 78% WR / +0.02R on exactly this axis), arm A default
+  per the declared promotion rule, 1x and 2x costs.
+- CANON SHAPE: too early — no P&L yet. Census arc is normal (premise clears wide).
+
+## london-po3-ifvg (LDN-PO3-01) — failure branch — ALIVE, census passed, claim narrowed
+- STAGE: L0 census done, same prereg, same event tree. L1 owed.
+- RAW TRIGGERS: same 425 breaks. Fail-within-120m on **85% (2025) / 84% (2026)** vs
+  the declared 15% census floor. The strong "the break is usually the trap" form
+  survives too — it needed >50% and got 84-85%.
+- **PLACEBO MARGIN — the number that actually matters.** A 04:00-06:00 London range
+  with no claim on the open fails at **73% / 70%**. So the headline 85% is mostly
+  ordinary boundary mean-reversion. The trial is the margin: **+12pp (z=3.43)** and
+  **+14pp (z=2.94)**, era-consistent. Never quote the 85% alone.
+- SPLITS: up-break fail 78%/74%, down-break fail 80%/81% — no side asymmetry.
+- TRANSFER TEST — **NEGATIVE, reported as one.** NYA-FA-01's excursion-depth
+  discriminator does not replicate: points rho **-0.105** (inverted), normalised by
+  range width rho **-0.017** (flat). Time-outside discriminates nothing here either,
+  which does replicate NY. See `research/findings/nyfa-discriminator-does-not-transfer.md`.
+- NEXT: L1 on arm B (close back inside) — arm A (IFVG) is barred until a mechanical
+  definition is committed in advance. SMT confluence dropped, no ES data.
+- CANON SHAPE: too early. The placebo margin is the honest starting edge, not 85%.
+
 ## nypre-gap-engine / nypre-inventory-correction — pre-market pair — SHELVED, back in play
 - Under §5.9 book-level bars: gap PSR 0.77, inventory PSR 0.92 vs the new
   0.75 sleeve floor — both eligible as book components pending the book

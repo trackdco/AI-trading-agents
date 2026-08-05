@@ -1,6 +1,6 @@
 ---
 date: 2026-08-05
-status: thesis-pending
+status: census PASSED — L1 owed
 tags: [london, overnight-structure, reversal, pattern-taxonomy]
 sources: ["findings/london-nq-what-three-traders-agree-on.md", "findings/london-window-LDN-WIN-01.md", "https://www.youtube.com/watch?v=uGE_GP9-nxU", "https://www.youtube.com/watch?v=v7tdhjW84Ho", "https://www.youtube.com/watch?v=RJXe1rF9kXM"]
 ---
@@ -174,5 +174,67 @@ quietly folded in as "the strategy".
 
 ## Trial ledger — LDN-PO3-01
 
-_Awaiting Angus greenlight. No trials run. Instrument blocker lifted; the open
-question is now the clock (03:00 London vs his proven 09:30 NY), not the market._
+### Trial 1 — L0 census (2026-08-05) — **PASSED on premise, claim narrowed sharply**
+
+Same prereg, same census, same event tree as `LDN-OBK-01` — one trigger, two
+branches. `docs/PREREG-london-open-break-tree.md`, `scripts/london_obk_census.py`.
+396 sessions, 2025/2026, **2023/24 untouched.**
+
+**1. Breaks fail, and even the strong form survives.** Of 425 breaks:
+
+| era | fail ≤30m | fail ≤60m | fail ≤120m |
+|---|---:|---:|---:|
+| 2025 | 79% | 83% | **85%** |
+| 2026 | 77% | 81% | **84%** |
+
+The declared census floor was 15%. EzTrades' strong claim — that the first move after
+the open is *usually* the trap, not the real move — needed >50% and got 84–85%. **On
+its own terms, as taught, the claim is correct.**
+
+**2. And now the number that stops this being a good day.** The declared placebo — a
+04:00–06:00 London range, same two-hour width, same logic, but with no claim on the
+open — fails at **73% (2025) / 70% (2026)**.
+
+So most of that spectacular 85% is not the London open sweeping anybody. It is what
+any range boundary does: price poked it and came back. **The edge is the margin, not
+the level:**
+
+| era | pre-open | placebo | margin | z |
+|---|---:|---:|---:|---:|
+| 2025 | 85% (276) | 73% (305) | **+12 pp** | +3.43 |
+| 2026 | 84% (149) | 70% (151) | **+14 pp** | +2.94 |
+
+Era-consistent, in the same direction, at a respectable z in both. **There is
+something specific about the pre-open range. It is about a seventh of what the raw
+number advertises.** From here on this candidate quotes the margin and never the 85%
+alone — and this is precisely why the placebo was added to the prereg before the run
+instead of after. Without it the honest read and the flattering read are
+indistinguishable, and I would have reported the flattering one.
+
+**3. No side asymmetry.** Up-break fail 78% (2025) / 74% (2026); down-break 80% /
+81%. The effect is not a directional drift artifact dressed up as a sweep.
+
+**4. Traverse is the weak link, and it is the same lesson NY learned.** After a
+failure, price reaches the **far edge** of the range only **~20%** of the time inside
+the window; the midpoint about **46%**. That is the same shape as
+`NYA-FA-01`'s finding that the "80% rule" is folklore (far edge 12–21% there). **The
+declared target for arm B is therefore the midpoint, not the far edge** — the far-edge
+version of this trade is not supported by its own base rate in either session.
+
+**5. The declared transfer test FAILED.** `NYA-FA-01`'s excursion-depth discriminator
+(23% vs 8% far-edge traverse) does not replicate here: in points rho **−0.105**
+(inverted), normalised by range width rho **−0.017** (flat). Time-outside
+discriminates nothing here either — that half *does* replicate NY. Full write-up and
+the geometric explanation, addressed to the NY lane, in
+`research/findings/nyfa-discriminator-does-not-transfer.md`. **London does not inherit
+a discriminator; it has to find its own.**
+
+**Recorded:** 4 rows under `LDN-PO3-01` in `output/trial_ledger.parquet` — the two
+placebo-margin trials and both transfer-test constructions. The normalised transfer
+test was a second look and is charged as one.
+
+**Next rung — L1, on arm B only.** Close-back-inside entry (arm A/IFVG stays barred
+until a mechanical definition is committed in advance), stop beyond the sweep
+extreme, **target the midpoint** per finding 4, flat by 10:00 London. Costs at 1× and
+2×. The SMT-divergence confluence remains dropped for want of ES data and the verdict
+will say so.
