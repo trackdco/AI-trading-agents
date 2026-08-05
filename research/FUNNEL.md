@@ -176,7 +176,13 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - CANON SHAPE: raw 0.90 → legal cuts → 1.89 era-consistent — the textbook
   arc, second family to show it.
 
-## nya-vwr-rotation — VWAP sd2 rotation fade RTH (Orochi, as taught) — STAGE 1 CENSUS DONE, awaiting Angus's stage-2 call
+## nya-vwr-rotation — VWAP sd2 rotation fade RTH (Orochi, as taught) — PARKED AT STAGE 1 [ANGUS 2026-08-05]
+- PARK RULING: Angus parked the family at stage 1 after the raw card. No
+  verdict, no bin — the stage-2 variable search is simply not spent on this
+  slot. Reopens cheaply: prereg, harness, event set and ledger rows are all
+  committed, so a reopen starts at stage 2 with nothing to rebuild.
+  Reopen condition: a slate slot, or a reason to believe the 18:00-anchor
+  arm (declared, never run) changes the picture.
 - STAGE: prereg (docs/PREREG-vwap-rotation.md, +4 amendments) → uncapped
   raw census → carded → STOPPED. No holdout look spent. Ledger rows 241-255.
 - RAW TRIGGERS: 2,168 distinct sd2 reaches / 290 RTH sessions (7.48/sess,

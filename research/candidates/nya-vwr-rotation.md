@@ -75,7 +75,13 @@ acceptance-back-inside add) means its R is scaled by design; 65 of 240
 events never produced a retest and were recorded `cancelled_no_retest`
 rather than dropped.
 
-### Status
+### Status — PARKED AT STAGE 1 [ANGUS 2026-08-05]
+
+Angus parked the family after reading the stage-1 card. No verdict, no bin;
+the stage-2 slot goes elsewhere. Everything needed to resume is committed
+(prereg, harness, event set, ledger rows 241-255), so a reopen starts at
+stage 2 with nothing to rebuild. The 18:00-anchor arm (A2) is declared and
+never run — it is the cheapest reopen test if the anchor is ever suspected.
 
 **NO BIN, NO VERDICT — census stage only.** Per §5.9.1 the only legal kill
 here is structural absence, and the event fires on essentially every
