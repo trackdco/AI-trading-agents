@@ -1,0 +1,1309 @@
+[0:00] welcome to the ultimate beginners guide
+[0:01] to orderflow trading in this course you
+[0:04] will gain Superior knowledge about the
+[0:06] tools of orderflow analysis in record
+[0:09] time technical analysis focuses on
+[0:12] analyzing historical data to predict
+[0:14] future price movements based on known
+[0:17] patterns in contrast order flow delves
+[0:20] deeper into the Dynamics of how prices
+[0:22] are formed by Shining Light on Market
+[0:25] micr structure meaning how buy and sell
+[0:27] orders are placed matched and ex uted in
+[0:30] the market orderflow analysis possesses
+[0:33] tools for assessing price formation in
+[0:36] real time as well as tools to analyze
+[0:38] how price was formed in the past in
+[0:41] short order flow has the capacity to
+[0:43] unveil information that cannot be seen
+[0:46] with price action reading by itself so
+[0:48] order flow is a great Ally for Price
+[0:50] action reading as you'll see throughout
+[0:52] the course this course is constructed in
+[0:55] a top-down manner first we're going to
+[0:57] quickly study the auction market theory
+[1:00] which provides the necessary theoretical
+[1:02] framework to understand Market micro
+[1:04] structure in orderflow trading Market
+[1:07] micro structure is what allows us to
+[1:09] understand the intricacies pitfalls and
+[1:12] opportunities that exist in the way buy
+[1:14] and sell orders are placed matched and
+[1:17] executed in the market next we're going
+[1:20] to delve into the various actionable
+[1:22] order flow tools and strategies that are
+[1:25] worth paying attention to as a retail
+[1:26] Trader you learn what tools to avoid and
+[1:29] what tools to focus on without further
+[1:32] Ado let's begin by talking about auction
+[1:34] Market Theory the auction market theory
+[1:37] was developed by Peter style Meer who
+[1:40] was a Trader at the Chicago Board of
+[1:42] Trade in the 1980s style Meer also
+[1:45] created the market profile method which
+[1:47] I'm going to talk about in future
+[1:49] courses and is similar to the volume
+[1:51] profile
+[1:52] tool the auction market theory is based
+[1:55] on the idea that the financial Market
+[1:57] serves as a place to facilitate trading
+[1:59] between buyers and sellers in a way that
+[2:01] is like the bidding and offering process
+[2:03] of an auction to keep things simple
+[2:06] buyers always want to buy at the lowest
+[2:08] price and sellers always want to sell at
+[2:11] the highest price the point where these
+[2:13] two opposing forces meet is what is
+[2:15] known as point of equilibrium it's also
+[2:18] referred to as efficiency balance or
+[2:21] fair value notice that auction market
+[2:23] theory is based on the fundamental
+[2:25] principle of supply and demand in
+[2:28] economics pric is the point where supply
+[2:30] and demand curves intersect meaning the
+[2:33] point where buyers and sellers agree the
+[2:35] search for efficiency equilibrium
+[2:38] balance or fair value of a market is not
+[2:41] static buyers and sellers are always
+[2:43] changing their perception about the
+[2:45] market due to many
+[2:46] factors such factors include major
+[2:49] macroeconomic forces news events overall
+[2:52] Market sentiment and Technical factors
+[2:55] to name a few when a new piece of
+[2:57] information emerges that changes the
+[3:00] perception of buyers and sellers related
+[3:02] to the fair value of a market in other
+[3:04] words it creates an
+[3:06] imbalance an imbalanced Market starts
+[3:09] the process of price Discovery meaning
+[3:11] the discovery for the new fair value
+[3:14] when markets are balanced they trade in
+[3:16] the range there is no motive for Price
+[3:19] Discovery since buyers and sellers are
+[3:21] relatively comfortable with the
+[3:23] perception of value of the market when
+[3:25] markets become imbalanced we have
+[3:28] trends one fundamental idea here is that
+[3:31] markets respond to previous areas of
+[3:33] balance and
+[3:35] imbalance balanced markets which are
+[3:37] sideways are recognized as areas of
+[3:41] acceptance imbalanced markets which are
+[3:43] trending are recognized as areas of
+[3:47] rejection price tends to be attracted to
+[3:49] areas of acceptance and repelled from
+[3:52] areas of
+[3:53] rejection all of this of course assumes
+[3:56] that no new information has affected the
+[3:58] perception of buyers and sellers
+[4:00] in auction Market Theory we have three
+[4:02] main components price time and volume
+[4:06] price acts like an auction year that
+[4:08] balances the forces of supply and demand
+[4:11] in the Market at all times time serves
+[4:13] as an indicator of acceptance or
+[4:16] rejection like it can be seen in the
+[4:18] market profile
+[4:19] methodology the amount of time price
+[4:21] spends in a price level shows whether
+[4:24] price accepts or rejects that level
+[4:27] volume helps confirm acceptance or
+[4:30] rejection areas of acceptance are marked
+[4:33] by higher volume and areas of rejection
+[4:35] are marked by lower
+[4:37] volume in auction Market Theory we also
+[4:40] have the concept of value area which
+[4:42] simply represents the price range where
+[4:44] 70% of the traded volume occurred within
+[4:47] a specific time
+[4:49] period the price level where the highest
+[4:51] volume occurred is called point of
+[4:54] control this value of 70% is based on
+[4:57] the empirical rule in statistics meaning
+[5:00] that in a gaussian distribution we have
+[5:02] 68% of the data falling within one
+[5:04] standard deviation away from the main
+[5:07] Traders round that up to 70% we'll talk
+[5:10] more about this when we look at the
+[5:11] volume
+[5:12] profile keeping these basic principles
+[5:15] in mind it's time now to move on to the
+[5:18] subject of Market micr structure so that
+[5:21] we understand the nuts and bolts of how
+[5:23] price action is formed in the
+[5:25] charts this might seem confusing and
+[5:27] unnecessary at first but it's it's
+[5:29] extremely important to understand
+[5:31] otherwise you'll be completely lost
+[5:33] later let's begin first by talking about
+[5:36] the different kinds of orders that exist
+[5:38] in trading to keep things simple we can
+[5:41] summarize order types in two categories
+[5:44] we have Market orders and we have Penny
+[5:47] orders a market order is an order to buy
+[5:50] or sell immediately for example if you
+[5:53] want to buy at whatever price is being
+[5:55] traded right now you will use a market
+[5:57] order the same is true of course for a
+[5:59] sell order a pending order is an order
+[6:02] to buy or sell at a price different than
+[6:05] what is being traded right now in that
+[6:07] sense we have two main types of pending
+[6:09] orders the limit and the stop order the
+[6:13] limit order is a pending order to buy or
+[6:15] sell at a better price than what is
+[6:17] being traded right now for example a buy
+[6:20] limit order is always below the current
+[6:22] price since buyers always want to buy
+[6:25] low a sell limit order is always above
+[6:28] the current price since sellers always
+[6:29] want to sell High the stop order is a
+[6:33] pending order that becomes a market
+[6:34] order once price reaches a predetermined
+[6:37] level notice that stop orders allow
+[6:40] traders to trade in a worse price buy
+[6:43] stop orders are always above the current
+[6:45] price and sell stop orders are always
+[6:48] below the current price one key
+[6:50] difference between stop and limit orders
+[6:53] is that limit orders are active meaning
+[6:55] that they are directly placed in the
+[6:57] market while stop orders are inative
+[6:59] active meaning that they are held by the
+[7:02] broker if the market reaches the level
+[7:04] where the stop order was placed the
+[7:06] broker immediately transforms it into a
+[7:09] market order that means that only the
+[7:11] broker can see your stop orders the
+[7:13] limit orders are visible to the entire
+[7:16] market so to make this absolutely clear
+[7:19] let's analyze the types of orders
+[7:21] involved in a simple trade with stop-
+[7:23] loss and takeprofit orders let's begin
+[7:25] with the long trade imagine that you
+[7:28] opened the long trade using a market
+[7:30] order if the trade was opened with a buy
+[7:33] order in order to close the trade you
+[7:35] need to execute a sell order of the same
+[7:38] size so both the stop- loss and
+[7:40] take-profit Target orders of a long
+[7:42] trade are sell orders the stop- loss of
+[7:45] a long trade is a sell order that is
+[7:47] below the price you open the trade so
+[7:49] it's a sell stop order in a worst price
+[7:52] the take profit of a long trade is a
+[7:54] sell order that is above the price you
+[7:56] open the trade so it's a sell limit
+[7:58] order in a Better
+[8:00] Price imagine now that you open the
+[8:02] short trade using a market order if the
+[8:05] trade was opened with a sell order to
+[8:07] close the trade you need to execute a
+[8:10] buy order of the same size so both the
+[8:12] stop- loss and take-profit Target orders
+[8:14] of a short trade are buy orders the
+[8:17] stop- loss of a short trade is a buy
+[8:19] order that is above the price you open
+[8:21] the trade so it's a buy stop order in a
+[8:23] worse price the takeprofit of a short
+[8:26] trade is a buy order that is below the
+[8:28] price you open the trade so it's a buy
+[8:30] limit order in a better price one easy
+[8:33] way of remembering all of this is that
+[8:35] market orders get you filled at the
+[8:37] current price limit orders get you
+[8:39] filled at a better price and stop orders
+[8:42] get you filled at a worse price keeping
+[8:44] in mind the buyers want to buy low and
+[8:47] sellers want to sell High notice also
+[8:49] that stop orders can be used either to
+[8:51] get out of a trade or to initiate a
+[8:53] breakout trade for example recall also
+[8:56] the limit orders are active meaning that
+[8:59] they are Place directly in the market
+[9:01] while stop orders are inactive meaning
+[9:03] that they are held by the broker until
+[9:05] the market reaches the level where they
+[9:07] are triggered this is one of the reasons
+[9:09] you need to choose a reliable broker
+[9:12] notice that not all buy orders have the
+[9:14] intention of adding buying pressure and
+[9:16] not all sell orders have the intention
+[9:18] of adding selling pressure in the case
+[9:20] of pending orders the intention can be
+[9:23] to stop or limit price movements this
+[9:25] leads us to different types of Market
+[9:28] players there are basically two types
+[9:30] the aggressive and the passive players
+[9:33] aggressive players are the ones that
+[9:35] initiate price movements and they do so
+[9:37] through the use of Market
+[9:39] orders passive players don't initiate
+[9:42] price movements but they can slow it
+[9:44] down or stop it and they do that through
+[9:46] limit
+[9:47] orders that also means that passive
+[9:49] players demonstrate intent across
+[9:51] different price levels as we'll see
+[9:53] later another way of thinking about
+[9:55] aggressive and passive players is that
+[9:57] aggressive players take liquidity from
+[9:59] passive players and passive players
+[10:01] provide liquidity to the aggressive
+[10:04] players it's important that you
+[10:05] acknowledge a few basic rules about the
+[10:08] interaction of Market players a buy
+[10:10] order must always match a sell order in
+[10:13] other words if you want to buy there
+[10:15] must be someone else on the other side
+[10:17] willing to sell and vice versa an
+[10:19] aggressive order must always match a
+[10:22] passive order with all this concept in
+[10:24] mind let's move on to hypothetical
+[10:26] scenarios in one of the order flow tools
+[10:28] called the order book the order book
+[10:31] shows the buy limit orders below the
+[10:33] current price in the bid column on the
+[10:35] left and the sell limit orders above the
+[10:37] current price in the as column on the
+[10:40] right the order book shows the Dynamics
+[10:42] of limit orders in real time notice that
+[10:45] the order book is very similar to
+[10:47] another real-time order flow tool called
+[10:49] depth a market or D the difference is
+[10:52] that the D is easier to read since the
+[10:55] size of bars in the bid and S columns
+[10:57] are proportional to the number of limit
+[10:59] orders giving an instant perception of
+[11:02] Market depth to the trader however they
+[11:05] basically show the same
+[11:07] information this is a good moment to
+[11:09] explain the concepts of liquidity and
+[11:11] Market depth liquidity is the ease with
+[11:14] which a market can be traded without
+[11:16] causing significant changes in Price
+[11:19] Market depth is the number of orders in
+[11:21] a given price level a deeper Market
+[11:24] means that more trading activity can
+[11:26] occur without causing significant
+[11:28] changes in price
+[11:30] by the same token a shallow Market means
+[11:32] that significant changes in price can
+[11:34] occur with low levels of trading
+[11:36] activity let's take a hypothetical
+[11:38] scenario where buyers for whatever
+[11:40] reason feel that the current price is
+[11:42] low and they decide to buy recall that
+[11:46] market players that initiate price
+[11:47] movements are aggressive players and
+[11:49] they do so with Market orders recall
+[11:52] also that an aggressive order must
+[11:54] always match a passive order for price
+[11:57] to rise from 50 to 51 one aggressive
+[12:00] buyers must take the liquidity provided
+[12:02] by the passive sellers in the 50 price
+[12:04] level first in this example there are 23
+[12:08] sell limit orders in that level to go
+[12:11] from the 51 to the 52 price level the
+[12:14] same process needs to occur of course
+[12:17] notice that in this case the S column
+[12:19] has shallow Market depth so the
+[12:21] aggressive buyers can cause a more
+[12:22] significant rise in price with not a lot
+[12:24] of aggressive power in the higher prices
+[12:27] market depth begins to rise price and
+[12:30] the aggressive buyers require more power
+[12:32] to produce the same change in price the
+[12:35] same mechanics of course happen in the
+[12:37] bid column that is how prices
+[12:39] effectively rise and
+[12:41] fall like I said previously the order
+[12:44] book or the Dum is a realtime tool to
+[12:47] assess the intention of passive players
+[12:50] and here Begins the problem since this
+[12:52] is a realtime tool it is subjected to
+[12:55] different kinds of manipulation
+[12:57] Maneuvers for example buyers can place
+[13:00] significant buy limit orders in a
+[13:02] specific price level with the intention
+[13:04] of attracting the market to that area
+[13:06] but with no intention of getting
+[13:08] filled they can cancel the orders just
+[13:11] before they are hit this problem became
+[13:14] significant especially after the rise of
+[13:16] high frequency trading algorithms in
+[13:18] 2008 which can basically automate this
+[13:21] process so the market depth reflected in
+[13:24] the order book or Dom doesn't
+[13:26] necessarily correspond to the real
+[13:28] intention of buyers and sellers let's
+[13:30] briefly go over different kinds of
+[13:32] manipulation Maneuvers that can occur in
+[13:34] the order book or
+[13:36] D spoofing this maneuver involves the
+[13:39] placement of large limit orders with no
+[13:42] intent of having them filled in other
+[13:44] words passive players can Place Large
+[13:47] orders that will appear in the order
+[13:49] book or DP to create the illusion that
+[13:51] there is a lot of intent in a particular
+[13:53] price level but in reality these players
+[13:56] don't have the intention of executing
+[13:58] these orders
+[13:59] they just want to induce the illusion of
+[14:01] liquidity or supply and demand on other
+[14:03] Market players such orders can be
+[14:06] quickly cancelled just before price hits
+[14:08] them for
+[14:10] example the problem of course is that
+[14:12] there is no way to tell if the large
+[14:14] orders exist for a legitimate intent or
+[14:17] if they are result from
+[14:19] spoofing Iceberg orders institutional
+[14:22] Traders have access to trading platforms
+[14:24] that allow them to place what are called
+[14:26] Iceberg orders which are limit orders
+[14:29] that appear partially in the order book
+[14:31] or Dum when the visible portion of the
+[14:33] order is executed another portion of the
+[14:36] order emerges and gets
+[14:38] executed the reason behind this is to
+[14:41] hide the intent of having a very large
+[14:43] order appear in the order book a retail
+[14:46] Trader has no way to tell if the ordered
+[14:48] book or Dum is hiding an iceberg ordered
+[14:51] so a price that appears to have shallow
+[14:53] depth might be hiding an iceberg order
+[14:56] which would obviously be
+[14:57] misleading there are other types of
+[14:59] manipulation Maneuvers like painting the
+[15:01] tape and layering but the understanding
+[15:04] of spoofing and Iceberg orders is enough
+[15:06] to understand the misleading nature of
+[15:08] real-time order flow
+[15:10] analysis in conclusion when observing
+[15:13] the order book or the Dom shallow price
+[15:15] levels might actually be deep and deep
+[15:17] price levels might actually be shallow
+[15:20] there is of course no way of telling the
+[15:22] intention of passive players just by
+[15:24] looking at these real-time tools as
+[15:26] retail Traders there is a very high
+[15:29] probability of being misled by more
+[15:30] astute institutional Traders
+[15:32] manipulating the order flow all this
+[15:35] talk about algorithms manipulating price
+[15:37] is related to real-time order flow not
+[15:40] historical order flow this information
+[15:43] might seem inoffensive but it's
+[15:45] importance will grow as we progress so
+[15:48] this deceptive mechanics of the
+[15:49] real-time order flow is one problem but
+[15:51] it doesn't stop there another problem
+[15:54] here is that Traders tend to assume that
+[15:56] buying and selling always have
+[15:58] directional content that's not true
+[16:01] certain kinds of Market participants
+[16:03] don't buy necessarily expecting that
+[16:05] price will rise or sell expecting that
+[16:07] price will fall the key to understanding
+[16:10] that is that there are mainly three
+[16:11] types of Market participants speculators
+[16:14] arbitres and
+[16:16] hedgers speculators are what most retail
+[16:19] Traders expect every Market participant
+[16:21] to be speculators want to capitalize on
+[16:24] the directionality of price movements
+[16:26] meaning buying low and selling High
+[16:29] if the market was made only of
+[16:31] speculators the order book would be less
+[16:33] misleading although the manipulative
+[16:35] tactics we just saw would still be a
+[16:37] problem we also have
+[16:39] arbitragers this kind of Market
+[16:41] participant is not worried about Market
+[16:44] Direction they want to capitalize on the
+[16:46] difference between two markets which
+[16:48] often involves buying one market and
+[16:50] selling another
+[16:52] simultaneously in other words when
+[16:54] arbitragers buy or sell a market they
+[16:56] don't necessarily expect this Market to
+[16:59] rise or fall statistical Arbitrage is a
+[17:02] good example these kinds of Traders
+[17:04] don't trade market Direction They trade
+[17:07] the statistical relationship between two
+[17:09] or more markets for example if an
+[17:12] arbitrager buys Market a and sells
+[17:15] Market B he doesn't care if Market a
+[17:17] Falls as long as Market B Falls more
+[17:20] than a that is a simplistic example but
+[17:23] it illustrates how buy and sell orders
+[17:25] don't necessarily have directional
+[17:27] intent behind them if you want to learn
+[17:29] more about Arbitrage I have an ebook
+[17:31] about it called statistical Arbitrage by
+[17:34] Co integration Co integration is an idea
+[17:37] that won the Nobel prize in economics
+[17:39] and it lays the foundation for Arbitrage
+[17:41] strategies in the institutional trading
+[17:43] World it can also be used by retail
+[17:46] Traders the third type of market player
+[17:48] is the hedger this kind of Market
+[17:51] participant aims to reduce or eliminate
+[17:54] some kind of Risk by using the financial
+[17:56] markets the classic example here is
+[17:59] Delta hedging used by Banks which
+[18:01] involves buy and call options at the
+[18:03] same time that they sell the underlying
+[18:05] Financial instrument following a certain
+[18:07] proportion the aim is to eliminate Delta
+[18:10] or directional risk that's useful to
+[18:13] mitigate some of the credit risk
+[18:14] associated with Landing operations in
+[18:17] summary just because they sold the
+[18:19] market doesn't mean they want it to go
+[18:21] down because they are not trading Market
+[18:23] Direction they are trading Market
+[18:25] volatility I have a video here in the
+[18:27] channel demonstrating how Del the
+[18:28] hedging occurs I'll leave it in the
+[18:31] video description or card the term Delta
+[18:34] here is completely unrelated to the
+[18:36] Delta we'll study later the first
+[18:38] relates to the delta or directional risk
+[18:40] of the market given by the black sches
+[18:42] formula and the latter relates to volume
+[18:45] Delta which is the difference between
+[18:47] bid and ask volume in conclusion not
+[18:50] every Market participant buying or
+[18:52] selling has directional intent like most
+[18:54] retail Traders expect that is a problem
+[18:57] because it obfuscates the order flow
+[18:59] process in real-time tools like the
+[19:01] order book or D the situation is even
+[19:04] worse because there are different ways
+[19:06] of manipulating the perception of intent
+[19:08] through limit orders as we saw if you're
+[19:11] still not depressed let me try again
+[19:13] beyond the problem of manipulation in
+[19:15] the order book and the problem of
+[19:17] ambiguity due to the diverse nature of
+[19:19] Market participants we also have the
+[19:22] problem of hidden volume hidden volume
+[19:25] occurs primarily due to OTC or over
+[19:28] thecount Trading
+[19:29] and dark pools OTC trading is when
+[19:32] trades happen between certain parties
+[19:34] without going through a centralized
+[19:36] exchange this is a problem of course
+[19:38] because it can obfuscate the real level
+[19:40] of Market activity to the general public
+[19:43] this is not a small matter since OTC
+[19:45] trading is usually done by large players
+[19:48] such as pensions funds hedge funds
+[19:51] Sovereign wealth funds and very large
+[19:53] companies just so you can have some
+[19:55] perspective the volume traded in the OTC
+[19:58] markets is a few times larger than the
+[20:00] global GDP in
+[20:03] 2023 it is estimated that the global GDP
+[20:06] was around1 trillion the volume traded
+[20:09] in the OTC derivatives Market alone was
+[20:12] 600 trillion according to the bank of
+[20:14] international
+[20:16] settlements dark pools are private off
+[20:18] exchange training venues where large
+[20:21] institutional investors can execute
+[20:23] trades without publicly revealing their
+[20:25] orders until after the trade is
+[20:27] completed dark tools are primarily used
+[20:29] to minimize the market impact of large
+[20:32] transactions the lack of pre-trade
+[20:34] transparency is clearly a problem if
+[20:36] Traders are looking to analyze the
+[20:38] real-time order flow of a market in
+[20:41] summary the manipulation in the order
+[20:43] book with the tactics such as Iceberg
+[20:45] orders and spoofing the ambiguity
+[20:47] generated by different kinds of Market
+[20:49] participants such as speculators
+[20:51] arbitragers and hedgers and the lack of
+[20:54] transparency due to OTC and dark pools
+[20:57] hidden volume Le lead us to conclude
+[20:59] that the real-time analysis of order
+[21:01] flow done by retail Traders is mostly a
+[21:03] vain
+[21:04] exercise given that trading is a game of
+[21:07] asymmetric information and Retail
+[21:09] Traders are always on the weaker side we
+[21:11] need ways to analyze order flow in a
+[21:13] more concrete way in other words we
+[21:16] cannot rely on tools that show realtime
+[21:18] intent we need to rely on tools that
+[21:21] tell us what in fact happened with the
+[21:23] order flow one of these tools is what is
+[21:26] called time and sales also referred to
+[21:28] as the tape however things happen too
+[21:31] quickly in the tape it's a difficult
+[21:33] tool to use and there are better options
+[21:35] for analyzing the historical order flow
+[21:38] the conclusion here is that we should
+[21:39] focus on tools that highlight important
+[21:42] aspects of historical order flow that
+[21:44] solve the problem of dealing with
+[21:46] manipulation tactics in the order book
+[21:48] or D such as layering spoofing and
+[21:50] Iceberg orders historical order flow
+[21:53] tools will show us what in fact happened
+[21:56] not the misleading intention of various
+[21:58] mark Mark
+[21:59] players however by using historical
+[22:01] order flow tools we still have the
+[22:03] problem of ambiguity and the problem of
+[22:05] lack of transparency or hidden volume
+[22:08] the problem of ambiguity can be
+[22:10] mitigated by changing our perspective
+[22:12] instead of looking at order flow as a
+[22:14] tool to identify directional movement we
+[22:17] look at it to identify levels of
+[22:19] activity the problem of lack of
+[22:22] transparency Still Remains one way of
+[22:25] dealing with this problem is to focus on
+[22:27] Futures Trading because future Futures
+[22:28] are traded on centralized exchanges
+[22:31] unlike Forex for example which is
+[22:33] decentralized you can rate order flow in
+[22:35] currency Futures to obtain more
+[22:37] transparent information and trade on
+[22:40] Forex charts for
+[22:41] example in conclusion use historical
+[22:44] order flow tools focus on identifying
+[22:47] levels of activity instead of
+[22:49] identifying directional intent and focus
+[22:52] on Futures Trading if you want to obtain
+[22:54] more reliable order flow data there are
+[22:57] many historical order flow tools but
+[22:59] we'll focus on three of them for
+[23:01] Simplicity sake the footprint the volume
+[23:04] profile and the cumulative volume Delta
+[23:07] let's begin with the
+[23:09] footprint the footprint shows the same
+[23:11] information given by the time in sales
+[23:13] or tape but it displays it in a useful
+[23:16] and relatively easy way to
+[23:19] observe once again the idea is not to
+[23:21] identify directionality but to quantify
+[23:24] the activity of buyers and sellers in
+[23:26] the price levels within a candlestick
+[23:28] recall that when we looked at the order
+[23:30] book we were analyzing limit orders
+[23:33] limit buy orders in the bid and limit
+[23:35] sell orders in the ask those were the
+[23:38] real-time orders of the market the
+[23:41] footprint is a historical order flow
+[23:43] tool meaning that it shows the orders
+[23:45] that got executed not the orders that
+[23:47] might be executed in this sense the bin
+[23:50] and ass Columns of the footprint
+[23:52] demonstrate aggressiveness meaning that
+[23:54] the bid column shows selling aggression
+[23:56] and the S column shows Buy buying
+[23:58] aggression that might seem confusing but
+[24:01] you must remember that an aggressive
+[24:02] order always matches a passive order in
+[24:05] summary the bid column shows passive
+[24:07] buying intent in the order book but in
+[24:10] the footprint it shows the aggressive
+[24:12] selling that actually took place the US
+[24:15] column shows passive selling intent in
+[24:17] the order book but in the footprint it
+[24:19] shows the aggressive buying that
+[24:21] actually took place When Buyers attack
+[24:24] sell limit orders this activity is
+[24:26] represented in the S column
+[24:29] when sellers attack by limit orders that
+[24:31] activity is represented in the bid
+[24:33] column make sure you understand this
+[24:36] perfectly before we move on to the
+[24:38] features of the footprint chart and how
+[24:40] to use it let's make sure we clarify a
+[24:42] problem related to the matching of
+[24:44] orders let's go back to the simple
+[24:46] example of a long trade with a stop-
+[24:48] loss and take-profit Target orders and
+[24:50] analyze where each of these three orders
+[24:53] will appear in the footprint imagine
+[24:55] that you open a long trade with a buy
+[24:57] Market order that is an aggressive buy
+[24:59] order so it matches a sell limit and
+[25:02] therefore it will appear on the S column
+[25:04] of the footprint if your trade gets
+[25:06] stopped out a sell stop order will be
+[25:08] triggered a sell stop order is a sell
+[25:11] Market order that matches a buy limit
+[25:13] order and therefore it will appear on
+[25:15] the bid column of the footprint the
+[25:18] takeprofit is a sell limit order that if
+[25:20] triggered will match a buy Market order
+[25:23] and it will appear on the S column of
+[25:25] the footprint imagine now that you open
+[25:27] a short trade with a sell Market order
+[25:30] that is an aggressive sell order so it
+[25:32] matches a buy limit and therefore it
+[25:34] will appear on the bid column of the
+[25:36] footprint if your trade gets stopped out
+[25:39] a buy stop order will be triggered a buy
+[25:42] stop order is a buy Market order that
+[25:44] matches a sell limit order and therefore
+[25:47] it will appear on the as column of the
+[25:49] footprint the takeprofit is a buy limit
+[25:51] order that if triggered will match a
+[25:53] sell Market order and it will appear on
+[25:55] the bid column of the footprint it's key
+[25:58] to remember that not all aggressive
+[26:00] orders have intent of adding buying or
+[26:02] selling pressure to the market for
+[26:04] example the stop loss of a sell which is
+[26:07] a buy Market order can match a take
+[26:10] profit from a buy which is a sell limit
+[26:12] order this will appear on the as both
+[26:15] Traders are leaving the market and yet
+[26:17] the footprint would reflect aggressive
+[26:19] buying in the ask the stop- loss of a
+[26:22] buy which is a sell Market order can
+[26:24] match a takeprofit from a sell which is
+[26:26] a buy limit order
+[26:28] this would appear in the bid both
+[26:31] Traders are leaving the market and yet
+[26:33] the footprint would reflect aggressive
+[26:35] selling in the bid with that in mind
+[26:37] let's begin understanding the features
+[26:39] of the footprint chart the footprint
+[26:42] chart shows two columns one in each side
+[26:45] of the Candlestick in
+[26:46] question you can change the level of
+[26:48] resolution of the price levels according
+[26:50] to your
+[26:52] liking the column on the left shows the
+[26:54] bit volume across different price levels
+[26:56] of the Candlestick recall ing that on
+[26:58] the footprint the bid column shows
+[27:00] selling aggression not by intention like
+[27:03] in the order book the column on the
+[27:05] right shows thees volume across
+[27:07] different price levels of the
+[27:08] Candlestick recalling that on the
+[27:10] footprints the S column shows buying
+[27:12] aggression not selling intention like in
+[27:15] the order book it's a mistake to
+[27:17] associate red cells with directional
+[27:19] selling only and green cells with
+[27:21] directional buying only as we saw
+[27:23] previously the cells with lighter colors
+[27:26] show price levels with lower volumes and
+[27:28] logically the cells with darker colors
+[27:31] show price levels with higher volumes
+[27:34] the cells in Black demonstrate the price
+[27:36] level with the highest level of activity
+[27:39] this is known as hvn or high volume node
+[27:43] this can be useful when trying to judge
+[27:45] which price level within a Candlestick
+[27:47] future price action can react to if this
+[27:50] was the price level with the highest
+[27:52] volume is the price where buyers and
+[27:54] sellers found fair value for the most
+[27:56] part and it can be used later support or
+[27:59] resistance another feature of the
+[28:01] footprint is called the value area as a
+[28:04] default the value area is the range of
+[28:06] prices where 70% of the volume occurred
+[28:10] this level of 70% is not arbitrary if we
+[28:13] recall the empirical rule in statistics
+[28:15] we see that 68% of the data occurs
+[28:18] within one standard deviation from the
+[28:20] mean in a gussian
+[28:22] distribution Traders simply round that
+[28:24] number up to
+[28:25] 70% this is therefore the range of fair
+[28:27] value value within the Candlestick the
+[28:30] high volume node is simply the peak of
+[28:32] the distribution within the value area
+[28:35] the limits of the value area are
+[28:37] displayed as
+[28:38] V which means value area high and V
+[28:43] which means value area low this is the
+[28:45] same idea of the volume profile but
+[28:47] instead of measuring the volume
+[28:49] distribution in a series of candlesticks
+[28:51] the footprint shows the volume
+[28:53] distribution within the Candlestick
+[28:56] another important feature of the
+[28:57] footprint is called imbalance which is
+[29:00] highlighted by green or red thin bars on
+[29:02] the side of the price levels where the
+[29:04] imbalance occurred it's important to
+[29:06] knowe that we don't compare price levels
+[29:08] horizontally in the footprint We compare
+[29:11] them diagonally like so that's because
+[29:14] When Buyers attack passive sellers they
+[29:16] do that one price level above when
+[29:18] sellers attack passive buyers they do
+[29:21] that one price level below as a standard
+[29:24] the imbalance occurs when there is a
+[29:25] 300% discrepancy between price levels
+[29:29] meaning when one price level has at
+[29:31] least three times more volume than the
+[29:33] price level immediately above or below
+[29:36] when the discrepancy occurs in the bid
+[29:38] there is a bid imbalance when the
+[29:40] discrepancy occurs in the ask there is
+[29:43] an Ask imbalance the terms buy or sell
+[29:46] imbalance are not really appropriate
+[29:48] because not every selling aggression
+[29:49] comes from sellers willing to add
+[29:51] selling pressure not every buying
+[29:53] aggression comes from buyers willing to
+[29:54] add buying pressure as we saw before in
+[29:57] the this Candlestick we have three
+[29:59] imbalances in the ask and one in the bid
+[30:02] let's analyze the highest one in the ask
+[30:04] we see that in the imbalance level
+[30:06] there's a volume of 24,000 in the ask
+[30:09] one level Below in the bid we see that
+[30:11] the volume was 6.9 th000 if we measure
+[30:15] the ratio here we see that the ask
+[30:17] volume was 3.46 times larger that is why
+[30:20] this is marked as an imbalance if we
+[30:23] look at the bid imbalance at the top
+[30:25] we'll see that the bid volume was around
+[30:27] 7 15,000 in comparison to 2.6 th000 in
+[30:31] the ask that's 6.5 times larger
+[30:34] imbalances can also be stacked for
+[30:37] example when there is more than one
+[30:38] imbalance in successive price levels we
+[30:41] have stacked
+[30:42] imbalances another important feature of
+[30:44] the footprint is the volume Delta the
+[30:47] Delta is nothing more than the
+[30:48] difference between ask volume and bid
+[30:51] volume generally speaking bullish
+[30:53] candles have positive Delta and bearish
+[30:55] candles have negative Delta but not
+[30:57] always as we'll see in a moment the
+[31:00] footprint basically serves two different
+[31:02] purposes we can use it to identify
+[31:04] support and resistance levels in
+[31:06] different ways and we can use it to
+[31:08] validate any other type of support and
+[31:11] resistance we find in a Candlestick
+[31:12] chart let's begin with the ways of
+[31:15] identifying support and resistance
+[31:16] levels with the footprint itself there
+[31:19] are mainly two ways of using the
+[31:20] footprint to identify support and
+[31:23] resistance levels consecutive high
+[31:25] volume nodes and stacked imbalances
+[31:28] let's see an example of both single high
+[31:31] volume nodes are usually not strong
+[31:33] enough to provide meaningful support and
+[31:35] resistance levels but when high volume
+[31:37] nodes happen consecutively in the same
+[31:39] price level there's a higher chance that
+[31:41] they will act as support or resistance
+[31:44] in this image you can see an example of
+[31:47] that we can see three different price
+[31:49] levels with multiple high volume
+[31:51] nodes the first has two the second has
+[31:55] three and the third has two
+[31:58] we see price returning to this high
+[31:59] volume area later and then resuming the
+[32:02] movement to the upside in this other
+[32:04] image you can see an example of stacked
+[32:06] imbalances working as support the low of
+[32:09] the large bearish Candlestick is formed
+[32:11] by four stacked imbalances in the ass
+[32:13] colum denoting buying aggression near
+[32:15] the low when price returns to that area
+[32:18] later it reacts to the upside these are
+[32:20] the two main ways of observing support
+[32:22] and resistance levels with the footprint
+[32:24] but in my point of view the best value
+[32:26] we can get from the foot footprint is
+[32:28] using it to confirm support and
+[32:30] resistance levels we would normally find
+[32:32] in a Candlestick chart this requires a
+[32:35] contextual reading of the footprint
+[32:36] chart in light of the support or
+[32:38] resistance level in question before we
+[32:41] observe examples of that we need to be
+[32:43] aware of two important aspects of the
+[32:45] footprint the price and balance
+[32:47] relationship and the price Delta
+[32:50] relationship price and balance
+[32:51] relationship is observing the position
+[32:54] of the closing price of a Candlestick in
+[32:56] relation to the bid and ask imbalances
+[32:58] that occur in the footprint this is
+[33:01] important to identify potential
+[33:02] absortion or initiative of Market
+[33:05] players which are important features of
+[33:07] Market reversals let's observe the
+[33:10] absortion pattern if you see price
+[33:12] closing below an Ask imbalance the
+[33:14] interpretation is that buyers are being
+[33:16] absorbed by sellers since an Ask
+[33:19] imbalance generally means buying
+[33:21] aggression price action should confirm
+[33:23] that by closing above it when it doesn't
+[33:26] we can infer that sellers are absorbing
+[33:28] the buyers if you see price closing
+[33:31] above a bid in Balance the
+[33:33] interpretation is that sellers are being
+[33:35] absorbed by buyers since a bid imbalance
+[33:38] generally means selling aggression price
+[33:40] action should confirm that by closing
+[33:42] below it when it doesn't we can infer
+[33:45] that buyers are absorbing the sellers
+[33:47] the absorption pattern is sometimes not
+[33:49] enough to spot a reversal we need to
+[33:51] confirm it with the initiation pattern
+[33:54] right after the initiation pattern is
+[33:56] nothing more than the agreement between
+[33:58] imbalances in price the buying
+[34:01] initiation pattern occurs when we see
+[34:03] price closing above imbalances in the
+[34:05] ask the interpretation is that in the
+[34:08] imbalances in the ask indeed represent
+[34:10] buying aggression with directional
+[34:12] intent the selling initiation pattern
+[34:15] occurs when we see price closing below
+[34:17] imbalances in the bid the interpretation
+[34:20] is that the imbalances in the bid indeed
+[34:22] represent selling aggression with
+[34:24] directional intent one possible way that
+[34:27] prices will reverse is by the
+[34:29] combination of absortion and
+[34:31] initiation for example imagine that we
+[34:34] observe price approaching a support line
+[34:36] as price moves toward the line we see
+[34:38] price closing below imbalances in the
+[34:40] bid which agrees with the idea of
+[34:42] selling pressure once price hits the
+[34:44] line we see an absorption pattern
+[34:46] meaning price closing above bid
+[34:49] imbalances right after that the market
+[34:51] switches to an initiation pattern we see
+[34:55] price closing above imbalances in the
+[34:57] ask in a clear bullish candle the same
+[34:59] logic of course applies to a bearish
+[35:01] reversal like you can see here the
+[35:04] important point is that you can use this
+[35:06] pattern to help in the confirmation of
+[35:08] any type of support and resistance line
+[35:10] it can be standard support and
+[35:12] resistance channels pitchforks Dynamic
+[35:15] lines like moving averages and Ballinger
+[35:17] bends Fibonacci levels and so on another
+[35:21] important information we can find in the
+[35:22] footprint is the relationship between
+[35:25] price and volume Delta volume Delta is
+[35:27] nothing more than the difference between
+[35:29] ask and bid volume as we saw earlier a
+[35:32] bullish candle usually has positive
+[35:34] Delta and a barish candle usually has
+[35:37] negative Delta positive Delta means more
+[35:39] volume in the ask which agrees with the
+[35:41] idea of buying aggression negative Delta
+[35:44] means more volume in the bid which
+[35:46] agrees with the idea of selling
+[35:48] aggression however bullish candles don't
+[35:50] always have positive Delta and bearish
+[35:52] candles don't always have negative Delta
+[35:55] this is known as Delta Divergence
+[35:58] this is important because if all that
+[36:00] happened in the ask was related to
+[36:01] trading activity directed to adding
+[36:03] buying pressure in the market and all
+[36:05] that happened in the bid was related to
+[36:07] trading activity directed to adding
+[36:09] selling pressure in the market Delta
+[36:11] Divergence would not exist but it
+[36:13] certainly does Delta Divergence is a
+[36:16] sign of absortion so it complements the
+[36:19] patterns we saw earlier when a bullish
+[36:21] candle shows negative Delta it is a sign
+[36:24] that buyers are being absorbed when a
+[36:26] bearish candle shows positive Delta it
+[36:29] is a sign that sellers are being
+[36:30] absorbed for example in this image you
+[36:33] can see that the candle highlighted is
+[36:35] bearish and it has positive Delta that
+[36:37] perfectly complements the fact that we
+[36:39] see price close above imbalances in the
+[36:41] as column which would be a sign of
+[36:43] buying initiation another detail here is
+[36:46] that these are stacked imbalances notice
+[36:49] how price continues going up afterwards
+[36:52] confirming the notion that sellers got
+[36:53] absorbed by more powerful buyers the
+[36:56] footprint showed the volume Delta in
+[36:58] each candle but we can also observe it
+[37:01] cumulatively over time in what's called
+[37:03] cumulative volume Delta or
+[37:05] cvd the advantage here is spotting
+[37:08] exhaustion and absortion signals this
+[37:10] works similarly to spotting Divergence
+[37:12] signals in oscillators in the sense that
+[37:14] we compare the evolution of price
+[37:16] extremes with the corresponding Extremes
+[37:18] in the cumulative volume Delta let's
+[37:21] study the exhaustion and absortion
+[37:23] patterns if price is creating higher
+[37:25] Highs but the CBD is making lower lower
+[37:27] highs it means that buyers are losing
+[37:29] Steam and price might reverse to the
+[37:31] downside soon that is the buying
+[37:35] exhaustion if price is making lower
+[37:37] highs and then CBD is making higher
+[37:39] highs it means that buyers are trying to
+[37:41] go up but sellers are absorbing them so
+[37:44] this movement is not being represented
+[37:46] in price action this is also an
+[37:49] indication that price will go down this
+[37:51] is the buying absortion
+[37:54] pattern if price is creating lower lows
+[37:56] but the cvd is making higher lows it
+[37:58] means that sellers are losing Steam and
+[38:01] price might reverse to the upside soon
+[38:03] this is the selling
+[38:05] exhaustion if price is making higher
+[38:07] lows and the cvd is making lower lows it
+[38:10] means that sellers are trying to go down
+[38:12] but buyers are absorbing them so this
+[38:14] movement is not being represented in
+[38:16] price action this is also an indication
+[38:19] that price will go up this is the
+[38:21] selling absortion pattern we can of
+[38:23] course use the cumulative volume Delta
+[38:25] Divergence patterns to Conta visualize
+[38:28] what happens with price imbalance and
+[38:30] price Delta relationships in the
+[38:33] footprint another important tool of
+[38:35] orderflow analysis is the volume profile
+[38:38] the volume profile is a variation of
+[38:40] style Meers Market profile it simply
+[38:44] displays the activity across different
+[38:45] price levels over a series of candles so
+[38:48] it's a volume at price too Market
+[38:51] profile is similar but it shows the
+[38:53] level of activity in each price level
+[38:55] based on time instead of volume
+[38:58] let's learn the main features of the
+[38:59] volume profile and then we'll learn how
+[39:01] to use it for market
+[39:03] analysis the volume profile is a
+[39:05] horizontal histogram that displays the
+[39:07] level of activity in each price level
+[39:09] based on volume the footprint shows the
+[39:13] volume action inside the Candlestick but
+[39:15] the volume profile shows the volume
+[39:17] action across a series of
+[39:19] candlesticks these two tools are
+[39:21] actually very similar just like in the
+[39:23] footprint in the volume profile we have
+[39:26] the value area which which represents
+[39:28] 70% of the traded volume in What's
+[39:30] called the PC or point of control which
+[39:33] is the price level with the largest
+[39:34] volume or the peak of the
+[39:36] histogram some Traders choose to use a
+[39:39] value area setting of 40% to get more
+[39:42] precise readings since the 70% can be
+[39:44] too wide sometimes in the volume profile
+[39:48] areas of high volume show areas of price
+[39:50] acceptance or balance meaning areas
+[39:52] where buyers and sellers relatively
+[39:54] agreed about the fair value of the
+[39:56] market
+[39:58] recall that these areas can act as
+[40:00] magnets for Price areas of fair value
+[40:03] are also areas of high
+[40:05] liquidity areas of low volume in the
+[40:07] profile show areas of price rejection or
+[40:10] imbalance meaning areas where buyers and
+[40:13] sellers disagreed about fair value areas
+[40:16] of imbalance shown by low volume in the
+[40:19] profile have low liquidity recall that
+[40:22] in areas of low liquidity price action
+[40:24] can travel greater distances with less
+[40:26] Market AC ity areas of low volume can
+[40:30] repel
+[40:31] price all of this of course assumes that
+[40:33] no new significant information has
+[40:35] changed the perception of buyers and
+[40:37] sellers in summary areas of fair value
+[40:40] shown by higher volumes in the profile
+[40:43] tend to attract price action areas of
+[40:46] imbalance given by lower volumes in the
+[40:48] profile tend to repel price action this
+[40:51] is very useful to judge the quality of
+[40:53] support and resistance levels and the
+[40:55] power of supply and demand Zone in the
+[40:58] chart there are many details about the
+[41:00] volume profile but for the context of
+[41:02] this course this tool is very useful to
+[41:04] identify previous areas of fair value
+[41:07] where price might get attracted to in
+[41:09] the future and reverse for example in
+[41:12] this chart you can see that I plotted
+[41:14] the volume profile in the Upper price
+[41:16] movement from A to B the idea here is to
+[41:19] understand where in this trend was the
+[41:21] fair value area which is highlighted by
+[41:24] the space between blue lines price comes
+[41:26] back to the fair value area later on and
+[41:29] resumes direction to the upside from
+[41:31] this example it's clear that the areas
+[41:33] of fair value are relative to where we
+[41:35] plot the
+[41:36] profile for example if we change the
+[41:39] profile to this upward price movement
+[41:41] the fair value area changes and we end
+[41:44] up catching another demand Zone price
+[41:46] does react to this demand Zone as well
+[41:49] in summary different profiles will point
+[41:52] to different fair value areas so it's
+[41:54] important to contextualize the volume
+[41:56] profile with other tools in order to
+[41:58] extract the greatest value from it let's
+[42:01] look at some examples of how these
+[42:03] different order flow techniques can work
+[42:05] in
+[42:06] combination in this chart we have the
+[42:08] minis SMP 1H hour time frame observe
+[42:11] that I have marked Market extremes from
+[42:13] 1 to 3 in the Candlestick chart we can
+[42:16] see a small volume profile plotted on
+[42:18] the downward movement from 1 to two the
+[42:21] idea here is to detect the fair value
+[42:23] area of that particular movement and its
+[42:26] point of control which is represented as
+[42:28] the red line the indicator at the bottom
+[42:31] is the cumulative volume Delta in this
+[42:34] example between lows 2 and three we have
+[42:37] a selling absortion example meaning that
+[42:39] the CBD is producing lower lows showing
+[42:41] an accumulation of negative Delta but at
+[42:44] the same time price action is not being
+[42:46] able to go down this means that sellers
+[42:48] are being absorbed by buyers which is of
+[42:51] course a bullish signal in this case
+[42:53] price is reaching the point of control
+[42:55] as support in number three and that is
+[42:57] happening in the context of a selling
+[42:59] absortion in the cumulative volume Delta
+[43:02] indicator this is a good moment to
+[43:03] employ the footprint chart in order to
+[43:06] understand what's happening with the
+[43:07] candlesticks that are touching the point
+[43:08] of control as support that will give us
+[43:11] further Insight onto why price reacted
+[43:14] so violently after the point of control
+[43:17] here we have the footprint chart of
+[43:19] those two candles in the first candle we
+[43:21] have price closing below two stacked
+[43:23] imbalances and one single imbalance in
+[43:26] the bid which is a sign of selling
+[43:29] initiation however we do see price
+[43:31] closing above an imbalance in the ask
+[43:33] which is a sign of buying
+[43:35] initiation the story here is that for
+[43:37] the most part this candle had a lot of
+[43:39] selling power until it met the support
+[43:41] Outline by the point of control we just
+[43:43] talked
+[43:44] about after touching the line we can
+[43:47] indeed see buyers emerging at the bottom
+[43:50] notice also that we do see a high volume
+[43:52] node occur below the close of the candle
+[43:54] that means that the greatest point of
+[43:56] battle between buyers and sellers
+[43:58] happened there in the area where the
+[43:59] buying initiation began to take place
+[44:02] with that said price closed within the
+[44:04] fair value area which is an indication
+[44:07] that buyers and sellers relatively agree
+[44:09] about the fair value at least in this
+[44:11] Candlestick in
+[44:12] isolation in terms of price Delta
+[44:15] relationship we can see that there is no
+[44:17] Divergence we have a clearly bearish
+[44:19] candle with a negative Delta a positive
+[44:22] Delta in this scenario would have been a
+[44:24] stronger piece of evidence to the upside
+[44:26] in the next candle we see a strong
+[44:28] bullish move the first thing that draws
+[44:31] attention here is the absence of
+[44:32] imbalances in the bid and price closing
+[44:35] above multiple imbalances in thees
+[44:38] suggesting a strong buying initiation
+[44:41] other than that we see price closing
+[44:42] above the high volume node and the whole
+[44:44] fair value area indicating that now
+[44:47] there is an
+[44:48] imbalance buyers and sellers are not
+[44:50] agreeing about the fair value like in
+[44:52] the previous Candlestick Delta is
+[44:55] positive confirming everything we just
+[44:57] just saw the story given by the
+[44:59] footprint can be summarized as follows
+[45:01] price encountered a support while it was
+[45:04] going down with violence and a small
+[45:06] degree of buying initiation began to
+[45:08] take place in the next scandle we see
+[45:11] very strong buyers initiating a movement
+[45:13] with very clear signs that scenario
+[45:15] ended up in a very large bullish move
+[45:18] afterwards let's also now forget about
+[45:21] the origin of the support line given by
+[45:23] the point of control of the volume
+[45:25] profile and the fact that all of the
+[45:27] this was happening within a selling
+[45:28] absortion in the cumulative volume Delta
+[45:31] indicator let's now look at what
+[45:33] happened in the same time but now in the
+[45:35] imin Dow Jones futures recall that the
+[45:38] S&P and the Dow Jones are highly
+[45:40] correlated so it's not uncommon for
+[45:42] relatively the same opportunities to
+[45:43] emerge in different ways in these
+[45:45] markets in this chart you can see that I
+[45:48] plotted an endro Pitchfork in Market
+[45:50] extremes one 2 and three the Pitchfork
+[45:53] then gives us a projection about the end
+[45:55] of four at the median line orderflow
+[45:58] analysis would enter the scene here to
+[45:59] Aid in the confirmation of the median
+[46:01] line as a support level so let's observe
+[46:04] the footprint of the candles that
+[46:06] interacted with the median line in this
+[46:08] case in the first candle we have
+[46:10] ambiguous readings in relation to
+[46:12] imbalances in the bid and ask columns we
+[46:15] have price closing above and below both
+[46:17] imbalances in the bid and ask let's
+[46:20] contextualize that with other elements
+[46:21] of the footprint in the scandle it's
+[46:24] pretty clear that most of the volume
+[46:26] happened in the lower Shadow judging by
+[46:28] the darker colors in there two important
+[46:31] details here are that price seems to be
+[46:33] moving away from the fair value area
+[46:35] notice how it closes almost at the value
+[46:38] area high that gives the impression that
+[46:40] buyers and sellers started to disagree
+[46:42] about the fair value here the second
+[46:44] detail is that we have Delta Divergence
+[46:47] meaning that we have a bearish candle
+[46:48] with positive Delta and that is a sign
+[46:50] of selling absortion this is confirmed
+[46:53] in a way by price closing above the
+[46:55] stack bid in balance at the very bottom
+[46:57] of the candle in the next candle this
+[46:59] notion is confirmed the ambiguity in the
+[47:02] imbalances disappears we have price
+[47:05] closing above a series of imbalances in
+[47:07] the ask and one imbalance in the
+[47:09] bid we also have price closing above the
+[47:12] fair value area and notice also how the
+[47:14] fair value in this candle is higher than
+[47:16] the fair value area from the previous
+[47:18] candle Delta Divergence also disappears
+[47:22] and we now have a Delta that agrees with
+[47:25] Buyers when you combine all these
+[47:27] elements in a context we can see price
+[47:29] turning at the medium line of the
+[47:30] Pitchfork and the result is already
+[47:32] obvious a massive upper movement just
+[47:35] like we saw in the S&P as you can see in
+[47:38] these examples order flow analysis gives
+[47:41] a more granular view of what's happening
+[47:43] between buyers and sellers it's almost
+[47:45] like putting candlesticks on an X-ray
+[47:47] machine some people claim you should
+[47:50] stop using candlesticks and focus on the
+[47:52] footprint instead that's misleading
+[47:55] recall that candlesticks are the best
+[47:57] representation of price the footprint is
+[47:59] about volume activity price and volume
+[48:02] are the two types of information
+[48:04] generated by the market but price is at
+[48:06] the top of the hierarchy volume only
+[48:09] helps contextualize what happens the
+[48:11] greatest power comes when we combine
+[48:13] these tools not when we choose one over
+[48:15] the other we can go a lot deeper into
+[48:18] order flow analysis but this serves as
+[48:20] an introduction let's now move on to the
+[48:22] advantages and disadvantages of using
+[48:24] orderflow starting with the advantages
+[48:27] number one order flow is an effective
+[48:30] way of analyzing volume action which in
+[48:33] combination with price action forms a
+[48:35] reliable framework of analysis two it
+[48:39] provides multiple ways of seeing Market
+[48:41] information in ways that might not be
+[48:42] obvious by looking at Price action in
+[48:45] isolation three it allows traders to put
+[48:48] an x-ray on price reversals four it
+[48:52] provides granular Market Insight while
+[48:55] analyzing the real-time reliab ility of
+[48:57] support and resistance levels which is
+[48:59] fundamental in any serious training
+[49:01] strategy five it can also provide new
+[49:04] ways of seeing support and resistance
+[49:05] levels that might not be obvious just by
+[49:07] looking at Price action there are of
+[49:10] course a few disadvantages too number
+[49:13] one orderflow analysis can be
+[49:15] overwhelming to learn in the beginning
+[49:17] due to the way the tools work and the
+[49:19] intricate nature of Market micr
+[49:22] structure two like we saw order flow
+[49:25] analysis is not the void of problems
+[49:27] there is the problem of ambiguity the
+[49:29] problem of manipulation and the problem
+[49:32] of lack of transparency even though
+[49:34] there are ways of dealing with these
+[49:35] issues they cannot be completely
+[49:38] eliminated three orderflow tools can
+[49:41] generate confusion if the trader lacks
+[49:43] the ability to put these tools under the
+[49:45] appropriate perspective four the
+[49:48] real-time analysis of orderflow tools to
+[49:50] validate support and resistance levels
+[49:52] requires Great familiarity with the
+[49:54] contextual analysis of footprint
+[49:56] Elements which can be a challenge
+[49:58] especially in lower time frames since
+[50:00] market analysis requires greater speed
+[50:04] this is it for this course I hope you
+[50:06] have found value in it if you wish to go
+[50:08] deeper into price action reading please
+[50:10] check out my course called fractal
+[50:12] trading mastering price action and
+[50:14] Beyond in the video description for more
+[50:16] information visit my website fractal
+[50:18] flowpro
+[50:20] docomo at support froff flowpro
+[50:23] docomo the video please help support the
+[50:26] channel by clicking the like button
+[50:27] subscribing to the channel activating
+[50:30] the notifications leaving your feedback
+[50:32] Below in the comment section and sharing
+[50:34] this video with your trading Community
+[50:37] thank you very much for watching and I
+[50:38] hope to see you in the next videos take
+[50:40] care
