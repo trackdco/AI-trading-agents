@@ -117,3 +117,28 @@ STATUS: to the exit/stop tournament under §6.0 (default already declared:
 0.25xIB stop, mid target, no BE) with IB-length variants 15/60 as declared
 challengers; then graders under §5.9 bars; then correlation battery vs
 canon (clock overlap with gold leg — mandatory). Family arm count 11.
+
+### Trials 7-8 — TOURNAMENT + GRADING (2026-08-05) — sleeve gates PASSED
+scripts/nya_ivb_fade_grade.py (arm matrix output/nya_ivb_fade_arms.parquet).
+TOURNAMENT (6 arms, full span, every arm positive in every era): default
+E0 PF 1.41 ($+10,865); challengers C1-C5 up to PF 1.64. **PBO 0.10,
+P(OOS loss) 0.01 — the cleanest selection read the program has produced.**
+Per §6.0 the default STANDS; C4 (15-min IB: n=392, PF 1.64, $+21,313,
+era-consistent incl. 23-24 +1480) is a PBO-clean challenger banked for
+holdout adjudication — not promoted by rank.
+GRADING (default spec): PSR(0) **0.994** vs the §5.9.5 sleeve floor 0.75 —
+PASS with room; min certifying track 390 days vs 911 held — certifiable vs
+zero ON ITS OWN TRACK, the first candidate in either program to get there.
+Canon correlation: union +0.015, both-active +0.167 on 88 shared days
+(>60-day trust bar; passes T1 easily) — clock overlap real, P&L overlap
+negligible. FLAGS: (1) MC standalone P(bust) 20% at 12mo on a $2k-trail
+shell — streaky 41%-WR profile; must be sized/graded as a BOOK component
+(book MC next). (2) Ledger-DSR reads 0.000 against a +1.24 daily-SR bar —
+the machine ledger's effect variance is inflated by micro-n cells (n=2-7
+rows contribute |effects| >1); METHODOLOGY FLAG FOR BRAKE: the §6.0
+denominator needs comparable day-level trial series or n-weighting, else
+every candidate fails by construction. PSR floor law (§5.9.5) governs the
+sleeve verdict meanwhile. Arms: 6 this trial (family 17).
+SLEEVE VERDICT: **PASSED to book stage** — era-clean, tournament-clean,
+PSR 0.994, low canon correlation. Ship decision belongs to the book
+grading + Angus.

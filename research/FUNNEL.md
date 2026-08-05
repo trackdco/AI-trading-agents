@@ -25,8 +25,15 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - ERA CHECK (full span, candles): 2025 PF 1.56 (n=101, +$2,455) / 2026 PF
   1.57 (n=57, +$2,503) / 23-24 PF 1.20 (n=198, +$5,907) — POSITIVE EVERY
   ERA, no flip; 356 trades, WR 41%.
-- NEXT: exit/stop tournament (§6.0 default: 0.25xIB stop, mid target) →
-  graders under §5.9 bars → correlation battery vs canon gold leg.
+- TOURNAMENT: 6 arms all positive every era; PBO 0.10 (cleanest of the
+  program); default stands, 15-min-IB challenger (PF 1.64, $+21,313) banked
+  for holdout adjudication.
+- GRADING: PSR(0) 0.994 vs 0.75 sleeve floor — PASS; min track 390d vs 911
+  held (certifiable vs zero on its own track, program first); canon
+  correlation +0.02 union / +0.17 both-active (88 days, trusted, passes).
+- FLAGS: standalone MC P(bust) 20% (streaky WR-41% profile — book component,
+  not solo ship); ledger-DSR denominator inflation flagged to Brake.
+- NEXT: book-level grading (canon + this + pre-market pair).
 - CANON SHAPE: ahead of canon's arc (canon raw was negative pre-wall-gate);
   era rung passed on the first attempt, no rebalance needed.
 - HISTORY NOTE: killed twice by strawman censuses (missing trigger; harsher
