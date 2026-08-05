@@ -10,6 +10,16 @@ Every Claude Code session begins by loading context in this order — and adopti
 5. The active spec (`spec-N-*.md`)
 6. `context/progress-tracker.md` (where the last session stopped)
 
+For **strategy intake** work (researching and validating a new candidate rather
+than building the engine), load instead:
+1. `context/project-overview.md`
+2. `context/strategy-research-protocol.md` — the pipeline
+3. `context/validation-gate-v1.md` — the bar it must clear
+4. `context/data-inventory.md` — **what data actually exists.** Check before
+   designing any test, not at the point of running it.
+5. `context/quant-in-plain-english.md` — the vocabulary every report must use
+6. The strategy's own folder under `strategies/<slug>/`
+
 ## Spec discipline
 
 - Work is spec-driven only. No freelancing features. If Claude Code proposes something outside the active spec, the answer is "flag it in next-tasks.md and continue the step."

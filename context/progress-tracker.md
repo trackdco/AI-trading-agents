@@ -27,6 +27,18 @@ Update at the END of every Claude Code session. This file is how sessions hand o
 
 ## Session log (newest first)
 
+### 2026-08-05 — Strategy intake pipeline + YouTube MCP (Claude Code, remote session)
+- Steps completed: built `tools/youtube-mcp/` (9 tools: search, transcript fetch/cache, regex over cached corpus, sweep, dossier scaffold) registered in `.mcp.json`; wrote `context/strategy-research-protocol.md`, `context/validation-gate-v1.md`, `context/quant-in-plain-english.md`, `context/data-inventory.md`; scaffolded `strategies/` with `_TEMPLATE/`, `BOOK.md`, `GRAVEYARD.md`; added `tools/audit_data.py`, `.gitignore`, `.env.example`
+- Checks passed: MCP server completes a stdio handshake and lists 9 tools; cache/grep/sweep-scope/dossier paths exercised against fixtures; missing-API-key path returns an actionable error; `tools/audit_data.py` reproduces the inventory tables from the actual files
+- Divergences/flags raised — **all four block work already scheduled**:
+  1. **No CVD data exists.** The 510 MBP-10 files are depth-only snapshots (1/minute): 29,574 adds, 22,212 cancels, 15,630 modifies, **3 trades**. Heatmap yes, CVD no.
+  2. **No bars after 2026-01-30.** The Feb 2026 calibration gate cannot run — no bars for the month the 28 hand trades come from.
+  3. **No 2023/24 book or flow data**, so flow-based strategies cannot be tested out-of-sample as designed. Three options in `data-inventory.md` §4.
+  4. **~10% of bar rows are calendar spreads** (`NQH6-NQM6` etc.) priced 106–840 alongside outrights at 10,000+. Ingest must filter them or every indicator is silently wrong.
+  Also: London book is `NQ.v.0` in decimal prices, NY book is `NQ.c.0` scaled ×1e9 — different roll convention and different price scaling between the two sets. NY book has a 51-weekday hole (2025-11-21 → 2026-01-30). No gold data at all.
+- Questions parked for Angus: does the strategy-validation framework / correlation baseline referred to in chat exist as code anywhere? It is not in this repo or the other branch — both branches are identical and contain no source code. Also: data budget for the gaps above, and confirmation of the gate thresholds in `validation-gate-v1.md` before the first strategy runs against them.
+- Next session starts at: install the MCP locally, then first candidate strategy through protocol Stages 0–3
+
 ### 2026-07-16 — Repo initialization (Claude Code, remote session)
 - Steps completed: repo created; full context pack committed (context/, strategy-definition-v1.0.md, spec-1); Angus's 28-trade hand log committed at data/reference/feb2026_hand_log.csv (as-is, per reported-not-fixed)
 - Checks passed: all 28 reference trades present; hand-log P&L $ / R Multiple / Risk $ columns cross-check internally

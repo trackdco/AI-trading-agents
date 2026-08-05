@@ -1,0 +1,30 @@
+# Secrets
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Raw market data and generated reports.
+# NOTE: data already committed at the repo root stays tracked — .gitignore does
+# not untrack files. This only stops NEW bulk data from being committed by
+# accident. Bulk data belongs in data/raw/ (ignored); derived, small, auditable
+# outputs belong in output/ and are regenerated from a documented command.
+data/raw/
+output/
+strategies/*/output/
+*.dbn
+*.dbn.zst
+
+# YouTube research cache: transcripts and sweep manifests ARE committed on
+# purpose — they are the provenance for every strategy claim. Nothing here.
+
+# OS
+.DS_Store
+Thumbs.db

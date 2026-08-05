@@ -46,9 +46,14 @@ A mechanical NQ futures trading system: a deterministic Python engine detects fu
 
 ## Repo map
 
-- `strategy-definition-v1.0.md` — the constitution. Everything traces here.
+- `strategy-definition-v1.0.md` — the constitution for strategy #1. Everything about that strategy traces here.
 - `spec-*.md` — build specs, executed one at a time via Claude Code.
 - `context/` — this file, architecture.md, code-standards.md, AI-workflow-rules.md, glossary.md, next-tasks.md, progress-tracker.md.
+- **Strategy intake pipeline** (added 2026-08): `context/strategy-research-protocol.md` (how a candidate strategy becomes a book entry), `context/validation-gate-v1.md` (the numbers it must hit), `context/quant-in-plain-english.md` (every statistical term translated — Angus audits from this), `context/data-inventory.md` (what data actually exists; **read before designing any test**).
+- `strategies/` — one folder per candidate. `BOOK.md` = passed, the only list agents may trade. `GRAVEYARD.md` = failed, kept so we don't retest.
+- `tools/youtube-mcp/` — MCP server for strategy research: YouTube search, transcript fetch and cache, regex over the cached corpus.
+- `tools/audit_data.py` — regenerates the data inventory. Run after every data purchase.
+- `research/youtube/` — cached transcripts and sweep manifests. Committed: they are the provenance for every research claim.
 - `config/` — strategy.yaml (all parameters), news_calendar.csv.
 - `src/engine/`, `src/backtest/` — Phase 1 code. `.claude/agents/` — Phase 3 agent files.
 - `data/reference/feb2026_hand_log.csv` — Angus's 28 hand-backtested trades; ground truth for calibration.

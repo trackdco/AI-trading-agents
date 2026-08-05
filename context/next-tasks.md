@@ -2,6 +2,38 @@
 
 Ordered. Do not start a task before its predecessor's gate clears.
 
+## BLOCKING — data gaps found in the 2026-08-05 audit
+
+Full detail in `context/data-inventory.md`. These block work already scheduled
+below, so they come first.
+
+- [ ] **NQ 1-minute bars, 2026-02-01 → present.** Coverage currently stops at
+      2026-01-30. This blocks the Spec 1 Step 8 calibration gate (the 28 hand
+      trades are February 2026 — we have no bars for the month we calibrate
+      against) and half the strategy-intake in-sample window.
+- [ ] **NQ `trades` schema, session windows, 2025-06 → present.** There is no
+      CVD data in this repo — the MBP-10 files are depth snapshots (3 trade
+      records across all 510 files). Blocks every order-flow refinement step.
+- [ ] **Decide the 2023/24 out-of-sample approach** (buy book+flow for 6 months,
+      or split the OOS design — `data-inventory.md` §4). Blocks Stage 7 for any
+      flow-based strategy.
+- [ ] NQ MBP-10, NY session, 2025-11-21 → 2026-01-30 — fills a 51-weekday hole.
+- [ ] GC/MGC data — the entire Asia-session track is blocked on this.
+- [ ] Ingest must filter calendar spreads (`"-" in symbol`) — ~10% of bar rows
+      are spread instruments priced 106–840 sitting next to outrights at 10,000+.
+
+## Strategy intake pipeline (new track, runs alongside Phase 1)
+
+- [ ] Install the YouTube MCP: `cd tools/youtube-mcp && uv venv --python 3.11 .venv && uv pip install --python .venv/bin/python -e .`
+- [ ] Get a YouTube Data API v3 key → `.env`
+- [ ] First candidate strategy through `context/strategy-research-protocol.md`
+      Stages 0–3 (research + mechanism + spec — no compute needed, and it
+      exercises the pipeline before the harness exists)
+- [ ] **Spec 2: the validation harness** — substrate generation, slice reports,
+      refinement metrics, correlation matrix. Write after the first strategy has
+      been through Stage 3, so the harness is built against a real example
+      rather than an imagined one.
+
 ## Setup (Angus, ~1 hour)
 - [ ] Databento account created; NQ 1-minute data Jan 2026 → present purchased and downloaded to `data/raw/`
 - [ ] Repo created from this file pack; Angus's 28-trade CSV placed at `data/reference/feb2026_hand_log.csv`
