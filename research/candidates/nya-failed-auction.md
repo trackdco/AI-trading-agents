@@ -95,6 +95,26 @@ conditioning, canon correlation battery. Sealed-holdout note: the six
 sealed months HAVE footprint data — a declared look could add ~6mo of gated
 events; banked, Angus's call at grading time.
 
+### Trial 6 — GRADING (2026-08-05) — SHELVED-UNPROVEN; search flagged by PBO
+scripts/nya_grade.py (pack in output/nya_fa_grading.md; book emitted to
+output/emission_nya_fa_fit.parquet). Portfolio gates ALL PASS: correlation
+vs canon ~0 (union −0.05), 1/3 shared families (order-flow only), canon+spec
+P(bust) 0.1% — adding this sleeve costs the account nothing. But the
+evidence gates fail hard: DSR 0.000 (daily SR +0.044 vs ledger-read SR0
++1.01; §6.0 denominator from 18 recorded trials incl. tiny-n cells that
+honestly widen the null), PSR(0) 0.786, minimum certifying track 1,155 days
+vs 270 held, and **PBO 0.85 on the 9-cell gate x stop search** — the
+selection procedure that surfaced deep+G2+S2 lands below the OOS median in
+85% of splits. The mechanism-prior story is coherent, but the machine says
+a 9-cell search on 71 events cannot distinguish it from noise.
+VERDICT: **SHELVED-UNPROVEN.** What stays solid: the census-level facts on
+full-span n=457 (fail/accept ~50/50 era-stable; 80%-rule folklore killed;
+depth discriminates traverse odds 8%→23%; time-outside is noise). What is
+unproven: the tradeable expression (n=28, 13.5mo). Reopening paths: live
+flow accrual, the banked holdout look (+~6mo flow-gated events, Angus's
+written call), Brake's independent NY emissions for book-level grading.
+NOT SHIPPED. Family arm count final: 20.
+
 ### Trial 5 — accept-branch conditioning (2026-08-05, flow span) — PARKED, too few events
 scripts/nya_fa_accept.py (events in output/nya_fa_accept_events.parquet).
 Only 15 accept-then-retest events exist on the whole flow span — accepted
