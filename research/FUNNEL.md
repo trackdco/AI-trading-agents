@@ -60,6 +60,12 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   All declared gates fail permnull (p~0.35) — population positive, gates
   unproven. Old "time is noise" verdict vacated (wrong clock). Earns next
   stage on the hours-clock expression; §5.9.4 banked-retest firewall holds.
+- TRIAL 11 (next stage): strict costs PASS (1.23); flow-at-re-entry
+  honest null (delta agreement near-universal, absorption no lift);
+  autopsy — true bracket trade (99 stop/89 target), losers go green
+  first, winners pay in ~17h, canon segments DON'T transfer at this
+  clock. No internal gate proven; candidate for grading AS-IS at the
+  next slate review, 2023-negative on the label.
 - STAGE: deep pass complete; §5.9.4 look #1 SPENT and FAILED (deep skeleton
   PF 0.68 / with cut 0.76 on 147 events, negative both years); the single
   rebalance-retest is BANKED — no rebalance candidate has credible in-fit
