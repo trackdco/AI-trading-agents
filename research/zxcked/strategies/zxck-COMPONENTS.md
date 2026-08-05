@@ -201,6 +201,32 @@ Skips FOMC/Powell-testimony days `[xae9AiV5Ps4 @ 01:31]`.
 
 ---
 
+## F00. STANDING CONVENTION — INTRABAR AMBIGUITY (Brake, 2026-08-07)
+
+> *"Where a rule's intrabar timing is ambiguous in OHLC, resolve the sequence with tick data.
+> Never let OHLC ambiguity silently discard sessions — the discarded set is systematically the
+> volatile end, so silent dropping biases every baseline toward quiet days."* `[stated-by-user]`
+
+**`zxck-gap-fill-edge` and `zxck-ifvg-50` inherit this.** Measured on `zxck-10am-keyopen`: the
+sessions OHLC could not decide had a **484pt median daily range against 366pt** for the ones it
+could. Dropping them is not a neutral sample cut.
+
+### ⚠️ F00.1 — WE DO NOT HOLD TICK DATA. Verified 2026-08-07.
+| source | what it actually is | sequence? |
+|---|---|---|
+| `data/reference/cvd/footprint_*.parquet` | aggregated to **(minute × price × side)** | **NO** — volume-at-price is identical whether price went up-then-down or down-then-up |
+| `data/reference/depth_*/nq_depth_*.csv` | 20 rows per stamp (10 levels × 2 sides), **one snapshot per minute** | **NO** — and it carries the known look-ahead defect |
+| Databento | no `databento` client, no API key | cannot fetch |
+
+**Until tick data exists, the convention is implemented as a BOUND, not a resolution:** run every
+ambiguous session under *both* orderings and report the interval. If both extremes agree, the
+ambiguity cannot be hiding the answer — that is a proof. If they straddle, we know what to buy.
+**Guessing the sequence from close direction is a guess dressed as a measurement and is banned.**
+
+**To actually resolve it:** Databento `GLBX.MDP3`, **trades** schema, NQ front month,
+**2025-06-01 → 2026-07-15, restricted to 10:00:00–10:15:00 ET**. ~280 sessions × 15 min. Only
+the ~73 ambiguous sessions strictly need it, and only their first minutes.
+
 ## F0. EXIT CONVENTION — LOCKED 2026-08-07
 
 Every `zxck-` card is scored on the **identical** convention as `ash-unicorn-sb`:

@@ -287,3 +287,72 @@ separate winners from losers at all.
 - **2026-08-07 rev c** — raw baseline run. Window corrected from my 10:00–14:00 assumption to
   10:00–10:15 per Brake's standing macro rule. Result is the random-walk null under all four
   variants.
+
+
+---
+
+## BOUNDED BASELINE — 2026-08-07 (rev d) — THE REAL BASELINE
+
+`scripts/zxck_keyopen_bounded.py` · `zxck-10am-keyopen-bounded.csv`
+Reading **A** (scan includes the 10:00 bar), per Brake. Span restricted to the tick-covered
+window so no convention is mixed. rev-c's numbers stay above as the record of what the OHLC
+discard bias was doing.
+
+### ⚠️ The tick resolution Brake asked for COULD NOT BE RUN — we do not hold tick data
+See `zxck-COMPONENTS.md` §F00.1. The footprint files are aggregated to (minute × price × side)
+and carry **zero** sequence information; depth is one snapshot per minute; there is no Databento
+client or key. **The 73 ambiguous sessions in this span remain unresolved, and none was guessed.**
+
+Instead the ambiguity is **bounded**: every ambiguous session is run under *both* orderings.
+
+### Spec
+NQ 1-min · 10:00–10:15 ET · **2025-06-01 → 2026-07-15** (the aggressor-tagged span) ·
+**352 sessions**, less 61 Sunday/holiday, 25 FOMC/Powell, 1 no-manipulation · exit = the locked
+convention. **Flow coverage is 100% by construction** — the span *is* the flow span.
+
+### Sessions
+| | n | median daily range |
+|---|---|---|
+| **decidable** on OHLC | 192 → **115 trades** | 366 pt |
+| **ambiguous** (both sides, one bar) | 73 → 44/45 trades | **484 pt** |
+
+### The bounded result
+
+| arm | n | win/BE/loss | avg R | expectancy | total | maxDD |
+|---|---|---|---|---|---|---|
+| **decidable only** | 115 | 23.5 / 25.2 / 51.3 | −0.043 | **−0.127R** | −5.0R | 16.0R |
+| ambiguous, *if up first* | 44 | 40.9 / 9.1 / 50.0 | +0.318 | +0.235R | +14.0R | 5.0R |
+| ambiguous, *if down first* | 45 | 24.4 / 17.8 / 57.8 | −0.089 | −0.172R | −4.0R | 8.0R |
+| **BOUND LOW** | 160 | 23.8 / 23.1 / 53.1 | −0.056 | **−0.140R** | −9.0R | 16.0R |
+| **BOUND HIGH** | 159 | 28.3 / 20.8 / 50.9 | +0.057 | **−0.027R** | +9.0R | 16.0R |
+
+*Random-walk null for a 2R target with break-even at 1R: **25.0 / 25.0 / 50.0**.*
+
+### Answer to "did recovering the volatile sessions change the picture?"
+
+**No — the whole bound is negative after costs.** Expectancy lies in **[−0.140R, −0.027R]**.
+Even the most favourable ordering of the ambiguous sessions does not produce a profitable card.
+
+### The flattering arm, and why it is not a finding
+The *"if up first"* ambiguous arm looks strong: 40.9% wins, +0.235R, 18/44 vs the 25% null gives
+binomial **p = 0.0148** (**0.0297** after doubling for the arbitrary choice between two orderings).
+Two reasons it is not an edge:
+
+1. **Every trade in that arm is a SHORT, by construction.** Under *up first* the manipulation is
+   up, so R4 makes every ambiguous trade a short; under *down first* every one is a long. **The
+   two arms are the same 44–45 sessions traded in opposite directions** — one directional bet and
+   its mirror, not two independent estimates. That arm is partly a bet on NQ's direction over 13
+   months.
+2. **Choosing it because it looks better is pure selection.** We cannot tell which ordering is
+   real; that is the entire reason this is a bound.
+
+**Where the uncertainty is concentrated is itself the useful output:** the ambiguous subset spans
+−0.172R to +0.235R on n≈44. That, and only that, is the case for buying the tick data.
+
+### Comparison to his figures — directional only
+His *"juicy take profit"* `[5pL41Pl7GM4 @ 25:30]` and 1:4–1:6 band `[WEeXKMzaJjY @ 15:56]` are
+**trailed** exits; ours is a fixed 2R with break-even at 1R. Not the same measurement.
+
+### Revision log
+- **2026-08-07 rev d** — reading A on the tick-covered span, ambiguity bounded rather than
+  guessed. Expectancy bound [−0.140R, −0.027R]: negative under both extremes.
