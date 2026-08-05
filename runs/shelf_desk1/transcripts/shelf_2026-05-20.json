@@ -1,0 +1,34 @@
+{
+ "turns": [
+  {
+   "minute": "2026-05-20 10:13:00-04:00",
+   "why": "position opened \u2014 read it and set your plan",
+   "sent": "NEW POSITION LONG shelf-fade | tier BASE ($180 risk, fixed) | entry 29023.25 risk 21.44pt | engine stop 29001.8125 (-1R, INVIOLATE) | mechanical target = the developing near band | mechanical scratch at t+10 if red | session ends 15:55\njournal: 91 trades | you $+19,671 vs mech $+17,729 (delta $+1,942)\n  defense (mech losers, n23): $-77\n  offense (mech winners, n68): $+2,020\n  band-exit refusals: 68, net vs mech $+2,020\nlast trades (you vs mech):\n  2026-05-08 short CONFIRMED: +0.58R vs +0.58R (band; Band touch but CVD+456 against short, faded from p)\n  2026-05-11 long BASE: -1.07R vs -1.05R (stop; Base tier, fresh open already +0.72R peak+1.59R. N)\n  2026-05-12 long BASE: +1.66R vs +1.66R (band; Band touch but CVD flipped -91 against long, faded)\n  2026-05-15 short BASE: -1.05R vs -1.04R (stop; Fresh entry, small heat within norm; let mechanica)\n  2026-05-18 long BASE: +2.46R vs +1.66R (stop; Pulled back from 5.93R peak to 2.84R but CVD flipp)\nReply with EXACTLY one JSON object, nothing else: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"stop_r\":<num,optional>,\"target_r\":<num or null,optional>,\"partial_pct\":<0-1,optional>,\"note\":\"<=120 chars\"}. R units are TRUE risk (engine stop = -1R). \"hold\"=no change (mechanical exits execute when due). \"revise\": stop_r only TIGHTENS (0=entry); target_r >= 0.3 replaces the target, null = ride on the stop (extension mode); partial_pct books that fraction of what is OPEN at next bar. \"exit_now\" flattens at next bar. Rule-breaking fields are ignored by the harness.\n\n[10:13] EVENT: position opened \u2014 read it and set your plan\nbar 29024.50/29032.00/29008.50/29028.50 | R_now +0.24 peak +0.41 | open 1.00 | stop -1.00R | target developing band +1.89R | cvd_since_entry +115 | mins_to_EOD 342",
+   "reply": "{\"action\":\"hold\",\"note\":\"Fresh open, small heat within norm, CVD supportive. Let mechanical plan run.\"}"
+  },
+  {
+   "minute": "2026-05-20 10:14:00-04:00",
+   "why": "BAND TOUCH: the mechanical exit is here at 29063.42 (+1.87R). Take it (hold/exit_now) or refuse with a plan (revise: null target to ride, or fixed target + tighter stop).",
+   "sent": "[10:14] EVENT: BAND TOUCH: the mechanical exit is here at 29063.42 (+1.87R). Take it (hold/exit_now) or refuse with a plan (revise: null target to ride, or fixed target + tighter stop).\nbar 29028.00/29130.00/29023.25/29088.25 | R_now +3.03 peak +0.41 | open 1.00 | stop -1.00R | target developing band +1.87R | cvd_since_entry +1199 | mins_to_EOD 341",
+   "reply": "{\"action\":\"revise\",\"stop_r\":1.5,\"target_r\":null,\"note\":\"Blew through band w/ CVD+1199 flow, top-quartile press\u2014trail stop to lock 1.5R, ride the run.\"}"
+  },
+  {
+   "minute": "2026-05-20 10:24:00-04:00",
+   "why": "extended recheck (10m)",
+   "sent": "[10:24] EVENT: extended recheck (10m)\nbar 29178.50/29187.00/29136.25/29143.50 | R_now +5.61 peak +9.82 | open 1.00 | stop +1.50R | target NONE (riding stop) | cvd_since_entry +1235 | mins_to_EOD 331",
+   "reply": "{\"action\":\"revise\",\"stop_r\":3.5,\"target_r\":null,\"note\":\"Pulled back hard from 9.82R peak; still well in profit\u2014tighten stop to lock 3.5R, keep riding.\"}"
+  },
+  {
+   "minute": "2026-05-20 10:34:00-04:00",
+   "why": "extended recheck (10m)",
+   "sent": "[10:34] EVENT: extended recheck (10m)\nbar 29214.25/29238.25/29208.50/29214.50 | R_now +8.92 peak +11.18 | open 1.00 | stop +3.50R | target NONE (riding stop) | cvd_since_entry +2333 | mins_to_EOD 321",
+   "reply": "{\"action\":\"revise\",\"stop_r\":6.5,\"target_r\":null,\"note\":\"New peak 11.18R, strong CVD+2333 still trending\u2014trail stop to 6.5R, ride further.\"}"
+  },
+  {
+   "minute": "2026-05-20 10:44:00-04:00",
+   "why": "extended recheck (10m)",
+   "sent": "[10:44] EVENT: extended recheck (10m)\nbar 29198.00/29224.75/29197.00/29223.75 | R_now +9.35 peak +11.18 | open 1.00 | stop +6.50R | target NONE (riding stop) | cvd_since_entry +2195 | mins_to_EOD 311",
+   "reply": "{\"action\":\"revise\",\"stop_r\":7.5,\"target_r\":null,\"note\":\"Holding near peak, CVD still strong though slightly cooling\u2014trail stop to 7.5R.\",\"stop_r\":7.5}"
+  }
+ ]
+}
