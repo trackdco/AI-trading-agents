@@ -69,3 +69,27 @@ vs Brake's sweep-reclaim. Ledger rows 105-107.
   t+5/15/30/60/120min, declared here); exit/stop arms under §6.0;
   redundancy vs Brake's sweep-reclaim; then DSR/PBO grading vs the
   sleeve floor.
+
+### Trial 4 — §3.2 loser autopsy + MFE/MAE + time segments on L1b (2026-08-05)
+scripts/nya_ds_autopsy.py (checkpoints t+5/15/30/60/120, hourly-clock
+adaptation declared; still-open-at-t conditioning per §5.12-5).
+- EXIT MIX: time 67 / stop 30 / target 20 — the 2R target hits only 17%;
+  the clock, not the bracket, resolves most trades (time-exit trades mean
+  +0.21R). Exit design is where this family's tournament will matter.
+- LOSERS (n=63): median MFE 0.11R — losers never really go green (only
+  27% ever saw +0.5R, 13% saw +1R); they ride to the stop (median MAE
+  0.91R). Half die at the stop, half at the clock.
+- WINNERS (n=54): median MAE 0.28R; worst survived 0.96R (a near-stop
+  save); p25 endured 0.51R; median time-to-target 60 min.
+- CANON GRAMMAR TRANSFERS, with one family-specific twist:
+  PRESS at t+15 wins 100% (n=12), t+60 88% (n=16) vs base 46%;
+  DYING (MAE<=-0.5R) wins 35-43% — the coin-flip degradation, matches
+  canon. TWIST: GIVEBACK IS STRONG HERE (t+30 76% n=21, t+60 100% n=13)
+  unlike the canon's ambiguous giveback — on an hourly mean-reversion
+  trade, pulling back off peak is rotation, not death. This goes in the
+  agent-rung playbook with the sign FLIPPED from canon.
+- BE note for the tournament: only 27% of losers ever reached +0.5R — a
+  BE@0.5R arm has limited material; §5.12-6 null stands until defeated.
+- Ledger row 109. NEXT: exit/stop arms under §6.0 (time-exit variants,
+  partial-at-1R, BE null, stop-cap class), redundancy vs sweep-reclaim,
+  then grading.
