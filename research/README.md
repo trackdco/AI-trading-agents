@@ -51,3 +51,47 @@ Rules carried over from the shop's standing law:
 2. **On greenlight** ("okay, let's do this strategy") → the deep-dive round:
    extensive research around that specific mechanism, appended to the candidate's
    file, before and alongside testing on its branch.
+
+## Video sources — `youtube/` and the MCP (2026-08-05)
+
+The 2026-08-04 sweeps record URLs as *leads*, because direct page fetches are
+403-blocked at egress (`findings/london-session-clock.md`) — so the claims in
+those files come from search snippets, not from the sources themselves. For
+video sources that gap is now closed: `tools/youtube-mcp/` fetches the actual
+transcript, timestamps every line, and commits it under `youtube/`.
+
+```
+youtube/transcripts/<video_id>.txt    transcript, [mm:ss] on every line
+youtube/transcripts/<video_id>.json   language, segments, characters, fetch date
+youtube/sweeps/<label>.json           what a sweep found: query, params, ranked index
+```
+
+**Committed on purpose.** The standing law is that every cited number has a
+source; a transcript that only ever existed in a context window can't be
+re-checked. With these committed, a thesis quotes a trader at `[video_id @ 12:34]`
+and anyone can verify it.
+
+Typical run — Angus arrives with "I found this strategy, here's the video":
+
+```
+youtube_research_sweep("<mechanism> nasdaq futures", max_videos=12)
+youtube_grep_transcripts(r"stop.?loss|invalidat|risk to reward|session")
+youtube_get_transcript("<top hit>", full=True)      # the two that matter, no more
+youtube_article_record(title=..., sweep_label=..., session="london",
+                       mechanism_families=["order-flow"])   # writes articles/
+```
+
+The sweep deliberately never returns transcript text — twelve videos is ~180k
+tokens. It returns a ranked index; you grep the corpus and read the two worth
+reading. `youtube_article_record` validates `session` and `mechanism_families`
+against the VAULT-SCHEMA §5 controlled vocabulary and refuses improvised values.
+
+Where this sits in the flow: it is stage-1 sourcing (and stage-2 deep-dive
+sourcing) for one class of source. It authorizes nothing. A candidate still needs
+a thesis, Angus's greenlight, and the validation process — the transcripts just
+mean the thesis is built on what was actually said.
+
+Setup and failure modes: `tools/youtube-mcp/README.md`. Needs a free
+`YOUTUBE_API_KEY` for search; transcripts work without one. Runs on a
+workstation — YouTube blocks datacenter IPs, so remote sessions need
+`YOUTUBE_TRANSCRIPT_PROXY`.
