@@ -145,3 +145,28 @@ DECLARED LEVER ARMS (causal, evaluated on the shared minute path):
   (50% at +0.5R full-risk basis); B-trail (after +1R stop to peak-0.5R).
 BE remains a defeated null on both legs — no BE arm re-enters without new
 prereg. All arms base friction, $160/unit-risk, ledger rows each.
+
+STAGE 2C RESULTS (fit span; A n=112 / B n=138):
+THE TWO LEGS HAVE OPPOSITE ANATOMIES:
+- LEG A losers are FAILED WINNERS: 80% went >= +0.5R green before dying
+  (median loser MFE 0.84R) — giveback deaths. Winners take little heat
+  (median MAE 0.23R), pay in 12 min, and WALK OUT a median +2.69R BEYOND
+  the mid target (p75 +4.37R) — the mid target leaves multiples on the
+  table.
+- LEG B losers DIE CLEAN: only 18% ever saw +0.5R (median MFE 0.32R).
+  Winners walk out just +0.85R beyond target. Mirror image of A.
+- BOTH legs: in-trade cvd decisive (A t+5: 56% with vs 22% against;
+  B t+5: 68% vs 36%) — the canon class prior (flow decisive INSIDE the
+  trade) now reproduced on every family tested.
+LEVER ARMS (single-arm, fit-span, causal):
+- A: cut5flow (exit t+5 if red AND cvd-against) +$990 -> $4,903 (best);
+  partial 50%@+1R +$803; cut3-dying +$260; trail +$143; EXTEND (runner
+  past mid, stop at entry) LOSES -$160 — the walkout is real but this
+  harvester gives back more than it catches; a trail-from-target combo
+  is the declared next arm.
+- B: cut15 +$534 (confirmed); partial05 -$1,112 (hurts); trailB inert.
+READ: A's management edge = flow-cut + profit protection (its losers are
+givebacks); B's = early dying/flow cut (its losers are clean). The
+walkout harvest on A is the open capture-more question — next declared
+round: extend+trail combos, and the press/giveback state playbook is
+agent-rung territory once the baseline is ruled. Ledger rows 244-246.
