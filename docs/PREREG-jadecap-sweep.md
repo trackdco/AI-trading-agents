@@ -68,3 +68,20 @@ AND holdout adjudication. Trials: merged machine ledger +
 research/candidates/nya-daily-sweep.md. Redundancy gate owed vs Brake's
 sweep-reclaim / london-level-trap-fade (same raid family, different
 sessions) before any book admission.
+
+## AMENDMENT 2026-08-05b — exit/stop tournament arms (declared BEFORE the lab runs)
+
+Basis (§5.12.1-13): L1b population (gap-against + deep-pen cuts), n=117,
+confirmation-close entry, base 1pt friction, $160-risk sizing. Default =
+census expression (SFP-bar stop, 2R target, 12:00/16:00 time exits).
+Arms (10, bounded):
+1. default  2. target 1R  3. target 3R  4. no-target (time+stop only)
+5. BE@0.5R (the §5.12-6 null — must be defeated, never defaulted to)
+6. BE@1R  7. partial 50%@1R + 50%@2R
+8. stop-cap 20pt (§5.11-3 class; R normalized to arm risk)
+9. stop-cap 30pt
+10. hold-to-15:55 (tests the taught time-exit rule mechanically)
+Scoring: day-level R matrix -> PBO CSCV (S=16). Displacement of the
+default requires PBO < 0.5 AND holdout adjudication (none is declared for
+this family yet — so today's tournament can only BANK challengers, not
+displace; §6.0). All arms to the merged ledger.
