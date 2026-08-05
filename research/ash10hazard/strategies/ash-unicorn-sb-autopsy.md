@@ -247,3 +247,19 @@ reporting them a second time would read as replication. It is not.
 **Verdict unchanged: plausible but unconfirmed, needs forward data.** The backfill pass
 established that this is not a data-processing problem that more diligence can solve — the
 sample is at its ceiling within what we own.
+
+---
+
+# 2026-08-07 — H1 and H2 are now PRE-REGISTERED
+
+`ash-unicorn-sb-forward-protocol.md` · log `ash-unicorn-sb-forward.csv` ·
+logger `scripts/ash_forward_log.py`
+
+Both hypotheses above are locked for a forward out-of-sample test: directions stated in
+advance (H1 winners higher `F1_disp_delta`; H2 three-bucket order win < loss < break-even on
+`F2_retrace_ratio`), definitions frozen to the existing code, two pre-planned looks at
+n_forward = 20 and 46, α = 0.0125 per hypothesis × look, decision rule written before any
+data exists. **The forward span begins 2026-08-08** and the logger refuses earlier dates.
+
+**H1 and H2 must not be tested on any set that includes these 29 trades.** They were generated
+here; the protocol is the only place they can be confirmed.
