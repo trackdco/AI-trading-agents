@@ -44,3 +44,20 @@ break-direction premise and kills BRANCH A only. Branch B (pre-break range
 fade, 10:00-10:30 IB-extreme touches) rides a different premise (unresolved
 balance mean-reverts) and remains ALIVE with its census owed as trial 2.
 Family arm count: 1 (census geometry).
+
+### Trial 2 — branch B census (2026-08-05) — PREMISE KILLED; FAMILY CLOSED
+scripts/nya_ivb_fade_census.py (356 events, full span). The fade's own race
+— touch the intact IB extreme, reach IB mid before a close breaks the
+extreme — wins only 26% (2025) / 19% (2026) / 24% (23-24). Era-consistent
+failure at the trade's actual geometry; no side is better (long 29%, short
+20%). Premise kill, both program eras, no conditioning owed (this is the
+base rate of the claimed behavior itself, not expectancy after costs).
+METHOD NOTE (honesty): the race is asymmetric by design — mid is ~0.5 IB
+away, invalidation is a close just beyond the extreme — because that IS the
+taught trade's geometry. No claim about "inversion edge" is made from this
+census; a symmetric-race study would be a fresh declaration.
+TOMBSTONE (family): both branches of the most famous opening-range doctrine
+are dead on 2025-26 NQ — the breakout premise decayed with publication, and
+the pre-break fade premise fails its own geometry in every era. The IB
+survives only as STRUCTURE (conditioning variables) for other candidates.
+Family arm count final: 2. Machine ledger updated.
