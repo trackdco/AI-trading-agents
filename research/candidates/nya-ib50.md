@@ -102,3 +102,24 @@ no BE, early-cut at t+15 (dying OR cvd-against), conviction-sized
 the flow-conditioned cut IS adjudicable; single look on written
 declaration after Angus approves the freeze. NO SHIP without it.
 Ledger rows 234-236.
+
+### Trial 6 — IB COMPLEX overlap study (2026-08-05, scripts/nya_ib_complex_overlap.py)
+ANGUS: are fade + continuation the IB's A/B? YES — structurally:
+- 628 IB days: fade-only 196 / ib50-only 272 / both 160. On both-days the
+  legs are OPPOSED 91% of the time (146/160) — near-mirrors, as expected.
+- BUT simultaneous conflict is rare: only 23 days in 4 years are
+  open-and-opposed at the same minute (median open-overlap 0 min). The
+  legs are SEQUENTIAL: the fade resolves extreme->mid, and mid is where
+  the continuation enters — the full oscillation decomposed into two
+  chained legs, hinge at the midpoint. Canon A/B analog confirmed.
+- Independence: trade-R correlation on both-days -0.132; day-level union
+  -0.058.
+- Combined two-leg book (current specs, $160/leg): $+10,871 = fade
+  $+10,865 + ib50 $+6 — leg B adds nothing AS CURRENTLY SPEC'D (raw flat)
+  but the optimized leg-B spec (front-run + early-cut + conviction,
+  trial 3-5, OOF pending) printed $+1,590 on the fit span.
+STRUCTURE PROPOSAL to Angus: ACTIVE FAMILY = THE IB COMPLEX — one family,
+two legs, one book, one process (satisfies one-at-a-time). Conflict rule
+needed for the 23 simultaneous-opposed days (declared arms: leg-A
+precedence while open / no leg-B entry while leg-A open / net) — selector
+prereg R1-R4 applies. Ledger row 237.
