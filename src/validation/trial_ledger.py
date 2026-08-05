@@ -123,21 +123,53 @@ def t_from_one_sided_p(p1: float) -> float:
     return _PHI.inv_cdf(1.0 - p1)
 
 
+# Columns added after the ledger was already in use by both researchers. They are
+# BACKFILLED, never required — a caller written against the original 10-column schema
+# must keep working, or the merged ledger §6.0 depends on silently stops being merged.
+_OPTIONAL = {
+    "programme": "UNSPECIFIED",
+    "researcher": "UNSPECIFIED",
+    "cluster": None,          # falls back to `family`
+    "series_path": None,
+}
+_REQUIRED = [c for c in COLUMNS if c not in _OPTIONAL]
+
+
+def _conform(d: pd.DataFrame) -> pd.DataFrame:
+    """Bring any ledger vintage up to the current schema without losing rows."""
+    d = d.copy()
+    for c, default in _OPTIONAL.items():
+        if c not in d.columns:
+            d[c] = default
+    if "cluster" in d.columns and "family" in d.columns:
+        d["cluster"] = d["cluster"].fillna(d["family"])
+    for c in COLUMNS:
+        if c not in d.columns:
+            d[c] = None
+    return d[COLUMNS]
+
+
 def load() -> pd.DataFrame:
     if not LEDGER.exists():
         return pd.DataFrame(columns=COLUMNS)
-    return pd.read_parquet(LEDGER)
+    return _conform(pd.read_parquet(LEDGER))
 
 
 def record(rows: list[dict]) -> pd.DataFrame:
-    """Append trials. Never rewrites existing rows."""
+    """Append trials. Never rewrites existing rows.
+
+    Only the original 10 columns are required. `programme`, `researcher`, `cluster` and
+    `series_path` are optional and default — supply them where you can, because §6.0's
+    merged denominator is more useful when scope is tagged, but a caller that omits them
+    still records a valid trial rather than raising.
+    """
     if not rows:
         return load()
     new = pd.DataFrame(rows)
-    missing = [c for c in COLUMNS if c not in new.columns]
+    missing = [c for c in _REQUIRED if c not in new.columns]
     if missing:
         raise ValueError(f"trial rows missing required columns: {missing}")
-    out = pd.concat([load(), new[COLUMNS]], ignore_index=True)
+    out = pd.concat([load(), _conform(new)], ignore_index=True)
     LEDGER.parent.mkdir(parents=True, exist_ok=True)
     out.to_parquet(LEDGER, index=False)
     return out
@@ -207,15 +239,41 @@ def effective_trials_from_series(threshold: float = 0.5) -> int:
     return len({find(i) for i in range(n)})
 
 
-def trial_effect_variance(df: pd.DataFrame | None = None) -> float:
-    """Variance of the standardised effect across recorded trials — the DSR denominator's
-    other half. Raises rather than guessing when there is too little history."""
+V_N_FLOOR = 30          # matches the desk's own n>=30 event floor
+
+
+def trial_effect_variance(df: pd.DataFrame | None = None,
+                          n_floor: int = V_N_FLOOR) -> float:
+    """Variance of the standardised effect across recorded trials — DSR's other input.
+
+    N-FLOOR ON THE VARIANCE ONLY. `effect = t/sqrt(n)` is a per-observation standardised
+    effect, and its ESTIMATE is noisy at small n — noise that scales as 1/sqrt(n) and
+    lands directly in V. Measured on the merged ledger 2026-08-05:
+
+        n   3-10   :  3 trials, mean |effect| 0.626, max 1.704
+        n  10-30   :  5 trials, mean |effect| 0.229
+        n  30-100  : 22 trials, mean |effect| 0.189
+        n 100+     : 14 trials, mean |effect| 0.088
+
+    The monotone decline is estimation noise, not signal. Including the three n<10 arms
+    inflated the bar from +0.5519 to +0.8026 at N=52 — a 45% rise driven by 3 of 44
+    trials, one of them n=3.
+
+    An inflated V is not "safely conservative": per §2.4 both under- and over-correction
+    are errors, and a bar set by an artifact rejects real edges. So trials below the
+    floor are still COUNTED in N (they were lottery tickets) but excluded from V.
+
+    Set n_floor=0 to reproduce the unfiltered figure.
+    """
     d = load() if df is None else df
-    e = pd.to_numeric(d["effect"], errors="coerce").dropna()
+    e = pd.to_numeric(d["effect"], errors="coerce")
+    n = pd.to_numeric(d["n"], errors="coerce")
+    keep = e.notna() & (n.fillna(0) >= n_floor)
+    e = e[keep]
     if len(e) < 2:
         raise ValueError(
-            f"trial ledger holds {len(e)} usable effects; variance needs at least 2. "
-            "Record more trials before deflating — do not substitute a guess.")
+            f"trial ledger holds {len(e)} usable effects at n>={n_floor}; variance needs "
+            "at least 2. Record more trials before deflating — do not substitute a guess.")
     return float(e.var(ddof=1))
 
 
@@ -235,10 +293,13 @@ def summary(df: pd.DataFrame | None = None) -> str:
     best = d.loc[d.effect.idxmax()]
     lines = [
         f"trials recorded (nominal): {len(d)}",
+        f"  by programme: {d.programme.value_counts().to_dict()}",
+        f"  by researcher: {d.researcher.value_counts().to_dict()}",
         f"effective trials (clusters): {eff}   <- approximation, see n_effective()",
         f"programmes             : {', '.join(sorted(d.programme.dropna().unique()))}",
         f"researchers            : {', '.join(sorted(d.researcher.dropna().unique()))}",
-        f"effect sd across trials: {math.sqrt(var):.4f}  (var {var:.6f})",
+        f"effect sd across trials: {math.sqrt(var):.4f}  (var {var:.6f})"
+        f"   [V over n>={V_N_FLOOR} only; all {len(d)} counted in N]",
         f"best effect observed   : {d.effect.max():+.4f}"
         f"  ({best['family']} {best['era']})",
         f"deflation bar @ nominal {len(d)}: {deflation_bar(df=d):+.4f}",
