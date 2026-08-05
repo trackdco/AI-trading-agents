@@ -61,3 +61,22 @@ are dead on 2025-26 NQ — the breakout premise decayed with publication, and
 the pre-break fade premise fails its own geometry in every era. The IB
 survives only as STRUCTURE (conditioning variables) for other candidates.
 Family arm count final: 2. Machine ledger updated.
+
+### Trial 3 — BOTH KILLS VACATED, canon-parity ruling (ANGUS 2026-08-05)
+Process correction under the §3.2 kill-class law, the polarity/euro-handoff
+precedent applied to ourselves: BOTH trial-1 and trial-2 kills fired before
+the FULL declared conditioning search ran — premature. Specifics of the
+error: (a) branch A died off two conditioning previews; the prereg's declared
+variables (flow at the break, depth-wall state at the IB extreme, open type,
+day type, gap state, pm_press_0800) were never searched. The 23-24→25-26
+DECAY of the raw base rate stands as a FINDING (it is real and stays in the
+machine ledger) but under the law it is an expectancy-class observation about
+one geometry, not proof that no conditioned expression exists. (b) branch B
+was censused as a STRAWMAN — "fade every touch" — when the taught setup is
+"fade the touch ON ABSORPTION AT THE EXTREME" (Fabervaale, extraction A);
+the mandatory flow trigger was omitted from the tested expression. STATUS:
+REOPENED, both branches. Owed searches: branch A full declared variable set
+x flow-at-break; branch B as-taught (absorption/exhaustion at the touched
+extreme, flow library flags) x geometry. Era discipline and cost stacks
+unchanged. All prior arms stand in the count (family 2 -> grows with the
+reopened search).

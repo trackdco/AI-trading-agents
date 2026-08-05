@@ -115,6 +115,22 @@ flow accrual, the banked holdout look (+~6mo flow-gated events, Angus's
 written call), Brake's independent NY emissions for book-level grading.
 NOT SHIPPED. Family arm count final: 20.
 
+### Trial 7 — GRADING VERDICT SUSPENDED, search reopened (ANGUS 2026-08-05, canon-parity ruling)
+The trial-6 grades were run after a THIN search relative to the canon
+standard: the prereg's declared variables open type, day type, IB size,
+poor/strong structure at the extreme, session clock, trapped-volume
+estimate, and DEPTH-WALL STATE AT THE BROKEN EDGE (the canon's pivotal
+variable class; extractor not yet built) were never searched. Grading a
+thin search is premature in the opposite direction from a premature kill —
+the DSR/PBO numbers stand in the record as measurements of the thin-search
+spec, but the SHELVED verdict is suspended rather than final. STATUS:
+search REOPENED per canon parity. Owed: (1) depth-wall-at-entry extractor
+built and tested at the edge on re-entry; (2) the remaining declared candle
+variables; (3) 2023-24 CANDLE validation of the candle-side spec per
+Angus's step-4 loop (23-24 candles were never sealed — only the six flow
+months are); (4) graders RE-RUN on whatever the deep search freezes.
+Trial-6 numbers stay ledgered; nothing is erased.
+
 ### Trial 5 — accept-branch conditioning (2026-08-05, flow span) — PARKED, too few events
 scripts/nya_fa_accept.py (events in output/nya_fa_accept_events.parquet).
 Only 15 accept-then-retest events exist on the whole flow span — accepted
