@@ -62,6 +62,22 @@ someone watching two minutes of the chart. **I would not greenlight this ahead o
 `london-nq-open-break` until that is resolved**, and I am filing it as
 thesis-pending rather than quietly assuming NQ because it would be convenient.
 
+**Update — a second EzTrades video landed and it names no instrument either.**
+`RJXe1rF9kXM` ("Opening Range Breakout & Retest") contains zero mentions of
+nasdaq, NQ, ES, gold, US30, DAX or futures. Two for two.
+
+That is not an accident of these two videos; it is how this source teaches — the
+instrument lives on the chart and the narration is instrument-agnostic. **So
+transcripts cannot settle this question for EzTrades at all**, and waiting for
+`v7tdhjW84Ho` is unlikely to help.
+
+Worth recording as a limitation of the method rather than of this candidate:
+transcript-based research has a blind spot for anything shown rather than said,
+and a chart-first teacher falls entirely inside it. The tool tells us *what the
+rules are* and cannot tell us *what they were demonstrated on*. For this
+candidate that gap is load-bearing, so it needs a human eyeball on the chart —
+about two minutes of work, and no amount of further transcription substitutes.
+
 ## Skeleton
 
 Accumulation range = high/low of **01:00–02:00 ET** (window declared, not tuned).
