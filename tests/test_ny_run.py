@@ -812,6 +812,39 @@ def test_arm_proceeds_when_broker_confirms_flat(tmp_path, monkeypatch):
     assert live.armed is True
 
 
+def test_spine_evidence_instrument_never_arms_with_the_real_broker(tmp_path, monkeypatch):
+    """2026-08-05 incident: instrument.spine used to be wired to the REAL broker and armed
+    with the same token as the live loop. SpineExecutor.place() (evidence-only, called from
+    _execute for guard_report/place) and NYExecution.place() (the certified execution path)
+    then BOTH independently called broker.submit_bracket() for the same trigger -- every
+    armed trade went out as two separate real bracket orders. The spine must stay
+    structurally shadow-only here (like canon_run.py's own instrument): _NoBroker, never
+    armed, regardless of --arm."""
+    import logging
+
+    import scripts.ny_run as nr
+
+    real_broker = _FakeBrokerWithPosition(0)
+    monkeypatch.setattr(nr, "verify_for_arming", lambda token, entrypoint=None: object())
+    monkeypatch.setattr(nr, "build_armed_broker", lambda cfg, auth, log: (real_broker, None))
+    monkeypatch.setenv("ARM_TOKEN", "whatever")
+
+    class _Alerts:
+        def say(self, text):
+            pass
+
+    live = nr.build_ny_live(
+        {"feed": {"sierra": {"data_dir": str(tmp_path), "scid": str(tmp_path / "x.scid")}},
+         "paths": {}, "account": {"equity": 50_000.0}, "ny": {"buffer": 2_000.0}},
+        alerts=_Alerts(), log=logging.getLogger("t"), arm=True)
+
+    assert live.armed is True                              # the REAL live loop is armed
+    assert live.instrument.spine.armed is False             # the evidence spine never is
+    assert live.instrument.spine.broker is not real_broker  # structurally _NoBroker
+    with pytest.raises(AssertionError, match="disarmed"):
+        live.instrument.spine.broker.submit_bracket(None)   # proves it cannot reach a real order
+
+
 # ---------------------------------------------------------------- trade-level alerts
 def test_disarmed_run_stays_silent_on_placements_and_fills(live):
     """Shadow/practice runs must not page anyone's phone — only a placement FAILURE is

@@ -854,12 +854,20 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
                 "while in a trade, or a stale prior session). This process does not "
                 "auto-adopt unknown positions — flatten it manually (Sierra Trade "
                 "Positions Window), confirm flat, then arm.")
+    # 2026-08-05 incident: instrument.spine used to be wired to the REAL broker and
+    # armed with the same token as the live loop -- both SpineExecutor.place() (here,
+    # via guard_report/place below, for promotion-gate evidence) AND NYExecution.place()
+    # (the actual certified execution path) independently called broker.submit_bracket()
+    # for the SAME trigger. Every armed trade went out as two real, separate bracket
+    # orders. This spine exists ONLY for promotion-gate evidence (guard_report/place
+    # calls below) -- exactly like canon_run.py's own instrument, which is documented as
+    # "NOTHING TOUCHES A BROKER... no DTC order path here". It must NEVER be armed here.
+    # broker=None (not `broker`) wires _NoBroker structurally -- even a future bug that
+    # re-adds an .arm() call cannot route a real order through this instrument again.
     spine_cfg = load_spine_config(config_path)     # pinned Tier-1 (F6: honour --config)
     instrument = build_shadow_instrument(out, account=sc.get("account", "FUNDED"),
                                          cfg=spine_cfg, kill_file=kill_file,
-                                         broker=broker, arm_token=token)
-    if arm and not instrument.spine.arm(token):
-        raise SystemExit("ARM REFUSED: spine token mismatch")
+                                         broker=None, arm_token=token)
 
     # R15: agents on by config (ny.agents) or the --agents flag. In agent mode the
     # execution layer does NOT bind the live V8 exit engine — the AgentDesk owns the
