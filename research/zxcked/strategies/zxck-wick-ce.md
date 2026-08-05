@@ -223,3 +223,28 @@ fixed-target backtest is not measuring his numbers.
 Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
 the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
 convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.
+
+
+---
+
+## ⬛ GATE CHECK 2026-08-07 — **n = 38, runnable**
+
+`scripts/zxck_wick_gate.py` — counts only, no power spent. Window 09:45–10:15 ET
+`[stated-by-user]`, span 2025-06-01 → 2026-07-15.
+
+The full stack — ≥10pt wick → closes against its own wick → swept a prior swing extreme →
+engineered liquidity >2pt beyond the CE → price returns to the CE — yields **38 events
+(17 in 2025, 21 in 2026)**.
+
+**Clears the n≥30 floor overall; thin per era.** No threshold was relaxed to get there.
+
+⚠️ The **10pt wick floor is OURS by extension** `[A]` — he gives no size threshold for a
+rejection wick, so the only quantified wick guidance in his corpus (the key-open manipulation
+floor) was reused. It barely binds: 249 of 266 sessions pass it. The binding gates are the
+**sweep** (231→96) and the **engineered liquidity** (96→47).
+
+**This card, not `zxck-gap-fill-edge`, is the runnable one.** The far-edge entry reaches only
+n=12 because an FVG is present at just 15 of 47 qualifying wicks.
+
+**Still PARTIAL — Q3 unresolved by instruction**, and any baseline carries the
+inside-the-wick liquidity reading as a tagged `[inferred]` assumption.

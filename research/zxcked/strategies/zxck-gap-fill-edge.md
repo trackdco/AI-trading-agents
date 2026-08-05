@@ -9,7 +9,7 @@ GAP_ENTRY: YES — and it is the DIRECT INVERSE of ash-unicorn-sb's near-edge en
 NY_SESSION: partial
 sources: [86DOt135Wts, lRgsHGWzO9E, 4COROwkO3DI]
 components: zxck-COMPONENTS.md
-verdict: CONFIRMED
+verdict: PARTIAL — UNTESTABLE (n=12)
 ---
 
 # `zxck-gap-fill-edge` — the far edge of the gap
@@ -140,3 +140,51 @@ points"* `[@ 02:26]`, *"a 250 point selloff"* `[@ 03:13]` — `[trader-claimed, 
 Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
 the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
 convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.
+
+
+---
+
+## ⛔ GATE CHECK 2026-08-07 — **UNTESTABLE at n = 12**
+
+`scripts/zxck_wick_gate.py` — counts only, no outcome measured, no power spent, no trial recorded.
+
+Window 09:45–10:15 ET `[stated-by-user]`, span 2025-06-01 → 2026-07-15, 352 sessions.
+
+| gate | 2025 | 2026 | all |
+|---|---|---|---|
+| 0. sessions in window (FOMC excluded) | 140 | 126 | 266 |
+| 1. + a ≥10pt wick | 128 | 121 | 249 |
+| 2. + candle closes against its own wick | 112 | 119 | 231 |
+| 3. + that wick swept a prior swing extreme | 41 | 55 | **96** |
+| 4. + engineered liquidity >2pt beyond the CE | 22 | 25 | **47** |
+| **5. + an FVG at the wick** | 5 | 10 | **15** |
+| 6a. + price returns to the CE → `zxck-wick-ce` | 17 | 21 | **38** |
+| **6b. + price returns to the FAR EDGE → this card** | **4** | **8** | **12** |
+
+### The far-edge entry dies at gate 5, and it is not a threshold I chose
+
+**Only 15 of 47 qualifying wicks have an FVG at them** — a 68% cut, and it is the single largest
+drop in the stack. The 10pt wick floor (which is **ours** by extension, `[A]`) barely filters at
+all: 249 of 266 sessions pass it. So the sample is not thin because of any number we picked. It
+is thin because **a rejection wick that also leaves a fair value gap is rare.**
+
+**n = 12, split 4/8 across eras. That is under half the n≥30 floor and cannot be baselined.**
+
+**No threshold was relaxed to manufacture sample**, per the standing rule that a thin sample is a
+finding rather than a reason to loosen a rule.
+
+### Verdict corrected: **CONFIRMED → PARTIAL / UNTESTABLE**
+
+Two corrections to my own bookkeeping, both mine:
+1. This card was marked **Confirmed** while its stop is inherited from `zxck-wick-ce`
+   (Q14 → Q16), and **`zxck-wick-ce` is PARTIAL with Q3 unresolved**. A card cannot be Confirmed
+   on an inherited open question.
+2. It is now also **UNTESTABLE on held data** at n = 12.
+
+**What would make it testable:** more sessions. At ~12 events per 13.5 months, reaching n = 30
+needs roughly **2.5 more years** of forward data. It is not a data-purchase problem — the events
+simply do not occur often inside a 30-minute window.
+
+### Revision log
+- **2026-08-07 rev e** — gate check run before baselining. UNTESTABLE at n=12; verdict corrected
+  from Confirmed to Partial. Host detector (`zxck-wick-ce`) reaches **n=38** and is runnable.
