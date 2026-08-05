@@ -33,24 +33,24 @@ from src.validation.trial_ledger import (
 
 def from_p(fam, trial, era, prereg, est, n, p1, verdict):
     t = t_from_one_sided_p(p1)
-    return dict(family=fam, trial=trial, era=era, prereg=prereg, stat_type="mean",
+    return dict(programme="LONDON", researcher="brake", cluster=fam, family=fam, trial=trial, era=era, prereg=prereg, stat_type="mean",
                 estimate=est, n=n, t_stat=t, effect=effect_from_t(t, n), verdict=verdict)
 
 
 def from_se(fam, trial, era, prereg, est, se, n, verdict):
     t = est / se
-    return dict(family=fam, trial=trial, era=era, prereg=prereg, stat_type="mean",
+    return dict(programme="LONDON", researcher="brake", cluster=fam, family=fam, trial=trial, era=era, prereg=prereg, stat_type="mean",
                 estimate=est, n=n, t_stat=t, effect=effect_from_t(t, n), verdict=verdict)
 
 
 def from_rho(fam, trial, era, prereg, rho, n, verdict):
     t = rho * math.sqrt(max(n - 2, 1)) / math.sqrt(max(1 - rho * rho, 1e-12))
-    return dict(family=fam, trial=trial, era=era, prereg=prereg, stat_type="rho",
+    return dict(programme="LONDON", researcher="brake", cluster=fam, family=fam, trial=trial, era=era, prereg=prereg, stat_type="rho",
                 estimate=rho, n=n, t_stat=t, effect=effect_from_t(t, n), verdict=verdict)
 
 
 def unquantified(fam, trial, era, prereg, est, n, verdict, note):
-    return dict(family=fam, trial=trial, era=era, prereg=prereg, stat_type="mean",
+    return dict(programme="LONDON", researcher="brake", cluster=fam, family=fam, trial=trial, era=era, prereg=prereg, stat_type="mean",
                 estimate=est, n=n, t_stat=float("nan"), effect=float("nan"),
                 verdict=f"{verdict} ({note})")
 

@@ -37,7 +37,10 @@ _PHI = NormalDist()
 LEDGER = Path(__file__).resolve().parents[2] / "output" / "trial_ledger.parquet"
 
 COLUMNS = [
+    "programme",     # LONDON | NY | ... — scope tag, NOT a separate denominator
+    "researcher",    # brake | angus — both arms must be visible (ANGUS 2026-08-05)
     "family",        # e.g. LDN-TRAP-01
+    "cluster",       # correlated-arm group for effective-N (§2.4); defaults to family
     "trial",         # short name of the specific statistic
     "era",           # 2025 / 2026
     "prereg",        # doc that declared it, or the commit
@@ -48,6 +51,21 @@ COLUMNS = [
     "effect",        # t / sqrt(n) — the common scale
     "verdict",
 ]
+
+# ---------------------------------------------------------------------------
+# WHY THERE IS NO PER-PROGRAMME DENOMINATOR
+#
+# It is tempting to deflate London against London's arms and NY against NY's. That is
+# wrong for the decision the desk actually makes. Whatever goes live is selected from
+# the pool of everything tested, so the go-live bar must see the whole pool. Same for
+# two researchers on one session: "two people searching the same session doubles the
+# search size — the deflation math has to see both our arm counts or we'll fool
+# ourselves" (ANGUS 2026-08-05).
+#
+# `programme` and `researcher` are therefore SCOPE TAGS for slicing and reporting, never
+# filters applied before deflation. `deflation_bar()` uses the merged ledger by default
+# and any narrowing has to be passed explicitly and justified on the verdict.
+# ---------------------------------------------------------------------------
 
 
 def effect_from_t(t: float, n: int) -> float:
@@ -81,7 +99,29 @@ def record(rows: list[dict]) -> pd.DataFrame:
 
 
 def n_trials(df: pd.DataFrame | None = None) -> int:
+    """NOMINAL arm count — everything tried, including abandoned arms (§2.4: they were
+    lottery tickets too)."""
     return int(len(load() if df is None else df))
+
+
+def n_effective(df: pd.DataFrame | None = None) -> int:
+    """EFFECTIVE independent trials — number of correlated-arm clusters (§2.4).
+
+    LIMITATION, STATED RATHER THAN HIDDEN. López de Prado's method clusters the trial
+    RETURN SERIES (ONC) and uses the cluster count as effective N, with V computed over
+    cluster representatives. This ledger stores summary statistics only, so it cannot
+    cluster on series. `cluster` is therefore a DECLARED grouping — by default the
+    family, on the reasoning that arms inside one prereg are draws from a single search
+    over correlated configurations.
+
+    That approximation is defensible but it is not the specified method, and it errs
+    toward FEWER effective trials, i.e. a LOWER bar. Treat any candidate that clears on
+    effective-N but not on nominal-N as unresolved until the series are recorded.
+    """
+    d = load() if df is None else df
+    if d.empty:
+        return 0
+    return int(d["cluster"].fillna(d["family"]).nunique())
 
 
 def trial_effect_variance(df: pd.DataFrame | None = None) -> float:
@@ -108,12 +148,18 @@ def summary(df: pd.DataFrame | None = None) -> str:
     if d.empty:
         return "trial ledger is empty"
     var = trial_effect_variance(d)
+    eff = n_effective(d)
+    best = d.loc[d.effect.idxmax()]
     lines = [
-        f"trials recorded        : {len(d)}",
-        f"families               : {d.family.nunique()}",
+        f"trials recorded (nominal): {len(d)}",
+        f"effective trials (clusters): {eff}   <- approximation, see n_effective()",
+        f"programmes             : {', '.join(sorted(d.programme.dropna().unique()))}",
+        f"researchers            : {', '.join(sorted(d.researcher.dropna().unique()))}",
         f"effect sd across trials: {math.sqrt(var):.4f}  (var {var:.6f})",
         f"best effect observed   : {d.effect.max():+.4f}"
-        f"  ({d.loc[d.effect.idxmax(), 'family']} {d.loc[d.effect.idxmax(), 'era']})",
-        f"deflation bar @ {len(d)} trials: {deflation_bar(df=d):+.4f}",
+        f"  ({best['family']} {best['era']})",
+        f"deflation bar @ nominal {len(d)}: {deflation_bar(df=d):+.4f}",
+        f"deflation bar @ effective {eff}: {deflation_bar(n=eff, df=d):+.4f}"
+        "   <- LOWER bar; do not use to promote until series-based clustering exists",
     ]
     return "\n".join(lines)
