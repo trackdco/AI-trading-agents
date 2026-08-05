@@ -104,3 +104,24 @@ STAGE 2 RESULTS (138 leg-B events, wick-death universe, fit span):
   look, decision rule declared BEFORE the look (ship-candidate = best
   OOF performer IF OOF-positive; else park leg B and the complex ships
   leg A alone). Ledger rows 238-240.
+
+### Stage 3 — THE SEALED-MONTHS LOOK (2026-08-05, scripts/nya_ibc_oof_look.py) — ALL THREE NEGATIVE; LEG B PARKS
+Executed once per docs/OOF-DECLARATION-ibc-legB.md. 71 leg-B events across
+the six sealed months (~2.7/wk, consistent with fit cadence). Sealed flow
+(130,288 min) + sealed depth (19,201 min) consumed for the first time —
+logged as the program's first sealed-data spend.
+- B0 as-taught: -0.3R, $-44 (flat — matches its fit character)
+- B1 cap20:     -29.6R, $-4,735, WR 18% — THE FIT-SPAN STAR COLLAPSES
+- B8 full stack: -27.2R, $-4,358
+PER THE PRE-COMMITTED RULE (all three negative): LEG B PARKS. The complex
+proceeds as LEG A ALONE. No discretion was available or exercised.
+FRAMEWORK NOTE: PBO 0.87 warned that fit-span ranking was noise; the OOF
+look confirmed it. Had cap20 shipped off its fit-span $+7,398, it would
+have shipped noise worth -$4,735 on unseen data. The §6.0 + OOF
+architecture did exactly what it was built to do.
+FAMILY STATUS: NYA-IBC-01 = leg A (the certified fade) alone. Stage 4
+combined-book question is moot; the remaining ladder is leg A's:
+baseline ruling (§5.11-8, Angus: default/cap20-W120/dual — NOTE the
+leg-A cap20 challenger now carries a caution flag from leg B's cap
+collapse, though its own evidence is separate) -> agent rung (paused
+run) -> shadow -> ship decision. Ledger rows 241-243.
