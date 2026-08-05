@@ -1,8 +1,8 @@
 # Channel overview — ash10hazard
 
 **Analyst:** ash10hazard-analyst · **Last updated:** 2026-08-05
-**Channel:** https://www.youtube.com/@ash10hazard · 50 most recent videos enumerated,
-3 tutorials transcribed and carded.
+**Channel:** https://www.youtube.com/@ash10hazard · **602 videos** fully enumerated
+(`channel-enumeration.txt`), **3 tutorials transcribed and carded**.
 
 ---
 
@@ -32,14 +32,23 @@ explanation.**
 | | |
 |---|---|
 | Instrument | NQ (traded), ES (confirmation only) |
-| Session | New York, 09:30 → 14:15 ET `[1cMWnAxElA0 @ 00:21]` |
+| Session | New York, 09:30 → 14:15 ET `[1cMWnAxElA0 @ 00:21]` — **but see London below** |
 | Macro windows | 09:45–10:15, 10:45–11:15, 11:45–12:15, 13:45–14:15 ET |
 | Entry timeframes | 1m–5m |
 | Structure timeframes | 5m / 15m; bias on 4H/1H/15m/5m |
 
-**London relevance:** although a NY trader, he consumes **London and Asia session extremes
-as sweep targets** `[1cMWnAxElA0 @ 02:07]`, and one carded example trades a London-highs
-sweep `[@ 08:50]`. See `research/_shared/session-map.md`.
+**London relevance — larger than the carded videos suggest.** Two distinct things:
+
+1. He consumes **London and Asia session extremes as sweep targets** for NY entries
+   `[1cMWnAxElA0 @ 02:07]`; one carded example trades a London-highs sweep `[@ 08:50]`.
+2. **He also trades the London session directly.** The full enumeration contains **20**
+   London-titled videos naming explicit London macro windows — *"2:45 – 3:15AM ICT LDN
+   Macro"* `[-AxipzPSWnY, 94vXrtbjOh4, vzDWnl3hp4M]` and *"3:45 – 4:15AM ICT LDN"*
+   `[3ujLL647TG0, Ee_tC5P-F20]`.
+
+**None of the three carded videos cover the London application** — the card is NY-only
+because the sources were. A London variant almost certainly exists and is uncarded.
+See `research/_shared/session-map.md`.
 
 ## Recurring building blocks
 
@@ -59,18 +68,39 @@ revisited. Needs a dedicated video before it earns a card.
 
 ## How reliable is the content as evidence?
 
-**Weak, with one point in its favour.**
+> **⚠️ CORRECTION 2026-08-05d.** An earlier version of this section called the channel a
+> highlight reel on the basis that "~40 of ~50 videos are P&L headlines and one shows a
+> loss." **That was drawn from the 50 most recent videos only — an 8% sample of a
+> 602-video channel — and it is materially wrong.** The full enumeration is below. Recording
+> the error rather than quietly editing it.
 
-- Of ~50 recent videos, roughly **40 are P&L headlines** (`+$4K`, `+$7.5K`, `+$12K`), and the
-  visible history contains **one loss** plus two breakevens. That distribution is not
-  achievable in real trading and indicates selective publication.
-- The content is a **funnel**: every tutorial closes on Discord subscription, one-to-one
+**Fair on the full sample.** Across all **602** videos:
+
+| category | count | share |
+|---|---|---|
+| P&L-headline wins (`+$…`) | 121 | 20% |
+| loss / breakeven / transparency | **48** | 8% |
+| everything else (tutorials, vlogs, mindset) | 433 | 72% |
+
+A ratio of roughly **2.5 wins to 1 breakeven-or-worse** in the *headlines*. That is not a
+highlight reel — it is closer to a trading diary.
+
+He publishes things a pure funnel would not:
+- *"HOW TO DEAL WITH GETTING COOKED \*FULL TRANSPARENCY\* (im still up on the month)"* `[N1EXytfVsiI]`
+- *"How To Take Losses as a Profitable Trader & NEVER Break Routine"* `[3rihdEsRTSQ]`
+- Repeated breakeven days, including *"+$0 4TH Breakeven on NASDAQ!"* `[d5EgTViZ0Q4]`,
+  *"+$0 CHOPPY BREAKEVEN PM"* `[LcR4MSuKWsg]`, *"+$0 on NASDAQ! Cooked PA"* `[gcX606rYo2k]`
+- *"How Trump COOKED an A+ ICT Silver Bullet Long"* `[ZgynHraPzvc]` — a losing setup, named as such
+
+**Remaining caveats, which still stand:**
+- The content **is** a funnel: every tutorial closes on Discord subscription, one-to-one
   mentorship, and an Alpha Futures affiliate code with a discount deadline
   `[UBIHB1oB784 @ 09:13]`.
-- View counts are 46–1,500 — a small channel, not an established source.
-- **In his favour:** in `pD5l_gEje9I @ 04:46, 08:30` he discloses that a live trade
-  underperformed the walkthrough (2R → 1R) and explains why — a correction against his own
-  interest, and the only such instance found so far.
+- View counts 46–1,500 — small channel.
+- No verified statement of record: no equity curve, no broker statement, no sample size. The
+  headline distribution is *consistent with* honesty but does not demonstrate it.
+- **In his favour:** `pD5l_gEje9I @ 04:46, 08:30` discloses a live trade underperforming the
+  walkthrough (2R → 1R), with the reason given.
 
 **All performance figures are tagged `[trader-claimed, unverified]` throughout the cards.**
 
