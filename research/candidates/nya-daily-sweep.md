@@ -117,3 +117,20 @@ hold1555 arm (n=110); spec wart recorded.
 - Ledger rows 110-113 (default, no_target, cap30, be05-null).
 NEXT: grading vs the 0.75 sleeve floor (PSR on the default), correlation
 battery vs canon + live emissions, then Angus's book decision.
+
+### Trial 6 — grading pack (2026-08-05, scripts/nya_ds_grade.py) — SLEEVE FLOOR PASS
+Default spec (tournament survivor), $160-risk, 98 trade-days / 915 sessions:
+- PSR(0) 0.986 vs the 0.75 sleeve floor — PASS. MTRL 512d vs 915 held —
+  certifiable on its own track.
+- DSR 0.000 under the merged ledger (113 trials) — carries the KNOWN
+  ledger-denominator inflation caveat (Brake fix pending); per standing
+  rule the PSR floor governs sleeve verdicts meanwhile.
+- Funded MC (12mo, 50K shell, 2K trail): P(bust) 0.1%, median +$1,032 —
+  small additive sleeve, not a solo account.
+- CORRELATIONS: canon union -0.017 (both-active -0.092, 19 days); IB fade
+  union -0.013 (35 both-active days) — independent-to-slightly-negative
+  vs everything live, AND the regime profile (23-24 strong) inverts the
+  canon's. Genuine diversifier.
+STATUS: sleeve-certified pending (a) redundancy gate vs Brake's
+sweep-reclaim trade file (BLOCKED on Brake), (b) Angus's book decision.
+2026 cell n=7 stays on the label. Ledger row 114.
