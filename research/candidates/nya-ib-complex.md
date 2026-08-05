@@ -352,3 +352,20 @@ PROPOSED CONVICTION LADDER (for Angus + next-round prereg): score 0-4 =
 early-touch + session-cvd-stretched + entry-delta-with + band-dist-hi;
 size tiers by score after monotonicity test; higher-risk shipping rides
 the tiers (his call on unit scaling). Ledger row 254.
+
+### FROZEN SPEC CANDIDATE v1 — "IB shelf fade" [ANGUS rulings 2026-08-05]
+ENTRY: fade first touch of intact 30-min IB extreme, window 10:00-10:30
+  (close-break veto). STOP: 0.5x legacy R = 0.125xIB beyond the extreme
+  (true 1R). TARGET: near VWAP sigma band (developing), min 0.25xtrue-R
+  away. SCRATCH: exit at t+10 close if still red. NO BE (defeated null).
+CONVICTION LADDER (ANGUS: "2 tier... base then the confirmation at
+entry"): CONFIRMED = score>=3 of {touch<=10:10, session-cvd against,
+touch-minute delta with, band-dist >= median}; else BASE.
+  BASE:      n=83 fit, 6.4/mo, WR 64%, +0.57R mean
+  CONFIRMED: n=29 fit, 2.2/mo, WR 97%, +1.20R mean (two independent
+  routes; permutation p=0.0003 raw)
+UNIT RATIOS (fit-span $ at $160/unit-at-stop): 1:2 $+18,774 | 1:3
+$+24,344 | 1:4 $+29,913 — ratio is Angus's sizing call.
+STATUS: NOT SHIPPING (Angus). Spec frozen for SHADOW as one package;
+shadow verdict must reproduce the tier separation before any size rides
+it. All evidence fit-span in-fit; the shadow IS the holdout. Ledger 255.
