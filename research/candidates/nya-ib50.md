@@ -33,3 +33,23 @@ Lookahead-clean (front-run entries use developing IB levels). 432 trades
   gates (pre-NFP-Thu, first-15-min, gap>1.5%), arm 3 strict 10:23-10:30
   window, arm 4 25%-retracement entry. No bin until complete (§5.9.1).
 Ledger rows 228-231.
+
+### Trial 3 — §5.11-9 deep round, FIT SPAN 2025-06→2026-07 (2026-08-05, scripts/nya_ib50_deep.py)
+n=138 fit-span trades, base WR 52%, mean R +0.013 (flat). THE DEPTH ROUND
+CHANGES THE PICTURE:
+- IN-TRADE SIGNATURES (canon grammar TRANSFERS on this minutes-clock
+  trade): PRESS 86-87% WR at t+5/15/30 (n=14-23) vs 52% base; DYING 6-21%
+  — sharp, matches canon shape.
+- IN-TRADE FLOW IS DECISIVE (canon class prior confirmed AGAIN: flow
+  near-worthless AT entry — trial 2 null — decisive INSIDE): cvd-since-
+  entry WITH the trade: 63-67% WR; AGAINST: 33-35%. n=36-57 per cell.
+- MFE/MAE: losers die clean (median MFE 0.31R, only 17% ever saw +0.5R);
+  winners' median MAE 0.21R.
+- CONVICTION SIZING (declared score: weekday-floor + entry-delta + book
+  lean; units = 1+score): monotone — score-0 cohort NEGATIVE (n=24, WR
+  33%, meanR -0.333); score-3 +0.191. Conviction-sized $+2,604 vs flat
+  $+278 (risk-normalized $+1,175) on the fit span.
+CAVEATS: all fit-span optimization surface (§5.11-9a); cells searched;
+score-0-as-cut and the cvd-management overlay need the OOF adjudication
+(six sealed months, single look, written declaration) before any freeze.
+Remaining declared arms (2/3/4) still owed. Ledger row 232.
