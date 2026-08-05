@@ -141,8 +141,8 @@ def main() -> int:
     h2 = {era: {"clock_peak_ratio": spread(clock, "clock_bucket", era),
                 "event_peak_ratio": spread(event, "event_bucket", era)}
           for era in ("2025", "2026")}
-    for era in h2:
-        h2[era]["H2_event_tighter"] = h2[era]["event_peak_ratio"] > h2[era]["clock_peak_ratio"]
+    for value in h2.values():
+        value["H2_event_tighter"] = value["event_peak_ratio"] > value["clock_peak_ratio"]
 
     report = {"verdict_H1": verdict, "verdict_H2": h2,
               "clock": clock.to_dict("records"), "event": event.to_dict("records")}
