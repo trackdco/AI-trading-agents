@@ -33,7 +33,24 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 
 ---
 
-## NYA-LVL-01 — level-interaction family (London 50 seed) — **ALL P&L VOID, rebuilding**
+## NYA-LVL-01 — level-interaction family (London 50 seed) — **DEAD. W was a lookahead.**
+- **VERDICT 2026-08-05: KILLED.** Placebo null 100 perms: observed +0.7082 R/trade vs
+  null median **+0.7509**, family-wise **p=0.7500** against a declared 0.01. The null
+  MEDIAN EXCEEDS the observed value.
+- **THE KILL SHOT — W read the future.** W was computed from the book at the FILL MINUTE,
+  which includes what price did after entry. Recomputed one minute earlier: lift falls
+  from **+19.5pp to +4.2pp**. ~80% of the edge was information from the wrong side of the
+  decision point. This also explains the null: W peeks regardless of which line it is
+  attached to, which is why random lines scored BETTER than the real six.
+- **THREE BUGS, ONE SHAPE, ALL MINE:** trail read a bar's high before its low; the sim
+  started 12 min after the fill (PF 3.09); W read the fill minute (56.9% at 2R). Every one
+  made the numbers better. Every one was post-decision information. I caught two by
+  looking and the third only because Angus pushed back on an oversell.
+- **STANDING CHECK ADOPTED:** any feature beating the bar-only baseline by >~5pp is
+  recomputed one bar earlier BEFORE being reported — not after someone is sceptical.
+- SURVIVES: the raw substrate (4,548 events, 16.2/session, six lookahead-clean levels) and
+  an honest bar-only ceiling of ~60% at 1.0R / +0.20R. Marginal, not a strategy.
+- **No 2023/24 look spent.** Full verdict: `research/findings/NYA-LVL-01-VERDICT-killed.md`.
 - **VOID NOTICE 2026-08-05:** the simulation filled at the level mid-bar but did not start
   watching until the 15-minute bar CLOSED — a median 12 minutes later, during which price
   moves a median 21 pts against the trade. **A 10pt stop was already hit before the sim
