@@ -36,6 +36,11 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - NEXT: book-level grading (canon + this + pre-market pair).
 - CANON SHAPE: ahead of canon's arc (canon raw was negative pre-wall-gate);
   era rung passed on the first attempt, no rebalance needed.
+- IN-TRADE SIGNATURES (§5.12-5, trial 11): canon grammar TRANSFERS — press
+  state at t+3 wins 67% vs 41% base (+26pp, positive lift every year); dying
+  state (MAE<=-0.5R by t+3) wins 19% (-22pp, consistent every year);
+  giveback ambiguous, as on the canon. This is the agent rung's playbook —
+  the rung now waits only on Pat's replay methodology.
 - HISTORY NOTE: killed twice by strawman censuses (missing trigger; harsher
   race than the taught trade), vacated on canon-parity, alive on retest —
   the correction that proved the framework audit mattered.
