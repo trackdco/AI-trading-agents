@@ -262,7 +262,52 @@ window: 08:30 and 09:30. That is why Lens C collapsed to 2 candidates rather tha
 
 ## PART 2 — PRE-REGISTERED HOLDOUT DIRECTIONS
 
-*(written before holdout is touched)*
+**Written 2026-08-07 after the discovery run and BEFORE any holdout data was touched.**
+
+### 2.1 The discovery result, stated first because it governs how the holdout is read
+
+**Best primary: `sw-precash-value-migration`, discovery expectancy +0.0968R.**
+**Best-of-12 noise floor: median +0.3097, p75 +0.3956, p90 +0.4971, p95 +0.5611, p99 +0.7088.**
+
+> ## ⛔ OUR BEST CANDIDATE SITS AT THE **1.5th PERCENTILE** OF THE NOISE FLOOR.
+> **98.5% of random-direction searches over the same events would produce a BETTER winner than
+> ours.** Not "fails to clear p95" — it is below the *median* of what chance produces, by a wide
+> margin. This is stated here, before the holdout, so that nothing downstream can be read as
+> rescuing it.
+
+Only 3 of 8 primaries have positive discovery expectancy at all, and the largest is under +0.10R.
+
+### 2.2 The three promoted, and their pre-registered directions
+
+Top 3 by discovery expectancy among the 8 primaries; all clear the ≥30-session floor.
+
+| # | candidate | disc exp | sessions | **PRE-REGISTERED DIRECTION** |
+|---|---|---|---|---|
+| 1 | `sw-precash-value-migration` | +0.097 | 90 | **LONG** when the 08:45–09:29 VPOC sits ≥15pt **above** the 08:00–08:44 VPOC; **SHORT** when ≥15pt below. Entry on the first retest of the later VPOC after 09:30. Expect **positive** holdout expectancy after costs. |
+| 2 | `sw-onx-reclaim` | +0.059 | 115 | **FADE** the swept overnight extreme: **SHORT** after the overnight HIGH is crossed and reclaimed, **LONG** after the LOW is. Expect **positive** holdout expectancy after costs. |
+| 3 | `sw-open-drive-pcr` | +0.033 | 75 | **CONTINUATION**: **LONG** when the 09:30 bar closes above the 08:00–09:29 range, **SHORT** when below. Expect **positive** holdout expectancy after costs. |
+
+**Holm correction across these 3.** One shot. No re-runs, no tweaks, no substitutions.
+
+### 2.3 Kill conditions already triggered IN DISCOVERY — recorded before the holdout
+
+**`sw-gap-nopart` is DEAD by its own pre-registered kill condition.** Its generator declared:
+*"the same test with the gate INVERTED produces an equal or better discovery expectancy"* would
+prove the participation gate does nothing. Measured: gate **−0.115R**, gate inverted **+0.031R**.
+**The inverted arm is better.** The low-participation gate is not merely inert, it is pointing the
+wrong way. The candidate is not promoted and would not be promoted on any holdout result.
+
+**`sw-precash-value-migration` beats its mandatory price-only control, but weakly**: VPOC arm
++0.097 vs price-only control +0.039. The generator pre-registered that *"the flow claim is only
+supported if the VPOC arm beats the price arm"*. It does, nominally. Both sit deep inside the
+noise envelope, so the comparison decides nothing on its own.
+
+**`sw-0830-secondleg` is the worst primary in the sweep** (−0.296R, t_clus −1.40) and its
+canonical-only consistency arm agrees in sign (−0.209R, n=17), so the tape gate is not the
+problem — the mechanism is.
+
+**Both Lens C candidates are negative**, and their canonical-only arms are negative too. The
+08:30-release second-leg thesis and the cash-open-backlog thesis both fail in discovery.
 
 ---
 
