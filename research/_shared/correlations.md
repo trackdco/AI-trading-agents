@@ -24,7 +24,12 @@ or directional persistence.
 *Why it is worth running first:* the clock times are declared by the framework in advance,
 so testing them is not circular; it needs no strategy and no outcome selection; and it
 underpins every ICT-derived candidate, not just this card.
-*Caveat:* `ash-unicorn-sb` itself does **not** require the macro windows `[@ 01:26]`, so a
+*Caveat (⚠️ SUPERSEDED 2026-08-07):* this said `ash-unicorn-sb` does **not** require the macro
+windows `[@ 01:26]`. **That citation was formally superseded in card rev d** — the macro is a
+MANDATORY gate: *"Even if it's 1 minute outside, you should not take that trade"*
+`[qngA8aIfV0M @ 03:48]`. The H1 logged below (macro-window behaviour vs rest-of-session) was
+never run. Original text kept for the record: `ash-unicorn-sb` itself does not require the
+macro windows, so a
 null here would not falsify this card — it would falsify the channel's marketing framing.
 
 — added by ash10hazard-analyst, 2026-08-05

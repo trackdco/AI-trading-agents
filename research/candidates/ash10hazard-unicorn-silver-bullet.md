@@ -593,7 +593,11 @@ The extra 15 minutes fall in a period **he explicitly does not name as a macro.*
 present in one and not the other. The wider window is purely additive, and everything it adds
 loses money.
 
-### The 10 extension trades — 1 win, 2 BE, 7 losses
+### The 8 extension trades — 1 win, 2 BE, 5 losses
+
+*(Corrected 2026-08-07. This table previously listed **10** trades against a summary that said 8;
+two rows — 2025-07-31 and 2026-05-27 — were pre-sweep-gate-fix survivors that no longer exist.
+The significance line below was also computed on the stale n **and** the stale pre-fix base rate.)*
 
 | date | time | dir | risk | R |
 |---|---|---|---|---|
@@ -601,18 +605,20 @@ loses money.
 | 2025-02-06 | 10:24 | long | 21.50 | −1.0 |
 | 2025-03-03 | 10:29 | short | 48.75 | 0.0 |
 | 2025-04-02 | 10:20 | short | 42.75 | −1.0 |
-| 2025-07-31 | 10:22 | long | 26.75 | −1.0 |
 | 2025-08-18 | 10:28 | long | 17.50 | −1.0 |
 | **2025-12-31** | **10:23** | **short** | **15.75** | **+2.0** |
 | 2026-04-24 | 10:26 | long | 34.25 | −1.0 |
 | 2026-05-21 | 10:30 | short | 74.50 | 0.0 |
-| 2026-05-27 | 10:22 | long | 40.00 | −1.0 |
 
-Negative in **both** eras (2025: 7 trades, −3.0R · 2026: 3 trades, −2.0R).
+Negative in **both** eras (2025: 6 trades, -2.0R · 2026: 2 trades, -1.0R).
 
-**Significance, stated conservatively:** 1 win in 10 against the core's 40.5% base rate is
-one-sided p = **0.0432**. This was **one pre-named slice, not a search** — the extension window was
-specified before the run. But **n = 10 cannot carry much**, and the result should be read as
+**Significance, stated conservatively:** 1 win in 8 against the core's **50.0%** post-fix base
+rate is one-sided p = **0.0352**. Note the direction of the correction: the stale line reported
+**0.0432** on a stale n=10 and a stale 40.5% base rate, so the corrected figure is *slightly
+stronger*, not weaker. It is still only a **nominal** p — no correction is applied for the other
+arms this programme has spent, and it is evidence **against** the extension, which is the
+direction already claimed. This was **one pre-named slice, not a search**. But **n = 8 cannot
+carry much**, and the result should be read as
 *"widening does not help"*, which it establishes, rather than *"10:15–10:45 is provably bad"*,
 which it does not.
 

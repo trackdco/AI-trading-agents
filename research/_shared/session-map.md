@@ -43,7 +43,7 @@ Both are scored on the **identical locked exit** (2R target, break-even at 1R, n
 stop-first on a same-bar conflict, 16:00 ET cap, costs separate) and the **identical flow
 definitions**, so the logs concatenate without a rename. See `EXIT-CONVENTION-LOCKED.md`.
 
-**Two things to know before treating 131 as one sample:**
+**Two things to know before treating 134 as one sample:**
 
 - **The windows only partly overlap.** `ash-unicorn-sb` runs 09:45–10:15; `zxck-10am-keyopen`
   runs 10:00–10:15. The shared 15 minutes are the honest intersection, but roughly the first half

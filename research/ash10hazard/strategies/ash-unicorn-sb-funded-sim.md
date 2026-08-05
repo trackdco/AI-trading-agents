@@ -119,9 +119,19 @@ completeness. The forward protocol is the only thing that can answer that questi
 3. **Fills are assumed at the stop and target prices**, per the raw-baseline assumptions
    A1–A9. Slippage beyond the 1-tick allowance in the cost figure is not modelled, and gap
    risk through a stop is not modelled.
-4. **F2 is knowable at entry** — it reads only minutes at or before the entry bar, with
+4. ~~**F2 is knowable at entry** — it reads only minutes at or before the entry bar, with
    runtime asserts in `scripts/ash_orderflow_test.py`. The 1.5× decision is implementable in
-   real time; that part is not hindsight.
+   real time; that part is not hindsight.~~
+   ### 🔴 RETRACTED 2026-08-07 — THIS ASSUMPTION IS FALSE.
+   The look-ahead audit (`research/_shared/f2-h1-oos-test.md`) established the opposite. The
+   runtime asserts answer the *weaker* question — "does it read a bar after the entry bar?" (no) —
+   while the operative question is whether it reads data that existed **at the entry instant**.
+   It does not: the retracement window ends at and *includes* the entry minute, footprint data is
+   minute-aggregated, and the entry is an intrabar limit fill, so F2 carries up to 59 seconds of
+   post-fill tape. **The 1.5× decision is therefore NOT implementable in real time.**
+   **Everything in this document that depends on the A/B arm split rests on a feature now known
+   not to be pre-entry, and must be read as unproven.** The superseded banner at the top of this
+   file covers only the n 37→24 sweep-gate fix; this is a second, independent defect.
 5. **The ES leading trigger is still absent**, as in every number in this programme.
 
 **No trial recorded. Sealed 2023/24 untouched.**
