@@ -142,3 +142,30 @@ sleeve verdict meanwhile. Arms: 6 this trial (family 17).
 SLEEVE VERDICT: **PASSED to book stage** — era-clean, tournament-clean,
 PSR 0.994, low canon correlation. Ship decision belongs to the book
 grading + Angus.
+
+### Trial 9 — MANDATORY LOSER AUTOPSY + MFE/MAE (2026-08-05, §3.2 — run late, flagged by Angus)
+PROCESS NOTE: this stage was skipped in the tournament→grading rush and
+run only after Angus asked — the omission itself is the finding for the
+process record. Results (356 trades; autopsy parquet committed):
+1. MFE/MAE: winners' median MAE **0.18R** (barely breathe) vs losers'
+   median MFE **0.84R** — 76% of losers were ≥0.5R favorable before dying.
+   DECLARED (not applied): BE@0.5R and partial@0.75R arms for future
+   holdout adjudication. Precedent caution: the C1-BE arm was already
+   PBO-inseparable, and inventory's MAE-derived A1 was PBO-refused — the
+   MFE hint often fails adjudication in mean-reversion trades.
+2. Candle features: winners ≈ losers on IB size (102/104) and side
+   (54%/55% short) — indistinguishable, as every autopsy so far. Touch
+   clock mild (winners 66% early vs 54%).
+3. FLOW-AT-ENTRY (105 flow-span events): does NOT discriminate — tape-with
+   PF 1.69 vs tape-against PF 1.61, both positive; absorption flag n=4.
+   The edge is STRUCTURAL, not flow-gated; no gate is supported and none
+   is added. (The law requires the check, not a gate.)
+4. 2024 AUTOPSY: the compressed-IB hypothesis is FALSE — 2024's small-IB
+   trades were PROFITABLE (PF 1.43); the losses came from mid/large IBs,
+   and 2024 losers' MFE shape matches other years. No declared feature
+   explains 2024. VERDICT: environmental hole, PRICED not cut (inventory
+   H2-2025 precedent). The small-IB cut is ILLEGAL anyway (positive in
+   23/24/26, negative only 2025 — fails every-era).
+AUTOPSY VERDICT: no spec change, no cuts, no gate; 2024 stays on the label
+as a priced environmental hole. Ship decision unchanged in substance,
+now §3.2-complete. Arms: 2 declared-not-run (family 19).

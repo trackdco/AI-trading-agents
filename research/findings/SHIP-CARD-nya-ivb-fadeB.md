@@ -1,7 +1,7 @@
 ---
 date: 2026-08-05
 kind: pre-ship statistical breakdown (Angus's request)
-status: SHIP DECISION PENDING — 2024 warning label attached
+status: SHIP DECISION PENDING — 2024 warning label attached; §3.2 autopsy COMPLETE (no spec change)
 tags: [ny-am, ivb-fade, ship-card]
 ---
 
@@ -69,6 +69,19 @@ year in four, depth unknown.
 - Book grading: passed (P(bust) 0.5%, corr matrix max 0.084).
 - Ledger-DSR: 0.000 under the known-inflated denominator (Brake fix
   pending) — recorded, not decision-driving per §5.9.5.
+
+## §3.2 loser autopsy + MFE/MAE (complete, run 2026-08-05 after Angus flagged)
+
+- Winners' median adverse excursion 0.18R (they barely breathe); losers get
+  0.84R favorable before dying (76% see >=0.5R). BE@0.5R and partial@0.75R
+  declared as future arms for holdout adjudication — NOT applied (BE-family
+  arms have twice failed adjudication in mean-reversion trades here).
+- Winners and losers indistinguishable on IB size and side; flow-at-entry
+  does NOT discriminate (both cohorts PF 1.6+) — the edge is structural; no
+  flow gate supported, none added.
+- 2024 autopsy: compressed-IB hypothesis FALSE (2024's small-IB trades were
+  profitable); no declared feature explains the year. Verdict: environmental
+  hole, PRICED not cut — same class as the inventory fade's H2-2025.
 
 ## Remaining before live (the ladder)
 
