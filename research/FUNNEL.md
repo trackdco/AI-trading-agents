@@ -129,10 +129,16 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - FIRST SPLITS: PM window PF 1.56 (permnull p=0.030) but 2025 flips to
   0.32 — evidence not gate. Deep-penetration raids negative ALL 4 years —
   every-era-bad cut candidate for L1 (canon wall-cut precedent).
-- NEXT: SFP close strength, level age, distance-from-open, gap context,
-  flow-at-raid (flow span), depth-at-level (morning overlap) → L1.
-- CANON SHAPE: raw-negative start is lawful; needs a variable that lifts
-  like depth did for canon. Watch the decay.
+- TRIAL 2 — THE VARIABLE IS GAP CONTEXT: raids against a >20pt overnight
+  gap are negative ALL FOUR YEARS (PF 0.68, n=227) — legal cut. L1b (cut
+  gap-against + deep-pen): n=117, WR 46%, +$3,556, PF 1.89, EVERY YEAR
+  POSITIVE (1.76/2.47/1.54/1.63), permnull p=0.008, ~0.69/wk. 2026 cell
+  n=7 thin — flagged. The trial-1 decay lives in the gap-against cohort.
+- NEXT: flow-at-raid (flow span) + depth-at-level, strict costs, §3.2
+  autopsy + MFE/MAE + time segments, exit/stop arms under §6.0,
+  redundancy vs Brake's sweep-reclaim → then grading.
+- CANON SHAPE: raw 0.90 → legal cuts → 1.89 era-consistent — the textbook
+  arc, second family to show it.
 
 ## QUEUE (cards open at census)
 - INTAKE ROUND 2 (2026-08-05, specs in research/transcripts/*/SPEC-as-taught.md,
