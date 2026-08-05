@@ -101,6 +101,19 @@ threshold values, not missing rules.
 - *Answerable from method?* **This one I can just measure** — it's a base rate on data we hold and
   costs no selection budget. I'd run it before anything else, unless you'd rather I didn't.
 
+### ⬛ SELF-RESOLVED 2026-08-07 — Q6, Q7, Q8, Q9 ALL closed
+Full evidence: `SELF-RESOLVED-2026-08-07.md`. **This card has no open questions left.**
+- **Q6 → manipulation wick >=10pt acceptable, >=15pt good, <=8pt not.** Four labelled examples:
+  2pt *"No"* `[5pL41Pl7GM4 @ 01:58]`; 8pt *"gray area"* `[@ 09:26]`; 10pt *"you can clearly see
+  that's a wick"* `[@ 10:10]`; 15pt *"Yes"* `[@ 05:50]` `[inferred]`
+  ⚠️ **ASSUMPTION: fixed 10pt floor, NOT ATR-scaled.** He never addresses scaling. An ATR version
+  would be OUR rule.
+- **Q7 → RETEST**: manipulate through -> move away -> return `[tNyT7tHOmGI @ 15:56]` `[stated]`
+- **Q8 → fib is a BONUS**, the 10:00 framework is the only requirement `[tNyT7tHOmGI @ 16:19]` `[stated]`
+- **Q9 → 10:00 ET IS a 4H open** on an 18:00-ET (CME session) grid: 18/22/02/06/**10**/14. A
+  midnight grid gives 00/04/08/12/16/20 and would not. He names 18:00 as a key open too
+  `[38YtF6xFX4o @ 00:00]` `[inferred, arithmetically self-consistent]`
+
 ### 4 · VERDICT — **PARTIAL**
 
 The best-specified model in the corpus and the closest competitor to `ash-unicorn-sb`. All seven

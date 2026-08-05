@@ -75,6 +75,18 @@ parties.** Third-party statements are never folded into his rules.
 > relative equal highs… this would actually have needed to sweep that liquidity for me to even
 > consider taking this."* `[pMv3USznFdU @ 05:04]`
 
+### B0 · AMD is the SHAPE of this gate, not a separate model — `[stated]`
+> *"Watch either engineered liquidity or the AMD. **They are pretty much the same thing.**"*
+> `[D-suu0f3XKI @ 02:17]`; *"Those are kind of the same concept."* `[-izOcim8KRQ @ 01:38]`
+
+**Accumulation** (a range) → **manipulation** (a sweep of the range extreme against bias) →
+**distribution** (delivery in the bias direction) `[EaxfhUS4eNg @ 00:46, 02:22, 03:57]`. This is
+the shape every zxck- setup makes; `zxck-amd-pdarray` was withdrawn as a card on 2026-08-07
+because carding it separately would double-count the same trades.
+
+⚠️ **The range itself is never defined** — he draws boxes by eye. That gap blocks
+`zxck-mmxm-breaker` (Q22) but no longer blocks anything else.
+
 ### B3 · The gate licenses a blind limit — `[stated]`
 > *"entering straight at the level pretty much only is valid if you have this engineered
 > liquidity."* `[BOuJLWIisMI @ 01:30]`

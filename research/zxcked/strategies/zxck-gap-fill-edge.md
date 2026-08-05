@@ -74,6 +74,19 @@ this specific entry, so I would have to borrow both from his general risk framew
   the trial ledger, not just the card.
 - *Answerable from method?* **Yes.**
 
+### ⬛ SELF-RESOLVED 2026-08-07 — Q14, Q15, Q16 ALL closed
+Full evidence: `SELF-RESOLVED-2026-08-07.md`. **This card has no open questions left.**
+- **Q16 → it is a LEVEL TYPE inside the wick-CE setup**, not an independent model. Both traded
+  examples are 4H wick-CE trades with engineered liquidity below the CE `[86DOt135Wts @ 01:39, 02:04]` `[inferred]`
+- **Q14 → stop is consequential on Q16: beyond the wick, per `zxck-wick-ce`.** `[inferred]`
+  **Assumption stated:** the gap-fill entry inherits the wick-CE stop rather than having its own.
+- **Q15 → the far edge must be reached**, within his ~1pt tolerance `[86DOt135Wts @ 02:26]`,
+  `[y7KMT9CIVMo @ 03:32]` `[stated]`
+
+**Card retained** despite being a variant, because far-edge-vs-near-edge is the exact A/B against
+`ash-unicorn-sb`. **Recorded as a VARIANT, not an independent trial** — it must not be counted
+twice in the ledger.
+
 ### 4 · VERDICT — **PARTIAL**
 
 The entry is precisely stated and it is the **cleanest head-to-head against `ash-unicorn-sb`** we

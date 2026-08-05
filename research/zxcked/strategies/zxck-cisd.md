@@ -79,6 +79,17 @@ CISD also **inverses a fair value gap**.
   bucket this card belongs in.
 - *Answerable from method?* **Yes.**
 
+### ⬛ SELF-RESOLVED 2026-08-07 — Q17, Q18, Q19 ALL closed
+Full evidence: `SELF-RESOLVED-2026-08-07.md`. **This card has no open questions left.**
+- **Q17 → BOTH**, explicitly: *"it can be a strategy in and of itself. You can just trade this"*
+  `[0u1L00q77bw @ 05:53]`. Standalone on D/4H/1H, trigger on 1m. **Carded as two variants, never
+  averaged together.** `[stated]`
+- **Q18 → the IMMEDIATELY ADJACENT opposing candle** — *"the next candle after this one"*
+  `[0u1L00q77bw @ 02:16, 02:41]` `[stated]`
+- **Q19 → FVG inversion is a BONUS** — *"if you want more confluence"* `[@ 10:11]` `[stated]`
+  ⚠️ **Consequence: `zxck-cisd` does NOT pool with `ash-unicorn-sb` as a gap entry.** Only the
+  `zxck-cisd-inversion` sub-case does.
+
 ### 4 · VERDICT — **PARTIAL**
 
 The pattern definition is the **most precise in the corpus** — an exact two-step on a named price.

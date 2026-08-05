@@ -85,6 +85,15 @@ side" read and I do not know how the two rules interact.
 - *Answerable from method?* **Yes** — and if there's no rule, I'll record that as a known bias in
   the backtest rather than invent a chop filter.
 
+### ⬛ SELF-RESOLVED 2026-08-07 — Q21 closed
+Full evidence: `SELF-RESOLVED-2026-08-07.md`.
+- **Q21 → the sub-minute trigger is OPTIONAL and the trigger is open-ended**: *"you can use the
+  30-second or even the 15-second, whatever you feel like doing"* `[c15YLeAKc2A @ 02:24]`;
+  *"you can use inverse fair value gaps whatever you want"* `[@ 03:11]` `[stated]`
+  **The card is NOT blocked on our 1-minute data.**
+
+**Still open: Q20 (the CPI conflict).**
+
 ### 4 · VERDICT — **PARTIAL**
 
 Unusually complete for this corpus — bias, entry, stop and target are all [stated] with numbers,

@@ -77,6 +77,16 @@ what one is.
   trade, the card should be `zxck-breaker-entry` with MMXM as a filter — a different object.
 - *Answerable from method?* **Yes.**
 
+### ⬛ SELF-RESOLVED 2026-08-07 — Q23 closed elsewhere; Q22 still blocks THIS card only
+Full evidence: `SELF-RESOLVED-2026-08-07.md`.
+- Q23 resolved AMD away as a description of engineered liquidity `[D-suu0f3XKI @ 02:17]`, which
+  **withdrew `zxck-amd-pdarray` as a card**. Q22 (what is a consolidation) therefore now blocks
+  **only this card**.
+- Q-G2 and Q-G3 were folded into Q22's dependency: with the model itself undefined, the breaker
+  count and the midnight-open bonus cannot be settled independently.
+
+**Still INSUFFICIENT: Q22 is the sole blocker and it is the model's identification step.**
+
 ### 4 · VERDICT — **INSUFFICIENT**
 
 The breaker trigger is well specified and testable in isolation. The **model that gates it is

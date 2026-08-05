@@ -9,10 +9,29 @@ GAP_ENTRY: PARTIAL — the PD array entered is often an FVG or order-block 50%
 NY_SESSION: YES
 sources: [EaxfhUS4eNg, -izOcim8KRQ, D-suu0f3XKI]
 components: zxck-COMPONENTS.md
-verdict: INSUFFICIENT
+verdict: WITHDRAWN — folded into zxck-COMPONENTS.md §B
 ---
 
-# `zxck-amd-pdarray` — accumulation / manipulation / distribution
+# `zxck-amd-pdarray` — WITHDRAWN as a card
+
+> ## ⬛ WITHDRAWN 2026-08-07 — Q23 self-resolved
+> **AMD is his name for the engineered-liquidity mechanism, not a separate model.** Stated twice,
+> independently:
+> > *"Watch either engineered liquidity or the AMD. **They are pretty much the same thing.**"*
+> > `[D-suu0f3XKI @ 02:17]`
+> > *"combine it with the AMD video or engineered liquidity. **Those are kind of the same
+> > concept.**"* `[-izOcim8KRQ @ 01:38]`
+>
+> Folded into `zxck-COMPONENTS.md` §B as the shape description of the gate. **Carding it
+> separately would have double-counted the same trades in the trial ledger** — the failure §6.0
+> exists to prevent. Q22 (what is a consolidation) therefore no longer blocks anything here; it
+> blocks only `zxck-mmxm-breaker`.
+>
+> The analysis below is retained for provenance. **It is not a live card.**
+
+---
+
+# `zxck-amd-pdarray` — accumulation / manipulation / distribution (retained, not live)
 
 ## Confirmation
 

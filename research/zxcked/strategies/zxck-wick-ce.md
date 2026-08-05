@@ -106,6 +106,17 @@ structure. Two losses and I am done for the day.
   his card without your say-so.
 - *Answerable from method?* **Yes.**
 
+### ⬛ SELF-RESOLVED 2026-08-07 — Q1, Q2, Q4, Q5 closed from the transcripts
+Full evidence: `SELF-RESOLVED-2026-08-07.md`.
+- **Q1 → entry defaults to the START of the wick**; CE only when that stop would exceed ~20pt
+  `[6opmiyFvJBA @ 08:40]`, `[tNyT7tHOmGI @ 06:09, 16:41]` `[inferred]`
+- **Q2 → sweep + directional close is MANDATORY**; the PD array is the upgrade `[a3LzCUZU5ko @ 02:24-03:34]` `[stated]`
+- **Q4 → displacement is a TELL, not a gate** — it tells you *where* to enter inside the block `[pMv3USznFdU @ 07:24]` `[stated]`
+- **Q5 → draw already taken KILLS the setup and flips bias** `[38YtF6xFX4o @ 06:08]` `[stated]` — Powell's own words, so the third-party version is corroborated and usable
+- **NEW stop band** `[5pL41Pl7GM4 @ 06:55, 10:59, 14:31, 16:42]`: prefer **5-7pt**, accept **<20pt**, reject **25pt+** `[stated]`
+
+**Still open: Q3 only.**
+
 ### 4 · VERDICT — **PARTIAL**
 
 Tradeable today. Every one of the seven parts is [stated] or cleanly [inferred] — but **Q-A1 and

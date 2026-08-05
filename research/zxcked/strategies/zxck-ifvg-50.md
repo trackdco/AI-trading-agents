@@ -84,6 +84,13 @@ to take it and when not to**: he gives no bias requirement, no target rule, and 
   alone could change event count several-fold.
 - *Answerable from method?* **Yes**, or re-watch `BOuJLWIisMI @ 04:16–05:03`.
 
+### ⬛ SELF-RESOLVED 2026-08-07 — Q12, Q13 closed; Q10 and Q11 still block
+Full evidence: `SELF-RESOLVED-2026-08-07.md`.
+- **Q12 → the standalone 5m/15m version IS real and separate** from the 1m/3m trigger `[lRgsHGWzO9E @ 07:44]` vs `[r5_yNjXsv6k @ 02:20]` `[stated]`
+- **Q13 → inversion requires a CLOSE beyond the gap**, not a wick-through `[BOuJLWIisMI @ 04:39]` `[stated]`
+
+**Still INSUFFICIENT: Q10 (bias) and Q11 (target) are both core and both unanswered.**
+
 ### 4 · VERDICT — **INSUFFICIENT**
 
 **Bias and targets are both [gap], and Q-C2 decides whether this is a strategy or an
