@@ -218,3 +218,56 @@ convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.
 
 ### 2026-08-07 rev c — Brake's close-out answers
 Prior revisions retained above, not overwritten.
+
+
+---
+
+## RAW BASELINE — 2026-08-07: **n=186, −0.616R expectancy. The worst result in the programme.**
+
+`scripts/zxck_remaining_baselines.py` · `zxck-remaining-raw-trades.csv`
+
+### Gate
+266 sessions → **4,523** 5m/15m FVGs → **1,960** inverted by a close → **836** draw-aligned →
+**186** filled. One trade per day, max verified.
+
+### Result
+| | | | era | n | WR | total |
+|---|---|---|---|---|---|---|
+| n | **186** | | 2025 | 95 | 20.0% | **−31.0R** |
+| win / BE / loss | **20 / 4 / 76** | | 2026 | 91 | 19.8% | **−37.0R** |
+| avg R | −0.366 |
+| **cost** | **0.250R/trade** |
+| **expectancy** | **−0.616R net** |
+| total | **−68.0R** · maxDD **68.0R** |
+| t / effect | **−4.165** / **−0.3054** |
+
+**Negative in both eras, on the largest sample in the programme.** t = −4.165 is not noise —
+this loses money reliably.
+
+### The reason, and it is not the concept — it is his stop
+
+**His stated 5-point stop is smaller than 99% of individual 1-minute bars in this window.**
+
+| NQ 1-min bar range, 09:45–10:15 | |
+|---|---|
+| p25 | 14.2 pt |
+| **median** | **21.0 pt** |
+| p75 | 30.5 pt |
+| p90 | 42.5 pt |
+
+A 5pt stop sits *inside single-bar noise*. It also makes costs **0.250R/trade** — a quarter of
+every R lost to commission and slippage before the market does anything. Gross is −0.366R, so the
+cost is not the whole story, but the two compound.
+
+**The stop was NOT tuned.** 5 points is his number `[lRgsHGWzO9E @ 07:44]` and it stays.
+
+### What this does and does not say
+It says: **as literally specified, on NQ, in this window, this loses badly.** It does not say the
+inverse-FVG 50% is worthless on a timeframe or instrument where 5 points is not noise — he never
+names either, and that gap is on the card.
+
+⚠️ **The bias gate is `[stated-by-user]`, not his** — Brake supplied it. Without it the card was
+Insufficient; with it the card is testable and fails.
+
+### Revision log
+- **2026-08-07 rev d** — raw baseline, n=186, −0.616R. Negative both eras, t = −4.165.

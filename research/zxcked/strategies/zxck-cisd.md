@@ -140,3 +140,44 @@ Also step 5 of his daily checklist `[C6VSpegON80 @ 01:38]`.
 Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
 the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
 convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.
+
+
+---
+
+## RAW BASELINE — 2026-08-07: **n=40, +0.044R — the only zxck card not negative**
+
+`scripts/zxck_remaining_baselines.py` · `zxck-remaining-raw-trades.csv`
+
+### Gate
+266 sessions → **84** with a 1-hour CISD → **40** filled (6 skipped: the draw was taken before the
+entry, per C5 `[0u1L00q77bw @ 04:39]`).
+
+### Result
+| | | | era | n | WR | total |
+|---|---|---|---|---|---|---|
+| n | **40** | | 2025 | 26 | 23.1% | +1.73R |
+| win / BE / loss | **22 / 22 / 45** (+4 timeouts) | | 2026 | 14 | 21.4% | +0.98R |
+| avg R | +0.068 |
+| cost | 0.024R/trade |
+| **expectancy** | **+0.044R net** |
+| total | **+2.70R** · maxDD **4.45R** |
+| **t / effect** | **+0.351** / **+0.0555** |
+
+### Read this before treating it as a positive
+
+**t = +0.351.** That is indistinguishable from zero. The outcome mix is **22 / 22 / 45** against a
+random-walk null of **25 / 25 / 50** — it *is* the null. The +2.70R total comes almost entirely
+from 4 timeout trades exiting at fractional R, not from the setup selecting direction.
+
+Against the deflation bar at **+0.6978**, an effect of **+0.0555** is not in the conversation.
+
+**"Not negative" is the honest description. "Works" is not.**
+
+### Assumption carried
+**C2 timeframe is OURS by selection** — he names daily, 4H and 1H as *"the most powerful and the
+most consistent"* `[rzfgAEYhxCg @ 00:47]`; daily and 4H produce too few levels inside a 30-minute
+window, so 1H was taken from among his three. And **C4 stop is `[inferred]`** structural, since his
+only statement is *"either a five or a three, I don't remember"* `[0u1L00q77bw @ 06:38]`.
+
+### Revision log
+- **2026-08-07 rev d** — raw baseline, n=40, +0.044R expectancy, t=+0.351. Statistically zero.
