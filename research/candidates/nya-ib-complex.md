@@ -552,3 +552,20 @@ DESIGN:
   position when >1 open). MAX_TURNS_DAY=600 is a runaway ceiling, not
   a budget. Passive-agent==B0 re-validated at minute cadence before
   relaunch.
+- FINAL LAUNCH CALIBRATION [ANGUS, three rulings pre-launch]:
+  (1) HYBRID CADENCE — full minute-by-minute WHILE HOLDING (the part
+  the live desk will query); 5-minute pulse + every signal minute
+  while flat in 08:00-10:30 ("that shit will take way too long"
+  otherwise; in-trade record stays complete).
+  (2) MONTH-PARALLEL — days within a calendar month run concurrently
+  (6 workers), journal chains month-to-month. His words: "might not be
+  exactly what a live agent moving on day to day might look like, but
+  its the closest we can get while still being quick."
+  (3) MODEL — desk turns run on Sonnet (his usage call). Recorded for
+  basis-stamping: any future comparison of this archive against a
+  different-model desk must note the model changed.
+  KNOWLEDGE BASE confirmed with him: both rulebooks in full + holdout
+  performance (shelf OOF 65%/+0.65R; canon = certified live core), NO
+  fit-span diagnostics, no outcome hindsight. Full discretion on
+  participation, management, conflicts. Mirrors the live seat: rulebooks
+  + holdout record + (this archive, once it exists).

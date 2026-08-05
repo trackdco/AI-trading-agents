@@ -50,13 +50,17 @@ SPEC = ROOT / ".claude/agents/live-desk-v1.md"
 RUNS = ROOT / "runs/live_desk1"
 TICK, SLIP, PV, COMMISSION, SFR = 0.25, 1, 20.0, 5.0, 1.0
 SHELF_TIER = {"CONFIRMED": 300.0, "BASE": 200.0}
-# MINUTE CADENCE (Angus: "on a live trading desk, it should be making llm calls
-# every minute. intraday adaptation... as if i were to sit in front of a chart").
-# The desk is AT THE CHART every minute of 08:00-10:30 (the only window either
-# engine can enter) and every minute it holds a position after that. Flat after
-# 10:30 = off the desk. MAX_TURNS_DAY is a runaway safety ceiling, not a budget.
+# CADENCE (Angus, two rulings): minute-by-minute intraday adaptation WHERE THE
+# MONEY IS — one call EVERY MINUTE a position is open; while flat in the entry
+# window (08:00-10:30, the only window either engine can enter) a 5-minute pulse
+# plus every signal minute; flat after 10:30 = off the desk. PARALLELISM: days
+# within a calendar month run concurrently, the journal chains month-to-month
+# ("closest we can get while still being quick" — his call, on the record).
+# MAX_TURNS_DAY is a runaway safety ceiling, not a budget.
 MAX_TURNS_DAY = 600
 CLI_TIMEOUT = 240
+WORKERS = 6
+MODEL = "sonnet"        # Angus: the desk runs on Sonnet — don't burn the plan
 
 DEPTH_DIRS = ["data/reference/depth_2025", "data/reference/depth_2026",
               "data/reference/depth_apr2026", "data/reference/depth_2023_24"]
@@ -77,7 +81,7 @@ TURN_CONTRACT = (
 # ------------------------------------------------------------------ CLI conversation
 
 def call_claude(prompt: str, session: str | None) -> tuple[str, str | None]:
-    cmd = ["claude", "-p", "--system-prompt-file", str(SPEC),
+    cmd = ["claude", "-p", "--model", MODEL, "--system-prompt-file", str(SPEC),
            "--disallowedTools", "*", "--output-format", "json"]
     if session:
         cmd += ["--resume", session]
@@ -162,7 +166,8 @@ def journal_rows() -> list[dict]:
     f = RUNS / "journal.jsonl"
     if not f.exists():
         return []
-    return [json.loads(x) for x in f.read_text().splitlines() if x.strip()]
+    rows = [json.loads(x) for x in f.read_text().splitlines() if x.strip()]
+    return sorted(rows, key=lambda r: r["day"])   # parallel writes land out of order
 
 
 def journal_digest(rows: list[dict]) -> str:
@@ -615,7 +620,8 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
             fav = r_of(p, float(bar.high) if p["s"] > 0 else float(bar.low))
             p["peak_r"] = max(p["peak_r"], fav)
         hhmm = minute.strftime("%H:%M")
-        at_chart = ("08:00" <= hhmm <= "10:30") or bool(book)
+        at_chart = bool(book) or (("08:00" <= hhmm <= "10:30")
+                                  and minute.minute % 5 == 0)
         if at_chart and last_turn_min != minute and turns < MAX_TURNS_DAY:
             fresh = next((p for p in book if p["turns"] == 0), None)
             focus = fresh or (book[0] if len(book) == 1 else None)
@@ -668,31 +674,46 @@ def main() -> None:
                   f"passes {sum(len(r['passes']) for r in rows)}")
         return
     days = build_signals()
-    sel = sorted(days)
+    sel = [d for d in sorted(days) if d not in done]
     if a.demo_day:
         sel = [a.demo_day]
     bars = load_bars_ny()
     tape = pd.read_parquet(ROOT / "output/fp_minutes.parquet").sort_index()
     dcache: dict = {}
-    print(f"live-sim desk: {len(sel)} days, "
-          f"{sum(len(days[d]) for d in sel)} signals", flush=True)
-    for d in sel:
-        if d in done:
-            continue
+    print(f"live-sim desk: {len(sel)} days, {sum(len(days[d]) for d in sel)} "
+          f"signals | {WORKERS} workers, month-parallel, journal chains monthly",
+          flush=True)
+
+    def one(d, journal):
         t0 = pd.Timestamp(f"{d} 00:00", tz=NY)
-        tape_day = tape.loc[t0:t0 + pd.Timedelta(hours=24)]
-        row, tr = run_day(d, days[d], bars, tape_day, load_depth(d, dcache),
-                          journal_rows())
-        (RUNS / "transcripts" / f"{d}.json").write_text(json.dumps({"turns": tr},
-                                                                   indent=1))
-        with (RUNS / "journal.jsonl").open("a") as f:
-            f.write(json.dumps(row) + "\n")
-        done.add(d)
-        st.write_text(json.dumps({"done": sorted(done)}))
-        print(f"  {d}: you ${row['agent_dollars']:+,.0f} vs B0 "
-              f"${row['b0_dollars']:+,.0f} vs B1 ${row['b1_dollars']:+,.0f} "
-              f"({row['n_signals']} signals, {len(row['passes'])} passes, "
-              f"{row['turns']} turns)", flush=True)
+        return d, run_day(d, days[d], bars, tape.loc[t0:t0 + pd.Timedelta(hours=24)],
+                          dcache.get(d), journal)
+
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    for mo in sorted({d[:7] for d in sel}):
+        batch = [d for d in sel if d[:7] == mo]
+        for d in batch:                       # depth pre-loaded serially; workers read only
+            dcache[d] = load_depth(d, {})
+        journal = journal_rows()              # frozen at month start (month-chained memory)
+        print(f"== {mo}: {len(batch)} days | journal {len(journal)} days", flush=True)
+        with ThreadPoolExecutor(max_workers=WORKERS) as ex:
+            futs = [ex.submit(one, d, journal) for d in batch]
+            for fut in as_completed(futs):
+                try:
+                    d, (row, tr) = fut.result()
+                except Exception as e:
+                    print(f"  DAY FAILED (will resume): {e}", flush=True)
+                    continue
+                (RUNS / "transcripts" / f"{d}.json").write_text(
+                    json.dumps({"turns": tr}, indent=1))
+                with (RUNS / "journal.jsonl").open("a") as f:
+                    f.write(json.dumps(row) + "\n")
+                done.add(d)
+                st.write_text(json.dumps({"done": sorted(done)}))
+                print(f"  {d}: you ${row['agent_dollars']:+,.0f} vs B0 "
+                      f"${row['b0_dollars']:+,.0f} vs B1 ${row['b1_dollars']:+,.0f} "
+                      f"({row['n_signals']} signals, {len(row['passes'])} passes, "
+                      f"{row['turns']} turns)", flush=True)
 
 
 if __name__ == "__main__":
