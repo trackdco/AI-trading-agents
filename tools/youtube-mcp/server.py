@@ -266,6 +266,64 @@ def _timedtext_fallback(video_id: str, languages: list[str]) -> list[tuple[float
     return out or None
 
 
+def _ytdlp_fallback(video_id: str, languages: list[str]) -> list[tuple[float, str]] | None:
+    """Third caption path, via yt-dlp's ANDROID player client.
+
+    This is the one that survives. When youtube-transcript-api and the web
+    innertube endpoint are both returning "Sign in to confirm you're not a bot",
+    the android client still serves caption tracks — it authenticates
+    differently and is not covered by the same block. Found the hard way after a
+    multi-hour throttle on a datacenter IP.
+    """
+    try:
+        import urllib.request
+
+        import yt_dlp
+    except ImportError:
+        return None
+
+    options = {
+        "skip_download": True,
+        "quiet": True,
+        "no_warnings": True,
+        "writeautomaticsub": True,
+        "extractor_args": {"youtube": {"player_client": ["android"]}},
+    }
+    try:
+        with yt_dlp.YoutubeDL(options) as ydl:
+            info = ydl.extract_info(
+                f"https://www.youtube.com/watch?v={video_id}", download=False
+            )
+    except Exception:  # noqa: BLE001 - any extractor failure means "try nothing else"
+        return None
+
+    tracks = {**(info.get("automatic_captions") or {}), **(info.get("subtitles") or {})}
+    if not tracks:
+        return None
+    # Manual subs win over auto-generated for the same language.
+    name = next(
+        (k for lang in languages for k in (lang, f"{lang}-orig") if k in tracks),
+        next((k for k in tracks if k.startswith(languages[0])), None),
+    )
+    if not name:
+        return None
+    json3 = next((f for f in tracks[name] if f.get("ext") == "json3"), None)
+    if not json3:
+        return None
+    try:
+        raw = urllib.request.urlopen(json3["url"], timeout=60).read().decode()
+        events = json.loads(raw).get("events", [])
+    except Exception:  # noqa: BLE001
+        return None
+
+    out: list[tuple[float, str]] = []
+    for event in events:
+        text = "".join(seg.get("utf8", "") for seg in event.get("segs", []) or []).strip()
+        if text:
+            out.append((event.get("tStartMs", 0) / 1000.0, text))
+    return out or None
+
+
 _BLOCKED = ("RequestBlocked", "IpBlocked", "TooManyRequests")
 
 
@@ -302,10 +360,12 @@ def _fetch_transcript(video_id: str, languages: list[str], refresh: bool) -> Cac
             if attempt < 2:
                 time.sleep(_THROTTLE_SECONDS * (4 ** (attempt + 1)))
 
-    # Fallback path: different endpoint, usually still alive when the first is
-    # throttled.
+    # Fallback chain, cheapest first. The yt-dlp/android path is the one that
+    # survives a hard IP throttle, so it is last but it is the workhorse.
     if snippets is None:
         snippets = _timedtext_fallback(video_id, languages)
+    if snippets is None:
+        snippets = _ytdlp_fallback(video_id, languages)
 
     if snippets is None:
         raise last_error or RuntimeError(f"No transcript available for {video_id}")
