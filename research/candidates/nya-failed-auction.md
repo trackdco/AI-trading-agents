@@ -76,3 +76,21 @@ on the full candle span (census trial 1) which is the family's structural
 anchor. Arms this trial: G1/G2/G3 x S1/S2/S3 + deep-combos = 9 (family
 count 13; all count in DSR). NEXT: exit-arm tournament on the leading
 cells, accept-branch conditioning, then grading.
+
+### Trial 4 — exit tournament under §6.0 (2026-08-05) — DEFAULT SPEC STANDS
+scripts/nya_fa_arms.py (arm matrix in output/nya_fa_arm_matrix.parquet).
+First tournament run under the declared promotion rule. Four arms on the
+G2-gated cohort (n=47): PF 1.46-1.63 on points, all within noise of each
+other — PBO on the arm choice = 0.50 (P(OOS loss) 0.96): the arms do NOT
+separate; no challenger displaces E1. DEFAULT SPEC STANDS by §6.0 without
+needing rank. SECOND FINDING (important): the G2-only cohort is
+dollar-NEGATIVE at fixed-risk sizing (~$-2.5k all arms) while trial 3's
+deep+G2 cell was dollar-positive — the DEPTH component carries the
+economics, not the exits; shallow events' tiny stops amplify losses under
+1/risk sizing. Confirms the default gate must include depth. Arms this
+trial: 3 new (E2/E3/E4; E1 = trial-3 cell). Family count 16, machine ledger
+updated. STATUS: fail-branch spec frozen as declared default (deep + G2 +
+S2 + min(POC, 0.5w) + TS 15:55); remaining before grading: accept-branch
+conditioning, canon correlation battery. Sealed-holdout note: the six
+sealed months HAVE footprint data — a declared look could add ~6mo of gated
+events; banked, Angus's call at grading time.
