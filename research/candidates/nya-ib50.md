@@ -53,3 +53,29 @@ CAVEATS: all fit-span optimization surface (§5.11-9a); cells searched;
 score-0-as-cut and the cvd-management overlay need the OOF adjudication
 (six sealed months, single look, written declaration) before any freeze.
 Remaining declared arms (2/3/4) still owed. Ledger row 232.
+
+### Trial 4 — winner-vs-loser diagnosis, fit span (2026-08-05, scripts/nya_ib50_diagnosis.py)
+ANGUS mandate: "there has to be something that distinguishes winners from
+losers... see if we can see losers before they happen."
+(A) STAT PACK: n=138, WR 52.2%, -435pts, $+278, PF 0.93, payoff 0.85
+(median win +68 / loss -86), mean risk 92.9pts, maxDD $1,831, streak 5.
+Halves: 25H1 0.43 (n=11) / 25H2 1.27 (+566) / 26H1 0.89 / 26H2 0.25 (n=7).
+(B) DISCRIMINANT TABLE (Welch t + rank AUC): AT ENTRY, near-nothing —
+risk 0.44 / frontrun 0.53 / weekday 0.53 / delta 0.51 / dz 0.51 /
+conviction 0.57 AUC. ONLY book imbalance separates (AUC 0.66, t +1.79,
+n=56 covered — the depth tease, best at-entry read). EARLY IN-TRADE,
+MASSIVE: r15 AUC 0.85, MFE15 0.85, MAE15 0.84, cvd15 0.81; already
+0.71-0.77 at t+5. The trade identifies itself within 5-15 minutes.
+CANON PROFILE REPRODUCED: entry = population, management = edge.
+(C) EARLY-CUT POLICY ARMS (causal, exit at t close; 6 declared):
+- cut t+5 if dying: cut-cohort baseline WR 6% (16 trades) -> $+1,295.
+- cut t+15 if dying OR cvd-against: cuts 50, cohort WR 32% -> $+1,590
+  (vs $+278 baseline, delta +$1,312 — 5.7x).
+- cut t+15 red AND cvd-against: $+1,575 on 32 cuts (cohort WR 19%).
+CAVEATS: fit-span searched cells (6 policies); freeze requires the
+remaining declared arms + OOF adjudication — and the OOF is LEGAL here:
+the sealed months' flow is unburned, so a flow-conditioned early-cut spec
+can be adjudicated there (single look, written declaration to Angus).
+PATH: the early-cut rule can be MECHANICAL spec (not agent discretion),
+making the mechanical baseline the managed walk — then agents must beat
+THAT (§5.11-8). Ledger row 233.
