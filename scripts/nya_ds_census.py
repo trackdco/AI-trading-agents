@@ -11,6 +11,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,7 +72,7 @@ def main() -> None:
             after = after[after.t < mark_t]
             tapped = (after.low <= lvl).any() if side > 0 else (after.high >= lvl).any()
             if not tapped:
-                levels.append(lvl)
+                levels.append((lvl, t_conf))
         if not levels:
             continue
         # raid + SFP in the windows, first signal only
@@ -79,18 +80,18 @@ def main() -> None:
         win = day_bars[day_bars.t.dt.strftime("%H:%M").isin(AM + PM)]
         sig = None
         for _, bar in win.iterrows():
-            for lvl in levels:
+            for lvl, t_conf in levels:
                 raided = bar.low < lvl if side > 0 else bar.high > lvl
                 confirmed = bar.close > lvl if side > 0 else bar.close < lvl
                 if raided and confirmed:
-                    sig = (bar, lvl)
+                    sig = (bar, lvl, t_conf)
                     break
             if sig:
                 break
         if sig is None:
             continue
         n_raid_days += 1
-        bar, lvl = sig
+        bar, lvl, t_conf = sig
         entry = bar.close
         stop = bar.low if side > 0 else bar.high
         risk = abs(entry - stop)
@@ -111,9 +112,19 @@ def main() -> None:
                 if lo <= tgt: pts = entry - tgt; break
         if pts is None:
             pts = (fwd.close.iloc[-1] - entry) * side if len(fwd) else 0.0
+        rng = max(bar.high - bar.low, 1e-9)
+        d0930 = B[(B.gday == d) & (B.clock == "09:30")]
+        o930 = float(d0930.open.iloc[0]) if len(d0930) else np.nan
+        pclose = rth_close.get(days[di - 1], np.nan)
         trades.append(dict(day=d, year=d[:4], window="AM" if is_am else "PM",
                            pts=pts * 1.0, risk=risk,
-                           pen=(lvl - bar.low) if side > 0 else (bar.high - lvl)))
+                           pen=(lvl - bar.low) if side > 0 else (bar.high - lvl),
+                           close_str=((bar.close - bar.low) / rng) if side > 0
+                                     else ((bar.high - bar.close) / rng),
+                           lvl_age=(bar.t - t_conf).total_seconds() / 3600,
+                           dist_open=abs(lvl - o930) if o930 == o930 else np.nan,
+                           gap=(o930 - pclose) * side if (o930 == o930 and pclose == pclose) else np.nan,
+                           bar_t=bar.t))
 
     T = pd.DataFrame(trades)
     T.to_parquet(ROOT / "output/nya_ds_census.parquet", index=False)
