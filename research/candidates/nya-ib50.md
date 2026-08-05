@@ -79,3 +79,26 @@ can be adjudicated there (single look, written declaration to Angus).
 PATH: the early-cut rule can be MECHANICAL spec (not agent discretion),
 making the mechanical baseline the managed walk — then agents must beat
 THAT (§5.11-8). Ledger row 233.
+
+### Trial 5 — remaining declared arms 2-4 (2026-08-05) — SEARCH COMPLETE
+- ARM 2 (calendar/gap): pre-NFP-Thursday cohort negative (PF 0.71) but
+  n=21 with 2023 positive — weak evidence, no gate; gap>1.5% nothing
+  (n=26, wild year swings). His calendar rules add ~nothing here.
+- ARM 3 (entry window) — THE STRUCTURAL SPLIT: strict front-run entries
+  (10:23-10:29, before IB completes) n=257, PF 1.15, +1,101pts, positive
+  2023/2024/2025 (2026 0.77); post-completion entries n=175, PF 0.81,
+  -1,332pts, no positive year. Mechanism-coherent (front-run = pre-break
+  positioning; post-10:30 = chasing). Permnull p=0.112 — MARGINAL again
+  (evidence, not proven gate; third marginal on this family).
+- ARM 4 (25%-retrace, fit span): KILLED as an entry — n=80, WR 21%, PF
+  0.61 — the deep pullback mostly fills on days going to the stop.
+DECLARED SEARCH NOW COMPLETE (arms 1-4 + flow/depth/state/in-trade + BE
++ conviction). FAMILY SHAPE: raw flat; every single gate marginal alone
+(weekday p=.096, front-run p=.112); the REAL structure is in-trade
+(t+15 AUC 0.81-0.85, early-cut 5.7x) + conviction sizing (monotone).
+PROPOSED FROZEN SPEC (for Angus + OOF declaration): front-run-only entry,
+no BE, early-cut at t+15 (dying OR cvd-against), conviction-sized
+(declared score). OOF: the six sealed months — flow unburned there, so
+the flow-conditioned cut IS adjudicable; single look on written
+declaration after Angus approves the freeze. NO SHIP without it.
+Ledger rows 234-236.
