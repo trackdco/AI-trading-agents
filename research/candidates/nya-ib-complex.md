@@ -214,3 +214,15 @@ the certified default requires tournament discipline + holdout; candle
 arms have no unopened holdout -> forward SHADOW adjudication (default vs
 near-band run side by side) OR Angus operator ruling (§5.12-11). His
 call. Ledger rows 247-249.
+
+CORRECTION (ANGUS, re-affirmed): "we do not give a fuck about 2023 and
+2024... those years have no order flow or depth data or anything to test
+variables and optimise against." The stage-2d full-span framing violated
+the §5.11-9a presentation standard. FIT-SPAN numbers are the decision
+numbers, restated:
+- T0 mid (default):    fit WR 42%, $+3,913 (25: +8.8R / 26: +15.6R)
+- T2 developing VWAP:  fit WR 51%, $+4,861 (+10.9 / +19.5)
+- NEAR SIGMA BAND:     fit WR 77%, $+5,491 (+14.6 / +19.7) — +40% over
+  default, best in both fit years, no substitutions.
+The 23/24 candle run stays in the file as background only and carries no
+decision weight. All target-arm work from here presents fit-first.
