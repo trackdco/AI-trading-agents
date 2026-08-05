@@ -280,3 +280,17 @@ in-trade largely self-managing (half resolve in 2 min); residual agent
 value = press-state EXTENSION (winners' MFE 0.98R vs 0.70R captured).
 AWAITING ANGUS: shape sign-off (rule now or shadow-both vs the certified
 default) -> §5.11-8 baseline -> agent rung resumes. Ledger row 252.
+
+### Stage 2g — LOSER REPAIR on the final shape (DECLARED 2026-08-05)
+ANGUS: "i still think we can make the losers look better." Basis:
+near-band target + 0.5R-legacy stop; ALL numbers in TRUE-R (risk = the
+actual stop distance; $160 at the stop). Declared repair arms:
+- L1 cut t+2 close if red AND cvd-against (the 38%-WR cohort)
+- L2 cut t+3 close if red AND cvd-against
+- L3 time-scratch t+10 if red (thesis = immediate rejection; lingering
+  red = dead)
+- L4 time-scratch t+15 if unresolved (flat exit regardless of sign)
+- L5 pressed-add structure: enter half, add half only if +0.25R-true
+  within 3 min (losers half-sized by construction — sizing-shape arm)
+Report per arm: WR, avg loss, payoff, expectancy (true-R), $fit, and the
+loser-distribution before/after. Thin-cell honesty applies.
