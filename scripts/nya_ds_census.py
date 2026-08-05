@@ -117,7 +117,8 @@ def main() -> None:
         o930 = float(d0930.open.iloc[0]) if len(d0930) else np.nan
         pclose = rth_close.get(days[di - 1], np.nan)
         trades.append(dict(day=d, year=d[:4], window="AM" if is_am else "PM",
-                           pts=pts * 1.0, risk=risk,
+                           pts=pts * 1.0, risk=risk, side=side,
+                           entry=entry, stop=stop,
                            pen=(lvl - bar.low) if side > 0 else (bar.high - lvl),
                            close_str=((bar.close - bar.low) / rng) if side > 0
                                      else ((bar.high - bar.close) / rng),
