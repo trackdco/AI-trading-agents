@@ -102,13 +102,20 @@ def main() -> None:
             if np.sign(fl.delta) == side: score += 1
         except KeyError:
             fl = None
+        dd = None
         try:
             dd = D.loc[(d, clk)]
             if (dd.imb - 0.5) * 2 * side > 0.1: score += 1
         except KeyError:
-            pass
+            dd = None
 
-        rec = dict(day=d, year=d[:4], score=score, risk=risk)
+        rec = dict(day=d, year=d[:4], score=score, risk=risk,
+                   entry_clock=clk, frontrun=int(clk < "10:30"),
+                   roll_wd=float(rw) if rw == rw else np.nan,
+                   e_delta=float(fl.delta) * side if fl is not None else np.nan,
+                   e_dz=float(fl.dz) * side if fl is not None and fl.dz == fl.dz else np.nan,
+                   e_imb=(float(dd.imb) - 0.5) * 2 * side if 'dd' in dir() and dd is not None else np.nan,
+                   ib_width=abs(tgt - stop))
         mfe = mae = 0.0
         done, pts = False, None
         cvd0 = None
