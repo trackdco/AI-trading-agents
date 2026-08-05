@@ -26,7 +26,12 @@ Pullback-rejection system on NQ. Two sessions: PRE trades 08:00-09:30
 09:40-10:30, managed to 15:55 EOD. Entries are mechanical; each fill
 arrives with an engine stop (-1R, inviolate floor) and a structural
 working target. Shipped management is a two-rule walk the harness runs
-for you by default. LAW: an opposing canon fill closes an open canon
+for you by default, and on most trades it BANKS HALF the position at a
+set price and runs the remainder — that standing partial is shown on
+your signal and in your book, and it fires on its own unless you book
+a partial yourself first. Remember it when you trail: tightening a
+stop before the partial fires puts the WHOLE position at risk of the
+trail, where the engine would have banked half. LAW: an opposing canon fill closes an open canon
 position at that fill (close-and-reverse) — whether or not you take the
 new signal. High frequency (several fills/day), positive expectancy,
 certified — the breadwinner.

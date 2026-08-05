@@ -42,7 +42,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.capture_replay import load_trades, load_bars_ny, sgn  # noqa: E402
+from scripts.capture_replay import (load_trades, load_bars_ny, sgn,  # noqa: E402
+                                    implied_partial)
 from scripts.nya_ibc_desk_run import build_shelf_trades  # noqa: E402
 
 NY = "America/New_York"
@@ -251,10 +252,22 @@ def build_signals():
             r = O.loc[k]
             mech_exit = pd.to_datetime(r.cr_exit_ts).tz_convert(NY)
             mech_px, mech_d = float(r.cr_exit_price), float(r.cr_dollars_1lot)
+        # AUDIT FIX 2: the book's `stop` column is not reliably the INITIAL stop
+        # (28% disagree with `risk`; 51 trades sit ~BE and exit 'stop' for ~$15 —
+        # a MOVED stop, i.e. post-hoc information). Reconstruct the engine's own
+        # -1R stop from risk so R units are honest and no hindsight leaks in.
+        s_ = sgn(t["direction"])
+        init_stop = round(round((t["entry"] - s_ * t["risk"]) / TICK) * TICK, 10)
+        # AUDIT FIX 1: 43.8% of canon trades bank a 50% partial in their shipped
+        # management. Recover its price (capture_replay's own inversion of the
+        # engine arithmetic) so a TOUCHED position keeps the shipped partial
+        # instead of silently becoming a naked position.
+        ppx = implied_partial(t)
         days.setdefault(t["day"], []).append(dict(
             engine="CANON", day=t["day"], sess=t["sess"], direction=t["direction"],
-            s=sgn(t["direction"]), fill=t["fill"], entry=float(t["entry"]),
-            stop=float(t["stop"]), risk=float(t["risk"]), size=float(t["size"]),
+            s=s_, fill=t["fill"], entry=float(t["entry"]),
+            stop=init_stop, risk=float(t["risk"]), size=float(t["size"]),
+            partial_px=(float(ppx) if ppx is not None else None),
             pattern=t.get("pattern", "?"), target=wt.get((t["ts"], t["direction"])),
             mech_exit=mech_exit, mech_exit_px=mech_px, mech_dollars=mech_d))
     for t in build_shelf_trades():
@@ -291,9 +304,12 @@ def b1_dollars(sigs: list[dict]) -> float:
 def sig_desc(g: dict) -> str:
     if g["engine"] == "CANON":
         tgt = "none" if g["target"] is None else f"{g['target']:.2f} ({g['s'] * (g['target'] - g['entry']) / g['risk']:+.1f}R)"
+        pt = (f", engine banks HALF at {g['partial_px']:.2f} "
+              f"({g['s'] * (g['partial_px'] - g['entry']) / g['risk']:+.1f}R) then runs "
+              f"the rest" if g.get("partial_px") is not None else "")
         return (f"CANON {g['direction'].upper()} [{g['sess']}] fills {g['entry']:.2f}, "
-                f"stop {g['stop']:.2f} (-1R = {g['risk']:.2f}pt), working target {tgt}, "
-                f"pattern {g['pattern']}")
+                f"stop {g['stop']:.2f} (-1R = {g['risk']:.2f}pt), working target {tgt}"
+                f"{pt}, pattern {g['pattern']}")
     return (f"SHELF {g['direction'].upper()} [{g['tier']}, ${g['dollars_risk']:.0f} risk] "
             f"fills {g['entry']:.2f}, stop {g['stop']:.2f} (-1R = {g['risk']:.2f}pt), "
             f"target = developing near VWAP band, scratch t+10 if red")
@@ -489,9 +505,12 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
         tgt = ("developing band" if p["target_mode"] == "band" else
                ("none (riding stop)" if p["target_mode"] == "none" else
                 f"{r_of(p, p['target_px']):+.2f}R"))
+        ap = (f" | engine partial pending {r_of(p, p['auto_partial_px']):+.2f}R"
+              if p.get("auto_partial_px") is not None else "")
         return (f"pos {p['pid']} {p['engine']} {p['sig']['direction']} | "
                 f"R_now {r_of(p, last):+.2f} peak {p['peak_r']:+.2f} | "
-                f"open {p['frac']:.2f} | stop {r_of(p, p['stop']):+.2f}R | target {tgt}")
+                f"open {p['frac']:.2f} | stop {r_of(p, p['stop']):+.2f}R | "
+                f"target {tgt}{ap}")
 
     def book_state(minute, bar):
         if not book:
@@ -532,6 +551,7 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
             trough_r=0.0, mfe_min=0, mae_min=0, first_red_min=None, red_cvd5=None,
             risk=g["risk"], stop=g["stop"], frac=1.0, legs=[], pending=[],
             target_mode=mode, target_px=g.get("target"),
+            auto_partial_px=g.get("partial_px"),
             extended=False, partial_done=False, peak_r=0.0, seen_r=set(),
             turns=0, last_note="", taken_by=taken_by, gb_peak=0.0,
             flatten=pd.Timestamp(f"{day} 09:30" if g["sess"] == "pre" else f"{day} 15:55",
@@ -630,6 +650,16 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
                       else max(p["stop"], float(bar.open)))
                 close_pos(p, p["frac"], px - p["s"] * SLIP * TICK, "stop")
                 settle(p, "stop", minute, anchor=not p["touched"])
+        # 4b. the SHIPPED partial (canon): a standing order the agent inherits.
+        # Fires once, at its price, unless the agent already booked a partial.
+        for p in list(book):
+            ap = p.get("auto_partial_px")
+            if ap is None or p["partial_done"] or p["frac"] <= 0:
+                continue
+            if (p["s"] > 0 and bar.high >= ap) or (p["s"] < 0 and bar.low <= ap):
+                close_pos(p, round(p["frac"] * 0.5, 10), ap, "partial")
+                p["partial_done"] = True
+                p["auto_partial_px"] = None
         # 5. targets + mechanical-exit decision events
         for p in list(book):
             mins_in = int((minute - p["sig"]["fill"]).total_seconds() // 60)

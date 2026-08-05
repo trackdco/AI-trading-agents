@@ -608,3 +608,45 @@ DESIGN:
   carry none of these fields; Angus also confirmed B0 semantics = both
   engines stacked at shipped spec, P&Ls summed, opposite-direction
   overlaps net.
+
+### JUNE AUDIT — TWO HARNESS BUGS FOUND, JUNE VOIDED [ANGUS 2026-08-05]
+His call before spending more: "i dont think we calibrated it properly
+... see if theres any early signs of bugs or errors we might have
+calibrated agents around ... before i waste more usage doing a broken
+test." Run stopped at 19 days; full audit of journal + 912 transcript
+turns. Deficit at stop: agent $+6,045 vs B0 $+7,062 (-$1,017).
+BUG 1 (DOMINANT, material) — THE AGENT INHERITED CANON POSITIONS
+STRIPPED OF THE SHIPPED PARTIAL. 43.8% of canon trades bank a 50%
+partial in their shipped management (partial+target 351, partial+stop
+467, partial+be_stop 3). The harness handed the agent only {stop,
+working target}, so ANY management touch silently converted the trade
+into a naked position — biasing the entire experiment against
+discretion. Evidence: both big June losses were shipped partial+target
+trades where the agent trailed and lost the whole position
+(2025-06-20 C4 agent $1,055 vs mech $1,701 = -$646; 2025-06-23 C2
+$180 vs $715 = -$535). FIX: recover the partial price via
+capture_replay.implied_partial (the engine's own inverted arithmetic),
+carry it as a standing order the agent inherits and can override,
+disclose it on the signal line and in the book state, and warn about
+it in the charter. POST-FIX PROOF: the same 06-20 C4 under a
+trail-to-BE stub now settles $+1,701 = mech exactly (was -$646).
+BUG 2 (real, pervasive) — R UNITS WRONG ON 31% OF CANON POSITIONS +
+HINDSIGHT LEAK. The book's `stop` column is not reliably the initial
+stop: 28% disagree with `risk`, and 51 trades sit ~BE yet exit 'stop'
+for ~$15 (a MOVED stop = post-hoc information). The agent was told
+"engine stop (-1R, INVIOLATE)" while its state line showed -0.12R to
+-0.94R, and its stop_r requests were converted through `risk` rather
+than the real stop distance — the same TRUE-R class of error Angus
+caught on the shelf $-sizing. FIX: reconstruct the initial stop as
+entry - s*risk (the engine's own -1R, no post-hoc content).
+POST-FIX: 100% of canon signals now open at exactly -1.00R (was 72%).
+CLEARED (audited, no defect): sizing/dollar convention (dollars_1lot
+is at-size; settle matches; half-size rows reconcile to 0.00);
+anchoring law (untouched-trade drift exactly $0.00 across 19 days);
+full P&L decomposition reconciles to the cent; 0 CLI errors in 912
+turns; 0 silently-dropped decisions (the agent always named `pos`);
+the agent was genuinely trading (25 revises with coherent trailing
+logic, 6 passes with stated reasons, 3 of them money-saving).
+RULING: the 19 June days are VOID as evidence — archived to
+runs/_archive/live_desk1_prebugfix/. Run restarts clean from
+2025-06-02 on the corrected harness.
