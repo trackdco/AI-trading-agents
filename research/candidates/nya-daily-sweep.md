@@ -93,3 +93,27 @@ adaptation declared; still-open-at-t conditioning per §5.12-5).
 - Ledger row 109. NEXT: exit/stop arms under §6.0 (time-exit variants,
   partial-at-1R, BE null, stop-cap class), redundancy vs sweep-reclaim,
   then grading.
+
+### Trial 5 — exit/stop tournament (2026-08-05, prereg amendment b) — DEFAULT STANDS, challengers banked
+scripts/nya_ds_exitlab.py, 10 declared arms, day-level PBO CSCV (S=8, 70
+splits, 104 days). Population note: 19 of 117 trades have a degenerate
+zero-length management window under the taught 12:00 exit (signals on the
+11:00 bar enter at the cutoff) — dropped by the lab, rescued only by the
+hold1555 arm (n=110); spec wart recorded.
+- Autopsy prediction CONFIRMED: deeper/no targets win in-sample —
+  no_target +35.0R ($5,599), cap30 +35.2R ($5,628), t3r +34.2R ($5,474)
+  vs default +23.2R ($3,705, every year positive).
+- BE NULL DEFEATED AGAIN (§5.12-6 holds): be05 wrecks it (+5.6R, WR 33%);
+  be10 +17.0R < default. Third family where BE hurts a mean-reversion book.
+- Stop-cap class delivers again (fade cap20 precedent): cap30 top-2 with
+  2025 +17.8R.
+- PBO = 0.50, slope -0.81 — the displacement bar (PBO < 0.5) is NOT met,
+  and no holdout is declared for this family. Per §6.0: DEFAULT STANDS;
+  no_target / cap30 / t3r / hold1555 BANKED as challengers for a round-2
+  tournament under a declared holdout.
+- REDUNDANCY GATE: blocked on Brake — sweep-reclaim has no trade file in
+  the repo yet; London sweep families have zero clock overlap (different
+  sessions). Owed before book admission, not before grading.
+- Ledger rows 110-113 (default, no_target, cap30, be05-null).
+NEXT: grading vs the 0.75 sleeve floor (PSR on the default), correlation
+battery vs canon + live emissions, then Angus's book decision.
