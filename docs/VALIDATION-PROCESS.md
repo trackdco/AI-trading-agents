@@ -505,6 +505,17 @@ of these answers.
    journals as live reference memory (the desk-run record is part of the
    shipped artifact).
 
+### 5.10 The transparency rule [ANGUS 2026-08-05]
+
+Every strategy past step 1 maintains a live data card in `research/FUNNEL.md`,
+updated at EVERY stage boundary: raw trigger counts and frequency, raw P&L
+(n, WR, points, dollars, PF), each variable stage's lift, era/half splits,
+next rung, and the canon-shape comparison. Stage results are reported to
+Angus with the numbers, not just verdicts — he inspects the arc (ugly raw →
+variable lift → out-of-fit) himself, per stage. A funnel whose behavior
+can't be audited against the canon's build arc is treated as broken until
+shown otherwise.
+
 ### 6.0 The promotion law [BRAKE 2026-08-05, ratified into process]
 
 **Rank-and-promote-the-top-scorer is a condemned procedure.** Selecting the
