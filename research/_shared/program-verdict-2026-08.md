@@ -30,7 +30,7 @@ scope: everything tested to 2026-07-15
 
 | card | n | win/BE/loss | expectancy | t | verdict |
 |---|---|---|---|---|---|
-| **`ash-unicorn-sb`** | **24** | 50.0/20.8/29.2 | **+0.655R** | +2.54 | plausible, **unconfirmed** |
+| **`ash-unicorn-sb`** | **23** | 43.5/26.1/30.4 | **+0.516R** | +2.02 | plausible, **unconfirmed** |
 | `zxck-cisd` | 40 | 22.5/22.5/45.0 | +0.044R | +0.35 | **is the null** |
 | `zxck-10am-keyopen` | 115 | 22.6/24.3/53.0 | −0.162R | −0.70 | **is the null** |
 | `zxck-ifvg-50` | 186 | 19.9/3.8/76.3 | −0.616R | −4.17 | **loses reliably** |
@@ -48,11 +48,11 @@ Random-walk null for this exit is **25/25/50**. Note how many rows sit on it.
 
 | | |
 |---|---|
-| expectancy | **+0.655R** net, +17.0R total, maxDD 3.0R |
-| effect (t/√n) | **+0.518** gross, +0.480 net |
-| **deflation bar at N=293 trials** | **+0.6978** — it reaches **74%** of it |
-| n | **24 — below the n≥30 floor**, after a defect fix cut it from 37 |
-| direction | **21 long / 3 short** on a market that rose 21,304 → 29,690 |
+| expectancy | **+0.516R** net, +13.0R total, maxDD **5.0R** *(rev 2026-08-08)* |
+| effect (t/√n) | **+0.421** gross, +0.383 net |
+| **deflation bar at N=293 trials** | **+0.6978** — it reaches **60%** of it |
+| n | **23 — below the n≥30 floor**, after two defect fixes cut it from 37 |
+| direction | **17 long / 6 short** on a market that rose 21,304 → 29,690 |
 | missing component | the **ES leading trigger**, which its author states is part of the entry. Never implemented. No ES data. |
 | flow enhancement | **VOID** as of 2026-08-08 — the feature was not computable at entry |
 

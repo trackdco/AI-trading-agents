@@ -1,5 +1,5 @@
 ---
-date: 2026-08-07 (rev b — post code-audit)
+date: 2026-08-08 (rev c — post retro-audit)
 kind: ranked comparison — every baselined strategy, both traders
 script: scripts/baseline_comparison.py
 data: baseline-comparison.csv
@@ -32,7 +32,7 @@ start earlier). So the numbers are directly comparable.
 | # | card | n | win/BE/loss | avg R | cost | **expectancy** | total | maxDD | t | effect | effect net |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | — | *`ash-unicorn-sb` (matched span)* | *19* | *52.6/26.3/21.1* | *+0.842* | *0.058* | *+0.784* | *+16.0R* | *1.0R* | *+2.819* | *+0.647* | *+0.602* |
-| **1** | **`ash-unicorn-sb`** (its baseline) | **24** | **50.0/20.8/29.2** | +0.708 | 0.054 | **+0.655** | **+17.0R** | **3.0R** | **+2.539** | **+0.518** | **+0.480** |
+| **1** | **`ash-unicorn-sb`** (its baseline) | **23** | **43.5/26.1/30.4** | +0.565 | 0.049 | **+0.516** | **+13.0R** | **5.0R** | **+2.019** | **+0.421** | **+0.383** |
 | 2 | `zxck-cisd` | 40 | 22.5/22.5/45.0 | +0.068 | 0.024 | **+0.044** | +2.7R | 4.5R | +0.351 | +0.055 | +0.036 |
 | 3 | `zxck-10am-keyopen` | 115 | 22.6/24.3/53.0 | −0.078 | 0.083 | **−0.162** | −9.0R | 16.0R | −0.699 | −0.065 | −0.135 |
 | 4 | `zxck-ifvg-50` | 186 | 19.9/3.8/76.3 | −0.366 | **0.250** | **−0.616** | **−68.0R** | 68.0R | **−4.165** | −0.305 | −0.514 |
@@ -51,8 +51,9 @@ It is the **only** strategy with a positive expectancy that is not statistically
 place (`zxck-cisd`) has **t = +0.351** — indistinguishable from nothing — and its outcome mix
 *is* the null (22.5/22.5/45.0 against 25/25/50).
 
-**It still does not clear the bar.** Effect **+0.518** gross, **+0.480** net, against **+0.6978**.
-About **three quarters** of the bar gross, **69%** net.
+**It still does not clear the bar, and by a wider margin than rev b said.** After the 2026-08-08
+Sunday-stub fix the effect is **+0.421** gross, **+0.383** net, against **+0.6978** — **60%** of the
+bar gross, 55% net. ~~rev b: +0.518 / +0.480, 74%.~~
 
 ### What the sweep fix did to it
 

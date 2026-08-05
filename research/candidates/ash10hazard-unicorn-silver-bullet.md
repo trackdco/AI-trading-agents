@@ -290,6 +290,34 @@ pick first and our result second — the two agreeing is corroboration, not sele
 
 **AM1-only baseline, span extended to the full non-sealed range (2025-01-01 → 2026-07-15):**
 
+> ### 🔴 2026-08-08 — REVISED AGAIN BY THE RETRO-AUDIT. n 24 → 23. THE NUMBERS BELOW ARE STALE.
+> A five-lens adversarial retro-audit against the programme's full defect catalogue confirmed a
+> **Sunday-stub defect in `daily_bias`**. `resample("1D")` on NY-local timestamps keys on the NY
+> **calendar** day, but Globex opens **18:00 ET Sunday** — so every Sunday became its own "daily
+> bar" holding only that 6-hour block. **80 such stubs**, median range **184.5pt against 393.5pt**
+> for a real weekday, fed to the FVG bias state machine as if they were sessions. They participate
+> in **54 of 117 bias-SET events**; the resulting daily bias is wrong on **84 of 480 days**.
+>
+> | | 2026-08-07 (stale) | **2026-08-08 (current)** |
+> |---|---|---|
+> | n | 24 | **23** |
+> | win / BE / loss | 12 / 5 / 7 | **10 / 6 / 7** |
+> | win rate | 50.0% | **43.5%** |
+> | avg R | +0.708 | **+0.565** |
+> | **expectancy net** | +0.655R | **+0.516R** |
+> | total | +17.0R | **+13.0R** |
+> | **max drawdown** | 3.0R | **5.0R** — *the "3.0R maxDD on +17R" headline was false* |
+> | effect | +0.518 | **+0.421** |
+> | **% of the +0.6978 bar** | 74% | **60%** |
+> | direction | 21L / 3S | 17L / 6S |
+> | median stop | 26.2pt | 31.8pt |
+>
+> The 20 common trades are **unchanged in direction and R**. The fix is not tunable: hour 17 ET
+> holds **zero** bars (CME maintenance), so every boundary in [17:00, 18:00) gives the same frame.
+> CME session keying and simply dropping the Sunday stubs produce a **byte-identical** trade set.
+>
+> **Full audit and the intrabar bound: `research/_shared/overnight-2026-08-08.md`.**
+
 > ### ⚠️ 2026-08-07 — REVISED BY A CODE FIX. n 37 → 24. Read the defect note below first.
 > An adversarial audit found that the **liquidity-sweep gate tested where price *was*, not
 > whether it *crossed*** — see "SWEEP-GATE DEFECT" at the end of this section. Every number in
@@ -297,7 +325,7 @@ pick first and our result second — the two agreeing is corroboration, not sele
 
 | | corrected | ~~before the fix~~ |
 |---|---|---|
-| n | **24** (2025-03-07 → 2026-07-13) | ~~37~~ |
+| n | ~~24~~ **23** (see the 2026-08-08 block above) | ~~37~~ |
 | win / BE / loss | **12 / 5 / 7** | ~~15 / 10 / 12~~ |
 | **win rate** | **50.0%** | ~~40.5%~~ |
 | **avg R** | **+0.708** | ~~+0.486~~ |

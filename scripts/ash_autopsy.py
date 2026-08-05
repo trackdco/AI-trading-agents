@@ -158,7 +158,10 @@ def main() -> None:
     W = d[d.R >= 2]; L = d[d.R <= -1]; BE = d[d.R == 0]
     print("AUTOPSY — ash-unicorn-sb (AM1 09:45-10:15 ET)")
     print(f"n={len(d)}   winners={len(W)}  losers={len(L)}  break-even={len(BE)}")
-    print("⚠️ SEARCH over ~9 features on 15v12. P(>=1 false positive at .05) = 37%.\n")
+    # de-hardcoded 2026-08-08: this line printed the PRE-FIX sample forever, which is how
+    # the stale n=37 autopsy figures survived review on the card.
+    print(f"⚠️ SEARCH over ~10 features on {len(W)}v{len(L)}. "
+          f"P(>=1 false positive at .05) = {100*(1-0.95**10):.0f}%.\n")
 
     tests = []
     # categorical / binary
