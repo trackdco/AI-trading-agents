@@ -1,0 +1,443 @@
+[0:00] All right, traders. Welcome back to the
+[0:01] channel. In this video, I'm going to be
+[0:03] going over my ultimate London session
+[0:06] trading strategy, okay? The first
+[0:07] component involves time, okay? There is
+[0:09] a specific time during London session
+[0:12] that this tends to play out. The second
+[0:13] is going to be the power of three, which
+[0:15] I'll jump into. And the third is going
+[0:17] to be your entry trigger, which is going
+[0:19] to be an inverse fair value gap,
+[0:21] otherwise known as an IFVG. Once you
+[0:23] combine all of these, time, PO3, and
+[0:26] IFVG, you get a really powerful strategy
+[0:29] and you guys are crushing it in the
+[0:30] Discord right now using this. This
+[0:32] strategy is so accurate that I'm quite
+[0:34] literally debating moving to Europe just
+[0:36] so I can trade London session, just to
+[0:38] trade this strategy because here in the
+[0:40] US where I live on the East Coast, it's
+[0:42] 3:00 a.m. So, I end up missing a lot of
+[0:45] these moves. I do not trade London
+[0:46] session every single night. But yeah,
+[0:48] without further ado, let us jump into
+[0:50] it. So, I call this the London session
+[0:52] PO3. This is a rendition of the
+[0:54] manipulation model, which I've gone over
+[0:56] on this channel. But what's different
+[0:58] about this is that it uses a specific
+[1:00] time-based range in London session. And
+[1:03] what I want you guys to do after you
+[1:05] watch this video is to go and backtest
+[1:07] this yourself, okay? Don't listen to any
+[1:09] random person on the internet. Don't
+[1:10] listen to me. Take what I'm telling you
+[1:12] in this video, go and backtest it
+[1:14] yourself following the rules that I'm
+[1:15] laying out in this video, and see if
+[1:17] it's a strategy worth trading for you.
+[1:18] So, let us go over first of all how this
+[1:20] setup actually forms, okay? Because I
+[1:22] mentioned that time is a factor. So, the
+[1:25] first thing you want to look for, guys,
+[1:26] is some sort of accumulation between 1
+[1:30] to 2:00 a.m. Eastern. So, 1:00 to 2:00
+[1:32] a.m. Eastern, you want to see some sort
+[1:34] of accumulation. You do not want to see
+[1:36] a clearly trending market to the upside
+[1:38] or to the downside. But lucky for you
+[1:39] guys, a lot of times London just
+[1:41] accumulates, which is why the strategy
+[1:43] tends to play out so often and why this
+[1:45] has a very high win rate. Now, this
+[1:47] isn't an exact science. This doesn't
+[1:49] have to be exactly 1:00 to 2:00 a.m.
+[1:50] Eastern, but this is the time that I
+[1:52] want you guys to watch for. Again, you
+[1:54] know, the 1:00 to 2:00 a.m. range could
+[1:55] be, let's say, from this high to maybe
+[1:57] this low. But if there is a clearly
+[2:00] defined range high right above that, you
+[2:01] can use this range high as well. Now,
+[2:03] what you are waiting for is your PO3 at
+[2:06] 3:00 a.m., okay? So, you want to see
+[2:08] either the high or the low of this range
+[2:11] get manipulated during that 3:00 a.m.
+[2:13] candle, and that is where you will enter
+[2:14] the trade looking to catch the
+[2:16] distribution in the opposite direction,
+[2:18] okay? So, let's say this is the 1:00 to
+[2:20] 2:00 a.m. range. Here is your 3:00 a.m.
+[2:23] candle, okay? You can see price ends up
+[2:26] manipulating the range lows, meaning it
+[2:28] goes below and then instantly reclaims.
+[2:30] And all we would look for here, guys, is
+[2:31] an inversion fair value gap on a
+[2:33] 1-to-3-minute time frame for our entry.
+[2:36] So, 1-to-3-minute IFVG for our entry
+[2:40] trigger, and we are looking to catch the
+[2:42] distribution in the opposite direction,
+[2:44] okay? That is all there is to the
+[2:46] strategy. I know it's stupid simple. I
+[2:48] know it's like a few steps, but this
+[2:51] actually incorporates quite a bit of
+[2:53] confluences, right? The first thing it
+[2:54] incorporates is time. You are only
+[2:57] trading the 3:00 a.m. manipulation,
+[3:00] okay? If there is no manipulation during
+[3:02] that 3:00 a.m. candle, you do not use
+[3:04] the strategy. The second thing it
+[3:06] incorporates is the PO3, the power of
+[3:09] three, otherwise known as accumulation,
+[3:11] manipulation, and distribution. That is
+[3:14] why it is so important to see
+[3:15] accumulation before this manipulation.
+[3:18] If there is no accumulation, then we do
+[3:19] not use the strategy. And the last thing
+[3:21] the strategy incorporates is our entry
+[3:24] trigger, which is going to be an inverse
+[3:26] fair value gap. You guys know I love
+[3:28] trading inversion fair value gaps. It is
+[3:29] my favorite entry model. Ideally, a
+[3:31] V-shaped inverse within a few candles,
+[3:33] and I'll show you guys some real-time
+[3:34] examples. So, this is the full strategy
+[3:37] here. There are a few added confluences
+[3:39] that I like to use to help increase my
+[3:41] win rate, which I'll be sharing with you
+[3:42] guys later in this video. So, make sure
+[3:44] to watch this until the end, okay? So,
+[3:46] hopefully you guys got this down. Let's
+[3:47] take a look at some real-time examples.
+[3:49] So, we're going to start with last
+[3:50] night, and we're going to go into replay
+[3:52] mode here. You can see here London
+[3:54] session opens. Here is the beginning of
+[3:57] the 1:00 a.m. range. We're going to let
+[3:59] price play out all the way till 2:00
+[4:00] a.m. So, we are not trading between 1:00
+[4:02] to 2:00 a.m. We are letting this range
+[4:04] form. So, there is the 1:00 to 2:00 a.m.
+[4:06] range. So, all I'm going to do is mark
+[4:08] out the highs and lows of this range.
+[4:11] So, I'm only taking a trade if price
+[4:13] takes out either side of the range
+[4:14] between 3:00 and 4:00 a.m. Again, not an
+[4:17] exact science. Sometimes this move
+[4:18] happens at, let's say, 2:30 a.m., which
+[4:20] is still valid. But most of the time you
+[4:22] will see manipulation in that 3:00 a.m.
+[4:24] candle. So, again, we are just ranging
+[4:26] here. I'm not entering a trade until we
+[4:28] take out one side of the range. So,
+[4:29] finally, boom, there we go. We take out
+[4:32] the high of the range. And at this
+[4:33] point, all that I'm looking for is my
+[4:36] entry confirmation, which is going to be
+[4:38] an inversion fair value gap. So, on a
+[4:39] 3-minute time frame here, I don't see
+[4:41] any fair value gaps that I can take a
+[4:44] trade off of. But on a 2-minute time
+[4:45] frame, we have this nice clear bullish
+[4:48] fair value gap. Let me zoom in a little
+[4:50] bit for you guys here, okay? So, here is
+[4:53] our 2-minute bullish fair value gap. If
+[4:55] price closes below, that will be my
+[4:57] entry trigger to take a short position.
+[4:59] So, there is a candle closure below on
+[5:01] the 2-minute time frame. I'm going to
+[5:02] enter the short, stop loss above this
+[5:04] bullish candle. This now acts as a
+[5:06] bearish order block, and I'm going to
+[5:08] target some of these lows down here,
+[5:10] right? Maybe TP1 at this low right here,
+[5:13] and TP2 at this low right here. I don't
+[5:16] want to target the bottom of this range
+[5:17] as my full TP. This is an 83-point move
+[5:20] in London session, which is pretty rare.
+[5:22] So, I'm just going to target these
+[5:23] internal structure lows here. So, we
+[5:24] have accumulation right here,
+[5:26] manipulation, and now we are
+[5:28] anticipating the distribution. Now, if
+[5:30] you guys want to automate more, we have
+[5:32] actually coded this into our
+[5:34] manipulation X indicator. It will show
+[5:35] you guys real-time SMT divergences,
+[5:38] which I also use as an added confluence.
+[5:40] This SMT divergence changes the setup
+[5:42] from an A to an A+ rated setup, and it
+[5:44] also notifies you in real time when you
+[5:47] have an inverse fair value gap that
+[5:48] swept liquidity. So, this is going to be
+[5:50] an A+ setup. you guys want access to the
+[5:53] manipulation X indicator, I'll link this
+[5:54] down in the description below. So, there
+[5:56] is our entry trigger. We're going to let
+[5:58] price play out, and you can see it hits
+[6:00] TP1 and then eventually TP2. So, that
+[6:02] was a trade last night during London
+[6:04] session. Let us go to the day before.
+[6:06] So, here we have midnight. You can see
+[6:08] price is starting to go to the upside,
+[6:10] and we have the 1:00 a.m. range. So, I'm
+[6:12] going to play out the 1:00 to 2:00 a.m.
+[6:14] range. So, here is our range low between
+[6:16] 1:00 to 2:00 a.m., and here is our range
+[6:18] high. So, I'm not going to be entering a
+[6:19] trade until either side of this range
+[6:21] gets taken out, okay? And you can see
+[6:23] that we take out the range high first,
+[6:25] which means I am looking for a potential
+[6:27] short position. Now, remember earlier I
+[6:29] said that there are a few added
+[6:30] confluences that I use to make this an
+[6:32] A+ rated setup. One of them being an SMT
+[6:35] divergence, which obviously we've coded
+[6:36] into our indicator. And the second is
+[6:38] going to be higher time frame delivery.
+[6:40] So, if I go to a 15-minute time frame
+[6:43] here, you can see that we are delivering
+[6:45] from a 15-minute bearish fair value gap.
+[6:47] So, not only do we have this
+[6:49] accumulation, manipulation, and
+[6:51] hopefully anticipating the distribution,
+[6:54] we also have something called higher
+[6:56] time frame delivery with this 15-minute
+[6:58] bearish fair value gap. This means that
+[7:00] price is rejecting from this 15-minute
+[7:02] gap as we are sweeping this time-based
+[7:04] range high. So, this is going to be an
+[7:06] A+ rated setup here. And we are looking
+[7:08] for an inversion fair value gap here. Do
+[7:11] we have any? I don't see any inversions
+[7:13] here on the 2-minute time frame. Let's
+[7:15] check the 3-minute. Still no fair value
+[7:17] gaps to take a trade off of. So, on this
+[7:19] day in particular, guys, I did not see
+[7:22] an entry trigger that I liked to the
+[7:24] downside. I didn't see any IFVG. And if
+[7:27] there's no IFVG, there is no trade. I
+[7:29] know some people like to use break of
+[7:30] structures or CISDs. I only use
+[7:33] inversion fair value gaps. If you guys
+[7:34] are beginner traders, you're still
+[7:35] unprofitable, stick to one entry model,
+[7:38] okay? Stop bouncing around from strategy
+[7:40] to strategy using different entry
+[7:41] models. Only use inversion fair value
+[7:43] gaps. Now, you can see that 3:00 a.m.
+[7:45] hits. We've swept the 1:00 a.m. range
+[7:47] low, okay? Still ranging. And I can see
+[7:49] here that we have actually just created
+[7:52] an inversion fair value gap on the
+[7:54] 3-minute time frame. Okay, this is the
+[7:56] highest time frame bearish fair value
+[7:57] gap in this leg down. Yeah, so this is
+[7:59] the highest time frame inversion fair
+[8:01] value gap. We also have a 2-minute
+[8:03] inversion here as well. So, this is a
+[8:05] long position that I would take, guys.
+[8:07] We've swept the time-based range lows.
+[8:08] We've also swept some more external
+[8:10] liquidity, and we are right inside of
+[8:12] that 3:30 a.m. manipulation. We also
+[8:15] have a very clear equal high target
+[8:17] here. So, this is going to be my trade
+[8:19] setup for the day. And you can see that
+[8:21] we hit our full take profit at this
+[8:23] equal high. I would have rather liked to
+[8:25] enter the short position. Uh but this
+[8:26] was still a valid long using the
+[8:28] strategy, right? And this was also a
+[8:30] mini accumulation, manipulation, right?
+[8:33] Taking out this internal low,
+[8:34] distribution back up to this relative
+[8:36] equal high. This is also a really good
+[8:38] take profit and target because we had a
+[8:40] 15-minute bearish fair value gap here as
+[8:43] well. So, our indicator automatically
+[8:44] shows you guys these higher time frame
+[8:46] fair value gaps on the chart of your
+[8:48] choosing. Literally called this reversal
+[8:50] here, and perfect TP right at this fair
+[8:52] value gap. Let us go to the previous
+[8:54] trading day. Okay, we are going to go
+[8:56] into replay mode here, and we are going
+[8:58] to let the 1:00 to 2:00 a.m. range play
+[9:00] out, okay? So, there we go. We have the
+[9:02] 1:00 a.m. range high somewhere around
+[9:04] here. This is the most obvious external
+[9:06] high that I see on my chart. So, I'm
+[9:07] going to mark this level out, and we
+[9:09] have the range low right here. So,
+[9:10] again, I'm not taking a trade until
+[9:12] either side of this range gets taken
+[9:14] out. So, we're going to let price play
+[9:15] out here. You can see we're just
+[9:16] accumulating here, and boom, we take out
+[9:18] the range high first. Something I notice
+[9:20] here, and this is why discretion is
+[9:23] important in your trading or just using
+[9:25] common sense, is that even though we
+[9:26] technically took out the range high from
+[9:29] that time-based range, take a look left
+[9:31] here, right? We still have this low
+[9:33] resistance liquidity, this trend line
+[9:34] liquidity, and this very obvious high to
+[9:37] the left here, this very obvious
+[9:38] external high. So, this is going to be
+[9:40] the range high that I'm looking for us
+[9:42] to manipulate within that 3:00 a.m.
+[9:43] candle. Again, you never want to be
+[9:45] entering a short when you have all of
+[9:47] these stacked equal highs to the left of
+[9:49] you. So, let's see if we manipulate this
+[9:50] high during that 3:00 a.m. candle.
+[9:52] Consolidating. Boom, there we go. We
+[9:54] manipulate that high right during that
+[9:57] 3:00 a.m. candle. From this point, I'm
+[9:58] going to a lower time frame looking for
+[10:00] my entry trigger. I can see here we have
+[10:02] a 2-minute bullish fair value gap on
+[10:04] this leg up. This is the highest time
+[10:06] frame fair value gap on this leg up, so
+[10:08] this is going to be my entry as soon as
+[10:10] price closes below. Stop loss at this
+[10:12] swing high, and I'm going to be
+[10:13] targeting these lows down here as my TP1
+[10:16] and the range lows here as my TP2. So,
+[10:19] there is my entry. I'm going to move my
+[10:21] stop loss to break even as soon as we
+[10:22] get a candle closure below this low. So,
+[10:25] let's see. Okay, boom, we have a candle
+[10:27] closure below. My stop loss is now at
+[10:29] break even. My TP1 is hit, and let's see
+[10:32] if this hits full take profit. And at
+[10:34] this point, guys, I would probably fully
+[10:36] close my trade, you know, definitely
+[10:38] right around here. As soon as I see we
+[10:40] get this V-shape inverse back to the
+[10:42] upside, inversing all these bearish
+[10:44] gaps, I would fully close the trade
+[10:46] here, okay? And at this point, if you
+[10:48] wanted to, you could also enter a long
+[10:50] position to the upside after this
+[10:52] V-shape inverse. We didn't end up
+[10:53] sweeping that range low, so I would
+[10:55] probably fade this long position, uh but
+[10:57] this trade looks like it would have
+[10:58] played out. So, that's three winning
+[11:00] days in a row. Let's go back to the day
+[11:02] before that. I'm telling you guys, this
+[11:03] strategy is like clockwork, okay? So,
+[11:06] previous day, we're going to let the run
+[11:07] we're going to let the 1:00 to 2:00 a.m.
+[11:08] range play out. There we go. There is
+[11:10] our range low, and here is my range
+[11:13] high. This is the most obvious external
+[11:14] high on my chart, and this is the most
+[11:16] obvious low within that range. So, I'm
+[11:17] going to wait for either side of the
+[11:19] range to get manipulated. Okay, we take
+[11:20] out the range high first right during
+[11:22] that 3:00 a.m. candle. Let's see if we
+[11:24] have any fair value gap to take an
+[11:26] inverse from. So, I don't believe I
+[11:28] would take any trades here. Let's see.
+[11:30] Maybe we get a 4:00 a.m. reversal. No.
+[11:32] So, on a day like this, there was no
+[11:34] trade, okay? We didn't get our entry
+[11:35] trigger with an inverse fair value gap,
+[11:37] and by the time 4:00 a.m. hit, we never
+[11:39] got that entry. So, this day was a no
+[11:41] trade day, which is completely fine.
+[11:43] Again, you really only need a few good
+[11:45] winning trades per week to start making
+[11:46] some really good money trading,
+[11:47] especially if you're trading prop firms,
+[11:49] copy trading accounts, etc. Let's go
+[11:51] back to the day before that. So, we have
+[11:53] the 1:00 to 2:00 a.m. range. Here is the
+[11:55] range low, and let's see when 2:00 a.m.
+[11:57] ends. Okay, the 2:00 a.m. closes right
+[12:00] around here. So, here is our range high.
+[12:02] At this point, I'm looking for some sort
+[12:05] of confirmation to go short. We do have
+[12:07] an inversion fair value gap right here,
+[12:08] guys, but this did not close below that
+[12:11] range high, so I'm not going to be
+[12:12] entering that trade. Okay, we do end up
+[12:14] getting an inversion right here on the
+[12:17] 3-minute time frame. We also had an
+[12:19] internal sweep of liquidity right here.
+[12:21] Here is our bullish fair value gap that
+[12:22] we inverse. We ended up closing below
+[12:24] and closing below that range high. I'm
+[12:26] going to put my stop loss above this
+[12:28] previous bearish candle that made this
+[12:30] inverse. If price reverses from here,
+[12:32] then my idea is invalidated. I'm going
+[12:34] to be targeting this most internal
+[12:35] structure low as my TP1 and this low
+[12:38] down here as my TP2. So, let's see what
+[12:40] happens.
+[12:42] Okay, TP1 is hit, and TP2 is hit. Now,
+[12:44] at this point, if you wanted to, you
+[12:46] could also enter a long position on this
+[12:49] inverse of the range low, okay? You can
+[12:51] see here we have a bearish fair value
+[12:52] gap. Let's see, we're going to go to the
+[12:53] highest time frame in that leg down,
+[12:55] which is the 5-minute. So, we did get a
+[12:57] 5-minute V-shape reversal here as well.
+[13:00] This is outside of my time window,
+[13:01] right? This is a little bit before 5:00
+[13:03] a.m. Eastern, but this was still a
+[13:05] really good price signature. So, you
+[13:06] could have entered a long position back
+[13:08] up towards the highs, and this one would
+[13:09] have hit take profit as well. So,
+[13:11] another winning day right here using
+[13:13] this model and using IFEGs as the entry
+[13:16] trigger. And guys, check this out. Our
+[13:17] indicator literally called both of these
+[13:20] moves to the top and bottom on the
+[13:23] 1-minute time frame. And just to show
+[13:25] you guys that our indicators are indeed
+[13:27] real-time and non-repaint, I'll go into
+[13:29] replay mode here. Not that I would enter
+[13:31] on a 1-minute time frame because
+[13:32] technically the highest time frame fair
+[13:33] value gap was this 3-minute, but if you
+[13:36] wanted to try to catch a top tick, there
+[13:38] you go, right? It's showing us that we
+[13:39] have a bearish SMT. There is our bullish
+[13:42] fair value gap that we're waiting to
+[13:43] inverse. We're going to let price play
+[13:44] out, okay? There is the indicator
+[13:46] telling us to go short, and it
+[13:48] immediately dumps to the downside, okay?
+[13:50] All these SMTs are in real-time as well,
+[13:53] and then boom, there is the reversal in
+[13:55] real-time with [clears throat] this
+[13:57] reversal signal back to the upside.
+[13:59] Again, very clear draw on liquidity with
+[14:01] this relative equal high as well. Well,
+[14:03] guys, that's going to be it for the
+[14:04] London session power of three. I hope
+[14:07] you guys have enjoyed. Again, make sure
+[14:08] to go and backtest the strategy
+[14:09] yourself. Don't take my word for it. Our
+[14:11] students inside the group have been
+[14:12] seeing some incredible results using
+[14:14] this. So, if you live anywhere in the
+[14:15] world that can trade London session, I
+[14:17] highly recommend giving this one a go.
+[14:19] Leave a like on the video if you guys
+[14:20] found value. This was an absolute
+[14:21] banger. Subscribe to the channel for
+[14:23] more trading content, and I'll see you
+[14:24] guys next video.

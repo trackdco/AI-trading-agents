@@ -53,6 +53,16 @@ question attached, and the recent GOLD/NQ/DAX era is the era that counts for us.
 
 ## 2. 🔴 Three of four channels converge on the same London idea
 
+> **⚠ CORRECTED 2026-08-05, same day, after reading the tape.** The inference
+> below was drawn from titles and is **wrong**. Tradesharpe's two ORB videos are
+> about the **New York** open, not London — he says explicitly *"this doesn't
+> really work too well in London open"* [`W5Hxv3hL3vY` @ 2:55]. The genuine
+> London claim is two-source (Brandan, EzTrades), and what all three actually
+> agree on is the **stop geometry**, not the trigger. Full correction and the
+> better finding: `research/findings/london-nq-what-three-traders-agree-on.md`.
+> Left standing rather than edited away, because the failure mode — inferring
+> content from titles — is the exact thing transcripts exist to prevent.
+
 Independently, and with different vocabularies, three of these traders point at
 one thing for London: **a session-open breakout.**
 
