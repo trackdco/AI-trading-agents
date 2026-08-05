@@ -269,3 +269,14 @@ to see what happens intra trade"). Fast clock — checkpoints t+2/3/5/8 min,
 still-open conditioning. Per checkpoint: r_now / MFE / MAE / cvd-since-
 entry / book imb (where covered); outcome AUC per variable; state x flow
 prediction table (the "can we accurately predict outcomes" question).
+
+STAGE 2 CLOSE-OUT — PBO over the accumulated leg-A arm matrix (8 arms x
+112 days): PBO 0.16, P(OOS loss) 0.00 — selection is finding SIGNAL
+(contrast leg B's 0.87). The band-target family's edge over mid is
+consistent across time blocks, not cherry-picked. VERDICT CARD: the
+complex = leg A alone; proposed frozen shape = NEAR-BAND TARGET + 0.5R
+STOP (WR 71%, payoff 1.35, $+6,241 fit, +60% vs certified default);
+in-trade largely self-managing (half resolve in 2 min); residual agent
+value = press-state EXTENSION (winners' MFE 0.98R vs 0.70R captured).
+AWAITING ANGUS: shape sign-off (rule now or shadow-both vs the certified
+default) -> §5.11-8 baseline -> agent rung resumes. Ledger row 252.
