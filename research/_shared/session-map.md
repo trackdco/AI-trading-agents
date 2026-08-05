@@ -52,9 +52,44 @@ definitions**, so the logs concatenate without a rename. See `EXIT-CONVENTION-LO
   — does retracement participation separate winners in a book that has no edge? — than as
   additional support.
 
-**Why 102 and not 115:** 13 of the 115 in-span decidable trades have undefined flow — the
-displacement or retracement leg contained no footprint minutes, or displacement volume was zero.
-Those are left blank, never interpolated.
+### ⚠️ CORRECTION 2026-08-07 — "why 102 and not 115" was answered wrongly above
+
+I first wrote that the 13 gaps were computational (empty legs / zero displacement volume).
+**That was wrong.** Brake questioned the coverage claim and the real cause is a data-derivation
+defect:
+
+**`output/fp_minutes.parquet` is missing January 2026.** It holds **60 rows for 2026-01** against
+27,000–31,000 for every other month — and those 60 are the tail of `footprint_q4_2025.parquet`,
+which ends 2026-01-01.
+
+**The raw data exists.** `data/reference/cvd/footprint_jan2026.parquet` holds **1,542,534 rows**
+covering 2026-01-01 → 2026-01-30. It was simply never folded into the derived frame that every
+flow test reads.
+
+| | |
+|---|---|
+| trading days in span with AM1 bars | **290** |
+| of those, with AM1 flow | **269** (92.8%) |
+| **missing** | **21 — every one of them January 2026** |
+| partially covered days | **0** — coverage is all-or-nothing per day |
+
+**Blast radius:**
+- `ash-unicorn-sb` — **unaffected**. Its log jumps 2025-12-24 → 2026-03-09, so it has no January
+  trades. The earlier backfill audit's conclusion still stands *for that card*.
+- `zxck-10am-keyopen` — **13 trades affected**, and they are *exactly* the 13 "undefined flow"
+  rows. Not a quirk; the gap. Its rev-d **R values are unaffected** (price only); only the flow
+  columns would change.
+- **29 scripts read `fp_minutes.parquet`**, including `london_canon.py` and `score_canon_span.py`.
+  Any flow-based result computed over January 2026 anywhere in this repo is affected.
+
+**Fix:** rebuild `fp_minutes.parquet` including `footprint_jan2026.parquet`. It is a tracked
+artifact committed as prebuilt (`b9724e6`) with no in-repo builder, and it is shared with the
+canon work — **so it is not being regenerated unilaterally.**
+
+### Sign convention — checked while here, and it is correct
+`delta` in `fp_minutes` correlates **+0.645** with the minute's (close − open) across 369,045
+minutes, agreeing in sign on **75.5%** of non-zero minutes. It is **buy-positive**, which is the
+convention `F1_disp_delta` assumes. No inversion.
 
 ---
 
