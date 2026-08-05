@@ -627,6 +627,19 @@ caught it:
    = a declared arm or a documented N/A with reason).
 7. **Lookahead audit** — every conditioning variable certified same-time
    computable (day_type nearly slipped through as a gate today).
+8. **Mechanical-baseline sign-off before any agent rung** [ANGUS
+   2026-08-05]. No agent test runs until Angus has been handed the
+   mechanical baseline VERDICT PACKAGE — the default spec's full stats,
+   every banked challenger's numbers, and every unresolved
+   baseline question (unadjudicated arms, missing holdouts) — and has
+   ruled which mechanical expression the agents are graded against. The
+   canon's baseline was built by exactly this back-and-forth (operator
+   catching missed variables, optimizing the mechanical, out-of-fit
+   confirmation) BEFORE agents ran; grading agents against an
+   under-optimized mechanical inflates their apparent value-add with
+   alpha a better mechanical already had. (Caught on the fade: the agent
+   rung launched while cap20-W120 — the strongest expression, no losing
+   year — sat banked and unadjudicated.)
 
 ### 5.10 The transparency rule [ANGUS 2026-08-05]
 
