@@ -54,7 +54,7 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - ROLE IN THE AUDIT: the negative control — the funnel lifts real edges
   (cards above) and fails to lift dead ones. Both behaviors are required.
 
-## london-nq-open-break (LDN-OBK-01) — continuation branch — ALIVE, census passed
+## london-nq-open-break (LDN-OBK-01) — continuation branch — **DEAD** (earned)
 - STAGE: L0 census done (`docs/PREREG-london-open-break-tree.md`). L1 owed.
 - RAW TRIGGERS: 425 breaks / 396 London sessions (~1.1/day); 92% of 2025 days and
   93% of 2026 days carry at least one. Declared census floor was 30%.
@@ -80,15 +80,21 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   alternative — near-zero beating negative. **Neither stop makes this pay.**
 - VARIABLE LIFT SO FAR: **negative.** Minimum displacement ≥0.10× range makes it worse
   in every era at every cost (2025 −0.124R, 2026 −0.129R vs −0.198/+0.013 unfiltered).
-- NEXT: no expectancy kill at L1 per §5.9.2, so the family earns the conditioning
-  search on its census-passed premise. Declared next variables: range width, time of
-  break within the window, and the 04:00 ET / 09:00 London second peak from
-  `LDN-WIN-01`. Then flow at L3.
+- CONDITIONING: 1 of 3 mechanism predictions confirmed (V1 macro hour, 4/4 cells;
+  V2 and V3 flip sign between eras).
+- **L3 FLOW: 0 of 6 declared features confirmed.** Autopsy: 16 cut-sets, 5 legal,
+  **none** positive at strict cost; de-risk also negative on all.
+- **VERDICT: KILLED on expectancy after the complete declared search (§5.9.2).** The
+  clock was right and the trade was not — same sentence as `nypre-euro-handoff`, second
+  session to teach it.
+- SURVIVES: the 09:00 London / 04:00 ET macro hour, the only confirmed variable and the
+  only London clock finding that came from our own measurement rather than a trader's
+  claim. No live candidate uses it.
 - CANON SHAPE: raw is ugly on schedule (canon raw was negative pre-wall-gate too). The
   difference from canon so far: **canon's first variable lifted, this one's didn't.**
   One variable is not a search, but it is not a good start either.
 
-## london-po3-ifvg (LDN-PO3-01) — failure branch — ALIVE, census passed, claim narrowed
+## london-po3-ifvg (LDN-PO3-01) — failure branch — **DEAD** (earned)
 - STAGE: L0 census done, same prereg, same event tree. L1 owed.
 - RAW TRIGGERS: same 425 breaks. Fail-within-120m on **85% (2025) / 84% (2026)** vs
   the declared 15% census floor. The strong "the break is usually the trap" form

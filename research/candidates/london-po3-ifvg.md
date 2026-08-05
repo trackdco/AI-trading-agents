@@ -1,6 +1,6 @@
 ---
 date: 2026-08-05
-status: L1 done — raw negative, conditioning search earned
+status: KILLED — expectancy, after the complete declared search (§5.9.2)
 tags: [london, overnight-structure, reversal, pattern-taxonomy]
 sources: ["findings/london-nq-what-three-traders-agree-on.md", "findings/london-window-LDN-WIN-01.md", "https://www.youtube.com/watch?v=uGE_GP9-nxU", "https://www.youtube.com/watch?v=v7tdhjW84Ho", "https://www.youtube.com/watch?v=RJXe1rF9kXM"]
 ---
@@ -288,3 +288,83 @@ version of this trade. That is now measured rather than quoted.
 pp placebo margin is a real, era-consistent signal that something specific happens at
 this range). Arm A (IFVG) remains barred pending a mechanical definition committed in
 advance. SMT confluence remains dropped for want of ES data.
+
+### Trial 3 — L3 flow + mandatory autopsy (2026-08-05) — **KILLED, expectancy, search complete**
+
+`docs/PREREG-london-obk-L3-flow-and-autopsy.md`. `scripts/london_obk_flow.py`,
+`scripts/london_obk_autopsy.py`. Flow span 2025-06-01 → 2026-07-19 (tape),
+295 depth days. **2023/24 and the sealed flow months untouched.**
+
+**This is the first stage at which an expectancy kill is legal** (§5.9.2: candle
+features AND flow-at-entry AND geometry variants must all have run). They have. The
+kill is earned, not premature.
+
+#### The mechanism variable failed, and it was named in advance
+
+`delta_sweep` — cumulative delta from the break bar through the fail bar — was
+declared in the prereg **before the join** as the one feature that had to work:
+*"the fade thesis is that the break traps aggressive size, and the delta printed
+during the sweep IS that size."*
+
+| era | low tercile | mid | high | predicted |
+|---|---:|---:|---:|---|
+| 2025 H2 | −0.271 | −0.241 | **−0.339** | high should be **best** |
+| 2026 | +0.114 | −0.347 | +0.218 | — |
+
+2025 puts high-delta sweeps in the **worst** tercile, the opposite of the prediction.
+2026 is non-monotonic, which is a shape noise makes and a mechanism does not.
+
+**Zero of six flow features confirmed in their predicted direction on either arm.**
+The controls did as well or better — `delta_entry` high in 2026 is the strongest cell
+in the entire pass (+0.448R, PF 1.56) with no story attached and no 2025 support. The
+prereg pre-committed to calling that generic flow-momentum rather than this
+candidate's mechanism, and that is what it is.
+
+#### Why this is decisive rather than just disappointing
+
+The candidate's whole thesis is a trapped counterparty. When V3 (drift alignment) only
+half-confirmed on candles, the defence was that bars cannot see trapped size because
+it is a flow object. **That defence was the reason to run L3.** The tape can see it,
+and it is not there. There is no third place to look.
+
+#### The autopsy found nothing to cut
+
+16 candidate cut-sets, proposed from the discover era, tested on every era per §3.2.
+**9 were legal** (cohort genuinely bad in both eras). **None left the arm positive at
+strict cost.** Best of them — cutting the low-`book_imb` cohort — moves R from −0.250
+to −0.123. De-risking instead of cutting was tested alongside every one, per §3.2, and
+every de-risk is also negative.
+
+Removing the worst cohorts raises the number without crossing zero. That is what it
+looks like when the losses are **spread through the sample** rather than sitting in a
+removable subset.
+
+**Half-year decomposition** (mandatory, and the reason it is mandatory):
+
+| half | n | WR | net pts base | PF |
+|---|---:|---:|---:|---:|
+| 2025H2 | 130 | 32% | **−405** | 0.63 |
+| 2026H1 | 117 | 34% | +5 | 1.00 |
+
+The same time-clustered losing-stretch shape that triggered the §3.2 rule.
+
+#### VERDICT — KILLED (expectancy, after the complete declared search)
+
+The premise is real and stays on the record: the pre-open range is broken on 92–93% of
+days, breaks fail 84–85% of the time, and that beats a placebo range by +12/+14pp,
+era-consistent. **What does not exist is a way to get paid for it.** The fade loses at
+strict cost in every era, in every conditioned form, after every legal cut.
+
+**What survives this candidate, and it is not nothing:**
+
+1. **`book_imb` at entry is the one flow feature that separated winners from losers
+   with the same sign in both eras** (+0.31σ / +0.43σ). It did not rescue this
+   candidate. It should be tried on candidates that are still alive — it is a
+   feature adoption, not a strategy.
+2. **The +12/+14pp placebo margin is a real measured fact about the London pre-open
+   range** and belongs to whatever uses that level next.
+3. **The far-edge-vs-midpoint target question stays open and unresolved** — F2 beat F1
+   in 2026 and not in 2025. It was never settled and this verdict does not settle it.
+
+**Never looked at:** the 2023/24 candle span and the sealed flow months. This candidate
+dies without spending a holdout look, which is the correct way for it to die.

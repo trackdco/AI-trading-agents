@@ -1,6 +1,6 @@
 ---
 date: 2026-08-05
-status: L1 done — raw negative, conditioning search earned
+status: KILLED — expectancy, after the complete declared search (§5.9.2)
 tags: [london, session-structure, trigger-density]
 sources: ["articles/2026-08-05-channel-map-four-traders.md", "findings/london-nq-what-three-traders-agree-on.md", "findings/london-window-LDN-WIN-01.md", "https://www.youtube.com/watch?v=hcVhQBAGGFw", "https://www.youtube.com/watch?v=JySO8cOWOIs", "https://www.youtube.com/watch?v=1noM1ogc5zM"]
 ---
@@ -247,3 +247,42 @@ within the window, and the 04:00 ET / 09:00 London second peak from `LDN-WIN-01`
 which no candidate currently uses. Exit-arm tournament is a later rung with the
 default declared first; 2R was a placeholder, not an optimised target, and that is
 stated so nobody mistakes this for an exit search that failed.
+
+### Trial 3 — L3 flow + mandatory autopsy (2026-08-05) — **KILLED, expectancy, search complete**
+
+Same prereg and same run as `LDN-PO3-01`: `docs/PREREG-london-obk-L3-flow-and-autopsy.md`.
+
+**Zero of six declared flow features confirmed in their predicted direction.** Every
+one flips sign between eras except `book_imb`, which is a control with no prediction
+attached.
+
+**Autopsy:** 16 candidate cut-sets, **5 legal** (cohort bad in every era), **none**
+leaving the arm positive at strict cost. Baseline R −0.133 base / −0.233 strict on
+n=300. De-risk tested alongside every hard cut, per §3.2 — all negative.
+
+#### VERDICT — KILLED (expectancy, after the complete declared search)
+
+This candidate had one novel component and it was measured and refuted at L1: the
+tight trigger-candle stop lost to a structural stop in **0 of 4** era×cost cells, and
+on its own terms it is hit 65% of the time against a 30% target rate — break-even
+geometry that costs turn negative. The conditioning search then confirmed only 1 of 3
+mechanism predictions, and the flow pass confirmed none.
+
+**The clock was right and the trade was not.** Three independent sources and our own
+`LDN-WIN-01` measurement agree that 08:00 London is the moment; the census confirmed
+the level gets broken on 92–93% of days; the event is genuinely bimodal (failed breaks
+run ~10 pts, continued breaks 64–97). **None of that converted into an edge per unit
+of risk**, which is the same sentence written on `nypre-euro-handoff`'s tombstone and
+is now the second time this programme has learned it in a different session.
+
+**What survives:**
+
+1. **The 09:00 London / 04:00 ET macro hour is the one variable that confirmed
+   (4/4 cells).** It did not save this candidate — 2025's macro hour still loses — but
+   it is the only London clock finding that came from our own measurement rather than
+   a trader's claim, and **no live candidate uses it**. It should outlive this file.
+2. **A negative control for the funnel.** Census passed wide, raw was ugly, the
+   variable search ran in full, and the thing still died. That arc is what the funnel
+   is supposed to do to a bad idea, and it is worth having next to the canon's arc.
+
+**Never looked at:** 2023/24 candles, sealed flow months. No holdout look spent.
