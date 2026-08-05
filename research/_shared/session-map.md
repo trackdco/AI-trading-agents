@@ -85,12 +85,13 @@ Those are left blank, never interpolated.
 
 **Flagged now rather than mid-baseline.**
 
-1. **`zxck-gap-fill-edge` and `zxck-ifvg-50` have NO stated clock window.** Both are Confirmed and
-   both are greenlit, and neither card says when to trade. Mechanizing either means **inventing a
-   window** — exactly the mistake already made on `zxck-10am-keyopen` (10:00–14:00, caught by
-   Brake). **The window must be decided before either is baselined, and recorded as ours.**
-   Defaulting them to 09:45–10:15 to match the macro rule is the obvious move, but it is a
-   decision, not a reading.
+1. ~~**`zxck-gap-fill-edge` and `zxck-ifvg-50` have NO stated clock window.**~~ **RESOLVED
+   2026-08-07 — both inherit 09:45–10:15 ET, dates 2025-06-01 → 2026-07-15.**
+   Brake: *"I just want it to be the time that we have data for order flow."* Measured: flow covers
+   **00:00–23:59 ET every hour** (only the 17:00 CME break missing), 271 of 271 trading days
+   complete across the macro — so **flow constrains the DATE range only, never the clock**. The
+   clock therefore comes from Brake's standing macro rule, and **it is OURS, not either trader's**
+   — tag it `[stated-by-user]` on both cards and in any result. See `zxck-COMPONENTS.md` §F000.
 
 2. **`ash-unicorn-sb`'s log starts 2025-03-07 — three months before flow.** 8 of 37 trades sit
    outside the footprint span and can never be flow-covered from held data.

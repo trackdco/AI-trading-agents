@@ -201,6 +201,32 @@ Skips FOMC/Powell-testimony days `[xae9AiV5Ps4 @ 01:31]`.
 
 ---
 
+## F000. STANDING CONVENTION — TEST WINDOW & SPAN (Brake, 2026-08-07)
+
+Brake: *"I just want it to be the time that we have data for order flow."*
+
+**Measured first, because it changes what that instruction resolves to.** `output/fp_minutes.parquet`
+covers **00:00–23:59 ET, every hour**, the only gap being the 17:00 CME maintenance break. On
+trading days inside the span, **271 of 271** have complete flow across 09:45–10:15 (median 31 of
+31 minutes present).
+
+**So order-flow coverage constrains the DATE RANGE only. It does not narrow the clock window** —
+flow covers any window we pick equally well.
+
+### The convention, therefore:
+
+| | value | whose rule |
+|---|---|---|
+| **date span** | **2025-06-01 → 2026-07-15** | **Brake** — "the time we have order flow for". Flow runs to 07-19 but bars stop 07-15 |
+| **clock window** | **09:45–10:15 ET** | **Brake's standing macro rule**, *"from here onwards we only will stick to 9:45-10:15 macro"* — NOT derived from flow, and **not stated by either trader** |
+
+**Every remaining card inherits both.** `zxck-gap-fill-edge` and `zxck-ifvg-50` state no window of
+their own, so 09:45–10:15 is **OURS** and must be tagged `[stated-by-user]` on each card and in
+any result. It matches `ash-unicorn-sb` exactly, so all logs pool on one window.
+
+⚠️ `zxck-10am-keyopen` keeps **10:00–10:15** — its level *is* the 10:00 open, so it cannot start
+earlier. It is the intersection of his level with the macro rule, not a different convention.
+
 ## F00. STANDING CONVENTION — INTRABAR AMBIGUITY (Brake, 2026-08-07)
 
 > *"Where a rule's intrabar timing is ambiguous in OHLC, resolve the sequence with tick data.
