@@ -468,6 +468,43 @@ Gauntlet → holdout → funded-rules MC → shadow → live at minimum size →
 evidence, **with a human sign-off at the paper-to-live step** (brief §2a-6). Every
 rung already exists in practice; this section names them in order.
 
+### 5.9 The five framework rulings [ANGUS 2026-08-05 — answers on the record]
+
+Settled in plain words before mass intake; every number below traces to one
+of these answers.
+
+1. **The census kill line.** A candidate dies at census ONLY if the claimed
+   behavior literally does not happen — tested AS TAUGHT, mandatory triggers
+   included. Raw profitability, decayed edges, ugly win rates: none of these
+   kill at census; they wait for the complete variable search (the canon
+   would have died at raw triggers under any other rule).
+2. **The deep search is earned — but never by pretty raw P&L.** Census +
+   trapped-counterparty story is the whole ticket. Raw-data ugliness cannot
+   deny entry to the deep search (Angus: "imagine i didnt go through that
+   shit [with the canon], it wouldve just been fully cooked"). The earn-gate
+   exists only to keep the program's total search honest, not to filter on
+   looks.
+3. **Certification is BOOK-LEVEL.** A 2-3-trades-a-month sleeve with genuine
+   positive EV ships as a book component; the live agents recognize its
+   setup when it occurs. Sleeve-level bars are pre-registered per candidate
+   (era consistency, cost realism, PSR floor per §5.9.5); the deflated
+   ≥0.95 screen applies to the BOOK — the search is charged once, at the
+   decision point.
+4. **The 23/24 candle holdout: ONE corrective iteration, maximum.** Look
+   once; on failure, diagnose and rebalance (that thesis is the quant's to
+   make); retest once. Fails again → the family does not ship. Look counts
+   live in the machine ledger. The six sealed FLOW months remain strict
+   single-look by written declaration, unchanged.
+5. **Dud tolerance: 2-3 per 10 shipped.** Accepted failure mode: live
+   shadow + agent journaling catch decay, and the desk cuts when the time
+   is right (§7.3). Calibration consequence: the per-sleeve confidence
+   floor is set at PSR(0) ≥ 0.75 (≈ tolerating ~1-in-4 sleeve duds before
+   book-level deflation and live monitoring), with the exact
+   sleeve/book statistical split to be ratified by Brake against his
+   graders. Every shipped strategy carries its validation-era agent
+   journals as live reference memory (the desk-run record is part of the
+   shipped artifact).
+
 ### 6.0 The promotion law [BRAKE 2026-08-05, ratified into process]
 
 **Rank-and-promote-the-top-scorer is a condemned procedure.** Selecting the
