@@ -135,6 +135,53 @@ Two further honesty markers on the same source:
 quotes**. A 10-point stop at 2R on NQ needs ~35% to break even before costs. That
 is the actual bar, and it is a very different conversation from 89.5%.
 
+## 🔴 Second correction: Tradesharpe's London edge is not on Nasdaq
+
+His explicit London-session video landed after the above was written
+[`A8KDclHRpGc` @ 2:40]:
+
+> *"during London session you do want to trade a pair that is going to have the
+> majority of the volume brought into London session, and in this case it's going
+> to be **pairs with GBP**, euro is also fine — but **anything where we're using
+> USD, anything where we're having something like gold and stuff like that and
+> US30, NASDAQ indices, this is where you might see some inconsistencies and
+> where it might be seasonal**."*
+
+> *"hedge funds and major funds normally rebalance portfolios and they go hard in
+> **February, March, April**, so even in London session we do see better moves on
+> those compared to later in the year — whereas New York there's a consistent
+> volume."*
+
+He is a London specialist who trades **GBPJPY** in London, and he actively warns
+that **Nasdaq in the London session is inconsistent and seasonal**. Two of his
+three relevant claims now point away from NQ-in-London: the ORB material is New
+York, and the index instruments are cautioned against outright.
+
+**Timeline nuance, and it matters.** That video is ~2 years old. His current
+livestreams are titled *"GOLD NQ & DAX"* — so he has since moved onto exactly the
+instruments he cautioned about. Either he changed his mind, or the caution still
+stands and the recent streams are a different (worse) business. **The 815-stream
+archive can answer that**, and it is the strongest argument yet for mining the
+recent era rather than the courses.
+
+**And the caution is itself a censusable claim.** "Nasdaq in London is seasonal,
+better in Feb–Apr" is directly testable on our substrate — 912 days, 2023→2026,
+London-window range and efficiency by month. That is a cheap measurement that
+either kills the concern or turns it into a regime filter we would want anyway.
+Not run: it needs its own prereg and Angus should see the changed picture first.
+
+### Where this leaves the sources
+
+| Source | London? | NQ? | Net |
+|---|---|---|---|
+| Brandan | yes | **yes — MNQ explicitly** | the only genuinely NQ-London source |
+| EzTrades | yes ("London Po3") | unknown, gold-heavy channel | **still queued — now the swing vote** |
+| Tradesharpe | yes, deeply | **no — GBP pairs; cautions against indices** | method transfer only, not the instrument |
+| Fabio / Chart Fanatics | no (NY open) | yes | geometry principle only |
+
+The two-source London claim is now closer to **one-and-a-half**. EzTrades'
+London videos matter more than they did an hour ago.
+
 ## What I would take forward
 
 1. **The trigger-candle stop rule as a component**, testable against triggers we
