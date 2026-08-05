@@ -492,3 +492,71 @@ discloses losing £10k at 16 `[@ 05:19]`.
 
 **Still unspecifiable after all seven videos:** order-block identification; bias aggregation;
 the *"clear where price is drawing to"* gate. Everything else is now mechanical.
+
+
+---
+
+## WINDOW ROBUSTNESS — 2026-08-07: 09:45–10:30 does NOT survive
+
+`scripts/ash_window_robustness.py` · `ash-unicorn-sb-window-robustness.csv`
+
+**A declared second look**, run at Brake's request. Framed before running as *"does the edge
+survive outside his macro?"* — not as *"which window is better"*, because with two windows tried,
+picking the better one is selection. **The AM1 window and the pre-registered forward test are
+unchanged by this.**
+
+### Why 10:15–10:30 is not a widening of his rule
+His own stated macro grid `[qngA8aIfV0M @ 00:27–01:46]`:
+
+| AM1 | **gap** | AM2 |
+|---|---|---|
+| 09:45–10:15 | **10:15–10:45** | 10:45–11:15 |
+
+The extra 15 minutes fall in a period **he explicitly does not name as a macro.**
+
+### Result
+
+| arm | n | win / BE / loss | avg R | expectancy | total | maxDD |
+|---|---|---|---|---|---|---|
+| **09:45–10:15** (committed baseline) | 37 | 40.5 / 27.0 / 32.4 | +0.486 | **+0.434R** | **+18.0R** | 3.0R |
+| 09:45–10:30 (robustness arm) | 47 | 34.0 / 25.5 / 40.4 | +0.277 | +0.226R | +13.0R | 4.0R |
+| **the extension alone (entries >10:15)** | **10** | **10.0 / 20.0 / 70.0** | **−0.500** | **−0.543R** | **−5.0R** | 4.0R |
+
+**The 37 baseline trades are byte-identical under both windows** — 0 outcome changes, 0 trades
+present in one and not the other. The wider window is purely additive, and everything it adds
+loses money.
+
+### The 10 extension trades — 1 win, 2 BE, 7 losses
+
+| date | time | dir | risk | R |
+|---|---|---|---|---|
+| 2025-01-27 | 10:23 | short | 31.50 | −1.0 |
+| 2025-02-06 | 10:24 | long | 21.50 | −1.0 |
+| 2025-03-03 | 10:29 | short | 48.75 | 0.0 |
+| 2025-04-02 | 10:20 | short | 42.75 | −1.0 |
+| 2025-07-31 | 10:22 | long | 26.75 | −1.0 |
+| 2025-08-18 | 10:28 | long | 17.50 | −1.0 |
+| **2025-12-31** | **10:23** | **short** | **15.75** | **+2.0** |
+| 2026-04-24 | 10:26 | long | 34.25 | −1.0 |
+| 2026-05-21 | 10:30 | short | 74.50 | 0.0 |
+| 2026-05-27 | 10:22 | long | 40.00 | −1.0 |
+
+Negative in **both** eras (2025: 7 trades, −3.0R · 2026: 3 trades, −2.0R).
+
+**Significance, stated conservatively:** 1 win in 10 against the core's 40.5% base rate is
+one-sided p = **0.0432**. This was **one pre-named slice, not a search** — the extension window was
+specified before the run. But **n = 10 cannot carry much**, and the result should be read as
+*"widening does not help"*, which it establishes, rather than *"10:15–10:45 is provably bad"*,
+which it does not.
+
+**A mechanical observation, not a proposed filter:** extension entries carry a **32.9pt median
+stop against 25.5pt** in the core, and arrive 35–45 minutes into the window versus a core maximum
+of 29. Later entries reach for further levels. Recorded because it is descriptive; **no stop-size
+filter is proposed from it.**
+
+### Ledger
+**This is 1 new arm** (the 09:45–10:30 window) on top of the 4 already owed. It raises the
+deflation bar for everything, including the pre-registered forward test — which is the price of
+having asked, and is why the answer coming back negative is the cheap outcome.
+
+**AM1 09:45–10:15 stands unchanged as the card's window.**
