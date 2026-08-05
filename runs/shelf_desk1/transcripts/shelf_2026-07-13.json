@@ -1,0 +1,28 @@
+{
+ "turns": [
+  {
+   "minute": "2026-07-13 10:17:00-04:00",
+   "why": "BAND TOUCH: the mechanical exit is here at 29557.18 (+1.43R). Take it (hold/exit_now) or refuse with a plan (revise: null target to ride, or fixed target + tighter stop).",
+   "sent": "NEW POSITION LONG shelf-fade | tier BASE ($180 risk, fixed) | entry 29518.0 risk 27.41pt | engine stop 29490.59375 (-1R, INVIOLATE) | mechanical target = the developing near band | mechanical scratch at t+10 if red | session ends 15:55\njournal: 110 trades | you $+24,879 vs mech $+21,057 (delta $+3,822)\n  defense (mech losers, n30): $-87\n  offense (mech winners, n80): $+3,909\n  band-exit refusals: 80, net vs mech $+3,909\nlast trades (you vs mech):\n  2026-06-29 long BASE: -1.04R vs -1.03R (stop; Pulled back off peak but still +0.45R, CVD +174 st)\n  2026-06-30 short CONFIRMED: +1.67R vs +1.67R (band; Band tag already +1.69R, but CVD +192 against shor)\n  2026-07-02 short CONFIRMED: +1.20R vs +1.20R (band; CVD +216 against short at band touch, mirrors prio)\n  2026-07-06 short BASE: -1.04R vs -1.03R (stop; near stop already, mechanical -1R will handle it, )\n  2026-07-07 long BASE: -1.04R vs -1.03R (stop; t+2 pullback from +1.29 peak to -0.08R, CVD -75 ag)\nReply with EXACTLY one JSON object, nothing else: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"stop_r\":<num,optional>,\"target_r\":<num or null,optional>,\"partial_pct\":<0-1,optional>,\"note\":\"<=120 chars\"}. R units are TRUE risk (engine stop = -1R). \"hold\"=no change (mechanical exits execute when due). \"revise\": stop_r only TIGHTENS (0=entry); target_r >= 0.3 replaces the target, null = ride on the stop (extension mode); partial_pct books that fraction of what is OPEN at next bar. \"exit_now\" flattens at next bar. Rule-breaking fields are ignored by the harness.\n\n[10:17] EVENT: BAND TOUCH: the mechanical exit is here at 29557.18 (+1.43R). Take it (hold/exit_now) or refuse with a plan (revise: null target to ride, or fixed target + tighter stop).\nbar 29557.00/29590.25/29493.50/29558.50 | R_now +1.48 peak +0.00 | open 1.00 | stop -1.00R | target developing band +1.43R | cvd_since_entry -93 | mins_to_EOD 338",
+   "reply": "{\"action\":\"revise\",\"stop_r\":0.6,\"target_r\":null,\"note\":\"Band tag +1.48R but CVD -93 vs long; tighten stop, ride trail rather than take flat exit\"}"
+  },
+  {
+   "minute": "2026-07-13 10:18:00-04:00",
+   "why": "t+2 check: the decisive minute on this clock",
+   "sent": "[10:18] EVENT: t+2 check: the decisive minute on this clock\nbar 29560.50/29582.75/29535.50/29560.25 | R_now +1.54 peak +2.36 | open 1.00 | stop +0.60R | target NONE (riding stop) | cvd_since_entry +28 | mins_to_EOD 337",
+   "reply": "{\"action\":\"revise\",\"stop_r\":1.0,\"target_r\":null,\"note\":\"Pulled back from +2.36 peak but CVD flipped +28, still riding; tighten stop to lock more of the run\"}"
+  },
+  {
+   "minute": "2026-07-13 10:28:00-04:00",
+   "why": "extended recheck (10m)",
+   "sent": "[10:28] EVENT: extended recheck (10m)\nbar 29662.25/29680.75/29652.25/29672.50 | R_now +5.64 peak +5.95 | open 1.00 | stop +1.00R | target NONE (riding stop) | cvd_since_entry +990 | mins_to_EOD 327",
+   "reply": "{\"action\":\"revise\",\"stop_r\":3.5,\"target_r\":null,\"note\":\"Deep extension +5.64R (peak 5.95), CVD +990 strongly with; lock major gains, trail generously to let outlier run\"}"
+  },
+  {
+   "minute": "2026-07-13 10:38:00-04:00",
+   "why": "extended recheck (10m)",
+   "sent": "[10:38] EVENT: extended recheck (10m)\nbar 29663.75/29684.25/29662.25/29676.75 | R_now +5.79 peak +7.52 | open 1.00 | stop +3.50R | target NONE (riding stop) | cvd_since_entry +1623 | mins_to_EOD 317",
+   "reply": "{\"action\":\"revise\",\"stop_r\":4.5,\"target_r\":null,\"note\":\"Peak 7.52R, now 5.79R pullback but CVD +1623 still strong; tighten stop to protect more of outlier run\"}"
+  }
+ ]
+}

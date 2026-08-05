@@ -409,3 +409,28 @@ Ledger rows 257-258.
   Defense/offense split reported per the canon journal convention.
   Spec: .claude/agents/trade-manager-shelf-v1.md (fast-clock terrain,
   honest fit + OOF numbers, walkout-extension briefing).
+
+### AGENT RUNG RESULT (2026-08-05, runs/shelf_desk1, 111/112 trades)
+HEADLINE: agent $+25,680 vs mechanical $+21,308 — +$4,373 (+21%) at
+Angus's 180/360. Mech total independently reconciles the spec estimate.
+ANATOMY (the honest read):
+- ALL OFFENSE: +$4,459 on mech winners; defense a wash (-$87 on 30 mech
+  losers) — the tight stop/scratch left nothing to save, as predicted.
+- THE REFUSAL STRUCTURE IS A POSITIVE-SKEW LOTTERY: 81 band-exit
+  refusals; only 22% beat the machine; median refusal delta $0 (trails
+  recapture the band); typical cost -$151, worst -$411, bounded well.
+  THE TOP 3 CATCHES (+$1,850/+$879/+$805) = ~79% OF THE ENTIRE EDGE.
+- CONSISTENCY: only 8 of 14 months positive (range -$1,382..+$2,567) —
+  the edge is lumpy, arriving in walkout bursts.
+- Tier: confirmed trades carry +$3,493 of the delta (2x sizing amplifies
+  refusal catches). Agent WR 72% = mech 73%; worst trades equal (-$374
+  vs -$371) — downside control is genuinely clean.
+INTERPRETATION: the agents are SELLING the band exit to BUY walkout
+optionality at ~$100-150/ticket, paid off by a few +$800-1,850 runners.
+Structurally safe per trade; the EDGE depends on big-walkout frequency
+(~3-5/yr in fit), which fit cannot prove stable. In-fit, journal-fed.
+RECOMMENDATION: ship the PROVEN core (mechanical flat-$180, OOF-validated)
+live via the standard arming path; run BOTH overlays in SHADOW — the
+2-tier ladder AND the single band-refusal agent decision (safe-default
+design: agent timeout = mechanical exit). Each overlay graduates on its
+own shadow receipts. Ledger row 259.
