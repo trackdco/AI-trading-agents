@@ -1,5 +1,6 @@
 # FROM 19,137 RAW TRIGGERS TO A 763-TRADE LIVE BOOK
 ## The discovery methodology, with the real numbers
+### v2 — adversarially verified (12 agents, 41 corrections applied)
 
 Written 2026-08-05 by the rebuild chat. Every number here was **recomputed from the
 committed artifacts today**, not quoted from memory or from prose. Where a shipped
@@ -87,7 +88,7 @@ Source: `scripts/l3_check_trial.py`. Recomputed here on `output/l3_scored_{span}
 
 | check | what it measures | fit 2025 | fit 2026 | HOLDOUT | verdict |
 |---|---|---|---|---|---|
-| **W** | **no depth wall BEHIND the trade** | **+0.488** | **+1.272** | **+0.836** | **SHIPPED — carries pre-market** |
+| **W** | **entry sits at/below the whole visible ladder** (see §4.2b — NOT wall-size) | **+0.488** | **+1.272** | **+0.836** | **SHIPPED — carries pre-market** |
 | F_ | fill-minute delta confirms direction | +0.041 | +0.338 | +0.001 | weak; kept in score |
 | Tp | 15-min delta, direction-signed ≥ −61.0 | −0.005 | +0.371 | +0.177 | era-unstable; NOT in shipped score |
 | G | entry vs VWAP in SD, signed ≥ −0.768 | −0.011 | +0.184 | **−0.228** | **in score despite negative holdout — see §2.4** |
@@ -99,8 +100,8 @@ W's WR on/off: **38.5%/24.1%** (2025), **46.9%/26.2%** (2026), **61.2%/32.3%** (
 
 | check | what it measures | fit 2025 | fit 2026 | HOLDOUT | verdict |
 |---|---|---|---|---|---|
-| **D** | **a depth wall EXISTS AHEAD** | **+0.875** | **+0.810** | **+0.806** | **SHIPPED — carries gold** |
-| **WALLSZ** | **wall ahead ≥ 7 contracts** | **+0.667** | **+0.495** | **+0.749** | **SHIPPED — the wall-quality cut** |
+| **D** | **visible book still exists above entry** (see §4.2b — NOT wall-size) | **+0.875** | **+0.810** | **+0.806** | **SHIPPED — carries gold** |
+| **WALLSZ** | **the level ahead carries ≥ 7 contracts** (the only true size test) | **+0.667** | **+0.495** | **+0.749** | **SHIPPED — the wall-quality cut** |
 | Tc | 15-min delta confirmation bit | −0.022 | +0.096 | +0.183 | weak; in score |
 | AGE | minutes since the extreme ≥ 136.5 | +0.034 | +0.155 | −0.007 | marginal; in score |
 | TRIG | trigger density (30m) > 11 | +0.016 | +0.312 | +0.261 | weak in 2025; elite limb |
@@ -119,9 +120,14 @@ D's WR on/off: **46.9%/12.1%** (2025), **41.8%/16.8%** (2026), **50.6%/20.4%** (
 All three are DEPTH variables. Every one of the thirteen others sits inside ±0.32R and
 most flip sign across eras.**
 
-The strategy's entire edge is: *is there resting liquidity where it matters?*
-- **Gold** wants a wall **ahead** — something for price to reject off / a magnet to trade into.
-- **Pre-market** wants **no wall behind** — nothing to stop the trade running back through you.
+The strategy's entire edge is **displacement geometry measured against the visible
+top-of-book ladder** (§4.2b — this is the corrected reading; the "wall detection" framing
+in most repo prose is wrong):
+- **Pre-market** wants the entry **outside the ladder** — price has punched clean through
+  a thin overnight book (momentum through vacuum).
+- **Gold** wants the entry **still inside the ladder** — price has not yet displaced past
+  the visible book, so there is room left to travel into.
+- **WALLSZ** is the one genuine size test, and it is the third-strongest signal.
 
 **Raw structure alone breaks even.** The trigger logic (rejection blocks, displacements,
 multi-timeframe confluence) generates the *population*; it does not generate the *edge*.
@@ -255,6 +261,54 @@ ahead_sz = dep_wall_above_sz if long else dep_wall_below_sz
 
 Below/above are **absolute**; behind/ahead are **relative to the trade**. Every wall
 feature must be resolved through direction before use.
+
+## 4.2b ⚠️ WHAT W AND D ACTUALLY MEASURE — the correction that reframes the edge
+
+**This was wrong in v1 of this document, and it is wrong in most prose about the canon.**
+An independent re-derivation of `depth_at` from the raw archive CSVs (40 fit days, 505
+trades, reproduced to 1e-9 on 505/505 rows) established the true semantics:
+
+> `dep_wall_above_d` is NaN **iff entry ≥ the ladder's maximum price**.
+> `dep_wall_below_d` is NaN **iff entry ≤ the ladder's minimum price**.
+> Cross-tab of 505 rows: **zero off-diagonal**. Perfectly clean.
+
+The wall fields are only written `if len(above)` / `if len(below)` — where
+`above, below = b[b.price > entry], b[b.price < entry]`. So a NaN does **not** mean "no
+big order there". It means **there is no price level at all on that side of entry in the
+visible book**.
+
+And the visible book is *tiny*: **MBP-10 spans a median 5.25 points total — about 2.25
+points each side.**
+
+**Therefore:**
+- **W = 1 (pre) does not mean "no wall behind me". It means the entry price sits at or
+  below every visible bid level — price has already displaced clean through the visible
+  book.**
+- **D = 1 (gold) does not mean "a big wall is ahead". It means there is still visible book
+  above the entry — price has NOT yet displaced past the ladder in the trade's direction.**
+
+There is **no notion of size or significance in either test.** Size enters only through
+`WALLSZ` (≥7 contracts), which is a separate bit.
+
+**Why this matters enormously for a validation framework:** the edge is not "read the
+order book for big resting orders." It is **a displacement-geometry measurement taken with
+a depth snapshot as the instrument** — is the entry inside or outside the top-of-book
+ladder? That is a far more mundane, far more *portable* signal, and it explains the
+session asymmetry cleanly:
+- **pre-market** wants entries that have punched *through* the thin overnight ladder
+  (momentum through vacuum);
+- **gold** wants entries that have *not yet* punched through (room left to travel into).
+
+If you'd described these as "wall detection" and gone looking for a bigger/better depth
+feed to improve them, you would have been optimising the wrong thing entirely.
+
+**Second-order consequence, also verified:** `dep_thick` medians differ by era — all-row
+fit 2025 **91.5**, fit 2026 **63.0**, holdout **131.0** (gold-only: 95.0 / 65.5 / 138.0).
+That is a 1.45× liquidity shift *within* the fit span. **`WALLSZ`'s absolute 7-contract
+threshold is therefore regime-sensitive by construction** — it means something different
+in a 63-thick book than a 131-thick one. It survived every era anyway, but a framework
+should prefer *relative* thresholds (quantiles of contemporaneous book thickness) over
+absolute contract counts, or at minimum measure the regime sensitivity explicitly.
 
 ## 4.3 The gates, exactly as shipped
 
@@ -460,10 +514,42 @@ Deeper floors *do* pay more per winner (1.75 → 1.89) but the reach ladder caps
 higher exit floor is increasingly an **entry change wearing an exit costume**.
 Reopening burden: a triple-era result at least as strong as this monotone ladder.
 
-**The profit-taking family — 25 arms, all closed.** Static-R first legs (1.0/1.5/2.0/3.0R
-× 25/50%), structural-min-R floors (1.5/2.0 × 25/50/75%), BE-at-partial, no-trail hold,
-hold-to-2R runners, no-target trail-only. **Every uniform variant lost to 25%-at-structure
-($93,310).** Mechanisms measured, not guessed:
+**The profit-taking family — 25 arms.** Static-R first legs (1.0/1.5/2.0/3.0R × 25/50%),
+structural-min-R floors (1.5/2.0 × 25/50/75%), BE-at-partial, no-trail hold, hold-to-2R
+runners, no-target trail-only.
+
+> ⚠️ **THE CLOSURE NO LONGER HOLDS ON THE SHIPPED BOOK — re-verified 2026-08-05.**
+> The recorded conclusion ("every uniform variant loses funded to 25%-at-structure,
+> $93,310") was computed on the **old 956-row book at the $150 base**. Re-running
+> `scripts/sweep_fixed_r_report.py` on the **current 763-trade book at $160**, **eight
+> arms beat shipped V8's $75,094**:
+>
+> | arm | funded net |
+> |---|---|
+> | partial_sweep_fit_0 (no partial, all-structure) | **$80,143** |
+> | **p25_at20r_trail (25% at a static 2R leg)** | **$78,404** |
+> | struct25 (25% at structure) | $77,476 |
+> | p25_struct_be | $77,230 |
+> | p50_at20r_trail | $77,097 |
+> | p25_at15r_trail | $75,643 |
+> | p25_at30r_trail | $75,589 |
+> | **shipped base V8** | **$75,094** |
+>
+> **The static 2R first leg — the exact arm the tombstone says was beaten — is now the
+> top static arm, and beats 25%-at-structure.** The family closure was basis-dependent
+> and the basis moved underneath it (three execution rules + a base change).
+>
+> This does **not** overturn Angus's ruling (he chose base V8 on win-rate and green-day
+> grounds, explicitly accepting less profit). It does mean **"uniform mechanics are
+> exhausted by measurement" is no longer a supported claim** — it was true on the old
+> basis and was never re-tested after the rules shipped.
+>
+> **The framework lesson is the important part: every comparative conclusion is pinned to
+> the book basis it was computed on. When the basis changes — new execution rules, new
+> sizing, new population — every closed question silently reopens.** A framework should
+> stamp each result with a basis hash and flag conclusions whose basis is stale.
+
+On the **old** basis, the mechanisms were measured, not guessed:
 - static/deep first legs **tax the 494 no-structure trades** that would have run whole,
   AND convert insured trades into full stop-outs (**stops 407 → 471 at a 2R leg**);
 - min-R structural walks book *beyond* the floor and pay the spread twice;
@@ -538,8 +624,38 @@ and probably contributing nothing but noise.
 
 Frozen in `config/live_thresholds.json` under `sizing.pre_gold_ladder`
 (`le2: 0.0, s3: 0.5, s4: 1.0, s5: 1.5`) with `size_cap: 1.5` for the non-elite ladder.
-**Cut points were chosen where the observed WR/meanR ladder actually stepped**, not on
-round numbers.
+
+**The score is mostly a constant plus adders.** Verified: in the valid+wall-cut book,
+`D == 1` for **1,199/1,199** gold rows and `W == 1` for **394/394** pre rows — because
+they are *admission gates*, so every surviving row has them. **The doubled term is
+therefore always exactly 2**, and the tier is decided entirely by the weak adders:
+gold 0–1 adders → 0.5×, 2 → 1.0×, 3–4 → 1.5×; pre 0 → 0.5×, 1 → 1.0×, 2 → 1.5×.
+
+> ⚠️ **THE LADDER IS NOT MONOTONE AT SESSION LEVEL — corrected 2026-08-05.**
+> The pooled gold+pre table looks monotone, but pooling two different ladders masks the
+> failures. By session and era:
+>
+> | | 0.5× | 1.0× | 1.5× |
+> |---|---|---|---|
+> | gold 2025 | 46.2% | **57.7%** | 55.8% ← 1.0 beats 1.5 |
+> | gold 2026 | 33.3% | 53.6% | 54.7% ✓ |
+> | gold holdout | **59.4%** | 51.3% | 58.6% ← 0.5 highest |
+> | pre 2025 | 16.2% | 43.9% | 47.6% ✓ |
+> | pre 2026 | 35.7% | 49.1% | 58.1% ✓ |
+> | pre holdout | 48.0% | **67.2%** | 57.1% ← 1.0 beats 1.5 |
+>
+> **Three of six session×era cells are non-monotone**, and `meanR` is worse than WR. The
+> code never claimed monotonicity — `scorer_ny.py:181` says only *"cells are
+> era-consistent"*, which is a weaker and honest claim. Nothing in the repo records how
+> the cut points were actually searched (QA entry 30 says only "built the score tiers from
+> era-consistent cells").
+>
+> **What this means:** the sizing ladder is a *defensible ordering*, not a measured
+> monotone relationship. It is directionally right at the extremes (0.5× is genuinely the
+> worst rung in 4 of 6 cells) and noisy in the middle. A framework should require the
+> ladder's monotonicity to be **tested per session per era and reported**, not asserted
+> from a pooled table — and should treat a non-monotone rung as a signal that the adders
+> are too weak to rank on, which, given §2.1, they demonstrably are.
 
 Shipped tier mix on the fit book (from `python -m scripts.funded_book --span fit
 --profile lucid`): **{1.5: 42%, 1.0: 33%, 0.5: 18%, 2.0: 7%}**. *(The pre-elite candidate
@@ -655,6 +771,57 @@ For any new strategy, in order:
     stacking, concurrency, forced flattens).
 12. **Tombstone every dead idea** with its reopening burden.
 
+---
+
+# PART 11 — WHAT THE ADVERSARIAL PASS CAUGHT (and why it's the most important part)
+
+Six research readers mapped these areas; six independent verifiers were then told to
+**refute** them against the code, with "invented numbers are the worst failure mode —
+hunt for them specifically." 12 agents, 0 errors, ~1.7M tokens. They found **41
+corrections and 17 unsupported claims** across six reports that all *looked* authoritative.
+
+**The four that changed conclusions** (all folded into the sections above):
+
+1. **W/D are displacement geometry, not wall detection** (§4.2b). Every prose description
+   in the repo — and v1 of this document — described a size/significance test that does
+   not exist in the code. Caught by re-deriving `depth_at` from raw CSVs and cross-tabbing
+   NaN against ladder bounds on 505 trades.
+2. **The exit-family closure is stale** (§7.2). "Every uniform variant loses" was true on
+   the 956-row/$150 basis and is false on the shipped 763-row/$160 book, where eight arms
+   beat V8 and the static 2R leg tops the table.
+3. **The tier ladder is non-monotone in half the session×era cells** (§8.3), which the
+   pooled table hid.
+4. **The survival rule was never code.** `lift()` emits raw per-era numbers and a `thin`
+   flag at n<15 — nothing else. "Discriminates in both eras" exists only as docstring
+   prose; every kill/keep was a **human read of sign-consistency over a printed table.**
+
+**Categories of error worth designing against:**
+
+| error class | example |
+|---|---|
+| **invented provenance** | `VWAPD`'s 0.107 was described as a "2025-gold quantile fit". It is an unattributed hardcoded literal; `freeze_thresholds.py` derives exactly five quantiles and this is not one of them. |
+| **stale basis** | the $93,310 exit comparison, the "20% loss" scaling figure (reproduces at −12.0%) |
+| **pooled tables hiding cell-level failure** | the tier ladder; the "2× liquidity shift" (really 1.45× within fit) |
+| **population drift mid-claim** | elite-cap concentration figures computed pre-close-and-reverse (108 elite days) vs on the shipped book (96 days, max 3/day not 6) |
+| **dropped qualifiers** | "LONSLOPE killed" — the repo says "killed **as a standalone**", and it ships in the elite combo |
+| **off-by-one citations** | four separate `file:line` refs pointed one line off |
+| **sign inversions** | "walkout is why targets are deep" — walkout targets are *shallower* (median 2.69R vs 3.78R), because `_walk_out` stops at the **first** level clearing 2R by construction |
+
+**The framework requirement this produces, and it is the most valuable single line in
+either document:**
+
+> **A finding is not a finding until something has tried to kill it. Budget as much
+> compute for refutation as for discovery — the refutation pass here changed four
+> conclusions out of six areas, and every one of the six reports read as confident and
+> well-cited before it was attacked.**
+
+Note what this implies about the ordinary case: these reports were produced by capable
+readers with full repo access and explicit instructions to cite evidence. They still
+carried a ~40% conclusion-level error rate on the hard claims. Anything a framework
+reports without an adversarial pass should be assumed to be in that same condition.
+
+---
+
 ## The one-line version
 
 > **19,137 triggers → 763 trades. Sixteen checks tested, three carried the edge, all
@@ -664,6 +831,9 @@ For any new strategy, in order:
 
 ---
 
-*All figures recomputed 2026-08-05 from committed artifacts. Two discrepancies with
-shipped documents are flagged in §2.4 and §6.2 — in both cases the artifact is
-authoritative and the shipped prose is optimistic.*
+*All figures recomputed 2026-08-05 from committed artifacts, then put through an
+adversarial verification pass (Part 11). Discrepancies with shipped documents are flagged
+inline at §2.4, §4.2b, §6.2, §7.2 and §8.3 — in every case the artifact is authoritative
+and the shipped prose was optimistic. The three that matter operationally: **W/D are
+displacement geometry, not wall detection**; **the exit-family closure no longer holds on
+the shipped book**; **the live agent spec's press-state number overstates the fit era**.*

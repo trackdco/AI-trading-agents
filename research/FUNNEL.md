@@ -120,6 +120,12 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - level-interaction trigger family (canon-frequency substrate, ~10-15 raw
   triggers/day) — prereg after.
 - sweep-reclaim — awaiting Brake dedup vs london-level-trap-fade.
+- §5.12.1-15 FEATURE SEMANTICS AUDIT owed on OUR depth features
+  (scripts/depth_walls.py wall ratios + the failed-auction depth tercile):
+  verify what the columns actually compute vs the "wall" prose, cross-tab
+  NaN/edge cases from raw, before any further verdict cites them. (The
+  canon's W/D bits turned out to be displacement geometry, not walls —
+  same audit must clear ours.)
 
 ---
 
