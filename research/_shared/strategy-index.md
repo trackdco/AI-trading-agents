@@ -62,3 +62,30 @@ hour where neither spec was written with the other in mind. Both are blocked on 
 mechanism behind `zxck-10am-keyopen`.
 
 — added by zxcked/Powell ingest, 2026-08-07
+
+
+---
+
+## orb- / anonymous social post — ⚠️ LOW PROVENANCE
+
+**A different KIND of source: one social-media post, not a video corpus.** Nothing can be
+self-resolved because there is nothing to re-read. Every unstated rule is OURS. Full source
+verbatim: `research/orb-fvg/SOURCE-POST.md`.
+
+| id | name | trader | sessions | instruments | gap-entry | provenance | verdict | card |
+|---|---|---|---|---|---|---|---|---|
+| `orb-fvg-nyopen` | NY-open opening-range breakout into a 1-min FVG | anonymous post | **NY · 09:30–10:30 ET** (window is OURS) | NQ | **YES** | **LOW — 1 post** | **RETIRED** — expectancy bound [−0.043R, −0.015R], entirely negative under every reading | `research/orb-fvg/strategies/orb-fvg-nyopen.md` |
+
+**Completeness: INSUFFICIENT AS POSTED** — 2 of 7 parts UNDEFINED (entry trigger, stop), 3 ABSENT
+(bias, risk/sizing, filters), 2 PARTIAL. Eight blanks, all filled by us; the two material ones
+were **bounded rather than guessed**.
+
+**Why the verdict is not about the poster.** Every rule that mattered was ours. This tested our
+adaptation. The one finding that *is* his: **his stated management (max 2/day, stop after a win)
+is actively harmful** — 0.12–0.20R per trade worse in every arm, because stopping after a win
+truncates upside while leaving downside intact.
+
+**Pooling:** contributes **~288 independent, fully flow-covered F2 observations** (first trade per
+session, retrace arms only). The formation arm contributes none — F2 does not exist for it.
+
+— added 2026-08-07

@@ -1,6 +1,6 @@
 # Session & coverage map — every carded strategy, both traders
 
-**Updated 2026-08-07.** Built by reading the cards and the trade logs; no backtest was re-run and
+**Updated 2026-08-07 (rev b).** Built by reading the cards and the trade logs; no backtest was re-run and
 nothing new was carded. Supersedes the 2026-08-05 version, whose `ash-unicorn-sb` window
 (09:30–14:15 ET) predates the AM1 narrowing. Its two London notes are kept verbatim at the bottom.
 
@@ -15,8 +15,8 @@ below. Bar data runs 2025-01-01 → 2026-07-15, so **bars extend ~5 months earli
 
 | card | trader | verdict | instrument | session & clock window | window derived from | entry TF | gap-entry? | log span | events | in-span | flow computed |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| `ash-unicorn-sb` | ash10hazard | **baselined** | NQ | **NY · 09:45–10:15 ET** | **his** macro schedule `[qngA8aIfV0M @ 00:27–01:46]`, narrowed to AM1 by Brake's standing rule — and he names AM1 highest-probability *before* any test `[@ 01:46]` | 1m entry, 15m levels | **YES** | 2025-03-07 → 2026-07-15 | **37** | 29 | **29** |
-| `zxck-10am-keyopen` | Powell | **Confirmed** | NQ | **NY · 10:00–10:15 ET** | level is **his** (10:00 = 4H open `[Y-oqSZmNo4U @ 00:49]`); the **15-minute cutoff is OURS** — Brake's macro rule. My first mechanization used 10:00–14:00 and was wrong | 1m | **YES** | 2025-01-06 → 2026-07-15 | **146** taken (115 decidable in-span) | 115 | **102** |
+| `ash-unicorn-sb` | ash10hazard | **baselined** | NQ | **NY · 09:45–10:15 ET** | **his** macro schedule `[qngA8aIfV0M @ 00:27–01:46]`, narrowed to AM1 by Brake's standing rule — and he names AM1 highest-probability *before* any test `[@ 01:46]` | 1m entry, 15m levels | **YES** | 2025-03-07 → 2026-07-13 | **24** | 19 | **19** |
+| `zxck-10am-keyopen` | Powell | **Confirmed** | NQ | **NY · 10:00–10:15 ET** | level is **his** (10:00 = 4H open `[Y-oqSZmNo4U @ 00:49]`); the **15-minute cutoff is OURS** — Brake's macro rule. My first mechanization used 10:00–14:00 and was wrong | 1m | **YES** | 2025-01-06 → 2026-07-15 | **146** taken (115 decidable in-span) | 115 | **115** |
 | `zxck-gap-fill-edge` | Powell | **Confirmed** | NQ | **not stated** — *"you can basically use any time frame"* `[86DOt135Wts @ 02:26]`; both traded examples are 4H wick trades | would be **OURS** | any | **YES** | — | — | — | — |
 | `zxck-ifvg-50` | Powell | **Confirmed** | NQ | **not stated** anywhere | would be **OURS** | 5m/15m standalone; 1m/3m as trigger | **YES** | — | — | — | — |
 | `zxck-cisd` | Powell | **Confirmed** | NQ | NY; worked example is the **09:00 ET** candle into the open. HTF variant on D/4H/1H | **his** by example, not by rule | 1m trigger; D/4H/1H standalone | **no** (inversion is a bonus) | — | — | — | — |
@@ -24,6 +24,7 @@ below. Bar data runs 2025-01-01 → 2026-07-15, so **bars extend ~5 months earli
 | `zxck-news-draw` | Powell | **Partial — parked** | NQ | **08:30 ET, PPI & NFP only** (CPI skipped) | **his** for the level `[c15YLeAKc2A @ 05:36]`; the CPI skip is **ours**, ratified | 15s/30s stated, 1m acceptable | partial | — | — | — | — |
 | `zxck-mmxm-breaker` | Powell | **Insufficient — parked** | NQ | NY, no clock window | — | 5m | partial | — | — | — | — |
 | `zxck-amd-pdarray` | Powell | **Withdrawn** | — | — | AMD is his name for the engineered-liquidity *shape*, not a model | — | — | — | — | — | — |
+| `orb-fvg-nyopen` | anonymous post ⚠️ **LOW PROV** | **RETIRED** | NQ | **NY · 09:30–10:30 ET** | **OURS entirely** — the post gives a start (the NY open) and **no end at all**. 60 min is Brake's. ⚠️ deliberately breaks the 09:45–10:15 macro rule, so overlap with every other card is only PARTIAL | 1m | **YES** | 2025-06-02 → 2026-07-15 | **1919 events** → 1354–1919 trades/arm | all | **100%** (288 independent) |
 
 `ash-unicorn-sb` has a second, empty log: `ash-unicorn-sb-forward.csv` — **0 rows**, the
 pre-registered forward clock (LOOK 1 at n_forward = 20, first eligible date 2026-08-08).
@@ -34,9 +35,9 @@ pre-registered forward clock (LOOK 1 at n_forward = 20, first eligible date 2026
 
 | card | trades with a defined direction **and** computed flow |
 |---|---|
-| `ash-unicorn-sb` | **29** |
-| `zxck-10am-keyopen` | **102** |
-| **POOLED n AVAILABLE TODAY** | **131** |
+| `ash-unicorn-sb` | **19** *(was 29 before the 2026-08-07 sweep-gate fix)* |
+| `zxck-10am-keyopen` | **115** |
+| **POOLED n AVAILABLE TODAY** | **134** |
 
 Both are scored on the **identical locked exit** (2R target, break-even at 1R, no trailing,
 stop-first on a same-bar conflict, 16:00 ET cap, costs separate) and the **identical flow
@@ -47,7 +48,7 @@ definitions**, so the logs concatenate without a rename. See `EXIT-CONVENTION-LO
 - **The windows only partly overlap.** `ash-unicorn-sb` runs 09:45–10:15; `zxck-10am-keyopen`
   runs 10:00–10:15. The shared 15 minutes are the honest intersection, but roughly the first half
   of ash's window has no Powell counterpart.
-- **`zxck-10am-keyopen`'s expectancy bound is entirely negative** — [−0.140R, −0.027R]. Pooling it
+- **`zxck-10am-keyopen`'s expectancy bound is entirely negative** — [−0.202R, −0.077R]. Pooling it
   adds count, not evidence of edge. It is arguably more useful as a *contrast* arm for the F2 test
   — does retracement participation separate winners in a book that has no edge? — than as
   additional support.
@@ -81,6 +82,15 @@ flow test reads.
   columns would change.
 - **29 scripts read `fp_minutes.parquet`**, including `london_canon.py` and `score_canon_span.py`.
   Any flow-based result computed over January 2026 anywhere in this repo is affected.
+
+**⚠️ PARTIAL WORKAROUND ALREADY IN PLACE (noted 2026-08-07 rev b).**
+`scripts/f2_oos_test.flow_frame()` rebuilds the per-minute frame **from the raw footprint files
+including `footprint_jan2026.parquet`**, so anything importing *that* helper — the F2 OOS test,
+`zxck_remaining_baselines.py`, and `orb_fvg_baseline.py` — already has complete January coverage.
+Verified: 26 January-2026 days and 28,739 rows via `flow_frame()`, against **1 day / 60 rows** via
+`fp_minutes.parquet`. **That is why the pooled count above is 115 and not 102.**
+`zxck_keyopen_baseline.add_flow()` still reads the defective `fp_minutes.parquet` directly, so its
+printed coverage line understates; its R values are unaffected (price only).
 
 **Fix:** rebuild `fp_minutes.parquet` including `footprint_jan2026.parquet`. It is a tracked
 artifact committed as prebuilt (`b9724e6`) with no in-repo builder, and it is shared with the
