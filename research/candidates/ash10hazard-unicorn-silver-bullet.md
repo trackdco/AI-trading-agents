@@ -278,7 +278,54 @@ See `research/ash10hazard/channel-overview.md`.
 
 ## Backtest / forward-test notes
 
-**Not yet tested.**
+### RAW BASELINE — 2026-08-06, exactly as taught, no enhancements
+
+`scripts/ash_raw_baseline.py` · trades: `research/ash10hazard/strategies/ash-unicorn-sb-raw-trades.csv`
+
+**Spec:** NQ 1-minute · 2025-07-01 → 2026-07-15 (326 sessions) · entry at the FVG fill after
+macro→sweep→MSS→displacement · stop at the order-block edge · target 2R · break-even at 50%
+· one trade per window · day ends after 2 losses · exits capped at 16:00 ET.
+R = (exit − entry)/risk, signed by direction. Costs = $5 commission + 1 tick slippage each
+way = $25 on NQ at $20/pt.
+
+| variant | n | win rate | avg R | expectancy net | total R | net R | max DD |
+|---|---|---|---|---|---|---|---|
+| **NY** | **74** | **29.7%** | **+0.203** | **+0.118** | +15.0R | +8.8R | 6.0R |
+| ALL | 104 | 26.9% | +0.096 | −0.008 | +10.0R | −0.8R | 16.0R |
+| **LONDON** | 30 | 20.0% | −0.167 | −0.320 | −5.0R | −9.6R | 12.0R |
+
+**By window** — AM1 carries the entire result:
+
+| window | n | WR | avg R | total |
+|---|---|---|---|---|
+| **AM1 09:45** | 26 | **46.2%** | **+0.692** | **+18.0R** |
+| LUNCH 11:45 | 13 | 30.8% | +0.231 | +3.0R |
+| AM2 10:45 | 17 | 23.5% | +0.059 | +1.0R |
+| **PM 13:45** | 18 | 11.1% | **−0.389** | −7.0R |
+| LDN2 03:45 | 19 | 21.1% | −0.158 | −3.0R |
+| LDN1 02:45 | 11 | 18.2% | −0.182 | −2.0R |
+
+### vs his `[trader-claimed, unverified]` figures
+
+| his claim | measured |
+|---|---|
+| "70-80% Winrate" `[PmMsxenKlVY title]`, "80%+" `[3lzkpoCOlHs title]` | **29.7% NY** at 2R; **60.8%** if break-evens count as wins |
+| *"Nine times out of 10 it's going to go to that draw"* `[1cMWnAxElA0 @ 06:30]` | 46.2% in AM1, his best window |
+| London *"1 to 2 R or more each month"* `[qngA8aIfV0M @ 02:10]` | **−5.0R over 12 months** — negative |
+
+**Two of these agree with him in direction.** He names AM1 as highest-probability and AM1 is
+by far the best window here (+0.692R vs −0.389R for PM). He says he **stopped trading London**
+because *"recently it hasn't been the greatest price action"* — and London is the losing
+variant. The headline win-rate claims do not survive.
+
+### Honest limits on these numbers
+
+1. **The ES leading trigger is missing** — a declared entry component (he enters when ES taps
+   its gap *before* NQ). **We hold no ES data.** This is not the model as taught.
+2. **Order-block identification is OUR reconstruction** (A1), not his rule.
+3. **London n=30 is below the 50-setup target** and its max DD (12R) exceeds its total move.
+4. AM1's +18R is 120% of the NY total — the result is one window, not a strategy.
+5. No DSR/PBO applied here: this is the raw baseline, not a graded candidate.
 
 **Blocker on faithful testing: this repo holds no ES data.** Conditions 3 and 4 both live on
 ES `[@ 05:47, 07:40, 09:14]`. An NQ-only reconstruction tests a strictly weaker model than
