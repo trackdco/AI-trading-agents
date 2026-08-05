@@ -216,3 +216,23 @@ EARNS the next funnel stage on the hours-clock expression (strict costs,
 on flow span) — it is NOT a ship and NOT a rebalance of the banked §5.9.4
 retest (firewall holds; any promotion interaction is Angus's ruling).
 Ledger rows 99-101.
+
+### Trial 11 — hours-clock next stage: strict costs + flow-at-re-entry + §3.2 autopsy (2026-08-05)
+- STRICT COSTS: PF 1.23 (vs 1.24 base) — wide targets absorb friction. PASS.
+- FLOW-AT-RE-ENTRY (flow span, n=66 covered): delta agrees with the fail
+  direction on 62/66 (94%) — near-universal, DESCRIBES the population
+  rather than discriminating within it; absorption-in-re-entry-bar shows
+  no lift (PF 1.74 vs cohort 2.01). No flow gate; the 4 against-delta
+  cases too thin to read. Honest null.
+- AUTOPSY (scripts/nya_fa_hc_autopsy.py, minute walk, checkpoints
+  t+30/60/120/240/480): TRUE BRACKET TRADE — stop 99 / target 89 / cap 5.
+  Losers go green first (median MFE 0.40R, 43% saw +0.5R, median death
+  541min); winners endure 0.35R median MAE and take ~1,026min (17h) to
+  pay. CANON SEGMENTS DO NOT TRANSFER at this clock: press 50-71% on
+  n=11-16, dying 39-43%, giveback mixed — all cells thin, nothing at
+  canon strength. Management stays mechanical bracket; no agent-playbook
+  material yet.
+- Ledger rows 115-116. STATUS: hours-clock expression is a coherent
+  positive population (PF 1.24/1.23, 3/4 years, 0.93/wk) with no proven
+  internal gate — candidate for grading as-is at the next slate review;
+  2023-negative stays on the label; §5.9.4 banked-retest firewall intact.

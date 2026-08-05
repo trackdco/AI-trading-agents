@@ -120,6 +120,7 @@ def main() -> None:
                 d = G[k]
                 rec = dict(day=d, year=d[:4], side=side, out_bars=out_bars,
                            entry=c, ext=ep["ext"], vah=vah, val=val,
+                           entry_t=b30.index[k] + pd.Timedelta(minutes=30),
                            balance=int(ep["touches_near"] >= 2 and ep["touches_far"] >= 2),
                            rounding=int(k - ep["last_ext_k"] >= 8),
                            poor=int(len(ep["exts"]) >= 2), squeeze=int(ep["swept"]),
