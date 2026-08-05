@@ -50,7 +50,12 @@ SPEC = ROOT / ".claude/agents/live-desk-v1.md"
 RUNS = ROOT / "runs/live_desk1"
 TICK, SLIP, PV, COMMISSION, SFR = 0.25, 1, 20.0, 5.0, 1.0
 SHELF_TIER = {"CONFIRMED": 300.0, "BASE": 200.0}
-MAX_TURNS_DAY = 16
+# MINUTE CADENCE (Angus: "on a live trading desk, it should be making llm calls
+# every minute. intraday adaptation... as if i were to sit in front of a chart").
+# The desk is AT THE CHART every minute of 08:00-10:30 (the only window either
+# engine can enter) and every minute it holds a position after that. Flat after
+# 10:30 = off the desk. MAX_TURNS_DAY is a runaway safety ceiling, not a budget.
+MAX_TURNS_DAY = 600
 CLI_TIMEOUT = 240
 
 DEPTH_DIRS = ["data/reference/depth_2025", "data/reference/depth_2026",
@@ -58,14 +63,15 @@ DEPTH_DIRS = ["data/reference/depth_2025", "data/reference/depth_2026",
 
 TURN_CONTRACT = (
     'Reply with EXACTLY one JSON object, nothing else. Signal events: {"action":'
-    '"take"|"pass","close_other":"<pos_id>,optional","note":"<=120"}. Management '
-    'events (the event names the position): {"action":"hold"|"revise"|"exit_now",'
-    '"stop_r":<num,opt>,"target_r":<num or null,opt>,"partial_pct":<0-1,opt>,'
-    '"close_other":"<pos_id>,opt","note":"<=120"}. R = TRUE risk (engine stop = -1R, '
-    '0 = entry). stop_r only TIGHTENS. canon target_r >= 2.0 until a partial then '
-    '>= 0.1; shelf target_r >= 0.3; null = ride on the stop. MECHANICAL EXIT events: '
-    '"hold" TAKES the exit; refusing = "revise" with a plan. Rule-breaking fields '
-    'are ignored; malformed replies = the mechanical book.')
+    '"take"|"pass","close_other":"<pos_id>,optional","note":"<=120"}. Every other '
+    'minute: {"action":"hold"|"revise"|"exit_now","pos":"<pos_id, required if more '
+    'than one position open>","stop_r":<num,opt>,"target_r":<num or null,opt>,'
+    '"partial_pct":<0-1,opt>,"close_other":"<pos_id>,opt","note":"<=120"}. R = TRUE '
+    'risk (engine stop = -1R, 0 = entry). stop_r only TIGHTENS. canon target_r >= '
+    '2.0 until a partial then >= 0.1; shelf target_r >= 0.3; null = ride on the '
+    'stop. MECHANICAL EXIT events: "hold" TAKES the exit; refusing = "revise" with '
+    'a plan. Rule-breaking fields are ignored; malformed replies = the mechanical '
+    'book. Keep notes terse; silence-equivalent is {"action":"hold"}.')
 
 
 # ------------------------------------------------------------------ CLI conversation
@@ -383,7 +389,7 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
         """One turn. p = management target position; signal = signal dict."""
         nonlocal turns, sid, last_turn_min
         is_sig = signal is not None
-        s_ctx = signal["s"] if is_sig else p["s"]
+        s_ctx = signal["s"] if is_sig else (p["s"] if p is not None else 1.0)
         state = (f"[{minute.strftime('%H:%M')}] EVENT: {why}\n"
                  f"bar {bar.open:.2f}/{bar.high:.2f}/{bar.low:.2f}/{bar.close:.2f} | "
                  f"{flow_line(tape_day, minute, s_ctx)} | "
@@ -601,45 +607,30 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
                                "note": str(rep.get("note", ""))[:120]})
                 if opposing:
                     conflicts.append({"day": day, "sid": g["sid"], "choice": "pass"})
-        # 7. passive management events (spacing >= 3 min between turns)
-        spaced = last_turn_min is None or minute - last_turn_min >= pd.Timedelta(minutes=3)
-        for p in list(book):
-            if turns >= MAX_TURNS_DAY:
-                break
-            mins_in = int((minute - p["sig"]["fill"]).total_seconds() // 60)
+        # 7. peak tracking + THE MINUTE PULSE. The desk is at the chart every
+        # minute of 08:00-10:30 (the only entry window either engine has) and
+        # every minute it holds a position after that. One call per minute;
+        # signal/mechanical-exit turns already count as that minute's call.
+        for p in book:
             fav = r_of(p, float(bar.high) if p["s"] > 0 else float(bar.low))
             p["peak_r"] = max(p["peak_r"], fav)
-            why = None
-            if p["turns"] == 0 and mins_in >= 1:
-                why = f"position {p['pid']} opened — read the tape and set your plan"
-            elif p["engine"] == "CANON" and mins_in == 3:
-                why = f"press check ({p['pid']}, fill+3m)"
-            elif p["engine"] == "SHELF" and mins_in == 2:
-                why = f"t+2 check ({p['pid']}): the decisive minute on this clock"
-            if p["engine"] == "CANON":
-                for k in range(1, 20):
-                    if fav >= k and k not in p["seen_r"]:
-                        p["seen_r"].add(k)
-                        why = f"{p['pid']} touched +{k}R"
-                if (p["peak_r"] >= 1.0 and
-                        p["peak_r"] - r_of(p, float(bar.close)) >= 0.75 and
-                        p["peak_r"] - 0.25 > p["gb_peak"]):
-                    p["gb_peak"] = p["peak_r"]
-                    why = why or f"{p['pid']} giving back off the +{p['peak_r']:.1f}R peak"
-            if abs(r_of(p, float(bar.close)) - r_of(p, p["stop"])) <= 0.3 and mins_in > 3:
-                why = why or f"price near your stop ({p['pid']})"
-            if p["extended"] and spaced and mins_in > 3 and \
-                    (last_turn_min is None or
-                     minute - last_turn_min >= pd.Timedelta(minutes=10)):
-                why = why or f"extended recheck ({p['pid']}, 10m)"
-            if why and (spaced or p["turns"] == 0):
-                rep = send(minute, bar, why, p=p)
+        hhmm = minute.strftime("%H:%M")
+        at_chart = ("08:00" <= hhmm <= "10:30") or bool(book)
+        if at_chart and last_turn_min != minute and turns < MAX_TURNS_DAY:
+            fresh = next((p for p in book if p["turns"] == 0), None)
+            focus = fresh or (book[0] if len(book) == 1 else None)
+            why = (f"position {fresh['pid']} opened — read it and set your plan"
+                   if fresh else "minute pulse — adapt or hold")
+            rep = send(minute, bar, why, p=focus)
+            tgt = focus
+            if rep.get("pos"):
+                tgt = next((q for q in book if q["pid"] == rep["pos"]), tgt)
+            if tgt is not None:
                 if rep["action"] == "exit_now":
-                    p["touched"] = True
-                    p["pending"].append(("exit", None))
+                    tgt["touched"] = True
+                    tgt["pending"].append(("exit", None))
                 elif rep["action"] == "revise":
-                    apply_mgmt(p, rep)
-                spaced = False
+                    apply_mgmt(tgt, rep)
     # any survivors (data ended early): flatten at last close
     for p in list(book):
         close_pos(p, p["frac"], float(daybars.close.iloc[-1]), "early_close")

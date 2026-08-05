@@ -540,3 +540,15 @@ DESIGN:
   shelf long citing open canon short + down-flow — landing exactly on
   B1's number for the day. Demo state wiped; the real run starts
   clean at 2025-06-02. Scale: 254 days, 875 signals, 16-turn/day cap.
+- CADENCE AMENDMENT [ANGUS, pre-launch]: "on a live trading desk, it
+  should be making llm calls every minute. intraday adaptation etc...
+  as if i were to sit infront a chart with knowledge of these 2
+  strategies and trading them out myself in the given window." The
+  16-turn event budget is DEAD. New rhythm: one call EVERY MINUTE the
+  desk is at the chart = all of 08:00-10:30 (the only entry window
+  either engine has) + every minute a position is open after 10:30;
+  flat after 10:30 ends the day. Signal and mechanical-exit turns
+  count as that minute's call. Reply contract gains "pos" (target
+  position when >1 open). MAX_TURNS_DAY=600 is a runaway ceiling, not
+  a budget. Passive-agent==B0 re-validated at minute cadence before
+  relaunch.
