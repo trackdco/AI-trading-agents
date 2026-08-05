@@ -434,3 +434,23 @@ live via the standard arming path; run BOTH overlays in SHADOW — the
 2-tier ladder AND the single band-refusal agent decision (safe-default
 design: agent timeout = mechanical exit). Each overlay graduates on its
 own shadow receipts. Ledger row 259.
+
+### GRADUATION RULINGS [ANGUS 2026-08-05 evening]
+- SIZING GRADUATES AT $200 BASE / $300 CONFIRMED (1.5x — his call,
+  §5.12-11 on the record: compresses the unproven tier's weight instead
+  of shadowing it). Economics: FIT $+19,987 | OOF (sealed six months)
+  $+7,405. Agent layer: NOT shipping (his read confirmed by the rung:
+  lottery-shaped offense; journal + harness archived for a future
+  band-refusal shadow if wanted).
+- CANON OVERLAY (measured): canon active on 51 of the 112 shelf days;
+  SIMULTANEOUSLY in-market only 8 days in 13 months — and ALL 8 were
+  OPPOSITE-direction (same instrument: netting/flatten risk on prop
+  accounts). P&L correlation -0.065 — independent stream.
+- OPEN INTEGRATION ITEM (the one thing before arming): book-level
+  conflict rule for those ~8 days/yr — options per selector prereg:
+  R1 net both (accept the hedge) / R-canon-precedence (shelf skips its
+  entry while canon holds an opposite position; costs ~7% of shelf
+  entries). RECOMMENDED: canon precedence (certified breadwinner keeps
+  right of way; zero integration complexity). Angus to rule; then the
+  ship package goes to the standard two-party arming with Pat (currently
+  gated on his certification).
