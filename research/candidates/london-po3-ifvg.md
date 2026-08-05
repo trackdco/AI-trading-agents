@@ -1,6 +1,6 @@
 ---
 date: 2026-08-05
-status: census PASSED — L1 owed
+status: L1 done — raw negative, conditioning search earned
 tags: [london, overnight-structure, reversal, pattern-taxonomy]
 sources: ["findings/london-nq-what-three-traders-agree-on.md", "findings/london-window-LDN-WIN-01.md", "https://www.youtube.com/watch?v=uGE_GP9-nxU", "https://www.youtube.com/watch?v=v7tdhjW84Ho", "https://www.youtube.com/watch?v=RJXe1rF9kXM"]
 ---
@@ -238,3 +238,53 @@ until a mechanical definition is committed in advance), stop beyond the sweep
 extreme, **target the midpoint** per finding 4, flat by 10:00 London. Costs at 1× and
 2×. The SMT-divergence confluence remains dropped for want of ES data and the verdict
 will say so.
+
+### Trial 2 — L1 mechanics (2026-08-05) — **ugly raw, and the target question reopens**
+
+`docs/PREREG-london-open-break-L1.md`, same run as `LDN-OBK-01`.
+
+**F1 — the declared default (entry at the fail-bar close, stop beyond the sweep
+extreme, target the range midpoint):**
+
+| era | n | WR | net pts | $ @160 risk | PF | R/trade |
+|---|---:|---:|---:|---:|---:|---:|
+| 2025 | 234 | 34% | −149 | −$7,099 | 0.93 | −0.190 |
+| 2026 | 125 | 33% | +8 | +$42 | 1.01 | +0.002 |
+
+Strict cost: both negative. Ugly raw is expected and does not kill (§5.9.2).
+
+**F2 — the as-taught far-edge target — is the interesting result, and I am not
+promoting it.**
+
+| era | R/trade (base) | PF | $ |
+|---|---:|---:|---:|
+| 2025 | −0.202 | 0.96 | −$7,556 |
+| 2026 | **+0.302** | **1.20** | **+$6,031** |
+
+It reaches its target only 13% of the time against F1's 29%, but when it pays it pays
+much more. **It is much better in 2026 and no better in 2025 — era inconsistent**, so
+under §6.0.1 it does not displace the declared default on in-sample rank. Ledgered as
+a declared negative.
+
+**This forces a correction to my own census read.** Trial 1 concluded from the ~20%
+far-edge traverse rate that "the far-edge version of this trade is not supported by
+its own base rate" and moved the declared target to the midpoint. **That inference was
+too quick.** A low hit rate on a distant target is not the same as a bad target — the
+payoff per hit is what settles it, and base rates alone cannot see that. The right
+statement is that **the target question is open**, not that the midpoint won. It is a
+declared exit-arm question for a later rung, with both arms already on the ledger.
+
+**Cost sensitivity is the real story on this branch.** Average risk is small — roughly
+5 points, because the sweep extreme sits close to the fail-bar close — so a 1–2 point
+cost is 20–40% of the stop. Fabio named NQ slippage as the one thing that breaks his
+version of this trade. That is now measured rather than quoted.
+
+**Declared variable — minimum displacement — did not lift.** ≥0.10× range width:
+2025 −0.255R, 2026 −0.200R, worse than unfiltered in both eras.
+
+**Recorded:** 4 arm×era trials in `output/trial_ledger.parquet`.
+
+**Next rung.** Conditioning search (earned — the premise passed census and the +12/+14
+pp placebo margin is a real, era-consistent signal that something specific happens at
+this range). Arm A (IFVG) remains barred pending a mechanical definition committed in
+advance. SMT confluence remains dropped for want of ES data.

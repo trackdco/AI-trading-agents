@@ -1,6 +1,6 @@
 ---
 date: 2026-08-05
-status: census PASSED — L1 owed
+status: L1 done — raw negative, conditioning search earned
 tags: [london, session-structure, trigger-density]
 sources: ["articles/2026-08-05-channel-map-four-traders.md", "findings/london-nq-what-three-traders-agree-on.md", "findings/london-window-LDN-WIN-01.md", "https://www.youtube.com/watch?v=hcVhQBAGGFw", "https://www.youtube.com/watch?v=JySO8cOWOIs", "https://www.youtube.com/watch?v=1noM1ogc5zM"]
 ---
@@ -193,3 +193,57 @@ premise, no effect charged — a trigger count is not an edge claim).
 as the declared default per the promotion rule above, 2R fixed target with
 next-structural-level as the declared alternative, costs at 1× and 2×. Minimum
 displacement enters as the first declared variable, expressed as a fraction of range.
+
+### Trial 2 — L1 mechanics (2026-08-05) — **the tight-stop claim FAILS as declared**
+
+`docs/PREREG-london-open-break-L1.md` (committed before any P&L was computed).
+`scripts/london_obk_l1.py`. Same 396 sessions, 2023/24 untouched.
+
+**The declared default arm, A/S1 — close-confirmed entry, trigger-candle stop, 2R:**
+
+| era | n | WR | net pts | $ @160 risk | PF | R/trade |
+|---|---:|---:|---:|---:|---:|---:|
+| 2025 | 256 | 32% | −479 | −$8,130 | 0.79 | −0.198 |
+| 2026 | 138 | 38% | +88 | +$294 | 1.06 | +0.013 |
+
+At strict (2 pt) cost both eras are negative. **Brandan's advertised 89.5% win rate
+lands at 32–38%**, which is roughly where the file predicted it would once R was the
+question instead of hit rate.
+
+**The declared test failed in every cell.** The pre-committed reading was: the
+tight-stop claim is supported only if S1 beats S2 on R/trade in both eras at both
+cost levels. **It wins 0 of 4.**
+
+**The one-line reason, and it is the whole finding.** At a 2R target the
+trigger-candle stop is hit **65%** of the time and the target **30%**. A 2R trade
+needs 33.3% to break even *before* costs. That is break-even geometry, and the cost
+stack decides it. **The tighter stop does not rescue the level break — it gets you
+tapped out.** This is the same shape that killed `nypre-euro-handoff`, arriving from
+the opposite direction: that one had a 78% win rate and no room; this one has room
+and no hit rate.
+
+**Read the control before reading the verdict.** The structural-stop arms (S2) exit on
+the clock **82%** of the time — a 2R target on a range-width stop sits 100–170 points
+away and NQ does not travel that inside a two-hour window. So S2 is not "the same
+trade with a wider stop", it is a two-hour hold that exits at market. Its apparent
+edge over S1 is near-zero beating negative. **Neither stop makes this pay**, and the
+honest verdict is about S1 on its own terms, not about S2 winning.
+
+**Declared variable — minimum displacement — did not lift.** Requiring the trigger
+candle to extend ≥0.10× range width makes it worse in every era at every cost
+(2025 −0.124R, 2026 −0.129R vs −0.198 / +0.013 unfiltered), on roughly 40% of the
+sample. Recorded as a declared negative.
+
+**No expectancy kill here, by law (§5.9.2).** The census premise passed and the
+trapped-counterparty story is intact, so the family earns the conditioning search.
+What it does **not** have any more is its headline reason for existing: the stop
+geometry was the novel component, and it is measured and unsupported.
+
+**Recorded:** 8 arm×era trials (all four arms, both eras) in
+`output/trial_ledger.parquet` — losers included.
+
+**Next rung.** Conditioning search on declared variables: range width, time of break
+within the window, and the 04:00 ET / 09:00 London second peak from `LDN-WIN-01`
+which no candidate currently uses. Exit-arm tournament is a later rung with the
+default declared first; 2R was a placeholder, not an optimised target, and that is
+stated so nobody mistakes this for an exit search that failed.

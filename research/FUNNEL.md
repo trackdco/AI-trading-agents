@@ -67,10 +67,26 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - BREAK QUALITY: 27% (2025) / 9% (2026) of breaks extend < 5 pts — bare touches
   admitted because the prereg froze the as-taught definition with no minimum
   displacement. Minimum-displacement is the obvious first L1 declared variable.
-- NEXT: L1 with the trigger-candle stop (the whole reason this candidate exists —
-  `nypre-euro-handoff` died at 78% WR / +0.02R on exactly this axis), arm A default
-  per the declared promotion rule, 1x and 2x costs.
-- CANON SHAPE: too early — no P&L yet. Census arc is normal (premise clears wide).
+- **RAW P&L (L1, `docs/PREREG-london-open-break-L1.md`) — UGLY, as the law expects.**
+  A/S1 (declared default): 2025 n=256 WR 32% **−479 pts** PF 0.79 R/trade −0.198;
+  2026 n=138 WR 38% **+88 pts** PF 1.06 R/trade +0.013. Strict cost: both negative.
+- **THE TIGHT-STOP CLAIM FAILED, 0 of 4 era×cost cells.** Pre-committed reading was
+  S1 beats S2 on R/trade in both eras at both costs. It never does. The one-line
+  reason: at 2R the trigger-candle stop is hit **65%** and the target **30%**, and a
+  2R trade needs 33.3% to break even before costs. Break-even geometry, cost stack
+  decides. Brandan's advertised 89.5% WR lands at 32–38%.
+- CONTROL CAVEAT: S2 exits on the clock 82% of the time (a 2R target on a range-width
+  stop is 100–170 pts away; NQ does not go that far in 2h). S2 is not a working
+  alternative — near-zero beating negative. **Neither stop makes this pay.**
+- VARIABLE LIFT SO FAR: **negative.** Minimum displacement ≥0.10× range makes it worse
+  in every era at every cost (2025 −0.124R, 2026 −0.129R vs −0.198/+0.013 unfiltered).
+- NEXT: no expectancy kill at L1 per §5.9.2, so the family earns the conditioning
+  search on its census-passed premise. Declared next variables: range width, time of
+  break within the window, and the 04:00 ET / 09:00 London second peak from
+  `LDN-WIN-01`. Then flow at L3.
+- CANON SHAPE: raw is ugly on schedule (canon raw was negative pre-wall-gate too). The
+  difference from canon so far: **canon's first variable lifted, this one's didn't.**
+  One variable is not a search, but it is not a good start either.
 
 ## london-po3-ifvg (LDN-PO3-01) — failure branch — ALIVE, census passed, claim narrowed
 - STAGE: L0 census done, same prereg, same event tree. L1 owed.
@@ -86,9 +102,25 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   discriminator does not replicate: points rho **-0.105** (inverted), normalised by
   range width rho **-0.017** (flat). Time-outside discriminates nothing here either,
   which does replicate NY. See `research/findings/nyfa-discriminator-does-not-transfer.md`.
-- NEXT: L1 on arm B (close back inside) — arm A (IFVG) is barred until a mechanical
-  definition is committed in advance. SMT confluence dropped, no ES data.
-- CANON SHAPE: too early. The placebo margin is the honest starting edge, not 85%.
+- **RAW P&L (L1) — UGLY.** F1 (midpoint, declared default): 2025 n=234 WR 34%
+  **−149 pts** PF 0.93 R/trade −0.190; 2026 n=125 WR 33% **+8 pts** PF 1.01 R/trade
+  +0.002. Strict cost: both negative.
+- **F2 (far-edge target, as taught) is the interesting loser.** 2025 −0.202R, 2026
+  **+0.302R** (PF 1.20, +$6,031). Much better in 2026, no better in 2025 — **era
+  INCONSISTENT**, so it does not displace the declared default on in-sample rank
+  (§6.0.1). Ledgered as a declared negative, not promoted. Note this also means the
+  census's implied midpoint correction is **not** confirmed: the target question is
+  open, not settled in the midpoint's favour.
+- COST SENSITIVITY IS THE STORY: average risk on this branch is small (~5 pts, because
+  the sweep extreme sits close to the fail-bar close), so a 1–2 pt cost is 20–40% of
+  the stop. Fabio named NQ slippage as the thing that breaks his version; this is that,
+  measured.
+- VARIABLE LIFT SO FAR: **negative.** Minimum displacement ≥0.10× range: 2025 −0.255R,
+  2026 −0.200R — worse than unfiltered in both.
+- NEXT: conditioning search (earned — census premise passed, §5.9.2 forbids an
+  expectancy kill here). Arm A (IFVG) still barred pending a mechanical definition.
+  SMT confluence still dropped, no ES data.
+- CANON SHAPE: raw ugly on schedule; first variable did not lift.
 
 ## nypre-gap-engine / nypre-inventory-correction — pre-market pair — SHELVED, back in play
 - Under §5.9 book-level bars: gap PSR 0.77, inventory PSR 0.92 vs the new
