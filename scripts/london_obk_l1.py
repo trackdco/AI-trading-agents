@@ -179,7 +179,8 @@ def run(bars: pd.DataFrame) -> pd.DataFrame:
                                        width_rel=width_rel,
                                        with_drift=(drift != 0 and drift == side),
                                        break_ts=tc["ts_event"], entry_ts=entry_ts,
-                                       extreme_ts=tc["ts_event"]))
+                                       extreme_ts=tc["ts_event"],
+                                       entry_px=float(entry), stop_px=float(stop)))
 
             # --- failure arms -------------------------------------------------
             inside = (tail["close"] <= hi) if side > 0 else (tail["close"] >= lo)
@@ -212,7 +213,8 @@ def run(bars: pd.DataFrame) -> pd.DataFrame:
                                    width_rel=width_rel,
                                    with_drift=(drift != 0 and drift == side),
                                    break_ts=tc["ts_event"], entry_ts=fb["ts_event"],
-                                   extreme_ts=ext_ts))
+                                   extreme_ts=ext_ts,
+                                   entry_px=float(entry), stop_px=float(extreme)))
 
     return pd.DataFrame(trades)
 
