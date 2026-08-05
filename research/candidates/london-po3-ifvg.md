@@ -1,6 +1,6 @@
 ---
 date: 2026-08-05
-status: KILL VACATED — search incomplete under §5.11/§5.12 (see findings/LDN-kill-vacated-under-511-512.md)
+status: KILLED (final) — depth searched, W failed its selection-corrected null
 tags: [london, overnight-structure, reversal, pattern-taxonomy]
 sources: ["findings/london-nq-what-three-traders-agree-on.md", "findings/london-window-LDN-WIN-01.md", "https://www.youtube.com/watch?v=uGE_GP9-nxU", "https://www.youtube.com/watch?v=v7tdhjW84Ho", "https://www.youtube.com/watch?v=RJXe1rF9kXM"]
 ---
@@ -395,3 +395,56 @@ kills — a candidate now running PF 1.56/1.57/1.20 and PSR 0.994.
 
 Census, L1 and the conditioning search all stand and are not re-run. No holdout look
 was spent, so nothing is lost by re-opening.
+
+### FINAL — KILLED (2026-08-05), depth searched, `W` failed its selection-corrected null
+
+The vacated kill has now been re-run properly. `docs/PREREG-london-depth-pass.md` and
+`docs/PREREG-london-W-scrutiny.md`, both committed before their runs.
+
+**Gap 1 closed — depth WAS searched, at canon thresholds.** Eight single checks,
+direction-resolved, NaN standing down, on 1,168 trades with book data. 9 of 32 check×arm
+cells survived every era. Exactly one was positive at strict cost in both:
+**`W` (no wall behind) on `A/S1`** — +0.204R (2025H2, n=37), +0.478R (2026, n=38), lift
++0.734/+0.756. That is inside the canon's own +0.5 to +1.3R depth band and it is the
+canon's pre-market gate transferring on mechanism.
+
+**And it does not survive its own selection correction.** I tested 32 cells and reported
+the best one, so the null was built around that whole procedure: shuffle the check labels
+within arm and era, re-run the entire 32-cell selection, 10,000 times.
+
+| quantity | observed | null | p |
+|---|---:|---|---:|
+| max era-consistent lift | +0.734 | median +0.299, 95th pct +0.598 | 0.0158 |
+| cells surviving every era **and** paying at strict cost | 1 | ≥1 in **42.1%** of shuffles | **0.4209** |
+
+**Declared pass condition was family-wise p < 0.05. It came in at 0.42.** My own search
+procedure produces a result this good from shuffled labels in more than two runs in five.
+
+**The two statistics disagree and the declared one governs.** The lift *magnitude* clears
+its bar (p=0.016); the *existence* of a survivor does not. The headline I actually
+reported was "exactly one survivor pays at strict cost in both eras" — an existence claim
+about the output of a 32-cell search, which is precisely what the failing test nulls.
+Switching to the statistic that passes, after seeing which one passes, is the procedure
+this framework exists to prevent. Re-opening on the magnitude result would need a new
+prereg declaring that criterion in advance, on an independent sample.
+
+Per the prereg, tests 2–4 (event expansion, stop caps, state-conditional) were **not
+run** — more search on a result that cannot clear its own selection correction only
+inflates the ledger denominator.
+
+## VERDICT — KILLED, and this time the search is genuinely complete
+
+Both highest-prior variable classes have now been tested at the canon's own definitions
+and thresholds:
+
+- **flow at entry** — 0 of 6 features confirmed; the declared mechanism variable
+  (`delta_sweep`) pointed the wrong way
+- **depth at entry** — 9 of 32 cells survived, 1 paid, and it failed its selection null
+
+The premise stays true and on the record: the pre-open range breaks on 92–93% of days,
+breaks fail 84–85%, and that beats a placebo range by +12/+14pp in both eras. **There is
+no way to get paid for it that survives honest scrutiny.**
+
+**No holdout look was ever spent** — 2023/24 candles, the sealed flow months and
+`depth_london_2023_24` are all untouched. The family dies without costing the programme
+a single look.

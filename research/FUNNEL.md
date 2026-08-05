@@ -70,7 +70,7 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - ROLE IN THE AUDIT: the negative control — the funnel lifts real edges
   (cards above) and fails to lift dead ones. Both behaviors are required.
 
-## london-nq-open-break (LDN-OBK-01) — continuation branch — KILL VACATED, search incomplete
+## london-nq-open-break (LDN-OBK-01) — continuation branch — **DEAD** (earned, search complete)
 - STAGE: **complete** — census -> L1 -> conditioning -> L3 flow -> autopsy -> killed.
 - RAW TRIGGERS: 425 breaks / 396 London sessions (~1.1/day); 92% of 2025 days and
   93% of 2026 days carry at least one. Declared census floor was 30%.
@@ -109,6 +109,17 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   sensitivity (§5.11.2), no stop-cap arm class (§5.11.3), no MFE/MAE pack so in-trade flow
   untested (§5.12.5), no permutation null on the carried combination (§5.12.4).
   Full reasoning: `research/findings/LDN-kill-vacated-under-511-512.md`.
+- **DEPTH PASS RUN (gap 1 closed).** 8 canon checks, 32 cells, 1,168 trades with book.
+  9 cells survive every era; ONE pays at strict cost both eras — `W` (no wall behind) on
+  A/S1, +0.204R (n=37) / +0.478R (n=38), lift +0.734/+0.756, inside the canon's depth band.
+- **W THEN FAILED ITS SELECTION-CORRECTED NULL.** 10k shuffles re-running the whole
+  32-cell selection: a cell that survives every era AND pays appears in **42.1%** of
+  shuffles vs the declared family-wise bar of 5%. Lift magnitude passes (p=0.016) but that
+  is a different claim from the one reported, and the declared test governs.
+- **FINAL VERDICT: KILLED, search genuinely complete.** Both highest-prior classes tested
+  at canon definitions: flow at entry 0/6, depth 9/32-survive-1-pays-0-survives-the-null.
+  Premise stays true (+12/+14pp placebo margin); no way to get paid for it survives.
+  No holdout look ever spent.
 
 - SURVIVES: the 09:00 London / 04:00 ET macro hour, the only confirmed variable and the
   only London clock finding that came from our own measurement rather than a trader's
@@ -117,7 +128,7 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   difference from canon so far: **canon's first variable lifted, this one's didn't.**
   One variable is not a search, but it is not a good start either.
 
-## london-po3-ifvg (LDN-PO3-01) — failure branch — KILL VACATED, search incomplete
+## london-po3-ifvg (LDN-PO3-01) — failure branch — **DEAD** (earned, search complete)
 - STAGE: **complete** — census -> L1 -> conditioning -> interaction -> L3 flow -> autopsy -> killed.
 - RAW TRIGGERS: same 425 breaks. Fail-within-120m on **85% (2025) / 84% (2026)** vs
   the declared 15% census floor. The strong "the break is usually the trap" form
