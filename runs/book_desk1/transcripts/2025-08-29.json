@@ -1,0 +1,9 @@
+{
+ "turns": [
+  {
+   "event": "SHELF LONG [CONFIRMED] risk $300 @ 10:00",
+   "sent": "DESK OPEN 2025-08-29. Two engines live; mechanical specs fixed; you choose what the book takes.\njournal: 24 days | you $+6,326 vs B0(take-all) $+6,326 vs B1(canon-precedence) $+6,326 | skips 0\n  2025-08-15: you $+801 vs B0 $+801 (3 signals, 0 skips)\n  2025-08-18: you $+500 vs B0 $+500 (2 signals, 0 skips)\n  2025-08-21: you $+681 vs B0 $+681 (1 signals, 0 skips)\n  2025-08-25: you $-221 vs B0 $-221 (1 signals, 0 skips)\n\n[10:00] SIGNAL: SHELF LONG [CONFIRMED] risk $300 @ 10:00\nbook: flat\nDecision: take or skip.",
+   "reply": "{\"action\":\"take\",\"note\":\"Confirmed-tier shelf fade, no conflict, no reason to override mechanical edge.\"}"
+  }
+ ]
+}

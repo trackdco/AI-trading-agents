@@ -479,3 +479,64 @@ DESIGN (scoped to isolate SELECTION):
   judgment.
 - Spec: .claude/agents/book-selector-v1.md; harness:
   scripts/nya_book_desk_run.py; journal = day rows with every decision.
+
+### BOOK-SELECTOR RUN REJECTED MID-FLIGHT [ANGUS 2026-08-05]
+"no, i want to run the agents from the beginning and simulate as if they
+were trading live with the knowledge of the 2 strategies. they dont have
+any hindsight, they are placed their and make their own decisions etc
+etc." Background run killed after a handful of days; runs/book_desk1
+archived as NOT EVIDENCE (design mismatch — a take/skip quiz, not a
+desk). Superseded by the declaration below.
+
+### LIVE-SIM DESK RUN (DECLARED 2026-08-05, supersedes book-selector)
+THE EXPERIMENT: drop an agent desk at the START of the fit span
+(2025-06-02) and walk it forward chronologically, day by day, as if
+live. Its ONLY knowledge: the two shipped strategy specs. Its ONLY
+memory: its own journal. No hindsight of any kind.
+DESIGN:
+- One conversation per session day, ALL 254 fit-span days with a canon
+  or shelf signal (230 canon days, 112 shelf days, 88 overlap),
+  chronological. 07:45 morning read, then live events.
+- KNOWLEDGE = the specs only: canon rules (two sessions, engine stop,
+  working structural target, close-and-reverse law, shipped two-rule
+  management as the mechanical default) and IB Shelf Fade frozen v1
+  (rules, tiers, $200/$300, OOF numbers 65%/+0.65R). EXPLICITLY
+  EXCLUDED: every fit-span diagnostic briefing (fast-clock, heat,
+  walkout terrain) — that material is the hindsight Angus is removing.
+  The prior shelf rung HAD those briefings; this run does not.
+- DECISIONS (all the agent's): take/pass every signal at fill;
+  management of every taken position within the standing guardrails
+  (stops tighten only; canon target >=2.0R until a partial then >=0.1R;
+  shelf target >=0.3R or null=ride; partials 0-1; EOD/pre-session
+  flattens absolute); cross-engine conflicts entirely its call — pass,
+  net the hedge, or cut the open position (close_other). Canon-vs-canon
+  close-and-reverse stays ENGINE LAW (part of the spec itself).
+- DEFAULTS ARE THE MACHINE: malformed/silent replies, turn-cap
+  overflow (16/day), and unrefused mechanical-exit events all execute
+  the mechanical book. A fully passive agent reproduces B0.
+- SIZING FIXED per shipped spec (canon engine size; shelf $200/$300 by
+  tier, computed causally at fill). Participation, management, and
+  conflict resolution are the discretion under test — not sizing.
+- BASELINES: B0 = both books fully mechanical, net conflicts (canon
+  two-rule dollars; shelf frozen walk at 200/300). B1 = canon
+  precedence (shelf skips entry while an opposite canon position is
+  open). Passed signals logged with forfeited mechanical P&L (pass
+  audit — shown in the journal digest AFTER resolution; causal).
+- CAVEAT ON THE RECORD: the shelf spec was BUILT on this span, so "no
+  hindsight" here means no outcome/future leakage and no diagnostic
+  briefings — it cannot make the span out-of-sample. This is a
+  simulation exercise for desk behaviour (selection, conflicts,
+  management style), not a validation gate. Nothing ships off it
+  without the standard OOF path.
+- Spec: .claude/agents/live-desk-v1.md; harness:
+  scripts/nya_live_desk_run.py; RUNS=runs/live_desk1; journal = day
+  rows with embedded per-trade rows, every decision stamped.
+- HARNESS VALIDATION (pre-launch): fully passive agent reproduces B0
+  TO THE CENT on 8 test days incl. conflict days (anchoring law:
+  untouched positions settle at the engine's own dollars; only agent
+  deviations are simulated — capture_replay principle). Live demo day
+  2025-06-04: agent took all canon fills, held mechanical exits ("day
+  one baseline" in its own notes), and PASSED the 10:00 conflicting
+  shelf long citing open canon short + down-flow — landing exactly on
+  B1's number for the day. Demo state wiped; the real run starts
+  clean at 2025-06-02. Scale: 254 days, 875 signals, 16-turn/day cap.
