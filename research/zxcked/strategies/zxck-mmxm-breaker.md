@@ -98,6 +98,15 @@ Full evidence: `SELF-RESOLVED-2026-08-07.md`.
 INSUFFICIENT. The breaker trigger, stop and target remain well specified and would be reusable if
 a range definition ever arrives — from him, or declared explicitly as ours.
 
+### ⬛ EXIT CONVENTION — LOCKED
+Scored on the **identical** convention as `ash-unicorn-sb` so the trade logs pool:
+**target = entry ± 2 × risk · break-even at 1R · no trailing · stop fills first on a same-bar
+conflict · capped 16:00 ET · R signed by direction · costs reported separately ($25/round-turn).**
+Full derivation and verification: `EXIT-CONVENTION-LOCKED.md`.
+This card keeps its **own stop rule**, because the stop is what defines R.
+**Powell's Apex-driven break-even and trailing, and his stated 1:4–1:6 band, remain
+`[trader-claimed, unverified]` colour and are NEVER the scored exit.**
+
 ### 4 · VERDICT — **INSUFFICIENT — PARKED**
 
 The breaker trigger is well specified and testable in isolation. The **model that gates it is

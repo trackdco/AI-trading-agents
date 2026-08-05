@@ -127,6 +127,31 @@ error. Applying the stated protocol now:
   **no stated signal**. A mechanical backtest will take days he would have sat out and therefore
   **understates** him. Recorded as a known bias; no chop filter invented.
 
+### ⬛ PARKED 2026-08-07 — Q-H2 is a fabricated component in a core rule
+> *"the card stays PARTIAL because of Q-H2. He never gives a window length, so any window we pick
+> is OURS and would define the level — that's a fabricated component in a core rule. Do not invent
+> one now. Record the gap explicitly on the card and park the strategy."* `[stated-by-user]`
+
+**Q-H2 remains an open [gap] and no window has been invented.** The data high/low are the extremes
+of the release reaction; the only timeframe he ever attaches to them is a 15-minute wick
+`[c15YLeAKc2A @ 06:45]`, and 15s/30s for entries `[@ 02:24]`. **No length is stated anywhere.**
+
+**Q-H4 [inferred]:** he skips discretionarily on *"atrocious"* price action `[@ 00:00]` with no
+stated signal. A mechanical backtest would take days he sat out and therefore **understate** him.
+Recorded as a known bias; no chop filter invented.
+
+**Status: carded and PARKED.** Bias, entry, stop and target are all in place and the CPI-skip is
+locked — the strategy fails only on the level's definition.
+
+### ⬛ EXIT CONVENTION — LOCKED
+Scored on the **identical** convention as `ash-unicorn-sb` so the trade logs pool:
+**target = entry ± 2 × risk · break-even at 1R · no trailing · stop fills first on a same-bar
+conflict · capped 16:00 ET · R signed by direction · costs reported separately ($25/round-turn).**
+Full derivation and verification: `EXIT-CONVENTION-LOCKED.md`.
+This card keeps its **own stop rule**, because the stop is what defines R.
+**Powell's Apex-driven break-even and trailing, and his stated 1:4–1:6 band, remain
+`[trader-claimed, unverified]` colour and are NEVER the scored exit.**
+
 ### 4 · VERDICT — **PARTIAL**
 
 Unusually complete for this corpus — bias, entry, stop and target are all [stated] with numbers,
@@ -163,3 +188,6 @@ Corroborated `[Y-oqSZmNo4U @ 18:12]`. **We hold `config/news_calendar_hist.csv` 
 Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
 the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
 convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.
+
+### 2026-08-07 rev c — Brake's close-out answers
+Prior revisions retained above, not overwritten.

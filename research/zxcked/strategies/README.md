@@ -14,13 +14,13 @@ card, that is recorded as a decision, not an omission.
 
 | card | verdict | GAP-entry? | NY? | status |
 |---|---|---|---|---|
-| **`zxck-10am-keyopen`** | **CONFIRMED** | **YES** | YES | 🟢 **GREENLIT for Stage 3** |
-| **`zxck-gap-fill-edge`** | **CONFIRMED** | **YES** | partial | 🟢 **GREENLIT for Stage 3** — as a *variant* of wick-ce, one trial not two |
-| `zxck-cisd` | **CONFIRMED** | no | YES | confirmed but **parked for pooling** — the FVG inversion turned out to be a bonus, so it is not a gap entry |
-| `zxck-wick-ce` | PARTIAL | no | YES | Q3 left unresolved **by instruction**; best reading rides tagged `[inferred]` |
-| `zxck-news-draw` | PARTIAL | partial | YES | CPI-skip locked; **Q-H2 (the data high/low window) is undefined and it defines the level** |
-| `zxck-ifvg-50` | INSUFFICIENT | YES | partial | **Q10 (bias) unanswered.** Literal reading = every 5m/15m inverse FVG is a trade — untestable |
-| `zxck-mmxm-breaker` | INSUFFICIENT — PARKED | partial | YES | shelved by instruction; no range definition invented |
+| **`zxck-10am-keyopen`** | **CONFIRMED** | **YES** | YES | 🟢 **GREENLIT** — every part is his |
+| **`zxck-gap-fill-edge`** | **CONFIRMED** | **YES** | partial | 🟢 **GREENLIT** — a *variant* of wick-ce, one trial not two |
+| **`zxck-ifvg-50`** | **CONFIRMED** ↑ | **YES** | partial | 🟢 **GREENLIT** — ⚠️ bias gate is `[stated-by-user]`, weaker footing than the other two |
+| `zxck-cisd` | **CONFIRMED** | no | YES | parked for pooling — the FVG inversion is a bonus, so not a gap entry |
+| `zxck-wick-ce` | PARTIAL | no | YES | Q3 left unresolved **by instruction**; both conflicting quotes preserved |
+| `zxck-news-draw` | PARTIAL — **PARKED** | partial | YES | CPI-skip locked, but Q-H2 (the data high/low window) is undefined and it **defines the level** |
+| `zxck-mmxm-breaker` | INSUFFICIENT — PARKED | partial | YES | shelved; no range definition invented |
 | `zxck-amd-pdarray` | **WITHDRAWN** | — | — | AMD is his name for the engineered-liquidity shape, not a model |
 
 **Greenlit for Stage 3: `zxck-10am-keyopen` and `zxck-gap-fill-edge`** — the only cards that are

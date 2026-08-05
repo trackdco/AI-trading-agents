@@ -201,6 +201,25 @@ Skips FOMC/Powell-testimony days `[xae9AiV5Ps4 @ 01:31]`.
 
 ---
 
+## F0. EXIT CONVENTION — LOCKED 2026-08-07
+
+Every `zxck-` card is scored on the **identical** convention as `ash-unicorn-sb`:
+**target = entry ± 2 × risk · break-even at 1R · no trailing · stop fills first on a same-bar
+conflict · capped 16:00 ET · R signed by direction · costs separate ($25/round-turn NQ).**
+Derivation and verification against the 37-row log: `EXIT-CONVENTION-LOCKED.md`.
+Each card keeps its **own** stop rule — the stop defines R and is part of the strategy.
+
+### F0.1 · Logged as OURS, not his — the ATR-scaled manipulation floor
+Brake ratified the **fixed 10-point** manipulation floor as Powell's rule `[stated-by-user]`:
+> *"keep the 10pt floor as a fixed point value like he stated it — that's his rule. The ATR-scaled
+> version stays logged as a separate future hypothesis, clearly marked as ours, not substituted in
+> now."*
+
+**FUTURE HYPOTHESIS (OURS, NOT HIS) — not implemented, not tested, not in any card:**
+*a manipulation floor expressed as a fraction of ATR or of the prior session's range, rather than
+a fixed point count.* It would need its own prereg and its own ledger arm. **It must never be
+silently substituted for the 10-point rule.**
+
 ## F. ⚠️ THE FIXED-TARGET PROBLEM — read before any backtest
 
 His break-even (E3) and trailing (E4) are **explicitly Apex-driven**. Every R-multiple he quotes
@@ -216,3 +235,6 @@ measuring the same thing as his numbers**, and any comparison to his claimed RRs
 | manipulation-wick size | 2pt *"not sufficient"*, 10pt *"not very good"* `[5pL41Pl7GM4 @ 01:36, 02:46]`; threshold above 10, never named |
 | target selection | a menu, never a rule (E2) |
 | which fib leg | partly solved by the rebalance rule, still needs *"a reason"* |
+
+### 2026-08-07 rev c — Brake's close-out answers
+Prior revisions retained above, not overwritten.

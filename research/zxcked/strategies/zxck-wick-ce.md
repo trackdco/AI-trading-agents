@@ -136,6 +136,15 @@ card carries the reading as an assumption, not as his rule.
 gap entry**, so it does not serve the pooling goal; its prominence is deliberately not being
 allowed to pull priority.
 
+### ⬛ EXIT CONVENTION — LOCKED
+Scored on the **identical** convention as `ash-unicorn-sb` so the trade logs pool:
+**target = entry ± 2 × risk · break-even at 1R · no trailing · stop fills first on a same-bar
+conflict · capped 16:00 ET · R signed by direction · costs reported separately ($25/round-turn).**
+Full derivation and verification: `EXIT-CONVENTION-LOCKED.md`.
+This card keeps its **own stop rule**, because the stop is what defines R.
+**Powell's Apex-driven break-even and trailing, and his stated 1:4–1:6 band, remain
+`[trader-claimed, unverified]` colour and are NEVER the scored exit.**
+
 ### 4 · VERDICT — **PARTIAL**
 
 Tradeable today. Every one of the seven parts is [stated] or cleanly [inferred] — but **Q-A1 and

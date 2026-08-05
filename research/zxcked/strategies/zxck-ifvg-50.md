@@ -10,7 +10,7 @@ NY_SESSION: partial — examples are NY, but he never restricts it
 his_rank: "#3 — stated as a standalone model three separate times, unprompted"
 sources: [lRgsHGWzO9E, r5_yNjXsv6k, BOuJLWIisMI, dlSXQgM1ZpA, pMv3USznFdU]
 components: zxck-COMPONENTS.md
-verdict: INSUFFICIENT
+verdict: CONFIRMED
 ---
 
 # `zxck-ifvg-50` — the inverse-FVG 50% mark
@@ -91,7 +91,37 @@ Full evidence: `SELF-RESOLVED-2026-08-07.md`.
 
 **Still INSUFFICIENT: Q10 (bias) and Q11 (target) are both core and both unanswered.**
 
-### ⬛ NOT ANSWERED 2026-08-07 — Q10 and Q11 were not addressed
+### ⬛ ANSWERED 2026-08-07 — Q10 closed by Brake, Q11 mooted by the exit lock
+
+**Q10 · does the standalone version need a bias/level? — `[stated-by-user]`: YES, IT REQUIRES ONE.**
+> *"the standalone version REQUIRES a directional bias / level. An inverted FVG counts as a setup
+> only when it forms in line with a draw on liquidity, same as the rest of his method."*
+
+**LOCKED RULE:** an inverse FVG is a setup **only when it forms in line with a draw on liquidity**
+(`zxck-COMPONENTS.md` §A — PXH/PXL, then session extremes, then MMXM). The draw-already-taken kill
+`[38YtF6xFX4o @ 06:08]` applies here as it does everywhere else.
+
+**⚠️ THE INTERPRETIVE CHOICE, RECORDED — this gate came from Brake, not from Powell.**
+Brake's instruction, verbatim:
+> *"the 'you could literally make a model out of this alone' line is treated as him overselling
+> the concept, not a literal every-gap rule — the literal version produces thousands of undirected
+> events a year and is a coin flip a priori."*
+
+So `[lRgsHGWzO9E @ 08:30]` is read as **rhetoric, not specification**, and *"use good gaps. Don't
+use every random gap that you see"* `[dlSXQgM1ZpA @ 03:51]` is read as **the selection criterion he
+gestured at but never spelled out** — resolved here as draw-alignment. Both quotes stay on the card.
+**Anyone reading a result from this card must know the core gate is a ratified interpretation.**
+
+**Standing instruction from Brake, recorded so it is not quietly ignored later:**
+> *"Do NOT build or test the no-bias variant. If the bias requirement makes the event count too
+> thin to test later, report that as a finding rather than relaxing the rule."*
+
+**Q11 · target — RESOLVED BY THE EXIT LOCK, not by him.**
+The locked convention fixes the target at **2R** for every card
+(`EXIT-CONVENTION-LOCKED.md`). His own material never states a target for this model; the
+first-opposing-swing reading from `[r5_yNjXsv6k @ 01:34]` is superseded and is no longer load-bearing.
+
+### ⬛ SUPERSEDED — the 2026-08-07 "not answered" note
 
 Brake's reply covered Q3, Q20, Q22 and the 10pt floor. **Q10 (bias) and Q11 (target) were not
 addressed**, so the "don't know" protocol applies: record the most literal transcript reading with
@@ -117,14 +147,40 @@ not a strategy; it is a coin flip with a tight stop, and testing it would consum
 tell us nothing about him. **He rates this concept third and states it standalone three separate
 times, so it is worth resolving — but it needs one answer first.**
 
-**Verdict unchanged: INSUFFICIENT.**
+**Verdict was INSUFFICIENT at the time of this note; superseded above.**
 
-### 4 · VERDICT — **INSUFFICIENT**
+### ⬛ EXIT CONVENTION — LOCKED
+Scored on the **identical** convention as `ash-unicorn-sb` so the trade logs pool:
+**target = entry ± 2 × risk · break-even at 1R · no trailing · stop fills first on a same-bar
+conflict · capped 16:00 ET · R signed by direction · costs reported separately ($25/round-turn).**
+Full derivation and verification: `EXIT-CONVENTION-LOCKED.md`.
+This card keeps its **own stop rule**, because the stop is what defines R.
+**Powell's Apex-driven break-even and trailing, and his stated 1:4–1:6 band, remain
+`[trader-claimed, unverified]` colour and are NEVER the scored exit.**
 
-**Bias and targets are both [gap], and Q-C2 decides whether this is a strategy or an
-observation.** He rates it highly and states it three times, so it is worth resolving — but I
-will not invent a bias rule and a target rule and then call the result his. Not tradeable or
-testable as it stands.
+### 4 · VERDICT — **CONFIRMED** (rev b; was INSUFFICIENT at rev a)
+
+**rev a verdict (retained):** *"Bias and targets are both [gap]… Not tradeable or testable as it
+stands."*
+
+**rev b verdict — CONFIRMED.** Both gaps are closed: **bias** by Brake `[stated-by-user]`, **target**
+by the locked exit convention. Q12 (the standalone 5m/15m version is real and separate) and Q13
+(inversion requires a close) were self-resolved from the transcript. **No open question remains.**
+
+All seven parts now resolve:
+| part | tag |
+|---|---|
+| bias source | **[stated-by-user]** — draw-aligned, via `COMPONENTS` §A |
+| setup conditions | **[stated]** — 5m/15m inverse FVG, inverted **by a close** `[BOuJLWIisMI @ 04:39]` |
+| entry trigger | **[stated]** — the 50% mark `[lRgsHGWzO9E @ 07:44]` |
+| stop / invalidation | **[stated]** — 5 points `[@ 07:44]` |
+| targets | **[locked]** — 2R, by the exit convention |
+| risk / sizing | **[inferred]** — `COMPONENTS` §D/§E |
+| avoid-filters | **[inferred]** — non-draw-aligned gaps excluded; this is the reading of *"use good gaps"* |
+
+**Caveat that travels with the verdict:** Confirmed here rests on a **ratified interpretation of
+the bias gate**, not on a rule Powell states. That is a weaker footing than
+`zxck-10am-keyopen`, where every part is his.
 
 ---
 
@@ -159,3 +215,6 @@ It is also one of the three conditions in the displacement rule `[pMv3USznFdU @ 
 Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
 the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
 convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.
+
+### 2026-08-07 rev c — Brake's close-out answers
+Prior revisions retained above, not overwritten.
