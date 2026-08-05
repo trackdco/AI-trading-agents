@@ -394,3 +394,18 @@ VALIDATED OUT-OF-FIT at flat size (~+0.65R/trade, ~2/wk, every-month-but-
 one positive). Remaining ladder: shadow (flat-size spec live-paper +
 ladder observation) -> §5.11-8 baseline -> Angus ship decision.
 Ledger rows 257-258.
+
+### RULINGS 2026-08-05 (post-OOF) + AGENT RUNG DECLARATION
+- ANGUS: "im happy to ship this tbh" — ship-intent recorded; ladder still
+  runs (agent rung -> shadow -> two-party arming).
+- SIZING REVISED: $180 base / $360 confirmed (2.0x, replacing 160/400).
+  §5.11-8 MECHANICAL BASELINE = frozen spec v1 at 180/360 — SIGNED by
+  this ruling.
+- AGENT RUNG (his order): full fit span, all 112 trades, chained desk run
+  (canon run-1 architecture: one conversation per trade, tools disabled,
+  event-driven turns, guardrails driver-enforced). Baseline = the frozen
+  mechanical walk at 180/360. Graduation: agent total $ >= mechanical
+  total $ AND non-negative defense delta AND zero guardrail violations.
+  Defense/offense split reported per the canon journal convention.
+  Spec: .claude/agents/trade-manager-shelf-v1.md (fast-clock terrain,
+  honest fit + OOF numbers, walkout-extension briefing).
