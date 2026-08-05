@@ -79,7 +79,27 @@ declared at L1 and frozen after tournament.
 - vs Brake's NY candidates and london-level-trap-fade (sweep cousin) — via
   shared vault emissions.
 
+## Promotion rule (declared 2026-08-05, BEFORE any exit tournament — §6.0 law)
+
+- Fail-branch DEFAULT SPEC by mechanism prior: deep-excursion cohort (trapped
+  mass), G2 excursion-delta gate (the chase wasn't paid — counterparty
+  confirmation), S2 half-excursion stop (MAE-derived geometry), target
+  min(POC, 0.5 width), time-stop 15:55. This default was fixed by mechanism
+  reasoning at trial 3, before the tournament.
+- The exit tournament may test declared arms; an alternative arm DISPLACES the
+  default only if PBO (CSCV, day-level, all arms) < 0.5 AND the alternative
+  survives the candidate's holdout adjudication. In-sample rank never
+  promotes.
+- Accept-branch default: A1 retest entry, 1.0-width target; same displacement
+  rule.
+- Family promotion to grading requires: era-consistent positive at base
+  friction on the default spec, all trials recorded in the MERGED machine
+  ledger (output/trial_ledger.parquet), correlation battery vs canon + all
+  live emissions passed.
+
 ## Trial ledger
 
-research/candidates/nya-failed-auction.md at first trial. All arms count;
-shared program deflation with Brake's NY work.
+research/candidates/nya-failed-auction.md (narrative) AND
+output/trial_ledger.parquet via src/validation/trial_ledger.py (the number
+the gate reads — §6.0). All arms count; deflation merged with Brake's NY
+program.

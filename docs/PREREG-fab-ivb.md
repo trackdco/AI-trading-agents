@@ -81,8 +81,17 @@ P7 library when built); depth-wall state at IB extreme (heatmap span).
 Arms declared at L1 after census geometry is known; tournament then FREEZE
 per ship contract. Time-stop family: 11:00/11:30/EOD declared now.
 
+## Promotion rule (declared 2026-08-05 under §6.0 law; branch A already dead)
+
+Branch B (range fade), if its census passes: DEFAULT SPEC by mechanism prior
+= fade the completed-IB extreme touch toward IB mid, stop beyond the extreme,
+10:00-10:30 only. Displacement of the default requires PBO < 0.5 on the arm
+matrix AND holdout adjudication — never in-sample rank. Family promotion
+requires era-consistent positive at base friction + merged-ledger recording +
+correlation battery vs canon (clock overlap known).
+
 ## Trial ledger
 
-Every arm above counts. Ledger lives in research/candidates/nya-ivb.md
-(created at first trial). Program-level deflation shared with Brake's NY
-program per the shared-vault convention.
+Every arm above counts. Narrative in research/candidates/nya-ivb.md; numbers
+in output/trial_ledger.parquet via src/validation/trial_ledger.py (§6.0).
+Program-level deflation merged with Brake's NY program.
