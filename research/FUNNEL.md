@@ -229,7 +229,10 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   research/findings/thraxx-credibility.md; candidate seed:
   research/candidates/nya-orderflow-continuation.md (NYA-OFC-01). 15
   teaching transcripts pulled + catalogued; 126 live NQ sessions catalogued,
-  not transcribed. NO prereg, NO data touched — awaiting Angus's slot call.
+  not transcribed. NO prereg, NO data touched, NO census run.
+  **RULING [ANGUS 2026-08-05]: no strategies taken to test. No slot
+  allocated.** Retained as reference, not killed — nothing was measured, so
+  there is nothing to tombstone and no holdout look was spent.
   - **nya-orderflow-continuation (NYA-OFC-01)** — two footprint continuation
     entry models (big-trade acceptance; stacked-imbalance acceptance), both
     two-candle "aggression then acceptance" sequences, gated by his

@@ -1,7 +1,17 @@
 # NYA-OFC-01 — footprint continuation entries (Thraxx, as taught)
 
-**STATUS: SEEDED AT INTAKE. No prereg. No data touched. No census run.**
-Awaiting an Angus slot decision under the one-strategy-at-a-time rule.
+**STATUS: NO SLOT ALLOCATED [ANGUS 2026-08-05] — "no strategies to test,
+all good. some good findings tho".** Not a kill and not a tombstone: no
+prereg was written, no data was touched, no census was run, so nothing has
+been measured and no holdout look was spent. The intake is retained as
+REFERENCE — the extracted specs, the footprint parameter set and the
+credibility audit stand on file.
+
+REOPEN PATH: a free slate slot, or a reason to want the footprint primitives
+themselves (the 400%/10-contract imbalance definition and the big-trade
+proxy are reusable as FEATURES for any candidate, independent of his entry
+models). Anyone reopening starts by reading the declared trap below before
+writing a prereg.
 
 Spec: `research/transcripts/thraxx/SPEC-as-taught.md` SPEC 1 (big-trade
 continuation) + SPEC 2 (stacked-imbalance continuation), gated by SPEC 3
