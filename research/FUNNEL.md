@@ -53,6 +53,13 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   the correction that proved the framework audit mattered.
 
 ## nya-failed-auction — balance-break fail branch (dual-sourced) — ON HOLD: 23/24 look failed, retest banked
+- TRIAL 10 (2026-08-05, hours-clock re-census per RESPEC Spec 6): the
+  TAUGHT clock (30-min bars, >=4h outside) is a different, better trade —
+  n=193, WR 47%, PF 1.24, $+1,893, years 0.97/1.06/1.57/1.24, frequency
+  0.93/wk matches teaching. Fast clock (old picture): PF 1.14, 23/24 neg.
+  All declared gates fail permnull (p~0.35) — population positive, gates
+  unproven. Old "time is noise" verdict vacated (wrong clock). Earns next
+  stage on the hours-clock expression; §5.9.4 banked-retest firewall holds.
 - STAGE: deep pass complete; §5.9.4 look #1 SPENT and FAILED (deep skeleton
   PF 0.68 / with cut 0.76 on 147 events, negative both years); the single
   rebalance-retest is BANKED — no rebalance candidate has credible in-fit
