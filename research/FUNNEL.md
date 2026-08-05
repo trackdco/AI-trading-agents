@@ -75,9 +75,17 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   0.75 sleeve floor — both eligible as book components pending the book
   grading. Full history in research/candidates/nypre-*.md.
 
+## nyo-rotation — overnight composite rotation (dual-sourced) — census done, conditioning owed
+- RAW TRIGGERS: 145 first-touch / 156 all-touch events over 548 composite-live
+  overnight sessions (~3/month — overnight touches of day-built balances are
+  structurally rare).
+- RAW P&L: PF 1.10, +345 pts, $-665 at 1/risk sizing (wide natural stops),
+  years +396/+74/-198/+74 — mediocre as the law expects; NO bin.
+- NEXT: full conditioning search — flow at touch (overnight fully covered),
+  euro-delta feature (first declared reuse), time-of-night, stop caps
+  (§5.11-3, the obvious geometry cure), then era discipline.
+
 ## QUEUE (cards open at census)
-- orochi-overnight-rotation (as taught: composite edge fade + DVA shift
-  confirmation, overnight session) — prereg next.
 - orochi-vwap-regime-pair (edge fade gated by rotational condition vs trend
   side) — prereg next.
 - level-interaction trigger family (canon-frequency substrate, ~10-15 raw
