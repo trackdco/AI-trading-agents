@@ -149,6 +149,7 @@ def zxck_trades(bars: pd.DataFrame, fp: pd.DataFrame) -> pd.DataFrame:
         dv, rv = float(disp.vol.sum()), float(ret.vol.sum())
         f2 = rv / dv if dv > 0 and len(ret) else np.nan
         rows.append({"date": day, "src": "zxck-10am-keyopen", "R": round(out, 3),
+                     "disp_start": t0, "disp_end": t1, "entry_ts": te,
                      "risk_pts": STOP_PTS,
                      "outcome": "win" if out >= 2 else ("BE" if out == 0 else
                                 ("loss" if out <= -1 else "timeout")),

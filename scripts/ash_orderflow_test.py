@@ -142,6 +142,8 @@ def run(bars: pd.DataFrame, fp: pd.DataFrame) -> pd.DataFrame:
                     last = float(tail.close.iloc[-1]) if len(tail) else entry
                     out = float(((entry - last) if side < 0 else (last - entry)) / risk)
                 trades.append({"date": day, "time": f"{ts_entry:%H:%M}", "session": "NY",
+                               # flow-window PROVENANCE, logged so the boundaries are auditable
+                               "disp_start": ts_disp0, "disp_end": ts_disp1, "entry_ts": ts_entry,
                                "window": name, "direction": "short" if side < 0 else "long",
                                "entry": round(entry, 2), "stop": round(stop, 2),
                                "target": round(target, 2), "risk_pts": round(risk, 2),

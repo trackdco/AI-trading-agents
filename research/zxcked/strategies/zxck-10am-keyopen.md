@@ -390,3 +390,25 @@ the 29 `ash-unicorn-sb` trades that produced them.
 - **Not an underpowered null:** the sample detects **d ≥ 0.58**; the claimed effects were ~0.6.
 
 **Both hypotheses are retired.** No filter is applied to this card.
+
+
+---
+
+### ⛔ 2026-08-07 — STAGE 4 POOLED F2/H1 TEST HALTED AT STEP 0 (LOOK-AHEAD)
+Full result: **`research/_shared/f2-h1-oos-test.md`**
+
+`retrace_ratio` (F2) is **not a pre-entry feature**. Its retracement window ends at and *includes
+the entry minute*, and the entry is an intrabar limit fill, so it contains up to 59 seconds of
+post-fill tape. Footprint data is minute-aggregated, so the split is unknowable from held data.
+**On 73% of `zxck-10am-keyopen` and 50% of `orb-fvg-nyopen` trades the retracement is a single
+minute — the entry minute — so 100% of F2's numerator is exposed.**
+
+**No H2 or H1 statistic was computed.** `disp_delta_magnitude`'s numerator is clean on every trade;
+only its normaliser is affected (median 1.0–4.5%).
+
+**R, expectancy, bounds and verdicts on this card are UNAFFECTED** — flow was computed and applied
+to nothing.
+
+✅ **The H2 out-of-sample FAILURE on this card STANDS, and stands more firmly.** The
+contamination biases toward false positives, so it should have *helped* H2 succeed. H2 failed
+anyway, on the most contaminated card in the set (100% median entry-minute share).

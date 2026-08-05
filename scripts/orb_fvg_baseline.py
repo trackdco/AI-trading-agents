@@ -274,7 +274,7 @@ def flow_feats(fpd, w, ev, t, side):
     f1 = float(disp.delta.sum()) * side / med if (len(disp) and med) else np.nan
     dv, rv = float(disp.vol.sum()), float(ret.vol.sum())
     f2 = rv / dv if dv > 0 and len(ret) else np.nan
-    return f1, f2
+    return f1, f2, t0, t1, te
 
 
 # ------------------------------------------------------------------------------- the run
@@ -335,9 +335,10 @@ def run(bars, fp, cal):
                     t, entry, stop, risk, same_bar = res
                     side = ev["side"]
                     R, ex, be, ex_ts = walk_exit(dayarr, t, entry, stop, side, risk, same_bar)
-                    f1, f2 = flow_feats(fpd, w, ev, t, side)
+                    f1, f2, ts_d0, ts_d1, ts_e = flow_feats(fpd, w, ev, t, side)
                     rows.append({
                         "arm_brk": brk, "arm_entry": er, "arm_stop": sr,
+                        "disp_start": ts_d0, "disp_end": ts_d1, "entry_ts": ts_e,
                         "date": day, "time": f"{w.ts.iloc[t]:%H:%M}",
                         "seq_in_day": n_ev,
                         "direction": "long" if side > 0 else "short",

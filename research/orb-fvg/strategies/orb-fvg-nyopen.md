@@ -467,3 +467,24 @@ reading landing negative rather than on any one arm's significance.
 
 **Ledger:** this card spends **4 primary arms + 4 sensitivity arms**, raising the deflation bar
 for every other candidate in the programme.
+
+
+---
+
+### ⛔ 2026-08-07 — STAGE 4 POOLED F2/H1 TEST HALTED AT STEP 0 (LOOK-AHEAD)
+Full result: **`research/_shared/f2-h1-oos-test.md`**
+
+`retrace_ratio` (F2) is **not a pre-entry feature**. Its retracement window ends at and *includes
+the entry minute*, and the entry is an intrabar limit fill, so it contains up to 59 seconds of
+post-fill tape. Footprint data is minute-aggregated, so the split is unknowable from held data.
+**On 73% of `zxck-10am-keyopen` and 50% of `orb-fvg-nyopen` trades the retracement is a single
+minute — the entry minute — so 100% of F2's numerator is exposed.**
+
+**No H2 or H1 statistic was computed.** `disp_delta_magnitude`'s numerator is clean on every trade;
+only its normaliser is affected (median 1.0–4.5%).
+
+**R, expectancy, bounds and verdicts on this card are UNAFFECTED** — flow was computed and applied
+to nothing.
+
+**Locked primary arm for any future pooled test, fixed before any F2 result was inspected:**
+`arm_brk=close · arm_entry=retrace · arm_stop=fvg`. The other three arms are sensitivity only.
