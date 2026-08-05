@@ -313,3 +313,19 @@ the certified default (or shadow-both); (2) loser rule pick (base+L3
 recommended / base+L1 accepted-cost option); (3) then shadow -> two-party
 arming with Pat. Agent rung = optional overlay AFTER mechanical ships
 (his standing rule), offense-focused playbook.
+
+### Stage 2h — AT-ENTRY CONVICTION DIAGNOSIS (DECLARED 2026-08-05)
+ANGUS: "what variables are there at entry that increase and decrease win
+rate... this in itself could ship higher risk cause the performance is
+genuinely good regardless." Basis: final shape (band + 0.5R + t10
+scratch), the 112 fit trades. Declared at-entry variable scan (all causal
+at the touch minute): IB width (abs + vs trailing median), touch side,
+entry clock, minutes-from-IB-completion, gap context (signed), band
+distance at entry (the available RR), entry-vs-VWAP distance, VWAP slope,
+entry delta / session cvd / dz, book imbalance + opposing/behind wall
+ratios (coverage 10:00-10:29), weekday, trailing-5 strategy P&L,
+approach velocity (pts/min over last 5m into touch), first-formed flag.
+OUTPUT: per-variable WR splits + AUC table -> the conviction-ladder
+candidates. This scan produces EVIDENCE for a pre-declared conviction
+prereg (tiers monotonicity-tested per §5.12.1-14) — not gates; thin-cell
+honesty at n=112 (terciles ~37).
