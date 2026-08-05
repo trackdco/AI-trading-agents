@@ -276,16 +276,37 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   (§6.0.1). Ledgered as a declared negative, not promoted. Note this also means the
   census's implied midpoint correction is **not** confirmed: the target question is
   open, not settled in the midpoint's favour.
-- COST SENSITIVITY IS THE STORY: average risk on this branch is small (~5 pts, because
-  the sweep extreme sits close to the fail-bar close), so a 1–2 pt cost is 20–40% of
-  the stop. Fabio named NQ slippage as the thing that breaks his version; this is that,
-  measured.
-- VARIABLE LIFT SO FAR: **negative.** Minimum displacement ≥0.10× range: 2025 −0.255R,
+- ~~COST SENSITIVITY: average risk ~5 pts, so a 1–2 pt cost is 20–40% of the stop.~~
+  **WRONG — corrected 2026-08-05.** That figure belongs to the OBK branch's
+  trigger-candle stop. Actual risk on this branch: **median 14.0 pts, p10 5.5, p90
+  39.8** — a 7.2× spread with no floor and no cap. Cost is 7–14% of median risk, not
+  20–40%.
+- VARIABLE LIFT: **negative.** Minimum displacement ≥0.10× range: 2025 −0.255R,
   2026 −0.200R — worse than unfiltered in both.
-- NEXT: conditioning search (earned — census premise passed, §5.9.2 forbids an
-  expectancy kill here). Arm A (IFVG) still barred pending a mechanical definition.
-  SMT confluence still dropped, no ES data.
-- CANON SHAPE: raw ugly on schedule; first variable did not lift.
+- **GEOMETRY CALIBRATION (2026-08-05, `docs/PREREG-london-po3-geometry.md`) — the
+  stage this family was killed twice without.** Ordered by Angus: *"if u arent testing
+  jack shit and just sending it off, its obviously not gonna do well."* Against the
+  §5.11 checklist the family had cleared **2 of 9** items on **2 total arms**; the
+  shipped IB fade got 28 arms across 13 trials. Kill vacated a second time, then:
+  - **6 stops × 7 targets = 42 declared cells, identical 359-event set in every cell.
+    0 of 42 are PF-positive at strict cost in both eras.** Best 0.97 (`E+F12/FAR`,
+    `E/FAR`, `E+F8/FAR`); default `E/MID` 0.87; worst 0.63.
+  - **Event universe (§5.11.2, never run here before): widening loses faster.**
+    re-entry 359→1,109 trades at PF 0.77; window→11:00 London 405 at 0.85; both
+    1,529 at 0.81.
+  - **The as-taught FAR-edge target beat my midpoint substitution** — far-edge takes
+    the top 3 slots and 5 of the top 6 (payoff 2.4–3.0 at 23–29% WR vs the midpoint's
+    1.5–1.8 at 30–37%). Trial 1's census inference was wrong and is now settled.
+  - **Stop floors help slightly, caps hurt, both are second-order** (~0.06 PF spread
+    across all six stop rules). The stop was never where the problem lived.
+- **VERDICT: DEAD (final), kill legal on the third attempt.** All three variable
+  classes searched: geometry 0/42, flow-at-entry 0/6 confirmed, depth 1/32 paid and
+  failed its null at family-wise p=0.42. Tombstone with the reopening burden:
+  `research/findings/LDN-PO3-01-TOMBSTONE.md`.
+- **NEVER SPENT: 2023/24 candles, the six sealed months, `depth_london_2023_24`.
+  Three kills, zero holdout looks.**
+- CANON SHAPE: raw ugly on schedule; **no variable class ever lifted** — that is the
+  difference from canon, whose wall gate lifted a negative raw set into the book.
 
 ## nypre-gap-engine / nypre-inventory-correction — pre-market pair — SHELVED, back in play
 - Under §5.9 book-level bars: gap PSR 0.77, inventory PSR 0.92 vs the new

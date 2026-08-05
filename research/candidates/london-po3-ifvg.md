@@ -449,6 +449,104 @@ no way to get paid for it that survives honest scrutiny.**
 `depth_london_2023_24` are all untouched. The family dies without costing the programme
 a single look.
 
+### Trial 4 — KILL VACATED AGAIN, then GEOMETRY CALIBRATED (2026-08-05) — **KILLED, and this time the arithmetic was searched first**
+
+`docs/PREREG-london-po3-geometry.md`, committed before `scripts/london_po3_geometry.py`
+ran. Output: `output/london_po3_geometry.md`, `output/london_po3_geometry.parquet`.
+
+**ANGUS called the defect and he was right:**
+
+> *"look at all we tested to get the IB fade model shipped, look at all we did to get
+> the canon shipped. if u arent testing jack shit and just sending it off, its
+> obviously not gonna do well"*
+
+Against the §5.11 pre-ship checklist this family had cleared **2 of 9** items when it
+was killed. **Total arms ever tested on this branch: 2** — `F1` and `F2`, sharing a
+single stop rule. `NYA-IVB-01`, which shipped, got **28 arms across 13 trials**. The
+expectancy kill was therefore illegal under §5.9.2 a second time, and was vacated a
+second time.
+
+**Two specific defects, both found by inspecting the already-run arms (in-sample, so
+declared as hypotheses in the prereg rather than reported as findings):**
+
+- **D1 — the stop was never a variable.** Risk = distance to the sweep extreme:
+  median 14.0 pts, p10 5.5, p90 39.8 — a **7.2× spread with no floor and no cap**.
+  (The "~5 pts average risk" recorded in trial 2 above is **wrong** — that figure
+  belongs to the OBK branch's trigger-candle stop, not this one. Corrected here.)
+- **D2 — the payoff was never controlled.** Both declared targets are structural
+  PRICE levels, so the R-multiple of the target was whatever the sweep extreme
+  happened to be: `F1` median 1.49R, p10 0.47R, p90 3.73R; `F2` median 4.22R, p90
+  7.06R. **A fixed-R target had never been tested on this branch, not once.**
+
+#### The calibration — 6 stops × 7 targets = 42 declared cells, plus 4 event universes
+
+Identical event set in every cell (359 events, 318 sessions; the minimum-risk filter
+applied once on the as-taught distance), so the grid compares management on the same
+trades. Scored on **profit factor at strict cost** per Angus's corrected objective,
+with max drawdown in dollars beside it.
+
+**Result: 0 of 42 cells are PF-positive at strict cost in both eras.** Best cell 0.97.
+
+| top cells | n | WR | payoff | PF strict | 2025 | 2026 | maxDD |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `E+F12/FAR` | 359 | 29% | 2.36 | **0.97** | 0.89 | 1.10 | $9,401 |
+| `E/FAR` | 359 | 26% | 2.78 | **0.97** | 0.87 | 1.12 | $13,484 |
+| `E+F8/FAR` | 359 | 27% | 2.65 | **0.97** | 0.88 | 1.11 | $11,092 |
+| `FIX15/TRAIL` | 359 | 42% | 1.27 | **0.91** | 0.94 | 0.86 | **$4,045** |
+| `E/MID` (default) | 359 | 33% | 1.78 | **0.87** | 0.83 | 0.93 | $16,112 |
+| worst (`E~C20/R1`) | 359 | 45% | 0.77 | 0.63 | 0.66 | 0.58 | $17,085 |
+
+**Event-universe sensitivity (§5.11.2, never run here before) — no frequency rescue.**
+Widening makes it worse, not better:
+
+| universe | events | /day | PF strict | 2025 | 2026 |
+|---|---:|---:|---:|---:|---:|
+| U1 as-is | 359 | 1.13 | 0.87 | 0.83 | 0.93 |
+| U2 re-entry | 1,109 | 3.49 | 0.77 | 0.76 | 0.77 |
+| U3 window → 11:00 London | 405 | 1.21 | 0.85 | 0.78 | 0.95 |
+| U4 both | 1,529 | 4.56 | 0.81 | 0.80 | 0.83 |
+
+#### Two real corrections this run forces on the record
+
+1. **The as-taught target was right and my census ruling was wrong.** The far-edge
+   family occupies the **top three slots and five of the top six**. Trial 1 moved the
+   declared target to the midpoint off a ~20% far-edge traverse base rate; trial 2
+   flagged that inference as too quick; this settles it. A low hit rate on a distant
+   target was never evidence against the target — payoff 2.4–3.0 against the
+   midpoint's 1.5–1.8 is what the base rate could not see. **EzTrades' geometry beat
+   mine.** It still loses.
+2. **Stop floors help, caps hurt, and both are second-order.** Flooring at 12 pts is
+   the best stop in the grid (it removes the 19%-WR / PF 0.52 tightest quintile);
+   capping at 20 is the worst (it puts the stop inside the sweep extreme, so the
+   retest takes you out). The spread across all six stop rules at a fixed target is
+   ~0.06 PF. **The stop was never where the problem lived.**
+
+#### VERDICT — KILLED (2026-08-05, final), prereg §6 kill condition FIRES
+
+The kill condition was declared before the run: *if no cell in the 42 is PF-positive
+at strict cost in both eras, the expectancy kill becomes legal.* None is. The
+geometry class is now searched — 42 arms plus 4 universes, 46 rows on the ledger —
+and the search across all three variable classes is complete:
+
+- **geometry** — 0 of 42 cells positive at strict cost in both eras
+- **flow at entry** — 0 of 6 features confirmed; the declared mechanism variable
+  (`delta_sweep`) pointed the wrong way
+- **depth at entry** — 9 of 32 cells survived, 1 paid, and it failed its
+  selection-corrected null at family-wise p = 0.42
+
+**The premise remains true and remains on the record:** the pre-open range breaks on
+92–93% of days, those breaks fail 84–85% of the time, and that beats a placebo range
+by +12/+14pp in both eras. **The failure is not the premise. It is that the reversal
+does not travel far enough, often enough, to pay for the round trip at any geometry
+in the declared grid.** Best payoff in the family is 2.78:1 at a 26% hit rate — that
+is a 0.97 PF trade, and 0.97 is a slow bleed, not an edge.
+
+**Still never spent: 2023/24 candles, the six sealed months, `depth_london_2023_24`.**
+Three kills on this family, zero holdout looks.
+
+Tombstone with the §7.1 anatomy and the reopening burden:
+`research/findings/LDN-PO3-01-TOMBSTONE.md`.
+
 ### §5.12.15 SEMANTICS CORRECTION (2026-08-05) — `W` was described wrongly above
 
 Everywhere this file calls `W` *"no wall behind"* and attaches a thin-overnight-liquidity
