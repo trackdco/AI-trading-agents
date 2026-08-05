@@ -377,3 +377,20 @@ of P&L). Trade-day maxDD $412; worst day -$412. MC 12mo funded shell:
 P(bust) 0.0%, median +$18,594/yr. SPEC v1 COMPLETE (entry/stop/target/
 scratch/2-tier ladder/sizing) — status NOT SHIPPING; next rung = shadow
 reproduction of the tier separation. Ledger row 256.
+
+### OOF LOOK #2 RESULT (2026-08-05, per docs/OOF-DECLARATION-ibc-legA-v1.md) — PARTIAL: SPEC VALIDATED FLAT-SIZE, LADDER UNPROVEN
+n=54 on the six sealed months (98% flow coverage), base 43 / confirmed 11.
+- TOTAL at ruled sizing: $+6,897 — POSITIVE; 5 of 6 months green
+  (2024-03: -$80 the only red).
+- BASE TIER REPRODUCES ALMOST EXACTLY: WR 65% vs fit 64%; mean +0.65R vs
+  fit +0.57R. THE CORE SPEC IS REAL OUT OF FIT.
+- CONFIRMED TIER DOES NOT: WR 73% vs fit 97% (n=11); separation +8pp <
+  the pre-committed +10pp bar. The 97% was fit-flattered, as suspected
+  and warned; the sealed months did their job.
+PRE-COMMITTED VERDICT: PARTIAL — the spec survives as FLAT-$160; the
+2-tier conviction sizing is UNPROVEN and waits for shadow. No re-looks.
+STATUS: NYA-IBC-01 leg A "IB shelf fade" = the program's first candidate
+VALIDATED OUT-OF-FIT at flat size (~+0.65R/trade, ~2/wk, every-month-but-
+one positive). Remaining ladder: shadow (flat-size spec live-paper +
+ladder observation) -> §5.11-8 baseline -> Angus ship decision.
+Ledger rows 257-258.
