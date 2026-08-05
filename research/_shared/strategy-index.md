@@ -82,8 +82,12 @@ were **bounded rather than guessed**.
 
 **Why the verdict is not about the poster.** Every rule that mattered was ours. This tested our
 adaptation. The one finding that *is* his: **his stated management (max 2/day, stop after a win)
-is actively harmful** — 0.12–0.20R per trade worse in every arm, because stopping after a win
-truncates upside while leaving downside intact.
+was ~~actively harmful~~ **immaterial**.
+⚠️ **CORRECTED 2026-08-07** — this row previously claimed his management cost 0.12–0.20R per
+trade. That figure came from a `cap_rules()` LOOK-AHEAD (the day stopped on a win's *outcome*
+while walking *entry* order, so 201 of 288 deletions removed positions already open). Implemented
+causally, the win-rule costs **0.002R–0.027R per trade, all |t| < 0.61** — indistinguishable from
+zero. **There is now NO finding on that card about the poster rather than our conventions.**
 
 **Pooling:** contributes **~288 independent, fully flow-covered F2 observations** (first trade per
 session, retrace arms only). The formation arm contributes none — F2 does not exist for it.

@@ -346,7 +346,10 @@ costs.** Before the fix that was already true but by a smaller margin.
 
 ### Answer to "did recovering the volatile sessions change the picture?"
 
-**No — the whole bound is negative after costs.** Expectancy lies in **[−0.140R, −0.027R]**.
+**No — the whole bound is negative after costs.** Expectancy lies in **[−0.202R, −0.077R]**.
+*(Corrected 2026-08-07: this line and the revision-log line below both still carried the
+pre-same-bar-fix bound [−0.140R, −0.027R] while the table above carried the post-fix one. The
+post-fix bound is the current one and is what the session map uses.)*
 Even the most favourable ordering of the ambiguous sessions does not produce a profitable card.
 
 ### The flattering arm, and why it is not a finding
@@ -371,7 +374,8 @@ His *"juicy take profit"* `[5pL41Pl7GM4 @ 25:30]` and 1:4–1:6 band `[WEeXKMzaJ
 
 ### Revision log
 - **2026-08-07 rev d** — reading A on the tick-covered span, ambiguity bounded rather than
-  guessed. Expectancy bound [−0.140R, −0.027R]: negative under both extremes.
+  guessed. Expectancy bound **[−0.202R, −0.077R]** post-fix (was [−0.140R, −0.027R] pre-fix):
+  negative under both extremes either way.
 
 ---
 
