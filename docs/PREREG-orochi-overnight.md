@@ -54,3 +54,37 @@ declared honestly.
 Default spec = the as-taught primary expression above. Displacement only via
 PBO < 0.5 on the arm matrix AND holdout adjudication. Trial ledger: machine
 ledger + research/candidates/nyo-rotation.md.
+
+## AMENDMENT 2026-08-05 — corrected as-taught retest (RESPEC Spec 5)
+
+The trial-1 census entered at the raw edge touch with NO confirmation —
+research/transcripts/orochi/RESPEC-as-taught-2026-08-05.md (deviations a-f)
+establishes the taught entries are post-confirmation DVA events. Canon-parity:
+the touch-fade verdict influence is VACATED; its numbers stand as BASELINE
+ONLY. Declared corrected grammar, filed before the retest runs:
+
+- DVA object: session VWAP anchored 18:00 ET, volume-weighted sigma bands,
+  +/-1 sigma = developing value area (dev VA), first 15 min excluded
+  (warm-up). Bands DEVELOPING (his object); frozen variant declared, not run.
+- Extreme visit: high/low reaches the composite edge (age >= 2 composite,
+  as trial 1) with rotational state intact. Rotational state death =
+  3 consecutive 1-min closes outside the composite edge (acceptance proxy,
+  declared from Spec 2 D1 arm set).
+- V-A (aggressive shift-out, his executed variant): after the extreme
+  visit, price re-enters the dev VA, then ENTRY on the first 1-min close
+  beyond the FAR dev-VA edge in the fade direction (the taught "shift out
+  of the developing value area").
+- V-B (pullback-confirmed, his recommended variant): after 1-min closes
+  back inside BOTH the composite edge and the near dev-VA edge, ENTRY on
+  the first pullback bar that touches the near dev-VA edge and closes back
+  in the fade direction (the "doubled edge holds" test).
+- Management (taught): DVA scratch — exit on any 1-min close re-crossing
+  the entry-defining dev edge against the position. Hard stop (OUR
+  invention, declared as such — stops are never taught): 0.25 x composite
+  width beyond the composite edge, same location as baseline for
+  comparability. Target: opposite composite edge (his stated "safest").
+  Time-stop 09:25. POC-partial declared as an exit arm, not run at census.
+- Report: per arm x per YEAR n/WR/pts/$/PF + frequency vs taught cadence
+  (1-3 per qualifying night ceiling) + baseline comparison. No bin off this
+  census (§5.9.1); the trial-1 declared flow/depth variables remain owed on
+  the corrected event set before any kill.

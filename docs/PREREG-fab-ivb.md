@@ -115,3 +115,43 @@ Branch B search space widened BEFORE running, all arms ledgered:
   analog arm here. Placeholder classes now: vwap-sd position at entry,
   prior-day close relationship, gap state, trigger-density analog
   (touch count so far today).
+
+## AMENDMENT 2026-08-05d — the agent rung (ship-ladder step 1), declared before any run
+
+- HARNESS: scripts/nya_ivb_desk_run.py — the in-repo desk-run code adapted
+  to the fade by the research chat (no live-box dependency; Pat owns live
+  integration only). One CLI conversation per trade, all tools disabled,
+  event-driven turns (MAX_TURNS 8), next-bar execution, stop-first, 15:55
+  flatten. Spec: .claude/agents/trade-manager-fade-v1.md (trial-11 numbers,
+  honest fit-era ranges).
+- BASELINE: the mechanical default spec walk (target mid, stop 0.25xIB, no
+  BE) — the agent is measured trade-by-trade against it (agent_R vs mech_R),
+  with the defense/offense split (mech losers vs mech winners) reported
+  separately, per the canon run-1 lesson.
+- SAMPLE (declared now, before any trade runs): the six tape-rich months
+  2025-06, 2025-09, 2025-12, 2026-02, 2026-04, 2026-06 (first/middle/last
+  full month per flow-era year — the canon phase-1 rule). Expected ~45-55
+  trades. Pre-tape eras are NOT in this rung (flow lines would be empty);
+  a candles+depth-only rung on 23-24 is a declared LATER phase, run only
+  if this rung graduates.
+- GUARDRAILS (driver-enforced): stops tighten only; target >= 2.0R until a
+  partial books (then >= 0.1R); partials 0-1 of open; no re-entries or
+  size/direction changes; malformed replies = no change.
+- GRADUATION BAR (declared): agent total R >= mechanical total R on the
+  sample AND defense contribution (on mech losers) non-negative AND no
+  guardrail violations. Passing -> shadow rung; failing -> the fade ships
+  MECHANICAL (the sleeve is certified either way; the agent layer is an
+  overlay, per Angus's rule that agents only get discretion on top of
+  already-profitable mechanical code). Angus reads the journal before any
+  graduation.
+- DEPTH: book lines read output/depth_minutes.parquet (per-minute
+  aggregates; wall_dist valid as of today's decoder fix; at-price reads
+  only per canon 2a9c221). Coverage is partial (215 NY mornings) and the
+  briefing says "book: n/a" where absent — honest gaps, no interpolation.
+
+### 2026-08-05d SAMPLE AMENDMENT (ANGUS, mid-run ruling)
+The 6-month sample is superseded: the rung runs the FULL flow span,
+2025-06 through 2026-07 (112 trades), matching the canon phase-1
+precedent (entire fit span, chronological). Journal/state persisted; the
+14 trades completed under the old sample are retained, not redone.
+Graduation bar unchanged.

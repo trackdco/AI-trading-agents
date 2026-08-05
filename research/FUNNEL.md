@@ -1,5 +1,25 @@
 # THE FUNNEL — live per-strategy data cards (Angus's window into every stage)
 
+## PROGRAM MODE: ONE STRATEGY AT A TIME [ANGUS 2026-08-05]
+"Lets go one strategy at a time... ill go through the same process i went
+through for the canon, one strategy at a time. except it will be way
+quicker now, and findings will be documented."
+- Single-family work-in-progress. Angus operates each family through the
+  full canon process start-to-finish (stage data cards -> his calls ->
+  next stage); everything else PARKS at its current stage, state
+  documented on its card. No new intakes/censuses until the active
+  family resolves (ship, shelve, or kill).
+- PARKED STAGES: nya-ivb-fadeB + NYA-IB50-01 = folded into the ACTIVE
+  IB COMPLEX (NYA-IBC-01, card below); nya-daily-sweep =
+  sleeve-certified, awaiting Brake redundancy + book decision;
+  nya-failed-auction hours-clock = SHELVED BY ANGUS (frequency too low
+  to be worth the slot, ~0.9/wk; history stands in the candidate file);
+  nyo-rotation = park recommended; nypre pair = shelved-eligible.
+- ACTIVE FAMILY (this chat): NYA-IBC-01 the IB Complex.
+- SECOND CHAT (Angus): level-interaction family seeded with the
+  MrZincx London-50/PD level set — the high-frequency substrate
+  (~10-15 raw triggers/day); fit-span universe, uncapped from birth.
+
 Standing rule (ANGUS 2026-08-05): every strategy past step 1 gets a data card
 here, updated at EVERY stage boundary — raw trigger counts and frequency, raw
 P&L, trade counts, win rate, the lift each variable stage produces, and the
@@ -53,6 +73,19 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   the correction that proved the framework audit mattered.
 
 ## nya-failed-auction — balance-break fail branch (dual-sourced) — ON HOLD: 23/24 look failed, retest banked
+- TRIAL 10 (2026-08-05, hours-clock re-census per RESPEC Spec 6): the
+  TAUGHT clock (30-min bars, >=4h outside) is a different, better trade —
+  n=193, WR 47%, PF 1.24, $+1,893, years 0.97/1.06/1.57/1.24, frequency
+  0.93/wk matches teaching. Fast clock (old picture): PF 1.14, 23/24 neg.
+  All declared gates fail permnull (p~0.35) — population positive, gates
+  unproven. Old "time is noise" verdict vacated (wrong clock). Earns next
+  stage on the hours-clock expression; §5.9.4 banked-retest firewall holds.
+- TRIAL 11 (next stage): strict costs PASS (1.23); flow-at-re-entry
+  honest null (delta agreement near-universal, absorption no lift);
+  autopsy — true bracket trade (99 stop/89 target), losers go green
+  first, winners pay in ~17h, canon segments DON'T transfer at this
+  clock. No internal gate proven; candidate for grading AS-IS at the
+  next slate review, 2023-negative on the label.
 - STAGE: deep pass complete; §5.9.4 look #1 SPENT and FAILED (deep skeleton
   PF 0.68 / with cut 0.76 on 147 events, negative both years); the single
   rebalance-retest is BANKED — no rebalance candidate has credible in-fit
@@ -202,7 +235,17 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   0.75 sleeve floor — both eligible as book components pending the book
   grading. Full history in research/candidates/nypre-*.md.
 
-## nyo-rotation — overnight composite rotation (dual-sourced) — census done, conditioning owed
+## nyo-rotation — overnight composite rotation (dual-sourced) — corrected retest ran WORSE; conditioning owed before verdict
+- TRIAL 3 (2026-08-05, corrected as-taught grammar per RESPEC Spec 5):
+  V-A shift-out n=63 PF 0.92 ($-1,060, only 2025 positive); V-B
+  doubled-edge hold n=74 PF 0.82 ($-129, scratch-truncated). BOTH worse
+  than the vacated touch-fade baseline below. Testing the RIGHT trade did
+  not help.
+- TRIAL 4 (conditioning, corrected events): no era-consistent positive
+  gate; only consistent cell is NEGATIVE (V-A 18-22 PF 0.17 all 4 years);
+  flow cells n=6-15 unclaimable; absorption structurally absent.
+  RECOMMENDATION TO ANGUS: PARK as-taught (no verdict — too thin past the
+  raw negatives); reopen when the flow span ~doubles. Awaiting his ruling.
 - RAW TRIGGERS: 145 first-touch / 156 all-touch events over 548 composite-live
   overnight sessions (~3/month — overnight touches of day-built balances are
   structurally rare).
@@ -213,6 +256,38 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   euro-delta n=8 (nothing); time-of-night era-flips. No era-consistent gate
   yet. Remaining declared variables (absorption at edge, composite age/width,
   all-touch expansion) owed before any verdict — no bin off this.
+
+## nya-daily-sweep — JadeCap 1H raid + SFP (NYA-DS-01) — census done, search owed
+- STAGE: census + first declared splits (2026-08-05); full search owed.
+- RAW TRIGGERS: 381 first-signal days / 845 biased days (~2.3/wk, matches
+  teaching).
+- RAW P&L: n=381, WR 38%, -1,132pts, $-454, PF 0.90 — ugly raw per law.
+- YEARS: 2023 PF 1.11 / 2024 1.15 / 2025 0.87 / 2026 0.64 — DECAY shape
+  (inverse of canon regime profile; book-diversification interest, live
+  suspicion).
+- FIRST SPLITS: PM window PF 1.56 (permnull p=0.030) but 2025 flips to
+  0.32 — evidence not gate. Deep-penetration raids negative ALL 4 years —
+  every-era-bad cut candidate for L1 (canon wall-cut precedent).
+- TRIAL 2 — THE VARIABLE IS GAP CONTEXT: raids against a >20pt overnight
+  gap are negative ALL FOUR YEARS (PF 0.68, n=227) — legal cut. L1b (cut
+  gap-against + deep-pen): n=117, WR 46%, +$3,556, PF 1.89, EVERY YEAR
+  POSITIVE (1.76/2.47/1.54/1.63), permnull p=0.008, ~0.69/wk. 2026 cell
+  n=7 thin — flagged. The trial-1 decay lives in the gap-against cohort.
+- TRIAL 3-5 (same day): strict costs PASS (PF 1.79 all years); flow round
+  honest-thin (L1b∩flow n=30, discriminator open); autopsy done — time
+  exits dominate (67/117), losers never go green (median MFE 0.11R),
+  PRESS 88-100% / DYING 35-43% transfer from canon, GIVEBACK SIGN-FLIPS
+  (76-100% good here — hourly rotation, declared for the agent playbook);
+  exit tournament — default stands (PBO 0.50, displacement bar unmet),
+  no_target/cap30/t3r/hold1555 banked, BE null defeated third time.
+- TRIAL 6 GRADING: PSR(0) 0.986 vs 0.75 floor — PASS; MTRL 512d vs 915
+  held; MC bust 0.1%, median +$1,032/yr (additive sleeve); correlation
+  ~zero-to-negative vs canon AND fade; regime profile inverts the canon's
+  — genuine diversifier. DSR carries the known ledger-denominator caveat.
+- STATUS: SLEEVE-CERTIFIED pending Brake redundancy gate (blocked on his
+  trade file) + Angus's book decision. 2026 n=7 on the label.
+- CANON SHAPE: raw 0.90 → legal cuts → 1.89 era-consistent — the textbook
+  arc, second family to show it.
 
 ## QUEUE (cards open at census)
 - INTAKE ROUND 2 (2026-08-05, specs in research/transcripts/*/SPEC-as-taught.md,

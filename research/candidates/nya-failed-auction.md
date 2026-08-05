@@ -188,3 +188,51 @@ PARKED (open-sweep-fade precedent — insufficient events is not a kill).
 Reopening: more span, or an entry expression that does not require the edge
 retest (would be a fresh declared arm). Arms this trial: 4 (A1 gates; family
 count 20). FAMILY TO GRADING on the fail-branch frozen spec alone.
+
+### Trial 10 — hours-clock re-census (2026-08-05, RESPEC Spec 6 amendment) — TAUGHT CLOCK VINDICATED AS POPULATION, GATES UNPROVEN
+scripts/nya_fa_hoursclock.py per the prereg amendment. The taught trade
+runs on 30-min Globex bars, hours-to-1.5-days outside a frozen multi-day
+composite, structure bundle tracked, re-entry close trigger, stop beyond
+the extension extreme, target opposite edge, 5-day cap.
+POPULATION RESULT (665 episodes; 472 fast <4h, 193 taught-scale >=4h):
+- FAST clock (what we effectively tested before): WR 27%, PF 1.14, $-44 —
+  and 23/24 negative. Matches the old picture.
+- TAUGHT clock: n=193, WR 47%, +3,913pts, $+1,893, PF 1.24 — years
+  0.97/1.06/1.57/1.24 (only 2023 negative, and mildly). Frequency
+  0.93/week matches his claimed 1-2/week. OROCHI WAS RIGHT THAT THE CLOCK
+  MATTERS: the hours-scale population is a different, better trade than
+  the minutes-scale one; the old "time-outside is noise" verdict measured
+  the wrong clock (now formally vacated as evidence about the taught trade).
+- Time ladder NON-MONOTONE (§5.12.1-14 reported): 4-12h carries it;
+  >=12h PF 0.80; >=1day PF 1.72 on n=23. Not a rankable ladder.
+GATES vs PERMNULL (declared pre-run, within-year shuffle):
+- balance-formed-outside: PF 1.32 but lift +0.078R p=0.355 — NOT proven.
+- full bundle (balance + poor-or-squeeze): PF 1.31, p=0.344 — NOT proven.
+- clock >=4h as a gate vs fast: lift +0.055R p=0.367 — NOT proven.
+READ: the raw taught population is mildly positive with 3/4 years green
+(meanR 0.061); the conditioning structure adds nothing provable yet. This
+EARNS the next funnel stage on the hours-clock expression (strict costs,
+§3.2 loser autopsy + MFE/MAE, exit/stop arms under §6.0, flow-at-re-entry
+on flow span) — it is NOT a ship and NOT a rebalance of the banked §5.9.4
+retest (firewall holds; any promotion interaction is Angus's ruling).
+Ledger rows 99-101.
+
+### Trial 11 — hours-clock next stage: strict costs + flow-at-re-entry + §3.2 autopsy (2026-08-05)
+- STRICT COSTS: PF 1.23 (vs 1.24 base) — wide targets absorb friction. PASS.
+- FLOW-AT-RE-ENTRY (flow span, n=66 covered): delta agrees with the fail
+  direction on 62/66 (94%) — near-universal, DESCRIBES the population
+  rather than discriminating within it; absorption-in-re-entry-bar shows
+  no lift (PF 1.74 vs cohort 2.01). No flow gate; the 4 against-delta
+  cases too thin to read. Honest null.
+- AUTOPSY (scripts/nya_fa_hc_autopsy.py, minute walk, checkpoints
+  t+30/60/120/240/480): TRUE BRACKET TRADE — stop 99 / target 89 / cap 5.
+  Losers go green first (median MFE 0.40R, 43% saw +0.5R, median death
+  541min); winners endure 0.35R median MAE and take ~1,026min (17h) to
+  pay. CANON SEGMENTS DO NOT TRANSFER at this clock: press 50-71% on
+  n=11-16, dying 39-43%, giveback mixed — all cells thin, nothing at
+  canon strength. Management stays mechanical bracket; no agent-playbook
+  material yet.
+- Ledger rows 115-116. STATUS: hours-clock expression is a coherent
+  positive population (PF 1.24/1.23, 3/4 years, 0.93/wk) with no proven
+  internal gate — candidate for grading as-is at the next slate review;
+  2023-negative stays on the label; §5.9.4 banked-retest firewall intact.

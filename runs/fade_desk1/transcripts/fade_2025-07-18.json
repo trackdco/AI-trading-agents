@@ -1,0 +1,10 @@
+{
+ "turns": [
+  {
+   "minute": "2025-07-18 10:04:00-04:00",
+   "why": "position opened \u2014 read the tape and set your initial plan",
+   "sent": "NEW POSITION LONG IB-fade | entry 23252.5 risk 14.38pt | engine stop 23238.125 (-1R, INVIOLATE FLOOR) | mechanical target 23281.25 (+2.0R, the IB mid) | session ends 15:55\njournal: 21 trades managed | your total -10.1R vs mech -9.9R (delta -0.2R)\n  defense (mech losers, n17): you -0.2R vs mech\n  offense (mech winners, n4): you +0.0R vs mech\nlast trades (you vs mech):\n  2025-09-22 short: -1.08R vs -1.06R (stop; Giveback ambiguous per family data; still green, no dying/pr)\n  2025-07-02 short: -1.06R vs -1.05R (stop; Near inviolate stop floor already; flow still opposed. Let m)\n  2025-07-08 long: -1.08R vs -1.06R (stop; Still near stop floor, no new evidence to act on. Hold.)\n  2025-07-11 short: -1.05R vs -1.04R (stop; Near inviolate floor; let mechanical stop work, no new tight)\n  2025-07-15 long: +1.96R vs +1.96R (target; Green and near peak, flow now supportive. No press-state pro)\nReply with EXACTLY one JSON object, nothing else: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"stop_r\":<num,optional>,\"target_r\":<num or null,optional>,\"partial_pct\":<0-1,optional>,\"note\":\"<=120 chars\"}. \"hold\"=no change. \"revise\" adjusts the standing plan: stop_r only ever TIGHTENS (in R from entry; 0=BE), target_r replaces the target (null = run on the stop; >=2.0R unless a partial is already booked), partial_pct books that fraction of what is OPEN at next bar. \"exit_now\" flattens at next bar. Rule-breaking fields are ignored by the harness.\n\n[10:04] EVENT: position opened \u2014 read the tape and set your initial plan\nbar 23255.25/23256.50/23240.75/23247.50 | R_now -0.35 peak +0.28 | press_state False | open 1.00 | stop -1.00R target +2.00R | flow(signed to trade): delta1m -98 cvd5m +168 cvd15m -831 opposed 2/5 vol 2.5x | book: imbalance -0.05 | wall-ahead ratio 1.4 at 0.00pt (visible +/-2pt only) | mins_to_session_end 351",
+   "reply": "{\"action\":\"hold\",\"note\":\"Just opened, R -0.35 not dying yet; no press/dying signal, let it develop.\"}"
+  }
+ ]
+}

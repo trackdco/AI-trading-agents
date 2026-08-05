@@ -103,3 +103,44 @@ research/candidates/nya-failed-auction.md (narrative) AND
 output/trial_ledger.parquet via src/validation/trial_ledger.py (the number
 the gate reads — §6.0). All arms count; deflation merged with Brake's NY
 program.
+
+## AMENDMENT 2026-08-05 — the taught hours-scale clock (RESPEC Spec 6)
+
+The census above ran the failure clock in MINUTES (1-min closes, 30/60/120
+min windows). research/transcripts/orochi/RESPEC-as-taught-2026-08-05.md
+(Spec 6, deviations a-e) establishes the taught trade runs on a 30-MIN TPO
+chart with hours-to-1.5-days outside value and a required
+balance-formed-outside structure bundle. The prior "time-outside is noise"
+finding was measured on the wrong clock and is VACATED as evidence about
+the taught trade (it stands as evidence about the fast intraday variant).
+Declared BEFORE the re-census:
+
+- BARS: 30-min bars from nq_1m_master, 24h Globex (his examples include
+  off-hours balance-building).
+- BREAK: 30-min close outside the live composite edge (age >= 2,
+  output/nya_composites.parquet), prior close inside. Composite FROZEN for
+  the episode at break time.
+- EPISODE: runs until re-entry (below) or VOID at > 72 outside bars (1.5
+  days + buffer = acceptance, trade dead). Minimum taught scale: >= 8
+  outside bars (4h). Sub-8-bar episodes recorded as the fast-clock
+  comparison population, not traded here.
+- TIME-OUTSIDE ARMS: >= 8 / >= 24 / >= 48 bars (4h / 12h / 1 day).
+- STRUCTURE BUNDLE ARMS (each on/off, declared): balance-outside = >= 2
+  touches of each side of the outside range after bar 4; rounding = no new
+  extension extreme in the last 8 outside bars; poor extreme = >= 2
+  extension extremes within 0.1 x composite width; squeeze = a sweep of
+  the prior-8-bar outside near-extreme after bar 4 (early trend-siders
+  taken out).
+- RE-ENTRY (trigger): (a) first 30-min close back inside; (b) 2
+  consecutive closes. Retest OPTIONAL per teaching (he takes strength when
+  no retest is offered) — retest-mandatory is NOT an arm here.
+- STOP (our invention, declared as such — never taught): beyond the
+  episode's extension extreme. TARGET: opposite frozen composite edge
+  (POC partial declared, not run at census). Horizon cap 5 days, then exit
+  at close. Costs: base 1pt / strict 2pt.
+- REPORT: per arm x per YEAR n/WR/pts/$/PF + frequency vs taught 1-2/week
+  + traverse base rates. NO bin off raw (§5.9.1).
+- FIREWALL: this census produces evidence about the TAUGHT hours-scale
+  trade. It does NOT spend, unlock, or rebalance the §5.9.4 BANKED 23/24
+  retest of the NY-AM fail-branch candidate — any promotion interaction is
+  Angus's ruling, separately.
