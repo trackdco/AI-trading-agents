@@ -81,9 +81,11 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   structurally rare).
 - RAW P&L: PF 1.10, +345 pts, $-665 at 1/risk sizing (wide natural stops),
   years +396/+74/-198/+74 — mediocre as the law expects; NO bin.
-- NEXT: full conditioning search — flow at touch (overnight fully covered),
-  euro-delta feature (first declared reuse), time-of-night, stop caps
-  (§5.11-3, the obvious geometry cure), then era discipline.
+- CONDITIONING ROUND 1 (trial 2): weak — stop caps lift dollars (+$2.3-2.5k)
+  but flip 2024 negative; flow-at-touch NEGATIVE on flow span (PF 0.95/0.58);
+  euro-delta n=8 (nothing); time-of-night era-flips. No era-consistent gate
+  yet. Remaining declared variables (absorption at edge, composite age/width,
+  all-touch expansion) owed before any verdict — no bin off this.
 
 ## QUEUE (cards open at census)
 - orochi-vwap-regime-pair (edge fade gated by rotational condition vs trend
