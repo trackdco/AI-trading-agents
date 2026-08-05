@@ -262,3 +262,10 @@ stops 8). Before any freeze: PBO across the accumulated matrix, the
 frontier stop choice is ANGUS's shape call (0.4/0.5/0.6 all defensible).
 Displacement of the certified default still requires shadow adjudication
 or his operator ruling. Ledger rows 250-251.
+
+### Stage 2f — in-trade outcome prediction on the FINAL SHAPE (DECLARED 2026-08-05)
+Basis: near-band target + 0.5R stop (Angus: "71% win rate is good, i want
+to see what happens intra trade"). Fast clock — checkpoints t+2/3/5/8 min,
+still-open conditioning. Per checkpoint: r_now / MFE / MAE / cvd-since-
+entry / book imb (where covered); outcome AUC per variable; state x flow
+prediction table (the "can we accurately predict outcomes" question).
