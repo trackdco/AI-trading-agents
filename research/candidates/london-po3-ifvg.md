@@ -2,7 +2,7 @@
 date: 2026-08-05
 status: thesis-pending
 tags: [london, overnight-structure, reversal, pattern-taxonomy]
-sources: ["findings/london-nq-what-three-traders-agree-on.md", "findings/london-window-LDN-WIN-01.md", "https://www.youtube.com/watch?v=uGE_GP9-nxU"]
+sources: ["findings/london-nq-what-three-traders-agree-on.md", "findings/london-window-LDN-WIN-01.md", "https://www.youtube.com/watch?v=uGE_GP9-nxU", "https://www.youtube.com/watch?v=v7tdhjW84Ho", "https://www.youtube.com/watch?v=RJXe1rF9kXM"]
 ---
 
 # london-po3-ifvg — the 03:00 sweep of the London accumulation range
@@ -135,7 +135,9 @@ range, with the range midpoint as a declared partial. Flat by 05:00 ET.
 - IFVG needs a mechanical definition before it can be censused; "V-shaped inverse
   within a few candles" is not one. Arm B exists so the candidate is testable
   even if arm A's definition proves too loose.
-- Data fully in hand: bars plus the 912-day substrate.
+- Data: the core spec is fully covered by bars plus the 912-day substrate.
+  **The SMT-divergence arm is the one exception** — it needs ES, which we do not
+  hold, so that arm is either bought or explicitly dropped.
 
 ## Trial ledger — LDN-PO3-01
 
