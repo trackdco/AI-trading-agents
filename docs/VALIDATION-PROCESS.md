@@ -640,6 +640,27 @@ caught it:
    alpha a better mechanical already had. (Caught on the fade: the agent
    rung launched while cap20-W120 — the strongest expression, no losing
    year — sat banked and unadjudicated.)
+9. **The deep-testing standard + span structure** [ANGUS 2026-08-05b].
+   (a) PRIMARY BUILD SPAN for every new family = the 13 full-coverage
+   months (2025-06 -> 2026-07: candles + flow + depth all present).
+   OUT-OF-FIT = the six sealed months (2023-07/09/11, 2024-03/04/10),
+   which carry the SAME depth+flow coverage (data/reference/
+   depth_2023_24, 129 day files) — single-look by written declaration,
+   unchanged. Full-span candle runs (2023-2026) remain the era-robustness
+   context (year labels), not the optimization surface. Candle-only arms
+   whose 23/24 candles were already opened cannot use the sealed months
+   as OOF — their honest holdout is forward shadow; flow/depth-conditioned
+   expressions CAN, because those features are unburned there.
+   (b) CONVICTION-BASED SIZING is a standard arm class ("the next obvious
+   thing" — Angus): pre-declared, causal at-signal conviction scores
+   (aligned-condition counts or calibrated probabilities) mapped to size,
+   tested against flat-size. Consistent with the agent-layer rule that
+   conviction tie-breaks must be pre-declared causal scores.
+   (c) MANDATORY DEPTH before any agent rung, in addition to §5.11 items:
+   MFE/MAE + time-segment schema, IN-TRADE flow tests (flow state during
+   the trade, not just at entry), depth-at-entry where covered, and the
+   conviction-sizing arm. "We need to test these strategies far deeper
+   before trading them against agents."
 
 ### 5.10 The transparency rule [ANGUS 2026-08-05]
 
