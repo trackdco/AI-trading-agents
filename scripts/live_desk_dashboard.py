@@ -226,7 +226,7 @@ def build() -> str:
     nt = ""
     for t in notable:
         d = t["agent_dollars"] - t["mech_dollars"]
-        note = html.escape((t.get("last_note") or "")[:90])
+        note = html.escape((t.get("debrief") or t.get("last_note") or "")[:160])
         nt += (f'<tr><td>{t["day"]}</td><td>{t["engine"]} {t["direction"]}</td>'
                f'<td class="{pl_class(d)}">{usd(d)}</td>'
                f'<td class="note">{note}</td></tr>')

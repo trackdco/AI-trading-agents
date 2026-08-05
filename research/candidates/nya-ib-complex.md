@@ -584,3 +584,15 @@ DESIGN:
   KNOWN ARTIFACT: month-parallel means every June day trades on an
   EMPTY journal ("day one" x21) — June conservatism is structural;
   July onward carries a month of record.
+- CHARTER v1.2 + ARCHIVE DEPTH [ANGUS, mid-June batch]: "make sure the
+  agent is taking deep notes on every trade it takes. all variables you
+  know." (a) DEBRIEF TURN: one journal entry per closed agent-taken
+  trade (entry read / in-trade / resolution / lesson, <=500 chars),
+  written knowing the machine counterfactual (causal — post-close);
+  stored on the trade row, last 2 fed back through the monthly digest.
+  (b) ENTRY-STATE SNAPSHOT recorded mechanically on every taken trade:
+  delta1m/cvd5m/cvd15m/opposed5/volx, book imbalance + nearest wall,
+  vwap & near-band distance in R, tier score. BASIS STAMP: days
+  completed before the mid-June restart carry no debrief/entry_state;
+  Angus also confirmed B0 semantics = both engines stacked at shipped
+  spec, P&Ls summed, opposite-direction overlaps net.

@@ -195,6 +195,12 @@ def journal_digest(rows: list[dict]) -> str:
     if cf:
         lines.append(f"  conflicts faced: {len(cf)} | " +
                      "; ".join(f"{c['day']}:{c['choice']}" for c in cf[-3:]))
+    debs = [(t["day"], t["debrief"]) for r in rows for t in r["trades"]
+            if t.get("debrief")]
+    if debs:
+        lines.append("your recent trade-journal entries:")
+        for d, note in debs[-2:]:
+            lines.append(f'  {d}: "{note[:110]}"')
     lines.append("last days (you vs B0):")
     for r in rows[-3:]:
         lines.append(f"  {r['day']}: you ${r['agent_dollars']:+,.0f} vs "
@@ -237,7 +243,7 @@ def build_signals():
             engine="SHELF", day=t["day"], sess="shelf", direction=t["direction"],
             s=float(t["side"]), fill=t["fill"], entry=float(t["entry"]),
             stop=float(t["stop"]), risk=float(t["risk"]), legacy=float(t["legacy"]),
-            tier=t["tier"], dollars_risk=td,
+            tier=t["tier"], score=int(t["score"]), dollars_risk=td,
             mech_exit=t["mech_exit_ts"], mech_exit_kind=t["mech_exit_kind"],
             mech_dollars=float(td * t["mech_R"]), mech_R=float(t["mech_R"])))
     for d in days:
@@ -297,11 +303,48 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
     done_trades: list[dict] = []
     passes: list[dict] = []
     conflicts: list[dict] = []
+    just_closed: list[dict] = []
     last_turn_min = None
     thesis = ""
 
     def r_of(p, px):
         return p["s"] * (px - p["entry"]) / p["risk"]
+
+    def entry_state(minute, s, entry, risk):
+        """All variables you know at the fill, recorded mechanically (archive)."""
+        st = {}
+        try:
+            w = tape_day.loc[:minute]
+            if len(w):
+                st["delta1m"] = round(float(w.delta.iloc[-1]) * s, 0)
+                st["cvd5m"] = round(float(w.delta.tail(5).sum()) * s, 0)
+                st["cvd15m"] = round(float(w.delta.tail(15).sum()) * s, 0)
+                st["opposed5"] = int((np.sign(w.delta.tail(5).to_numpy() * s) < 0).sum())
+                vmed = float(w.vol.tail(60).median()) or 1.0
+                st["volx"] = round(float(w.vol.iloc[-1]) / vmed, 2)
+        except Exception:
+            pass
+        try:
+            if dep is not None and len(dep):
+                snap = dep[dep.ts < minute]
+                if len(snap):
+                    snap = snap[snap.ts == snap.ts.max()]
+                    bid, ask = snap[snap.side == "bid"], snap[snap.side == "ask"]
+                    if len(bid) and len(ask):
+                        tb, ta = float(bid["size"].sum()), float(ask["size"].sum())
+                        st["imb"] = round((tb - ta) / max(tb + ta, 1) * s, 3)
+                        ahead = ask if s > 0 else bid
+                        wa = ahead.loc[ahead["size"].idxmax()]
+                        st["wall_pt"] = round(abs(float(wa.price) - entry), 2)
+                        st["wall_sz"] = float(wa["size"])
+        except Exception:
+            pass
+        j = rix.searchsorted(minute, side="right") - 1
+        if j >= 0:
+            st["vwap_dist_r"] = round(s * (float(vwap[j]) - entry) / risk, 2)
+            st["band_dist_r"] = round(s * ((float(vwap[j]) - s * float(sd[j])) - entry)
+                                      / risk, 2)
+        return st
 
     def close_pos(p, fr, px, reason):
         p["legs"].append((fr, px, reason))
@@ -334,7 +377,10 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
             "extended": p["extended"], "touched": p["touched"],
             "partials": sum(1 for _, _, rr in p["legs"] if rr == "partial"),
             "mfe_R": round(p["peak_r"], 3), "last_note": p["last_note"],
+            "score": p["sig"].get("score"), "entry_state": p.get("entry_state"),
+            "debrief": "",
             "legs": [(f, px, rr) for f, px, rr in p["legs"]]})
+        just_closed.append(done_trades[-1])
 
     def apply_mgmt(p, rep):
         p["touched"] = True
@@ -420,6 +466,7 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
             ("fixed" if g.get("target") is not None else "none")
         book.append(dict(
             pid=g["sid"], engine=g["engine"], sig=g, s=g["s"], entry=g["entry"],
+            entry_state=entry_state(g["fill"], g["s"], g["entry"], g["risk"]),
             risk=g["risk"], stop=g["stop"], frac=1.0, legs=[], pending=[],
             target_mode=mode, target_px=g.get("target"),
             extended=False, partial_done=False, peak_r=0.0, seen_r=set(),
@@ -637,6 +684,35 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
                     tgt["pending"].append(("exit", None))
                 elif rep["action"] == "revise":
                     apply_mgmt(tgt, rep)
+        # 8. trade-journal debriefs — one deep note per closed trade (Angus:
+        # "make sure the agent is taking deep notes on every trade it takes")
+        if just_closed:
+            for row_ in just_closed:
+                if row_["taken_by"] == "agent" and turns < MAX_TURNS_DAY:
+                    dwhy = (f"[{minute.strftime('%H:%M')}] TRADE CLOSED {row_['pid']}: "
+                            f"{row_['engine']} {row_['direction']} "
+                            f"({row_['sess']}/{row_['tier']}), exited "
+                            f"'{row_['exit_reason']}' at {row_['agent_R']:+.2f}R "
+                            f"(${row_['agent_dollars']:+,.0f}). Pure-machine outcome on "
+                            f"this trade: ${row_['mech_dollars']:+,.0f}. Write your trade "
+                            f"journal entry — deep note: your entry read (tape/book/"
+                            f"context), what you saw while in it, why it ended the way it "
+                            f"did, and the lesson your future self should find. Reply "
+                            f'EXACTLY one JSON: {{"note":"<=500 chars"}}')
+                    txt, sid2 = call_claude(dwhy, sid)
+                    sid = sid2 or sid
+                    turns += 1
+                    transcript.append({"minute": str(minute),
+                                       "why": f"debrief {row_['pid']}",
+                                       "sent": dwhy, "reply": txt})
+                    m = re.search(r"\{.*\}", txt, re.DOTALL)
+                    if m:
+                        try:
+                            row_["debrief"] = str(json.loads(m.group(0))
+                                                  .get("note", ""))[:500]
+                        except Exception:
+                            pass
+            just_closed.clear()
     # any survivors (data ended early): flatten at last close
     for p in list(book):
         close_pos(p, p["frac"], float(daybars.close.iloc[-1]), "early_close")
