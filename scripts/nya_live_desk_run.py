@@ -190,11 +190,23 @@ def journal_digest(rows: list[dict]) -> str:
              f"vs B1(canon-precedence) ${b1:+,.0f}"]
     for eng in ("CANON", "SHELF"):
         tr = [t for r in rows for t in r["trades"] if t["engine"] == eng]
-        if tr:
-            da = sum(t["agent_dollars"] for t in tr)
-            dm = sum(t["mech_dollars"] for t in tr)
-            lines.append(f"  {eng} taken n{len(tr)}: you ${da:+,.0f} vs mech "
-                         f"${dm:+,.0f} (management delta ${da - dm:+,.0f})")
+        ps = [p for r in rows for p in r["passes"] if p["engine"] == eng]
+        if not tr and not ps:
+            continue
+        da = sum(t["agent_dollars"] for t in tr)
+        dm = sum(t["mech_dollars"] for t in tr)
+        fired = len(tr) + len(ps)
+        lines.append(
+            f"  {eng}: {fired} signals, you took {len(tr)} / passed {len(ps)} "
+            f"({len(ps) / fired:.0%})")
+        lines.append(f"    the ENGINE earned ${dm:+,.0f} on the ones you took — that is "
+                     f"the strategy's own record, and it is not in question")
+        lines.append(f"    YOUR HANDLING of them: ${da:+,.0f} (${da - dm:+,.0f} vs the "
+                     f"engine) — this number is about YOU, not the strategy")
+    lines.append("  NOTE: a negative handling number is a reason to manage differently, "
+                 "NOT a reason to stop taking that engine's signals. Both engines are "
+                 "certified; passing them because your own management lagged just "
+                 "starves the book.")
     ps = [p for r in rows for p in r["passes"]]
     if ps:
         forf = sum(p["mech_dollars"] for p in ps)

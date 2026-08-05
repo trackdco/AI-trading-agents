@@ -689,3 +689,24 @@ median +2.36R ran on after the stop hit; with flow AGAINST you n20
 -$227, median +2.10R ran on. BASIS STAMP: days 1-29 ran without the
 trail gauge; run restarted from day 30 so the desk reads it. Completed
 days are preserved (resume by state.json) — no re-simulation.
+
+### ENGINE-BLAME FEEDBACK LOOP [ANGUS asked "is it taking IB trades as
+well" — day 29]. IT IS, BUT LOPSIDEDLY: canon 85/87 taken (passed 2%),
+shelf 8/13 taken (PASSED 38%) — declining the IB model ~20x more often.
+ROOT CAUSE, in the desk's own pass notes: "shelf mgmt has
+underperformed us (-297 delta), avoid adding conflict." It was reading
+the digest line "SHELF taken n8: you $+1,268 vs mech $+1,885
+(management delta -$617)" as EVIDENCE AGAINST THE ENGINE — but the IB
+model earned +$1,885 mechanically on those trades; the -$617 measures
+the DESK'S OWN handling. It was blaming the strategy for its own
+management error and then starving the strategy of trades, a
+self-reinforcing loop (fewer shelf trades -> thinner record -> more
+reason to skip) that would have quietly hollowed out leg A over 254
+days. FIX: digest now separates "the ENGINE earned $X — the strategy's
+own record, not in question" from "YOUR HANDLING: $Y — this number is
+about YOU", plus an explicit rule that a negative handling number means
+manage differently, NOT stop taking that engine. Also note 8/8 shelf
+trades taken were BASE tier (no CONFIRMED yet — sample, ~26% base rate).
+BASIS STAMP: days 1-29 ran on the old engine-split wording; resumed
+from day 30 (completed days preserved). Watch: does shelf pass-rate
+fall toward canon's after day 30?
