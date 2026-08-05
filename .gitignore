@@ -33,3 +33,4 @@ output/triggers_hist2326_days/
 # (these contain live skill content pulled off the Hermes host)
 .hermes-rebuild/
 .venv-freeze/
+data/depth/

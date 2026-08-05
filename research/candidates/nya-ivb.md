@@ -80,3 +80,27 @@ x flow-at-break; branch B as-taught (absorption/exhaustion at the touched
 extreme, flow library flags) x geometry. Era discipline and cost stacks
 unchanged. All prior arms stand in the count (family 2 -> grows with the
 reopened search).
+
+### Trial 4 — branch B REOPENED SEARCH (2026-08-05, flow span) — ALIVE at proper geometry
+scripts/nya_ivb_retest.py. THE VACATE WAS RIGHT TWICE OVER: trial 2's census
+raced "mid before any CLOSE beyond the extreme" — a definition harsher than
+the trade's actual geometry. At the taught geometry (stop 0.25xIB beyond the
+extreme, target mid), the UNGATED fade is POSITIVE on the flow span: n=105,
+WR 43%, +1,480 pts, $+4,104, PF 1.63, halves -161/+681/+908/+52 (June-25
+sliver negative, rest positive). The taught gates on current definitions
+add nothing yet: absorption fires 4% (n=4 — definition too strict, looser
+variant = new declared arm), wall>=3 n=10 flat. STATUS: branch B ALIVE as a
+flow-span candidate on geometry alone; next: era discipline vs the full
+span (the 23-24 candle read at THIS geometry), exit/stop arms under §6.0,
+then graders. Lesson banked: census race definitions must match the trade's
+taught geometry — a strawman can hide in the RACE, not just the trigger.
+
+### Trial 5 — branch A REOPENED SEARCH (2026-08-05, flow span) — KILL NOW EARNED
+Full flow-at-break conditioning on 265 flow-span breaks: raw PF 0.83;
+dz-confirmed PF 0.83; no-wall-ahead PF 0.68; dz+no-wall PF 0.54 — every
+declared gate makes it the same or WORSE, every half negative. Combined
+with trial 1's decay finding, the kill is now LEGAL under §5.9.1: tested
+as-taught, variables searched, dead in every era of the search span.
+TOMBSTONE (branch A, final): the IB breakout is dead on 2025-26 NQ — raw,
+flow-confirmed, and wall-conditioned alike. The decay+crowding story
+stands. Branch arm count: 8 new arms this session (family 10).
