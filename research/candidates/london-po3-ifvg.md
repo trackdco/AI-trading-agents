@@ -45,7 +45,7 @@ That is an event-tree pair on one trigger, not two independent ideas, and it
 should share a ledger the way the prior programme paired sweep-reversal with
 sweep-continuation. Testing them as one family is much cheaper than two.
 
-## 🔴 The thing I cannot confirm
+## ~~The thing I cannot confirm~~ — RESOLVED, see Update 2
 
 **I do not know what instrument this is.** The transcript never says — no
 "nasdaq", no "NQ", no "gold", no "futures". He demonstrates it on a chart and
@@ -62,21 +62,46 @@ someone watching two minutes of the chart. **I would not greenlight this ahead o
 `london-nq-open-break` until that is resolved**, and I am filing it as
 thesis-pending rather than quietly assuming NQ because it would be convenient.
 
-**Update — a second EzTrades video landed and it names no instrument either.**
-`RJXe1rF9kXM` ("Opening Range Breakout & Retest") contains zero mentions of
-nasdaq, NQ, ES, gold, US30, DAX or futures. Two for two.
+**Update 1 — a second EzTrades video landed naming no instrument either.**
+`RJXe1rF9kXM` contains zero mentions of nasdaq, NQ, ES, gold, US30, DAX or
+futures. On that basis I concluded transcripts could not settle this for this
+source, and that waiting for `v7tdhjW84Ho` was unlikely to help.
 
-That is not an accident of these two videos; it is how this source teaches — the
-instrument lives on the chart and the narration is instrument-agnostic. **So
-transcripts cannot settle this question for EzTrades at all**, and waiting for
-`v7tdhjW84Ho` is unlikely to help.
+**Update 2 — that was wrong. `v7tdhjW84Ho` settles it.** Two mentions, both
+load-bearing:
 
-Worth recording as a limitation of the method rather than of this candidate:
-transcript-based research has a blind spot for anything shown rather than said,
-and a chart-first teacher falls entirely inside it. The tool tells us *what the
-rules are* and cannot tell us *what they were demonstrated on*. For this
-candidate that gap is load-bearing, so it needs a human eyeball on the chart —
-about two minutes of work, and no amount of further transcription substitutes.
+> *"if you're **trading Nasdaq**, you would use **ES as your correlated asset**
+> that you're looking for SMT divergences."* [@ 2:09 — stated while describing
+> this London setup's confluence requirement]
+
+> *"we **live trade NQ** every single morning at **9:30 a.m. Eastern** using this
+> framework. **Same PO3, different time.**"* [@ 5:02]
+
+So: **NQ is explicitly in scope for the framework**, and Nasdaq is named inside
+the London setup's own rules. The instrument blocker is lifted.
+
+**But read the second quote carefully, because it cuts both ways.** His *live*
+NQ trading is the **New York** open at 09:30 ET — "same PO3, different time".
+That means the framework is proven on NQ at 09:30 and the London 03:00 version is
+the transfer, not the other way round. It is no longer an unknown instrument; it
+is a known instrument at an unproven hour. Better, and still not free.
+
+**A prediction of mine failed here and the failure is the useful part.** I
+generalised from two videos to "this source never names instruments" and
+recommended not waiting. One more video disproved it. Two data points were not
+enough to declare a pattern about a 406-video channel — the corpus was there and
+I called it early.
+
+### New rule detail this video adds
+
+A confluence requirement absent from `uGE_GP9-nxU`: the setup *"needs to be
+rejecting from a **15-minute or 1-hour fair value gap**, or it needs to have an
+**SMT divergence**"* (NQ vs ES non-confirmation).
+
+That is a real addition to the spec and it carries a **data dependency**: SMT
+divergence needs ES alongside NQ, which we do not hold. Either buy ES bars, or
+declare the HTF-FVG-rejection leg alone and record that the SMT arm was dropped
+for data reasons rather than silently testing a weaker spec.
 
 ## Skeleton
 
@@ -95,7 +120,11 @@ range, with the range midpoint as a declared partial. Flat by 05:00 ET.
 
 ## Flags
 
-- **Instrument unresolved — blocks greenlight.** See above.
+- **Instrument RESOLVED** — NQ is named explicitly. What remains is that his
+  *live* NQ application is the 09:30 ET New York open; the London 03:00 version
+  is a transfer of a proven framework to an unproven hour.
+- **SMT-divergence confluence needs ES data**, which we do not hold. Declare the
+  HTF-FVG leg alone and record the dropped arm, or buy ES bars.
 - **Family overlap.** Accumulation → manipulation → distribution is the same
   object as the previously greenlit `london-asia-sweep-reversal`. If that
   candidate is genuinely scrapped, this replaces it; if not, this joins its
@@ -110,4 +139,5 @@ range, with the range midpoint as a declared partial. Flat by 05:00 ET.
 
 ## Trial ledger — LDN-PO3-01
 
-_Awaiting Angus greenlight. No trials run. Blocked on the instrument question._
+_Awaiting Angus greenlight. No trials run. Instrument blocker lifted; the open
+question is now the clock (03:00 London vs his proven 09:30 NY), not the market._
