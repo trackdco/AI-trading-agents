@@ -569,3 +569,18 @@ DESIGN:
   fit-span diagnostics, no outcome hindsight. Full discretion on
   participation, management, conflicts. Mirrors the live seat: rulebooks
   + holdout record + (this archive, once it exists).
+- CHARTER v1.1 MID-RUN [ANGUS, 6 days in]: "just to be sure it can take
+  whatever trade it wants... can also manage the trades as in cut them
+  earlier, hold them longer, take partials... 7 days in a row being
+  identical is sus and points towards discretion not really being
+  there." First 6 days (2025-06-02..06-10, all June batch) ran on
+  charter v1.0: 2 deviated days (+$300 mgmt touch, -$385 conflict
+  pass), 4 identical — transcripts show "trust engine management / no
+  override on day one" rubber-stamping. v1.0's framing over-anchored
+  passivity ("machine never punishes passivity"; canon "dies by a
+  thousand management mistakes"); v1.1 removes both and states the
+  default-vs-recommendation distinction explicitly. BASIS STAMP: any
+  v1.0-vs-v1.1 behavioral comparison must split on this boundary.
+  KNOWN ARTIFACT: month-parallel means every June day trades on an
+  EMPTY journal ("day one" x21) — June conservatism is structural;
+  July onward carries a month of record.

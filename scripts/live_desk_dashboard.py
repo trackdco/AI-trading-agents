@@ -42,10 +42,12 @@ def pl_class(v: float) -> str:
 
 
 def spark(R: list[dict]) -> str:
-    """Cumulative agent / B0 / B1 lines as inline SVG."""
+    """Equity curve — desk vs the shipped machine (canon + IB) vs B1 — inline SVG
+    with dollar axis, month ticks, and endpoint labels."""
     if len(R) < 2:
-        return '<div class="empty">chart appears after the first few days land</div>'
-    W, H, PAD = 860, 190, 10
+        return '<div class="empty">equity curve appears after the first few days land</div>'
+    W, H = 880, 270
+    L, RP, T, B = 58, 110, 12, 24
     series = {}
     for key in ("agent_dollars", "b0_dollars", "b1_dollars"):
         acc, cum = 0.0, []
@@ -56,24 +58,98 @@ def spark(R: list[dict]) -> str:
     allv = [v for s in series.values() for v in s] + [0.0]
     lo, hi = min(allv), max(allv)
     rng = (hi - lo) or 1.0
+    lo -= rng * 0.05
+    hi += rng * 0.05
+    rng = hi - lo
     n = len(R)
 
-    def pts(cum):
-        return " ".join(
-            f"{PAD + i * (W - 2 * PAD) / (n - 1):.1f},"
-            f"{H - PAD - (v - lo) * (H - 2 * PAD) / rng:.1f}"
-            for i, v in enumerate(cum))
+    def x(i):
+        return L + i * (W - L - RP) / (n - 1)
 
-    zero_y = H - PAD - (0 - lo) * (H - 2 * PAD) / rng
-    end = {k: series[k][-1] for k in series}
-    return f'''<svg viewBox="0 0 {W} {H}" preserveAspectRatio="none" role="img"
-  aria-label="Cumulative P&amp;L: agent vs baselines">
-  <line x1="{PAD}" y1="{zero_y:.1f}" x2="{W - PAD}" y2="{zero_y:.1f}" class="zero"/>
+    def y(v):
+        return T + (hi - v) * (H - T - B) / rng
+
+    def pts(cum):
+        return " ".join(f"{x(i):.1f},{y(v):.1f}" for i, v in enumerate(cum))
+
+    def dlab(v):
+        return (f"{'−' if v < 0 else ''}${abs(v) / 1000:.1f}k" if abs(v) >= 1000
+                else f"{'−' if v < 0 else ''}${abs(v):.0f}")
+
+    grid = ""
+    for k in range(5):
+        v = lo + rng * k / 4
+        gy = y(v)
+        grid += (f'<line x1="{L}" y1="{gy:.1f}" x2="{W - RP}" y2="{gy:.1f}" class="grid"/>'
+                 f'<text x="{L - 8}" y="{gy + 4:.1f}" class="tick" text-anchor="end">'
+                 f'{dlab(v)}</text>')
+    months = ""
+    seen = None
+    for i, r in enumerate(R):
+        mo = r["day"][:7]
+        if mo != seen:
+            seen = mo
+            if i > 0:
+                months += (f'<line x1="{x(i):.1f}" y1="{T}" x2="{x(i):.1f}" '
+                           f'y2="{H - B}" class="mline"/>')
+            months += (f'<text x="{x(i) + 3:.1f}" y="{H - 8}" class="tick">'
+                       f'{mo[2:].replace("-", "/")}</text>')
+    zy = y(0)
+    ends = {k: series[k][-1] for k in series}
+    la = y(ends["agent_dollars"]) + 4
+    lm = y(ends["b0_dollars"]) + 4
+    if abs(lm - la) < 13:                 # de-overlap: machine label steps away
+        lm = la + 13 if y(ends["b0_dollars"]) >= y(ends["agent_dollars"]) else la - 13
+    endlab = (
+        f'<text x="{W - RP + 8}" y="{la:.1f}" class="elab ag">'
+        f'desk {dlab(ends["agent_dollars"])}</text>'
+        f'<text x="{W - RP + 8}" y="{lm:.1f}" class="elab mu">'
+        f'machine {dlab(ends["b0_dollars"])}</text>')
+    return f'''<svg viewBox="0 0 {W} {H}" role="img"
+  aria-label="Equity curve: desk vs shipped machine">
+  {grid}{months}
+  <line x1="{L}" y1="{zy:.1f}" x2="{W - RP}" y2="{zy:.1f}" class="zero"/>
   <polyline points="{pts(series['b1_dollars'])}" class="ln b1"/>
   <polyline points="{pts(series['b0_dollars'])}" class="ln b0"/>
   <polyline points="{pts(series['agent_dollars'])}" class="ln ag"/>
-  <circle cx="{W - PAD}" cy="{H - PAD - (end['agent_dollars'] - lo) * (H - 2 * PAD) / rng:.1f}" r="3.5" class="dot"/>
+  <circle cx="{x(n - 1):.1f}" cy="{y(ends['agent_dollars']):.1f}" r="3.5" class="dot"/>
+  {endlab}
 </svg>'''
+
+
+def discretion(R: list[dict]) -> str:
+    """The sus-detector: day-by-day identical-vs-deviated strip + action counts."""
+    if not R:
+        return ""
+    cells, ident, streak, best_streak = "", 0, 0, 0
+    for r in R:
+        d = r["agent_dollars"] - r["b0_dollars"]
+        if abs(d) < 0.01:
+            ident += 1
+            streak += 1
+            best_streak = max(best_streak, streak)
+            cls, lab = "same", "identical to machine"
+        else:
+            streak = 0
+            cls, lab = pl_class(d), usd(d)
+        cells += f'<i class="cell {cls}" title="{r["day"]}: {lab}"></i>'
+    trades = [t for r in R for t in r["trades"]]
+    touched = sum(1 for t in trades if t.get("touched"))
+    parts = sum(t.get("partials", 0) for t in trades)
+    cuts = sum(1 for t in trades if t["exit_reason"] == "agent_exit")
+    ext = sum(1 for t in trades if t.get("extended"))
+    passes = sum(len(r["passes"]) for r in R)
+    warn = (f'<div class="warn" style="margin-top:6px;">⚠ {best_streak}-day identical '
+            f'streak — discretion may not be showing up</div>' if best_streak >= 7 else "")
+    return f'''<div class="card">
+  <div class="eyebrow">Discretion — is the desk actually trading?</div>
+  <div class="cells">{cells}</div>
+  <div class="sub" style="font-size:13px;margin-top:8px;">
+    {ident} of {len(R)} days identical to the machine · longest identical streak
+    {best_streak} · touched {touched}/{len(trades)} trades ·
+    {cuts} early cuts · {parts} partials · {ext} exit refusals · {passes} passes</div>
+  {warn}
+</div>'''
 
 
 def month_table(R: list[dict]) -> str:
@@ -225,11 +301,19 @@ h1 .amber {{ color:var(--gold); }}
 .prog i {{ display:block; height:100%; width:{pct:.1f}%; background:var(--gold); }}
 .progrow {{ display:flex; justify-content:space-between; color:var(--mut);
   font-size:12px; margin-top:6px; }}
-svg {{ width:100%; height:190px; display:block; }}
+svg {{ width:100%; height:auto; display:block; }}
 .ln {{ fill:none; stroke-width:2; }} .ag {{ stroke:var(--gold); }}
 .b0 {{ stroke:var(--mut); stroke-width:1.4; }}
 .b1 {{ stroke:var(--mut); stroke-width:1; stroke-dasharray:4 4; }}
-.zero {{ stroke:var(--line); stroke-width:1; }} .dot {{ fill:var(--gold); }}
+.zero {{ stroke:var(--line); stroke-width:1.4; }} .dot {{ fill:var(--gold); }}
+.grid {{ stroke:var(--line); stroke-width:.5; opacity:.6; }}
+.mline {{ stroke:var(--line); stroke-width:.5; opacity:.45; }}
+.tick {{ fill:var(--mut); font:10.5px ui-monospace,monospace; }}
+.elab {{ font:11.5px ui-monospace,monospace; }}
+.elab.ag {{ fill:var(--gold); }} .elab.mu {{ fill:var(--mut); }}
+.cells {{ display:flex; flex-wrap:wrap; gap:3px; }}
+.cell {{ width:14px; height:14px; border-radius:2px; background:var(--chip); }}
+.cell.up {{ background:var(--up); }} .cell.dn {{ background:var(--dn); }}
 .legend {{ display:flex; gap:16px; color:var(--mut); font-size:12px; margin-top:6px; }}
 .legend b {{ font-weight:500; }}
 .sw {{ display:inline-block; width:14px; height:3px; vertical-align:middle;
@@ -268,9 +352,9 @@ footer {{ color:var(--mut); font-size:12px; display:flex; gap:18px; flex-wrap:wr
 <div class="score">
   <div class="card hero"><div class="eyebrow">The desk (agent, Sonnet)</div>
     <div class="big">{usd(a) if done else "—"}</div>{edge_pill}</div>
-  <div class="card"><div class="eyebrow">B0 · pure machine</div>
+  <div class="card"><div class="eyebrow">Shipped machine · canon + IB</div>
     <div class="big mut">{usd(b0) if done else "—"}</div>
-    <div class="sub">takes everything, nets conflicts</div></div>
+    <div class="sub">B0: takes everything, nets conflicts</div></div>
   <div class="card"><div class="eyebrow">B1 · canon precedence</div>
     <div class="big mut">{usd(b1) if done else "—"}</div>
     <div class="sub {pl_class(edge1)}">desk {usd(edge1)} vs B1</div></div>
@@ -283,14 +367,16 @@ footer {{ color:var(--mut); font-size:12px; display:flex; gap:18px; flex-wrap:wr
 </div>
 
 <div class="card">
-  <div class="eyebrow">Cumulative P&amp;L</div>
+  <div class="eyebrow">Equity curve</div>
   {spark(R)}
   <div class="legend">
-    <span><i class="sw" style="background:var(--gold)"></i><b>desk</b></span>
-    <span><i class="sw" style="background:var(--mut)"></i>B0 machine</span>
+    <span><i class="sw" style="background:var(--gold)"></i><b>desk (agent)</b></span>
+    <span><i class="sw" style="background:var(--mut)"></i>shipped machine (canon + IB)</span>
     <span><i class="sw" style="background:var(--mut);height:1px"></i>B1 canon-precedence</span>
   </div>
 </div>
+
+{discretion(R)}
 
 <div class="grid2">
   <div class="card scroll">
