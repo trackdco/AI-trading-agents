@@ -131,6 +131,30 @@ Angus's step-4 loop (23-24 candles were never sealed — only the six flow
 months are); (4) graders RE-RUN on whatever the deep search freezes.
 Trial-6 numbers stay ledgered; nothing is erased.
 
+### Trial 8 — DEEP PASS: walls + candle variables (2026-08-05, canon-parity)
+scripts/nya_fa_deep.py. Three findings:
+1. LEGAL CUT FOUND (bad every era, no lookahead): open_type=test_drive —
+   PF 0.40, negative in all three eras (open type is known by 10:00; every
+   entry is post-10:00). Declared arm for grading: spec + test_drive cut.
+2. DIAGNOSTIC ONLY (LOOKAHEAD — cannot gate): day_type=trend (PF 0.13, bad
+   every era) and day_type=neutral (PF 0.36, bad every era). day_type is
+   classified from the FULL session including the close — knowing it at
+   entry time is lookahead. Recorded as the autopsy explanation (fading
+   into a trend day is the death mode, mechanism-consistent) with a
+   TRADEABLE proxy declared as a future arm: one-timeframing state AT entry
+   time. Not applied to the spec.
+3. WALL-AT-ENTRY: canon-style wall-support gate does NOT transfer —
+   spec+wall>=3 is n=2 (0% WR); spec+wall<3 runs n=19, WR 58%, PF 2.91
+   (+$1,451). Direction consistent with the sweep doctrine (thin book after
+   the trap = fast traverse) but n=2/19 is far too small to ADOPT the
+   inverse as a gate — doing so would be the §6.0 failure in miniature.
+   VERDICT: no wall requirement enters the spec; observation recorded for
+   the holdout to adjudicate. Coverage honesty: 55% of events have wall
+   reads (depth ends 10:29); the uncovered cohort still runs PF 1.84.
+Arms this trial: 4 (test_drive cut, wall>=3, wall<3, day-type diagnostic).
+Family count 24. NEXT: 23/24 candle look (the ONE §5.9.4 iteration),
+graders re-run with the test_drive-cut arm included.
+
 ### Trial 5 — accept-branch conditioning (2026-08-05, flow span) — PARKED, too few events
 scripts/nya_fa_accept.py (events in output/nya_fa_accept_events.parquet).
 Only 15 accept-then-retest events exist on the whole flow span — accepted
