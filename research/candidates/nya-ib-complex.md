@@ -170,3 +170,21 @@ givebacks); B's = early dying/flow cut (its losers are clean). The
 walkout harvest on A is the open capture-more question — next declared
 round: extend+trail combos, and the press/giveback state playbook is
 agent-rung territory once the baseline is ruled. Ledger rows 244-246.
+
+### Stage 2d — LEG-A TARGET STRUCTURE ARMS (DECLARED 2026-08-05 before run)
+ANGUS: "what does this model actually target. could we try targeting
+different structural levels such as vwap bands, session highs and lows...
+the capture is selling a lot." Baseline target = IB mid (geometric, ~2R).
+Declared target arms (stop unchanged 0.25xIB; fit span; if a structural
+level sits less than 0.5R beyond entry in the profit direction at entry
+time, the arm substitutes IB mid — substitutions counted):
+- T0 IB mid (baseline)          - T1 opposite IB extreme (full traverse)
+- T2 developing RTH session VWAP (09:30 anchor, chased as it moves)
+- T3 far VWAP sigma band (VWAP -1sigma for shorts / +1sigma for longs)
+- T4 session extreme-so-far at entry (day low for shorts / high for
+  longs — the standing liquidity magnet, frozen at entry)
+- T5 prior-day RTH close (the unfinished-business level, static)
+- T6 no-target trail control (after peak >= 1R, stop trails peak-0.75R;
+  else EOD) — structure-free comparison
+Report per arm: n, WR, sumR, $, per-year, mean capture (realized/MFE on
+winners), substitution count. Ledger rows each.
