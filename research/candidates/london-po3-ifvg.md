@@ -448,3 +448,22 @@ no way to get paid for it that survives honest scrutiny.**
 **No holdout look was ever spent** — 2023/24 candles, the sealed flow months and
 `depth_london_2023_24` are all untouched. The family dies without costing the programme
 a single look.
+
+### §5.12.15 SEMANTICS CORRECTION (2026-08-05) — `W` was described wrongly above
+
+Everywhere this file calls `W` *"no wall behind"* and attaches a thin-overnight-liquidity
+story, **that description is wrong.** The v2 dissection established, and an audit on our
+own 300 `A/S1` trades confirmed, that `W` is **displacement geometry**: `W=1` means the
+entry sits beyond the entire visible ladder (96.0% of the time; median 3.62 pts beyond a
+ladder spanning ~5.5 pts). The book has not caught up to price — it is not a statement
+about resting size at all.
+
+**The verdict is unchanged.** `W` failed its selection-corrected permutation null at
+family-wise p = 0.42, and a permutation null shuffles labels and is indifferent to what
+they mean. A better mechanism story for a result that failed its own null is not grounds
+to reopen. Full audit: `research/findings/LDN-W-semantics-audit.md`.
+
+Also flagged there: this run used the canon's **absolute** thresholds (`WALLSZ >= 7`,
+`WALLFAR >= 2.75`) where §5.12.15 now prefers quantile/relative ones, and the basis stamp
+(§5.12.13) for every depth conclusion here is 1,168 trades with book state at the L1
+geometry, $160-risk, 1pt/2pt costs.

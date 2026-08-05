@@ -124,8 +124,7 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   untested (§5.12.5), no permutation null on the carried combination (§5.12.4).
   Full reasoning: `research/findings/LDN-kill-vacated-under-511-512.md`.
 - **DEPTH PASS RUN (gap 1 closed).** 8 canon checks, 32 cells, 1,168 trades with book.
-  9 cells survive every era; ONE pays at strict cost both eras — `W` (no wall behind) on
-  A/S1, +0.204R (n=37) / +0.478R (n=38), lift +0.734/+0.756, inside the canon's depth band.
+  9 cells survive every era; ONE pays at strict cost both eras — `W` on A/S1, +0.204R (n=37) / +0.478R (n=38), lift +0.734/+0.756, inside the canon's depth band.
 - **W THEN FAILED ITS SELECTION-CORRECTED NULL.** 10k shuffles re-running the whole
   32-cell selection: a cell that survives every era AND pays appears in **42.1%** of
   shuffles vs the declared family-wise bar of 5%. Lift magnitude passes (p=0.016) but that
