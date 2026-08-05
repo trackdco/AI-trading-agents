@@ -1,0 +1,6 @@
+# Spec-1 §Step 1: raw data and generated outputs are not committed.
+data/raw/
+output/
+__pycache__/
+*.pyc
+.env
