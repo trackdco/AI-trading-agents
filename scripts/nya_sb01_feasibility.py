@@ -95,9 +95,9 @@ def find_fvg(w: pd.DataFrame, i: int, side: int) -> float | None:
     for j in range(max(2, i - 6), i + 1):
         a, c = w.iloc[j - 2], w.iloc[j]
         if side < 0 and a.low > c.high:
-            return float(c.high)          # lower edge of the bearish gap
+            return float(c.high), float(a.low)   # (entry edge, far edge = invalidation)
         if side > 0 and a.high < c.low:
-            return float(c.low)           # upper edge of the bullish gap
+            return float(c.low), float(a.high)
     return None
 
 
