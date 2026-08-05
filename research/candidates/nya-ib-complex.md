@@ -590,9 +590,21 @@ DESIGN:
   trade (entry read / in-trade / resolution / lesson, <=500 chars),
   written knowing the machine counterfactual (causal — post-close);
   stored on the trade row, last 2 fed back through the monthly digest.
-  (b) ENTRY-STATE SNAPSHOT recorded mechanically on every taken trade:
-  delta1m/cvd5m/cvd15m/opposed5/volx, book imbalance + nearest wall,
-  vwap & near-band distance in R, tier score. BASIS STAMP: days
-  completed before the mid-June restart carry no debrief/entry_state;
-  Angus also confirmed B0 semantics = both engines stacked at shipped
-  spec, P&Ls summed, opposite-direction overlaps net.
+  (b) FULL TRADE RECORD mechanically on every taken trade — his spec:
+  "not just entry variables but intra trade variables where the trade
+  turned against it... where it could have captured more, market
+  conditions." ENTRY: delta1m/cvd5m/cvd15m/opposed5/volx, book
+  imbalance + nearest wall, vwap & near-band distance in R, vwap
+  slope, RTH range so far, tier score. IN-TRADE PATH: MFE/MAE in R
+  with minutes-to-each, first-red minute + cvd5 there, held minutes,
+  capture (realized/peak), flow at exit (cvd5/opposed). POST-EXIT:
+  run after exit on the original stop (left_peak_R), would-have-
+  stopped flag, session settle R. MARKET CONDITIONS: gap, overnight
+  range, prior-day range per day. The debrief prompt hands the agent
+  its own path (MFE/MAE/turn/after) so the lesson is written against
+  facts; the monthly digest adds canon run-1 conditioned gauges (early
+  cuts by flow state: would-have-died rate + median run-after; capture
+  median). BASIS STAMP: days completed before the mid-June restart
+  carry none of these fields; Angus also confirmed B0 semantics = both
+  engines stacked at shipped spec, P&Ls summed, opposite-direction
+  overlaps net.

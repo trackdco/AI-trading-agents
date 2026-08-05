@@ -195,6 +195,26 @@ def journal_digest(rows: list[dict]) -> str:
     if cf:
         lines.append(f"  conflicts faced: {len(cf)} | " +
                      "; ".join(f"{c['day']}:{c['choice']}" for c in cf[-3:]))
+    # conditioned learning gauges (canon run-1 convention): when you cut early
+    # in state X, what usually happened next — read by LATER months only.
+    tr_all = [t for r in rows for t in r["trades"]]
+    cuts = [t for t in tr_all if t["exit_reason"] == "agent_exit"
+            and t.get("left_peak_R") is not None]
+    if cuts:
+        for label, sel in (
+                ("flow WITH you", [t for t in cuts if t.get("cvd5_at_exit", 0) > 0]),
+                ("flow AGAINST you", [t for t in cuts if t.get("cvd5_at_exit", 0) <= 0])):
+            if not sel:
+                continue
+            died = sum(1 for t in sel if t.get("would_have_stopped"))
+            lp = sorted(t["left_peak_R"] for t in sel)
+            lines.append(f"  your early cuts with {label} (n{len(sel)}): {died} would "
+                         f"have stopped anyway; median run after you left "
+                         f"{lp[len(lp) // 2]:+.2f}R")
+    caps = sorted(t["capture"] for t in tr_all if t.get("capture") is not None)
+    if caps:
+        lines.append(f"  capture (realized/peak, trades that reached +0.5R): "
+                     f"median {caps[len(caps) // 2]:+.2f}")
     debs = [(t["day"], t["debrief"]) for r in rows for t in r["trades"]
             if t.get("debrief")]
     if debs:
@@ -344,7 +364,33 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
             st["vwap_dist_r"] = round(s * (float(vwap[j]) - entry) / risk, 2)
             st["band_dist_r"] = round(s * ((float(vwap[j]) - s * float(sd[j])) - entry)
                                       / risk, 2)
+            if j >= 5:
+                st["vwap_slope5"] = round(float(vwap[j] - vwap[j - 5]), 2)
+            seen = rth.loc[:minute]
+            if len(seen):
+                st["rth_range_pt"] = round(float(seen.high.max() - seen.low.min()), 2)
         return st
+
+    def post_exit_walk(p, ts_):
+        """What the trade did AFTER the exit, on the ORIGINAL engine stop — the
+        could-have-captured-more / would-have-died-anyway record."""
+        seg = daybars.loc[ts_:]
+        seg = seg[seg.index > ts_]
+        xpx = float(p["legs"][-1][1]) if p["legs"] else p["entry"]
+        left_peak, would_stop, end_r = 0.0, False, None
+        for mi2, b2 in seg.iterrows():
+            if mi2 >= p["flatten"]:
+                break
+            if (p["s"] > 0 and b2.low <= p["sig"]["stop"]) or \
+               (p["s"] < 0 and b2.high >= p["sig"]["stop"]):
+                would_stop = True
+                end_r = r_of(p, p["sig"]["stop"])
+                break
+            fav2 = (float(b2.high) - xpx) if p["s"] > 0 else (xpx - float(b2.low))
+            left_peak = max(left_peak, fav2 / p["risk"])
+            end_r = r_of(p, float(b2.close))
+        return (round(left_peak, 3), bool(would_stop),
+                round(end_r, 3) if end_r is not None else None)
 
     def close_pos(p, fr, px, reason):
         p["legs"].append((fr, px, reason))
@@ -376,11 +422,27 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
             "exit_reason": reason, "exit_ts": str(ts_), "turns": p["turns"],
             "extended": p["extended"], "touched": p["touched"],
             "partials": sum(1 for _, _, rr in p["legs"] if rr == "partial"),
-            "mfe_R": round(p["peak_r"], 3), "last_note": p["last_note"],
+            "mfe_R": round(p["peak_r"], 3), "mae_R": round(p["trough_r"], 3),
+            "mfe_min": p["mfe_min"], "mae_min": p["mae_min"],
+            "first_red_min": p["first_red_min"], "cvd5_at_first_red": p["red_cvd5"],
+            "capture": round(aR / p["peak_r"], 3) if p["peak_r"] > 0.5 else None,
+            "held_min": int((ts_ - p["sig"]["fill"]).total_seconds() // 60),
+            "last_note": p["last_note"],
             "score": p["sig"].get("score"), "entry_state": p.get("entry_state"),
-            "debrief": "",
+            "day_ctx": day_ctx, "debrief": "",
             "legs": [(f, px, rr) for f, px, rr in p["legs"]]})
-        just_closed.append(done_trades[-1])
+        row = done_trades[-1]
+        try:
+            w = tape_day.loc[:ts_]
+            if len(w) >= 5:
+                row["cvd5_at_exit"] = round(float(w.delta.tail(5).sum()) * p["s"], 0)
+                row["opposed_at_exit"] = int(
+                    (np.sign(w.delta.tail(5).to_numpy() * p["s"]) < 0).sum())
+        except Exception:
+            pass
+        lp, ws, sr = post_exit_walk(p, ts_)
+        row["left_peak_R"], row["would_have_stopped"], row["settle_after_R"] = lp, ws, sr
+        just_closed.append(row)
 
     def apply_mgmt(p, rep):
         p["touched"] = True
@@ -467,6 +529,7 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
         book.append(dict(
             pid=g["sid"], engine=g["engine"], sig=g, s=g["s"], entry=g["entry"],
             entry_state=entry_state(g["fill"], g["s"], g["entry"], g["risk"]),
+            trough_r=0.0, mfe_min=0, mae_min=0, first_red_min=None, red_cvd5=None,
             risk=g["risk"], stop=g["stop"], frac=1.0, legs=[], pending=[],
             target_mode=mode, target_px=g.get("target"),
             extended=False, partial_done=False, peak_r=0.0, seen_r=set(),
@@ -475,7 +538,8 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
                                  tz=NY),
             mech_exit_done=False, scratch_done=False, touched=False))
 
-    # ---- 07:45 morning read
+    # ---- 07:45 morning read (+ the day's market-condition record)
+    day_ctx: dict = {}
     d0 = pd.Timestamp(f"{day} 07:40", tz=NY)
     prior = bars.loc[:d0 - pd.Timedelta(hours=16)]
     on = bars.loc[d0 - pd.Timedelta(hours=13, minutes=40):d0]
@@ -483,6 +547,9 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
         pd_day = (prior[prior.index >= prior.index[-1] - pd.Timedelta("24h")]
                   if len(prior) else on)
         last = float(on.close.iloc[-1])
+        day_ctx = {"gap_pt": round(last - float(pd_day.close.iloc[-1]), 2),
+                   "on_range_pt": round(float(on.high.max() - on.low.min()), 2),
+                   "prior_range_pt": round(float(pd_day.high.max() - pd_day.low.min()), 2)}
         gap_note = ""
         if journal:
             gap = (pd.Timestamp(day) - pd.Timestamp(max(r["day"] for r in journal))).days
@@ -664,8 +731,20 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
         # every minute it holds a position after that. One call per minute;
         # signal/mechanical-exit turns already count as that minute's call.
         for p in book:
+            mins_in_p = int((minute - p["sig"]["fill"]).total_seconds() // 60)
             fav = r_of(p, float(bar.high) if p["s"] > 0 else float(bar.low))
-            p["peak_r"] = max(p["peak_r"], fav)
+            if fav > p["peak_r"]:
+                p["peak_r"], p["mfe_min"] = fav, mins_in_p
+            worst = r_of(p, float(bar.low) if p["s"] > 0 else float(bar.high))
+            if worst < p["trough_r"]:
+                p["trough_r"], p["mae_min"] = worst, mins_in_p
+            if p["first_red_min"] is None and r_of(p, float(bar.close)) <= -0.25:
+                p["first_red_min"] = mins_in_p
+                try:
+                    w = tape_day.loc[:minute]
+                    p["red_cvd5"] = round(float(w.delta.tail(5).sum()) * p["s"], 0)
+                except Exception:
+                    pass
         hhmm = minute.strftime("%H:%M")
         at_chart = bool(book) or (("08:00" <= hhmm <= "10:30")
                                   and minute.minute % 5 == 0)
@@ -689,16 +768,32 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
         if just_closed:
             for row_ in just_closed:
                 if row_["taken_by"] == "agent" and turns < MAX_TURNS_DAY:
+                    red = (f"first went red t+{row_['first_red_min']}m"
+                           + (f" (cvd5 {row_['cvd5_at_first_red']:+.0f})"
+                              if row_.get("cvd5_at_first_red") is not None else "")
+                           if row_["first_red_min"] is not None else "never went red")
+                    after = ("it would have hit the stop anyway"
+                             if row_.get("would_have_stopped") else
+                             (f"it ran {row_['left_peak_R']:+.2f}R further after you left"
+                              if row_.get("left_peak_R") is not None else ""))
+                    sett = (f"; session settled {row_['settle_after_R']:+.2f}R"
+                            if row_.get("settle_after_R") is not None else "")
                     dwhy = (f"[{minute.strftime('%H:%M')}] TRADE CLOSED {row_['pid']}: "
                             f"{row_['engine']} {row_['direction']} "
                             f"({row_['sess']}/{row_['tier']}), exited "
                             f"'{row_['exit_reason']}' at {row_['agent_R']:+.2f}R "
                             f"(${row_['agent_dollars']:+,.0f}). Pure-machine outcome on "
-                            f"this trade: ${row_['mech_dollars']:+,.0f}. Write your trade "
-                            f"journal entry — deep note: your entry read (tape/book/"
-                            f"context), what you saw while in it, why it ended the way it "
-                            f"did, and the lesson your future self should find. Reply "
-                            f'EXACTLY one JSON: {{"note":"<=500 chars"}}')
+                            f"this trade: ${row_['mech_dollars']:+,.0f}.\n"
+                            f"THE PATH: held {row_['held_min']}m | MFE "
+                            f"{row_['mfe_R']:+.2f}R at t+{row_['mfe_min']}m | MAE "
+                            f"{row_['mae_R']:+.2f}R at t+{row_['mae_min']}m | {red} | "
+                            f"flow at exit cvd5 {row_.get('cvd5_at_exit', 0):+.0f}, "
+                            f"opposed {row_.get('opposed_at_exit', '?')}/5 | {after}{sett}."
+                            f"\nWrite your trade journal entry — deep note: your entry "
+                            f"read (tape/book/context), where it turned for or against "
+                            f"you and what the flow said there, what you captured vs what "
+                            f"was there, and the lesson your future self should find. "
+                            f'Reply EXACTLY one JSON: {{"note":"<=500 chars"}}')
                     txt, sid2 = call_claude(dwhy, sid)
                     sid = sid2 or sid
                     turns += 1
