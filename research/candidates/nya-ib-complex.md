@@ -226,3 +226,13 @@ numbers, restated:
   default, best in both fit years, no substitutions.
 The 23/24 candle run stays in the file as background only and carries no
 decision weight. All target-arm work from here presents fit-first.
+
+### Stage 2e — near-band stop diagnosis (DECLARED 2026-08-05 before run)
+ANGUS: "run a stop loss diagnosis properly and see if we can cut losses
+earlier and hold that win rate." Basis: T3 near-band target, fit span,
+n=112 paired. MEASURE: MFE and MAE-before-resolution distributions,
+winners vs losers. STOP ARMS (distance stops at s x risk, s in 0.3 / 0.4
+/ 0.5 / 0.6 / 0.75 / 1.0-baseline; intrabar first-crossing order decides;
+plus time-cuts t+3 and t+5 if MAE>=0.5R as comparison) — the frontier:
+WR vs payoff vs expectancy per stop. Ledger rows for the chosen frontier
+points.
