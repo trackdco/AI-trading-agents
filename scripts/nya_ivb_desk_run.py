@@ -27,7 +27,10 @@ sys.path.insert(0, str(ROOT))
 NY = "America/New_York"
 SPEC = ROOT / ".claude/agents/trade-manager-fade-v1.md"
 RUNS = ROOT / "runs/fade_desk1"
-MONTHS = ["2025-06", "2025-09", "2025-12", "2026-02", "2026-04", "2026-06"]
+# ANGUS ruling mid-run 2026-08-05: full flow span, not the 6-month sample —
+# "it should be all june 2025 to july 2026" (canon phase-1 precedent).
+# State/journal persist; the 14 sample trades already done are kept.
+MONTHS = [f"2025-{m:02d}" for m in range(6, 13)] + [f"2026-{m:02d}" for m in range(1, 8)]
 TICK, SLIP, FR = 0.25, 1, 1.0
 MAX_TURNS = 8
 CLI_TIMEOUT = 240

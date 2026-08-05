@@ -148,3 +148,10 @@ Branch B search space widened BEFORE running, all arms ledgered:
   aggregates; wall_dist valid as of today's decoder fix; at-price reads
   only per canon 2a9c221). Coverage is partial (215 NY mornings) and the
   briefing says "book: n/a" where absent — honest gaps, no interpolation.
+
+### 2026-08-05d SAMPLE AMENDMENT (ANGUS, mid-run ruling)
+The 6-month sample is superseded: the rung runs the FULL flow span,
+2025-06 through 2026-07 (112 trades), matching the canon phase-1
+precedent (entire fit span, chronological). Journal/state persisted; the
+14 trades completed under the old sample are retained, not redone.
+Graduation bar unchanged.
