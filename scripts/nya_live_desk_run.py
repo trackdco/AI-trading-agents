@@ -831,6 +831,15 @@ def main() -> None:
     a = ap.parse_args()
     RUNS.mkdir(parents=True, exist_ok=True)
     (RUNS / "transcripts").mkdir(exist_ok=True)
+    if not a.status:                      # single-instance lock: no double desks
+        import fcntl
+        lockf = open(RUNS / ".lock", "w")
+        try:
+            fcntl.flock(lockf, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            print("another desk run holds the lock — refusing to double-launch")
+            return
+        main._lock = lockf               # keep the fd alive for the process life
     done = set()
     st = RUNS / "state.json"
     if st.exists():
