@@ -192,3 +192,14 @@ scripts/nya_ivb_fade_expand.py. Angus called three gaps; all three were real:
 Arms this trial: 7 (family 26). NEXT: full §6.0 tournament round 2 with
 cap20-W120 and the state-flow gate as declared challengers + the canon
 variable map when Angus returns with the rebuild-chat list.
+
+### Trial 12 — state-flow gate vs the permutation null (2026-08-05, §5.12-9) — REFUTED
+src/validation/permnull.py (the harness, built to the canon-map requirement)
+first run: the trial-10 drawdown-state flow finding does NOT survive — the
+within-state lift of flow-confirmation is NEGATIVE (−0.47R) with p=0.83
+over 10k shuffles (n=144). The impressive cells (drawdown+confirmed PF
+1.86; profit+against PF 3.17) were tiny-n noise shapes, exactly the
+manufactured-regime-edge failure §5.12-9 exists to catch. The declared
+state-gate arm CLOSES; no state conditioning enters this family. The
+harness killing our own finding on its first run is the §5.12 ratification
+working as law, not as prose. Family arm count 27.
