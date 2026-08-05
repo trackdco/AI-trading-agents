@@ -166,8 +166,10 @@ def run(bars: pd.DataFrame) -> pd.DataFrame:
                         sub = trig.loc[j:][["high", "low", "close"]].to_numpy()
                         if not len(sub):
                             continue
+                        entry_ts = trig.loc[j, "ts_event"]
                     else:
                         sub = tail_bars
+                        entry_ts = tc["ts_event"]
                     target = entry + side * TARGET_R * risk
                     pts, why = sim(side, entry, stop, target, sub)
                     trades.append(dict(day=day, era=era, branch="OBK", arm=f"{ea}/{sa}",
@@ -175,7 +177,9 @@ def run(bars: pd.DataFrame) -> pd.DataFrame:
                                        disp_frac=disp_frac, width=width,
                                        lon_hour=int(tc["ts_event"].tz_convert(LON).hour),
                                        width_rel=width_rel,
-                                       with_drift=(drift != 0 and drift == side)))
+                                       with_drift=(drift != 0 and drift == side),
+                                       break_ts=tc["ts_event"], entry_ts=entry_ts,
+                                       extreme_ts=tc["ts_event"]))
 
             # --- failure arms -------------------------------------------------
             inside = (tail["close"] <= hi) if side > 0 else (tail["close"] >= lo)
@@ -185,6 +189,8 @@ def run(bars: pd.DataFrame) -> pd.DataFrame:
             fb = trig.loc[f]
             seg = trig.loc[i0:f]
             extreme = float(seg["high"].max()) if side > 0 else float(seg["low"].min())
+            ext_ts = seg.loc[seg["high"].idxmax() if side > 0 else seg["low"].idxmin(),
+                             "ts_event"]
             entry = float(fb["close"])
             post = trig.loc[f + 1:]
             if post.empty:
@@ -204,7 +210,9 @@ def run(bars: pd.DataFrame) -> pd.DataFrame:
                                    disp_frac=disp_frac, width=width,
                                    lon_hour=int(tc["ts_event"].tz_convert(LON).hour),
                                    width_rel=width_rel,
-                                   with_drift=(drift != 0 and drift == side)))
+                                   with_drift=(drift != 0 and drift == side),
+                                   break_ts=tc["ts_event"], entry_ts=fb["ts_event"],
+                                   extreme_ts=ext_ts))
 
     return pd.DataFrame(trades)
 
