@@ -131,7 +131,54 @@ Angus's step-4 loop (23-24 candles were never sealed — only the six flow
 months are); (4) graders RE-RUN on whatever the deep search freezes.
 Trial-6 numbers stay ledgered; nothing is erased.
 
-### Trial 5 — accept-branch conditioning (2026-08-05, flow span) — PARKED, too few events
+### Trial 8 — DEEP PASS: walls + candle variables (2026-08-05, canon-parity)
+scripts/nya_fa_deep.py. Three findings:
+1. LEGAL CUT FOUND (bad every era, no lookahead): open_type=test_drive —
+   PF 0.40, negative in all three eras (open type is known by 10:00; every
+   entry is post-10:00). Declared arm for grading: spec + test_drive cut.
+2. DIAGNOSTIC ONLY (LOOKAHEAD — cannot gate): day_type=trend (PF 0.13, bad
+   every era) and day_type=neutral (PF 0.36, bad every era). day_type is
+   classified from the FULL session including the close — knowing it at
+   entry time is lookahead. Recorded as the autopsy explanation (fading
+   into a trend day is the death mode, mechanism-consistent) with a
+   TRADEABLE proxy declared as a future arm: one-timeframing state AT entry
+   time. Not applied to the spec.
+3. WALL-AT-ENTRY: canon-style wall-support gate does NOT transfer —
+   spec+wall>=3 is n=2 (0% WR); spec+wall<3 runs n=19, WR 58%, PF 2.91
+   (+$1,451). Direction consistent with the sweep doctrine (thin book after
+   the trap = fast traverse) but n=2/19 is far too small to ADOPT the
+   inverse as a gate — doing so would be the §6.0 failure in miniature.
+   VERDICT: no wall requirement enters the spec; observation recorded for
+   the holdout to adjudicate. Coverage honesty: 55% of events have wall
+   reads (depth ends 10:29); the uncovered cohort still runs PF 1.84.
+Arms this trial: 4 (test_drive cut, wall>=3, wall<3, day-type diagnostic).
+Family count 24. NEXT: 23/24 candle look (the ONE §5.9.4 iteration),
+graders re-run with the test_drive-cut arm included.
+
+### Trial 9 — THE 23/24 CANDLE LOOK (2026-08-05, §5.9.4) — FAILED; retest BANKED
+scripts/nya_fa_2324_look.py (output/nya_fa_2324_look.parquet). Look #1 of
+the family's allowance, spent on the conditioned candle skeleton (deep
+cohort, frozen flow-span threshold 0.117, with/without test_drive cut):
+147 fail events 2023-24 — deep PF 0.68 (n=73, −456 pts), deep+cut PF 0.76
+(n=63), negative BOTH years (2023 worse than 2024). Depth still
+discriminates directionally (WR 29% deep vs 12% shallow) but does not pay
+out-of-fit. DIAGNOSIS (in-fit, flow span, legal): the missing half of the
+trapped-mass mechanism is PARTICIPATION — a candle-legal excursion-volume
+proxy separates the spec cohort in-fit (evr>=1.3: n=7, WR 71%, PF 5.66 vs
+low-participation PF 1.22) but n=7 is too thin to bet the single retest on,
+the 1.3 threshold is ad hoc, and the proxy disagrees with G2 on 62% of
+events (different variable, not a stand-in). Composite age: noise-shaped
+(2.61/1.02/7.26 on 16/9/3). Very-deep: worse (1.45).
+RULING APPLIED: the ONE rebalance-retest is BANKED, not spent — no
+candidate rebalance has credible in-fit support at meaningful n, and
+spending the family's last out-of-fit bullet on a 7-trade cell is the
+exact gamble §6.0 exists to prevent. STATUS: family CANNOT SHIP until a
+successful retest (§5.9.4); stays shelved with the participation thesis
+maturing as flow-span events accrue (live + Brake's data). Honest regime
+note: 25-26 success + 23-24 failure may be genuine regime dependence — the
+mean-reversion fade thrives where the canon's with-trend logic starves,
+and vice versa; a book story, but not one that overrides the ruling.
+Arms this trial: 4 (look cells + evr proxy + age + very-deep). Family 28.
 scripts/nya_fa_accept.py (events in output/nya_fa_accept_events.parquet).
 Only 15 accept-then-retest events exist on the whole flow span — accepted
 breaks rarely return to the broken edge (which is itself consistent with

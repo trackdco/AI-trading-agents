@@ -22,15 +22,31 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - GATES TRIED: absorption-as-defined fires 4% (n=4 — looser variant is a
   declared future arm); wall>=3 n=10 flat. Geometry, not gating, carries it
   so far.
-- NEXT: 23-24 candle era check at the SAME geometry → exit/stop arms (§6.0
-  default declared first) → graders under §5.9 bars.
-- CANON SHAPE: ahead of canon's arc (canon raw was negative pre-wall-gate).
+- ERA CHECK (full span, candles): 2025 PF 1.56 (n=101, +$2,455) / 2026 PF
+  1.57 (n=57, +$2,503) / 23-24 PF 1.20 (n=198, +$5,907) — POSITIVE EVERY
+  ERA, no flip; 356 trades, WR 41%.
+- TOURNAMENT: 6 arms all positive every era; PBO 0.10 (cleanest of the
+  program); default stands, 15-min-IB challenger (PF 1.64, $+21,313) banked
+  for holdout adjudication.
+- GRADING: PSR(0) 0.994 vs 0.75 sleeve floor — PASS; min track 390d vs 911
+  held (certifiable vs zero on its own track, program first); canon
+  correlation +0.02 union / +0.17 both-active (88 days, trusted, passes).
+- FLAGS: standalone MC P(bust) 20% (streaky WR-41% profile — book component,
+  not solo ship); ledger-DSR denominator inflation flagged to Brake.
+- NEXT: book-level grading (canon + this + pre-market pair).
+- CANON SHAPE: ahead of canon's arc (canon raw was negative pre-wall-gate);
+  era rung passed on the first attempt, no rebalance needed.
 - HISTORY NOTE: killed twice by strawman censuses (missing trigger; harsher
   race than the taught trade), vacated on canon-parity, alive on retest —
   the correction that proved the framework audit mattered.
 
-## nya-failed-auction — balance-break fail branch (dual-sourced) — ALIVE, deep pass
-- STAGE: conditioning found; deep pass (walls, day/open type) + 23/24 loop owed.
+## nya-failed-auction — balance-break fail branch (dual-sourced) — ON HOLD: 23/24 look failed, retest banked
+- STAGE: deep pass complete; §5.9.4 look #1 SPENT and FAILED (deep skeleton
+  PF 0.68 / with cut 0.76 on 147 events, negative both years); the single
+  rebalance-retest is BANKED — no rebalance candidate has credible in-fit
+  support yet (participation proxy: n=7, PF 5.66 — promising, too thin).
+  Cannot ship until a successful retest. Regime note: thrives 25-26, starves
+  23-24 — inverse of the canon's regime profile.
 - RAW TRIGGERS: 457 breaks / 911 sessions (~2.5/wk); 248 in-window fails; 71
   fail events on flow span.
 - RAW P&L (L1, full span): n=248, WR 35%, −1,025 pts, PF 0.83 — ugly as the
@@ -133,11 +149,39 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   0.75 sleeve floor — both eligible as book components pending the book
   grading. Full history in research/candidates/nypre-*.md.
 
+## nyo-rotation — overnight composite rotation (dual-sourced) — census done, conditioning owed
+- RAW TRIGGERS: 145 first-touch / 156 all-touch events over 548 composite-live
+  overnight sessions (~3/month — overnight touches of day-built balances are
+  structurally rare).
+- RAW P&L: PF 1.10, +345 pts, $-665 at 1/risk sizing (wide natural stops),
+  years +396/+74/-198/+74 — mediocre as the law expects; NO bin.
+- CONDITIONING ROUND 1 (trial 2): weak — stop caps lift dollars (+$2.3-2.5k)
+  but flip 2024 negative; flow-at-touch NEGATIVE on flow span (PF 0.95/0.58);
+  euro-delta n=8 (nothing); time-of-night era-flips. No era-consistent gate
+  yet. Remaining declared variables (absorption at edge, composite age/width,
+  all-touch expansion) owed before any verdict — no bin off this.
+
 ## QUEUE (cards open at census)
-- orochi-overnight-rotation (as taught: composite edge fade + DVA shift
-  confirmation, overnight session) — prereg next.
 - orochi-vwap-regime-pair (edge fade gated by rotational condition vs trend
   side) — prereg next.
 - level-interaction trigger family (canon-frequency substrate, ~10-15 raw
   triggers/day) — prereg after.
 - sweep-reclaim — awaiting Brake dedup vs london-level-trap-fade.
+
+---
+
+## THE BOOK — first portfolio grading (2026-08-05, scripts/nya_book_grade.py)
+- COMPONENTS: live canon + IVB range fade (sleeve-passed) + pre-market pair
+  (shelved-eligible under §5.9 bars).
+- CORRELATION MATRIX: max |0.084| across all pairs — four independent
+  P&L streams, no vetoes.
+- FUNDED MC (12mo): canon alone P(bust) 0.2% / median +$77,882; FULL BOOK
+  P(bust) 0.5% / median +$82,354 (+$4.5k/yr from the sleeves, maxDD
+  $1,222→$1,460). New sleeves WITHOUT the canon: P(bust) 13.9% — the
+  sleeves are additives, not a standalone account.
+- BOOK PSR(0) 1.000 vs the 0.95 screen — PASS (canon-dominated; sleeve
+  merit was established at sleeve level). Ledger-DSR still carries the
+  denominator-inflation caveat (Brake fix pending).
+- STATUS: book gates PASSED. Ship-track remaining for the range fade:
+  chained-agents-vs-mechanical rung → shadow → Angus sign-off → two-party
+  arming. Pre-market pair: same track at smaller weight, Angus's pick.

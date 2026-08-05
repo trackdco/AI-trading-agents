@@ -478,6 +478,16 @@ of these answers.
    included. Raw profitability, decayed edges, ugly win rates: none of these
    kill at census; they wait for the complete variable search (the canon
    would have died at raw triggers under any other rule).
+   TIGHTENED [ANGUS 2026-08-05b]: no deterministic bin decision is EVER made
+   off the raw trigger set. Order-flow confirmations and the variable search
+   run BEFORE any dismissal; the bin happens only when the variables test
+   cannot save the strategy. Census-stage kills are reserved for structural
+   absence alone (the taught trigger never fires / the claimed event never
+   occurs) — even an apparently dead base rate gets its flow search first,
+   because the taught claim may only exist conditioned. Precedent: the IVB
+   breakout's kill became legal only AFTER the flow+wall search failed to
+   save it; the IVB range fade survived only BECAUSE the raw-set kill was
+   vacated and the search ran.
 2. **The deep search is earned — but never by pretty raw P&L.** Census +
    trapped-counterparty story is the whole ticket. Raw-data ugliness cannot
    deny entry to the deep search (Angus: "imagine i didnt go through that
@@ -504,6 +514,77 @@ of these answers.
    graders. Every shipped strategy carries its validation-era agent
    journals as live reference memory (the desk-run record is part of the
    shipped artifact).
+
+### 5.12 The canon map [RATIFIED 2026-08-05 from research/findings/DISCOVERY-raw-triggers-to-canon.md]
+
+The dissection is law. Binding requirements it adds, beyond §5.11:
+
+1. **Funnel with terminal statuses.** Every candidate trigger carries a
+   terminal status (filled / vetoed_x / cancelled_x); the status distribution
+   is reported at every stage. No silent drops. (Canon: 19,137 → 763 with
+   every drop accounted.)
+2. **Single-check trials, frozen thresholds, NaN stands down.** Every check
+   evaluated ALONE at its frozen threshold; NaN rows excluded from BOTH
+   arms ("no data" ≠ "bad signal"); <15 rows a side = `thin`, no verdict.
+   Survival rule: same direction in EVERY era.
+3. **The four kill classes** (canon precedent): every-era-bad → kill;
+   era-flip → kill or demote, never ship; too-thin → no verdict;
+   holdout-negative → demote with stated reason only.
+4. **Combination back-door flag.** A variable entering via a combination
+   rather than standalone survival is flagged and permutation-tested
+   (the LONSLOPE lesson).
+5. **Time-segment schema AT L2.** Every sim records open/r/mfe/mae at
+   t+2/3/5/8/10 from day one — the in-trade winner/loser signatures (press
+   state, dying trade, giving back) are where the management edge lives,
+   and conditioning-set vs outcome-set populations are stated explicitly.
+6. **BE is a null hypothesis** — twice-failed on the canon; any BE arm must
+   defeat it, never default to it.
+7. **Provenance rule.** Recompute every feature from raw; a cached column
+   that cannot be reproduced is folklore, not evidence (the pm_sofar_conf
+   failure).
+8. **Stale-rule audit.** Inherited thresholds from dead architectures are
+   the most dangerous artifacts in the repo — audit config against the
+   current book's measurements every certification cycle.
+9. **State-conditioning of ENTRY gates is an extension the canon never ran**
+   — legal, but it multiplies the search space and requires its own
+   permutation null before any regime-specific edge ships.
+10. **Class priors from the canon trial:** depth carried the entire canon
+    edge (+0.5 to +1.3R); flow was near-worthless AT entry and decisive
+    INSIDE the trade; context died almost everywhere; structure generates
+    population, not edge. Test everything regardless — but weight
+    skepticism accordingly, and expect the edge where the trapped liquidity
+    is measurable.
+11. **The framework produces evidence, not decisions** — win-rate/green-day
+    preferences over raw expectancy are the operator's call, made visible
+    and quantified (the base-V8 ruling).
+
+### 5.11 The pre-ship checklist [RATIFIED 2026-08-05 with §5.12 — from today's caught gaps]
+
+No ship card is complete until every box below is checked, in the ledger,
+with numbers. Each item exists because it was MISSED today until Angus
+caught it:
+
+1. **Mandatory §3.2 loser autopsy + MFE/MAE pack** — before any ship card,
+   never after. (Missed on the IB fade until asked.)
+2. **Event-universe sensitivity** — the trigger definition must be stress-
+   tested: all-occurrences vs first-occurrence, window widening, re-entry
+   rules. Report the frequency ceiling and why. (356→478 was found only on
+   challenge.)
+3. **Stop/risk-normalization arm class** — absolute stop caps and
+   fixed-dollar-sizing interaction tested as standard arms, not ad hoc.
+   (cap20 found the family's best expression and rescued 2024.)
+4. **State-conditional re-tests** — every flow/context gate re-tested inside
+   states: strategy drawdown vs profit, day regime at entry (no-lookahead),
+   post-loss entries. Pooled nulls DO NOT close a gate question. (Pooling
+   masked a real drawdown-state flow gate.)
+5. **Year-level (and half-year) reporting mandatory** — era aggregates mask
+   losing years (23-24 pooling hid negative 2024; calendar-year pooling hid
+   H2-2025 in the pre-market program).
+6. **Canon variable map** — every candidate's search must cover the canon
+   build's variable classes (list incoming from the rebuild chat; each class
+   = a declared arm or a documented N/A with reason).
+7. **Lookahead audit** — every conditioning variable certified same-time
+   computable (day_type nearly slipped through as a gate today).
 
 ### 5.10 The transparency rule [ANGUS 2026-08-05]
 

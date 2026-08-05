@@ -104,3 +104,91 @@ as-taught, variables searched, dead in every era of the search span.
 TOMBSTONE (branch A, final): the IB breakout is dead on 2025-26 NQ — raw,
 flow-confirmed, and wall-conditioned alike. The decay+crowding story
 stands. Branch arm count: 8 new arms this session (family 10).
+
+### Trial 6 — branch B ERA DISCIPLINE (2026-08-05, full span) — PASSED EVERY ERA
+scripts/nya_ivb_fade_era.py (output/nya_ivb_fade_era.parquet). The taught
+geometry, candles only, 2023-2026: **2025 PF 1.56 (n=101, +$2,455) / 2026
+PF 1.57 (n=57, +$2,503) / 2023-24 PF 1.20 (n=198, +$5,907)** — positive in
+every era, no flip, 356 trades total, WR 41%, +2,539 pts. The weakest era
+(23-24) is still positive — this is not a regime fluke. NOTE the irony for
+the intake doctrine: the branch the strawman censuses killed twice is now
+the healthiest candidate in the program, and the famous branch is dead.
+STATUS: to the exit/stop tournament under §6.0 (default already declared:
+0.25xIB stop, mid target, no BE) with IB-length variants 15/60 as declared
+challengers; then graders under §5.9 bars; then correlation battery vs
+canon (clock overlap with gold leg — mandatory). Family arm count 11.
+
+### Trials 7-8 — TOURNAMENT + GRADING (2026-08-05) — sleeve gates PASSED
+scripts/nya_ivb_fade_grade.py (arm matrix output/nya_ivb_fade_arms.parquet).
+TOURNAMENT (6 arms, full span, every arm positive in every era): default
+E0 PF 1.41 ($+10,865); challengers C1-C5 up to PF 1.64. **PBO 0.10,
+P(OOS loss) 0.01 — the cleanest selection read the program has produced.**
+Per §6.0 the default STANDS; C4 (15-min IB: n=392, PF 1.64, $+21,313,
+era-consistent incl. 23-24 +1480) is a PBO-clean challenger banked for
+holdout adjudication — not promoted by rank.
+GRADING (default spec): PSR(0) **0.994** vs the §5.9.5 sleeve floor 0.75 —
+PASS with room; min certifying track 390 days vs 911 held — certifiable vs
+zero ON ITS OWN TRACK, the first candidate in either program to get there.
+Canon correlation: union +0.015, both-active +0.167 on 88 shared days
+(>60-day trust bar; passes T1 easily) — clock overlap real, P&L overlap
+negligible. FLAGS: (1) MC standalone P(bust) 20% at 12mo on a $2k-trail
+shell — streaky 41%-WR profile; must be sized/graded as a BOOK component
+(book MC next). (2) Ledger-DSR reads 0.000 against a +1.24 daily-SR bar —
+the machine ledger's effect variance is inflated by micro-n cells (n=2-7
+rows contribute |effects| >1); METHODOLOGY FLAG FOR BRAKE: the §6.0
+denominator needs comparable day-level trial series or n-weighting, else
+every candidate fails by construction. PSR floor law (§5.9.5) governs the
+sleeve verdict meanwhile. Arms: 6 this trial (family 17).
+SLEEVE VERDICT: **PASSED to book stage** — era-clean, tournament-clean,
+PSR 0.994, low canon correlation. Ship decision belongs to the book
+grading + Angus.
+
+### Trial 9 — MANDATORY LOSER AUTOPSY + MFE/MAE (2026-08-05, §3.2 — run late, flagged by Angus)
+PROCESS NOTE: this stage was skipped in the tournament→grading rush and
+run only after Angus asked — the omission itself is the finding for the
+process record. Results (356 trades; autopsy parquet committed):
+1. MFE/MAE: winners' median MAE **0.18R** (barely breathe) vs losers'
+   median MFE **0.84R** — 76% of losers were ≥0.5R favorable before dying.
+   DECLARED (not applied): BE@0.5R and partial@0.75R arms for future
+   holdout adjudication. Precedent caution: the C1-BE arm was already
+   PBO-inseparable, and inventory's MAE-derived A1 was PBO-refused — the
+   MFE hint often fails adjudication in mean-reversion trades.
+2. Candle features: winners ≈ losers on IB size (102/104) and side
+   (54%/55% short) — indistinguishable, as every autopsy so far. Touch
+   clock mild (winners 66% early vs 54%).
+3. FLOW-AT-ENTRY (105 flow-span events): does NOT discriminate — tape-with
+   PF 1.69 vs tape-against PF 1.61, both positive; absorption flag n=4.
+   The edge is STRUCTURAL, not flow-gated; no gate is supported and none
+   is added. (The law requires the check, not a gate.)
+4. 2024 AUTOPSY: the compressed-IB hypothesis is FALSE — 2024's small-IB
+   trades were PROFITABLE (PF 1.43); the losses came from mid/large IBs,
+   and 2024 losers' MFE shape matches other years. No declared feature
+   explains 2024. VERDICT: environmental hole, PRICED not cut (inventory
+   H2-2025 precedent). The small-IB cut is ILLEGAL anyway (positive in
+   23/24/26, negative only 2025 — fails every-era).
+AUTOPSY VERDICT: no spec change, no cuts, no gate; 2024 stays on the label
+as a priced environmental hole. Ship decision unchanged in substance,
+now §3.2-complete. Arms: 2 declared-not-run (family 19).
+
+### Trial 10 — EXPANDED SEARCH (2026-08-05c amendment; ANGUS: "we aren't testing enough")
+scripts/nya_ivb_fade_expand.py. Angus called three gaps; all three were real:
+1. FREQUENCY: all-touches + wider windows lifts 356 → 478 trades (+34%) —
+   bounded structurally (the day dies at first IB break, so the universe
+   can't 3x). W30/W60/W120 all era-consistent, PF 1.33-1.42.
+2. STOP CAPS — THE FIND: W120 with a 20-pt absolute cap: n=477, WR 36%,
+   **$+22,964 at $160-risk (vs $14,227 uncapped), PF 1.45, and 2024 flips
+   from −253 pts to +10 — NO LOSING YEAR** (2023 +914 / 2024 +10 / 2025
+   +1456 / 2026 +316). The cap converts the point edge at fixed-dollar
+   sizing and rescues 2024. Cost: 2026 upside (−480 pts vs uncapped). This
+   is the strongest expression in the family — a §6.0 CHALLENGER (in-sample
+   over 3 cap arms; displacement needs PBO + holdout adjudication, and it
+   gets both at the next tournament).
+3. STATE-CONDITIONAL FLOW — the earlier "flow doesn't discriminate" verdict
+   was WRONG at state level, as Angus suspected: IN DRAWDOWN (trailing-5
+   negative) flow-confirmation is decisive (confirmed PF 1.86 n=47 vs
+   against PF 0.00 n=2); in-profit state the sign flips (against PF 3.17
+   n=11 vs confirmed 1.23 n=84). Pooling masked it. Small ns; declared for
+   the next tournament as a state-gate arm, not applied.
+Arms this trial: 7 (family 26). NEXT: full §6.0 tournament round 2 with
+cap20-W120 and the state-flow gate as declared challengers + the canon
+variable map when Angus returns with the rebuild-chat list.
