@@ -219,6 +219,52 @@ family and will not be reported as if it were.
    before this file was committed. The census below is the first scoring
    contact with the fit span.
 
+## AMENDMENTS — written before the corrected census ran
+
+The first census build was **defective and returned n=0 on the default
+arm**. Both fixes below were written and committed BEFORE the corrected
+run produced any number, per §8 (state the failure first, undiluted;
+pre-declare the change; never waive).
+
+**Defect.** At 09:30 the session sigma is exactly 0, so the ±1σ band is a
+single line and every close is trivially "beyond the edge". The regime
+gate therefore recorded acceptance within the first two or three minutes
+and died on **every session**, before the 09:45 warm-up boundary opened.
+The gate arms that do not use consecutive-close runs (G3 time-based, G4
+classifier) survived and produced events; G1/G2/G5 produced none.
+
+**Amendment 1 — the regime clock starts at the warm-up boundary.** No
+acceptance is accumulated before the first eligible trigger minute. This is
+his own teaching made mechanical ("the bracket's really small, it's a bit
+less usable at that point") and it is the same 10–15 minute exclusion
+already declared above, applied to the gate as well as the trigger.
+
+**Amendment 2 — a minimum risk of 8.0 NQ points on EVERY stop arm.** The
+declared stop arms are capped but were not floored, and S1 ("beyond the
+trigger bar extreme") collapses to 1–2 points whenever the trigger bar
+barely pokes through the band. A 1–2 point stop sits inside the noise of a
+single 1-minute bar, so its R multiple is an artifact of a degenerate fill,
+not an outcome — the exact failure that got **rr_floor 1.5 RETRACTED** in
+this shop (`docs/RULING-mechanical-only.md`, where 80% of a gain was one
+degenerate 6-pt-stop fill). The floor is set from an instrument property,
+not from performance: **8.0 pts is the 25th percentile of RTH 1-minute bar
+range on the fit span (7.5 pts, rounded up); the median is 12.0 pts.**
+Risk therefore runs 8–20 pts (8–30 on arm S4). Points and dollars are both
+carried on every card so that any residual small-risk leverage stays
+visible, and drop-top-3 fragility is reported on the default arm.
+
+**Amendment 3 — `mean_cross` exits are labelled, not buried.** With a
+developing target the mean can rise to meet a short (or fall to meet a
+long): price and the mean still converge, but the exit books a loss.
+These are reported as their own exit reason rather than as "target".
+
+**Contamination disclosure (§0 law 4).** The defective run printed partial
+numbers for three gate arms (G2/G3/G4) before the bug was found. Those
+numbers are **VOID** and were used for nothing except diagnosing the
+defect; no arm, threshold, or default was chosen or changed in light of
+them. The two amendments above are mechanical corrections, both justified
+without reference to any P&L.
+
 ## Artifacts
 
 - Census script: `scripts/nya_vwr_census.py` (adapting
