@@ -134,9 +134,16 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   gap-against + deep-pen): n=117, WR 46%, +$3,556, PF 1.89, EVERY YEAR
   POSITIVE (1.76/2.47/1.54/1.63), permnull p=0.008, ~0.69/wk. 2026 cell
   n=7 thin — flagged. The trial-1 decay lives in the gap-against cohort.
-- NEXT: flow-at-raid (flow span) + depth-at-level, strict costs, §3.2
-  autopsy + MFE/MAE + time segments, exit/stop arms under §6.0,
-  redundancy vs Brake's sweep-reclaim → then grading.
+- TRIAL 3-5 (same day): strict costs PASS (PF 1.79 all years); flow round
+  honest-thin (L1b∩flow n=30, discriminator open); autopsy done — time
+  exits dominate (67/117), losers never go green (median MFE 0.11R),
+  PRESS 88-100% / DYING 35-43% transfer from canon, GIVEBACK SIGN-FLIPS
+  (76-100% good here — hourly rotation, declared for the agent playbook);
+  exit tournament — default stands (PBO 0.50, displacement bar unmet),
+  no_target/cap30/t3r/hold1555 banked, BE null defeated third time.
+- NEXT: PSR grading vs 0.75 sleeve floor + correlation battery → Angus.
+  Redundancy vs Brake's sweep-reclaim blocked on his trade file (owed
+  before BOOK admission, not grading).
 - CANON SHAPE: raw 0.90 → legal cuts → 1.89 era-consistent — the textbook
   arc, second family to show it.
 
