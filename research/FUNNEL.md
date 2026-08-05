@@ -55,7 +55,7 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   (cards above) and fails to lift dead ones. Both behaviors are required.
 
 ## london-nq-open-break (LDN-OBK-01) — continuation branch — **DEAD** (earned)
-- STAGE: L0 census done (`docs/PREREG-london-open-break-tree.md`). L1 owed.
+- STAGE: **complete** — census -> L1 -> conditioning -> L3 flow -> autopsy -> killed.
 - RAW TRIGGERS: 425 breaks / 396 London sessions (~1.1/day); 92% of 2025 days and
   93% of 2026 days carry at least one. Declared census floor was 30%.
 - RAW P&L: **not computed.** Census counts events; §5.9.1 forbids a P&L kill here
@@ -95,7 +95,7 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   One variable is not a search, but it is not a good start either.
 
 ## london-po3-ifvg (LDN-PO3-01) — failure branch — **DEAD** (earned)
-- STAGE: L0 census done, same prereg, same event tree. L1 owed.
+- STAGE: **complete** — census -> L1 -> conditioning -> interaction -> L3 flow -> autopsy -> killed.
 - RAW TRIGGERS: same 425 breaks. Fail-within-120m on **85% (2025) / 84% (2026)** vs
   the declared 15% census floor. The strong "the break is usually the trap" form
   survives too — it needed >50% and got 84-85%.
