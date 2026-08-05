@@ -36,3 +36,24 @@ help raw P&L. NO BIN per §5.9.1: the trial-1 declared variables (flow at
 event, absorption at edge, euro-delta, time-of-night, composite age/width)
 are still owed on the corrected event set; flow-span overlap will be thin
 (~20 events) and will be reported honestly. Ledger rows 96-97.
+
+### Trial 4 — conditioning on the corrected event set (2026-08-05) — nothing era-consistent; RECOMMEND PARK
+Candle variables (full span): time-of-night — the ONLY era-consistent cell
+is NEGATIVE (V-A 18-22, n=54, PF 0.17, negative ALL FOUR years; the
+early-evening shift-out fires on tight-band noise); morning 06-09 cell PF
+17.56 is n=5. Composite age: age-2 poison (-453pts) vs age 3-5 positive on
+n=9-12 mixed years. Width: wide PF 1.34 with 2026 negative. No gate.
+Flow variables (flow span, n=23 V-A / 24 V-B, 87-100% coverage):
+dz/CVD cells n=6-15, nothing claimable (V-B CVD-neg PF 188 n=9 = the
+§5.12-9 tiny-n noise shape); absorption-as-defined fires 0-1x —
+structurally absent at corrected-entry minutes (matches the fade family).
+DECLARED-BUT-STRUCTURALLY-THIN (recorded, not run to verdict): euro-delta
+agreement (entries after 06:00: n<=7), distance-traveled (needs re-sim,
+cells would be <10 on flow span), depth London-window (~5-event overlap).
+STATUS RECOMMENDATION TO ANGUS: PARK as-taught (no verdict, too thin to
+convict or acquit past the raw negatives) — both taught grammars negative
+raw, no era-consistent positive gate, remaining declared variables cannot
+produce lawful cells at current data size. REOPEN CONDITION: flow span
+grows monthly; at ~2x current span the corrected event set doubles and the
+flow round becomes decidable. Not a kill claim: years are mixed (not
+every-era-bad), and §5.9.1 census-kill does not apply (events exist).
