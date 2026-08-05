@@ -113,6 +113,7 @@ def build(bars: pd.DataFrame, rng: np.random.Generator | None = None):
                             "dist_atr": (level - ro) * d / max(atr15, 1e-9),
                             "gap_atr": gap / max(atr15, 1e-9),
                             "skipped_min_old": int(len(sel) - (fill_i - sel[0])),
+                            "entry_ts": tse.iloc[fill_i],
                         })
                         paths_.append(mb[fill_i:fill_i + MAX_HOLD])
         if len(pdw) >= 100:
