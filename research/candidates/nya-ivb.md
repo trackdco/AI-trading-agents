@@ -169,3 +169,26 @@ process record. Results (356 trades; autopsy parquet committed):
 AUTOPSY VERDICT: no spec change, no cuts, no gate; 2024 stays on the label
 as a priced environmental hole. Ship decision unchanged in substance,
 now §3.2-complete. Arms: 2 declared-not-run (family 19).
+
+### Trial 10 — EXPANDED SEARCH (2026-08-05c amendment; ANGUS: "we aren't testing enough")
+scripts/nya_ivb_fade_expand.py. Angus called three gaps; all three were real:
+1. FREQUENCY: all-touches + wider windows lifts 356 → 478 trades (+34%) —
+   bounded structurally (the day dies at first IB break, so the universe
+   can't 3x). W30/W60/W120 all era-consistent, PF 1.33-1.42.
+2. STOP CAPS — THE FIND: W120 with a 20-pt absolute cap: n=477, WR 36%,
+   **$+22,964 at $160-risk (vs $14,227 uncapped), PF 1.45, and 2024 flips
+   from −253 pts to +10 — NO LOSING YEAR** (2023 +914 / 2024 +10 / 2025
+   +1456 / 2026 +316). The cap converts the point edge at fixed-dollar
+   sizing and rescues 2024. Cost: 2026 upside (−480 pts vs uncapped). This
+   is the strongest expression in the family — a §6.0 CHALLENGER (in-sample
+   over 3 cap arms; displacement needs PBO + holdout adjudication, and it
+   gets both at the next tournament).
+3. STATE-CONDITIONAL FLOW — the earlier "flow doesn't discriminate" verdict
+   was WRONG at state level, as Angus suspected: IN DRAWDOWN (trailing-5
+   negative) flow-confirmation is decisive (confirmed PF 1.86 n=47 vs
+   against PF 0.00 n=2); in-profit state the sign flips (against PF 3.17
+   n=11 vs confirmed 1.23 n=84). Pooling masked it. Small ns; declared for
+   the next tournament as a state-gate arm, not applied.
+Arms this trial: 7 (family 26). NEXT: full §6.0 tournament round 2 with
+cap20-W120 and the state-flow gate as declared challengers + the canon
+variable map when Angus returns with the rebuild-chat list.
