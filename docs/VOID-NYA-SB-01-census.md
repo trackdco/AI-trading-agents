@@ -64,3 +64,63 @@ One of:
 - **Declare our own stop and label it ours** — e.g. fixed 30-point risk, which sits inside
   his observed range. Legitimate, but it tests *our* variant, and under §5.9.1 a null could
   not touch his model.
+
+---
+
+## Addendum — stop/target sizes, and a THIRD implementation error
+
+**Stops and targets actually used:**
+
+| variant | median stop | median target (2R) |
+|---|---|---|
+| v1 swept level | 58 pts | **116 pts** |
+| v2 FVG far edge | 3.75 pts | 7.5 pts |
+| **his stated** | **27 / 28 / 51 / 53 pts** | **54–106 pts** |
+
+**How far price actually travels in each 30-minute window (median day range):**
+
+| window | median | p75 | p90 |
+|---|---|---|---|
+| AM1 09:45 | **129.8** | 173.8 | 229.8 |
+| AM2 10:45 | 90.2 | 131.0 | 171.4 |
+| LUNCH 11:45 | 69.8 | 100.8 | 148.9 |
+| PM 13:45 | **56.0** | 87.5 | 119.0 |
+
+This confirms v1 was dead on arrival — a 116-point target exceeds the median range of
+three of the four windows.
+
+**But it also exposes a third error of mine.** His own stops (27–53 pts) imply targets of
+54–106 points. **In the PM macro a 106-point target exceeds the entire median window range
+of 56 points.** His trades therefore cannot be resolving inside the 30-minute window —
+**the entry must occur in the macro, but the trade runs on past it.**
+
+My census resolved every outcome **within the window** and marked unresolved trades to
+market at the close. That truncates the model. It barely bit v2 (3/145 truncated, because
+7.5-point targets resolve fast) but it would have been severe at his real target distances.
+
+**Consequence:** the exit horizon is a fifth unspecified component, and my truncation was
+wrong regardless of what he does.
+
+## v2 results — recorded, still void, still not evidence
+
+| window | n | win rate | mean R | 2025H2 → 2026H1 |
+|---|---|---|---|---|
+| AM1 | 48 | 31.3% | −0.22 | 36.0% → 26.1% |
+| AM2 | 33 | 30.3% | −0.03 | 18.8% → 41.2% |
+| LUNCH | 26 | 38.5% | +0.40 | 50.0% → 31.3% |
+| PM | 38 | 34.2% | +0.33 | 27.3% → 43.8% |
+
+Overall **33.1%** — indistinguishable from the 33.3% break-even rate, i.e. what a coin flip
+at 2R produces.
+
+**No window is stably better: every one flips direction between eras.** AM1 and LUNCH fall,
+AM2 and PM rise. That is noise, and it is also the pattern PBO 0.891 predicts for
+rank-and-pick on this kind of arm set.
+
+Note it contradicts his claim that AM1 is highest-probability — AM1 is the *worst* cell
+here. That is not evidence against him; it is evidence that this run measures my
+specification, not his model.
+
+**And v2 is untradeable anyway:** a 3.75-point stop is ~$75 on a 1-lot NQ. Commission plus
+one tick of slippage each way is a double-digit percentage of risk. The §2.5 cost stack
+would erase it.
