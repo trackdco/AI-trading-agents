@@ -85,3 +85,22 @@ B0 as-taught; displacement needs PBO < 0.5 AND the stage-3 OOF look):
 Cap arms keep the taught target (predicted extreme) — the cap flips the
 shape to ~3-4:1 RR at lower WR; that is the point (Angus: stops way too
 big). All arms base 1pt friction, $160/unit-risk, ledger rows each.
+
+STAGE 2 RESULTS (138 leg-B events, wick-death universe, fit span):
+- ANGUS'S STOP CALL VINDICATED — every cap arm beats as-taught B0 ($+278):
+  B1 cap20: +46.2R, $+7,398, BOTH years positive (+12.6/+33.6), WR 30%
+  at ~4.7:1 avg RR — the cap converts the coin flip into a real trade.
+  B4 quarter-IB: $+4,577. B2 cap30: $+3,731. B8 full stack (cap30 +
+  front-run + early-cut + conviction sizing): $+9,144.
+- THE GUARD: PBO = 0.87 (slope -1.16) — in-sample ranking across these
+  10 arms is mostly noise; the displacement bar (PBO < 0.5) is decisively
+  NOT met on fit data alone. §6.0: B0 remains default; B1/B4/B8 BANKED.
+  This is not "cap20 is fake" — it is "the fit span cannot pick among
+  these arms"; the STAGE-3 OOF look (six sealed months, flow+depth
+  unburned) is the designed arbiter.
+- RECOMMENDATION TO ANGUS (stage-3 declaration): pre-commit a THREE-SPEC
+  OOF slate — B0 (as-taught control), B1 (pure cap20, simplest strong
+  arm, matches the leg-A cap20 precedent), B8 (full stack) — one written
+  look, decision rule declared BEFORE the look (ship-candidate = best
+  OOF performer IF OOF-positive; else park leg B and the complex ships
+  leg A alone). Ledger rows 238-240.
