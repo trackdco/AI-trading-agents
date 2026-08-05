@@ -49,8 +49,53 @@ COLUMNS = [
     "n",
     "t_stat",
     "effect",        # t / sqrt(n) — the common scale
+    "series_path",   # per-day outcome vector for this arm — unlocks ONC / CSCV / SPA
     "verdict",
 ]
+
+SERIES_DIR = LEDGER.parent / "trials"
+
+
+def series_file(family: str, arm: str) -> Path:
+    """One series per (family, arm) over the WHOLE fit span.
+
+    Deliberately not per era: the era split is a validation device, not a separate
+    strategy. For CSCV the N is the number of distinct configurations tried, and both
+    era rows of an arm point at the same series.
+    """
+    slug = f"{family}_{arm}".replace("/", "-").replace(":", "-").replace(" ", "")
+    return SERIES_DIR / f"{slug}.parquet"
+
+
+def write_series(family: str, arm: str, day_ret: "pd.Series") -> Path:
+    """Persist an arm's per-day outcome vector. Days the arm did not fire are 0 —
+    a strategy that does not trade earns nothing that day, which is what CSCV needs."""
+    p = series_file(family, arm)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    s = pd.Series(day_ret).astype(float).sort_index()
+    s.index.name = "day"
+    s.rename("ret").to_frame().to_parquet(p)
+    return p
+
+
+def load_matrix() -> "pd.DataFrame":
+    """T x N matrix of every recorded arm's day series, aligned on the union of days.
+
+    This is the artifact PBO/CSCV, ONC clustering and SPA all need and none of which
+    could run before it existed.
+    """
+    d = load()
+    paths = sorted({p for p in d.series_path.dropna().unique() if p})
+    cols = {}
+    for p in paths:
+        fp = Path(p)
+        if not fp.exists():
+            continue
+        cols[fp.stem] = pd.read_parquet(fp)["ret"]
+    if not cols:
+        raise FileNotFoundError(
+            "no trial series on disk — run scripts/backfill_trial_series.py")
+    return pd.DataFrame(cols).fillna(0.0).sort_index()
 
 # ---------------------------------------------------------------------------
 # WHY THERE IS NO PER-PROGRAMME DENOMINATOR
@@ -121,7 +166,45 @@ def n_effective(df: pd.DataFrame | None = None) -> int:
     d = load() if df is None else df
     if d.empty:
         return 0
-    return int(d["cluster"].fillna(d["family"]).nunique())
+    try:
+        return effective_trials_from_series()
+    except (FileNotFoundError, ValueError):
+        return int(d["cluster"].fillna(d["family"]).nunique())
+
+
+def effective_trials_from_series(threshold: float = 0.5) -> int:
+    """Effective independent trials by clustering the arms' RETURN SERIES (§2.4).
+
+    ONC-lite: correlate every pair of arm day-series, join arms whose |rho| >= threshold
+    into the same cluster (connected components), and count clusters. This is the
+    specified *kind* of correction — cluster on realised co-movement, not on which
+    prereg an arm happened to be declared in — though it is a simpler linkage than
+    López de Prado's ONC.
+
+    Correlated configurations are not independent draws, so effective N < nominal N and
+    the bar drops. That makes this correction dangerous if applied loosely: report it
+    alongside the nominal bar, never instead of it.
+    """
+    m = load_matrix()
+    if m.shape[1] < 2:
+        raise ValueError("need at least 2 arm series to cluster")
+    c = m.corr().abs().fillna(0.0).to_numpy()
+    n = c.shape[0]
+    parent = list(range(n))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if c[i, j] >= threshold:
+                ri, rj = find(i), find(j)
+                if ri != rj:
+                    parent[ri] = rj
+    return len({find(i) for i in range(n)})
 
 
 def trial_effect_variance(df: pd.DataFrame | None = None) -> float:
