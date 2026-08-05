@@ -515,6 +515,34 @@ of these answers.
    journals as live reference memory (the desk-run record is part of the
    shipped artifact).
 
+### 5.11 The pre-ship checklist [DRAFT 2026-08-05 — from today's caught gaps; Angus to ratify/amend with the canon-rebuild list]
+
+No ship card is complete until every box below is checked, in the ledger,
+with numbers. Each item exists because it was MISSED today until Angus
+caught it:
+
+1. **Mandatory §3.2 loser autopsy + MFE/MAE pack** — before any ship card,
+   never after. (Missed on the IB fade until asked.)
+2. **Event-universe sensitivity** — the trigger definition must be stress-
+   tested: all-occurrences vs first-occurrence, window widening, re-entry
+   rules. Report the frequency ceiling and why. (356→478 was found only on
+   challenge.)
+3. **Stop/risk-normalization arm class** — absolute stop caps and
+   fixed-dollar-sizing interaction tested as standard arms, not ad hoc.
+   (cap20 found the family's best expression and rescued 2024.)
+4. **State-conditional re-tests** — every flow/context gate re-tested inside
+   states: strategy drawdown vs profit, day regime at entry (no-lookahead),
+   post-loss entries. Pooled nulls DO NOT close a gate question. (Pooling
+   masked a real drawdown-state flow gate.)
+5. **Year-level (and half-year) reporting mandatory** — era aggregates mask
+   losing years (23-24 pooling hid negative 2024; calendar-year pooling hid
+   H2-2025 in the pre-market program).
+6. **Canon variable map** — every candidate's search must cover the canon
+   build's variable classes (list incoming from the rebuild chat; each class
+   = a declared arm or a documented N/A with reason).
+7. **Lookahead audit** — every conditioning variable certified same-time
+   computable (day_type nearly slipped through as a gate today).
+
 ### 5.10 The transparency rule [ANGUS 2026-08-05]
 
 Every strategy past step 1 maintains a live data card in `research/FUNNEL.md`,
