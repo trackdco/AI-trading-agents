@@ -53,3 +53,19 @@ NEXT (owed before any grading): flow-at-raid on flow span (declared),
 depth-at-level (morning overlap), strict-cost stack, §3.2 loser autopsy +
 MFE/MAE + time-segment schema, exit/stop arms under §6.0, redundancy gate
 vs Brake's sweep-reclaim. Ledger rows 105-107.
+
+### Trial 3 — strict costs + flow-at-raid round (2026-08-05)
+- STRICT-COST STACK (§5.11-3 declared arm): L1b holds — PF 1.79 strict
+  (vs 1.89 base), $+2,952, EVERY year positive (1.66/2.35/1.46/1.56). PASS.
+- FLOW-AT-RAID (declared): flow span covers 117 census trades — but that
+  span is the raw family's weak era, and no flow feature rescues the
+  UNGATED population (heavy-delta PF 0.66, absorb-flagged 0.36 — the
+  gap-against cohort dominates). On L1b ∩ flow-span: n=30 — cells n=9-11,
+  TOO THIN to claim (absorb-flagged PF 3.40 n=11 recorded as evidence
+  only, the §5.12-9 shape). The stop-run-absorption discriminator stays
+  OPEN, decidable as flow history accumulates (~monthly growth).
+- Ledger row 108. NEXT RUNGS before grading: §3.2 loser autopsy + MFE/MAE
+  + time-segment schema (checkpoints adapted to the hourly clock:
+  t+5/15/30/60/120min, declared here); exit/stop arms under §6.0;
+  redundancy vs Brake's sweep-reclaim; then DSR/PBO grading vs the
+  sleeve floor.
