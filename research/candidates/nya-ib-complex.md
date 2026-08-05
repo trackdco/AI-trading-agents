@@ -294,3 +294,22 @@ actual stop distance; $160 at the stop). Declared repair arms:
   within 3 min (losers half-sized by construction — sizing-shape arm)
 Report per arm: WR, avg loss, payoff, expectancy (true-R), $fit, and the
 loser-distribution before/after. Thin-cell honesty applies.
+
+STAGE 2G + GRADING CLOSE (2026-08-05):
+- LOSER REPAIR: L1 (cut t+2 red+flow-against) makes losers prettier
+  (avg -0.77, payoff 1.88) but costs ~$480 expectancy — cosmetic, not
+  free. L3 (scratch t+10 if still red) is the one clean gain: WR holds
+  72%, expct +0.737, $+13,205. Loss side declared MINED OUT; remaining
+  money = walkout extension (offense) + conviction sizing.
+- SHIP-SHAPE GRADING (band target + 0.5R stop + t10 scratch, TRUE-risk
+  $160/trade, 291 fit sessions): PSR(0) 1.000 vs 0.75 floor — PASS;
+  MTRL 19d vs 290 held; MC 12mo P(bust) 0.0%, median +$11,479/unit-yr;
+  canon P&L correlation -0.078 (independent). Ledger row 253.
+- THE 112-TRADE CONFIRMATION (Angus): yes — every headline number is the
+  fit-span 112-trade set: 2.0/wk, WR 72%, avg win +1.41R true, avg loss
+  -1.01R (with L3), expct +0.74R/trade.
+AWAITING ANGUS (ship path): (1) operator ruling adopting the shape over
+the certified default (or shadow-both); (2) loser rule pick (base+L3
+recommended / base+L1 accepted-cost option); (3) then shadow -> two-party
+arming with Pat. Agent rung = optional overlay AFTER mechanical ships
+(his standing rule), offense-focused playbook.
