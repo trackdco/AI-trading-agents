@@ -188,3 +188,29 @@ time, the arm substitutes IB mid — substitutions counted):
   else EOD) — structure-free comparison
 Report per arm: n, WR, sumR, $, per-year, mean capture (realized/MFE on
 winners), substitution count. Ledger rows each.
+
+STAGE 2D RESULTS (leg-A target arms; fit run + legal full-span era check —
+candle-only arms, candles never sealed):
+TWO CODE BUGS CAUGHT BY PROCESS, DISCLOSED: (1) profit-direction sign flip
+made every arm skip its target (caught because T0 must reproduce the
+$3,913 baseline — it didn't); (2) the sigma-band arm as coded targeted
+the NEAR band while the declaration said FAR — an undeclared variant ran
+by accident. Both bands now run and labeled honestly; arm count 8 (7
+declared + 1 disclosed).
+FULL-SPAN ERA CHECK (n=356):
+- T0 mid (certified default): WR 41%, $+10,865 | 2024 -9.6R (the label)
+- T2 developing VWAP: WR 47%, $+11,257 | 2024 +0.6R
+- NEAR SIGMA BAND (vwap+sigma on the entry side — the first structural
+  shelf): WR 75%, +101.7R, $+16,274 | years +28.6/+27.2/+26.2/+19.7R —
+  POSITIVE AND NEARLY UNIFORM ALL FOUR YEARS; 2024 FULLY RESCUED. The
+  strongest era signature measured on this family.
+- far band (across VWAP): WR 37%, $+14,801 | 2024 +1.2R, 2023-heavy.
+MECHANISM READ: the fade is not a "return to the middle" trade — it is a
+"return to the first volatility shelf" trade. The rejection reliably
+carries to the near band; travel beyond is regime-dependent (which is
+exactly why the fixed mid printed a negative 2024).
+STATUS: near-band target = proposed leg-A spec upgrade. §6.0: displacing
+the certified default requires tournament discipline + holdout; candle
+arms have no unopened holdout -> forward SHADOW adjudication (default vs
+near-band run side by side) OR Angus operator ruling (§5.12-11). His
+call. Ledger rows 247-249.
