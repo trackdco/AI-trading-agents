@@ -266,6 +266,7 @@ def run_candidate(name: str, detect, ctxs: list[Ctx], fpd_all: dict) -> pd.DataF
                 "outcome": "win" if R >= TARGET_R else ("BE" if R == 0 else
                            ("loss" if R <= -1 else "timeout")),
                 "be_moved": be, "tag": ev.tag, "ambiguous": ev.ambiguous,
+                "intrabar": ev.intrabar,
                 "period": "discovery" if ctx.day < SPLIT else "holdout",
                 **features(ctx, ev, fpd, risk)})
     return pd.DataFrame(rows)
@@ -332,11 +333,17 @@ def both_directions(ctxs_by_day: dict, d: pd.DataFrame) -> pd.DataFrame:
         risk = float(r.risk_pts)
         vals = {}
         for side in (+1, -1):
+            # ⚠️ The control MUST carry the real event's intrabar semantics. Hardcoding
+            # intrabar=True applied the same-bar stop check to close-entry candidates that never
+            # face it, so 4 of 293 controls could not reproduce their own real R. Caught by the
+            # assertion that a real R must equal one of its two precomputed directions.
             ev = Event(t=ti, side=side, entry=float(r.entry),
-                       stop=float(r.entry) - side * risk, intrabar=True)
+                       stop=float(r.entry) - side * risk, intrabar=bool(r.intrabar))
             vals[side] = walk_exit(ctx.g, ctx.w, ev)[0]
-        out.append({"candidate": r.candidate, "date": r.date, "R_long": vals[+1],
-                    "R_short": vals[-1], "risk_pts": risk})
+        # `seq` disambiguates sessions that produce more than one event — joining on
+        # (candidate, date) alone pairs them crosswise.
+        out.append({"candidate": r.candidate, "date": r.date, "seq": int(r.seq),
+                    "R_long": vals[+1], "R_short": vals[-1], "risk_pts": risk})
     return pd.DataFrame(out)
 
 
