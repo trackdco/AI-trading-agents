@@ -206,3 +206,44 @@ proposed.**
 
 **Nothing in this document is a verdict.** No trial was graded, no deflation bar was applied,
 and the sealed 2023/24 span was not touched.
+
+---
+
+# REVISION 2026-08-07 — backfill audit: sample unchanged, autopsy not re-run
+
+`scripts/ash_flow_coverage_audit.py` · full detail in `ash-unicorn-sb-orderflow.md`
+
+**The backfill added 0 trades.** Every trade inside the owned aggressor-tagged span
+(2025-06-01 → 2026-07-19) already had its derivations; the 8 without flow all sit *before*
+every non-sealed footprint file we hold. **29 flow-covered was a calendar boundary, not a
+processing shortfall.** The winner/loser split is unchanged at **15 v 12** overall and
+**13 v 8** on the flow-covered subset.
+
+Nothing above is superseded. The Holm result, the power floor (d = 1.09; 87% for a binary
+feature at a 33% base) and the null simulation (best-of-10 p ≤ 0.017 fifteen percent of the
+time) all describe this same sample and still hold.
+
+## The two live hypotheses were NOT tested — deliberately
+
+H1 (F1-magnitude) and H2 (F2-as-stall-filter) were generated **on these 29 trades**. The only
+honest test of either is behaviour on trades that did not produce them. The backfill added
+**zero such trades**, so:
+
+> **There is no quasi-out-of-sample set. Re-testing H1 and H2 here would measure the fit that
+> created them, not an edge.**
+
+Re-running would have returned δ = +0.596 for H1 and the 0.60 / 1.27 / 2.35 three-bucket
+medians for H2 — identical to the numbers above, because they are the same trades — and
+reporting them a second time would read as replication. It is not.
+
+## What actually moves this forward
+
+| | |
+|---|---|
+| **Forward accumulation** | ~9 months (+20 trades) to reach n ≈ 49, the 80%-power bar for a *large* effect. This is the only path that yields a genuinely out-of-sample test of H1/H2. |
+| **Databento `GLBX.MDP3` trades, 2025-03-01 → 2025-05-31** | recovers the 8 pre-span trades (3 losses, 2 wins, 2 BE, 1 loss), taking flow-covered to 37 and losers-with-flow from 8 to ~12. Still short of 49, and still in-sample for H1/H2. |
+| **ES 1-minute** | unchanged as the largest gap in the model as taught. |
+
+**Verdict unchanged: plausible but unconfirmed, needs forward data.** The backfill pass
+established that this is not a data-processing problem that more diligence can solve — the
+sample is at its ceiling within what we own.

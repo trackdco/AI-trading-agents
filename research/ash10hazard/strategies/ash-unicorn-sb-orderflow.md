@@ -236,3 +236,58 @@ raw R it is marginal.
 - **A fixed depth condense** would unblock rank 5 (heatmap).
 - **ES 1-minute** remains the single biggest gap — it is a component of his model, and F1
   demonstrates that NQ delta cannot stand in for it.
+
+---
+
+# REVISION 2026-08-07 — BACKFILL AUDIT: no re-run warranted
+
+`scripts/ash_flow_coverage_audit.py`
+
+**Result: 0 new flow-covered trades. The 29-trade numbers above stand unchanged.**
+
+A backfill pass was run to recover any trade sitting inside owned aggressor-tagged data
+that had never had derivations built. The audit checked coverage from both ends — the raw
+`data/reference/cvd/footprint_*.parquet` files (which define the owned span) and the derived
+`output/fp_minutes.parquet` frame the filters actually consume.
+
+| | |
+|---|---|
+| trades in the log | 37 (2025-03-07 → 2026-07-15) |
+| inside the owned aggressor span | **29** |
+| of those, already derived | **29** |
+| **recoverable (in span, no flow)** | **0** |
+| before the owned span (unrecoverable) | 8 (2025-03-07 → 2025-05-29) |
+
+`has_flow` and `day_in_fp` agree on all 37 rows. No trade was missing derivations for a
+computational reason; the split is purely calendar. **29 was never a processing shortfall —
+it is the count of trades that fall inside the data.**
+
+## Two corrections to the assumed owned window
+
+The brief assumed the owned span was **2025-07-01 → 2026-07-31**. The files say otherwise, in
+both directions:
+
+- **It starts 2025-06-01, not 2025-07-01.** `footprint_q3_2025.parquet` opens at
+  2025-06-01 18:00 ET. That extra month is already banked — it is where the 2025-06-10 and
+  2025-06-30 trades' flow came from. Widening the assumed window to the true one adds nothing
+  because the derivation already used the true one.
+- **It ends 2026-07-19, not 2026-07-31.** Moot: `nq_1m_master.parquet` ends 2026-07-15, so no
+  trade can exist in the difference.
+
+## The ceiling, stated
+
+**Flow-covered can never exceed the number of trades falling inside the owned span.** Both
+numbers are 29, so the sample is terminal within owned data. The eight uncovered trades
+(2025-03-07 → 2025-05-29) sit before *every* non-sealed footprint file we hold and cannot be
+recovered by reprocessing — only by a Databento `GLBX.MDP3` trades pull for a span that
+predates all of them. No such pull was attempted (no `databento` client and no API key are
+present in this environment), and no flow value was interpolated or imputed for any of them.
+
+Even at the ceiling, **n = 29 with 8 losers** is well under the ~49 the autopsy's power
+analysis needs for a *large* effect. At the observed 27.3 trades/year, +20 flow-covered
+trades is **~9 months of forward accumulation**; the ~87 needed for a *medium* effect is
+**~2.1 years**.
+
+**Stage 4 was not re-run.** Re-running the identical filters on an identical 29-trade set
+would have reproduced the table above to the decimal while creating the appearance of
+independent confirmation.

@@ -339,9 +339,25 @@ of a known result, not discovery. One genuinely new observation: **F1 separates 
 **F2 sorts stalls, not losses**: median 0.60 (win) < 1.27 (loss) < **2.35 (break-even)**,
 which is why it removed 14 trades for only +2R.
 
+**FLOW BACKFILL AUDIT (2026-08-07)** — `scripts/ash_flow_coverage_audit.py`.
+**0 new flow-covered trades. Nothing above changes.** Every trade inside the owned
+aggressor-tagged span already had derivations; `has_flow` and `day_in_fp` agree on all 37
+rows, so 29 was **a calendar boundary, not a processing shortfall**. Two corrections to the
+assumed span: it starts **2025-06-01** (not 07-01 — that extra month is already banked, it is
+where the 06-10 and 06-30 trades came from) and ends **2026-07-19** (not 07-31 — moot, bars
+end 07-15). The 8 uncovered trades (2025-03-07 → 2025-05-29) sit before *every* non-sealed
+footprint file and cannot be recovered by reprocessing.
+
+**Stage 4 and Stage 5 were NOT re-run** — on an identical 29-trade set they would have
+reproduced their own numbers to the decimal while looking like independent confirmation.
+The H1/H2 hypotheses stay untested for the same reason: the backfill produced **zero**
+out-of-sample trades to test them on. Ceiling within owned data is 29; the power bar is ~49,
+which is **~9 months of forward accumulation** at 27.3 trades/year.
+
 ⚠️ **Not yet graded.** No DSR/PBO applied; the deflation bar at N=58 is +0.5636 and this has
 not been put through it. The ES leading trigger is still missing. **No autopsy-derived filter
 has been applied to the baseline** — anything found in these 37 trades is circular on them.
+**Verdict unchanged: plausible but unconfirmed, needs forward data.**
 
 ---
 
