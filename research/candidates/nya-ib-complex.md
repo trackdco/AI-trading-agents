@@ -66,3 +66,22 @@ scripts/nya_ibc_census_uncapped.py — every trigger, sequential re-entries.
   close-outside — found from raw, not imposed. Uncapped ALL: PF 0.93
   (uglier than capped 1.03, as expected — and more to decipher, as
   ordered).
+
+### Stage 2 — leg-B optimization arm matrix (DECLARED 2026-08-05 before the lab runs)
+Universe: uncapped fit-span leg-B events under BOTH day-death definitions
+(close-outside = census; wick-touch = the stage-1b discovery — reported
+side by side; wick-death is the proposed universe correction).
+Named arms (bounded, 10; day-level R matrix -> PBO CSCV; §6.0: default =
+B0 as-taught; displacement needs PBO < 0.5 AND the stage-3 OOF look):
+- B0  as-taught (full-extreme stop, target = predicted extreme)
+- B1  stop cap 20pt   - B2  stop cap 30pt   - B3  stop cap 50pt
+- B4  stop 0.25xIB (fractional, mirrors leg A geometry)
+- B5  B2 + front-run-only entries (10:23-10:29)
+- B6  B2 + mechanical early-cut t+15 (dying OR cvd-against)
+- B7  B2 + front-run + early-cut
+- B8  B7 + conviction sizing (declared score: weekday-floor >= 0.70 +
+      entry-delta agreement + book lean; units = 1 + score)
+- B9  as-taught + early-cut (isolates the cut without a cap)
+Cap arms keep the taught target (predicted extreme) — the cap flips the
+shape to ~3-4:1 RR at lower WR; that is the point (Angus: stops way too
+big). All arms base 1pt friction, $160/unit-risk, ledger rows each.
