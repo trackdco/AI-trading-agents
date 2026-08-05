@@ -270,6 +270,16 @@ def build() -> str:
             eta = "COMPLETE"
     upd = (datetime.now(timezone.utc) + timedelta(hours=NY_OFF)).strftime("%H:%M ET")
     pct = 100.0 * done / TOTAL_DAYS
+    if not done:
+        # first block still in flight — days only write when they complete
+        import subprocess
+        try:
+            live = int(subprocess.run("ps aux | grep -c '[c]laude -p'", shell=True,
+                                      capture_output=True, text=True).stdout.strip())
+        except Exception:
+            live = 0
+        eta = (f"first block in flight — {live} desks trading concurrently"
+               if live else "run not active")
     stale = ""
     jf = RUNS / "journal.jsonl"
     if jf.exists() and time.time() - jf.stat().st_mtime > 2400 and done < TOTAL_DAYS:
@@ -381,7 +391,8 @@ footer {{ color:var(--mut); font-size:12px; display:flex; gap:18px; flex-wrap:wr
     <div class="sub">B0: takes everything, nets conflicts</div></div>
   <div class="card"><div class="eyebrow">B1 · canon precedence</div>
     <div class="big mut">{usd(b1) if done else "—"}</div>
-    <div class="sub {pl_class(edge1)}">desk {usd(edge1)} vs B1</div></div>
+    <div class="sub {pl_class(edge1) if done else 'mut'}">
+      {f"desk {usd(edge1)} vs B1" if done else "shelf stands aside vs open canon"}</div></div>
 </div>
 
 <div class="card">
