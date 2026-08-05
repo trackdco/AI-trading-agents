@@ -51,3 +51,18 @@ classes queued: stop caps (§5.11-3), early-cut t+15 dying-or-cvd
 (trial 4: 5.7x on fit), conviction sizing (trial 3: monotone), front-run
 window (trial 5: PF 1.15 vs 0.81), flow/depth per §5.11-9c. Nothing
 frozen until the OOF look (stage 3).
+
+### Stage 1b — UNCAPPED re-census (2026-08-05, ANGUS: no trade caps on raw)
+scripts/nya_ibc_census_uncapped.py — every trigger, sequential re-entries.
+- LEG A: the cap was never binding — 114 events vs 112 (2 re-entries in
+  13 months). One-per-day is STRUCTURAL here (window expires / day dies
+  before a second touch), not a YouTube-imposed cap. No distortion.
+- LEG B: 152 events vs 138 — and the 14 RE-ENTRIES ARE TOXIC: WR 21%,
+  mean -0.52R, PF 0.29 ($-1,156). Mechanism READ FROM THE RAW: re-entries
+  can only occur after an extreme was WICK-touched without a close
+  outside (my day-death used closes); the uncapped data shows a
+  wick-touch of either extreme already exhausts the continuation.
+  DISCOVERED ARM for stage 2: day-death = ANY extreme touch (wick), not
+  close-outside — found from raw, not imposed. Uncapped ALL: PF 0.93
+  (uglier than capped 1.03, as expected — and more to decipher, as
+  ordered).
