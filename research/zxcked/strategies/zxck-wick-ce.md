@@ -117,6 +117,25 @@ Full evidence: `SELF-RESOLVED-2026-08-07.md`.
 
 **Still open: Q3 only.**
 
+### ⬛ FOLDED IN 2026-08-07 — Brake's answers
+
+**Q3 · which side the engineered liquidity sits — `[stated-by-user]`: let the best reading ride.**
+> *"his own two statements genuinely contradict each other on the liquidity side, and there's no
+> point resolving a contradiction for a card you're deprioritizing. Let the best reading ride,
+> tagged inferred, and leave the card Partial."*
+
+**Recorded reading `[inferred]`, with the assumption stated:** the engineered liquidity sits
+**between the entry and the wick's extreme** — liquidity the wick sweeps on its way into the
+level, still resting when the entry fills. Basis: `[xae9AiV5Ps4 @ 02:40]` (*"if the liquidity is
+inside of the rejection block"*) plus the >2pt minimum `[@ 02:16]`.
+**The contradicting statement is NOT discarded:** `[wS-dBenAIlY @ 01:11]` places it *"right below
+this CE"* on a short, which is the opposite side. **Unresolved by design.** Any result on this
+card carries the reading as an assumption, not as his rule.
+
+**Card remains PARTIAL — by instruction, not by omission.** It is his #1 model but it is **not a
+gap entry**, so it does not serve the pooling goal; its prominence is deliberately not being
+allowed to pull priority.
+
 ### 4 · VERDICT — **PARTIAL**
 
 Tradeable today. Every one of the seven parts is [stated] or cleanly [inferred] — but **Q-A1 and
@@ -190,3 +209,8 @@ fixed-target backtest is not measuring his numbers.
 ## Revision log
 - **2026-08-07 rev a** — built from 11 sources across his own channel, the re-hosted course and
   two third parties. Verdict PARTIAL pending Q-A1 to Q-A5.
+
+### 2026-08-07 rev b — self-resolution, Brake's answers, exit lock
+Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
+the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
+convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.

@@ -10,7 +10,7 @@ NY_SESSION: YES — and it sits INSIDE ash10hazard's AM1 window (09:45–10:15)
 his_rank: "#2 — 'key opens being number two' [Y-oqSZmNo4U @ 15:54]"
 sources: [Y-oqSZmNo4U, 38YtF6xFX4o, rsbBubev4PM, 5pL41Pl7GM4, 4COROwkO3DI, WEeXKMzaJjY, tNyT7tHOmGI, 55KRVFLqzwA, C6VSpegON80]
 components: zxck-COMPONENTS.md
-verdict: PARTIAL
+verdict: CONFIRMED
 ---
 
 # `zxck-10am-keyopen` — the 10:00 ET key-open limit
@@ -114,7 +114,20 @@ Full evidence: `SELF-RESOLVED-2026-08-07.md`. **This card has no open questions 
   midnight grid gives 00/04/08/12/16/20 and would not. He names 18:00 as a key open too
   `[38YtF6xFX4o @ 00:00]` `[inferred, arithmetically self-consistent]`
 
-### 4 · VERDICT — **PARTIAL**
+### ⬛ CONFIRMED 2026-08-07
+ALL FOUR questions closed by self-resolution (Q6, Q7, Q8, Q9). No question on this card remains open.
+
+Brake also ratified the **fixed 10-point manipulation floor** as his rule:
+> *"keep the 10pt floor as a fixed point value like he stated it — that's his rule. The
+> ATR-scaled version the agent flagged is a separate hypothesis for later, not a substitute now."*
+`[stated-by-user]`
+
+**Exit is now the locked convention** — see `EXIT-CONVENTION-LOCKED.md`: target 2R, break-even at
+1R, no trailing, stop-first on a same-bar conflict, capped 16:00 ET, costs reported separately.
+Identical to `ash-unicorn-sb`, so the trades pool. **His own 1:4–1:6 band and Apex-driven trailing
+stay on this card as `[trader-claimed, unverified]` and are NOT scored.**
+
+### 4 · VERDICT — **CONFIRMED**
 
 The best-specified model in the corpus and the closest competitor to `ash-unicorn-sb`. All seven
 parts are [stated]. It is Partial only because **Q-B1 has no number** and Q-B2/Q-B3 change the
@@ -183,3 +196,8 @@ the same missing **ES** data.
 
 ## Revision log
 - **2026-08-07 rev a** — built from 9 sources, 4 of them his own channel. PARTIAL pending Q-B1 to Q-B5.
+
+### 2026-08-07 rev b — self-resolution, Brake's answers, exit lock
+Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
+the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
+convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.

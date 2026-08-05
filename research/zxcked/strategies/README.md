@@ -10,18 +10,26 @@ trader: Powell
 shared component, a measurement, or a blocked item. Where several candidates collapsed into one
 card, that is recorded as a decision, not an omission.
 
-## The 8 cards
+## The card set — re-verdicted 2026-08-07 (rev b)
 
-| card | verdict | GAP-entry? | NY? | blocking questions |
+| card | verdict | GAP-entry? | NY? | status |
 |---|---|---|---|---|
-| `zxck-wick-ce` | **PARTIAL** | no | YES | Q-A1 entry point · Q-A3 liquidity location · Q-A4 displacement gate |
-| `zxck-10am-keyopen` | **PARTIAL** | **YES** | YES | Q-B1 manipulation size · Q-B2 retest vs re-cross · Q-B3 fib mandatory |
-| `zxck-gap-fill-edge` | **PARTIAL** | **YES** | partial | Q-D1 stop (core gap) · Q-D3 card vs variant |
-| `zxck-cisd` | **PARTIAL** | variant | YES | Q-E1 standalone vs trigger |
-| `zxck-news-draw` | **PARTIAL** | partial | YES | Q-H1 conflicts with CPI prior · Q-H3 may need 30s data |
-| `zxck-ifvg-50` | **INSUFFICIENT** | **YES** | partial | Q-C2 bias/level requirement — blocking |
-| `zxck-amd-pdarray` | **INSUFFICIENT** | partial | YES | Q-F1 range undefined — blocking |
-| `zxck-mmxm-breaker` | **INSUFFICIENT** | partial | YES | Q-G1 consolidation undefined — blocking |
+| **`zxck-10am-keyopen`** | **CONFIRMED** | **YES** | YES | 🟢 **GREENLIT for Stage 3** |
+| **`zxck-gap-fill-edge`** | **CONFIRMED** | **YES** | partial | 🟢 **GREENLIT for Stage 3** — as a *variant* of wick-ce, one trial not two |
+| `zxck-cisd` | **CONFIRMED** | no | YES | confirmed but **parked for pooling** — the FVG inversion turned out to be a bonus, so it is not a gap entry |
+| `zxck-wick-ce` | PARTIAL | no | YES | Q3 left unresolved **by instruction**; best reading rides tagged `[inferred]` |
+| `zxck-news-draw` | PARTIAL | partial | YES | CPI-skip locked; **Q-H2 (the data high/low window) is undefined and it defines the level** |
+| `zxck-ifvg-50` | INSUFFICIENT | YES | partial | **Q10 (bias) unanswered.** Literal reading = every 5m/15m inverse FVG is a trade — untestable |
+| `zxck-mmxm-breaker` | INSUFFICIENT — PARKED | partial | YES | shelved by instruction; no range definition invented |
+| `zxck-amd-pdarray` | **WITHDRAWN** | — | — | AMD is his name for the engineered-liquidity shape, not a model |
+
+**Greenlit for Stage 3: `zxck-10am-keyopen` and `zxck-gap-fill-edge`** — the only cards that are
+both Confirmed and gap-entry.
+
+**Exit convention is locked** across every card — see `EXIT-CONVENTION-LOCKED.md`. Identical to
+`ash-unicorn-sb`: target 2R, break-even at 1R, no trailing, stop-first on a same-bar conflict,
+capped 16:00 ET, costs reported separately. Powell's Apex-driven trailing and his 1:4–1:6 band
+stay recorded as `[trader-claimed, unverified]` and are **not** scored.
 
 ## Candidates that became COMPONENTS, not cards
 
@@ -63,5 +71,7 @@ the trial ledger — the failure §6.0 exists to prevent.
 
 ## Status
 
-**All cards are committed as PARTIAL or INSUFFICIENT pending Brake's answers.** No card is
-Confirmed, nothing has been backtested, no prereg exists and nothing is in the trial ledger.
+**rev b, 2026-08-07.** 18 of 23 questions self-resolved from the transcripts; Brake answered Q3,
+Q20 and Q22 and ratified the fixed 10pt floor. **Three cards are Confirmed, two of them
+gap-entry and greenlit.** Nothing has been backtested, no prereg exists, and nothing is in the
+trial ledger.

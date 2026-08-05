@@ -9,7 +9,7 @@ GAP_ENTRY: YES — and it is the DIRECT INVERSE of ash-unicorn-sb's near-edge en
 NY_SESSION: partial
 sources: [86DOt135Wts, lRgsHGWzO9E, 4COROwkO3DI]
 components: zxck-COMPONENTS.md
-verdict: PARTIAL
+verdict: CONFIRMED
 ---
 
 # `zxck-gap-fill-edge` — the far edge of the gap
@@ -87,7 +87,20 @@ Full evidence: `SELF-RESOLVED-2026-08-07.md`. **This card has no open questions 
 `ash-unicorn-sb`. **Recorded as a VARIANT, not an independent trial** — it must not be counted
 twice in the ledger.
 
-### 4 · VERDICT — **PARTIAL**
+### ⬛ CONFIRMED 2026-08-07
+ALL THREE questions closed by self-resolution (Q14, Q15, Q16). No question on this card remains open.
+
+Brake also ratified the **fixed 10-point manipulation floor** as his rule:
+> *"keep the 10pt floor as a fixed point value like he stated it — that's his rule. The
+> ATR-scaled version the agent flagged is a separate hypothesis for later, not a substitute now."*
+`[stated-by-user]`
+
+**Exit is now the locked convention** — see `EXIT-CONVENTION-LOCKED.md`: target 2R, break-even at
+1R, no trailing, stop-first on a same-bar conflict, capped 16:00 ET, costs reported separately.
+Identical to `ash-unicorn-sb`, so the trades pool. **His own 1:4–1:6 band and Apex-driven trailing
+stay on this card as `[trader-claimed, unverified]` and are NOT scored.**
+
+### 4 · VERDICT — **CONFIRMED**
 
 The entry is precisely stated and it is the **cleanest head-to-head against `ash-unicorn-sb`** we
 have — same object, opposite edge. But **the stop is a [gap]** and Q-D3 decides whether this is
@@ -122,3 +135,8 @@ points"* `[@ 02:26]`, *"a 250 point selloff"* `[@ 03:13]` — `[trader-claimed, 
 
 ## Revision log
 - **2026-08-07 rev a** — PARTIAL. Stop is a gap (Q-D1); Q-D3 decides card-vs-variant.
+
+### 2026-08-07 rev b — self-resolution, Brake's answers, exit lock
+Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
+the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
+convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.

@@ -94,6 +94,39 @@ Full evidence: `SELF-RESOLVED-2026-08-07.md`.
 
 **Still open: Q20 (the CPI conflict).**
 
+### ⬛ FOLDED IN 2026-08-07 — Brake's answers
+
+**Q20 · the CPI conflict — `[stated-by-user]`: CPI IS A SKIP.**
+> *"accept the agent's reading that CPI is a skip. It's internally consistent: he says CPI keeps
+> extending all day, so the opposing-draw rule genuinely conflicts on CPI, and trading against his
+> own stated prior would be the incoherent choice. Yes it drops a third of the sample, but the
+> logic is clean. Tag inferred, medium priority."*
+
+**LOCKED RULE:** the model trades **PPI and NFP only**. CPI days are skipped, because
+> *"CPI usually makes a move and it usually just keeps making that move for the entire day"*
+> `[WEeXKMzaJjY @ 03:58]`
+directly contradicts
+> *"whichever side we take first, we're going to go for that other opposing liquidity pool"*
+> `[c15YLeAKc2A @ 00:00]`.
+Tagged `[inferred]` — **he never says to skip CPI.** This is the coherent reading of two of his
+statements, ratified by Brake, not a rule he stated.
+
+**Cost of the rule, stated up front:** roughly a third of eligible days removed. Given ~12 releases
+each of CPI/PPI/NFP a year, the eligible universe drops from ~36 to ~24 days — before any setup
+filter. **This model may not clear the n≥30 floor.** That is a foreseeable outcome, not a surprise.
+
+**⚠️ BOOKKEEPING CORRECTION.** Two questions from this card's original set — **Q-H2** (what
+exactly constitutes the data high/low) and **Q-H4** (does he skip on unreadable price action) —
+were dropped from the shrunk list I presented **without being marked resolved**. That was my
+error. Applying the stated protocol now:
+- **Q-H2 `[inferred]`, assumption stated:** the data high/low are the extremes of the release
+  reaction. **He never gives a window length.** The only timeframe he attaches to them is a
+  15-minute wick `[c15YLeAKc2A @ 06:45]`. **Any window we pick is OURS**, and it defines the level,
+  so it materially changes the trade. **This is why the card stays Partial.**
+- **Q-H4 `[inferred]`:** he skips discretionarily on *"atrocious"* price action `[@ 00:00]` with
+  **no stated signal**. A mechanical backtest will take days he would have sat out and therefore
+  **understates** him. Recorded as a known bias; no chop filter invented.
+
 ### 4 · VERDICT — **PARTIAL**
 
 Unusually complete for this corpus — bias, entry, stop and target are all [stated] with numbers,
@@ -125,3 +158,8 @@ Corroborated `[Y-oqSZmNo4U @ 18:12]`. **We hold `config/news_calendar_hist.csv` 
 
 ## Revision log
 - **2026-08-07 rev a** — PARTIAL. Q-H1 possible internal conflict; Q-H3 may block on data.
+
+### 2026-08-07 rev b — self-resolution, Brake's answers, exit lock
+Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
+the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
+convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.

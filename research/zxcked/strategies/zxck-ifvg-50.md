@@ -91,6 +91,34 @@ Full evidence: `SELF-RESOLVED-2026-08-07.md`.
 
 **Still INSUFFICIENT: Q10 (bias) and Q11 (target) are both core and both unanswered.**
 
+### ⬛ NOT ANSWERED 2026-08-07 — Q10 and Q11 were not addressed
+
+Brake's reply covered Q3, Q20, Q22 and the 10pt floor. **Q10 (bias) and Q11 (target) were not
+addressed**, so the "don't know" protocol applies: record the most literal transcript reading with
+the assumption stated, and do not guess silently.
+
+**Q10 `[inferred]` — the literal reading does not resolve, because his two statements conflict:**
+> *"You could literally make a model out of this alone and be profitable."* `[lRgsHGWzO9E @ 08:30]`
+> — reads as **no additional condition**
+> *"use good gaps. Don't use every random gap that you see."* `[dlSXQgM1ZpA @ 03:51]`
+> — reads as **a selection criterion he never defines**
+
+Taken at face value together, there **is** a selection rule and he does not state it. That is a
+`[gap]`, not a resolution.
+
+**Q11 `[inferred]`, assumption stated:** target the **first opposing swing point**, by analogy
+with the trigger version — *"we aim for the first swing low which is 37 points"* `[r5_yNjXsv6k @ 01:34]`.
+Under the locked convention this becomes **2R** regardless, so Q11 is no longer blocking on its
+own. **Q10 still is.**
+
+**Why this card cannot be greenlit.** Implemented literally — every 5m/15m inverse FVG with a
+5-point stop — it produces **thousands of events a year with no directional condition**. That is
+not a strategy; it is a coin flip with a tight stop, and testing it would consume a trial and
+tell us nothing about him. **He rates this concept third and states it standalone three separate
+times, so it is worth resolving — but it needs one answer first.**
+
+**Verdict unchanged: INSUFFICIENT.**
+
 ### 4 · VERDICT — **INSUFFICIENT**
 
 **Bias and targets are both [gap], and Q-C2 decides whether this is a strategy or an
@@ -126,3 +154,8 @@ It is also one of the three conditions in the displacement rule `[pMv3USznFdU @ 
 
 ## Revision log
 - **2026-08-07 rev a** — INSUFFICIENT. Bias and target are gaps; Q-C2 is blocking.
+
+### 2026-08-07 rev b — self-resolution, Brake's answers, exit lock
+Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
+the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
+convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.

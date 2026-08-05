@@ -9,7 +9,7 @@ GAP_ENTRY: NO standalone; YES in the CISD+inversion variant
 NY_SESSION: YES
 sources: [0u1L00q77bw, rzfgAEYhxCg, C6VSpegON80, 55KRVFLqzwA, pMv3USznFdU, asi9nTJywN4]
 components: zxck-COMPONENTS.md
-verdict: PARTIAL
+verdict: CONFIRMED
 ---
 
 # `zxck-cisd` — the CISD retest
@@ -90,7 +90,20 @@ Full evidence: `SELF-RESOLVED-2026-08-07.md`. **This card has no open questions 
   ⚠️ **Consequence: `zxck-cisd` does NOT pool with `ash-unicorn-sb` as a gap entry.** Only the
   `zxck-cisd-inversion` sub-case does.
 
-### 4 · VERDICT — **PARTIAL**
+### ⬛ CONFIRMED 2026-08-07
+ALL THREE questions closed by self-resolution (Q17, Q18, Q19). No question on this card remains open.
+
+Brake also ratified the **fixed 10-point manipulation floor** as his rule:
+> *"keep the 10pt floor as a fixed point value like he stated it — that's his rule. The
+> ATR-scaled version the agent flagged is a separate hypothesis for later, not a substitute now."*
+`[stated-by-user]`
+
+**Exit is now the locked convention** — see `EXIT-CONVENTION-LOCKED.md`: target 2R, break-even at
+1R, no trailing, stop-first on a same-bar conflict, capped 16:00 ET, costs reported separately.
+Identical to `ash-unicorn-sb`, so the trades pool. **His own 1:4–1:6 band and Apex-driven trailing
+stay on this card as `[trader-claimed, unverified]` and are NOT scored.**
+
+### 4 · VERDICT — **CONFIRMED**
 
 The pattern definition is the **most precise in the corpus** — an exact two-step on a named price.
 Partial because the stop is a recollection rather than a rule, and Q-E1 means we may be looking at
@@ -122,3 +135,8 @@ Also step 5 of his daily checklist `[C6VSpegON80 @ 01:38]`.
 
 ## Revision log
 - **2026-08-07 rev a** — PARTIAL. Q-E1 may split this into two cards.
+
+### 2026-08-07 rev b — self-resolution, Brake's answers, exit lock
+Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
+the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
+convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.

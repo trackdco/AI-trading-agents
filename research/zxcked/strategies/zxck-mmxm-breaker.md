@@ -9,7 +9,7 @@ GAP_ENTRY: PARTIAL — the breaker is paired with a 5-minute imbalance and enter
 NY_SESSION: YES — midnight open is the premium/discount pivot
 sources: [lPbKWoBShLI, asi9nTJywN4, f0mYnZ9ISJY, C6VSpegON80]
 components: zxck-COMPONENTS.md
-verdict: INSUFFICIENT
+verdict: INSUFFICIENT — PARKED
 ---
 
 # `zxck-mmxm-breaker` — market maker model, breaker entry
@@ -87,7 +87,18 @@ Full evidence: `SELF-RESOLVED-2026-08-07.md`.
 
 **Still INSUFFICIENT: Q22 is the sole blocker and it is the model's identification step.**
 
-### 4 · VERDICT — **INSUFFICIENT**
+### ⬛ PARKED 2026-08-07 — Brake's instruction
+
+> *"park it. He eyeballs the consolidation boxes and there's no definition you could mechanize
+> honestly. It's already Insufficient and it's not a priority gap-entry, so inventing a range rule
+> just to unblock it is exactly the fabrication you've been avoiding. Shelve it; if it ever
+> matters, revisit with a defined range then."*
+
+**Q22 is NOT resolved and no range definition has been invented.** The card is shelved at
+INSUFFICIENT. The breaker trigger, stop and target remain well specified and would be reusable if
+a range definition ever arrives — from him, or declared explicitly as ours.
+
+### 4 · VERDICT — **INSUFFICIENT — PARKED**
 
 The breaker trigger is well specified and testable in isolation. The **model that gates it is
 not**, and I will not supply a consolidation detector and call the result his.
@@ -112,3 +123,8 @@ consistent with the model being a bias frame rather than a precision entry.
 
 ## Revision log
 - **2026-08-07 rev a** — INSUFFICIENT. Consolidation undefined (Q-G1); Q-G4 may reshape the card.
+
+### 2026-08-07 rev b — self-resolution, Brake's answers, exit lock
+Prior rev-a numbers and tags are **retained above, not overwritten**. This revision adds:
+the Step-1 self-resolution block, Brake's `[stated-by-user]` answers where given, the locked exit
+convention (`EXIT-CONVENTION-LOCKED.md`), and a re-issued verdict.
