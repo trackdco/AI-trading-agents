@@ -95,8 +95,24 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   all-touch expansion) owed before any verdict — no bin off this.
 
 ## QUEUE (cards open at census)
+- INTAKE ROUND 2 (2026-08-05, specs in research/transcripts/*/SPEC-as-taught.md,
+  credibility in research/findings/intake2-credibility.md):
+  - nya-ivb-fade first-formed-extreme arm (MrZincx/Edgeful 73% rejection
+    stat applied as a conditioning split on OUR validated fade's 356/478
+    events) — highest-value, prereg first.
+  - nya-ib50-continuation (MrZincx Model 1 as taught: enter IB midpoint
+    toward predicted second-formed-extreme break; opposite vector to our
+    fade) — new candidate, full funnel.
+  - jadecap-daily-sweep (1H swing-point raid + SFP close-back-inside +
+    5m FVG entry, NY AM/PM windows) — new candidate, full funnel.
+  - orochi corrected respecs: sd2-rotation-fade w/ retest+add grammar
+    (overnight analog) + failed-auction re-run on the taught hours-scale
+    clock — verdict revisits, prior tests were strawmanned.
+  - daxton-ifvg-continuation (EMA-stack bias + first inverted FVG after
+    9:30, 5m close entry) — LOW priority: FCA warning on his handle,
+    claims unverifiable; cheap census only if slate has room.
 - orochi-vwap-regime-pair (edge fade gated by rotational condition vs trend
-  side) — prereg next.
+  side) — folded into the sd2 respec above.
 - level-interaction trigger family (canon-frequency substrate, ~10-15 raw
   triggers/day) — prereg after.
 - sweep-reclaim — awaiting Brake dedup vs london-level-trap-fade.
