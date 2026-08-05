@@ -118,6 +118,39 @@ Entry = confirmation that the break failed. Two declared arms:
 Stop beyond the sweep extreme. Target the opposite side of the accumulation
 range, with the range midpoint as a declared partial. Flat by 05:00 ET.
 
+## Promotion rule — declared BEFORE any tournament (§6.0.1)
+
+**Default spec = arm B, close back inside the accumulation range.** Chosen on
+mechanism and on testability, not on expected performance: the thesis is that the
+03:00 break *fails*, and a close back inside the range is the minimal
+unambiguous statement of failure. Arm A (IFVG) is the source's own trigger but
+*"a V-shaped inverse within a few candles"* is not yet a mechanical definition,
+and an arm whose definition is still being written cannot be the default —
+whoever writes it would be writing it after seeing the data.
+
+**Arm A (IFVG) may displace B only if ALL THREE hold:**
+1. IFVG is given a mechanical definition **committed before** the arm is run,
+2. PBO on the arm matrix is **< 0.5**, and
+3. the holdout adjudicates in A's favour under the single corrective iteration.
+
+**The SMT-divergence confluence is not an arm at all** until ES data exists. If
+we run without it, the verdict records that the spec tested was the
+HTF-FVG-rejection leg only, and the SMT leg was dropped for data reasons — not
+quietly folded in as "the strategy".
+
+**In-sample rank never promotes anything here.**
+
+## Bars — pre-registered per §5.9.3 and §5.9.5
+
+- **Census kill line (§5.9.1):** dies only if the claimed behaviour does not
+  occur — i.e. if the 01:00–02:00 range is not swept in 02:30–04:00, or sweeps
+  never fail. Tested **as taught**, with the confluence requirement included as
+  a mandatory trigger, per §5.9.1.
+- Sleeve bars as for `london-nq-open-break`: era consistency plus inverse pass,
+  costs at 1× and 2×, PSR(0) ≥ 0.75.
+- Deflation charged at book level; every trial to the machine ledger at trial
+  time.
+
 ## Flags
 
 - **Instrument RESOLVED** — NQ is named explicitly. What remains is that his

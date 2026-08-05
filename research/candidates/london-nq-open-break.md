@@ -82,6 +82,43 @@ initially, with next-structural-level as a declared alternative. Flat by 05:00 E
 per `LDN-WIN-01` — the 05:00–06:00 hour carries the worst efficiency in the
 session and should not be inherited.
 
+## Promotion rule — declared BEFORE any tournament (§6.0.1)
+
+Rank-and-promote-the-top-scorer is a condemned procedure. So the winner here is
+named in advance, on mechanism, not on results:
+
+**Default spec = arm A, close-confirmed entry.** It is the mechanism prior: the
+thesis is that the open *resolves* a level test, and a close beyond the level is
+what resolution looks like. An entry on touch is a bet placed before the
+resolution the thesis is about. A also inherits the tighter stop the whole
+candidate rests on — the trigger candle exists only if you waited for it.
+
+**Arm B (touch entry) may displace A only if BOTH hold:**
+1. PBO on the A/B arm matrix is **< 0.5** (CSCV, day-level rows), and
+2. the holdout adjudicates in B's favour under §5.9.4's single corrective
+   iteration.
+
+**In-sample rank alone never promotes B.** If B out-earns A in sample and fails
+either condition, the frozen spec stays A and B is ledgered as a declared
+negative result.
+
+**If both arms fail their own bars, neither ships.** The candidate is not
+promoted by being the better of two losers.
+
+## Bars — pre-registered per §5.9.3 and §5.9.5
+
+- **Census (L0) kill line, per §5.9.1:** this dies at census ONLY if the claimed
+  behaviour does not happen — i.e. if levels marked before 08:00 UK are not
+  tested in the window, or tests do not resolve. **Raw profitability does not
+  kill at census.** Ugly P&L at raw triggers sends it to the variable search, it
+  does not close the family.
+- **Sleeve bars:** era consistency (2025/2026 agree in direction, plus the
+  inverse pass), cost realism at the standard stack **and at 2× slippage**, and
+  **PSR(0) ≥ 0.75** per §5.9.5.
+- **Deflation is charged at book level** (§5.9.3), not against this sleeve alone.
+- **Every trial goes to `output/trial_ledger.parquet` at trial time**, not just
+  into this file's prose (§6.0.2).
+
 ## Flags
 
 - **Data: fully in hand.** `nq_1m_master.parquet` and the 912-day London

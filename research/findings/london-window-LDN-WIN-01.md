@@ -46,14 +46,31 @@ carry the two lowest efficiency readings in the entire profile, in both eras
 (0.419/0.412 in 2025, 0.418/0.409 in 2026). Our substrate window runs
 03:00–06:00 ET, so a third of it is the least productive stretch measured.
 
-**H1 — supported, but read the size honestly.** The declared test was: median
-range *and* efficiency in 02:00–05:00 exceed 05:00–06:00, in both eras. It
-passes both eras. But the 2025 margin is real (range 34.1 vs 27.4, +25%;
-efficiency 0.472 vs 0.428) and the **2026 margin is negligible** (46.8 vs 46.3,
-+1%; 0.431 vs 0.425). One era supports it clearly; the other technically clears
-the bar and means almost nothing. Recording that rather than reporting a clean
-pass, because the criterion I wrote was direction-only and did not require a
-magnitude.
+**H1 — supported in both eras.** The declared test was: median range *and*
+efficiency in 02:00–05:00 exceed 05:00–06:00, in both eras. It passes both.
+
+On the medians the 2025 margin looked real (range 34.1 vs 27.4, +25%) and the
+2026 margin looked negligible (46.8 vs 46.3, +1%), and I originally reported the
+2026 leg as "technically clears the bar and means almost nothing."
+
+**That read was wrong, and the correction came from the ledger work.** §6.0.2
+required this trial on the machine ledger, which needs a t-statistic — and a
+median-of-medians has none. Recomputing the same declared comparison as a
+**paired per-day test** (mean 30-min range in 02:00–05:00 minus 05:00–06:00, one
+observation per day) gives:
+
+| era | n | mean difference | t | standardised effect |
+|---|---:|---:|---:|---:|
+| 2025 | 257 | **+7.07 pts** | +6.41 | +0.400 |
+| 2026 | 139 | **+5.55 pts** | +3.76 | +0.319 |
+
+Both robust. The paired test controls for day-level variation, which the
+median-of-medians throws away — so my original comparison was simply
+underpowered, not the data being ambiguous. **H1 is better supported than I
+first reported**, and the 05:00–06:00 hour is worse than it first looked.
+
+Recorded as `LDN-WIN-01` in `output/trial_ledger.parquet` via
+`scripts/london_window_ledger.py`.
 
 **H2 — failed. Kill criterion 3 fired.** Anchoring buckets to each day's
 *measured* European open produced a **flatter** profile than the wall clock
