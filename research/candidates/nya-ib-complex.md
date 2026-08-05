@@ -369,3 +369,11 @@ $+24,344 | 1:4 $+29,913 — ratio is Angus's sizing call.
 STATUS: NOT SHIPPING (Angus). Spec frozen for SHADOW as one package;
 shadow verdict must reproduce the tier separation before any size rides
 it. All evidence fit-span in-fit; the shadow IS the holdout. Ledger 255.
+
+SIZING RULING [ANGUS 2026-08-05]: $160 base / 2.5x = $400 confirmed.
+Fit-span at ruled sizing: $+21,559 (base $+7,635 from 83 trades +
+confirmed $+13,924 from 29 — the confirmed tier is 26% of trades and 65%
+of P&L). Trade-day maxDD $412; worst day -$412. MC 12mo funded shell:
+P(bust) 0.0%, median +$18,594/yr. SPEC v1 COMPLETE (entry/stop/target/
+scratch/2-tier ladder/sizing) — status NOT SHIPPING; next rung = shadow
+reproduction of the tier separation. Ledger row 256.
