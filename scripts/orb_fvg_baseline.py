@@ -123,17 +123,26 @@ BRK_READINGS = ("close", "wick")                   # O2 — "close" is primary
 
 
 # ------------------------------------------------------------------- levels (O13, decorative)
-def marked_levels(g: pd.DataFrame, prev: pd.DataFrame) -> dict:
+def marked_levels(g: pd.DataFrame, prev: pd.DataFrame, prev_rth: pd.DataFrame | None) -> dict:
     """The four levels the post says to mark and then never uses again.
 
-    [A] "NY session high/low" is read as the PREVIOUS session's RTH range, because today's has
+    [A] "NY session high/low" is read as the PREVIOUS RTH SESSION's range, because today's has
     not happened yet at 09:30. "Overnight" is the Globex session into this open.
     COMPUTED AND LOGGED. NO RULE IN THIS FILE READS THEM.
     """
     out = {}
-    pdh = prev[(prev.mins >= OPEN_MIN) & (prev.mins <= RTH_END)]
+    # ⚠️ FIXED 2026-08-07 (adversarial audit). `prev` used to be the previous CALENDAR key, and
+    # load_bars() gives Sunday its own key because Globex opens 18:00 ET. So on every Monday the
+    # "previous session" was a Sunday with ZERO 09:30-16:00 bars and pdh/pdl were silently NaN --
+    # 61 of 290 sessions (59 Mondays + 2 post-holiday Fridays), i.e. a day-of-week-correlated
+    # hole in two of the four levels the card promises to log. `prev_rth` is now the most recent
+    # PRIOR DAY THAT ACTUALLY HAS AN RTH SESSION.
+    # The OVERNIGHT levels always used `prev` and that was and remains correct: the Sunday Globex
+    # block IS the overnight into Monday.
+    pdh = prev_rth[(prev_rth.mins >= OPEN_MIN) & (prev_rth.mins <= RTH_END)] \
+        if prev_rth is not None else None
     on = pd.concat([prev[prev.mins > RTH_END], g[g.mins < OPEN_MIN]])
-    if len(pdh):
+    if pdh is not None and len(pdh):
         out["pdh"], out["pdl"] = float(pdh.high.max()), float(pdh.low.min())
     if len(on):
         out["onh"], out["onl"] = float(on.high.max()), float(on.low.min())
@@ -290,6 +299,12 @@ def run(bars, fp, cal):
         if not k or day < LO or day > HI:
             continue
         g, prev = by_day[day], by_day[days[k - 1]]
+        prev_rth = None
+        for jj in range(k - 1, -1, -1):                 # most recent PRIOR day with an RTH block
+            cand = by_day[days[jj]]
+            if len(cand[(cand.mins >= OPEN_MIN) & (cand.mins <= RTH_END)]):
+                prev_rth = cand
+                break
         # ONE contiguous 09:30 -> 16:00 block. `w` is its leading 09:30-10:30 slice, so an entry
         # index inside `w` indexes straight into `dayarr` and the exit tail is everything after.
         post = g[(g.mins >= OPEN_MIN) & (g.mins <= RTH_END)].reset_index(drop=True)
@@ -299,7 +314,7 @@ def run(bars, fp, cal):
         dayarr = {"low": post.low.to_numpy(), "high": post.high.to_numpy(),
                   "close": post.close.to_numpy(), "ts": post.ts.to_numpy()}
         fpd = fp_by_day.get(day, fp.iloc[:0])
-        lv = marked_levels(g, prev)
+        lv = marked_levels(g, prev, prev_rth)
         pre = g[g.mins < OPEN_MIN]
         h1 = float(pre.close.iloc[-1] - pre.close.iloc[-120]) if len(pre) > 120 else np.nan
         phi = float(pre.high.max()) if len(pre) else np.nan
@@ -358,18 +373,43 @@ def run(bars, fp, cal):
 
 # ------------------------------------------------------------------------------- reporting
 def cap_rules(d: pd.DataFrame) -> pd.DataFrame:
-    """O11 SECONDARY — his management: max 2/day, stop after a win, one more after BE/loss."""
+    """O11 SECONDARY — his management: max 2/day, stop after a win, one more after BE/loss.
+
+    ⚠️ LOOK-AHEAD DEFECT FIXED 2026-08-07 (found by adversarial audit, independently confirmed by
+    two separate lenses). The first version broke the day on `if r.R >= TARGET_R` while walking
+    trades in ENTRY order. R is not known until `exit_time`, which is minutes to hours after
+    `time`. Because this card fires 4.7-6.7 OVERLAPPING setups per session inside one 60-minute
+    window, the trade the win-rule deleted had usually ALREADY BEEN ENTERED when the winner
+    finally reached +2R: 201 of the 288 deletions (70%) were of positions already open.
+    That is not a management rule, it is a filter on future information.
+
+    A win can only stop the day for entries at or after THAT WIN'S OWN EXIT MINUTE. Anything
+    entered before the winner resolved was a live position and cannot be un-taken.
+    """
     keep = []
     for _, day in d.sort_values(["date", "time", "seq_in_day"]).groupby("date"):
-        taken = 0
+        taken, blocked_from = 0, None
         for i, r in day.iterrows():
-            if taken >= 2:
+            if blocked_from is not None and r.time >= blocked_from:
+                break                    # a prior win had already EXITED before this entry
+            if taken >= 2:               # "max 2 trades/day"
                 break
             keep.append(i)
             taken += 1
-            if r.R >= TARGET_R:          # "stop for the day after a win"
-                break
+            if r.R >= TARGET_R:          # "stop for the day after a win" -- from its exit onward
+                blocked_from = (r.exit_time if blocked_from is None
+                                else min(blocked_from, r.exit_time))
     return d.loc[keep]
+
+
+def cap_rules_nowin(d: pd.DataFrame) -> pd.DataFrame:
+    """The cap WITHOUT the win-rule: first two setups of each session, unconditionally.
+
+    Reported alongside cap_rules() so the win-rule's own contribution is separable from the
+    2-per-day cap's. Neither uses future information.
+    """
+    return (d.sort_values(["date", "time", "seq_in_day"])
+             .groupby("date", as_index=False).head(2))
 
 
 def summarise(d: pd.DataFrame, label: str) -> dict:
@@ -462,7 +502,11 @@ def main() -> None:
     show([summarise(cap_rules(prim[(prim.arm_entry == er) & (prim.arm_stop == sr)]),
                     f"entry={er:<9} stop={sr}")
           for er, sr in itertools.product(ENTRY_READINGS, STOP_READINGS)],
-         "SECONDARY — his management applied (max 2/day, stop after a win)")
+         "SECONDARY — his management applied (max 2/day; a win stops the day FROM ITS EXIT)")
+    show([summarise(cap_rules_nowin(prim[(prim.arm_entry == er) & (prim.arm_stop == sr)]),
+                    f"entry={er:<9} stop={sr}")
+          for er, sr in itertools.product(ENTRY_READINGS, STOP_READINGS)],
+         "SECONDARY — the 2/day cap ALONE, win-rule removed (isolates the win-rule's effect)")
 
     def first_per_session(a):
         """The first TRADE of each session, not the first EVENT index -- an event that produced

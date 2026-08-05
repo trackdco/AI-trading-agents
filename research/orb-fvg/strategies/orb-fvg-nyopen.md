@@ -312,21 +312,53 @@ The outcome mix is also close to the random-walk null for this exit (**25/25/50*
 is 26.3/24.6/49.0. The card selects *when* to be in the market, not *which way* — the same
 diagnosis as `zxck-10am-keyopen`.
 
-### SECONDARY — his management applied (max 2/day, stop after a win)
+### SECONDARY — his management applied (max 2/day; a win stops the day FROM ITS EXIT)
 
-| arm | n | win/BE/loss/TO | avgR | **exp** | totR | t_clus |
+> #### 🔴 CORRECTED 2026-08-07 — the first version of this table was produced by LOOK-AHEAD.
+> An adversarial audit found it, and **two independent lenses filed it separately.** `cap_rules()`
+> walked each session's trades in **entry order** and stopped the day on `R >= 2R` — but **R is
+> not known until `exit_time`**, minutes to hours later. Because this card fires 4.7–6.7
+> **overlapping** setups inside one 60-minute window, the trade the win-rule deleted had usually
+> already been entered when the winner finally hit target: **201 of 288 deletions (70%) removed
+> positions that were already open.** That is a filter on future information, not a management
+> rule.
+>
+> ~~The original table showed expectancy −0.181 / −0.138 / −0.168 / −0.224 and t up to −3.68, and
+> the card concluded his management was "actively harmful", costing 0.12–0.20R per trade.
+> **That conclusion was an artefact of the defect and is withdrawn.**~~
+
+| arm | n | win/BE/loss/TO | avgR | **exp** | totR | t_clus | ~~exp before the fix~~ |
+|---|---|---|---|---|---|---|---|
+| retrace · breakout | 523 | 23.3/20.5/52.0/4.2 | −0.037 | **−0.097** | −19.2 | −0.60 | ~~−0.181 (t −2.12)~~ |
+| retrace · fvg | 538 | 25.7/23.6/50.7/0.0 | +0.006 | **−0.043** | +3.0 | +0.09 | ~~−0.138 (t −1.63)~~ |
+| formation · breakout | 556 | 26.8/18.3/52.7/2.2 | +0.023 | **−0.034** | +12.5 | +0.35 | ~~−0.168 (t −1.88)~~ |
+| formation · fvg | 573 | 24.1/24.3/51.1/0.5 | −0.026 | **−0.058** | −14.8 | −0.41 | ~~−0.224 (t −3.68)~~ |
+
+**Every |t| collapses inside 0.60.** avgR flips sign on two of four arms; post-cost expectancy
+stays negative on all four, as it does everywhere on this card.
+
+### SECONDARY — the 2/day cap ALONE, win-rule removed (isolates the win-rule)
+
+| arm | n | avgR | **exp** | totR | t_clus | **win-rule's own cost** |
 |---|---|---|---|---|---|---|
-| retrace · breakout | 489 | 21.1/19.8/55.2/3.9 | −0.118 | **−0.181** | −57.7 | −2.12 |
-| retrace · fvg | 498 | 22.3/24.1/53.6/0.0 | −0.090 | **−0.138** | −45.0 | −1.63 |
-| formation · breakout | 494 | 23.3/17.2/57.9/1.6 | −0.108 | **−0.168** | −53.4 | −1.88 |
-| formation · fvg | 508 | 18.3/25.2/56.1/0.4 | −0.192 | **−0.224** | −97.6 | −3.68 |
+| retrace · breakout | 556 | −0.012 | −0.070 | −6.4 | −0.19 | **−0.027R** |
+| retrace · fvg | 573 | +0.007 | −0.041 | +4.0 | +0.12 | **−0.002R** |
+| formation · breakout | 572 | +0.034 | −0.022 | +19.6 | +0.54 | **−0.012R** |
+| formation · fvg | 576 | −0.021 | −0.052 | −11.8 | −0.32 | **−0.006R** |
 
-**His management rule makes every arm materially worse — by 0.12R to 0.20R per trade.** It has a
-mechanism, and it is not subtle: *"stop for the day after a win"* **truncates the upside and
-leaves the downside intact.** Every win after the first is discarded, and trade 2 is taken only
-*conditional on trade 1 having failed*. The rule selects for losses.
+### ⛔ CORRECTED CONCLUSION ON HIS MANAGEMENT
 
-This is the clearest result on the card, and it is about the **management**, not the entry.
+**It has no measurable effect.** Isolated against the plain 2-per-day cap, his *"stop for the day
+after a win"* rule costs between **0.002R and 0.027R per trade** — indistinguishable from zero at
+every arm's standard error.
+
+**The card previously claimed the opposite**, and claimed it as "the clearest result on the card"
+and "the one finding that IS about his post rather than our conventions". **Both statements were
+wrong.** The mechanism I described — truncating upside while leaving downside intact — is real
+arithmetic, but it only bites if the rule can cancel a position *retroactively*, which a trader
+cannot do. Implemented causally, it barely bites at all.
+
+**There is now NO finding on this card that is about his post rather than our conventions.**
 
 ### SECONDARY — FIRST trade of each session only (one per session: independent draws)
 
@@ -379,6 +411,7 @@ window is empty. That is a property of the reading, not a data gap.
 | equity curve is chronological (maxDD validity) | **yes** |
 | bar-by-bar replay of one win and one loss | **exact** |
 | **fill bars already through the stop (retrace arms)** | **923 / 4470 = 20.6%** |
+| adversarial audit — 4 lenses, every finding independently refuted | **13 filed, 10 refuted, 2 distinct defects confirmed** |
 
 That last row matters. On 2025-06-03 the trade fills at 10:07, breaches the stop **in that same
 minute**, and *would have reached target at 10:49*. It is booked −1R. Had this card carried the
@@ -413,10 +446,24 @@ his range. **This tested our adaptation, and our adaptation loses.** A different
 same blanks could produce a different answer, which is precisely the problem with a single-post
 source and is why this card is flagged LOW PROVENANCE.
 
-**The one finding that IS about his post rather than our conventions:** his stated management
-(*max 2/day, stop after a win*) is **actively harmful** here, costing 0.12–0.20R per trade in
-every arm, and the mechanism — truncating upside while leaving downside intact — does not depend
-on any of our choices.
+**And there is NO finding here that is about his post rather than our conventions.** The card
+briefly claimed one — that his management was actively harmful — and an adversarial audit showed
+that result was produced by look-ahead in our own harness. Corrected, his management does
+essentially nothing (0.002R–0.027R per trade, all |t| < 0.61). **The correction removed the only
+conclusion this card had about the poster.**
+
+### Defects found by the audit and fixed
+
+| # | defect | impact | status |
+|---|---|---|---|
+| 1 | **`cap_rules()` look-ahead** — the day stopped on a win's *outcome* while walking *entry* order, un-taking already-open positions (70% of deletions) | **falsified a stated conclusion**; every management |t| collapsed from up to −3.68 to inside ±0.61 | **fixed** — a win now blocks only entries at/after its own exit minute |
+| 2 | **`marked_levels()` prior session** — `prev` was the previous *calendar* key, which is Globex-only Sunday on Mondays, so `pdh`/`pdl` were silently NaN on **61 of 290 sessions** (59 Mondays + 2 post-holiday Fridays) | nil on every reported number (decorative features), but a day-of-week-correlated hole in data the card promises for a future prereg | **fixed** — now the most recent prior day that actually has an RTH session; NaN count 293 → **0** |
+
+**Ten further findings were filed and refuted**, including: the same-bar convention's asymmetry
+(it is the locked convention), `atr_pct` ranked over the whole sample (logged, gated on nothing),
+the 10:30 entry cutoff (declared, not silent), and the objection that the bound is four point
+estimates whose CIs each straddle zero — correct, and the reason the verdict rests on *every*
+reading landing negative rather than on any one arm's significance.
 
 **Ledger:** this card spends **4 primary arms + 4 sensitivity arms**, raising the deflation bar
 for every other candidate in the programme.
