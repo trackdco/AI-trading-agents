@@ -236,3 +236,29 @@ winners vs losers. STOP ARMS (distance stops at s x risk, s in 0.3 / 0.4
 plus time-cuts t+3 and t+5 if MAE>=0.5R as comparison) — the frontier:
 WR vs payoff vs expectancy per stop. Ledger rows for the chosen frontier
 points.
+
+STAGE 2E RESULTS (near-band basis, n=112 paired, fit span):
+THE MFE/MAE ANSWER: winners under this spec take almost NO heat —
+MAE-before-win median 0.06R, p75 0.26R, p90 0.47R, max 0.91R; winner MFE
+median 0.98R (runs ~0.3R past the band exit). Losers poke green first
+(median MFE 0.55R) then die at -1R. MECHANISM: the rejection either
+works immediately or it fails — heat IS the tell on this geometry.
+STOP FRONTIER (intrabar stop-first, target = near band):
+  0.30R: WR 59% payoff 2.13 expct +0.281 $+5,029
+  0.40R: WR 65% payoff 1.63 expct +0.310 $+5,556
+  0.50R: WR 71% payoff 1.35 expct +0.348 $+6,241
+  0.60R: WR 73% payoff 1.13 expct +0.352 $+6,311  <- $ peak
+  0.75R: WR 74% payoff 0.91 expct +0.324 $+5,807
+  1.00R: WR 77% payoff 0.69 expct +0.306 $+5,491  (baseline)
+READ: because 90% of winners never exceed 0.47R adverse, a 0.5R stop
+clips ~10% of winners while halving every loss — WR holds 77->71%,
+payoff DOUBLES 0.69->1.35, expectancy +14%. Angus's "cut losses earlier
+and hold the win rate" is exactly what the geometry offers. Candidate
+shape: NEAR-BAND TARGET + 0.5R STOP (= 0.125xIB): WR 71%, payoff 1.35,
+$+6,241 fit (+60% over certified default).
+DISCIPLINE NOTE: leg-A fit-span arm count this session ~16 (targets 8 +
+stops 8). Before any freeze: PBO across the accumulated matrix, the
+§5.11-9c deep round on THIS shape (flow/depth/conviction), and the
+frontier stop choice is ANGUS's shape call (0.4/0.5/0.6 all defensible).
+Displacement of the certified default still requires shadow adjudication
+or his operator ruling. Ledger rows 250-251.
