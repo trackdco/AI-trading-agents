@@ -332,3 +332,70 @@ flow-based group is worse than the price/structure group in both (disc −0.070 
 
 **No candidate promoted to forward accumulation.** Four new hypotheses logged as UNTESTED, none
 testable on the 289 sessions used here.
+
+
+---
+
+# PART 4 — CONFLUENCE SCAN, 2026-08-08 (overnight run)
+
+**⚠️ IN-SAMPLE BY CONSTRUCTION. The entire owned span through 2026-07-15 is in-sample for this
+programme, permanently. Nothing in this section is a finding, an edge, or a result.**
+
+## Ledger N for the night: **18,232 comparisons scanned**
+
+17 event streams (all carded setups including retired ones, plus all 12 sweep trials) × the
+Stage-2 flow feature library + standard context features, stacks of at most two conditions,
+thresholds only at the 25th/50th/75th percentile of each feature's own within-stream
+distribution. Subsets below 25 events or 20 sessions are not scannable and are excluded from the
+count — they were never comparisons.
+
+Matched control: outcomes **permuted within stream** (breaking any feature–outcome link while
+preserving the outcome distribution, event count, clustering and search width), 400 reps per
+stream, best-of null.
+
+## ⛔ REGISTERED HYPOTHESES: **ZERO**
+
+An empty shortlist is a valid output and this is one. The calibration does not support
+registering anything.
+
+| check | result |
+|---|---|
+| streams whose best comparison reaches the **99th** percentile of its own best-of null | **0** (expected 0.17) |
+| streams reaching the **95th** | 3 (expected 0.85) — Poisson P(≥3) ≈ 0.053, marginal |
+| observed maximum percentile across 17 streams | **0.980** (`zxck-10am-keyopen`) |
+| expected maximum of 17 uniform draws | **0.944** |
+| **P(at least one of 17 streams reaches 0.980 by chance)** | **1 − 0.980¹⁷ = 0.291 — UNREMARKABLE** |
+
+### Three independent reasons nothing is registered
+
+1. **The best result is what 17 draws produce.** A maximum of 0.980 across 17 streams happens
+   **29% of the time** under the null. There is nothing to explain.
+
+2. **The top subsets are all at the size floor.** Of the top 20 comparisons, **19 sit within four
+   events of the `MIN_N = 25` boundary** (n range 25–31). A 25-event subset drawn from a
+   1,500-event stream can post any expectancy at all; that is what the noise floor is measuring
+   and it is why the floor is so high (per-stream best-of p95 runs +0.22 to +0.80).
+
+3. **Most of the "confluences" are not confluences.** The top 30 rows collapse to **16 distinct
+   subsets** — 14 are the *same* subset relabelled, reached via a second condition that excludes
+   nothing. A two-condition stack whose second condition removes zero events is a one-condition
+   result wearing a stack's name.
+
+### And no feature discriminates across streams
+
+A feature that genuinely separated outcomes would do so in the **same direction on many
+independent streams**. None does. Across the 8 flow features and 7 context features on ≥8 streams
+each, mean improvement runs **−0.06R to +0.03R**, and the largest deviation from a 50/50
+positive-improvement split is `risk_pts` high at **0.710 on 13 streams** — carrying a mean
+improvement of **+0.027R**. Median null percentile is **0.000** for essentially every feature.
+
+## Scanned and dropped — in bulk
+
+**All 18,232 comparisons** are logged to `research/_shared/confluence-scan-2026-08-08.csv` with
+their subset size, session count, base expectancy, subset expectancy, improvement and
+noise-floor percentile. **Every one is dropped.** They are recorded so that nobody re-scans this
+space believing it unexplored, and so the N is auditable rather than asserted.
+
+**The N matters beyond tonight.** 18,232 comparisons is now part of this programme's
+multiple-testing history. Any future candidate arising from a confluence idea in this space
+inherits it.
