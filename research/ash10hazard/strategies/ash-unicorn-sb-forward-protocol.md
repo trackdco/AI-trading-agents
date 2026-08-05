@@ -10,6 +10,11 @@ in-sample set being confirmed: 29 flow-covered trades, 2025-06-10 → 2026-07-15
 
 > ## PROGRESS
 > **forward setups logged: 0 · flow-covered: 0 · toward LOOK 1: 0/20 (need +20) · toward LOOK 2: 0/46**
+>
+> ### ⛔ 2026-08-08 — H1 and H2 STRUCK. H2′ registered as untested. See the amendment below.
+> The looks and the Bonferroni schedule below were written for **two** hypotheses. With H1 and H2
+> struck there is currently **one** registered hypothesis (H2′) and **no confirmatory test is
+> scheduled** until its look-ahead proof passes and its threshold is set from future data.
 > *No test may be run until a look trigger is reached. Nothing has been tested.*
 
 # Forward protocol — putting H1 and H2 on trial
@@ -35,32 +40,75 @@ enter the forward set, even by accident.
 Both directions are stated **now**, in advance. A result in the opposite direction is a
 **failure**, not a discovery — it may not be re-read as "the effect is real, just inverted."
 
-### H1 — displacement-delta magnitude separates winners from losers
+> # ⛔ AMENDMENT 2026-08-08 — BOTH ORIGINAL HYPOTHESES ARE STRUCK
+>
+> Made **before any forward trade accumulated** (forward log: 0 rows). Nothing below was
+> influenced by forward data, because none exists.
 
-> **Direction (locked): winners carry a LARGER `F1_disp_delta` than losers.**
+### ~~H1 — displacement-delta magnitude separates winners from losers~~ · **STRUCK**
 
-- Test: **one-sided Mann–Whitney U**, winners (R ≥ +2) vs losers (R ≤ −1).
-- In-sample effect being confirmed: Cliff's δ = **+0.596** (≈ Cohen's d 1.48); winners' median
-  0.33 vs losers' 0.23, losers clustered ≤ 0.30 with one contrary case at 0.85.
-- **Definition is frozen**: `F1_disp_delta` = (Σ signed delta over the displacement leg)
-  × side ÷ median session minute volume, exactly as computed in
-  `scripts/ash_orderflow_test.py`. It is **already side-signed**, so the brief's
-  "|displacement delta|" resolves to this same quantity. A *negative* forward value means
-  delta ran against the trade; it scores as **small**, not as large-magnitude. This
-  disambiguation is fixed here so it cannot be chosen later to suit the result.
+**Reason: failed out-of-sample.** Tested on 115 independent trades from a different trader and
+a different setup with identical feature definitions: direction held (win median 0.080 vs loss
+0.072) but Cliff's δ came in at **+0.178 against an in-sample +0.596** — under a third the size —
+with **p_holm = 0.1895**. The sample had the power to see the claimed effect (it detects d ≥ 0.58;
+the effect claimed was d ≈ 0.596). **The power was there. The effect was not.**
 
-### H2 — retracement participation predicts a STALL, not a loss
+**H1 is retired and may not be resurrected on this forward set.**
 
-> **Direction (locked): three-bucket ordering on `F2_retrace_ratio` is
-> win < loss < break-even.**
+### ~~H2 — retracement participation predicts a STALL, not a loss~~ · **STRUCK**
 
-- Test: **Jonckheere–Terpstra trend test** against that pre-specified ordering. This is the
-  test that matches the hypothesis as written, and it uses **every trade** rather than
-  discarding break-evens.
-- In-sample medians being confirmed: **0.60 (win) / 1.27 (loss) / 2.35 (break-even)**.
-- **Definition is frozen**: `F2_retrace_ratio` = (volume during the FVG fill) ÷ (volume over
-  the displacement leg), both read only from minutes at or before the entry bar, exactly as in
-  `scripts/ash_orderflow_test.py`.
+**Reason: the feature is not computable at entry.** `F2_retrace_ratio`'s retracement window ends
+at *and includes* the entry minute. Footprint data is minute-aggregated and the entry is an
+intrabar limit fill, so the feature contains **up to 59 seconds of post-fill tape**. On 73% of
+`zxck-10am-keyopen` trades and 50% of `orb-fvg-nyopen` trades the retracement is a **single
+minute — the entry minute** — so 100% of the numerator is exposed. Full audit:
+`research/_shared/f2-h1-oos-test.md`.
+
+A rule of the form *"take the trade if F2 < 1.0"* is **not implementable**: at the fill you do
+not yet know the entry minute's volume.
+
+> ### ⚠️ THIS RETROACTIVELY VOIDS THE ORIGINAL STAGE-4 F2 FINDING ON THE CARD.
+> The 52.6% → 72.7% win-rate improvement was a **positive discrimination result on a
+> contaminated feature**, and the contamination biases *toward* false positives — the entry
+> minute's volume is mechanically related to what price did immediately after the fill, hence to
+> the outcome. **It is not evidence. Treat it as void, not as weakened.**
+
+H2 also **failed out-of-sample independently** (ordering not observed, JT p = 0.9105, Cliff's δ
+**+0.235** against an in-sample **−0.635** — the sign reversed). That failure *stands and stands
+more firmly*: the contamination should have helped it succeed.
+
+**H2 is retired and may not be resurrected on this forward set.**
+
+---
+
+### ✅ H2′ — REGISTERED HERE AS A NEW, UNTESTED HYPOTHESIS
+
+The stall idea may still be true; the *measurement* was broken. H2′ is the same idea with a
+boundary that is provably pre-entry.
+
+> **`participation_to_touch` = (volume from the end of the displacement leg up to, but NOT
+> including, the entry minute) ÷ (volume over the displacement leg).**
+
+> **Direction (locked, pre-stated): WINNERS carry a LOWER `participation_to_touch` than losers.**
+
+| | |
+|---|---|
+| **time boundary** | last minute read is **entry_minute − 1**. The entry minute is excluded entirely. |
+| **why that is provably pre-entry** | the `entry_minute − 1` bar has **closed** before the entry minute begins. No part of the fill minute is read, so no post-fill tape can enter the value. |
+| **look-ahead proof required before use** | recompute with all bars from the entry minute onward masked; the value must be **identical** on every historical event. Asserted in code — `research/_shared/flow-features/`. |
+| **threshold** | **NONE IS SET.** It will be fixed at a percentile of the feature's own distribution **in the future data**, never chosen to suit a result. |
+| **status** | **UNTESTED.** Registered, not confirmed, not promoted. |
+
+**⚠️ H2′ IS NOT H2 REBUILT TO PASS.** It is a strictly *smaller* window than H2 — it discards
+the entry minute rather than including it — so where H2's retracement was a single minute, H2′ is
+**undefined**, not merely different. On the historical sample that was 73% of one card and 50% of
+another. **A large fraction of any future sample will have no H2′ value at all, and that is a
+property of the idea, not a data problem.** If most events are undefined, H2′ is untestable and
+must be reported that way rather than run on the surviving minority, which is a biased subset
+(it selects slow retracements).
+
+**H2′ may not be tested on any data used before 2026-08-08.** The entire owned span through
+2026-07-15 is in-sample for this programme.
 
 ### Nothing else is on trial
 

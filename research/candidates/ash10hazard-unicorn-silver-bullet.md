@@ -326,11 +326,25 @@ volume) on the **19** flow-covered trades: **52.6% → 72.7% WR, +0.842 → +1.3
 of setups, filtered arm **n=11** (was 15). Displacement-delta remains **vacuous** (removes 0 of
 19), which still shows NQ delta cannot substitute for his ES check.
 
-⚠️ **The filter no longer adds profit.** On the corrected sample it takes total R from **+16.0R
+> ### ⛔ VOID 2026-08-08 — THE F2 FILTER RESULT IS WITHDRAWN, NOT WEAKENED.
+> `F2_retrace_ratio` is **not computable at entry**. Its window ends at and *includes* the entry
+> minute; footprint data is minute-aggregated and the entry is an intrabar limit fill, so the
+> feature carries up to 59 seconds of **post-fill** tape. The contamination biases **toward false
+> positives** — the entry minute's volume is mechanically related to what price did straight
+> after the fill, hence to the outcome.
+>
+> **A positive discrimination result on that feature is exactly what the defect manufactures.**
+> The 52.6% → 72.7% win-rate improvement is therefore **not evidence of anything** and is void.
+> Audit: `research/_shared/f2-h1-oos-test.md`. Protocol amendment:
+> `ash-unicorn-sb-forward-protocol.md` (2026-08-08) — H1 and H2 both **STRUCK**, H2′ registered
+> as a new untested hypothesis with a provably pre-entry boundary.
+
+~~⚠️ **The filter no longer adds profit.** On the corrected sample it takes total R from **+16.0R
 down to +15.0R** while cutting max DD from 1.0R to 0.0R. Before the fix it added +2.0R. So its
-only remaining claim is drawdown smoothing on n=11 — and **H2, the hypothesis behind it, already
-failed out-of-sample on 115 independent trades** (see the Stage-4 entry below). It is not applied
-to the baseline and should now be regarded as retired rather than promising.
+only remaining claim is drawdown smoothing on n=11 — and H2, the hypothesis behind it, already
+failed out-of-sample on 115 independent trades. It is not applied to the baseline and should now
+be regarded as retired rather than promising.~~ *(superseded by the void above — the arithmetic
+was right but it was arithmetic on a feature that does not exist at entry.)*
 
 **WINNER/LOSER AUTOPSY (2026-08-06)** — see `ash-unicorn-sb-autopsy.md`.
 Ten context features tested on 15 winners vs 12 losers. **Nothing survives Holm correction.**
