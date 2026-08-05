@@ -107,3 +107,26 @@ HONESTY: 5 arms selected on n=22 — the arm choice itself is in-sample; the
 sealed holdout adjudicates it out-of-fit and all 5 arms count in DSR. NOTE:
 sims standardized to conservative intrabar tie-break (stop checked before
 target within a bar) from this trial forward.
+
+### Trial 8 — GRADING (2026-08-05, Brake's graders) — arm upgrade REFUSED, below screen
+Full pack in output/nypre_grading_report.md (scripts/nypre_grade.py); book as
+committed self-checking code in scripts/nypre_book.py. PBO on the exit
+tournament: **0.57 — OVERFIT.** Picking the in-sample best arm out of 5 on
+n=22 lands below the out-of-sample median in 57% of CSCV splits: the trial-7
+worry, formally confirmed. THE A1 UPGRADE DOES NOT SURVIVE — the frozen spec
+REVERTS to the pre-tournament declared A0 (stop at ONH, $+753, PF 1.59); A1
+stays ledgered as the declared holdout question. DSR below the 0.95 screen
+under BOTH specs: A1 0.818/0.788/0.704 (arms/family-8/program-34; PSR(0)
+0.916), A0 0.632/0.598/0.511 (PSR(0) 0.768). Minimum certifying track vs
+zero: 380 days at A1 economics / 1,345 at A0 (we have 268). MC and
+correlation: every portfolio gate PASSES (P(bust) canon+both 0.2-0.4% vs 1%
+bar; 2/3 shared families, no veto; ~15% minute overlap).
+VERDICT: **SHELVED-PROMISING — closest to certifiable, not shippable today.**
+This is the one candidate where a holdout look has genuine adjudication value
+(it answers the arm question AND extends the track), but the recommendation is
+to BANK the look: even a clean holdout leaves the program-deflated bar unmet.
+PORTFOLIO NOTE (the constructive lesson): the combined gap+inv book grades at
+PSR(0) 0.943 needing 291 days vs our 268 — two uncertifiable sleeves are
+already nearly one certifiable book. At ~2 trades/month per sleeve,
+certification lives at BOOK level; that is the argument for the 10-sleeve
+shelf, in numbers.

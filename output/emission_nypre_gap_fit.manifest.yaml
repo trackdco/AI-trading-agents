@@ -1,0 +1,46 @@
+schema: emission-v0.1-proposed
+strategy: nypre_gap
+vault_id: strategy:nypre-gap-engine
+span: flow-fit
+key:
+- strategy
+- ts
+- direction
+sessions:
+- ny-pre-open
+session_window: "entry 09:30 open, hard exit 10:00 (holds through the bell by design\
+  \ \u2014 semantics ruling logged in the candidate file)"
+signal_ts_is_fill: true
+mechanism_families:
+- session-structure
+- order-flow
+input_columns:
+- gap_pts
+- prior_rth_range
+- d5_preopen_delta
+sizing_regime: research-native fixed-$160-risk (1/risk MNQ sizing; NOT funded-governed)
+execution_semantics:
+  two_sessions: false
+  close_reverse: false
+  one_per_level: false
+commission_included: true
+exit_reason_vocab:
+- stop
+- target
+- time_1000
+counts:
+  rows: 51
+  days: 51
+  span_days: 2025-06-04..2026-06-24
+  net_pl: 837
+provenance:
+  commit: ef677f2
+  book:
+    generator: scripts/nypre_book.py
+    spec_frozen_in: research/candidates/nypre-gap-engine.md
+  reproduce: python -m scripts.nypre_book
+  holdout_looks_spent: 0
+  gaps:
+  - "research-native sizing (contract \xA77 class)"
+  - "flow span only \u2014 both gates read the footprint tape"
+  - "small n: the ledgered \xA72.2 warning applies to every statistic"

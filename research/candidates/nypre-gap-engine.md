@@ -100,3 +100,31 @@ trade (price commonly retests against entry before filling; the canon's own
 BE-vs-V8 lesson repeating). EXIT SPEC FREEZES AS-IS per ship contract: 1×gap
 stop, prior-close target, 10:00 time-stop, no BE. Three arms ledgered as
 negative results; current spec confirmed by tournament rather than assumption.
+
+### Trial 8 — reference metrics RESTATED under the standardized tie-break (2026-08-05)
+The trial-6 headline (WR 63%, +498 pts, $+1,797, PF 1.80) was computed under
+the pre-standardization optimistic intrabar fill. Under the trial-7
+conservative standard (stop checked before target inside a bar) the SAME
+frozen spec reads: n=51, WR 57%, +406 pts, $+837, PF(pts) 1.61 / PF($) 1.24,
+DD $725, halves +11/+15/+380 (2026-heavy). Spec unchanged; numbers restated.
+The book now lives as committed self-checking code — `scripts/nypre_book.py`
+emits it through the contract (output/emission_nypre_gap_fit.parquet) and
+fails loudly on any drift from these numbers.
+
+### Trial 9 — GRADING (2026-08-05, Brake's graders) — FAILS the DSR screen
+Full pack in output/nypre_grading_report.md (scripts/nypre_grade.py).
+PBO on the exit tournament: **0.02** — the trial-7 freeze is sound. MC/portfolio
+gates all pass (canon+both P(bust) 0.2-0.4% vs the 1% bar; 1 shared input
+family; ~16% minute overlap with the canon, gold-leg window). But DSR: 0.405
+(rebuilt arms) / 0.291 (family, 7) / **0.108 (program, 34 arms)**; PSR(0) only
+0.770. Minimum track to certify vs zero at this Sharpe: **1,319 days (we have
+268)**; vs the program-deflated benchmark: **unreachable** — the observed daily
+Sharpe (+0.046) sits BELOW the expected best-of-34-noise-arms Sharpe (+0.122).
+A search this size would be EXPECTED to produce one noise strategy this good.
+VERDICT: **SHELVED-UNPROVEN — not shippable on fit evidence.** Premise stands
+(both cohort legs era-consistent), economics thin but real; no holdout look
+recommended — a look cannot change this verdict and looks are scarce.
+Reopening burden: accrued span (live shadow or extended data), or
+certification at PORTFOLIO level (see the combined-book note in
+nypre-inventory-correction.md trial 8 — the sleeve is a book component, not a
+standalone ship).
