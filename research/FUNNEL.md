@@ -22,9 +22,13 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - GATES TRIED: absorption-as-defined fires 4% (n=4 — looser variant is a
   declared future arm); wall>=3 n=10 flat. Geometry, not gating, carries it
   so far.
-- NEXT: 23-24 candle era check at the SAME geometry → exit/stop arms (§6.0
-  default declared first) → graders under §5.9 bars.
-- CANON SHAPE: ahead of canon's arc (canon raw was negative pre-wall-gate).
+- ERA CHECK (full span, candles): 2025 PF 1.56 (n=101, +$2,455) / 2026 PF
+  1.57 (n=57, +$2,503) / 23-24 PF 1.20 (n=198, +$5,907) — POSITIVE EVERY
+  ERA, no flip; 356 trades, WR 41%.
+- NEXT: exit/stop tournament (§6.0 default: 0.25xIB stop, mid target) →
+  graders under §5.9 bars → correlation battery vs canon gold leg.
+- CANON SHAPE: ahead of canon's arc (canon raw was negative pre-wall-gate);
+  era rung passed on the first attempt, no rebalance needed.
 - HISTORY NOTE: killed twice by strawman censuses (missing trigger; harsher
   race than the taught trade), vacated on canon-parity, alive on retest —
   the correction that proved the framework audit mattered.

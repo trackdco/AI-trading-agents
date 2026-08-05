@@ -104,3 +104,16 @@ as-taught, variables searched, dead in every era of the search span.
 TOMBSTONE (branch A, final): the IB breakout is dead on 2025-26 NQ — raw,
 flow-confirmed, and wall-conditioned alike. The decay+crowding story
 stands. Branch arm count: 8 new arms this session (family 10).
+
+### Trial 6 — branch B ERA DISCIPLINE (2026-08-05, full span) — PASSED EVERY ERA
+scripts/nya_ivb_fade_era.py (output/nya_ivb_fade_era.parquet). The taught
+geometry, candles only, 2023-2026: **2025 PF 1.56 (n=101, +$2,455) / 2026
+PF 1.57 (n=57, +$2,503) / 2023-24 PF 1.20 (n=198, +$5,907)** — positive in
+every era, no flip, 356 trades total, WR 41%, +2,539 pts. The weakest era
+(23-24) is still positive — this is not a regime fluke. NOTE the irony for
+the intake doctrine: the branch the strawman censuses killed twice is now
+the healthiest candidate in the program, and the famous branch is dead.
+STATUS: to the exit/stop tournament under §6.0 (default already declared:
+0.25xIB stop, mid target, no BE) with IB-length variants 15/60 as declared
+challengers; then graders under §5.9 bars; then correlation battery vs
+canon (clock overlap with gold leg — mandatory). Family arm count 11.
