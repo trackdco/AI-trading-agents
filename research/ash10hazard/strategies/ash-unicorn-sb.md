@@ -2,7 +2,7 @@
 id: ash-unicorn-sb
 name: "Unicorn Model / ICT Silver Bullet — his names, both used in the same video"
 trader: ash10hazard
-sources: [1cMWnAxElA0 @ 00:00–14:29, pD5l_gEje9I @ 00:00–08:54]
+sources: [1cMWnAxElA0 @ 00:00–14:29, pD5l_gEje9I @ 00:00–08:54, UBIHB1oB784 @ 00:00–07:40]
 sessions: [New York]
 instruments: [NQ (traded), ES (confirmation only, not traded)]
 timeframes: [HTF: 15m for sweeps/structure, entry: 1m–5m]
@@ -28,15 +28,28 @@ and this one genuinely does not.
 > *"The New York open, which happens at 9:30 a.m. New York local time… And then you'll be
 > trading until the end of the PM macro… till 2:15 p.m."* `[@ 00:00–00:21]`
 
-**Macro windows are confluence, NOT a filter.** `[stated]` — important, and the opposite of
-how the channel's video titles present it:
-> *"Macro entries are obviously an added confluence"* `[@ 00:45]`
-> *"just trading the full session completely eliminates the fact that you missed those
-> trades. And if a trade presents itself, then it's valid to take."* `[@ 01:26]`
+**Macro windows — status DISPUTED between his own videos.** Do not treat either reading as
+settled; see Contradictions #1.
+> `1cMWnAxElA0 @ 00:45–01:26`: *"Macro entries are obviously an added confluence"* … *"just
+> trading the full session completely eliminates the fact that you missed those trades."*
+> `pD5l_gEje9I @ 00:00`: *"the key factors are one, you need to be inside a macro."*
 
-**Directional bias** comes from which side of liquidity was swept — sweep of buy-side →
-look for shorts. `[inferred]` from all four examples `[@ 05:03, 07:16, 08:50, 12:04]`; he
-never states the bias rule in the abstract.
+**Directional bias — two layers.**
+
+*Which side to trade* comes from which side of liquidity was swept — sweep of buy-side →
+look for shorts. `[inferred]` from all four examples in `1cMWnAxElA0 @ 05:03, 07:16, 08:50,
+12:04`; never stated in the abstract.
+
+*Whether bias is aligned* (step 6 of his checklist) is **multi-timeframe imbalance
+alignment**. `[stated]` `[UBIHB1oB784 @ 01:07]`:
+> *"on the 4-hour time frame, we're trading out of this 4-hour bullish gap. If we look on the
+> 1-hour, we're trading out of this 1-hour bullish gap. Look on the 15, we're trading out of
+> that 15. If we look at the five as well, trading out of a 5-minute bullish gap, too. So, we
+> have a completely fully bullish bias."*
+
+Price trading out of a gap in the same direction on **4H, 1H, 15m and 5m**. He shows 4/4 and
+calls it "completely fully" bullish; **how many must align for a valid setup is not stated**
+— `[unclear — needs review]`.
 
 ## Setup — conditions that must be present
 
@@ -58,7 +71,7 @@ which came from watching examples rather than from a stated checklist:
 | 3 | **Market structure shift on both NQ and ES** | |
 | 4 | **Inverse order block** — bearish OB inverses for longs, bullish for shorts | becomes *mitigation* or *breaker* block "depending on if the previous short-term high got taken" `[pD5l_gEje9I @ 00:42]` |
 | 5 | **Inverse OB paired with a fair value gap** | the FVG is the entry |
-| 6 | **Aligned bias** | never operationalised — `[unclear — needs review]` |
+| 6 | **Aligned bias** | ✅ **operationalised in rev c** — multi-timeframe imbalance alignment, see below |
 
 **Optional confluence — SMT divergence.** `[stated]` Explicitly not required:
 > *"that would be a bullish SMT between the two assets which is you know it's **not a
@@ -122,18 +135,35 @@ Variant, condition undefined:
 
 ## Targets / trade management
 
-**Target: 2R, placed at "the opposing draw on liquidity".** `[stated]`
+**Target: the opposing draw on liquidity.** `[stated]` Whether that is *capped* at 2R is
+disputed across videos:
 > *"I'll look for a two R at the opposing draw on liquidity which is clear price is going to
-> go and draw to hit anyway"* `[@ 06:30]`
+> go and draw to hit anyway"* `[1cMWnAxElA0 @ 06:30]`; *"going for a flat 1 to 2 RR"*
+> `[pD5l_gEje9I @ 02:57]`
+
+but in `UBIHB1oB784 @ 01:29` he takes what the draw gives — 53-point stop, 122-point target,
+≈**2.3R** — and banks ~2.45R. **Reading: the draw sets the target and R is the consequence;
+"2R" is the typical result, not a cap.** `[inferred]` — see Contradictions #4.
 
 **Break-even:** when price reaches 50% of the entry→TP range. `[stated]`
 > *"we have this swing low on NQ that's 50% of the range between our entry point and TP. So,
 > once price takes this point, I would be going break even."* `[@ 06:53]`
 
-In example 3 he instead uses the **New York open low** as the break-even trigger `[@ 10:01]`
-— a different rule, same video. See Contradictions.
+Confirmed three times: `[1cMWnAxElA0 @ 06:53]`, `[pD5l_gEje9I @ 03:50]`,
+`[UBIHB1oB784 @ 03:12]`. **This is the most consistently stated rule in the whole card.**
 
-**Trailing — stated then disowned in the same breath.** `[stated]`
+The **New York open low** variant `[1cMWnAxElA0 @ 10:01]` appears once and never again —
+now read as a one-off, not a competing rule.
+
+**Trailing — stated then overridden in all three videos.** Treat this section as
+documentation of what he *says*, not what he *does*. In `UBIHB1oB784 @ 07:40` he states his
+own rule would have lost the trade being demonstrated:
+> *"trailing with the normal way that I usually trail is, you know, it's going to get stopped
+> out. You got to let price do its thing."*
+> and `[@ 03:40]`: *"there's nowhere to really trail my stop loss to yet. I don't see any
+> valid points to do that, and I want to let my trade run."*
+
+The stated system: `[stated]`
 > *"if it hits a 1R, you trail aggressively, hits a 2R, you go break even, and if it hits a
 > 3R, then obviously you let the trade play out for a 3R."* `[@ 02:54]`
 
@@ -205,9 +235,18 @@ See `research/ash10hazard/channel-overview.md`.
    `[1cMWnAxElA0 @ 01:26]` vs "a five or 15 minute low" `[pD5l_gEje9I @ 00:21]`.
    Which governs? `[unclear — needs review]`
 
-3. **"Aligned bias" is step 6 of his own checklist but never operationalised.** The only
-   elaboration is *"we have a bullish bias using imbalances"* `[pD5l_gEje9I @ 02:57]`.
-   `[unclear — needs review]`
+3. ~~**"Aligned bias" never operationalised.**~~ **RESOLVED rev c** — it is multi-timeframe
+   imbalance alignment (4H/1H/15m/5m) `[UBIHB1oB784 @ 01:07]`. Residual: how many of the four
+   must align. `[unclear — needs review]`
+
+4. **Target: fixed 2R or take-the-draw?** *"flat 1 to 2 RR"* `[pD5l_gEje9I @ 02:57]` vs a
+   122-point target on a 53-point stop ≈2.3R `[UBIHB1oB784 @ 01:29]`. Current reading is
+   take-the-draw, but it is `[inferred]`.
+
+5. **The stated trailing system is contradicted in all three videos**, most sharply in
+   `UBIHB1oB784 @ 07:40` where he says his normal trailing *"is going to get stopped out"* on
+   the trade being demonstrated. **Any faithful test must implement the discretionary
+   behaviour, which is not specifiable — or test a fixed variant and label it as ours.**
 2. **Break-even has two different rules in one video** — 50% of entry→TP range `[@ 06:53]`
    vs the New York open low `[@ 10:01]`. He does not reconcile them.
 3. **Trailing is stated as a system then explicitly abandoned** `[@ 02:54]` vs `[@ 03:19]`.
@@ -255,5 +294,22 @@ no stated checklist existed in that video.
   channel-level highlight-reel critique.
 - Sweep timeframe conflict logged (15-min vs 5-or-15-min).
 
-**Still uncarded:** `UBIHB1oB784` (transcribed, not yet read). ~47 further videos enumerated
-but not pulled — mostly P&L posts rather than tutorials.
+**2026-08-05c** — revised from `UBIHB1oB784`. Changes:
+- **Open question 3 RESOLVED**: "aligned bias" = multi-timeframe imbalance alignment across
+  4H/1H/15m/5m `[@ 01:07]`. Residual: how many must align.
+- Mitigation-vs-breaker rule **confirmed in application** `[@ 01:07]`.
+- Break-even at 50% now confirmed in **all three** videos — the card's most consistent rule.
+  The NY-open-low variant reclassified as a one-off.
+- Target section rewritten: the draw sets the target, R is the consequence `[@ 01:29]`.
+- Stop section: he gives a **confluence justification** for placement, not just "recent
+  swing" `[@ 01:58]`.
+- Trailing reframed as *documentation of what he says, not what he does* — he states his own
+  rule would have lost this trade `[@ 07:40]`.
+- Macro dispute now **2–1 toward required** on behaviour `[@ 00:00, 00:23]`, still formally
+  unresolved.
+- New terms logged to glossary: *breakaway gap* `[@ 04:53]`, *draw on liquidity*.
+
+**Still uncarded:** ~47 further videos enumerated but not pulled — overwhelmingly P&L posts
+and vlogs rather than tutorials. Next highest-value targets if the team wants more:
+`bnVKxbOokBQ` (Silver Bullet breakdown) and `01xGCvuY3p8` (trade management / break-even /
+trailing — likely to resolve Contradiction #5).

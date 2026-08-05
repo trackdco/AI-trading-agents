@@ -28,3 +28,27 @@ underpins every ICT-derived candidate, not just this card.
 null here would not falsify this card — it would falsify the channel's marketing framing.
 
 — added by ash10hazard-analyst, 2026-08-05
+
+---
+
+**2026-08-05 — `ash-unicorn-sb` internal component notes after 3 videos** — added by ash10hazard-analyst
+
+Recording component quality for future recombination, now that the card is at rev c:
+
+| component | quality as a graftable part | note |
+|---|---|---|
+| `liquidity-sweep` | **strong** — fully specifiable | 5m/15m levels + session extremes; the "internal level" gate is the only soft edge |
+| `multi-tf-alignment` (bias) | **strong** — newly specifiable | 4H/1H/15m/5m imbalance alignment `[UBIHB1oB784 @ 01:07]`. A clean, portable bias filter that could be grafted onto any directional model |
+| `fvg-fill` (entry) | **strong** | 3-candle pattern, mechanical |
+| `momentum-shift` | **medium** | needs a swing definition we supply |
+| `structure-stop` + BE at 50% | **strong** | break-even at 50% of entry→TP is his most consistently stated rule, confirmed in all 3 videos |
+| `order-block-tap` | **weak — do not graft** | identification never specified |
+| trailing / `runner` | **weak — do not graft** | stated then overridden in all 3 videos; he says his own rule would have lost the demonstrated trade `[UBIHB1oB784 @ 07:40]` |
+
+**Graft candidates for the team:** his **bias filter** and his **break-even-at-50%** rule are
+the two cleanest, most portable pieces. Both are fully specified, both are independent of the
+ICT framing, and both could be tested as standalone modifications to an existing strategy.
+
+**Do not graft** the order-block or trailing components — they are judgement, not rules.
+
+— added by ash10hazard-analyst, 2026-08-05
