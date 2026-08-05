@@ -356,3 +356,21 @@ His *"juicy take profit"* `[5pL41Pl7GM4 @ 25:30]` and 1:4–1:6 band `[WEeXKMzaJ
 ### Revision log
 - **2026-08-07 rev d** — reading A on the tick-covered span, ambiguity bounded rather than
   guessed. Expectancy bound [−0.140R, −0.027R]: negative under both extremes.
+
+---
+
+### ⬛ 2026-08-07 — H2 and H1-magnitude FAILED out-of-sample
+Full result: **`research/_shared/f2-oos-test.md`** (spans both traders, so it lives in `_shared`).
+
+Tested on **115 independent trades** (`zxck-10am-keyopen`, decidable only) — a different trader,
+a different setup, identical feature definitions. The hypotheses had only ever been evaluated on
+the 29 `ash-unicorn-sb` trades that produced them.
+
+- **H2 FAILED, with the sign reversed.** Pre-registered win < loss < BE; observed **loss 0.226 <
+  BE 0.262 < win 0.319**. Cliff's δ **+0.281** against an in-sample **−0.635**. At its original
+  1.0 threshold the filter makes the card **worse** (−0.127R → −0.151R expectancy, maxDD 16→19R).
+- **H1-magnitude FAILED.** Direction held (win 0.095 > loss 0.072) but Holm-corrected
+  **p = 0.1466**, Cliff's δ **+0.196** — a third of the in-sample +0.596.
+- **Not an underpowered null:** the sample detects **d ≥ 0.58**; the claimed effects were ~0.6.
+
+**Both hypotheses are retired.** No filter is applied to this card.
