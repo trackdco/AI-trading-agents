@@ -142,7 +142,10 @@ def main() -> None:
                 if pts is not None:
                     risk = abs((vah if sd_ < 0 else val) - sd_ * 0.25 * width - p["entry"])
                     trades[v].append(dict(day=d, year=year, pts=pts,
-                                          risk=max(risk, 1e-9)))
+                                          risk=max(risk, 1e-9),
+                                          clock=r.clock.iloc[p["k"]],
+                                          comp_age=float(C.loc[d, "comp_age"]),
+                                          width=width))
                     pos[v] = None
 
         for v in ("VA", "VB"):  # time-stop
@@ -152,7 +155,10 @@ def main() -> None:
                 sd_ = p["side"]
                 risk = abs((vah if sd_ < 0 else val) - sd_ * 0.25 * width - p["entry"])
                 trades[v].append(dict(day=d, year=d[:4], pts=sd_ * (cl - p["entry"]),
-                                      risk=max(risk, 1e-9)))
+                                      risk=max(risk, 1e-9),
+                                      clock=r.clock.iloc[p["k"]],
+                                      comp_age=float(C.loc[d, "comp_age"]),
+                                      width=width))
 
     print(f"qualifying overnight sessions: {n_sessions}")
     for v, lbl in (("VA", "V-A shift-out (his executed variant)"),
