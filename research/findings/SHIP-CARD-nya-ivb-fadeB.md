@@ -89,5 +89,7 @@ year in four, depth unknown.
    hold for the banked 15-min-IB holdout adjudication (its 23-24 was
    +$1,480 but its 2024 split is UNKNOWN and checking it burns holdout
    information) / hold for more evidence.
-2. Chained-agents-vs-mechanical rung (Pat's replay methodology).
+2. Chained-agents-vs-mechanical rung (replay harness adapted from
+   scripts/capture_desk_run.py; playbook = trial-11 signatures; agent must
+   beat the mechanical book on the declared funded statistic).
 3. Shadow period; two-party arming; §6 human sign-off.

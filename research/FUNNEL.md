@@ -36,6 +36,18 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - NEXT: book-level grading (canon + this + pre-market pair).
 - CANON SHAPE: ahead of canon's arc (canon raw was negative pre-wall-gate);
   era rung passed on the first attempt, no rebalance needed.
+- IN-TRADE SIGNATURES (§5.12-5, trial 11): canon grammar TRANSFERS — press
+  state at t+3 wins 67% vs 41% base (+26pp, positive lift every year); dying
+  state (MAE<=-0.5R by t+3) wins 19% (-22pp, consistent every year);
+  giveback ambiguous, as on the canon. This is the agent rung's playbook.
+  HARNESS: adapting scripts/capture_desk_run.py (the desk-run code in this
+  repo) to the fade myself — no Pat dependency for the backtest rung; Pat
+  owns live-box integration only.
+- FIRST-FORMED SPLIT (trial 13, intake round 2, prereg'd): REFUTED — the
+  MrZincx/Edgeful 73% stat does NOT transfer as a gate. Fade-first-formed
+  n=83 PF 1.02 vs fade-second-formed n=273 PF 1.52; permnull p=0.579.
+  Default untouched; structural note: 273/356 tradeable touches are of the
+  second-formed extreme, and that side carries the family's edge.
 - HISTORY NOTE: killed twice by strawman censuses (missing trigger; harsher
   race than the taught trade), vacated on canon-parity, alive on retest —
   the correction that proved the framework audit mattered.
@@ -51,7 +63,9 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   fail events on flow span.
 - RAW P&L (L1, full span): n=248, WR 35%, −1,025 pts, PF 0.83 — ugly as the
   law expects.
-- VARIABLE LIFT: depth tercile WR 12%→59% (the trapped-mass variable);
+- VARIABLE LIFT: extension-depth tercile WR 12%→59% (how far price
+  stretched beyond the edge — candle geometry, NOT order-book depth;
+  renamed 2026-08-05 per §5.12.1-15);
   flow gate (tape-didn't-pay) + depth + fixed geometry: n=28, WR 46%, +647
   pts, +$984, PF 2.06 (strict-cost 1.99).
 - SPLITS (conditioned): 25H1(June) −109 / 25H2 +364 / 26H1 +392.
@@ -180,11 +194,37 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   all-touch expansion) owed before any verdict — no bin off this.
 
 ## QUEUE (cards open at census)
+- INTAKE ROUND 2 (2026-08-05, specs in research/transcripts/*/SPEC-as-taught.md,
+  credibility in research/findings/intake2-credibility.md):
+  - nya-ivb-fade first-formed-extreme arm — RUN AND REFUTED same day
+    (trial 13, card above); no gate, default stands.
+  - nya-ib50-continuation (MrZincx Model 1 as taught: enter IB midpoint
+    toward predicted second-formed-extreme break; opposite vector to our
+    fade) — new candidate, full funnel.
+  - jadecap-daily-sweep (1H swing-point raid + SFP close-back-inside +
+    5m FVG entry, NY AM/PM windows) — new candidate, full funnel.
+  - orochi corrected respecs: sd2-rotation-fade w/ retest+add grammar
+    (overnight analog) + failed-auction re-run on the taught hours-scale
+    clock — verdict revisits, prior tests were strawmanned.
+  - daxton-ifvg-continuation (EMA-stack bias + first inverted FVG after
+    9:30, 5m close entry) — LOW priority: FCA warning on his handle,
+    claims unverifiable; cheap census only if slate has room.
 - orochi-vwap-regime-pair (edge fade gated by rotational condition vs trend
-  side) — prereg next.
+  side) — folded into the sd2 respec above.
 - level-interaction trigger family (canon-frequency substrate, ~10-15 raw
   triggers/day) — prereg after.
 - sweep-reclaim — awaiting Brake dedup vs london-level-trap-fade.
+- §5.12.1-15 FEATURE SEMANTICS AUDIT on our depth features — RUN 2026-08-05,
+  first pass CAUGHT A REAL BUG: the depth archive's second file family
+  stores already-decimal prices; the blanket 1e-9 decode corrupted
+  wall_dist/best_bid/best_ask on 52.5% of rows (295 days). FIXED
+  (per-file scale detection in scripts/depth_walls.py, re-extracted,
+  0% wrong-scale). NO VERDICT CONTAMINATED: every consumer (nya_fa_deep,
+  nya_ivb_retest) read only wall_ratio, which is size-based and
+  scale-free — verified identical pre/post fix. Price-based depth reads
+  (wall_dist, book-vs-level joins) only became usable TODAY. Naming
+  collision also fixed: the failed-auction card's "depth tercile" is
+  EXTENSION depth (candle geometry), not order-book depth — renamed.
 
 ---
 

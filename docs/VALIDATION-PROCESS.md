@@ -548,15 +548,57 @@ The dissection is law. Binding requirements it adds, beyond §5.11:
 9. **State-conditioning of ENTRY gates is an extension the canon never ran**
    — legal, but it multiplies the search space and requires its own
    permutation null before any regime-specific edge ships.
-10. **Class priors from the canon trial:** depth carried the entire canon
-    edge (+0.5 to +1.3R); flow was near-worthless AT entry and decisive
-    INSIDE the trade; context died almost everywhere; structure generates
-    population, not edge. Test everything regardless — but weight
-    skepticism accordingly, and expect the edge where the trapped liquidity
-    is measurable.
+10. **Class priors from the canon trial** (v2-corrected 2026-08-05): depth
+    carried the entire canon edge (+0.5 to +1.3R) — but the dissection's
+    adversarial pass established W/D are **displacement geometry, not wall
+    detection** (W=1: entry sits beyond the whole visible ladder; D=1:
+    visible book still exists ahead; MBP-10 spans a median ~5pts total;
+    size enters only via WALLSZ). The prior is therefore: the edge lives in
+    displacement measured against visible liquidity — a more portable
+    signal than "big resting orders." Flow was near-worthless AT entry and
+    decisive INSIDE the trade; context died almost everywhere; structure
+    generates population, not edge. Test everything regardless — but weight
+    skepticism accordingly.
 11. **The framework produces evidence, not decisions** — win-rate/green-day
     preferences over raw expectancy are the operator's call, made visible
     and quantified (the base-V8 ruling).
+
+#### §5.12.1 v2 amendments [RATIFIED from the adversarially-verified dissection, 2026-08-05]
+
+The v2 pass (12 agents, 41 corrections, 4 changed conclusions) adds four
+binding rules:
+
+12. **Adversarial refutation is part of discovery.** A finding is not a
+    finding until something has tried to kill it. Every report-level claim
+    that feeds a verdict gets a refutation pass (agent or harness) before
+    it enters a ship card — six confident, well-cited reports carried a
+    ~40% conclusion-level error rate until attacked. (permnull and PBO
+    already do this for statistics; this extends it to PROSE claims.)
+13. **Basis-stamping.** Every comparative conclusion ("arm X beats arm Y",
+    "family closed") is pinned to the exact book basis it was computed on
+    (population, execution rules, sizing base). When the basis changes,
+    every conclusion computed on the old basis silently reopens — the
+    canon's exit-family closure ("all 25 uniform arms lose") was FALSE on
+    the shipped 763/$160 book, where eight arms beat V8. Ship cards state
+    their basis; stale-basis conclusions may not be cited as closed.
+14. **Tiered ladders must be monotonicity-tested per session per era.**
+    The canon's sizing ladder is non-monotone in 3 of 6 session x era
+    cells (pooling hid it). A ladder that fails monotonicity is a
+    defensible ordering at best — it may ship as an operator choice, never
+    be cited as a measured relationship.
+15. **Feature semantics audit.** What a feature ACTUALLY computes must be
+    verified against what its name/prose claims (recompute from raw,
+    cross-tab the edge cases) before any verdict cites it — the canon's
+    entire depth story was mis-described in every repo prose for months.
+    Absolute thresholds (e.g. WALLSZ >= 7 contracts) are regime-sensitive
+    by construction (book thickness shifted 1.45x within fit); prefer
+    quantile/relative thresholds, or measure the sensitivity explicitly.
+
+Standing correction to a LIVE artifact, flagged not fixed (two-party rule):
+trade-manager-v3's system prompt claims press-state "wins 79-88% in every
+era measured" — on the exact stated definition it is 72.3% fit-overall and
+64.6% on fit/2026 (n=48); only holdout reaches 86-91%. The lift is real;
+the range overstates fit. Correct at the next certification cycle.
 
 ### 5.11 The pre-ship checklist [RATIFIED 2026-08-05 with §5.12 — from today's caught gaps]
 
