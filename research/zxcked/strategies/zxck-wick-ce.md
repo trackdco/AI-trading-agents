@@ -248,3 +248,87 @@ n=12 because an FVG is present at just 15 of 47 qualifying wicks.
 
 **Still PARTIAL — Q3 unresolved by instruction**, and any baseline carries the
 inside-the-wick liquidity reading as a tagged `[inferred]` assumption.
+
+
+---
+
+## RAW BASELINE — 2026-08-07: **decisively negative, and worse than a coin flip**
+
+`scripts/zxck_wickce_baseline.py` · `zxck-wick-ce-raw-trades.csv`
+
+### Spec
+NQ 1-min · **09:45–10:15 ET** `[stated-by-user]` · **2025-06-01 → 2026-07-15** · exit = the locked
+convention, identical to `ash-unicorn-sb`. Flow computed on **38/38**, **not applied**.
+
+### Result
+
+| | |
+|---|---|
+| n | **38** |
+| win / BE / loss | **5 / 1 / 32** |
+| **win rate** | **13.2%** |
+| avg R | −0.579 |
+| cost | 0.177R/trade (median stop **7.1pt**) |
+| **expectancy** | **−0.745R net** |
+| total | −22.0R gross / **−28.3R net** |
+| **max drawdown** | **21.0R** |
+| direction | 21 long / 17 short |
+
+| era | n | WR | avg R | total |
+|---|---|---|---|---|
+| 2025 | 17 | 17.6% | −0.412 | −7.0R |
+| 2026 | 21 | 9.5% | −0.714 | −15.0R |
+
+**Negative in both eras.** This is Powell's **#1** model — the one he says you could trade and
+never use anything else `[dlSXQgM1ZpA @ 02:41]`.
+
+### It is not a null — it is materially worse than one
+
+| | win | BE | loss |
+|---|---|---|---|
+| random-walk null (2R target, BE at 1R) | 25 | 25 | 50 |
+| **observed** | **13** | **3** | **84** |
+
+### The mechanical reason, and it is structural
+
+**Entry is the wick's MIDpoint; the stop is the wick's TIP. So risk is exactly half the wick,
+every time — and the stop sits in territory price traversed moments earlier.** A retrace to the
+CE is already price moving back into the wick; the tip is only half a wick further on.
+
+Median wick 14.1pt → **median stop 7.1pt**, which makes costs **0.177R/trade — 3.3× ash-unicorn-sb's
+0.053R**. But the gross figure is −0.579R, so this is not a cost artefact.
+
+### ⚠️ Defect found and fixed during this run — recorded because it matters elsewhere
+
+A bar-by-bar replay of 2025-06-05 showed the fill happening at 10:14 on a bar whose low had
+**already traded through the stop**. The exit scan started at `t+1`, so a fill-and-stop inside one
+minute was invisible — an **optimistic** bias.
+
+Fixed: the entry bar is now checked for the stop, with the stop assumed first per the locked
+convention. **22 of 38 trades had a fill bar that already reached the stop.** No outcome changed
+(they all stopped on the following bar anyway), so the numbers above are unaffected — but the bias
+is removed.
+
+> **`scripts/ash_raw_baseline.py` has the same `w.iloc[t+1:]` pattern.** Its stop is the
+> order-block edge at a 25.5pt median, so a same-bar fill-and-stop is far less likely — but the
+> latent bias is identical and should be checked before that card is graded.
+
+### What is NOT being done
+
+The stop rule is *"at the wick's extreme, no buffer"* — the most literal reading of *"stop loss at
+the high or low of the rejection block"* `[a3LzCUZU5ko @ 06:18]`. A buffered variant would very
+likely improve this number. **It is not being run.** Tuning a stop until a failed card passes is
+exactly the fabrication this programme exists to prevent; a buffered version would be a **new arm
+needing its own justification**, not a fix.
+
+Also unchanged: the 10pt wick floor stays `[A] OURS`, untuned; no filter applied; the Q3
+liquidity-side reading rides as a tagged `[inferred]` assumption on every number above.
+
+### Verdict
+**PARTIAL — and now baselined negative.** The card is not retired (Q3 is still open by
+instruction, and the assumption set is ours in two places), but on held data, as mechanized, it
+loses money decisively.
+
+### Revision log
+- **2026-08-07 rev f** — raw baseline, n=38, −0.745R expectancy. Same-bar stop defect found and
+  fixed mid-run. AM1 window, locked exit, no filters.
