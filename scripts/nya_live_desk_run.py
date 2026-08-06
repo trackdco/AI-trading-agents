@@ -1002,8 +1002,8 @@ def main() -> None:
     tape = pd.read_parquet(ROOT / "output/fp_minutes.parquet").sort_index()
     dcache: dict = {}
     print(f"live-sim desk: {len(sel)} days, {sum(len(days[d]) for d in sel)} "
-          f"signals | {WORKERS} workers, calendar-month batches, journal chains "
-          f"monthly", flush=True)
+          f"signals | {WORKERS} workers, "
+          f"{'calendar-month' if BATCH_BY_MONTH else '10-day'} batches", flush=True)
 
     def one(d, journal):
         t0 = pd.Timestamp(f"{d} 00:00", tz=NY)
