@@ -43,3 +43,5 @@ runs/*/.lock
 # rather than an artifact. The parquet beside it is derived and stays ignored.
 !output/trial_ledger.jsonl
 output/trial_ledger.parquet
+# raw subtitle files — transcripts are kept as converted markdown
+research/transcripts/**/*.vtt

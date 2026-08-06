@@ -176,6 +176,52 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - CANON SHAPE: raw 0.90 → legal cuts → 1.89 era-consistent — the textbook
   arc, second family to show it.
 
+## nya-vwr-rotation — VWAP sd2 rotation fade RTH (Orochi, as taught) — PARKED AT STAGE 1 [ANGUS 2026-08-05]
+- PARK RULING: Angus parked the family at stage 1 after the raw card. No
+  verdict, no bin — the stage-2 variable search is simply not spent on this
+  slot. Reopens cheaply: prereg, harness, event set and ledger rows are all
+  committed, so a reopen starts at stage 2 with nothing to rebuild.
+  Reopen condition: a slate slot, or a reason to believe the 18:00-anchor
+  arm (declared, never run) changes the picture.
+- STAGE: prereg (docs/PREREG-vwap-rotation.md, +4 amendments) → uncapped
+  raw census → carded → STOPPED. No holdout look spent. Ledger rows 241-255.
+- RAW TRIGGERS: 2,168 distinct sd2 reaches / 290 RTH sessions (7.48/sess,
+  first-reach-only 446 = 1.54/sess); reaches on 289/290 sessions.
+  THE EVENT EXISTS — no §5.9.1 census kill is available.
+- GATE ATTRITION: G1 (default, 2 closes beyond a ±1σ edge = acceptance)
+  removes 89%, 2,168 → 242 (0.83/sess — matches his taught 0-2/day cadence,
+  though RESPEC §8 expected only ~half removed). G2 325 / G3 626 / G4 113 /
+  G5 161.
+- RAW P&L (default E-a/S1cap20/T1-mean/developing/G1): n=242, WR 27.7%,
+  −392 pts, +$4,397, PF 1.14, mean +0.114R. Strict cost +$927, PF 1.03.
+- THE HEADLINE IS NOT EVIDENCE — three diagnostics void it:
+  (1) CAUSALITY — S1 stops beyond the trigger bar's own extreme, unknowable
+  at an intrabar limit fill. Strictly causal sibling S1c = **−$58, PF 1.00**.
+  The edge IS the leak. (2) FRAGILITY — total +27.5R, top 3 trades +26.0R,
+  remaining 239 trades **+1.5R = +$242** (drop-top-3, the rr_floor
+  precedent). (3) RISK SKEW — winners 10.8pt risk vs losers 13.9pt, which is
+  why the arm is −392 points but +27.5R.
+- SPLITS: 25H1 +$280 (n=17) / 25H2 +$958 (n=104) / 26H1 +$4,378 (n=114) /
+  26H2 −$1,219 (n=7). Years 2025 PF 1.08 / 2026 PF 1.21.
+- ARMS (15, all ledgered, NO arm t-stat above 1.1): entries E-b +$1,415 /
+  E-c −$5,151 / E-d (SPEC-3 compound grammar) −$1,652; stops S1c −$58 /
+  S2 +$756 / S3 −$2,349 / S4cap30 −$4,691 (monotone worse as cap widens);
+  targets T2 +$3,853 / T1-frozen +$5,916 (both inherit the S1 leak); gates
+  G2 +$3,413 / G3 −$7,553 / G4 −$69 / G5 +$2,558; warm-up 10min +$1,093.
+- IN-TRADE (§5.12-5 from birth): mean R t+2 +0.030 / t+3 +0.247 / t+5
+  +0.438 / t+8 −0.011 / t+10 +0.057 / t+15 +0.037 / t+30 +0.480 — peaks at
+  t+5, given back by t+8. MFE median +1.15R, MAE median −1.00R.
+- FLAG: stops modelled at the stop price, but price travels a median 0.79R
+  beyond it inside the stopping minute — stage-2 economics need a slippage
+  assumption.
+- NEXT RUNG: flow/depth/conviction/in-trade variable search per §5.11-9c —
+  ANGUS'S CALL, not started. Depth covers only 08:00-10:29 ET, i.e. the
+  first hour of RTH.
+- CANON SHAPE: at the canon's starting point (raw unprofitable) but weaker
+  than the IVB fade was — the causal raw set is FLAT, not merely ugly, and
+  the overnight cousin NYO-ROT-01 failed its corrected retest the same day.
+  Priority argument against the slate, not a kill.
+
 ## LONDON — seven graded families, none passed (reconciled 2026-08-06, no trials charged)
 
 **PATTERN LEGEND, read this before any bare A/B/B2 below or in any London artifact**
@@ -210,6 +256,32 @@ Full detail and unspent legs: `research/LONDON-PROGRESS.md`. Verdict documents l
 - **No holdout look spent by any of the six.**
 
 ## QUEUE (cards open at census)
+- INTAKE ROUND 3 (2026-08-05) — **THRAXX / Christopher Creamer**, order-flow
+  futures trader (youtube.com/@thraxxtrades). Spec:
+  research/transcripts/thraxx/SPEC-as-taught.md; credibility:
+  research/findings/thraxx-credibility.md; candidate seed:
+  research/candidates/nya-orderflow-continuation.md (NYA-OFC-01). 15
+  teaching transcripts pulled + catalogued; 126 live NQ sessions catalogued,
+  not transcribed. NO prereg, NO data touched, NO census run.
+  **RULING [ANGUS 2026-08-05]: no strategies taken to test. No slot
+  allocated.** Retained as reference, not killed — nothing was measured, so
+  there is nothing to tombstone and no holdout look was spent.
+  - **nya-orderflow-continuation (NYA-OFC-01)** — two footprint continuation
+    entry models (big-trade acceptance; stacked-imbalance acceptance), both
+    two-candle "aggression then acceptance" sequences, gated by his
+    mandatory four-layer context. FIRST intake whose primitives land on the
+    footprint/CVD substrate rather than on candle geometry, and the first
+    where the STOP is taught rather than invented by us.
+  - Fully specified thresholds as taught: 400% diagonal imbalance ratio,
+    10-contract level floor, big trade ≥300 MNQ, 5-min execution.
+  - DECLARED TRAP: he states both models are edgeless standalone. An
+    ungated census returns a meaningless negative — the exact strawman that
+    killed nya-ivb twice before it was vacated. Gate or don't run it.
+  - BLOCKERS for the prereg: gamma/GEX not computable (no options data,
+    document as N/A per §5.11-6); MNQ→NQ scaling is a 10× trap; his BE
+    management must defeat our thrice-beaten BE null (§5.12-6); big-trade
+    detection off aggregated footprint cells is a PROXY, not exact
+    per-trade size.
 - INTAKE ROUND 2 (2026-08-05, specs in research/transcripts/*/SPEC-as-taught.md,
   credibility in research/findings/intake2-credibility.md):
   - nya-ivb-fade first-formed-extreme arm — RUN AND REFUTED same day
