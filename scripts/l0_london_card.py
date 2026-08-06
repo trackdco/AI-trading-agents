@@ -31,6 +31,23 @@ KILL_MIN_PER_SESSION = 2.0
 KILL_MIN_TRADEABLE_FRAC = 0.60
 
 
+def _types(v) -> set[str]:
+    """Cluster level types as a set, whatever container the store handed back.
+
+    §5.12.15, learned the hard way one commit ago: parquet returns this column as a
+    numpy ARRAY, and `str(np.array(['bb','vwap']))` is `"['bb' 'vwap']"` — no commas.
+    `ast.literal_eval` on that concatenates the adjacent string literals into the single
+    token `'bbvwap'`, so every membership test silently returns False and the card
+    reported 0.0% tradeable. It failed loudly enough to catch only because zero is
+    absurd. Handle every container explicitly; parse strings only when it IS a string.
+    """
+    if isinstance(v, str):
+        return set(ast.literal_eval(v))
+    if v is None:
+        return set()
+    return {str(x) for x in v}          # list, tuple, set, np.ndarray, pd.array
+
+
 def load(band: str) -> pd.DataFrame | None:
     p = ROOT / f"output/l0_triggers_london_fit_{band}.parquet"
     if not p.exists():
@@ -42,8 +59,7 @@ def load(band: str) -> pd.DataFrame | None:
     T["half"] = T["day"].str[:4] + T["day"].str[5:7].astype(int).map(
         lambda m: "H1" if m <= 6 else "H2")
     T["lon_hm"] = (T["ts_et"].dt.hour - T["et_hour_start"]) * 60 + T["ts_et"].dt.minute
-    ct = T["cluster_types"].map(
-        lambda v: set(v) if isinstance(v, (list, set)) else set(ast.literal_eval(str(v))))
+    ct = T["cluster_types"].map(_types)
     T["has_bb"], T["has_vwap"], T["has_poc"] = (ct.map(lambda s: "bb" in s),
                                                 ct.map(lambda s: "vwap" in s),
                                                 ct.map(lambda s: "poc" in s))
@@ -145,10 +161,18 @@ def main() -> int:
     L.append("")
 
     # --- 5. event-universe sensitivity ------------------------------------------
-    L += ["## 5. Event-universe sensitivity (§5.11.2) — run at stage one, not bolted on", ""]
+    L += ["## 5. Event-universe sensitivity (§5.11.2)", ""]
     W = Ts["wide"]
     if W is None:
-        L += ["_wide band not yet built_", ""]
+        L += ["**CANCELLED BY ANGUS mid-run** — *\"dont worry about 7:30 to 10:30, im only",
+              "interested in 8-10\"*. The wide-band run was killed before it produced a",
+              "parquet: **no wide-band number was ever computed, seen or reported.** The",
+              "window for this family is 08:00–10:00 Europe/London.", "",
+              "The §5.11.2 item is **not closed at L0** and does not disappear with the band.",
+              "It moves to L1, where the universe questions that live inside the declared",
+              "window are the ones that matter: **which entry timeframes are in scope** (the",
+              "detector fires on 1/2/3/5-minute and nobody has chosen yet), whether both",
+              "patterns trade, and the order-cancel policy. See the prereg amendment.", ""]
     else:
         L += ["| band | sessions | triggers | /session | tradeable (ladder) | /session |",
               "|---|---:|---:|---:|---:|---:|"]
