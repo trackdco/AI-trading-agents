@@ -8,14 +8,48 @@
 staged=$(git diff --cached --name-only)
 echo "$staged" | grep -q '^output/trial_ledger.jsonl$' || exit 0
 
+LOG=docs/LEDGER-EXEMPTIONS.log
+
+# EXEMPTION PATH. Some ledger commits legitimately carry no prereg -- a format migration,
+# a merge that carries trials rather than creating them, a tooling change. `--no-verify`
+# would allow those, but it leaves NO RECORD, which is exactly the failure this hook
+# exists to prevent in the other direction. So: exempt deliberately and the bypass is
+# written down and versioned.
+#
+#     LEDGER_EXEMPT="format migration, adds no trials" git commit ...
+#
+if [ -n "$LEDGER_EXEMPT" ]; then
+  mkdir -p docs
+  printf '%s\t%s\t%s\t%s\n' \
+    "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    "$(git config user.name 2>/dev/null || echo unknown)" \
+    "$LEDGER_EXEMPT" \
+    "$(echo "$staged" | tr '\n' ',' | sed 's/,$//')" >> "$LOG"
+  git add "$LOG"
+  echo "LEDGER EXEMPTION RECORDED in $LOG: $LEDGER_EXEMPT" >&2
+  # An exemption waives the prereg requirement, NOT the integrity tests. A bypass must
+  # never be able to drop rows or lose a sealed-look row.
+  if ! python3 -m pytest tests/test_ledger_integrity.py -q >/dev/null 2>&1; then
+    echo "REFUSED even under exemption: tests/test_ledger_integrity.py fails." >&2
+    echo "  An exemption waives the DECLARATION requirement, never the integrity guards." >&2
+    exit 1
+  fi
+  exit 0
+fi
+
 if ! echo "$staged" | grep -qE '(PREREG|VERDICT|AMENDMENT)[^/]*\.md$'; then
   cat >&2 <<'MSG'
 REFUSED: the trial ledger changed with no prereg or verdict in the same commit.
 
-Every ledger row must trace to a declaration (BRAKE-HANDOFF §4). Stage the
-docs/PREREG-*.md that authorised the trials, or the docs/VERDICT-*.md that grades them.
+Every ledger row must trace to a declaration (BRAKE-HANDOFF §4). Either:
+  - stage the docs/PREREG-*.md that authorised the trials, or the
+    docs/VERDICT-*.md that grades them; or
+  - if this commit legitimately adds no trials (format migration, merge,
+    tooling), declare it so the bypass is RECORDED rather than invisible:
 
-Override only if you know why:  git commit --no-verify
+      LEDGER_EXEMPT="why this adds no trials" git commit ...
+
+`git commit --no-verify` also works but leaves no record, which defeats the point.
 MSG
   exit 1
 fi
