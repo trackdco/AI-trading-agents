@@ -895,3 +895,52 @@ is 22 trading days, so WORKERS 10 -> 22: every calendar month now runs
 in ONE wave, 14 waves total (~4h) — half the fortnightly setup and the
 outcome he actually wanted. Charter v1.7 tells the desk its book rolls
 MONTHLY; dashboard deviation-rate now buckets by calendar month.
+
+### RUN HALTED — DEPTH/FLOW LOOKAHEAD BUG [ANGUS 2026-08-06]
+Angus found a lookahead leak in the canon and ordered everything stopped
+at 32/254 days. Traced and CONFIRMED in BOTH engines.
+
+CANON — origin scripts/condense_depth.py:46-54. The condenser keeps the
+LAST book state within each minute (`groupby("minute").tail(1)`) but
+stamps it with `r["minute"]`, i.e. the minute's START. So the snapshot
+labelled 10:15:00 is the book as of ~10:15:59. src/canon/features.py:69
+then selects `dep[dep.ts <= minute]` and takes the max — a fill at
+10:15:00 reads the 10:15:59 book. Up to 60s of future. Live cannot do
+this (ingestor reads the book at the moment of fill), so live and
+backtest genuinely diverge — and depth_at's own docstring says "the live
+ingestor MUST call this exact function". BLAST RADIUS: WALLSZ is a HARD
+GOLD ADMISSION GATE (dep_wall_below_d >= 2.75 AND WALLSZ == 1) applied
+in funded_book.load_book, so every gold trade in the book was admitted
+using a leaky read; plus dep_wall_*, dep_thick, dep_imb wherever scored.
+
+IB SHELF FADE — same class, found independently. build_shelf_trades
+reads flow features AT THE FILL MINUTE: `fl = F.loc[(day, clk)]` where
+clk is the fill minute, and fp_minutes.delta is signed volume summed
+over the WHOLE minute (indexed at minute start), with cvd a cumsum
+INCLUSIVE of that minute. The touch is intra-minute, so 3 of the 4
+conviction flags leak:
+  - early (touch at exactly 10:00)      CLEAN — it is the clock
+  - delta_with (touch-minute delta > 0) LEAKS — includes post-entry flow
+  - stretched (session cvd < 0)         LEAKS — cumsum includes the minute
+  - near_target (band distance)         LEAKS — vwap/sd at k0 include the
+                                        fill minute's full volume + TP
+That is exactly what decides CONFIRMED ($300) vs BASE ($200), so the
+tier's fit 97% WR and the sealed-months 73% were both scored with it.
+INTACT: the shelf ENTRY trigger (first touch of an intact IB extreme)
+and the MANAGEMENT walk (stop / band target / t+10 scratch, all from
+m=1) never read the fill minute's aggregate — the base strategy stands;
+the conviction layer is contaminated.
+
+PROPOSED FIX (both): strict inequality — `dep.ts < minute` for depth,
+prior-minute flow for the shelf flags — i.e. the last state genuinely
+available at the fill.
+
+STATUS OF THE HALTED LIVE-SIM RUN (32 days, runs/live_desk1): the
+agent-vs-machine COMPARISON is internally consistent (both sides traded
+the identical signal stream), so the behavioural findings — shelf
+untouched 13/13 under v1.7, canon management -$509 over 23 touched
+trades, the conviction-tier pattern where only the 1.0x tier profits
+from intervention — remain PROVISIONALLY informative. But the signal set
+itself was admitted with a leaky gate, so every absolute dollar figure
+is void and nothing here supports a ship decision. Re-run after the
+rebuild. Monitoring loop stopped; no auto-relaunch.
