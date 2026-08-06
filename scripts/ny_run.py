@@ -120,6 +120,12 @@ DTC_ALERT_REPEAT_S = 300.0
 # transient query hiccup had no path to ever clear itself if the connection then
 # stayed healthy. Now genuinely periodic, always, whenever the connection is up.
 RECONCILE_INTERVAL_S = 60.0
+# 2026-08-05 review: a position query taken the instant after a fresh fill can catch
+# Sierra's own internal state before it has caught up to the fill it just sent us --
+# reproduced live tonight (a mismatch 8s after a real fill). One retry after a brief
+# pause absorbs that without weakening the check: a GENUINE mismatch reproduces on the
+# retry too, since nothing about a real drift resolves itself in two seconds.
+RECONCILE_RETRY_DELAY_S = 2.0
 
 
 def _profile(name: str):
@@ -198,6 +204,7 @@ class NYLive:
     replay_day: str | None = None               # practice day: act on this historical day
     kill_file: str | Path | None = None         # shared with canon_run: one kill, both loops
     clock: object = None                        # Callable[[], pd.Timestamp], injectable
+    reconcile_sleep: object = None              # Callable[[float], None], injectable
 
     guard: FeedGuard = None
     watcher: RollWatcher = None
@@ -232,6 +239,8 @@ class NYLive:
             self.roll_state = RollState(root=self.root)
         if self.clock is None:
             self.clock = lambda: pd.Timestamp.now(tz="UTC")
+        if self.reconcile_sleep is None:
+            self.reconcile_sleep = time.sleep
         self._acct_fn = constant_account_fn(self.equity)
         self._feed_fn = default_feed_fn(self.ingestor, lambda: self._last_bar_ts)
 
@@ -629,16 +638,30 @@ class NYLive:
         have silently drifted while the socket was dead — a resting order could have
         filled, or a stop fired, with nobody watching). Soft: blocks NEW entries only —
         an existing position's protection is the real resting stop AT THE BROKER, which
-        needs no cooperation from this process to keep working. Never guesses a fix."""
+        needs no cooperation from this process to keep working. Never guesses a fix.
+
+        2026-08-05 review: one retry, after RECONCILE_RETRY_DELAY_S, before treating a
+        mismatch (or a query error) as real — Sierra's own position state can lag a query
+        taken right after a fresh fill by a couple of seconds, and this was reproduced
+        live. A genuine drift reproduces on the retry too; a transient one does not."""
         broker = getattr(self.execution, "broker", None)
         if broker is None or not hasattr(broker, "position"):
             return True                            # dry-run/shadow: nothing to reconcile
         expected = sum(p.size if p.direction == "long" else -p.size
                        for p in self._positions.values())
-        try:
-            actual = int(broker.position(self.account))
-        except Exception as e:                     # noqa: BLE001 — can't verify = not ok
-            self._journal({"type": "position_reconcile_error", "error": repr(e),
+        actual, err = None, None
+        for attempt in (1, 2):
+            try:
+                actual = int(broker.position(self.account))
+                err = None
+            except Exception as e:                 # noqa: BLE001 — can't verify = not ok
+                err = e
+            if err is None and actual == expected:
+                break                              # clean match — no need for a retry query
+            if attempt == 1:
+                self.reconcile_sleep(RECONCILE_RETRY_DELAY_S)
+        if err is not None:
+            self._journal({"type": "position_reconcile_error", "error": repr(err),
                            "ts": str(now)})
             self._position_mismatch = True
             return False
