@@ -56,17 +56,18 @@ BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul
 _BARS: pd.DataFrame | None = None       # per-process cache (fork inherits the parent's copy)
 
 
+_ENTRY = "E3"        # set by --entry; EC = market on displacement (prereg NYA-DSP-01)
 _MGMT = "V8"        # module-level so Pool workers inherit it (exit-model arms: V5/V6
                      # walk the SAME fills with deeper structural targets — ANGUS 30-Jul,
                      # 2R floor hard, targets structural only, menu depth is the lever)
 
 
-def l2_cfg(t_cancel: float = 100000.0):
+def l2_cfg(t_cancel: float = 100000.0, entry: str = "E3"):
     return load_backtest_config().model_copy(update={
         "win_start": dtime(7, 45), "win_end": dtime(11, 0), "max_trades_per_day": 99,
         "min_stop_points": 0.0, "post_open_min_stop": 0.0, "max_stop_points": None,
         "no_trade_start": None, "no_trade_end": None, "t_cancel": t_cancel,
-        "mgmt_variant": _MGMT})
+        "mgmt_variant": _MGMT, "entry_variant": entry})
 
 
 def load_bars() -> pd.DataFrame:
@@ -78,14 +79,14 @@ def load_bars() -> pd.DataFrame:
 
 def day_outcomes(args) -> list[dict]:
     """All of one day's triggers, one simulate() each. Module-level for Pool pickling."""
-    day, recs, lookback = args
+    day, recs, lookback, entry = args
     global _BARS
     if _BARS is None:
         _BARS = load_bars()
     seg = _BARS[(_BARS.ts_event >= pd.Timestamp(f"{day} 00:00", tz=NY)
                  - pd.Timedelta(days=lookback))
                 & (_BARS.ts_event <= pd.Timestamp(f"{day} 16:10", tz=NY))].reset_index(drop=True)
-    cfg = l2_cfg()
+    cfg = l2_cfg(entry=entry)
     out = []
     for rec in recs:
         t = Trigger(**{k: v for k, v in rec.items() if k in Trigger.model_fields})
@@ -118,7 +119,7 @@ def run(trigs: pd.DataFrame, procs: int, lookback: int = LOOKBACK_DAYS) -> pd.Da
     # trigger ts are ET ISO strings whose UTC offset flips across DST — parse via UTC
     ts = pd.to_datetime(trigs.ts, format="mixed", utc=True).dt.tz_convert(NY)
     trigs = trigs.assign(day=ts.dt.strftime("%Y-%m-%d"))
-    jobs = [(day, g.drop(columns=["day"]).to_dict("records"), lookback)
+    jobs = [(day, g.drop(columns=["day"]).to_dict("records"), lookback, _ENTRY)
             for day, g in trigs.groupby("day", sort=True)]
     rows = []
     if procs <= 1:
@@ -178,17 +179,21 @@ def main() -> None:
                     help="lookback days: gated variant for --gate, override for full runs")
     ap.add_argument("--procs", type=int, default=3)
     ap.add_argument("--mgmt", default="V8", help="management/exit variant (V8 shipped; V5/V6 = partial at first structure, runner to deeper structural level)")
+    ap.add_argument("--entry", default="E3", choices=["E3", "EC", "E4"],
+                    help="EC = market on displacement, limit on rejection blocks "
+                         "(prereg NYA-DSP-01); E4 = market on everything; E3 = retest limit")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     if a.gate:
         return gate(a.lb)
     if not a.span:
         raise SystemExit("--span or --gate required")
-    global _MGMT
-    _MGMT = a.mgmt
+    global _MGMT, _ENTRY
+    _MGMT, _ENTRY = a.mgmt, a.entry
     trigs = pd.read_parquet(ROOT / f"output/l0_triggers_{a.span}.parquet")
     F = run(trigs, procs=a.procs, lookback=a.lb)
-    suffix = "" if a.mgmt == "V8" else f"_{a.mgmt.lower()}"
+    suffix = ("" if a.mgmt == "V8" else f"_{a.mgmt.lower()}") + \
+             ("" if a.entry == "E3" else f"_{a.entry}")
     out = Path(a.out) if a.out else ROOT / f"output/l2_outcomes_{a.span}{suffix}.parquet"
     F.to_parquet(out, index=False)
     oc = F[F.status == "outcome"]
