@@ -150,6 +150,12 @@ def run(b: pd.DataFrame, atr_tf: int, swing_n: int = SWING_N) -> pd.DataFrame:
         cl = g.close.to_numpy(float)
         hm = g.hm.to_numpy()
         atr = g.atr.to_numpy(float)
+        # BUG FIX 2026-08-06: these were read from the FULL-dataset arrays while `i` indexes
+        # the per-day frame, so every session was screened against 2023-01-02's candle shapes
+        # (40% agreement with the correct flags). Every number this function produced before
+        # this line existed is void. Take them from `g`, like every other series here.
+        d_up_g = g.disp_up.to_numpy(bool)
+        d_dn_g = g.disp_dn.to_numpy(bool)
 
         # 3-bar fractal swings, confirmed one bar late so nothing is known early
         # k bars either side of the pivot. k=1 is a 3-bar fractal, which on 1-minute NQ marks
@@ -162,9 +168,13 @@ def run(b: pd.DataFrame, atr_tf: int, swing_n: int = SWING_N) -> pd.DataFrame:
         for i in range(len(g)):
             j = i - k                                  # pivot candidate, confirmed at i
             if j - k >= 0:
-                if hi[j] == hi[j - k:j + k + 1].max() and (hi[j - k:j] < hi[j]).all():
+                # STRICT on both sides. `== max` allowed ties with the right-hand bar and made
+                # this 13 setups more permissive than scripts/fvt_optimise.entries(), which is
+                # the reference implementation. Two builds of the same model must agree exactly
+                # or neither number can be trusted.
+                if (hi[j - k:j] < hi[j]).all() and (hi[j + 1:j + k + 1] < hi[j]).all():
                     lh = hi[j]
-                if lo[j] == lo[j - k:j + k + 1].min() and (lo[j - k:j] > lo[j]).all():
+                if (lo[j - k:j] > lo[j]).all() and (lo[j + 1:j + k + 1] > lo[j]).all():
                     ll = lo[j]
             sw_hi[i], sw_lo[i] = lh, ll
 
@@ -204,15 +214,15 @@ def run(b: pd.DataFrame, atr_tf: int, swing_n: int = SWING_N) -> pd.DataFrame:
                 d_ = 0
                 # CONTINUATION phase: trade AWAY from fair value, needs a BOS in that direction
                 if phase == "cont":
-                    if b_up := (bool(np.isfinite(sw_hi[i])) and cl[i] > sw_hi[i] and disp_up[i]):
+                    if b_up := (bool(np.isfinite(sw_hi[i])) and cl[i] > sw_hi[i] and d_up_g[i]):
                         d_ = 1 if above else 0
-                    if (not b_up) and np.isfinite(sw_lo[i]) and cl[i] < sw_lo[i] and disp_dn[i]:
+                    if (not b_up) and np.isfinite(sw_lo[i]) and cl[i] < sw_lo[i] and d_dn_g[i]:
                         d_ = -1 if not above else 0
                 # REVERSION phase: trade BACK toward fair value, needs an MSB toward it
                 else:
-                    if above and np.isfinite(sw_lo[i]) and cl[i] < sw_lo[i] and disp_dn[i]:
+                    if above and np.isfinite(sw_lo[i]) and cl[i] < sw_lo[i] and d_dn_g[i]:
                         d_ = -1
-                    elif (not above) and np.isfinite(sw_hi[i]) and cl[i] > sw_hi[i] and disp_up[i]:
+                    elif (not above) and np.isfinite(sw_hi[i]) and cl[i] > sw_hi[i] and d_up_g[i]:
                         d_ = 1
                 if d_ == 0:
                     continue
