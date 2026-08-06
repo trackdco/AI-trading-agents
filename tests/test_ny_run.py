@@ -1031,3 +1031,77 @@ def test_genuine_mismatch_keeps_reconfirming_and_stays_blocked(live):
     lv.poll_once(_ts("09:00") + pd.Timedelta(seconds=122))
     assert lv._position_mismatch is True                # never self-clears without agreement
     assert sum("mismatch" in s for s in said) == 1       # but doesn't spam a new alert each retry
+
+
+# --------------------------------------------------------------------- manual resync
+def test_resync_clears_stale_tracking_when_broker_confirms_flat(live, tmp_path):
+    """2026-08-05 review: a manual Sierra-side flatten never touches `_positions` (only
+    a day roll does), so a plain restart used to be the only way out. Dropping the
+    resync file, WITH the broker independently confirming flat, must clear the stale
+    entry and resume without one."""
+    from scripts.ny_run import _Position
+    lv, det = live
+    lv._positions["ny:1"] = _Position(ref="ny:1", direction="long", entry=18_000.0,
+                                      stop=17_990.0, size=10, fill_ts=_ts("09:00"), pre=False)
+    lv._position_mismatch = True                    # as if a periodic reconcile already caught it
+    lv.execution = SimpleNamespace(live=True, account="FUNDED",
+                                   broker=_FakeBrokerWithPosition(0))  # broker: genuinely flat
+    rf = tmp_path / "RESYNC"
+    rf.write_text("")
+    lv.resync_file = rf
+    said = []
+    lv._say = said.append
+    lv.poll_once(_ts("09:05"))
+    assert lv._positions == {} and lv._position_mismatch is False
+    assert any("resynced" in s for s in said)
+    assert any(r.get("type") == "position_resynced" for r in lv.decision_sink)
+    assert not rf.exists()                           # consumed, never re-fires
+    # `_position_mismatch is False` (asserted above) IS the unblock: `_execute`'s place
+    # path only ever consults that flag, so new entries resume the instant it clears.
+
+
+def test_resync_refused_when_broker_still_shows_a_position(live, tmp_path):
+    """Never adopts an unverified position: if the broker does NOT itself confirm flat,
+    the resync request is refused and the mismatch stays exactly as blocked as before."""
+    from scripts.ny_run import _Position
+    lv, det = live
+    lv._positions["ny:1"] = _Position(ref="ny:1", direction="long", entry=18_000.0,
+                                      stop=17_990.0, size=10, fill_ts=_ts("09:00"), pre=False)
+    lv._position_mismatch = True
+    lv.execution = SimpleNamespace(live=True, account="FUNDED",
+                                   broker=_FakeBrokerWithPosition(4))  # NOT flat
+    rf = tmp_path / "RESYNC"
+    rf.write_text("")
+    lv.resync_file = rf
+    said = []
+    lv._say = said.append
+    lv.poll_once(_ts("09:05"))
+    assert "ny:1" in lv._positions and len(lv._positions) == 1  # tracking untouched
+    assert lv._position_mismatch is True                        # still blocked
+    assert any("refused" in s for s in said)
+    assert any(r.get("type") == "resync_refused" for r in lv.decision_sink)
+    assert not rf.exists()                                     # still consumed either way
+
+
+def test_resync_refused_on_query_error(live, tmp_path):
+    lv, det = live
+    lv.execution = SimpleNamespace(
+        live=True, account="FUNDED",
+        broker=_FakeBrokerWithPosition(RuntimeError("DTC down")))
+    rf = tmp_path / "RESYNC"
+    rf.write_text("")
+    lv.resync_file = rf
+    lv.poll_once(_ts("09:05"))
+    assert any(r.get("type") == "resync_refused" for r in lv.decision_sink)
+    assert not rf.exists()
+
+
+def test_no_resync_file_is_a_silent_noop(live):
+    """The overwhelming common case — no file present — must never touch state or the
+    broker, on every ordinary poll."""
+    lv, det = live
+    lv.execution = SimpleNamespace(live=True, account="FUNDED",
+                                   broker=_FakeBrokerWithPosition(0))
+    lv.poll_once(_ts("09:00"))                        # resync_file is None by default
+    assert not any(r.get("type", "").startswith("resync")
+                  or r.get("type") == "position_resynced" for r in lv.decision_sink)

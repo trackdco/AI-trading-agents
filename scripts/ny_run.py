@@ -203,6 +203,7 @@ class NYLive:
     execution: NYExecution = None               # R13 layer; shadow-mode default
     replay_day: str | None = None               # practice day: act on this historical day
     kill_file: str | Path | None = None         # shared with canon_run: one kill, both loops
+    resync_file: str | Path | None = None       # NY-only: operator-triggered position resync
     clock: object = None                        # Callable[[], pd.Timestamp], injectable
     reconcile_sleep: object = None              # Callable[[float], None], injectable
 
@@ -689,6 +690,46 @@ class NYLive:
         self._last_reconcile = now
         self._reconcile_position(now)
 
+    def _check_resync_request(self, now: pd.Timestamp) -> None:
+        """2026-08-05 review: a MANUAL flatten in Sierra (the operator clicking flatten
+        outside this process) never touches `_positions` — only a day roll clears it —
+        so `_reconcile_position` keeps seeing a stale non-zero `expected` against the
+        broker's real zero and blocks new entries for the rest of the session, until a
+        full restart. A restart-free resync is only safe in the risk-reducing direction:
+        this never guesses. It acts ONLY on an explicit operator-placed file (same shape
+        as the KILL file) and even then trusts nothing but a FRESH broker read-back — if
+        the broker does not itself confirm flat, the request is refused and journaled,
+        and the mismatch stays blocked exactly as before. Consumed unconditionally so a
+        stale file can never re-fire on a later, unrelated mismatch."""
+        if self.resync_file is None or not Path(self.resync_file).exists():
+            return
+        try:
+            Path(self.resync_file).unlink()
+        except OSError:
+            pass
+        broker = getattr(self.execution, "broker", None)
+        if broker is None or not hasattr(broker, "position"):
+            return                                  # dry-run/shadow: nothing to resync
+        try:
+            actual = int(broker.position(self.account))
+        except Exception as e:                      # noqa: BLE001 — can't verify = refuse
+            self._journal({"type": "resync_refused", "reason": repr(e), "ts": str(now)})
+            self._say(f"WARN resync request refused — could not verify the broker "
+                      f"({type(e).__name__}: {e})")
+            return
+        if actual != 0:
+            self._journal({"type": "resync_refused", "actual": actual, "ts": str(now)})
+            self._say(f"WARN resync request refused — broker still reports a {actual} "
+                      "position, not flat. This never adopts an unverified position; "
+                      "flatten manually, confirm flat, then request again.")
+            return
+        cleared = list(self._positions)
+        self._positions.clear()
+        self._position_mismatch = False
+        self._journal({"type": "position_resynced", "cleared_refs": cleared, "ts": str(now)})
+        self._say(f"position resynced: broker confirmed flat — cleared stale tracking "
+                  f"for {cleared or 'nothing'}; new entries resume")
+
     def _dtc_keepalive(self, now: pd.Timestamp) -> None:
         """Idle-independent liveness check on the ORDER connection (2026-08-02/03 fix).
         Runs every poll but self-throttles to DTC_KEEPALIVE_S — a dead socket is caught
@@ -726,6 +767,7 @@ class NYLive:
 
     def poll_once(self, now: pd.Timestamp | None = None) -> bool:
         now = self.clock() if now is None else now
+        self._check_resync_request(now)
         self._dtc_keepalive(now)
         self._maybe_retarget(now)
         self.dispatch(self.feed.poll_events(), now)
@@ -807,6 +849,7 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
     out = Path(paths.get("journal_dir", "runs/journal")) / ny.get("journal_subdir", "ny")
     out.mkdir(parents=True, exist_ok=True)
     kill_file = paths.get("kill_file", "KILL")     # SHARED with canon_run deliberately
+    resync_file = paths.get("resync_file", "RESYNC")   # NY-only: manual-flatten resync
 
     now = pd.Timestamp.now(tz="UTC")
     today = now.tz_convert(NY).strftime("%Y-%m-%d")
@@ -915,7 +958,7 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
         feed=feed, data_dir=data_dir, runner=runner, detector=LiveDetector(),
         ingestor=ingestor, instrument=instrument, account=sc.get("account", "FUNDED"),
         buffer=buffer, equity=equity, root=root, suffix=suffix, alerts=alerts,
-        kill_file=kill_file,
+        kill_file=kill_file, resync_file=resync_file,
         execution=execution, replay_day=replay_day,
         decision_sink=JsonlSink(out / "decisions.jsonl"),
         action_sink=JsonlSink(out / "ny_actions.jsonl"),
