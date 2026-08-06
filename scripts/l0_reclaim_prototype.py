@@ -62,7 +62,14 @@ def main() -> None:
     bars["mi"] = pd.to_datetime(bars.ts_event, utc=True).dt.tz_convert(NY)
     bars = bars.sort_values("mi")
     bars["day"] = bars.mi.dt.strftime("%Y-%m-%d")
-    days = sorted(d for d in bars.day.unique() if bars[bars.day == d].mi.dt.hour.max() >= 10)
+    # HARD FIT GUARD (incident 2026-08-06, prereg §8a): load_bars() covers
+    # 2023-2026 INCLUDING the sealed holdout. Detection days are restricted to
+    # the fit span; prior-day/overnight refs may reach into earlier bars
+    # (causal), but no trigger outside fit is scanned, walked, or saved.
+    FIT_START, FIT_END = "2025-06-01", "2026-07-31"
+    days = sorted(d for d in bars.day.unique()
+                  if FIT_START <= d <= FIT_END
+                  and bars[bars.day == d].mi.dt.hour.max() >= 10)
 
     rows = []
     for day in days:
@@ -94,6 +101,7 @@ def main() -> None:
                                  "sweep_ext": float(r[stop_col]),
                                  "close": float(r.close)})
     C = pd.DataFrame(rows).drop_duplicates(["day", "T", "tf", "ref_name", "direction"])
+    assert C.day.min() >= FIT_START and C.day.max() <= FIT_END, "fit-guard violated"
     C["era"] = np.where(C.day.str[:4] == "2025", "2025", "2026")
     print(f"RECLAIM census: {len(C):,} triggers over {C.day.nunique()} days "
           f"({(C.era=='2025').sum():,} in 2025 / {(C.era=='2026').sum():,} in 2026)")

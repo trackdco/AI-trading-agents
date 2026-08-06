@@ -212,7 +212,39 @@ not coded in): it must fire long on 2026-04-27 ~09:35-09:36 — it does (1min
 Declared: this is a NEW trigger family at census stage. It enters the same
 meat grinder (era rule, clustered views, costs, multiplicity ledger, threshold
 neighborhoods) before anything is believed. Its raw walk is descriptive.
-HOLDOUT NOT TOUCHED.
+
+### §8a INCIDENT — holdout boundary breach, 2026-08-06, self-caught same run
+
+The prototype's first run iterated `load_bars()` day-by-day, and that loader
+covers 2023-01-02..2026-07-15 INCLUDING the sealed 2023/24 holdout. Result:
+27,125 reclaim triggers on holdout days were scanned and walked, and the run's
+printed tables POOLED them: the "2026" era row (n=33,075, net +0.012) was ~80%
+holdout days; the by-ref and by-session rows mixed holdout throughout. Caught
+immediately by the day-count anomaly (896 days vs ~250 fit days) before any
+further use.
+
+**Exactly what was observed by the operator (Claude):** pooled aggregates only —
+one mixed era row, six mixed by-ref rows, three mixed by-session rows. NO
+holdout-only table, NO per-year 2023/2024 split, NO ref×year or session×year
+holdout cell was printed or seen. The calendar-2025 row also included Jan–May
+2025 (outside fit, not holdout — gray zone).
+
+**Mitigation:** both output parquets deleted (they contained holdout rows on
+disk); the script now carries a hard fit-window guard (2025-06-01..2026-07-31)
+plus a runtime assert; prior-day/overnight reference construction may reach
+earlier bars (causal), detection may not. All other displacement-program
+scripts were audited: they iterate the fit census's days, not the loader's —
+this breach is confined to the reclaim prototype's first run.
+
+**Ledger consequence — ANGUS to rule:** the reclaim family's holdout has been
+partially observed in pooled form. Options on the table: (a) treat the whole
+2023/24 span as touched-in-aggregate for this family and demand a stricter
+final exam (e.g. the family's one look must clear BOTH years independently);
+(b) rule the pooled glimpse immaterial and keep the standard single look. The
+conservative default recorded here, pending his ruling, is (a). This incident
+does NOT touch any other family's holdout standing.
+
+HOLDOUT OTHERWISE NOT TOUCHED.
 
 **The declared failure diagnostic remains armed: detector-fidelity audit.**
 The machine's A/B ≠ ANGUS's A/B until proven otherwise — 579 mechanical "A"
