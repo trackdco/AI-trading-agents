@@ -1,0 +1,887 @@
+[0:00] In the last three episodes of this
+[0:01] orderflow series, we talked about
+[0:03] auction market theory using footprint
+[0:05] charts and bookmap to find trade setups.
+[0:07] And in this episode 4, I want to
+[0:09] introduce you to one of the most
+[0:11] important tools for any trader, and that
+[0:13] is the depth of market. It provides key
+[0:15] information that allows me to find
+[0:17] quality setups and make the best trading
+[0:19] decisions every day. The depth of market
+[0:21] is the order book, and it shows us how
+[0:23] buyers and sellers are interacting by
+[0:25] price. If you haven't watched those
+[0:27] first videos yet, I will add the link in
+[0:29] the description down below. Also, I
+[0:31] recommend that everyone go and follow my
+[0:33] Instagram. I post really great trading
+[0:35] tips and trading recaps which can be a
+[0:37] really great resource for you to learn
+[0:38] from. Now, let's take a deeper look into
+[0:40] the depth of market. All right, let's go
+[0:43] over the depth of market or the DOM. In
+[0:45] this video, I'm going to tell you what
+[0:47] the DOM is. We're going to talk about
+[0:48] how to use it, why it's beneficial, the
+[0:52] function of it as a orderflow tool, and
+[0:55] we're going to go over how you can use
+[0:57] it to kind of figure out if there's
+[1:00] going to be like a short-term move up or
+[1:01] down without looking at a candlestick
+[1:04] chart. So, first, what is the depth of
+[1:06] market? The depth of market or the DOM
+[1:09] shows us the order book. It shows us the
+[1:11] price ladder of participants and it
+[1:13] allows us to place buy and sell orders.
+[1:16] And it shows us completed transactions
+[1:18] and volume by price. So before we get
+[1:21] into the lesson, I want to bring your
+[1:23] attention to this picture which is of a
+[1:25] New York professional trading floor. And
+[1:28] I want you to pay close attention to
+[1:29] their screens. Some of these firms have
+[1:32] million-doll traders that are like
+[1:35] professional traders. And what you
+[1:37] notice is all these computers right
+[1:40] here. These are DOMs. These are price
+[1:42] sliders. These are depth of markets.
+[1:44] What do you
+[1:45] notice? Are there more candlestick
+[1:47] charts or are there more depth of
+[1:49] markets? This guy's got a volume profile
+[1:52] right here. This guy has got three or
+[1:54] two screens of volume profiles. And what
+[1:57] do you see? This guy has three different
+[2:00] monitors with depth of markets. He has
+[2:03] three monitors with volume profiles. And
+[2:05] then he has like, look, he has like one,
+[2:06] two, three, four. He has like five tiny
+[2:08] little charts. So the charts are just
+[2:10] reference points and he's majorly
+[2:13] focused in on the actual order book and
+[2:16] the depth of market. This guy's got it
+[2:17] in the front screen. This guy's got it
+[2:19] right here. There's one over here. This
+[2:21] guy has some charts right here. But you
+[2:23] can see that the the screen is not
+[2:25] dominated by charts. Most of their
+[2:28] screen real estate is given to the depth
+[2:30] of market, the price ladder, and
+[2:32] orderflow tools. I want you to keep that
+[2:34] in mind that like there are people on
+[2:36] Wall Street or traders wherever that
+[2:39] make tons of money and they're not even
+[2:41] looking at candlestick charts. Like
+[2:43] there there's guys that trade without
+[2:45] looking at a candlestick chart. And most
+[2:48] of you are probably thinking that's
+[2:49] crazy, especially if you most of your
+[2:52] education comes from
+[2:53] YouTube. You know, everything is is
+[2:56] about candlestick charts and moving
+[2:58] averages. And there seems to be like not
+[3:01] as much info going on behind order flow.
+[3:03] So I want you to keep that in mind as we
+[3:05] kind of go through this lesson as you go
+[3:07] through any orderflow content on my
+[3:09] channel or anywhere that you know price
+[3:11] is ruled by buyers and sellers and
+[3:14] volume. And the candlestick charts all
+[3:16] they do is show you a visual
+[3:18] representation of what's going on but
+[3:21] the magic is happening on these price
+[3:24] ladders and these depth of markets. That
+[3:26] is the actual order, you know, order
+[3:28] book where buys and sells are being
+[3:30] placed. If you're an ICT trader, smart
+[3:33] money concepts, all those things, that's
+[3:35] fine. Indicators, moving averages, RSI,
+[3:38] what, whatever you're
+[3:39] using, the market goes up and down
+[3:42] because an order is placed, right? An
+[3:45] order is placed to buy or sell. And
+[3:47] whether there's more buyers or more
+[3:48] sellers at a specific price, the market
+[3:50] will move up in that direction. It's not
+[3:52] because your
+[3:53] ICT strategy thing, whatever they call,
+[3:56] whatever names the the guy has for them,
+[3:58] whatever ICT thing you're seeing on the
+[4:00] chart, that's only working because there
+[4:04] are traders at that price placing buys
+[4:06] and sells. So, keep that in mind. So,
+[4:08] this is a depth of market. This is mine
+[4:11] from Motive Wave. You can kind of
+[4:13] customize these, but every depth of
+[4:15] market is going to kind of like have the
+[4:17] same functions of what's going to be on
+[4:19] here. So I'm going to start with the
+[4:21] middle column first which are these four
+[4:24] right here which is the bid the at bid
+[4:26] the at ask and the ask. So the bid is
+[4:28] the limit orders. This is your level
+[4:30] two. This is your your limit buys or
+[4:34] your passive buys. So if you are in no
+[4:37] rush and you want to buy at
+[4:39] 630 you can click this place a buy and
+[4:43] then for one contract and this 128 will
+[4:46] turn into 129 and your order will be
+[4:48] waiting there.
+[4:50] On this pink side right here, you have
+[4:52] the ask, which is your passive sales.
+[4:55] So, if you want to buy at
+[4:56] 6,35, you would click right here, and
+[4:59] the 230 would now say 231 with your one
+[5:02] lot order. All right? And then you are
+[5:04] now a passive seller in no rush. This
+[5:07] atbid at column is going to be your
+[5:10] market orders, which are completed
+[5:12] transactions. Now, if you if any of this
+[5:14] is confusing, I would I would definitely
+[5:17] tell you to watch the auction market
+[5:19] video, which is the first video in this
+[5:21] episode, which goes over how auction
+[5:23] market theory works. You're confused by
+[5:25] any of that, I suggest watching that.
+[5:27] Um, it might give you some key context,
+[5:29] but market orders are filled by limit
+[5:31] orders. All right? So, the middle is
+[5:34] market orders, and they're colorcoded.
+[5:35] So a market sell has to hit the bid in
+[5:39] order to be a completed transaction and
+[5:41] a market buy has to be hit has to hit
+[5:45] the ask to be a completed transaction.
+[5:46] The at ask is market buys and the at bid
+[5:51] is market sells and they're colorcoded.
+[5:53] This column right here is your bid and
+[5:55] your ask volume. So this middle column
+[5:57] volume is going to be right here. These
+[5:58] are completed transactions. All right.
+[6:01] So these are you can see the histogram
+[6:03] and like the profile. um if there's more
+[6:06] market buys or market sells at that
+[6:08] price. And it shows your total volume
+[6:10] profile. So the volume right here is
+[6:13] going to be the total of these combined.
+[6:15] So 375 + 0 is
+[6:19] 375. 303 + 69 is 372, right? 780 + 543
+[6:26] is
+[6:28] 1323. That's the volume. And then the
+[6:30] delta volume is going to be your ask
+[6:32] minus your bid. So ask minus bid. So 375
+[6:36] minus 0
+[6:38] 375. 303 minus 69 is 234. And then you
+[6:43] come right here like 1550 minus 1834 is
+[6:47] going to be -284. All right. And that's
+[6:50] how those columns are populated. That's
+[6:52] the math of it. And then you can see a
+[6:54] histogram or a volume profile to see
+[6:57] where the volume by price is thicker or
+[6:59] lighter. So, just to recap, I have these
+[7:01] colorcoded to correspond with the chart.
+[7:04] A market buy is an aggressive order
+[7:06] hitting the ask, which would be this 99.
+[7:09] And a market sell is an aggressive order
+[7:11] hitting the bid, which would be this 62.
+[7:14] A limit buy is a passive order waiting
+[7:16] on the bid, which is this blue column.
+[7:19] And then the red column is a limit sell
+[7:21] passive order waiting on the ask. All
+[7:23] right. There's always a buyer and a
+[7:25] seller for every transaction. If this
+[7:27] column in the middle is empty and there
+[7:30] is no one placing market orders, the
+[7:33] market will not move up or down, the
+[7:35] these four these limits, these bids and
+[7:37] asks do not fill each other. There has
+[7:38] to be uh someone willing to hit the
+[7:41] market to ask. Think of it like a
+[7:43] housing market. If you are willing to
+[7:45] pay 390,000 for a house and you place a
+[7:50] buy for 390 and there's one house in
+[7:53] that neighborhood, the guy that owns the
+[7:55] house only wants to sell it at 400,000.
+[7:58] What's going to happen? Nothing, right?
+[8:00] The house will not be sold. But if
+[8:02] someone else comes in and says, "Hey, I
+[8:04] will pay for 400,000 for your house
+[8:06] right now." Then you would have a
+[8:09] completed transaction and then the
+[8:10] market would move up, right? or someone
+[8:12] comes another house you know you have
+[8:15] your buy at 390,000 and then a guy now
+[8:18] in the neighborhood goes hey I'll sell
+[8:19] my house for 390,000 right now and then
+[8:22] you would have him market sell to you
+[8:24] and then you would buy your house for
+[8:25] 390,000 that's the basics functions of
+[8:28] you know how a market works and it's the
+[8:30] same thing in the stock market so in
+[8:33] order for price to move up right here
+[8:35] and go up to 33 and a quarter you would
+[8:38] there's 71 right now waiting on the ask
+[8:40] so you would need 71 orders to come in.
+[8:44] And this would actually say 72 cuz
+[8:46] there's already one right here. You
+[8:47] would need an additional 71. But just to
+[8:50] keep it simple, if 71 traders market
+[8:54] bought at the ask, then these orders
+[8:57] would be filled. You would see 71
+[9:00] increase on this side. You would see
+[9:04] this 135. It would now say
+[9:07] 206, right? 135 + 71 and then the volume
+[9:11] would grow by 71, right? Which would say
+[9:14] what, like
+[9:16] 2,498. And the market would move up. In
+[9:19] order to move down, you would need, you
+[9:22] know,
+[9:23] 75 traders to market sell at this
+[9:27] 6,3250 and then the market would move
+[9:30] down to facilitate that trade. All
+[9:32] right, that's kind of the basics of it.
+[9:33] But we're going to watch a live video of
+[9:35] the DOM moving and I'm going to like
+[9:37] break it down further for you. We still
+[9:39] want to understand like how the depth of
+[9:41] market is working and how these like
+[9:43] middle trades and remember this middle
+[9:44] column right here is market
+[9:46] orders. So you have a heavier sellside
+[9:49] book right here. You have more
+[9:52] sellers willing to offer at these prices
+[9:56] than there are buyers willing to buy
+[9:58] down here. And then in this column, now
+[10:01] this is the key thing right here is, you
+[10:03] know, there's a lot of sellers here. The
+[10:05] buyers are are trying to buy, but you
+[10:08] know, let's say price move down to six
+[10:10] and, you know, 100 lots hits the bid,
+[10:14] but then 50 comes in on the ask. So,
+[10:18] there's not a lot of buying pressure,
+[10:19] right? In order for price to move up, in
+[10:21] order to be watching this and think that
+[10:24] buyers are going to continue to move
+[10:25] this up, you would want to see like 9
+[10:28] 950 hit and then kind of like close out
+[10:31] these sellers and then move price up.
+[10:34] But because there's only 50 right here,
+[10:36] the buyers aren't that strong. And all
+[10:39] the sellers have to do is come down and
+[10:42] hit another 400 contracts under this.
+[10:45] And then that would clear out these
+[10:47] buyers. And then price would now move
+[10:49] down. And if they hit 350
+[10:51] here, price would also move down. You
+[10:55] see that happen right here, right? These
+[10:57] are the same
+[10:58] charts. I wanted you to understand the
+[11:01] math. You have you already have 100 and
+[11:03] you have 400. So 400 more comes in.
+[11:07] That's why this says 500. All right? You
+[11:10] already have the 100 here. So you have
+[11:11] 400 come in. 400 plus 100 gets you that
+[11:15] 500.
+[11:17] And then this one was just 350. And then
+[11:19] now you have 350 here. So the buyers
+[11:21] only hit 50 contracts and then the
+[11:24] sellers pressed with
+[11:25] 5350. They cleared out the book on the
+[11:28] bid right here. And then price moved
+[11:30] down and then the sellers are still
+[11:32] offering. So, you really would need to
+[11:34] see like let's say you saw 100 right
+[11:37] here and then you saw 800 come in right
+[11:42] here and then you saw like 700 show up
+[11:46] here and like price starts to move up
+[11:48] and you're seeing lower numbers on the
+[11:50] at on the at bid and you're seeing
+[11:52] higher numbers in this market column
+[11:54] right here. then that's the clue that
+[11:57] the buyers are now pressing in higher
+[12:00] and they're willing to buy down here at
+[12:01] these lower prices and the sellers are
+[12:04] not willing to sell down here at lower
+[12:06] prices. Right? If you're a seller, you
+[12:09] would rather sell up here at
+[12:11] 8 than down here at four, right? And if
+[12:14] you're a buyer, you would rather, right?
+[12:18] Would you rather buy at five or maybe
+[12:20] you want to buy down here at three? So
+[12:22] buyers always want like lower prices and
+[12:24] sellers want higher prices. So you get
+[12:26] to a point where eventually the buyers
+[12:28] are going to step in and you can see
+[12:30] that when you see size starting to be
+[12:32] pressed that clears out all the levels
+[12:35] right here and then you see like less
+[12:37] size on the right or less less less size
+[12:39] on the left. Here's a heavier buy side
+[12:41] chart, right? You have 1,200 at 5, 1,000
+[12:43] at 4. There's less sellers willing to to
+[12:46] sell up here. Now, even though the
+[12:47] sellers are pressing hard, the buyers
+[12:50] are are are hitting a little harder. So,
+[12:52] there's 400 cons right here, but they
+[12:54] come in with 700. So, you know, then
+[12:56] maybe price moves up and then you would
+[12:58] want to see this 600 grow by another
+[13:01] another 700 contracts. If you saw 700
+[13:05] come in again, then that's clearing out
+[13:06] this price and then that's how price
+[13:09] would move up. So these middle columns
+[13:11] are very important to judge whether
+[13:15] price is going to move down or is going
+[13:18] to move up and based on how these market
+[13:21] orders are filling at the bid or at the
+[13:23] ask. Just having large numbers on this
+[13:26] column, it's like yes, it's heavier buy
+[13:28] side, but this doesn't show intention,
+[13:31] right? I can place an order for
+[13:34] 9,850 contracts at $3. If price comes
+[13:38] down to three and then I cancel the
+[13:39] order and I lift my my my bid, doesn't
+[13:43] mean anything, right? But if you see
+[13:46] 9,000 right here in this column, like
+[13:50] let's say this is 9,000 waiting. If
+[13:53] there's 9 I'm just going to keep it I'm
+[13:54] just going to say 900 to keep it keep it
+[13:56] simple. If you see 900 right here, this
+[13:58] 850 doesn't mean anything until you see
+[14:01] 900, then you know that is a completed
+[14:04] transaction and 900 sellers market sold
+[14:08] and hit the bid and filled at $3. All
+[14:11] right, completed transactions matter.
+[14:14] This doesn't matter so much. It helps us
+[14:17] kind of look and and to see that there's
+[14:19] more sellers and there's heavier sell
+[14:21] side and there's heavier buy side right
+[14:23] here. But what matters is completed
+[14:26] transactions because that's where you
+[14:27] can see intention. Now, let me kind of
+[14:30] go through this video right here and
+[14:33] we're going to see a DOM work and I'm
+[14:35] going to kind of pause it and play it
+[14:36] just to kind of show you what's
+[14:38] happening. So, again, we have the market
+[14:40] orders in the middle, we have the book
+[14:42] on the left, and we have the the sellers
+[14:44] on the right. So, we can see how price
+[14:46] is moving down. We're going to kind of
+[14:47] look at this and judge like, are we
+[14:48] going to kind of move up? We're going to
+[14:50] kind of move down. I'm going to pause it
+[14:51] and play it frame by frame. So we saw
+[14:53] this 135 go to 142. Now remember if we
+[14:57] want this to go down this 8 needs to get
+[14:59] bigger or to go up like the 29 or the 43
+[15:03] like we want to see more size on the
+[15:05] right. So if I pause and play it that 8
+[15:08] went to 13 that now it went to 20.
+[15:11] There's 11 right
+[15:13] here. 25 now 25. And then now now this
+[15:17] goes to 20. It's at 27. So, in order to
+[15:20] move down, 47's got to get bigger. More
+[15:23] traders got to sell at at either
+[15:26] 79.50 or at
+[15:28] 7975. More traders have to
+[15:33] buy. I'm trying to do it frame by
+[15:36] frame. So, you see one order come in and
+[15:39] it moves up. So, only one seller sold at
+[15:45] 79.25. I'm going to backtrack that we
+[15:48] can see. So there's 47 now. One
+[15:54] hits. See if you caught
+[15:57] that. So one hits. This says
+[16:01] 48 and then it goes to 59. And then this
+[16:05] 142 didn't change. All right. So we bit
+[16:07] up because more traders hit the ass
+[16:09] right
+[16:11] there. This column refreshes like every
+[16:13] 200 milliseconds.
+[16:17] So that's growing to
+[16:20] 39 and then sells come in. It moves down
+[16:22] a few
+[16:24] ticks. I'm going to keep going. This is
+[16:26] going to make sense. So now there's 111
+[16:28] market buys. We're moving
+[16:31] up to kind of play
+[16:34] this. All right. So now we're coming
+[16:36] into the
+[16:38] low. All right. One contract hits at 79.
+[16:42] So boom, right there.
+[16:44] 272335
+[16:46] 11611. All
+[16:48] right, more sellers hit the bid. Price
+[16:51] moved down and there was weak buying.
+[16:53] Now what happens next? Now buyers step
+[16:56] in right after and they push this up to
+[16:58] 43 16 28 one comes in 29
+[17:03] 46. You're seeing more size right here.
+[17:06] 77 it grows to 78. Buyer step in right
+[17:09] there. Right. This column grows now 61.
+[17:11] buyer step in again. Let me let me
+[17:14] backtrack that again. So, we're sitting
+[17:16] here
+[17:19] 368. That six doesn't change and we hit
+[17:22] 33 contracts now at
+[17:24] 7975
+[17:26] 23
+[17:28] 34 65 72
+[17:31] 82. So, what we're seeing right now is
+[17:34] even though we get these moves down, the
+[17:37] buyers step in right after and kind of
+[17:39] bring it up. So, we're not looking at a
+[17:41] candlestick chart. We're just watching
+[17:43] this column. And then boom, buyers step
+[17:45] in
+[17:46] again. Sellers try and bring it down.
+[17:49] There's 78 here at the low. And then
+[17:52] 269, right? What do you see right there?
+[17:55] 269.
+[17:56] 387
+[17:58] 38731. We hit down this. We hit this low
+[18:01] and then buyer stepped in on the right.
+[18:03] We saw bigger numbers grow. That's why
+[18:05] price is not moving down. You don't just
+[18:07] see 78 and think that there's big size
+[18:11] and we're going to move lower because
+[18:13] you would need to see continued size hit
+[18:16] and outweigh the buyers as we move down.
+[18:19] If someone hits 78 market sells at 7850
+[18:23] and then right after
+[18:24] that buyers hit 38 731 more buyers press
+[18:28] higher the market's going to move up and
+[18:30] that's that's what you're seeing happen
+[18:31] right there. grows to
+[18:34] 90, 109,
+[18:38] 116, 128, 141, and then boom. And it
+[18:42] moves up. Can even Let me Let's like
+[18:44] kind of go slow here and and pause and
+[18:47] play frame by frame. So, we're looking
+[18:50] at this 13 and this 18 that grows to
+[18:54] 19. We move down. Buyers still buying at
+[18:59] 7950. It's growing to 133, 136.
+[19:05] 141 21 and 16 and then boom
+[19:09] 266. All right, that 18 didn't change.
+[19:12] 26 orders came in on the buy side and
+[19:15] then six came in on on the uh on the
+[19:17] bid. Then 12 and three, seven and five.
+[19:20] All right, so the reason we're moving up
+[19:22] is because there's more b there's more
+[19:24] buyers market aggressively buying at
+[19:27] 5980. Let me try and find There we go.
+[19:30] This is a good point. So, so we're
+[19:32] sitting here at this low. We're in this
+[19:33] tight like little threepoint range right
+[19:35] here. So, you're just watching the book,
+[19:37] watching these orders. It moves down 79
+[19:40] again
+[19:42] 101 35 and then 68 comes in right after
+[19:46] the sellers are trying and then boom,
+[19:47] buyers press in and move it up. So,
+[19:49] right there, what we can deduce from
+[19:51] that, we're now looking at a candlestick
+[19:54] chart. You're seeing size come in on the
+[19:56] on the bid, right? you're seeing large
+[19:58] sellers, but right after we hit these
+[20:01] low prices, buyers step in right after
+[20:03] and and push it
+[20:05] up. So, you can tell just off this price
+[20:08] action that we're not breaking a low and
+[20:10] there's size hitting by the sellers, but
+[20:12] we keep moving up after and the buyers
+[20:14] are willing to buy. So, without looking
+[20:16] at a candlestick chart, you can already
+[20:17] start to create a bullish bias that this
+[20:20] thing can move up. And if you're
+[20:22] scalping a couple ticks, a couple points
+[20:23] with size, you know, that's how that's
+[20:26] how they, you know, read this without
+[20:29] looking at a candlestick chart. If you
+[20:30] think, how can I just figure out if it's
+[20:31] going to go up or down? You can see the
+[20:33] size right there. And then the buyer
+[20:35] step in right after move this up. So,
+[20:38] it's not something that I want to really
+[20:40] short because there's interest from
+[20:41] buyers. And you can see the delta right
+[20:44] here growing right to 600. At
+[20:46] 7975, there's heavy buying, right? Way
+[20:49] more than any other price point.
+[20:54] So, I hope this makes sense. Uh, if it
+[20:57] doesn't, you can always kind of rewind
+[20:58] or like pause this video. But this is,
+[21:02] you know, this is the depth of the
+[21:03] market moving in real time. And if
+[21:05] you're zoned in, I zone in at key
+[21:07] levels, at price
+[21:09] levels and watch the book to see if I
+[21:12] want to get in a trade or get out of a
+[21:14] trade if I'm in a trade. Right? If
+[21:17] I'm if I'm short right now and I see
+[21:20] this action, I'm not going to be that
+[21:22] comfy because even though we move down,
+[21:25] the buyers press in right after and they
+[21:27] move us
+[21:31] up. So, we're holding at 79. Look at the
+[21:33] delta is growing. I'm going to like
+[21:34] pause the video. We're at 251. I come
+[21:37] back here to like a minute ago, it was
+[21:39] at
+[21:40] 575. Now at 20 251, it's at 638. So at
+[21:45] 7975 there's a lot of buying volume. All
+[21:48] right. There's buyers willing to buy
+[21:50] there. We get above this this grows and
+[21:52] then boom we shoot up 83. So right
+[21:55] there. So before this push
+[22:02] up. We're sitting at 79. And we saw this
+[22:06] bigger sell volume come in. Let me just
+[22:09] rewind right here. All right. Well,
+[22:10] watch this. It goes to 112. It grows
+[22:13] 129, 137, 144, 157. We're moving up,
+[22:18] right? If there's tons of selling, why
+[22:19] aren't we moving down? And then this
+[22:21] thing shoots
+[22:23] up. All right? And at that point, right,
+[22:26] we're at 251 at this point right here
+[22:29] when we're at 79 to 80. I would I'm
+[22:32] telling you that there's like a bull
+[22:34] bias in this that the sellers are trying
+[22:36] to put it push it down and they're using
+[22:38] size and then the buyers come in right
+[22:40] after
+[22:42] and they push it
+[22:44] up. And then what happens next? You get
+[22:46] this, you get this nice big move up into
+[22:49] the 82s, 83s, and then it creates zero
+[22:52] prints right here. This means that there
+[22:53] was no volume traded on the bid. Now,
+[22:56] when you see zero prints, this typically
+[22:59] means they usually get filled pretty
+[23:00] quick, and it's something I pay
+[23:02] attention to, especially at highs when
+[23:03] there's no volume. But now, we're moving
+[23:06] up. And then, what do you see about the
+[23:08] book? When I when I say the book, I mean
+[23:10] the limit orders, the ask and the bid.
+[23:12] We pushed up into 83 now, right? There's
+[23:15] a lot of buying pressure right here. But
+[23:17] if you look at the level two, it's kind
+[23:20] of skewed heavier to the cells, right?
+[23:23] We have 124, 63, 98, 52, 103. And if you
+[23:28] look in this area right here, there's
+[23:30] actually not as many
+[23:33] buyers waiting to buy right here. And
+[23:36] there's more sellers willing to sell up
+[23:37] here.
+[23:39] If you're maybe you're a scalper with a
+[23:42] ton of size and you got in at 80 when we
+[23:45] saw this area being defended, maybe it's
+[23:50] a a trader at 80 and he wants to get out
+[23:52] at 8485. I mean, you don't know the
+[23:53] agenda, but we can just see the book.
+[23:55] The book is kind of skewed short now.
+[23:58] So, now you see buyers coming in. I'm
+[23:59] going to rewind this. Now you see buyers
+[24:01] trying and pressing harder. All right,
+[24:04] move up to 83. Look at this column right
+[24:06] here. 68 and the 12 and the
+[24:09] four it goes to
+[24:12] 78 goes to 104 228 very quick look at
+[24:17] that I'll rewind in about 1 second it
+[24:20] goes from
+[24:25] 78 to
+[24:28] 104 we move down 190 all right so 80 85
+[24:32] you can actually see it right there see
+[24:34] that 86 that 86 is is a recent trade. So
+[24:38] someone hit 86 lots or 86 lots were
+[24:40] traded at 83 right there to the buy.
+[24:43] That's what that green is and that's why
+[24:45] it increased by
+[24:46] 86 110
+[24:48] now
+[24:54] red. Now it's 228 230. All right. Now it
+[24:58] moves down 253. So now what do we see?
+[25:02] Now you can kind of see this change in
+[25:04] momentum, right? There's a lot of buying
+[25:06] going on. We're pushing into this higher
+[25:08] liquidity
+[25:10] area and you want to see buyers continue
+[25:13] to
+[25:14] press otherwise the market will have to
+[25:17] move down to facilitate trade. The
+[25:18] market moves up to the last buyer buys.
+[25:20] All right, the book is heavier on the
+[25:24] ass side than the bid. You're seeing
+[25:26] buyers come in and you're seeing sellers
+[25:29] and so you want to see that continued
+[25:31] strength. And now there's strong buying.
+[25:33] And now the sellers are coming in. All
+[25:35] right. Now there's heavier side. There's
+[25:38] heavier sellers right at the bid right
+[25:40] here. 155 106 52. Sellers are
+[25:43] aggressively selling right here. And
+[25:44] this could be I mean if you're a trader
+[25:46] at 80 that's scalping for four points.
+[25:48] Maybe you're trading 50 contracts. Maybe
+[25:51] it's a floor trader and they just wanted
+[25:52] to get four points. Now he's now he's
+[25:54] selling. You don't know. I'm just giving
+[25:56] you a possibility. But we saw the book
+[25:58] flip. We see a thicker ask and now we're
+[26:01] starting to see selling step
+[26:04] in after this move up. And so you want
+[26:08] to see buyers continue to press in order
+[26:10] to move higher. And we have these zero
+[26:12] prints down here. And like I said, those
+[26:13] usually get filled pretty quick. And
+[26:15] then what happens? I mean, it drops
+[26:17] three points very fast. We can rewind
+[26:19] that to see it again. We get up here to
+[26:23] 8425. It grows to 30. We have seven.
+[26:28] It goes to 48 and then it drops. So, I'm
+[26:31] going to rewind that one more time. I
+[26:33] hope this isn't too confusing for you
+[26:34] guys. I'm trying to like make it as
+[26:35] obvious as I
+[26:39] can. So, when it gets to 48, I'll pause
+[26:45] it. It's 30. All right. 48. I'll go to
+[26:48] 46. I'll go to 47. Okay.
+[26:58] All right. So, it hit it hit 48 and then
+[27:00] 22 came in right after. So, in order for
+[27:03] price to move up and continue higher,
+[27:05] you need to have buyers willing to
+[27:07] buy at 848425. And if this column grows,
+[27:11] price will move
+[27:14] down. And you can see as it refreshed
+[27:17] and the and the new volume comes in,
+[27:20] there are more sells than buys on the
+[27:22] left column. and price moves down. All
+[27:26] right, 58 and 4, 45 and 35, 33 and
+[27:31] 18, and we fill those zero prints and
+[27:34] now the market moved down. So, just to
+[27:36] kind of recap, all right, at the
+[27:38] beginning of the video, we
+[27:42] saw this strong selling and every time
+[27:46] we for this first two minutes, every
+[27:48] time we came down into the 7978s, the
+[27:50] buyer stepped in and pushed it up. Then
+[27:54] when we moved up into the 83s, 84s, we
+[27:57] saw the book flip and we see heavier
+[28:00] limit sells on the right, heavier
+[28:03] sellers, and then we start to see
+[28:06] aggressive selling step in after. And
+[28:09] you kind of see the book flip and you
+[28:10] see it change. All right, we know the
+[28:11] zero prints down there. So, if I'm long
+[28:14] and I see a thicker book and I start to
+[28:17] see heavier size being traded at the bid
+[28:20] and there's zero prints down here, I'm
+[28:22] scared of my long or if I'm short, I
+[28:24] have conviction to get in
+[28:27] short. But that's how you can watch the
+[28:29] order flow at certain levels. It can be
+[28:32] very fast sometimes, but you train your
+[28:34] eyes. You get you get good at it. You
+[28:36] see these orders being printed and you
+[28:39] can kind of make your judgment call. All
+[28:41] right. If you wanted to get in short,
+[28:42] you get in short right here at 84 for a
+[28:46] couple points for these zero prints to
+[28:48] fill and then it moves down and it gets
+[28:50] filled three points. And that's what
+[28:52] some of those floor guys are doing.
+[28:53] They're trading with a ton of size and
+[28:55] they're go they're scalping and that's
+[28:57] what scalping is. I go for 10, 15, 20,
+[29:00] 25 points, 30 points on a trade, but
+[29:03] when I get to lows or highs, I I'm
+[29:05] watching this. So
+[29:07] pretend, you know, pretend there's a a
+[29:11] key level here, right? Pretend this is
+[29:14] resistance
+[29:18] and we're pretend this is a candlestick
+[29:20] chart. All right. And we come into the
+[29:22] resistance area right here. We hit
+[29:25] 84. And then I'm watching the book and I
+[29:28] start to see, all right, we need to see
+[29:31] buyers press up. All right, they go
+[29:32] above my resistance by one tick.
+[29:36] 8425. Maybe I'm in short. All right, I
+[29:38] start to see heavier size come in on
+[29:40] this side. I'm short at resistance. I'm
+[29:42] seeing heavier size come in. All right,
+[29:45] the buyers push up one tick. They can't
+[29:48] get the thing any higher. Oh, and then
+[29:49] it just drops right there and then
+[29:51] seller come. There's seller ensues and
+[29:53] then zero hits. So, I hope that kind of
+[29:55] makes sense. But, you know, if you're
+[29:58] playing resistance, like if my
+[29:59] resistance is at 84, now I'm watching
+[30:02] the book to kind of gauge the
+[30:04] reaction at my level to see if the
+[30:08] buyers or sellers are more strong. Now,
+[30:10] I'm going to show you a recording I have
+[30:11] next to a candlestick chart. And I just
+[30:13] want to like highlight how if you see a
+[30:15] big number like at a psychological level
+[30:17] like 5700, it doesn't necessarily mean
+[30:21] that you want to get in short because
+[30:22] that number is greater. All right?
+[30:24] Sometimes it can. But again, you know,
+[30:27] here's the Globex high was
+[30:29] 56.99. It's coming into this key level,
+[30:32] right? It's a psychological level.
+[30:34] There's this higher low and this bounce
+[30:36] getting put in. So, are we going to
+[30:37] reject right here and come back down or
+[30:39] are we going to like break out and go
+[30:41] higher? All right. So, now we're zoned
+[30:43] in on the on the order flow. You can see
+[30:45] this thing push up into
+[30:47] 700. It was at
+[30:50] 395. We move up into it. There's only 98
+[30:53] orders hitting. All the actions traded
+[30:55] at 6975. All right. What does that 342
+[30:58] mean? 325. Buyers are are are
+[31:01] aggressively buying this psychological
+[31:06] level. If I can get my mouse out of the
+[31:08] way, it' be better. So, we're watching
+[31:11] the reaction here at 5700. You don't
+[31:13] want to just put your your cells right
+[31:15] here and think that this is going to
+[31:17] drop. You want to gauge the reaction at
+[31:19] it. Watching the order flow.
+[31:23] Watching this middle column, right? The
+[31:24] at
+[31:29] ask. Fast forward
+[31:32] it. You can see this number constantly
+[31:34] trading, constantly tra uh changing. So
+[31:37] orders are traders are lifting orders,
+[31:40] right? They're not leaving them the
+[31:41] whole time. Some guys are probably
+[31:44] canceling their short because they think
+[31:45] it's going to go higher. doesn't it
+[31:48] doesn't show intention until it gets
+[31:50] filled and you see this hit. All right,
+[31:53] but if you're trying to short this high
+[31:55] and be a first seller and you're getting
+[31:57] in right
+[31:59] now. All right, let's see what
+[32:04] happens. Size hitting
+[32:08] 2349. Sellers are trying and we and then
+[32:11] boom, buyers step right in 280. This
+[32:13] delta is growing. You see the delta
+[32:14] right here, right? Tons of buying at
+[32:16] this high right here. Tons of buying.
+[32:18] This is at 315. So, the sellers are
+[32:21] trying to move it down and then the
+[32:22] buyers just come in and then take it
+[32:25] higher. And then you get to 5700 and
+[32:28] then boom. I mean, it just shoots right
+[32:30] up. I'm going to pause it frame by
+[32:33] frame. So, here we are. Look how quick
+[32:36] that was. I mean, in a millisecond there
+[32:38] was 279. This hasn't tra This hasn't
+[32:41] changed yet. 279 orders at the ask and
+[32:44] then 279 buys come in. Zero prints are
+[32:48] formed and price moves right up right
+[32:51] past 5700 and continues higher. So, I
+[32:54] don't want to be a first seller on that
+[32:56] level and I'm gauging the reaction. Now,
+[32:58] we have these zero prints. This will
+[33:00] probably come back down and test it at
+[33:01] some point, but you can see just how
+[33:04] fast it'll break up through
+[33:08] there. There it is. I'll just stop it
+[33:10] again. 279 at the S, 279 orders come in
+[33:14] and then there's just tons of buying and
+[33:15] there's no selling. You have one seller
+[33:17] on the bid and then all this buying and
+[33:21] you can see all the delta. So, there's
+[33:22] heavy buying going on at this high. Now,
+[33:24] are they going to get put in pain if we
+[33:26] come back down?
+[33:28] Probably. But I don't want to just short
+[33:31] blindly because there's a ton of
+[33:32] liquidity at that
+[33:34] level. All right, that's that's
+[33:36] basically like a lockout. So now I would
+[33:38] want to see from here if we kind of come
+[33:41] back down and get underneath
+[33:44] 97700 then maybe those buyers get put in
+[33:47] pain. But that's a uh that's like a
+[33:49] lockout trade at the high right there.
+[33:51] And the last thing I want to show you is
+[33:52] just kind of how like the footprint like
+[33:54] the bookmap like everything's kind of
+[33:56] showing you like similar data. So
+[33:59] there's my footprint chart and the depth
+[34:01] of market on the right time and sales.
+[34:03] So kind of watch as we we come into this
+[34:05] high. Let me go full screen. All right.
+[34:07] So, we make this high right here. And
+[34:09] you can see the footprint, right?
+[34:11] There's 30 47. There's 30 47 30 47 30 47
+[34:18] 3047. All right. This left column is the
+[34:22] delta. This right column is the volume.
+[34:24] You have 30 market buys at 56.50. So,
+[34:28] there's 30 on the ask, nothing on the
+[34:30] bid. 30 delta and 30 volume. And then
+[34:33] this 45 plus this one, what does that
+[34:36] get you? 46. All right. So the depth of
+[34:39] market, this column, the price ladder,
+[34:42] it's showing us the same information
+[34:44] that we can see on a footprint, even on
+[34:47] bookmap. And even the time and sales
+[34:49] column, like if I see a big order, this
+[34:51] is filtered for higher. You can't really
+[34:53] see it on this, but if like 600
+[34:55] contracts came in, I would see 600 right
+[34:59] here on the right. So it's showing you
+[35:01] the same data. So it just kind of like I
+[35:04] want I wanted you to see this. So it
+[35:06] kind of like ties in, you know, the
+[35:08] function of order flow is all these
+[35:10] tools, they kind of show you the same
+[35:12] data just in a little different way.
+[35:15] Like I can see this the delta and the
+[35:17] buying and the selling kind of like you
+[35:19] know as a footprint like historically
+[35:21] and then the the ladder shows it to me
+[35:23] by price and I can actually see the way
+[35:26] orders are moving on the bid on the ask.
+[35:29] All right, but that's pretty much the
+[35:30] depth of market. If you have any
+[35:32] questions, please let me know. I hope um
+[35:36] it's kind of hard to find good depth of
+[35:38] market education. So, I hope I explained
+[35:41] it in a easy way with the video. You
+[35:44] know, it's just something that you watch
+[35:46] and you get better at. But when you tie
+[35:48] it into like the footprint, like you
+[35:50] understand kind of like the relationship
+[35:51] between everything and you just watch it
+[35:54] at your key levels and gauge the
+[35:56] reactions and over time you're going to
+[35:57] learn how to get comfortable taking
+[35:59] trade setups. So that's the depth of
+[36:02] market. If you learn something new, drop
+[36:04] a thumbs up. If you're new to my
+[36:05] channel, I'd appreciate you subscribing
+[36:07] so I can continue to make trading videos
+[36:09] and provide value to those watching. If
+[36:11] you're looking to level up your trading,
+[36:13] we have our full-time trader course
+[36:14] which gives you access to the Discord
+[36:16] where I keep everyone updated on my
+[36:18] thoughts and my trading throughout the
+[36:19] day so that you can learn from the good
+[36:21] and the bad of of what I'm doing and
+[36:22] what I'm seeing. It's a more
+[36:23] personalized approach to learning where
+[36:25] you can interact with like-minded
+[36:27] traders. That will be the first link
+[36:28] down below. And with that, I'm ending it
+[36:30] and I will see you in the next video.

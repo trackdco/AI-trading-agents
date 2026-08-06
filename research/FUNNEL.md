@@ -33,6 +33,63 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 
 ---
 
+## NYA-LVL-01 — level-interaction family (London 50 seed) — **DEAD. W was a lookahead.**
+- **VERDICT 2026-08-05: KILLED.** Placebo null 100 perms: observed +0.7082 R/trade vs
+  null median **+0.7509**, family-wise **p=0.7500** against a declared 0.01. The null
+  MEDIAN EXCEEDS the observed value.
+- **THE KILL SHOT — W read the future.** W was computed from the book at the FILL MINUTE,
+  which includes what price did after entry. Recomputed one minute earlier: lift falls
+  from **+19.5pp to +4.2pp**. ~80% of the edge was information from the wrong side of the
+  decision point. This also explains the null: W peeks regardless of which line it is
+  attached to, which is why random lines scored BETTER than the real six.
+- **THREE BUGS, ONE SHAPE, ALL MINE:** trail read a bar's high before its low; the sim
+  started 12 min after the fill (PF 3.09); W read the fill minute (56.9% at 2R). Every one
+  made the numbers better. Every one was post-decision information. I caught two by
+  looking and the third only because Angus pushed back on an oversell.
+- **STANDING CHECK ADOPTED:** any feature beating the bar-only baseline by >~5pp is
+  recomputed one bar earlier BEFORE being reported — not after someone is sceptical.
+- SURVIVES: the raw substrate (4,548 events, 16.2/session, six lookahead-clean levels) and
+  an honest bar-only ceiling of ~60% at 1.0R / +0.20R. Marginal, not a strategy.
+- **No 2023/24 look spent.** Full verdict: `research/findings/NYA-LVL-01-VERDICT-killed.md`.
+- **VOID NOTICE 2026-08-05:** the simulation filled at the level mid-bar but did not start
+  watching until the 15-minute bar CLOSED — a median 12 minutes later, during which price
+  moves a median 21 pts against the trade. **A 10pt stop was already hit before the sim
+  began on 72.9% of trades.** Every P&L number below and in stages 2/3a/3b is withdrawn.
+  Event counts stand. Full notice: `research/findings/NYA-LVL-01-VOID-entry-bar-skipped.md`.
+  Fix: detect the touch on 1-minute bars and start the path at the touch minute.
+  Caught because Angus said the numbers looked 'almost suspiciously good'.
+- STAGE: stage 1 complete — prereg + raw uncapped trigger set. **STOPPED for Angus's
+  read before any optimisation**, per his order. Nothing filtered, nothing selected.
+- RAW TRIGGERS: **4,808 touches / 286 sessions, 4,759 filled = 16.6 per session**
+  (2025: 17.4, 2026: 15.8) vs the ~10-15/day design intent. Kill line was <2/session —
+  cleared by 8x. Fill rate 99% under the §2.5 limit rule.
+- BY LEVEL: PM_50 21% / PM_HIGH 20% / PM_LOW 18% / PD_HIGH 15% / PD_50 15% / PD_LOW 11%.
+- RAW P&L (base cost, Version B raw touch, ALL SIX ARMS, nothing selected):
+  S_LEVEL/T_LADDER n=4,310 WR 39% PF 0.79 | S_LEVEL/T_SCALP n=4,759 WR 61% PF 0.43 |
+  S_LEVEL/T_TIME n=4,759 WR 39% PF 0.91 | S_FAR/T_LADDER n=2,539 WR 59% PF 0.96 |
+  S_FAR/T_SCALP n=2,988 WR 79% PF 0.50 | S_FAR/T_TIME n=2,988 WR 50% PF 0.94.
+  **Every arm negative at both cost levels.** Ugly raw is the expected shape (§5.9.1).
+- **THE HEADLINE — REALISED STOP DISTANCE.** He teaches the stop as ~16 points. Measured
+  as taught (a 15-minute CLOSE beyond the level), it costs a **median 48.4 pts, p90 87.9**.
+  S_FAR is a **median 121 pts, p90 334**. His win rate is roughly real (61-79%); the stop
+  is ~3x what he says, which is why a 61% win rate still runs PF 0.43.
+- HALF-YEARS: 2025H1 PF 0.70 / 2025H2 0.47 / 2026H1 0.38 / 2026H2 0.30 — negative every
+  half, and drifting worse. No calendar pooling hiding anything.
+- VERSION A vs B (both taught, neither picked): break-then-retest n=1,133 WR 63% PF 0.87
+  vs raw touch n=4,759 WR 61% PF 0.43. **Reported, not acted on** — selecting here would
+  be a bin decision off the raw set (§5.9.1).
+- RECORDED FROM BIRTH (§5.12-5): level type, tap number (2 timeframes), clock, level age,
+  gap context, distance from open, MFE/MAE, t+5/15/30. His own filters (opening candle,
+  three-tap, 80/20 bias, 11:00 stop) are declared ARMS, none applied.
+- TWO BUGS CAUGHT AND FIXED BEFORE REPORTING: the far-extreme stop sat on the wrong side
+  of a fade (simulator read it as an instant target — produced a fake PF 9.18/90% WR);
+  and break-tracking skipped bars that touched the level, so Version A armed only twice
+  instead of 1,133 times.
+- NEXT: **Angus's call.** Stage 2 options per §5.11-9c are flow/depth/conviction; the
+  depth archive covers 08:00-10:29 ET, overlapping level formation and his prime window.
+- CANON SHAPE: canon-like so far — very high raw frequency, raw economics negative, all
+  the discriminating variables recorded and untouched.
+
 ## nya-ivb-fadeB — IVB range fade (Fabervaale, as taught) — ALIVE, mid-funnel
 - STAGE: geometry validated on flow span; era discipline + exit arms owed.
 - RAW TRIGGERS: 356 touches / 911 sessions full span (~2/wk); 105 on flow span.
@@ -116,6 +173,145 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   (25) → 43.9% (26).
 - ROLE IN THE AUDIT: the negative control — the funnel lifts real edges
   (cards above) and fails to lift dead ones. Both behaviors are required.
+
+## london-asian-trend-continuation (LDN-ATC-01) — pre-London pullback — **DEAD** (L1 Stage 1 FAIL, 2026-08-06)
+- **SUPERSEDES the census-stage status below.** `docs/VERDICT-LDN-ATC-01-L1.md`: primary n=30
+  INCONCLUSIVE ON POWER (eras 22/8), secondary n=88 negative in BOTH eras (−0.204/−0.236).
+  Two defects found — a LOOKAHEAD in the censused chain (LTA gate 07:00–08:00 vs triggers
+  firing 07:30, 27% of events) and a 64% target-invalid rate in the L1 prereg's own target
+  rule. The L0 counts below stand as counts but are INFLATED BY LOOKAHEAD. Stage 2 not spent.
+- STAGE: L0 census done (`docs/PREREG-london-atc-census.md`). L1 owed.
+- RAW TRIGGERS: 108 of 396 sessions complete the taught chain — **27% (2025) / 28% (2026)**
+  vs a declared 15% census floor. Half-year 29/25/26/(55% on 11 sessions, noise).
+- RAW P&L: **not computed.** Census counts events; §5.9.1 forbids a P&L kill here.
+- FUNNEL (§5.12.1, no silent drops): no-bias 22% / bias-no-pullback 2% /
+  **pullback-no-LTA 40%** / LTA-no-trigger 8% / fallback-only 1% / triggered 27%.
+  The LTA requirement is the binding constraint, not the trend and not the trigger.
+- TRIGGER GRID IS 30-MINUTE, NOT 15: '15m and 30m closing together' can only occur on
+  30m boundaries. Observed clock is exactly 07:30/08:00/08:30/09:00 and nothing between.
+  Opportunity set is half what a naive reading implies. 27% of triggers fire BEFORE the
+  08:00 open — mechanically a different trade from both dead London candidates.
+- SEMANTICS SELF-CHECK (§5.12.15): the '>=2 consecutive closes' LTA rule is MY
+  mechanisation, and it is loose — the pullback window holds a median 4 bars, and 47% of
+  sessions reaching it clear the bar. The column is not as selective as the name suggests.
+  Stricter LTA is a declared L1 arm.
+- EVENT CEILING (§5.11.2, declared before economics): all-triggers = 1.55x/1.51x.
+- NEXT: L1 at as-taught geometry with the time-segment/MFE-MAE schema built in from the
+  start, plus the declared randomised-bias control so 'continuation' must beat 'any
+  direction', not merely beat zero.
+- CANON SHAPE: too early — no P&L yet. Census arc normal (premise clears, ~2x the floor).
+
+## london-nq-open-break (LDN-OBK-01) — continuation branch — **DEAD** (earned, search complete)
+- STAGE: **complete** — census -> L1 -> conditioning -> L3 flow -> autopsy -> killed.
+- RAW TRIGGERS: 425 breaks / 396 London sessions (~1.1/day); 92% of 2025 days and
+  93% of 2026 days carry at least one. Declared census floor was 30%.
+- RAW P&L: **not computed.** Census counts events; §5.9.1 forbids a P&L kill here
+  and the prereg declared no P&L at this stage. First P&L is L1.
+- THE EVENT: continued breaks extend a median **63.9 pts (2025) / 96.5 pts (2026)**
+  beyond the level vs 8.6 / 11.5 for failed ones. ~7-8x separation — the tree is
+  bimodal, which is what makes a discriminator worth building.
+- SPLITS: break freq 92% (2025) / 93% (2026). Continuation share 15% / 16%.
+- BREAK QUALITY: 27% (2025) / 9% (2026) of breaks extend < 5 pts — bare touches
+  admitted because the prereg froze the as-taught definition with no minimum
+  displacement. Minimum-displacement is the obvious first L1 declared variable.
+- **RAW P&L (L1, `docs/PREREG-london-open-break-L1.md`) — UGLY, as the law expects.**
+  A/S1 (declared default): 2025 n=256 WR 32% **−479 pts** PF 0.79 R/trade −0.198;
+  2026 n=138 WR 38% **+88 pts** PF 1.06 R/trade +0.013. Strict cost: both negative.
+- **THE TIGHT-STOP CLAIM FAILED, 0 of 4 era×cost cells.** Pre-committed reading was
+  S1 beats S2 on R/trade in both eras at both costs. It never does. The one-line
+  reason: at 2R the trigger-candle stop is hit **65%** and the target **30%**, and a
+  2R trade needs 33.3% to break even before costs. Break-even geometry, cost stack
+  decides. Brandan's advertised 89.5% WR lands at 32–38%.
+- CONTROL CAVEAT: S2 exits on the clock 82% of the time (a 2R target on a range-width
+  stop is 100–170 pts away; NQ does not go that far in 2h). S2 is not a working
+  alternative — near-zero beating negative. **Neither stop makes this pay.**
+- VARIABLE LIFT SO FAR: **negative.** Minimum displacement ≥0.10× range makes it worse
+  in every era at every cost (2025 −0.124R, 2026 −0.129R vs −0.198/+0.013 unfiltered).
+- CONDITIONING: 1 of 3 mechanism predictions confirmed (V1 macro hour, 4/4 cells;
+  V2 and V3 flip sign between eras).
+- **L3 FLOW: 0 of 6 declared features confirmed.** Autopsy: 16 cut-sets, 5 legal,
+  **none** positive at strict cost; de-risk also negative on all.
+- ~~VERDICT: KILLED on expectancy~~ — **VACATED**, see below.
+- **VERDICT WITHDRAWN same day.** §5.11/§5.12 landed after the kill. The L3 pass was
+  four tape features AT ENTRY plus two thin book features — §5.12.10 records that on the
+  shipped canon depth carried the entire edge (+0.5 to +1.3R) and flow at entry was a
+  rounding error. Weakest class, weakest moment, null treated as decisive. `W`/`D`/`WALLSZ`
+  never built. Plus: pooled flow nulls cannot close a gate (§5.11.4), no event-universe
+  sensitivity (§5.11.2), no stop-cap arm class (§5.11.3), no MFE/MAE pack so in-trade flow
+  untested (§5.12.5), no permutation null on the carried combination (§5.12.4).
+  Full reasoning: `research/findings/LDN-kill-vacated-under-511-512.md`.
+- **DEPTH PASS RUN (gap 1 closed).** 8 canon checks, 32 cells, 1,168 trades with book.
+  9 cells survive every era; ONE pays at strict cost both eras — `W` on A/S1, +0.204R (n=37) / +0.478R (n=38), lift +0.734/+0.756, inside the canon's depth band.
+- **W THEN FAILED ITS SELECTION-CORRECTED NULL.** 10k shuffles re-running the whole
+  32-cell selection: a cell that survives every era AND pays appears in **42.1%** of
+  shuffles vs the declared family-wise bar of 5%. Lift magnitude passes (p=0.016) but that
+  is a different claim from the one reported, and the declared test governs.
+- **FINAL VERDICT: KILLED, search genuinely complete.** Both highest-prior classes tested
+  at canon definitions: flow at entry 0/6, depth 9/32-survive-1-pays-0-survives-the-null.
+  Premise stays true (+12/+14pp placebo margin); no way to get paid for it survives.
+  No holdout look ever spent.
+
+- SURVIVES: the 09:00 London / 04:00 ET macro hour, the only confirmed variable and the
+  only London clock finding that came from our own measurement rather than a trader's
+  claim. No live candidate uses it.
+- CANON SHAPE: raw is ugly on schedule (canon raw was negative pre-wall-gate too). The
+  difference from canon so far: **canon's first variable lifted, this one's didn't.**
+  One variable is not a search, but it is not a good start either.
+
+## london-po3-ifvg (LDN-PO3-01) — failure branch — **DEAD** (earned, search complete)
+- STAGE: **complete** — census -> L1 -> conditioning -> interaction -> L3 flow -> autopsy -> killed.
+- RAW TRIGGERS: same 425 breaks. Fail-within-120m on **85% (2025) / 84% (2026)** vs
+  the declared 15% census floor. The strong "the break is usually the trap" form
+  survives too — it needed >50% and got 84-85%.
+- **PLACEBO MARGIN — the number that actually matters.** A 04:00-06:00 London range
+  with no claim on the open fails at **73% / 70%**. So the headline 85% is mostly
+  ordinary boundary mean-reversion. The trial is the margin: **+12pp (z=3.43)** and
+  **+14pp (z=2.94)**, era-consistent. Never quote the 85% alone.
+- SPLITS: up-break fail 78%/74%, down-break fail 80%/81% — no side asymmetry.
+- TRANSFER TEST — **NEGATIVE, reported as one.** NYA-FA-01's excursion-depth
+  discriminator does not replicate: points rho **-0.105** (inverted), normalised by
+  range width rho **-0.017** (flat). Time-outside discriminates nothing here either,
+  which does replicate NY. See `research/findings/nyfa-discriminator-does-not-transfer.md`.
+- **RAW P&L (L1) — UGLY.** F1 (midpoint, declared default): 2025 n=234 WR 34%
+  **−149 pts** PF 0.93 R/trade −0.190; 2026 n=125 WR 33% **+8 pts** PF 1.01 R/trade
+  +0.002. Strict cost: both negative.
+- **F2 (far-edge target, as taught) is the interesting loser.** 2025 −0.202R, 2026
+  **+0.302R** (PF 1.20, +$6,031). Much better in 2026, no better in 2025 — **era
+  INCONSISTENT**, so it does not displace the declared default on in-sample rank
+  (§6.0.1). Ledgered as a declared negative, not promoted. Note this also means the
+  census's implied midpoint correction is **not** confirmed: the target question is
+  open, not settled in the midpoint's favour.
+- ~~COST SENSITIVITY: average risk ~5 pts, so a 1–2 pt cost is 20–40% of the stop.~~
+  **WRONG — corrected 2026-08-05.** That figure belongs to the OBK branch's
+  trigger-candle stop. Actual risk on this branch: **median 14.0 pts, p10 5.5, p90
+  39.8** — a 7.2× spread with no floor and no cap. Cost is 7–14% of median risk, not
+  20–40%.
+- VARIABLE LIFT: **negative.** Minimum displacement ≥0.10× range: 2025 −0.255R,
+  2026 −0.200R — worse than unfiltered in both.
+- **GEOMETRY CALIBRATION (2026-08-05, `docs/PREREG-london-po3-geometry.md`) — the
+  stage this family was killed twice without.** Ordered by Angus: *"if u arent testing
+  jack shit and just sending it off, its obviously not gonna do well."* Against the
+  §5.11 checklist the family had cleared **2 of 9** items on **2 total arms**; the
+  shipped IB fade got 28 arms across 13 trials. Kill vacated a second time, then:
+  - **6 stops × 7 targets = 42 declared cells, identical 359-event set in every cell.
+    0 of 42 are PF-positive at strict cost in both eras.** Best 0.97 (`E+F12/FAR`,
+    `E/FAR`, `E+F8/FAR`); default `E/MID` 0.87; worst 0.63.
+  - **Event universe (§5.11.2, never run here before): widening loses faster.**
+    re-entry 359→1,109 trades at PF 0.77; window→11:00 London 405 at 0.85; both
+    1,529 at 0.81.
+  - **The as-taught FAR-edge target beat my midpoint substitution** — far-edge takes
+    the top 3 slots and 5 of the top 6 (payoff 2.4–3.0 at 23–29% WR vs the midpoint's
+    1.5–1.8 at 30–37%). Trial 1's census inference was wrong and is now settled.
+  - **Stop floors help slightly, caps hurt, both are second-order** (~0.06 PF spread
+    across all six stop rules). The stop was never where the problem lived.
+- **VERDICT: DEAD (final), kill legal on the third attempt.** All three variable
+  classes searched: geometry 0/42, flow-at-entry 0/6 confirmed, depth 1/32 paid and
+  failed its null at family-wise p=0.42. Tombstone with the reopening burden:
+  `research/findings/LDN-PO3-01-TOMBSTONE.md`.
+- **NEVER SPENT: 2023/24 candles, the six sealed months, `depth_london_2023_24`.
+  Three kills, zero holdout looks.**
+- CANON SHAPE: raw ugly on schedule; **no variable class ever lifted** — that is the
+  difference from canon, whose wall gate lifted a negative raw set into the book.
 
 ## nypre-gap-engine / nypre-inventory-correction — pre-market pair — SHELVED, back in play
 - Under §5.9 book-level bars: gap PSR 0.77, inventory PSR 0.92 vs the new
@@ -331,3 +527,80 @@ Full detail and unspent legs: `research/LONDON-PROGRESS.md`. Verdict documents l
 - STATUS: book gates PASSED. Ship-track remaining for the range fade:
   chained-agents-vs-mechanical rung → shadow → Angus sign-off → two-party
   arming. Pre-market pair: same track at smaller weight, Angus's pick.
+
+## london-canon-rebuild (LDN-CAN-01) — Angus's canon geometry in London — **L2 complete, raw is negative, risk floor validated**
+- STAGE: L0 census → L1 fills → L1b setup dedup → **L2 outcomes**. L3 (features + trial) owed.
+- METHOD OF RECORD: `docs/HANDOFF-london-rebuild.md`, written 2026-07-28 and never run until now.
+  Prereg `docs/PREREG-london-canon-rebuild.md`.
+- **GATES, both passed before any number was reported.** L0 parity vs the cached London
+  stream: byte-identical on 3 days incl. a DST-misaligned one (39/39, 53/53, 16/16). L1
+  engine-subset fidelity: 20 engine fills over 6 sessions, every one reproduced on trigger,
+  fill minute and entry price. L2 lookback invariance: 7d identical to 30d on 105 outcomes.
+- FUNNEL: **8,723 triggers** (33.0/session, 264 sessions) → 7,239 filled → **1,426 setups**
+  after multi-TF dedup + the VWAP ruling (5.40/session) → **1,239 engine outcomes** (4.69/session).
+- **RAW P&L, 1 lot, costs in, no risk gate, no caps: n=1,239 WR 28% PF 0.91 −$8,899
+  R/trade −0.173, maxDD $13,076.** Era-stable and era-negative: 2025 PF 0.91 / 2026 PF 0.91.
+- **NO PATTERN SURVIVES BOTH ERAS.** B2 0.88/1.32, B 1.05/0.57, A 0.63/1.24 — every one flips.
+- **THE FINDING — the 9.5pt London risk floor is real, and it was measured not imported.**
+  The handoff called `LON_RISK_MIN = 9.5` a hypothesis to re-test on the honest population:
+
+  | risk band | n | WR | PF | $ 1-lot | R/trade |
+  |---|---:|---:|---:|---:|---:|
+  | 0–3 pt | 270 | **10%** | **0.37** | −$4,854 | −0.708 |
+  | 3–5 pt | 238 | 24% | 0.78 | −$2,748 | −0.104 |
+  | 5–7 pt | 200 | 26% | 0.81 | −$2,861 | −0.063 |
+  | 7–9.5 pt | 191 | 37% | 0.90 | −$1,478 | −0.027 |
+  | **9.5–15 pt** | 216 | **40%** | **1.20** | **+$5,125** | **+0.110** |
+  | 15–25 pt | 97 | 43% | 0.89 | −$1,815 | −0.039 |
+  | 25+ pt | 27 | 41% | 0.97 | −$269 | −0.013 |
+
+  Below 9.5pt: PF 0.77, −$11,940. At/above: PF 1.06, +$3,041, 41% WR. Monotone improving to
+  the floor, then a BAND not a ray — 15pt+ gives it back. The 0–3pt band at 10% WR is the
+  same micro-stop kill zone NY found at sub-7pt (11–15% WR).
+- EXITS: 68% straight stop, 21% partial+stop, 8% partial+target, **3% clean target**.
+  With a hard 2R floor on structural targets, this book mostly does not reach its target.
+- ARMS, reported and not selected on: `vs_htf` (highest-TF entry) is WORSE than the
+  causal default `vs_first` (−$14,538 vs −$8,899) — the causality-safe choice is also the
+  better one. The VWAP ruling helped: `setup_first` −$10,559 → `vs_first` −$8,899, WR 24%→28%.
+- **BUG CAUGHT AT L2, cost 11.8% of the population.** The engine's NY news rule ("high-impact
+  pre-open day → no entries until 09:30") was vetoing every London trigger on a US data day —
+  408 of 409 such releases land at 08:15 ET or later, hours after the London trade is flat.
+  1,086 candidates on 34 sessions. Scoped off for London; a UK/EU stand-down is owed at L4.
+- **L3 COMPLETE (features + trial + null).** Feature matrix gated: 39 columns reproduce
+  `london_matrix` to 1e-6 on matched fills. Depth resolved 100%.
+- **DEPTH ANCHOR MOVED TO ORDER PLACEMENT (ANGUS).** Both fill-anchored reads are invalid
+  for a limit strategy: the fill-bar CLOSE contains the answer (worth +19.0pp on `W` vs
+  +8.2pp honest — `research/findings/LDN-depth-read-one-bar-late.md`), and the fill-bar
+  OPEN is adverse BY CONSTRUCTION because a limit fill requires price to travel toward us.
+  At-fill book state was never actionable anyway — you cannot cancel an order at the
+  instant it fills. The tradeable anchor is the trigger candle's close.
+- **NULL PASSES BOTH DECLARED BARS** (1,000 shuffles within era, whole 49-candidate search
+  re-run, both bars committed before any p-value existed):
+  family-wise max \|WR gap\| observed **24.7%** vs null median 7.7% / 99th 13.4%,
+  **p=0.0000**; 2026 alone observed **24.3%** vs null 99th 22.5%, **p=0.0050**.
+- **BUT GRADE EACH CANDIDATE AGAINST THAT SAME DISTRIBUTION — this is the real result:**
+
+  | candidate | gap | vs null median 7.7% | verdict |
+  |---|---:|---|---|
+  | `room_ahead_R` | **24.7%** | 3.2x | **clears decisively** |
+  | `ROOM` (band form) | 12.8% | 1.7x | marginal |
+  | `W` @ order placement | 8.2% | **1.06x** | **noise-level** |
+  | `FAR` @ order placement | 7.6% | **0.99x** | **noise-level** |
+  | `ASIA` | -1.7% | — | fails era-consistency |
+
+- **DEPTH AND FLOW ARE NOT ESTABLISHED FOR LONDON.** `W`/`FAR` survived the era screen and
+  then landed on the null median. Negative result, recorded as one — and the clean version
+  of a negative, versus shipping a +19pp `W` that was reading the future.
+- **THE ONE REAL DISCRIMINATOR IS `room_ahead_R`, and it is a BARS feature** — no book, no
+  tape, no timestamp judgement, structurally immune to the defect class that ate this rung.
+  **Direction is backwards from intuition: the gap is NEGATIVE.** More room to the
+  target-side overnight extreme is 24.7pp WORSE. Consistent with the canon's own ROOM band
+  excluding the high tail.
+- NEXT: **L4 — policy.** Depth, tape, VWAP geometry, every old London check
+  (W/FAR/ROOM/ASIA) re-derived from scratch at re-derived thresholds, with a family-wise
+  permutation null. The NY rebuild killed 4 of its checks and demoted 5 more; the prior is
+  that London loses checks too.
+- CANON SHAPE: **this is the canon's own arc.** NY's rebuild found "raw structure breaks even;
+  two wall checks carry the edge." London raw is breakeven-to-negative at the right risk band
+  and negative below it. Whether depth carries it here is exactly what L3 answers.
+- **NEVER SPENT:** 2023/24, the six sealed months, `depth_london_2023_24`.

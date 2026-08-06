@@ -89,8 +89,16 @@ triggers:
     atr_floor_enabled: false      # §3 — OPTIONAL size floor: range ≥ k × ATR(20)
     atr_floor_k: 1.0              # §3 CALIBRATE — k (start 1.0)
     atr_length: 20                # §3 — ATR(20)
-  over_extension_sigma: 2         # §3 — over-extension = touch of NY VWAP ±2σ
-  over_extension_extreme_sigma: 3 # §3 — extreme over-extension = ±3σ
+  over_extension_sigma: 2         # §3 — over-extension = touch of the DAILY VWAP ±2σ band
+                                  #      (18:00 ET CME session anchor), NOT the NY VWAP.
+                                  #      Comment corrected 2026-08-05: it said "NY VWAP" and
+                                  #      the code has always read daily_vwap (triggers.py
+                                  #      _test_candle -> ind["daily_vwap"]). The distinction
+                                  #      is load-bearing for London: ny_vwap is NaN before
+                                  #      09:30 ET, so a London 03:00-05:00 trigger would have
+                                  #      classified every A-pattern wrong had the comment been
+                                  #      the truth. Code right, comment stale — comment fixed.
+  over_extension_extreme_sigma: 3 # §3 — extreme over-extension = ±3σ (same daily anchor)
 
 entry:
   variant: E3                     # §5.3 TOURNAMENT — active limit-price variant. ANGUS pass-5
