@@ -51,13 +51,22 @@ SPEC = ROOT / ".claude/agents/live-desk-v1.md"
 RUNS = ROOT / "runs/live_desk1"
 TICK, SLIP, PV, COMMISSION, SFR = 0.25, 1, 20.0, 5.0, 1.0
 SHELF_TIER = {"CONFIRMED": 300.0, "BASE": 200.0}
-# CANON CONVICTION SIZING (Angus): $160 base per unit-risk x the shipped
-# multiplier. Multipliers are 0.5 / 1.0 / 1.5 from the book's own tier column,
-# and 2.0 for the FIRST elite signal of each day (funded_book.py:176 —
-# subsequent elites fall back to their base tier). Drawdown-state effects
-# (ramp, soft de-risk, daily budget) are deliberately excluded: this sim is
-# constant-risk by design so that agent-vs-machine measures decisions, not
-# account state.
+# CANON CONVICTION SIZING — Angus's spec, verified against funded_book.py.
+#   gold_score = 2*D + Tc + AGE + TRIG + T2   (max 6)
+#   pre_score  = 2*W + G + F                  (max 4)
+#   gold: <=3 -> 0.5x | 4 -> 1.0x | >=5 -> 1.5x
+#   pre:  <=2 -> 0.5x | 3 -> 1.0x |  4  -> 1.5x
+#   ELITE 2.0x overrides the ladder when gold AND TRIG AND LONSLOPE AND
+#   struct_event == "broke" all fire — MAX ONE PER DAY, and THE SLOT IS SPENT
+#   ON A FILL, NOT ON A REFUSAL. So the multiplier cannot be precomputed per
+#   signal for the desk: if it passes the day's first elite, the slot stays
+#   live for the next one. Baselines take everything, so theirs resolves in
+#   signal order; the desk's resolves against its own fills.
+#   (WALLSZ is not a tier bit — it is a hard gold admission gate applied
+#   upstream in load_book. No Q-boost mechanic exists in the live canon.)
+# Drawdown-state effects (buffer base_eff, ramp, soft de-risk, daily budget)
+# are deliberately EXCLUDED: this sim is constant-risk so agent-vs-machine
+# isolates decisions from account state.
 CANON_BASE = 160.0
 # CADENCE (Angus, two rulings): minute-by-minute intraday adaptation WHERE THE
 # MONEY IS — one call EVERY MINUTE a position is open; while flat in the entry
@@ -349,17 +358,16 @@ def build_signals():
             mech_dollars=float(td * t["mech_R"]), mech_R=float(t["mech_R"])))
     for d in days:
         days[d].sort(key=lambda x: x["fill"])
-        elite_used = False          # 2.0x goes to the day's FIRST elite only
+        elite_used = False     # baseline slot: baselines fill every signal
         for i, sig in enumerate(days[d]):
             sig["sid"] = f"{'C' if sig['engine'] == 'CANON' else 'S'}{i + 1}"
             if sig["engine"] != "CANON":
                 continue
             if sig["elite"] and not elite_used:
-                sig["tier_mult"], elite_used = 2.0, True
+                sig["mech_tier"], elite_used = 2.0, True
             else:
-                sig["tier_mult"] = sig["tier_base"]
-            sig["dollars_risk"] = CANON_BASE * sig["tier_mult"]
-            sig["mech_dollars"] = sig["mech_R"] * sig["dollars_risk"]
+                sig["mech_tier"] = sig["tier_base"]
+            sig["mech_dollars"] = sig["mech_R"] * CANON_BASE * sig["mech_tier"]
     return days
 
 
@@ -378,16 +386,16 @@ def b1_dollars(sigs: list[dict]) -> float:
 
 # ------------------------------------------------------------------ the day loop
 
-def sig_desc(g: dict) -> str:
+def sig_desc(g: dict, tier_now=None) -> str:
     if g["engine"] == "CANON":
         tgt = "none" if g["target"] is None else f"{g['target']:.2f} ({g['s'] * (g['target'] - g['entry']) / g['risk']:+.1f}R)"
         pt = (f", engine banks HALF at {g['partial_px']:.2f} "
               f"({g['s'] * (g['partial_px'] - g['entry']) / g['risk']:+.1f}R) then runs "
               f"the rest" if g.get("partial_px") is not None else "")
-        tm = g.get("tier_mult", 1.0)
-        lbl = {2.0: "ELITE conviction", 1.5: "HIGH conviction",
+        tm = tier_now if tier_now is not None else g.get("tier_base", 1.0)
+        lbl = {2.0: "ELITE conviction (the day's 2x slot)", 1.5: "HIGH conviction",
                1.0: "standard", 0.5: "REDUCED conviction"}.get(tm, "standard")
-        conv = f"{lbl} {tm:g}x — ${g['dollars_risk']:.0f} risk"
+        conv = f"{lbl} {tm:g}x — ${CANON_BASE * tm:.0f} risk"
         return (f"CANON {g['direction'].upper()} [{g['sess']}] fills {g['entry']:.2f}, "
                 f"stop {g['stop']:.2f} (-1R = {g['risk']:.2f}pt), working target {tgt}"
                 f"{pt}, {conv}, pattern {g['pattern']}")
@@ -416,6 +424,7 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
 
     sid = None
     turns, transcript = 0, []
+    desk_elite_used = [False]   # the DESK's own 2.0x slot — spent on a fill only
     book: list[dict] = []
     done_trades: list[dict] = []
     passes: list[dict] = []
@@ -497,8 +506,10 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
         # ANCHORING LAW (capture_replay): an untouched position settles at the
         # engine's own realised dollars — only agent DEVIATIONS are simulated.
         if anchor:
-            net = p["sig"]["mech_dollars"]
-            aR = net / p["sig"]["dollars_risk"]
+            # engine's own outcome (mech_R), sized at THIS DESK's multiplier
+            aR = p["sig"]["mech_R"] if p["engine"] == "CANON" \
+                else p["sig"]["mech_dollars"] / p["sig"]["dollars_risk"]
+            net = aR * p["sig"]["dollars_risk"]
         else:
             pts = sum(fr * p["s"] * (px - p["entry"]) for fr, px, _ in p["legs"])
             if p["engine"] == "CANON":
@@ -625,9 +636,21 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
         handle_close_other(rep)
         return rep
 
+    def desk_tier(g):
+        """The multiplier THIS DESK gets if it fills g now (elite slot = one per
+        day, spent on a fill; a refusal leaves it live for the next elite)."""
+        if g["engine"] != "CANON":
+            return None
+        return 2.0 if (g["elite"] and not desk_elite_used[0]) else g["tier_base"]
+
     def open_pos(g, taken_by):
         mode = "band" if g["engine"] == "SHELF" else \
             ("fixed" if g.get("target") is not None else "none")
+        if g["engine"] == "CANON":
+            tm = desk_tier(g)
+            if tm == 2.0:
+                desk_elite_used[0] = True      # burned only now, on the fill
+            g = dict(g, tier_mult=tm, dollars_risk=CANON_BASE * tm)
         book.append(dict(
             pid=g["sid"], engine=g["engine"], sig=g, s=g["s"], entry=g["entry"],
             entry_state=entry_state(g["fill"], g["s"], g["entry"], g["risk"]),
@@ -820,11 +843,11 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
                 open_pos(g, "auto_cap")
                 continue
             if opposing:
-                why = (f"SIGNAL + CONFLICT: {sig_desc(g)} — fires OPPOSITE to your open "
+                why = (f"SIGNAL + CONFLICT: {sig_desc(g, desk_tier(g))} — fires OPPOSITE to your open "
                        f"{', '.join(q['pid'] + ' ' + q['engine'] for q in opposing)}. "
                        f"pass / take (net the hedge) / take + close_other.")
             else:
-                why = f"SIGNAL: {sig_desc(g)} — take or pass."
+                why = f"SIGNAL: {sig_desc(g, desk_tier(g))} — take or pass."
             rep = send(minute, bar, why, signal=g)
             if rep["action"] == "take":
                 open_pos(g, "agent")
@@ -834,7 +857,7 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
                                       else "net"})
             else:
                 passes.append({"sid": g["sid"], "engine": g["engine"],
-                               "desc": sig_desc(g),
+                               "desc": sig_desc(g, desk_tier(g)),
                                "mech_dollars": round(g["mech_dollars"], 2),
                                "note": str(rep.get("note", ""))[:120]})
                 if opposing:
