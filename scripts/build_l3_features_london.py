@@ -280,20 +280,26 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--run", action="store_true")
     ap.add_argument("--gate", action="store_true")
+    ap.add_argument("--entry", default="E3", choices=["E3", "EC", "E4"],
+                    help="which entry arm's L2 book to feature")
     a = ap.parse_args()
     if a.gate:
         return 0 if gate() else 1
     if not a.run:
         ap.error("--run or --gate")
 
-    D = pd.read_parquet(IN)
+    src = (IN if a.entry == "E3"
+           else IN.with_name(f"l2_outcomes_london_fit_{a.entry}.parquet"))
+    D = pd.read_parquet(src)
     D = D[D.status == "outcome"].sort_values(["day", "fill_ts"]).reset_index(drop=True)
     print(f"L3 London — featuring {len(D):,} outcomes over {D.day.nunique()} sessions",
           flush=True)
     F = build(D)
-    F.to_parquet(OUT, index=False)
+    out = (OUT if a.entry == "E3"
+           else OUT.with_name(f"l3_features_london_fit_{a.entry}.parquet"))
+    F.to_parquet(out, index=False)
     dep_cols = [c for c in F.columns if c.startswith("dep_")]
-    print(f"\nwrote {OUT.relative_to(ROOT)} — {len(F):,} rows x {F.shape[1]} cols")
+    print(f"\nwrote {out.relative_to(ROOT)} — {len(F):,} rows x {F.shape[1]} cols")
     print(f"depth resolved on {int(F[dep_cols[0]].notna().sum()):,} of {len(F):,} "
           f"({F[dep_cols[0]].notna().mean():.0%})" if dep_cols else "no depth columns")
     return 0
