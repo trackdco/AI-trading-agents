@@ -100,6 +100,26 @@ before anyone asked what widening the window did — and when it was finally ask
 answer changed the trade count by 13%. The question is answerable here without a re-run,
 at stage one, for free.
 
+### AMENDMENT (ANGUS 2026-08-05, mid-run — recorded, not silently applied)
+
+> *"dont worry about 7:30 to 10:30, im only interested in 8-10"*
+
+**The wide band is CANCELLED.** The `--band wide` run was killed before it produced a
+parquet and **no wide-band number was ever computed, seen, or reported.** The window for
+this family is 08:00–10:00 Europe/London, full stop.
+
+Consequences, stated so nothing is quietly lost:
+
+- The §5.11.2 event-universe item is **NOT closed at L0**. It moves to L1, where the
+  honest universe questions on this family are different and cheaper anyway: **which
+  timeframes are in scope** (the detector fires on 1/2/3/5-minute), **whether both
+  patterns trade**, and **the order-cancel policy** (orders die at the window end per the
+  standing ruling, versus a distance cancel). Those are re-entry and universe questions
+  that live inside the declared window.
+- The rung table in §5 is updated accordingly: L0 closes item 5 only; item 2 is owed at L1.
+- `scripts/build_l0_triggers_london.py` keeps the `--band` switch. It is not deleted,
+  because deleting it would hide that the question was asked. It is simply not run.
+
 ## 4. Census kill line — declared before the numbers are read (§5.9.1)
 
 L0 is a census. **It can only kill on the premise, never on expectancy.** This family
@@ -123,8 +143,8 @@ first number, rather than audited at the end:
 
 | rung | what runs | §5.11 items closed | gate |
 |---|---|---|---|
-| **L0** census | every trigger, no selection; two bands | 2 (event universe), 5 (year/half reporting) | parity vs cached stream — **PASSED** |
-| **L1** fills | E3 limits walked once each, no cancels enforced; cancel policies as derived columns | 7 (lookahead audit) | engine fill reproduction to the tick |
+| **L0** census | every trigger, no selection, 08:00–10:00 London | 5 (year/half reporting) | parity vs cached stream — **PASSED** |
+| **L1** fills | E3 limits walked once each, no cancels enforced; cancel policies as derived columns | 7 (lookahead audit), 2 (event universe — timeframe scope, pattern scope, cancel policy) | engine fill reproduction to the tick |
 | **L2** outcomes | every fill through the REAL engine, V8 management, rr_floor 2.0 | 3 (stop/risk arm class), 1 (MFE/MAE pack) | lookback invariance 7d vs 30d |
 | **L3** features + trial | depth, tape, VWAP geometry; every old check re-trialled at re-derived thresholds | 4 (state-conditional), 6 (canon variable map), 9c (in-trade flow) | reproduce old matrix values to 1e-6; family-wise permutation null |
 | **L4** policy | caps, sizing, risk as POST-HOC causal walks; 1-lot first | 9b (conviction sizing), 8 (mechanical baseline) | causal unit tests, PBO, DSR |
