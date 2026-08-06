@@ -21,7 +21,11 @@ THREE FAMILIES, all strictly pre-fill:
               at fill minus one minute.
   geometry    entry vs the daily-VWAP band, overnight-range position, extreme age, netpath,
               level churn, VWAP crosses, wickiness, BB width state.
-  depth       NEW HERE. `london_matrix.py` says "EXCEPT depth (heatmap not yet purchased)".
+  depth       NEW HERE, and read at THREE anchors. `t_*` is the book at ORDER PLACEMENT
+              (the trigger candle's close) and is the one that can be traded -- see the
+              long note in features_one(). The fill-anchored pair is kept only so the
+              contamination that motivated the move stays auditable.
+              `london_matrix.py` says "EXCEPT depth (heatmap not yet purchased)".
               It has been purchased: data/reference/depth_london, 295 condensed MBP-10 days.
               Read via scripts/london_depth.load_day, last snapshot AT OR BEFORE the fill
               minute — never the fill minute's own later state, which is the lookahead that
@@ -76,7 +80,7 @@ def load_bars() -> pd.DataFrame:
 
 
 def features_one(f: pd.Timestamp, sgn: int, entry: float, M, B, trig_arr,
-                 dep) -> dict:
+                 dep, trig_ts: pd.Timestamp | None = None) -> dict:
     """One trade's features. EVERY window ends at fill-minus-one-minute.
 
     Formulas are lifted expression-for-expression from scripts/london_matrix.py so the
@@ -169,6 +173,25 @@ def features_one(f: pd.Timestamp, sgn: int, entry: float, M, B, trig_arr,
         out.update(depth_at(dep, f, entry, side))
         out.update({f"p1_{k}": v for k, v in
                     depth_at(dep, f - pd.Timedelta(minutes=1), entry, side).items()})
+        # `t_` -- THE BOOK AT ORDER PLACEMENT. ANGUS 2026-08-05, and it supersedes both
+        # of the above as the feature that can actually be traded:
+        #
+        #   "live book will look at the literal seconds, not minutes. on a limit order, of
+        #    course the minute before entry, flow will probably be against us because it is
+        #    opposing our direction to get filled before running the way we want it to."
+        #
+        # Exactly right, and it invalidates the fill-anchored pair. The fill-bar CLOSE
+        # contains the answer; the fill-bar OPEN is adverse BY CONSTRUCTION, because a
+        # limit fill requires price to travel toward us. Neither brackets the truth.
+        #
+        # And at-fill book state was never actionable anyway: you cannot cancel an order at
+        # the instant it fills. The moment a limit trader can act on is when the order is
+        # PLACED -- the trigger candle's close. That book is unambiguous, strictly prior to
+        # the limit existing, free of approach bias, and measurable with the minute archive
+        # we already hold.
+        if trig_ts is not None:
+            out.update({f"t_{k}": v for k, v in
+                        depth_at(dep, trig_ts, entry, side).items()})
     return out
 
 
@@ -188,8 +211,10 @@ def build(D: pd.DataFrame, quiet: bool = False) -> pd.DataFrame:
             dep = load_day(t.day, DEPTH_DIR)
             if dep is None:
                 missing.add(t.day)
+        tt = pd.Timestamp(t.ts)
+        tt = (tt.tz_localize(NY) if tt.tzinfo is None else tt.tz_convert(NY)).floor("min")
         rows.append(features_one(f, 1 if t.direction == "long" else -1,
-                                 float(t.entry), M, B, tby.get(t.day), dep))
+                                 float(t.entry), M, B, tby.get(t.day), dep, tt))
         if not quiet and (i + 1) % 200 == 0:
             print(f"  {i+1}/{len(D)}", flush=True)
     X = pd.DataFrame(rows, index=D.index)

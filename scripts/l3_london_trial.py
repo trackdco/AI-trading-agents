@@ -64,17 +64,26 @@ def econ(T: pd.DataFrame) -> dict | None:
 def derive(F: pd.DataFrame) -> pd.DataFrame:
     """The shipped London checks, rebuilt from raw columns at their frozen thresholds.
 
-    DEPTH IS READ FROM THE `p1_` COLUMNS -- the book at the fill bar's OPEN. The shipped
-    `london_depth.py` reads at `fill.floor("min")`, which is the bar's CLOSE; engine bars
-    are close-labeled and fills land inside their stamped bar (100.0% here), so that read
-    is at or AFTER the fill. Worth +19.0pp vs +9.4pp on `W` and +20.5pp vs +6.3pp on
-    `FAR`. Full finding: research/findings/LDN-depth-read-one-bar-late.md.
+    DEPTH IS READ AT ORDER PLACEMENT (`t_*`, the trigger candle's close). ANGUS 2026-08-05:
+
+        "on a limit order, of course the minute before entry, flow will probably be against
+         us because it is opposing our direction to get filled before running the way we
+         want it to."
+
+    That invalidates BOTH fill-anchored reads. The fill-bar CLOSE contains the answer
+    (research/findings/LDN-depth-read-one-bar-late.md); the fill-bar OPEN is adverse BY
+    CONSTRUCTION, because a limit fill requires price to travel toward us. Neither brackets
+    the truth, so neither is a baseline.
+
+    Order placement is the moment a limit trader can actually act on -- you cannot cancel an
+    order at the instant it fills -- and the trigger candle's close is unambiguous, strictly
+    prior to the limit existing, and free of approach bias.
     """
     F = F.copy()
     long = (F.direction == "long").to_numpy()
-    behind = np.where(long, F.get("p1_dep_wall_below_d"), F.get("p1_dep_wall_above_d"))
-    ahead = np.where(long, F.get("p1_dep_wall_above_d"), F.get("p1_dep_wall_below_d"))
-    known = F["p1_dep_thick"].notna().to_numpy()
+    behind = np.where(long, F.get("t_dep_wall_below_d"), F.get("t_dep_wall_above_d"))
+    ahead = np.where(long, F.get("t_dep_wall_above_d"), F.get("t_dep_wall_below_d"))
+    known = F["t_dep_thick"].notna().to_numpy()
     F["chk_W"] = np.where(known, np.isnan(behind).astype(float), np.nan)
     F["chk_FAR"] = np.where(known, (np.nan_to_num(ahead, nan=-1) > LON_FAR_MIN).astype(float),
                             np.nan)
@@ -86,11 +95,12 @@ def derive(F: pd.DataFrame) -> pd.DataFrame:
     sgn = np.where(long, 1.0, -1.0)
     F["chk_ASIA"] = np.where(F["cvd_ASIA"].notna(),
                              (sgn * F["cvd_ASIA"] >= LON_ASIA_MIN).astype(float), np.nan)
-    # the CONTAMINATED mirror of W (fill-bar close), kept so the standing-check table
-    # can show both and the correction stays auditable. Never used as a feature.
-    behind_late = np.where(long, F.get("dep_wall_below_d"), F.get("dep_wall_above_d"))
-    known_late = F["dep_thick"].notna().to_numpy()
-    F["chk_W_late"] = np.where(known_late, np.isnan(behind_late).astype(float), np.nan)
+    # the two fill-anchored mirrors of W, kept ONLY so the comparison table can show all
+    # three and the reasoning stays auditable. Neither is ever used as a feature.
+    for pre, name in (("", "chk_W_late"), ("p1_", "chk_W_open")):
+        b = np.where(long, F.get(pre + "dep_wall_below_d"), F.get(pre + "dep_wall_above_d"))
+        k = F[pre + "dep_thick"].notna().to_numpy()
+        F[name] = np.where(k, np.isnan(b).astype(float), np.nan)
     return F
 
 
@@ -177,6 +187,7 @@ def main() -> int:
 
     # --- 2. the standing check on W -------------------------------------------
     rp, rw = split_lift(F, "chk_W"), split_lift(F, "chk_W_late")
+    ro = split_lift(F, "chk_W_open")
     if rw and rp:
         L += ["", "### The NYA-LVL-01 standing check on `W`, run BEFORE `W` is described", "",
               "*Any depth feature beating baseline by >5pp is recomputed from the book one",
@@ -185,7 +196,10 @@ def main() -> int:
               "| book used | n | WR gap (pass − fail) | 2025 | 2026 |", "|---|---:|---:|---:|---:|",
               f"| fill-bar CLOSE (as the shipped book reads it) | {rw['n_hi']:,} | "
               f"**{rw['wr_gap']:+.1%}** | {rw['gap_2025']:+.1%} | {rw['gap_2026']:+.1%} |",
-              f"| **fill-bar OPEN (causal — used here)** | {rp['n_hi']:,} | "
+              f"| fill-bar OPEN (adverse by construction) | {ro['n_hi']:,} | "
+              f"**{ro['wr_gap']:+.1%}** | {ro['gap_2025']:+.1%} | {ro['gap_2026']:+.1%} |"
+              if ro else "| fill-bar OPEN | — | — | — | — |",
+              f"| **ORDER PLACEMENT (used here)** | {rp['n_hi']:,} | "
               f"**{rp['wr_gap']:+.1%}** | {rp['gap_2025']:+.1%} | {rp['gap_2026']:+.1%} |", "",
               (f"Gap between the two: **{abs(rw['wr_gap'] - rp['wr_gap']):.1%}**. "
                + ("Small — the signal is not coming from the last minute of information."
@@ -196,8 +210,9 @@ def main() -> int:
     # --- 3. everything else ----------------------------------------------------
     # depth features come from p1_ only; the un-prefixed dep_ columns are the
     # contaminated fill-bar-close read and are excluded from the search entirely.
+    # only the order-placement depth enters the search; both fill-anchored sets are barred
     feats = [c for c in F.columns if c not in SKIP and not c.startswith("dep_")
-             and not c.startswith("chk_") and pd.api.types.is_numeric_dtype(F[c])
+             and not c.startswith("p1_") and not c.startswith("chk_") and pd.api.types.is_numeric_dtype(F[c])
              and F[c].notna().sum() > 4 * MIN_CELL]
     rows = [r for r in (split_lift(F, c) for c in sorted(feats)) if r]
     R = pd.DataFrame(rows)
