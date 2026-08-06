@@ -61,6 +61,7 @@ _BARS: pd.DataFrame | None = None
 
 
 ENTRY_VARIANT = "EC"        # overridden by --entry; see prereg §9
+_RRFLOOR = None             # None = keep the config's 2.0. 0.0 = NEXT structural level.
 
 
 def l2_cfg(day: str, entry: str = "EC"):
@@ -92,7 +93,16 @@ def l2_cfg(day: str, entry: str = "EC"):
         "min_stop_points": 0.0, "post_open_min_stop": 0.0, "max_stop_points": None,
         "no_trade_start": None, "no_trade_end": None, "t_cancel": 100000.0,
         "no_premarket_high_impact": False, "mgmt_variant": "V8",
-        "entry_variant": entry})
+        "entry_variant": entry,
+        **({} if _RRFLOOR is None else
+           # ANGUS 2026-08-05: "it should be the next structural level not 2r floor
+           # minimum" -- and then "can u run that for the full london raw trigger set?".
+           # Identical semantics to the NY script: walkout_under_floor walks the menu
+           # OUTWARD past the nearest level, so a 2.0 floor DISCARDS the near target and
+           # vetoes the trade when nothing clears. Floor 0 with walkout off takes the
+           # first level in the menu -- the next structural level, whatever R that is.
+           {"rr_floor": _RRFLOOR, "rr_floor_partial": min(_RRFLOOR, 1.5),
+            "walkout_under_floor": False})})
 
 
 def day_outcomes(args) -> list[dict]:
@@ -188,7 +198,12 @@ def main() -> int:
     ap.add_argument("--gate", action="store_true")
     ap.add_argument("--procs", type=int, default=4)
     ap.add_argument("--entry", default="EC", choices=["EC", "E4", "E3"])
+    ap.add_argument("--rr-floor", type=float, default=None,
+                    help="0.0 = next structural level, no minimum R (ANGUS 2026-08-05). "
+                         "Omit to keep the config's 2.0 floor.")
     a = ap.parse_args()
+    global _RRFLOOR
+    _RRFLOOR = a.rr_floor           # set BEFORE any Pool fork; workers inherit it
     if a.gate:
         return 0 if gate() else 1
     if not a.span:
@@ -207,8 +222,9 @@ def main() -> int:
     O[flags] = O[flags].fillna(False)
     for c in ("setup_id", "vs_id"):
         O[c] = O[c].fillna(-1).astype(int)
-    out = (OUT if a.entry == "E3"
-           else OUT.with_name(f"l2_outcomes_london_fit_{a.entry}.parquet"))
+    suffix = (("" if a.entry == "E3" else f"_{a.entry}")
+              + ("" if a.rr_floor is None else f"_rr{a.rr_floor:g}"))
+    out = OUT.with_name(f"l2_outcomes_london_fit{suffix}.parquet")
     O.to_parquet(out, index=False)
 
     ok = O[O.status == "outcome"]

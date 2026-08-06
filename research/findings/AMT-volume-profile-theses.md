@@ -1,8 +1,18 @@
 ---
 date: 2026-08-05
-status: RESEARCH — six falsifiable theses for the volume-profile / AMT build
+status: RESEARCH — six falsifiable theses; T1 and T5 now RESOLVED (2026-08-06)
 tags: [amt, volume-profile, poc, lvn, research, theses]
 ---
+
+> **T1 and T5 are answered.** See `research/findings/T1-T5-volume-profile-nodes.md`.
+> **T1 partially supported: the HVN half only.** Price holds ~7% longer than neighbouring
+> prices at yesterday's high-volume nodes, era-consistent and dose-responsive in band
+> width. The LVN half fails — low-volume nodes are neutral, not repellent, once controlled
+> for where in the prior range they sit. *The magnet is real, the vacuum is not.*
+> **T5 answered: `prev_session`.** Only yesterday's profile separates; the week, rolling 5
+> and rolling 20 are flat or era-inconsistent. Longer windows are context, not levels.
+> The naive uncontrolled test would have PASSED T1 outright (0.899–0.973) — that gap is the
+> range-position confound, measured.
 
 # Volume profile and AMT — six theses worth testing, and one our own data already kills
 
