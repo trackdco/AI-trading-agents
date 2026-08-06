@@ -315,13 +315,20 @@ def build_signals():
         # engine arithmetic) so a TOUCHED position keeps the shipped partial
         # instead of silently becoming a naked position.
         ppx = implied_partial(t)
+        # CONVICTION SIZING (Angus's canon ruling): the book's `tier` column is
+        # the shipped conviction multiplier (0.5x / 1.0x / 1.5x) and is NOT
+        # inside dollars_1lot — it is applied downstream. Carry it here so both
+        # the desk and the baselines trade the book at its real weights.
+        tier = float(t["tier"])
         days.setdefault(t["day"], []).append(dict(
             engine="CANON", day=t["day"], sess=t["sess"], direction=t["direction"],
             s=s_, fill=t["fill"], entry=float(t["entry"]),
             stop=init_stop, risk=float(t["risk"]), size=float(t["size"]),
+            tier_mult=tier, elite=bool(t.get("elite")),
             partial_px=(float(ppx) if ppx is not None else None),
             pattern=t.get("pattern", "?"), target=wt.get((t["ts"], t["direction"])),
-            mech_exit=mech_exit, mech_exit_px=mech_px, mech_dollars=mech_d))
+            mech_exit=mech_exit, mech_exit_px=mech_px,
+            mech_dollars=mech_d * tier))
     for t in build_shelf_trades():
         td = SHELF_TIER[t["tier"]]
         days.setdefault(t["day"], []).append(dict(
@@ -359,9 +366,12 @@ def sig_desc(g: dict) -> str:
         pt = (f", engine banks HALF at {g['partial_px']:.2f} "
               f"({g['s'] * (g['partial_px'] - g['entry']) / g['risk']:+.1f}R) then runs "
               f"the rest" if g.get("partial_px") is not None else "")
+        tm = g.get("tier_mult", 1.0)
+        conv = ("HIGH conviction 1.5x size" if tm >= 1.5 else
+                ("REDUCED conviction 0.5x size" if tm <= 0.5 else "standard 1.0x size"))
         return (f"CANON {g['direction'].upper()} [{g['sess']}] fills {g['entry']:.2f}, "
                 f"stop {g['stop']:.2f} (-1R = {g['risk']:.2f}pt), working target {tgt}"
-                f"{pt}, pattern {g['pattern']}")
+                f"{pt}, {conv}, pattern {g['pattern']}")
     return (f"SHELF {g['direction'].upper()} [{g['tier']}, ${g['dollars_risk']:.0f} risk] "
             f"fills {g['entry']:.2f}, stop {g['stop']:.2f} (-1R = {g['risk']:.2f}pt), "
             f"target = developing near VWAP band, scratch t+10 if red")
@@ -474,8 +484,8 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
         else:
             pts = sum(fr * p["s"] * (px - p["entry"]) for fr, px, _ in p["legs"])
             if p["engine"] == "CANON":
-                net = pts * PV * p["sig"]["size"] - COMMISSION
-                aR = net / (p["risk"] * PV * p["sig"]["size"])
+                net = (pts * PV * p["sig"]["size"] - COMMISSION) * p["sig"]["tier_mult"]
+                aR = net / (p["risk"] * PV * p["sig"]["size"] * p["sig"]["tier_mult"])
             else:
                 aR = (pts - SFR) / p["risk"]
                 net = p["sig"]["dollars_risk"] * aR
@@ -484,6 +494,7 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
             "pid": p["pid"], "engine": p["engine"], "day": day,
             "direction": p["sig"]["direction"],
             "sess": p["sig"]["sess"], "tier": p["sig"].get("tier", "-"),
+            "tier_mult": p["sig"].get("tier_mult", 1.0),
             "taken_by": p["taken_by"], "agent_R": round(aR, 4),
             "agent_dollars": round(net, 2),
             "mech_dollars": round(p["sig"]["mech_dollars"], 2),

@@ -795,3 +795,29 @@ correct decision on this engine far more often than on the canon.
 NO RESTART (charter is read per CLI call). BASIS STAMP: days 1-80 on
 v1.5; day 81+ on v1.6. Watch: does shelf management delta stop
 deteriorating, and does the touched-shelf rate fall from 26%?
+
+### CANON CONVICTION SIZING WAS NOT APPLIED [ANGUS caught it, day 94]
+"you're not doing the conviction based sizing shit we built for the
+canon? please tell me u are." WE WERE NOT. The canon book carries TWO
+size-ish columns and the harness used the wrong one: `size_engine`
+(1.0/0.5 — the de-risk half-size flag) instead of `tier` (0.5x / 1.0x /
+1.5x — the shipped CONVICTION multiplier, spread 138/267/358 across the
+fit-span signals). `tier` is not inside dollars_1lot; it is applied
+downstream by the funded shell, so the live-sim ran the canon FLAT —
+a high-conviction trade weighted identically to a reduced one. The
+shelf's own conviction tiers ($200 BASE / $300 CONFIRMED) WERE wired,
+which is what made the omission easy to miss.
+MATERIALITY: re-grading the 94 completed days with tier weighting FLIPS
+THE HEADLINE — flat: agent $+47,301 vs machine $+47,921 (-$619);
+tier-weighted: agent $+55,825 vs machine $+55,480 (+$345). (Approximate:
+92 of 337 canon trades did not rejoin cleanly and defaulted to 1.0x.)
+FIX: tier_mult carried on every canon signal; mech_dollars and the
+agent's settle both scale by it; tier stored on the trade row; and per
+§5.11-10(c) the desk is now TOLD the conviction on each signal ("HIGH
+conviction 1.5x size" / "standard 1.0x" / "REDUCED 0.5x") so it can
+weight its care accordingly. Passive==B0 re-validated to the cent.
+NOTE THIS IS §5.11-10 FAILING ON ITS OWN AUTHOR: the law requires
+briefing the agent on the strategy's DEFAULT MANAGEMENT IN FULL, and
+sizing is part of that. The audit hook in the law is amended: the
+spec-vs-strategy diff must explicitly include SIZING, not just entry,
+exit and management rules.

@@ -678,10 +678,12 @@ caught it:
    the spec's own geometry (target distance, scratch clock), never from
    fit-span outcome statistics. Management tempo that pays on a slow
    engine destroys a fast one.
-   (c) DEFAULT MANAGEMENT IN FULL — every standing order the shipped book
-   carries (partials, trails, scratches), disclosed at signal and in the
-   position state, so that touching a position does not silently discard
-   management the agent never knew it had.
+   (c) DEFAULT MANAGEMENT IN FULL, INCLUDING SIZING — every standing
+   order the shipped book carries (partials, trails, scratches) AND the
+   book's own position weighting (conviction tiers, de-risk multipliers),
+   disclosed at signal and in the position state, so that touching a
+   position does not silently discard management the agent never knew it
+   had, and so the agent knows which trades the book is leaning on.
    (d) PER-ENGINE SEPARATION — when an agent runs more than one strategy,
    each gets its own (a)-(c). A single blended briefing guarantees the
    heuristics of the dominant engine leak onto the other.
