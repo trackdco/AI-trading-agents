@@ -84,15 +84,16 @@ def main() -> None:
     bars = bars.sort_values("mi")
     bars_by_day = {d: g for d, g in bars.groupby(bars.mi.dt.strftime("%Y-%m-%d"))}
 
-    P["T"] = pd.to_datetime(P["T"])
+    P["T"] = pd.to_datetime(P["T"], utc=True)
     cap_rows, aut_rows = [], []
     for day, g in P.groupby("day", sort=True):
         db = bars_by_day[day]
-        mi = db.mi.to_numpy()
+        mi = db.mi.dt.tz_convert("UTC").dt.tz_localize(None).to_numpy()
         H, L_, C = db.high.to_numpy(), db.low.to_numpy(), db.close.to_numpy()
-        end = pd.Timestamp(f"{day} 15:55", tz=NY).to_datetime64()
+        end = (pd.Timestamp(f"{day} 15:55", tz=NY).tz_convert("UTC")
+               .tz_localize(None).to_datetime64())
         for r in g.itertuples():
-            t0 = r.T.to_datetime64()
+            t0 = r.T.tz_localize(None).to_datetime64()
             i0 = np.searchsorted(mi, t0, side="left")
             i1 = np.searchsorted(mi, end, side="right")
             if i1 <= i0:
