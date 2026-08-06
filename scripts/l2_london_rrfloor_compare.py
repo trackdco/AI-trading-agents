@@ -36,7 +36,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.validation.prop_score import score_book  # noqa: E402
+from src.validation.prop_score import FRICTION_PTS as FRICTION, score_book  # noqa: E402
 
 L0 = ROOT / "output/l0_triggers_london_fit_std.parquet"
 BOOKS = [
@@ -62,7 +62,10 @@ METRICS = [
     ("mean R", lambda s, B: f"{B.R.mean():+.3f}"),
     ("median R", lambda s, B: f"{B.R.median():+.3f}"),
     ("median risk", lambda s, B: f"{B.risk.median():.1f} pt"),
-    ("median RR at order", lambda s, B: f"{_rr(B).median():.2f}"),
+    ("RR at order · min", lambda s, B: f"{_rr(B).min():.2f}"),
+    ("RR at order · median", lambda s, B: f"**{_rr(B).median():.2f}**"),
+    ("ordered under 2R", lambda s, B: f"{(_rr(B) < 2).mean():.1%}"),
+    ("value of a target hit", lambda s, B: _tgt_value(B)),
 ]
 
 
@@ -70,12 +73,69 @@ def _share(B: pd.DataFrame, col: str, vals: set) -> float:
     return float(B[col].astype(str).isin(vals).mean()) if len(B) else float("nan")
 
 
+def _sgn(B: pd.DataFrame) -> pd.Series:
+    return (B.direction.astype(str).str.lower() == "long").map({True: 1.0, False: -1.0})
+
+
 def _rr(B: pd.DataFrame) -> pd.Series:
-    """Reward:risk the engine actually ORDERED — the working target vs the entry, over the
-    initial risk. This is the number the 2R floor was gating, so it is the direct read on
-    what cutting the floor did to target distance."""
-    sgn = (B.direction.astype(str).str.lower() == "long").map({True: 1.0, False: -1.0})
-    return (B.working_target - B.entry) * sgn / B.risk
+    """Reward:risk as the ENGINE gated it: working target vs the LIMIT price, over risk.
+
+    Not vs `entry`. `entry` is the fill, and an EC displacement is a market order that slips
+    a median 0.75pt (p90 7.25) past its reference — measuring against it reports negative RR
+    on trades the engine ordered at a legitimate positive one. `risk` is stored as
+    |limit - stop_initial|, so the limit is recoverable as stop + sgn*risk.
+
+    This is the number the floor gated, so it is the direct read on what cutting it did.
+    Sanity: the 2R arm floors at exactly 2.00 and the rr0 arm at 0.00, both exact."""
+    s = _sgn(B)
+    return (B.working_target - (B.stop + s * B.risk)) * s / B.risk
+
+
+def _tgt_value(B: pd.DataFrame) -> str:
+    """Mean NET points a pure-target exit books. A target-hit RATE means nothing without
+    it: the rate can be raised to anything at all by pulling the target nearer."""
+    t = B[B.exit_reason.astype(str) == "target"]
+    return f"{(t.pts - FRICTION).mean():+.2f} pt" if len(t) else "—"
+
+
+def buckets(cols: list[tuple[str, pd.DataFrame]]) -> list[str]:
+    """The book cut by the distance of the target the engine ordered. This is where the
+    floor question is actually settled: if nearer targets paid, the near buckets would be
+    where the money is."""
+    edges = [-0.01, 0.5, 1, 1.5, 2, 3, 1e9]
+    names = ["<0.5R", "0.5-1R", "1-1.5R", "1.5-2R", "2-3R", ">3R"]
+    L = ["### Net points/trade by the RR the engine ORDERED", "",
+         "Share of book in brackets. Friction charged.", "",
+         "| ordered RR | " + " | ".join(nm for nm, _ in cols) + " |",
+         "|---|" + "---:|" * len(cols)]
+    for lo, hi, nm in zip(edges[:-1], edges[1:], names):
+        cells = []
+        for _, B in cols:
+            r = _rr(B)
+            g = B[(r > lo) & (r <= hi)]
+            cells.append(f"{(g.pts - FRICTION).mean():+.2f} ({len(g)/len(B):.0%})"
+                         if len(g) else "—")
+        L.append(f"| {nm} | " + " | ".join(cells) + " |")
+    return L + [""]
+
+
+def paired(cols: list[tuple[str, pd.DataFrame]]) -> list[str]:
+    """The population changes between arms, so the headline difference mixes a target-policy
+    effect with a composition effect. Restricting to setups BOTH arms traded isolates the
+    policy, and each trade is its own control."""
+    (na, A), (nb, B) = cols
+    common = sorted(set(A.ts) & set(B.ts))
+    a = A[A.ts.isin(common)].sort_values("ts")
+    b = B[B.ts.isin(common)].sort_values("ts")
+    d = b.pts.to_numpy(float) - a.pts.to_numpy(float)
+    t = d.mean() / (d.std(ddof=1) / (len(d) ** 0.5)) if len(d) > 1 and d.std(ddof=1) else 0.0
+    return [f"### Paired on the {len(common):,} setups both arms traded", "",
+            f"Of {len(A):,} ({na}) and {len(B):,} ({nb}).", "",
+            "| | value |", "|---|---:|",
+            f"| per-trade delta (rr0 − 2R) | **{d.mean():+.2f} pt** |",
+            f"| paired T | **{t:+.2f}** |",
+            f"| outcome identical in both arms | **{(d == 0).mean():.1%}** |",
+            f"| rr0 better / worse | {(d > 0).mean():.1%} / {(d < 0).mean():.1%} |", ""]
 
 
 def book(path: Path) -> pd.DataFrame | None:
@@ -154,7 +214,12 @@ def funnel(rows: list[tuple[str, pd.DataFrame]]) -> list[str]:
     L.append("| **outcomes** | " + " | ".join(f"**{len(T):,}**" for _, T in ok) + " |")
     L.append("| **deduped setups (vs_first)** | " + " | ".join(
         f"**{int(T.vs_first.sum()):,}**" for _, T in ok) + " |")
-    L.append("| walked target (working != level) | " + " | ".join(
+    # NOT a walkout metric. `working = level - sgn*front_run` unconditionally, so
+    # working != level on 100% of outcomes in BOTH arms — it is the 2.5pt front-run, not
+    # evidence the menu was walked. Verified: |working - level| sits within half a tick of
+    # front_run on every outcome in both books. The walkout's real signature is the RR
+    # distribution below, where the arms genuinely separate.
+    L.append("| working != target_level (front-run, both arms) | " + " | ".join(
         f"{(T.working_target != T.target_level).mean():.0%}" for _, T in ok) + " |")
     return L + [""]
 
@@ -180,6 +245,8 @@ def main() -> int:
         L += table(f"Era {era} ({d[0]} → {d[-1]}, {len(d)} sessions)",
                    [(nm, sub(B, lo, hi), d) for nm, B in dedup])
     L += exits(dedup)
+    L += buckets(dedup)
+    L += paired(dedup)
 
     text = "\n".join(L)
     print(text)
