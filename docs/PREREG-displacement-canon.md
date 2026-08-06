@@ -90,4 +90,29 @@ riskband stratification) before anything is called an engine.
 
 | round | declared | run | outcome |
 |---|---|---|---|
-| 1 | 2026-08-06 (this doc) | pending | — |
+| 1 | 2026-08-06 (this doc) | 2026-08-06, `scripts/l2_disp_engine_r1.py` (A–E, 23 cells; F deferred — no struct_ts exists for displacement entries) | **NOTHING SURVIVES — 0/23** beat baseline net-1t in both eras on both views, below the ~1–2 noise expectation. Kill line fires. |
+
+## 5. CLOSURE (2026-08-06)
+
+Round 2 is combinations of round-1 survivors; there are none, so rounds 2–5 are
+empty by construction. **The displacement-entry canon process terminates with no
+engine and no book.** This closure now rests on the full declared process, not
+the quick sweep: entry conventions (settled), stop geometry (candle stop
+validated, caps rejected), naive arms (dead), MAE cuts and retrace fork (dead),
+and a pre-registered engine round across five management families (dead).
+
+The structural finding, stated once for the record: **every management
+intervention in this population trades 2025's losers against 2026's runners.**
+Time-stops, breakeven, and in-trade opposing-flow exits all IMPROVE the discover
+era (E-family: +0.053/+0.076 per-trade/episode net — the round's best 2025
+cells) and all DAMAGE the confirm era, whose entire hold edge is carried by
+runners that any early exit clips (partials −0.06..−0.19 in 2026; BE −0.085;
+trails catastrophic in both eras). The two regimes want opposite management, and
+a rule that flips sign with regime is exactly what the era rule exists to
+refuse. The E-family observation (opposing-flow exits help in chop, hurt in
+runner regimes) is recorded as a portfolio-level regime insight, NOT a freezable
+rule.
+
+The holdout was never touched by any of this. The prereg machine, conventions,
+and harnesses carry forward unchanged to the next entry family
+(`research/candidates/INTAKE-orderflow-2026-08-05.md`).
