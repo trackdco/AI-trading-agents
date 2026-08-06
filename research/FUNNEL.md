@@ -176,6 +176,38 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - CANON SHAPE: raw 0.90 → legal cuts → 1.89 era-consistent — the textbook
   arc, second family to show it.
 
+## LONDON — six graded families, none passed (reconciled 2026-08-06, no trials charged)
+
+**PATTERN LEGEND, read this before any bare A/B/B2 below or in any London artifact**
+(ANGUS 22-Jul-2026, `docs/STRATEGY-SETUP-TAXONOMY.md` — authoritative):
+**A** = reversal of a ±2 daily-VWAP over-extension via close-through ·
+**B** = with-trend continuation via close-through ·
+**B2** = rejection/fade, wick in and close back.
+"Reclaim" is retired as a pattern name and survives only as the E3 entry-reference level.
+The superseded v1.0 reading (B = reclaim, B2 = continuation) inverts continuation and
+fade — a per-pattern table read under the wrong legend gives opposite era priors.
+
+Full detail and unspent legs: `research/LONDON-PROGRESS.md`. Verdict documents live on
+`claude/dsr-pbo-strategy-validation-mzp0wv` and are NOT on this branch.
+
+| family | verdict | headline |
+|---|---|---|
+| **LDN-SWP-01** asia-sweep pair | **FAIL** both | #3 fails under the declared spec; #2's declared test was invalid, causal re-measurement null. §0 CORRECTION: first run used 03:00–06:00 ET, not the London session |
+| **LDN-TRAP-01** level-trap-fade | **FAIL** | 2025 n=161 −2.30pts (p=0.721) / 2026 n=89 −2.64pts (p=0.621). Wrong sign both eras, 48% of events positive. A clean, well-powered null |
+| **LDN-VWAP-01** vwap-σ-rotation, **leg 1 only** | **INCONCLUSIVE ON POWER** (blocks like FAIL) | 2025 n=77 −3.81 / 2026 n=38 −12.15, wrong sign both eras; 2026 CI cannot separate slightly-negative from zero. **Legs 2–3 unspent** |
+| **LDN-VT-01** value-traverse, **leg (a) only** | **INCONCLUSIVE ON POWER** | 2025 n=53 +4.74 / 2026 n=23, below the n≥30 floor. Two author-disclosed defects (feasibility count omitted the entry trigger; placebo mis-anchored). Declared secondary: "no effect". **Legs (b)–(c) unspent** |
+| **LDN-DEF-01** level-defense-flow | **FAIL** all three measures | ρ ABSORB +0.040/−0.144, PIN +0.063/−0.012, ICEBERG +0.037/−0.116; AUC 0.451–0.515; n=99/89, min detectable ρ 0.248/0.262 — a null on evidence, not power. Tombstone recommended |
+| **LDN-FLOW-01** flow-confirmation | closed | Minute-aggregate flow. Stated its own limit — price-level absorption is invisible at that resolution — which is the gap LDN-DEF-01 then tested |
+
+- **These are real trials the tracker never recorded, not backfill.** All six were in the
+  ledger before the Task 17 backfill commit (`f4e35c1^`, 116 rows); all carry
+  `programme`/`researcher` provenance; five carry `series_path` artifacts under
+  `output/trials/`.
+- **Trial-count reconciliation open, needs ANGUS.** 34 (declared, `programme=='LONDON'`)
+  vs 439 (all London-family rows incl. 405 harness writes for CAN-01/PO3-01/OBK-01).
+  Different things, materially different deflation bars.
+- **No holdout look spent by any of the six.**
+
 ## QUEUE (cards open at census)
 - INTAKE ROUND 2 (2026-08-05, specs in research/transcripts/*/SPEC-as-taught.md,
   credibility in research/findings/intake2-credibility.md):

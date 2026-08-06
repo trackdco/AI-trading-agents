@@ -8,19 +8,42 @@ Angus owns: rulings, holdout-look declarations, veto waivers, bar ratifications.
 Pipeline stages: thesis → greenlit → **prereg** → census (L0) → refine (L1–L4)
 → grade (permutation/DSR/PBO) → holdout (declared look) → VERDICT → shelf.
 
-## Candidates (as of 2026-08-04)
+## Candidates (verdicts current as of 2026-08-06)
 
-| # | Candidate | Stage | Latest | Next action |
+**⚠️ This table was stale for two days.** It read "greenlit / prereg owed" for five
+candidates that had already been prereg'd, run and GRADED on 2026-08-04 — the same day
+this page was written, in the afternoon after it was written. Reconciled 2026-08-06
+against `output/trial_ledger.parquet` and the verdict documents. **Six London families
+are graded. None passed.**
+
+Evidence that these are real trials and not backfill: all six were present in the
+ledger *before* the "Task 17: backfill 111 prose trials" commit (`f4e35c1^`, 116 rows),
+all six carry `programme`/`researcher` provenance, and five carry `series_path`
+pointers to committed per-trial artifacts under `output/trials/`.
+
+| # | Candidate | Stage | Verdict / latest | Next action |
 |---|---|---|---|---|
-| 1 | inventory-fade | **refine** | Trial 1 (L0): 2025 shows the inventory signature (+20.7pts worst-quintile, asymmetric); 2026 direction agrees but asymmetry absent (kill crit. 2 live) | joint conditioning: inv_skew × σ-location; inverse era pass |
-| 2 | asia-sweep-reversal | greenlit | thesis filed | prereg |
-| 3 | asia-sweep-continuation | greenlit | thesis filed | prereg (same family as #2 — one ledger) |
-| 4 | euro-open-drive | greenlit | thesis filed (ITSM frame, not naive ORB) | prereg |
-| 5 | level-trap-fade | greenlit | thesis filed | prereg |
-| 6 | level-defense-flow | greenlit | flow-span only (Jun 2025+); NY veto expected | prereg |
-| 7 | vwap-sigma-rotation | greenlit | thesis filed (3 legs, one family) | prereg |
-| 8 | value-traverse | greenlit | thesis filed | prereg |
-| 9 | eu-macro-windows | greenlit | thesis filed; stand-aside rule doubles as news spec layer | build EU release calendar → prereg |
+| 1 | inventory-fade (LDN-INV-01) | **refine** | Trial 1 (L0): 2025 shows the inventory signature (+20.7pts worst-quintile, asymmetric); 2026 direction agrees but asymmetry absent (kill crit. 2 live). NOT killed, NOT validated | joint conditioning: inv_skew × σ-location; inverse era pass |
+| 2+3 | asia-sweep reversal + continuation (LDN-SWP-01) | **GRADED** | **FAIL both.** `VERDICT-LDN-SWP-01.md`. #3 fails cleanly under the declared spec; #2's declared test was invalid and the causal re-measurement is null. Carries a §0 CORRECTION — the first run hardcoded 03:00–06:00 ET, which is not the London session. Neither proceeds to L1 | closed unless re-thesised |
+| 4 | euro-open-drive | greenlit | thesis filed (ITSM frame, not naive ORB) — **genuinely untested** | prereg |
+| 5 | level-trap-fade (LDN-TRAP-01) | **GRADED** | **FAIL.** `VERDICT-LDN-TRAP-01.md`. 2025 n=161 −2.30 pts (p=0.721); 2026 n=89 −2.64 pts (p=0.621). Wrong sign both eras, 48% of events positive. "The first candidate whose null means something" — real power, found nothing | closed |
+| 6 | level-defense-flow (LDN-DEF-01) | **GRADED** | **FAIL all three measures.** `VERDICT-LDN-DEF-01.md`. ρ: ABSORB +0.040/−0.144, PIN +0.063/−0.012, ICEBERG +0.037/−0.116. AUC 0.451–0.515. n=99/89, min detectable ρ 0.248/0.262 — a null on evidence, not on power. All three fail the proximity ladder. Tombstone recommended | Angus ruling on the tombstone |
+| 7 | vwap-sigma-rotation (LDN-VWAP-01) | **GRADED, leg 1 only** | **INCONCLUSIVE ON POWER** (blocks like FAIL). `VERDICT-LDN-VWAP-01.md`. 2025 n=77 −3.81; 2026 n=38 −12.15 — wrong sign both eras; 2026 CI [−37.87, +13.57] cannot separate slightly-negative from zero. Fragility clear | **legs 2–3 UNSPENT** (trend-day pullback to VWAP; late-window stall) |
+| 8 | value-traverse (LDN-VT-01) | **GRADED, leg (a) only** | **INCONCLUSIVE ON POWER.** `VERDICT-LDN-VT-01.md`. 2025 n=53 +4.74; 2026 n=23 **below the n≥30 floor**. Two defects disclosed by the author: the feasibility count omitted the entry trigger, and the placebo was mis-anchored. Declared secondary (placebo-diff) returns "no effect" against the thesis's central claim | **legs (b)–(c) UNSPENT** (80%-rule verdict; LVN air-pocket path) |
+| 9 | eu-macro-windows | greenlit | thesis filed; stand-aside rule doubles as news spec layer — **genuinely untested** | build EU release calendar → prereg |
+| — | flow-confirmation (LDN-FLOW-01) | **GRADED** | Not on the original nine. 8 ledger rows, 4 committed artifacts, `PREREG-london-flow-confirmation.md`. Tested *minute-aggregate* flow and stated its own limit: price-level absorption is invisible at that resolution — which is what LDN-DEF-01 then went and tested | closed |
+
+**Pattern legend** (ANGUS 22-Jul-2026, `docs/STRATEGY-SETUP-TAXONOMY.md` — authoritative):
+**A** = reversal of a ±2 daily-VWAP over-extension · **B** = with-trend continuation ·
+**B2** = rejection/fade. "Reclaim" is retired as a pattern name and survives only as the
+E3 entry-reference level. Read any bare A/B/B2 in London artifacts against these.
+
+**Trial-count reconciliation, unresolved and needing an ANGUS ruling.** Two London totals
+are both quotable from the same ledger: **34** (rows carrying `programme=='LONDON'` —
+Brake's declared trials, the figure `PREREG-london-level-defense-flow.md` §10 cites) and
+**439** (all London-family rows, including 405 written by the L3/geometry search
+harnesses for CAN-01/PO3-01/OBK-01). These count different things and imply materially
+different deflation bars. §2.4's effective-trial clustering puts the truth between them.
 
 ## Program infrastructure
 
@@ -47,6 +70,18 @@ Pipeline stages: thesis → greenlit → **prereg** → census (L0) → refine (
 - New candidate ideas → thesis to Angus first (the thesis gate).
 
 ## Session log (newest first)
+
+- **2026-08-06** — Reconciliation, no trials charged. Ledger audited against the prose
+  tracker: six London families are GRADED (SWP-01, TRAP-01, VWAP-01, VT-01, DEF-01,
+  FLOW-01), none passed, and this page had been describing five of them as "greenlit /
+  prereg owed" since 2026-08-04. All six pre-date the Task 17 backfill, so they are real
+  trials the tracker never recorded, not backfill artifacts. Unspent legs identified:
+  VWAP-01 legs 2–3, VT-01 legs (b)–(c). Two defects fixed at source: the A/B/B2 label
+  conflict (code + `STRATEGY-SETUP-TAXONOMY.md` are canonical; `_trigger_class` was
+  classifying B2 as continuation when B2 is a fade — dormant, arm-A only, no committed
+  number affected) and footprint roll contamination + an inverted delta sign in two
+  consumers (`src/engine/footprint.py` is now the chokepoint, both pinned by
+  `tests/test_footprint_convention.py`). Sealed span untouched throughout.
 
 - **2026-08-04** — Program launched. Nine theses greenlit; substrate built +
   verified (DST clock corrected by measurement: mismatch-week euro open = 04:00

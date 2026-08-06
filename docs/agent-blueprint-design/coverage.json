@@ -163,24 +163,24 @@
   },
   {
    "ref": "\u00a74.A",
-   "rule_summary": "Pattern A (reversal): over-extension and/or HTF range extreme -> rejection block against prior move -> retest",
+   "rule_summary": "Pattern A (reversal): a close-through that reverses a \u00b12 daily-VWAP over-extension -> retest of the closest structural level",
    "owner_layer": "engine",
    "desk_agent": "",
-   "notes": "Apollo re-check (binary): pattern==A => kind==rejection_block AND (over-extended per \u00a73.5 OR htf_flag==counter_trend). Any inconsistency = FAIL."
+   "notes": "Apollo re-check (binary): pattern==A => kind==displacement AND a \u00b12 daily-VWAP touch within the prior _EXT_LOOKBACK entry-TF bars. Any inconsistency = FAIL. Taxonomy per ANGUS 22-Jul-2026, docs/STRATEGY-SETUP-TAXONOMY.md (authoritative)."
   },
   {
    "ref": "\u00a74.B",
-   "rule_summary": "Pattern B (reclaim): wrong side of cluster -> displacement back through -> retest of reclaimed cluster",
+   "rule_summary": "Pattern B (continuation): a close-through with no qualifying prior \u00b12 extension, off a stacked confluence -> retest, with-trend",
    "owner_layer": "engine",
    "desk_agent": "",
-   "notes": "Apollo re-check (binary): kind==displacement <=> pattern==B."
+   "notes": "Apollo re-check (binary): pattern==B => kind==displacement AND NOT the A extension condition. NB kind==displacement implies A OR B, not B alone. Taxonomy per ANGUS 22-Jul-2026, docs/STRATEGY-SETUP-TAXONOMY.md (authoritative)."
   },
   {
    "ref": "\u00a74.B2",
-   "rule_summary": "Pattern B2 (continuation): established move -> pullback to cluster -> rejection block with the move -> retest",
+   "rule_summary": "Pattern B2 (rejection/fade): price wicks into a level and closes back -> fade off the level at the retest",
    "owner_layer": "engine",
    "desk_agent": "",
-   "notes": "Apollo re-check (binary): pattern==B2 => kind==rejection_block AND htf_flag==with_trend AND not over-extended."
+   "notes": "Apollo re-check (binary): pattern==B2 <=> kind==rejection. No htf_flag constraint - B2 works with- or counter-HTF. Taxonomy per ANGUS 22-Jul-2026, docs/STRATEGY-SETUP-TAXONOMY.md (authoritative)."
   },
   {
    "ref": "\u00a74",
