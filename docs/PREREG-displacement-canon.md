@@ -168,7 +168,31 @@ between his A/B and the machine's A/B becomes the object of study.
   damages 2026 (same structure as Program 1). The regime-opposition is a
   property of the trigger family, not of the B2 contamination.
 
-**The declared failure diagnostic is now active: detector-fidelity audit.**
+## 7. CANDIDATE AB-1, declared 2026-08-06 before its robustness run
+
+From the winner/loser split (`scripts/l3_ab_winner_loser.py`): the three
+era-consistent variables, stacked — **VOLX ≥ 1.5 AND WALLSZ == 1 AND risk ≥ 7pt**
+on the A/B population, hold-to-close. Raw read: 2025 +0.115 net-1t (n=939),
+2026 +0.682 (n=253) — the first configuration positive net in both eras.
+
+**Declared honestly as post-hoc stacked** (3 survivors of a 10-variable look).
+It advances ONLY if the battery passes, all declared here first:
+1. Episode-mean and day-clustered net-1t positive in BOTH eras; LODO min > 0
+   or explained.
+2. Threshold neighborhood 3×3×3 grid — VOLX {1.25,1.5,1.75} × wall size
+   {5,7,10} × risk {5,7,10}: the stack must be majority-positive with no
+   single-cell cliff around the chosen corner.
+3. Session split + 2-tick column reported; tail share reported (top-5% of
+   trades' share of total R).
+Fails any leg ⇒ AB-1 dies and the detector-fidelity audit (below) is the path.
+Passes ⇒ AB-1 becomes the declared candidate for the full ladder (exits,
+sizing, assembly) — holdout untouched until a frozen book earns the one look.
+
+| AB-1 run | declared | run | outcome |
+|---|---|---|---|
+| robustness battery | 2026-08-06 (this §) | 2026-08-06, `scripts/ab1_robustness.py` | **ADVANCES.** Leg 1 PASS (both eras positive per-trade + episode-mean). Leg 2 PASS (21/27 neighborhood cells both-era positive — no magic corner; vol≥1.75 is the weak edge). Leg 3: survives 2-tick (+0.103/+0.675). **Weaknesses on the record:** 2025 is knife-edge (episode-mean +0.025; LODO min −0.005 — one day from flat) and heavily tail-carried (top-5% of trades = 452% of 2025's total R); 'other' session negative in 2025 (−0.092). AB-1 is a runner book that pays on a handful of monster days. Advances to the full ladder (exits, sizing, assembly) with these named; NOT a book, NOT freezable yet, holdout untouched. |
+
+**The declared failure diagnostic remains armed: detector-fidelity audit.**
 The machine's A/B ≠ ANGUS's A/B until proven otherwise — 579 mechanical "A"
 labels against a discretionary class he trades selectively is prima facie
 divergence. Next step requires the human: ANGUS labels a stratified sample of
