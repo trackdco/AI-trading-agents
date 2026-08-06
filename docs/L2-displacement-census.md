@@ -70,14 +70,51 @@ selection — and it is the mandate for the next stage: an early-cut /
 management-ladder study (cut rules of the form "from minute m, if adverse ≥ θR,
 exit at bar close"), era-split, net of costs, sacrifice rate reported.
 
-## 4. Where the top-down program stands
+## 4. Management is exhausted: cuts dead, retrace fork dead
+
+**(m,θ) MAE cut ladder** (`scripts/l2_displacement_cuts.py`): dead. On the 2R
+arm the best 2025 improvement is +0.016 net (still −0.064) while every 2026 cell
+worsens; on the hold arm every cut shaves 2026's tail-carried edge (+0.202 →
++0.108..+0.154 net) and 2025 stays negative. Sacrifice runs 15–30% — the
+era-stable 0.14R MAE gap is a description, not a rule; it cannot pay the toll of
+cutting one future 2R winner per four or five cuts.
+
+**Retrace fork** (`scripts/l2_displacement_retrace_fork.py`) — the structural
+version (exit when price trades back to entry_ref, the old limit level; ANGUS's
+"the retrace IS the old strategy's fill"): dead, and its premise is empirically
+false on this population. Price retraces to the old level on **52–57% of all
+displacement entries** (fork% at grace 0), and forked trades still go on to win
+8–30% of the time — revisiting the level is routine behavior, not a regime
+signal. Numbers: 2R arm — 2025 improvements ≈ +0.01 (still ≤ −0.083 net), 2026
+strictly worse everywhere. Hold arm — every fork cell destroys 2026's uncut
++0.202 (best fork: +0.127); the one era-consistent-positive cell (ALL·hold·m5:
++0.006 / +0.100 net) is a 1-of-16 multiplicity pick, ≈zero in discover, and
+strictly dominated by not forking in confirm — not a finding. Gold·hold: fork
+ruins 2025 outright (+0.030 → negative at every grace).
+
+**Program conclusion — the displacement-entry family is measured out.** Entry
+(sweep: every entry-moment feature era-fragile; assembly FAIL), stop geometry
+(caps rejected; candle stop right but not profitable), and management (θ cuts,
+structural fork) have each been tested top-down and killed under the
+2025-discover / 2026-confirm rule with costs netted. The census has no
+demonstrable discover-era edge under any configuration tested. The 2026-only
+strength (big-candle regime) is real in-sample arithmetic but is exactly what
+the era rule exists to refuse — and it does not earn a holdout look.
+
+What remains OPEN and is not touched by this conclusion: the EC matrix's
+rejection-block LIMIT leg (features frozen at T, the other half of
+`docs/SPEC-EC-entry-matrix.md`), and everything the negative results taught the
+framework (causality law, episode clustering, cost ladder, autopsy method).
+
+## 5. Where the top-down program stands
 
 1. ✔ census — regime shift quantified at the raw level
 2. ✔ stop geometry — candle stop validated; caps rejected; 2026 tight-cap hold
    flagged as artifact
-3. → early-cut ladder from the autopsy (in progress)
-4. → fresh separation trial for entry features **against managed outcomes** (the
-   canon's own pipeline order: the check trial judged features on engine-managed
-   outcomes, not naive walks)
-5. → sizing, assembly, era rule, and only then a frozen candidate for the one
-   human-authorized holdout look
+3. ✔ early-cut ladder — dead (era-inconsistent, sacrifice-dominated)
+4. ✔ retrace fork — dead; premise empirically false (52–57% of entries revisit
+   the level and routinely still win)
+5. **CLOSED.** No separation trial against managed outcomes is warranted: there
+   is no managed-outcome configuration with a discover-era edge to judge
+   features against. Next live question is the EC rejection-block limit leg —
+   a different entry family, a human scope decision.
