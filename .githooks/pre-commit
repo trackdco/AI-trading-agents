@@ -1,0 +1,28 @@
+#!/bin/sh
+# Ledger discipline. Installed via: git config core.hooksPath .githooks
+#
+# BRAKE-HANDOFF §4: "Every trial hits the ledger -- including abandoned ones. Your DSR
+# denominators come from that ledger; an unlogged trial rigs your own grade."
+# The converse also holds: a ledger row with no declaration is a trial that was never
+# pre-registered. This hook refuses that direction.
+staged=$(git diff --cached --name-only)
+echo "$staged" | grep -q '^output/trial_ledger.jsonl$' || exit 0
+
+if ! echo "$staged" | grep -qE '(PREREG|VERDICT|AMENDMENT)[^/]*\.md$'; then
+  cat >&2 <<'MSG'
+REFUSED: the trial ledger changed with no prereg or verdict in the same commit.
+
+Every ledger row must trace to a declaration (BRAKE-HANDOFF §4). Stage the
+docs/PREREG-*.md that authorised the trials, or the docs/VERDICT-*.md that grades them.
+
+Override only if you know why:  git commit --no-verify
+MSG
+  exit 1
+fi
+
+if ! python3 -m pytest tests/test_ledger_integrity.py -q >/dev/null 2>&1; then
+  echo "REFUSED: tests/test_ledger_integrity.py fails. Run it to see which guard tripped." >&2
+  echo "  keys unique / sorted / identity+prereg present / row-count floor / sealed looks intact" >&2
+  exit 1
+fi
+exit 0

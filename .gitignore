@@ -37,3 +37,9 @@ data/depth/
 
 # desk-run single-instance lock (runtime artifact)
 runs/*/.lock
+
+# THE TRIAL LEDGER. output/ is ignored wholesale, but the ledger is the DSR
+# denominator and MUST be versioned — it is the one file in output/ that is evidence
+# rather than an artifact. The parquet beside it is derived and stays ignored.
+!output/trial_ledger.jsonl
+output/trial_ledger.parquet
