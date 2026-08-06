@@ -226,7 +226,45 @@ Pooled lift tables (2R / hold arms):
   (`docs/SPEC-EC-entry-matrix.md`) the instrument is correctly timed by
   construction.
 
-## 8. Standing rules
+## 8. The assembly test — FAIL under the era rule
+
+`scripts/assemble_displacement_book.py` (run 2026-08-06): the verified survivors
+applied JOINTLY as a gold-scoped waterfall (gold · depth-evaluable → risk≥7pt →
+Mon–Thu → D==1 → WALLSZ masked → bp5opp==1), three exit arms (2R, hold,
+RANGEX-menu), netted at 1 tick + $5/RT, per-trade / per-episode / per-day views.
+
+Final stack (G5): 877 trades / 225 episodes / 116 days (2025); 334 / 129 / 77
+(2026).
+
+| arm | 2025 net-1t (ep-mean) | 2026 net-1t (ep-mean) | era rule |
+|---|---|---|---|
+| 2R | −0.041 (−0.090) | +0.361 (+0.190) | **FAIL** |
+| hold | +0.068 (−0.026) | +0.817 (+0.236) | **FAIL** (episode view kills 2025) |
+| menu | −0.025 (−0.117) | +0.580 (+0.122) | **FAIL** |
+
+What the waterfall shows: **2026 responds monotonically to every verified gate**
+(net-1t 2R: +0.037 → +0.085 → +0.129 → +0.249 → +0.361 across G1→G5) — the gates
+are measuring something real there. **2025 never moves** (−0.04..−0.06 net 2R at
+every stage); no combination of the survivors rescues the discover era. This is
+the synthesis's era-inversion open question materialized at stack level, and it
+is exactly the shape our protocol exists to reject — a 2026-only stack is the
+same class of finding as the killed 2026-only TF gradient, only bigger.
+
+**Ruling (protocol, not taste): the displacement entry family as currently
+formulated is NOT freezable.** No holdout look is warranted or permitted for it.
+
+Legitimate follow-ups, explicitly bounded:
+1. **Diagnose the inversion, don't re-mine it**: the riskband-stratified era
+   comparison the synthesis already mandated (2026's 30pt+ share is 36% vs 15% —
+   regime composition vs drift). A diagnostic may explain the fail; it must not
+   be used to invent a regime gate post hoc — that is the multiplicity trap with
+   a costume on.
+2. **Run 2 (EC rejection-block leg + retrace fork) is unaffected** — different
+   leg, its own discover/confirm pass.
+3. The sweep's conventions, causality law, and verified negative results all
+   stand and carry forward to any future entry family.
+
+## 9. Standing rules
 
 Holdout untouched. One look, later, for one frozen candidate — human-authorized.
 No profitability promised: the honest state is "census with a small set of
