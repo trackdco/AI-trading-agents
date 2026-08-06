@@ -105,7 +105,7 @@ def main() -> None:
             for K in CAPS:
                 re_ = r.risk if K is None else min(r.risk, K)
                 r2, rh, stop_i, tgt_i = walk_cap(hi, lo, cl, r.entry, sgn, re_)
-                cap_rows.append({**base, "cap": "none" if K is None else K,
+                cap_rows.append({**base, "cap": "none" if K is None else str(int(K)),
                                  "risk_eff": re_, "capped": K is not None and r.risk > K,
                                  "r_2r": r2, "r_hold": rh,
                                  "r_2r_net": r2 - COST_1T / re_,
@@ -134,7 +134,7 @@ def main() -> None:
               f"{'WR2R':>7}{'m2R':>8}{'m2Rnet':>8}{'mHold':>8}{'mHoldNet':>9}")
         for era in ("2025", "2026"):
             for K in CAPS:
-                d = M[(M.era == era) & (M.cap == ("none" if K is None else K))]
+                d = M[(M.era == era) & (M.cap == ("none" if K is None else str(int(K))))]
                 if len(d) == 0:
                     continue
                 wr = (d.r_2r >= 2.0).mean()
