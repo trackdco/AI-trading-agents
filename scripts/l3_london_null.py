@@ -94,10 +94,15 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--perms", type=int, default=1000)
     ap.add_argument("--arm", default="vs_first")
+    ap.add_argument("--features", default="output/l3_features_london_fit.parquet")
+    ap.add_argument("--kind", default="all",
+                    choices=["all", "displacement", "rejection_block"])
     a = ap.parse_args()
 
-    F = pd.read_parquet(ROOT / "output/l3_features_london_fit.parquet")
+    F = pd.read_parquet(ROOT / a.features)
     F = F[F[a.arm]].copy()
+    if a.kind != "all":
+        F = F[F["kind"] == a.kind].copy()
     F["era"] = F.day.str[:4]
     F = derive(F).reset_index(drop=True)
     M = masks(F)
@@ -161,10 +166,12 @@ def main() -> int:
 
     text = "\n".join(L)
     print(text)
-    OUT_MD.write_text(text)
+    (OUT_MD if a.kind == "all"
+     else OUT_MD.with_name(f"l3_london_null_{a.kind}.md")).write_text(text)
 
     row = [{"family": "LDN-CAN-01", "era": "fit", "prereg": PREREG,
-            "trial": "L3 family-wise permutation null over the 49-candidate search",
+            "trial": ("L3 family-wise permutation null over the search"
+                      + (f" ({a.kind})" if a.kind != "all" else "")),
             "stat_type": "mean", "estimate": round(p, 5), "n": len(nb),
             "t_stat": 0.0, "effect": 0.0,
             "verdict": (f"{verdict}: family-wise p={p:.4f} (obs {obs:.1%} vs null 95th "
