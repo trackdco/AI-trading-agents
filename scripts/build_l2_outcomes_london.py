@@ -62,13 +62,33 @@ _BARS: pd.DataFrame | None = None
 
 def l2_cfg(day: str):
     """Config for ONE London day. The window is rebuilt per day because London's ET hours
-    move with the UK/US DST misalignment — hardcoding them is burn-list item 1."""
+    move with the UK/US DST misalignment — hardcoding them is burn-list item 1.
+
+    `no_premarket_high_impact` is OFF, and this is a correction, not a relaxation.
+    The engine's rule is *"on a high-impact pre-open release day the ENTIRE pre-market is
+    blocked -> no entries until 09:30"*, written for NY. London runs 03:00-05:00 ET, which
+    satisfies `tod < 09:30`, so it was standing London down for US releases that had not
+    happened yet. Measured on this calendar:
+
+        408 of 409 high-impact pre-09:30 releases land at 08:15 ET or later
+        exactly 1 of 409 could touch a London 03:00-06:00 window
+        the veto deleted 1,086 candidates on 34 sessions -- 168 of the 1,426 ruled
+        setups, 11.8% -- for an event 2.5 to 5.5 hours in their future
+
+    The London trade is flat long before the release exists. `docs/HANDOFF-london-rebuild.md`
+    §5 flagged this in advance: *"news blackout ... NY-scoped 8:30 events -- check which
+    events touch the London window before applying"*. This is that check, and it fails.
+
+    OPEN, recorded rather than silently dropped: London has no news stand-down at all now.
+    A correctly scoped one needs a UK/EU calendar (an 08:30 London release is 03:30 ET,
+    squarely inside the window) and we do not hold one. Declared as owed at L4.
+    """
     start, end = window_et(day, ("08:00", "10:00"))
     return load_backtest_config().model_copy(update={
         "win_start": start.time(), "win_end": end.time(), "max_trades_per_day": 99,
         "min_stop_points": 0.0, "post_open_min_stop": 0.0, "max_stop_points": None,
         "no_trade_start": None, "no_trade_end": None, "t_cancel": 100000.0,
-        "mgmt_variant": "V8"})
+        "no_premarket_high_impact": False, "mgmt_variant": "V8"})
 
 
 def day_outcomes(args) -> list[dict]:
