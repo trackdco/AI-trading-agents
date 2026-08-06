@@ -155,4 +155,23 @@ between his A/B and the machine's A/B becomes the object of study.
 
 | program-2 run | declared | run | outcome |
 |---|---|---|---|
-| census+baselines+engine A–E | 2026-08-06 (this §) | pending | — |
+| census+baselines+engine A–E | 2026-08-06 (this §) | 2026-08-06, `l2_disp_engine_r1.py --kind displacement` | **NOTHING SURVIVES — 0/23.** Kill line fires again. |
+
+**Program-2 findings (2026-08-06):**
+- Removing B2 made the discover era WORSE, not better: A/B hold baseline 2025
+  −0.048 net vs −0.019 pooled. B2's fades were the better-behaved cohort under
+  displacement entry in 2025.
+- Pattern A — the premium class — is the worst subpopulation in the census:
+  2025 hold −0.199 / 2R −0.141 net; 2026 −0.001 / −0.052. Thin (n=381/198) but
+  nowhere near hiding an edge.
+- The era mirror persists inside A/B alone: every cell that improves 2025
+  damages 2026 (same structure as Program 1). The regime-opposition is a
+  property of the trigger family, not of the B2 contamination.
+
+**The declared failure diagnostic is now active: detector-fidelity audit.**
+The machine's A/B ≠ ANGUS's A/B until proven otherwise — 579 mechanical "A"
+labels against a discretionary class he trades selectively is prima facie
+divergence. Next step requires the human: ANGUS labels a stratified sample of
+detector hits (take / skip / not-my-setup), and the object of study becomes the
+gap. No further mining runs on this census without that labeling. HOLDOUT
+UNTOUCHED throughout.
