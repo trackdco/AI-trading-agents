@@ -153,48 +153,78 @@ belong on the limit leg is an open question for the EC run (rejection-block limi
 outcomes re-trialed with features frozen at T, vs their market-at-close
 counterfactual, riskband-stratified) — not a settled premise.
 
-## 7. Depth at the causally clean decision point — the standout of the sweep
+## 7. Depth at the causally clean decision point — verified: real, modest, gold-concentrated
 
-*The sweep's depth agent completed its harness but was cut off before reporting;
-the trial was re-run directly from its script. Coverage: 19,131/19,137 walked;
-18,822 in the risk≥2pt population; 16,969 depth-evaluable (892 rows on days with
-no fit depth file + 1,025 with no T−1 snapshot are EXCLUDED, never zero-filled).
+*The sweep's depth agent was cut off before reporting; the trial was re-run from
+its script, then independently verified by an adversarial recompute. Coverage:
+19,131/19,137 walked; 18,822 in the risk≥2pt population; 16,969 depth-evaluable.
 Convention: snapshot = archive row minute T−1 (the book at the close), features vs
 the displacement entry price, W/D/WALLSZ built exactly as `l3_check_trial`.*
 
-**Verification status: harness code-reviewed and rerun; an independent
-adversarial recompute is in flight (the sweep's verifier for this family never
-ran). Corrections, if any, will be amended here.**
+**Causality is airtight — verified, not assumed.** 250/250 randomly sampled rows
+reproduce exactly from the raw depth CSVs with fully independent selection code;
+zero rows used a snapshot labeled past T−1; the archive's labeling was proven
+floor-of-minute of the last book state (so row T−1 completes strictly before
+boundary T); a synthetic test confirmed `depth_at` cannot leak the T row. All 24
+lift-table numbers reproduce, and 250 rows recomputed end-to-end from raw
+bars+depth (independent walk implementation) match 250/250. The at-close depth
+convention is clean.
 
-| check | arm | cell (sess·era) | lift | verdict |
-|---|---|---|---|---|
-| **W** | 2R | pre·25 / pre·26 | −0.230 / +0.355 | **DEAD — era sign-flip, both arms** (hold +0.863/−1.284; n_on only 150/59) |
-| **D** | 2R | gold·25 / gold·26 | +0.108 / +0.674 | **gold-only VETO** — see below |
-| **D** | hold | gold·25 / gold·26 | +0.750 / +0.980 | |
-| **WALLSZ** | 2R | pre +0.154/+0.068 · gold +0.061/+0.278 | | **positive in ALL 8 cells** |
-| **WALLSZ** | hold | pre +0.446/+1.064 · gold +0.245/+0.504 | | |
+Pooled lift tables (2R / hold arms):
 
-- **WALLSZ is the sweep's most consistent signal**: positive in both sessions ×
-  both eras × both arms, on balanced cells (smallest side n=595). A large resting
-  wall (size ≥7) *ahead* of the displacement at the close marks better trades
-  everywhere we can measure. Lifts are first-order cost-invariant (costs hit both
-  sides of the cut equally). Joins the ≥7pt risk floor at the top of the
-  candidate list, pending verification. Open: is 7 a magic threshold? (needs the
-  monotone-support test per the threshold rule).
-- **D reads as a rare stand-down, gold only**: D is on for ~97% of gold rows; the
-  lift is entirely the ~3% off-cohort, which is disastrous era-consistently
-  (2026 off: 2R meanR −0.583, hold −0.820). No visible level ahead at the close =
-  do not trade. Pre-session D flips sign — gold-scope only. Small off-cohort
-  needs a day-clustering check before freezing.
-- **W is dead here too**, completing its obituary: it failed honest measurement
-  at limit fills (`docs/FINDING-depth-lookahead.md`) and fails again on the
-  displacement population.
-- **The contrast that matters:** at limit fills, honest W/WALLSZ died and D
-  halved. At the causally clean close, WALLSZ is era-consistent everywhere and D
-  survives as a veto. The depth family's information lives *at the close* — which
-  squares with the archive's own semantics: the end-of-minute book IS the book at
-  the close. The decide-at-the-candle law (`docs/SPEC-EC-entry-matrix.md`) turns
-  the depth archive from a lookahead bug into a correctly-timed instrument.
+| check | cell | 2R lift | hold lift |
+|---|---|---|---|
+| W | pre·25 / pre·26 | −0.230 / +0.355 | +0.863 / −1.284 |
+| D | gold·25 / gold·26 | +0.108 / +0.674 | +0.750 / +0.980 |
+| WALLSZ | pre·25 / pre·26 | +0.154 / +0.068 | +0.446 / +1.064 |
+| WALLSZ | gold·25 / gold·26 | +0.061 / +0.278 | +0.245 / +0.504 |
+
+**Verifier corrections (both accepted):**
+
+1. **Zero-fill bug in the WALLSZ table**: `WALLSZ` is never NaN by construction,
+   so 621 depth-NaN rows were silently parked on the off side despite the
+   "excluded, never zero-filled" claim (W and D tables excluded them correctly).
+   Fixed: still 8/8 positive, but shaved — pre·26 2R +0.068→**+0.048**, gold·26
+   hold +0.504→**+0.445**. The bug flattered 2026.
+2. **Pooled counts overstate independent support.** The 16,969 rows collapse to
+   ~1,602 same-direction ≤15-min episodes (mean 10.6 rows per episode). Under
+   clustered views the 8/8 pattern breaks: equal-day weighting → 5/8 positive;
+   episode-mean collapse → 4/8 (**all four gold cells positive, all four pre
+   cells negative**); first-trigger-per-episode → 4/8 with gold·25 2R negative
+   (−0.329). LODO (leave-one-day-out) keeps all 8 pooled cells positive, and the
+   effect survives riskband stratification (8/8 in every band), kind mix, D==1
+   restriction, and hold-clipping at +5R — so it is not an artifact; it is
+   *smaller and narrower* than pooled counts suggest.
+
+**Verified verdict per check:**
+
+- **WALLSZ — a real but modest, GOLD-concentrated wall-size effect.** Gold cells
+  survive every robustness cut except first-trigger collapse in 2025 (which is
+  marginal: pooled +0.061, day-mean −0.069, episode-mean +0.046). Gold dose-
+  response is weakly monotone (Spearman z=3–4; threshold 7 is NOT magic in gold —
+  every threshold 3–15 is positive). Pre cells fail clustered views broadly, and
+  pre·26 2R is positive *only* at exactly threshold 7 (magic cut — inadmissible
+  under the threshold rule). Hold-arm pre magnitudes are ~90% a few >5R runner
+  days. **Status: gold-scoped candidate, strongest in 2026 (discover-era support
+  is the weak point); episode-clustered errors mandatory in the assembly test.**
+- **D — a thin-book-day observation, not a per-trade edge.** The gold off-cohort
+  is ~a dozen days / ~14 episodes per era (2026-03-16/17/18 alone contribute 57
+  of 108 rows, all stopped). LODO stays positive in all four gold cells, but the
+  2025 hold lift sign-flips under equal-day weighting (+0.750 pooled → −0.170
+  day-mean). Honest reading: candle-closes-into-visible-vacuum days are bad days;
+  carry as a gold stand-down *hypothesis* with ~14 episodes of support per era,
+  not a validated gate.
+- **W — noise, not even a sign-flip worth interpreting.** The on-cohort is 13
+  days/23 episodes (2025) and 7 days/13 episodes (2026); day-mean disagrees with
+  pooled in 2 of 4 cells; LODO crosses zero. Combined with its death at limit
+  fills (`docs/FINDING-depth-lookahead.md`): W never measured anything real.
+- **The structural point survives the corrections:** at limit fills the honest
+  depth family was dead or halved; at the causally clean close, a verified
+  (if modest) wall-size effect exists in gold. The depth information — whatever
+  its size — lives at the close, and the archive's end-of-minute snapshot IS the
+  book at the close, so under the decide-at-the-candle law
+  (`docs/SPEC-EC-entry-matrix.md`) the instrument is correctly timed by
+  construction.
 
 ## 8. Standing rules
 
