@@ -483,13 +483,16 @@ def _trigger_class(t: Trigger) -> str:
     for the regime de-risk gate (docs/replay-integration-contract.md).
 
     Pattern is primary; htf_flag is the fallback when pattern is unclear.
-    PROPOSED pending Angus: pattern B (reclaim) treated as continuation (it rides the
-    reclaim leg); pattern wins over htf_flag on conflict. Flip the B line on his ruling.
+    Taxonomy per ANGUS 22-Jul-2026, docs/STRATEGY-SETUP-TAXONOMY.md (authoritative):
+    A = reversal of a +/-2 daily-VWAP over-extension (fades), B = with-trend continuation
+    (rides), B2 = rejection/fade at a level (fades). Pattern wins over htf_flag on conflict.
     """
     if t.pattern == "A":
         return "reversion"
-    if t.pattern in ("B", "B2"):
+    if t.pattern == "B":
         return "continuation"
+    if t.pattern == "B2":
+        return "reversion"          # B2 fades the level it rejected — it does not ride the move
     return "reversion" if t.htf_flag == "counter_trend" else "continuation"
 
 

@@ -42,19 +42,21 @@ condition de-risks).
 ## Trigger → structure classification (PROPOSED — needs Angus)
 
 The gate speaks in `reversion`/`continuation`; a `Trigger` carries `pattern`
-(A/B/B2) and `htf_flag` (with_trend/counter_trend/range). Proposed mapping:
+(A/B/B2) and `htf_flag` (with_trend/counter_trend/range). Mapping, RULED:
 
 | trigger | class | rationale |
 |---|---|---|
-| pattern **A** (reversal) | fade / reversion | fades an over-extension |
-| pattern **B2** (continuation) | continuation | rides the move |
+| pattern **A** (reversal) | fade / reversion | fades a ±2 daily-VWAP over-extension |
+| pattern **B** (continuation) | continuation | rides the prevailing trend |
+| pattern **B2** (rejection / fade) | fade / reversion | fades the level it rejected |
 | `htf_flag == counter_trend` | fade / reversion | against the 15m trend |
 | `htf_flag == with_trend` | continuation | with the 15m trend |
-| pattern **B** (reclaim) | **NEEDS ANGUS** | a reclaim is arguably continuation of the reclaim leg — rule it |
 
-When pattern and htf_flag disagree, **pattern wins** (proposed). This one ruling
-(plus the pattern-B case) is the only trading-semantics decision the hook needs;
-everything else is mechanical.
+When pattern and htf_flag disagree, **pattern wins**. The pattern letters follow the
+ANGUS 22-Jul-2026 taxonomy, `docs/STRATEGY-SETUP-TAXONOMY.md` (authoritative) — the
+earlier "B = reclaim" reading is superseded and "reclaim" is retired as a pattern name
+(it survives only as the E3 entry-reference level). The former **NEEDS ANGUS** row on
+pattern B is closed by that ruling: B is continuation, B2 is a fade.
 
 ## Who supplies what
 
