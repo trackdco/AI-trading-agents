@@ -107,3 +107,71 @@ assumed either way — assuming is what produced this finding.
 That `W` and `FAR` are worthless. Read causally they are still **+9.4pp** and **+6.3pp**
 against a 27.6% baseline, era-consistent in sign. That is a real residual and it is the
 honest starting point for L3. It is simply not the +19/+20pp that was on the page.
+
+---
+
+## THE NY CANON HAS THE SAME BACKTEST READ — checked, not assumed (2026-08-05)
+
+The finding above flagged this as owed. It is now measured, on the same three tests:
+
+1. **NY depth is the same shape.** `data/reference/depth_2025/*_ny.csv`: one snapshot per
+   minute, 0.0% off the minute boundary, and instantaneous at T — depth mid vs close of
+   bar T gives median error **0.25 pt, 96% within 1 pt**; vs the open of bar T, 2.88 pt.
+2. **NY fills land inside their stamped bar.** `output/canon_book.parquet`, 713 trades:
+   every fill stamp on a minute boundary, entry inside the bar stamped `fill` on
+   **95.8%**.
+3. **The backtest reads at that stamp.** `scripts/score_canon_span.py:196` —
+   `depth_at(dep_cache[day], fill, entry, direction)`.
+
+**So the NY canon's depth features are computed from the book at the fill bar's CLOSE,
+at or after the fill. Same defect, same call, different session.**
+
+### But the LIVE bot is honest — and this distinction is the whole finding
+
+`src/canon/ingestor.py:150-153`:
+
+```python
+book = pd.DataFrame(self.book.long_form())
+if not book.empty:
+    book["ts"] = fill                        # current snapshot is as-of the fill
+    f.update(depth_at(book, fill, entry, direction))
+```
+
+Live reads `self.book` — the **actual current order book at the moment of decision**. It
+does not and cannot see the rest of the bar. **The live bot is not cheating.**
+
+The asymmetry is one-directional and it is the thing to understand:
+
+| | book used | relative to the fill |
+|---|---|---|
+| live | the true book at decision time | somewhere inside the fill bar |
+| backtest / calibration | the archived snapshot at the bar's close | **at or after** the fill |
+
+The backtest is strictly later than live, therefore strictly better informed, therefore
+**optimistic**.
+
+### What that costs, and what it does not
+
+**It does not mean the canon is fake or that live results are misattributed.** It means the
+canon's depth thresholds (`Q_WALLSZ_MIN = 7.0`, the `W`/`D` gates) were fitted, and its
+expected edge measured, on a feature carrying information the live bot will not have.
+§5.12.10 records that **depth carried the canon's entire edge, +0.5 to +1.3R**, while flow
+at entry was a rounding error. That is the number this touches.
+
+For scale, the same correction in London halved `W` (+19.0 → +9.4pp) and took two thirds
+off `FAR` (+20.5 → +6.3pp, and its 2026 edge to +0.6pp). Live sits *between* the bar's open
+and its close, so the live-realisable share is between those bounds rather than at either —
+but it is below the calibrated figure, not above it.
+
+**This is a calibration finding, not a correctness incident.** Nothing in the live path
+needs an emergency change. What needs re-running is the measurement of what depth is worth,
+against a book read at the fill bar's OPEN — the conservative bound — so the canon's
+expected edge is stated on information the bot will actually hold.
+
+### Owed
+
+- Re-run the canon's depth calibration at the fill-bar-open read and restate the depth
+  contribution as a range (open-read = floor, close-read = the current, optimistic figure).
+- Until that exists, **treat the +0.5 to +1.3R depth attribution in §5.12.10 as an upper
+  bound**, not a point estimate.
+- This is Angus's call, not a unilateral change to a live-adjacent artifact.
