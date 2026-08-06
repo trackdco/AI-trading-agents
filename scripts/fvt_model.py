@@ -64,7 +64,21 @@ NY = "America/New_York"
 BARS = ("data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul2026.parquet")
 FRICTION = 2.0
 
-WINDOWS = [("AM", 9 * 60 + 30, 11 * 60), ("PM", 14 * 60, 15 * 60)]
+# JJ's published NY windows, plus the sessions his channel says he actually trades. The FX
+# Replay PDF hints at them ("Could also test first 90m after Asia & London market opens";
+# "If trading Asia session, only trade it if it provides a surge in volume/volatility") and
+# his video "How I Trade the 6PM & 8PM Session (Fair Price Theory on Funded Accounts)" makes
+# them explicit. Fair value for each window is that window's OPENING PRICE -- the same rule
+# as 09:30, applied to the session that is actually opening.
+WINDOW_SETS = {
+    "ny": [("AM", 9 * 60 + 30, 11 * 60), ("PM", 14 * 60, 15 * 60)],
+    "evening": [("E18", 18 * 60, 19 * 60 + 30), ("E20", 20 * 60, 21 * 60 + 30)],
+    "london": [("LDN", 3 * 60, 4 * 60 + 30)],
+    "all": [("AM", 9 * 60 + 30, 11 * 60), ("PM", 14 * 60, 15 * 60),
+            ("E18", 18 * 60, 19 * 60 + 30), ("E20", 20 * 60, 21 * 60 + 30),
+            ("LDN", 3 * 60, 4 * 60 + 30)],
+}
+WINDOWS = WINDOW_SETS["ny"]
 SKIP_FIRST_MIN = 3          # "may be best to avoid the first 3m after 9:30 market open"
 CONT_MIN = 15               # continuation phase length; JJ says "the first ~10-15m"
 WICK_MAX = 0.20             # displacement quality
@@ -118,12 +132,13 @@ def run(b: pd.DataFrame, atr_tf: int) -> pd.DataFrame:
     trades = []
     for day, g in b.groupby("day"):
         g = g.reset_index(drop=True)
-        rth = g[g.hm >= 9 * 60 + 30]
-        if rth.empty:
-            continue
-        fv_am = float(rth.open.iloc[0])                       # 09:30 open = fair value
-        pm = g[g.hm >= 14 * 60]
-        fv_pm = float(pm.open.iloc[0]) if len(pm) else np.nan
+        # Fair value for a window is THAT WINDOW'S opening price. JJ states it for 09:30 and
+        # 14:00; the same rule generalises to whichever session is actually opening, which is
+        # what makes the evening and London windows testable at all.
+        fv_by_win = {}
+        for wname, wlo, _ in WINDOWS:
+            seg = g[g.hm >= wlo]
+            fv_by_win[wname] = float(seg.open.iloc[0]) if len(seg) else np.nan
 
         hi = g.high.to_numpy(float)
         lo = g.low.to_numpy(float)
@@ -143,7 +158,7 @@ def run(b: pd.DataFrame, atr_tf: int) -> pd.DataFrame:
             sw_hi[i], sw_lo[i] = lh, ll
 
         for wname, wlo, whi in WINDOWS:
-            fv = fv_am if wname == "AM" else fv_pm
+            fv = fv_by_win.get(wname, np.nan)
             if not np.isfinite(fv):
                 continue
             start = wlo + (SKIP_FIRST_MIN if wname == "AM" else 0)
