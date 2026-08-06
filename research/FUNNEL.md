@@ -176,7 +176,7 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - CANON SHAPE: raw 0.90 → legal cuts → 1.89 era-consistent — the textbook
   arc, second family to show it.
 
-## LONDON — six graded families, none passed (reconciled 2026-08-06, no trials charged)
+## LONDON — seven graded families, none passed (reconciled 2026-08-06, no trials charged)
 
 **PATTERN LEGEND, read this before any bare A/B/B2 below or in any London artifact**
 (ANGUS 22-Jul-2026, `docs/STRATEGY-SETUP-TAXONOMY.md` — authoritative):
@@ -197,6 +197,7 @@ Full detail and unspent legs: `research/LONDON-PROGRESS.md`. Verdict documents l
 | **LDN-VWAP-01** vwap-σ-rotation, **leg 1 only** | **INCONCLUSIVE ON POWER** (blocks like FAIL) | 2025 n=77 −3.81 / 2026 n=38 −12.15, wrong sign both eras; 2026 CI cannot separate slightly-negative from zero. **Legs 2–3 unspent** |
 | **LDN-VT-01** value-traverse, **leg (a) only** | **INCONCLUSIVE ON POWER** | 2025 n=53 +4.74 / 2026 n=23, below the n≥30 floor. Two author-disclosed defects (feasibility count omitted the entry trigger; placebo mis-anchored). Declared secondary: "no effect". **Legs (b)–(c) unspent** |
 | **LDN-DEF-01** level-defense-flow | **FAIL** all three measures | ρ ABSORB +0.040/−0.144, PIN +0.063/−0.012, ICEBERG +0.037/−0.116; AUC 0.451–0.515; n=99/89, min detectable ρ 0.248/0.262 — a null on evidence, not power. Tombstone recommended |
+| **LDN-ATC-01** asian-trend-continuation | **FAIL** (L1 Stage 1) | Primary n=30 INCONCLUSIVE ON POWER (eras 22/8); secondary n=88 negative in BOTH eras (−0.204/−0.236). Found a LOOKAHEAD in the censused chain (LTA gate reads 07:00–08:00, triggers fire 07:30 — 27% of events) and a 64% target-invalid rate in the prereg's own target rule. Stage 2 not spent |
 | **LDN-FLOW-01** flow-confirmation | closed | Minute-aggregate flow. Stated its own limit — price-level absorption is invisible at that resolution — which is the gap LDN-DEF-01 then tested |
 
 - **These are real trials the tracker never recorded, not backfill.** All six were in the
