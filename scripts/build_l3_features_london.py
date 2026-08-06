@@ -149,19 +149,34 @@ def features_one(f: pd.Timestamp, sgn: int, entry: float, M, B, trig_arr,
                                   & (trig_arr < f.to_datetime64())).sum())
 
     # --- depth ---------------------------------------------------------------
-    # CAUSALITY, VERIFIED NOT ASSUMED (2026-08-05). The condensed London MBP-10 carries
-    # exactly one snapshot per minute stamped on the minute boundary. Is that boundary an
-    # INSTANT at T, or a roll-up of the minute that follows it? The second would be the
-    # lookahead that killed NYA-LVL-01. Measured against close-labeled 1m bars on
-    # 2025-06-10 (bar stamped T covers (T-1min, T]):
+    # CAUSALITY, VERIFIED NOT ASSUMED (2026-08-05) -- AND THE CONCLUSION WAS WRONG.
+    # SUPERSEDED 2026-08-06, see docs/FINDING-london-depth-timestamp-lookahead.md.
+    #
+    # The original audit asked exactly the right question -- is the minute boundary an
+    # INSTANT at T, or a roll-up of the minute that follows it? -- and its measurements
+    # were correct and reproduce today:
     #
     #     depth mid at T vs close of bar T    -> median |err| 0.25 pt, 96% within 1pt
     #     depth mid at T vs open  of bar T    -> median |err| 3.62 pt, 17% within 1pt
     #     depth mid at T vs close of bar T+1  -> median |err| 3.75 pt, 15% within 1pt
     #
-    # One tick of error against the close of bar T. The snapshot is the INSTANTANEOUS book
-    # at T. The fill happens strictly after T (inside minute T), so reading at T is causal
-    # -- and so is the shipped London book, which reads the same way. No lookahead here.
+    # It concluded "the snapshot is the INSTANTANEOUS book at T, no lookahead here" from
+    # a stated premise about a DIFFERENT file: "close-labeled 1m bars (bar stamped T
+    # covers (T-1min, T])". The bars are START-labelled -- see
+    # data/reference/parity_slice_feb2026.md, and measured: footprint trades stamped
+    # ts_minute=T fall inside bar ts_event=T on 98.1% of 42,230 minutes, against 17.5%
+    # for the alternative. Under the correct premise the SAME numbers say the opposite:
+    # `close of bar T` is the price at T+1min, so a depth mid at label T matching it
+    # means the snapshot is the book at T+1min.
+    #
+    # Settled without bars at all: ts_recv - ts_event has median 59.889s against ~13us of
+    # capture latency. ts_event is FLOORED to the minute at extraction. The row labelled T
+    # is the book at ~T+59.9s, and reading label M for a decision at M is a ~60s lookahead.
+    #
+    # scripts.london_depth.load_day now indexes by ts_recv, so every anchor below shifts
+    # to true observation time. Consequence for the three anchors: `t_*` (trigger close)
+    # needs the row labelled trig_ts-1min, which is what the corrected loader returns;
+    # the old `p1_*` fallback was accidentally the closest of the three to honest.
     #
     # Default therefore reads at the fill-minute boundary (freshest legitimate book, and it
     # reproduces london_matrix so downstream comparisons stay meaningful). The one-minute-

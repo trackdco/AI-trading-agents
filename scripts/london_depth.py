@@ -32,12 +32,37 @@ SPANS = {
 
 
 def load_day(day: str, DIR: Path):
-    """day 'YYYY-MM-DD' -> long frame (ts, side, price, size) or None."""
+    """day 'YYYY-MM-DD' -> long frame (ts, side, price, size) or None.
+
+    `ts` is the TRUE observation time, not `ts_event`. The condensed extraction FLOORS
+    `ts_event` to the minute: `ts_recv - ts_event` runs a median 59.889s (p1 58.193s,
+    95.9% inside [59s,60s)) against ~13us of matching-engine-to-capture latency, so the
+    row labelled T is the book at ~T+59.9s -- the END of minute T.
+
+    The 2026-08-05 audit in `build_l3_features_london.py` asked exactly the right
+    question here and got the right measurements ("depth mid at T vs close of bar T ->
+    median |err| 0.25 pt"), but concluded "no lookahead" from a premise about a DIFFERENT
+    file: it took the 1m bars to be close-labelled. They are start-labelled
+    (`data/reference/parity_slice_feb2026.md`; footprint trades stamped T fall inside bar
+    T on 98.1% of 42,230 minutes against 17.5% for the alternative). Under the correct
+    premise the same numbers say the snapshot at label T is the book at T+1min.
+    `ts_recv` settles it without needing bars at all.
+    """
     f = DIR / f"glbx-mdp3-{day.replace('-', '')}.mbp-10_condensed.csv"
     if not f.exists():
         return None
     d = pd.read_csv(f)
-    ts = pd.to_datetime(d.ts_event, utc=True).dt.tz_convert(NY)
+    if "ts_recv" not in d.columns:
+        raise ValueError(f"{f} has no ts_recv; cannot correct the floored ts_event label")
+    lag = (pd.to_datetime(d.ts_recv, utc=True, format="mixed")
+           - pd.to_datetime(d.ts_event, utc=True, format="mixed")).dt.total_seconds()
+    if lag.median() < 30:
+        raise ValueError(
+            f"{f}: ts_recv-ts_event median {lag.median():.1f}s, expected ~59.9s. The "
+            f"floored-label correction below would become a 60-second ERROR on a genuine "
+            f"per-instant sample. Re-verify before use.")
+    ts = (pd.to_datetime(d.ts_recv, utc=True, format="mixed")
+          - pd.to_timedelta(d.ts_in_delta, unit="ns")).dt.tz_convert(NY)
     rows = []
     for lvl in range(10):
         for side, px, sz in (("bid", f"bid_px_{lvl:02d}", f"bid_sz_{lvl:02d}"),

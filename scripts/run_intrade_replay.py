@@ -415,7 +415,17 @@ def load_depth(day: str, session: str, cache: dict):
             f = ROOT / d / f"glbx-mdp3-{day.replace('-', '')}.mbp-10_condensed.csv"
             if f.exists():
                 w = pd.read_csv(f)
-                ts = pd.to_datetime(w.ts_event, utc=True).dt.tz_convert(NY)
+                # ts_event is FLOORED to the minute at extraction (ts_recv runs a median
+                # 59.889s later against ~13us of capture latency), so the row labelled T
+                # is the book at ~T+59.9s. Indexing on the label is a ~60s lookahead.
+                # docs/FINDING-london-depth-timestamp-lookahead.md.
+                if "ts_recv" in w.columns:
+                    ts = (pd.to_datetime(w.ts_recv, utc=True, format="mixed")
+                          - pd.to_timedelta(w.get("ts_in_delta", 0), unit="ns")
+                          ).dt.tz_convert(NY)
+                else:
+                    raise ValueError(f"{f} has no ts_recv; ts_event alone is floored and "
+                                     f"indexing on it is a ~60s lookahead")
                 parts = [pd.DataFrame({"ts": ts, "side": side, "price": w[px], "size": w[sz]})
                          for lvl in range(10)
                          for side, px, sz in (("bid", f"bid_px_{lvl:02d}", f"bid_sz_{lvl:02d}"),

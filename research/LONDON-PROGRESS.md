@@ -97,6 +97,28 @@ different deflation bars. §2.4's effective-trial clustering puts the truth betw
 
 ## Session log (newest first)
 
+- **2026-08-06 (Phase 4 follow-up)** — Regeneration, migration, per-family audit, flow
+  verdict. No trials charged; the canonical ledger stays at **810 rows**. (i) **Regenerated**
+  `output/london_obk_flow.{parquet,md}` on the corrected sign/band/clock: **140 of 140
+  comparable cells moved**, and the headline quoted cell inverts — `delta_entry` F1 2026
+  high was **+0.448R PF 1.56**, is now **−0.099R PF 0.85**. The verdict prose was hardcoded
+  and did not regenerate with its own table, so it is now computed from the data. The
+  `delta_sweep` conclusion survives but its *reason* changes: under the corrected sign 2025
+  points WITH the prediction, so the kill is the era-flip, not "2025 points the wrong way".
+  (ii) **Migrated** all four remaining depth consumers to the `ts_recv` clock;
+  `london_matrix.parquet` `dep_*` columns move on **705–746 of 749 rows**. (iii) **Per-family
+  audit** — `docs/AUDIT-depth-lookahead-exposure-by-family.md`. **This corrects my own Phase 4
+  claim:** "no graded London verdict rests on it" was true for the seven graded families but
+  too narrow — **LDN-CAN-01 (39), LDN-OBK-01 (15), LDN-PO3-01 (16) = 70 ledger rows** are
+  affected. Zero verdicts move; CAN-01's 39 all carry `effect = 0.0` so the DSR *variance*
+  is untouched; OBK/PO3's 31 hold contaminated estimates that `record()` will not overwrite
+  — **needs an ANGUS ruling**, three options set out in the audit. (iv) **Flow verdict filed**
+  as `docs/FINDING-book-state-has-no-forward-content-at-1min.md` — it **closes the
+  resting-liquidity question LDN-DEF-01 left open**, with no prereg and no charged trial.
+  Also landed the §2.5 **data-layer clock assertion** — every timestamped source is checked
+  against a second clock at load time, because the window-causality bar provably cannot see
+  a lying timestamp.
+
 - **2026-08-06 (Phase 4)** — Flow-feature inventory and build. No trials charged, no P&L,
   no rule proposed. **Triage** (`orderflow-construction` taxonomy): 9 VALID, 3 BIASED,
   6 NOT CONSTRUCTIBLE. **OFI is BIASED, not "not constructible"** — computable here, but

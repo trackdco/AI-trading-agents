@@ -259,24 +259,35 @@ def scorecard(flow: pd.DataFrame) -> list[str]:
 
     mech = verdicts.get(("F1", "delta_sweep"), {})
     if not mech.get("aligned"):
+        F1 = flow[flow["arm"] == "F1"]
+        num = lambda f, e, w: band_r(F1, f, e, w, 1.0)          # noqa: E731
+        s = lambda v: "n/a" if v is None else f"{v:+.3f}R"      # noqa: E731
+        # Every number below is READ FROM THE DATA. It was hardcoded prose until
+        # 2026-08-06, and when the inverted delta sign was fixed the table regenerated
+        # while the narrative beneath it did not -- leaving a document that contradicted
+        # itself and still quoted +0.448R for a cell that had become -0.099R. A verdict
+        # that cannot regenerate is a verdict that quietly goes stale.
+        sw25_hi, sw25_lo = num("delta_sweep", "2025", "high"), num("delta_sweep", "2025", "low")
+        sw26_hi, sw26_lo = num("delta_sweep", "2026", "high"), num("delta_sweep", "2026", "low")
+        de26_hi = num("delta_entry", "2026", "high")
+        worse25 = (sw25_hi is not None and sw25_lo is not None and sw25_hi < sw25_lo)
         L += ["### The mechanism variable failed, and that is the finding", "",
               "`delta_sweep` was named in the prereg — before the join — as the one",
               "feature that had to work: *\"the fade thesis is that the break traps",
               "aggressive size, and the delta printed during the sweep IS that size.\"*",
               "",
-              "It does not confirm. In 2025 H2 the **high**-delta sweeps are the",
-              "**worst** tercile (−0.339R vs −0.271R for low) — the opposite of the",
-              "prediction — and 2026 is non-monotonic (low +0.114, mid −0.347, high",
-              "+0.218), which is a shape noise makes and a mechanism does not.", "",
+              f"It does not confirm. 2025 H2: high {s(sw25_hi)} vs low {s(sw25_lo)} "
+              f"({'high is WORSE — against the prediction' if worse25 else 'high is better — WITH the prediction'}). "
+              f"2026: high {s(sw26_hi)} vs low {s(sw26_lo)}.",
+              "**The two eras point opposite ways, and that is the kill** — an era-flip",
+              "is not a weak confirmation, it is the absence of one.", "",
               "**Bars could not see the trapped counterparty and neither can the tape.**",
               "That was the argument for running L3 at all: V3 half-failed on candles",
               "and the defence was that trapped size is a flow object. The flow says no.",
               "",
-              "**The controls did as well or better**, which the prereg pre-committed to",
-              "calling out: `delta_entry` high in 2026 is the strongest cell in the",
-              "whole pass (+0.448R, PF 1.56) and it has no story attached and no 2025",
-              "support. That is generic flow-momentum in one era, not this candidate's",
-              "mechanism.", ""]
+              f"Control reference, which the prereg pre-committed to calling out: "
+              f"`delta_entry` high in 2026 is {s(de26_hi)}, with no story attached and",
+              "no 2025 support.", ""]
     return L
 
 

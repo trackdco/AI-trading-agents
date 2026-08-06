@@ -34,6 +34,7 @@ SRC = ROOT / "data/depth"
 
 def main() -> None:
     frames = []
+    floored, genuine, unverifiable = [], [], []
     for f in sorted(SRC.glob("*.csv")):
         try:
             df = pd.read_csv(f)
@@ -41,7 +42,26 @@ def main() -> None:
             continue
         if "bid_px_00" not in df.columns:
             continue
+        # TIMESTAMP FAMILY, detected per file the same way the price scale is.
+        # The London condensed extraction FLOORS ts_event to the minute -- ts_recv runs a
+        # median 59.889s later against ~13us of capture latency -- so the row labelled T
+        # is the book at ~T+59.9s and indexing on the label is a ~60s lookahead
+        # (docs/FINDING-london-depth-timestamp-lookahead.md). This archive is a different
+        # family and its provenance is not established, so DETECT rather than assume:
+        # a ~60s label/recv gap means floored and gets corrected; a millisecond gap means
+        # genuine and is left alone. Without ts_recv the question is unanswerable from
+        # the file, and that is reported rather than guessed either way.
         ts = pd.to_datetime(df["ts_event"], utc=True, errors="coerce")
+        if "ts_recv" in df.columns:
+            recv = pd.to_datetime(df["ts_recv"], utc=True, errors="coerce", format="mixed")
+            gap = (recv - ts).dt.total_seconds().median()
+            if pd.notna(gap) and gap > 30:
+                ts = recv - pd.to_timedelta(df.get("ts_in_delta", 0), unit="ns")
+                floored.append(f.name)
+            else:
+                genuine.append(f.name)
+        else:
+            unverifiable.append(f.name)
         bpx = df[[f"bid_px_0{i}" for i in range(10)]].to_numpy(float)
         apx = df[[f"ask_px_0{i}" for i in range(10)]].to_numpy(float)
         # The archive holds two file families: fixed-point 1e-9 prices
@@ -68,6 +88,13 @@ def main() -> None:
         })
         rows["imb"] = rows.bid_total / (rows.bid_total + rows.ask_total).clip(lower=1)
         frames.append(rows)
+    print(f"[depth_walls] timestamp families — floored(corrected) {len(floored)} | "
+          f"genuine {len(genuine)} | UNVERIFIABLE (no ts_recv) {len(unverifiable)}")
+    if unverifiable:
+        print("[depth_walls] WARNING: files without ts_recv cannot be checked for the "
+              "floored-label defect. If they are floored, every read below is a ~60s "
+              "lookahead. Re-export with ts_recv, or treat these outputs as unaudited: "
+              + ", ".join(unverifiable[:5]) + ("..." if len(unverifiable) > 5 else ""))
     D = pd.concat(frames, ignore_index=True).dropna(subset=["mi"])
     D = D.sort_values("mi").drop_duplicates("mi", keep="last").set_index("mi")
     D.to_parquet(ROOT / "output/depth_minutes.parquet")

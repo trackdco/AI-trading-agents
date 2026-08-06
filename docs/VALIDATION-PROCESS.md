@@ -88,6 +88,12 @@ Input columns:     the exact column names the entry or gate reads (e.g. dep_wall
                    on_extreme_age, cvd_ASIA). This feeds the correlation input-family
                    veto at pre-registration time, before any returns exist
                    (docs/REPORT-correlation-2026-08-04.md; brief §3 item 1).
+Clock provenance:  for EVERY timestamped source this experiment reads: the column used
+                   as the event time, the second clock it was validated against, and the
+                   measured agreement. "ts_event, cross-checked against ts_recv, median
+                   lag 13us" is an answer; "ts_event" alone is not. §2.5 — the window
+                   table below audits DECLARED windows and cannot see a lying timestamp,
+                   which is how a 60-second lookahead survived a correct audit once.
 Condition windows: the §2.5 window-causality table — one row PER CONDITION, plus the
                    full set of minutes at which the rule can fire. Columns are not
                    enough; the defect class lives in the (condition, decision-time)
@@ -267,6 +273,47 @@ implements; Angus judges the implementation. Proposed bars:
   **A cohort being on-mechanism is not a defence.** LDN-ATC-01's prereg §6.1 kept the
   07:30 cohort on the reasoning that it was the most on-mechanism part of the set. That
   reasoning was sound about the mechanism and irrelevant to the arithmetic.
+
+- **The clock is a claim, and it gets checked against a second clock at load time**
+  [NEW 2026-08-06, from `docs/FINDING-london-depth-timestamp-lookahead.md`]. The bar
+  above audits **declared** windows: it reads `close_time(W)` from the declaration and
+  certifies the arithmetic. **It therefore cannot catch a source whose timestamps lie**,
+  and it provably did not — it passed the London book feature layer while every row was
+  labelled ~60 seconds before it was observed. A declaration saying "book snapshot,
+  closes at Rel(0)" is true about the *label* and false about the *world*. The bar:
+
+  > **Every timestamped source is validated against a second, independent clock at load
+  > time, in the loader, before any consumer sees a row.** A source with one clock and no
+  > cross-check is unaudited, and must be labelled as such wherever its outputs are read.
+
+  **The case.** `data/reference/depth_london/` carries `ts_event` on exact minute
+  boundaries — which reads as a clean per-minute sample and is how every consumer treated
+  it for a year. `ts_recv` says the row labelled T is the book at **T + 59.889s** (p1
+  58.193s, 95.9% inside [59s, 60s)) against ~13 µs of matching-engine-to-capture latency.
+  The extraction floored the label. Reading row M for a decision at minute M is a
+  60-second lookahead, invisible to every downstream check, on immaculate-looking
+  timestamps.
+
+  **Why a data-layer assertion and not a review step.** This was reviewed. A 2026-08-05
+  audit in `scripts/build_l3_features_london.py` asked precisely the right question —
+  *"is that boundary an INSTANT at T, or a roll-up of the minute that follows it?"* — took
+  real measurements, recorded them, and concluded "no lookahead here". Its measurements
+  were correct and reproduce today. It was defeated by a stated premise about a
+  **different file**: it took the 1-minute bars to be close-labelled, and they are
+  start-labelled. Under the correct premise the same numbers say the opposite. **Diligence
+  did not catch this; a second clock did, in one line, without reference to any other
+  file.**
+
+  What satisfies the bar, in order of preference: (a) a second timestamp on the same rows
+  (`ts_recv` vs `ts_event`), (b) agreement with an independent instrument at known
+  precision (a quoted book against traded prices), (c) an explicit vendor guarantee cited
+  by name. The loader **refuses**, not warns, when the cross-check fails — and refuses
+  equally when the cross-check *unexpectedly passes*, because a correction applied to a
+  source that was never floored is itself a 60-second error. `src/engine/book.load_depth`
+  and `scripts/london_depth.load_day` are the reference implementations.
+
+  **A lookahead can only inflate**, so nulls established on a defective clock survive it.
+  That is a reason the damage was bounded here, never a reason to skip the check.
 
 - **Control admissibility — declare the type, then the only tests it admits**
   [NEW 2026-08-06, from `VERDICT-LDN-ATC-01-L1.md` §4]. Every declared control carries

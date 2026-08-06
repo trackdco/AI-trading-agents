@@ -243,6 +243,11 @@ def test_validation_process_carries_the_bar_and_the_prereg_fields():
     assert "Control admissibility" in t
     assert "DISJOINT-GROUP TESTS ONLY" in t
     assert "Condition windows:" in t and "Controls:" in t
+    # The data-layer bar, and the reason it is separate: this check is blind to a source
+    # whose timestamps lie, and it was blind to exactly that for a year.
+    assert "validated against a second, independent clock at load" in t
+    assert "Clock provenance:" in t
+    assert "cannot catch a source whose timestamps lie" in t
     # the §1 template row must ask for the CLOSE, which is the only edge that binds
     assert re.search(r"\|\s*window CLOSES\s*\|", t)
     assert "LDN-DEF-01" in t, "the worked example is cited in the bar"
