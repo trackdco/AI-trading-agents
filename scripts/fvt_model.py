@@ -82,7 +82,12 @@ WINDOWS = WINDOW_SETS["ny"]
 SKIP_FIRST_MIN = 3          # "may be best to avoid the first 3m after 9:30 market open"
 CONT_MIN = 15               # continuation phase length; JJ says "the first ~10-15m"
 WICK_MAX = 0.20             # displacement quality
-SWING_N = 3                 # 3-bar fractal for the structure break
+# Bars either side of the pivot: 1 = the 3-bar fractal JJ describes ("close past wick H/L of
+# recent price leg"). NOTE the semantic: this is the HALF-width, not the total. It was briefly
+# 3 here after the fractal was generalised, which silently meant a 7-bar fractal and moved the
+# baseline from +0.19 to -1.37 pt/trade. The sweep in the commit log shows 1 is also the best
+# value, monotonically -- stricter structure is strictly worse on this model.
+SWING_N = 1
 RR = 1.5                    # "1.5R take profit, no trade management"
 TIERS = [(20.0, 50.0), (7.0, 25.0), (0.0, 16.5)]   # (atr_above, stop_points)
 
