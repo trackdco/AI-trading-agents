@@ -142,17 +142,28 @@ def split_lift(F: pd.DataFrame, col: str) -> dict | None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--arm", default="vs_first")
+    ap.add_argument("--features", default=str(IN))
+    ap.add_argument("--kind", default="all", choices=["all", "displacement",
+                                                      "rejection_block"],
+                    help="ANGUS 2026-08-05: under EC the depth feature has DIFFERENT LEAD "
+                         "TIME per half -- zero for a market-entered displacement (trigger "
+                         "close IS the entry), and the retest delay for a limit-entered "
+                         "rejection block. Same causality, different freshness. Pooling "
+                         "them would blur a signal that works at zero lead and decays.")
     a = ap.parse_args()
 
-    F = pd.read_parquet(IN)
+    F = pd.read_parquet(a.features)
+    if a.kind != "all":
+        F = F[F["kind"] == a.kind]
     F = F[F[a.arm]].copy()
     F["era"] = F.day.str[:4]
     F = derive(F)
     base = econ(F)
 
     L = ["# LDN-CAN-01 — L3 trial: what separates winners from losers", "",
-         f"Authorised by `{PREREG}`. Arm `{a.arm}`, **{len(F):,} trades**, "
-         f"{F.day.nunique()} sessions.", "",
+         f"Authorised by `{PREREG}`. Arm `{a.arm}`"
+         + (f", trigger kind **{a.kind}**" if a.kind != "all" else "")
+         + f", **{len(F):,} trades**, {F.day.nunique()} sessions.", "",
          "**No risk gate, no caps, no geometry changes** — the 9.5pt band from L2 is L4",
          "policy and is deliberately not applied here (ANGUS: *\"separate winners from",
          "losers before putting stop caps and other things\"*). Measuring lift on a",
@@ -247,10 +258,13 @@ def main() -> int:
 
     text = "\n".join(L)
     print(text)
-    OUT_MD.write_text(text)
+    out_md = (OUT_MD if a.kind == "all"
+              else OUT_MD.with_name(f"l3_london_trial_{a.kind}.md"))
+    out_md.write_text(text)
 
     led = [{"family": "LDN-CAN-01", "era": "fit", "prereg": PREREG,
-            "trial": f"L3 winner/loser separation {r.feature} ({a.arm})",
+            "trial": (f"L3 winner/loser separation {r.feature} ({a.arm}"
+                      + (f", {a.kind}" if a.kind != "all" else "") + ")"),
             "stat_type": "mean", "estimate": round(float(r.wr_gap), 4),
             "n": int(r.n_hi), "t_stat": 0.0, "effect": 0.0,
             "verdict": (f"WR gap {r.wr_gap:+.1%} (25 {r.gap_2025:+.1%} / 26 "
