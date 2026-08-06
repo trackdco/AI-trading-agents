@@ -11,7 +11,14 @@ Nothing about the rule changes: same 15-minute window from a setup's FIRST fill,
 BEFORE grouping (ANGUS: it is a trigger requirement, so an inadmissible trigger must not
 claim a setup and block a valid one behind it), same `first` tie-break on causality.
 
+The same argument applies to the TARGET arm, which is why `--rr-floor` is here. Cutting the
+2R floor changes which candidates the engine will order at all (`vetoed_rr_floor` moves), so
+the rr0 arm's *eligible* population differs from the 2R arm's. Inheriting either one's
+grouping would let a candidate that arm never traded claim a setup and block the one behind
+it — the precise failure this file exists to prevent, one layer up.
+
     python -m scripts.l2_london_dedup_arm --entry EC
+    python -m scripts.l2_london_dedup_arm --entry EC --rr-floor 0
 """
 
 from __future__ import annotations
@@ -30,17 +37,23 @@ from scripts.l1_london_dedup import assign  # noqa: E402
 NY = "America/New_York"
 
 
-def path_for(entry: str) -> Path:
-    return (ROOT / "output/l2_outcomes_london_fit.parquet" if entry == "E3"
-            else ROOT / f"output/l2_outcomes_london_fit_{entry}.parquet")
+def path_for(entry: str, rr_floor: float | None = None) -> Path:
+    """Mirrors the suffix `build_l2_outcomes_london` writes, so the two stay in step."""
+    suffix = ("" if entry == "E3" else f"_{entry}") + \
+             ("" if rr_floor is None else f"_rr{rr_floor:g}")
+    return ROOT / f"output/l2_outcomes_london_fit{suffix}.parquet"
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--entry", default="EC", choices=["EC", "E4", "E3"])
+    ap.add_argument("--rr-floor", type=float, default=None,
+                    help="select the --rr-floor arm's book; omit for the 2.0-floor book")
     a = ap.parse_args()
 
-    p = path_for(a.entry)
+    p = path_for(a.entry, a.rr_floor)
+    if not p.exists():
+        ap.error(f"{p.relative_to(ROOT)} does not exist — build that arm first")
     O = pd.read_parquet(p)
     O = O.drop(columns=[c for c in O.columns
                         if c.startswith(("setup_", "vs_")) or c in ("arm_none", "arm_struct")],
@@ -59,7 +72,8 @@ def main() -> int:
     nd = O["day"].nunique()
     ns = int(O.loc[O.vs_id > 0, "vs_id"].nunique())
     fl = int(O.arm_none.sum())
-    print(f"{a.entry}: {len(O):,} candidates | {fl:,} positions | "
+    arm = a.entry + ("" if a.rr_floor is None else f" rr{a.rr_floor:g}")
+    print(f"{arm}: {len(O):,} candidates | {fl:,} positions | "
           f"{ns:,} VWAP-ruled setups ({ns/nd:.2f}/session over {nd} sessions)")
     K = O[O.vs_first]
     print("  " + " ".join(f"{k} {(K.kind == k).mean():.0%}"
