@@ -116,7 +116,7 @@ def stop_for(atr: float) -> float:
     return TIERS[-1][1]
 
 
-def run(b: pd.DataFrame, atr_tf: int) -> pd.DataFrame:
+def run(b: pd.DataFrame, atr_tf: int, swing_n: int = SWING_N) -> pd.DataFrame:
     b = b.copy()
     b["atr"] = atr_series(b, atr_tf)
     rng = (b.high - b.low).to_numpy()
@@ -147,14 +147,20 @@ def run(b: pd.DataFrame, atr_tf: int) -> pd.DataFrame:
         atr = g.atr.to_numpy(float)
 
         # 3-bar fractal swings, confirmed one bar late so nothing is known early
+        # k bars either side of the pivot. k=1 is a 3-bar fractal, which on 1-minute NQ marks
+        # a new "swing" every few bars and turns "close past the recent price leg" into "close
+        # past a wiggle". Larger k means a real leg, which is what the source intends.
+        k = max(1, swing_n)
         sw_hi = np.full(len(g), np.nan)
         sw_lo = np.full(len(g), np.nan)
         lh = ll = np.nan
         for i in range(len(g)):
-            if i >= 2 and hi[i - 1] > hi[i - 2] and hi[i - 1] > hi[i]:
-                lh = hi[i - 1]
-            if i >= 2 and lo[i - 1] < lo[i - 2] and lo[i - 1] < lo[i]:
-                ll = lo[i - 1]
+            j = i - k                                  # pivot candidate, confirmed at i
+            if j - k >= 0:
+                if hi[j] == hi[j - k:j + k + 1].max() and (hi[j - k:j] < hi[j]).all():
+                    lh = hi[j]
+                if lo[j] == lo[j - k:j + k + 1].min() and (lo[j - k:j] > lo[j]).all():
+                    ll = lo[j]
             sw_hi[i], sw_lo[i] = lh, ll
 
         for wname, wlo, whi in WINDOWS:
