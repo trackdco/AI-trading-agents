@@ -168,3 +168,44 @@ bias ×2, chain-stripped ×2. London declared total **34 → 42**.
   prereg, a fresh L0, and the honest note that its predecessor died on defects, not on a
   measured absence of edge.
 - **Stage 2 was not spent.** The 2023/24 ruling is unaffected by this result.
+
+---
+
+## 8. Corrections recorded into process — 2026-08-06
+
+Three lines, on the record, so this family's number is never quoted without them. The
+first two are facts about the measurement; the third is what the FAIL actually rests on.
+
+1. **The published L0 count of 108 is INFLATED BY LOOKAHEAD.** The LTA condition is
+   evaluated over 07:00–08:00 while the trigger scan opens at 07:30; 29 of the 108 (27%)
+   fire on the strength of the 07:45 and 08:00 bars, which have not closed. The count
+   stands as a count of what the censused chain did, and it is not the count of what a
+   causal chain would do. Cite it only with this sentence attached. (§2 above.)
+
+2. **The causally-clean cohort was measured, and it is negative.** Restricting to
+   triggers at 08:00 and later — where every LTA input is settled by the decision minute,
+   so the §2.5 window-causality bar passes — the secondary (fixed 1R) arm gives
+   **−0.135R on n=65**. The pre-open 07:30 cohort, the contaminated one, is worse still
+   at −0.440R on n=23. There is no cohort of this population that is not negative.
+
+3. **The family closes on line 2, not merely on the failed primary.** The primary arm was
+   INCONCLUSIVE ON POWER, which blocks like FAIL but establishes nothing; the secondary
+   arm's negativity in both eras is the finding. Had the whole FAIL rested on the primary
+   — or on a population that only the lookahead created — the honest verdict would have
+   been "defective, unmeasured", and a respecification would have been owed a fresh look.
+   It does not. **A causal respecification is still legitimate as a NEW candidate** (fresh
+   prereg, fresh L0), but it inherits a measured negative on the clean cohort, not an open
+   question.
+
+**What this family put into process** (`docs/VALIDATION-PROCESS.md` §2.5):
+
+- the **window-causality bar** — `max(close_time(Wᵢ)) ≤ T` for every condition at every
+  minute the rule can fire — with the per-condition window table now required in the §1
+  prereg template. ATC's L0 lookahead audit was correct about every column and still
+  missed this, because the defect lives in the (condition, decision-time) pair. Pinned by
+  `tests/test_window_causality.py`, which replays this chain and requires the check to
+  catch it at 07:30 and pass it from 08:00.
+- the **control-admissibility field** — §10.1 Test B paired a *population* control (the
+  chain is a pure session filter) and returned +0.000R on all 30 paired sessions. Degenerate
+  by construction, and decidable from the definition before the run. Controls now declare
+  `Type: population | mechanism`, and population admits disjoint-group tests only.

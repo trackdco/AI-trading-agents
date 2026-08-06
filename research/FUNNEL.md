@@ -180,6 +180,17 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   Two defects found — a LOOKAHEAD in the censused chain (LTA gate 07:00–08:00 vs triggers
   firing 07:30, 27% of events) and a 64% target-invalid rate in the L1 prereg's own target
   rule. The L0 counts below stand as counts but are INFLATED BY LOOKAHEAD. Stage 2 not spent.
+- **THE FAIL DOES NOT REST ON EITHER DEFECT** (correction recorded 2026-08-06, `VERDICT`
+  §8). The causally-clean cohort — triggers at 08:00 and later, where every LTA input is
+  settled by the decision minute and the §2.5 window-causality bar passes — measures
+  **−0.135R on n=65** (secondary/fixed-1R arm). The contaminated 07:30 cohort is worse,
+  −0.440R on n=23. No cohort of this population is non-negative. A causal respecification
+  is a legitimate NEW candidate, but it inherits a measured negative, not an open question.
+- **PUT INTO PROCESS:** the §2.5 window-causality bar (this chain is a registry case in
+  `tests/test_window_causality.py` — caught at 07:30, clean from 08:00) and the §2.5
+  control-admissibility field (§10.1 Test B paired a *population* control against a pure
+  session filter and returned +0.000R on all 30 paired sessions — degenerate by
+  construction, decidable from the definition before the run).
 - STAGE: L0 census done (`docs/PREREG-london-atc-census.md`). L1 owed.
 - RAW TRIGGERS: 108 of 396 sessions complete the taught chain — **27% (2025) / 28% (2026)**
   vs a declared 15% census floor. Half-year 29/25/26/(55% on 11 sessions, noise).
@@ -429,17 +440,20 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 The superseded v1.0 reading (B = reclaim, B2 = continuation) inverts continuation and
 fade — a per-pattern table read under the wrong legend gives opposite era priors.
 
-Full detail and unspent legs: `research/LONDON-PROGRESS.md`. Verdict documents live on
-`claude/dsr-pbo-strategy-validation-mzp0wv` and are NOT on this branch.
+Full detail and unspent legs: `research/LONDON-PROGRESS.md`. **The five verdict documents
+and their six preregs are now ON this branch** (cherry-picked 2026-08-06, `5668d2f`) —
+the earlier note that they lived only on `claude/dsr-pbo-strategy-validation-mzp0wv` is
+superseded. 19 of the 20 London preregs cited by ledger rows now resolve here; the
+outstanding one is `PREREG-london-inventory-fade-continuous.md`, which exists on no branch.
 
 | family | verdict | headline |
 |---|---|---|
-| **LDN-SWP-01** asia-sweep pair | **FAIL** both | #3 fails under the declared spec; #2's declared test was invalid, causal re-measurement null. §0 CORRECTION: first run used 03:00–06:00 ET, not the London session |
+| **LDN-SWP-01** asia-sweep pair | **FAIL** both | #3 fails under the declared spec; #2's declared test was invalid, causal re-measurement null. §0 CORRECTION: first run used 03:00–06:00 ET, not the London session. **§8 (2026-08-06): cross-window defect CONFIRMED mechanically (group P leaks 180 min), FAIL certified SAFE** — the bias INFLATES the contaminated group, so it cannot manufacture a refutation, and #3's group D never leaked |
 | **LDN-TRAP-01** level-trap-fade | **FAIL** | 2025 n=161 −2.30pts (p=0.721) / 2026 n=89 −2.64pts (p=0.621). Wrong sign both eras, 48% of events positive. A clean, well-powered null |
 | **LDN-VWAP-01** vwap-σ-rotation, **leg 1 only** | **INCONCLUSIVE ON POWER** (blocks like FAIL) | 2025 n=77 −3.81 / 2026 n=38 −12.15, wrong sign both eras; 2026 CI cannot separate slightly-negative from zero. **Legs 2–3 unspent** |
 | **LDN-VT-01** value-traverse, **leg (a) only** | **INCONCLUSIVE ON POWER** | 2025 n=53 +4.74 / 2026 n=23, below the n≥30 floor. Two author-disclosed defects (feasibility count omitted the entry trigger; placebo mis-anchored). Declared secondary: "no effect". **Legs (b)–(c) unspent** |
-| **LDN-DEF-01** level-defense-flow | **FAIL** all three measures | ρ ABSORB +0.040/−0.144, PIN +0.063/−0.012, ICEBERG +0.037/−0.116; AUC 0.451–0.515; n=99/89, min detectable ρ 0.248/0.262 — a null on evidence, not power. Tombstone recommended |
-| **LDN-ATC-01** asian-trend-continuation | **FAIL** (L1 Stage 1) | Primary n=30 INCONCLUSIVE ON POWER (eras 22/8); secondary n=88 negative in BOTH eras (−0.204/−0.236). Found a LOOKAHEAD in the censused chain (LTA gate reads 07:00–08:00, triggers fire 07:30 — 27% of events) and a 64% target-invalid rate in the prereg's own target rule. Stage 2 not spent |
+| **LDN-DEF-01** level-defense-flow | **FAIL** all three measures | ρ ABSORB +0.040/−0.144, PIN +0.063/−0.012, ICEBERG +0.037/−0.116; AUC 0.451–0.515; n=99/89, min detectable ρ 0.248/0.262 — a null on evidence, not power. Tombstone recommended. **Now the WORKED EXAMPLE for the §2.5 window-causality bar** — footprint read in `[t−3, t]`, outcome over `(t, close]`, `assert max(mins) <= t` fired on every event, in code, before any ρ was read |
+| **LDN-ATC-01** asian-trend-continuation | **FAIL** (L1 Stage 1) | Primary n=30 INCONCLUSIVE ON POWER (eras 22/8); secondary n=88 negative in BOTH eras (−0.204/−0.236). Found a LOOKAHEAD in the censused chain (LTA gate reads 07:00–08:00, triggers fire 07:30 — 27% of events) and a 64% target-invalid rate in the prereg's own target rule. **Closes on the causally-clean 08:00+ cohort, −0.135R at n=65, not on the failed primary.** Stage 2 not spent |
 | **LDN-FLOW-01** flow-confirmation | closed | Minute-aggregate flow. Stated its own limit — price-level absorption is invisible at that resolution — which is the gap LDN-DEF-01 then tested |
 
 - **These are real trials the tracker never recorded, not backfill.** All six were in the
@@ -450,6 +464,29 @@ Full detail and unspent legs: `research/LONDON-PROGRESS.md`. Verdict documents l
   vs 439 (all London-family rows incl. 405 harness writes for CAN-01/PO3-01/OBK-01).
   Different things, materially different deflation bars.
 - **No holdout look spent by any of the six.**
+- **What the dead ones put into process (2026-08-06, no trials charged).** Two checks now
+  sit in `docs/VALIDATION-PROCESS.md` §2.5, built from these failures rather than from
+  theory:
+  - **Window causality** — `max(close_time(Wᵢ)) ≤ T` for every condition of a rule at
+    every minute it can fire, declared as a per-condition window table in the §1 prereg
+    template, asserted by `src.validation.window_causality.assert_causal`, pinned by
+    `tests/test_window_causality.py`. It is a separate bar from the standing "causality
+    or it doesn't count" rule because that one is audited per COLUMN, and the defect class
+    lives in the *(condition, decision-time)* pair — SWP-01, ATC-01 and INV-01 all passed
+    a per-column audit. It cannot be delegated to the fragility ladder either, because
+    **circularity is robust**: SWP-01's leaky Δ came back p<0.001 in both eras and
+    survived every trim depth and winsorisation we run. The test replays DEF-01 (must
+    pass) and the three defects (must all be caught), so the check cannot rot into
+    decoration.
+  - **Control admissibility** — every control declares `Type: population | mechanism`;
+    a population control admits **disjoint-group tests only**. Diagnostic question:
+    does removing the control's component change the entry *within* a session, or only
+    *which sessions appear*? ATC's Test B got this wrong and returned +0.000R on all 30
+    paired sessions.
+- **LDN-INV-01 carries an era-local-quintile flag** (`research/LONDON-PROGRESS.md`):
+  **+20.7pt is descriptive, never quotable as tradeable.** The prereg declared the causal
+  L1 cut (trailing-252-day quantiles); the tracker quoted the descriptive era-local number
+  without it. Not a kill — a bar on the number until the re-cut exists.
 
 ## QUEUE (cards open at census)
 - INTAKE ROUND 3 (2026-08-05) — **THRAXX / Christopher Creamer**, order-flow

@@ -88,6 +88,28 @@ Input columns:     the exact column names the entry or gate reads (e.g. dep_wall
                    on_extreme_age, cvd_ASIA). This feeds the correlation input-family
                    veto at pre-registration time, before any returns exist
                    (docs/REPORT-correlation-2026-08-04.md; brief §3 item 1).
+Condition windows: the §2.5 window-causality table — one row PER CONDITION, plus the
+                   full set of minutes at which the rule can fire. Columns are not
+                   enough; the defect class lives in the (condition, decision-time)
+                   pair. Transcribes directly into src.validation.window_causality.
+
+                   | condition | window opens | window CLOSES | settled by T? |
+                   |---|---|---|---|
+                   | <name>    | <clock or T±m> | <clock or T±m> | yes / NO |
+
+                   Decision times (every minute the rule can fire): ...
+                   Declare the FULL admissible set, not the typical case — LDN-ATC-01
+                   was reasoned about at 08:00, where it is clean, and fires at 07:30,
+                   where it is not. Any "NO" is a blocker, not a caveat: fix the spec
+                   before the run, because no downstream check can see this defect.
+Controls:          each control gets a name, a definition, and Type: population |
+                   mechanism (§2.5 control admissibility). population = a different
+                   event set -> DISJOINT-GROUP TESTS ONLY. mechanism = the same events
+                   with one component removed/randomised -> paired tests admissible.
+                   State which test each control will be read under, here, before the
+                   run: LDN-ATC-01's paired test against a population control was
+                   degenerate by construction and that was decidable from the
+                   definition alone.
 Session:           ny-pre | ny-gold | london (vault vocab, docs/VAULT-SCHEMA.md §5).
 Entry type:        e.g. limit/rotation (E3-style) | momentum (E4-style).
 Spans consumed:    which eras this experiment touches. Holdout look: YES/NO. If YES,
@@ -205,6 +227,68 @@ implements; Angus judges the implementation. Proposed bars:
 - **Causality or it doesn't count:** decision at minute t uses only ≤ t information;
   the harness is built before anything plays (rule 1, `docs/HANDOFF-agents-capture.md`
   §3). Post-loss cooldown "looked great leaky, died honest" (London burn list item 8).
+
+- **Window causality — the check is on the (condition, decision-time) pair, not the
+  column** [NEW 2026-08-06, from `VERDICT-LDN-SWP-01.md` §4's recommendation; three
+  independent proofs below]. The bullet above has always been audited per column, and a
+  per-column audit is not sufficient. The bar:
+
+  > For every rule R composed of conditions c₁…cₙ with evaluation windows W₁…Wₙ, and
+  > every decision time T at which R can fire: **assert max(close_time(Wᵢ)) ≤ T for all i.**
+
+  Every condition must be *settled* by the minute the rule can fire. Declared as the
+  per-condition window table in the §1 prereg template, asserted in code by
+  `src.validation.window_causality.assert_causal`, pinned by
+  `tests/test_window_causality.py`. `decision_times` must be the **full admissible set**,
+  not the typical case.
+
+  **Why it is a separate bar and not an instance of the one above.** *Circularity is
+  robust.* A lookahead survives drop-top-3, every trim depth and every winsorisation,
+  and emerges large, stable and significant — the fragility ladder cannot see it, and
+  neither can the P&L. LDN-SWP-01's contaminated Δ came back p < 0.001 in both eras and
+  passed every robustness check we run.
+
+  **The worked example — a rule that passes** (`VERDICT-LDN-DEF-01.md` §4): every
+  footprint minute read lies in `[t−3, t]`, the outcome is measured over
+  `(t, window close]`, so `close_time(W) = t = T` — legal, since the ≤ is not strict.
+  `assert max(mins) <= t` fired on every event, in code, before any ρ was read. That is
+  the shape this bar asks for. Note the author's own reason for mechanising it: *"Given
+  I re-created a causality-class defect in LDN-VT-01 an hour before this run, it is
+  checked mechanically, not by eye."*
+
+  **The three failures it is built from**, all of which a per-column audit passed:
+
+  | family | condition | window closes | can fire at | lookahead |
+  |---|---|---|---|---|
+  | LDN-SWP-01 | group-P membership (post-open breach) | outcome-window close, 06:00 ET | 03:00 ET | up to 180 min |
+  | LDN-ATC-01 | LTA (≥2 consecutive 15m closes) | 08:00 | 07:30 | 30 min, on 27% of the census |
+  | LDN-INV-01 | bottom-quintile cut (era-local boundary) | end of era | any day in the era | up to a year |
+
+  **A cohort being on-mechanism is not a defence.** LDN-ATC-01's prereg §6.1 kept the
+  07:30 cohort on the reasoning that it was the most on-mechanism part of the set. That
+  reasoning was sound about the mechanism and irrelevant to the arithmetic.
+
+- **Control admissibility — declare the type, then the only tests it admits**
+  [NEW 2026-08-06, from `VERDICT-LDN-ATC-01-L1.md` §4]. Every declared control carries
+  `Type: population | mechanism` in the §1 prereg, and the type fixes what may be
+  computed against it:
+
+  - **population** control — a *different set of events* (a comparison group). Admits
+    **disjoint-group tests only**. A paired/within-session test against a population
+    control is not conservative, it is degenerate.
+  - **mechanism** control — the *same events* with one mechanism component removed,
+    randomised or shuffled. Admits paired tests, and that is the point of it.
+
+  **The failure that produced the bar.** `PREREG-london-atc-L1.md` §10.1 Test B paired
+  the declared population against a chain-stripped control and returned **+0.000R on all
+  30 paired sessions** (diagnosed in `VERDICT-LDN-ATC-01-L1.md` §4) — because the chain (pullback + LTA) is *purely a session filter*: it
+  decides which sessions qualify and never alters the entry inside one. Where both fire,
+  the entries are identical by construction, so the test compared each trade with itself.
+  It could not discriminate and never could, and that was decidable at prereg time from
+  the definition alone. The diagnostic question: **does removing the control's component
+  change the entry within a session, or only which sessions appear?** Only-which-sessions
+  means population, means disjoint-only.
+
 - **Beat the best mechanical control**, not just the baseline — the agent arm was
   graded against `lock1r_2r`, not only against V8 (`docs/PLAN-agents-capture-run.md`
   §9 criterion 2; `docs/REPORT-desk-run-2.md`).
@@ -1060,3 +1144,17 @@ after signature follow §8 — evidence + pre-declared experiment, never waived.
 12. Appendix A as a whole — signable separately to unblock Brake (brief §9 item 7).
 13. Confirm the 2026-07-26 eval-IS-the-test stance (old PROMOTION-GATE §0, recovered
     git d420b10~1) extends to newly promoted strategies (§6 rung 4).
+
+**[LANDED 2026-08-06 — no knob to ratify, flagged so Angus can overrule]:**
+14. **§2.5 window causality** and **§2.5 control admissibility**, with the
+    per-condition window table and the `Type: population | mechanism` field added to
+    the §1 prereg template. These are deliberately **not** on the [PROPOSED] list,
+    because neither carries a number. `max(close_time(Wᵢ)) ≤ T` is an arithmetic
+    identity about what was knowable at the decision minute — there is no threshold to
+    set and no defensible value other than "settled". Likewise a paired test against a
+    population control is degenerate by construction, not merely weak. Ratifying a
+    knob is the wrong instrument for both; **overruling the requirement itself is the
+    only lever, and it is yours.** Built from three measured failures (LDN-SWP-01,
+    LDN-ATC-01, LDN-INV-01) with LDN-DEF-01 as the passing worked example; pinned by
+    `tests/test_window_causality.py`. Cost of compliance: one table in the prereg and
+    one `assert_causal()` call in the census script.

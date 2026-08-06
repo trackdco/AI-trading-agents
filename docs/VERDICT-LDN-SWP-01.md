@@ -174,3 +174,40 @@ tests, flow confirmation at the extreme), a causal specification, and a fresh pr
 - `sweep_side_dead` counts a wick through the extreme as a breach — deliberate (the stop
   pool is reached by the wick), but it is not an acceptance test, and both candidates'
   L1 skeletons call for acceptance logic this census does not implement.
+
+---
+
+## 8. Correction recorded — the cross-window defect is confirmed, and the FAIL is safe
+
+**Recorded 2026-08-06**, when §4's recommended causality audit was built. Replaying this
+census through `src.validation.window_causality` (registry case in
+`tests/test_window_causality.py`) **confirms the defect mechanically**:
+
+| condition | window | closes | decision at | verdict |
+|---|---|---|---|---|
+| group D — dead-hour breach | 00:00–03:00 ET | 03:00 | 03:00 | **causal** |
+| group P — post-open breach | 03:00–06:00 ET | 06:00 | 03:00 | **180 min of lookahead** |
+| sign of the outcome (which side broke) | 03:00–06:00 ET | 06:00 | 03:00 | **definitional** |
+
+`max(close_time(Wᵢ)) ≤ T` fails on two of the three conditions. §2's diagnosis stands
+unchanged; it is now a check that runs rather than a paragraph.
+
+**The FAIL is safe, and it is worth being precise about why.** The defect is not
+symmetric noise — **it INFLATES the contaminated group's apparent effect rather than
+suppressing it.** Signing the return by which side broke makes a day that rallies score
+positive by construction, so contamination pushes `mean P` *up*, away from the negative
+value candidate #2 needs. The contaminated reading was **+42.44 / +69.57**; the causal
+re-measurement is **+2.84 / +1.57**. A bias that can only push a statistic away from the
+thesis cannot manufacture a refutation — at worst it hid an effect that was never there,
+and the causal re-measurement confirms it was not.
+
+**Candidate #3 needs no such argument at all.** Group D is determined 00:00–03:00 ET,
+wholly before the outcome window, and the table above certifies it clean. Its FAIL
+(+3.43 / +1.16 against a session that moves tens of points) is a clean refutation under
+the declared specification, measured on a causally sound group.
+
+**So: both FAILs stand.** What the defect invalidated was the declared *primary statistic*
+Δ, not the verdicts — which is exactly the distinction §2 drew and this check now enforces
+at prereg time rather than at post-mortem. §4's recommendation is landed as
+`docs/VALIDATION-PROCESS.md` §2.5 (window causality) with the per-condition window table
+in the §1 prereg template.

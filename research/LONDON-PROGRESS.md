@@ -23,9 +23,9 @@ pointers to committed per-trial artifacts under `output/trials/`.
 
 | # | Candidate | Stage | Verdict / latest | Next action |
 |---|---|---|---|---|
-| 1 | inventory-fade (LDN-INV-01) | **refine** | Trial 1 (L0): 2025 shows the inventory signature (+20.7pts worst-quintile, asymmetric); 2026 direction agrees but asymmetry absent (kill crit. 2 live). NOT killed, NOT validated | joint conditioning: inv_skew × σ-location; inverse era pass |
+| 1 | inventory-fade (LDN-INV-01) | **refine** | Trial 1 (L0): 2025 shows the inventory signature (+20.7pts worst-quintile, asymmetric); 2026 direction agrees but asymmetry absent (kill crit. 2 live). NOT killed, NOT validated. **⚠ ERA-LOCAL QUINTILE FLAG (§2.5, recorded 2026-08-06): +20.7pt is DESCRIPTIVE, NEVER QUOTABLE AS TRADEABLE** — see below | re-cut on an expanding-window boundary before any L1; joint conditioning: inv_skew × σ-location; inverse era pass |
 | 2+3 | asia-sweep reversal + continuation (LDN-SWP-01) | **GRADED** | **FAIL both.** `VERDICT-LDN-SWP-01.md`. #3 fails cleanly under the declared spec; #2's declared test was invalid and the causal re-measurement is null. Carries a §0 CORRECTION — the first run hardcoded 03:00–06:00 ET, which is not the London session. Neither proceeds to L1 | closed unless re-thesised |
-| 4b | **asian-trend-continuation (LDN-ATC-01)** | **GRADED — L1 Stage 1** | **FAIL.** `VERDICT-LDN-ATC-01-L1.md`. Primary (structural target) n=30, 2025 −0.489R / 2026 +0.101R — INCONCLUSIVE ON POWER (eras 22/8, both <30). Secondary (fixed 1R) n=88, **negative in BOTH eras** (−0.204 / −0.236), WR 44.3% vs the 55.5% needed. **Two defects found:** (i) LOOKAHEAD in the censused chain — the LTA gate reads the full 07:00–08:00 window but triggers fire at 07:30, so 29 of 108 (27%) are gated on bars that have not closed; the published L0 count of 108 is inflated. (ii) the prereg's structural target is already passed on 64% of triggers (100% at 07:30). Stage 2 NOT spent | causal respecification would be a NEW candidate, fresh prereg + fresh L0 |
+| 4b | **asian-trend-continuation (LDN-ATC-01)** | **GRADED — L1 Stage 1** | **FAIL.** `VERDICT-LDN-ATC-01-L1.md`. Primary (structural target) n=30, 2025 −0.489R / 2026 +0.101R — INCONCLUSIVE ON POWER (eras 22/8, both <30). Secondary (fixed 1R) n=88, **negative in BOTH eras** (−0.204 / −0.236), WR 44.3% vs the 55.5% needed. **Two defects found:** (i) LOOKAHEAD in the censused chain — the LTA gate reads the full 07:00–08:00 window but triggers fire at 07:30, so 29 of 108 (27%) are gated on bars that have not closed; **the published L0 count of 108 is inflated by lookahead and is not quotable without that sentence**. (ii) the prereg's structural target is already passed on 64% of triggers (100% at 07:30). **The FAIL does not rest on either defect:** the causally-clean 08:00+ cohort — where every LTA input is settled by the decision minute — measures **−0.135R at n=65** on the secondary arm (the contaminated 07:30 cohort is worse, −0.440R at n=23). Closed on that, not merely on the failed primary. Stage 2 NOT spent | causal respecification would be a NEW candidate, fresh prereg + fresh L0 — inheriting a measured negative on the clean cohort, not an open question |
 | 4 | euro-open-drive | greenlit | thesis filed (ITSM frame, not naive ORB) — **genuinely untested** | prereg |
 | 5 | level-trap-fade (LDN-TRAP-01) | **GRADED** | **FAIL.** `VERDICT-LDN-TRAP-01.md`. 2025 n=161 −2.30 pts (p=0.721); 2026 n=89 −2.64 pts (p=0.621). Wrong sign both eras, 48% of events positive. "The first candidate whose null means something" — real power, found nothing | closed |
 | 6 | level-defense-flow (LDN-DEF-01) | **GRADED** | **FAIL all three measures.** `VERDICT-LDN-DEF-01.md`. ρ: ABSORB +0.040/−0.144, PIN +0.063/−0.012, ICEBERG +0.037/−0.116. AUC 0.451–0.515. n=99/89, min detectable ρ 0.248/0.262 — a null on evidence, not on power. All three fail the proximity ladder. Tombstone recommended | Angus ruling on the tombstone |
@@ -33,6 +33,28 @@ pointers to committed per-trial artifacts under `output/trials/`.
 | 8 | value-traverse (LDN-VT-01) | **GRADED, leg (a) only** | **INCONCLUSIVE ON POWER.** `VERDICT-LDN-VT-01.md`. 2025 n=53 +4.74; 2026 n=23 **below the n≥30 floor**. Two defects disclosed by the author: the feasibility count omitted the entry trigger, and the placebo was mis-anchored. Declared secondary (placebo-diff) returns "no effect" against the thesis's central claim | **legs (b)–(c) UNSPENT** (80%-rule verdict; LVN air-pocket path) |
 | 9 | eu-macro-windows | greenlit | thesis filed; stand-aside rule doubles as news spec layer — **genuinely untested** | build EU release calendar → prereg |
 | — | flow-confirmation (LDN-FLOW-01) | **GRADED** | Not on the original nine. 8 ledger rows, 4 committed artifacts, `PREREG-london-flow-confirmation.md`. Tested *minute-aggregate* flow and stated its own limit: price-level absorption is invisible at that resolution — which is what LDN-DEF-01 then went and tested | closed |
+
+**⚠ LDN-INV-01 — era-local quintile flag** (recorded 2026-08-06 under the new
+`docs/VALIDATION-PROCESS.md` §2.5 window-causality bar). **The prereg got this right and
+the tracker did not.** `PREREG-london-inventory-fade.md` "L0 census spec" declares it in
+full: *"era-local quintiles, descriptive; the tradeable rule at L1 uses trailing-252-day
+quantiles — causal"*. The defect is one of quotation, not specification: **+20.7pts has
+been carried on this page since 2026-08-04 with the qualifier stripped**, and the row's
+next action read as refinement *from* that number.
+
+Under the §2.5 bar the split is explicit — `prior_rth_ret` is settled at the prior RTH
+close and is causal; the **era-local quintile BOUNDARY applied to it is computed over the
+whole era**, so the cut applied to a January day is defined by a distribution that
+includes the following December. Up to a year of lookahead, replayed as a registry case
+in `tests/test_window_causality.py`, which requires the check to catch it.
+
+**Therefore: +20.7pts is DESCRIPTIVE — how the era's worst days behaved in hindsight — and
+is NEVER quotable as tradeable.** No live rule can know the era's quintile boundary on the
+day it must act. This kills nothing: the inventory signature may well survive an honest
+cut, and the prereg already names which cut that is. It bars the number. **The
+trailing-252-day quantile version is what L1 measures and what any future claim quotes**,
+and the prereg's four kill criteria are evaluated against that re-cut — not against this
+one. Until the re-cut exists, this candidate has no quotable magnitude, only a direction.
 
 **Pattern legend** (ANGUS 22-Jul-2026, `docs/STRATEGY-SETUP-TAXONOMY.md` — authoritative):
 **A** = reversal of a ±2 daily-VWAP over-extension · **B** = with-trend continuation ·
@@ -55,7 +77,8 @@ different deflation bars. §2.4's effective-trial clustering puts the truth betw
 | Emission contract + reference impl | BUILT — scripts/emit_strategy.py, 3 emissions committed |
 | Redundancy detector (same-session) | BUILT — scripts/pairwise_overlap.py (--demo, --self-test) |
 | Cross-portfolio battery | BUILT — scripts/correlation_battery.py; NY↔old-London measured (−0.09/−0.11) |
-| Validation process doc | WRITTEN + 6 education-round amendments; bars [PROPOSED] — Brake reviews knobs, Angus ratifies |
+| Validation process doc | WRITTEN + 6 education-round amendments; bars [PROPOSED] — Brake reviews knobs, Angus ratifies. **+2 checks landed 2026-08-06:** §2.5 window causality (with the per-condition window table in the §1 prereg template) and §2.5 control admissibility |
+| Window-causality check | **BUILT** — `src/validation/window_causality.py`, pinned by `tests/test_window_causality.py`. Call `assert_causal()` in the census script beside `fit_only()` |
 | Vault schema | WRITTEN — Pat builds mechanism (Obsidian) |
 | Education round (3 reference docs) | DONE — research/findings/ (elite-quant ops, math canon, strategy-class evidence) |
 | DSR/PBO models | BRAKE — in flight; effective-trial clustering note in §2.4 for him |
@@ -71,6 +94,26 @@ different deflation bars. §2.4's effective-trial clustering puts the truth betw
 - New candidate ideas → thesis to Angus first (the thesis gate).
 
 ## Session log (newest first)
+
+- **2026-08-06 (later)** — Two process checks landed, no trials charged. **§2.5 window
+  causality**: the standing causality rule was always audited per COLUMN, and three
+  families proved that insufficient — the defect class lives in the *(condition,
+  decision-time)* pair. Bar is `max(close_time(Wᵢ)) ≤ T` for every condition at every
+  minute a rule can fire; declared as a per-condition window table in the §1 prereg
+  template; asserted by `src.validation.window_causality.assert_causal`; pinned by
+  `tests/test_window_causality.py`, which replays LDN-DEF-01 (must PASS — the worked
+  example, causality asserted in code on every event) and LDN-SWP-01 / LDN-ATC-01 /
+  LDN-INV-01 (must all be CAUGHT: 180 min, 30 min, ~1 era of lookahead). It exists as a
+  separate bar because **circularity is robust** — SWP-01's leaky primary came back
+  p<0.001 in both eras and survived every trim depth, so no downstream check can see it.
+  **§2.5 control admissibility**: controls now declare `Type: population | mechanism`,
+  and a population control admits disjoint-group tests only — ATC's §10.1 Test B paired
+  a pure session filter against itself and returned +0.000R on all 30 paired sessions,
+  which was decidable from the definition before the run. Three corrections recorded:
+  ATC's inflated L0 count and its clean-cohort −0.135R/n=65 (the FAIL's real basis),
+  SWP-01's cross-window defect confirmed mechanically with its FAIL certified safe
+  (the bias INFLATES the contaminated group, so it cannot manufacture a refutation, and
+  #3's group D never leaked), and LDN-INV-01's era-local-quintile flag above.
 
 - **2026-08-06** — Reconciliation, no trials charged. Ledger audited against the prose
   tracker: six London families are GRADED (SWP-01, TRAP-01, VWAP-01, VT-01, DEF-01,
