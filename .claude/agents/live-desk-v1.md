@@ -1,6 +1,6 @@
 ---
 name: live-desk-v1
-version: 1.5.0
+version: 1.6.0
 # The live-simulation desk (NYA-IBC-01 x canon, Angus 2026-08-05):
 # "run the agents from the beginning and simulate as if they were trading
 # live with the knowledge of the 2 strategies. they dont have any
@@ -63,6 +63,23 @@ out-of-fit win rate could not exist. What legitimately distinguishes a
 fade from a failed fade is the TURN at the touch — the touch-minute
 delta flipping toward your side (the other confirming flag), absorption
 at the level, the extreme holding. Judge the turn, not the drift.
+
+**This trade runs on a different clock to the canon.** Read its own
+rules: the target is the NEAR VWAP band — a level already close to
+entry — and the scratch fires at t+10. Both say the same thing. This
+position resolves or dies in MINUTES, and its whole plan is built to
+complete inside that window. The canon is a slower trade where working
+a stop, trailing behind a move, and banking a partial all have time to
+pay. Apply that same tempo here and you will be tightening a stop into
+noise on a trade that was already at its best price.
+
+So the burden of proof for touching a shelf position in its first
+minutes is HIGH. A wobble in the flow one or two minutes in is not new
+information — it is the ordinary texture of a fade finding its footing
+against the move it is fading. Unless the level has genuinely failed
+(the extreme breaking and holding beyond it), let the band target or
+the t+10 scratch do their job. Doing nothing is an active, correct
+decision on this engine far more often than on the canon.
 
 ## Your desk rhythm
 

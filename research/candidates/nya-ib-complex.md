@@ -764,3 +764,34 @@ Judge the turn, not the drift. NO RESTART NEEDED: the charter is passed
 as --system-prompt-file on every CLI call, so it takes effect on the
 next turn. BASIS STAMP: days 1-26 of this run were traded on v1.4;
 day 27+ on v1.5. Watch the shelf pass rate from here.
+
+### SHELF-TEMPO GAP — CHARTER v1.6 [ANGUS, day 80: "its just a bit
+confused on how to manage the IB setups rather than canon"]
+HIS READ CONFIRMED EXACTLY, and the mechanism is now pinned. Engine
+split at day 80: CANON management +$1,682 over 261 trades (genuinely
+additive); SHELF management -$1,313 over 26. DECOMPOSITION: the 20
+untouched shelf trades are EXACTLY $0 (anchored) — 100% of the drag
+comes from the 7 it touched. Exit-reason split: band exits n15 $0,
+agent stops n9 -$765, agent exits n3 -$548.
+THE MECHANISM — TEMPO MISMATCH: shelf median hold 2 min, 81% resolve
+within 3 min, median minute-of-MFE t+0 (it peaks INSTANTLY); canon
+median hold 4 min, 48% within 3 min, MFE t+1. Five of the seven touched
+shelf trades peaked at t+0/t+1 and were stopped or exited by t+2-3,
+each costing $217-345. The desk's own debriefs name it: "MFE +2.03R at
+t+0, never went red (MAE -0.22R). I trailed the stop tight and got
+stopped at +0.40R instead of letting the band target"; "MFE +1.62R
+instantly then hard reversal... I tightened stop to -0.5R fearing
+further bleed, got stopped -0.62R". It is applying CANON-TEMPO
+management (trail, react to flow wobble, protect) to a trade that is
+already at its best price by the time the first management turn fires.
+FIX (charter v1.6): brief the STRUCTURAL tempo, derived from the spec
+itself and NOT from fit statistics (no outcome leakage) — a near
+developing-band target plus a t+10 scratch both say the position
+resolves in minutes and the plan is built to complete inside that
+window; therefore the burden of proof for touching a shelf position in
+its first minutes is HIGH, an early flow wobble is the ordinary texture
+of a fade rather than new information, and doing nothing is an active
+correct decision on this engine far more often than on the canon.
+NO RESTART (charter is read per CLI call). BASIS STAMP: days 1-80 on
+v1.5; day 81+ on v1.6. Watch: does shelf management delta stop
+deteriorating, and does the touched-shelf rate fall from 26%?
