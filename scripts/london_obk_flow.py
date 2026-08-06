@@ -25,6 +25,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from src.engine import book as _book  # noqa: E402
+from src.engine import footprint as _fp  # noqa: E402
 from src.validation import trial_ledger  # noqa: E402
 
 PREREG = "docs/PREREG-london-obk-L3-flow-and-autopsy.md"
@@ -33,6 +35,9 @@ OUT_PARQUET = ROOT / "output/london_obk_flow.parquet"
 OUT_MD = ROOT / "output/london_obk_flow.md"
 
 # non-holdout tape only — the six sealed 2023/24 files are NOT read
+# Retained for the record of what the original run consumed. The live file list now
+# comes from _fp.fit_span_files(), which excludes the six sealed holdout files by name
+# rather than relying on this literal staying correct.
 FOOTPRINT = ["footprint_q3_2025.parquet", "footprint_q4_2025.parquet",
              "footprint_jan2026.parquet", "footprint_feb_mar2026.parquet",
              "footprint_apr2026.parquet", "footprint_may_jul2026.parquet"]
@@ -57,45 +62,54 @@ PRIOR = {
 
 
 def load_delta() -> pd.DataFrame:
-    """Per-minute signed delta and volume from the aggressor-tagged tape."""
-    frames = []
-    for f in FOOTPRINT:
-        p = ROOT / "data/reference/cvd" / f
-        if not p.exists():
-            continue
-        d = pd.read_parquet(p, columns=["ts_minute", "side", "volume"])
-        frames.append(d)
-    fp = pd.concat(frames, ignore_index=True)
-    fp["signed"] = np.where(fp["side"] == "A", fp["volume"], -fp["volume"])
-    g = fp.groupby("ts_minute", sort=True).agg(delta=("signed", "sum"),
-                                               vol=("volume", "sum"))
+    """Per-minute signed delta and volume from the aggressor-tagged tape.
+
+    THREE DEFECTS FIXED 2026-08-06 (Phase 4 inventory). All predate this line and all
+    fed `output/london_obk_flow.parquet`, so that artifact and the L3 flow numbers built
+    on it need regenerating before they are quoted again:
+
+    1. **Inverted sign.** This read `np.where(side == "A", volume, -volume)`, making the
+       SELLER-aggressor positive. The convention is B - A (buyer-positive), settled
+       empirically at r = +0.7293 over 287 sessions. Every `delta_*` feature here --
+       including `delta_sweep`, the prereg's named mechanism variable -- carried the
+       wrong sign, and R^2 cannot see that.
+    2. **No band clean.** It read only `["ts_minute", "side", "volume"]`, so without
+       `price` it could not band-filter, and consumed calendar-spread and back-month
+       prints alongside the outright.
+    3. **Bypassed the chokepoint**, which is why (1) and (2) survived: the path was
+       assembled in a variable, so `test_no_direct_footprint_reads` never matched it.
+       `test_no_footprint_reads_via_a_variable_path` now catches that shape.
+    """
+    d = _fp.load_footprint(_fp.fit_span_files(), _fp.cached_front_month_bands(),
+                           report=False)
+    delta = _fp.signed_delta(d, by=("ts_minute",)).rename("delta")
+    vol = d.groupby("ts_minute").volume.sum().rename("vol")
+    g = pd.concat([delta, vol], axis=1)
     g.index = g.index.tz_convert("America/New_York")
     return g
 
 
 def load_depth() -> pd.DataFrame:
-    """Per-minute at-price book metrics. At-price reads ONLY (canon finding 2a9c221)."""
-    bid_sz = [f"bid_sz_{i:02d}" for i in range(10)]
-    ask_sz = [f"ask_sz_{i:02d}" for i in range(10)]
-    rows = []
-    for f in sorted(DEPTH_DIR.glob("*.csv")):
-        try:
-            d = pd.read_csv(f, usecols=["ts_event"] + bid_sz + ask_sz)
-        except Exception:
-            continue
-        b, a = d[bid_sz].to_numpy(float), d[ask_sz].to_numpy(float)
-        bt, at = b.sum(1), a.sum(1)
-        rows.append(pd.DataFrame({
-            "ts": pd.to_datetime(d["ts_event"], utc=True),
-            "bid_wall": b.max(1) / np.maximum(np.median(b, axis=1), 1e-9),
-            "ask_wall": a.max(1) / np.maximum(np.median(a, axis=1), 1e-9),
-            "book_imb": bt / np.maximum(bt + at, 1e-9),
-        }))
-    if not rows:
-        return pd.DataFrame()
-    out = pd.concat(rows, ignore_index=True).drop_duplicates("ts").set_index("ts")
-    out.index = out.index.tz_convert("America/New_York")
-    return out.sort_index()
+    """Per-minute at-price book metrics. At-price reads ONLY (canon finding 2a9c221).
+
+    FIXED 2026-08-06: this indexed the book by `ts_event`, which the extraction FLOORS
+    to the minute -- the row labelled T is the book at ~T+59.9s (`ts_recv` carries the
+    truth). Combined with the `searchsorted(..., "right") - 1` below, an entry at minute
+    M took the row labelled M and therefore the book as it stood ~60 seconds AFTER the
+    decision. A one-minute lookahead on `book_imb` and `wall_ratio_opp`, invisible to
+    every downstream check. `src.engine.book` indexes by true observation time.
+    """
+    D = _book.load_depth(depth_dir=DEPTH_DIR, tz="America/New_York")
+    bsz = D[_book.BID_SZ].to_numpy(float)
+    asz = D[_book.ASK_SZ].to_numpy(float)
+    bt, at = bsz.sum(1), asz.sum(1)
+    return pd.DataFrame({
+        "bid_wall": bsz.max(1) / np.maximum(np.median(bsz, axis=1), 1e-9),
+        "ask_wall": asz.max(1) / np.maximum(np.median(asz, axis=1), 1e-9),
+        # kept as the historical bid-share in [0,1] rather than the [-1,1] form, so the
+        # column means what the prereg declared. src.engine.book.features gives imb_L*.
+        "book_imb": bt / np.maximum(bt + at, 1e-9),
+    }, index=D.index).sort_index()
 
 
 def attach(T: pd.DataFrame, delta: pd.DataFrame, depth: pd.DataFrame) -> pd.DataFrame:

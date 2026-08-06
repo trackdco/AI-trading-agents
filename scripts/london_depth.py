@@ -72,9 +72,23 @@ def depth_at(dep, minute, entry, direction):
         w = below.loc[below["size"].idxmax()]
         f["dep_wall_below_d"] = float(entry - w.price)
         f["dep_wall_below_sz"] = float(w["size"])
+    # BIASED — DO NOT READ AS FLOW (flagged 2026-08-06, Phase 4 inventory).
+    # This is the NET depth change across two snapshots five minutes apart, and the
+    # London depth extraction retains one row per minute out of a median 23,654 book
+    # events. So this differences across ~118,000 unobserved additions, cancellations
+    # and executions and keeps only the residual. Cont-Kukanov-Stoikov's identity is
+    # that a market sell and a cancelled buy of the same size have the SAME effect on
+    # the queue, so a net change cannot separate "book building" from "cancellations
+    # happened to net positive" — which is exactly the reading
+    # docs/PREREG-london-depth-pass.md §62 declares for the BUILD arm.
+    # Kept because a committed artifact (output/london_obk_depth.parquet) already
+    # contains it; it must not be used as a flow proxy without that caveat attached.
+    # The sound alternative at this resolution is a book LEVEL, not a book DIFFERENCE:
+    # see src/engine/book.py.
     b5 = dep[dep.ts <= minute - pd.Timedelta(minutes=5)]
     if not b5.empty:
-        f["dep_thick_d5m"] = f["dep_thick"] - b5[b5.ts == b5.ts.max()]["size"].sum()
+        f["dep_thick_d5m_BIASED"] = f["dep_thick"] - b5[b5.ts == b5.ts.max()]["size"].sum()
+        f["dep_thick_d5m"] = f["dep_thick_d5m_BIASED"]   # legacy name, same value
     return f
 
 

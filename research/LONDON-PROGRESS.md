@@ -78,7 +78,9 @@ different deflation bars. §2.4's effective-trial clustering puts the truth betw
 | Redundancy detector (same-session) | BUILT — scripts/pairwise_overlap.py (--demo, --self-test) |
 | Cross-portfolio battery | BUILT — scripts/correlation_battery.py; NY↔old-London measured (−0.09/−0.11) |
 | Validation process doc | WRITTEN + 6 education-round amendments; bars [PROPOSED] — Brake reviews knobs, Angus ratifies. **+2 checks landed 2026-08-06:** §2.5 window causality (with the per-condition window table in the §1 prereg template) and §2.5 control admissibility |
-| Window-causality check | **BUILT** — `src/validation/window_causality.py`, pinned by `tests/test_window_causality.py`. Call `assert_causal()` in the census script beside `fit_only()` |
+| Window-causality check | **BUILT** — `src/validation/window_causality.py`, pinned by `tests/test_window_causality.py`. Call `assert_causal()` in the census script beside `fit_only()`. **Known limit:** it audits DECLARED windows and cannot detect a mislabelled timestamp — see the depth finding below |
+| Book feature layer (instantaneous) | **BUILT** — `src/engine/book.py` is the depth chokepoint (companion to `footprint.py`). Multi-level depth imbalance, book pressure, weighted mid + tilt, avg order size, spread/reach. Validated by `scripts/book_feature_validation.py`, pinned by `tests/test_book_construction.py` |
+| OFI (order flow imbalance) | **NOT BUILT — BIASED at this resolution.** `docs/FINDING-london-depth-timestamp-lookahead.md` and `src/engine/book.ofi_proxy` carry the reasoning. Needs event-level MBP-10 (a purchase) to become VALID |
 | Vault schema | WRITTEN — Pat builds mechanism (Obsidian) |
 | Education round (3 reference docs) | DONE — research/findings/ (elite-quant ops, math canon, strategy-class evidence) |
 | DSR/PBO models | BRAKE — in flight; effective-trial clustering note in §2.4 for him |
@@ -94,6 +96,33 @@ different deflation bars. §2.4's effective-trial clustering puts the truth betw
 - New candidate ideas → thesis to Angus first (the thesis gate).
 
 ## Session log (newest first)
+
+- **2026-08-06 (Phase 4)** — Flow-feature inventory and build. No trials charged, no P&L,
+  no rule proposed. **Triage** (`orderflow-construction` taxonomy): 9 VALID, 3 BIASED,
+  6 NOT CONSTRUCTIBLE. **OFI is BIASED, not "not constructible"** — computable here, but
+  differencing spans a median 23,654 discarded book events, and CKS's own identity (a
+  market sell and a cancelled buy have the same effect on the queue) means it understates
+  gross flow, conflates cancellation with execution, and can carry the wrong sign, which
+  R² cannot see. Event-level MBP-10 for the window would make it VALID — a purchase, not
+  a code change. **Built** the sound instantaneous set behind a new chokepoint
+  (`src/engine/book.py`): multi-level depth imbalance L1–L10, book pressure, weighted mid
+  + tilt, average order size (the `*_ct_*` fields were present on all 295 days and unused).
+  **Construction validation ran before any edge question** and is the honest result:
+  tape delta clears its contemporaneous check at **r = +0.6029** (the positive control,
+  and an independent re-confirmation of B−A), while every book LEVEL sits **inside the
+  shuffle null** on the forward probe and is **residual-dominant on the time-shifted
+  placebo** — r(F, ret_now) = −0.164 against r(F, ret_next) = −0.007 for `imb_L10`. These
+  are honest columns measuring mostly memory. **Four defects found:** (i) the depth
+  `ts_event` is floored to the minute, so every consumer indexing on it reads the book
+  ~60s after the decision — `docs/FINDING-london-depth-timestamp-lookahead.md`, and it
+  incidentally CONFIRMS the ATC bar-label correction rather than overturning it;
+  (ii) `london_obk_flow.py` carried the inverted delta sign, no band clean, and the 60s
+  depth lookahead — fixed, artifact needs regenerating; (iii) `dep_thick_d5m` is a shipped
+  BIASED feature declared as the `BUILD` arm in `PREREG-london-depth-pass.md` — correction
+  appended to that prereg, column renamed with the caveat attached; (iv) the footprint
+  chokepoint test had a hole (inline paths only) and was passing vacuously on exactly the
+  file carrying the sign defect — replaced with AST taint analysis after the first widened
+  version threw 3 false positives out of 4.
 
 - **2026-08-06 (later)** — Two process checks landed, no trials charged. **§2.5 window
   causality**: the standing causality rule was always audited per COLUMN, and three

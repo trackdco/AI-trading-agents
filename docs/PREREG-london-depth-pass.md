@@ -109,3 +109,49 @@ particular spec.
 
 `scripts/london_obk_depth.py`, `output/london_obk_depth.md`, trials to
 `output/trial_ledger.parquet`, `research/FUNNEL.md` refreshed.
+
+---
+
+## CONSTRUCTION CORRECTION — the `BUILD` check is a BIASED measure (2026-08-06)
+
+**Recorded after the fact, against a prereg that is otherwise unchanged.** This does not
+respecify anything: the declared check stays as declared and any result already computed
+under it stands as computed. It records what the check can and cannot mean.
+
+`BUILD = dep_thick_d5m > 0`, read as *"book building, not pulling"*, is a **net depth
+change across two snapshots five minutes apart**. The London depth extraction keeps one
+row per minute out of a median **23,654 book events** (p75 33,606), so this differences
+across roughly **118,000 unobserved additions, cancellations and executions** and retains
+only the residual.
+
+Cont-Kukanov-Stoikov's identity is the reason that residual cannot carry the intended
+meaning: **a market sell and a cancelled buy of the same size have identical effect on
+the queue.** A net change therefore cannot separate
+
+- book building (the declared reading), from
+- cancellations that happened to net positive, from
+- executions on the opposite side,
+
+and it can carry the opposite sign to true integrated order flow. Under the
+`orderflow-construction` taxonomy this is the **BIASED** class -- computable, stable,
+reproducible, and measuring something other than its name. It is not NOT-CONSTRUCTIBLE
+and it is not merely noisy.
+
+**Consequences, stated rather than fixed:**
+
+- `dep_thick_d5m` is now emitted as `dep_thick_d5m_BIASED` with the legacy name retained
+  as an alias (`scripts/london_depth.py`), so the caveat travels with the column.
+- `output/london_obk_depth.parquet` contains a `BUILD` column built from it. Any reading
+  of that column must carry this note.
+- `src/canon/features.py` computes the identical quantity on the NY side. Stated as a
+  fact; not analysed here, which is London-scoped.
+
+**What would make it VALID:** event-level MBP-10 for the window -- the same Databento
+schema, unsampled. A purchase, not a code change. At event resolution the quantity CKS
+define is directly computable and the identity above stops being a confound.
+
+**The sound alternative at this resolution is a book LEVEL, not a book DIFFERENCE.**
+Levels survive coarse sampling; interval differences do not degrade, they become a
+different quantity. `src/engine/book.py` provides the level forms (multi-level depth
+imbalance, book pressure, weighted mid) with construction validation in
+`scripts/book_feature_validation.py`.
