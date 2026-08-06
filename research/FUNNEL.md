@@ -456,7 +456,37 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
   pre-open day → no entries until 09:30") was vetoing every London trigger on a US data day —
   408 of 409 such releases land at 08:15 ET or later, hours after the London trade is flat.
   1,086 candidates on 34 sessions. Scoped off for London; a UK/EU stand-down is owed at L4.
-- NEXT: **L3 — features + trial.** Depth, tape, VWAP geometry, every old London check
+- **L3 COMPLETE (features + trial + null).** Feature matrix gated: 39 columns reproduce
+  `london_matrix` to 1e-6 on matched fills. Depth resolved 100%.
+- **DEPTH ANCHOR MOVED TO ORDER PLACEMENT (ANGUS).** Both fill-anchored reads are invalid
+  for a limit strategy: the fill-bar CLOSE contains the answer (worth +19.0pp on `W` vs
+  +8.2pp honest — `research/findings/LDN-depth-read-one-bar-late.md`), and the fill-bar
+  OPEN is adverse BY CONSTRUCTION because a limit fill requires price to travel toward us.
+  At-fill book state was never actionable anyway — you cannot cancel an order at the
+  instant it fills. The tradeable anchor is the trigger candle's close.
+- **NULL PASSES BOTH DECLARED BARS** (1,000 shuffles within era, whole 49-candidate search
+  re-run, both bars committed before any p-value existed):
+  family-wise max \|WR gap\| observed **24.7%** vs null median 7.7% / 99th 13.4%,
+  **p=0.0000**; 2026 alone observed **24.3%** vs null 99th 22.5%, **p=0.0050**.
+- **BUT GRADE EACH CANDIDATE AGAINST THAT SAME DISTRIBUTION — this is the real result:**
+
+  | candidate | gap | vs null median 7.7% | verdict |
+  |---|---:|---|---|
+  | `room_ahead_R` | **24.7%** | 3.2x | **clears decisively** |
+  | `ROOM` (band form) | 12.8% | 1.7x | marginal |
+  | `W` @ order placement | 8.2% | **1.06x** | **noise-level** |
+  | `FAR` @ order placement | 7.6% | **0.99x** | **noise-level** |
+  | `ASIA` | -1.7% | — | fails era-consistency |
+
+- **DEPTH AND FLOW ARE NOT ESTABLISHED FOR LONDON.** `W`/`FAR` survived the era screen and
+  then landed on the null median. Negative result, recorded as one — and the clean version
+  of a negative, versus shipping a +19pp `W` that was reading the future.
+- **THE ONE REAL DISCRIMINATOR IS `room_ahead_R`, and it is a BARS feature** — no book, no
+  tape, no timestamp judgement, structurally immune to the defect class that ate this rung.
+  **Direction is backwards from intuition: the gap is NEGATIVE.** More room to the
+  target-side overnight extreme is 24.7pp WORSE. Consistent with the canon's own ROOM band
+  excluding the high tail.
+- NEXT: **L4 — policy.** Depth, tape, VWAP geometry, every old London check
   (W/FAR/ROOM/ASIA) re-derived from scratch at re-derived thresholds, with a family-wise
   permutation null. The NY rebuild killed 4 of its checks and demoted 5 more; the prior is
   that London loses checks too.
