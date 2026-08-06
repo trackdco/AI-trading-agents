@@ -1016,17 +1016,33 @@ def build_ny_live(cfg: dict, alerts: LaunchAlerts, log, arm: bool = False,
 
     wu = sc.get("warmup", {}) or {}
     if wu.get("parquet"):
-        hist = pd.read_parquet(wu["parquet"])
+        hist_all = pd.read_parquet(wu["parquet"])
         # reference parquet is NY-tz; live bars are UTC. Mixed zones make ts_event
         # object-dtype and the first feature_row raises — normalize on the way in.
-        hist = hist.assign(ts_event=pd.to_datetime(hist.ts_event, utc=True))
+        hist_all = hist_all.assign(ts_event=pd.to_datetime(hist_all.ts_event, utc=True))
         sess = pd.Timestamp(wu.get("session", today), tz=NY)
         lo = sess - pd.Timedelta(days=int(wu.get("warmup_days", 20)))
-        hist = hist[(hist.ts_event >= lo.tz_convert("UTC"))
-                    & (hist.ts_event < sess.tz_convert("UTC"))]
+        hist = hist_all[(hist_all.ts_event >= lo.tz_convert("UTC"))
+                        & (hist_all.ts_event < sess.tz_convert("UTC"))]
         fp = pd.read_parquet(wu["footprint"]) if wu.get("footprint") else None
         live.warm(hist, fp)
         log.info("warm start: %d bars", len(hist))
+        if hist.empty:
+            # 2026-08-05 review: a `warm start: 0 bars` line only ever landed in
+            # ny_run.log, which nobody tails live — this went unnoticed until day-one
+            # levels were already visibly wrong. A stale reference parquet (its newest
+            # bar older than warmup_days before today's session) produces exactly this:
+            # an empty window, silently. This never guesses a fix — trading proceeds
+            # exactly as before (cold indicators are the existing behavior) — it only
+            # makes the gap loud enough to catch BEFORE the session, not after.
+            newest = hist_all.ts_event.max() if not hist_all.empty else None
+            where = (f"newest reference bar is {newest} — {wu['parquet']} needs a refresh"
+                     if newest is not None else f"{wu['parquet']} itself has no rows")
+            alerts.say(f"WARN warm start got 0 bars for session {sess.date()} ({where}). "
+                      "Day-one levels are running COLD, not calibrated off recent "
+                      "history — signal quality for the early session is unverified.")
+            log.warning("warm_start_empty session=%s newest_reference_bar=%s",
+                       sess.date(), newest)
     return live
 
 

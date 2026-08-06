@@ -906,6 +906,71 @@ def test_spine_evidence_instrument_never_arms_with_the_real_broker(tmp_path, mon
         live.instrument.spine.broker.submit_bracket(None)   # proves it cannot reach a real order
 
 
+# ---------------------------------------------------------------- warm-start staleness
+def test_warm_start_empty_window_pages_a_loud_alert(tmp_path):
+    """2026-08-05 review: a stale reference parquet (its newest bar older than
+    warmup_days before the session) produces a silently EMPTY warm-start window --
+    `warm start: 0 bars` used to only reach ny_run.log, which nobody tails live. Day-one
+    levels then ran cold with nobody told until it showed up as bad early-session
+    signals. This never guesses a fix (trading proceeds exactly as before) -- it only
+    makes the gap loud enough to catch BEFORE the session, not after."""
+    import logging
+
+    import scripts.ny_run as nr
+
+    pq = tmp_path / "ref.parquet"
+    pd.DataFrame({
+        "ts_event": pd.to_datetime(["2026-07-01 14:30:00"], utc=True),
+        "open": [18_000.0], "high": [18_005.0], "low": [17_995.0],
+        "close": [18_000.0], "volume": [10.0],
+    }).to_parquet(pq)
+
+    said = []
+
+    class _Alerts:
+        def say(self, text):
+            said.append(text)
+
+    live = nr.build_ny_live(
+        {"feed": {"sierra": {"data_dir": str(tmp_path), "scid": str(tmp_path / "x.scid"),
+                             "warmup": {"parquet": str(pq), "warmup_days": 5,
+                                       "session": "2026-08-06"}}},
+         "paths": {}, "account": {"equity": 50_000.0}, "ny": {"buffer": 2_000.0}},
+        alerts=_Alerts(), log=logging.getLogger("t"))
+    assert any("0 bars" in s and "WARN" in s and "2026-07-01" in s for s in said)
+    assert live.ingestor.bars_frame().empty
+
+
+def test_warm_start_with_bars_in_window_is_silent(tmp_path):
+    """The healthy case: the reference parquet's data reaches into the warmup window --
+    no alert, and the bars actually reach the ingestor."""
+    import logging
+
+    import scripts.ny_run as nr
+
+    pq = tmp_path / "ref.parquet"
+    pd.DataFrame({
+        "ts_event": pd.to_datetime(["2026-08-03 14:30:00"], utc=True),
+        "open": [18_000.0], "high": [18_005.0], "low": [17_995.0],
+        "close": [18_000.0], "volume": [10.0],
+    }).to_parquet(pq)
+
+    said = []
+
+    class _Alerts:
+        def say(self, text):
+            said.append(text)
+
+    live = nr.build_ny_live(
+        {"feed": {"sierra": {"data_dir": str(tmp_path), "scid": str(tmp_path / "x.scid"),
+                             "warmup": {"parquet": str(pq), "warmup_days": 5,
+                                       "session": "2026-08-06"}}},
+         "paths": {}, "account": {"equity": 50_000.0}, "ny": {"buffer": 2_000.0}},
+        alerts=_Alerts(), log=logging.getLogger("t"))
+    assert not any("warm start" in s.lower() for s in said)
+    assert len(live.ingestor.bars_frame()) == 1
+
+
 # ---------------------------------------------------------------- trade-level alerts
 def test_disarmed_run_stays_silent_on_placements_and_fills(live):
     """Shadow/practice runs must not page anyone's phone — only a placement FAILURE is
