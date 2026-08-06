@@ -396,3 +396,51 @@ settled.** The head-to-head below is what settles it.
 Objective stays profit factor at strict cost with max drawdown beside it. Era- and
 half-consistency required. The L3 null keeps both declared bars from §8 (family-wise
 p ≤ 0.01 AND 2026 clearing independently). **No holdout look is spent by any of this.**
+
+---
+
+## 10. L4 — policy, declared before the run (ANGUS 2026-08-05)
+
+> *"lets also look at displacement + flow confirms actually. i feel like we also arent
+> using flow to its full capability to validating trades. we need to look from different
+> angles given we are changing the entire entry mechanism basically"*
+
+**Two arms, both named before any L4 number exists:**
+
+- **A-FADE** — E3 rejection blocks. The only positive cell in the build (PF 1.08,
+  +$2,988, maxDD $4,270) and where `room_ahead_R` passed its null twice at p=0.0000.
+- **A-DISP** — E3 displacements gated on `trig_delta_conf` (the closed trigger candle's
+  delta agrees with direction). The only flow gate that moved both eras the same way
+  (0.93→1.05, 0.69→0.75).
+
+Both use the **limit** entry. The market-entry arms (EC/E4) are not carried into L4:
+EC PF 0.80 and E4 PF 0.76 against E3's 0.91, and the split showed the loss comes from
+re-pricing trades that would have retested. Recorded as a measured negative, not a
+preference.
+
+### 10.1 Phase 1 — risk geometry (no engine re-run; a filter over existing outcomes)
+
+Declared sweep: risk floors at **0 / 5 / 7 / 9.5 / 12 / 15 pt**, crossed with
+`room_ahead_R` terciles. Scored on **PF at 1 lot, costs in**, with max drawdown beside it.
+
+**Survival requires PF > 1.0 in BOTH eras**, n ≥ 30 per era cell. Pooled PF does not
+qualify a cell (§5.11.4). Every cell to the ledger.
+
+### 10.2 Phase 2 — IN-TRADE FLOW, the angle never run for London
+
+§5.11.9c requires it and §5.12.10 records the reason: on the shipped canon **flow at entry
+was a rounding error while flow inside the trade was decisive.** Every flow test in this
+build so far — `trig_*`, `d5/d15/d30`, `fill_delta`, `cvd_ASIA` — is measured **at or
+before entry**. The class the canon says actually works has never been measured here.
+
+Declared features, all computed from the tape strictly between fill and exit:
+`cvd_since_fill` (direction-signed), `flow_flip` (delta turns against the trade and stays),
+`t+3 / t+5 / t+15` delta confirmation, and `mfe_at_flip` (excursion at the moment flow
+turns). These are **management** signals, not entry gates, and they are scored as exit
+arms — an entry filter cannot use them.
+
+### 10.3 Bars
+
+Nothing promotes on in-sample rank (§6.0.1). Any surviving cell owes a family-wise
+permutation null on the full L4 search under §8's two bars before it is called a result.
+**No holdout look is spent by Phase 1 or Phase 2.**
