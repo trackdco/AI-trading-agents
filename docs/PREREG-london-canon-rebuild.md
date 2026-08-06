@@ -120,6 +120,71 @@ Consequences, stated so nothing is quietly lost:
 - `scripts/build_l0_triggers_london.py` keeps the `--band` switch. It is not deleted,
   because deleting it would hide that the question was asked. It is simply not run.
 
+## 3.1 AMENDMENT — the position is the SETUP, not the trigger (ANGUS 2026-08-05, at L1)
+
+> *"big thing is overlapping entries. for example if it broke the 1 minute bb ma, and then
+> 3 minute as well after the 1 minute filled, it should not double up on the same trade...
+> i dont scale my entry just because it broke the MA on multiple time frames
+> sequentially."*
+
+**This is a defect in the L1 population, not a refinement.** L1 walks every trigger
+independently so execution capacity cannot shape the population — correct — but one move
+through a BB basis trips the 1-minute, then the 2-minute, then the 3-minute, and L1
+counted that as three trades. The detector has always resolved **simultaneous** multi-TF
+collisions ("highest TF wins", §1 MTF arbitration). **Nothing ever resolved sequential
+ones.**
+
+Measured on the fit span before any rule was written:
+
+| same-direction fill following an earlier one | share |
+|---|---:|
+| within 5 min and 2 pts | 52.1% |
+| within 15 min and 5 pts | 73.9% |
+| **sharing an actual cluster LEVEL, within 15 min** | **97.7%** |
+
+They are structurally the same setup, not merely adjacent in price.
+
+**THE RULE, declared — a fill joins an OPEN setup when, in the same day and direction, it
+lands within 15 minutes of that setup's FIRST fill AND either shares a cluster level name
+with it, or fills within 5 points of it.** Window runs from the setup's first fill, never
+its latest, so a chain cannot extend a setup indefinitely. Thresholds: 15 min because the
+entry timeframes span 1–5 minutes and a cluster re-trips within a few bars; 5 points
+because that is about one median intended stop (4.00 pt).
+
+**Effect: 7,239 fills → 1,804 setups, 6.8 per session. 75% of the fill population was the
+same trade counted again.** Only 20.5% of setups are singletons; the median setup collapses
+3 triggers, the largest 18.
+
+**Tie-break — which member of the setup is actually traded. Two arms, both recorded,
+neither enforced here:**
+
+- **`setup_first` — the earliest fill. DEFAULT, on causality.** At the moment the 1-minute
+  fills you do not yet know a 3-minute is coming, so taking it needs no foreknowledge and
+  no waiting. Same principle as the L4 burn-list rule *"first-N-clearing, never
+  best-of-day"*.
+- **`setup_htf` — the highest timeframe in the setup. DECLARED CHALLENGER.** Live it
+  requires standing aside for an arbitration window and may select a fill that has already
+  happened. **Its causality must be proven before it can be traded**, and it does not
+  displace the default on in-sample rank (§6.0.1).
+
+The two arms trade the **same setups** and differ only in which entry is used:
+
+| arm | n | /session | timeframe mix | median risk |
+|---|---:|---:|---|---:|
+| as walked (no dedup) | 7,239 | 27.4 | 1m 22% · 2m 25% · 3m 28% · 5m 25% | 4.00 pt |
+| **`setup_first`** (default) | 1,804 | 6.8 | 1m 31% · 2m 29% · 3m 22% · 5m 19% | 4.75 pt |
+| `setup_htf` (challenger) | 1,804 | 6.8 | 1m 7% · 2m 9% · 3m 19% · **5m 65%** | 6.00 pt |
+
+Pattern mix is unchanged between them (B2 59–60%, B 33–34%, A 7–8%), so the tie-break is a
+pure entry-quality question for L2 and not a different strategy.
+
+**Consequence for §5.11.2:** the event-universe item is closed at L1 by this plus the
+timeframe/pattern/cancel tables on the L1 card. The population definition is now the setup.
+
+Implementation: `scripts/l1_london_dedup.py` → `output/l1_fills_london_fit_dedup.parquet`.
+Nothing is enforced in that file; both tie-breaks are boolean columns beside the untouched
+population, exactly as the cancel policies are.
+
 ## 4. Census kill line — declared before the numbers are read (§5.9.1)
 
 L0 is a census. **It can only kill on the premise, never on expectancy.** This family
