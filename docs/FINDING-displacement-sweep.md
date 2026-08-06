@@ -153,13 +153,48 @@ belong on the limit leg is an open question for the EC run (rejection-block limi
 outcomes re-trialed with features frozen at T, vs their market-at-close
 counterfactual, riskband-stratified) — not a settled premise.
 
-## 7. Depth at the causally clean decision point
+## 7. Depth at the causally clean decision point — the standout of the sweep
 
 *The sweep's depth agent completed its harness but was cut off before reporting;
-the trial was re-run directly from its script
-(`scratchpad/honest_disp_depth.py` → results below).*
+the trial was re-run directly from its script. Coverage: 19,131/19,137 walked;
+18,822 in the risk≥2pt population; 16,969 depth-evaluable (892 rows on days with
+no fit depth file + 1,025 with no T−1 snapshot are EXCLUDED, never zero-filled).
+Convention: snapshot = archive row minute T−1 (the book at the close), features vs
+the displacement entry price, W/D/WALLSZ built exactly as `l3_check_trial`.*
 
-**PENDING — this section is filled by the re-run.**
+**Verification status: harness code-reviewed and rerun; an independent
+adversarial recompute is in flight (the sweep's verifier for this family never
+ran). Corrections, if any, will be amended here.**
+
+| check | arm | cell (sess·era) | lift | verdict |
+|---|---|---|---|---|
+| **W** | 2R | pre·25 / pre·26 | −0.230 / +0.355 | **DEAD — era sign-flip, both arms** (hold +0.863/−1.284; n_on only 150/59) |
+| **D** | 2R | gold·25 / gold·26 | +0.108 / +0.674 | **gold-only VETO** — see below |
+| **D** | hold | gold·25 / gold·26 | +0.750 / +0.980 | |
+| **WALLSZ** | 2R | pre +0.154/+0.068 · gold +0.061/+0.278 | | **positive in ALL 8 cells** |
+| **WALLSZ** | hold | pre +0.446/+1.064 · gold +0.245/+0.504 | | |
+
+- **WALLSZ is the sweep's most consistent signal**: positive in both sessions ×
+  both eras × both arms, on balanced cells (smallest side n=595). A large resting
+  wall (size ≥7) *ahead* of the displacement at the close marks better trades
+  everywhere we can measure. Lifts are first-order cost-invariant (costs hit both
+  sides of the cut equally). Joins the ≥7pt risk floor at the top of the
+  candidate list, pending verification. Open: is 7 a magic threshold? (needs the
+  monotone-support test per the threshold rule).
+- **D reads as a rare stand-down, gold only**: D is on for ~97% of gold rows; the
+  lift is entirely the ~3% off-cohort, which is disastrous era-consistently
+  (2026 off: 2R meanR −0.583, hold −0.820). No visible level ahead at the close =
+  do not trade. Pre-session D flips sign — gold-scope only. Small off-cohort
+  needs a day-clustering check before freezing.
+- **W is dead here too**, completing its obituary: it failed honest measurement
+  at limit fills (`docs/FINDING-depth-lookahead.md`) and fails again on the
+  displacement population.
+- **The contrast that matters:** at limit fills, honest W/WALLSZ died and D
+  halved. At the causally clean close, WALLSZ is era-consistent everywhere and D
+  survives as a veto. The depth family's information lives *at the close* — which
+  squares with the archive's own semantics: the end-of-minute book IS the book at
+  the close. The decide-at-the-candle law (`docs/SPEC-EC-entry-matrix.md`) turns
+  the depth archive from a lookahead bug into a correctly-timed instrument.
 
 ## 8. Standing rules
 
