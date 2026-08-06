@@ -662,6 +662,43 @@ caught it:
    conviction-sizing arm. "We need to test these strategies far deeper
    before trading them against agents."
 
+10. **THE STRATEGY-AWARENESS LAW** [ANGUS 2026-08-06: "it should always
+   be strategy aware. easy thing to look at moving forward"]. An agent
+   handed a strategy must be briefed on HOW THAT STRATEGY WORKS, not
+   merely on its entry/exit rules and its validation numbers. A rulebook
+   states what to do; it does not state what the trade FEELS like, and an
+   agent reasoning from generic trading instinct will systematically
+   mis-handle any setup whose mechanics run against that instinct.
+   REQUIRED IN EVERY AGENT SPEC, per strategy the agent runs:
+   (a) MECHANISM — what the edge actually is, and therefore which
+   conditions are the SETUP rather than a warning. (A mean-reversion fade
+   only fires when flow is one-sided against it; an agent calibrated for
+   continuation reads its own entry condition as a veto.)
+   (b) TEMPO — how long the trade lives and when it peaks, inferred from
+   the spec's own geometry (target distance, scratch clock), never from
+   fit-span outcome statistics. Management tempo that pays on a slow
+   engine destroys a fast one.
+   (c) DEFAULT MANAGEMENT IN FULL — every standing order the shipped book
+   carries (partials, trails, scratches), disclosed at signal and in the
+   position state, so that touching a position does not silently discard
+   management the agent never knew it had.
+   (d) PER-ENGINE SEPARATION — when an agent runs more than one strategy,
+   each gets its own (a)-(c). A single blended briefing guarantees the
+   heuristics of the dominant engine leak onto the other.
+   WHY THIS IS LAW: all three calibration defects found in the NYA-IBC-01
+   live-sim desk run were this class, not agent error — an inherited
+   partial the desk was never told about (cost: the two largest losses in
+   the first block), fade mechanics that made it veto the IB model on its
+   own entry condition (cost: ~50% of leg A declined, $977 net), and a
+   tempo mismatch that made it manage a 2-minute trade like a 4-minute
+   one (cost: 100% of the shelf management drag, -$1,313 over 7 touched
+   trades). None were visible in P&L alone; each was found by reading the
+   agent's own written reasoning. AUDIT HOOK: before any agent rung,
+   diff the agent spec against the strategy spec and confirm (a)-(d) are
+   present for every engine; after the rung, read the decision notes for
+   any signal the agent declined or mis-managed CITING A CONDITION THAT
+   IS PART OF THE SETUP — that phrase is the signature of this defect.
+
 ### 5.10 The transparency rule [ANGUS 2026-08-05]
 
 Every strategy past step 1 maintains a live data card in `research/FUNNEL.md`,
