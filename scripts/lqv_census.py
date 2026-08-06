@@ -22,6 +22,7 @@ It can kill on the premise and it makes no expectancy claim (5.9.1).
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -113,8 +114,13 @@ def main() -> int:
     rng = np.random.default_rng(SEED)
     E, C = [], []
     for i, f in enumerate(files):
-        day = "".join(ch for ch in f.name if ch.isdigit())[:8]
-        day = f"{day[:4]}-{day[4:6]}-{day[6:]}"
+        # DO NOT scrape digits: 'glbx-mdp3-20250602...' yields '32025060' because the 3
+        # in mdp3 comes first, which parsed every day as 3202-50-60 and silently returned
+        # zero events across all 295 files. Match the date shape explicitly.
+        m = re.search(r"(20\d{2})-?(\d{2})-?(\d{2})", f.name)
+        if not m:
+            continue
+        day = f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
         dep = load_day(day, ddir)
         if dep is None or dep.empty:
             continue
