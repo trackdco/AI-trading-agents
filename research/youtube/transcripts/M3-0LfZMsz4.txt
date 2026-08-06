@@ -1,0 +1,468 @@
+[0:00] Since the rise of the first popular
+[0:02] retail trading newsletters in 2008,
+[0:04] individual traders and investors have
+[0:06] been lied to on the most fundamental
+[0:08] level about the reality of building
+[0:10] profitable trading strategies. In fact,
+[0:11] the lies run so deep that a lot of the
+[0:13] retail traders watching this video have
+[0:14] probably never even tried to build their
+[0:16] own trading strategy because they've
+[0:18] been convinced the first step to making
+[0:19] money trading is buying or learning a
+[0:22] public trading strategy, something from
+[0:24] social media or a paid course. I'm
+[0:26] making this series in an attempt to
+[0:27] finally disrupt the billiondoll lie that
+[0:30] has been sold to retail traders for the
+[0:32] past 20 years by gurus, influencers, and
+[0:35] other financial info products. And to
+[0:36] equip them with the knowledge and tools
+[0:38] necessary to conceive of, build, test,
+[0:41] optimize, and deploy real, statistically
+[0:44] valid trading strategies using the real
+[0:46] institutional workflow. By the end of
+[0:48] this series, you will know how to test
+[0:49] the predictive power of any idea you
+[0:51] have with statistical rigor using
+[0:53] programming before you ever build a
+[0:55] strategy around it. You'll be able to
+[0:57] design and build programmatic trading
+[0:58] strategies around valid ideas that you
+[1:00] find. How to programmatically back test
+[1:02] your strategy over decades of data. How
+[1:04] to use code to rigorously validate and
+[1:06] stress test a strategy before you ever
+[1:08] risk dollar trading it. And how to
+[1:09] deploy that strategy only once you've
+[1:11] tested it rigorously and professionally.
+[1:13] I'd like to structure this series like
+[1:15] an academic textbook. So this first
+[1:16] video will be my motivation. Retail
+[1:18] trading and retail trading education
+[1:20] never became what they were supposed to
+[1:22] be which is in my opinion an extension
+[1:24] of the tools research and methodology
+[1:26] employed by institutions. Retail trading
+[1:28] education from the very start should
+[1:30] have been aimed at democratizing [music]
+[1:32] these things for the individual trader.
+[1:33] But instead its primary aim has always
+[1:35] been on selling strategies, signals or
+[1:37] stock picks. I'm sure virtually every
+[1:39] single retail trader has watched a
+[1:41] strategy breakdown video like this
+[1:42] before. In previous videos, I've
+[1:44] discussed alpha decay, which is the
+[1:45] process by which signals in financial
+[1:47] markets lose their predictive power over
+[1:49] time. When I explained this phenomenon
+[1:50] that is extremely well documented in the
+[1:52] financial literature, I was met with a
+[1:54] ton of blowback. This was my first time
+[1:55] realizing that retail traders are not
+[1:57] familiar with the idea that when edges
+[1:59] are made public, they cease to exist.
+[2:01] This is why real profitable alpha
+[2:03] generating trading strategies are never
+[2:05] ever shared. This goes for both
+[2:07] institutions and individuals. Hence why
+[2:09] institutions will go after even a single
+[2:11] trader who tries to run away with one of
+[2:13] their edges. So knowing this, knowing
+[2:15] that a strategy which is public cannot
+[2:17] be a winning strategy, why have retail
+[2:19] traders been convinced that this is the
+[2:20] workflow of trading? Step one, pick a
+[2:23] public strategy to learn. Choose an
+[2:24] influencer, a guru, a mentor, or a
+[2:27] course and learn somebody else's
+[2:28] pre-existing strategy. They tell you
+[2:30] that to validate this strategy, all you
+[2:32] have to do is back test it manually. And
+[2:34] all they do is site metrics like P&L,
+[2:36] average RR, and win rate on those manual
+[2:38] back tests. So, not only do they never
+[2:40] talk about programmatic back testing,
+[2:41] but they don't even tell you what to do
+[2:43] with a manual back test that you've
+[2:44] conducted. It's extremely naive. The
+[2:46] next thing they tell you to do is to
+[2:47] hone your trading psychology. People say
+[2:49] psychology and discipline is 80% of
+[2:51] trading, 90% of trading. It will make
+[2:53] trading become easy. So, once you've
+[2:55] studied and back tested and dialed in
+[2:56] your psychology, the last step is to
+[2:58] just be consistent and never give up.
+[3:00] Because the only traders that fail are
+[3:02] those who gave up. People emphasize the
+[3:04] idea of the trading journey and tell you
+[3:05] that it'll take a very long time, a lot
+[3:07] of losses to finally win. Here's what's
+[3:09] really happening. Step one [music] is to
+[3:10] force you to buy something before you
+[3:11] start. It insinuates that it's
+[3:13] impossible to start without somebody
+[3:15] else's strategy. The brutally naive
+[3:18] manual back testing is to make it
+[3:19] impossible for you to determine if the
+[3:21] guru's strategy actually has an edge.
+[3:23] They don't even begin to mention the
+[3:25] statistical tools necessary to properly
+[3:27] validate a strategy. Because of course,
+[3:28] if you had them, they couldn't sell you
+[3:30] a useless strategy. They then massively
+[3:33] emphasize trading psychology and
+[3:35] discipline to make sure it's your fault
+[3:37] if the strategy doesn't work. There's a
+[3:38] popular line in the retail trading
+[3:40] community that says that every strategy
+[3:42] works with the correct discipline and
+[3:44] psychology. If every strategy works when
+[3:46] executed with perfect discipline in
+[3:48] psychology, then why are PhDs in math
+[3:50] and physics hired for tens of millions
+[3:52] of dollars a year to [music] develop
+[3:54] strategies that will be traded on
+[3:55] computers that will be executed by
+[3:57] machines with perfect discipline and no
+[3:59] psychology? Couldn't they just deploy
+[4:01] any strategy on those machines? [music]
+[4:03] In step four, of course, be consistent.
+[4:05] The only traders who lose are those who
+[4:07] give up. I'll propose an alternative.
+[4:08] Insanity is doing the same thing over
+[4:11] and over again and [music] expecting
+[4:12] different results. Losing for a long
+[4:14] time before figuring things out is not
+[4:16] something that should happen. There
+[4:17] should be no prolonged and inexplicable
+[4:19] losing in your trading because if there
+[4:20] is, you're trading something that you
+[4:22] haven't validated. The entire retail
+[4:24] trading narrative is built around
+[4:26] extracting maximum lifetime value from
+[4:28] you. And honestly, I don't blame people
+[4:30] for buying into this at all because this
+[4:31] is all that comes up when you try to
+[4:33] research trading. Trading is the only
+[4:35] science where attempting to do research
+[4:36] online yields more YouTube thumbnails
+[4:39] with gurus and Lamborghinis than it does
+[4:41] peer-reviewed articles and textbooks. It
+[4:43] is perfectly reasonable for people to
+[4:45] fall into this. My dad is an
+[4:46] institutional trader, which gave me a
+[4:48] wildly different perspective on this
+[4:49] industry really early on. It's a story
+[4:51] for another time, but he gave me a
+[4:52] correction of course when I first
+[4:53] started trading that changed things for
+[4:55] me forever. That's ultimately what
+[4:56] turned me on to math and programming
+[4:58] [music] applications to finance and
+[4:59] steered me away from all of this stuff.
+[5:00] Had I grown up without that though, I
+[5:02] don't think it's unlikely that I would
+[5:03] have fallen into trading these guru
+[5:05] strategies and wondered what the hell
+[5:06] was going on and never gotten an answer.
+[5:08] And that's really why I started posting
+[5:09] on social media in the first place at
+[5:11] all. I saw this industry of people
+[5:12] profiting off of lying to hardworking
+[5:15] and ambitious people just continue to
+[5:17] grow and grow and just set record years
+[5:20] showing that more people are being lied
+[5:22] to and scammed out of their money than
+[5:24] ever before. while nobody did anything
+[5:26] about it. So, I started posting on short
+[5:27] form social media and I mostly started
+[5:29] by busting myths, starting to debunk a
+[5:31] lot of these crazy almost cultish lies
+[5:33] that are taught by retail trading
+[5:34] educators. And the feedback I got to
+[5:36] that was mostly people saying, "I don't
+[5:37] care if it's true or not. I just care
+[5:38] that it works and it does." So, then I
+[5:40] started coding influencers strategies. I
+[5:42] coded some strategies and ideas from
+[5:44] some really popular people like TJR, a
+[5:46] guy named Justin Worlin, and some
+[5:47] others. I showed that many of these
+[5:48] strategies and ideas perform terribly,
+[5:50] and all of them perform worse than
+[5:52] purported. And this is when I started
+[5:53] getting comments saying things like, "If
+[5:54] TJR strategy doesn't work, then what do
+[5:56] we trade? If ICT concepts don't work,
+[5:58] then what do we trade?" That's when I
+[5:59] found out that most people really think
+[6:01] that step one in trading is learning a
+[6:03] strategy. And that couldn't be further
+[6:05] from the truth. And in the past, I had
+[6:06] shown examples of old strategies of mine
+[6:08] that have now been armed out. And a lot
+[6:09] of the comments said, "How did you come
+[6:11] up with this?" The strategies I showed
+[6:13] required me to build out a bunch of
+[6:14] custom infrastructure. These weren't
+[6:15] [music] simple trades, and a lot of the
+[6:17] comments said things like that. I think
+[6:18] people were entertained by the videos,
+[6:20] but they weren't actually anything
+[6:21] actionable. And so I thought, how can I
+[6:23] show people that this is the right way
+[6:24] to do things and it's applicable for the
+[6:26] everyday retail trader, the everyday
+[6:28] retail trader who mostly trades futures
+[6:29] on properform accounts. So that's what I
+[6:31] did. I built a programmatic trading
+[6:32] strategy specifically for passing a
+[6:34] funded account challenge. If you don't
+[6:35] know about these proper challenges,
+[6:36] they're basically like a financial
+[6:37] carnival game. You have to win a certain
+[6:39] amount of money before losing a certain
+[6:40] amount of money or you lose your
+[6:41] account. I built and optimized a
+[6:43] strategy through Monte Carlo simulation
+[6:44] that had a 93% chance of passing the
+[6:46] topep account. Then I bought my first
+[6:48] ever funded account challenge and passed
+[6:50] it on my first try in the minimum number
+[6:51] of days. But of course, the two 3minute
+[6:53] videos I made on Instagram and Tik Tok
+[6:55] about how I built this Monte Carlo
+[6:57] simulation, ideated on the strategy,
+[6:59] created it, and optimized it to [music]
+[7:00] pass a prop from account challenge isn't
+[7:02] actually going to enable anybody to do
+[7:04] that. The same way that some short form
+[7:05] content about coding guru strategies
+[7:07] doesn't teach anybody how to code them,
+[7:09] or how content about my own old
+[7:10] strategies doesn't show people how to
+[7:12] build things that are similar. I've
+[7:13] realized over this last year and a half
+[7:14] that it's not possible to make the
+[7:16] difference I want to make by posting
+[7:17] short form content. I can't expect
+[7:19] people to see my short form videos and
+[7:20] go seek out a comprehensive trading
+[7:22] re-education through textbooks,
+[7:24] research, literature, and Ivy League
+[7:26] education like the one that I was able
+[7:27] to have and access to an institutional
+[7:29] trader as a dad. That's why I'm making
+[7:30] this series. I want to make it possible
+[7:32] for retail traders to build, test,
+[7:34] optimize, and deploy their own
+[7:36] strategies the right way. I want to make
+[7:38] the retail trading industry an extension
+[7:39] of the institutional trading industry,
+[7:41] which is what it should have been from
+[7:42] the start with the same tools and the
+[7:44] same methodology just made simpler and
+[7:46] more accessible to everyday people. But
+[7:47] I know that no matter how
+[7:48] comprehensively or clearly I can explain
+[7:50] that workflow, it's not going to be
+[7:52] actionable for almost anybody. I knew
+[7:54] that walking people through this process
+[7:55] in long form while I show myself coding
+[7:57] feature analyses and coding strategies
+[7:59] would be completely unactionable, just
+[8:01] like the short form content. videos of
+[8:02] me coding feature analyses or coding
+[8:04] strategies or running these strategies
+[8:06] through customuilt software for
+[8:08] validation doesn't help anybody. And
+[8:09] this was the underlying problem in my
+[8:11] short form content too. Every time I
+[8:12] showed something, people asked how to do
+[8:14] it and I had to say, "Sorry, I built
+[8:16] whatever this is. Sorry, I built this
+[8:17] strategy or I coded this feature
+[8:19] analysis or I coded this risk simulation
+[8:21] or the prop from Monte Carlo
+[8:23] simulation." I can't expect to change
+[8:24] how retail traders trade by showing them
+[8:26] things that they don't have the tools to
+[8:28] do. I realized that retail trading will
+[8:30] stay broken until retail traders have
+[8:32] the tools to build and test their own
+[8:34] strategies. And once they have that,
+[8:36] gurus aren't the only place to turn.
+[8:38] They'll be able to build their own
+[8:39] strategies privately. That's why I've
+[8:41] spent the last 7 months building this
+[8:43] infrastructure myself and packaging up
+[8:45] every single stage of the institutional
+[8:47] workflow from strategy ideation to
+[8:49] building to testing and optimization to
+[8:50] deployment. And you don't have to code a
+[8:53] single line. I call it quantpad and it's
+[8:56] the actual process [music] that
+[8:57] institutions use to create trading
+[8:59] strategies exposed end to end and made
+[9:02] operable and usable by anybody. You
+[9:04] don't start with some public edgeless
+[9:06] trading strategy. You start in the same
+[9:08] place that institutions start with an
+[9:10] idea, a feature or features that you can
+[9:12] engineer using quantad. If you're not
+[9:14] familiar with that term feature in
+[9:15] quantitative finance, a feature [music]
+[9:16] can be anything from the weather to if
+[9:19] you're an ICT trader, maybe a fair value
+[9:21] app or the day volatility. Anything that
+[9:23] you think might have some sort of
+[9:24] predictive power over other financial
+[9:26] variables, you describe that idea and
+[9:28] QuampPad writes code to determine if it
+[9:30] really has any predictive value. It'll
+[9:32] pull the necessary financial data,
+[9:34] compute the features that you've
+[9:35] described, and then analyze if there are
+[9:37] any relationships there, even using
+[9:38] machine learning if you want it to. You
+[9:40] can describe any signal or confluence in
+[9:42] natural language, and Quampad will
+[9:43] determine whether it affects market
+[9:45] behavior, how strong that relationship
+[9:46] is, and under what conditions it breaks
+[9:48] down or thrives. Once and only once an
+[9:50] idea shows statistical evidence of an
+[9:52] edge, you can start building a real
+[9:54] executable [music] programmatic trading
+[9:56] strategy around it using a gentic AI to
+[9:58] make every aspect of Quampad truly
+[10:00] plug-and-play. The strategies are
+[10:01] implemented in Trading Views Pinescript,
+[10:03] which means you don't have to do any of
+[10:04] the stuff you'd have to do if the
+[10:05] strategies were coded in Python or C++,
+[10:07] for example. The LLMs that code in
+[10:09] Pinescript are fine-tuned specifically
+[10:11] for developing quantitative trading
+[10:12] strategies in Pinescript. Not only that,
+[10:14] but they also have access to a bunch of
+[10:16] tools that make the strategy development
+[10:18] process so much easier and so much
+[10:20] better than if you actually just tried
+[10:22] to code it with one of the frontier
+[10:23] models like chachypt. I won't get into
+[10:24] the weeds on this, but you can compare
+[10:26] for yourself quad versus any frontier
+[10:28] model like claude or chatpt or anything
+[10:31] for coding pine script and you'll see
+[10:33] the difference. I'm really really proud
+[10:34] of it. This AI can build really
+[10:36] complicated stateful strategies with
+[10:38] dynamic risk protocol, lots of
+[10:40] confluences and all sorts of things
+[10:41] going on. And if you insist on trading a
+[10:43] discretionary strategy, it's also very
+[10:45] proficient in creating indicators.
+[10:47] Indicators can compute and visualize
+[10:49] features that you found on the ideation
+[10:50] page so that there's no human error in
+[10:52] the data processing process. And if
+[10:54] you're trying to build a human in the
+[10:55] loop trading system, you can create
+[10:56] indicators that give you entry and exit
+[10:58] signals based on your entire strategy,
+[10:59] but you make the final call to accept or
+[11:01] reject trades based on discretion. And
+[11:03] again, the strategies and indicators are
+[11:04] written in Trading View's PineScript
+[11:06] language. So you literally just copy
+[11:07] them from Quantpad to Trading View and
+[11:09] they're on your chart. You're not
+[11:10] setting up a Python environment or
+[11:12] interfacing C++ code with a notification
+[11:14] API or anything like that. The barrier
+[11:16] to entry here is non-existent. I made
+[11:17] sure that everybody can use this. Then
+[11:19] comes the part that retail almost never
+[11:21] does, right, which is validating the
+[11:23] edge. Quad uses bootstrapping and Monte
+[11:25] Carlo simulation to show you the
+[11:26] distribution of possible outcomes. It
+[11:28] uses resampling to construct alternate
+[11:30] timelines of your back test and stress
+[11:31] [music] tests it. Quad has a ton of
+[11:33] really important tools for validation
+[11:34] that we're going to get into later on in
+[11:36] the series. But the important thing is
+[11:37] that it goes way beyond just determining
+[11:38] whether your back test P&L is positive
+[11:40] or negative. It answers the question of
+[11:42] how statistically confident you can be
+[11:44] in your edge, whether your back test
+[11:45] results are true edge or just luck
+[11:47] that'll get you rinsed if you deploy the
+[11:49] strategy in real life. From there,
+[11:50] Quantpad helps you determine exactly why
+[11:52] your strategy is behaving the way that
+[11:54] it does. It computes hundreds of
+[11:56] features in the background and then
+[11:57] reveals the ones to you that are
+[11:58] statistically correlated with important
+[12:00] things like your draw down, your runup,
+[12:02] and your P&L. It computes and reveals
+[12:04] invisible factors that are influencing
+[12:06] the performance of your trades, possibly
+[12:08] without you even knowing things related
+[12:09] to regime, volume, trend, volatility,
+[12:11] and a ton of other categories. And then
+[12:13] finally, deployment. If you deploy your
+[12:15] strategy live on a real account with
+[12:16] real money, you do so with an
+[12:18] understanding of the risk of that
+[12:19] strategy and the expected performance of
+[12:21] it that retail almost never has. And if
+[12:23] you trade funded accounts, QuampPad
+[12:24] treats them like institutions would,
+[12:26] like structured products with
+[12:28] probabilistic payoffs, which is the same
+[12:29] way that I treated them when I built
+[12:31] that strategy that passed the prop firm
+[12:33] first try in the minimum number of days.
+[12:34] By resampling your strategies back test,
+[12:36] it's able to simulate your odds of
+[12:38] passing a prop from account challenge.
+[12:39] You start by picking from some of the
+[12:41] most popular prop account challenges and
+[12:42] then you simulate them. So, Quamped will
+[12:44] simulate pass odds, draw downs, resets,
+[12:46] fees, and expected value over many
+[12:48] different account challenges before you
+[12:50] ever risk a dollar. This is the part I
+[12:52] want to be really clear about. Quampad
+[12:53] is not making retail traders trade
+[12:55] smarter within the existing broken
+[12:58] framework. It finally replaces that
+[13:00] framework altogether and moves retail
+[13:02] trading away from psychology and buying
+[13:04] courses from gurus and hoping that
+[13:06] something works and wondering why it's
+[13:08] not working and to hypothesis testing
+[13:10] and statistical validation and
+[13:11] datadriven decision-making. That's what
+[13:13] this whole series is about. We're going
+[13:15] to walk through the entire process that
+[13:17] institutions use from step zero to a
+[13:19] fully deployed strategy. And Quampad is
+[13:21] the tool that makes that process
+[13:22] accessible to retail and makes every
+[13:24] single thing I'm going to say actionable
+[13:26] to every viewer. This is where the
+[13:28] retail world is finally going to start
+[13:30] doing things the real way and the right
+[13:32] way. I'll be using Quampad starting in
+[13:33] the next video, which will be the first
+[13:35] lesson, but if you want to check it out
+[13:36] now, the link is in the description.
