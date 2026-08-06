@@ -77,13 +77,17 @@ CANON_BASE = 160.0
 # month instead too, i want it to be done quicker. month on month will still
 # bring us an adequate conclusion"): days inside a batch run concurrently and the
 # journal chains batch-to-batch, so batch size IS the learning granularity.
-# Wall clock is driven by how many WAVES it takes, and a wave is min(batch,
-# WORKERS) days — so monthly chaining is only faster if the worker pool can hold
-# a whole month at once. Largest month on the span is 22 days, hence WORKERS 22:
-# every calendar month runs in ONE wave, 14 waves total (~4h) vs the fortnightly
-# setup's 26 (~8h). Monthly on 10 workers would have been SLOWER (39 ragged
-# waves, ~12h) — the batch size was never the bottleneck, the pool was.
-BATCH_BY_MONTH = True
+# MEASURED CORRECTION (Angus: "if its slower maybe we should run fortnight by
+# fortnight again" — he was right). Throughput here is API-BOUND, not
+# worker-bound: at 22 concurrent CLIs turn latency measured ~28s vs ~15s at 10,
+# so a bigger pool just splits the same bandwidth into slower streams. Monthly
+# batching then compounds it, because a wave cannot close until the LONGEST day
+# in the batch finishes — waiting on the worst of 21 days (~109 turns x 28s =
+# ~50min) instead of the worst of 10. Net: monthly/22w projected ~12h vs the
+# fortnightly/10w setup that was empirically running ~30 days/hr (~8h).
+# So: 10-day batches on 10 workers. Journal chains fortnightly; REPORTING to
+# Angus stays monthly (dashboard buckets by calendar month).
+BATCH_BY_MONTH = False   # MEASURED: monthly+22w was slower, see note
 # Angus: "it takes what a dozen trades and draws the conclusion, thats way too
 # inconclusive... it should be trading like that for the first couple months
 # minimum and using the journal as documentation rather than ruling, just like i
@@ -91,7 +95,7 @@ BATCH_BY_MONTH = True
 SAMPLE_FLOOR = 40
 MAX_TURNS_DAY = 600
 CLI_TIMEOUT = 240
-WORKERS = 22
+WORKERS = 10
 MODEL = "sonnet"        # Angus: the desk runs on Sonnet — don't burn the plan
 
 DEPTH_DIRS = ["data/reference/depth_2025", "data/reference/depth_2026",
