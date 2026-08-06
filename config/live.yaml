@@ -77,6 +77,17 @@ telegram:
   enabled: true                    # true => alerts via .env creds; false => run silent
                                    #   (the runner still logs every alert to run_log)
 
+ny:                                # scripts/ny_run.py operational settings
+  agents: true                    # R15 AI agent layer ALWAYS on -- mechanical-only is not a
+                                   # valid live configuration. This is the config-level default
+                                   # (not just a --agents CLI flag) specifically because
+                                   # watchdog.ps1's auto-restart command line is fixed to
+                                   # "-m scripts.ny_run --arm" with no --agents -- without this,
+                                   # any crash-restart silently came back mechanical-only, with
+                                   # no alert that the running mode had changed. Every
+                                   # certification replay must exercise this same path (see
+                                   # docs/RUNBOOK-cert-r15.md, docs/RUNBOOK-burnin-r16.md).
+
 feed:
   sierra:                          # the on-box Route-B live data path
     data_dir: C:/SierraChart/Data  # Sierra's Data dir (front-month .scid + MarketDepthData/)
