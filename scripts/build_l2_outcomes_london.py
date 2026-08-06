@@ -175,12 +175,13 @@ def main() -> int:
     O = run(trigs, procs=a.procs)
 
     # join the L1b setup identity back on, so both tie-break arms are answerable
-    L1 = pd.read_parquet(IN_L1)[["ts", "setup_id", "setup_size", "setup_first",
-                                 "setup_htf", "arm_none", "arm_struct"]]
+    flags = ["setup_first", "setup_htf", "vs_first", "vs_htf", "arm_none", "arm_struct"]
+    L1 = pd.read_parquet(IN_L1)[["ts", "setup_id", "setup_size", "vs_id", "vs_size",
+                                 *flags]]
     O = O.merge(L1, on="ts", how="left")
-    O[["setup_first", "setup_htf", "arm_none", "arm_struct"]] = O[
-        ["setup_first", "setup_htf", "arm_none", "arm_struct"]].fillna(False)
-    O["setup_id"] = O["setup_id"].fillna(-1).astype(int)
+    O[flags] = O[flags].fillna(False)
+    for c in ("setup_id", "vs_id"):
+        O[c] = O[c].fillna(-1).astype(int)
     O.to_parquet(OUT, index=False)
 
     ok = O[O.status == "outcome"]

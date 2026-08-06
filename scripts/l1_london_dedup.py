@@ -62,12 +62,19 @@ PRICE_PT = 5.0           # declared: ~one median intended stop (4.00 pt)
 TF_RANK = {"1min": 1, "2min": 2, "3min": 3, "5min": 5}
 
 
-def assign(F: pd.DataFrame) -> pd.DataFrame:
-    """Attach setup_id + both tie-break flags. Unfilled rows carry setup_id -1."""
+def assign(F: pd.DataFrame, prefix: str = "setup", eligible=None) -> pd.DataFrame:
+    """Attach <prefix>_id + both tie-break flags. Ineligible/unfilled rows carry id -1.
+
+    `eligible` is a boolean mask applied BEFORE grouping, not after. Order matters: a
+    trigger the spec does not admit must not be able to claim a setup and block a valid
+    trigger queued behind it. (ANGUS 2026-08-05 on the VWAP touch — it is part of the
+    trigger definition, so it filters first.)
+    """
     F = F.copy()
-    F["setup_id"] = -1
-    F["setup_size"] = 0
-    fl = F[F["arm_none"]].copy()
+    F[f"{prefix}_id"] = -1
+    F[f"{prefix}_size"] = 0
+    keep = F["arm_none"] if eligible is None else (F["arm_none"] & eligible)
+    fl = F[keep].copy()
     fl["fill_ts"] = pd.to_datetime(fl["fill_ts"], utc=True, format="mixed")
     fl["names"] = fl["cluster_members"].map(
         lambda s: frozenset(m[0] for m in json.loads(s or "[]")))
@@ -98,51 +105,62 @@ def assign(F: pd.DataFrame) -> pd.DataFrame:
             open_setups = [s for s in open_setups
                            if (r.fill_ts - s["ts0"]).total_seconds() / 60.0 <= WINDOW_MIN]
 
-    F.loc[list(assign_map), "setup_id"] = list(assign_map.values())
-    sizes = F[F.setup_id > 0].groupby("setup_id").size()
-    F["setup_size"] = F["setup_id"].map(sizes).fillna(0).astype(int)
+    F.loc[list(assign_map), f"{prefix}_id"] = list(assign_map.values())
+    sizes = F[F[f"{prefix}_id"] > 0].groupby(f"{prefix}_id").size()
+    F[f"{prefix}_size"] = F[f"{prefix}_id"].map(sizes).fillna(0).astype(int)
 
     # tie-breaks
-    D = F[F.setup_id > 0].copy()
+    D = F[F[f"{prefix}_id"] > 0].copy()
     D["fill_ts_p"] = pd.to_datetime(D["fill_ts"], utc=True, format="mixed")
     D["rank_tf"] = D["tf"].map(TF_RANK)
-    first_ix = D.sort_values(["setup_id", "fill_ts_p", "rank_tf"]).groupby(
-        "setup_id").head(1).index
-    htf_ix = D.sort_values(["setup_id", "rank_tf", "fill_ts_p"],
-                           ascending=[True, False, True]).groupby("setup_id").head(1).index
-    F["setup_first"] = F.index.isin(first_ix)
-    F["setup_htf"] = F.index.isin(htf_ix)
+    first_ix = D.sort_values([f"{prefix}_id", "fill_ts_p", "rank_tf"]).groupby(
+        f"{prefix}_id").head(1).index
+    htf_ix = D.sort_values([f"{prefix}_id", "rank_tf", "fill_ts_p"],
+                           ascending=[True, False, True]).groupby(f"{prefix}_id").head(1).index
+    F[f"{prefix}_first"] = F.index.isin(first_ix)
+    F[f"{prefix}_htf"] = F.index.isin(htf_ix)
     return F
 
 
 def main() -> int:
     F = pd.read_parquet(IN_PARQUET)
-    F = assign(F)
-    F.to_parquet(OUT_PARQUET, index=False)
-    fl = F[F.arm_none]
     nd = F["day"].nunique()
-    ns = int(F.loc[F.setup_id > 0, "setup_id"].nunique())
 
-    print(f"wrote {OUT_PARQUET.relative_to(ROOT)}")
-    print(f"\nfills {len(fl):,} over {nd} sessions ({len(fl)/nd:.1f}/session)")
-    print(f"distinct SETUPS {ns:,} ({ns/nd:.1f}/session) — "
-          f"{1 - ns/len(fl):.0%} of the fill population was the same trade counted again")
-    print(f"\nsetup size (fills collapsed into one position):")
-    print(F[F.setup_first].setup_size.value_counts().sort_index().to_string())
-    print(f"\n{'arm':<22}{'n':>8}{'/session':>10}   timeframe mix")
+    # `setup_*`  every filled trigger — kept for the record, NOT the default any more
+    # `vs_*`     VWAP-REQUIRED, the shipped population (ANGUS 2026-08-05)
+    F = assign(F, "setup")
+    F = assign(F, "vs", eligible=F["vwap_touched"])
+    F.to_parquet(OUT_PARQUET, index=False)
+
+    print(f"wrote {OUT_PARQUET.relative_to(ROOT)}\n")
+    print(f"fills {int(F.arm_none.sum()):,} over {nd} sessions")
+    for pre, lbl in (("setup", "any trigger (superseded)"),
+                     ("vs", "VWAP touched/closed through (DEFAULT)")):
+        n = int(F.loc[F[f"{pre}_id"] > 0, f"{pre}_id"].nunique())
+        print(f"  {lbl:<42} {n:>6,} setups  {n/nd:>5.2f}/session")
+    print(f"\n{'arm':<26}{'n':>8}{'/session':>10}   timeframe mix")
     for lbl, col in (("as walked (no dedup)", "arm_none"),
-                     ("setup_first (DEFAULT)", "setup_first"),
-                     ("setup_htf (challenger)", "setup_htf")):
+                     ("setup_first (superseded)", "setup_first"),
+                     ("vs_first  (DEFAULT)", "vs_first"),
+                     ("vs_htf    (challenger)", "vs_htf")):
         K = F[F[col]]
         mix = " ".join(f"{t.replace('min','m')} {(K.tf==t).mean():.0%}"
                        for t in ("1min", "2min", "3min", "5min"))
-        print(f"{lbl:<22}{len(K):>8,}{len(K)/nd:>10.1f}   {mix}")
-    for lbl, col in (("setup_first", "setup_first"), ("setup_htf", "setup_htf")):
+        print(f"{lbl:<26}{len(K):>8,}{len(K)/nd:>10.2f}   {mix}")
+    for lbl, col in (("vs_first", "vs_first"), ("vs_htf", "vs_htf")):
         K = F[F[col]]
         print(f"\n{lbl}: pattern " + " ".join(
             f"{p} {(K.pattern==p).mean():.0%}" for p in ("B2", "B", "A"))
             + f" | median intended risk {K.risk_intended.median():.2f} pt"
-            + f" | below 9.5pt {(K.risk_intended < 9.5).mean():.0%}")
+            + f" | below 9.5pt {(K.risk_intended < 9.5).mean():.0%}"
+            + f" | median setup size {K.vs_size.median():.0f}")
+
+    # what the ordering actually bought: setups the VWAP rule RESCUED rather than deleted
+    old = set(F.loc[F.setup_first, "ts"])
+    new = set(F.loc[F.vs_first, "ts"])
+    print(f"\nfilter-BEFORE-dedup vs after: {len(new - old):,} entries are triggers that a "
+          f"VWAP-less\ntrigger had been blocking — they would have been lost had the rule "
+          f"been applied\nafter grouping instead of before.")
     return 0
 
 
