@@ -292,3 +292,39 @@ daily risk budget is account-level and shared with NY, so London does not get it
 The London risk gate (`risk >= 9.5pt`, no upper cap) is **carried in as a hypothesis to
 re-test at L2, not as a rule** — the handoff is explicit that it must be tested on the
 honest population the way NY's 7–60 band was.
+
+---
+
+## 8. L3 permutation null — declared BEFORE the run (§2.3, Appendix A)
+
+The L3 trial tested **49 candidates** (45 features + the 4 shipped checks) and reported the
+best three. That is a search, so the null re-runs **the entire search**, not the winner.
+
+**Procedure.** Shuffle the outcome column (`dollars_1lot`) **within era**, so each era's
+base win rate is preserved and only the feature↔outcome association is destroyed. Re-run
+the identical 49-candidate selection — same tercile split, same n≥30 per era cell, same
+era-consistency requirement — and record the **family-wise maximum |WR gap| among
+era-consistent survivors**. 1,000 permutations.
+
+**Two bars, BOTH must pass. Declared now, before any p-value exists:**
+
+1. **Family-wise p ≤ 0.01** on the max |WR gap| statistic (Appendix A: ≥1,000 shuffles,
+   family-wise max-statistic, p ≤ 0.01).
+2. **The 2026 era must clear its own null independently** — Appendix A's London-specific
+   tightening: *"the validate-2026 era must independently clear the permutation null, not
+   merely point the same direction — same-direction-only is INCONCLUSIVE in London, and
+   INCONCLUSIVE blocks."* London has no hand-log ground truth, so the bar is stricter here
+   than in NY by written rule.
+
+**If either bar fails, no L3 feature enters L4.** The trial's survivors are candidates, not
+findings, until this passes — including `ROOM`, which is currently the strongest.
+
+**Statistic chosen before seeing which one flatters the result.** `|WR gap|` is used rather
+than signed gap because the trial reported the largest separator in either direction
+(`room_ahead_R` at −24.7pp is a negative separator and was reported). Switching to whichever
+statistic passes, after seeing which passes, is the exact failure that closed `LDN-PO3-01`'s
+depth pass at family-wise p = 0.42.
+
+**Depth candidates enter the null at the CAUSAL read** (`p1_*`, fill-bar open) per
+`research/findings/LDN-depth-read-one-bar-late.md`. The contaminated fill-bar-close columns
+are excluded from the search entirely and cannot be selected.
