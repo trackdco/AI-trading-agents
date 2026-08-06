@@ -19,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "runs/live_desk1"
 TOTAL_DAYS = 254
-BATCH_DAYS = 10          # journal chaining granularity — mirrors the harness
+BATCH_DAYS = 21  # dashboard bucketing only; harness batches by calendar month
 NY_OFF = -4  # ET offset for display only
 
 
@@ -144,19 +144,18 @@ def discretion(R: list[dict]) -> str:
     # first block(s) near-identical while the journal builds; canon precedent
     # was ~3 flat months, then consistent month-on-month outperformance).
     # Blocks match the harness chaining: every BATCH_DAYS trading days.
-    blocks, days_sorted = [], [r["day"] for r in R]
-    by_day = {r["day"]: r for r in R}
-    for i in range(0, len(days_sorted), BATCH_DAYS):
-        chunk = days_sorted[i:i + BATCH_DAYS]
-        dev = sum(1 for d in chunk
-                  if abs(by_day[d]["agent_dollars"] - by_day[d]["b0_dollars"]) >= 0.01)
-        blocks.append((chunk[0], dev, len(chunk)))
-    devline = " · ".join(f"{d0[5:]}: {dv}/{n}" for d0, dv, n in blocks)
+    bym: dict = {}
+    for r in R:
+        bym.setdefault(r["day"][:7], []).append(r)
+    blocks = [(m, sum(1 for r in g
+                      if abs(r["agent_dollars"] - r["b0_dollars"]) >= 0.01), len(g))
+              for m, g in sorted(bym.items())]
+    devline = " · ".join(f"{m[5:]}: {dv}/{n}" for m, dv, n in blocks)
     # streak warning only once the desk has a full journal block behind it
     in_first_month = len(blocks) <= 1
     if best_streak >= 7 and in_first_month:
         warn = ('<div class="sub" style="margin-top:6px;">journal-building phase — '
-                'near-identical days expected until the first fortnight of record '
+                'near-identical days expected until the first month of record '
                 'exists</div>')
     elif best_streak >= 7:
         warn = (f'<div class="warn" style="margin-top:6px;">⚠ {best_streak}-day identical '
@@ -164,7 +163,7 @@ def discretion(R: list[dict]) -> str:
     else:
         warn = ""
     warn = (f'<div class="sub" style="margin-top:8px;">deviated days per journal '
-            f'block (chains every {BATCH_DAYS} trading days) — {devline}</div>' + warn)
+            f'block (journal chains monthly) — {devline}</div>' + warn)
     return f'''<div class="card">
   <div class="eyebrow">Discretion — is the desk actually trading?</div>
   <div class="cells">{cells}</div>
@@ -444,8 +443,7 @@ footer {{ color:var(--mut); font-size:12px; display:flex; gap:18px; flex-wrap:wr
 </div>
 
 <footer>
-  <span>fit span 2025-06 → 2026-07 · 875 signals · journal chains every
-    {BATCH_DAYS} trading days</span>
+  <span>fit span 2025-06 → 2026-07 · 875 signals · journal chains monthly</span>
   <span>knowledge: both rulebooks + holdout only · passive desk == B0 verified ·
     inherited-partial + true-R fixes applied</span>
 </footer>

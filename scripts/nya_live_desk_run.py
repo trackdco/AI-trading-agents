@@ -73,16 +73,17 @@ CANON_BASE = 160.0
 # window (08:00-10:30, the only window either engine can enter) a 5-minute pulse
 # plus every signal minute; flat after 10:30 = off the desk.
 #
-# CHAINING (Angus: "what if we did every 2 trading weeks for higher frequency...
-# the closer we can get to a day the better, just dont want to wait a million
-# years"): days inside a BATCH run concurrently and the journal chains
-# batch-to-batch, so batch size IS the learning granularity. Wall clock is
-# 254/min(BATCH, WORKERS) waves — so a finer batch only costs time if it drops
-# below the worker count. BATCH 10 with WORKERS 10 gives fortnightly learning at
-# 26 waves (~8h), FASTER than the old 21-day/6-worker setup (43 waves, ~14h).
-# Going below 10 does cost: 5-day batches cap parallelism at 5 (~16h), daily
-# chaining is fully sequential (~80h).
-BATCH_DAYS = 10
+# CHAINING (Angus, final: "can we go month on month with journal updates every
+# month instead too, i want it to be done quicker. month on month will still
+# bring us an adequate conclusion"): days inside a batch run concurrently and the
+# journal chains batch-to-batch, so batch size IS the learning granularity.
+# Wall clock is driven by how many WAVES it takes, and a wave is min(batch,
+# WORKERS) days — so monthly chaining is only faster if the worker pool can hold
+# a whole month at once. Largest month on the span is 22 days, hence WORKERS 22:
+# every calendar month runs in ONE wave, 14 waves total (~4h) vs the fortnightly
+# setup's 26 (~8h). Monthly on 10 workers would have been SLOWER (39 ragged
+# waves, ~12h) — the batch size was never the bottleneck, the pool was.
+BATCH_BY_MONTH = True
 # Angus: "it takes what a dozen trades and draws the conclusion, thats way too
 # inconclusive... it should be trading like that for the first couple months
 # minimum and using the journal as documentation rather than ruling, just like i
@@ -90,7 +91,7 @@ BATCH_DAYS = 10
 SAMPLE_FLOOR = 40
 MAX_TURNS_DAY = 600
 CLI_TIMEOUT = 240
-WORKERS = 10
+WORKERS = 22
 MODEL = "sonnet"        # Angus: the desk runs on Sonnet — don't burn the plan
 
 DEPTH_DIRS = ["data/reference/depth_2025", "data/reference/depth_2026",
@@ -997,8 +998,8 @@ def main() -> None:
     tape = pd.read_parquet(ROOT / "output/fp_minutes.parquet").sort_index()
     dcache: dict = {}
     print(f"live-sim desk: {len(sel)} days, {sum(len(days[d]) for d in sel)} "
-          f"signals | {WORKERS} workers, {BATCH_DAYS}-day batches, journal chains "
-          f"every {BATCH_DAYS} trading days", flush=True)
+          f"signals | {WORKERS} workers, calendar-month batches, journal chains "
+          f"monthly", flush=True)
 
     def one(d, journal):
         t0 = pd.Timestamp(f"{d} 00:00", tz=NY)
@@ -1006,7 +1007,13 @@ def main() -> None:
                           dcache.get(d), journal)
 
     from concurrent.futures import ThreadPoolExecutor, as_completed
-    batches = [sel[i:i + BATCH_DAYS] for i in range(0, len(sel), BATCH_DAYS)]
+    if BATCH_BY_MONTH:
+        bym: dict = {}
+        for d in sel:
+            bym.setdefault(d[:7], []).append(d)
+        batches = [bym[m] for m in sorted(bym)]
+    else:
+        batches = [sel[i:i + 10] for i in range(0, len(sel), 10)]
     for batch in batches:
         for d in batch:                       # depth pre-loaded serially; workers read only
             dcache[d] = load_depth(d, {})

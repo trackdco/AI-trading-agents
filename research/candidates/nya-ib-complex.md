@@ -849,3 +849,49 @@ are VOID — archived runs/_archive/live_desk1_flatsizing_94days. This
 also changes DECISIONS going forward, not just accounting: the desk can
 now see that a signal is a 2x elite versus a 0.5x reduced trade.
 RESTART #4, clean from 2025-06-02.
+
+### IB MANAGEMENT POST-MORTEM + CHARTER v1.7 [ANGUS asked for the
+diagnosis before the rerun; ruled NO HINDSIGHT in the fix]
+EVIDENCE: 41 shelf trades pooled across the two archived runs (36
+unique). Shelf sizing was ALWAYS correct at $200/$300, so this evidence
+is untainted by the canon sizing bug. Untouched 28 -> exactly $0
+(perfect machine replication). Touched 13 -> -$1,930. Only 2 of 13
+interventions helped. Machine WR 78% vs desk 71%.
+THE REFLEX, in the desk's own words: "S4 short reversed hard from
++1.85R peak to -0.22R... cutting before full -1R stop, setup looks
+[failed]" (machine +1.41R); "Gave back peak +1.62 to -0.32... tighten
+stop to cap further round-trip risk" (machine +1.02R). It reads THE
+GIVE-BACK FROM AN INSTANT SPIKE AS PROOF THE SETUP FAILED. Note the
+same day's ENTRY note was textbook v1.5 — "delta/cvd flipping negative
+at entry = confirming turn signal, not a reason to fade the fade" — so
+v1.5 fixed entry reasoning while the MANAGEMENT reflex survived intact.
+WHY THE REFLEX IS WRONG (measured, FOR OUR RECORD ONLY — deliberately
+NOT given to the desk): base rate 75% win / +1.17R median. Heat taken
+by t+2: >=0.25R -> 83% win; >=0.35R -> 75%; >=0.50R -> 69%; >=0.75R ->
+50% (n8, median -0.07R). So early heat carries essentially no signal
+until ~0.75R, by which point the -1R stop is already handling it. And
+the spike it kept protecting is if anything a mild NEGATIVE: MFE >=1.5R
+by t+1 wins 65% vs the 75% base rate, and machine LOSERS have a HIGHER
+median MFE (+1.70R) than winners (+1.25R) — they spike hardest then
+fail. Median-split on heat separates almost nothing (72% vs 78%).
+FIX (charter v1.7) — SPEC-DERIVED ONLY, per his ruling "this is
+hindsight so we cant do that, its unfair": the stop is an eighth of the
+IB, deliberately tight against the volatility of a range extreme, so
+the position is BUILT to take heat inside its own plan; a round-trip
+off an early high-water mark is what a fade looks like while the level
+is fought over, not the setup breaking; the -1R stop and the t+10
+scratch ARE the protection, and stacking a third tighter layer does not
+reduce risk, it converts band-reaching trades into scratches — and does
+so precisely on the trades that moved fastest in your favour. No
+statistics, no outcome data, nothing the desk could not derive from its
+own rulebook.
+
+### MONTHLY CHAINING [ANGUS: "go month on month... i want it to be done
+quicker"]. RULED. But the batch size was never the bottleneck — the
+WORKER POOL was. Wall clock = waves, and a wave is min(batch, WORKERS)
+days. Monthly on the old 10-worker pool would have been SLOWER (39
+ragged waves ~12h vs the fortnight's 26 ~8h). Largest month on the span
+is 22 trading days, so WORKERS 10 -> 22: every calendar month now runs
+in ONE wave, 14 waves total (~4h) — half the fortnightly setup and the
+outcome he actually wanted. Charter v1.7 tells the desk its book rolls
+MONTHLY; dashboard deviation-rate now buckets by calendar month.
