@@ -1,0 +1,489 @@
+[0:00] For the past 421 days, I've been working
+[0:02] on something that's going to change
+[0:04] retail trading fundamentally forever.
+[0:06] For those who might not know me, my name
+[0:07] is Thomas Skinner. I'm a physics student
+[0:09] at Columbia University studying to be an
+[0:11] institutional quantitative trader. My
+[0:13] dad is an institutional trader at a
+[0:14] quantitative trading firm, and 6 years
+[0:16] ago he told me that I would never make
+[0:18] money day trading a strategy that I
+[0:19] found on YouTube because that's actually
+[0:21] what I wanted to do. At 15 years old, I
+[0:23] got interested in trading probably
+[0:25] because it's my dad's profession. I've
+[0:26] grown up hearing him talking about it
+[0:28] all the time, and I initially found
+[0:31] YouTube trading gurus like most people
+[0:33] do. I started consuming a hundreds of
+[0:35] hours of this content and eventually
+[0:36] settled on one strategy that I decided I
+[0:39] would study and then implement on a demo
+[0:41] account, and I did that. I was
+[0:42] profitable on demo for maybe 6 months
+[0:44] before I went to my dad and I said,
+[0:46] "Hey, look at my demo results. I want to
+[0:48] start trading live money. Can you give
+[0:49] me an account in your name and fund it
+[0:50] for me?" I remember this exact
+[0:52] conversation so vividly because at the
+[0:54] time it was so confusing to me. He said,
+[0:56] "You don't have an edge here." And then
+[0:57] another thing that he said that really
+[0:58] stuck with me was, "If it were this
+[1:00] easy, everybody would do it." And in
+[1:02] that moment, I thought, "You're an
+[1:04] idiot." Being an arrogant 15-year-old,
+[1:05] the thoughts going through my mind were,
+[1:07] "Yeah, everybody doesn't do it because
+[1:08] it's not easy. I had to study this
+[1:10] really hard, and that's why I'm
+[1:11] profitable on demo, and I'm going to be
+[1:12] profitable with real money." I played my
+[1:14] case to him, and he set me up with a
+[1:16] live account with some money, and I
+[1:17] traded that account, and I believe in
+[1:18] the first 2 months I ran the account up
+[1:20] 100%. I then had some big losing trades,
+[1:23] some other big winners, big losers,
+[1:24] eventually got the account back down to
+[1:26] break even, and a few weeks later wound
+[1:28] up blowing it. I vividly remember the
+[1:31] day that I blew that account because I
+[1:32] felt really nervous to tell him that I
+[1:35] blew the account, really confused by the
+[1:37] fact that my results suddenly changed
+[1:40] between trading on demo and trading
+[1:42] live, even though I hadn't changed the
+[1:43] way that I was trading the strategy at
+[1:45] all. And I was also confused by the fact
+[1:47] that I knew for a fact I was executing
+[1:49] the strategy perfectly as taught by the
+[1:51] guru, but the guru's lifestyle, his
+[1:54] luxurious lifestyle, didn't line up with
+[1:56] the results that I got when I actually
+[1:58] deployed this strategy live and wind up
+[1:59] blowing the account. We'll get back to
+[2:00] that in a second, but I went to my dad
+[2:02] and I told him, "Hey, I blew this
+[2:03] account. I got the balance so low that I
+[2:05] can't trade it anymore." And he said,
+[2:07] "Tom, I mentally wrote the money I gave
+[2:09] you for that account off as a loss as
+[2:11] soon as I gave it to you. I knew you
+[2:12] were going to lose that money." The
+[2:13] amount he gave me was about a tenth of
+[2:14] the cost of the annual tuition of the
+[2:16] high school I was attending at the time.
+[2:17] He said, "I know you learned a hell of a
+[2:19] lot more over these past few months than
+[2:21] you would in a tenth of a year at
+[2:23] school." That experience genuinely
+[2:25] changed the course of my life because
+[2:26] it's when I realized that you need to
+[2:28] statistically validate an edge. It was
+[2:31] that experience that made me realize all
+[2:32] these disciplines I've been so
+[2:33] passionate about my entire life, math,
+[2:35] statistics, and programming could and
+[2:38] should be applied to trading. It was
+[2:40] also the moment that I realized that you
+[2:41] can't trust anybody online, especially
+[2:43] in a billion-dollar information sales
+[2:46] industry. And luckily from that point it
+[2:47] didn't take me too long to figure out
+[2:48] how to actually objectively verify or
+[2:51] falsify any trading idea. So, fast
+[2:53] forward to three years ago, I'm at
+[2:54] Columbia studying to do this stuff as a
+[2:56] career and I see a resurgence of these
+[2:59] gurus. People like TJR, ICT, all these
+[3:02] other ICT or SMC traders selling courses
+[3:05] on ridiculous chart patterns, on
+[3:07] drawings. And they're hooking tens or
+[3:09] hundreds of thousands of people on these
+[3:11] predatory courses that I fell victim to
+[3:13] years before. And actually around that
+[3:15] same time is when the guy who I
+[3:17] originally learned that strategy from
+[3:19] back when I was 15, he actually got sued
+[3:21] by the FTC. So, you can imagine my
+[3:23] frustration watching all of these other
+[3:24] people fall for the exact same thing
+[3:26] that made me so confused and feel so
+[3:28] stupid and lose money, actually, like
+[3:30] suffer a financial loss. So, there's
+[3:32] that, too. They're all getting hooked on
+[3:34] it and nobody's telling them, "Hey,
+[3:35] these guys are scams." So, that's around
+[3:37] the time that I posted my first video
+[3:38] about the predatory day trading course
+[3:40] sales industry. That's when I started
+[3:42] programmatically backtesting guru
+[3:43] strategies and exposing them for being
+[3:45] fake. I exposed TJR maybe a year and a
+[3:48] half or two years ago at this point.
+[3:50] That was long before Iman Trading came
+[3:52] and made the video brutally exposing TJR
+[3:54] maybe three months ago which pretty much
+[3:55] ended his career in the day trading
+[3:57] course sales space. I started posting
+[3:59] videos about programmatic backtesting,
+[4:01] programmatic trading statistics for
+[4:03] finance and trading. And I was really
+[4:04] happy to see the people engaged with
+[4:05] those and started to wake up to the
+[4:07] reality of these gurus, these snake oil
+[4:09] salesmen. But the recurring comments on
+[4:11] every single video were can you code
+[4:13] this person's strategy next? Can you
+[4:15] change this? I think you did this tiny
+[4:17] thing wrong. Can you change it and make
+[4:19] a new video? Can you show us how to code
+[4:21] this? Can you test this idea? And for a
+[4:23] long time I did that. Earlier I used to
+[4:25] do a bunch of comment response videos
+[4:27] saying yes I will change that tiny thing
+[4:29] in the code and rerun it. Here are the
+[4:30] results. Yes, I will code this person's
+[4:32] strategy. Here are the results. As AI
+[4:33] has gotten better it's become easier for
+[4:35] people with no programming experience to
+[4:37] code. But coding for quantitative
+[4:38] research and trading applications is
+[4:40] entirely different than vibe coding an
+[4:42] app. I started open sourcing a lot of
+[4:43] the code that I was using in my videos
+[4:45] and telling people you can use AI to
+[4:46] edit it if you need to. But then people
+[4:48] had issues with getting data. Historical
+[4:50] financial data is extremely expensive
+[4:52] mostly because the primary consumers are
+[4:54] institutions who have a ton of R&D
+[4:56] capital. For retail traders looking to
+[4:57] build, test, and optimize quantitative
+[4:59] trading strategies, you have to be
+[5:00] prepared to spend hundreds of dollars a
+[5:02] month on data. You need to handle
+[5:03] fetching, cleaning, preprocessing data,
+[5:05] storing it somewhere. You need to handle
+[5:07] your environments. You need to handle
+[5:09] file versioning. You need to handle all
+[5:11] of your API integrations and API keys.
+[5:13] And even with all that done there's not
+[5:14] even an agentic coding harness that's
+[5:16] built for developing and testing trading
+[5:19] strategies. That on top of all the
+[5:20] testing and validation infrastructure
+[5:22] you need to build for yourself is just
+[5:23] too much to ask of somebody who is a
+[5:25] trader, a trader and not a software
+[5:27] engineer. And that's why the comments I
+[5:28] got in response to me telling people
+[5:30] just edit stuff with AI was it's not
+[5:32] really feasible. And that's why over the
+[5:33] past 421 days myself and the engineers
+[5:36] and contractors who I've hired have
+[5:38] spent thousands of hours and a bunch of
+[5:40] money building Quantpad. Quantpad has
+[5:42] three prongs. The first of which is a
+[5:44] fully online AI coding agent built for
+[5:48] trading. The Quantpedia agent has all
+[5:49] the functionality of a normal AI coding
+[5:51] agent, the ability to work with multiple
+[5:53] files in a workspace, read, write to,
+[5:56] and patch files with diffs, etc. It does
+[5:58] all of that in a virtual file system,
+[6:00] which means it's entirely hosted online.
+[6:02] I can be working on a strategy on
+[6:03] Quantpedia on my Mac, and then go over
+[6:05] to my PC and open it up and resume my
+[6:07] workflow seamlessly, just like Google
+[6:09] Docs. The entire workspace is online, so
+[6:11] there's no need for anything like
+[6:13] GitHub, but the agent is still able to
+[6:15] execute files and shell commands on
+[6:17] cloud compute infrastructure. Okay, so
+[6:19] you guys built an online cloud hosted AI
+[6:21] coding agent. That's pretty cool, but
+[6:23] what does it have to do with traders?
+[6:24] Well, I'm not nearly done. The
+[6:25] Quantpedia agent has access to tons of
+[6:27] historical market data, and historical
+[6:30] market data usage on Quantpedia is not
+[6:32] billed pay-as-you-go, as it would be on
+[6:34] massive or Data Bento or these other
+[6:36] data providers that sell primarily into
+[6:38] institutions. On Quantpedia, historical
+[6:40] market data usage is all you can eat.
+[6:42] You could request 16 years of 1-second
+[6:45] bars on Nasdaq. If you tried to make
+[6:47] that exact same request on Data Bento,
+[6:49] it would be $1,163.01.
+[6:53] So, Quantpedia offers full history open
+[6:55] high low close volume data. That's
+[6:56] candlestick data down to the 1-second
+[6:58] granularity up to whatever you want.
+[7:01] But, that's not all. Quantpedia also
+[7:02] includes the last year of tick level
+[7:04] data, trade data, every single trade on
+[7:06] the tape. And for really granular
+[7:07] microstructure work, Quantpedia has the
+[7:09] last 1 month of level two data. That
+[7:11] shows resting bids and asks in the order
+[7:13] book, even if they're never executed.
+[7:15] And that's not just for futures, it's
+[7:17] for all CME futures, US equities, and
+[7:19] equity options. Quantpedia is also
+[7:21] integrated with the SEC database to look
+[7:23] at company filings and with
+[7:24] macroeconomic data from the Federal
+[7:26] Reserve. And all of that is with no API
+[7:28] keys and no additional cost to users
+[7:30] because retail traders shouldn't have to
+[7:32] budget their data consumption. The
+[7:34] amount of money you're spending on data
+[7:35] while trying to develop a statistically
+[7:36] valid edge as a retail trader should not
+[7:38] be something you have to think about.
+[7:40] The Quantpedia agent knows how to fetch,
+[7:41] manipulate, and work with this data
+[7:43] perfectly, so you don't have to. You can
+[7:45] ask the agent to build and backtest an
+[7:47] order flow trading strategy using level
+[7:48] two data. You could ask it to determine
+[7:50] the impact of some sort of macroeconomic
+[7:52] regime on the performance of a trading
+[7:54] strategy. In premarket or live trading,
+[7:56] you could ask the agent to scan stocks
+[7:58] and pull options chains and flag any
+[8:00] symbols with rich premium. You could
+[8:02] build a strategy around options dealer
+[8:03] hedging behavior. You can test ideas
+[8:05] using plain open high low close volume
+[8:07] price action. You can have the agent
+[8:09] analyze and re- produce research from a
+[8:11] research paper and validate or falsify
+[8:13] it. Then you can build a strategy off of
+[8:14] that. QuantPad is the AI agent that
+[8:16] actually has everything it needs to do
+[8:18] quantitative research and develop, test,
+[8:21] and optimize trading strategies. The
+[8:23] QuantPad agent isn't just for writing
+[8:24] Python scripts and Python notebooks,
+[8:26] it's also for writing domain-specific
+[8:28] languages. Anybody who has used AI to
+[8:30] try to build strategies or indicators in
+[8:32] TradingView Pine Script, the TradingView
+[8:34] native DSL that you can create
+[8:36] indicators and strategies with on
+[8:37] platform, knows how difficult it is.
+[8:39] Because TradingView Pine Script has a
+[8:41] very unique syntax that LLMs aren't
+[8:43] trained on, so they make all sorts of
+[8:45] linter errors. If the AI generates a
+[8:47] Pine Script for you and you paste it
+[8:48] into TradingView, there is a 99% chance
+[8:51] that any frontier model that generates
+[8:52] Pine Script flags linter errors once you
+[8:54] drag them into TradingView. Those are
+[8:56] the errors that get underlined in red
+[8:57] with a little error message that you
+[8:59] have to copy-paste back to the LLM that
+[9:01] you used to generate the Pine Script and
+[9:02] have it iterate, and then you paste it
+[9:04] in again, and then there are more
+[9:05] errors, and then you have to iterate
+[9:06] again. Everybody knows how difficult
+[9:07] this is. For the QuantPad agent, we
+[9:09] built a TradingView linter, so the agent
+[9:11] is able to lint the script and see those
+[9:13] errors and their error messages and
+[9:15] correct them before it ever even gives
+[9:17] you a Pine Script output. On QuantPad,
+[9:19] the script that the agent returns to you
+[9:21] will not have linter errors because it's
+[9:22] able to lint it itself and correct the
+[9:24] errors before it gives you the script.
+[9:26] OpenAI's ChatGPT can't do that. Claude
+[9:28] can't do that. Cursor can't do that.
+[9:30] While we're on the topic of Pine Script,
+[9:31] because it's a very popular language,
+[9:33] I'll also tell you that the QuantPad
+[9:35] agent has a Pine Script skill that it
+[9:37] loads into context when it's writing
+[9:39] Pine Script to avoid compiler errors.
+[9:41] And it also has access to a library of
+[9:43] thousands of Pine Script examples that
+[9:44] it can semantically search before it
+[9:46] starts writing your Pine Script. But
+[9:48] Quantpad isn't just for Python and Pine
+[9:50] Script. You can write whatever language
+[9:51] you want inside of Quantpad. If you use
+[9:53] NinjaTrader or MultiCharts, you can
+[9:54] write those as well. I could easily go
+[9:56] on listing features about the Quantpad
+[9:57] agent for another 30 minutes, but that's
+[9:59] only the first of three prongs. The
+[10:01] second prong is called Quant Co-Pilot.
+[10:03] Quant Co-Pilot is the strategy
+[10:05] validation pipeline on Quantpad. It is
+[10:07] not an AI agent. It takes in a backtest
+[10:09] file or a live test file, just a trade
+[10:11] log from your strategy. Then it pulls a
+[10:13] bunch of market data to contextualize
+[10:15] the trade log that you uploaded. And it
+[10:17] computes a verdict, which is a letter
+[10:18] grade for your strategy based on various
+[10:20] factors. It also performs regime
+[10:22] analysis on your strategy to see which
+[10:24] market regimes it performs best in and
+[10:26] which it performs worst in. It performs
+[10:28] normal and regime-aware Monte Carlo
+[10:30] simulations of your strategy, and that
+[10:32] allows you to examine probabilities of
+[10:34] different drawdowns, max drawdowns,
+[10:36] final equities, etc. On the advanced
+[10:38] insights page, a bunch of feature
+[10:39] correlations are computed and then
+[10:41] surfaced to you if they're relevant.
+[10:43] That means that if characteristics of
+[10:44] your trades like their maximum run-up,
+[10:47] their return, their win rate are based
+[10:49] on anything like the current average
+[10:51] true range, current uh trending
+[10:53] environment, current volatility regime,
+[10:55] any quantifiable feature of the market,
+[10:57] if it highly influences your trade
+[10:59] performance, the advanced insights page
+[11:01] surfaces that to you and shows you
+[11:02] exactly how. You can use that
+[11:04] information to tune and optimize the
+[11:06] trading strategy. Then one of the most
+[11:07] interesting features on the Quant
+[11:08] Co-Pilot page is the prop firm
+[11:10] assistant. Prop firm funded accounts
+[11:12] have become extremely popular over the
+[11:14] last year or two. The issue that I
+[11:15] immediately saw with them is that a lot
+[11:17] of retail traders were just approaching
+[11:18] them with no idea whether they would
+[11:20] pass or not. They have no idea what
+[11:22] their probability of passing is, what
+[11:23] the net expected value of them
+[11:25] approaching these challenges is, if it's
+[11:26] even positive. They don't know their
+[11:28] probability of getting a payout. They
+[11:29] don't know the the average number of
+[11:31] days to pass the challenge or days till
+[11:33] first payout, etc. Given a log of your
+[11:35] historical trades or backtested trades,
+[11:37] the QuantPedia Assistant uses a Monte
+[11:39] Carlo simulation treating the funded
+[11:41] account challenges and funded phase as a
+[11:43] structured product to determine all
+[11:45] these statistics for you. I'm probably
+[11:46] going to make a video tomorrow or the
+[11:48] next day explaining this methodology
+[11:49] more in depth, but I came up with it
+[11:51] back in October. I applied the same idea
+[11:53] of using Monte Carlo simulation to price
+[11:55] structured products like exotic options,
+[11:57] lookback options, Asian options to the
+[11:59] prop firm account challenges. The
+[12:01] challenge phase is essentially a
+[12:02] boundary problem. Hit one boundary
+[12:04] before hitting another, and sometimes
+[12:06] they're moving. There's a trailing
+[12:07] drawdown, and we model that in the
+[12:08] simulation as well. And then the funded
+[12:10] phase is a bit more complicated because
+[12:11] we have withdrawals, profit splits,
+[12:13] sometimes back to funded, for example,
+[12:15] on Topstep, but we model it similarly.
+[12:17] And then we resample trades from the
+[12:19] trade log to construct the equity paths
+[12:21] and do this hundreds of thousands of
+[12:22] times. And assuming the trade log you
+[12:23] upload isn't overfit or anything, you
+[12:25] can determine the probability of your
+[12:27] strategy that the trade log was produced
+[12:29] by passing the funded account challenge,
+[12:31] the net expected value per account to
+[12:33] see if over many turns you are likely to
+[12:35] make or lose money attempting these prop
+[12:37] firm account challenges. You don't have
+[12:39] to, and you shouldn't buy prop firm
+[12:41] account challenges without knowing these
+[12:42] statistics. Again, there's a bunch more
+[12:44] I can say about this and that I will
+[12:45] eventually say about this, but we're
+[12:47] only on prong two of three. So, the
+[12:48] third is the community. QuantPedia has a
+[12:50] community page where users can
+[12:52] collaborate on research or share ideas.
+[12:54] From within any QuantPedia project where
+[12:56] you have all your files and you're
+[12:57] speaking with the agent to work on
+[12:58] things, you can publish any files from a
+[13:01] project or a full project itself to the
+[13:03] library. Users can like, favorite,
+[13:05] comment on, or clone a project. When you
+[13:07] clone a project, it copies all of the
+[13:09] files from that project to a new project
+[13:11] in your own workspace. Say you see a
+[13:13] published project from another user that
+[13:15] has some research Python scripts, a
+[13:17] research paper, and then a Pine Script
+[13:19] indicator as the centerpiece. If you
+[13:20] like that indicator, but you want to
+[13:21] make some tweaks to it, or you think the
+[13:23] research is interesting and you have an
+[13:24] idea to build off of it, you can click
+[13:26] clone on that project and it clones all
+[13:28] of the files into a new workspace for
+[13:30] you. Now you're in a new project with
+[13:32] all of those files there to work on by
+[13:33] yourself. The QuantPad AI agent is right
+[13:35] beside you and can see all those files
+[13:37] and work with you on them. If you later
+[13:38] want to publish a file or some files or
+[13:40] all of the files from a project, you
+[13:42] just click the publish button and walk
+[13:43] through the workflow. Every user has a
+[13:45] profile that they can post things to
+[13:46] publicly, although you don't have to
+[13:47] obviously if you don't want to. And
+[13:49] users can follow each other's accounts
+[13:50] and interact with each other. In the
+[13:52] community library, there are also
+[13:54] publications uploaded by the QuantPad
+[13:55] engineers. These function just like any
+[13:57] other post except they're posted by
+[13:59] QuantPad. I have poured my heart and my
+[14:01] time into this project and I truly
+[14:03] believe that this is going to change the
+[14:06] world of retail trading forever. Retail
+[14:08] trading in the way that it's known on
+[14:10] social media has been a giant scam since
+[14:13] the dawn of day trading. Trading
+[14:15] fundamentally is not a game of copying
+[14:18] ideas or learning strategies from other
+[14:20] people. Trading is a game of rapid
+[14:23] research and iteration. It's a game of
+[14:25] rigorous mathematical testing. It's a
+[14:27] game of data, objectivity, and science
+[14:30] and QuantPad makes that accessible to an
+[14:32] infinitely larger sect of people than
+[14:35] the 0.001%
+[14:37] of retail traders to whom it was
+[14:38] previously available. You don't have to
+[14:40] be a software engineer anymore. You
+[14:41] don't have to spend hundreds or
+[14:42] thousands of dollars a month on data
+[14:44] anymore. I've worked so hard on this and
+[14:46] I just can't wait to see the impact that
+[14:49] it has on this community. QuantPad is
+[14:51] launching in exactly 1 week on Friday,
+[14:53] June 26th.
