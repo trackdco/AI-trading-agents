@@ -13,6 +13,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from src.engine import footprint as _fp  # band-clean chokepoint
+
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 NY = "America/New_York"
@@ -29,12 +31,9 @@ def auc(x, y):
 def load_cvd():
     files = ["footprint_q3_2025", "footprint_q4_2025", "footprint_feb_mar2026",
              "footprint_apr2026", "footprint_may_jul2026"]
-    fr = []
-    for f in files:
-        d = pd.read_parquet(f"data/reference/cvd/{f}.parquet", columns=["ts_minute", "side", "volume"])
-        d["signed"] = np.where(d["side"] == "B", d["volume"], -d["volume"])
-        fr.append(d.groupby("ts_minute")["signed"].sum())
-    g = pd.concat(fr).groupby(level=0).sum().rename("delta")
+    d = _fp.load_footprint([f"data/reference/cvd/{f}.parquet" for f in files],
+                           _fp.cached_front_month_bands())
+    g = _fp.signed_delta(d, by=("ts_minute",)).rename("delta")
     g.index = g.index.tz_convert(NY)
     return g.sort_index()
 

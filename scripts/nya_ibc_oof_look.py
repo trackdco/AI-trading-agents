@@ -18,20 +18,38 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from src.engine import footprint as _fp  # noqa: E402  # band-clean / sealed-span chokepoint
+
 NY = "America/New_York"
 FR = 1.0
 MONTHS = ("2023-07", "2023-09", "2023-11", "2024-03", "2024-04", "2024-10")
 
 
 def build_flow():
-    """Minute delta from the sealed footprint files (A=ask-side buys)."""
+    """Minute delta from the sealed footprint files.
+
+    SIGN CORRECTED 2026-08-06. 'B' is the BUYER-aggressor (lifted the offer), so
+    delta = B - A. This function computed A - B, i.e. the exact negative. Settled
+    empirically against realised direction over 287 London sessions (r = +0.78 on
+    large moves for B - A); see src/engine/footprint for the audit.
+
+    ANGUS: the committed output of this script was produced under the INVERTED sign,
+    and this is a spent NY holdout look. Whether its recorded conclusion survives the
+    correction is a ruling, not an engineering call — nothing here has been re-run and
+    no artifact has been regenerated.
+    """
     frames = []
     for m in MONTHS:
-        f = pd.read_parquet(ROOT / f"data/reference/cvd/footprint_holdout_{m}.parquet")
+        # allow_holdout: this script IS the declared NY out-of-fit look. No band is
+        # supplied — deriving one for the sealed days would itself be a look
+        # (VALIDATION-PROCESS §4.1), so the tape here is NOT band-cleaned.
+        f = _fp.load_footprint(
+            [ROOT / f"data/reference/cvd/footprint_holdout_{m}.parquet"],
+            bands=None, allow_holdout=True, report=False)
         ts = pd.to_datetime(f.ts_minute, utc=True).dt.tz_convert(NY)
         f = f.assign(mi=ts)
         piv = f.pivot_table(index="mi", columns="side", values="volume", aggfunc="sum").fillna(0)
-        delta = piv.get("A", 0) - piv.get("B", 0)
+        delta = piv.get("B", 0) - piv.get("A", 0)
         frames.append(delta.rename("delta"))
     D = pd.concat(frames).sort_index()
     out = pd.DataFrame({"delta": D})

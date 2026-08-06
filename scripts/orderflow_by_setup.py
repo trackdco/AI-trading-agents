@@ -16,6 +16,8 @@ import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
+from src.engine import footprint as _fp  # band-clean chokepoint
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 NY = "America/New_York"
 
@@ -28,6 +30,7 @@ def load_fp_all():
         if not p.exists():
             continue
         d = pd.read_parquet(p, columns=["ts_minute", "price", "side", "volume"])
+        d = _fp.band_filter(d, _fp.cached_front_month_bands())   # front-month band (programme defect D5)
         ny = d.ts_minute.dt.tz_convert(NY)
         hm = ny.dt.hour.values * 60 + ny.dt.minute.values
         keep = (hm >= 475) & (hm <= 620)

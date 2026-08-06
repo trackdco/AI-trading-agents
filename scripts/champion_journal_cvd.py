@@ -20,6 +20,8 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.backtest.engine import load_backtest_config, simulate  # noqa: E402
 from src.engine.triggers import Trigger  # noqa: E402
+from src.engine import footprint as _fp  # band-clean chokepoint
+
 
 NY = "America/New_York"
 MONTHS = ["2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07"]
@@ -52,13 +54,9 @@ def load_cvd_delta():
     SIGN VERIFIED EMPIRICALLY (scratchpad/sign_test.py): corr(A-B, price change) = -0.66,
     i.e. side 'A' = aggressive SELL (A-heavy minutes push price DOWN), side 'B' = aggressive BUY.
     So buy-sell = B - A. (Fable5 caught the original A=buy mislabel; price test confirms.)"""
-    frames = []
-    for f in CVD:
-        d = pd.read_parquet(f"data/reference/cvd/{f}.parquet", columns=["ts_minute", "side", "volume"])
-        frames.append(d)
-    d = pd.concat(frames, ignore_index=True)
-    d["signed"] = np.where(d["side"] == "B", d["volume"], -d["volume"])   # B(buy) - A(sell)
-    g = d.groupby("ts_minute")["signed"].sum().rename("delta")
+    d = _fp.load_footprint([f"data/reference/cvd/{f}.parquet" for f in CVD],
+                           _fp.cached_front_month_bands())
+    g = _fp.signed_delta(d, by=("ts_minute",)).rename("delta")
     g.index = g.index.tz_convert(NY)
     return g.sort_index()
 

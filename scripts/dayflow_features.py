@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.engine.indicators import daily_vwap
+from src.engine import footprint as _fp  # band-clean chokepoint
+
 NY = "America/New_York"
 FP_FILES = ["footprint_q3_2025", "footprint_q4_2025", "footprint_feb_mar2026",
             "footprint_apr2026", "footprint_may_jul2026"]
@@ -31,6 +33,7 @@ def minute_table():
         if not p.exists():
             continue
         d = pd.read_parquet(p, columns=["ts_minute", "price", "side", "volume"])
+        d = _fp.band_filter(d, _fp.cached_front_month_bands())   # front-month band (programme defect D5)
         ny = d.ts_minute.dt.tz_convert(NY)
         d = pd.DataFrame({"mi": ny.dt.floor("min"), "price": d.price.values,
                           "side": d.side.values, "volume": d.volume.values})

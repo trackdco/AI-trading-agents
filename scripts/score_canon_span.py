@@ -76,19 +76,40 @@ def sgn_conf(v, direction) -> int:
     return int((v > 0 and direction == "long") or (v < 0 and direction == "short"))
 
 
-def minute_tape(spec: dict) -> pd.DataFrame:
+def minute_tape(spec: dict, bands: dict | None = None) -> pd.DataFrame:
     """Per-minute b/a/vol/delta/vwp. fp_minutes is already in this shape; the holdout
-    footprints are raw tick-level and get folded down to it here — same columns either way."""
+    footprints are raw tick-level and get folded down to it here — same columns either way.
+
+    delta = b - a, i.e. BUYER-aggressor positive ('B' lifted the offer). Pinned by
+    tests/test_footprint_convention.py; do not flip it.
+
+    bands: optional {date: (lo, hi)} front-month price band, from
+    src.engine.footprint.front_month_bands() or bands_from_bars(). When supplied, ticks
+    outside the band are dropped — the raw pull carries calendar-spread and back-month
+    prints (3.91% of London-window volume, concentrated on roll weeks; programme defect
+    D5). Left None by default and WARNED about rather than defaulted on, because the
+    glob branch also serves the sealed-holdout spec and deriving bands for those days
+    would itself be a holdout look (VALIDATION-PROCESS §4.1).
+    """
     tape = spec["tape"]
     if tape.endswith(".parquet") and "*" not in tape:
         M = pd.read_parquet(ROOT / tape)
         M.index = pd.DatetimeIndex(M.index)
         M = M.sort_index()
     else:
+        if bands is None:
+            print("[minute_tape] WARNING: no front-month bands supplied — raw tape is "
+                  "NOT band-cleaned; calendar-spread/back-month prints are included")
         frames = []
         for p in sorted(glob.glob(str(ROOT / tape))):
             d = pd.read_parquet(p, columns=["ts_minute", "price", "side", "volume"])
             d["volume"] = d["volume"].astype("int64")   # uint32 wraps on the B-A subtraction
+            if bands is not None:
+                _day = pd.to_datetime(d.ts_minute, utc=True).dt.tz_convert(
+                    "Europe/London").dt.date
+                _lo = _day.map(lambda x: bands.get(x, (np.nan, np.nan))[0])
+                _hi = _day.map(lambda x: bands.get(x, (np.nan, np.nan))[1])
+                d = d.loc[(d.price >= _lo) & (d.price <= _hi)]
             ny = pd.to_datetime(d.ts_minute, utc=True).dt.tz_convert(NY)
             f = pd.DataFrame({"mi": ny.dt.floor("min"), "price": d.price.to_numpy(),
                               "side": d.side.to_numpy(), "volume": d.volume.to_numpy()})
