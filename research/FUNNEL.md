@@ -417,3 +417,50 @@ PF) / VARIABLE LIFT (each stage's numbers) / SPLITS / NEXT RUNG / CANON SHAPE.
 - STATUS: book gates PASSED. Ship-track remaining for the range fade:
   chained-agents-vs-mechanical rung → shadow → Angus sign-off → two-party
   arming. Pre-market pair: same track at smaller weight, Angus's pick.
+
+## london-canon-rebuild (LDN-CAN-01) — Angus's canon geometry in London — **L2 complete, raw is negative, risk floor validated**
+- STAGE: L0 census → L1 fills → L1b setup dedup → **L2 outcomes**. L3 (features + trial) owed.
+- METHOD OF RECORD: `docs/HANDOFF-london-rebuild.md`, written 2026-07-28 and never run until now.
+  Prereg `docs/PREREG-london-canon-rebuild.md`.
+- **GATES, both passed before any number was reported.** L0 parity vs the cached London
+  stream: byte-identical on 3 days incl. a DST-misaligned one (39/39, 53/53, 16/16). L1
+  engine-subset fidelity: 20 engine fills over 6 sessions, every one reproduced on trigger,
+  fill minute and entry price. L2 lookback invariance: 7d identical to 30d on 105 outcomes.
+- FUNNEL: **8,723 triggers** (33.0/session, 264 sessions) → 7,239 filled → **1,426 setups**
+  after multi-TF dedup + the VWAP ruling (5.40/session) → **1,239 engine outcomes** (4.69/session).
+- **RAW P&L, 1 lot, costs in, no risk gate, no caps: n=1,239 WR 28% PF 0.91 −$8,899
+  R/trade −0.173, maxDD $13,076.** Era-stable and era-negative: 2025 PF 0.91 / 2026 PF 0.91.
+- **NO PATTERN SURVIVES BOTH ERAS.** B2 0.88/1.32, B 1.05/0.57, A 0.63/1.24 — every one flips.
+- **THE FINDING — the 9.5pt London risk floor is real, and it was measured not imported.**
+  The handoff called `LON_RISK_MIN = 9.5` a hypothesis to re-test on the honest population:
+
+  | risk band | n | WR | PF | $ 1-lot | R/trade |
+  |---|---:|---:|---:|---:|---:|
+  | 0–3 pt | 270 | **10%** | **0.37** | −$4,854 | −0.708 |
+  | 3–5 pt | 238 | 24% | 0.78 | −$2,748 | −0.104 |
+  | 5–7 pt | 200 | 26% | 0.81 | −$2,861 | −0.063 |
+  | 7–9.5 pt | 191 | 37% | 0.90 | −$1,478 | −0.027 |
+  | **9.5–15 pt** | 216 | **40%** | **1.20** | **+$5,125** | **+0.110** |
+  | 15–25 pt | 97 | 43% | 0.89 | −$1,815 | −0.039 |
+  | 25+ pt | 27 | 41% | 0.97 | −$269 | −0.013 |
+
+  Below 9.5pt: PF 0.77, −$11,940. At/above: PF 1.06, +$3,041, 41% WR. Monotone improving to
+  the floor, then a BAND not a ray — 15pt+ gives it back. The 0–3pt band at 10% WR is the
+  same micro-stop kill zone NY found at sub-7pt (11–15% WR).
+- EXITS: 68% straight stop, 21% partial+stop, 8% partial+target, **3% clean target**.
+  With a hard 2R floor on structural targets, this book mostly does not reach its target.
+- ARMS, reported and not selected on: `vs_htf` (highest-TF entry) is WORSE than the
+  causal default `vs_first` (−$14,538 vs −$8,899) — the causality-safe choice is also the
+  better one. The VWAP ruling helped: `setup_first` −$10,559 → `vs_first` −$8,899, WR 24%→28%.
+- **BUG CAUGHT AT L2, cost 11.8% of the population.** The engine's NY news rule ("high-impact
+  pre-open day → no entries until 09:30") was vetoing every London trigger on a US data day —
+  408 of 409 such releases land at 08:15 ET or later, hours after the London trade is flat.
+  1,086 candidates on 34 sessions. Scoped off for London; a UK/EU stand-down is owed at L4.
+- NEXT: **L3 — features + trial.** Depth, tape, VWAP geometry, every old London check
+  (W/FAR/ROOM/ASIA) re-derived from scratch at re-derived thresholds, with a family-wise
+  permutation null. The NY rebuild killed 4 of its checks and demoted 5 more; the prior is
+  that London loses checks too.
+- CANON SHAPE: **this is the canon's own arc.** NY's rebuild found "raw structure breaks even;
+  two wall checks carry the edge." London raw is breakeven-to-negative at the right risk band
+  and negative below it. Whether depth carries it here is exactly what L3 answers.
+- **NEVER SPENT:** 2023/24, the six sealed months, `depth_london_2023_24`.
