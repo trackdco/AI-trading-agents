@@ -328,3 +328,71 @@ depth pass at family-wise p = 0.42.
 **Depth candidates enter the null at the CAUSAL read** (`p1_*`, fill-bar open) per
 `research/findings/LDN-depth-read-one-bar-late.md`. The contaminated fill-bar-close columns
 are excluded from the search entirely and cannot be selected.
+
+---
+
+## 9. ENTRY MODEL CHANGE — market on the close-through (ANGUS 2026-08-05)
+
+> *"maybe we re build it around the displacement through the level straight up instead of a
+> retest. this would make sense because you can see the flow upon the candle you are
+> entering off basically"* … *"boom. lets market order on the closure through the level. re
+> run the entire thing and we will re run the entire winners vs losers audit"*
+
+**This reverses a standing ruling and that is recorded, not buried.** The repo carries
+*"ANGUS 29-Jul: i never market order"*, and `scripts/build_l1_fills.py` states the E4 market
+book is *"deliberately not rebuilt"*. Superseded by the above, on Angus's call.
+
+### The evidence that motivated it, INCLUDING the part that weakens it
+
+**1,190 of 8,723 candidates (14%) never fill on the retest** — price closed through the
+level and never came back. Measured from the trigger candle's close (the proposed entry),
+next 90 minutes, in the trade direction:
+
+| | median | p75 | p90 |
+|---|---:|---:|---:|
+| favourable excursion | **47.8 pt** | 71.2 | 116.3 |
+| adverse excursion | **5.0 pt** | 14.2 | 29.8 |
+
+MFE beat MAE on **89%**.
+
+**The adverse figure is partly DEFINITIONAL and is not evidence.** "Never filled" means
+price did not return to the level, so a small adverse excursion is guaranteed by the
+selection. The favourable figure is not definitional — declining to retrace does not oblige
+a 48-point run — but the sample is still conditioned on not-retracing. **Suggestive, not
+settled.** The head-to-head below is what settles it.
+
+### The two arms, both already implemented in the engine
+
+`src/backtest/engine.py::_is_market_entry`, `cfg.entry_variant`:
+
+- **`EC` — market on displacement, resting limit on rejection blocks. THE NEW DEFAULT.**
+  Chosen because it is what Angus described across two messages, not because it is expected
+  to win: the close-through he named is a *displacement*, and he separately specified
+  rejection blocks as *"limit order the rejection block, or whatever is closest to price"*
+  (§0.1.1). The engine's own comment calls `EC` *"ANGUS's actual execution"*.
+- **`E4` — market on everything. DECLARED CHALLENGER**, run so the contextual split is
+  measured rather than assumed. It does not displace `EC` on in-sample rank (§6.0.1).
+- **`E3` — the retest limit. Retained as the CONTROL**, so this is a head-to-head on an
+  identical trigger set and not two separate strategies.
+
+### What this re-opens, declared in advance so nothing is quietly inherited
+
+1. **Risk distribution.** Entering at the candle's close instead of back at the level puts
+   the stop further away. **The L2 9.5pt risk-band result is VOID for the new arms** and
+   must be re-measured; it is not carried across.
+2. **The event universe.** Every displacement trigger now becomes a trade — no cancels, no
+   `cancelled_window_end`. The dedup rule (§3.1) and the VWAP-touch ruling still apply and
+   are unchanged.
+3. **The whole L3 trial and its null**, re-run from scratch on the new outcomes. No feature
+   result carries over.
+4. **A measurement benefit, and it is the reason this is worth the compute.** With entry at
+   the trigger candle's close, **the decision moment and the entry moment are the same
+   instant**. The book and tape at that candle are exactly what was acted on — no approach
+   bias, no anchor ambiguity, no fill-timing question. The defect class that consumed L3
+   (`research/findings/LDN-depth-read-one-bar-late.md`) cannot arise for these arms.
+
+### Bars, unchanged
+
+Objective stays profit factor at strict cost with max drawdown beside it. Era- and
+half-consistency required. The L3 null keeps both declared bars from §8 (family-wise
+p ≤ 0.01 AND 2026 clearing independently). **No holdout look is spent by any of this.**
