@@ -108,6 +108,52 @@ My reading is (2): both passes did happen, the corrected one is a real trial set
 inflating the denominator is the conservative direction for a deflation bar. But this is a
 ledger-integrity decision and it is Angus's.
 
+---
+
+## RULING AND EXECUTION — ANGUS 2026-08-06, option 2
+
+**And the scope was larger than the 31 rows I reported.** I filtered on the two *depth*
+features and missed that the **inverted delta sign** contaminates the four tape features
+in the same pass. The true set:
+
+| cause | features | rows |
+|---|---|---:|
+| inverted delta sign (`A` signed positive) | `delta_entry`, `delta_pre5`, `delta_sweep`, `absorb_extreme` | 64 |
+| ~60s depth lookahead | `book_imb`, `wall_ratio_opp` | 31 |
+| | **total** | **95** |
+
+Split LDN-OBK-01 47 / LDN-PO3-01 48; by stage, 71 `L3 flow` and 24 `autopsy`. The 8
+`disp_frac` / `width_rel` autopsy rows are pure geometry and are **not** affected.
+
+**Executed:** ledger **810 -> 903 rows**. No row edited, none deleted.
+
+- **93 corrected rows appended** under the distinguished key suffix `[v2 clock+sign]`,
+  regenerated from the corrected artifact by calling the same `feature_table()` and
+  `cuts()` the originals came from -- not re-typed from markdown.
+- **93 originals marked** `status = "superseded"`, `superseded_by = <corrected key>`.
+  Zero dangling pointers.
+- **2 originals marked** `status = "superseded_no_counterpart"` -- the corrected pass
+  produces **no equivalent cell**, because the clock fix changes which trades carry a
+  book read at all and `n` fell below the reporting threshold:
+  `LDN-PO3-01 - L3 flow F1 wall_ratio_opp mid - 2026` and
+  `LDN-PO3-01 - autopsy F1 cut wall_ratio_opp high - 2025+2026`.
+  `superseded_by` is null on these because there is genuinely nothing to point at.
+- **39 LDN-CAN-01 `dep_*` rows marked** `status = "stale"` -- effect 0.0, count without
+  variance, never selected on. No correction.
+- **1 corrected-pass cell NOT charged**, per the no-trials instruction:
+  `LDN-OBK-01 - L3 flow A/S1 wall_ratio_opp mid - 2026` newly qualifies under the
+  corrected clock and has no original to supersede. It is a genuine new cell and charging
+  it is a separate decision.
+
+**DSR impact: negligible.** 812 -> 903 trials, effect sd 0.1821 -> **0.1811**, deflation
+bar **+0.5820 -> +0.5843** (+0.4%). Adding 93 rows raises the count and very slightly
+lowers the variance; the two nearly cancel.
+
+**Schema.** `scripts/ledger_io.COLUMNS` gains `status` and `superseded_by`, with permitted
+`status` values enumerated in `STATUS`. `src/validation/trial_ledger.py` no longer writes
+the derived parquet -- it reads and writes the canonical JSONL through `scripts.ledger_io`,
+and `tests/test_ledger_integrity.py` fails if any module writes the parquet directly.
+
 ## The claim that survives, and the one that does not
 
 **Survives:** a lookahead can only *inflate* apparent edge, so every null established on

@@ -565,3 +565,43 @@ Also flagged there: this run used the canon's **absolute** thresholds (`WALLSZ >
 `WALLFAR >= 2.75`) where §5.12.15 now prefers quantile/relative ones, and the basis stamp
 (§5.12.13) for every depth conclusion here is 1,168 trades with book state at the L1
 geometry, $160-risk, 1pt/2pt costs.
+
+---
+
+## §0 CORRECTION — the L3 flow-pass numbers below are SUPERSEDED (2026-08-06)
+
+**The verdict does not change. The numbers, and the reason, do.** Sections quoting the L3
+flow pass are retained as the record of what was run and reported; they must not be
+quoted. Corrected values: `output/london_obk_flow.md`, regenerated today.
+
+Three defects in `scripts/london_obk_flow.py` fed every flow feature in that pass
+(`docs/AUDIT-depth-lookahead-exposure-by-family.md`):
+
+1. **Inverted delta sign** — `A` (seller-aggressor) was signed positive; the convention is
+   `B − A`. This inverts the terciles of `delta_entry`, `delta_pre5`, `delta_sweep` and
+   `absorb_extreme`: what was the "high" cohort is the "low" cohort.
+2. **No band clean** — the tape was read without `price`, so calendar-spread and
+   back-month prints were included.
+3. **~60-second depth lookahead** — `book_imb` and `wall_ratio_opp` were read from a
+   snapshot labelled ~60s before it was observed
+   (`docs/FINDING-london-depth-timestamp-lookahead.md`).
+
+**140 of 140 comparable cells moved.** The two numbers this card quotes:
+
+| quoted here | corrected |
+|---|---|
+| `delta_sweep` 2025 H2: low −0.271 · mid −0.241 · **high −0.339** | low **−0.341** · mid **−0.244** · high **−0.272** — the terciles swap, as a sign flip must do |
+| *"`delta_entry` high in 2026 is the strongest cell in the entire pass (+0.448R, PF 1.56)"* | **−0.099R, PF 0.85.** It is not the strongest cell; it is negative |
+
+**The kill stands, on a different reason.** This card says `delta_sweep` "pointed the
+wrong way" in 2025 H2. Under the corrected sign 2025 H2 points **with** the prediction
+(high −0.272 vs low −0.341). 2026 points against it. **The kill is the era-flip, not a
+wrong-way 2025** — an era-flip is the absence of confirmation, not a weak one, so the
+conclusion is unchanged and its stated basis was wrong.
+
+The claim that *"the controls did as well or better"* also needs re-reading: the control
+cell that carried it is now negative.
+
+**Ledger:** the 95 affected `LDN-PO3-01` / `LDN-OBK-01` rows are marked `superseded` with
+`superseded_by` pointing at the corrected key (suffix `[v2 clock+sign]`), per the ANGUS
+ruling of 2026-08-06. Both passes sit in the DSR denominator; neither was deleted.

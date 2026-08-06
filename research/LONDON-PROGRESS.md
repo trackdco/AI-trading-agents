@@ -97,6 +97,25 @@ different deflation bars. §2.4's effective-trial clustering puts the truth betw
 
 ## Session log (newest first)
 
+- **2026-08-06 (ledger ruling + two fixes)** — ANGUS ruled option 2 on the corrected pass.
+  **Scope was larger than I reported:** I filtered on the two depth features and missed
+  that the inverted delta sign contaminates the four tape features too — **95 rows, not
+  31** (64 sign / 31 lookahead; OBK 47, PO3 48). Ledger **810 → 903**: 93 corrected rows
+  appended under `[v2 clock+sign]`, 93 originals marked `superseded` with a pointer, 2
+  marked `superseded_no_counterpart` (the cell no longer qualifies under the corrected
+  clock), 39 CAN-01 `dep_*` marked `stale`. **No row edited or deleted.** One newly
+  qualifying cell NOT charged. **DSR impact negligible** — effect sd 0.1821 → 0.1811,
+  deflation bar +0.5820 → **+0.5843**. Two fixes: `src/validation/trial_ledger.py` now
+  reads and writes the canonical JSONL through `scripts.ledger_io` (it wrote the derived
+  parquet, which is how a script could "record 1 trial" and leave the canonical file
+  untouched), pinned by a test that fails if any module writes the parquet directly; and a
+  sweep for prose that cannot regenerate with its own table —
+  `docs/AUDIT-hardcoded-prose-in-generated-docs.md`, 20 strings across 11 files, **one was
+  the same defect** (`l1_london_card.py`, fixed), the other 19 are citations, historical
+  records or definitions. `research/candidates/london-po3-ifvg.md` carried stale flow
+  numbers and now has a §0 CORRECTION. Also fixed `london_obk_autopsy.py`'s PEP 701
+  f-string, which made it unimportable and unscannable on this interpreter.
+
 - **2026-08-06 (Phase 4 follow-up)** — Regeneration, migration, per-family audit, flow
   verdict. No trials charged; the canonical ledger stays at **810 rows**. (i) **Regenerated**
   `output/london_obk_flow.{parquet,md}` on the corrected sign/band/clock: **140 of 140

@@ -24,18 +24,37 @@ the same scale and their variance is the quantity DSR actually wants.
 APPEND-ONLY BY DESIGN. `record()` never rewrites a row. A trial that was run happened, and
 a ledger you can quietly shrink is not a ledger — it is the thing DSR exists to defend
 against.
+
+STORAGE IS `scripts/ledger_io`, NOT PARQUET. This module wrote
+`output/trial_ledger.parquet` directly until 2026-08-06, which had stopped being the
+canonical store: the ledger had already forked into four divergent copies precisely
+because parquet is a binary blob git cannot merge, and the fix was sorted JSONL with
+`merge=union`. A second writer pointed at the derived artifact meant a script could
+"record 1 trial" and leave the canonical file untouched — which is exactly what happened
+when the corrected OBK/PO3 flow pass was re-run, and it took a row-count comparison to
+notice. Every read and write here now goes through `scripts.ledger_io`; the parquet is a
+build artifact regenerated from the JSONL and nothing writes it directly.
+`tests/test_ledger_integrity.py` fails if anything does.
 """
 from __future__ import annotations
 
 import math
+import sys
 from pathlib import Path
 from statistics import NormalDist
 
 import pandas as pd
 
-_PHI = NormalDist()
-LEDGER = Path(__file__).resolve().parents[2] / "output" / "trial_ledger.parquet"
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from scripts import ledger_io  # noqa: E402
 
+_PHI = NormalDist()
+#: The canonical store. Kept as a name because callers and docs refer to it, but it is
+#: now the JSONL, not the parquet.
+LEDGER = ledger_io.LEDGER
+
+#: The subset every caller must supply. `ledger_io.COLUMNS` is the full schema and
+#: carries the provenance fields (`status`, `superseded_by`) that recording does not set.
 COLUMNS = [
     "family",        # e.g. LDN-TRAP-01
     "trial",         # short name of the specific statistic
@@ -61,23 +80,34 @@ def t_from_one_sided_p(p1: float) -> float:
 
 
 def load() -> pd.DataFrame:
-    if not LEDGER.exists():
-        return pd.DataFrame(columns=COLUMNS)
-    return pd.read_parquet(LEDGER)
+    return ledger_io.read()
 
 
 def record(rows: list[dict]) -> pd.DataFrame:
-    """Append trials. Never rewrites existing rows."""
+    """Append trials to the canonical JSONL. Never rewrites an existing row's numbers.
+
+    A key that already exists is left ALONE rather than overwritten. `ledger_io.append`
+    overwrites on collision -- correct for a re-run of the same declared arm -- but this
+    module's contract is append-only, and the two differ exactly when a re-run produces
+    different numbers from the same key. That case is a supersession, not an update, and
+    it is handled by appending under a distinguished trial key with `superseded_by` set
+    on the original (ANGUS ruling 2026-08-06). Silently taking the new numbers would
+    erase the fact that both passes ran.
+    """
     if not rows:
         return load()
     new = pd.DataFrame(rows)
     missing = [c for c in COLUMNS if c not in new.columns]
     if missing:
         raise ValueError(f"trial rows missing required columns: {missing}")
-    out = pd.concat([load(), new[COLUMNS]], ignore_index=True)
-    LEDGER.parent.mkdir(parents=True, exist_ok=True)
-    out.to_parquet(LEDGER, index=False)
-    return out
+    cur = load()
+    seen = set(zip(cur.family, cur.trial, cur.era))
+    fresh = [r for r in new[COLUMNS].to_dict("records")
+             if (r["family"], r["trial"], r["era"]) not in seen]
+    if not fresh:
+        return cur
+    ledger_io.write(pd.concat([cur, pd.DataFrame(fresh)], ignore_index=True))
+    return load()
 
 
 def n_trials(df: pd.DataFrame | None = None) -> int:

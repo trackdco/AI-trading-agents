@@ -159,6 +159,7 @@ def cuts(T: pd.DataFrame, arm: str) -> tuple[str, list[dict]]:
         L.append(f"| {name} | {fmt(bad.get('2025'))} | {fmt(bad.get('2026'))} | "
                  f"{'**LEGAL**' if legal else 'no'} | "
                  f"{kept_b['r']:+.3f} | {kept_s['r']:+.3f} | {derisk_r:+.3f} |")
+        _legal_txt = "LEGAL" if legal else "illegal (cohort not bad in every era)"
         rows.append({
             "family": "LDN-PO3-01" if arm == "F1" else "LDN-OBK-01",
             "era": "2025+2026", "prereg": PREREG,
@@ -166,9 +167,12 @@ def cuts(T: pd.DataFrame, arm: str) -> tuple[str, list[dict]]:
             "stat_type": "mean", "estimate": round(kept_b["r"], 4), "n": kept_b["n"],
             "t_stat": round(kept_b["t"], 4),
             "effect": round(trial_ledger.effect_from_t(kept_b["t"], kept_b["n"]), 6),
-            "verdict": (f"autopsy cut {'LEGAL' if legal else 'illegal (cohort not bad in '
-                        'every era)'}; kept R base {kept_b['r']:+.3f} strict "
-                        f"{kept_s['r']:+.3f}; de-risk {derisk_r:+.3f}"),
+            # Nested same-type quotes inside an f-string are PEP 701 (Python 3.12+).
+            # This repo runs 3.11, so the module could not be imported OR AST-scanned --
+            # which is why tests/test_footprint_convention.py reported it unscannable.
+            # Hoisted to a plain name; identical output, parses everywhere.
+            "verdict": (f"autopsy cut {_legal_txt}; kept R base {kept_b['r']:+.3f} "
+                        f"strict {kept_s['r']:+.3f}; de-risk {derisk_r:+.3f}"),
         })
     baseline_b, baseline_s = stats(sub, 1.0), stats(sub, 2.0)
     L += ["", f"**Unconditioned baseline for reference: R base {baseline_b['r']:+.3f}, "

@@ -8,10 +8,14 @@ These tests exist so a careless merge cannot repeat that silently.
 from __future__ import annotations
 
 import json
+import re
+from pathlib import Path
 
 import pytest
 
 from scripts.ledger_io import KEY, LEDGER, read, sort_key
+
+ROOT = Path(__file__).resolve().parents[1]
 
 #: Monotonic floor. The ledger may only grow. RAISE this deliberately when trials are
 #: added; a merge that drops rows fails here instead of losing evidence quietly.
@@ -85,3 +89,48 @@ def test_round_trip_is_stable():
     from scripts.ledger_io import write
     write(read(), derive_parquet=False)
     assert LEDGER.read_text() == before, "write(read(x)) != x -- serialisation is unstable"
+
+
+# ------------------------------------------------- the parquet is derived, not canonical
+
+_PARQUET = re.compile(
+    r"""to_parquet\s*\(\s*[^)]*trial_ledger        # explicit path in the call
+        | trial_ledger\.parquet[^\n]{0,80}to_parquet
+        | LEDGER\s*=\s*[^\n]*trial_ledger\.parquet  # a module pointing its writer at it
+    """, re.X | re.S)
+#: `scripts/ledger_io.py` derives the parquet from the JSONL on every write -- that is the
+#: one legitimate writer. `scripts/ledger_io.py --from-parquet` reads it for the one-time
+#: conversion. The test file itself names the path to assert on it.
+_PARQUET_OK = {"scripts/ledger_io.py", "tests/test_ledger_integrity.py"}
+
+
+def test_nothing_writes_the_derived_parquet_directly():
+    """The JSONL is canonical; the parquet is a build artifact regenerated from it.
+
+    `src/validation/trial_ledger.py` wrote the parquet directly until 2026-08-06, so a
+    script could record a trial into the derived artifact and leave the canonical file
+    untouched -- which happened, and was caught only by comparing row counts by hand.
+    A second writer pointed at a derived store re-creates the exact fork that made JSONL
+    necessary in the first place, and it does it invisibly.
+    """
+    offenders = []
+    for base in ("scripts", "src"):
+        for p in sorted((ROOT / base).rglob("*.py")):
+            rel = p.relative_to(ROOT).as_posix()
+            if rel in _PARQUET_OK:
+                continue
+            if _PARQUET.search(p.read_text()):
+                offenders.append(rel)
+    assert not offenders, (
+        "these write output/trial_ledger.parquet directly instead of going through "
+        "scripts.ledger_io, so rows can land in the derived artifact and never reach the "
+        "canonical JSONL: " + ", ".join(offenders))
+
+
+def test_the_canonical_store_is_the_jsonl_everywhere_it_is_named():
+    """`trial_ledger.LEDGER` must BE the JSONL, not merely coexist with it."""
+    from src.validation import trial_ledger as tl
+    assert tl.LEDGER == LEDGER, (
+        f"src.validation.trial_ledger.LEDGER is {tl.LEDGER}, expected {LEDGER}. "
+        "A module holding its own idea of where the ledger lives is how the fork starts.")
+    assert tl.load().shape[0] == len(_rows()), "load() disagrees with the canonical file"

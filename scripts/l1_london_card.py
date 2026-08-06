@@ -124,14 +124,29 @@ def main() -> int:
     for p in ("B2", "B", "A"):
         L.append(f"| `{p}` | {(fl['pattern'] == p).mean():.1%} | "
                  f"{(keep['pattern'] == p).mean():.1%} |")
-    L += ["", "The raw substrate is **69.6% B2** — wick into a level, close back, fade it.",
-          "After the floor it is **55.8% B**, continuation. Applying a 9.5-point stop",
-          "minimum silently converts a fade book into a trend book, because B2's stop sits",
-          "just beyond a wick (median 2.75 pt) while B's sits beyond a displacement origin",
-          "(median 7.50 pt).", "",
-          "It selects timeframe the same way: 5-minute triggers clear the floor 26.0% of the",
-          "time, 1-minute triggers 8.4%.", "",
-          "**No decision is taken here.** The floor is recorded as an L2 arm class, to be",
+    # Every number in this paragraph is READ FROM THE DATA. It was hardcoded prose sitting
+    # directly under a computed table of the same quantities until 2026-08-06 -- the same
+    # defect that left `london_obk_flow.md` quoting +0.448R for a cell that had become
+    # -0.099R once its inputs were corrected. A sentence that cannot regenerate will
+    # eventually contradict the table above it, and it will look authoritative doing so.
+    _pre = {p: (fl["pattern"] == p).mean() for p in ("B2", "B", "A")}
+    _post = {p: (keep["pattern"] == p).mean() for p in ("B2", "B", "A")}
+    _top_pre = max(_pre, key=_pre.get)
+    _top_post = max(_post, key=_post.get)
+    _med = {p: fl.loc[fl["pattern"] == p, "risk_intended"].median() for p in ("B2", "B")}
+    _tf = {tf: (g.loc[g["arm_none"], "risk_intended"] >= LON_RISK_MIN).mean()
+           for tf, g in F.groupby("tf")}
+    _tf_hi = max(_tf, key=_tf.get) if _tf else None
+    _tf_lo = min(_tf, key=_tf.get) if _tf else None
+    L += ["", f"The raw substrate is **{_pre[_top_pre]:.1%} `{_top_pre}`**. After the floor "
+              f"the largest share is **{_post[_top_post]:.1%} `{_top_post}`**. Applying a "
+              f"{LON_RISK_MIN}-point stop minimum reshapes the book, because `B2`'s stop sits "
+              f"just beyond a wick (median {_med['B2']:.2f} pt) while `B`'s sits beyond a "
+              f"displacement origin (median {_med['B']:.2f} pt).", ""]
+    if _tf_hi is not None and _tf_hi != _tf_lo:
+        L += [f"It selects timeframe the same way: `{_tf_hi}` triggers clear the floor "
+              f"{_tf[_tf_hi]:.1%} of the time, `{_tf_lo}` triggers {_tf[_tf_lo]:.1%}.", ""]
+    L += ["**No decision is taken here.** The floor is recorded as an L2 arm class, to be",
           "tested by risk band on outcomes the way NY tested its 7–60 band — not applied",
           "because it is what the old book did.", ""]
 

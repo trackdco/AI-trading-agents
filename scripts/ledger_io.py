@@ -30,7 +30,31 @@ LEDGER = ROOT / "output/trial_ledger.jsonl"
 DERIVED = ROOT / "output/trial_ledger.parquet"      # build artifact, gitignored
 KEY = ("family", "trial", "era")
 COLUMNS = ["family", "trial", "era", "prereg", "stat_type", "estimate", "n", "t_stat",
-           "effect", "verdict", "programme", "researcher", "cluster", "series_path"]
+           "effect", "verdict", "programme", "researcher", "cluster", "series_path",
+           # Provenance, added 2026-08-06 by ANGUS ruling on the corrected-clock pass.
+           # A trial that was run happened, so a row whose INPUTS turned out to be
+           # defective is never edited and never deleted -- it is marked, and the
+           # corrected pass is appended beside it under a distinguished trial key.
+           # Both rows then sit in the DSR denominator, which is the conservative
+           # direction for a deflation bar: both passes really were run.
+           "status",          # see STATUS below
+           "superseded_by"]   # the trial key of the corrected row, when one exists
+
+#: Values `status` may take. Anything else is a typo, and a typo in a provenance field
+#: is worse than a blank one because it reads as deliberate.
+#:
+#:   superseded                 -- inputs were defective; a corrected row exists, and
+#:                                 `superseded_by` names its trial key
+#:   superseded_no_counterpart  -- inputs were defective and the corrected pass produces
+#:                                 NO equivalent cell (e.g. n fell below the reporting
+#:                                 threshold once the defect was fixed). `superseded_by`
+#:                                 is null because there is genuinely nothing to point
+#:                                 at -- which is information, not a missing field.
+#:   stale                      -- inputs were defective but no correction is warranted:
+#:                                 the row carries effect = 0.0, so it contributes trial
+#:                                 COUNT to the DSR denominator and no VARIANCE, and it
+#:                                 was never selected on.
+STATUS = {None, "superseded", "superseded_no_counterpart", "stale"}
 
 
 def _norm(v):
