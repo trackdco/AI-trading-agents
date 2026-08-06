@@ -104,3 +104,31 @@ friction.
 
 The 2023/24 sealed days and `depth_london_2023_24` are **untouched** and stay that way
 until a candidate has earned its one look.
+
+---
+
+## 7. AMENDMENT (2026-08-05, before any result was read)
+
+**The first implementation did not match this prereg and produced zero events.**
+
+§3 declares the thin side must sit in *"its bottom declared quantile"*. The code compared
+the ratio to a fixed **0.25** — an **absolute threshold**, which is precisely the defect
+§3 exists to prevent, written into the first script authorised by this document.
+
+It was also unreachable. Measured over five sample days, the ratio of a side's resting
+size to its own trailing median has **min 0.562 and 1st percentile 0.645** — aggregating
+ten levels across ±10 points smooths out the collapse the trigger is trying to see. A
+0.25 cut can never fire, and the census duly reported the premise dead.
+
+**Corrected to what §3 actually declared:** `rt` is judged against **its own trailing
+distribution** — bottom decile over a 60-minute window, shifted so the cut is computed
+strictly before the minute being judged.
+
+**This is implementing the prereg, not moving the goalposts.** The declared quantity was
+always a quantile; the code was wrong. Recorded here rather than silently patched, and
+the kill line in §4 is unchanged.
+
+**Carried forward as a real limitation:** aggregate depth across ten levels is far more
+stable than expected. If the corrected version also finds nothing, the honest reading is
+that *depletion is not visible at this aggregation* — top-of-book would be sharper — and
+that is a finding about the measurement, not about the market.

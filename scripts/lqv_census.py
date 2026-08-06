@@ -39,7 +39,8 @@ PREREG = "docs/PREREG-liquidity-vacuum.md"
 
 BAND_PTS = 10.0        # depth band around mid, in points
 WIN = 20               # trailing window (minutes) for each side's own norm
-Q_THIN = 0.25          # thin side in its bottom quartile vs own norm
+Q_THIN = 0.10          # thin side in the bottom DECILE of its OWN ratio distribution
+QWIN = 60              # trailing window (minutes) that distribution is measured over
 SEED = 20260805
 HORIZONS = (5, 15, 30)
 
@@ -75,7 +76,14 @@ def events(g: pd.DataFrame) -> list[dict]:
         nt = g[thin].rolling(WIN, min_periods=WIN).median().shift(1)
         nk = g[thick].rolling(WIN, min_periods=WIN).median().shift(1)
         rt, rk = g[thin] / nt.replace(0, np.nan), g[thick] / nk.replace(0, np.nan)
-        cond = (rt <= Q_THIN) & (rk >= 1.0)
+        # Q_THIN IS A QUANTILE, NOT A RATIO. The first version compared rt to a fixed
+        # 0.25 -- an absolute threshold, the exact defect this prereg exists to avoid --
+        # and it was unreachable: aggregate side size never falls below 0.56x its own
+        # trailing median (min 0.562, 1st pct 0.645 over five sample days), so the census
+        # returned zero events. Judging rt against ITS OWN trailing distribution is both
+        # what the prereg declared and adaptive by construction.
+        cut = rt.rolling(QWIN, min_periods=QWIN // 2).quantile(Q_THIN).shift(1)
+        cond = (rt <= cut) & (rk >= 1.0)
         fresh = cond & ~cond.shift(1, fill_value=False)
         for ts in g.index[fresh.fillna(False)]:
             out.append({"ts": ts, "thin": thin,
