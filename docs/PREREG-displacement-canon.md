@@ -192,6 +192,28 @@ sizing, assembly) — holdout untouched until a frozen book earns the one look.
 |---|---|---|---|
 | robustness battery | 2026-08-06 (this §) | 2026-08-06, `scripts/ab1_robustness.py` | **ADVANCES.** Leg 1 PASS (both eras positive per-trade + episode-mean). Leg 2 PASS (21/27 neighborhood cells both-era positive — no magic corner; vol≥1.75 is the weak edge). Leg 3: survives 2-tick (+0.103/+0.675). **Weaknesses on the record:** 2025 is knife-edge (episode-mean +0.025; LODO min −0.005 — one day from flat) and heavily tail-carried (top-5% of trades = 452% of 2025's total R); 'other' session negative in 2025 (−0.092). AB-1 is a runner book that pays on a handful of monster days. Advances to the full ladder (exits, sizing, assembly) with these named; NOT a book, NOT freezable yet, holdout untouched. |
 
+## 8. DETECTOR v2 — the RECLAIM family, declared 2026-08-06
+
+Fidelity forensics on ANGUS's own receipts (37 screenshots in git, four old
+branches): on 2026-04-27 his documented 09:33-09:36 long (8pt stop, ~8R) does
+not exist in the census — the detector fired five SHORT rejections into the
+flush he bought. Diagnosis: (1) missing grammar — SWEEP-AND-RECLAIM (extend
+beyond a reference extreme, close back through it, go with the reclaim);
+(2) missing level family — his MIG LiquidityEdge zones (definition pending from
+ANGUS; possibly re-derivable from our MBP-10 book); (3) the 09:30-09:40 bucket
+is the old canon's blind spot and holds his best trade.
+
+`scripts/l0_reclaim_prototype.py` implements (1) bars-only: refs = ON H/L,
+prior-day H/L, opening-range H/L; TF close-labeled reclaim; sweep extreme = stop;
+same walk/entry/cost conventions as everything else. VALIDATION ANCHOR (checked,
+not coded in): it must fire long on 2026-04-27 ~09:35-09:36 — it does (1min
+09:36 or_low reclaim, 5min 09:35 risk 6.8pt).
+
+Declared: this is a NEW trigger family at census stage. It enters the same
+meat grinder (era rule, clustered views, costs, multiplicity ledger, threshold
+neighborhoods) before anything is believed. Its raw walk is descriptive.
+HOLDOUT NOT TOUCHED.
+
 **The declared failure diagnostic remains armed: detector-fidelity audit.**
 The machine's A/B ≠ ANGUS's A/B until proven otherwise — 579 mechanical "A"
 labels against a discretionary class he trades selectively is prima facie
