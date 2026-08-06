@@ -56,6 +56,7 @@ BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul
 _BARS: pd.DataFrame | None = None       # per-process cache (fork inherits the parent's copy)
 
 
+_RRFLOOR = None      # None = keep the config's 2.0. 0.0 = target the NEXT structural level.
 _ENTRY = "E3"        # set by --entry; EC = market on displacement (prereg NYA-DSP-01)
 _MGMT = "V8"        # module-level so Pool workers inherit it (exit-model arms: V5/V6
                      # walk the SAME fills with deeper structural targets — ANGUS 30-Jul,
@@ -67,7 +68,16 @@ def l2_cfg(t_cancel: float = 100000.0, entry: str = "E3"):
         "win_start": dtime(7, 45), "win_end": dtime(11, 0), "max_trades_per_day": 99,
         "min_stop_points": 0.0, "post_open_min_stop": 0.0, "max_stop_points": None,
         "no_trade_start": None, "no_trade_end": None, "t_cancel": t_cancel,
-        "mgmt_variant": _MGMT, "entry_variant": entry})
+        "mgmt_variant": _MGMT, "entry_variant": entry,
+        **({} if _RRFLOOR is None else
+           # ANGUS 2026-08-05: "it should be the next structural level not 2r floor
+           # minimum". walkout_under_floor walks the menu OUTWARD to the first level
+           # clearing rr_floor, so a 2.0 floor does not merely enforce a minimum -- it
+           # DISCARDS the nearest structural target for a further one, and vetoes the
+           # trade outright when nothing clears. Floor 0 with walkout off takes the
+           # first level in the menu: the next structural level, whatever R that is.
+           {"rr_floor": _RRFLOOR, "rr_floor_partial": min(_RRFLOOR, 1.5),
+            "walkout_under_floor": False})})
 
 
 def load_bars() -> pd.DataFrame:
@@ -182,18 +192,22 @@ def main() -> None:
     ap.add_argument("--entry", default="E3", choices=["E3", "EC", "E4"],
                     help="EC = market on displacement, limit on rejection blocks "
                          "(prereg NYA-DSP-01); E4 = market on everything; E3 = retest limit")
+    ap.add_argument("--rr-floor", type=float, default=None,
+                    help="0.0 = next structural level, no minimum R (ANGUS 2026-08-05). "
+                         "Omit to keep the config's 2.0 floor.")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     if a.gate:
         return gate(a.lb)
     if not a.span:
         raise SystemExit("--span or --gate required")
-    global _MGMT, _ENTRY
-    _MGMT, _ENTRY = a.mgmt, a.entry
+    global _MGMT, _ENTRY, _RRFLOOR
+    _MGMT, _ENTRY, _RRFLOOR = a.mgmt, a.entry, a.rr_floor
     trigs = pd.read_parquet(ROOT / f"output/l0_triggers_{a.span}.parquet")
     F = run(trigs, procs=a.procs, lookback=a.lb)
-    suffix = ("" if a.mgmt == "V8" else f"_{a.mgmt.lower()}") + \
-             ("" if a.entry == "E3" else f"_{a.entry}")
+    suffix = (("" if a.mgmt == "V8" else f"_{a.mgmt.lower()}")
+              + ("" if a.entry == "E3" else f"_{a.entry}")
+              + ("" if a.rr_floor is None else f"_rr{a.rr_floor:g}"))
     out = Path(a.out) if a.out else ROOT / f"output/l2_outcomes_{a.span}{suffix}.parquet"
     F.to_parquet(out, index=False)
     oc = F[F.status == "outcome"]
