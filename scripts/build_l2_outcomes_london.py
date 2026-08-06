@@ -60,7 +60,10 @@ OUT = ROOT / "output/l2_outcomes_london_fit.parquet"
 _BARS: pd.DataFrame | None = None
 
 
-def l2_cfg(day: str):
+ENTRY_VARIANT = "EC"        # overridden by --entry; see prereg §9
+
+
+def l2_cfg(day: str, entry: str = "EC"):
     """Config for ONE London day. The window is rebuilt per day because London's ET hours
     move with the UK/US DST misalignment — hardcoding them is burn-list item 1.
 
@@ -88,11 +91,12 @@ def l2_cfg(day: str):
         "win_start": start.time(), "win_end": end.time(), "max_trades_per_day": 99,
         "min_stop_points": 0.0, "post_open_min_stop": 0.0, "max_stop_points": None,
         "no_trade_start": None, "no_trade_end": None, "t_cancel": 100000.0,
-        "no_premarket_high_impact": False, "mgmt_variant": "V8"})
+        "no_premarket_high_impact": False, "mgmt_variant": "V8",
+        "entry_variant": entry})
 
 
 def day_outcomes(args) -> list[dict]:
-    day, recs, lookback = args
+    day, recs, lookback, entry = args
     global _BARS
     if _BARS is None:
         _BARS = load_bars()
@@ -100,7 +104,7 @@ def day_outcomes(args) -> list[dict]:
                  - pd.Timedelta(days=lookback))
                 & (_BARS.ts_event <= pd.Timestamp(f"{day} 16:10", tz=NY))
                 ].reset_index(drop=True)
-    cfg = l2_cfg(day)
+    cfg = l2_cfg(day, entry)
     out = []
     for rec in recs:
         t = Trigger(**{k: v for k, v in rec.items() if k in Trigger.model_fields})
@@ -131,10 +135,10 @@ def day_outcomes(args) -> list[dict]:
 
 
 def run(trigs: pd.DataFrame, procs: int, lookback: int = LOOKBACK_DAYS,
-        quiet: bool = False) -> pd.DataFrame:
+        quiet: bool = False, entry: str = "EC") -> pd.DataFrame:
     ts = pd.to_datetime(trigs.ts, format="mixed", utc=True).dt.tz_convert(NY)
     trigs = trigs.assign(_d=ts.dt.strftime("%Y-%m-%d"))
-    jobs = [(day, g.drop(columns=["_d"]).to_dict("records"), lookback)
+    jobs = [(day, g.drop(columns=["_d"]).to_dict("records"), lookback, entry)
             for day, g in trigs.groupby("_d", sort=True)]
     rows, done = [], 0
     if procs <= 1:
@@ -183,6 +187,7 @@ def main() -> int:
     ap.add_argument("--span", choices=["fit"])
     ap.add_argument("--gate", action="store_true")
     ap.add_argument("--procs", type=int, default=4)
+    ap.add_argument("--entry", default="EC", choices=["EC", "E4", "E3"])
     a = ap.parse_args()
     if a.gate:
         return 0 if gate() else 1
@@ -192,7 +197,7 @@ def main() -> int:
     trigs = pd.read_parquet(IN_L0)
     print(f"L2 London — {len(trigs):,} candidates over {trigs.day.nunique()} sessions",
           flush=True)
-    O = run(trigs, procs=a.procs)
+    O = run(trigs, procs=a.procs, entry=a.entry)
 
     # join the L1b setup identity back on, so both tie-break arms are answerable
     flags = ["setup_first", "setup_htf", "vs_first", "vs_htf", "arm_none", "arm_struct"]
@@ -202,10 +207,12 @@ def main() -> int:
     O[flags] = O[flags].fillna(False)
     for c in ("setup_id", "vs_id"):
         O[c] = O[c].fillna(-1).astype(int)
-    O.to_parquet(OUT, index=False)
+    out = (OUT if a.entry == "E3"
+           else OUT.with_name(f"l2_outcomes_london_fit_{a.entry}.parquet"))
+    O.to_parquet(out, index=False)
 
     ok = O[O.status == "outcome"]
-    print(f"\nwrote {OUT.relative_to(ROOT)} — {len(O):,} candidates, "
+    print(f"\nwrote {out.relative_to(ROOT)} — {len(O):,} candidates, "
           f"{len(ok):,} with an outcome")
     print(f"engine statuses: {O.status.value_counts().head(8).to_dict()}")
     return 0
