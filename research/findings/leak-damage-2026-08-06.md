@@ -83,13 +83,56 @@ sizing, moves. That isolates the conviction layer exactly.
 Tier flips on 27/112 (24.1%). 15 trades were CONFIRMED only thanks to the leak
 (93.3% WR).
 
-**The base strategy is untouched: 112 trades, 72.3% WR, +82.5R.** It never read the
-leak and needs no rebuild.
+The base strategy's *management* is untouched: 112 trades, 72.3% WR, +82.5R as
+shipped. But its ENTRY is not — see the next section. That correction supersedes
+the "base strategy is fine" reading of this table.
 
 **The conviction tier does not survive.** Honestly it separates by +16.0pp but at
 p=0.082 with a 95% CI crossing zero — directionally positive, not established. The
 frozen spec's 97% CONFIRMED tier was a leak artefact. Flat sizing yields +82.5R;
 the honest tiered split is not distinguishable from it on this sample.
+
+## IB fade ENTRY: a third leak, and the worst of the three
+
+Found while verifying — not assuming — the claim that the shelf's entry is clean.
+It is not. `nya_ivb_desk_run.build_trades:163-167`:
+
+    if row.close > ibh or row.close < ibl:   # abort, evaluated BEFORE the touch
+        break
+    if row.high >= ibh: touch = (-1, i); break
+    if row.low  <= ibl: touch = ( 1, i); break
+
+The abort tests minute i's CLOSE before minute i's touch is recorded. When a minute
+BOTH touches the IB extreme AND closes beyond it, the walk breaks and no trade is
+recorded — but live, a resting limit at that extreme filled intra-minute and price
+then closed through it. The backtest declines entries using information that only
+exists 60 seconds after the entry decision. Those are exactly the immediate-failure
+fades.
+
+Reproduce: `python -m scripts.leak_damage_ib_entry` (reproduces the shipped book
+exactly at n=112 / 72.3% / +82.5R before adding the dropped days).
+
+Fit span, matched to the shipped shelf book:
+
+| | n | WR | sumR | meanR |
+|---|---|---|---|---|
+| as shipped (recorded) | 112 | 72.3% | +82.5 | +0.74 |
+| SILENTLY DROPPED (live fills) | 124 | — | — | — |
+| ...(a) taken + managed normally | 124 | 22.6% | −66.6 | −0.54 |
+| ...(b) taken + stand-down at touch close | 124 | 0.0% | −90.1 | −0.73 |
+| **honest total (a)** | **236** | **46.2%** | **+16.0** | **+0.07** |
+| **honest total (b)** | **236** | **34.3%** | **−7.6** | **−0.03** |
+
+**124 dropped fills — 53% of every fill the strategy actually takes was invisible to
+the backtest.** (a) is the fair treatment: take the fill, manage with the frozen
+rules. (b) implements the abort honestly as an EXIT rather than a refusal-to-enter,
+and is 0.0% WR by construction (the close is beyond entry in the adverse direction),
+so it is a floor rather than an estimate.
+
+On the fair reading, the IB fade retains **+16.0R over 236 trades, meanR +0.07** —
+down from +0.74. **81% of the edge was the entry leak.** On the harsh reading it is
+negative. Either way it is marginal, and this is before the conviction tier, which
+the previous section already showed does not survive.
 
 ## One caveat that matters, in the canon's favour
 
@@ -112,7 +155,11 @@ re-condense.
 - **Canon depth family: dead as it stands.** Every gold trade in the book was
   admitted through a leaky gate. Re-condense with true timestamps, then re-test
   honestly and pre-registered. Do not assume it survives.
-- **Shelf base strategy: alive, unaffected.** Ship-relevant work stands.
+- **IB fade base strategy: NOT clean.** Its entry declines fills using the touch
+  minute's close. 53% of real fills are invisible to the backtest, and they are
+  losers. Honest edge is +0.07 meanR over 236 trades (fair reading) or slightly
+  negative (harsh reading), against +0.74 as shipped. The management walk is the
+  only part of the IB complex that is genuinely clean.
 - **Shelf conviction tier: withdraw.** Re-derive from scratch honestly if wanted;
   the current 97% figure cannot be cited.
 - **The halted 32-day live-sim:** behavioural findings remain provisionally
