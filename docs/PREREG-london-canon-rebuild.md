@@ -49,6 +49,62 @@ BB+VWAP+POC; HALF = two levels including BB+VWAP; **NO TRADE without both BB and
 **Window.** 08:00–10:00 Europe/London, converted per-day to ET — 03:00–05:00 normally,
 04:00–06:00 on DST-misaligned weeks. Never hardcoded ET hours (handoff burn-list item 1).
 
+### 0.1.1 The three setups in Angus's own words (2026-08-05), and what the code does
+
+Recorded verbatim because the spec statement is the thing the tests are tested against:
+
+> **B** — *"there is vwap -1 and a bb ma on the 3 minute time frame close to it. price
+> closes through both of them. i enter on the retest of whatever is closest to price,
+> whether its the poc, bb ma, or vwap."*
+>
+> **B2** — *"price touches vwap +1 with a bb ma there, rejects it and forms a rejection
+> block. limit order the rejection block, or whatever is closest to price."*
+>
+> **A** — *"touches +2, and then closes through vwap +1 and a bb ma, a limit the retest."*
+
+**Verified against `src/engine/triggers.py::_test_candle`, and it matches:**
+
+| | code | matches |
+|---|---|---|
+| A | displacement whose last 10 entry-TF bars wicked the **daily-VWAP ±2σ** band the opposite way, then the body closed through the cluster | ✔ |
+| B | the same close-through **without** that ±2 context | ✔ |
+| B2 | wick into the cluster, body closes back beyond all of it | ✔ |
+| entry | displacement → the penetrated cluster level **nearest the close**; rejection → the **cluster edge** nearest price | ✔ "whatever is closest to price" |
+
+**Audit of "whatever is closest to price" (§5.12.15 — check what the feature computes, not
+what its name claims).** For each setup, is there a level in the FULL stack nearer to price
+than the engine's chosen entry?
+
+- A first pass said ~50% of setups had one. **That was a tick-rounding artifact** — the limit
+  is rounded to 0.25 at placement, so cluster levels within that rounding gap read as
+  "nearer". **90.6% of the hits are under one tick.**
+- **Genuinely nearer (≥1 pt closer): 83 of 1,804 setups, 5%.** Median 4.60 pt closer, and
+  **0% of them are in the crossed cluster** — they are almost all a BB basis from a
+  *different* timeframe (`bb_basis_1min` 28, `bb_basis_3min` 17, `bb_basis_2min` 16).
+
+So the engine already does what the spec says in 95% of setups. The 5% residual — "should a
+nearer level from outside the crossed cluster override the entry?" — is a **declared L4 arm,
+not a defect**, and it is recorded here so it cannot be discovered later and called a find.
+
+### 0.1.2 OPEN — the VWAP touch (Angus's call, carried both ways, not decided by me)
+
+Angus's B description begins *"vwap touch"*. In code the touch is **not** part of the B
+classification: it is a separate flag `vwap_touched` (the trigger candle's own range
+actually reached a VWAP band, as against a VWAP level merely sitting near a BB level), and
+its gate `filters.require_vwap_touch` is currently **`false`**.
+
+| pattern | setups | actually touched a VWAP band |
+|---|---:|---:|
+| A | 131 | 90.8% |
+| B | 613 | **71.3%** |
+| B2 | 1,060 | 57.5% |
+
+**176 of 613 B setups never touched a VWAP band.** Turning the gate on: 1,804 → **1,165
+setups (4.4/session)**, mix B2 52% / B 38% / A 10%.
+
+**Carried as a column through L2 so the question is decidable on outcomes rather than on my
+guess.** Default follows the shipped config (off) until Angus rules.
+
 ## 0.2 The old London book is NOT the baseline
 
 `output/london_canon_book.parquet` exists and `scripts/london_canon.py` advertises 2025
