@@ -246,6 +246,26 @@ does NOT touch any other family's holdout standing.
 
 HOLDOUT OTHERWISE NOT TOUCHED.
 
+### §8b — clean fit-only walk, 2026-08-06 (post-incident rerun)
+
+13,382 triggers / 286 fit days (6,953 / 6,429 per era). **The first
+era-consistent raw census of the program:** per-trade net +0.183 (2025) /
++0.200 (2026); day-clustered day-mean +0.307 / +0.419; LODO min +0.057 /
++0.104 — the raw family survives day-removal in both eras, which AB-1 could
+not. Ref split: pd_high, on_high, or_low, or_high positive in BOTH eras
+independently; on_low negative both (consistent — informative); pd_low flips
+(era-inconsistent — distrust). All three sessions positive. Runner structure
+(WR ~13%, avg win +8.4R, ~33% of days positive) — tail caveats apply to
+everything.
+
+Epistemic status: grammar specified from ONE receipt day (Apr 27 forensics),
+then measured blind over 286 days — hypothesis-first, not mined. Still a raw
+census, not a book. Declared next round: episode-level clustering (walked
+artifact needs the T-join), TF-sibling dedup policy, the AB-1 ingredient trial
+on this family (volume / wall / depth at the reclaim close), 2-tick column,
+exits. The §8a holdout ruling is now LOAD-BEARING: this family looks real and
+its final exam is the thing the incident weakened — ANGUS must rule.
+
 **The declared failure diagnostic remains armed: detector-fidelity audit.**
 The machine's A/B ≠ ANGUS's A/B until proven otherwise — 579 mechanical "A"
 labels against a discretionary class he trades selectively is prima facie
