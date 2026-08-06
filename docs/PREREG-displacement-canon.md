@@ -116,3 +116,43 @@ rule.
 The holdout was never touched by any of this. The prereg machine, conventions,
 and harnesses carry forward unchanged to the next entry family
 (`research/candidates/INTAKE-orderflow-2026-08-05.md`).
+
+## 6. PROGRAM 2 — A/B setups only, declared 2026-08-06 (ANGUS)
+
+ANGUS: *"go from the beginning again... include the ones that didnt get filled
+because price just ran (no limits anymore). only A and B setups, because b2 is
+a limit order that we cant calibrate order flow around. run from top to
+bottom."*
+
+**Motivation accepted as construction logic, on the record:** Program 1's
+population was 72% B2 (rejection blocks, `src/engine/triggers.py` §4 — the
+limit-order fade class). A fade that closes BACK from a wick has no
+close-through to market into; feeding B2 a market-at-close entry mongrelized
+the majority of every Program-1 table. The pure A/B (displacement-kind)
+top-to-bottom program has never been run.
+
+**Population:** kind == displacement (pattern A or B), ~5,568 rows
+(2025: 3,434 / 2026: 2,131 pre-filters). All other conventions (§1) unchanged:
+same entry, candle stop, risk ≥ 2pt, cost ladder, episode clustering, era rule.
+
+**Declared runs:** (i) census + baselines on the restricted population;
+(ii) the SAME round-1 engine cells A–E (no new cells — reusing the declared
+grid on the declared subpopulation); (iii) pattern split A vs B reported
+descriptively (A n≈579 is thin — reported, never gated on alone).
+
+**Multiplicity ledger:** this is the fit data's third full pass. The survival
+bar does not move (beat baseline net-1t, both eras, both views; ≤noise ⇒
+NOTHING SURVIVES), and the program count is part of the record: whatever
+survives here must also survive being finding #1-of-3-programs at the final
+table-read.
+
+**Declared in advance — the failure diagnostic:** ANGUS's live success with
+A/B setups includes his own discretion (context reads, skips, sizing). The
+detector's A/B is a mechanical shadow of that. If Program 2 dies, the next step
+is NOT more mining — it is a detector-fidelity audit: ANGUS labels real charts
+(which detector A/B hits he would actually have taken), and the divergence
+between his A/B and the machine's A/B becomes the object of study.
+
+| program-2 run | declared | run | outcome |
+|---|---|---|---|
+| census+baselines+engine A–E | 2026-08-06 (this §) | pending | — |

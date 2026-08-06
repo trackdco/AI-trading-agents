@@ -44,7 +44,20 @@ E_CELLS = [0.8, 0.9]
 
 
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--kind", default=None,
+                    help="restrict population, e.g. displacement (PROGRAM 2: A/B only)")
+    args = ap.parse_args()
     A = build()
+    L2 = pd.read_parquet(ROOT / "output/l2_outcomes_fit.parquet",
+                         columns=["ts", "tf", "direction", "pattern"])
+    A = A.merge(L2.drop_duplicates(["ts", "tf", "direction"]),
+                on=["ts", "tf", "direction"], how="left", validate="m:1")
+    if args.kind:
+        A = A[A.kind == args.kind]
+        print(f"PROGRAM 2 population: kind={args.kind}, patterns "
+              f"{A.pattern.value_counts().to_dict()}")
     P = A[A.risk >= 2.0].copy()
     P["T"] = pd.to_datetime(P["T"], utc=True)
     P = P.sort_values(["day", "direction", "T"], kind="mergesort").reset_index(drop=True)
@@ -93,7 +106,8 @@ def main() -> None:
             eod = float(closeR[-1])
             r_hold = -1.0 if stop_i < n else eod
             r_2r = 2.0 if tgt_i < n else r_hold
-            base = {"era": r.era, "day": day, "risk": risk, "episode": r.episode}
+            base = {"era": r.era, "day": day, "risk": risk, "episode": r.episode,
+                    "pattern": getattr(r, "pattern", None), "sess": r.sess}
             out = {"BASE_hold": r_hold, "BASE_2r": r_2r}
             # A: time-stop (hold back-end). Convention, declared: x>0 exits at
             # minute m when +xR was never touched by then; x=0.0 exits at minute
@@ -174,7 +188,16 @@ def main() -> None:
     cells = [c for c in D_.columns if c[0] in "ABCDE" and "_" in c]
     for c in cells + ["BASE_hold", "BASE_2r"]:
         D_[c + "_net"] = D_[c] - COST / D_.risk
-    D_.to_parquet(ROOT / "output/l2_disp_engine_r1.parquet", index=False)
+    tag = f"_{args.kind}" if args.kind else ""
+    D_.to_parquet(ROOT / f"output/l2_disp_engine_r1{tag}.parquet", index=False)
+    if args.kind:
+        for pat in sorted(D_.pattern.dropna().unique()):
+            for era in ("2025", "2026"):
+                d = D_[(D_.pattern == pat) & (D_.era == era)]
+                if len(d) == 0:
+                    continue
+                print(f"  pattern {pat} {era}: n={len(d):>5,} | hold net "
+                      f"{d.BASE_hold_net.mean():+.3f} | 2R net {d.BASE_2r_net.mean():+.3f}")
 
     print(f"round 1: {len(D_):,} trades, {len(cells)} declared cells (F deferred)\n")
     print(f"{'cell':<16}{'base':<6}{'era':<6}{'n':>6}{'net':>8}{'baseNet':>9}"
