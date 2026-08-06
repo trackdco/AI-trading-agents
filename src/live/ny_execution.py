@@ -121,17 +121,32 @@ class DryRunBroker:
     def position(self, account: str) -> int:
         return self._pos
 
-    def cancel_order(self, ref: str) -> None:
+    def cancel_order(self, ref: str, *, only_if_not_filled: bool = False) -> None:
         """Bracket cancel: pulls whatever remains — the working entry+stop, or (entry
         already filled) the protective stop child. The FILLED position itself is never
         undone by a cancel; surfacing and flattening that race-filled position is the
-        execution layer's job (poll_fills graveyard -> runner scratch), not the broker's."""
+        execution layer's job (poll_fills graveyard -> runner scratch), not the broker's.
+        `only_if_not_filled` is a DTCBroker-only concern (no atomic check-and-cancel over
+        the real protocol) — the dry-run graveyard already resolves this race exactly via
+        take_fills()'s attribution regardless of stop_resting, so it's accepted here only
+        to keep the two Broker implementations duck-type interchangeable."""
         o = self._orders.get(ref)
         if o is None:
             return
         if o["state"] == "working":
             o["state"] = "cancelled"
         o["stop_resting"] = False
+
+    def cancel_protective_stop(self, ref: str) -> None:
+        """Pull only the stop, leaving the entry's own state untouched — for a rule-J
+        reversal whose fill already netted this position away elsewhere. The caller
+        only ever invokes this on an already-FILLED entry, so cancel_order() above
+        would already leave `state` alone (its cancel-to-"cancelled" branch only fires
+        for "working"); this exists as the same explicit, narrower primitive DTCBroker
+        has, so callers never depend on that coincidence."""
+        o = self._orders.get(ref)
+        if o is not None:
+            o["stop_resting"] = False
 
     def modify_stop(self, ref: str, price: float) -> None:
         o = self._orders.get(ref)
@@ -224,7 +239,10 @@ class NYExecution:
         if self.live and rec["broker_ref"] is not None:
             self._graveyard[rec["broker_ref"]] = {"ref": ref, "rec": rec}
             try:
-                self.broker.cancel_order(rec["broker_ref"])
+                # only_if_not_filled: we THINK this is still resting, but can't be
+                # certain -- if it actually filled, the DTC broker must leave its now-
+                # real protective stop alone (2026-08-05 review).
+                self.broker.cancel_order(rec["broker_ref"], only_if_not_filled=True)
             except Exception as e:                 # noqa: BLE001
                 self._note({"type": "cancel_failed", "ref": ref, "error": repr(e)})
                 return
@@ -276,6 +294,31 @@ class NYExecution:
             if st and st.get("stop_resting") and not self._entry_working(rec, st):
                 out.append({"ref": ref, "ts": pd.Timestamp.now(tz="UTC"),
                             "size": int(st.get("size", rec["intent"].size))})
+        # 2026-08-05 review: a cancel can race a fill here too (R13 practice day 3,
+        # ny:20 -- the incident the graveyard was originally built for) but this branch
+        # never consulted it, unlike the dry-run branch above. cancel()'s
+        # only_if_not_filled=True left a raced order's real stop resting instead of
+        # cancelling it (dtc_broker.py) -- stop_resting is exactly the signal that the
+        # cancel lost the race and this is a genuine fill needing the normal fill path,
+        # not an orphan. Checked once per poll, then dropped either way: a fill found
+        # here is resurrected and reported below; a confirmed-dead one needs no further
+        # tracking.
+        for bref in list(self._graveyard):
+            g = self._graveyard[bref]
+            rec = g["rec"]
+            if rec["broker_ref"] is None:
+                del self._graveyard[bref]
+                continue
+            try:
+                st = self.broker.order_status(rec["broker_ref"])
+            except Exception as e:                 # noqa: BLE001
+                self._note({"type": "status_poll_failed", "ref": g["ref"], "error": repr(e)})
+                continue
+            del self._graveyard[bref]
+            if st and st.get("stop_resting"):
+                self._orders[g["ref"]] = rec        # resurrect: confirm_fill needs it
+                out.append({"ref": g["ref"], "ts": pd.Timestamp.now(tz="UTC"),
+                            "size": int(st.get("size", rec["intent"].size))})
         return out
 
     def _entry_working(self, rec, st) -> bool:
@@ -319,17 +362,27 @@ class NYExecution:
                                 "LiveExitExecutor — fails toward flat (known limitation)"})
 
     # ---- agent-mode plan surface (R15: the desk's standing plan -> the broker) ----
-    def modify_agent_stop(self, ref: str, price: float) -> None:
-        """Desk stop-tighten -> the broker's resting protective stop."""
+    def modify_agent_stop(self, ref: str, price: float) -> bool:
+        """Desk stop-tighten -> the broker's resting protective stop. Returns False on
+        a failed broker call WITHOUT committing the new price (2026-08-05 review): the
+        old version set p["stop"] unconditionally before attempting the broker call, so
+        a DTC reject/timeout/disconnect left this layer's belief permanently tighter
+        than the broker's real, unchanged stop — and the desk's own ManagedTrade.stop
+        (agent_desk.py) drifts the same way, since the caller already committed it
+        before this method is even reached. On False the caller must roll its own copy
+        back to the value it had before calling apply_reply, or the bar-level stop
+        mirror in agent_desk.py fires against a price the broker was never told about."""
         p = self._positions.get(ref)
         if p is None:
-            return
-        p["stop"] = float(price)
+            return True                            # nothing to protect against a stale write
         if self.live and p.get("broker_ref") is not None:
             try:
                 self.broker.modify_stop(p["broker_ref"], float(price))
             except Exception as e:                 # noqa: BLE001
                 self._note({"type": "modify_stop_failed", "ref": ref, "error": repr(e)})
+                return False
+        p["stop"] = float(price)
+        return True
 
     def close_partial_qty(self, ref: str, qty: int) -> None:
         """Desk partial -> market-close qty micros of the position, position stays open."""
@@ -375,23 +428,35 @@ class NYExecution:
 
     def close_now(self, ref: str, why: str) -> float:
         """Market-close a position NOW (scratch / rule J flatten / rule K flatten).
-        Cancels the protective stop first, then closes. Returns estimated realized $."""
+        Cancels the protective stop first, then closes. Returns estimated realized $.
+
+        2026-08-05 review: must be leg-aware like _realize() — a position that already
+        took a partial exit (V8's own partial action, or an agent's close_partial_qty)
+        has fewer than p["size"] micros left. The old version always closed AND priced
+        the full original size, both over-closing (close_partial's own broker-side
+        clamp to the live position size saves the ORDER from being wrong, but the
+        REPORTED pl still double-counted the already-realized legs) and corrupting the
+        realized P&L fed into the day's risk budget — a direct wrong-sizing bug for
+        every subsequent trade that day."""
         p = self._positions.pop(ref, None)
         if p is None:
             return 0.0
         rec_ref = p.get("broker_ref")
         if p["exe"] is not None:
             p["exe"].done = True                   # abandon the driven stream
-        pl = 0.0
+        sgn = 1.0 if p["side"] == "B" else -1.0
+        closed = sum(q for q, _ in p["legs"])
+        remaining = max(int(p["size"]) - closed, 0)
+        pl = sum(sgn * (px - p["entry"]) * PV_MICRO * q for q, px in p["legs"])
         if self.live:
             try:
                 if rec_ref is not None:
                     self.broker.cancel_order(rec_ref)          # stop down FIRST
-                self.broker.close_partial(self.account, p["size"])
+                if remaining > 0:
+                    self.broker.close_partial(self.account, remaining)
                 last = getattr(self.broker, "_last", {})
                 px = float(last.get("close", p["entry"]))
-                sgn = 1.0 if p["side"] == "B" else -1.0
-                pl = (sgn * (px - p["entry"]) * PV_MICRO * p["size"]) - COMMISSION
+                pl += (sgn * (px - p["entry"]) * PV_MICRO * remaining) - COMMISSION
             except Exception as e:                 # noqa: BLE001
                 self._note({"type": "close_failed", "ref": ref, "why": why,
                             "error": repr(e)})
@@ -400,6 +465,32 @@ class NYExecution:
         if self.on_closed is not None:
             self.on_closed(ref, pl)
         return pl
+
+    def close_flipped(self, ref: str, why: str, pl: float) -> None:
+        """Rule J reversal: the padded fill that opened the NEW position already netted
+        this one away in the SAME broker order (`size + opposing_size` in one ticket —
+        scripts/ny_run.py's rule-J padding). Calling close_now() here (2026-08-05
+        incident) issues a REDUNDANT close_partial against the broker's now-already-
+        flipped position, eroding — partially or fully — the brand-new reversal trade
+        that fill just opened. Only the stale, now-wrong-direction stop needs pulling;
+        the position itself needs bookkeeping-only closure, using the pl the flip fill
+        itself already realized (the caller's estimate, computed off the actual fill
+        price — more accurate than close_now's own last-bar-close approximation)."""
+        p = self._positions.pop(ref, None)
+        if p is None:
+            return
+        if p["exe"] is not None:
+            p["exe"].done = True                   # abandon the driven stream
+        if self.live and p.get("broker_ref") is not None:
+            try:
+                self.broker.cancel_protective_stop(p["broker_ref"])
+            except Exception as e:                 # noqa: BLE001
+                self._note({"type": "close_flipped_cancel_failed", "ref": ref,
+                            "error": repr(e)})
+        self._note({"type": "closed_now", "ref": ref, "why": why,
+                    "pl_estimated": round(pl, 2), "mode": self.mode})
+        if self.on_closed is not None:
+            self.on_closed(ref, pl)
 
     # ---- per closed bar: drive every position's exit engine ------------------
     def on_bar(self, bars_df, ts) -> None:

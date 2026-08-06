@@ -220,6 +220,40 @@ def test_rule_j_pads_opposing_placement_and_flattens_at_flip(live):
     assert ref1 not in lv._positions and ref2 in lv._positions
 
 
+def test_rule_j_flip_does_not_erode_the_new_position_when_armed(live):
+    """2026-08-05 incident: the padded fill that opens the reversal ALREADY nets the
+    old position away at the broker in the SAME order (size + opposing_size, one
+    ticket). The old code then called close_now() for the flip, which issued a
+    REDUNDANT close_partial against the already-flipped broker position -- eroding the
+    brand-new reversal (this is precisely how a rule-J flip could land at a near-
+    nothing residual size instead of the full reversal). With the fix, the broker's
+    net position after the flip fill must be EXACTLY the netted amount, untouched."""
+    from src.live.ny_execution import DryRunBroker, NYExecution
+    lv, det = live
+    bk = DryRunBroker()
+    lv.execution = NYExecution(mode="dryrun", broker=bk, journal=lv.decision_sink)
+    lv.execution.on_closed = lv._on_execution_closed
+
+    det.script["09:45"] = [_trigger()]                          # long, entry 18_000.10
+    _drive(lv, "09:45", events=[_minute_event("09:45", low=18_002.0)])   # rests
+    _drive(lv, "09:46", events=[_minute_event("09:46", low=17_999.0)])   # fills long
+    size = list(bk._orders.values())[0]["size"]
+    assert bk.position("FUNDED") == size
+
+    det.script["09:50"] = [_trigger(hm="09:50", direction="short",
+                                    entry=18_020.10, stop=18_030.30)]
+    _drive(lv, "09:50", events=[_minute_event("09:50", h=18_015.0)])  # rests, padded
+    assert any(r["type"] == "rule_j_padded" and r["close_pad"] == size
+               for r in lv.decision_sink)
+    _drive(lv, "09:51", events=[_minute_event("09:51", h=18_022.0)])  # fills -> flip
+    assert any(r["type"] == "rule_j_flip" for r in lv.decision_sink)
+    # the padded fill alone already nets size (long) - 2*size (short) = -size --
+    # close_flipped must leave that EXACTLY alone, not erode it back toward flat
+    assert bk.position("FUNDED") == -size
+    assert any(r.get("type") == "closed_now" and r.get("why") == "rule_j_flip"
+              for r in lv.decision_sink)
+
+
 # ---------------------------------------------------------------- rule K
 def test_rule_k_flattens_pre_positions_on_the_first_open_bar(live):
     from scripts.ny_run import _Position
@@ -466,6 +500,35 @@ def test_detector_frame_is_trimmed_to_warmup_horizon(live):
     df = seen["df"]
     assert len(df)                                          # the fresh bar is present
     assert pd.to_datetime(df.ts_event).min() >= _ts("09:45") - FRAME_WARMUP
+
+
+# ------------------------------------------------------- dispatch never crashes the loop
+def test_dispatch_survives_a_bad_bar_and_keeps_processing_later_ones(live):
+    """2026-08-05 review: guard.accept() and everything through desk.on_bar used to run
+    OUTSIDE dispatch()'s only try/except (which started further down, at the fills
+    poll). Any exception there propagated all the way through poll_once/serve/main --
+    no journal row, no page (alerts.say("ny_run STOP") never reached), and the whole
+    armed session silently ended, mid-position if one was open. A bad bar must be
+    journaled loudly and skipped, never kill the loop for every bar after it."""
+    lv, det = live
+    real_accept = lv.guard.accept
+    calls = {"n": 0}
+
+    def flaky_accept(bar):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise ValueError("feed bars must be tz-aware")
+        return real_accept(bar)
+
+    lv.guard.accept = flaky_accept
+    said = []
+    lv._say = said.append
+    lv.dispatch([_minute_event("09:45")], _ts("09:45") + pd.Timedelta(minutes=1))
+    assert any(r.get("type") == "dispatch_error" for r in lv.decision_sink)
+    assert any("dispatch error" in s for s in said)
+    # the NEXT bar must still be processed normally -- the loop survived
+    lv.dispatch([_minute_event("09:46")], _ts("09:46") + pd.Timedelta(minutes=1))
+    assert lv._last_bar_ts == _ts("09:46")
 
 
 # ------------------------------------------------------- cancel/fill same-bar race (ny:20)
@@ -785,6 +848,26 @@ def test_reconcile_position_mismatch_blocks_new_entries_not_existing_ones(live):
     lv.execution.cancel = lambda ref, why: said.append(f"cancelled:{ref}")
     lv._execute([{"action": "cancel", "ref": "ny:1", "why": "test"}], _ts("09:07"))
     assert "cancelled:ny:1" in said
+
+
+def test_modify_size_is_blocked_by_position_mismatch_same_as_place(live):
+    """2026-08-05 review: modify_size is cancel+place under the hood (NYExecution.
+    modify_size) -- a real, possibly LARGER submission to the broker, same new-risk
+    class as "place". It was the only action kind not gated by this flag."""
+    lv, det = live
+    lv.execution = SimpleNamespace(live=True, account="FUNDED",
+                                   broker=_FakeBrokerWithPosition(15))
+    lv._reconcile_position(_ts("09:05"))
+    assert lv._position_mismatch is True
+
+    calls = []
+    lv.execution.modify_size = lambda ref, intent, trig: calls.append(ref)
+    from types import SimpleNamespace as SN
+    lv.runner._cands["ny:1"] = SN(side="B", limit=18_010.0, stop=18_000.0, trigger=None)
+    lv._execute([{"action": "modify_size", "ref": "ny:1", "size": 20}], _ts("09:06"))
+    assert calls == []                                  # never reached the broker
+    assert any(r.get("type") == "modify_size_blocked_position_mismatch"
+              for r in lv.decision_sink)
 
 
 def test_reconcile_position_query_error_fails_closed(live):

@@ -324,6 +324,16 @@ class NYLive:
                 self.execution.cancel(a["ref"], a.get("why", ""))
                 continue
             if kind == "modify_size":
+                if self._position_mismatch:
+                    # 2026-08-05 review: modify_size is cancel+place under the hood
+                    # (NYExecution.modify_size) -- a real, possibly LARGER submission
+                    # to the broker, same new-risk class as "place". It was the only
+                    # action kind not gated by this flag. Refusing just leaves the
+                    # existing resting order at its current (already-approved) size,
+                    # which is exactly as safe as untouched — no cancel needed.
+                    self._journal({"type": "modify_size_blocked_position_mismatch",
+                                   "ref": a["ref"], "ts": str(now)})
+                    continue
                 v = a.get("verdict") or {}
                 c = self.runner._cands.get(a["ref"])
                 if c is not None:
@@ -435,7 +445,15 @@ class NYLive:
                         pref, "rule_j_flip", ts, float(v["entry"]),
                         getattr(self.desk, "_tape", None))
                 if self.execution.live:
-                    self.execution.close_now(pref, "rule_j_flip")
+                    # 2026-08-05 incident: the padded fill that just landed for `ref`
+                    # already netted `pref` away in the SAME broker order (rule J's
+                    # size+opposing padding, one ticket) -- close_now() would issue a
+                    # REDUNDANT close against the already-flipped position and erode
+                    # the brand-new reversal (this is precisely how a rule-J flip could
+                    # come out the other side as a near-nothing residual size). Only
+                    # the stale stop needs pulling; the position needs bookkeeping-only
+                    # closure with the SAME pl estimate the shadow branch below uses.
+                    self.execution.close_flipped(pref, "rule_j_flip", pl)
                 else:
                     self._close_position(pref, pl=pl, reason="rule_j_flip")
         et = ts.tz_convert(NY)
@@ -494,41 +512,60 @@ class NYLive:
                 continue
             if ev["kind"] != "minute":
                 continue
-            for gbar in self.guard.accept(dict(ev["bar"])):
+            try:
+                gbars = self.guard.accept(dict(ev["bar"]))
+            except Exception as e:             # noqa: BLE001 — 2026-08-05 review: this
+                # call sat outside every try/except in this method. A malformed bar
+                # (e.g. a naive timestamp — accept() raises ValueError) propagated all
+                # the way through poll_once/serve/main with no journal row, no page
+                # (alerts.say("ny_run STOP") never reached), and no protected position
+                # managed for the rest of the (now-dead) process. journal loudly, skip
+                # this one event, keep the loop alive for the next one.
+                self._journal({"type": "dispatch_error", "ts": str(now), "error": repr(e)})
+                self._say(f"WARN dispatch error (guard.accept) at {now}: {e}")
+                continue
+            for gbar in gbars:
                 bts = pd.Timestamp(gbar["ts_event"])
-                rs = self.roll_state.on_bar(bts)
-                if rs.get("roll"):
-                    self._journal({"type": "roll", **{k: str(v) for k, v in rs.items()}})
-                self.ingestor.on_bar(gbar)
-                t = ev["tape"]
-                self.ingestor.on_minute_tape(bts, t["delta"], t["vol"], t["vwp"])
-                if self.desk is not None:
-                    self.desk.push_tape(bts.tz_convert(NY), float(t["delta"]),
-                                        float(t["vol"]))
-                self._last_bar_ts = bts
-                if self.execution.live and hasattr(self.execution.broker, "on_bar"):
-                    self.execution.broker.on_bar(bts, float(gbar["high"]),
-                                                 float(gbar["low"]),
-                                                 float(gbar["close"]))
-                self._start_day_if_new(bts)
-                # catch-up guard: an old bar builds state but must never act — and
-                # fixture rows for a boot backlog are noise, so they wait too. In
-                # PRACTICE-DAY replay the guard is the day match instead: the certified
-                # rehearsal must act on historical bars, but only the chosen day's.
-                if self.replay_day is not None:
-                    if session_day(bts.tz_convert(NY)) != self.replay_day:
-                        continue
-                else:
-                    age = (self.clock() - (bts + pd.Timedelta(minutes=1))).total_seconds()
-                    if age > STALE_BAR_S:
-                        self._journal({"type": "catchup_bar_skipped", "ts": str(bts),
-                                       "age_s": round(age, 1)})
-                        continue
-                if self.fixture_sink is not None:
-                    self.fixture_sink({"type": "tape", "ts": str(bts), **t})
-                    self.fixture_sink({"type": "book", "ts": str(bts),
-                                       "levels": self.ingestor.book.long_form(10)})
                 try:
+                    # 2026-08-05 review: everything from here through desk.on_bar used
+                    # to run OUTSIDE this try/except (only the block below it, from the
+                    # fills poll onward, was ever protected) — pulled in so a bad bar
+                    # can never escape uncaught partway through ingestion either.
+                    rs = self.roll_state.on_bar(bts)
+                    if rs.get("roll"):
+                        self._journal({"type": "roll",
+                                       **{k: str(v) for k, v in rs.items()}})
+                    self.ingestor.on_bar(gbar)
+                    t = ev["tape"]
+                    self.ingestor.on_minute_tape(bts, t["delta"], t["vol"], t["vwp"])
+                    if self.desk is not None:
+                        self.desk.push_tape(bts.tz_convert(NY), float(t["delta"]),
+                                            float(t["vol"]))
+                    self._last_bar_ts = bts
+                    if self.execution.live and hasattr(self.execution.broker, "on_bar"):
+                        self.execution.broker.on_bar(bts, float(gbar["high"]),
+                                                     float(gbar["low"]),
+                                                     float(gbar["close"]))
+                    self._start_day_if_new(bts)
+                    # catch-up guard: an old bar builds state but must never act — and
+                    # fixture rows for a boot backlog are noise, so they wait too. In
+                    # PRACTICE-DAY replay the guard is the day match instead: the
+                    # certified rehearsal must act on historical bars, but only the
+                    # chosen day's.
+                    if self.replay_day is not None:
+                        if session_day(bts.tz_convert(NY)) != self.replay_day:
+                            continue
+                    else:
+                        age = (self.clock()
+                               - (bts + pd.Timedelta(minutes=1))).total_seconds()
+                        if age > STALE_BAR_S:
+                            self._journal({"type": "catchup_bar_skipped", "ts": str(bts),
+                                           "age_s": round(age, 1)})
+                            continue
+                    if self.fixture_sink is not None:
+                        self.fixture_sink({"type": "tape", "ts": str(bts), **t})
+                        self.fixture_sink({"type": "book", "ts": str(bts),
+                                           "levels": self.ingestor.book.long_form(10)})
                     # FILLS FIRST (R13 practice day 3, ny:20): the broker saw this bar
                     # before any of the decisions below. Processing fills before the
                     # runner's per-bar cancels/resizes means a cancel can never race a

@@ -110,10 +110,32 @@ class DTCBroker:
 
     # ---- Broker protocol ----------------------------------------------------
     def submit_bracket(self, intent) -> str:
-        ref = self.client.submit_bracket(
-            symbol=self.symbol, buy=(intent.side == "B"),
-            entry=float(intent.entry_ref) * self.price_scale,
-            stop=float(intent.stop) * self.price_scale, qty=int(intent.size))
+        try:
+            ref = self.client.submit_bracket(
+                symbol=self.symbol, buy=(intent.side == "B"),
+                entry=float(intent.entry_ref) * self.price_scale,
+                stop=float(intent.stop) * self.price_scale, qty=int(intent.size))
+        except Exception:
+            # 2026-08-05 review: the entry and stop are two independent sends
+            # (client.submit_bracket's own docstring, v4 design) -- a socket death
+            # between them (or during the client's own post-send bookkeeping) can
+            # leave the ENTRY already live at the broker with this exception raised
+            # before its oid is ever returned here. `client.last_bracket` is set
+            # UNCONDITIONALLY before either send, so it survives this exception and
+            # is the only way to recover the ids. Without this, the leg is invisible
+            # to cancel_all/flatten forever -- a permanently untracked, possibly
+            # naked position. The caller (NYExecution.place) still sees the
+            # exception and fails the placement/retries later; this only ensures
+            # whatever DID reach the broker is swept up by the next kill/EOD flatten
+            # instead of orphaned.
+            pair = getattr(self.client, "last_bracket", None)
+            if pair is not None:
+                entry_oid, stop_oid = pair
+                self._brackets[entry_oid] = {
+                    "stop_oid": stop_oid, "side": intent.side, "size": int(intent.size),
+                    "entry": float(intent.entry_ref), "stop": float(intent.stop),
+                    "account": intent.account}
+            raise
         entry_oid, stop_oid = self.client.last_bracket
         self._brackets[ref] = {"stop_oid": stop_oid, "side": intent.side,
                                "size": int(intent.size), "entry": float(intent.entry_ref),
@@ -172,17 +194,45 @@ class DTCBroker:
         rule means account net == this symbol's net; the spine's reconcile keeps it honest."""
         return sum(int(self._coalesce(p.get("Quantity"), 0)) for p in self.client.positions())
 
-    def cancel_order(self, ref: str) -> None:
+    def cancel_order(self, ref: str, *, only_if_not_filled: bool = False) -> None:
         """B7: pull one working bracket. The server tears children down with the parent
         (verified against the mock; re-verified on box), but the tracked stop child is
         cancelled explicitly too — a cancel-reject on an already-dead child is harmless
-        and journaled server-side, while a surviving naked stop child is not."""
+        and journaled server-side, while a surviving naked stop child is not.
+
+        `only_if_not_filled` (2026-08-05 review): the caller doesn't always know for
+        certain this order is still resting — NYExecution.cancel() races the runner's
+        own belief against a fill that may have already landed at the broker. In that
+        case the ENTRY's own post-pump read-back is authoritative (same read-back-never-
+        trust pattern submit_bracket's pairing check already relies on): if it shows
+        FILLED, the stop is no longer a leftover of a cancelled order — it is the real,
+        now-necessary protection for a position we just discovered exists, and must be
+        left alone. Callers that already KNOW the entry is filled and want it closed
+        anyway (close_now, scratch_unconfirmed) keep the unconditional default — for
+        them, cancelling that stop is the whole point of calling this at all."""
         self.client.cancel_order(ref)
         b = self._brackets.get(ref)
         if b is not None:
             self._pump()
-            if self._working(self._state(b["stop_oid"])):
+            if only_if_not_filled and self._state(ref).get("OrderStatus") == D.ORDER_STATUS_FILLED:
+                pass                                # raced a real fill -- its stop stays
+            elif self._working(self._state(b["stop_oid"])):
                 self.client.cancel_order(b["stop_oid"])
+        self._pump()
+
+    def cancel_protective_stop(self, ref: str) -> None:
+        """Pull ONLY the stop child, regardless of the entry's fill state — for a
+        position already closed by other means (2026-08-05 review: a rule-J reversal's
+        padded fill nets the old position away in the SAME order that opens the new
+        one) whose stop is now stale, wrong-direction risk rather than real protection.
+        Unlike cancel_order(), never touches the entry — it is correctly filled and
+        staying that way."""
+        b = self._brackets.get(ref)
+        if b is None:
+            return
+        self._pump()
+        if self._working(self._state(b["stop_oid"])):
+            self.client.cancel_order(b["stop_oid"])
         self._pump()
 
     def modify_stop(self, ref: str, price: float) -> None:

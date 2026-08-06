@@ -98,6 +98,7 @@ class _Exec:
 
     def modify_agent_stop(self, ref, price):
         self.calls.append(("modify_stop", ref, price))
+        return True
 
     def on_agent_stop(self, ref):
         self.calls.append(("stop_realized", ref))
@@ -202,6 +203,22 @@ def test_stop_tighten_routes_to_broker(tmp_path):
     _drive(desk, "09:46", 18_002, 18_004, 18_001, 18_003)
     assert t.stop == 18_000.0
     assert ("modify_stop", "ny:t:1", 18_000.0) in desk.execution.calls
+
+
+def test_stop_tighten_rolls_back_when_the_broker_rejects_it(tmp_path):
+    """2026-08-05 review: modify_agent_stop() used to commit p["stop"] before even
+    attempting the broker call -- a DTC reject/timeout/disconnect left this belief
+    permanently tighter than the broker's real, unchanged stop, and the desk's own
+    ManagedTrade.stop drifted the same way (it's set in apply_reply, before the broker
+    call is even reached). The bar-level stop mirror (bar.low <= t.stop) would then
+    fire against a price the broker was never told about. A False return must roll
+    t.stop back to what it was before this reply, not leave it drifted."""
+    desk = _desk(tmp_path, ['{"action":"revise","stop_r":0.0,"note":"BE"}'])
+    t = _open_trade(desk)
+    desk.execution.modify_agent_stop = lambda ref, price: False   # broker rejected it
+    before = t.stop
+    _drive(desk, "09:46", 18_002, 18_004, 18_001, 18_003)
+    assert t.stop == before                             # rolled back, not drifted to BE
 
 
 def test_partial_shrinks_and_routes_qty(tmp_path):

@@ -32,6 +32,7 @@ class MockDTCServer:
         self.ocos: list[dict] = []        # SUBMIT_NEW_OCO_ORDER messages received
         self.cancelled: list[str] = []    # ClientOrderIDs cancelled (incl. bracket children)
         self.cancel_rejects: list[str] = []   # cancels of unknown/filled orders
+        self.filled: set[str] = set()     # ClientOrderIDs sent an OrderStatus=FILLED update
         self.replaced: list[dict] = []    # CANCEL_REPLACE messages applied
         self._sid = 7000                  # ServerOrderIDs, echoed like real Sierra
         self._srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -142,6 +143,7 @@ class MockDTCServer:
                      or (self.order_mode in ("fill_entry", "fill_entry_stop_errors")
                          and m.get("OrderType") != D.ORDER_TYPE_STOP))
             if fills:
+                self.filled.add(oid)
                 self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid, OrderStatus=D.ORDER_STATUS_FILLED,
                            FilledQuantity=m["Quantity"], AverageFillPrice=m.get("Price1", 100.0))
             elif self.order_mode == "partial":
@@ -167,10 +169,14 @@ class MockDTCServer:
         elif t == D.CANCEL_ORDER:
             # model Sierra: a cancel of an unknown/never-seen order is REJECTED with text,
             # not silently absorbed; cancelling a working parent cancels its bracket
-            # children too (Sierra tears the linked stop down with the entry).
+            # children too (Sierra tears the linked stop down with the entry). A FILLED
+            # order also rejects a cancel (2026-08-05 review) -- Sierra cannot un-fill an
+            # order, and critically must never overwrite its FILLED status with CANCELED,
+            # which is exactly the read-back DTCBroker.cancel_order(only_if_not_filled)
+            # relies on to tell "genuinely still resting" apart from "already filled."
             oid = m.get("ClientOrderID")
             order = self.order_by_oid(oid)
-            if order is None or oid in self.cancelled:
+            if order is None or oid in self.cancelled or oid in self.filled:
                 self.cancel_rejects.append(oid)
                 self._send(conn, D.ORDER_UPDATE, ClientOrderID=oid,
                            InfoText="cancel rejected: no working order")

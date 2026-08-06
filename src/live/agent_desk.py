@@ -664,8 +664,8 @@ class AgentDesk:
                 t.last_turn_min = minute
                 before = t.stop
                 t.apply_reply(rep)
-                if t.stop != before:
-                    self.execution.modify_agent_stop(ref, t.stop)
+                if t.stop != before and not self.execution.modify_agent_stop(ref, t.stop):
+                    t.stop = before                # broker rejected the tighten -- don't drift
         # 1. session flatten (the desk enforces 15:55 for gold; rule K owns pre 09:30
         #    upstream, this is the belt for both)
         if minute >= t.flatten and t.frac > 0:
@@ -799,8 +799,8 @@ class AgentDesk:
                                  "sent": state, "reply": txt})
             before = t.stop
             t.apply_reply(rep)
-            if t.stop != before:
-                self.execution.modify_agent_stop(t.ref, t.stop)
+            if t.stop != before and not self.execution.modify_agent_stop(t.ref, t.stop):
+                t.stop = before                    # broker rejected the tighten -- don't drift
         else:
             holder = {"why": why, "sent": state}
 

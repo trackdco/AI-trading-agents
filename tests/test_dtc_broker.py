@@ -228,6 +228,112 @@ def test_submit_bracket_cancels_a_still_resting_entry_when_its_stop_dies_unrecog
         s.stop()
 
 
+class _FailingClient:
+    """Models client.submit_bracket raising mid-call (a socket death between the two
+    independent sends, or during its own post-send bookkeeping) -- last_bracket is set
+    UNCONDITIONALLY before either send in the real client, so it survives the failure."""
+    def __init__(self):
+        self.last_bracket = None
+
+    def submit_bracket(self, **kw):
+        self.last_bracket = ("desk-1", "desk-2")
+        raise ConnectionError("socket died mid-submission")
+
+
+def test_submit_bracket_tracks_the_bracket_even_when_the_client_call_raises():
+    """2026-08-05 review: without this, a leg that DID reach the broker before the
+    exception (the entry send can succeed before the stop send fails) is invisible to
+    cancel_all/flatten forever -- a permanently untracked, possibly naked position. The
+    caller (NYExecution.place) still sees the exception and fails the placement."""
+    b = DTCBroker(client=_FailingClient(), symbol="MNQU26-CME", account="FUNDED")
+    try:
+        b.submit_bracket(_intent())
+        raise AssertionError("expected the client exception to propagate")
+    except ConnectionError:
+        pass
+    assert "desk-1" in b._brackets
+    assert b._brackets["desk-1"]["stop_oid"] == "desk-2"
+    assert b._brackets["desk-1"]["size"] == 3
+
+
+# --------------------------------------------------------------------------- cancel-vs-fill race
+def test_cancel_order_only_if_not_filled_leaves_a_raced_fills_real_stop_alone():
+    """2026-08-05 review: NYExecution.cancel() can race a fill it doesn't know about
+    yet. The old unconditional cancel_order() would strip the now-real protective stop
+    from a position that just turned out to exist -- naked and untracked (poll_fills'
+    DTC branch never saw it either, since cancel() had already moved it out of
+    _orders). only_if_not_filled=True must check the ENTRY's own post-pump status and
+    leave a FILLED entry's stop resting."""
+    s = MockDTCServer(order_mode="fill_entry")     # entry fills, stop stays WORKING
+    try:
+        b, c = _broker(s)
+        ref = b.submit_bracket(_intent())
+        stop_oid = b._brackets[ref]["stop_oid"]
+        b.cancel_order(ref, only_if_not_filled=True)
+        assert stop_oid not in s.cancelled          # the real protection was left alone
+        assert b.order_status(ref)["stop_resting"] is True
+        c.close()
+    finally:
+        s.stop()
+
+
+def test_cancel_order_only_if_not_filled_still_cancels_a_genuinely_resting_order():
+    """The normal case: the entry never filled, so only_if_not_filled must behave
+    exactly like the unconditional cancel -- the stop still comes down."""
+    s = MockDTCServer(order_mode="none")            # entry rests OPEN, never fills
+    try:
+        b, c = _broker(s)
+        ref = b.submit_bracket(_intent())
+        stop_oid = b._brackets[ref]["stop_oid"]
+        b.cancel_order(ref, only_if_not_filled=True)
+        assert stop_oid in s.cancelled
+        c.close()
+    finally:
+        s.stop()
+
+
+def test_cancel_order_default_still_pulls_a_filled_entrys_stop():
+    """close_now()/scratch_unconfirmed() call cancel_order() KNOWING the entry is
+    filled -- for them, unconditional (only_if_not_filled=False, the default) must be
+    unchanged: that stop coming down is the entire point of the call."""
+    s = MockDTCServer(order_mode="fill_entry")
+    try:
+        b, c = _broker(s)
+        ref = b.submit_bracket(_intent())
+        stop_oid = b._brackets[ref]["stop_oid"]
+        b.cancel_order(ref)
+        assert stop_oid in s.cancelled
+        c.close()
+    finally:
+        s.stop()
+
+
+def test_cancel_protective_stop_pulls_only_the_stop_never_the_entry():
+    """Rule-J flip cleanup: the entry is correctly filled and MUST stay that way --
+    only the now-stale, wrong-direction stop should ever be touched."""
+    s = MockDTCServer(order_mode="fill_entry")
+    try:
+        b, c = _broker(s)
+        ref = b.submit_bracket(_intent())
+        stop_oid = b._brackets[ref]["stop_oid"]
+        b.cancel_protective_stop(ref)
+        assert stop_oid in s.cancelled
+        assert ref not in s.cancelled                # the entry itself was never touched
+        c.close()
+    finally:
+        s.stop()
+
+
+def test_cancel_protective_stop_on_unknown_ref_is_a_safe_noop():
+    s = MockDTCServer(order_mode="none")
+    try:
+        b, c = _broker(s)
+        b.cancel_protective_stop("desk-ghost")        # must not raise
+        c.close()
+    finally:
+        s.stop()
+
+
 # --------------------------------------------------------------------------- keepalive
 def test_ensure_connected_survives_a_true_idle_drop():
     """The 2026-08-02/03 incident, reproduced: a socket that dies during a QUIET stretch
