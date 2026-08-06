@@ -51,6 +51,14 @@ SPEC = ROOT / ".claude/agents/live-desk-v1.md"
 RUNS = ROOT / "runs/live_desk1"
 TICK, SLIP, PV, COMMISSION, SFR = 0.25, 1, 20.0, 5.0, 1.0
 SHELF_TIER = {"CONFIRMED": 300.0, "BASE": 200.0}
+# CANON CONVICTION SIZING (Angus): $160 base per unit-risk x the shipped
+# multiplier. Multipliers are 0.5 / 1.0 / 1.5 from the book's own tier column,
+# and 2.0 for the FIRST elite signal of each day (funded_book.py:176 —
+# subsequent elites fall back to their base tier). Drawdown-state effects
+# (ramp, soft de-risk, daily budget) are deliberately excluded: this sim is
+# constant-risk by design so that agent-vs-machine measures decisions, not
+# account state.
+CANON_BASE = 160.0
 # CADENCE (Angus, two rulings): minute-by-minute intraday adaptation WHERE THE
 # MONEY IS — one call EVERY MINUTE a position is open; while flat in the entry
 # window (08:00-10:30, the only window either engine can enter) a 5-minute pulse
@@ -319,16 +327,17 @@ def build_signals():
         # the shipped conviction multiplier (0.5x / 1.0x / 1.5x) and is NOT
         # inside dollars_1lot — it is applied downstream. Carry it here so both
         # the desk and the baselines trade the book at its real weights.
-        tier = float(t["tier"])
+        # the engine's realised dollars -> R, so conviction sizing can be applied
+        # on the same footing as the shelf (R x risk-dollars)
+        mech_R = mech_d / (float(t["risk"]) * PV * float(t["size"]))
         days.setdefault(t["day"], []).append(dict(
             engine="CANON", day=t["day"], sess=t["sess"], direction=t["direction"],
             s=s_, fill=t["fill"], entry=float(t["entry"]),
             stop=init_stop, risk=float(t["risk"]), size=float(t["size"]),
-            tier_mult=tier, elite=bool(t.get("elite")),
+            tier_base=float(t["tier"]), elite=bool(t.get("elite")),
             partial_px=(float(ppx) if ppx is not None else None),
             pattern=t.get("pattern", "?"), target=wt.get((t["ts"], t["direction"])),
-            mech_exit=mech_exit, mech_exit_px=mech_px,
-            mech_dollars=mech_d * tier))
+            mech_exit=mech_exit, mech_exit_px=mech_px, mech_R=mech_R))
     for t in build_shelf_trades():
         td = SHELF_TIER[t["tier"]]
         days.setdefault(t["day"], []).append(dict(
@@ -340,8 +349,17 @@ def build_signals():
             mech_dollars=float(td * t["mech_R"]), mech_R=float(t["mech_R"])))
     for d in days:
         days[d].sort(key=lambda x: x["fill"])
+        elite_used = False          # 2.0x goes to the day's FIRST elite only
         for i, sig in enumerate(days[d]):
             sig["sid"] = f"{'C' if sig['engine'] == 'CANON' else 'S'}{i + 1}"
+            if sig["engine"] != "CANON":
+                continue
+            if sig["elite"] and not elite_used:
+                sig["tier_mult"], elite_used = 2.0, True
+            else:
+                sig["tier_mult"] = sig["tier_base"]
+            sig["dollars_risk"] = CANON_BASE * sig["tier_mult"]
+            sig["mech_dollars"] = sig["mech_R"] * sig["dollars_risk"]
     return days
 
 
@@ -367,8 +385,9 @@ def sig_desc(g: dict) -> str:
               f"({g['s'] * (g['partial_px'] - g['entry']) / g['risk']:+.1f}R) then runs "
               f"the rest" if g.get("partial_px") is not None else "")
         tm = g.get("tier_mult", 1.0)
-        conv = ("HIGH conviction 1.5x size" if tm >= 1.5 else
-                ("REDUCED conviction 0.5x size" if tm <= 0.5 else "standard 1.0x size"))
+        lbl = {2.0: "ELITE conviction", 1.5: "HIGH conviction",
+               1.0: "standard", 0.5: "REDUCED conviction"}.get(tm, "standard")
+        conv = f"{lbl} {tm:g}x — ${g['dollars_risk']:.0f} risk"
         return (f"CANON {g['direction'].upper()} [{g['sess']}] fills {g['entry']:.2f}, "
                 f"stop {g['stop']:.2f} (-1R = {g['risk']:.2f}pt), working target {tgt}"
                 f"{pt}, {conv}, pattern {g['pattern']}")
@@ -479,13 +498,13 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
         # engine's own realised dollars — only agent DEVIATIONS are simulated.
         if anchor:
             net = p["sig"]["mech_dollars"]
-            aR = net / (p["risk"] * PV * p["sig"]["size"]) if p["engine"] == "CANON" \
-                else net / p["sig"]["dollars_risk"]
+            aR = net / p["sig"]["dollars_risk"]
         else:
             pts = sum(fr * p["s"] * (px - p["entry"]) for fr, px, _ in p["legs"])
             if p["engine"] == "CANON":
-                net = (pts * PV * p["sig"]["size"] - COMMISSION) * p["sig"]["tier_mult"]
-                aR = net / (p["risk"] * PV * p["sig"]["size"] * p["sig"]["tier_mult"])
+                aR = (pts * PV * p["sig"]["size"] - COMMISSION) \
+                    / (p["risk"] * PV * p["sig"]["size"])
+                net = aR * p["sig"]["dollars_risk"]
             else:
                 aR = (pts - SFR) / p["risk"]
                 net = p["sig"]["dollars_risk"] * aR
@@ -495,6 +514,7 @@ def run_day(day: str, sigs: list[dict], bars, tape_day, dep, journal) -> tuple[d
             "direction": p["sig"]["direction"],
             "sess": p["sig"]["sess"], "tier": p["sig"].get("tier", "-"),
             "tier_mult": p["sig"].get("tier_mult", 1.0),
+            "dollars_risk": p["sig"].get("dollars_risk"),
             "taken_by": p["taken_by"], "agent_R": round(aR, 4),
             "agent_dollars": round(net, 2),
             "mech_dollars": round(p["sig"]["mech_dollars"], 2),

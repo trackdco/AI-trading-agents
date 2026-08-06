@@ -821,3 +821,31 @@ briefing the agent on the strategy's DEFAULT MANAGEMENT IN FULL, and
 sizing is part of that. The audit hook in the law is amended: the
 spec-vs-strategy diff must explicitly include SIZING, not just entry,
 exit and management rules.
+
+### CONVICTION SIZING CORRECTED TO SPEC — RESTART #4 [ANGUS, day 94]
+His spec, stated: "$160 base for the canon, with multiples of 0.5, 1,
+1.5 and 2." The harness had NONE of it — it used `size_engine` (the
+1.0/0.5 de-risk flag), so every canon trade carried identical weight
+and the desk was never told which setups the book was leaning on.
+FULL RULE RECOVERED from funded_book.py:176 — multiplier = the book's
+`tier` column (0.5 / 1.0 / 1.5, gold-score derived) EXCEPT the FIRST
+elite signal of each day, which takes 2.0 (subsequent elites fall back
+to their base tier). Risk $ = 160 x multiplier -> $80 / $160 / $240 /
+$320. Fit-span spread: 137 / 255 / 318 / 53 signals.
+IMPLEMENTATION: canon dollars re-based from engine 1-lot realised
+dollars to R x (160 x multiplier), putting it on the same footing as
+the shelf (R x tier dollars). Both baselines and the agent settlement
+scale identically; passive==B0 re-validated to the cent. Per
+§5.11-10(c) the desk is now TOLD the conviction on every canon signal
+("ELITE conviction 2x — $320 risk" etc). EXCLUDED deliberately, and on
+the record: the funded shell's drawdown-state effects (ramp, soft
+de-risk at -35%, daily budget) — this sim is constant-risk by design so
+the measurement isolates decisions from account state; running the
+final decision stream back through the funded shell is a separate
+downstream exercise.
+MATERIALITY: full-span B0 at correct conviction sizing = $+105,547.
+The 94 completed days were on a different dollar basis entirely and
+are VOID — archived runs/_archive/live_desk1_flatsizing_94days. This
+also changes DECISIONS going forward, not just accounting: the desk can
+now see that a signal is a 2x elite versus a 0.5x reduced trade.
+RESTART #4, clean from 2025-06-02.
