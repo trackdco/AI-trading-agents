@@ -36,6 +36,12 @@ TICK = 0.25
 COST_PTS = 0.5
 FIT_START, FIT_END = "2025-06-01", "2026-07-31"
 TFS = [1, 2, 3, 5]
+# TF=15 runs as a CONTROL COLUMN, not a candidate: D8 already declares the
+# (A)-only path at TF=15 the calibration control, and carrying it through the
+# outcome walk is the same control one stage later. It anchors the LTF numbers
+# against the incumbent timeframe under ONE convention (both arms entering at
+# the next 1m open) instead of against the 15m census's retest-entry break arm.
+CTRL_TF = 15
 SESSIONS = {"LONDON": (180, 299), "NY_PRE": (480, 569), "NY_AM": (570, 630)}
 EXCL = {"no_next_open": 0, "gap_through_stop": 0, "level_nan": 0}
 
@@ -313,7 +319,7 @@ def main() -> None:
                              else t.normalize() - pd.Timedelta(days=1)).date())
                         for t in bars.index})
     days = [d for d in sess_days if FIT_START <= d <= FIT_END]
-    tfs = TFS + [15] if pre else TFS
+    tfs = TFS + [CTRL_TF]
     rows = []
     for k, d in enumerate(days):
         rows.extend(day_triggers(bars, d, tfs=tfs, walk=not pre))

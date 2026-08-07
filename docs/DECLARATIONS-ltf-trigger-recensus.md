@@ -4,6 +4,18 @@ Written 2026-08-07. **Nothing has been built or measured under this
 design.** Holdout look #1 remains HALTED and unspent; no sealed row has
 been read.
 
+> ## STATUS: EXECUTED AND CLOSED, same day. Results in `FINDINGS-ltf-trigger-recensus.md`, base rates BR-27..BR-32.
+>
+> Every gate passed (D8 pre-flight clean; TF=15 calibration exact at 8,107
+> triggers; entry-price gate PASS at all four TFs). **Nothing cleared a
+> declared bar:** 0 of 168 (A)-only cells met E1.4, 0 of 30 cells met D1a.
+> The book EV is **monotone in trigger timeframe and the 15m control wins**
+> (1m −0.071R → 15m +0.176R). Predictions 3 and 5 are refuted; 1 and 2
+> confirmed; 4 is invariant. **The invalidation list below is WITHDRAWN** —
+> the re-census showed BR-19..BR-26 were measured on the right population
+> after all. Holdout look #1 stays HALTED, now pending only a D7
+> (room-to-run) declaration.
+
 ## Why everything downstream of the trigger is being rebuilt
 
 The programme fixed the trigger candle at 15m. That came from the original
