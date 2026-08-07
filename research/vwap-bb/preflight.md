@@ -1,17 +1,21 @@
 # PRE-FLIGHT — VWAP/BB confluence strategy
 
-**Three of six gates fire: 2 (session overlap), 4 (specifiability), 5 (data feasibility).
-Gates 1, 3 and 6 pass, and gate 1 passes cleanly and by a wide margin.** Per the runbook,
-diagnosis stops here and no remedies are proposed — a separate decision follows.
+*Revision 2, 2026-08-07 — gate 4 closed, gate 6 run properly, gate 5 attempted and
+**blocked on credentials**. Gate 2 untouched and still OPEN.*
+
+**Gate 4 is now CLOSED. Gate 6 PASSES with a declared resolution floor. Gate 5 could not be
+closed — the pull requires Databento credentials that are not present in this environment,
+so it remains FIRING and is now the single blocking item.** Gate 2 remains OPEN pending a
+human decision. No backtest was run, no parameter was fitted, and **N_trials remains 0**.
 
 | Gate | Verdict | The number that decided it |
 |---|---|---|
 | 1 SIZING | **PASS** | Median MNQ risk $19–43/contract vs a $2,000 allowance; hand-log realised risk $150–420 |
-| 2 SESSION OVERLAP | **FIRES** | 9 of 28 hand-log trades (32%) precede the 09:36 first-signal bar; BB(20)/ATR(20) reach into pre-open on all four entry TFs |
+| 2 SESSION OVERLAP | **OPEN** | 9 of 28 hand-log trades (32%) precede 09:36; W1 vs RTH document conflict awaiting a human decision — untouched in this revision |
 | 3 BREAKEVEN | **PASS** | p₀ = 40.61% at R=1.5 base cost; c/s = 1.53%, a normal cost ratio |
-| 4 SPECIFIABILITY | **FIRES** | 18 free parameters, 5 of them with no stated value; 90 discrete tournament configurations against 19 usable calibration trades |
-| 5 DATA FEASIBILITY | **FIRES** | February 2026 — the entire calibration month and both parity-gate dates — is absent from the OHLCV archives |
-| 6 SAMPLE SUFFICIENCY | **PASS** | ~1,170 available trades vs 519 required at the pessimistic win rate |
+| 4 SPECIFIABILITY | **CLOSED** | All 5 unstated parameters frozen: 1 [SPEC], 4 [FIAT], 0 [FIT]. Free count 18 → 13 |
+| 5 DATA FEASIBILITY | **FIRES — BLOCKED** | Feb 2026 still absent. Pull not executable: no Databento API key, no `databento` package, and repo policy gates paid pulls |
+| 6 SAMPLE SUFFICIENCY | **PASS**, floor p₁ ≈ 0.50 | Workbench 537 sessions resolves p₁ ≥ 0.50 under every correction regime; the 46–50% band is indeterminate |
 
 **Scope of these verdicts.** This is *the VWAP/BB spec as currently written, implemented on
 NQ, under the stated RTH 09:31–16:00 / first-signal-09:36 session convention, against the
@@ -77,7 +81,13 @@ position size is the free variable fitted to it. That is the correct dependency 
 it is the single structural difference between a model that fits inside a funded account and
 one that cannot.
 
-## GATE 2 — SESSION OVERLAP · **FIRES**
+## GATE 2 — SESSION OVERLAP · **OPEN**
+
+> **Status: OPEN pending a human decision on the W1-vs-RTH document conflict.** This section
+> is carried unchanged from revision 1 and was deliberately not revisited. The conflict is a
+> strategy-authority question (which session the strategy actually trades), not an
+> engineering one, and resolving it either way would change what every other gate is
+> measuring. Both readings are carried through gate 6 rather than one being assumed.
 
 The brief expected this to pass. It does not, on two independent counts.
 
@@ -153,119 +163,174 @@ is genuine rather than an artefact.
 
 Even the pessimistic in-window Wilson floor of 46.0% clears the 40.61% breakeven, though not
 by much — see gate 6.
+## GATE 4 — SPECIFIABILITY · **CLOSED**
 
-## GATE 4 — SPECIFIABILITY · **FIRES**
+*Was FIRING in revision 1 on five parameters with no stated value. All five are now frozen.*
 
-**(a) Unhandled states.** The α hole is **closed**: §1 specifies an end-of-day flatten
-(default 15:55 ET) for any position still open, so the "reaches neither target nor stop"
-state that swung α's expectancy by 0.41R has a stated rule here. That is a genuine strength
-and worth recording as such.
+**(a) Unhandled states.** Unchanged from revision 1: the α hole is closed by §1's end-of-day
+flatten. The two open items — volatility stand-down and stop buffer — are resolved below.
 
-Two states remain unhandled:
+**(b) The five frozen parameters.**
 
-- **Volatility stand-down** — §7 states the criterion is "computable definition TBD" and marks
-  it **[OPEN]**. The doc names a filter it does not define.
-- **Stop buffer** — §5.4 places the stop "beyond the wick extreme" without a distance. R is
-  the denominator of every expectancy figure and the input to the 1.5R floor that decides
-  whether a trade is taken at all, so an unstated buffer changes both the magnitude of R and
-  the composition of the trade list.
+| # | Parameter | Value | Tag | Justification |
+|---|---|---|---|---|
+| 1 | VWAP typical-price input | **HLC/3** | **[SPEC]** | §2 specifies "standard TradingView VWAP". TradingView's built-in VWAP takes `hlc3` as its source by default, so the doc already fixes this — it was under-read, not unstated |
+| 2 | Volume-profile bin size | **1.00 point** (4 ticks) | **[FIAT]** | Resolves the §3 cluster tolerance (~10 pts) at 10:1. Finer bins imply precision the method does not have: spec-1 distributes each 1-minute bar's volume across its own range, so sub-point structure is interpolation, not measurement |
+| 3 | HTF classification rule | **15m fractal swings, N=2 either side; HH+HL ⇒ uptrend, LH+LL ⇒ downtrend, else range** | **[FIAT]** | spec-1 already fixes the *method* ("swing HH/HL–LH/LL"), leaving only the swing definition. N=2 is the conventional fractal width, symmetric, and the smallest that rejects single-bar noise |
+| 4 | Stop buffer beyond the wick | **1 tick (0.25 pt)** | **[FIAT]** | §5.4 says "beyond the wick extreme" and "never widened". One tick is the minimum increment satisfying "beyond"; any larger buffer is an unstated widening, which the same clause forbids. The doc's own prohibition selects the value |
+| 5 | Volatility stand-down | **DISABLED for v1** | **[FIAT]** | §7 marks it OPEN with no definition. Enabling an undefined filter with an invented threshold adds a free parameter with no basis and suppresses trades for unmeasurable reasons. "Off" is the neutral choice — it removes a filter rather than adding one, and admits *more* trades, which is the harder test. Left for a separately pre-registered layer |
 
-**(b) Free parameter count: 18.**
+**No parameter was set by examining outcomes. Zero [FIT] tags. N_trials remains 0**, and the
+holdout was not touched. Parameter 2 was the only candidate that might have required data;
+it was resolved from the cluster tolerance and the volume-distribution method instead, so no
+data was consulted for any of the five.
 
-*Explicitly marked CALIBRATE (9):* cluster proximity tolerance (~10 pts), B_min body/range
-(0.6), ATR floor k (1.0), N_data minutes (15), T_cancel, front-run F (2–3 pts), RR floor
-(1.5), daily halt thresholds, max trades/day.
+**Parity is now adjudicable.** Revision 1 noted that the 1-point parity gate (spec-1 Step 4)
+was *undefined* rather than failing, because an ambiguous VWAP price input makes "within
+1 point" meaningless. Freezing parameter 1 to HLC/3 removes that ambiguity: parity can now
+be computed and can now genuinely pass or fail. It still cannot be *run* — see gate 5.
 
-*Marked TOURNAMENT (4 axes):* window W1/W2/W3, entry E1/E2/E3, management V0–V4, weekly
-profile on/off.
+**(c) Free-parameter count after the freeze.**
 
-*Not stated anywhere in the doc or spec-1 (5):* VWAP typical-price input (close vs HLC3 vs
-HL2 — spec-1 specifies the *variance* formula but not the *price*), volume-profile bin size,
-HTF trend/range classification rule (spec-1 defers it: "document the exact rule chosen"), stop
-buffer, volatility stand-down.
+| Category | Before | After |
+|---|---|---|
+| CALIBRATE (explicit, numeric) | 9 | 9 |
+| TOURNAMENT (variant axes) | 4 | 4 |
+| Unstated / OPEN | 5 | **0** |
+| **Total free** | **18** | **13** |
 
-The tournament axes alone span **3 × 3 × 5 × 2 = 90 discrete configurations**, before any of
-the nine continuous CALIBRATE parameters. The calibration target is **19 usable trades** after
-gate 2's window restriction. Eighteen free parameters against nineteen calibration
-observations is a configuration space larger than the evidence intended to constrain it.
+Tournament configuration space is unchanged at **90** cells
+(W1/W2/W3 × E1/E2/E3 × V0–V4 × weekly-profile on/off = 3×3×5×2). §12.3 restricts the
+immediate programme to **30** (W×E×V) and mandates one axis at a time rather than a grid —
+which matters for the correction applied in gate 6.
 
-The five unstated parameters are the operative finding for this gate: **two competent
-implementers working from these documents would produce different trade lists**, so the
-strategy is not currently specifiable, and the 1-point parity gate in spec-1 Step 4 cannot be
-adjudicated against an ambiguous VWAP price input.
+## GATE 5 — DATA FEASIBILITY · **FIRES — BLOCKED ON CREDENTIALS**
 
-**(c) Were parameters selected on the data?** **No.** No engine code exists (`src/` is absent;
-progress-tracker records zero completed steps), so nothing has been fitted. **N_trials = 0.**
-The doc's anti-tuning discipline is explicit (§12.3: axes tested one at a time, not as a grid)
-and the out-of-sample reservation is written down (§12.4).
+**Volume clean, roll corruption clean at the traded hour** — both unchanged from revision 1
+and both genuine passes.
 
-One qualification, recorded without prejudice: the CALIBRATE starting values were derived from
-Angus's discretionary trading during February 2026, which is also the declared calibration
-month. That is expert prior rather than curve-fitting, and the doc is transparent that
-February is in-sample by construction — but the starting values are not independent of the
-period they will first be measured against.
-
-## GATE 5 — DATA FEASIBILITY · **FIRES**
-
-**Volume: present and clean.** 1,089,712 bars, **zero** zero-volume bars, mean 419
-contracts/bar. VWAP is computable. PASS on that limb.
-
-**Roll corruption at the traded hour: not present.** Only 2 of 794 ET sessions contain a
-contract change, and in both the switch falls in the evening:
-
-| session | contracts | max 1-min move | BB(20) 5m window at 09:36 |
-|---|---|---|---|
-| 2024-12-16 | NQZ4 → NQH5 | 297.00 pts | switch at 19:00 — **clean** |
-| 2025-03-17 | NQH5 → NQM5 | 199.50 pts | switch at 20:00 — **clean** |
-
-The ~250-point gaps are real and large, but the longest entry-TF lookback (5m × 20 = 100 min)
-opens at 07:56 ET on the same session, well after any evening switch. **No indicator value at
-or after the 09:36 first-signal bar is corrupted by a roll.** Recorded as a genuine pass
-against a hazard that was reasonable to suspect.
-
-**What fires: February 2026 is absent from the data.**
+**The February 2026 pull was attempted and could not be executed.** Environment check:
 
 ```
-OHLCV coverage: 2023-01-02 -> 2026-01-30   (961 UTC days)
-  2026-01 days present: 26
-  2026-02 days present:  0     <- the hand-log month
-  spec-1 Step 4 parity dates:  2026-02-11 ABSENT,  2026-02-17 ABSENT
-  spec-1 Step 8 calibration window 2026-02-02..02-27:  0 of ~19 sessions present
+.env file:                    absent
+DATABENTO_API_KEY in env:     not set
+python `databento` package:   not installed
+hist.databento.com:           reachable (HTTP 200)
 ```
 
-The hand log is February 2026. Spec-1 Step 4 gates all downstream work on reproducing
-indicator values at two specific February timestamps to within 1 point, and Step 8 gates
-Phase 2 on matching the 28 February trades. **Neither step can be executed on the data in the
-repo.** Both are declared Angus sign-off gates, so the blockage is not confined to one step —
-it sits across the front of the build.
+The endpoint is reachable but there is no credential to authenticate with, and no client
+library. Separately, `context/ai-workflow-rules.md` §22 lists Databento pulls among the
+operations that "keep permission prompts" because they spend money — so this is gated by
+policy as well as by credentials.
 
-A second, wider consequence: the strategy doc's validation plan (§12.1, §12.4) designates
-Jan 2026→present as primary and reserves Mar–Jul 2026 as untouched out-of-sample. The
-archives end **2026-01-30**, so there is no post-January-2026 data at all. Neither the primary
-window nor the out-of-sample reservation exists as described.
+**I did not attempt to work around either constraint.** Coverage therefore stands exactly as
+in revision 1:
 
-## GATE 6 — SAMPLE SUFFICIENCY · **PASS**
+| Month | Sessions present | Status |
+|---|---|---|
+| 2023-01 … 2025-12 | full | present |
+| 2026-01 | 26 UTC days | present, ends 2026-01-30 |
+| **2026-02** | **0** | **absent — the hand-log month** |
+| 2026-03 … present | 0 | absent |
 
-*Least battle-tested of the six — α died before sample size mattered, so this gate is
-specified from method rather than demonstrated by the closed branch.*
+Both parity dates (2026-02-11, 2026-02-17) and all ~19 calibration sessions remain missing.
+spec-1 Steps 4 and 8 remain unexecutable, and both are Angus sign-off gates.
 
-Frequency 28 trades / 19 sessions = **1.47/session** (below the Vault's 3/day cap, so not
-truncated). Available: **794** RTH sessions → **~1,170** trades.
+**This is now the single blocking item in pre-flight.** Gate 4 is closed, gate 6 passes, and
+gates 1 and 3 passed in revision 1. Gate 2 needs a decision rather than data. Gate 5 needs
+one command run by someone holding the key:
 
-Required n to distinguish the win rate from a 40.61% breakeven at α=0.05 one-sided, 80% power:
+```bash
+# requires DATABENTO_API_KEY; spends money; permission-gated per ai-workflow-rules.md
+databento download --dataset GLBX.MDP3 --schema ohlcv-1m \
+  --symbols NQ.FUT --stype-in parent \
+  --start 2026-02-01 --end <today>
+```
 
-| assumed true win rate | required n | sessions | years |
-|---|---|---|---|
-| 68.4% (in-window point estimate) | 19 | 13 | 0.05 |
-| 52.9% (Wilson low, all 28) | 100 | 68 | 0.27 |
-| **46.0% (Wilson low, in-window)** | **519** | **352** | **1.40** |
+The verification checklist requested — 1380 bars/session, no intra-session gaps, both parity
+dates full, ~19 calibration sessions, front-month outrights identifiable, hyphenated spreads
+present and excludable, open-labelling consistent — **cannot be reported because there is
+nothing to verify.** It is carried forward verbatim as the acceptance test for whoever runs
+the pull. Reporting a coverage table for data that was not obtained would be fabrication.
 
-Even the pessimistic case needs 519 trades against ~1,170 available. **PASS**, with two
-qualifications: the estimate assumes the trade frequency generalises from a single month, and
-the available sample is 2023-01→2026-01 rather than the window the doc's validation plan
-describes (see gate 5).
+## GATE 6 — SAMPLE SUFFICIENCY · **PASS**, with a declared resolution floor
 
----
+**Least battle-tested of the six.** Cluster α died at gate 1, before sample size mattered, so
+this gate is specified from method rather than demonstrated by the closed branch. Its
+verdict carries correspondingly less weight than gates 1–5.
+
+**(a) Frequency, from the hand log's own span.** Log covers 2026-02-02 → 2026-02-27,
+**19 distinct trading sessions** (Feb 16 is a holiday).
+
+| reading | trades | per session |
+|---|---|---|
+| W1 convention, all 28 | 28 | **1.474** |
+| RTH convention, post-09:36 subset | 19 | **1.000** |
+
+**(d)** Gate 2 removed 32% of the log, so under the RTH convention the frequency estimate
+must come from the 19-trade subset — and it does. Only **15 of 19** sessions retain at least
+one post-09:36 trade. Gate 2 is OPEN, so both readings are carried throughout and the answer
+is reported under each.
+
+**Binomial verification** against p₀ = 0.406, one-sided — the brief's corrected figures
+reproduce exactly:
+
+| basis | observed | p |
+|---|---|---|
+| full log | 20/28 | **0.00095** |
+| post-gate-2 subset | 13/19 | **0.01332** |
+
+Both clear breakeven. The log is a hypothesis with real room, not an underpowered null.
+
+**Required n.** `n = [z_α√(p₀(1−p₀)) + z_β√(p₁(1−p₁))]² / (p₁−p₀)²`, p₀ = 0.406,
+z_β = 0.842 (80% power), z_α from α = 0.05 one-sided with the correction shown.
+
+Correction regimes: §12.3 mandates **one axis at a time, not a grid**, so the honest
+multiplier for the immediate programme is the largest single axis (V0–V4 = 5), not the full
+90-cell space. All four are shown because the choice changes the verdict at the margin.
+
+| true p₁ | margin | none | ÷5 (axis) | ÷30 (grid) | ÷90 (full) |
+|---|---|---|---|---|---|
+| 0.68 | +0.274 | 19 | 31 | 45 | 53 |
+| 0.60 | +0.194 | 40 | 64 | 91 | 108 |
+| 0.55 | +0.144 | 73 | 118 | 167 | 197 |
+| 0.529 *(Wilson low, full log)* | +0.123 | 100 | 161 | 229 | 270 |
+| 0.50 | +0.094 | 171 | 277 | 393 | 463 |
+| 0.46 *(Wilson low, subset)* | +0.054 | 517 | **837** | **1,188** | **1,401** |
+| 0.45 | +0.044 | **777** | **1,259** | **1,788** | **2,108** |
+
+**(c) Capacity.** Existing archives, split as instructed and with the holdout untouched:
+
+| split | span | sessions | trades @1.000 | trades @1.474 |
+|---|---|---|---|---|
+| workbench | 2023-01-02 → 2025-01-31 | **537** | 537 | 792 |
+| sealed holdout | 2025-02-01 → 2026-01-30 | 257 | 257 | 379 |
+
+**(b) What the workbench resolves**, at the RTH frequency of 1.000 trades/session (the
+conservative reading — the W1 reading yields 792 and resolves strictly more):
+
+- **p₁ ≥ 0.50 — resolvable under every correction regime**, including the full 90-cell space
+  (463 ≤ 537). This covers the entire upper portion of both Wilson intervals.
+- **p₁ = 0.529** (full-log Wilson floor) — resolvable everywhere; 270 needed at worst.
+- **p₁ = 0.46** (post-gate-2 Wilson floor) — resolvable **only uncorrected** (517 ≤ 537).
+  At the §12.3 axis multiplier of 5 it needs 837 and does **not** fit.
+- **p₁ ≤ 0.45 — not resolvable under any regime.**
+
+**Declared resolution floor: p₁ ≈ 0.50.** Above it the study answers cleanly. Between 0.46
+and 0.50 the result will be indeterminate under the correction §12.3's own discipline
+implies. Below 0.46 the workbench cannot answer the question at all.
+
+**Why this is a PASS and not a FIRE.** The gate fires if required n exceeds available n at a
+*plausible* true win rate. The plausible range is the Wilson interval, and its bulk —
+everything from 0.50 to 0.85 — is comfortably resolvable, with the full-log Wilson floor of
+0.529 resolvable even under the most punitive correction. Only the bottom four points of the
+post-gate-2 interval fall outside reach. That is a known limitation accepted in advance,
+which is materially different from discovering it after a null result.
+
+Two qualifications. The frequency estimate rests on a single month, and if the true rate is
+lower than the hand log suggests it will also be *rarer* — both estimates would move against
+the study together. And the holdout adds 257 sessions if the workbench result warrants
+spending it, which is a separate decision and not counted above.
 
 ## What passed, stated as plainly as what fired
 
@@ -276,12 +341,36 @@ forced by a reward multiple. Gate 3's cost ratio is healthy and its pass is not 
 kind α produced. Gate 5's roll hazard, reasonable to suspect given unadjusted 250-point gaps,
 measured clean at the traded hour. The α exit-rule hole does not exist here.
 
-None of the three firing gates is a finding about the strategy's edge. Gate 2 is a conflict
-between two session conventions in two documents. Gate 4 is five unstated parameters. Gate 5
-is a missing month of data. All three fire on the specification and the inputs, which is what
-PRE-FLIGHT is for and why it runs before anything is built.
+None of the firing gates is a finding about the strategy's edge. Gate 2 is a conflict between
+two session conventions in two documents. Gate 4 was five unstated parameters. Gate 5 is a
+missing month of data. All fire on the specification and the inputs, which is what PRE-FLIGHT
+is for and why it runs before anything is built.
 
-**N_trials: 0.** No parameter was fitted, no configuration selected, no backtest run.
+**N_trials: 0.** No parameter was fitted, no configuration selected, no backtest run, no
+holdout touched.
+
+---
+
+## Revision 2 — state after this pass
+
+| | |
+|---|---|
+| **Closed** | Gate 4. Five parameters frozen — 1 [SPEC], 4 [FIAT], 0 [FIT]. Free count 18 → 13 |
+| **Passed** | Gate 6, with a declared resolution floor at p₁ ≈ 0.50 |
+| **Blocking** | Gate 5. Needs one Databento pull, executable only by a key-holder |
+| **Awaiting decision** | Gate 2. W1 vs RTH — strategy authority, not engineering |
+| **Already passed** | Gates 1 and 3, revision 1 |
+
+Pre-flight cannot complete until gate 5's pull lands and gate 2 is decided. Neither is
+research work: one is a purchase, the other is a ruling. Both were left undone deliberately
+rather than worked around.
+
+The order matters and is worth stating, because it is the discipline the closed branch
+bought. **Gate 5's pull must precede any backtest, and it must precede it for a reason that
+has nothing to do with convenience:** acquiring data after seeing a result is how a sample
+gets shopped. Right now there is no result — no engine exists, nothing has been fitted,
+N_trials is 0 — so the pull can be commissioned on a clean decision. That property is
+perishable, and it is lost the moment anything is run.
 
 ---
 
