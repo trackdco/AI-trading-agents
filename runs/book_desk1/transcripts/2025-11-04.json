@@ -1,0 +1,9 @@
+{
+ "turns": [
+  {
+   "event": "SHELF SHORT [BASE] risk $200 @ 10:00",
+   "sent": "DESK OPEN 2025-11-04. Two engines live; mechanical specs fixed; you choose what the book takes.\njournal: 41 days | you $+11,266 vs B0(take-all) $+11,266 vs B1(canon-precedence) $+11,266 | skips 0\n  2025-10-17: you $+163 vs B0 $+163 (2 signals, 0 skips)\n  2025-10-20: you $+61 vs B0 $+61 (1 signals, 0 skips)\n  2025-10-24: you $+188 vs B0 $+188 (1 signals, 0 skips)\n  2025-10-29: you $+467 vs B0 $+467 (1 signals, 0 skips)\n\n[10:00] SIGNAL: SHELF SHORT [BASE] risk $200 @ 10:00\nbook: flat\nDecision: take or skip.",
+   "reply": "{\"action\":\"take\",\"note\":\"No open position, no conflict, base-tier shelf fade\u2014default take.\"}"
+  }
+ ]
+}

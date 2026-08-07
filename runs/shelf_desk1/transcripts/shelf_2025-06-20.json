@@ -1,0 +1,16 @@
+{
+ "turns": [
+  {
+   "minute": "2025-06-20 10:01:00-04:00",
+   "why": "position opened \u2014 read it and set your plan",
+   "sent": "NEW POSITION LONG shelf-fade | tier BASE ($180 risk, fixed) | entry 22010.5 risk 15.00pt | engine stop 21995.5 (-1R, INVIOLATE) | mechanical target = the developing near band | mechanical scratch at t+10 if red | session ends 15:55\njournal: 6 trades | you $+1,212 vs mech $+1,266 (delta $-54)\n  defense (mech losers, n1): $-3\n  offense (mech winners, n5): $-51\n  band-exit refusals: 5, net vs mech $-51\nlast trades (you vs mech):\n  2025-06-06 long BASE: +3.90R vs +2.14R (stop; CVD flipped negative (-24), pullback from 6.08 pea)\n  2025-06-11 short BASE: -1.09R vs -1.07R (stop; Near stop, flow firmly against; let the inviolate )\n  2025-06-16 short BASE: +1.20R vs +1.20R (band; Band touch hit but CVD +2094 (heavy buying) agains)\n  2025-06-17 short BASE: +0.88R vs +1.67R (stop; Pullback from peak 3.19 to 2.45 is normal noise; s)\n  2025-06-18 short BASE: +1.17R vs +1.17R (band; CVD still buying against short, price off peak; ba)\nReply with EXACTLY one JSON object, nothing else: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"stop_r\":<num,optional>,\"target_r\":<num or null,optional>,\"partial_pct\":<0-1,optional>,\"note\":\"<=120 chars\"}. R units are TRUE risk (engine stop = -1R). \"hold\"=no change (mechanical exits execute when due). \"revise\": stop_r only TIGHTENS (0=entry); target_r >= 0.3 replaces the target, null = ride on the stop (extension mode); partial_pct books that fraction of what is OPEN at next bar. \"exit_now\" flattens at next bar. Rule-breaking fields are ignored by the harness.\n\n[10:01] EVENT: position opened \u2014 read it and set your plan\nbar 22015.50/22023.25/22001.75/22012.75 | R_now +0.15 peak +0.85 | open 1.00 | stop -1.00R | target developing band +2.08R | cvd_since_entry -64 | mins_to_EOD 354",
+   "reply": "{\"action\":\"hold\",\"note\":\"Fresh entry, heat minimal, no defense/offense signal yet; let plan run to next decision point.\"}"
+  },
+  {
+   "minute": "2025-06-20 10:02:00-04:00",
+   "why": "t+2 check: the decisive minute on this clock",
+   "sent": "[10:02] EVENT: t+2 check: the decisive minute on this clock\nbar 22011.75/22025.00/22008.50/22013.75 | R_now +0.22 peak +0.97 | open 1.00 | stop -1.00R | target developing band +1.93R | cvd_since_entry -32 | mins_to_EOD 353",
+   "reply": "{\"action\":\"hold\",\"note\":\"Green, pullback from 0.97 peak is normal noise; CVD mildly against but not decisive. Hold stop.\"}"
+  }
+ ]
+}

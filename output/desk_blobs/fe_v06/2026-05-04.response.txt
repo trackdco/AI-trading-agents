@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "agent_version": "ff94d3a77570",
+  "date": "2026-05-04",
+  "regime": "event_risk",
+  "directional_bias": "long",
+  "permitted_structures": ["reversion", "continuation"],
+  "stand_down": false,
+  "size_multiplier": 0.25,
+  "confidence": "low",
+  "rationale": "High-impact ISM Services PMI today = event_risk, a timing/size modifier not a stand-down. Analog cohort splits FLAT7/MOM5/ROT3 (majority FLAT) but share_both_books_red=0.47, below the ~0.6 that licenses flat; both books only mildly red (mom -63 > rot -126). Classic mixed-middle -> 0.25 reduced-arm, arm the better (momentum) book. Bias long: net_10d +1090 and price 0.32% off window high favor continuation. range_pctl_20=0.95 and mixed analogs keep size small; trap_rate_10=0.1 gives no cause to exclude either structure.",
+  "cited_evidence": ["calendar.ISM Services PMI impact=high today=true", "analog_block.majority_action=FLAT", "analog_block.share_both_books_red=0.47", "analog_block.mean_pl_if_momentum=-63", "analog_block.mean_pl_if_rotation=-126", "trailing_stats.net_10d_pts=1090.25", "trailing_stats.pct_off_window_high=0.323", "regime_vector.range_pctl_20=0.95"],
+  "playbook_notes": "Fresh-eyes start, no inherited notes. Rule set applied: (1) event_risk (high-impact ISM Services PMI 10:00 ET, red_folder_today=1) is NOT an auto stand-down under v0.6 — engine holds entries past the release; set size for residual uncertainty. (2) Stand-down/0.0 needs affirmative evidence: here share_both_books_red=0.47 is below the ~0.6 bar and no fresh directionless overnight shock (largest shock 133.5 was 04-29, not last night; overnight net -63 vs gap +43.5 is ordinary), so flat is unjustified. (3) Book selection from analogs: momentum mean -63 beats rotation -126, and tape confirms trend (net_10d +1090, price 0.32% off window high, imbal_share_10/20=0.7) -> arm momentum, bias long. (4) Sizing: cohort is mixed-middle (majority FLAT but not both-red), event pending, range_pctl_20=0.95 elevated -> 0.25 reduced-arm rather than 0.5. (5) Both structures permitted: trap_rate_10=0.1 low and no gap-and-fade signature, so no structure-specific evidence excludes reversion or continuation. Watch next day: if a fresh outsized overnight shock appears with no direction, or an analog cohort crosses share_both_books_red>=0.6, escalate toward stand-down; if trend extends with a clean streak (streak_imbal rising from 0), consider stepping momentum up to 0.5."
+}

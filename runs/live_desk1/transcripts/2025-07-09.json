@@ -1,0 +1,340 @@
+{
+ "turns": [
+  {
+   "minute": "07:45",
+   "why": "morning read",
+   "sent": "MORNING READ, 2025-07-09 07:45 ET. Your desk, your day. Both engines live.\nNOTE: 8 calendar days since your last journaled day.\nprior day: O 22852 H 22973 L 22808 C 22885\novernight (18:00->07:40): H 22952 L 22844 last 22933 (gap +48)\njournal: 22 days | you $+7,989 vs B0(machine) $+8,511 vs B1(canon-precedence) $+8,554\n  CANON: 70 signals, you took 70 / passed 0 (0%)\n    the ENGINE earned $+7,242 on the ones you took \u2014 that is the strategy's own record, and it is not in question\n    YOUR HANDLING of them: $+6,720 ($-522 vs the engine) on n=70 \u2014 sample is getting usable\n  SHELF: 9 signals, you took 9 / passed 0 (0%)\n    the ENGINE earned $+1,269 on the ones you took \u2014 that is the strategy's own record, and it is not in question\n    YOUR HANDLING of them: $+1,269 ($+0 vs the engine) on n=9 \u2014 LOGBOOK ONLY \u2014 n is far too small to mean anything yet\n  SAMPLE DISCIPLINE: both engines were certified on hundreds of trades. Under ~40 of your own trades on an engine you have NO basis to judge it \u2014 that is a logbook entry, not a verdict. A run of bad handling means manage differently; it never means stop taking that engine's signals. Pass a signal only for what the TAPE and your BOOK say right now (flow against it, a conflicting position), never because your record on that engine looks thin.\n  conflicts faced: 4 | 2025-06-05:net; 2025-06-11:net; 2025-06-20:net\n  your early cuts with flow WITH you (n1): 1 would have stopped anyway; median run after you left +1.28R\n  YOUR TRAILED STOPS caught 16 trades, net $-602 vs letting the engine run them\n    tightened with flow still WITH you (n5): $-49; median +1.33R ran on AFTER your stop hit\n    tightened with flow AGAINST you (n11): $-553; median +0.83R ran on AFTER your stop hit\n  capture (realized/peak, trades that reached +0.5R): median +0.31\nyour recent trade-journal entries:\n  2025-07-01: \"CANON long, GOLD. Explosive move: MFE +6.00R at t+7m, never went red (MAE -0.03R at entry). Trailed stop caugh\"\n  2025-07-01: \"CANON short, GOLD. MFE +2.07R at t+1m then sharp reversal (MAE -0.31R by t+3m). Tightened stop to breakeven on\"\nlast days (you vs B0):\n  2025-06-27: you $+426 vs $+426 (5 signals, 0 passes)\n  2025-06-30: you $+525 vs $+549 (5 signals, 0 passes)\n  2025-07-01: you $+938 vs $+861 (5 signals, 0 passes)\nReply with EXACTLY one JSON object, nothing else. Signal events: {\"action\":\"take\"|\"pass\",\"close_other\":\"<pos_id>,optional\",\"note\":\"<=120\"}. Every other minute: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"pos\":\"<pos_id, required if more than one position open>\",\"stop_r\":<num,opt>,\"target_r\":<num or null,opt>,\"partial_pct\":<0-1,opt>,\"close_other\":\"<pos_id>,opt\",\"note\":\"<=120\"}. R = TRUE risk (engine stop = -1R, 0 = entry). stop_r only TIGHTENS. canon target_r >= 2.0 until a partial then >= 0.1; shelf target_r >= 0.3; null = ride on the stop. MECHANICAL EXIT events: \"hold\" TAKES the exit; refusing = \"revise\" with a plan. Rule-breaking fields are ignored; malformed replies = the mechanical book. Keep notes terse; silence-equivalent is {\"action\":\"hold\"}.\nReply EXACTLY one JSON: {\"bias\":\"long|short|neutral\",\"day_type\":\"<=30 chars\",\"thesis\":\"<=200 chars\"}",
+   "reply": "{\"bias\":\"long\",\"day_type\":\"gap-up trend/holding\",\"thesis\":\"Overnight held +48 gap above prior close; lean long bias for canon GOLD, let mechanical partials/stops run, trail only on clear structural failure not noise.\"}"
+  },
+  {
+   "minute": "2025-07-09 08:00:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:00] EVENT: minute pulse \u2014 adapt or hold\nbar 22937.75/22938.50/22932.00/22932.75 | flow(signed to trade): delta1m -67 cvd5m -98 cvd15m -80 opposed 3/5 vol 1.9x | book: n/a\nbook: flat\nmins_to_EOD 475",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, pre-session forming, no signal yet\"}"
+  },
+  {
+   "minute": "2025-07-09 08:05:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:05] EVENT: minute pulse \u2014 adapt or hold\nbar 22933.00/22938.75/22931.25/22937.25 | flow(signed to trade): delta1m +12 cvd5m +20 cvd15m -124 opposed 2/5 vol 1.2x | book: imbalance +0.04 wall-ahead 1.75pt x5\nbook: flat\nmins_to_EOD 470",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal; wait for entry\"}"
+  },
+  {
+   "minute": "2025-07-09 08:10:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:10] EVENT: minute pulse \u2014 adapt or hold\nbar 22938.75/22939.25/22937.50/22937.50 | flow(signed to trade): delta1m -4 cvd5m -48 cvd15m -126 opposed 5/5 vol 0.5x | book: imbalance +0.01 wall-ahead 2.50pt x7\nbook: flat\nmins_to_EOD 465",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal yet\"}"
+  },
+  {
+   "minute": "2025-07-09 08:15:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:15] EVENT: minute pulse \u2014 adapt or hold\nbar 22942.50/22943.25/22939.25/22940.75 | flow(signed to trade): delta1m -37 cvd5m +21 cvd15m -7 opposed 2/5 vol 1.6x | book: imbalance +0.32 wall-ahead 4.50pt x5\nbook: flat\nmins_to_EOD 460",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal yet\"}"
+  },
+  {
+   "minute": "2025-07-09 08:20:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:20] EVENT: minute pulse \u2014 adapt or hold\nbar 22941.50/22941.50/22936.50/22937.50 | flow(signed to trade): delta1m -37 cvd5m -45 cvd15m -72 opposed 4/5 vol 2.1x | book: imbalance +0.00 wall-ahead 7.25pt x7\nbook: flat\nmins_to_EOD 455",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal\"}"
+  },
+  {
+   "minute": "2025-07-09 08:25:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:25] EVENT: minute pulse \u2014 adapt or hold\nbar 22943.00/22943.00/22937.00/22938.25 | flow(signed to trade): delta1m +1 cvd5m +30 cvd15m +6 opposed 1/5 vol 1.5x | book: imbalance +0.06 wall-ahead 7.25pt x6\nbook: flat\nmins_to_EOD 450",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal yet\"}"
+  },
+  {
+   "minute": "2025-07-09 08:30:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:30] EVENT: minute pulse \u2014 adapt or hold\nbar 22941.50/22943.00/22939.75/22939.75 | flow(signed to trade): delta1m -5 cvd5m -14 cvd15m -29 opposed 3/5 vol 1.4x | book: imbalance +0.06 wall-ahead 4.00pt x8\nbook: flat\nmins_to_EOD 445",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal\"}"
+  },
+  {
+   "minute": "2025-07-09 08:35:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:35] EVENT: minute pulse \u2014 adapt or hold\nbar 22938.25/22939.50/22937.25/22938.00 | flow(signed to trade): delta1m -10 cvd5m -13 cvd15m +3 opposed 3/5 vol 0.5x | book: imbalance -0.04 wall-ahead 2.00pt x12\nbook: flat\nmins_to_EOD 440",
+   "reply": "API Error: Unable to connect to API: Self-signed certificate detected. Check your proxy or corporate SSL certificates"
+  },
+  {
+   "minute": "2025-07-09 08:40:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:40] EVENT: minute pulse \u2014 adapt or hold\nbar 22935.25/22940.00/22933.50/22939.25 | flow(signed to trade): delta1m +55 cvd5m +61 cvd15m +34 opposed 2/5 vol 1.6x | book: imbalance -0.02 wall-ahead 1.50pt x7\nbook: flat\nmins_to_EOD 435",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal yet\"}"
+  },
+  {
+   "minute": "2025-07-09 08:45:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:45] EVENT: minute pulse \u2014 adapt or hold\nbar 22943.75/22948.25/22942.75/22947.25 | flow(signed to trade): delta1m +43 cvd5m +76 cvd15m +124 opposed 2/5 vol 2.1x | book: imbalance -0.11 wall-ahead 2.25pt x15\nbook: flat\nmins_to_EOD 430",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal\"}"
+  },
+  {
+   "minute": "2025-07-09 08:50:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:50] EVENT: minute pulse \u2014 adapt or hold\nbar 22954.00/22954.00/22940.25/22948.00 | flow(signed to trade): delta1m -90 cvd5m -65 cvd15m +72 opposed 4/5 vol 14.0x | book: imbalance +0.00 wall-ahead 7.75pt x8\nbook: flat\nmins_to_EOD 425",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal yet, elevated vol\"}"
+  },
+  {
+   "minute": "2025-07-09 08:55:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[08:55] EVENT: minute pulse \u2014 adapt or hold\nbar 22940.50/22942.25/22938.00/22939.75 | flow(signed to trade): delta1m -55 cvd5m -192 cvd15m -181 opposed 5/5 vol 2.3x | book: imbalance -0.04 wall-ahead 2.75pt x11\nbook: flat\nmins_to_EOD 420",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal\"}"
+  },
+  {
+   "minute": "2025-07-09 09:00:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:00] EVENT: minute pulse \u2014 adapt or hold\nbar 22935.25/22938.25/22932.75/22934.75 | flow(signed to trade): delta1m +2 cvd5m -225 cvd15m -482 opposed 3/5 vol 1.7x | book: imbalance -0.18 wall-ahead 3.00pt x8\nbook: flat\nmins_to_EOD 415",
+   "reply": "{\"action\":\"hold\",\"note\":\"book flat, no open position\"}"
+  },
+  {
+   "minute": "2025-07-09 09:05:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:05] EVENT: minute pulse \u2014 adapt or hold\nbar 22946.00/22947.50/22941.25/22941.25 | flow(signed to trade): delta1m -32 cvd5m +87 cvd15m -330 opposed 2/5 vol 1.7x | book: imbalance -0.21 wall-ahead 6.25pt x13\nbook: flat\nmins_to_EOD 410",
+   "reply": "{\"action\":\"hold\",\"note\":\"flat, no signal\"}"
+  },
+  {
+   "minute": "2025-07-09 09:06:00-04:00",
+   "why": "SIGNAL: CANON LONG [pre] fills 22942.00, stop 22929.75 (-1R = 12.25pt), working target 22970.25 (+2.3R), engine banks HALF at 22955.75 (+1.1R) then runs the rest, standard 1x \u2014 $160 risk, pattern B \u2014 take or pass.",
+   "sent": "[09:06] EVENT: SIGNAL: CANON LONG [pre] fills 22942.00, stop 22929.75 (-1R = 12.25pt), working target 22970.25 (+2.3R), engine banks HALF at 22955.75 (+1.1R) then runs the rest, standard 1x \u2014 $160 risk, pattern B \u2014 take or pass.\nbar 22942.00/22947.25/22942.00/22946.50 | flow(signed to trade): delta1m +12 cvd5m +105 cvd15m -302 opposed 1/5 vol 1.1x | book: imbalance +0.04 wall-ahead 2.00pt x7\nbook: flat\nmins_to_EOD 409",
+   "reply": "{\"action\":\"take\",\"note\":\"canon long PRE signal, book flat, no open position to conflict\"}"
+  },
+  {
+   "minute": "2025-07-09 09:07:00-04:00",
+   "why": "position C1 opened \u2014 read it and set your plan",
+   "sent": "[09:07] EVENT: position C1 opened \u2014 read it and set your plan\nbar 22946.25/22951.25/22945.25/22950.50 | flow(signed to trade): delta1m +53 cvd5m +143 cvd15m -190 opposed 1/5 vol 2.2x | book: imbalance -0.27 wall-ahead 2.00pt x16\nbook: pos C1 CANON long | R_now +0.69 peak +0.76 | open 1.00 | stop -1.00R | target +2.31R | engine partial pending +1.12R\nmins_to_EOD 408\nthis event is about: pos C1 CANON long | R_now +0.69 peak +0.76 | open 1.00 | stop -1.00R | target +2.31R | engine partial pending +1.12R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"canon long, standard plan: let engine run to partial then trail remainder\"}"
+  },
+  {
+   "minute": "2025-07-09 09:08:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:08] EVENT: minute pulse \u2014 adapt or hold\nbar 22951.00/22953.50/22949.25/22949.50 | flow(signed to trade): delta1m +10 cvd5m +135 cvd15m -154 opposed 1/5 vol 1.4x | book: imbalance -0.21 wall-ahead 3.00pt x12\nbook: pos C1 CANON long | R_now +0.61 peak +0.94 | open 1.00 | stop -1.00R | target +2.31R | engine partial pending +1.12R\nmins_to_EOD 407\nthis event is about: pos C1 CANON long | R_now +0.61 peak +0.94 | open 1.00 | stop -1.00R | target +2.31R | engine partial pending +1.12R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"pulled back off peak but still +0.61R, partial not yet triggered, let engine work\"}"
+  },
+  {
+   "minute": "2025-07-09 09:09:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:09] EVENT: minute pulse \u2014 adapt or hold\nbar 22949.25/22953.25/22948.25/22953.25 | flow(signed to trade): delta1m +22 cvd5m +65 cvd15m -96 opposed 1/5 vol 1.3x | book: imbalance -0.04 wall-ahead 2.00pt x12\nbook: pos C1 CANON long | R_now +0.92 peak +0.94 | open 1.00 | stop -1.00R | target +2.31R | engine partial pending +1.12R\nmins_to_EOD 406\nthis event is about: pos C1 CANON long | R_now +0.92 peak +0.94 | open 1.00 | stop -1.00R | target +2.31R | engine partial pending +1.12R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"strong move in favor, near partial trigger, let mechanical banking fire\"}"
+  },
+  {
+   "minute": "2025-07-09 09:10:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:10] EVENT: minute pulse \u2014 adapt or hold\nbar 22953.00/22959.75/22952.00/22957.25 | flow(signed to trade): delta1m +106 cvd5m +203 cvd15m +65 opposed 0/5 vol 3.9x | book: imbalance -0.20 wall-ahead 2.25pt x11\nbook: pos C1 CANON long | R_now +1.24 peak +1.45 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 405\nthis event is about: pos C1 CANON long | R_now +1.24 peak +1.45 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"running well, half banked, letting engine manage rest\"}"
+  },
+  {
+   "minute": "2025-07-09 09:11:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:11] EVENT: minute pulse \u2014 adapt or hold\nbar 22957.75/22959.50/22955.50/22956.25 | flow(signed to trade): delta1m -4 cvd5m +187 cvd15m +80 opposed 1/5 vol 1.5x | book: imbalance -0.18 wall-ahead 3.75pt x12\nbook: pos C1 CANON long | R_now +1.16 peak +1.45 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 404\nthis event is about: pos C1 CANON long | R_now +1.16 peak +1.45 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "API Error: Unable to connect to API: Self-signed certificate detected. Check your proxy or corporate SSL certificates"
+  },
+  {
+   "minute": "2025-07-09 09:12:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:12] EVENT: minute pulse \u2014 adapt or hold\nbar 22956.25/22959.00/22955.00/22959.00 | flow(signed to trade): delta1m -9 cvd5m +125 cvd15m +82 opposed 2/5 vol 1.2x | book: imbalance +0.02 wall-ahead 0.00pt x9\nbook: pos C1 CANON long | R_now +1.39 peak +1.45 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 403\nthis event is about: pos C1 CANON long | R_now +1.39 peak +1.45 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"partial banked, running toward target +2.31R, no override\"}"
+  },
+  {
+   "minute": "2025-07-09 09:13:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:13] EVENT: minute pulse \u2014 adapt or hold\nbar 22959.25/22961.25/22956.50/22956.75 | flow(signed to trade): delta1m -21 cvd5m +94 cvd15m +258 opposed 3/5 vol 2.1x | book: imbalance -0.23 wall-ahead 4.00pt x13\nbook: pos C1 CANON long | R_now +1.20 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 402\nthis event is about: pos C1 CANON long | R_now +1.20 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"partial banked, running remainder, no override\"}"
+  },
+  {
+   "minute": "2025-07-09 09:14:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:14] EVENT: minute pulse \u2014 adapt or hold\nbar 22957.00/22960.25/22957.00/22959.75 | flow(signed to trade): delta1m -1 cvd5m +71 cvd15m +257 opposed 4/5 vol 1.1x | book: imbalance +0.01 wall-ahead 0.50pt x8\nbook: pos C1 CANON long | R_now +1.45 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 401\nthis event is about: pos C1 CANON long | R_now +1.45 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"partial banked, running remainder toward target, no override\"}"
+  },
+  {
+   "minute": "2025-07-09 09:15:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:15] EVENT: minute pulse \u2014 adapt or hold\nbar 22959.75/22960.00/22954.00/22956.00 | flow(signed to trade): delta1m -63 cvd5m -98 cvd15m +192 opposed 5/5 vol 1.9x | book: imbalance -0.11 wall-ahead 6.25pt x11\nbook: pos C1 CANON long | R_now +1.14 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 400\nthis event is about: pos C1 CANON long | R_now +1.14 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"pulled back off peak but stop/target intact, hold mechanical\"}"
+  },
+  {
+   "minute": "2025-07-09 09:16:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:16] EVENT: minute pulse \u2014 adapt or hold\nbar 22955.75/22959.75/22954.50/22959.50 | flow(signed to trade): delta1m +19 cvd5m -75 cvd15m +217 opposed 4/5 vol 1.2x | book: imbalance -0.09 wall-ahead 2.25pt x9\nbook: pos C1 CANON long | R_now +1.43 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 399\nthis event is about: pos C1 CANON long | R_now +1.43 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"remainder running near target, trust mechanical\"}"
+  },
+  {
+   "minute": "2025-07-09 09:17:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:17] EVENT: minute pulse \u2014 adapt or hold\nbar 22959.00/22961.00/22958.25/22959.00 | flow(signed to trade): delta1m -19 cvd5m -85 cvd15m +183 opposed 4/5 vol 1.6x | book: imbalance -0.09 wall-ahead 1.25pt x10\nbook: pos C1 CANON long | R_now +1.39 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 398\nthis event is about: pos C1 CANON long | R_now +1.39 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"long running well, partial banked, close to target, trust mechanical\"}"
+  },
+  {
+   "minute": "2025-07-09 09:18:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:18] EVENT: minute pulse \u2014 adapt or hold\nbar 22959.00/22961.25/22958.00/22960.50 | flow(signed to trade): delta1m -44 cvd5m -108 cvd15m +121 opposed 4/5 vol 1.1x | book: imbalance -0.01 wall-ahead 1.00pt x12\nbook: pos C1 CANON long | R_now +1.51 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 397\nthis event is about: pos C1 CANON long | R_now +1.51 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"strong hold near peak, partial banked, running remainder to target\"}"
+  },
+  {
+   "minute": "2025-07-09 09:19:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:19] EVENT: minute pulse \u2014 adapt or hold\nbar 22960.25/22960.50/22958.25/22958.75 | flow(signed to trade): delta1m -29 cvd5m -136 cvd15m +0 opposed 4/5 vol 0.8x | book: imbalance +0.08 wall-ahead 3.25pt x11\nbook: pos C1 CANON long | R_now +1.37 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 396\nthis event is about: pos C1 CANON long | R_now +1.37 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"partial banked, remainder at +1.37R off peak +1.57R, target +2.31R ahead, hold\"}"
+  },
+  {
+   "minute": "2025-07-09 09:20:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:20] EVENT: minute pulse \u2014 adapt or hold\nbar 22959.00/22960.50/22958.00/22960.50 | flow(signed to trade): delta1m -4 cvd5m -77 cvd15m +28 opposed 4/5 vol 0.9x | book: imbalance -0.01 wall-ahead 0.00pt x10\nbook: pos C1 CANON long | R_now +1.51 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 395\nthis event is about: pos C1 CANON long | R_now +1.51 peak +1.57 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"strong run near peak, letting engine ride to target\"}"
+  },
+  {
+   "minute": "2025-07-09 09:21:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:21] EVENT: minute pulse \u2014 adapt or hold\nbar 22960.25/22964.00/22960.25/22963.00 | flow(signed to trade): delta1m +119 cvd5m +23 cvd15m +135 opposed 4/5 vol 2.3x | book: imbalance -0.23 wall-ahead 0.25pt x18\nbook: pos C1 CANON long | R_now +1.71 peak +1.80 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 394\nthis event is about: pos C1 CANON long | R_now +1.71 peak +1.80 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"long running well, +1.71R near peak, half open, target +2.31R ahead, hold\"}"
+  },
+  {
+   "minute": "2025-07-09 09:22:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:22] EVENT: minute pulse \u2014 adapt or hold\nbar 22963.00/22964.00/22958.75/22959.25 | flow(signed to trade): delta1m -45 cvd5m -3 cvd15m +37 opposed 4/5 vol 1.4x | book: imbalance +0.01 wall-ahead 5.75pt x12\nbook: pos C1 CANON long | R_now +1.41 peak +1.80 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 393\nthis event is about: pos C1 CANON long | R_now +1.41 peak +1.80 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"remainder running well, near target, trust engine\"}"
+  },
+  {
+   "minute": "2025-07-09 09:23:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:23] EVENT: minute pulse \u2014 adapt or hold\nbar 22959.00/22962.50/22959.00/22960.25 | flow(signed to trade): delta1m -5 cvd5m +36 cvd15m +22 opposed 4/5 vol 1.1x | book: imbalance +0.08 wall-ahead 1.00pt x8\nbook: pos C1 CANON long | R_now +1.49 peak +1.80 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 392\nthis event is about: pos C1 CANON long | R_now +1.49 peak +1.80 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"strong long, partial banked, letting remainder run to target\"}"
+  },
+  {
+   "minute": "2025-07-09 09:24:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:24] EVENT: minute pulse \u2014 adapt or hold\nbar 22960.75/22964.50/22960.50/22961.75 | flow(signed to trade): delta1m -7 cvd5m +58 cvd15m -7 opposed 4/5 vol 1.3x | book: imbalance +0.10 wall-ahead 0.25pt x8\nbook: pos C1 CANON long | R_now +1.61 peak +1.84 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 391\nthis event is about: pos C1 CANON long | R_now +1.61 peak +1.84 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"partial banked, remainder near target, trust engine\"}"
+  },
+  {
+   "minute": "2025-07-09 09:25:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:25] EVENT: minute pulse \u2014 adapt or hold\nbar 22962.25/22965.75/22958.50/22964.75 | flow(signed to trade): delta1m -44 cvd5m +18 cvd15m -157 opposed 4/5 vol 2.6x | book: imbalance +0.07 wall-ahead 0.75pt x8\nbook: pos C1 CANON long | R_now +1.86 peak +1.94 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 390\nthis event is about: pos C1 CANON long | R_now +1.86 peak +1.94 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"strong run near target, letting engine manage\"}"
+  },
+  {
+   "minute": "2025-07-09 09:26:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:26] EVENT: minute pulse \u2014 adapt or hold\nbar 22964.50/22966.00/22962.50/22965.75 | flow(signed to trade): delta1m +9 cvd5m -92 cvd15m -144 opposed 4/5 vol 1.3x | book: imbalance +0.07 wall-ahead 0.25pt x8\nbook: pos C1 CANON long | R_now +1.94 peak +1.96 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 389\nthis event is about: pos C1 CANON long | R_now +1.94 peak +1.96 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"near target, partial banked, letting engine finish\"}"
+  },
+  {
+   "minute": "2025-07-09 09:27:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:27] EVENT: minute pulse \u2014 adapt or hold\nbar 22965.75/22966.00/22959.00/22961.00 | flow(signed to trade): delta1m -5 cvd5m -52 cvd15m -140 opposed 4/5 vol 4.7x | book: imbalance +0.27 wall-ahead 6.50pt x7\nbook: pos C1 CANON long | R_now +1.55 peak +1.96 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 388\nthis event is about: pos C1 CANON long | R_now +1.55 peak +1.96 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"partial banked, remainder near target, trust engine\"}"
+  },
+  {
+   "minute": "2025-07-09 09:28:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:28] EVENT: minute pulse \u2014 adapt or hold\nbar 22961.00/22970.00/22959.00/22969.50 | flow(signed to trade): delta1m +158 cvd5m +111 cvd15m +39 opposed 3/5 vol 3.8x | book: imbalance +0.08 wall-ahead 6.25pt x9\nbook: pos C1 CANON long | R_now +2.24 peak +2.29 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 387\nthis event is about: pos C1 CANON long | R_now +2.24 peak +2.29 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"very close to target, letting engine complete the plan\"}"
+  },
+  {
+   "minute": "2025-07-09 09:29:00-04:00",
+   "why": "MECHANICAL EXIT (C1): canon exits here at 22970.25 (+2.31R). hold TAKES it; refuse = revise with a plan.",
+   "sent": "[09:29] EVENT: MECHANICAL EXIT (C1): canon exits here at 22970.25 (+2.31R). hold TAKES it; refuse = revise with a plan.\nbar 22969.50/22978.75/22968.00/22978.75 | flow(signed to trade): delta1m +180 cvd5m +298 cvd15m +220 opposed 2/5 vol 8.1x | book: imbalance -0.17 wall-ahead 8.25pt x42\nbook: pos C1 CANON long | R_now +3.00 peak +2.29 | open 0.50 | stop -1.00R | target +2.31R\nmins_to_EOD 386\nthis event is about: pos C1 CANON long | R_now +3.00 peak +2.29 | open 0.50 | stop -1.00R | target +2.31R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"take mechanical target exit at +2.31R, strong result, no reason to override\"}"
+  },
+  {
+   "minute": "2025-07-09 09:29:00-04:00",
+   "why": "debrief C1",
+   "sent": "[09:29] TRADE CLOSED C1: CANON long (pre/-), exited 'canon_exit' at +1.69R ($+271). Pure-machine outcome on this trade: $+271.\nTHE PATH: held 23m | MFE +2.29R at t+22m | MAE +0.00R at t+0m | never went red | flow at exit cvd5 +298, opposed 2/5 | it ran +0.00R further after you left.\nWrite your trade journal entry \u2014 deep note: your entry read (tape/book/context), where it turned for or against you and what the flow said there, what you captured vs what was there, and the lesson your future self should find. Reply EXACTLY one JSON: {\"note\":\"<=500 chars\"}",
+   "reply": "{\"note\":\"CANON long PRE 09:06 fill 22942. Never went red, MFE +2.29R at t+22m into the mandatory 09:30 flatten, banked partial along the way, engine closed remainder +1.69R at the flatten. Clean full-position winner, no need to intervene - mechanical PRE flatten did its job right at the window edge. Lesson: PRE trades that are running strong into 09:30 don't need trailing help, the hard flatten rule already caps the risk of giving back a big move; just let it ride to the bell.\"}"
+  },
+  {
+   "minute": "2025-07-09 09:30:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:30] EVENT: minute pulse \u2014 adapt or hold\nbar 22978.75/23004.50/22978.00/23003.75 | flow(signed to trade): delta1m +397 cvd5m +739 cvd15m +680 opposed 1/5 vol 23.3x | book: imbalance -0.15 wall-ahead 23.75pt x28\nbook: flat\nmins_to_EOD 385",
+   "reply": "{\"action\":\"hold\",\"note\":\"09:30 PRE flatten boundary, book flat\"}"
+  },
+  {
+   "minute": "2025-07-09 09:35:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:35] EVENT: minute pulse \u2014 adapt or hold\nbar 23024.50/23040.00/23024.50/23027.00 | flow(signed to trade): delta1m +30 cvd5m +333 cvd15m +1090 opposed 1/5 vol 16.2x | book: imbalance +0.12 wall-ahead 0.50pt x6\nbook: flat\nmins_to_EOD 380",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C3\",\"note\":\"partial already banked, remainder running well, letting engine trail\"}"
+  },
+  {
+   "minute": "2025-07-09 09:40:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:40] EVENT: minute pulse \u2014 adapt or hold\nbar 23048.50/23055.00/23038.75/23054.50 | flow(signed to trade): delta1m -233 cvd5m +91 cvd15m +1163 opposed 3/5 vol 13.8x | book: imbalance +0.23 wall-ahead 4.50pt x8\nbook: flat\nmins_to_EOD 375",
+   "reply": "{\"action\":\"hold\",\"note\":\"book flat\"}"
+  },
+  {
+   "minute": "2025-07-09 09:45:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:45] EVENT: minute pulse \u2014 adapt or hold\nbar 23054.75/23074.75/23054.75/23074.00 | flow(signed to trade): delta1m +114 cvd5m +110 cvd15m +534 opposed 2/5 vol 13.8x | book: imbalance -0.09 wall-ahead 18.75pt x10\nbook: flat\nmins_to_EOD 370",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C1\",\"note\":\"near partial trigger, letting engine manage\"}"
+  },
+  {
+   "minute": "2025-07-09 09:50:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:50] EVENT: minute pulse \u2014 adapt or hold\nbar 23086.00/23097.00/23083.50/23094.50 | flow(signed to trade): delta1m +239 cvd5m -157 cvd15m +44 opposed 3/5 vol 7.4x | book: imbalance -0.01 wall-ahead 7.50pt x10\nbook: flat\nmins_to_EOD 365",
+   "reply": "{\"action\":\"hold\",\"note\":\"book flat\"}"
+  },
+  {
+   "minute": "2025-07-09 09:55:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[09:55] EVENT: minute pulse \u2014 adapt or hold\nbar 23087.75/23093.75/23079.25/23082.25 | flow(signed to trade): delta1m -355 cvd5m -764 cvd15m -811 opposed 4/5 vol 3.9x | book: imbalance -0.23 wall-ahead 7.75pt x28\nbook: flat\nmins_to_EOD 360",
+   "reply": "{\"action\":\"hold\",\"note\":\"book flat\"}"
+  },
+  {
+   "minute": "2025-07-09 10:00:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[10:00] EVENT: minute pulse \u2014 adapt or hold\nbar 23086.00/23110.75/23085.00/23103.25 | flow(signed to trade): delta1m +787 cvd5m +892 cvd15m -29 opposed 2/5 vol 4.3x | book: imbalance -0.03 wall-ahead 15.00pt x7\nbook: flat\nmins_to_EOD 355",
+   "reply": "{\"action\":\"hold\",\"note\":\"book flat\"}"
+  },
+  {
+   "minute": "2025-07-09 10:05:00-04:00",
+   "why": "SIGNAL: CANON LONG [gold] fills 23083.50, stop 23074.50 (-1R = 9.00pt), working target 23108.75 (+2.8R), engine banks HALF at 23097.00 (+1.5R) then runs the rest, standard 1x \u2014 $160 risk, pattern B2 \u2014 take or pass.",
+   "sent": "[10:05] EVENT: SIGNAL: CANON LONG [gold] fills 23083.50, stop 23074.50 (-1R = 9.00pt), working target 23108.75 (+2.8R), engine banks HALF at 23097.00 (+1.5R) then runs the rest, standard 1x \u2014 $160 risk, pattern B2 \u2014 take or pass.\nbar 23089.50/23095.25/23083.25/23094.50 | flow(signed to trade): delta1m +6 cvd5m -156 cvd15m -28 opposed 3/5 vol 1.1x | book: imbalance +0.16 wall-ahead 3.50pt x12\nbook: flat\nmins_to_EOD 350",
+   "reply": "{\"action\":\"take\",\"note\":\"canon long GOLD, book flat no conflict, mechanical take\"}"
+  },
+  {
+   "minute": "2025-07-09 10:06:00-04:00",
+   "why": "position C2 opened \u2014 read it and set your plan",
+   "sent": "[10:06] EVENT: position C2 opened \u2014 read it and set your plan\nbar 23095.00/23103.75/23091.00/23091.25 | flow(signed to trade): delta1m +10 cvd5m -90 cvd15m +263 opposed 2/5 vol 1.2x | book: imbalance -0.18 wall-ahead 4.00pt x18\nbook: pos C2 CANON long | R_now +0.86 peak +2.25 | open 0.50 | stop -1.00R | target +2.81R\nmins_to_EOD 349\nthis event is about: pos C2 CANON long | R_now +0.86 peak +2.25 | open 0.50 | stop -1.00R | target +2.81R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C2\",\"note\":\"partial already banked, remainder running, R_now +0.86 off peak +2.25, trust mechanical trail\"}"
+  },
+  {
+   "minute": "2025-07-09 10:07:00-04:00",
+   "why": "MECHANICAL EXIT (C2): canon exits here at 23084.75 (+0.14R). hold TAKES it; refuse = revise with a plan.",
+   "sent": "[10:07] EVENT: MECHANICAL EXIT (C2): canon exits here at 23084.75 (+0.14R). hold TAKES it; refuse = revise with a plan.\nbar 23091.25/23094.75/23084.75/23084.75 | flow(signed to trade): delta1m -141 cvd5m -392 cvd15m +137 opposed 3/5 vol 0.6x | book: imbalance -0.09 wall-ahead 7.00pt x7\nbook: pos C2 CANON long | R_now +0.14 peak +2.25 | open 0.50 | stop -1.00R | target +2.81R\nmins_to_EOD 348\nthis event is about: pos C2 CANON long | R_now +0.14 peak +2.25 | open 0.50 | stop -1.00R | target +2.81R",
+   "reply": "{\"action\":\"hold\",\"pos\":\"C2\",\"note\":\"mechanical exit taken, gave back from peak +2.25 but partial already banked half\"}"
+  },
+  {
+   "minute": "2025-07-09 10:07:00-04:00",
+   "why": "debrief C2",
+   "sent": "[10:07] TRADE CLOSED C2: CANON long (gold/-), exited 'canon_exit' at +0.79R ($+127). Pure-machine outcome on this trade: $+127.\nTHE PATH: held 2m | MFE +2.25R at t+1m | MAE -0.03R at t+0m | never went red | flow at exit cvd5 -392, opposed 3/5 | it would have hit the stop anyway; session settled -1.00R.\nWrite your trade journal entry \u2014 deep note: your entry read (tape/book/context), where it turned for or against you and what the flow said there, what you captured vs what was there, and the lesson your future self should find. Reply EXACTLY one JSON: {\"note\":\"<=500 chars\"}",
+   "reply": "{\"note\":\"CANON long GOLD 22916.00, standard size. Fast spike to MFE +2.25R at t+1m, then sharp reversal (flow flipped cvd5 to -392 by exit). Partial banked early captured the move; blended result +0.79R despite giving back most of peak on the runner. Mechanical exit correct - no override attempted. Lesson: this engine's fast reversals after big MFE spikes are common on gold longs today; the standing partial did its job protecting realized R even when the runner faded hard. Confirms trusting the partial mechanism over trailing tighter.\"}"
+  },
+  {
+   "minute": "2025-07-09 10:10:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[10:10] EVENT: minute pulse \u2014 adapt or hold\nbar 23090.75/23099.50/23082.50/23097.75 | flow(signed to trade): delta1m +202 cvd5m +170 cvd15m +906 opposed 1/5 vol 1.3x | book: imbalance -0.23 wall-ahead 4.75pt x12\nbook: flat\nmins_to_EOD 345",
+   "reply": "{\"action\":\"hold\",\"note\":\"book flat\"}"
+  },
+  {
+   "minute": "2025-07-09 10:15:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[10:15] EVENT: minute pulse \u2014 adapt or hold\nbar 23091.00/23094.75/23088.50/23093.75 | flow(signed to trade): delta1m +72 cvd5m +56 cvd15m +70 opposed 3/5 vol 0.6x | book: imbalance -0.33 wall-ahead 0.25pt x55\nbook: flat\nmins_to_EOD 340",
+   "reply": "{\"action\":\"hold\",\"note\":\"book flat\"}"
+  },
+  {
+   "minute": "2025-07-09 10:20:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[10:20] EVENT: minute pulse \u2014 adapt or hold\nbar 23077.25/23085.75/23073.50/23082.25 | flow(signed to trade): delta1m -88 cvd5m -465 cvd15m -239 opposed 5/5 vol 0.9x | book: imbalance +0.15 wall-ahead 4.50pt x12\nbook: flat\nmins_to_EOD 335",
+   "reply": "{\"action\":\"hold\",\"note\":\"book flat\"}"
+  },
+  {
+   "minute": "2025-07-09 10:25:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[10:25] EVENT: minute pulse \u2014 adapt or hold\nbar 23071.50/23079.00/23069.25/23075.50 | flow(signed to trade): delta1m +102 cvd5m -153 cvd15m -562 opposed 3/5 vol 0.6x | book: imbalance +0.08 wall-ahead 1.50pt x10\nbook: flat\nmins_to_EOD 330",
+   "reply": "{\"action\":\"hold\",\"note\":\"book flat\"}"
+  },
+  {
+   "minute": "2025-07-09 10:30:00-04:00",
+   "why": "minute pulse \u2014 adapt or hold",
+   "sent": "[10:30] EVENT: minute pulse \u2014 adapt or hold\nbar 23049.00/23049.25/23022.00/23026.25 | flow(signed to trade): delta1m -391 cvd5m -1176 cvd15m -1794 opposed 5/5 vol 2.7x | book: imbalance -0.12 wall-ahead 23.75pt x22\nbook: flat\nmins_to_EOD 325",
+   "reply": "{\"action\":\"hold\",\"note\":\"book flat, 10:30 window closing\"}"
+  }
+ ]
+}

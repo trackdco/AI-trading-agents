@@ -1,0 +1,10 @@
+{
+ "turns": [
+  {
+   "minute": "2026-04-29 10:24:00-04:00",
+   "why": "position opened \u2014 read it and set your plan",
+   "sent": "NEW POSITION SHORT shelf-fade | tier BASE ($180 risk, fixed) | entry 27235.75 risk 13.94pt | engine stop 27249.6875 (-1R, INVIOLATE) | mechanical target = the developing near band | mechanical scratch at t+10 if red | session ends 15:55\njournal: 81 trades | you $+19,377 vs mech $+17,315 (delta $+2,062)\n  defense (mech losers, n18): $-65\n  offense (mech winners, n63): $+2,126\n  band-exit refusals: 63, net vs mech $+2,126\nlast trades (you vs mech):\n  2026-04-06 short CONFIRMED: +2.95R vs +1.39R (stop; Peak 6.80 pulled back to 4.18R\u2014big giveback. Lock )\n  2026-04-08 long BASE: +0.99R vs +0.99R (band; CVD -103 against us at band touch, price already f)\n  2026-04-09 long CONFIRMED: +0.91R vs +1.30R (stop; Strong CVD+358, price ran past band to +2.62R\u2014refu)\n  2026-04-14 short BASE: +0.96R vs +0.96R (band; CVD +304 against short at band touch, buyers stepp)\n  2026-04-15 short BASE: -1.11R vs -1.09R (stop; Round trip from 1.64 peak to -0.07 is noise on thi)\nReply with EXACTLY one JSON object, nothing else: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"stop_r\":<num,optional>,\"target_r\":<num or null,optional>,\"partial_pct\":<0-1,optional>,\"note\":\"<=120 chars\"}. R units are TRUE risk (engine stop = -1R). \"hold\"=no change (mechanical exits execute when due). \"revise\": stop_r only TIGHTENS (0=entry); target_r >= 0.3 replaces the target, null = ride on the stop (extension mode); partial_pct books that fraction of what is OPEN at next bar. \"exit_now\" flattens at next bar. Rule-breaking fields are ignored by the harness.\n\n[10:24] EVENT: position opened \u2014 read it and set your plan\nbar 27234.00/27245.00/27231.25/27243.75 | R_now -0.57 peak +0.32 | open 1.00 | stop -1.00R | target developing band +1.49R | cvd_since_entry -139 | mins_to_EOD 331",
+   "reply": "{\"action\":\"hold\",\"note\":\"early, within noise; mechanical stop/scratch handles defense, no plan change yet\"}"
+  }
+ ]
+}

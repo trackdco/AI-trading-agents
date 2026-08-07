@@ -1,0 +1,241 @@
+# config/strategy.yaml — every configurable number for the Market Engine & Backtester.
+#
+# RULES (code-standards.md / architecture.md invariant 5):
+#   - Every parameter carries a comment tracing it to a § of strategy-definition-v1.0.md
+#     (or to spec-1 Section 3 for engineering/fill-realism parameters).
+#   - CALIBRATE   = numeric parameter the February re-run tunes (value below is the doc's start value).
+#   - TOURNAMENT  = rule variant tested head-to-head; the `variant`/flag keys select the active one.
+#   - PLACEHOLDER = the doc names the parameter but gives NO starting value. Values below are
+#     best-effort stand-ins, flagged in context/progress-tracker.md for Angus confirmation.
+#     Changing them later is calibration input, not a rule change.
+
+instrument:
+  symbol: NQ                      # §1 — NQ (CME), sized via MNQ where risk requires
+  tick_size: 0.25                 # spec-1 §3 — fill realism; prices round to tick at every order boundary
+  point_value_nq: 20.0            # §1 — NQ $ per point
+  point_value_mnq: 2.0            # §1 — MNQ $ per point
+
+session:
+  timezone: America/New_York      # spec-1 §0 — all timestamps tz-aware NY, DST via tz library
+  entry_window: W1                # §1 TOURNAMENT — active variant (W1 primary, Angus-confirmed intent)
+  no_trade_start: "09:30"         # Tier-2 (Angus 20 Jul): sit out the 09:30-09:40 cash open (22% win, chop).
+  no_trade_end:   "09:40"         #   PENDING OOS validation before trusting live.
+  entry_windows:
+    W1: { start: "08:00", end: "11:00" }   # §1 — pre-market through pre-lunch (primary)
+    W2: { start: "18:00", end: "15:55" }   # §1 — "full trading day" PLACEHOLDER read: full CME session
+                                           #      (18:00 prior day → EOD flatten); confirm scope with Angus
+    # W3 (other sessions, e.g. London) = Hypothesis H3, only after v1 validates — intentionally not configured (§1)
+  eod_flatten: "15:55"            # §1 — Vault backstop flatten time, default 15:55 ET
+  boxes:                          # §2 — session boxes Asia/London/NY. PLACEHOLDER times: the doc names
+    asia:   { start: "18:00", end: "03:00" }   # §2 PLACEHOLDER — the boxes but gives no clock times;
+    london: { start: "03:00", end: "09:30" }   # §2 PLACEHOLDER — standard conventions used, Angus to
+    ny:     { start: "09:30", end: "16:00" }   # §2 PLACEHOLDER — confirm before Step 3 signs off
+
+timeframes:
+  entry: ["1min", "2min", "3min", "5min"]   # §1 — entry TFs, resampled from 1m base (spec-1 §3)
+  mtf_arbitration: highest_wins   # §1 CONFIRMED — simultaneous valid triggers → take the highest TF
+  htf_flag_tf: "15min"            # §1 — context TF for HTF trend/range flag
+  range_extreme_tfs: ["1h", "4h"] # §1 — context TFs for HTF range extremes.
+                                  #      FLAGGED (Step-4 review): sessions.resample_ohlcv bins from
+                                  #      midnight (pandas origin='start_day') — correct only for rules
+                                  #      dividing 60min ("1h" OK; entry TFs OK). "4h" needs the CME
+                                  #      18:00-ET session-anchored HTF resampler (spec-1 Step 5); the
+                                  #      indicator layer raises on such rules rather than mis-binning.
+
+indicators:
+  bollinger:
+    length: 20                    # §2 — BB(20, SMA, close, 2σ); basis "BB MA" = core cluster level
+    ma_type: sma                  # §2
+    source: close                 # §2
+    stdev_mult: 2.0               # §2
+  ny_vwap:
+    anchor: "09:30"               # §2 — anchored 09:30 ET cash open; does NOT exist pre-market
+                                  #      (architecture invariant 1: returns NaN before anchor)
+    bands_sigma: [1, 2, 3]        # §2 — ±1σ/±2σ/±3σ; volume-weighted stdev, TradingView formula (spec-1 §3)
+  daily_vwap:
+    anchor: "18:00"               # §2 CONFIRMED — resets at CME daily session open 18:00 ET;
+                                  #      the ONLY VWAP pre-9:30 (§3)
+    bands_sigma: [1, 2, 3]        # §2 — full band set, CORE component per Angus
+  volume_profile:
+    anchors: [daily, session]     # §2 — daily + session profiles required (spec-1 §3)
+    weekly_enabled: false         # §2 TOURNAMENT — weekly anchor is a tested variant behind this flag
+    value_area_pct: 70            # §2 PLACEHOLDER — VAH/VAL value-area %; doc doesn't state it,
+                                  #      70% is the industry standard — Angus to confirm
+    bin_points: 0.25              # spec-1 §3 volume profile from 1m bars — bin size engineering
+                                  #      PLACEHOLDER, tick size
+  vwap:
+    source: hlc3                  # §2 standard TradingView VWAP — source hlc3, volume-weighted stdev bands
+  data_levels:
+    window_min: 15                # §2 CALIBRATE — extremes printed within N min of scheduled release (start 15)
+
+cluster:
+  min_level_types: 2              # §3 — confluence cluster = ≥2 of {BB MA, NY VWAP mid/±1σ (post-9:30 only),
+                                  #      daily VWAP mid/±1σ/±2σ/±3σ, daily POC}; pre-9:30 VWAP family = daily only
+  tolerance_points: 10.0          # §3 CALIBRATE — proximity tolerance (start ~10 NQ pts)
+  tolerance_pct: 0.04             # §3 CALIBRATE — percentage form of the same tolerance (0.04%)
+  include_ote: false              # ANGUS pass-22 SPLIT TEST — add FIB/OTE retracement levels
+                                  #      (0.382 aggressive continuation / 0.5 equilibrium / 0.618 /
+                                  #      0.705 favourite / 0.786) as a cluster level type "ote".
+                                  #      Two anchors: 15m impulse-leg fibs + session-anchored 4H range.
+                                  #      Default OFF — existing trigger caches stay valid; OTE arms
+                                  #      re-detect with this ON.
+
+triggers:
+  displacement:
+    min_levels_through: 2         # §3 — body closes through ≥2 cluster levels
+    body_range_min: 0.6           # §3 CALIBRATE — B_min, body/range floor (start 0.6)
+    close_extreme_quartile: 0.25  # §3 — close within extreme quartile of candle range
+                                  #      (top 25% longs / bottom 25% shorts)
+    atr_floor_enabled: false      # §3 — OPTIONAL size floor: range ≥ k × ATR(20)
+    atr_floor_k: 1.0              # §3 CALIBRATE — k (start 1.0)
+    atr_length: 20                # §3 — ATR(20)
+  over_extension_sigma: 2         # §3 — over-extension = touch of the DAILY VWAP ±2σ band
+                                  #      (18:00 ET CME session anchor), NOT the NY VWAP.
+                                  #      Comment corrected 2026-08-05: it said "NY VWAP" and
+                                  #      the code has always read daily_vwap (triggers.py
+                                  #      _test_candle -> ind["daily_vwap"]). The distinction
+                                  #      is load-bearing for London: ny_vwap is NaN before
+                                  #      09:30 ET, so a London 03:00-05:00 trigger would have
+                                  #      classified every A-pattern wrong had the comment been
+                                  #      the truth. Code right, comment stale — comment fixed.
+  over_extension_extreme_sigma: 3 # §3 — extreme over-extension = ±3σ (same daily anchor)
+
+entry:
+  variant: E3                     # §5.3 TOURNAMENT — active limit-price variant. ANGUS pass-5
+                                  #      ruling 2026-07-17: E3 wins the entry tournament (enter at
+                                  #      the reclaim, where he actually enters). E1 (BB MA) sat
+                                  #      12-53pt off the reclaim -> bad-geometry/tcancel misses;
+                                  #      Feb E1 +2.59R -> E3 +13.74R. E2 (wick 50%) barely fills.
+                                  #      E1 = limit at BB MA / E2 = 50% of wick / E3 = penetrated level.
+  min_stop_points: 7.0            # §5 — ANGUS 24-Jul: raised from 6.0. Autopsy verdict: risk<=6.75
+                                  #   wins 17%/12% (2025/2026), monotone by quartile both years —
+                                  #   the sub-7pt bucket is structurally toxic. (pass-5 had 6.0)
+  post_open_min_stop: 10.0        # Tier-2 (Angus 20 Jul): post-open tape ~2.4x wider -> 10pt floor after
+                                  #   post_open_after. PENDING OOS validation. (ATR-scaled is the ideal form.)
+                                  #      is active (reclaim entry sits near invalidation -> 7-9pt
+                                  #      stops). 10 clipped his own tight-stop winners (Feb 20 08:06
+                                  #      = 8.25pt; +12.98R Feb 25 monster = 9.0pt). 6 admits those;
+                                  #      still kills the 1-4pt coin-toss stops. Watch EXTRA quality.
+  cancel_if_runs_points: 22.0     # §5.5 CALIBRATE — T_cancel: cancel unfilled order if price runs this
+                                  #      many points beyond entry. ANGUS 2026-07-17: band 20-25, start 22
+                                  #      (price rarely re-chases a missed limit)
+  one_position_at_a_time: true    # §5.6 CONFIRMED — no overlapping trades ever (also Vault rule §10)
+
+targets:
+  front_run_points: 2.5           # §6.4 CALIBRATE CONFIRMED — F: working target = level ∓ F
+                                  #      (doc start range 2–3 NQ pts; midpoint used)
+  rr_floor: 2.0                   # §6.5 — ANGUS 2026-07-17: HARD 2R minimum every trade (was 1.5);
+                                  #      "thin target → half" (§9) subsumed — below 2R = no trade
+  news_day_override: true         # §6.3 CONFIRMED — on high-impact days, untaken data extreme beyond
+                                  #      default target becomes the target
+  news_override_vwap_proxy: false # §6.3 TOURNAMENT — fallback variant to test (VWAP −1/+1 as proxy)
+  alignment_min_stack: 2          # §6.6 — prefer targets where ≥2 menu levels stack within tolerance
+  model: default                  # ANGUS pass-6 SPLIT TEST — target selection model:
+                                  #   default     = §6.2 pattern tree (A→VWAP mid, B2→structural, B→liquidity)
+                                  #   vwap_revert = mean-reversion to the VWAP band 2σ across the mean
+                                  #                 (enter ~VWAP−1 → target VWAP+1; ~VWAP−2 → mid)
+                                  #   walk_menu   = walk levels outward to the first that clears rr_floor
+                                  #   (news_day_override applies to 'default' only; the others self-target)
+  rr_floor_partial: 1.5           # ANGUS pass-7 — V5/V6 only: the FIRST profit target (first structure)
+                                  #      must offer >= this ("RR floor for the first profit target is 1.5");
+                                  #      the 25% runner is exempt. Single-target variants keep rr_floor.
+  walkout_under_floor: true       # ANGUS pass-9 RULING (P5.16 = YES): when the default-tree target
+                                  #      computes < rr_floor, walk the §6 menu outward to the FIRST
+                                  #      level that clears it (veto only if nothing does). Rescues the
+                                  #      rr_floor class of his missed winners (Feb 12/18/20/06).
+
+filters:
+  min_confluence_counter_trend: 2 # §7 v1.2 — ANGUS calibration ruling 2026-07-17: was 3; the
+                                  #      3-count counter-trend minimum vetoed 13 of his 24 Feb
+                                  #      trades. Minimum is now 2 EVERYWHERE, and the two must
+                                  #      be BB+VWAP (sizing.require_bb_vwap gate below).
+  min_confluence_with_trend: 2    # §7 — confluence minimum, with-trend (unchanged)
+  location_veto: true             # §7 — no longs at HTF range top / no shorts at range bottom
+  invalidation_at_entry: false    # §7 HYPOTHESIS (test) — trigger candle touching opposing ±1σ → stand down
+  news_entry_buffer_enabled: false  # §7 — H4 "no entry within N min of release"; test only, default off
+  news_entry_buffer_min: 15       # §7 PLACEHOLDER — N for H4 if enabled
+  vwap_warmup_min: 60             # ANGUS 2026-07-17 NEW: no entries in the first hour after the
+                                  #      18:00 daily-VWAP anchor (VWAP needs to form); W1/NY unaffected
+  no_premarket_entry_on_high_impact: true   # ANGUS 2026-07-17 (TIGHTENED): on a high-impact pre-open
+                                  #      release day (e.g. CPI 08:30) the ENTIRE pre-market is blocked;
+                                  #      entries only from the 09:30 open. Overrides the earlier release-time
+                                  #      reading (doc wins) — pre-release entries like Feb 20 08:06 now vetoed
+  require_vwap_touch: false       # ANGUS pass-6 QUALITY FILTER (split test) — trade only if the trigger
+                                  #      candle's range ACTUALLY reached a VWAP band ("it rejected VWAP"),
+                                  #      not just a VWAP level near a BB level (Brake's Feb-24 find). When
+                                  #      ON, set sizing.require_bb_vwap:false — touch supersedes composition.
+  named_high_impact:              # ANGUS pass-9 RULING (P5.14): "high-impact" = this NAMED LIST only
+                                  #      (regex, case-insensitive) — PCE deliberately EXCLUDED. Empty
+                                  #      list = strict FF red-folder (every impact=high row counts).
+                                  #      Gates the pre-open stand-down AND the §6.3 target override.
+    - "CPI"
+    - "PPI"
+    - "non.?farm|payroll|NFP|employment change"
+    - "JOLTS"
+    - "rate decision|FOMC|federal funds"
+  # SHIPPED 2026-07-20 (Angus) — the "don't-trade" SELECTION gate (docs/FINDING-dont-trade-filter.md).
+  #      A post-engine selection filter (applied in src/backtest/selection.py), NOT an engine mechanic —
+  #      it decides which validated trades to keep, and never touches fill/stop logic. In-sample 2026:
+  #      132t -> 78t, +$14,009 -> +$14,351, win 33% -> 41%, 5/6 months green. Cross-year OOS is OPEN
+  #      (docs/FINDING-oracle-is-hindsight...): ship as a 2026-regime gate, not a proven cross-year edge.
+  cut_below_value_open: true      #      skip trades whose day opened below the prior value area
+                                  #      (open_vs_value == "below_value"): 0% win / -$2,355 in-sample
+  require_cvd_absorption: true    #      require CVD absorption (flow INTO the level) — skip hollow
+                                  #      rejections (the #1 loser/winner separator: winners cvd ~-74, losers ~-10)
+  cvd_absorption_max: 0.0         #      keep trades with cvd <= this. 0.0 = shipped (41% win, keeps the money);
+                                  #      -30 -> 44% win / still 5-6 green; -60 -> 50% but breaks a month (too tight)
+  # Volatility stand-down (§7): [OPEN] — no computable definition yet; intentionally not configured.
+
+management:
+  variant: V0                     # §8 TOURNAMENT — active variant; V0 = set-and-forget baseline.
+                                  #      Calibration (spec-1 Step 8) runs V0. Priority head-to-head: V1 vs V0.
+  v1_be_at_r: 1.0                 # §8 V1 CONFIRMED — BE on TOUCH of +1R (any TF tick), stop to entry exact
+  v4_partial_pct: 50              # §8 V4 — 50% partial at first structural level, runner to target
+  v5_partial_pct: 75              # ANGUS pass-7 — V5/V6: 75% booked at the FIRST structure; 25%
+                                  #      runner targets the NEXT structural (V5) or the one beyond (V6).
+                                  #      Runner rides free of the RR floor (targets.rr_floor_partial
+                                  #      gates the first leg instead).
+  v7_partial_r: 1.5               # pass-8 TEST ARM (MFE-derived; MEASURED and REJECTED for Feb —
+                                  #      see progress-tracker pass 8): V7 books v5_partial_pct at a
+                                  #      FIXED +kR milestone; trade set identical to V0. Result:
+                                  #      win% 19.6→26.1 but +30.41R→+4.77R (winners pay ~-30R,
+                                  #      only 3 losers convert +5R). Kept for future distributions.
+
+sizing:
+  # §9 v1.2 — ANGUS calibration ruling 2026-07-17: FULL size is the DEFAULT for every entry,
+  # counter-trend reversals included ("I wasn't doing 50%"). The v1.1 confluence/type-count
+  # sizing tiers and the with-trend-or-A conviction test are REMOVED; the old
+  # full_unit_min_confluences / full_unit_min_target_r keys are gone (2R lives in targets.rr_floor).
+  # HALF only on the two deliberate overrides below.
+  oversized_stop_points: 42       # §9 — ANGUS 2026-07-17: stop wider than this (band 40-45,
+                                  #      median wick-stop ~30) → HALF size
+  post_open_after: "09:40"        # Tier-2 (Angus 20 Jul): after this time the stop floor = post_open_min_stop.
+  late_window_after: "10:30"      # §9 — ANGUS 2026-07-17: fills after 10:30 ET → HALF size,
+                                  #      session-scoped windows only (09:45-10:15 is prime AM-macro)
+  require_bb_vwap: true           # §7 v1.2 — the ENTRY GATE: no trade unless BOTH BB and VWAP
+                                  #      are in the crossed cluster (POC = bonus confluence,
+                                  #      not required; no effect on size any more)
+  # Absolute per-trade risk ceiling comes from Monte Carlo vs eval rules (Spec 4) — intentionally absent (§9)
+
+vault:
+  max_trades_per_day: 3           # §10 — config range 2–3; start 3
+  daily_halt_losses: 0            # §10 v1.2 — ANGUS calibration ruling #2 (17 Jul, option a):
+                                  #      loss-COUNT halt DISABLED (0 = off). Two -0.1R scratches
+                                  #      were locking out the day's real setups (Feb 12/17).
+  daily_halt_r: -2.0              # §10 — halt on -2R day total (damage, not attempts;
+                                  #      placeholder; MC calibrates)
+
+fills:                            # spec-1 §3 — fill realism (engineering parameters; no § start values)
+  trade_through_ticks: 1          # spec-1 §3 — resting limit fills only when price trades strictly
+                                  #      through it by ≥1 tick (0.25)
+  slippage_ticks_normal: 1        # spec-1 §3 PLACEHOLDER — S_normal, ticks per side
+  slippage_ticks_news: 4          # spec-1 §3 PLACEHOLDER — S_news, ticks per side near releases
+  news_slippage_window_min: 15    # spec-1 §3 PLACEHOLDER — N_news, minutes around scheduled release
+  commission_per_contract_side: 2.50  # spec-1 §3 PLACEHOLDER — $/contract/side; confirm broker numbers
+
+data:
+  primary_start: "2026-01-01"     # §12.1 — 1-minute NQ, Jan 2026 → present, primary dataset
+  robustness_2025: false          # §12.1 — 2025 pulled later as regime-robustness check ONLY, not pass/fail
+  calibration_start: "2026-02-02" # §12.2 / spec-1 Step 8 — February re-run vs the 28 hand trades
+  calibration_end: "2026-02-27"   # §12.2 / spec-1 Step 8
+  news_calendar: config/news_calendar.csv  # spec-1 §3 — news calendar is an input file, not an API

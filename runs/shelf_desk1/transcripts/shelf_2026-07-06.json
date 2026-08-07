@@ -1,0 +1,22 @@
+{
+ "turns": [
+  {
+   "minute": "2026-07-06 10:12:00-04:00",
+   "why": "position opened \u2014 read it and set your plan",
+   "sent": "NEW POSITION SHORT shelf-fade | tier BASE ($180 risk, fixed) | entry 30009.0 risk 29.09pt | engine stop 30038.09375 (-1R, INVIOLATE) | mechanical target = the developing near band | mechanical scratch at t+10 if red | session ends 15:55\njournal: 108 trades | you $+25,253 vs mech $+21,428 (delta $+3,825)\n  defense (mech losers, n28): $-84\n  offense (mech winners, n80): $+3,909\n  band-exit refusals: 80, net vs mech $+3,909\nlast trades (you vs mech):\n  2026-06-22 short CONFIRMED: +1.25R vs +1.25R (band; CVD faded -108\u2192-6, price round-tripped off band, R)\n  2026-06-24 long BASE: +4.46R vs +1.77R (stop; CVD reversed hard (+384->-242), 2R pullback off pe)\n  2026-06-29 long BASE: -1.04R vs -1.03R (stop; Pulled back off peak but still +0.45R, CVD +174 st)\n  2026-06-30 short CONFIRMED: +1.67R vs +1.67R (band; Band tag already +1.69R, but CVD +192 against shor)\n  2026-07-02 short CONFIRMED: +1.20R vs +1.20R (band; CVD +216 against short at band touch, mirrors prio)\nReply with EXACTLY one JSON object, nothing else: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"stop_r\":<num,optional>,\"target_r\":<num or null,optional>,\"partial_pct\":<0-1,optional>,\"note\":\"<=120 chars\"}. R units are TRUE risk (engine stop = -1R). \"hold\"=no change (mechanical exits execute when due). \"revise\": stop_r only TIGHTENS (0=entry); target_r >= 0.3 replaces the target, null = ride on the stop (extension mode); partial_pct books that fraction of what is OPEN at next bar. \"exit_now\" flattens at next bar. Rule-breaking fields are ignored by the harness.\n\n[10:12] EVENT: position opened \u2014 read it and set your plan\nbar 30000.25/30018.75/29985.50/30015.00 | R_now -0.21 peak +0.81 | open 1.00 | stop -1.00R | target developing band +1.27R | cvd_since_entry -78 | mins_to_EOD 343",
+   "reply": "{\"action\":\"hold\",\"note\":\"early, stop intact, let mechanical band/scratch logic run\"}"
+  },
+  {
+   "minute": "2026-07-06 10:13:00-04:00",
+   "why": "t+2 check: the decisive minute on this clock",
+   "sent": "[10:13] EVENT: t+2 check: the decisive minute on this clock\nbar 30014.00/30023.25/30002.00/30017.25 | R_now -0.28 peak +0.81 | open 1.00 | stop -1.00R | target developing band +1.20R | cvd_since_entry -53 | mins_to_EOD 342",
+   "reply": "{\"action\":\"hold\",\"note\":\"underwater but mild, cvd improving, stop untouched, no defense trigger yet\"}"
+  },
+  {
+   "minute": "2026-07-06 10:16:00-04:00",
+   "why": "price near your stop",
+   "sent": "[10:16] EVENT: price near your stop\nbar 30029.75/30037.75/30015.75/30033.75 | R_now -0.85 peak +0.81 | open 1.00 | stop -1.00R | target developing band +0.93R | cvd_since_entry -178 | mins_to_EOD 339",
+   "reply": "{\"action\":\"hold\",\"note\":\"near stop already, mechanical -1R will handle it, no early cut needed\"}"
+  }
+ ]
+}

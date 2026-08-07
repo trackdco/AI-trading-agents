@@ -1,0 +1,364 @@
+{"type": "boot", "git_sha": "42149a398ccf5b004422c9cc25248bc7352c814f", "armed": false, "entry": "ny_run"}
+{"type": "ny_day_start", "day": "2026-01-20", "buffer": 2000.0, "bar_ts": "2026-01-20 08:35:00+00:00"}
+{"type": "ny_day_start", "day": "2026-01-21", "buffer": 2000.0, "bar_ts": "2026-01-21 01:13:00+00:00"}
+{"type": "ny_day_start", "day": "2026-01-22", "buffer": 2000.0, "bar_ts": "2026-01-22 13:16:00+00:00"}
+{"type": "ny_day_start", "day": "2026-01-26", "buffer": 2000.0, "bar_ts": "2026-01-26 16:48:00+00:00"}
+{"type": "ny_day_start", "day": "2026-01-27", "buffer": 2000.0, "bar_ts": "2026-01-27 18:51:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-02", "buffer": 2000.0, "bar_ts": "2026-02-02 06:34:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-03", "buffer": 2000.0, "bar_ts": "2026-02-03 16:28:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-04", "buffer": 2000.0, "bar_ts": "2026-02-04 16:43:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-05", "buffer": 2000.0, "bar_ts": "2026-02-05 14:36:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-06", "buffer": 2000.0, "bar_ts": "2026-02-06 00:27:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-09", "buffer": 2000.0, "bar_ts": "2026-02-09 00:04:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-10", "buffer": 2000.0, "bar_ts": "2026-02-10 20:34:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-11", "buffer": 2000.0, "bar_ts": "2026-02-11 18:16:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-12", "buffer": 2000.0, "bar_ts": "2026-02-12 14:59:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-13", "buffer": 2000.0, "bar_ts": "2026-02-13 13:32:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-17", "buffer": 2000.0, "bar_ts": "2026-02-17 05:42:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-18", "buffer": 2000.0, "bar_ts": "2026-02-18 08:26:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-19", "buffer": 2000.0, "bar_ts": "2026-02-19 15:03:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-20", "buffer": 2000.0, "bar_ts": "2026-02-20 15:49:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-23", "buffer": 2000.0, "bar_ts": "2026-02-23 00:19:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-24", "buffer": 2000.0, "bar_ts": "2026-02-24 12:06:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-25", "buffer": 2000.0, "bar_ts": "2026-02-25 12:19:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-26", "buffer": 2000.0, "bar_ts": "2026-02-25 23:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-02-27", "buffer": 2000.0, "bar_ts": "2026-02-27 15:02:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-02", "buffer": 2000.0, "bar_ts": "2026-03-01 23:12:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-03", "buffer": 2000.0, "bar_ts": "2026-03-03 05:47:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-04", "buffer": 2000.0, "bar_ts": "2026-03-04 00:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-05", "buffer": 2000.0, "bar_ts": "2026-03-05 00:18:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-06", "buffer": 2000.0, "bar_ts": "2026-03-06 09:46:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-09", "buffer": 2000.0, "bar_ts": "2026-03-08 22:30:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-10", "buffer": 2000.0, "bar_ts": "2026-03-09 23:22:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-11", "buffer": 2000.0, "bar_ts": "2026-03-11 02:36:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-12", "buffer": 2000.0, "bar_ts": "2026-03-11 23:30:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-13", "buffer": 2000.0, "bar_ts": "2026-03-12 23:38:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-16", "buffer": 2000.0, "bar_ts": "2026-03-15 22:19:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-17", "buffer": 2000.0, "bar_ts": "2026-03-16 23:36:00+00:00"}
+{"type": "roll", "contract": "NQM26", "roll": "True", "session": "2026-03-18", "from": "NQH26", "bar_ts": "2026-03-18 00:20:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-18", "buffer": 2000.0, "bar_ts": "2026-03-18 00:20:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-19", "buffer": 2000.0, "bar_ts": "2026-03-18 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-20", "buffer": 2000.0, "bar_ts": "2026-03-19 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-23", "buffer": 2000.0, "bar_ts": "2026-03-22 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-24", "buffer": 2000.0, "bar_ts": "2026-03-23 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-25", "buffer": 2000.0, "bar_ts": "2026-03-24 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-26", "buffer": 2000.0, "bar_ts": "2026-03-25 22:38:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-27", "buffer": 2000.0, "bar_ts": "2026-03-26 22:18:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-30", "buffer": 2000.0, "bar_ts": "2026-03-29 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-03-31", "buffer": 2000.0, "bar_ts": "2026-03-30 22:06:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-01", "buffer": 2000.0, "bar_ts": "2026-03-31 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-02", "buffer": 2000.0, "bar_ts": "2026-04-01 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-03", "buffer": 2000.0, "bar_ts": "2026-04-03 00:27:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-06", "buffer": 2000.0, "bar_ts": "2026-04-05 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-07", "buffer": 2000.0, "bar_ts": "2026-04-06 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-08", "buffer": 2000.0, "bar_ts": "2026-04-07 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-09", "buffer": 2000.0, "bar_ts": "2026-04-08 22:29:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-10", "buffer": 2000.0, "bar_ts": "2026-04-09 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-13", "buffer": 2000.0, "bar_ts": "2026-04-12 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-14", "buffer": 2000.0, "bar_ts": "2026-04-13 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-15", "buffer": 2000.0, "bar_ts": "2026-04-14 22:09:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-16", "buffer": 2000.0, "bar_ts": "2026-04-15 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-17", "buffer": 2000.0, "bar_ts": "2026-04-16 23:11:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-20", "buffer": 2000.0, "bar_ts": "2026-04-19 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-21", "buffer": 2000.0, "bar_ts": "2026-04-20 22:49:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-22", "buffer": 2000.0, "bar_ts": "2026-04-21 22:30:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-23", "buffer": 2000.0, "bar_ts": "2026-04-22 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-24", "buffer": 2000.0, "bar_ts": "2026-04-23 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-27", "buffer": 2000.0, "bar_ts": "2026-04-26 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-28", "buffer": 2000.0, "bar_ts": "2026-04-27 22:06:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-29", "buffer": 2000.0, "bar_ts": "2026-04-28 22:35:00+00:00"}
+{"type": "ny_day_start", "day": "2026-04-30", "buffer": 2000.0, "bar_ts": "2026-04-29 22:05:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-01", "buffer": 2000.0, "bar_ts": "2026-04-30 22:04:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-04", "buffer": 2000.0, "bar_ts": "2026-05-03 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-05", "buffer": 2000.0, "bar_ts": "2026-05-04 22:04:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-06", "buffer": 2000.0, "bar_ts": "2026-05-05 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-07", "buffer": 2000.0, "bar_ts": "2026-05-06 23:31:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-08", "buffer": 2000.0, "bar_ts": "2026-05-07 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-11", "buffer": 2000.0, "bar_ts": "2026-05-10 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-12", "buffer": 2000.0, "bar_ts": "2026-05-11 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-13", "buffer": 2000.0, "bar_ts": "2026-05-12 22:14:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-14", "buffer": 2000.0, "bar_ts": "2026-05-13 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-15", "buffer": 2000.0, "bar_ts": "2026-05-14 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-18", "buffer": 2000.0, "bar_ts": "2026-05-17 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-19", "buffer": 2000.0, "bar_ts": "2026-05-18 22:02:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-20", "buffer": 2000.0, "bar_ts": "2026-05-19 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-21", "buffer": 2000.0, "bar_ts": "2026-05-20 22:07:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-22", "buffer": 2000.0, "bar_ts": "2026-05-21 22:08:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-25", "buffer": 2000.0, "bar_ts": "2026-05-24 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-26", "buffer": 2000.0, "bar_ts": "2026-05-25 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-27", "buffer": 2000.0, "bar_ts": "2026-05-26 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-28", "buffer": 2000.0, "bar_ts": "2026-05-27 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-05-29", "buffer": 2000.0, "bar_ts": "2026-05-28 22:01:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-01", "buffer": 2000.0, "bar_ts": "2026-05-31 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-02", "buffer": 2000.0, "bar_ts": "2026-06-01 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-03", "buffer": 2000.0, "bar_ts": "2026-06-02 22:02:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-04", "buffer": 2000.0, "bar_ts": "2026-06-03 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-05", "buffer": 2000.0, "bar_ts": "2026-06-04 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-08", "buffer": 2000.0, "bar_ts": "2026-06-07 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-09", "buffer": 2000.0, "bar_ts": "2026-06-08 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-10", "buffer": 2000.0, "bar_ts": "2026-06-09 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-11", "buffer": 2000.0, "bar_ts": "2026-06-10 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-12", "buffer": 2000.0, "bar_ts": "2026-06-11 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-15", "buffer": 2000.0, "bar_ts": "2026-06-14 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-16", "buffer": 2000.0, "bar_ts": "2026-06-15 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-17", "buffer": 2000.0, "bar_ts": "2026-06-16 22:00:00+00:00"}
+{"type": "roll", "contract": "NQU26", "roll": "True", "session": "2026-06-17", "from": "NQM26", "bar_ts": "2026-06-17 00:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-18", "buffer": 2000.0, "bar_ts": "2026-06-17 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-19", "buffer": 2000.0, "bar_ts": "2026-06-18 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-22", "buffer": 2000.0, "bar_ts": "2026-06-21 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-23", "buffer": 2000.0, "bar_ts": "2026-06-22 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-24", "buffer": 2000.0, "bar_ts": "2026-06-23 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-25", "buffer": 2000.0, "bar_ts": "2026-06-24 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-26", "buffer": 2000.0, "bar_ts": "2026-06-25 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-29", "buffer": 2000.0, "bar_ts": "2026-06-28 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-06-30", "buffer": 2000.0, "bar_ts": "2026-06-29 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-01", "buffer": 2000.0, "bar_ts": "2026-06-30 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-02", "buffer": 2000.0, "bar_ts": "2026-07-01 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-03", "buffer": 2000.0, "bar_ts": "2026-07-02 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-06", "buffer": 2000.0, "bar_ts": "2026-07-05 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-07", "buffer": 2000.0, "bar_ts": "2026-07-06 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-08", "buffer": 2000.0, "bar_ts": "2026-07-07 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-09", "buffer": 2000.0, "bar_ts": "2026-07-08 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-10", "buffer": 2000.0, "bar_ts": "2026-07-09 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-13", "buffer": 2000.0, "bar_ts": "2026-07-12 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-14", "buffer": 2000.0, "bar_ts": "2026-07-13 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-15", "buffer": 2000.0, "bar_ts": "2026-07-14 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-16", "buffer": 2000.0, "bar_ts": "2026-07-15 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-17", "buffer": 2000.0, "bar_ts": "2026-07-16 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-20", "buffer": 2000.0, "bar_ts": "2026-07-19 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-21", "buffer": 2000.0, "bar_ts": "2026-07-20 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-22", "buffer": 2000.0, "bar_ts": "2026-07-21 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-23", "buffer": 2000.0, "bar_ts": "2026-07-22 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-24", "buffer": 2000.0, "bar_ts": "2026-07-23 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-27", "buffer": 2000.0, "bar_ts": "2026-07-26 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-28", "buffer": 2000.0, "bar_ts": "2026-07-27 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-29", "buffer": 2000.0, "bar_ts": "2026-07-28 22:00:00+00:00"}
+{"type": "agent_day_read", "day": "2026-07-28", "which": "thesis", "text": "{\"bias\":\"short\",\"day_type\":\"gap-down downtrend\",\"thesis\":\"Gap -338 below 28199 close, overnight one-way to 27840 and last 5 bars stair-stepping lower into 27860. Sell pullback rejections into 27900-27960 supply.\",\"invalidates\":\"Reclaim and hold above 27960 (ON high 28228 area); acceptance back inside prior-day range\"}"}
+{"type": "agent_day_read", "day": "2026-07-28", "which": "reread", "text": "{\"bias\":\"short\",\"note\":\"Open probed 27992 then rejected 200pts to close at 27791 lows \u00e2\u20ac\u201d supply confirmed. Short pullback rejections into 27860-27920; invalid above 27960.\"}"}
+{"type": "agent_day_read", "day": "2026-07-29", "which": "thesis", "text": "{\"bias\":\"neutral\",\"day_type\":\"wide two-way, mid-range chop\",\"thesis\":\"Prior day 626pt washout closed off lows; ON reclaimed to 28178 then faded back to 27972 \u00e2\u20ac\u201d price sits mid a huge 27640-28178 range with no edge either way. Fade extremes, trust mechanical entries.\",\"invalidates\":\"Accepted break/hold above 28178 or below 27640 turns this into a one-way trend day\"}"}
+{"type": "trigger_seen", "ts": "2026-07-29T08:17:00-04:00", "direction": "short", "entry_ref": 27900.375, "placed": true}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:1", "broker_ref": "dry:1", "mode": "dryrun"}
+{"type": "scratch", "ref": "ny:2026-07-29:1", "why": "pre_wall_behind", "ts": "2026-07-29 12:18:00+00:00"}
+{"layer": "ny_execution", "type": "scratched", "ref": "ny:2026-07-29:1", "why": "gate:pre_wall_behind", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T08:18:00-04:00", "direction": "long", "entry_ref": 27902.3101, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T08:19:00-04:00", "direction": "short", "entry_ref": 27900.375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T08:20:00-04:00", "direction": "short", "entry_ref": 27900.375, "placed": true}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:4", "broker_ref": "dry:3", "mode": "dryrun"}
+{"type": "agent_trade_open", "ref": "ny:2026-07-29:4", "sess": "pre", "entry": 27900.5, "stop": 27947.5, "size": 2}
+{"type": "trigger_seen", "ts": "2026-07-29T08:21:00-04:00", "direction": "short", "entry_ref": 27900.375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T08:22:00-04:00", "direction": "short", "entry_ref": 27900.375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T08:24:00-04:00", "direction": "short", "entry_ref": 27900.375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T08:25:00-04:00", "direction": "short", "entry_ref": 27900.375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T08:28:00-04:00", "direction": "short", "entry_ref": 27900.375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T08:30:00-04:00", "direction": "short", "entry_ref": 27900.375, "placed": false}
+{"layer": "ny_execution", "type": "closed_now", "ref": "ny:2026-07-29:4", "why": "agent_exit", "pl_estimated": 57.0, "mode": "dryrun"}
+{"type": "agent_trade_settled", "ref": "ny:2026-07-29:4", "exit_reason": "agent_exit", "agent_R": 0.2606, "v8_R": 0.266, "turns": 6}
+{"type": "trigger_seen", "ts": "2026-07-29T08:42:00-04:00", "direction": "long", "entry_ref": 27901.5264, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T08:43:00-04:00", "direction": "long", "entry_ref": 27901.5303, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T08:44:00-04:00", "direction": "long", "entry_ref": 27901.5339, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T08:45:00-04:00", "direction": "long", "entry_ref": 27901.5452, "placed": false}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:2", "broker_ref": "dry:5", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:11", "broker_ref": "dry:6", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:14", "broker_ref": "dry:7", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:2", "why": "pre_wall_behind", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:11", "why": "pre_wall_behind", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:14", "why": "pre_wall_behind", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:2", "broker_ref": "dry:8", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:11", "broker_ref": "dry:9", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:14", "broker_ref": "dry:10", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:2", "why": "pre_wall_behind", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:11", "why": "pre_wall_behind", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:14", "why": "pre_wall_behind", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:2", "broker_ref": "dry:11", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:11", "broker_ref": "dry:12", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:14", "broker_ref": "dry:13", "mode": "dryrun"}
+{"type": "scratch", "ref": "ny:2026-07-29:2", "why": "pre_wall_behind", "ts": "2026-07-29 13:00:00+00:00"}
+{"layer": "ny_execution", "type": "scratched", "ref": "ny:2026-07-29:2", "why": "gate:pre_wall_behind", "mode": "dryrun"}
+{"type": "scratch", "ref": "ny:2026-07-29:11", "why": "pre_wall_behind", "ts": "2026-07-29 13:00:00+00:00"}
+{"layer": "ny_execution", "type": "scratched", "ref": "ny:2026-07-29:11", "why": "gate:pre_wall_behind", "mode": "dryrun"}
+{"type": "scratch", "ref": "ny:2026-07-29:14", "why": "pre_wall_behind", "ts": "2026-07-29 13:00:00+00:00"}
+{"layer": "ny_execution", "type": "scratched", "ref": "ny:2026-07-29:14", "why": "gate:pre_wall_behind", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T09:01:00-04:00", "direction": "long", "entry_ref": 27901.8239, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:02:00-04:00", "direction": "long", "entry_ref": 27901.8356, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:03:00-04:00", "direction": "long", "entry_ref": 27901.8429, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:04:00-04:00", "direction": "short", "entry_ref": 27898.675, "placed": true}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:17", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T09:05:00-04:00", "direction": "short", "entry_ref": 27898.675, "placed": true}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:18", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T09:06:00-04:00", "direction": "short", "entry_ref": 27897.8125, "placed": false}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:19", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:20", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:21", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:22", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "pre_wall_behind", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "pre_wall_behind", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:23", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:24", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:25", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:26", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:27", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:28", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:29", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:30", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T09:15:00-04:00", "direction": "short", "entry_ref": 27894.95, "placed": false}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:31", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:32", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:33", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:34", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:35", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:36", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:37", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:38", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:18", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:18", "broker_ref": "dry:39", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:19", "why": "resize", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:19", "broker_ref": "dry:40", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T09:23:00-04:00", "direction": "short", "entry_ref": 27891.925, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:24:00-04:00", "direction": "short", "entry_ref": 27891.975, "placed": false}
+{"type": "agent_trade_open", "ref": "ny:2026-07-29:18", "sess": "pre", "entry": 27898.75, "stop": 27917.0, "size": 4}
+{"type": "rule_l_scratch", "ref": "ny:2026-07-29:19", "blocking": "ny:2026-07-29:18", "ts": "2026-07-29 13:25:00+00:00"}
+{"layer": "ny_execution", "type": "scratched", "ref": "ny:2026-07-29:19", "why": "one_per_level:ny:2026-07-29:18", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T09:26:00-04:00", "direction": "long", "entry_ref": 27901.08, "placed": false}
+{"layer": "ny_execution", "type": "stop_fired", "broker_ref": "dry:39", "price": 27917.0, "ts": "2026-07-29 13:26:00+00:00"}
+{"layer": "ny_execution", "type": "position_closed", "ref": "ny:2026-07-29:18", "reason": "stop", "pl": -151.0, "mode": "dryrun"}
+{"type": "agent_trade_settled", "ref": "ny:2026-07-29:18", "exit_reason": "stop", "agent_R": -1.0479, "v8_R": -1.0479, "turns": 0}
+{"type": "trigger_seen", "ts": "2026-07-29T09:27:00-04:00", "direction": "long", "entry_ref": 27915.875, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:29:00-04:00", "direction": "long", "entry_ref": 27908.875, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:30:00-04:00", "direction": "long", "entry_ref": 27908.875, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:32:00-04:00", "direction": "short", "entry_ref": 27881.4325, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:33:00-04:00", "direction": "long", "entry_ref": 27887.15, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:34:00-04:00", "direction": "long", "entry_ref": 27912.175, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:35:00-04:00", "direction": "long", "entry_ref": 27901.7787, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:36:00-04:00", "direction": "long", "entry_ref": 27914.7261, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:39:00-04:00", "direction": "short", "entry_ref": 27897.675, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:40:00-04:00", "direction": "short", "entry_ref": 27907.375, "placed": false}
+{"type": "agent_day_read", "day": "2026-07-29", "which": "reread", "text": "{\"bias\":\"neutral\",\"note\":\"Open faded 27996->27887, 160pt in 10min; sellers took the push but price still mid the 27640-28178 range. Two-way chop, slight downward tilt.\"}"}
+{"type": "trigger_seen", "ts": "2026-07-29T09:41:00-04:00", "direction": "short", "entry_ref": 27896.625, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:42:00-04:00", "direction": "short", "entry_ref": 27906.2125, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:43:00-04:00", "direction": "short", "entry_ref": 27902.2375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:44:00-04:00", "direction": "short", "entry_ref": 27902.2375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:45:00-04:00", "direction": "long", "entry_ref": 27895.3125, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:46:00-04:00", "direction": "long", "entry_ref": 27897.1125, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:47:00-04:00", "direction": "short", "entry_ref": 27890.375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T09:48:00-04:00", "direction": "short", "entry_ref": 27890.375, "placed": false}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:28", "broker_ref": "dry:42", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:34", "broker_ref": "dry:43", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:35", "broker_ref": "dry:44", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:41", "broker_ref": "dry:45", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:42", "broker_ref": "dry:46", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:28", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:34", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:35", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:41", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:42", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:28", "broker_ref": "dry:47", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:34", "broker_ref": "dry:48", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:35", "broker_ref": "dry:49", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:41", "broker_ref": "dry:50", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:42", "broker_ref": "dry:51", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T10:04:00-04:00", "direction": "short", "entry_ref": 27775.9436, "placed": false}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:28", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:34", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:35", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:41", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:42", "why": "gold_wall_quality", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T10:05:00-04:00", "direction": "long", "entry_ref": 27775.825, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T10:06:00-04:00", "direction": "long", "entry_ref": 27774.7494, "placed": true}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:45", "broker_ref": "dry:52", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:28", "broker_ref": "dry:53", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:34", "broker_ref": "dry:54", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:35", "broker_ref": "dry:55", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:41", "broker_ref": "dry:56", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:42", "broker_ref": "dry:57", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:44", "broker_ref": "dry:58", "mode": "dryrun"}
+{"type": "scratch", "ref": "ny:2026-07-29:45", "why": "gold_no_wall_ahead", "ts": "2026-07-29 14:07:00+00:00"}
+{"layer": "ny_execution", "type": "scratched", "ref": "ny:2026-07-29:45", "why": "gate:gold_no_wall_ahead", "mode": "dryrun"}
+{"type": "scratch", "ref": "ny:2026-07-29:44", "why": "gold_no_wall_ahead", "ts": "2026-07-29 14:07:00+00:00"}
+{"layer": "ny_execution", "type": "scratched", "ref": "ny:2026-07-29:44", "why": "gate:gold_no_wall_ahead", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T10:07:00-04:00", "direction": "short", "entry_ref": 27764.2375, "placed": false}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:28", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:34", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:35", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:41", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:42", "why": "gold_wall_quality", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T10:09:00-04:00", "direction": "short", "entry_ref": 27747.5001, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T10:10:00-04:00", "direction": "short", "entry_ref": 27820.9375, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T10:12:00-04:00", "direction": "short", "entry_ref": 27740.6962, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T10:13:00-04:00", "direction": "short", "entry_ref": 27735.1057, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T10:14:00-04:00", "direction": "short", "entry_ref": 27727.7657, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T10:15:00-04:00", "direction": "short", "entry_ref": 27722.5957, "placed": true}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:52", "broker_ref": "dry:61", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:28", "broker_ref": "dry:62", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:34", "broker_ref": "dry:63", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:35", "broker_ref": "dry:64", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:41", "broker_ref": "dry:65", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:42", "broker_ref": "dry:66", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:43", "broker_ref": "dry:67", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:46", "broker_ref": "dry:68", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:47", "broker_ref": "dry:69", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:49", "broker_ref": "dry:70", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:50", "broker_ref": "dry:71", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:51", "broker_ref": "dry:72", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:28", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:34", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:35", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:41", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:42", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:43", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:46", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:47", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:49", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:50", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:51", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:52", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:28", "broker_ref": "dry:73", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:34", "broker_ref": "dry:74", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:35", "broker_ref": "dry:75", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:41", "broker_ref": "dry:76", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:42", "broker_ref": "dry:77", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:43", "broker_ref": "dry:78", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:46", "broker_ref": "dry:79", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:47", "broker_ref": "dry:80", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:49", "broker_ref": "dry:81", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:50", "broker_ref": "dry:82", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:51", "broker_ref": "dry:83", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "placed", "ref": "ny:2026-07-29:52", "broker_ref": "dry:84", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:28", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:34", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:35", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:41", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:42", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:43", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:46", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:47", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:49", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:50", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:51", "why": "gold_wall_quality", "mode": "dryrun"}
+{"layer": "ny_execution", "type": "cancelled", "ref": "ny:2026-07-29:52", "why": "gold_wall_quality", "mode": "dryrun"}
+{"type": "trigger_seen", "ts": "2026-07-29T10:25:00-04:00", "direction": "short", "entry_ref": 27691.644, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T10:54:00-04:00", "direction": "long", "entry_ref": 27596.8125, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T10:55:00-04:00", "direction": "long", "entry_ref": 27596.8125, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T10:56:00-04:00", "direction": "short", "entry_ref": 27591.9875, "placed": false}
+{"type": "trigger_seen", "ts": "2026-07-29T11:00:00-04:00", "direction": "long", "entry_ref": 27588.4512, "placed": false}
+{"type": "ny_day_start", "day": "2026-07-30", "buffer": 2000.0, "bar_ts": "2026-07-29 22:00:00+00:00"}
+{"type": "ny_day_start", "day": "2026-07-31", "buffer": 2000.0, "bar_ts": "2026-07-30 22:00:00+00:00"}
+{"type": "price_scale", "which": "bars", "scale": 100.0}
+{"type": "price_scale", "which": "depth", "scale": 100.0}

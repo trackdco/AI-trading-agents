@@ -6,13 +6,13 @@
 
 **Stack ground truth:** Python 3.11+, pandas + numpy, pydantic v2 for configs/schemas, PyYAML, pytest, ruff. No other heavy dependencies without flagging. All timestamps timezone-aware `America/New_York` (DST-aware — never hardcode UTC offsets).
 
-**Authoritative reference:** `strategy-definition-v1.0.md` in the repo root. Every rule implemented here is defined there; when this spec and that document appear to conflict, STOP and flag — do not guess. Section references below (§) point to that document.
+**Authoritative reference:** `strategy-definition-v1.2.md` in the repo root (v1.1 supersedes v1.0, 17 Jul 2026 — same § numbering). Every rule implemented here is defined there; when this spec and that document appear to conflict, STOP and flag — do not guess. Section references below (§) point to that document.
 
 **Working rules:** Implement ONE step at a time. Verify each step's check before starting the next (per `code-standards.md`). Commit after every completed step with the step number in the commit message. Ask clarifying questions before writing code if any step is ambiguous.
 
 ## Section 1 — Goal
 
-A backtester that replays 1-minute NQ history through the exact mechanical rules of strategy-definition-v1.0.md and outputs a trade log, per-slice diagnostics, and a calibration report comparing its February 2026 trades against Angus's 28 hand-logged reference trades.
+A backtester that replays 1-minute NQ history through the exact mechanical rules of strategy-definition-v1.2.md and outputs a trade log, per-slice diagnostics, and a calibration report comparing its February 2026 trades against Angus's 28 hand-logged reference trades.
 
 ## Section 2 — Out of Scope
 
@@ -26,7 +26,7 @@ A backtester that replays 1-minute NQ history through the exact mechanical rules
 
 ## Section 3 — Design Decisions
 
-- Config-driven everything: every CALIBRATE parameter and TOURNAMENT variant in strategy-definition-v1.0.md lives in `config/strategy.yaml` with the doc's starting values. No magic numbers in code.
+- Config-driven everything: every CALIBRATE parameter and TOURNAMENT variant in strategy-definition-v1.2.md lives in `config/strategy.yaml` with the doc's starting values. No magic numbers in code.
 - No lookahead, structurally: signals are computed strictly on CLOSED candles; a signal on bar *t* may place a working limit order active from bar *t+1* onward. Write it so lookahead is impossible, not merely avoided.
 - Fill realism: a resting limit fills only when price trades strictly through it by ≥1 tick (0.25). Targets use the front-run offset F (§6.4). Slippage: S_normal ticks per side, S_news ticks per side within N_news minutes of a scheduled release; commissions per contract per side. All in config.
 - VWAP bands = volume-weighted standard deviation of price around VWAP (TradingView formula), NOT simple stdev. Daily VWAP anchors 18:00 ET (CME daily session open). NY VWAP anchors 09:30 ET and DOES NOT EXIST before then — pre-9:30 cluster logic uses daily VWAP only (§2, §3).
@@ -38,7 +38,7 @@ A backtester that replays 1-minute NQ history through the exact mechanical rules
 
 ## Section 4 — Implementation (ordered, independently verifiable)
 
-**Step 1 — Repo scaffold.** Create: `README.md`, `strategy-definition-v1.0.md` (copy in), `config/strategy.yaml` (all §-referenced parameters with starting values, commented with their § source), `config/news_calendar.csv` (header + Feb 2026 seed rows), `src/engine/`, `src/backtest/`, `tests/`, `data/raw/`, `data/reference/`, `output/`, `.gitignore` (ignore `data/raw/` and `output/`). Place Angus's 28-trade CSV at `data/reference/feb2026_hand_log.csv`.
+**Step 1 — Repo scaffold.** Create: `README.md`, `strategy-definition-v1.2.md` (copy in), `config/strategy.yaml` (all §-referenced parameters with starting values, commented with their § source), `config/news_calendar.csv` (header + Feb 2026 seed rows), `src/engine/`, `src/backtest/`, `tests/`, `data/raw/`, `data/reference/`, `output/`, `.gitignore` (ignore `data/raw/` and `output/`). Place Angus's 28-trade CSV at `data/reference/feb2026_hand_log.csv`.
 *Check: repo tree matches; `strategy.yaml` parses; every parameter carries a § comment.*
 
 **Step 2 — Data ingest.** `src/engine/data.py`: load Databento 1-minute NQ (DBN or CSV) → validated parquet at `data/nq_1m.parquet` with columns ts_event(NY tz), open, high, low, close, volume. Validation: monotonic timestamps, no duplicates, gap report (missing minutes per session), roll-date tags.
@@ -72,7 +72,7 @@ A backtester that replays 1-minute NQ history through the exact mechanical rules
 - [ ] Parity report (Step 4) signed off by Angus BEFORE Steps 5–9 were built
 - [ ] No-lookahead test exists and passes
 - [ ] NY VWAP returns no values before 09:30 ET; pre-market clusters use daily VWAP only (test proves it)
-- [ ] Every parameter in `config/strategy.yaml` traces to a § in strategy-definition-v1.0.md via comment
+- [ ] Every parameter in `config/strategy.yaml` traces to a § in strategy-definition-v1.2.md via comment
 - [ ] Calibration report generated with all 28 reference trades classified MATCHED / MISSED / EXTRA
 - [ ] No parameter tuning, no optimization, no rule changes were made to improve the calibration numbers — divergences are REPORTED, not fixed
 - [ ] No new components beyond the files named in Section 4 without flagging first

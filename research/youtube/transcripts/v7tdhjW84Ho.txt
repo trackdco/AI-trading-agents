@@ -1,0 +1,262 @@
+[0:00] If you trade the London session, please
+[0:01] listen to this video closely. In this
+[0:03] video, I'm going to be giving you guys
+[0:04] my ultimate London session trading
+[0:06] strategy, which I call the London PO3.
+[0:08] It's the same power of three framework
+[0:10] that I use during the 9:30 market open
+[0:12] during New York session, only the clock
+[0:14] is different. By the end of this video,
+[0:15] you're going to know exactly when the
+[0:17] range builds, when the fake out hits,
+[0:19] and where price is actually going.
+[0:21] There's going to be a ton of sauce in
+[0:22] this video, guys, so make sure to leave
+[0:23] a like on the video now, and let's jump
+[0:25] into it. So, here was a trade that I
+[0:27] took last week during London session.
+[0:29] You can see the market accumulates
+[0:30] between 1 to 2:00 a.m. 3:00 a.m. rolls
+[0:33] around, price manipulates that range
+[0:35] low, and boom, V-shape IFEG on the
+[0:37] 1-minute time frame. This is where we
+[0:39] enter the trade, targeting the opposing
+[0:41] end liquidity as our take profit. 15
+[0:43] minutes later, and we're done. That's a
+[0:45] little over 2R on a London session trade
+[0:47] before most New York traders are even
+[0:49] awake. Now, there's quite a bit that
+[0:50] goes into spotting and executing a trade
+[0:52] setup like this, and a lot of people
+[0:54] will get this completely wrong, so
+[0:55] listen closely. All right, so here's the
+[0:57] thing that nobody wants to tell you.
+[0:58] Time is the only repeatable variable in
+[1:01] trading. Price, to a large extent, is
+[1:03] random, okay? It can move up, it can
+[1:04] move down, it can move sideways. You
+[1:06] cannot predict price accurately in
+[1:08] advance, but you can predict time. The
+[1:10] market cycles through the same three
+[1:12] phases during the same times almost
+[1:14] every single day. We have accumulation,
+[1:16] or A, manipulation, or M, and
+[1:19] distribution, or D. So, AMD, otherwise
+[1:22] known as the power of three, or the PO3.
+[1:25] This happens during the 9:30 a.m.
+[1:27] Eastern open during New York session,
+[1:29] and it also tends to happen between 2 to
+[1:31] 3:00 a.m. during London session. Once
+[1:33] you understand this time-based PO3, you
+[1:35] stop chasing patterns, and you start
+[1:37] trading the clock. All right, so here
+[1:38] are the three components of the London
+[1:40] PO3. Three components, and that is all.
+[1:43] Number one is going to be time.
+[1:44] Accumulation has to occur between 1 to
+[1:47] 2:00 a.m. Eastern. Now, this does not
+[1:48] have to be exactly 1 to 2:00 a.m.
+[1:51] Eastern. This could be from midnight to
+[1:53] 2:00 a.m., or midnight to 2:30 a.m.
+[1:55] Manipulation tends to occur between 2:30
+[1:57] and 3:30 a.m. Eastern. That's your
+[1:59] window for entering the trade. Number
+[2:01] two, higher time frame delivery. Price
+[2:03] needs to be rejecting from a 15-minute
+[2:05] or a 1-hour fair value gap, or it needs
+[2:07] to have an SMT divergence. So, if you're
+[2:09] trading Nasdaq, you would use ES as your
+[2:11] correlated asset that you're looking for
+[2:13] SMT divergences. We've also coded both
+[2:15] of these into its own indicator called
+[2:17] the Manipulation X indicator. It shows
+[2:19] you multi-time frame fair value gaps and
+[2:20] real-time SMT divergences. But, if you
+[2:22] guys are interested, I'll leave the link
+[2:24] to that indicator down in the
+[2:25] description below. This is going to be
+[2:26] your context. Number three is going to
+[2:29] be your entry trigger. This is a V-shape
+[2:31] IFEG on the 1-to-3-minute time frame,
+[2:34] targeting the opposing end of the range.
+[2:36] Three components, one and done. So,
+[2:37] let's go over how the London PO3
+[2:39] actually forms. On a higher time frame,
+[2:41] you're looking for accumulation, right?
+[2:43] So, this is going to be price kind of
+[2:44] ranging sideways here, generating
+[2:46] liquidity on both sides. So, here you're
+[2:48] going to be looking for price to be
+[2:49] accumulating, right? Trading sideways,
+[2:51] or kind of chopping around in this
+[2:53] range, generating liquidity on both
+[2:55] sides. Now, what's important here is
+[2:57] that this is occurring between 1 to 2:00
+[2:59] a.m. Eastern. This is actually the most
+[3:01] important part of the strategy, even
+[3:03] though we don't enter a trade here,
+[3:04] because this is setting up for the
+[3:06] manipulation, and then eventually the
+[3:08] distribution in the opposite direction.
+[3:10] This is where we capitalize on this
+[3:11] move. So, 1 to 2:00 a.m. accumulates,
+[3:14] finally 3:00 a.m. hits. Let's say 3:00
+[3:16] a.m. opens right here. We get a
+[3:17] manipulation of either side of the
+[3:19] range. Price inverses on a 1-to-3-minute
+[3:22] time frame, which is where you enter.
+[3:23] Stop loss at that swing high, and
+[3:25] targeting the opposing end of the range.
+[3:27] Very simple, very mechanical, using an
+[3:29] inverse fair value gap, or a market
+[3:31] structure break as your entry trigger.
+[3:33] To keep things simple, I like to use
+[3:34] IFEGs alone. So, here's the exact clock.
+[3:37] If nothing has happened by 4:00 a.m.,
+[3:38] you do not have any clear accumulation
+[3:41] or manipulation, then do not look for
+[3:42] the setup. If there's no setup, there's
+[3:44] no trade, do not FOMO. So, let's take a
+[3:46] look at a real-time example. You can see
+[3:48] we have this relative equal high here at
+[3:50] the range highs, and we also have this
+[3:52] relative equal low. Now, my higher time
+[3:54] frame bias was bullish, because price
+[3:56] was at all-time highs, so I was only
+[3:57] looking for longs. Price ended up
+[3:59] manipulating the range lows right at
+[4:01] that 3:00 a.m. window, also tagging into
+[4:03] a higher time frame fair value gap. At
+[4:05] the time, I believe there was a 5-minute
+[4:06] and a 15-minute bullish fair value gap.
+[4:08] So, now we have our higher time frame
+[4:10] delivery, or the context behind the
+[4:12] trade. We're in an uptrend, we start to
+[4:13] accumulate between that 1 to 2:00 a.m.
+[4:15] range, and you can see this isn't an
+[4:17] exact science. This accumulation only
+[4:19] occurred from around 2:00 a.m. to 3:00
+[4:21] a.m., but this is still a valid
+[4:22] accumulation. Finally, we get that IFEG,
+[4:25] and also a break of structure right
+[4:27] here. This is when I enter the trade,
+[4:28] stop loss below that inversion,
+[4:30] targeting the opposite end of the range.
+[4:32] I move my stop loss to break even at the
+[4:34] most internal structure high. So, within
+[4:36] 2 minutes, this trade is already
+[4:37] risk-free, and I'm holding to my full
+[4:39] target. 15 minutes later, we hit TP, and
+[4:41] boom, we are done for the day. Here's
+[4:43] your accumulation, here is your
+[4:45] manipulation, and here is your
+[4:47] distribution. Real quick, guys, if you
+[4:48] want to trade this strategy live with us
+[4:50] every single morning during New York
+[4:52] session, as well as get access to our
+[4:53] custom-coded indicators, and marks out
+[4:55] your session levels, your higher time
+[4:57] frame fair value gaps, your IFEGs, then
+[4:59] make sure to click the first link in the
+[5:00] description below. Like I said, we live
+[5:02] trade NQ every single morning at 9:30
+[5:04] a.m. Eastern using this framework. Same
+[5:06] PO3, different time. Now, let's take a
+[5:08] look at a bearish example, because this
+[5:10] works in both directions, long and
+[5:12] short. So, here we see accumulation
+[5:13] between 1 to 2:00 a.m. Price kind of
+[5:15] chopping sideways, generating liquidity.
+[5:17] We see we have our 1:00 a.m. range lows
+[5:20] all the way down here, and we have our
+[5:21] 2:00 a.m. range highs. Now, again, this
+[5:23] is not an exact science, right? You can
+[5:25] see this candle is at around maybe 2:10,
+[5:27] 2:12, but this is the most notable range
+[5:30] high within this visible range here. So,
+[5:32] all we're waiting for is for one side of
+[5:34] the range to get taken out during that
+[5:35] 3:00 a.m. candle. You can see that the
+[5:37] 3:00 a.m. candle opens high. We
+[5:39] manipulate that range high, tapping into
+[5:41] that higher time frame fair value gap.
+[5:42] So, now we have time and delivery, which
+[5:44] is our context. All we're waiting for
+[5:46] now is an inverse fair value gap to
+[5:47] confirm that the delivery has shifted,
+[5:49] and we can look for short positions
+[5:50] targeting the opposing end of the range.
+[5:52] So, here we can see a bullish fair value
+[5:54] gap has formed. All we're going to do is
+[5:56] wait for price to close below that
+[5:57] bullish fair value gap, creating an
+[5:58] inverse. Stop loss at above that IFEG,
+[6:01] moving our stop loss to break even at
+[6:02] this most internal structure low, and
+[6:04] full TP at the range low. Clean,
+[6:06] mechanical, two out of the three
+[6:07] components stacked. We have time and
+[6:09] delivery. Framework fires the same way,
+[6:11] whether price is going up or down. All
+[6:12] right, this last one is an A++ setup. I
+[6:15] will take this trade 10 times out of 10,
+[6:17] and this happens more frequently than
+[6:19] you would think. Here we have the highs
+[6:20] from the 1-to-2-a.m. range, and we have
+[6:22] the lows somewhere around here. Now, you
+[6:24] can see we had this massive
+[6:26] accumulation, even going back as far as
+[6:29] Asian session. So, this is our
+[6:30] accumulation. As soon as price takes out
+[6:32] either side of this range during that
+[6:34] 2:30 to 3:30 window, we will look for
+[6:36] the distribution in the opposite
+[6:38] direction. Price was accelerating
+[6:39] towards all-time highs, so I only want
+[6:41] to look for longs, and you can see price
+[6:43] eventually sweeps this range low right
+[6:45] here. Now, notice what we have here. We
+[6:46] did not sweep this most external low,
+[6:49] but ES did. This creates a bullish SMT
+[6:51] divergence. That's the true manipulation
+[6:53] model, showing you manipulation between
+[6:55] these two correlated assets. Now, we
+[6:57] have higher time frame context, which is
+[6:59] bullish. We have our higher time frame
+[7:00] SMT divergence confirming the
+[7:02] manipulation. All we're waiting for now
+[7:04] is our entry trigger. We drop to, in
+[7:06] this case, the 5-minute time frame. We
+[7:07] have this 5-minute bearish fair value
+[7:09] gap. Price closes above, creating an
+[7:11] IFEG. We enter the trade, stop loss at
+[7:14] the previous candle low, moving our stop
+[7:16] losses to break even at the most
+[7:17] internal structure high, and targeting
+[7:19] the opposing end of the range, which in
+[7:21] this case was the Asian session high as
+[7:23] our take profit. This is the 80 to 85%
+[7:25] win rate trading model when all three
+[7:27] components align. Time, delivery, and
+[7:29] SMT divergence, followed by your entry
+[7:32] trigger with an inverse fair value gap.
+[7:34] Study this example here. And that's
+[7:35] going to do it for this video, guys.
+[7:36] Three components, one time, and one
+[7:39] repeatable system. If you guys want to
+[7:40] learn a little bit more about the
+[7:41] strategy, as well as get access to the
+[7:43] Manipulation X indicator, then make sure
+[7:45] to click the first link in the
+[7:46] description below. I'll also leave the
+[7:47] link to the Lucid Prop Firm down below,
+[7:49] as well. This is my recommended prop
+[7:51] firm, so if you guys don't have that
+[7:52] much money to trade, you can use code
+[7:54] easy and get 40% off your 50K evals, and
+[7:57] literally trade with hundreds of
+[7:58] thousands of dollars. Leave a like on
+[7:59] the video if you guys have enjoyed.
+[8:01] Subscribe to the channel for more
+[8:02] trading content, and I'll see you guys
+[8:03] next video.

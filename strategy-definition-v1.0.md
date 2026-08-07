@@ -1,6 +1,13 @@
-# NQ VWAP/BB/Profile Strategy — Definition v1.0
+# NQ VWAP/BB/Profile Strategy — Definition v1.1
 
 **Status:** LOCKED pending final Angus read-through. Changes from v0.1 sourced from Angus Q&A (17 Jul 2026).
+**v1.1 (supersedes v1.0 §4):** the pattern taxonomy is replaced per the **ANGUS 22-Jul-2026
+ruling**, documented at `docs/STRATEGY-SETUP-TAXONOMY.md` (which calls itself authoritative
+and states "any earlier 'rejection=A, displacement=B' shape-based description is WRONG and
+superseded") and implemented in `src/engine/triggers.py`. v1.0's §4 was candle-shape-based;
+the ruling makes it context-based. **"Reclaim" is retired as a pattern name.** The ruling
+landed five days after v1.0 was locked and this document was never version-bumped — that
+gap is what let the code and the constitution disagree for two weeks.
 **Source of truth:** 28 hand-backtested trades (Feb 2–27 2026, NQ, NY morning) + journals + charts + Q&A.
 **Purpose:** Section 0 context for every spec in the build. Nothing is implemented that isn't written here. Items marked CALIBRATE are numeric parameters the February re-run tunes; items marked TOURNAMENT are rule variants tested head-to-head.
 
@@ -37,9 +44,19 @@
 
 ## 4. Pattern Taxonomy (mechanism-based; HTF alignment is a separate flag)
 
-- **A — Reversal:** over-extension and/or HTF range extreme → rejection block against prior move → retest entry.
-- **B — Reclaim:** price on wrong side of cluster → displacement back through → retest of reclaimed cluster.
-- **B2 — Continuation:** established move → pullback to cluster → rejection block with the move → retest entry.
+*Context-based, not candle-shape-based. Source: ANGUS 22-Jul-2026, `docs/STRATEGY-SETUP-TAXONOMY.md`.
+All three share one entry mechanism — a limit at the retest of the closest structural level
+(POC / daily-VWAP ±1/±2 band / BB MA). They differ only in the context of the move before it.*
+
+- **A — Reversal (counter-trend):** a candle **closes through** the cluster, reversing a real
+  ±2 daily-VWAP over-extension (the prior `_EXT_LOOKBACK` entry-TF bars must have touched the
+  ±2 band) → retest entry. Fades the extension.
+- **B — Continuation (with-trend):** a **close-through** with no qualifying prior ±2 extension,
+  off a stacked confluence → retest entry. Rides the prevailing trend.
+- **B2 — Rejection / fade:** price **wicks into** the level and **closes back** → fade off the
+  level at the retest, stop beyond the rejection wick. Works with- or counter-HTF.
+- **Retired: "Reclaim."** Not a pattern. The term survives only as the **E3 entry-reference
+  level** (§5.3), which is unaffected.
 - **HTF flag:** with_trend / counter_trend / range, tagged per trade. Counter-trend raises confluence requirement (§8).
 
 ## 5. Entry Rules

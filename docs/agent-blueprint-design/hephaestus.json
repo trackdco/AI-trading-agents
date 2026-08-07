@@ -1,0 +1,502 @@
+{
+ "lane": "Hephaestus \u2014 trade construction (the forge)",
+ "mandate": "Hephaestus alone is responsible for validating that a fully-specified proposed order construction is exactly what strategy-definition-v1.0.md commands for this trigger: the entry limit price reproduces from the ACTIVE \u00a75.3 variant (entry.variant) using raw snapshot values; the stop sits structurally beyond the trigger wick extreme in the adverse direction and is not widened at birth (\u00a75.4); the target is the \u00a76 selection-tree output from the snapshot's target_menu (pattern defaults \u00a76.2, news-day override \u00a76.3, front-run working price \u00a76.4, alignment preference \u00a76.6); the RR floor gates the trade to SKIP when the nearest valid target pays less than targets.rr_floor of the recomputed R (\u00a76.5); the full/half unit call matches the \u00a79 conviction formula recomputed from raw trigger/indicator fields; and the whole construction is internally coherent (direction-consistent ordering stop<entry<target for longs, mirrored for shorts, every price tick-aligned to instrument.tick_size). Hephaestus re-derives every number independently from Snapshot+Trigger+config \u2014 it is the cross-check that catches engine bugs (e.g. the displacement entry_ref=first-penetrated-level vs \u00a75.3 E3 nearest-to-close discrepancy found in triggers.py) and stale config. It does NOT judge whether the setup itself is valid (Apollo), whether structure/levels are right (Atlas), or whether the session/news context permits trading (Helios); it takes trigger fields like confluence_count and htf_flag as given inputs to the \u00a79 formula without re-litigating them. It proposes and grades; it never places, sizes in dollars, or transmits anything \u2014 the Vault owns execution and risk ceilings.",
+ "strategy_slice_refs": [
+  "\u00a73 (verbatim: rejection-block + tradeable-zone-wick definition, displacement definition, over-extension = touch of NY VWAP \u00b12\u03c3)",
+  "\u00a75 items 3\u20136 (verbatim: E1/E2/E3 limit variants, stop beyond wick extreme / displacement origin never widened, no-chase T_cancel, one position)",
+  "\u00a76 entire (verbatim: target menu, selection tree v1 incl. \u00a76.3 news-day override, \u00a76.4 front-run F, \u00a76.5 RR floor, \u00a76.6 alignment bonus)",
+  "\u00a79 (verbatim: sizing & conviction \u2014 full vs half unit formula)",
+  "\u00a711 (verbatim: architecture boundary \u2014 agents grade and propose; Python owns sizing, stops, limits, execution)"
+ ],
+ "snapshot_allowlist": [
+  "ts",
+  "ref_price",
+  "session_high",
+  "session_low",
+  "indicators.tfs.1min.bb_basis",
+  "indicators.tfs.2min.bb_basis",
+  "indicators.tfs.3min.bb_basis",
+  "indicators.tfs.5min.bb_basis",
+  "indicators.daily_vwap.mid",
+  "indicators.daily_vwap.upper_1",
+  "indicators.daily_vwap.lower_1",
+  "indicators.daily_vwap.upper_2",
+  "indicators.daily_vwap.lower_2",
+  "indicators.daily_vwap.upper_3",
+  "indicators.daily_vwap.lower_3",
+  "indicators.ny_vwap.mid",
+  "indicators.ny_vwap.upper_1",
+  "indicators.ny_vwap.lower_1",
+  "indicators.ny_vwap.upper_2",
+  "indicators.ny_vwap.lower_2",
+  "indicators.ny_vwap.upper_3",
+  "indicators.ny_vwap.lower_3",
+  "indicators.daily_profile.poc",
+  "indicators.daily_profile.vah",
+  "indicators.daily_profile.val",
+  "clusters[].center",
+  "clusters[].confluence_count",
+  "clusters[].types",
+  "clusters[].members",
+  "target_menu[].name",
+  "target_menu[].price",
+  "target_menu[].type",
+  "target_menu[].distance",
+  "data_levels[].event",
+  "data_levels[].impact",
+  "data_levels[].data_high",
+  "data_levels[].data_low",
+  "data_levels[].event_time"
+ ],
+ "trigger_allowlist": [
+  "ts",
+  "tf",
+  "direction",
+  "kind",
+  "pattern",
+  "htf_flag",
+  "entry_ref",
+  "stop_ref",
+  "wick_low",
+  "wick_high",
+  "cluster_center",
+  "confluence_count",
+  "close"
+ ],
+ "config_refs": [
+  "entry.variant",
+  "instrument.tick_size",
+  "targets.front_run_points",
+  "targets.rr_floor",
+  "targets.news_day_override",
+  "targets.news_override_vwap_proxy",
+  "targets.alignment_min_stack",
+  "cluster.tolerance_points",
+  "sizing.full_unit_min_confluences",
+  "sizing.full_unit_min_target_r",
+  "triggers.over_extension_sigma",
+  "session.entry_window",
+  "session.entry_windows"
+ ],
+ "checks": [
+  {
+   "name": "entry_matches_active_variant",
+   "rule_ref": "\u00a75.3",
+   "kind": "recompute",
+   "pass_condition": "Recompute E per config entry.variant \u2014 E1: E = indicators.tfs[trigger.tf].bb_basis; E2: E = (trigger.wick_low + trigger.wick_high) / 2 (the \u00a73 tradeable zone: body edge to wick extreme, exactly what wick_low/wick_high encode); E3: E = price of the penetrated cluster member nearest trigger.close, resolved by mapping clusters[].members names to indicator values (bb_basis_{tf} \u2192 indicators.tfs[tf].bb_basis, dvwap_* \u2192 indicators.daily_vwap.*, nyvwap_* \u2192 indicators.ny_vwap.*, poc \u2192 indicators.daily_profile.poc). PASS iff proposed.entry == round_to_tick(E) exactly. Any required input null (e.g. bb_basis None for trigger TF) \u2192 FAIL.",
+   "inputs": [
+    "entry.variant",
+    "instrument.tick_size",
+    "trigger.tf",
+    "trigger.kind",
+    "trigger.direction",
+    "trigger.wick_low",
+    "trigger.wick_high",
+    "trigger.close",
+    "trigger.entry_ref",
+    "indicators.tfs.{trigger.tf}.bb_basis",
+    "clusters[].members",
+    "indicators.daily_vwap.*",
+    "indicators.ny_vwap.*",
+    "indicators.daily_profile.poc",
+    "proposed.entry"
+   ],
+   "fail_note": "Entry limit does not reproduce from the active \u00a75.3 variant \u2014 engine bug, stale entry.variant config, or the known triggers.py E3 discrepancy (entry_ref = first-penetrated level, not nearest-to-close)."
+  },
+  {
+   "name": "stop_beyond_wick_extreme",
+   "rule_ref": "\u00a75.4",
+   "kind": "recompute",
+   "pass_condition": "Long: proposed.stop <= trigger.wick_low AND (trigger.wick_low \u2212 proposed.stop) <= instrument.tick_size AND proposed.stop < proposed.entry. Short: proposed.stop >= trigger.wick_high AND (proposed.stop \u2212 trigger.wick_high) <= instrument.tick_size AND proposed.stop > proposed.entry. Additionally |proposed.stop \u2212 round_to_tick(trigger.stop_ref)| <= instrument.tick_size (stop is structural at/just beyond the wick extreme or displacement origin \u2014 never widened at construction).",
+   "inputs": [
+    "trigger.direction",
+    "trigger.stop_ref",
+    "trigger.wick_low",
+    "trigger.wick_high",
+    "instrument.tick_size",
+    "proposed.stop",
+    "proposed.entry"
+   ],
+   "fail_note": "Stop is not structurally placed at/just beyond the trigger wick extreme in the adverse direction, or has been widened relative to stop_ref."
+  },
+  {
+   "name": "target_is_pattern_default",
+   "rule_ref": "\u00a76.1\u2013\u00a76.2",
+   "kind": "recompute",
+   "pass_condition": "Restrict target_menu to levels strictly beyond proposed.entry in trade direction (long: price > entry; short: price < entry). Recompute the \u00a76.2 default: pattern A \u2192 VWAP middle (ny_vwap_mid if indicators.ny_vwap.mid is non-null, else daily_vwap_mid); B2 \u2192 nearest menu level beyond entry in the move direction; B \u2192 nearest opposing-liquidity level among {premarket/Asia/London session extremes, prior_day_high/low} beyond entry, preferring a candidate within cluster.tolerance_points of indicators.ny_vwap.upper_2/lower_2 when one exists. PASS iff proposed.target_name exists in target_menu AND proposed.target_level == that menu level's price AND it equals the recomputed default (unless check news_day_override_applied legitimately overrides it). A proposed target not present in target_menu \u2192 FAIL unconditionally.",
+   "inputs": [
+    "trigger.pattern",
+    "trigger.direction",
+    "proposed.entry",
+    "proposed.target_name",
+    "proposed.target_level",
+    "target_menu[].name",
+    "target_menu[].price",
+    "target_menu[].type",
+    "indicators.ny_vwap.mid",
+    "indicators.ny_vwap.upper_2",
+    "indicators.ny_vwap.lower_2",
+    "indicators.daily_vwap.mid",
+    "cluster.tolerance_points"
+   ],
+   "fail_note": "Chosen target is not the \u00a76.2 selection-tree default for this pattern, or is not a menu level at all."
+  },
+  {
+   "name": "news_day_override_applied",
+   "rule_ref": "\u00a76.3",
+   "kind": "recompute",
+   "pass_condition": "If targets.news_day_override is true AND there exists a data_levels entry with impact == high whose extreme in trade direction (long: data_high; short: data_low) lies strictly beyond the check-3 default target AND is untaken (long: data_high >= snapshot.session_high; short: data_low <= snapshot.session_low), then PASS iff proposed.target_level equals the nearest such data extreme; otherwise PASS iff proposed target equals the check-3 default (vacuous pass when no qualifying extreme or override disabled). If targets.news_override_vwap_proxy is true, substitute the VWAP \u22121/+1 proxy per config instead of the data extreme.",
+   "inputs": [
+    "targets.news_day_override",
+    "targets.news_override_vwap_proxy",
+    "data_levels[].impact",
+    "data_levels[].data_high",
+    "data_levels[].data_low",
+    "data_levels[].event_time",
+    "session_high",
+    "session_low",
+    "trigger.direction",
+    "proposed.target_level"
+   ],
+   "fail_note": "News-day target override was skipped when a qualifying untaken high-impact data extreme exists (or was applied when it should not have been)."
+  },
+  {
+   "name": "front_run_working_target",
+   "rule_ref": "\u00a76.4",
+   "kind": "recompute",
+   "pass_condition": "Long: proposed.working_target == round_to_tick(proposed.target_level \u2212 targets.front_run_points). Short: proposed.working_target == round_to_tick(proposed.target_level + targets.front_run_points). And working_target remains strictly beyond proposed.entry in trade direction.",
+   "inputs": [
+    "targets.front_run_points",
+    "instrument.tick_size",
+    "trigger.direction",
+    "proposed.target_level",
+    "proposed.working_target",
+    "proposed.entry"
+   ],
+   "fail_note": "Working target does not equal target level \u2213 F points, or front-running collapsed the target to/behind entry."
+  },
+  {
+   "name": "rr_floor_met",
+   "rule_ref": "\u00a76.5",
+   "kind": "recompute",
+   "pass_condition": "R = |proposed.entry \u2212 proposed.stop| > 0 AND (|proposed.working_target \u2212 proposed.entry| / R) >= targets.rr_floor. If no target satisfying the \u00a76.2/\u00a76.3 tree also clears the floor, the only passing Hephaestus verdict is FAIL with skip_reason 'rr_floor' \u2014 a construction proposing the trade anyway must be vetoed. R == 0 (entry equals stop) \u2192 FAIL.",
+   "inputs": [
+    "targets.rr_floor",
+    "proposed.entry",
+    "proposed.stop",
+    "proposed.working_target"
+   ],
+   "fail_note": "Nearest valid target pays less than the RR floor \u2014 \u00a76.5 commands SKIP, not a thinner trade."
+  },
+  {
+   "name": "size_matches_conviction",
+   "rule_ref": "\u00a79",
+   "kind": "recompute",
+   "pass_condition": "target_r = |proposed.working_target \u2212 proposed.entry| / |proposed.entry \u2212 proposed.stop|. a_at_extension = (trigger.pattern == 'A') AND directional NY VWAP \u00b12\u03c3 touch (long: trigger.wick_low <= indicators.ny_vwap.lower_2; short: trigger.wick_high >= indicators.ny_vwap.upper_2; both bands non-null \u2014 pre-09:30 NY VWAP is null so a_at_extension is false). full_ok = (trigger.confluence_count >= sizing.full_unit_min_confluences) AND (trigger.htf_flag == 'with_trend' OR a_at_extension) AND (target_r >= sizing.full_unit_min_target_r). half_forced = (trigger.confluence_count == 2) OR oversized_stop OR late_window OR (target_r < sizing.full_unit_min_target_r); while oversized_stop and late_window lack config definitions (see open questions) they evaluate as INDETERMINATE, and any proposed size 'full' under an indeterminate half-condition FAILS (fail-closed to half). PASS iff proposed.size == ('full' if full_ok AND NOT half_forced else 'half').",
+   "inputs": [
+    "sizing.full_unit_min_confluences",
+    "sizing.full_unit_min_target_r",
+    "triggers.over_extension_sigma",
+    "trigger.confluence_count",
+    "trigger.htf_flag",
+    "trigger.pattern",
+    "trigger.direction",
+    "trigger.wick_low",
+    "trigger.wick_high",
+    "trigger.ts",
+    "indicators.ny_vwap.upper_2",
+    "indicators.ny_vwap.lower_2",
+    "session.entry_window",
+    "session.entry_windows",
+    "proposed.size",
+    "proposed.entry",
+    "proposed.stop",
+    "proposed.working_target"
+   ],
+   "fail_note": "Proposed unit size does not reproduce from the \u00a79 conviction formula \u2014 includes the fail-closed case where 'full' is claimed while a half-condition is indeterminate."
+  },
+  {
+   "name": "construction_coherent_and_tick_aligned",
+   "rule_ref": "\u00a75.3\u2013\u00a75.4, \u00a76.1 (+ spec-1 \u00a73 fill realism via instrument.tick_size)",
+   "kind": "recompute",
+   "pass_condition": "proposed.direction == trigger.direction; long: proposed.stop < proposed.entry < proposed.working_target <= proposed.target_level; short: proposed.target_level <= proposed.working_target < proposed.entry < proposed.stop; each of proposed.entry, proposed.stop, proposed.working_target is an exact multiple of instrument.tick_size; proposed.size \u2208 {'full','half'}; all prices finite and > 0.",
+   "inputs": [
+    "proposed.direction",
+    "proposed.entry",
+    "proposed.stop",
+    "proposed.target_level",
+    "proposed.working_target",
+    "proposed.size",
+    "trigger.direction",
+    "instrument.tick_size"
+   ],
+   "fail_note": "Construction is internally incoherent: wrong direction, price ordering violated, or a price is not tick-aligned to 0.25."
+  },
+  {
+   "name": "target_alignment_preference",
+   "rule_ref": "\u00a76.6 (with \u00a76.2 B-pattern \u00b12\u03c3 preference)",
+   "kind": "judgment",
+   "pass_condition": "PASS iff no alternative target_menu level beyond proposed.entry in trade direction exists that (a) belongs to the same \u00a76.2 pattern-default family and clears targets.rr_floor, (b) has >= targets.alignment_min_stack menu levels stacked within cluster.tolerance_points of it while the chosen target has fewer, and (c) is nearer to entry than the chosen target or equal in tree rank. Ties between equally-stacked candidates are a judgment call and must be explained in the gate note; an unexplained bypass of a better-stacked valid target FAILS.",
+   "inputs": [
+    "target_menu[].name",
+    "target_menu[].price",
+    "target_menu[].type",
+    "targets.alignment_min_stack",
+    "targets.rr_floor",
+    "cluster.tolerance_points",
+    "trigger.direction",
+    "trigger.pattern",
+    "proposed.entry",
+    "proposed.target_level",
+    "indicators.ny_vwap.upper_2",
+    "indicators.ny_vwap.lower_2"
+   ],
+   "fail_note": "A valid target with a stronger \u00a76.6 level stack (or \u00a76.2 \u00b12\u03c3 alignment for B) was bypassed without justification."
+  }
+ ],
+ "output_schema_proposal": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HephaestusVerdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+   "agent",
+   "agent_version",
+   "trigger_ts",
+   "tf",
+   "verdict",
+   "gates",
+   "recomputed",
+   "skip_reasons",
+   "thesis"
+  ],
+  "properties": {
+   "agent": {
+    "const": "hephaestus"
+   },
+   "agent_version": {
+    "type": "string",
+    "description": "Version stamp of hephaestus.md \u2014 prompt edits are versioned like code (ai-workflow-rules)."
+   },
+   "trigger_ts": {
+    "type": "string",
+    "description": "Echo of Trigger.ts (ISO ET) \u2014 join key for Hermes; guards against grading a stale candidate."
+   },
+   "tf": {
+    "enum": [
+     "1min",
+     "2min",
+     "3min",
+     "5min"
+    ]
+   },
+   "verdict": {
+    "enum": [
+     "pass",
+     "fail"
+    ],
+    "description": "fail = veto. Any gate false, any required input null, or any recompute mismatch forces fail. Hermes must also treat missing/late/invalid-JSON output as fail (fail-closed)."
+   },
+   "gates": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "entry_matches_active_variant",
+     "stop_beyond_wick_extreme",
+     "target_is_pattern_default",
+     "news_day_override_applied",
+     "front_run_working_target",
+     "rr_floor_met",
+     "size_matches_conviction",
+     "construction_coherent_and_tick_aligned",
+     "target_alignment_preference"
+    ],
+    "properties": {
+     "entry_matches_active_variant": {
+      "$ref": "#/$defs/gate"
+     },
+     "stop_beyond_wick_extreme": {
+      "$ref": "#/$defs/gate"
+     },
+     "target_is_pattern_default": {
+      "$ref": "#/$defs/gate"
+     },
+     "news_day_override_applied": {
+      "$ref": "#/$defs/gate"
+     },
+     "front_run_working_target": {
+      "$ref": "#/$defs/gate"
+     },
+     "rr_floor_met": {
+      "$ref": "#/$defs/gate"
+     },
+     "size_matches_conviction": {
+      "$ref": "#/$defs/gate"
+     },
+     "construction_coherent_and_tick_aligned": {
+      "$ref": "#/$defs/gate"
+     },
+     "target_alignment_preference": {
+      "$ref": "#/$defs/gate"
+     }
+    }
+   },
+   "recomputed": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "entry",
+     "stop",
+     "target_name",
+     "target_level",
+     "working_target",
+     "r_points",
+     "target_r_multiple",
+     "size"
+    ],
+    "properties": {
+     "entry": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "stop": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "target_name": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "Must be a target_menu[].name"
+     },
+     "target_level": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "working_target": {
+      "type": [
+       "number",
+       "null"
+      ],
+      "description": "target_level \u2213 targets.front_run_points, tick-rounded"
+     },
+     "r_points": {
+      "type": [
+       "number",
+       "null"
+      ],
+      "description": "|entry \u2212 stop| in NQ points"
+     },
+     "target_r_multiple": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "size": {
+      "enum": [
+       "full",
+       "half",
+       "none"
+      ],
+      "description": "'none' only when verdict is fail"
+     }
+    },
+    "description": "Hephaestus's independent re-derivation \u2014 Hermes compares these to the engine's proposed construction; any mismatch is itself evidence of an engine bug and must be logged."
+   },
+   "skip_reasons": {
+    "type": "array",
+    "items": {
+     "enum": [
+      "rr_floor",
+      "missing_input",
+      "entry_mismatch",
+      "stop_mismatch",
+      "target_mismatch",
+      "front_run_mismatch",
+      "size_mismatch",
+      "incoherent_construction",
+      "alignment_bypass",
+      "schema_or_null_input"
+     ]
+    },
+    "description": "Machine-readable veto reasons for the Vault's strict-schema journal (\u00a710)."
+   },
+   "thesis": {
+    "type": "string",
+    "maxLength": 600,
+    "description": "Human-auditable one-paragraph construction rationale: which variant produced the entry, why this target per the \u00a76 tree, the R math, and the \u00a79 size call. No P&L, no history, no confidence scores."
+   }
+  },
+  "$defs": {
+   "gate": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "pass",
+     "expected",
+     "observed"
+    ],
+    "properties": {
+     "pass": {
+      "type": "boolean"
+     },
+     "expected": {
+      "type": [
+       "number",
+       "string",
+       "boolean",
+       "null"
+      ]
+     },
+     "observed": {
+      "type": [
+       "number",
+       "string",
+       "boolean",
+       "null"
+      ]
+     },
+     "note": {
+      "type": "string",
+      "maxLength": 240
+     }
+    }
+   }
+  }
+ },
+ "edge_cases": [
+  "E1 with indicators.tfs[trigger.tf].bb_basis null (insufficient history at session start) \u2014 no entry price derivable \u2192 verdict fail with skip_reason missing_input, never a fallback to another variant.",
+  "Pre-09:30 candidate: indicators.ny_vwap.* all null \u2192 pattern-A default 'VWAP middle' resolves to daily_vwap_mid (\u00a73 pre-9:30 VWAP family = daily only, architecture invariant 1), A-at-extension is unachievable so full unit requires with_trend, and B-pattern \u00b12\u03c3 alignment preference is vacuous.",
+  "Displacement trigger: 'wick' semantics differ \u2014 Trigger encodes wick_low/wick_high as origin-to-body-edge (long: lo\u2192o), so E2's '50% of the trigger candle's wick' rides on that encoding; the displacement candle's full high/low is NOT in the Trigger, so over-extension recompute uses the directional extreme only (long: wick_low IS the candle low; short: wick_high IS the candle high \u2014 the opposite side is unavailable and must not be guessed).",
+  "E3 on a displacement: engine's entry_ref = min(up_through) (first level penetrated) but \u00a75.3 says level nearest the block's close = max(up_through) for longs \u2014 Hephaestus's recompute from clusters[].members will flag every such trade until the discrepancy is ruled on.",
+  "Front-run collapse: a near target minus front_run_points lands at or behind entry (working_target <= entry for a long) \u2192 construction incoherent \u2192 fail, not a zero-R trade.",
+  "Target exactly at the floor: target_r_multiple == targets.rr_floor passes (>= is the \u00a76.5 boundary); float comparison needs an epsilon smaller than one tick's R contribution.",
+  "Cluster-derived prices (cluster center is a mean, VWAP bands are floats) are not tick-multiples \u2014 the proposed construction must be tick-rounded while the recompute compares against round_to_tick(raw); a proposal matching the RAW float but not the tick grid fails coherence, not entry-match.",
+  "Multiple qualifying untaken high-impact data extremes beyond the default target \u2192 the nearest one in trade direction is the override target; a farther one chosen = fail.",
+  "data_high exactly equal to session_high: the extreme IS the session high (printed, never exceeded) \u2192 counts as untaken; session_high strictly greater \u2192 taken, override does not apply.",
+  "Trigger.ts at the last bar of the entry window under W2 (window wraps 18:00\u219215:55 across midnight): late-window evaluation must use the ACTIVE window variant's clock, tz-aware ET \u2014 never offset arithmetic.",
+  "ref_price or the entire proposed construction missing/partial (engine handed only entry_ref/stop_ref) \u2192 Hephaestus cannot validate what does not exist: fail with skip_reason schema_or_null_input, per fail-closed."
+ ],
+ "open_questions_for_spec3": [
+  "WHO COMPUTES THE CONSTRUCTION (flagged per task note): recommend the engine's Step-7 order builder computes the full ProposedConstruction {direction, entry, stop, target_name, target_level, working_target, size} deterministically from config, and Hephaestus validates it \u2014 Hermes never computes prices, agents never originate numbers. Spec 3 must pin this and define the ProposedConstruction schema as part of the Engine\u2192Desk contract.",
+  "ENGINE DISCREPANCY (found, needs Angus ruling before Phase 3): triggers.py sets displacement entry_ref = min(up_through) for longs (first level penetrated) while \u00a75.3 E3 reads 'penetrated cluster level nearest the block's close' (= max(up_through) for longs). Confirm intended semantics or fix; Hephaestus's E3 recompute will veto every displacement E3 trade until resolved.",
+  "STOP CONVENTION: \u00a75.4 says stop 'beyond the wick extreme' but triggers.py places stop_ref AT the extreme (lo/h exactly). Is the stop at the extreme or N ticks beyond? Recommend a config key (e.g. entry.stop_buffer_ticks, \u00a7 5.4-traced) so the check is exact instead of the interim \u22641-tick tolerance.",
+  "E2 ON DISPLACEMENT: what is 'the trigger candle's wick' for a displacement candle \u2014 the origin-to-body-edge zone the Trigger encodes, or the classical wick? Angus to confirm; the Trigger field encoding currently forces the former.",
+  "RR FLOOR BASIS: is the \u00a76.5 floor measured to the raw target level or the front-run working target? Recommend working target (matches \u00a76.4's 'backtest counts touched-minus-F as filled') \u2014 the checks above assume it; needs Angus confirmation and a comment in strategy.yaml.",
+  "\u00a79 UNDEFINED HALF-TRIGGERS: 'oversized stop' and 'late-window entry' have no computable definitions or config keys. Propose sizing.oversized_stop_points (or ATR multiple) and sizing.late_window_start (per entry-window variant); until defined Hephaestus fails any 'full' proposal fail-closed \u2014 confirm that behavior is acceptable for calibration.",
+  "CLUSTER MEMBER PRICES: Snapshot.Cluster carries member names but not prices, so the E3 recompute relies on name\u2192indicator resolution (dvwap_upper_1 \u2192 indicators.daily_vwap.upper_1 etc.). Recommend adding member (name, price, type) tuples to Cluster in snapshot.py so the recompute is direct and name-scheme drift can't silently break it.",
+  "'VWAP MIDDLE' FOR PATTERN-A DEFAULT: NY VWAP mid post-09:30 vs daily VWAP mid pre \u2014 the doc says only 'VWAP middle'. The design assumes ny_vwap_mid when non-null else daily_vwap_mid (consistent with \u00a73's pre-9:30 rule); Angus to confirm.",
+  "'UNTAKEN' DATA EXTREME: confirm the computable definition (data extreme not strictly exceeded by session_high/low since event_time). Cleaner alternative: engine stamps a per-data-level 'swept' boolean into Snapshot.data_levels so the Desk never approximates it.",
+  "SIZE VOCABULARY IN THE PINNED VERDICT: recommend Verdict.size is the enum {full, half}, never a contract count \u2014 the Vault alone maps units to contracts via the Monte Carlo ceiling (\u00a79/\u00a710). Spec 3 should pin the enum.",
+  "TICK-ROUNDING DIRECTION: nearest-tick vs conservative (entry rounded toward stop, target rounded toward entry)? Affects fill realism parity with the backtester; needs one rule in strategy.yaml traced to spec-1 \u00a73."
+ ],
+ "split_concerns": "Three overlaps and one gap. (1) \u00a79 sizing structurally straddles all four lanes: its inputs are confluence count (Atlas's level territory), with-trend flag (Atlas/Apollo), A-at-extension (Apollo's pattern anatomy), and late-window (Helios's clock). Since specialists cannot see each other's verdicts, Hephaestus must re-read the raw fields (trigger.confluence_count, trigger.htf_flag, trigger.pattern, ny_vwap \u00b12\u03c3 vs wick, snapshot.ts) and apply the formula itself \u2014 deliberate duplication that preserves independence, but spec 3 must state that Hephaestus takes these trigger fields AS GIVEN for the sizing formula (their verification belongs to Atlas/Apollo/Helios), otherwise every lane re-litigates everything and a single engine value gets four divergent re-derivations with no tiebreak rule. Hermes should log (not arbitrate) any cross-specialist inconsistency as an additional veto reason. (2) The \u00a76.3 news-day override forces Hephaestus into Helios's news lane: 'is there a qualifying high-impact untaken extreme' is target-selection logic (mine) built on news facts (Helios's). The split holds only because data_levels[].impact is raw snapshot data, not a Helios judgment \u2014 keep it that way. (3) Over-extension is computed independently by Apollo (pattern-A classification) and Hephaestus (A-at-extension full-unit gate) from the same fields; identical formula must be pinned verbatim in both agent files or the two can disagree on the same candle. GAP: nobody on the Desk owns \u00a75.5 no-chase/T_cancel or \u00a78 management variants \u2014 correctly so (they're order-lifecycle mechanics for the engine/Vault), but spec 3 should say this explicitly so the omission reads as designed, not forgotten. Finally, note that Hephaestus's rr_floor fail is semantically a SKIP verdict, not a 'bad construction' \u2014 Hermes must map it to the same veto path (fail-closed makes them equivalent downstream, but the journal reason should distinguish skip-by-rule from construction-defect for the \u00a712.5 diagnostics slices)."
+}

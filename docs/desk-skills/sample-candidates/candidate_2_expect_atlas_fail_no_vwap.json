@@ -1,0 +1,237 @@
+{
+  "snapshot": {
+    "ts": "2026-03-02T09:31:00-05:00",
+    "ref_price": 24683.0,
+    "session": "ny",
+    "htf_regime": "range",
+    "indicators": {
+      "ts": "2026-03-02T09:31:00-05:00",
+      "tfs": {
+        "1min": {
+          "bar_ts": "2026-03-02T09:30:00-05:00",
+          "bb_basis": 24632.7,
+          "bb_upper": 24659.497201319118,
+          "bb_lower": 24605.902798680883
+        },
+        "2min": {
+          "bar_ts": "2026-03-02T09:30:00-05:00",
+          "bb_basis": 24632.375,
+          "bb_upper": 24655.001588351184,
+          "bb_lower": 24609.748411648816
+        },
+        "3min": {
+          "bar_ts": "2026-03-02T09:30:00-05:00",
+          "bb_basis": 24646.45,
+          "bb_upper": 24693.50252383575,
+          "bb_lower": 24599.397476164253
+        },
+        "5min": {
+          "bar_ts": "2026-03-02T09:30:00-05:00",
+          "bb_basis": 24651.425,
+          "bb_upper": 24705.783784935993,
+          "bb_lower": 24597.066215064006
+        }
+      },
+      "daily_vwap": {
+        "mid": 24681.36094254565,
+        "upper_1": 24777.87673029049,
+        "lower_1": 24584.84515480081,
+        "upper_2": 24874.39251803533,
+        "lower_2": 24488.32936705597,
+        "upper_3": 24970.90830578017,
+        "lower_3": 24391.81357931113
+      },
+      "ny_vwap": {
+        "mid": 24657.16666666667,
+        "upper_1": 24657.16666666667,
+        "lower_1": 24657.16666666667,
+        "upper_2": 24657.16666666667,
+        "lower_2": 24657.16666666667,
+        "upper_3": 24657.16666666667,
+        "lower_3": 24657.16666666667
+      },
+      "daily_profile": {
+        "poc": 24643.125,
+        "vah": 24820.125,
+        "val": 24608.375
+      }
+    },
+    "session_high": 24901.25,
+    "session_low": 24477.0,
+    "prior_day_high": 25098.75,
+    "prior_day_low": 24782.0,
+    "prior_week_high": 25494.75,
+    "prior_week_low": 24668.0,
+    "clusters": [
+      {
+        "center": 24647.0,
+        "confluence_count": 2,
+        "types": [
+          "bb",
+          "poc"
+        ],
+        "members": [
+          "poc",
+          "bb_basis_3min",
+          "bb_basis_5min"
+        ]
+      }
+    ],
+    "data_levels": [],
+    "target_menu": [
+      {
+        "name": "daily_vwap_mid",
+        "price": 24681.36094254565,
+        "type": "vwap",
+        "distance": -1.6391
+      },
+      {
+        "name": "daily_vwap_upper_1",
+        "price": 24777.87673029049,
+        "type": "vwap",
+        "distance": 94.8767
+      },
+      {
+        "name": "daily_vwap_lower_1",
+        "price": 24584.84515480081,
+        "type": "vwap",
+        "distance": -98.1548
+      },
+      {
+        "name": "daily_vwap_upper_2",
+        "price": 24874.39251803533,
+        "type": "vwap",
+        "distance": 191.3925
+      },
+      {
+        "name": "daily_vwap_lower_2",
+        "price": 24488.32936705597,
+        "type": "vwap",
+        "distance": -194.6706
+      },
+      {
+        "name": "ny_vwap_mid",
+        "price": 24657.16666666667,
+        "type": "vwap",
+        "distance": -25.8333
+      },
+      {
+        "name": "ny_vwap_upper_1",
+        "price": 24657.16666666667,
+        "type": "vwap",
+        "distance": -25.8333
+      },
+      {
+        "name": "ny_vwap_lower_1",
+        "price": 24657.16666666667,
+        "type": "vwap",
+        "distance": -25.8333
+      },
+      {
+        "name": "ny_vwap_upper_2",
+        "price": 24657.16666666667,
+        "type": "vwap",
+        "distance": -25.8333
+      },
+      {
+        "name": "ny_vwap_lower_2",
+        "price": 24657.16666666667,
+        "type": "vwap",
+        "distance": -25.8333
+      },
+      {
+        "name": "profile_poc",
+        "price": 24643.125,
+        "type": "poc",
+        "distance": -39.875
+      },
+      {
+        "name": "profile_vah",
+        "price": 24820.125,
+        "type": "structural",
+        "distance": 137.125
+      },
+      {
+        "name": "profile_val",
+        "price": 24608.375,
+        "type": "structural",
+        "distance": -74.625
+      },
+      {
+        "name": "prior_day_high",
+        "price": 25098.75,
+        "type": "structural",
+        "distance": 415.75
+      },
+      {
+        "name": "prior_day_low",
+        "price": 24782.0,
+        "type": "structural",
+        "distance": 99.0
+      },
+      {
+        "name": "prior_week_high",
+        "price": 25494.75,
+        "type": "structural",
+        "distance": 811.75
+      },
+      {
+        "name": "prior_week_low",
+        "price": 24668.0,
+        "type": "structural",
+        "distance": -15.0
+      },
+      {
+        "name": "asia_session_high",
+        "price": 24901.25,
+        "type": "structural",
+        "distance": 218.25
+      },
+      {
+        "name": "asia_session_low",
+        "price": 24528.0,
+        "type": "structural",
+        "distance": -155.0
+      },
+      {
+        "name": "london_session_high",
+        "price": 24739.25,
+        "type": "structural",
+        "distance": 56.25
+      },
+      {
+        "name": "london_session_low",
+        "price": 24477.0,
+        "type": "structural",
+        "distance": -206.0
+      },
+      {
+        "name": "ny_session_high",
+        "price": 24683.5,
+        "type": "structural",
+        "distance": 0.5
+      },
+      {
+        "name": "ny_session_low",
+        "price": 24605.0,
+        "type": "structural",
+        "distance": -78.0
+      }
+    ]
+  },
+  "trigger": {
+    "ts": "2026-03-02T09:31:00-05:00",
+    "tf": "1min",
+    "direction": "long",
+    "kind": "rejection_block",
+    "pattern": "A",
+    "htf_flag": "range",
+    "entry_ref": 24651.425,
+    "stop_ref": 24605.0,
+    "wick_low": 24605.0,
+    "wick_high": 24644.5,
+    "cluster_center": 24647.0,
+    "confluence_count": 2,
+    "close": 24683.0
+  }
+}

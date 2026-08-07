@@ -1,0 +1,33 @@
+[00:00] $207,000 in the last 90 days trading one setup only on the 5-minute time frame taking just one trade per day. I wasted years with ICT. Endless concepts, multiple time frames, struggled a lot to be consistent. Then I simplified everything to one mechanical setup and this happened. Now I'm going to show you the exact strategy step-by-step and I'll be using the last 4 days of real trades. No 
+
+[00:30] cherry-picking, no setups that happen only once per month, only trades that I took. So let's get straight into it. This trade that I took today. This is yesterday. This is on Friday and this is on Thursday. Step one, every day before market opens I check my custom EMAs. These are higher time frames EMAs directly showing up on my 5-minute chart. Big institutions are monitoring these EMAs every day. And at the end of 
+
+[01:00] this video I will show you how to get these custom EMAs directly on your chart completely for free. So if these EMAs are stacked and pointing up, I'm only looking for buys. If these EMAs are stacked and pointing down, I'm only looking for shorts. When these EMAs are flat or mixed, I don't trade at all. That's my entire bias defined in 10 seconds. No need for complexity, no need to switch between 10 time frames. Step two, I look for a fair value gap inside 
+
+[01:32] a counter trend. So today we are obviously bullish. The counter trend will be bearish. That's why we have here this bearish fair value gap inside the price. Step three, if we inverse this fair value gap, I would be going in for continuation and target previous liquidity. Since we have here no previous liquidity, I usually be targeting a two to one risk reward ratio. The stop loss goes under the swing low. 
+
+[02:03] And bang, TP hit. This was the trade from today. I made 4K with it. Now let's go to yesterday. The price is above the EMAs and they are pointing up. My bias is bullish for the day. This was the first step. The second step is I wait for the New York session to start and I wait for a counter trend to form. I need to see a bearish mini trend and I want to see a fair value gap inside this bearish counter trend. So we can see 
+
+[02:35] right here that we formed a fair value gap inside the counter trend and we are simply waiting for the price to break through this fair value gap and to inverse it. This is the step three. You can see here that we inverse this fair value gap. We go in. The stop loss is at the swing low and if our liquidity level is too close, we simply target two R. Here's the replay of this trade. 
+
+[03:07] So a full TP hit and this was a trade from yesterday. Also made 4K with it. Now let's go to the day before. You can see the EMAs here are pointing up. Our bias will be bullish. This is the first step. Now we wait for the market open and we need to see a counter trend. So I need to see a bearish trend and a fair value gap forms inside a bearish trend 
+
+[03:38] like you see here. This is a fair value gap and the price immediately inverse it. I go in. The stop loss under the swing low and I don't believe we had a liquidity to target this day. No, so I targeted two Rs. Let's see how this trade will play out. So this was a stop loss hit as you can see here on the 10th. I lost 2K. This is 
+
+[04:11] what I want you to know about the strategy. This is not a 100% win rate strategy. There is no such thing. This was a losing day. I simply took the L, closed my laptop and called it a day. Now let's get to the day before. You can see here that the EMAs are stacked and pointing up. I will be only looking for buys. Let's wait for the market open. So we are done with the first step which is 
+
+[04:43] defining our bias. We will be bullish today. Now I want to see a retracement or a downtrend. So we can see clearly that we formed a fair value gap inside this counter trend. This is for step two. Step three is I wait for the price to inverse this fair value gap so we can go in and trade the continuation. 
+
+[05:13] Make sure if you see a fair value gap formed here, then we take the last fair value gap that was inversed and we simply ignore this. It's not the case here, so we wait for the price to break this fair value gap and to inverse it. Like you see here. We did inverse this fair value gap. We go in. Stop loss under the swing low and we target this previous liquidity that we have here. 
+
+[05:47] Let's play the trade out and see what happened. Directly a full TP hit. This was a three R trade. I believe, yeah. I made 5.9K with it. You don't realize what I showed you right now. I just showed you four back-to-back trades which has only one stop loss and three TPs. You have 3% here minus 1% that's 2% plus here we 
+
+[06:18] have 2% plus 2% that's 6% in only four trading days with full mechanical strategy. You don't need to be glued all the day in front of the charts and most importantly, these are absolutely not cherry-picked trades. I did gave you four trades back-to-back days. Now let's do a recap of the strategy. The first thing you want to do is to look at these custom EMAs. If they are stacked and 
+
+[06:49] pointing up, you only buy. If they are stacked and pointing down, you only sell. If they are sideways, you simply don't trade. This is the first step, the bias. The second step is you wait for a counter trend to form. Then you want to see a fair value gap formed inside this counter trend. This is step two. For step three, you want this fair value 
+
+[07:19] gap to be inversed. You go in. You put your stop loss under the swing low and you target next liquidity. If you find no previous liquidity to target or this next liquidity that you see is too close, you simply target two R. If you can do this every single day without hesitating, without FOMOing, without revenge trading, I promise you you will have numbers like this. Now as I promised you at the beginning of the video, I will show you how to get the custom EMA on your chart. You can go on 
+
+[07:52] your TradingView and search for this indicator. 10 in one different moving average. You click on it, then you go in and check the first three select EMAs and put the value here to 50. The first one will be the 15-minute EMA, the second one will be the 30-minute EMA and the third one will be the 1-hour EMA. Then choose whatever color you want. Here you can see that these EMAs 
+
+[08:24] are exactly like mine. If you found this video helpful, make sure to like, subscribe, drop your comments down below and follow me on Instagram. I drop videos every week on NQ showing you my trades and showing you my strategy that can bring me numbers like this. Thank you so much and let's meet next time.

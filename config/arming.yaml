@@ -1,0 +1,37 @@
+# ARMING AUTHORIZATION — Angus's half of the two-party gate (src/live/arming.py).
+#
+# RE-ISSUED 2026-08-02 against the R15-certified commit. Supersedes the authorization
+# issued earlier the same day against 4c8685c (mechanical only), which died the moment
+# the agent-layer code landed — by design: the runtime refuses when HEAD differs from
+# armed_sha in any file other than this one.
+#
+# Issued after Pat's written confirmation certifying 1364cb7: suite green, agent layer
+# ported per HANDOVER §7 and exercised on three on-box replays of 2026-07-29, kill test
+# 7/7 turns with the trade completing mechanically, journal schema-identical to the
+# seed with v8_R present, seed untouched. Verdict: docs/RUNBOOK-cert-r15.md.
+#
+# SCOPE OF THIS AUTHORIZATION:
+#   * MECHANICAL ENTRIES + AGENT TRADE MANAGEMENT (gates R13 + R15). The certified
+#     book is the agent book: lucid fit +$100,297, worst day -$542, maxDD $878 at the
+#     $160 base, three execution rules (close-and-reverse, 09:30 pre-flatten,
+#     one-per-level). Mechanical laws override the agent unconditionally.
+#   * The account below is the EVAL account. When it passes and the firm issues a
+#     funded account, that arm needs its own authorization — new account string, and a
+#     FRESH token phrase (this one will have been spoken at the box by then).
+#
+# ARM-DAY PINS carried into the first armed session (documented, not blocking):
+#   * The LIVE agent path is asynchronous (worker thread); the R15 kill test exercised
+#     the SYNCHRONOUS replay path. The async path is safe by construction — daemon
+#     thread, exceptions caught in the worker, the loop never joins — but it has no
+#     unit test and no live fire yet. Watch turn counts and any stalled bar on day one.
+#   * Behavioural sample was thin: two managed trades, one meaningfully driven. The
+#     guardrails are test-pinned and kill-tested; the agent's event coverage is not
+#     broadly sampled live.
+#   * Pat's own R13 pins stand: DTC `_entry_working` read-back, account-level stop
+#     verification on stacked positions.
+#
+# Revoking is deleting this file: absence is the disarmed state, never a default.
+
+token_sha256: f95a8d08410ee9f702128461a4c490208cfff641bab010c4b0ede20a9bb675c5
+armed_sha: 1364cb78944cb314562a87d8d1a4c66f388a6010
+account: LFE050-9YSC047M-TEST001

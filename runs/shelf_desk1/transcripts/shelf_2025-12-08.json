@@ -1,0 +1,16 @@
+{
+ "turns": [
+  {
+   "minute": "2025-12-08 10:16:00-05:00",
+   "why": "position opened \u2014 read it and set your plan",
+   "sent": "NEW POSITION LONG shelf-fade | tier BASE ($180 risk, fixed) | entry 25721.5 risk 17.41pt | engine stop 25704.09375 (-1R, INVIOLATE) | mechanical target = the developing near band | mechanical scratch at t+10 if red | session ends 15:55\njournal: 49 trades | you $+11,184 vs mech $+10,162 (delta $+1,022)\n  defense (mech losers, n12): $-44\n  offense (mech winners, n37): $+1,066\n  band-exit refusals: 37, net vs mech $+1,066\nlast trades (you vs mech):\n  2025-11-18 long BASE: -1.03R vs -1.03R (stop; Just opened, underwater within noise; let mechanic)\n  2025-11-19 short BASE: -0.23R vs -0.23R (scratch; Scratch at t+10, red, CVD now against short since )\n  2025-11-20 short BASE: +1.77R vs +1.77R (band; CVD +187 against short, pulled back from peak 1.66)\n  2025-12-01 short BASE: +0.69R vs +1.69R (stop; CVD against-short easing (166->92), strong peak 1.)\n  2025-12-05 short CONFIRMED: +1.50R vs +1.50R (band; Band touched then bar already faded 1.56R->0.99R; )\nReply with EXACTLY one JSON object, nothing else: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"stop_r\":<num,optional>,\"target_r\":<num or null,optional>,\"partial_pct\":<0-1,optional>,\"note\":\"<=120 chars\"}. R units are TRUE risk (engine stop = -1R). \"hold\"=no change (mechanical exits execute when due). \"revise\": stop_r only TIGHTENS (0=entry); target_r >= 0.3 replaces the target, null = ride on the stop (extension mode); partial_pct books that fraction of what is OPEN at next bar. \"exit_now\" flattens at next bar. Rule-breaking fields are ignored by the harness.\n\n[10:16] EVENT: position opened \u2014 read it and set your plan\nbar 25728.50/25740.00/25728.50/25739.50 | R_now +1.03 peak +1.06 | open 1.00 | stop -1.00R | target developing band +1.67R | cvd_since_entry +340 | mins_to_EOD 339",
+   "reply": "{\"action\":\"hold\",\"note\":\"Just opened, fast green move; let mechanical stop/target/scratch run, no data yet to override.\"}"
+  },
+  {
+   "minute": "2025-12-08 10:17:00-05:00",
+   "why": "t+2 check: the decisive minute on this clock",
+   "sent": "[10:17] EVENT: t+2 check: the decisive minute on this clock\nbar 25740.00/25748.50/25738.25/25746.75 | R_now +1.45 peak +1.55 | open 1.00 | stop -1.00R | target developing band +1.64R | cvd_since_entry +538 | mins_to_EOD 338",
+   "reply": "{\"action\":\"hold\",\"note\":\"Strong green push, CVD building with us, near band not yet touched; let it run.\"}"
+  }
+ ]
+}

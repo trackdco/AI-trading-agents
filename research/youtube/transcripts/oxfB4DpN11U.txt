@@ -1,0 +1,442 @@
+[0:00] if you're sick and tired of these
+[0:01] complex strategies that have complex
+[0:03] entry models and don't actually work
+[0:05] then you come to the right place because
+[0:06] today I'm going to discuss something
+[0:08] that has worked for me which is my
+[0:10] 15minute scalping strategy I use this on
+[0:12] a day-to-day basis to generate money in
+[0:14] the markets and today I'm going to share
+[0:16] with you one of my favorite entry models
+[0:18] which is my 15minute scalping strategy I
+[0:20] trade this live in front of an audience
+[0:22] on a day-to-day basis on YouTube you can
+[0:24] see that entry I have data of 1.5 years
+[0:27] of Entry taken from entry to exit it all
+[0:30] tracked of this specific entry now what
+[0:32] I'm going to do differently is instead
+[0:34] of just explaining it to you by showing
+[0:36] you how it's executed and how it's done
+[0:38] I'm actually going to jump straight into
+[0:41] a back testing session and show you the
+[0:43] entry bit by bit as we go through the
+[0:45] back testing session so you can see it
+[0:47] done in real time and see how to execute
+[0:50] it I hope this is going to be a good way
+[0:52] to explain it and be a useful video with
+[0:54] that being said let's get straight into
+[0:56] the video all right guys so what we're
+[0:57] going to do is we're going to go through
+[0:58] the strategy as if I was trading it live
+[1:00] here as you know I do trade this
+[1:02] strategy live I do it as well on YouTube
+[1:04] like I said in the intro but I'd like to
+[1:06] go explain it through a simulator
+[1:07] something different instead of me just
+[1:09] drawing diagrams and showing it let me
+[1:11] show you it in the action so we come to
+[1:12] a fresh chart I've chose gold so what
+[1:15] we're going to do is we're going to get
+[1:16] into this the first thing I need to do
+[1:17] is Mark up so I need to find up where is
+[1:20] my barriers on the chart where am I
+[1:21] going to get stuck so first thing we're
+[1:23] going to do is Mark our support and
+[1:24] resistance so since we're at alltime
+[1:26] high you don't need to scroll left to
+[1:28] check where is resistance and and where
+[1:30] supports you don't need to do it because
+[1:32] we're at alltime high there's no price
+[1:33] action but say we were back here and we
+[1:36] were starting trading from here that's
+[1:38] where you would need to start to mark
+[1:39] your most recent support and resistance
+[1:41] so if we look left where price is the
+[1:44] most recent is this one here so you'd
+[1:46] mark this one the next one would be this
+[1:49] right and you work your way up based on
+[1:51] daily so where we are right now there's
+[1:53] nothing now on a 4H hour time frame if
+[1:55] we go down on a 4H hour you can see
+[1:57] we're at 4H hour resistance here so we
+[1:59] need to mark this so we put 4 R I like
+[2:02] to name them so I know what I'm looking
+[2:04] at and this is going to show you
+[2:05] obstacles right at the same time we need
+[2:07] to check what bias is so bias is going
+[2:10] to help us identify whether we're
+[2:12] bullish or bearish for the session right
+[2:14] now as you can see in the top right we
+[2:15] are in London but we're just about to
+[2:17] tick into NY so for me I'm going to be
+[2:21] looking at previous daily close previous
+[2:23] daily did close bullish here and
+[2:25] previous 4H hour is closing bullish
+[2:27] which makes my session bias bullish
+[2:29] right for the new York session you look
+[2:31] at previous daily and previous 4our now
+[2:33] what's very interesting here is we're
+[2:35] going to go ahead and look at how to
+[2:37] execute on a 15minute time frame so be
+[2:39] sure to watch the rest of this video my
+[2:41] Basics all of the videos You'll watch I
+[2:43] always talk about markup and bias it
+[2:45] will look like a common thing if you're
+[2:46] a returning viewer you're going to hear
+[2:48] that again and again and again but it's
+[2:50] going to hammer it into your head as
+[2:51] well it's it's something I use all the
+[2:53] time right no matter what is my entry
+[2:54] strategy that is something I always have
+[2:57] so buyas today is going to be bullish if
+[2:59] you haven't watched my my last week's
+[3:00] video I talk about bias and depth so I
+[3:02] want I'm not going to talk too much
+[3:04] about it here because I made last week's
+[3:05] video about that and there's a free
+[3:07] indicator included in that video to help
+[3:09] you guys further so 4H hour resistance
+[3:11] there next time frame going to be 1 hour
+[3:13] time frame here at the 1 hour we have
+[3:14] the same resistance here now we could
+[3:17] mark this resistance here but for me
+[3:19] from here to here is not a tradable
+[3:20] range what do I mean by a tradable range
+[3:22] not worth it in terms of pip so I'm not
+[3:24] going to mark it 30 minute time frame is
+[3:26] the next time frame again same choppy
+[3:29] here I'm not looking what we're really
+[3:30] looking for is clean candle zones
+[3:32] because that's where prices are smooth
+[3:34] right this would have been a trade here
+[3:36] this was a nice trade to close above
+[3:38] here from here to get to this resistance
+[3:40] clean area smooth uh price action that's
+[3:43] what we want we don't want to trade in
+[3:44] just choppiness where we can get chopped
+[3:46] up right so don't trade in choppiness so
+[3:48] you don't get chopped up pretty simple
+[3:50] right 15 minute also the same so today
+[3:52] looks like a straight breakout trade
+[3:54] looking for a 15 minute candle close
+[3:57] above so you need to mark all the way
+[3:59] down to the
+[4:00] if there was a resistance we need to
+[4:01] mark that so what I need to look for now
+[4:03] in this entry strategy is a 15-minute
+[4:06] candle closing Above This resistance
+[4:08] here so I must need two things I need
+[4:11] either clean candles to the left we
+[4:12] don't need that because we're at alltime
+[4:14] high but ideally we would need we need
+[4:16] no support and resistance where our
+[4:18] entry is we need a clean room if I have
+[4:20] a resistance right here it's not going
+[4:21] to be valid right it's not going to be
+[4:23] valid I'm not going to be able to take
+[4:24] the trade so I need clean room that's
+[4:26] exactly what I'm looking for so we have
+[4:28] clean room because we're at time high we
+[4:30] have structure formed and now we need a
+[4:32] candle closing above that is going to be
+[4:34] our entry confirmation so what I'm going
+[4:36] to do is going to skip by 15-minute
+[4:38] candles cuz that's what we're waiting
+[4:39] for 15-minute strategy 15-minute candle
+[4:41] 15-minute close going to be the one so
+[4:43] we close bearish here no entry we're
+[4:46] staying out this mess again close
+[4:48] bearish no entry uh close bearish no
+[4:51] entry I'm not taking sells remember
+[4:53] today buyas is bullish I'm not looking
+[4:54] for sells we Clos bullish here I'm not
+[4:57] taking a buy here because of this
+[4:58] resistance right here for me this is too
+[5:00] close if you look at risk to reward
+[5:02] breakoff High we're looking at 16 Pips
+[5:04] for a 50 pip stop loss no way no way 6
+[5:08] 15 but that's how You' mark this
+[5:09] resistance anyways today we only have
+[5:11] one line which is pretty cool now since
+[5:14] we're only looking for buys I don't
+[5:15] really need to Mark lower levels here if
+[5:17] you would like to do a markup you can
+[5:19] mark your 1 hour supports and stuff like
+[5:21] that you would do the same we can Mark 1
+[5:23] hour support here 1 s but like I said
+[5:25] it's not tradable range and you can see
+[5:27] that it rejected exactly from the 1 hour
+[5:29] support so this is why that rocks right
+[5:31] because you'll take a sell and then
+[5:33] you'll fail and you won't know why so
+[5:35] let's continue skipping here and now we
+[5:37] get a close above so this is going to be
+[5:39] an entry confirmation for me I expect
+[5:41] this to push I expect this to break out
+[5:43] now this software I'm using is called
+[5:45] pip laabs it is not trading view it just
+[5:47] uses trading view but it's a back
+[5:49] testing simulator allows you to see your
+[5:51] p&l allows you to see uh what time
+[5:54] you're trading and you'll see it also
+[5:56] shows you tick data so what I'm going to
+[5:57] do here is I'm going to tra place a
+[5:59] trade here long position break off high
+[6:02] stop loss goes below the candle that
+[6:04] closed above right and I'm simply going
+[6:06] to press trade here on this software
+[6:08] trade will allow me to place a trade 1%
+[6:11] risk and uh that's it stop loss below
+[6:13] the range here let's go here and we can
+[6:15] now play the candles now this is what
+[6:16] makes this software next level is we can
+[6:19] view how the candles were moving in real
+[6:22] life and actually simulate so what was
+[6:24] very important here is we made a bottom
+[6:25] Wick first and I'm entering break of
+[6:27] high those are two very important
+[6:29] factors so let's see if we can break the
+[6:31] high get triggered boom now we're in oh
+[6:33] oh whoa whoa
+[6:34] whoa we got triggered there and straight
+[6:37] we're flying man straight straight into
+[6:40] one:1 now I was about to say you want to
+[6:42] secure in one:1 but holy crap that just
+[6:45] pushed past my one to1 I did not expect
+[6:48] that that fast I needed to be securing
+[6:50] at my 1 to1 at least something so now
+[6:52] you guys will get to learn how to manage
+[6:54] the trade I guess because I haven't
+[6:56] closed yet I haven't closed so let's see
+[6:57] if we can get back to that one to one so
+[7:00] I can close something man I set my
+[7:03] TP a little bit higher see if we can get
+[7:05] the boom that's what I'm talking about
+[7:07] should hit TP there should hit TP come
+[7:08] on so we going to close full that that's
+[7:11] the first trade man clean clean clean
+[7:13] clean clean very happy with that and the
+[7:16] way it's moved so with that being said
+[7:18] let's go on to London session the next
+[7:20] day here because I'm only going to back
+[7:21] test London and New York session so I'm
+[7:23] just going to skip to London session so
+[7:25] we need to Fresh markup right so we need
+[7:28] to check where's our resistance is here
+[7:30] so this candle hasn't closed yet so this
+[7:32] is not a valid 4-Hour resistance we
+[7:34] still have yesterday's uh let's see the
+[7:36] 1our time frame we have a 1 hour
+[7:38] previous resistance so I still going to
+[7:40] mark this because resistance can become
+[7:42] support right so if we look at Market
+[7:45] structure looks something like
+[7:47] this this resistance can become support
+[7:50] and then go down so we need to keep that
+[7:52] in mind uh that's why I'm marking that
+[7:54] and then we have a resistance up here as
+[7:57] well 1 r
+[8:00] and yeah plan for today is still bullish
+[8:02] bias is still bullish previous daily
+[8:03] close bullish previous 4 hours you can
+[8:05] see close bullish so I'm still looking
+[8:06] for buys I'm looking for any type of
+[8:09] support to form to buy back up but we
+[8:11] need to see that we need more of a
+[8:12] pullback so ideally it can pull back we
+[8:15] need to start to Mark the rest of our
+[8:16] levels so we did 1 hour next level is
+[8:19] going to be 30 minute as well clean on
+[8:21] 30 minute next level is going to be 15
+[8:23] minute here as well so let's go ahead
+[8:26] and see 15minute uh but we should be
+[8:28] marking this level this level and this
+[8:30] level all of these levels but what we're
+[8:32] going to do is we're just going to see
+[8:34] because we can't buy into all those
+[8:36] levels so we're just going to skip here
+[8:38] a little bit like we did yesterday 15
+[8:40] minute skip let's go next candle and
+[8:43] then we skip next candle now we're just
+[8:45] ranging so this actually is forming the
+[8:47] setup I wanted to form because what do
+[8:49] we have here we actually have a clean
+[8:51] candle zone right we have a Zone to
+[8:53] trade from here to here we are forming
+[8:55] structure today bias is bullish what do
+[8:57] I need I need a 15-minute candle CLE
+[8:59] closing above and that will give me my
+[9:01] same trade I took the day before but we
+[9:03] have structure here candle close above
+[9:06] clean candles to the left so we have no
+[9:08] obstruction next obstruction is going to
+[9:10] be somewhere here we're going to mark
+[9:12] that depending on the close now what
+[9:13] happens if the candle closes too deep
+[9:15] here it it's a possibility that candle
+[9:17] can close too deep I can see something
+[9:19] like that if that happens no trade
+[9:21] because we're too close to resistance no
+[9:23] range right so I can't take a trade if
+[9:25] that happens so we're going to continue
+[9:26] this skip this a little bit more nothing
+[9:28] yet we're getting a little bit late now
+[9:30] we're going into pre and Y so no trades
+[9:32] in London so if it does close above now
+[9:34] with New York coming I am interested
+[9:36] with that to look for potential buy
+[9:39] opportunity again so let's go ahead and
+[9:42] have a look here so we rejected we're
+[9:44] coming even closer to New York liquidity
+[9:46] grab this is looking interesting here
+[9:49] this is looking interesting if we can
+[9:51] close above here we have beautiful
+[9:52] structure I'm happy to take this trade
+[9:55] and we do get the close above very
+[9:57] interesting what I'm going to do is the
+[9:58] same plan I need to watch these levels
+[10:00] here to the left right so let's mark
+[10:02] this level here and let's mark this
+[10:04] level here as watch I know there's a lot
+[10:07] of lines but we need to be careful
+[10:08] because it could reject this and we can
+[10:10] get stopped out so same trade position
+[10:13] going to take entry break of high stop
+[10:15] loss below previous candle low now this
+[10:18] is another story but there's no bottom
+[10:21] wick on the previous candle uh so that I
+[10:24] recommend you watch my no Wick video I'm
+[10:27] going to Target that one to one
+[10:30] which is right there which is quite nice
+[10:32] it's lining up now ideally where you
+[10:34] don't need to be targeting a one to one
+[10:36] you should be targeting the next level
+[10:37] so in this case this is the next level
+[10:40] or this right that's what you can Target
+[10:42] but I'm trying to make this as basic as
+[10:44] possible uh and give you something
+[10:46] higher probability as I said as you get
+[10:48] more advanced like for me I don't
+[10:49] personally just Target a one to one all
+[10:51] the time I try to get past it if I see
+[10:53] the price action forming the way I want
+[10:55] it and Target something actually on the
+[10:57] chart not just Target a random one to
+[10:59] one number Target a resistance right so
+[11:02] the next Target should be your next
+[11:04] resistance so in terms of this our next
+[11:06] resistance here but I'm not going to use
+[11:07] that as a Target because it's not going
+[11:09] to pay me enough but I can use that to
+[11:11] watch and move my stop loss to break
+[11:13] even which means moving your stop loss
+[11:14] to entry so for now one:1 is going to be
+[11:17] the target um and we're going to then
+[11:20] press trade we're going to confirm this
+[11:22] $11,000 risk um and confirm there so we
+[11:26] can see the order went in and uh let's
+[11:28] go ahead and see what happens previous
+[11:31] order here was this was the trade we
+[11:32] took plus the runner so let's see how
+[11:35] that goes here so what we're going to do
+[11:37] is we're going to take this trade and
+[11:39] see how it goes so I'm going to again
+[11:41] play the candles now so we can watch
+[11:42] price action bottom Wick is made we got
+[11:45] triggered into this trade straight into
+[11:47] some draw down uh-oh okay it's looking
+[11:49] all right flip back up re broke the high
+[11:51] is a very good sign so when we tap this
+[11:54] level I want to be careful right so far
+[11:56] we haven't tapped any level so we we're
+[11:58] okay as soon as we tap a level we have
+[12:01] problems so we tap that level you see
+[12:02] the immediate rejection there you can
+[12:05] see immediately tap the level rejected
+[12:07] now this is where I'm going to be
+[12:08] cautious if I see this start to to fail
+[12:11] at my entry here I'm probably want to
+[12:12] get out see if we can just get a little
+[12:15] bit more I still trust the
+[12:16] trade see with these previous levels
+[12:19] this is where it gets a little bit more
+[12:20] advanced previous
+[12:22] levels it's a very small think about it
+[12:25] it's only one candle that closed so in
+[12:27] this case scenario when I only have such
+[12:30] a limited thing here now we're getting
+[12:32] pretty Advanced I want to keep this as
+[12:34] simple as possible we we are clean
+[12:36] candles here this is not like if this
+[12:38] was a resistance here move this to here
+[12:42] 100% you'll break even on this trade but
+[12:44] this is clean candles here so with how
+[12:48] bullish we are and how we tap that level
+[12:50] until this 15-minute candle closes
+[12:52] bearish then I can close this trade for
+[12:54] a small loss I'm even teaching you
+[12:56] Management in this video so leave a like
+[12:58] on this video video get the likes up to
+[13:00] 500 likes would appreciate that let's
+[13:03] see so far it looks good let's speed it
+[13:05] up a bit getting a bit
+[13:07] bored and perfect can we close above
+[13:09] that zone done amazing so now if this
+[13:12] comes back to entry I'm probably getting
+[13:14] out because there's no point of oh
+[13:16] it just smashed TP yeah but you see when
+[13:18] we re-broke I was probably going to get
+[13:20] out because it has no reason to make a
+[13:22] bottom Wick break the high and then uh
+[13:24] fail again and we just smashed TP there
+[13:26] I wonder how far this is going to go
+[13:28] let's uh speed it up and see what
+[13:30] happened very interesting we are in a
+[13:32] New York session now the trade is
+[13:34] basically done for the day here you take
+[13:36] one trade and enjoy your day that's my
+[13:37] rules I like that already 2.3% on the
+[13:40] count you can see I probably only going
+[13:42] to give two examples here man we could
+[13:43] go back test all day but this going to
+[13:45] be a more than an hour long video I
+[13:47] don't want to make it an hour long video
+[13:49] but I hope you guys enjoyed my 15
+[13:51] minutes strategy I use this all the time
+[13:53] I hope that this video has helped I hope
+[13:54] you've enjoyed the video if you have
+[13:56] leave a like on this video and let me
+[13:58] know in the com Ms if you enjoyed the
+[13:59] way I delivered it this software is
+[14:01] called pip laabs it's also linked in the
+[14:03] description below make use of it try the
+[14:05] free demo and see all of the features it
+[14:07] has so many features this this thing I
+[14:09] want to show you that dashboard you can
+[14:11] go and see all the statistics of the
+[14:13] simulation that you just did so you can
+[14:15] see everything that you've done uh if we
+[14:17] take for example this simulation we can
+[14:19] see that you can see all your statistics
+[14:21] average win average loss which is very
+[14:23] important to see your average win and
+[14:25] average loss to know that if you're
+[14:27] winning more than you're losing is
+[14:28] definitely a good good thing uh see
+[14:30] which days you're winning which days
+[14:31] you're losing amazing stuff on here so
+[14:34] make use of this software we are
+[14:35] actually the owners of the software so
+[14:37] it is a small plug for myself uh but we
+[14:40] put a lot of passion based into this and
+[14:42] uh and yeah if you've actually made it
+[14:44] this far to the video um use code pip 10
+[14:47] you get 10% off I'm not even going to
+[14:49] write that in the description only for
+[14:51] you guys who stick to the end of the
+[14:52] video uh but use the Free Demo First
+[14:55] check if you like it and let us know so
+[14:57] that being said take care trade shop and
+[14:59] hopefully catch you guys very very soon
+[15:01] peace let's go
+[15:05] [Music]

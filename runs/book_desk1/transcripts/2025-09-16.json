@@ -1,0 +1,14 @@
+{
+ "turns": [
+  {
+   "event": "CANON SHORT @ 09:09",
+   "sent": "DESK OPEN 2025-09-16. Two engines live; mechanical specs fixed; you choose what the book takes.\njournal: 30 days | you $+7,752 vs B0(take-all) $+7,752 vs B1(canon-precedence) $+7,752 | skips 0\n  2025-09-03: you $-224 vs B0 $-224 (1 signals, 0 skips)\n  2025-09-05: you $-140 vs B0 $-140 (2 signals, 0 skips)\n  2025-09-11: you $+588 vs B0 $+588 (2 signals, 0 skips)\n  2025-09-15: you $+415 vs B0 $+415 (1 signals, 0 skips)\n\n[09:09] SIGNAL: CANON SHORT @ 09:09\nbook: flat\nDecision: take or skip.",
+   "reply": "{\"action\":\"take\",\"note\":\"Certified core system, no conflict/context to override default take.\"}"
+  },
+  {
+   "event": "SHELF LONG [BASE] risk $200 @ 10:12",
+   "sent": "[10:12] SIGNAL: SHELF LONG [BASE] risk $200 @ 10:12\nbook: flat\nDecision: take or skip.",
+   "reply": "{\"action\":\"take\",\"note\":\"No conflict, book flat; base-tier shelf fade is net positive OOF, take default.\"}"
+  }
+ ]
+}

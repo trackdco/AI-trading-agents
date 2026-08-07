@@ -1,0 +1,6 @@
+# The trial ledger is append-mostly and is written from many branches. A union merge
+# lets two branches add different trials without adjudication; tests/test_ledger_integrity.py
+# then enforces uniqueness, sort order and the monotonic row-count floor.
+# Rationale: this file used to be a parquet, which git cannot merge, and it forked into
+# four divergent copies -- one of which alone held five sealed-holdout looks.
+output/trial_ledger.jsonl merge=union linguist-generated=false

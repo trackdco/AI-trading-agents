@@ -1,0 +1,270 @@
+[0:00] okay let's now jump through a scenario
+[0:01] in which we'll see how the price really
+[0:04] moves what you see in front of you is
+[0:06] called depth of market this depth of
+[0:09] market displays how many limit orders
+[0:12] there are at a particular price on the
+[0:15] left we will see buy limit orders and on
+[0:18] the right we will see sell limit orders
+[0:20] this depth of market is nowadays a basic
+[0:23] future of any charting platform and you
+[0:25] can commonly find it as a d o M which is
+[0:29] abbreviation for depth of market one
+[0:31] important thing to mention is that the
+[0:33] depth of market only displays limit
+[0:36] orders this is sometimes called a
+[0:38] passive order flow on the depth of
+[0:40] market you cannot see market orders
+[0:43] market orders are called
+[0:45] an active order flow and there are
+[0:47] different tools for displaying them
+[0:49] another important thing to bear in mind
+[0:51] is that this depth of market is not
+[0:53] static because markets are not static
+[0:56] depth of market is dynamic and numbers
+[0:59] of limit orders change all the time
+[1:02] simply because there may be hundreds of
+[1:04] people watching the market at any given
+[1:06] time and they are sending orders
+[1:08] changing them or canceling them so to
+[1:11] keep it clear and simple in this
+[1:13] scenario we are going to assume that
+[1:15] there are only few traders who trade
+[1:16] this market and we know about all of
+[1:19] them say that the market opens at 8:00
+[1:21] a.m. and first trader comes in he wants
+[1:24] to buy
+[1:25] he wants to buy five contracts at the
+[1:27] price of ninety eight so he doesn't want
+[1:29] to buy now but he specifies the price
+[1:31] therefore he sends a buy limit order to
+[1:33] buy five contracts and you now know that
+[1:36] he's a passive buyer on the depth of
+[1:38] market his buy limit order will be
+[1:41] displayed like this it will be on the
+[1:43] bid side because it is a buy limit order
+[1:46] and the depth of market will show a
+[1:48] quantity of five on bid at the price of
+[1:50] ninety eight one minute later another
+[1:52] trader comes in he wants to sell
+[1:55] he wants to sell 10 contracts at the
+[1:57] price of 99 he specifies the price so he
+[2:00] uses a sell limit order and he is there
+[2:02] for a passive seller his sell limit will
+[2:04] be on the ask side because he's asking
+[2:07] somebody to buy 10 contracts from him
+[2:09] and he's asking for a price of 99 per
+[2:12] quarter
+[2:13] on the other hand the first trader is
+[2:15] willing to buy no higher than 98
+[2:18] therefore his order is on the bedside
+[2:21] now two more traders wants to buy and
+[2:23] sell trade the number three who wants to
+[2:26] buy two contracts at ninety seven and
+[2:28] trade and number four who wants to sell
+[2:31] three contracts at the price of one
+[2:32] hundred on the depth of market we can
+[2:35] already see these new limit orders
+[2:37] none of these orders will be paired with
+[2:40] each other and the price doesn't move
+[2:42] because all these traders demand a
+[2:45] different price at the moment two buyers
+[2:48] are willing to buy at 98 and 97 and two
+[2:52] sellers are willing to sell at 99 and
+[2:55] 100 respectively so there is no
+[2:57] agreement between them let's continue
+[3:00] we've got one more seller trade the
+[3:02] number five who wants to sell four
+[3:04] contracts at the price of ninety nine so
+[3:07] same like trade number two so the ask is
+[3:09] now 14 and this ask size of fourteen
+[3:13] consists of ten contracts of trade
+[3:16] number two and four contracts of trade
+[3:18] number five still nothing happens but
+[3:21] suddenly somebody comes in and says I
+[3:24] don't want to wait anymore I want to buy
+[3:26] five contracts now and this is our
+[3:29] aggressive buyer that we were waiting
+[3:31] for you should remember that he uses a
+[3:34] by market order and this order doesn't
+[3:36] specify the price the by market order
+[3:39] buys the first available offer from a
+[3:42] passive seller where is this first
+[3:44] available offer at the price of ninety
+[3:46] nine so this aggressive buyer buys five
+[3:49] contracts at the price of ninety nine by
+[3:51] doing this he cleared five sell limits
+[3:54] on the ask side that the price of ninety
+[3:56] nine that means the ask the price of
+[3:59] ninety nine will be reduced from
+[4:01] fourteen to nine all of these five sell
+[4:04] limits at the price of ninety nine
+[4:06] belonged to trader number two because he
+[4:08] came first and therefore he has got a
+[4:11] sell limit for five contracts left still
+[4:14] waiting to be merged with more
+[4:15] aggressive by market orders so the price
+[4:18] from ninety nine there are nine sell
+[4:21] limits left and they will be filled in
+[4:23] the following order firstly all of the
+[4:26] remaining
+[4:26] cell limits of trade to number two and
+[4:28] then cell limits of trader number five
+[4:31] so it's like a queue the limit orders
+[4:34] are sorted chronologically with a logic
+[4:37] of first comes first served
+[4:39] so because the trade of five came in
+[4:41] later than trader to then he has got to
+[4:44] wait until the trader two will get
+[4:46] failed all of his cell limits now
+[4:49] aggressive seller comes in making the
+[4:52] price to move the actual price is ninety
+[4:54] nine because that's the price on which
+[4:55] the most recent trade took place the
+[4:58] aggressive seller wants to sell three
+[5:00] contracts using a cell market order you
+[5:03] should remember that the cell market
+[5:05] order is paired with the first available
+[5:07] bit from a passive buyer in other words
+[5:10] it is paired with the first available
+[5:12] buy limit order on the bit side where is
+[5:15] this first available buy limit at the
+[5:17] price of ninety eight so the aggressive
+[5:19] seller sends the sell market order and
+[5:22] the passive buyer buys from him now
+[5:24] because this passive buyer has called
+[5:26] his buy limit at the price of ninety
+[5:28] eight the price goes down so it can
+[5:31] match the sell market order to this buy
+[5:33] limit the aggressive seller sold three
+[5:36] contracts
+[5:37] therefore he clears free buy limits at
+[5:40] the price of ninety eight and there were
+[5:42] five buy limits of this price in total
+[5:44] less free of them were cleared by this
+[5:46] aggressive seller that means that there
+[5:48] are two more buy limits left to be
+[5:51] filled at this price notice that the
+[5:54] price is moved down yet the number of
+[5:56] sell versus buy orders is equal the
+[6:00] price didn't move down because there
+[6:01] were more sellers than buyers but
+[6:03] because sellers were more aggressive
+[6:05] than buyers now what needs to happen in
+[6:08] order for the price to move from 98 to
+[6:11] 97 it's simple there must be more
+[6:14] aggressive sellers who will clear these
+[6:16] two more buy limits at the price of 98
+[6:19] so it's like a barrier this barrier of
+[6:22] limit orders must be broken in order for
+[6:25] the price to move one aggressive seller
+[6:27] comes in he sends sell market orders to
+[6:30] sell free contracts but you see that at
+[6:32] the price of 98 there are only two buy
+[6:35] limits so this barrier of buy limits is
+[6:38] not strong enough to
+[6:40] satisfy this aggressive seller so what
+[6:42] happens to you sell market orders are
+[6:44] paired with to buy limits at the price
+[6:47] of ninety eight and this clears all the
+[6:49] buy limits at ninety eight and then
+[6:51] there are no buy limits left at this
+[6:53] price however there's one more sell
+[6:56] market order left to be paired since
+[6:59] there are no buy limits left at the
+[7:01] price of ninety eight the market now
+[7:03] must move rule over to find more buy
+[7:06] limit orders so it moves from 98 to 97
+[7:10] at 97 one sell market order left is
+[7:14] paired with new buy limit this completes
+[7:17] the order of aggressive seller to sell
+[7:19] free contracts this aggressive seller
+[7:22] therefore moved the market down because
+[7:25] his market order was paired with buy
+[7:27] limits at two different prices his sell
+[7:30] market order for free contracts was
+[7:32] paired with two by limits at 98 and one
+[7:35] buy limit at 97 now notice this the
+[7:39] price has moved from 98 97 despite there
+[7:42] was one seller and two different buyers
+[7:45] however the number of buy and sell
+[7:48] orders is equal sell market order for
+[7:51] free contract and buy limits for free
+[7:54] contract in total now what do you see at
+[7:56] the price of 98 there are no sell limit
+[7:59] orders at this price do you remember
+[8:01] that the market order doesn't specify
+[8:03] the price the price at which the market
+[8:05] order is filled only depends on the
+[8:08] availability of limit orders so what are
+[8:11] the first available sell limits the
+[8:14] first available sell limits are at 99
+[8:16] now the aggressive buyer comes in and he
+[8:19] wants to buy one contract by using a
+[8:22] market order the actual price is 97
+[8:24] there are no sell limits in 98 first
+[8:27] available sell limits are at 99
+[8:29] despite the actual price being 97 the
+[8:33] aggressive buyer is filled for 99
+[8:35] because that's the price at which he
+[8:38] finds somebody to buy from so he moved
+[8:41] the market up from 97 to 99 because at
+[8:45] 98 there was no liquidity no sell limit
+[8:49] orders so the market has skipped this
+[8:52] price and mu
+[8:53] of $2.99 straightaway this is called a
+[8:56] gap the market has kept up from 97 to 99
+[9:01] the aggressive buyer has got what's
+[9:04] called a slippage this means that he
+[9:06] bought for worse price than he was
+[9:08] expecting
+[9:09] he sent the by market order when the
+[9:11] actual price was 97 he would be
+[9:14] expecting to be filled for 98 because
+[9:17] logically there should be some sell
+[9:19] limits in reality there were no sell
+[9:21] limits so the market has kept up and he
+[9:24] bought for 99 that means he has called a
+[9:27] worse price and got a slippage so in
+[9:30] this situation there was one buyer in
+[9:31] one seller one buy market order and one
+[9:34] sell limit order and the price has moved
+[9:36] from 97 to 99 and now the final
+[9:41] situation that we will have a look at a
+[9:43] big trader comes in and he wants to buy
+[9:45] 15 contracts as you can see that in the
+[9:48] meantime some more passive sellers have
+[9:50] appeared and sent their sell limit
+[9:52] orders into the market the last price is
+[9:55] 99 this is the price at which the most
+[9:57] recent trade has taken place this is the
+[10:00] price that the big trader is looking at
+[10:02] when he decides to send his order into
+[10:06] the market this big trader uses a buy
+[10:08] market order to buy 15 contracts by
+[10:11] doing this he will move the price from
+[10:13] 99 to 103 you can see how his market
+[10:18] order for 15 contracts was spared take a
+[10:21] moment to have a look at this so there
+[10:24] was one buyer and many more sellers and
+[10:27] the price has moved by four points
+[10:29] however the quantity of buy and sell
+[10:32] orders was equal 15 contracts to buy and
+[10:36] 15 contracts to sell this is always
+[10:39] equal and this is how the price moves
+[10:41] however in reality such big trader is
+[10:44] likely to use a limit order to open a
+[10:46] trade because he trades such big
+[10:48] positions that the potential slippage
+[10:51] when using market orders is very big so
+[10:53] to sum it up the price moves in relation
+[10:57] to market orders and available limit
+[10:59] orders these limit orders are like a
+[11:02] barrier when this barrier is not strong
+[11:05] enough to
+[11:06] satisfied market orders the price moves
+[11:08] however the number of buy and sell
+[11:11] orders is always equal for example in
+[11:14] this last scenario the price has moved
+[11:16] from 99 to 103 and there were 15 by
+[11:19] market orders and 15 sell limit orders
