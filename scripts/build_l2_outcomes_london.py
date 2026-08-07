@@ -62,6 +62,15 @@ _BARS: pd.DataFrame | None = None
 
 ENTRY_VARIANT = "EC"        # overridden by --entry; see prereg §9
 _RRFLOOR = None             # None = keep the config's 2.0. 0.0 = NEXT structural level.
+_ARM = ""                   # census arm suffix, e.g. "_pp" (prior-session profile levels)
+
+
+def in_l0(arm: str = "") -> Path:
+    return ROOT / f"output/l0_triggers_london_fit_std{arm}.parquet"
+
+
+def in_l1(arm: str = "") -> Path:
+    return ROOT / f"output/l1_fills_london_fit{arm}_dedup.parquet"
 
 
 def l2_cfg(day: str, entry: str = "EC"):
@@ -170,7 +179,7 @@ def gate(lb: int = LOOKBACK_DAYS) -> bool:
     fills. A lookback that changes outcomes corrupts every number downstream of L2. NY's
     2-day attempt failed this gate honestly; the handoff expects London to need >= 7 too."""
     days = ["2025-06-10", "2025-07-22", "2025-09-17", "2025-12-03"]
-    T = pd.read_parquet(IN_L0)
+    T = pd.read_parquet(in_l0(_ARM))
     trigs = T[T.day.isin(days)].reset_index(drop=True)
     a = run(trigs, procs=4, lookback=lb, quiet=True)
     b = run(trigs, procs=4, lookback=30, quiet=True)
@@ -201,28 +210,36 @@ def main() -> int:
     ap.add_argument("--rr-floor", type=float, default=None,
                     help="0.0 = next structural level, no minimum R (ANGUS 2026-08-05). "
                          "Omit to keep the config's 2.0 floor.")
+    ap.add_argument("--arm", default="",
+                    help="census arm suffix, e.g. `_pp` for the prior-session-profile L0. "
+                         "Selects that arm's L0 and L1 and suffixes the output.")
     a = ap.parse_args()
-    global _RRFLOOR
+    global _RRFLOOR, _ARM
     _RRFLOOR = a.rr_floor           # set BEFORE any Pool fork; workers inherit it
+    _ARM = a.arm
     if a.gate:
         return 0 if gate() else 1
     if not a.span:
         ap.error("--span fit or --gate")
 
-    trigs = pd.read_parquet(IN_L0)
+    for p in (in_l0(_ARM), in_l1(_ARM)):
+        if not p.exists():
+            ap.error(f"{p.relative_to(ROOT)} does not exist — build that arm's layer first")
+    trigs = pd.read_parquet(in_l0(_ARM))
     print(f"L2 London — {len(trigs):,} candidates over {trigs.day.nunique()} sessions",
           flush=True)
     O = run(trigs, procs=a.procs, entry=a.entry)
 
     # join the L1b setup identity back on, so both tie-break arms are answerable
     flags = ["setup_first", "setup_htf", "vs_first", "vs_htf", "arm_none", "arm_struct"]
-    L1 = pd.read_parquet(IN_L1)[["ts", "setup_id", "setup_size", "vs_id", "vs_size",
-                                 *flags]]
+    L1 = pd.read_parquet(in_l1(_ARM))[["ts", "setup_id", "setup_size", "vs_id", "vs_size",
+                                       *flags]]
     O = O.merge(L1, on="ts", how="left")
     O[flags] = O[flags].fillna(False)
     for c in ("setup_id", "vs_id"):
         O[c] = O[c].fillna(-1).astype(int)
-    suffix = (("" if a.entry == "E3" else f"_{a.entry}")
+    suffix = (_ARM
+              + ("" if a.entry == "E3" else f"_{a.entry}")
               + ("" if a.rr_floor is None else f"_rr{a.rr_floor:g}"))
     out = OUT.with_name(f"l2_outcomes_london_fit{suffix}.parquet")
     O.to_parquet(out, index=False)

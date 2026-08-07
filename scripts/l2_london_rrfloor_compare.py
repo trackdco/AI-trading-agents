@@ -119,18 +119,25 @@ def buckets(cols: list[tuple[str, pd.DataFrame]]) -> list[str]:
     return L + [""]
 
 
-def paired(cols: list[tuple[str, pd.DataFrame]]) -> list[str]:
-    """The population changes between arms, so the headline difference mixes a target-policy
-    effect with a composition effect. Restricting to setups BOTH arms traded isolates the
-    policy, and each trade is its own control."""
-    (na, A), (nb, B) = cols
+def paired(a_col: tuple[str, pd.DataFrame], b_col: tuple[str, pd.DataFrame]) -> list[str]:
+    """The population changes between arms, so the headline difference mixes a policy effect
+    with a composition effect. Restricting to setups BOTH arms traded isolates the policy,
+    and each trade is its own control.
+
+    Across a CENSUS arm (`_pp`) the overlap is partial by construction — adding levels
+    changes which candles cluster at all, so the arm can both gain and lose triggers. The
+    paired set is then "the trades the change left alone", and the trades outside it are
+    the change's actual product; both counts are reported."""
+    (na, A), (nb, B) = a_col, b_col
     common = sorted(set(A.ts) & set(B.ts))
     a = A[A.ts.isin(common)].sort_values("ts")
     b = B[B.ts.isin(common)].sort_values("ts")
     d = b.pts.to_numpy(float) - a.pts.to_numpy(float)
     t = d.mean() / (d.std(ddof=1) / (len(d) ** 0.5)) if len(d) > 1 and d.std(ddof=1) else 0.0
-    return [f"### Paired on the {len(common):,} setups both arms traded", "",
-            f"Of {len(A):,} ({na}) and {len(B):,} ({nb}).", "",
+    return [f"### Paired: {nb} vs {na} — {len(common):,} setups in common", "",
+            f"Of {len(A):,} ({na}) and {len(B):,} ({nb}). "
+            f"{len(set(B.ts) - set(A.ts)):,} setups exist only in {nb}; "
+            f"{len(set(A.ts) - set(B.ts)):,} only in {na}.", "",
             "| | value |", "|---|---:|",
             f"| per-trade delta (rr0 − 2R) | **{d.mean():+.2f} pt** |",
             f"| paired T | **{t:+.2f}** |",
@@ -225,12 +232,27 @@ def funnel(rows: list[tuple[str, pd.DataFrame]]) -> list[str]:
 
 
 def main() -> int:
-    raw = [(nm, book(p)) for nm, p in BOOKS]
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--arms", nargs="*", default=[],
+                    help="extra census arms to score alongside the baselines, e.g. `_pp`")
+    a = ap.parse_args()
+    books = list(BOOKS) + [
+        (f"prior-profile{arm} (rr0)",
+         ROOT / f"output/l2_outcomes_london_fit{arm}_EC_rr0.parquet") for arm in a.arms]
+
+    raw = [(nm, book(p)) for nm, p in books]
     missing = [nm for nm, T in raw if T is None]
     if missing:
         print(f"MISSING BOOK: {missing} — run build_l2_outcomes_london --rr-floor 0 first")
         return 1
+    # each arm has its OWN census, so the session denominator comes from that arm's L0
     sessions = sorted(pd.read_parquet(L0).day.astype(str).unique())
+    for arm in a.arms:
+        p = ROOT / f"output/l0_triggers_london_fit_std{arm}.parquet"
+        if p.exists():
+            sessions = sorted(set(sessions) | set(pd.read_parquet(p).day.astype(str)))
     dedup = [(nm, T[(T.status == "outcome") & T.vs_first]) for nm, T in raw]
 
     L = ["# LONDON TASK #1 — the 2R floor vs the next structural level", "",
@@ -246,7 +268,10 @@ def main() -> int:
                    [(nm, sub(B, lo, hi), d) for nm, B in dedup])
     L += exits(dedup)
     L += buckets(dedup)
-    L += paired(dedup)
+    # 2R -> rr0 is the target-policy change; rr0 -> each census arm is a menu change
+    L += paired(dedup[0], dedup[1])
+    for extra in dedup[2:]:
+        L += paired(dedup[1], extra)
 
     text = "\n".join(L)
     print(text)

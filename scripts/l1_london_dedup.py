@@ -123,16 +123,27 @@ def assign(F: pd.DataFrame, prefix: str = "setup", eligible=None) -> pd.DataFram
 
 
 def main() -> int:
-    F = pd.read_parquet(IN_PARQUET)
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--arm", default="",
+                    help="census arm suffix, e.g. `_pp`. Suffixes input AND output.")
+    a = ap.parse_args()
+    src = IN_PARQUET.with_name(f"l1_fills_london_fit{a.arm}.parquet")
+    dst = OUT_PARQUET.with_name(f"l1_fills_london_fit{a.arm}_dedup.parquet")
+    if not src.exists():
+        ap.error(f"{src.relative_to(ROOT)} does not exist — build that L1 arm first")
+
+    F = pd.read_parquet(src)
     nd = F["day"].nunique()
 
     # `setup_*`  every filled trigger — kept for the record, NOT the default any more
     # `vs_*`     VWAP-REQUIRED, the shipped population (ANGUS 2026-08-05)
     F = assign(F, "setup")
     F = assign(F, "vs", eligible=F["vwap_touched"])
-    F.to_parquet(OUT_PARQUET, index=False)
+    F.to_parquet(dst, index=False)
 
-    print(f"wrote {OUT_PARQUET.relative_to(ROOT)}\n")
+    print(f"wrote {dst.relative_to(ROOT)}\n")
     print(f"fills {int(F.arm_none.sum()):,} over {nd} sessions")
     for pre, lbl in (("setup", "any trigger (superseded)"),
                      ("vs", "VWAP touched/closed through (DEFAULT)")):

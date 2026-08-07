@@ -150,15 +150,21 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--span", choices=["fit"])
     ap.add_argument("--gate", action="store_true")
+    ap.add_argument("--arm", default="",
+                    help="census arm suffix, e.g. `_pp` for the prior-session-profile L0. "
+                         "Suffixes input AND output so an arm never overwrites the baseline.")
     a = ap.parse_args()
     if a.gate:
         return 0 if gate() else 1
     if not a.span:
         ap.error("--span fit or --gate")
 
-    trigs = pd.read_parquet(ROOT / "output/l0_triggers_london_fit_std.parquet")
+    src = ROOT / f"output/l0_triggers_london_fit_std{a.arm}.parquet"
+    if not src.exists():
+        ap.error(f"{src.relative_to(ROOT)} does not exist — build that L0 arm first")
+    trigs = pd.read_parquet(src)
     F = run(trigs, load_bars())
-    out = ROOT / "output/l1_fills_london_fit.parquet"
+    out = ROOT / f"output/l1_fills_london_fit{a.arm}.parquet"
     F.to_parquet(out, index=False)
     fl = F[F.arm_none]
     print(f"\nwrote {out.relative_to(ROOT)} — {len(F):,} candidates on {F.day.nunique()} days")

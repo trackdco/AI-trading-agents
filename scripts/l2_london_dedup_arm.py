@@ -37,9 +37,9 @@ from scripts.l1_london_dedup import assign  # noqa: E402
 NY = "America/New_York"
 
 
-def path_for(entry: str, rr_floor: float | None = None) -> Path:
+def path_for(entry: str, rr_floor: float | None = None, arm: str = "") -> Path:
     """Mirrors the suffix `build_l2_outcomes_london` writes, so the two stay in step."""
-    suffix = ("" if entry == "E3" else f"_{entry}") + \
+    suffix = arm + ("" if entry == "E3" else f"_{entry}") + \
              ("" if rr_floor is None else f"_rr{rr_floor:g}")
     return ROOT / f"output/l2_outcomes_london_fit{suffix}.parquet"
 
@@ -49,9 +49,10 @@ def main() -> int:
     ap.add_argument("--entry", default="EC", choices=["EC", "E4", "E3"])
     ap.add_argument("--rr-floor", type=float, default=None,
                     help="select the --rr-floor arm's book; omit for the 2.0-floor book")
+    ap.add_argument("--arm", default="", help="census arm suffix, e.g. `_pp`")
     a = ap.parse_args()
 
-    p = path_for(a.entry, a.rr_floor)
+    p = path_for(a.entry, a.rr_floor, a.arm)
     if not p.exists():
         ap.error(f"{p.relative_to(ROOT)} does not exist — build that arm first")
     O = pd.read_parquet(p)
