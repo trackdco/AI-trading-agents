@@ -775,3 +775,43 @@ spirit covers it is a human call, not the desk's. No adoption bar existed on
 the 2x2 (declared diagnostic); any filter adoption requires its own declared
 bar AND the ANGUS ruling on the mechanism distinction first. Nothing further
 runs without that ruling. HOLDOUT UNTOUCHED.
+
+## Round 3 — RESULT (run 2026-08-08)
+
+```
+ROUND 3 (prereg): ablation | structural partial | H2 re-priced | Job 3
+
+== 1. ABLATION: shipped vs TRAIL_ONLY ==
+  H2-2025: shipped -0.047 | trail-only -0.172 | partial earns +0.125
+  H1-2026: shipped +0.097 | trail-only +0.001 | partial earns +0.096
+  LODO on the margin: 14/14 folds shipped>trail-only
+  DECLARED CONSEQUENCE: partial EARNS ITS PLACE — two-part rule stands
+
+== 2. STRUCTURAL vs FIXED partial ==
+  H2-2025: fixed-3R -0.047 | structural>=2R -0.050 (median struct T 3.00R)
+  H1-2026: fixed-3R +0.097 | structural>=2R +0.095 (median struct T 3.00R)
+  fixed-3R stands (structural does not win both eras)
+
+== 3. H2 RE-PRICED under shipped exit (three gates) ==
+  H2-2025: row rho +0.148 | episode rho +0.116 (n_ep=911)
+  H1-2026: row rho +0.121 | episode rho +0.092 (n_ep=816)
+  period gate: 14/14 folds keep sign
+
+== 4. JOB 3 — H3 solo bar under shipped exit ==
+  H2-2025: Q1:-0.053[-0.220,+0.114](n290) Q2:+0.032[-0.130,+0.194](n321) Q3:-0.023[-0.181,+0.135](n309) Q4:+0.185[+0.025,+0.346](n296)
+          monotone=N | topQ>0 CI clear=Y
+  H1-2026: Q1:+0.175[-0.010,+0.359](n258) Q2:+0.039[-0.146,+0.224](n275) Q3:+0.231[+0.051,+0.410](n275) Q4:+0.183[-0.006,+0.372](n264)
+          monotone=N | topQ>0 CI clear=N
+  period gate: 14/14 folds
+  JOB 3 BAR: FAIL
+```
+
+## Cadence query (ANGUS 2026-08-08) — combined raw book, recorded
+
+Reject + break-retest are the SAME episodes at different moments (a break
+ends the chain its rejections started) — arms share fights, never sum.
+All sessions: 927 / 824 episodes over 152 / 139 days = 6.1 / 5.9 per day
+(median 6, max 13, zero-days 0/0). Desk window (ny_pre+ny_rth_am): 266 / 239
+episodes = 1.8 / 1.7 per day (median 2, max 5-6), window zero-days 24/152
+and 15/139; window arm split 356/171 and 312/135 (reject/break events).
+Selected book (cnt_ahead<=2): ~2.2/day all-session, ~0.6/day in window.
