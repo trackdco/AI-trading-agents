@@ -28,8 +28,9 @@ from src.htf_ma.levels import NY, bb_ma_asof              # noqa: E402
 TICK = 0.25
 COST_PTS = 0.5
 SINGLES = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0]
-PARTIALS = [(p, T, rem) for p in (0.50, 0.75) for T in (1.0, 1.5, 2.0)
-            for rem in ("hold", "trail")]
+PARTIALS = [(p, T, rem) for p in (0.50, 0.75)
+            for T in (1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0)
+            for rem in ("hold", "trail")]        # Job 2b extended grid
 
 
 def main() -> None:
