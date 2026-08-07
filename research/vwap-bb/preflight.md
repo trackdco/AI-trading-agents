@@ -3,7 +3,7 @@
 *Revision 3, 2026-08-07 — **PRE-FLIGHT COMPLETE**. Gate 2 ruled and closed, gate 5 closed by
 scoping to held data, gate 6 recomputed at the true workbench size. No data was purchased.*
 
-> **SUPERSEDED 2026-08-07: gate 6 has REOPENED.** The signal count found that the spec's trigger definition does not determine a trade frequency (25–109 signals/session across faithful readings, against a hand-log benchmark of 1.0), so gate 6's load-bearing input is unestablished. See [`signal-count.md`](signal-count.md). The statement below applied before that run.
+> **SUPERSEDED 2026-08-07 by [`signal-count.md`](signal-count.md) rev 2.** Gate 6 PASSES — the full filter stack yields 1.59–2.70 signals/session across all four trigger readings, clearing the 0.486 tripwire, so the frequency input is established. But **gate 4 has REOPENED**: the Vault's candidate-selection rule is not stated anywhere in the spec, it binds on 33–92% of sessions, and it discards 43–86% of candidates that passed every written filter. The statement below applied before those runs.
 
 **All six gates are now closed. Nothing blocks the study design.** No backtest was run, no
 parameter was fitted, the holdout was not read, and **N_trials remains 0**.
@@ -13,9 +13,9 @@ parameter was fitted, the holdout was not read, and **N_trials remains 0**.
 | 1 SIZING | **PASS** | Median MNQ risk $19–43/contract vs a $2,000 allowance; hand-log realised risk $150–420 |
 | 2 SESSION OVERLAP | **RESOLVED** | Ruled: RTH 09:36 adopted, W1 superseded. 9 trades out of scope; in-scope evidence 13/19 |
 | 3 BREAKEVEN | **PASS** | p₀ = 40.61% at R=1.5 base cost; c/s = 1.53%, a normal cost ratio |
-| 4 SPECIFIABILITY | **CLOSED** | All 5 unstated parameters frozen: 1 [SPEC], 4 [FIAT], 0 [FIT]. Free count 18 → 13 |
+| 4 SPECIFIABILITY | **REOPENED 2026-08-07** | Signal count rev 2: the **Vault selection rule is unstated** and binds on 33–92% of sessions, discarding 43–86% of qualified candidates. See [`signal-count.md`](signal-count.md) |
 | 5 DATA FEASIBILITY | **CLOSED — SCOPE ACCEPTED** | Coverage ends 2026-01-30, confirmed by exhaustive search. Parity relocated; calibration **downgraded** — one irrecoverable loss |
-| 6 SAMPLE SUFFICIENCY | **REOPENED 2026-08-07** | Signal count could not establish a trade frequency — see [`signal-count.md`](signal-count.md). Was PASS with floor p₁ ≈ 0.50 |
+| 6 SAMPLE SUFFICIENCY | **PASS restored** | Signal count rev 2: full filter stack gives 1.59–2.70/session, clearing 0.486 on every reading. Floor p₁ ≈ 0.50 stands |
 
 **Scope of these verdicts.** This is *the VWAP/BB spec as currently written, implemented on
 NQ, under the stated RTH 09:31–16:00 / first-signal-09:36 session convention, against the
