@@ -1,0 +1,15 @@
+metric,value
+n_sessions_both_ok,290.0
+median_abs_dVAH_pts,1.0
+p90_abs_dVAH_pts,34.30000000000007
+median_abs_dVAL_pts,1.0
+p90_abs_dVAL_pts,61.30000000000007
+median_abs_dPOC_pts,2.0
+p90_abs_dPOC_pts,92.10000000000025
+n_excursions_union,1231.0
+n_matched_exact,809.0
+n_matched_near5min,90.0
+n_unmatched,242.0
+label_flips_matched,33.0
+flip_rate_matched_K15,0.03670745272525028
+flip_rate_conservative_K15,0.22339561332250202
