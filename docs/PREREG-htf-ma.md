@@ -76,3 +76,35 @@ pairs naturally with B1 first-target-or-stop, best-of-five in both eras.
 
 NEXT per the standing sequence: Census C — the admissibility sweep — the
 selection lead with +12/+18pp era-consistent separation on 22-30% of events.
+
+## E — CORRECTION TO THE READING (ANGUS, 2026-08-07)
+
+"E1 loses" is the wrong record: in R terms (stop ≈ 20pt) the entire 5×2×2
+surface spans ~0.4R and E1 finished 0.01R behind hold-with-stop. **E1 TIED.**
+Recorded as: trail and hold-with-stop are indistinguishable on the raw book.
+**Consequence shipped as a simplification:** the live path uses HOLD-WITH-STOP
+— no ratchet state to reconstruct after restart, no trailing logic to disagree
+with the backtest. Second null this week that made the build smaller.
+
+## E1-CONDITIONAL — declared 2026-08-07, BEFORE Census C results exist
+
+The interaction argument (selection plausibly concentrates the fat tails; a
+trail is the rule that pays on tails) is legitimate AND is exactly how a
+post-hoc rescue is born. Therefore, declared blind to C:
+
+- IF Census C establishes admissibility separation under its own declared bar,
+  E1 (trail) is re-tested ONCE on the C-selected book (the ADMISSIBLE stratum
+  at C's winning K), per arm.
+- BAR: E1 must beat BOTH B1 and B2 on cluster-collapsed mean net capture in
+  BOTH eras on that population.
+- This is the SECOND AND FINAL test of E1. No other subsets, no variants, no
+  third test regardless of outcome. If C fails its own bar, this conditional
+  expires unused.
+
+## Standing principle (three-for-three, recorded)
+
+Failed auction, M1, M2: every raw structural regularity measured this week is
+priced at what the risk costs. The edge, if it exists, lives entirely in
+SELECTION — which setups are taken — not in the setups existing. Three
+well-characterised nulls now sit underneath the live edge; the edge itself
+remains unmeasured.
