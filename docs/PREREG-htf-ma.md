@@ -341,3 +341,27 @@ DENSITY not distance (aligns with D's congestion finding); strong => the
 +0.04/+0.24 gap must be explained before either is trusted. corr(H2,H3) per
 era — resolves SPEC A-1 clause 5 at the declared 0.4 threshold.
 Dual-currency throughout. One run, no variants.
+
+## H-capture — RESULT (run 2026-08-08)
+
+```
+H-CAPTURE BATTERY (prereg §H-capture), reject arm, frame persisted
+
+== queries reported with the result ==
+  H2-2025: corr(H1 dist, H2 emptiness=-cnt) = +0.440 | corr(H2, H3 bwx) = +0.003
+  H1-2026: corr(H1 dist, H2 emptiness=-cnt) = +0.397 | corr(H2, H3 bwx) = +0.064
+
+== count-ahead bins in netR (two-part bar, both eras) ==
+  H2-2025: 0:UNDERPWR(n3) 1:-0.418[-0.714,-0.123]arr61%(n165) 2:-0.428[-0.714,-0.143]arr63%(n197) 3+:-0.266[-0.518,-0.014]arr67%(n724)
+          monotone-decreasing=N | count0>0 CI clear=N
+  H1-2026: 0:UNDERPWR(n8) 1:+0.766[-0.245,+1.777]arr58%(n161) 2:+0.281[-0.351,+0.912]arr71%(n197) 3+:-0.029[-0.538,+0.480]arr66%(n633)
+          monotone-decreasing=Y | count0>0 CI clear=N
+
+== MONTHLY LODO (14 folds): H2 netR rho sign per fold ==
+  H2: 14/14 folds keep sign | ALL FOLDS HOLD
+  H3: 14/14 folds keep sign | ALL FOLDS HOLD
+
+  H3 day-clustered (mean of within-day rhos): H2-2025 +0.162 (n=141 days) | H1-2026 +0.222 (n=132 days)
+
+BIN BAR: FAIL | LODO read above | SPEC A-1 clause 5 resolves per the H2xH3 corr vs 0.4.
+```
