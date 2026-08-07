@@ -96,8 +96,9 @@ def caption_kind(path: Path) -> str:
     return "auto" if re.search(r"<\d{2}:\d{2}:\d{2}\.\d{3}>|<c>", head) else "manual"
 
 
-def fetch_one(ytdlp: str, vid: str, cookies: str | None, req_sleep: float) -> tuple[str, str, str]:
-    """Returns (status, reason, caption_type)."""
+def fetch_one(ytdlp: str, vid: str, cookies: str | None,
+              req_sleep: float) -> tuple[str, str, str, str]:
+    """Returns (status, reason, caption_type, upload_date)."""
     CAPTIONS.mkdir(parents=True, exist_ok=True)
     before = set(CAPTIONS.glob(f"{vid}*"))
 
@@ -112,6 +113,10 @@ def fetch_one(ytdlp: str, vid: str, cookies: str | None, req_sleep: float) -> tu
         # yt-dlp's own retries stay low; our backoff loop is the real control.
         "--retries", "2", "--extractor-retries", "1",
         "--no-warnings", "--no-progress",
+        # Caption files are named by id alone so the manifest lookup stays
+        # trivial, which loses the upload date the old template carried. Capture
+        # it to a sidecar instead of paying a second request for it later.
+        "--print-to-file", "%(upload_date)s", str(CAPTIONS / "%(id)s.date"),
         "-o", str(CAPTIONS / "%(id)s"),
         f"https://www.youtube.com/watch?v={vid}",
     ]
@@ -122,7 +127,13 @@ def fetch_one(ytdlp: str, vid: str, cookies: str | None, req_sleep: float) -> tu
         p = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
         err = (p.stderr or "") + (p.stdout or "")
     except subprocess.TimeoutExpired:
-        return "failed", "timeout: no response in 300s", ""
+        return "failed", "timeout: no response in 300s", "", ""
+
+    datef = CAPTIONS / f"{vid}.date"
+    upload_date = ""
+    if datef.exists():
+        upload_date = datef.read_text().strip()
+        datef.unlink(missing_ok=True)
 
     new = sorted(set(CAPTIONS.glob(f"{vid}*")) - before)
     vtts = [f for f in new if f.suffix == ".vtt"]
@@ -139,7 +150,7 @@ def fetch_one(ytdlp: str, vid: str, cookies: str | None, req_sleep: float) -> tu
             if f != keep:
                 f.unlink(missing_ok=True)
         keep.rename(CAPTIONS / f"{vid}.en.vtt")
-    return status, reason, ctype
+    return status, reason, ctype, upload_date
 
 
 # --------------------------------------------------------------------------
@@ -196,7 +207,7 @@ def main() -> None:
         vid = v["video_id"]
         print(f"[{i}/{len(queue)}] {vid}  {v['title'][:56]}", flush=True)
 
-        status, reason, ctype = fetch_one(ytdlp, vid, args.cookies, min(args.sleep, 3.0))
+        status, reason, ctype, up = fetch_one(ytdlp, vid, args.cookies, min(args.sleep, 3.0))
 
         v["status"] = status
         v["attempts"] = v.get("attempts", 0) + 1
@@ -204,6 +215,8 @@ def main() -> None:
         v["last_error"] = reason
         if ctype:
             v["caption_type"] = ctype
+        if up and up != "NA":
+            v["upload_date"] = up
         save_manifest(man)          # commit before sleeping — a kill loses nothing
         counts[status] = counts.get(status, 0) + 1
 
