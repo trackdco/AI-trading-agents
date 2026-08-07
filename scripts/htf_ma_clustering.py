@@ -96,19 +96,24 @@ def main() -> None:
     F = pd.read_parquet(ROOT / table)
     trigs = F[["sess_day", "t", "side", "w15", "arm", "n_attempts"]].copy()
     uniq = trigs.drop_duplicates(["sess_day", "side", "t"])
-    bars = load_bars()
-    bars["mi"] = pd.to_datetime(bars.ts_event, utc=True).dt.tz_convert(NY)
-    bars = bars.set_index("mi").sort_index()[["open", "high", "low", "close",
-                                              "volume"]]
-    pairs = []
-    days = sorted(uniq.sess_day.unique())
-    for k, day in enumerate(days):
-        pairs.extend(excursions_for_day(bars, day, uniq[uniq.sess_day == day]))
-        if k % 60 == 0:
-            print(f"  {k}/{len(days)} days...", flush=True)
-    P = pd.DataFrame(pairs)
-    P.to_parquet(ROOT / "output/htf_ma_census/cluster_pairs.parquet",
-                 index=False)
+    cache = ROOT / "output/htf_ma_census/cluster_pairs.parquet"
+    if cache.exists() and "--rewalk" not in sys.argv:
+        P = pd.read_parquet(cache)
+        print(f"  pairs cache: {cache} ({len(P):,} pairs)")
+    else:
+        bars = load_bars()
+        bars["mi"] = pd.to_datetime(bars.ts_event, utc=True).dt.tz_convert(NY)
+        bars = bars.set_index("mi").sort_index()[["open", "high", "low",
+                                                  "close", "volume"]]
+        pairs = []
+        days = sorted(uniq.sess_day.unique())
+        for k, day in enumerate(days):
+            pairs.extend(excursions_for_day(bars, day,
+                                            uniq[uniq.sess_day == day]))
+            if k % 60 == 0:
+                print(f"  {k}/{len(days)} days...", flush=True)
+        P = pd.DataFrame(pairs)
+        P.to_parquet(cache, index=False)
 
     e = P.exc_w.dropna()
     print(f"\npairs: {len(P):,} | excursion quantiles (W): "
@@ -125,14 +130,28 @@ def main() -> None:
            .agg(n=("exc_w", "size"), med_gap=("gap_min", "median"),
                 p75_gap=("gap_min", lambda s: s.quantile(.75)))
            .to_string())
-    # valley: minimum of the smoothed histogram strictly between the near-zero
-    # mode and the separate-fights mass (search 0.2..1.5W)
+    # valley: an INTERIOR local minimum of the smoothed histogram flanked by
+    # higher density on both sides, searched in 0.2..1.5W. A minimum at the
+    # search boundary of a monotone-decaying curve is NOT a valley — that
+    # outcome is recorded as a miss of the procedure and the declared
+    # fallback applies: X = 0.5W, the programme's canonical displacement
+    # threshold (Census A's D=0.5W event grammar: price >=0.5W from the MA
+    # IS "displaced from the level"; justified independently of outcomes).
     smooth = np.convolve(h, np.ones(3) / 3, mode="same")
     lo_i = int(np.argmax(edges[:-1] >= 0.2))
     hi_i = int(np.argmax(edges[:-1] >= 1.5))
-    valley_i = lo_i + int(np.argmin(smooth[lo_i:hi_i]))
-    x = float(edges[valley_i] + 0.05)
-    print(f"\nVALLEY: X = {x:.2f}W (smoothed-min in [0.2, 1.5]W)")
+    seg_s = smooth[lo_i:hi_i]
+    vi = int(np.argmin(seg_s))
+    interior = 0 < vi < len(seg_s) - 1 and \
+        seg_s[0] > seg_s[vi] * 1.2 and seg_s[-1] > seg_s[vi] * 1.2
+    if interior:
+        x = float(edges[lo_i + vi] + 0.05)
+        print(f"\nVALLEY FOUND: X = {x:.2f}W (interior smoothed-min)")
+    else:
+        x = 0.5
+        print("\nNO VALLEY: histogram monotone through the search range — "
+              "procedure miss RECORDED; declared fallback X = 0.50W "
+              "(M1 displacement grammar, Census A D=0.5W)")
 
     ids = assign_structural(uniq, P, x)
     uniq2 = uniq.join(ids)

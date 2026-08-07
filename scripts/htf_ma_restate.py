@@ -30,14 +30,24 @@ sys.path.insert(0, str(ROOT))
 SEED, DRAWS = 20260807, 2000
 
 
-def boot_ci(day_vals: pd.Series, stat=np.mean, seed=SEED, draws=DRAWS):
-    """Day-level bootstrap: day_vals indexed by sess_day (one value per day,
-    already collapsed within day). Returns (lo, hi) 95% percentile CI."""
+def boot_ci(df: pd.DataFrame, value: str, stat, seed=SEED, draws=DRAWS):
+    """Day-level bootstrap of an arbitrary statistic: resample session-days
+    with replacement, recompute stat(sub-frame) per draw. The statistic is
+    the SAME one reported as the point estimate (D4: the resampling unit is
+    the day; the estimator is never switched between point and interval)."""
     rng = np.random.default_rng(seed)
-    v = day_vals.to_numpy()
-    n = len(v)
-    stats = [stat(v[rng.integers(0, n, n)]) for _ in range(draws)]
+    days = df.sess_day.unique()
+    by_day = {d: g for d, g in df.groupby("sess_day")}
+    stats = []
+    for _ in range(draws):
+        pick = rng.choice(days, len(days), replace=True)
+        sub = pd.concat([by_day[d] for d in pick], ignore_index=True)
+        stats.append(stat(sub))
     return float(np.percentile(stats, 2.5)), float(np.percentile(stats, 97.5))
+
+
+def cc_mean(df: pd.DataFrame, col: str, ccol: str) -> float:
+    return float(df.groupby(ccol)[col].mean().mean())
 
 
 def era_of(day: str) -> str:
@@ -68,8 +78,7 @@ def main() -> None:
     print("\n== 1. stop width in W (reject) ==")
     for era, g in R.groupby("era"):
         q = g.stop_w.quantile
-        dmed = g.groupby("sess_day").stop_w.median()
-        lo, hi = boot_ci(dmed, np.median)
+        lo, hi = boot_ci(g, "stop_w", lambda s: s.stop_w.median())
         print(f"  {era}: p25 {q(.25):.3f} | p50 {q(.50):.3f} "
               f"[{lo:.3f},{hi:.3f}] | p75 {q(.75):.3f}  (n={len(g):,})")
     q = R.stop_w.quantile
@@ -86,16 +95,12 @@ def main() -> None:
     print("\n== 3. unselected reject book, adopted exit (out_ship) ==")
     Rs = R[R.out_ship.notna()]
     for era, g in Rs.groupby("era"):
-        cm = g.groupby(ccol).out_ship.mean()
-        dm = g.groupby("sess_day").out_ship.mean()
-        lo, hi = boot_ci(dm)
-        print(f"  {era}: cluster-collapsed mean {cm.mean():+.3f}R | "
+        lo, hi = boot_ci(g, "out_ship", lambda s: cc_mean(s, "out_ship", ccol))
+        print(f"  {era}: cluster-collapsed mean {cc_mean(g, 'out_ship', ccol):+.3f}R | "
               f"day-boot 95% [{lo:+.3f},{hi:+.3f}] | rows {len(g):,} | "
               f"clusters {g[ccol].nunique():,}")
-    cm = Rs.groupby(ccol).out_ship.mean()
-    dm = Rs.groupby("sess_day").out_ship.mean()
-    lo, hi = boot_ci(dm)
-    print(f"  pooled: cluster-collapsed mean {cm.mean():+.3f}R | day-boot "
+    lo, hi = boot_ci(Rs, "out_ship", lambda s: cc_mean(s, "out_ship", ccol))
+    print(f"  pooled: cluster-collapsed mean {cc_mean(Rs, 'out_ship', ccol):+.3f}R | day-boot "
           f"95% [{lo:+.3f},{hi:+.3f}] | rows {len(Rs):,}")
     print("\n(also for reference) hold / trail-only pooled, cluster-collapsed:")
     for col in ("out_hold", "out_trail"):

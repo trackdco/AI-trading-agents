@@ -29,6 +29,7 @@ S_SWEEP = [10, 20, 30, 40, 60, 80]
 FLOW_NAMES = ["flowconf", "volx", "closeloc", "rangex", "bp5opp", "d5_conf",
               "d15_conf", "d30_conf", "thru_delta_conf", "eff_result",
               "cvd_slope30", "delta_z"]
+EXCL = {"no_next_open": 0, "gap_through_stop": 0}   # named exclusions
 
 
 def flow_features(fpd: pd.DataFrame | None, bar_start: pd.Timestamp,
@@ -87,6 +88,7 @@ def day_rows(bars, fp, sess_day: str):
     seg = hist[(hist.index >= t0) & (hist.index < t1)]
     idx = seg.index
     hi, lo, cl = seg.high.to_numpy(), seg.low.to_numpy(), seg.close.to_numpy()
+    op = seg.open.to_numpy()
     ma_1m = ma15.loc[idx].to_numpy()
     f15 = hist.resample("15min", label="right", closed="left").agg(
         {"open": "first", "high": "max", "low": "min", "close": "last"}).dropna()
@@ -155,14 +157,19 @@ def day_rows(bars, fp, sess_day: str):
                     d = 1 if b_.close > ma_e else -1
                     j0 = int(np.searchsorted(idx.values, tstamp.to_datetime64()))
                     jt = None
-                    for j in range(j0, len(idx)):
-                        if np.isfinite(ma_1m[j]) and lo[j] <= ma_1m[j] <= hi[j]:
+                    # ENTRY LAW (entry gate, 2026-08-07): the limit level at
+                    # bar j is the MA as-of the PREVIOUS 1m close — ma_1m[j]
+                    # includes bar j's own close and is not knowable when the
+                    # fill happens inside bar j
+                    for j in range(max(j0, 1), len(idx)):
+                        lvl = ma_1m[j - 1]
+                        if np.isfinite(lvl) and lo[j] <= lvl <= hi[j]:
                             jt = j
                             break
                     # COMPLETENESS LAW: the break event exists at the cross,
                     # unconditionally — the retest is an outcome, not an
                     # existence condition (gate-caught defect, 2026-08-08)
-                    entry = float(ma_1m[jt]) if jt is not None else np.nan
+                    entry = float(ma_1m[jt - 1]) if jt is not None else np.nan
                     stop = (b_.low - TICK) if d > 0 else (b_.high + TICK)
                     w = walk_exits(jt, d, entry, stop) if jt is not None else None
                     if w is None:
@@ -188,8 +195,16 @@ def day_rows(bars, fp, sess_day: str):
             count += 1                      # NO CAP (prereg: cap removed)
             d = -1 if side_name == "below" else 1
             j0 = int(np.searchsorted(idx.values, tstamp.to_datetime64()))
-            entry = float(b_.close)
+            if j0 >= len(idx):
+                EXCL["no_next_open"] += 1   # final-bar decision, named excl.
+                continue
+            # ENTRY LAW (entry gate, 2026-08-07): entry at the NEXT 1m open —
+            # the decision bar's close is decision information, not a fill
+            entry = float(op[j0])
             stop = (b_.high + TICK) if d < 0 else (b_.low - TICK)
+            if d * (entry - stop) <= 0:
+                EXCL["gap_through_stop"] += 1   # named excl., counted
+                continue
             w = walk_exits(j0, d, entry, stop)
             if w:
                 fl = flow_features(fpd, tstamp - pd.Timedelta(minutes=15),
@@ -322,6 +337,8 @@ def main() -> None:
         pd.DataFrame(gray).to_parquet(out / "mtable_gray.parquet", index=False)
     print(f"M-TABLE: fit={len(fit):,} | sealed={len(sealed):,} (written, NOT "
           f"read) | gray={len(gray):,}")
+    print(f"named exclusions: no_next_open={EXCL['no_next_open']} | "
+          f"gap_through_stop={EXCL['gap_through_stop']}")
 
 
 if __name__ == "__main__":

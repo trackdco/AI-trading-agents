@@ -91,7 +91,30 @@ replacement, 2,000 draws) replaces cluster-collapsed Wilson everywhere a
 new claim is made — same unit the MC lab already uses. Cluster collapse
 remains for point estimates.
 
-RESULT (recorded after the run): see PHASE0-results appendix below.
+RESULT (run 2026-08-07, `scripts/htf_ma_clustering.py`, 4,148 consecutive
+same-session same-side pairs over 291 fit days):
+
+- **The valley procedure MISSED** — recorded as a miss. The excursion
+  histogram decays monotonically from its 0.1-0.2W mode through the whole
+  0.2-1.5W search range; there is no interior minimum flanked by higher
+  density. A boundary minimum of a monotone curve is not a valley.
+- **Declared fallback applied: X = 0.50W** — the programme's canonical
+  displacement threshold (Census A's D=0.5W IS the established grammar for
+  "price displaced from the MA"; the return from >=0.5W is an M1 rebalance
+  approach, i.e. a NEW event). Justified by the existing event grammar,
+  independently of any outcome.
+- Time-gap coupling (for the record): pairs with excursion <=0.25W have
+  median gap 15 min (adjacent bars — one fight); pairs beyond 1W are 3+
+  hours apart.
+- **Cluster counts on the same 4,717-row trigger set:** 30-min window
+  2,412 (NY-am 592) | cross-cycle table-native 1,740 (NY-am 532) |
+  structural X=0.5W 2,218 (NY-am 765). The structural rule separates MORE
+  in NY-am (the trader's genuinely-distinct 15-20-min entries: 15.2% of
+  10-25-min-apart pairs carry a >=0.5W excursion and were wrongly merged by
+  any time window) and merges more overnight (31.5% of >30-min-apart pairs
+  never left the level — one fight the 30-min rule wrongly split).
+- Map: `output/htf_ma_census/mtable_fit*_structclust.parquet`; CIs for all
+  new claims move to the day-level bootstrap (D4).
 
 ## Item 4 — restated numbers (after the item-1 fix and item-3 re-clustering)
 
