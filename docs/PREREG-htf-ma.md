@@ -192,3 +192,15 @@ STUDY F — close_dist_bw continuous rank (prereg §F), reject arm, shipped exit
 
 PREREG BAR (both tests, both eras): FAIL — reported as a miss, no variants
 ```
+
+## D — RESULT (run 2026-08-07)
+
+```
+CENSUS D — confluence_count as continuous monotone (prereg §D)
+precondition (logged): corr(confluence, close_dist_bw) = -0.18 — independent variables
+  reject  H2-2025: rho +0.153 -> PASS | bins 1:55%(n189) 2:63%(n617) 3:71%(n340) 4:73%(n260) 5+:81%(n162)
+  reject  H1-2026: rho +0.119 -> PASS | bins 1:59%(n199) 2:62%(n552) 3:69%(n339) 4:71%(n214) 5+:79%(n126)
+  break   H2-2025: rho +0.070 -> PASS | bins 1:61%(n87) 2:71%(n272) 3:71%(n160) 4:66%(n117) 5+:86%(n65)
+  break   H1-2026: rho +0.060 -> PASS | bins 1:64%(n102) 2:71%(n236) 3:66%(n139) 4:73%(n75) 5+:82%(n44)
+PREREG BAR (rho>0, both eras, both arms): PASS
+```
