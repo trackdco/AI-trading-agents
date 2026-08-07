@@ -134,6 +134,34 @@ holdout. It runs in the study for book-impact measurement, flagged
 
 Anything not on this list does not run in this study.
 
-## Appendix — pre-registered survivors (empty until Half 1 is complete)
+## Appendix — pre-registered survivors (Half 1 run 2026-08-07; frozen
+BEFORE any Half-2 contact)
 
-(none yet)
+Half-1 baselines: reject EV +0.120R, n 971, score 56.9% | break EV
++0.130R, n 686, score 63.7%. Full readout in the run log. 18 candidates
+per arm; survivors below; notable recorded miss: delta_z's declared
+low=bad direction INVERTED on both arms (the extreme-delta bin carries
++0.25/+0.33R) — recorded, not flipped, not advanced.
+
+**Half-2 bar, declared now for every survivor:** same cut, same frozen
+edges, sign unchanged (removed-bin mean below the Half-2 book EV), implied
+lift >= +0.05R on Half 2, AND Half-2 score >= the Half-2 baseline score.
+Then the three gates on full fit: (G1) per-fight units by construction —
+asserted, plus no single day contributing >25% of the lift; (G2) LODO by
+month, lift sign >= 0 in 14/14 folds for ADOPT, 12-13/14 recorded as
+"weak, holdout decides", <=11 fails; (G3) dual currency — win-rate
+(out_ship>0) before/after reported; a >3pp win-rate drop is flagged on
+the record.
+
+| # | arm | cut | H1 lift | H1 score | flag |
+|---|-----|-----|---------|----------|------|
+| S1 | reject | flowconf==0 removed | +0.053 | 72.1% | |
+| S2 | reject | d30_conf==0 removed | +0.066 | 68.9% | |
+| S3 | reject | volx<Q1 removed | +0.066 | 71.3% | |
+| S4 | reject | session==ny_pm removed | +0.052 | 69.4% | operational |
+| S5 | break | thru_delta_conf==0 removed | +0.057 | 80.6% | |
+| S6 | break | d15_conf==0 removed | +0.086 | 80.2% | |
+| S7 | break | volx<Q1 removed | +0.116 | 88.6% | |
+| S8 | break | cvd_slope30<Q1 removed | +0.059 | 74.6% | |
+| S9 | break | closeloc<Q1 removed | +0.062 | 78.3% | |
+| S10 | break | confluence>=3 removed | +0.108 | 84.4% | prior-full-fit-read |
