@@ -5,11 +5,33 @@ written and committed (`d47cfc4e`, amended `f675e39f`) before a single row
 existed. Fit span 2025-06-01..2026-07-14, 291 session days, 81,457 triggers
 with outcomes. **Holdout look #1 remains HALTED and unspent.**
 
-## THE HEADLINE
+> ## CORRECTION, same day, before anything was acted on
+>
+> The first version of this document concluded "**the LTF trigger family is
+> closed**" from the raw-substrate result below. **That conclusion was
+> wrong and is withdrawn.** The objection that produced the correction:
+> *the raw book is unselected substrate — a population containing trades
+> nobody would take — so a raw-vs-raw comparison does not settle which
+> trigger timeframe supports the better selected book.*
+>
+> That objection is correct, and the test is in **§ MATCHED SELECTIVITY**
+> below. At matched trades/day, **3m and 5m beat the 15m control by
+> +0.12–0.14R** and clear both eras; the raw ordering reverses everywhere
+> except 1m. The mechanism is specific and is the most useful thing in this
+> pass: **a tighter stop does not enlarge MFE (prediction 3 stays refuted)
+> — it makes room-to-run measurable.**
+>
+> What survives unchanged: every gate, every raw number, the refutation of
+> predictions 3 and 5, the stop-rule defect, and the D1a verdict on (B).
+> What is withdrawn: the closure of the LTF family and the cancellation of
+> the cross-TF union.
 
-**The 15-minute trigger candle is not a legacy convention that was never
-tested. It is the best of the five timeframes measured, and the ordering is
-monotone.**
+## THE HEADLINE (raw substrate, unselected — see the correction above)
+
+**On raw substrate the 15-minute candle is the best of the five timeframes
+measured, and the ordering is monotone.** This is a fact about the
+unselected population and it is NOT the same claim as "the 15m trigger
+supports the best book."
 
 Pooled (A)-only executable first-of-fight book, shipped exit, one
 convention throughout (both arms entering at the next 1m open), X=0.5W15:
@@ -207,6 +229,78 @@ session — the 1m reject EV is negative in all three sessions while the 5m
 and 15m are positive. Since no cell clears the E1.4 bar, no pooled verdict
 is available either way; this is recorded, not used.
 
+## MATCHED SELECTIVITY — the test the raw comparison could not settle
+
+**The question.** The raw book is every trigger at every locus, both arms,
+all sessions. Nobody trades that. If short timeframes produce a larger and
+more heterogeneous population, selection has more to work with there — so
+the raw ordering could reverse once both sides are selected. The raw
+comparison cannot answer this, and the first draft of this document
+wrongly treated it as if it had.
+
+**The design.** Hold **trades/day constant** across timeframes and compare
+EV. The *same three filters* are applied identically at every TF — a 2pt
+risk floor, room-to-run (`next_lvl_R ≥ 3R` or open space), then top
+flow-concordance until the per-day rate hits the target. Selectivity is
+**swept, not tuned**. Only the TF changes.
+
+| target/day | 1m | 2m | 3m | 5m | **15m** |
+|---|---|---|---|---|---|
+| 1.0 | +0.317 | +0.366 | **+0.453** | +0.400 | +0.256 |
+| 2.0 | +0.264 | +0.334 | **+0.446** | +0.427 | +0.306 |
+| 3.0 | +0.232 | +0.350 | **+0.406** | +0.386 | +0.328 |
+| 4.0 | +0.211 | +0.300 | **+0.363** | +0.348 | +0.282 |
+| 6.0 | +0.120 | +0.247 | *max 5.36* | *max 5.07* | *max 4.70* |
+
+**The raw ordering reverses.** At every rung from 1 to 4 trades/day, 3m and
+5m beat the 15m control, by +0.12 to +0.20R. At ~2/day the day-boot CIs
+clear zero in **both eras** at 2m, 3m, 5m and 15m — and **not** at 1m.
+Split-half on the frozen seeded day-split: all five positive on both
+halves, 5m the most stable (+0.435 / +0.418).
+
+**The advantage lives exactly where the trader operates.** As selectivity
+loosens the books converge and 15m *improves* (+0.256 → +0.328) while the
+LTF books decay. The raw comparison was measuring the ~20-trades-a-day
+regime, which is not a regime anyone trades.
+
+### WHY — and this is the useful part
+
+The reversal is carried **entirely by room-to-run**. Drop that one filter
+and the raw ordering returns:
+
+| filter stack @2/day | 1m | 3m | 5m | 15m |
+|---|---|---|---|---|
+| risk + room + concordance | +0.264 | **+0.446** | +0.427 | +0.306 |
+| room + concordance (no risk floor) | +0.256 | **+0.421** | +0.418 | +0.304 |
+| risk + concordance (**no room**) | +0.050 | +0.168 | +0.165 | **+0.234** |
+| concordance only | +0.043 | +0.169 | +0.165 | **+0.234** |
+
+The mechanism is arithmetic and it explains prediction 3's refutation
+rather than contradicting it. **At 15m the median next level sits only
+0.40R away**, because the stop is so wide that everything is nearby *in R
+terms* — so there is almost nothing for a room filter to select. At 3–5m
+the same distances are 0.83R and 0.67R with a much longer right tail, and
+the filter has real range to work in.
+
+> **The tighter stop's payoff is not a bigger MFE. It is that room-to-run
+> becomes a measurable, selectable quantity.** Prediction 3 said the
+> excursion table would shift up; it did not, and it still has not. What
+> shifts is the *selectability* of the population.
+
+### WHAT THIS IS NOT
+
+It is **fit-side and post-hoc**. The filter stack was assembled after
+seeing the raw result; room-to-run was declared a reported column and
+explicitly *not* a filter this pass, and concordance failed its own gate
+bar. Two of the three filters are therefore being used in ways their own
+declarations forbade for this pass. The split-half passes, but it was run
+on an object chosen by looking, so it is a stability check, not a
+confirmation.
+
+**Nothing here ships.** What it does is reopen a family this document had
+wrongly closed, and hand the next declaration a specific, mechanism-backed
+hypothesis instead of a vague one.
+
 ## D7 — THE ONE LIVE LEAD (declared as a column, NOT acted on)
 
 `next_lvl_R` — distance to the nearest other locus ahead of entry, in R —
@@ -238,9 +332,11 @@ likelihood of arrival.
 
 ## WHAT THIS PASS COSTS THE PROGRAMME, AND WHAT IT BUYS
 
-**Costs:** the LTF trigger family is closed. The conjunction — the
-trader's own stated grammar — does not beat the incumbent at any of the
-four timeframes it was tested at, and the shortest one loses money.
+**Costs:** the **1-minute** trigger is closed — it loses raw, it is worst
+at every matched-selectivity rung, and it is the only TF that fails the
+both-era check under selection. Condition (B), the trader's own momentum
+requirement, adds nothing at any timeframe. *(The first draft closed the
+whole LTF family here; that was withdrawn — see the correction at the top.)*
 
 **Buys:**
 1. The 15m trigger is now **defended by measurement** rather than by
@@ -257,14 +353,21 @@ four timeframes it was tested at, and the shortest one loses money.
 ## WHAT IS EXPLICITLY NOT DONE
 
 - The **cross-TF union with a declared dedup rule** — D3 called it the
-  necessary next pass. Given that every LTF book is worse than the 15m
-  control, a union of them is not worth building; the necessity was
-  conditional on an LTF book being competitive, and none is. Recorded as
-  **cancelled with cause**, not as skipped.
-- The **depth family at the LTF decision bar**. The declaration argued
-  15m snapshots were up to 15 minutes stale. That argument survives, but
-  with every LTF book losing to the 15m control there is no book for a
-  depth gate to select inside. Parked with cause.
-- **Holdout look #1 stays HALTED.** The locus set is closed; the trigger
-  set is now closed too. What is not settled is D7, and spending the look
-  before that is declared would waste it.
+  necessary next pass. *The first draft cancelled it on the grounds that no
+  LTF book was competitive. That cancellation is withdrawn:* 3m and 5m are
+  competitive under selection, so the union is live again and still needs a
+  declared dedup rule before it can be built.
+- The **depth family at the LTF decision bar**. The staleness argument
+  survives and now has a book to select inside. Still parked this pass —
+  it needs its own declaration — but no longer parked "with cause".
+- **Holdout look #1 stays HALTED**, and the reason has changed. It is no
+  longer "the trigger set is closed": the trigger set is *reopened at 3–5m*.
+  Spending the look now would burn it on a question the next declaration is
+  about to reframe.
+
+## THE NEXT DECLARATION, IN ONE LINE
+
+Blind, before any of it is measured: **at 3m and 5m, does a room-to-run
+gate clear +0.05R marginal lift with both-era CIs, per session, at matched
+trades/day against the 15m control?** Everything in the matched-selectivity
+section is the hypothesis, not the answer.
