@@ -34,11 +34,28 @@ EXCL = {"no_next_open": 0, "gap_through_stop": 0}   # named exclusions
 
 def flow_features(fpd: pd.DataFrame | None, bar_start: pd.Timestamp,
                   bar_end: pd.Timestamp, direction: int,
-                  tf_bars: pd.DataFrame | None) -> dict:
+                  tf_bars: pd.DataFrame | None,
+                  bar_ohlc=None, prior_ohlc: pd.DataFrame | None = None) -> dict:
     """Twelve flow features as-of bar_end (decision-bar close; entry = next
     open). Uses fp minutes with index < bar_end ONLY (the decision bar's own
-    minutes are [bar_start, bar_end) — complete at bar_end)."""
+    minutes are [bar_start, bar_end) — complete at bar_end).
+
+    closeloc/rangex (Phase 0 defect: declared as two of the twelve, never
+    implemented — 100% NaN in the recorded table) are decision-bar
+    geometry: closeloc = close position in the bar's range oriented by
+    direction (1 = closed at the trade-favorable extreme); rangex = bar
+    range / median range of the prior 20 COMPLETED 15m bars."""
     f = {k: np.nan for k in FLOW_NAMES}
+    if bar_ohlc is not None:
+        rng_ = float(bar_ohlc.high - bar_ohlc.low)
+        if rng_ > 0:
+            f["closeloc"] = float((bar_ohlc.close - bar_ohlc.low) / rng_) \
+                if direction > 0 else \
+                float((bar_ohlc.high - bar_ohlc.close) / rng_)
+        if prior_ohlc is not None and len(prior_ohlc) >= 20:
+            med = float((prior_ohlc.high - prior_ohlc.low).iloc[-20:].median())
+            if med > 0 and rng_ > 0:
+                f["rangex"] = rng_ / med
     if fpd is None or len(fpd) == 0:
         return f
     upto = fpd[fpd.index < bar_end]
@@ -177,7 +194,9 @@ def day_rows(bars, fp, sess_day: str):
                              "out_trail": np.nan, "out_hold": np.nan}
                     fl = flow_features(fpd, tstamp - pd.Timedelta(minutes=15),
                                        tstamp, d, fp15[fp15.index < tstamp]
-                                       if fp15 is not None else None)
+                                       if fp15 is not None else None,
+                                       bar_ohlc=b_,
+                                       prior_ohlc=f15[f15.index < tstamp])
                     rows.append({"sess_day": sess_day, "t": tstamp,
                                  "arm": "break", "side": side_name,
                                  "n_attempts": count, "direction": d,
@@ -209,7 +228,9 @@ def day_rows(bars, fp, sess_day: str):
             if w:
                 fl = flow_features(fpd, tstamp - pd.Timedelta(minutes=15),
                                    tstamp, d, fp15[fp15.index < tstamp]
-                                   if fp15 is not None else None)
+                                   if fp15 is not None else None,
+                                   bar_ohlc=b_,
+                                   prior_ohlc=f15[f15.index < tstamp])
                 rows.append({"sess_day": sess_day, "t": tstamp, "arm": "reject",
                              "side": side_name, "n_attempts": count,
                              "direction": d, "session": session_tag(tstamp),

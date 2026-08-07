@@ -107,6 +107,14 @@ silently skipped).
 Bar: cnt_ahead_1w, cnt_beyond_3r, fresh-permission (K=1) admissibility,
 pen_bw, session(ny_pm operational).
 
+AMENDMENT (2026-08-07, before any Half-1 readout existed): confluence_count
+enters as a BREAK-ARM candidate (cut the TOP bin, 3+), motivated by Phase 2
+item 10 (rho −0.126/−0.058 in R, declared-sign confirmed). Recorded
+honestly: item 10 read the FULL fit span, so Half-2 "confirmation" for this
+one variable is partially informed — its real confirmation is the D2
+holdout. It runs in the study for book-impact measurement, flagged
+`prior-full-fit-read`.
+
 Anything not on this list does not run in this study.
 
 ## Appendix — pre-registered survivors (empty until Half 1 is complete)
