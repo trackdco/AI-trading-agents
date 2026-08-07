@@ -424,3 +424,29 @@ JOB 1 completion — partial correlation (H2 vs netR, H1 removed):
   H2-2025: partial rho(H2, netR | H1) = +0.212 (episode level)
   H1-2026: partial rho(H2, netR | H1) = +0.223 (episode level)
 ```
+
+## Job 2 — RESULT (run 2026-08-08)
+
+```
+JOB 2 — exit sweep (prereg bar: interior-of-plateau, beat both baselines, both eras, per arm)
+
+== MFE distribution in R (first time produced) ==
+  reject  H2-2025: p50 0.86 p75 2.50 p90 6.38 p95 10.68 max 59.0 | >=1R:46% >=2R:30% >=3R:22% >=5R:13%
+  reject  H1-2026: p50 0.96 p75 2.78 p90 7.32 p95 12.65 max 168.9 | >=1R:49% >=2R:32% >=3R:23% >=5R:16%
+  break   H2-2025: p50 1.02 p75 2.52 p90 6.91 p95 14.21 max 195.9 | >=1R:51% >=2R:31% >=3R:21% >=5R:13%
+  break   H1-2026: p50 1.03 p75 2.51 p90 6.90 p95 11.12 max 189.6 | >=1R:51% >=2R:30% >=3R:21% >=5R:14%
+
+== cluster-collapsed mean netR per config (vs B1/B2) ==
+[reject]
+  H2-2025: B1 -0.170 B2 -0.396 | best P75_2.0_trail -0.089 | P75_2.0_trail:-0.089 P75_1.5_trail:-0.104 P50_2.0_trail:-0.116 P50_1.5_trail:-0.127 P75_1.0_trail:-0.132 P50_1.0_trail:-0.145
+  H1-2026: B1 -0.052 B2 +0.034 | best P75_2.0_trail +0.058 | P75_2.0_trail:+0.058 P50_2.0_trail:+0.039 P75_1.5_trail:+0.012 P50_1.5_trail:+0.008 S6.0:+0.007 P50_1.0_trail:-0.011
+[break]
+  H2-2025: B1 -0.032 B2 -0.024 | best P75_2.0_trail +0.044 | P75_2.0_trail:+0.044 P75_1.5_trail:+0.041 P75_1.0_trail:+0.012 P50_2.0_trail:-0.001 P50_1.5_trail:-0.003 P50_1.0_trail:-0.022
+  H1-2026: B1 +0.088 B2 +0.147 | best P75_2.0_trail +0.097 | P75_2.0_trail:+0.097 P75_1.5_trail:+0.076 P75_1.0_trail:+0.076 P50_1.0_hold:+0.072 P50_2.0_trail:+0.060 P50_1.5_trail:+0.046
+
+== plateau reading (singles line; a winner needs itself+neighbours > both baselines, both eras) ==
+  reject: interior-plateau singles = NONE
+  reject: partial P50_2.0_trail beats both baselines, both eras
+  reject: partial P75_2.0_trail beats both baselines, both eras
+  break: interior-plateau singles = NONE
+```
