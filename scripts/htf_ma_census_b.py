@@ -137,6 +137,10 @@ def census_day(bars: pd.DataFrame, sess_day: str) -> list[dict]:
                                  "session": session_tag(tstamp),
                                  "cluster_id": f"{sess_day}:{side_name}:{cluster}",
                                  "w15": w_e, "ma_px": ma_e, "event_px": cb.close,
+                                 "retest_px": ma_1m[jt] if jt is not None else np.nan,
+                                 "t_retest_min": ((idx[jt] - tstamp)
+                                                  / pd.Timedelta(minutes=1))
+                                                 if jt is not None else np.nan,
                                  "trig_high": cb.high, "trig_low": cb.low,
                                  "_j0": jt if jt is not None else -1,
                                  "_dir": brk})
@@ -241,15 +245,24 @@ def census_day(bars: pd.DataFrame, sess_day: str) -> list[dict]:
                 break
         return tgt_first, w1_first
 
-    all_ev = [r["t"] for r in rows]
+    # snapshot minute per row: rejects at the event close; breaks at the
+    # RETEST minute with the RETEST price as reference (ANGUS: the earlier
+    # crossing-close reference made the break-arm comparison unfair)
+    for r in rows:
+        if r["kind"] == "break" and r["_j0"] >= 0:
+            r["_pm"] = idx[int(r["_j0"])] - pd.Timedelta(minutes=1)
+            r["_ref"] = r["retest_px"]
+        else:
+            r["_pm"] = r["t"] - pd.Timedelta(minutes=1)
+            r["_ref"] = r["event_px"]
+    all_ev = [r["_pm"] for r in rows if not (r["kind"] == "break" and r["_j0"] < 0)]
     if all_ev:
-        prof = profile_at_minutes(hist, sorted({m - pd.Timedelta(minutes=1)
-                                                for m in all_ev}))
+        prof = profile_at_minutes(hist, sorted(set(all_ev)))
         for r in rows:
             if r["kind"] == "break" and r["_j0"] < 0:
                 r["target_defined"] = False
                 continue
-            pm = r["t"] - pd.Timedelta(minutes=1)
+            pm = r["_pm"]
             p = prof.loc[pm]
             vrow = vw.loc[pm] if pm in vw.index else None
             lvls = {"poc": p.poc, "vah": p.vah, "val": p.val}
@@ -262,17 +275,17 @@ def census_day(bars: pd.DataFrame, sess_day: str) -> list[dict]:
                                         if np.isfinite(v) and abs(v - r["ma_px"]) <= tol)
             direction = r["_dir"]
             ahead = [(k, v) for k, v in lvls.items() if np.isfinite(v)
-                     and direction * (v - r["event_px"]) > 0]
+                     and direction * (v - r["_ref"]) > 0]
             if ahead:
-                k, v = min(ahead, key=lambda kv: abs(kv[1] - r["event_px"]))
-                r["next_level"], r["next_level_dist_W"] = k, abs(v - r["event_px"]) / r["w15"]
+                k, v = min(ahead, key=lambda kv: abs(kv[1] - r["_ref"]))
+                r["next_level"], r["next_level_dist_W"] = k, abs(v - r["_ref"]) / r["w15"]
                 r["target_defined"] = True
                 m5 = ma5.reindex([pm]).iloc[0]
                 m60 = ma60.reindex([pm]).iloc[0]
                 ceil_tf, ceil_px = None, None
                 for tfn, mv in (("5m", m5), ("60m", m60)):
-                    if np.isfinite(mv) and min(r["event_px"], v) < mv < max(r["event_px"], v):
-                        if ceil_px is None or abs(mv - r["event_px"]) < abs(ceil_px - r["event_px"]):
+                    if np.isfinite(mv) and min(r["_ref"], v) < mv < max(r["_ref"], v):
+                        if ceil_px is None or abs(mv - r["_ref"]) < abs(ceil_px - r["_ref"]):
                             ceil_tf, ceil_px = tfn, mv
                 r["ceiling_tf"] = ceil_tf or "none"
                 r["admissible_snapshot"] = ceil_tf is None
@@ -287,13 +300,15 @@ def census_day(bars: pd.DataFrame, sess_day: str) -> list[dict]:
             # crossing bar (break; race starts at the RETEST touch = the entry)
             stop_ref = r["trig_high"] if direction < 0 else r["trig_low"]
             tgt_first, w1_first = ext_race(int(r["_j0"]), direction, stop_ref,
-                                           tgt_px, r["w15"], r["event_px"])
+                                           tgt_px, r["w15"], r["_ref"])
             for S in S_SWEEP:
                 r[f"target_before_extreme_{S}"] = tgt_first[S]
                 r[f"w1_before_extreme_{S}"] = w1_first[S]
     for r in rows:
         r.pop("_j0", None)
         r.pop("_dir", None)
+        r.pop("_pm", None)
+        r.pop("_ref", None)
     return rows
 
 
