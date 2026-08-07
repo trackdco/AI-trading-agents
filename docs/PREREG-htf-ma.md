@@ -655,3 +655,48 @@ SPEC A-2 — RESULT (run 2026-08-08)
   BAR: (a) weighted>unweighted both eras: FAIL | (b) weighted>0 both eras: FAIL | (c) LODO 14/14: FAIL
   A-2: FAILS — which-failed recorded above
 ```
+
+## Six items (ANGUS 2026-08-08), executed in order
+
+**1. DOCUMENT LOOKUP (factual):** A-1 frozen text — book "evaluated on ALL
+sessions (the law: tagged, never filtered)"; bar: "positive in BOTH eras ON
+THE HEADLINE SESSIONS" (ny_pre + ny_rth_am, the desk's window). The desk
+window was the PRE-REGISTERED bar locus, declared blind. The cherry-pick
+framing inverts. A-2's pooled-book bar was a later, stricter re-location and
+its FAIL stands as its own verdict. Item 6's condition is NOT met; the
+profile-age dose-response is not run (available on order).
+
+**2. SEVENTH LAW (standing protocol):** EFFECT-SIZE ARITHMETIC FIRST, BUILD
+SECOND. Before implementing any variable, compute its maximum plausible worth
+through the intended mechanism and compare to the gap to be closed. (A-2's
+autopsy: rho 0.12 through a 0.5-2.0x ladder ≈ +0.01R vs a 0.047R gap —
+computable before the build; neither party computed it.)
+
+**3. ATTRIBUTION QUERY (declared before running):** localise A-2's sign flip
+with three numbers per era — gain from (i) ORACLE full-sample rank,
+(ii) CAUSAL 60-session continuous rank, (iii) CAUSAL ladder-bucketed rank
+(the A-2 implementation). Attribution, not rescue. DECLARED NOW: H2-as-
+sizing-input gets EXACTLY ONE more shot, inside item 4's run, using the
+single encoding the decomposition diagnoses — chosen on diagnostic grounds,
+never on scoreboard. Second and final test regardless of outcome.
+
+**4. NEW CANDIDATE (from diagnosis, not hunting): obstacles beyond the
+partial.** path_emptiness was measured within 1W of entry; the shipped exit
+banks 75% at 3R and trails the rest, so the runner's fate is set by obstacles
+BEYOND 3R — never built. Variable: count of levels in (3R, 8R] from entry in
+risk units (8R ~ the offer p90). DECLARED SIGN: fewer obstacles beyond 3R ->
+MORE netR. BAR: all three gates (episode-level declared-sign rho both eras;
+14/14 monthly folds; currency = shipped-exit netR). SEVENTH-LAW ARITHMETIC
+FIRST, in the output, before the gates are read: expected worth through the
+ladder vs the 0.047R gap — set expectations before the number exists.
+
+**5. JOINT 2x2 (declared):** {P75_3.0_trail, trail_only} x {selection-on =
+above-median causal rank of the item-3-diagnosed encoding, selection-off =
+all}. One read: does the +0.1R the partial earns on the unselected book
+reverse on a tail-selected one? Rationale recorded: the shipped exit
+truncates the tail on purpose, the selection variable predicts the tail —
+two sequential optimisations may have converged on a self-fighting pair.
+Cluster/period/currency reported. Diagnostic read, not an adoption.
+
+**STANDING:** no A-3; holdout untouched; high-R autopsy remains exploration
+on a seeded split-half only.
