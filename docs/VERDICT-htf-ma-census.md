@@ -1,5 +1,14 @@
 # VERDICT — HTF BB MA mechanism census
 
+**THE NUMBER THAT MATTERS (2026-08-08): the unselected reject book went from
+−0.396R to −0.047R per trade** — the R-denominated exit sweep recovered ~0.35R
+of the hold-arm bleed, reducing what selection must find from ~0.7R to ~0.05R:
+a ~14-fold reduction in the difficulty of the only problem left. The adopted
+exit (75% out at 3R, remainder trailed — the trader's own shape at the
+trader's own size, plateau-interior, LODO 14/14) is the reason. H2 (obstacle
+count, gate-passed, +0.21 money correlation at episode level) now needs to be
+adequate, not miraculous.
+
 ## Census A — M1 REBALANCE (run 2026-08-07, fit only, 15m reference)
 
 ```

@@ -550,3 +550,28 @@ declaration. The 5R+ region remains open and unowned.
 
 Job 3 (H3 solo bar) now runs under the NEW shipped reject exit, per its
 blind declaration.
+
+## Round 3 — declared 2026-08-08 before run (ANGUS)
+
+Also recorded: the Job-1 partial correlation caught a wrong reading (the
+withdrawn-pass call) BECAUSE its condition was set before the number existed
+— the mechanism working as designed, on both of us.
+
+One script, four declared deliverables, reject arm, frame persisted WITH KEYS:
+1. **ABLATION — 100% trail, no partial.** The 2b grid had no no-partial arm;
+   we do not know if the partial earns its place. Read: shipped
+   (P75_3.0_trail) vs TRAIL_ONLY, cluster-collapsed, both eras, monthly LODO
+   on the margin. DECLARED CONSEQUENCE: if trail-only >= shipped in BOTH eras
+   on the cluster view, the simpler rule ships (the E1-tie precedent — fewer
+   moving parts wins ties or better).
+2. **STRUCTURAL vs FIXED partial.** 75% at the nearest structural level
+   beyond 2R from entry (fallback fixed 3R when no such level), remainder
+   trailed — vs the shipped fixed-3R. Head-to-head report, both eras; if
+   structural wins both eras it becomes a DECLARED CANDIDATE for the shipped
+   rule (adoption is a separate human decision, not automatic).
+3. **H2 RE-PRICED under the shipped exit** (protocol: a variable priced in
+   one currency may not enter an assembly with an exit chosen in another).
+   Episode-level money rho under new-R, sign + magnitude both eras, 14
+   monthly folds — all three gates reported.
+4. **Job 3 (H3 solo bar) discharged** under the shipped exit per its standing
+   blind declaration.
