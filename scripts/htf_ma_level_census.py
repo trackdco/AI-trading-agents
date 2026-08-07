@@ -32,6 +32,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from scripts.build_l2_outcomes import load_bars                     # noqa: E402
+from scripts.htf_ma_mtable import flow_features                     # noqa: E402
 from src.htf_ma.levels import (NY, bb_ma_asof, vwap_bands,          # noqa: E402
                                profile_at_minutes, session_tag)
 
@@ -65,8 +66,14 @@ def level_series(hist: pd.DataFrame, seg_index: pd.DatetimeIndex,
 
 
 def day_rows(bars: pd.DataFrame, sess_day: str,
-             loci: list[str]) -> list[dict]:
-    """All fights at every requested locus for one 18:00-anchored session."""
+             loci: list[str], fp: pd.DataFrame | None = None) -> list[dict]:
+    """All fights at every requested locus for one 18:00-anchored session.
+
+    fp (optional): per-minute footprint state. When supplied, the twelve
+    flow features are attached to every row, computed as-of the DECISION
+    BAR's close by the same `flow_features` the M-TABLE uses (imported, not
+    reimplemented). The live recorder passes it; the base-rate census does
+    not need it."""
     t0 = pd.Timestamp(f"{sess_day} 18:00", tz=NY)
     t1 = t0 + pd.Timedelta(hours=23)
     hist = bars[(bars.index >= t0 - pd.Timedelta(hours=30)) & (bars.index < t1)]
@@ -91,6 +98,19 @@ def day_rows(bars: pd.DataFrame, sess_day: str,
     ma_f15.index = f15.index                      # trail reference (all loci)
     w_at15 = w15.reindex(f15.index - pd.Timedelta(minutes=1))
     w_at15.index = f15.index
+    fpd = fp15 = None
+    if fp is not None and len(fp):
+        fpd = fp[(fp.index >= t0 - pd.Timedelta(hours=30)) & (fp.index < t1)]
+        fp15 = fpd.resample("15min", label="right", closed="left").agg(
+            {"vol": "sum", "delta": "sum"}).dropna() if len(fpd) else None
+
+    def flow_at(tstamp, d, b_):
+        if fpd is None:
+            return {}
+        return flow_features(fpd, tstamp - pd.Timedelta(minutes=15), tstamp,
+                             d, fp15[fp15.index < tstamp]
+                             if fp15 is not None else None,
+                             bar_ohlc=b_, prior_ohlc=f15[f15.index < tstamp])
 
     def walk_exits(j0, d, entry, stop):
         """Shipped exit, identical machinery for every locus."""
@@ -109,12 +129,13 @@ def day_rows(bars: pd.DataFrame, sess_day: str,
                 t3 = j
         eod = d * (cl[-1] - entry) / risk
         hold = -1.0 if stop_j is not None else eod
-        tstop, trail = stop, None
+        tstop, trail, j_trail = stop, None, None
         fb2 = f15[f15.index > idx[j0]]
         fi, pos = list(fb2.index), 0
         for j in range(j0, len(idx)):
             if (lo[j] <= tstop) if d > 0 else (hi[j] >= tstop):
                 trail = d * (tstop - entry) / risk
+                j_trail = j
                 break
             while pos < len(fi) and fi[pos] <= idx[j]:
                 b_ = fb2.iloc[pos]
@@ -126,10 +147,19 @@ def day_rows(bars: pd.DataFrame, sess_day: str,
                 pos += 1
         if trail is None:
             trail = eod
+            j_trail = len(idx) - 1
         leg3 = (3.0 * risk - TICK) / risk if t3 is not None else None
         ship = (0.75 * leg3 + 0.25 * trail if leg3 is not None else trail) - cost
+        # EXPOSURE TIMESTAMPS (item 3, risk spine): the position is open from
+        # entry until the LAST leg leaves. Under the shipped exit the 75% leg
+        # goes at 3R (t_3r) and the 25% remainder rides the trail to j_trail;
+        # if the stop is hit before 3R the whole position leaves at stop_j.
+        j_exit = stop_j if (stop_j is not None and t3 is None) else j_trail
         return {"risk": risk, "mfe_r": mfe, "out_ship": ship,
-                "out_trail": trail - cost, "out_hold": hold - cost}
+                "out_trail": trail - cost, "out_hold": hold - cost,
+                "t_entry": idx[j0],
+                "t_3r": idx[t3] if t3 is not None else pd.NaT,
+                "t_exit": idx[j_exit] if j_exit is not None else idx[-1]}
 
     rows: list[dict] = []
     for locus in loci:
@@ -169,7 +199,8 @@ def day_rows(bars: pd.DataFrame, sess_day: str,
                         if w is None:
                             w = {"risk": np.nan, "mfe_r": np.nan,
                                  "out_ship": np.nan, "out_trail": np.nan,
-                                 "out_hold": np.nan}
+                                 "out_hold": np.nan, "t_entry": pd.NaT,
+                                 "t_3r": pd.NaT, "t_exit": pd.NaT}
                         rows.append({"sess_day": sess_day, "t": tstamp,
                                      "locus": locus, "arm": "break",
                                      "side": side_name, "n_attempts": count,
@@ -182,7 +213,8 @@ def day_rows(bars: pd.DataFrame, sess_day: str,
                                      "trig_high": b_.high, "trig_low": b_.low,
                                      "retested": jt is not None,
                                      "t_fill": idx[jt] if jt is not None
-                                     else pd.NaT, **w})
+                                     else pd.NaT, **w,
+                                     **flow_at(tstamp, d, b_)})
                     count = 0
                     cluster += 1
                     continue
@@ -210,7 +242,8 @@ def day_rows(bars: pd.DataFrame, sess_day: str,
                                  "entry": entry, "stop": stop, "w15": w_e,
                                  "lvl_px": lvl_e, "trig_high": b_.high,
                                  "trig_low": b_.low, "retested": None,
-                                 "t_fill": pd.NaT, **w})
+                                 "t_fill": pd.NaT, **w,
+                                 **flow_at(tstamp, d, b_)})
     return rows
 
 

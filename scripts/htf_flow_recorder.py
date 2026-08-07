@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
-"""HTF-MA LIVE FLOW RECORDER — log-only, acts on NOTHING (Phase C1).
+"""HTF LIVE FLOW RECORDER — log-only, acts on NOTHING (C1; E-item 5).
 
-Stage-3 shadow artifact for the HTF-MA family: logs every 15m BB MA trigger
-(reject and break, taken or not — nothing is ever taken) with all twelve
-flow features, computed by THE SAME CODE the M-TABLE uses
-(scripts.htf_ma_mtable.day_rows import — parity by construction, no
-reimplementation). Forward-recorded flow is S1's only real validation route:
-the flow holdout cannot resolve a +4pp effect (D3), so every session without
-this recorder is uncontaminated data lost permanently.
+Stage-3 shadow artifact. Logs every trigger of BOTH mechanisms at ALL SEVEN
+declared loci (bbma15, poc, val, vah, vwap, vwap_m1, vwap_p1) — taken or
+not, nothing is ever taken — with all twelve flow features, computed by THE
+SAME CODE the census uses (scripts.htf_ma_level_census.day_rows import —
+parity by construction, no reimplementation).
+
+UPGRADED 2026-08-07 from the single-locus (bbma15) grammar. E1 found the
+edge lives at break-of-VAL and break-of-VWAP-1, not at the incumbent, so a
+single-locus recorder would have accrued a year of forward data on the
+wrong grammar. Coverage is now ~5x per session (122-141 triggers vs 18-26).
+
+Forward-recorded flow is the only validation route for any SELECTION layer
+(the flow holdout cannot resolve a +4pp effect, D3), so every session
+without this recorder is uncontaminated data lost permanently.
 
 Modes:
   --replay SESS_DAY     certification: recompute one historical session from
@@ -47,7 +54,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.htf_ma_mtable import FLOW_NAMES, day_rows              # noqa: E402
+from scripts.htf_ma_level_census import LOCI, day_rows              # noqa: E402
+from scripts.htf_ma_mtable import FLOW_NAMES                        # noqa: E402
 from src.htf_ma.levels import NY                                    # noqa: E402
 
 CFG = ROOT / "config/flow_recorder.json"
@@ -78,7 +86,8 @@ def sess_day_of(ts: pd.Timestamp) -> str:
 
 
 def row_key(r: dict) -> str:
-    return f"{r['sess_day']}|{r['t']}|{r['arm']}|{r['side']}|{r['n_attempts']}"
+    return (f"{r['sess_day']}|{r['t']}|{r.get('locus','bbma15')}|{r['arm']}"
+            f"|{r['side']}|{r['n_attempts']}")
 
 
 def emit(journal: Path, rows: list[dict], seen: set) -> int:
@@ -104,11 +113,13 @@ def replay(sess_day: str) -> None:
                            if sess_day < "2026-02-01"
                            else "data/reference/nq_1m_feb_jul2026.parquet",
                            "output/fp_minutes_full.parquet")
-    rows = day_rows(bars, fp, sess_day)
+    rows = day_rows(bars, sess_day, LOCI, fp=fp)
     F = pd.read_parquet(ROOT / "output/htf_ma_census/mtable_fit.parquet")
     ref = F[F.sess_day == sess_day]
     ok, checked = True, 0
     for r in rows:
+        if r.get("locus") != "bbma15":
+            continue                    # the M-TABLE indexes bbma15 only
         m = ref[(ref.t == r["t"]) & (ref.arm == r["arm"])
                 & (ref.side == r["side"])
                 & (ref.n_attempts == r["n_attempts"])]
@@ -123,8 +134,19 @@ def replay(sess_day: str) -> None:
                 ok = False
                 print(f"PARITY FAIL {r['t']} {k}: recorder={a} table={b}")
         checked += 1
-    print(f"REPLAY {sess_day}: {len(rows)} triggers | {checked} matched vs "
-          f"table | PARITY {'PASS' if ok else 'FAIL'}")
+    per = {}
+    for r in rows:
+        per[r.get("locus", "?")] = per.get(r.get("locus", "?"), 0) + 1
+    miss = [l for l in LOCI if per.get(l, 0) == 0]
+    flow_cov = np.mean([np.isfinite(r.get("flowconf", np.nan)) for r in rows]) \
+        if rows else 0.0
+    print(f"REPLAY {sess_day}: {len(rows)} triggers across {len(per)} loci")
+    print(f"  per-locus: {per}")
+    print(f"  flow coverage: {flow_cov*100:.1f}% | bbma15 rows checked vs "
+          f"M-TABLE: {checked} | PARITY {'PASS' if ok else 'FAIL'}")
+    if miss:
+        print(f"  NOTE: no triggers today at {miss} (not a failure)")
+    ok = ok and checked > 0 and flow_cov > 0.9
     sys.exit(0 if ok else 1)
 
 
@@ -160,7 +182,7 @@ def live() -> None:
                     time.sleep(30)
                     continue
                 sd = sess_day_of(now)
-                rows = day_rows(bars, fp, sd)
+                rows = day_rows(bars, sd, LOCI, fp=fp)
                 n = emit(journal, rows, seen)
                 if n:
                     print(f"{now} +{n} triggers logged (session {sd})")

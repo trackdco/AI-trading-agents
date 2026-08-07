@@ -1,17 +1,25 @@
 # RUNBOOK — HTF-MA flow recorder (log-only, Phase C1)
 
-**What it is.** A Stage-3 shadow artifact: logs every 15m BB MA trigger with
-all twelve flow features, computed by the SAME `day_rows` code as the
-M-TABLE (import, not reimplementation — parity by construction). It places
+**What it is.** A Stage-3 shadow artifact: logs every trigger of both
+mechanisms at ALL SEVEN declared loci (bbma15, poc, val, vah, vwap,
+vwap_m1, vwap_p1) with all twelve flow features, computed by the SAME
+`day_rows` code as the level census (import, not reimplementation — parity
+by construction).
+
+**UPGRADED 2026-08-07 (E-item 5).** It previously logged the 15m BB MA
+only. E1 found the edge lives at break-of-VAL and break-of-VWAP-1, so a
+single-locus recorder would have accrued a year of forward data on the
+wrong grammar. Coverage is now ~5x per session. It places
 nothing, cancels nothing, and has no DTC/order code path in the file at
 all. Its journal is S1's forward validation set: the flow holdout resolves
 ±10pp and S1 is a +4pp-class effect, so the sealed look cannot confirm it
 (per D3 the look stays unspent) — forward flow is the only route, and every
 un-recorded session is lost permanently.
 
-**Certification status (2026-08-07).** `--replay` parity gate PASS on
-2026-06-02 (26/26 triggers) and 2026-03-10 (18/18): entry, stop, risk and
-all twelve features bit-identical to the research table.
+**Certification status (2026-08-07, seven-locus).** `--replay` PASS on
+2026-06-02 (122 triggers across 7 loci) and 2026-03-10 (141 across 7):
+100% flow coverage both days, and every bbma15 row bit-identical to the
+M-TABLE on entry, stop, risk and all twelve features.
 
 ## Wiring (VPS, same box as Sierra — data never leaves the box)
 
