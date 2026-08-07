@@ -46,6 +46,7 @@ from src.engine.indicators import (
     _closed_1m,
     indicators_asof,
     load_indicators_config,
+    prior_profile_asof,
 )
 from src.engine.sessions import (
     SessionBox,
@@ -148,6 +149,47 @@ def _include_ote() -> bool:
         except Exception:
             _INCLUDE_OTE_CACHE = False
     return _INCLUDE_OTE_CACHE
+
+
+_INCLUDE_PRIOR_PROFILE_CACHE: bool | None = None
+
+
+def _include_prior_profile() -> bool:
+    """Config flag, memoized exactly like `_include_ote`, and DEFAULT OFF for the same
+    reason: it changes the level menu, so it changes the census, so it is a new arm rather
+    than an edit. NY's canon must not move because London opened an arm — with the flag off
+    every level here is absent and behaviour is byte-identical to before.
+
+    London detection turns it on by monkeypatching this function (the memo never masks an
+    override), which is the pattern `_include_ote` documents."""
+    global _INCLUDE_PRIOR_PROFILE_CACHE
+    if _INCLUDE_PRIOR_PROFILE_CACHE is None:
+        import yaml
+        from pathlib import Path
+        try:
+            c = yaml.safe_load(open(Path("config/strategy.yaml")))
+            _INCLUDE_PRIOR_PROFILE_CACHE = bool(
+                c.get("cluster", {}).get("include_prior_profile", False))
+        except Exception:
+            _INCLUDE_PRIOR_PROFILE_CACHE = False
+    return _INCLUDE_PRIOR_PROFILE_CACHE
+
+
+def prior_profile_levels(prior: dict | None) -> list[tuple[str, float, str]]:
+    """Yesterday's POC/VAH/VAL as cluster candidates.
+
+    TYPED `poc`, deliberately, rather than given a type of their own. `_level_groups` keeps
+    a group only if it spans >= `min_types` distinct types, so typing these as `poc` means
+    yesterday's levels EXTEND the existing POC family: they still have to pair with a
+    Bollinger basis or a VWAP band to form a cluster, and cannot invent a confluence axis
+    of their own by clustering with each other. That keeps the canon geometry Angus
+    specified — "bollinger basis + daily-VWAP bands + POC" — intact while adding the levels
+    §7 measured holding power for.
+    """
+    if not prior:
+        return []
+    return [(f"prior_{k}", v, "poc") for k in ("poc", "vah", "val")
+            if (v := prior.get(k)) is not None]
 
 
 _CLUSTER_CFG_CACHE: dict | None = None
@@ -337,7 +379,17 @@ def build_snapshot(df_1m: pd.DataFrame, ts: pd.Timestamp,
 
     # clusters (§3); ANGUS pass-22: OTE fib levels join the candidates behind the
     # cluster.include_ote flag (split-test arm — default off keeps prior behavior)
+    # yesterday's finished profile — §7's only levels with measured holding power. Behind
+    # its own flag (default off) so the NY census cannot move; see `_include_prior_profile`.
+    prior_prof = None
+    if _include_prior_profile():
+        pp = prior_profile_asof(df_1m, ts, ind_cfg.vp_bin_points,
+                                ind_cfg.vp_value_area_pct)
+        prior_prof = None if pp is None else {"poc": pp.poc, "vah": pp.vah, "val": pp.val}
+
     cand = _gather_levels(ind, prof)
+    if prior_prof:
+        cand = cand + prior_profile_levels(prior_prof)
     if _include_ote():
         cand = cand + _ote_levels(closed, ts)
     clusters = _clusters(cand, cluster_tol, cluster_min_types)
@@ -378,6 +430,13 @@ def build_snapshot(df_1m: pd.DataFrame, ts: pd.Timestamp,
             menu.append(lvl(f"ny_vwap_{key}", nv.get(key), "vwap"))
     for key in ("poc", "vah", "val"):
         menu.append(lvl(f"profile_{key}", prof.get(key), "poc" if key == "poc" else "structural"))
+    # yesterday's profile joins the TARGET menu too, not just the cluster candidates: §7's
+    # point is that these levels hold price, and a level that holds price is exactly what a
+    # target wants to sit in front of. The menu already carries prior_day HIGH/LOW; this
+    # adds where the volume actually was. Same flag, so NY is unaffected.
+    for key in ("poc", "vah", "val"):
+        menu.append(lvl(f"prior_profile_{key}", (prior_prof or {}).get(key),
+                        "poc" if key == "poc" else "structural"))
     if pdl is not None:
         menu.append(lvl("prior_day_high", pdl["prior_day_high"], "structural"))
         menu.append(lvl("prior_day_low", pdl["prior_day_low"], "structural"))

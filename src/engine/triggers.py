@@ -46,9 +46,21 @@ import numpy as np
 import pandas as pd
 from pydantic import BaseModel, field_validator
 
-from src.engine.indicators import IndicatorsConfig, indicators_asof, load_indicators_config
+from src.engine.indicators import (
+    IndicatorsConfig,
+    indicators_asof,
+    load_indicators_config,
+    prior_profile_asof,
+)
 from src.engine.sessions import resample_ohlcv
-from src.engine.snapshot import _gather_levels, _include_ote, _level_groups, _ote_levels
+from src.engine.snapshot import (
+    _gather_levels,
+    _include_ote,
+    _include_prior_profile,
+    _level_groups,
+    _ote_levels,
+    prior_profile_levels,
+)
 
 __all__ = ["Trigger", "detect_triggers", "_level_groups"]  # _level_groups re-exported (shared rule)
 
@@ -254,6 +266,13 @@ def detect_triggers(df_1m: pd.DataFrame, cfg: IndicatorsConfig | None = None,
             t = fr["ts_event"].iloc[i]
             ind = indicators_asof(df_1m, t, cfg)
             levels = _gather_levels(ind, ind.get("daily_profile") or {})
+            if _include_prior_profile():             # §7 prior-session profile (split arm)
+                # Memoized on the prior session boundary inside `prior_profile_asof`, so
+                # this is one profile per session, not one per candle.
+                pp = prior_profile_asof(df_1m, t, cfg.vp_bin_points, cfg.vp_value_area_pct)
+                if pp is not None:
+                    levels = levels + prior_profile_levels(
+                        {"poc": pp.poc, "vah": pp.vah, "val": pp.val})
             if _include_ote():                       # ANGUS pass-22 fib confluence (split arm)
                 # 10-day lookback: fractal fibs use only the most RECENT swing pair, so a
                 # trailing window is result-identical to full history (>= 60 4H blocks vs

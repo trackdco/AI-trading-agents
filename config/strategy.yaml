@@ -79,6 +79,20 @@ cluster:
                                   #      Two anchors: 15m impulse-leg fibs + session-anchored 4H range.
                                   #      Default OFF — existing trigger caches stay valid; OTE arms
                                   #      re-detect with this ON.
+  include_prior_profile: false    # §7 SPLIT TEST (LDN, 2026-08-06) — add the PREVIOUS session's
+                                  #      POC/VAH/VAL as cluster candidates AND target-menu levels.
+                                  #      research/findings/T1-T5-volume-profile-nodes.md: yesterday's
+                                  #      high-volume nodes hold price ~7% longer than prices 20pt
+                                  #      either side, era-consistent (1.078 / 1.058), and the effect
+                                  #      GROWS with band width — a real effect blurred by 1m bars.
+                                  #      Previous week / roll5 / roll20 are flat or era-inconsistent,
+                                  #      so only the previous SESSION earns a level. LVNs do nothing
+                                  #      (2026 = 1.004, wrong direction) — do not add them.
+                                  #      Typed "poc", so these EXTEND the POC family and still must
+                                  #      pair with a BB basis or VWAP band to form a cluster.
+                                  #      Default OFF — this changes the census, so it is a new arm,
+                                  #      not an edit. NY's canon must not move because London
+                                  #      opened an arm.
 
 triggers:
   displacement:

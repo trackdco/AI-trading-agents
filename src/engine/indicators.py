@@ -334,6 +334,51 @@ def profile_asof(df_1m: pd.DataFrame, ts: pd.Timestamp, scope: str,
     return volume_profile(sl, bin_points, value_area_pct)
 
 
+_PRIOR_PROFILE_CACHE: dict = {}
+
+
+def prior_profile_asof(df_1m: pd.DataFrame, ts: pd.Timestamp, bin_points: float,
+                       value_area_pct: float,
+                       session_open: dtime = dtime(18, 0)) -> VolumeProfile | None:
+    """The PREVIOUS completed CME session's volume profile, as of ``ts``.
+
+    Distinct from ``profile_asof(scope="daily")``, which is the CURRENT session's
+    DEVELOPING profile. This one is finished and immutable before the current session even
+    opens, which is what makes it a level rather than a moving average of the day so far.
+
+    Motivated by `research/findings/T1-T5-volume-profile-nodes.md`: over 32,014
+    node-session-widths, **yesterday's high-volume nodes hold price ~7% longer** than prices
+    20pt either side, era-consistently (1.078 / 1.058), and the effect grows with band width
+    — the signature of a real effect blurred by 1-minute bars. Previous WEEK, rolling 5 and
+    rolling 20 are flat or era-inconsistent, so only the previous session earns a level.
+
+    NO LOOKAHEAD, structurally: the slice ends at the prior session boundary, so every bar
+    in it closed before the current session began. Memoized on that boundary because the
+    answer cannot change for the whole of the current session — the same reason
+    ``_INCLUDE_OTE_CACHE`` exists, applied to a value rather than a flag. The bar count is
+    part of the key so a lookback window that clips the prior session cannot poison the
+    entry a full window would produce.
+
+    Returns None when no earlier session exists in ``df_1m``.
+    """
+    closed = _closed_1m(df_1m, ts)
+    if closed.empty:
+        return None
+    sd = _anchor_session_date(closed["ts_event"], session_open)
+    cur = _anchor_session_date(pd.Series([ts]), session_open).iloc[0]
+    earlier = sd[(sd < cur).to_numpy()]
+    if earlier.empty:
+        return None
+    prior_sd = earlier.max()
+    sl = closed[(sd == prior_sd).to_numpy()]
+    if sl.empty:
+        return None
+    key = (prior_sd, len(sl), bin_points, value_area_pct)
+    if key not in _PRIOR_PROFILE_CACHE:
+        _PRIOR_PROFILE_CACHE[key] = volume_profile(sl, bin_points, value_area_pct)
+    return _PRIOR_PROFILE_CACHE[key]
+
+
 def weekly_profile_asof(df_1m: pd.DataFrame, ts: pd.Timestamp, bin_points: float,
                         value_area_pct: float, weekly_enabled: bool,
                         session_open: dtime = dtime(18, 0)) -> VolumeProfile | None:

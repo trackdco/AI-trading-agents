@@ -53,10 +53,27 @@ _BARS: pd.DataFrame | None = None
 _BAND: tuple[str, str] = BANDS["std"]
 
 
-def _init_pool(bars: pd.DataFrame, band: tuple[str, str]) -> None:
+def _force_prior_profile() -> None:
+    """Force the §7 prior-session-profile flag ON in BOTH binding modules.
+
+    `triggers` does `from ... import _include_prior_profile`, which binds the name in its
+    own namespace, so patching only `snapshot` would leave detection reading the config
+    default and silently produce the baseline census under an arm's filename. Same
+    two-module patch `scripts/_detect_parallel.py` uses for OTE, and applied per worker so
+    it survives a spawn start method.
+    """
+    import src.engine.snapshot as _snap
+    import src.engine.triggers as _trg
+    _snap._include_prior_profile = lambda: True
+    _trg._include_prior_profile = lambda: True
+
+
+def _init_pool(bars: pd.DataFrame, band: tuple[str, str], prior_profile: bool = False) -> None:
     """Pool initializer -- workers need their own globals under spawn (Pat's VPS, 2026-07-30)."""
     global _BARS, _BAND
     _BARS, _BAND = bars, band
+    if prior_profile:
+        _force_prior_profile()
 
 
 def window_et(day: str, band: tuple[str, str]):
@@ -81,19 +98,23 @@ def _one_day(d: str) -> list[dict]:
 
 
 def run_days(bars: pd.DataFrame, days: list[str], band: tuple[str, str],
-             procs: int = 1, quiet: bool = False) -> pd.DataFrame:
+             procs: int = 1, quiet: bool = False,
+             prior_profile: bool = False) -> pd.DataFrame:
     """Days are independent, so the Pool changes wall-clock only -- output is identical."""
     global _BARS, _BAND
     _BARS, _BAND = bars, band
     rows = []
     if procs <= 1:
+        if prior_profile:
+            _force_prior_profile()
         for d in days:
             got = _one_day(d)
             rows.extend(got)
             if not quiet:
                 print(f"  {d}: {len(got):>3} triggers", flush=True)
     else:
-        with Pool(procs, initializer=_init_pool, initargs=(bars, band)) as p:
+        with Pool(procs, initializer=_init_pool,
+                  initargs=(bars, band, prior_profile)) as p:
             for i, (d, got) in enumerate(zip(days, p.imap(_one_day, days))):
                 rows.extend(got)
                 if not quiet and (i % 20 == 0 or i == len(days) - 1):
@@ -156,6 +177,10 @@ def parity(procs: int) -> bool:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--prior-profile", action="store_true",
+                    help="§7 arm: add the PREVIOUS session's POC/VAH/VAL to the level menu. "
+                         "Changes the census, so it writes its own file and must re-gate "
+                         "L0 parity as a new arm.")
     ap.add_argument("--span", choices=["fit"])
     ap.add_argument("--band", choices=sorted(BANDS), default="std")
     ap.add_argument("--parity", action="store_true")
@@ -170,9 +195,14 @@ def main() -> int:
     bars = load_bars()
     days = span_days(bars)
     print(f"L0 London, band {a.band} {BANDS[a.band]} Europe/London, "
-          f"{len(days)} weekdays {days[0]} -> {days[-1]}", flush=True)
-    T = run_days(bars, days, BANDS[a.band], procs=a.procs)
-    out = ROOT / f"output/l0_triggers_london_fit_{a.band}.parquet"
+          f"{len(days)} weekdays {days[0]} -> {days[-1]}"
+          + (" | +PRIOR-SESSION PROFILE (§7 arm)" if a.prior_profile else ""), flush=True)
+    T = run_days(bars, days, BANDS[a.band], procs=a.procs,
+                 prior_profile=a.prior_profile)
+    # a different level menu is a different census: its own file, never overwriting the
+    # baseline the shipped L0 gate was run against
+    suffix = a.band + ("_pp" if a.prior_profile else "")
+    out = ROOT / f"output/l0_triggers_london_fit_{suffix}.parquet"
     T.to_parquet(out, index=False)
     print(f"\nwrote {out.relative_to(ROOT)}: {len(T):,} triggers over "
           f"{T['day'].nunique()} days ({len(T)/max(T['day'].nunique(),1):.1f}/day)")
