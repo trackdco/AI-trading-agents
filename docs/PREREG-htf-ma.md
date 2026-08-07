@@ -482,3 +482,71 @@ baselines, both eras, per arm, cluster-collapsed; monthly LODO on the winner
 reported; three gates apply. Declared with the boundary reason stated before
 the run; one run, no variants. Job 3 (H3 solo) runs after 2b resolves the
 shipped exit.
+
+## Job 2 — RESULT (run 2026-08-08)
+
+```
+JOB 2 — exit sweep (prereg bar: interior-of-plateau, beat both baselines, both eras, per arm)
+
+== MFE distribution in R (first time produced) ==
+  reject  H2-2025: p50 0.86 p75 2.50 p90 6.38 p95 10.68 max 59.0 | >=1R:46% >=2R:30% >=3R:22% >=5R:13%
+  reject  H1-2026: p50 0.96 p75 2.78 p90 7.32 p95 12.65 max 168.9 | >=1R:49% >=2R:32% >=3R:23% >=5R:16%
+  break   H2-2025: p50 1.02 p75 2.52 p90 6.91 p95 14.21 max 195.9 | >=1R:51% >=2R:31% >=3R:21% >=5R:13%
+  break   H1-2026: p50 1.03 p75 2.51 p90 6.90 p95 11.12 max 189.6 | >=1R:51% >=2R:30% >=3R:21% >=5R:14%
+
+== cluster-collapsed mean netR per config (vs B1/B2) ==
+[reject]
+  H2-2025: B1 -0.170 B2 -0.396 | best P75_5.0_trail -0.003 | P75_5.0_trail:-0.003 P75_4.0_trail:-0.027 P75_3.0_trail:-0.047 P50_5.0_trail:-0.059 P75_2.5_trail:-0.067 P50_4.0_trail:-0.075
+  H1-2026: B1 -0.052 B2 +0.034 | best P75_5.0_trail +0.178 | P75_5.0_trail:+0.178 P75_4.0_trail:+0.148 P50_5.0_trail:+0.119 P50_4.0_trail:+0.099 P75_3.0_trail:+0.097 P75_2.5_trail:+0.075
+[break]
+  H2-2025: B1 -0.032 B2 -0.024 | best P75_5.0_trail +0.105 | P75_5.0_trail:+0.105 P75_4.0_trail:+0.095 P75_3.0_trail:+0.069 P75_2.5_trail:+0.056 P75_2.0_trail:+0.044 P75_1.5_trail:+0.041
+  H1-2026: B1 +0.088 B2 +0.147 | best P75_5.0_trail +0.222 | P75_5.0_trail:+0.222 P75_4.0_trail:+0.182 P75_3.0_trail:+0.146 P50_5.0_trail:+0.143 P75_2.5_trail:+0.124 P50_4.0_trail:+0.116
+
+== plateau reading (singles line; a winner needs itself+neighbours > both baselines, both eras) ==
+  reject: interior-plateau singles = NONE
+  reject: partial P50_2.0_trail beats both baselines, both eras
+  reject: partial P50_2.5_trail beats both baselines, both eras
+  reject: partial P50_3.0_trail beats both baselines, both eras
+  reject: partial P50_4.0_trail beats both baselines, both eras
+  reject: partial P50_5.0_trail beats both baselines, both eras
+  reject: partial P75_2.0_trail beats both baselines, both eras
+  reject: partial P75_2.5_trail beats both baselines, both eras
+  reject: partial P75_3.0_trail beats both baselines, both eras
+  reject: partial P75_4.0_trail beats both baselines, both eras
+  reject: partial P75_5.0_trail beats both baselines, both eras
+  break: interior-plateau singles = NONE
+  break: partial P75_4.0_trail beats both baselines, both eras
+  break: partial P75_5.0_trail beats both baselines, both eras
+```
+
+```
+Monthly LODO — winner P75_3.0_trail (reject arm), margin vs best baseline per fold:
+  14/14 folds: winner beats best baseline | ALL FOLDS HOLD
+  H2-2025: P75_3.0_trail -0.047 (B1 -0.170, B2 -0.396)
+  H1-2026: P75_3.0_trail +0.097 (B1 -0.052, B2 +0.034)
+```
+
+## Job 2b — VERDICT (read against the declared extended-grid bar)
+
+**REJECT ARM: ADOPTED.** The extension revealed a broad ridge, not a spike:
+every trail-remainder partial from T=2.0 to 5.0, both sizes, beats both
+baselines in both eras — TEN configs. Interior-of-plateau satisfied for
+T in {2.5, 3.0, 4.0} on both p-lines. SHIPPED EXIT (reject arm) =
+**75% out at 3R, remainder trailed (E1 rule)** — the plateau's middle point,
+not its edge; 75% is the trader's stated real-world size; monthly LODO
+14/14 folds vs best baseline. Values: -0.047 (H2-2025, vs baselines -0.170/
+-0.396) / +0.097 (H1-2026). The unselected reject book remains ~fair-priced
+in the discover era even under the best exit — selection's job, per the
+standing principle; the exit recovered ~0.35R/trade of the hold-arm bleed.
+
+**BREAK ARM: NO ADOPTION** — P75_3.0_trail misses B2 in H1-2026 by 0.001
+(+0.146 vs +0.147); P75_4.0's lower neighbour therefore fails; 5.0 is edge.
+Recorded exactly so; break keeps hold-with-stop. A thousandth is a miss.
+
+**Unexplored, on the record:** the curve still rises to the 5R grid edge
+(P75_5.0_trail best point in all four cells). NOT chased — the adopted point
+is the plateau interior, and further extension would need its own
+declaration. The 5R+ region remains open and unowned.
+
+Job 3 (H3 solo bar) now runs under the NEW shipped reject exit, per its
+blind declaration.
