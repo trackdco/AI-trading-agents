@@ -120,13 +120,26 @@ def census_day(bars: pd.DataFrame, sess_day: str) -> list[dict]:
                         if brk * (cl[j] - ma_e) / w_e >= 1.0:
                             reached_break = True
                             break
+                    cb = f15.iloc[bi]
+                    # retrace-touch index for the retest entry (ANGUS steer 1:
+                    # the stop anchor is the CROSSING candle's origin extreme)
+                    jt = None
+                    for j in range(j0, len(idx)):
+                        m = ma_1m[j]
+                        if np.isfinite(m) and lo[j] <= m <= hi[j]:
+                            jt = j
+                            break
                     rows.append({"sess_day": sess_day, "t": tstamp, "kind": "break",
                                  "side": side_name, "n_attempts": count,
                                  "break_dir": "up" if brk > 0 else "down",
                                  "retraced_ma": retraced,
                                  "reached_1W_break": reached_break,
                                  "session": session_tag(tstamp),
-                                 "cluster_id": f"{sess_day}:{side_name}:{cluster}"})
+                                 "cluster_id": f"{sess_day}:{side_name}:{cluster}",
+                                 "w15": w_e, "ma_px": ma_e, "event_px": cb.close,
+                                 "trig_high": cb.high, "trig_low": cb.low,
+                                 "_j0": jt if jt is not None else -1,
+                                 "_dir": brk})
                 count = 0
                 cluster += 1
                 continue
@@ -192,13 +205,49 @@ def census_day(bars: pd.DataFrame, sess_day: str) -> list[dict]:
                    for S in S_SWEEP},
                 "t_first_cross": t_first_cross,
                 "mtf_reject_count": mtf,
-                "profile_min": (tstamp - t0) / pd.Timedelta(minutes=1)})
-    # confluence + admissibility snapshot + next-level columns (batch) -----
-    if events_min:
+                "profile_min": (tstamp - t0) / pd.Timedelta(minutes=1),
+                "trig_high": bar.high, "trig_low": bar.low,
+                "_j0": j0, "_dir": away})
+    # confluence + admissibility + next-level + EXTREME-ANCHORED races -----
+    # (ANGUS steers 1+2: stop anchor = trigger-candle extreme; primary payoff
+    #  metric = the STRUCTURAL target, per event, from the actual level set)
+    def ext_race(jstart: int, direction: int, stop_ref: float, target_px: float,
+                 w_e: float, event_px: float):
+        """Race: target / fixed-1W travel vs S ticks beyond the candle extreme.
+        Stop-first within each bar. Returns dicts keyed by S."""
+        tgt_first = {S: False for S in S_SWEEP}
+        w1_first = {S: False for S in S_SWEEP}
+        stopped = {S: False for S in S_SWEEP}
+        w1_px = event_px + direction * 1.0 * w_e
+        got_t = got_w = False
+        for j in range(jstart, len(idx)):
+            for S in S_SWEEP:
+                if not stopped[S]:
+                    adv = ((hi[j] - stop_ref) if direction < 0
+                           else (stop_ref - lo[j])) / TICK
+                    if adv >= S:
+                        stopped[S] = True
+            if not got_t and np.isfinite(target_px) and \
+                    direction * ((hi[j] if direction > 0 else lo[j]) - target_px) >= 0:
+                got_t = True
+                for S in S_SWEEP:
+                    tgt_first[S] = not stopped[S]
+            if not got_w and \
+                    direction * ((hi[j] if direction > 0 else lo[j]) - w1_px) >= 0:
+                got_w = True
+                for S in S_SWEEP:
+                    w1_first[S] = not stopped[S]
+            if got_t and got_w:
+                break
+        return tgt_first, w1_first
+
+    all_ev = [r["t"] for r in rows]
+    if all_ev:
         prof = profile_at_minutes(hist, sorted({m - pd.Timedelta(minutes=1)
-                                                for m in events_min}))
+                                                for m in all_ev}))
         for r in rows:
-            if r["kind"] != "reject":
+            if r["kind"] == "break" and r["_j0"] < 0:
+                r["target_defined"] = False
                 continue
             pm = r["t"] - pd.Timedelta(minutes=1)
             p = prof.loc[pm]
@@ -211,12 +260,13 @@ def census_day(bars: pd.DataFrame, sess_day: str) -> list[dict]:
             tol = CONFL_TOL_W * r["w15"]
             r["confluence_count"] = sum(1 for v in lvls.values()
                                         if np.isfinite(v) and abs(v - r["ma_px"]) <= tol)
-            away = -1 if r["side"] == "below" else 1
+            direction = r["_dir"]
             ahead = [(k, v) for k, v in lvls.items() if np.isfinite(v)
-                     and away * (v - r["event_px"]) > 0]
+                     and direction * (v - r["event_px"]) > 0]
             if ahead:
                 k, v = min(ahead, key=lambda kv: abs(kv[1] - r["event_px"]))
                 r["next_level"], r["next_level_dist_W"] = k, abs(v - r["event_px"]) / r["w15"]
+                r["target_defined"] = True
                 m5 = ma5.reindex([pm]).iloc[0]
                 m60 = ma60.reindex([pm]).iloc[0]
                 ceil_tf, ceil_px = None, None
@@ -226,11 +276,24 @@ def census_day(bars: pd.DataFrame, sess_day: str) -> list[dict]:
                             ceil_tf, ceil_px = tfn, mv
                 r["ceiling_tf"] = ceil_tf or "none"
                 r["admissible_snapshot"] = ceil_tf is None
+                tgt_px = v
             else:
-                r["next_level"] = "none"
-                r["next_level_dist_W"] = np.nan
-                r["ceiling_tf"] = "none"
-                r["admissible_snapshot"] = True
+                r["next_level"], r["next_level_dist_W"] = "none", np.nan
+                r["ceiling_tf"], r["admissible_snapshot"] = "none", True
+                r["target_defined"] = False
+                tgt_px = np.nan
+            # ANGUS steer 1: stop anchored at the TRIGGER-CANDLE EXTREME —
+            # adverse side of the failing bar (reject) / origin side of the
+            # crossing bar (break; race starts at the RETEST touch = the entry)
+            stop_ref = r["trig_high"] if direction < 0 else r["trig_low"]
+            tgt_first, w1_first = ext_race(int(r["_j0"]), direction, stop_ref,
+                                           tgt_px, r["w15"], r["event_px"])
+            for S in S_SWEEP:
+                r[f"target_before_extreme_{S}"] = tgt_first[S]
+                r[f"w1_before_extreme_{S}"] = w1_first[S]
+    for r in rows:
+        r.pop("_j0", None)
+        r.pop("_dir", None)
     return rows
 
 
