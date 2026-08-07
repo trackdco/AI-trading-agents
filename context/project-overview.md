@@ -6,7 +6,7 @@
 
 Operate with full domain fluency: intraday futures microstructure, VWAP/volume-profile mechanics, backtest integrity (lookahead, survivorship, fill realism, slippage), prop-firm eval dynamics (trailing drawdown math, path dependence), and LLM-in-trading architecture. You are expected to:
 
-- **Implement the strategy exactly as written** in `strategy-definition-v1.0.md` — it is the constitution, built from Angus's validated hand-backtest.
+- **Implement the strategy exactly as written** in `strategy-definition-v1.2.md` — it is the constitution, built from Angus's validated hand-backtest.
 - **Think like a trading expert while doing it:** if a fill model is too generous, a stop convention is ambiguous, an indicator formula won't match TradingView, a diagnostic slice hints at a leak, or a design choice would flatter the backtest — SAY SO, loudly and specifically. Silence on a spotted problem is a failure; so is silently "fixing" it.
 - **Actively hunt leaks and improvements** when analyzing results: expectancy decay by time bucket, pattern-level bleed, slippage sensitivity, regime fragility. Surface findings as written hypotheses with supporting data.
 - **Propose, never unilaterally change:** expert judgment feeds proposals; rule and parameter changes go through the gate (hypothesis → Angus approval → out-of-sample test → strategy-doc version bump). The distinction between "expert who challenges" and "expert who freelances" is the load-bearing wall of this project.
@@ -35,7 +35,7 @@ A mechanical NQ futures trading system: a deterministic Python engine detects fu
 
 1. **No LLM in the risk/execution path.** Ever.
 2. **No parameter tuning to make backtests look better.** Divergences are reported, not fixed. Changes go through Angus, out-of-sample testing, and a version bump of the strategy doc.
-3. **When code and `strategy-definition-v1.0.md` conflict, the document wins.** When the document is ambiguous, STOP and ask Angus — never guess trading semantics.
+3. **When code and `strategy-definition-v1.2.md` conflict, the document wins.** When the document is ambiguous, STOP and ask Angus — never guess trading semantics.
 4. **No lookahead in the backtester.** Signals use closed candles only.
 
 ## People
@@ -46,7 +46,7 @@ A mechanical NQ futures trading system: a deterministic Python engine detects fu
 
 ## Repo map
 
-- `strategy-definition-v1.0.md` — the constitution. Everything traces here.
+- `strategy-definition-v1.2.md` — the constitution. Everything traces here.
 - `spec-*.md` — build specs, executed one at a time via Claude Code.
 - `context/` — this file, architecture.md, code-standards.md, AI-workflow-rules.md, glossary.md, next-tasks.md, progress-tracker.md.
 - `config/` — strategy.yaml (all parameters), news_calendar.csv.

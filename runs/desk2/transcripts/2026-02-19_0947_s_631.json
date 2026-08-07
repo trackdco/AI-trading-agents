@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"neutral\",\"day_type\":\"inside-range grind, small gap\",\"thesis\":\"Gap -32 holding tight overnight range 24815-25054, last bars compressing near 24870-24893; wait for pullback rejection at range edges before pre entries.\",\"invalidates\":\"clean break/hold beyond 24815 or 25054 with flow confirming\"}",
+ "reread": "{\"bias\":\"short\",\"note\":\"Open rejected 24884 back through 24815, breaking overnight low struct; sellers in control into gold window, favor short pullback rejections.\"}",
+ "turns": [
+  {
+   "minute": "2026-02-19 09:48:00-05:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2026-02-19_0948_l_632) filled at 24817.25 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

@@ -1,0 +1,404 @@
+{
+ "lane": "Helios \u2014 session, time & news context",
+ "mandate": "Helios owns the clock. It is the only specialist that judges WHEN a candidate is valid: it re-derives entry-window membership of the trigger candle's close from raw config (\u00a71), independently recomputes the session-box label and cross-checks it against Snapshot.session (catching stale session.boxes config or session_of bugs), enforces the TIME half of the pre-09:30 rule by verifying the NY-VWAP family is null before its anchor (\u00a73/architecture invariant 1), verifies temporal integrity of the snapshot payload (Snapshot.ts == Trigger.ts, no future-dated bar_ts or data-level event_time \u2014 a lookahead tripwire), classifies each data-level row as final vs still-developing against its N-minute formation window (\u00a72), determines news-day status for the \u00a76.3 override to the extent the Snapshot permits (honestly emitting \"unknown\" when later-today releases are invisible), computes the late-window-entry sizing flag (\u00a79), and surfaces session-integrity anomalies (weekend/maintenance timestamps, suspected CME holidays/early closes, quarterly roll weeks) as auditable context for the human. Helios never judges price structure, cluster composition, candle anatomy, direction, or trade construction \u2014 it reads timestamps, nulls, and impact tags, not prices (data_high/data_low are deliberately outside its allowlist).",
+ "strategy_slice_refs": [
+  "\u00a71 (Instrument, Session, Timeframes \u2014 entry-window variants W1/W2/W3, entry TFs, EOD flatten context)",
+  "\u00a72 rows: NY session VWAP (anchored 09:30, does NOT exist pre-market), Daily VWAP (18:00 ET anchor, the ONLY VWAP pre-9:30), Session boxes, Data levels (extremes within N min of releases)",
+  "\u00a73 sentence: 'Pre-9:30, the VWAP family = daily VWAP only'",
+  "\u00a75.2 sentence: 'Candle must CLOSE to confirm'",
+  "\u00a76.3 (News-day override \u2014 high-impact data days, elevated sweep probability)",
+  "\u00a77 news handling sentence (data is bias/target input, not blackout; H4 'no entry within N min of release' = test-only)",
+  "\u00a79 clause: 'late-window entry \u2192 half [unit]'",
+  "\u00a712.2 (divergences audited \u2014 context for integrity flagging)"
+ ],
+ "snapshot_allowlist": [
+  "ts",
+  "session",
+  "ref_price",
+  "session_high",
+  "session_low",
+  "indicators.ts",
+  "indicators.tfs.1min.bar_ts",
+  "indicators.tfs.2min.bar_ts",
+  "indicators.tfs.3min.bar_ts",
+  "indicators.tfs.5min.bar_ts",
+  "indicators.ny_vwap.mid",
+  "indicators.ny_vwap.upper_1",
+  "indicators.ny_vwap.upper_2",
+  "indicators.ny_vwap.upper_3",
+  "indicators.ny_vwap.lower_1",
+  "indicators.ny_vwap.lower_2",
+  "indicators.ny_vwap.lower_3",
+  "indicators.daily_vwap.mid",
+  "data_levels[].event",
+  "data_levels[].impact",
+  "data_levels[].event_time"
+ ],
+ "trigger_allowlist": [
+  "ts",
+  "tf"
+ ],
+ "config_refs": [
+  "session.timezone",
+  "session.entry_window",
+  "session.entry_windows.W1.start",
+  "session.entry_windows.W1.end",
+  "session.entry_windows.W2.start",
+  "session.entry_windows.W2.end",
+  "session.eod_flatten",
+  "session.boxes.asia.start",
+  "session.boxes.asia.end",
+  "session.boxes.london.start",
+  "session.boxes.london.end",
+  "session.boxes.ny.start",
+  "session.boxes.ny.end",
+  "timeframes.entry",
+  "indicators.ny_vwap.anchor",
+  "indicators.daily_vwap.anchor",
+  "indicators.data_levels.window_min",
+  "targets.news_day_override",
+  "filters.news_entry_buffer_enabled",
+  "filters.news_entry_buffer_min",
+  "sizing.late_window_min (PROPOSED \u2014 does not exist yet; see open questions)"
+ ],
+ "checks": [
+  {
+   "name": "entry_window_validity",
+   "rule_ref": "\u00a71 (entry window, active TOURNAMENT variant)",
+   "pass_condition": "Let t = wall-clock ET time of Trigger.ts (the candle CLOSE, parsed from the tz-aware ISO string \u2014 never offset arithmetic). Let (start, end) = session.entry_windows.{session.entry_window}.start/.end. If start < end (non-wrapping, e.g. W1): pass iff start <= t < end. If start > end (wrapping, e.g. W2 18:00\u219215:55): pass iff t >= start OR t < end. Otherwise fail.",
+   "inputs": [
+    "Trigger.ts",
+    "config:session.entry_window",
+    "config:session.entry_windows.<active>.start",
+    "config:session.entry_windows.<active>.end",
+    "config:session.timezone"
+   ],
+   "kind": "recompute",
+   "fail_note": "Veto. Trigger closed outside the active entry window \u2014 either an engine filtering bug or a stale entry_window config. Note the engine/Vault must ALSO enforce this deterministically; Helios is the independent cross-check, never the sole enforcement."
+  },
+  {
+   "name": "session_label_recompute",
+   "rule_ref": "\u00a72 (session boxes row) \u2014 engine cross-check",
+   "pass_condition": "Recompute the box label for Trigger.ts from raw config: for each box in session.boxes (in declared order), t is inside iff start <= t < end when start <= end, else (t >= start OR t < end); label = first matching box name, or \"\" if none (the 16:00\u201318:00 ET gap is legitimately \"\"). Pass iff recomputed label == Snapshot.session exactly (including the empty-string case).",
+   "inputs": [
+    "Snapshot.session",
+    "Trigger.ts",
+    "config:session.boxes.{asia,london,ny}.{start,end}"
+   ],
+   "kind": "recompute",
+   "fail_note": "Veto. Snapshot.session disagrees with an independent re-derivation from config \u2014 session_of bug or config drift; downstream session-extreme targets are suspect."
+  },
+  {
+   "name": "timestamp_coherence",
+   "rule_ref": "\u00a75.2 ('Candle must CLOSE to confirm') + architecture invariants 2\u20133 (tz-aware ET, closed candles / no-lookahead)",
+   "pass_condition": "ALL of: (a) Snapshot.ts == Trigger.ts == indicators.ts after ISO parse; (b) every non-null indicators.tfs.{1min,2min,3min,5min}.bar_ts <= Snapshot.ts (no future-stamped bar = lookahead tripwire); (c) for the trigger's own TF, 0 <= (Trigger.ts \u2212 indicators.tfs.{Trigger.tf}.bar_ts) <= one Trigger.tf period (tolerating the START-labeled 1min base frame), i.e. the trigger was evaluated on a just-closed candle, not stale data.",
+   "inputs": [
+    "Snapshot.ts",
+    "Snapshot.indicators.ts",
+    "Trigger.ts",
+    "Trigger.tf",
+    "Snapshot.indicators.tfs.{1min,2min,3min,5min}.bar_ts",
+    "config:timeframes.entry"
+   ],
+   "kind": "recompute",
+   "fail_note": "Veto. Snapshot and Trigger are temporally inconsistent or the trigger-TF bar is stale \u2014 a data gap at the trigger or a builder bug; nothing downstream can be trusted."
+  },
+  {
+   "name": "premarket_vwap_time_regime",
+   "rule_ref": "\u00a73 ('Pre-9:30, the VWAP family = daily VWAP only') + \u00a72 NY VWAP row + architecture invariant 1",
+   "pass_condition": "Let t = ET time of Trigger.ts, anchor = indicators.ny_vwap.anchor. If t < anchor (pre-market): pass iff EVERY indicators.ny_vwap field (mid, upper_1..3, lower_1..3) is null AND indicators.daily_vwap.mid is non-null. If t >= anchor + one Trigger.tf period and t < 17:00 ET: pass iff indicators.ny_vwap.mid is non-null. In the grace interval [anchor, anchor + one Trigger.tf period): no ny_vwap requirement (first NY bar may not have closed). Also emit flags.premarket = (t < anchor).",
+   "inputs": [
+    "Trigger.ts",
+    "Trigger.tf",
+    "Snapshot.indicators.ny_vwap.{mid,upper_1,upper_2,upper_3,lower_1,lower_2,lower_3}",
+    "Snapshot.indicators.daily_vwap.mid",
+    "config:indicators.ny_vwap.anchor"
+   ],
+   "kind": "recompute",
+   "fail_note": "Veto. NY VWAP leaking pre-market poisons cluster composition (Atlas independently checks the composition half \u2014 no cluster member named nyvwap_* pre-anchor; this is the deliberate dual-key). Null NY VWAP well after the open, or null daily VWAP, means broken indicators."
+  },
+  {
+   "name": "data_level_availability",
+   "rule_ref": "\u00a72 (data levels: extremes printed within N min of releases) + \u00a76.3 input integrity",
+   "pass_condition": "Every data_levels[].event_time <= Snapshot.ts (a future-dated event in the snapshot = engine lookahead bug = FAIL). Additionally classify each row: developing iff event_time + indicators.data_levels.window_min > Snapshot.ts \u2014 its extreme is still forming and must be listed in flags.developing_data_levels[] (an output obligation, not a gate failure); rows with elapsed windows are final and usable as \u00a76.3/\u00a76 target inputs.",
+   "inputs": [
+    "Snapshot.data_levels[].event_time",
+    "Snapshot.data_levels[].event",
+    "Snapshot.ts",
+    "config:indicators.data_levels.window_min"
+   ],
+   "kind": "recompute",
+   "fail_note": "Veto on any future-dated event_time (lookahead). Developing rows never veto but MUST be flagged so Hephaestus/the human do not treat a half-formed data extreme as a final target level."
+  },
+  {
+   "name": "news_day_classification",
+   "rule_ref": "\u00a76.3 (news-day override on high-impact data days)",
+   "pass_condition": "Emit flags.news_day per this exact rule: 'high_impact' iff at least one data_levels row has impact == 'high' AND event_time falls in the current CME session (session date derived via the indicators.daily_vwap.anchor 18:00 ET boundary, matching engine grouping); otherwise 'unknown' \u2014 never 'normal', because the Snapshot carries only PAST events and a later-today high-impact release is invisible without an engine-provided news_context field. Gate passes iff the emitted value follows this derivation; any other value, or use of outside/world knowledge of the economic calendar, is a fail. Stale rows from prior sessions must be excluded from the classification.",
+   "inputs": [
+    "Snapshot.data_levels[].impact",
+    "Snapshot.data_levels[].event_time",
+    "Snapshot.ts",
+    "config:targets.news_day_override",
+    "config:indicators.daily_vwap.anchor"
+   ],
+   "kind": "recompute",
+   "fail_note": "Fail-closed on malformed output. 'unknown' does NOT veto \u2014 it is surfaced to Hermes/the human; whether unknown downgrades the \u00a76.3 override is an Angus call (open question). The calendar file itself is engine input; Helios must never read files or supply calendar facts from memory."
+  },
+  {
+   "name": "late_window_entry",
+   "rule_ref": "\u00a79 (sizing: 'late-window entry' \u2192 half unit)",
+   "pass_condition": "Compute minutes_to_window_close = (active window end \u2212 Trigger.ts) in wall-clock ET, wrap-aware for W2. Emit flags.late_window_entry = (minutes_to_window_close <= sizing.late_window_min). Gate = pass whenever the flag and minutes_to_window_close are computed and emitted; gate = fail only if inputs are missing/uncomputable (fail-closed). This is an ADVISORY sizing input, never a trade veto \u2014 \u00a79 makes late-window a half-unit condition, not a skip.",
+   "inputs": [
+    "Trigger.ts",
+    "config:session.entry_windows.<active>.end",
+    "config:sizing.late_window_min (PROPOSED \u2014 missing key, see open questions)",
+    "config:session.timezone"
+   ],
+   "kind": "recompute",
+   "fail_note": "The flag feeds \u00a79 half-unit sizing, which Helios does not apply \u2014 see split_concerns for who composes \u00a79 (recommendation: Vault recomputes deterministically; Helios's flag is the cross-check)."
+  },
+  {
+   "name": "session_integrity",
+   "rule_ref": "\u00a71 (session definition) + \u00a712.2 (divergences audited) \u2014 weak \u00a7 anchor, flagged for Angus; no constitution rule covers holidays/roll explicitly",
+   "pass_condition": "Hard gate (binary): ref_price is non-null AND Trigger.ts is NOT inside a known CME closed period (Saturday any time; Sunday before 18:00 ET; Friday at/after 17:00 ET; the 17:00\u201318:00 ET daily maintenance break) \u2014 a trigger stamped inside a closure is corrupt data. Advisory half (never fails the gate): populate flags.session_anomalies[] with any of \u2014 suspected CME full holiday or early close for the trigger date (LLM calendar knowledge, clearly labeled 'suspected \u2014 engine has no holiday input'); quarterly futures roll week (mid Mar/Jun/Sep/Dec); Snapshot.session == '' at trigger time; null session_high/session_low during an active session.",
+   "inputs": [
+    "Snapshot.ref_price",
+    "Snapshot.ts",
+    "Snapshot.session",
+    "Snapshot.session_high",
+    "Snapshot.session_low",
+    "Trigger.ts"
+   ],
+   "kind": "judgment",
+   "fail_note": "Hard half vetoes (data from a closed market is unusable). Advisory anomalies are for the human's audit trail only \u2014 the Snapshot carries no roll flag, holiday calendar, or gap statistics, so these are judgment-flagged suspicions, not verdicts (missing engine fields listed in open questions)."
+  }
+ ],
+ "output_schema_proposal": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HeliosVerdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+   "agent",
+   "prompt_version",
+   "trigger_ts",
+   "verdict",
+   "gates",
+   "flags",
+   "computed",
+   "thesis"
+  ],
+  "properties": {
+   "agent": {
+    "const": "helios"
+   },
+   "prompt_version": {
+    "type": "string",
+    "description": "semver of .claude/agents/helios.md \u2014 prompt edits are versioned like code"
+   },
+   "trigger_ts": {
+    "type": "string",
+    "description": "ISO-8601 ET; must byte-echo Trigger.ts"
+   },
+   "verdict": {
+    "enum": [
+     "pass",
+     "fail"
+    ],
+    "description": "AND of all gates; Hermes recomputes and treats any mismatch, missing field, or invalid JSON as fail (fail-closed)"
+   },
+   "gates": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "entry_window_validity",
+     "session_label_recompute",
+     "timestamp_coherence",
+     "premarket_vwap_time_regime",
+     "data_level_availability",
+     "news_day_classification",
+     "late_window_entry",
+     "session_integrity"
+    ],
+    "properties": {
+     "entry_window_validity": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "session_label_recompute": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "timestamp_coherence": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "premarket_vwap_time_regime": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "data_level_availability": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "news_day_classification": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "late_window_entry": {
+      "enum": [
+       "pass",
+       "fail"
+      ],
+      "description": "computability only \u2014 the substantive output is flags.late_window_entry"
+     },
+     "session_integrity": {
+      "enum": [
+       "pass",
+       "fail"
+      ],
+      "description": "hard half only; advisory anomalies never fail this gate"
+     }
+    }
+   },
+   "flags": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "premarket",
+     "late_window_entry",
+     "news_day",
+     "developing_data_levels",
+     "session_anomalies"
+    ],
+    "properties": {
+     "premarket": {
+      "type": "boolean",
+      "description": "Trigger.ts ET time < indicators.ny_vwap.anchor (\u00a73 time half)"
+     },
+     "late_window_entry": {
+      "type": "boolean",
+      "description": "\u00a79 half-unit input"
+     },
+     "news_day": {
+      "enum": [
+       "high_impact",
+       "unknown",
+       "normal"
+      ],
+      "description": "'normal' is only emittable once the engine provides a forward-looking news_context Snapshot field; until then the derivation rule permits only high_impact|unknown"
+     },
+     "developing_data_levels": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "event names whose N-min formation window has not elapsed at Snapshot.ts"
+     },
+     "session_anomalies": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "advisory: suspected holiday/early close, roll week, session=='' at trigger, null session extremes"
+     }
+    }
+   },
+   "computed": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "active_window",
+     "window_start",
+     "window_end",
+     "minutes_since_window_open",
+     "minutes_to_window_close",
+     "recomputed_session",
+     "trigger_weekday_et"
+    ],
+    "properties": {
+     "active_window": {
+      "type": "string",
+      "description": "echo of config session.entry_window, e.g. W1"
+     },
+     "window_start": {
+      "type": "string"
+     },
+     "window_end": {
+      "type": "string"
+     },
+     "minutes_since_window_open": {
+      "type": "number"
+     },
+     "minutes_to_window_close": {
+      "type": "number"
+     },
+     "recomputed_session": {
+      "enum": [
+       "asia",
+       "london",
+       "ny",
+       ""
+      ]
+     },
+     "trigger_weekday_et": {
+      "enum": [
+       "Mon",
+       "Tue",
+       "Wed",
+       "Thu",
+       "Fri",
+       "Sat",
+       "Sun"
+      ]
+     }
+    },
+    "description": "shown work \u2014 lets Hermes and the human audit the arithmetic behind every gate"
+   },
+   "thesis": {
+    "type": "string",
+    "maxLength": 400,
+    "description": "2\u20133 sentence human-auditable time/session/news narrative, e.g. 'Trigger 09:42 ET, W1 window with 78 min remaining, NY session confirmed, CPI 08:30 high-impact extremes final and in play \u2014 news day.'"
+   }
+  }
+ },
+ "edge_cases": [
+  "W2 wraps midnight (18:00 \u2192 15:55): all window arithmetic must be wrap-aware \u2014 a 16:30 ET trigger is OUTSIDE W2 (after flatten, before reopen) even though 16:30 is 'between' the configured times numerically.",
+  "Boundary closes: a candle closing exactly at window start (08:00:00) or end (11:00:00). Recommend half-open [start, end) on the CLOSE timestamp; a 5min candle closing exactly 11:00 uses 10:55\u201311:00 data \u2014 inside or out is a trading-semantics call for Angus (sample includes a 10:52 winner, so strictly-before is safe).",
+  "Trigger close exactly at 09:30: the candle's data is entirely pre-market but ts.time() == anchor; ny_vwap is all-null because no NY bar has closed \u2014 flags.premarket must use strict t < anchor while the vwap-regime check tolerates null ny_vwap in the [anchor, anchor + one TF period) grace interval.",
+  "DST transition days: compare wall-clock ET extracted from the tz-aware ISO ts only (architecture invariant 2); never do offset arithmetic; do not infer anomalies from that day's unusual bar count.",
+  "Release at 07:50 with window_min = 15: the formation window completes 08:05, inside W1 \u2014 an 08:00\u201308:04 trigger sees a DEVELOPING extreme that must be flagged, not treated as final.",
+  "Two calendar events at the same minute (e.g. 2026-03-02 10:00 ISM Manufacturing PMI + ISM Manufacturing Prices): two data_levels rows share event_time; classify per-row, news_day derives from ANY high-impact row.",
+  "CPI day, trigger at 08:15 before the 08:30 release: data_levels is empty (or holds only stale rows) \u2014 news_day MUST be 'unknown', never 'normal'; later-today releases are invisible to the Snapshot.",
+  "Session-box gap 16:00\u201318:00 ET: session_of legitimately returns '' \u2014 session_label_recompute must reproduce '' rather than error; under W1 such a trigger also fails entry_window_validity (double failure is correct).",
+  "Trigger stamped Saturday, Sunday pre-18:00, or inside the 17:00\u201318:00 maintenance break: hard session_integrity fail \u2014 data from a closed market.",
+  "Stale data_levels: sessions.data_levels() scans the ENTIRE past calendar over the full closed frame with no expiry, so February events appear in a March snapshot; news_day must filter to current-session event_time, and the unbounded retention is flagged upstream (it also leaks stale rows into target_menu \u2014 Hephaestus lane).",
+  "Suspected CME early close (e.g. 13:00 ET day-after-Thanksgiving): W1 08:00\u201311:00 is technically still valid but eod_flatten and session extremes are distorted \u2014 advisory anomaly only, since no holiday input exists.",
+  "Quarterly roll week (mid Mar/Jun/Sep/Dec): front-month switch (data.py volume-based roll) can step prices vs prior-day/week levels; Snapshot carries no roll flag \u2014 advisory anomaly from date arithmetic only, clearly labeled as suspicion."
+ ],
+ "open_questions_for_spec3": [
+  "MISSING SNAPSHOT FIELD (biggest): news_context \u2014 engine-computed {is_high_impact_day: bool, todays_events: [{event, impact, scheduled_ts, occurred: bool}], minutes_to_next_release, minutes_since_last_release}, derived from config/news_calendar.csv for the CURRENT CME session including not-yet-occurred events. This is NOT lookahead \u2014 the calendar is a known-ex-ante input file. Without it Helios can never emit news_day='normal' and cannot support \u00a76.3 before the release prints, and the H4 buffer (filters.news_entry_buffer_*) is unimplementable. Agents must not read files, so the engine must surface it.",
+  "MISSING SNAPSHOT FIELD: session_integrity \u2014 {is_roll_session: bool (data.py already computes front-month change per 18:00 session), max_gap_minutes / bars_present_vs_expected in the current session, early_close: bool}. Requires adding a CME holiday/early-close calendar CSV to config/ (an input file like news_calendar.csv). Until then Helios's holiday/roll flags are labeled suspicions from LLM calendar knowledge \u2014 acceptable for the human audit trail, not for gating.",
+  "Window boundary semantics: is a candle CLOSING exactly at the window end (11:00:00 for W1) inside the window? Recommend half-open [start, end); trading-semantics call \u2014 Angus.",
+  "\u00a79 names 'late-window entry' as a half-unit input but no threshold exists in strategy.yaml. Propose sizing.late_window_min (CALIBRATE, needs an Angus start value, e.g. final 30 min of the active window) with the standard \u00a7-traceback comment.",
+  "data_levels retention: sessions.data_levels() emits every historical calendar event with bars \u2014 no expiry. Confirm intended horizon (current session only? trailing N sessions?). Stale rows also enter Snapshot.target_menu, which touches Hephaestus's lane.",
+  "Behavior of news_day='unknown' when targets.news_day_override is enabled: note-only in the thesis, size downgrade, or veto? Recommendation: note-only (H7 \u00a77 says news is bias/target input, not blackout) \u2014 but this is Angus's call, not engineering's.",
+  "Grace period for expecting non-null ny_vwap after the anchor: exactly one Trigger.tf period, or one 1min bar? Pin the constant in spec-3 so the check is deterministic.",
+  "Snapshot/Trigger carry no shared correlation id \u2014 timestamp string equality is the only join key. Consider adding trigger_id echoed in both (engineering; strengthens timestamp_coherence and the audit log).",
+  "Entry-window enforcement must ALSO exist deterministically in the engine/Vault path (detect_triggers start/end or a Vault time gate). Helios is cross-check (a) of the Desk's value proposition, never sole enforcement \u2014 spec-3 should state which deterministic layer owns primary window rejection so a Desk outage cannot admit out-of-window trades.",
+  "Weak \u00a7 anchor for session_integrity: the constitution has no explicit holiday/roll/gap rule. Flag to Angus whether v1.1 should add a session-integrity clause (e.g. 'no entries on early-close days') or whether it stays advisory-only."
+ ],
+ "split_concerns": "Four seams in the proposed split touch my lane. (1) \u00a79 sizing composition: 'late-window entry' is a time fact (Helios) but half-unit sizing is trade construction (Hephaestus) \u2014 and specialists cannot see each other's outputs, so Hephaestus can never consume my flag. Either Hermes composes \u00a79 from Helios.flags.late_window_entry + Atlas/Apollo confluence + Hephaestus target-R, or (recommended, cleaner) the Vault recomputes \u00a79 deterministically and my flag is a cross-check that must agree; spec-3 must pick one and say so. (2) \u00a76.3 news-day override: Helios owns 'is it a news day', Hephaestus owns applying the target override, but Hephaestus can't read my news_day flag. Options: Hephaestus independently re-derives day status from data_levels impacts (duplicated logic, but preserves independence and gives Hermes a consistency cross-check \u2014 I mildly favor this), or the engine's proposed news_context field is read by both lanes. (3) Pre-09:30 rule is deliberately dual-keyed: Helios owns the TIME half (ny_vwap fields null before anchor), Atlas owns the COMPOSITION half (no nyvwap_* members in the trigger's cluster) \u2014 this overlap is intentional defense-in-depth, not a gap, but spec-3 should state it explicitly so neither lane drops its half assuming the other covers it. (4) Entry-window checking overlaps the engine (detect_triggers start/end) and the Vault: fine \u2014 the Desk's stated value is independent re-derivation \u2014 but a deterministic layer must remain the primary enforcer so the Desk failing open/closed never changes window semantics. No gaps found otherwise: MTF arbitration timing (\u00a71 shared-close resolution) is trigger anatomy and correctly sits with Apollo; data-level PRICES (are extremes in play as levels/targets) correctly sit with Atlas/Hephaestus \u2014 Helios deliberately reads only event/impact/event_time, never data_high/data_low."
+}

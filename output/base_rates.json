@@ -1,0 +1,264 @@
+{
+ "generated_from_days": 892,
+ "asof_cutoff": "full_history",
+ "note": "Realized best-action base rates from the oracle+stand-down ledger (1 NQ contract, $20/pt). 'FLAT' = both books lost (or made $0). red_folder is only populated 2026+ until the historical calendar lands \u2014 treat the 'clear' bucket as mixed before then.",
+ "topline": {
+  "n": 892,
+  "p_flat": 0.47,
+  "p_rotation": 0.25,
+  "p_momentum": 0.28,
+  "oracle_sd_mean": 288.56,
+  "rotation_book_mean": -48.42,
+  "momentum_book_mean": -16.36
+ },
+ "by_year": {
+  "2023": {
+   "n": 253,
+   "p_flat": 0.45,
+   "p_rotation": 0.23,
+   "p_momentum": 0.32,
+   "oracle_sd_mean": 286.7,
+   "rotation_book_mean": -64.64,
+   "momentum_book_mean": 14.9
+  },
+  "2024": {
+   "n": 257,
+   "p_flat": 0.43,
+   "p_rotation": 0.29,
+   "p_momentum": 0.28,
+   "oracle_sd_mean": 290.38,
+   "rotation_book_mean": -9.64,
+   "momentum_book_mean": -23.53
+  },
+  "2025": {
+   "n": 252,
+   "p_flat": 0.51,
+   "p_rotation": 0.23,
+   "p_momentum": 0.27,
+   "oracle_sd_mean": 245.11,
+   "rotation_book_mean": -94.36,
+   "momentum_book_mean": -74.62
+  },
+  "2026": {
+   "n": 130,
+   "p_flat": 0.53,
+   "p_rotation": 0.27,
+   "p_momentum": 0.2,
+   "oracle_sd_mean": 372.83,
+   "rotation_book_mean": -4.49,
+   "momentum_book_mean": 49.9
+  }
+ },
+ "by_day_type": {
+  "balanced": {
+   "n": 397,
+   "p_flat": 0.45,
+   "p_rotation": 0.27,
+   "p_momentum": 0.28,
+   "oracle_sd_mean": 293.68,
+   "rotation_book_mean": -42.49,
+   "momentum_book_mean": -4.18
+  },
+  "imbalanced": {
+   "n": 493,
+   "p_flat": 0.49,
+   "p_rotation": 0.24,
+   "p_momentum": 0.27,
+   "oracle_sd_mean": 283.45,
+   "rotation_book_mean": -53.71,
+   "momentum_book_mean": -26.14
+  }
+ },
+ "by_value_position": {
+  "above": {
+   "n": 221,
+   "p_flat": 0.45,
+   "p_rotation": 0.23,
+   "p_momentum": 0.32,
+   "oracle_sd_mean": 286.61,
+   "rotation_book_mean": -85.41,
+   "momentum_book_mean": -16.69
+  },
+  "below": {
+   "n": 145,
+   "p_flat": 0.54,
+   "p_rotation": 0.26,
+   "p_momentum": 0.2,
+   "oracle_sd_mean": 305.78,
+   "rotation_book_mean": -2.01,
+   "momentum_book_mean": -21.03
+  },
+  "inside": {
+   "n": 397,
+   "p_flat": 0.45,
+   "p_rotation": 0.27,
+   "p_momentum": 0.28,
+   "oracle_sd_mean": 293.68,
+   "rotation_book_mean": -42.49,
+   "momentum_book_mean": -4.18
+  },
+  "overlap_dn": {
+   "n": 59,
+   "p_flat": 0.53,
+   "p_rotation": 0.31,
+   "p_momentum": 0.17,
+   "oracle_sd_mean": 238.7,
+   "rotation_book_mean": -51.55,
+   "momentum_book_mean": -157.97
+  },
+  "overlap_up": {
+   "n": 68,
+   "p_flat": 0.47,
+   "p_rotation": 0.18,
+   "p_momentum": 0.35,
+   "oracle_sd_mean": 264.43,
+   "rotation_book_mean": -62.82,
+   "momentum_book_mean": 46.62
+  }
+ },
+ "by_imbal_share_20": {
+  "<0.35": {
+   "n": 23,
+   "p_flat": 0.43,
+   "p_rotation": 0.35,
+   "p_momentum": 0.22,
+   "oracle_sd_mean": 190.43,
+   "rotation_book_mean": -23.99,
+   "momentum_book_mean": -115.43
+  },
+  "0.35-0.5": {
+   "n": 342,
+   "p_flat": 0.47,
+   "p_rotation": 0.26,
+   "p_momentum": 0.27,
+   "oracle_sd_mean": 320.71,
+   "rotation_book_mean": -36.64,
+   "momentum_book_mean": 15.56
+  },
+  "0.5-0.65": {
+   "n": 411,
+   "p_flat": 0.48,
+   "p_rotation": 0.24,
+   "p_momentum": 0.27,
+   "oracle_sd_mean": 262.24,
+   "rotation_book_mean": -68.85,
+   "momentum_book_mean": -41.47
+  },
+  ">0.65": {
+   "n": 110,
+   "p_flat": 0.46,
+   "p_rotation": 0.24,
+   "p_momentum": 0.3,
+   "oracle_sd_mean": 293.85,
+   "rotation_book_mean": -18.31,
+   "momentum_book_mean": -11.55
+  }
+ },
+ "by_shock_percentile": {
+  "calm(<p50)": {
+   "n": 523,
+   "p_flat": 0.46,
+   "p_rotation": 0.25,
+   "p_momentum": 0.29,
+   "oracle_sd_mean": 285.97,
+   "rotation_book_mean": -53.12,
+   "momentum_book_mean": -12.23
+  },
+  "mid": {
+   "n": 227,
+   "p_flat": 0.46,
+   "p_rotation": 0.26,
+   "p_momentum": 0.28,
+   "oracle_sd_mean": 306.65,
+   "rotation_book_mean": -21.97,
+   "momentum_book_mean": -8.36
+  },
+  "elevated(>p85)": {
+   "n": 135,
+   "p_flat": 0.56,
+   "p_rotation": 0.22,
+   "p_momentum": 0.22,
+   "oracle_sd_mean": 259.25,
+   "rotation_book_mean": -75.38,
+   "momentum_book_mean": -51.54
+  }
+ },
+ "by_overnight_inventory": {
+  "short>40pts": {
+   "n": 100,
+   "p_flat": 0.48,
+   "p_rotation": 0.32,
+   "p_momentum": 0.2,
+   "oracle_sd_mean": 325.24,
+   "rotation_book_mean": -10.4,
+   "momentum_book_mean": -18.68
+  },
+  "neutral": {
+   "n": 651,
+   "p_flat": 0.46,
+   "p_rotation": 0.24,
+   "p_momentum": 0.3,
+   "oracle_sd_mean": 289.28,
+   "rotation_book_mean": -47.13,
+   "momentum_book_mean": 3.93
+  },
+  "long>40pts": {
+   "n": 139,
+   "p_flat": 0.53,
+   "p_rotation": 0.27,
+   "p_momentum": 0.2,
+   "oracle_sd_mean": 255.29,
+   "rotation_book_mean": -83.66,
+   "momentum_book_mean": -109.62
+  }
+ },
+ "by_red_folder": {
+  "clear": {
+   "n": 583,
+   "p_flat": 0.44,
+   "p_rotation": 0.28,
+   "p_momentum": 0.28,
+   "oracle_sd_mean": 295.88,
+   "rotation_book_mean": -21.81,
+   "momentum_book_mean": -21.87
+  },
+  "red_folder": {
+   "n": 309,
+   "p_flat": 0.54,
+   "p_rotation": 0.2,
+   "p_momentum": 0.26,
+   "oracle_sd_mean": 274.77,
+   "rotation_book_mean": -98.63,
+   "momentum_book_mean": -5.97
+  }
+ },
+ "by_imbal_streak": {
+  "0": {
+   "n": 397,
+   "p_flat": 0.47,
+   "p_rotation": 0.26,
+   "p_momentum": 0.27,
+   "oracle_sd_mean": 289.27,
+   "rotation_book_mean": -64.18,
+   "momentum_book_mean": -19.21
+  },
+  "1-2": {
+   "n": 354,
+   "p_flat": 0.48,
+   "p_rotation": 0.26,
+   "p_momentum": 0.25,
+   "oracle_sd_mean": 269.47,
+   "rotation_book_mean": -36.99,
+   "momentum_book_mean": -28.64
+  },
+  "3+": {
+   "n": 139,
+   "p_flat": 0.47,
+   "p_rotation": 0.2,
+   "p_momentum": 0.33,
+   "oracle_sd_mean": 331.68,
+   "rotation_book_mean": -34.34,
+   "momentum_book_mean": 23.18
+  }
+ }
+}

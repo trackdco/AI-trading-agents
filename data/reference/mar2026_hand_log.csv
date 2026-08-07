@@ -1,0 +1,21 @@
+# Angus's March 2026 backtest journal (extracted from "Backtesting March VWAP + Bollinger bands, New York session" PDF,
+# branch claude/ai-trading-agents-repo-r64muf commit be1fbb8). Times are APPROXIMATE (read from chart position tools,
+# +/-15-25min) — match with a wide window. Sizing ~50k fund. Totals: 8W/5L/3BE, +984pts, +$13,340 (through Mar 16).
+Date,Direction,Entry TF,Entry Time,Result,PNL Points,Setup Notes
+2026-03-02,long,3M,09:45,win,54,"NWOG filled; displaced through BB MA; retest rejection block; target +1 vwap stdv"
+2026-03-03,short,3M,10:00,win,140,"delivering from vwap; target London lows; 2&3m rejection after respecting BB MA; half size big stop"
+2026-03-04,short,1M,09:45,loss,-35,"BB MA + vwap rejection; LIMIT order rejection block ran through"
+2026-03-04,long,1M,10:15,win,110,"displacement through vwap+MA; MARKET order; 3:1 RR"
+2026-03-05,long,1M,09:45,loss,-22,"displacing through vwap; overbought RSI; should have BE'd at MA touch"
+2026-03-06,short,1M,09:50,loss,-22,"'retarded ass trade'"
+2026-03-09,long,1M,10:15,be,0,"only trading off BB MA; BE"
+2026-03-09,long,5M,10:45,win,232,"3&5m rejection broke vwap; entry retest MA + POC; TRAILED 5m candles to 15m level"
+2026-03-10,short,3M,09:55,loss,-40,"big rejection from vwap + BB MA; 3m rejection block entry"
+2026-03-10,long,1M,10:20,win,173,"displacement through vwap+MA MARKET order; scaled at 3m rejection (BE if stopped); TP1 AM high 50%, TP2 15m level"
+2026-03-11,long,2M,08:45,win,140,"PREMARKET displacement through MA after breaking VWAP-1; BE before open; ran to 15m MIG level; RR 4.14"
+2026-03-11,short,2M,10:05,win,113,"over-extension +2 vwap; rejection wick; LIMIT at POC exactly; target opposing -1 dev"
+2026-03-12,short,3M,10:00,win,94,"2,3,5m MA respect + displacement through vwap; CONTINUATION shorts ~2.5:1"
+2026-03-13,long,3M,08:40,win,81,"PREMARKET breakthrough 2&3m MA after respecting vwap + POC rejection"
+2026-03-13,long,3M,09:40,loss,-32,"broke through vwap; respected MA; solid rejection block"
+2026-03-13,short,2M,10:05,be,0,"big displacement through vwap+MA; entry on retest; targeting lows; brutal BE"
+2026-03-16,short,2M,08:40,be,0,"+2 stdv trend break through BB MA; entry retest, stops above high; uncountable (open candle = stop or tp)"

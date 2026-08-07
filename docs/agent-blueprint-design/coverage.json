@@ -1,0 +1,522 @@
+{
+ "rules": [
+  {
+   "ref": "\u00a71.1",
+   "rule_summary": "Instrument is NQ (CME), sized via MNQ where risk requires",
+   "owner_layer": "config",
+   "desk_agent": "",
+   "notes": "instrument.symbol / point_value_nq / point_value_mnq. Hephaestus's size proposal (\u00a79) chooses NQ vs MNQ units symbolically; the Vault risk ceiling (\u00a79.2) is what forces the MNQ downshift."
+  },
+  {
+   "ref": "\u00a71.2",
+   "rule_summary": "Active entry window W1 (08:00-11:00 ET) gates trigger emission",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "session.entry_window + session.entry_windows.W1. Desk re-check: Helios verifies Snapshot.ts falls inside the active window (outside = FAIL). Window variant is config-selected, never agent-selected."
+  },
+  {
+   "ref": "\u00a71.2",
+   "rule_summary": "W1 vs W2 entry-window tournament; backtest declares the winner",
+   "owner_layer": "backtest",
+   "desk_agent": "",
+   "notes": "TOURNAMENT. W2 runs with Vault risk parameters unchanged. Adoption of a non-W1 winner requires Angus sign-off + doc version bump (\u00a710.5)."
+  },
+  {
+   "ref": "\u00a71.2",
+   "rule_summary": "W3 other sessions (London etc.) - hypothesis H3",
+   "owner_layer": "not_applicable_phase3",
+   "desk_agent": "",
+   "notes": "Parked until v1 validates; intentionally not configured in strategy.yaml."
+  },
+  {
+   "ref": "\u00a71.3/\u00a710",
+   "rule_summary": "EOD flatten of any open position before CME close (default 15:55 ET)",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "session.eod_flatten. Explicitly a VAULT RULE, not strategy. Desk cannot own: agents never see open positions."
+  },
+  {
+   "ref": "\u00a71.4",
+   "rule_summary": "Entry TFs are exactly 1m/2m/3m/5m",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "timeframes.entry; resampled from the 1m base. Desk re-check: Apollo verifies Trigger.tf is in the allowlist and Trigger.ts sits on that TF's bar-close grid."
+  },
+  {
+   "ref": "\u00a71.4",
+   "rule_summary": "MTF arbitration: simultaneous valid triggers on multiple TFs -> take the highest TF",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "CONFIRMED-Angus; triggers._mtf_arbitrate. NOT re-derivable by the Desk - losing-TF triggers are not in the contract, so this is an engine-trust point. Hermes must only ever be handed the arbitrated winner; Apollo can only sanity-check the tf field."
+  },
+  {
+   "ref": "\u00a71.5",
+   "rule_summary": "15m context TF produces the HTF trend/range regime",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "snapshot._htf_regime (fractal swings, k=2). Raw 15m bars are not in the Snapshot, so the Desk consumes Snapshot.htf_regime as ground truth; the derived-flag consistency check is Atlas's (\u00a74 row)."
+  },
+  {
+   "ref": "\u00a71.5",
+   "rule_summary": "1h/4h context TFs provide HTF range extremes",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "timeframes.range_extreme_tfs. ENGINE GAP: session-anchored 4h resampler deferred (flagged in strategy.yaml); these levels are absent from Snapshot. Needed by Atlas for the \u00a77.2 location veto - until present Atlas must proxy with prior_day/week H/L and session extremes. Flag as a Snapshot-contract gap for Phase 3."
+  },
+  {
+   "ref": "\u00a72",
+   "rule_summary": "Bollinger Bands 20/SMA/close/2-sigma; basis (BB MA) is a core cluster level",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "indicators.bollinger.*. Agents cannot recompute BB (no raw bars in Snapshot). Apollo runs a corruption tripwire instead: tfs[tf].bb_lower <= bb_basis <= bb_upper for every entry TF."
+  },
+  {
+   "ref": "\u00a72",
+   "rule_summary": "NY session VWAP anchored 09:30 ET cash open; does NOT exist pre-market; bands 1/2/3-sigma",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "indicators.ny_vwap.anchor; architecture invariant 1. Desk re-check: Helios - if Snapshot.ts < 09:30 ET then indicators.ny_vwap.mid must be null; a non-null pre-market NY VWAP is an engine bug = FAIL (fail-closed cross-check is exactly the Desk's value)."
+  },
+  {
+   "ref": "\u00a72",
+   "rule_summary": "Daily VWAP: CORE component, CME 18:00 ET anchor, full 1/2/3-sigma band set, the only VWAP pre-9:30",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "indicators.daily_vwap.* (anchor CONFIRMED). Helios re-checks daily_vwap.mid is present at all times; missing/null = FAIL (fail-closed on stale indicators)."
+  },
+  {
+   "ref": "\u00a72",
+   "rule_summary": "Volume profile (session + daily): POC, VAH/VAL, HVN/LVN; POC is a core cluster level",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "indicators.volume_profile.*; value_area_pct=70 is a PLACEHOLDER pending Angus. Atlas consumes daily_profile.poc/vah/val in cluster and target re-derivation."
+  },
+  {
+   "ref": "\u00a72",
+   "rule_summary": "Weekly profile anchor as a tested variant",
+   "owner_layer": "not_applicable_phase3",
+   "desk_agent": "",
+   "notes": "volume_profile.weekly_enabled=false (TOURNAMENT flag). If adopted post-tournament it becomes an engine computation feeding the same lanes."
+  },
+  {
+   "ref": "\u00a72",
+   "rule_summary": "Session boxes Asia/London/NY provide session extremes for targets/liquidity",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "session.boxes.* (PLACEHOLDER clock times pending Angus). Feeds Snapshot.target_menu *_session_high/low. Helios re-checks Snapshot.session label is consistent with ts."
+  },
+  {
+   "ref": "\u00a72",
+   "rule_summary": "Data levels: extremes printed within N min of scheduled releases; role = bias + targets",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "indicators.data_levels.window_min (CALIBRATE, start 15). Helios re-checks each Snapshot.data_levels entry's event_time is a real calendar release within the window. Feeds \u00a76.3 override and \u00a77.5 news handling."
+  },
+  {
+   "ref": "\u00a72",
+   "rule_summary": "MIG LiquidityEdge is EXCLUDED; journal MIG targets re-map to nearest computable level",
+   "owner_layer": "human",
+   "desk_agent": "",
+   "notes": "Angus scope decision, enforced structurally (engine computes no MIG inputs, so no agent can reference one). Re-mapping is Phase-2 calibration work (\u00a712.2); a native absorption detector is a future module requiring separate validation + sign-off."
+  },
+  {
+   "ref": "\u00a73.1",
+   "rule_summary": "Confluence cluster: >=2 distinct level types within proximity tolerance",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "cluster.min_level_types + cluster.tolerance_points/tolerance_pct (CALIBRATE, start ~10 pts / 0.04%). PRIMARY Atlas re-check: re-derive the cluster from raw prices in Snapshot.indicators (tfs.*.bb_basis, daily_vwap/ny_vwap mid+bands, daily_profile.poc) and confirm Trigger.cluster_center and composition match; mismatch = FAIL."
+  },
+  {
+   "ref": "\u00a73.1",
+   "rule_summary": "Pre-9:30 the VWAP family = daily VWAP only",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "Automatic in engine (NY VWAP null upstream, snapshot._gather_levels skips). Desk re-check assigned to Helios (time-gated): ts < 09:30 => no nyvwap_* member names in any Cluster.members."
+  },
+  {
+   "ref": "\u00a73.2",
+   "rule_summary": "Confluence count = distinct level TYPES touched (VWAP x1, BB x1, POC x1, structural x1)",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "Cluster.confluence_count/types. Atlas re-derives the type count and fails if Trigger.confluence_count differs. Note: engine's displacement path hard-codes count=2 (triggers.py _test_candle) - flag for verification that displacement confluence is counted per \u00a73.2, not floored."
+  },
+  {
+   "ref": "\u00a73.3",
+   "rule_summary": "Rejection block: trades into cluster, CLOSES back on trade side of all cluster levels, leaves wick through; tradeable zone = body edge to wick extreme",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "CONFIRMED-Angus; triggers._test_candle. Apollo re-check is currently PARTIAL: Trigger carries wick_low/wick_high/close but not the candle's full OHLC. CONTRACT GAP: add trigger-candle open/high/low so Apollo can fully re-derive (a)-(c). Zone bounds re-checkable now via wick_low/wick_high."
+  },
+  {
+   "ref": "\u00a73.4",
+   "rule_summary": "Displacement: body closes through >=2 cluster levels, body/range >= B_min, close in extreme quartile (top 25% long / bottom 25% short)",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "triggers.displacement.min_levels_through / body_range_min (CALIBRATE 0.6) / close_extreme_quartile; optional ATR floor atr_floor_k (CALIBRATE 1.0, disabled). Apollo re-check PARTIAL for the same OHLC-gap reason (range/high not derivable for longs); levels-through count re-checkable from indicators + close."
+  },
+  {
+   "ref": "\u00a73.5",
+   "rule_summary": "Over-extension = touch of NY VWAP +/-2-sigma (extreme = +/-3-sigma)",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "triggers.over_extension_sigma / over_extension_extreme_sigma. Feeds pattern-A classification (\u00a74) and 'A-at-extension' in \u00a79. Apollo re-checks candle extreme vs indicators.ny_vwap.upper_2/lower_2 (full re-derivation needs the OHLC contract fix)."
+  },
+  {
+   "ref": "\u00a74.A",
+   "rule_summary": "Pattern A (reversal): over-extension and/or HTF range extreme -> rejection block against prior move -> retest",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "Apollo re-check (binary): pattern==A => kind==rejection_block AND (over-extended per \u00a73.5 OR htf_flag==counter_trend). Any inconsistency = FAIL."
+  },
+  {
+   "ref": "\u00a74.B",
+   "rule_summary": "Pattern B (reclaim): wrong side of cluster -> displacement back through -> retest of reclaimed cluster",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "Apollo re-check (binary): kind==displacement <=> pattern==B."
+  },
+  {
+   "ref": "\u00a74.B2",
+   "rule_summary": "Pattern B2 (continuation): established move -> pullback to cluster -> rejection block with the move -> retest",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "Apollo re-check (binary): pattern==B2 => kind==rejection_block AND htf_flag==with_trend AND not over-extended."
+  },
+  {
+   "ref": "\u00a74",
+   "rule_summary": "HTF flag with_trend / counter_trend / range tagged per trade",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "triggers._htf_flag. Atlas re-check: Trigger.htf_flag must equal the deterministic map of Snapshot.htf_regime + Trigger.direction (range->range; uptrend+long->with_trend; etc.). The counter-trend confluence escalation it drives is enforced at \u00a77.1."
+  },
+  {
+   "ref": "\u00a75.1",
+   "rule_summary": "Detect the confluence cluster on each entry TF",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "detect_triggers evaluates all four TFs per close. Not desk-verifiable across TFs (Desk sees only the arbitrated winner); Atlas verifies the winning TF's cluster (\u00a73.1 row)."
+  },
+  {
+   "ref": "\u00a75.2",
+   "rule_summary": "Trigger must be a rejection block (A, B2) or displacement (B); the candle must CLOSE to confirm",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "Architecture invariant 3 (closed candles only; no-lookahead test). Apollo re-checks: kind is in {rejection_block, displacement}, Trigger.ts == Snapshot.ts, and ts is a completed-bar boundary for Trigger.tf."
+  },
+  {
+   "ref": "\u00a75.3",
+   "rule_summary": "Active entry limit rule E1: limit at the BB MA",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "entry.variant=E1; engine emits Trigger.entry_ref. Hephaestus re-check: Verdict.entry == Snapshot.indicators.tfs[Trigger.tf].bb_basis, tick-rounded (instrument.tick_size). Under E2/E3 the symbolic formula swaps (50% of wick span; nearest penetrated cluster level) - agent file references entry.variant, never a hard-coded rule."
+  },
+  {
+   "ref": "\u00a75.3",
+   "rule_summary": "E1/E2/E3 limit-price tournament (replaces 'what makes the most sense')",
+   "owner_layer": "backtest",
+   "desk_agent": "",
+   "notes": "TOURNAMENT, one axis at a time per \u00a712.3. Winner adoption = Angus sign-off + doc bump."
+  },
+  {
+   "ref": "\u00a75.4",
+   "rule_summary": "Stop goes beyond the wick extreme of the trigger candle / displacement origin; structural",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "Trigger.stop_ref. Hephaestus re-check (binary): long => Verdict.stop < Trigger.wick_low (strictly beyond, tick-rounded); short => Verdict.stop > Trigger.wick_high."
+  },
+  {
+   "ref": "\u00a75.4/\u00a710",
+   "rule_summary": "Stop is never widened",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "Vault-enforced order management post-verdict. Desk cannot own: agents never see open positions or working orders."
+  },
+  {
+   "ref": "\u00a75.5",
+   "rule_summary": "No fill -> no chase; order cancels if price runs T_cancel points beyond entry unfilled",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "entry.cancel_if_runs_points (CALIBRATE; PLACEHOLDER value flagged for Angus - doc gives no start number). Live order-lifecycle rule, deterministic; the backtest fill model mirrors it."
+  },
+  {
+   "ref": "\u00a75.6/\u00a710",
+   "rule_summary": "One position at a time; no overlapping trades ever",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "CONFIRMED-Angus; architecture invariant 4; entry.one_position_at_a_time. Desk is stateless per candidate and cannot own position-state rules."
+  },
+  {
+   "ref": "\u00a76",
+   "rule_summary": "Target menu: VWAP mid/+/-1/+/-2-sigma, POC, session extremes, data extremes, prior-day H/L, weekly H/L, pullback origin (B2), HTF range extremes",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "Snapshot.target_menu (Level list with signed distances). Hephaestus re-check: Verdict.target corresponds to a menu Level (\u2213 front-run F). ENGINE GAP: HTF 1h/4h extremes and B2 pullback-origin are not yet in the menu (deferred/trade-specific) - close before Phase 3."
+  },
+  {
+   "ref": "\u00a76.1",
+   "rule_summary": "Selection step 1: list opposing structural levels beyond entry, ordered by distance",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "target_menu.distance is signed (+ above price). Hephaestus filters the menu to the trade side (long: distance>0 beyond entry) when re-deriving the default target."
+  },
+  {
+   "ref": "\u00a76.2",
+   "rule_summary": "Default targets by pattern: A -> VWAP middle; B2 -> next structural level in move direction; B -> opposing liquidity preferring +/-2-sigma alignment",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "Deterministic selection tree (Spec-1 Step 7 territory). Hephaestus re-derives the default from Trigger.pattern + target_menu and FAILS if the proposed target deviates without a valid \u00a76.3 override."
+  },
+  {
+   "ref": "\u00a76.3",
+   "rule_summary": "News-day override: untaken data extreme beyond the default target becomes the target",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "CONFIRMED-Angus; targets.news_day_override=true. Deterministic given news_calendar + Snapshot.data_levels. Desk re-check split across lanes without sharing verdicts: Helios independently gates 'high-impact day + data extreme untaken' from data_levels; Hephaestus independently gates 'target == that data extreme when it lies beyond the default'. Both conditions are binary from Snapshot fields."
+  },
+  {
+   "ref": "\u00a76.3",
+   "rule_summary": "Fallback variant: VWAP -1/+1 as simpler news-override proxy",
+   "owner_layer": "not_applicable_phase3",
+   "desk_agent": "",
+   "notes": "targets.news_override_vwap_proxy=false; tournament variant to test."
+  },
+  {
+   "ref": "\u00a76.4",
+   "rule_summary": "Fill front-run: working target = level \u2213 F points",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "CONFIRMED-Angus; targets.front_run_points (CALIBRATE, start 2-3, mid 2.5). Hephaestus re-check: Verdict.target == menu level \u2213 F (long: level \u2212 F). Backtest mirror (target touched-minus-F counts as filled) lives in the backtest fill model."
+  },
+  {
+   "ref": "\u00a76.5",
+   "rule_summary": "RR floor: nearest valid target < 1.5R -> skip the trade",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "targets.rr_floor (CALIBRATE). Hephaestus re-derives R = (target\u2212entry)/(entry\u2212stop) from the Verdict's own numbers and FAILS below floor. Also feeds \u00a79 full-unit condition (target >= 2R)."
+  },
+  {
+   "ref": "\u00a76.6",
+   "rule_summary": "Alignment bonus: prefer targets where >=2 menu levels stack within tolerance",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "targets.alignment_min_stack; a preference/tie-break inside the deterministic tree, NOT a binary gate. Hephaestus notes stack alignment in the thesis; it must not veto on its absence."
+  },
+  {
+   "ref": "\u00a77.1/\u00a74",
+   "rule_summary": "Confluence minimum: 3 counter-trend; 2 with-trend (with-trend at reduced risk)",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "filters.min_confluence_counter_trend/with_trend. ENGINE GAP FLAG: detect_triggers currently emits any count>=2 with no htf-conditional filter - the filter must be applied engine-side pre-Desk (verify in Step 7/8), else Atlas's gate is the only stop. Atlas re-check (binary): confluence_count >= threshold(htf_flag), counter_trend threshold also applied when htf_flag==range unless Angus rules otherwise (ambiguity - escalate). The 'reduced risk' half is \u00a79/Hephaestus."
+  },
+  {
+   "ref": "\u00a77.2",
+   "rule_summary": "Location veto: no longs at HTF range top / no shorts at range bottom",
+   "owner_layer": "desk",
+   "desk_agent": "atlas",
+   "notes": "filters.location_veto. Judgment-shaped gate the Desk owns (engine 1h/4h extremes deferred). Binary pass: trade direction is not INTO the nearest opposing HTF extreme within cluster.tolerance_points, using prior_day/week H/L, session_high/low, and (once in contract) 1h/4h range extremes. Fail-closed if required fields missing."
+  },
+  {
+   "ref": "\u00a77.3",
+   "rule_summary": "Invalidation-at-entry: trigger candle simultaneously touching opposing +/-1-sigma -> stand down",
+   "owner_layer": "not_applicable_phase3",
+   "desk_agent": "",
+   "notes": "Hypothesis to test; filters.invalidation_at_entry=false. If promoted: engine mechanical check + Apollo re-check (needs trigger-candle OHLC in contract)."
+  },
+  {
+   "ref": "\u00a77.4",
+   "rule_summary": "Volatility stand-down (opening range vs ATR)",
+   "owner_layer": "not_applicable_phase3",
+   "desk_agent": "",
+   "notes": "[OPEN] - no computable definition yet; intentionally unconfigured. Natural future home is Helios (session/volatility lane) once Angus signs off a definition; must arrive as engine computation + Helios binary gate, not agent vibes."
+  },
+  {
+   "ref": "\u00a77.5",
+   "rule_summary": "News is a bias/target input, NOT a blackout",
+   "owner_layer": "desk",
+   "desk_agent": "helios",
+   "notes": "Helios must NOT veto solely for proximity to a release while H4 is disabled - its news gate verifies news context is correctly represented (data_levels present on release days, \u00a76.3 conditions evaluated) and otherwise passes. Guards against the LLM inventing an unwritten blackout rule; keeps \u00a77.5 semantics."
+  },
+  {
+   "ref": "\u00a77.5",
+   "rule_summary": "Slippage modeled punitively near releases",
+   "owner_layer": "backtest",
+   "desk_agent": "",
+   "notes": "fills.slippage_ticks_news + news_slippage_window_min (spec-1 fill realism). Backtest-only mechanics; no live-behavior owner."
+  },
+  {
+   "ref": "\u00a77.5",
+   "rule_summary": "H4: no entry within N min of release",
+   "owner_layer": "not_applicable_phase3",
+   "desk_agent": "",
+   "notes": "Test hypothesis; filters.news_entry_buffer_enabled=false (buffer_min PLACEHOLDER). If promoted: engine time filter + Helios re-check."
+  },
+  {
+   "ref": "\u00a78.V0",
+   "rule_summary": "Active trade management = V0 set-and-forget (baseline)",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "management.variant=V0. In-trade management is executed by the Vault (only layer that sees the open position); the Desk proposes nothing about management. Config selects the variant."
+  },
+  {
+   "ref": "\u00a78.V1",
+   "rule_summary": "V1: break-even on TOUCH of +1R (any TF tick), stop moved to entry exact",
+   "owner_layer": "not_applicable_phase3",
+   "desk_agent": "",
+   "notes": "Definition CONFIRMED-Angus; management.v1_be_at_r=1.0. Tournament variant, off by default; if it wins the head-to-head it becomes a Vault management rule."
+  },
+  {
+   "ref": "\u00a78.V2-V4",
+   "rule_summary": "V2 BE at first VWAP-band milestone; V3 BE at 09:30 open if entered pre-open; V4 50% partial at first structural level with runner",
+   "owner_layer": "not_applicable_phase3",
+   "desk_agent": "",
+   "notes": "Tournament variants (management.v4_partial_pct=50 for V4). Any winner becomes a deterministic Vault rule; never a Desk judgment."
+  },
+  {
+   "ref": "\u00a78",
+   "rule_summary": "Tournament protocol: variants over identical data, Monte Carlo distribution comparison, winner-or-V0 goes live; priority head-to-head V1 vs V0 over Jan-Jul first",
+   "owner_layer": "backtest",
+   "desk_agent": "",
+   "notes": "Adoption gate = Angus sign-off + doc version bump (\u00a710.5 governance). One axis at a time per \u00a712.3."
+  },
+  {
+   "ref": "\u00a79.1",
+   "rule_summary": "Full vs half unit: full requires 3+ confluences AND (with_trend OR A-at-extension) AND target >= 2R; any of {2 confluences, oversized stop, late-window entry, thin target} -> half",
+   "owner_layer": "desk",
+   "desk_agent": "hephaestus",
+   "notes": "Hephaestus proposes Verdict.size from Snapshot/Trigger only: confluence_count, htf_flag, pattern + \u00a73.5 extension state, re-derived RR, Snapshot.ts vs window end (late-window derivable without Helios's verdict), stop distance. All inputs binary/mechanical - Vault should deterministically recompute as backstop. CONFIG GAP: 'oversized stop' and 'late-window' thresholds are undefined - flag for Angus before Phase 3."
+  },
+  {
+   "ref": "\u00a79.2",
+   "rule_summary": "Absolute per-trade risk ceiling from Monte Carlo vs eval rules (well below sample's $400)",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "Value pending Spec-4 MC; intentionally absent from strategy.yaml. Vault clamps Hephaestus's proposed size; the Desk never knows the ceiling (account-state adjacent)."
+  },
+  {
+   "ref": "\u00a710.1",
+   "rule_summary": "Max trades/day: 3 (config range 2-3)",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "vault.max_trades_per_day. Desk structurally cannot own: agents never see today's trade count."
+  },
+  {
+   "ref": "\u00a710.2",
+   "rule_summary": "Daily halt after 2 losses or \u22122R on the day, whichever first",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "vault.daily_halt_losses / daily_halt_r (placeholder; MC calibrates). Desk never sees P&L/outcomes - Vault-only by construction."
+  },
+  {
+   "ref": "\u00a710.3",
+   "rule_summary": "Drawdown kill-switch vs trailing drawdown buffer",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "Parameters from Spec-4 MC + firm rules. Live-account state; no LLM access (architecture invariant 6)."
+  },
+  {
+   "ref": "\u00a710.4",
+   "rule_summary": "Every verdict (taken/skipped/vetoed) logged to strict-schema append-only journal with reason",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "Hermes's Verdict JSON is the logged artifact; a schema-invalid or missing Verdict is itself logged as a veto (fail-closed). Log feeds \u00a710.5 stats and \u00a712.5 diagnostics."
+  },
+  {
+   "ref": "\u00a710.5",
+   "rule_summary": "Nightly stats refresh; weekly Edge-Lab-style review generated as PROPOSALS ONLY",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "Offline deterministic analytics over the Vault journal; produces written hypotheses only; no write path to rules, config, or agent files."
+  },
+  {
+   "ref": "\u00a710.5",
+   "rule_summary": "Rule changes require out-of-sample evidence + Angus sign-off + strategy-doc version bump; the system never edits its own rules",
+   "owner_layer": "human",
+   "desk_agent": "",
+   "notes": "CONFIRMED-Angus. Extends to agent prompts: per ai-workflow-rules, an agent-file edit IS a strategy change (versioned, logged in progress-tracker)."
+  },
+  {
+   "ref": "\u00a711",
+   "rule_summary": "Agents grade against this doc and propose; Python owns sizing, stops, limits, kill-switch, execution",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "Enforced structurally: Vault has no import path from any LLM-calling module (architecture invariant 6); no Desk agent has an outbound channel. Hermes emits a Verdict proposal only - the pinned schema {trade, pattern, direction, entry, stop, target, size, grade, thesis, gates}."
+  },
+  {
+   "ref": "\u00a711 (+architecture.md)",
+   "rule_summary": "Hermes orchestration: poll the four specialists, require UNANIMITY, fail-closed on invalid/missing/late specialist output, assemble Verdict + auditable thesis",
+   "owner_layer": "desk",
+   "desk_agent": "hermes",
+   "notes": "One specialist fail = veto. Hermes never overrides a FAIL, adds no market judgment of its own, and never shows one specialist another's verdict (independence rule). Any non-schema JSON from a specialist = FAIL = veto; Verdict.gates records each named gate pass/fail for the journal."
+  },
+  {
+   "ref": "\u00a711",
+   "rule_summary": "Telegram alerts fire from the Vault only, post-risk-check",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "Phase 4; bot token lives Vault-side only. Reinforces the no-agent-outbound-channel constraint."
+  },
+  {
+   "ref": "\u00a711",
+   "rule_summary": "Inbound /status /pause /flatten commands locked to Angus's chat ID",
+   "owner_layer": "vault",
+   "desk_agent": "",
+   "notes": "Later phase; deterministic identity check in the Vault. Human-facing control surface, never routed through the Desk."
+  },
+  {
+   "ref": "\u00a712.1",
+   "rule_summary": "Data: 1-minute NQ Jan 2026 -> present via Databento; in-repo volume-based continuous front-month",
+   "owner_layer": "engine",
+   "desk_agent": "",
+   "notes": "data.primary_start; src/engine/data.py derives the unspliced front-month (auditable roll). Foundation for both backtest and live snapshots."
+  },
+  {
+   "ref": "\u00a712.1",
+   "rule_summary": "2025 data is a regime-robustness check ONLY, not pass/fail",
+   "owner_layer": "human",
+   "desk_agent": "",
+   "notes": "Evaluation-governance rule (the honesty guard); data.robustness_2025 flag. Interpreting robustness results is an Angus/analysis decision, not a mechanical gate."
+  },
+  {
+   "ref": "\u00a712.2",
+   "rule_summary": "February re-run must approximately reproduce the 28 hand trades; divergences audited one-by-one; skipped days traded only on valid triggers with gap analysis",
+   "owner_layer": "human",
+   "desk_agent": "",
+   "notes": "Angus-led Phase-2 gate over backtest output (data/reference/feb2026_hand_log.csv). Anti-tuning guardrail: divergences are reproduced + documented, never threshold-fitted away."
+  },
+  {
+   "ref": "\u00a712.3",
+   "rule_summary": "Tournaments W x E x V run as separate axes, one fixed at a time - no combinatorial grid search",
+   "owner_layer": "backtest",
+   "desk_agent": "",
+   "notes": "Overfitting guard; methodology enforced in the backtest harness and Angus review."
+  },
+  {
+   "ref": "\u00a712.4",
+   "rule_summary": "Mar-Jul 2026 out-of-sample untouched until rules lock",
+   "owner_layer": "human",
+   "desk_agent": "",
+   "notes": "Governance rule; worth a hard date-range guard in backtest config so a pre-lock run cannot silently read the OOS window."
+  },
+  {
+   "ref": "\u00a712.5",
+   "rule_summary": "Per-slice expectancy diagnostics: pattern x TF x confluence count x HTF flag x time bucket x news flag",
+   "owner_layer": "backtest",
+   "desk_agent": "",
+   "notes": "Leak-location tooling. Slice keys deliberately align with Trigger/Snapshot fields (pattern, tf, confluence_count, htf_flag, ts, data_levels) so the live Vault journal supports identical cuts."
+  },
+  {
+   "ref": "\u00a712.6",
+   "rule_summary": "Monte Carlo: winning config vs 50K eval (3K target / 2K trailing DD) -> pass probability, attempts/cost, blowup risk -> sizing config -> firm selection",
+   "owner_layer": "backtest",
+   "desk_agent": "",
+   "notes": "Spec 4. Output feeds the Vault size ceiling (\u00a79.2) and daily-halt calibration (\u00a710.2); firm selection is a human decision on MC output."
+  },
+  {
+   "ref": "\u00a712.7",
+   "rule_summary": "Live paper: TradingView charts, agents grade real-time, human executes",
+   "owner_layer": "human",
+   "desk_agent": "",
+   "notes": "Phase-5 operating mode. Desk still grades every candidate and the Vault still gates/logs verdicts before any alert reaches Angus; the human is the executor of last resort."
+  }
+ ]
+}

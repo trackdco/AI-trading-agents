@@ -1,0 +1,328 @@
+{
+ "orchestration_flow": "STEP 0 \u2014 STARTUP INTEGRITY (once per Desk boot, not per candidate): Hermes's runner loads the four specialist agent files (.claude/agents/{atlas,helios,apollo,hephaestus}.md) and asserts that each file's declared Snapshot/Trigger field allowlist and mandatory output schema exactly match the mirror copies Hermes carries (hash comparison). Drift = boot failure = no Desk cycles run (fail-closed). Also loads config/strategy.yaml once; Hermes references every threshold symbolically and never sees raw numbers it could 'adjust'.\n\nSTEP 1 \u2014 RECEIVE ONE (Snapshot, Trigger) PAIR: exactly one pydantic-serialized Snapshot JSON + one Trigger JSON per invocation, pushed by the Python Desk-runner when triggers.py fires (post \u00a71 MTF arbitration, so one trigger per candle close). Hermes is STATELESS per invocation: no memory of prior candidates, prior verdicts, or clock history (anything else would smuggle in prior-trade info, violating the ai-workflow-rules isolation clause).\n\nSTEP 2 \u2014 INPUT VALIDATION (transport hygiene, zero market judgment): (a) both payloads re-validate against the pinned Snapshot{ts, ref_price, session, htf_regime, indicators, session_high, session_low, prior_day_high, prior_day_low, prior_week_high, prior_week_low, clusters, data_levels, target_menu} and Trigger{ts, tf, direction, kind, pattern, htf_flag, entry_ref, stop_ref, wick_low, wick_high, cluster_center, confluence_count, close} schemas; (b) Trigger.ts == Snapshot.ts (the snapshot must be as-of the trigger candle's close \u2014 architecture invariant 3, closed candles only); (c) Trigger.tf \u2208 timeframes.entry; (d) Snapshot.ref_price is not null; (e) staleness guard (live mode only): now_ET \u2212 Trigger.ts \u2264 desk.staleness_max_s [PROPOSED config key]. Any failure \u2192 skip fan-out entirely and emit a VETOED Verdict with all gates='fail' and gate_reasons.*.code='input_invalid'|'input_mismatch'|'stale', logged per \u00a710. Timestamps compared as tz-aware ET values only (invariant 2) \u2014 no offset arithmetic.\n\nSTEP 3 \u2014 ALLOWLIST PROJECTION: build four payloads BEFORE any dispatch by projecting the Snapshot (and Trigger) through each specialist's declared allowlist. Projection is a pure whitelist: fields not on an agent's list are DROPPED (absent, not nulled \u2014 an agent cannot even see the shape of what it was denied). Declared-but-null fields (e.g. indicators.ny_vwap.mid pre-09:30) pass through as null \u2014 Hermes never 'cleans up' nulls; handling them is the specialist's \u00a7-anchored job (invariant 1). Hermes adds NOTHING: no derived fields, no annotations, no commentary, no other agent's output (structurally impossible \u2014 no specialist output exists yet at projection time). The per-agent allowlists themselves are owned by the four specialist specs; Hermes only enforces them.\n\nSTEP 4 \u2014 PARALLEL FAN-OUT: dispatch all four specialist subagent calls simultaneously (asyncio.gather / SDK parallel subagents). Isolation invariants: separate conversations, no shared files, no ordering dependency, no cross-talk channel. Each call carries a per-specialist deadline desk.specialist_timeout_s [PROPOSED] and the whole cycle a hard cap desk.desk_timeout_s [PROPOSED].\n\nSTEP 5 \u2014 COLLECT + VALIDATE EACH RESULT INDEPENDENTLY. A specialist's gate = 'pass' only if ALL of: (a) response arrived before its deadline; (b) parses as JSON; (c) validates strictly (additionalProperties: false) against that agent's mandatory output schema \u2014 extra fields, missing fields, wrong types all reject, per ai-workflow-rules 'anything but valid schema JSON is a bug'; (d) verdict field is exactly 'pass' or 'fail'; (e) every check in the agent's declared checklist is present as {pass: bool, ref: '\u00a7n'}; (f) internal-consistency identity holds: verdict == AND(all checks.pass). Clause (f) is contract validation of an arithmetic identity the specialist's own schema declares \u2014 it is NOT Hermes re-scoring whether a check should have passed; Hermes never evaluates market content. Any a\u2013f failure \u2192 gate='fail' with mechanical reason code (timeout | invalid_json | schema_violation | incomplete_checks | inconsistent_verdict). NO RETRIES [default proposal \u2014 Spec-3 open question]: single-shot, fail-closed; determinism beats recovery.\n\nSTEP 6 \u2014 TIMEOUT HANDLING DETAIL: Hermes does NOT short-circuit on the first failure. Even if Atlas fails at t+2s, it still waits (within desk_timeout_s) for Helios/Apollo/Hephaestus, because \u00a710 requires every vetoed verdict logged WITH per-gate reasons \u2014 the audit trail needs the full picture, and the marginal cost is zero since the calls are parallel. At desk_timeout_s, any unresolved specialist is stamped gate='fail', code='timeout'. Final staleness re-check before emission: if now_ET \u2212 Trigger.ts > desk.staleness_max_s the verdict is forced to trade=false with an additional 'stale' reason even if all four passed \u2014 a verdict about a candle that closed too long ago must never reach the Vault as tradeable. (Backtest mode bypasses the Desk entirely per architecture.md, so timeout paths are live-mode only.)\n\nSTEP 7 \u2014 UNANIMITY DECISION: trade = (atlas=='pass' AND helios=='pass' AND apollo=='pass' AND hephaestus=='pass'). Pure boolean AND \u2014 no weights, no quorum, no Hermes opinion.\n\nSTEP 8 \u2014 VERDICT ASSEMBLY (see verdict_assembly): populate the pinned schema field-by-field by verbatim copy from Trigger and specialist outputs; compute size/grade by the fixed \u00a79 lookup table over specialist-reported facts; compose the thesis from specialist finding strings; attach gates + PROPOSED-ADDITIVE gate_reasons/gate_checks metadata. Assembly-time assertions: trade=true \u21d2 all gates 'pass'; every numeric field traces to a copied source; thesis within length bounds.\n\nSTEP 9 \u2014 EMISSION: Hermes returns exactly one Verdict JSON to the Python Desk-runner and terminates. The runner (deterministic Python) re-validates the Verdict against the pinned pydantic model AND independently recomputes size/grade from the same reported facts; any mismatch or invalid Hermes output \u2192 the runner synthesizes a VETOED verdict with reason 'hermes_invalid'/'hermes_arithmetic_mismatch' \u2014 Hermes itself is subject to fail-closed. The runner hands the Verdict to the Vault, which alone logs it (taken/skipped/vetoed, \u00a710) and alone talks to the world (Telegram/paper order \u2014 \u00a711, architecture invariant 6). Hermes sends nothing anywhere, writes no files, mutates no risk state, and retains no memory into the next invocation.",
+ "unanimity_and_veto": "UNANIMITY: trade=true requires all four gates exactly 'pass' \u2014 a boolean AND with no weighting, no majority, no tie-breaks, and no Hermes override in either direction. Hermes cannot flip a specialist's fail to pass (no 'but the other three loved it'), cannot flip pass to fail on its own market opinion (it has none), and cannot re-run a specialist to get a different answer.\n\nFAIL EQUIVALENCE CLASSES \u2014 all of these map to gate='fail' identically (fail-closed): (1) explicit verdict:'fail' from the specialist; (2) response after deadline (timeout); (3) unparseable output (invalid_json); (4) strict-schema violation, including extra fields (schema_violation); (5) missing or extra checklist entries vs the agent's declared checklist (incomplete_checks); (6) verdict \u2260 AND(own checks) (inconsistent_verdict \u2014 caught as contract validation of a declared arithmetic identity, never by re-judging check content); (7) any verdict value other than the exact strings 'pass'/'fail' (e.g. 'pass with reservations', confidence scores, hedged prose). There is no 'partial pass', no 'pass at reduced size' originating from a gate \u2014 size reduction flows only through the \u00a79 conviction table.\n\nVETO PATH: any fail \u21d2 trade=false, and the Verdict is still FULLY assembled and delivered \u2014 \u00a710 mandates every verdict logged taken/skipped/vetoed with reasons. gates carries per-agent pass/fail; gate_reasons (PROPOSED-ADDITIVE) carries per-agent {code, detail, refs} where detail/refs come verbatim from the failing specialist's fail_reason output (with its \u00a7 citation) for content fails, or from Hermes's mechanical reason codes for transport fails (those cite the ai-workflow-rules fail-closed clause, not a strategy \u00a7, because no strategy judgment occurred). The thesis becomes a veto thesis citing the failing checks' \u00a7 refs. Vetoed-verdict field convention [PROPOSED, needs Angus \u2014 pinned schema is silent on nullability]: entry/stop/target/size are populated from Hephaestus's output when Hephaestus returned valid output (so \u00a712.5 diagnostics and \u00a712.2 gap analysis can study what the skipped trade would have been), null when the sourcing output itself was invalid/timed out; grade is null on any veto. Multiple simultaneous fails all appear \u2014 Hermes never collapses to 'first failure wins'.",
+ "verdict_assembly": "Field-by-field population of the pinned {trade, pattern, direction, entry, stop, target, size, grade, thesis, gates}:\n\n\u2022 trade (bool) \u2014 Hermes-computed: AND of the four gates (Step 7). The only field Hermes 'decides', and it is pure arithmetic. Assembly assertion: trade=true \u21d2 every gates.* == 'pass'.\n\n\u2022 pattern ('A'|'B'|'B2') \u2014 copied VERBATIM from Trigger.pattern (\u00a74 taxonomy, classified by the engine). Never sourced from Apollo: Apollo's lane is to independently re-derive the classification from raw snapshot values (the cross-check that catches engine bugs); if Apollo disagrees, its gate FAILS and the trade is vetoed \u2014 the field never contains a specialist's re-classification. This preserves backtest/live parity: triggers.py IS the ruleset in both modes.\n\n\u2022 direction ('long'|'short') \u2014 copied verbatim from Trigger.direction. Same veto-not-rewrite logic via Apollo.\n\n\u2022 entry (number) \u2014 copied from hephaestus.construction.entry_price. Hephaestus computes it per the ACTIVE \u00a75.3 tournament variant (entry.variant: E1 = BB MA i.e. snapshot indicators.tfs.{Trigger.tf}.bb_basis; E2 = 50% of Trigger wick [wick_low, wick_high]; E3 = penetrated cluster level nearest Trigger.close) and cross-checks against Trigger.entry_ref; a reconciliation failure fails Hephaestus's gate. Hermes copies, never computes.\n\n\u2022 stop (number) \u2014 copied from hephaestus.construction.stop_price (\u00a75.4: beyond wick extreme / displacement origin). Hephaestus must reconcile it with Trigger.stop_ref within instrument.tick_size tolerance or fail its own gate.\n\n\u2022 target (number) \u2014 copied from hephaestus.construction.target_price: \u00a76 selection tree over Snapshot.target_menu (Level.{name, price, type, distance}), including the \u00a76.4 front-run (level \u2213 targets.front_run_points), the \u00a76.5 RR floor vs targets.rr_floor, and the \u00a76.3 news-day override. Cross-lane note: 'is today a high-impact data day' is Helios's lane, but Hephaestus needs it for target selection \u2014 resolved WITHOUT inter-agent communication by putting Snapshot.data_levels[].{event, impact, data_high, data_low, event_time} on BOTH allowlists; each derives the flag independently from raw data. Specialists never see each other's verdicts; overlapping raw inputs are fine.\n\n\u2022 size ('full'|'half') \u2014 Hermes-computed from the fixed \u00a79 predicate over specialist-reported FACTS (see grade_derivation); the Python runner independently recomputes and must agree (fail-closed on mismatch), so no LLM arithmetic is load-bearing. Value-domain note [needs Angus confirmation]: 'size' is the \u00a79 UNIT designation full/half \u2014 the contract COUNT is the Vault's (\u00a79 MC risk ceiling; \u00a711 'Python owns sizing'). The Desk proposing a contract count would breach the architecture boundary.\n\n\u2022 grade ('A'|'B'|'C') \u2014 Hermes-computed by the PROPOSED Spec-3 mapping in grade_derivation, from the same \u00a79 facts as size (runner-recomputed identically). null on veto.\n\n\u2022 thesis (string) \u2014 Hermes-composed per thesis_composition: 2\u20134 sentences, fixed template, only specialist 'finding' strings + Trigger fields, every claim \u00a7-cited.\n\n\u2022 gates (object) \u2014 {atlas, helios, apollo, hephaestus} each exactly 'pass'|'fail', matching the pinned {name: pass/fail}. Per-check detail and failure codes ride in PROPOSED-ADDITIVE gate_checks / gate_reasons (see schema), never replacing the pinned core.\n\nSourcing summary: Trigger \u2192 pattern, direction (+ ts/tf/kind as PROPOSED-ADDITIVE journal keys). Hephaestus \u2192 entry, stop, target, plus facts {target_r, oversized_stop, thin_target}. Atlas \u2192 confluence verification facts. Helios \u2192 late_window_entry fact + news context. Apollo \u2192 a_at_extension fact + anatomy confirmation. Hermes \u2192 trade (AND), size/grade (fixed table over the above facts, runner-verified), thesis (template join), gates (validation results). Every number in the Verdict is a verbatim copy or a runner-verified table output \u2014 Hermes invents nothing.",
+ "grade_derivation": "All inputs are schema-validated FACTS reported by specialists or copied from the Trigger \u2014 Hermes applies a fixed total-function lookup table, and the Python runner recomputes the same table from the same facts and vetoes on mismatch (no LLM arithmetic in the trust path).\n\nINPUT FACTS: C = Trigger.confluence_count, independently re-derived by Atlas from Snapshot.clusters[].{types, confluence_count} (mismatch \u21d2 Atlas gate fails, so C is dual-attested before grading). W = (Trigger.htf_flag == 'with_trend'). X = apollo.facts.a_at_extension: Trigger.pattern=='A' AND the trigger candle touched NY VWAP \u00b1triggers.over_extension_sigma (from indicators.ny_vwap.upper_2/lower_2), re-derived by Apollo. R = hephaestus.facts.target_r: R-multiple of the chosen target after \u00a76.4 front-run, = |target \u2212 entry| / |entry \u2212 stop|.\n\nHALF-TRIGGERS (\u00a79's 'any of {\u2026} \u2192 half'), H = count of true in: h1 exactly-minimum confluence: C == cluster.min_level_types (i.e. C < sizing.full_unit_min_confluences); h2 oversized stop: hephaestus.facts.oversized_stop \u2014 stop distance > sizing.oversized_stop_max [PROPOSED PLACEHOLDER key: \u00a79 names 'oversized stop' with no number; Angus must define, e.g. points or \u00d7ATR(atr_length)]; h3 late-window entry: helios.facts.late_window_entry \u2014 Trigger.ts within sizing.late_window_min [PROPOSED PLACEHOLDER] minutes of session.entry_windows.{active}.end; h4 thin target: hephaestus.facts.thin_target \u2014 targets.rr_floor \u2264 R < sizing.full_unit_min_target_r (a target that clears the \u00a76.5 floor but not the \u00a79 full-unit bar).\n\nSIZE (directly computable from \u00a79, not a proposal): size = 'full' iff [C \u2265 sizing.full_unit_min_confluences] AND [W OR X] AND [R \u2265 sizing.full_unit_min_target_r] AND [H == 0]; else 'half'. (R < targets.rr_floor never reaches grading \u2014 \u00a76.5 makes it a skip, enforced as a Hephaestus gate fail.)\n\nGRADE \u2014 PROPOSED Spec-3 A/B/C mapping (needs Angus sign-off; computed only when trade=true, null on veto): A \u21d4 size == 'full' (exactly the \u00a79 full-unit predicate \u2014 A and full-size are the same fact, so they can never drift apart); B \u21d4 size == 'half' AND H \u2264 1 (misses full-unit on strength \u2014 e.g. counter-trend with 3 confluences, or R just under full_unit_min_target_r \u2014 with at most one \u00a79 weakening factor); C \u21d4 size == 'half' AND H \u2265 2 (two or more \u00a79 half-triggers stack: passes every gate, lowest conviction, worth flagging to the human distinctly). Rationale: every boundary is a \u00a7 9-traceable count \u2014 no vibes, no unanchored score. Alternative for Angus to consider: drop C and map all half-size trades to B. Invariants: grade A \u21d4 size full; grade \u2208 {B, C} \u21d4 size half; grading never overrides a gate (a C-grade trade with unanimity still goes to the Vault as trade=true, half size \u2014 the Vault, not the Desk, decides admission).",
+ "thesis_composition": "The thesis is a 2\u20134 sentence audit string for Angus (\u00a710 journal), composed by MECHANICAL template-fill \u2014 Hermes contributes ordering and joining only, never market judgment, adjectives, or numbers of its own. Each specialist's mandatory output schema includes 'finding': one bounded sentence (\u2264160 chars) stating its conclusion with inline \u00a7 refs and only numbers present in its own validated output.\n\nPASS TEMPLATE (4 sentences): S1 = candidate frame from Trigger fields + Apollo's finding \u2014 '{pattern} {direction} on {tf}: ' + apollo.finding (trigger anatomy, \u00a73 rejection-block/displacement + \u00a74 mechanism). S2 = atlas.finding (cluster composition/confluence count from Snapshot.clusters, \u00a73; location vs HTF extremes, \u00a77). S3 = helios.finding (entry window \u00a71, session context \u00a72, news/data-level context \u00a76.3/\u00a77). S4 = hephaestus.finding (entry per active \u00a75.3 variant, stop \u00a75.4, target + R vs \u00a76.5, size per \u00a79) + ' Grade {grade}.'\n\nVETO TEMPLATE (2\u20133 sentences): S1 = candidate frame from Trigger ('Candidate {pattern} {direction} on {tf} at {close} vetoed.'). S2(\u2013S3) = each failing gate rendered as '{agent}: ' + its fail_reason with \u00a7 ref (specialist-authored for content fails), or the mechanical code for transport fails ('apollo: no valid output within deadline \u2014 fail-closed per desk contract', citing the ai-workflow-rules invalid-JSON-is-a-bug clause rather than a strategy \u00a7, because no strategy judgment occurred). Multiple fails concatenate in fixed agent order (atlas, helios, apollo, hephaestus) and truncate at the thesis length bound with a '+N more gates failed' suffix \u2014 the untruncated detail always survives in gate_reasons.\n\nRULES: every \u00a7 citation in the thesis originates in a specialist's output or the fixed Trigger-field frame \u2014 Hermes may not add, drop, or alter citations; total length bounded (proposed 600 chars) so the journal row stays scannable; deterministic given the same specialist outputs (same inputs \u21d2 byte-identical thesis is the testable target).",
+ "forbidden_behaviors": [
+  "Overriding or re-scoring any specialist: never flips fail\u2192pass or pass\u2192fail, never re-evaluates the market content of a check, never applies weights/majority/quorum \u2014 validation of the declared verdict==AND(checks) identity is the only 'checking' Hermes does, and it is schema-level, not judgment.",
+  "Forming market opinions: Hermes carries no strategy checks of its own, computes no indicators, reads no price data, and calls no engine function \u2014 its only inputs are the one (Snapshot, Trigger) pair and the four specialist outputs.",
+  "Any outbound channel: no Telegram, no orders, no network calls, no webhooks, no file writes beyond returning the Verdict JSON to the runner \u2014 the Vault alone talks to the world (\u00a711, architecture invariant 6).",
+  "Receiving or requesting account state, P&L, prior trade outcomes, trade counts today, halt status, or drawdown state \u2014 structurally absent from Snapshot/Trigger and must stay absent from Hermes's prompt and runtime context (ai-workflow-rules isolation clause).",
+  "Statefulness across candidates: no memory of prior verdicts or prior candidates between invocations \u2014 remembered outcomes are prior-trade info by the back door.",
+  "Leaking any specialist's output (or Hermes's own aggregation state) to another specialist, including via re-prompts ('Atlas found X, do you agree?') \u2014 payloads are finalized before any dispatch, and there is no second round.",
+  "Inventing, adjusting, or rounding numeric values: every number in the Verdict is a verbatim copy from Trigger or a specialist output, or the runner-verified \u00a79 table output \u2014 Hermes never 'fixes' an entry price, widens a stop (\u00a75.4), or nudges a target.",
+  "Emitting trade=true with any gate != 'pass', emitting a Verdict without all four gates populated, or emitting anything other than exactly one schema-valid Verdict JSON per invocation (free text to the Vault is forbidden; invalid Hermes output is itself vetoed fail-closed by the runner).",
+  "Degrading under time pressure: no unbounded retries, no 3-of-4 quorum when one agent is slow, no 'accept late answer after emission'.",
+  "Mutating anything: config/strategy.yaml values, agent allowlists, agent prompt files, risk state, or its own instructions \u2014 prompt edits are versioned like code and go through the human gate (ai-workflow-rules).",
+  "Filtering beyond the declared allowlists (adding fields an agent didn't declare) or under-filtering (passing the full Snapshot 'for convenience') \u2014 projection must match the agent-file declaration byte-for-byte.",
+  "Suppressing or collapsing veto information: never drops a failing gate's reason, never logs only the first failure, never skips Verdict emission because 'it's a veto anyway' (\u00a710: every verdict logged)."
+ ],
+ "output_schema_proposal": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Verdict (Desk -> Vault)",
+  "description": "Pinned core per context/architecture.md Layer contracts: {trade, pattern, direction, entry, stop, target, size, grade, thesis, gates: {name: pass/fail}}. All other properties are PROPOSED-ADDITIVE and require Angus/Spec-3 approval before implementation. Nullability of entry/stop/target/size/grade on vetoed verdicts is itself a PROPOSED convention (pinned contract is silent) \u2014 see field notes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+   "trade",
+   "pattern",
+   "direction",
+   "entry",
+   "stop",
+   "target",
+   "size",
+   "grade",
+   "thesis",
+   "gates"
+  ],
+  "properties": {
+   "trade": {
+    "type": "boolean",
+    "description": "PINNED. Hermes-computed AND of the four gates. true only if every gates.* == 'pass'. Runner re-asserts; violation = synthetic veto."
+   },
+   "pattern": {
+    "enum": [
+     "A",
+     "B",
+     "B2"
+    ],
+    "description": "PINNED. Verbatim Trigger.pattern (\u00a74). Apollo disagreement = apollo gate fail, never a rewrite."
+   },
+   "direction": {
+    "enum": [
+     "long",
+     "short"
+    ],
+    "description": "PINNED. Verbatim Trigger.direction."
+   },
+   "entry": {
+    "type": [
+     "number",
+     "null"
+    ],
+    "description": "PINNED field. Copied from hephaestus.construction.entry_price per active entry.variant E1/E2/E3 (\u00a75.3), reconciled by Hephaestus against Trigger.entry_ref. null only when Hephaestus produced no valid output (timeout/invalid) [nullability convention PROPOSED \u2014 on veto with valid Hephaestus output the value is retained for \u00a712.5 skipped-trade diagnostics]."
+   },
+   "stop": {
+    "type": [
+     "number",
+     "null"
+    ],
+    "description": "PINNED field. Copied from hephaestus.construction.stop_price (\u00a75.4 beyond wick extreme; must reconcile with Trigger.stop_ref within instrument.tick_size). Same nullability convention as entry [PROPOSED]."
+   },
+   "target": {
+    "type": [
+     "number",
+     "null"
+    ],
+    "description": "PINNED field. Copied from hephaestus.construction.target_price: \u00a76 selection tree over Snapshot.target_menu incl. front-run (targets.front_run_points), RR floor (targets.rr_floor), news-day override (\u00a76.3). Same nullability convention [PROPOSED]."
+   },
+   "size": {
+    "enum": [
+     "full",
+     "half",
+     null
+    ],
+    "description": "PINNED field; value domain PROPOSED: the \u00a79 UNIT designation only \u2014 contract count belongs to the Vault (\u00a79 MC ceiling, \u00a711 'Python owns sizing'). Computed by the fixed \u00a79 predicate over specialist-reported facts; Python runner independently recomputes and vetoes on mismatch. null when trade=false and inputs unavailable [PROPOSED]."
+   },
+   "grade": {
+    "enum": [
+     "A",
+     "B",
+     "C",
+     null
+    ],
+    "description": "PINNED field; A/B/C mapping PROPOSED (Spec-3, needs Angus): A <=> size 'full' (\u00a79 full-unit predicate); B <=> half with <=1 \u00a79 half-trigger; C <=> half with >=2. null on veto."
+   },
+   "thesis": {
+    "type": "string",
+    "minLength": 1,
+    "maxLength": 600,
+    "description": "PINNED. 2-4 sentences, fixed-template join of specialist 'finding' strings (pass) or fail_reasons (veto); every claim carries its \u00a7 ref; Hermes adds no judgment, numbers, or citations of its own."
+   },
+   "gates": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "atlas",
+     "helios",
+     "apollo",
+     "hephaestus"
+    ],
+    "properties": {
+     "atlas": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "helios": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "apollo": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "hephaestus": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     }
+    },
+    "description": "PINNED {name: pass/fail}. 'fail' covers explicit fail, timeout, invalid JSON, strict-schema violation, incomplete checklist, and verdict!=AND(checks) inconsistency \u2014 all fail-closed."
+   },
+   "schema_version": {
+    "type": "string",
+    "description": "PROPOSED-ADDITIVE. Verdict schema semver; bumped like code per ai-workflow-rules (a schema edit IS a strategy-infrastructure change)."
+   },
+   "ts": {
+    "type": "string",
+    "description": "PROPOSED-ADDITIVE. Verbatim Trigger.ts (ISO ET, tz-aware) \u2014 join key for the \u00a710 journal and \u00a712.2 calibration audits."
+   },
+   "tf": {
+    "enum": [
+     "1min",
+     "2min",
+     "3min",
+     "5min"
+    ],
+    "description": "PROPOSED-ADDITIVE. Verbatim Trigger.tf (post \u00a71 MTF arbitration)."
+   },
+   "trigger_kind": {
+    "enum": [
+     "rejection_block",
+     "displacement"
+    ],
+    "description": "PROPOSED-ADDITIVE. Verbatim Trigger.kind (\u00a73) \u2014 lets \u00a712.5 slice diagnostics by mechanism without re-joining engine logs."
+   },
+   "gate_reasons": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "atlas",
+     "helios",
+     "apollo",
+     "hephaestus"
+    ],
+    "properties": {
+     "atlas": {
+      "$ref": "#/$defs/gate_reason"
+     },
+     "helios": {
+      "$ref": "#/$defs/gate_reason"
+     },
+     "apollo": {
+      "$ref": "#/$defs/gate_reason"
+     },
+     "hephaestus": {
+      "$ref": "#/$defs/gate_reason"
+     }
+    },
+    "description": "PROPOSED-ADDITIVE. Per-gate failure/pass provenance satisfying \u00a710 'logged with the reason'. detail/refs verbatim from the specialist for content fails; mechanical codes for transport fails."
+   },
+   "gate_checks": {
+    "type": "object",
+    "description": "PROPOSED-ADDITIVE. Per agent: map of check_name -> {pass: boolean, ref: string} copied VERBATIM from each specialist's validated output \u2014 full per-check audit without touching the pinned core. Shape: {atlas: {<check>: {pass, ref}}, helios: {...}, apollo: {...}, hephaestus: {...}}."
+   },
+   "conviction_facts": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+     "confluence_count": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "with_trend": {
+      "type": [
+       "boolean",
+       "null"
+      ]
+     },
+     "a_at_extension": {
+      "type": [
+       "boolean",
+       "null"
+      ]
+     },
+     "target_r": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "half_triggers": {
+      "type": "array",
+      "items": {
+       "enum": [
+        "min_confluence",
+        "oversized_stop",
+        "late_window_entry",
+        "thin_target"
+       ]
+      }
+     }
+    },
+    "description": "PROPOSED-ADDITIVE. The exact \u00a79 inputs size/grade were computed from \u2014 makes the runner's recomputation and the human audit one-line checks."
+   },
+   "desk_meta": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+     "prompt_versions": {
+      "type": "object",
+      "description": "agent file name -> version/hash (ai-workflow-rules: prompt edits versioned like code)"
+     },
+     "allowlist_hash": {
+      "type": "string"
+     },
+     "latency_ms": {
+      "type": "object",
+      "description": "per-agent + total desk wall time"
+     },
+     "staleness_s": {
+      "type": "number",
+      "description": "emission time minus Trigger.ts"
+     }
+    },
+    "description": "PROPOSED-ADDITIVE. Reproducibility metadata: which prompt versions and allowlists produced this verdict, and how long the desk took."
+   }
+  },
+  "$defs": {
+   "gate_reason": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "code"
+    ],
+    "properties": {
+     "code": {
+      "enum": [
+       "none",
+       "fail_check",
+       "timeout",
+       "invalid_json",
+       "schema_violation",
+       "incomplete_checks",
+       "inconsistent_verdict",
+       "input_invalid",
+       "input_mismatch",
+       "stale"
+      ]
+     },
+     "detail": {
+      "type": "string",
+      "maxLength": 300
+     },
+     "refs": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "description": "strategy-definition-v1.0.md \u00a7 reference, e.g. '\u00a76.5'"
+      }
+     }
+    }
+   }
+  }
+ },
+ "edge_cases": [
+  "Trigger.ts != Snapshot.ts (runner composed mismatched pair): veto before fan-out, code input_mismatch \u2014 a specialist grading a snapshot from a different candle would silently break invariant 3 (closed-candle semantics).",
+  "Displacement trigger with cluster=None: triggers.py hardcodes confluence_count=2 and cluster_center=entry_ref for displacements, and Snapshot.clusters may not contain a matching cluster. Atlas's independent re-derivation from raw levels is exactly the cross-check that catches this class of engine subtlety; Hermes relays a resulting fail verbatim, never smooths it over.",
+  "Pre-09:30 candidate: indicators.ny_vwap.* all null (invariant 1) and NY-VWAP-family checks are structurally N/A. Hermes passes declared-but-null fields through untouched; handling null is the specialist's \u00a7-anchored responsibility (e.g. Helios/Apollo must not fail merely because ny_vwap is null pre-open).",
+  "Specialist returns verdict 'pass' while one of its checks is false: inconsistent_verdict -> gate fail. Caught as violation of the declared verdict==AND(checks) identity \u2014 contract validation, not re-scoring.",
+  "Specialist returns extra undeclared fields: strict schema (additionalProperties false) -> schema_violation -> fail. 'Anything but valid schema JSON is a bug' (ai-workflow-rules).",
+  "All four specialists fail simultaneously (or all time out): still exactly one Verdict, all gates fail, all reasons populated \u2014 never zero-emission (\u00a710).",
+  "Hephaestus fails but Atlas/Helios/Apollo pass: veto; entry/stop/target/size null because the sourcing output is invalid; gates make clear which lane failed.",
+  "Atlas fails but Hephaestus passed: veto; entry/stop/target retained from Hephaestus's valid output for \u00a712.5 skipped-trade diagnostics [PROPOSED convention needing Angus].",
+  "Hermes's own output invalid (bad JSON, failed assertion, trade=true with a failing gate): the Python runner's re-validation vetoes with hermes_invalid \u2014 the orchestrator enjoys no exemption from fail-closed.",
+  "Runner's independent \u00a79 size/grade recomputation disagrees with Hermes's: veto with hermes_arithmetic_mismatch \u2014 LLM arithmetic is never load-bearing.",
+  "Desk cycle exceeds staleness bound even with unanimity (slow specialists near the wire): forced trade=false with reason stale \u2014 a verdict about a long-closed candle must not become an order.",
+  "Second trigger arrives while a Desk cycle is in flight: Hermes is single-pair-per-invocation and stateless; serialization (queue vs drop-with-log) is the Python runner's concern and a Spec-3 decision \u2014 but \u00a75.6 one-position-at-a-time lives in the Vault either way, so no double-fill risk from the Desk.",
+  "Duplicate delivery of the same (Snapshot, Trigger): idempotency keyed on (ts, tf) is the runner's job; stateless Hermes would happily re-grade, so dedup must sit outside it.",
+  "Snapshot.ref_price null or empty clusters+target_menu with a live Trigger: input_invalid veto \u2014 a trigger cannot exist without closed bars behind it, so this indicates an engine bug worth surfacing loudly, not grading around.",
+  "DST transition day: all comparisons on tz-aware ET timestamps via the tz library (invariant 2); Hermes performs only equality/ordering/staleness checks, never offset arithmetic.",
+  "Truncated/non-UTF8/multi-JSON-object specialist response: invalid_json -> fail; Hermes never attempts repair-parsing of malformed output.",
+  "Backtest mode: the Desk (Hermes included) is bypassed entirely per architecture.md \u2014 no timeout or staleness logic leaks into backtest paths; parity comes from both modes consuming the identical Market Engine."
+ ],
+ "open_questions_for_spec3": [
+  "Retry policy: design default is ZERO retries (single-shot, fail-closed) for determinism; should Spec-3 allow exactly one bounded re-invocation on transport-class failures (invalid_json/timeout) given live triggers are scarce (\u00a710: 2-3 real setups/day) and a formatting hiccup costs a whole candidate?",
+  "Vetoed-verdict nullability convention (pinned schema is silent): populate entry/stop/target/size from valid Hephaestus output on veto (better \u00a712.5/\u00a712.2 gap diagnostics) vs always-null (cleaner 'no trade proposed' semantics). Needs Angus.",
+  "Concrete values + placement for PROPOSED engineering keys desk.specialist_timeout_s, desk.desk_timeout_s, desk.staleness_max_s \u2014 strategy.yaml under a desk: block with spec-3 traces (they are engineering parameters like fills:, not strategy numbers), or a separate desk config?",
+  "\u00a79 half-trigger operationalizations the doc names without numbers \u2014 Angus must define: 'oversized stop' (absolute points vs xATR(atr_length) vs percentile of the Feb sample), 'late-window entry' (minutes before session.entry_windows.{active}.end), 'thin target' (proposed: targets.rr_floor <= R < sizing.full_unit_min_target_r).",
+  "Ratify or amend the PROPOSED A/B/C grade mapping (A<=>full; B=half with <=1 half-trigger; C=half with >=2) \u2014 including whether C should exist at all, or whether Angus wants C to mean 'do not alert me'.",
+  "Confirm Verdict.size value domain = {'full','half'} unit designation with the Vault owning unit->contract mapping (\u00a79 MC ceiling, \u00a711) \u2014 the pinned schema word 'size' could be misread as contract count.",
+  "Should size/grade be computed by Hermes at all, or moved wholly into the Python runner post-collection (Hermes emits only facts)? Design keeps Hermes emitting them WITH mandatory runner recomputation+assert; pure-Python is the more conservative alternative and costs nothing but schema clarity.",
+  "Approve the PROPOSED-ADDITIVE Verdict fields (ts, tf, trigger_kind, gate_reasons, gate_checks, conviction_facts, desk_meta, schema_version) into the Desk->Vault contract, or keep the wire Verdict at pinned-core-only with the additive metadata written to a Desk-side log the Vault journal joins on (ts, tf)?",
+  "Runner-level concurrency for triggers arriving mid-cycle: queue (grade sequentially, risk staleness veto) vs drop-with-log (cleaner, loses a candidate row \u00a710 would otherwise journal as skipped) \u2014 and the \u00a710 classification of such drops ('skipped: desk_busy'?).",
+  "Cross-lane \u00a79 fact sourcing: design has Helios owning late_window_entry and Hephaestus owning oversized_stop/thin_target/target_r, with Snapshot.data_levels on both Helios's and Hephaestus's allowlists for independent news-day derivation (\u00a76.3). The four specialist specs must declare these facts + allowlist overlaps in their mandatory schemas \u2014 flag any lane disagreement (e.g. Apollo vs Atlas owning a_at_extension re-derivation) back to Hermes's spec.",
+  "hermes.md verbatim strategy-doc slice: proposal is minimal \u2014 \u00a79 (conviction table), \u00a710 (logging duty), \u00a711 (boundary) \u2014 since Hermes holds no market checks; confirm no other \u00a7 belongs in its prompt, and confirm the specialist output schemas (which Hermes mirrors) are pinned in Spec-3 as shared fixtures asserted at boot.",
+  "Trigger-field allowlists per specialist (Hermes enforces, specialists declare): does Helios receive Trigger.{ts, tf} only, and does Atlas receive Trigger.{confluence_count, cluster_center, htf_flag} for cross-check \u2014 or should specialists re-derive with NO engine-computed answers visible (stronger independence, harder task)? This 'blind re-derivation vs verification' choice materially affects the engine-bug-catching value and must be decided per-lane."
+ ]
+}
