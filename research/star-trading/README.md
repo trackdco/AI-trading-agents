@@ -9,6 +9,7 @@ cannot be mistaken for anything the constitution has adopted.
 
 | File | What it is |
 |---|---|
+| [`HANDOFF.md`](HANDOFF.md) | **Self-contained brief for handing the corpus to another chat** — primer to paste, extraction schema, open questions, tiered watch order |
 | [`channel-index.md`](channel-index.md) | All 117 videos — titles, lengths, view counts, links — grouped by topic, with a "where to start" shortlist |
 | [`negative-rr-model.md`](negative-rr-model.md) | The model as the channel states it, plus the arithmetic and how it sits against our locked rules |
 | [`tools/pull_channel.sh`](tools/pull_channel.sh) | Re-runnable caption pull for the whole channel |
