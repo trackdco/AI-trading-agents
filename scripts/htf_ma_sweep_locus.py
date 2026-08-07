@@ -103,7 +103,7 @@ def day_rows(bars: pd.DataFrame, sess_day: str,
                 "out_trail": trail - cost, "out_hold": hold - cost,
                 "t_entry": idx[j0], "t_exit": idx[j_exit]}
 
-    def emit(cell, bi, d, side):
+    def emit(cell, bi, d, side, ref_px=np.nan):
         b_ = f15.iloc[bi]
         w_e = w_at15.iloc[bi]
         if not (np.isfinite(w_e) and w_e > 0):
@@ -124,7 +124,8 @@ def day_rows(bars: pd.DataFrame, sess_day: str,
                 "side": side, "direction": d, "n_attempts": 0,
                 "session": session_tag(f15.index[bi]), "w15": w_e,
                 "entry": entry, "stop": stop, "trig_high": b_.high,
-                "trig_low": b_.low, "arm": "sweep", "locus": cell, **w}
+                "trig_low": b_.low, "arm": "sweep", "locus": cell,
+                "ref_px": ref_px, **w}
 
     rows = []
     # ---- cell (a): standalone one-bar sweep-and-reclaim -------------------
@@ -132,11 +133,11 @@ def day_rows(bars: pd.DataFrame, sess_day: str,
         ref_lo = fl[bi - LOOKBACK:bi].min()
         ref_hi = fh[bi - LOOKBACK:bi].max()
         if fl[bi] <= ref_lo - pen and fc[bi] > ref_lo:
-            r = emit("sweep_a", bi, 1, "below")
+            r = emit("sweep_a", bi, 1, "below", ref_lo)
             if r:
                 rows.append(r)
         if fh[bi] >= ref_hi + pen and fc[bi] < ref_hi:
-            r = emit("sweep_a", bi, -1, "above")
+            r = emit("sweep_a", bi, -1, "above", ref_hi)
             if r:
                 rows.append(r)
 
@@ -153,7 +154,7 @@ def day_rows(bars: pd.DataFrame, sess_day: str,
                 inside = (fc[m] > sp) if d > 0 else (fc[m] < sp)
                 if inside:
                     r = emit("sweep_b", m, d,
-                             "below" if d > 0 else "above")
+                             "below" if d > 0 else "above", sp)
                     if r:
                         r["prior_t"] = t_st
                         rows.append(r)
