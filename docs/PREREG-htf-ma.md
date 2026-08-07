@@ -108,3 +108,18 @@ priced at what the risk costs. The edge, if it exists, lives entirely in
 SELECTION — which setups are taken — not in the setups existing. Three
 well-characterised nulls now sit underneath the live edge; the edge itself
 remains unmeasured.
+
+## C — the admissibility sweep (declared 2026-08-07, before the run)
+
+Population: Census B fit events, both arms (DEVIATION from SPEC §5's canon-L0
+population, recorded with reason: same coordinate system as the established
+headline metric and the +12/+18pp preview; the canon-L0 comparator is deferred,
+not cancelled). Strata per event: NO-CEILING / CEILING-BROKEN-within-K /
+CEILING-UNBROKEN, ceiling = the stored 5m/60m MA between entry-reference and
+target; broken-within-K = that TF closed through its own MA in the trade
+direction within its last K completed bars before the event, K swept
+{1,2,3,5,10,inf}. Metric: target_before_extreme_20 (the established headline).
+Wilson cluster-collapsed, era x side x arm with UNDERPOWERED flags, stratum
+sizes mandatory. ESTABLISHED requires: BROKEN(K)+NO-CEILING vs UNBROKEN
+separation positive in BOTH eras with non-overlapping intervals at >=2
+adjacent K values (a plateau, not a spike). One run, read against this bar.
