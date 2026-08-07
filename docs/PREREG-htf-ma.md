@@ -717,3 +717,61 @@ construction — count<=1 -> 2.0, ==2 -> 1.5, ==3 -> 1.0, >=4 -> 0.5, the
 existing ladder values, untuned. Bar: A-2's three legs unchanged. Final
 regardless of outcome. Item 5's selection-on cell = count_ahead <= 2 (the
 tie-free split nearest the median), declared here.
+
+## Items 4+5 + final H2 — RESULT (run 2026-08-08)
+
+```
+ITEMS 4+5 + FINAL H2 TEST (prereg six-items + item-3 diagnosis)
+
+== SEVENTH LAW FIRST (before any gate is read) ==
+  Ladder weights 0.5-2.0 bound the achievable gain: with any rho <=
+  0.25, weighted-minus-unweighted <= ~0.02R. The 2025 gap is 0.047R.
+  EXPECTATION SET: even a full pass closes AT MOST ~half the gap.
+
+== ITEM 4: obstacles beyond the partial (count in (3R,8R]) ==
+  distribution: {0.0: 1424, 1.0: 896, 2.0: 456, 3.0: 166, 4.0: 30, 5.0: 3}
+  H2-2025: row rho +0.237 | episode rho +0.150 (n_ep=911)
+  H1-2026: row rho +0.145 | episode rho +0.093 (n_ep=816)
+  period gate: 14/14
+  ITEM 4 GATES: PASS
+
+== FINAL H2 TEST: direct count thresholds (declared encoding) ==
+  H2-2025: unweighted -0.0472 | count-ladder -0.0459 | margin +0.0014
+  H1-2026: unweighted +0.0971 | count-ladder +0.0846 | margin -0.0125
+  LODO: 0/14 FAILING ['2025-06', '2025-07', '2025-08', '2025-09', '2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07']
+  FINAL H2 VERDICT (three legs): FAIL — H2-as-sizing is CLOSED permanently
+
+== ITEM 5: joint 2x2 — exit x selection (selection-on = cnt_ahead<=2) ==
+  H2-2025 ALL      : partial -0.0472 | trail-only -0.1724 | partial-earns +0.1252 (n_cl=911)
+  H2-2025 SELECTED : partial +0.0957 | trail-only -0.0678 | partial-earns +0.1635 (n_cl=334)
+  H1-2026 ALL      : partial +0.0971 | trail-only +0.0009 | partial-earns +0.0962 (n_cl=816)
+  H1-2026 SELECTED : partial +0.1826 | trail-only +0.0418 | partial-earns +0.1408 (n_cl=319)
+```
+
+## Items 4+5 + final H2 — VERDICTS
+
+ITEM 4: **PASS, all three gates** — beyond-3R obstacle count, episode rho
++0.150/+0.093, declared sign, 14/14 folds, shipped-exit currency. The
+diagnosis-born runner-zone variable is real. UNIMPLEMENTED: any
+implementation mechanism must clear the seventh law first (declared worth vs
+gap) and be declared before running.
+
+FINAL H2: **FAIL — H2-AS-SIZING CLOSED PERMANENTLY** per the declared
+second-and-final rule (tie-free count ladder: margins +0.0014/-0.0125,
+LODO 0/14). H2 remains a gates-passed correlation that cannot be cashed
+through weighting. No third test, ever.
+
+ITEM 5: the self-fighting hypothesis is REFUTED — the partial earns MORE on
+the selected book (+0.125->+0.164 in 2025, +0.096->+0.141 in 2026). And the
+declared SELECTED x partial cell is **positive in BOTH eras, cluster-
+collapsed: +0.0957 (n_cl=334) / +0.1826 (n_cl=319)** — the first
+configuration in the program to show the discover era positive.
+
+**FLAGGED, NOT ADOPTED — and a ledger question for ANGUS:** the SELECTED
+cell uses cnt_ahead<=2 as a binary FILTER. The closed-permanently ruling
+covered H2-as-SIZING (weighting); a stand-down filter is a mechanically
+distinct use (the D-veto shape), but whether the second-and-final ruling's
+spirit covers it is a human call, not the desk's. No adoption bar existed on
+the 2x2 (declared diagnostic); any filter adoption requires its own declared
+bar AND the ANGUS ruling on the mechanism distinction first. Nothing further
+runs without that ruling. HOLDOUT UNTOUCHED.
