@@ -411,3 +411,16 @@ from a failed test (result-independent reason: the original variable had no
 dynamic range on the side that mattered): path variables recomputed over a
 sparse subset (profile levels + 15m and 1h MAs, ~5 lines), own bar to be
 declared before any run. Not scheduled.
+
+## Job 1 — RESULT (gap explanation)
+
+```
+  H2-2025: H2 row +0.237 -> episode +0.214 | H1 row +0.042 -> episode +0.053 (n_ep=911)
+  H1-2026: H2 row +0.246 -> episode +0.230 | H1 row +0.029 -> episode +0.065 (n_ep=816)
+```
+
+```
+JOB 1 completion — partial correlation (H2 vs netR, H1 removed):
+  H2-2025: partial rho(H2, netR | H1) = +0.212 (episode level)
+  H1-2026: partial rho(H2, netR | H1) = +0.223 (episode level)
+```
