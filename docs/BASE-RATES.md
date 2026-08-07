@@ -22,6 +22,11 @@ mechanism must beat these, not zero. Fit span 2025-06..2026-07 unless noted.
 | BR-13 | **Break arm AT THE INCUMBENT LOCUS (bbma15)** — the arm's own null | **+0.105R/fight**, 4.39/day, positive at all four X but H2-2025 CI never clears zero → fails the BR-9 bar. Combined both-arm book at this locus: **+0.131R at 10.70/day**, both eras clear | E2 |
 | BR-14 | **Re-entry after a stop (M2 reject):** unconditional, and under the declared sweep+reclaim filter | unconditional **−0.168R**/attempt; sweep-filtered **−0.143R** [−0.376,+0.107] (12% of 998 candidates) — the filter does not separate. NOTE: the declared sweep definition does not capture the trader's own reference example, so this nulls the DEFINITION, not the concept | E3, A2 |
 
+| BR-15 | **Sweep-reclaim census (item 6), X=0.5W, no selection** — the trader's own definition (reference extreme = the trader's own stop) | (a) standalone sweep+reclaim **+0.070R** (7.81/day, neither era clears — NULL) · (b) **sweep of the OWN STOP after a stopped attempt +0.175R** (12.79/day, both eras clear at ALL four X) → the prior stopped attempt is load-bearing; E3's contrary null was about the definition, not the concept | Item 6, FINDINGS-F |
+| BR-16 | **Composite book (union-break VAL/VWAP−1 + reject arm), executable, shipped exit, X=0.5W** | **+0.186R at 11.42 fights/day**, both eras clear (H2 +0.177, H1 +0.196). P(graduate) 100.0% vs 92.3% reject-alone; time-to-first-dollar 31d vs 62d | Item 2 |
+| BR-17 | **Direction-skew of the union break book** | EV vs monthly NQ return: slope **−0.0155R per 1% NQ**, CI [−0.0207,−0.0063] — a real downside premium. Still positive in up months (+0.183 [+0.076,+0.290]) as well as down (+0.323). Long side +0.166 [+0.002,+0.329], MDE 0.230 = absence of evidence | Item 1 |
+| BR-18 | **Concurrency of the composite book** (the risk-spine null) | peak simultaneous R-at-risk p95 **4.0R**, max 5.0R, **0 of 291 days** exceed the canon's 5.33R budget. Worst days are sequential grind (18 losers of 20 trades at peak 3.0R), NOT overlapping clusters — the old canon's failure mode does not recur here | Item 3 |
+
 **Standing principle (2026-08-07):** three raw mechanisms measured (failed
 auction, M1 rebalance, M2 rejection/continuation) — all fairly priced under
 every entry/stop/exit configuration tested. New level-based ideas must locate
