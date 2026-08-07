@@ -1,0 +1,3 @@
+# Per-session JSON shards — intermediate, regenerable in ~1.3 min from the
+# archives via tools/vwapbb_opportunity.py. candidates.parquet is the artefact.
+data/_shards/
