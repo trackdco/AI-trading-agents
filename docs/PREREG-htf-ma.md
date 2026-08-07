@@ -365,3 +365,49 @@ H-CAPTURE BATTERY (prereg §H-capture), reject arm, frame persisted
 
 BIN BAR: FAIL | LODO read above | SPEC A-1 clause 5 resolves per the H2xH3 corr vs 0.4.
 ```
+
+## STANDING PROTOCOL (ANGUS): THREE GATES ON EVERY CLAIM, NOT A MENU
+
+Cluster-collapse, period folds, and currency. H2 passed 14/14 monthly folds
+and died on clustering — they catch different diseases and passing one says
+nothing about the others. Every claim from here passes all three or reports
+which it failed.
+
+## Job 2 — fixed-R and scale-out exit sweep (declared before run)
+
+Rationale on the record: every exit tested so far was single-exit and none
+was R-denominated; the trader's actual exit is a scale-out (75% partial,
+runner behind); a fixed-W target is a VARIABLE-R target because the stop is
+the trigger-candle extreme — prior payoff tables pooled 3R and 12R outcomes
+in the same cells.
+Deliverables: (1) MFE distribution IN R per event, both arms, both eras —
+never yet produced. (2) Single fixed targets at 1/1.5/2/2.5/3/4/5/6R.
+(3) Partials: {50%,75%} out at {1,1.5,2}R, remainder (a) held with stop,
+(b) trailed per the E1 rule. Baselines: first-structural-target and
+hold-with-stop. Costs net 0.5pt.
+BAR, declared now: the winner must sit in the INTERIOR OF A PLATEAU —
+adjacent R values also beating both baselines — clear both baselines in both
+eras, per arm, cluster-collapsed; monthly LODO reported.
+Pre-committed shape so the result cannot flatter itself: low targets = high
+hit rate, thin average; high targets = the reverse; any fixed cap forgoes the
+20R+ tail by construction — the partials exist to test exactly that.
+
+## Job 3 — H3 solo bar, declared BLIND now, run AFTER Job 2
+
+H3 is judged under the SHIPPED exit as it stands after Job 2 (the Job-2
+winner if one clears its bar, else hold-with-stop). Bar: causal-rank
+quartile bins of bw_expansion must be (a) monotone non-decreasing in
+cluster-collapsed net R across powered bins (min 30 clusters), BOTH eras;
+(b) top quartile positive, 95% cluster CI clear of zero, BOTH eras;
+(c) all three gates pass (bins = cluster gate; rho sign in all 14 monthly
+folds = period gate; net R = currency gate). Declared before Job 2's result
+exists so the bar cannot be tuned to it. One run.
+
+## Declared, NOT run: sparse level set
+
+Count-0 barely exists because OUR set has ~14 lines — a property of the
+definition, not the market. Variant declared as a new hypothesis arising
+from a failed test (result-independent reason: the original variable had no
+dynamic range on the side that mattered): path variables recomputed over a
+sparse subset (profile levels + 15m and 1h MAs, ~5 lines), own bar to be
+declared before any run. Not scheduled.
