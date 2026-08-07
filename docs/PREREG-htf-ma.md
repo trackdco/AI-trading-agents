@@ -307,3 +307,20 @@ Context (reported, unbarred): profile_min, session, side.
 BAR per candidate: Spearman(rank, netR) with the DECLARED sign in BOTH eras;
 family verdict requires >=1 of 3 passing with |rho| >= 0.05 in both eras.
 Cluster views reported. One run, no variants, misses recorded as misses.
+
+## H — RESULT (run 2026-08-07)
+
+```
+STUDY H — travel regression (prereg §H), reject arm, shipped exit
+  H1 next_level_dist_W   H2-2025: netR rho +0.042 MISS | travel +0.054 | arrival -0.360 (n=1,555)
+  H1 next_level_dist_W   H1-2026: netR rho +0.029 MISS | travel +0.072 | arrival -0.350 (n=1,420)
+    -> FAIL (declared sign, both eras, |rho|>=0.05)
+  H2 path_emptiness      H2-2025: netR rho +0.237 OK  | travel +0.168 | arrival -0.102 (n=1,555)
+  H2 path_emptiness      H1-2026: netR rho +0.246 OK  | travel +0.157 | arrival -0.057 (n=1,420)
+    -> PASS (declared sign, both eras, |rho|>=0.05)
+  H3 bw_expansion        H2-2025: netR rho +0.176 OK  | travel +0.133 | arrival +0.090 (n=1,548)
+  H3 bw_expansion        H1-2026: netR rho +0.217 OK  | travel +0.122 | arrival +0.088 (n=1,413)
+    -> PASS (declared sign, both eras, |rho|>=0.05)
+
+FAMILY VERDICT (>=1 of 3): PASS — the travel direction has at least one live candidate
+```
