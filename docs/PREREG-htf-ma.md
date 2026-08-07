@@ -204,3 +204,39 @@ precondition (logged): corr(confluence, close_dist_bw) = -0.18 — independent v
   break   H1-2026: rho +0.060 -> PASS | bins 1:64%(n102) 2:71%(n236) 3:66%(n139) 4:73%(n75) 5+:82%(n44)
 PREREG BAR (rho>0, both eras, both arms): PASS
 ```
+
+## THE STOP-WIDTH LAW (ANGUS 2026-08-07, protocol, permanent)
+
+Any variable correlated with stop width must be tested in R, never hit rate —
+close_dist_bw bought win rate with denominator (stop ≈ close_dist + wick) and
+neither side caught it until capture. Corollary: DUAL-CURRENCY BY DEFAULT —
+every study from here reports hit rate AND net R from the outset; a hit-rate
+pass alone is a known-unreliable filter. G runs dual-currency.
+
+## D-capture pre-checks (run before the prereg below, logged)
+
+1. corr(confluence_count, stop_dist_W) = -0.20..-0.24 in ALL four arm×era
+   cells — NEGATIVE. Confluence associates with TIGHTER stops; the
+   close_dist death mechanism is absent, directionally reversed.
+2. Tolerance is W-DENOMINATED (code: 0.25×w15) — the manufactured-confluence-
+   by-low-volatility channel does not exist. corr with w15 mildly positive
+   (+0.16/+0.22). HOWEVER: corr(confluence, profile_min) = -0.51/-0.49 —
+   confluence is strongly a property of the EARLY session (asia mean 3.78 vs
+   ~2.1-2.4 elsewhere): the immature profile packs POC/VAH/VAL/VWAP together
+   mechanically. CONFOUND FLAGGED: D may partly proxy session time. The
+   capture study reports session-stratified and profile-age-stratified tables
+   alongside the bar; the bar itself is unchanged.
+
+## §D-capture — declared 2026-08-07 BEFORE the run (ANGUS two-part bar)
+
+Population: Census B fit, shipped exits per arm (reject: hold-with-stop;
+break: first-target-or-stop). Currency: NET R = (exit-entry)/stop_distance,
+cost 0.5pt converted per event. Bins: confluence 1/2/3/4/5+. Minimum 30
+clustered observations per bin; an underpowered bin cannot carry a pass and
+monotonicity is read on powered bins only.
+BAR (on the REJECT arm; break reported alongside):
+  (a) bin mean net R non-decreasing across powered bins, BOTH eras;
+  (b) the top powered bin's mean net R positive with its 95% cluster interval
+      clear of zero, BOTH eras.
+Context tables (reported, unbarred): session-stratified bins; profile_min
+tercile bins. One run, no variants.
