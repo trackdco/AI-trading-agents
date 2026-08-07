@@ -642,3 +642,16 @@ unseen number is A-2's own result.
 - If A-2 passes all three: FREEZE. The ONE sealed look is then ANGUS's
   decision alone, both 2023 and 2024 halves reported, no post-holdout edits
   under any outcome.
+
+```
+SPEC A-2 — RESULT (run 2026-08-08)
+  H2-2025: unweighted -0.0472 | H2-ladder-weighted -0.0436 | margin +0.0036 | ranked events 87%
+      headline ny_pre    : weighted +0.1774 (n_cl=102)
+      headline ny_rth_am : weighted +0.0235 (n_cl=143)
+  H1-2026: unweighted +0.0971 | H2-ladder-weighted +0.0840 | margin -0.0131 | ranked events 100%
+      headline ny_pre    : weighted +0.3353 (n_cl=85)
+      headline ny_rth_am : weighted +0.1782 (n_cl=134)
+  LODO: 0/14 folds weighted>unweighted | FAILING ['2025-06', '2025-07', '2025-08', '2025-09', '2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07']
+  BAR: (a) weighted>unweighted both eras: FAIL | (b) weighted>0 both eras: FAIL | (c) LODO 14/14: FAIL
+  A-2: FAILS — which-failed recorded above
+```
