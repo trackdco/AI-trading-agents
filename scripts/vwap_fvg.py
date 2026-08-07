@@ -201,6 +201,7 @@ def run_day(g: pd.DataFrame, anchor: str, k: float, setup: str,
             # ---- resolve the path in order ----
             r = {"day": g.day.iloc[0], "side": side, "setup": setup, "anchor": anchor,
                  "k": k, "tf": cand["tf"], "hm": int(hm[ent_i]), "risk": risk,
+                 "entry": float(entry), "stop": float(stop), "t_mid": float(t_mid),
                  "r_mid": abs(t_mid - entry) / risk,
                  "r_band": abs(t_band - entry) / risk,
                  "r_dol": abs(dol - entry) / risk if dol == dol else np.nan,
