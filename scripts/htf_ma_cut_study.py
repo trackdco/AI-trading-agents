@@ -82,6 +82,7 @@ def book_stats(book: pd.DataFrame) -> dict:
     return {"ev": book.out_ship.mean(), "n": len(book),
             "npd": len(book) / max(book.sess_day.nunique(), 1),
             "green": (dp > 0).mean(),
+            "qday": (dp >= 250.0).mean(),   # D4: qualifying-day axis, $250
             "maxdd": (cum.cummax() - cum).max(),
             "score": score, "med_days": med_days}
 
@@ -156,11 +157,12 @@ def main() -> None:
         base = book_stats(bk)
         print(f"\n-- {arm.upper()} book: EV {base['ev']:+.3f}R | n {base['n']} "
               f"({base['npd']:.1f}/day) | green {base['green']*100:.0f}% | "
+              f"qday {base['qday']*100:.0f}% | "
               f"maxDD ${base['maxdd']:,.0f} | score {base['score']*100:.1f}% "
               f"(med {base['med_days']:.0f}d) --")
         print(f"{'cut':22s} {'rm%':>5s} {'muCut':>7s} {'lift':>7s} "
-              f"{'EVaft':>7s} {'n':>5s} {'green':>6s} {'maxDD':>8s} "
-              f"{'score':>6s} verdict")
+              f"{'EVaft':>7s} {'n':>5s} {'/day':>5s} {'qday':>5s} "
+              f"{'green':>6s} {'maxDD':>8s} {'score':>6s} verdict")
         for name, mask in cuts_for(bk, edges[arm]).items():
             q = mask.mean()
             known = mask.notna().all()
@@ -177,7 +179,8 @@ def main() -> None:
             verdict = "SURVIVOR" if (feas and better) else \
                 ("lift<bar" if not feas else "score↓")
             print(f"{name:22s} {q*100:5.1f} {mu:+7.3f} {lift:+7.3f} "
-                  f"{s['ev']:+7.3f} {s['n']:5d} {s['green']*100:5.0f}% "
+                  f"{s['ev']:+7.3f} {s['n']:5d} {s['npd']:5.1f} "
+                  f"{s['qday']*100:4.0f}% {s['green']*100:5.0f}% "
                   f"${s['maxdd']:7,.0f} {s['score']*100:5.1f}% {verdict}")
 
 
