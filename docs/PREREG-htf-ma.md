@@ -450,3 +450,35 @@ JOB 2 — exit sweep (prereg bar: interior-of-plateau, beat both baselines, both
   reject: partial P75_2.0_trail beats both baselines, both eras
   break: interior-plateau singles = NONE
 ```
+
+## Job 2 — VERDICT against the declared bar + Job 2b declaration
+
+**NO ADOPTION under the declared bar.** P50_2.0_trail and P75_2.0_trail beat
+both baselines in both eras on both...arms? No: reject arm only; on the break
+arm B2-hold wins H1-2026 (+0.147) and nothing passes both eras. And on the
+reject arm the winner FAILS the interior-of-plateau clause twice over: T=2.0
+is the EDGE of the tested partial grid (no upper neighbour exists), and the
+lower neighbour P75_1.5_trail fails H1-2026 (+0.012 < B2 +0.034). Recorded
+as a miss under the bar as written.
+
+**What the run established regardless (deliverables, not bar claims):**
+- MFE-in-R, first ever: p50 ~0.9-1.0R, p75 ~2.5R, p90 ~6.4-7.3R, p95 11-14R,
+  max 59-196R — era-stable to a decimal, both arms. The offer distribution is
+  huge-tailed and stable; exits, not offers, are the constraint.
+- The trader's exit shape (partial + trailed runner) tops the ordering in
+  3 of 4 arm-era cells — the first exit family to beat both baselines
+  anywhere consistently (reject arm, both eras).
+- The winner sits at the grid's upper boundary with the curve still rising —
+  the same boundary situation as cumulative-K, in mirror image: the grid
+  capped partial targets at 2R while the measured offer p75 is 2.5R and p90
+  is ~7R. The grid was mis-sized for the effect's location.
+
+### Job 2b — declared extension (new run, own bar, not a rescue)
+
+Extend the partial grid to T in {2, 2.5, 3, 4, 5}, p in {50%, 75%},
+remainder {hold, trail}; singles unchanged as context. BAR: interior of a
+plateau on the EXTENDED grid — the winner and BOTH T-neighbours beat both
+baselines, both eras, per arm, cluster-collapsed; monthly LODO on the winner
+reported; three gates apply. Declared with the boundary reason stated before
+the run; one run, no variants. Job 3 (H3 solo) runs after 2b resolves the
+shipped exit.
