@@ -240,3 +240,70 @@ BAR (on the REJECT arm; break reported alongside):
       clear of zero, BOTH eras.
 Context tables (reported, unbarred): session-stratified bins; profile_min
 tercile bins. One run, no variants.
+
+## D-capture — RESULT (run 2026-08-07)
+
+```
+STUDY D-capture — confluence bins in NET R (prereg bar on reject arm)
+
+[reject]
+  H2-2025: 1:+0.056[-0.602,+0.714](n134) 2:-0.277[-0.573,+0.020](n413) 3:-0.417[-0.686,-0.148](n257) 4:-0.670[-0.909,-0.431](n195) 5+:-0.506[-1.043,+0.030](n113)
+          monotone(powered)=N | top-bin>0 w/ CI clear=N
+  H1-2026: 1:+0.584[-0.377,+1.545](n140) 2:-0.073[-0.457,+0.311](n370) 3:-0.229[-0.518,+0.059](n251) 4:+0.548[-1.265,+2.362](n158) 5+:+0.578[-0.537,+1.692](n84)
+          monotone(powered)=N | top-bin>0 w/ CI clear=N
+
+[break]
+  H2-2025: 1:-0.284[-0.467,-0.101](n87) 2:+0.107[-0.033,+0.248](n272) 3:-0.003[-0.156,+0.151](n160) 4:-0.199[-0.349,-0.050](n117) 5+:+0.131[-0.027,+0.289](n65)
+          monotone(powered)=N | top-bin>0 w/ CI clear=N
+  H1-2026: 1:+0.177[-0.048,+0.401](n102) 2:+0.181[-0.010,+0.372](n236) 3:+0.001[-0.168,+0.170](n139) 4:+0.052[-0.134,+0.237](n75) 5+:+0.039[-0.137,+0.215](n44)
+          monotone(powered)=N | top-bin>0 w/ CI clear=N
+
+PREREG BAR (reject arm, both parts, both eras): FAIL — miss recorded, no variants
+
+== context (unbarred): reject netR by bin x session (pooled eras) ==
+  asia       1:+0.95(n35) 2:-0.24(n175) 3:-0.52(n172) 4:+0.39(n156) 5+:+0.02(n180)
+  london     1:+0.91(n87) 2:-0.17(n242) 3:-0.39(n127) 4:-1.06(n78) 5+:--
+  ny_pre     1:+0.55(n39) 2:+0.18(n118) 3:-0.77(n34) 4:-- 5+:--
+  ny_rth_am  1:-0.14(n65) 2:+0.22(n122) 3:-0.07(n81) 4:-0.10(n56) 5+:--
+  ny_pm      1:-0.08(n61) 2:-0.28(n187) 3:+0.05(n115) 4:+0.02(n59) 5+:--
+
+== context (unbarred): reject netR by bin x profile-age tercile ==
+  early  1:+1.09(n43) 2:-0.35(n195) 3:-0.48(n185) 4:+0.34(n161) 5+:+0.02(n180)
+  mid    1:+0.69(n117) 2:-0.01(n331) 3:-0.60(n152) 4:-1.05(n90) 5+:--
+  late   1:-0.03(n119) 2:-0.14(n291) 3:+0.05(n185) 4:-0.09(n107) 5+:--
+```
+
+## THE REORIENTATION (ANGUS 2026-08-07) + §H declared before run
+
+**The opposite-signs result reread:** every selection variable this week
+(close_dist, confluence, admissibility, persistence) was arrival-predicting —
+regressed on "does price reach the level." The paycheck is in travel PAST the
+level, and arrival-prediction plausibly selects congestion, which caps tails.
+0-for-5 is what you'd expect from a whole family pointed the wrong way — a
+better explanation than five independent bad guesses. PRE-COMMITTED
+ALTERNATIVE READING, equally live tonight: the discretion is not in these
+features at all and the mechanical strategy must earn its own validation
+rather than cloning the trader. §H distinguishes them.
+
+**G: PARKED** (arrival-family; its tradeable content — fresh breaks only —
+is banked). **Bin-1/isolation: preconditions resolved** — NY-am bin-1 netR is
+-0.14 (n65), the +1R cells are Asia/London/early only; recorded as a
+session-expansion lead with a thin-liquidity caveat, not a book finding.
+**Costs: confirmed** — all week's R figures net 0.5pt/RT (NY assumption;
+Asia cells optimistic).
+
+### §H — travel regression (dependent variable changed, not the candidates)
+
+Population: Census B reject arm, fit, shipped exit (hold-with-stop).
+DVs: net R (money, barred) and travel_max_W (tail proxy, reported); arrival
+hit rate reported alongside so the opposition is visible per variable.
+Candidates, direction DECLARED in advance, tested as continuous ranks:
+  H1 next_level_dist_W — MORE distance to the first level ahead -> MORE netR
+     (the inverse of this week's family; room to run).
+  H2 path_emptiness — FEWER levels within 1.0W ahead of entry -> MORE netR.
+  H3 bw_expansion — w15 now vs 4 completed 15m bars ago (ratio>1 = expanding)
+     -> MORE netR.
+Context (reported, unbarred): profile_min, session, side.
+BAR per candidate: Spearman(rank, netR) with the DECLARED sign in BOTH eras;
+family verdict requires >=1 of 3 passing with |rho| >= 0.05 in both eras.
+Cluster views reported. One run, no variants, misses recorded as misses.
