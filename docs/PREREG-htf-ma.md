@@ -700,3 +700,20 @@ Cluster/period/currency reported. Diagnostic read, not an adoption.
 
 **STANDING:** no A-3; holdout untouched; high-R autopsy remains exploration
 on a seeded split-half only.
+
+```
+ITEM 3 — attribution of the A-2 sign flip (gain = weighted-per-unit-wt minus unweighted):
+  H2-2025: | oracle-cont +0.0012 | causal-cont +0.0014 | causal-ladder +0.0036
+  H1-2026: | oracle-cont -0.0083 | causal-cont -0.0083 | causal-ladder -0.0131
+```
+
+**Item 3 — DIAGNOSIS (declared before the final H2 test runs):** the sign
+flip exists at ORACLE stage (2026: oracle-cont -0.0083 = causal-cont
+-0.0083; ladder -0.0131). Not the window; not chiefly coarseness. Defect =
+rank-percentile encoding of a DISCRETE, heavily-tied count plus linear
+weights. The diagnosed encoding for H2's SECOND AND FINAL sizing test
+(inside item 4's run): DIRECT COUNT THRESHOLDS, tie-free and causal by
+construction — count<=1 -> 2.0, ==2 -> 1.5, ==3 -> 1.0, >=4 -> 0.5, the
+existing ladder values, untuned. Bar: A-2's three legs unchanged. Final
+regardless of outcome. Item 5's selection-on cell = count_ahead <= 2 (the
+tie-free split nearest the median), declared here.
