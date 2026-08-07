@@ -10,3 +10,10 @@ tools/yt-dlp
 
 # Manifest scratch from an interrupted atomic write.
 manifest.json.tmp
+
+# Derived caches for the alpha feasibility test — regenerable from the .zst
+# archives in ~19s via tools/alpha_data.py.
+tools/_nq_frontmonth.pkl
+tools/_alpha_sessions.pkl
+tools/_alpha_trades.pkl
+__pycache__/
