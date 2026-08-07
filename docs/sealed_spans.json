@@ -1,0 +1,4 @@
+{
+  "comment": "Sealed (holdout) spans. The chokepoint loader raises SealedPathError on any load touching these dates unless authorize_sealed=True is passed with a written, pre-declared look. Append entries; never delete — supersede with a note.",
+  "sealed": []
+}
