@@ -48,7 +48,8 @@ def in_window(hm: int) -> str | None:
 
 
 def day_triggers(bars: pd.DataFrame, sess_day: str, tfs=TFS,
-                 walk: bool = True) -> list[dict]:
+                 walk: bool = True, loci: list[str] | None = None,
+                 entry_only: bool = False) -> list[dict]:
     """All conjunction triggers for one session, all TFs, all loci.
 
     LEVEL CONSTRUCTION USES THE FULL SESSION (D5): the profile is
@@ -76,40 +77,86 @@ def day_triggers(bars: pd.DataFrame, sess_day: str, tfs=TFS,
     ma_f15 = ma15.reindex(f15.index - pd.Timedelta(minutes=1))
     ma_f15.index = f15.index
 
+    # --- D7 target-admissibility machinery (REPORTED, never a filter) -----
+    # A "ceiling" is a 5m or 60m BB MA sitting between entry and the next
+    # level ahead. Fresh permission = that ceiling was broken on the LAST
+    # COMPLETED candle of its own timeframe (K <= 1 bar, per Census C).
+    ceil = {}
+    for tfc in (5, 60):
+        mac, _ = bb_ma_asof(hist, tfc)
+        fc_ = hist.resample(f"{tfc}min", label="right", closed="left").agg(
+            {"open": "first", "high": "max", "low": "min",
+             "close": "last"}).dropna()
+        fc_ = fc_[(fc_.index > t0) & (fc_.index <= t1)]
+        mc_ = mac.reindex(fc_.index - pd.Timedelta(minutes=1)).to_numpy()
+        abv = fc_.close.to_numpy() > mc_                  # NaN -> False
+        prv = np.concatenate([[False], abv[:-1]])
+        ceil[tfc] = {"ma1m": mac.reindex(idx).to_numpy(),
+                     "ends": fc_.index.values,
+                     "up": abv & ~prv, "dn": (~abv) & prv,
+                     "n": len(fc_)}
+
+    # --- precomputed trail machinery -------------------------------------
+    # The 15m trail stop is a STEP function: it can only move at a 15m bar
+    # end. `trail_cand` is the stop each completed 15m bar WOULD propose
+    # (NaN when that bar did not close through the 15m BB MA in the trade
+    # direction), and `f15_pos` is the 1m position at which each proposal
+    # becomes live. Same rule as the 15m census, evaluated per-interval
+    # instead of per-minute so the walk is O(#15m bars) not O(#1m bars).
+    f15_pos = np.searchsorted(idx.values, f15.index.values)   # first 1m > bar
+    _mf = ma_f15.to_numpy()
+    _fc, _fl, _fh = (f15.close.to_numpy(), f15.low.to_numpy(),
+                     f15.high.to_numpy())
+    _ok_up = np.isfinite(_mf) & (_fc > _mf)
+    _ok_dn = np.isfinite(_mf) & (_fc < _mf)
+    trail_up = np.where(_ok_up, _fl - TICK, np.nan)
+    trail_dn = np.where(_ok_dn, _fh + TICK, np.nan)
+    N1 = len(idx)
+
     def walk_exits(j0, d, entry, stop):
         risk = abs(entry - stop)
-        if risk <= 0 or j0 >= len(idx):
+        if risk <= 0 or j0 >= N1:
             return None
         cost = COST_PTS / risk
-        stop_j, t3, mfe = None, None, 0.0
-        for j in range(j0, len(idx)):
-            if (lo[j] <= stop) if d > 0 else (hi[j] >= stop):
-                stop_j = j
-                break
-            fav = d * ((hi[j] if d > 0 else lo[j]) - entry) / risk
-            mfe = max(mfe, fav)
-            if t3 is None and fav >= 3.0:
-                t3 = j
+        # ---- leg 1: hard stop, MFE and 3R, vectorised over [j0, N) ------
+        adv = (lo[j0:] <= stop) if d > 0 else (hi[j0:] >= stop)
+        k = int(np.argmax(adv)) if adv.any() else (N1 - j0)   # rel. to j0
+        stop_j = j0 + k if adv.any() else None
+        ext = (hi[j0:j0 + k] if d > 0 else lo[j0:j0 + k])
+        if k > 0:
+            fav = d * (ext - entry) / risk
+            mfe = float(max(0.0, fav.max()))      # 0.0 floor, as the 15m walk
+            hit3 = fav >= 3.0
+            t3 = j0 + int(np.argmax(hit3)) if hit3.any() else None
+        else:
+            mfe, t3 = 0.0, None
         eod = d * (cl[-1] - entry) / risk
         hold = -1.0 if stop_j is not None else eod
+        # ---- leg 2: 15m trailing stop, evaluated per 15m interval -------
         tstop, trail, j_trail = stop, None, None
-        fb2 = f15[f15.index > idx[j0]]
-        fi, pos = list(fb2.index), 0
-        for j in range(j0, len(idx)):
-            if (lo[j] <= tstop) if d > 0 else (hi[j] >= tstop):
-                trail = d * (tstop - entry) / risk
-                j_trail = j
+        cand_arr = trail_up if d > 0 else trail_dn
+        b = int(np.searchsorted(f15_pos, j0, side="right"))  # bars still ahead
+        lo_j = j0
+        while lo_j < N1:
+            # a 15m bar ending at f15_pos[b] is checked for a breach FIRST and
+            # only then moves the stop, so its proposal goes live one 1m bar
+            # later — the 15m walk's exact ordering.
+            hi_j = min(int(f15_pos[b]) + 1, N1) if b < len(f15_pos) else N1
+            if hi_j > lo_j:
+                seg_adv = ((lo[lo_j:hi_j] <= tstop) if d > 0
+                           else (hi[lo_j:hi_j] >= tstop))
+                if seg_adv.any():
+                    j_trail = lo_j + int(np.argmax(seg_adv))
+                    trail = d * (tstop - entry) / risk
+                    break
+            if b >= len(f15_pos):
                 break
-            while pos < len(fi) and fi[pos] <= idx[j]:
-                b_ = fb2.iloc[pos]
-                m = ma_f15.get(fi[pos], np.nan)
-                if np.isfinite(m) and d * (b_.close - m) > 0:
-                    cand = (b_.low - TICK) if d > 0 else (b_.high + TICK)
-                    if d * (cand - tstop) > 0:
-                        tstop = cand
-                pos += 1
+            c = cand_arr[b]
+            if np.isfinite(c) and d * (c - tstop) > 0:
+                tstop = float(c)
+            lo_j, b = max(lo_j, hi_j), b + 1
         if trail is None:
-            trail, j_trail = eod, len(idx) - 1
+            trail, j_trail = eod, N1 - 1
         leg3 = (3.0 * risk - TICK) / risk if t3 is not None else None
         ship = (0.75 * leg3 + 0.25 * trail if leg3 is not None else trail) - cost
         j_exit = stop_j if (stop_j is not None and t3 is None) else j_trail
@@ -117,6 +164,43 @@ def day_triggers(bars: pd.DataFrame, sess_day: str, tfs=TFS,
                 "out_trail": trail - cost, "out_hold": hold - cost,
                 "t_entry": idx[j0], "t_exit": idx[j_exit],
                 "t_3r": idx[t3] if t3 is not None else pd.NaT}
+
+    def admissibility(bi, pos_tf, j0, d, entry, risk, locus, tstamp, lv):
+        """D7 — reported as columns, never a filter this pass.
+
+        next_lvl_R : distance to the NEAREST OTHER locus ahead of entry in
+                     the trade direction, in R (NaN if the path is clear)
+        ceilN_between : the N-minute BB MA sits between entry and that level
+        ceilN_fresh   : that ceiling was broken on the LAST COMPLETED
+                        N-minute candle (K <= 1 bar of its own timeframe)"""
+        p = pos_tf[bi]
+        best, bname = np.nan, None
+        for other in LOCI:
+            if other == locus:
+                continue
+            v = lv[other][p]
+            if not np.isfinite(v):
+                continue
+            dist = d * (v - entry)
+            if dist > 0 and (not np.isfinite(best) or dist < best):
+                best, bname = dist, other
+        out = {"next_lvl": bname,
+               "next_lvl_R": (best / risk) if np.isfinite(best) else np.nan}
+        for tfc in (5, 60):
+            C = ceil[tfc]
+            m = C["ma1m"][p]
+            mdist = d * (m - entry) if np.isfinite(m) else np.nan
+            # both distances are signed-positive-ahead, so "between" is
+            # simply 0 < ceiling distance < next-level distance
+            btw = bool(np.isfinite(mdist) and np.isfinite(best)
+                       and 0 < mdist < best)
+            b = int(np.searchsorted(C["ends"], tstamp.to_datetime64(),
+                                    side="right")) - 1
+            fresh = bool(0 <= b < C["n"]
+                         and (C["up"][b] if d > 0 else C["dn"][b]))
+            out[f"ceil{tfc}_between"] = btw
+            out[f"ceil{tfc}_fresh"] = fresh
+        return out
 
     rows = []
     for tf in tfs:
@@ -143,7 +227,7 @@ def day_triggers(bars: pd.DataFrame, sess_day: str, tfs=TFS,
                       ftf.close.to_numpy())
         mtf = ma_at.to_numpy()
 
-        for locus in LOCI:
+        for locus in (loci or LOCI):
             l_1m = lv[locus]
             l_at = l_1m[pos_tf]
             w_at = w_1m[pos_tf]
@@ -205,10 +289,16 @@ def day_triggers(bars: pd.DataFrame, sess_day: str, tfs=TFS,
                     if d * (entry - stop) <= 0:
                         EXCL["gap_through_stop"] += 1
                         continue
+                    if entry_only:            # entry-price gate: no exits
+                        rec.update({"entry": entry, "stop": stop})
+                        rows.append(rec)
+                        continue
                     w = walk_exits(j0, d, entry, stop)
                     if not w:
                         continue
-                    rec.update({"entry": entry, "stop": stop, **w})
+                    rec.update({"entry": entry, "stop": stop, **w,
+                                **admissibility(bi, pos_tf, j0, d, entry,
+                                                w["risk"], locus, tstamp, lv)})
                     rows.append(rec)
     return rows
 
