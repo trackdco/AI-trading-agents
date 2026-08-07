@@ -1,5 +1,12 @@
 # Star Trading channel — research pull
 
+> **BRANCH CLOSED 2026-08-07.** Cluster α is **DEAD on position sizing** — RR 0.2 against a
+> level target forces a 424-point median stop, and at MNQ (the smallest listed contract) the
+> median loss is 42% of a $2,000 trailing drawdown. Independent of win rate.
+> **Start at [`CLOSURE.md`](CLOSURE.md)** — two minutes, and it tells you what is reusable.
+> Scope: this kills α *on NQ in a trailing-drawdown account*, not α as taught on forex/gold,
+> which we did not test and make no claim about.
+
 Research material gathered for the high-win-rate / low-RR strategy question, from
 [@StarTrading-n8t](https://www.youtube.com/@StarTrading-n8t). External source material,
 kept deliberately outside `context/` and away from `strategy-definition-v1.0.md` so it

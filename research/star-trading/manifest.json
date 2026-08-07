@@ -1,7 +1,7 @@
 {
  "channel": "https://www.youtube.com/@StarTrading-n8t",
  "generated_utc": "2026-08-07T16:31:26+00:00",
- "updated_utc": "2026-08-07T16:52:57+00:00",
+ "updated_utc": "2026-08-07T17:42:57+00:00",
  "priority_set_size": 20,
  "statuses": [
   "pending",
@@ -85,14 +85,14 @@
    "title": "Full Negative Risk to Reward Masterclass (This Will Make You Profitable)",
    "duration_s": 4734,
    "views_at_pull": 2000,
-   "priority_rank": 6,
-   "priority_tier": "B",
-   "status": "failed",
+   "priority_rank": null,
+   "priority_tier": null,
+   "status": "deprioritised",
    "caption_type": "",
    "attempts": 6,
    "last_attempt_utc": "2026-08-07T16:51:55+00:00",
    "last_error": "bot_check: YouTube demands cookies for this IP",
-   "note": ""
+   "note": "DEPRIORITISED 2026-08-07. Wanted for cluster alpha's exit rule and win-rate denominator. Alpha is now DEAD on position sizing, which neither of those can affect: RR 0.2 against a level target forces a 424pt median stop, and at MNQ (smallest contract) the median loss is 42% of a $2,000 trailing drawdown. Do not spend requests on this."
   },
   {
    "video_id": "n6tdQXCM52Y",
@@ -120,7 +120,7 @@
    "attempts": 4,
    "last_attempt_utc": "2026-08-07T16:52:18+00:00",
    "last_error": "bot_check: YouTube demands cookies for this IP",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "9vlZwfly-4c",
@@ -134,7 +134,7 @@
    "attempts": 3,
    "last_attempt_utc": "2026-08-07T16:52:57+00:00",
    "last_error": "bot_check: YouTube demands cookies for this IP",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "IBD_cfjF2b8",
@@ -148,7 +148,7 @@
    "attempts": 0,
    "last_attempt_utc": "",
    "last_error": "",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "RtAN5HHHwyk",
@@ -162,7 +162,7 @@
    "attempts": 0,
    "last_attempt_utc": "",
    "last_error": "",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "xbh3qNNgRWE",
@@ -176,7 +176,7 @@
    "attempts": 0,
    "last_attempt_utc": "",
    "last_error": "",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "d2PHNIV6rmA",
@@ -190,7 +190,7 @@
    "attempts": 0,
    "last_attempt_utc": "",
    "last_error": "",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "G9J6n0GtdMg",
@@ -204,7 +204,7 @@
    "attempts": 0,
    "last_attempt_utc": "",
    "last_error": "",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "wj_ySYkAR1I",
@@ -218,7 +218,7 @@
    "attempts": 0,
    "last_attempt_utc": "",
    "last_error": "",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "ReDMfMM9bKQ",
@@ -232,7 +232,7 @@
    "attempts": 0,
    "last_attempt_utc": "",
    "last_error": "",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "UXw76pNGNzY",
@@ -246,7 +246,7 @@
    "attempts": 0,
    "last_attempt_utc": "",
    "last_error": "",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "MgcxuVd6jx0",
@@ -260,7 +260,7 @@
    "attempts": 0,
    "last_attempt_utc": "",
    "last_error": "",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "oHZCMvO0JlA",
@@ -274,7 +274,7 @@
    "attempts": 0,
    "last_attempt_utc": "",
    "last_error": "",
-   "note": ""
+   "note": "Priority set retired 2026-08-07 with the branch; see CLOSURE.md."
   },
   {
    "video_id": "GRgI67UwkHY",
@@ -1648,5 +1648,7 @@
    "last_error": "",
    "note": ""
   }
- ]
+ ],
+ "branch_status": "CLOSED \u2014 see CLOSURE.md. Cluster alpha DEAD on position sizing.",
+ "pull_guidance": "Tooling and manifest are intact and reusable for the next candidate. Do NOT spend requests completing this channel: the model the priority set was built to document is dead on a criterion no further transcript can affect."
 }

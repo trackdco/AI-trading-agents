@@ -1,17 +1,83 @@
 # Cluster α — cheap-kill feasibility test on NQ
 
-**Verdict: INCONCLUSIVE — but not in a way that recommends further work.**
-See [Verdict](#verdict) for why, and [The disqualifier](#the-disqualifier-position-size) for
-the finding that matters more than the verdict does.
+# VERDICT: DEAD — ON POSITION SIZING, INDEPENDENT OF WIN RATE
+
+**The mechanism.** RR 0.2 against a level-based target forces
+`stop = 5 × (entry-to-target distance)`. The median entry-to-level distance measured over
+772 NQ sessions is 85 points, so the median stop is **424 points**. That is not a parameter
+choice and no rule change reaches it — it is arithmetic. Negative RR combined with a level
+target is **mathematically incompatible with a trailing-drawdown account on this instrument**.
+No exit rule, no bias rule, and no win rate — not even 100% — alters it, because the
+disqualifier is the size of a single loss, not the frequency of losses.
+
+**MNQ is where the port actually dies.** The original analysis priced NQ only. MNQ is one
+tenth the size and is the smallest listed contract in this family, so it is the floor:
+
+| contract | $/point | median loss | p95 loss |
+|---|---|---|---|
+| NQ | $20 | $8,475 | $40,020 |
+| **MNQ** | **$2** | **$848** | **$4,002** |
+
+Against a **$2,000 trailing drawdown**, trading the minimum size of the smallest contract:
+
+- median loss = **42.4%** of the entire allowance
+- p95 loss = **200.1%** of the allowance — one such trade ends the account outright
+- **bust in 2.4 median losses**
+
+There is no smaller contract. There is no fractional futures contract. So there is no
+position size at which this geometry fits inside the account type the model is sold for.
+That is what makes this DEAD rather than unattractive.
+
+**What this does not say** — see [Scope of the claim](#scope-of-the-claim), which is not
+optional reading. This kills α *on NQ inside a trailing-drawdown account*. It does not kill
+α as taught.
 
 | | |
 |---|---|
 | Date | 2026-08-07 |
+| Verdict | **DEAD — on position sizing** (supersedes the INCONCLUSIVE finding retained below) |
 | Model under test | Cluster α, from ledger records 3, 6, 7 (masterclass + two supporting videos) |
-| Instrument tested | NQ front-month outrights |
+| Instrument tested | NQ front-month outrights; MNQ by scaling |
 | Sample | 772 sessions, 2023-01-03 → 2026-01-30 |
 | N_trials (this study) | **1** — see [N_trials](#n_trials) |
 | Ledger | Separate from the AUG-01 pre-registration. Different base model; α's α-budget is not the sweep model's. |
+
+---
+
+## Scope of the claim
+
+Stated precisely, because overclaiming here would repeat the exact error this audit was built
+to catch.
+
+**What died:** α traded on NQ, inside a prop-firm trailing-drawdown account.
+
+**What did NOT die:** α as taught. α is a forex and gold model, and those instruments have
+**fractional lot sizing** — position size scales continuously with the stop, so a 424-point
+equivalent stop is met by shrinking the lot rather than by blowing the risk budget. The
+geometry that kills the model here **does not arise there.** Futures are quantised at one
+contract, and that quantisation is the whole disqualifier.
+
+**We have not tested α on forex or gold, and we are making no claim about its performance
+there.** Nothing in this report is evidence for or against the author's results on his own
+instruments. A reader who takes "cluster α is dead" to mean "negative RR does not work" has
+drawn a conclusion this study does not support and cannot support.
+
+The separate criticisms in the retained analysis below — the absent exit rule, the missing
+win-rate denominator, the arithmetic error in the masterclass — stand on their own as
+documentation defects, and they are reasons the model could not be *specified*, not evidence
+that it does not *work*.
+
+---
+
+## Retained analysis — superseded but preserved
+
+Everything below was written before the MNQ sizing check and concluded **INCONCLUSIVE**. It
+is retained deliberately and should not be deleted: it is the evidence trail for the verdict
+above, and the sensitivity work in Step 2 is the most valuable part of the report — it is
+what caught a profitable-looking result that was an artefact of an arbitrary hold cap.
+
+Where the text below says "INCONCLUSIVE", read it as *inconclusive on win rate*, which
+remains true. The verdict above kills the model on a criterion win rate cannot affect.
 
 ---
 
@@ -199,6 +265,9 @@ the levels get touched, not that they can be chosen in advance.
 
 ## The disqualifier: position size
 
+*Written before the MNQ check. It was flagged here as outranking the verdict; the MNQ
+numbers at the top of the file confirmed that and converted it into the verdict.*
+
 This sits outside the DEAD / NOT VIABLE / INCONCLUSIVE trichotomy but outranks it for the
 project's actual purpose.
 
@@ -225,9 +294,11 @@ Two further observations, recorded not resolved:
 
 ---
 
-## Verdict
+## Verdict (superseded — see the DEAD verdict at the top of this file)
 
-**INCONCLUSIVE.**
+**INCONCLUSIVE *on win rate*.** This remains accurate and is retained. It is no longer the
+operative verdict: the sizing analysis above kills the model on a criterion that win rate
+cannot influence.
 
 By the stated criteria: Step 1 did not terminate (worst-case breakeven 87.43% < 95%); the
 hindsight ceiling (98.96%) is far above breakeven, so no bias-rule kill is available; and the
