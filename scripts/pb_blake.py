@@ -300,10 +300,48 @@ def run_day(g: pd.DataFrame, pools: dict, stop_rule: str = "swept",
             # ---- resolve the path, bar by bar, in order ----
             tp1 = tgt[0]
             r_tp1 = abs(tp1 - entry) / risk
+            # ---- FEATURES, everything knowable at or before bar ent_i and nothing after ----
+            atr = float(np.mean(h[max(0, ent_i - 60):ent_i] - lo[max(0, ent_i - 60):ent_i])) or 1.0
+            gsz = abs(cand["top"] - cand["bottom"])
+            sweep_depth = (lvl - ext) if side == "long" else (ext - lvl)
+            pre = slice(max(0, ent_i - 20), ent_i)
+            day_hi = float(h[:ent_i].max())
+            day_lo = float(lo[:ent_i].min())
+            rng = max(day_hi - day_lo, 1e-9)
+            inv = ent_i - 1                                # the bar whose close inverted the gap
+            confl = sum(1 for k, v in p.items()
+                        if (k.endswith("L") if side == "long" else k.endswith("H"))
+                        and abs(v - lvl) <= atr * 0.5)
+            n_above = sum(1 for x in gaps if x["ready"] <= ent_i
+                          and ((x["bottom"] > entry) if side == "long" else (x["top"] < entry)))
             res = {"day": g.day.iloc[0], "side": side, "pool": name, "tf": cand["tf"],
                    "tp_tf": tgt[2], "hm": int(hm[ent_i]), "entry": entry, "stop": stop,
                    "risk": risk, "tp1": tp1, "r_tp1": r_tp1,
-                   "extern_R": (abs(extern - entry) / risk) if extern else np.nan}
+                   "extern_R": (abs(extern - entry) / risk) if extern else np.nan,
+                   "ent_i": ent_i, "sweep_i": t,
+                   # -- setup geometry
+                   "atr60": atr, "risk_atr": risk / atr,
+                   "gap_pts": gsz, "gap_atr": gsz / atr,
+                   "sweep_depth": sweep_depth, "sweep_depth_atr": sweep_depth / atr,
+                   "bars_to_entry": ent_i - t,
+                   "travel_atr": abs(entry - ext) / atr,
+                   "travel_per_bar": abs(entry - ext) / max(ent_i - t, 1),
+                   "confluence": confl, "n_gaps_ahead": n_above,
+                   "window": "AM" if hm[ent_i] < 12 * 60 else "PM",
+                   "trade_no": len(trades) + 1,
+                   # -- where in the day's range the entry sits
+                   "pos_in_day": (entry - day_lo) / rng,
+                   "day_rng_atr": rng / atr,
+                   # -- the inverting bar itself
+                   "inv_body": abs(c[inv] - o[inv]) / max(h[inv] - lo[inv], 1e-9),
+                   "inv_range_atr": (h[inv] - lo[inv]) / atr,
+                   "inv_close_pos": (c[inv] - lo[inv]) / max(h[inv] - lo[inv], 1e-9),
+                   # -- momentum into the entry
+                   "mom5_atr": (c[ent_i - 1] - c[max(0, ent_i - 6)]) / atr *
+                               (1 if side == "long" else -1),
+                   "mom15_atr": (c[ent_i - 1] - c[max(0, ent_i - 16)]) / atr *
+                                (1 if side == "long" else -1),
+                   "pre_rng_atr": float(h[pre].max() - lo[pre].min()) / atr}
             hit_tp1 = stopped = False
             r_max = 0.0
             for u in range(ent_i, n):
