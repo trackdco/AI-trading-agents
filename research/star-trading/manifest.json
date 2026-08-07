@@ -1,7 +1,7 @@
 {
  "channel": "https://www.youtube.com/@StarTrading-n8t",
  "generated_utc": "2026-08-07T16:31:26+00:00",
- "updated_utc": "2026-08-07T16:38:08+00:00",
+ "updated_utc": "2026-08-07T16:40:23+00:00",
  "priority_set_size": 20,
  "statuses": [
   "pending",
@@ -59,11 +59,11 @@
    "views_at_pull": 281,
    "priority_rank": 4,
    "priority_tier": "B",
-   "status": "failed",
-   "caption_type": "",
-   "attempts": 4,
-   "last_attempt_utc": "2026-08-07T16:37:45+00:00",
-   "last_error": "bot_check: YouTube demands cookies for this IP",
+   "status": "downloaded",
+   "caption_type": "auto",
+   "attempts": 5,
+   "last_attempt_utc": "2026-08-07T16:40:23+00:00",
+   "last_error": "",
    "note": ""
   },
   {
@@ -87,11 +87,11 @@
    "views_at_pull": 2000,
    "priority_rank": 6,
    "priority_tier": "B",
-   "status": "pending",
+   "status": "failed",
    "caption_type": "",
-   "attempts": 0,
-   "last_attempt_utc": "",
-   "last_error": "",
+   "attempts": 1,
+   "last_attempt_utc": "2026-08-07T16:38:46+00:00",
+   "last_error": "bot_check: YouTube demands cookies for this IP",
    "note": ""
   },
   {
