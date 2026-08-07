@@ -25,6 +25,22 @@ trigger with that trigger alone, so dropping rejection_block candidates is EXACT
 equivalent to keeping them and filtering after — and B2 is removed anyway (handoff §3.1).
 2,657 candidates instead of 8,723 cuts each arm from ~48 min to ~15.
 
+...WITH ONE CONSEQUENCE THAT IS NOT A DETAIL. The OUTCOMES are unchanged by dropping
+rejection_blocks, but the DEDUP is not, because grouping is a property of the population.
+Every London book shipped to date deduped the FULL census and filtered to displacement
+after, which lets a rejection_block trigger — a B2, i.e. a pattern Angus REMOVED — claim a
+setup and suppress the displacement trigger sitting behind it. Measured on the rr0 book:
+
+    dedup full census, filter after   667 setups   −3.64 pt/trade   −2,427 pt
+    filter to displacement, dedup     852 setups   −3.47 pt/trade   −2,955 pt
+
+185 tradeable setups suppressed by untradeable triggers. That is exactly the failure
+handoff §4 names — *"do not group first and filter after — that silently merges ineligible
+triggers into setups"* — applied to `kind` rather than to VWAP eligibility. This sweep uses
+the second convention throughout, so its control does NOT reproduce the −3.64 quoted
+elsewhere, and it should not: compare arms to the `min 2R` control in these tables, never
+to a number from an earlier report.
+
 EVERY ARM IS SCORED IN BOTH ERAS AND ON BOTH POPULATIONS. Both eras because the burn list's
 signature failure is a 2025 winner that dies in 2026. Both populations — trades price never
 retraced to vs trades it did — because that split is where the last finding landed: the
@@ -196,6 +212,14 @@ def main() -> int:
          "London produces. The session ceiling (~26 pt/day even if every setup behaved like "
          "the best population, against a 50 pt/day objective) is untouched by anything "
          "here. What these can fix is per-trade edge.", "",
+         "> ⚠️ **Dedup convention differs from every earlier London report, deliberately.** "
+         "These arms filter to displacement and THEN group; the shipped books grouped the "
+         "full census and filtered after, which let a rejection_block trigger — a B2, the "
+         "pattern §3.1 removed — claim a setup and suppress the displacement behind it. On "
+         "the rr0 book that is **667 setups / −3.64 pt** the old way against **852 setups / "
+         "−3.47 pt** this way: 185 tradeable setups suppressed by untradeable triggers. "
+         "Compare arms to the `min 2R` control below, never to a number from an earlier "
+         "report.", "",
          "**Bar: net ≥ +4 pt, T ≥ 2, N ≥ 200, green ≥ 55%, positive in BOTH eras.**", ""]
     L += table([r for r in rows if r["kind"] == "target"], MAIN,
                "Target RR — what to aim at")
