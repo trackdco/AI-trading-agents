@@ -65,6 +65,12 @@ one.
 
 Kept deliberately. All of it survives the branch closing.
 
+**Testing runbook** — [`star-testing-runbook.md`](star-testing-runbook.md). The staged
+process, with a PRE-FLIGHT stage of six gates that need no data work: sizing, session
+overlap, breakeven, specifiability, data feasibility, sample sufficiency. Every one of them
+was answerable on day one of this branch, and at least three would have flagged it. Run
+them before acquiring anything.
+
 **Caption pull pipeline that works against a bot check** — `tools/pull_captions.py`.
 Manifest-driven and resumable, per-run cap, sleep with jitter, exponential backoff, hard stop
 after 3 consecutive failures, atomic manifest write after every video so a kill loses at most
@@ -84,19 +90,34 @@ sign, management) across every record before synthesising anything. It caught th
 models hiding under one identity, which no amount of reading would have surfaced, and it
 prevented merging contradictory rules into one incoherent strategy.
 
-**Cheap-kill test structure** — the sequence that matters, in order:
-1. **Cost gate first.** Compute breakeven from the geometry before any backtest. It can end
-   the study for the price of a distribution.
-2. **Unconditional both-directions base rate.** When the discretionary core is not codable,
+**Cheap-kill test structure** — run in this order. The numbering *is* the instruction; a note
+saying "do step 6 first" is the kind that gets skipped under pressure, which is exactly when
+it matters. Sizing was step 6 in the first draft of this document, and sizing is what killed
+the branch.
+
+1. **Sizing.** Does one loss fit in the account? For a fixed reward:risk against a
+   level-based target, `stop = (1/R) x target distance` — forced, not chosen. Convert to
+   dollars at the smallest available contract and compare to the drawdown allowance. Needs no
+   entry rule, no exit rule, no win rate, no backtest. **This ends more studies than
+   everything below it combined.**
+2. **Cost gate.** Compute breakeven from the geometry before any backtest:
+   `p0 = (s + c) / (s x (R + 1))`, at three cost levels, costed for the session actually
+   traded. Ends the study for the price of a distribution. Beware the inverse trap — α passed
+   this because its stops were so large that costs rounded to nothing against them, which is
+   the same property that killed it at step 1.
+3. **Unconditional both-directions base rate.** When the discretionary core is not codable,
    delete it and measure the base rate instead of guessing it.
-3. **Stop-first resolution, always.** At low RR the target sits inside far more bars than the
+4. **Stop-first resolution, always.** At low RR the target sits inside far more bars than the
    stop; target-first accounting inflates win rate systematically. Non-negotiable.
-4. **Required lift.** State the gap between base rate and breakeven in win-rate points. Above
+5. **Required lift.** State the gap between base rate and breakeven in win-rate points. Above
    ~10 points from a rule the author cannot put into words, that is a verdict, not a
    research question.
-5. **Hindsight ceiling.** Win rate with perfect direction choice. Below breakeven, no bias
+6. **Hindsight ceiling.** Win rate with perfect direction choice. Below breakeven, no bias
    rule of any kind can rescue the model.
-6. **Sizing.** Do this *first* next time, not last.
+
+Steps 1–2 need no data acquisition at all and belong in PRE-FLIGHT — see
+[`star-testing-runbook.md`](star-testing-runbook.md), which puts them alongside four other
+gates answerable before any corpus is built.
 
 **Two structural findings** worth carrying to any similar candidate — full statements in
 [`ledger/README.md`](ledger/README.md):
@@ -114,6 +135,7 @@ prevented merging contradictory rules into one incoherent strategy.
 | Path | What |
 |---|---|
 | [`CLOSURE.md`](CLOSURE.md) | This file |
+| [`star-testing-runbook.md`](star-testing-runbook.md) | Staged process for the next candidate, incl. PRE-FLIGHT gates |
 | [`ledger/README.md`](ledger/README.md) | Cluster verdicts, model census, structural findings |
 | [`alpha-feasibility.md`](alpha-feasibility.md) | DEAD verdict, plus the retained inconclusive-on-win-rate evidence trail |
 | [`negative-rr-model.md`](negative-rr-model.md) | First-pass reading of the model (early, superseded by the ledger) |
