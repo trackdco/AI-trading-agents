@@ -1,5 +1,12 @@
-# Source material stays local — this repo holds our reading of it, not a copy of it.
+# Raw caption downloads. Bulky (the 7.5h video alone is 4.5 MB of VTT) and the
+# timestamped transcripts carry everything the extraction stage needs.
 captions/
-transcripts/
-*.vtt
-*.description
+
+# Redundant prose variant — derivable from the timestamped primary.
+transcripts/*.plain.txt
+
+# Standalone yt-dlp binary, if dropped next to the scripts.
+tools/yt-dlp
+
+# Manifest scratch from an interrupted atomic write.
+manifest.json.tmp
