@@ -144,3 +144,110 @@ proximity-matched neighbors at the payoff level. Research pivots to
 rebalance SELECTION — what distinguishes the rebalances worth taking —
 and to Census B (M2 rejection/continuation).
 ```
+
+## Census B — M2 REJECTION/CONTINUATION (run 2026-08-07, fit only, 15m reference)
+
+```
+CENSUS B — M2 REJECTION/CONTINUATION, fit only, 15m reference
+reject events w/ target: 2,998 | break-retest w/ target: 1,297 | days 291
+
+== HEADLINE: structural target before S past the trigger-candle extreme (cluster-collapsed, Wilson 95) ==
+[REJECT]
+  S=10t below   60.4% [55.8,64.7] n=464  |   57.9% [53.1,62.7] n=395
+  S=10t above   59.6% [55.1,64.1] n=454  |   64.3% [59.8,68.8] n=427
+  S=20t below   63.7% [59.3,68.0] n=464  |   59.7% [54.8,64.5] n=395
+  S=20t above   63.3% [58.7,67.5] n=454  |   65.6% [60.9,69.9] n=427
+  S=40t below   68.8% [64.4,72.8] n=464  |   62.8% [57.9,67.4] n=395
+  S=40t above   67.4% [63.0,71.6] n=454  |   68.6% [64.1,72.8] n=427
+[BREAK-RETEST (retest-referenced)]
+  S=10t below   64.6% [59.5,69.3] n=364  |   69.0% [63.4,74.1] n=284
+  S=10t above   69.4% [64.3,74.1] n=337  |   67.3% [61.9,72.3] n=312
+  S=20t below   67.6% [62.6,72.2] n=364  |   70.1% [64.5,75.1] n=284
+  S=20t above   73.3% [68.3,77.7] n=337  |   69.2% [63.9,74.1] n=312
+  S=40t below   72.5% [67.7,76.9] n=364  |   75.0% [69.7,79.7] n=284
+  S=40t above   77.2% [72.4,81.3] n=337  |   70.8% [65.6,75.6] n=312
+
+== the skew (travel_max_W quantiles, reject) ==
+  H2-2025 below  p50 1.28W p75 2.45 p90 3.90 p95 5.30 max 13.7
+  H2-2025 above  p50 1.24W p75 1.96 p90 2.95 p95 4.10 max 8.8
+  H1-2026 below  p50 1.08W p75 1.98 p90 3.14 p95 3.91 max 10.9
+  H1-2026 above  p50 1.13W p75 1.85 p90 2.77 p95 3.73 max 7.9
+
+== geometry (reject): target dist / stop dist, W units ==
+  target p25/50/75: 0.04/0.10/0.20W | stop p25/50/75: 0.10/0.17/0.29W
+
+== magnitude, read ONCE as declared (quartiles vs headline S=20) ==
+  pen_bw         H2-2025: Q1..Q4 62% 66% 70% 72%
+  pen_bw         H1-2026: Q1..Q4 62% 66% 67% 70%
+  body_atr       H2-2025: Q1..Q4 64% 64% 64% 69%
+  body_atr       H1-2026: Q1..Q4 64% 66% 64% 63%
+  close_dist_bw  H2-2025: Q1..Q4 60% 62% 70% 78%
+  close_dist_bw  H1-2026: Q1..Q4 54% 64% 73% 73%
+
+== conditioning columns, REPORTED never filtered (headline S=20) ==
+  confluence_count   H2-2025: 1:57%(n175) 2+:69%(n1379)
+  confluence_count   H1-2026: 1:58%(n187) 2+:67%(n1231)
+  mtf_reject_count   H2-2025: 1:68%(n1238) 2:64%(n272) 3+:64%(n58)
+  mtf_reject_count   H1-2026: 1:65%(n1127) 2:69%(n239) 3+:69%(n64)
+  admissible_snapshot H2-2025: ADMISSIBLE 70%(n1229) vs BLOCKED 58%(n339)
+  admissible_snapshot H1-2026: ADMISSIBLE 70%(n1101) vs BLOCKED 52%(n329)
+
+== sessions (reject, S=20, eras pooled; reported never filtered) ==
+  asia       below   68.1% [62.6,73.2] n=298
+  asia       above   70.9% [65.8,75.7] n=317
+  london     below   60.3% [53.5,66.4] n=218
+  london     above   65.4% [59.2,70.8] n=253
+  ny_pre     below   61.9% [52.2,71.5] n=93
+  ny_pre     above   65.2% [54.8,73.8] n=94
+  ny_rth_am  below   71.3% [63.0,78.2] n=132
+  ny_rth_am  above   70.8% [63.2,77.8] n=145
+  ny_pm      below   55.3% [48.3,61.8] n=205
+  ny_pm      above   56.6% [49.1,63.4] n=181
+
+== placebos (headline: target before 20t past extreme) ==
+  H2-2025: real 56.8% (events 474) | placebo mean 54.4% p95 59.6% | real at 80th pct
+  H1-2026: real 55.4% (events 475) | placebo mean 49.8% p95 55.4% | real at 94th pct
+```
+
+## Census B verdict (per SPEC §8)
+
+```
+VERDICT      M2 REJECTION/CONTINUATION: BASE RATE ESTABLISHED — both arms,
+             era-consistent, cluster-collapsed; same placebo rider as M1.
+HEADLINE     Structural target before 20t past the trigger-candle extreme:
+             REJECT 59.7-65.6% (all four era-side cells agree within Wilson
+             intervals). BREAK-RETEST (retest-referenced, the fairness fix)
+             67.6-73.3% — HIGHER than reject in every matched cell, both eras.
+             The census's strongest branch is break-and-retest: ~70-77% to
+             first target at S=40t, with a defined entry 80% of the time.
+             Corroborated independently by ANGUS's setup-4 pair (Wednesday):
+             the winner was break-and-retest; the loser was immediate entry.
+SKEW         travel_max_W p50 1.1-1.3W, p90 2.8-3.9W, p95 3.7-5.3W, max 8-14W,
+             both eras. The economics are in the tail, as claimed; the first
+             level (median 0.10W) is a toll booth, not the trade.
+MAGNITUDE    Read once, as declared: close_dist_bw is the carrier — Q1->Q4
+             monotone +18pp/+19pp in BOTH eras (60->78, 54->73). pen_bw
+             +8-10pp both eras. body_atr flat. The "hard rejection" ANGUS
+             verbalised as persistence (null, BR-5) lives in HOW FAR THE
+             CLOSE SETTLES from the MA — an unhunted variable, both eras.
+CONDITIONING (reported, never filtered) admissible_snapshot separates
+             era-consistently: ADMISSIBLE 70%/70% vs BLOCKED 58%/52% — the
+             Census C rule showing its teeth for free in the B columns.
+             confluence 2+ vs 1: +11/+9pp. mtf_reject_count: flat (consistent
+             with the persistence null).
+SESSION      asia + ny_rth_am strongest (68-71%); ny_pm weakest (55-57%,
+             truncation-confounded). Reported, never filtered.
+NULLS        Proximity-shifted line, headline metric: real at 80th pct
+             (H2-2025) / 94th pct (H1-2026); beats the placebo MEAN in both
+             eras (+2.4pp/+5.6pp) but clears p95 in neither. Under the same
+             standard M1 was held to: line-specialness NOT proven. The base
+             rates, not the line, are the durable artifact.
+ERA          Every headline cell agrees across eras within intervals; skew,
+             magnitude, and admissibility findings replicate in both.
+GAPS         5m/60m comparators unrun; ny_pm truncation unquantified; break
+             placebo not run (reject-headline only); Census C full sweep
+             (ceiling_broken_K) pending.
+NEXT         Census C — the admissibility rule sweep — now carrying an
+             era-consistent +12/+18pp preview from unfiltered columns, the
+             strongest selection lead either mechanism has produced.
+```
