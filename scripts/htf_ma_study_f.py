@@ -17,7 +17,18 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy.stats import spearmanr
+
+
+def spearmanr(a, b):
+    """Spearman rho + normal-approx p (scipy unavailable in this venv)."""
+    ra = pd.Series(a).rank()
+    rb = pd.Series(b).rank()
+    rho = float(np.corrcoef(ra, rb)[0, 1])
+    n = len(ra)
+    z = rho * np.sqrt(max(n - 3, 1)) if abs(rho) < 1 else np.inf
+    from math import erfc, sqrt
+    p = erfc(abs(z) / sqrt(2))
+    return rho, p
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))

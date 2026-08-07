@@ -178,3 +178,17 @@ D, not before.
 The six sealed months buy ONE clean confirmation. It is reserved for the
 ASSEMBLED selection layer (close_dist_bw + confluence + whatever survives),
 not for any individual lead. Nothing here authorizes unsealing.
+
+## F — RESULT (run 2026-08-07)
+
+```
+STUDY F — close_dist_bw continuous rank (prereg §F), reject arm, shipped exit (hold-with-stop)
+  H2-2025: n=1,568 | TEST1 Spearman rho -0.561 (p=5.2e-109) -> FAIL
+          TEST2 ladder-weighted -0.0681W vs unweighted -0.0672W per unit weight (cluster view) -> FAIL
+          quartile mean caps: Q1 -0.049 Q2 -0.071 Q3 -0.010 Q4 -0.087
+  H1-2026: n=1,430 | TEST1 Spearman rho -0.474 (p=1.4e-71) -> FAIL
+          TEST2 ladder-weighted +0.0099W vs unweighted +0.0096W per unit weight (cluster view) -> PASS
+          quartile mean caps: Q1 -0.038 Q2 +0.006 Q3 +0.137 Q4 +0.048
+
+PREREG BAR (both tests, both eras): FAIL — reported as a miss, no variants
+```
