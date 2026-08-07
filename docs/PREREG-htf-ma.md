@@ -324,3 +324,20 @@ STUDY H — travel regression (prereg §H), reject arm, shipped exit
 
 FAMILY VERDICT (>=1 of 3): PASS — the travel direction has at least one live candidate
 ```
+
+## §H-capture battery — declared 2026-08-08, before run (ANGUS steers baked)
+
+Reject arm, shipped exit, netR currency, frame PERSISTED. Bins on the natural
+count: levels within 1.0W ahead = 0 / 1 / 2 / 3+ (emptiness decreasing).
+BAR (two-part, D-capture style): (a) bin mean netR monotone DECREASING in
+count across powered bins (min 30 clusters), BOTH eras; (b) the count=0 bin
+positive with 95% cluster CI clear of zero, BOTH eras.
+LODO UNIT = MONTH (14 folds): H2's netR rho must keep its declared sign in
+ALL 14 folds; folds failing are named. Same treatment reported for H3 with
+day-clustered views (H3 is a regime variable; period dependence is the
+expected failure mode).
+QUERIES REPORTED WITH THE RESULT: corr(H1,H2) per era — weak => H2 is
+DENSITY not distance (aligns with D's congestion finding); strong => the
++0.04/+0.24 gap must be explained before either is trusted. corr(H2,H3) per
+era — resolves SPEC A-1 clause 5 at the declared 0.4 threshold.
+Dual-currency throughout. One run, no variants.
