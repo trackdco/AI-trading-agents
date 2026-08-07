@@ -123,3 +123,58 @@ Wilson cluster-collapsed, era x side x arm with UNDERPOWERED flags, stratum
 sizes mandatory. ESTABLISHED requires: BROKEN(K)+NO-CEILING vs UNBROKEN
 separation positive in BOTH eras with non-overlapping intervals at >=2
 adjacent K values (a plateau, not a spike). One run, read against this bar.
+
+## Sequencing ruling (ANGUS 2026-08-07) + declared follow-on studies
+
+**The C verdict stands untouched.** Recorded alongside it, worth more than the
+verdict it failed: **FRESH BREAKS ONLY** — clause (b) of the admissibility
+rule holds for ~one bar of the breaking timeframe, then expires. Actionable
+immediately, regardless of any census.
+
+**Methodological note (not a relitigation):** ceiling_broken_K was CUMULATIVE
+(within the last K bars), so widening K mechanically dilutes a boundary
+effect — K=2's population contains K=1's plus staler events. An adjacent-
+cumulative-cell plateau bar cannot pass when the true effect is a monotone
+decay from the edge. The bar was built for mid-range spikes; that is what it
+catches; the verdict stands because the bar was the bar.
+
+**Role note, recorded:** three ANGUS market hypotheses failed today
+(convergence confound, exits-before-C, spent-travel); four ANGUS process
+steers flipped or protected results (stop anchoring, circularity check,
+stratum sizes, the blind conditional). Division of labour going forward:
+trader supplies observations; the desk's job is measurement and adversarial
+breakage, not market guesses.
+
+### §F — close_dist_bw as CONTINUOUS conviction weight (FIRST)
+
+Population: Census B reject arm, fit (close_dist_bw is an attempt-bar
+magnitude; the break arm has no such bar — scope stated, not hidden).
+Capture: the SHIPPED exit convention (hold-with-stop). Variable: within-era
+percentile rank of close_dist_bw — continuous, never a cut.
+Two declared tests, no variants:
+1. Spearman rank corr(close_dist_rank, captured W net) > 0 in BOTH eras.
+2. The EXISTING conviction ladder applied without tuning — rank quartiles
+   mapped to 0.5/1.0/1.5/2.0 weights — weighted mean capture per unit risk
+   beats unweighted in BOTH eras on the cluster view.
+Weights, not gates: every trade stays in the book.
+
+### §D — confluence census (SECOND)
+
+Precondition query (logged before D runs): corr(confluence_count,
+close_dist_bw) + joint table, per the findings-4/5 protocol.
+Then: confluence_count as a continuous monotone variable on the same metric,
+rank corr + monotonicity in BOTH eras, both arms. Motivated by three placebo
+failures with identical signatures; nothing has tested it.
+
+### §G — fresh-permission, EXCLUSIVE bins (LAST)
+
+Declared as a NEW hypothesis arising from a failed test, held to the
+45-minute-timer standard — not a rescue. Exclusive staleness bins {1, 2-3,
+4-5, 6-10, never}; the test is MONOTONE DECAY in both eras. Runs after F and
+D, not before.
+
+### Holdout rule (standing)
+
+The six sealed months buy ONE clean confirmation. It is reserved for the
+ASSEMBLED selection layer (close_dist_bw + confluence + whatever survives),
+not for any individual lead. Nothing here authorizes unsealing.
