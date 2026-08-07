@@ -113,9 +113,9 @@ Share of book in brackets. Friction charged.
 | 2-3R | -4.29 (47%) | -5.78 (17%) |
 | >3R | -3.05 (51%) | -2.70 (23%) |
 
-### Paired on the 626 setups both arms traded
+### Paired: next structural (rr0) vs 2R floor (shipped) — 626 setups in common
 
-Of 719 (2R floor (shipped)) and 667 (next structural (rr0)).
+Of 719 (2R floor (shipped)) and 667 (next structural (rr0)). 41 setups exist only in next structural (rr0); 93 only in 2R floor (shipped).
 
 | | value |
 |---|---:|
