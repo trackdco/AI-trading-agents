@@ -847,3 +847,21 @@ as an identifiable subset (same keys, in_censusB_pop=True, count-asserted in
 the build). If the assert fails, the base-rate library gets re-stated
 against the new population before any cut study runs — measured cuts against
 nulls from a different book are forbidden.
+
+## M-TABLE — BUILD RESULT (2026-08-08)
+
+fit = 4,717 rows (reject 3,112 incl. 144 uncapped n>4; break 1,605 —
+existence now unconditional, retested is a flag) | sealed = 8,807 written
+unread | gray = 1,786. Flow coverage 99-100% on fit INCLUDING January (329
+rows, 100%) — the hole is closed in the book. Perturbation gate PASS (15
+probes) after catching a real defect: break-row existence had been
+conditioned on the future retest (fixed at root). Convention gate caught a
+delta sign inversion before fill (fp delta = b - a, verified 100.00% on the
+2026-02 overlap).
+
+**CONTINUITY RESOLVED:** 3,020/3,043 Census-B reject keys reproduced
+(99.2%). The 23 missing are stamped 17:00 (20) and 13:00 half-day closes
+(3) — decisions at the session's final bar with NO possible next-open entry;
+B recorded them, the M-TABLE excludes non-enterable events by construction.
+The library stands un-restated, with this 0.8%-untradeable-boundary caveat
+attached to B-derived rates.
