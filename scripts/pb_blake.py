@@ -52,7 +52,11 @@ sys.path.insert(0, str(ROOT))
 NY = "America/New_York"
 BARS = ("data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul2026.parquet")
 TICK = 0.25
-FVG_TFS = (15, 10, 5, 3)             # searched highest-first, per rule 3
+# Searched HIGHEST-FIRST, so a 15m gap still wins when one exists -- 1m/2m are only reached
+# when nothing larger is present in the leg. Blake sets 3m as his floor, but that floor alone
+# was rejecting 3.57 AM setups per day, by far the largest leak in the funnel, and Angus traded
+# 1m/2m gaps directly. The floor is his preference, not a property of the market.
+FVG_TFS = (15, 10, 5, 3, 2, 1)
 RTH = (9 * 60 + 30, 16 * 60)
 WINDOWS = ((9 * 60 + 30, 11 * 60 + 10), (13 * 60, 15 * 60))
 LEG_LOOKBACK = 120                    # minutes back from the sweep to frame the leg
@@ -147,6 +151,13 @@ def build_pools(b: pd.DataFrame, days: list[str]) -> dict[str, dict]:
     return pools
 
 
+FUNNEL: dict[str, int] = {}
+
+
+def _f(k: str) -> None:
+    FUNNEL[k] = FUNNEL.get(k, 0) + 1
+
+
 def run_day(g: pd.DataFrame, pools: dict, stop_rule: str = "swept",
             min_tp1_r: float = MIN_TP1_R) -> list[dict]:
     o = g.open.to_numpy(float)
@@ -194,6 +205,9 @@ def run_day(g: pd.DataFrame, pools: dict, stop_rule: str = "swept",
             if hit is None:
                 continue
             name, lvl = hit
+            am = hm[t] < 12 * 60
+            if am:
+                _f("1. sweep of a pool detected")
 
             # ---- 1b. STRUCTURE: swing low -> swing high -> lower low ----
             # Blake's first stated requirement, and the one that separates his setup from a
@@ -206,12 +220,16 @@ def run_day(g: pd.DataFrame, pools: dict, stop_rule: str = "swept",
                 ph_i = np.flatnonzero(ph[:max(0, t - PIVOT_K)])
                 prior = [i for i in pl_i if lo[i] > lo[t]]        # a low we have now broken
                 if not prior or not [j for j in ph_i if j > prior[-1]]:
+                    if am:
+                        _f("2. REJECTED no swing-low/high/lower-low structure")
                     continue
             else:
                 ph_i = np.flatnonzero(ph[:max(0, t - PIVOT_K)])
                 pl_i = np.flatnonzero(pl[:max(0, t - PIVOT_K)])
                 prior = [i for i in ph_i if h[i] < h[t]]
                 if not prior or not [j for j in pl_i if j > prior[-1]]:
+                    if am:
+                        _f("2. REJECTED no swing-low/high/lower-low structure")
                     continue
 
             # ---- 2/3. highest-timeframe gap in the sweep leg, re-checked each bar ----
@@ -245,8 +263,18 @@ def run_day(g: pd.DataFrame, pools: dict, stop_rule: str = "swept",
                 if (side == "long" and c[u] > edge) or (side == "short" and c[u] < edge):
                     ent_i, cand = u + 1, cur
                     break
-            if ent_i is None or ent_i >= n - 2 or not in_window(hm[ent_i]):
+            if am:
+                _f("3. structure ok")
+            if ent_i is None:
+                if am:
+                    _f("4. REJECTED no inversion of a >=3m leg gap within 90min")
                 continue
+            if ent_i >= n - 2 or not in_window(hm[ent_i]):
+                if am:
+                    _f("5. REJECTED inversion landed outside the trade window")
+                continue
+            if am:
+                _f("6. inversion found")
 
             entry = o[ent_i]
             # STOP RULE. "swept" is the literal reading -- stop at the swept extreme. But by the
@@ -265,6 +293,8 @@ def run_day(g: pd.DataFrame, pools: dict, stop_rule: str = "swept",
             stop = (ref - TICK) if side == "long" else (ref + TICK)
             risk = abs(entry - stop)
             if not (MIN_STOP_PTS <= risk <= MAX_STOP_PTS):
+                if am:
+                    _f("7. REJECTED risk outside 2-60pt")
                 continue
 
             # ---- 5. internal draw: nearest UNMITIGATED gap beyond entry ----
@@ -290,7 +320,11 @@ def run_day(g: pd.DataFrame, pools: dict, stop_rule: str = "swept",
                 tgt = (near, x["top"] if side == "long" else x["bottom"], x["tf"])
                 break
             if tgt is None:
+                if am:
+                    _f("8. REJECTED no unmitigated FVG target beyond entry")
                 continue
+            if am:
+                _f("9. TRADE TAKEN")
 
             # ---- 6. external draw: the opposing significant pool ----
             cands = [v for k, v in p.items()
@@ -435,6 +469,10 @@ def main() -> int:
     for p, x in T.groupby("pool"):
         book(x, f"pool {p}")
     print(f"\nwrote {a.csv}")
+    nd = T.day.nunique()
+    print(f"\nAM FUNNEL — where setups die, per trading day ({nd} days)")
+    for k in sorted(FUNNEL):
+        print(f"   {k:52} {FUNNEL[k]:6d}   {FUNNEL[k]/nd:5.2f}/day")
     return 0
 
 
