@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
 import sys
 from pathlib import Path
 
@@ -128,12 +129,25 @@ def build(b: pd.DataFrame, sessions: list[str]) -> list[dict]:
                                l=("low", "min"), c=("close", "last"))
     days = list(S.index)
     di = {d: i for i, d in enumerate(days)}
-    wk = b.groupby("day").wk.first()
-    mo = b.groupby("day").mo.first()
-    W = rth.groupby(wk.reindex(rth.day).values).agg(h=("high", "max"), l=("low", "min"))
-    M = rth.groupby(mo.reindex(rth.day).values).agg(h=("high", "max"), l=("low", "min"))
+    # Week/month key PER RTH DAY, aligned to `days` by LABEL. `b` is indexed by the ALL-BARS day
+    # list, which is LONGER than the RTH one -- Sunday evenings and holidays carry overnight bars
+    # but no RTH. Slicing it positionally with the RTH counter `n` drifts further apart the deeper
+    # into the corpus you go, and it returned a previous-week high that was weeks stale on 100% of
+    # sessions. Reindex by label; never slice one table with another's counter.
+    wk_d = b.groupby("day").wk.first().reindex(days).to_numpy()
+    mo_d = b.groupby("day").mo.first().reindex(days).to_numpy()
 
     dh, dl, dc = S.h.to_numpy(), S.l.to_numpy(), S.c.to_numpy()
+
+    def period_range(keys: np.ndarray, upto: int) -> dict | None:
+        """High/low of the most recent COMPLETED period, from the same daily array as everything
+        else. Deriving this from a second groupby is what broke it before."""
+        prior = keys[:upto][keys[:upto] < keys[upto]]
+        if not len(prior):
+            return None
+        m = keys[:upto] == prior.max()
+        return {"high": float(dh[:upto][m].max()), "low": float(dl[:upto][m].min())}
+
     dgaps = fvgs(S.o.to_numpy(), dh, dl, dc, days)
     for k, g in enumerate(dgaps):
         g["_i"] = di[g["at"]]
@@ -152,22 +166,14 @@ def build(b: pd.DataFrame, sessions: list[str]) -> list[dict]:
             rng_hi, rng_lo = float(dh[n - 20:n].max()), float(dl[n - 20:n].min())
         eq = (rng_hi + rng_lo) / 2.0
 
-        wkeys = sorted(set(wk.iloc[:n + 1].tolist()))
-        cur_wk = wk[day]
-        pw = [k for k in wkeys if k < cur_wk]
-        mkeys = sorted(set(mo.iloc[:n + 1].tolist()))
-        pm = [k for k in mkeys if k < mo[day]]
-
         base = {
             "day": day, "session_atr_20d": round(atr, 2),
             "prev_day": {"high": float(dh[n - 1]), "low": float(dl[n - 1]),
                          "close": float(dc[n - 1]),
                          "close_pos": round(float((dc[n - 1] - dl[n - 1]) /
                                                   max(dh[n - 1] - dl[n - 1], 1e-9)), 3)},
-            "prev_week": ({"high": float(W.h[pw[-1]]), "low": float(W.l[pw[-1]])}
-                          if pw else None),
-            "prev_month": ({"high": float(M.h[pm[-1]]), "low": float(M.l[pm[-1]])}
-                           if pm else None),
+            "prev_week": period_range(wk_d, n),
+            "prev_month": period_range(mo_d, n),
             "dealing_range": {"high": round(rng_hi, 2), "low": round(rng_lo, 2),
                               "equilibrium": round(eq, 2)},
             "ipda": {f"{k}d": {"high": float(dh[n - k:n].max()),
@@ -239,9 +245,17 @@ NON_PRICE = {"position_in_range", "close_pos", "age_days", "session", "id", "dir
 def anonymise(rows: list[dict]) -> list[dict]:
     """Strip everything identifying the period or instrument; index PRICES to 100.
 
-    Ratios, counts and labels are passed through unchanged -- see NON_PRICE."""
+    Ratios, counts and labels are passed through unchanged -- see NON_PRICE.
+
+    THE ID IS SHUFFLED, and that is not cosmetic. Rows are built in date order, so a sequential
+    id is a monotone proxy for the calendar: W000115 is early in the corpus and W004199 is late.
+    That hands back exactly the period signal the rest of this function strips out. Ids are
+    therefore drawn from a seeded permutation -- deterministic across rebuilds, but carrying no
+    ordering."""
+    order = list(range(len(rows)))
+    random.Random(20260807).shuffle(order)
     out = []
-    for i, r in enumerate(rows):
+    for i, r in zip(order, rows):
         ref = r["overnight"]["last"] if r.get("overnight") else r["prev_day"]["close"]
         k = 100.0 / ref
 
@@ -262,6 +276,35 @@ def anonymise(rows: list[dict]) -> list[dict]:
     return out
 
 
+def sanity(rows: list[dict]) -> None:
+    """Hard invariants, checked on every build. A stale prev_week survived a code review and a
+    committed artefact because nothing here asserted that it had to sit inside the price history
+    it was drawn from. These are the cheap containment checks that catch that whole family."""
+    bad: list[str] = []
+    for r in rows:
+        d20 = r["daily_ohlc_20"]
+        hi20, lo20 = max(x[1] for x in d20), min(x[2] for x in d20)
+        hi60, lo60 = r["ipda"]["60d"]["high"], r["ipda"]["60d"]["low"]
+        tag = f"{r.get('day', r.get('id'))} {r['session']}"
+        # last 20 daily bars END on the reference day, so the prior WEEK is inside them
+        pw = r.get("prev_week")
+        if pw and not (lo20 - 1e-6 <= pw["low"] and pw["high"] <= hi20 + 1e-6):
+            bad.append(f"{tag}: prev_week {pw} outside 20-bar range [{lo20}, {hi20}]")
+        # the prior MONTH can predate 20 bars, but never the 60-day lookback
+        pm = r.get("prev_month")
+        if pm and not (lo60 - 1e-6 <= pm["low"] and pm["high"] <= hi60 + 1e-6):
+            bad.append(f"{tag}: prev_month {pm} outside 60d range [{lo60}, {hi60}]")
+        # prev_day must BE the last bar of the series handed over -- no off-by-one
+        pd_ = r["prev_day"]
+        if abs(pd_["high"] - d20[-1][1]) > 1e-6 or abs(pd_["low"] - d20[-1][2]) > 1e-6:
+            bad.append(f"{tag}: prev_day does not match the last of daily_ohlc_20")
+    if bad:
+        for b in bad[:10]:
+            print(f"  SANITY FAIL {b}", file=sys.stderr)
+        raise SystemExit(f"sanity: {len(bad):,}/{len(rows):,} rows failed containment")
+    print(f"sanity: {len(rows):,} rows pass prev_week / prev_month / prev_day containment")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--anon", action="store_true")
@@ -269,6 +312,7 @@ def main() -> int:
     a = ap.parse_args()
     b = load()
     rows = build(b, a.sessions.split(","))
+    sanity(rows)
     if a.anon:
         rows = anonymise(rows)
     p = OUT if not a.anon else OUT.with_name("htf_context_anon.jsonl")
