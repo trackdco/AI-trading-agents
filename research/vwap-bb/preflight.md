@@ -3,6 +3,8 @@
 *Revision 3, 2026-08-07 — **PRE-FLIGHT COMPLETE**. Gate 2 ruled and closed, gate 5 closed by
 scoping to held data, gate 6 recomputed at the true workbench size. No data was purchased.*
 
+> **SUPERSEDED 2026-08-07: gate 6 has REOPENED.** The signal count found that the spec's trigger definition does not determine a trade frequency (25–109 signals/session across faithful readings, against a hand-log benchmark of 1.0), so gate 6's load-bearing input is unestablished. See [`signal-count.md`](signal-count.md). The statement below applied before that run.
+
 **All six gates are now closed. Nothing blocks the study design.** No backtest was run, no
 parameter was fitted, the holdout was not read, and **N_trials remains 0**.
 
@@ -13,7 +15,7 @@ parameter was fitted, the holdout was not read, and **N_trials remains 0**.
 | 3 BREAKEVEN | **PASS** | p₀ = 40.61% at R=1.5 base cost; c/s = 1.53%, a normal cost ratio |
 | 4 SPECIFIABILITY | **CLOSED** | All 5 unstated parameters frozen: 1 [SPEC], 4 [FIAT], 0 [FIT]. Free count 18 → 13 |
 | 5 DATA FEASIBILITY | **CLOSED — SCOPE ACCEPTED** | Coverage ends 2026-01-30, confirmed by exhaustive search. Parity relocated; calibration **downgraded** — one irrecoverable loss |
-| 6 SAMPLE SUFFICIENCY | **PASS**, floor p₁ ≈ 0.50 | Workbench 539 sessions; p₁ = 0.50 becomes unresolvable below **0.513 trades/session** |
+| 6 SAMPLE SUFFICIENCY | **REOPENED 2026-08-07** | Signal count could not establish a trade frequency — see [`signal-count.md`](signal-count.md). Was PASS with floor p₁ ≈ 0.50 |
 
 **Scope of these verdicts.** This is *the VWAP/BB spec as currently written, implemented on
 NQ, under the stated RTH 09:31–16:00 / first-signal-09:36 session convention, against the
