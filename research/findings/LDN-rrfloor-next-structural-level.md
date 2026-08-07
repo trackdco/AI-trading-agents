@@ -160,3 +160,48 @@ losing side is the whole question. Two facts already in hand and not yet used:
 
 **Neither arm goes near the prop bar.** Both fail net (≥4pt), T (≥2), green (≥55%) and both
 years red. Nothing here is shippable; this settles a mechanism, not a strategy.
+
+---
+
+## ADDENDUM 2026-08-07 — the floor result was redistributive, not neutral
+
+Prompted by Angus asking why the profitable population only yields ~1.7 pt/day. Splitting
+BOTH books by whether price ever retraced to the trigger level (L1's E3 walk = the limit
+that would or would not have filled):
+
+| population | 2R floor | rr0 (nearest level) | change |
+|---|---:|---:|---:|
+| **RAN (never retraced)** | 104 tr, **+8.06**/tr, **+839 pt** | 99 tr, **+4.58**/tr, **+453 pt** | **−386 pt** |
+| **RETRACED** | 615 tr, −5.68/tr, −3,495 pt | 568 tr, −5.07/tr, −2,880 pt | **+614 pt** |
+
+Cutting the floor took **386 pt off the population that pays** and gave **614 pt back to the
+one that does not**. Net +228 — precisely the flat headline (−2,656 → −2,427).
+
+So "the floor changed nothing" understates it. The floor change is REDISTRIBUTIVE: a nearer
+target pays the trades that retrace (banked before price comes back) and caps the trades
+that run. They cancel because the losing population is 6× larger. Mechanically visible in
+the exit mix of the RAN population alone — under the 2R floor it is 56% partial+stop / 32%
+partial+target with a median ordered RR of 3.02; under rr0 it is 54% target / 28%
+partial+target at RR 1.16. Same trades, cashed out earlier.
+
+**The correct target policy is conditional on which population the trade is in** — far for
+runners, near for retracers — and that is the same unresolvable-at-entry question as
+everything else in this file. A single global floor cannot be right for both, which is why
+every global setting of it measures as a wash.
+
+### Why the ceiling is what it is
+
+Even with perfect foresight and the BETTER (2R) target policy, the RAN population yields
+**+839 pt over 264 sessions = 3.18 pt/day** on ~88 traded sessions. Against Angus's stated
+50 pt/day:
+
+- 50 pt/day at +8.06/trade needs **~6.2 trades/day** of that quality. London supplies
+  **0.39/day**. Short by 16×.
+- If EVERY London displacement setup (3.20/day) performed like the best population, the
+  session would yield **~26 pt/day** — still half the objective, in a scenario that cannot
+  occur.
+
+This is a session-size constraint, not a strategy defect: a 2-hour window yielding ~3
+setups/day cannot reach 50 pt/day under any target policy. Recorded because it bounds every
+future London arm before it is run, and it is the strongest argument for London never being
+a standalone answer to the objective.
