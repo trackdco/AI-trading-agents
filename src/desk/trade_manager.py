@@ -156,6 +156,33 @@ def _sgn(direction: str) -> float:
     return 1.0 if direction == "long" else -1.0
 
 
+def _wall(side: pd.DataFrame, last: float):
+    """Largest resting level on one side; ties broken by NEAREST price to `last`.
+
+    `idxmax` alone resolves a size tie by ROW POSITION, which is an artefact of how the
+    depth frame was assembled rather than a fact about the book. On this instrument that
+    is not a corner case: NQ's London book runs a median 3 contracts a level across ten
+    levels spanning ~2.25 points, so exact size ties are ordinary. Measured on the 749-fill
+    fit matrix, the two rules disagree on 180 rows -- every one an exact size tie -- and 45
+    of them get a different wall distance.
+
+    **This is the live desk, so the cost is replay parity**: the same book replayed from a
+    differently-ordered frame produced a different `wall_ahead_points_away`, and a
+    briefing that cannot be reproduced cannot be audited against what the desk actually
+    saw. Ported from `scripts/london_depth.depth_at` (2026-08-07), which took it from the
+    rev-3 lineage. `kind="mergesort"` is required: it is pandas' only stable sort, and an
+    unstable one reintroduces the same order dependence one layer down.
+
+    Nearest-on-tie is the right reading here too -- between two equal-sized levels, the
+    one price reaches first is the one that binds.
+    """
+    if not len(side):
+        return None
+    s = side.assign(_d=(side["price"].astype(float) - float(last)).abs())
+    return s.sort_values(["size", "_d"], ascending=[False, True],
+                         kind="mergesort").iloc[0]
+
+
 def build_briefing(trade: dict, minute: pd.Timestamp, state: dict,
                    bars: pd.DataFrame, tape: pd.DataFrame,
                    depth: pd.DataFrame | None, journal: dict | None = None) -> dict:
@@ -269,8 +296,8 @@ def build_briefing(trade: dict, minute: pd.Timestamp, state: dict,
         if len(bid) and len(ask):
             tb, ta = float(bid["size"].sum()), float(ask["size"].sum())
             ahead, behind = (ask, bid) if sgn > 0 else (bid, ask)
-            wa = ahead.loc[ahead["size"].idxmax()] if len(ahead) else None
-            wb = behind.loc[behind["size"].idxmax()] if len(behind) else None
+            wa = _wall(ahead, last)
+            wb = _wall(behind, last)
             b["book"] = {
                 "thickness": round(tb + ta, 1),
                 "imbalance_signed": round(((tb - ta) / max(tb + ta, 1)) * sgn, 3),
