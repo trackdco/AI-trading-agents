@@ -251,3 +251,100 @@ NEXT         Census C — the admissibility rule sweep — now carrying an
              era-consistent +12/+18pp preview from unfiltered columns, the
              strongest selection lead either mechanism has produced.
 ```
+
+## Census C — admissibility sweep (run 2026-08-07)
+
+```
+CENSUS C — admissibility sweep (prereg §C), fit only
+events: 4,295 | NO-CEILING 75.9% | with ceiling 24.1% (5m 19.5%, 60m 4.6%)
+
+== ANGUS asymmetry: remaining favorable travel FROM ENTRY (W) ==
+  reject  H2-2025: p50 1.28 p75 2.68 p90 4.63 p95 6.23
+  reject  H1-2026: p50 1.01 p75 2.27 p90 4.37 p95 5.53
+  break   H2-2025: p50 1.22 p75 2.79 p90 4.69 p95 5.71
+  break   H1-2026: p50 1.17 p75 2.40 p90 4.20 p95 6.10
+
+== strata by K (metric: target before 20t past extreme) ==
+[K=1]
+  H2-2025: NOCEIL  68.6%[65.4,71.6]n=865  | BROKEN  65.6%[57.0,73.3]n=128  | UNBROKEN  57.0%[51.5,62.3]n=321 
+          ADMISSIBLE(K)  68.8%[65.6,71.7]n=886   [sizes: 1743/131/395]
+  H1-2026: NOCEIL  68.7%[65.3,71.8]n=769  | BROKEN  68.1%[59.2,75.9]n=116  | UNBROKEN  51.7%[46.2,57.2]n=315 
+          ADMISSIBLE(K)  69.4%[66.2,72.6]n=786   [sizes: 1519/120/387]
+[K=2]
+  H2-2025: NOCEIL  68.6%[65.4,71.6]n=865  | BROKEN  59.8%[53.0,66.3]n=204  | UNBROKEN  59.8%[53.8,65.6]n=264 
+          ADMISSIBLE(K)  67.8%[64.7,70.8]n=901   [sizes: 1743/218/308]
+  H1-2026: NOCEIL  68.7%[65.3,71.8]n=769  | BROKEN  61.6%[54.6,68.6]n=181  | UNBROKEN  52.3%[46.2,58.3]n=260 
+          ADMISSIBLE(K)  68.6%[65.2,71.7]n=792   [sizes: 1519/192/315]
+[K=3]
+  H2-2025: NOCEIL  68.6%[65.4,71.6]n=865  | BROKEN  59.8%[53.3,65.5]n=245  | UNBROKEN  60.1%[53.8,66.6]n=222 
+          ADMISSIBLE(K)  67.4%[64.3,70.4]n=906   [sizes: 1743/271/255]
+  H1-2026: NOCEIL  68.7%[65.3,71.8]n=769  | BROKEN  61.3%[54.9,67.4]n=230  | UNBROKEN  51.2%[44.6,57.7]n=219 
+          ADMISSIBLE(K)  68.1%[64.8,71.2]n=799   [sizes: 1519/253/254]
+[K=5]
+  H2-2025: NOCEIL  68.6%[65.4,71.6]n=865  | BROKEN  57.8%[52.2,63.2]n=308  | UNBROKEN  64.5%[56.9,72.1]n=148 
+          ADMISSIBLE(K)  66.5%[63.4,69.5]n=916   [sizes: 1743/363/163]
+  H1-2026: NOCEIL  68.7%[65.3,71.8]n=769  | BROKEN  57.4%[51.6,62.7]n=302  | UNBROKEN  53.6%[45.3,61.6]n=140 
+          ADMISSIBLE(K)  67.0%[63.6,70.1]n=810   [sizes: 1519/355/152]
+[K=10]
+  H2-2025: NOCEIL  68.6%[65.4,71.6]n=865  | BROKEN  57.8%[52.6,62.7]n=362  | UNBROKEN  69.2%[57.2,79.1]n=65 
+          ADMISSIBLE(K)  66.0%[62.9,69.0]n=923   [sizes: 1743/455/71]
+  H1-2026: NOCEIL  68.7%[65.3,71.8]n=769  | BROKEN  56.0%[50.8,61.1]n=357  | UNBROKEN  54.2%[40.9,65.4]n=60 
+          ADMISSIBLE(K)  65.6%[62.2,68.7]n=818   [sizes: 1519/444/63]
+[K=inf]
+  H2-2025: NOCEIL  68.6%[65.4,71.6]n=865  | BROKEN  58.5%[53.5,63.1]n=399  | UNBROKEN  77.3%[43.4,90.3]n=11*
+          ADMISSIBLE(K)  66.1%[63.0,69.1]n=926   [sizes: 1743/513/13]
+  H1-2026: NOCEIL  68.7%[65.3,71.8]n=769  | BROKEN  55.8%[50.8,60.7]n=387  | UNBROKEN  53.8%[29.1,76.8]n=13*
+          ADMISSIBLE(K)  65.3%[62.0,68.5]n=822   [sizes: 1519/494/13]
+
+Per-arm x side splits + the prereg plateau reading follow in the verdict append. Sides/arms pooled cells above are for the K surface shape only; the bar is read on the full split table.
+
+== full split at each K: ADMISSIBLE vs UNBROKEN, era x arm ==
+  K=1    reject  +11.3pp!(n269) | +18.5pp!(n267)   ('!' = CIs non-overlapping)
+  K=1    break    +9.5pp (n68) | +15.8pp!(n70)   ('!' = CIs non-overlapping)
+  K=2    reject   +7.4pp (n227) | +14.3pp!(n231)   ('!' = CIs non-overlapping)
+  K=2    break    +3.9pp (n45) | +23.6pp!(n46)   ('!' = CIs non-overlapping)
+  K=3    reject   +6.4pp (n192) | +15.3pp!(n194)   ('!' = CIs non-overlapping)
+  K=3    break    +5.9pp (n34) | +22.4pp!(n37)   ('!' = CIs non-overlapping)
+  K=5    reject   -0.9pp (n125) | +14.0pp!(n117)   ('!' = CIs non-overlapping)
+  K=5    break    +9.8pp (n23) | +13.1pp (n28)   ('!' = CIs non-overlapping)
+  K=10   reject   -9.3pp (n48) |  +5.3pp (n45)   ('!' = CIs non-overlapping)
+  K=10   break   +11.8pp (n17) | +26.6pp (n16)   ('!' = CIs non-overlapping)
+  K=inf  reject  UNDERPOWERED | UNDERPOWERED   ('!' = CIs non-overlapping)
+  K=inf  break   UNDERPOWERED | UNDERPOWERED   ('!' = CIs non-overlapping)
+```
+
+## Census C verdict (read against the prereg §C bar)
+
+```
+VERDICT      NOT ESTABLISHED. The bar demanded ADMISSIBLE-vs-UNBROKEN
+             separation positive in BOTH eras with non-overlapping intervals
+             at >=2 ADJACENT K values. Both-era non-overlap occurs at exactly
+             one cell: K=1, reject (+11.3pp!/+18.5pp!). No plateau. The
+             E1-CONDITIONAL therefore EXPIRES UNUSED, as declared.
+WHAT IS REAL Separation is SIGN-consistent at K in {1,2,3}, both arms, both
+             eras (8/8 powered cells positive), magnitudes larger in H1-2026;
+             it decays and flips by K=10 (reject -9.3pp). The lead survives
+             as a lead, not as an established rule.
+DISCOVERY    Permission EXPIRES, fast: BROKEN within K=1 own-TF bar performs
+             like NO-CEILING (~66-68%); by K>=5 BROKEN degrades to 56-58%.
+             The spec's open question is answered: a ceiling break grants
+             passage for roughly ONE bar of its own timeframe. Fresh
+             permission only.
+STRATA       NO-CEILING 75.9% of events (68.6%/68.7% era-stable baseline);
+             with-ceiling 24.1% (5m 19.5%, 60m 4.6%). UNBROKEN-ceiling is the
+             consistently worst stratum (52-60%).
+ASYMMETRY    ANGUS's spent-travel hypothesis NOT supported: remaining
+             favorable travel from entry is equal across branches (reject p50
+             1.01-1.28W vs break 1.17-1.22W; p95 5.5-6.2 vs 5.7-6.1). The
+             fixed-target-vs-tail exit difference between branches is not
+             mechanical scarcity; it is path shape, cause unmeasured.
+GAPS         Break-arm UNBROKEN cells thin (n17-70 clusters, several
+             UNDERPOWERED); K=inf unpowered both arms; canon-L0 comparator
+             population deferred; no placebo run on C (lead-level, not
+             mechanism-level).
+NEXT         Nothing auto-runs. The surviving selection leads, ranked by
+             trial status: close_dist_bw (passed its constant-target trial),
+             K<=1 fresh-permission admissibility (sign-consistent, plateau
+             failed), confluence/Census D (motivated by the twice-failed
+             placebo pattern). Sequencing is the human's call.
+```
