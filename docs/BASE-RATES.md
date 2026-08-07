@@ -1,0 +1,11 @@
+# BASE-RATE LIBRARY
+
+Every number here is a NULL: a future idea claiming edge on a related
+mechanism must beat these, not zero. Fit span 2025-06..2026-07 unless noted.
+
+| # | mechanism | base rate | source |
+|---|---|---|---|
+| BR-1 | Price displaced ≥0.5W from the 15m BB MA touches it before session close | **89%** (87-91% all side×era cells) | Census A, VERDICT-htf-ma-census |
+| BR-2 | ...touch arrives before 1.0W of further extension | **64-66%** (62-66% all cells) — proximity-matched placebo achieves 60-63%, so a "level near price" gets most of this for free | Census A NEXT test |
+| BR-3 | True collectable at touch (price's share of the gap) | **69% of the naive gap**; mean +0.38W per touched event | Convergence decomposition |
+| BR-4 | Adverse-before-touch | median **0.43-0.44W**, era-stable in W units, NOT in points (the scale law) | Census A |

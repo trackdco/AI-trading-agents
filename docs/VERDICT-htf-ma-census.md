@@ -118,3 +118,29 @@ NEXT         ONE test: proximity placebo on the W-NORMALIZED payoff cell
              as the NULL that every future level idea must beat, and entry
              research pivots to what selects WHICH rebalances (Angus's eye).
 ```
+
+## NEXT test result + convergence decomposition (run 2026-08-07)
+
+```
+DECOMPOSITION (all fit days, 1,490 events at D=0.5, wins only):
+  price-led (share>=.75): 50-72% by cell | ma-led (<=.25): 7-21%
+  profit<=0 at touch: 4.5-14.2% (below-side cleanest: 4.5/7.1%)
+  pooled median price_share 0.86; mean profit at touch +0.381W vs mean gap
+  0.549W -> TRUE COLLECTABLE = 69% of the naive gap.
+  The touch is real: price does most of the walking. The rebalance pays
+  ~0.38W mean per touched event; refine every payoff calc accordingly.
+
+DECLARED W-CELL PLACEBO BAR (real >= p95 both eras):
+  H2-2025: real 65.8% | placebo mean 62.9%, p95 67.3% -> 89th pct  FAIL
+  H1-2026: real 63.9% | placebo mean 59.8%, p95 63.7% -> 96th pct  PASS
+  RESULT: FAIL. No re-litigation: the bar was declared before the run.
+  Honest residue on the record: real beats the placebo MEAN in both eras
+  (+2.9pp / +4.1pp) and crushes the stale control — the MA carries a small
+  real signal that does not clear significance in the discovery era.
+
+RULING (as pre-registered): M1's 89% touch rate enters the base-rate library
+as the NULL for level-based ideas. The 15m MA is not proven special vs
+proximity-matched neighbors at the payoff level. Research pivots to
+rebalance SELECTION — what distinguishes the rebalances worth taking —
+and to Census B (M2 rejection/continuation).
+```
