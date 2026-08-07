@@ -51,3 +51,28 @@ undeclared variants; misses are reported as misses.
   mean, p95 cleared nowhere): consistent with confluence-as-mechanism rather
   than line-identity — strengthens the case for a Census D (confluence), not
   a weaker model.
+
+## E — RESULT (run 2026-08-07, read against the declared bar)
+
+4,272 events. Cluster-collapsed captured W net, (B1 tgt / B2 hold / E1 trail /
+E2 p30 / E3 p45):
+
+- reject H2-2025: -0.026 / -0.068 / -0.023 / -0.058 / -0.062
+- reject H1-2026: -0.014 / +0.010 / +0.008 / +0.004 / +0.009
+- break  H2-2025: +0.008 / -0.031 / -0.017 / -0.035 / -0.032
+- break  H1-2026: +0.030 / +0.017 / +0.018 / +0.023 / +0.019
+
+**ADOPTION: NONE.** E1 wins reject-2025 but loses to B2 in 2026 by 0.002W;
+E2/E3 beat nothing consistently; on the break arm B1 (first-target-or-stop)
+is best in BOTH eras — no E rule tops it. Misses reported as misses.
+
+**The finding above the misses:** the entire 5-exit × 2-arm × 2-era surface
+lives within ±0.07W net. The raw M2 book is fairly priced under every exit
+tested — the travel tail exists (p95 ~4-5W) but no unconditioned exit
+converts it. The exit is a multiplier on the SELECTED book, not a rescue of
+the raw one: selection (close_dist_bw, admissibility, break-branch) must move
+the base off zero first. Convention note (not an edge claim): break-retest
+pairs naturally with B1 first-target-or-stop, best-of-five in both eras.
+
+NEXT per the standing sequence: Census C — the admissibility sweep — the
+selection lead with +12/+18pp era-consistent separation on 22-30% of events.
