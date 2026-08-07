@@ -575,3 +575,70 @@ One script, four declared deliverables, reject arm, frame persisted WITH KEYS:
    monthly folds — all three gates reported.
 4. **Job 3 (H3 solo bar) discharged** under the shipped exit per its standing
    blind declaration.
+
+## Round 3 — RESULT (run 2026-08-08)
+
+```
+ROUND 3 (prereg): ablation | structural partial | H2 re-priced | Job 3
+
+== 1. ABLATION: shipped vs TRAIL_ONLY ==
+  H2-2025: shipped -0.047 | trail-only -0.172 | partial earns +0.125
+  H1-2026: shipped +0.097 | trail-only +0.001 | partial earns +0.096
+  LODO on the margin: 14/14 folds shipped>trail-only
+  DECLARED CONSEQUENCE: partial EARNS ITS PLACE — two-part rule stands
+
+== 2. STRUCTURAL vs FIXED partial ==
+  H2-2025: fixed-3R -0.047 | structural>=2R -0.050 (median struct T 3.00R)
+  H1-2026: fixed-3R +0.097 | structural>=2R +0.095 (median struct T 3.00R)
+  fixed-3R stands (structural does not win both eras)
+
+== 3. H2 RE-PRICED under shipped exit (three gates) ==
+  H2-2025: row rho +0.148 | episode rho +0.116 (n_ep=911)
+  H1-2026: row rho +0.121 | episode rho +0.092 (n_ep=816)
+  period gate: 14/14 folds keep sign
+
+== 4. JOB 3 — H3 solo bar under shipped exit ==
+  H2-2025: Q1:-0.053[-0.220,+0.114](n290) Q2:+0.032[-0.130,+0.194](n321) Q3:-0.023[-0.181,+0.135](n309) Q4:+0.185[+0.025,+0.346](n296)
+          monotone=N | topQ>0 CI clear=Y
+  H1-2026: Q1:+0.175[-0.010,+0.359](n258) Q2:+0.039[-0.146,+0.224](n275) Q3:+0.231[+0.051,+0.410](n275) Q4:+0.183[-0.006,+0.372](n264)
+          monotone=N | topQ>0 CI clear=N
+  period gate: 14/14 folds
+  JOB 3 BAR: FAIL
+```
+
+## Round 3 — VERDICTS
+
+1. ABLATION: the partial EARNS ITS PLACE — +0.125/+0.096 over trail-only,
+   14/14 folds. Two-part rule stands.
+2. STRUCTURAL vs FIXED: tie to three decimals; median structural target IS
+   3.00R — the level lattice puts the first level beyond 2R at ~3R, so the
+   trader's structural partial and the fixed 3R are the same rule in
+   different clothes. Fixed stands (simpler; declared read).
+3. H2 RE-PRICED: survives all three gates under the shipped exit at roughly
+   half strength (episode rho +0.116/+0.092, 14/14 folds) — the exit already
+   harvests part of what emptiness predicted; the remainder is real.
+4. JOB 3: H3 FAILS its blind solo bar (non-monotone quartiles both eras;
+   2026 top-quartile CI misses zero by 0.006). Period gate 14/14 noted.
+   H3 is OUT as a solo selection variable by its own declared bar.
+
+## SPEC A-2 — declared 2026-08-08, BEFORE its result exists
+
+Every component below is fixed by an already-declared outcome; the only
+unseen number is A-2's own result.
+- Book: M2 reject arm, mechanical entry at the failing 15m close, stop =
+  trigger-candle extreme ±1 tick, exit = SHIPPED two-part rule (75% at 3R,
+  remainder trailed). All sessions in the book (the law); headline cells
+  ny_pre + ny_rth_am reported.
+- Sizing: H2 causal rank ONLY — percentile of obstacle-emptiness vs the
+  trailing 60 sessions' events (min 200 trailing events, else weight 1.0);
+  rank quartiles -> the existing 0.5/1.0/1.5/2.0 ladder, untuned. H3
+  EXCLUDED as the mechanical consequence of its own failed bar. A-1 is
+  SUPERSEDED (its frozen exit clause no longer matches the shipped rule);
+  recorded, not edited.
+- BAR: (a) ladder-weighted mean netR per unit weight > unweighted book,
+  cluster-collapsed, BOTH eras; (b) weighted book > 0 in BOTH eras;
+  (c) monthly LODO 14/14 on the weighted-minus-unweighted margin.
+  All three or A-2 fails; partial passes are reported as which-failed.
+- If A-2 passes all three: FREEZE. The ONE sealed look is then ANGUS's
+  decision alone, both 2023 and 2024 halves reported, no post-holdout edits
+  under any outcome.
