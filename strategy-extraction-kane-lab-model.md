@@ -113,3 +113,41 @@ Per CLAUDE.md §7, none of the repo's required infrastructure exists yet (conven
 5. Cost model (two stacks) — the source offers none.
 
 Until those exist, this document is the deliverable: a raw-trigger inventory with its provenance and its holes on record.
+
+## 10. Primary-source channel audit — youtube.com/@traderkane (retrieved 2026-08-07)
+
+Full channel inventory at retrieval time: **8 videos**. Transcripts of all 8 were retrieved and scanned.
+
+| Video ID | Title | Views |
+|---|---|---|
+| yLJMKtFphNM | The Real Story of Tradeify (fireside w/ founder) | 6.6k |
+| QeS16NgB5oU | The Real Story of Lucid Trading (fireside) | 8.3k |
+| dQcT_vmg7Qs | why you suck at trading prop firms (whilst I've profited $2.5M) | 37k |
+| rtxG1DQ2Z6Y | before you quit your job to trade, watch this | 23k |
+| UoIlbmzuXyw | the brutal truth about the trading industry | 30k |
+| HPNztQD9bl0 | it was fun... I'm done | 29k |
+| l65oghvEt84 | Coffee & a chat on why you suck at trading | 39k |
+| WQvjW0xUkRM | 2024 was tough.. but the best yet | 17k |
+
+### 10.1 Scan result: the channel contains essentially no strategy mechanics
+
+A keyword scan (SMT, inversion, FVG, rebalance, midpoint, LLT, premium/discount, PO3, standard deviation, …) produced **1 hit across all 8 transcripts combined**. Known-positive validation per CLAUDE.md §1: the identical pattern fires **174 times** on the FX Replay reconstruction transcript, so the scan works and the absence is real. His YouTube is prop-firm commentary, firesides and recaps; the model itself lives in the paid Lab, his X feed, and livestreams. **The §4–§5 reconstruction therefore cannot be corroborated from his channel; his X feed is the next primary source.**
+
+### 10.2 Fragments that do bear on the reconstruction (his own words)
+
+- **Timeframe stack** (l65oghvEt84, answering a viewer): *"time frame alignment for the lab model — 15 minute for standard deviation, 3 minute for entry, an hourly for premium discount — is that valid? Seems pretty valid."* Partially corroborates §2 (1H premium/discount, low-TF entry) and puts the std-dev/PO3 leg on the **15m**, which the FX Replay reconstruction never specifies.
+- **Base-hit character** (l65oghvEt84): *"my model is very very short-term bias — it just wants to get in that move and get out."* Corroborates the LLT/base-hit framing.
+- **Capped-target overlay** (dQcT_vmg7Qs): during the first ~50 days of the big Apex account — where he says ~95% of that account's profit was made — he *"took basically the same trade every day"* with take-profit = **min(model TP, 100 ticks)**. This overlay appears nowhere in the FX Replay reconstruction. Candidate trial arm if the model is ever tested.
+- **Win-rate tension** (dQcT_vmg7Qs): *"My model isn't a high win rate model."* This sits against the FX Replay video's 54% (n=14) and the host's stated preference to keep win rate above 50%. Unresolved; lowers confidence in the 54% figure describing Kane's actual distribution.
+- **Regime self-description** (yLJMKtFphNM): he says he thrives when *"we're rangebound, we're consolidating, not really going anywhere"* and has not made his big money in strongly trending tape. Consistent with a rebalance-to-midpoint model; suggests a regime split (rangebound vs trending) as a declared arm, and that era stability should be checked across regime shifts.
+- **Self-reported de-risking** (HPNztQD9bl0, ~May 2025): not quitting, but *"down-risking a massive amount whilst I get into a new phase of trading, new tools, new risk"* during choppy Fed/tariff conditions — his own usage of the model is regime-conditional by his own account.
+
+### 10.3 Account-claims audit
+
+Claimed (dQcT_vmg7Qs): **$2.5M+ total prop-firm profit**, of which **$1.86M was one single Apex payout**, plus ~$300K more from Apex (≈$2.23M of the $2.5M from Apex alone).
+
+- **Concentration**: ~74% of the lifetime claim is a single payout event, and ~95% of that account's profit came in its first ~50 days. The headline number is dominated by one short window on one account — it is evidence of one exceptional run, not of a stationary edge.
+- **Verifiability**: UNVERIFIABLE from here. No statements, no audited records; prop-firm payouts are not audited track records, and leaderboard visibility is a survivorship filter over a large entrant population.
+- **Incentives**: he operates a paid community (the Lab) and publishes prop-firm reviews/referrals (he states he declines some sponsorships; affiliate economics still apply). Standard conflict-of-interest discount applies to all self-reported figures.
+
+None of this falsifies the model. It does mean: the only evidence that will ever count is our own prereg'd testing, and the two channel-sourced arms worth declaring if we proceed are the **100-tick target cap** and the **rangebound/trending regime split**.
