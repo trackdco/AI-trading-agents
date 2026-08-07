@@ -69,11 +69,28 @@ parameters for the Lucid Flex account), 2,000 draws, seed 20260807.
 
 **Executable-book convention (declared; BR-10 makes this mandatory):** the
 book sim takes the FIRST trigger of each structural fight that survives the
-cut, in time order, one position per arm at a time (a fight whose first
-surviving trigger fires while the previous position is still open is
-skipped and counted). Baseline to beat, from the Phase 0 restatement:
-+0.139R / +0.162R per fight by era (BR-9) at ~6 fights/day all-session.
+cut, in time order; ALL fights are taken (overlapping exposure allowed —
+each fight is an independent, separately-sized trade, matching desk
+practice). Day P&L = sum of fight R x $160 risk. AMENDED 2026-08-07 BEFORE
+any Half-1 readout: the original one-position-at-a-time wording is not
+computable from the table (exit minutes are not recorded); the
+one-at-a-time variant is deferred to the assembly stage. Baseline to beat,
+from the Phase 0 restatement: +0.139R / +0.162R per fight by era (BR-9).
 Law-7 arithmetic runs against THIS baseline, not against −0.047R.
+
+**Cut rules pinned (before Half-1 contact):** binary confirms bad bin = 0
+(bp5opp bad bin = 1 — it MEASURES opposing pressure); continuous
+(volx, delta_z, eff_result, cvd_slope30, closeloc, rangex, pen_bw) bad =
+bottom quartile, edges frozen from Half-1 books per arm; counts
+(cnt_ahead_1w, cnt_beyond_3r) bad = above the Half-1 p75;
+admissible_snapshot bad = BLOCKED (censusB rule as stored — the K=1-pure
+refinement needs Census C's table and is recorded as deferred);
+session bad = ny_pm; confluence (break arm) bad = 3+.
+**Infeasibility rule:** a declared cut that removes 0%, removes >60%, or
+leaves <50 book rows is recorded infeasible — never adjusted.
+**Survivor rule:** implied lift >= +0.05R (Law-7 bar) AND eval score >=
+the same half's baseline score. Survivors are appended to the appendix
+with sign and bar, then Half 2 runs them UNCHANGED.
 
 A cut that improves per-trade R but lowers the score FAILS — cuts cost
 frequency and frequency produces qualifying days.
