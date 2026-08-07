@@ -1,0 +1,264 @@
+[0:00] So, this is what profitable options
+[0:01] trading looks like, and it's the
+[0:02] fundamental framework of modern options
+[0:04] pricing theory. My name is Thomas, and
+[0:06] I'm a physics student at Columbia, and
+[0:07] I'm going to give you the most intuitive
+[0:08] explanation of options pricing theory
+[0:10] you've ever heard. This is likely going
+[0:12] to be different than any explanation
+[0:13] you've heard in a YouTube video or a
+[0:14] textbook before, but once you understand
+[0:16] it, which I promise you, you will,
+[0:18] you'll have a much deeper and less
+[0:20] cosmetic understanding of options
+[0:22] pricing, and it'll be really satisfying.
+[0:24] Options contracts are exactly like the
+[0:25] reservation contracts that people were
+[0:27] buying for Cyber Trucks in 2019. So, do
+[0:29] you remember when Tesla announced the
+[0:31] Cyber Truck in 2019? They started
+[0:32] selling these $100 reservations where
+[0:34] you could lock in the retail price, like
+[0:37] a spot in line to buy the truck at the
+[0:38] retail price, which was probably
+[0:40] something like $70,000. And all you had
+[0:42] to do is pay $100. When you bought one
+[0:43] of these reservations, you weren't
+[0:45] forced to exercise it. Like, you weren't
+[0:47] forced to actually buy the car in the
+[0:49] future. You just had the option to buy
+[0:51] the car at a fixed price, the retail
+[0:53] price at this date in the future. By the
+[0:56] time 2023 rolls around and the car
+[0:58] actually comes out, you don't have to
+[0:59] exercise your reservation to buy the
+[1:01] Cybertruck. If I bought one of these
+[1:03] reservations for $100 in 2019, in 2023
+[1:06] when the Cybertruck comes out, let's say
+[1:08] the market price of a Cybertruck is
+[1:09] $90,000. So the retail price, the price
+[1:12] you're buying it at when you go to the
+[1:13] Tesla dealership and hand them your
+[1:14] [clears throat] reservation is $70,000.
+[1:16] Hand over the reservation and $70,000
+[1:18] and the Cybertruck is yours. But then
+[1:20] you can drive it off the lot, get on
+[1:21] Carvana, and go sell it for $90,000 to
+[1:24] the broader market. these people who
+[1:25] don't have reservations. The going rate
+[1:27] of the car is $90,000 for anybody who
+[1:30] didn't reserve the option to buy it at
+[1:31] this set price, the retail price back in
+[1:34] 2019 with a reservation. So, here I am
+[1:36] in 2023. All I've spent is the $100 back
+[1:38] in 2019, and I can walk into the Tesla
+[1:42] dealership, hand them the reservation in
+[1:43] $70,000, walk out, sell for $90,000, and
+[1:46] make a $20,000 profit. So, if I have the
+[1:48] money, I could do this. I could go hand
+[1:49] them my reservation, pay $70,000, turn
+[1:52] around, and make 20K by selling the car.
+[1:54] Or if I don't have that money, I can
+[1:56] sell my contract, my reservation to
+[1:58] somebody else who does have the money to
+[1:59] buy the car. Maybe they want the car
+[2:01] actually, or maybe they just want to
+[2:02] turn around and make some profit by
+[2:04] selling it at the higher price. So in
+[2:06] this situation, how much is the
+[2:07] reservation worth to the person I'm
+[2:08] selling it to? So if you're the guy
+[2:09] without the reservation in this
+[2:10] situation, you have two choices. You
+[2:12] either buy the car for $90,000, or you
+[2:14] buy this piece of paper from somebody
+[2:16] else, this reservation, and then go pay
+[2:19] $70,000 for the same car. So, if I'm
+[2:21] that guy who wants the car and has no
+[2:22] reservation and I'm perfectly rational,
+[2:24] I'm willing to buy this piece of paper
+[2:26] for any amount of money less than
+[2:28] $20,000. I'll buy it for $19,999.99
+[2:32] and save myself 1 cent buying this
+[2:34] $90,000 car. Okay, but what if when the
+[2:35] Cybertruck came out, the market value
+[2:37] was $60,000? If the market value of the
+[2:40] car is $60,000 when it's released, does
+[2:43] it make any sense for me to exercise
+[2:45] this option and buy the car for 70 grand
+[2:47] from Tesla when I could get on Carvana
+[2:49] and buy it for $10,000 cheaper? No, that
+[2:51] wouldn't make any sense for me. Why
+[2:52] would I pay $10,000 more than I have to?
+[2:54] It wouldn't make sense for anybody to
+[2:55] exercise this contract and buy the car
+[2:57] for more than it's actually worth. So,
+[2:59] the contract itself is useless. Its
+[3:00] intrinsic value is $0. I can make no
+[3:03] money by exercising it. So, when the
+[3:04] market price of the Tesla is $90,000, my
+[3:07] reservation is worth 20,000 because of
+[3:09] that difference. If the market value of
+[3:10] the Cybert truck is anything less than
+[3:13] the retail price of the Cybertruck, my
+[3:15] reservation is completely worthless. If
+[3:16] the market price of the car on Carvana
+[3:18] were $100,000, my reservation to buy it
+[3:21] at $70,000 would be worth $30,000
+[3:23] because exercising it gives me a car for
+[3:26] $70,000 that I can go turn around and
+[3:28] sell for $100,000. Okay, so now we
+[3:30] understand how to evaluate the value of
+[3:31] an option when it expires, but nobody
+[3:33] really cares about that. We want to
+[3:35] evaluate the value of an option in
+[3:37] advance. We want to know what the fair
+[3:38] price of this option is in the first
+[3:40] place so we can decide whether we want
+[3:41] to buy it or sell it. Let me transition
+[3:43] us to an example with an actual call
+[3:44] option. Okay, in this example, I'm
+[3:45] looking at a European style call option
+[3:48] on ABC stock that gives me the right to
+[3:50] buy it at $100, which is the strike
+[3:52] price on January 30th. Just like the
+[3:55] Tesla Cybert truck example, if ABC stock
+[3:57] is trading below the strike price of
+[3:59] this option, meaning the price that the
+[4:00] option allows me to buy it at on the
+[4:02] expiration date, the option is
+[4:04] worthless. If ABC stock, which is
+[4:05] trading at $90, trades sideways until
+[4:07] the expiration date and it expires at
+[4:09] $90, there's no reason to exercise this
+[4:12] option. There's no reason for me to buy
+[4:14] ABC stock at $100 when I can just buy it
+[4:17] in the market at $90. Let's look at that
+[4:19] over here. If ABC stock is trading at
+[4:21] $90 on the expiration date, the option
+[4:24] is worth $0. If it's trading any amount
+[4:27] less than $90, the price of the option
+[4:28] doesn't go negative. It just remains
+[4:30] zero. If we plot another path here where
+[4:33] ABC ends at $80, the price of the option
+[4:36] is still $0 at expiration. Now, imagine
+[4:39] ABC stock trades up to $110 because they
+[4:43] have some good news. In this case, it
+[4:45] does make sense to exercise our option
+[4:47] at expiration. The option does have
+[4:48] intrinsic value. I can buy the stock ABC
+[4:51] stock at $100 and go turn around in the
+[4:53] market and sell it at 110. This option
+[4:56] could become worth $0, $10, $15, etc.
+[4:59] So, how do we know how much we should
+[5:00] pay for it in the first place? What's
+[5:02] the fair value of this option? That's a
+[5:03] guiding question in options trading
+[5:05] because we want to buy options that are
+[5:06] too cheap and sell options that are too
+[5:08] expensive. We're going to find the fair
+[5:09] price of this option by assigning
+[5:11] probabilities to every single one of
+[5:12] these outcomes, these final prices for
+[5:14] ABC stock and then waiting this function
+[5:17] by those probabilities. Let me explain
+[5:19] what I mean and draw something. The fair
+[5:20] value of an option is fundamentally
+[5:22] driven by this, the distribution of
+[5:25] future prices of the underlying asset.
+[5:27] So in this example, imagine we have ABC
+[5:29] earnings early on. So we might get a
+[5:31] more dispersed distribution of future
+[5:33] prices of ABC. We think it's most
+[5:35] probable for ABC to beat earnings by a
+[5:37] large margin. Let's see. That's why we
+[5:39] have this fat tail to the upside because
+[5:40] we think most of the extreme events for
+[5:42] ABC lie to the upside. And maybe
+[5:44] according to our models, the most
+[5:46] probable future outcome for ABC is
+[5:48] something like $99. Okay, so according
+[5:50] to our forecasts, maybe the most
+[5:51] probable outcome for ABC is $99. In
+[5:54] which case, the contract wouldn't be
+[5:55] worth anything at expiration. Does that
+[5:57] mean that we should be willing to pay $0
+[5:59] for it? Definitely not because of these
+[6:01] huge tail events. Sure, the most likely
+[6:03] outcome for ABC might be $99, in which
+[6:05] case the contract is worth nothing, but
+[6:07] we still assign some probability to
+[6:09] these events where the contract winds up
+[6:11] being worth a lot. Say up here ABC
+[6:12] becomes worth $150. That would leave the
+[6:15] contract being worth $50. We don't care
+[6:17] about an individual outcome for ABC like
+[6:19] $99, which would mean an individual
+[6:21] outcome for the contract of $0 at
+[6:23] expiration. What we care about is the
+[6:24] expected value of the contract at
+[6:26] expiration. If we replayed this scenario
+[6:29] a million times and maybe one time the
+[6:31] contract becomes worth $25 once $50 100
+[6:34] times $0 20 times $10. What's the
+[6:38] average value of the contract if we
+[6:40] repeat this experiment a million times
+[6:41] to find the expected value of the ABC
+[6:43] option at expiration? We just have to
+[6:45] come over to every possible outcome for
+[6:46] the price of ABC at expiration and take
+[6:49] its probability
+[6:51] times the price of the call in that
+[6:53] event. We sum the probability of each
+[6:56] ending price for ABC times the value of
+[6:59] the call option at that price. The value
+[7:01] of the call option in the event that the
+[7:03] ending price of ABC is greater than the
+[7:05] strike price is just going to be that
+[7:07] difference. It's going to be the price
+[7:08] of ABC. Let's say that's maybe $102
+[7:11] minus the strike price, which is what
+[7:12] we're going to have to pay for that
+[7:13] stock. That's $100, which would be $2 in
+[7:16] that case. If the ending price of ABC is
+[7:18] lower than that price, then the option
+[7:19] is just going to be worth $0 because
+[7:21] remember it wouldn't make sense to
+[7:22] exercise it. So if you think about it,
+[7:24] at every single step in this
+[7:25] distribution, we're just taking the
+[7:27] probability here and multiplying it by
+[7:29] the corresponding value of the option
+[7:30] here. So we're just taking this and
+[7:32] multiplying it by this. We're taking
+[7:34] this and multiplying it by this. So for
+[7:37] this entire range in here, which is this
+[7:39] entire range in here, the value of the
+[7:42] option is going to be zero. Then we
+[7:46] arrive at the strike price here and the
+[7:48] value of the function is non zero. So
+[7:49] now we have this in here which is the
+[7:51] probability weighted payoff function of
+[7:53] our option. And all we have to do to
+[7:55] find the expected value is integrate
+[7:59] this function here. So we integrate this
+[8:01] and now we have the expected future
+[8:02] value of this call option. So we have
+[8:04] our expected value of the call option
+[8:06] and we discount it and we'll say that's
+[8:07] maybe like $3. Now if we go look in the
+[8:10] market and this option is trading at
+[8:11] $2.50 that's a discount according to our
+[8:14] model. If it's trading at 350 our model
+[8:16] says that's a 50 premium to fair value.
+[8:18] So, we'll sell that option. And if our
+[8:20] expected future value of the option is
+[8:22] more accurate than the markets, over
+[8:23] time, we'll make money. So, this is what
+[8:25] profitable options trading looks like.
+[8:26] And it's the fundamental framework of
+[8:28] modern options pricing theory. If you
+[8:30] like this video and you're interested in
+[8:31] quantitative finance, consider following
+[8:33] my page.

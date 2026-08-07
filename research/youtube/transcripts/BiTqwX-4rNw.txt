@@ -1,0 +1,309 @@
+[0:00] If you trade prop firm accounts, this
+[0:01] could well be one of the most important
+[0:03] videos you watch about trading in
+[0:04] general. So, unlike any video you've
+[0:06] probably watched about trading, if
+[0:07] you're watching people like TJR or ICT,
+[0:10] I'm actually going to break down the
+[0:11] verifiable mathematical reality of
+[0:13] trading prop firm accounts. Now, let me
+[0:15] start with this. There's a very large
+[0:16] probability that whatever strategy
+[0:18] you're trading, whether you got that
+[0:19] from YouTube, from some guru, or you
+[0:21] made it up yourself, maybe, there's a
+[0:23] very small possibility that if you're
+[0:25] trading the assets that are tradeable on
+[0:27] these prop firm accounts, these super
+[0:29] liquid futures that have tons of
+[0:31] eyeballs on them, HFT arbitrageurs
+[0:33] trading them, tons of institutions
+[0:35] throwing millions of dollars at them
+[0:36] every single day, there's a really small
+[0:38] chance that you actually are trading a
+[0:39] strategy that generates alpha on these
+[0:41] assets, right? Because they're some of
+[0:43] the best priced assets in the world,
+[0:44] meaning they're the most some of the
+[0:46] most efficient markets in the world
+[0:47] because they're so liquid. Now, that
+[0:49] being said, when you trade a prop firm,
+[0:50] it's not imperative that you have a
+[0:52] strategy that generates alpha or even a
+[0:54] strategy that has positive expected
+[0:56] value in order to have positive net
+[0:58] expected value over the entire course of
+[1:00] doing a prop firm challenge, getting
+[1:01] funded, and then trading the funded
+[1:02] account. So, let me explain exactly what
+[1:04] that means. If you treat prop firm
+[1:05] accounts, the challenge and the funded
+[1:07] phase like a structured product, which
+[1:08] is what you should do if you want to
+[1:10] model them correctly and figure out
+[1:11] whether you're actually going to make
+[1:12] money on them or lose money on them over
+[1:14] a long time before you start throwing
+[1:16] money at them, which everybody should be
+[1:17] doing, don't just blindly throw money at
+[1:19] these accounts not knowing your exact
+[1:20] percentage probability of passing, the
+[1:22] exact net expected value of you
+[1:24] approaching these accounts, or else
+[1:25] you're just going to throw your money
+[1:26] away for no reason on a sub-optimal
+[1:28] strategy. Like, for example, let me just
+[1:30] jump ahead for 1 second. If you're
+[1:31] trading some top tick, bottom tick,
+[1:33] super high uh RR strategy, like very
+[1:36] tight stop loss, very wide take profit
+[1:38] with a low win rate, you're trading
+[1:40] pretty much the exact mathematical
+[1:41] opposite of what you should be trading
+[1:43] on these accounts in order to take
+[1:44] advantage of the convex payoff
+[1:46] structure. What do I mean when I say
+[1:47] convex payoff structure? What I mean is
+[1:49] that your downside is capped. The losses
+[1:50] that you take on a prop firm account
+[1:52] challenge are not realized. If you lose
+[1:54] $3,000 on your prop firm account, you
+[1:56] blow the account, you didn't lose 3,000
+[1:58] actual USD. You lost the sum total of
+[2:01] all the challenge fees that you paid,
+[2:03] which could just be in the case of a
+[2:04] Topstep 50K account, which is what I
+[2:05] model in this video, $49, maybe if you
+[2:08] passed in your first try, and then your
+[2:09] activation fee. So, you didn't lose the
+[2:11] $3,000, you just lost however much
+[2:13] whatever your sunken cost is into
+[2:15] passing and then activating the account
+[2:17] to get to the point where you are. On
+[2:18] the other hand, if you win $3,000, that
+[2:20] win is actually realized. You can take a
+[2:23] payout. That's what we call a convex
+[2:25] payoff structure, like a call option,
+[2:26] for example, where your loss is capped
+[2:28] at whatever you paid for the call
+[2:29] option, but your winnings are
+[2:30] theoretically unlimited, and the amount
+[2:33] that you're winning accelerates as price
+[2:34] moves in your favor. So, obviously, this
+[2:36] is an optimization problem, making the
+[2:38] maximum amount of money that we can in
+[2:39] this weird convex payoff structure
+[2:41] environment that we can solve with
+[2:43] simulation, but in this case, we're
+[2:44] going to use simulation and just some
+[2:46] toy strategies to get an idea not of the
+[2:47] exact strategy that we should be
+[2:49] trading, but of the general
+[2:50] characteristics of the risk geometry of
+[2:52] the strategy that we should deploy to
+[2:53] maximize our chances of passing and
+[2:55] making the most money possible on a prop
+[2:57] firm account challenge. Okay, so, let's
+[2:58] get into it. Let's start talking about
+[2:59] prop firm risk geometry. And when I say
+[3:01] risk geometry, I'm just talking about
+[3:03] something very basic here, okay? We're
+[3:04] just going to talk about the win rate
+[3:06] and the risk to reward of the strategy.
+[3:08] How frequently you're winning and then
+[3:10] the geometry of how tight your stop loss
+[3:12] is versus your take profit, okay? This
+[3:14] is a really simple way of characterizing
+[3:15] a strategy and the way that it behaves,
+[3:17] and every single strategy that we're
+[3:18] going to look at, these are toy
+[3:19] strategies, they're all going to have
+[3:21] zero expected value per trade. That
+[3:23] means that in the real world, if these
+[3:24] strategies that we're simulating the
+[3:26] equity curves for were actually traded
+[3:28] over a large number of trades, they
+[3:29] would neither make nor lose money. They
+[3:31] have zero net expected value per trade.
+[3:33] So, we'll look at a really low RR
+[3:34] strategy with a high win rate and then
+[3:36] increasingly high RR with decreasing win
+[3:39] rate up until four RR with 20% win rate.
+[3:42] And so, we're going to use some Monte
+[3:43] Carlo simulation to simulate the equity
+[3:45] paths of these strategies in the barrier
+[3:47] problem that is a prop firm account
+[3:49] challenge to figure figure what risk
+[3:50] geometry works the best on strategies
+[3:52] that all have equal and zero expected
+[3:55] value. So, these are not strategies that
+[3:57] would make any money traded on a real
+[3:58] market, but can we make some money in a
+[4:00] prop firm simulated environment by
+[4:01] taking advantage of the convex payoff
+[4:03] structure over maybe many attempts of an
+[4:05] account challenge. Let's start here with
+[4:07] a really high RR, 4:1 RR with a 20% win
+[4:10] rate. This is something like trying to
+[4:11] top or bottom tick the market where
+[4:13] you're obviously going to lose a lot
+[4:15] more frequently than we're winning. If
+[4:16] you think you know a guru who takes one
+[4:18] trade every day and top ticks or bottom
+[4:20] ticks with a super tight stop loss and a
+[4:21] super wide take profit and they win 80%
+[4:23] of the time, they're lying to you.
+[4:25] That's just the reality of these
+[4:26] intraday probability of touching
+[4:27] problems. In this case, we passed 37% of
+[4:30] the time and failed 63% of the time.
+[4:32] Then we move over here to 3:1 RR and our
+[4:34] odds actually get a little bit better,
+[4:36] right? 1% better, our odds of passing.
+[4:38] 2% better when we move up to 2:1 RR, 33%
+[4:42] win rate. That's still zero expected
+[4:43] value. Our chance of passing increases
+[4:45] again when we move to 1:1 RR with 50%
+[4:47] win rate and then increases again when
+[4:49] we move to a larger stop than our take
+[4:52] profit, still with equally zero expected
+[4:54] value. And then it stays virtually the
+[4:56] same when we move to an even wider stop
+[4:58] with a 75% win rate here. So, you can
+[5:00] see that for pass rate, there's a clear
+[5:02] trend. A worse worse RR with a wider
+[5:05] stop and a narrower tighter take profit,
+[5:08] but a higher win rate has a greater
+[5:10] chance of passing these accounts. Now,
+[5:12] could these RR and win rate pairings be
+[5:14] different for your particular strategy?
+[5:16] Of course, they could, but I'm just
+[5:17] saying most people have a zero or
+[5:19] negative expected value strategy that
+[5:21] they're trading. They're trading some
+[5:22] stuff off of YouTube and they're trading
+[5:24] it manually, which 99% of these people
+[5:26] are, you probably have negative expected
+[5:28] value if we're being honest. But the
+[5:29] interesting thing about this convex
+[5:30] payoff structure environment is that
+[5:31] that doesn't necessarily preclude your
+[5:33] making money. Now, the general trend is
+[5:35] that as the standard deviation of trade
+[5:37] P&Ls increases, your pass rate
+[5:39] decreases. Meaning having a high win
+[5:42] rate with a low RR or a high win rate
+[5:45] with really consistent wins and then the
+[5:47] occasional maybe larger loss is more
+[5:50] conducive to passing a prop firm account
+[5:51] challenge this barrier problem than a
+[5:53] strategy that's the opposite of that.
+[5:55] What's something that we can actually
+[5:56] trade that has a low RR and a high win
+[5:58] rate like this and has something like a
+[6:00] 40% pass rate on prop firms? Well, if we
+[6:03] apply this type of RR to an opening
+[6:05] range breakout strategy, we can actually
+[6:07] achieve a win rate just like this. And
+[6:09] with that win rate, we have a pass rate
+[6:11] on the funded accounts just like the one
+[6:13] we observed in the simulation just using
+[6:14] a GBM or a stochastic jump diffusion.
+[6:16] The particular opening range breakout
+[6:18] strategy that I coded actually has a
+[6:19] little bit of a better pass probability
+[6:21] than what we observed in the completely
+[6:23] random example because it has slight
+[6:25] positive expected value per trade. Okay,
+[6:27] so now we're passing accounts about 50%
+[6:29] of the time, which is crazy when you
+[6:30] consider that Topstep's own statistics
+[6:33] from 2024, I think, put people passing
+[6:35] at what? At 12.4%.
+[6:38] Are you serious? And all we had to do
+[6:40] was just code a strategy that's not even
+[6:41] viable in the real world, generates very
+[6:43] small positive expected value, and
+[6:45] already we have almost 50% chance of
+[6:47] passing. So boom, just like that we
+[6:49] deploy this live on the API and we pass
+[6:51] 50% of the time and already we're four
+[6:52] times better than the average Topstep
+[6:54] trader. How hard was that? I built this
+[6:55] in 20 minutes. So what happens if we do
+[6:57] even just a little bit better than this?
+[6:59] Well, you might have seen my video on
+[7:00] TikTok and Instagram where I passed a
+[7:01] Topstep account challenge on my first
+[7:03] try, the first time I first and last
+[7:05] time I've ever tried a funded account
+[7:06] challenge, passed on my first try in the
+[7:08] minimum number of days. And the strategy
+[7:09] that I traded had over a 90% chance of
+[7:12] passing and that's why I was able to do
+[7:13] that. Yet these day traders continue
+[7:15] throwing money at courses and ignoring
+[7:17] or commenting hate on my videos. It's
+[7:18] insane. But those people are
+[7:20] probably in the 87.6% here. So Okay, but
+[7:23] what's more important than our pass
+[7:24] percentage here is whether or not we
+[7:25] actually make money on the accounts once
+[7:27] we've passed. So let's figure that out.
+[7:28] So it turns out that our strategy with
+[7:29] the best odds of passing during the
+[7:31] challenge phase here is not actually the
+[7:32] one that generates the highest expected
+[7:34] payout value once the account is
+[7:35] actually funded. We change our risk
+[7:37] geometry a little bit for the funded
+[7:38] phase and then all of a sudden our
+[7:39] average expected payout per passed
+[7:41] account per past account, that's
+[7:43] important, is about $9,000. Does this
+[7:46] mean that every single time you pay $49
+[7:47] to approach an account challenge, you're
+[7:49] going to make $9,000? No, because we
+[7:50] have a 40-something percent chance of
+[7:52] passing. So, our net expected value per
+[7:54] account is going to factor in how many
+[7:55] challenges we have to take in order to
+[7:57] actually get the funded account, then
+[7:59] the activation fee, and then our average
+[8:01] payout once we have an activated account
+[8:03] here. So, in the pessimistic case here,
+[8:05] we pay about $300 on average to get an
+[8:07] active funded account, and then we make
+[8:09] on average about $8,900, so $8,600 net
+[8:12] of challenge fees and activation fees.
+[8:15] So, there you go. Now, you understand
+[8:16] what risk geometry works best on funded
+[8:18] account challenges. Now, you understand
+[8:19] what a convex payoff structure is and
+[8:21] how you can take advantage of that with
+[8:23] a strategy that has no expected value or
+[8:25] very small positive expected value, and
+[8:27] how you can use that to generate net of
+[8:29] fees, net of fees positive expected
+[8:31] value on prop firm accounts. Stop paying
+[8:34] gurus money. Stop watching YouTube
+[8:35] videos about trading strategies. Stop
+[8:37] watching get-rich-quick content. Start
+[8:39] learning how to code just deploy
+[8:40] something like this using the API of
+[8:42] your prop firm and make some money. You
+[8:44] don't even need a winning strategy. You
+[8:45] just need to know how to take advantage
+[8:47] of the the shape of the payoff structure
+[8:49] of these prop firm accounts, where the
+[8:50] losses aren't realized, but the winnings
+[8:51] are. Okay, so that's all I have for you
+[8:53] today. If you're interested in building,
+[8:54] testing, optimizing, and deploying
+[8:56] programmatic trading strategies and
+[8:57] learning about the math of programmatic
+[8:58] trading, you can join the Quant Pad
+[9:00] waitlist. The public beta is closed now,
+[9:01] but we're probably going to open the
+[9:03] actual version two production version in
+[9:06] about a month and a half to two months.

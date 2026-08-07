@@ -1,0 +1,16 @@
+{
+ "turns": [
+  {
+   "minute": "2025-06-20 10:01:00-04:00",
+   "why": "position opened \u2014 read the tape and set your initial plan",
+   "sent": "NEW POSITION LONG IB-fade | entry 22010.5 risk 30.00pt | engine stop 21980.5 (-1R, INVIOLATE FLOOR) | mechanical target 22070.5 (+2.0R, the IB mid) | session ends 15:55\njournal: 6 trades managed | your total -3.3R vs mech -3.2R (delta -0.1R)\n  defense (mech losers, n5): you -0.1R vs mech\n  offense (mech winners, n1): you +0.0R vs mech\nlast trades (you vs mech):\n  2025-06-06 long: +1.96R vs +1.96R (target; still pressing, near peak, no reason to clip - let winner ru)\n  2025-06-11 short: -1.05R vs -1.04R (stop; deepening toward floor, this is the dying profile playing ou)\n  2025-06-16 short: -1.03R vs -1.03R (stop; Still -0.76R, chopping near stop for 40+ min. No new evidenc)\n  2025-06-17 short: -1.06R vs -1.05R (stop; Deep giveback from +1.92R peak but giveback is ambiguous her)\n  2025-06-18 short: -1.05R vs -1.04R (stop; Giveback from +0.74 peak but ambiguous on this family, not d)\nReply with EXACTLY one JSON object, nothing else: {\"action\":\"hold\"|\"revise\"|\"exit_now\",\"stop_r\":<num,optional>,\"target_r\":<num or null,optional>,\"partial_pct\":<0-1,optional>,\"note\":\"<=120 chars\"}. \"hold\"=no change. \"revise\" adjusts the standing plan: stop_r only ever TIGHTENS (in R from entry; 0=BE), target_r replaces the target (null = run on the stop; >=2.0R unless a partial is already booked), partial_pct books that fraction of what is OPEN at next bar. \"exit_now\" flattens at next bar. Rule-breaking fields are ignored by the harness.\n\n[10:01] EVENT: position opened \u2014 read the tape and set your initial plan\nbar 22015.50/22023.25/22001.75/22012.75 | R_now +0.07 peak +0.42 | press_state False | open 1.00 | stop -1.00R target +2.00R | flow(signed to trade): delta1m -64 cvd5m -523 cvd15m -1296 opposed 5/5 vol 1.2x | book: imbalance +0.27 | wall-ahead ratio 2.0 at 12.50pt (visible +/-2pt only) | mins_to_session_end 354",
+   "reply": "{\"action\":\"hold\",\"note\":\"Fresh entry, not press/dying yet; flow opposed but no MAE breach. Hold plan, no evidence to act.\"}"
+  },
+  {
+   "minute": "2025-06-20 10:03:00-04:00",
+   "why": "press check (fill+3m)",
+   "sent": "[10:03] EVENT: press check (fill+3m)\nbar 22014.00/22016.75/22003.00/22012.75 | R_now +0.07 peak +0.48 | press_state False | open 1.00 | stop -1.00R target +2.00R | flow(signed to trade): delta1m -69 cvd5m -335 cvd15m -1131 opposed 4/5 vol 1.0x | book: imbalance +0.27 | wall-ahead ratio 2.0 at 12.50pt (visible +/-2pt only) | mins_to_session_end 352",
+   "reply": "{\"action\":\"hold\",\"note\":\"Neither press nor dying; +0.07R with mild opposed flow. No evidence to override default plan.\"}"
+  }
+ ]
+}

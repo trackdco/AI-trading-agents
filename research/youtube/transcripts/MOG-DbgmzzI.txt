@@ -1,0 +1,252 @@
+[0:00] If you trade opening range breakouts,
+[0:02] you've inevitably made one decision that
+[0:05] shapes nearly every single trade you
+[0:07] take, your time frame.
+[0:09] Whether you've chosen the 5-minute, the
+[0:11] first 15 minutes, or the first 30
+[0:13] minutes, whatever that is, most traders
+[0:16] pick one and usually never look back.
+[0:18] So, if you choose the 30-minute time
+[0:20] frame as your morning opening range
+[0:22] breakout, typically you're just trading
+[0:24] the 30-minute having no idea if it's the
+[0:26] right one or not. To help answer that
+[0:29] question, we backtested 1.17 million
+[0:32] opening range breakout trades through
+[0:34] our backtesters. We tested more than 600
+[0:37] symbols and went back more than 300
+[0:40] trading days to gather this data set.
+[0:43] Now, the most common advice that you'll
+[0:44] hear, at least from YouTubers, including
+[0:47] ones that I believed myself, is that the
+[0:49] 30-minute opening range breakout is the
+[0:52] most reliable. The logic makes sense on
+[0:54] the surface. You're giving the market
+[0:56] more time to settle, you're filtering
+[0:58] out the opening noise, and then you're
+[1:00] letting the real direction emerge and
+[1:02] joining in that direction.
+[1:04] This is also easy to internalize as a
+[1:06] trader. It just makes sense. They think
+[1:08] wider range equals more clearer signal,
+[1:11] plus you allow more time to pass, which
+[1:13] means a little bit more certainty, or at
+[1:15] least that's what we equate it to in our
+[1:17] heads.
+[1:18] Now, here's the problem. We put this
+[1:20] theory to test and the actual data says
+[1:23] something completely opposite.
+[1:25] The 5-minute opening range breakout has
+[1:28] the highest win rate. Not the 30-minute,
+[1:31] not the 15-minute. The fastest,
+[1:33] tightest, noisiest time frame is the one
+[1:36] that tends to win more often than either
+[1:38] of the two safer options.
+[1:40] With real numbers, 53.78%
+[1:43] is the win rate on a 5-minute average
+[1:45] across these 600 symbols. On a
+[1:47] 15-minute, that number drops down to
+[1:50] 50.97%,
+[1:52] so call it 51. And on a 30-minute, that
+[1:55] number is less than 50 right now at
+[1:57] about 49.38%.
+[1:59] Now, why is this the case, you might
+[2:01] ask? Well, according to me, or my theory
+[2:04] rather, the 5-minute range is about 76
+[2:07] cents wide on average, which is a fairly
+[2:10] tight stop. And because the range is so
+[2:12] narrow, trades tend to resolve
+[2:14] themselves very quickly. Now, if you're
+[2:16] watching our scanner, you'll see this
+[2:18] real time where the 5 minutes come and
+[2:20] go very, very, very quick. However,
+[2:22] using numbers, only 3% of 5-minute
+[2:25] trades are still open at the end of the
+[2:27] day. So, what that means is 5-minute
+[2:29] trades have really resolved one way or
+[2:30] the other, either hitting the target or
+[2:32] the stop. Now, you compare that to the
+[2:35] 30-minute time frame, for example, where
+[2:37] nearly 13% compared to what we saw 3% on
+[2:41] the 5 minutes, so 13% here of the trades
+[2:43] never hit their target or stop. They
+[2:45] just sort of drift around. So, the
+[2:47] 5-minute opening range breakout doesn't
+[2:50] really give the market much time to be
+[2:52] indecisive. It forces it to be resolvent
+[2:56] in its decision one way or the other.
+[2:58] Now, if you've been avoiding the
+[2:59] 5-minute because it felt too risky,
+[3:02] you've been avoiding what seems to be
+[3:04] the time frame with the best hit rate.
+[3:06] Now, here's where it gets even more
+[3:08] interesting. Your target and stop rules
+[3:11] change the numbers more than your time
+[3:14] frame of choice does. Let's take the
+[3:16] 5-minute opening range breakout one more
+[3:18] time.
+[3:19] If you set a half range target with a
+[3:22] full range stop, your win rate jumps to
+[3:25] nearly 69%.
+[3:27] The same time frame, same symbols, same
+[3:30] market. Now, you just changed where you
+[3:32] take your profit and where you cut your
+[3:34] losses. That's the only variables that
+[3:37] you changed. However, that one decision
+[3:39] swings your win rate by nearly more than
+[3:41] 30 percentage points. Flip that around.
+[3:44] Now, we go full target versus a half
+[3:46] stop. You're aiming for bigger wins with
+[3:49] a tighter leash. Here, the win rate
+[3:51] drops to 39%. You lose more often, but
+[3:54] the wins you do get are significantly
+[3:57] larger. Picking a time frame is step
+[3:59] one, but if you're not testing any of
+[4:01] these target or stop rules, you're, I
+[4:03] think, optimizing on the wrong set of
+[4:05] variables.
+[4:07] Now, we come into the 15-minute time
+[4:09] frame, and this is where I'm hoping
+[4:11] it'll really click in terms of changing
+[4:13] how you think about win rates.
+[4:15] The 15-minute opening range breakout has
+[4:18] a 46% win rate on a full target, full
+[4:21] stop setup. You're losing more than half
+[4:24] of your trades, and most people, I
+[4:26] think, would throw that strategy
+[4:28] completely in the trash. It is not one
+[4:30] that you really want to add to your
+[4:32] library of strategies.
+[4:34] But, what's interesting is that this
+[4:36] particular strategy has the highest
+[4:38] trade expectancy of any combination we
+[4:40] tested, nearly 4.4 cents per trade. And
+[4:45] while that sounds low in terms of EV,
+[4:46] you have to keep in mind this is
+[4:47] blended, and any number above zero,
+[4:50] meaning a positive number, is what we're
+[4:52] looking for. A positive 4.4 cents is
+[4:54] actually quite good here with the
+[4:55] blended average. You win constantly, but
+[4:57] each win is small.
+[4:59] Now, win rate here is very clearly not
+[5:02] equal to profitability. A strategy that
+[5:05] wins 46% of the time can make you a heck
+[5:08] of a lot more money than one that wins
+[5:10] 69% of the time. Feels good, but doesn't
+[5:13] actually make you money. If you're
+[5:15] choosing strategies based on win rate
+[5:17] alone, you're optimizing for comfort,
+[5:20] not returns, and that's not a recipe for
+[5:22] success.
+[5:24] Now, under all of these averages, I
+[5:27] tried to uncover some specific stock
+[5:29] patterns, some specific equities that we
+[5:31] would want to focus on, where this is
+[5:33] working well. So, I looked at a few
+[5:35] stocks, Tesla is one of them. Tesla has
+[5:38] a 57% win rate on the 5-minute opening
+[5:41] range breakout, and it makes almost a
+[5:43] dollar per trade on the 30-minute
+[5:46] breakout. It's the best opening range
+[5:48] breakout stock in the data set of stocks
+[5:50] that I looked at.
+[5:51] The other stock I looked at was Meta.
+[5:54] It's strong on a 5-minute at a 56% win
+[5:57] rate, but that win rate drops to about
+[5:59] 37% on the 15-minute. Same stock,
+[6:02] completely different behavior again
+[6:04] based on your time frame.
+[6:06] Now, SPY and QQQ, which I know most of
+[6:08] you trade, sit right around the 50% mark
+[6:11] everywhere. It feels like the strategy
+[6:13] is, to {quote} efficient, where the edge
+[6:16] gets arbitraged out on these major index
+[6:19] markets. Very easy for algos to trade it
+[6:21] there. So, no real edge I could find on
+[6:23] either of those two index markets. The
+[6:25] best time frame depends on what you're
+[6:27] trading and then running the backtest to
+[6:30] figure out what is the strategy. For
+[6:31] example, running the 5-minute on Tesla
+[6:34] and the 15-minute on Meta would have
+[6:36] given you a better result than using the
+[6:38] same time frame. So, for example, the
+[6:39] 5-minute on both Tesla and Meta. So,
+[6:42] having the right time frame for each
+[6:44] symbol and backtesting the symbols in
+[6:46] your watchlist, not the universe
+[6:47] average, is the next way to take this
+[6:49] strategy and apply it to make it better
+[6:52] for your particular use case, improve
+[6:54] that ROI.
+[6:56] Now, one more thing the data revealed is
+[6:58] that short breakouts tend to win more
+[7:00] often across nearly every time frame.
+[7:02] And this is again over the past 30 days.
+[7:04] So, that data might be skewed with what
+[7:06] the market has been doing, a lot of
+[7:07] choppy behavior.
+[7:09] 54% versus 53% on the 5-minute, but the
+[7:12] long breakouts make nearly twice the
+[7:15] average profit per trade. Stocks drift
+[7:18] up slowly and fall fast. So, shorts
+[7:21] resolve quickly with smaller gains. Long
+[7:23] stakes longer, but they produce bigger
+[7:25] moves when they do work, given that the
+[7:27] market, uh, with all of the index funds,
+[7:29] the funds that actually move the market
+[7:31] tend to resolve towards the upside.
+[7:34] So, if you're a win rate trader who
+[7:35] wants consistency, short opening range
+[7:38] breakouts are actually where you might
+[7:39] find your edge, even in the index
+[7:41] markets. If you're a P&L trader who can
+[7:43] stomach losing streaks, for example, for
+[7:46] bigger payoffs, then you'll find that
+[7:48] long side breakouts are where you might
+[7:50] find more of the money for your full
+[7:52] range targets instead of just your half
+[7:54] range targets.
+[7:55] So, the bottom line in all of this,
+[7:57] which time frame should you actually
+[7:58] trade if you were to answer that
+[7:59] question? Well, the 5-minute opening
+[8:02] range breakout, which I think most
+[8:04] traders discount, uh, is very much a
+[8:06] speed strategy, but if you want the
+[8:09] highest win rate and you can handle the
+[8:10] morning chaos, the 5-minute, which a lot
+[8:13] of traders ignore, is actually a very
+[8:15] profitable strategy. Use the backtester
+[8:18] to figure out exactly the right symbols.
+[8:19] You saw Tesla as one example, but you
+[8:21] can find others, and the scanner will
+[8:23] give you this list real time. Plus, use
+[8:25] the morning brief to know where that
+[8:27] 5-minute is already a strategy you want
+[8:29] to deploy.
+[8:31] The 15-minute is for systematic traders
+[8:33] who want the best risk-adjusted returns.
+[8:36] You'll lose more often, keep that in
+[8:38] mind, but you will make more per trade.
+[8:41] The 30-minute is for patient traders who
+[8:43] want the largest total dollar return and
+[8:45] you can tolerate a sub-50% win rate.
+[8:48] None of them is, {quote} universally the
+[8:50] best. The best one is really the one
+[8:52] that matches a few factors. One is how
+[8:54] you trade and what you can execute and
+[8:57] the symbol list that you're looking at.
+[8:59] Every number in this video today came
+[9:01] from our opening range breakout setups
+[9:03] backtester. We have more than 150,000
+[9:06] total historical setups with 1-minute
+[9:08] candle data. You can test any symbol,
+[9:10] any time frame, any rule combination,
+[9:13] and see the win rate before you risk a
+[9:15] single capital of your dollar. The link
+[9:17] to sign up is in the description box
+[9:19] below. We're running a special offer
+[9:20] through the end of this month. I'll see
+[9:22] you in our next update.

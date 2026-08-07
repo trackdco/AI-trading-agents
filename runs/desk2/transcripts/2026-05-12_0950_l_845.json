@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"short\",\"day_type\":\"gap-down trend/rejection\",\"thesis\":\"Gap -220 vs prior close, overnight low 29133 held, price basing 29155-29185 under prior value; fade pullback rallies toward 29200-29230 into overnight range resistance\",\"invalidates\":\"Reclaim/hold above 29230 (overnight mid) with cvd flipping net long\"}",
+ "reread": "{\"bias\":\"short\",\"note\":\"Opening range low 29143 swept, reclaimed to 29227 near range high; still below overnight/prior structure\u2014fade strength into 29230-29250 resistance\"}",
+ "turns": [
+  {
+   "minute": "2026-05-12 09:51:00-04:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2026-05-12_0950_s_846) filled at 29219.5 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

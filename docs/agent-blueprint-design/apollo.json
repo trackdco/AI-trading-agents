@@ -1,0 +1,489 @@
+{
+ "lane": "Apollo \u2014 trigger & pattern anatomy",
+ "mandate": "Apollo alone is responsible for the anatomy of the single arbitrated trigger candle: it independently re-derives, from raw Snapshot indicator prices and Trigger geometry, that the candle satisfies the \u00a73 mechanical definition of its claimed kind (rejection block: trades INTO the cluster, CLOSES back on the trade side of ALL cluster levels, leaves a wick through them, tradeable zone = body edge to wick extreme; displacement: body closes through >=min_levels_through cluster levels, body/range >= B_min, close in the extreme quartile, optional ATR floor); that the \u00a74 pattern label (A/B/B2) follows mechanically from kind + over-extension + HTF flag; that the HTF flag is consistent with Snapshot.htf_regime and direction; that over-extension is classified (none/standard/extreme/unavailable) as an anchored fact for downstream sizing; and it applies the flag-gated \u00a77 invalidation-at-entry check. It verifies the MTF slice it CAN see (TF validity, close-boundary alignment, trigger==last-closed-bar coherence) and declares the rest a data gap. Apollo does NOT judge location quality or confluence minima (Atlas), session/time/news (Helios), or entry/stop/target/size construction (Hephaestus); it verifies only that Trigger.entry_ref/stop_ref are the anatomically-correct reference points the engine claims to have derived. Any recompute mismatch, missing input, or unclassifiable pattern = FAIL = veto.",
+ "strategy_slice_refs": [
+  "\u00a71 \u2014 Entry TFs bullet + MTF arbitration sentence only ('evaluate all four; if multiple TFs show valid triggers simultaneously, take the highest TF')",
+  "\u00a73 \u2014 full section (confluence cluster, confluence count, rejection block, displacement, over-extension definitions)",
+  "\u00a74 \u2014 full section (pattern taxonomy A/B/B2 + HTF flag)",
+  "\u00a75.2 \u2014 'Trigger = rejection block (A, B2) or displacement (B). Candle must CLOSE to confirm.'",
+  "\u00a77 \u2014 invalidation-at-entry bullet only ('trigger candle simultaneously touching the opposing \u00b11\u03c3 \u2192 stand down')"
+ ],
+ "snapshot_allowlist": [
+  "ts",
+  "htf_regime",
+  "clusters[].center",
+  "clusters[].confluence_count",
+  "clusters[].types",
+  "clusters[].members",
+  "indicators.tfs.1min.bar_ts",
+  "indicators.tfs.1min.bb_basis",
+  "indicators.tfs.2min.bar_ts",
+  "indicators.tfs.2min.bb_basis",
+  "indicators.tfs.3min.bar_ts",
+  "indicators.tfs.3min.bb_basis",
+  "indicators.tfs.5min.bar_ts",
+  "indicators.tfs.5min.bb_basis",
+  "indicators.daily_vwap.mid",
+  "indicators.daily_vwap.upper_1",
+  "indicators.daily_vwap.lower_1",
+  "indicators.daily_vwap.upper_2",
+  "indicators.daily_vwap.lower_2",
+  "indicators.daily_vwap.upper_3",
+  "indicators.daily_vwap.lower_3",
+  "indicators.ny_vwap.mid",
+  "indicators.ny_vwap.upper_1",
+  "indicators.ny_vwap.lower_1",
+  "indicators.ny_vwap.upper_2",
+  "indicators.ny_vwap.lower_2",
+  "indicators.ny_vwap.upper_3",
+  "indicators.ny_vwap.lower_3",
+  "indicators.daily_profile.poc"
+ ],
+ "trigger_allowlist": [
+  "ts",
+  "tf",
+  "direction",
+  "kind",
+  "pattern",
+  "htf_flag",
+  "entry_ref",
+  "stop_ref",
+  "wick_low",
+  "wick_high",
+  "cluster_center",
+  "confluence_count",
+  "close"
+ ],
+ "config_refs": [
+  "timeframes.entry",
+  "timeframes.mtf_arbitration",
+  "cluster.tolerance_points",
+  "cluster.min_level_types",
+  "triggers.displacement.min_levels_through",
+  "triggers.displacement.body_range_min",
+  "triggers.displacement.close_extreme_quartile",
+  "triggers.displacement.atr_floor_enabled",
+  "triggers.displacement.atr_floor_k",
+  "triggers.displacement.atr_length",
+  "triggers.over_extension_sigma",
+  "triggers.over_extension_extreme_sigma",
+  "filters.invalidation_at_entry"
+ ],
+ "checks": [
+  {
+   "name": "APL-1 snapshot_trigger_coherence",
+   "rule_ref": "\u00a71 (entry TFs) + \u00a75.2 (close to confirm) + architecture invariant 3 (closed candles only)",
+   "pass_condition": "Trigger.tf is a member of timeframes.entry AND Snapshot.indicators.tfs[Trigger.tf].bar_ts == Trigger.ts (string-equal ISO, i.e. the trigger candle IS the last closed bar of its TF in this snapshot) AND minute-of-day(Trigger.ts, ET) mod tf_minutes == 0 (valid bar boundary for the engine's midnight-ET-origin resampler).",
+   "inputs": [
+    "Trigger.ts",
+    "Trigger.tf",
+    "Snapshot.indicators.tfs.{tf}.bar_ts",
+    "timeframes.entry"
+   ],
+   "kind": "recompute",
+   "fail_note": "Mismatch means the snapshot is stale or built for a different bar than the trigger \u2014 grading anything else would grade the wrong candle. Veto, do not best-effort."
+  },
+  {
+   "name": "APL-2 cluster_reconstruction",
+   "rule_ref": "\u00a73 (confluence cluster + confluence count = distinct level types)",
+   "pass_condition": "Applies when kind==rejection_block (see fail_note for displacement). Exactly one c in Snapshot.clusters has |c.center - Trigger.cluster_center| <= EPS (EPS=1e-3 on 4dp-rounded prices); every name in c.members resolves to a non-null price via the fixed name map (bb_basis_{tf} -> indicators.tfs.{tf}.bb_basis; dvwap_mid/upper_k/lower_k -> indicators.daily_vwap.*; nyvwap_* -> indicators.ny_vwap.*; poc -> indicators.daily_profile.poc); sorted member prices have every adjacent gap <= cluster.tolerance_points; distinct-type count >= cluster.min_level_types; distinct-type count == c.confluence_count == Trigger.confluence_count; mean(member prices) within EPS of c.center.",
+   "inputs": [
+    "Trigger.kind",
+    "Trigger.cluster_center",
+    "Trigger.confluence_count",
+    "Snapshot.clusters[].center",
+    "Snapshot.clusters[].confluence_count",
+    "Snapshot.clusters[].types",
+    "Snapshot.clusters[].members",
+    "Snapshot.indicators.tfs.{tf}.bb_basis",
+    "Snapshot.indicators.daily_vwap.*",
+    "Snapshot.indicators.ny_vwap.*",
+    "Snapshot.indicators.daily_profile.poc",
+    "cluster.tolerance_points",
+    "cluster.min_level_types"
+   ],
+   "kind": "recompute",
+   "fail_note": "For kind==displacement the engine emits cluster_center=entry_ref and hard-codes confluence_count=2 (triggers.py _test_candle), so no snapshot cluster will match: gate returns not_evaluated and the gap is recorded in data_gaps \u2014 this is a schema gap (open question), not a pass."
+  },
+  {
+   "name": "APL-3 rejection_block_anatomy",
+   "rule_ref": "\u00a73 (rejection block: trades into cluster, closes back on trade side of ALL levels, leaves wick; tradeable zone = body edge to wick extreme) + \u00a75.4 reference geometry",
+   "pass_condition": "Applies when kind==rejection_block; not_evaluated for displacement. With T=max and B=min of APL-2's reconstructed member prices: LONG \u2014 wick_low <= T (traded into cluster), close > T strictly (closed back above ALL levels), wick_high >= B (body edge did not close below the cluster bottom), wick_high - wick_low > 0 (a wick exists; zone = [wick_low, wick_high]), |entry_ref - T| <= EPS, |stop_ref - wick_low| <= EPS. SHORT mirror \u2014 wick_high >= B, close < B strictly, wick_low <= T, wick_high - wick_low > 0, |entry_ref - B| <= EPS, |stop_ref - wick_high| <= EPS. All conjuncts must hold.",
+   "inputs": [
+    "Trigger.kind",
+    "Trigger.direction",
+    "Trigger.close",
+    "Trigger.wick_low",
+    "Trigger.wick_high",
+    "Trigger.entry_ref",
+    "Trigger.stop_ref",
+    "reconstructed cluster member prices (APL-2)"
+   ],
+   "kind": "recompute",
+   "fail_note": "Uses the engine's own wick-field encoding (long: wick_low=candle low, wick_high=body bottom edge; short mirrored). Cannot verify displacement-precedence (that the candle wasn't really a displacement mislabeled as rejection) without full OHLC \u2014 recorded in data_gaps until Trigger carries candle OHLC."
+  },
+  {
+   "name": "APL-4 displacement_anatomy",
+   "rule_ref": "\u00a73 (displacement: body closes through >=2 cluster levels, body/range >= B_min, close in extreme quartile, optional range >= k\u00d7ATR(20))",
+   "pass_condition": "Applies when kind==displacement; not_evaluated for rejection_block. Requires proposed fields Trigger.candle.{open,high,low} (open is recoverable today: long open==wick_high, short open==wick_low; high/low of the far side are NOT in the current schema). With full OHLC: LONG \u2014 close > open; count of candidate levels p (all bb_basis per TF, all daily/NY VWAP mid+bands, poc \u2014 reconstructed from allowlisted indicator fields) with open < p <= close is >= triggers.displacement.min_levels_through; (close-open)/(high-low) >= triggers.displacement.body_range_min; (close-low)/(high-low) >= 1 - triggers.displacement.close_extreme_quartile; if triggers.displacement.atr_floor_enabled then (high-low) >= triggers.displacement.atr_floor_k \u00d7 Trigger.atr (proposed field); |entry_ref - min(penetrated levels)| <= EPS; |stop_ref - low| <= EPS. SHORT mirror with c <= p < o, (high-close)/(high-low) quartile, entry_ref = max(penetrated), stop_ref = high. Under the CURRENT schema the body/range and quartile conjuncts are uncomputable (missing far-side extreme): per fail-closed, the gate FAILS with the missing fields listed in data_gaps.",
+   "inputs": [
+    "Trigger.kind",
+    "Trigger.direction",
+    "Trigger.close",
+    "Trigger.wick_low",
+    "Trigger.wick_high",
+    "Trigger.entry_ref",
+    "Trigger.stop_ref",
+    "Snapshot.indicators.tfs.{tf}.bb_basis",
+    "Snapshot.indicators.daily_vwap.*",
+    "Snapshot.indicators.ny_vwap.*",
+    "Snapshot.indicators.daily_profile.poc",
+    "triggers.displacement.min_levels_through",
+    "triggers.displacement.body_range_min",
+    "triggers.displacement.close_extreme_quartile",
+    "triggers.displacement.atr_floor_enabled",
+    "triggers.displacement.atr_floor_k",
+    "PROPOSED: Trigger.candle.open/high/low",
+    "PROPOSED: Trigger.atr"
+   ],
+   "kind": "recompute",
+   "fail_note": "This gate is the forcing function for adding trigger-candle OHLC to the Trigger schema: fail-closed means every displacement is vetoed until the engine supplies the fields Apollo needs to re-derive B_min and the extreme-quartile close. Do not soften to not_evaluated."
+  },
+  {
+   "name": "APL-5 pattern_taxonomy_mapping",
+   "rule_ref": "\u00a74 (A reversal = over-extension and/or HTF range extreme + rejection AGAINST prior move; B reclaim = wrong side -> displacement back through; B2 continuation = rejection WITH the move)",
+   "pass_condition": "derived := 'B' if kind==displacement (with wrong-side precondition: candle opened beyond ALL penetrated levels \u2014 long: open < min(penetrated), short: open > max(penetrated); open recovered from wick fields); else for rejection_block: 'A' if (direction-appropriate over-extension per APL-7 is standard/extreme) OR htf_flag=='counter_trend', else 'B2' if htf_flag=='with_trend', else 'unclassifiable' (htf_flag=='range' with no over-extension has no \u00a74 home; HTF-range-extreme evidence is absent from the Snapshot). PASS iff Trigger.pattern == derived AND derived != 'unclassifiable'.",
+   "inputs": [
+    "Trigger.kind",
+    "Trigger.pattern",
+    "Trigger.direction",
+    "Trigger.htf_flag",
+    "Trigger.wick_low",
+    "Trigger.wick_high",
+    "Trigger.close",
+    "Snapshot.indicators.ny_vwap.upper_{sigma}",
+    "Snapshot.indicators.ny_vwap.lower_{sigma}",
+    "triggers.over_extension_sigma"
+   ],
+   "kind": "recompute",
+   "fail_note": "Deliberately diverges from the engine on range+no-over-extension rejections (engine labels them A at triggers.py line 165); Apollo failing them is the cross-check doing its job \u2014 the divergence goes to Angus, not into a silent pass."
+  },
+  {
+   "name": "APL-6 htf_flag_consistency",
+   "rule_ref": "\u00a74 (HTF flag: with_trend / counter_trend / range) + \u00a71 (context TF 15m)",
+   "pass_condition": "(Snapshot.htf_regime=='range' AND Trigger.htf_flag=='range') OR (Snapshot.htf_regime=='uptrend' AND Trigger.htf_flag == ('with_trend' if Trigger.direction=='long' else 'counter_trend')) OR (Snapshot.htf_regime=='downtrend' AND Trigger.htf_flag == ('with_trend' if Trigger.direction=='short' else 'counter_trend')). Snapshot.htf_regime=='unknown' \u2192 FAIL (no \u00a74 mapping exists for unknown).",
+   "inputs": [
+    "Snapshot.htf_regime",
+    "Trigger.direction",
+    "Trigger.htf_flag"
+   ],
+   "kind": "recompute",
+   "fail_note": "Engine's _htf_flag folds 'unknown' into the downtrend branch (triggers.py line 63), silently producing counter_trend for longs \u2014 which also inflates the \u00a77 confluence minimum Atlas applies. Fail-closed here surfaces that bug class."
+  },
+  {
+   "name": "APL-7 over_extension_classification",
+   "rule_ref": "\u00a73 (over-extension = touch of NY VWAP \u00b12\u03c3, extreme \u00b13\u03c3) + \u00a74 (A justification) + \u00a79 (A-at-extension feeds sizing)",
+   "pass_condition": "Classify over_extension using the direction-appropriate candle extreme (long: wick_low, which is the candle low for both kinds; short: wick_high, the candle high): 'extreme' if it touches NY VWAP \u00b1(over_extension_extreme_sigma)\u03c3 on the trade-entry side (long: wick_low <= ny_vwap.lower_3; short: wick_high >= ny_vwap.upper_3), else 'standard' if it touches \u00b1(over_extension_sigma)\u03c3, else 'none'; 'unavailable' when the referenced ny_vwap fields are null (pre-09:30). GATE: if Trigger.pattern=='A' AND Trigger.htf_flag != 'counter_trend' then over_extension must be 'standard' or 'extreme' (the only in-snapshot \u00a74 justification for A), else the gate passes and the classification is emitted as a data field for Hephaestus.",
+   "inputs": [
+    "Trigger.pattern",
+    "Trigger.htf_flag",
+    "Trigger.direction",
+    "Trigger.wick_low",
+    "Trigger.wick_high",
+    "Snapshot.indicators.ny_vwap.upper_2",
+    "Snapshot.indicators.ny_vwap.lower_2",
+    "Snapshot.indicators.ny_vwap.upper_3",
+    "Snapshot.indicators.ny_vwap.lower_3",
+    "triggers.over_extension_sigma",
+    "triggers.over_extension_extreme_sigma"
+   ],
+   "kind": "recompute",
+   "fail_note": "Engine checks BOTH sides (high>=up2 OR low<=lo2, triggers.py _over_extended) \u2014 a long could be called 'over-extended' because its high poked the upper band, which is extension WITH the trade, not against it; Apollo's direction-appropriate recompute will fail such A-labels and surface the divergence."
+  },
+  {
+   "name": "APL-8 invalidation_at_entry",
+   "rule_ref": "\u00a77 (invalidation-at-entry: trigger candle simultaneously touching the opposing \u00b11\u03c3 \u2192 stand down) [HYPOTHESIS, behind filters.invalidation_at_entry]",
+   "pass_condition": "If filters.invalidation_at_entry == false: gate = not_evaluated (counts as pass; the check exists behind its flag). If true: LONG fails iff trigger candle high >= opposing upper_1 (VWAP family per pending Angus clarification: NY VWAP post-09:30, daily VWAP pre-09:30); SHORT fails iff candle low <= opposing lower_1. Requires proposed Trigger.candle.{high,low} (the opposing-side extreme is not in the current schema for either kind); if the flag is enabled and the field is absent \u2192 FAIL (fail-closed) with data_gaps recorded.",
+   "inputs": [
+    "filters.invalidation_at_entry",
+    "Trigger.direction",
+    "Snapshot.indicators.ny_vwap.upper_1",
+    "Snapshot.indicators.ny_vwap.lower_1",
+    "Snapshot.indicators.daily_vwap.upper_1",
+    "Snapshot.indicators.daily_vwap.lower_1",
+    "PROPOSED: Trigger.candle.high",
+    "PROPOSED: Trigger.candle.low"
+   ],
+   "kind": "recompute",
+   "fail_note": "Which VWAP owns 'the opposing \u00b11\u03c3' is a trading-semantics ambiguity \u2192 Angus (open question); the check is designed now so enabling the flag is a config flip, not a prompt rewrite."
+  },
+  {
+   "name": "APL-9 pattern_mechanism_narrative",
+   "rule_ref": "\u00a74 (mechanism-based taxonomy: A against prior move; B wrong-side reclaim; B2 established move + pullback + rejection with the move)",
+   "pass_condition": "Binary judgment over enumerated evidence only: PASS iff every mandatory mechanism element of the labeled pattern has at least one supporting item among {APL-7 over-extension side vs trade direction, htf_flag, candle open side vs penetrated levels (from wick fields), cluster_center position vs close (pullback geometry: for B2 long the rejected cluster must sit below the close; short above)} AND no listed item contradicts the mechanism (e.g. a 'B2 continuation' whose over-extension is on the trade-entry side at \u00b13\u03c3, or a 'B reclaim' whose open was already on the trade side of the penetrated levels). Missing evidence items (nulls) count as neither support nor contradiction, but at least one supporting item per element is required \u2014 zero support = FAIL.",
+   "inputs": [
+    "Trigger.pattern",
+    "Trigger.direction",
+    "Trigger.htf_flag",
+    "Trigger.cluster_center",
+    "Trigger.close",
+    "Trigger.wick_low",
+    "Trigger.wick_high",
+    "Snapshot.htf_regime",
+    "APL-7 classification"
+   ],
+   "kind": "judgment",
+   "fail_note": "The one judgment-shaped gate: 'established move' and 'prior move' need history a single candle cannot prove, so the evidence list is fixed and enumerated to keep the judgment anchored \u2014 no free-form confidence scoring. Gaps in provable history are logged in data_gaps, not guessed."
+  }
+ ],
+ "output_schema_proposal": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ApolloVerdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+   "agent",
+   "agent_version",
+   "trigger_ts",
+   "tf",
+   "verdict",
+   "gates",
+   "pattern_assessment",
+   "over_extension",
+   "recomputed",
+   "data_gaps",
+   "thesis"
+  ],
+  "properties": {
+   "agent": {
+    "const": "apollo"
+   },
+   "agent_version": {
+    "type": "string",
+    "description": "version stamp of .claude/agents/apollo.md (prompt edits are versioned like code)"
+   },
+   "trigger_ts": {
+    "type": "string",
+    "description": "echo of Trigger.ts (ISO ET) \u2014 Hermes joins on this"
+   },
+   "tf": {
+    "enum": [
+     "1min",
+     "2min",
+     "3min",
+     "5min"
+    ]
+   },
+   "verdict": {
+    "enum": [
+     "pass",
+     "fail"
+    ],
+    "description": "fail iff any gate == fail OR any required input missing/unparseable; Hermes treats missing/invalid JSON from Apollo as fail (fail-closed)"
+   },
+   "gates": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "snapshot_trigger_coherence",
+     "cluster_reconstruction",
+     "rejection_block_anatomy",
+     "displacement_anatomy",
+     "pattern_taxonomy_mapping",
+     "htf_flag_consistency",
+     "over_extension_classification",
+     "invalidation_at_entry",
+     "pattern_mechanism_narrative"
+    ],
+    "properties": {
+     "snapshot_trigger_coherence": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "cluster_reconstruction": {
+      "enum": [
+       "pass",
+       "fail",
+       "not_evaluated"
+      ]
+     },
+     "rejection_block_anatomy": {
+      "enum": [
+       "pass",
+       "fail",
+       "not_evaluated"
+      ]
+     },
+     "displacement_anatomy": {
+      "enum": [
+       "pass",
+       "fail",
+       "not_evaluated"
+      ]
+     },
+     "pattern_taxonomy_mapping": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "htf_flag_consistency": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "over_extension_classification": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     },
+     "invalidation_at_entry": {
+      "enum": [
+       "pass",
+       "fail",
+       "not_evaluated"
+      ]
+     },
+     "pattern_mechanism_narrative": {
+      "enum": [
+       "pass",
+       "fail"
+      ]
+     }
+    },
+    "description": "not_evaluated is legal ONLY where structurally N/A (kind-specific anatomy gate for the other kind; displacement cluster gap; invalidation flag disabled) and counts as pass; any other absence or unknown value = Hermes veto"
+   },
+   "pattern_assessment": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "labeled",
+     "derived",
+     "match"
+    ],
+    "properties": {
+     "labeled": {
+      "enum": [
+       "A",
+       "B",
+       "B2"
+      ]
+     },
+     "derived": {
+      "enum": [
+       "A",
+       "B",
+       "B2",
+       "unclassifiable"
+      ]
+     },
+     "match": {
+      "type": "boolean"
+     }
+    }
+   },
+   "over_extension": {
+    "enum": [
+     "none",
+     "standard",
+     "extreme",
+     "unavailable"
+    ],
+    "description": "direction-appropriate NY VWAP band touch (\u00a73); consumed by Hephaestus for \u00a79 A-at-extension sizing \u2014 single source of truth"
+   },
+   "recomputed": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "cluster_top",
+     "cluster_bottom",
+     "distinct_types",
+     "body_range_ratio",
+     "close_quartile_position",
+     "levels_body_closed_through"
+    ],
+    "properties": {
+     "cluster_top": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "cluster_bottom": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "distinct_types": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "body_range_ratio": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "close_quartile_position": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "levels_body_closed_through": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     }
+    },
+    "description": "audit numbers behind each recompute, for the strict-schema journal and human review; null = uncomputable with current fields"
+   },
+   "data_gaps": {
+    "type": "array",
+    "items": {
+     "type": "string"
+    },
+    "description": "exact field paths Apollo needed but were absent/null (e.g. Trigger.candle.high); non-empty gaps that blocked a gate always co-occur with that gate == fail"
+   },
+   "thesis": {
+    "type": "string",
+    "maxLength": 500,
+    "description": "one auditable paragraph: what the candle did, in \u00a73/\u00a74 terms, citing recomputed numbers \u2014 no confidence language"
+   }
+  }
+ },
+ "edge_cases": [
+  "Pre-09:30 trigger: all ny_vwap fields null \u2192 over_extension='unavailable'; an A-label then survives only via counter_trend (APL-7 must not fail A-by-counter-trend for missing bands, but must fail A that claims the extension route)",
+  "Snapshot.htf_regime=='unknown': engine's _htf_flag treats it as downtrend (triggers.py:63) and can emit counter_trend for a long \u2014 APL-6 fails closed because \u00a74 defines no mapping for unknown",
+  "Displacement Trigger carries cluster_center==entry_ref and hard-coded confluence_count=2 (triggers.py:92,95) \u2014 APL-2 cannot match a Snapshot cluster; treat as schema gap (not_evaluated + data_gaps), and note the bogus confluence_count also feeds \u00a77 minima in Atlas's lane",
+  "Candle satisfying BOTH displacement and rejection anatomy: engine tests displacement first (_test_candle ordering) \u2014 Apollo must mirror that precedence before declaring a kind mismatch",
+  "Boundary strictness must mirror the engine exactly: close > top strictly (rejection), body/range >= B_min inclusive, quartile >= 1-0.25 inclusive, penetration half-open (o < p <= c); float compares use EPS=1e-3 on 4dp-rounded prices (tick 0.25)",
+  "Zero-range candle (high==low) or zero-length wick (wick_high==wick_low): engine returns no trigger; if one arrives anyway, anatomy gates fail \u2014 never divide by rng without the rng>0 guard",
+  "Long trigger whose HIGH pierced ny_vwap upper_2 but whose low never touched the lower bands: engine's both-sides _over_extended calls it over-extended and may label A \u2014 Apollo's direction-appropriate recompute fails it and surfaces the divergence",
+  "Trigger.cluster_center within EPS of MORE than one Snapshot cluster center (tolerance-adjacent clusters): ambiguous reconstruction \u2192 APL-2 fails closed rather than picking one",
+  "Trigger.ts is the engine's START-labeled bar stamp (ts_event) despite the docstring saying 'close time' \u2014 APL-1 compares like-for-like against indicators.tfs.{tf}.bar_ts (also start-labeled), so the check is valid either way, but the label semantics need documenting before Hephaestus quotes 'entry activates next bar'",
+  "Snapshot built at a 1m close between higher-TF closes: indicators.tfs.5min.bar_ts will lag Trigger.ts for a 1min trigger \u2014 APL-1 only pins the trigger's OWN tf entry, never the other TFs"
+ ],
+ "open_questions_for_spec3": [
+  "REQUIRED FIELD: add the trigger candle's full OHLC to Trigger (candle.open/high/low; close exists). Without it, displacement body/range and extreme-quartile (APL-4), invalidation-at-entry (APL-8), rejection displacement-precedence, and both-sides over-extension audit are uncomputable \u2014 under fail-closed every displacement would be vetoed. Open+one extreme are recoverable from wick fields, the far-side extreme is not.",
+  "REQUIRED FIELD (conditional): Trigger.atr (ATR(triggers.displacement.atr_length) at trigger time) if triggers.displacement.atr_floor_enabled is ever turned on \u2014 Apollo cannot compute ATR from a single snapshot.",
+  "REQUIRED FIELD: MTF arbitration evidence. Apollo sees one post-arbitration Trigger and can only verify TF membership + boundary alignment; \u00a71 'highest TF wins' needs an engine-emitted arbitration record (e.g. Trigger.competing_tfs or evaluated-TF results) \u2014 or explicit assignment of that audit to an engine unit test instead of the Desk. Decide which.",
+  "SEMANTICS (Angus): \u00a73 displacement says body closes through >=2 CLUSTER levels; the engine counts penetrations of ANY candidate level regardless of whether they form a valid >=2-type cluster within tolerance (triggers.py:88-95 uses all_levels). Which reading is constitutional?",
+  "SEMANTICS (Angus): displacement Trigger.confluence_count is hard-coded to 2 \u2014 should it be the actual distinct level TYPES penetrated? It feeds \u00a77 confluence minima and \u00a79 sizing downstream.",
+  "SEMANTICS (Angus): rejection block with htf_flag=='range' and no over-extension \u2014 engine labels it A (triggers.py:165); \u00a74's A requires over-extension and/or HTF range extreme. Apollo as designed FAILS it (unclassifiable). Confirm intended taxonomy, and whether counter_trend ALONE (no over-extension, no range extreme) legitimately makes an A.",
+  "SEMANTICS (Angus): \u00a77 invalidation-at-entry 'the opposing \u00b11\u03c3' \u2014 of which VWAP? NY VWAP (the \u00a73 over-extension family, undefined pre-09:30) or daily VWAP pre-market fallback?",
+  "SEMANTICS (Angus): over-extension for pattern-A justification \u2014 direction-appropriate touch only (Apollo's reading of 'rejection AGAINST prior move') or either-side touch (engine's current _over_extended)?",
+  "DATA GAP: \u00a74 A alternatively justifies via 'HTF range extreme', but Snapshot has no 1h/4h range-extreme fields (deferred with the session-anchored HTF resampler, snapshot.py header). Until the engine adds them, A-validation rests on over-extension/counter-trend only; when added, they must reach Apollo via Snapshot \u2014 never via Atlas's verdict (specialist independence).",
+  "DATA GAP: B2 'established move' / B 'wrong side' priors are one-candle-provable only in part; decide whether the engine should add a compact prior-context summary (e.g. last-N-bars swing digest) to the Snapshot, or whether APL-9's enumerated-evidence judgment is the accepted ceiling. Also confirm 'retest entry' verification (\u00a74/\u00a75.3) belongs to Hephaestus, not Apollo.",
+  "HTF flag: define the constitutional mapping for htf_regime=='unknown' (Apollo fails closed today; engine folds it into downtrend). Should the engine emit no trigger at all when regime is unknown?"
+ ],
+ "split_concerns": "Four seams need explicit ownership lines. (1) Apollo vs Hephaestus on entry_ref/stop_ref: Apollo verifies these Trigger fields are the anatomically-correct references (top/bottom cluster level; wick extreme per \u00a73/\u00a75.4); Hephaestus owns turning them into the Verdict's actual entry/stop/target/size (E1-E3, RR floor, front-run). If both lanes re-check stop placement they can disagree on EPS conventions \u2014 pin one numeric-comparison convention repo-wide. (2) Apollo vs Atlas on \u00a73 clusters: Apollo re-derives only the ONE cluster the trigger fired against, for anatomy; Atlas owns cluster/level correctness globally plus \u00a77 confluence minima and location veto. Deliberate redundancy on the trigger cluster is good cross-checking, but the \u00a77 confluence-minimum GATE must live in exactly one lane (Atlas) or Hermes can receive contradictory rationales for the same veto \u2014 especially given displacement's hard-coded confluence_count=2. (3) Over-extension is computed by Apollo (\u00a74 A-justification) but consumed by \u00a79 sizing (Hephaestus): Hephaestus must NOT receive Apollo's verdict (independence rule), so either Hephaestus recomputes over-extension from the same Snapshot fields (accepted duplication, keep formulas identical) or the engine promotes over_extension to a Snapshot field \u2014 recommend the latter. Same pattern for the A-pattern HTF-range-extreme evidence once 1h/4h extremes exist: it overlaps Atlas's location veto inputs and must flow to both lanes from the Snapshot, never between agents. (4) MTF arbitration has no clean owner: Apollo can only verify its visible slice (TF validity, boundary alignment, trigger==last-closed-bar); full 'highest TF wins' auditing needs either an engine-emitted arbitration record (then it's Apollo's) or an engine unit test (then it's out of the Desk entirely). Leaving it unassigned is a gap; assigning it to Hermes would give the orchestrator analytic duties it shouldn't have."
+}

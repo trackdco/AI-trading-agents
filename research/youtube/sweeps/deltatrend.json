@@ -1,0 +1,138 @@
+{
+  "query": "channel deep-dive: DeltaTrend Trading (https://www.youtube.com/@deltatrendtrading/videos)",
+  "label": "deltatrend",
+  "swept_at": "2026-08-06T11:15:51+00:00",
+  "parameters": {
+    "channel": "@deltatrendtrading",
+    "subscribers": "36.3K subscribers",
+    "catalogue_size": 14,
+    "max_videos": 14,
+    "min_duration_minutes": 5.0,
+    "exclude_title_pattern": null
+  },
+  "transcribed": [
+    {
+      "video_id": "BiTqwX-4rNw",
+      "title": "stop trading like an idiot.",
+      "duration": "9:08",
+      "views": "147K views",
+      "published": "4 months ago",
+      "minutes": 9.1,
+      "channel": "DeltaTrend Trading",
+      "url": "https://www.youtube.com/watch?v=BiTqwX-4rNw",
+      "published_at": "4 months ago",
+      "characters": 13954,
+      "estimated_tokens": 3488,
+      "rule_keyword_hits": 27,
+      "cache_path": "research/youtube/transcripts/BiTqwX-4rNw.txt"
+    },
+    {
+      "video_id": "M3-0LfZMsz4",
+      "title": "How Trading Is Actually Done (The Quant Process 01)",
+      "duration": "13:41",
+      "views": "53K views",
+      "published": "7 months ago",
+      "minutes": 13.7,
+      "channel": "DeltaTrend Trading",
+      "url": "https://www.youtube.com/watch?v=M3-0LfZMsz4",
+      "published_at": "7 months ago",
+      "characters": 21209,
+      "estimated_tokens": 5302,
+      "rule_keyword_hits": 9,
+      "cache_path": "research/youtube/transcripts/M3-0LfZMsz4.txt"
+    },
+    {
+      "video_id": "TSmF8IU-rrM",
+      "title": "stop trading like an idiot pt. 2",
+      "duration": "14:58",
+      "views": "15K views",
+      "published": "1 month ago",
+      "minutes": 15.0,
+      "channel": "DeltaTrend Trading",
+      "url": "https://www.youtube.com/watch?v=TSmF8IU-rrM",
+      "published_at": "1 month ago",
+      "characters": 22190,
+      "estimated_tokens": 5547,
+      "rule_keyword_hits": 7,
+      "cache_path": "research/youtube/transcripts/TSmF8IU-rrM.txt"
+    },
+    {
+      "video_id": "AR1CQUCMgnE",
+      "title": "The One Idea Behind All Options Pricing",
+      "duration": "8:34",
+      "views": "11K views",
+      "published": "6 months ago",
+      "minutes": 8.6,
+      "channel": "DeltaTrend Trading",
+      "url": "https://www.youtube.com/watch?v=AR1CQUCMgnE",
+      "published_at": "6 months ago",
+      "characters": 11895,
+      "estimated_tokens": 2973,
+      "rule_keyword_hits": 0,
+      "cache_path": "research/youtube/transcripts/AR1CQUCMgnE.txt"
+    }
+  ],
+  "failed": [
+    {
+      "video_id": "ZQUmXK_xapM",
+      "title": "Why the Same Setup Wins and Loses: Contextualizing Features | The Quant Process Ep. 4",
+      "url": "https://www.youtube.com/watch?v=ZQUmXK_xapM",
+      "reason": "IpBlocked: \nCould not retrieve a transcript for the video https://www.youtube.com/watch?v=ZQUmXK_xapM! This is most likely caused by:\n\nYouTube is blocking requests from yo"
+    },
+    {
+      "video_id": "IHZLyff3FgE",
+      "title": "Is Orderflow Imbalance Tradable?",
+      "url": "https://www.youtube.com/watch?v=IHZLyff3FgE",
+      "reason": "RequestBlocked: \nCould not retrieve a transcript for the video https://www.youtube.com/watch?v=IHZLyff3FgE! This is most likely caused by:\n\nYouTube is blocking requests from yo"
+    },
+    {
+      "video_id": "u8zyK0p3Jek",
+      "title": "I Coded Powell Trades' Strategy | Pt. 1",
+      "url": "https://www.youtube.com/watch?v=u8zyK0p3Jek",
+      "reason": "IpBlocked: \nCould not retrieve a transcript for the video https://www.youtube.com/watch?v=u8zyK0p3Jek! This is most likely caused by:\n\nYouTube is blocking requests from yo"
+    },
+    {
+      "video_id": "jGhk-uSrtII",
+      "title": "How To: Monte Carlo Simulation",
+      "url": "https://www.youtube.com/watch?v=jGhk-uSrtII",
+      "reason": "IpBlocked: \nCould not retrieve a transcript for the video https://www.youtube.com/watch?v=jGhk-uSrtII! This is most likely caused by:\n\nYouTube is blocking requests from yo"
+    },
+    {
+      "video_id": "MCnFrUxZARU",
+      "title": "Will Your Trading Strategy MAKE MONEY?",
+      "url": "https://www.youtube.com/watch?v=MCnFrUxZARU",
+      "reason": "IpBlocked: \nCould not retrieve a transcript for the video https://www.youtube.com/watch?v=MCnFrUxZARU! This is most likely caused by:\n\nYouTube is blocking requests from yo"
+    },
+    {
+      "video_id": "Zu4sL5u-WyU",
+      "title": "STOP Sampling EVERY CANDLE (The Quant Process 03)",
+      "url": "https://www.youtube.com/watch?v=Zu4sL5u-WyU",
+      "reason": "IpBlocked: \nCould not retrieve a transcript for the video https://www.youtube.com/watch?v=Zu4sL5u-WyU! This is most likely caused by:\n\nYouTube is blocking requests from yo"
+    },
+    {
+      "video_id": "TEVRiSNxs50",
+      "title": "Turning Data Into Meaning (The Quant Process 02)",
+      "url": "https://www.youtube.com/watch?v=TEVRiSNxs50",
+      "reason": "IpBlocked: \nCould not retrieve a transcript for the video https://www.youtube.com/watch?v=TEVRiSNxs50! This is most likely caused by:\n\nYouTube is blocking requests from yo"
+    },
+    {
+      "video_id": "fIEwVmJJ06s",
+      "title": "\"Build Your Own Trading Strategy\" \u2014 Ivy League Quant",
+      "url": "https://www.youtube.com/watch?v=fIEwVmJJ06s",
+      "reason": "IpBlocked: \nCould not retrieve a transcript for the video https://www.youtube.com/watch?v=fIEwVmJJ06s! This is most likely caused by:\n\nYouTube is blocking requests from yo"
+    },
+    {
+      "video_id": "vQ9n4SaFxHE",
+      "title": "Quant Trading: Markov Chains & Steady States",
+      "url": "https://www.youtube.com/watch?v=vQ9n4SaFxHE",
+      "reason": "RequestBlocked: \nCould not retrieve a transcript for the video https://www.youtube.com/watch?v=vQ9n4SaFxHE! This is most likely caused by:\n\nYouTube is blocking requests from yo"
+    },
+    {
+      "video_id": "QhGoLgWyUrw",
+      "title": "I Coded This Daytrading Guru's Strategy \u2014 Here\u2019s the Truth",
+      "url": "https://www.youtube.com/watch?v=QhGoLgWyUrw",
+      "reason": "IpBlocked: \nCould not retrieve a transcript for the video https://www.youtube.com/watch?v=QhGoLgWyUrw! This is most likely caused by:\n\nYouTube is blocking requests from yo"
+    }
+  ],
+  "skipped": []
+}

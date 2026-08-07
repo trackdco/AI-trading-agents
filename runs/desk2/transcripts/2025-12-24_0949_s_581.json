@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"long\",\"day_type\":\"holiday low-vol tight range\",\"thesis\":\"Prior day closed strong near high 25800, overnight held tight 25778-25827 near highs, no giveback \u2014 pullback rejection longs favored into thin holiday liquidity\",\"invalidates\":\"clean break/hold below overnight low 25778\"}",
+ "reread": "{\"bias\":\"neutral\",\"note\":\"Opening 9:30-39 rejected overnight high 25828, closed weak at 25791 near range low \u2014 chop not trend, thin holiday tape, wait for pullback rejection confirmation\"}",
+ "turns": [
+  {
+   "minute": "2025-12-24 09:50:00-05:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2025-12-24_0950_l_582) filled at 25794.0 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

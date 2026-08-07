@@ -1,0 +1,28 @@
+[project]
+name = "youtube-research-mcp"
+version = "1.0.0"
+description = "YouTube search + transcript MCP server for the research lane"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=2.0.0",
+    "youtube-transcript-api>=1.2.0",
+    "httpx>=0.27",
+    # Third caption path — the ANDROID player client survives the IP throttle
+    # that blocks both youtube-transcript-api and the web innertube endpoint.
+    "yt-dlp>=2026.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# Without this, flat-layout discovery sees both server.py and test_server.py
+# and refuses to build. The test module is not part of the distribution.
+py-modules = ["server"]
+
+[tool.ruff]
+line-length = 100

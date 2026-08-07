@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"neutral\",\"day_type\":\"tight overnight range, no edge\",\"thesis\":\"Gap -5, overnight range only 71pts, price coiled 24024-24029 last 5 bars \u2014 no clean pullback/rejection setup yet, wait for range break with flow\",\"invalidates\":\"clean break+reject of overnight H24040 or L23969 with flow confirmation\"}",
+ "reread": "{\"bias\":\"short\",\"note\":\"Opened above overnight range, swept 24064, rejected hard to 24013 (-51 off high) \u2014 failed breakout, gold window rejection short favored\"}",
+ "turns": [
+  {
+   "minute": "2025-09-12 09:47:00-04:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2025-09-12_0947_l_303) filled at 24028.75 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

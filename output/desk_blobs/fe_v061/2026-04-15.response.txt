@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "agent_version": "a4b241cca843",
+  "date": "2026-04-15",
+  "regime": "war",
+  "directional_bias": "neutral",
+  "permitted_structures": [],
+  "stand_down": true,
+  "size_multiplier": 0.0,
+  "confidence": "medium",
+  "rationale": "Analog cohort of the 15 nearest days resolves FLAT (best_action_counts.FLAT=10, majority_action=FLAT), share_both_books_red=0.67, and both books' realized means are negative (mean_pl_if_rotation=-84, mean_pl_if_momentum=-264): the retrieval no-trade signal, which is a stand-down, never a 0.25. Tape is war-like (directional_streak_days=7, net_5d_pts=1848.25, pct_off_window_high=0.019 = pinned at the high), a tempting continuation arm, but the cohort of similar days paid neither book. red_folder_today=0 so no event_risk basis to trade or hide. Stand down.",
+  "cited_evidence": [
+    "analog_block.majority_action=FLAT",
+    "analog_block.best_action_counts.FLAT=10",
+    "analog_block.share_both_books_red=0.67",
+    "analog_block.mean_pl_if_rotation=-84",
+    "analog_block.mean_pl_if_momentum=-264",
+    "trailing_stats.directional_streak_days=7",
+    "trailing_stats.pct_off_window_high=0.019",
+    "regime_vector.red_folder_today=0"
+  ],
+  "playbook_notes": "NO inherited notes (fresh-eyes). 2026-04-15: stood down. Decision anchored to analog retrieval, not the tape story: majority_action=FLAT (10/15), share_both_books_red=0.67, both book means red (rotation -84, momentum -264) => FLAT cohort = 0.0 stand-down per v0.6.1 (a FLAT majority is a stand-down, never a 0.25 'just in case'). The morning narrative was war/continuation (7-day up streak, net_10d=2403, price 0.019 off window high, streak_imbal=3, net_5d=1848), which would tempt a momentum arm — but v0.6.1: the cohort's realized book beats the narrative, and here the cohort paid neither book. Setup shape worth remembering: an extended trend (day 7) running into a compressed daily range (range_pctl_20=0.1) with 24 overnight shock bars is exhaustion-prone and both-sided-loss prone, consistent with the 0.67 both-red share. Calendar today is only medium (Trump speaks 06:00, Empire State 08:30); red_folder_today=0, named_high_today=0, so no event_risk stand-down or arm basis regardless. Forward rule: when a day pairs a long streak / price at a window extreme with a FLAT-majority cohort and high both-red share, default 0.0. Only arm when majority_action names a book with a clearly positive mean_pl."
+}

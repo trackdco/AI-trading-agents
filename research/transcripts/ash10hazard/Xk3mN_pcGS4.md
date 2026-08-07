@@ -1,0 +1,7 @@
+[00:00] we're tapping into this Supply zone right here it's going to respect the supply Zone it's going to return back into our liquidity Zone because what you can see here last night in New York Red news for USD really bullish last night Asia we just had some dead consolidation it's price is respecting the supply Zone and it's going to retrace off that what we're going to see is a selloff see a change of character at some point so we
+
+[00:26] do see price come back into our buy side liquidity then we can start looking for some sales and I'm thinking this is going to be a really nice trade that change of character we were talking [Music] about I took 50% partials trade like this would literally pass my F Well phase one we're here with Ain s on so a you didn't answer my question from last time would you rather get bummed by your grandad your
+
+[01:03] grandma that's four open up doors yeah I count too hot without spinning too much yeah I get that girl when I get that of course oh my money on C be s in the yard money on weight PA yeah yeah yeah yeah let me go let me go let me go yeah hey yeah I can be de little so it's the end of that video boys start trying to customize my live stream hopefully tomorrow morning you guys should see uh a few little
+
+[01:46] additions to try and Spruce things up a little bit hope you guys have enjoyed this video and we go again tomorrow it's the last [&nbsp;__&nbsp;] day come on come on

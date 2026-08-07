@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "agent_version": "a4b241cca843",
+  "date": "2026-04-01",
+  "regime": "event_risk",
+  "directional_bias": "neutral",
+  "permitted_structures": [],
+  "stand_down": true,
+  "size_multiplier": 0.0,
+  "confidence": "medium",
+  "rationale": "Analog cohort decides: majority_action=FLAT (FLAT:7 vs ROTATION:5, MOMENTUM:3), both books barely positive (rotation 71, momentum 72). A FLAT-majority cohort is the retrieval no-trade signal, sufficient to stand down per v0.6.1. Calendar is heavy (red_folder_today=4, ADP+Retail today) but event risk alone never forces flat; the stand-down here is analog-driven, not calendar-driven. No persistent trend (streak_imbal=0, directional_streak_days=1) to justify arming rotation or momentum.",
+  "cited_evidence": [
+    "analog_block.majority_action=FLAT",
+    "analog_block.best_action_counts.FLAT=7",
+    "analog_block.mean_pl_if_rotation=71",
+    "analog_block.mean_pl_if_momentum=72",
+    "regime_vector.red_folder_today=4",
+    "regime_vector.streak_imbal=0",
+    "trailing_stats.directional_streak_days=1",
+    "analog_block.share_both_books_red=0.27"
+  ],
+  "playbook_notes": "2026-04-01 (fresh start, no inherited notes). Stood down (0.0) on a FLAT-majority analog cohort (7/15 FLAT; ROTATION 5, MOMENTUM 3) with thin book edges (~71-72 mean P&L). Per v0.6.1: majority_action==FLAT is a sufficient stand-down trigger regardless of the calendar. Discipline applied: a heavy event slate (red_folder_today=4: ADP 08:15, Retail Sales 08:30) was NOT used to force a stand-down, and was NOT overridden into a trade either — the calendar was neutral to the call; the analog FLAT plurality drove it. Tape context: big overnight gap (+285.5) after a +786 reversal day (03-31), elevated imbal_share (0.65/0.6) but streak_imbal=0 and directional_streak_days=1 — no persistent one-way regime, so no war-continuation case; net_10d -820 is whipsawing, not trending. share_both_books_red only 0.27 (not a both-red cohort), so the flat call rests on the FLAT plurality, not on both-books-red. Carry forward: when majority_action==FLAT and both mean_pl_if_<book> are small, stand down; reserve 0.25 for a genuine book majority with a thin edge, never for a FLAT cohort 'just in case'."
+}
