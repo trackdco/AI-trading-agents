@@ -29,6 +29,24 @@ from src.htf_ma.levels import NY, bb_ma_asof                        # noqa: E402
 
 XS = [0.25, 0.5, 1.0, 2.0]
 PAIRS = ROOT / "output/htf_ma_census/level_cluster_pairs.parquet"
+SEED, DRAWS = 20260807, 2000
+
+
+def boot_mean(df: pd.DataFrame, col: str = "out_ship"):
+    """Day-level bootstrap of a MEAN, vectorised.
+
+    Identical estimator and resampling unit to scripts.htf_ma_restate.boot_ci
+    (resample session-days with replacement, recompute the same statistic),
+    but expressed as resampled day sums / day counts so 2,000 draws are two
+    matrix products instead of 2,000 DataFrame concatenations. Verified
+    against boot_ci before use."""
+    g = df.groupby("sess_day")[col].agg(["sum", "size"])
+    s, n = g["sum"].to_numpy(), g["size"].to_numpy()
+    rng = np.random.default_rng(SEED)
+    idx = rng.integers(0, len(s), (DRAWS, len(s)))
+    tot, cnt = s[idx].sum(axis=1), n[idx].sum(axis=1)
+    st = np.divide(tot, cnt, out=np.full(DRAWS, np.nan), where=cnt > 0)
+    return float(np.nanpercentile(st, 2.5)), float(np.nanpercentile(st, 97.5))
 
 
 def build_pairs(F: pd.DataFrame) -> pd.DataFrame:
@@ -136,8 +154,7 @@ def main() -> None:
                     if len(g) < 15:
                         cells[era] = "UNDERPOWERED"
                         continue
-                    lo, hi = boot_ci(g, "out_ship",
-                                     lambda s: s.out_ship.mean())
+                    lo, hi = boot_mean(g)
                     star = "!" if (lo > 0 or hi < 0) else " "
                     cells[era] = f"{g.out_ship.mean():+.3f} [{lo:+.3f},{hi:+.3f}]{star}"
                 print(f"{locus:9s} {len(b):7d} {len(b)/ndays:5.2f} "
@@ -175,8 +192,7 @@ def main() -> None:
                         if len(g) < 15:
                             ok.append(False)
                             continue
-                        lo, hi = boot_ci(g, "out_ship",
-                                         lambda s: s.out_ship.mean())
+                        lo, hi = boot_mean(g)
                         ok.append(lo > 0)
                     both = len(ok) == 2 and all(ok)
             pos = np.nansum([s > 0 for s in signs])
