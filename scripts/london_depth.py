@@ -44,7 +44,29 @@ def load_day(day: str, DIR: Path):
     if not f.exists():
         return None
     d = pd.read_csv(f)
-    ts = pd.to_datetime(d.ts_event, utc=True).dt.tz_convert(NY)
+    # CLOCK CORRECTION (ported from trunk, 2026-08-07).
+    # `ts_event` is FLOORED to the minute by the condensed extraction: ts_recv runs a
+    # median 59.895s later (depth_london) / 59.794s (depth_london_2023_24) against ~13us
+    # of matching-engine-to-capture latency. The row labelled T is therefore the book at
+    # ~T+59.9s, and indexing on the label puts every as-of read ~60 seconds in the FUTURE.
+    # `depth_at` below selects `dep.ts <= minute`, so on the raw label that is a
+    # ~60-second lookahead on every dep_* column and on the W/FAR/thick/resist veto ladder.
+    # docs/FINDING-london-depth-timestamp-lookahead.md.
+    #
+    # REFUSES rather than warns, and refuses in BOTH directions: applying this correction
+    # to a genuine per-instant sample would itself be a 60-second error.
+    if "ts_recv" not in d.columns or "ts_in_delta" not in d.columns:
+        raise ValueError(f"{f} lacks ts_recv/ts_in_delta; the floored ts_event label "
+                         f"cannot be corrected and must not be used as an as-of read")
+    lag = (pd.to_datetime(d.ts_recv, utc=True, format="mixed")
+           - pd.to_datetime(d.ts_event, utc=True, format="mixed")).dt.total_seconds()
+    if lag.median() < 30:
+        raise ValueError(
+            f"{f}: ts_recv-ts_event median {lag.median():.1f}s, expected ~59.9s. This "
+            f"extraction may not be floored; the correction below would become a "
+            f"60-second ERROR. Re-verify before use.")
+    ts = (pd.to_datetime(d.ts_recv, utc=True, format="mixed")
+          - pd.to_timedelta(d.ts_in_delta, unit="ns")).dt.tz_convert(NY)
     rows = []
     for lvl in range(10):
         for side, px, sz in (("bid", f"bid_px_{lvl:02d}", f"bid_sz_{lvl:02d}"),
@@ -113,7 +135,16 @@ def main():
             rows.append({})
             continue
         f = pd.Timestamp(t.fill).tz_convert(NY).floor("min")
-        rows.append(depth_at(dep, f, t.entry, t.direction))
+        # THREE ANCHORS were adopted on trunk 2026-08-05 (ANGUS): the fill-anchored read
+        # is contaminated by construction -- a limit fill requires price to have travelled
+        # TO the order -- so the tradeable read is the book at ORDER PLACEMENT (the trigger
+        # candle's close). Only two of the three are constructible here: this matrix
+        # carries no trigger timestamp, so `t_*` needs `trig_ts` threaded down from L2.
+        # `p1_*` is the one-minute-earlier fallback and is the closest available to honest.
+        r = depth_at(dep, f, t.entry, t.direction)
+        r.update({f"p1_{k}": v for k, v in
+                  depth_at(dep, f - pd.Timedelta(minutes=1), t.entry, t.direction).items()})
+        rows.append(r)
         if (i + 1) % 200 == 0:
             print(f"  {i+1}/{len(L)}", flush=True)
     X = pd.DataFrame(rows, index=L.index)
