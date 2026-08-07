@@ -63,6 +63,7 @@ _BARS: pd.DataFrame | None = None
 ENTRY_VARIANT = "EC"        # overridden by --entry; see prereg §9
 _RRFLOOR = None             # None = keep the config's 2.0. 0.0 = NEXT structural level.
 _ARM = ""                   # census arm suffix, e.g. "_pp" (prior-session profile levels)
+_CFG_OVERRIDES: dict = {}   # exit-lab sweep: arbitrary config overrides applied LAST
 
 
 def in_l0(arm: str = "") -> Path:
@@ -111,10 +112,14 @@ def l2_cfg(day: str, entry: str = "EC"):
            # vetoes the trade when nothing clears. Floor 0 with walkout off takes the
            # first level in the menu -- the next structural level, whatever R that is.
            {"rr_floor": _RRFLOOR, "rr_floor_partial": min(_RRFLOOR, 1.5),
-            "walkout_under_floor": False})})
+            "walkout_under_floor": False}),
+        # exit-lab sweep overrides go LAST so an arm can set anything, including putting
+        # `walkout_under_floor` back on (the --rr-floor block above forces it off, which is
+        # right for "next structural level" but wrong for "aim for at least X R").
+        **_CFG_OVERRIDES})
 
 
-def _init_pool(prior_profile: bool) -> None:
+def _init_pool(prior_profile: bool, rrfloor=..., overrides: dict | None = None) -> None:
     """Per-worker setup. The engine's `default_target_resolver` calls `build_snapshot`, which
     reads `_include_prior_profile()` from its own module globals — so patching `snapshot` is
     what puts yesterday's POC/VAH/VAL into the TARGET MENU. Applied per worker so it holds
@@ -122,6 +127,13 @@ def _init_pool(prior_profile: bool) -> None:
     if prior_profile:
         import src.engine.snapshot as _snap
         _snap._include_prior_profile = lambda: True
+    # the sweep drives workers directly, so its arm settings must be re-established here —
+    # a spawn start method does not inherit the parent's module globals
+    global _RRFLOOR, _CFG_OVERRIDES
+    if rrfloor is not ...:
+        _RRFLOOR = rrfloor
+    if overrides is not None:
+        _CFG_OVERRIDES = overrides
 
 
 def day_outcomes(args) -> list[dict]:
@@ -165,18 +177,20 @@ def day_outcomes(args) -> list[dict]:
 
 def run(trigs: pd.DataFrame, procs: int, lookback: int = LOOKBACK_DAYS,
         quiet: bool = False, entry: str = "EC",
-        prior_profile: bool = False) -> pd.DataFrame:
+        prior_profile: bool = False, overrides: dict | None = None) -> pd.DataFrame:
     ts = pd.to_datetime(trigs.ts, format="mixed", utc=True).dt.tz_convert(NY)
     trigs = trigs.assign(_d=ts.dt.strftime("%Y-%m-%d"))
     jobs = [(day, g.drop(columns=["_d"]).to_dict("records"), lookback, entry)
             for day, g in trigs.groupby("_d", sort=True)]
     rows, done = [], 0
     if procs <= 1:
-        _init_pool(prior_profile)
+        _init_pool(prior_profile, _RRFLOOR, overrides if overrides is not None else _CFG_OVERRIDES)
         for j in jobs:
             rows.extend(day_outcomes(j))
     else:
-        with Pool(procs, initializer=_init_pool, initargs=(prior_profile,)) as p:
+        with Pool(procs, initializer=_init_pool,
+                  initargs=(prior_profile, _RRFLOOR,
+                            overrides if overrides is not None else _CFG_OVERRIDES)) as p:
             for day_rows in p.imap(day_outcomes, jobs):
                 rows.extend(day_rows)
                 done += 1
