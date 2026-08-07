@@ -16,8 +16,8 @@ with outcomes. **Holdout look #1 remains HALTED and unspent.**
 >
 > That objection is correct, and the test is in **§ MATCHED SELECTIVITY**
 > below. At matched trades/day, **3m and 5m beat the 15m control by
-> +0.12–0.14R** and clear both eras; the raw ordering reverses everywhere
-> except 1m. The mechanism is specific and is the most useful thing in this
+> +0.12 to +0.20R** and clear both eras; the raw ordering reverses
+> everywhere except 1m. The mechanism is specific and is the most useful thing in this
 > pass: **a tighter stop does not enlarge MFE (prediction 3 stays refuted)
 > — it makes room-to-run measurable.**
 >
@@ -91,9 +91,11 @@ by 3.7 — it left the body of the distribution alone and moved the losers.
 P(≥3R) — the quantity the 75%-at-3R leg actually depends on — did not move
 at all.
 
-## WHY THE LTF BOOK LOSES: the stop RULE, not the timeframe
+## WHY THE RAW LTF BOOK LOSES: the stop RULE, not the timeframe
 
-Two mechanisms, both measured:
+Two mechanisms, both measured. Note the scope: this explains the **raw**
+ordering above. Mechanism 2 in particular is separable, which is part of
+why the ordering does not survive selection.
 
 **1. Costs, exactly as D6 warned.** cost_R median 0.061 at 1m vs 0.016 at
 15m. Under the declared stress assumptions:
@@ -339,16 +341,22 @@ requirement, adds nothing at any timeframe. *(The first draft closed the
 whole LTF family here; that was withdrawn — see the correction at the top.)*
 
 **Buys:**
-1. The 15m trigger is now **defended by measurement** rather than by
-   comparability with an incumbent. That was the actual weakness in the E1
-   declaration and it is now repaired.
-2. The flow question is closed. Weak, not mis-measured.
+1. **A mechanism, not just a ranking.** Room-to-run is worth roughly three
+   times more at 3–5m than at 15m, and the reason is measurable and
+   arithmetic: the 15m stop is so wide that the next level is a median
+   0.40R away, leaving a room filter nothing to discriminate on. This is
+   the most useful thing in the pass.
+2. The flow question is closed. Weak, not mis-measured. That had been open
+   since the beginning.
 3. Everything BR-19..BR-26 was measured on is **re-validated as the right
    population** rather than being invalidated. The invalidation list in the
    declaration is withdrawn.
 4. A stop-rule defect is now visible that was invisible at 15m, and it
    contaminates `closeloc` at every timeframe.
-5. One live, well-powered, mechanism-consistent lead (D7 room-to-run).
+5. The trigger timeframe is now a **measured** dimension rather than an
+   inherited convention — which is what the E1 declaration was actually
+   weak on. It just did not resolve the way either side expected: 15m wins
+   raw, 3–5m win selected.
 
 ## WHAT IS EXPLICITLY NOT DONE
 
