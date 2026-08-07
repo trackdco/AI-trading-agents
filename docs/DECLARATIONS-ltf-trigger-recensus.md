@@ -41,6 +41,15 @@ CONSTRAINT-mbp10-reach (a fact about the feed).
 The locus set is **UNCHANGED**: 15m BB MA, VAL, VAH, VWAP, VWAP−1,
 VWAP+1, POC. Only the **trigger candle** changes.
 
+**VAH is retained** — all seven loci run, VAH included. It was the weakest,
+symmetry-only cell all-session and it earned no follow-up in the 15m
+per-session re-census, but it is not dropped: the publication rule requires
+every cell, nulls included. **The 15m-only POC/VAH per-session census run
+two turns ago is SUPERSEDED by this pass, not abandoned** — its results are
+on the record (POC-reject London +0.419 vs +0.084 pooled, H1 clears and H2
+does not; VAH-reject NY_PRE +0.470, same pattern; twelve cells, twelve
+parks) and every one of them is re-measured here at all four TFs.
+
 **An LTF BB MA is NOT a locus.** Censusing bbma1 as a locus would test
 rejections of the 1-minute Bollinger middle band — a fast line price
 crosses constantly — and generate a mountain of meaningless triggers. The
@@ -72,6 +81,30 @@ trigger candle's extreme ± 1 tick — which at 1m is ~3–5pt rather than
 
 Reported alongside every row: **(A)-only** and **(A)∧(B)** populations, so
 condition (B)'s contribution is measured, not assumed.
+
+### D1a — THE BAR FOR (B)'s MARGINAL CONTRIBUTION, declared before either population is read
+
+Reporting (A)-only and (A)∧(B) each clearing its own bar **does not answer
+the question**. Both can pass while (B) contributes nothing — the same
+failure mode as closeloc validating itself while saying nothing about S1's
+marginal value. The comparison is therefore declared directly, now:
+
+(A)∧(B) is a strict subset of (A), so (B) is a **gate on the (A)
+population** and is priced by the standing gate arithmetic:
+
+> q = share of (A) rows that FAIL (B) · μ_fail = their mean out_ship
+> **marginal lift of (B) = q · (EV_A − μ_fail) / (1 − q)**
+
+**Declared bar for (B):** marginal lift **≥ +0.05R** (the programme's
+standing Law-7 gate bar), with the **day-boot CI on the lift clear of zero
+in BOTH eras**, at the declared X, per session and per TF. Dual currency
+reported alongside (Law 3): win-rate of the kept vs failed sets, since a
+momentum filter is exactly the kind of variable that can buy hit rate and
+sell expectancy — which is how BR-20 died.
+
+If (A)-only and (A)∧(B) both clear their own bars but the marginal lift
+misses, the verdict recorded is **"(B) adds nothing"**, and the shipped
+trigger stays (A)-only.
 
 ## D2 — W15 REMAINS THE SCALE RULER, and the reason is stated
 
@@ -172,6 +205,27 @@ If the trader's grammar is right, expect:
 flow family is genuinely weak rather than mis-measured, and it closes a
 question that has been open since the beginning. That outcome is recorded
 as a result, not as a failed run.
+
+## D8 — PRE-FLIGHT: RAW TRIGGER COUNTS BEFORE THE OUTCOME WALK
+
+The outcome walk is the expensive stage (~100k rows × up to a full session
+of 1m bars each). **Raw trigger counts per (TF, locus, arm, session) are
+printed FIRST**, from the trigger scan alone, before a single outcome walk
+runs. Five minutes against a long background run.
+
+**Declared pathology criterion — halt and diagnose, do not proceed:**
+- any cell implying **> 50 triggers/day**, or
+- a 1m or 2m rate that is not a **sane multiple** of the 15m rate for the
+  same cell (candles scale ~15× from 15m to 1m; triggers should scale
+  **sub-linearly**, because reaching a locus and closing through one's own
+  BB MA both get rarer per-candle as the candle shrinks). A super-linear
+  jump is a bug, not a discovery.
+- (A)∧(B) count exceeding (A) count anywhere — an impossibility that would
+  indicate the conjunction is mis-wired.
+
+Counts are reported whatever they show, and the calibration control runs in
+the same stage: **the (A)-only path at TF=15 must reproduce the existing
+level census bit-for-bit** before any new number is trusted.
 
 ## Gates and standing constraints
 
