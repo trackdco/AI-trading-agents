@@ -89,12 +89,29 @@ def depth_at(dep, minute, entry, direction):
          "dep_resist": ta if direction == "long" else tb}
     f["dep_sup_m_res"] = f["dep_support"] - f["dep_resist"]
     above, below = b[b.price > entry], b[b.price < entry]
+    # EXPLICIT TIE-BREAK: largest size, then NEAREST price to the entry.
+    #
+    # `idxmax` alone resolves a size tie by ROW POSITION, which is input-order dependent
+    # -- the same book fed in a different row order yields a different wall. NQ's London
+    # book is thin (median 3 contracts a level, 10 levels spanning ~2.25 pts), so exact
+    # size ties are common rather than exotic: measured on the 749-fill fit matrix, the
+    # two rules disagree on 180 rows, and on every one of those the wall SIZE is
+    # identical -- they are pure ties. 45 rows get a different wall DISTANCE and 9 of
+    # them flip the `FAR = wall_ahead_d > 4.5` gate condition.
+    #
+    # Ported from the rev-3 lineage (origin/claude/agent-capture-london), which carried
+    # this fix from 2026-08-03 while trunk did not. Found 2026-08-07 while porting
+    # trunk's clock correction the other way; a wholesale port would have regressed it.
+    # `kind="mergesort"` is required -- it is the only stable sort pandas offers, and an
+    # unstable sort re-introduces the same order dependence one layer down.
     if len(above):
-        w = above.loc[above["size"].idxmax()]
+        w = above.sort_values(["size", "price"], ascending=[False, True],
+                              kind="mergesort").iloc[0]
         f["dep_wall_above_d"] = float(w.price - entry)
         f["dep_wall_above_sz"] = float(w["size"])
     if len(below):
-        w = below.loc[below["size"].idxmax()]
+        w = below.sort_values(["size", "price"], ascending=[False, False],
+                              kind="mergesort").iloc[0]
         f["dep_wall_below_d"] = float(entry - w.price)
         f["dep_wall_below_sz"] = float(w["size"])
     # BIASED — DO NOT READ AS FLOW (flagged 2026-08-06, Phase 4 inventory).

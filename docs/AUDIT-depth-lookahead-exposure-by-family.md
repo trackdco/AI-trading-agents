@@ -165,3 +165,58 @@ on it. They change no verdict, they change the DSR denominator only by count and
 variance, and none of them was ever selected on — but they are wrong numbers sitting in
 the evidence base, and that is worth saying plainly rather than filing under a
 technically-true summary.
+
+
+---
+
+## SUPERSESSION — the `dep_wall_above_d` row above is off by one (2026-08-07)
+
+**Appended, not edited**, per the same discipline as the ledger correction: the published
+table stays as published, and the corrected value sits beside it.
+
+`scripts/london_depth.py::depth_at` selected the wall with `idxmax`, which resolves a
+size tie by ROW POSITION. Row position is an artefact of how the long frame was
+assembled, so the same book in a different order gave a different wall. The rev-3 lineage
+(`origin/claude/agent-capture-london`) has carried the deterministic fix — largest size,
+then NEAREST price, stable sort — since 2026-08-03; trunk did not. Found 2026-08-07 while
+porting trunk's clock correction the other way, and a wholesale port would have regressed
+it. Now fixed on trunk and pinned by `tests/test_depth_tiebreak.py`.
+
+**Effect on the published table: one number.**
+
+| column | published | corrected |
+|---|---:|---:|
+| `dep_wall_above_d` | 687 | **686** |
+| every other row (`dep_imb` 746, `dep_thick` 721, `dep_sup_m_res` 718, `dep_resist` 711, `dep_support` 705, `dep_wall_below_d` 698, `dep_thick_d5m` 581) | — | **unchanged** |
+
+**Effect of the tie-break fix alone**, against yesterday's committed matrix: only the two
+wall-DISTANCE columns move — `dep_wall_above_d` 19 rows, `dep_wall_below_d` 26 rows, 45
+in total (6.0%). Both wall-SIZE columns and all seven other `dep_*` columns are identical
+on all 749 rows, which is the signature of a pure tie: same size, different price.
+
+**No conclusion in this audit moves.** "Zero graded verdicts affected", the 70-of-447
+exposure count, and LDN-CAN-01's 39 rows all carrying `effect = 0.0` are each independent
+of 687 vs 686.
+
+**Ledger: no new action.** LDN-CAN-01's 39 `dep_*` rows are already marked `status =
+"stale"` under the 2026-08-06 ruling, which covers this change too. The 93 appended
+`[v2 clock+sign]` rows are **not** affected: `scripts/london_obk_flow.py::load_depth`
+computes `bid_wall = bsz.max(1) / median(bsz)` — a ratio of SIZES with no price
+selection — so it never calls `depth_at` and has no tie-break exposure.
+
+**The same defect is live in 14 other call sites**, unfixed and out of scope here:
+
+| file | sites | note |
+|---|---:|---|
+| `src/desk/trade_manager.py` | 2 | **the LIVE desk path** |
+| `scripts/nya_live_desk_run.py` | 3 | live/desk runs |
+| `scripts/capture_desk_run.py` | 1 | |
+| `src/canon/features.py` | 2 | the NY canon's own `depth_at` |
+| `scripts/nya_lvl_depth.py` | 2 | NYA-LVL-01 |
+| `scripts/depth_features.py` | 2 | |
+| `scripts/leak_damage_canon.py` | 2 | |
+| `scripts/depth_walls.py` | 1 | `np.nanargmax`, same class |
+
+`src/desk/trade_manager.py` is the one worth a ruling: a live wall selection that depends
+on frame row order is non-deterministic in the same way, and the fix is the four-line
+patch already applied here.
