@@ -88,7 +88,8 @@ def size_for(policy: dict, locked: bool, cushion: float) -> float:
 
 def run_account(day_r: np.ndarray, seq: np.ndarray, policy: dict,
                 start: int = 0, payout_cap=PAYOUT_CAP,
-                payout_at: float | None = PAYOUT_MIN_BAL) -> dict:
+                payout_at: float | None = PAYOUT_MIN_BAL,
+                n_days: int | None = None) -> dict:
     """One account over one calendar year (shared market sequence `seq`).
     Returns withdrawals by day, fees, and breach days."""
     state = "eval"
@@ -104,7 +105,8 @@ def run_account(day_r: np.ndarray, seq: np.ndarray, policy: dict,
     first_dollar = None
     max_day = 0.0                          # largest single day (eval
     #                                        consistency rule, Flex eval only)
-    for d in range(start, len(seq)):
+    stop = len(seq) if n_days is None else min(start + n_days, len(seq))
+    for d in range(start, stop):
         if state == "graduated":
             break
         size = EVAL_SIZE if state == "eval" else \
@@ -123,8 +125,11 @@ def run_account(day_r: np.ndarray, seq: np.ndarray, policy: dict,
             if state == "eval":
                 fees += RESET_COST
             else:
+                funded_days += 1           # the day the account died counts
                 funded_deaths.append(d)
                 fees += EVAL_COST          # funded is NOT resettable
+                payouts = 0                # a NEW funded account gets its
+                #                            own 5-payout allowance
             state, bal, peak, locked, wins = "eval", 0.0, 0.0, False, 0
             max_day = 0.0
             continue
@@ -148,13 +153,16 @@ def run_account(day_r: np.ndarray, seq: np.ndarray, policy: dict,
             if payout_cap is not None and payouts >= payout_cap:
                 state = "graduated"        # account moves to LucidLive
     if payout_at is None:                  # year-end sweep policy
-        if state == "funded" and bal > 0:
-            n_left = (payout_cap - payouts) if payout_cap is not None else 99
-            take = min(PAYOUT_CAP_PCT * bal, PAYOUT_CAP_ABS * max(n_left, 0))
+        # ONE request is possible at year end: the $2k / 50%-of-profit cap
+        # and the 5-qualifying-day gate both still apply
+        if (state == "funded" and bal > 0 and wins >= QD
+                and (payout_cap is None or payouts < payout_cap)):
+            take = min(PAYOUT_CAP_PCT * bal, PAYOUT_CAP_ABS)
             if take > 0:
-                wd_days.append((len(seq) - 1, take * PAYOUT_SPLIT))
+                wd_days.append((stop - 1, take * PAYOUT_SPLIT))
+                payouts += 1
                 if first_dollar is None:
-                    first_dollar = len(seq) - 1
+                    first_dollar = stop - 1
     return {"wd": wd_days, "fees": fees, "breaches": breaches,
             "funded_deaths": funded_deaths,
             "funded_days": funded_days, "payouts": payouts,
@@ -176,13 +184,15 @@ def summarize(runs: list[dict]) -> dict:
             "funded_days": float(np.mean([r["funded_days"] for r in runs])),
             "p_first_dollar": len(fd) / len(runs),
             "t_first": float(np.median(fd)) if fd else np.nan,
+            "p_grad": float(np.mean([r["end_state"] == "graduated"
+                                     for r in runs])),
             "payouts": float(np.mean([r["payouts"] for r in runs]))}
 
 
 def line(tag: str, s: dict) -> str:
     return (f"{tag:26s} net ${s['net']:8,.0f} (p05 ${s['net_p05']:7,.0f}) | "
             f"fees ${s['fees']:5,.0f} | funded-death/yr {s['deaths']:4.2f} "
-            f"(P>0 {s['p_death']*100:4.1f}%) | funded {s['funded_days']:5.1f}d "
+            f"(P>0 {s['p_death']*100:4.1f}%) | GRAD {s['p_grad']*100:5.1f}% "
             f"| payouts {s['payouts']:4.2f} | t1st "
             f"{s['t_first'] if not np.isnan(s['t_first']) else -1:5.0f}d "
             f"({s['p_first_dollar']*100:4.1f}%)")

@@ -1,41 +1,45 @@
 # FINDINGS — B2 REDUX: pricing the bust (2026-08-07)
 
-Five items on the bust rate. Short answer to the framing question: **your
-discomfort was misplaced for the reason you suspected, and justified for a
-reason neither of us had modelled.** B2's per-account bust rate was the
-wrong statistic — but so was the extraction number it was traded against,
-because three firm rules that govern the whole problem were not in the
-model. Those come first, because everything downstream moves.
+Five items on the bust rate. Short answer: **your discomfort was misplaced
+for exactly the reason you gave, and justified for a reason neither of us
+had modelled.** B2's per-account bust rate was the wrong statistic — but
+so was the extraction figure it was traded against, because three firm
+rules that govern the whole problem were absent from the model.
 
-Method: the B2 grid is replaced by a full LIFECYCLE simulation — eval →
-funded → breach → buy a new eval → ... over a 250-day year — so a bust is
+Method: B2's grid is replaced by a full LIFECYCLE simulation — eval →
+funded → breach → buy a new eval → … over a 250-day year — so a bust is
 paid for in fees AND in the funded days it costs, by construction rather
 than by arithmetic afterwards. Day-block bootstrap, whole days resampled
 with intraday order preserved, 2,000 draws, seed 20260807. Book: A+S1
 (first-of-fight reject, flow-agreeing), 832 fights / 275 days, +0.257R.
 Scripts: `scripts/htf_ma_account_lab.py`, `scripts/htf_ma_portfolio_lab.py`.
 
+**Provenance note.** The simulator was put through a five-lens adversarial
+code review before these numbers were accepted. Thirteen candidate defects
+were raised, five confirmed, eight refuted. All five confirmed defects
+were fixed and everything below is post-fix — see "Defects found and
+fixed" at the end. The largest of them reversed a conclusion.
+
 ---
 
 ## 0. THREE VERIFIED RULE FINDINGS THAT RESHAPE THE PROBLEM
 
-All three fetched live from Lucid's own Help Center on 2026-08-07 and
-marked VERIFIED-CURRENT. Sources in the appendix.
+Fetched live from Lucid's own Help Center on 2026-08-07, VERIFIED-CURRENT.
 
 **0a. The 33-account plan is not permitted.** Max **10 accounts total**
-(evaluation + funded combined) and max **5 funded**, *per household or
-family* — not per login. One profile per trader, permanent, and profiles
+(evaluation + funded combined), max **5 funded**, *per household or
+family* — not per login. One profile per trader, permanent; profiles
 "cannot be converted, deactivated, or replaced to create a new profile,"
-which closes the register-a-business workaround explicitly. 33 exceeds the
-cap by more than 3×. **This is a hard input to every number in item 4 and
-it needs resolving before any capital plan is built on the fleet.**
+which closes the register-a-business route explicitly. 33 exceeds the cap
+by more than 3×. **This is a hard input to item 4 and needs resolving
+before any capital plan rests on the fleet.**
 
-**0b. There are at most 5 payouts per funded account, then the account
-moves to LucidLive.** The sim-funded stage is not an income stream — it is
-a *qualification ladder* with a hard ceiling. Combined with "max request =
-50% of profit, capped at $2,000" and the 90/10 split, one 50K Flex account
-can return at most ~$9,000 net in its sim-funded life, ever. B2's implicit
-"withdraw forever" assumption inflated annual extraction by roughly 3×.
+**0b. At most 5 payouts per funded account, then the account moves to
+LucidLive.** The sim-funded stage is not an income stream — it is a
+*qualification ladder* with a hard ceiling. With "max request = 50% of
+profit, capped at $2,000" and the 90/10 split, one 50K Flex account
+returns at most ~$9,000 net in its entire sim-funded life. B2's implicit
+withdraw-forever assumption inflated annual extraction ~3×.
 
 **0c. A funded breach kills the account; only evaluations are
 resettable.** B2 modelled a bust as a cheap reset. It is not: a funded
@@ -43,210 +47,255 @@ breach destroys the account and you re-enter at the evaluation stage on a
 newly purchased eval.
 
 A fourth rule was found and modelled: the Flex **evaluation** carries a
-**50% consistency requirement** (largest single day ≤ 50% of account
-profit, measured at the moment of pass; funded Flex has none). Tested
-directly — at the recommended $150 eval size it is **non-binding**: net
-$8,689 → $8,683 and account-death 24.6% → 25.2% with the rule on. It only
-starts to bite at eval sizes large enough for one day to be half the
-$3,000 target, which is a reason not to size the eval up.
+**50% consistency requirement** (largest single day ≤ 50% of profit at the
+moment of pass; funded Flex has none). Tested directly — at the
+recommended $150 eval size it is **non-binding**: net $8,785 either way,
+graduation 97.1% → 97.0%. It only bites at eval sizes where one day can be
+half the $3,000 target, which is a further reason not to size the eval up.
+
+**Consequence of 0b: the right objective function is not annual dollars.**
+Under the cap, nearly every policy extracts ~$8,700/account/year, so
+extraction cannot discriminate. What varies is **P(graduate to LucidLive
+within the year)** and the risk taken to get there. Every table below
+reports GRAD alongside the dollars, and it is the column that matters.
 
 ---
 
 ## 1. PRICE THE BUST INSTEAD OF MINIMISING IT
 
 **Your arithmetic was right, and the world it applies to has been ruled
-out.** Two worlds, same book, same policies:
+out.**
 
 *Counterfactual (payouts uncapped — what B2 implicitly assumed):*
 
-| policy | net/yr | funded-death P(≥1) | fees/yr |
+| policy | net/yr | p05 | funded-death P(≥1) |
 |---|---|---|---|
-| 150→150 wd@$6k | $18,461 | 11.9% | $159 |
-| 150→300 wd@$6k | **$28,280** | 27.9% | $190 |
-| 150→600 wd@$6k | $29,879 | 45.4% | $250 |
+| 150→150 wd@$6k | $18,461 | $8,865 | 11.9% |
+| 150→300 wd@$6k | **$28,280** | $12,210 | 27.9% |
+| 150→600 wd@$6k | $29,879 | $6,748 | 45.4% |
 
 Here your instinct is exactly correct: (150→300) beats (150→150) by
-~$9,800/yr, and the extra death risk costs ~$30/yr in fees plus some
-downtime. Priced rather than counted, the higher-size option wins by a
-wide margin — the discomfort *was* misplaced.
+~$9,800/yr while the extra death risk costs ~$30/yr in fees plus some
+downtime. Priced rather than counted, the bigger size wins by a wide
+margin — **the discomfort was misplaced.**
 
-*The verified world (5-payout cap):*
+*The verified world (5-payout cap), fit book:*
 
-| policy | net/yr | p05 | funded-death P(≥1) | funded days |
+| policy | net/yr | p05 | funded-death P(≥1) | **GRAD** |
 |---|---|---|---|---|
-| 150→150 wd@$6k | $8,695 | $8,645 | **11.8%** | 123.0 |
-| 150→300 wd@$6k | $8,683 | $8,610 | 25.2% | 86.9 |
-| 150→300 wd@$4k | $8,646 | $8,515 | 35.9% | 79.5 |
-| 150→600 wd@$4k | $8,380 | $4,785 | 50.3% | 74.0 |
+| 150→150 wd@$6k | $8,695 | $8,645 | **11.8%** | 96.4% |
+| 150→300 wd@$4k | $9,226 | $8,550 | 35.9% | 94.0% |
+| 150→300 wd@$6k | $8,785 | $8,610 | 25.2% | 97.0% |
+| 150→300 wd@$8k | $8,701 | $8,610 | 22.2% | **97.5%** |
+| 150→600 wd@$4k | $9,026 | $4,785 | 50.3% | 90.8% |
+| 150→600 wd@$6k | $8,746 | $6,748 | 44.0% | 93.6% |
+| 150→150 wd@yr-end | $1,639 | $1,540 | 11.6% | **0.0%** |
 
-The cap flattens extraction to ~$8,700 for *every* policy — nearly all of
-them reach 4.9 of 5 payouts inside a year. So the compensation that
-justified the extra risk disappears: **you are buying 2–4× the account-
-death probability for about $0.** In the world that actually exists, the
-answer inverts and small is unambiguously correct.
+The cap compresses extraction into an $8,583–$9,226 band for every in-year
+policy — a 7% spread against death rates spanning 11.8%–50.3%. **The
+compensation that justified the extra risk is gone: at 150→600 you buy 4×
+the account-death probability for ~$300.** In the world that exists, the
+answer inverts and small is correct.
 
-Why the bust is nearly free in dollars but not in outcome: annual fees run
-$155–$273 (one or two resets), which is noise against $8,700. The real
-cost is *time* — a dead funded account sends you back to the eval queue,
-and what you are actually racing for is the 5th payout and the move to
-LucidLive. Under the cap, minimising death probability at equal net is the
-whole optimisation.
+Two secondary results worth keeping. **Year-end sweeping is catastrophic,
+not conservative** ($1,639, GRAD 0.0%): deferring extraction means the
+qualifying-day gate and the $2,000 per-request cap let you take exactly
+one payout, so you never reach the fifth and never graduate. And **the
+dollar cost of a bust really is trivial** — fees run $155–$275/yr, noise
+against $8,700. The bust's true price is *time*: a dead funded account
+sends you back to the eval queue, and what you are racing is the 250-day
+clock to the fifth payout.
 
-## 2. THE WITHDRAWAL POLICY — CONFIRMED, AND IT IS FREE
+## 2. THE WITHDRAWAL POLICY — CONFIRMED, AND IT IS THE CHEAPEST LEVER
 
-Your mechanism is correct and it is the cheapest lever on the board. Post-
-lock the floor is frozen at start, so cushion *is* the distance to ruin,
-and every payout resets it to the minimum. Holding for more cushion before
-withdrawing:
-
-| policy | net/yr | funded-death P(≥1) |
-|---|---|---|
-| 150→300 **wd@$4k** | $8,646 | 35.9% |
-| 150→300 **wd@$6k** | $8,683 | 25.2% |
-| 150→300 **wd@$8k** | $8,680 | 22.2% |
-| 150→150 wd@$4k | $8,715 | 18.3% |
-| 150→150 **wd@$6k** | $8,695 | 11.8% |
-| 150→150 wd@$8k | $8,583 | 11.6% |
-
-Your "~13R" figure is exactly right, and it is the whole mechanism. Since
-the request is capped at min(50% of profit, $2,000), the post-payout
-cushion is:
+Your mechanism is exactly right and the arithmetic confirms your "~13R"
+figure. Post-lock the floor is frozen at start, so cushion *is* distance
+to ruin; since a request is capped at min(50% of profit, $2,000):
 
 | withdraw at | post-payout cushion | cushion in R at $150 |
 |---|---|---|
-| $4,000 | $2,000 | **13R** — your number |
+| $4,000 | $2,000 | **13R** — your number, exactly |
 | $6,000 | $4,000 | 27R |
 | $8,000 | $6,000 | 40R |
 
-Raising the threshold from $4k to $6k doubles the post-payout cushion and
-cuts account-death probability by **11–14 percentage points for ≤$40/yr**. Beyond $6k the gain flattens and
-time-to-first-dollar keeps rising (60d → 76d → 93d), so **$6k is the knee
-and the declared recommendation**. Year-end sweeping is strictly worse
-under the cap: it forgoes payouts entirely (0.00 taken) while carrying the
-same risk. Your "12 cycles a year at ~2% each" intuition was structurally
-right; the cap means it is ~5 cycles, not 12, which is why the observed
-per-cycle cost matters *more* per cycle, not less.
+Effect on 150→300:
 
-## 3. CUSHION-PROPORTIONAL SIZING — THE FRESH HYPOTHESIS EARNS ITS TEST
+| threshold | net/yr | funded-death P(≥1) | GRAD |
+|---|---|---|---|
+| wd@$4k | $9,226 | 35.9% | 94.0% |
+| wd@$6k | $8,785 | 25.2% | 97.0% |
+| wd@$8k | $8,701 | 22.2% | **97.5%** |
+
+**It is not quite a free lunch on raw dollars — it is better than one on
+the objective that matters.** wd@$4k does earn ~$440 more per year (a
+replacement funded account gets a fresh 5-payout allowance, so dying
+faster buys extra payout cycles inside a 250-day window — a real but
+perverse effect). But it graduates *less often* (94.0% vs 97.5%) while
+carrying 14pp more death risk. Since graduation to LucidLive is worth far
+more than $440, **wd@$6k–$8k dominates; $6k is the knee** (beyond it,
+time-to-first-dollar keeps climbing: 54d → 63d → 71d). Your "12 cycles a
+year at ~2% each" reasoning was structurally right; the cap makes it ~5
+cycles, which raises the cost of each one rather than lowering it.
+
+## 3. CUSHION-PROPORTIONAL SIZING — THE FRESH HYPOTHESIS WINS
 
 Declared as a new hypothesis, not inheriting the old buffer-scaled
-verdict: this is a different book with a measured edge. `size = clip(k ×
-cushion, s_min, s_max)` post-lock, flat $150 pre-lock.
+verdict. `size = clip(k × cushion, s_min, s_max)` post-lock, flat $150
+pre-lock.
 
-*Capped (verified) world:*
+*Capped (verified) world, wd@$6k:*
 
-| policy | net/yr | funded-death P(≥1) |
-|---|---|---|
-| **k=0.05 [75,300] wd@$6k** | **$8,718** | **9.4%** |
-| k=0.05 [150,300] wd@$6k | $8,740 | 12.1% |
-| k=0.10 [75,600] wd@$6k | $8,719 | 12.6% |
-| k=0.15 [150,600] wd@$6k | $8,631 | 28.1% |
-| flat 150→150 wd@$6k | $8,695 | 11.8% |
-| flat 150→300 wd@$6k | $8,683 | 25.2% |
+| policy | net/yr | p05 | funded-death P(≥1) | **GRAD** |
+|---|---|---|---|---|
+| **k=0.05 [150,300]** | $8,745 | **$8,737** | 12.1% | **97.9%** |
+| k=0.05 [75,300] | $8,718 | $8,680 | **9.4%** | 96.9% |
+| k=0.10 [75,600] | $8,737 | $8,680 | 12.6% | 97.5% |
+| k=0.15 [150,600] | $8,826 | $8,585 | 28.1% | 95.7% |
+| flat 150→150 | $8,695 | $8,645 | 11.8% | 96.4% |
+| flat 150→300 | $8,785 | $8,610 | 25.2% | 97.0% |
 
-*Uncapped counterfactual — where the money can actually move:*
+*Uncapped counterfactual — where dollars can still move:*
 
 | policy | net/yr | p05 | funded-death P(≥1) |
 |---|---|---|---|
-| **k=0.10 [75,600] wd@$6k** | **$30,251** | $12,470 | **12.7%** |
-| k=0.15 [150,600] wd@$6k | $30,589 | $10,410 | 28.7% |
-| flat 150→600 wd@$6k | $29,879 | $6,748 | 45.4% |
-| flat 150→300 wd@$6k | $28,280 | $12,210 | 27.9% |
+| **k=0.10 [75,600]** | **$30,251** | **$12,470** | **12.7%** |
+| k=0.15 [150,600] | $30,589 | $10,410 | 28.7% |
+| flat 150→600 | $29,879 | $6,748 | 45.4% |
+| flat 150→300 | $28,280 | $12,210 | 27.9% |
 
 **VERDICT: cushion-proportional sizing dominates flat two-phase sizing on
-both axes simultaneously.** In the uncapped world k=0.10 [75,600] earns
-statistically the same money as flat 150→600 ($30.3k vs $29.9k) at **less
-than a third of the account-death rate** (12.7% vs 45.4%), and nearly
-doubles the 5th-percentile year ($12,470 vs $6,748). In the capped world
-k=0.05 [75,300] is the lowest-risk policy tested at the best net. The
-mechanism is obvious in hindsight: flat post-lock sizing bets the same
+every axis at once.** In the capped world k=0.05 [150,300] posts the best
+graduation rate tested (97.9%), the best 5th-percentile year ($8,737), and
+half the death rate of the flat policy it beats. In the uncapped world
+k=0.10 [75,600] earns flat-150→600 money ($30.3k vs $29.9k) at **less than
+a third of the death rate** (12.7% vs 45.4%) and nearly double the p05.
+The mechanism is obvious in hindsight: flat post-lock sizing bets the same
 dollars whether you are $6,000 or $400 above a frozen floor.
 
-This is a fit-book result and it inherits every in-sample caveat in item 5,
-but the *ordering* is robust across the haircut grid.
+**Recommended: cushion k=0.05, bounds [150,300], withdraw at $6k.** Note
+the floor matters — dropping s_min to $75 lowers death further (9.4%) but
+*costs* graduation (96.9%), because a shrunken size cannot reach the fifth
+payout inside the year. The bounded version is the better trade.
 
 ## 4. THE PORTFOLIO PROBLEM — THE NUMBER THAT DECIDES IT
 
 **Your framing is correct and the simulation makes it stark.** N accounts
-on identical signals at identical starts are not N risks — they are
-literally one account multiplied. The proof is in the output: for every
-simultaneous configuration, P(≥50% of accounts die in one month) and P(ALL
-die in one month) are *the same number* (24.2% / 24.2%). There is no
-diversification at all, at any N.
+on identical signals with identical starts are not N risks — they are one
+account multiplied. The proof is in the output: for every simultaneous
+configuration, P(≥50% of accounts die in one month) and P(ALL die in one
+month) are *the same number* (22.2% / 22.2%). There is no diversification
+at any N. (Confirmed independently: two accounts on the same sequence
+return bit-identical results.)
 
-What the per-account rate would have implied, versus the truth (N=33,
-uncapped, 150→300 wd@$6k):
+What the per-account rate would imply versus the truth (N=33, uncapped,
+150→300 wd@$6k):
 
 | | mean net | p05 net | monthly CV | zero-cashflow months | P(≥50% die in one month) |
 |---|---|---|---|---|---|
-| 33 **independent** streams | $927,311 | $850,884 | 0.63 | 7.6% | **0.0%** |
-| 33 **shared** stream (reality) | $946,639 | $463,213 | 0.83 | 29.7% | **26.2%** |
+| 33 **independent** streams | $927,019 | $839,014 | 0.48 | 7.0% | **0.0%** |
+| 33 **shared** stream (reality) | $950,930 | $466,463 | 0.74 | 27.7% | **23.2%** |
 
 Identical means, completely different businesses. The independent framing
 says a mass simultaneous wipeout is essentially impossible; the correlated
-truth puts it at better than one year in four, and halves the bad-year
-5th percentile.
+truth puts it at nearly one year in four, halves the bad-year 5th
+percentile, and quadruples the frequency of months that pay nothing.
 
-**Staggering works, and it is the cheapest risk reduction available.**
-N=5 (the compliant fleet), capped, 150→300 wd@$6k:
+**Staggering works, and after correcting a modelling error it is free.**
+(The first version truncated staggered accounts' horizons instead of
+shifting them, so they traded up to 24% fewer days — the entire apparent
+cost of staggering was that artifact. Corrected: every account trades a
+full 250 days on a longer shared calendar.)
+
+N=5 — the compliant fleet — capped, wd@$6k:
 
 | configuration | net/yr | P(≥50% die/mo) | P(all die/mo) | zero-cashflow months |
 |---|---|---|---|---|
-| simultaneous | $43,749 | 24.2% | 24.2% | 71.8% |
-| staggered 60d | $43,216 | 13.0% | **3.0%** | 48.3% |
-| cushion k=.05 simultaneous | $43,788 | 10.0% | 10.0% | 70.0% |
-| **cushion k=.05 staggered 60d** | $43,014 | **4.0%** | **0.8%** | 48.2% |
+| flat 150→300 simultaneous | $44,098 | 22.2% | 22.2% | 73.9% |
+| flat 150→300 staggered 60d | $44,189 | 12.8% | 2.2% | 60.5% |
+| cushion k=.05 simultaneous | $43,869 | 8.8% | 8.8% | 73.0% |
+| **cushion k=.05 staggered 60d** | $43,910 | **2.8%** | **0.2%** | 61.3% |
 
-Your reasoning was right — breach risk concentrates pre-lock, so
-de-synchronising the pre-lock windows de-synchronises the deaths. Combining
-staggering with cushion sizing cuts the total-wipeout probability from
-24.2% to 0.8% — a **30× reduction for 1.7% of net**. Staggering also nearly
-halves zero-cashflow months, which is the monthly-income problem in its own
-right. (The small net cost is a one-time onboarding effect: staggered
-accounts trade fewer days in year one, not fewer days per year thereafter.)
+At N=33 uncapped the same pattern is larger: staggering moves net
+$950,930 → $954,523 (**up**, not down), p05 $466,463 → $559,650, and P(all
+die in one month) 23.2% → **1.0%**. Your reasoning was right — breach risk
+concentrates pre-lock, so de-synchronising the pre-lock windows
+de-synchronises the deaths. **Combining staggering with cushion sizing
+cuts total-wipeout probability by ~100× at no cost in expected dollars and
+a better tail.** Staggering also cuts zero-cashflow months by a third,
+which is the monthly-income problem in its own right.
 
 **On $100k/month: not reachable from Lucid sim-funded accounts, by rule
 rather than by performance.** A compliant 5-account fleet under the
-verified 5-payout cap returns ~$43.7k/yr ≈ **$3.6k/month**. Even the
-non-compliant 33-account fleet caps at ~$289k/yr ≈ $24k/month. The
-$100k/month target has to come from LucidLive (real-money, post-
-graduation) or from a different firm structure entirely — and the sim
-stage's only job is to get accounts through to that with minimum
-mortality. That reframes the fleet's objective from *extraction* to
-*graduation throughput*.
+verified payout cap returns ~$44k/yr ≈ **$3.7k/month**. Even the
+non-compliant 33-account fleet caps at ~$291k/yr ≈ $24k/month. The
+$100k/month target must come from LucidLive (real-money, post-graduation)
+or a different firm structure — and the sim stage's only job is to deliver
+accounts there with minimum mortality. That reframes the fleet objective
+from *extraction* to **graduation throughput**, which is what item 3's
+recommended policy maximises.
 
 ## 5. HAIRCUT SENSITIVITY — THE HONEST CAVEAT, QUANTIFIED
 
-Every number above is in-sample twice over (the book is fit-period, and S1
-was selected on it). Haircut construction, declared: a constant is
-subtracted from every fight's R so the mean falls 20% / 40% while the
-dispersion is preserved — the conservative form (scaling both mean and
-volatility would flatter the drawdown).
+Every number above is in-sample twice (fit-period book; S1 selected on
+it). Haircut construction, declared: a constant is subtracted from every
+fight's R so the mean falls 20% / 40% with dispersion preserved — the
+conservative form (scaling both would flatter the drawdown). Verified: the
+haircut lands at exactly 0.800 and 0.600 of the fit mean with sd unchanged
+(2.796 → 2.797 → 2.800).
 
-| policy | frame | net/yr | p05 net | funded-death P(≥1) |
-|---|---|---|---|---|
-| 150→150 wd@$6k | fit | $8,695 | $8,645 | 11.8% |
-| | −20% | $8,060 | $3,245 | 21.2% |
-| | −40% | $6,281 | **−$510** | 37.1% |
-| 150→300 wd@$6k | fit | $8,683 | $8,610 | 25.2% |
-| | −20% | $8,169 | $3,113 | 39.9% |
-| | −40% | $6,657 | **−$650** | 57.5% |
-| 150→300 wd@$4k | −40% | $6,642 | −$615 | 67.7% |
+| policy | frame | net/yr | p05 net | funded-death P(≥1) | GRAD |
+|---|---|---|---|---|---|
+| 150→150 wd@$6k | fit | $8,695 | $8,645 | 11.8% | 96.4% |
+| | −20% | $8,062 | $3,245 | 21.2% | 81.8% |
+| | −40% | $6,285 | **−$510** | 37.1% | **51.5%** |
+| 150→300 wd@$6k | fit | $8,785 | $8,610 | 25.2% | 97.0% |
+| | −20% | $8,317 | $3,113 | 39.9% | 87.1% |
+| | −40% | $6,789 | **−$650** | 57.5% | 64.8% |
+| 150→300 wd@$4k | −40% | $7,050 | −$615 | 67.7% | 56.1% |
 
-**The haircut hits risk about three times harder than it hits return.** A
-20% EV cut costs ~7% of net but nearly doubles account-death probability;
-a 40% cut costs ~25% of net and roughly triples death, taking the
-5th-percentile year *negative* (you pay more in eval fees than you
-withdraw). Portfolio-level at −20%, N=33 shared: P(all die in one month)
-rises 26.2% → 43.5% and the p05 year falls to $160,100.
+**The haircut hits risk roughly three times harder than it hits return.** A
+20% EV cut costs ~7% of net but nearly doubles death probability; a 40%
+cut costs ~25% of net, roughly triples death, and takes the
+5th-percentile year *negative* — you pay more in eval fees than you
+withdraw. Portfolio-level at −20%, N=33 shared: P(all die in one month)
+rises 23.2% → 42.5%.
 
-**Sizing against a haircut edge is the right instinct and it changes the
-answer**: at −40%, flat 150→300 dies in 57.5% of years. Cushion sizing at
-k=0.05 degrades most gracefully of everything tested. If you want one
-sizing rule that survives being wrong about the edge, it is
-cushion-proportional with a low k and a hard floor.
+One honest tension the haircut exposes: under a degraded edge, *larger*
+sizes graduate more often (64.8% vs 51.5% at −40%) because they race the
+250-day clock better, even while dying far more. So "small is safe" is
+conditional on the edge being real; if the edge is badly overstated,
+nothing in the sizing grid rescues the year. **Sizing against a haircut
+edge is the right instinct, and cushion-proportional with a floor degrades
+most gracefully of everything tested.**
 
 ---
+
+## Defects found and fixed (adversarial review, 2026-08-07)
+
+Five confirmed of thirteen raised. All fixed before the numbers above:
+
+1. **Year-end sweep bypassed all three payout constraints** (no
+   qualifying-day gate, no $2,000 per-request cap, never incremented the
+   payout counter) — paid up to $10,000 in one day. **This inverted a
+   conclusion**: wd@yr-end appeared competitive at ~$8,500 and is actually
+   the worst policy in the grid at $1,639 with 0% graduation.
+2. **The payout counter was not reset on a funded death**, so a
+   replacement account inherited the dead one's consumed allowance and
+   graduated prematurely.
+3. **Staggering truncated horizons instead of shifting them** — staggered
+   accounts traded up to 24% fewer days, making the entire reported cost
+   of staggering an exposure artifact. Corrected, staggering is free.
+4. **Month buckets** — 250 // 21 = 11 buckets left the last "month"
+   spanning 40 days, inflating monthly cashflow statistics.
+5. **Correlated-blowup metric counted breach events, not distinct
+   accounts**, so the ≥50% threshold could trip on fewer accounts than
+   claimed; and eval resets were counted as account deaths.
+
+One acknowledged asymmetry, not fixed: in-year policies leave residual
+terminal equity uncredited while the year-end sweep is credited for one
+final payout. Capping the sweep to the stated rules is the literal
+reading; a fully consistent treatment would credit terminal equity across
+all policies. It does not change any ranking here.
 
 ## What must be personally verified before any of this is acted on
 
@@ -254,34 +303,33 @@ Ranked by how much of the model they move:
 
 1. **The account cap** — 10 total / 5 funded per household is
    VERIFIED-CURRENT on Lucid's own page. The 33-account plan needs
-   resolving first; items 4's compliant numbers assume N=5.
-2. **The 5-payout cap and the 50%-of-profit / $2,000 withdrawal cap** —
-   VERIFIED-CURRENT, and they set the ~$8,700/account/year ceiling that
-   makes small sizing free. If your account tier differs, re-run.
+   resolving first; item 4's compliant numbers assume N=5.
+2. **The 5-payout cap and the 50%-of-profit / $2,000 request cap** —
+   VERIFIED-CURRENT; they set the ~$8,700/account/year ceiling that makes
+   small sizing free and make graduation the objective.
 3. **Whether the $2,000 cap is gross or net of the 90/10 split** — not
    resolved; modelled as trader-receives-90%-of-request. Moves every
-   dollar figure by ~10%.
-4. **Flex reset price** ($95 on a single secondary source; Lucid's pricing
-   page is Cloudflare-blocked to automated fetches). Low impact — fees are
-   noise at this cap — but check the dashboard.
+   dollar figure ~10%.
+4. **Flex reset price** ($95, single secondary source; Lucid's pricing
+   page is Cloudflare-blocked to automated fetches). Low impact.
 5. **Whether a copier fanning one signal into many accounts trips the
    automated HFT detector.** Lucid runs automated HFT detection and cites
    "hundreds of orders within minutes" as the profile; a fan-out
-   architecture produces exactly that order count. Not found in
-   documentation either way. **This is the single largest silent risk to
-   the fleet architecture — get it in writing.**
+   architecture produces exactly that order count. Not documented either
+   way. **The single largest silent risk to the fleet architecture — get
+   it in writing.**
 6. **Any lifetime cap on resets per account** — genuinely absent from all
    official documentation; ask support in writing.
 7. **The inactivity rule** — an account with <$1 net P&L movement in 30
    calendar days is deemed abandoned and permanently deleted. This bites
    reserve accounts and any staggered account left idle before its start
-   date; staggering must be implemented as *delayed funding*, not idle
-   funded accounts.
+   date: **staggering must be implemented as delayed funding, not as idle
+   funded accounts.**
 
-Two corrections to the local compliance reference were also confirmed:
-Flex now has a DLL as a purchase-time option (not "no DLL at any stage"),
-and the Flex *evaluation* does carry a 50% consistency rule (the "no
-consistency" claim holds only for funded).
+Two corrections to the local compliance reference were confirmed: Flex now
+has a DLL as a purchase-time option (not "no DLL at any stage"), and the
+Flex *evaluation* does carry a 50% consistency rule (the "no consistency"
+claim holds only for funded).
 
 ## Unchanged by this round
 

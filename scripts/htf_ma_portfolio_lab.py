@@ -39,28 +39,34 @@ MONTH = 21                      # trading days per month bucket
 
 def portfolio(day_r, seqs, n_acct: int, policy: dict, stagger: int,
               payout_cap, payout_at) -> dict:
-    rng = np.random.default_rng(SEED + 7)
+    """EQUAL EXPOSURE (fix, 2026-08-07): every account trades exactly YEAR
+    days. Staggering SHIFTS the window along a longer shared calendar; it
+    does not truncate it. The earlier version gave staggered accounts up
+    to 24% fewer trading days, so their whole net penalty was an exposure
+    artifact rather than a cost of staggering."""
     offs = (np.linspace(0, stagger, n_acct).astype(int) if stagger
             else np.zeros(n_acct, dtype=int))
-    n_month = YEAR // MONTH
+    cal = YEAR + stagger                      # shared calendar length
+    n_month = int(np.ceil(cal / MONTH))
     p_half, p_all, zero_m = [], [], []
     m_flow_all, ann_net = [], []
     for seq in seqs:
-        month_breach = np.zeros(n_month)
+        # distinct ACCOUNTS dying per month (not breach events)
+        month_dead = [set() for _ in range(n_month)]
         month_flow = np.zeros(n_month)
         net = 0.0
         for i in range(n_acct):
             r = run_account(day_r, seq, policy, start=int(offs[i]),
-                            payout_cap=payout_cap, payout_at=payout_at)
+                            payout_cap=payout_cap, payout_at=payout_at,
+                            n_days=YEAR)
             net += sum(w for _, w in r["wd"]) - r["fees"]
             for d in r["funded_deaths"]:   # account DEATHS, not eval resets
-                mi = min(d // MONTH, n_month - 1)
-                month_breach[mi] += 1
+                month_dead[min(d // MONTH, n_month - 1)].add(i)
             for d, w in r["wd"]:
-                mi = min(d // MONTH, n_month - 1)
-                month_flow[mi] += w
-        p_half.append(float((month_breach >= 0.5 * n_acct).any()))
-        p_all.append(float((month_breach >= n_acct).any()))
+                month_flow[min(d // MONTH, n_month - 1)] += w
+        counts = np.array([len(s) for s in month_dead])
+        p_half.append(float((counts >= 0.5 * n_acct).any()))
+        p_all.append(float((counts >= n_acct).any()))
         zero_m.append(float((month_flow == 0).mean()))
         m_flow_all.append(month_flow)
         ann_net.append(net)
@@ -89,7 +95,10 @@ def main() -> None:
     rng = np.random.default_rng(SEED)
     base = load_days()
     hair20 = load_days(0.2 * 0.257)
-    seqs = [rng.integers(0, len(base), YEAR) for _ in range(draws)]
+    MAXSTAG = 60
+    # the shared calendar must be long enough that a staggered account
+    # still gets its full YEAR of trading days (equal-exposure fix)
+    seqs = [rng.integers(0, len(base), YEAR + MAXSTAG) for _ in range(draws)]
     POL = {"s_pre": 150., "s_post": 300.}
     CUSH = {"s_pre": 150., "mode": "cushion", "k": 0.05,
             "s_min": 75., "s_max": 300.}
@@ -118,24 +127,25 @@ def main() -> None:
 
     print("== correlation check: N=33 INDEPENDENT streams (what the "
           "per-account rate would imply) vs shared ==")
-    ind_seqs = [rng.integers(0, len(base), YEAR) for _ in range(draws)]
     s_shared = portfolio(base, seqs, 33, POL, 0, None, 6000.)
     # independent: give each account its own sequence within a draw
     p_half, mflow, ann = [], [], []
-    n_month = YEAR // MONTH
+    n_month = int(np.ceil(YEAR / MONTH))
     for k in range(draws):
-        month_breach = np.zeros(n_month)
+        month_dead = [set() for _ in range(n_month)]
         month_flow = np.zeros(n_month)
         net = 0.0
         for i in range(33):
             seq = rng.integers(0, len(base), YEAR)
-            r = run_account(base, seq, POL, payout_cap=None, payout_at=6000.)
+            r = run_account(base, seq, POL, payout_cap=None,
+                            payout_at=6000., n_days=YEAR)
             net += sum(w for _, w in r["wd"]) - r["fees"]
             for d in r["funded_deaths"]:
-                month_breach[min(d // MONTH, n_month - 1)] += 1
+                month_dead[min(d // MONTH, n_month - 1)].add(i)
             for d, w in r["wd"]:
                 month_flow[min(d // MONTH, n_month - 1)] += w
-        p_half.append(float((month_breach >= 16.5).any()))
+        p_half.append(float((np.array([len(x) for x in month_dead])
+                             >= 16.5).any()))
         mflow.append(month_flow)
         ann.append(net)
     mf = np.concatenate(mflow)
