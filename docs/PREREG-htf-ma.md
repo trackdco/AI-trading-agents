@@ -815,3 +815,35 @@ All sessions: 927 / 824 episodes over 152 / 139 days = 6.1 / 5.9 per day
 episodes = 1.8 / 1.7 per day (median 2, max 5-6), window zero-days 24/152
 and 15/139; window arm split 356/171 and 312/135 (reject/break events).
 Selected book (cnt_ahead<=2): ~2.2/day all-session, ~0.6/day in window.
+
+## M-TABLE — the master completeness table (ANGUS 2026-08-08, declared)
+
+L0-style completeness: EVERY trigger of BOTH mechanisms, no selection, no
+caps (the n_attempts<=4 cap is REMOVED and recorded), no gates. Full
+2023-2026 span; pre-2025 rows written to output/sealed/ as before, never
+read. Columns: keys (sess_day, t, arm, side, n_attempts, cluster_id,
+session, era, in_censusB_pop flag), geometry (entry, stop, risk, w15, ma_px,
+trigger extremes, next level + distance, ceiling_tf, struct target), the
+level-set snapshot, outcomes (M2: shipped P75_3.0_trail, trail_only, hold,
+B1 target, struct-partial + MFE_R; M1: the touch/stop battery), and TWELVE
+flow features.
+
+**Flow law (the canon's killer, asserted not assumed):** every flow feature
+is computed as-of the DECISION BAR's close with entry at the NEXT open; a
+G1-style perturbation gate (all tape and bar rows after the decision bar
+multiplied/shifted; features must be bit-identical on probe events) runs and
+must PASS before the main pass writes a single row.
+
+**January wiring:** fp_minutes has a 2026-01 hole (60 minutes vs ~27k);
+data/reference/cvd/footprint_jan2026.parquet is the recovered file. The
+full-tape builder aggregates the cvd price-level files to per-minute
+b/a/vol/delta/vwp, VERIFIES the aggregation convention byte-wise against
+fp_minutes on an overlapping month (2026-02) before filling, then fills
+2026-01 and the six sealed-month footprints (flow on sealed rows is
+written-unread like everything else).
+
+**Continuity clause:** fit-era M2 rows must reproduce Census B's event set
+as an identifiable subset (same keys, in_censusB_pop=True, count-asserted in
+the build). If the assert fails, the base-rate library gets re-stated
+against the new population before any cut study runs — measured cuts against
+nulls from a different book are forbidden.
