@@ -114,6 +114,16 @@ def l2_cfg(day: str, entry: str = "EC"):
             "walkout_under_floor": False})})
 
 
+def _init_pool(prior_profile: bool) -> None:
+    """Per-worker setup. The engine's `default_target_resolver` calls `build_snapshot`, which
+    reads `_include_prior_profile()` from its own module globals — so patching `snapshot` is
+    what puts yesterday's POC/VAH/VAL into the TARGET MENU. Applied per worker so it holds
+    under a spawn start method as well as fork."""
+    if prior_profile:
+        import src.engine.snapshot as _snap
+        _snap._include_prior_profile = lambda: True
+
+
 def day_outcomes(args) -> list[dict]:
     day, recs, lookback, entry = args
     global _BARS
@@ -154,17 +164,19 @@ def day_outcomes(args) -> list[dict]:
 
 
 def run(trigs: pd.DataFrame, procs: int, lookback: int = LOOKBACK_DAYS,
-        quiet: bool = False, entry: str = "EC") -> pd.DataFrame:
+        quiet: bool = False, entry: str = "EC",
+        prior_profile: bool = False) -> pd.DataFrame:
     ts = pd.to_datetime(trigs.ts, format="mixed", utc=True).dt.tz_convert(NY)
     trigs = trigs.assign(_d=ts.dt.strftime("%Y-%m-%d"))
     jobs = [(day, g.drop(columns=["_d"]).to_dict("records"), lookback, entry)
             for day, g in trigs.groupby("_d", sort=True)]
     rows, done = [], 0
     if procs <= 1:
+        _init_pool(prior_profile)
         for j in jobs:
             rows.extend(day_outcomes(j))
     else:
-        with Pool(procs) as p:
+        with Pool(procs, initializer=_init_pool, initargs=(prior_profile,)) as p:
             for day_rows in p.imap(day_outcomes, jobs):
                 rows.extend(day_rows)
                 done += 1
@@ -213,7 +225,20 @@ def main() -> int:
     ap.add_argument("--arm", default="",
                     help="census arm suffix, e.g. `_pp` for the prior-session-profile L0. "
                          "Selects that arm's L0 and L1 and suffixes the output.")
+    ap.add_argument("--prior-profile", action="store_true",
+                    help="put yesterday's POC/VAH/VAL in the engine's TARGET MENU. Separate "
+                         "from --arm, which only selects the census: the census answers "
+                         "'do these levels make trades', the menu answers 'are they worth "
+                         "targeting'. An arm wants both.")
     a = ap.parse_args()
+    # Guard. Running the _pp census against the BASELINE target menu tests half the change
+    # and reads as a null result -- which is exactly what happened on the first attempt:
+    # the book came back with zero prior_profile_* targets and a 100%-identical paired
+    # comparison, because the levels created triggers but were absent when the engine chose
+    # where to aim. Fail loudly rather than produce that book again.
+    if "_pp" in a.arm and not a.prior_profile:
+        ap.error("--arm _pp without --prior-profile: the census would carry the new levels "
+                 "but the target menu would not. Pass both, or neither.")
     global _RRFLOOR, _ARM
     _RRFLOOR = a.rr_floor           # set BEFORE any Pool fork; workers inherit it
     _ARM = a.arm
@@ -228,7 +253,7 @@ def main() -> int:
     trigs = pd.read_parquet(in_l0(_ARM))
     print(f"L2 London — {len(trigs):,} candidates over {trigs.day.nunique()} sessions",
           flush=True)
-    O = run(trigs, procs=a.procs, entry=a.entry)
+    O = run(trigs, procs=a.procs, entry=a.entry, prior_profile=a.prior_profile)
 
     # join the L1b setup identity back on, so both tie-break arms are answerable
     flags = ["setup_first", "setup_htf", "vs_first", "vs_htf", "arm_none", "arm_struct"]
