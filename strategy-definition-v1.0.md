@@ -9,7 +9,9 @@
 ## 1. Instrument, Session, Timeframes
 
 - **Instrument:** NQ (CME), sized via MNQ where risk requires.
-- **Entry window:** CONFIG, tested as variants — **W1:** 08:00–11:00 ET, pre-market through pre-lunch (primary; matches full sample incl. 8:06 and 10:52 winners; Angus-confirmed intent); **W2:** full trading day with Vault risk parameters unchanged (Angus priority test #2 — where does the edge live across the day?); **W3:** other sessions (London etc.) — Hypothesis H3, after v1 validates. Backtest declares the winner. [TOURNAMENT]
+- **Entry window: RTH 09:31–16:00 ET, entry blackout 09:31–09:35, first tradeable signal bar 09:36.** [AMENDED 2026-08-07 — see Amendment Log A1]
+  - Tournament variants retained for later testing, all now *inside* the RTH boundary: **W2:** full RTH day with Vault risk parameters unchanged (Angus priority test #2 — where does the edge live across the day?); **W3:** other sessions (London etc.) — Hypothesis H3, after v1 validates. Backtest declares the winner. [TOURNAMENT]
+  - **Superseded:** W1 08:00–11:00 ET, pre-market through pre-lunch. Retained here for traceability only; it is no longer the primary window. Nine of the 28 hand-log trades fall before 09:36 and are consequently OUT OF SCOPE — see `data/reference/hand_log_scope.md`.
 - **End-of-day flatten:** VAULT RULE, not strategy: any open position is flattened before the CME close per the eventual firm's rules (default 15:55 ET). Exists as a backstop; expected to almost never fire (median trade resolves ~30 min).
 - **Entry TFs:** 1m, 2m, 3m, 5m. **MTF arbitration:** evaluate all four; if multiple TFs show valid triggers simultaneously, take the highest TF. [CONFIRMED — Angus]
 - **Context TFs:** 15m for HTF trend/range flag; 1h/4h for range extremes.
@@ -109,3 +111,54 @@ Agents grade against this doc and propose. Python owns sizing, stops, limits, ki
 5. **Diagnostics:** per-slice expectancy (pattern × TF × confluence count × HTF flag × time bucket × news flag) so leaks are locatable.
 6. **Monte Carlo:** winning config's distribution vs 50K eval (3K target / 2K trailing DD): pass probability, expected attempts/cost, days-to-pass, first-month blowup risk → sizing config → firm selection.
 7. Live paper via TradingView; agents grade real-time; human executes.
+
+---
+
+## Amendment Log
+
+Append-only. Each entry records a ruling, its date, its reason, and the settled decision it
+defers to — so a future reader sees a decision, not a silent edit.
+
+### A1 — 2026-08-07 — Entry window changed from W1 08:00–11:00 ET to RTH 09:31–16:00 ET
+
+**Change.** §1 entry window is now RTH 09:31–16:00 ET, with an entry blackout 09:31–09:35 and
+the first tradeable signal bar at 09:36. W1 (08:00–11:00) is superseded and retained in §1 for
+traceability only.
+
+**Reason.** The doc's W1 window conflicted with the project's settled session convention. The
+conflict was surfaced by PRE-FLIGHT gate 2 (`research/vwap-bb/preflight.md`), which found that
+nine of the 28 hand-log trades — 32% of the sample, including its single largest winner at
++12.98R — fall before 09:36 and are therefore untradeable under the settled convention. Two
+documents were describing two different strategies.
+
+**Settled decision deferred to.** RTH 09:31–16:00, entry blackout 09:31–09:35, first tradeable
+signal bar 09:36. Settled decisions take precedence over the strategy doc where the two
+conflict; this amendment brings the doc into line rather than the reverse.
+
+**Consequences, recorded so they are not rediscovered later:**
+- Nine hand-log trades are OUT OF SCOPE. They are not deleted — see
+  `data/reference/hand_log_scope.md` for the list and the reason.
+- The in-scope hand-log evidence is **19 trades, 13 wins (68.4%), Wilson 95% [46.0%, 84.6%]**,
+  against a cost-adjusted breakeven of 40.6% at the §6.5 1.5R floor with c/s = 1.53%.
+  One-sided binomial p = 0.0133 — it clears breakeven at the lower bound.
+- **Open item, NOT resolved by this amendment:** BB(20) and ATR(20) evaluated at 09:36 reach
+  back into pre-open bars whose median 1-minute range is 5.75 pts against 9.50 in RTH. Every
+  band width and ATR threshold on the first tradeable bars is therefore computed from a regime
+  1.65× quieter than the one being traded, biasing toward admitting trades the rule intends to
+  exclude. Adopting RTH does not fix this. It is logged for the study design.
+
+### A2 — 2026-08-07 — Five previously unstated parameters frozen
+
+Recorded in full in `research/vwap-bb/preflight.md` gate 4. VWAP typical price = HLC/3
+[SPEC, per "standard TradingView VWAP"]; volume-profile bin = 1.00 pt [FIAT]; HTF
+classification = 15m fractal swings N=2, HH+HL ⇒ uptrend / LH+LL ⇒ downtrend / else range
+[FIAT]; stop buffer = 1 tick beyond the wick extreme [FIAT, per §5.4 "never widened"];
+volatility stand-down = DISABLED for v1 [FIAT, §7 was marked OPEN with no definition].
+Zero parameters were set by examining outcomes. N_trials remains 0.
+
+### A3 — 2026-08-07 — Parity and calibration targets relocated into available coverage
+
+§12.2's February 2026 calibration month does not exist in the held bar data, which ends
+2026-01-30. Parity dates relocated; the calibration gate is **downgraded**, not relocated —
+see `research/vwap-bb/preflight.md` gate 5 and spec-1 Step 4 / Step 8 for the substitution and
+why the two are not equivalent.

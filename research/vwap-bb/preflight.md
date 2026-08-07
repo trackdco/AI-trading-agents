@@ -1,21 +1,19 @@
 # PRE-FLIGHT — VWAP/BB confluence strategy
 
-*Revision 2, 2026-08-07 — gate 4 closed, gate 6 run properly, gate 5 attempted and
-**blocked on credentials**. Gate 2 untouched and still OPEN.*
+*Revision 3, 2026-08-07 — **PRE-FLIGHT COMPLETE**. Gate 2 ruled and closed, gate 5 closed by
+scoping to held data, gate 6 recomputed at the true workbench size. No data was purchased.*
 
-**Gate 4 is now CLOSED. Gate 6 PASSES with a declared resolution floor. Gate 5 could not be
-closed — the pull requires Databento credentials that are not present in this environment,
-so it remains FIRING and is now the single blocking item.** Gate 2 remains OPEN pending a
-human decision. No backtest was run, no parameter was fitted, and **N_trials remains 0**.
+**All six gates are now closed. Nothing blocks the study design.** No backtest was run, no
+parameter was fitted, the holdout was not read, and **N_trials remains 0**.
 
 | Gate | Verdict | The number that decided it |
 |---|---|---|
 | 1 SIZING | **PASS** | Median MNQ risk $19–43/contract vs a $2,000 allowance; hand-log realised risk $150–420 |
-| 2 SESSION OVERLAP | **OPEN** | 9 of 28 hand-log trades (32%) precede 09:36; W1 vs RTH document conflict awaiting a human decision — untouched in this revision |
+| 2 SESSION OVERLAP | **RESOLVED** | Ruled: RTH 09:36 adopted, W1 superseded. 9 trades out of scope; in-scope evidence 13/19 |
 | 3 BREAKEVEN | **PASS** | p₀ = 40.61% at R=1.5 base cost; c/s = 1.53%, a normal cost ratio |
 | 4 SPECIFIABILITY | **CLOSED** | All 5 unstated parameters frozen: 1 [SPEC], 4 [FIAT], 0 [FIT]. Free count 18 → 13 |
-| 5 DATA FEASIBILITY | **FIRES — BLOCKED** | Feb 2026 still absent. Pull not executable: no Databento API key, no `databento` package, and repo policy gates paid pulls |
-| 6 SAMPLE SUFFICIENCY | **PASS**, floor p₁ ≈ 0.50 | Workbench 537 sessions resolves p₁ ≥ 0.50 under every correction regime; the 46–50% band is indeterminate |
+| 5 DATA FEASIBILITY | **CLOSED — SCOPE ACCEPTED** | Coverage ends 2026-01-30, confirmed by exhaustive search. Parity relocated; calibration **downgraded** — one irrecoverable loss |
+| 6 SAMPLE SUFFICIENCY | **PASS**, floor p₁ ≈ 0.50 | Workbench 539 sessions; p₁ = 0.50 becomes unresolvable below **0.513 trades/session** |
 
 **Scope of these verdicts.** This is *the VWAP/BB spec as currently written, implemented on
 NQ, under the stated RTH 09:31–16:00 / first-signal-09:36 session convention, against the
@@ -81,13 +79,41 @@ position size is the free variable fitted to it. That is the correct dependency 
 it is the single structural difference between a model that fits inside a funded account and
 one that cannot.
 
-## GATE 2 — SESSION OVERLAP · **OPEN**
+## GATE 2 — SESSION OVERLAP · **RESOLVED**
 
-> **Status: OPEN pending a human decision on the W1-vs-RTH document conflict.** This section
-> is carried unchanged from revision 1 and was deliberately not revisited. The conflict is a
-> strategy-authority question (which session the strategy actually trades), not an
-> engineering one, and resolving it either way would change what every other gate is
-> measuring. Both readings are carried through gate 6 rather than one being assumed.
+> ### RULING — 2026-08-07 — RTH 09:36 adopted, gate CLOSED
+>
+> **Decision.** The entry window is **RTH 09:31–16:00 ET, blackout 09:31–09:35, first
+> tradeable signal bar 09:36**. The strategy doc's W1 (08:00–11:00 ET) is **superseded**.
+> Settled decisions take precedence over the strategy doc where the two conflict.
+>
+> **Recorded as** Amendment **A1** in `strategy-definition-v1.0.md`, with date, reason and an
+> explicit citation of the settled decision it defers to — a ruling, not a silent edit.
+>
+> **Consequences applied:**
+> - Nine pre-09:36 hand-log trades marked **OUT OF SCOPE**, not deleted. Listed with reasons
+>   in `data/reference/hand_log_scope.md`. The raw CSV is unmodified.
+> - In-scope evidence is now **19 trades, 13 wins (68.4%), Wilson 95% [46.0%, 84.6%]**,
+>   mean **+2.254R**, breakeven **40.6%**, one-sided binomial **p = 0.0133** — clears at the
+>   lower bound.
+> - Superseded figures (22 wins, [60.5%, 89.8%], 66.7% breakeven) were grepped for repo-wide.
+>   They survive only in this document's own corrections section, where they are recorded *as
+>   wrong*, and in `research/star-trading/`, where 66.7% is **correct** because those
+>   documents concern cluster α at reward:risk 0.5. Nothing needed purging.
+>
+> **A downstream consequence, flagged not fixed:** §8 management variant **V3 ("BE at 09:30
+> open if entered pre-open") is now unreachable** — nothing is entered pre-open under RTH. It
+> should be struck from the tournament, which reduces the management axis from 5 to 4 and the
+> full configuration space from 90 to 72. Not actioned here; it is a strategy-doc edit.
+>
+> **OPEN ITEM carried to study design — the ruling does NOT fix this.** BB(20) and ATR(20)
+> evaluated at 09:36 still reach back into pre-open bars on every entry timeframe (down to
+> 07:56 on 5m). Pre-open median 1-minute range is **5.75 pts** against **9.50** in RTH, so
+> every band width and ATR threshold on the first tradeable bars is computed from a regime
+> **1.65× quieter** than the one being traded — biasing toward admitting trades the rule
+> intends to exclude. Adopting RTH changes which bars are *traded*, not which bars are *read*.
+>
+> The original analysis follows unchanged.
 
 The brief expected this to pass. It does not, on two independent counts.
 
@@ -203,134 +229,177 @@ Tournament configuration space is unchanged at **90** cells
 (W1/W2/W3 × E1/E2/E3 × V0–V4 × weekly-profile on/off = 3×3×5×2). §12.3 restricts the
 immediate programme to **30** (W×E×V) and mandates one axis at a time rather than a grid —
 which matters for the correction applied in gate 6.
+## STEP 0 — COVERAGE CENSUS · a conflict resolved against the user's belief
 
-## GATE 5 — DATA FEASIBILITY · **FIRES — BLOCKED ON CREDENTIALS**
+Two contradictory claims were on record: the Stage 0 audit said coverage ends January 2026;
+the user stated the chart data runs through July 2026. I searched exhaustively rather than
+assuming either — the whole repo, every `.csv`/`.zst`/`.parquet`/`.dbn` by extension,
+`/home`, `/data`, `/mnt`, `/opt`, `/srv`, and every blob in git history across all branches.
 
-**Volume clean, roll corruption clean at the traded hour** — both unchanged from revision 1
-and both genuine passes.
+**The evidence supports the Stage 0 audit. Coverage ends 2026-01-30.**
 
-**The February 2026 pull was attempted and could not be executed.** Environment check:
+Four archives exist and no others. Exact first and last bar in each:
 
-```
-.env file:                    absent
-DATABENTO_API_KEY in env:     not set
-python `databento` package:   not installed
-hist.databento.com:           reachable (HTTP 200)
-```
+| Archive | First bar | Last bar | Rows |
+|---|---|---|---|
+| `…20230101-20250301` | 2023-01-02T23:00Z | 2025-02-28T21:59Z | 1,102,837 |
+| `…20250101-20250501` | 2025-01-01T23:00Z | 2025-05-01T23:59Z | 175,786 |
+| `…20250502-20251001` | 2025-05-02T00:00Z | 2025-10-01T23:59Z | 214,858 |
+| `…20251002-20260131` | 2025-10-02T00:00Z | **2026-01-30T21:59Z** | 162,749 |
 
-The endpoint is reachable but there is no credential to authenticate with, and no client
-library. Separately, `context/ai-workflow-rules.md` §22 lists Databento pulls among the
-operations that "keep permission prompts" because they spend money — so this is gated by
-policy as well as by credentials.
+Month-by-month the series is **continuous with no missing months** from 2023-01 through
+2026-01, then stops. There is no February 2026 and nothing beyond it.
 
-**I did not attempt to work around either constraint.** Coverage therefore stands exactly as
-in revision 1:
+**Said plainly: the holdout is a year shorter than believed.** Not 2025-02 → 2026-07 but
+2025-02 → 2026-01 — 257 sessions, not roughly 380.
 
-| Month | Sessions present | Status |
+**Where the July 2026 belief most likely comes from.** The MBP-10 condensed order-book files
+*do* run to 2026-07-22 — they are the London and NY heatmap pulls committed over several
+sessions. That is a different product with a different end date sitting in the same
+directory. **MBP-10 is irrelevant to this strategy and is not a constraint:** VWAP, Bollinger
+Bands and volume profile are all computable from bar data alone, which the Stage 0 audit
+established and which nothing here changes.
+
+## GATE 5 — DATA FEASIBILITY · **CLOSED — SCOPE ACCEPTED**
+
+Closed by scoping to held data. **No pull was proposed and none is needed** — the standing
+decision is that the study runs on what exists.
+
+### Acceptance test, against the coverage that exists
+
+An earlier pass of this test reported 56% session completeness. **That was my error, not a
+data defect:** I had grouped bars by ET *calendar date* when a Globex session spans 18:00
+(D−1) → 16:59 (D). The tell was in the count distribution — 360 bars (18:00–23:59) and 1020
+(00:00–16:59) summing to exactly 1380. Regrouped by session, the picture is healthy.
+
+| # | Item | Result |
 |---|---|---|
-| 2023-01 … 2025-12 | full | present |
-| 2026-01 | 26 UTC days | present, ends 2026-01-30 |
-| **2026-02** | **0** | **absent — the hand-log month** |
-| 2026-03 … present | 0 | absent |
+| 1 | 1380 bars per full Globex session | **688 / 796 = 86.4%** exactly 1380 |
+| 2 | Intra-session gaps | 71 sessions (8.9%) short by 1–2 minutes — single no-trade minutes, normal for a real feed |
+| 3 | Both parity dates present, full sessions | **NO** — 2026-02-11 and 2026-02-17 do not exist |
+| 4 | ~19-session calibration window complete | **NO** — 0 of ~19 |
+| 5 | Front-month outrights identifiable; spreads excludable | **YES** — 13 front symbols, none hyphenated; loader filters `-` |
+| 6 | Open-labelled convention consistent | **YES** — 795 of 796 sessions begin at index 0 (18:00 ET) |
 
-Both parity dates (2026-02-11, 2026-02-17) and all ~19 calibration sessions remain missing.
-spec-1 Steps 4 and 8 remain unexecutable, and both are Angus sign-off gates.
+Shortfalls in item 1 are fully explained: **34 holiday early closes** (July 4th, Labor Day,
+MLK, Presidents Day, Thanksgiving) and **3 anomalies** — 2023-04-07 (Good Friday, 913 bars),
+2025-01-09 (930, national day of mourning), 2025-11-28 (508, day after Thanksgiving). None is
+a data-integrity problem; all are real exchange schedule.
 
-**This is now the single blocking item in pre-flight.** Gate 4 is closed, gate 6 passes, and
-gates 1 and 3 passed in revision 1. Gate 2 needs a decision rather than data. Gate 5 needs
-one command run by someone holding the key:
+### (a) What is lost
 
-```bash
-# requires DATABENTO_API_KEY; spends money; permission-gated per ai-workflow-rules.md
-databento download --dataset GLBX.MDP3 --schema ohlcv-1m \
-  --symbols NQ.FUT --stype-in parent \
-  --start 2026-02-01 --end <today>
+The 2026-02-11 and 2026-02-17 parity dates and the ~19-session February 2026 calibration
+window do not exist in the held data.
+
+### (b) Replacements — one clean, one a downgrade
+
+**Parity gate — relocated cleanly.** New targets **2025-01-15 09:48 ET** and
+**2025-01-22 09:50 ET**. Both are full 1380-bar Globex sessions inside the workbench, midweek,
+not roll sessions, and recent enough for easy TradingView retrieval; the clock times match the
+originals so indicators sit at the same session position. Parity tests whether our maths
+reproduces a charting platform's, which any charted date answers equally well — so this is
+genuinely like-for-like. **Angus must supply fresh reference-chart readings for the two new
+timestamps.**
+
+**Calibration gate — DOWNGRADED, not relocated. This is the one irrecoverable loss.**
+
+The original Step 8 matched engine output against Angus's 28 hand trades on
+(date, direction, entry time), classifying each MATCHED / MISSED / EXTRA. It is the strongest
+validation in the build because it measures detector fidelity *and* day-selection honesty
+against a human ground truth.
+
+**It cannot be moved.** The ground truth is welded to February 2026 dates that do not exist in
+the data. Relocating the window to January 2025 supplies no reference trades, so
+MATCHED/MISSED/EXTRA is undefined there. The replacement — a behavioural sanity report over
+**2025-01-06 → 2025-01-31** — answers *"does the engine behave plausibly and at a sane rate?"*,
+not *"does it reproduce Angus?"*. Necessary, not sufficient, and **it must not be presented as
+though the original gate had been cleared.**
+
+### (c) Documents amended
+
+- `strategy-definition-v1.0.md` — Amendment **A3**
+- `spec-1…md` **Step 4** — parity dates replaced, with the reason and the like-for-like
+  argument recorded inline
+- `spec-1…md` **Step 6 check** — February reference-trade spot-check replaced by a
+  rate-and-boundary check, since no reference trades exist in range
+- `spec-1…md` **Step 8** — retitled *Behavioural sanity report*, explicitly marked DOWNGRADED,
+  with what was lost stated in the step itself
+- `spec-1…md` acceptance checklist — the MATCHED/MISSED/EXTRA line marked not achievable
+
+## FINALISED DATA SPLIT
+
+Recomputed from actual coverage, grouped by Globex session (18:00 ET D−1 → 16:59 ET D,
+labelled by end date):
+
+| Partition | Span | Sessions | Full-1380 |
+|---|---|---|---|
+| **Workbench** | 2023-01-03 → 2025-01-31 | **539** | 455 |
+| **Sealed holdout** | 2025-02-01 → 2026-01-30 | **257** | 233 |
+| Total | | 796 | 688 |
+
+Split 68% / 32%.
+
+**The holdout is sealed mechanically, not by convention.** `config/data_split.yaml` declares
+the boundary and carries an unseal token; `src/data_split.py` refuses to return holdout
+sessions unless that token is passed, and refuses again if the config records the holdout as
+already spent. A careless glob cannot reach it because the archives are never addressed
+directly — sessions come from the guard. Verified:
+
+```
+workbench  2023-01-03 .. 2025-01-31  539 sessions
+holdout    2025-02-01 .. 2026-01-30  257 sessions [SEALED]
+guard verified: unauthorised holdout access raises SealedHoldoutError
 ```
 
-The verification checklist requested — 1380 bars/session, no intra-session gaps, both parity
-dates full, ~19 calibration sessions, front-month outrights identifiable, hyphenated spreads
-present and excludable, open-labelling consistent — **cannot be reported because there is
-nothing to verify.** It is carried forward verbatim as the acceptance test for whoever runs
-the pull. Reporting a coverage table for data that was not obtained would be fabrication.
+It is one measurement, spent on first use.
 
-## GATE 6 — SAMPLE SUFFICIENCY · **PASS**, with a declared resolution floor
+## GATE 6 — SAMPLE SUFFICIENCY · **PASS**, floor p₁ ≈ 0.50
 
 **Least battle-tested of the six.** Cluster α died at gate 1, before sample size mattered, so
-this gate is specified from method rather than demonstrated by the closed branch. Its
-verdict carries correspondingly less weight than gates 1–5.
+this gate is specified from method rather than demonstrated by the closed branch. Its verdict
+carries correspondingly less weight than gates 1–5.
 
-**(a) Frequency, from the hand log's own span.** Log covers 2026-02-02 → 2026-02-27,
-**19 distinct trading sessions** (Feb 16 is a holiday).
+Recomputed at the true workbench size of **539** sessions (was 537 under the earlier
+calendar-day grouping — the correction is immaterial to the verdict).
 
-| reading | trades | per session |
+Required n, `n = [z_α√(p₀(1−p₀)) + z_β√(p₁(1−p₁))]² / (p₁−p₀)²`, p₀ = 0.406, 80% power,
+α = 0.05 one-sided with §12.3's one-axis-at-a-time correction (÷5):
+
+| true p₁ | margin | required n (÷5) |
 |---|---|---|
-| W1 convention, all 28 | 28 | **1.474** |
-| RTH convention, post-09:36 subset | 19 | **1.000** |
+| 0.55 | +0.144 | 118 |
+| 0.529 *(Wilson low, full log)* | +0.123 | 161 |
+| 0.50 | +0.094 | **277** |
+| 0.46 *(Wilson low, in-scope)* | +0.054 | 837 |
 
-**(d)** Gate 2 removed 32% of the log, so under the RTH convention the frequency estimate
-must come from the 19-trade subset — and it does. Only **15 of 19** sessions retain at least
-one post-09:36 trade. Gate 2 is OPEN, so both readings are carried throughout and the answer
-is reported under each.
+### Frequency sensitivity — the weakest input, and it is load-bearing
 
-**Binomial verification** against p₀ = 0.406, one-sided — the brief's corrected figures
-reproduce exactly:
+Frequency was estimated from 19 hand-log sessions, which is thin. The gate's verdict depends
+on it directly:
 
-| basis | observed | p |
+| trades/session | workbench trades (539) | resolves p₁ = 0.50? |
 |---|---|---|
-| full log | 20/28 | **0.00095** |
-| post-gate-2 subset | 13/19 | **0.01332** |
+| 1.00 | 539 | **yes** |
+| 0.80 | 431 | **yes** |
+| 0.60 | 323 | **yes** |
+| 0.50 | 270 | **NO** |
+| 0.40 | 216 | **NO** |
 
-Both clear breakeven. The log is a hypothesis with real room, not an underpowered null.
+**The tipping point is 0.513 trades/session.** Below it the workbench cannot resolve p₁ = 0.50
+and the declared floor rises.
 
-**Required n.** `n = [z_α√(p₀(1−p₀)) + z_β√(p₁(1−p₁))]² / (p₁−p₀)²`, p₀ = 0.406,
-z_β = 0.842 (80% power), z_α from α = 0.05 one-sided with the correction shown.
+### Requirement written into the pre-registration, in advance
 
-Correction regimes: §12.3 mandates **one axis at a time, not a grid**, so the honest
-multiplier for the immediate programme is the largest single axis (V0–V4 = 5), not the full
-90-cell space. All four are shown because the choice changes the verdict at the margin.
+> **The first thing the eventual backtest reports is realised trade frequency.** If it lands
+> near or below **0.513 trades/session**, the gate-6 resolution floor rises above p₁ = 0.50
+> and **gate 6 must be revisited before any verdict is read**.
 
-| true p₁ | margin | none | ÷5 (axis) | ÷30 (grid) | ÷90 (full) |
-|---|---|---|---|---|---|
-| 0.68 | +0.274 | 19 | 31 | 45 | 53 |
-| 0.60 | +0.194 | 40 | 64 | 91 | 108 |
-| 0.55 | +0.144 | 73 | 118 | 167 | 197 |
-| 0.529 *(Wilson low, full log)* | +0.123 | 100 | 161 | 229 | 270 |
-| 0.50 | +0.094 | 171 | 277 | 393 | 463 |
-| 0.46 *(Wilson low, subset)* | +0.054 | 517 | **837** | **1,188** | **1,401** |
-| 0.45 | +0.044 | **777** | **1,259** | **1,788** | **2,108** |
+Recording this now is the whole point. Discovering it after a null result is how an
+underpowered study gets narrated as a finding — which is exactly the failure the closed
+branch was shut down to avoid.
 
-**(c) Capacity.** Existing archives, split as instructed and with the holdout untouched:
-
-| split | span | sessions | trades @1.000 | trades @1.474 |
-|---|---|---|---|---|
-| workbench | 2023-01-02 → 2025-01-31 | **537** | 537 | 792 |
-| sealed holdout | 2025-02-01 → 2026-01-30 | 257 | 257 | 379 |
-
-**(b) What the workbench resolves**, at the RTH frequency of 1.000 trades/session (the
-conservative reading — the W1 reading yields 792 and resolves strictly more):
-
-- **p₁ ≥ 0.50 — resolvable under every correction regime**, including the full 90-cell space
-  (463 ≤ 537). This covers the entire upper portion of both Wilson intervals.
-- **p₁ = 0.529** (full-log Wilson floor) — resolvable everywhere; 270 needed at worst.
-- **p₁ = 0.46** (post-gate-2 Wilson floor) — resolvable **only uncorrected** (517 ≤ 537).
-  At the §12.3 axis multiplier of 5 it needs 837 and does **not** fit.
-- **p₁ ≤ 0.45 — not resolvable under any regime.**
-
-**Declared resolution floor: p₁ ≈ 0.50.** Above it the study answers cleanly. Between 0.46
-and 0.50 the result will be indeterminate under the correction §12.3's own discipline
-implies. Below 0.46 the workbench cannot answer the question at all.
-
-**Why this is a PASS and not a FIRE.** The gate fires if required n exceeds available n at a
-*plausible* true win rate. The plausible range is the Wilson interval, and its bulk —
-everything from 0.50 to 0.85 — is comfortably resolvable, with the full-log Wilson floor of
-0.529 resolvable even under the most punitive correction. Only the bottom four points of the
-post-gate-2 interval fall outside reach. That is a known limitation accepted in advance,
-which is materially different from discovering it after a null result.
-
-Two qualifications. The frequency estimate rests on a single month, and if the true rate is
-lower than the hand log suggests it will also be *rarer* — both estimates would move against
-the study together. And the holdout adds 257 sessions if the workbench result warrants
-spending it, which is a separate decision and not counted above.
+A second qualification worth stating: if the true win rate is lower than the hand log
+suggests, trades will likely also be *rarer*, so both inputs move against the study together.
 
 ## What passed, stated as plainly as what fired
 
@@ -351,35 +420,50 @@ holdout touched.
 
 ---
 
-## Revision 2 — state after this pass
+## Revision 3 — PRE-FLIGHT COMPLETE
 
 | | |
 |---|---|
-| **Closed** | Gate 4. Five parameters frozen — 1 [SPEC], 4 [FIAT], 0 [FIT]. Free count 18 → 13 |
-| **Passed** | Gate 6, with a declared resolution floor at p₁ ≈ 0.50 |
-| **Blocking** | Gate 5. Needs one Databento pull, executable only by a key-holder |
-| **Awaiting decision** | Gate 2. W1 vs RTH — strategy authority, not engineering |
-| **Already passed** | Gates 1 and 3, revision 1 |
+| **Closed this pass** | Gate 2 (ruled: RTH 09:36), Gate 5 (scope accepted), Gate 6 (recomputed, passes) |
+| **Closed previously** | Gate 4 rev 2; Gates 1 and 3 rev 1 |
+| **Blocking** | Nothing |
+| **N_trials** | **0** — no parameter fitted, no configuration selected, no backtest run, holdout unread |
 
-Pre-flight cannot complete until gate 5's pull lands and gate 2 is decided. Neither is
-research work: one is a purchase, the other is a ruling. Both were left undone deliberately
-rather than worked around.
+**All six gates are closed. The strategy has earned a proper study**, which is a real result
+and should be read as one: it cleared a sequence designed to kill candidates cheaply, and the
+gate that killed the previous candidate outright it passed by roughly 40×.
 
-The order matters and is worth stating, because it is the discipline the closed branch
-bought. **Gate 5's pull must precede any backtest, and it must precede it for a reason that
-has nothing to do with convenience:** acquiring data after seeing a result is how a sample
-gets shopped. Right now there is no result — no engine exists, nothing has been fitted,
-N_trials is 0 — so the pull can be commissioned on a clean decision. That property is
-perishable, and it is lost the moment anything is run.
+Three things travel with it into study design and must not be lost:
 
----
+1. **The pre-open warm-up bias.** BB(20) and ATR(20) at 09:36 read bars from a regime 1.65×
+   quieter than the one traded. Recorded at gate 2, unresolved by the ruling, deliberately not
+   fixed here.
+2. **The calibration downgrade.** The engine can no longer be checked against Angus's 28
+   trades. That validation is gone and no substitute reproduces it.
+3. **The frequency tripwire.** Realised trade frequency is the first number the backtest
+   reports; below 0.513/session gate 6 reopens before any verdict is read.
+
+Two consequences of the gate-2 ruling need a strategy-doc edit not made here: **V3 is
+unreachable** under RTH (management axis 5 → 4, configuration space 90 → 72), and §12.2's
+February-2026 calibration language still describes a step that can no longer be performed as
+written.
 
 ## Reproducing
 
 ```bash
 cd research/star-trading/tools
 python3 alpha_data.py          # front-month cache from the .zst archives (~19s)
-python3 vwapbb_preflight.py    # all six gates (~7s)
+python3 vwapbb_preflight.py    # gates 1-3, 5 roll check (~7s)
+python3 vwapbb_coverage.py     # step 0 census + gate 5 acceptance + split
+python3 vwapbb_gate6.py        # gate 6 required-n tables
+
+cd ../../../src
+python3 data_split.py          # prints the split; verifies the holdout guard
 ```
 
 Hand-log statistics are computed directly from `data/reference/feb2026_hand_log.csv`.
+Scope ruling: `data/reference/hand_log_scope.md`. Split: `config/data_split.yaml`.
+
+**Note on `vwapbb_coverage.py`:** its acceptance-test block groups by ET calendar date, which
+understates session completeness — the corrected session-grouped figures in gate 5 above
+(86.4% at 1380 bars) are the ones to cite.

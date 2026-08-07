@@ -1,0 +1,46 @@
+# Workbench / holdout split — SEALED 2026-08-07
+#
+# The holdout is the only clean out-of-sample measurement this dataset will ever
+# produce, and it is spent on first use. Reading it is a deliberate act: any loader
+# touching holdout sessions must be passed an explicit unseal token. A careless glob
+# over the archives must not reach it.
+#
+# Recomputed from actual coverage (research/vwap-bb/preflight.md, revision 3).
+# Sessions are Globex sessions, 18:00 ET (D-1) -> 16:59 ET (D), labelled by end date.
+
+coverage:
+  first_session: "2023-01-03"
+  last_session:  "2026-01-30"
+  total_sessions: 796
+  note: >
+    Bar data ends 2026-01-30. February 2026 onward does not exist in the held
+    archives. MBP-10 condensed files extend to 2026-07-22 but are irrelevant here:
+    VWAP, Bollinger Bands and volume profile are all computable from bars alone.
+
+workbench:
+  start: "2023-01-03"
+  end:   "2025-01-31"
+  sessions: 539
+  full_1380_sessions: 455
+  use: "All development, calibration, parameter freezing, and the tournament."
+
+holdout:
+  start: "2025-02-01"
+  end:   "2026-01-30"
+  sessions: 257
+  full_1380_sessions: 233
+  sealed: true
+  unseal_token: "HOLDOUT_UNSEAL_APPROVED_BY_ANGUS"
+  spent: false
+  spent_on: null
+  use: >
+    One measurement, once, after the workbench result is locked and the
+    pre-registration is signed off. Reading it for any other purpose burns it.
+
+parity_gate_dates:
+  - "2025-01-15 09:48 ET"
+  - "2025-01-22 09:50 ET"
+behaviour_sample_window:
+  start: "2025-01-06"
+  end:   "2025-01-31"
+  sessions: 19
