@@ -1,6 +1,8 @@
 # Strategy extraction — "Trader Kane / Lab Model" entry mechanisms
 
-**Status: HYPOTHESIS MATERIAL. Not a prereg. Nothing here is validated. No number in the source video is evidence.**
+**Status: SHELVED — not pursued. Owner decision, 2026-08-07, at triage stage, before any prereg or test was run. Reasons on record: no trustworthy evidence in the sources, edge likely resident in unformalisable discretion, 13-item looseness ledger implying a heavy multiple-comparison penalty, and an ES data purchase required for the core trigger. No holdout was touched; no search was run; no span was consumed. This document remains as the record of the triage.**
+
+**Originally: HYPOTHESIS MATERIAL. Not a prereg. Nothing here is validated. No number in the source video is evidence.**
 
 ## 1. Provenance — read before using anything below
 
