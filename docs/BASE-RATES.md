@@ -14,8 +14,18 @@ mechanism must beat these, not zero. Fit span 2025-06..2026-07 unless noted.
 | BR-7 | **M2 break-and-retest:** retrace to MA after chain-resolving cross **80-82%**; target-before-extreme-stop from the retest entry | **68-75%** — the stronger branch, every matched cell | Census B verdict |
 | BR-8 | **M2 travel skew:** distance travelled away from the 15m MA per rejection | p50 ~1.1-1.3W, p95 3.7-5.3W — tail economics, both eras | Census B verdict |
 
+| BR-9 | **Unselected reject book, adopted exit, executable (first trigger per structural fight):** | **+0.139R / +0.162R by era** (day-boot 95% CIs clear zero both eras; pooled +0.149R [+0.076,+0.224]); median fight −0.53R, tail pays | Phase 0 restatement, PHASE0-verification item 4 |
+| BR-10 | **Collapse-convention sensitivity:** the same book reads −0.04R (cross-cycle collapse, H2) to +0.20R (structural collapse) — any future book claim must name its trade-selection convention or it is not a number | Phase 0 restatement |
+
 **Standing principle (2026-08-07):** three raw mechanisms measured (failed
 auction, M1 rebalance, M2 rejection/continuation) — all fairly priced under
 every entry/stop/exit configuration tested. New level-based ideas must locate
 their claimed edge in SELECTION against these nulls, not in mechanism
 existence.
+
+**Restatement note (2026-08-07, Phase 0):** the −0.047R "gap to close"
+headline was the cross-cycle-collapsed H2-era reading; under the structural
+fight definition and the executable first-of-fight convention the unselected
+reject book is +0.14/+0.16R by era (BR-9). Stop 0.17W and the MFE-in-R table
+survived the entry-price fix unmoved. Selection's target is account-level
+concentration, not per-trade rescue.

@@ -116,9 +116,59 @@ same-session same-side pairs over 291 fit days):
 - Map: `output/htf_ma_census/mtable_fit*_structclust.parquet`; CIs for all
   new claims move to the day-level bootstrap (D4).
 
-## Item 4 — restated numbers (after the item-1 fix and item-3 re-clustering)
+## Item 4 — restated numbers (run 2026-08-07, fixed table, 4,716 fit rows)
 
-See PHASE0-results appendix below: the 0.17W median stop, the MFE-in-R
-table, and the −0.047R unselected reject book are restated on the fixed
-table; BASE-RATES.md is updated in the same commit iff any moved beyond
-noise.
+Reproduction first: the baseline (unfixed) rebuild reproduced the recorded
+build EXACTLY (fit 4,717 | sealed 8,807 | gray 1,786; continuity
+3,020/3,043 = 99.2%; stop p50 0.175/0.183W; MFE p90 7.28/6.38; H2-2025
+book under cross-cycle collapse −0.049R vs recorded −0.047R). Every
+comparison below is against a verified-identical substrate.
+
+**Stop width (reject): UNMOVED.** p50 0.177W (H1-2026) / 0.184W (H2-2025),
+p25/p75 0.10/0.30W. The 0.17W figure stands.
+
+**MFE-in-R (reject): UNMOVED.** p50 0.95/0.87 | p90 7.2/6.4 | p95
+12.4/10.6 by era. The recorded table stands.
+
+**The entry-price fix moved the book by +0.001R — verified nil.** Entry
+differences (next-open minus decision-close, signed toward trade
+direction): mean +0.006 pts, sd 0.91 pts, median 0. The defect was real
+(the gate proved the price was read off the decision bar) but its book
+impact is symmetric noise on the reject arm. Named exclusions introduced:
+no_next_open=67, gap_through_stop=6 (whole span).
+
+**The −0.047R headline was a property of the COLLAPSE CONVENTION, not of
+the book.** Same fixed table, four readings of the unselected reject book
+under the adopted exit (out_ship):
+
+| reading                              | H2-2025 | H1-2026 | pooled |
+|--------------------------------------|---------|---------|--------|
+| cross-cycle cluster-collapse (old)   | −0.042R | +0.098R | +0.024R |
+| structural cluster-collapse (new)    | +0.163R | +0.236R | +0.197R |
+| first-of-fight, executable           | **+0.139R** [+0.028,+0.253] | **+0.162R** [+0.051,+0.280] | **+0.149R** [+0.076,+0.224] |
+| row-mean (every trigger)             | —       | —       | +0.120R |
+
+Mechanism, recorded: the two cluster definitions carry OPPOSITE
+size-outcome gradients. Cross-cycle: singleton chains −0.11R, 4-8-attempt
+chains +0.50R (a level that keeps rejecting keeps paying). Structural:
+singleton fights +0.29R, mult-touch chop fights −0.06R (price that sits at
+the level without leaving doesn't travel). Equal-weighting fights under
+either definition swings the mean by ±0.2R. The clustering criterion was
+committed (671cd215) BEFORE the restatement was run — the ordering is on
+the record.
+
+**The load-bearing restatement is the first-of-fight row:** it is an
+executable book (first trigger of each structural fight, real sequential
+trades), not a weighting, and it clears zero in BOTH eras by day-level
+bootstrap. Median fight −0.53R; the tail pays (top-1% of rows carries
+0.057R of the 0.120R row-mean; p90 +2.6R). Under the adopted exit the
+unselected reject book is ~+0.15R/fight, NOT −0.05R: selection's job is no
+longer rescuing a negative book — it is concentration (fewer, better
+fights vs the account-level frequency requirement). The cut study's Law-7
+arithmetic must be recomputed against THIS baseline, and its book sim uses
+the declared executable convention (SPEC-cut-study.md).
+
+Caveats attached: out_ship's 3R leg fills on an intrabar touch (optimistic
+by up to one tick, as recorded at adoption); cost constant 0.5 pt/trade;
+break-arm restatement follows the same convention but was not the recorded
+−0.047R claim.
