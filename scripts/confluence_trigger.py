@@ -23,8 +23,14 @@
                     census reject grammar); the cycle stays live until a
                     15m close through the MA. Trigger fires AWAY from the
                     MA in the original direction. No exit assumed — scored
-                    against three structural targets side by side:
-                    short: VWAP-1, VAL, VWAP-2  |  long: VWAP+1, VAH, VWAP+2
+                    against NEAR and FAR structural targets selected
+                    RELATIVE TO THE BAND THAT FIRED THE TRIGGER (fix of the
+                    first build's flaw, where a fixed set put the first
+                    target behind the entry):
+                      fired band = VWAP middle -> near VWAP-/+1, far VWAP-/+2
+                      fired band = VWAP-/+1     -> near VAL/VAH,  far VWAP-/+2
+                      any other fired band      -> next two bands in the
+                                                  trade direction (recorded)
                     first-passage hit rate and realized R to each.
 
 Entry: next 1m open (standing entry law; flatten gate below). Stop: the
@@ -74,7 +80,7 @@ def in_window(hm):
     return None
 
 
-def day_rows(bars, sess_day, tfs=TFS):
+def day_rows(bars, sess_day, tfs=TFS, tol=TOL):
     t0 = pd.Timestamp(f"{sess_day} 18:00", tz=NY)
     t1 = t0 + pd.Timedelta(hours=23)
     hist = bars[(bars.index >= t0 - pd.Timedelta(hours=30))
@@ -98,12 +104,27 @@ def day_rows(bars, sess_day, tfs=TFS):
     poc_1m = prof["poc"].to_numpy()
     val_1m = prof["val"].to_numpy()
     vah_1m = prof["vah"].to_numpy()
-    tgt_series = {"short": [("vwap_m1", band_1m["vwap_m1"]),
-                            ("val", val_1m),
-                            ("vwap_m2", band_1m["vwap_m2"])],
-                  "long": [("vwap_p1", band_1m["vwap_p1"]),
-                           ("vah", vah_1m),
-                           ("vwap_p2", band_1m["vwap_p2"])]}
+    BIDX = {"vwap_p3": 3, "vwap_p2": 2, "vwap_p1": 1, "vwap": 0,
+            "vwap_m1": -1, "vwap_m2": -2, "vwap_m3": -3}
+    BNAME = {v: k for k, v in BIDX.items()}
+
+    def m2_targets(qband, d):
+        """(near_name, near_arr, far_name, far_arr, case) — targets selected
+        RELATIVE TO THE FIRED BAND, in the trade direction d."""
+        k = BIDX[qband]
+        if k == 0:                              # middle -> -/+1 then -/+2
+            return (BNAME[d], band_1m[BNAME[d]],
+                    BNAME[2 * d], band_1m[BNAME[2 * d]], "mid")
+        if k == d:                              # the -/+1 on the trade side
+            nm = "vah" if d > 0 else "val"
+            return (nm, vah_1m if d > 0 else val_1m,
+                    BNAME[2 * d], band_1m[BNAME[2 * d]], "band1")
+        near_k, far_k = k + d, k + 2 * d        # any other fired band
+        near = (BNAME[near_k], band_1m[BNAME[near_k]]) \
+            if abs(near_k) <= 3 else (None, None)
+        far = (BNAME[far_k], band_1m[BNAME[far_k]]) \
+            if abs(far_k) <= 3 else (None, None)
+        return near[0], near[1], far[0], far[1], "other"
 
     # ---- M2 cycle state from 15m bars (reject grammar, cycle ends on a
     # 15m close through the MA). live_dir[j] = continuation direction in
@@ -204,7 +225,7 @@ def day_rows(bars, sess_day, tfs=TFS):
                 qual, stack = None, 0
                 for b in BANDS:
                     bv = band_1m[b][p]
-                    if not np.isfinite(bv) or abs(bv - m_tf) > TOL:
+                    if not np.isfinite(bv) or abs(bv - m_tf) > tol:
                         continue
                     stack += 1
                     thru = (d * (fc[bi] - bv) > 0 and d * (fo[bi] - bv) <= 0)
@@ -232,16 +253,22 @@ def day_rows(bars, sess_day, tfs=TFS):
                        "qual_band": qual[0], "qual_px": qual[1],
                        "n_stack": stack,
                        "poc_conf": bool(np.isfinite(pocv)
-                                        and abs(pocv - m_tf) <= TOL)}
+                                        and abs(pocv - m_tf) <= tol)}
                 if mech == "M1":
                     hit, out, mfe = walk(j0, d, entry, stop, ma15_1m)
                     rec.update({"m1_hit": hit, "m1_out": out, "mfe_r": mfe,
                                 "m1_dist_r": d * (m15 - entry) / risk})
                 else:
+                    nn, na, fn, fa, case = m2_targets(qual[0], d)
+                    rec["tgt_case"] = case
                     mfe_all = 0.0
-                    for lbl, (nm, arr) in zip(
-                            ("t1", "t2", "t3"),
-                            tgt_series["long" if d > 0 else "short"]):
+                    for lbl, nm, arr in (("near", nn, na), ("far", fn, fa)):
+                        if nm is None:
+                            rec.update({f"{lbl}_name": None,
+                                        f"{lbl}_hit": False,
+                                        f"{lbl}_out": np.nan,
+                                        f"{lbl}_dist_r": np.nan})
+                            continue
                         hit, out, mfe = walk(j0, d, entry, stop, arr)
                         tv = arr[p]
                         rec.update({f"{lbl}_name": nm, f"{lbl}_hit": hit,
@@ -423,21 +450,39 @@ def main() -> None:
                   f"{g.m1_out.mean():+8.3f} [{lo_:+.3f},{hi_:+.3f}]"
                   f"{'!' if lo_ > 0 else ' '}  {ps}")
 
-        print(f"\n§2 M2 CONTINUATION — no exit assumed; three structural "
-              f"targets side by side")
+        print(f"\n§2 M2 CONTINUATION — no exit assumed; NEAR/FAR targets "
+              f"selected relative to the FIRED band")
         for dr in ("long", "short"):
             g = Bt[(Bt.mech == "M2") & (Bt.dir == dr)]
-            print(f"   -- {dr}  n={len(g)}  {len(g)/nd:.2f}/day")
+            print(f"   -- {dr}  n={len(g)}  {len(g)/nd:.2f}/day   fired-band "
+                  f"cases: " + "  ".join(
+                      f"{k}:{v}" for k, v in
+                      g.tgt_case.value_counts().items()))
             if len(g) < 10:
                 print("      THIN")
                 continue
-            for lbl in ("t1", "t2", "t3"):
-                nm = g[f"{lbl}_name"].iloc[0]
-                lo_, hi_ = dboot(g, f"{lbl}_out")
-                print(f"      {nm:8s} medD {g[f'{lbl}_dist_r'].median():6.2f}R"
-                      f"  hit {g[f'{lbl}_hit'].mean()*100:5.1f}%  EV "
-                      f"{g[f'{lbl}_out'].mean():+8.3f} "
+            for lbl in ("near", "far"):
+                gg = g[g[f"{lbl}_name"].notna()]
+                if len(gg) < 10:
+                    print(f"      {lbl}: thin ({len(gg)})")
+                    continue
+                nms = "/".join(gg[f"{lbl}_name"].value_counts().index[:3])
+                lo_, hi_ = dboot(gg, f"{lbl}_out")
+                print(f"      {lbl:5s} ({nms:16s}) medD "
+                      f"{gg[f'{lbl}_dist_r'].median():6.2f}R  hit "
+                      f"{gg[f'{lbl}_hit'].mean()*100:5.1f}%  EV "
+                      f"{gg[f'{lbl}_out'].mean():+8.3f} "
                       f"[{lo_:+.3f},{hi_:+.3f}]{'!' if lo_ > 0 else ''}")
+            for case in ("mid", "band1", "other"):
+                gc = g[g.tgt_case == case]
+                if len(gc) < 10:
+                    continue
+                print(f"        [{case}] n={len(gc)}  near medD "
+                      f"{gc.near_dist_r.median():5.2f}R hit "
+                      f"{gc.near_hit.mean()*100:5.1f}% EV "
+                      f"{gc.near_out.mean():+7.3f} | far hit "
+                      f"{gc.far_hit.mean()*100:5.1f}% EV "
+                      f"{gc.far_out.mean():+7.3f}")
 
         print(f"\n§3 BATTERY")
         print(f"   MFE-in-R (bounded by stop), per mech x dir:")
@@ -459,14 +504,14 @@ def main() -> None:
             m2 = bt[bt.mech == "M2"]
             print(f"      X={x:4.2f}  n/day {len(bt)/nd:5.2f}  "
                   f"M1 EV {m1.m1_out.mean():+.3f} (n={len(m1)})  "
-                  f"M2 t1-hit {m2.t1_hit.mean()*100:5.1f}% (n={len(m2)})")
-        print(f"   cost sensitivity (M1 EV; M2 t1 EV) at 0.5/1.0/1.5pt:")
+                  f"M2 near-hit {m2.near_hit.mean()*100:5.1f}% (n={len(m2)})")
+        print(f"   cost sensitivity (M1 EV; M2 near EV) at 0.5/1.0/1.5pt:")
         m1 = Bt[Bt.mech == "M1"]
         m2 = Bt[Bt.mech == "M2"]
         for extra in (0.0, 0.5, 1.0):
             print(f"      @{0.5+extra:3.1f}pt  M1 "
-                  f"{(m1.m1_out - extra/m1.risk).mean():+.3f}   M2-t1 "
-                  f"{(m2.t1_out - extra/m2.risk).mean():+.3f}")
+                  f"{(m1.m1_out - extra/m1.risk).mean():+.3f}   M2-near "
+                  f"{(m2.near_out - extra/m2.risk).mean():+.3f}")
 
         print(f"\n   per-session breakdown (compact; no session verdicts "
               f"drawn):")
@@ -476,8 +521,44 @@ def main() -> None:
             m2 = g[g.mech == "M2"]
             print(f"      {s:7s} n/day {len(g)/nd:5.2f} | M1 n={len(m1):4d} "
                   f"EV {m1.m1_out.mean() if len(m1) else float('nan'):+.3f} | "
-                  f"M2 n={len(m2):4d} t1-hit "
-                  f"{m2.t1_hit.mean()*100 if len(m2) else float('nan'):5.1f}%")
+                  f"M2 n={len(m2):4d} near-hit "
+                  f"{m2.near_hit.mean()*100 if len(m2) else float('nan'):5.1f}%")
+
+    # ---- STACKING-TOLERANCE SWEEP — for SHAPE, not selection -------------
+    print("\n" + "=" * 100)
+    print(f"STACKING-TOLERANCE SWEEP — the declared {TOL:.0f}pt was imported "
+          f"from the confluence work and")
+    print("never checked against THIS population; the thinness is partly by "
+          "construction. Reported for")
+    print("shape only — the declared value stays declared, nothing is "
+          "picked.")
+    print("=" * 100)
+    print(f"   {'tol':>5s} {'tf':>3s} {'raw':>5s} {'fof/day':>8s} "
+          f"{'M1 n':>5s} {'M1 EV':>8s} {'M2 n':>5s} {'near hit':>9s} "
+          f"{'near EV':>8s} {'far hit':>8s} {'far EV':>8s}")
+    for tol in (TOL, 15.0, 20.0):
+        if tol == TOL:
+            Fs, Bs = F, B
+        else:
+            rows = []
+            for k, d_ in enumerate(days):
+                rows.extend(day_rows(bars, d_, tol=tol))
+                if k % 80 == 0:
+                    print(f"     tol={tol:.0f}  {k}/{len(days)}...",
+                          flush=True)
+            Fs = pd.DataFrame(rows)
+            Fs["t"] = pd.to_datetime(Fs.t)
+            Bs = cluster(Fs, bars, XDEC)
+        for tf in TFS:
+            bt = Bs[Bs.tf == tf]
+            m1 = bt[bt.mech == "M1"]
+            m2 = bt[bt.mech == "M2"]
+            print(f"   {tol:5.0f} {tf:3d} "
+                  f"{int((Fs.tf == tf).sum()):5d} {len(bt)/nd:8.2f} "
+                  f"{len(m1):5d} {m1.m1_out.mean():+8.3f} {len(m2):5d} "
+                  f"{m2.near_hit.mean()*100:8.1f}% "
+                  f"{m2.near_out.mean():+8.3f} "
+                  f"{m2.far_hit.mean()*100:7.1f}% {m2.far_out.mean():+8.3f}")
 
 
 if __name__ == "__main__":

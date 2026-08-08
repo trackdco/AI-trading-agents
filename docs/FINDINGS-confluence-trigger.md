@@ -147,3 +147,69 @@ London cell at 3m is 5 trades — noise. No session verdicts drawn.
 Nothing is adopted. No holdout exists for any of this — the bar-only venue
 is closed, so anything carried forward from this family validates on
 forward data only.
+
+
+---
+
+# ADDENDUM 2026-08-08 — M2 target fix, and the tolerance sweep
+
+## THE M2 TARGET FLAW, FIXED
+
+The first pass applied a fixed target set uniformly, which put the "near"
+target behind the entry whenever the fired band WAS that target. Targets are
+now selected **relative to the band that fired the trigger**: fired =
+VWAP-middle → near ∓1, far ∓2; fired = VWAP∓1 → near VAL/VAH, far ∓2; any
+other fired band → the next two bands in the trade direction (recorded).
+Same first-passage methodology, same-bar → stop wins.
+
+**The geometry artifact is gone** — near-target median distance is now
++0.35R to +0.84R (previously −0.14 to −0.34R) — **and the verdict does not
+change: M2 still does not price.**
+
+| TF | dir | n | near: medD / hit / EV | far: medD / hit / EV |
+|---|---|---|---|---|
+| 2m | long | 101 | 0.84R / 48.5% / −0.234 [−0.473,+0.044] | 2.89R / 29.5% / −0.266 |
+| 2m | short | 87 | 0.47R / 52.9% / **−0.263 [−0.442,−0.091]** | 2.14R / 28.0% / **−0.315 [−0.583,−0.049]** |
+| 3m | long | 89 | 0.65R / 56.2% / −0.129 | 1.93R / 36.5% / −0.096 |
+| 3m | short | 69 | 0.35R / 71.0% / −0.027 | 1.75R / 38.2% / +0.148 [−0.308,+0.702] |
+
+So the first pass's *verdict* survives its own flaw; the *mechanism* stated
+in BR-75 ("first target behind the entry") was an artifact of my fixed-set
+construction and is corrected: **with honest targets, the population simply
+does not continue far enough, often enough, to pay a −1R stop.** 7 of 8
+target-cells negative; 2m-short clears zero on the negative side at both.
+
+**The case split is the informative part:**
+
+- **`band1` (fired through ±1 itself) is the bad case everywhere** — the
+  majority case (55–74 of each cell), near target ~0.2–0.5R away, EV −0.14
+  to −0.36. Price that just crossed the outer band is near exhaustion, not
+  ignition.
+- **`mid` (fired through the VWAP middle) is the only positive corner**:
+  3m long +0.223 near / 3m short +0.168 near and **+0.566 far**, and it is
+  the one cell where the far target out-earns the near one. n = 20–26 per
+  cell, uncorrected among many — a base-rate observation, nothing more.
+
+## THE TOLERANCE SWEEP — shape, not selection
+
+10pt was imported from the confluence work and never checked against this
+population. Swept at 10 / 15 / 20pt, everything else fixed:
+
+| tol | TF | raw | fof/day | M1 EV | M2 near EV |
+|---|---|---|---|---|---|
+| **10** | 2m | 350 | 0.97 | **+0.153** | −0.247 |
+| 15 | 2m | 408 | 1.12 | +0.105 | −0.184 |
+| 20 | 2m | 439 | 1.20 | +0.087 | −0.183 |
+| **10** | 3m | 242 | 0.70 | **+0.099** | −0.084 |
+| 15 | 3m | 286 | 0.82 | +0.088 | −0.090 |
+| 20 | 3m | 316 | 0.91 | +0.079 | −0.131 |
+
+**The shape is monotone and answers the construction question:** widening
+the tolerance buys ~25% more triggers and pays for them with monotonically
+decaying M1 quality at both timeframes, while M2 stays negative throughout.
+The thinness is real, not an artifact of a too-tight stack — **the tighter
+stack is the better stack**, and the declared 10pt sits on the good side of
+its own curve. Nothing is picked; the declared value stays declared.
+
+Standing unchanged: fit-only, no holdout (none exists for this family),
+nothing adopted.
