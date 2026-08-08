@@ -32,6 +32,10 @@ from src.htf_ma.levels import NY, bb_ma_asof, session_tag           # noqa: E402
 TICK = 0.25
 COST_PTS = 0.5
 FIT_START, FIT_END = "2025-06-01", "2026-07-31"
+# --out-suffix lets a calibration run write beside the published artifacts
+# instead of over them, so the fit-side check happens before anything is
+# replaced.
+SUF = ""
 LOOKBACK, PEN_TICKS, RECLAIM_A, RECLAIM_B = 8, 4, 1, 3
 EXCL = {"no_next_open": 0, "gap_through_stop": 0}
 
@@ -184,12 +188,28 @@ def main() -> None:
     n_days = None
     if "--days" in sys.argv:
         n_days = int(sys.argv[sys.argv.index("--days") + 1])
+    global SUF
+    if "--out-suffix" in sys.argv:
+        SUF = sys.argv[sys.argv.index("--out-suffix") + 1]
     bars = load_bars()
     bars["mi"] = pd.to_datetime(bars.ts_event, utc=True).dt.tz_convert(NY)
     bars = bars.set_index("mi").sort_index()[["open", "high", "low", "close",
                                               "volume"]]
-    # prior stopped attempts, from the seven-locus census (fit rows only)
-    L = pd.read_parquet(ROOT / "output/htf_ma_census/levels_fit_v1.parquet")
+    # PRIOR STOPPED ATTEMPTS — span-aware.
+    #
+    # DEFECT FIXED 2026-08-07: this read levels_fit_v1.parquet ALONE, so on
+    # any non-fit day there were no prior stopped attempts and cell (b) could
+    # never fire. sweep_sealed.parquet came back 100% sweep_a, which made
+    # holdout H4 unevaluable and H1 void (H1's book is composite + sweep_b).
+    # The fit-side lookup is UNCHANGED in content — levels_fit_v1 and
+    # levels_fit are identical on every field this builder consumes
+    # (t, stop, direction, out_hold, mfe_r, risk, out_ship) and on the
+    # derived `stopped` flag; levels_fit merely adds three timestamp columns.
+    _lv = [ROOT / "output/htf_ma_census/levels_fit.parquet",
+           ROOT / "output/sealed/levels_sealed.parquet",
+           ROOT / "output/htf_ma_census/levels_gray.parquet"]
+    L = pd.concat([pd.read_parquet(f) for f in _lv if f.exists()],
+                  ignore_index=True)
     L = L[L.out_ship.notna() & (L.risk > 0)]
     L["stopped"] = (L.out_hold <= -1.0) & (L.mfe_r < 3.0)
     S = L[L.stopped]
@@ -215,11 +235,16 @@ def main() -> None:
     out = ROOT / "output/htf_ma_census"
     if fit:
         F = pd.DataFrame(fit)
-        F.to_parquet(out / "sweep_fit.parquet", index=False)
+        F.to_parquet(out / f"sweep_fit{SUF}.parquet", index=False)
         print(F.groupby(["cell", "side"]).size().to_string())
     if sealed:
         pd.DataFrame(sealed).to_parquet(
-            ROOT / "output/sealed/sweep_sealed.parquet", index=False)
+            ROOT / f"output/sealed/sweep_sealed{SUF}.parquet", index=False)
+    if gray:
+        # was computed and silently discarded, leaving 2025-01..05 with no
+        # sweep rows at all — half of holdout Block B
+        pd.DataFrame(gray).to_parquet(
+            out / f"sweep_gray{SUF}.parquet", index=False)
     print(f"SWEEP LOCUS: fit={len(fit):,} | sealed={len(sealed):,} "
           f"(written, NOT read) | gray={len(gray):,} | excl={EXCL}")
 
