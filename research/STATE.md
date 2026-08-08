@@ -1,11 +1,15 @@
 # STATE — canonical figures for the NQ trading project
 
-**Source of truth as of 2026-08-07.** Every figure here was recomputed from the underlying
+**Source of truth as of 2026-08-08.** Every figure here was recomputed from the underlying
 file, not copied from a report. Anything quoting a number cites **this file**, not another
 report. Where a report disagrees, this file wins — see
 [`mismatch-report.md`](mismatch-report.md).
 
-N_trials: **0**. Holdout: **SEALED, never read**.
+N_trials: **0**. Holdout: **SEALED. No bar content read; no measurement made.** One
+seal-boundary exposure is on record — 2 rows from each of 287 holdout-dated MBP-10 files,
+read during a file inventory on 2026-08-08. Declared in
+[`target-stop-reconciliation.md`](vwap-bb/target-stop-reconciliation.md) §7; both scripts are
+now guarded.
 
 ---
 
@@ -23,12 +27,33 @@ N_trials: **0**. Holdout: **SEALED, never read**.
 | **Holdout (SEALED)** | **257 sessions**, 2025-02-03 → 2026-01-30 | 233 full-1380; index only, no bar content read |
 | Sessions < 1380 bars | **108** | 71 missing 1–2 min, 34 holiday early close, 3 anomalies |
 | Anomalies | 2023-04-07 (913), 2025-01-09 (930), 2025-11-28 (508) | Good Friday, national day of mourning, day after Thanksgiving |
-| February 2026 | **0 sessions — absent** | the hand-log month is not in the data |
+| February 2026 | **0 BAR sessions** | the hand-log month has no bars — but see MBP-10 below |
 | Contract rolls | 12 quarterly, ~250 pt unadjusted gaps | 2 sessions contain an intra-session switch, both in the evening |
 
 Bars are **open-labelled** at source (verified: median \|book_mid − bar.close\| 0.38 pts vs
-6.69 vs bar.open). MBP-10 condensed files run to 2026-07-22 but are **irrelevant** — VWAP, BB
-and volume profile are all bar-computable.
+6.69 vs bar.open).
+
+### MBP-10 — corrected 2026-08-08
+
+**510 MBP-10 CSV files sit in the repository root.** The earlier entry here ("irrelevant") was
+wrong. Census: `research/star-trading/tools/mbp_census.py`.
+
+| family | files | dates | ET window | rows/file | symbol |
+|---|---|---|---|---|---|
+| `glbx-mdp3-<date>.mbp-10_condensed.csv` | 295 | 2025-06-02 → 2026-07-22 | 03:00–04:59 | 120 | NQ.v.0 |
+| `condensed_glbx-mdp3-<date>.mbp-10.csv` | 115 | 2025-06-02 → 2025-11-20 | 08:00–10:29 | 150 | NQ.c.0 |
+| `condensed_GLBX-<hash>.csv` | 100 | 2026-02-02 → 2026-07-08 | 08:00–10:29 | 150 | NQ.c.0 |
+
+**All 19 hand-log dates have a file; 17 of 20 February 2026 trading days have one overlapping
+RTH.** One book snapshot per minute (`ts_event` at `:00`, flags 128) — top-10 book plus the
+single event that produced it.
+
+**Cannot be derived:** intra-minute high/low (no OHLC, no wick, no trigger candle), traded
+volume (no VWAP, no POC), anything after 10:29 ET. **The detector cannot be run on this
+schema** — three of its four inputs are absent. What it *can* measure is the spread; see COSTS.
+
+**Classification gap.** 2026-02-01 → 2026-07-22 (223 files) is neither workbench nor holdout in
+`config/data_split.yaml`. Needs a ruling.
 
 ## HAND LOG
 
@@ -160,27 +185,92 @@ Cost-adjusted breakeven `p₀ = (s+c)/(s(1+R))` at R=1.5, recomputed:
 
 ## COSTS
 
-**0.25 / 0.50 / 1.00 points round-trip** (lean / base / adverse). NQ = $20/point, tick 0.25.
-Basis: commission ≈ $4.50 RT = 0.225 pt, plus stop-exit slippage. Entry is a limit (no spread
-paid), target is a limit at a level.
+**Declared ladder: 0.25 / 0.50 / 1.00 points round-trip** (lean / base / adverse). NQ =
+$20/point, tick 0.25. Basis: commission ≈ $4.50 RT = 0.225 pt, plus stop-exit slippage. Entry
+is a limit (no spread paid), target is a limit at a level, so the spread is crossed once — on
+the stop exit.
 
-**These are declared assumptions, not measurements.** The Stage 0 audit established there is
-no trade-level data — 3 trade records across 67,419 order-book rows — so no execution-quality
-estimate is possible from what is held. **UNVERIFIED by construction.**
+**Superseded 2026-08-08: the spread is now measured, not assumed.** MBP-10 book snapshots,
+**5,781 RTH samples over 99 sessions, 2026-02-02 → 2026-07-08** (post-holdout only;
+`mbp_feb2026.py`):
+
+| | value |
+|---|---|
+| top-of-book spread, median | **0.75 pt (3 ticks)** |
+| p25 / p75 / p95 | 0.75 / 1.00 / 1.75 |
+| ticks | 2t 13.3% · **3t 44.7%** · 4t 23.4% · ≥5t 18.6% |
+| inside size (bid+ask) | median 3 contracts |
+| **implied stop-exit cost, median** | **0.975 pt** (spread + 0.225 commission) |
+| implied stop-exit cost, p90 | **1.725 pt** |
+
+Not a cancel artefact — adds median 0.75, modifies 0.75, cancels 1.00.
+
+> **The declared ladder is optimistic by about one step.** "Lean" 0.25 is below one tick of
+> spread and unattainable on a stop exit; "adverse" 1.00 is roughly the **median**.
+
+Breakeven at R=1.5, recomputed at the measured cost:
+
+| stop s | c=0.50 (declared base) | **c=0.975 (measured median)** | c=1.725 (measured p90) |
+|---|---|---|---|
+| 3.12 (spec geometry) | 46.41% | **52.50%** | 62.12% |
+| 10.00 | 42.00% | **43.90%** | 46.90% |
+| 20.00 | 41.00% | **41.95%** | 43.45% |
+| 35.00 (hand log, in-scope) | 40.57% | **41.11%** | 41.97% |
+
+**Caveats:** point samples at minute boundaries, not time-weighted; 08:00–10:29 ET only;
+continuous `NQ.c.0`; 2026-02 → 2026-07, which is neither workbench nor a period any result is
+fitted on. A first measurement, not a settled cost model.
 
 ## OPEN ITEMS
 
 | item | blocks | status |
 |---|---|---|
+| **§6 target rule is the binding constraint** | Gate 4; the whole feasibility question | Rule 5 tests the **nearest** level (median 7.95 pts) while the menu holds levels at hand-log distances (nearest liquidity extreme median 75.8 pts; 63.3% of records have a rung ≥155 pts). Diagnosed in [`target-stop-reconciliation.md`](vwap-bb/target-stop-reconciliation.md) |
+| **§6 rule 2 defaults are ambiguous, and unimplemented** | Gate 4 | Pattern A's default target is "VWAP middle", but 85.4% of entries sit *inside* the firing cluster, which contains it. The A/B/B2 taxonomy (§4) is not implemented at all. Needs Angus |
 | **Vault selection rule unstated** | Gate 4; any backtest | Needs a spec amendment (Angus). Time-priority is implied by "one position at a time" but never written |
-| **Spec stop geometry ~11× tighter than the hand log** | Every R-normalised measurement | E1 + 1-tick-beyond-wick gives median R 3.12 pts vs 35.00. Either the freeze or the E1 pairing is wrong |
+| **Stop anchor unconfirmable from data** | Gate 4 | Alternatives measured (prior swing 16.29, 2×ATR 25.32 vs frozen 5.62 pts). The hand log records **no entry/stop/target prices**, so no anchor can be confirmed. Requires Angus or marked-up charts |
+| **Measured spread exceeds the declared cost ladder** | Gate 3; every breakeven figure | Median stop-exit cost 0.975 pt vs a declared base of 0.50. See COSTS. Gate 3's PASS should be re-derived at the measured cost |
+| **2026-02-01 → 2026-07-22 unclassified** | Any use of the MBP files | 223 files outside both workbench and holdout in `data_split.yaml`. Needs a ruling |
+| **Seal-boundary read, 2026-08-08** | Nothing — no verdict rests on it | 2 rows read from each of 287 holdout-dated MBP files during inventory. Declared in [`target-stop-reconciliation.md`](vwap-bb/target-stop-reconciliation.md) §7; both scripts now guarded |
 | **Pre-open warm-up bias** | Study design | BB(20)/ATR(20) at 09:36 read bars 1.65× quieter than RTH. Measured effect on counts: −0.8% |
 | **Parity readings not supplied** | spec-1 Step 4 sign-off | Angus must provide chart values for 2025-01-15 09:48 and 2025-01-22 09:50 |
-| **Calibration gate downgraded** | Phase 2 sign-off | Irrecoverable — the 28 hand trades are in a month the data does not contain |
+| **Calibration gate downgraded** | Phase 2 sign-off | Irrecoverable *as a bar-based gate* — Feb 2026 has no bars, and the MBP schema cannot produce the detector's inputs |
 | **V3 unreachable under RTH** | Tournament sizing | Management axis 5 → 4, configuration space 90 → 72. Not yet actioned in the spec |
 | **"+4.23R" in three documents** | Nothing — no verdict rests on it | Correct to 3.678 (in-scope) in a separate pass |
+
+**Resolved this pass:** "Spec stop geometry ~11× tighter than the hand log" — diagnosed. It is
+not a stop-anchor problem in isolation: the *target* is 19.5× nearer as well, so both ends are
+compressed together. The R-multiple therefore looks healthy while the **cost ratio** is 31% of
+risk. H1 (entry timeframe) is rejected — the gap is 8.5–11.2× within every timeframe.
 
 ---
 
 *Recomputation scripts: `research/star-trading/tools/{alpha_data,vwapbb_signals,vwapbb_opportunity,vwapbb_analyse}.py`.
 Full comparison against reported values: [`mismatch-report.md`](mismatch-report.md).*
+
+---
+
+## GEOMETRY (added 2026-08-08)
+
+Source: `research/vwap-bb/data/geometry.parquet` — 63,195 records, **pre-RR-floor**, 496
+sessions, warmup `prior`. Reading A: 33,993 records, 490 sessions.
+
+| figure | value |
+|---|---|
+| Stop, wick+1tick, **pre**-RR-floor median | **5.62 pts** |
+| Stop, wick+1tick, **post**-RR-floor median | **3.12 pts** (`candidates.parquet`) |
+| Triggers with no valid wick stop (entry ≤ stop) | **29.6%** |
+| Entry inside the firing cluster | **85.4%** |
+| Target: nearest rung, median | **7.95 pts** |
+| Target: 2nd / 3rd rung, median | 20.88 / **37.36 pts** |
+| Target: nearest liquidity extreme, median | **75.76 pts** |
+| Target: deepest rung in menu, median | **192.36 pts** |
+| Hand log, in-scope winners' implied target | **155.2 pts** (median, n=13) |
+| Records with a rung ≥ 155.2 pts available | **63.3%** |
+
+> The 1.5R floor **selects for small stops**: it moves the median stop from 5.62 to 3.12.
+
+Feasibility map (min-stop floor × target rung, tripwire 0.4862 as a selector-free session
+floor) is in [`target-stop-reconciliation.md`](vwap-bb/target-stop-reconciliation.md) §5. The
+feasible region is **not empty**: every 3rd-nearest cell clears the tripwire, including a
+35-point floor (0.765). The nearest-target column fails from a 20-point floor upward.
