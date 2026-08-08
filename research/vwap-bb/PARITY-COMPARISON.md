@@ -160,3 +160,102 @@ diagnoses; it does not fix.
 **Still outstanding from the sheet and unrelated to any of the above:** the two judgement calls —
 would you have taken this trade, and **where exactly does the stop go**. The second settles open
 item 10.2 and no amount of data can substitute for it.
+
+---
+
+# ADDENDUM — the candle OHLC, and a behavioural finding bigger than the parity gap
+
+## 1. Price data: confirmed matching
+
+| | Angus | detector | diff |
+|---|---|---|---|
+| O | 21299.00 | 21299.50 | 0.50 |
+| H | 21327.75 | 21327.75 | **0.00** |
+| L | 21295.00 | 21295.00 | **0.00** |
+| C | 21324.50 | 21324.25 | 0.25 |
+
+**4 of 4 within half a point, two exact.** Combined with the BB basis (0.35) and the session
+high (0.25, same minute), **the price series is settled: it agrees.** Volume remains the only
+live suspect for the VWAP gap, and it is still untested — Angus has not supplied a volume figure.
+
+## 2. At 09:48 the detector agrees with Angus: NO TRADE
+
+Angus: *"Way too high for a long, definitely no reason to short either… it had just gone up 141
+pts in last 8 minutes."*
+
+The detector fires **nothing** at 09:48 — no trigger on any timeframe, any reading. Checked
+explicitly. **The two agree.**
+
+That is a real behavioural match, and it is worth more than the numeric parity would have been
+on this minute.
+
+## 3. But the detector's first trade of the day is 12:03 — and Angus sees a setup at ~09:41
+
+On 2025-01-15 the detector produces **19 candidates**, the first at **12:03** (a long). Under A7
+first-come, that is the one taken. **Nothing at all between 09:36 and 12:03.**
+
+Angus's chart annotation marks a setup earlier and lower: *"Broke through bollinger band and
+displacement candle back inside of it"* — a §4 pattern-B reclaim. That is a setup he says he
+would have taken, and the detector took nothing.
+
+**The detector did see it.** Cascade over 09:36 → 10:10, reading A, all timeframes:
+
+| drop reason | candidates |
+|---|---|
+| **§7 invalidation-at-entry** | **30** (23 long, 7 short) |
+| confluence below minimum | 21 |
+| no trigger fired | 8 |
+| **survived all filters** | **0** |
+
+The long triggers at **09:41, 09:42, 09:44, 09:45** — exactly Angus's window — all fire, and all
+die to **§7 invalidation-at-entry**.
+
+## 4. What that filter is actually doing
+
+§7: *"Invalidation-at-entry: trigger candle simultaneously touching the opposing ±1σ → stand
+down. **[Hypothesis — test]**"*
+
+Implemented as: for a long, if the trigger candle's high ≥ NY VWAP +1σ, stand down.
+
+On this session, how often that condition is true, by 30-minute bucket:
+
+| 09:30 | 10:00 | 10:30 | 11:00–12:59 | 13:00 | 13:30 | 14:00–15:59 |
+|---|---|---|---|---|---|---|
+| 79% | **100%** | 40% | 0% | 33% | 97% | **100%** |
+
+**On a trending day this filter blocks with-trend longs almost entirely.** It only stops firing
+during the 11:00–13:00 lull when price returns to VWAP — which is precisely why the detector's
+only long is at 12:03, and why everything after 13:00 is a **short on a session that rallied
+from 21180 to 21430.**
+
+Stated plainly: **on this day the frozen spec fades a trend.** That is a consequence of a rule
+the spec itself marks as an untested hypothesis, and nobody has yet checked it against intent.
+
+## 5. This is a gate-4b finding, not a parity finding
+
+Gate 4b (LITERALISM, added to the runbook this week): *a stated rule frozen to its most literal
+reading can produce behaviour the author never intended.* This is the fourth instance, and the
+first found by putting the author's own judgement next to the detector's on the same chart.
+
+**Two readings of "opposing ±1σ", and the spec does not disambiguate:**
+
+- **(a) As implemented** — for a long, the +1σ *above*, the band you are moving toward. Rationale:
+  if the candle already reaches it, the move is spent. Consistent with Angus's own "way too high
+  for a long" at 09:48.
+- **(b) The other reading** — for a long, the −1σ *below*, the band that would invalidate the
+  setup if price fell back through it.
+
+Reading (a) blocks 30 candidates in a 34-minute window. Reading (b) would block almost none.
+**The rule's meaning is worth more than any parameter in the spec, and it has never been
+settled.**
+
+**Nothing has been changed.** No filter altered, no parameter touched. This is diagnosis.
+
+## 6. Open questions for Angus, in priority order
+
+1. **Is (a) or (b) what you mean by invalidation-at-entry?** This single answer changes the
+   traded population more than anything else outstanding.
+2. **The 09:41–09:45 setup you'd have taken — should the strategy take it?** If yes, the
+   invalidation rule as implemented is wrong. If no, it is right and 12:03 is correct behaviour.
+3. **Volume of the 09:46 candle** — still the decisive test for the VWAP gap. Archive: 4,279.
+4. **"Session low"** — reading-scope error, or a genuinely different session definition?
