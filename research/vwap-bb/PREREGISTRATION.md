@@ -325,6 +325,15 @@ stop, entry or target **prices**.
 **The 68.4% win rate was achieved by a different trade than the one this spec places.** It is
 context, not a prior.
 
+**And by a different *decision*, not only a different trade. [ADDED 2026-08-08]** Asked why he
+would skip a mechanically valid setup, Angus cited **unfilled range** and **no liquidity swept**.
+Neither is in the specification — the first appears nowhere at all, the second only as a target
+concept, with its tool (MIG LiquidityEdge) explicitly excluded and deferred to "a possible future
+module". **The hand log was produced by a process applying these filters; the frozen spec is not.
+The spec will take trades its author rejects.** See
+[`MISSING-ENTRY-CRITERIA.md`](MISSING-ENTRY-CRITERIA.md). This reopens gate 4, and the gate that
+would have caught it — §12.2's trade-by-trade calibration — is irrecoverable.
+
 ### 8.3 Nineteen trades cannot separate a real edge from a good month
 
 The in-scope hand log is **19 trades over 19 sessions in a single month**. Wilson 95% is
