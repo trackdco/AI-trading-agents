@@ -762,3 +762,47 @@ only a rounding convention with no tunable value.
 
 **N_trials after A14: 0.** No value here was chosen by comparing outcomes; the direction is fixed
 by a stated conservatism principle applied identically to every price, before computation.
+
+### A15 — 2026-08-08 — §6.5, the ladder collapses rungs within one tick, formalising existing behaviour
+
+**Finding that forced this.** 2a's test D5 (Code-Path Verification Suite, `STATE.md`,
+2026-08-08) asserted that two menu levels 0.25 pt apart should walk the ladder as two distinct
+rungs. It failed: `ladder()` collapses any level within one tick of the previously kept rung and
+keeps the nearer one, and **no clause in §6.5 or A4 authorises that** — the text says only *"Walk
+the ladder of opposing menu levels outward from entry."* D5's expectation had no spec clause
+behind it and was reclassified `UNSPECIFIED IN SPEC`, along with D4, whose pass on the same
+undocumented behaviour was equally uninformative.
+
+**Rule, formalising what the code already does — when two menu levels fall within one tick of
+each other, they collapse to a single rung, and the rung nearer to entry is kept.**
+
+**Why "within one tick" and not some other bound.** Two menu levels 0.25 apart are not two
+distinct order prices — NQ trades in 0.25 increments, so they are, for execution purposes, the
+same level. Treating them as separate rungs would let the RR-floor walk (§6.5) count a
+near-duplicate as a second, independent opportunity to clear the floor, which is not what
+"outward from entry" describes.
+
+**Why the nearer rung, not the further one.** The nearer rung is the one actually being traded
+against — the same principle §10.1(4) level 4 already uses to break a tie between candidate
+clusters ("Cluster nearest the entry price"). Keeping the further rung would let the ladder claim
+a target beyond what the local cluster of levels actually justifies.
+
+**The boundary, stated precisely: "within" means a gap of ≤ 1 tick (0.25 pt) collapses; a gap of
+> 1 tick does not.** Two levels exactly one tick apart (0.25) remain **two** distinct rungs — the
+code's existing `abs(x - out[-1]) > TICK` test is `>`, strict, so equality collapses. This matches
+the sense of "within one tick" as inclusive of the tick itself.
+
+**The alternative — never collapse, and walk every raw menu level as its own rung — is recorded
+as an untested branch** in `OUT-OF-SCOPE-BRANCHES.md`, not run: it is a behaviour change to a
+component (the target ladder) that a live trade record already depends on, and evaluating it now
+would be comparing outcomes to choose a ladder rule.
+
+**No code changes.** `ladder()` in `vwapbb_a7_selector.py` already implements this rule exactly;
+A15 states in the specification what the implementation was silently already doing. **Tests D4
+and D5 are rewritten under item 6** to assert this rule directly, rather than asserting nothing.
+
+**Tag: [FIAT]** — a de-duplication convention with one bound (1 tick), which was already implicit
+in the code and is not newly invented. **Free-parameter count unchanged.**
+
+**N_trials after A15: 0.** No behaviour changed; a description was added for a rule that already
+governed every admitted trade.

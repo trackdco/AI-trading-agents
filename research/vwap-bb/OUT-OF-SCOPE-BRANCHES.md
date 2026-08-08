@@ -186,3 +186,21 @@ recompute, specifically to avoid choosing a number after seeing its effect. Runn
 convention now, after A14's effect is known, would be exactly that — a comparison of outcomes
 used to pick a rounding rule, which is a parameter search and consumes N_trials under the
 project's own standing rule. **It stays untested for that reason, not because it is implausible.**
+
+---
+
+## 8. UNTESTED BRANCH — A15's ladder collapse, the never-collapse alternative [ADDED 2026-08-08]
+
+**A15 formalised the target ladder's existing behaviour: menu levels within one tick collapse to
+a single rung, keeping the nearer one.** The alternative — never collapse, walk every raw menu
+level as its own rung regardless of spacing — is a coherent reading of §6.5's *"Walk the ladder of
+opposing menu levels outward from entry"* taken fully literally, and is recorded here, unevaluated.
+
+| | A15 (in force) | never-collapse (untested) |
+|---|---|---|
+| Two levels ≤1 tick apart | one rung, the nearer kept | two rungs, both walked |
+| Effect on the RR-floor walk | a near-duplicate cannot supply a second, independent chance to clear the floor | it can |
+
+**Why it is not run:** it is a behaviour change to the target ladder that every admitted trade in
+this project already depends on, and evaluating it now — after the collapsing version's admission
+counts and geometry are already known — would be choosing a ladder rule by comparing outcomes.
