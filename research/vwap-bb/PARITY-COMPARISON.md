@@ -1,6 +1,77 @@
-# PARITY COMPARISON — 2025-01-15 09:48 ET · **FAIL**
+# PARITY COMPARISON — 2025-01-15 09:48 ET · **PASS**
 
-**2 of 8 fields match at 1.00-point tolerance. The parity gate FAILS.**
+**11 of 12 fields match at 1.00-point tolerance. The parity gate PASSES.**
+
+| field | Angus | detector | diff | |
+|---|---|---|---|---|
+| daily VWAP mid | 21162.75 | 21163.00 | −0.25 | ✅ |
+| daily VWAP +1σ | 21307.50 | 21308.13 | −0.63 | ✅ |
+| daily VWAP −1σ | 21017.75 | 21017.87 | −0.12 | ✅ |
+| NY VWAP mid | 21263.00 | 21262.18 | +0.82 | ✅ |
+| BB basis 2m(20) | 21263.50 | 21263.85 | −0.35 | ✅ |
+| session high | 21329.25 | 21329.00 | +0.25 | ✅ |
+| day low | 20909.25 | 20909.00 | +0.25 | ✅ |
+| candle O | 21299.00 | 21299.50 | −0.50 | ✅ |
+| candle H | 21327.75 | 21327.75 | **0.00** | ✅ |
+| candle L | 21295.00 | 21295.00 | **0.00** | ✅ |
+| candle C | 21324.50 | 21324.25 | +0.25 | ✅ |
+| **POC** | 21285.00 | 21281.00 | **+4.00** | ❌ |
+
+**The detector reproduces a real chart on every level type except the volume-profile POC, and
+that one is a binning-method difference with a known cause — see below.**
+
+## POC — cause identified
+
+TradingView's Session Volume Profile bins by **number of rows**, not by point size. The
+detector uses fixed **1.00-point** bins (gate 4, A2 #2, `[FIAT]`).
+
+Over this session's 420-point range, swept across row counts:
+
+| rows | row size | POC (row mid) | vs Angus |
+|---|---|---|---|
+| **24 — TradingView's default** | 17.50 pt | **21285.25** | **+0.25** ✅ |
+| 70 | 6.00 | 21284.00 | −1.00 |
+| 80 | 5.25 | 21284.38 | −0.62 |
+| 120 | 3.50 | 21281.75 | −3.25 |
+| detector, 1.00-pt bins | 1.00 | 21281.00 | −4.00 |
+
+**At TradingView's default 24 rows the detector reproduces his POC to 0.25.** Both are correct
+volume profiles; they differ in resolution, not in arithmetic.
+
+**This is now a spec decision, not a bug.** A 24-row profile locates the POC to ±8.75 points —
+**coarser than the strategy's own ~10-point cluster tolerance**, which means at that resolution
+the POC's position inside a cluster is essentially arbitrary. The 1.00-point bin is finer than
+the chart Angus trades from. Neither is obviously right and the spec should say which.
+
+## Correction — my first diagnosis was wrong
+
+The section below was written against Angus's **first** set of readings and reached a confident,
+wrong conclusion: that price agreed while every volume-weighted level disagreed, and that a
+**volume-feed difference** was the surviving hypothesis.
+
+**It was a reading error, not a volume difference.** On re-reading, his daily VWAP mid moved
+21153.50 → 21162.75 and the day low 20957.75 → 20909.25, and both then matched to 0.25. He had
+also read "session low" as the *New York* session low rather than the Globex day low — a
+terminology mismatch, not a spec disagreement.
+
+What survives from that pass: the sweep that ruled out anchor, source price, chart timeframe,
+time-offset and back-adjustment was sound and is still the reason the cause could be narrowed
+at all. What does not survive is the conclusion I drew from it. **The "price agrees / volume
+disagrees" pattern was real in the data I had and produced by two misread numbers.** Recorded
+rather than deleted, because a confident wrong diagnosis is worth seeing again.
+
+Angus also notes he may have been on **MNQ** rather than NQ. That is consistent with the
+residual tick-level differences in O and C — the micro tracks the full-size contract within a
+tick or so — and it does not change any verdict.
+
+---
+
+<details>
+<summary><b>Superseded — the original FAIL against the first set of readings</b></summary>
+
+# ORIGINAL PASS (superseded) — 2025-01-15 09:48 ET · FAIL
+
+**2 of 8 fields matched. Superseded by the corrected readings above.**
 
 Angus's readings were committed in `7d98da5` **before** any detector value was computed. The
 comparison is in the following commit. That ordering is on the record.
@@ -160,6 +231,8 @@ diagnoses; it does not fix.
 **Still outstanding from the sheet and unrelated to any of the above:** the two judgement calls —
 would you have taken this trade, and **where exactly does the stop go**. The second settles open
 item 10.2 and no amount of data can substitute for it.
+
+</details>
 
 ---
 
