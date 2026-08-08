@@ -1,0 +1,111 @@
+{
+ "fail": 0,
+ "pass": 15,
+ "results": [
+  [
+   "SF1",
+   "4.1, long, stop only",
+   "'stop'",
+   "'stop'",
+   "PASS"
+  ],
+  [
+   "SF2",
+   "4.1, long, target only",
+   "'target'",
+   "'target'",
+   "PASS"
+  ],
+  [
+   "SF3",
+   "4.1, long, neither touched",
+   "None",
+   "None",
+   "PASS"
+  ],
+  [
+   "SF4",
+   "4.1 \"ambiguous bars resolve STOP-FIRST\", long, both touched",
+   "'stop'",
+   "'stop'",
+   "PASS"
+  ],
+  [
+   "SF5",
+   "4.1, short, stop only",
+   "'stop'",
+   "'stop'",
+   "PASS"
+  ],
+  [
+   "SF6",
+   "4.1, short, target only",
+   "'target'",
+   "'target'",
+   "PASS"
+  ],
+  [
+   "SF7",
+   "4.1, short, neither touched",
+   "None",
+   "None",
+   "PASS"
+  ],
+  [
+   "SF8",
+   "4.1 STOP-FIRST, short, both touched",
+   "'stop'",
+   "'stop'",
+   "PASS"
+  ],
+  [
+   "SF9",
+   "touch convention, inclusive, long stop exact",
+   "'stop'",
+   "'stop'",
+   "PASS"
+  ],
+  [
+   "SF10",
+   "touch convention, inclusive, long target exact",
+   "'target'",
+   "'target'",
+   "PASS"
+  ],
+  [
+   "SF11",
+   "touch convention, inclusive, short stop exact",
+   "'stop'",
+   "'stop'",
+   "PASS"
+  ],
+  [
+   "SF12",
+   "touch convention, inclusive, short target exact",
+   "'target'",
+   "'target'",
+   "PASS"
+  ],
+  [
+   "SF13",
+   "4.1 STOP-FIRST, long, both touched exactly",
+   "'stop'",
+   "'stop'",
+   "PASS"
+  ],
+  [
+   "SF14",
+   "4.1 STOP-FIRST, short, both touched exactly",
+   "'stop'",
+   "'stop'",
+   "PASS"
+  ],
+  [
+   "SF15",
+   "4.1, degenerate zero-range bar, no touch",
+   "None",
+   "None",
+   "PASS"
+  ]
+ ]
+}
