@@ -535,6 +535,10 @@ V1 / V2 / V4 they diverge and §7.3 must be redone.
 
 **This document is not in force until all four are resolved. None may be filled by inference.**
 
+> **Prepared for signing, 2026-08-08:** [`PASS-MARKS-FOR-SIGNING.md`](PASS-MARKS-FOR-SIGNING.md)
+> restates all four items with options, commitments and a recommendation each — fifteen minutes,
+> not a research task. **Nothing has been signed. This section still governs.**
+
 ### 10.1 Parity chart readings — OPEN
 
 Required: reference chart values for **2025-01-15 09:48 ET** and **2025-01-22 09:50 ET** —
