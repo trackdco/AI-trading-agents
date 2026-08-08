@@ -320,12 +320,27 @@ first"* — therefore coincide:
 **Every fully-losing session in the sealed run is exactly 50% deeper than the spec permits**, and
 any drawdown built from such sessions scales by the same factor.
 
-**Stated precisely, because "50% worse" is not uniformly true.** Sessions with fewer than two
-losses are unaffected. Sessions reaching two losses get a third trade the spec forbids — if it
-loses, that session is 1.5× worse; **if it wins, that session is better than the spec would
-have been.** So the *worst case* is unambiguously 1.5× worse and the *tail is fatter*, while
-the *average* drawdown could move either way depending on how those third trades resolved — a
-number that is in the sealed file and has not been read.
+**The carve-out is unambiguously conservative, because of which statistic binds.** For a
+trailing-drawdown account the binding statistic is the **peak-to-trough excursion**, not the
+mean. A single breaching session ends the account regardless of what the average across 501
+sessions looks like. And the tail is **guaranteed** worse without the halt: every session that
+reaches the halt condition and then loses its third trade is exactly 1.50× deeper than the spec
+permits, and no mechanism in the run makes any session shallower than the spec's floor of −2R
+on a fully-losing day. **The worst case is worse by construction, in the direction that kills
+the account.**
+
+*For completeness, on the statistic that does not bind:* sessions with fewer than two losses are
+unaffected, and a session whose forbidden third trade **wins** finishes better than the spec
+would have. So the *mean* drawdown could move either way. That is true and it is beside the
+point — a mean drawdown does not breach a trailing limit. **The carve-out rests on the excursion,
+which is worse with certainty, not on the mean, which is uncertain.**
+
+**The exact 1.50× holds ONLY under V0.** Management is set-and-forget, so every stop is exactly
+−1R, which is precisely why §10's two halt conditions — *2 losses* and *−2R* — coincide. **Under
+V1 / V2 / V4 they diverge:** a break-even exit produces 0R, so a session can reach two losses
+without reaching −2R, or reach −2R by other paths. The arithmetic above is therefore specific to
+this run. **This analysis must be redone before any V1 / V2 / V4 variant is run** — the carve-out
+does not transfer to them unexamined.
 
 **Consequence.** A drawdown failure cannot be attributed to the strategy. It is at least partly,
 and possibly wholly, the missing halt.
@@ -444,7 +459,9 @@ fills at the level or not at all; the open fills wherever the market opened.
 
 **The missing §10 daily halt — different in kind.** Not permissive: a loss-limiting device, whose
 absence makes every fully-losing session **exactly 1.50× deeper** than the spec permits. This is
-why **drawdown is reported but not binding** — see §7.3.
+why **drawdown is reported but not binding** — see §7.3. The 1.50× figure is **V0-only**: it holds
+because every stop is exactly −1R, which is what makes §10's two halt conditions coincide. Under
+V1 / V2 / V4 they diverge and §7.3 must be redone.
 
 **The consequence, stated once and plainly:**
 

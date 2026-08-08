@@ -72,6 +72,20 @@ a session that had already lost twice kept trading.
 > fail cannot distinguish "the strategy does not work" from "the implementation was missing the
 > parts that make it work."**
 
+### The pass does not carry over — the practical consequence [ADDED 2026-08-08]
+
+The PASS reading above says the edge does not *depend* on the missing branches. It does **not**
+say the branches can be added afterwards and the pass kept. Recorded plainly, because this is the
+sentence that will be reached for later:
+
+> **If the nine branches are ever implemented, the pass does NOT carry over. That is a new
+> specification and requires a new test. The reasoning "we already validated it, and the filters
+> were designed to help, so adding them can only improve things" is invalid: the filters shrink
+> the trade set, and a mean over a subset is not guaranteed to beat the mean over the superset.**
+
+Mirrored in `PREREGISTRATION.md` §8.5, which corrects the same overstatement in this document's
+earlier wording.
+
 **This mirrors the next-bar-open fill decision (§4.2) exactly, and for the same reason.** Filling
 at the next bar's open rather than at the E1 limit is strictly worse than the spec's intent: the
 limit would fill at the level or not at all, while the open fills wherever the market opened.

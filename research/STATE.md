@@ -479,10 +479,15 @@ weekly H/L, pullback origin, HTF range extremes.**
 selective than the full spec intends.**
 
 > **THE ASYMMETRY. A PASS is trustworthy — it survived a looser population and a worse fill
-> (§4.2 next-bar-open) than the spec specifies, and tightening either cannot turn it into a
-> fail. A FAIL is AMBIGUOUS — the missing branches might have removed the losing trades, so it
-> cannot distinguish "does not work" from "was missing the parts that make it work." A fail must
-> not be reported as a verdict on the strategy.**
+> (§4.2 next-bar-open) than the spec specifies, which establishes that the edge is present
+> WITHOUT the refinements meant to help. A FAIL is AMBIGUOUS — the missing branches might have
+> removed the losing trades, so it cannot distinguish "does not work" from "was missing the parts
+> that make it work." A fail must not be reported as a verdict on the strategy.**
+
+> **The pass does NOT carry over if the branches are later implemented.** That is a new
+> specification and requires a new test. *"We already validated it, and the filters were designed
+> to help, so adding them can only improve things"* is **invalid**: the filters shrink the trade
+> set, and a mean over a subset is not guaranteed to beat the mean over the superset.
 
 **Cost to bring them in: ≈23 new [FIAT] parameters** (taxonomy 9, rule 2 4, alignment 2,
 T_cancel 1, VAH/VAL 2, session boxes 3, menu 2; daily halt 0) **plus an economic calendar the
@@ -503,10 +508,17 @@ was implementable and simply not built. An omission, not a specification gap.
 > distortion is exact: worst session **−2R with the halt vs −3R without — exactly 1.50×**
 > (21.95 vs 32.93 pts; $439 vs $659 on 1 NQ at the A5 floor, c=0.975).
 >
-> Not uniformly 1.5×: sessions with under two losses are unaffected, and a session whose third
-> trade *wins* is **better** than the spec would have been. So the **worst case is unambiguously
-> 1.5× deeper and the tail fatter**, while the average could move either way — a number sitting
-> in the sealed file, unread.
+> **The carve-out is unambiguously conservative, because of which statistic binds.** For a
+> trailing-drawdown account the binding statistic is the **peak-to-trough excursion**, not the
+> mean — one breaching session ends the account whatever the average is. The tail is worse by
+> construction and nothing in the run makes a fully-losing session shallower than −2R. Sessions
+> with under two losses are unaffected and a session whose third trade *wins* finishes better,
+> so the *mean* could move either way; that is true and beside the point, because a mean
+> drawdown does not breach a trailing limit.
+>
+> **The 1.50× is V0-only.** Every stop is exactly −1R there, which is why §10's two halt
+> conditions coincide. Under **V1 / V2 / V4** a break-even exit produces 0R, the conditions
+> diverge, and **this analysis must be redone before those variants are run.**
 >
 > **A drawdown failure is therefore not a verdict on the spec.** If the result fails on drawdown
 > alone, re-test with the halt implemented — **cost: 0 new parameters**, since §10 states both
@@ -652,3 +664,41 @@ The A7 confirmation count processed **509** sessions and did **not** exclude rol
 session-after-roll, which the pre-registered accounting rule §4.3 requires. **13 sessions,
 2.6%.** The §6 frequency figures are therefore an **upper bound**. Cannot move 2.849 below a
 1.172 tripwire, so no verdict turns on it; the engine will apply the rule.
+
+---
+
+## PARITY GATE — spec-1 Step 4 (Stage A issued 2026-08-08)
+
+**Stage A: the question sheet.** [`vwap-bb/PARITY-SHEET.md`](vwap-bb/PARITY-SHEET.md) **Rev 2**
+— issued, awaiting Angus's readings. **Blind: it contains no computed value of any kind.**
+
+| | |
+|---|---|
+| **P1** | 2025-01-15, **09:48 ET** — the candle covering 09:47:00–09:47:59, just closed |
+| **P2** | 2025-01-22, **09:50 ET** — the candle covering 09:49:00–09:49:59, just closed |
+
+**Rev 2 is wider than Rev 1**, which asked 8 values on P1 only (recorded in
+`vwap-bb/PARITY-ANGUS-READINGS.md`, compared in `vwap-bb/PARITY-COMPARISON.md`). Rev 2 adds the
+full §3 cluster-eligible menu, the §6 target menu, Bollinger bands on **all four** entry
+timeframes, the last completed candle per timeframe, cluster membership and **span**, the 15m
+fractal HTF classification, all four **§7 filter checks**, and the **entry / stop / target**
+that follow. P1's 8 prior values carry over unchanged; everything else on both pages is unread.
+
+**Three fields the sheet flags as load-bearing:** daily VWAP mid (the anchor everything else
+depends on); the **stop** (a structurally different placement answers an open question rather
+than being a mismatch); and the **4h range**, which the spec never defines and which the §7
+location filter depends on — whatever Angus writes becomes the definition.
+
+**Bar convention, reconciled explicitly on the sheet.** Source bars are **open-labelled**; the
+detector shifts +1 so its own minute label is the bar's **close**. Same instant, two
+descriptions. **RTH 09:31–16:00 is the entry window only** — the daily VWAP and session profile
+anchor at **Globex 18:00 ET**, the NY VWAP at **09:30 ET**.
+
+> **STAGE B IS NOT RUN AND MUST NOT BE PRE-COMPUTED.** No detector value for either minute may
+> exist in the record before Angus's readings do, or the blind is broken. Stage B compares field
+> by field at **1.00 pt** tolerance, diagnoses each mismatch as spec ambiguity / implementation
+> bug / charting difference / reading error, and returns **PARITY PASS** or **PARITY FAIL**.
+> **The detector is not assumed correct** — it has been wrong three times out of three on
+> literalism checks — and **it will not be adjusted to match in that pass.**
+
+**N_trials: 0.**
