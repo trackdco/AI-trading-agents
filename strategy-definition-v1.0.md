@@ -787,10 +787,14 @@ against — the same principle §10.1(4) level 4 already uses to break a tie bet
 clusters ("Cluster nearest the entry price"). Keeping the further rung would let the ladder claim
 a target beyond what the local cluster of levels actually justifies.
 
-**The boundary, stated precisely: "within" means a gap of ≤ 1 tick (0.25 pt) collapses; a gap of
-> 1 tick does not.** Two levels exactly one tick apart (0.25) remain **two** distinct rungs — the
-code's existing `abs(x - out[-1]) > TICK` test is `>`, strict, so equality collapses. This matches
-the sense of "within one tick" as inclusive of the tick itself.
+**The boundary, stated precisely, and CORRECTED — see the errata note below: "within" means a gap
+of ≤ 1 tick (0.25 pt), inclusive, collapses to a single rung. Only a gap strictly greater than
+one tick (> 0.25 pt) keeps two rungs separate.** Two levels **exactly** one tick apart therefore
+**collapse to one rung**, the nearer of the two — verified directly against the code:
+`ladder([120.0, 120.25], entry=105.0, "long", f=2.0)` returns `[118.0]`, a single rung, because
+the existing `abs(x - out[-1]) > TICK` test is `>`, strict, and `0.25 > 0.25` is false. A gap of
+0.275 (`ladder([120.0, 120.275], ...)`) does return two rungs, `[118.0, 118.275]`, confirming the
+boundary sits exactly at one tick, inclusive.
 
 **The alternative — never collapse, and walk every raw menu level as its own rung — is recorded
 as an untested branch** in `OUT-OF-SCOPE-BRANCHES.md`, not run: it is a behaviour change to a
@@ -806,3 +810,12 @@ in the code and is not newly invented. **Free-parameter count unchanged.**
 
 **N_trials after A15: 0.** No behaviour changed; a description was added for a rule that already
 governed every admitted trade.
+
+**ERRATA, 2026-08-08, disclosed rather than silently corrected.** A15 as first written contained
+a sentence directly contradicting itself and the code: it stated the ≤1-tick rule as the operative
+one and, one sentence later, claimed "two levels exactly one tick apart remain **two** distinct
+rungs" — which is the *opposite* of ≤1-tick-inclusive and does not match `ladder()`'s actual
+output. Caught while writing item 6's new test cases for the boundary, before any test was
+written against the wrong version. **Corrected above; nothing about the rule itself changed, only
+the sentence describing it.** No trade was ever computed under the wrong reading — no code
+implements the erroneous sentence, only the spec's prose stated it backwards for a few hours.
