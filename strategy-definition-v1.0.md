@@ -37,10 +37,17 @@ and finer is strictly better. **Bollinger Bands remain per-entry-timeframe**, be
 SMA of 5m bars is *definitionally* a different object from a 20-bar SMA of 2m bars — there is no
 single underlying quantity being approximated. The volume profile likewise uses 1-minute bars.
 
-**Minimum observations before NY VWAP σ bands are eligible: 30 completed 1-minute bars since the
-09:30 anchor, i.e. from 10:00 ET.** Below that the NY **mid** is usable and the **σ bands are
-not** — they may not enter a cluster (§3) and may not serve as the §7 invalidation reference.
-Argument and derivation in A8. **Pre-registered, not tuned: no value was tried against data.**
+~~**Minimum observations before NY VWAP σ bands are eligible: 30 completed 1-minute bars since
+the 09:30 anchor, i.e. from 10:00 ET.**~~ **SUPERSEDED BY A13 — the fixed-n form is the wrong
+shape. 30 does not satisfy the tightened criterion (5.01 pt against a 5.00 pt bound) and no n
+does at the p75 σ̂, because the CI half-width is nearly flat in n.**
+
+**IN FORCE (A13): a NY VWAP σ band is cluster-eligible when the 95% CI on its distance from the
+mid is ≤ HALF the §3 cluster tolerance —** `1.95996 · σ̂ / √(2(n−1)) ≤ 5.00 points` — **evaluated
+live, per instant, from that session's own σ̂.** Below that the NY **mid** is usable and the **σ
+bands are not**: they may not enter a cluster (§3) and may not serve as the §7 invalidation
+reference. **No waiting period, no clock time, no fitted constant.** Derivation in A13.
+**Pre-registered, not tuned: no value was tried against outcomes.**
 
 **EXCLUDED: MIG LiquidityEdge.** Closed-source, mutable, replay-inaccurate. MIG targets in journals re-map to nearest computable structural level. A native absorption/exhaustion zone detector is a possible future module, validated separately.
 
@@ -624,3 +631,97 @@ prevent.**
 computing P&L, ranking configurations or reading the holdout. The location-gate figures in A9 are
 a **descriptive count of a filter's block rate**, not a test of whether removing it helps — that
 question remains unasked and unanswered.
+
+### A13 — 2026-08-08 — A8's σ threshold RESTATED, and the fixed-n form ABANDONED
+
+**A8's feed decision stands unchanged.** Only its threshold clause is superseded.
+
+**The criterion, restated as asked.** A NY VWAP σ band is cluster-eligible when the **95%
+confidence interval on its distance from the mid is ≤ HALF the §3 cluster tolerance**:
+
+> **z · σ̂ / √(2(n−1)) ≤ tol / 2**  —  i.e. **1.95996 · σ̂ / √(2(n−1)) ≤ 5.00 points**
+
+This is tighter than A8's original wording (*"inside the 10-pt cluster tolerance"*), which
+licensed n=20 and arguably n=10 and was therefore not a criterion at all.
+
+**n = 30 DOES NOT FALL OUT OF IT.** Measured descriptively over 537 workbench sessions —
+`research/star-trading/tools/` NY-σ census, no outcome touched:
+
+| n | ET | median σ̂ | CI half-width at median σ̂ | ≤ 5.00? |
+|---|---|---|---|---|
+| 6 | 09:36 | 9.23 | **5.72** | no |
+| 10 | 09:40 | 11.12 | 5.14 | no |
+| 20 | 09:50 | 16.00 | 5.09 | no |
+| **30** | **10:00** | **19.48** | **5.01** | **no — by 0.01** |
+| **35** | **10:05** | 20.91 | **4.97** | **yes** |
+| 50 | 10:20 | 24.69 | 4.89 | yes |
+| 90 | 11:00 | 30.10 | 4.42 | yes |
+
+**Recorded without softening: 30 fails, by 0.01 of a point.** The smallest n that satisfies the
+criterion at the median is **35**. At the **p75** σ̂ it is **never satisfied** — not at n=90, not
+anywhere in the measured range.
+
+**And the fixed-n form is not merely mis-set. It is the wrong shape.**
+
+> **The CI half-width is essentially FLAT in n: 5.72 at n=6, 5.01 at n=30, 4.42 at n=90.**
+> It falls by 23% while n grows fifteen-fold.
+
+The reason is structural. NY VWAP dispersion **grows through the session at almost exactly the
+rate √(2(n−1)) shrinks the estimator's error**, because each new bar both adds an observation
+and widens the price range the VWAP is dispersed over. **Waiting for more bars does not buy a
+materially better band estimate in absolute points, so no waiting period fixes the problem A8
+was written to fix.** A8's premise — that the band becomes trustworthy after enough
+observations — is false as stated.
+
+**Resolution: the criterion is evaluated LIVE, per instant, from that session's own σ̂.**
+
+```
+eligible(σ̂, n)  ⟺  1.95996 · σ̂ / √(2(n−1))  ≤  5.00
+```
+
+No waiting period, no clock time, **no fitted constant**: z is the 95% normal quantile and 5.00
+is half of §3's stated tolerance. **On a quiet session the bands qualify early; on a violent one
+they never qualify, which is the correct behaviour and is what a fixed n cannot express.**
+
+**Free parameters: A8 added one (the 30). A13 removes it. Net effect of A8+A13 on the count:
+zero.**
+
+**Named honestly — the rule is mildly circular.** σ̂ appears on both sides: the estimate gates its
+own admissibility. This is the same circularity as a t-statistic using the sample SD and is
+accepted for the same reason, but it is a real property and is recorded rather than glossed.
+
+**Why the fixed-30 form would have been actively harmful — the 10:00 ET coincidence.**
+30 bars past the 09:30 anchor lands **exactly at 10:00 ET**, which is the conventional slot for a
+cluster of US releases — ISM Manufacturing and Services PMI, JOLTS, Conference Board Consumer
+Confidence, Michigan sentiment (prelim and final), new and existing home sales, factory orders.
+*(The project holds no economic calendar — see out-of-scope branch 3 — so this is the
+conventional schedule, not a verified list for any given date.)*
+
+A fixed boundary at 10:00 would therefore have switched σ-band eligibility on **at the same
+minute that realised volatility jumps on a large minority of sessions**, and:
+
+1. **It confounds the Stage 5 release layer.** That layer asks whether release proximity predicts
+   outcome. A rule that changes the *level set itself* at the modal release minute puts a
+   detector-side discontinuity at exactly the covariate's discontinuity. Any release effect
+   would be partly the eligibility switch, and the two are not separable after the fact.
+2. **It makes σ̂ least reliable precisely where the rule declared it reliable.** The estimate is
+   taken over 09:30–10:00, the pre-release drift window; the level it places is then used from
+   10:00, into the release. **The estimation window and the application window sit on opposite
+   sides of the volatility break.**
+
+**The live rule removes both problems** — eligibility becomes a function of the session's own
+dispersion rather than of the clock, so there is no fixed minute for a release to coincide with.
+
+**Recorded for the Stage 5 pre-registration regardless:** if any future rule reintroduces a fixed
+clock boundary, it must not be at 10:00, 08:30 or 14:00 ET, and the release layer must control
+for it.
+
+**P3 re-verified under both forms.** `2025-01-29 10:20` remains an admitted trade on 2m/3m/5m
+under the fixed-30 rule and under the live rule, so the released instant is unaffected by this
+amendment. Verified with `research/star-trading/tools/spec_current.py`; no outcome computed.
+
+**Tag: [SPEC]** — the criterion is derived from §3's stated tolerance and a standard interval, not
+chosen. **Supersedes A8's threshold clause only; A8's 1-minute feed decision is unchanged.**
+
+**N_trials after A13: 0.** The σ̂ census is a descriptive measurement of an indicator's dispersion.
+No trade outcome was examined and no value was selected by comparing results.

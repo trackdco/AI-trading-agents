@@ -19,10 +19,11 @@ signing invalidates this pre-registration and requires a new one.
 | | |
 |---|---|
 | File | `strategy-definition-v1.0.md` |
-| **SHA-256** | **`59edd5b283b33e343fae176bb20bc5eb2b3ec75b87a926260ef65ce27872c679`** |
-| git blob | **`4bad6a684af06b2ed6bf43dcb65c94feb9965fbe`** |
-| Size | **46,617 bytes · 626 lines** |
-| Amendments in force | A1 – **A12** |
+| **SHA-256** | **`42d6f0f68ed35bef0280be782c58f72059333222047841473ab74d5b9fbd83bf`** |
+| git blob | **`03f7a21b2841a99bb67932abbeebf00b6423d34a`** |
+| Size | **52,574 bytes · 727 lines** |
+| Amendments in force | A1 – **A13** |
+| Superseded hashes | `59edd5b2…` (A1–A12, 46,617 B) · `8ead7259…` (A1–A7, 30,059 B — **the sealed run's spec**) |
 
 Verify with `sha256sum strategy-definition-v1.0.md` before the run and again after.
 

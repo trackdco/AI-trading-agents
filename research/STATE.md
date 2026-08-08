@@ -677,10 +677,10 @@ Binds when Angus signs the four OPEN items. **Spec RE-HASHED 2026-08-08 after A8
 
 | | |
 |---|---|
-| **SHA-256 (current)** | `59edd5b283b33e343fae176bb20bc5eb2b3ec75b87a926260ef65ce27872c679` |
-| git blob | `4bad6a684af06b2ed6bf43dcb65c94feb9965fbe` |
-| size | 46,617 bytes · 626 lines · amendments A1–A12 |
-| superseded | `8ead725997b620678426bd41075bbdfd05356cab8325d2a92a95d63ee1bbf10f` (30,059 B · 387 L) |
+| **SHA-256 (current)** | `42d6f0f68ed35bef0280be782c58f72059333222047841473ab74d5b9fbd83bf` |
+| git blob | `03f7a21b2841a99bb67932abbeebf00b6423d34a` |
+| size | 52,574 bytes · 727 lines · amendments **A1–A13** |
+| superseded | `59edd5b2…` (A1–A12, 46,617 B) · `8ead7259…` (A1–A7, 30,059 B — **the sealed run's spec**) |
 
 > **`workbench_results_SEALED.parquet` was produced under the SUPERSEDED hash.** A9 and A10
 > change the admitted population; A8's σ-band rule is new and unrun; A11 is output-only. The
@@ -888,5 +888,93 @@ render a 1m VWAP for January 2025.
 > NOT be cited as an agreement rate.**
 
 Instrument: `PARITY-SHEET.md` Rev 2, unchanged apart from the date and time in its header.
+
+**N_trials: 0.**
+
+---
+
+## 2026-08-08 — P3 RE-VERIFIED · SEALED RESULT ARCHIVED · A13
+
+### 1. P3 was selected under the SUPERSEDED spec — and it survives
+
+**Answered first because Angus was reading.** `p3_select.py` called
+`stage2_smoke.signal_candidates`, i.e. the **frozen detector**, which implements **8ead7259**
+(A1–A7). The A8–A12 amendments were written into the *document*, not the code, so the pool of 30
+was generated under the superseded spec. **Three of the changes alter behaviour:** A8's σ-band
+eligibility (unimplemented in the detector), A9's demoted location gate (the detector still
+applies it), A10's fractal plateau rule (the detector uses strict `>`).
+
+Re-verified with a new harness, `tools/spec_current.py`, which re-implements the pipeline with
+A8+A9+A10 and **leaves the frozen detector untouched**:
+
+| spec | admitted at `cm 620` on 2m/3m/5m |
+|---|---|
+| **8ead7259** superseded (frozen detector) | **1 — triggers** |
+| **59edd5b2** A8–A12, fixed-30 σ rule | **1 — triggers** |
+| **42d6f0f6** A13, live σ rule | **1 — triggers** |
+
+> ### **P3 stands at 2025-01-29 10:20 ET. No replacement, nothing new released.**
+
+The session's *other* admitted minutes move between specs, so the surrounding context differs —
+but the released instant survives all three.
+
+### 2. `workbench_results_SEALED.parquet` — ARCHIVED, NEVER OPENED
+
+Moved with `git mv`, byte-identical, **`a9ddc2947ca6a5f4c7e453d90427bed91710d1bc94c86de81fa9b381739bd4f0`**
+verified before and after:
+
+`research/vwap-bb/data/archive/workbench_results_SEALED_PRE-A8_UNOPENED.parquet` (+ `.sha256`)
+
+| | |
+|---|---|
+| Status | **SUPERSEDED · NEVER OPENED · retained, not deleted** |
+| Spec it tests | `8ead7259` (A1–A7) |
+| Why superseded | **A9** demotes the location gate it applied; **A10** changes HTF flags wherever a 15m plateau occurs. Both change the admitted population |
+| Performance numbers | **UNUSABLE.** They describe a specification no longer in force, and reading them now would be reading a result chosen after the spec moved |
+| What it did deliver | **the pipeline verification it existed to provide** — `loc_gate_measure.py` reproduced its admitted count **exactly (1,423)** from an independent replication, confirming the engine is deterministic and faithfully re-implementable |
+| N_trials | **0** — no outcome field has ever been read |
+
+> **Two operational consequences.** `stage2_smoke.RESULTS` now points at an empty path, so its
+> refuse-to-overwrite guard no longer fires; a re-run would create a new seal there, which must
+> be a deliberate act. And **`stage2_smoke.py` does not implement A8/A9/A10/A13 — it cannot be
+> used for Stage 3.** Stage 3 needs an engine built on `spec_current.py`.
+
+### 3. A13 — the σ criterion tightened, and n=30 FAILS it
+
+Criterion as restated: a NY VWAP σ band is eligible when the 95% CI on its distance from the mid
+is **≤ half** the §3 cluster tolerance — `1.95996 · σ̂ / √(2(n−1)) ≤ 5.00 pt`.
+
+Descriptive σ̂ census, 537 workbench sessions:
+
+| n | ET | median σ̂ | CI half-width | ≤ 5.00 |
+|---|---|---|---|---|
+| 6 | 09:36 | 9.23 | 5.72 | no |
+| 20 | 09:50 | 16.00 | 5.09 | no |
+| **30** | **10:00** | 19.48 | **5.01** | **NO — by 0.01** |
+| **35** | **10:05** | 20.91 | **4.97** | yes |
+| 90 | 11:00 | 30.10 | 4.42 | yes |
+
+**30 does not fall out. 35 does, at the median — and at the p75 σ̂ nothing does, up to n=90.**
+
+> **The deeper result: the CI half-width is nearly FLAT in n** — 5.72 → 4.42 while n grows
+> fifteen-fold. NY dispersion grows through the session at almost exactly the rate √(2(n−1))
+> shrinks the estimator error. **Waiting does not buy resolution, so no waiting period fixes
+> what A8 was written to fix.** The fixed-n form is the wrong shape, not merely mis-set.
+
+**A13 therefore evaluates the criterion LIVE, per instant, from the session's own σ̂.** Zero
+fitted constants — z is the normal quantile, 5.00 is half of §3's stated tolerance. **A8 added
+one free parameter; A13 removes it. Net zero.** Named honestly: σ̂ gates its own admissibility,
+the same circularity a t-statistic has.
+
+**The 10:00 ET coincidence, recorded as the argument AGAINST a fixed boundary.** 30 bars past
+09:30 lands exactly on the conventional slot for ISM Manufacturing and Services, JOLTS, Consumer
+Confidence, Michigan sentiment, home sales and factory orders. *(No economic calendar is held —
+out-of-scope branch 3 — so this is the conventional schedule, not a verified list.)* A fixed
+boundary there would (a) **confound the Stage 5 release layer**, putting a detector-side
+discontinuity in the level set at the modal release minute, and (b) estimate σ̂ over the
+pre-release drift window and then apply it *into* the release — **estimation and application on
+opposite sides of the volatility break.** The live rule has no fixed minute, so neither arises.
+**Recorded for Stage 5: if any future rule reintroduces a clock boundary it must not sit at
+10:00, 08:30 or 14:00 ET, and the release layer must control for it.**
 
 **N_trials: 0.**
