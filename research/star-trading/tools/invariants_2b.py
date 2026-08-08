@@ -10,7 +10,7 @@ artefact that does not exist in this repository:
   spec 8ead7259 which A9 and A10 have since superseded.
 
   These invariants are therefore asserted over a FRESHLY COMPUTED ADMISSION LIST
-  under the current spec 42d6f0f6 (A1-A13), produced by spec_current.py. It is a
+  under the current spec f6b38bf4 (A1-A15), produced by spec_current.py. It is a
   geometry-only artefact: every trade carries entry, stop, target, timeframe,
   direction and timing, and NO outcome field exists anywhere in it. No exit
   reason, no P&L, no R multiple is computed, stored or reported.
@@ -362,17 +362,19 @@ def run_invariants(trades, sess):
 
     # 8 — determinism: handled by the caller's double run
 
-    # 9 — tick grid
+    # 9 — tick grid. RESOLVED by A14 (was UNSPECIFIED IN SPEC before it existed).
     bad_entry = [tid(t) for t in trades if not on_grid(t["entry"])]
     bad_stop = [tid(t) for t in trades if not on_grid(t["stop_px"])]
     bad_tgt = [tid(t) for t in trades if not on_grid(t["tgt_px"])]
     bad_fill = [tid(t) for t in trades if not on_grid(t["fill_px"])]
-    rec(9, 'NO CLAUSE. §5.3 says "E1: limit at the BB MA" and never requires '
-           'rounding to the tick; §1 gives the instrument but no price-grid rule',
-        n * 4, len(bad_entry) + len(bad_stop) + len(bad_tgt) + len(bad_fill),
-        [], "UNSPECIFIED IN SPEC",
+    n_bad = len(bad_entry) + len(bad_stop) + len(bad_tgt) + len(bad_fill)
+    rec(9, 'A14 "every transmitted order price rounds to the 0.25 grid in the '
+           'direction that makes the trade worse" — was NO CLAUSE before A14 existed',
+        n * 4, n_bad, bad_entry + bad_stop + bad_tgt + bad_fill,
+        "PASS" if not n_bad else "FAIL",
         f"off-grid counts of {n}: intended entry {len(bad_entry)}, "
-        f"stop {len(bad_stop)}, target {len(bad_tgt)}, actual fill {len(bad_fill)}")
+        f"stop {len(bad_stop)}, target {len(bad_tgt)}, actual fill {len(bad_fill)} "
+        f"(fill is a real bar open, always on-grid, and was never the gap)")
 
     # 10 — single contract
     bad = [tid(t) for t in trades if len(t["symbols"]) != 1]
@@ -391,7 +393,7 @@ def main():
     print("2b — INVARIANTS OVER THE WHOLE TRADE LIST")
     print("=" * 96)
     print("ARTEFACT UNDER TEST — there is no Stage 3 trade list in this repository.")
-    print("  Freshly computed ADMISSION LIST under spec 42d6f0f6 (A1-A13).")
+    print("  Freshly computed ADMISSION LIST under spec f6b38bf4 (A1-A15).")
     print(f"  workbench sessions {ndays}   processed {processed}   excluded {excl}")
     print(f"  TRADES: {len(trades)}   sampling: NONE   cap: NONE   truncation: NONE")
     print()
@@ -409,7 +411,7 @@ def main():
         9: ["entry", "stop_px", "tgt_px", "fill_px"],
         10: ["symbols"],
     }
-    for k in sorted(need):
+    for k in sorted(need, key=lambda x: (isinstance(x, str), x)):
         miss = [f for f in need[k] if f.split()[0] not in fields]
         print(f"  inv {k:>2}: requires {need[k]}"
               f"{'   MISSING: ' + str(miss) if miss else '   all present'}")

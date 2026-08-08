@@ -99,24 +99,24 @@
    "violations": 0
   },
   {
-   "clause": "\u00a74.1 (accounting) \"ambiguous bars resolve STOP-FIRST\"",
+   "clause": "MOVED to test_stop_first_5.py \u2014 see that file",
    "evaluated": 0,
-   "n": 7,
-   "note": "the admission list carries NO exit attribution by construction, because recording which side released a position is outcome information barred by Part 0 rule 6. Stop-first is a property of a Stage 3 engine that does not exist. It cannot be tested here and is NOT marked PASS",
-   "status": "NOT TESTABLE",
+   "n": "7 (moved)",
+   "note": "was NOT TESTABLE here; now 15/15 PASS in 2a on synthetic bars",
+   "status": "MOVED",
    "violating_ids": [],
    "violating_ids_truncated": 0,
    "violations": 0
   },
   {
-   "clause": "NO CLAUSE. \u00a75.3 says \"E1: limit at the BB MA\" and never requires rounding to the tick; \u00a71 gives the instrument but no price-grid rule",
+   "clause": "A14 \"every transmitted order price rounds to the 0.25 grid in the direction that makes the trade worse\" \u2014 was NO CLAUSE before A14 existed",
    "evaluated": 5888,
    "n": 9,
-   "note": "off-grid counts of 1472: intended entry 1401, stop 824, target 1134, actual fill 0",
-   "status": "UNSPECIFIED IN SPEC",
+   "note": "off-grid counts of 1472: intended entry 0, stop 0, target 0, actual fill 0 (fill is a real bar open, always on-grid, and was never the gap)",
+   "status": "PASS",
    "violating_ids": [],
    "violating_ids_truncated": 0,
-   "violations": 3359
+   "violations": 0
   },
   {
    "clause": "\u00a74.3 (accounting) \"contract rolls reset indicator state; roll sessions AND the session after each roll are skipped\"",

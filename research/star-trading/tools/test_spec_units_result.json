@@ -1,6 +1,6 @@
 {
- "pass": 61,
- "fail": 3,
+ "pass": 77,
+ "fail": 4,
  "results": [
   [
    "A1",
@@ -236,7 +236,7 @@
   ],
   [
    "D4",
-   "\u00a76.5 ladder, sub-tick duplicates",
+   "A15 'a gap of <=1 tick, inclusive, collapses'",
    "[LIT]",
    "[118.0]",
    "[118.0]",
@@ -244,11 +244,11 @@
   ],
   [
    "D5",
-   "\u00a76.5 ladder, one tick apart",
+   "A15 boundary, exactly one tick, inclusive => collapses",
    "[LIT]",
-   "[118.0, 118.25]",
    "[118.0]",
-   "FAIL"
+   "[118.0]",
+   "PASS"
   ],
   [
    "D6",
@@ -415,16 +415,16 @@
    "\u00a75.3 'E1: limit at the BB MA'",
    "[FORM]",
    "20005.3",
-   "20005.3",
-   "PASS"
+   "20005.5",
+   "FAIL"
   ],
   [
    "H1c",
    "\u00a75.4 + A2 buffer + A5 floor",
    "[FORM]",
    "15.549999999999272",
-   "15.549999999999272",
-   "PASS"
+   "15.75",
+   "FAIL"
   ],
   [
    "H1d",
@@ -463,7 +463,7 @@
    "\u00a76.5/A4 '>= 1.5R'",
    "[FORM]",
    ">= 1.5",
-   "2.435717",
+   "2.396825",
    "PASS"
   ],
   [
@@ -486,8 +486,8 @@
    "H2c",
    "A5, stop price with the floor binding",
    "[FORM]",
-   "19995.3",
-   "19995.3",
+   "19995.5",
+   "19995.5",
    "PASS"
   ],
   [
@@ -512,6 +512,142 @@
    "[LIT]",
    "[]",
    "[]",
+   "PASS"
+  ],
+  [
+   "I1",
+   "A14 entry, long, against the trader = round up",
+   "[FORM]",
+   "100.25",
+   "100.25",
+   "PASS"
+  ],
+  [
+   "I2",
+   "A14 entry, short, against the trader = round down",
+   "[FORM]",
+   "100.0",
+   "100.0",
+   "PASS"
+  ],
+  [
+   "I3",
+   "A14 'a price already ... on the grid is not moved', long",
+   "[FORM]",
+   "100.25",
+   "100.25",
+   "PASS"
+  ],
+  [
+   "I4",
+   "A14 'not moved', short",
+   "[FORM]",
+   "100.25",
+   "100.25",
+   "PASS"
+  ],
+  [
+   "I5",
+   "A14 entry, long, just above a tick",
+   "[FORM]",
+   "100.5",
+   "100.5",
+   "PASS"
+  ],
+  [
+   "I6",
+   "A14 stop, long, away from entry = round down",
+   "[FORM]",
+   "89.75",
+   "89.75",
+   "PASS"
+  ],
+  [
+   "I7",
+   "A14 stop, short, away from entry = round up",
+   "[FORM]",
+   "110.25",
+   "110.25",
+   "PASS"
+  ],
+  [
+   "I8",
+   "A14 target, long, away from entry = round up",
+   "[FORM]",
+   "130.25",
+   "130.25",
+   "PASS"
+  ],
+  [
+   "I9",
+   "A14 target, short, away from entry = round down",
+   "[FORM]",
+   "69.75",
+   "69.75",
+   "PASS"
+  ],
+  [
+   "I10",
+   "A14 'not moved', already on the grid",
+   "[FORM]",
+   "90.0",
+   "90.0",
+   "PASS"
+  ],
+  [
+   "I11",
+   "A14, degenerate price == entry, on-grid",
+   "[FORM]",
+   "100.0",
+   "100.0",
+   "PASS"
+  ],
+  [
+   "J1",
+   "A15, three-way sub-tick chain collapses to the nearest",
+   "[LIT]",
+   "[118.0]",
+   "[118.0]",
+   "PASS"
+  ],
+  [
+   "J2",
+   "A15 'keeping the nearer one'",
+   "[LIT]",
+   "[118.0]",
+   "[118.0]",
+   "PASS"
+  ],
+  [
+   "J3",
+   "A15 boundary, gap > 1 tick stays separate",
+   "[LIT]",
+   "[118.0, 118.26]",
+   "[118.0, 118.26]",
+   "PASS"
+  ],
+  [
+   "J4",
+   "A15, chaining is against the last KEPT rung",
+   "[LIT]",
+   "[118.0, 118.4]",
+   "[118.0, 118.4]",
+   "PASS"
+  ],
+  [
+   "J5",
+   "A15, short side, nearer rung kept",
+   "[LIT]",
+   "[82.2]",
+   "[82.2]",
+   "PASS"
+  ],
+  [
+   "J6",
+   "A15 boundary, short side, gap > 1 tick stays separate",
+   "[LIT]",
+   "[82.0, 81.74]",
+   "[82.0, 81.74]",
    "PASS"
   ]
  ],
