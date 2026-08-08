@@ -70,10 +70,44 @@ fields for holdout-dated files) and `mbp_feb2026.py` (raises `HoldoutBreach`; re
 | Sessions < 1380 bars | **108** | 71 missing 1–2 min, 34 holiday early close, 3 anomalies |
 | Anomalies | 2023-04-07 (913), 2025-01-09 (930), 2025-11-28 (508) | Good Friday, national day of mourning, day after Thanksgiving |
 | February 2026 | **0 BAR sessions** | the hand-log month has no bars — but see MBP-10 below |
-| Contract rolls | 12 quarterly, ~250 pt unadjusted gaps | 2 sessions contain an intra-session switch, both in the evening |
+| Contract rolls | 12 quarterly. **Unadjusted gaps 125.05 – 300.40 pts — see below** | 2 sessions contain an intra-session switch, both in the evening |
 
 Bars are **open-labelled** at source (verified: median \|book_mid − bar.close\| 0.38 pts vs
 6.69 vs bar.open).
+
+### ROLL SPREADS — MEASURED, correcting "~230–250" [2026-08-08]
+
+**The "~230–250 pt unadjusted gaps" shorthand was never right for any roll except roughly
+2024-09.** Amendment 03 §1 asked for one figure corrected; measuring one invites the same error
+again, so **all eight workbench rolls were measured** from the `NQxx-NQyy` calendar-spread
+instrument's own quotes on the roll day — the deferred premium as the market priced it, not a
+difference of two outright prints.
+
+| roll (UTC front-month switch) | spread symbol | n quotes | **median** | min | max |
+|---|---|---|---|---|---|
+| 2023-03-13 | NQH3-NQM3 | 1,198 | **125.05** | 115.55 | 128.45 |
+| 2023-06-12 | NQM3-NQU3 | 1,280 | **180.75** | 175.50 | 186.10 |
+| 2023-09-11 | NQU3-NQZ3 | 1,127 | **197.90** | 194.95 | 199.35 |
+| 2023-12-11 | NQZ3-NQH4 | 1,343 | **210.80** | 208.30 | 214.05 |
+| 2024-03-11 | NQH4-NQM4 | 1,261 | **247.65** | 242.70 | 255.10 |
+| 2024-06-17 | NQM4-NQU4 | 1,090 | **264.15** | 259.55 | 272.35 |
+| 2024-09-16 | NQU4-NQZ4 | 1,101 | **236.00** | 230.30 | 239.95 |
+| **2024-12-17** | **NQZ4-NQH5** | 1,341 | **300.40** | 295.75 | 305.85 |
+| | | | **median 223.40 · mean 220.34 · range 125.05 – 300.40** | | |
+
+**At the exact splice minute of the 2024-12-17 roll (2024-12-16 23:28 ET) the quote is 301.15**
+— the figure cited in `vwap-bb/PARITY-P2-RESULT.md` §1.2. **The spread grew monotonically apart
+from one dip, roughly tracking the rate environment: it is not a constant and must not be quoted
+as one.**
+
+**The four remaining rolls (2025-03-18, 2025-06-16, 2025-09-15, 2025-12-15) were REFUSED — they
+are holdout-dated.** The measurement script guards on `WORKBENCH_END` and printed the refusal.
+
+**Where this figure lived.** Amendment 03 names `research/data-audit.md`; **that file does not
+exist in this repository.** The Stage 0 audit's data figures live here, in this file's DATA
+section, which is the declared source of truth. The stale round number is corrected here and in
+`prereg/layer-01-deseasonalisation-release.md`. Recomputed by
+`research/star-trading/tools/roll_spreads.py`.
 
 ### MBP-10 — corrected 2026-08-08
 
@@ -639,8 +673,19 @@ moved ties to 22.9% with level 5 at 0.0%.
 ## PRE-REGISTRATION (drafted 2026-08-08)
 
 [`research/vwap-bb/PREREGISTRATION.md`](vwap-bb/PREREGISTRATION.md) — **DRAFT, NOT IN FORCE.**
-Binds when Angus signs the four OPEN items. Spec pinned at SHA-256
-`8ead725997b620678426bd41075bbdfd05356cab8325d2a92a95d63ee1bbf10f`.
+Binds when Angus signs the four OPEN items. **Spec RE-HASHED 2026-08-08 after A8–A12:**
+
+| | |
+|---|---|
+| **SHA-256 (current)** | `59edd5b283b33e343fae176bb20bc5eb2b3ec75b87a926260ef65ce27872c679` |
+| git blob | `4bad6a684af06b2ed6bf43dcb65c94feb9965fbe` |
+| size | 46,617 bytes · 626 lines · amendments A1–A12 |
+| superseded | `8ead725997b620678426bd41075bbdfd05356cab8325d2a92a95d63ee1bbf10f` (30,059 B · 387 L) |
+
+> **`workbench_results_SEALED.parquet` was produced under the SUPERSEDED hash.** A9 and A10
+> change the admitted population; A8's σ-band rule is new and unrun; A11 is output-only. The
+> sealed result is a result on a superseded spec — **not invalidated, not re-sealed here.** Any
+> Stage 3 run under A8–A12 is a **different run** and must be sealed separately. Spec A12.
 
 ### Axis decision table — required n at p₀ = 43.90%, p₁ = 0.50, 80% power
 
@@ -755,5 +800,93 @@ Both 4h swing points are **post-roll NQH5**: high **22425.75** @ 2024-12-16 23:2
 `NQZ4-NQH5` calendar quote is **301.15 pts**, not the ~250 the project's shorthand assumed.
 Correcting it moves the 1h range position from **83.03% to 58.82%**. The detector used neither
 range — its 4h construction is session-local and never crosses a roll.
+
+**N_trials: 0.**
+
+---
+
+## AMENDMENT 03 EXECUTED (2026-08-08) — four resolutions, one measurement, P3 released
+
+### Location gate — DESCRIPTIVE COUNT, run before any spec change
+
+`research/star-trading/tools/loc_gate_measure.py` · full workbench, 501 processed sessions ·
+`vwap-bb/data/loc_gate_measure.json`. **Not a hypothesis test — no outcome computed, nothing
+ranked. N_trials 0.** Faithfulness check: the replication reproduces the sealed run's admitted
+count **exactly (1,423)**.
+
+| | |
+|---|---|
+| Otherwise-valid candidates (every gate except location, post-dedup) | **23,490** — 12,042 long / 11,448 short |
+| **Blocked by the location gate** | **4,346 = 18.50%** |
+| — of longs | **19.55%** |
+| — of shorts | **17.40%** |
+| Admitted, gate **ON** (as sealed) | **1,423** — 655 long / 768 short · 2.8403/session |
+| Admitted, gate **OFF** | **1,453** — 719 long / 734 short · 2.9002/session |
+| Delta | **+30 (+2.11%)** |
+| Amendment 02 floor **n ≥ 661** | ON **2.15×** · OFF **2.20×** — **both CLEAR** |
+
+Range-position distribution over the 23,490: p05 **−0.331** · p25 0.274 · median **0.514** ·
+p75 0.765 · p95 **1.378** · min −3.109 · max 6.130.
+
+| band | share |
+|---|---|
+| < 0.00 — below its own range | **9.79%** |
+| 0.00–0.20 — blocks SHORTS | 8.67% |
+| 0.20–0.80 | 58.78% |
+| 0.80–1.00 — blocks LONGS | 11.41% |
+| > 1.00 — above its own range, blocks LONGS | **11.34%** |
+
+> **The feared failure mode did NOT materialise — recorded as a negative result.** Amendment 03
+> §4 warned the gate might be suppressing longs systematically and pushing the count under the
+> runnable floor. Block rates are **near-symmetric** (19.55% long vs 17.40% short) and the
+> budget is never at risk. **Decision 2 is a footnote on sample size.** The demotion stands on
+> specification-quality grounds, not on this count.
+>
+> **Two findings it did produce, neither the one being looked for:**
+> **(1) the range fails to contain price 21.07% of the time** — 4,346 gate decisions were taken
+> on a "range" price sat outside; **(2) the cap absorbs the gate** — 4,346 blocks yield only
+> **+30** trades when removed, but the mix moves **46.0/54.0 → 49.5/50.5 long/short**. The
+> gate's effect on *which* trades are taken is an order of magnitude larger than on *how many*,
+> consistent with §10.1(5).
+
+### The four resolutions, written into the spec
+
+| # | resolution | tag | free params |
+|---|---|---|---|
+| **A8** | VWAP (both anchors) computed from **1-minute bars, one canonical series**; BB stay per-entry-timeframe. **NY σ bands ineligible until 30 bars since the 09:30 anchor (10:00 ET)** | [SPEC] feed · **[FIAT]** threshold | **+1** |
+| **A9** | Location filter **demoted from gate to recorded covariate**; both range definitions carried as columns; gate on neither | [SPEC] | **−1** (`LOC_BAND` retired) |
+| **A10** | Swing fractal: `H[i] > H[i−1…i−N]` **AND** `H[i] ≥ H[i+1…i+N]`, mirrored for lows. **First bar of a plateau is the swing** | [FIAT] | 0 |
+| **A11** | 1m **retained**; boolean `entry_tf_1m` on every Stage 3 trade | [SPEC] | 0 |
+| **A12** | Note: A9 and A10 change the admitted population, so the sealed result is a result on a superseded spec | — | — |
+
+**A8's threshold was argued, not searched.** The relative standard error of σ̂ from *n*
+observations is ≈ **1/√(2(n−1))** — a property of the estimator, evaluable without touching the
+data. At n=6 (09:36) that is **31.6%**, a ±62% interval on the band's distance from the mid:
+±9–12 pts at typical early-session NY σ, **wider than the 10-pt cluster tolerance the band
+feeds**. At n=30 it is **13.1%**, ±26%, ≈±4–5 pts — inside tolerance. **30 is the point at which
+the estimate's own interval stops dominating the membership decision.** No value was tried
+against the trade list; α is untouched.
+
+**Cost of A8, stated not hidden:** 09:36–09:59 now has the NY **mid** only, so fewer clusters
+form and §7 invalidation fires less in that window. Effect on trade counts is **unmeasured**.
+NY-band parity against the reference chart becomes **permanently unverifiable** — Angus cannot
+render a 1m VWAP for January 2025.
+
+### P3 — instant selected and released under the blindness control
+
+> ## **P3 = 2025-01-29, 10:20 ET**
+>
+> **That is the entire release.** Not the timeframe, not the direction, not a level, not the
+> reason. Selection reasoning and the detector's expected values are in
+> [`vwap-bb/P3-SELECTION-SEALED.md`](vwap-bb/P3-SELECTION-SEALED.md) — **DO NOT OPEN until the
+> reading is submitted.** Selector: `tools/p3_select.py`, pool = 30 January-2025 admitted trades
+> on 2m/3m/5m.
+>
+> **The instant was chosen FROM detector output.** Legitimate as test design — P3 exists to
+> reach the code paths P2 never did. **Illegitimate as an agreement rate:** the instants were
+> not randomly drawn. **P3 may be cited as evidence the code paths behave as specified; it may
+> NOT be cited as an agreement rate.**
+
+Instrument: `PARITY-SHEET.md` Rev 2, unchanged apart from the date and time in its header.
 
 **N_trials: 0.**

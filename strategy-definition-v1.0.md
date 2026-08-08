@@ -14,18 +14,33 @@
   - **Superseded:** W1 08:00–11:00 ET, pre-market through pre-lunch. Retained here for traceability only; it is no longer the primary window. Nine of the 28 hand-log trades fall before 09:36 and are consequently OUT OF SCOPE — see `data/reference/hand_log_scope.md`.
 - **End-of-day flatten:** VAULT RULE, not strategy: any open position is flattened before the CME close per the eventual firm's rules (default 15:55 ET). Exists as a backstop; expected to almost never fire (median trade resolves ~30 min).
 - **Entry TFs:** 1m, 2m, 3m, 5m. **MTF arbitration:** evaluate all four; if multiple TFs show valid triggers simultaneously, take the highest TF. [CONFIRMED — Angus]
-- **Context TFs:** 15m for HTF trend/range flag; 1h/4h for range extremes.
+  - **1m is RETAINED as an entry timeframe and every 1m trade is FLAGGED in Stage 3 output** (boolean `entry_tf_1m`). [AMENDED 2026-08-08 — see Amendment Log A11] Parity on 1m is **structurally unverifiable on the workbench window** — the reference platform's 1-minute history does not reach back to January 2025, and the recent window where it does is the sealed holdout. The flag preserves the ability to answer the question retrospectively rather than scoping 1m out to avoid a measurement problem.
+- **Context TFs:** 15m for HTF trend/range flag; 1h/4h for range extremes. **The 4h/1h range is RECORDED, NOT GATED ON** — see §7 and Amendment Log A9.
 
 ## 2. Indicator Stack (computable only)
 
 | Indicator | Parameters | Role |
 |---|---|---|
 | Bollinger Bands | 20, SMA, close, 2σ | Basis ("BB MA") = core cluster level |
-| NY session VWAP | **Anchored 09:30 ET cash open** — does NOT exist pre-market. ±1σ/±2σ/±3σ | Cluster levels, extension detector, targets |
-| Daily VWAP | **CORE — "one of the most important components" (Angus).** Full band set ±1σ/±2σ/±3σ. Anchor: CONFIRMED — standard TradingView VWAP, resets at CME daily session open, 18:00 ET / Asia open | Core cluster level at all times; the ONLY VWAP pre-9:30 |
+| NY session VWAP | **Anchored 09:30 ET cash open** — does NOT exist pre-market. ±1σ/±2σ/±3σ. **Computed from 1-minute bars (A8). σ bands are INELIGIBLE below the minimum-observation threshold of §2.1 (A8).** | Cluster levels, extension detector, targets |
+| Daily VWAP | **CORE — "one of the most important components" (Angus).** Full band set ±1σ/±2σ/±3σ. Anchor: CONFIRMED — standard TradingView VWAP, resets at CME daily session open, 18:00 ET / Asia open. **Computed from 1-minute bars (A8).** | Core cluster level at all times; the ONLY VWAP pre-9:30 |
 | Volume profile | Session + daily; **weekly anchor added as tested variant (Angus)**. POC, VAH/VAL, HVN/LVN | POC = core cluster level; profile feeds targets |
 | Session boxes | Asia / London / NY | Session extremes for targets/liquidity |
 | Data levels | Extremes printed within N min of scheduled releases | Bias + targets. N: CALIBRATE (start 15 min) |
+
+### 2.1 Indicator input feed [ADDED 2026-08-08 — see Amendment Log A8]
+
+**Both VWAP anchors are computed from 1-minute bars — ONE canonical series, shared by every
+entry timeframe.** Reason: VWAP estimates a single underlying quantity (the volume-weighted mean
+price since the anchor); bar size is only the resolution at which that integral is approximated,
+and finer is strictly better. **Bollinger Bands remain per-entry-timeframe**, because a 20-bar
+SMA of 5m bars is *definitionally* a different object from a 20-bar SMA of 2m bars — there is no
+single underlying quantity being approximated. The volume profile likewise uses 1-minute bars.
+
+**Minimum observations before NY VWAP σ bands are eligible: 30 completed 1-minute bars since the
+09:30 anchor, i.e. from 10:00 ET.** Below that the NY **mid** is usable and the **σ bands are
+not** — they may not enter a cluster (§3) and may not serve as the §7 invalidation reference.
+Argument and derivation in A8. **Pre-registered, not tuned: no value was tried against data.**
 
 **EXCLUDED: MIG LiquidityEdge.** Closed-source, mutable, replay-inaccurate. MIG targets in journals re-map to nearest computable structural level. A native absorption/exhaustion zone detector is a possible future module, validated separately.
 
@@ -73,7 +88,14 @@
 ## 7. Filters & Skip Criteria
 
 - Confluence minimum: 3 counter-trend; 2 with-trend at reduced risk.
-- Location: no longs at HTF range top / shorts at range bottom.
+- ~~Location: no longs at HTF range top / shorts at range bottom.~~ **DEMOTED FROM GATE TO
+  RECORDED COVARIATE 2026-08-08 (A9).** Range position is **recorded, not gated on**. Stage 3
+  output carries **both** definitions as columns — `range_pos_swing` (swing highs/lows, the
+  reference definition) and `range_pos_blocks` (session-local 240-min clock blocks, the former
+  implementation) — and **neither removes a candidate.** Reason: the threshold was never written
+  down, the two definitions differ by a factor of 11 on the same instant and land on opposite
+  sides of any plausible threshold, and the runbook prefers continuous covariates to binary
+  gates. Whether location predicts outcome becomes a pre-registered question, not an assumption.
 - Invalidation-at-entry: trigger candle simultaneously touching the opposing ±1σ → stand down. [Hypothesis — test]
 - Volatility stand-down: computable definition TBD (opening range vs ATR). [OPEN]
 - News handling: data is bias/target input, not blackout; slippage modeled punitively near releases. "No entry within N min of release" = H4, test.
@@ -209,6 +231,10 @@ classification = 15m fractal swings N=2, HH+HL ⇒ uptrend / LH+LL ⇒ downtrend
 [FIAT]; stop buffer = 1 tick beyond the wick extreme [FIAT, per §5.4 "never widened"];
 volatility stand-down = DISABLED for v1 [FIAT, §7 was marked OPEN with no definition].
 Zero parameters were set by examining outcomes. N_trials remains 0.
+
+**The fractal item is EXTENDED by A10 (2026-08-08):** A2 fixed N=2 but never stated how equal
+extremes are treated, and a strict `>` on both sides admits neither bar of a plateau. A10 states
+the comparison explicitly. **N=2 and the HH+HL/LH+LL classification are unchanged.**
 
 ### A3 — 2026-08-07 — Parity and calibration targets relocated into available coverage
 
@@ -385,3 +411,216 @@ stated, on structural, execution-realism and implementability grounds. A6 is a c
 internal inconsistency.
 The first decision made by comparing outcomes will increment N_trials, and must be recorded
 here at the moment it is made.
+
+---
+
+## Amendments A8–A11 — 2026-08-08 — the four gaps parity P2 surfaced
+
+**Source: `research/vwap-bb/PARITY-P2-RESULT.md` (PARITY FAIL, 12 of 48 numeric fields, all
+twelve diagnosed as specification gaps) and Runbook Amendment 03. No implementation bug was
+found. None of these four is selected because it makes the detector agree with the reference
+chart; where a resolution also happens to resolve a mismatch, that is recorded as a CHECK, not
+as the justification. N_trials remains 0.**
+
+### A8 — 2026-08-08 — §2.1: the VWAP input feed is 1-minute, and NY σ bands get a minimum-observation rule
+
+**Change.** New §2.1. Both VWAP anchors are computed from **1-minute bars, one canonical series**
+shared by all four entry timeframes. Bollinger Bands stay **per-entry-timeframe**. NY VWAP σ
+bands are **ineligible for cluster membership (§3) and for the §7 invalidation reference until
+30 completed 1-minute bars have elapsed since the 09:30 anchor** — i.e. from **10:00 ET**. Below
+that the NY **mid** remains usable.
+
+**Reason for the feed — arithmetic, not aesthetic.** §2 said *"standard TradingView VWAP"*, an
+indicator whose value depends on the chart's timeframe, and never named the feed. VWAP estimates
+**one underlying quantity** — the volume-weighted mean price since the anchor — and bar size is
+only the resolution at which that integral is approximated. Finer is strictly better, so 1m wins
+on the merits. A Bollinger basis is not like this: a 20-bar SMA of 5m closes is a *different
+object* from a 20-bar SMA of 2m closes, not a coarser estimate of the same one, so
+per-timeframe is the only coherent reading there. **The split is principled.**
+
+Per-entry-timeframe VWAP was the tempting alternative and fails hardest where the indicator is
+already weakest. Completed bars behind the NY anchor at 09:50: **1m 20 · 2m 10 · 3m ~6 · 5m 4.**
+A standard deviation from four observations, used to place a level that decides cluster
+membership and invalidation, is indefensible.
+
+**Reason for the minimum-observation rule — the estimator, not the data.** The relative standard
+error of a standard deviation estimated from *n* observations is approximately
+**1/√(2(n−1))**. That is a property of the estimator; it needs no data to evaluate and **no value
+was tried against the trade list**.
+
+| n bars since 09:30 | ET | RSE of σ̂ | 95% CI on the band's distance from the mid |
+|---|---|---|---|
+| 6 | 09:36 | **31.6%** | ±62% — the ±1σ band could be anywhere from 0.38σ to 1.62σ |
+| 10 | 09:40 | 23.6% | ±46% |
+| 20 | 09:50 | 16.2% | ±32% |
+| **30** | **10:00** | **13.1%** | **±26%** |
+| 60 | 10:30 | 9.2% | ±18% |
+
+**30 is chosen because it is the point at which the σ estimate's own 95% interval is narrower
+than the cluster tolerance it feeds.** At the workbench's typical early-session NY σ of roughly
+15–20 points, a ±26% interval on σ is ±4–5 points — inside the ~10-point cluster tolerance of
+§3, so the band's *membership* decision is no longer dominated by estimation error. At n=6 the
+same interval is ±9–12 points, wider than the tolerance itself: the level is noise with a line
+drawn through it. 30 is also the conventional small-sample boundary, which is a weak reason on
+its own and is not the operative one.
+
+**Stated as a cost, not hidden.** This makes the first tradeable signal bar (09:36) fall inside
+the ineligible window. Between 09:36 and 09:59 the NY VWAP contributes its **mid only**. Fewer
+clusters will form and the §7 invalidation will fire less in that window. **That is the intended
+consequence** — a level that cannot be estimated should not be allowed to decide trades — and it
+is a spec change whose effect on trade counts is unmeasured at the time of writing.
+
+**Cost to parity, recorded as a limitation and not as a pass.** NY VWAP band parity against the
+reference chart is now **unverifiable**: Angus cannot render a 1-minute VWAP for January 2025.
+The daily VWAP agreement at 0.002 across feeds is genuine reassurance about the implementation;
+the NY bands get none.
+
+**Tag: [SPEC]** for the 1m feed (it resolves what *"standard TradingView VWAP"* left open on
+structural grounds). **[FIAT]** for the 30-bar threshold. **Free-parameter count +1.**
+
+**Check, not justification:** the detector already computed from 1m bars, so A8 codifies existing
+behaviour on the feed and does **not** move the detector toward the reference chart. It moves the
+*specification* to where the detector already was, for an independent reason.
+
+### A9 — 2026-08-08 — §7: the location filter is DEMOTED from gate to recorded covariate
+
+**Change.** §7's *"no longs at HTF range top / shorts at range bottom"* no longer removes a
+candidate. Stage 3 records **two** columns — `range_pos_swing` (swing highs/lows, the reference
+definition set by the P2 reading) and `range_pos_blocks` (session-local 240-minute clock blocks,
+≤6, session-reset, current partial block excluded — the former implementation). **Gate on
+neither.**
+
+**Reason 1 — the threshold was never written down.** §7 states a direction, not a number. The
+implementation invented `LOC_BAND = 0.20`. Asked to make the call by eye at P2, the reference
+trader answered *"not really sure."* **A rule nobody can state is not a filter; it is a free
+parameter with a gate's authority.**
+
+**Reason 2 — the two definitions are not two readings of one thing.** At 2025-01-22 09:50 the
+swing range is **1733.25** points wide and the clock-block range **151.75** — a factor of
+**eleven** — putting price at **74.50%** and **143.99%** respectively, on opposite sides of any
+plausible threshold. Neither candidate is clearly right, which is the strongest argument that
+neither should be load-bearing.
+
+**Reason 3 — house style.** Amendment 01's Stage 5 doctrine prefers continuous covariates to
+binary gates: a gate splits the trade budget, a covariate keeps every trade in the fit. Range
+position is natively continuous. Recording is free; testing is what costs α.
+
+**Measured before the change, as required by Amendment 03 §8.1** — descriptive count, full
+workbench, 501 processed sessions, `research/star-trading/tools/loc_gate_measure.py`:
+
+| | |
+|---|---|
+| Otherwise-valid candidates (every gate except location) | **23,490** — 12,042 long / 11,448 short |
+| **Blocked by the location gate** | **4,346 = 18.50%** — long **19.55%**, short **17.40%** |
+| Range position **outside [0, 1]** | **21.07%** — 11.34% above 1.00, 9.79% below 0.00 |
+| Admitted trades, gate **ON** | **1,423** (655 long / 768 short), 2.8403/session |
+| Admitted trades, gate **OFF** | **1,453** (719 long / 734 short), 2.9002/session |
+| Delta | **+30 trades, +2.11%** |
+| Amendment 02 floor n ≥ 661 | ON **2.15×** · OFF **2.20×** — both CLEAR |
+
+**The feared failure mode did NOT materialise, and this is recorded as a negative result.**
+Amendment 03 §4 warned the gate might be suppressing longs systematically in an up-drifting
+market and pushing the realised count under the runnable floor. It blocks **19.55% of longs
+against 17.40% of shorts** — near-symmetric, not a systematic long suppression — and the sample
+budget is never at risk. **Decision 2 is a footnote on sample size.** The demotion stands on
+reasons 1–3, which are about specification quality, not about trade counts.
+
+**Two findings the count did produce, neither of which was the one being looked for:**
+
+1. **The range fails to contain price 21.07% of the time.** A "range" price sits above or below
+   is not a range under any reading of §7, and 4,346 gate decisions were taken on it.
+2. **The cap absorbs the gate.** 4,346 blocked candidates yield only **+30** admitted trades when
+   the gate is removed, because the 3/session cap and one-at-a-time occupancy substitute one
+   trade for another. But the *composition* moves: **655→719 long, 768→734 short**, i.e. 46.0/54.0
+   becomes 49.5/50.5. **The gate's effect on which trades are taken is an order of magnitude
+   larger than its effect on how many.** Consistent with §10.1(5): the cap, not the filter, sets
+   the population.
+
+**Tag: [SPEC]** — this removes an invented parameter rather than adding one. **Free-parameter
+count −1** (`LOC_BAND` retired).
+
+**Consequence for the sealed result, stated plainly:** the sealed run **applied** this gate. It
+is therefore a result on the pre-A9 specification. See A12 note below.
+
+### A10 — 2026-08-08 — A2's 15m fractal: equal extremes, stated
+
+**Change.** A swing high at bar *i* requires **`H[i] > H[i−1 … i−N]` AND `H[i] ≥ H[i+1 … i+N]`**.
+Mirrored for lows: **`L[i] < L[i−1 … i−N]` AND `L[i] ≤ L[i+1 … i+N]`**. **The first bar of a
+plateau is the swing.** N=2 and the HH+HL / LH+LL classification are unchanged.
+
+**Reason 1 — the level was established by the bar that created it.** A2's fractal is a
+formalisation of chart reading, and a chart reader attributes structure to the bar that made the
+high, not the one that revisited it.
+
+**Reason 2 — it confirms earlier, for free.** Under N=2 a swing at bar *i* is confirmed once
+*i+1* and *i+2* complete. Admitting the first bar of a plateau rather than the last confirms one
+plateau-length sooner. **Confirmation lag is pure cost** in a model whose first tradeable bar is
+09:36, and a rule that reduces it at no cost should.
+
+**Why it was needed.** A strict `>` on both sides admits **neither** bar of a plateau. On
+2025-01-22 the 08:30 and 08:45 fifteen-minute bars both printed **21934.25 to the tick**; the
+detector admitted neither, fell back to 21905.00 at 06:15, and read **range** where the reference
+read **uptrend**. Three of the four swings matched to ≤0.25 at identical timestamps. **The entire
+trend flag turned on a tie the spec never anticipated.**
+
+**Check, not justification.** Applied to that instant, 08:30 is admitted at 21934.25 against
+21905.00 at 06:15 — a higher high, the lows already agreed — and the flag becomes **uptrend**,
+matching the reference. **The rule was chosen on the two reasons above and would stand if it had
+produced the opposite flag.** Recorded this way so it is never read as fitted.
+
+**Tag: [FIAT]** — a tie-breaking convention. It replaces silence rather than adding a knob, so
+the free-parameter count is unchanged.
+
+**Consequence for the sealed result:** the sealed run used strict `>`, so its HTF flags differ
+wherever a 15m plateau occurs. See A12 note below.
+
+### A11 — 2026-08-08 — §1: 1m retained, and flagged
+
+**Change.** 1m remains an entry timeframe. Stage 3 output carries a boolean **`entry_tf_1m`** on
+every trade.
+
+**Reason — the alternatives are worse, and the hole is permanent.** The reference platform's
+1-minute history does not reach nineteen months back, so **there is no instant inside the
+workbench where a 1m reference reading can be taken**, and the recent window where 1m *is*
+renderable is the sealed holdout. Scoping 1m out would discard the hand log's four 1M entries —
+two of them in scope — and would change the strategy to avoid a *measurement* problem, which is
+backwards. Ignoring it means not knowing whether the result rests on an unverified path.
+
+**Flagging costs one boolean and buys a retrospective answer:** if Stage 3's expectancy survives
+with 1m trades excluded, the hole never mattered; if it does not, **the finding is that the edge
+lives in the least-verified code path**, which is worth knowing before it trades money.
+
+**Why the hole is live and not academic.** At P2 it was moot — no 1m trigger at the instant. But
+across **09:36–09:44 the detector fired eleven raw 1m triggers, three carrying two cluster
+types**, at minutes that cannot be rendered. **A parity instant chosen one minute earlier would
+have been silently incomplete.**
+
+**Named and not quietly dropped:** one recent session of 1-minute OHLCV, pulled solely to run a
+parity instant and never used for performance measurement, would close the hole for a trivial
+sum. A unit test is not a sample and it contaminates nothing. **Angus's standing no on further
+data purchases holds; this is recorded as available, not recommended.**
+
+**Tag: [SPEC]** — an output field, no rule change, no new parameter.
+
+### A12 — 2026-08-08 — note: what A8–A11 do to the sealed workbench result
+
+**A9 and A10 change the admitted population; A8 and A11 do not.**
+
+| amendment | changes the population? | why |
+|---|---|---|
+| A8 feed | **No** on the feed — the detector already used 1m. **Yes** on the σ-band eligibility rule, which is new and unrun | codifies existing behaviour, then adds a restriction |
+| A9 location | **Yes** | the sealed run applied the gate; the amended spec does not. Measured: 1,423 → 1,453 admitted, and the direction mix moves 46.0/54.0 → 49.5/50.5 |
+| A10 fractal | **Yes** | HTF flags differ wherever a 15m plateau occurs, which changes counter-trend status and hence the confluence minimum |
+| A11 1m flag | **No** | output-only |
+
+**Therefore `workbench_results_SEALED.parquet` is a result on the PRE-A8 specification.** It is
+not invalidated and it is not re-sealed here — that is a decision for Angus, not a side effect of
+an amendment. What is recorded is that **the spec hash it was produced under is superseded**, and
+that any Stage 3 run under A8–A11 is a *different* run and must be sealed separately rather than
+compared against it. **Two results and a choice made afterwards is the thing the seal exists to
+prevent.**
+
+**N_trials after A8, A9, A10, A11 and A12: 0.** Nothing here was selected by comparing outcomes,
+computing P&L, ranking configurations or reading the holdout. The location-gate figures in A9 are
+a **descriptive count of a filter's block rate**, not a test of whether removing it helps — that
+question remains unasked and unanswered.

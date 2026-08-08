@@ -82,9 +82,16 @@ quantitative.
    highest total volume is the front month. Roll date = the first session where the
    deferred contract's volume exceeds the front's (verified: 2025-12-15 for NQZ5→NQH6).
 3. **Returns never cross a roll.** Prices are **not** back-adjusted; the inter-contract
-   spread was measured at ~227–258 points across the Dec-2025 roll. The first bar of a new
-   front month has **no** return; it is dropped, not carried. A single unhandled roll
-   injects a ~250-point fake return that would swamp every seasonal bucket it lands in.
+   spread was measured at ~227–258 points across the Dec-2025 roll. **CORRECTED 2026-08-08:
+   the spread is not a constant.** Measured from the `NQxx-NQyy` calendar instrument's own
+   quotes across all **eight workbench rolls**, the median ranges **125.05 → 300.40 points**
+   (2023-03: 125.05 · 2023-06: 180.75 · 2023-09: 197.90 · 2023-12: 210.80 · 2024-03: 247.65 ·
+   2024-06: 264.15 · 2024-09: 236.00 · **2024-12: 300.40**), growing roughly with the rate
+   environment. The four 2025+ rolls are holdout-dated and were refused. The first bar of a new
+   front month has **no** return; it is dropped, not carried. A single unhandled roll injects a
+   fake return of **125 to 300 points** — the size depends on which roll — that would swamp
+   every seasonal bucket it lands in. See `research/STATE.md` → ROLL SPREADS, and
+   `research/star-trading/tools/roll_spreads.py`.
 4. **Bar labelling.** Source bars are **open-labelled** (verified empirically: median
    \|book_mid − bar.close\| = 0.38 pts vs 6.69 pts against bar.open). Bar labelled `13:00`
    covers `13:00:00–13:00:59`. Apply the pipeline's standard +1 min shift to close labels

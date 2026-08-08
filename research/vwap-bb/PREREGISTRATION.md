@@ -19,12 +19,28 @@ signing invalidates this pre-registration and requires a new one.
 | | |
 |---|---|
 | File | `strategy-definition-v1.0.md` |
-| **SHA-256** | `8ead725997b620678426bd41075bbdfd05356cab8325d2a92a95d63ee1bbf10f` |
-| git blob | `2235e2dc38f279951ddbf5f95805f071c4fdf21f` |
-| Size | 30,059 bytes · 387 lines |
-| Frozen at commit | `5bab7c5` (last commit touching this file) |
+| **SHA-256** | **`59edd5b283b33e343fae176bb20bc5eb2b3ec75b87a926260ef65ce27872c679`** |
+| git blob | **`4bad6a684af06b2ed6bf43dcb65c94feb9965fbe`** |
+| Size | **46,617 bytes · 626 lines** |
+| Amendments in force | A1 – **A12** |
 
 Verify with `sha256sum strategy-definition-v1.0.md` before the run and again after.
+
+> ### ⚠ SPEC RE-HASHED 2026-08-08 — THIS PRE-REGISTRATION IS SUPERSEDED FOR THE SEALED RUN
+>
+> **Previous hash `8ead725997b620678426bd41075bbdfd05356cab8325d2a92a95d63ee1bbf10f`**
+> (30,059 bytes · 387 lines, frozen at `5bab7c5`). Amendments **A8–A12** were written into the
+> spec after parity P2 returned FAIL, so the file this document points at has changed.
+>
+> **`workbench_results_SEALED.parquet` was produced under the PREVIOUS hash.** Two of the four
+> resolutions change the admitted population — **A9** (the location gate the sealed run applied
+> is demoted to a covariate) and **A10** (the fractal tie-break changes HTF flags wherever a 15m
+> plateau occurs). **A8**'s NY σ-band eligibility rule is new and unrun. **A11** is output-only.
+>
+> **The sealed result is therefore a result on a superseded specification.** It is not
+> invalidated and it is not re-sealed by this edit — that is Angus's call. What is fixed is
+> that **any Stage 3 run under A8–A12 is a different run and must be sealed separately**, never
+> compared against the old one and the better of the two reported. See spec Amendment **A12**.
 
 ### 1.1 Amendments in force
 

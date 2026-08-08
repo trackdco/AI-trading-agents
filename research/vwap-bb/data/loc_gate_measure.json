@@ -1,0 +1,47 @@
+{
+ "processed_sessions": 501,
+ "excluded": {
+  "holiday / short session": 22,
+  "roll session": 8,
+  "session after roll": 8
+ },
+ "funnel": {
+  "raw triggers": 132163,
+  "dropped: confluence": 50368,
+  "dropped: invalidation": 40146,
+  "dropped: entry beyond wick": 11738,
+  "dropped: no target clears the RR floor": 671
+ },
+ "otherwise_valid": 23490,
+ "by_direction": {
+  "short": 11448,
+  "long": 12042
+ },
+ "blocked_total": 4346,
+ "blocked_by_direction": {
+  "short": 1992,
+  "long": 2354
+ },
+ "pos_quantiles": {
+  "min": -3.1093394077448746,
+  "p05": -0.330945558739255,
+  "p25": 0.2742561448900388,
+  "median": 0.514271531397369,
+  "p75": 0.7651006711409396,
+  "p95": 1.3782771535580525,
+  "max": 6.129943502824859,
+  "mean": 0.5318561120754365
+ },
+ "admitted_gate_on": 1423,
+ "admitted_gate_off": 1453,
+ "admitted_on_by_dir": {
+  "short": 768,
+  "long": 655
+ },
+ "admitted_off_by_dir": {
+  "short": 734,
+  "long": 719
+ },
+ "n_floor": 661,
+ "report": "====================================================================================\nLOCATION GATE \u2014 DESCRIPTIVE COUNT (Amendment 03 \u00a78.1). No hypothesis tested.\n====================================================================================\n  workbench sessions        : 539  (2023-01-03 .. 2025-01-31)\n  sessions PROCESSED        : 501\n       excluded holiday / short session      22\n       excluded roll session                 8\n       excluded session after roll           8\n\n  gate order upstream of location (all applied normally):\n       raw triggers                            132,163\n       dropped: confluence                      50,368\n       dropped: invalidation                    40,146\n  gates downstream of location (applied normally, location NOT applied):\n       dropped: entry beyond wick               11,738\n       dropped: no target clears the RR floor      671\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n  OTHERWISE-VALID CANDIDATES (post-dedup, every gate except location)\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n       total                      23,490\n       long                       12,042\n       short                      11,448\n       no 4h range available           0  (gate cannot fire)\n\n  BLOCKED BY THE LOCATION GATE\n       total                       4,346   18.50%\n       long                        2,354   19.55% of longs\n       short                       1,992   17.40% of shorts\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n  RANGE-POSITION DISTRIBUTION over otherwise-valid candidates\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n       < 0.00  (below its own range)                   2,300  9.79%\n       0.00-0.20  [gate blocks SHORTS]                 2,036  8.67%\n       0.20-0.40                                       4,363  18.57%\n       0.40-0.60                                       5,441  23.16%\n       0.60-0.80                                       4,005  17.05%\n       0.80-1.00  [gate blocks LONGS]                  2,681  11.41%\n       > 1.00  (above its own range) [blocks LONGS]    2,664  11.34%\n\n       n=23,490   min -3.1093   p05 -0.3309   p25 0.2743   median 0.5143\n                    p75 0.7651   p95 1.3783   max 6.1299   mean 0.5319\n       outside [0,1] entirely : 4,949  21.07%\n       long  median 0.4957   mean 0.5013   n=12,042\n       short median 0.5322   mean 0.5640   n=11,448\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n  IMPLIED SURVIVING TRADE COUNT (A7 admission, counts only, no outcomes)\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n       gate ON  (as sealed)        1,423 trades   long 655 / short 768   2.8403/session\n       gate OFF (demoted)          1,453 trades   long 719 / short 734   2.9002/session\n       delta                         +30 trades   2.11% of the gated count\n\n       Amendment 02 floor n >= 661\n       gate ON   1,423  ->  CLEARS (2.15x)\n       gate OFF  1,453  ->  CLEARS (2.20x)\n\n  runtime 60s.  No outcome computed. N_trials unchanged: 0."
+}
