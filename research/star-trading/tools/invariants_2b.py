@@ -351,13 +351,14 @@ def run_invariants(trades, sess):
         "overlap is tested on bar indices; the release bar is recorded WITHOUT "
         "recording which side released it, so no outcome is exposed")
 
-    # 7 — stop-first
-    rec(7, '§4.1 (accounting) "ambiguous bars resolve STOP-FIRST"', 0, 0, [],
-        "NOT TESTABLE",
-        "the admission list carries NO exit attribution by construction, because "
-        "recording which side released a position is outcome information barred by "
-        "Part 0 rule 6. Stop-first is a property of a Stage 3 engine that does not "
-        "exist. It cannot be tested here and is NOT marked PASS")
+    # 7 — MOVED to 2a (item 5, overnight queue). Stop-first accounting is now tested
+    # with no outcome data at all, via a standalone resolve_bar_stop_first() function
+    # exercised on synthetic bars in test_stop_first_5.py: 15/15 pass. It cannot be
+    # tested here on the real admission list without exposing an exit attribution,
+    # which is exactly why it left this file. Left as a note, not a numbered
+    # invariant, so the count of invariants below does not silently renumber.
+    rec("7 (moved)", 'MOVED to test_stop_first_5.py — see that file', 0, 0, [],
+        "MOVED", "was NOT TESTABLE here; now 15/15 PASS in 2a on synthetic bars")
 
     # 8 — determinism: handled by the caller's double run
 
@@ -404,7 +405,7 @@ def main():
         4: ["fill_bar", "fill_px", "signal_bar_idx"],
         5: ["cm"],
         6: ["fill_bar", "release_bar", "session_date"],
-        7: ["exit_reason  <-- ABSENT BY DESIGN"],
+        "7 (moved)": ["exit_reason  <-- ABSENT BY DESIGN; test moved to test_stop_first_5.py"],
         9: ["entry", "stop_px", "tgt_px", "fill_px"],
         10: ["symbols"],
     }

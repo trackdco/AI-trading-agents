@@ -350,14 +350,20 @@ def group_d(ladder, tick):
     check("D3", "§6.5/A4 'outward from entry'", "[LIT]", [118.0, 138.0, 198.0],
           ladder([200.0, 120.0, 140.0], 105.0, "long", 2.0))
 
-    # D4 [LIT] two menu levels a tenth of a point apart are one rung, not two: the
-    # tick grid is 0.25 and they are indistinguishable as order prices.
-    check("D4", "§6.5 ladder, sub-tick duplicates", "[LIT]", [118.0],
+    # D4 [LIT] RECLASSIFIED under A15 (was UNSPECIFIED IN SPEC in run 1 - no clause
+    # existed yet). Two menu levels a tenth of a point apart are well within A15's
+    # one-tick collapse bound and become one rung, the nearer kept.
+    check("D4", "A15 'a gap of <=1 tick, inclusive, collapses'", "[LIT]", [118.0],
           ladder([120.0, 120.1], 105.0, "long", 2.0))
 
-    # D5 [LIT] exactly one tick apart is two distinct rungs.
-    check("D5", "§6.5 ladder, one tick apart", "[LIT]", [118.0, 118.25],
-          ladder([120.0, 120.25], 105.0, "long", 2.0))
+    # D5 [LIT] RECLASSIFIED under A15. Its run-1 expectation ([118.0, 118.25], "two
+    # distinct rungs") was written before any clause existed and was WRONG even on
+    # its own terms - it does not match ladder()'s actual behaviour, which collapses
+    # an exactly-one-tick gap (confirmed directly: 0.25 is not > TICK). A15's
+    # boundary is inclusive of the tick itself, so exactly one tick apart is ALSO
+    # one rung.
+    check("D5", "A15 boundary, exactly one tick, inclusive => collapses", "[LIT]",
+          [118.0], ladder([120.0, 120.25], 105.0, "long", 2.0))
 
     # D6 [LIT] nothing beyond entry -> empty ladder -> §6.5 "Skip only if no level
     # in the menu clears the floor" has nothing to offer.
@@ -613,12 +619,120 @@ def group_h(signal_candidates_current):
 
 
 # ════════════════════════════════════════════════════════════════════
+# GROUP I — A14 TICK ROUNDING.  A14, quoted: "every transmitted order price rounds to
+# the 0.25 grid in the direction that makes the trade worse." Stop and target round
+# AWAY FROM ENTRY; the entry itself rounds AGAINST THE TRADER (long pays more, short
+# receives less). "A price already exactly on the 0.25 grid is not moved."
+# ════════════════════════════════════════════════════════════════════
+def group_i(round_against_trader, round_away_from_entry):
+    # I1 [FORM] entry, long, off-grid -> against the trader means paying MORE, i.e.
+    # rounding UP to the next tick.
+    close("I1", "A14 entry, long, against the trader = round up", "[FORM]",
+          100.25, round_against_trader(100.13, "long"), 1e-9)
+
+    # I2 [FORM] entry, short, off-grid -> against the trader means receiving LESS,
+    # i.e. rounding DOWN.
+    close("I2", "A14 entry, short, against the trader = round down", "[FORM]",
+          100.00, round_against_trader(100.13, "short"), 1e-9)
+
+    # I3 [FORM] entry, long, already on the 0.25 grid -> "not moved".
+    close("I3", "A14 'a price already ... on the grid is not moved', long", "[FORM]",
+          100.25, round_against_trader(100.25, "long"), 1e-9)
+
+    # I4 [FORM] entry, short, already on the grid -> not moved.
+    close("I4", "A14 'not moved', short", "[FORM]",
+          100.25, round_against_trader(100.25, "short"), 1e-9)
+
+    # I5 [FORM] entry, long, boundary just above a tick (100.2500001) -> rounds up to
+    # the NEXT tick, not back down to the one it is already almost on.
+    close("I5", "A14 entry, long, just above a tick", "[FORM]",
+          100.50, round_against_trader(100.2500001, "long"), 1e-6)
+
+    # I6 [FORM] stop, long: stop sits BELOW entry, so "away from entry" means rounding
+    # DOWN (more negative distance = wider R).
+    close("I6", "A14 stop, long, away from entry = round down", "[FORM]",
+          89.75, round_away_from_entry(89.87, 100.0), 1e-9)
+
+    # I7 [FORM] stop, short: stop sits ABOVE entry, so away from entry means UP.
+    close("I7", "A14 stop, short, away from entry = round up", "[FORM]",
+          110.25, round_away_from_entry(110.13, 100.0), 1e-9)
+
+    # I8 [FORM] target, long: target sits ABOVE entry, away from entry means UP.
+    close("I8", "A14 target, long, away from entry = round up", "[FORM]",
+          130.25, round_away_from_entry(130.13, 100.0), 1e-9)
+
+    # I9 [FORM] target, short: target sits BELOW entry, away from entry means DOWN.
+    close("I9", "A14 target, short, away from entry = round down", "[FORM]",
+          69.75, round_away_from_entry(69.87, 100.0), 1e-9)
+
+    # I10 [FORM] boundary: a stop already exactly on the grid is not moved, whichever
+    # side of entry it sits on.
+    close("I10", "A14 'not moved', already on the grid", "[FORM]",
+          90.00, round_away_from_entry(90.00, 100.0), 1e-9)
+
+    # I11 [FORM] boundary: a price exactly AT entry (degenerate; never occurs for a
+    # real stop or target, but the function must not divide by zero or misbehave).
+    # "Away from entry" has no side to prefer when price == entry, so it is treated
+    # as already-on-the-grid and left alone if it happens to be on-grid.
+    close("I11", "A14, degenerate price == entry, on-grid", "[FORM]",
+          100.00, round_away_from_entry(100.00, 100.00), 1e-9)
+
+
+# ════════════════════════════════════════════════════════════════════
+# GROUP J — A15 LADDER COLLAPSE, WHICH RUNG SURVIVES.  A15, quoted (as corrected):
+# "a gap of <=1 tick, inclusive, collapses to a single rung, keeping the nearer one.
+# Only a gap strictly greater than one tick (>0.25 pt) keeps two rungs separate."
+# ════════════════════════════════════════════════════════════════════
+def group_j(ladder):
+    # J1 [LIT] three levels chained by sub-tick gaps all collapse to the FIRST
+    # (nearest-to-entry) one — chaining is against the LAST KEPT rung, not the
+    # original nearest, but with sub-tick gaps throughout the whole run stays one.
+    check("J1", "A15, three-way sub-tick chain collapses to the nearest", "[LIT]",
+          [118.0], ladder([120.0, 120.05, 120.09], 105.0, "long", 2.0))
+
+    # J2 [LIT] THE CASE A15 EXISTS TO DESCRIBE — two menu levels within one tick of
+    # each other; the nearer (to entry) rung is kept, the farther one dropped.
+    # 120.0 -> 118.0 (nearer), 120.2 -> 118.2 (farther, 0.2 from the kept rung,
+    # <= 1 tick) - collapses, nearer survives.
+    check("J2", "A15 'keeping the nearer one'", "[LIT]",
+          [118.0], ladder([120.2, 120.0], 105.0, "long", 2.0))
+
+    # J3 [LIT] a gap just OVER one tick (0.26) stays as two separate rungs - the
+    # boundary is exclusive on the far side, per A15's corrected text.
+    check("J3", "A15 boundary, gap > 1 tick stays separate", "[LIT]",
+          [118.0, 118.26], ladder([120.0, 120.26], 105.0, "long", 2.0))
+
+    # J4 [LIT] CHAINING is measured against the LAST KEPT rung, not the original one -
+    # this is what makes it a chain rather than a fixed cluster radius. Three levels
+    # 0.20 apart pairwise (120.0, 120.20, 120.40): gap 1 (120.0->118.0 vs 120.20->
+    # 118.20) is 0.20 <= tick, collapses; the NEXT candidate (120.40 -> 118.40) is
+    # compared against the LAST KEPT rung (118.0, since 118.20 was dropped), gap
+    # 0.40 > tick, so it survives as a second rung.
+    check("J4", "A15, chaining is against the last KEPT rung", "[LIT]",
+          [118.0, 118.40], ladder([120.0, 120.20, 120.40], 105.0, "long", 2.0))
+
+    # J5 [LIT] mirror of J2 on the short side. For a short, ladder() walks in
+    # DESCENDING order of (level + F) - i.e. nearest-to-entry first, since every
+    # candidate sits below entry and the largest such value is closest to it.
+    # levels 80.2, 80.0 -> +F(2.0) -> 82.2, 82.0. |95-82.2|=12.8 < |95-82.0|=13.0,
+    # so 82.2 (from the raw level 80.2) is nearer and is processed, hence kept,
+    # first; 82.0 collapses into it (gap 0.2 <= one tick).
+    check("J5", "A15, short side, nearer rung kept", "[LIT]",
+          [82.2], ladder([80.2, 80.0], 95.0, "short", 2.0))
+
+    # J6 [LIT] on the short side, a gap just over one tick stays separate.
+    check("J6", "A15 boundary, short side, gap > 1 tick stays separate", "[LIT]",
+          [82.0, 81.74], ladder([80.0, 79.74], 95.0, "short", 2.0))
+
+
+# ════════════════════════════════════════════════════════════════════
 def main():
     from vwapbb_opportunity import trig
     from vwapbb_signals import cluster_levels
     from vwapbb_a7_selector import ladder, tie_break, TICK as A7_TICK
     from spec_current import (htf_flag_a10, ny_sigma_eligible,
-                              signal_candidates_current)
+                              signal_candidates_current, round_against_trader,
+                              round_away_from_entry)
 
     group_a(trig)
     group_b(cluster_levels)
@@ -628,6 +742,8 @@ def main():
     group_f(tie_break)
     group_g(ny_sigma_eligible)
     group_h(signal_candidates_current)
+    group_i(round_against_trader, round_away_from_entry)
+    group_j(ladder)
 
     npass = sum(1 for r in RESULTS if r[5] == "PASS")
     nfail = len(RESULTS) - npass
