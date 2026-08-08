@@ -55,8 +55,20 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from scripts.htf_ma_level_census import LOCI, day_rows              # noqa: E402
+from scripts.htf_ma_ltf_census import day_triggers                  # noqa: E402
 from scripts.htf_ma_mtable import FLOW_NAMES                        # noqa: E402
 from src.htf_ma.levels import NY                                    # noqa: E402
+
+# UPGRADED 2026-08-07 (second time): the recorder logged the 15m trigger
+# grammar ONLY, and its rows carried NO `next_lvl_R` and NO trigger-timeframe
+# tag. Open-space — the strongest candidate on the book — is defined by
+# `next_lvl_R` being undefined at a 3m/5m trigger, so NONE of the forward
+# data collected so far can validate it. Both are added here.
+#
+# LTF rows come from htf_ma_ltf_census.day_triggers (imported, not
+# reimplemented) which already emits next_lvl_R and the ceiling flags via
+# its admissibility() path, so parity with the research build is structural.
+LTF_TFS = [3, 5]
 
 CFG = ROOT / "config/flow_recorder.json"
 
@@ -108,18 +120,36 @@ def emit(journal: Path, rows: list[dict], seen: set) -> int:
     return n
 
 
+def all_rows(bars, sess_day, fp=None):
+    """Every trigger the programme now cares about, tagged by timeframe.
+
+    15m rows keep the twelve flow features (day_rows takes fp). LTF rows
+    carry the D7 geometry — next_lvl_R and the ceiling flags — which is
+    what open-space needs; they carry NO flow features yet, and that is
+    stated on the row rather than left to be inferred from a missing key."""
+    out = []
+    for r in day_rows(bars, sess_day, LOCI, fp=fp):
+        r["tf"] = 15
+        r["has_flow"] = True
+        out.append(r)
+    for r in day_triggers(bars, sess_day, tfs=LTF_TFS):
+        r["has_flow"] = False
+        out.append(r)
+    return out
+
+
 def replay(sess_day: str) -> None:
     bars, fp = load_frames("data/reference/nq_1m_master.parquet"
                            if sess_day < "2026-02-01"
                            else "data/reference/nq_1m_feb_jul2026.parquet",
                            "output/fp_minutes_full.parquet")
-    rows = day_rows(bars, sess_day, LOCI, fp=fp)
+    rows = all_rows(bars, sess_day, fp=fp)
     F = pd.read_parquet(ROOT / "output/htf_ma_census/mtable_fit.parquet")
     ref = F[F.sess_day == sess_day]
     ok, checked = True, 0
     for r in rows:
-        if r.get("locus") != "bbma15":
-            continue                    # the M-TABLE indexes bbma15 only
+        if r.get("tf") != 15 or r.get("locus") != "bbma15":
+            continue        # the M-TABLE indexes the 15m bbma15 grammar only
         m = ref[(ref.t == r["t"]) & (ref.arm == r["arm"])
                 & (ref.side == r["side"])
                 & (ref.n_attempts == r["n_attempts"])]
@@ -138,15 +168,27 @@ def replay(sess_day: str) -> None:
     for r in rows:
         per[r.get("locus", "?")] = per.get(r.get("locus", "?"), 0) + 1
     miss = [l for l in LOCI if per.get(l, 0) == 0]
-    flow_cov = np.mean([np.isfinite(r.get("flowconf", np.nan)) for r in rows]) \
-        if rows else 0.0
+    r15 = [r for r in rows if r.get("tf") == 15]
+    rltf = [r for r in rows if r.get("tf") in LTF_TFS]
+    flow_cov = np.mean([np.isfinite(r.get("flowconf", np.nan)) for r in r15]) \
+        if r15 else 0.0
+    nlr_cov = np.mean([("next_lvl_R" in r) for r in rltf]) if rltf else 0.0
+    open_n = sum(1 for r in rltf if r.get("next_lvl_R") is None
+                 or (isinstance(r.get("next_lvl_R"), float)
+                     and np.isnan(r.get("next_lvl_R"))))
     print(f"REPLAY {sess_day}: {len(rows)} triggers across {len(per)} loci")
     print(f"  per-locus: {per}")
-    print(f"  flow coverage: {flow_cov*100:.1f}% | bbma15 rows checked vs "
-          f"M-TABLE: {checked} | PARITY {'PASS' if ok else 'FAIL'}")
+    print(f"  15m rows {len(r15)} | LTF rows {len(rltf)} "
+          f"({sorted({r.get('tf') for r in rltf})})")
+    print(f"  flow coverage (15m): {flow_cov*100:.1f}% | next_lvl_R coverage "
+          f"(LTF): {nlr_cov*100:.1f}% | OPEN-SPACE rows today: {open_n}")
+    print(f"  bbma15 rows checked vs M-TABLE: {checked} | "
+          f"PARITY {'PASS' if ok else 'FAIL'}")
     if miss:
         print(f"  NOTE: no triggers today at {miss} (not a failure)")
-    ok = ok and checked > 0 and flow_cov > 0.9
+    # the recorder must now certify BOTH streams, not just the 15m one
+    ok = ok and checked > 0 and flow_cov > 0.9 and len(rltf) > 0 \
+        and nlr_cov > 0.99
     sys.exit(0 if ok else 1)
 
 
@@ -182,7 +224,7 @@ def live() -> None:
                     time.sleep(30)
                     continue
                 sd = sess_day_of(now)
-                rows = day_rows(bars, sd, LOCI, fp=fp)
+                rows = all_rows(bars, sd, fp=fp)
                 n = emit(journal, rows, seen)
                 if n:
                     print(f"{now} +{n} triggers logged (session {sd})")
