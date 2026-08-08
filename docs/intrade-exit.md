@@ -93,10 +93,14 @@ junk base rate, breaks the feature→label link — 20 draws, same CV.
 | h (min) | still-open frac | AUC pooled (LR / GBM) | AUC **actionable** subset¹ (LR / GBM) | null mean [95%] | null p |
 |---:|---:|---|---|---|---:|
 | 1  | 80.0% | 0.931 / 0.950 | 0.880 / 0.898 | 0.501 [0.475,0.527] | 0/20 |
-| 2  | 72.1% | 0.959 / 0.976 | 0.909 / 0.926 | 0.503 [0.480,0.529] | 0/20 |
-| 3  | 66.4% | 0.971 / 0.985 | 0.924 / 0.939 | 0.502 [0.480,0.534] | 0/20 |
+| 2  | 72.1% | 0.959 / 0.976 | 0.909 / 0.926 | 0.503 [0.479,0.529] | 0/20 |
+| 3  | 66.4% | 0.971 / 0.985 | 0.924 / 0.939 | 0.501 [0.469,0.534] | 0/20 |
 | 5  | 57.9% | 0.982 / 0.993 | 0.942 / 0.949 | 0.500 [0.475,0.532] | 0/20 |
-| 10 | 46.3% | 0.990 / 0.999 | 0.966 / 0.975 | 0.500 [0.474,0.536] | 0/20 |
+| 10 | 46.3% | 0.990 / 0.999 | 0.966 / 0.975 | 0.501 [0.469,0.536] | 0/20 |
+
+null mean/range = the two models' 20-draw null distributions pooled
+(mean averaged, range = the envelope of both); `null p` = 0/20 permutation
+AUCs (either model) matched or beat the real AUC, at every horizon.
 
 ¹ "actionable subset" = fights **not yet resolved** at horizon N (not
 already stopped, session not yet ended) — the population a policy could
@@ -133,7 +137,11 @@ touched (nothing to exit) and keep their real outcome. Compared against
 and **blanket −0.5R / −0.75R stops** — re-simulated with the *identical*
 `race_realexit.score_one` machinery (same 3R target, same breakeven/trail
 runner), only the initial stop distance changed, so the comparison isolates
-the stop decision from everything else.
+the stop decision from everything else. (`P(3R)` here = `reached_3r` from
+the two-phase real-exit engine — 24.7% do-nothing, vs. the brief's 25.1%
+which is `run_mfe_r>=3` on the untruncated walk; both count "reached 3R",
+the ~0.4pt gap is the two measurement conventions, not a discrepancy in the
+data.)
 
 **Pooled, whole book (n=3,153):**
 
@@ -174,8 +182,8 @@ do-nothing by more than the amounts shown.)
 +25.2R aggregate) is well inside noise. Both blanket stops are
 *catastrophically* worse than do-nothing and worse than every early-exit
 variant — confirms the brief's warning that a blanket tighter stop is not
-free (my re-simulation: −0.5R kills 41.3% of the do-nothing book's runners,
-778→457 fights reaching 3R, to buy a shrunk average loss on the junk — net
+free (my re-simulation: −0.5R kills 41.4% of the do-nothing book's runners,
+778→456 fights reaching 3R, to buy a shrunk average loss on the junk — net
 EV more than 4x worse than doing nothing).
 
 ### Why a 0.88–0.98 AUC doesn't turn into money
@@ -214,8 +222,8 @@ consistent with the book's own timing structure (established fact: 43% of
 fights peak within 1 minute) — most of what will happen has often already
 started happening by minute 1, and the "already stopped" freeze is not yet
 dominant (only 20% resolved by then), so there's more "still alive"
-population to act on than at later horizons. By h=5 and h=10, over half the
-book is already resolved (57.9%, 53.7%) and the flagged population shrinks
+population to act on than at later horizons. By h=5 and h=10, 42.1% and
+53.7% of the book is already resolved and the flagged population shrinks
 to 3–6%, run out of frequency to move the aggregate needle even when the
 sign is favorable.
 
@@ -252,8 +260,9 @@ worst do-nothing baseline (more junk to cut in absolute terms), and the
 pooled bootstrap already shows the *pooled* effect is noise; per-session
 splits are thinner still and not separately recalibrated, so this is
 suggestive, not a finding. NY_AM — the best-performing session by
-do-nothing — gets *worse* under every early-exit variant tried (−0.065 vs
-−0.099 to −0.073 across horizons): the session with fewest true junk fights
+do-nothing (−0.065) — gets *worse* under 9 of the 10 horizon/model variants
+swept (−0.099 to −0.067), with one essentially-flat exception (h3 GBM,
+−0.064, a −0.0004R difference): the session with fewest true junk fights
 to cut has the most room to shoot a runner instead.
 
 **Per mechanism** (EV, R/trade):
@@ -263,7 +272,6 @@ to cut has the most room to shoot a runner instead.
 | M1 | 1,541 | −0.083 | −0.099 | −0.082 | −0.538 |
 | M2 | 786 | −0.180 | −0.173 | −0.171 | −0.563 |
 | M3 | 826 | −0.149 | −0.095 | −0.150 | −0.492 |
-| M1 (h3 GBM, n=1,541) | | −0.083 | | −0.082 | |
 
 M1 (reversal off the 15m MA) is worst-hit by the h=1 policy (−0.083→−0.099,
 the wrong direction) — it is also the mechanism with the best do-nothing
