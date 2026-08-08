@@ -84,3 +84,64 @@ this census as the null, not against hope.
 
 Standing: fit-only, no holdout exists for this family (forward data is
 the only out-of-sample), report-only, nothing adopted, nulls published.
+
+
+---
+
+# ADDENDUM — RE-RUN AGAINST THE CORRECTED (EPISODE-M1) CENSUS
+
+2026-08-08. Run because the population changed (Amendment 1 crossed
+every pre-declared "meaningful" line: M1 +270/+284/+58% by window, book
++42%), not because the first answer was unwelcome. Same outcome
+declaration, only the population swapped. Gate: **T1 flatten PASS
+(20 probes, 0 bad, 18 moved)**. Calibration vs the episode census:
+**exact** (6,642 vs 6,645; the 3-row gap fully accounted by counted
+gap-through-stop exclusions). Book: **3,153 fights, 10.76/day.**
+
+## THE ANSWER DOES NOT CHANGE
+
+**Still no positive cell clears a day-boot CI — anywhere, in ~44 CI'd
+numbers.** Pooled at cost, the corrected book is marginally *worse* than
+the open-M1 book:
+
+| @cost | M1 (15m MA) | M2 near | M3 near |
+|---|---|---|---|
+| 0.5pt | −0.040 | −0.087 | −0.111 |
+| 1.5pt | −0.142 | −0.199 | −0.223 |
+
+The tripled M1 population — now including the trader's reclaim entries,
+T3 among them — prices at **zero**: NY_AM M1 long/short land at +0.008
+and +0.001 with tight CIs ([−0.19,+0.22] on 253 and 233 fights); NY_PRE
+at −0.060/−0.017. The 2,577 newly-visible reclaim triggers went from
+"not counted" to "counted, and worth nothing mechanically" — which is
+precisely consistent with the selection thesis: the trader's four real
+trades live inside a population that nets zero before his filtering.
+
+**One new negative clear appears, and it's the largest M1 cell:**
+LONDON M1 short — fading upside displacement in London — **−0.227
+[−0.395,−0.046] on 346 fights** (the first pass showed the same point
+estimate on 82 fights but spanned; 4× the data resolves it). LONDON M1
+long stays faintly positive and spanning (+0.114 [−0.173,+0.433],
+n=271), still carrying the 3.8R-median-target lottery geometry (BR-87).
+
+M2/M3 are the same populations as before (Amendment 1 barely touched
+them) and reproduce the first pass: NY_PRE M2-long remains the worst
+cell in the family (far −0.722 [−0.908,−0.537]), LONDON M2-long near,
+NY_AM M2-short near, NY_AM M3-long far and M3-short near all clear
+negative; NY_AM M2-long far (+0.209) and NY_PRE M2-short near (+0.302)
+remain the best spanning positives.
+
+MFE on the corrected M1 is marginally healthier at the floor (p25 0.20R
+vs 0.12R) and unchanged in the tail (p90 3.00R, P(≥2R) 19.7%).
+
+## STANDING CONCLUSION FOR THE FAMILY
+
+Both censuses — the original and the corrected one that provably
+catches the trader's real entries — say the same thing under
+mechanization: **the grammar's population is fairly priced to slightly
+negative; nothing clears positive; a handful of continuation-long and
+London-fade cells clear negative.** The corrected census is now the
+better null (it contains the trades that actually happen), and the next
+edge claim on this family — a selection layer, an entry-timing change,
+or a moved declared line — tests against IT. Nothing is adopted;
+forward data remains the only out-of-sample.
