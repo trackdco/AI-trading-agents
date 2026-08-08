@@ -63,7 +63,7 @@
    "\u00a73 displacement, 'body/range >= B_min', B_min = 0.6",
    "[LIT]",
    "{('long', 'displacement')}",
-   "{('long', 'rejection'), ('long', 'displacement')}",
+   "{('long', 'displacement'), ('long', 'rejection')}",
    "FAIL"
   ],
   [
@@ -110,8 +110,8 @@
    "A14",
    "\u00a73, both predicates on one bar",
    "[LIT]",
-   "{('long', 'rejection'), ('long', 'displacement')}",
-   "{('long', 'rejection'), ('long', 'displacement')}",
+   "{('long', 'displacement'), ('long', 'rejection')}",
+   "{('long', 'displacement'), ('long', 'rejection')}",
    "PASS"
   ],
   [
@@ -126,8 +126,8 @@
    "A9b",
    "\u00a73, B_min 0.6 boundary with close in top quartile",
    "[LIT]",
-   "{('long', 'rejection'), ('long', 'displacement')}",
-   "{('long', 'rejection'), ('long', 'displacement')}",
+   "{('long', 'displacement'), ('long', 'rejection')}",
+   "{('long', 'displacement'), ('long', 'rejection')}",
    "PASS"
   ],
   [

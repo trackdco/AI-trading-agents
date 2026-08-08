@@ -978,3 +978,77 @@ opposite sides of the volatility break.** The live rule has no fixed minute, so 
 10:00, 08:30 or 14:00 ET, and the release layer must control for it.**
 
 **N_trials: 0.**
+
+---
+
+## 2026-08-08 — CODE-PATH VERIFICATION SUITE · P3 CANCELLED
+
+### Part 1 — the parity gate CLOSES AT P2
+
+**P3 is CANCELLED.** `vwap-bb/P3-SELECTION-SEALED.md` is deleted from the working tree and
+survives in git history at `36229ea`. The instant 2025-01-29 10:20 ET is withdrawn and
+`vwap-bb/PARITY-P3-SHEET.md` is void.
+
+**Why: Amendment 03 §7 published the selection criterion** — *"P3 must be chosen where a trigger
+survives past the confluence gate. On 2m, 3m or 5m"* — which told the reader that a trigger
+exists at the released instant and that it is not on 1m, before he opened a chart. **No
+date-and-time-only discipline repairs that**, because the criterion had to be published to
+justify the instant. **Machine verification replaces it.**
+
+The P4–P9 batch pre-registration (`PARITY-BATCH-PREREG.md`, `d3123e4c…`) is a separate,
+committed pre-registration and is **NOT cancelled by this**. Whether it survives the switch to
+machine verification is an open decision, not a side effect.
+
+### Two premises the suite assumed and the repository does not satisfy
+
+> **1. There is NO Stage 3 run.** Nothing named Stage 3 has been executed. The only sealed
+> artefact is the **Stage 2** workbench smoke result, archived unopened, on the superseded spec
+> `8ead7259`. The suite's Part 2b was therefore run over a **freshly computed admission list** —
+> geometry only, no outcome field of any kind — and Part 4's rule governs a run that does not
+> yet exist.
+>
+> **2. The spec hash in the brief is stale.** It named `59edd5b2` (A1–A12). The repository is at
+> **`42d6f0f6` (A1–A13)**, because A13 was added at Angus's own instruction. The suite ran
+> against `42d6f0f6`, and the hash was **identical at the start and at the end** of the run.
+
+### Results
+
+| part | outcome |
+|---|---|
+| **2a** spec-derived unit tests | **64 written, 64 run, 61 PASS, 3 FAIL — no detector bug.** 2 failures are mis-constructed test bars, left unedited; 1 asserted something no clause states |
+| **2b** invariants | **8 PASS at 1,472 of 1,472 evaluated · 1 NOT TESTABLE (7, stop-first) · 1 UNSPECIFIED IN SPEC (9, tick grid)** |
+| **Part 3** bar archive | first **2023-01-02**, last **2026-01-30** (UTC days). `data_split.yaml` needs **no change** — it already records `2026-01-30`; the brief's `2026-07-31` is the MBP-10 window, which ends 2026-07-22 |
+| **Part 4** unseal rule | created at `vwap-bb/STAGE3-UNSEAL-RULE.md` — **it did not previously exist**. Verdict **DO NOT OPEN** |
+
+> ### THE FINDING WITH THE LARGEST BLAST RADIUS — invariant 9
+>
+> **1,401 of 1,472 intended entries, 824 stops and 1,134 targets do not sit on the 0.25 tick
+> grid.** §5.3 says *"E1: limit at the BB MA"* — a 20-bar mean — and **no clause anywhere in the
+> spec rounds a price to the tick.** These orders cannot be placed as written. Actual fills are
+> bar opens and are all on-grid, so the defect is in the *intended* order prices, i.e. in the
+> stop and target that a live system would transmit. **UNSPECIFIED IN SPEC: the spec must say how
+> prices round, and in which direction, before any run claims to be executable.**
+
+**Invariant 7 (stop-first) is NOT TESTABLE and is not marked PASS.** Attributing an exit is
+outcome information, barred by the suite's own rule 6, so it can only be tested against a Stage 3
+engine — and it must be tested there *before* that engine's output is sealed.
+
+**`stage2_smoke.py` implements none of A8, A9, A10 or A13 and cannot be used for Stage 3.** The
+current-spec harness is `tools/spec_current.py`.
+
+### Determinism
+
+| artefact | hash |
+|---|---|
+| 2b trade list (geometry only), run 1 and run 2 | `1c9fce7d494f84fff18ec5e769abb6b995f378ba3e2bdff49b938c38075554bd` — **identical** |
+| 2a result, `PYTHONHASHSEED=0`, run 1 and run 2 | `dcc9f9c67f56e9e536bbb558e5a78b85b2b45add9b52ab1a1ced52239d234b7e` — **identical** |
+| 2a result, unseeded | **DIFFERED between runs** |
+
+**Disclosed rather than quietly fixed:** the first determinism attempt FAILED on 2a. The cause is
+`repr()` of Python sets in the serialized report, whose ordering depends on the per-process
+string hash seed. **The pass/fail verdicts are stable** — a hash over `(test id, status)` alone is
+identical across all four runs, seeded and unseeded — so the non-determinism is in the artefact's
+serialization, not in any outcome. Fixed by pinning `PYTHONHASHSEED=0`, which is the fixed seed
+the suite's rule 9 required in the first place.
+
+**N_trials: 0.** Nothing in the suite tested a hypothesis and no outcome was computed anywhere.

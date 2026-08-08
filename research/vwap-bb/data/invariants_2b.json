@@ -1,0 +1,134 @@
+{
+ "excluded": {
+  "holiday / short session": 22,
+  "roll session": 8,
+  "session after roll": 8
+ },
+ "fields": [
+  "R_int",
+  "bar",
+  "cl_lo",
+  "cl_mid",
+  "cm",
+  "counter",
+  "direction",
+  "entry",
+  "fill_bar",
+  "fill_min",
+  "fill_px",
+  "htf",
+  "kind",
+  "lvl",
+  "n_at_minute",
+  "n_rungs",
+  "nlev",
+  "release_bar",
+  "release_min",
+  "rungs_skipped",
+  "session_date",
+  "signal_bar_idx",
+  "stop_px",
+  "struct_anchor",
+  "symbols",
+  "tf",
+  "tf_bar_first_idx",
+  "tgt_px",
+  "trig_high",
+  "trig_low",
+  "types"
+ ],
+ "invariants": [
+  {
+   "clause": "\u00a76.5/A4 \"the first level whose front-run-adjusted distance is >= 1.5R\"",
+   "evaluated": 1472,
+   "n": 1,
+   "note": "measured against the INTENDED R at signal time, which is the quantity \u00a76.5 is written about",
+   "status": "PASS",
+   "violating_ids": [],
+   "violating_ids_truncated": 0,
+   "violations": 0
+  },
+  {
+   "clause": "\u00a75.4 \"beyond the wick extreme of the trigger candle\" + A2 \"1 tick beyond the wick extreme\" + A5 \"Effective stop = max(structural stop, 10.00 pt)\"",
+   "evaluated": 1472,
+   "n": 2,
+   "note": "",
+   "status": "PASS",
+   "violating_ids": [],
+   "violating_ids_truncated": 0,
+   "violations": 0
+  },
+  {
+   "clause": "\u00a76.5/A4 \"Walk the ladder ... outward from entry. The working target is the FIRST level whose front-run-adjusted distance is >= 1.5R\"",
+   "evaluated": 1472,
+   "n": 3,
+   "note": "checks that no rung nearer than the chosen one also cleared the floor",
+   "status": "PASS",
+   "violating_ids": [],
+   "violating_ids_truncated": 0,
+   "violations": 0
+  },
+  {
+   "clause": "PREREGISTRATION.md accounting rule 4.2, quoted in stage2_smoke: \"entry fills at the OPEN of the bar after the signal bar closes\"",
+   "evaluated": 1472,
+   "n": 4,
+   "note": "NOTE: 4.2 is an ACCOUNTING rule in the pre-registration. The SPEC itself (\u00a75.3 E1) specifies a LIMIT at the BB MA and \u00a75.5 a no-chase cancel; the next-bar-open fill is a documented handicap, not spec text",
+   "status": "PASS",
+   "violating_ids": [],
+   "violating_ids_truncated": 0,
+   "violations": 0
+  },
+  {
+   "clause": "A1 \"RTH 09:31-16:00 ET, entry blackout 09:31-09:35, first tradeable signal bar 09:36\"",
+   "evaluated": 1472,
+   "n": 5,
+   "note": "",
+   "status": "PASS",
+   "violating_ids": [],
+   "violating_ids_truncated": 0,
+   "violations": 0
+  },
+  {
+   "clause": "\u00a75.6 \"One position at a time. No overlapping trades ever.\" + \u00a710.1(3) \"At most 3 candidates are admitted per session\"",
+   "evaluated": 1472,
+   "n": 6,
+   "note": "overlap is tested on bar indices; the release bar is recorded WITHOUT recording which side released it, so no outcome is exposed",
+   "status": "PASS",
+   "violating_ids": [],
+   "violating_ids_truncated": 0,
+   "violations": 0
+  },
+  {
+   "clause": "\u00a74.1 (accounting) \"ambiguous bars resolve STOP-FIRST\"",
+   "evaluated": 0,
+   "n": 7,
+   "note": "the admission list carries NO exit attribution by construction, because recording which side released a position is outcome information barred by Part 0 rule 6. Stop-first is a property of a Stage 3 engine that does not exist. It cannot be tested here and is NOT marked PASS",
+   "status": "NOT TESTABLE",
+   "violating_ids": [],
+   "violating_ids_truncated": 0,
+   "violations": 0
+  },
+  {
+   "clause": "NO CLAUSE. \u00a75.3 says \"E1: limit at the BB MA\" and never requires rounding to the tick; \u00a71 gives the instrument but no price-grid rule",
+   "evaluated": 5888,
+   "n": 9,
+   "note": "off-grid counts of 1472: intended entry 1401, stop 824, target 1134, actual fill 0",
+   "status": "UNSPECIFIED IN SPEC",
+   "violating_ids": [],
+   "violating_ids_truncated": 0,
+   "violations": 3359
+  },
+  {
+   "clause": "\u00a74.3 (accounting) \"contract rolls reset indicator state; roll sessions AND the session after each roll are skipped\"",
+   "evaluated": 1472,
+   "n": 10,
+   "note": "",
+   "status": "PASS",
+   "violating_ids": [],
+   "violating_ids_truncated": 0,
+   "violations": 0
+  }
+ ],
+ "processed": 501,
+ "trades": 1472
+}
