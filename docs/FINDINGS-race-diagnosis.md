@@ -138,3 +138,58 @@ against this one as the null. That is a new declaration, not made here.
 
 Standing: fit-only, no holdout, report-only, nothing adopted, nulls
 published.
+
+
+---
+
+# PART 3 — FLOW (12) + DEPTH (6) INTO THE DIAGNOSTIC
+
+2026-08-08, `scripts/race_flow_diag.py`. **Declared before the run: this
+is a SECOND LOOK at a refuted family, not a fresh unbiased test.** The
+flow features were refuted as a selection layer three times (BR-19's
+CONCORD, BR-26's transfer failure, BR-62 on open-space), the LTF
+re-measurement found the family weak rather than mis-measured, the B/C
+walk found nothing durable in depth, and the one survivor (closeloc, H5)
+is Law-2 contaminated (BR-43). The prior is against. Features computed
+by the SAME imported functions the B/C run used (`flow_features`,
+`depth_at`) at each fight's winning-TF decision bar; same screens as
+Parts 1–2 (points-control beside every R split, |ρ(risk)|>0.4
+auto-flag, closeloc/rangex LAW2 by declaration).
+
+**Coverage**: flow 100% (eff_result 67.7% by construction); depth on
+229/290 days → 80% of fights; wall distance/size 40.5% — those two are
+sub-population findings by the standing rule.
+
+## THE RESULT: THE FAMILY PERFORMS AT ITS FALSE-POSITIVE BUDGET
+
+**~160 comparisons produced 9 clears against ~8 expected false at
+95%.** Order flow, tested on the population that is actually the
+trader's, delivers what it delivered on every previous population:
+chance-level selection. The nine, for the record and nothing more:
+
+- LONDON M1: `flowconf` **+0.452 [+0.137,+0.748]** (ρ(risk)+0.02,
+  points-control agrees — the shiniest single cell in the table, and it
+  appears in exactly one of nine cells); `rangex` +0.325 **[LAW2,
+  ρ+0.51 — screened]**; `d30_conf` −0.394, `eff_result` −0.424,
+  `cvd_slope30` −0.384.
+- LONDON M2: `cvd_slope30` −0.301.
+- NY_AM M2: `thru_delta_conf` −0.505; `support_minus_resist` +0.278
+  [+0.028,+0.546] (80% coverage, ρ 0.00).
+- Nothing clears in LONDON M3, all of NY_PRE, NY_AM M1, or NY_AM M3.
+
+The only cross-cell repetition is `cvd_slope30` negative in both LONDON
+cells that clear — winners in LONDON M1 carry MORE CVD slope *against*
+the trade than losers (−5.45 vs −4.95): fading flow, coherent with the
+rebalance mechanism and with the confluence-load theme of Part 1, on
+two adjacent cells, uncorrected. The direction-confirmation features
+(`d5/d15/d30_conf`) lean negative for M1 across cells — flow already
+moving toward the MA marks a reversion that has spent itself — same
+family of reading, no cell-level significance outside LONDON.
+
+**Verdict, stated against the priors as instructed: the refutations
+stand.** No flow or depth feature earns a place as a selection layer on
+this population; the isolated positive cells are base rates on a family
+whose prior is against, and would need forward confirmation even if the
+programme wanted them — it should not, on this evidence.
+
+Standing unchanged: fit-only, no holdout, report-only, nothing adopted.
