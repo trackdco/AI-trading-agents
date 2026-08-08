@@ -71,10 +71,11 @@ practice are on the record and unpriced here:
    when he passes on five of six valid triggers is exactly the part not
    in the grammar yet, and on this evidence it is where the entire edge
    would have to live.
-2. **Entry timing.** He market-orders ahead of the closure (T1: ~27pt
-   better than the construction on a ~15pt-risk trade — roughly 1.8R of
-   entry difference on that single fill). The census prices the
-   patient, mechanized version; his fills are structurally earlier.
+2. **Entry timing.** *(Corrected 2026-08-08, BR-95: the "his fills are
+   structurally earlier" reading was withdrawn — the documented fills
+   are the closure trades themselves. The BR-92 waiting-cost
+   decomposition stood on its own and is priced honestly in Addendum
+   2.)*
 
 Neither observation licenses a parameter change by itself. The three
 declared lines the trade check surfaced (0.5W displacement floor, 10:30
@@ -145,3 +146,64 @@ better null (it contains the trades that actually happen), and the next
 edge claim on this family — a selection layer, an entry-timing change,
 or a moved declared line — tests against IT. Nothing is adopted;
 forward data remains the only out-of-sample.
+
+
+---
+
+# ADDENDUM 2 — THE NO-LOOKAHEAD EARLY ENTRY (Amendment 2): THE TIMING GAP WAS THE ACCOUNTING
+
+2026-08-08, `scripts/race_early.py`, declared in
+`DECLARATIONS-trigger-race.md` Amendment 2 and committed before the
+build. **Gate: PASS — 20 flatten probes, 0 bad, on entry AND stop
+invariance** (a single stop moved by a flattened future would have
+failed it). Entry at each 1m close on the developing TF MA cross with
+the bucket open on the far side; stop = the bucket's extreme SO FAR ±1
+tick; thesis/affirmation/gates unchanged. 3,215 fights, 10.97/day,
+median risk 11.5pt (vs the closure census's 12.8 — developing extremes
+are tighter).
+
+## THE RESULT: ~88% OF BR-92'S MEASURED GAP WAS THE LOOK-AHEAD
+
+| window | mech | EV early [95% CI] | EV null (closure) |
+|---|---|---|---|
+| LONDON | M1 | +0.009 [−0.183,+0.224] | −0.077 |
+| LONDON | M2 | −0.118 [−0.283,+0.043] | −0.139 |
+| LONDON | M3 | −0.073 [−0.229,+0.095] | −0.070 |
+| NY_PRE | M1 | −0.061 [−0.256,+0.157] | −0.036 |
+| NY_PRE | M2 | −0.050 [−0.344,+0.276] | −0.096 |
+| NY_PRE | M3 | −0.175 [−0.360,+0.039] | −0.089 |
+| NY_AM | M1 | +0.030 [−0.124,+0.197] | +0.005 |
+| NY_AM | M2 | −0.038 [−0.195,+0.140] | −0.033 |
+| NY_AM | M3 | −0.166 [−0.300,−0.025] ! | −0.181 |
+
+**Whole book: EARLY −0.050 vs NULL −0.069 — the honest version recovers
++0.019 of the +0.161 upper bound.** No cell clears positive; the cells
+move both ways (LONDON M1 improves +0.086; NY_PRE M3 worsens −0.086);
+NY_AM M3 still clears negative. Costs decay it further
+(−0.111/−0.171 at 1.0/1.5pt).
+
+The mechanism is exactly what the amendment predicted: BR-92's early
+leg carried a stop set one tick beyond the completed candle's extreme —
+unhittable inside the candle remainder — and silently dropped its worst
+fills. Price the same entries with the stop actually known at the
+decision minute and the unconfirmed mid-candle crosses that later
+reverse enter, get stopped by the candle they entered inside, and hand
+back nearly the entire measured gap. **The waiting cost, priced
+honestly, is ~+0.02R/fight — statistically nothing.**
+
+## WHERE THIS LEAVES THE FAMILY, in one paragraph
+
+The grammar is verified faithful (BR-95: the documented trades are the
+construction's trades at their own prices); the population nets zero
+mechanized (BR-86/90); the decision-time price-state columns mark only
+things to avoid (BR-91); flow and depth select at chance, at either
+evaluation timestamp (BR-94); and the timing lever, the one effect that
+cleared everywhere, was ~88% accounting artifact (this pass). What
+remains unexplained between the census and live discretionary results
+is the trader's trade selection itself — which of the ~11 valid
+fights/day he actually takes — and that is not in any column measured
+so far. Every constructive claim on this family now tests against the
+episode census under the standing laws; forward data is the only
+out-of-sample.
+
+Standing: fit-only, no holdout, report-only, nothing adopted.
