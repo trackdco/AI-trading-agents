@@ -1,29 +1,47 @@
 #!/usr/bin/env python3
-"""CURRENT-SPEC harness — spec 59edd5b2, amendments A1-A12.
+"""CURRENT-SPEC harness — spec 42d6f0f6, amendments A1-A14 (A15 pending).
 
 The frozen detector (stage2_smoke / vwapbb_signals / vwapbb_opportunity) is NOT
-edited. This module re-implements the same pipeline with the three A8-A12 changes
-that alter behaviour, so "under the current spec" can be evaluated without
-touching the files the sealed run was produced from.
+edited. This module re-implements the same pipeline with the changes that alter
+behaviour, so "under the current spec" can be evaluated without touching the
+files the sealed Stage 2 run was produced from.
 
 DELTAS vs the superseded spec (8ead7259), and nothing else:
 
   A8  NY VWAP sigma bands are INELIGIBLE for cluster membership (§3) and as the
-      §7 invalidation reference until NY_SIGMA_MIN_OBS completed 1-minute bars
-      have elapsed since the 09:30 anchor. The NY MID stays eligible throughout.
-      A8 says nothing about the §6 target menu, so the menu is left alone; that
-      silence is recorded as a residual ambiguity, not resolved here.
+      §7 invalidation reference until eligible under the live A13 criterion.
+      The NY MID stays eligible throughout. A8 says nothing about the §6 target
+      menu, so the menu is left alone; that silence is a residual ambiguity.
       The VWAP feed itself is unchanged - the detector already used 1m bars.
 
   A9  The §7 location gate is REMOVED. Range position is computed and carried as
-      a covariate on every candidate (both definitions where available), and
-      removes nothing.
+      a covariate on every candidate, and removes nothing.
 
   A10 Fractal swing: H[i] >  H[i-1..i-N] AND H[i] >= H[i+1..i+N]
                      L[i] <  L[i-1..i-N] AND L[i] <= L[i+1..i+N]
       First bar of a plateau is the swing.
 
   A11 is output-only and is emitted as entry_tf_1m.
+
+  A13 replaces A8's fixed-30-bar threshold with a live per-instant CI test.
+      SIGMA_RULE selects between them; "live" is A13, in force by default.
+
+  A14 every transmitted order price rounds to the 0.25 grid in the direction
+      that makes the trade worse. Toggle A14_ROUND to reproduce the pre-A14
+      detector for a before/after comparison (verification suite item 3).
+      Entry rounds against the trader; because every bar OHLC in the archive
+      is already tick-aligned (verified: 0 of 4,358,848 prices off-grid), the
+      structural stop and the MIN_STOP floor stay on-grid once entry is
+      rounded, so rounding entry alone is sufficient to make the stop exact -
+      no separate stop-rounding step is needed. The target is NOT
+      algebraically tied to entry (it comes off the VWAP-derived ladder), so
+      it needs its own explicit rounding step, applied AFTER the RR-floor
+      selection decision - the floor test itself uses the true (unrounded)
+      ladder distances against the rounded R, so an admission change traces
+      only to R widening from entry rounding, not to a second rounding effect
+      stacked on top of it. The opposite order (round every ladder rung before
+      testing the floor) is a coherent alternative, recorded as untested in
+      OUT-OF-SCOPE-BRANCHES.md rather than run, per A14's own text.
 
 No outcome is computed anywhere in this module. Workbench only.
 """
@@ -33,6 +51,7 @@ import sys
 sys.path = [p for p in sys.path if p != "/usr/lib/python3/dist-packages"]
 
 import collections
+import math
 
 from vwapbb_signals import (minute_of_day, cluster_levels, RunningVWAP, TFS, BB_N,
                             RTH_OPEN, FIRST_SIG, RTH_CLOSE, NY_VWAP_ANCHOR, POC_BIN,
@@ -47,6 +66,31 @@ NY_SIGMA_OK_CM = NY_VWAP_ANCHOR + NY_SIGMA_MIN_OBS      # 600 = 10:00 ET
 CLUSTER_TOL_HALF = 5.0                                  # A13: half the 10-pt §3 tolerance
 Z95 = 1.959964
 SIGMA_RULE = "live"      # "live" = A13 per-instant CI test; "fixed30" = A8 as first written
+
+A14_ROUND = True          # A14 in force by default; False reproduces the pre-A14 detector
+_EPS = 1e-9
+
+
+def round_against_trader(price, direction, tick=TICK):
+    """A14, the entry. A resting limit that cannot sit exactly on the level fills at the
+    nearest price no better than intended: long pays more (ceil), short receives less
+    (floor). A price already on the grid is left unmoved."""
+    if abs(price / tick - round(price / tick)) < _EPS:
+        return round(price / tick) * tick
+    if direction == "long":
+        return math.ceil(price / tick - _EPS) * tick
+    return math.floor(price / tick + _EPS) * tick
+
+
+def round_away_from_entry(price, entry, tick=TICK):
+    """A14, stop and target. Rounds AWAY from entry: the side further from entry is
+    'worse' for both — a wider stop dilutes every R-multiple, a further target needs a
+    bigger favourable move to count as reached. A price already on the grid is unmoved."""
+    if abs(price / tick - round(price / tick)) < _EPS:
+        return round(price / tick) * tick
+    if price > entry:
+        return math.ceil(price / tick - _EPS) * tick
+    return math.floor(price / tick + _EPS) * tick
 
 
 def ny_sigma_eligible(nmid, nsig, cm, n_bars):
@@ -185,31 +229,41 @@ def signal_candidates_current(bars, prev_hl, audit=None):
                     else:
                         audit["invalidation SKIPPED (A8, NY sigma ineligible)"] += 1
                     # A9: location gate removed. loc_pos rides along as a covariate.
+                    # A14: entry rounds against the trader FIRST; every downstream
+                    # quantity (struct comparison, R_int, stop_px) is derived from the
+                    # rounded entry, exactly as the pre-A14 code derived it from basis.
+                    entry_px = round_against_trader(basis, direction) if A14_ROUND else basis
                     if direction == "long":
                         struct = tl_ - TICK
-                        if basis <= struct:
+                        if entry_px <= struct:
                             audit["dropped: entry beyond wick"] += 1
                             continue
-                        R_int = max(basis - struct, MIN_STOP)
-                        stop_px = basis - R_int
+                        R_int = max(entry_px - struct, MIN_STOP)
+                        stop_px = entry_px - R_int
                     else:
                         struct = th_ + TICK
-                        if struct <= basis:
+                        if struct <= entry_px:
                             audit["dropped: entry beyond wick"] += 1
                             continue
-                        R_int = max(struct - basis, MIN_STOP)
-                        stop_px = basis + R_int
+                        R_int = max(struct - entry_px, MIN_STOP)
+                        stop_px = entry_px + R_int
                     tgt_px = None
-                    for x in ladder(menu, basis, direction, FRONT_RUN_F):
-                        if abs(x - basis) / R_int >= RR_FLOOR:
+                    for x in ladder(menu, entry_px, direction, FRONT_RUN_F):
+                        if abs(x - entry_px) / R_int >= RR_FLOOR:
                             tgt_px = x
                             break
                     if tgt_px is None:
                         audit["dropped: no target clears the RR floor"] += 1
                         continue
+                    # A14: the target is rounded AFTER the floor decision, away from
+                    # entry - it only ever increases |target - entry|, so a rung that
+                    # already cleared the floor still clears it; the decision itself
+                    # used the true (unrounded) ladder distance against the rounded R.
+                    if A14_ROUND:
+                        tgt_px = round_away_from_entry(tgt_px, entry_px)
                     by_min[cm].append({
                         "cm": cm, "bar": i, "tf": tf, "direction": direction,
-                        "kind": kind, "entry": basis, "stop_px": stop_px,
+                        "kind": kind, "entry": entry_px, "stop_px": stop_px,
                         "tgt_px": tgt_px, "R_int": R_int, "nlev": nlev,
                         "cl_lo": cl_lo, "cl_mid": (cl_lo + cl_hi) / 2,
                         "htf": flag, "counter": counter, "types": len(types),

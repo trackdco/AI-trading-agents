@@ -165,31 +165,38 @@ def _instrumented(bars, prev_hl):
                             continue
                         if direction == "short" and tl_ <= nmid - nsig:
                             continue
+                    # A14: entry rounds against the trader first (spec_current.A14_ROUND
+                    # toggles this off for a before/after comparison); every downstream
+                    # quantity is derived from the rounded entry, same as spec_current.py.
+                    entry_px = SC.round_against_trader(basis, direction) if SC.A14_ROUND \
+                        else basis
                     if direction == "long":
                         struct = tl_ - TICK
-                        if basis <= struct:
+                        if entry_px <= struct:
                             continue
-                        R_int = max(basis - struct, MIN_STOP)
-                        stop_px = basis - R_int
+                        R_int = max(entry_px - struct, MIN_STOP)
+                        stop_px = entry_px - R_int
                     else:
                         struct = th_ + TICK
-                        if struct <= basis:
+                        if struct <= entry_px:
                             continue
-                        R_int = max(struct - basis, MIN_STOP)
-                        stop_px = basis + R_int
-                    rungs = ladder(menu, basis, direction, FRONT_RUN_F)
+                        R_int = max(struct - entry_px, MIN_STOP)
+                        stop_px = entry_px + R_int
+                    rungs = ladder(menu, entry_px, direction, FRONT_RUN_F)
                     tgt_px = None
                     skipped = []
                     for x in rungs:
-                        if abs(x - basis) / R_int >= RR_FLOOR:
+                        if abs(x - entry_px) / R_int >= RR_FLOOR:
                             tgt_px = x
                             break
                         skipped.append(x)
                     if tgt_px is None:
                         continue
+                    if SC.A14_ROUND:
+                        tgt_px = SC.round_away_from_entry(tgt_px, entry_px)
                     by_min[cm].append({
                         "cm": cm, "bar": i, "tf": tf, "direction": direction,
-                        "kind": kind, "entry": basis, "stop_px": stop_px,
+                        "kind": kind, "entry": entry_px, "stop_px": stop_px,
                         "tgt_px": tgt_px, "R_int": R_int, "nlev": nlev,
                         "cl_lo": cl_lo, "cl_mid": (cl_lo + cl_hi) / 2,
                         "htf": flag, "counter": counter, "types": len(types),
