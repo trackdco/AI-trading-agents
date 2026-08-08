@@ -8,6 +8,18 @@ report. Where a report disagrees, this file wins — see
 N_trials: **0**. Holdout: **SEALED.** See RULINGS below — a seal event is on permanent record
 and must accompany any future holdout result.
 
+> ### STANDING NOTE — a figure from a partial run is not a figure
+>
+> **Label sample scope on every reported number.** Rev 2 of the signal count reported
+> frequency from a **150-session probe** and understated the full-workbench value — reading D
+> came in at 1.54/session on the full 509 against a lower probe figure, and the gap was
+> invisible because the scope was not on the number. A probe is for checking that code runs.
+> It is not evidence about frequency, and it must never be compared against a threshold
+> computed on the full sample.
+>
+> Every figure in this file carries its n and its scope. Anything that does not is not yet a
+> figure.
+
 ---
 
 ## RULINGS
@@ -121,6 +133,10 @@ parameter here was set by comparing outcomes.**
 | 5 | Volatility stand-down | DISABLED for v1 | [FIAT] | A2 |
 | **6** | **Minimum stop distance** | **10.00 pt (40 ticks)** | **[FIAT]** | **A5 — 2026-08-08** |
 | **7** | **Target selection ("valid")** | **first ladder level clearing the RR floor** | **[FIAT]** | **A4 — 2026-08-08** |
+| **8** | **Vault selector** | **first-come, signal-time order** | **[FIAT]** | **A7 — 2026-08-08** |
+| **9** | **Candidate during an open position** | **discarded, not queued** | **[FIAT]** | **A7 — 2026-08-08** |
+| **10** | **Tie-break, level 1** | **highest entry TF** | **[SPEC]** | §1 MTF arbitration, CONFIRMED — Angus |
+| **11** | **Tie-break, levels 2–5** | stand down on conflict → largest cluster → nearest cluster → lowest cluster low | [FIAT] | A7 — **levels 3–5 never fire** |
 
 | figure | value |
 |---|---|
@@ -189,10 +205,10 @@ Blocked under first-come, reading A: **54.2%**. Overlap (time-rank-1 = convictio
 | 1 SIZING | **PASS** | Median MNQ risk $19–43/contract vs a $2,000 allowance |
 | 2 SESSION OVERLAP | **RESOLVED** | Ruled RTH 09:36 (Amendment A1); 9 of 28 trades out of scope |
 | 3 BREAKEVEN | **PASS — needs formal re-derivation at c=0.975** | p₀ = **43.90%** at the A5 floor s=10.00, c=0.975 (was 40.61% at s=32.75, c=0.50). c/s = 9.75% |
-| 4 SPECIFIABILITY | **REOPENED** | Vault selector unstated; cap binds on 33–92% of sessions. A4/A5 closed the stop and target sub-items; §6 rule 2 and the A/B/B2 taxonomy remain open |
+| 4 SPECIFIABILITY | **CLOSED** | Last item — the Vault selector — written into §10.1 by **A7**. Stop and target closed by A4/A5. §6 rule 2 and the A/B/B2 taxonomy remain open but are **tournament variants, not gate blockers** |
 | **4b LITERALISM** | **NEW — FIRED 3×** | Stop 11× tighter than intent; target 19.5× nearer; Vault cap acting as selector. See the runbook |
 | 5 DATA FEASIBILITY | **CLOSED — SCOPE ACCEPTED** | Feb 2026 bars absent; MBP-10 present but cannot produce VWAP/POC/wick. Parity relocated, calibration downgraded (A6) |
-| 6 SAMPLE SUFFICIENCY | **PASS**, floor p₁ ≈ 0.50 | Tripwire **0.4862** trades/session (n=262, ÷4, 539 sessions). Amended rules deliver **2.24–2.83** — see SIGNAL COUNT |
+| 6 SAMPLE SUFFICIENCY | **PASS**, floor p₁ ≈ 0.50 | Tripwire **0.4862** trades/session (n=262, ÷4, 539 sessions). Under A4+A5+A7: **2.328–2.849**, clearing by 4.8–5.9× |
 
 Gate-6 arithmetic, recomputed at p₁=0.50, p₀=0.406, 80% power, 539 sessions:
 
@@ -265,40 +281,53 @@ at s = 35.00. The in-scope hand-log win rate is 68.4%, Wilson lower bound 46.0%.
 > floor land in opposite directions and the floor wins. **Gate 3 should still be formally
 > re-derived at c = 0.975 rather than inherited.**
 
-### Caveats — stated, not buried
+### COST BASIS — ruled 2026-08-08
 
-Point samples at minute boundaries, not time-weighted; continuous `NQ.c.0`; sample period
-2026-02 → 2026-07, which is neither workbench nor any period a result is fitted on.
+> **0.975 is measured on 09:30–10:29, which holds ~9.7% of signals. The signal distribution is
+> near-uniform across RTH, so this is CONSERVATIVE BY CONSTRUCTION — the widest hour applied
+> everywhere — not representative. At the 10 pt floor the full 0.50–1.50 range moves breakeven
+> by 4.0 points, so the strategy's viability does not hinge on which value is chosen.**
 
-**On representativeness — correcting the premise.** The measurement window is **09:30–10:29
-ET**, and it was suggested this is representative because the signal distribution peaks
-10:00–10:30. **Measured, it does not.** Deduplicated signal-minutes by 30-minute bucket over
-the workbench (reading A, pre-RR-floor, n = 20,357) are close to uniform across RTH — 7.0% to
-9.5% per bucket, with the largest at **12:00–12:29 (9.5%)**, not 10:00–10:30 (7.0%):
+The 4.0-point span: at s = 10.00, p₀ runs **42.00% (c=0.50) → 46.00% (c=1.50)**. The in-scope
+hand-log win rate is 68.4% with a Wilson lower bound of 46.0%. The cost choice moves breakeven
+by less than the width of the confidence interval on the win rate — it is not the deciding
+variable and should not be argued about further.
+
+**Basis for "widest hour":** within the measured window the median holds flat at 0.750 while
+p90 falls 1.50 → 1.25 by 10:15, and the pre-market buckets are wider still (median 1.000 at
+08:00–08:30). Spread narrowing after the open is the expected intraday shape. **Post-10:29
+spread is unmeasured** — every MBP file ends at 10:29 or 04:59 — so "widest" is an inference
+from the direction of the measured trend, not a measurement. It is the conservative inference,
+which is why the ruling stands on it.
+
+### Correction — the earlier representativeness claim was wrong
+
+**It was claimed the signal distribution peaks 10:00–10:30. It does not.** Deduplicated
+signal-minutes by 30-minute bucket over the workbench (reading A, pre-RR-floor, n = 20,357)
+are close to uniform across RTH — 7.0% to 9.5% per bucket, largest at **12:00–12:29 (9.5%)**,
+while 10:00–10:30 is **7.0%**, below average:
 
 | bucket | 09:30 | 10:00 | 10:30 | 11:00 | 11:30 | 12:00 | 12:30 | 13:00 | 13:30 | 14:00 | 14:30 | 15:00 | 15:30 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | share | 2.6% | 7.0% | 7.5% | 7.6% | 7.3% | **9.5%** | 8.0% | 8.7% | 8.1% | 8.3% | 7.4% | 8.4% | 8.8% |
 
-**The window covers 9.7% of the signal population by weight.** It is therefore *not*
-representative — it is a 10% slice, and 90% of signals fire in hours with no spread measurement
-at all. On direction of bias: within the measured window the median holds flat at 0.750 while
-p90 falls from 1.50 to 1.25 by 10:15, which is consistent with the early session being the
-wider part of the day — so 0.975 is more likely conservative than optimistic. **That is an
-extrapolation from a trend inside a 10% slice, not a measurement.** Spread after 10:29 is
-unmeasured and remains unknown.
+**The window covers 9.7% of the signal population by weight** — a 10% slice, not a
+representative sample. Per the ruling above it is treated as **conservative**, not
+representative: the widest measured hour applied to all hours.
+
+Other caveats: point samples at minute boundaries, not time-weighted; continuous `NQ.c.0`;
+sample period 2026-02 → 2026-07, which is neither workbench nor any period a result is fitted
+on.
 
 ## OPEN ITEMS
 
 | item | blocks | status |
 |---|---|---|
-| **Vault selection rule unstated** | Gate 4; any backtest | **The largest open item.** The 3/day cap does 21–32% of all filtering and sets the trade count — 2.83/session out of ~30 qualified. Which 3, and why, is unwritten. Time-priority is implied by "one position at a time" but never stated. Needs Angus |
-| **§6 rule 2 defaults ambiguous and unimplemented** | Gate 4 | Pattern A's default target is "VWAP middle", but 85.4% of entries sit *inside* the firing cluster, which contains it. The A/B/B2 taxonomy (§4) is not implemented at all. **A4 does not fix this.** Needs Angus |
-| **Stop anchor unconfirmable from data** | Gate 4 | Alternatives measured (prior swing 16.29, 2×ATR 25.32 vs frozen 5.62 pts). The hand log records **no entry/stop/target prices**, so no anchor can be confirmed. A5 supplies a floor, not the anchor. Requires Angus or marked-up charts |
-| **E1 + wick degenerate on 29.6% of triggers** | Gate 4 | Entry falls on the wrong side of the wick extreme; those triggers are skipped. A5 deliberately does not rescue them. The E1 pairing itself may be the defect |
+| **§6 rule 2 defaults ambiguous and unimplemented** | Nothing — tournament variant | Pattern A's default target is "VWAP middle", but 85.4% of entries sit *inside* the firing cluster, which contains it. The A/B/B2 taxonomy (§4) is not implemented. **A4 supplies a working rule without it**, so this is a variant to test, not a blocker. Angus should still rule |
+| **Stop anchor unconfirmable from data** | Nothing — A5 makes it non-blocking | Alternatives measured (prior swing 16.29, 2×ATR 25.32 vs frozen 5.62 pts). The hand log records **no entry/stop/target prices**, so no anchor can be confirmed from data. A5's floor makes the spec executable without it; the residual shows up as 5–7 min holds against the human's ~30. Requires Angus or marked-up charts |
+| **E1 + wick degenerate on 29.6% of triggers** | Nothing — E1 is one of three tournament entries | Entry falls on the wrong side of the wick extreme; those triggers are skipped. A5 deliberately does not rescue them. E2/E3 may not share the defect — the tournament will show it |
 | **Gate 3 not formally re-derived at c = 0.975** | Gate 3 sign-off | Arithmetic done (43.90% at the A5 floor, still PASS); the gate document still records the old basis |
-| **Spread unmeasured after 10:29 ET** | Cost model confidence | The 5,781-snapshot sample covers 9.7% of the signal population. 90% of signals fire in hours with no spread data. Would need MBP files with a later window |
-| **One-position lockout placeholder** | Signal count precision | 30 min, derived under the *old* geometry. A5's wider stops lengthen holds, so the placeholder is now more approximate. Declared, not hidden |
+| **Spread unmeasured after 10:29 ET** | Nothing — ruled conservative | 90% of signals fire in hours with no spread data. Ruled: treat 0.975 as the widest hour applied everywhere. The 0.50–1.50 range moves breakeven by 4.0 pts at the A5 floor, so nothing hinges on it. Would need MBP files with a later window to improve |
 | **Pre-open warm-up bias** | Study design | BB(20)/ATR(20) at 09:36 read bars 1.65× quieter than RTH. Measured effect on counts: −0.8% |
 | **Parity readings not supplied** | spec-1 Step 4 sign-off | Angus must provide chart values for 2025-01-15 09:48 and 2025-01-22 09:50 |
 | **Calibration gate downgraded** | Phase 2 sign-off | Irrecoverable *as a bar-based gate* — Feb 2026 has no bars, and the MBP schema cannot produce the detector's inputs. §12.2 corrected by A6 |
@@ -308,6 +337,7 @@ unmeasured and remains unknown.
 
 | item | how |
 |---|---|
+| **Vault selector unstated — the last gate-4 item** | **A7.** First-come by elimination: ranking needs lookahead, thresholding needs a score with resolution and §9's is 3-valued with two-thirds on one value. §10.1 states admission order, discard-not-queue, the 3/day cap and a five-level tie-break. **Gate 4 CLOSED** |
 | Spec stop geometry ~11× tighter than the hand log | Diagnosed, then amended. Not a stop-anchor problem alone — the target was 19.5× nearer too, so both ends compressed together and the R-multiple looked healthy. **A5** floors the stop at 10.00 pt; cost ratio 31.25% → 9.75% |
 | §6 target rule discards viable targets | **A4** — "valid" disambiguated to "clears the floor". The RR floor now removes 4.6–11.7% of stage-0 instead of ~25%, and screens target quality rather than stop size |
 | H1 — entry timeframe | **REJECTED.** The gap is 8.5–11.2× within every timeframe, tested against the hand log's own `Entry TF` column |
@@ -315,7 +345,10 @@ unmeasured and remains unknown.
 | §12.2 described a calibration that cannot run | **A6** — corrected |
 | 2026-02-01 → 2026-07-22 unclassified | **RULED** — microstructure only. Mirrored in `data_split.yaml` |
 | Seal-boundary read | **RULED** — recorded, not remediated. Permanent entry in RULINGS; both scripts guarded |
-| Gate 6 under the amended rules | **CONFIRMED** — 2.24–2.83 trades/session against a 0.4862 tripwire |
+| Gate 6 under the amended rules | **CONFIRMED** — 2.328–2.849 trades/session under A4+A5+A7 against a 0.4862 tripwire |
+| Cost-basis representativeness | **RULED** — conservative by construction, and the 0.50–1.50 range moves breakeven by 4.0 points at the A5 floor. Earlier "peaks in the measured window" claim corrected: it does not |
+| Partial-run figures | **STANDING NOTE** added at the head of this file — a figure from a partial run is not a figure |
+| One-position lockout placeholder | **RETIRED.** The 30-min proxy is replaced by actual resolution timing in the A7 count. Median hold measured at 5–7 min |
 
 ---
 
@@ -403,3 +436,73 @@ Two things the cascade shows:
 Frequency is not this strategy's constraint and never was: 2.83/session against a hand-log
 1.00 and a tripwire of 0.486. **The open question is which 3 of ~30 qualified candidates get
 taken, and the spec still does not say.**
+
+---
+
+## A7 SELECTOR — confirmation count (added 2026-08-08)
+
+Source: `research/star-trading/tools/vwapbb_a7_selector.py`. **Workbench, 509 sessions.**
+Full filter stack + A4 + A5 + A7. Holdout never addressed.
+
+**Resolution timing note.** The one-at-a-time rule cannot be applied without knowing when a
+position closes, so each admitted candidate's bars are walked forward until the stop distance
+or the target distance is touched. **Stop-first ordering is computed as an unavoidable
+by-product. It was not aggregated, reported or examined** — no win rate, no expectancy, no P&L
+exists in that script. Elapsed minutes were used only to decide when the next candidate could
+be admitted.
+
+| | A | B | C | D |
+|---|---|---|---|---|
+| qualified candidates / session | 47.430 | 27.436 | 13.762 | 8.866 |
+| distinct signal minutes / session | 30.100 | 16.701 | 11.238 | 7.251 |
+| **ADMITTED trades / session** | **2.849** | **2.782** | **2.699** | **2.328** |
+| blocked — position open | 7.417 | 4.678 | 3.071 | 2.293 |
+| blocked — 3/day cap | 27.346 | 12.491 | 7.088 | 3.658 |
+| **% blocked — one-at-a-time** | 15.6% | 17.0% | 22.3% | 25.9% |
+| **% blocked — 3/day cap** | **57.7%** | 45.5% | 51.5% | 41.3% |
+| **% sessions where the cap binds** | **91.0%** | 86.8% | 81.5% | 63.1% |
+| **% signal minutes with a tie** | 22.9% | 19.9% | 16.4% | 18.1% |
+| median hold, minutes | 5 | 6 | 6 | 7 |
+| admitted ÷ qualified | 6.0% | 10.1% | 19.6% | 26.3% |
+
+**Tripwire: every reading CLEARS 0.4862 — by 5.9× (A), 5.7× (B), 5.6× (C), 4.8× (D).**
+
+### Which tie-break level actually decides
+
+| level | A | B | C | D |
+|---|---|---|---|---|
+| 0 — no tie, single candidate | 80.7% | 81.4% | 84.3% | 82.1% |
+| **1 — highest entry TF [SPEC]** | **19.1%** | **18.6%** | **15.7%** | **17.9%** |
+| 2 — stand down, long/short conflict | 0.2% | 0.0% | 0.0% | 0.0% |
+| 3 — largest cluster | **0.0%** | **0.0%** | **0.0%** | **0.0%** |
+| 4 — cluster nearest entry | **0.0%** | **0.0%** | **0.0%** | **0.0%** |
+| 5 — lowest cluster low (arbitrary backstop) | **0.0%** | **0.0%** | **0.0%** | **0.0%** |
+
+**The tie-break is carried entirely by §1's MTF arbitration — a rule Angus already confirmed.**
+Levels 3–5 never fire. The [FIAT] content of the tie-break is, in practice, zero.
+
+### A measurement-hygiene finding worth keeping
+
+The first run of this count reported the arbitrary level-5 backstop deciding **36.1%** of
+admissions under reading A, and ties on **39.3%** of signal minutes. Both were wrong.
+`trig()` emits a rejection *and* a displacement for the same cluster on the same bar; those
+duplicate records were tying with each other. Checked directly: **100% of level-5 invocations
+were between two records of an identical trade** — same entry, same stop, same target — so the
+choice was immaterial. Collapsing duplicates left **admitted trades/session unchanged** and
+moved ties to 22.9% with level 5 at 0.0%.
+
+> **An arbitrary rule that looks load-bearing may just be counting one thing twice.** Check
+> whether the things being tie-broken are actually different before designing a rule to
+> separate them.
+
+### What the numbers say about the design
+
+- **The cap is the dominant filter**, discarding 41–58% of qualified candidates and binding on
+  63–91% of sessions. Under reading A only **6.0%** of qualified candidates are traded.
+  Admission order determines the traded population. Recorded in §10.1(5) as a known property
+  of the design, not an oversight.
+- **Frequency is not, and never was, the constraint** — 2.33–2.85/session against a hand-log
+  1.00 and a tripwire of 0.486.
+- **Median hold is 5–7 minutes against the hand log's ~30.** A5's floor is 10.00 pt against the
+  human's 35.00 median, so positions still resolve ~5× faster. Residual of the unresolved stop
+  *anchor*, not a new problem.

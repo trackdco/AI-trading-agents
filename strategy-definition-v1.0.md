@@ -97,6 +97,55 @@ Each variant runs over identical data; Monte Carlo compares distributions; winne
 
 ## 10. Vault (deterministic, no LLM access)
 
+### 10.1 Selector — FIRST-COME [AMENDED 2026-08-08 — see Amendment Log A7]
+
+The Vault admits **at most one candidate at a time, in signal-time order**. Stated in full:
+
+1. **Admission order.** Qualified candidates (those surviving §5, §6 and §7) are admitted in
+   ascending order of **signal minute** — the close minute of the trigger candle. No candidate
+   is compared against any later candidate. Nothing about the session's future is consulted.
+2. **One position at a time.** While a position is open, later candidates are **NOT admitted
+   and are NOT queued**. A candidate that fires during an open position is **DISCARDED**. It is
+   not reconsidered when the position resolves. Re-entry requires a **fresh trigger** meeting
+   §5 in full.
+   - *Why discarded rather than queued:* a trigger's validity is tied to its trigger candle
+     (§5.2, "candle must CLOSE to confirm") and its entry is a limit at the BB MA (E1). By the
+     time an earlier position resolves the BB MA has moved, the cluster may have dissolved and
+     the trigger candle is stale. Filling a stale trigger at a price that no longer sits on the
+     level is precisely the behaviour §5.5 forbids — *"No fill → no chase."* Queueing would
+     reintroduce chasing under another name.
+3. **Session cap.** At most **3** candidates are admitted per session (§10 as written). Once 3
+   are admitted, all further candidates are discarded regardless of quality.
+4. **Tie-break — candidates sharing a signal minute.** Applied in order; the first level that
+   separates them decides.
+
+   | # | rule | grounds |
+   |---|---|---|
+   | 1 | **Highest entry TF** | §1 MTF arbitration — *"if multiple TFs show valid triggers simultaneously, take the highest TF"* **[SPEC, CONFIRMED — Angus]** |
+   | 2 | **Long and short on the same bar → stand down, take neither** | This is a confluence strategy. Contradictory confluence is not confluence, and there is no basis in the spec for preferring one side |
+   | 3 | **Larger cluster (more distinct level types)** | §3 defines confluence count as the quality measure and §7 already gates on it. Using the spec's own measure to break a tie is consistent |
+   | 4 | **Cluster nearest the entry price** | The cluster actually being traded against |
+   | 5 | **Lowest cluster low** | Pure determinism backstop. Arbitrary, and stated as arbitrary, so that runs reproduce |
+
+   **Before tie-breaking, collapse duplicate records of the same trade.** One cluster can emit
+   both a rejection and a displacement trigger on the same bar; those share entry, stop and
+   target and are **one trade, not two**.
+
+   **Measured weight of each level** (workbench, 509 sessions — see `research/STATE.md`):
+   ties occur on **16.4–22.9%** of signal minutes; level 1 resolves **15.7–19.1%** of
+   admissions; level 2 fires on **0.2%** under reading A and never otherwise; **levels 3, 4 and
+   5 never fire at all.** The tie-break is therefore carried entirely by a rule Angus already
+   confirmed, and the arbitrary backstop is dead weight retained only for determinism.
+
+5. **Consequence, stated plainly.** The 3/day cap discards **41–58%** of qualified candidates
+   and binds on **63–91%** of sessions. **Admission order materially determines the traded
+   population — the cap, not the strategy, sets which trades are taken.** This is a **known
+   property of the design, not an oversight.** Any future change to trigger sensitivity changes
+   the traded population through the cap before it changes anything else, and must be assessed
+   on that basis.
+
+### 10.2 Remaining Vault rules
+
 - Max trades/day: **3** (config 2–3; Angus: "no more than 2–3 genuinely high-probability setups exist per day").
 - Daily halt: after **2 losses** or **−2R** on the day, whichever first (placeholder; MC calibrates).
 - One position at a time; no stop widening; EOD flatten (§1); drawdown kill-switch vs trailing DD buffer; size ceiling from MC.
@@ -266,11 +315,73 @@ behavioural sanity report substituted in its place is **not equivalent and is no
 
 **Grounds.** Both are corrections of internal inconsistency. No outcome was computed.
 
+### A7 — 2026-08-08 — §10: the Vault selector is FIRST-COME, stated in full
+
+**Change.** §10 gains 10.1, which states the admission rule the spec never contained: candidates
+admitted in signal-time order, one position at a time, later candidates during an open position
+**discarded not queued**, max 3 per session, with a five-level tie-break for candidates sharing
+a signal minute. Full text in §10.1.
+
+**Reason — first-come by ELIMINATION, not by comparison.**
+
+1. **A ranking selector is not tradeable.** "Take the highest-conviction candidate of the
+   session" requires knowing every candidate before choosing one. That is lookahead. It cannot
+   be executed in real time and no backtest of it would mean anything.
+2. **A threshold selector needs a score with resolution, and §9's has none.** The conviction
+   score is **3-valued** (confluence ≥3, with-trend, target ≥2R) and **~two-thirds of
+   candidates sit on a single value** — 65.7% on score 2 under reading A. Any threshold either
+   admits two-thirds of the pool or, among whatever clears it, collapses to first-come anyway.
+   The score cannot separate the population it would be asked to rank.
+3. **Therefore first-come is the only implementable selector the spec supports.**
+
+**This is a specification completion by elimination, NOT a performance comparison. No outcome
+was examined.** No selector was backtested, no P&L computed, no alternative scored. The two
+rejected forms were rejected on *implementability* and *resolution* — properties of the rule
+and the score, not of any result they produce. **N_trials remains 0.**
+
+**Tag: [FIAT]** for the admission rule, the discard-not-queue ruling and tie-break levels 2–5.
+**Tie-break level 1 is [SPEC]** — it is §1's MTF arbitration, already confirmed by Angus, and
+it turns out to carry the entire tie-break in practice.
+
+**Measured under A4 + A5 + A7** (workbench, 509 sessions, `vwapbb_a7_selector.py`):
+
+| | A | B | C | D |
+|---|---|---|---|---|
+| qualified candidates / session | 47.43 | 27.44 | 13.76 | 8.87 |
+| **ADMITTED trades / session** | **2.849** | **2.782** | **2.699** | **2.328** |
+| blocked — position open | 15.6% | 17.0% | 22.3% | 25.9% |
+| blocked — 3/day cap | 57.7% | 45.5% | 51.5% | 41.3% |
+| sessions where the cap binds | 91.0% | 86.8% | 81.5% | 63.1% |
+| signal minutes with a tie | 22.9% | 19.9% | 16.4% | 18.1% |
+| median hold, minutes | 5 | 6 | 6 | 7 |
+
+**All four readings clear the gate-6 tripwire of 0.4862 trades/session, by 4.8× to 5.9×.**
+
+**Consequences, recorded so they are not rediscovered later:**
+- **The cap is the dominant filter.** It discards 41–58% of qualified candidates and binds on
+  63–91% of sessions. Admission order determines the traded population. Recorded in §10.1(5) as
+  a known property.
+- **The arbitrary tie-break backstop is never used.** Levels 3, 4 and 5 fire on 0.0% of
+  admissions. §1's MTF arbitration resolves everything that is not already unique. The [FIAT]
+  content of the tie-break is, in practice, zero.
+- **A measurement-hygiene finding.** Before duplicate records were collapsed, level 5 appeared
+  to decide **36.1%** of admissions and ties appeared to occur on **39.3%** of signal minutes.
+  Both were artefacts: `trig()` emits a rejection and a displacement for the same cluster, and
+  those duplicates were tying with themselves. Every level-5 invocation was between two records
+  of an **identical** trade — same entry, same stop, same target — so the choice was immaterial.
+  The admitted counts are unchanged by the fix; only the tie statistics were wrong. **An
+  arbitrary rule that looks load-bearing may just be counting one thing twice.**
+- **Median hold is 5–7 minutes against the hand log's ~30.** Stops under A5 are still ~3.5×
+  tighter than the human's 35-point median, so positions resolve faster and the
+  one-position rule blocks less than it would under his geometry. **Residual, not new** — it
+  follows from A5 being a floor rather than the anchor, which remains unresolved.
+
 ---
 
-**N_trials after A4, A5 and A6: 0.** None of these amendments was selected by comparing
-outcomes, computing P&L, ranking configurations, or reading the holdout. A4 and A5 are
-**specification completions** — they supply values and disambiguations the spec never stated,
-on structural and execution-realism grounds. A6 is a correction of internal inconsistency.
+**N_trials after A4, A5, A6 and A7: 0.** None of these amendments was selected by comparing
+outcomes, computing P&L, ranking configurations, or reading the holdout. A4, A5 and A7 are
+**specification completions** — they supply values, disambiguations and rules the spec never
+stated, on structural, execution-realism and implementability grounds. A6 is a correction of
+internal inconsistency.
 The first decision made by comparing outcomes will increment N_trials, and must be recorded
 here at the moment it is made.
