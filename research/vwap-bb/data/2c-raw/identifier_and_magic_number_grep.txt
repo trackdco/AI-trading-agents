@@ -1,0 +1,167 @@
+=== NARROW IDENTIFIER GREP (names) ===
+  RunningVWAP : 0
+  cluster_levels : 0
+  tie_break : 0
+  def trig : 0
+  trig( : 0
+  LOC_BAND : 0
+  FRONT_RUN_F : 7
+  B_MIN : 3
+  QUARTILE : 3
+  MIN_STOP : 0
+  RR_FLOOR : 2
+  POC_BIN : 4
+  FRACTAL_N : 8
+  NY_VWAP_ANCHOR : 0
+  FIRST_SIG : 2
+  EOD_FLATTEN : 2
+  htf_flag : 2
+  signal_candidates : 0
+  admit_current : 0
+  contract_key : 0
+  spec_current : 0
+  stage2_smoke : 0
+  vwapbb_signals : 0
+  vwapbb_opportunity : 0
+  vwapbb_a7_selector : 0
+  alpha_data : 0
+  _nq_frontmonth : 0
+
+=== MAGIC NUMBERS ABSENT FROM THE SPEC (checked against SPEC.md) ===
+  pattern '0\.25'  in SPEC.md: 1   in blind_impl.py: 2
+  pattern '0\.6\b'  in SPEC.md: 3   in blind_impl.py: 1
+  pattern '0\.75\b'  in SPEC.md: 1   in blind_impl.py: 0
+0
+  pattern '10\.00'  in SPEC.md: 6   in blind_impl.py: 3
+  pattern '1\.5\b'  in SPEC.md: 3   in blind_impl.py: 1
+  pattern '2\.0\b'  in SPEC.md: 0
+0   in blind_impl.py: 2
+  pattern '2\.5\b'  in SPEC.md: 0
+0   in blind_impl.py: 1
+  pattern '3\.0\b'  in SPEC.md: 0
+0   in blind_impl.py: 1
+  pattern '20\b'  in SPEC.md: 18   in blind_impl.py: 6
+  pattern '\bN=2\b'  in SPEC.md: 5   in blind_impl.py: 1
+  pattern '0\.20\b'  in SPEC.md: 1   in blind_impl.py: 0
+0
+  pattern '15'  in SPEC.md: 16   in blind_impl.py: 18
+  pattern '240'  in SPEC.md: 2   in blind_impl.py: 0
+0
+  pattern '1080'  in SPEC.md: 0
+0   in blind_impl.py: 2
+  pattern '930'  in SPEC.md: 0
+0   in blind_impl.py: 2
+  pattern '576'  in SPEC.md: 0
+0   in blind_impl.py: 1
+  pattern '960'  in SPEC.md: 0
+0   in blind_impl.py: 0
+0
+  pattern '1.959964'  in SPEC.md: 0
+0   in blind_impl.py: 0
+0
+  pattern '1\.96\b'  in SPEC.md: 0
+0   in blind_impl.py: 0
+0
+  pattern '5\.00\b'  in SPEC.md: 9   in blind_impl.py: 2
+
+=== FUNCTION / CONSTANT NAMES DEFINED IN blind_impl.py ===
+35:TICK = 0.25                 # NQ tick.  A5: "10.00 points (40 ticks)" => tick = 0.25
+36:CLUSTER_TOL = 10.00         # §3 tolerance, CALIBRATE start "~10 NQ pts"; pinned by A13
+38:TOL_HALF = CLUSTER_TOL / 2  # A13 right-hand side = 5.00
+41:BB_PERIOD = 20              # §2 table "Bollinger Bands | 20, SMA, close, 2σ"
+42:BB_SIGMA = 2.0              # §2 (bands themselves are not §3 cluster levels; basis only)
+44:ATR_PERIOD = 20             # §3 "range >= k x ATR(20)"
+45:ATR_K = 1.0                 # §3 CALIBRATE start k = 1.0
+46:B_MIN = 0.6                 # §3 displacement body/range, CALIBRATE start 0.6
+47:EXTREME_QUARTILE = 0.25     # §3 "close within the extreme quartile of the candle's range"
+49:STOP_BUFFER = 1 * TICK      # A2 "stop buffer = 1 tick beyond the wick extreme"
+50:STOP_MIN = 10.00            # A5 "effective stop = max(structural stop, 10.00 pt)"
+52:RR_FLOOR = 1.5              # §6.5 / A4 "first level whose front-run-adjusted distance is >= 1.5R"
+53:FRONT_RUN_F = 2.5           # §6.4 F: CALIBRATE (start 2-3 NQ pts) -> midpoint  [see AMBIGUITIES A-08]
+55:POC_BIN = 1.00              # A2 "volume-profile bin = 1.00 pt"
+56:FRACTAL_N = 2               # A2 "15m fractal swings N=2"
+57:HTF_TF = 15                 # §1 "Context TFs: 15m for HTF trend/range flag"
+59:CONF_MIN_WITH_TREND = 2     # §7 "Confluence minimum: 3 counter-trend; 2 with-trend"
+60:CONF_MIN_COUNTER = 3
+61:SESSION_CAP = 3             # §10.1(3) / §10.2 "Max trades/day: 3"
+63:ENTRY_TFS = (1, 2, 3, 5)    # §1 "Entry TFs: 1m, 2m, 3m, 5m"
+66:FIRST_SIGNAL_MIN = 9 * 60 + 36    # 576  — A1 "first tradeable signal bar 09:36"
+67:LAST_SIGNAL_MIN = 15 * 60 + 59    # 959  — A1 entry window ends 16:00 ET
+68:NY_ANCHOR_IDX = 9 * 60 + 30 + 360   # 930 — §2 NY VWAP anchored 09:30 ET
+69:EOD_FLATTEN_IDX = 15 * 60 + 55 + 360  # 1315 — §1 "default 15:55 ET"
+70:LAST_FILL_IDX = 16 * 60 + 360         # 1320 — §1 entry window closes 16:00 ET
+71:N_SESSION_IDX = 1380
+73:SEAL_DATE = "2025-01-31"    # TASK.md — never process a session after this
+85:OPT = {
+95:DEBUG = {}   # diagnostics sink; never read by the strategy logic
+98:def idx_of_minute(mm):
+102:def _mean(xs):
+110:def running_vwap(bars, anchor_idx):
+145:def running_poc(bars):
+176:def build_tf_bars(bars, k):
+206:def attach_bb_atr(tfb):
+243:def fractal_swings(b15):
+267:def htf_flag(sw_h, sw_l, e):
+288:def find_clusters(levels):
+325:def cluster_types(cl):
+333:def process_session(date, bars, prior):
+653:def simulate_fill(bars, start_idx, end_idx, limit, direction):
+676:def simulate_exit(bars, fill_idx, stop, target, direction):
+702:def build_prior_levels(all_sessions, dates):
+741:def main():
+
+=== DETECTOR'S FUNCTION/CONSTANT NAMES, FOR COMPARISON (from the pinned worktree) ===
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:20:NY = ZoneInfo("America/New_York")
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:21:WORKBENCH_END = "2025-01-31"
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:23:NY_VWAP_ANCHOR = 9 * 60 + 30
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:24:TFS = (1, 2, 3, 5)
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:26:CLUSTER_TOL = 10.0          # §3, CALIBRATE start ~10 NQ pts
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:27:BB_N = 20                   # §2
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:28:B_MIN = 0.6                 # §3, CALIBRATE start
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:29:QUARTILE = 0.75             # §3 close in extreme quartile
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:30:POC_BIN = 1.00              # gate 4 [FIAT]
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:31:FRACTAL_N = 2               # gate 4 [FIAT]
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:35:def build_sessions():
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:53:def minute_of_day(idx: int) -> int:
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:59:class RunningVWAP:
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:80:def cluster_levels(levels, tol=CLUSTER_TOL):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:99:def htf_flag(bars15):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:122:def triggers(o, h, l, c, cl_lo, cl_hi, n_levels_in_body):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:144:def scan(rth_only_warmup: bool):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_signals.py:265:def report(tag, per_session, total, skipped, bucket, by_year, tripwire=0.486):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_opportunity.py:36:OUT = Path(__file__).resolve().parents[2] / "vwap-bb" / "data"
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_opportunity.py:37:SHARDS = OUT / "_shards"
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_opportunity.py:38:WORKBENCH_END = "2025-01-31"          # HARD BOUNDARY — holdout begins 2025-02-01
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_opportunity.py:40:LOC_BAND = 0.20
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_opportunity.py:41:READINGS = ("A", "B", "C", "D")
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_opportunity.py:44:class HoldoutBreach(RuntimeError):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_opportunity.py:48:def assert_workbench(d: str):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_opportunity.py:57:def trig(o, h, l, c, lo, hi, nib, mode):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_opportunity.py:79:def process_session(d, bars, sym, days_to_roll, spans_roll, prev_hl, atr_d):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_opportunity.py:289:def main():
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:31:TICK = 0.25
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:32:MIN_STOP = 10.00            # §5.4 as amended — A5
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:33:RR_FLOOR = 1.5              # §6.5
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:34:FRONT_RUN_F = 2.0           # §6.4 "start 2-3"; low end, most permissive
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:35:MAX_TRADES_DAY = 3          # §10
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:36:LOC_BAND = 0.20             # PLACEHOLDER — "HTF range top" has no stated boundary
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:37:READINGS = ("A", "B", "C", "D")
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:38:TRIPWIRE = 0.4862
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:41:def ladder(levels, entry, direction, f):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:53:def tie_break(cands):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:81:def process(d, bars, prev_hl):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/vwapbb_a7_selector.py:264:def main():
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/spec_current.py:45:NY_SIGMA_MIN_OBS = 30                                   # A8 as first written
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/spec_current.py:46:NY_SIGMA_OK_CM = NY_VWAP_ANCHOR + NY_SIGMA_MIN_OBS      # 600 = 10:00 ET
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/spec_current.py:47:CLUSTER_TOL_HALF = 5.0                                  # A13: half the 10-pt §3 tolerance
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/spec_current.py:49:SIGMA_RULE = "live"      # "live" = A13 per-instant CI test; "fixed30" = A8 as first written
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/spec_current.py:52:def ny_sigma_eligible(nmid, nsig, cm, n_bars):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/spec_current.py:64:def htf_flag_a10(b15, n=FRACTAL_N):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/spec_current.py:85:def signal_candidates_current(bars, prev_hl, audit=None):
+/tmp/claude-0/-home-user-AI-trading-agents/90c7bfeb-e680-5848-8a9b-2088af4f6416/scratchpad/wt_bab2e03/research/star-trading/tools/spec_current.py:233:def admit_current(bars, cands):
+
+=== OUTPUT COLUMN NAMES / ORDER ===
+-- blind_trades.json, first record keys, in order --
+['session_date', 'signal_minute', 'entry_tf', 'direction', 'entry', 'stop', 'target']
+-- detector admission list (invariants_2b), first record keys, in order --
+['cm', 'bar', 'tf', 'direction', 'kind', 'entry', 'stop_px', 'tgt_px', 'R_int', 'nlev', 'cl_lo', 'cl_mid', 'htf', 'counter', 'types', 'trig_high', 'trig_low', 'struct_anchor', 'rungs_skipped', 'n_rungs', 'signal_bar_idx', 'tf_bar_first_idx', 'lvl', 'n_at_minute', 'fill_px', 'fill_min', 'fill_bar', 'release_min', 'release_bar', 'session_date', 'symbols']
