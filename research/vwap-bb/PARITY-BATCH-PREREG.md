@@ -188,5 +188,70 @@ instants", never as "the detector is correct".**
 
 ## 7. THE DRAW
 
-**EMPTY IN PART 1 — BY DESIGN.** Appended in a separate commit. If this section contains
-instants in the same commit that first added §1–§6, this pre-registration is void.
+**Executed 2026-08-08, in a commit separate from §1–§6.** Script:
+`research/star-trading/tools/parity_batch_draw.py`.
+
+### 7.1 Seed, recoverable by anyone
+
+| | |
+|---|---|
+| PART-1 commit SHA | **`4014d2e5c31fbeeefe579d35d19558a2850afe87`** |
+| first 16 hex | `4014d2e5c31fbeee` |
+| **seed** | **`4617547402224582382`** |
+| generator | `random.Random(seed)` — CPython Mersenne Twister |
+
+Verify: `git log` → find the commit that added this file without §7 → take its SHA → the seed is
+`int(sha[:16], 16)`. **The SHA could not be known while §1–§6 were being written, so the seed
+could not be shopped.**
+
+### 7.2 Pools, built per §3.3
+
+| | |
+|---|---|
+| **pool R** | **192,384** (session, minute) pairs — 501 sessions × 384 minutes (09:36–15:59 inclusive) |
+| sessions excluded (§4.3) | holiday/short 22 · roll 8 · session after roll 8 = **38 of 539** |
+| **pool F** | **857** admitted trades on 2m/3m/5m under spec `42d6f0f6` (A8+A9+A10+A13) |
+
+**Pool F was NOT scored or ranked.** `rng.sample` over the whole pool. The test-design scoring
+used for P3 is abandoned — it is what made P3's selection criterion publishable-and-leaky.
+
+### 7.3 Discarded draws
+
+**None.** No collision, no exclusion, no redraw. Every drawn instant has a bar present.
+*(A silent replacement would void this batch — §6.)*
+
+### 7.4 THE RELEASE — dates and times only
+
+Shuffled with the same stream, then numbered. **Class membership is not shown here and is not
+inferable from the ordering.**
+
+| | date | time (ET) |
+|---|---|---|
+| **P4** | **2024-10-30** | **10:15** |
+| **P5** | **2024-05-02** | **11:51** |
+| **P6** | **2023-08-30** | **09:42** |
+| **P7** | **2023-02-17** | **09:39** |
+| **P8** | **2023-12-14** | **11:51** |
+| **P9** | **2024-01-04** | **09:47** |
+
+Each is read exactly as P2 and P3 were: **Bar Replay to that minute, do not scroll forward.**
+"At `hh:mm`" means the bar covering `hh:(mm−1):00 – hh:(mm−1):59` has just closed. Chart labels
+by open time, so on 2m/3m/5m step to the last bar that closed **at or before** the stated minute.
+
+Class membership and the detector's expected state for all six are in
+[`PARITY-BATCH-SEALED.md`](PARITY-BATCH-SEALED.md) and
+`data/PARITY-BATCH-SEALED.json`. **Not opened until all six readings are submitted.**
+
+### 7.5 Two things the release itself makes obvious, stated so they are not mistaken for leaks
+
+**Readability is the live risk.** The draw ran over the whole workbench and landed on
+**2023-02 to 2024-10** — every instant is older than the January 2025 window Angus has already
+proven he can render. **If the platform cannot show 2m/3m/5m at one of these dates, §3.4 applies:
+mark it UNREADABLE, log it, draw the next from the same stream.** That is the only permitted
+replacement and it must be logged in this section.
+
+**Three instants sit before 10:00 ET.** At 09:39, 09:42 and 09:47 the NY VWAP has 9, 12 and 17
+bars behind it, so under **A13** its σ bands will usually be ineligible and the cluster set will
+carry the NY **mid** only. This follows from the released times and A13's published rule — it is
+derivable by anyone and reveals nothing about any instant's class or outcome. It does mean those
+three instants exercise the **A13 eligibility path**, which no parity instant has tested.
