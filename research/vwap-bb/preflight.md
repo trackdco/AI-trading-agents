@@ -10,7 +10,7 @@ parameter was fitted, the holdout was not read, and **N_trials remains 0**.
 
 | Gate | Verdict | The number that decided it |
 |---|---|---|
-| 1 SIZING | **PASS** | Median MNQ risk $19–43/contract vs a $2,000 allowance; hand-log realised risk $150–420 |
+| 1 SIZING | **PASS** | Median MNQ risk $19–43/contract vs a $2,000 allowance; hand-log **hand-marked** risk $150–420 |
 | 2 SESSION OVERLAP | **RESOLVED** | Ruled: RTH 09:36 adopted, W1 superseded. 9 trades out of scope; in-scope evidence 13/19 |
 | 3 BREAKEVEN | **PASS**, re-derived 2026-08-08 | p₀ = **43.90%** at the A5 10.00 pt floor, c = 0.975, R = 1.5; c/s = **9.75%**. Clears the 68.4% point estimate by 24.5 pt; clears the 46.0% Wilson lower bound by **2.1 pt at base and 0.0 pt at adverse** |
 | 4 SPECIFIABILITY | **REOPENED 2026-08-07** | Signal count rev 2: the **Vault selection rule is unstated** and binds on 33–92% of sessions, discarding 43–86% of qualified candidates. See [`signal-count.md`](signal-count.md) |
@@ -41,7 +41,7 @@ intervals are:
 
 **The RR 0.5 / 66.7%-breakeven line does not apply to this strategy.** That is a cluster-α
 figure. The VWAP/BB doc sets an RR **floor of 1.5R** (§6.5) and the hand log's **in-scope**
-winners realised a mean of **+3.678R** (median 3.370, max 5.98, n = 13). This is a positive-RR
+winners recorded a mean of **+3.678R** (median 3.370, max 5.98, n = 13). This is a positive-RR
 strategy; its breakeven is ~40%, not 66.7%. Gate 3 is computed at the correct RR below.
 
 > **Corrected 2026-08-08.** This line previously read **+4.23R**, which is the mean over all
@@ -73,8 +73,8 @@ Dollar risk per contract:
 | 5m | $430 | **$43** | $1,230 | $123 |
 
 Against a $2,000 trailing drawdown on MNQ, a median 5m stop is **2.2%** of the allowance and
-a p95 stop is **6.2%**. The hand log corroborates: realised stop distances 8.25–65.0 points
-(median 32.8), and realised dollar risk held in a narrow $150–420 band because contract count
+a p95 stop is **6.2%**. The hand log corroborates: **hand-marked** stop distances 8.25–65.0 points
+(median 32.8), and recorded dollar risk held in a narrow $150–420 band because contract count
 is varied to hold risk roughly constant.
 
 **Why this passes where α died.** α's stop was *forced* by geometry — a fixed 0.2 reward

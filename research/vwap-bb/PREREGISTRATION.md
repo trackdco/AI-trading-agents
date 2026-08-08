@@ -314,7 +314,7 @@ The frozen spec **trades faster and smaller than the hand log did.**
 |---|---|---|
 | median stop | **35.00 pt** | **10.00 pt** (A5 floor; 59.9% of trades sit exactly on it) |
 | median hold | **~30 min** | **5–7 min** |
-| median RR | 3.370 realised | 2.132 planned |
+| median RR | 3.370 hand-marked | 2.132 planned |
 | trades/session | 1.000 | 2.849 |
 
 The A5 floor is still **3.5× tighter** than Angus's median stop, and positions resolve roughly
@@ -334,7 +334,24 @@ The spec will take trades its author rejects.** See
 [`MISSING-ENTRY-CRITERIA.md`](MISSING-ENTRY-CRITERIA.md). This reopens gate 4, and the gate that
 would have caught it — §12.2's trade-by-trade calibration — is irrecoverable.
 
-### 8.3 Nineteen trades cannot separate a real edge from a good month
+### 8.3 The hand log is a HAND-BACKTEST, not a track record — and nineteen of them cannot separate an edge from a good month
+
+**[STRENGTHENED 2026-08-08.]** Angus has confirmed he **has never traded this strategy**. The
+28 trades are setups **marked up on historical charts**, exactly as the spec's own line 4 says
+("28 hand-backtested trades") and as this project read past for a week, writing "realised"
+throughout.
+
+**Hindsight contamination is structural in hand-backtesting, not a lapse** — scrolling a chart
+is seeing what happened next. A 68.4% win rate at 2.25R mean per trade would be an exceptional
+*live* edge; as a hand-marked figure it is the number produced by someone who already knew the
+answer. **It cannot establish a win rate.** Every comparison of 68.4% against breakeven in this
+document is a sanity check, not evidence. See
+[`../EVIDENCE-BASE-CORRECTION.md`](../EVIDENCE-BASE-CORRECTION.md).
+
+One consequence worth stating positively: **the sealed workbench result is the first mechanical,
+hindsight-free measurement this strategy will ever have had.**
+
+And separately, on sample size:
 
 The in-scope hand log is **19 trades over 19 sessions in a single month**. Wilson 95% is
 **[46.0%, 84.6%]** — a 38-point interval. Against the re-derived breakeven of 43.90% the lower

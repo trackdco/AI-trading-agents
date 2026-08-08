@@ -5,6 +5,16 @@ file, not copied from a report. Anything quoting a number cites **this file**, n
 report. Where a report disagrees, this file wins — see
 [`mismatch-report.md`](mismatch-report.md).
 
+> ### THE HAND LOG IS A HAND-BACKTEST, NOT A TRACK RECORD
+>
+> **Angus has never traded this strategy.** The 28 trades are setups marked on historical charts
+> — the spec says so on line 4 and this file wrote "realised" for a week anyway. Hindsight
+> contamination is structural in hand-backtesting. **The 68.4% win rate cannot establish a win
+> rate**; it describes the kind and scale of setup intended, nothing more. Gate arithmetic is
+> unaffected — breakeven, sizing and the tripwire are computed independently — but every
+> comparison against 68.4% is a sanity check, not evidence. See
+> [`EVIDENCE-BASE-CORRECTION.md`](EVIDENCE-BASE-CORRECTION.md).
+
 N_trials: **0**. Holdout: **SEALED.** See RULINGS below — a seal event is on permanent record
 and must accompany any future holdout result.
 

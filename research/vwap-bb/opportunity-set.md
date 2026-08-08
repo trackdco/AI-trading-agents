@@ -35,7 +35,7 @@ Measured, reading A:
 |---|---|---|---|---|---|---|
 | R, points | 0.36 | 1.39 | **3.12** | 5.79 | 11.85 | **0.0125** |
 
-Hand-log realised stops: **8.25–65.0 points, median 32.8**. The spec geometry is roughly
+Hand-log **hand-marked** stops: **8.25–65.0 points, median 32.8**. The spec geometry is roughly
 **10× tighter than the human it was written to formalise.**
 
 The consequence for the excursion fields is mechanical:
