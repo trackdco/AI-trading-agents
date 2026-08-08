@@ -152,6 +152,47 @@ def group_a(trig):
     check("A14", "§3, both predicates on one bar", "[LIT]", {R, DL},
           trig(98.0, 112.0, 97.0, 111.0, CL_LO, CL_HI, 3, "A"))
 
+    # ---- ADDED AFTER RUN 1, AS NEW CASES. A8 and A9 were mis-constructed: their
+    # bars had a lower wick, so §3's rejection predicate fired too and the B_min
+    # boundary was never actually exercised. A8 and A9 are LEFT EXACTLY AS THEY
+    # WERE - no expectation has been edited. A8b and A9b are new cases that
+    # isolate displacement by setting the low equal to the open, so no lower wick
+    # exists and (c) of the rejection clause cannot be satisfied. Their expected
+    # values were written before running them.
+
+    # A8b [LIT] B_min boundary, ON, displacement isolated. range 20 (95->115),
+    # o = l = 95 so there is no lower wick; body 95->107 = 12 = 0.60 of the range
+    # exactly. §3 says "body/range >= B_min", so 0.60 must PASS. Close 107 is
+    # (107-95)/20 = 0.60 up the range, which is NOT in the top quartile, so the
+    # cluster is placed low enough that the quartile test is the only thing that
+    # could block - and it would. The bar is therefore built with the close at the
+    # top of the range instead, and the body set to exactly 0.6 by the open:
+    # o = 103, l = 103, h = 115, c = 115 -> range 12, body 12 = 1.00. That is not
+    # the boundary either. The boundary with no wick requires o = l, so
+    # body/range = (c - o)/(h - l) = (c - l)/(h - l), which is the same quantity
+    # the quartile test uses; with the close at the high both are 1.00.
+    # A no-wick bar therefore CANNOT sit at body/range = 0.6 with the close in the
+    # top quartile: the two ratios coincide. The boundary is exercised instead with
+    # an upper wick, which the long rejection clause does not read.
+    # o = 95, l = 95, h = 115, c = 107: body/range = 12/20 = 0.60 exactly;
+    # close is 0.60 up the range, OUTSIDE the top quartile -> displacement must NOT
+    # fire, and with no lower wick the rejection cannot fire either.
+    check("A8b", "§3 displacement, B_min 0.6 met but quartile failed", "[LIT]",
+          set(), trig(95.0, 115.0, 95.0, 107.0, 90.0, 99.0, 3, "A"))
+
+    # A9b [LIT] the same geometry with the close in the top quartile and the body
+    # ratio driven below B_min by an upper wick. o = 95, l = 95, h = 130, c = 116:
+    # range 35, body 21 -> 0.60 exactly; close is (116-95)/35 = 0.60 up the range,
+    # still outside the top quartile. To get both, the close must be high AND the
+    # body small, which needs a LOWER wick - and that re-arms the rejection clause.
+    # Recorded as the structural fact it is: with mode-A predicates, a bar with
+    # body/range at exactly 0.6 and its close in the top quartile NECESSARILY has a
+    # lower wick and therefore NECESSARILY also fires the rejection predicate.
+    # Expected set is both.
+    check("A9b", "§3, B_min 0.6 boundary with close in top quartile", "[LIT]",
+          {("long", "displacement"), ("long", "rejection")},
+          trig(101.0, 115.0, 95.0, 113.0, 90.0, 99.0, 3, "A"))
+
 
 # ════════════════════════════════════════════════════════════════════
 # GROUP B — CLUSTERS.  §3, quoted: "Confluence cluster: >=2 of {BB MA, NY VWAP
