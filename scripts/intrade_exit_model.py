@@ -29,6 +29,16 @@ changes) -- book EV and P(3R).
 """
 from __future__ import annotations
 
+import os
+
+# MUST precede sklearn/numpy import: this sandbox has 4 CPUs but the BLAS/OMP
+# default thread pools oversubscribe and thrash — a single HistGB fit that
+# takes 0.25s at 1 thread was measured at 33s at default threading.
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("LOKY_MAX_CPU_COUNT", "1")
+
 import sys
 import warnings
 from pathlib import Path
@@ -108,10 +118,16 @@ def make_pipe(kind: str, cat_cols: list[str], num_cols: list[str]) -> Pipeline:
         pre = ColumnTransformer([
             ("cat", OneHotEncoder(handle_unknown="ignore"), cat_cols),
             ("num", SimpleImputer(strategy="median"), num_cols)])
+        # class_weight is intentionally omitted: AUC is rank-based and
+        # insensitive to class balance, and class_weight="balanced"
+        # measured a ~9x slowdown in HistGradientBoostingClassifier on
+        # this sandbox (disables a fast uniform-weight code path) for no
+        # ranking benefit.
         clf = HistGradientBoostingClassifier(
             max_depth=3, max_iter=150, learning_rate=0.06,
             l2_regularization=1.0, random_state=SEED,
-            class_weight="balanced")
+            early_stopping=True, n_iter_no_change=15,
+            validation_fraction=0.15)
     return Pipeline([("pre", pre), ("clf", clf)])
 
 
@@ -120,7 +136,7 @@ def oof_proba(Xh: pd.DataFrame, y: np.ndarray, groups: np.ndarray, kind: str,
     pipe = make_pipe(kind, cat_cols, num_cols)
     cv = GroupKFold(n_splits=n_folds)
     p = cross_val_predict(pipe, Xh, y, groups=groups, cv=cv,
-                          method="predict_proba")
+                          method="predict_proba", n_jobs=1)
     return p[:, 1]
 
 
@@ -140,14 +156,21 @@ def run_horizon(M: pd.DataFrame, h: int, n_folds: int = N_FOLDS,
     groups = M.sess_day.to_numpy()
     strata = (M.session.astype(str) + "|" + M.mech.astype(str)).to_numpy()
     num_cols = [c for c in cols if c not in CAT_COLS]
+    # ACTIONABLE subset: fights still open at h (not already stopped by the
+    # ORIGINAL stop, not already at session end). For the resolved subset,
+    # is_junk is close to definitionally known already (the walk that built
+    # h*_exc_fav_r froze at the same bar race_runs' walk froze at), so a
+    # policy has nothing left to act on there anyway -- see docs write-up.
+    still_open = ~M[f"h{h}_resolved_early"].to_numpy()
 
-    result = {"h": h}
+    result = {"h": h, "still_open_frac": float(still_open.mean())}
     oof = {}
     for kind in ("lr", "gbm"):
         p = oof_proba(Xh, y, groups, kind, CAT_COLS, num_cols, n_folds)
         oof[kind] = p
         auc = roc_auc_score(y, p)
         result[f"auc_{kind}"] = auc
+        result[f"auc_{kind}_open"] = roc_auc_score(y[still_open], p[still_open])
         # secondary target: real_out < 0 directly
         auc_real = roc_auc_score(M.is_real_loss.to_numpy(), p)
         result[f"auc_{kind}_realloss"] = auc_real
@@ -155,11 +178,14 @@ def run_horizon(M: pd.DataFrame, h: int, n_folds: int = N_FOLDS,
 
     rng = np.random.default_rng(SEED)
     null_auc = {"lr": [], "gbm": []}
+    null_auc_open = {"lr": [], "gbm": []}
     for i in range(n_perm):
         yp = permute_within_strata(y, strata, rng)
         for kind in ("lr", "gbm"):
             pp = oof_proba(Xh, yp, groups, kind, CAT_COLS, num_cols, n_folds)
             null_auc[kind].append(roc_auc_score(yp, pp))
+            null_auc_open[kind].append(
+                roc_auc_score(yp[still_open], pp[still_open]))
     for kind in ("lr", "gbm"):
         arr = np.array(null_auc[kind])
         result[f"null_mean_{kind}"] = arr.mean()
@@ -167,6 +193,11 @@ def run_horizon(M: pd.DataFrame, h: int, n_folds: int = N_FOLDS,
         result[f"null_hi_{kind}"] = np.percentile(arr, 97.5)
         result[f"null_p_{kind}"] = (arr >= result[f"auc_{kind}"]).mean()
         result[f"null_arr_{kind}"] = arr
+        arro = np.array(null_auc_open[kind])
+        result[f"null_mean_{kind}_open"] = arro.mean()
+        result[f"null_lo_{kind}_open"] = np.percentile(arro, 2.5)
+        result[f"null_hi_{kind}_open"] = np.percentile(arro, 97.5)
+        result[f"null_p_{kind}_open"] = (arro >= result[f"auc_{kind}_open"]).mean()
 
     result["oof_lr"] = oof["lr"]
     result["oof_gbm"] = oof["gbm"]
@@ -233,10 +264,19 @@ def main() -> None:
         print(f"\n--- horizon {h}m ---", flush=True)
         res = run_horizon(M, h)
         results[h] = res
-        print(f"  LR  OOF AUC {res['auc_lr']:.4f}  | null mean {res['null_mean_lr']:.4f} "
+        print(f"  still-open-at-h frac: {res['still_open_frac']*100:.1f}%")
+        print(f"  LR  OOF AUC (pooled) {res['auc_lr']:.4f}  | null mean {res['null_mean_lr']:.4f} "
               f"[{res['null_lo_lr']:.4f},{res['null_hi_lr']:.4f}]  p={res['null_p_lr']:.3f}")
-        print(f"  GBM OOF AUC {res['auc_gbm']:.4f}  | null mean {res['null_mean_gbm']:.4f} "
+        print(f"  LR  OOF AUC (still-open only, ACTIONABLE) {res['auc_lr_open']:.4f}  | "
+              f"null mean {res['null_mean_lr_open']:.4f} "
+              f"[{res['null_lo_lr_open']:.4f},{res['null_hi_lr_open']:.4f}]  "
+              f"p={res['null_p_lr_open']:.3f}")
+        print(f"  GBM OOF AUC (pooled) {res['auc_gbm']:.4f}  | null mean {res['null_mean_gbm']:.4f} "
               f"[{res['null_lo_gbm']:.4f},{res['null_hi_gbm']:.4f}]  p={res['null_p_gbm']:.3f}")
+        print(f"  GBM OOF AUC (still-open only, ACTIONABLE) {res['auc_gbm_open']:.4f}  | "
+              f"null mean {res['null_mean_gbm_open']:.4f} "
+              f"[{res['null_lo_gbm_open']:.4f},{res['null_hi_gbm_open']:.4f}]  "
+              f"p={res['null_p_gbm_open']:.3f}")
         print(f"  vs real_out<0 : LR AUC {res['auc_lr_realloss']:.4f}  GBM AUC "
               f"{res['auc_gbm_realloss']:.4f}")
         print(f"  spearman(OOF p_junk, real_out): LR {res['spearman_lr_realout']:+.4f}  "
@@ -257,13 +297,19 @@ def main() -> None:
     for h in HORIZONS:
         r = results[h]
         for kind in ("lr", "gbm"):
-            auc_rows.append(dict(h=h, model=kind, auc=r[f"auc_{kind}"],
+            auc_rows.append(dict(h=h, model=kind, still_open_frac=r["still_open_frac"],
+                                 auc=r[f"auc_{kind}"],
+                                 auc_open=r[f"auc_{kind}_open"],
                                  auc_realloss=r[f"auc_{kind}_realloss"],
                                  spearman_realout=r[f"spearman_{kind}_realout"],
                                  null_mean=r[f"null_mean_{kind}"],
                                  null_lo=r[f"null_lo_{kind}"],
                                  null_hi=r[f"null_hi_{kind}"],
-                                 null_p=r[f"null_p_{kind}"]))
+                                 null_p=r[f"null_p_{kind}"],
+                                 null_mean_open=r[f"null_mean_{kind}_open"],
+                                 null_lo_open=r[f"null_lo_{kind}_open"],
+                                 null_hi_open=r[f"null_hi_{kind}_open"],
+                                 null_p_open=r[f"null_p_{kind}_open"]))
     AUC = pd.DataFrame(auc_rows)
     AUC.to_csv(CENSUS / "intrade_exit_auc.csv", index=False)
     print("\nwritten: intrade_exit_oof.parquet, intrade_exit_auc.csv")
