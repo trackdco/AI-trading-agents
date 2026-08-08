@@ -355,7 +355,11 @@ on.
 | **SPEC OMITS TWO OF ANGUS'S ENTRY CRITERIA** | **Gate 4 REOPENS; the hand log as evidence** | Asked why he'd skip a valid setup he cited **unfilled range** (zero occurrences in the spec) and **no liquidity swept** (present only as a *target* concept; the MIG tool was explicitly EXCLUDED and deferred). **The hand log's 68.4% was produced WITH these filters; the spec runs WITHOUT them — they are not the same strategy.** Both computable from held bars. See [`MISSING-ENTRY-CRITERIA.md`](vwap-bb/MISSING-ENTRY-CRITERIA.md) |
 | **§7 invalidation-at-entry: which "opposing ±1σ"?** | The traded population, more than anything else outstanding | Spec marks it **[Hypothesis — test]** and never disambiguates. As implemented (band you move toward) it blocks with-trend longs on **79–100% of minutes** on a trend day and makes the spec fade the trend; the other reading blocks almost none. On 2025-01-15 it killed **30 of 51** candidates in 09:36–10:10, including the setup Angus says he'd have taken. Needs Angus |
 | **POC binning: 1.00-pt bins vs TradingView's 24 rows** | Cluster formation | At 24 rows the detector reproduces Angus's POC to 0.25, so the arithmetic agrees — but 24 rows locates the POC to ±8.75 pt, **coarser than the 10-pt cluster tolerance**. The spec should say which resolution it means |
-| **PARITY 1m BLIND SPOT** | The parity gate, on two fields | Entry-TF distribution in the hand log is **1M:4 / 2M:6 / 3M:7 / 5M:11** (full) and **1M:2 / 2M:6 / 3M:4 / 5M:7** (in-scope). **1m is therefore a timeframe the reference trader uses**, and parity cannot be compared on it for the relocated January 2025 dates — Angus's platform has no 1m history that far back, so §2 and §3's 1m rows read "n/a". **Materiality is determined at Stage B:** if the detector does not fire on 1m at either instant, the gap is moot for this gate |
+| **INDICATOR FEED TIMEFRAME UNSPECIFIED** | **The whole level set. Largest item on the project** | §2 says *"standard TradingView VWAP"* — an indicator whose value depends on the **chart's timeframe** — and never names the feed. Same for the volume profile. Angus's chart is **2m**; the detector computes from **1m**. Recomputing on 2m reproduces his daily VWAP to **0.002**, NY VWAP mid to **0.07**, NY σ to **0.02** and the POC to **0.50**. Unresolvable by any implementation as written: §1 evaluates four entry timeframes at once, so no single feed matches all four. **Consequences measured at P2: NY ±1σ off by 3.23/7.81, ±3σ by up to 19.10, POC by 44.50.** Needs Angus |
+| **4h RANGE — implementation contradicts the reference** | §7 location filter; §6 menu | Reference definition set at P2: **swing highs and lows** (method still unspecified). Implementation: **fixed 240-min clock blocks, ≤6, reset every session, current partial block excluded**. At 2025-01-22 09:50 that gives 21768.25/21920.00, width **151.75**, against the chart's 20695.50/22428.75, width **1733.25** — a factor of **11**. Price sits at **143.99%** of the detector's own range against **74.50%** of the chart's: opposite sides of the 0.80 block threshold. **A "range" price sits 44% above is not a range under any reading of §7** |
+| **15m FRACTAL — tie handling unstated** | The HTF flag, hence every counter-trend confluence minimum | A2's frozen rule says *"15m fractal N=2"* and does not say how to treat **equal** extremes. On 2025-01-22 the 08:30 and 08:45 bars both print **21934.25** to the tick; the strict `>` test admits **neither**, so the detector falls back to 21905.00 @ 06:15 → lower high → **range**, while Angus reads 08:45 → higher high → **uptrend**. Three of the four swings matched to ≤0.25; the flag turns entirely on the tie |
+| **PARITY 1m BLIND SPOT** | Nothing at P2 — **moot**. Live elsewhere | Entry-TF distribution in the hand log is **1M:4 / 2M:6 / 3M:7 / 5M:11** (full) and **1M:2 / 2M:6 / 3M:4 / 5M:7** (in-scope), so 1m is a timeframe the reference trader uses; Angus's platform has no 1m history for January 2025. **Materiality determined at Stage B: the detector produces zero 1m triggers at the P2 instant, so the gap costs that gate nothing.** It is not resolved — across 09:36–09:50 the detector produced **11 raw 1m trigger events**, three carrying 2 cluster types, at minutes that could not be checked. A gate one minute earlier would have been incomplete |
+| **Prior-week H/L reading unreconciled** | Nothing — level not implemented | Angus 21686.75 / 20687.00 against a Sunday-18:00-anchored archive measurement of 21682.50 / 20694.00: **+4.25 / −7.00**. His week-to-date reading reconciled exactly (21988.00, and 21377.75 vs 21378.00), so the anchor is right and the prior-week bar is not. Not diagnosed — the detector computes no weekly level, so it is outside the parity comparison |
 | **Calibration gate downgraded** | Phase 2 sign-off | Irrecoverable *as a bar-based gate* — Feb 2026 has no bars, and the MBP schema cannot produce the detector's inputs. §12.2 corrected by A6 |
 
 **Closed 2026-08-08:**
@@ -695,11 +699,61 @@ detector shifts +1 so its own minute label is the bar's **close**. Same instant,
 descriptions. **RTH 09:31–16:00 is the entry window only** — the daily VWAP and session profile
 anchor at **Globex 18:00 ET**, the NY VWAP at **09:30 ET**.
 
-> **STAGE B IS NOT RUN AND MUST NOT BE PRE-COMPUTED.** No detector value for either minute may
-> exist in the record before Angus's readings do, or the blind is broken. Stage B compares field
-> by field at **1.00 pt** tolerance, diagnoses each mismatch as spec ambiguity / implementation
-> bug / charting difference / reading error, and returns **PARITY PASS** or **PARITY FAIL**.
-> **The detector is not assumed correct** — it has been wrong three times out of three on
-> literalism checks — and **it will not be adjusted to match in that pass.**
+### STAGE B — P2 RUN 2026-08-08 → **PARITY FAIL**
+
+Full report: [`vwap-bb/PARITY-P2-RESULT.md`](vwap-bb/PARITY-P2-RESULT.md). Detector dump:
+`vwap-bb/data/parity_p2_detector.json`. Harness: `tools/parity_p2_dump.py` (read-only; it
+re-executes `stage2_smoke.signal_candidates`, the sealed engine's own pre-outcome path, and
+confirms agreement with it). **Sealed result never opened. No detector file edited. N_trials 0.**
+
+> ### PARITY FAIL — 36 of 48 numeric fields MATCH, 12 MISMATCH
+>
+> **The market data agrees to the tick. The definitions do not.** All 12 OHLC fields on 2m/3m/5m
+> match at **0.00**; BB basis to **0.005**; session, pre-market and prior-day extremes to
+> **≤0.50**. Every mismatch is downstream of something the spec does not state.
+>
+> **The trigger decision agreed — both say NO TRIGGER — and that is not evidence of parity.** The
+> detector's single raw trigger at the instant (5m long rejection, cluster 21950.09–21952.35)
+> died at the **first** gate, confluence count 1 against a minimum of 2. Nothing disputed was
+> ever consulted. **The trigger predicates, RR floor, stop anchor, target ladder and A7 selector
+> were not exercised at all.**
+
+**The 12 mismatches, all diagnosed SPEC AMBIGUITY** — no implementation bug was found, and
+"charting difference" was considered for the VWAP family and rejected because no single feed can
+match a four-timeframe evaluation:
+
+| group | worst \|Δ\| | cause |
+|---|---|---|
+| NY VWAP mid / ±1σ / ±2σ / ±3σ (7 fields) | **19.10** | indicator feed timeframe — see OPEN ITEMS |
+| Daily VWAP **+3σ** (1 field) | **1.0037** | same; only band to breach, error is `k·Δσ` |
+| Daily POC (1 field) | **44.50** | same |
+| 4h range high / low (2 fields) | **1072.75** | range definition — see OPEN ITEMS |
+| 15m latest swing high (1 field) | **29.25** | fractal tie handling — see OPEN ITEMS |
+
+**Cluster sets differ on count and on every member:** detector 3 clusters (one of them
+vwap-only), chart 2 (both carrying 2 types). **HTF flag: detector `range`, chart `uptrend`.**
+**Location filter: detector 143.99% of range → all longs blocked; chart 74.50% → none blocked.**
+
+**Two spec definitions the reading sets, checked against the code:**
+**"prior day" = GLOBEX → implementation AGREES** (21783.50/21377.75 vs 21783.75/21378.25; an
+RTH-only reading would have been wrong by **147.50** on the low). **4h range = swing highs and
+lows → implementation CONTRADICTS** (clock blocks, not swings).
+
+**All four spec ambiguities were non-binding at this instant** — structural cluster-eligibility
+(implementation: not eligible), span vs chaining (implementation: **chaining**), which VWAP's
+±1σ (implementation: **NY**, band on the side of travel), the 4h range definition. **None
+changes the trigger decision here, and that is a weak result, not a reassuring one:** the trigger
+died before any of them was reached. **A second instant, chosen where a trigger survives past the
+confluence gate, is required before any of the four can be called tested.**
+
+### ROLL CHECK — the flag pointed at the wrong range
+
+Both 4h swing points are **post-roll NQH5**: high **22425.75** @ 2024-12-16 23:28 ET, low
+**20694.00** @ 2025-01-13 04:16 ET. **They do not straddle**, so no correction applies — as read
+74.50%, archive-measured 74.65%. **The 1h range does straddle:** its high (22111.00, 2024-12-16
+13:21 ET) is a **pre-roll NQZ4** print, its low post-roll NQH5. Measured roll spread from the
+`NQZ4-NQH5` calendar quote is **301.15 pts**, not the ~250 the project's shorthand assumed.
+Correcting it moves the 1h range position from **83.03% to 58.82%**. The detector used neither
+range — its 4h construction is session-local and never crosses a roll.
 
 **N_trials: 0.**
