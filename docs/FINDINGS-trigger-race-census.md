@@ -91,3 +91,75 @@ screenshots; (2) only after that, outcome scoring under a declared plan.
 
 Standing: fit-only, no holdout (none exists for this family), counts
 only, nothing adopted.
+
+
+---
+
+# ADDENDUM — THE TRADE CHECK: the real executed trades vs the grammar
+
+2026-08-08. The accessible screenshots document **4 distinct trades**
+(the other images are multi-TF context shots of the same trades), not the
+8 originally referenced — recorded as-is; the check runs on what exists.
+Chart timezone **verified = NY by exact OHLC bar match** (the Jun-3 10:55
+bar matches to the minute; header bars elsewhere are the replay's last
+bar). Tool: `scripts/trade_check_jun.py` — windows treated as a reported
+stage, never used to hide a row.
+
+## THE TALLY: 2 CAUGHT, 2 MISSED — each miss at a named stage
+
+**T1 — Jun 1, SHORT ~09:49–50 from ~30,445 (pullback after the morning
+collapse): CAUGHT.** Census fires **M2 short via 1m closure at 09:52**,
+n_aff=2 (POC + VWAP), NY_AM; 2m/3m closures confirm at 09:56/09:57 (same
+fight). Noted honestly: the construction enters ~2 minutes later and
+~27pt lower than his fill — he market-orders ahead of the closure; the
+grammar waits for the candle to close. That timing skew is a property of
+mechanization, recorded, not scored here.
+
+**T2 — Jun 2, LONG ~09:46–50 from ~30,479 (VWAP reclaim on the morning
+reversal): CAUGHT, on the nose.** Census fires **M1 long via 1m closure
+at 09:45**, n_aff=2 (POC + VWAP+1), NY_AM; 2m confirms 09:46. In grammar
+terms his "long off VWAP" is the displacement rebalance — price had been
+driven ≥0.5W below the 15m MA and his entry is the closure back toward
+it.
+
+**T3 — Jun 3, LONG ~09:05–10 from ~30,723 (premarket rejoin of the
+overnight rally): MISSED — kill stage: THESIS.** The entry race itself
+was ready to catch him (1m/2m closures long at 09:03/09:04 and
+09:09/09:10, affirmation count 2, NY_PRE window open). No thesis armed:
+price sat only **−0.24W below the 15m MA — an M1-shaped rebalance below
+the 0.5W displacement floor** (BR-1 convention, inherited); no 15m
+rejection was live; and the break episode pointed SHORT (a 15m close
+below the MA at 08:45 — the up-cross that would have armed M3 long came
+at 09:30, after his entry). **The 0.5W floor is the exact line between
+this trade and the census.** Recorded as a grammar discrepancy for the
+trader to rule on — not patched.
+
+**T4 — Jun 3, SHORT 10:45 from ~30,701 (the multi-TF one: 15m break +
+pullback): MISSED — kill stage: WINDOW, exactly as pre-registered before
+any data was touched.** Outside 10:30 the construction fires anyway: M2
+short via 2m closure at 10:50 (3m at 10:51), n_aff=1 — every stage
+passes except the NY_AM boundary, which the trader chose to keep ("10:30
+is fine"). **A second discrepancy is documented on this trade:** his
+actual 1m entry at 10:45 would have been denied even in-window, because
+the ≥2-affirmation gate counts structures *excluding* the anchor MA —
+his "double confirmation" was the 15m MA itself + POC, which the census
+scores as n_aff=1. The declared gate is one count stricter than his
+practice on this exact trade.
+
+## WHAT THE CHECK SAYS
+
+1. **The redeclared grammar catches the trades the old construction
+   couldn't see.** Neither T1 nor T2 existed in the old census (wrong
+   conjunction + flat tolerance); both are clean catches now, with the
+   right mechanism labels and near-exact timing.
+2. **Both misses die at declared, named lines — not at vague
+   construction noise**: the 0.5W displacement floor (T3) and the 10:30
+   window edge plus the MA-exclusive affirmation count (T4). All three
+   lines are the trader's to move or keep; each is a one-parameter
+   declaration change, and none is changed here.
+3. The timing-skew observation (T1): mechanized entries lag discretionary
+   market orders by up to the trigger candle's remaining life. Any
+   outcome comparison against his fills must carry that structurally.
+
+Standing unchanged: fit-only, counts and stage audits only, nothing
+adopted, nothing patched without declaration.
