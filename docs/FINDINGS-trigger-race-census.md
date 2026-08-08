@@ -164,6 +164,45 @@ practice on this exact trade.
 Standing unchanged: fit-only, counts and stage audits only, nothing
 adopted, nothing patched without declaration.
 
+## AMENDMENT 1 RESULTS — open vs episode M1, side by side (counts only)
+
+2026-08-08, run under the amendment declared in
+`DECLARATIONS-trigger-race.md` before the build. Flatten probe on the
+episode variant: **PASS (10 probes, 0 bad)**. Declared 0.10W, fit span,
+nothing replaced in this step.
+
+| window | mech | OPEN /d | EPISODE /d | Δ | % |
+|---|---|---|---|---|---|
+| LONDON | M1 | 0.57 | 2.11 | +1.54 | **+270%** |
+| LONDON | M2 | 0.96 | 0.96 | 0.00 | 0% |
+| LONDON | M3 | 1.19 | 1.14 | −0.05 | −5% |
+| NY_PRE | M1 | 0.39 | 1.49 | +1.11 | **+284%** |
+| NY_PRE | M2 | 0.83 | 0.83 | 0.00 | 0% |
+| NY_PRE | M3 | 0.86 | 0.83 | −0.02 | −3% |
+| NY_AM | M1 | 1.05 | 1.66 | +0.61 | **+58%** |
+| NY_AM | M2 | 0.90 | 0.90 | 0.00 | 0% |
+| NY_AM | M3 | 0.86 | 0.85 | −0.01 | −1% |
+| **TOTAL** | | **7.60** | **10.76** | +3.16 | **+42%** |
+
+**The change is surgical**: M2 and M3 are essentially untouched (76+4 of
+6,645 raw rows reassigned by priority), and the episode-M1 population is
+overwhelmingly NEW — of its 3,263 raw rows, **2,577 were not triggers at
+all** under the open definition, 606 were already M1, and only 3.3% of
+open rows change mechanism or presence. The open definition wasn't
+mislabeling reclaims; it was *blind* to them.
+
+**T3 calibration — the declared expectation confirmed**: under the
+episode state, T3 is CAUGHT at **09:03 via the 1m** (n_aff=2, episode
+max −0.56W), with the 2m confirming at 09:04. All four of the trader's
+documented trades are now caught or die only at lines he explicitly
+chose to keep (T4's window).
+
+**Decision per the pre-declared rule**: M1 moved ≥25% in every window
+(+270/+284/+58%) and the total book moved +42% ≥10% — the population
+meaningfully changed, so the outcome pass re-runs against the corrected
+census. Not because the first answer was unwelcome; because the
+population changed.
+
 ## T3 RE-CHECKED: genuinely M1 — and the floor is not the real gap
 
 2026-08-08, follow-up. Question asked: is T3 actually a rejection or a
