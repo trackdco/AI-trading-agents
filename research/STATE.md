@@ -296,12 +296,22 @@ hand-log win rate is 68.4% with a Wilson lower bound of 46.0%. The cost choice m
 by less than the width of the confidence interval on the win rate — it is not the deciding
 variable and should not be argued about further.
 
-**Basis for "widest hour":** within the measured window the median holds flat at 0.750 while
-p90 falls 1.50 → 1.25 by 10:15, and the pre-market buckets are wider still (median 1.000 at
-08:00–08:30). Spread narrowing after the open is the expected intraday shape. **Post-10:29
-spread is unmeasured** — every MBP file ends at 10:29 or 04:59 — so "widest" is an inference
-from the direction of the measured trend, not a measurement. It is the conservative inference,
-which is why the ruling stands on it.
+**Basis for "widest hour" — CORRECTED 2026-08-08 by the Stage 4 measurement.** The ruling's
+conclusion may hold; **its stated justification does not.** Across the eleven 30-minute buckets
+with data, **09:30–10:29 is the TIGHTEST**, at 0.75 median against 1.00–1.25 in every earlier
+bucket (overnight 03:00–05:59 and pre-market 08:00–08:59). Nine of the eleven are outside RTH
+and carry no signals, so **within RTH only this one hour is measured and nothing can be
+established about whether it is widest, narrowest or typical.**
+
+What survives is directional and weak: p90 falls 1.50 → 1.25 across 09:30 → 10:29, so the trend
+at the right edge of the measured window is still tightening. **That is an argument from a trend
+inside a 10% slice, not a measurement.** Post-10:29 spread is unmeasured — every MBP file ends
+at 10:29 or 04:59.
+
+**No figure or verdict changes.** The 0.50–1.50 range moves breakeven by 4.0 points at the A5
+floor, less than the width of the confidence interval on the win rate. What changes is only what
+may honestly be said about *why* 0.975 is defensible. See
+[`STAGE4-ORDERFLOW.md`](vwap-bb/STAGE4-ORDERFLOW.md) §4.
 
 ### Correction — the earlier representativeness claim was wrong
 
@@ -329,6 +339,7 @@ on.
 | **§6 rule 2 defaults ambiguous and unimplemented** | Nothing — tournament variant | Pattern A's default target is "VWAP middle", but 85.4% of entries sit *inside* the firing cluster, which contains it. The A/B/B2 taxonomy (§4) is not implemented. **A4 supplies a working rule without it**, so this is a variant to test, not a blocker. Angus should still rule |
 | **Stop anchor unconfirmable from data** | Nothing — A5 makes it non-blocking | Alternatives measured (prior swing 16.29, 2×ATR 25.32 vs frozen 5.62 pts). The hand log records **no entry/stop/target prices**, so no anchor can be confirmed from data. A5's floor makes the spec executable without it; the residual shows up as 5–7 min holds against the human's ~30. Requires Angus or marked-up charts |
 | **E1 + wick degenerate on 29.6% of triggers** | Nothing — E1 is one of three tournament entries | Entry falls on the wrong side of the wick extreme; those triggers are skipped. A5 deliberately does not rescue them. E2/E3 may not share the defect — the tournament will show it |
+| **DEFERRED CAPABILITY — holdout depth data** | Nothing now; improves the cost model later | When the holdout is opened its MBP-10 becomes readable and can validate the cost model **against the very sessions the verdict rests on** — strictly better than the post-holdout window. 287 files, 2025-06 → 2026-01. **Recorded so it is not forgotten** |
 | **Spread unmeasured after 10:29 ET** | Nothing — ruled conservative | 90% of signals fire in hours with no spread data. Ruled: treat 0.975 as the widest hour applied everywhere. The 0.50–1.50 range moves breakeven by 4.0 pts at the A5 floor, so nothing hinges on it. Would need MBP files with a later window to improve |
 | **Pre-open warm-up bias** | Study design | BB(20)/ATR(20) at 09:36 read bars 1.65× quieter than RTH. Measured effect on counts: −0.8% |
 | **Parity readings not supplied** | spec-1 Step 4 sign-off | Angus must provide chart values for 2025-01-15 09:48 and 2025-01-22 09:50 |
