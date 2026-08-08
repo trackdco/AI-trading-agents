@@ -725,3 +725,40 @@ chosen. **Supersedes A8's threshold clause only; A8's 1-minute feed decision is 
 
 **N_trials after A13: 0.** The σ̂ census is a descriptive measurement of an indicator's dispersion.
 No trade outcome was examined and no value was selected by comparing results.
+
+### A14 — 2026-08-08 — order-price tick rounding, direction fixed BEFORE any recompute
+
+**Finding that forced this.** Invariant 9 of the Code-Path Verification Suite (`STATE.md`,
+2026-08-08): of 1,472 admitted trades, **1,401 intended entries, 824 stops and 1,134 targets sit
+off the 0.25 tick grid.** §5.3 makes the entry a 20-bar mean and no clause anywhere rounds a
+price to a tradeable increment. Live, a stop or target at a non-existent price is rounded by the
+broker in a direction nobody chose — an uncontrolled source of slippage this project has
+otherwise gone to some length to make explicit (§4.2's next-bar-open fill, the front-run in
+§6.4).
+
+**Rule, stated once and applied uniformly — round every transmitted order price to the 0.25 grid
+in the direction that makes the trade worse:**
+
+| price | reference | direction | reason |
+|---|---|---|---|
+| **Stop** | entry | **away from entry** (long: floor down; short: ceil up) | widens the realised risk R for the same structural stop — conservative, since a wider R dilutes every R-multiple computed against it |
+| **Target** | entry | **away from entry** (long: ceil up; short: floor down) | requires a larger favourable move to be counted as reached — conservative about what a live system would actually capture |
+| **Entry** (E1, the resting limit) | — | **against the trader** (long: ceil up, i.e. pay more; short: floor down, i.e. receive less) | a resting limit order that cannot sit exactly on the level fills at the nearest price that is *no better* than intended, never at one that is better. This extends the same stated principle to the one price A2's rounding text does not name outright, and is flagged here as an extension rather than a literal quote |
+
+**The direction was fixed and committed before any trade was recomputed.** Choosing it after
+seeing its effect on the trade count or the R distribution would be choosing a number that
+flatters the result, which is exactly the failure this amendment exists to close.
+
+**The opposite convention — round toward entry / round in the trader's favour — is recorded as an
+untested branch**, not evaluated, in `OUT-OF-SCOPE-BRANCHES.md`.
+
+**Boundary case, stated so it is not left implicit:** a price already exactly on the 0.25 grid is
+not moved. "Away from entry" and "against the trader" are directions applied only when rounding
+is necessary; they are not a mandate to always move the price.
+
+**Tag: [SPEC]** — closes a gap invariant 9 found; it is a completion, not a fix to code that
+contradicted an existing clause. **Free-parameter count unchanged** — no threshold is introduced,
+only a rounding convention with no tunable value.
+
+**N_trials after A14: 0.** No value here was chosen by comparing outcomes; the direction is fixed
+by a stated conservatism principle applied identically to every price, before computation.

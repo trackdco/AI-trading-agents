@@ -165,3 +165,24 @@ That is the real cost of a future run, and it is not mainly compute. It is:
 
 **The specification under test is now named rather than implied**, which is the condition the
 seal needed and did not previously have.
+
+---
+
+## 7. UNTESTED BRANCH — A14's opposite rounding convention [ADDED 2026-08-08]
+
+**A14 fixed the tick-rounding direction as "the direction that makes the trade worse" — stops and
+targets away from entry, the entry itself against the trader.** The opposite convention —
+round every price *toward* entry / *in the trader's favour* — is a coherent alternative and is
+recorded here, unevaluated, so it is available if A14's conservatism is ever challenged.
+
+| | A14 (in force) | opposite (untested) |
+|---|---|---|
+| Stop | away from entry (widens R) | toward entry (narrows R) |
+| Target | away from entry (harder to reach) | toward entry (easier to reach) |
+| Entry | against the trader (worse fill) | in the trader's favour (better fill) |
+
+**Why it is not run:** A14's own text is explicit that the direction was fixed *before* any
+recompute, specifically to avoid choosing a number after seeing its effect. Running the opposite
+convention now, after A14's effect is known, would be exactly that — a comparison of outcomes
+used to pick a rounding rule, which is a parameter search and consumes N_trials under the
+project's own standing rule. **It stays untested for that reason, not because it is implausible.**
