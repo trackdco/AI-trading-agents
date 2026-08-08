@@ -1,5 +1,5 @@
 {
- "pass": 59,
+ "pass": 61,
  "fail": 3,
  "results": [
   [
@@ -109,6 +109,22 @@
   [
    "A14",
    "\u00a73, both predicates on one bar",
+   "[LIT]",
+   "{('long', 'rejection'), ('long', 'displacement')}",
+   "{('long', 'rejection'), ('long', 'displacement')}",
+   "PASS"
+  ],
+  [
+   "A8b",
+   "\u00a73 displacement, B_min 0.6 met but quartile failed",
+   "[LIT]",
+   "set()",
+   "set()",
+   "PASS"
+  ],
+  [
+   "A9b",
+   "\u00a73, B_min 0.6 boundary with close in top quartile",
    "[LIT]",
    "{('long', 'rejection'), ('long', 'displacement')}",
    "{('long', 'rejection'), ('long', 'displacement')}",
