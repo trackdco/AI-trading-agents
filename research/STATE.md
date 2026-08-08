@@ -113,8 +113,10 @@ Source: `data/reference/feb2026_hand_log.csv`, unmodified. Scope ruling:
 Date span: 2026-02-02 → 2026-02-27, **19 distinct sessions**.
 
 > **The "+4.23R on winners" figure is the FULL-log mean and includes the +12.98R trade, which
-> A1 places out of scope. The in-scope figure is 3.678 mean / 3.370 median.** Several
-> documents still carry 4.23 — see mismatch #1.
+> A1 places out of scope. The in-scope figure is 3.678 mean / 3.370 median, n = 13.**
+> **Corrected everywhere 2026-08-08** — `preflight.md` (×2) and `hand_log_scope.md`. No
+> document now carries 4.23 as a live figure; it survives only where labelled as the wrong
+> number.
 
 **Not in the source file:** entry, stop and target *prices*. Only distances, risk $, R
 multiples and P&L are recorded. Any per-trade price figure would be fabricated.
@@ -204,11 +206,11 @@ Blocked under first-come, reading A: **54.2%**. Overlap (time-rank-1 = convictio
 |---|---|---|
 | 1 SIZING | **PASS** | Median MNQ risk $19–43/contract vs a $2,000 allowance |
 | 2 SESSION OVERLAP | **RESOLVED** | Ruled RTH 09:36 (Amendment A1); 9 of 28 trades out of scope |
-| 3 BREAKEVEN | **PASS — needs formal re-derivation at c=0.975** | p₀ = **43.90%** at the A5 floor s=10.00, c=0.975 (was 40.61% at s=32.75, c=0.50). c/s = 9.75% |
+| 3 BREAKEVEN | **PASS — re-derived 2026-08-08** | p₀ = **43.90%** at the A5 floor s=10.00, c=0.975, R=1.5. c/s = **9.75%** (was 1.53%). Clears the 68.4% point estimate by 24.5 pt; clears the 46.0% Wilson lower bound by **2.1 pt at base, 0.0 pt at adverse** |
 | 4 SPECIFIABILITY | **CLOSED** | Last item — the Vault selector — written into §10.1 by **A7**. Stop and target closed by A4/A5. §6 rule 2 and the A/B/B2 taxonomy remain open but are **tournament variants, not gate blockers** |
 | **4b LITERALISM** | **NEW — FIRED 3×** | Stop 11× tighter than intent; target 19.5× nearer; Vault cap acting as selector. See the runbook |
 | 5 DATA FEASIBILITY | **CLOSED — SCOPE ACCEPTED** | Feb 2026 bars absent; MBP-10 present but cannot produce VWAP/POC/wick. Parity relocated, calibration downgraded (A6) |
-| 6 SAMPLE SUFFICIENCY | **PASS**, floor p₁ ≈ 0.50 | Tripwire **0.4862** trades/session (n=262, ÷4, 539 sessions). Under A4+A5+A7: **2.328–2.849**, clearing by 4.8–5.9× |
+| 6 SAMPLE SUFFICIENCY | **PASS** at every axis structure tested | **Recomputed at the new p₀ = 43.90%:** required n is 411 (÷1) to 1,083 (÷72); available is 1,185–1,450. The old 0.4862 tripwire assumed p₀ = 0.406 and is superseded — at ÷4 it is now **1.172 trades/session**. Measured 2.328–2.849 clears every divisor. See `research/prereg/axis_decision.py` |
 
 Gate-6 arithmetic, recomputed at p₁=0.50, p₀=0.406, 80% power, 539 sessions:
 
@@ -275,11 +277,12 @@ Not a cancel artefact — adds median 0.75, modifies 0.75, cancels 1.00.
 At the hand log's realised R of 3.678 and c = 0.975: p₀ = **23.46%** at s = 10.00, **21.97%**
 at s = 35.00. The in-scope hand-log win rate is 68.4%, Wilson lower bound 46.0%.
 
-> **Gate 3 still PASSES at the new base**, and by a wider margin than the arithmetic suggests:
-> A5's 10-point floor moves the operative stop from 3.12 to ≥10.00, which cuts the cost ratio
-> from 31.25% to 9.75% and breakeven from 52.50% to **43.90%**. The cost rise and the stop
-> floor land in opposite directions and the floor wins. **Gate 3 should still be formally
-> re-derived at c = 0.975 rather than inherited.**
+> **Gate 3 re-derived formally 2026-08-08 — PASS confirmed, margin materially reduced.**
+> A5's floor cuts the cost ratio from 31.25% to 9.75% and breakeven from 52.50% to **43.90%**.
+> But measured against the **original** gate-3 basis (s=32.75, c=0.50, p₀=40.61%) the cushion
+> over the 46.0% Wilson lower bound has fallen from **4.8 pt → 2.1 pt at base and 0.0 pt at
+> adverse**, because cost rose and the stop fell together. Full working in `preflight.md`
+> gate 3. Against the *point estimate* of 68.4% the margin is 22–26 pt at every cost level.
 
 ### COST BASIS — ruled 2026-08-08
 
@@ -326,12 +329,10 @@ on.
 | **§6 rule 2 defaults ambiguous and unimplemented** | Nothing — tournament variant | Pattern A's default target is "VWAP middle", but 85.4% of entries sit *inside* the firing cluster, which contains it. The A/B/B2 taxonomy (§4) is not implemented. **A4 supplies a working rule without it**, so this is a variant to test, not a blocker. Angus should still rule |
 | **Stop anchor unconfirmable from data** | Nothing — A5 makes it non-blocking | Alternatives measured (prior swing 16.29, 2×ATR 25.32 vs frozen 5.62 pts). The hand log records **no entry/stop/target prices**, so no anchor can be confirmed from data. A5's floor makes the spec executable without it; the residual shows up as 5–7 min holds against the human's ~30. Requires Angus or marked-up charts |
 | **E1 + wick degenerate on 29.6% of triggers** | Nothing — E1 is one of three tournament entries | Entry falls on the wrong side of the wick extreme; those triggers are skipped. A5 deliberately does not rescue them. E2/E3 may not share the defect — the tournament will show it |
-| **Gate 3 not formally re-derived at c = 0.975** | Gate 3 sign-off | Arithmetic done (43.90% at the A5 floor, still PASS); the gate document still records the old basis |
 | **Spread unmeasured after 10:29 ET** | Nothing — ruled conservative | 90% of signals fire in hours with no spread data. Ruled: treat 0.975 as the widest hour applied everywhere. The 0.50–1.50 range moves breakeven by 4.0 pts at the A5 floor, so nothing hinges on it. Would need MBP files with a later window to improve |
 | **Pre-open warm-up bias** | Study design | BB(20)/ATR(20) at 09:36 read bars 1.65× quieter than RTH. Measured effect on counts: −0.8% |
 | **Parity readings not supplied** | spec-1 Step 4 sign-off | Angus must provide chart values for 2025-01-15 09:48 and 2025-01-22 09:50 |
 | **Calibration gate downgraded** | Phase 2 sign-off | Irrecoverable *as a bar-based gate* — Feb 2026 has no bars, and the MBP schema cannot produce the detector's inputs. §12.2 corrected by A6 |
-| **"+4.23R" in three documents** | Nothing — no verdict rests on it | Correct to 3.678 (in-scope) in a separate pass |
 
 **Closed 2026-08-08:**
 
@@ -348,6 +349,8 @@ on.
 | Gate 6 under the amended rules | **CONFIRMED** — 2.328–2.849 trades/session under A4+A5+A7 against a 0.4862 tripwire |
 | Cost-basis representativeness | **RULED** — conservative by construction, and the 0.50–1.50 range moves breakeven by 4.0 points at the A5 floor. Earlier "peaks in the measured window" claim corrected: it does not |
 | Partial-run figures | **STANDING NOTE** added at the head of this file — a figure from a partial run is not a figure |
+| Gate 3 re-derived at the measured cost | **DONE.** p₀ = 43.90% at the A5 floor. PASS confirmed, but the cushion against the Wilson lower bound fell from 4.8 pt to 2.1 pt at base and 0.0 pt at adverse. Recorded in `preflight.md` gate 3 |
+| "+4.23R" scope error | **CORRECTED** in `preflight.md` (×2) and `hand_log_scope.md`. In-scope: mean 3.678, median 3.370, max 5.98, n=13 |
 | One-position lockout placeholder | **RETIRED.** The 30-min proxy is replaced by actual resolution timing in the A7 count. Median hold measured at 5–7 min |
 
 ---
@@ -456,6 +459,10 @@ be admitted.
 | qualified candidates / session | 47.430 | 27.436 | 13.762 | 8.866 |
 | distinct signal minutes / session | 30.100 | 16.701 | 11.238 | 7.251 |
 | **ADMITTED trades / session** | **2.849** | **2.782** | **2.699** | **2.328** |
+| planned RR at entry, median | 2.132 | 2.162 | 2.206 | 2.208 |
+| planned RR at entry, mean | 2.481 | 2.529 | 2.592 | 2.558 |
+| stop distance, median (pts) | 10.00 | 10.00 | 10.00 | 10.00 |
+| **% of trades AT the A5 floor** | **59.9%** | 55.0% | 52.4% | 54.6% |
 | blocked — position open | 7.417 | 4.678 | 3.071 | 2.293 |
 | blocked — 3/day cap | 27.346 | 12.491 | 7.088 | 3.658 |
 | **% blocked — one-at-a-time** | 15.6% | 17.0% | 22.3% | 25.9% |

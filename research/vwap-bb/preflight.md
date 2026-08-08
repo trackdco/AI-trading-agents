@@ -12,7 +12,7 @@ parameter was fitted, the holdout was not read, and **N_trials remains 0**.
 |---|---|---|
 | 1 SIZING | **PASS** | Median MNQ risk $19–43/contract vs a $2,000 allowance; hand-log realised risk $150–420 |
 | 2 SESSION OVERLAP | **RESOLVED** | Ruled: RTH 09:36 adopted, W1 superseded. 9 trades out of scope; in-scope evidence 13/19 |
-| 3 BREAKEVEN | **PASS** | p₀ = 40.61% at R=1.5 base cost; c/s = 1.53%, a normal cost ratio |
+| 3 BREAKEVEN | **PASS**, re-derived 2026-08-08 | p₀ = **43.90%** at the A5 10.00 pt floor, c = 0.975, R = 1.5; c/s = **9.75%**. Clears the 68.4% point estimate by 24.5 pt; clears the 46.0% Wilson lower bound by **2.1 pt at base and 0.0 pt at adverse** |
 | 4 SPECIFIABILITY | **REOPENED 2026-08-07** | Signal count rev 2: the **Vault selection rule is unstated** and binds on 33–92% of sessions, discarding 43–86% of qualified candidates. See [`signal-count.md`](signal-count.md) |
 | 5 DATA FEASIBILITY | **CLOSED — SCOPE ACCEPTED** | Coverage ends 2026-01-30, confirmed by exhaustive search. Parity relocated; calibration **downgraded** — one irrecoverable loss |
 | 6 SAMPLE SUFFICIENCY | **PASS restored** | Signal count rev 2: full filter stack gives 1.59–2.70/session, clearing 0.486 on every reading. Floor p₁ ≈ 0.50 stands |
@@ -40,10 +40,13 @@ intervals are:
 | *brief's 22/28* | *78.6%* | *[60.5%, 89.8%]* |
 
 **The RR 0.5 / 66.7%-breakeven line does not apply to this strategy.** That is a cluster-α
-figure. The VWAP/BB doc sets an RR **floor of 1.5R** (§6.5) and the hand log's winners
-realised a mean of **+4.23R**. This is a positive-RR strategy; its breakeven is ~40%, not
-66.7%, and the hand-log win rate clears it comfortably on every reading. Gate 3 is computed
-at the correct RR below.
+figure. The VWAP/BB doc sets an RR **floor of 1.5R** (§6.5) and the hand log's **in-scope**
+winners realised a mean of **+3.678R** (median 3.370, max 5.98, n = 13). This is a positive-RR
+strategy; its breakeven is ~40%, not 66.7%. Gate 3 is computed at the correct RR below.
+
+> **Corrected 2026-08-08.** This line previously read **+4.23R**, which is the mean over all
+> **20** winners in the FULL 28-trade log and includes the **+12.98R** trade of 2026-02-25
+> 09:25 — a trade Amendment A1 places OUT OF SCOPE. The in-scope figure is 3.678.
 
 Neither correction changes a gate verdict. Both change how much room the hypothesis has.
 
@@ -178,19 +181,67 @@ At the hand-log median stop of 32.75 points:
 | 1.50 (doc floor) | 40.00% | 40.31% | 40.61% | 41.22% |
 | 2.00 | 33.33% | 33.59% | 33.84% | 34.35% |
 | 3.00 | 25.00% | 25.19% | 25.38% | 25.76% |
-| 4.23 (realised) | 19.12% | 19.27% | 19.41% | 19.70% |
+| 3.678 (hand log in-scope, **not what the amended spec targets**) | 21.36% | 21.53% | 21.71% | 22.06% |
 
 **Cost-ratio diagnostic:** c/s = **0.76% / 1.53% / 3.05%**, inflating breakeven by factors of
 1.0076 / 1.0153 / 1.0305.
 
-This sits in the normal band — costs bite, visibly and proportionately, which is what a
-healthy geometry looks like. It is **not** the α pathology: α sat at **0.12%**, where costs
-vanish against the stop, and that easy pass was a symptom of the oversized stop that killed it
-at gate 1. Here the cost ratio is 13× larger and gate 1 passed on its own merits, so the pass
-is genuine rather than an artefact.
+---
 
-Even the pessimistic in-window Wilson floor of 46.0% clears the 40.61% breakeven, though not
-by much — see gate 6.
+### RE-DERIVED 2026-08-08 at the A5 floor and the measured cost — verdict CONFIRMED, margin materially reduced
+
+Everything above is computed at **s = 32.75** (hand-log median) and the **declared** cost
+ladder. Both inputs are now superseded: **A5** fixes the operative stop at a **10.00 pt floor**
+and the cost basis is **measured** at 0.50 / **0.975** / 1.50. This section re-derives rather
+than inherits.
+
+**Working**, `p₀ = (s + c) / (s(1 + R))` at s = 10.00, c = 0.975, R = 1.5:
+
+```
+frictionless          1 / (1 + 1.5)        = 40.00%
+cost inflation        (10.00 + 0.975)/10.00 = 1.0975
+p₀ = 0.4000 x 1.0975                        = 43.90%
+```
+
+| stop | c = 0.50 | **c = 0.975** | c = 1.50 | c/s at base |
+|---|---|---|---|---|
+| **10.00 — A5 floor, OPERATIVE** | 42.00% | **43.90%** | 46.00% | **9.75%** |
+| 3.12 — old frozen geometry | 46.41% | 52.50% | 59.23% | 31.25% |
+| 32.75 — hand log, full *(what gate 3 originally used)* | 40.61% | 41.19% | 41.83% | 2.98% |
+
+**Margin against the evidence:**
+
+| cost level | p₀ | vs the 68.4% point estimate | vs the 46.0% Wilson lower bound |
+|---|---|---|---|
+| optimistic 0.50 | 42.00% | +26.4 pt | **+4.0 pt** |
+| **base 0.975** | **43.90%** | **+24.5 pt** | **+2.1 pt** |
+| adverse 1.50 | 46.00% | +22.4 pt | **+0.0 pt** |
+
+**VERDICT: PASS — but say the second half out loud.** On the point estimate the strategy clears
+breakeven at every cost level by more than 22 points. **Against the pessimistic Wilson bound
+the cushion has collapsed from 4.8 points to 2.1 at base cost and to exactly zero at adverse
+cost.** Under the old basis the adverse breakeven was 41.22% against the same 46.0% floor.
+
+Two changes compounded in the same direction: **cost rose** (0.50 → 0.975, measured) and the
+**stop fell** (32.75 → 10.00, A5). The cost ratio went from 1.53% to **9.75% — a 6.4× increase**.
+Gate 3 is no longer a comfortable pass; it is a pass whose worst case sits exactly on the line.
+
+**One thing pulls the other way, and it is measured, not assumed.** R = 1.5 is the *floor*, not
+the typical trade. Planned RR of admitted trades under A4+A5+A7 (509 sessions, known at signal
+time, not an outcome) is **median 2.132, mean 2.481**, with only 41% of trades between 1.5R and
+2.0R. At the median planned RR:
+
+| R used | c = 0.50 | c = 0.975 | c = 1.50 |
+|---|---|---|---|
+| 1.500 — the floor (hard) | 42.00% | **43.90%** | 46.00% |
+| 2.132 — median planned | 33.53% | **35.04%** | 36.72% |
+| 2.481 — mean planned | 30.14% | **31.50%** | 33.01% |
+
+The pre-registration commits to the **conservative 43.90%**. The measured row is recorded so
+the size of the cushion is visible, not so it can be quoted as the pass mark.
+
+*Superseded: the pre-A5 figure of 40.61% at s = 32.75, c = 0.50. Recompute source:
+`research/prereg/axis_decision.py`.*
 ## GATE 4 — SPECIFIABILITY · **CLOSED**
 
 *Was FIRING in revision 1 on five parameters with no stated value. All five are now frozen.*

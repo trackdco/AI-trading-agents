@@ -52,8 +52,12 @@ documents:
 - **"22 wins / 28"** and the Wilson interval **[60.5%, 89.8%]**. The `Result` column reads
   **20 win / 7 loss / 1 BE**. The 22 figure never matched the file.
 - **"66.7% breakeven"**. That is cluster α's figure at reward:risk 0.5. This strategy has a
-  **1.5R floor** (§6.5) and realised **+4.23R** on hand-log winners, so its breakeven is
-  ~40%, not 66.7%.
+  **1.5R floor** (§6.5) and realised **+3.678R** on **in-scope** hand-log winners, so its
+  breakeven is ~40%, not 66.7%.
+- **"+4.23R on winners"**. That is the mean over all 20 winners in the FULL log and includes
+  the **+12.98R** trade of 2026-02-25 09:25, which this very document lists as out of scope
+  under A1. The in-scope figure is **mean 3.678, median 3.370, max 5.98, n = 13**.
+  *(Corrected 2026-08-08; the file previously contradicted itself on this line.)*
 
 Neither figure should appear again in relation to this strategy. Where 66.7% still appears in
 `research/star-trading/`, it is correct — those documents are about cluster α.

@@ -219,7 +219,7 @@ def process(d, bars, prev_hl):
         stats = {"qualified": len(cands), "minutes": len(by_min), "admitted": 0,
                  "blocked_open": 0, "blocked_cap": 0, "cap_bound": 0,
                  "ties": 0, "tie_levels": collections.Counter(),
-                 "standdown": 0, "holds": []}
+                 "standdown": 0, "holds": [], "rr": [], "stops": []}
         open_until, n_adm = -1, 0
         for cm in sorted(by_min):
             group = by_min[cm]
@@ -250,6 +250,8 @@ def process(d, bars, prev_hl):
                 j += 1
             hold = res if res is not None else (last_idx - win["bar"])
             stats["holds"].append(hold)
+            stats["rr"].append(win["tgt_d"] / win["R"])
+            stats["stops"].append(win["R"])
             open_until = cm + hold
             n_adm += 1
             stats["admitted"] += 1
@@ -271,6 +273,8 @@ def main():
 
     agg = {m: collections.Counter() for m in READINGS}
     holds = {m: [] for m in READINGS}
+    rrs = {m: [] for m in READINGS}
+    stps = {m: [] for m in READINGS}
     tl = {m: collections.Counter() for m in READINGS}
     ns = 0
     prev_hl = None
@@ -291,6 +295,8 @@ def main():
                       "blocked_cap", "cap_bound", "ties", "standdown"):
                 agg[m][k] += s[k]
             holds[m].extend(s["holds"])
+            rrs[m].extend(s["rr"])
+            stps[m].extend(s["stops"])
             tl[m].update(s["tie_levels"])
         if n % 100 == 0:
             print(f"  ...{n}/{len(days)}")
@@ -319,6 +325,26 @@ def main():
         f"{agg[m]['ties']/max(1,agg[m]['minutes'])*100:>12.1f}%" for m in READINGS))
     print(f"{'median hold, minutes':28}" + "".join(
         f"{sorted(holds[m])[len(holds[m])//2] if holds[m] else 0:>13.0f}" for m in READINGS))
+
+    def q(xs, f):
+        xs = sorted(xs); k = (len(xs)-1)*f; lo = int(k)
+        return xs[lo] + (xs[min(lo+1, len(xs)-1)] - xs[lo]) * (k - lo)
+    print(f"\nPLANNED RR AT ENTRY of admitted trades (known before any bar moves,")
+    print(f"NOT an outcome). Under A4 the target is the FIRST level clearing 1.5R,")
+    print(f"so realised RR is expected to sit near the floor by construction.")
+    print(f"{'':18}" + "".join(f"{m:>13}" for m in READINGS))
+    for lab, f in (("p10", .10), ("p25", .25), ("median", .50), ("p75", .75), ("p90", .90)):
+        print(f"{'planned RR ' + lab:18}" + "".join(f"{q(rrs[m], f):>13.3f}" for m in READINGS))
+    print(f"{'mean planned RR':18}" + "".join(
+        f"{sum(rrs[m])/len(rrs[m]):>13.3f}" for m in READINGS))
+    print(f"{'% within 1.5-2.0R':18}" + "".join(
+        f"{sum(1 for x in rrs[m] if x < 2.0)/len(rrs[m])*100:>12.1f}%" for m in READINGS))
+    print(f"\nSTOP DISTANCE of admitted trades, points (A5 floor = {MIN_STOP:.2f})")
+    print(f"{'':18}" + "".join(f"{m:>13}" for m in READINGS))
+    for lab, f in (("p25", .25), ("median", .50), ("p75", .75), ("p90", .90)):
+        print(f"{'stop ' + lab:18}" + "".join(f"{q(stps[m], f):>13.2f}" for m in READINGS))
+    print(f"{'% AT the floor':18}" + "".join(
+        f"{sum(1 for x in stps[m] if x <= MIN_STOP + 1e-9)/len(stps[m])*100:>12.1f}%" for m in READINGS))
 
     print(f"\nTIE-BREAK: which level decided each admission")
     names = {0: "0 no tie (single candidate)", 1: "1 highest entry TF [SPEC]",
