@@ -51,8 +51,11 @@ def era(d):
 
 # --------------------------------------------------------- bootstrapping --
 def _daysums(df, col):
-    g = df.groupby("sess_day")[col].agg(["sum", "size"])
-    return g["sum"].to_numpy(), g["size"].to_numpy()
+    # COUNT, not SIZE: size counts NaN rows and would deflate the bootstrap
+    # mean to sum/size. Every prior use passed an all-non-null column so no
+    # published number moves, but the helper must not depend on that.
+    g = df.groupby("sess_day")[col].agg(["sum", "count"])
+    return g["sum"].to_numpy(), g["count"].to_numpy()
 
 
 def boot_mean(df, col="out_ship"):

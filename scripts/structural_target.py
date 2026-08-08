@@ -151,6 +151,7 @@ def walk(book: pd.DataFrame, tag: str, trig_tf: int) -> pd.DataFrame:
 
             rec = {"sess_day": day, "t": r.t, "side": r.side, "risk": risk,
                    "book": tag, "tf": trig_tf,
+                   "locus": getattr(r, "locus", None),
                    "next_lvl_R": float(getattr(r, "next_lvl_R", np.nan)),
                    "stopped": stop_j is not None, "fp3": bool(w3),
                    "out_ship_col": float(r.out_ship)}
