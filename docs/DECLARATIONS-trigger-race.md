@@ -91,3 +91,55 @@ misses.
 
 Standing: fit-only, no holdout (none exists for this family), counts
 only, nothing adopted, nothing scored.
+
+
+---
+
+# AMENDMENT 1 — EPISODE-BASED M1 STATE (declared 2026-08-08, before the run)
+
+Motivated by BR-88 (T3): displacement-at-open demands the displacement
+persist into the entry candle, structurally excluding fast reclaims. This
+amendment declares the candidate replacement EXPLICITLY and compares —
+**nothing replaces anything in the comparison step.**
+
+## THE NEW M1 STATE (candidate)
+
+A per-minute episode machine on 1m bars against the 15m MA (as-of
+values, same causality as everything else):
+
+- A **touch minute** — the bar's range contains the current 15m MA —
+  ends any episode and disarms M1 at that minute (including a would-be
+  trigger minute: price already reached the target, no trade left).
+- Otherwise the bar lies entirely on one side of the MA; that side's
+  episode continues (or begins fresh on a side flip), tracking the
+  **running maximum excursion of the bar extreme beyond the MA**,
+  denominated in that minute's W15 at the time of the excursion.
+- M1 is **ARMED toward the MA** once the running max reaches **0.5W —
+  the floor is UNCHANGED** — and stays armed until the episode ends.
+
+Everything else is untouched: trigger = first close through own BB MA
+across the admissible race, affirmation menu/zone, the ≥2 gate for the
+1m, priority M1 > M2 > M3, windows, 0.10W tolerance. The trigger
+candle's open displacement stays recorded as data.
+
+## COMPARISON PROTOCOL
+
+Full census at the declared 0.10W under BOTH definitions, per window ×
+mechanism fights/day side by side, raw-row provenance of the episode-M1
+population (was each row M1 / M2 / M3 / absent under the open
+definition), flatten probe on the episode variant before anything is
+read. Fit-only, counts only.
+
+**"Meaningfully changes," declared now so the rerun decision is not
+post-hoc:** M1 fights/day moves ≥25% in any window, OR total fights/day
+moves ≥10%, OR ≥10% of raw rows change mechanism. If met → the outcome
+pass is re-run against the corrected census (because the population
+changed); if not → the existing outcome pass stands.
+
+## DECLARED EXPECTATIONS
+
+The M1 population grows materially (episode arming spans the whole
+reclaim, not one candle's open). **T3's 09:03 1m closure is predicted
+CAUGHT** (episode max −0.56W ≥ floor, no MA touch before entry,
+n_aff=2 → 1m admissible). If it is not caught, that is a miss recorded
+as a miss.

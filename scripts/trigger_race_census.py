@@ -53,9 +53,41 @@ def in_window(hm):
     return None
 
 
-def day_rows(bars, sess_day, tols=TOL_SWEEP, funnel=False):
+def m1_episode_arrays(hi1, lo1, cl1, ma15_1m, w15_1m, floor=DISP):
+    """AMENDMENT 1 episode state: per-minute machine vs the 15m MA.
+    A touch minute (bar range contains the MA) ends the episode and
+    disarms; otherwise the bar is entirely on one side, and that side's
+    episode tracks the running max excursion of the bar extreme beyond
+    the MA in that minute's W15. Armed toward the MA once the running
+    max >= floor (0.5W, unchanged). Returns (armed: +1 long-armed /
+    -1 short-armed / 0, epi_max: running max in W)."""
+    N = len(cl1)
+    armed = np.zeros(N, dtype=int)
+    epi = np.full(N, np.nan)
+    side, mx = 0, 0.0
+    for j in range(N):
+        m, w = ma15_1m[j], w15_1m[j]
+        if not (np.isfinite(m) and np.isfinite(w) and w > 0):
+            side, mx = 0, 0.0
+            continue
+        if lo1[j] <= m <= hi1[j]:          # touch -> episode over
+            side, mx = 0, 0.0
+            continue
+        s = 1 if cl1[j] < m else -1        # below-MA arms LONG (+1)
+        if s != side:
+            side, mx = s, 0.0
+        exc = (m - lo1[j]) / w if s == 1 else (hi1[j] - m) / w
+        mx = max(mx, exc)
+        epi[j] = mx
+        armed[j] = s if mx >= floor else 0
+    return armed, epi
+
+
+def day_rows(bars, sess_day, tols=TOL_SWEEP, funnel=False, m1_mode="open"):
     """All raw triggers for one session-day, at every tolerance in `tols`
-    (rows carry a `tol` field). Counts only — no outcome walks."""
+    (rows carry a `tol` field). Counts only — no outcome walks.
+    m1_mode: 'open' = displacement at the trigger candle's open (original
+    declaration); 'episode' = AMENDMENT 1 episode state."""
     t0 = pd.Timestamp(f"{sess_day} 18:00", tz=NY)
     t1 = t0 + pd.Timedelta(hours=23)
     hist = bars[(bars.index >= t0 - pd.Timedelta(hours=30))
@@ -71,6 +103,9 @@ def day_rows(bars, sess_day, tols=TOL_SWEEP, funnel=False):
     ma15, w15 = bb_ma_asof(hist, 15)
     ma15_1m = ma15.reindex(idx).to_numpy()
     w15_1m = w15.reindex(idx).to_numpy()
+    armed1, epi1 = m1_episode_arrays(seg.high.to_numpy(),
+                                     seg.low.to_numpy(), cl,
+                                     ma15_1m, w15_1m)
     vw = vwap_bands(hist)
     req = list(idx + pd.Timedelta(minutes=1))
     prof = profile_at_minutes(hist, req)
@@ -166,7 +201,9 @@ def day_rows(bars, sess_day, tols=TOL_SWEEP, funnel=False):
                 if not (d * (fc[bi] - m_tf) > 0
                         and d * (fo[bi] - m_tf) <= 0):
                     continue        # no fresh close through own MA
-                if (-disp_o if d > 0 else disp_o) >= DISP:
+                m1_ok = (armed1[p] == d) if m1_mode == "episode" else \
+                    ((-disp_o if d > 0 else disp_o) >= DISP)
+                if m1_ok:
                     mech = "M1"
                 elif live2[p] == d:
                     mech = "M2"
@@ -203,7 +240,10 @@ def day_rows(bars, sess_day, tols=TOL_SWEEP, funnel=False):
                                      if which[tol][i, p]),
                 "m1_admissible": bool(n_aff >= 2),
                 "w15": float(w15_1m[p]), "ma15": float(ma15_1m[p]),
-                "close_px": float(cl[p]), "disp_w": float(disp_o)})
+                "close_px": float(cl[p]), "disp_w": float(disp_o),
+                "m1_mode": m1_mode,
+                "epi_max_w": float(epi1[p])
+                if np.isfinite(epi1[p]) else np.nan})
     return rows
 
 
@@ -251,7 +291,7 @@ def cluster(F, bars, x=XDEC):
         .groupby("scid", as_index=False).first()
 
 
-def gate(bars, days):
+def gate(bars, days, m1_mode="open"):
     """Integrity probe: flatten all bars after a sampled trigger's time;
     the trigger set at or before that time must be unchanged."""
     bad = n = 0
@@ -259,7 +299,8 @@ def gate(bars, days):
         t0 = pd.Timestamp(f"{day} 18:00", tz=NY)
         win = bars[(bars.index >= t0 - pd.Timedelta(hours=30))
                    & (bars.index < t0 + pd.Timedelta(hours=23))]
-        rows = [r for r in day_rows(win, day, tols=[TOLW])]
+        rows = [r for r in day_rows(win, day, tols=[TOLW],
+                                    m1_mode=m1_mode)]
         if not rows:
             continue
         for r in rows[:1] + rows[len(rows) // 2:len(rows) // 2 + 1]:
@@ -272,7 +313,8 @@ def gate(bars, days):
             m = wf.index >= t
             wf.loc[m, ["open", "high", "low", "close"]] = pc
             wf.loc[m, "volume"] = 1
-            re = [x for x in day_rows(wf, day, tols=[TOLW])
+            re = [x for x in day_rows(wf, day, tols=[TOLW],
+                                      m1_mode=m1_mode)
                   if pd.Timestamp(x["t"]) <= t]
             og = [x for x in rows if pd.Timestamp(x["t"]) <= t]
             n += 1
@@ -298,6 +340,85 @@ def main() -> None:
                         for t in bars.index})
     days = [d for d in sess_days if FIT_START <= d <= FIT_END]
     nd = len(days)
+
+    if "--m1-compare" in sys.argv:
+        # AMENDMENT 1 comparison: open vs episode M1, declared tol only,
+        # side by side. NOTHING REPLACES ANYTHING HERE.
+        print("=" * 100)
+        print("M1 DEFINITION COMPARISON — open-displacement vs episode "
+              "state (AMENDMENT 1). Declared 0.10W. COUNTS ONLY.")
+        print("=" * 100)
+        print("\nINTEGRITY PROBE, episode variant:")
+        if not gate(bars, days[::60], m1_mode="episode"):
+            sys.exit(1)
+        V = {}
+        for mode in ("open", "episode"):
+            p = OUT.with_name(f"race_fit_m1{mode}.parquet")
+            rows = []
+            for k, d in enumerate(days):
+                rows.extend(day_rows(bars, d, tols=[TOLW], m1_mode=mode))
+                if k % 60 == 0:
+                    print(f"  [{mode}] {k}/{nd}...", flush=True)
+            Fv = pd.DataFrame(rows)
+            Fv["t"] = pd.to_datetime(Fv.t)
+            Fv.to_parquet(p, index=False)
+            V[mode] = Fv
+            print(f"  [{mode}] raw {len(Fv):,} -> {p.name}")
+        Bv = {m: cluster(V[m], bars) for m in V}
+        a, b = Bv["open"], Bv["episode"]
+
+        print(f"\nFIGHTS/DAY, per window x mechanism, SIDE BY SIDE:")
+        print(f"   {'window':7s} {'mech':4s} {'OPEN/d':>8s} "
+              f"{'EPISODE/d':>10s} {'delta':>8s} {'pct':>7s}")
+        for w_ in SESSIONS:
+            for mech in MECHS:
+                na_ = len(a[(a.session == w_) & (a.mech == mech)])
+                nb_ = len(b[(b.session == w_) & (b.mech == mech)])
+                pct = (nb_ - na_) / na_ * 100 if na_ else float("inf")
+                print(f"   {w_:7s} {mech:4s} {na_/nd:8.2f} {nb_/nd:10.2f} "
+                      f"{(nb_-na_)/nd:+8.2f} {pct:+6.0f}%")
+            na_, nb_ = len(a[a.session == w_]), len(b[b.session == w_])
+            print(f"   {w_:7s} ALL  {na_/nd:8.2f} {nb_/nd:10.2f} "
+                  f"{(nb_-na_)/nd:+8.2f} {(nb_-na_)/na_*100:+6.0f}%")
+        print(f"   {'TOTAL':7s}      {len(a)/nd:8.2f} {len(b)/nd:10.2f} "
+              f"{(len(b)-len(a))/nd:+8.2f} "
+              f"{(len(b)-len(a))/len(a)*100:+6.0f}%")
+
+        from collections import Counter
+        Ao, Ae = V["open"], V["episode"]
+        ko = {(r.t, r.dir): r.mech for r in Ao.itertuples()}
+        ke = {(r.t, r.dir): r.mech for r in Ae.itertuples()}
+        m1e = Ae[Ae.mech == "M1"]
+        prov = Counter(ko.get((r.t, r.dir), "ABSENT")
+                       for r in m1e.itertuples())
+        print(f"\nEPISODE-M1 raw rows {len(m1e)} — provenance under OPEN: "
+              + "  ".join(f"{k}:{v}" for k, v in prov.most_common()))
+        m1o = Ao[Ao.mech == "M1"]
+        fate = Counter(ke.get((r.t, r.dir), "ABSENT")
+                       for r in m1o.itertuples())
+        print(f"OPEN-M1 raw rows {len(m1o)} — fate under EPISODE: "
+              + "  ".join(f"{k}:{v}" for k, v in fate.most_common()))
+        moved = sum(1 for k_, m_ in ke.items() if ko.get(k_) not in
+                    (None, m_)) + sum(1 for k_ in ko if k_ not in ke)
+        print(f"raw rows changing mechanism or presence: {moved} "
+              f"({moved/len(Ao)*100:.1f}% of OPEN rows)")
+
+        t3w0 = pd.Timestamp("2026-06-03 09:00", tz=NY)
+        t3w1 = pd.Timestamp("2026-06-03 09:15", tz=NY)
+        t3 = Ae[(Ae.dir == "long") & (Ae.t >= t3w0) & (Ae.t <= t3w1)]
+        print("\nT3 CALIBRATION (predicted CAUGHT under episode):")
+        if len(t3):
+            for r in t3.itertuples():
+                print(f"   {r.t.strftime('%H:%M')} {r.mech} tf_won="
+                      f"{r.tf_won} n_aff={r.n_aff} "
+                      f"epi_max={r.epi_max_w:.2f}W -> CAUGHT")
+        else:
+            print("   NOT CAUGHT — recorded as a miss of the declared "
+                  "expectation")
+
+        print("\nDECLARED 'MEANINGFUL' LINES: M1 >=25% any window | "
+              "total >=10% | >=10% rows change mechanism")
+        return
 
     print("=" * 100)
     print("TRIGGER RACE CENSUS — redeclared grammar "
