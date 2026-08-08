@@ -143,3 +143,55 @@ reclaim, not one candle's open). **T3's 09:03 1m closure is predicted
 CAUGHT** (episode max −0.56W ≥ floor, no MA touch before entry,
 n_aff=2 → 1m admissible). If it is not caught, that is a miss recorded
 as a miss.
+
+
+---
+
+# AMENDMENT 2 — NO-LOOKAHEAD EARLY-ENTRY CONSTRUCTION (declared 2026-08-08, before the build)
+
+**Motivation, stated on the corrected record**: BR-92's mechanical
+decomposition — the cost of waiting for the trigger candle to complete
+is positive in all nine cells and monotone in candle length (1m +0.018
+/ 2m +0.186 / 3m +0.335) — measured under favorable accounting
+(final-candle stop, infeasible-fill drops). This construction prices
+the REAL version. It does NOT rest on the withdrawn "his fills are
+earlier" claim (BR-95): the trader's documented fills are the closure
+trades themselves.
+
+## THE CONSTRUCTION
+
+At each 1m close (decision minute j, entry next 1m open — the standing
+entry law), for each TF in the admissible race set {1m, 2m, 3m}:
+
+- **Developing state only**: the TF's developing BB(20) MA as-of minute
+  j; the TF bucket containing j, with its open price (known at bucket
+  start) and its extreme SO FAR through minute j.
+- **Trigger**: the bucket opened on the far side of the current
+  developing MA (d·(bucket_open − MA_j) ≤ 0) AND minute j's close is
+  through it (d·(close_j − MA_j) > 0) — the first such minute per
+  bucket fires. For tf=1 this is identical to the closure construction.
+- **Stop**: the bucket's extreme SO FAR ± 1 tick — known at the
+  decision minute. **No value from any later minute appears anywhere.**
+- Thesis (episode M1 / M2 / M3), affirmation ≥1 for M2/M3, the
+  ≥2-affirmation 1m gate, windows, 0.10W tolerance: all unchanged,
+  evaluated at minute j.
+- Race: earliest firing minute wins; simultaneous → smallest TF.
+  First-of-fight clustering X=0.5W, ref = 15m MA, unchanged.
+- Outcomes: same targets (M1 → 15m MA; M2/M3 → first/second menu
+  structure beyond entry), same walks, costs, day-boot, cells.
+
+## GATE, BEFORE ANYTHING IS READ
+
+T1-flatten on the builder: flatten all bars after a sampled trigger's
+decision minute; the trigger set at or before that minute — including
+each trigger's ENTRY and STOP — must be unchanged. This is the
+prove-it-cannot-see-the-future gate; a single moved stop fails it.
+
+## DECLARED EXPECTATIONS
+
+Fires earlier and MORE often than the closure census (unconfirmed
+mid-candle crosses that later reverse now enter and pay for it — that
+is the honest cost BR-92's accounting hid). The interesting number is
+how much of the +0.161 upper bound survives: report EV per cell vs the
+closure census as the null, plus frequency. No declared bar — the
+comparison is the deliverable. Report-only, fit-only, nothing adopted.

@@ -46,7 +46,15 @@ from scripts.trigger_race_census import SESSIONS                    # noqa: E402
 from src.htf_ma.levels import NY                                    # noqa: E402
 
 OUTP = ROOT / "output/htf_ma_census/race_outcomes_epi.parquet"
-FEATP = ROOT / "output/htf_ma_census/race_flow_feats.parquet"
+# --at-entry (Part 4): evaluate depth AS-OF THE CLOSURE MINUTE t — the
+# book you market-order into — instead of t-1min. The old canon's
+# hindsight came from LIMIT fills timestamped inside later bars; a
+# market order at the close makes the as-of-t snapshot causal. Flow is
+# already as-of the closure (windows end at bar_end=t) and is unchanged.
+AT_ENTRY = "--at-entry" in sys.argv
+FEATP = ROOT / ("output/htf_ma_census/race_flow_feats_entry.parquet"
+                if AT_ENTRY
+                else "output/htf_ma_census/race_flow_feats.parquet")
 DEPTH_FEATS = ["dep_thickness_vs_day", "dep_imbalance",
                "support_minus_resist", "support_wall_dist",
                "support_wall_size", "dep_thickness_delta_5m"]
@@ -98,9 +106,9 @@ def build_feats(B, bars):
                 fptf[fptf.index < ts] if fptf is not None else None,
                 bar_ohlc=b_, prior_ohlc=otf[otf.index < ts])
             if books:
-                f.update(depth_at(books, ts - pd.Timedelta(minutes=1),
-                                  float(r.entry), int(r.direction),
-                                  med_all))
+                dm = ts if AT_ENTRY else ts - pd.Timedelta(minutes=1)
+                f.update(depth_at(books, dm, float(r.entry),
+                                  int(r.direction), med_all))
             rows.append({"scid": r.scid, **{k2: f.get(k2, np.nan)
                                             for k2 in FLOW_NAMES
                                             + DEPTH_FEATS}})
@@ -132,6 +140,11 @@ def main() -> None:
     B = B.merge(FT, on="scid", how="left", validate="1:1")
 
     print("\n" + "=" * 100)
+    if AT_ENTRY:
+        print("AT-ENTRY MODE: depth as-of the closure minute t (the book "
+              "a market order enters into — causal, unlike the old")
+        print("canon's limit-fill hindsight); flow already ends at the "
+              "closure and is unchanged.")
     print("FLOW (12) + DEPTH (6) INTO THE DIAGNOSTIC — SECOND LOOK AT A "
           "REFUTED FAMILY (BR-19/26/62; closeloc BR-43-contaminated).")
     print("The prior is AGAINST. Same screens as race_diagnose: "

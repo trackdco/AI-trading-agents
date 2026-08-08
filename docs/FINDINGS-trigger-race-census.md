@@ -252,6 +252,63 @@ the spec question sharpened: "first 1m cross" confirmation and
 constructions, and his fills match the second.** Which one gets declared
 is the trader's call; nothing is built here.
 
+## CORRECTION — T1'S 1m CLOSURE RE-DERIVED, AND THE MISMATCH IS IN MY SCREENSHOT READING, NOT THE CONSTRUCTION
+
+2026-08-08, follow-up under the trader's standing rule, now on the
+record for this whole programme: **when a screenshot appears to
+conflict with the trader's directly stated process, the stated process
+wins and the screenshot gets re-checked — never the other way around.**
+
+**The 1m facts, re-derived (unchanged from the audit, restated
+precisely):** on 2026-06-01 the only 1m closure through the 1m BB MA in
+the short direction in the entire envelope is the bar ending **09:52 —
+close 30,417.75 through the 1m MA 30,427.58** (every earlier minute
+09:40–09:51 closed ABOVE the 1m MA; verified line by line). The
+construction fired exactly that: entry 30,417.50 (next 1m open), stop
+30,449.75 (trigger-candle high 30,449.50 + 1 tick), risk 32.25pt.
+
+**Which screenshot documents the 1m entry:** the Jun-1 1m chart (replay
+bar 09:59) — the only T1 image on the entry timeframe; the 2m image is
+higher-timeframe context. Its position-tool price-scale labels are
+**30,445.25** (upper) and **30,325.00** (lower), with no label at any
+price between. My earlier audit took the ~30,445–450 region as HIS FILL
+at 09:49–50 — an inference from box geometry, never from a label that
+says "entry."
+
+**The trader's stated process** — "bollinger band MA on closure on top
+to enter" — admits no entry at 30,445–450 at 09:49–50, because **no 1m
+closure through the MA existed there**. Under the standing rule the
+statement wins, and the screenshot re-reads coherently: **30,445.25 is
+the STOP** (sitting 4.5pt from the construction's own 30,449.75),
+30,325.00 the target, and the entry is the 09:52 closure at
+~30,417.75 — the construction's trade to within a tick of entry and a
+few points of stop placement. **The same correction applies to T2**
+(labels 30,566.25 / 30,479.25 / 30,442.00): the stated process puts the
+entry at the 09:45 closure (~30,502.50), not at 30,479.25, and the
+lower labels re-read as stop/target placement.
+
+**What this corrects, explicitly (misses recorded as misses — these
+were my misreadings, not the construction's):**
+
+1. The audit section above claimed "his fill is 32.5pt / +1.01R better"
+   (T1) and "23.25pt / +0.78R better" (T2), and built an "entry-class /
+   zone-touch anticipation" narrative on it. **Withdrawn.** Both
+   documented trades are the construction's own closure trades. BR-93
+   is annotated accordingly.
+2. BR-85's "he market-orders ahead of the closure (~1.8R better on one
+   measured fill)" carries the same defect. **Withdrawn for T1/T2.**
+3. **BR-92 is NOT touched** — the entry-timing measurement never used
+   his fills; it is a self-contained mechanical decomposition of the
+   waiting cost inside 2m/3m candles, and it stands on its own as the
+   motivation for the early-entry construction. What is withdrawn is
+   only the claim that his real fills demonstrate the anticipation.
+
+**Net verdict on the trade check, restated:** the construction catches
+T1 and T2 not merely as triggers but as **the same trades at the same
+prices** the screenshots document, T3 is caught under Amendment 1, and
+T4 dies at the window edge the trader chose. The grammar is a faithful
+mechanization of the stated process on all four documented trades.
+
 ## T3 RE-CHECKED: genuinely M1 — and the floor is not the real gap
 
 2026-08-08, follow-up. Question asked: is T3 actually a rejection or a
