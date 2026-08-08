@@ -1,5 +1,12 @@
 # HOLDOUT LOOK #1 — SPENT, plus the recorder fix and conviction sizing
 
+> **RESOLVED 2026-08-07 — see `FINDINGS-holdout-look-1b.md`.** The sweep_b
+> build defect described below was fixed, calibrated byte-identical on the
+> fit span, and H1/H4 were run once against sealed. **Both PASS.** H2, H3
+> and H5 below are unchanged. The "inversion" framing in this document —
+> every base rate failing while a selection layer passed — was an artifact
+> of the defect and does not survive.
+
 2026-08-07. Look #1 executed against the committed declaration. Builder SHA
 `13e79a2f`. Flow venue never touched. New York analysis untouched.
 
