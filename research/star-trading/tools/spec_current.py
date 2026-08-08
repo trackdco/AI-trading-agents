@@ -82,6 +82,30 @@ def round_against_trader(price, direction, tick=TICK):
     return math.floor(price / tick + _EPS) * tick
 
 
+def resolve_bar_stop_first(direction, stop_px, tgt_px, o, h, l, c):
+    """Accounting rule 4.1, quoted in stage2_smoke's docstring: 'ambiguous bars resolve
+    STOP-FIRST.' A faithful, mechanical transcription of the resolution order already
+    implemented inline in stage2_smoke.run_session, extracted here as a standalone,
+    testable function so item 5 of the overnight queue can close invariant 7 without
+    computing any real outcome. Touch is inclusive (<=/>=), matching the touch
+    semantics used elsewhere in the spec (§7 invalidation, over-extension).
+
+    Returns "stop", "target", or None (bar resolves neither). Does not read or return
+    any P&L, R multiple, or exit price beyond which of the two named levels was hit -
+    a synthetic-bar unit test of a RULE, not a report on the real trade list."""
+    if direction == "long":
+        hit_stop = l <= stop_px
+        hit_tgt = h >= tgt_px
+    else:
+        hit_stop = h >= stop_px
+        hit_tgt = l <= tgt_px
+    if hit_stop:
+        return "stop"
+    if hit_tgt:
+        return "target"
+    return None
+
+
 def round_away_from_entry(price, entry, tick=TICK):
     """A14, stop and target. Rounds AWAY from entry: the side further from entry is
     'worse' for both — a wider stop dilutes every R-multiple, a further target needs a
