@@ -256,7 +256,8 @@ def build() -> pd.DataFrame:
                           None: None})[l2k]
                 for X in (STOP_XS if vname in
                          ("V4_75s1_25s2", "V5_75s1_25trail",
-                          "V8_75s1_25none", "V1_full_s1") else [1.0]):
+                          "V8_75s1_25none", "V1_full_s1",
+                          "V6_50s1_50s2") else [1.0]):
                     res = walk_two_phase(
                         j0, d, entry, risk, N, hi, lo, cl,
                         l1arr, l2kind, l2arr, w1, w2, X,
