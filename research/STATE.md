@@ -453,6 +453,33 @@ taken, and the spec still does not say.**
 
 ---
 
+## STAGE 2 — SEALED WORKBENCH RESULT (2026-08-08)
+
+`research/vwap-bb/data/workbench_results_SEALED.parquet` — **1,423 trades, 501 sessions,
+35 columns.**
+
+| | |
+|---|---|
+| **SHA-256** | **`a9ddc2947ca6a5f4c7e453d90427bed91710d1bc94c86de81fa9b381739bd4f0`** |
+| Reproduced byte-identical on a second run | **yes** |
+| Trades / session | **2.8403** — clears every §6 tripwire from /1 (0.7631) to /72 (2.0091) |
+| Excluded | 38 — holiday/short 22, roll 8, session-after-roll 8. Reconciles: 501+38+0 = 539 |
+| Errors | 0 |
+
+> **SEALED AND UNREAD.** No outcome column has been read, printed or aggregated. Reader is
+> `stage2_smoke.read_results(token)`, which raises `SealedResultsError` without
+> `RESULTS_UNSEAL_APPROVED_BY_ANGUS`. **Reading it spends N_trials and must wait for
+> PREREGISTRATION.md §10.4 sign-off.**
+
+**Nine defects were found and fixed by a pre-run adversarial review, before anything was
+sealed.** Two mattered most: the EOD flatten was tested before the stop on the same bar, which
+let 4.5 override 4.1 and made the flatten branch the only exit able to lose more than 1R; and
+`trig()` returns a set whose unsorted iteration made the **sealed hash non-reproducible**. Roll
+detection was also alphabetical rather than chronological — confirmed to have put 6 of 8 roll
+dates one session late. Full list in [`STAGE2-SMOKE.md`](vwap-bb/STAGE2-SMOKE.md).
+
+---
+
 ## A7 SELECTOR — confirmation count (added 2026-08-08)
 
 Source: `research/star-trading/tools/vwapbb_a7_selector.py`. **Workbench, 509 sessions.**
