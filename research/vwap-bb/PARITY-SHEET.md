@@ -243,6 +243,12 @@ We hold no economic calendar, so this is likely "n/a" — but if you know of one
 All four entry timeframes are evaluated independently (§1 MTF arbitration), so all four are
 needed.
 
+> **⚠ 1m — applies to §2, §3 and §7.** 1m is unavailable on your platform for January 2025
+> (history depth), so the **1m rows will read "n/a"**. **This is a live branch, not a dead
+> one:** the hand log contains **4 entries on 1M, 2 of them in scope**. So when you answer
+> **§7**, state which timeframes you actually checked — *"no trigger on 2m/3m/5m, 1m not
+> checkable"* — so Stage B can tell a blind spot apart from a disagreement.
+
 | entry TF | BB basis (20 SMA) | upper 2σ | lower 2σ |
 |---|---|---|---|
 | **1m** | | | |
@@ -465,6 +471,12 @@ page.**
 | Low printed within 15 min of it | |
 
 ## 2. Bollinger basis and bands, per entry timeframe
+
+> **⚠ 1m — applies to §2, §3 and §7.** 1m is unavailable on your platform for January 2025
+> (history depth), so the **1m rows will read "n/a"**. **This is a live branch, not a dead
+> one:** the hand log contains **4 entries on 1M, 2 of them in scope**. So when you answer
+> **§7**, state which timeframes you actually checked — *"no trigger on 2m/3m/5m, 1m not
+> checkable"* — so Stage B can tell a blind spot apart from a disagreement.
 
 | entry TF | BB basis (20 SMA) | upper 2σ | lower 2σ |
 |---|---|---|---|
