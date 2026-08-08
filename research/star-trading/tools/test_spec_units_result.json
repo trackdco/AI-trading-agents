@@ -1,0 +1,516 @@
+{
+ "pass": 59,
+ "fail": 3,
+ "results": [
+  [
+   "A1",
+   "\u00a73 rejection block",
+   "[LIT]",
+   "{('long', 'rejection')}",
+   "{('long', 'rejection')}",
+   "PASS"
+  ],
+  [
+   "A2",
+   "\u00a73 rejection block (b)",
+   "[LIT]",
+   "set()",
+   "set()",
+   "PASS"
+  ],
+  [
+   "A3",
+   "\u00a73 rejection block (a)",
+   "[LIT]",
+   "set()",
+   "set()",
+   "PASS"
+  ],
+  [
+   "A4",
+   "\u00a73 rejection block (c)",
+   "[LIT]",
+   "set()",
+   "set()",
+   "PASS"
+  ],
+  [
+   "A5",
+   "\u00a73 rejection block, short",
+   "[LIT]",
+   "{('short', 'rejection')}",
+   "{('short', 'rejection')}",
+   "PASS"
+  ],
+  [
+   "A6",
+   "\u00a73 displacement",
+   "[LIT]",
+   "{('long', 'displacement')}",
+   "{('long', 'displacement')}",
+   "PASS"
+  ],
+  [
+   "A7",
+   "\u00a73 displacement, '>=2 cluster levels'",
+   "[LIT]",
+   "set()",
+   "set()",
+   "PASS"
+  ],
+  [
+   "A8",
+   "\u00a73 displacement, 'body/range >= B_min', B_min = 0.6",
+   "[LIT]",
+   "{('long', 'displacement')}",
+   "{('long', 'rejection'), ('long', 'displacement')}",
+   "FAIL"
+  ],
+  [
+   "A9",
+   "\u00a73 displacement, B_min boundary below",
+   "[LIT]",
+   "set()",
+   "{('long', 'rejection')}",
+   "FAIL"
+  ],
+  [
+   "A10",
+   "\u00a73 displacement, extreme-quartile boundary",
+   "[LIT]",
+   "{('long', 'displacement')}",
+   "{('long', 'displacement')}",
+   "PASS"
+  ],
+  [
+   "A11",
+   "\u00a73 displacement, quartile boundary below",
+   "[LIT]",
+   "set()",
+   "set()",
+   "PASS"
+  ],
+  [
+   "A12",
+   "\u00a73 displacement, short",
+   "[LIT]",
+   "{('short', 'displacement')}",
+   "{('short', 'displacement')}",
+   "PASS"
+  ],
+  [
+   "A13",
+   "\u00a73, range = 0 degenerate",
+   "[LIT]",
+   "set()",
+   "set()",
+   "PASS"
+  ],
+  [
+   "A14",
+   "\u00a73, both predicates on one bar",
+   "[LIT]",
+   "{('long', 'rejection'), ('long', 'displacement')}",
+   "{('long', 'rejection'), ('long', 'displacement')}",
+   "PASS"
+  ],
+  [
+   "B1",
+   "\u00a73, '>=2 of {...}'",
+   "[LIT]",
+   "[]",
+   "[]",
+   "PASS"
+  ],
+  [
+   "B2",
+   "\u00a73, two levels within tolerance",
+   "[LIT]",
+   "[(100.0, 105.0, {'vwap', 'bb'}, 2)]",
+   "[(100.0, 105.0, {'vwap', 'bb'}, 2)]",
+   "PASS"
+  ],
+  [
+   "B3",
+   "\u00a73, levels outside tolerance",
+   "[LIT]",
+   "[]",
+   "[]",
+   "PASS"
+  ],
+  [
+   "B4",
+   "\u00a73, confluence count by distinct type",
+   "[LIT]",
+   "[(100.0, 104.0, {'vwap'}, 3)]",
+   "[(100.0, 104.0, {'vwap'}, 3)]",
+   "PASS"
+  ],
+  [
+   "C1",
+   "A2 'N=2' + 'else range'",
+   "[LIT]",
+   "'range'",
+   "'range'",
+   "PASS"
+  ],
+  [
+   "C2",
+   "A2 'HH+HL => uptrend', insufficient swing lows",
+   "[LIT]",
+   "'range'",
+   "'range'",
+   "PASS"
+  ],
+  [
+   "C3",
+   "A2 'else range' on HH + LL",
+   "[LIT]",
+   "'range'",
+   "'range'",
+   "PASS"
+  ],
+  [
+   "C4",
+   "A10 plateau, function total",
+   "[LIT]",
+   "'range'",
+   "'range'",
+   "PASS"
+  ],
+  [
+   "C5",
+   "A10 plateau on both highs and lows, HH + LL",
+   "[LIT]",
+   "'range'",
+   "'range'",
+   "PASS"
+  ],
+  [
+   "C6",
+   "A2 'LH+LL => downtrend', insufficient swing lows",
+   "[LIT]",
+   "'range'",
+   "'range'",
+   "PASS"
+  ],
+  [
+   "D1",
+   "\u00a76.4 front-run, long",
+   "[LIT]",
+   "[118.0, 138.0]",
+   "[118.0, 138.0]",
+   "PASS"
+  ],
+  [
+   "D2",
+   "\u00a76.4 front-run, short",
+   "[LIT]",
+   "[82.0]",
+   "[82.0]",
+   "PASS"
+  ],
+  [
+   "D3",
+   "\u00a76.5/A4 'outward from entry'",
+   "[LIT]",
+   "[118.0, 138.0, 198.0]",
+   "[118.0, 138.0, 198.0]",
+   "PASS"
+  ],
+  [
+   "D4",
+   "\u00a76.5 ladder, sub-tick duplicates",
+   "[LIT]",
+   "[118.0]",
+   "[118.0]",
+   "PASS"
+  ],
+  [
+   "D5",
+   "\u00a76.5 ladder, one tick apart",
+   "[LIT]",
+   "[118.0, 118.25]",
+   "[118.0]",
+   "FAIL"
+  ],
+  [
+   "D6",
+   "\u00a76.5, empty ladder",
+   "[LIT]",
+   "[]",
+   "[]",
+   "PASS"
+  ],
+  [
+   "E1",
+   "\u00a76.5/A4 'first level whose ... distance is >= 1.5R'",
+   "[FORM]",
+   "130.0",
+   "130.0",
+   "PASS"
+  ],
+  [
+   "E2",
+   "\u00a76.5/A4 boundary, '>=' is inclusive",
+   "[FORM]",
+   "115.0",
+   "115.0",
+   "PASS"
+  ],
+  [
+   "E3",
+   "\u00a76.5/A4 boundary, just below",
+   "[FORM]",
+   "130.0",
+   "130.0",
+   "PASS"
+  ],
+  [
+   "E4",
+   "\u00a76.5/A4 'Skip only if no level ... clears the floor'",
+   "[FORM]",
+   "None",
+   "None",
+   "PASS"
+  ],
+  [
+   "E5",
+   "\u00a76.5/A4, short",
+   "[FORM]",
+   "85.0",
+   "85.0",
+   "PASS"
+  ],
+  [
+   "F1",
+   "\u00a710.1(4), single candidate",
+   "[LIT]",
+   "({'tf': 2, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 0)",
+   "({'tf': 2, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 0)",
+   "PASS"
+  ],
+  [
+   "F2",
+   "\u00a710.1(4) level 1, 'Highest entry TF'",
+   "[LIT]",
+   "({'tf': 5, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 1)",
+   "({'tf': 5, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 1)",
+   "PASS"
+  ],
+  [
+   "F3",
+   "\u00a710.1(4) level 2, 'stand down, take neither'",
+   "[LIT]",
+   "(None, 2)",
+   "(None, 2)",
+   "PASS"
+  ],
+  [
+   "F4",
+   "\u00a710.1(4) level 3, 'Larger cluster'",
+   "[LIT]",
+   "({'tf': 2, 'direction': 'long', 'nlev': 4, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 3)",
+   "({'tf': 2, 'direction': 'long', 'nlev': 4, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 3)",
+   "PASS"
+  ],
+  [
+   "F5",
+   "\u00a710.1(4) level 4, 'Cluster nearest the entry price'",
+   "[LIT]",
+   "({'tf': 2, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 4)",
+   "({'tf': 2, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 4)",
+   "PASS"
+  ],
+  [
+   "F6",
+   "\u00a710.1(4) level 5, 'Lowest cluster low'",
+   "[LIT]",
+   "({'tf': 2, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 90.0}, 5)",
+   "({'tf': 2, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 90.0}, 5)",
+   "PASS"
+  ],
+  [
+   "F7",
+   "\u00a710.1(4), 'the first level that separates them decides'",
+   "[LIT]",
+   "({'tf': 5, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 1)",
+   "({'tf': 5, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 1)",
+   "PASS"
+  ],
+  [
+   "F8",
+   "\u00a710.1(4), level 1 precedes level 2",
+   "[LIT]",
+   "({'tf': 5, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 1)",
+   "({'tf': 5, 'direction': 'long', 'nlev': 2, 'cl_mid': 100.0, 'entry': 100.0, 'cl_lo': 95.0}, 1)",
+   "PASS"
+  ],
+  [
+   "G1",
+   "A13 eligibility, wide CI",
+   "[FORM]",
+   "False",
+   "False",
+   "PASS"
+  ],
+  [
+   "G2",
+   "A13 eligibility, narrow CI",
+   "[FORM]",
+   "True",
+   "True",
+   "PASS"
+  ],
+  [
+   "G3",
+   "A13 boundary, '<=' inclusive",
+   "[FORM]",
+   "True",
+   "True",
+   "PASS"
+  ],
+  [
+   "G4",
+   "A13 boundary, just above",
+   "[FORM]",
+   "False",
+   "False",
+   "PASS"
+  ],
+  [
+   "G5",
+   "\u00a72, NY VWAP absent",
+   "[FORM]",
+   "False",
+   "False",
+   "PASS"
+  ],
+  [
+   "H1a",
+   "\u00a75.3 'E1: limit at the BB MA'",
+   "[FORM]",
+   "1",
+   "1",
+   "PASS"
+  ],
+  [
+   "H1b",
+   "\u00a75.3 'E1: limit at the BB MA'",
+   "[FORM]",
+   "20005.3",
+   "20005.3",
+   "PASS"
+  ],
+  [
+   "H1c",
+   "\u00a75.4 + A2 buffer + A5 floor",
+   "[FORM]",
+   "15.549999999999272",
+   "15.549999999999272",
+   "PASS"
+  ],
+  [
+   "H1d",
+   "\u00a75.4, stop price",
+   "[FORM]",
+   "19989.75",
+   "19989.75",
+   "PASS"
+  ],
+  [
+   "H1e",
+   "A5, floor not binding when structural stop exceeds 10.00",
+   "[FORM]",
+   "False",
+   "False",
+   "PASS"
+  ],
+  [
+   "H1f",
+   "\u00a73 rejection block, direction",
+   "[LIT]",
+   "'long'",
+   "'long'",
+   "PASS"
+  ],
+  [
+   "H1g",
+   "\u00a73, trigger kind",
+   "[LIT]",
+   "'rejection'",
+   "'rejection'",
+   "PASS"
+  ],
+  [
+   "H1h",
+   "\u00a76.5/A4 '>= 1.5R'",
+   "[FORM]",
+   ">= 1.5",
+   "2.435717",
+   "PASS"
+  ],
+  [
+   "H2a",
+   "\u00a75.4/A5, candidate exists",
+   "[FORM]",
+   "1",
+   "1",
+   "PASS"
+  ],
+  [
+   "H2b",
+   "A5 'Effective stop = max(structural stop, 10.00 pt)'",
+   "[FORM]",
+   "10.0",
+   "10.0",
+   "PASS"
+  ],
+  [
+   "H2c",
+   "A5, stop price with the floor binding",
+   "[FORM]",
+   "19995.3",
+   "19995.3",
+   "PASS"
+  ],
+  [
+   "H3a",
+   "A5 'the floor does not rescue it'",
+   "[FORM]",
+   "0",
+   "0",
+   "PASS"
+  ],
+  [
+   "H4a",
+   "A1 'first tradeable signal bar 09:36'",
+   "[LIT]",
+   "[]",
+   "[]",
+   "PASS"
+  ],
+  [
+   "H4b",
+   "\u00a71 'RTH 09:31-16:00 ET'",
+   "[LIT]",
+   "[]",
+   "[]",
+   "PASS"
+  ]
+ ],
+ "observed": [
+  [
+   "B5",
+   "\u00a73, 'Tolerance: CALIBRATE (start ~10 NQ pts)'",
+   "gap of exactly 10.00 - inclusive or exclusive is UNSPECIFIED",
+   "[(100.0, 110.0, {'vwap', 'bb'}, 2)]"
+  ],
+  [
+   "B6",
+   "\u00a73, 'within proximity tolerance'",
+   "span-vs-chaining is UNSPECIFIED; gaps 7 and 7, total span 14",
+   "[(100.0, 114.0, {'poc', 'vwap', 'bb'}, 3)]"
+  ]
+ ]
+}
