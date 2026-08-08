@@ -103,10 +103,10 @@ one that cannot.
 >   wrong*, and in `research/star-trading/`, where 66.7% is **correct** because those
 >   documents concern cluster α at reward:risk 0.5. Nothing needed purging.
 >
-> **A downstream consequence, flagged not fixed:** §8 management variant **V3 ("BE at 09:30
-> open if entered pre-open") is now unreachable** — nothing is entered pre-open under RTH. It
-> should be struck from the tournament, which reduces the management axis from 5 to 4 and the
-> full configuration space from 90 to 72. Not actioned here; it is a strategy-doc edit.
+> **A downstream consequence — ACTIONED 2026-08-08 (Amendment A6):** §8 management variant
+> **V3 ("BE at 09:30 open if entered pre-open") is unreachable** — nothing is entered pre-open
+> under RTH. It has now been **struck**, reducing the management axis from 5 to 4 and the full
+> configuration space from 90 to **72**.
 >
 > **OPEN ITEM carried to study design — the ruling does NOT fix this.** BB(20) and ATR(20)
 > evaluated at 09:36 still reach back into pre-open bars on every entry timeframe (down to
@@ -445,10 +445,18 @@ Three things travel with it into study design and must not be lost:
 3. **The frequency tripwire.** Realised trade frequency is the first number the backtest
    reports; below 0.513/session gate 6 reopens before any verdict is read.
 
-Two consequences of the gate-2 ruling need a strategy-doc edit not made here: **V3 is
-unreachable** under RTH (management axis 5 → 4, configuration space 90 → 72), and §12.2's
-February-2026 calibration language still describes a step that can no longer be performed as
-written.
+Two consequences of the gate-2 ruling needed a strategy-doc edit. **Both were made on
+2026-08-08 under Amendment A6:** V3 is struck (management axis 5 → 4, configuration space
+90 → 72), and §12.2's February-2026 calibration language is corrected to record that the step
+cannot be performed — and that the MBP-10 book snapshots do not rescue it, since they carry no
+intra-minute high/low and no volume.
+
+**Also superseded in this document:** gate 3's breakeven rests on the declared cost ladder
+0.25 / 0.50 / 1.00. That ladder was **retired on 2026-08-08** — the spread is now measured at
+0.75 pt median and the ruled basis is 0.50 / **0.975** / 1.50. Gate 3 still passes (43.90% at
+the A5 10.00 pt stop floor) but **should be formally re-derived rather than inherited**. The
+frequency tripwire in point 3 above is **0.4862**, not 0.513 — the /5 figure is superseded.
+Under the amended rules the count is 2.24–2.83/session. See `research/STATE.md`.
 
 ## Reproducing
 

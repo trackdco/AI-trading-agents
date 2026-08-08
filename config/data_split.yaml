@@ -13,9 +13,61 @@ coverage:
   last_session:  "2026-01-30"
   total_sessions: 796
   note: >
-    Bar data ends 2026-01-30. February 2026 onward does not exist in the held
-    archives. MBP-10 condensed files extend to 2026-07-22 but are irrelevant here:
-    VWAP, Bollinger Bands and volume profile are all computable from bars alone.
+    BAR data ends 2026-01-30; February 2026 onward has no bars. The earlier claim
+    that the MBP-10 files are "irrelevant" was WRONG and is corrected below.
+
+# ---------------------------------------------------------------------------
+# MBP-10 book snapshots. 510 files in the repository root, 2025-06-02 ->
+# 2026-07-22. One snapshot per minute: top-10 book plus the single event that
+# produced it. NO intra-minute high/low and NO traded volume, so no OHLC bars,
+# no VWAP, no volume profile. The detector CANNOT run on this schema.
+# ---------------------------------------------------------------------------
+mbp10:
+  total_files: 510
+  families:
+    - pattern: "glbx-mdp3-<date>.mbp-10_condensed.csv"
+      files: 295
+      dates: "2025-06-02 .. 2026-07-22"
+      et_window: "03:00-04:59"      # overnight; outside the strategy window
+    - pattern: "condensed_glbx-mdp3-<date>.mbp-10.csv"
+      files: 115
+      dates: "2025-06-02 .. 2025-11-20"
+      et_window: "08:00-10:29"
+    - pattern: "condensed_GLBX-<hash>.csv"
+      files: 100
+      dates: "2026-02-02 .. 2026-07-08"
+      et_window: "08:00-10:29"
+
+  # RULING 2026-08-08 — post-holdout MBP data
+  post_holdout:
+    range: "2026-02-01 .. 2026-07-22"
+    files: 223
+    status: "outside the declared split"
+    permitted_use: "MICROSTRUCTURE measurement only - spread, book depth, liquidity"
+    forbidden_use: "strategy-outcome computation of any kind"
+    on_bar_acquisition: >
+      If bars for this period are ever acquired it becomes a FRESH OUTCOME
+      HOLDOUT. Prior microstructure measurement here is immaterial to that and
+      does not disqualify it.
+    measured_so_far: >
+      Top-of-book spread over 5,781 RTH snapshots on 99 sessions
+      (2026-02-02 .. 2026-07-08). Median 0.75 pt. See research/STATE.md COSTS.
+
+  # RULING 2026-08-08 — seal event, permanent record
+  seal_event:
+    date: "2026-08-08"
+    what: >
+      A *.csv inventory read 2 rows from each of 287 holdout-dated MBP-10 files
+      before the date range was known.
+    measurement_computed: false
+    findings_resting_on_it: none
+    ruling: >
+      Recorded, not remediated - the holdout's outcome data remains unseen.
+      Both scripts now refuse holdout-dated sessions. This entry is PERMANENT and
+      must accompany any future holdout result.
+    guarded_scripts:
+      - "research/star-trading/tools/mbp_census.py"
+      - "research/star-trading/tools/mbp_feb2026.py"
 
 workbench:
   start: "2023-01-03"

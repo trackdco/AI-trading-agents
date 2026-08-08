@@ -35,9 +35,16 @@ Do this once per dataset, not once per candidate.
 
 ## PRE-FLIGHT
 
-**Every gate below is answerable from arithmetic, a timezone conversion, a file listing, or a
+**Gates 1–6 are answerable from arithmetic, a timezone conversion, a file listing, or a
 careful read of the source. None requires data acquisition, backtesting, or transcript
 extraction.**
+
+**Gate 4b is the exception and is deliberately placed inside pre-flight anyway.** It needs the
+detector built and run over the sample — but it needs no *outcomes*, only the distributions the
+stated rules produce. Run it as soon as the detector fires, before any performance measurement.
+Discovering that a rule means something other than its author intended is cheap before a
+backtest and expensive after one, because by then the result has a number attached and the
+number will be defended.
 
 ### The principle
 
@@ -156,6 +163,43 @@ was never a specifiable strategy — that is a documentation verdict, not a perf
 finding is not the result. The finding is that the strategy is underspecified. Test your own
 assumptions before testing the strategy — the StarTrading study nearly reported a profitable
 system that was an artefact of an arbitrary 20-day hold cap the analyst had introduced.
+
+#### Gate 4b — LITERALISM. Do the STATED rules produce the intended behaviour?
+
+**A stated rule frozen to its most literal reading can produce behaviour the author never
+intended.** Seen three times on this strategy: the 1-tick stop buffer, the nearest-level target
+rule, and the Vault cap acting as primary selector. Gate 4 tests for UNSTATED parameters. It
+does not test whether STATED rules produce intended behaviour. Add that check: **for each
+stated rule, compute what it actually does across the sample and compare against the author's
+stated intent.**
+
+**How to run it.** For every rule you implemented, produce the distribution of the quantity it
+governs — not a spot check, the whole distribution — and hold it against the author's own
+recorded behaviour or stated purpose. Median, tails, and the fraction where the rule is
+degenerate.
+
+**TERMINATES IF:** nothing. This gate does not kill a strategy; it kills an *implementation*
+and sends it back for a spec amendment. Record each divergence as an amendment with a date and
+a reason, tagged `[FIAT]`, and state explicitly that no outcome was compared.
+
+**Evidence — all three from VWAP/BB, all three invisible to gate 4:**
+
+| stated rule | literal reading produced | author's intent | ratio |
+|---|---|---|---|
+| §5.4 "beyond the wick extreme" | median stop **3.12 pt** | hand-log median **35.00 pt** | **11×** |
+| §6.5 "nearest valid target" | median target **7.95 pt** | hand-log winners **155.2 pt** | **19.5×** |
+| §10 "max 3 trades/day" | binding on 33–92% of sessions, discarding 43–86% of qualified candidates | a *risk cap*, not a selection rule | — |
+
+Each rule was stated, implemented faithfully, and wrong. The stop and target defects also
+**masked each other**: because both compressed by roughly the same factor, the R-multiple
+looked healthy and three gates passed over them. What did not survive was the cost ratio —
+31% of risk at a 3.12-point stop against 2.8% at 35.
+
+**The trap this catches.** The literal reading is the *defensible* one — it is what the
+document says — so it survives review by anyone checking implementation against spec. It only
+fails against a check of implementation against *intent*, and intent lives in the author's
+behaviour, not the document. If the author supplied a trade log, that log is the intent
+reference. If they did not, this gate cannot be run and you should say so.
 
 ---
 

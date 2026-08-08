@@ -21,7 +21,7 @@ A backtester that replays 1-minute NQ history through the exact mechanical rules
 - Do NOT build the Monte Carlo simulator (Spec 4 territory).
 - Do NOT build order execution, broker/prop integration, or the Vault's live loop.
 - Do NOT implement any MIG LiquidityEdge reconstruction or absorption-zone detector.
-- Do NOT add trade-management variants beyond V0–V4 as defined in §8.
+- Do NOT add trade-management variants beyond V0, V1, V2, V4 as defined in §8. **V3 was struck 2026-08-08 (Amendment A6) — it cannot fire under the RTH window.**
 - Do NOT optimize parameters in this spec — build the machinery that CAN be swept; sweeping happens under human direction later.
 
 ## Section 3 — Design Decisions
@@ -60,7 +60,7 @@ A backtester that replays 1-minute NQ history through the exact mechanical rules
 **Step 6 — Trigger detection.** `src/engine/triggers.py`: rejection block (§3: trades into cluster, closes back on trade side of ALL cluster levels, wick zone recorded) and displacement (§3: body closes through ≥2 cluster levels, body/range ≥ B_min, close in extreme quartile, optional ATR floor), per entry TF; pattern classification A/B/B2 per §4 with HTF flag; MTF arbitration.
 *Check:* **[AMENDED 2026-08-07 — A3]** run over **2025-01-06 → 2025-01-31**; emit `output/triggers_sample.csv`; verify triggers fire at a plausible rate and that none is timestamped before 09:36. The original check spot-verified triggers at four February 2026 reference timestamps; those bars are not in the held data, so no reference-trade spot-check is possible. This is a rate-and-boundary check only.
 
-**Step 7 — Backtester core.** `src/backtest/engine.py`: event loop over closed 1m bars; working limit orders per §5 (entry variants E1/E2/E3 as config), stop per §5.4, target tree per §6 incl. news-day override and front-run F, cancel rule T_cancel, one-position-at-a-time, entry window W1/W2 config, management variants V0–V4 (§8), Vault constraints (max trades/day, daily halt, EOD flatten per §10), slippage + commissions. Outputs trades/diagnostics/equity files.
+**Step 7 — Backtester core.** `src/backtest/engine.py`: event loop over closed 1m bars; working limit orders per §5 (entry variants E1/E2/E3 as config), stop per §5.4 **including the 10.00 pt minimum (A5)**, target tree per §6 incl. news-day override, front-run F and the **A4 ladder walk (first level clearing the RR floor)**, cancel rule T_cancel, one-position-at-a-time, entry window W1/W2 config, management variants V0/V1/V2/V4 (§8; V3 struck by A6), Vault constraints (max trades/day, daily halt, EOD flatten per §10), slippage + commissions. Outputs trades/diagnostics/equity files.
 *Check: `pytest tests/test_backtest.py` — includes an explicit no-lookahead test (perturbing future bars must not change past signals) and a fill-logic test with hand-built bar sequences.*
 
 **Step 8 — Behavioural sanity report.** **[AMENDED 2026-08-07 — A3. This step is DOWNGRADED, not relocated. Read the note before executing it.]** `src/backtest/calibrate.py`: run **2025-01-06 → 2025-01-31** (19 workbench sessions) with **RTH/E1/V0** defaults; emit `output/behaviour_report.md` covering: trades taken per session, entry-time distribution within the session, realised stop and target distances, pattern mix (A/B/B2), and the rate at which triggers are rejected by each gate. No tuning in this step: report honestly and stop.

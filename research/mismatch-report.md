@@ -133,3 +133,25 @@ header line of each of the four archives.** Trivial, recorded for completeness.
 The hand-log gap in row 3 is worth noting: the brief asked for "per trade: entry, stop,
 target" and those fields **do not exist in the source file**. Only distances and multiples are
 recorded. Any figure purporting to give hand-log entry or target prices would be fabricated.
+
+---
+
+## Addendum — 2026-08-08
+
+This report is a snapshot of the 2026-08-07 reconciliation. Three of its entries have since
+been superseded by measurement or by ruling. The table above is left unedited; the corrections
+are here.
+
+| entry | superseded by |
+|---|---|
+| **Cost assumption "UNVERIFIED by construction"** (unverifiable table, row 2) | **Now measured.** The premise — "no trade-level data exists" — was true of *trades* but the repo holds 510 MBP-10 book files. Top-of-book spread median **0.75 pt** over 5,781 RTH snapshots; implied stop-exit cost **0.975 pt** against a declared base of 0.50. Ladder re-ruled to 0.50 / 0.975 / 1.50 with the 0.25 case retired. See `STATE.md` COSTS |
+| **"February 2026 absent"** (implicit throughout) | **Wrong as stated.** No *bars* exist for Feb 2026; MBP-10 files exist for all 19 hand-log dates. They cannot produce OHLC or volume, so the detector still cannot run — but the reason changed and the record said the wrong thing. See `STATE.md` DATA |
+| **Mismatch #2, gate-3 stop `s`** | Overtaken. Gate 3's stop is now the **A5 floor of 10.00 pt**, not either hand-log median. Breakeven at the measured base is **43.90%** |
+
+**Not superseded and still open:** mismatch #1 (the "+4.23R" scope error, still uncorrected in
+three documents), #3 (session-count ambiguity), #4 (the per-session unit mismatch), #6 (the
+4-row archive count).
+
+**New unverifiable, added 2026-08-08:** spread after 10:29 ET. Every MBP file ends at 10:29 or
+04:59, so 90% of the signal population fires in hours with no spread measurement. The 0.975
+base is measured on a 9.7% slice and extrapolated no further than saying so.

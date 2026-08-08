@@ -3,6 +3,14 @@
 **Diagnosis only.** No rule adopted, no P&L computed, no cell ranked, no threshold tuned,
 no fix proposed. **N_trials remains 0.**
 
+> **ACTIONED 2026-08-08.** The findings below were subsequently ruled on and written into the
+> spec — **A4** (§6 rule 5, target selection), **A5** (§5.4, 10.00 pt minimum stop), **A6**
+> (V3 struck, §12.2 corrected), plus the two data rulings now in `research/STATE.md` RULINGS
+> and `config/data_split.yaml`. The amended rules were re-counted over the full workbench and
+> deliver **2.24–2.83 trades/session** against a 0.4862 tripwire. **This document remains the
+> diagnosis; it was not edited to match the amendments.** N_trials is still 0 — the amendments
+> were selected on structural and execution-realism grounds, not by comparing outcomes.
+
 Two things came out of this that were not in the brief and change the project's state:
 
 1. **The repo contains 510 MBP-10 files covering 2025-06-02 → 2026-07-22, including every
@@ -275,8 +283,9 @@ the inputs", and the second reason is not fixable by looking harder.
 
 ### What the files did answer: the cost assumption
 
-`STATE.md` records costs of **0.25 / 0.50 / 1.00 points** round-trip as declared assumptions,
-marked *"UNVERIFIED by construction"* on the grounds that no trade-level data exists. The book
+`STATE.md` recorded costs of **0.25 / 0.50 / 1.00 points** round-trip as declared assumptions,
+marked *"UNVERIFIED by construction"* on the grounds that no trade-level data exists. (That
+ladder was retired on 2026-08-08; the ruled basis is now 0.50 / **0.975** / 1.50.) The book
 snapshots make the spread directly measurable. Measured over **99 sessions, 2026-02-02 →
 2026-07-08, 5,781 RTH snapshots** (post-holdout only):
 

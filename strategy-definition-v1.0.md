@@ -52,7 +52,7 @@
    - **E1:** limit at the BB MA (most frequent in journals)
    - **E2:** limit at the 50% level of the trigger candle's wick
    - **E3:** limit at the penetrated cluster level nearest the block's close
-4. Stop: beyond the wick extreme of the trigger candle / displacement origin. Structural, never widened (Vault-enforced).
+4. Stop: beyond the wick extreme of the trigger candle / displacement origin. Structural, never widened (Vault-enforced). **Minimum stop distance: 10.00 points (40 ticks). Effective stop = max(structural stop, 10.00 pt).** The floor applies at order placement only; once placed the stop is never widened, and a structural stop already beyond 10.00 pt is used unchanged. A trigger whose E1 entry falls on the wrong side of the wick extreme remains invalid — the floor does not rescue it. [AMENDED 2026-08-08 — see Amendment Log A5]
 5. No fill → no chase. Order cancels if price runs T_cancel points beyond entry without filling. T_cancel: CALIBRATE.
 6. One position at a time. No overlapping trades ever. [CONFIRMED — Angus]
 
@@ -65,7 +65,9 @@
 2. Defaults: **A** → VWAP middle; **B2** → next structural level in move direction; **B** → opposing liquidity (pre-market/prior-day extreme), preferring ±2σ alignment.
 3. **News-day override [CONFIRMED — Angus]:** on high-impact data days, data extremes have elevated sweep probability. If trade direction points at an untaken data extreme beyond the default target, target the data extreme instead. (Fallback variant to test: VWAP −1/+1 as the simpler proxy.)
 4. **Fill front-run [CONFIRMED — Angus]:** working target = level ∓ F points (level minus F for longs). F: CALIBRATE (start 2–3 NQ pts). Backtest counts target *touched-minus-F* as filled, mirroring live behavior.
-5. **RR floor:** nearest valid target < 1.5R → skip. CALIBRATE floor.
+5. **RR floor — target is the nearest *valid* target, and "valid" means it clears the floor.** Walk the ladder of opposing menu levels outward from entry. The working target is the **first level whose front-run-adjusted distance is ≥ 1.5R**. Skip only if **no** level in the menu clears the floor. RR floor: CALIBRATE. [AMENDED 2026-08-08 — see Amendment Log A4]
+   - **Superseded reading:** "test rung 1; if it is under 1.5R, skip." Retained here for traceability. It measured the floor against a level a median 7.95 pts from entry and discarded setups the menu already carried a valid target for.
+   - Consequence, recorded: realised RR will sit near the floor by construction. That is lower than the hand log's realised 3.68R and is deliberate — this rule completes a specification, it does not attempt to reproduce the human's payoff.
 6. Alignment bonus: prefer targets where ≥2 menu levels stack within tolerance.
 
 ## 7. Filters & Skip Criteria
@@ -81,8 +83,10 @@
 - **V0:** none — set-and-forget (baseline)
 - **V1:** BE at +1R. **Definition: TOUCH of +1R (any TF tick), stop to entry exact.** [CONFIRMED — Angus]
 - **V2:** BE at first VWAP band milestone touch
-- **V3:** BE at 09:30 open if entered pre-open
+- ~~**V3:** BE at 09:30 open if entered pre-open~~ — **STRUCK 2026-08-08 (A6).** Unreachable: A1 sets the first tradeable signal bar at 09:36, so no trade can be entered pre-open and the variant can never fire. Retained struck-through for traceability.
 - **V4:** 50% partial at first structural level, runner to target
+
+**Management axis = 4 variants (V0, V1, V2, V4).** Tournament configuration space 90 → **72**.
 Each variant runs over identical data; Monte Carlo compares distributions; winner (or V0) goes live.
 **Priority head-to-head (Angus test #1): V1 (BE at +1R touch) vs V0 (none), over the full Jan–Jul period, before the wider tournament.**
 
@@ -105,8 +109,9 @@ Agents grade against this doc and propose. Python owns sizing, stops, limits, ki
 ## 12. Data & Validation Plan
 
 1. **Data:** 1-minute NQ, Jan 2026 → present, via Databento (or equivalent cheapest clean source). 2025 pulled later as a regime-robustness check only — not pass/fail. [Angus regime rationale noted; robustness check is the honesty guard.]
-2. **Calibration:** February 2026 re-run must approximately reproduce the 28 hand trades; divergences audited one by one (incl. MIG-target remaps). Days Angus skipped: system trades them only if valid triggers exist — gap analysis measures day-selection honestly.
-3. **Tournaments:** windows W1/W2 × entries E1–E3 × management V0–V4 — run as separate axes, not a combinatorial free-for-all; one axis fixed at a time to avoid overfitting via grid search.
+2. **Calibration — DOWNGRADED, not relocatable. [AMENDED 2026-08-08 — A6]** The original gate ("February 2026 re-run must approximately reproduce the 28 hand trades") **cannot be run.** The held bar archives end 2026-01-30 and contain no February 2026. The repo does hold MBP-10 book snapshots for all 19 hand-log dates, but at one snapshot per minute with no intra-minute high/low and no volume — so no OHLC bars, no VWAP, no volume profile. Three of the detector's four inputs are absent, and the calibration cannot be reconstructed from that schema either. **Replacement:** a behavioural sanity report over 2025-01-06 → 2025-01-31 (spec-1 Step 8), which checks that the system behaves plausibly but does **not** check it against Angus's trades. The two are not equivalent and the substitution is not a pass. Trade-by-trade divergence auditing and the skipped-day gap analysis are **irrecoverable** unless February 2026 bars are acquired.
+   - **Superseded:** the February 2026 reproduction gate. Retained for traceability. See Amendment Log A3, `research/vwap-bb/preflight.md` gate 5, and `research/STATE.md`.
+3. **Tournaments:** windows W1/W2 × entries E1–E3 × management V0/V1/V2/V4 — run as separate axes, not a combinatorial free-for-all; one axis fixed at a time to avoid overfitting via grid search. (V3 struck — A6.)
 4. **Out-of-sample:** Mar–Jul 2026 untouched until rules lock.
 5. **Diagnostics:** per-slice expectancy (pattern × TF × confluence count × HTF flag × time bucket × news flag) so leaks are locatable.
 6. **Monte Carlo:** winning config's distribution vs 50K eval (3K target / 2K trailing DD): pass probability, expected attempts/cost, days-to-pass, first-month blowup risk → sizing config → firm selection.
@@ -162,3 +167,110 @@ Zero parameters were set by examining outcomes. N_trials remains 0.
 2026-01-30. Parity dates relocated; the calibration gate is **downgraded**, not relocated —
 see `research/vwap-bb/preflight.md` gate 5 and spec-1 Step 4 / Step 8 for the substitution and
 why the two are not equivalent.
+
+### A4 — 2026-08-08 — §6 rule 5: "nearest valid target" disambiguated to "nearest target that clears the floor"
+
+**Change.** §6 rule 5 previously read *"nearest valid target < 1.5R → skip."* It is now: walk
+the ladder of opposing menu levels outward from entry and take the **first level whose
+front-run-adjusted distance is ≥ 1.5R**; skip only if **no** level in the menu clears the floor.
+
+**Reason.** The word *"valid"* was never defined, and the implementation read it as vacuous —
+rung 1 was tested and, if it failed, the setup was discarded even when the menu already carried
+a level that cleared the floor. Measured over 33,993 pre-floor candidates
+(`research/vwap-bb/target-stop-reconciliation.md` §3):
+
+| ladder rung | median distance from entry |
+|---|---|
+| nearest — what the old rule tested | **7.95 pts** |
+| 2nd nearest | 20.88 pts |
+| 3rd nearest | 37.36 pts |
+| nearest liquidity extreme (§6 rule 2's default for B) | 75.76 pts |
+| deepest rung the menu offers | 192.36 pts |
+
+**63.3% of candidates have a level ≥155.2 pts available** — the hand log's median winner
+distance — and 91.8% have one ≥84.2 pts, its smallest. The menu is not short of targets. The
+old reading of rule 5 discarded them, and in doing so turned the RR floor into a filter that
+*preferentially admitted the tightest stops in the population* (median stop 5.62 pt pre-floor,
+3.12 pt post-floor). The floor was screening on stop size, not target quality.
+
+Reading "valid" as "clears the floor" is the only reading under which rule 5 is not
+self-defeating, and it is consistent with rule 1 ("list opposing structural levels beyond
+entry, **by distance**") — a list ordered by distance implies walking it.
+
+**Grounds.** Selected **structurally**: the menu holds these levels and the nearest-rule
+discards them. **No outcome was computed, no P&L, no configuration compared, nothing ranked.**
+The feasibility map that surfaced the defect reports constraints satisfied, not performance.
+
+**Tag: [FIAT].** The spec states no disambiguation; this supplies one.
+
+**Consequences, recorded so they are not rediscovered later:**
+- Realised RR now sits **near the floor by construction** — the rule takes the first
+  qualifying level, not the best one. That is *below* the hand log's realised 3.68R. This is a
+  specification completion, not an attempt to reproduce the human's payoff, and the gap is
+  expected.
+- §6 rule 2's pattern-conditioned defaults (**A** → VWAP middle, **B2** → next structural
+  level, **B** → opposing liquidity) remain **unimplemented and ambiguous**. Pattern A's
+  default names a target that 85.4% of the time sits *inside* the firing cluster, i.e. at the
+  entry. A4 does not fix rule 2. **Open, needs Angus.**
+- The A/B/B2 taxonomy of §4 is not implemented in the detector at all.
+
+### A5 — 2026-08-08 — §5.4: minimum stop distance of 10.00 points
+
+**Change.** §5.4 now carries a floor: effective stop = **max(structural stop, 10.00 pt)**. The
+floor applies at placement only; the "never widened" rule is unchanged, and a structural stop
+already beyond 10.00 pt is used as-is.
+
+**Reason — fill realism and measured spread, not performance.**
+
+1. **The measured spread makes tighter stops meaningless.** Top-of-book spread over 5,781 RTH
+   snapshots on 99 sessions is **0.75 pt median (3 ticks), 1.50 pt at p90**
+   (`research/STATE.md` COSTS). A 10.00 pt stop is **40 ticks — 13.3× the median spread and
+   6.7× the p90.** Below roughly that scale the stop is not measuring structure, it is
+   measuring the width of the book.
+2. **It bounds cost as a fraction of risk.** At the measured base stop-exit cost of 0.975 pt,
+   a 10 pt stop puts costs at **9.75% of risk**. The frozen geometry's 3.12 pt median put them
+   at **31.2%**, which moved cost-adjusted breakeven from 40.6% to 46.4% on its own.
+3. **It never excludes behaviour the author demonstrated.** The hand log's smallest in-scope
+   stop is **11.00 pts**; the floor sits below it. Every trade Angus actually took under the
+   settled session convention is admissible under A5. This uses the author's recorded stop
+   *distances*, not his P&L.
+4. **It sits inside the feasible region**, jointly with A4 — the two are coupled, since a floor
+   on R raises the distance a target must reach to clear 1.5R
+   (`target-stop-reconciliation.md` §5).
+
+**Grounds.** **No outcome was computed, no P&L, no configuration compared, nothing ranked.**
+
+**Tag: [FIAT].** §5.4 stated no minimum.
+
+**Consequences, recorded so they are not rediscovered later:**
+- A5 is a **floor, not a repair.** The 29.6% of triggers whose E1 entry falls on the wrong side
+  of the wick extreme remain invalid and are still skipped. The E1-plus-wick pairing is
+  degenerate at both ends and that is **still an open gate-4 item**.
+- With A4, the minimum target distance becomes 15.00 pts (10.00 × 1.5).
+- The §1 note that "median trade resolves ~30 min" was derived under the old geometry. Wider
+  stops lengthen holds, so the 30-minute one-position lockout used in the signal count is a
+  **declared placeholder that A5 makes more approximate, not less**.
+
+### A6 — 2026-08-08 — Housekeeping: V3 struck; §12.2 corrected
+
+**V3 struck from the management axis.** *"BE at 09:30 open if entered pre-open"* cannot fire:
+A1 sets the first tradeable signal bar at 09:36, so no trade is ever entered pre-open. The
+management axis is **4 variants (V0, V1, V2, V4)** and the tournament configuration space is
+**90 → 72**. Retained struck-through in §8 for traceability.
+
+**§12.2 corrected.** It still described the February 2026 calibration as a live gate after A3
+had downgraded it. The corrected text records that the gate cannot be run, why the MBP-10 book
+snapshots do not rescue it (one snapshot per minute; no intra-minute high/low, no volume, so no
+OHLC, no VWAP, no volume profile — three of the detector's four inputs absent), and that the
+behavioural sanity report substituted in its place is **not equivalent and is not a pass**.
+
+**Grounds.** Both are corrections of internal inconsistency. No outcome was computed.
+
+---
+
+**N_trials after A4, A5 and A6: 0.** None of these amendments was selected by comparing
+outcomes, computing P&L, ranking configurations, or reading the holdout. A4 and A5 are
+**specification completions** — they supply values and disambiguations the spec never stated,
+on structural and execution-realism grounds. A6 is a correction of internal inconsistency.
+The first decision made by comparing outcomes will increment N_trials, and must be recorded
+here at the moment it is made.
