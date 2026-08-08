@@ -296,7 +296,49 @@ twice over.
 | **2** | **Any lookahead detected in the engine** | A lookahead result is not a weak result, it is not a result. This includes any use of a session's later bars in a decision made earlier, and any selector that ranks across candidates not yet observed |
 | **3** | **The result changes sign between cost levels** | If mean net R is positive at 0.50 and negative at 1.50, the finding is about the cost assumption, not the strategy. Report the sign change; do not report a verdict |
 
-### 7.3 Not a pass mark
+### 7.3 DRAWDOWN IS REPORTED BUT NOT BINDING — carve-out for the missing §10 halt [RULED 2026-08-08]
+
+> **Drawdown is REPORTED but is NOT a binding pass criterion for this run. If the result would
+> fail on drawdown alone, that requires re-testing with the halt implemented before any
+> conclusion is drawn.**
+
+**Why this one omission is different from the other eight.** The rest are permissive — they only
+remove candidates, so they bear on *which trades* are in the sample. §10's daily halt is a
+**loss-limiting device whose entire purpose is to cap the drawdown path.** Its absence does not
+change which setups qualify; it changes how deep a bad session is allowed to go.
+
+**The distortion is exact, not approximate.** Management is V0 (set-and-forget, §8), so every
+stopped trade is exactly −1R. §10's two halt conditions — *"2 losses or −2R on the day, whichever
+first"* — therefore coincide:
+
+| | worst session | at the A5 10-pt floor, c = 0.975 |
+|---|---|---|
+| Spec, halt implemented | **−2R** | 21.95 pts · $439 on 1 NQ |
+| **Sealed run, no halt** | **−3R** | **32.93 pts · $659 on 1 NQ** |
+| ratio | **exactly 1.50×** | |
+
+**Every fully-losing session in the sealed run is exactly 50% deeper than the spec permits**, and
+any drawdown built from such sessions scales by the same factor.
+
+**Stated precisely, because "50% worse" is not uniformly true.** Sessions with fewer than two
+losses are unaffected. Sessions reaching two losses get a third trade the spec forbids — if it
+loses, that session is 1.5× worse; **if it wins, that session is better than the spec would
+have been.** So the *worst case* is unambiguously 1.5× worse and the *tail is fatter*, while
+the *average* drawdown could move either way depending on how those third trades resolved — a
+number that is in the sealed file and has not been read.
+
+**Consequence.** A drawdown failure cannot be attributed to the strategy. It is at least partly,
+and possibly wholly, the missing halt.
+
+**Re-testing cost: 0 new parameters.** §10 states both values and marks them *"placeholder; MC
+calibrates"* — provisional, not absent. Implementing the halt requires inventing nothing. This is
+the only item on the out-of-scope list with that property, and it is why a drawdown fail is
+**recoverable by a re-run** rather than blocked behind ≈23 invented parameters.
+
+**Unaffected by this carve-out:** the primary criterion (§7.1, mean net R) and any win-rate
+reporting. Those rest on the permissive omissions only.
+
+### 7.4 Not a pass mark
 
 Win rate alone, at any level. Maximum drawdown alone. Any per-slice result. Any figure computed
 after the primary criterion has been read.
@@ -400,11 +442,22 @@ would have stopped a losing session. None would have added a trade.
 **The next-bar-open fill (§4.2).** Strictly worse than the E1 limit the spec specifies: a limit
 fills at the level or not at all; the open fills wherever the market opened.
 
+**The missing §10 daily halt — different in kind.** Not permissive: a loss-limiting device, whose
+absence makes every fully-losing session **exactly 1.50× deeper** than the spec permits. This is
+why **drawdown is reported but not binding** — see §7.3.
+
 **The consequence, stated once and plainly:**
 
 > **PASS** — the strategy cleared its bar on a population looser than the spec describes and with
-> a worse fill than the spec specifies. Tightening either cannot turn a pass into a fail on the
-> same trades. **A pass here is conservative and can be relied on.**
+> a worse fill than the spec specifies. **A pass here says the edge does not depend on the
+> unimplemented refinements**, which is the conservative reading and can be relied on.
+>
+> *Stated precisely, correcting an earlier overstatement in this document:* the filters do not
+> alter entry, stop or target on a trade they admit, so trades that survive them are unchanged.
+> But the trade **set** shrinks, and a mean over a subset is not guaranteed to exceed the mean
+> over the superset — removing trades could in principle remove winners. What a pass does
+> establish is that the edge is present **without** the filters that were meant to help. It is
+> not a proof that adding them preserves the pass.
 >
 > **FAIL** — uninformative about the full spec. The missing branches might have removed exactly
 > the losing trades; the fill handicap might account for the shortfall. **A fail cannot

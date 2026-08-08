@@ -493,6 +493,29 @@ all 23. **Not an afternoon.**
 **§10's daily halt is flagged separately**: the spec states both values (2 losses, −2R), so it
 was implementable and simply not built. An omission, not a specification gap.
 
+> ### DRAWDOWN CARVE-OUT — ruled 2026-08-08
+>
+> **Drawdown is REPORTED but is NOT a binding pass criterion for this run.**
+>
+> The other eight omissions are permissive — they bear on *which trades* are in the sample. The
+> daily halt is a **loss-limiting device**, and its absence changes **how deep a bad session
+> goes**. Under V0 every stop is exactly −1R, so §10's two halt conditions coincide and the
+> distortion is exact: worst session **−2R with the halt vs −3R without — exactly 1.50×**
+> (21.95 vs 32.93 pts; $439 vs $659 on 1 NQ at the A5 floor, c=0.975).
+>
+> Not uniformly 1.5×: sessions with under two losses are unaffected, and a session whose third
+> trade *wins* is **better** than the spec would have been. So the **worst case is unambiguously
+> 1.5× deeper and the tail fatter**, while the average could move either way — a number sitting
+> in the sealed file, unread.
+>
+> **A drawdown failure is therefore not a verdict on the spec.** If the result fails on drawdown
+> alone, re-test with the halt implemented — **cost: 0 new parameters**, since §10 states both
+> values. It is the only out-of-scope item that is recoverable by a re-run rather than blocked
+> behind ≈23 invented parameters.
+>
+> **Expectancy and win-rate criteria are unaffected** — those rest on the permissive omissions
+> only.
+
 ---
 
 ## STAGE 2 — SEALED WORKBENCH RESULT (2026-08-08)
