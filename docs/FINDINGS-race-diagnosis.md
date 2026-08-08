@@ -193,3 +193,29 @@ whose prior is against, and would need forward confirmation even if the
 programme wanted them — it should not, on this evidence.
 
 Standing unchanged: fit-only, no holdout, report-only, nothing adopted.
+
+
+---
+
+# PART 4 — THE SAME TEST AT ENTRY: identical result
+
+2026-08-08, `race_flow_diag --at-entry`. The evaluation point moved to
+where a market-order entry actually sees the world: **depth as-of the
+closure minute t itself** — the book you enter into — rather than
+t−1min. This is causal *because* the entries are market orders at the
+close; the old canon's hindsight came from limit fills timestamped
+inside later bars, a defect this construction does not have. Flow was
+already as-of the closure (every window ends at bar_end = t) and is
+unchanged by construction.
+
+**The result is identical, cell for cell: the same 9 clears in the same
+cells with the same signs** (LONDON M1's flowconf/rangex-LAW2/d30_conf/
+eff_result/cvd_slope30, LONDON M2's cvd_slope30, NY_AM M2's
+thru_delta_conf and support_minus_resist), same coverage (229/290 depth
+days), and the depth features remain flat everywhere else — the
+snapshot-timing change moved nothing. **The refutation is not an
+artifact of the evaluation timestamp.** Order flow and book state,
+evaluated exactly where a market-order execution would read them,
+still select at chance level on this population.
+
+Standing unchanged: fit-only, no holdout, report-only, nothing adopted.
