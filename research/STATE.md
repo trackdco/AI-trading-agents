@@ -513,3 +513,39 @@ moved ties to 22.9% with level 5 at 0.0%.
 - **Median hold is 5–7 minutes against the hand log's ~30.** A5's floor is 10.00 pt against the
   human's 35.00 median, so positions still resolve ~5× faster. Residual of the unresolved stop
   *anchor*, not a new problem.
+
+---
+
+## PRE-REGISTRATION (drafted 2026-08-08)
+
+[`research/vwap-bb/PREREGISTRATION.md`](vwap-bb/PREREGISTRATION.md) — **DRAFT, NOT IN FORCE.**
+Binds when Angus signs the four OPEN items. Spec pinned at SHA-256
+`8ead725997b620678426bd41075bbdfd05356cab8325d2a92a95d63ee1bbf10f`.
+
+### Axis decision table — required n at p₀ = 43.90%, p₁ = 0.50, 80% power
+
+| divisor | corrected α | required n | tripwire /sess | A clears (1,450) | D clears (1,185) | resolution floor | blind zone |
+|---|---|---|---|---|---|---|---|
+| 1 | 0.05000 | 411.3 | 0.763 | YES | YES | 47.15% | 3.25 pt |
+| **4 (current)** | 0.01250 | **631.7** | **1.172** | YES | YES | 47.93% | 4.03 pt |
+| 5 | 0.01000 | 666.9 | 1.237 | YES | YES | 48.04% | 4.14 pt |
+| 8 | 0.00625 | 740.9 | 1.375 | YES | YES | 48.26% | 4.36 pt |
+| 16 | 0.00313 | 849.4 | 1.576 | YES | YES | 48.57% | 4.67 pt |
+| 72 (full grid) | 0.00069 | 1082.9 | 2.009 | YES | YES | 49.17% | 5.27 pt |
+
+> **Every axis structure clears on sample size.** The constraint is the **blind zone**: with
+> breakeven at 43.90%, the study cannot resolve a true win rate below **47.15%** even
+> uncorrected. **A true 45% win rate — genuinely profitable — is undetectable at any axis
+> structure.** The correction costs ~2 points of resolution; the design costs 3.
+
+At the measured median planned RR of 2.132 (p₀ = 35.04%) required n falls to 65 (÷1) – 169
+(÷72). The pre-registration commits to the conservative p₀ = 43.90%.
+
+Recompute: `research/prereg/axis_decision.py`.
+
+### Session-accounting discrepancy, recorded
+
+The A7 confirmation count processed **509** sessions and did **not** exclude roll /
+session-after-roll, which the pre-registered accounting rule §4.3 requires. **13 sessions,
+2.6%.** The §6 frequency figures are therefore an **upper bound**. Cannot move 2.849 below a
+1.172 tripwire, so no verdict turns on it; the engine will apply the rule.
