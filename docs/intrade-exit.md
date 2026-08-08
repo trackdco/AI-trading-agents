@@ -273,16 +273,26 @@ to cut has the most room to shoot a runner instead.
 | M2 | 786 | −0.180 | −0.173 | −0.171 | −0.563 |
 | M3 | 826 | −0.149 | −0.095 | −0.150 | −0.492 |
 
-M1 (reversal off the 15m MA) is worst-hit by the h=1 policy (−0.083→−0.099,
-the wrong direction) — it is also the mechanism with the best do-nothing
-EV, i.e. the least junk-heavy of the three, so there is less to gain and
-more good trades exposed to being cut. M3 shows the largest apparent h=1
-gain (−0.149→−0.095) but is flat-to-worse at h=3. **No mechanism shows a
-consistent, horizon-stable improvement** — the sign flips across horizons
-within every mechanism, which is itself evidence against a real, exploitable
-effect at the per-mechanism level (full sweep:
+Checking all 10 horizon×model "best" variants against each mechanism's own
+do-nothing EV (not just the two columns shown): **M1** (reversal off the
+15m MA) is worse under 9/10 variants (−0.005R to −0.016R, one +0.0004R
+near-tie) — it is also the mechanism with the best do-nothing EV, i.e. the
+least junk-heavy of the three, so there is less to gain and more good
+trades exposed to being cut. **M2 and M3** (both continuation) are
+*better* under 9/10 variants each (M2: +0.003 to +0.019R, one −0.006R
+exception; M3: +0.004 to +0.055R, one −0.001R exception) — the two
+mechanisms with the worst do-nothing EV have the most junk to correctly
+cut. Re-running the day-block bootstrap **within the M3 subset alone**
+(h=1 LR @ 0.45, the pooled-book's own best threshold, n=826, 249 days):
+ΔEV +0.055R, 95% CI [+0.013, +0.095], one-sided bootstrap p≈0.006 — nominally
+significant on its own. It does not survive even a mild multiple-comparison
+adjustment for the 3 mechanisms checked (0.05/3≈0.017 two-sided is closer,
+0.05/9-ish across mech×session≈0.006 is not), and it reuses the pooled
+sweep's own threshold rather than an independently chosen M3 one, so it is
+reported as the single most suggestive result in this whole analysis, not
+as a standalone discovery. (Full sweep:
 `output/htf_ma_census/intrade_exit_mech_table.csv` /
-`_session_table.csv`).
+`_session_table.csv`.)
 
 ---
 
@@ -310,7 +320,13 @@ with wider or equally-zero-straddling CIs. The reason is not model quality
 (AUC is very high) but economics: cutting a real 3R+ runner among the false
 positives costs 3.2–3.5R, roughly 5–8x what correctly cutting a junk trade
 saves (0.45–0.61R), so even a strong classifier needs precision the book
-doesn't currently support to turn a profit from intervening. **The
+doesn't currently support to turn a profit from intervening. One partial
+exception worth flagging for follow-up rather than acting on: within **M3
+alone**, the same pooled h=1 threshold clears its own day-block bootstrap
+(ΔEV +0.055R, 95% CI [+0.013,+0.095]) — nominally significant, does not
+survive a multiple-comparison correction for the 3 mechanisms checked, and
+uses a threshold picked on the pooled book rather than for M3 specifically,
+so it is a lead, not a result. **The
 established pre-peak-heat asymmetry (runners dip −0.45R median, junk dips
 −0.66R median, immediately) is real and detectable — but by the time it's
 detectable with usable confidence, the cost of the false positives it drags
