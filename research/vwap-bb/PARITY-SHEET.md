@@ -44,6 +44,59 @@ Indicator settings, so we are reading the same thing:
 
 ---
 
+## HOW TO READ THESE VALUES — read this before you start
+
+**Budget: about 20 minutes for both pages.** Most of it is the level menu.
+
+### ⚠ The one thing that will ruin the exercise if you skip it
+
+**Three of the values change depending on whether the rest of the day is on your screen.**
+Scroll to 2025-01-15 on a normal chart and you are looking at the *finished* day. Read the
+volume-profile POC off that and you get the POC **for the whole session**, not the POC as it
+stood at 09:48 — which is a completely different number.
+
+The three affected:
+
+| value | what a finished chart shows you | what we need |
+|---|---|---|
+| **Volume profile POC / VAH / VAL** | the whole session's profile | the profile built from 18:00 ET **up to 09:48 only** |
+| **Session high so far** | the day's high | the highest print **before 09:48** |
+| **Session low so far** | the day's low | the lowest print **before 09:48** |
+
+**Use Bar Replay.** In TradingView: the ⏵ **Replay** button in the top toolbar → click on the
+09:48 candle → the chart rebuilds as if that were now. Then read everything off the replayed
+chart. Every indicator, including the profile, will show its point-in-time value.
+
+**Everything else is safe to read off a finished chart** — VWAP and its bands, Bollinger Bands,
+prior-day levels and the candles themselves are all plotted per-bar, so the value sitting above
+09:48 *is* the 09:48 value. But since you need Replay for the profile anyway, it is simpler to
+do the whole sheet in Replay mode.
+
+*Why this matters more than it sounds: the detector was audited specifically for this failure
+— computing a whole-session value and reading it back at an earlier time. It came back clean.
+If your sheet has the contaminated version and the detector has the clean one, the comparison
+shows a mismatch that is nobody's bug, and we spend a day chasing it.*
+
+### Which candle is "09:48"
+
+TradingView labels intraday candles by their **open** time. So "as at 09:48" means: **the 09:47
+candle has just closed, the 09:48 candle has not started.** In Replay, step to where 09:47 is
+the last completed candle.
+
+If your platform labels by close time instead, the same instant is the candle labelled 09:48.
+Tick the box in the setup section either way — that one convention difference would otherwise
+show up as a systematic one-bar disagreement across every field, and it looks exactly like an
+indicator bug.
+
+### If you cannot get a value
+
+**Write "n/a" and move on. Do not estimate.** A blank tells us the comparison cannot be run on
+that field, which is useful. A guess looks like data and quietly corrupts the result. The same
+goes for any field where you would be reading a level off a chart your eye is placing rather
+than a number the platform is giving you — say so in §8.
+
+---
+
 # P1 · 2025-01-15 · 09:48 ET
 
 ## 1. Level menu — price of every level (§2, §6)
