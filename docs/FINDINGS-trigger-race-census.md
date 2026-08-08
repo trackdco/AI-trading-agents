@@ -163,3 +163,35 @@ practice on this exact trade.
 
 Standing unchanged: fit-only, counts and stage audits only, nothing
 adopted, nothing patched without declaration.
+
+## T3 RE-CHECKED: genuinely M1 — and the floor is not the real gap
+
+2026-08-08, follow-up. Question asked: is T3 actually a rejection or a
+break carrying incidental displacement, i.e. a miscategorization rather
+than a threshold problem?
+
+**It is neither — T3 is a rebalance bet, correctly categorized as M1.**
+The 08:45 15m bar *closed through* the MA (a cross, not a rejection);
+the two recovery bars before his entry never touched the MA (highs
+−16.7 / −8.7pt), so no rejection grammar could fire; the live break
+episode pointed short and he went long against it. The shape is pure
+rebalance: 4.5h uptrend, two-bar shakeout through the MA, reclaim bought
+at POC (30,718.5) over VWAP (30,710.9) — and he **took profit at the
+15m MA** (30,756 exit vs MA 30,752, converged with VWAP+1 at 30,756.5)
+while the market ran on to 30,807.8 within ten minutes. Selling at the
+mean is the rebalance bet's behavior.
+
+**Displacement at the trigger opens: −0.340 / −0.346 / −0.365 /
+−0.374 W vs the −0.500 floor** — a ~0.13–0.16W (~13pt) shortfall, made
+visible as asked. **But the dip's extreme reached −0.56W at 08:55 —
+past the floor.** The displacement existed; the reclaim ate a third of
+it before any closure could confirm. The construction measures
+displacement at the trigger candle's OPEN, demanding it persist into
+the entry candle — structurally penalizing fast reclaims, the exact
+trades a rebalance bettor wants. Same defect family as the original
+displacement-at-close bug, one step milder (close = persistence after
+the reversal; open = persistence until it; extreme = it happened and
+has not resolved). An M1 state of "excursion extreme reached ≥0.5W
+below the MA and price has not yet returned to the MA" catches T3 at
+the **unchanged** floor. Recorded; the operationalization change is the
+trader's declaration to make, and nothing is changed here.
