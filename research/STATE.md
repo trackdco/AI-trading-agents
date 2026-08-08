@@ -995,9 +995,15 @@ exists at the released instant and that it is not on 1m, before he opened a char
 date-and-time-only discipline repairs that**, because the criterion had to be published to
 justify the instant. **Machine verification replaces it.**
 
-The P4–P9 batch pre-registration (`PARITY-BATCH-PREREG.md`, `d3123e4c…`) is a separate,
-committed pre-registration and is **NOT cancelled by this**. Whether it survives the switch to
-machine verification is an open decision, not a side effect.
+**UPDATE 2026-08-08, item 9 of the overnight queue — the open decision above is now closed.**
+The P4–P9 batch pre-registration is **WITHDRAWN**, formally, in its own document
+(`PARITY-BATCH-PREREG.md`, header note). No further hand readings will be performed; the
+parity gate closed at P2 and machine verification replaced it, and the batch was a
+pre-registered plan for more of the thing that was just replaced. The document, including its
+already-executed draw (six instants, seed `4617547402224582382`), is retained verbatim below
+the withdrawal notice for the record. `PARITY-BATCH-SEALED.md` and its JSON companion stay
+sealed permanently — not to protect a blind that will be used, but because there is no
+remaining reason to open them.
 
 ### Two premises the suite assumed and the repository does not satisfy
 

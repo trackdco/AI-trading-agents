@@ -1,3 +1,30 @@
+# PARITY BATCH P4–P9 — PRE-REGISTRATION — **WITHDRAWN 2026-08-08**
+
+> ## WITHDRAWN. NO INSTANT IN THIS DOCUMENT WILL BE READ BY ANYONE.
+>
+> **Reason:** the Code-Path Verification Suite closed the parity gate at P2 (`STATE.md`,
+> `PARITY-P2-RESULT.md`) and replaced hand-reading with machine verification — 2a's
+> spec-derived unit tests, 2b's full-workbench invariants, and 2c's differential
+> implementation. P3 was cancelled the same day, for the same reason: Amendment 03 §7
+> published its own selection criterion and thereby told the reader a trigger existed at
+> the released instant before any chart was opened, which no date-and-time-only discipline
+> can repair. This batch inherits the identical structural problem one level up — it is a
+> *pre-registered plan* for more hand readings, and no further hand readings will be
+> performed.
+>
+> **A committed pre-registration nobody will execute must be closed deliberately, not left
+> to go stale.** This document, including its already-executed draw in §7, is retained in
+> full below for the historical record — the seed derivation, the pool construction, and
+> the six drawn instants are exactly as committed at `92e2857`, unmodified. **Nothing below
+> this notice is in force. Reading it as a live instruction is an error.**
+>
+> The class-membership file it produced, `PARITY-BATCH-SEALED.md` /
+> `data/PARITY-BATCH-SEALED.json`, is likewise withdrawn and stays sealed permanently — not
+> because opening it would compromise a blind that will ever be used, but because there is
+> no remaining reason to open it at all.
+
+---
+
 # PARITY BATCH P4–P9 — PRE-REGISTRATION
 
 **Written 2026-08-08, BEFORE P3's result is known and BEFORE any instant is drawn.**
