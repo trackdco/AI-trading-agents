@@ -21,12 +21,20 @@ sys.path.insert(0, str(ROOT))
 
 from scripts.build_l2_outcomes import load_bars                     # noqa: E402
 from scripts.trigger_race_census import (DISP, MENU, SESSIONS,      # noqa: E402
-                                         TOLW, in_window)
+                                         TOLW, in_window,
+                                         m1_episode_arrays)
 from src.htf_ma.levels import (NY, bb_ma_asof, profile_at_minutes,  # noqa: E402
                                vwap_bands)
 
-OUT = ROOT / "output/htf_ma_census/race_outcomes.parquet"
-CENSUS = ROOT / "output/htf_ma_census/race_fit.parquet"
+# AMENDMENT 1: --m1-episode scores the episode-M1 census (the corrected
+# population) against its own parquet; default remains the original.
+M1_MODE = "episode" if "--m1-episode" in sys.argv else "open"
+OUT = ROOT / ("output/htf_ma_census/race_outcomes_epi.parquet"
+              if M1_MODE == "episode"
+              else "output/htf_ma_census/race_outcomes.parquet")
+CENSUS = ROOT / ("output/htf_ma_census/race_fit_m1episode.parquet"
+                 if M1_MODE == "episode"
+                 else "output/htf_ma_census/race_fit.parquet")
 FIT_START, FIT_END = "2025-06-01", "2026-07-31"
 TICK, COST_PTS = 0.25, 0.5
 SEED, DRAWS = 20260807, 2000
@@ -54,6 +62,7 @@ def day_rows(bars, sess_day):
     ma15, w15 = bb_ma_asof(hist, 15)
     ma15_1m = ma15.reindex(idx).to_numpy()
     w15_1m = w15.reindex(idx).to_numpy()
+    armed1, _epi1 = m1_episode_arrays(hi, lo, cl, ma15_1m, w15_1m)
     vw = vwap_bands(hist)
     prof = profile_at_minutes(hist, list(idx + pd.Timedelta(minutes=1)))
     S = {"poc": prof["poc"].to_numpy(), "val": prof["val"].to_numpy(),
@@ -145,7 +154,9 @@ def day_rows(bars, sess_day):
                 if not (d * (fc[bi] - m_tf) > 0
                         and d * (fo[bi] - m_tf) <= 0):
                     continue
-                if (-disp_o if d > 0 else disp_o) >= DISP:
+                m1_ok = (armed1[p] == d) if M1_MODE == "episode" else \
+                    ((-disp_o if d > 0 else disp_o) >= DISP)
+                if m1_ok:
                     mech = "M1"
                 elif live2[p] == d:
                     mech = "M2"
@@ -313,7 +324,7 @@ def main() -> None:
     nd = len(days)
 
     print("=" * 100)
-    print("RACE OUTCOMES — first outcome look at the race-census family. "
+    print(f"RACE OUTCOMES — M1 mode: {M1_MODE.upper()}. "
           "REPORT ONLY, no declared bar (~100+ numbers).")
     print("=" * 100)
 
