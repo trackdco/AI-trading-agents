@@ -203,6 +203,55 @@ meaningfully changed, so the outcome pass re-runs against the corrected
 census. Not because the first answer was unwelcome; because the
 population changed.
 
+## T1 AND T2 RE-DERIVED AT THE FINEST AVAILABLE RESOLUTION — NO BUG; THE GAP IS REAL AND LARGER THAN MEASURED
+
+2026-08-08, `scripts/trade_audit_t1t2.py`. The substrate is 1m bars +
+per-minute footprint — there is no tick stream in this repo, so "tick
+level" here means every candle, every MA value, and every condition the
+construction tested, printed raw, plus parity checks against the exact
+BB values visible on the trader's own TradingView screenshots.
+
+**MA parity: exact.** Jun-1 1m MA: TV 30,405.18 vs ours 30,405.17
+(−0.01). Jun-1 2m MA: TV 30,382.96 vs ours 30,382.96 (0.00). Jun-2 1m
+MA: TV 30,504.70 vs ours 30,504.70 (0.00). The construction prices the
+same moving averages the trader's own chart draws.
+
+**Candle selection: hand-verified, correct.** Every candle in both
+envelopes at all three TFs is printed with its open-side test,
+close-through test, thesis, and affirmation count; every non-emitting
+candle has a named failing condition; the emitted triggers are exactly
+the first fresh closures (T1: 09:52-1m/09:56-2m/09:57-3m; T2:
+09:45-1m/09:46-2m/09:48-3m), and the tie/priority ordering is right.
+
+**T1 anatomy — the gap is an entry-class difference, not slippage.**
+His fill ~30,450 at 09:49–50 was **at the 15m-MA/VWAP zone tag
+itself** — the 09:47 candle poked 30,467.25 through the 15m MA
+(30,454.99) and rejected; he shorted the rejection. The first LTF
+closure did not come until 09:52 (1m close 30,417.75 through the 1m MA
+30,427.58). Construction entry 30,417.50 against his ~30,450: **his
+fill is 32.5pt better = +1.01R at that fight's 32.25pt risk.**
+
+**T2 — re-verified, and the earlier "clean" call is CORRECTED.** The
+time matched (his window ~09:44–47, trigger 09:45), which is why it was
+called caught-on-the-nose; the price does not. His fill 30,479.25
+traded during 09:42–43 at the VWAP reclaim, **before the first 1m
+closure existed** (09:45, close 30,503.25). Construction entry
+30,502.50: **his fill is 23.25pt better = +0.78R.** The same
+anticipation gap as T1, previously hidden behind a time coincidence.
+
+**Verdict: the winning-candle picking and pricing are correct — the gap
+is real, and it is bigger than BR-92 measured.** On both audited trades
+the trader enters at the STRUCTURE TOUCH (zone rejection / reclaim),
+earlier even than the first 1m cross that BR-92 used as its early-entry
+proxy (T1: fill 09:49–50 vs first cross 09:52; T2: fill 09:42–43 vs
+09:45). BR-92's +0.161 upper bound therefore captures only part of the
+gap; the anticipation component on these two trades ran +0.78R to
++1.01R per trade. **The early-entry premise stands — unblocked — with
+the spec question sharpened: "first 1m cross" confirmation and
+"zone-touch entry with a zone-extreme stop" are two different declared
+constructions, and his fills match the second.** Which one gets declared
+is the trader's call; nothing is built here.
+
 ## T3 RE-CHECKED: genuinely M1 — and the floor is not the real gap
 
 2026-08-08, follow-up. Question asked: is T3 actually a rejection or a
