@@ -21,9 +21,14 @@ MECHANICAL = {"risk", "w15", "w15_pts", "risk_over_w", "tf_won",
               "closeloc", "rangex", "risk_over_atr30", "entry", "stop",
               "ma15"}
 # columns that ARE outcomes or outcome-derived — never use as predictors
-OUTCOME_COLS = {"out", "hit", "mfe_r", "near_hit", "near_out",
+OUTCOME_COLS = {"out", "out_pts", "hit", "mfe_r", "near_hit", "near_out",
                 "near_dist_r", "far_hit", "far_out", "far_dist_r",
                 "m1_hit", "m1_out", "m1_dist_r"}
+# NOTE 2026-08-08: `out_pts` (= out x risk) was missing from this set in
+# the first sweep build — it is the outcome itself re-scaled, so it
+# "survived" tautologically in every cell it was tested in. Caught by the
+# NY_PRE sweep agent, not by me. Any survivor list containing `out_pts`
+# is void for that row only; all other rows are unaffected.
 
 
 def load_wide() -> pd.DataFrame:
