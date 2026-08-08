@@ -465,6 +465,36 @@ taken, and the spec still does not say.**
 
 ---
 
+## SCOPE RULING — nine spec branches OUT OF SCOPE (2026-08-08)
+
+> **This study tests the spec AS IMPLEMENTED, at the pinned provenance hashes. The unimplemented
+> branches are formally OUT OF SCOPE for this run. The seal stands.**
+
+Out of scope, each quoted in [`OUT-OF-SCOPE-BRANCHES.md`](vwap-bb/OUT-OF-SCOPE-BRANCHES.md):
+**§4 A/B/B2 taxonomy · §6 rule 2 pattern targets · §6 rule 3 news override · §6 rule 6 alignment
+bonus · §10 daily halt · §5.5 T_cancel · §2 VAH/VAL/HVN/LVN · §2 Asia/London/NY boxes · §6 menu's
+weekly H/L, pullback origin, HTF range extremes.**
+
+**Every omission is permissive.** None could add a candidate. **The tested population is less
+selective than the full spec intends.**
+
+> **THE ASYMMETRY. A PASS is trustworthy — it survived a looser population and a worse fill
+> (§4.2 next-bar-open) than the spec specifies, and tightening either cannot turn it into a
+> fail. A FAIL is AMBIGUOUS — the missing branches might have removed the losing trades, so it
+> cannot distinguish "does not work" from "was missing the parts that make it work." A fail must
+> not be reported as a verdict on the strategy.**
+
+**Cost to bring them in: ≈23 new [FIAT] parameters** (taxonomy 9, rule 2 4, alignment 2,
+T_cancel 1, VAH/VAL 2, session boxes 3, menu 2; daily halt 0) **plus an economic calendar the
+project does not hold.** The A2 freeze moved 18 → 13 and was treated as significant; this would
+add 23. It also voids the spec hash, this pre-registration and the seal, and reopens gate 4 on
+all 23. **Not an afternoon.**
+
+**§10's daily halt is flagged separately**: the spec states both values (2 losses, −2R), so it
+was implementable and simply not built. An omission, not a specification gap.
+
+---
+
 ## STAGE 2 — SEALED WORKBENCH RESULT (2026-08-08)
 
 `research/vwap-bb/data/workbench_results_SEALED.parquet` — **1,423 trades, 501 sessions,

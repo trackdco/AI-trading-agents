@@ -60,6 +60,22 @@ correction of internal inconsistency. **This is why N_trials is 0 and not 7.**
 
 **Free parameter count: 13** — 9 CALIBRATE + 4 TOURNAMENT axes. Was 18 before the A2 freeze.
 
+### 1.3 SCOPE — what this study tests, and what it does not [RULED 2026-08-08]
+
+> **This study tests the spec AS IMPLEMENTED, at the provenance hashes in
+> [`CODE-PROVENANCE.md`](CODE-PROVENANCE.md). Nine spec branches are formally OUT OF SCOPE.**
+
+§4 pattern taxonomy (A/B/B2) · §6 rule 2 pattern-conditioned targets · §6 rule 3 news-day
+override · §6 rule 6 alignment bonus · §10 daily halt · §5.5 T_cancel · §2 VAH/VAL/HVN/LVN ·
+§2 Asia/London/NY session boxes · §6 menu's weekly H/L, pullback origin and HTF range extremes.
+
+Each quoted with its reason in [`OUT-OF-SCOPE-BRANCHES.md`](OUT-OF-SCOPE-BRANCHES.md).
+
+**Every omission is permissive** — a classification, a target refinement or a stop condition,
+none of which could add a candidate. **The tested population is LESS SELECTIVE than the full
+spec intends.** Bringing the branches in would require **≈23 new `[FIAT]` parameters** plus an
+economic calendar the project does not hold.
+
 **Declared placeholders** (the spec states no value; these are stand-ins, not findings):
 location band 20% of the trailing 4h range; front-run **F = 2.0 pt** (spec says "start 2–3",
 low end chosen as most permissive); entry variant **E1** as default.
@@ -372,7 +388,30 @@ sensitivity changes the traded population through the cap before it changes anyt
 This is a known property of the design (§10.1(5)), recorded so that a result cannot later be
 attributed to the strategy when it belongs to the cap.
 
-### 8.5 Smaller, still real
+### 8.5 A PASS is trustworthy; a FAIL is ambiguous — and this holds twice over
+
+**[ADDED 2026-08-08.]** Two independent handicaps sit on the sealed result, both in the same
+direction.
+
+**Nine unimplemented spec branches (§1.3).** All permissive — the taxonomy would have classified
+and possibly excluded, the pattern-conditioned targets would have redirected, the daily halt
+would have stopped a losing session. None would have added a trade.
+
+**The next-bar-open fill (§4.2).** Strictly worse than the E1 limit the spec specifies: a limit
+fills at the level or not at all; the open fills wherever the market opened.
+
+**The consequence, stated once and plainly:**
+
+> **PASS** — the strategy cleared its bar on a population looser than the spec describes and with
+> a worse fill than the spec specifies. Tightening either cannot turn a pass into a fail on the
+> same trades. **A pass here is conservative and can be relied on.**
+>
+> **FAIL** — uninformative about the full spec. The missing branches might have removed exactly
+> the losing trades; the fill handicap might account for the shortfall. **A fail cannot
+> distinguish "the strategy does not work" from "the implementation was missing the parts that
+> make it work", and must not be reported as a verdict on the strategy.**
+
+### 8.6 Smaller, still real
 
 - **Pre-open warm-up bias.** BB(20)/ATR(20) at 09:36 read bars 1.65× quieter than RTH.
   Measured effect on counts: −0.8%. Not fixed, not fixable within A1.
