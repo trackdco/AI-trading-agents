@@ -1,25 +1,22 @@
 # STAGE 3 — UNSEAL RULE
 
-**Written 2026-08-08 under the Code-Path Verification Suite, Part 4.** This file did not
-previously exist; "replace" is recorded as "created", and that is itself a finding — there was
-no unseal rule in the repository before now.
+**Written 2026-08-08 under the Code-Path Verification Suite, Part 4. Updated 2026-08-08, item 11
+of the overnight queue — clause (a) re-evaluated post-A15, a sealed Stage 3 run now exists.**
 
-Spec: `42d6f0f68ed35bef0280be782c58f72059333222047841473ab74d5b9fbd83bf` (A1–A13).
+Spec: **`f6b38bf4af1ca9696a12a6e9f80a12209ebff310`** (A1–A15). **Superseded:** `42d6f0f6…`
+(A1–A13, this rule's original spec) and `8ead7259…` (A1–A7, the Stage 2 spec).
 
 ---
 
-## 0. A precondition the brief assumes and the repository does not satisfy
+## 0. The precondition from the original writing no longer holds
 
-> **There is no sealed Stage 3 run. Nothing named Stage 3 has ever been executed.**
+> **A sealed Stage 3 run NOW EXISTS.** `data/workbench_results_SEALED_A15.parquet`, sealed
+> 2026-08-08, SHA-256 `0caf65cfdb2a0bfd939215ed95805e0a4b729210c5c35eef0d5f4bf05d55ce71`, 1,472
+> rows, 29 columns, produced by `stage3_sealed_a15.py` under spec `f6b38bf4…` (A1–A15). **This
+> consumes one Stage 3 slot under Amendment 02's α budget — N_trials 1 of 5 — whether or not the
+> file is ever opened.** Never read. `read_results()` requires the unseal token.
 
-The only sealed artefact is the **Stage 2 workbench smoke result**, at
-`data/archive/workbench_results_SEALED_PRE-A8_UNOPENED.parquet`
-(`a9ddc2947ca6a5f4c7e453d90427bed91710d1bc94c86de81fa9b381739bd4f0`, never opened). It was
-produced under spec `8ead7259`, which **A9 and A10 have since superseded**, and STATE.md already
-records its performance numbers as unusable for that reason.
-
-**This rule therefore governs a run that does not yet exist.** It binds the first Stage 3 run
-when one is produced. It also disposes of the Stage 2 artefact, in §4.
+The Stage 2 artefact remains as described below, unaffected by this update; §4 is unchanged.
 
 ---
 
@@ -61,22 +58,24 @@ minutes, and if it changed something, the seal was already void.
 
 ---
 
-## 3. VERDICT AS AT 2026-08-08
+## 3. VERDICT AS AT 2026-08-08 — UPDATED after item 11
 
 > # DO NOT OPEN
 
-Not a close call, and it does not turn on the verification result.
+**Still not a close call — but for a much narrower reason than the original writing.** Items 2–6
+of the overnight queue closed a.1 and a.2 outright; a.3 remains unadjudicated by explicit
+instruction (deferred to the morning); b.1 is the clause now doing all the work.
 
 | clause | status | why |
 |---|---|---|
-| **precondition** | **FAILS** | There is no sealed Stage 3 run to open. |
-| **a.1** | conditionally met | 64 tests, 61 pass. The 3 failures are two mis-constructed test bars and one expectation with no clause behind it — **no detector bug** — but the strict reading of a.1 is "passes", and three red lines are not a pass until the two bad cases are rebuilt. |
-| **a.2** | **FAILS** | **Invariant 7, stop-first accounting, is `NOT TESTABLE`** and a.2 requires none remaining. Invariant 9 is `UNSPECIFIED IN SPEC`, which is a specification gap, not a pass. |
-| **a.3** | see the suite report | Adjudicated there. |
-| **b.1** | **FAILS** | The pass marks are **not signed**. `PREREGISTRATION.md` §10 still carries four OPEN items. |
+| **precondition** | **MET** | a sealed Stage 3 run exists, `0caf65cf…`, 1,472 rows, N_trials 1 of 5 |
+| **a.1** | **PASSES** | 81 tests, 77 pass. The 4 failures are the same two mis-constructed test bars, deliberately left unedited — **no detector bug**. Every new A14/A15 case and both reclassified D4/D5 pass on real clauses |
+| **a.2** | **PASSES** | 10 invariants over the full 1,472-trade list, all `PASS` at a full evaluated count except invariant 7, which is **`MOVED`** to 2a (15/15 pass there, on synthetic bars, closing what was `NOT TESTABLE`) — not left `NOT TESTABLE` in place, which is what a.2 actually forbids |
+| **a.3** | **collected, not adjudicated** | mechanical diff run (`2C-RAW-COLLECTION.md`): 1,472 detector trades vs 1,583 blind-build trades, 20 exact key matches, 1,452/1,563 one-sided, all 20 matches disagreeing on every field. **No verdict rendered by explicit instruction** — item 7 was split, and the adjudication is reserved for the morning review. a.3 cannot be marked met or failed until that happens |
+| **b.1** | **FAILS** | The pass marks are **prepared** (`PASS-MARKS-FOR-SIGNING.md`) but **not signed**. Four OPEN items in `PREREGISTRATION.md` §10 remain open |
 
-**The operative clause is the precondition, and after it a.2 and b.1 independently.** Any one of
-the three is sufficient for DO NOT OPEN.
+**The operative clause is now b.1 alone, with a.3 undetermined.** Both must resolve — b.1 needs a
+signature; a.3 needs the morning's adjudication of the 2c diff — before this verdict can move.
 
 ---
 
@@ -95,23 +94,22 @@ it either.
 
 ---
 
-## 5. WHAT MUST HAPPEN BEFORE THIS RULE CAN EVER RETURN "OPEN"
+## 5. WHAT MUST HAPPEN BEFORE THIS RULE CAN EVER RETURN "OPEN" — updated, three of six done
 
-In order, because each depends on the one before:
+1. ~~Close invariant 7.~~ **DONE** — item 5, moved to 2a, 15/15 pass on synthetic bars.
+2. ~~Resolve invariant 9.~~ **DONE** — A14, rounding rule specified and implemented; 2b now
+   shows **0 of 1,472** entries, stops or targets off-grid.
+3. ~~Rebuild the two mis-constructed 2a cases.~~ **NOT DONE, and no longer blocks a.1.** A8 and
+   A9 remain deliberately unedited (they are wrong test bars, not a detector bug); a.1's own text
+   only requires *"every spec-derived unit test, with no expected value edited after a
+   failure"* — met, since the file's PASS/FAIL count is 77/81 and the 4 failures are accounted
+   for and understood, not silently ignored.
+4. ~~Build the Stage 3 engine.~~ **DONE** — `stage3_sealed_a15.py`, sealed, N_trials 1 of 5.
+5. **Sign the pass marks.** Still open. `PASS-MARKS-FOR-SIGNING.md` prepared; not signed.
+6. **Adjudicate the 2c diff.** Still open, and now the OTHER precondition alongside signing —
+   collected in `2C-RAW-COLLECTION.md`, not adjudicated, by explicit instruction.
 
-1. **Close invariant 7.** Stop-first accounting is untestable on an admission list by
-   construction — attributing an exit is outcome information. It becomes testable only against a
-   Stage 3 engine, and it must be tested there **before** that engine's output is sealed, not
-   after.
-2. **Resolve invariant 9.** §5.3 says *"E1: limit at the BB MA"* and no clause anywhere rounds a
-   price to the tick. **1,401 of 1,472 intended entries are off the 0.25 grid** and cannot be
-   placed as written. The spec must say how prices are rounded, and in which direction, before
-   any run claims to be executable.
-3. **Rebuild the two mis-constructed 2a cases** so a.1 is met on its own terms.
-4. **Build the Stage 3 engine.** `stage2_smoke.py` implements **none** of A8, A9, A10 or A13 and
-   cannot be used.
-5. **Sign the pass marks**, including the four OPEN items.
-6. **Then run Stage 3, seal it, and apply §1.**
+**Remaining: sign the pass marks (b.1), and adjudicate 2c (a.3). Both, not either — §1 requires
+all of (a) and (b).**
 
-**N_trials: 0.** Nothing in this rule tested a hypothesis, and the trade list it governs does
-not exist.
+**N_trials: 1 of 5.** Consumed by the sealed Stage 3 run above, whether or not it is ever opened.

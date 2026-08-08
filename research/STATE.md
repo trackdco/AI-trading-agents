@@ -15,8 +15,10 @@ report. Where a report disagrees, this file wins — see
 > comparison against 68.4% is a sanity check, not evidence. See
 > [`EVIDENCE-BASE-CORRECTION.md`](EVIDENCE-BASE-CORRECTION.md).
 
-N_trials: **0**. Holdout: **SEALED.** See RULINGS below — a seal event is on permanent record
-and must accompany any future holdout result.
+N_trials: **1 of 5** (Amendment 02 budget: Stage 3 ×1 · Stage 4 ≤3 · Stage 5 ×1). Consumed
+2026-08-08 by sealing `workbench_results_SEALED_A15.parquet` under spec A1–A15 — **whether or
+not the file is ever opened**, per the standing rule. Holdout: **SEALED.** See RULINGS below —
+a seal event is on permanent record and must accompany any future holdout result.
 
 > ### STANDING NOTE — a figure from a partial run is not a figure
 >
@@ -1058,3 +1060,39 @@ serialization, not in any outcome. Fixed by pinning `PYTHONHASHSEED=0`, which is
 the suite's rule 9 required in the first place.
 
 **N_trials: 0.** Nothing in the suite tested a hypothesis and no outcome was computed anywhere.
+
+---
+
+## 2026-08-08 — ITEM 11: STAGE 3 SEALED. N_trials 1 of 5.
+
+**Gate check first, per item 11's own condition:** items 2–6 introduced no behaviour
+contradicting an existing clause. A14 and A15 are additions closing documented gaps, not bug
+fixes, and are exempted from tripping this gate by the item's own text. The two bugs actually
+found and fixed overnight (§ above) were in the verification tooling I wrote — a sort-key crash
+and a stale status label — not in the detector or in any amendment's implementation. **Gate
+PASSES.**
+
+`stage3_sealed_a15.py` — a new sealed engine, admission via `spec_current.signal_candidates_current`
+(A8/A9/A10/A13/A14) + the A7 loop, resolution via `resolve_bar_stop_first` (item 5) + EOD flatten,
+A11's `entry_tf_1m` flag, costs at three bases (lean 0.25 / base 0.50 / adverse 1.00 pt). Modelled
+on `stage2_smoke.py`'s own sealing discipline, restricted further: **this script's console output
+contains only completion status, the row count, the file path and the SHA-256** — no frequency or
+audit figures, stricter than Stage 2's report, per item 11's own report restriction. Self-check
+scanned the printed text for outcome tokens before returning: **PASS, none found.**
+
+| | |
+|---|---|
+| **Ran** | YES |
+| **Realised trade count** | **1,472** |
+| **SHA-256** | **`0caf65cfdb2a0bfd939215ed95805e0a4b729210c5c35eef0d5f4bf05d55ce71`** |
+| **Amendment 02 floor n ≥ 661** | **CLEARS** |
+| File | `research/vwap-bb/data/workbench_results_SEALED_A15.parquet`, 29 columns |
+| Spec | `f6b38bf4af1ca9696a12a6e9f80a12209ebff310` (A1–A15) |
+
+**Nothing about expectancy, win rate, drawdown, Sharpe or direction appears here or anywhere
+else this run touched — per item 11, that information does not exist in any file this session
+produced.** `STAGE3-UNSEAL-RULE.md` updated: precondition now MET, a.1 and a.2 now PASS, a.3
+awaits the morning's 2c adjudication, b.1 awaits signature. **Verdict unchanged: DO NOT OPEN**,
+now resting on b.1 and a.3 alone rather than on the absence of a run.
+
+**N_trials: 1 of 5.**
