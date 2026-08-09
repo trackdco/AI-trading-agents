@@ -43,16 +43,21 @@ original sweep and are **not** included here without an explicit decision:
 - **Pre-market H/L, absent from the target menu** despite §6 naming it (*"session extremes
   (Asia/London/pre-market)"*) — a parallel case to fork 5's weekly H/L, same shape, different
   level.
-- **NY VWAP ±3σ, absent from both the cluster set and the target menu** despite §2/§3 naming it
-  as part of the NY VWAP indicator.
 - **The "structural" confluence TYPE, never emitted** — §3 counts it as a fourth type
   (*"structural ×1"*) but no code path ever tags a level "structural" for cluster-formation
   purposes, capping the real attainable confluence count at 3, not 4.
 
-**None of these three is enumerated as a fork above.** They are structurally similar to fork 5
-(a named-but-unbuilt menu item) and could each become one. **Whether they belong in the
-combination set is exactly the kind of decision this document exists to force before a run, not
-after** — recorded here so it is asked, not silently decided either way.
+**Retracted, errata 2026-08-08 (`STRUCTURAL-LEVELS-AUDIT.md` §0-bis): NY VWAP ±3σ is NOT a
+candidate.** It was listed here as a parallel gap to weekly H/L; re-verification found §3's own
+cluster clause caps NY VWAP at *"middle/±1σ (post-9:30 only)"* — ±3σ was never required in the
+cluster set, and §6 never names ±3σ for any VWAP family's target-menu entries either. The code
+already matches what the spec asks for on this point. Struck from the candidate list rather than
+silently dropped, so the retraction isn't lost.
+
+**Neither of the two remaining candidates is enumerated as a fork above.** They are structurally
+similar to fork 5 (a named-but-unbuilt menu item) and could each become one. **Whether they belong
+in the combination set is exactly the kind of decision this document exists to force before a
+run, not after** — recorded here so it is asked, not silently decided either way.
 
 ## 4. What "the minimum across every documented resolution combination" requires, operationally
 

@@ -1,5 +1,16 @@
 # MINIMAL FROZEN SPEC — single stated build, population count only
 
+> **SUPERSEDED, 2026-08-08.** "Minimal" here was read as "the 5 literal rows
+> `STRUCTURAL-LEVELS-AUDIT.md` marked COMPUTED" — Angus corrected this: "minimal" means
+> **everything genuinely implemented**, not that literal 5-row subset (which also, per that
+> audit's own later errata, undercounted what's actually coded — daily VWAP's cluster-eligible
+> band actually reaches ±3σ, not ±2σ as first reported). The corrected build, with the full
+> current level set, is `IMPLEMENTED-LEVELS-LIMIT-FILL-BUILD.md`. **This document and its 988
+> figure are kept, not deleted** — per standing practice, nothing gets discarded, and per Angus's
+> own words: *"the earlier 988-trade build was a measurement under a misread instruction, not a
+> rejected result. No outcome was computed, so nothing is consumed."* N_trials was, and remains,
+> unaffected by either build.
+
 **2026-08-08. Follow-up to Amendment 05 round 2, items 3-5.** A single build under one
 explicitly declared reading of everything ambiguous, to answer one question: **how many trades
 survive if the detector trusts only what is genuinely, fully implemented, entry fills the way the

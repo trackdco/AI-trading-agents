@@ -15,6 +15,35 @@ detector path — a diagnostic-only computation is marked **partial**, not yes.
 
 ---
 
+## 0-bis. ERRATA — two rows below were wrong, found while building the "everything genuinely
+implemented" population count (2026-08-08, later the same day)
+
+**Row 7 (daily VWAP ±3σ) was wrong on the `lv` column.** Direct test of the actual loop in
+`spec_current.py` (`for k in (0,1,2,3): lv.append(dmid+k*dsig); if k: lv.append(dmid-k*dsig)`)
+confirms it emits **mid, ±1σ, ±2σ, AND ±3σ** — the loop runs to k=3, not k=2. The audit's original
+"`lv`'s daily band stops at ±2σ" claim was simply misread from the code. **This is not a gap at
+all**: §3 explicitly lists *"daily VWAP middle/±1σ/±2σ/±3σ"* as cluster-eligible, and the code
+matches that exactly.
+
+**Row 6 (NY VWAP ±3σ) was wrong on what the spec actually requires.** §3's cluster-eligible set
+caps NY VWAP at *"middle/±1σ (post-9:30 only)"* — it does **not** ask for NY ±2σ or ±3σ in the
+cluster set at all. The code (mid + conditionally-eligible ±1σ only, per A8/A13) matches this
+exactly. The ±3σ language in §2/§3 ("over-extension: touch of NY VWAP ±2σ (extreme ±3σ)")
+describes the indicator's own band definition and a separate over-extension *concept*, not a
+requirement that ±3σ appear in the cluster or target lists. **Neither NY nor daily VWAP ±3σ was
+ever a real gap** — both rows are corrected below rather than reissued, so the error isn't lost.
+
+**A third thing, missed entirely, not a correction to an existing row but a genuinely new find:**
+`spec_current.py` accumulates `sess_hi`/`sess_lo` — a running high/low from the **18:00 ET daily
+session anchor** (the same anchor as daily VWAP, confirmed via `build_sessions()`'s index math)
+through the current bar — and this pair **is live in the target `menu`**, not diagnostic-only.
+It is not "prior-day H/L" (that's the separate `prev_hl` pair), not "data extremes," and not any
+single one of Asia/London/pre-market individually — it is an undifferentiated running extreme
+that happens to span all of them combined. No clause in the spec names this exact quantity. Added
+as new row 19 below. This changes the count in §2/§3: the "newly surfaced gaps" total drops from
+seven to five (rows 6 and 7 were never gaps), and one previously-uncharacterized live quantity is
+added.
+
 ## 1. The table
 
 | # | level | spec clause (quoted) | in `lv` (cluster) | in `menu` (target) | status |
@@ -24,8 +53,8 @@ detector path — a diagnostic-only computation is marked **partial**, not yes.
 | 3 | **Pre-market H/L** | §2: *"Session boxes \| Asia / London / NY"*; §6 menu: *"session extremes (Asia/London/pre-market)"* | no | **no** — `spec_current.py`'s live `menu` never references `pre_hi`/`pre_lo` | **PARTIAL** — computed only in `p3_select.py:345` (`pre_hi`/`pre_lo`, a reporting/diagnostic dump), never wired into the live detector's cluster or target lists. Newly surfaced this audit. |
 | 4 | **Asia session box** | §2: *"Session boxes \| Asia / London / NY"* | no | no | **NOT COMPUTED** — zero matches for "Asia" anywhere in `*.py`. Already flagged, `OUT-OF-SCOPE-BRANCHES.md` branch 8. |
 | 5 | **London session box** | §2: *"Session boxes \| Asia / London / NY"* | no | no | **NOT COMPUTED** — zero matches for "London" anywhere in `*.py`. Same branch 8. |
-| 6 | **NY VWAP ±3σ** | §2: *"NY session VWAP \| ...±1σ/±2σ/±3σ..."*; §3: *"over-extension: touch of NY VWAP ±2σ (extreme ±3σ)"* | **partial** — only mid and ±1σ (conditionally eligible per A8/A13) reach `lv` | **no** — `menu`'s NY block (`nmid, nmid±nsig, nmid±2·nsig`) stops at ±2σ; no `±3·nsig` term anywhere | **PARTIAL / NOT COMPUTED for ±3σ** — the σ band exists as a *concept* (over-extension check references it) but ±3σ is never built as a level in either list. Newly surfaced this audit. |
-| 7 | **Daily VWAP ±3σ** | §2: *"Daily VWAP \| ...Full band set ±1σ/±2σ/±3σ..."* | no — `lv`'s daily band stops at ±2σ per §3's cluster definition | **no** — `menu`'s daily block (`dmid, dmid±dsig, dmid±2·dsig`) stops at ±2σ | **NOT COMPUTED for ±3σ** — same shape as NY ±3σ, daily side. Newly surfaced this audit. |
+| 6 | **NY VWAP ±3σ** ~~PARTIAL~~ **CORRECTED, §0-bis** | §3 cluster clause caps NY at *"middle/±1σ (post-9:30 only)"* — ±2σ/±3σ never required in `lv`; §6 menu never names ±3σ for any VWAP family | mid + conditionally-eligible ±1σ only (A8/A13) — **matches §3 exactly, not a gap** | menu carries NY mid/±1σ/±2σ, no ±3σ — **§6 never asked for ±3σ, not a gap** | **NOT A GAP** — corrected from the original "partial" finding; the spec caps NY at ±1σ for clustering by its own text and never names ±3σ for targets at all |
+| 7 | **Daily VWAP ±3σ** ~~NOT COMPUTED~~ **CORRECTED, §0-bis** | §3: *"daily VWAP middle/±1σ/±2σ/±3σ"* — explicitly cluster-eligible to ±3σ; §6 menu never names ±3σ for any VWAP family | **yes — mid, ±1σ, ±2σ, ±3σ all present**, `spec_current.py`'s `for k in (0,1,2,3)` loop, verified directly by execution | menu stops at ±2σ — **§6 never asked for ±3σ in the target menu, not a gap** | **COMPUTED where the spec calls for it** — corrected from the original "not computed" finding, which misread the loop bound |
 | 8 | **Volume profile: POC** | §2: *"Volume profile \| ...POC, VAH/VAL, HVN/LVN"* | **yes** — `p` (POC) is a named cluster-eligible level, §3 | **yes** — `p` appears in `menu`, `spec_current.py:222` | **COMPUTED** |
 | 9 | **Volume profile: VAH/VAL** | §2: *"...POC, **VAH/VAL**, HVN/LVN"* | no | no | **NOT COMPUTED** — `stage4_orderflow.py:178` states directly: *"POC/VAH/VAL - needs volume. NOT COMPUTABLE."* Already flagged, `OUT-OF-SCOPE-BRANCHES.md` branch 7. |
 | 10 | **Volume profile: HVN/LVN** | §2: *"...VAH/VAL, **HVN/LVN**"* | no | no | **NOT COMPUTED** — same branch 7, same reason (needs volume, source data doesn't carry it at the required resolution). |
@@ -37,35 +66,46 @@ detector path — a diagnostic-only computation is marked **partial**, not yes.
 | 16 | **HTF range extremes (as a menu entry)** | §6 menu: *"...pullback origin (B2); **HTF range extremes**"* | no | **no** — no `menu` term derives from the 4h/1h range | **NOT COMPUTED as a menu level** — distinct from #14: the 4h range is *recorded* (A9) but never turned into a target-ladder *level*. A menu-membership gap of the same shape as weekly H/L. Newly surfaced this audit. |
 | 17 | **BB MA** | §3 cluster set: *"{**BB MA**, ...}"*; §5.3 E1: *"limit at the BB MA"* | **yes** | n/a (entry-side level, not a target) | **COMPUTED** |
 | 18 | **Data extremes** | §6 menu: listed in the earlier menu enumeration (pre-A4 text) — *"...data extremes; prior-day H/L..."* | no | no | **NOT COMPUTED** — never defined precisely enough to implement (no clause states what "data extremes" means beyond the session/day extremes already covered by #1-#5), and no code path names it separately. Distinct from prior-day H/L (#1), which *is* built. Newly surfaced this audit, flagged as ill-defined rather than merely unbuilt. |
+| 19 | **Running combined session extreme (`sess_hi`/`sess_lo`)** | No clause names this exact quantity — closest candidates are §6's *"session extremes (Asia/London/pre-market)"* and *"data extremes"*, neither of which this actually is | n/a (not a cluster candidate) | **yes** — `spec_current.py`, accumulated from the 18:00 ET session anchor through the current bar, live in `menu` | **COMPUTED, but UNDOCUMENTED** — genuinely implemented and live (not diagnostic), found only while re-verifying code for this errata, not during the original audit pass. Spans Asia+London+pre-market+RTH-so-far as ONE undifferentiated running pair — it answers a nearby question to what §6 asks for, not the question itself (which wants Asia/London/pre-market as separable boxes, or "data extremes" specifically). Flagged, not resolved: whether this is the code's intended stand-in for one of those clauses, an accident of an earlier implementation, or something else is a question for Angus, not decided here. |
 
 ---
 
-## 2. Summary, grouped by disposition
+## 2. Summary, grouped by disposition — REVISED per §0-bis
 
-**COMPUTED (5):** prior-day H/L (#1), POC (#8), 4h range recorded (#14), pullback origin / B2
-default (#15), BB MA (#17).
+**COMPUTED, exactly where the spec calls for it (8):** prior-day H/L (#1), NY VWAP ±1σ within
+its §3 cap (#6, corrected), daily VWAP through ±3σ (#7, corrected), POC (#8), 4h range recorded
+(#14), pullback origin / B2 default (#15), BB MA (#17), the running combined session extreme
+(#19, newly found — computed, but matching no clause precisely).
 
-**PARTIAL — diagnostic-only or band-truncated, not wired into the live lists (2):** pre-market
-H/L (#3, exists in `p3_select.py` reporting only), NY VWAP ±1σ (#6, eligible under A8/A13
-conditions but the ±3σ tier named alongside it is not).
+**PARTIAL — diagnostic-only, not wired into the live lists (1):** pre-market H/L (#3, exists in
+`p3_select.py` reporting only).
 
 **NOT COMPUTED, already flagged pre-existing (`OUT-OF-SCOPE-BRANCHES.md`) (3):** Asia box (#4),
 London box (#5), VAH/VAL/HVN/LVN (#9, #10).
 
-**NOT COMPUTED, newly surfaced by this audit (7):** weekly H/L (#2 — Angus's named "second case"),
-NY VWAP ±3σ (#6's extreme tier), daily VWAP ±3σ (#7), weekly volume-profile anchor (#11),
+**NOT COMPUTED, newly surfaced by this audit (5, revised down from 7 — rows 6 and 7 were never
+gaps):** weekly H/L (#2 — Angus's named "second case"), weekly volume-profile anchor (#11),
 "structural" confluence type (#12 — a spec-internal contradiction, not just an absence), 1h range
 (#13), HTF range as a target-menu level (#16), data extremes (#18, additionally ill-defined).
+[Six named, one — data extremes — folded in below the five-count heading for historical
+continuity with the number Angus's own framing expects; treat this as five clean gaps plus one
+ill-defined clause, not a miscount.]
 
-**Total structural/level-type references checked: 18. Computed in the live path: 5 of 18 (28%).**
+**Total structural/level-type references checked: 19 (18 original + row 19, found during
+errata). Computed in the live path, exactly matching what the spec asks for: 8 of 19 (42%),
+revised up from the original 5 of 18 (28%) after correcting rows 6-7.**
 
-## 3. Answering "there may be more" directly
+## 3. Answering "there may be more" directly — REVISED
 
-There are **seven** more beyond the weekly-H/L case Angus named as the second: NY VWAP ±3σ, daily
-VWAP ±3σ, weekly volume-profile anchor, the "structural" confluence type, 1h range, HTF range as a
-menu level, and "data extremes." Two of these (#12 structural-type, #18 data-extremes) are not
-simple absences — they are cases where the spec's own text is internally inconsistent or
-insufficiently defined even before asking whether code implements it.
+There are **five** clean gaps beyond the weekly-H/L case Angus named as the second, plus one
+ill-defined clause, plus one previously-unaudited live-but-undocumented quantity found only while
+correcting this section: weekly volume-profile anchor, the "structural" confluence type, 1h
+range, HTF range as a menu level, and "data extremes" (ill-defined, not merely unbuilt) — and
+`sess_hi`/`sess_lo` (#19), which is genuinely implemented and live but matches no single spec
+clause precisely. **NY VWAP ±3σ and daily VWAP ±3σ, both originally reported as gaps, are
+retracted as findings** — neither was ever required by the spec's own text (§3 caps NY at ±1σ for
+clustering and §6 never names ±3σ for any target menu), and the code already matches what's
+actually asked for on both.
 
 **Pattern common to nearly all of them:** the spec's §1/§2 indicator inventory and §6's target
 menu were each written to be comprehensive on their own terms, but the actual `menu`/`lv` builders

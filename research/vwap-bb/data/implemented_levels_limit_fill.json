@@ -1,0 +1,15 @@
+{
+ "n_trades_admitted_and_filled": 1444,
+ "comparison_baseline_661": 661,
+ "clears_661": true,
+ "candidates_seen_at_fill_decision": 3104,
+ "filled": 1444,
+ "no_fill_bar_never_reached_limit": 1660,
+ "sessions_processed": 501,
+ "sessions_excluded": {
+  "holiday / short session": 22,
+  "roll session": 8,
+  "session after roll": 8
+ },
+ "workbench_days_total": 539
+}
