@@ -1,0 +1,642 @@
+[
+ {
+  "combo_id": 0,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "same",
+   "confluence": "base",
+   "front_run_f": 2.0,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1360,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.06795693327136519,
+  "mean_net_R_c0975": -0.09044688944044611,
+  "mean_net_R_c150": -0.11530420941679871,
+  "bootstrap_lb_c0975": -0.18001100225362485,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_00.parquet",
+  "sha256": "389e2367907efb72ae55112524b5e43a33398044d41f1ce8f392e242da5b82cd"
+ },
+ {
+  "combo_id": 1,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "same",
+   "confluence": "base",
+   "front_run_f": 2.0,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1344,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.02707504013169156,
+  "mean_net_R_c0975": -0.049311805996881265,
+  "mean_net_R_c150": -0.07388928405840679,
+  "bootstrap_lb_c0975": -0.14198969569543773,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_01.parquet",
+  "sha256": "5ed511c0ad467478977c239e6da0b0b15264d3550638a9ba8819e853f93d544f"
+ },
+ {
+  "combo_id": 2,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "same",
+   "confluence": "base",
+   "front_run_f": 2.5,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1360,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.061297967739520114,
+  "mean_net_R_c0975": -0.0838018410663351,
+  "mean_net_R_c150": -0.10867454316439387,
+  "bootstrap_lb_c0975": -0.1749001931039066,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_02.parquet",
+  "sha256": "37b1339615b5a915063e903cba37a7fcd5405560febf7bf12bbc23e0f2549e92"
+ },
+ {
+  "combo_id": 3,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "same",
+   "confluence": "base",
+   "front_run_f": 2.5,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1344,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.015899815274571544,
+  "mean_net_R_c0975": -0.038106126918193324,
+  "mean_net_R_c150": -0.06264994505061737,
+  "bootstrap_lb_c0975": -0.13732070302704033,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_03.parquet",
+  "sha256": "e3c50f7081423585edb373cb9382f3db248904c2a5703bcc2a76e2b32ec37217"
+ },
+ {
+  "combo_id": 4,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "same",
+   "confluence": "counter",
+   "front_run_f": 2.0,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1187,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.06389839917828,
+  "mean_net_R_c0975": -0.08643727036697058,
+  "mean_net_R_c150": -0.11134865431236529,
+  "bootstrap_lb_c0975": -0.17910446564004956,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_04.parquet",
+  "sha256": "7f8ca83111870b4898f80bf19480d9aa247fbffc9ea62c7f3b29e664c754984d"
+ },
+ {
+  "combo_id": 5,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "same",
+   "confluence": "counter",
+   "front_run_f": 2.0,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1184,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.03918640110395549,
+  "mean_net_R_c0975": -0.06157281886703853,
+  "mean_net_R_c150": -0.08631570165781458,
+  "bootstrap_lb_c0975": -0.15721821319974638,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_05.parquet",
+  "sha256": "7e96c9a9534239299513a5715e1a32bab5fea71997b493b4519bf36d84aefb97"
+ },
+ {
+  "combo_id": 6,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "same",
+   "confluence": "counter",
+   "front_run_f": 2.5,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1185,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.06765420965317624,
+  "mean_net_R_c0975": -0.09028788783839162,
+  "mean_net_R_c150": -0.11530405846415577,
+  "bootstrap_lb_c0975": -0.18282709188904,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_06.parquet",
+  "sha256": "29c96ae3c64263b7113ab89f66120d445874d0ca647678746512076403328d22"
+ },
+ {
+  "combo_id": 7,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "same",
+   "confluence": "counter",
+   "front_run_f": 2.5,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1183,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.03933885117515462,
+  "mean_net_R_c0975": -0.06175994785064963,
+  "mean_net_R_c150": -0.08654115996567034,
+  "bootstrap_lb_c0975": -0.1614034808188111,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_07.parquet",
+  "sha256": "296816da04ba578805002f07b1edffff155a113e0a760e656bdc047af90caa87"
+ },
+ {
+  "combo_id": 8,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "opposite",
+   "confluence": "base",
+   "front_run_f": 2.0,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1384,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.08706777817095376,
+  "mean_net_R_c0975": -0.10826946369999901,
+  "mean_net_R_c150": -0.13170290560052222,
+  "bootstrap_lb_c0975": -0.19628110008394628,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_08.parquet",
+  "sha256": "74a596aeb416c2ea40e833b1e00a05263d342e0ea4ecfefaf73e1521f68dfdc2"
+ },
+ {
+  "combo_id": 9,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "opposite",
+   "confluence": "base",
+   "front_run_f": 2.0,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1380,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.08203390588970291,
+  "mean_net_R_c0975": -0.10307180550978905,
+  "mean_net_R_c150": -0.12632422087935796,
+  "bootstrap_lb_c0975": -0.1951611247802596,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_09.parquet",
+  "sha256": "61661af4f0c8dba49dcdd34cddfae0080ddae77fdcf7c50f210be284842cdf61"
+ },
+ {
+  "combo_id": 10,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "opposite",
+   "confluence": "base",
+   "front_run_f": 2.5,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1378,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.09074523641551435,
+  "mean_net_R_c0975": -0.11195149745326832,
+  "mean_net_R_c150": -0.1353899964949961,
+  "bootstrap_lb_c0975": -0.20174952745928537,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_10.parquet",
+  "sha256": "0c570b144aba54e3bf2c74a15565ec780019dcfc7bf2f3d9991efd54ef2dca76"
+ },
+ {
+  "combo_id": 11,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "opposite",
+   "confluence": "base",
+   "front_run_f": 2.5,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1374,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.07723846559830774,
+  "mean_net_R_c0975": -0.09823853914505169,
+  "mean_net_R_c150": -0.12144914674934762,
+  "bootstrap_lb_c0975": -0.1944080249742228,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_11.parquet",
+  "sha256": "f8cf3e93478629edce29d5519040fdf130ceedab6ef314f2907ca651a3976ae6"
+ },
+ {
+  "combo_id": 12,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "opposite",
+   "confluence": "counter",
+   "front_run_f": 2.0,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1243,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.08679595663374419,
+  "mean_net_R_c0975": -0.10883459577694726,
+  "mean_net_R_c150": -0.133193091672066,
+  "bootstrap_lb_c0975": -0.19632301386027484,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_12.parquet",
+  "sha256": "06fdd687c0ac1d8ccb5f8e11f301169b6dcd15668900e4a0e50abd22b5839622"
+ },
+ {
+  "combo_id": 13,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "opposite",
+   "confluence": "counter",
+   "front_run_f": 2.0,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1252,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.07618642342209668,
+  "mean_net_R_c0975": -0.09797158395014119,
+  "mean_net_R_c150": -0.12204991927061125,
+  "bootstrap_lb_c0975": -0.19022429387653905,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_13.parquet",
+  "sha256": "1094ea28405e76e104ed70e0a63ee3c17822c6c2a20de10124bad980acf5615e"
+ },
+ {
+  "combo_id": 14,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "opposite",
+   "confluence": "counter",
+   "front_run_f": 2.5,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1239,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.08808487643911715,
+  "mean_net_R_c0975": -0.1101275140831679,
+  "mean_net_R_c150": -0.1344904293739601,
+  "bootstrap_lb_c0975": -0.19763895120024402,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_14.parquet",
+  "sha256": "768c8ce4d01301688f151328741d327c2785b4cdc7af34e7b2b3e0708d3183c7"
+ },
+ {
+  "combo_id": 15,
+  "forks": {
+   "cluster": "bounded",
+   "invalidation": "opposite",
+   "confluence": "counter",
+   "front_run_f": 2.5,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1247,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.07698224118794499,
+  "mean_net_R_c0975": -0.09870080027572237,
+  "mean_net_R_c150": -0.12270552347800258,
+  "bootstrap_lb_c0975": -0.19011512748258771,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_15.parquet",
+  "sha256": "ef74fc6be35d019bb36e8a86964364d3c778dac33775596121aa521d3d4902c7"
+ },
+ {
+  "combo_id": 16,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "same",
+   "confluence": "base",
+   "front_run_f": 2.0,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1316,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.074163088786174,
+  "mean_net_R_c0975": -0.09634145648049826,
+  "mean_net_R_c150": -0.12085438919527751,
+  "bootstrap_lb_c0975": -0.19018164965654125,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_16.parquet",
+  "sha256": "5df2512e75ee71f5851f39d0484cdc1cbf189ffca49384452625b83bfe7aa4bd"
+ },
+ {
+  "combo_id": 17,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "same",
+   "confluence": "base",
+   "front_run_f": 2.0,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1306,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.0593367329974004,
+  "mean_net_R_c0975": -0.0812950676120083,
+  "mean_net_R_c150": -0.10556480587025885,
+  "bootstrap_lb_c0975": -0.17763487806070796,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_17.parquet",
+  "sha256": "4a41a5e43eae303087f50dfeddd6d376d762a4d9709185488538e1d6d3fd6deb"
+ },
+ {
+  "combo_id": 18,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "same",
+   "confluence": "base",
+   "front_run_f": 2.5,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1317,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.06319013976091449,
+  "mean_net_R_c0975": -0.08528854765475274,
+  "mean_net_R_c150": -0.10971310374794223,
+  "bootstrap_lb_c0975": -0.17722028321751349,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_18.parquet",
+  "sha256": "6cb22104fb872fec37aa181423202a7ff07849415aba84b9f7e30dd0555dd4f7"
+ },
+ {
+  "combo_id": 19,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "same",
+   "confluence": "base",
+   "front_run_f": 2.5,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1308,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.04842549876147376,
+  "mean_net_R_c0975": -0.0703138476937222,
+  "mean_net_R_c150": -0.09450623335568085,
+  "bootstrap_lb_c0975": -0.16810346673119253,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_19.parquet",
+  "sha256": "f733a72446bcfedd78d4edfe8fe35463db8c9140e598ef18963a5d2315b54380"
+ },
+ {
+  "combo_id": 20,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "same",
+   "confluence": "counter",
+   "front_run_f": 2.0,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1117,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.055161392852934595,
+  "mean_net_R_c0975": -0.07729229915573624,
+  "mean_net_R_c150": -0.10175277454304334,
+  "bootstrap_lb_c0975": -0.1735849006335597,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_20.parquet",
+  "sha256": "dbddf3cb38be4f377f2040c3b816c81354ef6caa88d0c98d867142539cac3713"
+ },
+ {
+  "combo_id": 21,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "same",
+   "confluence": "counter",
+   "front_run_f": 2.0,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1111,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.04940986578344716,
+  "mean_net_R_c0975": -0.07133695457691676,
+  "mean_net_R_c150": -0.09557215798022523,
+  "bootstrap_lb_c0975": -0.17285078002786297,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_21.parquet",
+  "sha256": "f2d8d4287dcf8f575cfeb7c52f74781ac9f2b7e9ab6aabf7447cc519f6e86e82"
+ },
+ {
+  "combo_id": 22,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "same",
+   "confluence": "counter",
+   "front_run_f": 2.5,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1114,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.05536277770221999,
+  "mean_net_R_c0975": -0.07739211502766948,
+  "mean_net_R_c150": -0.10174032996632404,
+  "bootstrap_lb_c0975": -0.1762238351645598,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_22.parquet",
+  "sha256": "a31154f76dd67623bda619bee12c5e66ff6f632bb7bdc0879ff4057780270cf7"
+ },
+ {
+  "combo_id": 23,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "same",
+   "confluence": "counter",
+   "front_run_f": 2.5,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1111,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.05473038602140865,
+  "mean_net_R_c0975": -0.07654905839254736,
+  "mean_net_R_c150": -0.10066443311854267,
+  "bootstrap_lb_c0975": -0.17914601462699345,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_23.parquet",
+  "sha256": "2bb79cea95ffe8c6ebbfab733f0a08e4ef6ab8baad74aede97ea00b2782fbb53"
+ },
+ {
+  "combo_id": 24,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "opposite",
+   "confluence": "base",
+   "front_run_f": 2.0,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1363,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.04281887452053494,
+  "mean_net_R_c0975": -0.06521646740887103,
+  "mean_net_R_c150": -0.08997170165387387,
+  "bootstrap_lb_c0975": -0.16252483995204303,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_24.parquet",
+  "sha256": "b4093d86f65610ccd7cc4447ad2fb229856759b1b6f4284f9a4ec67b08914102"
+ },
+ {
+  "combo_id": 25,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "opposite",
+   "confluence": "base",
+   "front_run_f": 2.0,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1367,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.032162490063896494,
+  "mean_net_R_c0975": -0.054157983003281035,
+  "mean_net_R_c150": -0.07846879098891647,
+  "bootstrap_lb_c0975": -0.15302930791740638,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_25.parquet",
+  "sha256": "d090b0053652304e424cb7e48d9ce784161504a2c843bd7d12850bc9056e28ba"
+ },
+ {
+  "combo_id": 26,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "opposite",
+   "confluence": "base",
+   "front_run_f": 2.5,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1360,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.04366391029849913,
+  "mean_net_R_c0975": -0.06607200352551294,
+  "mean_net_R_c150": -0.09083884340800155,
+  "bootstrap_lb_c0975": -0.16354270793563955,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_26.parquet",
+  "sha256": "27f561046810f76fa77a26dd1817c9a0a87e5190d69968f527217da595148433"
+ },
+ {
+  "combo_id": 27,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "opposite",
+   "confluence": "base",
+   "front_run_f": 2.5,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1364,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.024857493783840518,
+  "mean_net_R_c0975": -0.046831578940481136,
+  "mean_net_R_c150": -0.07111872569255752,
+  "bootstrap_lb_c0975": -0.15071130553361672,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_27.parquet",
+  "sha256": "b38b37269b8cc2e365f13a9d11c9a4751659c00832d0feda8f076050365347af"
+ },
+ {
+  "combo_id": 28,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "opposite",
+   "confluence": "counter",
+   "front_run_f": 2.0,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1227,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.05551805837572257,
+  "mean_net_R_c0975": -0.07802803377036645,
+  "mean_net_R_c150": -0.10290748025918348,
+  "bootstrap_lb_c0975": -0.1751425183416606,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_28.parquet",
+  "sha256": "fcc36f550814c897a97462e68c7f8de6e081e70f6ebdc72721ec4bbfbbfa84aa"
+ },
+ {
+  "combo_id": 29,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "opposite",
+   "confluence": "counter",
+   "front_run_f": 2.0,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1239,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.03697992704797644,
+  "mean_net_R_c0975": -0.05916568442550696,
+  "mean_net_R_c150": -0.08368678468488276,
+  "bootstrap_lb_c0975": -0.16080361472861782,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_29.parquet",
+  "sha256": "f510b374e827868ee1c06cc6fa67fa110cb11f5d2d83c68177f727b58683ce4b"
+ },
+ {
+  "combo_id": 30,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "opposite",
+   "confluence": "counter",
+   "front_run_f": 2.5,
+   "weekly_hl": "absent"
+  },
+  "n_trades": 1226,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.05797517381489295,
+  "mean_net_R_c0975": -0.08041693064027129,
+  "mean_net_R_c150": -0.10522097765779478,
+  "bootstrap_lb_c0975": -0.17778510924856583,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_30.parquet",
+  "sha256": "48e92d3a6e51050a8c51a6e64d5da886fbd8cf70aa8ac92ab9585fd37a8a41d6"
+ },
+ {
+  "combo_id": 31,
+  "forks": {
+   "cluster": "chain",
+   "invalidation": "opposite",
+   "confluence": "counter",
+   "front_run_f": 2.5,
+   "weekly_hl": "present"
+  },
+  "n_trades": 1239,
+  "sessions_processed": 501,
+  "mean_net_R_c050": -0.04015055568730204,
+  "mean_net_R_c0975": -0.062232786868819306,
+  "mean_net_R_c150": -0.08663946343786467,
+  "bootstrap_lb_c0975": -0.1622294909547389,
+  "sign_flip_050_150": false,
+  "clears": false,
+  "sealed_file": "/home/user/AI-trading-agents/research/vwap-bb/data/identity_churn_sweep/combo_31.parquet",
+  "sha256": "44bb2aa1c1183972104f0508c99590a1ccc660665bcc8e6f928c34449a083dd6"
+ }
+]

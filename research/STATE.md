@@ -15,10 +15,14 @@ report. Where a report disagrees, this file wins — see
 > comparison against 68.4% is a sanity check, not evidence. See
 > [`EVIDENCE-BASE-CORRECTION.md`](EVIDENCE-BASE-CORRECTION.md).
 
-N_trials: **1 of 5** (Amendment 02 budget: Stage 3 ×1 · Stage 4 ≤3 · Stage 5 ×1). Consumed
-2026-08-08 by sealing `workbench_results_SEALED_A15.parquet` under spec A1–A15 — **whether or
-not the file is ever opened**, per the standing rule. Holdout: **SEALED.** See RULINGS below —
-a seal event is on permanent record and must accompany any future holdout result.
+N_trials: **2 of 5** (Amendment 02 budget: Stage 3 ×1 · Stage 4 ≤3 · Stage 5 ×1 — Stage 3 has now
+used 2 of the 5, one more than its own ×1 allocation; **3 of 5 remain overall**, not the 4 the
+original plan assumed). Slot 1 consumed 2026-08-08 by sealing `workbench_results_SEALED_A15.parquet`
+under spec A1–A15 (later discarded unopened, not refunded). Slot 2 consumed 2026-08-08 by the
+identity-churn sweep (32 combinations, A1–A22) — **VERDICT: NO EDGE DEMONSTRATED**, every
+combination negative at every cost basis. See `IDENTITY-CHURN-SWEEP-RESULT.md` and the dated
+entry below. Holdout: **SEALED, never read.** See RULINGS below — a seal event is on permanent
+record and must accompany any future holdout result.
 
 > ### STANDING NOTE — a figure from a partial run is not a figure
 >
@@ -1096,3 +1100,52 @@ awaits the morning's 2c adjudication, b.1 awaits signature. **Verdict unchanged:
 now resting on b.1 and a.3 alone rather than on the absence of a run.
 
 **N_trials: 1 of 5.**
+
+---
+
+## 2026-08-08 — THE IDENTITY-CHURN SWEEP RUN. N_trials 2 of 5. VERDICT: NO EDGE DEMONSTRATED.
+
+**Preconditions met before this ran:** `PASS-MARKS-FOR-SIGNING.md` fully signed (all 8 items,
+item by item); A16 (limit-order entry), A17 (bounded-span clustering), A18–A21 (fork
+confirmations), A22 (2×ATR stop floor, Angus's own decision) implemented and fresh-verified
+(2a/2b, determinism confirmed for each). The discarded run's admission-gate/accounting mismatch
+is closed by A16; the sweep itself resolves the identity-churn clause (a-i) by running every
+documented fork-resolution combination and taking the minimum, exactly as pre-registered.
+
+**What ran, for the first time in this project's Amendment 05 work: an actual outcome
+computation.** `run_identity_churn_sweep.py` — 32 combinations of the five forks (cluster
+formation, §7 invalidation side, range confluence minimum, front-run F, weekly H/L presence),
+each built under the current A1–A22 base, each producing gross/net points and net R at the three
+pre-registered cost bases (`stage2_smoke.COSTS`: 0.50 / 0.975 / 1.50), exit resolved via
+`resolve_bar_stop_first` (ambiguous bars resolve stop-first). Each combination's trade-level data
+sealed separately (parquet + SHA-256, `data/identity_churn_sweep/combo_NN.parquet`).
+
+**The session-block bootstrap PREREGISTRATION.md §7.1 specifies had never been implemented
+anywhere in this project.** Built for this run: blocks = whole sessions, resample with
+replacement, 10,000 iterations, mean net R per iteration. **Disclosed convention** (the
+pre-registration states the block design and the corrected alpha but never the percentile or
+one- vs two-sided form): one-sided lower bound at the 1.25th percentile, matching the signed
+corrected alpha of 0.0125 (`PASS-MARKS-FOR-SIGNING.md` §10.3, ÷4).
+
+| | |
+|---|---|
+| Combinations evaluated | **32 / 32** |
+| Combinations clearing (positive mean, bootstrap lower bound > 0, no cost-sign-flip) | **0** |
+| Mean net R @ 0.975, range across all 32 | **−0.038 to −0.112** |
+| Mean net R @ 0.50 (most lenient cost), range across all 32 | **−0.016 to −0.091 — still negative in every combination** |
+| Mean net R @ 1.50 (most adverse cost), range across all 32 | **−0.063 to −0.135** |
+| Sign flip between 0.50 and 1.50 in any combination | **No — none needed one; every combination is negative at every cost level tested** |
+| Trade count range across the 32 combinations | **1,111 to 1,384** |
+
+**VERDICT: NO EDGE DEMONSTRATED.** Per (a-i)'s own text: *"A result positive under one resolution
+and negative under another is recorded as NO EDGE DEMONSTRATED, not as a pass on the favourable
+branch."* This result is stronger than that clause anticipated — every combination is negative,
+not just inconsistent in sign, and negative even at the most lenient cost basis tested. Full
+table of all 32 combinations, sealed file paths and hashes: `IDENTITY-CHURN-SWEEP-RESULT.md`.
+
+**N_trials: 2 of 5.** Amendment 02's original allocation gave Stage 3 exactly ×1 of the 5 — this
+run is Stage 3's SECOND consumption of the shared pool (the first was the discarded run, not
+refunded per the standing rule), one more than the original plan allocated to this stage. **3 of
+the 5 remain for whatever comes next**, not the 4 the original Stage 4 (≤3) + Stage 5 (×1) plan
+assumed would be available. This is stated plainly rather than silently absorbed: the discard
+cost more than its own slot — it also ate into the margin the later stages were planned around.
