@@ -943,3 +943,105 @@ nor "sequential" anywhere) in favour of the reading under which "confluence" kee
 meaning.
 
 **N_trials after A17: 1 of 5, unchanged.**
+
+### A18 — 2026-08-08 — §7 invalidation-at-entry: "the opposing ±1σ" resolved to same-side (the band the trade is heading into)
+
+**Change.** §7's *"Invalidation-at-entry: trigger candle simultaneously touching the opposing
+±1σ → stand down"* is operationalised as: for a long, "opposing" means the +1σ band (the side a
+long is heading INTO); for a short, the −1σ band. This matches the reading already implemented
+(`spec_current.py`'s `ny_sig_ok` gate) — A18 supplies the textual justification the implementation
+never had stated for it, and confirms rather than changes behaviour.
+
+**Reason — the alternative reading is self-defeating against the pattern it is nested under.**
+1. Read as plain English, "opposing" could mean the band on the far side from the trade's
+   direction (−1σ for a long) — that reading has real pull, which is why this was a fork at all.
+2. But §4's Pattern A ("Reversal") is *"over-extension and/or HTF range extreme → rejection block
+   against prior move → retest entry"* — a long under Pattern A is, by construction, expected to
+   originate FROM a rejection near a LOW extreme (commonly −1σ or beyond). Reading "opposing" as
+   −1σ for a long would invalidate the trigger candle for touching the very extreme the pattern
+   requires it to have rejected from, gutting Pattern A's own longs at the moment they qualify —
+   not filtering a rare degenerate case.
+3. Reading "opposing" as +1σ for a long (same-side, the band the anticipated move is heading
+   TOWARD) operationalises a coherent, narrow filter instead: if the SAME trigger candle that
+   confirms the setup has already reached into the target-side band, the reversal and its own
+   target happened inside one bar — a legitimate "already ran, don't chase" case, consistent with
+   this spec's repeated theme (§5.5's no-chase, §6.4's front-run) of declining to enter after a
+   move has already gone too far.
+4. Between a reading that is self-defeating against the pattern it filters and one coherent with
+   the rest of the document's own stated concerns, the coherent one is adopted. This is a judgment
+   call, disclosed as such — reasonable readers could land differently, exactly as A4's "valid"
+   disambiguation was.
+
+**Grounds.** No outcome was computed. The reasoning is drawn from §4's pattern definition and the
+document's recurring no-chase theme, not from any measured admission count or trade result.
+
+**Tag: [FIAT]. Confirms existing behaviour; no code change.**
+
+**N_trials after A18: 1 of 5, unchanged.**
+
+### A19 — 2026-08-08 — §7 confluence minimum: the "range" HTF state resolved to the base (2), not the raised (3), minimum
+
+**Change.** §7's *"Confluence minimum: 3 counter-trend; 2 with-trend at reduced risk"* is
+operationalised to cover all three HTF states §4 names (`with_trend`/`counter_trend`/`range`):
+the "range" state takes the base minimum of 2. Matches the reading already implemented — A19
+supplies the textual justification, confirms behaviour.
+
+**Reason.** §7's clause is a binary partition with no third bucket named, while §4 names three
+HTF flags. "Range," by definition, is the ABSENCE of an established trend — it cannot be
+counter-trend, because counter-trend requires a trend to be counter TO. The only textually
+consistent way to place an unnamed third category into an exhaustive-sounding binary is by
+exclusion from the one it plainly is not: since "range" is not counter-trend, it falls into the
+"not counter-trend" bucket, which is the clause's own 2-minimum case.
+
+**Grounds.** No outcome was computed; the reasoning is a logical exclusion from §7's own two
+named categories.
+
+**Tag: [FIAT]. Confirms existing behaviour; no code change.**
+
+**N_trials after A19: 1 of 5, unchanged.**
+
+### A20 — 2026-08-08 — §6.4 front-run F: "start 2–3 NQ pts" resolved to 2.0, the range's low end
+
+**Change.** §6.4's *"F: CALIBRATE (start 2–3 NQ pts)"* is operationalised as F = 2.0. Matches the
+reading already implemented (`vwapbb_a7_selector.FRONT_RUN_F`) — A20 supplies the textual
+justification, confirms behaviour.
+
+**Reason.** The clause's own word is "start" — "start 2–3" reads most naturally as "begin
+calibration AT 2, with 3 as an upper bound to test toward," not "begin at the range's midpoint."
+A starting point is naturally the range's own low end unless stated otherwise; nothing in §6.4
+suggests beginning at 2.5. The blind build's own alternative reading (2.5, the midpoint) is a real
+candidate with its own logic, but "start" reads textually closer to "low end" than to "centre."
+
+**Grounds.** No outcome was computed; the reasoning is a plain reading of the word "start" against
+the two numbers given.
+
+**Tag: [FIAT]. Confirms existing behaviour; no code change.** 3.0, the range's other boundary,
+remains a third defensible reading, excluded here for the same reason `FORK-SET-ENUMERATION.md`
+excluded it from the combination count — flagged, not silently dropped.
+
+**N_trials after A20: 1 of 5, unchanged.**
+
+### A21 — 2026-08-08 — §6 target menu: "weekly H/L" struck, joining the menu's other named-but-unbuilt items
+
+**Change.** §6's menu clause — *"...prior-day H/L; weekly H/L; pullback origin (B2); HTF range
+extremes"* — strikes "weekly H/L": ~~weekly H/L~~. Retained struck-through, per this project's
+standing traceability convention (A6 struck V3 the same way), rather than removed outright.
+
+**Reason.** No code path anywhere in this project computes a weekly high/low aggregate (confirmed
+by direct search, zero matches for any weekly-aggregation construct — `STRUCTURAL-LEVELS-AUDIT.md`
+row 2, `OUT-OF-SCOPE-BRANCHES.md` branch 9). This is the same situation as several already-struck
+or already-scoped-out menu items (Asia/London session boxes, VAH/VAL/HVN/LVN, pre-market H/L as a
+standalone menu entry) — a named-but-never-implemented quantity, not an ambiguous reading of one
+that IS implemented. Striking it here, rather than building fresh weekly-aggregation code this
+late in a pre-registration cycle, keeps this amendment about disambiguating what already exists
+rather than adding a new, unverified computation under time pressure.
+
+**Grounds.** No outcome was computed; the decision to strike rather than build rests on
+consistency with how every other named-but-unbuilt menu item in this spec has already been
+handled, not on what including weekly H/L would have produced.
+
+**Tag: [FIAT]. Confirms existing (non-)behaviour; no code change.** Building weekly H/L properly
+remains a live candidate for a FUTURE spec version, not foreclosed — only deferred, exactly like
+the other struck/scoped-out branches.
+
+**N_trials after A21: 1 of 5, unchanged.**
