@@ -6,8 +6,12 @@ inline beside each case. The detector was NOT executed to obtain any expectation
 and no expectation was adjusted after seeing a result. This file is committed on
 its own, before any run.
 
-Spec under test: strategy-definition-v1.0.md,
-SHA-256 42d6f0f68ed35bef0280be782c58f72059333222047841473ab74d5b9fbd83bf (A1-A13).
+Spec under test: strategy-definition-v1.0.md. Groups A-J were written against
+SHA-256 42d6f0f68ed35bef0280be782c58f72059333222047841473ab74d5b9fbd83bf (A1-A13) and
+have not been re-derived since (this header was not bumped at A14/A15 either; noted as
+a pre-existing housekeeping gap, not something this pass corrects retroactively).
+Groups K and L are written against A16/A17,
+SHA-256 9286ac1eadbedf49dba76715373cf9885b8034586933620e3d93476916aaf2b7 (A1-A21).
 
 Two kinds of expectation appear, and each case says which it is:
   [LIT]  a literal, reasoned from the quoted clause with no arithmetic borrowed
@@ -726,6 +730,117 @@ def group_j(ladder):
 
 
 # ════════════════════════════════════════════════════════════════════
+# GROUP K — A16 LIMIT FILL.  A16, quoted: "long fills iff bar_low <= limit; fill price
+# = limit, or the bar's open if the open itself already cleared the limit favourably
+# (min(open, limit) long / max(open, limit) short). ... short fills iff bar_high >=
+# limit ... No fill -> no trade." Touch is inclusive, matching this spec's touch
+# semantics elsewhere (resolve_bar_stop_first, S7 invalidation, over-extension).
+#
+# Disclosure: K1, K3 and K5 were sanity-checked once against limit_fill() while it was
+# being written, to confirm the extracted function matched its own docstring - this is
+# ordinary development, not test-fitting: the expected values below were reasoned from
+# A16's text first, and no expectation was adjusted after seeing a mismatch (there was
+# none). Nothing about a trade count, admission rate, or any other downstream quantity
+# was consulted at any point.
+# ════════════════════════════════════════════════════════════════════
+def group_k(limit_fill):
+    # K1 [LIT] long, bar range reaches down through the limit, open on the WORSE side
+    # (above the limit) -> fills, at the limit exactly (no better price available).
+    check("K1", "A16 long, reaches, open worse than limit", "[LIT]",
+          (True, 100.0), limit_fill("long", 100.0, 102.0, 103.0, 99.0))
+
+    # K2 [LIT] long, the bar opens THROUGH the limit favourably (open below limit) ->
+    # fills at the open, which is BETTER (lower) than the limit.
+    check("K2", "A16 long, gap-through, fills at the better open", "[LIT]",
+          (True, 98.0), limit_fill("long", 100.0, 98.0, 101.0, 97.0))
+
+    # K3 [LIT] long, the bar's low never reaches the limit -> no fill, no trade.
+    check("K3", "A16 long, bar never reaches the limit", "[LIT]",
+          (False, None), limit_fill("long", 100.0, 102.0, 103.0, 101.0))
+
+    # K4 [LIT] long, boundary: the bar's low touches the limit EXACTLY -> fills (touch
+    # inclusive, <=), consistent with this spec's touch convention elsewhere.
+    check("K4", "A16 long, exact touch is inclusive", "[LIT]",
+          (True, 100.0), limit_fill("long", 100.0, 101.0, 102.0, 100.0))
+
+    # K5 [LIT] short, mirror of K3: the bar's high never reaches the limit -> no fill.
+    check("K5", "A16 short, bar never reaches the limit", "[LIT]",
+          (False, None), limit_fill("short", 50.0, 48.0, 49.0, 47.0))
+
+    # K6 [LIT] short, the bar opens THROUGH the limit favourably (open above limit) ->
+    # fills at the open, which is BETTER (higher, for a sell) than the limit.
+    check("K6", "A16 short, gap-through, fills at the better open", "[LIT]",
+          (True, 52.0), limit_fill("short", 50.0, 52.0, 53.0, 51.0))
+
+    # K7 [LIT] short, the bar's high reaches the limit but the open was on the WORSE
+    # side (below the limit) -> fills at the limit exactly.
+    check("K7", "A16 short, reaches, open worse than limit", "[LIT]",
+          (True, 50.0), limit_fill("short", 50.0, 48.0, 51.0, 47.0))
+
+    # K8 [LIT] short, boundary: the bar's high touches the limit EXACTLY -> fills.
+    check("K8", "A16 short, exact touch is inclusive", "[LIT]",
+          (True, 50.0), limit_fill("short", 50.0, 48.0, 50.0, 47.0))
+
+
+# ════════════════════════════════════════════════════════════════════
+# GROUP L — A17 BOUNDED-SPAN CLUSTERING.  A17, quoted: "every level in an admitted
+# cluster is within the tolerance of every OTHER level in that cluster - equivalently,
+# for a sorted set, the cluster's span ... never exceeds the tolerance." This replaces
+# GROUP B's single-linkage chaining (vwapbb_signals.cluster_levels) for the A16-era
+# pipeline; GROUP B is left as-is, since it correctly describes the FROZEN function,
+# which A17 does not edit, only supersede for live use.
+#
+# Disclosure: L1 was sanity-checked once against cluster_levels_bounded() while it was
+# being written (same standing as K1/K3/K5 above) - reasoned from the text first, not
+# fitted to a result. L3's 76,108/15,986/50.53 figures (quoted in A17 itself) came from
+# a separate structural measurement script, not from this test file.
+# ════════════════════════════════════════════════════════════════════
+def group_l(cluster_levels_bounded):
+    # L1 [LIT] agreement case, identical to B2: when the whole group already fits
+    # inside the tolerance, bounded-span and chaining agree exactly.
+    check("L1", "A17, agreement case (matches B2)", "[LIT]",
+          [(100.0, 105.0, {"bb", "vwap"}, 2)],
+          cluster_levels_bounded([(100.0, "bb"), (105.0, "vwap")], 10.0))
+
+    # L2 [LIT] THE CASE A17 EXISTS TO FIX. 0, 4, 8 with tolerance 5: chaining (GROUP B's
+    # function) would join all three (span 8, over tolerance) because each consecutive
+    # gap is <= 5. Bounded-span cannot: 8 is 8 away from 0 (the group's min), over
+    # tolerance, so 8 starts a fresh group of its own and - alone - forms no cluster at
+    # all (>=2 required, per B1). Result: one cluster, {0, 4}, span 4.
+    check("L2", "A17, the degenerate chaining case, fixed", "[LIT]",
+          [(0.0, 4.0, {"a", "b"}, 2)],
+          cluster_levels_bounded([(0.0, "a"), (4.0, "b"), (8.0, "c")], 5.0))
+
+    # L3 [LIT] GROUP B6's own scenario (100, 107, 114; gaps 7 and 7; tolerance 10),
+    # reclassified from UNSPECIFIED (B6 only OBSERVED it, asserting nothing, because
+    # the pre-A17 spec never said which reading applied) to a real, asserted case now
+    # that A17 resolves the ambiguity B6 recorded. 114 is 14 from the group's min (100)
+    # -> excluded; alone, it forms no cluster.
+    check("L3", "A17, B6's own case resolved (was UNSPECIFIED)", "[LIT]",
+          [(100.0, 107.0, {"bb", "vwap"}, 2)],
+          cluster_levels_bounded([(100.0, "bb"), (107.0, "vwap"), (114.0, "poc")], 10.0))
+
+    # L4 [LIT] the practical case A17's amendment text cites: a one-sided VWAP band
+    # ladder (mid, +1sig, +2sig, +3sig at a 4-pt sigma) must NOT auto-cluster end-to-end
+    # under chaining just because each adjacent pair is close. Bounded-span correctly
+    # drops the level that would push the span over tolerance (112 is 12 from the
+    # group's min of 100), keeping a 3-member cluster spanning 8, not a 4-member one
+    # spanning 12.
+    check("L4", "A17, one-sided VWAP ladder does not over-cluster", "[LIT]",
+          [(100.0, 108.0, {"vwap"}, 3)],
+          cluster_levels_bounded([(100.0, "vwap"), (104.0, "vwap"),
+                                  (108.0, "vwap"), (112.0, "vwap")], 10.0))
+
+    # L5 UNSPECIFIED IN SPEC - exact-tolerance boundary. Same status as B5: SS3 writes
+    # "~10 NQ pts", an approximate quantity, so whether a gap of exactly 10.00 is
+    # inside is not decided by the text, under bounded-span any more than it was under
+    # chaining. Behaviour recorded, nothing asserted.
+    observe("L5", "A17 (carrying B5's own note forward), exact-tolerance boundary",
+            "gap of exactly 10.00 - inclusive or exclusive is UNSPECIFIED",
+            cluster_levels_bounded([(100.0, "bb"), (110.0, "vwap")], 10.0))
+
+
+# ════════════════════════════════════════════════════════════════════
 def main():
     from vwapbb_opportunity import trig
     from vwapbb_signals import cluster_levels
@@ -733,6 +848,7 @@ def main():
     from spec_current import (htf_flag_a10, ny_sigma_eligible,
                               signal_candidates_current, round_against_trader,
                               round_away_from_entry)
+    from spec_a16 import limit_fill, cluster_levels_bounded
 
     group_a(trig)
     group_b(cluster_levels)
@@ -744,6 +860,8 @@ def main():
     group_h(signal_candidates_current)
     group_i(round_against_trader, round_away_from_entry)
     group_j(ladder)
+    group_k(limit_fill)
+    group_l(cluster_levels_bounded)
 
     npass = sum(1 for r in RESULTS if r[5] == "PASS")
     nfail = len(RESULTS) - npass
