@@ -409,8 +409,13 @@ def build_daily_levels(bars: pd.DataFrame,
         if bins.empty:
             continue
         poc, val, vah = value_area(bins, va_pct)
+        # largest close-to-close step between consecutive raw bars INSIDE the
+        # session. A contract splice that lands mid-session shows up here as a
+        # step of 100+ points; ordinary 1-minute moves are an order smaller.
+        jump = grp["close"].diff().abs()
         rows.append({
             "session": sess,
+            "max_intrabar_jump": float(jump.max()) if jump.notna().any() else 0.0,
             "poc": poc, "val": val, "vah": vah,
             "sess_high": float(agg["high"].max()),
             "sess_low": float(agg["low"].min()),
@@ -444,22 +449,31 @@ def build_daily_levels(bars: pd.DataFrame,
 
     # ---- contract-roll detection -------------------------------------------
     # On an UNADJUSTED front-month splice the series jumps by the calendar spread
-    # at each roll. The session immediately after a roll compares today's price in
-    # the NEW contract against a POC computed in the OLD one, which measures the
-    # roll spread rather than market position. Those sessions are flagged and
-    # dropped. Detection is a robust (MAD-based) outlier test on the overnight gap,
-    # which is preferred over a supplied roll-date list because it catches splice
-    # errors and mid-session rolls too. Only the gapping session is dropped: its
-    # own prev-day levels are cross-contract, whereas the following session's come
-    # from the new contract and are clean.
-    gap = prof["sess_open"].to_numpy(dtype=float) - prof["sess_close"].shift(1).to_numpy(dtype=float)
-    out["overnight_gap"] = gap
-    finite = np.isfinite(gap)
+    # at each roll. If that splice lands mid-session, the session's volume profile
+    # is built across two contracts and its POC/VAH/VAL are meaningless.
+    #
+    # Detection is a robust (MAD-based) outlier test on the largest close-to-close
+    # step between consecutive bars INSIDE the session.
+    #
+    # This deliberately replaces an earlier test on the overnight gap (session open
+    # minus previous session close). That test could only see a discontinuity that
+    # fell exactly on the session boundary, so it missed every mid-session splice -
+    # which is the only kind that actually corrupts a profile - while flagging
+    # ordinary large overnight gaps instead. A mid-session splice is invisible at
+    # the boundary and unmistakable intra-session, so this is where to look.
+    #
+    # Note this fires on the session CONTAINING the step, which is the session whose
+    # profile is corrupt. A splice aligned to the session boundary produces no
+    # intra-session step and is correctly not flagged: it needs no exclusion,
+    # because no profile spans it.
+    jump = prof["max_intrabar_jump"].to_numpy(dtype=float)
+    out["max_intrabar_jump"] = jump
+    finite = np.isfinite(jump)
     if finite.sum() > 20:
-        med = float(np.median(gap[finite]))
-        mad = float(np.median(np.abs(gap[finite] - med)))
+        med = float(np.median(jump[finite]))
+        mad = float(np.median(np.abs(jump[finite] - med)))
         scale = 1.4826 * mad if mad > 0 else np.nan
-        z = np.abs(gap - med) / scale if np.isfinite(scale) else np.zeros_like(gap)
+        z = (jump - med) / scale if np.isfinite(scale) else np.zeros_like(jump)
         out["roll_z"] = z
         out["roll_flag"] = np.where(np.isfinite(z), z > roll_sigma, False)
     else:
@@ -880,14 +894,18 @@ def _drop_rolls(levels: pd.DataFrame) -> Tuple[pd.DataFrame, dict]:
     count can be sanity-checked against the known number of rolls in the file."""
     flag = levels["roll_flag"].fillna(False).astype(bool)
     dates = [str(d) for d in levels.index[flag]]
-    gaps = [round(float(g), 2) for g in levels.loc[flag, "overnight_gap"]]
+    jumps = [round(float(g), 2) for g in levels.loc[flag, "max_intrabar_jump"]]
     info = {"sessions_dropped": int(flag.sum()),
             "dropped_dates": dates,
-            "dropped_gaps_points": gaps,
-            "note": ("Expect roughly one per contract roll. Far more means the "
-                     "threshold is too tight or the splice is faulty; far fewer "
-                     "means rolls are not being caught and cross-contract POC "
-                     "comparisons are still in the population.")}
+            "dropped_max_intrabar_jump_points": jumps,
+            "note": ("Flags sessions whose profile spans a contract splice, via the "
+                     "largest intra-session bar-to-bar step. On a bar file spliced "
+                     "AT the session boundary the correct count is ~0, because no "
+                     "profile spans the roll. On a file spliced mid-session expect "
+                     "one per roll. A count far above the roll count means genuine "
+                     "news minutes are being caught too - check the reported step "
+                     "sizes against the known calendar-spread width before trusting "
+                     "the exclusion.")}
     return levels.loc[~flag].copy(), info
 
 
