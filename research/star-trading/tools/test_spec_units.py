@@ -841,6 +841,64 @@ def group_l(cluster_levels_bounded):
 
 
 # ════════════════════════════════════════════════════════════════════
+# GROUP M — A22 ATR(20) STOP FLOOR.  A22, quoted: "True Range per closed entry-TF bar:
+# max(high-low, |high-prev_close|, |low-prev_close|) ... Lookback: 20 bars ... Smoothing:
+# simple average ... Warmup: a candidate's entry TF needs 20 closed bars before ATR is
+# available." This is a DECISION (Angus's own choice among pre-existing figures), not a
+# textual disambiguation, so [LIT]/[FORM] tags describe the ARITHMETIC only.
+# ════════════════════════════════════════════════════════════════════
+def group_m(true_range, compute_atr):
+    # M1 [FORM] True Range, the ordinary case: today's range exceeds either gap-from-
+    # yesterday's-close term.
+    close("M1", "A22 True Range, range exceeds either gap term", "[FORM]",
+          5.0, true_range(105.0, 100.0, 102.0), 1e-9)
+
+    # M2 [FORM] True Range, a gap UP dominates: yesterday's close is below today's own
+    # low, so |high-prev_close| is the largest term.
+    close("M2", "A22 True Range, gap up dominates", "[FORM]",
+          10.0, true_range(105.0, 103.0, 95.0), 1e-9)
+
+    # M3 [FORM] True Range, a gap DOWN dominates: yesterday's close is above today's own
+    # high, so |low-prev_close| is the largest term.
+    close("M3", "A22 True Range, gap down dominates", "[FORM]",
+          10.0, true_range(97.0, 95.0, 105.0), 1e-9)
+
+    # M4 [LIT] warmup: fewer than 21 closed bars (20 True Range values, each needing a
+    # prior close) -> None, exactly as "a candidate's entry TF needs 20 closed bars
+    # before ATR is available" requires. 10 bars -> 9 TR values -> not warmed up.
+    bars10 = [(100.0 + i, 101.0 + i, 99.0 + i, 100.5 + i) for i in range(10)]
+    check("M4", "A22 warmup, fewer than 21 closed bars => None", "[LIT]",
+          None, compute_atr(bars10, n=20))
+
+    # M5 [FORM] warmup boundary: exactly 21 closed bars (20 True Range values) is enough
+    # - a constant-range synthetic series makes the expected ATR exact by construction.
+    bars21 = [(100.0, 102.0, 98.0, 100.0)] * 21   # every bar identical: TR = 4.0 always
+    close("M5", "A22 warmup boundary, exactly 21 bars => ATR available", "[FORM]",
+          4.0, compute_atr(bars21, n=20), 1e-9)
+
+    # M6 [LIT] simple average, not Wilder's smoothing: a constant series must average to
+    # exactly the constant True Range, which any exponential scheme would also do, but a
+    # series with ONE outlier distinguishes them - simple average is unaffected by
+    # ORDER, so moving the outlier to the front vs the back gives the SAME result. This
+    # is the property A22's "simple average (not Wilder's)" text asserts.
+    base = [(100.0, 102.0, 98.0, 100.0)] * 20 + [(100.0, 130.0, 98.0, 100.0)]
+    outlier_last = base
+    outlier_first = [base[-1]] + base[:-1]
+    a_last = compute_atr(outlier_last, n=20)
+    a_first = compute_atr(outlier_first, n=20)
+    check("M6", "A22 simple average, order-independent (not Wilder's)", "[LIT]",
+          True, abs(a_last - a_first) < 1e-9)
+
+    # M7 [FORM] the floor itself, computed from compute_atr's own return value rather
+    # than a hand-copied constant: A22's text is "2 x ATR(20, entry TF)" - a direct
+    # multiplication, no rounding or clamping stated. Reuses M5's constant-range series
+    # (ATR = 4.0 by construction) so the expected floor (8.0) is independently reasoned
+    # from the text, not fitted to whatever compute_atr happens to return.
+    atr = compute_atr(bars21, n=20)
+    close("M7", "A22 '2 x ATR(20, entry TF)'", "[FORM]", 8.0, 2.0 * atr, 1e-9)
+
+
+# ════════════════════════════════════════════════════════════════════
 def main():
     from vwapbb_opportunity import trig
     from vwapbb_signals import cluster_levels
@@ -849,6 +907,7 @@ def main():
                               signal_candidates_current, round_against_trader,
                               round_away_from_entry)
     from spec_a16 import limit_fill, cluster_levels_bounded
+    from spec_a22 import true_range, compute_atr
 
     group_a(trig)
     group_b(cluster_levels)
@@ -862,6 +921,7 @@ def main():
     group_j(ladder)
     group_k(limit_fill)
     group_l(cluster_levels_bounded)
+    group_m(true_range, compute_atr)
 
     npass = sum(1 for r in RESULTS if r[5] == "PASS")
     nfail = len(RESULTS) - npass
