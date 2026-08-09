@@ -12,7 +12,7 @@ combinations exist, fixed before any of them is computed, exactly as the clause 
 
 | # | fork | reading A | reading B | governing text |
 |---|---|---|---|---|
-| **1** | **Cluster formation** | **Mutual proximity** — every level in a cluster within tolerance of every other (current) | **Single-linkage chaining** — consecutive sorted gap ≤ tolerance, span may exceed it | §3: *"within proximity tolerance"* — undefined which |
+| **1** | **Cluster formation** | **Mutual proximity** — every level in a cluster within tolerance of every other | **Single-linkage chaining** — consecutive sorted gap ≤ tolerance, span may exceed it (current) | §3: *"within proximity tolerance"* — undefined which |
 | **2** | **§7 invalidation band** | **Same-side band** — the NY ±1σ band the trade is heading *into* (+1σ long, −1σ short) (current) | **Opposite-side band** — the NY ±1σ band the trade is heading *away from* (−1σ long, +1σ short) | §7: *"the opposing ±1σ"*, `[Hypothesis — test]` |
 | **3** | **`range` confluence minimum** | **2** — `range` is not counter-trend, so it takes the base requirement (current) | **3** — `range` is treated as requiring the raised (counter-trend) minimum | §7 names only 2 of §4's 3 HTF flags |
 | **4** | **Front-run F** | **2.0** — low end of the stated range (current, `vwapbb_a7_selector.FRONT_RUN_F`) | **2.5** — the midpoint (blind build's reading) | §6.4: *"F: CALIBRATE (start 2–3 NQ pts)"* — a range, not a value |
@@ -21,6 +21,10 @@ combinations exist, fixed before any of them is computed, exactly as the clause 
 **Combinations: 2⁵ = 32.** Every combination yields an admission list somewhere near the
 1,450–1,600 range the sweep already measured (±3% on count, per Amendment 05's original finding),
 each one a population that could plausibly be mistaken for "the" result.
+
+## 1-bis. Errata — fork 1's "(current)" label was on the wrong reading
+
+**Found 2026-08-08, while building the minimal-frozen-spec population count.** `vwapbb_signals.cluster_levels()`, the function `spec_current.py` and `invariants_2b.py` both actually import and call, compares each candidate only to the **last accepted member of the running cluster** (`p - cur[-1][0] <= tol`), not to every member. Verified directly: `cluster_levels([(0,'a'),(4,'b'),(8,'c')], tol=5)` returns one cluster spanning **0 to 8** — a span of 8, which exceeds the tolerance of 5. Mutual proximity could never produce that (0 and 8 are 8 apart, over tolerance); only chaining does. **The code is single-linkage chaining. The row above is corrected in place** (not silently — this note exists so the earlier mislabeling isn't lost); nothing about the fork's existence, its two readings, or the 32-combination count changes. This does not touch anything already run: no admission list, sealed or otherwise, has been built under a "mutual proximity" reading — the correction only affects which label to attach to code that has been running as chaining all along.
 
 ## 2. A third reading exists on fork 4 and is deliberately excluded, with the reason stated
 
