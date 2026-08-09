@@ -99,6 +99,48 @@ sign as drafted** — 0.975 is the mid cost basis already used throughout (`COST
 "c0975": 0.975, "c150": 1.50}`), and the abort condition below already covers the case where the
 sign flips at a different cost.
 
+### (a-i) THE IDENTITY-CHURN CLAUSE — ADDED 2026-08-08, Amendment 05, before signing
+
+> **Stage 3's expectancy is computed under one resolution of four documented spec ambiguities.
+> The ambiguity sweep shows each resolution changes trade identity by 32–45% while changing
+> trade count by under 3%. The pass mark is therefore evaluated as the minimum across every
+> documented resolution combination, at the base cost basis. A result positive under one
+> resolution and negative under another is recorded as NO EDGE DEMONSTRATED, not as a pass on
+> the favourable branch.**
+
+**Why this is being added to a document already being signed, rather than filed as a separate
+finding.** The blind build's fork sweep (`data/2c-raw/NOTES.md`, `sensitivity.py`) measured what
+2C-ADJUDICATION.md's A-01 shift test confirms independently: swapping a single documented
+ambiguity's resolution — cluster linkage (A-04), the invalidation side (A-07), or the `range`
+confluence minimum (A-06) — leaves the **admitted count** within ±3% while changing **which
+trades** are admitted by 32–45%. Four such forks are documented and unresolved by the spec text
+itself (§3's "proximity tolerance," §7's incomplete confluence table, §7's invalidation
+`[Hypothesis — test]` tag, §6.4's F range). **A pass mark that only ever sees one resolution has
+not tested the strategy — it has tested one arbitrary reading of four unwritten sentences, and a
+different overnight run of this same project could easily have landed on a different one.**
+
+**Confirmed in writing: this does NOT increase N_trials, and here is why.** A multiple-comparisons
+correction exists to control the false-positive rate of a procedure that **selects** the most
+favourable result from among several candidates — the danger is trying k variants and reporting
+the best one, which inflates the chance of a spurious pass. **Taking the minimum across a
+pre-specified set of variants is the opposite operation.** It is a conjunction: the criterion is
+satisfied only if **every** variant clears the bar, decided *before* any of them is computed, with
+no selection step anywhere in it. A procedure that can only make the pass condition **harder** to
+satisfy cannot inflate a false-positive rate — it can only lower it. This is the same logic
+already in force elsewhere in this project: taking the **minimum** across cost bases (already
+part of §7.2's abort condition) has never been treated as a second trial, for the identical
+reason. `N_trials` stays at **1** for Stage 3.
+
+**What this requires operationally, recorded so it is not lost between now and the run:** the
+"every documented resolution combination" in the clause means, at minimum, the fork set the
+sweep already measured — cluster linkage, invalidation side, `range` confluence minimum — and
+should also include the front-run F range (§6.4, "start 2–3 NQ pts" is itself unresolved in the
+frozen detector, which fixed F=2.0) and the target-menu question of weekly H/L (§6's menu vs
+`OUT-OF-SCOPE-BRANCHES.md` branch 9). **Enumerating the exact combination set is a pre-registration
+task in its own right and is not done by this clause alone** — this clause fixes the *combining
+rule* (minimum, at base cost); the *fork set* it runs over needs its own explicit list before
+Stage 3 is ever re-run under it.
+
 ### (b) Abort condition 3 — sign change across cost levels
 **Options:** **abort** (a sign change between cost bases voids the run entirely, no verdict
 read) or **annotate** (report the sign change as a finding, alongside whatever the mid-cost

@@ -58,24 +58,22 @@ minutes, and if it changed something, the seal was already void.
 
 ---
 
-## 3. VERDICT AS AT 2026-08-08 — UPDATED after item 11
+## 3. VERDICT AS AT 2026-08-08 — UPDATED after item 11, then after the morning's 2c adjudication
 
 > # DO NOT OPEN
 
-**Still not a close call — but for a much narrower reason than the original writing.** Items 2–6
-of the overnight queue closed a.1 and a.2 outright; a.3 remains unadjudicated by explicit
-instruction (deferred to the morning); b.1 is the clause now doing all the work.
+**a.3 is now adjudicated** (`2C-ADJUDICATION.md`, Amendment 05 item 1). **b.1 is the only clause
+left unmet.**
 
 | clause | status | why |
 |---|---|---|
 | **precondition** | **MET** | a sealed Stage 3 run exists, `0caf65cf…`, 1,472 rows, N_trials 1 of 5 |
 | **a.1** | **PASSES** | 81 tests, 77 pass. The 4 failures are the same two mis-constructed test bars, deliberately left unedited — **no detector bug**. Every new A14/A15 case and both reclassified D4/D5 pass on real clauses |
 | **a.2** | **PASSES** | 10 invariants over the full 1,472-trade list, all `PASS` at a full evaluated count except invariant 7, which is **`MOVED`** to 2a (15/15 pass there, on synthetic bars, closing what was `NOT TESTABLE`) — not left `NOT TESTABLE` in place, which is what a.2 actually forbids |
-| **a.3** | **collected, not adjudicated** | mechanical diff run (`2C-RAW-COLLECTION.md`): 1,472 detector trades vs 1,583 blind-build trades, 20 exact key matches, 1,452/1,563 one-sided, all 20 matches disagreeing on every field. **No verdict rendered by explicit instruction** — item 7 was split, and the adjudication is reserved for the morning review. a.3 cannot be marked met or failed until that happens |
-| **b.1** | **FAILS** | The pass marks are **prepared** (`PASS-MARKS-FOR-SIGNING.md`) but **not signed**. Four OPEN items in `PREREGISTRATION.md` §10 remain open |
+| **a.3** | **MET** | `2C-ADJUDICATION.md`: every one of the 3,035 raw disagreements traces to **spec ambiguity** or a **documented, already-ruled scope limitation** (weekly H/L, `OUT-OF-SCOPE-BRANCHES.md` branch 9) — none to a detector bug, none to a second-build bug. **Source isolation held**; **output isolation leaked narrowly** (7 of 28 decisions touched a published detector figure, mostly as corroboration rather than as the deciding vote) on dimensions confirmed **not** to explain the diff's size — a direct empirical test of A-01's own hypothesis (a uniform minute-label shift) found it explains only 24–36% of the residual, not "the whole explanation" its own text speculated. a.3's rule is satisfied by its own second clause: *"every disagreement is adjudicated to spec ambiguity rather than to a bug in either implementation"* |
+| **b.1** | **FAILS** | The pass marks are **prepared** (`PASS-MARKS-FOR-SIGNING.md`, now carrying the Amendment 05 identity-churn clause) but **not signed**. Four OPEN items in `PREREGISTRATION.md` §10 remain open |
 
-**The operative clause is now b.1 alone, with a.3 undetermined.** Both must resolve — b.1 needs a
-signature; a.3 needs the morning's adjudication of the 2c diff — before this verdict can move.
+**The operative clause is now b.1 alone.** Sign the pass marks, and clause (a) is fully met.
 
 ---
 
