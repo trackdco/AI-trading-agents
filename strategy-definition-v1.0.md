@@ -819,3 +819,74 @@ output. Caught while writing item 6's new test cases for the boundary, before an
 written against the wrong version. **Corrected above; nothing about the rule itself changed, only
 the sentence describing it.** No trade was ever computed under the wrong reading — no code
 implements the erroneous sentence, only the spec's prose stated it backwards for a few hours.
+
+### A16 — 2026-08-08 — §5.3/§5.5 operationalised: entry fills as a true limit order; PREREGISTRATION 4.2's next-open convention becomes a disclosed sensitivity, not a candidate
+
+**Change.** The entry order described in §5.3 ("limit at [level]") and §5.5 ("No fill → no
+chase... order cancels if price runs T_cancel points beyond entry without filling") is now
+operationalised exactly as those clauses name it: a resting LIMIT order. **Fill rule:** the order
+fills at the limit price, or better, if the one bar immediately following the signal bar's close
+reaches it; if that bar's range never reaches the limit, there is no trade. `PREREGISTRATION.md`
+4.2's "fills unconditionally at the next bar's open" convention — used throughout Stage 2 and the
+discarded Stage 3 run — is retained **only** as a disclosed sensitivity: computed and reported
+alongside the limit-order population for comparison, **never as a second candidate the pass marks
+could select between.**
+
+**Reason — pre-committed on the evidence already in the text, not on any result.**
+1. §5.3's own words are the order type. Every one of the three tournament variants (E1/E2/E3)
+   reads "limit at [level]" under a section header that is literally "Limit price." A price whose
+   defining property is that it is a limit is, by construction, a limit order.
+2. §5.5 corroborates it and only makes sense under it. "No fill → no chase. Order cancels if price
+   runs T_cancel points beyond entry without filling" describes a resting order that CAN fail to
+   fill — a market order cannot fail to fill, so a no-chase-cancel clause is meaningless unless
+   the order it describes is a limit order. This is textual corroboration, not an inference from
+   any measured behaviour.
+3. The single-bar window is the only reading that does not invent a parameter. T_cancel has no
+   stated value and is disabled everywhere in this project (`FILL-MECHANICS-QUOTES.md` §2). A
+   limit order resting across more than one bar needs some stated duration; since none exists,
+   the only window available without fabricating a number is the one bar the signal already
+   designates as the earliest actionable bar (4.2's own bar, reused for its timing only, not its
+   unconditional-fill rule).
+4. Grounds are structural, not statistical. Nothing above cites a P&L, a win rate, or a comparison
+   between the limit and market-at-open populations. The basis is what the spec's own words say an
+   order IS, not which reading produces more, fewer, better, or worse trades.
+
+**What changes operationally.**
+- Fill: long fills iff the fill-window bar's low ≤ limit; short iff its high ≥ limit. Fill price =
+  the limit, or the bar's open if the open itself already cleared the limit favourably
+  (`min(open, limit)` long / `max(open, limit)` short).
+- No fill → no trade. The signal is not retried on a later bar — §5.5's own no-chase clause
+  already says the order cancels rather than persisting, and no later window is stated anywhere
+  the spec could supply one from.
+- Exit resolution (stop-vs-target) is unchanged. This amendment touches only how a trade enters,
+  not how it is managed once filled.
+
+**Market-at-open — retained, never a competing candidate.** `PREREGISTRATION.md` 4.2 already
+discloses that its convention "departs from E1's stated limit-at-the-BB-MA" and is "worse than a
+filled limit and better than nothing." That self-disclosed departure is preserved as a
+documented, always-computed SENSITIVITY figure — reported next to the limit-order population in
+every future report so the size of the divergence stays visible — but it is retired as a thing
+the pass marks, or any future selection, could choose INSTEAD of the limit mechanism. Limit is
+the pre-registered mechanism. Market-at-open is a disclosed comparison point, not an alternative
+on the table.
+
+**Grounds.** No outcome was computed, no P&L, no configuration compared by result. The decision
+rests on what §5.3 and §5.5 already say an order is, and on which fill window can be built
+without inventing an unstated parameter.
+
+**Tag: [FIAT]**, resting on the order-type finding already made in `FILL-MECHANICS-QUOTES.md` and
+the single-bar-window finding already used in `MINIMAL-FROZEN-SPEC-BUILD.md` /
+`IMPLEMENTED-LEVELS-LIMIT-FILL-BUILD.md`. §5.3 and §5.5 stated no minimum rest duration and no
+operationalised fill test; A16 supplies both, from the text alone.
+
+**Consequences, recorded so they are not rediscovered later:**
+- The discarded Stage 3 run (`STAGE3-DISCARDED.md`) was built under the market-at-open convention
+  this amendment now demotes to a sensitivity. Its 65.2%-below-1.5R finding was the evidence that
+  forced this amendment; A16 does not retroactively validate that run, which stays discarded and
+  unopened.
+- This is a change to the trader, not a patch: `admit_current` (`spec_current.py`) and
+  `invariants_2b._admit` are both superseded by a new admission function under this amendment.
+- Every admission list built from this point forward carries BOTH figures — limit-fill
+  (canonical) and market-at-open (disclosed sensitivity) — as a matter of course.
+
+**N_trials after A16: 1 of 5, unchanged.** No outcome was computed to arrive at this amendment.
