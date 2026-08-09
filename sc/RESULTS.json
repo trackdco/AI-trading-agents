@@ -1,0 +1,169 @@
+{
+  "metric": "R",
+  "r_available": true,
+  "r_source": "derived from entry_price and stop_price",
+  "counts": {
+    "trades_in_file": 260,
+    "trades_in_ny_window": 260,
+    "dropped_no_levels": 2,
+    "trades_analysed": 258
+  },
+  "baseline": {
+    "R": {
+      "n": 258,
+      "mean": 0.050616250223828846,
+      "median": 0.07823604734591451,
+      "win_rate": 0.5232558139534884,
+      "sum": 13.058992557747843,
+      "std": 0.7441677467324948
+    },
+    "points": {
+      "n": 258,
+      "mean": 1.5184875067148653,
+      "median": 2.3470814203774353,
+      "win_rate": 0.5232558139534884,
+      "sum": 391.7697767324353,
+      "std": 22.325032401974845
+    }
+  },
+  "filters": {
+    "F1_golden_rule": {
+      "description": "entry vs previous-day POC (18:00-16:30 ET profile, 68% VA)",
+      "level_column": "prev_poc",
+      "real_lift": -0.005145654401443121,
+      "aligned_bootstrap_ci95": [
+        -0.08887823416969867,
+        0.17745903201921723
+      ],
+      "aligned": {
+        "R": {
+          "n": 113,
+          "mean": 0.045470595822385725,
+          "median": 0.016549965274437757,
+          "win_rate": 0.5221238938053098,
+          "sum": 5.138177327929587,
+          "std": 0.7196811982166014
+        },
+        "points": {
+          "n": 113,
+          "mean": 1.364117874671572,
+          "median": 0.4964989582331327,
+          "win_rate": 0.5221238938053098,
+          "sum": 154.14531983788766,
+          "std": 21.59043594649804
+        }
+      },
+      "opposed": {
+        "R": {
+          "n": 145,
+          "mean": 0.054626311929781055,
+          "median": 0.08332468363842054,
+          "win_rate": 0.5241379310344828,
+          "sum": 7.920815229818253,
+          "std": 0.7651624263009265
+        },
+        "points": {
+          "n": 145,
+          "mean": 1.6387893578934318,
+          "median": 2.499740509152616,
+          "win_rate": 0.5241379310344828,
+          "sum": 237.62445689454762,
+          "std": 22.954872789027796
+        }
+      },
+      "nulls": {
+        "null_A_offset_preserving": {
+          "draws": 60,
+          "mean": -0.0044152054841809455,
+          "p95": 0.03641430482732646,
+          "p99": 0.047711412359984544,
+          "max": 0.05068976711224861
+        },
+        "null_B_day_shuffled": {
+          "draws": 60,
+          "mean": 0.0073014213841962345,
+          "p95": 0.06777615808909838,
+          "p99": 0.0827594358426547,
+          "max": 0.08398681360532076
+        }
+      },
+      "verdict": "NO LIFT (fails a null)"
+    },
+    "F2_midnight_open": {
+      "description": "entry vs 00:00 ET open (premium/discount)",
+      "level_column": "midnight_open",
+      "real_lift": 1.1398123607557487e-05,
+      "aligned_bootstrap_ci95": [
+        -0.07461153874337147,
+        0.1758029520258847
+      ],
+      "aligned": {
+        "R": {
+          "n": 146,
+          "mean": 0.0506276483474364,
+          "median": 0.06917490579847557,
+          "win_rate": 0.5068493150684932,
+          "sum": 7.391636658725715,
+          "std": 0.7788085140241946
+        },
+        "points": {
+          "n": 146,
+          "mean": 1.5188294504230926,
+          "median": 2.075247173954267,
+          "win_rate": 0.5068493150684932,
+          "sum": 221.7490997617715,
+          "std": 23.36425542072584
+        }
+      },
+      "opposed": {
+        "R": {
+          "n": 112,
+          "mean": 0.0506013919555547,
+          "median": 0.08081025098526878,
+          "win_rate": 0.5446428571428571,
+          "sum": 5.667355899022127,
+          "std": 0.6998984257229525
+        },
+        "points": {
+          "n": 112,
+          "mean": 1.5180417586666408,
+          "median": 2.424307529558064,
+          "win_rate": 0.5446428571428571,
+          "sum": 170.02067697066377,
+          "std": 20.996952771688573
+        }
+      },
+      "nulls": {
+        "null_A_offset_preserving": {
+          "draws": 60,
+          "mean": -0.001712103231683137,
+          "p95": 0.036673451057496025,
+          "p99": 0.052150363188697334,
+          "max": 0.05216026586483402
+        },
+        "null_B_day_shuffled": {
+          "draws": 60,
+          "mean": -0.007593858182365403,
+          "p95": 0.0453104273560392,
+          "p99": 0.07053248807998906,
+          "max": 0.07286741042253043
+        }
+      },
+      "verdict": "NO LIFT (fails a null)"
+    }
+  },
+  "f3_base_rates": {
+    "canonical_80pct_rule": {
+      "triggers": 54,
+      "hits": 22,
+      "rate": 0.4074074074074074,
+      "note": "Independent tests on ES cluster at 60-70%, not 80%. A result far outside that band on NQ is more likely a pipeline fault than a finding."
+    },
+    "zarb_poc_engagement_variant": {
+      "triggers": 86,
+      "hits": 62,
+      "rate": 0.7209302325581395,
+      "note": "No published base rate exists for this variant. It does not inherit the canonical rule's evidence."
+    }
+  }
+}

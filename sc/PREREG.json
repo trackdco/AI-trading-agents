@@ -1,0 +1,28 @@
+{
+  "config": {
+    "placebo_draws": 60,
+    "profile_tf": 30,
+    "seed": 20260810,
+    "session_close": "16:30:00",
+    "session_open": "18:00:00",
+    "va_pct": 0.68
+  },
+  "decision_rule": "A filter is declared to show lift ONLY IF its real statistic exceeds the 95th percentile of BOTH null distributions (offset-preserving and day-shuffled), each built from 60 draws. Failing either null = no lift. Buckets with n < 30 are reported descriptively with no verdict.",
+  "f3_status": "F3 is a session-level base rate, reported for pipeline validation only. It is not part of the lift hypotheses.",
+  "hypotheses": {
+    "F1_golden_rule": "Restricting NY trades to those aligned with the previous-day-POC bias raises mean R per trade.",
+    "F2_midnight_open": "Restricting NY trades to those aligned with midnight-open premium/discount raises mean R per trade."
+  },
+  "n_trades": 260,
+  "primary_metric": "R per trade",
+  "primary_statistic": "mean(filter-aligned) - mean(all trades)",
+  "r_available": true,
+  "secondary_reported": [
+    "median R",
+    "win rate",
+    "mean points",
+    "bootstrap 95% CI"
+  ],
+  "sha256": "66d9c49df0ad93bb5da49fc406c18866a2bf9ef4154812fed6b03df9d05dd3b2",
+  "written_at_utc": "2026-08-09T15:34:11.620565+00:00"
+}
