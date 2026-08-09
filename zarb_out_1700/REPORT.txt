@@ -1,0 +1,56 @@
+==============================================================================
+ZARB BIAS FILTERS - DIRECTIONAL TEST ON BARS (no trade population needed)
+==============================================================================
+PREREG sha256 : 8e2f24de701c4505d07047144eebbc5fb6efaeb8322d4a9d83aba208a9cbde60
+Metric        : R at a declared 30-point stop, 09:30 entry -> 16:00 ET exit
+                The stop is DECLARED, not a real one. R here is a common
+                yardstick for comparing directions, not a tradeable result.
+Sessions      : 726  (2023-01-04 -> 2026-01-30)
+Rolls dropped : 66 sessions (see RESULTS.json)
+                Expect ~1 per contract roll. Verify this count.
+
+DRIFT BASELINES (what you get with no filter at all)
+  always_long   n=726   mean R=+0.1790  median=-1.0000  win=18.7%
+  always_short  n=726   mean R=+0.1688  median=-1.0000  win=20.0%
+
+------------------------------------------------------------------------------
+F1_golden_rule  --  long above previous-day POC, short below (18:00-16:30 ET, 68% VA)
+------------------------------------------------------------------------------
+  mean R        : +0.1038   CI95 [-0.0881, +0.3024]
+  long/short    : 56.2% long   (stopped out 81.0% of sessions)
+  MFE           : mean +68.54 pts   median +28.38 pts
+  MAE           : mean +27.08 pts   median +30.00 pts
+  close         : mean -11.77 pts   median -7.00 pts
+  null_A_offset_preserving     draws=200  mean=+0.1077  p95=+0.2211  max=+0.2514
+  null_B_day_shuffled          draws=200  mean=+0.0369  p95=+0.1837  max=+0.2611
+  null_C_direction_matched     draws=200  mean=+0.1633  p95=+0.3044  max=+0.3724
+  VERDICT: NO LIFT (fails at least one null)
+
+------------------------------------------------------------------------------
+F2_midnight_open  --  long below the 00:00 ET open (discount), short above (premium)
+------------------------------------------------------------------------------
+  mean R        : +0.2005   CI95 [-0.0035, +0.4077]
+  long/short    : 46.7% long   (stopped out 78.1% of sessions)
+  MFE           : mean +71.70 pts   median +29.62 pts
+  MAE           : mean +26.65 pts   median +30.00 pts
+  close         : mean -2.13 pts   median -1.88 pts
+  null_A_offset_preserving     draws=200  mean=+0.2291  p95=+0.3336  max=+0.3872
+  null_B_day_shuffled          draws=200  mean=+0.3005  p95=+0.4322  max=+0.5095
+  null_C_direction_matched     draws=200  mean=+0.1770  p95=+0.3373  max=+0.4490
+  VERDICT: NO LIFT (fails at least one null)
+
+------------------------------------------------------------------------------
+F3  80% RULE BASE RATES (pipeline validation)
+------------------------------------------------------------------------------
+  canonical_80pct_rule: 160/458 = 34.9%
+      Independent tests on ES cluster at 60-70%, not 80%. A result far outside that band on NQ is more likely a pipeline fault than a finding.
+  zarb_poc_engagement_variant: 458/625 = 73.3%
+      No published base rate exists for this variant. It does not inherit the canonical rule's evidence.
+
+==============================================================================
+NULL C IS THE ONE THAT MATTERS. Nulls A and B only randomise WHERE the
+level sits. Null C holds the filter's own long/short mix fixed and destroys
+only the level information -- so a filter that beats A and B but fails C is
+capturing directional drift, not reading the level.
+Fit-side measurement only. No holdout was touched.
+==============================================================================

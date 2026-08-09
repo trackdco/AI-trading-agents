@@ -1,0 +1,30 @@
+{
+  "config": {
+    "declared_stop": 30.0,
+    "placebo_draws": 200,
+    "profile_tf": 30,
+    "roll_sigma": 6.0,
+    "seed": 20260810,
+    "session_close": "17:00",
+    "session_open": "18:00",
+    "va_pct": 0.68
+  },
+  "decision_rule": "A filter is declared to show lift ONLY IF its mean R exceeds the 95th percentile of ALL THREE nulls (A offset-preserving level, B day-shuffled level, C direction-frequency-matched), each from 200 draws. Failing any null = no lift. Null C is decisive: passing A and B while failing C means the filter captured directional drift, not level information. Fewer than 100 sessions = descriptive only, no verdict.",
+  "f3_status": "F3 is a session-level base rate, reported for pipeline validation only. It is not part of the lift hypotheses.",
+  "hypotheses": {
+    "F1_golden_rule": "Taking the direction implied by price vs the previous-day POC at 09:30 produces positive mean R.",
+    "F2_midnight_open": "Taking the direction implied by price vs the 00:00 ET open at 09:30 produces positive mean R."
+  },
+  "mode": "bars (directional test, no trade population)",
+  "primary_metric": "R at a declared 30.0-point stop",
+  "primary_statistic": "mean R of the filter-directed session population",
+  "secondary_reported": [
+    "MFE points",
+    "MAE points",
+    "close points",
+    "stopped-out rate",
+    "always-long and always-short drift baselines"
+  ],
+  "sha256": "8e2f24de701c4505d07047144eebbc5fb6efaeb8322d4a9d83aba208a9cbde60",
+  "written_at_utc": "2026-08-09T16:05:37.099415+00:00"
+}

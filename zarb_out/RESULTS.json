@@ -1,0 +1,257 @@
+{
+  "mode": "bars",
+  "metric": "R at declared stop",
+  "declared_stop_points": 30.0,
+  "roll_exclusion": {
+    "sessions_dropped": 43,
+    "dropped_dates": [
+      "2023-02-03",
+      "2023-02-23",
+      "2023-05-25",
+      "2023-05-29",
+      "2023-10-09",
+      "2023-10-26",
+      "2024-01-31",
+      "2024-07-24",
+      "2024-08-05",
+      "2024-08-07",
+      "2024-11-21",
+      "2024-11-25",
+      "2025-01-27",
+      "2025-02-03",
+      "2025-02-04",
+      "2025-02-10",
+      "2025-03-03",
+      "2025-03-24",
+      "2025-03-31",
+      "2025-04-03",
+      "2025-04-07",
+      "2025-04-14",
+      "2025-04-16",
+      "2025-04-21",
+      "2025-04-23",
+      "2025-04-25",
+      "2025-05-12",
+      "2025-05-19",
+      "2025-06-06",
+      "2025-06-16",
+      "2025-06-23",
+      "2025-07-14",
+      "2025-07-28",
+      "2025-10-13",
+      "2025-10-27",
+      "2025-10-30",
+      "2025-10-31",
+      "2025-11-10",
+      "2025-11-20",
+      "2025-11-24",
+      "2025-12-12",
+      "2026-01-19",
+      "2026-01-26"
+    ],
+    "dropped_gaps_points": [
+      110.75,
+      80.75,
+      101.5,
+      75.75,
+      -90.75,
+      -73.0,
+      -119.0,
+      -73.25,
+      -158.75,
+      -158.0,
+      86.0,
+      76.0,
+      -129.25,
+      -362.5,
+      88.25,
+      -122.5,
+      106.5,
+      89.75,
+      -71.25,
+      -338.0,
+      -318.0,
+      405.25,
+      -150.25,
+      -100.75,
+      272.0,
+      77.0,
+      269.75,
+      -190.75,
+      -96.25,
+      -100.0,
+      -209.75,
+      -75.75,
+      83.25,
+      107.75,
+      206.0,
+      -83.25,
+      192.25,
+      117.5,
+      81.5,
+      133.25,
+      -119.0,
+      -211.75,
+      -103.25
+    ],
+    "note": "Expect roughly one per contract roll. Far more means the threshold is too tight or the splice is faulty; far fewer means rolls are not being caught and cross-contract POC comparisons are still in the population."
+  },
+  "counts": {
+    "sessions_analysed": 749,
+    "date_min": "2023-01-04",
+    "date_max": "2026-01-30"
+  },
+  "drift_baselines": {
+    "always_long": {
+      "n": 749,
+      "mean": 0.1440921228304406,
+      "median": -1.0,
+      "win_rate": 0.1829105473965287,
+      "sum": 107.92500000000001,
+      "std": 3.581607652366318
+    },
+    "always_short": {
+      "n": 749,
+      "mean": 0.1858144192256342,
+      "median": -1.0,
+      "win_rate": 0.19626168224299065,
+      "sum": 139.175,
+      "std": 3.0322178924709617
+    },
+    "note": "If one of these is strongly positive, the span has directional drift and any filter that leans that way will look good for reasons unrelated to its level. Null C is what controls for it."
+  },
+  "filters": {
+    "F1_golden_rule": {
+      "description": "long above previous-day POC, short below (18:00-16:30 ET, 68% VA)",
+      "level_column": "prev_poc",
+      "mean_R": 0.09859813084112151,
+      "mean_R_ci95": [
+        -0.08734785269247886,
+        0.3010803293279929
+      ],
+      "fraction_long": 0.5594125500667557,
+      "MFE_points": {
+        "n": 749,
+        "mean": 69.11181575433912,
+        "median": 28.75,
+        "win_rate": 0.9986648865153538,
+        "sum": 51764.75,
+        "std": 91.41606344066342
+      },
+      "MAE_points": {
+        "n": 749,
+        "mean": 27.113484646194927,
+        "median": 30.0,
+        "win_rate": 0.9986648865153538,
+        "sum": 20308.0,
+        "std": 7.251150453168325
+      },
+      "close_points": {
+        "n": 749,
+        "mean": -12.450267022696929,
+        "median": -7.25,
+        "win_rate": 0.4766355140186916,
+        "sum": -9325.25,
+        "std": 184.36386134194674
+      },
+      "stopped_rate": 0.8130841121495327,
+      "nulls": {
+        "null_A_offset_preserving": {
+          "draws": 200,
+          "mean": 0.11680702047174009,
+          "p95": 0.2355807743658211,
+          "p99": 0.27475278148642623,
+          "max": 0.2866266132621273
+        },
+        "null_B_day_shuffled": {
+          "draws": 200,
+          "mean": 0.022279928793947485,
+          "p95": 0.13493546951490862,
+          "p99": 0.1822212950600798,
+          "max": 0.223497997329773
+        },
+        "null_C_direction_matched": {
+          "draws": 200,
+          "mean": 0.16435425011125943,
+          "p95": 0.30719514908767226,
+          "p99": 0.38223887405429446,
+          "max": 0.40254784156653317
+        }
+      },
+      "verdict": "NO LIFT (fails at least one null)"
+    },
+    "F2_midnight_open": {
+      "description": "long below the 00:00 ET open (discount), short above (premium)",
+      "level_column": "midnight_open",
+      "mean_R": 0.16151535380507345,
+      "mean_R_ci95": [
+        -0.03947513351134846,
+        0.36849271250556265
+      ],
+      "fraction_long": 0.4712950600801068,
+      "MFE_points": {
+        "n": 749,
+        "mean": 69.75233644859813,
+        "median": 29.0,
+        "win_rate": 0.9946595460614153,
+        "sum": 52244.5,
+        "std": 94.07239616274845
+      },
+      "MAE_points": {
+        "n": 749,
+        "mean": 26.76134846461949,
+        "median": 30.0,
+        "win_rate": 1.0,
+        "sum": 20044.25,
+        "std": 7.56377992554648
+      },
+      "close_points": {
+        "n": 749,
+        "mean": -4.581108144192257,
+        "median": -2.5,
+        "win_rate": 0.49265687583444595,
+        "sum": -3431.25,
+        "std": 184.72746179335462
+      },
+      "stopped_rate": 0.7890520694259012,
+      "nulls": {
+        "null_A_offset_preserving": {
+          "draws": 200,
+          "mean": 0.19647947263017357,
+          "p95": 0.2938501335113484,
+          "p99": 0.31137583444592787,
+          "max": 0.3263684913217623
+        },
+        "null_B_day_shuffled": {
+          "draws": 200,
+          "mean": 0.3192848798397864,
+          "p95": 0.4251418558077435,
+          "p99": 0.4479638406764573,
+          "max": 0.5072874944370273
+        },
+        "null_C_direction_matched": {
+          "draws": 200,
+          "mean": 0.1619108811748999,
+          "p95": 0.3041811303960835,
+          "p99": 0.4072333110814416,
+          "max": 0.44778593680462836
+        }
+      },
+      "verdict": "NO LIFT (fails at least one null)"
+    }
+  },
+  "f3_base_rates": {
+    "canonical_80pct_rule": {
+      "triggers": 472,
+      "hits": 164,
+      "rate": 0.3474576271186441,
+      "note": "Independent tests on ES cluster at 60-70%, not 80%. A result far outside that band on NQ is more likely a pipeline fault than a finding."
+    },
+    "zarb_poc_engagement_variant": {
+      "triggers": 654,
+      "hits": 474,
+      "rate": 0.7247706422018348,
+      "note": "No published base rate exists for this variant. It does not inherit the canonical rule's evidence."
+    }
+  }
+}
