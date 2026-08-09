@@ -1,9 +1,11 @@
-# PASS MARKS — FOR ANGUS TO SIGN
+# PASS MARKS — SIGNED 2026-08-08
 
-**Prepared 2026-08-08, overnight queue item 10. Not signed. Fifteen minutes, not a research
-task.** Companion to `PREREGISTRATION.md` §10, whose four OPEN items are restated here with the
-options, what each commits to, and a recommendation with its reason. **Nothing below is a
-decision — it is the decision laid out for you to make.**
+**Prepared 2026-08-08, overnight queue item 10. SIGNED 2026-08-08, item by item, in a direct
+conversation — not the "fifteen minutes" originally estimated, and not skimmed.** Companion to
+`PREREGISTRATION.md` §10. Each item below now carries Angus's actual decision, not just a
+recommendation. **One decision (10.2) departs from the prepared recommendation and is a real
+change to the strategy, not a documentation confirmation — see 10.2 and the new A22 amendment it
+requires, tracked separately from this signing.**
 
 Spec at time of writing: `f6b38bf4af1ca9696a12a6e9f80a12209ebff310` (A1–A15). **Updated
 2026-08-08, Amendment 05 round 2's follow-up: spec now
@@ -50,6 +52,9 @@ sample, is reproducible, and does not depend on your platform's 1-minute history
 structural limitation P2 already ran into). The P2 result is not discarded under (b) — it is the
 finding that produced A8–A13, and its value is already banked.
 
+> **SIGNED: (b).** The verification suite supersedes the hand-chart plan. No further hand
+> readings required.
+
 ---
 
 ## 10.2 — Stop anchor: floor or structural rule?
@@ -70,6 +75,16 @@ nothing overnight moved the evidence enough to break the tie. What overnight wor
 figure is fresher (58.7%, not 59.9%) and the R-distribution behind it is now confirmed stable
 under A14 (item 3: median R unchanged at 10.00 before and after rounding), so whichever way you
 rule, it is ruling on a number that has been re-verified, not one computed once and left stale.
+
+> **SIGNED: switch to 2×ATR, structural, not the fixed 10.00 pt floor.** This is the one item
+> signed AGAINST the prepared recommendation (which had none — this was always "genuinely yours
+> to call"). Unlike every other item in this document, this is a REAL CHANGE to the strategy, not
+> a confirmation of something already built: §5.4's floor becomes `max(structural stop, 2×ATR)`
+> instead of `max(structural stop, 10.00 pt)`. Tracked as **Amendment A22**, implemented,
+> tested, and re-hashed separately (see `strategy-definition-v1.0.md`, Amendment Log, and
+> `A22-2XATR-STOP-FLOOR-REPORT.md` for the fresh 2a/2b re-run this change requires). **This
+> signature does not itself change any code — the amendment referenced above is the actual
+> change**; this line records the decision that authorised it.
 
 ---
 
@@ -93,6 +108,8 @@ Changing it now would not just require a decision, it would require re-deriving 
 already quoted elsewhere. If a different structure is wanted, flag it explicitly rather than
 silently signing ÷4 — several documents cite the ÷4 figure by value already.
 
+> **SIGNED: ÷4, as proposed.**
+
 ---
 
 ## 10.4 — Pass-mark sign-off
@@ -105,6 +122,8 @@ As drafted: **mean net R > 0 at cost 0.975, with the bootstrap lower bound above
 sign as drafted** — 0.975 is the mid cost basis already used throughout (`COSTS = {"c050": 0.50,
 "c0975": 0.975, "c150": 1.50}`), and the abort condition below already covers the case where the
 sign flips at a different cost.
+
+> **SIGNED: as drafted.**
 
 ### (a-i) THE IDENTITY-CHURN CLAUSE — ADDED 2026-08-08, Amendment 05, before signing
 
@@ -148,6 +167,9 @@ task in its own right and is not done by this clause alone** — this clause fix
 rule* (minimum, at base cost); the *fork set* it runs over needs its own explicit list before
 Stage 3 is ever re-run under it.
 
+> **SIGNED: confirmed as written.** The fork set is fixed in `FORK-SET-ENUMERATION.md` (5 forks,
+> 32 combinations); building and running it remains outstanding, separate from this signature.
+
 ### (a-ii) THE FILL-MECHANISM CLAUSE — ADDED 2026-08-08, Amendment 05 round 2's follow-up, before signing
 
 > **Entry is pre-committed to a LIMIT order — fills at the limit or better if the one bar
@@ -186,6 +208,8 @@ under A16's limit-fill admission (`spec_a16.admit_a16` or its successor), carryi
 re-entering as a candidate. The discarded run (`STAGE3-DISCARDED.md`) was built under the OLD
 market-at-open convention and stays discarded; A16 does not retroactively rehabilitate it.
 
+> **SIGNED: confirmed as written.**
+
 ### (b) Abort condition 3 — sign change across cost levels
 **Options:** **abort** (a sign change between cost bases voids the run entirely, no verdict
 read) or **annotate** (report the sign change as a finding, alongside whatever the mid-cost
@@ -193,6 +217,8 @@ result was). **Recommendation: abort.** §7.2's own text (*"If mean net R is pos
 negative at 1.50, the finding is about the cost assumption, not the strategy"*) already commits
 to this reading in prose; making it binding rather than advisory closes the loophole where a
 cost-sensitive result gets reported as a strategy result anyway.
+
+> **SIGNED: abort.** A cost-level sign flip voids the run; no verdict is read.
 
 ### (c) Trigger reading — A/B/C/D, fixed or itself a tournament axis
 **Context:** `READING = "A"` is hardcoded in `stage2_smoke.py` and inherited by every downstream
@@ -210,35 +236,36 @@ changing it now multiplies the correction factor for no stated reason to prefer 
 and if reading sensitivity turns out to matter it can be tested as a **Stage 4 autopsy question**
 (≤3 hypotheses, per Amendment 02) rather than folded into the primary tournament structure.
 
+> **SIGNED: (i), fix reading A.**
+
 ---
 
-## Summary table for §11's sign-off block
+## Summary table for §11's sign-off block — ALL ITEMS SIGNED 2026-08-08
 
-| item | recommendation | what signing it commits you to |
-|---|---|---|
-| 10.1 parity | **(b)** verification suite supersedes hand-chart plan | P2 + 2a/2b/2c stand as the parity evidence; no further hand readings |
-| 10.2 stop anchor | **no recommendation — genuinely open** | floor (a) keeps the spec as written; structural (b) requires picking prior-swing vs ATR, unconfirmable from the hand log either way |
-| 10.3 axis structure | **sign ÷4** | required n 631.7, blind zone 4.03 pt, matches every threshold already quoted elsewhere |
-| 10.4a primary criterion | **sign as drafted** | mean net R > 0 at c=0.975, bootstrap lower bound above zero |
-| 10.4a-i identity-churn clause | **pre-registered, N_trials unaffected** | pass mark = minimum across every documented fork-resolution combination (32, `FORK-SET-ENUMERATION.md`); fork set fixed, not yet run |
-| 10.4a-ii fill-mechanism clause | **pre-registered, N_trials unaffected** | entry is a limit order (A16); market-at-open is a disclosed sensitivity only, never a competing candidate |
-| 10.4b abort condition 3 | **abort, not annotate** | a cost-level sign flip voids the run; no verdict is read |
-| 10.4c trigger reading | **fix reading A** | matches every prior measurement; reading sensitivity becomes a Stage 4 question if it ever matters |
+| item | recommendation | SIGNED | what it commits to |
+|---|---|---|---|
+| 10.1 parity | (b) | **(b)** | verification suite supersedes hand-chart plan; no further hand readings |
+| 10.2 stop anchor | none — genuinely open | **2×ATR (structural)**, DEPARTS from status quo | §5.4 floor becomes `max(structural, 2×ATR(20, entry TF))` — see Amendment A22, implemented and re-verified separately |
+| 10.3 axis structure | ÷4 | **÷4** | required n 631.7, blind zone 4.03 pt |
+| 10.4a primary criterion | sign as drafted | **as drafted** | mean net R > 0 at c=0.975, bootstrap lower bound above zero |
+| 10.4a-i identity-churn clause | confirm | **confirmed** | pass mark = minimum across every documented fork-resolution combination (32, `FORK-SET-ENUMERATION.md`); fork set fixed, not yet run |
+| 10.4a-ii fill-mechanism clause | confirm | **confirmed** | entry is a limit order (A16); market-at-open is a disclosed sensitivity only |
+| 10.4b abort condition 3 | abort | **abort** | a cost-level sign flip voids the run; no verdict is read |
+| 10.4c trigger reading | fix reading A | **fix reading A** | matches every prior measurement |
 
-**If you sign everything above as recommended except 10.2, that is a coherent, internally
-consistent pass-mark set** — nothing in 10.1, 10.3 or 10.4 depends on which way 10.2 goes.
-**10.4a-i and 10.4a-ii are pre-registered commitments already in force, not open questions like
-10.2** — they are listed here so signing this document means signing them too, not because
-either is still undecided.
+**Only 10.2 departs from the prepared recommendation, and it is the one item that is a real
+change to the strategy rather than a confirmation** — tracked as Amendment A22
+(`strategy-definition-v1.0.md`), implemented in `spec_a22.py`, fresh-verified in
+`A22-2XATR-STOP-FLOOR-REPORT.md`.
 
 ---
 
 ## STANDING, per the closing instruction of Amendment 05 round 2's follow-up
 
-**This document does not authorise a Stage 3 run.** A16-A21 are implemented and fresh-verified
-(`A16-A21-FRESH-RERUN-REPORT.md`: 93 2a tests, 89 pass / 4 pre-existing accounted-for failures;
-10/10 2b invariants pass; determinism confirmed across two independent runs). **What remains
-before any Stage 3 seal:** (1) Angus's signature on this document, including the two clauses
-added this round; (2) the 32-combination fork sweep (`FORK-SET-ENUMERATION.md`) built and run,
-with the minimum taken, per (a-i). **Neither has happened. No Stage 3 run occurs until both
-have.**
+**This document is now SIGNED.** It still does not, by itself, authorise a Stage 3 run — signing
+the pass marks and building the population the pass marks apply to are two different steps. A16-
+A22 are implemented and fresh-verified (`A16-A21-FRESH-RERUN-REPORT.md`,
+`A22-2XATR-STOP-FLOOR-REPORT.md`). **What remains before any Stage 3 seal:** the 32-combination
+fork sweep (`FORK-SET-ENUMERATION.md`) built and run, with the minimum taken, per (a-i), now
+against the A22 stop floor rather than the fixed one. **No Stage 3 run occurs until that sweep is
+built and run.**
