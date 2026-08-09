@@ -1045,3 +1045,54 @@ remains a live candidate for a FUTURE spec version, not foreclosed — only defe
 the other struck/scoped-out branches.
 
 **N_trials after A21: 1 of 5, unchanged.**
+
+### A22 — 2026-08-08 — §5.4 stop floor: 10.00 pt fixed → 2×ATR(20, entry TF), Angus's own decision on 10.2
+
+**Change.** §5.4's floor — *"Effective stop = max(structural stop, 10.00 pt)"* (A5) — becomes
+**"Effective stop = max(structural stop, 2 × ATR(20, entry TF))."** The floor is now dynamic,
+computed per candidate from that candidate's own entry timeframe, rather than a single fixed
+number.
+
+**Decision, not a text disambiguation.** Unlike A16–A21, this amendment does not resolve an
+ambiguity from the spec's own wording — §5.4 as written names a fixed number, unambiguously. This
+is Angus's own choice among three already-computed, pre-existing figures presented side by side in
+`PASS-MARKS-FOR-SIGNING.md` §10.2 (10.00 pt fixed; 16.29 pt median prior-swing; 25.32 pt median
+2×ATR), explicitly framed there as **"genuinely yours to call"** — no recommendation was made
+either way, and none of the three was chosen because of a measured trading result. **Grounds are
+identical to every other amendment in this log: no outcome was computed to select 2×ATR over the
+alternatives, and no outcome would have changed the choice** — this was reserved as the strategy
+author's own judgement about what a defensible stop distance looks like, exactly as
+`PASS-MARKS-FOR-SIGNING.md` framed it before any of the three numbers was picked.
+
+**ATR definition, exactly matching the one already computed as a diagnostic
+(`vwapbb_geometry.py`, `target-stop-reconciliation.md` line 143) and never previously wired into
+the live pipeline:**
+- Timeframe: the candidate's own **entry TF** (1/2/3/5 minutes), not a single fixed timeframe —
+  ATR is tracked independently per TF and matched to each candidate's own.
+- Lookback: 20 bars.
+- True Range per closed entry-TF bar: `max(high−low, |high−prev_close|, |low−prev_close|)`,
+  `prev_close` from the prior CLOSED bar on the same TF.
+- Smoothing: simple average (not Wilder's), matching the diagnostic exactly.
+- Warmup: a candidate's entry TF needs 20 closed bars before ATR is available. **Candidates
+  before that warmup are dropped** — the same shape as the existing VWAP warmup gate
+  (`if dmid is None: continue`), not a new kind of exclusion.
+
+**Consequences, recorded so they are not rediscovered later:**
+- The floor is now **higher on typical days** (median ≈25.32 pt vs the fixed 10.00 pt) and
+  **varies day to day and TF to TF**, where A5's floor was a single constant. Every downstream
+  R-multiple, target distance (A4's 1.5R floor is measured against R, which now moves), and the
+  A20 front-run/menu-walk distance is affected, because R_int itself changed.
+- A5's own reasoning (spread-relative cost bound, §5.4 as amended) is **superseded for the floor
+  value**, not repudiated — the underlying concern (a stop too tight to be measuring structure
+  rather than book width) is still addressed, now by a distribution-following measure instead of
+  a fixed number picked from spread statistics.
+- This is a real change to the trader, not a documentation clarification (unlike A18–A21) — it
+  ships as its own pre-registered amendment with a fresh 2a/2b re-run, exactly as A16 required for
+  the fill mechanism.
+
+**Tag: [DECISION — Angus, not FIAT].** Distinguished from every other tag in this log because the
+choice among the three numbers was made by the strategy's author directly, not derived from
+spec text or reasoned to a single defensible reading by the person amending the spec.
+
+**N_trials after A22: 1 of 5, unchanged.** No outcome was computed to select the floor value or
+to evaluate it once selected.
