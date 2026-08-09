@@ -890,3 +890,56 @@ operationalised fill test; A16 supplies both, from the text alone.
   (canonical) and market-at-open (disclosed sensitivity) — as a matter of course.
 
 **N_trials after A16: 1 of 5, unchanged.** No outcome was computed to arrive at this amendment.
+
+### A17 — 2026-08-08 — §3 confluence cluster: "within proximity tolerance" resolved to mutual proximity, not chaining
+
+**Change.** §3's confluence-cluster clause (*"≥2 of {...} within proximity tolerance"*) is
+operationalised as: every level in an admitted cluster is within the tolerance of every OTHER
+level in that cluster — equivalently, for a sorted set, the cluster's span (its highest level
+minus its lowest) never exceeds the tolerance. This **replaces** `vwapbb_signals.cluster_levels()`'s
+existing single-linkage chaining (each level compared only to the immediately preceding one,
+letting the group's total span exceed the tolerance) with a bounded-span algorithm.
+
+**Reason — textual, then confirmed structurally, never by outcome.**
+1. "Within proximity tolerance" describes a static distance property of the group, not a
+   sequential construction rule. Nothing in §3's wording says "consecutive" or "chain," and the
+   ordinary reading of "N things within [a distance] of each other" is that all of them are close
+   to all of the others — which is what "confluence" is supposed to mean: several distinct
+   indicator families sitting at effectively the same price, not a drifting chain of evenly-spaced
+   band levels.
+2. Chaining produces clusters that cannot be called "confluence" under any plain reading of the
+   word. On a low-volatility session (daily σ smaller than the 10-point tolerance), the entire
+   daily VWAP band ladder — mid, ±1σ, ±2σ, ±3σ — chains into one cluster purely because each
+   adjacent pair is close, regardless of whether anything else ever comes near it; a single BB or
+   POC touch anywhere near the outer edge of that already-wide chain then trivially satisfies the
+   "≥2 types" test. That is one indicator's own internal band ladder masquerading as multi-type
+   confluence.
+3. This is not hypothetical. Measured directly (a structural count over candidate cluster
+   geometry — no outcome, no P&L, no trade evaluated) over a 60-session sample of the exact `lv`
+   construction `spec_current.py` builds: **76,108 clusters formed; 15,986 of them (21.0%) span
+   MORE than the stated 10-point tolerance; the largest observed span is 50.53 points — five
+   times the tolerance.** A cluster-formation rule that puts a fifth of its own output outside the
+   distance it is named for is not a plausible reading of "within proximity tolerance."
+4. The code's own docstring names the existing behaviour "greedy chain grouping" — a deliberate
+   implementation choice, not an accident. A17 does not allege a bug in how it was built; it
+   alleges the choice matches §3's text less well than the alternative, which is a different kind
+   of finding and is stated as such.
+
+**What changes operationally.** A new function, bounded-span clustering, is added — frozen
+`vwapbb_signals.py` is not edited, per this project's standing practice of layering deltas rather
+than rewriting the baseline: sort the candidate levels, extend the current group only while doing
+so keeps the group's span ≤ tolerance, close and start fresh otherwise, emit groups of ≥2. This is
+the same comparisons cluster formation always made, run against the group's minimum instead of
+its most recently added member.
+
+**Grounds.** No outcome was computed. The 76,108 / 15,986 / 50.53 figures are geometric counts
+over candidate cluster GEOMETRY — spans between prices — not trades, fills, or results. Nothing
+was ranked or selected by what it would have produced downstream; the measurement characterises
+the CURRENT algorithm's own behaviour against the text, exactly the kind of quantification this
+project's N_trials rule exempts.
+
+**Tag: [FIAT]**, resolving a genuine textual ambiguity (§3 uses neither "consecutive" nor "chain"
+nor "sequential" anywhere) in favour of the reading under which "confluence" keeps its ordinary
+meaning.
+
+**N_trials after A17: 1 of 5, unchanged.**
