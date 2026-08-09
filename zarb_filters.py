@@ -385,7 +385,8 @@ def build_daily_levels(bars: pd.DataFrame,
                        s_open: time,
                        s_close: time,
                        va_pct: float,
-                       tf_min: int) -> pd.DataFrame:
+                       tf_min: int,
+                       roll_sigma: float = 6.0) -> pd.DataFrame:
     """
     Per trading day, compute: the PREVIOUS session's POC/VAH/VAL/high/low, and the
     current day's midnight open. Indexed by trading date.
@@ -414,6 +415,7 @@ def build_daily_levels(bars: pd.DataFrame,
             "sess_high": float(agg["high"].max()),
             "sess_low": float(agg["low"].min()),
             "sess_open": float(agg["open"].iloc[0]),
+            "sess_close": float(agg["close"].iloc[-1]),
             "n_bars": int(len(agg)),
             "total_volume": float(bins.sum()),
         })
@@ -439,6 +441,30 @@ def build_daily_levels(bars: pd.DataFrame,
         # used as the anchor while F2 was testing the midnight open.
         "day_open": prof["sess_open"],
     })
+
+    # ---- contract-roll detection -------------------------------------------
+    # On an UNADJUSTED front-month splice the series jumps by the calendar spread
+    # at each roll. The session immediately after a roll compares today's price in
+    # the NEW contract against a POC computed in the OLD one, which measures the
+    # roll spread rather than market position. Those sessions are flagged and
+    # dropped. Detection is a robust (MAD-based) outlier test on the overnight gap,
+    # which is preferred over a supplied roll-date list because it catches splice
+    # errors and mid-session rolls too. Only the gapping session is dropped: its
+    # own prev-day levels are cross-contract, whereas the following session's come
+    # from the new contract and are clean.
+    gap = prof["sess_open"].to_numpy(dtype=float) - prof["sess_close"].shift(1).to_numpy(dtype=float)
+    out["overnight_gap"] = gap
+    finite = np.isfinite(gap)
+    if finite.sum() > 20:
+        med = float(np.median(gap[finite]))
+        mad = float(np.median(np.abs(gap[finite] - med)))
+        scale = 1.4826 * mad if mad > 0 else np.nan
+        z = np.abs(gap - med) / scale if np.isfinite(scale) else np.zeros_like(gap)
+        out["roll_z"] = z
+        out["roll_flag"] = np.where(np.isfinite(z), z > roll_sigma, False)
+    else:
+        out["roll_z"] = np.nan
+        out["roll_flag"] = False
 
     # midnight open: first bar at or after 00:00 ET on the trading date
     mid = {}
@@ -753,7 +779,9 @@ BAR_FILTERS = {
 def analyse_bars(bars: pd.DataFrame, outdir: Path, cfg: dict) -> dict:
     rng = np.random.default_rng(cfg["seed"])
     levels = build_daily_levels(bars, cfg["session_open"], cfg["session_close"],
-                               cfg["va_pct"], cfg["profile_tf"])
+                               cfg["va_pct"], cfg["profile_tf"],
+                               cfg.get("roll_sigma", 6.0))
+    levels, roll_info = _drop_rolls(levels)
     pop = build_bar_population(bars, levels, cfg)
 
     entry_px = pop["entry_price"].to_numpy(dtype=float)
@@ -767,6 +795,7 @@ def analyse_bars(bars: pd.DataFrame, outdir: Path, cfg: dict) -> dict:
         "mode": "bars",
         "metric": "R at declared stop",
         "declared_stop_points": cfg["declared_stop"],
+        "roll_exclusion": roll_info,
         "counts": {"sessions_analysed": int(n),
                    "date_min": str(pop["trading_date"].min()),
                    "date_max": str(pop["trading_date"].max())},
@@ -846,6 +875,22 @@ def analyse_bars(bars: pd.DataFrame, outdir: Path, cfg: dict) -> dict:
     return results
 
 
+def _drop_rolls(levels: pd.DataFrame) -> Tuple[pd.DataFrame, dict]:
+    """Remove flagged contract-roll sessions and report what was removed, so the
+    count can be sanity-checked against the known number of rolls in the file."""
+    flag = levels["roll_flag"].fillna(False).astype(bool)
+    dates = [str(d) for d in levels.index[flag]]
+    gaps = [round(float(g), 2) for g in levels.loc[flag, "overnight_gap"]]
+    info = {"sessions_dropped": int(flag.sum()),
+            "dropped_dates": dates,
+            "dropped_gaps_points": gaps,
+            "note": ("Expect roughly one per contract roll. Far more means the "
+                     "threshold is too tight or the splice is faulty; far fewer "
+                     "means rolls are not being caught and cross-contract POC "
+                     "comparisons are still in the population.")}
+    return levels.loc[~flag].copy(), info
+
+
 def _null_pack(stats: List[float]) -> dict:
     arr = np.array([s for s in stats if np.isfinite(s)], dtype=float)
     if not len(arr):
@@ -868,6 +913,11 @@ def report_bars(res: dict, digest: str) -> str:
     add("                yardstick for comparing directions, not a tradeable result.")
     c = res["counts"]
     add(f"Sessions      : {c['sessions_analysed']}  ({c['date_min']} -> {c['date_max']})")
+
+    ri = res["roll_exclusion"]
+    add(f"Rolls dropped : {ri['sessions_dropped']} sessions "
+        f"{ri['dropped_dates'] if ri['sessions_dropped'] <= 20 else '(see RESULTS.json)'}")
+    add("                Expect ~1 per contract roll. Verify this count.")
 
     add("")
     add("DRIFT BASELINES (what you get with no filter at all)")
@@ -991,7 +1041,9 @@ def analyse(bars: pd.DataFrame, trades: pd.DataFrame, r_available: bool,
     rng = np.random.default_rng(cfg["seed"])
 
     levels = build_daily_levels(bars, cfg["session_open"], cfg["session_close"],
-                                cfg["va_pct"], cfg["profile_tf"])
+                                cfg["va_pct"], cfg["profile_tf"],
+                                cfg.get("roll_sigma", 6.0))
+    levels, roll_info = _drop_rolls(levels)
 
     # restrict to the NY window and attach levels
     t = trades.copy()
@@ -1025,6 +1077,7 @@ def analyse(bars: pd.DataFrame, trades: pd.DataFrame, r_available: bool,
         "metric": metric_name,
         "r_available": r_available,
         "r_source": trades.attrs.get("r_source", "unknown"),
+        "roll_exclusion": roll_info,
         "counts": {
             "trades_in_file": n_all,
             "trades_in_ny_window": n_ny,
@@ -1109,6 +1162,9 @@ def report(res: dict, digest: str) -> str:
     add(f"Trades in file {c['trades_in_file']} -> NY window {c['trades_in_ny_window']} "
         f"-> analysed {c['trades_analysed']} (dropped for missing levels: {c['dropped_no_levels']})")
 
+    ri = res["roll_exclusion"]
+    add(f"Roll sessions dropped: {ri['sessions_dropped']} - verify against the "
+        f"known roll count")
     b = res["baseline"]
     add("")
     add("BASELINE (all analysed NY trades)")
@@ -1213,7 +1269,8 @@ def selfcheck(outdir: Path) -> None:
     t_, r_ok = load_trades(tp, "UTC")
     cfg = {"session_open": SESSION_OPEN, "session_close": SESSION_CLOSE,
            "va_pct": VALUE_AREA_PCT, "profile_tf": PROFILE_TF_MIN,
-           "placebo_draws": 60, "seed": SEED, "declared_stop": 30.0}
+           "placebo_draws": 60, "seed": SEED, "declared_stop": 30.0,
+           "roll_sigma": 6.0}
     cfg_ser = dict(cfg, session_open=str(SESSION_OPEN), session_close=str(SESSION_CLOSE))
 
     d1 = preregister(outdir, cfg_ser, 0, True, mode="bars")
@@ -1264,6 +1321,9 @@ def main(argv=None) -> int:
     ap.add_argument("--mode", choices=["bars", "trades"], default="bars",
                     help="bars: directional test, needs ONLY --bars (default). "
                          "trades: conditional lift, needs a trade population with R.")
+    ap.add_argument("--roll-sigma", type=float, default=6.0,
+                    help="robust z threshold on overnight gaps for contract-roll "
+                         "detection; lower catches more, 0 disables")
     ap.add_argument("--declared-stop", type=float, default=30.0,
                     help="bars mode only: declared stop in points, for the R yardstick")
     ap.add_argument("--selfcheck", action="store_true",
@@ -1282,7 +1342,8 @@ def main(argv=None) -> int:
            "session_close": _parse_time(a.session_close),
            "va_pct": a.va_pct, "profile_tf": a.profile_tf,
            "placebo_draws": a.placebo_draws, "seed": a.seed,
-           "declared_stop": a.declared_stop}
+           "declared_stop": a.declared_stop,
+           "roll_sigma": (a.roll_sigma if a.roll_sigma > 0 else float("inf"))}
     cfg_ser = dict(cfg, session_open=a.session_open, session_close=a.session_close)
 
     bars = load_bars(a.bars, a.bars_tz)

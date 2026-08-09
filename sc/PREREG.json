@@ -3,6 +3,7 @@
     "declared_stop": 30.0,
     "placebo_draws": 60,
     "profile_tf": 30,
+    "roll_sigma": 6.0,
     "seed": 20260810,
     "session_close": "16:30:00",
     "session_open": "18:00:00",
@@ -25,6 +26,6 @@
     "mean points",
     "bootstrap 95% CI"
   ],
-  "sha256": "6d5b1e0a9413052f598925ff7d0bcbe6c256d02db22f97509a0387d1be33cd5a",
-  "written_at_utc": "2026-08-09T15:53:15.444738+00:00"
+  "sha256": "93ac32cd58466968b2e3755da5467038c051ce14362219e7d8a24d3115d46d5d",
+  "written_at_utc": "2026-08-09T16:05:15.205004+00:00"
 }
