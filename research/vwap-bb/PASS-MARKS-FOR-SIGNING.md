@@ -5,7 +5,14 @@ task.** Companion to `PREREGISTRATION.md` §10, whose four OPEN items are restat
 options, what each commits to, and a recommendation with its reason. **Nothing below is a
 decision — it is the decision laid out for you to make.**
 
-Spec at time of writing: `f6b38bf4af1ca9696a12a6e9f80a12209ebff310` (A1–A15).
+Spec at time of writing: `f6b38bf4af1ca9696a12a6e9f80a12209ebff310` (A1–A15). **Updated
+2026-08-08, Amendment 05 round 2's follow-up: spec now
+`4ad4ed815dda8446648160aa6e4f8dac66a91bde` (A1–A21) — see the new (a-ii) clause below.
+References to "the 1,472-trade admission list" elsewhere in this document describe the
+population that existed at the time each item was written; A16 has since changed what a "trade"
+is (see (a-ii)), and the current fresh count under A1-A21 is 1,470 (`A16-A21-FRESH-RERUN-REPORT.md`)
+— a different population, not a correction to the figures below, which are left as originally
+written per this project's practice of never editing a number after the fact.**
 
 ---
 
@@ -141,6 +148,44 @@ task in its own right and is not done by this clause alone** — this clause fix
 rule* (minimum, at base cost); the *fork set* it runs over needs its own explicit list before
 Stage 3 is ever re-run under it.
 
+### (a-ii) THE FILL-MECHANISM CLAUSE — ADDED 2026-08-08, Amendment 05 round 2's follow-up, before signing
+
+> **Entry is pre-committed to a LIMIT order — fills at the limit or better if the one bar
+> immediately following the signal bar reaches it, no trade otherwise (A16) — on the evidence of
+> §5.3's "limit at [level]" wording and §5.5's no-chase-cancel clause, which only makes sense for
+> an order that can fail to fill. This commitment is independent of any result: no admission
+> count, trade list, or outcome was computed to decide it, and none would have changed it.
+> `PREREGISTRATION.md` 4.2's market-at-open convention is retained ONLY as a disclosed
+> sensitivity, reported alongside the limit population on every future run — it is never a second
+> candidate the pass marks, or any future selection, may choose instead.**
+
+**Why this is being added to a document already being signed.** The admission gate (§6.5/A4)
+certifies a candidate against its intended limit price; the accounting rule that had been used to
+compute every trade list this project produced through the discarded Stage 3 run instead filled
+unconditionally at the next bar's open — a documented, self-disclosed departure
+(`PREREGISTRATION.md` 4.2 says so in its own text) that nobody had quantified until
+`FILL-ACCOUNTING-FORK.md`: **65.2% of the discarded run's 1,472 trades realised below the very
+1.5R the gate certified.** That is not a rounding error in a footnote; it is most of the
+population failing its own admission criterion once the real fill replaced the assumed one. A16
+closes that gap by making the admission gate and the accounting rule agree on what price a trade
+actually transacts at.
+
+**Confirmed in writing: this is a mechanism decision, not a result.** Every reason cited for A16
+(`strategy-definition-v1.0.md`, Amendment Log) is textual — what §5.3 and §5.5 already say an
+order is, and which fill window can be built without inventing an unstated value for `T_cancel`.
+No P&L, no win rate, no comparison between the limit and market-at-open populations entered the
+decision. **N_trials is unaffected — stays at 1 for Stage 3** — for the same reason (a-i)'s
+minimum-across-forks clause does not increase it: nothing here is a selection among candidates by
+result. There is exactly one pre-registered fill mechanism (limit); market-at-open is disclosure,
+not a competitor.
+
+**What this requires operationally, recorded so it is not lost between now and the run:** every
+future Stage 3 seal — including the eventual fork-sweep-and-minimum under (a-i) — must be built
+under A16's limit-fill admission (`spec_a16.admit_a16` or its successor), carrying
+`sensitivity_open_px` on every trade so the market-at-open comparison stays visible without ever
+re-entering as a candidate. The discarded run (`STAGE3-DISCARDED.md`) was built under the OLD
+market-at-open convention and stays discarded; A16 does not retroactively rehabilitate it.
+
 ### (b) Abort condition 3 — sign change across cost levels
 **Options:** **abort** (a sign change between cost bases voids the run entirely, no verdict
 read) or **annotate** (report the sign change as a finding, alongside whatever the mid-cost
@@ -175,8 +220,25 @@ and if reading sensitivity turns out to matter it can be tested as a **Stage 4 a
 | 10.2 stop anchor | **no recommendation — genuinely open** | floor (a) keeps the spec as written; structural (b) requires picking prior-swing vs ATR, unconfirmable from the hand log either way |
 | 10.3 axis structure | **sign ÷4** | required n 631.7, blind zone 4.03 pt, matches every threshold already quoted elsewhere |
 | 10.4a primary criterion | **sign as drafted** | mean net R > 0 at c=0.975, bootstrap lower bound above zero |
+| 10.4a-i identity-churn clause | **pre-registered, N_trials unaffected** | pass mark = minimum across every documented fork-resolution combination (32, `FORK-SET-ENUMERATION.md`); fork set fixed, not yet run |
+| 10.4a-ii fill-mechanism clause | **pre-registered, N_trials unaffected** | entry is a limit order (A16); market-at-open is a disclosed sensitivity only, never a competing candidate |
 | 10.4b abort condition 3 | **abort, not annotate** | a cost-level sign flip voids the run; no verdict is read |
 | 10.4c trigger reading | **fix reading A** | matches every prior measurement; reading sensitivity becomes a Stage 4 question if it ever matters |
 
 **If you sign everything above as recommended except 10.2, that is a coherent, internally
 consistent pass-mark set** — nothing in 10.1, 10.3 or 10.4 depends on which way 10.2 goes.
+**10.4a-i and 10.4a-ii are pre-registered commitments already in force, not open questions like
+10.2** — they are listed here so signing this document means signing them too, not because
+either is still undecided.
+
+---
+
+## STANDING, per the closing instruction of Amendment 05 round 2's follow-up
+
+**This document does not authorise a Stage 3 run.** A16-A21 are implemented and fresh-verified
+(`A16-A21-FRESH-RERUN-REPORT.md`: 93 2a tests, 89 pass / 4 pre-existing accounted-for failures;
+10/10 2b invariants pass; determinism confirmed across two independent runs). **What remains
+before any Stage 3 seal:** (1) Angus's signature on this document, including the two clauses
+added this round; (2) the 32-combination fork sweep (`FORK-SET-ENUMERATION.md`) built and run,
+with the minimum taken, per (a-i). **Neither has happened. No Stage 3 run occurs until both
+have.**
