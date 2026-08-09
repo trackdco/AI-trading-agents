@@ -155,18 +155,115 @@ worse, in points and in the fraction of the population it touches.
 
 ---
 
-## 4. What this does and does not decide
+## 4. UPDATE 2026-08-08 — Amendment 05 round 2, item 3: the full geometry-only report
 
-**Does not decide the fork.** Per Amendment 05 item 4's own framing, the recommendation to keep
-the detector's behaviour and amend A5 to say so explicitly is **a default, not a verdict** — this
-document supplies the quantified basis for that decision, it does not make it. Keeping the
-detector's convention means keeping a rule under which two-thirds of admitted trades run at a
-worse-than-screened R:R by construction; switching to true-limit accounting removes that but
-requires an explicit amendment (and, given the population-wide scale just measured, arguably
-deserves the same scrutiny A5 itself got before being written in).
+**This section is why the sealed run was discarded** (`STAGE3-DISCARDED.md`). Computed by
+`research/star-trading/tools/fill_fork_report.py`, full 1,472-trade admission list, no outcome
+computed anywhere — every quantity below is a distance or ratio between prices already fixed at
+signal time or realised at the fill bar's own OHLC.
+
+### (a) Realised RR − screened RR, full distribution
+
+| | value |
+|---|---|
+| min | **−5.98** |
+| p05 | −2.63 |
+| p25 | −1.77 |
+| **median** | **−1.12** |
+| p75 | −0.48 |
+| p95 | +4.75 |
+| max | **+245.45** |
+| mean | −0.15 |
+
+**Median trade loses 1.12R of the R:R it was screened on.** The mean is far less extreme than the
+median because of a heavy right tail — a small number of trades realise a fill landing almost
+exactly on the stop price, making the realised-R denominator tiny and the ratio explode (the
+max of +245.45 is one such degenerate case, not a data error: a real fill that happened to land a
+few ticks from the stop). **Read the median, not the mean, as the representative number**; the
+mean is reported for completeness and is not a claim that trades are "on average" fine.
+
+### (b) Fraction realising below threshold
+
+| threshold | count | share of 1,472 |
+|---|---|---|
+| **< 1.5R** (the admission floor itself) | **960** | **65.2%** |
+| **< 1.0R** | **685** | **46.5%** |
+| **< 0.5R** | **398** | **27.0%** |
+
+**Nearly half the admitted population realises below 1.0R — a materially worse trade than "the
+floor slipped a little."** More than a quarter realise below 0.5R.
+
+### (c) Adverse entry gap — points and ticks
+
+Direction split: **1,279 worse (86.9%) · 183 favourable (12.4%) · 10 exact (0.7%)**, matching the
+earlier examples' population.
+
+| | points | ticks |
+|---|---|---|
+| min | 0.25 | 1.00 |
+| p05 | 1.00 | 4.00 |
+| p25 | 4.00 | 16.00 |
+| **median** | **8.25** | **33.00** |
+| p75 | 15.75 | 63.00 |
+| p95 | 39.00 | 156.00 |
+| max | 93.00 | 372.00 |
+| mean | 12.18 | 48.73 |
+
+**A median adverse gap of 33 ticks is not microstructure noise — it is more than 3× the A5 stop
+floor's own tick count relative to the measured median spread (3 ticks).** This gap is an order
+of magnitude larger than the friction A5 was designed to absorb.
+
+### (d) True single-bar limit reachability — sizes the selection effect directly
+
+**Question:** if the entry order were a real limit order, checked only against the single bar the
+detector currently uses for its fill, does that bar's range ever reach the limit at all?
+
+| | count | share |
+|---|---|---|
+| **Bar range NEVER reaches the limit — would NOT fill** | **768** | **52.2%** |
+| Bar reaches or opens through the limit — would fill | 704 | 47.8% |
+
+> **More than half the admitted population would not have filled at all on the bar the detector
+> uses, under a literal reading of a resting limit order.** This is a **lower bound** on the true
+> non-fill rate, stated explicitly rather than left implicit: a real limit order does not expire
+> after one bar — it can be filled by a later bar, by a real market, or (per §5.5) eventually
+> cancelled once T_cancel is given a value. The 52.2% figure answers "does the very next bar reach
+> it," not "does the order ever fill." The true non-fill rate under a persistent multi-bar limit
+> order was **not computed** — tracking a resting order across an unbounded number of subsequent
+> bars is a materially larger simulation (it reintroduces the T_cancel question this project has
+> twice declined to invent a value for) and was out of scope for a geometry-only, same-day report.
+
+**Selection effect — does the non-fill population look different, in what it was screened on,
+from the population that would fill?**
+
+| | screened-RR n | min | p25 | median | p75 | max | mean |
+|---|---|---|---|---|---|---|---|
+| **would NOT fill** (768) | 768 | 1.500 | 1.775 | **2.140** | 2.650 | 6.775 | 2.336 |
+| **would fill** (704) | 704 | 1.500 | 1.725 | **2.075** | 2.625 | 11.200 | 2.414 |
+
+**The two populations look nearly identical on screened RR** — medians 2.14 vs 2.08, means 2.34 vs
+2.41, both floored at exactly 1.500 (the admission minimum, as expected). **Non-fills are not
+random in the sense of being unrelated to the setup** (they correlate with whatever makes a
+trigger's cluster far from the very next bar's range), **but they are not obviously screened-RR-
+biased either** — switching to a single-bar true-limit model would remove roughly half the
+population without obviously skewing it toward higher- or lower-RR setups, on this one dimension.
+**This says nothing about bias on other dimensions** (timeframe, direction, HTF flag, time of
+day) — those were not checked and are not claimed to be balanced.
+
+---
+
+## 5. What this does and does not decide
+
+**Does not decide the fork.** The recommendation to keep the detector's behaviour and amend A5 to
+say so explicitly was offered as **a default, not a verdict** — this document supplies the
+quantified basis for a decision, it does not make one. **The scale of (a)/(b)/(d) above is why
+the sealed run built on the old accounting was discarded** (`STAGE3-DISCARDED.md`): keeping the
+detector's convention unexamined means sealing a population where 65.2% fails its own admission
+promise, and where 52.2% may not be a real limit fill at all.
 
 **Does not touch N_trials.** Nothing here compared outcomes, ranked a configuration, or selected
 a reading by result. It quantifies the geometric consequence of two already-stated readings of
-one accounting rule.
+one accounting rule, and sizes a selection effect on one dimension (screened RR) for a decision
+not yet made.
 
 **N_trials: 1 of 5, unchanged.**

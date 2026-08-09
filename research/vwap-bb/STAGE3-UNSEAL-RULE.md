@@ -1,7 +1,9 @@
 # STAGE 3 — UNSEAL RULE
 
 **Written 2026-08-08 under the Code-Path Verification Suite, Part 4. Updated 2026-08-08, item 11
-of the overnight queue — clause (a) re-evaluated post-A15, a sealed Stage 3 run now exists.**
+of the overnight queue — clause (a) re-evaluated post-A15, a sealed Stage 3 run now exists.
+Updated again 2026-08-08, Amendment 05 round 2, item 1 — that sealed run has since been
+DISCARDED UNOPENED under §2 below; see §0-bis and the revised §3 verdict.**
 
 Spec: **`f6b38bf4af1ca9696a12a6e9f80a12209ebff310`** (A1–A15). **Superseded:** `42d6f0f6…`
 (A1–A13, this rule's original spec) and `8ead7259…` (A1–A7, the Stage 2 spec).
@@ -17,6 +19,37 @@ Spec: **`f6b38bf4af1ca9696a12a6e9f80a12209ebff310`** (A1–A15). **Superseded:**
 > file is ever opened.** Never read. `read_results()` requires the unseal token.
 
 The Stage 2 artefact remains as described below, unaffected by this update; §4 is unchanged.
+
+---
+
+## 0-bis. That sealed run no longer exists at the path above — DISCARDED, per §2, unopened
+
+**2026-08-08, Amendment 05 round 2, item 1.** The RR-floor admission gate (§6.5/A4) was found to
+screen a price — the intended limit — that the accounting rule (`PREREGISTRATION.md` 4.2) does
+not transact at (it fills at the next bar's open, unconditionally). Geometry-only measurement
+(`fill_fork_report.py`, no outcome computed) found **65.2% of the sealed run's 1,472 trades**
+realise below the very 1.5R the gate certified. This is exactly the condition §2 below describes
+— a bug on a path a.1/a.2/a.3 were supposed to cover but didn't, because the mismatch is between
+two documents (the spec's admission clause and the pre-registration's accounting clause), not
+inside either one alone.
+
+**Action taken, exactly per §2's text:** the sealed run was **discarded unopened**, not read "to
+see whether the bug mattered." The file was moved, byte-identical, hash reverified before and
+after the move (`0caf65cf…`), to
+`data/archive/workbench_results_SEALED_A15_DISCARDED_UNOPENED.parquet`. **Its contents remain
+unread to this moment.** Full reasoning, the exact 65.2% figure and its distributional detail:
+`STAGE3-DISCARDED.md`, `FILL-ACCOUNTING-FORK.md`, `fill_fork_report.json`.
+
+**N_trials: NOT refunded by the discard.** The slot this run consumed — 1 of 5 — stays spent, per
+the standing rule that sealing consumes a trial "whether or not the file is ever opened."
+Discarding for cause is not an exception to that rule; it is the exact scenario the rule is there
+to prevent from becoming a free re-roll. **The next sealed Stage 3 run, whenever it happens,
+consumes slot 2 of 5, not a re-use of slot 1.**
+
+**Every clause below this point (§1 THE RULE, §3 VERDICT, §5 remaining steps) now governs a
+*future* Stage 3 run — a re-seal that does not yet exist — not the discarded one.** §3's verdict
+is rewritten accordingly; do not read the pre-discard verdict table as still describing a live
+sealed file, because there is no longer a sealed file to describe.
 
 ---
 
@@ -58,22 +91,38 @@ minutes, and if it changed something, the seal was already void.
 
 ---
 
-## 3. VERDICT AS AT 2026-08-08 — UPDATED after item 11, then after the morning's 2c adjudication
+## 3. VERDICT AS AT 2026-08-08 — UPDATED after the Amendment 05 round 2 discard
 
-> # DO NOT OPEN
+> # NO SEALED RUN EXISTS. THE QUESTION "OPEN OR NOT" DOES NOT CURRENTLY ARISE.
 
-**a.3 is now adjudicated** (`2C-ADJUDICATION.md`, Amendment 05 item 1). **b.1 is the only clause
-left unmet.**
+**Superseded verdict, kept for the record (this described the run that was discarded under §2 /
+§0-bis, and no longer describes anything that exists):**
 
-| clause | status | why |
+| clause | status at time of discard | why |
 |---|---|---|
-| **precondition** | **MET** | a sealed Stage 3 run exists, `0caf65cf…`, 1,472 rows, N_trials 1 of 5 |
-| **a.1** | **PASSES** | 81 tests, 77 pass. The 4 failures are the same two mis-constructed test bars, deliberately left unedited — **no detector bug**. Every new A14/A15 case and both reclassified D4/D5 pass on real clauses |
-| **a.2** | **PASSES** | 10 invariants over the full 1,472-trade list, all `PASS` at a full evaluated count except invariant 7, which is **`MOVED`** to 2a (15/15 pass there, on synthetic bars, closing what was `NOT TESTABLE`) — not left `NOT TESTABLE` in place, which is what a.2 actually forbids |
-| **a.3** | **MET** | `2C-ADJUDICATION.md`: every one of the 3,035 raw disagreements traces to **spec ambiguity** or a **documented, already-ruled scope limitation** (weekly H/L, `OUT-OF-SCOPE-BRANCHES.md` branch 9) — none to a detector bug, none to a second-build bug. **Source isolation held**; **output isolation leaked narrowly** (7 of 28 decisions touched a published detector figure, mostly as corroboration rather than as the deciding vote) on dimensions confirmed **not** to explain the diff's size — a direct empirical test of A-01's own hypothesis (a uniform minute-label shift) found it explains only 24–36% of the residual, not "the whole explanation" its own text speculated. a.3's rule is satisfied by its own second clause: *"every disagreement is adjudicated to spec ambiguity rather than to a bug in either implementation"* |
-| **b.1** | **FAILS** | The pass marks are **prepared** (`PASS-MARKS-FOR-SIGNING.md`, now carrying the Amendment 05 identity-churn clause) but **not signed**. Four OPEN items in `PREREGISTRATION.md` §10 remain open |
+| **precondition** | ~~MET~~ **VOID** | the sealed run this row described no longer exists; discarded unopened, `STAGE3-DISCARDED.md` |
+| **a.1** | PASSED | 81 tests, 77 pass, 4 accounted-for failures, no detector bug — unaffected by the discard, still true of the current code |
+| **a.2** | PASSED | 10 invariants, full-count `PASS` or `MOVED` — unaffected by the discard, still true of the current code |
+| **a.3** | MET | `2C-ADJUDICATION.md` — unaffected by the discard, still true of the current code |
+| **b.1** | FAILED | pass marks prepared, not signed — **still unmet**, and now joined by a new, prior blocker (below) |
 
-**The operative clause is now b.1 alone.** Sign the pass marks, and clause (a) is fully met.
+**a.1/a.2/a.3 pass or hold on the code as it stands — the discard was not caused by a detector
+bug on any path those clauses check.** It was caused by a mismatch *between* the admission gate
+(§6.5/A4, evaluated against the limit) and the accounting rule (`PREREGISTRATION.md` 4.2, fills
+at the open) — a cross-document inconsistency neither a.1, a.2, nor a.3 was ever scoped to catch,
+since each checks one implementation against one spec, not two spec documents against each other.
+
+**New precondition for the NEXT seal, ranked before b.1, because b.1 is about signing marks on a
+mechanism and there is currently no agreed mechanism to sign marks on:**
+
+| | condition |
+|---|---|
+| **a.4 (new)** | The fill-accounting fork is resolved and pre-registered as a spec amendment — not a patch, per Angus's own closing instruction ("this is a change to the trader and it ships as a pre-registered spec version"). See `FILL-ACCOUNTING-FORK.md`, `FILL-MECHANICS-QUOTES.md`. |
+| **a.5 (new)** | The fork set for the identity-churn pass-mark clause (`FORK-SET-ENUMERATION.md`, 5 forks / 32 combinations, fixed 2026-08-08) is built and run, and the minimum taken, per `PASS-MARKS-FOR-SIGNING.md`'s combining rule. |
+| **b.1 (unchanged)** | Pass marks signed. |
+
+**Operative clauses now: a.4, a.5, and b.1 — three, not one.** a.1–a.3 remain met on the current
+code and do not need to be re-proven unless the detector changes again before the re-seal.
 
 ---
 
@@ -92,22 +141,32 @@ it either.
 
 ---
 
-## 5. WHAT MUST HAPPEN BEFORE THIS RULE CAN EVER RETURN "OPEN" — updated, three of six done
+## 5. WHAT MUST HAPPEN BEFORE THIS RULE CAN EVER RETURN "OPEN" — updated after the discard
 
 1. ~~Close invariant 7.~~ **DONE** — item 5, moved to 2a, 15/15 pass on synthetic bars.
 2. ~~Resolve invariant 9.~~ **DONE** — A14, rounding rule specified and implemented; 2b now
    shows **0 of 1,472** entries, stops or targets off-grid.
-3. ~~Rebuild the two mis-constructed 2a cases.~~ **NOT DONE, and no longer blocks a.1.** A8 and
-   A9 remain deliberately unedited (they are wrong test bars, not a detector bug); a.1's own text
-   only requires *"every spec-derived unit test, with no expected value edited after a
-   failure"* — met, since the file's PASS/FAIL count is 77/81 and the 4 failures are accounted
-   for and understood, not silently ignored.
-4. ~~Build the Stage 3 engine.~~ **DONE** — `stage3_sealed_a15.py`, sealed, N_trials 1 of 5.
-5. **Sign the pass marks.** Still open. `PASS-MARKS-FOR-SIGNING.md` prepared; not signed.
-6. **Adjudicate the 2c diff.** Still open, and now the OTHER precondition alongside signing —
-   collected in `2C-RAW-COLLECTION.md`, not adjudicated, by explicit instruction.
+3. ~~Rebuild the two mis-constructed 2a cases.~~ **NOT DONE, and no longer blocks a.1**, as before.
+4. ~~Build the Stage 3 engine.~~ **DONE, then DISCARDED.** `stage3_sealed_a15.py`'s sealed output
+   consumed N_trials 1 of 5 and was discarded unopened, `STAGE3-DISCARDED.md`. **The engine code
+   itself is not known to be wrong** — the discard was about what the admission gate and the
+   accounting rule jointly certify, not a bug in the engine's arithmetic.
+5. ~~Sign the pass marks.~~ **STILL open**, and now sequenced behind items 7-8 below, not before
+   them — signing marks on a mechanism that is about to change is signing marks on the wrong
+   mechanism.
+6. ~~Adjudicate the 2c diff.~~ **DONE** — `2C-ADJUDICATION.md`; a.3 is MET.
+7. **NEW — resolve and pre-register the fill-accounting fork.** `FILL-ACCOUNTING-FORK.md` /
+   `FILL-MECHANICS-QUOTES.md` lay out the choice; Angus's own words govern the form of the fix:
+   *"this is a change to the trader and it ships as a pre-registered spec version, not a patch."*
+   **Not started** — explicitly deferred this round ("do not amend the entry mechanism yet").
+8. **NEW — build and run the 32-combination fork sweep**, `FORK-SET-ENUMERATION.md`, and take the
+   minimum per `PASS-MARKS-FOR-SIGNING.md`'s combining rule. **Not started**, and sequenced
+   *after* item 7 (sweeping combinations on a fill mechanism about to be replaced would measure
+   identity churn on a population that already doesn't match its own admission criterion).
 
-**Remaining: sign the pass marks (b.1), and adjudicate 2c (a.3). Both, not either — §1 requires
-all of (a) and (b).**
+**Remaining, in order: fix the fill mechanism and re-pre-register (7) → build and run the fork
+sweep, take the minimum (8) → sign the pass marks (5, i.e. b.1). §1 still requires all of (a) —
+now including the new a.4/a.5 — and (b) together; neither substitutes for the other.**
 
-**N_trials: 1 of 5.** Consumed by the sealed Stage 3 run above, whether or not it is ever opened.
+**N_trials: 1 of 5, spent on the discarded run and not refunded.** The next sealed run consumes
+slot **2 of 5**.
