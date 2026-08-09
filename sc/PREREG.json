@@ -1,5 +1,6 @@
 {
   "config": {
+    "declared_stop": 30.0,
     "placebo_draws": 60,
     "profile_tf": 30,
     "seed": 20260810,
@@ -13,6 +14,7 @@
     "F1_golden_rule": "Restricting NY trades to those aligned with the previous-day-POC bias raises mean R per trade.",
     "F2_midnight_open": "Restricting NY trades to those aligned with midnight-open premium/discount raises mean R per trade."
   },
+  "mode": "trades (conditional lift on an existing population)",
   "n_trades": 260,
   "primary_metric": "R per trade",
   "primary_statistic": "mean(filter-aligned) - mean(all trades)",
@@ -23,6 +25,6 @@
     "mean points",
     "bootstrap 95% CI"
   ],
-  "sha256": "66d9c49df0ad93bb5da49fc406c18866a2bf9ef4154812fed6b03df9d05dd3b2",
-  "written_at_utc": "2026-08-09T15:34:11.620565+00:00"
+  "sha256": "6d5b1e0a9413052f598925ff7d0bcbe6c256d02db22f97509a0387d1be33cd5a",
+  "written_at_utc": "2026-08-09T15:53:15.444738+00:00"
 }

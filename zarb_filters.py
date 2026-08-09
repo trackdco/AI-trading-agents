@@ -657,34 +657,323 @@ def eighty_percent_rule(bars: pd.DataFrame, levels: pd.DataFrame,
 
 
 # ----------------------------------------------------------------------------
+# BARS-ONLY MODE -- measure the filters as directional bias, no trades required
+# ----------------------------------------------------------------------------
+
+def build_bar_population(bars: pd.DataFrame, levels: pd.DataFrame,
+                         cfg: dict) -> pd.DataFrame:
+    """
+    One observation per trading day: enter at the 09:30 ET open, hold to 16:00 ET,
+    with a declared fixed stop.
+
+    Both directional outcomes are precomputed per session. A filter (or a placebo)
+    then only SELECTS which of the two it would have taken, so a 200-draw placebo
+    sweep costs two bar-walks per session in total rather than 200. Because the
+    outcome set is fixed before any level is consulted, no placebo draw can alter
+    the underlying data -- only which side of it gets picked.
+
+    Intrabar ambiguity: if a single 1-minute bar contains both the stop and a
+    larger favourable excursion, the stop is assumed first. Conservative, and it
+    applies identically to real and placebo directions, so it cannot bias the
+    comparison.
+    """
+    S = float(cfg["declared_stop"])
+    rows = []
+    for d, row in levels.iterrows():
+        if not (np.isfinite(row["prev_poc"]) and np.isfinite(row["midnight_open"])
+                and np.isfinite(row["day_open"])):
+            continue
+        start = pd.Timestamp(datetime.combine(d, NY_OPEN), tz=ET)
+        end = pd.Timestamp(datetime.combine(d, NY_CLOSE), tz=ET)
+        w = bars.loc[(bars.index >= start) & (bars.index <= end)]
+        if len(w) < 30:
+            continue
+
+        entry = float(w["open"].iloc[0])
+        hi = w["high"].to_numpy(dtype=float)
+        lo = w["low"].to_numpy(dtype=float)
+        cl = float(w["close"].iloc[-1])
+
+        rec = {
+            "trading_date": d, "entry_price": entry, "n_bars": int(len(w)),
+            "prev_poc": float(row["prev_poc"]),
+            "midnight_open": float(row["midnight_open"]),
+            "day_open": float(row["day_open"]),
+            "prev_val": row["prev_val"], "prev_vah": row["prev_vah"],
+        }
+
+        for dname, ds in (("long", 1.0), ("short", -1.0)):
+            stop_px = entry - ds * S
+            hit = np.nonzero(lo <= stop_px)[0] if ds > 0 else np.nonzero(hi >= stop_px)[0]
+            stopped = len(hit) > 0
+            fav_arr = hi if ds > 0 else lo
+            adv_arr = lo if ds > 0 else hi
+            if stopped:
+                k = int(hit[0])
+                r = -1.0
+                mfe = float(np.max(ds * (fav_arr[:k + 1] - entry)))
+                mae = S
+            else:
+                r = ds * (cl - entry) / S
+                mfe = float(np.max(ds * (fav_arr - entry)))
+                mae = float(max(0.0, -np.min(ds * (adv_arr - entry))))
+            rec[f"R_{dname}"] = r
+            rec[f"MFE_{dname}"] = mfe
+            rec[f"MAE_{dname}"] = mae
+            rec[f"pts_{dname}"] = ds * (cl - entry)
+            rec[f"stopped_{dname}"] = bool(stopped)
+        rows.append(rec)
+
+    pop = pd.DataFrame(rows)
+    if pop.empty:
+        raise ValueError("No sessions produced a usable NY window. Check bar coverage.")
+    return pop
+
+
+def select_by_dir(pop: pd.DataFrame, dirs: np.ndarray, field: str) -> np.ndarray:
+    return np.where(dirs > 0,
+                    pop[f"{field}_long"].to_numpy(dtype=float),
+                    pop[f"{field}_short"].to_numpy(dtype=float))
+
+
+BAR_FILTERS = {
+    "F1_golden_rule": {
+        "level_col": "prev_poc",
+        "dir_fn": lambda px, lvl: np.where(px > lvl, 1.0, -1.0),
+        "desc": "long above previous-day POC, short below (18:00-16:30 ET, 68% VA)",
+    },
+    "F2_midnight_open": {
+        "level_col": "midnight_open",
+        "dir_fn": lambda px, lvl: np.where(px < lvl, 1.0, -1.0),
+        "desc": "long below the 00:00 ET open (discount), short above (premium)",
+    },
+}
+
+
+def analyse_bars(bars: pd.DataFrame, outdir: Path, cfg: dict) -> dict:
+    rng = np.random.default_rng(cfg["seed"])
+    levels = build_daily_levels(bars, cfg["session_open"], cfg["session_close"],
+                               cfg["va_pct"], cfg["profile_tf"])
+    pop = build_bar_population(bars, levels, cfg)
+
+    entry_px = pop["entry_price"].to_numpy(dtype=float)
+    ref = pop["day_open"].to_numpy(dtype=float)
+    n = len(pop)
+
+    always_long = pop["R_long"].to_numpy(dtype=float)
+    always_short = pop["R_short"].to_numpy(dtype=float)
+
+    results = {
+        "mode": "bars",
+        "metric": "R at declared stop",
+        "declared_stop_points": cfg["declared_stop"],
+        "counts": {"sessions_analysed": int(n),
+                   "date_min": str(pop["trading_date"].min()),
+                   "date_max": str(pop["trading_date"].max())},
+        "drift_baselines": {
+            "always_long": describe(always_long),
+            "always_short": describe(always_short),
+            "note": ("If one of these is strongly positive, the span has directional "
+                     "drift and any filter that leans that way will look good for "
+                     "reasons unrelated to its level. Null C is what controls for it."),
+        },
+        "filters": {},
+    }
+
+    for fname, spec in BAR_FILTERS.items():
+        lvl = pop[spec["level_col"]].to_numpy(dtype=float)
+        dirs = spec["dir_fn"](entry_px, lvl)
+        R = select_by_dir(pop, dirs, "R")
+        real = float(np.nanmean(R))
+        frac_long = float(np.mean(dirs > 0))
+
+        ci_lo, ci_hi = bootstrap_ci(R, rng)
+
+        nulls: Dict[str, dict] = {}
+
+        # NULL A -- proximity-matched synthetic level
+        stats = [float(np.nanmean(select_by_dir(
+            pop, spec["dir_fn"](entry_px, placebo_offset_preserving(lvl, ref, rng)), "R")))
+            for _ in range(cfg["placebo_draws"])]
+        nulls["null_A_offset_preserving"] = _null_pack(stats)
+
+        # NULL B -- levels permuted across days
+        stats = [float(np.nanmean(select_by_dir(
+            pop, spec["dir_fn"](entry_px, placebo_day_shuffled(lvl, rng)), "R")))
+            for _ in range(cfg["placebo_draws"])]
+        nulls["null_B_day_shuffled"] = _null_pack(stats)
+
+        # NULL C -- random directions matched to this filter's own long/short mix.
+        # This is the null that matters most: it holds the filter's directional
+        # imbalance fixed and destroys only the level information, so beating it
+        # means the LEVEL carried signal rather than the filter merely leaning the
+        # way the market drifted.
+        stats = []
+        for _ in range(cfg["placebo_draws"]):
+            fake_dirs = np.where(rng.random(n) < frac_long, 1.0, -1.0)
+            stats.append(float(np.nanmean(select_by_dir(pop, fake_dirs, "R"))))
+        nulls["null_C_direction_matched"] = _null_pack(stats)
+
+        if n < 100:
+            verdict = f"DESCRIPTIVE ONLY - only {n} sessions, need 100+"
+        else:
+            p95s = [v["p95"] for v in nulls.values() if v["p95"] is not None]
+            verdict = ("LIFT SHOWN (beats all three nulls)"
+                       if p95s and all(real > p for p in p95s)
+                       else "NO LIFT (fails at least one null)")
+
+        results["filters"][fname] = {
+            "description": spec["desc"],
+            "level_column": spec["level_col"],
+            "mean_R": real,
+            "mean_R_ci95": [ci_lo, ci_hi],
+            "fraction_long": frac_long,
+            "MFE_points": describe(select_by_dir(pop, dirs, "MFE")),
+            "MAE_points": describe(select_by_dir(pop, dirs, "MAE")),
+            "close_points": describe(select_by_dir(pop, dirs, "pts")),
+            "stopped_rate": float(np.mean(select_by_dir(
+                pop, dirs, "stopped").astype(bool))),
+            "nulls": nulls,
+            "verdict": verdict,
+        }
+
+    results["f3_base_rates"] = eighty_percent_rule(
+        bars, levels, cfg["session_open"], cfg["session_close"])
+
+    pop.to_csv(outdir / "bar_population.csv", index=False)
+    levels.to_csv(outdir / "daily_levels.csv")
+    (outdir / "RESULTS.json").write_text(json.dumps(results, indent=2, default=str))
+    return results
+
+
+def _null_pack(stats: List[float]) -> dict:
+    arr = np.array([s for s in stats if np.isfinite(s)], dtype=float)
+    if not len(arr):
+        return {"draws": 0, "mean": None, "p95": None, "p99": None, "max": None}
+    return {"draws": int(len(arr)), "mean": float(arr.mean()),
+            "p95": float(np.percentile(arr, PLACEBO_PCTILE)),
+            "p99": float(np.percentile(arr, 99)), "max": float(arr.max())}
+
+
+def report_bars(res: dict, digest: str) -> str:
+    L: List[str] = []
+    add = L.append
+    add("=" * 78)
+    add("ZARB BIAS FILTERS - DIRECTIONAL TEST ON BARS (no trade population needed)")
+    add("=" * 78)
+    add(f"PREREG sha256 : {digest}")
+    add(f"Metric        : R at a declared {res['declared_stop_points']:.0f}-point stop, "
+        f"09:30 entry -> 16:00 ET exit")
+    add("                The stop is DECLARED, not a real one. R here is a common")
+    add("                yardstick for comparing directions, not a tradeable result.")
+    c = res["counts"]
+    add(f"Sessions      : {c['sessions_analysed']}  ({c['date_min']} -> {c['date_max']})")
+
+    add("")
+    add("DRIFT BASELINES (what you get with no filter at all)")
+    for k in ("always_long", "always_short"):
+        d = res["drift_baselines"][k]
+        add(f"  {k:<13} n={d['n']:<5} mean R={d['mean']:+.4f}  "
+            f"median={d['median']:+.4f}  win={d['win_rate']*100:.1f}%")
+
+    for fname, f in res["filters"].items():
+        add("")
+        add("-" * 78)
+        add(f"{fname}  --  {f['description']}")
+        add("-" * 78)
+        add(f"  mean R        : {f['mean_R']:+.4f}   "
+            f"CI95 [{f['mean_R_ci95'][0]:+.4f}, {f['mean_R_ci95'][1]:+.4f}]")
+        add(f"  long/short    : {f['fraction_long']*100:.1f}% long   "
+            f"(stopped out {f['stopped_rate']*100:.1f}% of sessions)")
+        for label, key in (("MFE", "MFE_points"), ("MAE", "MAE_points"),
+                           ("close", "close_points")):
+            d = f[key]
+            add(f"  {label:<13} : mean {d['mean']:+.2f} pts   median {d['median']:+.2f} pts")
+        for nn, nv in f["nulls"].items():
+            if nv["p95"] is not None:
+                add(f"  {nn:<28} draws={nv['draws']:<4} mean={nv['mean']:+.4f}  "
+                    f"p95={nv['p95']:+.4f}  max={nv['max']:+.4f}")
+        add(f"  VERDICT: {f['verdict']}")
+
+    add("")
+    add("-" * 78)
+    add("F3  80% RULE BASE RATES (pipeline validation)")
+    add("-" * 78)
+    for k, v in res["f3_base_rates"].items():
+        rate = f"{v['rate']*100:.1f}%" if v["rate"] is not None else "n/a"
+        add(f"  {k}: {v['hits']}/{v['triggers']} = {rate}")
+        add(f"      {v['note']}")
+
+    add("")
+    add("=" * 78)
+    add("NULL C IS THE ONE THAT MATTERS. Nulls A and B only randomise WHERE the")
+    add("level sits. Null C holds the filter's own long/short mix fixed and destroys")
+    add("only the level information -- so a filter that beats A and B but fails C is")
+    add("capturing directional drift, not reading the level.")
+    add("Fit-side measurement only. No holdout was touched.")
+    add("=" * 78)
+    return "\n".join(L)
+
+
+# ----------------------------------------------------------------------------
 # PRE-REGISTRATION
 # ----------------------------------------------------------------------------
 
-def preregister(outdir: Path, cfg: dict, n_trades: int, r_available: bool) -> str:
-    prereg = {
-        "written_at_utc": datetime.now(timezone.utc).isoformat(),
-        "primary_metric": "R per trade" if r_available else "POINTS per trade (R unavailable)",
-        "primary_statistic": "mean(filter-aligned) - mean(all trades)",
-        "hypotheses": {
-            "F1_golden_rule": "Restricting NY trades to those aligned with the "
-                              "previous-day-POC bias raises mean R per trade.",
-            "F2_midnight_open": "Restricting NY trades to those aligned with "
-                                "midnight-open premium/discount raises mean R per trade.",
-        },
-        "decision_rule": (
-            f"A filter is declared to show lift ONLY IF its real statistic exceeds "
-            f"the {PLACEBO_PCTILE:.0f}th percentile of BOTH null distributions "
-            f"(offset-preserving and day-shuffled), each built from "
-            f"{cfg['placebo_draws']} draws. Failing either null = no lift. "
-            f"Buckets with n < {MIN_BUCKET_N} are reported descriptively with no verdict."
-        ),
-        "secondary_reported": ["median R", "win rate", "mean points", "bootstrap 95% CI"],
-        "f3_status": "F3 is a session-level base rate, reported for pipeline "
-                     "validation only. It is not part of the lift hypotheses.",
-        "config": cfg,
-        "n_trades": n_trades,
-        "r_available": r_available,
-    }
+def preregister(outdir: Path, cfg: dict, n_trades: int, r_available: bool,
+                mode: str = "trades") -> str:
+    if mode == "bars":
+        prereg = {
+            "written_at_utc": datetime.now(timezone.utc).isoformat(),
+            "mode": "bars (directional test, no trade population)",
+            "primary_metric": f"R at a declared {cfg.get('declared_stop')}-point stop",
+            "primary_statistic": "mean R of the filter-directed session population",
+            "hypotheses": {
+                "F1_golden_rule": "Taking the direction implied by price vs the "
+                                  "previous-day POC at 09:30 produces positive mean R.",
+                "F2_midnight_open": "Taking the direction implied by price vs the "
+                                    "00:00 ET open at 09:30 produces positive mean R.",
+            },
+            "decision_rule": (
+                f"A filter is declared to show lift ONLY IF its mean R exceeds the "
+                f"{PLACEBO_PCTILE:.0f}th percentile of ALL THREE nulls "
+                f"(A offset-preserving level, B day-shuffled level, "
+                f"C direction-frequency-matched), each from "
+                f"{cfg['placebo_draws']} draws. Failing any null = no lift. "
+                f"Null C is decisive: passing A and B while failing C means the "
+                f"filter captured directional drift, not level information. "
+                f"Fewer than 100 sessions = descriptive only, no verdict."
+            ),
+            "secondary_reported": ["MFE points", "MAE points", "close points",
+                                   "stopped-out rate", "always-long and "
+                                   "always-short drift baselines"],
+            "config": cfg,
+        }
+    else:
+        prereg = {
+            "written_at_utc": datetime.now(timezone.utc).isoformat(),
+            "mode": "trades (conditional lift on an existing population)",
+            "primary_metric": "R per trade" if r_available else "POINTS per trade (R unavailable)",
+            "primary_statistic": "mean(filter-aligned) - mean(all trades)",
+            "hypotheses": {
+                "F1_golden_rule": "Restricting NY trades to those aligned with the "
+                                  "previous-day-POC bias raises mean R per trade.",
+                "F2_midnight_open": "Restricting NY trades to those aligned with "
+                                    "midnight-open premium/discount raises mean R per trade.",
+            },
+            "decision_rule": (
+                f"A filter is declared to show lift ONLY IF its real statistic exceeds "
+                f"the {PLACEBO_PCTILE:.0f}th percentile of BOTH null distributions "
+                f"(offset-preserving and day-shuffled), each built from "
+                f"{cfg['placebo_draws']} draws. Failing either null = no lift. "
+                f"Buckets with n < {MIN_BUCKET_N} are reported descriptively with no verdict."
+            ),
+            "secondary_reported": ["median R", "win rate", "mean points", "bootstrap 95% CI"],
+            "config": cfg,
+            "n_trades": n_trades,
+            "r_available": r_available,
+        }
+    prereg["f3_status"] = ("F3 is a session-level base rate, reported for pipeline "
+                          "validation only. It is not part of the lift hypotheses.")
     blob = json.dumps(prereg, sort_keys=True, indent=2)
     digest = hashlib.sha256(blob.encode()).hexdigest()
     prereg["sha256"] = digest
@@ -924,20 +1213,28 @@ def selfcheck(outdir: Path) -> None:
     t_, r_ok = load_trades(tp, "UTC")
     cfg = {"session_open": SESSION_OPEN, "session_close": SESSION_CLOSE,
            "va_pct": VALUE_AREA_PCT, "profile_tf": PROFILE_TF_MIN,
-           "placebo_draws": 60, "seed": SEED}
+           "placebo_draws": 60, "seed": SEED, "declared_stop": 30.0}
     cfg_ser = dict(cfg, session_open=str(SESSION_OPEN), session_close=str(SESSION_CLOSE))
-    d = preregister(outdir, cfg_ser, len(t_), r_ok)
-    res = analyse(b, t_, r_ok, outdir, cfg)
-    print(report(res, d))
-    print("\n[selfcheck] Pipeline ran end to end. Synthetic data has no edge, so")
-    print("[selfcheck] 'NO LIFT' on both filters is the correct and expected result.")
-    print("[selfcheck] If either filter reports LIFT SHOWN here, the placebo engine")
-    print("[selfcheck] is broken and no downstream verdict should be trusted.")
-    print("[selfcheck] Both null p95 values must be NON-ZERO -- a null that is")
-    print("[selfcheck] identically zero means the placebo collapsed onto the real level.")
-    print("[selfcheck] IGNORE the F3 percentages here: these are Gaussian random")
-    print("[selfcheck] walks, not auctions, so value-area traversal has no reason to")
-    print("[selfcheck] land in the 60-70% band. F3 only means something on real bars.")
+
+    d1 = preregister(outdir, cfg_ser, 0, True, mode="bars")
+    res1 = analyse_bars(b, outdir, cfg)
+    print(report_bars(res1, d1))
+
+    print("\n\n" + "#" * 78 + "\n# TRADES MODE\n" + "#" * 78 + "\n")
+    d2 = preregister(outdir, cfg_ser, len(t_), r_ok, mode="trades")
+    res2 = analyse(b, t_, r_ok, outdir, cfg)
+    print(report(res2, d2))
+
+    print("\n[selfcheck] Both modes ran end to end on a random walk.")
+    print("[selfcheck] TRADES mode: R is i.i.d. and independent of direction and")
+    print("[selfcheck] price by construction, so NO LIFT is provably correct.")
+    print("[selfcheck] BARS mode: a driftless random walk carries no directional")
+    print("[selfcheck] edge, so NO LIFT is the expected result there too.")
+    print("[selfcheck] Every null p95 must be NON-ZERO. A null of exactly 0.0000")
+    print("[selfcheck] means the placebo collapsed onto the real level and can")
+    print("[selfcheck] never fire -- stop and report it rather than trusting a verdict.")
+    print("[selfcheck] IGNORE the F3 percentages: random walks are not auctions, so")
+    print("[selfcheck] value-area traversal has no reason to land in the 60-70% band.")
 
 
 # ----------------------------------------------------------------------------
@@ -964,6 +1261,11 @@ def main(argv=None) -> int:
                     help="minutes; 30 matches the chart Zarb reads levels from")
     ap.add_argument("--placebo-draws", type=int, default=PLACEBO_DRAWS)
     ap.add_argument("--seed", type=int, default=SEED)
+    ap.add_argument("--mode", choices=["bars", "trades"], default="bars",
+                    help="bars: directional test, needs ONLY --bars (default). "
+                         "trades: conditional lift, needs a trade population with R.")
+    ap.add_argument("--declared-stop", type=float, default=30.0,
+                    help="bars mode only: declared stop in points, for the R yardstick")
     ap.add_argument("--selfcheck", action="store_true",
                     help="run on synthetic data to validate the pipeline")
     a = ap.parse_args(argv)
@@ -971,23 +1273,32 @@ def main(argv=None) -> int:
     if a.selfcheck:
         selfcheck(a.outdir)
         return 0
-    if not a.bars or not a.trades:
-        ap.error("--bars and --trades are required (or use --selfcheck)")
+    if not a.bars:
+        ap.error("--bars is required (or use --selfcheck)")
+    if a.mode == "trades" and not a.trades:
+        ap.error("--mode trades requires --trades")
 
     cfg = {"session_open": _parse_time(a.session_open),
            "session_close": _parse_time(a.session_close),
            "va_pct": a.va_pct, "profile_tf": a.profile_tf,
-           "placebo_draws": a.placebo_draws, "seed": a.seed}
+           "placebo_draws": a.placebo_draws, "seed": a.seed,
+           "declared_stop": a.declared_stop}
+    cfg_ser = dict(cfg, session_open=a.session_open, session_close=a.session_close)
 
     bars = load_bars(a.bars, a.bars_tz)
-    trades, r_ok = load_trades(a.trades, a.trades_tz)
 
-    cfg_ser = dict(cfg, session_open=a.session_open, session_close=a.session_close)
-    digest = preregister(a.outdir, cfg_ser, len(trades), r_ok)
-    print(f"[prereg] written to {a.outdir/'PREREG.json'}  sha256={digest[:16]}...\n")
+    if a.mode == "bars":
+        digest = preregister(a.outdir, cfg_ser, 0, True, mode="bars")
+        print(f"[prereg] {a.outdir/'PREREG.json'}  sha256={digest[:16]}...\n")
+        res = analyse_bars(bars, a.outdir, cfg)
+        text = report_bars(res, digest)
+    else:
+        trades, r_ok = load_trades(a.trades, a.trades_tz)
+        digest = preregister(a.outdir, cfg_ser, len(trades), r_ok, mode="trades")
+        print(f"[prereg] {a.outdir/'PREREG.json'}  sha256={digest[:16]}...\n")
+        res = analyse(bars, trades, r_ok, a.outdir, cfg)
+        text = report(res, digest)
 
-    res = analyse(bars, trades, r_ok, a.outdir, cfg)
-    text = report(res, digest)
     print(text)
     (a.outdir / "REPORT.txt").write_text(text)
     return 0
