@@ -876,18 +876,25 @@ def group_m(true_range, compute_atr):
     close("M5", "A22 warmup boundary, exactly 21 bars => ATR available", "[FORM]",
           4.0, compute_atr(bars21, n=20), 1e-9)
 
-    # M6 [LIT] simple average, not Wilder's smoothing: a constant series must average to
-    # exactly the constant True Range, which any exponential scheme would also do, but a
-    # series with ONE outlier distinguishes them - simple average is unaffected by
-    # ORDER, so moving the outlier to the front vs the back gives the SAME result. This
-    # is the property A22's "simple average (not Wilder's)" text asserts.
+    # M6 [LIT] KNOWN WRONG, kept and disclosed rather than edited (same standing as A8/A9):
+    # this case reasoned that moving an outlier bar from the end of the series to the
+    # FRONT should leave a simple average unchanged, and asserted the two resulting ATRs
+    # would be equal. That reasoning was wrong: the FIRST bar in any closed-bar sequence
+    # never contributes its own high/low to a True Range value at all (a bar's range is
+    # only used when it is the "current" bar in a pair, and the first bar is never
+    # "current" - it only ever supplies its close as the PRIOR close for the second
+    # bar). Moving the outlier to position 0 does not reorder its contribution, it
+    # REMOVES its high/low from the sample entirely, which is a different operation from
+    # the one this case intended to test. Caught on the first real run, after this file
+    # was committed unrun - not edited to pass; M8 below replaces it with a correctly-
+    # reasoned case for the same property.
     base = [(100.0, 102.0, 98.0, 100.0)] * 20 + [(100.0, 130.0, 98.0, 100.0)]
     outlier_last = base
     outlier_first = [base[-1]] + base[:-1]
     a_last = compute_atr(outlier_last, n=20)
     a_first = compute_atr(outlier_first, n=20)
-    check("M6", "A22 simple average, order-independent (not Wilder's)", "[LIT]",
-          True, abs(a_last - a_first) < 1e-9)
+    check("M6", "A22 simple average, order-independent (not Wilder's) [KNOWN WRONG - see M8]",
+          "[LIT]", True, abs(a_last - a_first) < 1e-9)
 
     # M7 [FORM] the floor itself, computed from compute_atr's own return value rather
     # than a hand-copied constant: A22's text is "2 x ATR(20, entry TF)" - a direct
@@ -896,6 +903,23 @@ def group_m(true_range, compute_atr):
     # from the text, not fitted to whatever compute_atr happens to return.
     atr = compute_atr(bars21, n=20)
     close("M7", "A22 '2 x ATR(20, entry TF)'", "[FORM]", 8.0, 2.0 * atr, 1e-9)
+
+    # M8 [FORM] REPLACES M6's intent, correctly reasoned. A simple average weighs every
+    # True Range value equally regardless of recency; Wilder's exponential smoothing
+    # weighs recent values MORE. Construct a bar-0 (seed, contributes only its close)
+    # followed by 10 bars producing TR=2 each, then 10 MORE RECENT bars producing TR=10
+    # each - deliberately putting the large values LAST, where a recency-weighted scheme
+    # would pull the result toward 10, away from the plain mean. The plain arithmetic
+    # mean of ten 2s and ten 10s is exactly (10*2 + 10*10) / 20 = 6.0 - hand-computed
+    # from the definition, not from running compute_atr first. All bars share
+    # open=close=100 so True Range reduces to max(h-l, |h-100|, |l-100|): TR=2 bars use
+    # (h=101, l=99); TR=10 bars use (h=105, l=95).
+    seed = (100.0, 101.0, 99.0, 100.0)
+    small = [(100.0, 101.0, 99.0, 100.0)] * 10
+    large = [(100.0, 105.0, 95.0, 100.0)] * 10
+    close("M8", "A22 simple average = plain mean, weighted toward recent large values "
+                "only under Wilder's (this must NOT happen)", "[FORM]",
+          6.0, compute_atr([seed] + small + large, n=20), 1e-9)
 
 
 # ════════════════════════════════════════════════════════════════════
