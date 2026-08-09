@@ -1,5 +1,5 @@
 {
- "pass": 77,
+ "pass": 89,
  "fail": 4,
  "results": [
   [
@@ -63,7 +63,7 @@
    "\u00a73 displacement, 'body/range >= B_min', B_min = 0.6",
    "[LIT]",
    "{('long', 'displacement')}",
-   "{('long', 'displacement'), ('long', 'rejection')}",
+   "{('long', 'rejection'), ('long', 'displacement')}",
    "FAIL"
   ],
   [
@@ -110,8 +110,8 @@
    "A14",
    "\u00a73, both predicates on one bar",
    "[LIT]",
-   "{('long', 'displacement'), ('long', 'rejection')}",
-   "{('long', 'displacement'), ('long', 'rejection')}",
+   "{('long', 'rejection'), ('long', 'displacement')}",
+   "{('long', 'rejection'), ('long', 'displacement')}",
    "PASS"
   ],
   [
@@ -127,7 +127,7 @@
    "\u00a73, B_min 0.6 boundary with close in top quartile",
    "[LIT]",
    "{('long', 'displacement'), ('long', 'rejection')}",
-   "{('long', 'displacement'), ('long', 'rejection')}",
+   "{('long', 'rejection'), ('long', 'displacement')}",
    "PASS"
   ],
   [
@@ -649,6 +649,102 @@
    "[82.0, 81.74]",
    "[82.0, 81.74]",
    "PASS"
+  ],
+  [
+   "K1",
+   "A16 long, reaches, open worse than limit",
+   "[LIT]",
+   "(True, 100.0)",
+   "(True, 100.0)",
+   "PASS"
+  ],
+  [
+   "K2",
+   "A16 long, gap-through, fills at the better open",
+   "[LIT]",
+   "(True, 98.0)",
+   "(True, 98.0)",
+   "PASS"
+  ],
+  [
+   "K3",
+   "A16 long, bar never reaches the limit",
+   "[LIT]",
+   "(False, None)",
+   "(False, None)",
+   "PASS"
+  ],
+  [
+   "K4",
+   "A16 long, exact touch is inclusive",
+   "[LIT]",
+   "(True, 100.0)",
+   "(True, 100.0)",
+   "PASS"
+  ],
+  [
+   "K5",
+   "A16 short, bar never reaches the limit",
+   "[LIT]",
+   "(False, None)",
+   "(False, None)",
+   "PASS"
+  ],
+  [
+   "K6",
+   "A16 short, gap-through, fills at the better open",
+   "[LIT]",
+   "(True, 52.0)",
+   "(True, 52.0)",
+   "PASS"
+  ],
+  [
+   "K7",
+   "A16 short, reaches, open worse than limit",
+   "[LIT]",
+   "(True, 50.0)",
+   "(True, 50.0)",
+   "PASS"
+  ],
+  [
+   "K8",
+   "A16 short, exact touch is inclusive",
+   "[LIT]",
+   "(True, 50.0)",
+   "(True, 50.0)",
+   "PASS"
+  ],
+  [
+   "L1",
+   "A17, agreement case (matches B2)",
+   "[LIT]",
+   "[(100.0, 105.0, {'vwap', 'bb'}, 2)]",
+   "[(100.0, 105.0, {'vwap', 'bb'}, 2)]",
+   "PASS"
+  ],
+  [
+   "L2",
+   "A17, the degenerate chaining case, fixed",
+   "[LIT]",
+   "[(0.0, 4.0, {'a', 'b'}, 2)]",
+   "[(0.0, 4.0, {'a', 'b'}, 2)]",
+   "PASS"
+  ],
+  [
+   "L3",
+   "A17, B6's own case resolved (was UNSPECIFIED)",
+   "[LIT]",
+   "[(100.0, 107.0, {'vwap', 'bb'}, 2)]",
+   "[(100.0, 107.0, {'vwap', 'bb'}, 2)]",
+   "PASS"
+  ],
+  [
+   "L4",
+   "A17, one-sided VWAP ladder does not over-cluster",
+   "[LIT]",
+   "[(100.0, 108.0, {'vwap'}, 3)]",
+   "[(100.0, 108.0, {'vwap'}, 3)]",
+   "PASS"
   ]
  ],
  "observed": [
@@ -663,6 +759,12 @@
    "\u00a73, 'within proximity tolerance'",
    "span-vs-chaining is UNSPECIFIED; gaps 7 and 7, total span 14",
    "[(100.0, 114.0, {'poc', 'vwap', 'bb'}, 3)]"
+  ],
+  [
+   "L5",
+   "A17 (carrying B5's own note forward), exact-tolerance boundary",
+   "gap of exactly 10.00 - inclusive or exclusive is UNSPECIFIED",
+   "[(100.0, 110.0, {'vwap', 'bb'}, 2)]"
   ]
  ]
 }
