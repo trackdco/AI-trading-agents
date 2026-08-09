@@ -1096,3 +1096,20 @@ spec text or reasoned to a single defensible reading by the person amending the 
 
 **N_trials after A22: 1 of 5, unchanged.** No outcome was computed to select the floor value or
 to evaluate it once selected.
+
+**ERRATA, 2026-08-08, disclosed rather than silently corrected.** A22 as first implemented did
+not account for tick-grid rounding on the new floor. A5's fixed 10.00 pt floor was on-grid by
+construction (a round number), which is why A14 never needed a stop-rounding step — its own text
+says so directly: *"the structural stop and the MIN_STOP floor stay on-grid once entry is
+rounded, so rounding entry alone is sufficient."* **2×ATR(20, entry TF) is a simple average of
+True Range values and is generally NOT a multiple of 0.25**, so once A22 replaced the constant
+floor with this dynamic one, any trade where the floor bound landed off-grid. Caught on the
+fresh 2b re-run (invariant 9, tick grid): **1,105 of 1,361 trades (81.2%) had an off-grid stop**
+before this was fixed. **Fixed by extending A14's own rule to cover the new case**: when the A22
+floor binds, `stop_px` is rounded AWAY FROM ENTRY (the same direction A14 already uses for stop
+and target — a wider stop only ever dilutes an R-multiple, which is conservative), and `R_int` is
+recomputed from the rounded stop so every downstream distance reflects the price that would
+actually transmit. **No trade was ever computed or reported under the wrong (off-grid) version**
+— this was caught between implementation and the fresh 2b run that this amendment itself
+requires, before any admission list left this module. Fresh 2a (`GROUP M`) and 2b results below
+reflect the corrected version only.

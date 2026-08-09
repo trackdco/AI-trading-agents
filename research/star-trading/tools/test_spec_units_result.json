@@ -63,7 +63,7 @@
    "\u00a73 displacement, 'body/range >= B_min', B_min = 0.6",
    "[LIT]",
    "{('long', 'displacement')}",
-   "{('long', 'rejection'), ('long', 'displacement')}",
+   "{('long', 'displacement'), ('long', 'rejection')}",
    "FAIL"
   ],
   [
@@ -110,8 +110,8 @@
    "A14",
    "\u00a73, both predicates on one bar",
    "[LIT]",
-   "{('long', 'rejection'), ('long', 'displacement')}",
-   "{('long', 'rejection'), ('long', 'displacement')}",
+   "{('long', 'displacement'), ('long', 'rejection')}",
+   "{('long', 'displacement'), ('long', 'rejection')}",
    "PASS"
   ],
   [
@@ -126,8 +126,8 @@
    "A9b",
    "\u00a73, B_min 0.6 boundary with close in top quartile",
    "[LIT]",
-   "{('long', 'rejection'), ('long', 'displacement')}",
-   "{('long', 'rejection'), ('long', 'displacement')}",
+   "{('long', 'displacement'), ('long', 'rejection')}",
+   "{('long', 'displacement'), ('long', 'rejection')}",
    "PASS"
   ],
   [
@@ -822,7 +822,7 @@
    "B6",
    "\u00a73, 'within proximity tolerance'",
    "span-vs-chaining is UNSPECIFIED; gaps 7 and 7, total span 14",
-   "[(100.0, 114.0, {'vwap', 'bb', 'poc'}, 3)]"
+   "[(100.0, 114.0, {'vwap', 'poc', 'bb'}, 3)]"
   ],
   [
    "L5",

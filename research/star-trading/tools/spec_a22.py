@@ -182,6 +182,19 @@ def signal_candidates_a22(bars, prev_hl, audit=None):
                             continue
                         R_int = max(struct - entry_px, floor)                  # A22
                         stop_px = entry_px + R_int
+                    if SC.A14_ROUND:
+                        # A14's own text: every transmitted order price rounds to the
+                        # 0.25 grid in the direction that makes the trade worse. A5's
+                        # fixed 10.00pt floor and the structural (wick) stop were both
+                        # already on-grid by construction, so A14 never needed a stop-
+                        # rounding step. A22's floor is a simple average of True Range
+                        # values and is generally NOT on-grid, so stop_px can now land
+                        # off-grid when the floor binds. Rounded AWAY from entry, same
+                        # direction A14 already uses for stop and target - a wider stop
+                        # dilutes every R-multiple computed against it, which is
+                        # conservative, exactly A14's own stated rule.
+                        stop_px = SC.round_away_from_entry(stop_px, entry_px)
+                        R_int = abs(entry_px - stop_px)
                     tgt_px = None
                     for x in _ladder_raw(menu, entry_px, direction, FRONT_RUN_F):  # A20
                         if abs(x - entry_px) / R_int >= RR_FLOOR:
