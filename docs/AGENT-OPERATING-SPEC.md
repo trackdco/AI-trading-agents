@@ -160,13 +160,12 @@ the reason logged, no judgment required:**
    10:51 entry now sits inside. **The window governs ENTRIES ONLY:**
    *"You don't flatten trades when the window closes… I can hold them
    until my targets get hit."*
-3. **MAXIMUM TWO NEW YORK TRADES PER DAY**, NY_PRE and NY_AM combined.
-   *"I don't think there are ever really more than 2 good setups in New
-   York, and even the days where there's more, I've taken my piece of the
-   pie."* He took **exactly 2 on every day of the narrated week**. The cap
-   counts **fills, not attempts** — two of those days also placed a
-   pre-market limit that never filled. Once two are filled, every further
-   candidate is logged as a pass with reason `ny_cap`.
+3. **PER-WINDOW TRADE CAPS: LONDON 2, NY_PRE 1, NY_AM 2** (corrected
+   2026-08-10). Caps, not quotas — zero breaches across the narrated week
+   and none of them ever binding. The cap counts **fills, not attempts**:
+   two days placed a pre-market limit that never filled and still took
+   their full NY_AM allowance. Once a window's cap is reached, every
+   further candidate in it is logged as a pass with reason `window_cap`.
 4. Not in the first few minutes of the cash open.
 5. If a displacement is awaiting a rebalance to the 15m MA, stand aside
    until it happens.
@@ -190,6 +189,24 @@ the reason logged, no judgment required:**
    before high-impact news. That is stupid."* This is the macro/events
    agent's first concrete job. It gates entries — it is not a general
    licence to sit out.
+
+**SIZING is set by conviction in the THESIS, not by the setup.** *"All
+my sizing is inherently based off of my confidence behind my thesis…
+when I'm very confident, I will risk a lil more."* Inputs, in order:
+confidence in the read; then session (**London is risked lower** — *"New
+York is the money maker"*); then available drawdown (*"fundeds have EOD
+DD, so I like to use that to my advantage"* — the trailing floor only
+ratchets on the **closing** balance, so intraday swings don't
+permanently raise it); then stop width, which is mechanical and last.
+
+**The actual multipliers are NOT known.** Emit a conviction label and
+leave the size to him — **do not simulate a size ladder** until he states
+one.
+
+**Sitting out is a legitimate action, not a failure to act.** *"If I'm
+happy with what we took in London, I might just sit out New York entirely
+and just forward test to learn."* An agent uncertain of its own
+calibration should prefer this.
 
 **Conviction inputs, recorded and weighed, NOT hard filters:**
 - 2m and 3m closing through their MAs **in the same minute** — named

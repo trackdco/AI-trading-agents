@@ -157,6 +157,46 @@ fucking big stop, jeez louise"*, taken anyway because the thesis was strong).
 
 ---
 
+## 4b. SIZING — driven by conviction, not by the setup
+
+> *"All my sizing is inherently based off of my confidence behind my thesis…
+> when I'm very confident, I will risk a lil more."*
+
+Four inputs, in his own order of importance:
+
+1. **Confidence in the thesis** — the primary driver. Not confidence in the
+   trigger; confidence in the *read*. This is why he can take a valid setup
+   *light* rather than passing it: Friday's London short was declared light
+   size before entry — *"it's not like a full-conviction trade"* — and still
+   made 2.45R.
+2. **Session.** London is risked **lower** as a rule. *"New York is the money
+   maker."* The trade counts say the same thing: 4 London fills in the week
+   against 10 in New York.
+3. **Available drawdown.** *"I'm conscious of the fact that fundeds have EOD
+   DD, so I like to use that to my advantage."* End-of-day trailing drawdown
+   only ratchets on the **closing** balance, so intraday equity swings don't
+   permanently raise the floor — which changes what intraday risk costs.
+4. **Stop width** — mechanical, and the last input, not the first. A wide
+   stop is taken smaller; it does not veto the trade.
+
+**Sitting out is a legitimate action.**
+
+> *"If I'm happy with what we took in London, I might just sit out New York
+> entirely and just forward test to learn."*
+
+Banking a good London and watching New York is **not** a failure to act, and
+an agent must be able to choose it. It is also the only behaviour in the
+playbook that produces learning without risk, which makes it the correct
+default whenever the agent is uncertain about its own calibration.
+
+**Not yet known: the actual size ladder.** "A lil more" is not a number, and
+nothing in the narration pins what light / normal / high conviction mean in
+contracts or percent of account. **Sizing must not be simulated until that is
+stated** — the agent logs a conviction label (A/B/C) and leaves the multiplier
+to him.
+
+---
+
 ## 5. THE EXIT
 
 **Targets are structure named in the thesis.** Weekly VAL, prior-day levels,
@@ -194,23 +234,29 @@ stop would have been hit anyway.
    09:30–11:00** NY. **Entries only** — *"you don't flatten trades when the
    window closes."* (11:00 confirmed 2026-08-10; his practical centre of mass
    is nearer 10:45, and January's 10:51 entry now sits inside the window.)
-3. **MAXIMUM TWO NEW YORK TRADES PER DAY**, across NY_PRE and NY_AM combined.
+3. **PER-WINDOW TRADE CAPS — LONDON 2, NY_PRE 1, NY_AM 2.** Corrected
+   2026-08-10 (see the note below; an earlier reading of "2 in New York"
+   was wrong).
 
-   > *"My maximum trades in New York is 2. I don't think there are ever
-   > really more than 2 good setups in New York, and even the days where
-   > there's more, I've taken my piece of the pie."*
+   | window | cap | week's actual |
+   |---|---|---|
+   | LONDON | 2 | 0–1 |
+   | NY_PRE | 1 | 0–1 |
+   | NY_AM | 2 | 1–2 |
 
-   **Verified: he took exactly 2 on every single day of the week**, without
-   exception — 2/2/2/2/2, mean 2.0. The split varies (2 in NY_AM on Mon–Wed;
-   1 pre + 1 AM on Thu–Fri).
+   **These are caps, not quotas.** Zero breaches across the week, and the
+   caps were never *binding* — he never used his full London allowance and
+   never took the maximum 3 in New York.
 
    **The cap counts FILLS, not attempts.** Tuesday and Wednesday each placed
-   an unfilled pre-market limit *and* still took 2 in NY_AM. A limit that
-   never fills does not spend the budget.
+   an unfilled pre-market limit *and* still took 2 in NY_AM.
 
-   Friday's closing pass is the cap wearing a thesis: *"I don't think any
-   good long setup will occur in my trading period any more"* — said after
-   his second NY trade.
+   > **My error, recorded.** The week shows exactly 2 New York fills every
+   > single day, and I read that as a hard total cap of 2. It isn't — the
+   > real structure is 1 pre-market + 2 NY_AM, so the maximum is 3 and the
+   > week simply never reached it. The count was right; the inference from
+   > it was wrong. **A cap that is never binding cannot be inferred from
+   > observed counts** — it has to be stated, and he stated it.
 4. Not in the first few minutes of the cash open.
 5. After a displacement, wait for the rebalance before entering.
 6. A thesis alone is never enough — the trigger must exist.
