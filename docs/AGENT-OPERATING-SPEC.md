@@ -40,13 +40,18 @@ through a failed gate.
    minute; compare against `scripts/agent_context.py` values for the
    same minute. Report the deltas. >1pt on VWAP or >0.5pt on the BB MA
    means the chart config differs from the research build — say so
-   rather than proceeding quietly. *(Bollinger and VWAP already
-   reconcile to ~1pt or better against his narrated 2026-06-22 levels.)*
-   **The volume profile does NOT reconcile** — his "weekly value area
-   high" landed 42pt apart at two points of the same day and matches
-   none of our anchors. Read profile levels off the chart only; never
-   substitute ours. Settle anchor / value-area % / bin width / TPO-vs-
-   volume before relying on any of them.
+   rather than proceeding quietly. *(Bollinger and VWAP reconcile to
+   ~1pt or better against his narrated levels on both 2026-06-22 and
+   2026-06-23 — including a 2m BB MA he read as 30,008.5 against our
+   30,008.58.)*
+
+   **Volume profile — partially calibrated.** The **developing daily
+   POC** matches exactly (29,740.50 vs his 29,741.5 limit). His
+   **anchored weekly** profile is anchored to 18:00 NY exactly seven
+   days back and develops from there — implemented as
+   `agent_context.anchored_weekly_profile`. Its VAH still sits a
+   consistent **+43pt** from his reading, so read weekly profile levels
+   off the chart; ours are for orientation only.
 4. **NO-LEAK CHECK — the one that matters most.** Step replay to a
    decision minute, screenshot, and verify no bars exist after it. A
    decision made on a chart showing later bars is worthless and the
@@ -83,18 +88,34 @@ rely on the precomputed census — it is a research artifact built on
 slightly different indicator values and it is known to miss real
 entries.
 
+**TWO LEVELS, ALWAYS.** *"My entry always needs to be closure through two
+levels. That's usually what I stick by."* A single closure is not a
+candidate. The pair can be any two of: its own BB MA, a VWAP band, the
+developing POC, a profile edge — and **a rejection counts toward the
+pair**, not only a closure (2026-06-23 N2 closed through the 2m MA while
+rejecting the VWAP mid and the POC).
+
 **The trigger candle is the SIGNAL bar, not the entry bar.** Entry is a
-**limit order on the retest** of the level the candle displaced through
-— normally its own BB MA — placed a couple of points inside it. Declared
-2026-08-10: *"If we're teaching an agent to trade a trade like me, we're
-going to start taking fucking limit orders."* On 2026-06-22 the same NY
-setup was worth 1.0R entered at market on the close and **2.33R** entered
-on the retest, identical stop and target. See
-`docs/CORPUS-narrated-days.md`.
+**limit order on the retest**, placed a couple of points inside the
+level. Declared 2026-08-10: *"the damn agent is gonna be doing limit
+orders because that's how I fucking trade."* On 2026-06-22 the same NY
+setup was worth 1.0R at market and **2.33R** on the retest, identical
+stop and target.
+
+- **Which level?** *"The closest structural level — what was closest to
+  price at that candle close… the last thing it would have broken
+  through."* Not always the BB MA: on 2026-06-23 it was the developing
+  POC once and VWAP−1 once.
+- **The offset is forward-looking.** Offset in the direction the MA is
+  **travelling**, because it keeps moving while the retest is pending:
+  *"this candle is closed through, this Bollinger Band is probably going
+  to move down, I'm going to give it three points of leeway."*
 
 Consequence the market grammar did not have: **no retest means no fill
-means no trade.** How long the limit rests, and whether it is ever
-chased, is not yet declared — log every unfilled limit as its own row.
+means no trade.** It is a real outcome, not an edge case — 2026-06-23's
+pre-market limit had the right read and the right direction and produced
+nothing. **Log every unfilled limit as its own row.** How long the limit
+rests, and whether it is ever chased, is still not declared.
 
 **Candle times are START times on his chart.** A "09:46 2m candle" spans
 09:46–09:47 and closes at 09:48. Our census right-labels by close time.
@@ -104,9 +125,10 @@ Off-by-one here silently mismatches every decision.
 the reason logged, no judgment required:**
 1. Direction must match the standing thesis. (He declined a valid 10:12
    long outright: *"I don't even like this long."*)
-2. Inside a window: LONDON 03:00–04:59, NY_PRE 08:00–09:29, NY_AM
-   09:30–10:30 NY. *(11:00 was his older cut-off; treat as configurable
-   and log any candidate that only fails on this.)*
+2. Inside a window: LONDON 03:00–04:59, NY_PRE 08:00–09:29, **NY_AM
+   09:30–11:00** NY. The old 10:30 cut-off is wrong: on 2026-06-23 his
+   best trade of the day entered at **10:36** and exited 11:24, and
+   January's best was 10:51. 11:00 is his own stated historical cut-off.
 3. Not in the first few minutes of the cash open.
 4. If a displacement is awaiting a rebalance to the 15m MA, stand aside
    until it happens.
@@ -139,6 +161,15 @@ there the candle high *was* the invalidation: it is where price would
 have to reclaim both the 3m BB MA and VWAP +1. *"That's a double anchor
 right there."* Read the level, not the candle.
 
+**The specific test: does the candle's extreme sit ON a live level?** If
+it does, the stop goes beyond that level instead, because price can go
+touch it and come back. Three instances, one rule: 2026-06-22 London
+(candle high near the weekly high); 2026-06-23 N1 (candle low sat exactly
+at VWAP−1 — *"price can absolutely come down and reject VWAP minus one
+before it moves back up"*); 2026-06-23 N2 (candle high sat at the
+POC/VWAP-mid it had been rejecting off — *"I don't feel safe putting that
+there"*). When the extreme is clean, use it.
+
 **Targets** are pre-identified structure from the thesis, not fixed R
 multiples. His realised distribution sits at **1.5–2.5R**; beyond ~3R
 the raw population's fixed-target EV decays.
@@ -150,8 +181,16 @@ touch VWAP."* On 2026-06-22 the weekly VAH and the VWAP mid sat 15pt
 apart and he targeted the VWAP — worth 3.80R on the runner instead of
 ~3.4R.
 
+**Take profit sits a couple of points SHORT of the target band** —
+*"I usually keep my take profit a couple points away from the VWAP
+band."* On 2026-06-23 that was 29,728 against a VWAP−1 of 29,721.
+
 **Management:** partial at intermediate structure; move to break-even
 after TP1.
+
+**R is quoted at the FULL target, not blended across the partials.** His
+"3RR" on 2026-06-23 N1 means 3.69R at the final target, with TP1 at
+2.35R. Score both, but report his convention when comparing to him.
 
 Emit per candidate:
 ```

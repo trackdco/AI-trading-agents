@@ -50,21 +50,78 @@ DISP_W = 0.5                                  # displacement, in W15
 NY_RANGE = (570, 600)                         # 09:30-10:00 NY
 
 
-def volume_profile(seg: pd.DataFrame, tick: float = 0.25,
+def volume_profile(seg: pd.DataFrame, bin_w: float = 1.0,
                    value_frac: float = 0.70):
-    """(poc, val, vah) by traded volume. Empty -> NaNs."""
+    """(poc, val, vah) by traded volume, TradingView-style.
+
+    Two fixes over the original, both of which mattered (2026-08-10):
+
+    1. Each bar's volume is SPREAD uniformly across its high-low range.
+       The original dumped the whole bar at its HLC3, which for a 1m bar
+       spanning 20 points is a bad approximation of where trade occurred.
+    2. The value area EXPANDS OUTWARD FROM THE POC in pairs until it holds
+       `value_frac` of total volume, so it is CONTIGUOUS. The original took
+       the highest-volume bins anywhere in the profile and returned their
+       min/max — over a week-long profile that returns something close to
+       the full range. On 2026-06-22 it put the weekly VAH ~190pt above the
+       trader's own reading; this version lands ~25-45pt away.
+
+    A ~30pt residual remains and is NOT resolved: real profiles distribute
+    volume by traded ticks, not uniformly, and his chart's row size is
+    unknown. Read profile levels off the chart; use these for orientation.
+    """
     if seg.empty or seg.volume.sum() <= 0:
         return (np.nan, np.nan, np.nan)
-    px = np.round(((seg.high + seg.low + seg.close) / 3.0) / tick) * tick
-    v = seg.volume.astype(float).groupby(px).sum().sort_index()
-    if v.empty:
+    lo = np.floor(seg.low.to_numpy() / bin_w).astype(np.int64)
+    hi = np.floor(seg.high.to_numpy() / bin_w).astype(np.int64)
+    vol = seg.volume.to_numpy(float)
+    b0, b1 = int(lo.min()), int(hi.max())
+    acc = np.zeros(b1 - b0 + 2, dtype=float)
+    # spread each bar over its rows via a difference array (O(n) not O(n*rows))
+    np.add.at(acc, lo - b0, vol / (hi - lo + 1))
+    np.add.at(acc, hi - b0 + 1, -vol / (hi - lo + 1))
+    rows = np.cumsum(acc)[:-1]
+    if rows.sum() <= 0:
         return (np.nan, np.nan, np.nan)
-    poc = float(v.idxmax())
-    order = v.sort_values(ascending=False)
-    inside = order[order.cumsum() <= value_frac * v.sum()].index
-    if len(inside) == 0:
-        inside = [poc]
-    return poc, float(min(inside)), float(max(inside))
+    i = int(rows.argmax())
+    total, lo_i, hi_i = rows.sum(), i, i
+    cum = rows[i]
+    while cum < value_frac * total and (lo_i > 0 or hi_i < len(rows) - 1):
+        up = rows[hi_i + 1:hi_i + 3].sum() if hi_i < len(rows) - 1 else -1.0
+        dn = rows[max(lo_i - 2, 0):lo_i].sum() if lo_i > 0 else -1.0
+        if up >= dn and hi_i < len(rows) - 1:
+            hi_i = min(hi_i + 2, len(rows) - 1)
+        elif lo_i > 0:
+            lo_i = max(lo_i - 2, 0)
+        else:
+            break
+        cum = rows[lo_i:hi_i + 1].sum()
+    return (float((b0 + i) * bin_w), float((b0 + lo_i) * bin_w),
+            float((b0 + hi_i + 1) * bin_w))
+
+
+def anchored_weekly_profile(bars: pd.DataFrame, sess_day: str,
+                            upto: pd.Timestamp | None = None):
+    """His actual weekly profile: anchored to the Asia open (18:00 NY) of the
+    SAME WEEKDAY exactly one week earlier, and DEVELOPING to `upto`.
+
+    Declared 2026-08-10: "If I'm trading Monday, I'm gonna anchor it to the
+    Asia Open at the beginning of last week. If I'm trading Tuesday, I'm
+    gonna anchor it to the Asia Open of Monday night... the last five trading
+    days should be exactly a week before, the same day."
+
+    Note this is NOT `weekly_levels` below, which is a fixed 5-completed-day
+    profile. Both are kept: this one is his, that one is the research build's.
+    """
+    anchor = pd.Timestamp(f"{sess_day} 18:00", tz=NY) - pd.Timedelta(days=7)
+    end = upto if upto is not None else (
+        pd.Timestamp(f"{sess_day} 18:00", tz=NY) + pd.Timedelta(hours=23))
+    seg = bars[(bars.index >= anchor) & (bars.index < end)]
+    poc, val, vah = volume_profile(seg)
+    return {"awPOC": poc, "awVAL": val, "awVAH": vah,
+            "awHIGH": float(seg.high.max()) if len(seg) else np.nan,
+            "awLOW": float(seg.low.min()) if len(seg) else np.nan,
+            "anchor": anchor}
 
 
 def session_day_of(t: pd.Timestamp) -> str:

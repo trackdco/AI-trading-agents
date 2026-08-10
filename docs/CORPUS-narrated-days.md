@@ -7,9 +7,10 @@ agent can be scored on the same numbers he traded.
 Structured source of truth: `data/narrated_days/<date>.json`.
 This file is the human-readable roll-up.
 
-| day | trader label | takes | passes | status |
-|---|---|---|---|---|
-| 2026-06-21 | Monday 22 June 2026 | 3 | 2 | reconciled; profile levels unresolved |
+| day | trader label | takes | passes | no-fills | status |
+|---|---|---|---|---|---|
+| 2026-06-21 | Monday 22 June 2026 | 3 | 2 | 0 | reconciled |
+| 2026-06-22 | Tuesday 23 June 2026 | 3 | 1 | 1 | reconciled; profile anchor now known |
 
 ---
 
@@ -28,8 +29,9 @@ explicit *"open at 10:15 with a close at 10:18"*).
 **session-day 2026-06-21**. Getting this wrong makes `prev_day_levels`
 return the current day's own extremes — it looks like lookahead and isn't.
 
-**3. Our Bollinger/VWAP stack is calibrated. Our volume profile is not.**
-See the calibration section at the end.
+**3. Our Bollinger/VWAP stack is calibrated. The volume profile is close but
+not exact.** Day 2 gave the anchor rule and exposed a genuine bug in our own
+value-area code; the residual is now ~43pt. See day 2's calibration section.
 
 ---
 
@@ -136,9 +138,8 @@ touches a value area high and then just runs straight from it. It usually
 wicks around, and with VWAP right there, I'm inclined to believe it would
 touch VWAP."* So he took the further of the two.
 
-> **Open:** he calls this **3.6 RR**. Blended, 0.75 × 2.68 + 0.25 × 3.80 =
-> **2.96R**; the runner leg alone is **3.80R**. Which convention gives 3.6?
-> It matters for scoring.
+> **Resolved on day 2:** he quotes the **full-target R**, so "3.6 RR" is the
+> **3.80R** runner leg, not the 2.96R blended figure.
 
 Price ran to 30,540 by noon. Recorded as fact, not as a criticism of the exit.
 
@@ -194,3 +195,175 @@ Anchor, value-area %, bin width and volume-vs-TPO are all unknown.
 **Until that is settled, our profile levels must not be substituted for his** —
 and two of his three trades took TP1 at a profile level, so this is
 load-bearing, not cosmetic.
+
+---
+
+## 2026-06-22 — "Tuesday 23 June"
+
+*(He said "Tuesday the 23rd" opening and "Tuesday the 24th" mid-narration.
+23 June is the Tuesday and every price checks out on it. London narration is
+London local — confirmed to the decimal: he read the 2m BB MA at his
+displacement candle's close as **30,008.5**; ours is **30,008.58**.)*
+
+### The read coming in
+
+Asia sold off hard after stalling at all-time highs. A **~400pt New Week
+Opening Gap** from last week's open is unfilled and he expects it to fill.
+Shorts only — *"I'm not very interested in longs, we're too close to some key
+levels."* And *"I want to get an entry as soon as I can."* He anchored the
+weekly profile and dismissed it: *"the volume profile levels aren't going to
+be too significant today."*
+
+### L1 — LONDON short, 08:22 London / 03:22 NY · TAKEN · **+2.94R**
+
+The build-up is a POC fight, narrated tick by tick: 08:06/08:08 broke the 2m
+BB MA and the developing POC; 08:16 displaced back through; 08:18 rejected
+the 2m MA; 08:20 touched POC again; 08:22 *"we rejected POC very hard."*
+
+2m candle 03:22–03:23: **O 30,033.50 H 30,033.50 L 29,995.00 C 29,995.75** —
+its open sits **on** the POC (30,032.50), and it closes through the 2m BB MA
+(30,008.58). The 3m broke its own MA on the same move.
+
+Mid-narration he caught himself and switched order type:
+
+> *"Wait. We're teaching an agent how to trade. You know what? The damn agent
+> is gonna be doing limit orders because that's how I fucking trade. Am I
+> stupid? Oh sorry for the crash out Claude."*
+
+- **Limit 30,005.5** — MA 30,008.5 less 3pt. He dictated "30,004 5.5"; his own
+  arithmetic pins it, since only 30,005.5 gives the 28pt risk, 82pt target and
+  2.9R he quotes. **Filled 03:25** — *"filled to the fucking tick."*
+- **Stop 30,033.5** = the displacement candle's high, exactly. Never touched.
+- **Target 29,923.25** (the 17 June lows) — **hit 03:54**. 82.25pt / 28pt =
+  **2.94R** against his stated "2.9R" and "82 point target".
+
+London ran on to 29,776. *"I could have held that basically to the new week
+opening gap fill."* No further London entries.
+
+### P1 — NY_PRE, 08:09 · LIMIT PLACED, **NEVER FILLED**
+
+3m candle 08:09–08:11 closed through the 3m BB MA (29,851.86) and VWAP−1
+(29,845.05). He limited the retest of VWAP−1 at **~29,839** — *"I had my
+limits at about 8:39."*
+
+**Highs after that candle topped out at 29,832.75. It never filled**, and
+price ran straight down to fill the gap (pre-market low 29,675.75 against his
+~29,685).
+
+This is the first recorded no-fill, and it is the cost of the new grammar
+stated plainly: the read was right, the direction was right, and he got
+nothing.
+
+### P2 — NY_AM short, 09:33 · PASSED
+
+3m candle 09:33–09:35: **O 29,749.25 → C 29,718.75**, through the 3m MA
+(29,729.91) and VWAP−1 (29,732.67). Valid.
+
+> *"There was technically a valid trade there… Why didn't I? Market open, we
+> filled the new week opening gap. I want a rebalance now."*
+
+**The thesis completing is itself a reason to stop taking triggers in that
+direction.** That is a different pass rule from Monday's (which was level
+strength), and worth keeping separate.
+
+### N1 — NY_AM long, 09:38 · TAKEN · **+3.69R**
+
+2m candle 09:38–09:39: **O 29,713.25 → C 29,780.75**, closing through the
+developing POC (29,740.50), the 2m MA (29,722.67) and VWAP−1 (29,719.12).
+*(He said "VWAP plus one"; the data and his own stop reasoning both make it
+minus. Recorded as a slip.)*
+
+- **Limit at the developing POC, 29,741.5** — filled 09:42
+- **Stop 29,671** — the bottom of the **09:36** candle, not the displacement
+  candle, *"because this candle that displaced through the levels is
+  basically exactly where VWAP minus one is — price can absolutely come down
+  and reject VWAP minus one before it moves back up."* ~70pt.
+- **TP1 29,901**, the pre-market 08:00 high (**ours: 29,900.75**), 75% out,
+  hit 09:53 → **2.35R** against his "about a 2.3 to one"
+- **TP2 the VWAP middle band**, hit 10:02 → **251 points**, exactly his
+  figure → **3.69R**
+
+### N2 — NY_AM short, 10:30 signal / 10:36 fill · TAKEN · **+3.13R**
+
+Rejected the 0.382 of the day's range and touched the VWAP mid, having
+displaced through the 15m MA. *"I don't think we're reclaiming much of this
+sell-off today. If anything, I'm looking for a continuation."*
+
+2m candle 10:30–10:31: **H 29,998.00** rejects both the VWAP mid (29,992.08)
+and the POC (29,989.50), and it closes through the 2m MA (29,962.59).
+
+- **Limit at the 2m MA retest, 29,969** — filled 10:36
+- **Stop 30,046**, at the high that rejected the 0.382 — *"the high of this
+  candle is around that POC / VWAP middle band level that it's been rejecting
+  off of, so I don't feel safe putting that there."* 77pt.
+- At 10:38 the 3m also closed through its MA — *"I feel pretty good about this
+  trade."* Confirmation **after** entry.
+- **Target VWAP−1, taken a couple of points early at 29,728** — hit **11:24**.
+  241pt / 77 = **3.13R**
+
+---
+
+## WHAT DAY 2 SETTLES
+
+**The R convention.** He quotes the **full-target R**, not the blended R. N1
+is "3RR" (3.69R at the full target, 2.35R at TP1); N2 is "3RR" (3.13R). So
+Monday's "3.6RR" was the 3.80R runner leg, not the 2.96R blended figure.
+Day 1's open question is closed.
+
+**The weekly profile anchor**, asked and answered:
+
+> *"If I'm trading Monday, I'm gonna anchor it to the Asia Open at the
+> beginning of last week. If I'm trading Tuesday, I'm gonna anchor it to the
+> Asia Open of Monday night… the last five trading days should be exactly a
+> week before, the same day. That's what I anchored it to, and it's
+> developing."*
+
+Anchor = **18:00 NY exactly seven days before the session-day's own 18:00
+anchor, developing to now.** Now implemented as
+`agent_context.anchored_weekly_profile`.
+
+**And that exposed a real defect in our code, not his settings.** Our
+`volume_profile` did two things wrong: it dumped each bar's whole volume at
+its HLC3 instead of spreading it across the bar's range, and it built the
+"value area" from the highest-volume bins *anywhere* in the profile and
+returned their min and max. Over a week-long profile that returns something
+close to the full range. Both are fixed — the value area now expands outward
+from the POC in pairs, so it is contiguous.
+
+| weekly VAH | old | fixed | his |
+|---|---|---|---|
+| Mon 03:42 | 30,898.75 | 30,756 | 30,713 |
+| Mon 10:20 | 30,956.75 | 30,798 | 30,755 |
+
+Error falls from **~+186pt to a consistent +43pt**. The consistency across
+two different times of day says we have the right construct with a systematic
+offset — most likely row size or tick-level volume distribution. **Not
+tuned:** two observations is not enough to fit a parameter, and fitting it
+would be the exact mistake this project keeps catching.
+
+### Four new rules, in his words
+
+- **Two levels, always.** *"My entry always needs to be closure through two
+  levels. That's usually what I stick by."* Holds on every candidate today.
+  N2 closed through the 2m MA while *rejecting* the VWAP mid and POC — so
+  **rejection counts toward the pair**, not just closure.
+- **Which level to limit at:** *"the closest structural level — what was
+  closest to price at that candle close… the last thing it would have broken
+  through."*
+- **The offset is forward-looking.** *"This candle is closed through, this
+  Bollinger Band is probably going to move down. I'm going to give it three
+  points of leeway."* He offsets in the direction the MA is travelling,
+  because the MA moves before the retest arrives.
+- **Stops avoid live levels.** Both NY stops were moved off the displacement
+  candle's extreme because that extreme sat **on** a level price was actively
+  rejecting. Monday's London stop moved for the same reason. This is one rule,
+  not three exceptions.
+
+### Two things that need changing
+
+**The NY_AM window is too tight.** He entered N2 at **10:36** and exited at
+**11:24** — his best trade of the day, entirely outside 09:30–10:30. Combined
+with January's 10:51 entry, the window needs to run to at least 11:00.
+
+**A no-fill is now a real, logged outcome.** P1 had the right read and the
+right direction and produced nothing. Every unfilled limit gets its own row.
