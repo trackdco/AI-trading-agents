@@ -45,13 +45,19 @@ through a failed gate.
    2026-06-23 — including a 2m BB MA he read as 30,008.5 against our
    30,008.58.)*
 
-   **Volume profile — partially calibrated.** The **developing daily
-   POC** matches exactly (29,740.50 vs his 29,741.5 limit). His
-   **anchored weekly** profile is anchored to 18:00 NY exactly seven
-   days back and develops from there — implemented as
-   `agent_context.anchored_weekly_profile`. Its VAH still sits a
-   consistent **+43pt** from his reading, so read weekly profile levels
-   off the chart; ours are for orientation only.
+   **Volume profile — calibrated as of 2026-06-25.** The **developing
+   daily** profile matches exactly (POC 29,740.50 vs his 29,741.5 limit;
+   VAH 29,860.50 vs his 29,860 stop; VAL 29,675.50 vs his 29,676 limit).
+   The **anchored weekly** profile — 18:00 NY exactly seven days back,
+   developing — is `agent_context.anchored_weekly_profile`, and his
+   take-profit on 2026-06-25 landed within ~5pt of its VAL.
+
+   **"Value area" is ambiguous in his narration and must never be
+   resolved by guessing.** It means the daily profile some days and the
+   anchored weekly one others; on 2026-06-25 they sat **165 points
+   apart**, and taking the daily one would have exited a 180pt trade at
+   30–45pt. Compute both, and pick by which one the price action is
+   actually respecting.
 4. **NO-LEAK CHECK — the one that matters most.** Step replay to a
    decision minute, screenshot, and verify no bars exist after it. A
    decision made on a chart showing later bars is worthless and the
@@ -164,6 +170,10 @@ the reason logged, no judgment required:**
    passes turned on this.
 8. **In chop, require higher-timeframe alignment before taking
    anything.** *"There's no reason to trade like that for no reason."*
+9. **No entries before high-impact news.** *"Obviously we're not trading
+   before high-impact news. That is stupid."* This is the macro/events
+   agent's first concrete job. It gates entries — it is not a general
+   licence to sit out.
 
 **Conviction inputs, recorded and weighed, NOT hard filters:**
 - 2m and 3m closing through their MAs **in the same minute** — named
@@ -214,6 +224,17 @@ apart and he targeted the VWAP — worth 3.80R on the runner instead of
 **Take profit sits a couple of points SHORT of the target band** —
 *"I usually keep my take profit a couple points away from the VWAP
 band."* On 2026-06-23 that was 29,728 against a VWAP−1 of 29,721.
+
+**Move to break-even before the cash open** when carrying a pre-market
+position — *"open volatility can cook you even if ur thesis is wrong."*
+On 2026-06-25 that cost him a 2.45R trade that then ran **29.2R**, and he
+endorsed the decision anyway: *"that's straight gambling for me."*
+**Scoring must not penalise this.** A rule that pays out over a year is
+not refuted by the day it costs the most.
+
+**Target size scales to direction.** A counter-trend rebalance gets a
+modest target by design — *"it's not going for a big target or anything,
+because we're clearly bearish, more so just looking for a rebalance."*
 
 **Management:** partial at intermediate structure; move to break-even
 after TP1, or on touching an intermediate band even without a partial

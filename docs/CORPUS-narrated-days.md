@@ -31,9 +31,12 @@ explicit *"open at 10:15 with a close at 10:18"*).
 **session-day 2026-06-21**. Getting this wrong makes `prev_day_levels`
 return the current day's own extremes — it looks like lookahead and isn't.
 
-**3. Our Bollinger/VWAP stack is calibrated. The volume profile is close but
-not exact.** Day 2 gave the anchor rule and exposed a genuine bug in our own
-value-area code; the residual is now ~43pt. See day 2's calibration section.
+**3. Our Bollinger/VWAP stack is calibrated, and so — as of day 4 — is the
+volume profile.** Day 2 gave the anchor rule and exposed a genuine bug in our
+own value-area code; day 4's take-profit landed within ~5pt of our anchored
+weekly VAL. **"Value area" is ambiguous in his narration** — it can mean the
+developing daily profile or the anchored weekly one, and on day 4 they were
+165 points apart. Always check both.
 
 ---
 
