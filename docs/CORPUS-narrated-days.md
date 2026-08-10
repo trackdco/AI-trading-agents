@@ -13,6 +13,9 @@ This file is the human-readable roll-up.
 | 2026-06-22 | Tuesday 23 June 2026 | 3 | 1 | 1 | reconciled; profile anchor now known |
 | 2026-06-23 | Wednesday 24 June 2026 | 3 | 3 | 1 | reconciled; limit-lifetime rule answered |
 | 2026-06-24 | Thursday 25 June 2026 | 2 | 1 (whole window) | 0 | reconciled; weekly profile confirmed |
+| 2026-06-25 | Friday 26 June 2026 | 3 | 1 | 0 | reconciled; fib construction confirmed |
+
+**Week complete.** Distilled decision procedure: [`docs/PLAYBOOK.md`](PLAYBOOK.md).
 
 ---
 
@@ -676,3 +679,107 @@ Still inferred rather than stated, and still needs putting to him.
 
 Which is what the day shows: a whole-window London pass and a pre-market
 break-even, both correct process, on a session that offered one clean trade.
+
+---
+
+## 2026-06-25 — "Friday 26 June"
+
+**Three trades, three winners: +2.45R, +2.35R, +2.90R — about +7.7R.** The
+cleanest execution of the week, and the best demonstration of the two-level
+rule being *waited for* rather than forced.
+
+Coming in: bottoming the weekly range — Wednesday's and Thursday's lows, with
+a rejection off the weekly VAL. Long-leaning but explicitly two-sided:
+*"I'm more long-biased, but I'm not opposed to shorts. If it's going to
+continue down, it's going to continue down here."*
+
+### L1 — LONDON short, 09:04 London / 04:04 NY · **+2.45R**, light size
+
+Declared before entry: *"I'd probably take this one with light size because
+it's not like a full-conviction trade."*
+
+**The wait is the lesson.** The 04:00 2m candle closed through the 2m BB MA
+(29,523.97) but its close of 29,502.50 was still **above** VWAP (29,492.61) —
+*one* level. *"We closed through the moving average. We didn't close through
+VWAP. I waited for it to close through VWAP as well."* The 04:04 candle then
+opened 29,503.75 and closed 29,477.25, **through VWAP at 29,492.65**. Two
+levels, and only then a candidate.
+
+- **Limit 29,492.75** — VWAP reads **29,492.65**. A tenth of a point.
+- **Stop 29,550**, above the choppy range's high. 57.25pt. Never touched.
+- Exit ~29,352.75 around 05:18–05:21 — **140 points, 2.45R**, his "easy 2.5R".
+
+*(The exit sits above every target he named — daily VAL 29,161.50, weekly VAL
+29,290, VWAP−1 29,305. He banked it early rather than holding to the level.)*
+
+### PRE1 — NY_PRE short, 08:33 · **+2.35R** — and the clearest proof of the closest-level rule
+
+Context: the 15m from 08:15 rejected its MA downward, and *"I marked the high
+from London at 3:30 and the low at 7:54 — this is the second time rejecting
+off of the 0.5 of that range."*
+
+**Verified:** high 29,562.75, low 29,304.75, range 258.00, **0.5 = 29,433.75**.
+Pre-market highs cluster at **29,435.75–29,450.00**. He is right, and it
+rejected twice.
+
+3m candle 08:33–08:35: **O 29,400.50 → C 29,360.25**, through its 3m BB MA
+(29,383.31) and the developing POC (29,369.50).
+
+- **Limit 29,369** at the POC — ours **29,369.50**. Filled 08:36.
+- **Stop 29,400**, at the displacement candle's high (29,401.00). 31pt.
+- **Target VWAP−1** (29,299.38), exit **29,296** — hit 09:00. **2.35R.**
+
+> *"It never even retested the three-minute moving average before hitting
+> take profit. You see, that's why I enter on the closest structural level."*
+
+**Verified: the 3m MA sat at 29,382.79 and the highest print after his fill
+was 29,377.00.** Limiting the moving average would have meant **no trade at
+all**. This is the single best piece of evidence for the closest-structure
+rule in the corpus.
+
+### N1 — NY_AM long, 09:34 · **+2.90R**, 280 points — and a refusal
+
+Repeated wicks at the developing VAL (09:18, 09:33) and a rejection of both
+the weekly and daily value area lows. *"I'm looking for longs."*
+
+**The discipline row.** The 09:34 2m candle was valid but oversized —
+*"if it wasn't so fucking big I'd probably take that… I don't like how big
+that stop is."* He considered limiting VWAP−1 or the VAL instead of the MA to
+get a tighter fill, and then:
+
+> *"I really do think it's gonna go up. I don't really wanna miss a good
+> entry because I'm being tight with where I place my limits. Nah, I'm
+> sticking to my rules. I gotta stick to my fucking rules."*
+
+- **Limit 29,296.25** at the 2m MA (ours 29,293.66). Filled 09:36.
+- **Stop ~29,199** — 97.25pt, implied by his own 2.9R. Closest approach
+  29,217.75 at 09:40. Never touched.
+- **TP1 the VWAP mid** at 09:56, 75% out.
+- **Target EXTENDED mid-trade** from the developing VAH to **VWAP+1**:
+  *"I do think my thesis is playing out well."* Full exit **29,578** — ours
+  reads VWAP+1 at **29,578.92** — at 10:06. **281.75 points, 2.90R.**
+
+Extending was worth ~90 points, since the VAH sat at 29,489.50. **Targets get
+revised up when the thesis confirms; risk does not.**
+
+### P1 — rest of the window · PASSED
+
+*"I'm not gonna look for shorts just because I think we've bottomed out the
+range for the day and actually the week."*
+
+### Calibration — everything
+
+| level | ours | his |
+|---|---|---|
+| VWAP | 29,492.65 | 29,492.75 limit |
+| developing POC | 29,369.50 | 29,369 limit |
+| VWAP−1 | 29,299.38 | 29,296 exit |
+| VWAP+1 | 29,578.92 | 29,578 exit |
+| 2m BB MA | 29,293.66 | 29,296.25 limit |
+| anchored weekly VAL | 29,290 | *"we also got to the weekly value area low"* |
+| fib 0.5 from his marked swings | 29,433.75 | rejections at 29,435.75–29,450 |
+
+**And that closes the fib gap.** His fibs are drawn on **manually marked
+swings**, not a fixed session range — which is exactly why my Wednesday
+attempt (full-session range) landed ~70pt off. Identifying the swing is a
+judgment call the agent has to make, not a formula it can apply.
