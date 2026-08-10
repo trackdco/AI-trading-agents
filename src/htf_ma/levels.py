@@ -90,10 +90,26 @@ def bb_ma_asof(bars_1m: pd.DataFrame, tf: int, n: int = 20):
     return ma, width
 
 
-def vwap_bands(bars_1m: pd.DataFrame) -> pd.DataFrame:
-    """Session VWAP (18:00 anchor) with +/-1/2/3 sd bands, per 1m row, causal."""
+def vwap_bands(bars_1m: pd.DataFrame, source: str = "open") -> pd.DataFrame:
+    """Session VWAP (18:00 anchor) with +/-1/2/3 sd bands, per 1m row, causal.
+
+    source="open" is the calibrated default: the trader's TradingView VWAP is
+    configured to `Session open`, bar-matched to 0.13pt on his 2026-01-07
+    screenshot. The former hlc3 default sat ~0.5pt out — two NQ ticks, enough
+    to flip a borderline "closed through the band" call. Parquet artifacts
+    written before 2026-08-10 were built on hlc3; rebuild before comparing.
+    """
     df = bars_1m.copy()
-    tp = (df.high + df.low + df.close) / 3.0
+    if source == "open":
+        tp = df.open.astype(float)
+    elif source == "hlc3":
+        tp = (df.high + df.low + df.close) / 3.0
+    elif source == "ohlc4":
+        tp = (df.open + df.high + df.low + df.close) / 4.0
+    elif source == "close":
+        tp = df.close.astype(float)
+    else:
+        raise ValueError(f"unknown vwap source: {source!r}")
     v = df.volume.astype(float).clip(lower=0)
     key = [session_key(t) for t in df.index]
     g = pd.Series(key, index=df.index)

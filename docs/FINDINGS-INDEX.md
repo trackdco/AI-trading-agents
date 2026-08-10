@@ -15,3 +15,17 @@ built; A-1 spec untouched. The one open validation route on holdout is the
 queued closeloc claim (bar-only venue, ±4pp); the decisive S1 validation
 is the forward flow journal, which starts accruing the day the recorder
 goes live on the VPS.
+
+---
+
+## 2026-08-10 — corrections to the agent programme
+
+The index above covers phases A–D only; the agent programme (2026-08-08
+onward) sits in `ARCHITECTURE-trading-agent.md`, `AGENT-OPERATING-SPEC.md`
+and `SETUP-tradingview-mcp.md`. Two corrections landed on 2026-08-10 and
+both change what those documents claim:
+
+| file | verdict |
+|---|---|
+| FINDINGS-vwap-calibration.md | The research build's VWAP was on **hlc3**; his chart is **`Session open`, 18:00-anchored**. Median in-window divergence 0.72pt (~3 NQ ticks), p95 1.5pt, max 15pt — enough to flip a borderline "closed through the band" call. `vwap_bands(source=)` now defaults to `open`; pre-2026-08-10 parquets were built on hlc3 and must be rebuilt before reuse. Found by the trader reading his own settings, not by ~11,500 statistical tests — no permutation calibration can detect a mis-specified input, because the null shares it. |
+| FINDINGS-selection-effect.md | **"His picks run 5.48R vs a 1.15R baseline, beaten by 0.17% of 20,000 permutations" is WITHDRAWN.** The matcher had lookahead (±5min two-sided, so a candle closing after his entry could count as his selection) and the ratio's halves came from different populations. Corrected: in-window median **2.02R vs 1.20R**, P(2R) **55.0% vs 36.3%**, permutation **p ≈ 0.05–0.17** at n=20. The +18.7pp lift is stable at every tolerance but the sample cannot resolve it. His P&L (+26,218 USD, 42 decisions, 67% win) is untouched. Data and script now committed: `data/trader_fills/`, `scripts/trader_selection_effect.py`. |

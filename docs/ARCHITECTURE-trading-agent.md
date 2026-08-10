@@ -5,14 +5,22 @@
 
 ## WHY AN AGENT AT ALL — the evidence, not a preference
 
-Mechanization was tried exhaustively and failed on **selection**, while
-his selection was independently proven to work:
+Mechanization was tried exhaustively and failed on **selection**, and he
+demonstrably makes money doing it by hand:
 
-- **His picks are real.** Of the in-window 3m raw triggers he took,
-  median run **5.48R** vs a same-day baseline of **1.15R**; P(2R)
-  **71.4%** vs 38.5%. Binomial vs same-day baseline **p = 0.013**;
-  permutation (20,000 draws of 14 from his own trading days) beaten by
-  **0.17%** on median run and **0.55%** on P(2R).
+- **He makes money.** 42 real January decisions over 14 days (3.00/day),
+  **+26,218 USD, 67% win rate**, avg win +1,336 vs avg loss −800.
+- **His trigger selection is suggestive but NOT established.** Corrected
+  2026-08-10: of the in-window 2m/3m triggers he took (22 of 42 fills
+  match, causal), median run **2.02R vs a same-day in-window baseline of
+  1.20R**, P(2R) **55.0% vs 36.3%** — a +18.7pp lift stable across every
+  matching tolerance, at **permutation p ≈ 0.07**, n = 20. Suggestive,
+  underpowered, not proof. **The earlier "5.48R vs 1.15R, beaten by 0.17%
+  of 20,000 permutations" is WITHDRAWN** — the matcher allowed a candle
+  closing *after* his entry to count as his selection, and the two halves
+  of the ratio came from different populations. See
+  `FINDINGS-selection-effect.md`; reproduce either reading with
+  `scripts/trader_selection_effect.py`.
 - **No mechanical proxy reproduces it.** Rejected individually: 111
   decision-time features (univariate, calibrated null), 8,721
   pair/triple combinations (best beaten by 9 of 10 shuffled searches),
@@ -20,8 +28,10 @@ his selection was independently proven to work:
   (a blanket structural stop is neutral-to-worse in R), seven direction
   proxies (all flat or negative), previous-day level proximity (null).
 
-The conclusion is not "there is no signal" — it is that the signal is a
-**conjunction reasoned as a narrative**, which is LLM-shaped work. His
+The conclusion is not "there is no signal" — it is that whatever he is
+doing has no mechanical proxy, and the working hypothesis is that it is a
+**conjunction reasoned as a narrative**, which is LLM-shaped work. That is
+a hypothesis the agent is built to test, not a finding. His
 own Jan-14 read chained: Asia choppy → 04:00 displacement through the
 15m BB MA → prev-day VAL rejected hard yesterday → can't close back
 above it on the 2m → at VWAP−1 → 15m prints a rejection wick. No
@@ -101,8 +111,10 @@ numeric payload:
 
 1. **Agreement** with his 42 January decisions: take/pass confusion
    matrix, per window and per session-day.
-2. **Outcome**: do the agent's picks reproduce the 5.48R-vs-1.15R
-   effect against the same-day baseline, permutation-calibrated?
+2. **Outcome**: in-window P(2R) against the same-day in-window baseline
+   (~36%), permutation-calibrated. His own matched picks sit at 55.0%,
+   p ≈ 0.07 — so **one month cannot resolve this for the agent either**,
+   and the sample has to be widened before the outcome axis can rule.
 3. **Both are required.** 80% agreement whose picks do not run means the
    agreement is cosmetic. Outcomes that beat baseline while disagreeing
    with him wholesale is a different (possibly better) strategy, and
