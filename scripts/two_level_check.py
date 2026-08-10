@@ -15,9 +15,18 @@ A "closure through" is open one side, close the other. A "rejection" is a wick
 beyond the level closing back — day 2 established that rejection counts toward
 the pair, so both are reported, closures first.
 
-THE OWN BB MA IS REQUIRED BY DEFAULT. All 9 takes across the first three
-narrated days close through the candle's own BB MA; it is a mandatory leg of
-the pair, not one option among many. Pass --any-pair to relax it.
+THE OWN BB MA IS REQUIRED. Confirmed by him 2026-08-10: "usually I want it to
+break the BB MA and another structural level in the same candle, but it's up
+to my discretion... I need a break through of 2 structural levels."
+
+So there are TWO shapes, and both are reported:
+  same-candle  - the norm: MA and a second level in one candle
+  sequential   - MA closes first, the second level completes on a later
+                 candle within SEQ_CANDLES. He calls this the exception
+                 ("usually I wouldn't"), and did it on 2026-06-26 London:
+                 the 04:00 2m closed the MA, the 04:04 2m closed VWAP, and
+                 he entered on the retest only then.
+Pass --any-pair to also surface pairs that exclude the MA.
 
     python -m scripts.two_level_check 2026-06-24 LONDON
     python -m scripts.two_level_check 2026-06-24 LONDON --min 1
@@ -40,6 +49,7 @@ from src.htf_ma.levels import (NY, bb_ma_asof, profile_at_minutes,  # noqa: E402
 WINDOWS = {"LONDON": (180, 299), "NY_PRE": (480, 569),
            "NY_AM": (570, 645), "ALL": (0, 1439)}
 BANDS = ["vwap", "vwap_p1", "vwap_m1", "vwap_p2", "vwap_m2"]
+SEQ_CANDLES = 3          # how long an MA-only closure stays live
 
 
 def analyse(sess_day: str, window: str, tfs=(2, 3), min_levels: int = 2,
@@ -68,7 +78,7 @@ def analyse(sess_day: str, window: str, tfs=(2, 3), min_levels: int = 2,
     a, b = WINDOWS[window]
     print(f"session-day {sess_day}  window {window} "
           f"({a//60:02d}:{a%60:02d}-{b//60:02d}:{b%60:02d} NY)\n")
-    rows = []
+    rows, pend = [], []
     for tf in tfs:
         ma_tf, _ = bb_ma_asof(hist, tf)
         f = hist.resample(f"{tf}min", label="left", closed="left").agg(
@@ -94,17 +104,39 @@ def analyse(sess_day: str, window: str, tfs=(2, 3), min_levels: int = 2,
                 elif (r.high > val > r.open and r.close < val) or \
                      (r.low < val < r.open and r.close > val):
                     rejected.append(name)
-            if len(closed) >= min_levels and (
-                    not require_own_ma or "own_ma" in closed):
-                rows.append((ts, tf, r, closed, rejected))
+            others = [c for c in closed if c != "own_ma"]
+            if "own_ma" in closed and others:
+                rows.append((ts, tf, r, closed, rejected, "same-candle"))
+            elif "own_ma" in closed:
+                # MA only. His discretion allows WAITING for the second level
+                # on a later candle - verified 2026-06-26 London, where the
+                # 04:00 2m closed the MA and the 04:04 2m closed VWAP.
+                pend.append((ts, tf, r, 1 if r.close > r.open else -1))
+            elif others and pend:
+                for p_ts, p_tf, p_r, p_d in list(pend):
+                    if p_tf != tf or ts <= p_ts:
+                        continue
+                    if (ts - p_ts) > pd.Timedelta(minutes=tf * SEQ_CANDLES):
+                        pend.remove((p_ts, p_tf, p_r, p_d))
+                        continue
+                    if p_d == (1 if r.close > r.open else -1):
+                        rows.append((ts, tf, r, ["own_ma@" +
+                                                 p_ts.strftime("%H:%M")]
+                                     + others, rejected,
+                                     f"sequential (+{int((ts-p_ts).total_seconds()//60)}m)"))
+                        pend.remove((p_ts, p_tf, p_r, p_d))
+                        break
+            if len(closed) >= min_levels and not require_own_ma \
+                    and "own_ma" not in closed:
+                rows.append((ts, tf, r, closed, rejected, "no-own-MA"))
     if not rows:
         print(f"  NO candle closed through {min_levels}+ levels"
               + (" including its own BB MA" if require_own_ma else "")
               + ". His claim holds mechanically.")
-    for ts, tf, r, closed, rejected in sorted(rows):
+    for ts, tf, r, closed, rejected, kind in sorted(rows, key=lambda x: x[0]):
         d = "UP  " if r.close > r.open else "DOWN"
         print(f"  {ts:%H:%M} {tf}m {d}  O{r.open:9.2f} C{r.close:9.2f}  "
-              f"closed through [{', '.join(closed)}]"
+              f"{kind:18s} [{', '.join(closed)}]"
               + (f"   rejected [{', '.join(rejected)}]" if rejected else ""))
     print(f"\n  {len(rows)} candle(s) with {min_levels}+ closures")
 

@@ -71,14 +71,28 @@ Three qualifications that the week established and that matter:
 
 1. **A rejection counts toward the pair**, not only a closure. Tue N2 closed
    through the 2m MA while *rejecting* the VWAP mid and the POC.
-2. **The own BB MA appears to be mandatory.** 11 of 11 takes close through
-   the candle's own MA; the second leg varies freely. *Inferred from his
-   behaviour, not stated by him — flagged for confirmation.* On Thursday
-   London it is the difference between three qualifying candles and one, and
-   it is what makes his "no closure through two levels" account exact.
-3. **He waits for the second level.** Friday London: the 04:00 2m closed
-   through the MA but not VWAP; he waited; the 04:04 2m closed through VWAP;
-   *then* he acted. Verified on the tape.
+2. **The own BB MA is mandatory — CONFIRMED by him**, 2026-08-10:
+
+   > *"Usually I want it to break the BB MA and another structural level in
+   > the same candle, but it's up to my discretion… I need a break through of
+   > 2 structural levels."*
+
+   11 of 11 takes close through the candle's own MA; the second leg varies
+   freely. **Same candle is the norm.**
+3. **But the pair may complete SEQUENTIALLY, at his discretion.** Friday
+   London: the 04:00 2m closed through the MA but not VWAP; he waited; the
+   04:04 2m closed through VWAP; *then* he limited the retest. He flags this
+   as the exception — *"usually I wouldn't"*.
+
+   `scripts/two_level_check.py` detects both shapes and labels them. It finds
+   his Friday trade as `04:04 2m DOWN sequential (+4m) [own_ma@04:00, vwap]`.
+
+   **Caveat on Thursday's negative control:** allowing sequential completion
+   at up to 3 candles surfaces a 04:48 short on Thursday London
+   (`own_ma@04:39` + VWAP+1 + VAH, a 9-minute gap) that same-candle-only
+   excludes. His words were *"no closure through 2 levels **at once**"* —
+   which is the same-candle reading, and that holds exactly. The sequential
+   reading is looser and would have found one. Recorded, not resolved.
 
 **Timeframes: 2m and 3m.** He checks the other one for confirmation —
 *"we look at the 3-minute really quick first as well"* — and simultaneous
@@ -177,19 +191,37 @@ stop would have been hit anyway.
 
 1. Direction must match the standing thesis.
 2. Inside a window: **LONDON 03:00–04:59, NY_PRE 08:00–09:29, NY_AM
-   09:30–10:45** NY. **Entries only** — *"you don't flatten trades when the
-   window closes."*
-3. Not in the first few minutes of the cash open.
-4. After a displacement, wait for the rebalance before entering.
-5. A thesis alone is never enough — the trigger must exist.
-6. **Headroom.** Two levels broken is the minimum, not the criterion. The
+   09:30–11:00** NY. **Entries only** — *"you don't flatten trades when the
+   window closes."* (11:00 confirmed 2026-08-10; his practical centre of mass
+   is nearer 10:45, and January's 10:51 entry now sits inside the window.)
+3. **MAXIMUM TWO NEW YORK TRADES PER DAY**, across NY_PRE and NY_AM combined.
+
+   > *"My maximum trades in New York is 2. I don't think there are ever
+   > really more than 2 good setups in New York, and even the days where
+   > there's more, I've taken my piece of the pie."*
+
+   **Verified: he took exactly 2 on every single day of the week**, without
+   exception — 2/2/2/2/2, mean 2.0. The split varies (2 in NY_AM on Mon–Wed;
+   1 pre + 1 AM on Thu–Fri).
+
+   **The cap counts FILLS, not attempts.** Tuesday and Wednesday each placed
+   an unfilled pre-market limit *and* still took 2 in NY_AM. A limit that
+   never fills does not spend the budget.
+
+   Friday's closing pass is the cap wearing a thesis: *"I don't think any
+   good long setup will occur in my trading period any more"* — said after
+   his second NY trade.
+4. Not in the first few minutes of the cash open.
+5. After a displacement, wait for the rebalance before entering.
+6. A thesis alone is never enough — the trigger must exist.
+7. **Headroom.** Two levels broken is the minimum, not the criterion. The
    next level beyond the entry must not sit immediately in the way. *"I don't
    like taking trades where it has to break through something in order for my
    trade to work."*
-7. **POC alignment.** POC should be *with* the trade, not an obstacle.
-8. **In chop, require higher-timeframe alignment** before taking anything.
-9. **No entries before high-impact news.**
-10. **Move to break-even before the cash open** when carrying a pre-market
+8. **POC alignment.** POC should be *with* the trade, not an obstacle.
+9. **In chop, require higher-timeframe alignment** before taking anything.
+10. **No entries before high-impact news.**
+11. **Move to break-even before the cash open** when carrying a pre-market
     position.
 
 ---
@@ -254,8 +286,20 @@ Every level he named across five days reproduces on our bars:
 
 ## 10. WHAT IS STILL OPEN
 
-1. **Is the own BB MA genuinely mandatory?** 11/11, but inferred. A yes makes
-   it a hard gate; a no means the agent would be discarding valid setups.
-2. **Monday's London stop.** *"Stops at 30"*, sentence cut off. That trade's
-   R is provisional.
-3. **The 10:45 cut-off vs January's 10:51 entry.** Minor, but unresolved.
+**Closed 2026-08-10.** The own BB MA is confirmed mandatory (same candle
+normally, sequentially at his discretion). The window is 11:00, which also
+absorbs January's 10:51 entry. Both are folded in above.
+
+**Still open — one item, and it is small:**
+
+1. **Monday 22 June's London stop.** *"Stops at 30"*, sentence cut off; asked
+   and he does not recall. **That trade's R is unrecoverable, not merely
+   unknown** — it is excluded from any R aggregate rather than estimated.
+   Everything else about the trade (entry 30,753, TP1 at 30,713, the runner
+   missing VWAP+1 by ~9pt) stands.
+
+**And one thing to watch rather than resolve:** the sequential-completion
+window. `SEQ_CANDLES = 3` is a guess, not his number. It is what decides
+whether Thursday London had zero qualifying shorts or one. If the agent
+starts taking trades he would not have, this is the first parameter to
+question.

@@ -94,12 +94,22 @@ rely on the precomputed census — it is a research artifact built on
 slightly different indicator values and it is known to miss real
 entries.
 
-**TWO LEVELS, ALWAYS.** *"My entry always needs to be closure through two
-levels. That's usually what I stick by."* A single closure is not a
-candidate. The pair can be any two of: its own BB MA, a VWAP band, the
-developing POC, a profile edge — and **a rejection counts toward the
-pair**, not only a closure (2026-06-23 N2 closed through the 2m MA while
-rejecting the VWAP mid and the POC).
+**TWO LEVELS, ALWAYS — and one of them is the candle's OWN BB MA.**
+Confirmed 2026-08-10: *"Usually I want it to break the BB MA and another
+structural level in the same candle, but it's up to my discretion… I need
+a break through of 2 structural levels."* 11 of 11 takes in the narrated
+week close through their own MA.
+
+The second leg is any of: a VWAP band, the developing POC, a profile
+edge — and **a rejection counts toward the pair**, not only a closure
+(2026-06-23 N2 closed through the 2m MA while rejecting the VWAP mid and
+the POC).
+
+**Same candle is the norm; sequential completion is allowed at his
+discretion.** 2026-06-26 London: the 04:00 2m closed the MA only, he
+waited, the 04:04 2m closed VWAP, and only then did he limit the retest.
+He calls this the exception — *"usually I wouldn't."* Treat a lone MA
+closure as a **pending** candidate, not a candidate.
 
 **The trigger candle is the SIGNAL bar, not the entry bar.** Entry is a
 **limit order on the retest**, placed a couple of points inside the
@@ -145,32 +155,38 @@ the reason logged, no judgment required:**
 1. Direction must match the standing thesis. (He declined a valid 10:12
    long outright: *"I don't even like this long."*)
 2. Inside a window: LONDON 03:00–04:59, NY_PRE 08:00–09:29, **NY_AM
-   09:30–10:45** NY. *"My window would be realistically around 10:45."*
-   The old 10:30 cut-off is wrong — 2026-06-23's best trade entered at
-   10:36. **The window governs ENTRIES ONLY:** *"You don't flatten trades
-   when the window closes… I can hold them until my targets get hit."*
-   That trade exited at 11:24 and 2026-06-24's at 10:45, both fine.
-   *(January's 10:51 entry sits outside even 10:45 — flagged, unresolved.)*
-3. Not in the first few minutes of the cash open.
-4. If a displacement is awaiting a rebalance to the 15m MA, stand aside
+   09:30–11:00** NY. Confirmed 2026-08-10: *"My window is usually
+   11:00."* His practical centre of mass is nearer 10:45, and January's
+   10:51 entry now sits inside. **The window governs ENTRIES ONLY:**
+   *"You don't flatten trades when the window closes… I can hold them
+   until my targets get hit."*
+3. **MAXIMUM TWO NEW YORK TRADES PER DAY**, NY_PRE and NY_AM combined.
+   *"I don't think there are ever really more than 2 good setups in New
+   York, and even the days where there's more, I've taken my piece of the
+   pie."* He took **exactly 2 on every day of the narrated week**. The cap
+   counts **fills, not attempts** — two of those days also placed a
+   pre-market limit that never filled. Once two are filled, every further
+   candidate is logged as a pass with reason `ny_cap`.
+4. Not in the first few minutes of the cash open.
+5. If a displacement is awaiting a rebalance to the 15m MA, stand aside
    until it happens.
-5. A thesis alone is never enough — the trigger must exist. *"I know
+6. A thesis alone is never enough — the trigger must exist. *"I know
    it's going down, but there's no entry to back that up."*
 
-6. **HEADROOM.** Two levels broken is the minimum, not the criterion —
+7. **HEADROOM.** Two levels broken is the minimum, not the criterion —
    the next level beyond the entry must not sit immediately in the way.
    *"I don't really like taking trades where it has to break through
    something in order for my trade to work. I like a couple things to be
    broken through with some headroom."* On 2026-06-24 he passed a 3m long
    that had cleared both its MA and POC, purely because VWAP+1 was
    directly overhead.
-7. **POC alignment.** POC should be *with* the trade, not an obstacle it
+8. **POC alignment.** POC should be *with* the trade, not an obstacle it
    must break. *"I'd rather POC be aligned with my trades rather than
    rely on my trade to break through it."* Two of that day's three London
    passes turned on this.
-8. **In chop, require higher-timeframe alignment before taking
+9. **In chop, require higher-timeframe alignment before taking
    anything.** *"There's no reason to trade like that for no reason."*
-9. **No entries before high-impact news.** *"Obviously we're not trading
+10. **No entries before high-impact news.** *"Obviously we're not trading
    before high-impact news. That is stupid."* This is the macro/events
    agent's first concrete job. It gates entries — it is not a general
    licence to sit out.

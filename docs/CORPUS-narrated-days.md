@@ -79,9 +79,11 @@ same move, exactly as he described.
   **30,687.25** — missed by ~9 points, remainder taken out at break-even.
   His call: *"It got very close to VWAP +1, but I wouldn't have hit."* ✓
 
-> **Open:** he said *"stops at 30"* and the sentence cut off. 30,783 (the
-> Thu-18 high) fits his rationale and his *"bit of a big stop"* remark, but
-> it is inferred. R for this trade is provisional until confirmed.
+> **Closed 2026-08-10, as unrecoverable.** He said *"stops at 30"* and the
+> sentence cut off; asked directly, he does not recall. The stop is **not
+> recoverable**, so this trade is **excluded from R aggregates rather than
+> estimated**. Everything else about it stands: entry 30,753, TP1 at 30,713,
+> the runner missing VWAP+1 by ~9pt.
 
 ### P1 — NY_PRE, whole window · PASSED
 
