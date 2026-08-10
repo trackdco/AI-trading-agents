@@ -11,6 +11,7 @@ This file is the human-readable roll-up.
 |---|---|---|---|---|---|
 | 2026-06-21 | Monday 22 June 2026 | 3 | 2 | 0 | reconciled |
 | 2026-06-22 | Tuesday 23 June 2026 | 3 | 1 | 1 | reconciled; profile anchor now known |
+| 2026-06-23 | Wednesday 24 June 2026 | 3 | 3 | 1 | reconciled; limit-lifetime rule answered |
 
 ---
 
@@ -367,3 +368,160 @@ with January's 10:51 entry, the window needs to run to at least 11:00.
 
 **A no-fill is now a real, logged outcome.** P1 had the right read and the
 right direction and produced nothing. Every unfilled limit gets its own row.
+
+---
+
+## 2026-06-23 — "Wednesday 24 June"
+
+Chop. Range-bound all session, failing to break either side. **Two losses
+and one win, net ≈ +2.1R** — and by far the most valuable day so far for
+*pass* reasoning: three declined candidates in London alone, each for a
+different stated reason.
+
+> *"Wow, this shit is fucking horrible price action."*
+
+The fork he set at the open: *"It's either gonna break this range and keep
+pushing to the upside, which will be a good thesis for New York… or we're
+gonna break and just keep going lower."* And the gate: **"I'm not going to
+take anything until I see some higher time frame alignment."**
+
+### The three London passes — three different rules
+
+**LP1, London open (03:00 NY).** 3m closed through the VWAP+1 band and its
+BB MA. Passed: *"we're right at developing POC, I don't really wanna take a
+short here."* Then — *"Haha, maybe I should have taken a short. We fuckin'
+dumped the next candle."* **A pass he immediately regretted.** Kept as-is:
+the agent learns the rule, not the outcome.
+
+**LP2, 08:36 London / 03:36 NY.** Touched the 15m MA, the 1h MA and the VWAP
+mid; closed through the MA on both 2m and 3m. Passed — chop, and:
+
+> *"We're right at POC now. I'd rather POC be aligned with my trades rather
+> than rely on my trade to break through it."*
+
+**LP3, 09:03 London / 04:03 NY** — the important one. The 3m closed through
+its MA **and** through POC, so it clears the two-level minimum. Still passed:
+
+> *"Except VWAP+1 is right here. I don't really like taking trades where it
+> has to break through something in order for my trade to work. I like a
+> couple things to be broken through with some **headroom**."*
+
+**Two levels broken is necessary, not sufficient.** The next level beyond
+the entry must not be sitting immediately in the way. That is a genuinely
+new constraint and it is not derivable from anything in the previous two
+days.
+
+### L1 — LONDON short, 09:49 London / 04:49 NY · **−0.46R**, and a good loss
+
+Rejected VWAP+1, then closed through the BB MA and the developing POC after
+rejecting the VAH.
+
+- **Limit 29,821** at the developing POC — ours is **29,821.50**. Filled 04:52.
+- **Stop ~29,850**, *not* above the candle that closed through, *"just
+  because VWAP+1 is right above it — I want to give it a bit of headroom."*
+  Placed at the top wick of the 3m candle before it. 29pt.
+- **Trailed hard.** At 10:00 London a big 3m candle wicked the 3m MA and
+  traded down; he trailed above that wick to **29,834.25** — 13.25pt.
+- Stopped 05:12 for **13.25pt instead of 29**.
+
+His read: *"it looks as though if I didn't trail my stops I might have lost
+anyways."* **Verified — the untrailed 29pt stop would also have been hit.**
+The trail cost nothing and saved 16 points.
+
+### PRE1 — NY_PRE 08:33 · LIMIT PLACED, **NEVER FILLED** — and it would have won
+
+3m candle 08:33–08:35 closed through its BB MA (29,839.44) and the developing
+POC (29,821.50), with its high at 29,844.25 sitting **on** VWAP+1 (29,844.27)
+— a rejection, not a closure, which is exactly the case day 2 established
+counts toward the pair.
+
+- **Limit 29,821** at the POC retest. **Pre-market high afterwards: 29,814.25.
+  Never reached.**
+- **Stop 29,860** = the daily VAH (ours **29,860.50**), not the candle high,
+  *"purely because that candle is basically at the same level as the
+  three-minute moving average and VWAP+1."*
+- Target the daily VAL. That is **1.99R** — his *"would have been a 2:1"*.
+
+> *"I could care less. This wasn't a great trade anyway in the first place,
+> so I'm not going to be mad about it."*
+
+### N1 — NY_AM long, 09:50 · **−1.0R**
+
+Asia low swept; *"we're probably going to come to the top of this range now."*
+The 2m candle 09:50–09:51 closed through **four** levels at once: the
+developing VAL (29,695.50), VWAP−1 (29,679.35), the 2m MA (29,718.14) and the
+VWAP mid (29,751.97).
+
+His own confidence, stated before the outcome: *"this is technically a valid
+trade, but I'm not too confident in it."*
+
+- **Limit at the 2m MA, 29,719.25.** *(He dictated "29,619.25" — a digit slip.
+  29,719.25 is the MA, and it is the only value consistent with his stop, his
+  target and his stated 1.6R.)* Filled 09:55.
+- **Stop 29,657.25** — exactly the displacement candle's low. 62pt.
+- **Target 29,820.25**, the POC overlapping VWAP+1 → planned **1.63R**, his
+  *"roughly a 1.6 to 1"*.
+- **Stopped 10:00.**
+
+### N2 — NY_AM long, 10:24 · **+3.58R**
+
+Same thesis, second attempt. At 10:22 the 2m touched VWAP−1 and left a big
+top wick; he waited. *"The 3-minute low-key left a massive top wick. I'd want
+to wait for closure through."* — he checked the higher of his two timeframes
+before committing.
+
+The 10:24–10:25 2m closed through the developing VAL (29,675.50), VWAP−1
+(29,657.62) and the 2m MA (29,667.81).
+
+- **Limit 29,676** at the VAL — *"that's the closest thing to my level."*
+  Filled 10:26. *(He calls it the "value area high"; every number he quotes is
+  the value area **low**. Naming slip, not a different level.)*
+- **Stop 29,639**, just below the 10:24 low (29,639.50). 37pt.
+- Touched the VWAP mid → **moved to break-even.**
+- **Target 29,808.5**, a point inside VWAP+1 (ours 29,809.49) — **hit 10:45**
+  (his "10:44 candle", start-labelled). **3.58R** against his "3.6R".
+
+---
+
+## WHAT DAY 3 SETTLES
+
+**The limit-lifetime question, answered outright:**
+
+> *"A limit will rest for maybe 10 minutes max. If it runs to a structural
+> level and then fills me, I'm not very confident in that anymore… I would
+> want it to get filled within a couple minutes. If it hits some structural
+> levels and then fills me, I'm more likely to lose."*
+
+With a worked example on N2: *"If we were to come to the VWAP middle band
+before filling my limit order, I would close that limit order."*
+
+So the rule has two clauses, and the second is the interesting one: **cancel
+if price reaches the next structure before the fill arrives.** A late fill is
+not the same trade at a better price — it is a different, worse trade. He
+never chases.
+
+**Window semantics.** *"You don't flatten trades when the window closes. My
+window would be realistically around 10:45. That doesn't mean I flatten
+trades. I just can't enter any trades after that."* The window governs
+**entries only**. *(Note: January's 10:51 entry sits outside even this.
+Flagged, not resolved.)*
+
+**Three new judgment rules**, in his words:
+
+- **Headroom** (LP3) — the next level must not be in the way.
+- **POC alignment** (LP2) — POC should be with the trade, not an obstacle.
+- **HTF alignment gate** — in chop, stand down until the higher timeframes
+  point one way.
+
+**And a management rule with evidence**: trail to beyond the wick of a candle
+that rejects your level against you. It cost nothing on L1 and saved 16
+points.
+
+### Calibration
+
+**The developing daily profile is now fully calibrated.** Every level he named
+today reproduces: POC 29,821.50 vs his 29,821 (quoted twice), VAH 29,860.50 vs
+his 29,860 stop, VAL 29,675.50 vs his 29,676 limit, VWAP+1 29,809.49 vs his
+29,808.5 take-profit, and both stops sitting exactly on displacement-candle
+lows. The only outstanding item remains the **anchored weekly** profile's
++43pt VAH offset.

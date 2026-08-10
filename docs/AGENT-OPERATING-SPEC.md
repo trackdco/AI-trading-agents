@@ -111,11 +111,24 @@ stop and target.
   *"this candle is closed through, this Bollinger Band is probably going
   to move down, I'm going to give it three points of leeway."*
 
+**LIMIT LIFETIME — two clauses, both hard.** Declared 2026-08-10:
+
+1. **~10 minutes maximum.** *"A limit will rest for maybe 10 minutes max…
+   I would want it to get filled within a couple minutes."*
+2. **Cancel if price reaches the next structural level before filling.**
+   *"If it runs to a structural level and then fills me, I'm not very
+   confident in that anymore… I'm more likely to lose."* His worked
+   example: limit at the value-area-low retest — *"if we were to come to
+   the VWAP middle band before filling my limit order, I would close that
+   limit order."*
+
+**He never chases.** A late fill is not the same trade at a better price;
+it is a different, worse trade.
+
 Consequence the market grammar did not have: **no retest means no fill
-means no trade.** It is a real outcome, not an edge case — 2026-06-23's
-pre-market limit had the right read and the right direction and produced
-nothing. **Log every unfilled limit as its own row.** How long the limit
-rests, and whether it is ever chased, is still not declared.
+means no trade.** It is a real outcome, not an edge case — two no-fills in
+two days, and the 2026-06-24 one would have made 2R. He is untroubled by
+them: *"I could care less."* **Log every unfilled limit as its own row.**
 
 **Candle times are START times on his chart.** A "09:46 2m candle" spans
 09:46–09:47 and closes at 09:48. Our census right-labels by close time.
@@ -126,14 +139,31 @@ the reason logged, no judgment required:**
 1. Direction must match the standing thesis. (He declined a valid 10:12
    long outright: *"I don't even like this long."*)
 2. Inside a window: LONDON 03:00–04:59, NY_PRE 08:00–09:29, **NY_AM
-   09:30–11:00** NY. The old 10:30 cut-off is wrong: on 2026-06-23 his
-   best trade of the day entered at **10:36** and exited 11:24, and
-   January's best was 10:51. 11:00 is his own stated historical cut-off.
+   09:30–10:45** NY. *"My window would be realistically around 10:45."*
+   The old 10:30 cut-off is wrong — 2026-06-23's best trade entered at
+   10:36. **The window governs ENTRIES ONLY:** *"You don't flatten trades
+   when the window closes… I can hold them until my targets get hit."*
+   That trade exited at 11:24 and 2026-06-24's at 10:45, both fine.
+   *(January's 10:51 entry sits outside even 10:45 — flagged, unresolved.)*
 3. Not in the first few minutes of the cash open.
 4. If a displacement is awaiting a rebalance to the 15m MA, stand aside
    until it happens.
 5. A thesis alone is never enough — the trigger must exist. *"I know
    it's going down, but there's no entry to back that up."*
+
+6. **HEADROOM.** Two levels broken is the minimum, not the criterion —
+   the next level beyond the entry must not sit immediately in the way.
+   *"I don't really like taking trades where it has to break through
+   something in order for my trade to work. I like a couple things to be
+   broken through with some headroom."* On 2026-06-24 he passed a 3m long
+   that had cleared both its MA and POC, purely because VWAP+1 was
+   directly overhead.
+7. **POC alignment.** POC should be *with* the trade, not an obstacle it
+   must break. *"I'd rather POC be aligned with my trades rather than
+   rely on my trade to break through it."* Two of that day's three London
+   passes turned on this.
+8. **In chop, require higher-timeframe alignment before taking
+   anything.** *"There's no reason to trade like that for no reason."*
 
 **Conviction inputs, recorded and weighed, NOT hard filters:**
 - 2m and 3m closing through their MAs **in the same minute** — named
@@ -186,7 +216,14 @@ apart and he targeted the VWAP — worth 3.80R on the runner instead of
 band."* On 2026-06-23 that was 29,728 against a VWAP−1 of 29,721.
 
 **Management:** partial at intermediate structure; move to break-even
-after TP1.
+after TP1, or on touching an intermediate band even without a partial
+(2026-06-24: *"we've touched the VWAP middle band, I'm moving my stops to
+break even"*).
+
+**In chop, trail aggressively** — to beyond the wick of any candle that
+rejects your level against you. On 2026-06-24 that cut a 29pt loss to
+13.25pt, and the untrailed stop would have been hit anyway, so it cost
+nothing.
 
 **R is quoted at the FULL target, not blended across the partials.** His
 "3RR" on 2026-06-23 N1 means 3.69R at the final target, with TP1 at
