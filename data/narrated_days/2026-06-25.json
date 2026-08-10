@@ -1,0 +1,38 @@
+{
+  "trader_label": "Thursday 25 June 2026",
+  "session_day": "2026-06-24",
+  "status": "LONDON captured. New York not yet narrated.",
+
+  "decisions": [
+    {
+      "id": "LP0", "type": "pass", "window": "LONDON", "scope": "whole_window",
+      "narration": "I didn't take any trades in London. I was actually looking for a rebalance since it pushed all day. Once I realised it was just straight going up there was no good entries anyways - no closure through 2 levels at once. Closed through the BB MA multiple times but no other opportunities, since there wasn't much closure through anything else. Was just straight pumping.",
+      "reason": "Waiting on a rebalance that never came, in a one-way market that never produced his two-level minimum.",
+      "verification": {
+        "was_it_one_way": "YES. Price held above BOTH the 15m and the 1h BB MA for 100% of the London window. The deepest approach to the 15m MA came within 1.09pt and never touched it, so the rebalance he was waiting for genuinely never arrived.",
+        "window_shape": {"open": 30106.50, "high": 30219.00, "low": 30105.75,
+                         "close": 30119.50, "net": 13.00},
+        "single_level_closures": 30,
+        "single_level_detail": "Almost all of them the candle's own BB MA or VWAP+2 alone - exactly his 'closed through the BB MA multiple times but no other opportunities'.",
+        "two_level_closures_any_pair": 3,
+        "two_level_closures_with_own_ma": 1,
+        "the_one": "03:03 3m UP, closed through its own MA and the developing VAH. It is a LONG, three minutes into the London open, in the direction he had already dismissed - he wanted a rebalance, i.e. a pullback. The other two (04:48 3m, 04:50 2m, both DOWN) closed through VWAP+1 and the VAH but NOT their own BB MA.",
+        "verdict": "His recollection is mechanically correct under his own grammar. No qualifying two-level closure in the direction he wanted."
+      },
+      "value": "A whole-window pass with a falsifiable mechanical claim attached, and it held. This is the cleanest negative control in the corpus so far."
+    }
+  ],
+
+  "structural_finding": {
+    "id": "R13",
+    "rule": "THE CANDLE'S OWN BB MA IS A MANDATORY LEG OF THE PAIR, not one option among many.",
+    "evidence": "All 9 takes across the first three narrated days close through the candle's own BB MA (2m or 3m as applicable). The second leg varies freely - VWAP band, developing POC, VAH or VAL - but the own MA is always present.",
+    "discriminating_power": "On 2026-06-24 London it is the difference between 3 qualifying candles and 1. Without it, two shorts at 04:48/04:50 look like missed entries; with it, they are correctly excluded and his account is exact.",
+    "caveat": "9 takes is a small sample and the rule is inferred from them, not stated by him. It should be put to him directly rather than assumed.",
+    "implemented": "scripts/two_level_check.py, required by default, --any-pair to relax."
+  },
+
+  "day_context_for_later": {
+    "ny_am_move": "NY_AM on this session-day is a -504pt collapse (high 30,193.00 at the open, low 29,295.75). Recorded here only as context; it is NOT analysed and NOT scored until he narrates it."
+  }
+}

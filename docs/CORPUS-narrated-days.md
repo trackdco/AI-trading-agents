@@ -12,6 +12,7 @@ This file is the human-readable roll-up.
 | 2026-06-21 | Monday 22 June 2026 | 3 | 2 | 0 | reconciled |
 | 2026-06-22 | Tuesday 23 June 2026 | 3 | 1 | 1 | reconciled; profile anchor now known |
 | 2026-06-23 | Wednesday 24 June 2026 | 3 | 3 | 1 | reconciled; limit-lifetime rule answered |
+| 2026-06-24 | Thursday 25 June 2026 | 0 | 1 (whole window) | 0 | **London only — NY pending** |
 
 ---
 
@@ -525,3 +526,60 @@ his 29,860 stop, VAL 29,675.50 vs his 29,676 limit, VWAP+1 29,809.49 vs his
 29,808.5 take-profit, and both stops sitting exactly on displacement-candle
 lows. The only outstanding item remains the **anchored weekly** profile's
 +43pt VAH offset.
+
+---
+
+## 2026-06-24 — "Thursday 25 June" *(London only; New York pending)*
+
+> *"I didn't take any trades in London. I was actually looking for a
+> rebalance since it pushed all day. Once I realised it was just straight
+> going up there was no good entries anyways — no closure through 2 levels at
+> once. Closed through the BB MA multiple times but no other opportunities…
+> was just straight pumping."*
+
+A whole-window pass with a **falsifiable mechanical claim** attached, which
+makes it the cleanest negative control in the corpus. Built
+`scripts/two_level_check.py` to test it rather than take it on trust.
+
+**Was it one-way?** Price held above **both** the 15m and the 1h BB MA for
+**100% of the London window**. The deepest approach to the 15m MA came within
+**1.09pt and never touched it** — the rebalance he was waiting on genuinely
+never arrived.
+
+**Were there two-level closures?**
+
+| | count |
+|---|---|
+| candles closing through exactly one level | **30** |
+| … almost all of them the own BB MA or VWAP+2 alone | — |
+| candles closing through 2+ levels, any pair | **3** |
+| candles closing through 2+ levels **including their own BB MA** | **1** |
+
+The one is **03:03 3m UP**, through its own MA and the developing VAH — a
+**long**, three minutes into the open, in the direction he had already
+dismissed. The other two (04:48 3m and 04:50 2m, both down) closed through
+VWAP+1 and the VAH but **not their own BB MA**.
+
+**His recollection is mechanically correct under his own grammar.** And the
+30-vs-3 split is exactly his *"closed through the BB MA multiple times but no
+other opportunities."*
+
+### R13 — the own BB MA looks mandatory, not optional
+
+Checking every take in the corpus:
+
+**9 of 9 takes close through the candle's own BB MA.** The second leg varies
+freely — VWAP band, developing POC, VAH, VAL — but the own MA is always
+there.
+
+It has real discriminating power here: it is the difference between 3
+qualifying candles and 1. Without it, the 04:48/04:50 shorts look like missed
+entries and his account looks loose; with it, they are correctly excluded and
+his account is exact.
+
+**Caveat, and it matters:** nine takes is a small sample, and this rule is
+**inferred from his behaviour, not stated by him**. It is now the default in
+`two_level_check.py` (`--any-pair` relaxes it), but it should be put to him
+directly rather than assumed. If it is right it is a hard constraint the
+agent can lean on; if it is an artefact of three days, leaning on it would
+quietly discard valid setups.
