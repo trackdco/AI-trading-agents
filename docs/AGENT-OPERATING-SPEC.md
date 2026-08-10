@@ -40,7 +40,13 @@ through a failed gate.
    minute; compare against `scripts/agent_context.py` values for the
    same minute. Report the deltas. >1pt on VWAP or >0.5pt on the BB MA
    means the chart config differs from the research build — say so
-   rather than proceeding quietly.
+   rather than proceeding quietly. *(Bollinger and VWAP already
+   reconcile to ~1pt or better against his narrated 2026-06-22 levels.)*
+   **The volume profile does NOT reconcile** — his "weekly value area
+   high" landed 42pt apart at two points of the same day and matches
+   none of our anchors. Read profile levels off the chart only; never
+   substitute ours. Settle anchor / value-area % / bin width / TPO-vs-
+   volume before relying on any of them.
 4. **NO-LEAK CHECK — the one that matters most.** Step replay to a
    decision minute, screenshot, and verify no bars exist after it. A
    decision made on a chart showing later bars is worthless and the
@@ -77,6 +83,23 @@ rely on the precomputed census — it is a research artifact built on
 slightly different indicator values and it is known to miss real
 entries.
 
+**The trigger candle is the SIGNAL bar, not the entry bar.** Entry is a
+**limit order on the retest** of the level the candle displaced through
+— normally its own BB MA — placed a couple of points inside it. Declared
+2026-08-10: *"If we're teaching an agent to trade a trade like me, we're
+going to start taking fucking limit orders."* On 2026-06-22 the same NY
+setup was worth 1.0R entered at market on the close and **2.33R** entered
+on the retest, identical stop and target. See
+`docs/CORPUS-narrated-days.md`.
+
+Consequence the market grammar did not have: **no retest means no fill
+means no trade.** How long the limit rests, and whether it is ever
+chased, is not yet declared — log every unfilled limit as its own row.
+
+**Candle times are START times on his chart.** A "09:46 2m candle" spans
+09:46–09:47 and closes at 09:48. Our census right-labels by close time.
+Off-by-one here silently mismatches every decision.
+
 **Hard constraints — a candidate failing any of these is passed with
 the reason logged, no judgment required:**
 1. Direction must match the standing thesis. (He declined a valid 10:12
@@ -97,7 +120,8 @@ the reason logged, no judgment required:**
 - proximity to weekly VAL/VAH, prior-day levels, or a NY-range fib
   (0.618 set up his 10:28 short)
 
-**Stop placement — do not use the trigger candle's extreme.** He is
+**Stop placement — do not reach for the trigger candle's extreme by
+default.** He is
 explicit that it stops him out on trades that work; on 2026-01-14 the
 candle stop would have killed both London entries. Place it beyond the
 structure the thesis rests on, with clearance. On an oversized
@@ -106,9 +130,25 @@ that wick area I'd be getting stopped out anyway, so I may as well save
 my stops."* Note: mechanically widening stops is EV-neutral in R — the
 gain comes from placing them where invalidation actually lives.
 
+The rule is **place it where the thesis dies, then add a couple of
+points of clearance** — which cuts both ways. On 2026-06-22 the London
+short went *wider* than the candle (out to the Thursday high, because the
+candle high sat too close to the weekly high to survive a retest), while
+the 10:15 NY short went **just above the signal candle's high**, because
+there the candle high *was* the invalidation: it is where price would
+have to reclaim both the 3m BB MA and VWAP +1. *"That's a double anchor
+right there."* Read the level, not the candle.
+
 **Targets** are pre-identified structure from the thesis, not fixed R
 multiples. His realised distribution sits at **1.5–2.5R**; beyond ~3R
 the raw population's fixed-target EV decays.
+
+**When two levels cluster, take the further one.** *"Price never touches
+a value area high and then just runs straight from it. It usually wicks
+around, and with VWAP right there, I'm inclined to believe it would
+touch VWAP."* On 2026-06-22 the weekly VAH and the VWAP mid sat 15pt
+apart and he targeted the VWAP — worth 3.80R on the runner instead of
+~3.4R.
 
 **Management:** partial at intermediate structure; move to break-even
 after TP1.
@@ -116,10 +156,26 @@ after TP1.
 Emit per candidate:
 ```
 { "decision": "take|pass", "reason": "...",
-  "entry": 0.0, "stop": 0.0, "stop_rationale": "...",
+  "entry_type": "limit_retest|market", "entry": 0.0,
+  "retest_level": "bb_ma_3m", "filled": true,
+  "stop": 0.0, "stop_rationale": "...",
   "targets": [0.0], "conviction": "A|B|C",
   "constraints_failed": [] }
 ```
+
+## THE AGENT STACK
+
+Three roles, not one. Separating them is what lets a disagreement be
+attributed rather than just observed.
+
+1. **Macro/events agent.** Recent events bearing on the NASDAQ and its
+   large constituents — earnings, policy, geopolitics. Feeds Phase 1
+   bias. **It informs; it does not hold a veto.** Declared constraint:
+   *"I don't want an agent that's gonna be too worried about things…
+   it's important that the agent is acting."* An events read that only
+   ever counsels caution is a failed component, not a safe one.
+2. **Thesis agent** — Phase 1 above.
+3. **Trigger agent** — Phase 2 above.
 
 ## PHASE 3 — LOGGING (non-negotiable)
 
