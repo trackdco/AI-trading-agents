@@ -1,38 +1,123 @@
 {
   "trader_label": "Thursday 25 June 2026",
   "session_day": "2026-06-24",
-  "status": "LONDON captured. New York not yet narrated.",
+  "status": "Complete - London and New York both narrated.",
+  "character": "One-way pump in London with nothing to trade, then an 897-point collapse in the first 30 minutes of the New York cash session. One break-even and one win.",
+
+  "macro_read": {
+    "prior_day": "'The previous day before market close it just pumped for the last hour - rallied up fucking 700 points in the last hour of New York.'",
+    "verified": "Correct. The prior cash session's final hour (16:00-17:00) ran +581pt net and +608.5pt low-to-close; from the 15:13 low to the close is +830.5pt, and the last three hours net exactly +706pt.",
+    "attribution": "'Obviously there's some sort of political incentive behind New York PM being that volatile and just pumping up.' Later, on the open: 'Peak peak fucking Trump market manipulation here.'"
+  },
 
   "decisions": [
     {
       "id": "LP0", "type": "pass", "window": "LONDON", "scope": "whole_window",
-      "narration": "I didn't take any trades in London. I was actually looking for a rebalance since it pushed all day. Once I realised it was just straight going up there was no good entries anyways - no closure through 2 levels at once. Closed through the BB MA multiple times but no other opportunities, since there wasn't much closure through anything else. Was just straight pumping.",
-      "reason": "Waiting on a rebalance that never came, in a one-way market that never produced his two-level minimum.",
+      "narration": "I didn't take any trades in London. I was actually looking for a rebalance since it pushed all day. Once I realised it was just straight going up there was no good entries anyways - no closure through 2 levels at once. Closed through the BB MA multiple times but no other opportunities. Was just straight pumping. It was trading along VWAP +2 - fucking mean to enter off there.",
       "verification": {
-        "was_it_one_way": "YES. Price held above BOTH the 15m and the 1h BB MA for 100% of the London window. The deepest approach to the 15m MA came within 1.09pt and never touched it, so the rebalance he was waiting for genuinely never arrived.",
-        "window_shape": {"open": 30106.50, "high": 30219.00, "low": 30105.75,
-                         "close": 30119.50, "net": 13.00},
+        "was_it_one_way": "YES. Price held above BOTH the 15m and 1h BB MA for 100% of the London window; the deepest approach to the 15m came within 1.09pt and never touched it.",
         "single_level_closures": 30,
-        "single_level_detail": "Almost all of them the candle's own BB MA or VWAP+2 alone - exactly his 'closed through the BB MA multiple times but no other opportunities'.",
         "two_level_closures_any_pair": 3,
         "two_level_closures_with_own_ma": 1,
-        "the_one": "03:03 3m UP, closed through its own MA and the developing VAH. It is a LONG, three minutes into the London open, in the direction he had already dismissed - he wanted a rebalance, i.e. a pullback. The other two (04:48 3m, 04:50 2m, both DOWN) closed through VWAP+1 and the VAH but NOT their own BB MA.",
-        "verdict": "His recollection is mechanically correct under his own grammar. No qualifying two-level closure in the direction he wanted."
+        "the_one": "03:03 3m UP through its own MA and the developing VAH - a long, three minutes into the open, in the direction he had already dismissed. The other two (04:48 3m, 04:50 2m, both DOWN) closed through VWAP+1 and VAH but NOT their own BB MA.",
+        "verdict": "Mechanically correct under his own grammar."
+      }
+    },
+
+    {
+      "id": "PRE1", "type": "take", "window": "NY_PRE", "direction": "short",
+      "ny_time": "09:03", "result": "BREAK-EVEN",
+      "trigger": {
+        "tf": 3, "candle_start_ny": "09:03", "candle_close_ny": "09:06",
+        "ohlc": [30198.00, 30201.75, 30165.00, 30171.50],
+        "closed_through": ["bb_ma_3m", "vwap_p1"],
+        "levels_verified": {"bb_ma_3m": 30176.96, "vwap_p1": 30172.23, "developing_poc": 30167.50},
+        "note": "He also named POC. The developing POC stepped to 30,167.50 on that very minute and the candle closed at 30,171.50 - just ABOVE it, so on our profile it did not close through. Nearest miss of the corpus; possibly his profile differs by a few points."
       },
-      "value": "A whole-window pass with a falsifiable mechanical claim attached, and it held. This is the cleanest negative control in the corpus so far."
+      "entry": {"type": "limit_on_retest", "price": 30172.5,
+                "level": "VWAP+1 (ours 30,172.23 - 30,172.45 across the next three minutes)",
+                "dictated_as": "'Manchu was at 30,172.5' - garbled, the price is unambiguous",
+                "filled": true, "fill_ny": "09:06"},
+      "stop": {"price": 30202.5, "risk_pts": 30.0,
+               "rationale": "Above the candle that displaced below - its high is 30,201.75, so 0.75pt of clearance.",
+               "trader_stated": "I had a 30-point stop"},
+      "targets": [{"label": "VWAP middle band", "price_ours": 30098.71, "planned_r": 2.45}],
+      "management": {
+        "action": "Moved to break-even before the cash open.",
+        "quote": "Moving to break even for market open - open volatility can cook you even if ur thesis is wrong.",
+        "outcome": "Break-even stop hit at 09:30 (first-30-min high 30,193.00)."
+      },
+      "what_happened_next": {
+        "target_hit_ny": "09:31",
+        "session_low": 29295.75,
+        "low_time_ny": "09:59",
+        "r_available_had_he_held": 29.2,
+        "trader_reaction": "Wow, it would've obliterated take profit on open, but that's straight gambling for me."
+      },
+      "value": "THE MOST INSTRUCTIVE ROW IN THE CORPUS. A disciplined de-risk immediately before a volatility event cost him a 2.45R planned trade that ran to 29R, and he does not flinch. The rule is the rule; the outcome is not the teacher."
+    },
+
+    {
+      "id": "N1", "type": "take", "window": "NY_AM", "direction": "long",
+      "ny_time": "10:18", "result": "WIN",
+      "context": "After an 897-point collapse in the first 30 minutes (high 30,193.00 at 09:30, low 29,295.75 at 09:59) price had traded down near VWAP-3. 'We're clearly bearish' - so this is a counter-trend rebalance long, not a reversal trade.",
+      "trigger": {
+        "tf": 2, "candle_start_ny": "10:18", "candle_close_ny": "10:20",
+        "ohlc": [29535.25, 29618.75, 29488.00, 29612.25],
+        "closed_through": ["vwap_m1", "bb_ma_2m"],
+        "levels_verified": {"vwap_m1": 29584.63, "bb_ma_2m": 29563.94}
+      },
+      "entry": {"type": "limit_on_retest", "price_approx": 29594.0,
+                "level": "VWAP-1 - 'that's obviously the closest structural level'",
+                "filled": true, "fill_ny": "10:23",
+                "trader_fill_label": "the 10:22 2-minute candle",
+                "note": "Exact fill not stated. VWAP-1 sat at 29,578-29,580; his '180 points' to a 29,774 exit implies ~29,594."},
+      "stop": {"price_inferred": 29522.0,
+               "basis": "He reports 'almost got stopped out by like two points'. The lowest low after the fill is 29,524.00 at 10:24, which puts the stop around 29,522. INFERRED, not stated - and it is NOT the displacement candle's low (29,488.00), which was never approached within 36pt."},
+      "targets": [{"label": "value area low", "price_taken": 29774.0,
+                   "hit": true, "hit_ny": "10:52",
+                   "trader_stated_pts": 180,
+                   "IMPORTANT": "This is the ANCHORED WEEKLY value area low, NOT the daily one. Daily VAL at 10:52 was 29,609.50 and had already been crossed by 10:26. Our anchored_weekly_profile gives awVAL 29,778 at 10:18 and 29,768 at 10:52 - his exit at ~29,774 sits between them."}],
+      "target_sizing_rule": "'It's not going for a big target or anything, because we're clearly bearish, more so just looking for a rebalance.' A counter-trend rebalance gets a modest target by design."
     }
+  ],
+
+  "declared_rules": [
+    {"id": "R14", "rule": "NO ENTRIES BEFORE HIGH-IMPACT NEWS.",
+     "quote": "Obviously we're not trading before high-impact news. That is stupid.",
+     "note": "A hard constraint, and the first concrete job for the macro/events agent (C3). It gates entries; it is not a general licence to sit out."},
+    {"id": "R15", "rule": "MOVE TO BREAK-EVEN BEFORE THE CASH OPEN when carrying a pre-market position.",
+     "quote": "Moving to break even for market open - open volatility can cook you even if ur thesis is wrong.",
+     "evidence": "Applied on this day at a cost of ~29R of foregone move, and endorsed after the fact: 'that's straight gambling for me.'"},
+    {"id": "R16", "rule": "Target size scales to whether the trade is with or against the prevailing move. A counter-trend rebalance gets a modest target.",
+     "quote": "It's not going for a big target or anything, because we're clearly bearish, more so just looking for a rebalance."}
   ],
 
   "structural_finding": {
     "id": "R13",
-    "rule": "THE CANDLE'S OWN BB MA IS A MANDATORY LEG OF THE PAIR, not one option among many.",
-    "evidence": "All 9 takes across the first three narrated days close through the candle's own BB MA (2m or 3m as applicable). The second leg varies freely - VWAP band, developing POC, VAH or VAL - but the own MA is always present.",
-    "discriminating_power": "On 2026-06-24 London it is the difference between 3 qualifying candles and 1. Without it, two shorts at 04:48/04:50 look like missed entries; with it, they are correctly excluded and his account is exact.",
-    "caveat": "9 takes is a small sample and the rule is inferred from them, not stated by him. It should be put to him directly rather than assumed.",
-    "implemented": "scripts/two_level_check.py, required by default, --any-pair to relax."
+    "rule": "THE CANDLE'S OWN BB MA IS A MANDATORY LEG OF THE PAIR.",
+    "evidence": "Now 11 of 11 takes across four narrated days close through the candle's own BB MA. The second leg varies freely - VWAP band, developing POC, VAH, VAL - the own MA never does.",
+    "discriminating_power": "On 2026-06-24 London it is the difference between 3 qualifying candles and 1, and it is what makes his 'no closure through 2 levels' account exact.",
+    "caveat": "Still INFERRED from behaviour, not stated by him. Needs putting to him directly.",
+    "implemented": "scripts/two_level_check.py, default on, --any-pair to relax."
   },
 
-  "day_context_for_later": {
-    "ny_am_move": "NY_AM on this session-day is a -504pt collapse (high 30,193.00 at the open, low 29,295.75). Recorded here only as context; it is NOT analysed and NOT scored until he narrates it."
+  "calibration_status": {
+    "anchored_weekly_profile_CONFIRMED": {
+      "observation": "His AM target, described as 'the value area low', was taken at ~29,774. Our anchored_weekly_profile gives awVAL 29,778 (10:18) and 29,768 (10:52).",
+      "significance": "Second independent confirmation of the weekly profile, and the first on the VAL edge. Combined with the anchor rule he gave on 2026-06-23, the construct now looks right. The earlier +43pt VAH residual may partly reflect that he places take-profit a few points INSIDE the level rather than at it - not established, but it is the obvious candidate.",
+      "operational": "Where he says 'value area', check BOTH the developing daily profile and the anchored weekly one. On this day the daily VAL would have exited at ~30-45pt instead of 180."
+    },
+    "matched_this_day": {
+      "vwap_p1": "30,172.23-30,172.45 ours vs his 30,172.5 limit",
+      "displacement_candle_high": "30,201.75 ours vs his 30,202.5 stop",
+      "bb_ma_2m and vwap_m1": "both confirmed at the 10:18 trigger",
+      "anchored_weekly_VAL": "29,768-29,778 ours vs his ~29,774 exit"
+    }
+  },
+
+  "trader_closing_note": {
+    "quote": "Some days the price action is not good. You're not taking as many trades when you know how to trade. Every day is a winning day. Just build a bot that wins every day.",
+    "reading": "The first two sentences are the operative content and they match the evidence: the London pass and the pre-market break-even are both correct process. The last sentence is a joke and is not treated as a specification."
   }
 }

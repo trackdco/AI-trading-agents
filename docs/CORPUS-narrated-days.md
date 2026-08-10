@@ -12,7 +12,7 @@ This file is the human-readable roll-up.
 | 2026-06-21 | Monday 22 June 2026 | 3 | 2 | 0 | reconciled |
 | 2026-06-22 | Tuesday 23 June 2026 | 3 | 1 | 1 | reconciled; profile anchor now known |
 | 2026-06-23 | Wednesday 24 June 2026 | 3 | 3 | 1 | reconciled; limit-lifetime rule answered |
-| 2026-06-24 | Thursday 25 June 2026 | 0 | 1 (whole window) | 0 | **London only — NY pending** |
+| 2026-06-24 | Thursday 25 June 2026 | 2 | 1 (whole window) | 0 | reconciled; weekly profile confirmed |
 
 ---
 
@@ -529,7 +529,7 @@ lows. The only outstanding item remains the **anchored weekly** profile's
 
 ---
 
-## 2026-06-24 — "Thursday 25 June" *(London only; New York pending)*
+## 2026-06-24 — "Thursday 25 June"
 
 > *"I didn't take any trades in London. I was actually looking for a
 > rebalance since it pushed all day. Once I realised it was just straight
@@ -583,3 +583,93 @@ his account is exact.
 directly rather than assumed. If it is right it is a hard constraint the
 agent can lean on; if it is an artefact of three days, leaning on it would
 quietly discard valid setups.
+
+### The New York side — an 897-point collapse
+
+**Macro frame, and it checks out.** *"The previous day before market close it
+just pumped for the last hour — rallied up fucking 700 points."* The prior
+cash session's final hour ran **+581pt net, +608.5pt low-to-close**; from the
+15:13 low to the close is **+830.5pt**, and the last three hours net exactly
+**+706pt**. His number is right.
+
+### PRE1 — NY_PRE short, 09:03 · **BREAK-EVEN**, and the most instructive row in the corpus
+
+3m candle 09:03–09:05: **O 30,198.00 → C 30,171.50**, through its own 3m BB
+MA (30,176.96) and VWAP+1 (30,172.23).
+
+- **Limit 30,172.5 at VWAP+1** — ours reads 30,172.23–30,172.45 across the
+  next three minutes. Filled 09:06.
+- **Stop 30,202.5**, above the displacement candle's high of 30,201.75 —
+  0.75pt of clearance. His *"30-point stop"*, exactly.
+- **Target the VWAP middle band** (30,098.71) → a planned **2.45R**.
+- **Moved to break-even for the cash open:** *"open volatility can cook you
+  even if ur thesis is wrong."*
+
+**Break-even hit at 09:30** (first-30-min high 30,193.00). Then the market
+fell to **29,295.75** by 09:59. His target was hit at **09:31**.
+
+**Had he held: 29.2R was available.**
+
+> *"Wow, it would've obliterated take profit on open — but that's straight
+> gambling for me."*
+
+A disciplined de-risk immediately before a volatility event cost a 2.45R
+planned trade that ran to twenty-nine, and he does not flinch. **The rule is
+the rule; the outcome is not the teacher.** Any scoring that penalises this
+decision is scoring the wrong thing.
+
+### N1 — NY_AM long, 10:18 · **WIN**, ~180pt
+
+After the collapse, price traded down near VWAP−3. *"We're clearly bearish"* —
+so this is a **counter-trend rebalance**, not a reversal, and it is sized
+accordingly: *"it's not going for a big target or anything."*
+
+2m candle 10:18–10:19: **O 29,535.25 → C 29,612.25**, through VWAP−1
+(29,584.63) and the 2m BB MA (29,563.94).
+
+- **Limit at VWAP−1** — *"that's obviously the closest structural level."*
+  Filled on his 10:22 candle (our 10:23).
+- **Near-stop by two points**: the lowest low after the fill is **29,524.00**
+  at 10:24, putting his stop around 29,522. Worth noting this is **not** the
+  displacement candle's low (29,488.00), which was never approached within
+  36pt — so the stop is inferred, not stated.
+- **Target "the value area low" — taken at ~29,774 at 10:52.**
+
+### That target confirmed the weekly profile
+
+The **daily** VAL at 10:52 was 29,609.50, and price had already crossed it at
+10:26 — exiting there would have been 30–45 points, not 180. The level he
+actually used was the **anchored weekly** VAL:
+
+| | ours | his |
+|---|---|---|
+| awVAL at 10:18 | **29,778** | — |
+| awVAL at 10:52 | **29,768** | exit ~**29,774** |
+
+**Second independent confirmation of the weekly profile, and the first on the
+VAL edge.** Combined with the anchor rule he gave on day 2, the construct now
+looks right. It also suggests the earlier **+43pt VAH residual** may be partly
+his habit of placing take-profit a few points *inside* a level rather than at
+it — a candidate explanation, not an established one.
+
+**Operationally:** when he says "value area", check **both** the developing
+daily profile and the anchored weekly one. They were 165 points apart here.
+
+### Three more rules
+
+- **R14 — no entries before high-impact news.** *"Obviously we're not trading
+  before high-impact news. That is stupid."* A hard constraint, and the first
+  concrete job for the macro/events agent.
+- **R15 — move to break-even before the cash open** when carrying a pre-market
+  position. Applied here at a cost of ~29R and endorsed afterwards.
+- **R16 — target size scales to direction.** A counter-trend rebalance gets a
+  modest target by design.
+
+**R13 update:** now **11 of 11 takes** close through the candle's own BB MA.
+Still inferred rather than stated, and still needs putting to him.
+
+> *"Some days the price action is not good. You're not taking as many trades
+> when you know how to trade."*
+
+Which is what the day shows: a whole-window London pass and a pre-market
+break-even, both correct process, on a session that offered one clean trade.
