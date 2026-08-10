@@ -15,7 +15,7 @@ individual claim: `data/narrated_days/*.json`.
 
 | day | character | takes | result |
 |---|---|---|---|
-| Mon 22 | topping the weekly range | 3 | +1.0R, +3.8R, and a small London win |
+| Mon 22 | topping the weekly range | 3 | +1.0R, +3.8R, London R unrecoverable |
 | Tue 23 | 400pt gap fill, one-way down | 3 | +2.94R, +3.69R, +3.13R |
 | Wed 24 | chop, range unbroken all day | 3 | −0.46R, −1.0R, +3.58R |
 | Thu 25 | London one-way pump, then an 897pt collapse | 2 | break-even, +180pt |

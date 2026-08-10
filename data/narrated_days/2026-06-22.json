@@ -7,7 +7,6 @@
     "macro": "April-May was a bullish pump on the ceasefire plus strong earnings (NVDA named). Coming into late June he is trend-following, not fading.",
     "trader_words": "It was just a given that we were gonna keep going up. Being conscious of what's happening in the big businesses around the NASDAQ is really important."
   },
-
   "pre_session": {
     "asia": "Opened up, sold off, has been trending up since.",
     "structure": "Already swept the previous day's high. Thursday 18 June stalled at this level and it has not been broken coming into the London open.",
@@ -20,7 +19,6 @@
       "price_at_london_open": 30765.0
     }
   },
-
   "decisions": [
     {
       "id": "L1",
@@ -33,27 +31,56 @@
         "tf": 3,
         "candle_start_ny": "03:39",
         "candle_close_ny": "03:42",
-        "ohlc": [30772.0, 30772.0, 30752.5, 30752.5],
-        "closed_through": ["bb_ma_3m", "vwap_p2", "bb_ma_2m"],
-        "levels_verified": {"bb_ma_3m": 30756.58, "vwap_p2": 30765.03, "bb_ma_2m": 30768.01}
+        "ohlc": [
+          30772.0,
+          30772.0,
+          30752.5,
+          30752.5
+        ],
+        "closed_through": [
+          "bb_ma_3m",
+          "vwap_p2",
+          "bb_ma_2m"
+        ],
+        "levels_verified": {
+          "bb_ma_3m": 30756.58,
+          "vwap_p2": 30765.03,
+          "bb_ma_2m": 30768.01
+        }
       },
-      "entry": {"type": "market", "price": 30753.0, "bar_open_ours": 30754.0},
+      "entry": {
+        "type": "market",
+        "price": 30753.0,
+        "bar_open_ours": 30754.0
+      },
       "stop": {
         "price_assumed": 30783.25,
         "rationale": "Placed at the Thursday-18-June high, NOT the trigger candle high, because the candle high sits very close to the weekly high and could be retested. 'I'm holding a bit of a big stop here.'",
         "risk_pts_assumed": 30.25,
-        "OPEN_QUESTION": "He said 'stops at 30' and the sentence cut off. 30,783 (= Thu 18 high) fits both his rationale and his 'bit of a big stop' remark, but it is inferred, not stated."
+        "RESOLVED_2026-08-10": "Asked directly; he does not recall. The stop is UNRECOVERABLE, not merely unknown, so this trade is EXCLUDED from R aggregates rather than estimated. Entry 30,753, TP1 30,713 and the runner missing VWAP+1 by ~9pt all stand."
       },
       "targets": [
-        {"label": "weekly value area high", "price": 30713.0, "size_pct": 75, "hit": true,
-         "hit_candle_start_ny": "04:09", "candle_low_ours": 30698.0},
-        {"label": "VWAP +1", "price_ours_at_0411": 30678.33, "size_pct": 25, "hit": false,
-         "note": "London low after entry 30687.25 - missed by ~9pt. Remainder stopped at break-even."}
+        {
+          "label": "weekly value area high",
+          "price": 30713.0,
+          "size_pct": 75,
+          "hit": true,
+          "hit_candle_start_ny": "04:09",
+          "candle_low_ours": 30698.0
+        },
+        {
+          "label": "VWAP +1",
+          "price_ours_at_0411": 30678.33,
+          "size_pct": 25,
+          "hit": false,
+          "note": "London low after entry 30687.25 - missed by ~9pt. Remainder stopped at break-even."
+        }
       ],
-      "outcome": {"tp1_r_assumed": 1.33, "net_r_assumed": 1.0,
-                  "note": "R depends on the unconfirmed stop."}
+      "outcome": {
+        "r": null,
+        "note": "R unrecoverable - stop never stated. Excluded from aggregates."
+      }
     },
-
     {
       "id": "P1",
       "type": "pass",
@@ -62,7 +89,6 @@
       "reason": "Nothing pieced together. Disliked the 07:00 NY rally that dumped straight back after a big 15m wick through the 15m Bollinger band. Still stalling at the top of the range.",
       "note": "Whole-window pass, not a specific candidate."
     },
-
     {
       "id": "P2",
       "type": "pass",
@@ -73,16 +99,26 @@
         "tf": 3,
         "candle_start_ny": "09:42",
         "candle_close_ny": "09:45",
-        "ohlc": [30842.75, 30847.75, 30763.0, 30790.0],
-        "closed_through": ["bb_ma_3m", "vwap_p1"],
-        "levels_verified": {"bb_ma_3m": 30837.15, "vwap_p1": 30832.75},
+        "ohlc": [
+          30842.75,
+          30847.75,
+          30763.0,
+          30790.0
+        ],
+        "closed_through": [
+          "bb_ma_3m",
+          "vwap_p1"
+        ],
+        "levels_verified": {
+          "bb_ma_3m": 30837.15,
+          "vwap_p1": 30832.75
+        },
         "valid": true
       },
       "reason": "Developing daily value area high sitting right there, and price has stalled around the value area highs all day - it wicked around them at market open before pumping back up. Also the 07:45 15m was a good rejection candle, so it could keep going up. 'I'd be okay with taking shorts with some extra confirmation here.'",
       "classification": "Valid trigger, correct direction for the standing bias, PASSED for want of extra confirmation at a level he rated as strong.",
       "value": "This is the boundary row - a mechanically valid short in his own bias, declined."
     },
-
     {
       "id": "N1",
       "type": "take",
@@ -93,24 +129,50 @@
         "tf": 2,
         "candle_start_ny": "09:46",
         "candle_close_ny": "09:48",
-        "ohlc": [30822.5, 30873.75, 30808.75, 30873.75],
-        "closed_through": ["bb_ma_2m", "vwap_p1"],
-        "levels_verified": {"bb_ma_2m": 30846.58, "vwap_p1": 30836.20},
+        "ohlc": [
+          30822.5,
+          30873.75,
+          30808.75,
+          30873.75
+        ],
+        "closed_through": [
+          "bb_ma_2m",
+          "vwap_p1"
+        ],
+        "levels_verified": {
+          "bb_ma_2m": 30846.58,
+          "vwap_p1": 30836.2
+        },
         "setup": "Rejection off the developing daily value area high, then closure back through VWAP+1 and the 2m BB MA."
       },
-      "entry": {"type": "market", "price": 30873.0, "note": "= the trigger candle's close"},
-      "stop": {"price": 30818.0, "risk_pts": 55.0,
-               "rationale": "Bottom of the candle BODY, not the wick - 'I don't like how big the stop is.' Body bottom 30822.50, so ~4.5pt of clearance beyond it."},
-      "targets": [{"label": "1:1 / the 09:40 high", "price": 30928.0,
-                   "level_ours": 30926.75, "hit": true, "hit_ny": "09:58"}],
-      "outcome": {"r": 1.0},
+      "entry": {
+        "type": "market",
+        "price": 30873.0,
+        "note": "= the trigger candle's close"
+      },
+      "stop": {
+        "price": 30818.0,
+        "risk_pts": 55.0,
+        "rationale": "Bottom of the candle BODY, not the wick - 'I don't like how big the stop is.' Body bottom 30822.50, so ~4.5pt of clearance beyond it."
+      },
+      "targets": [
+        {
+          "label": "1:1 / the 09:40 high",
+          "price": 30928.0,
+          "level_ours": 30926.75,
+          "hit": true,
+          "hit_ny": "09:58"
+        }
+      ],
+      "outcome": {
+        "r": 1.0
+      },
       "his_own_critique": {
         "text": "It would have been better if I entered on the retest. Since we're actually making agents do this shit, we should start entering on the retest, because that's more so how I actually fucking trade.",
         "counterfactual_retest_limit": 30851.0,
         "verified": "30851 would have filled ~09:54 (lows 30843.75 / 30842.50). Same 30818 stop = 33pt risk; same 30928 target = 77pt. That is 2.33R against the 1.0R he actually took. His 'easy 2:1' is arithmetically correct."
       }
     },
-
     {
       "id": "N2",
       "type": "take",
@@ -122,9 +184,20 @@
         "tf": 3,
         "candle_start_ny": "10:15",
         "candle_close_ny": "10:18",
-        "ohlc": [30909.75, 30911.75, 30848.0, 30855.25],
-        "closed_through": ["bb_ma_3m", "vwap_p1"],
-        "levels_verified": {"bb_ma_3m": 30878.96, "vwap_p1": 30887.06},
+        "ohlc": [
+          30909.75,
+          30911.75,
+          30848.0,
+          30855.25
+        ],
+        "closed_through": [
+          "bb_ma_3m",
+          "vwap_p1"
+        ],
+        "levels_verified": {
+          "bb_ma_3m": 30878.96,
+          "vwap_p1": 30887.06
+        },
         "trader_words": "For my trade to invalidate, it has to break through this 3-minute Bollinger Band and VWAP +1, and that's a double anchor right there."
       },
       "entry": {
@@ -132,28 +205,46 @@
         "price": 30878.0,
         "level": "the 3m BB MA (ours 30878.96)",
         "placement_habit": "I usually like to give it a couple points from where it actually is.",
-        "filled": true, "fill_ny": "10:18", "bar_high_ours": 30888.0
+        "filled": true,
+        "fill_ny": "10:18",
+        "bar_high_ours": 30888.0
       },
-      "stop": {"price": 30913.5, "risk_pts": 35.5,
-               "rationale": "Just above the displacement candle high (30911.75) - the level that invalidates the double anchor."},
+      "stop": {
+        "price": 30913.5,
+        "risk_pts": 35.5,
+        "rationale": "Just above the displacement candle high (30911.75) - the level that invalidates the double anchor."
+      },
       "thesis": "Stalling heavily around all-time highs; expecting a sell-off, or at minimum a rebalance to the 15m BB MA.",
       "targets": [
-        {"label": "15m BB MA", "price": 30783.0, "level_ours": 30786.94,
-         "size_pct": 75, "hit": true, "hit_ny": "10:27", "r": 2.68},
-        {"label": "VWAP middle band", "price": 30743.0, "level_ours": 30736.74,
-         "size_pct": 25, "hit": true, "hit_ny": "10:30", "r": 3.80}
+        {
+          "label": "15m BB MA",
+          "price": 30783.0,
+          "level_ours": 30786.94,
+          "size_pct": 75,
+          "hit": true,
+          "hit_ny": "10:27",
+          "r": 2.68
+        },
+        {
+          "label": "VWAP middle band",
+          "price": 30743.0,
+          "level_ours": 30736.74,
+          "size_pct": 25,
+          "hit": true,
+          "hit_ny": "10:30",
+          "r": 3.8
+        }
       ],
       "target_selection_reasoning": "Weekly value area high was ~30759 and the VWAP mid was ~30743 - only 15 points apart. 'Price never touches a value area high and then just runs straight from it. It usually wicks around, and with VWAP right there, I'm inclined to believe it would touch VWAP.' So he took the further of two clustered levels.",
       "outcome": {
         "trader_stated_rr": 3.6,
         "our_blended_r": 2.96,
-        "our_max_r": 3.80,
+        "our_max_r": 3.8,
         "OPEN_QUESTION": "0.75 x 2.68R + 0.25 x 3.80R = 2.96R blended; the runner leg alone is 3.80R. Which convention gives 3.6?"
       },
       "aftermath": "Price ran to 30540 by 12:00 NY - the untruncated move was far larger. Recorded as fact, not as criticism of the exit."
     }
   ],
-
   "declared_changes": [
     {
       "id": "C1",
@@ -178,7 +269,6 @@
       "quote": "I don't want an agent that's gonna be too worried about things... I think it's important that the agent is acting."
     }
   ],
-
   "calibration_status": {
     "matched": {
       "bb_ma_3m": "30878.96 ours vs his 30878 limit",
