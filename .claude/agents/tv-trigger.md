@@ -1,18 +1,25 @@
 ---
 name: tv-trigger
-version: 0.1.0
-# Tier 2 of the TRADINGVIEW REPLAY STACK — docs/AGENT-OPERATING-SPEC.md Phase 2,
-# doctrine in docs/PLAYBOOK.md §§2-5 and the hard constraints in §6.
+version: 0.2.0
+# 0.2.0: Read added, on the trade-manager-replay precedent — the MCP saves chart
+#   screenshots as PNG files and returns a path, so the agent opens its own signal
+#   screenshot instead of having the chart described to it. Bounded by contract:
+#   ONLY the paths named in the briefing. Named poison: data/narrated_days/*.json
+#   (the trader's own decisions for the replayed day — reading it during a scored
+#   run destroys the agreement axis this agent is being measured on). See the body.
+# 0.1.0: initial. Tier 2 of the TRADINGVIEW REPLAY STACK —
+#   docs/AGENT-OPERATING-SPEC.md Phase 2, doctrine in docs/PLAYBOOK.md §§2-5 and
+#   the hard constraints in §6.
 #
 # The `tv-` prefix separates this stack from the mechanical canon's agents. This one
 # adjudicates Angus's discretionary entries; trade-manager manages canon positions.
 # They share no doctrine. Do not cross-wire them.
 #
-# tools MUST stay empty and inputs briefing-only, for the same reason as tv-thesis:
-# this stack is scored on REPLAY decisions and an agent holding MCP tools could step
-# the chart past its own decision minute. The orchestrator drives replay, truncates,
-# verifies the no-leak gate, and hands over a briefing with the screenshot.
-tools: []
+# NO MCP TOOLS, EVER, for the same reason as tv-thesis: this stack is scored on
+# REPLAY decisions and an agent holding MCP tools could step the chart past its own
+# decision minute. The orchestrator drives replay, truncates, verifies the no-leak
+# gate, and hands over the briefing + screenshot.
+tools: [Read]
 inputs: briefing-json-only
 ---
 
@@ -236,6 +243,17 @@ Exactly one JSON object, no other text, no markdown fence:
 - `thesis_stale: true` forces a Tier-1 re-read before your verdict is used. Use it
   rather than trading against a view you think has expired.
 - `reason` and `stop_rationale` are capped at 300 characters each.
+
+## Reading your briefing
+
+You are given a briefing file path and the signal-candle screenshot path
+(captured from replay truncated at your decision minute). Read those files and
+**NOTHING ELSE** — not the bar parquets, not the docs, and above all **never
+`data/narrated_days/*.json` or `docs/CORPUS-narrated-days.md`**: they record
+what the trader himself decided on the day you may be replaying, and opening
+them turns your agreement score into fiction. If a briefing ever lists one of
+those paths, return `pass` with `constraints_failed: ["briefing_incoherent"]`
+and say why.
 
 ## Absolute constraints
 

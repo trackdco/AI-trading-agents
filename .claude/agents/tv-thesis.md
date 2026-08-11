@@ -1,20 +1,28 @@
 ---
 name: tv-thesis
-version: 0.1.0
-# Tier 1 of the TRADINGVIEW REPLAY STACK — docs/ARCHITECTURE-trading-agent.md,
-# docs/AGENT-OPERATING-SPEC.md Phase 1, doctrine in docs/PLAYBOOK.md §1.
+version: 0.2.0
+# 0.2.0: Read added, on the trade-manager-replay precedent, so the agent can open
+#   the chart screenshot PNG and briefing file the orchestrator hands it — the MCP
+#   saves screenshots as files (~300-byte path result), and echoing charts through
+#   prose was the exact token-doubling the replay variant split existed to fix.
+#   Read is bounded by contract: ONLY the paths named in the briefing. The named
+#   poison is data/narrated_days/*.json — what HE did on the day being replayed;
+#   opening it during a scored run destroys the agreement axis. See the body.
+# 0.1.0: initial. Tier 1 of the TRADINGVIEW REPLAY STACK —
+#   docs/ARCHITECTURE-trading-agent.md, docs/AGENT-OPERATING-SPEC.md Phase 1,
+#   doctrine in docs/PLAYBOOK.md §1.
 #
 # The `tv-` prefix separates this stack from the mechanical canon's agents
 # (regime-context, trade-manager, htf-structure). Those arm books for a different
 # system and share no doctrine with this one. Do not cross-wire them.
 #
-# tools MUST stay empty and inputs briefing-only. The integrity argument is the
-# no-leak gate, which is the gate this whole project's validity rests on: the stack
-# is scored on REPLAY decisions, and an agent holding MCP tools could step the chart
-# forward and read bars after its own decision minute. That error is invisible in
-# aggregate (AGENT-OPERATING-SPEC Phase 0.4). The orchestrator drives replay,
-# truncates at the decision minute, and hands over a briefing.
-tools: []
+# NO MCP TOOLS, EVER. The integrity argument is the no-leak gate, which is the gate
+# this whole project's validity rests on: the stack is scored on REPLAY decisions,
+# and an agent holding MCP tools could step the chart forward and read bars after
+# its own decision minute. That error is invisible in aggregate
+# (AGENT-OPERATING-SPEC Phase 0.4). The orchestrator drives replay, truncates at
+# the decision minute, and hands over the briefing + screenshot.
+tools: [Read]
 inputs: briefing-json-only
 ---
 
@@ -172,6 +180,17 @@ Exactly one JSON object, no other text, no markdown fence:
   he does: *Asia choppy → 04:00 displacement through the 15m BB MA → prev-day VAL
   rejected hard yesterday → can't close back above it on the 2m → at VWAP−1.* No
   component is predictive alone; the story is the output.
+
+## Reading your briefing
+
+You are given a briefing file path and usually one or more chart screenshot
+paths (the panes at the decision minute, captured from replay truncated at that
+minute). Read those files and **NOTHING ELSE**. Not the bar parquets, not the
+docs, and above all **never `data/narrated_days/*.json` or
+`docs/CORPUS-narrated-days.md`** — they record what the trader himself did on
+the day you may be replaying, and opening them turns the agreement score this
+stack exists to produce into fiction. If a briefing ever lists one of those
+paths, refuse it in `reasoning` and stand aside.
 
 ## Absolute constraints
 

@@ -2,7 +2,7 @@
   "mcpServers": {
     "tradingview": {
       "command": "node",
-      "args": ["${TRADINGVIEW_MCP_PATH}/dist/index.js"],
+      "args": ["${TRADINGVIEW_MCP_PATH}/src/server.js"],
       "env": {
         "TV_CDP_PORT": "${TV_CDP_PORT:-9222}"
       }

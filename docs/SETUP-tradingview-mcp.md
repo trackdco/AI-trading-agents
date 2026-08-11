@@ -6,56 +6,64 @@ running TradingView Desktop over Chrome DevTools Protocol. The cloud
 session that built this repo cannot reach your machine; it prepares the
 substrate, prompts and scoring, and the local session does the driving.
 
-## 1. Launch TradingView with remote debugging
+> **DISAMBIGUATION — two unrelated projects share this name.** The
+> desktop driver is **`tradesdontlie/tradingview-mcp`** (Node, 84 tools,
+> CDP port 9222, replay/Pine/screenshots — its `CLAUDE.md` is vendored at
+> `docs/TOOLS-tradingview-mcp.md`). **`atilaahmettaner/tradingview-mcp`**
+> is a different, headless market-data/screener server (Python) that
+> never touches TradingView Desktop and has **no replay** — its own README
+> says to use tradesdontlie's for driving a chart. This confusion has
+> already happened once (2026-08-11); the replay agent needs tradesdontlie's.
 
-TradingView Desktop must be started with the CDP port open.
+Facts below verified against the repo source on 2026-08-11
+(`src/core/replay.js`, `src/connection.js`, `SETUP_GUIDE.md`).
 
-**macOS**
+## 1. Install the MCP server
+
 ```bash
-open -a "TradingView" --args --remote-debugging-port=9222
+git clone https://github.com/tradesdontlie/tradingview-mcp ~/tradingview-mcp
+cd ~/tradingview-mcp
+npm install
+```
+Node 18+ required. **There is no build step** — the server runs straight
+from `src/server.js`. Follow the repo's own `SETUP_GUIDE.md` where it
+differs from this — it is the authority, this file is a convenience.
+
+## 2. Register it with Claude Code
+
+Easiest is the CLI, run from anywhere:
+```bash
+claude mcp add tradingview -- node ~/tradingview-mcp/src/server.js
 ```
 
-**Windows** (adjust the path if yours differs)
-```powershell
-& "$env:LOCALAPPDATA\Programs\TradingView\TradingView.exe" --remote-debugging-port=9222
+Or use this repo's committed `.mcp.json`, which expands env vars so no
+repo edit is needed:
+```bash
+export TRADINGVIEW_MCP_PATH=~/tradingview-mcp   # in your shell profile
+```
+The server honors `TV_CDP_PORT` (default 9222) and `TV_CDP_HOST`
+(default `127.0.0.1` — it deliberately avoids `localhost`, which
+resolves to `::1` while Electron's debug port listens on IPv4 only).
+
+Restart Claude Code, then confirm the tools are visible (`/mcp`).
+
+## 3. Launch TradingView with remote debugging
+
+**Preferred: let the MCP do it.** Once connected, the `tv_launch` tool
+auto-detects and launches TradingView with the CDP flag on Mac, Windows
+and Linux, and `tv_health_check` verifies the wiring end to end
+(expect `cdp_connected: true, api_available: true`).
+
+**Manual, macOS** (the repo's own form — flags after the binary, not
+via `open --args`, which silently drops them if the app is running):
+```bash
+/Applications/TradingView.app/Contents/MacOS/TradingView --remote-debugging-port=9222
 ```
 
 Verify it is listening — this should return JSON, not an error:
 ```bash
 curl -s http://127.0.0.1:9222/json/version
 ```
-
-## 2. Install the MCP server
-
-```bash
-git clone https://github.com/tradesdontlie/tradingview-mcp
-cd tradingview-mcp
-npm install
-npm run build          # if the repo defines a build step
-```
-Node 18+ required. Follow the repo's own README where it differs from
-this — it is the authority, this file is a convenience.
-
-## 3. Register it with Claude Code
-
-Easiest is the CLI, run from anywhere:
-```bash
-claude mcp add tradingview -- node /ABSOLUTE/PATH/TO/tradingview-mcp/dist/index.js
-```
-
-Or add it by hand to your Claude Code MCP config:
-```json
-{
-  "mcpServers": {
-    "tradingview": {
-      "command": "node",
-      "args": ["/ABSOLUTE/PATH/TO/tradingview-mcp/dist/index.js"],
-      "env": { "TV_CDP_PORT": "9222" }
-    }
-  }
-}
-```
-Restart Claude Code, then confirm the tools are visible (`/mcp`).
 
 ## 4. Clone this repo locally
 

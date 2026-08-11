@@ -15,12 +15,15 @@ driving. Everything below is committed on
 
 | | status |
 |---|---|
-| Three agent definitions | **done** — `.claude/agents/tv-*.md` |
-| `.mcp.json` scaffold | **done** — needs one env var set locally |
+| Three agent definitions | **done** — `.claude/agents/tv-*.md` (0.2.0: thesis/trigger carry `Read` for screenshots) |
+| `.mcp.json` scaffold | **done** — `src/server.js` entry (the server has **no build step**), one env var locally |
 | Phase 0 gate 3 (indicator parity) | **done and validated** — `scripts/phase0_parity.py` |
+| Replay procedure | **done** — `docs/RUNBOOK-replay-scoring.md`, grounded in the MCP source |
+| Agreement scorer v0 | **done** — `scripts/score_replay_run.py` |
+| MCP tool reference | **done** — `docs/TOOLS-tradingview-mcp.md` (vendored) |
 | MCP installed and connected | **NOT DONE — cannot be done from the cloud** |
 | Phase 0 gates 1, 2, 4 | **NOT DONE** — all four need the live chart |
-| Replay run, logging, scoring | **NOT DONE** — downstream of the MCP |
+| Replay run itself | **NOT DONE** — downstream of the MCP |
 
 **Why the MCP is not connected.** The server talks to TradingView Desktop over
 Chrome DevTools Protocol on `127.0.0.1:9222`. That loopback address is the
@@ -43,7 +46,7 @@ different system and share no doctrine. Do not cross-wire them.
 | `tv-thesis` | Tier 1 — the directional read | each window open + material structural events |
 | `tv-trigger` | Tier 2 — take full / take light / pass | at each surviving candidate |
 
-### All three are `tools: []` and briefing-fed. This is deliberate.
+### None of the three holds MCP tools. This is deliberate.
 
 The stack is scored on **replay** decisions, and the no-leak gate is the thing
 this project's validity rests on (`AGENT-OPERATING-SPEC.md` Phase 0.4: *"A
@@ -60,6 +63,15 @@ replay, verifies no-leak, builds the briefing, and calls the agents. The agents
 see only what they are handed. This matches the existing house pattern —
 blueprint §6.1, and the integrity argument written into
 `.claude/agents/trade-manager-replay.md`.
+
+**As of 0.2.0, `tv-thesis` and `tv-trigger` carry `Read`** — on the
+trade-manager-replay precedent — because the MCP saves chart screenshots as PNG
+files and returns a ~300-byte path, so the agent opens its own screenshot
+instead of having the chart described to it. The contract bounds it: **only the
+paths named in the briefing**, and never `data/narrated_days/*.json` or
+`docs/CORPUS-narrated-days.md`, which record what *he* did on the replayed day
+— reading them during a scored run destroys the agreement axis.
+`tv-macro-events` stays `tools: []`; it reads no chart and needs no files.
 
 **Consequence for `tv-macro-events`:** its contract is identical in replay and
 live; only the briefing builder differs. In replay, build `scheduled_events`
@@ -107,7 +119,8 @@ macro                the tv-macro-events output
 **`tv-trigger`** additionally:
 
 ```
-screenshot           chart truncated at decision_minute
+screenshot           PATH to the PNG (replay truncated at decision_minute);
+                     the agent Reads it itself
 thesis               the standing tv-thesis output
 candle_start         START time -- his chart labels candles by start
 timeframe            2 | 3
@@ -166,23 +179,28 @@ the label.
 
 ## 4. WHAT THE LOCAL SESSION DOES, IN ORDER
 
-1. **Launch TradingView with CDP open** and install the MCP —
-   `docs/SETUP-tradingview-mcp.md` §§1–3.
-2. **Point `.mcp.json` at it.** The committed scaffold expands env vars, so no
-   edit to the repo is needed:
+**The step-by-step replay procedure is `docs/RUNBOOK-replay-scoring.md`** —
+grounded in the MCP's actual source, including the market-only `replay_trade`
+constraint (limit lifecycle is orchestrator-simulated), the timezone trap in
+`replay_start`, and the mechanical no-leak check. In outline:
+
+1. **Install the MCP and launch TradingView** — `docs/SETUP-tradingview-mcp.md`
+   (no build step; `tv_launch` + `tv_health_check` do the wiring).
+2. **Point `.mcp.json` at it:**
    ```bash
-   export TRADINGVIEW_MCP_PATH=/absolute/path/to/tradingview-mcp
+   export TRADINGVIEW_MCP_PATH=~/tradingview-mcp
    # TV_CDP_PORT defaults to 9222
    ```
    Restart Claude Code, confirm with `/mcp`.
-3. **Run Phase 0, all four gates.** Gate 3 is `scripts/phase0_parity.py` above.
-   **Gate 4 — no-leak — is the one that matters most**, and must be re-verified
-   after every replay jump, not once at the start.
-4. **Run replay** and log **every candidate, taken or passed, with its full
-   payload**, to `output/agent_runs/<date>.jsonl`. Unfilled limits get their own
-   rows. A run that logs only its trades is close to worthless for teaching.
-5. **Score on both axes** — agreement against his 19 recorded decisions, and
-   outcome (in-window P(2R) vs a same-day baseline). Both are required.
+3. **Run Phase 0, all four gates** (runbook R0). Gate 3 is
+   `scripts/phase0_parity.py`. **Gate 4 — no-leak — is the one that matters
+   most**, re-verified after every replay jump.
+4. **Run replay** (runbook R1–R3) and log **every candidate, taken or passed,
+   with its full payload**, to `output/agent_runs/<sess_day>.jsonl`. Unfilled
+   limits get their own rows.
+5. **Score agreement** — `python -m scripts.score_replay_run
+   output/agent_runs/<sess_day>.jsonl` against his recorded decisions. The
+   outcome axis comes after agreement runs are stable.
 
 **No live orders**, under any circumstances, until scoring has been run and
 reviewed with him.
