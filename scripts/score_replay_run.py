@@ -42,7 +42,11 @@ GUARDS = {
                    "('that's straight gambling for me'). Do not score it as a miss."),
     "2026-06-25": ("the refusal to limit a nearer level for a tighter fill "
                    "('I'm sticking to my fucking rules'). A rule that pays out "
-                   "over a year is not refuted by the day it costs the most."),
+                   "over a year is not refuted by the day it costs the most. "
+                   "ALSO his ruling 2026-08-11: L1 (04:04 London short) "
+                   "completed its two levels SEQUENTIALLY and he calls it 'a "
+                   "heavily discretionary reading' — an agent PASS there is "
+                   "acceptable, not an error."),
 }
 
 HHMM = re.compile(r"(\d{1,2}):(\d{2})")

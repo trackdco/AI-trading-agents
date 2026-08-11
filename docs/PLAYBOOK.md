@@ -87,6 +87,17 @@ Three qualifications that the week established and that matter:
    `scripts/two_level_check.py` detects both shapes and labels them. It finds
    his Friday trade as `04:04 2m DOWN sequential (+4m) [own_ma@04:00, vwap]`.
 
+   **Ruling, 2026-08-11 — an agent PASS on a sequential pair is within
+   doctrine.** Given unprompted while watching the first agent replay of this
+   very day: *"this is the one trade where I wouldn't be mad about it not
+   taking. I usually instate it has to break another level along with the MA
+   in the same candle. This was a heavily discretionary reading."* So:
+   same-candle is the rule; Friday's sequential take was discretion ON TOP of
+   the rule, not the rule itself; and a scorer must not count an agent pass at
+   2026-06-25 L1 as a plain error. This also lowers the stakes on
+   `SEQ_CANDLES = 3` — the guessed window matters less when a sequential pair
+   is optional-take by construction.
+
    **Caveat on Thursday's negative control:** allowing sequential completion
    at up to 3 candles surfaces a 04:48 short on Thursday London
    (`own_ma@04:39` + VWAP+1 + VAH, a 9-minute gap) that same-candle-only
