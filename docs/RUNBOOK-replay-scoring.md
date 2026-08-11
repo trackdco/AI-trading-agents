@@ -26,15 +26,19 @@ Every implementation fact below was read from the MCP source
 
 Two consequences that shape everything below:
 
-1. **His entries are limit-on-retest; the replay tool surface is market-only.**
-   The decisions ARE limit orders — price, expiry, cancel rule, fill at the
-   limit — and two paths exist to execute them:
-   - **Native, if it's there.** The MCP wraps five methods of
-     `window.TradingViewApi._replayApi`; whether that object carries order
-     placement beyond market buy/sell/close is unknown until probed on a live
-     TradingView (KICKOFF Phase B step 2 does exactly that, first session).
-     If limit methods exist, extend the MCP with a `replay_limit_order` tool
-     and the agents' limits become real TradingView orders in replay.
+1. **His entries are limit-on-retest; the MCP's replay tool surface is
+   market-only — but the product underneath is not.** TradingView's replay
+   trading natively supports **limit / stop / stop-limit orders and TP/SL
+   brackets** (support doc 43000691889; brackets announced on their blog).
+   The MCP wraps only five methods of `window.TradingViewApi._replayApi` and
+   never mapped the order ticket. The decisions ARE limit orders — price,
+   expiry, cancel rule, fill at the limit — and two paths exist to execute
+   them:
+   - **Native — probe first.** `scripts/probe_replay_api.mjs` (read-only)
+     enumerates the internal API for the order-placement surface; KICKOFF
+     Phase B step 2 runs it in the first session. If hits exist, extend the
+     MCP with a `replay_limit_order` tool and the agents' limits become real
+     TradingView orders in replay, brackets included.
    - **Simulated, otherwise.** The **orchestrator runs the limit lifecycle**
      (placement, expiry, cancel rule, fill detection) against replayed bars,
      and the JSONL log is the authoritative record. **Make the limit VISIBLE

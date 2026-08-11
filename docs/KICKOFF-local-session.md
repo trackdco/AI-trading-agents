@@ -55,18 +55,19 @@ Then, in this order, stopping to report after each numbered step:
    run tv_launch and retry. chart_get_state once; confirm my NQ contract
    and the 2m timeframe; cache the entity IDs.
 
-2. PROBE FOR NATIVE LIMIT ORDERS IN REPLAY. The MCP only wraps market
-   buy/sell/close from window.TradingViewApi._replayApi, but the object
-   may carry more. From the MCP checkout, run a small node script that
-   uses its own src/connection.js to evaluate, in the TradingView page:
-     - Object.getOwnPropertyNames(window.TradingViewApi._replayApi)
-     - plus getOwnPropertyNames of its prototype chain (2 levels)
-   and report every method name you find, verbatim. We are looking for
-   anything shaped like limit/stop/order placement. If such methods
-   exist, say so and STOP — we will extend the MCP with a
-   replay_limit_order tool before running the loop, so limits are native.
-   If they don't exist, say so — the runbook's simulated-limit path (with
-   the drawn limit lines) is the fallback and it is already specced.
+2. PROBE FOR NATIVE LIMIT ORDERS IN REPLAY. TradingView's replay trading
+   natively supports limit / stop / stop-limit orders and TP/SL brackets
+   (their support doc 43000691889) — the MCP just never wrapped that
+   surface. Run the committed probe:  node scripts/probe_replay_api.mjs
+   It is read-only (enumerates method names, never calls anything). Run
+   it twice as its header says: once on the normal chart, once INSIDE
+   replay with the replay trading panel open after placing and cancelling
+   one practice order by hand — the service may lazy-load. Report the
+   LIMIT-SHAPED HITS section verbatim. If hits exist, STOP — we extend
+   the MCP with a replay_limit_order tool before running the loop, so
+   the agents place real limit orders in replay. If both passes come up
+   empty, say so — the runbook's simulated-limit path (drawn limit lines,
+   log fills at the limit price) is the fallback and is already specced.
 
 3. Python deps for the repo scripts: python3 --version; if 3.12+,
    pip install -r requirements.txt into a venv; if 3.11, install the same
