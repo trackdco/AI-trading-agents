@@ -1,0 +1,131 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D21-L1-0342",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-22T03:42 ET",
+ "candle_start": "03:39 (3m) / 03:40 (2m)",
+ "timeframe": "3m and 2m, simultaneous same-candle",
+ "leak_check": "pass - truncated at 03:41:59; last completed 2m bar starts 03:40 (verified via bar series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d21_c1_0342.png",
+ "chart_note": "the anchored-weekly VP drawing is hidden (unreachable anchor in replay); weekly levels below are numeric and DEVELOPING as-of this minute",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "weekly_vah",
+    "price": 30754.0
+   },
+   {
+    "level": "prior_day_high",
+    "price": 30770.75
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "overnight_low",
+   "price": 30337.5
+  },
+  "waiting_for": "rebalance to the 15m MA (30618.17, confluent with the 0.705 day-range fib at 30622.85) before longs are licensed; a 15m decisive-body close through the weekly VAH/prior-day-high cluster licenses entries on its retest instead",
+  "two_sided": true,
+  "condition_for_other_side": "a hard rejection AT the vwap_p2/weekly VAH/prior-day-high cluster (30737-30771) that fails to push through licenses shorts back toward the 15m MA/0.705 fib confluence (30618-30623), or deeper to the VWAP mid/daily POC/0.5 fib confluence (30540-30563)",
+  "anticipated_resolution": {
+   "level": "weekly_vah_prior_day_high_cluster",
+   "price": 30754.0,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close through 30754-30770.75 with a decisive body; a wicky absorption candle there means the cluster held",
+  "reasoning": "Overnight one-way climb from 30337.5 (19:59) to session high 30742.25 (02:55), 399pt, Asia predominantly up -> continuation framing. Price now presses vwap_p2 (30736.8), extended above every BB MA with no 15m MA touch since ~20:30 - un-rebalanced - right under the weekly VAH/prior-day-high cluster (30754-30770.75). Lean long toward weekly high 30975.5, but can't chase; want the 15m MA/0.705 fib confluence (30618-30623) first. A hard rejection at the cluster instead licenses shorts back into that same zone.",
+  "as_of": "03:00 window_open"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "03:39",
+  "direction": "DOWN",
+  "open": 30772.0,
+  "close": 30752.5,
+  "closed_at": "03:42",
+  "levels": "own 3m MA + vwap_p2, same candle"
+ },
+ "signal_candle_2m": {
+  "start": "03:40",
+  "direction": "DOWN",
+  "open": 30768.75,
+  "high": 30769.5,
+  "low": 30752.5,
+  "close": 30752.5,
+  "volume": 202,
+  "levels": "own 2m MA + vwap_p2, same candle"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "own_ma_3m",
+  "vwap_p2"
+ ],
+ "what_happened_since_0300": "Price pushed into the cluster on pokes - weekly VAH 30754 at ~03:04, prior-day high 30770.75 at ~03:06, day high 30781.75 at 03:22 - then STALLED for 20 minutes (03:22-03:40) in a 30759-30781 band capped under the highs. Acceptance test per the thesis's own rule: the 03:15 15m closed 30756.0 (2pt over VAH); the 03:30 15m closed 30774.25 (3.5pt over the prior-day high, body_ratio 0.66) with zero follow-through. No 15m closed decisively beyond the full cluster. The signal candles now break back DOWN through it, closing 30752.5 - below weekly VAH 30754.",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 30571.49,
+   "p1": 30668.26,
+   "p2": 30765.03,
+   "m1": 30474.72,
+   "m2": 30377.95
+  },
+  "bb_ma": {
+   "tf_2m": 30768.01,
+   "tf_3m": 30756.58,
+   "tf_15m": 30643.66,
+   "tf_60m": null
+  },
+  "day_range_fibs": {
+   "0.382": 30507.2,
+   "0.5": 30559.62,
+   "0.618": 30612.05,
+   "0.705": 30650.7
+  },
+  "day_high": 30781.75,
+  "day_low": 30337.5,
+  "daily_profile": {
+   "poc": 30563.0,
+   "val": 30487.0,
+   "vah": 30658.0,
+   "note": "developing as-of 03:42"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30343.0,
+   "vah": 30754.0,
+   "note": "DEVELOPING as-of 03:42"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "session_high": 30781.75,
+  "pre_london_shelf": 30742.25
+ },
+ "levels_below_entry_for_target_selection": "prior_day_vah 30699, daily_vah 30658, prior_day_poc 30668, bb_ma_15m 30643.66, fib_0.705 30650.70, fib_0.618 30612.05, vwap_p1 30668.26, prior_day_val 30568, daily_poc 30563, fib_0.5 30559.62, vwap_mid 30571.49",
+ "poc_alignment": {
+  "daily_poc": 30563.0,
+  "position": "far below - with a short",
+  "prior_day_poc": 30668.0,
+  "position2": "below - with a short"
+ },
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "cap_counts": "fills, not attempts",
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+}

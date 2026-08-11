@@ -1,0 +1,89 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "destination_approached_and_rejected",
+ "window": "NY_AM (entries to 11:00; cap 2, ONE used)",
+ "event_detail": "your second target - weekly_high 30975.5, the top of the multi-day range, untouched all week - was approached to within 7.5pt (session high 30968.00 at 10:10) and REJECTED. Since that high the last four 2m bars are a monotone slide 30949.75 -> 30920.75 -> 30912.25 -> 30898.5 -> 30855.25 on rising volume (2897, 1706, 2454, 3210). The completed 10:00-10:15 15m closed 30909.75 on a 0.37 body - no decisive acceptance above the cluster ever printed.",
+ "decision_minute": "2026-06-22T10:18 ET (session-day 2026-06-21)",
+ "leak_check": "pass - truncated at 10:17:59; last completed 2m bar starts 10:16",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d21_c4_1018_v2.png",
+ "chart_note": "anchored-weekly VP drawing hidden; weekly levels numeric and DEVELOPING as-of this minute. No agent-drawn positions on the chart.",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The OHLC legend in the chart header follows TradingView's CROSSHAIR, not the last bar, and is parked on the 10:00 bar (O30936.25 H30954.50 L30907.50 C30937.00). That is 16 minutes BEFORE this decision minute - it is not a leak. Authoritative state is this briefing plus the SELL/BUY ticker (30855.25). The chart is truncated at the cursor.",
+ "price_at_decision": 30855.25,
+ "prior_thesis_as_of_0930": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "session_high",
+    "price": 30873.5
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "0930_support_cluster_low",
+   "price": 30737.0
+  },
+  "waiting_for": "rebalance to the 30737-30781 confluence - SATISFIED at 09:42 (low 30763 held)",
+  "two_sided": true,
+  "condition_for_other_side": "a 15m decisive-body close below 30737 relicenses shorts toward 30683-30701, deeper to 30557-30617",
+  "anticipated_resolution": {
+   "level": "0930_support_cluster",
+   "price": 30757.5,
+   "expect": "holds",
+   "act_on_resolution": true
+  }
+ },
+ "what_happened_since_0930": "Your read paid. The 30737-30781 rebalance held at 30763, the long that fired off it took its first target at the session high 30924 for +1.67R, and the runner exited at break-even 30849.5 at 10:17 as this rejection developed. Both of your named targets were reached or all-but-reached: session_high 30873.5 exceeded, weekly_high 30975.5 missed by 7.5pt. The book is now FLAT with one of two NY_AM fills used.",
+ "levels_at_1018": {
+  "vwap": {
+   "mid": 30735.94,
+   "p1": 30887.06,
+   "p2": 31038.19,
+   "m1": 30584.81
+  },
+  "bb_ma": {
+   "tf_2m": 30894.74,
+   "tf_3m": 30878.96,
+   "tf_15m": 30784.78,
+   "tf_60m": null
+  },
+  "day_range_fibs": {
+   "0.382": 30578.35,
+   "0.5": 30652.75,
+   "0.618": 30727.15,
+   "0.705": 30782.0
+  },
+  "day_high": 30968.0,
+  "day_low": 30337.5,
+  "daily_profile": {
+   "poc": 30810.0,
+   "val": 30644.0,
+   "vah": 30969.0,
+   "note": "DEVELOPING as-of 10:18"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30349.0,
+   "vah": 30798.0,
+   "note": "DEVELOPING as-of 10:18"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "session_high": 30968.0
+ },
+ "timing_note": "42 minutes of the NY_AM entry window remain (closes 11:00).",
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}
