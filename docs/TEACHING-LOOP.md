@@ -446,3 +446,81 @@ this. Check C validates *times* inside briefings; check E validates *prices* in
 decision rows. A future **price** embedded in a **briefing** is checked by
 neither. E should be extended to scan briefing bodies against the as-of printed
 range — which is precisely the shape of clairvoyance it was built to detect.
+
+## T15 — 2026-08-12 · THE 15m-MA FLOOR IS SUSPENDED ON A TREND DAY; the 15m MA is ONE key level, not a gate
+
+**Run:** session-day 2026-06-22 (his Tue 23 Jun). **Zero fills, 0.00R, agreement
+0/2.** A 751pt one-way overnight collapse never brought price within **230 points**
+of the 15m MA, so the T2 rebalance floor passed every London candidate — including
+the one the scorer matched against **a London short he actually took.**
+
+**His correction, verbatim:**
+
+> *"It absolutely needs a trend day exemption… When it's clear that it is a trend
+> day I'm going to go about that differently where I'm like, I don't need it to
+> reclaim this 15 minute. I'm going to wait for a rejection off of something —
+> whether it's a Fibonacci level of the daily range, whatever it is — I'm going to
+> wait for a rejection, and then I'm going to look for the closure through the
+> moving average stacked with another level, and I'm going to enter on the retest.
+> It's simple as that."*
+
+And the deeper diagnosis, which is the more important half:
+
+> *"I think the agents are having this over-importance of the 15-minute and the
+> one-hour Bollinger bands. Like I said, my strategy, if I could dumb it down, is
+> rejection off of a key level, closure through a moving average, stacked with
+> another key level to confirm the rejection as a valid rejection and that price is
+> going to continue trading in that direction. **The 15-minute Bollinger band moving
+> average is simply just one of those key levels.** We have a lot of key levels."*
+
+His worked hypothetical: *"If we reject the value area low for the day and then we
+close through the Bollinger band with maybe some sort of POC, a weekly value area
+low, something there, then I'm entering on the retest of that."*
+
+**Consequences:**
+1. **On a clear trend day, do not put a 15m-MA reclaim in `waiting_for`.** Name the
+   rejection you are waiting for instead — a day-range fib, a profile edge, a VWAP
+   band, a prior-day level.
+2. **The 15m MA is one key level among many**, eligible as the "another level"
+   stacked with the MA closure — never a gate in its own right.
+3. **Do NOT over-correct.** *"I don't want to take that information and start over-
+   trading like… price in relation to the higher timeframe moving averages are
+   important."* On a rotational day the T2 floor still stands. Judging the day's
+   character is now explicitly part of the thesis agent's job.
+
+**Also his, on the same trade sequence (day 2, ~10:30):** he would expect the stack
+to catch *"those shorts at that VWAP middle band closure through the moving average…
+obviously not with the stops at the candle that displaced through, because that
+would have been right at the VWAP band — we're going to give it a bit of breathing
+room."* That is the origin-proximity stop clause (T5 rider) working as intended.
+
+**His own note on the calibration:** *"I think Tuesday was an absurdly easy day to
+trade, so I'm not very happy and that's a miscalibration on my end."*
+
+## T15-A — 2026-08-12 · TWO DETECTOR DEFECTS FOUND WHILE CHECKING HIS 10:30 SETUP
+
+He said the stack should have caught a VWAP-mid rejection short around 10:30 on day
+2. It found no candidate between 09:40 and 11:00. Both causes are mechanical, not
+doctrinal:
+
+1. **`two_level_check` ended NY_AM at 10:45, not 11:00.** `WINDOWS["NY_AM"]` was
+   `(570, 645)`. PLAYBOOK §6.2 says the window runs to 11:00 (confirmed 2026-08-10),
+   so any candidate between 10:45 and 11:00 was invisible to a windowed scan.
+   **Fixed to (570, 660).** Day-2's scan happened to use `ALL`, so this did not cause
+   the miss there — but it would have on any windowed run.
+2. **A rejection on an EARLIER candle followed by an own-MA closure later is not
+   detected.** The 10:24 bar wicked above the VWAP mid (29,992) and closed back
+   below it — a textbook rejection; the 10:30 bar then closed down through its own
+   2m MA (29,962). That is exactly his grammar (T5: rejection → break → retest), but
+   the detector only pairs a rejection with a closure **in the same candle**, and its
+   sequential logic only handles *MA first, second level later* — not *rejection
+   first, MA later*. **This is the shape of the trade he expected and the stack
+   cannot currently see it.** Open: extend the detector, or have the orchestrator
+   surface rejection-then-MA sequences as supplementary candidates.
+
+**Hindsight check, on his instruction** (*"make sure that the agents don't have the
+knowledge of what happened on Tuesday"*): confirmed clean. `data/narrated_days/**`
+and `docs/CORPUS-narrated-days.md` are Read-DENIED to every agent in
+`.claude/settings.json`; every briefing is built from as-of values only; and the
+per-day leak audit re-derives this from the committed bars. Day 1's one contamination
+was caught, voided and re-run.

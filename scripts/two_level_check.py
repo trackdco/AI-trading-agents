@@ -47,7 +47,7 @@ from src.htf_ma.levels import (NY, bb_ma_asof, profile_at_minutes,  # noqa: E402
                                vwap_bands)
 
 WINDOWS = {"LONDON": (180, 299), "NY_PRE": (480, 569),
-           "NY_AM": (570, 645), "ALL": (0, 1439)}
+           "NY_AM": (570, 660), "ALL": (0, 1439)}   # NY_AM ends 11:00 (PLAYBOOK 6.2, confirmed 2026-08-10); was 645/10:45
 BANDS = ["vwap", "vwap_p1", "vwap_m1", "vwap_p2", "vwap_m2"]
 SEQ_CANDLES = 3          # how long an MA-only closure stays live
 
