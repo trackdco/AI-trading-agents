@@ -325,3 +325,79 @@ object-(b) population-collapse finding replicate independently on both
 chronological halves of the fit era (2023-01-02..2024-03-16 /
 2024-03-17..2025-05-31) — see `output/p_table_geometry_sweep_half{1,2}.json` and
 `output/p_table_geometry_sweep_candle_high_half{1,2}.json`.
+
+---
+
+## Entry 4 — LEG-SCALE ARM (OTE), declared 2026-08-11 (same day)
+
+Built alongside the existing candle-scale arm, not replacing it. Same fit-era
+population, same sealed span, same qualified-row working set (4,815 rows) as
+Entry 1's candle-scale build, per the run's own "same event population"
+instruction for Task 7's comparison. No new trigger population is derived;
+this entry layers an alternate entry/stop/target geometry and two informational
+displacement/sweep column sets onto the EXISTING rows.
+
+**Source note.** The "OTE research" driving this entry is a YouTube trading-
+education video transcript (ICT/SMC-style "Optimal Trade Entry" explainer,
+including a sponsored prop-firm discount segment), not a paper. Per the
+skill's own reporting discipline this is treated as an ASSERTED model, not
+measured evidence — only the structural definitions (retracement zone,
+displacement, liquidity sweep) are operationalised; no claim that OTE entries
+outperform is tested or implied. The Tsinaslanidis et al. (2022) null on
+Fibonacci bounce rates is accepted as given; `r` is used purely as a declared
+entry-depth parameter.
+
+### Declared parameters
+
+- `r ∈ {0.50, 0.62, 0.705, 0.79}` — entry depth as a fraction of `leg_height_pts`
+  retraced from the leg extreme back toward the leg origin. Not swept.
+  **Constraint asserted and verified at build time:** every declared `r` must
+  exceed `MIN_LEG_RETRACE` (0.382) — checked programmatically
+  (`scripts/p_table_leg_scale_geometry.py`), would raise and halt the build
+  on violation. All four values pass.
+- Leg-scale zone: `level_1.0 = leg_start_price`, `level_0.0 = pxl_level_0` —
+  both already-recorded columns, no new lookups, mirrors the candle-scale
+  `level_1`/`level_0` naming at leg scale.
+- Entry/stop/target: `entry_r = level_0.0 ± r×leg_height` (sign by direction);
+  `stop = level_1.0 ± STOP_BUFFER` (2.0pt, same constant as candle-scale);
+  `target = level_0.0`. Stop and structural invalidation (A2) share the same
+  anchor price (`leg_start_price`); invalidation's threshold (±TICK, 0.25pt)
+  is tighter than the stop's (±STOP_BUFFER, 2.0pt), so invalidation always
+  fires at or before the nominal stop — the fill/cancellation simulation uses
+  the tighter (invalidation) threshold as the order-pull trigger.
+- **New fit-era-derived stop bar** (replaces both the discarded M-TABLE
+  0.17W/~11-20pt anchor AND the prior repair run's 1.5×-noise-floor proxy):
+  p90 of max adverse excursion from `limit_price` over the 5 real minutes
+  starting at `ts_fill`, measured on candle-scale qualified+filled rows,
+  fit era only. **`ny_am` = 44.7pt, `london` = 15.75pt.** Precise procedure
+  and the reasoning for each implementation choice recorded in
+  `scripts/p_table_leg_scale_bar.py`'s docstring and
+  `output/p_table_leg_scale_bar.json`.
+- Asia reference window (NEW, not previously defined anywhere in this build —
+  Asia remains excluded from TRADING per SPEC A1; this is a reference level
+  only): 19:00 ET (prior evening) → 03:00 ET.
+- Pre-open range: each session's own already-loaded warm-up window
+  (`ny_am` 08:00–09:30 ET, `london` 07:00–08:00 London local).
+- Sweep-confirmation window: trade-through then close-back-inside within 3
+  bars of the trigger timeframe; searched from session/warm-up start through
+  `leg_start_ts` (bounded at 200 bars, non-binding in practice).
+- Displacement-on-leg definitions (Task 3), all three recorded as columns
+  on every row, no selection between them: (a) 3-candle FVG present within
+  `[leg_start_ts, pxl_ts]`; (b) `leg_height_pts / ATR14` measured at the
+  PIVOT bar's own index (never the entry/trigger candle — avoids the A4.1-C1
+  circularity named explicitly in the run's own instructions); (c) ≥2
+  consecutive close-over-close steps in the leg's direction within the same
+  window (a stricter reading than "≥2 same-direction candles").
+- Session/time scope (Task 6): traded window narrowed to `ny_am` 09:30–10:30
+  ET, sub-bucketed at 09:45. `london` stays fully recorded, explicitly marked
+  not-traded in every table — reported as free mechanism evidence per its own
+  (much lower) noise floor.
+
+### Out of scope, enforced
+
+No expectancy, no win rate, no exit outcome (no R-multiple, no MFE/MAE
+hold-through) computed anywhere in this entry — the fill/cancellation
+simulation (`scripts/p_table_leg_scale_fill.py`) reports fill boolean,
+cancellation reason, and unfilled travel ONLY. No cuts, no filtering, no
+variable selection — Task 3's and Task 5's flags are recorded columns, not
+applied gates. Sealed rows untouched throughout.

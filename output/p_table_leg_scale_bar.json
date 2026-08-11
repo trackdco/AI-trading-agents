@@ -1,0 +1,31 @@
+{
+ "ny_am": {
+  "n": 1037,
+  "mae_5min": {
+   "median": 14.5,
+   "p75": 28.0,
+   "p90": 44.7,
+   "p95": 59.8
+  },
+  "mae_1min_fillbar_only": {
+   "median": 7.0,
+   "p90": 25.95
+  },
+  "DECLARED_BAR_pts": 44.7
+ },
+ "london": {
+  "n": 1890,
+  "mae_5min": {
+   "median": 5.5,
+   "p75": 9.75,
+   "p90": 15.75,
+   "p95": 21.0
+  },
+  "mae_1min_fillbar_only": {
+   "median": 3.0,
+   "p90": 10.0
+  },
+  "DECLARED_BAR_pts": 15.75
+ },
+ "method": "p90 of max-adverse-excursion-from-limit_price over the 5 real minutes starting at ts_fill, on candle-scale qualified+filled rows, per session. NOT the M-TABLE 0.17W/~11-20pt figure (discarded, traces to this table's own sealed span). NOT the prior run's pooled-1m-noise-floor proxy -- this is a direct, fit-era-only, entry-conditioned measure."
+}

@@ -26,7 +26,7 @@ from collections import Counter, defaultdict
 from datetime import date as Date
 
 sys.path.insert(0, os.path.dirname(__file__))
-from p_table_lib import (CONFIG, TICK, aggregate_tf, build_session_minutes,
+from p_table_lib import (CONFIG, NY, TICK, aggregate_tf, build_session_minutes,
                          run_tf_pipeline, session_window_utc, tick_round,
                          true_ranges)
 from build_p_table import load_front_minutes, minute_map_for_day_window
@@ -59,6 +59,23 @@ def minimal_fill_stop_touch(direction, limit, stop, minutes, eligible_ts, sessio
         if fill_cond(b):
             return True, bool(stop_touch(b))
     return False, None
+
+
+def time_bucket_for(session: str, close_ts) -> str:
+    """Task 6: NY 09:30-10:30 ET traded, sub-bucketed at 09:45; everything
+    else in ny_am (10:30-11:30, the pre-existing session end) is 'outside the
+    now-narrowed traded window' but stays reported. London is recorded-not-
+    traded in full, single bucket -- it stays in the table as free mechanism
+    evidence (its noise floor is far lower than ny_am's, per Task 6)."""
+    if session == "london":
+        return "not_traded"
+    et = close_ts.astimezone(NY)
+    hm = et.hour * 60 + et.minute
+    if 9 * 60 + 30 <= hm < 9 * 60 + 45:
+        return "09:30-09:45"
+    if 9 * 60 + 45 <= hm < 10 * 60 + 30:
+        return "09:45-10:30"
+    return "outside_traded_window"
 
 
 def stop_geo(cand, direction):
@@ -139,7 +156,8 @@ def main():
                             wick_width_pts=cand.wick_width,
                             stop_dist_pts=sd, r_available=r_avail,
                             filled=filled, stop_touch_on_fill=stop_touch,
-                            session=session))
+                            session=session, direction=e.direction,
+                            time_bucket=time_bucket_for(session, e.close_ts)))
         if (di + 1) % 50 == 0:
             print(f"  {di + 1}/{len(dates)} dates", flush=True)
 
@@ -198,6 +216,15 @@ def write_report(events, n_sessions, tr_pool):
         by_sess = Counter(e["session"] for e in all_ev)
         tpd = {s: round(by_sess.get(s, 0) / max(1, n_sessions.get(s, 1)), 3)
               for s in n_sessions}
+        # Task 6/7: triggers per session per DAY per DIRECTION, by time bucket
+        # (ny_am only has real traded sub-buckets; london is one not_traded
+        # bucket). Divide by 2 directions for the ~1/session/direction floor.
+        tpd_bucket_dir = defaultdict(lambda: defaultdict(int))
+        for e in all_ev:
+            tpd_bucket_dir[(e["session"], e["time_bucket"])][e["direction"]] += 1
+        tpd_by_bucket = {
+            f"{s}|{tb}|dir={d}": round(n / max(1, n_sessions.get(s, 1)), 4)
+            for (s, tb), dd in tpd_bucket_dir.items() for d, n in dd.items()}
         per_tf = {}
         for tf in CONFIG["TFS_MIN"]:
             tf_ev = tfd[tf]
@@ -226,9 +253,20 @@ def write_report(events, n_sessions, tr_pool):
                 per_tf_out["stop_dist_x_noise_floor_by_session"] = mult
                 per_tf_out["mechanically_nonviable"] = bool(
                     mult and min(mult.values()) < 1.0)
+            # Task 6: leg_height/stop_dist distributions per time bucket
+            by_bucket = defaultdict(list)
+            for e in tf_ev:
+                by_bucket[(e["session"], e["time_bucket"])].append(e)
+            per_tf_out["by_time_bucket"] = {
+                f"{s}|{tb}": dict(
+                    n=len(evs2),
+                    leg_height_pts=_dist([e["leg_height_pts"] for e in evs2]),
+                    stop_dist_pts=_dist([e["stop_dist_pts"] for e in evs2]))
+                for (s, tb), evs2 in by_bucket.items()}
             per_tf[str(tf)] = per_tf_out
         cells_out[cell_key] = dict(
             n_qualified_all_tf=n_q, triggers_per_session_per_day=tpd,
+            triggers_per_session_per_day_by_bucket_and_direction=tpd_by_bucket,
             per_tf=per_tf)
 
     target = {s: round(TARGET_NOISE_MULT * v, 3) for s, v in noise_floor.items()}

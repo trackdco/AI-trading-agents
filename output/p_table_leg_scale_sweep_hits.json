@@ -1,0 +1,236 @@
+[
+ {
+  "cell": "retrace=0.236|height_atr=2.0",
+  "tf": "5",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 127,
+  "median_leg": 27.5,
+  "stop_leg": 15.75
+ },
+ {
+  "cell": "retrace=0.382|height_atr=2.0",
+  "tf": "5",
+  "bucket": "ny_am|outside_traded_window",
+  "r": "0.5",
+  "n": 21,
+  "median_leg": 91.5,
+  "stop_leg": 47.75
+ },
+ {
+  "cell": "retrace=0.382|height_atr=2.0",
+  "tf": "5",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 104,
+  "median_leg": 31.625,
+  "stop_leg": 17.812
+ },
+ {
+  "cell": "retrace=0.5|height_atr=2.0",
+  "tf": "5",
+  "bucket": "ny_am|outside_traded_window",
+  "r": "0.5",
+  "n": 13,
+  "median_leg": 105.25,
+  "stop_leg": 54.625
+ },
+ {
+  "cell": "retrace=0.5|height_atr=2.0",
+  "tf": "5",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 69,
+  "median_leg": 28.25,
+  "stop_leg": 16.125
+ },
+ {
+  "cell": "retrace=0.236|height_atr=3.0",
+  "tf": "2",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 71,
+  "median_leg": 28.5,
+  "stop_leg": 16.25
+ },
+ {
+  "cell": "retrace=0.236|height_atr=3.0",
+  "tf": "2",
+  "bucket": "ny_am|outside_traded_window",
+  "r": "0.5",
+  "n": 17,
+  "median_leg": 93.25,
+  "stop_leg": 48.625
+ },
+ {
+  "cell": "retrace=0.236|height_atr=3.0",
+  "tf": "3",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 52,
+  "median_leg": 29.75,
+  "stop_leg": 16.875
+ },
+ {
+  "cell": "retrace=0.236|height_atr=3.0",
+  "tf": "3",
+  "bucket": "ny_am|outside_traded_window",
+  "r": "0.5",
+  "n": 11,
+  "median_leg": 97.0,
+  "stop_leg": 50.5
+ },
+ {
+  "cell": "retrace=0.236|height_atr=3.0",
+  "tf": "3",
+  "bucket": "ny_am|09:45-10:30",
+  "r": "0.5",
+  "n": 17,
+  "median_leg": 90.0,
+  "stop_leg": 47.0
+ },
+ {
+  "cell": "retrace=0.236|height_atr=3.0",
+  "tf": "5",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 81,
+  "median_leg": 27.75,
+  "stop_leg": 15.875
+ },
+ {
+  "cell": "retrace=0.382|height_atr=3.0",
+  "tf": "2",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 85,
+  "median_leg": 28.25,
+  "stop_leg": 16.125
+ },
+ {
+  "cell": "retrace=0.382|height_atr=3.0",
+  "tf": "2",
+  "bucket": "ny_am|outside_traded_window",
+  "r": "0.5",
+  "n": 12,
+  "median_leg": 109.0,
+  "stop_leg": 56.5
+ },
+ {
+  "cell": "retrace=0.382|height_atr=3.0",
+  "tf": "3",
+  "bucket": "ny_am|09:45-10:30",
+  "r": "0.5",
+  "n": 19,
+  "median_leg": 103.75,
+  "stop_leg": 53.875
+ },
+ {
+  "cell": "retrace=0.382|height_atr=3.0",
+  "tf": "3",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 60,
+  "median_leg": 28.25,
+  "stop_leg": 16.125
+ },
+ {
+  "cell": "retrace=0.382|height_atr=3.0",
+  "tf": "3",
+  "bucket": "ny_am|outside_traded_window",
+  "r": "0.5",
+  "n": 11,
+  "median_leg": 87.75,
+  "stop_leg": 45.875
+ },
+ {
+  "cell": "retrace=0.382|height_atr=3.0",
+  "tf": "5",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 69,
+  "median_leg": 33.25,
+  "stop_leg": 18.625
+ },
+ {
+  "cell": "retrace=0.382|height_atr=3.0",
+  "tf": "5",
+  "bucket": "ny_am|09:45-10:30",
+  "r": "0.5",
+  "n": 15,
+  "median_leg": 111.5,
+  "stop_leg": 57.75
+ },
+ {
+  "cell": "retrace=0.5|height_atr=3.0",
+  "tf": "2",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 66,
+  "median_leg": 30.25,
+  "stop_leg": 17.125
+ },
+ {
+  "cell": "retrace=0.5|height_atr=3.0",
+  "tf": "2",
+  "bucket": "ny_am|09:45-10:30",
+  "r": "0.5",
+  "n": 14,
+  "median_leg": 87.875,
+  "stop_leg": 45.938
+ },
+ {
+  "cell": "retrace=0.5|height_atr=3.0",
+  "tf": "2",
+  "bucket": "ny_am|outside_traded_window",
+  "r": "0.5",
+  "n": 11,
+  "median_leg": 126.5,
+  "stop_leg": 65.25
+ },
+ {
+  "cell": "retrace=0.5|height_atr=3.0",
+  "tf": "2",
+  "bucket": "ny_am|outside_traded_window",
+  "r": "0.62",
+  "n": 11,
+  "median_leg": 126.5,
+  "stop_leg": 50.07
+ },
+ {
+  "cell": "retrace=0.5|height_atr=3.0",
+  "tf": "3",
+  "bucket": "ny_am|09:45-10:30",
+  "r": "0.5",
+  "n": 18,
+  "median_leg": 103.75,
+  "stop_leg": 53.875
+ },
+ {
+  "cell": "retrace=0.5|height_atr=3.0",
+  "tf": "3",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 42,
+  "median_leg": 37.875,
+  "stop_leg": 20.938
+ },
+ {
+  "cell": "retrace=0.5|height_atr=3.0",
+  "tf": "3",
+  "bucket": "london|not_traded",
+  "r": "0.62",
+  "n": 42,
+  "median_leg": 37.875,
+  "stop_leg": 16.392
+ },
+ {
+  "cell": "retrace=0.5|height_atr=3.0",
+  "tf": "5",
+  "bucket": "london|not_traded",
+  "r": "0.5",
+  "n": 43,
+  "median_leg": 33.25,
+  "stop_leg": 18.625
+ }
+]

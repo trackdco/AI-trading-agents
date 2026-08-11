@@ -1,0 +1,120 @@
+{
+ "n_qualified": 4815,
+ "min_leg_retrace": 0.382,
+ "constraint_check": "PASS -- all declared r exceed MIN_LEG_RETRACE",
+ "retrace_frac_below_min_leg_retrace_anomaly": {
+  "n": 34,
+  "pct": 0.0071,
+  "note": "small boundary-effect population (max observed 0.382, all within ~0.10 of the threshold) already present in the gated, committed table -- not introduced by this run"
+ },
+ "leg_height_recompute_mismatches": 0,
+ "stop_invalidation_coincidence": {
+  "anchor_price": "leg_start_price (same for both)",
+  "stop_offset_pts": 2.0,
+  "invalidation_offset_pts": 0.25,
+  "gap_pts": 1.75,
+  "statement": "Coincide in ANCHOR (same origin price); invalidation fires strictly before the leg-scale stop is technically touched (tighter threshold), so 'stopped out' and 'structure invalidated' describe the same event at the same location for practical purposes."
+ },
+ "by_r": {
+  "0.5": {
+   "reward_pts": {
+    "n": 4815,
+    "median": 8.875,
+    "p25": 5.0,
+    "p75": 17.0,
+    "p90": 29.5
+   },
+   "risk_pts": {
+    "n": 4815,
+    "median": 10.875,
+    "p25": 7.0,
+    "p75": 19.0,
+    "p90": 31.5
+   },
+   "realised_R": {
+    "n": 4815,
+    "median": 0.816,
+    "p25": 0.714,
+    "p75": 0.895,
+    "p90": 0.937
+   },
+   "asymptotic_R_r_over_1_minus_r": 1.0,
+   "pct_rows_retrace_already_past_r": 0.7331
+  },
+  "0.62": {
+   "reward_pts": {
+    "n": 4815,
+    "median": 11.005,
+    "p25": 6.2,
+    "p75": 21.08,
+    "p90": 36.58
+   },
+   "risk_pts": {
+    "n": 4815,
+    "median": 8.745,
+    "p25": 5.8,
+    "p75": 14.92,
+    "p90": 24.42
+   },
+   "realised_R": {
+    "n": 4815,
+    "median": 1.258,
+    "p25": 1.069,
+    "p75": 1.413,
+    "p90": 1.498
+   },
+   "asymptotic_R_r_over_1_minus_r": 1.632,
+   "pct_rows_retrace_already_past_r": 0.4787
+  },
+  "0.705": {
+   "reward_pts": {
+    "n": 4815,
+    "median": 12.514,
+    "p25": 7.05,
+    "p75": 23.97,
+    "p90": 41.595
+   },
+   "risk_pts": {
+    "n": 4815,
+    "median": 7.236,
+    "p25": 4.95,
+    "p75": 12.03,
+    "p90": 19.405
+   },
+   "realised_R": {
+    "n": 4815,
+    "median": 1.729,
+    "p25": 1.424,
+    "p75": 1.993,
+    "p90": 2.144
+   },
+   "asymptotic_R_r_over_1_minus_r": 2.39,
+   "pct_rows_retrace_already_past_r": 0.3379
+  },
+  "0.79": {
+   "reward_pts": {
+    "n": 4815,
+    "median": 14.023,
+    "p25": 7.9,
+    "p75": 26.86,
+    "p90": 46.61
+   },
+   "risk_pts": {
+    "n": 4815,
+    "median": 5.727,
+    "p25": 4.1,
+    "p75": 9.14,
+    "p90": 14.39
+   },
+   "realised_R": {
+    "n": 4815,
+    "median": 2.448,
+    "p25": 1.927,
+    "p75": 2.939,
+    "p90": 3.239
+   },
+   "asymptotic_R_r_over_1_minus_r": 3.762,
+   "pct_rows_retrace_already_past_r": 0.2147
+  }
+ }
+}

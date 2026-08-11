@@ -1,0 +1,7424 @@
+{
+ "fit_era_bar_pts": {
+  "ny_am": 44.7,
+  "london": 15.75
+ },
+ "by_cell": {
+  "retrace=0.236|height_atr=0.5": {
+   "1": {
+    "ny_am|09:30-09:45": {
+     "n": 214,
+     "leg_height_pts": {
+      "n": 214,
+      "median": 29.0,
+      "p90": 65.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 16.5,
+        "p90": 34.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 13.02,
+        "p90": 26.985
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 10.555,
+        "p90": 21.396
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.09,
+        "p90": 15.807
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 594,
+     "leg_height_pts": {
+      "n": 594,
+      "median": 25.125,
+      "p90": 57.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 14.562,
+        "p90": 30.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 11.547,
+        "p90": 23.66
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 9.412,
+        "p90": 18.815
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.276,
+        "p90": 13.97
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 2539,
+     "leg_height_pts": {
+      "n": 2539,
+      "median": 8.5,
+      "p90": 20.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 6.25,
+        "p90": 12.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 5.23,
+        "p90": 9.6
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 4.508,
+        "p90": 7.9
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 3.785,
+        "p90": 6.2
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 710,
+     "leg_height_pts": {
+      "n": 710,
+      "median": 19.75,
+      "p90": 49.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 11.875,
+        "p90": 26.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 9.505,
+        "p90": 20.81
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 7.826,
+        "p90": 16.603
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 6.147,
+        "p90": 12.395
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "ny_am|09:45-10:30": {
+     "n": 315,
+     "leg_height_pts": {
+      "n": 315,
+      "median": 38.75,
+      "p90": 85.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 21.375,
+        "p90": 44.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 16.725,
+        "p90": 34.3
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.431,
+        "p90": 27.075
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.137,
+        "p90": 19.85
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 386,
+     "leg_height_pts": {
+      "n": 386,
+      "median": 30.75,
+      "p90": 62.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 17.375,
+        "p90": 33.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 13.685,
+        "p90": 25.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.071,
+        "p90": 20.438
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.457,
+        "p90": 15.125
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 1468,
+     "leg_height_pts": {
+      "n": 1468,
+      "median": 11.5,
+      "p90": 27.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 7.75,
+        "p90": 15.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 6.37,
+        "p90": 12.545
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 5.393,
+        "p90": 10.186
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 4.415,
+        "p90": 7.827
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 126,
+     "leg_height_pts": {
+      "n": 126,
+      "median": 33.75,
+      "p90": 66.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 18.875,
+        "p90": 35.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.825,
+        "p90": 27.08
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.956,
+        "p90": 21.47
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.087,
+        "p90": 15.86
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "ny_am|09:45-10:30": {
+     "n": 239,
+     "leg_height_pts": {
+      "n": 239,
+      "median": 43.5,
+      "p90": 96.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 23.75,
+        "p90": 50.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.53,
+        "p90": 38.765
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.833,
+        "p90": 30.541
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.135,
+        "p90": 22.317
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 283,
+     "leg_height_pts": {
+      "n": 283,
+      "median": 39.0,
+      "p90": 96.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 21.5,
+        "p90": 50.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 16.82,
+        "p90": 38.765
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.505,
+        "p90": 30.541
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.19,
+        "p90": 22.317
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 1021,
+     "leg_height_pts": {
+      "n": 1021,
+      "median": 14.25,
+      "p90": 34.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 9.125,
+        "p90": 19.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 7.415,
+        "p90": 15.015
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 6.204,
+        "p90": 12.104
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 4.992,
+        "p90": 9.192
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 92,
+     "leg_height_pts": {
+      "n": 92,
+      "median": 32.875,
+      "p90": 66.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 18.438,
+        "p90": 35.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.492,
+        "p90": 27.175
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.698,
+        "p90": 21.544
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.904,
+        "p90": 15.912
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "london|not_traded": {
+     "n": 640,
+     "leg_height_pts": {
+      "n": 640,
+      "median": 18.375,
+      "p90": 44.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 11.188,
+        "p90": 24.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 8.982,
+        "p90": 18.72
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 7.421,
+        "p90": 14.98
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.859,
+        "p90": 11.24
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 163,
+     "leg_height_pts": {
+      "n": 163,
+      "median": 57.25,
+      "p90": 124.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 30.625,
+        "p90": 64.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 23.755,
+        "p90": 49.405
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 18.889,
+        "p90": 38.801
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.022,
+        "p90": 28.197
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 177,
+     "leg_height_pts": {
+      "n": 177,
+      "median": 51.25,
+      "p90": 105.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 27.625,
+        "p90": 54.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 21.475,
+        "p90": 42.185
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 17.119,
+        "p90": 33.196
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.762,
+        "p90": 24.207
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 54,
+     "leg_height_pts": {
+      "n": 54,
+      "median": 34.25,
+      "p90": 67.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 19.125,
+        "p90": 35.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 15.015,
+        "p90": 27.65
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.104,
+        "p90": 21.913
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.192,
+        "p90": 16.175
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.382|height_atr=0.5": {
+   "1": {
+    "london|not_traded": {
+     "n": 1315,
+     "leg_height_pts": {
+      "n": 1315,
+      "median": 10.0,
+      "p90": 27.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 7.0,
+        "p90": 15.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 5.8,
+        "p90": 12.355
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 4.95,
+        "p90": 10.039
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 4.1,
+        "p90": 7.722
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 261,
+     "leg_height_pts": {
+      "n": 261,
+      "median": 32.0,
+      "p90": 74.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 18.0,
+        "p90": 39.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.16,
+        "p90": 30.12
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.44,
+        "p90": 23.83
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.72,
+        "p90": 17.54
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 305,
+     "leg_height_pts": {
+      "n": 305,
+      "median": 24.75,
+      "p90": 59.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 14.375,
+        "p90": 31.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 11.405,
+        "p90": 24.705
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 9.301,
+        "p90": 19.626
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.197,
+        "p90": 14.547
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 149,
+     "leg_height_pts": {
+      "n": 149,
+      "median": 32.5,
+      "p90": 69.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 18.25,
+        "p90": 36.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.35,
+        "p90": 28.315
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.588,
+        "p90": 22.429
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.825,
+        "p90": 16.542
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "ny_am|09:45-10:30": {
+     "n": 152,
+     "leg_height_pts": {
+      "n": 152,
+      "median": 43.0,
+      "p90": 85.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 23.5,
+        "p90": 44.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.34,
+        "p90": 34.3
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.685,
+        "p90": 27.075
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.03,
+        "p90": 19.85
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 772,
+     "leg_height_pts": {
+      "n": 772,
+      "median": 13.25,
+      "p90": 33.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 8.625,
+        "p90": 18.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 7.035,
+        "p90": 14.635
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 5.909,
+        "p90": 11.809
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 4.782,
+        "p90": 8.982
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 172,
+     "leg_height_pts": {
+      "n": 172,
+      "median": 38.875,
+      "p90": 87.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 21.438,
+        "p90": 45.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 16.773,
+        "p90": 35.155
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.468,
+        "p90": 27.739
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.164,
+        "p90": 20.322
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 96,
+     "leg_height_pts": {
+      "n": 96,
+      "median": 39.5,
+      "p90": 79.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 21.75,
+        "p90": 41.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.01,
+        "p90": 32.21
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.653,
+        "p90": 25.453
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.295,
+        "p90": 18.695
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "london|not_traded": {
+     "n": 519,
+     "leg_height_pts": {
+      "n": 519,
+      "median": 16.75,
+      "p90": 42.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 10.375,
+        "p90": 23.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 8.365,
+        "p90": 17.96
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 6.941,
+        "p90": 14.39
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.517,
+        "p90": 10.82
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 129,
+     "leg_height_pts": {
+      "n": 129,
+      "median": 44.5,
+      "p90": 96.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 24.25,
+        "p90": 50.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.91,
+        "p90": 38.48
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.128,
+        "p90": 30.32
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.345,
+        "p90": 22.16
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 125,
+     "leg_height_pts": {
+      "n": 125,
+      "median": 55.0,
+      "p90": 122.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 29.5,
+        "p90": 63.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 22.9,
+        "p90": 48.55
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 18.225,
+        "p90": 38.138
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 13.55,
+        "p90": 27.725
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 58,
+     "leg_height_pts": {
+      "n": 58,
+      "median": 36.625,
+      "p90": 70.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 20.312,
+        "p90": 37.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 15.918,
+        "p90": 28.79
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.804,
+        "p90": 22.798
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.691,
+        "p90": 16.805
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "london|not_traded": {
+     "n": 338,
+     "leg_height_pts": {
+      "n": 338,
+      "median": 20.875,
+      "p90": 46.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 12.438,
+        "p90": 25.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 9.933,
+        "p90": 19.765
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 8.158,
+        "p90": 15.791
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 6.384,
+        "p90": 11.817
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 83,
+     "leg_height_pts": {
+      "n": 83,
+      "median": 59.75,
+      "p90": 95.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 31.875,
+        "p90": 49.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.705,
+        "p90": 38.29
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.626,
+        "p90": 30.173
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.547,
+        "p90": 22.055
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 87,
+     "leg_height_pts": {
+      "n": 87,
+      "median": 65.5,
+      "p90": 155.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 34.75,
+        "p90": 79.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 26.89,
+        "p90": 60.9
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 21.323,
+        "p90": 47.725
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 15.755,
+        "p90": 34.55
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 35,
+     "leg_height_pts": {
+      "n": 35,
+      "median": 35.25,
+      "p90": 51.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 19.625,
+        "p90": 27.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 15.395,
+        "p90": 21.475
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.399,
+        "p90": 17.119
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.402,
+        "p90": 12.762
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.5|height_atr=0.5": {
+   "1": {
+    "london|not_traded": {
+     "n": 310,
+     "leg_height_pts": {
+      "n": 310,
+      "median": 12.25,
+      "p90": 35.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 8.125,
+        "p90": 19.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 6.655,
+        "p90": 15.585
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 5.614,
+        "p90": 12.546
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 4.572,
+        "p90": 9.507
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 93,
+     "leg_height_pts": {
+      "n": 93,
+      "median": 41.0,
+      "p90": 103.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 22.5,
+        "p90": 53.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.58,
+        "p90": 41.425
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.095,
+        "p90": 32.606
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.61,
+        "p90": 23.787
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 84,
+     "leg_height_pts": {
+      "n": 84,
+      "median": 39.25,
+      "p90": 71.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 21.625,
+        "p90": 37.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 16.915,
+        "p90": 29.075
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.579,
+        "p90": 23.019
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.242,
+        "p90": 16.962
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 71,
+     "leg_height_pts": {
+      "n": 71,
+      "median": 34.0,
+      "p90": 97.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 19.0,
+        "p90": 50.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.92,
+        "p90": 39.05
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.03,
+        "p90": 30.763
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.14,
+        "p90": 22.475
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "ny_am|09:45-10:30": {
+     "n": 68,
+     "leg_height_pts": {
+      "n": 68,
+      "median": 48.375,
+      "p90": 120.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 26.188,
+        "p90": 62.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 20.383,
+        "p90": 47.79
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 16.271,
+        "p90": 37.548
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.159,
+        "p90": 27.305
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 56,
+     "leg_height_pts": {
+      "n": 56,
+      "median": 42.125,
+      "p90": 97.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 23.062,
+        "p90": 50.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.008,
+        "p90": 39.05
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.427,
+        "p90": 30.763
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.846,
+        "p90": 22.475
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 252,
+     "leg_height_pts": {
+      "n": 252,
+      "median": 17.0,
+      "p90": 42.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 10.5,
+        "p90": 23.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 8.46,
+        "p90": 17.96
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 7.015,
+        "p90": 14.39
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.57,
+        "p90": 10.82
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 59,
+     "leg_height_pts": {
+      "n": 59,
+      "median": 40.5,
+      "p90": 79.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 22.25,
+        "p90": 41.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.39,
+        "p90": 32.21
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.948,
+        "p90": 25.453
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.505,
+        "p90": 18.695
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "ny_am|outside_traded_window": {
+     "n": 36,
+     "leg_height_pts": {
+      "n": 36,
+      "median": 51.375,
+      "p90": 90.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 27.688,
+        "p90": 47.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 21.523,
+        "p90": 36.2
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 17.156,
+        "p90": 28.55
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.789,
+        "p90": 20.9
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 187,
+     "leg_height_pts": {
+      "n": 187,
+      "median": 19.25,
+      "p90": 42.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 11.625,
+        "p90": 23.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 9.315,
+        "p90": 18.15
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 7.679,
+        "p90": 14.538
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 6.042,
+        "p90": 10.925
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 70,
+     "leg_height_pts": {
+      "n": 70,
+      "median": 60.5,
+      "p90": 143.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 32.25,
+        "p90": 73.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.99,
+        "p90": 56.34
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.848,
+        "p90": 44.185
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.705,
+        "p90": 32.03
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 41,
+     "leg_height_pts": {
+      "n": 41,
+      "median": 41.75,
+      "p90": 102.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 22.875,
+        "p90": 53.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.865,
+        "p90": 40.855
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.316,
+        "p90": 32.164
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.767,
+        "p90": 23.472
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "ny_am|outside_traded_window": {
+     "n": 36,
+     "leg_height_pts": {
+      "n": 36,
+      "median": 80.0,
+      "p90": 104.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 42.0,
+        "p90": 54.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 32.4,
+        "p90": 41.615
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 25.6,
+        "p90": 32.754
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 18.8,
+        "p90": 23.892
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 147,
+     "leg_height_pts": {
+      "n": 147,
+      "median": 24.0,
+      "p90": 47.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 14.0,
+        "p90": 25.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 11.12,
+        "p90": 20.145
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 9.08,
+        "p90": 16.086
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.04,
+        "p90": 12.027
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 48,
+     "leg_height_pts": {
+      "n": 48,
+      "median": 70.125,
+      "p90": 155.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 37.062,
+        "p90": 79.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 28.648,
+        "p90": 60.9
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 22.687,
+        "p90": 47.725
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 16.726,
+        "p90": 34.55
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 19,
+     "leg_height_pts": {
+      "n": 19,
+      "median": 34.0,
+      "p90": 52.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 19.0,
+        "p90": 28.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.92,
+        "p90": 21.76
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.03,
+        "p90": 17.34
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.14,
+        "p90": 12.92
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.236|height_atr=1.0": {
+   "1": {
+    "ny_am|09:30-09:45": {
+     "n": 126,
+     "leg_height_pts": {
+      "n": 126,
+      "median": 30.875,
+      "p90": 56.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 17.438,
+        "p90": 30.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 13.732,
+        "p90": 23.47
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.108,
+        "p90": 18.668
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.484,
+        "p90": 13.865
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 818,
+     "leg_height_pts": {
+      "n": 818,
+      "median": 9.5,
+      "p90": 22.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 6.75,
+        "p90": 13.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 5.61,
+        "p90": 10.645
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 4.803,
+        "p90": 8.711
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 3.995,
+        "p90": 6.777
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 202,
+     "leg_height_pts": {
+      "n": 202,
+      "median": 24.875,
+      "p90": 66.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 14.438,
+        "p90": 35.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 11.453,
+        "p90": 27.08
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 9.338,
+        "p90": 21.47
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.224,
+        "p90": 15.86
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 200,
+     "leg_height_pts": {
+      "n": 200,
+      "median": 30.75,
+      "p90": 64.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 17.375,
+        "p90": 34.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 13.685,
+        "p90": 26.32
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.071,
+        "p90": 20.88
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.457,
+        "p90": 15.44
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "ny_am|outside_traded_window": {
+     "n": 120,
+     "leg_height_pts": {
+      "n": 120,
+      "median": 35.25,
+      "p90": 80.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 19.625,
+        "p90": 42.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 15.395,
+        "p90": 32.685
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.399,
+        "p90": 25.821
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.402,
+        "p90": 18.957
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 131,
+     "leg_height_pts": {
+      "n": 131,
+      "median": 42.75,
+      "p90": 92.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 23.375,
+        "p90": 48.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.245,
+        "p90": 36.96
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.611,
+        "p90": 29.14
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.977,
+        "p90": 21.32
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 501,
+     "leg_height_pts": {
+      "n": 501,
+      "median": 14.75,
+      "p90": 35.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 9.375,
+        "p90": 19.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 7.605,
+        "p90": 15.395
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 6.351,
+        "p90": 12.399
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.097,
+        "p90": 9.402
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 84,
+     "leg_height_pts": {
+      "n": 84,
+      "median": 34.875,
+      "p90": 69.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 19.438,
+        "p90": 36.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 15.252,
+        "p90": 28.315
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.288,
+        "p90": 22.429
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.324,
+        "p90": 16.542
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "london|not_traded": {
+     "n": 398,
+     "leg_height_pts": {
+      "n": 398,
+      "median": 17.25,
+      "p90": 38.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 10.625,
+        "p90": 21.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 8.555,
+        "p90": 16.725
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 7.089,
+        "p90": 13.431
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.622,
+        "p90": 10.137
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 94,
+     "leg_height_pts": {
+      "n": 94,
+      "median": 50.875,
+      "p90": 97.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 27.438,
+        "p90": 50.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 21.332,
+        "p90": 39.05
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 17.008,
+        "p90": 30.763
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.684,
+        "p90": 22.475
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 124,
+     "leg_height_pts": {
+      "n": 124,
+      "median": 47.75,
+      "p90": 117.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 25.875,
+        "p90": 60.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 20.145,
+        "p90": 46.745
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 16.086,
+        "p90": 36.736
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.027,
+        "p90": 26.727
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 59,
+     "leg_height_pts": {
+      "n": 59,
+      "median": 33.5,
+      "p90": 78.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 18.75,
+        "p90": 41.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.73,
+        "p90": 31.735
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.883,
+        "p90": 25.084
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.035,
+        "p90": 18.432
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "london|not_traded": {
+     "n": 306,
+     "leg_height_pts": {
+      "n": 306,
+      "median": 21.125,
+      "p90": 50.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 12.562,
+        "p90": 27.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 10.027,
+        "p90": 21.19
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 8.232,
+        "p90": 16.898
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 6.436,
+        "p90": 12.605
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 117,
+     "leg_height_pts": {
+      "n": 117,
+      "median": 60.5,
+      "p90": 147.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 32.25,
+        "p90": 75.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.99,
+        "p90": 58.145
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.848,
+        "p90": 45.586
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.705,
+        "p90": 33.027
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 37,
+     "leg_height_pts": {
+      "n": 37,
+      "median": 39.25,
+      "p90": 82.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 21.625,
+        "p90": 43.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 16.915,
+        "p90": 33.445
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.579,
+        "p90": 26.411
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.242,
+        "p90": 19.377
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 81,
+     "leg_height_pts": {
+      "n": 81,
+      "median": 63.25,
+      "p90": 143.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 33.625,
+        "p90": 73.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 26.035,
+        "p90": 56.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 20.659,
+        "p90": 44.406
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 15.282,
+        "p90": 32.188
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.382|height_atr=1.0": {
+   "1": {
+    "ny_am|outside_traded_window": {
+     "n": 188,
+     "leg_height_pts": {
+      "n": 188,
+      "median": 28.625,
+      "p90": 61.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 16.312,
+        "p90": 32.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 12.877,
+        "p90": 25.18
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 10.444,
+        "p90": 19.995
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.011,
+        "p90": 14.81
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 809,
+     "leg_height_pts": {
+      "n": 809,
+      "median": 11.25,
+      "p90": 28.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 7.625,
+        "p90": 16.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 6.275,
+        "p90": 12.735
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 5.319,
+        "p90": 10.334
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 4.362,
+        "p90": 7.932
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 116,
+     "leg_height_pts": {
+      "n": 116,
+      "median": 33.625,
+      "p90": 69.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 18.812,
+        "p90": 36.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.777,
+        "p90": 28.315
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.919,
+        "p90": 22.429
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.061,
+        "p90": 16.542
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 180,
+     "leg_height_pts": {
+      "n": 180,
+      "median": 32.5,
+      "p90": 79.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 18.25,
+        "p90": 41.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.35,
+        "p90": 32.115
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.588,
+        "p90": 25.379
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.825,
+        "p90": 18.642
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "london|not_traded": {
+     "n": 459,
+     "leg_height_pts": {
+      "n": 459,
+      "median": 15.75,
+      "p90": 40.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 9.875,
+        "p90": 22.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 7.985,
+        "p90": 17.2
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 6.646,
+        "p90": 13.8
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.307,
+        "p90": 10.4
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 93,
+     "leg_height_pts": {
+      "n": 93,
+      "median": 40.25,
+      "p90": 89.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 22.125,
+        "p90": 46.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.295,
+        "p90": 35.915
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.874,
+        "p90": 28.329
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.452,
+        "p90": 20.742
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 95,
+     "leg_height_pts": {
+      "n": 95,
+      "median": 47.25,
+      "p90": 103.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 25.625,
+        "p90": 53.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 19.955,
+        "p90": 41.425
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.939,
+        "p90": 32.606
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.922,
+        "p90": 23.787
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 78,
+     "leg_height_pts": {
+      "n": 78,
+      "median": 39.375,
+      "p90": 91.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 21.688,
+        "p90": 47.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 16.962,
+        "p90": 36.58
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.616,
+        "p90": 28.845
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.269,
+        "p90": 21.11
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "london|not_traded": {
+     "n": 364,
+     "leg_height_pts": {
+      "n": 364,
+      "median": 17.875,
+      "p90": 42.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 10.938,
+        "p90": 23.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 8.793,
+        "p90": 18.15
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 7.273,
+        "p90": 14.538
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.754,
+        "p90": 10.925
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 73,
+     "leg_height_pts": {
+      "n": 73,
+      "median": 58.75,
+      "p90": 97.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 31.375,
+        "p90": 50.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.325,
+        "p90": 39.05
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.331,
+        "p90": 30.763
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.337,
+        "p90": 22.475
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 101,
+     "leg_height_pts": {
+      "n": 101,
+      "median": 60.25,
+      "p90": 133.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 32.125,
+        "p90": 68.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.895,
+        "p90": 52.54
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.774,
+        "p90": 41.235
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.652,
+        "p90": 29.93
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 50,
+     "leg_height_pts": {
+      "n": 50,
+      "median": 34.875,
+      "p90": 70.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 19.438,
+        "p90": 37.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 15.252,
+        "p90": 28.79
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.288,
+        "p90": 22.798
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.324,
+        "p90": 16.805
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "london|not_traded": {
+     "n": 256,
+     "leg_height_pts": {
+      "n": 256,
+      "median": 23.875,
+      "p90": 51.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 13.938,
+        "p90": 27.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 11.072,
+        "p90": 21.475
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 9.043,
+        "p90": 17.119
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.014,
+        "p90": 12.762
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 54,
+     "leg_height_pts": {
+      "n": 54,
+      "median": 57.5,
+      "p90": 88.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 30.75,
+        "p90": 46.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 23.85,
+        "p90": 35.535
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 18.963,
+        "p90": 28.034
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.075,
+        "p90": 20.532
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 30,
+     "leg_height_pts": {
+      "n": 30,
+      "median": 37.75,
+      "p90": 52.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 20.875,
+        "p90": 28.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 16.345,
+        "p90": 21.76
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.136,
+        "p90": 17.34
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.927,
+        "p90": 12.92
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 80,
+     "leg_height_pts": {
+      "n": 80,
+      "median": 65.25,
+      "p90": 160.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 34.625,
+        "p90": 82.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 26.795,
+        "p90": 62.895
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 21.249,
+        "p90": 49.274
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 15.702,
+        "p90": 35.652
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.5|height_atr=1.0": {
+   "1": {
+    "london|not_traded": {
+     "n": 276,
+     "leg_height_pts": {
+      "n": 276,
+      "median": 12.25,
+      "p90": 37.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 8.125,
+        "p90": 20.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 6.655,
+        "p90": 16.345
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 5.614,
+        "p90": 13.136
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 4.572,
+        "p90": 9.927
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 91,
+     "leg_height_pts": {
+      "n": 91,
+      "median": 40.5,
+      "p90": 103.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 22.25,
+        "p90": 53.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.39,
+        "p90": 41.425
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.948,
+        "p90": 32.606
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.505,
+        "p90": 23.787
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 86,
+     "leg_height_pts": {
+      "n": 86,
+      "median": 37.875,
+      "p90": 71.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 20.938,
+        "p90": 37.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 16.392,
+        "p90": 29.075
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.173,
+        "p90": 23.019
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.954,
+        "p90": 16.962
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 71,
+     "leg_height_pts": {
+      "n": 71,
+      "median": 35.5,
+      "p90": 88.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 19.75,
+        "p90": 46.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 15.49,
+        "p90": 35.44
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.473,
+        "p90": 27.96
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.455,
+        "p90": 20.48
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "ny_am|outside_traded_window": {
+     "n": 44,
+     "leg_height_pts": {
+      "n": 44,
+      "median": 47.25,
+      "p90": 101.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 25.625,
+        "p90": 52.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 19.955,
+        "p90": 40.57
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.939,
+        "p90": 31.943
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.922,
+        "p90": 23.315
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 209,
+     "leg_height_pts": {
+      "n": 209,
+      "median": 18.25,
+      "p90": 42.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 11.125,
+        "p90": 23.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 8.935,
+        "p90": 18.245
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 7.384,
+        "p90": 14.611
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.832,
+        "p90": 10.977
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 59,
+     "leg_height_pts": {
+      "n": 59,
+      "median": 49.25,
+      "p90": 134.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 26.625,
+        "p90": 69.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 20.715,
+        "p90": 53.015
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 16.529,
+        "p90": 41.604
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.342,
+        "p90": 30.192
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 56,
+     "leg_height_pts": {
+      "n": 56,
+      "median": 40.625,
+      "p90": 79.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 22.312,
+        "p90": 41.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.438,
+        "p90": 32.21
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.984,
+        "p90": 25.453
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.531,
+        "p90": 18.695
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "ny_am|outside_traded_window": {
+     "n": 32,
+     "leg_height_pts": {
+      "n": 32,
+      "median": 59.0,
+      "p90": 90.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 31.5,
+        "p90": 47.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.42,
+        "p90": 36.2
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.405,
+        "p90": 28.55
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.39,
+        "p90": 20.9
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 163,
+     "leg_height_pts": {
+      "n": 163,
+      "median": 20.5,
+      "p90": 44.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 12.25,
+        "p90": 24.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 9.79,
+        "p90": 19.005
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 8.048,
+        "p90": 15.201
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 6.305,
+        "p90": 11.397
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 67,
+     "leg_height_pts": {
+      "n": 67,
+      "median": 60.25,
+      "p90": 143.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 32.125,
+        "p90": 73.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.895,
+        "p90": 56.34
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.774,
+        "p90": 44.185
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.652,
+        "p90": 32.03
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 36,
+     "leg_height_pts": {
+      "n": 36,
+      "median": 43.125,
+      "p90": 100.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 23.562,
+        "p90": 52.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.387,
+        "p90": 40.19
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.722,
+        "p90": 31.648
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.056,
+        "p90": 23.105
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "ny_am|outside_traded_window": {
+     "n": 30,
+     "leg_height_pts": {
+      "n": 30,
+      "median": 78.25,
+      "p90": 100.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 41.125,
+        "p90": 52.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 31.735,
+        "p90": 40.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 25.084,
+        "p90": 31.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 18.432,
+        "p90": 23.0
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 131,
+     "leg_height_pts": {
+      "n": 131,
+      "median": 24.5,
+      "p90": 50.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 14.25,
+        "p90": 27.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 11.31,
+        "p90": 21.19
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 9.228,
+        "p90": 16.898
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.145,
+        "p90": 12.605
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 47,
+     "leg_height_pts": {
+      "n": 47,
+      "median": 70.25,
+      "p90": 155.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 37.125,
+        "p90": 79.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 28.695,
+        "p90": 60.9
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 22.724,
+        "p90": 47.725
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 16.752,
+        "p90": 34.55
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 19,
+     "leg_height_pts": {
+      "n": 19,
+      "median": 34.0,
+      "p90": 52.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 19.0,
+        "p90": 28.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.92,
+        "p90": 21.76
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.03,
+        "p90": 17.34
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.14,
+        "p90": 12.92
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.236|height_atr=2.0": {
+   "1": {
+    "london|not_traded": {
+     "n": 222,
+     "leg_height_pts": {
+      "n": 222,
+      "median": 14.5,
+      "p90": 27.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 9.25,
+        "p90": 15.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 7.51,
+        "p90": 12.355
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 6.278,
+        "p90": 10.039
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.045,
+        "p90": 7.722
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 46,
+     "leg_height_pts": {
+      "n": 46,
+      "median": 41.875,
+      "p90": 117.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 22.938,
+        "p90": 60.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.913,
+        "p90": 46.745
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.353,
+        "p90": 36.736
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.794,
+        "p90": 26.727
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 42,
+     "leg_height_pts": {
+      "n": 42,
+      "median": 47.25,
+      "p90": 86.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 25.625,
+        "p90": 45.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 19.955,
+        "p90": 34.965
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.939,
+        "p90": 27.591
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.922,
+        "p90": 20.217
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 38,
+     "leg_height_pts": {
+      "n": 38,
+      "median": 49.125,
+      "p90": 94.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 26.562,
+        "p90": 49.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 20.668,
+        "p90": 37.815
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 16.492,
+        "p90": 29.804
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.316,
+        "p90": 21.792
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "ny_am|09:30-09:45": {
+     "n": 31,
+     "leg_height_pts": {
+      "n": 31,
+      "median": 40.0,
+      "p90": 78.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 22.0,
+        "p90": 41.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.2,
+        "p90": 31.735
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.8,
+        "p90": 25.084
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.4,
+        "p90": 18.432
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 137,
+     "leg_height_pts": {
+      "n": 137,
+      "median": 20.25,
+      "p90": 39.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 12.125,
+        "p90": 21.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 9.695,
+        "p90": 17.105
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 7.974,
+        "p90": 13.726
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 6.252,
+        "p90": 10.347
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 39,
+     "leg_height_pts": {
+      "n": 39,
+      "median": 61.5,
+      "p90": 117.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 32.75,
+        "p90": 60.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 25.37,
+        "p90": 46.46
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 20.143,
+        "p90": 36.515
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.915,
+        "p90": 26.57
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 29,
+     "leg_height_pts": {
+      "n": 29,
+      "median": 58.0,
+      "p90": 104.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 31.0,
+        "p90": 54.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.04,
+        "p90": 41.805
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.11,
+        "p90": 32.901
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.18,
+        "p90": 23.997
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "london|not_traded": {
+     "n": 98,
+     "leg_height_pts": {
+      "n": 98,
+      "median": 23.25,
+      "p90": 52.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 13.625,
+        "p90": 28.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 10.835,
+        "p90": 22.045
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 8.859,
+        "p90": 17.561
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 6.882,
+        "p90": 13.077
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 38,
+     "leg_height_pts": {
+      "n": 38,
+      "median": 73.875,
+      "p90": 126.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 38.938,
+        "p90": 65.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 30.073,
+        "p90": 49.975
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 23.793,
+        "p90": 39.244
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 17.514,
+        "p90": 28.512
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 38,
+     "leg_height_pts": {
+      "n": 38,
+      "median": 70.875,
+      "p90": 187.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 37.438,
+        "p90": 95.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 28.933,
+        "p90": 73.345
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 22.908,
+        "p90": 57.386
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 16.884,
+        "p90": 41.427
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 35,
+     "leg_height_pts": {
+      "n": 35,
+      "median": 51.25,
+      "p90": 112.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 27.625,
+        "p90": 58.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 21.475,
+        "p90": 44.845
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 17.119,
+        "p90": 35.261
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.762,
+        "p90": 25.677
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "london|not_traded": {
+     "n": 127,
+     "leg_height_pts": {
+      "n": 127,
+      "median": 27.5,
+      "p90": 58.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 15.75,
+        "p90": 31.25
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 12.45,
+        "p90": 24.23
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 10.113,
+        "p90": 19.258
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.775,
+        "p90": 14.285
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 23,
+     "leg_height_pts": {
+      "n": 23,
+      "median": 84.5,
+      "p90": 189.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 44.25,
+        "p90": 96.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 34.11,
+        "p90": 74.105
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 26.928,
+        "p90": 57.976
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 19.745,
+        "p90": 41.847
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 36,
+     "leg_height_pts": {
+      "n": 36,
+      "median": 70.875,
+      "p90": 135.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 37.438,
+        "p90": 69.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 28.933,
+        "p90": 53.3
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 22.908,
+        "p90": 41.825
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 16.884,
+        "p90": 30.35
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 23,
+     "leg_height_pts": {
+      "n": 23,
+      "median": 45.25,
+      "p90": 82.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 24.625,
+        "p90": 43.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 19.195,
+        "p90": 33.445
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.349,
+        "p90": 26.411
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.502,
+        "p90": 19.377
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.382|height_atr=2.0": {
+   "1": {
+    "london|not_traded": {
+     "n": 283,
+     "leg_height_pts": {
+      "n": 283,
+      "median": 15.0,
+      "p90": 37.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 9.5,
+        "p90": 20.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 7.7,
+        "p90": 16.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 6.425,
+        "p90": 13.063
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.15,
+        "p90": 9.875
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 42,
+     "leg_height_pts": {
+      "n": 42,
+      "median": 43.375,
+      "p90": 84.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 23.688,
+        "p90": 44.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.483,
+        "p90": 33.92
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.796,
+        "p90": 26.78
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.109,
+        "p90": 19.64
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 57,
+     "leg_height_pts": {
+      "n": 57,
+      "median": 48.75,
+      "p90": 94.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 26.375,
+        "p90": 49.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 20.525,
+        "p90": 37.815
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 16.381,
+        "p90": 29.804
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.237,
+        "p90": 21.792
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 58,
+     "leg_height_pts": {
+      "n": 58,
+      "median": 42.25,
+      "p90": 95.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 23.125,
+        "p90": 49.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.055,
+        "p90": 38.29
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.464,
+        "p90": 30.173
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.872,
+        "p90": 22.055
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "london|not_traded": {
+     "n": 159,
+     "leg_height_pts": {
+      "n": 159,
+      "median": 22.75,
+      "p90": 42.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 13.375,
+        "p90": 23.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 10.645,
+        "p90": 18.15
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 8.711,
+        "p90": 14.538
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 6.777,
+        "p90": 10.925
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 37,
+     "leg_height_pts": {
+      "n": 37,
+      "median": 62.25,
+      "p90": 122.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 33.125,
+        "p90": 63.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 25.655,
+        "p90": 48.645
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 20.364,
+        "p90": 38.211
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 15.072,
+        "p90": 27.777
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 47,
+     "leg_height_pts": {
+      "n": 47,
+      "median": 46.0,
+      "p90": 95.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 25.0,
+        "p90": 49.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 19.48,
+        "p90": 38.29
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.57,
+        "p90": 30.173
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.66,
+        "p90": 22.055
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 26,
+     "leg_height_pts": {
+      "n": 26,
+      "median": 67.125,
+      "p90": 124.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 35.562,
+        "p90": 64.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 27.508,
+        "p90": 49.215
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 21.802,
+        "p90": 38.654
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 16.096,
+        "p90": 28.092
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "ny_am|09:45-10:30": {
+     "n": 36,
+     "leg_height_pts": {
+      "n": 36,
+      "median": 68.125,
+      "p90": 133.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 36.062,
+        "p90": 68.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 27.887,
+        "p90": 52.54
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 22.097,
+        "p90": 41.235
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 16.306,
+        "p90": 29.93
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 29,
+     "leg_height_pts": {
+      "n": 29,
+      "median": 74.75,
+      "p90": 101.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 39.375,
+        "p90": 52.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 30.405,
+        "p90": 40.475
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 24.051,
+        "p90": 31.869
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 17.697,
+        "p90": 23.262
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 115,
+     "leg_height_pts": {
+      "n": 115,
+      "median": 23.25,
+      "p90": 50.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 13.625,
+        "p90": 27.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 10.835,
+        "p90": 21.285
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 8.859,
+        "p90": 16.971
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 6.882,
+        "p90": 12.657
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 35,
+     "leg_height_pts": {
+      "n": 35,
+      "median": 44.25,
+      "p90": 118.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 24.125,
+        "p90": 61.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.815,
+        "p90": 47.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.054,
+        "p90": 37.031
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.292,
+        "p90": 26.937
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "ny_am|outside_traded_window": {
+     "n": 21,
+     "leg_height_pts": {
+      "n": 21,
+      "median": 91.5,
+      "p90": 214.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 47.75,
+        "p90": 109.0
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 36.77,
+        "p90": 83.32
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 28.993,
+        "p90": 65.13
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 21.215,
+        "p90": 46.94
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 31,
+     "leg_height_pts": {
+      "n": 31,
+      "median": 75.75,
+      "p90": 206.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 39.875,
+        "p90": 105.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 30.785,
+        "p90": 80.28
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 24.346,
+        "p90": 62.77
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 17.907,
+        "p90": 45.26
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 104,
+     "leg_height_pts": {
+      "n": 104,
+      "median": 31.625,
+      "p90": 58.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 17.812,
+        "p90": 31.25
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.018,
+        "p90": 24.23
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.329,
+        "p90": 19.258
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.641,
+        "p90": 14.285
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 23,
+     "leg_height_pts": {
+      "n": 23,
+      "median": 42.75,
+      "p90": 81.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 23.375,
+        "p90": 42.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.245,
+        "p90": 33.065
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.611,
+        "p90": 26.116
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.977,
+        "p90": 19.167
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.5|height_atr=2.0": {
+   "1": {
+    "london|not_traded": {
+     "n": 162,
+     "leg_height_pts": {
+      "n": 162,
+      "median": 17.0,
+      "p90": 42.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 10.5,
+        "p90": 23.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 8.46,
+        "p90": 18.15
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 7.015,
+        "p90": 14.538
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.57,
+        "p90": 10.925
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 22,
+     "leg_height_pts": {
+      "n": 22,
+      "median": 62.0,
+      "p90": 89.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 33.0,
+        "p90": 46.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 25.56,
+        "p90": 36.105
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 20.29,
+        "p90": 28.476
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 15.02,
+        "p90": 20.847
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 48,
+     "leg_height_pts": {
+      "n": 48,
+      "median": 50.875,
+      "p90": 103.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 27.438,
+        "p90": 53.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 21.332,
+        "p90": 41.425
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 17.008,
+        "p90": 32.606
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.684,
+        "p90": 23.787
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 55,
+     "leg_height_pts": {
+      "n": 55,
+      "median": 38.5,
+      "p90": 91.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 21.25,
+        "p90": 47.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 16.63,
+        "p90": 36.58
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.358,
+        "p90": 28.845
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.085,
+        "p90": 21.11
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "ny_am|09:45-10:30": {
+     "n": 29,
+     "leg_height_pts": {
+      "n": 29,
+      "median": 65.5,
+      "p90": 160.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 34.75,
+        "p90": 82.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 26.89,
+        "p90": 62.895
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 21.323,
+        "p90": 49.274
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 15.755,
+        "p90": 35.652
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 116,
+     "leg_height_pts": {
+      "n": 116,
+      "median": 24.625,
+      "p90": 47.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 14.312,
+        "p90": 25.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 11.357,
+        "p90": 19.955
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 9.264,
+        "p90": 15.939
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.171,
+        "p90": 11.922
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 40,
+     "leg_height_pts": {
+      "n": 40,
+      "median": 44.25,
+      "p90": 102.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 24.125,
+        "p90": 53.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.815,
+        "p90": 40.855
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.054,
+        "p90": 32.164
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.292,
+        "p90": 23.472
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 18,
+     "leg_height_pts": {
+      "n": 18,
+      "median": 72.625,
+      "p90": 124.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 38.312,
+        "p90": 64.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 29.598,
+        "p90": 49.215
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 23.424,
+        "p90": 38.654
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 17.251,
+        "p90": 28.092
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "ny_am|09:45-10:30": {
+     "n": 36,
+     "leg_height_pts": {
+      "n": 36,
+      "median": 71.875,
+      "p90": 155.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 37.938,
+        "p90": 79.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 29.312,
+        "p90": 60.9
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 23.203,
+        "p90": 47.725
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 17.094,
+        "p90": 34.55
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 21,
+     "leg_height_pts": {
+      "n": 21,
+      "median": 82.0,
+      "p90": 142.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 43.0,
+        "p90": 73.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 33.16,
+        "p90": 56.245
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 26.19,
+        "p90": 44.111
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 19.22,
+        "p90": 31.977
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 87,
+     "leg_height_pts": {
+      "n": 87,
+      "median": 24.75,
+      "p90": 51.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 14.375,
+        "p90": 27.625
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 11.405,
+        "p90": 21.475
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 9.301,
+        "p90": 17.119
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.197,
+        "p90": 12.762
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 30,
+     "leg_height_pts": {
+      "n": 30,
+      "median": 45.125,
+      "p90": 112.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 24.562,
+        "p90": 58.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 19.148,
+        "p90": 44.845
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.312,
+        "p90": 35.261
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.476,
+        "p90": 25.677
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "ny_am|outside_traded_window": {
+     "n": 13,
+     "leg_height_pts": {
+      "n": 13,
+      "median": 105.25,
+      "p90": 177.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 54.625,
+        "p90": 90.75
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 41.995,
+        "p90": 69.45
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 33.049,
+        "p90": 54.363
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 24.102,
+        "p90": 39.275
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 69,
+     "leg_height_pts": {
+      "n": 69,
+      "median": 28.25,
+      "p90": 58.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 16.125,
+        "p90": 31.25
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 12.735,
+        "p90": 24.23
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 10.334,
+        "p90": 19.258
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.932,
+        "p90": 14.285
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 35,
+     "leg_height_pts": {
+      "n": 35,
+      "median": 76.25,
+      "p90": 186.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 40.125,
+        "p90": 95.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 30.975,
+        "p90": 72.965
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 24.494,
+        "p90": 57.091
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 18.012,
+        "p90": 41.217
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 21,
+     "leg_height_pts": {
+      "n": 21,
+      "median": 41.75,
+      "p90": 102.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 22.875,
+        "p90": 53.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.865,
+        "p90": 40.855
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.316,
+        "p90": 32.164
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.767,
+        "p90": 23.472
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.236|height_atr=3.0": {
+   "1": {
+    "ny_am|09:30-09:45": {
+     "n": 31,
+     "leg_height_pts": {
+      "n": 31,
+      "median": 35.0,
+      "p90": 81.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 19.5,
+        "p90": 42.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 15.3,
+        "p90": 32.78
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 12.325,
+        "p90": 25.895
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.35,
+        "p90": 19.01
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 116,
+     "leg_height_pts": {
+      "n": 116,
+      "median": 18.5,
+      "p90": 38.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 11.25,
+        "p90": 21.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 9.03,
+        "p90": 16.63
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 7.458,
+        "p90": 13.358
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 5.885,
+        "p90": 10.085
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 21,
+     "leg_height_pts": {
+      "n": 21,
+      "median": 75.75,
+      "p90": 122.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 39.875,
+        "p90": 63.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 30.785,
+        "p90": 48.55
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 24.346,
+        "p90": 38.138
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 17.907,
+        "p90": 27.725
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 37,
+     "leg_height_pts": {
+      "n": 37,
+      "median": 51.0,
+      "p90": 102.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 27.5,
+        "p90": 53.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 21.38,
+        "p90": 40.95
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 17.045,
+        "p90": 32.238
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.71,
+        "p90": 23.525
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "london|not_traded": {
+     "n": 71,
+     "leg_height_pts": {
+      "n": 71,
+      "median": 28.5,
+      "p90": 55.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 16.25,
+        "p90": 29.625
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 12.83,
+        "p90": 22.995
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 10.408,
+        "p90": 18.299
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.985,
+        "p90": 13.602
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 9,
+     "leg_height_pts": {
+      "n": 9,
+      "median": 83.5,
+      "p90": 106.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 43.75,
+        "p90": 55.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 33.73,
+        "p90": 42.28
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 26.633,
+        "p90": 33.27
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 19.535,
+        "p90": 24.26
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 17,
+     "leg_height_pts": {
+      "n": 17,
+      "median": 93.25,
+      "p90": 154.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 48.625,
+        "p90": 79.125
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 37.435,
+        "p90": 60.615
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 29.509,
+        "p90": 47.504
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 21.582,
+        "p90": 34.392
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 25,
+     "leg_height_pts": {
+      "n": 25,
+      "median": 43.0,
+      "p90": 98.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 23.5,
+        "p90": 51.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 18.34,
+        "p90": 39.43
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.685,
+        "p90": 31.058
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.03,
+        "p90": 22.685
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "london|not_traded": {
+     "n": 52,
+     "leg_height_pts": {
+      "n": 52,
+      "median": 29.75,
+      "p90": 61.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 16.875,
+        "p90": 32.5
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 13.305,
+        "p90": 25.18
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 10.776,
+        "p90": 19.995
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.247,
+        "p90": 14.81
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 11,
+     "leg_height_pts": {
+      "n": 11,
+      "median": 97.0,
+      "p90": 108.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 50.5,
+        "p90": 56.25
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 38.86,
+        "p90": 43.23
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 30.615,
+        "p90": 34.008
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 22.37,
+        "p90": 24.785
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 17,
+     "leg_height_pts": {
+      "n": 17,
+      "median": 90.0,
+      "p90": 130.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 47.0,
+        "p90": 67.375
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 36.2,
+        "p90": 51.685
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 28.55,
+        "p90": 40.571
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 20.9,
+        "p90": 29.457
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 26,
+     "leg_height_pts": {
+      "n": 26,
+      "median": 58.25,
+      "p90": 111.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 31.125,
+        "p90": 57.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.135,
+        "p90": 44.465
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.184,
+        "p90": 34.966
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.232,
+        "p90": 25.467
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "london|not_traded": {
+     "n": 81,
+     "leg_height_pts": {
+      "n": 81,
+      "median": 27.75,
+      "p90": 68.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 15.875,
+        "p90": 36.125
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 12.545,
+        "p90": 27.935
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 10.186,
+        "p90": 22.134
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.827,
+        "p90": 16.332
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 7,
+     "leg_height_pts": {
+      "n": 7,
+      "median": 81.0,
+      "p90": 95.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 42.5,
+        "p90": 49.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 32.78,
+        "p90": 38.29
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 25.895,
+        "p90": 30.173
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 19.01,
+        "p90": 22.055
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 19,
+     "leg_height_pts": {
+      "n": 19,
+      "median": 75.5,
+      "p90": 111.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 39.75,
+        "p90": 57.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 30.69,
+        "p90": 44.37
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 24.273,
+        "p90": 34.893
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 17.855,
+        "p90": 25.415
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 13,
+     "leg_height_pts": {
+      "n": 13,
+      "median": 53.0,
+      "p90": 82.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 28.5,
+        "p90": 43.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 22.14,
+        "p90": 33.445
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 17.635,
+        "p90": 26.411
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 13.13,
+        "p90": 19.377
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.382|height_atr=3.0": {
+   "1": {
+    "london|not_traded": {
+     "n": 122,
+     "leg_height_pts": {
+      "n": 122,
+      "median": 22.5,
+      "p90": 43.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 13.25,
+        "p90": 23.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 10.55,
+        "p90": 18.53
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 8.638,
+        "p90": 14.833
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 6.725,
+        "p90": 11.135
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 41,
+     "leg_height_pts": {
+      "n": 41,
+      "median": 46.0,
+      "p90": 113.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 25.0,
+        "p90": 58.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 19.48,
+        "p90": 45.13
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.57,
+        "p90": 35.483
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.66,
+        "p90": 25.835
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 25,
+     "leg_height_pts": {
+      "n": 25,
+      "median": 69.75,
+      "p90": 122.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 36.875,
+        "p90": 63.25
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 28.505,
+        "p90": 48.55
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 22.576,
+        "p90": 38.138
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 16.647,
+        "p90": 27.725
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 34,
+     "leg_height_pts": {
+      "n": 34,
+      "median": 65.125,
+      "p90": 97.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 34.562,
+        "p90": 50.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 26.747,
+        "p90": 39.05
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 21.212,
+        "p90": 30.763
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 15.676,
+        "p90": 22.475
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "london|not_traded": {
+     "n": 85,
+     "leg_height_pts": {
+      "n": 85,
+      "median": 28.25,
+      "p90": 52.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 16.125,
+        "p90": 28.125
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 12.735,
+        "p90": 21.855
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 10.334,
+        "p90": 17.414
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.932,
+        "p90": 12.972
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 12,
+     "leg_height_pts": {
+      "n": 12,
+      "median": 109.0,
+      "p90": 133.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 56.5,
+        "p90": 68.75
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 43.42,
+        "p90": 52.73
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 34.155,
+        "p90": 41.383
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 24.89,
+        "p90": 30.035
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 31,
+     "leg_height_pts": {
+      "n": 31,
+      "median": 46.5,
+      "p90": 120.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 25.25,
+        "p90": 62.0
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 19.67,
+        "p90": 47.6
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.718,
+        "p90": 37.4
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.765,
+        "p90": 27.2
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 13,
+     "leg_height_pts": {
+      "n": 13,
+      "median": 83.5,
+      "p90": 122.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 43.75,
+        "p90": 63.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 33.73,
+        "p90": 48.645
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 26.633,
+        "p90": 38.211
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 19.535,
+        "p90": 27.777
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "ny_am|09:45-10:30": {
+     "n": 19,
+     "leg_height_pts": {
+      "n": 19,
+      "median": 103.75,
+      "p90": 192.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 53.875,
+        "p90": 98.0
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 41.425,
+        "p90": 74.96
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 32.606,
+        "p90": 58.64
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 23.787,
+        "p90": 42.32
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 60,
+     "leg_height_pts": {
+      "n": 60,
+      "median": 28.25,
+      "p90": 64.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 16.125,
+        "p90": 34.25
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 12.735,
+        "p90": 26.51
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 10.334,
+        "p90": 21.028
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.932,
+        "p90": 15.545
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 23,
+     "leg_height_pts": {
+      "n": 23,
+      "median": 45.75,
+      "p90": 118.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 24.875,
+        "p90": 61.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 19.385,
+        "p90": 46.935
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 15.496,
+        "p90": 36.884
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 11.607,
+        "p90": 26.832
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 11,
+     "leg_height_pts": {
+      "n": 11,
+      "median": 87.75,
+      "p90": 178.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 45.875,
+        "p90": 91.125
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 35.345,
+        "p90": 69.735
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 27.886,
+        "p90": 54.584
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 20.427,
+        "p90": 39.432
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "london|not_traded": {
+     "n": 69,
+     "leg_height_pts": {
+      "n": 69,
+      "median": 33.25,
+      "p90": 70.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 18.625,
+        "p90": 37.125
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.635,
+        "p90": 28.695
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.809,
+        "p90": 22.724
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.982,
+        "p90": 16.752
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 15,
+     "leg_height_pts": {
+      "n": 15,
+      "median": 111.5,
+      "p90": 277.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 57.75,
+        "p90": 140.75
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 44.37,
+        "p90": 107.45
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 34.893,
+        "p90": 83.863
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 25.415,
+        "p90": 60.275
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 12,
+     "leg_height_pts": {
+      "n": 12,
+      "median": 62.375,
+      "p90": 81.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 33.188,
+        "p90": 42.875
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 25.703,
+        "p90": 33.065
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 20.401,
+        "p90": 26.116
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 15.099,
+        "p90": 19.167
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 3,
+     "leg_height_pts": {
+      "n": 3,
+      "median": 95.25,
+      "p90": 95.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 49.625,
+        "p90": 49.625
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 38.195,
+        "p90": 38.195
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 30.099,
+        "p90": 30.099
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 22.002,
+        "p90": 22.002
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  },
+  "retrace=0.5|height_atr=3.0": {
+   "1": {
+    "london|not_traded": {
+     "n": 77,
+     "leg_height_pts": {
+      "n": 77,
+      "median": 24.25,
+      "p90": 45.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 14.125,
+        "p90": 24.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 11.215,
+        "p90": 19.29
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 9.154,
+        "p90": 15.423
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 7.092,
+        "p90": 11.555
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 28,
+     "leg_height_pts": {
+      "n": 28,
+      "median": 40.75,
+      "p90": 95.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 22.375,
+        "p90": 49.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 17.485,
+        "p90": 38.29
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 14.021,
+        "p90": 30.173
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 10.557,
+        "p90": 22.055
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 14,
+     "leg_height_pts": {
+      "n": 14,
+      "median": 82.125,
+      "p90": 160.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 43.062,
+        "p90": 82.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 33.207,
+        "p90": 62.895
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 26.227,
+        "p90": 49.274
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 19.246,
+        "p90": 35.652
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 20,
+     "leg_height_pts": {
+      "n": 20,
+      "median": 72.875,
+      "p90": 97.5
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 38.438,
+        "p90": 50.75
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 29.692,
+        "p90": 39.05
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 23.498,
+        "p90": 30.763
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 17.304,
+        "p90": 22.475
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "2": {
+    "london|not_traded": {
+     "n": 66,
+     "leg_height_pts": {
+      "n": 66,
+      "median": 30.25,
+      "p90": 48.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 17.125,
+        "p90": 26.125
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 13.495,
+        "p90": 20.335
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 10.924,
+        "p90": 16.234
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.352,
+        "p90": 12.132
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 14,
+     "leg_height_pts": {
+      "n": 14,
+      "median": 87.875,
+      "p90": 127.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 45.938,
+        "p90": 65.625
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 35.392,
+        "p90": 50.355
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 27.923,
+        "p90": 39.539
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 20.454,
+        "p90": 28.722
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 11,
+     "leg_height_pts": {
+      "n": 11,
+      "median": 126.5,
+      "p90": 209.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 65.25,
+        "p90": 106.875
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 50.07,
+        "p90": 81.705
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 39.318,
+        "p90": 63.876
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 28.565,
+        "p90": 46.047
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 24,
+     "leg_height_pts": {
+      "n": 24,
+      "median": 50.625,
+      "p90": 101.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 27.312,
+        "p90": 52.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 21.238,
+        "p90": 40.38
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 16.934,
+        "p90": 31.795
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 12.631,
+        "p90": 23.21
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "3": {
+    "ny_am|09:45-10:30": {
+     "n": 18,
+     "leg_height_pts": {
+      "n": 18,
+      "median": 103.75,
+      "p90": 155.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 53.875,
+        "p90": 79.5
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 41.425,
+        "p90": 60.9
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 32.606,
+        "p90": 47.725
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 23.787,
+        "p90": 34.55
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "london|not_traded": {
+     "n": 42,
+     "leg_height_pts": {
+      "n": 42,
+      "median": 37.875,
+      "p90": 59.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 20.938,
+        "p90": 31.875
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 16.392,
+        "p90": 24.705
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 13.173,
+        "p90": 19.626
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 9.954,
+        "p90": 14.547
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 16,
+     "leg_height_pts": {
+      "n": 16,
+      "median": 58.25,
+      "p90": 118.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 31.125,
+        "p90": 61.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.135,
+        "p90": 46.935
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.184,
+        "p90": 36.884
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.232,
+        "p90": 26.832
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 9,
+     "leg_height_pts": {
+      "n": 9,
+      "median": 82.0,
+      "p90": 97.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 43.0,
+        "p90": 50.5
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 33.16,
+        "p90": 38.86
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 26.19,
+        "p90": 30.615
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 19.22,
+        "p90": 22.37
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   },
+   "5": {
+    "london|not_traded": {
+     "n": 43,
+     "leg_height_pts": {
+      "n": 43,
+      "median": 33.25,
+      "p90": 61.0
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 18.625,
+        "p90": 32.5
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 14.635,
+        "p90": 25.18
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 11.809,
+        "p90": 19.995
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 8.982,
+        "p90": 14.81
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:45-10:30": {
+     "n": 16,
+     "leg_height_pts": {
+      "n": 16,
+      "median": 78.125,
+      "p90": 148.75
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 41.062,
+        "p90": 76.375
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 31.688,
+        "p90": 58.525
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 25.047,
+        "p90": 45.881
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 18.406,
+        "p90": 33.237
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|09:30-09:45": {
+     "n": 7,
+     "leg_height_pts": {
+      "n": 7,
+      "median": 60.25,
+      "p90": 102.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 32.125,
+        "p90": 53.125
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 24.895,
+        "p90": 40.855
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 19.774,
+        "p90": 32.164
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 14.652,
+        "p90": 23.472
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    },
+    "ny_am|outside_traded_window": {
+     "n": 3,
+     "leg_height_pts": {
+      "n": 3,
+      "median": 95.25,
+      "p90": 95.25
+     },
+     "per_r": {
+      "0.5": {
+       "stop_dist_leg_pts": {
+        "median": 49.625,
+        "p90": 49.625
+       },
+       "clears_fit_era_bar": true
+      },
+      "0.62": {
+       "stop_dist_leg_pts": {
+        "median": 38.195,
+        "p90": 38.195
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.705": {
+       "stop_dist_leg_pts": {
+        "median": 30.099,
+        "p90": 30.099
+       },
+       "clears_fit_era_bar": false
+      },
+      "0.79": {
+       "stop_dist_leg_pts": {
+        "median": 22.002,
+        "p90": 22.002
+       },
+       "clears_fit_era_bar": false
+      }
+     }
+    }
+   }
+  }
+ }
+}

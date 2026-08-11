@@ -1,0 +1,357 @@
+{
+ "0.5": {
+  "london|not_traded": {
+   "n_qualified": 3137,
+   "fill_rate": 0.1536,
+   "cancel_reasons": {
+    "target_taken": 2589,
+    "session_end": 66
+   },
+   "unfilled_travel_pts": {
+    "n": 2590,
+    "median": 29.25,
+    "p25": 17.25,
+    "p75": 50.717,
+    "p90": 80.38
+   },
+   "stop_dist_leg_pts": {
+    "n": 3137,
+    "median": 8.125,
+    "p25": 6.0,
+    "p75": 12.125,
+    "p90": 18.5
+   }
+  },
+  "ny_am|09:30-09:45": {
+   "n_qualified": 332,
+   "fill_rate": 0.1627,
+   "cancel_reasons": {
+    "target_taken": 278
+   },
+   "unfilled_travel_pts": {
+    "n": 278,
+    "median": 104.625,
+    "p25": 62.252,
+    "p75": 160.965,
+    "p90": 246.111
+   },
+   "stop_dist_leg_pts": {
+    "n": 332,
+    "median": 19.062,
+    "p25": 13.375,
+    "p75": 27.156,
+    "p90": 37.5
+   }
+  },
+  "ny_am|09:45-10:30": {
+   "n_qualified": 628,
+   "fill_rate": 0.1369,
+   "cancel_reasons": {
+    "target_taken": 542
+   },
+   "unfilled_travel_pts": {
+    "n": 542,
+    "median": 83.815,
+    "p25": 55.53,
+    "p75": 129.312,
+    "p90": 192.958
+   },
+   "stop_dist_leg_pts": {
+    "n": 628,
+    "median": 22.938,
+    "p25": 15.5,
+    "p75": 33.156,
+    "p90": 48.538
+   }
+  },
+  "ny_am|outside_traded_window": {
+   "n_qualified": 718,
+   "fill_rate": 0.1128,
+   "cancel_reasons": {
+    "target_taken": 572,
+    "session_end": 65
+   },
+   "unfilled_travel_pts": {
+    "n": 573,
+    "median": 53.62,
+    "p25": 35.13,
+    "p75": 81.5,
+    "p90": 110.204
+   },
+   "stop_dist_leg_pts": {
+    "n": 718,
+    "median": 18.625,
+    "p25": 12.25,
+    "p75": 29.25,
+    "p90": 43.25
+   }
+  }
+ },
+ "0.62": {
+  "london|not_traded": {
+   "n_qualified": 3137,
+   "fill_rate": 0.1278,
+   "cancel_reasons": {
+    "target_taken": 2668,
+    "session_end": 68
+   },
+   "unfilled_travel_pts": {
+    "n": 2671,
+    "median": 30.76,
+    "p25": 18.585,
+    "p75": 53.255,
+    "p90": 83.62
+   },
+   "stop_dist_leg_pts": {
+    "n": 3137,
+    "median": 6.655,
+    "p25": 5.04,
+    "p75": 9.695,
+    "p90": 14.54
+   }
+  },
+  "ny_am|09:30-09:45": {
+   "n_qualified": 332,
+   "fill_rate": 0.1416,
+   "cancel_reasons": {
+    "target_taken": 285
+   },
+   "unfilled_travel_pts": {
+    "n": 285,
+    "median": 111.08,
+    "p25": 66.52,
+    "p75": 170.07,
+    "p90": 260.55
+   },
+   "stop_dist_leg_pts": {
+    "n": 332,
+    "median": 14.968,
+    "p25": 10.645,
+    "p75": 21.119,
+    "p90": 28.98
+   }
+  },
+  "ny_am|09:45-10:30": {
+   "n_qualified": 628,
+   "fill_rate": 0.1146,
+   "cancel_reasons": {
+    "target_taken": 554,
+    "session_end": 2
+   },
+   "unfilled_travel_pts": {
+    "n": 556,
+    "median": 90.92,
+    "p25": 60.685,
+    "p75": 137.338,
+    "p90": 202.095
+   },
+   "stop_dist_leg_pts": {
+    "n": 628,
+    "median": 17.913,
+    "p25": 12.26,
+    "p75": 25.679,
+    "p90": 37.369
+   }
+  },
+  "ny_am|outside_traded_window": {
+   "n_qualified": 718,
+   "fill_rate": 0.0836,
+   "cancel_reasons": {
+    "target_taken": 591,
+    "session_end": 67
+   },
+   "unfilled_travel_pts": {
+    "n": 594,
+    "median": 57.47,
+    "p25": 38.253,
+    "p75": 87.017,
+    "p90": 116.952
+   },
+   "stop_dist_leg_pts": {
+    "n": 718,
+    "median": 14.635,
+    "p25": 9.79,
+    "p75": 22.71,
+    "p90": 33.35
+   }
+  }
+ },
+ "0.705": {
+  "london|not_traded": {
+   "n_qualified": 3137,
+   "fill_rate": 0.1135,
+   "cancel_reasons": {
+    "target_taken": 2712,
+    "session_end": 69
+   },
+   "unfilled_travel_pts": {
+    "n": 2716,
+    "median": 31.925,
+    "p25": 19.435,
+    "p75": 54.647,
+    "p90": 86.16
+   },
+   "stop_dist_leg_pts": {
+    "n": 3137,
+    "median": 5.614,
+    "p25": 4.36,
+    "p75": 7.974,
+    "p90": 11.735
+   }
+  },
+  "ny_am|09:30-09:45": {
+   "n_qualified": 332,
+   "fill_rate": 0.1265,
+   "cancel_reasons": {
+    "target_taken": 290
+   },
+   "unfilled_travel_pts": {
+    "n": 290,
+    "median": 114.965,
+    "p25": 69.358,
+    "p75": 171.467,
+    "p90": 266.118
+   },
+   "stop_dist_leg_pts": {
+    "n": 332,
+    "median": 12.067,
+    "p25": 8.711,
+    "p75": 16.842,
+    "p90": 22.945
+   }
+  },
+  "ny_am|09:45-10:30": {
+   "n_qualified": 628,
+   "fill_rate": 0.0987,
+   "cancel_reasons": {
+    "target_taken": 564,
+    "session_end": 2
+   },
+   "unfilled_travel_pts": {
+    "n": 566,
+    "median": 94.43,
+    "p25": 63.83,
+    "p75": 140.107,
+    "p90": 206.1
+   },
+   "stop_dist_leg_pts": {
+    "n": 628,
+    "median": 14.353,
+    "p25": 9.965,
+    "p75": 20.382,
+    "p90": 29.457
+   }
+  },
+  "ny_am|outside_traded_window": {
+   "n_qualified": 718,
+   "fill_rate": 0.0752,
+   "cancel_reasons": {
+    "target_taken": 597,
+    "session_end": 67
+   },
+   "unfilled_travel_pts": {
+    "n": 600,
+    "median": 60.775,
+    "p25": 40.358,
+    "p75": 91.335,
+    "p90": 122.175
+   },
+   "stop_dist_leg_pts": {
+    "n": 718,
+    "median": 11.809,
+    "p25": 8.048,
+    "p75": 18.078,
+    "p90": 26.338
+   }
+  }
+ },
+ "0.79": {
+  "london|not_traded": {
+   "n_qualified": 3137,
+   "fill_rate": 0.0995,
+   "cancel_reasons": {
+    "target_taken": 2755,
+    "session_end": 70
+   },
+   "unfilled_travel_pts": {
+    "n": 2760,
+    "median": 33.21,
+    "p25": 20.428,
+    "p75": 56.24,
+    "p90": 88.001
+   },
+   "stop_dist_leg_pts": {
+    "n": 3137,
+    "median": 4.572,
+    "p25": 3.68,
+    "p75": 6.252,
+    "p90": 8.93
+   }
+  },
+  "ny_am|09:30-09:45": {
+   "n_qualified": 332,
+   "fill_rate": 0.1175,
+   "cancel_reasons": {
+    "target_taken": 293
+   },
+   "unfilled_travel_pts": {
+    "n": 293,
+    "median": 117.51,
+    "p25": 70.99,
+    "p75": 179.39,
+    "p90": 271.74
+   },
+   "stop_dist_leg_pts": {
+    "n": 332,
+    "median": 9.166,
+    "p25": 6.777,
+    "p75": 12.566,
+    "p90": 16.91
+   }
+  },
+  "ny_am|09:45-10:30": {
+   "n_qualified": 628,
+   "fill_rate": 0.0939,
+   "cancel_reasons": {
+    "target_taken": 566,
+    "session_end": 3
+   },
+   "unfilled_travel_pts": {
+    "n": 569,
+    "median": 99.15,
+    "p25": 67.11,
+    "p75": 143.42,
+    "p90": 214.324
+   },
+   "stop_dist_leg_pts": {
+    "n": 628,
+    "median": 10.794,
+    "p25": 7.67,
+    "p75": 15.086,
+    "p90": 21.546
+   }
+  },
+  "ny_am|outside_traded_window": {
+   "n_qualified": 718,
+   "fill_rate": 0.071,
+   "cancel_reasons": {
+    "target_taken": 600,
+    "session_end": 67
+   },
+   "unfilled_travel_pts": {
+    "n": 603,
+    "median": 63.93,
+    "p25": 42.85,
+    "p75": 95.66,
+    "p90": 130.184
+   },
+   "stop_dist_leg_pts": {
+    "n": 718,
+    "median": 8.982,
+    "p25": 6.305,
+    "p75": 13.445,
+    "p90": 19.325
+   }
+  }
+ }
+}
