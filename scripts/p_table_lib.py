@@ -316,14 +316,22 @@ def _aligned_run(piv: list[Pivot], direction: int) -> int:
 
 def run_tf_pipeline(tf_bars: list[Bar], tf: int, frac: float,
                     session_start: datetime, session_end: datetime,
-                    min_height_atr_frac: float = 0.0):
+                    min_height_atr_frac: float = 0.0, wick_top_mode: str = "body"):
     """Run legs + candidates + triggers for ONE timeframe.
     Returns (events, candidates). Everything is as-of bar close: a row's existence
     and every pre-decision field depend only on bars up to and including the
     decision bar (Gate 1's property, by construction).
 
     min_height_atr_frac: ADDITIVE param (default 0.0 preserves prior behaviour
-    byte-for-byte). Gates leg-pivot confirmation on height >= frac * ATR14(tf)."""
+    byte-for-byte). Gates leg-pivot confirmation on height >= frac * ATR14(tf).
+
+    wick_top_mode: ADDITIVE param (default 'body' preserves prior behaviour
+    byte-for-byte). 'body' = DA-3 as specced (level_1 = min/max(open,close)).
+    'candle_high' = the SPEC's own pre-declared, previously-unbuilt alternative
+    (level_1 = the pivot bar's own high/low -- the full candle range). Changes
+    level_1 at candidate BIRTH, which cascades correctly through everything
+    downstream (span trigger, penetration check, stop/limit/target) because
+    they all read c.level_1 generically -- this is not a separate code path."""
     tracker = LegTracker(frac, min_height_atr_frac)
     trs = true_ranges(tf_bars)
     atr = [float("nan")] * len(tf_bars)
@@ -400,10 +408,12 @@ def run_tf_pipeline(tf_bars: list[Bar], tf: int, frac: float,
         # 2) leg tracker update — pivots confirmed at this close
         for piv in tracker.on_bar(bar, atr[i]):
             direction = -1 if piv.kind == "L" else 1
-            c = Candidate(direction, tf, piv,
-                          level_0=piv.px,
-                          level_1=(min(piv.bar.open, piv.bar.close) if direction == -1
-                                   else max(piv.bar.open, piv.bar.close)),
+            if wick_top_mode == "candle_high":
+                lvl1 = piv.bar.high if direction == -1 else piv.bar.low
+            else:
+                lvl1 = (min(piv.bar.open, piv.bar.close) if direction == -1
+                       else max(piv.bar.open, piv.bar.close))
+            c = Candidate(direction, tf, piv, level_0=piv.px, level_1=lvl1,
                           born_ts=piv.confirm_ts)
             c.retrace_extreme = piv.px
             # birth scan over bars strictly after the pivot bar up to and including

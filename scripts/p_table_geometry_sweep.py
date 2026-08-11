@@ -38,7 +38,13 @@ FIT_END = CONFIG["FIT_END_DATE"]
 
 HEIGHT_FRACS = [0.5, 1.0, 2.0, 3.0]
 RETRACE_FRACS = [0.236, 0.382, 0.5]
+WICK_TOP_MODE = os.environ.get("SWEEP_WICK_TOP_MODE", "body")
+if os.environ.get("SWEEP_HEIGHT_FRACS"):
+    HEIGHT_FRACS = [float(x) for x in os.environ["SWEEP_HEIGHT_FRACS"].split(",")]
 CELLS = [(r, h) for h in HEIGHT_FRACS for r in RETRACE_FRACS]
+# corrected bar (user directive, this turn): 1.5x the FIT-ERA-ONLY noise floor,
+# replacing the earlier holdout-derived 0.17W/~11-20pt anchor entirely
+TARGET_NOISE_MULT = 1.5
 
 
 def minimal_fill_stop_touch(direction, limit, stop, minutes, eligible_ts, session_end):
@@ -68,6 +74,8 @@ def main():
     ap.add_argument("--shard", default="")
     ap.add_argument("--partdir", default="")
     ap.add_argument("--merge", default="")
+    ap.add_argument("--date-min", default="")
+    ap.add_argument("--date-max", default="")
     args = ap.parse_args()
 
     if args.merge:
@@ -79,6 +87,10 @@ def main():
                     __import__("pandas").to_datetime(list(front.keys()), utc=True)
                     .map(lambda ts: ts.tz_convert("America/New_York").date())})
     dates = [d for d in dates if d.isoformat() <= FIT_END]
+    if args.date_min:
+        dates = [d for d in dates if d.isoformat() >= args.date_min]
+    if args.date_max:
+        dates = [d for d in dates if d.isoformat() <= args.date_max]
     if args.shard:
         i, n = (int(x) for x in args.shard.split("/"))
         dates = [d for k, d in enumerate(dates) if k % n == i]
@@ -108,7 +120,7 @@ def main():
                 retrace, height = cell
                 for tf in CONFIG["TFS_MIN"]:
                     evs, _ = run_tf_pipeline(tf_bars_cache[tf], tf, retrace,
-                                             s_utc, e_utc, height)
+                                             s_utc, e_utc, height, WICK_TOP_MODE)
                     for e in evs:
                         if not e.qualified:
                             continue
@@ -219,16 +231,38 @@ def write_report(events, n_sessions, tr_pool):
             n_qualified_all_tf=n_q, triggers_per_session_per_day=tpd,
             per_tf=per_tf)
 
+    target = {s: round(TARGET_NOISE_MULT * v, 3) for s, v in noise_floor.items()}
+    for cell_key, c in cells_out.items():
+        for tf, v in c["per_tf"].items():
+            mult = v.get("stop_dist_x_noise_floor_by_session")
+            if mult:
+                v["meets_corrected_bar_1_5x_fit_noise_floor"] = {
+                    s: bool(m >= TARGET_NOISE_MULT) for s, m in mult.items()}
+
     out = dict(
-        noise_floor_median_1m_TR_pts=noise_floor,
+        wick_top_mode=WICK_TOP_MODE,
+        noise_floor_median_1m_TR_pts_FIT_ERA_ONLY=noise_floor,
+        corrected_bar_note=(
+            "REPLACES the earlier holdout-derived 0.17W / ~11-20pt anchor "
+            "entirely (that figure traces to the M-TABLE programme's OWN "
+            "fit-era band-width measurement, which is this table's SEALED "
+            "span -- using it to judge this table's fit-era geometry was a "
+            "leak, not just an exposure risk). New bar, declared here: "
+            f"stop_dist_pts >= {TARGET_NOISE_MULT}x the FIT-ERA-ONLY median "
+            "1-minute true range, computed on 2023-01..2025-05 alone."),
+        corrected_bar_target_pts=target,
         cost_assumption_pts_round_trip=CONFIG["COST_RT_PTS"],
         cost_assumption_note="DECLARED constant, matching existing book "
                              "convention -- NOT measured (no book/spread data "
                              "exists in the fit era; all flow coverage lies in "
                              "the sealed span).",
         cells=cells_out)
-    json.dump(out, open("output/p_table_geometry_sweep.json", "w"), indent=1)
-    print("wrote output/p_table_geometry_sweep.json")
+    suffix = os.environ.get("SWEEP_OUT_SUFFIX", "")
+    base = ("output/p_table_geometry_sweep" if WICK_TOP_MODE == "body"
+           else f"output/p_table_geometry_sweep_{WICK_TOP_MODE}")
+    outpath = f"{base}{suffix}.json"
+    json.dump(out, open(outpath, "w"), indent=1)
+    print(f"wrote {outpath}")
     print(json.dumps({k: v for k, v in out.items() if k != "cells"}, indent=1))
 
 
