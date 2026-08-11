@@ -389,3 +389,31 @@ that same trade the only structure between entry and target sat 0.4–0.5R away;
 applying the clause literally would move nearly every trade to break-even within
 half an R and turn the system into a break-even machine. Needs his ruling
 separately.
+
+## T14 — 2026-08-12 · BREAK-EVEN is earned by BREAKING the band, not touching it
+
+**The question put to him:** PLAYBOOK §5 says "move to break-even on touching an
+intermediate band even without taking a partial." On D21-NYP1-0902 the only
+structure between entry 30,847 and target 30,972.5 was VWAP+2 at 30,874.52 —
+0.48R above entry. Applying "touch" literally would move nearly every trade to
+break-even within half an R and turn the system into a break-even machine.
+
+**His ruling:** *"in that trade, i would wait for it to break that band before
+moving to BE. that means it would then have to break the band it just broke
+through to break even me."*
+
+**The rule:** the break-even move is triggered when price **breaks through** the
+intermediate band — not when it touches it. The geometry is the point: once the
+band is broken and the stop sits at entry on the far side of it, price has to
+**break back through that same band** to stop you at break-even. The band guards
+the stop. A touch earns nothing.
+
+**Effect on the trade that raised it: none.** The highest print between the 09:04
+fill and the 09:30 cash open was **30,873.50 — one point below the 30,874.52
+band.** The band was never broken, no break-even was earned, the position was in
+drawdown at the open, and T13's flatten stands at −0.44R. (Price did reach 30,904
+later, but inside the 09:30 candle itself, after T13's resolution instant.)
+
+**Interaction with T13:** T13 is absolute and independent — at the 09:30 open a
+pre-market carry is flattened if red or set to break-even if green, regardless of
+whether a band has been broken.
