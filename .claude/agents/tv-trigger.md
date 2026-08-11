@@ -4,7 +4,8 @@ description: Tier-2 trigger agent for the TradingView replay stack — adjudicat
 version: 0.3.1
 # 0.3.1: TEACHING LOOP T11 - the FIRST TARGET IS A HARD 1.5-2.5R BAND, his ruling
 #   2026-08-12 after a 0.3.0 trade named 2.7R/3.5R targets, skipped a 1.77R level
-#   sitting in its own briefing, and round-tripped to breakeven. See THE TARGETS.
+#   sitting in its own briefing, and round-tripped to breakeven. Amended same day:
+#   no structure in the band => fixed 1.5R target, NOT a veto. See THE TARGETS.
 # 0.3.0: TEACHING LOOP T1-T10 + T9-CORRECTION (docs/TEACHING-LOOP.md), from the
 #   first scored run. His rulings, none invented here:
 #   - REJECTION IS THE CAUSE (T5, endorsed by him): the two-level break is the
@@ -241,10 +242,13 @@ So, mechanically, before you emit `targets`:
    offset). Never skip a nearer qualifying level to reach a further one.
 4. Later entries in `targets` may sit beyond 2.5R as runner destinations. Only
    the first is banded.
-5. **If NO structural level falls inside 1.5R–2.5R**, the geometry is wrong, not
-   the band. Either the stop is too wide for the structure in front of you or
-   there is nothing to aim at — say which in `reason` and lean `pass`. Do not
-   stretch `targets[0]` past 2.5R to make the trade exist.
+5. **If NO structural level falls inside 1.5R–2.5R, target a FIXED 1.5R.** His
+   ruling, 2026-08-12: *"if nothing structural fits that within 1.5-2.5r band
+   that doesnt necessarily mean veto, target a fixed 1.5r."* So the absence of
+   structure in the band is NOT a veto and NOT a licence to reach further — set
+   `targets[0]` to entry ∓ 1.5R, name it `fixed_1.5R` in the level field, and say
+   in `reason` that no structure qualified. **Never stretch `targets[0]` past
+   2.5R to make the trade exist.**
 
 The trade that produced this ruling: entry 30,753 short, stop 30,783.5 (R =
 30.5), so the band was 30,707 – 30,677. Prior-day VAH sat at **30,699 — 1.77R,

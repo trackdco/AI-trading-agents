@@ -330,3 +330,31 @@ went fill → stop and recorded a flat −1.0R, skipping the mandatory
 intermediate-structure partial (PLAYBOOK §5). Managed correctly the trade is
 +54pt on 75% and flat on the runner. Caught by him on review, corrected before
 anything was committed.
+
+**T11 AMENDMENT, same day, before the week rerun:** *"if nothing structural fits
+that within 1.5-2.5r band that doesnt necessarily mean veto, target a fixed
+1.5r."* So the empty-band case sets `targets[0] = entry ∓ 1.5R` labelled
+`fixed_1.5R` — it is not a pass and not a licence to reach past 2.5R. The
+"lean pass" wording first encoded here was mine, not his, and is superseded.
+
+## T12 — 2026-08-12 · RETEST DEGENERACY — recorded, ruling DEFERRED to after the week
+
+**His observation on the same trade:** *"I noticed that it didn't enter on the
+retest of anything. I thought it would have entered on maybe the retest of the
+Bollinger Band. Obviously, it closed through VWAP +2 and the Bollinger Band. It
+didn't actually enter on a retest of either of those… that just looked like a
+market order… 0.5 points from where price closed is practically a market order
+lol."*
+
+**The mechanics:** signal 2m closed 30,752.50; the agent limited 30,753 — the
+weekly VAH, which was genuinely the closest broken structure at 1.5pt. The 2m BB
+MA (30,768.01) and VWAP+2 (30,765.03) sat 12–15pt above; either is a real
+retest, and the 2m MA is the level he expected. The next bar OPENED 30,754,
+through the limit, so the fill was effectively immediate.
+
+**Status: OPEN.** He deferred it — *"not a big issue, it was a valid trade… we'll
+see what we can change when the week has been done."* Candidate shapes: a
+minimum retest distance (skip a level closer than ~N pts and take the next one
+out), or prefer the BB MA over a profile edge when both are in the just-broken
+set. **Do not encode either until he rules.** The week runs on 0.3.1 as-is so
+the data is collected under one consistent rule set.
