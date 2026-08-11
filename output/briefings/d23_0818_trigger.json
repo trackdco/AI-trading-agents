@@ -1,0 +1,110 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D23-NYP1-0818",
+ "window": "NY_PRE 08:00-09:29 ET",
+ "session": "NY_PRE",
+ "decision_minute": "2026-06-24T08:18 ET",
+ "candle_start": "08:16",
+ "timeframe": "2m",
+ "leak_check": "pass - truncated at 08:17:59; last completed 2m bar starts 08:16 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d23_c2_0818.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; weekly levels numeric and DEVELOPING. No agent-drawn positions.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "overnight_high",
+    "price": 29891.75
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 29928.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 30036.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29577.25
+  },
+  "waiting_for": "nothing",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed on a rejection at the overnight-high/prior-day-VAH cluster (29891-29928), or at weekly VAL 30036",
+  "anticipated_resolution": {
+   "level": "overnight_high_prior_day_vah_cluster",
+   "price": 29891.75,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond 29928 with a decisive body, not a wicky absorption candle",
+  "reasoning": "Rotational confirmed: 15m MA crossed 7x since 03:00 on weak bodies, VA only 121pt wide - T15 suspension does not apply, the floor holds. The 03:00 long paid: the 0.618/VWAP shelf held at 03:36, price ground to 29862.25, now testing the overnight-high/prior-day-VAH cluster. Long toward weekly VAL on a decisive break; rejection there licenses shorts back to the shelf.",
+  "as_of": "08:00 window_open"
+ },
+ "candidate_source": "both detectors - two_level_check flags 08:16 2m UP [own_ma, vwap_p1]; the supplementary rejection-first scan flags the same bar with a preceding rejection.",
+ "rejection_sequence": "vwap_p1 was rejected twice on the way in: the 08:10 bar wicked 7.86pt beyond it and closed back below, and 08:12 wicked 0.86pt beyond and closed back below. This candle then closes UP through both its own 2m MA and vwap_p1.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "08:16",
+  "direction": "UP",
+  "open": 29833.25,
+  "high": 29844.75,
+  "low": 29823.25,
+  "close": 29844.75,
+  "volume": 380,
+  "note": "closed at its high, through its own 2m MA 29836.88 and vwap_p1 29842.45"
+ },
+ "pair_shape": "rejection_first / same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "vwap_p1"
+ ],
+ "levels_at_decision_CHART": {
+  "vwap": 29777.79,
+  "vwap_p1": 29842.45,
+  "vwap_m1": 29713.12,
+  "vwap_p2": 29907.12,
+  "bb_2m_basis": 29836.88,
+  "bb_2m_upper": 29872.82,
+  "bb_2m_lower": 29800.93
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_3m": 29815.28,
+  "bb_ma_15m": 29814.8,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "day_high": 29891.75,
+  "day_low": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29737.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "overnight_high": 29891.75,
+  "weekly_low": 29577.25
+ },
+ "levels_above_for_target_selection": "daily_vah 29858 (13pt above), bb_2m_upper 29872.82, overnight_high 29891.75, vwap_p2 29907.12, prior_day_vah 29928. Apply T11: R = |entry-stop| first, then the NEAREST level inside 1.5R-2.5R; FIXED 1.5R if none qualifies.",
+ "chop_warning": "the thesis calls this session ROTATIONAL - 15m MA crossed 7 times since 03:00, developing value area only 121pt wide. Constraint 9 (in chop, require higher-timeframe alignment) is live.",
+ "fills_this_window": 0,
+ "window_cap": 1,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}
