@@ -194,6 +194,77 @@ def effect(sel: pd.DataFrame, pool: pd.DataFrame, label: str) -> None:
               f"p ~= 0.07 — treat as directional, not settled.")
 
 
+
+# ---------------------------------------------------------------- realised R
+# HIS BAR, stated 2026-08-11: "if it can hold 50%+ WR at around average 2R
+# I'll know it's in the ballpark of what I'm at." That is REALISED R after
+# management, which is NOT what the selection test below measures — so it
+# gets its own scorecard, first, because it is the one he actually cares
+# about.
+#
+# Grounding, from committed data:
+#   his January (42 decisions / 14 days): 67% WR, avg win +1,336 vs avg loss
+#   -800 USD -> a 1.67 win/loss ratio, expectancy ~ +0.79R/trade.
+#   his narrated week (11 takes with recoverable R): 9W / 2L = 82% WR,
+#   avg win 2.87R, avg loss 0.73R — his own words call it the cleanest week
+#   of the five, so it is a ceiling, not a bar.
+# His stated bar (50% WR, 2R winners -> ~+0.5R/trade) is therefore MORE
+# FORGIVING than his own January. Report against both.
+HIS_BAR = {"wr": 0.50, "avg_win_r": 2.0}
+HIS_JAN = {"wr": 0.67, "ratio": 1.67, "n": 42, "days": 14}
+
+
+def realised(paths: list[Path]) -> None:
+    """Realised R from the exit rows — win rate, average winner, expectancy."""
+    rs = []
+    for p in paths:
+        for line in p.read_text().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if r.get("row") != "exit":
+                continue
+            v = r.get("r_result")
+            if isinstance(v, (int, float)):
+                rs.append((p.stem, r.get("candidate_id"), float(v)))
+    if not rs:
+        print("\n  REALISED — no exit rows with r_result found.")
+        return
+
+    vals = np.array([x[2] for x in rs])
+    wins, losses = vals[vals > 0], vals[vals < 0]
+    scratches = vals[vals == 0]
+    wr = len(wins) / max(len(wins) + len(losses), 1)
+    aw = wins.mean() if len(wins) else 0.0
+    al = abs(losses.mean()) if len(losses) else 0.0
+    exp = vals.mean()
+
+    print("\nREALISED R — the bar he actually set")
+    print(f"  {len(rs)} closed trades over {len({x[0] for x in rs})} session-day(s)"
+          + (f", {len(scratches)} scratch" if len(scratches) else ""))
+    print(f"  win rate      {wr * 100:5.1f}%   ({len(wins)}W / {len(losses)}L)")
+    print(f"  avg winner    {aw:5.2f}R      avg loser {al:5.2f}R")
+    print(f"  expectancy    {exp:+5.2f}R/trade     total {vals.sum():+.2f}R")
+
+    ok_wr = wr >= HIS_BAR["wr"]
+    ok_aw = aw >= HIS_BAR["avg_win_r"] - 0.15      # "around 2R"
+    print("\n  vs HIS BAR (>=50% WR, ~2R average winner):")
+    print(f"     win rate      {'MEETS' if ok_wr else 'BELOW'} the bar")
+    print(f"     avg winner    {'MEETS' if ok_aw else 'BELOW'} the bar")
+    print(f"  vs HIS JANUARY ({HIS_JAN['wr'] * 100:.0f}% WR, {HIS_JAN['ratio']:.2f} "
+          f"win/loss ratio over {HIS_JAN['n']} decisions):")
+    ratio = (aw / al) if al else float("inf")
+    print(f"     agent ratio   {ratio:.2f}  (his {HIS_JAN['ratio']:.2f})")
+    if len(rs) < 30:
+        print(f"\n  !! n = {len(rs)}. A win rate on under ~30 trades swings "
+              f"double digits on one trade.")
+        print("     Directional only until the walk-forward has run.")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -206,6 +277,8 @@ def main() -> int:
     paths = [p for p in paths if p.is_file()]
     if not paths:
         raise SystemExit("no run files matched")
+
+    realised(paths)
 
     F = load_fills(paths)
     if F.empty:
