@@ -358,3 +358,34 @@ minimum retest distance (skip a level closer than ~N pts and take the next one
 out), or prefer the BB MA over a profile edge when both are in the just-broken
 set. **Do not encode either until he rules.** The week runs on 0.3.1 as-is so
 the data is collected under one consistent rule set.
+
+## T13 — 2026-08-12 · PRE-MARKET CARRY: break-even if green, FLATTEN if red, by the 09:30 candle
+
+**His ruling, mid-run:** *"All pre-market trades: if they have not hit take profit
+or are in drawdown during market open, I move everything to break even by the
+time that the 9:30 candle arrives. The 9:30 candle is so volatile that even if
+the trade's going well, you can get stopped out at the click of your fingers…
+If it was in drawdown, close it… I wouldn't log that as a -1R if it was floating
+profit until market open. It's not fair to judge it against that."*
+
+**The rule, mechanically:** any position opened before 09:30 and still open at the
+cash open is resolved AT the 09:30 open —
+- **in profit** → stop to break-even (it may keep running);
+- **in drawdown** → flattened at the open price.
+
+No pre-market trade carries live stop risk through the 09:30 candle. This extends
+PLAYBOOK constraint 11 (which had only the break-even half) with the
+drawdown-flatten branch.
+
+**Scoring consequence, which is the half he cared about:** such a trade is never
+recorded at its full stop distance. **The run that produced this ruling:**
+D21-NYP1-0902, long 30,847, stop 30,790, which ran to 30,968 — 4.5pt shy of its
+2.20R target — then rolled over into the bell and stopped at 09:33 for a raw
+−1.0R. Under T13 it is **flattened at the 09:30 open of 30,822.75 = −0.44R**.
+
+**Still open, and NOT answered by this:** whether the general intra-trade clause
+"move to break-even on touching an intermediate band" has a minimum distance. On
+that same trade the only structure between entry and target sat 0.4–0.5R away;
+applying the clause literally would move nearly every trade to break-even within
+half an R and turn the system into a break-even machine. Needs his ruling
+separately.
