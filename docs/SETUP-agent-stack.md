@@ -179,6 +179,11 @@ the label.
 
 ## 4. WHAT THE LOCAL SESSION DOES, IN ORDER
 
+**Starting from a bare Mac: `docs/KICKOFF-local-session.md`** — two paste
+blocks; the local session does everything, including the MCP install via
+`scripts/setup_local_mac.sh` and the first-session probe for native limit
+orders in TradingView's internal replay API.
+
 **The step-by-step replay procedure is `docs/RUNBOOK-replay-scoring.md`** —
 grounded in the MCP's actual source, including the market-only `replay_trade`
 constraint (limit lifecycle is orchestrator-simulated), the timezone trap in

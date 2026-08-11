@@ -18,6 +18,10 @@ substrate, prompts and scoring, and the local session does the driving.
 Facts below verified against the repo source on 2026-08-11
 (`src/core/replay.js`, `src/connection.js`, `SETUP_GUIDE.md`).
 
+> **From zero, don't do this by hand:** `docs/KICKOFF-local-session.md` is
+> two paste blocks that make the local Claude session do all of it, and
+> `scripts/setup_local_mac.sh` automates §§1–3 of this file idempotently.
+
 ## 1. Install the MCP server
 
 ```bash

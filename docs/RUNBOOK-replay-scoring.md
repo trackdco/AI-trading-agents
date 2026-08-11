@@ -26,14 +26,27 @@ Every implementation fact below was read from the MCP source
 
 Two consequences that shape everything below:
 
-1. **His entries are limit-on-retest; the replay API is market-only.** So the
-   **orchestrator simulates the limit lifecycle** (placement, expiry, cancel
-   rule, fill detection) against replayed bars, and the JSONL log is the
-   authoritative record. Optionally mirror each simulated fill with a
-   `replay_trade` market order **at the fill bar** so he can watch entries
-   appear on the chart — but TradingView's `position`/`realized_pnl` then
-   reflects market-at-touch fills, not his limit prices. **Never score from
-   TradingView's replay P&L.** Score from the log.
+1. **His entries are limit-on-retest; the replay tool surface is market-only.**
+   The decisions ARE limit orders — price, expiry, cancel rule, fill at the
+   limit — and two paths exist to execute them:
+   - **Native, if it's there.** The MCP wraps five methods of
+     `window.TradingViewApi._replayApi`; whether that object carries order
+     placement beyond market buy/sell/close is unknown until probed on a live
+     TradingView (KICKOFF Phase B step 2 does exactly that, first session).
+     If limit methods exist, extend the MCP with a `replay_limit_order` tool
+     and the agents' limits become real TradingView orders in replay.
+   - **Simulated, otherwise.** The **orchestrator runs the limit lifecycle**
+     (placement, expiry, cancel rule, fill detection) against replayed bars,
+     and the JSONL log is the authoritative record. **Make the limit VISIBLE
+     while it rests**: on placement, `draw_shape` a horizontal line at the
+     limit price with a text label (`SHORT LMT 29,492.75 · expires 04:16`);
+     on cancel, remove it and log why; on fill, remove it, mirror with a
+     `replay_trade` market order at the fill bar so the position shows on the
+     chart, and mark the entry. He watches limits rest, die, and fill —
+     which is the point.
+   Either way TradingView's `position`/`realized_pnl` does not reflect limit
+   fills exactly — **never score from TradingView's replay P&L. Score from
+   the log.**
 2. **Stepping is the precision instrument; autoplay is for watching.** Use
    `replay_step` for everything scored. Use autoplay at 1000–3000ms only for
    his live-viewing sessions, and pause it (toggle) at every candidate.
@@ -129,18 +142,22 @@ NY_AM 09:30–11:00. After **every** step:
    the trigger briefing (thesis + candle payload + `fills_this_window` +
    headroom fields + macro gate), call `tv-trigger`. Log the full verdict —
    takes AND passes. **The passes are the valuable rows.**
-5. **On `take_full` / `take_light`**: simulate the limit —
-   - placed at the agent's `entry` (retest level, forward offset);
-   - **expiry: 5 bars** (10 minutes on 2m), then cancelled → row
-     `no_fill_expired`;
+5. **On `take_full` / `take_light`**: run the limit lifecycle (native tool if
+   the Phase B probe found one; simulated otherwise) —
+   - placed at the agent's `entry` (retest level, forward offset), and
+     **drawn on the chart** (`draw_shape` horizontal line + label) so it is
+     visibly resting;
+   - **expiry: 5 bars** (10 minutes on 2m), then cancelled → line removed →
+     row `no_fill_expired`;
    - **cancel rule**: if a bar reaches the next structural level before the
-     fill → cancelled → row `no_fill_ran` (*"if it runs to a structural level
-     and then fills me, I'm not very confident in that anymore"*);
+     fill → cancelled → line removed → row `no_fill_ran` (*"if it runs to a
+     structural level and then fills me, I'm not very confident in that
+     anymore"*);
    - **fill**: first bar whose range contains the limit price fills at the
-     limit. Touch-equals-fill is optimistic for a resting limit (no queue
-     model); every fill row carries `fill_model: "touch"` so scoring can
-     discount marginal ones later.
-   - optionally `replay_trade buy|sell` on the fill bar (visual mirror only).
+     limit → line removed, `replay_trade buy|sell` mirrors the position on
+     the chart. Touch-equals-fill is optimistic for a resting limit (no
+     queue model); every fill row carries `fill_model: "touch"` so scoring
+     can discount marginal ones later.
 6. **Manage open positions on doctrine** (`PLAYBOOK.md` §5): partial at
    intermediate structure, break-even after TP1 or on touching an
    intermediate band, break-even before 09:30 for pre-market carries, trail
@@ -218,7 +235,17 @@ With `Read` comes one poison to name: `data/narrated_days/*.json` holds what
 destroys the agreement axis. The agent contracts forbid it; the orchestrator
 must also never place those paths in a briefing.
 
-## 8. DISCIPLINE
+## 8. DISCIPLINE — and the live path this feeds
 
 Replay and practice orders only. No live orders under any circumstances
 until scoring has been run and reviewed with him.
+
+The eventual live path is real and architecturally simple: TradingView
+Desktop connected to a broker (Tradovate is how his funded accounts route)
+exposes its trading panel inside the same app this MCP already drives — same
+machine, same chart, no VPS stack. It stays behind two gates, in order:
+**(1)** scoring run and reviewed with him — the rule every doc in this repo
+carries; **(2)** the prop firm's automation policy read in writing first,
+because prop firms routinely restrict automated order entry and a funded
+account lost to a TOS clause is the dumb way to lose one. Nothing in this
+runbook wires a broker.
