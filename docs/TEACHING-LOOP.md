@@ -188,3 +188,26 @@ unlicensed absent exceptional structure. Still not a veto, and the original
 constraint stands untouched (an events read that only ever counsels caution
 is a failed component). This is the ACTING side of macro he always said
 mattered more.
+
+## T8 — 2026-08-11 · agent-only trades with a sound thesis are LEGITIMATE
+
+**Context:** his verdict on the full-day run (4 fills +5.12R, agreement 1/3):
+*"It is complete. I don't care if it takes trades that I missed… it waited
+for the value area low retest. That's completely fine. I would constitute
+that as a completely sane entry… this agent that has been built has a
+fucking brain."*
+
+**Consequence for scoring:** an agent-only row (a trade he did not take) is
+NOT an automatic miss. It is judged on thesis-soundness and entry sanity,
+exactly like his own trades. The agreement axis measures decision quality
+against his process, not photocopy fidelity. (The −1R London long remains a
+defect — not because he didn't take it, but because its rebalance depth and
+rejection story were wrong per T2/T5.)
+
+**In-sample honesty note, recorded the same hour:** the narrated week is the
+TRAINING material — the playbook in the agents' prompts was distilled from
+these five days and names some of their trades (the 29,369 POC limit, the
+Friday day-character row). Zero in-run lookahead (mechanically verified per
+row), but on these five days agreement partly measures textbook execution.
+The strict walk-forward is post-corpus days (bars run to 2026-07-15) that no
+prompt has seen; that is the proof phase after the week calibration.
