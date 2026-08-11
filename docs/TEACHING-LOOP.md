@@ -257,3 +257,39 @@ absorption/spring. His rule reads that sequence as "the low is being
 defended" — which is what happened (+280pt rip). **His definition, applied
 cold, outperforms the flip the agent made on this exact morning.** Kills the
 open whipsaw (three theses in 8 minutes) as a side effect.
+
+## T9-CORRECTION — 2026-08-11 · there is ONE entry mode: the limit on the retest
+
+**T9 above is WRONG and is superseded by this entry.** (Append-only file: the
+error stays visible rather than being edited away.)
+
+**His correction, same day:** *"I want to make it very clear that,
+inherently, I'm always entering on a retest. I don't market order."*
+
+**Provenance of the error — important, because it also taints the corpus.**
+The market-order entries in the narrated week are **an artifact of a prior
+cloud session's validation method, not his process.** During order-flow
+validation that session read flow at candle CLOSE while limits fill
+mid-minute — an implicit 30-second lookahead — and he switched to market
+orders to dodge the artifact: *"limit orders fill in the middle of a minute,
+and you're looking at the order flow data at the end of that candle close…
+we can't see 30 seconds into the future in the live markets, can we? I went
+to market orders to try and mitigate that problem."* He now judges that a
+mistake on its own terms: *"it really does greatly affect your average R per
+trade… if you just enter off of the displacement instead of a retest, a lot
+of the times it's gonna retest one of those structural levels that broke
+anyways. That was a bit stupid from my hand. The easiest way was always
+retests."*
+
+**Consequences:**
+1. **`entry_type` is `limit_retest`, always. `market` is not a licensed
+   value for any agent, in any mode, including at a break he anticipated.**
+2. What T9's "going for the break" actually means: at a thesis-anticipated
+   resolution he ACTS on the break rather than standing aside — but the
+   execution is still a limit at the retest of the breaking level. The two
+   licensed modes collapse into one; only the choice of which level to limit
+   at differs.
+3. **Corpus caveat, recorded:** Mon N1's market entry (PLAYBOOK §3, "1.0R at
+   market vs 2.33R on the retest — his own critique") is now understood as
+   this artifact rather than as his style. The arithmetic in that section
+   stands and its conclusion is strengthened.
