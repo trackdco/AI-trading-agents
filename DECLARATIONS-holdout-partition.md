@@ -211,3 +211,17 @@ and extensively explored fit-accessible window (Census A, narrated-day corpus, l
 agent trading tests, through 2026-08-11) — this repository's "written unread" claim
 for that span is true of this session's eyes only, not of the team's collective
 knowledge. No partition change is made in this entry; the decision belongs to Angus.
+
+### 6b. Resolution, 2026-08-11 — partition risk from Entry 2 §Provenance note
+
+Decision (user, in response to the repair run's question): **leave the
+P-TABLE partition as built** — fit 2023-01-02→2025-05-31, sealed
+2025-06-01→2026-01-30, unchanged. Rationale accepted: the M-TABLE programme's
+own bar-only holdout use of the inverse span is already closed/spent, so no
+retroactive contamination exists on that side; and this session already
+published fit-era statistics for 2023-01→2025-05, so a swap could not cleanly
+reset exposure in either direction. The cross-programme exposure risk on this
+table's sealed span (2025-06→2026-01 sits inside the M-TABLE's actively
+explored, currently-fit-accessible window on other branches) stands as a
+recorded, accepted risk — not eliminated, but explicitly not acted on. No
+rebuild, no reseal.
