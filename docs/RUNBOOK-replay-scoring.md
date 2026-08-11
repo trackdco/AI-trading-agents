@@ -126,6 +126,16 @@ At the landing minute (before the window opens):
    (`data_get_study_values`, `data_get_pine_lines` / `_labels` for his
    Pine-drawn levels); the research build fills what the chart doesn't expose.
    **Both value areas, always** — daily and anchored weekly, labelled.
+
+   **The anchored weekly profile is a MANUAL daily drawing, his ritual:**
+   he re-anchors it each session-day to the Asia open (18:00 NY) of the same
+   weekday one week back — which is exactly what
+   `agent_context.anchored_weekly_profile` computes, in his own quoted words.
+   The briefing numerics therefore never depend on the drawing existing. But
+   when he is present (every replay run), have him anchor it on the chart
+   before the window and re-screenshot, so the thesis agent's visual matches
+   what he would actually be looking at. Unattended sessions run on the
+   computed values alone; that is fine and expected.
 2. Build the macro briefing **as-of**: `data/reference/news_archive.csv`
    filtered to `datetime_ET <= decision_minute`. Call `tv-macro-events`.
 3. `capture_screenshot {region: "chart", waitForRender: true}` → PNG path.
