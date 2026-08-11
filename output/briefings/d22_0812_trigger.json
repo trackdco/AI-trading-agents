@@ -1,0 +1,126 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D22-NYP1-0812",
+ "window": "NY_PRE 08:00-09:29 ET",
+ "session": "NY_PRE",
+ "decision_minute": "2026-06-23T08:12 ET",
+ "candle_start": "08:09 (3m) / 08:10 (2m)",
+ "timeframe": "3m and 2m, simultaneous",
+ "leak_check": "pass - truncated at 08:11:59; last completed 2m bar starts 08:10 (verified via the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d22_c1_0812.png",
+ "chart_note": "anchored-weekly VP drawing hidden; weekly levels numeric and DEVELOPING as-of this minute. No agent-drawn positions on the chart.",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows TradingView's CROSSHAIR, not the last bar, and can sit on an earlier bar - never evidence of a leak. Authoritative state is this briefing plus the SELL/BUY ticker. The chart is truncated at the cursor.",
+ "level_provenance": "VWAP+bands read off his chart at this minute; BB MAs/profiles/fibs from the research build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 29563.08
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29278.04
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29923.0
+  },
+  "waiting_for": "nothing further - rebalance to the 15m MA (29875.30) already happened during the 29752-29917 base",
+  "two_sided": true,
+  "condition_for_other_side": "15m decisive-body close back above weekly low 29923 (reclaim) licenses longs toward the 0.618 fib confluence at prior-day low/weekly VAL (~30338-30343)",
+  "anticipated_resolution": {
+   "level": "daily_val_session_low_29752",
+   "price": 29752.0,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond a level with a decisive body, not a wick",
+  "reasoning": "Weekly low 29923 broke decisively (12 straight 15m closes below, no reclaim); both 03:00 targets essentially printed at session low 29752. Since then price based 29752-29917 for 3hrs, tagging the 15m MA (29875) during the base - rebalance done. Last 15m closed 29873, body_ratio 0.15 (absorption) at vwap_m1/2m-BB-basis confluence (~29848). Favor continuation to vwap_m2 29563 then vwap_m3 29278.",
+  "as_of": "08:00 window_open"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "08:09",
+  "direction": "DOWN",
+  "open": 29860.0,
+  "close": 29827.5,
+  "closed_at": "08:12",
+  "levels": "own 3m MA + vwap_m1, same candle; also rejected the developing POC and the 15m MA"
+ },
+ "signal_candle_2m": {
+  "start": "08:10",
+  "direction": "DOWN",
+  "open": 29858.0,
+  "high": 29868.5,
+  "low": 29827.0,
+  "close": 29827.5,
+  "levels": "own 2m MA + vwap_m1 (sequential leg at 08:08)"
+ },
+ "pair_shape": "same_candle (3m) / sequential (2m)",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "vwap_m1"
+ ],
+ "rejection_context": "The three-hour base 29752-29917 topped out against the vwap_m1 / 2m-BB-basis / 15m-MA confluence around 29848-29875. Price probed it, the last completed 15m closed there on a 0.15 body (absorption), and these candles now break back DOWN through the whole cluster, closing 29827.50 - beneath vwap_m1 29843.50 and beneath the 2m basis 29860.01.",
+ "levels_at_decision_CHART": {
+  "vwap": 30128.15,
+  "vwap_p1": 30412.8,
+  "vwap_m1": 29843.5,
+  "vwap_m2": 29558.85,
+  "vwap_m3": 29274.2,
+  "bb_2m_basis": 29860.01,
+  "bb_2m_upper": 29900.44,
+  "bb_2m_lower": 29819.58
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_3m": 29851.86,
+  "bb_ma_15m": 29864.38,
+  "day_range_fibs": {
+   "0.382": 30114.61,
+   "0.5": 30226.62,
+   "0.618": 30338.64,
+   "0.705": 30421.22
+  },
+  "day_high": 30701.25,
+  "day_low": 29752.0,
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_low_broken": 29923.0,
+  "session_low": 29752.0,
+  "daily_profile": {
+   "poc": 29866.0,
+   "val": 29752.0,
+   "vah": 30349.0,
+   "note": "DEVELOPING as-of 08:12"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30343.0,
+   "vah": 30756.0,
+   "note": "DEVELOPING as-of 08:12"
+  }
+ },
+ "levels_below_for_target_selection": "daily_VAL / session_low 29752.00 (~75pt below the 29827.50 close), then vwap_m2 29558.85, then vwap_m3 29274.20. There is a 193pt gap between 29752 and 29559. Apply T11: compute R = |entry-stop| first, then take the NEAREST level inside 1.5R-2.5R; if NO structure falls in that band, use a FIXED 1.5R target (his amendment - the empty band is NOT a veto).",
+ "poc_alignment": {
+  "daily_poc": 29866.0,
+  "position": "38pt ABOVE the signal close and just rejected by these candles - with the short",
+  "weekly_poc": 30445.0,
+  "position2": "far above - with the short"
+ },
+ "fills_this_window": 0,
+ "window_cap": 1,
+ "cap_counts": "fills, not attempts - NY_PRE cap is 1",
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+}
