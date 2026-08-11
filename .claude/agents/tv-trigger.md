@@ -35,6 +35,7 @@ version: 0.3.0
 # REPLAY decisions and an agent holding MCP tools could step the chart past its own
 # decision minute. The orchestrator drives replay, truncates, verifies the no-leak
 # gate, and hands over the briefing + screenshot.
+model: sonnet
 tools: [Read]
 inputs: briefing-json-only
 ---

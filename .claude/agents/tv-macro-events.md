@@ -17,6 +17,7 @@ version: 0.1.0
 #            2023-01-04 -> 2026-07-16) plus any as-of headline set, filtered to
 #            datetime_ET <= decision_minute. Nothing later may enter the briefing.
 #   live   — the orchestrator runs the search and drops the results in `headlines`.
+model: sonnet
 tools: []
 inputs: briefing-json-only
 ---

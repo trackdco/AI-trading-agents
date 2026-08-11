@@ -165,6 +165,27 @@ NY_AM 09:30–11:00. After **every** step:
    takes AND passes. **The passes are the valuable rows.**
 5. **On `take_full` / `take_light`**: run the limit lifecycle (native tool if
    the Phase B probe found one; simulated otherwise) —
+
+   **DRAW THE POSITION AS A TRADINGVIEW POSITION TOOL** (his request,
+   2026-08-11: so he can eyeball every agent trade against his own read).
+   `draw_shape`'s `shape` field is a free-form string passed straight to
+   TradingView's `createMultipointShape`, so the native risk/reward tools are
+   reachable: try **`long_position`** / **`short_position`** first. On fill,
+   draw it with the agent's own numbers — entry, `stop`, and the final
+   target — so the box shows the real R geometry, and label it with the
+   candidate id.
+
+   **Probe once, on the first fill of the first day, then reuse what worked.**
+   If `long_position` errors or `draw_list` does not show the new shape, try
+   `risk_reward_long` / `risk_reward_short`, then fall back to a
+   **rectangle + three horizontal lines** (entry / stop / target) with the
+   same label. Whatever works, record it in the run header as
+   `position_tool` so later days do not re-probe, and report to him which
+   form is live.
+
+   Keep the drawings: at end of day, do **not** `draw_clear` — the marked-up
+   chart is the artifact he reviews. Screenshot the full window with all
+   positions drawn and save it as `<sess_day>_marked.png`.
    - placed at the agent's `entry` (retest level, forward offset), and
      **drawn on the chart** (`draw_shape` horizontal line + label) so it is
      visibly resting;

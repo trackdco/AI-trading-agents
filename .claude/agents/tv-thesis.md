@@ -37,6 +37,7 @@ version: 0.3.0
 # its own decision minute. That error is invisible in aggregate
 # (AGENT-OPERATING-SPEC Phase 0.4). The orchestrator drives replay, truncates at
 # the decision minute, and hands over the briefing + screenshot.
+model: sonnet
 tools: [Read]
 inputs: briefing-json-only
 ---
