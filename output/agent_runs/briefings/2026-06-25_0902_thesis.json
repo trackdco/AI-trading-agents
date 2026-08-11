@@ -1,0 +1,69 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "destination_printed",
+ "event_detail": "your primary destination weekly_val 29290 PRINTED: first trade below 29290 in the 09:00 ET minute (the 09:00 2m bar ran to 29283.25, also through prior-day low 29295.75), but the bar CLOSED 29294.25 \u2014 back above the shelf. A poke, not acceptance. Your contract: a thesis that has paid out is spent \u2014 decide what stands now.",
+ "window": "NY_PRE 08:00-09:29 ET (open; ~27 min of entries remain; the window's 1-fill cap is USED \u2014 the 08:36 short filled and completed: 75% partial at 29304.75, runner at target 29292 on this 09:00 bar, 2.14R)",
+ "decision_minute": "2026-06-26T09:02 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 09:01:59; last completed 2m bar starts 09:00",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_0902_weekly_val_print.png",
+ "price_at_decision": 29294.25,
+ "prior_thesis_as_of_0816": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_val",
+    "price": 29290.0
+   },
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_val",
+   "price": 29465.0
+  },
+  "waiting_for": "nothing",
+  "two_sided": true,
+  "condition_for_other_side": "a sweep of the weekly_val 29290 / prior-day low 29295.75 shelf that FAILS, with 2m closes reclaiming vwap_m1 (~29295), flips long toward prior_day_val 29465 (earlier form also referenced 15m close back above the 15m MA)"
+ },
+ "what_happened_since_0816": "The licensed short set up and completed: 08:33/08:34 DOWN pair through own MAs + daily POC, filled 29369 on the retest, partialed at the 08:52 sweep to 29298.25 (which closed 29339 on 843 contracts \u2014 a first sweep-fail shape), and the runner exited at target 29292 on this 09:00 flush. The destination has now printed as a wick-through with a close back above. Cash open is 28 minutes away.",
+ "levels_at_0902": {
+  "vwap": {
+   "mid": 29463.52,
+   "p1": 29632.0,
+   "m1": 29295.04,
+   "m2": 29126.56
+  },
+  "bb_ma": {
+   "tf_2m": 29348.36,
+   "tf_3m": 29368.62,
+   "tf_15m": 29381.74
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "session_low_new": 29283.25
+ },
+ "fib_source": "none",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false,
+  "note": "no scheduled releases; the 09:30 cash open itself is 28 min ahead \u2014 doctrine holds no entries in its first few minutes and break-even before it on pre-market carries (none open now)"
+ }
+}

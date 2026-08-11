@@ -1,0 +1,70 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "invalidation_broken",
+ "event_detail": "your 09:02 read's own kill condition fired on the very next bar: the 09:02 2m bar closed 29282.75 at 09:04 \u2014 the first 2m CLOSE below weekly_val 29290 (acceptance, not a wick), also below the 09:00 session low 29283.25 intrabar (bar low 29282.00). Your stated consequence: the sweep-fail long dies and the flip reopens weekly_low 29160.5.",
+ "window": "NY_PRE (open; ~25 min of entries remain; window fill cap USED). Cash open 09:30 is 26 min ahead \u2014 no entries in its first few minutes per doctrine.",
+ "decision_minute": "2026-06-26T09:04 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 09:03:59; last completed 2m bar starts 09:02",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_0902_weekly_val_print.png",
+ "screenshot_note": "screenshot is from 09:02, one bar earlier; the 09:02 bar OHLC is in this briefing (O29293.5 H29305.5 L29282.00 C29282.75, 473 contracts)",
+ "price_at_decision": 29282.75,
+ "prior_thesis_as_of_0902": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_poc",
+    "price": 29369.0
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_val",
+   "price": 29290.0
+  },
+  "waiting_for": "2m closes reclaiming vwap_m1 ~29295",
+  "two_sided": true,
+  "condition_for_other_side": "2m acceptance below weekly_val 29290 / session low 29283.25 kills the sweep-fail read and flips short toward weekly_low 29160.5"
+ },
+ "what_happened_since_0902": "One bar. The reclaim never came; acceptance printed instead.",
+ "levels_at_0904": {
+  "vwap": {
+   "mid": 29462.0,
+   "m1": 29294.5,
+   "m2": 29126.5,
+   "note": "m1/m2 drifting; computed values at 09:04"
+  },
+  "bb_ma": {
+   "tf_2m": 29341.0,
+   "tf_3m": 29357.0,
+   "tf_15m": 29378.0,
+   "note": "computed at 09:04"
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "daily_val_developing": 29225.0,
+  "session_low": 29282.0
+ },
+ "fib_source": "none",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}
