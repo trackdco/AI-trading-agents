@@ -7,7 +7,7 @@
  "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d23_0300_open.png",
  "chart_note": "anchored-weekly VP drawing hidden; its levels are numeric below and DEVELOPING as-of this minute.",
  "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows TradingView's CROSSHAIR, not the last bar - never evidence of a leak. Authoritative state is this briefing plus the SELL/BUY ticker. The chart is truncated at the cursor.",
- "level_provenance": "VWAP and its bands are read DIRECTLY off his chart at this minute; BB MAs, profiles and fibs come from the research build (which reconciles to his chart on those to ~0.01).",
+ "level_provenance": "VWAP and its bands are read from his chart's own study series at the last bar; BB MAs, profiles and fibs come from the research build.",
  "price_at_decision": 29822.75,
  "overnight": {
   "open_18et": 29770.0,
@@ -82,5 +82,6 @@
   "drivers": [],
   "falsified_by": "n/a - no dated event to falsify",
   "reasoning": "No scheduled US releases at or before this minute and none upcoming this session-day; the next red-folder event is Core PCE on 2026-06-25, two days out. No headlines supplied. No basis for a lean or a blackout."
- }
+ },
+ "day_character_note": "Judge the day's character explicitly and say which you think you are in - your rebalance rule depends on it. On a ROTATIONAL day the 15m MA is the rebalance floor. On a CLEAR TREND day that floor is suspended and you wait for a REJECTION off a key level instead. The 15m MA is one key level among many, never a gate on its own. 'I don't know' is a complete answer and emits stand_aside."
 }
