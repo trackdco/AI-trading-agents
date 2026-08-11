@@ -8,6 +8,12 @@
       "Bash(python3 *)",
       "Bash(node *)",
       "Bash(bash scripts/*)"
+    ],
+    "deny": [
+      "Read(./data/narrated_days/**)",
+      "Read(./docs/CORPUS-narrated-days.md)",
+      "Read(./docs/FINDINGS-selection-effect.md)",
+      "Read(./output/agent_runs/**)"
     ]
   }
 }
