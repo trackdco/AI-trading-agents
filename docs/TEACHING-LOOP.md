@@ -417,3 +417,32 @@ later, but inside the 09:30 candle itself, after T13's resolution instant.)
 **Interaction with T13:** T13 is absolute and independent — at the 09:30 open a
 pre-market carry is flattened if red or set to break-even if green, regardless of
 whether a band has been broken.
+
+## T13-CORRECTION — 2026-08-12 · the "missed by 4.5pt" detail in T13 was FALSE
+
+**T13's ruling stands unchanged.** This corrects a factual claim in its worked
+example, and records the leak it caused.
+
+**What I wrote:** *"D21-NYP1-0902, long 30,847, stop 30,790, which ran to 30,968 —
+4.5pt shy of its 2.20R target — then rolled over into the bell."*
+
+**What actually happened:** the trade's true high while open (09:04 fill → 09:30
+flatten) was **30,873.50 = +26.5pt = +0.46R.** It never approached its target.
+The 30,968 print did not occur until **10:10**, forty minutes after the position
+was already closed.
+
+**Root cause:** my orchestrator scan helper measured MFE over a fixed six-hour
+window instead of truncating at the trade's exit. Fixed.
+
+**The consequence that matters — it became a LEAK.** That false 30,968 was copied
+into the 09:30 and 09:44 briefings as `session_high`. The 09:30 thesis agent read
+it and reasoned from it (*"ran to 30968… the long destination effectively
+printed"*). The whole NY_AM chain for 2026-06-21 was voided and re-run on
+corrected as-of briefings. The LONDON (+1.80R) and NY_PRE (−0.44R) trades are
+unaffected.
+
+**Audit gap found, and it needs closing:** `scripts/audit_run_leak` did not catch
+this. Check C validates *times* inside briefings; check E validates *prices* in
+decision rows. A future **price** embedded in a **briefing** is checked by
+neither. E should be extended to scan briefing bodies against the as-of printed
+range — which is precisely the shape of clairvoyance it was built to detect.
