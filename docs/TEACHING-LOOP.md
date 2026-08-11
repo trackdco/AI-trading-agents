@@ -115,3 +115,40 @@ distance, role, and behavior:**
    through it → continue to target; price STALLING at it → *"I'd probably
    close the trade early."* This is a new management clause for the exit
    logic, not only an entry filter — nothing in the corpus carried it.
+
+## T5 — 2026-08-11 · the entry grammar, dumbed down by him — REJECTION IS THE CAUSE
+
+**Context:** volunteered unprompted while the first NY replay leg ran.
+
+**His words:** *"If we can dumb down an entry, what does an entry actually
+look like? It's a rejection off of a key level, and then a breakout through
+the moving average and something else stacked on top of it, and then an
+entry at the retest… We've rejected this key level, whatever it is. Great,
+it's 0.5 of the daily range. What am I going to look for then? If price
+breaks through the moving average or breaks through VWAP as well, I'm
+inclined to take shorts because that rejection is constituting me to go for
+shorts. That's really all it is."*
+
+**Consequence — a causality inversion for the trigger prompt.** The doctrine
+as first written treated the two-level closure as THE trigger, with
+rejection merely "counting toward the pair." His grammar is ordered:
+**(1) rejection at a key level → (2) the two-level break as the rejection
+proving itself → (3) entry at the retest.** A two-level break with no
+rejection story behind it is movement, not an entry. This cleanly separates
+his Friday short (rejection at the 0.5-zone/VWAP-mid confluence) from the
+agent's −1.0R long the same morning (identical mechanical shape, nothing
+being rejected). 0.3.0 trigger frame: *name the level that was rejected, or
+lean pass.*
+
+**Two riders, same monologue:**
+- **Origin-proximity stop clause:** when the displacement candle's origin
+  sits close to the VWAP band, limit at the closest structure (the BB MA)
+  but give the stop breathing room beyond the band cluster — *"I'm not
+  going to put it past the fact that we might come up and retest the
+  Bollinger Band and the VWAP band."* The origin-side variant of the
+  existing extreme-on-a-live-level stop rule.
+- **Style anchor, for every prompt:** *"I'm never trying to catch these
+  gigantic moves. You have to take your piece of the pie and get out… I
+  like having a higher win rate."* Guards the agents against drifting
+  toward home-run targeting; consistent with the realized 1.5–2.5R
+  distribution and the §7 break-even guard.
