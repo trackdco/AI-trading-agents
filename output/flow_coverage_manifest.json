@@ -565,7 +565,7 @@
    "n_rows": 95,
    "utc_start": "2025-06-20T12:00:00+00:00",
    "utc_end": "2025-06-20T14:00:00+00:00",
-   "price_scale": "decimal",
+   "price_scale": "fixed1e9",
    "symbology": "NQ.c.0",
    "in_ohlcv_span": true,
    "ny_am_minutes": 5,
@@ -1410,7 +1410,7 @@
    "n_rows": 97,
    "utc_start": "2025-09-19T12:00:00+00:00",
    "utc_end": "2025-09-19T14:12:00+00:00",
-   "price_scale": "decimal",
+   "price_scale": "fixed1e9",
    "symbology": "NQ.c.0",
    "in_ohlcv_span": true,
    "ny_am_minutes": 7,
@@ -6558,7 +6558,7 @@
    "n_rows": 99,
    "utc_start": "2026-06-18T12:00:00+00:00",
    "utc_end": "2026-06-18T14:26:00+00:00",
-   "price_scale": "decimal",
+   "price_scale": "fixed1e9",
    "symbology": "NQ.c.0",
    "in_ohlcv_span": false,
    "ny_am_minutes": 9,
@@ -7006,5 +7006,6 @@
    "ny_am_minutes": 60,
    "ny_warmup_minutes": 90
   }
- ]
+ ],
+ "scale_anomalies_note": "The three files previously flagged as decimal-scaled in families A/C are fixed-point 1e-9 magnitudes serialized WITH a decimal point; a string-shape detector misreads them (Gate 3 catch). Scale detection is therefore by magnitude (value > 1e6 => fixed-point), per value."
 }

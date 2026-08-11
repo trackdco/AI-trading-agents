@@ -95,14 +95,19 @@ def rebuild(minutes, d: Date, session: str, ctx):
     return pd.DataFrame(m), pd.DataFrame(t)
 
 
+def _is_num(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
 def cmp_row(a: pd.Series, b: pd.Series, cols) -> list[str]:
     bad = []
     for c in cols:
         va, vb = a.get(c), b.get(c)
-        if isinstance(va, float) and isinstance(vb, float):
-            if math.isnan(va) and math.isnan(vb):
+        if _is_num(va) and _is_num(vb):
+            fa, fb = float(va), float(vb)
+            if math.isnan(fa) and math.isnan(fb):
                 continue
-            if not math.isclose(va, vb, rel_tol=0, abs_tol=1e-9):
+            if not math.isclose(fa, fb, rel_tol=0, abs_tol=1e-9):
                 bad.append(f"{c}: {va!r} != {vb!r}")
         elif va is None and vb is None:
             continue

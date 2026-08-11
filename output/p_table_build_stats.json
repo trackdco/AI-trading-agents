@@ -1,0 +1,351 @@
+{
+ "rows_fit": 13253,
+ "rows_sealed_UNREAD": 3589,
+ "tf_rows_fit": 16944,
+ "tf_rows_sealed_UNREAD": 5224,
+ "cand_rows_fit": 215746,
+ "cand_rows_sealed_UNREAD": 59006,
+ "n_sessions_processed": {
+  "ny_am": 793,
+  "london": 795
+ },
+ "exclusion_log_entries": 351,
+ "flow_nonnull_assert": {
+  "n_flow_covered_rows_all_eras": 1592,
+  "closeloc_all_nonnull": true,
+  "rangex_all_nonnull": true
+ },
+ "counts_by_session_direction_qualified_reason": {
+  "london|short|False|multi_bar_break": 634,
+  "london|short|False|structure_unaligned": 2320,
+  "london|short|True|-": 1537,
+  "london|long|False|multi_bar_break": 696,
+  "london|long|False|structure_unaligned": 2356,
+  "london|long|True|-": 1600,
+  "ny_am|short|False|multi_bar_break": 142,
+  "ny_am|short|False|structure_unaligned": 1047,
+  "ny_am|short|True|-": 833,
+  "ny_am|long|False|multi_bar_break": 136,
+  "ny_am|long|False|structure_unaligned": 1107,
+  "ny_am|long|True|-": 845
+ },
+ "triggers_per_session_per_day": {
+  "ny_am": {
+   "all": 5.183,
+   "qualified": 2.116
+  },
+  "london": {
+   "all": 11.501,
+   "qualified": 3.946
+  }
+ },
+ "wick_width_pts": {
+  "n": 13253,
+  "median": 2.0,
+  "p25": 1.0,
+  "p75": 4.25,
+  "p90": 8.0
+ },
+ "wick_width_pts_qualified": {
+  "n": 4815,
+  "median": 2.5,
+  "p25": 1.0,
+  "p75": 5.0,
+  "p90": 9.5
+ },
+ "stop_dist": {
+  "base": {
+   "n": 13253,
+   "median": 3.0,
+   "p25": 2.5,
+   "p75": 4.0,
+   "p90": 6.0
+  },
+  "atr015": {
+   "n": 13199,
+   "median": 2.25,
+   "p25": 1.5,
+   "p75": 4.25,
+   "p90": 7.25
+  },
+  "atr025": {
+   "n": 13199,
+   "median": 3.0,
+   "p25": 1.75,
+   "p75": 5.5,
+   "p90": 9.75
+  },
+  "atr033": {
+   "n": 13199,
+   "median": 3.75,
+   "p25": 2.25,
+   "p75": 6.75,
+   "p90": 11.5
+  }
+ },
+ "fill": {
+  "n_qualified": 4815,
+  "n_filled": 2927,
+  "fill_rate": 0.6079,
+  "cancellation_reasons": {
+   "expired_target_taken": 1412,
+   "expired_invalidated": 114,
+   "expired_session_end": 362
+  },
+  "cancellation_rates": {
+   "expired_target_taken": 0.2933,
+   "expired_invalidated": 0.0237,
+   "expired_session_end": 0.0752
+  },
+  "order_never_live": 966,
+  "gap_limit_traded_through": 1773,
+  "filled_mfe_pts": {
+   "n": 2927,
+   "median": 20.5,
+   "p25": 8.5,
+   "p75": 46.625,
+   "p90": 87.1
+  },
+  "filled_mfe_R": {
+   "n": 2927,
+   "median": 5.889,
+   "p25": 2.467,
+   "p75": 12.444,
+   "p90": 21.111
+  },
+  "unfilled_mfe_pts": {
+   "n": 1787,
+   "median": 31.5,
+   "p25": 15.25,
+   "p75": 60.875,
+   "p90": 107.85
+  },
+  "unfilled_mfe_pts_target_taken": {
+   "n": 1412,
+   "median": 28.375,
+   "p25": 14.5,
+   "p75": 54.5,
+   "p90": 90.7
+  },
+  "unfilled_mfe_pts_session_end": {
+   "n": 261,
+   "median": 61.0,
+   "p25": 39.5,
+   "p75": 114.5,
+   "p90": 202.75
+  },
+  "filled_stress_2tick_rate": 0.9423,
+  "fill_bar_ambiguous_rate": 0.4376
+ },
+ "tf_agreement_count": {
+  "1": 3994,
+  "2": 665,
+  "3": 138,
+  "4": 18
+ },
+ "tf_trigger_distribution": {
+  "3": 2068,
+  "1": 6586,
+  "2": 2984,
+  "5": 1615
+ },
+ "events_per_cluster": {
+  "1": 10325,
+  "2": 2274,
+  "4": 109,
+  "3": 545
+ },
+ "geometry_by_tf": {
+  "1": {
+   "wick_width_pts": {
+    "n": 8376,
+    "median": 1.5,
+    "p25": 0.75,
+    "p75": 3.0,
+    "p90": 5.75
+   },
+   "stop_dist_pts": {
+    "n": 8376,
+    "median": 2.75,
+    "p25": 2.25,
+    "p75": 3.5,
+    "p90": 4.75
+   },
+   "r_available": {
+    "n": 7044,
+    "median": 2.786,
+    "p25": 1.667,
+    "p75": 4.778,
+    "p90": 7.769
+   }
+  },
+  "2": {
+   "wick_width_pts": {
+    "n": 4132,
+    "median": 2.25,
+    "p25": 1.25,
+    "p75": 4.5,
+    "p90": 8.475
+   },
+   "stop_dist_pts": {
+    "n": 4132,
+    "median": 3.25,
+    "p25": 2.5,
+    "p75": 4.25,
+    "p90": 6.25
+   },
+   "r_available": {
+    "n": 3133,
+    "median": 3.333,
+    "p25": 2.091,
+    "p75": 5.5,
+    "p90": 8.75
+   }
+  },
+  "3": {
+   "wick_width_pts": {
+    "n": 2646,
+    "median": 2.75,
+    "p25": 1.5,
+    "p75": 5.75,
+    "p90": 10.25
+   },
+   "stop_dist_pts": {
+    "n": 2646,
+    "median": 3.5,
+    "p25": 2.75,
+    "p75": 5.0,
+    "p90": 7.25
+   },
+   "r_available": {
+    "n": 1853,
+    "median": 3.737,
+    "p25": 2.385,
+    "p75": 6.222,
+    "p90": 9.398
+   }
+  },
+  "5": {
+   "wick_width_pts": {
+    "n": 1790,
+    "median": 3.75,
+    "p25": 2.0,
+    "p75": 7.25,
+    "p90": 13.25
+   },
+   "stop_dist_pts": {
+    "n": 1790,
+    "median": 3.75,
+    "p25": 3.0,
+    "p75": 5.5,
+    "p90": 8.75
+   },
+   "r_available": {
+    "n": 1016,
+    "median": 4.185,
+    "p25": 2.818,
+    "p75": 6.768,
+    "p90": 10.387
+   }
+  }
+ },
+ "wick_top_mode": "body",
+ "body_wick_ratio": {
+  "n": 4593,
+  "median": 3.333,
+  "p25": 2.214,
+  "p75": 5.5,
+  "p90": 10.0
+ },
+ "leg_height_pts": {
+  "n": 13253,
+  "median": 13.75,
+  "p25": 7.5,
+  "p75": 26.5,
+  "p90": 48.45
+ },
+ "retrace_frac": {
+  "n": 13253,
+  "median": 0.659,
+  "p25": 0.519,
+  "p75": 0.818,
+  "p90": 0.929
+ },
+ "min_leg_retrace_sensitivity": {
+  "0.236": {
+   "ny_am|qualified": 5447,
+   "ny_am|not_qualified": 7819,
+   "london|not_qualified": 17951,
+   "london|qualified": 9676
+  },
+  "0.382": {
+   "ny_am|qualified": 2146,
+   "ny_am|not_qualified": 3016,
+   "london|not_qualified": 7661,
+   "london|qualified": 4019
+  },
+  "0.5": {
+   "london|not_qualified": 2412,
+   "ny_am|not_qualified": 1133,
+   "ny_am|qualified": 742,
+   "london|qualified": 1129
+  }
+ },
+ "zone_pre_penetration": {
+  "n_candidates": 215746,
+  "n_penetrated": 78185,
+  "penetrated_rate": 0.3624,
+  "born_penetrated": 42775,
+  "fates": {
+   "invalidated": 106356,
+   "triggered_unaligned_warmup": 4085,
+   "penetrated": 78185,
+   "triggered_qualified_warmup": 2116,
+   "broken_not_active": 2391,
+   "broken_multibar": 2132,
+   "triggered_unaligned": 9351,
+   "triggered_qualified": 5980,
+   "broken_multibar_warmup": 1107,
+   "session_end": 4043
+  }
+ },
+ "r_available_qualified": {
+  "n": 3182,
+  "median": 3.077,
+  "p25": 1.778,
+  "p75": 5.098,
+  "p90": 8.2
+ },
+ "min_1r_pass_rate": 0.6179,
+ "market_ctrl": {
+  "ctrl_R": {
+   "n": 4661,
+   "median": -1.009,
+   "p25": -1.071,
+   "p75": 0.5,
+   "p90": 1.125
+  },
+  "ctrl_R_filled_subset": {
+   "n": 2906,
+   "median": -1.047,
+   "p25": -1.105,
+   "p75": -1.007,
+   "p90": 0.931
+  },
+  "ctrl_R_unfilled_subset": {
+   "n": 1755,
+   "median": 0.211,
+   "p25": -0.251,
+   "p75": 0.864,
+   "p90": 1.785
+  }
+ },
+ "limit_outcome_nearest_draw_R": {
+  "n": 2927,
+  "median": -1.143,
+  "p25": -1.182,
+  "p75": -1.083,
+  "p90": 1.241
+ },
+ "target_missing_rate": 0.3391
+}

@@ -1,0 +1,80 @@
+{
+ "gate1": {
+  "n_probes": 24,
+  "strata": {
+   "london|-1|multi_bar_break": 2,
+   "london|-1|qualified": 2,
+   "london|-1|structure_unaligned": 2,
+   "london|1|multi_bar_break": 2,
+   "london|1|qualified": 2,
+   "london|1|structure_unaligned": 2,
+   "ny_am|-1|multi_bar_break": 2,
+   "ny_am|-1|qualified": 2,
+   "ny_am|-1|structure_unaligned": 2,
+   "ny_am|1|multi_bar_break": 2,
+   "ny_am|1|qualified": 2,
+   "ny_am|1|structure_unaligned": 2
+  },
+  "failures": [],
+  "notes": [],
+  "tf_trigger_causality": {
+   "part1": "governance fixed at ts_decision (the 5m boundary where the mode-b decision completes): flatten after ts_decision leaves tf_trigger, the qualifying set, and every row column unchanged",
+   "part2": "the governing event's own facts fixed at tf_trigger_ts: flatten after tf_trigger_ts leaves the event present with identical geometry/qualification in the per-TF stream",
+   "note": "the STRICT reading (governance itself fixed at tf_trigger_ts) is unsatisfiable under mode (b): a higher-TF bar closing later in the same window supersedes by design; this was demonstrated by an earlier gate run and is why ts_decision is the boundary. Mode (a) rows would make the two instants coincide."
+  },
+  "passed": true
+ },
+ "gate2": {
+  "failures": [],
+  "notes": [
+   {
+    "note": "limit == some decision-bar OHLC (numeric coincidence; limit is structurally pxl-bar-derived)",
+    "n_rows": 220,
+    "of": 13253
+   },
+   {
+    "note": "developing-indicator scan: no level in this schema derives from any indicator (limit/stop/target are pure PXL-bar and pivot geometry); the delta-close/period signature has no surface to appear on. The 1-tick close-shift invariance above is the direct test.",
+    "ctrl_entry_flat_coincidences": 2
+   }
+  ],
+  "passed": true
+ },
+ "gate3": {
+  "n_files_checked": 510,
+  "n_in_span_ok": 270,
+  "n_in_span_excluded_by_declared_criterion": 17,
+  "excluded_files": [
+   "condensed_glbx-mdp3-20250616.mbp-10.csv",
+   "condensed_glbx-mdp3-20250617.mbp-10.csv",
+   "condensed_glbx-mdp3-20250618.mbp-10.csv",
+   "condensed_glbx-mdp3-20250619.mbp-10.csv",
+   "condensed_glbx-mdp3-20250620.mbp-10.csv",
+   "condensed_glbx-mdp3-20250915.mbp-10.csv",
+   "condensed_glbx-mdp3-20250916.mbp-10.csv",
+   "condensed_glbx-mdp3-20250917.mbp-10.csv",
+   "condensed_glbx-mdp3-20250918.mbp-10.csv",
+   "condensed_glbx-mdp3-20250919.mbp-10.csv",
+   "glbx-mdp3-20250616.mbp-10_condensed.csv",
+   "glbx-mdp3-20250617.mbp-10_condensed.csv",
+   "glbx-mdp3-20250915.mbp-10_condensed.csv",
+   "glbx-mdp3-20250916.mbp-10_condensed.csv",
+   "glbx-mdp3-20250917.mbp-10_condensed.csv",
+   "glbx-mdp3-20251215.mbp-10_condensed.csv",
+   "glbx-mdp3-20251216.mbp-10_condensed.csv"
+  ],
+  "unhandled_failures": [],
+  "out_of_span_format_checked": 223,
+  "scale_anomalies_confirmed": [
+   "condensed_glbx-mdp3-20250620.mbp-10.csv",
+   "condensed_glbx-mdp3-20250919.mbp-10.csv",
+   "condensed_GLBX-20260720-KS5YBWCDQ3.csv"
+  ],
+  "cross_extraction": {
+   "shared_dates_A_and_B": 115,
+   "common_minutes": 0,
+   "miss": "Families A and B share dates but zero common minutes; agreement is established transitively through the front-month OHLCV bar. STANDING REQUIREMENT: future extractions must preserve a deliberate same-minute overlap; the forward recorder must capture trades and overlap both windows."
+  },
+  "passed": true
+ },
+ "pass": true
+}

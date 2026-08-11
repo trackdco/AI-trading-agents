@@ -134,6 +134,28 @@ it is one line and a rebuild.
    a calendar-based, outcome-independent criterion. The absent same-minute overlap is
    recorded as a standing MISS: every future extension must preserve one deliberately.
 
+### 6a. Amendment, 2026-08-11 — pre-merge, during gate iteration
+
+Gate 1 demonstrated that the C4 assertion's strict reading — "`tf_trigger` is fully
+determined at `tf_trigger_ts`" — is **unsatisfiable under resolution mode (b)** as the
+SPEC defines it: within a 5m window, a higher-timeframe bar closing later than an
+earlier trigger supersedes it by design (probe case 2023-07-27 london: a 3m bar closing
+07:18 stole governance from a 2m trigger at 07:16 inside the 07:20 window), so
+governance is only fixed when the window ends. Accordingly, and before any merge:
+
+- **`ts_decision` under mode (b) is the 5m resolution boundary** — the moment the
+  decision completes and every row column is fixed. B3's parenthetical
+  ("ts_decision = trigger bar close") is carried by `tf_trigger_ts` instead; under
+  mode (a) the two instants coincide.
+- The C4 assert is enforced in its satisfiable two-part form: (1) flattening bars
+  strictly after `ts_decision` leaves row existence, `tf_trigger`, the qualifying set
+  and every row column unchanged; (2) flattening bars strictly after `tf_trigger_ts`
+  leaves the governing event present in the per-timeframe stream with identical
+  geometry and qualification.
+- This is a recorded property of mode (b), not a waiver: it is additional evidence for
+  running the mode (a) comparison at Stage 4+, which the `a_*` columns and the sibling
+  table exist to support.
+
 ### 7. Out of scope for the build this entry governs
 
 No conditioning, no cuts, no filtering, no parameter selection, no exit choice, no holdout
