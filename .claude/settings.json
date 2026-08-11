@@ -1,0 +1,13 @@
+{
+  "enabledMcpjsonServers": [
+    "tradingview"
+  ],
+  "permissions": {
+    "allow": [
+      "mcp__tradingview",
+      "Bash(python3 *)",
+      "Bash(node *)",
+      "Bash(bash scripts/*)"
+    ]
+  }
+}

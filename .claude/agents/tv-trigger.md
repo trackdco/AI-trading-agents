@@ -1,5 +1,6 @@
 ---
 name: tv-trigger
+description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
 version: 0.2.0
 # 0.2.0: Read added, on the trade-manager-replay precedent — the MCP saves chart
 #   screenshots as PNG files and returns a path, so the agent opens its own signal

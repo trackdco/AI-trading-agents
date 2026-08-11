@@ -1,5 +1,6 @@
 ---
 name: tv-thesis
+description: Tier-1 thesis agent for the TradingView replay stack — reads briefing file + chart screenshot, emits bias/targets/invalidation JSON. Spawned by the orchestrator only; never self-select.
 version: 0.2.0
 # 0.2.0: Read added, on the trade-manager-replay precedent, so the agent can open
 #   the chart screenshot PNG and briefing file the orchestrator hands it — the MCP

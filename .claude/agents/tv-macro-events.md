@@ -1,5 +1,6 @@
 ---
 name: tv-macro-events
+description: Macro/events read for the TradingView replay stack — emits lean + news_blackout gate from an as-of briefing. Spawned by the orchestrator only, with the briefing inline; never self-select.
 version: 0.1.0
 # Component 1 of the TRADINGVIEW REPLAY STACK — docs/AGENT-OPERATING-SPEC.md
 # "THE AGENT STACK", docs/ARCHITECTURE-trading-agent.md. Feeds Phase 1 bias.
