@@ -1,0 +1,96 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills; none used)",
+ "decision_minute": "2026-06-24T09:30 ET (session-day 2026-06-23)",
+ "leak_check": "pass - truncated at 09:29:59; last completed 2m bar starts 09:28 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d23_0930_nyam.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; weekly levels numeric and DEVELOPING as-of this minute.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the research build.",
+ "day_character_note": "Re-judge the day's character. At 03:00 and 08:00 you called it ROTATIONAL and kept the 15m-MA floor.",
+ "timing_note": "This is the cash open. The no-entry bar covers roughly the first FIVE minutes (09:30-09:35); from about 09:36 a clean setup is judged on structure, not the clock.",
+ "price_at_decision": 29711.5,
+ "prior_thesis_as_of_0800": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "overnight_high",
+    "price": 29891.75
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 29928.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 30036.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29577.25
+  },
+  "waiting_for": "nothing",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed on a rejection at the overnight-high/prior-day-VAH cluster (29891-29928), or at weekly VAL 30036",
+  "anticipated_resolution": {
+   "level": "overnight_high_prior_day_vah_cluster",
+   "price": 29891.75,
+   "expect": "break_up",
+   "act_on_resolution": true
+  }
+ },
+ "what_happened_since_0800": "Your anticipated break UP did not happen. Price stalled at 29872.75 - 19pt short of the overnight high - and has since sold off steadily for an hour: 29872 -> 29703, a 170pt decline that has broken back below the developing daily POC, below the 15m MA, below the VWAP (29774.60) and below vwap_m1 (29711.97). Price sits at 29711.50 on the last bar, at the low end of the session's entire range. The 08:45 15m closed DOWN through the 15m MA on a 0.72 body.",
+ "levels_at_0930_CHART": {
+  "vwap": 29774.6,
+  "vwap_p1": 29837.23,
+  "vwap_m1": 29711.97,
+  "vwap_p2": 29899.86,
+  "vwap_m2": 29649.34,
+  "bb_2m_basis": 29740.45,
+  "bb_2m_upper": 29783.04,
+  "bb_2m_lower": 29697.86
+ },
+ "levels_at_0930_BUILD": {
+  "bb_ma_3m": 29761.76,
+  "bb_ma_15m": 29799.6,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "day_high": 29891.75,
+  "day_low": 29585.5,
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "overnight_high": 29891.75,
+  "overnight_low": 29585.5,
+  "weekly_low": 29577.25,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29731.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 09:30 - price has just broken BELOW the developing VAL"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30000.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 09:30"
+  }
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false,
+  "note": "no scheduled releases today; Core PCE is tomorrow 08:30"
+ }
+}
