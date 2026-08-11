@@ -1,0 +1,1554 @@
+{
+ "noise_floor_median_1m_TR_pts": {
+  "ny_am": 12.5,
+  "london": 4.25
+ },
+ "cost_assumption_pts_round_trip": 0.5,
+ "cost_assumption_note": "DECLARED constant, matching existing book convention -- NOT measured (no book/spread data exists in the fit era; all flow coverage lies in the sealed span).",
+ "cells": {
+  "retrace=0.236|height_atr=0.5": {
+   "n_qualified_all_tf": 9021,
+   "triggers_per_session_per_day": {
+    "ny_am": 6.76,
+    "london": 11.404
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 4057,
+     "leg_height_pts": {
+      "n": 4057,
+      "median": 12.25,
+      "p90": 39.0
+     },
+     "wick_width_pts": {
+      "n": 4057,
+      "median": 1.75,
+      "p90": 6.5
+     },
+     "stop_dist_pts": {
+      "n": 4057,
+      "median": 3.0,
+      "p90": 5.25
+     },
+     "r_available": {
+      "n": 3093,
+      "median": 2.75,
+      "p90": 8.0
+     },
+     "fill_rate": 0.8977,
+     "stop_touched_on_fill_bar_rate": 0.3666,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.32,
+      "london": 0.588
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 2295,
+     "leg_height_pts": {
+      "n": 2295,
+      "median": 17.25,
+      "p90": 50.75
+     },
+     "wick_width_pts": {
+      "n": 2295,
+      "median": 2.75,
+      "p90": 8.75
+     },
+     "stop_dist_pts": {
+      "n": 2295,
+      "median": 3.5,
+      "p90": 6.5
+     },
+     "r_available": {
+      "n": 1555,
+      "median": 3.25,
+      "p90": 8.786
+     },
+     "fill_rate": 0.8575,
+     "stop_touched_on_fill_bar_rate": 0.313,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.38,
+      "london": 0.706
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 1635,
+     "leg_height_pts": {
+      "n": 1635,
+      "median": 20.5,
+      "p90": 62.5
+     },
+     "wick_width_pts": {
+      "n": 1635,
+      "median": 3.25,
+      "p90": 11.25
+     },
+     "stop_dist_pts": {
+      "n": 1635,
+      "median": 3.75,
+      "p90": 7.75
+     },
+     "r_available": {
+      "n": 978,
+      "median": 3.476,
+      "p90": 8.684
+     },
+     "fill_rate": 0.8355,
+     "stop_touched_on_fill_bar_rate": 0.2745,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.44,
+      "london": 0.765
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 1034,
+     "leg_height_pts": {
+      "n": 1034,
+      "median": 26.875,
+      "p90": 77.75
+     },
+     "wick_width_pts": {
+      "n": 1034,
+      "median": 4.5,
+      "p90": 14.75
+     },
+     "stop_dist_pts": {
+      "n": 1034,
+      "median": 4.25,
+      "p90": 9.5
+     },
+     "r_available": {
+      "n": 471,
+      "median": 3.957,
+      "p90": 9.829
+     },
+     "fill_rate": 0.7863,
+     "stop_touched_on_fill_bar_rate": 0.2497,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.882,
+      "ny_am": 0.52
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.382|height_atr=0.5": {
+   "n_qualified_all_tf": 4596,
+   "triggers_per_session_per_day": {
+    "ny_am": 3.331,
+    "london": 5.924
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 2030,
+     "leg_height_pts": {
+      "n": 2030,
+      "median": 14.5,
+      "p90": 45.75
+     },
+     "wick_width_pts": {
+      "n": 2030,
+      "median": 1.75,
+      "p90": 6.75
+     },
+     "stop_dist_pts": {
+      "n": 2030,
+      "median": 2.75,
+      "p90": 5.5
+     },
+     "r_available": {
+      "n": 1507,
+      "median": 2.636,
+      "p90": 7.8
+     },
+     "fill_rate": 0.9015,
+     "stop_touched_on_fill_bar_rate": 0.3639,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.588,
+      "ny_am": 0.32
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 1192,
+     "leg_height_pts": {
+      "n": 1192,
+      "median": 19.5,
+      "p90": 61.75
+     },
+     "wick_width_pts": {
+      "n": 1192,
+      "median": 2.75,
+      "p90": 9.75
+     },
+     "stop_dist_pts": {
+      "n": 1192,
+      "median": 3.5,
+      "p90": 6.75
+     },
+     "r_available": {
+      "n": 737,
+      "median": 3.125,
+      "p90": 7.889
+     },
+     "fill_rate": 0.8733,
+     "stop_touched_on_fill_bar_rate": 0.3007,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.38,
+      "london": 0.706
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 831,
+     "leg_height_pts": {
+      "n": 831,
+      "median": 23.25,
+      "p90": 74.0
+     },
+     "wick_width_pts": {
+      "n": 831,
+      "median": 3.25,
+      "p90": 11.75
+     },
+     "stop_dist_pts": {
+      "n": 831,
+      "median": 3.5,
+      "p90": 8.0
+     },
+     "r_available": {
+      "n": 452,
+      "median": 3.523,
+      "p90": 9.03
+     },
+     "fill_rate": 0.8448,
+     "stop_touched_on_fill_bar_rate": 0.2906,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.765,
+      "ny_am": 0.44
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 543,
+     "leg_height_pts": {
+      "n": 543,
+      "median": 31.75,
+      "p90": 80.25
+     },
+     "wick_width_pts": {
+      "n": 543,
+      "median": 4.5,
+      "p90": 15.25
+     },
+     "stop_dist_pts": {
+      "n": 543,
+      "median": 4.25,
+      "p90": 9.5
+     },
+     "r_available": {
+      "n": 211,
+      "median": 4.2,
+      "p90": 9.829
+     },
+     "fill_rate": 0.7808,
+     "stop_touched_on_fill_bar_rate": 0.2123,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.824,
+      "ny_am": 0.52
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.5|height_atr=0.5": {
+   "n_qualified_all_tf": 1577,
+   "triggers_per_session_per_day": {
+    "ny_am": 1.373,
+    "london": 1.803
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 558,
+     "leg_height_pts": {
+      "n": 558,
+      "median": 21.875,
+      "p90": 70.0
+     },
+     "wick_width_pts": {
+      "n": 558,
+      "median": 2.0,
+      "p90": 7.0
+     },
+     "stop_dist_pts": {
+      "n": 558,
+      "median": 3.0,
+      "p90": 5.5
+     },
+     "r_available": {
+      "n": 331,
+      "median": 2.889,
+      "p90": 7.571
+     },
+     "fill_rate": 0.9104,
+     "stop_touched_on_fill_bar_rate": 0.3917,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.588,
+      "ny_am": 0.32
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 435,
+     "leg_height_pts": {
+      "n": 435,
+      "median": 25.5,
+      "p90": 71.75
+     },
+     "wick_width_pts": {
+      "n": 435,
+      "median": 2.75,
+      "p90": 9.5
+     },
+     "stop_dist_pts": {
+      "n": 435,
+      "median": 3.5,
+      "p90": 6.75
+     },
+     "r_available": {
+      "n": 215,
+      "median": 3.03,
+      "p90": 7.286
+     },
+     "fill_rate": 0.892,
+     "stop_touched_on_fill_bar_rate": 0.3222,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.38,
+      "london": 0.706
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 334,
+     "leg_height_pts": {
+      "n": 334,
+      "median": 30.0,
+      "p90": 85.0
+     },
+     "wick_width_pts": {
+      "n": 334,
+      "median": 3.5,
+      "p90": 12.75
+     },
+     "stop_dist_pts": {
+      "n": 334,
+      "median": 3.75,
+      "p90": 8.5
+     },
+     "r_available": {
+      "n": 124,
+      "median": 3.275,
+      "p90": 7.8
+     },
+     "fill_rate": 0.8713,
+     "stop_touched_on_fill_bar_rate": 0.2955,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.44,
+      "london": 0.765
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 250,
+     "leg_height_pts": {
+      "n": 250,
+      "median": 38.75,
+      "p90": 91.0
+     },
+     "wick_width_pts": {
+      "n": 250,
+      "median": 4.5,
+      "p90": 15.5
+     },
+     "stop_dist_pts": {
+      "n": 250,
+      "median": 4.25,
+      "p90": 9.75
+     },
+     "r_available": {
+      "n": 62,
+      "median": 3.922,
+      "p90": 7.643
+     },
+     "fill_rate": 0.788,
+     "stop_touched_on_fill_bar_rate": 0.1929,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.5,
+      "london": 0.824
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.236|height_atr=1.0": {
+   "n_qualified_all_tf": 3398,
+   "triggers_per_session_per_day": {
+    "ny_am": 2.772,
+    "london": 4.07
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 1346,
+     "leg_height_pts": {
+      "n": 1346,
+      "median": 15.0,
+      "p90": 45.5
+     },
+     "wick_width_pts": {
+      "n": 1346,
+      "median": 2.0,
+      "p90": 7.5
+     },
+     "stop_dist_pts": {
+      "n": 1346,
+      "median": 3.0,
+      "p90": 5.75
+     },
+     "r_available": {
+      "n": 808,
+      "median": 3.317,
+      "p90": 9.9
+     },
+     "fill_rate": 0.9004,
+     "stop_touched_on_fill_bar_rate": 0.3713,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.32,
+      "london": 0.588
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 836,
+     "leg_height_pts": {
+      "n": 836,
+      "median": 22.25,
+      "p90": 62.5
+     },
+     "wick_width_pts": {
+      "n": 836,
+      "median": 3.25,
+      "p90": 10.75
+     },
+     "stop_dist_pts": {
+      "n": 836,
+      "median": 3.5,
+      "p90": 7.25
+     },
+     "r_available": {
+      "n": 409,
+      "median": 3.615,
+      "p90": 11.167
+     },
+     "fill_rate": 0.8732,
+     "stop_touched_on_fill_bar_rate": 0.3082,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.42,
+      "london": 0.706
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 675,
+     "leg_height_pts": {
+      "n": 675,
+      "median": 24.75,
+      "p90": 75.5
+     },
+     "wick_width_pts": {
+      "n": 675,
+      "median": 4.0,
+      "p90": 13.25
+     },
+     "stop_dist_pts": {
+      "n": 675,
+      "median": 4.0,
+      "p90": 8.5
+     },
+     "r_available": {
+      "n": 294,
+      "median": 3.817,
+      "p90": 11.0
+     },
+     "fill_rate": 0.8281,
+     "stop_touched_on_fill_bar_rate": 0.2683,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.765,
+      "ny_am": 0.46
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 541,
+     "leg_height_pts": {
+      "n": 541,
+      "median": 32.5,
+      "p90": 94.5
+     },
+     "wick_width_pts": {
+      "n": 541,
+      "median": 4.75,
+      "p90": 16.75
+     },
+     "stop_dist_pts": {
+      "n": 541,
+      "median": 4.5,
+      "p90": 10.5
+     },
+     "r_available": {
+      "n": 179,
+      "median": 4.16,
+      "p90": 10.98
+     },
+     "fill_rate": 0.7893,
+     "stop_touched_on_fill_bar_rate": 0.2553,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.882,
+      "ny_am": 0.54
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.382|height_atr=1.0": {
+   "n_qualified_all_tf": 3026,
+   "triggers_per_session_per_day": {
+    "ny_am": 2.294,
+    "london": 3.799
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 1293,
+     "leg_height_pts": {
+      "n": 1293,
+      "median": 16.75,
+      "p90": 51.0
+     },
+     "wick_width_pts": {
+      "n": 1293,
+      "median": 1.75,
+      "p90": 7.25
+     },
+     "stop_dist_pts": {
+      "n": 1293,
+      "median": 3.0,
+      "p90": 5.75
+     },
+     "r_available": {
+      "n": 869,
+      "median": 3.111,
+      "p90": 9.333
+     },
+     "fill_rate": 0.8979,
+     "stop_touched_on_fill_bar_rate": 0.3626,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.32,
+      "london": 0.588
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 725,
+     "leg_height_pts": {
+      "n": 725,
+      "median": 22.5,
+      "p90": 66.0
+     },
+     "wick_width_pts": {
+      "n": 725,
+      "median": 3.0,
+      "p90": 10.25
+     },
+     "stop_dist_pts": {
+      "n": 725,
+      "median": 3.5,
+      "p90": 7.0
+     },
+     "r_available": {
+      "n": 393,
+      "median": 3.5,
+      "p90": 9.833
+     },
+     "fill_rate": 0.9076,
+     "stop_touched_on_fill_bar_rate": 0.2979,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.706,
+      "ny_am": 0.4
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 588,
+     "leg_height_pts": {
+      "n": 588,
+      "median": 26.625,
+      "p90": 78.25
+     },
+     "wick_width_pts": {
+      "n": 588,
+      "median": 3.5,
+      "p90": 12.75
+     },
+     "stop_dist_pts": {
+      "n": 588,
+      "median": 3.75,
+      "p90": 8.25
+     },
+     "r_available": {
+      "n": 265,
+      "median": 3.429,
+      "p90": 8.789
+     },
+     "fill_rate": 0.8486,
+     "stop_touched_on_fill_bar_rate": 0.2826,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.765,
+      "ny_am": 0.46
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 420,
+     "leg_height_pts": {
+      "n": 420,
+      "median": 34.375,
+      "p90": 80.75
+     },
+     "wick_width_pts": {
+      "n": 420,
+      "median": 4.5,
+      "p90": 16.25
+     },
+     "stop_dist_pts": {
+      "n": 420,
+      "median": 4.25,
+      "p90": 10.25
+     },
+     "r_available": {
+      "n": 132,
+      "median": 4.5,
+      "p90": 9.829
+     },
+     "fill_rate": 0.7905,
+     "stop_touched_on_fill_bar_rate": 0.2199,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.824,
+      "ny_am": 0.55
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.5|height_atr=1.0": {
+   "n_qualified_all_tf": 1417,
+   "triggers_per_session_per_day": {
+    "ny_am": 1.286,
+    "london": 1.567
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 524,
+     "leg_height_pts": {
+      "n": 524,
+      "median": 22.5,
+      "p90": 67.75
+     },
+     "wick_width_pts": {
+      "n": 524,
+      "median": 2.0,
+      "p90": 7.0
+     },
+     "stop_dist_pts": {
+      "n": 524,
+      "median": 3.0,
+      "p90": 5.5
+     },
+     "r_available": {
+      "n": 295,
+      "median": 3.045,
+      "p90": 8.154
+     },
+     "fill_rate": 0.8969,
+     "stop_touched_on_fill_bar_rate": 0.3936,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.588,
+      "ny_am": 0.3
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 368,
+     "leg_height_pts": {
+      "n": 368,
+      "median": 27.625,
+      "p90": 75.25
+     },
+     "wick_width_pts": {
+      "n": 368,
+      "median": 2.75,
+      "p90": 10.25
+     },
+     "stop_dist_pts": {
+      "n": 368,
+      "median": 3.5,
+      "p90": 7.0
+     },
+     "r_available": {
+      "n": 160,
+      "median": 3.125,
+      "p90": 7.8
+     },
+     "fill_rate": 0.8967,
+     "stop_touched_on_fill_bar_rate": 0.3242,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.38,
+      "london": 0.706
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 298,
+     "leg_height_pts": {
+      "n": 298,
+      "median": 33.625,
+      "p90": 88.25
+     },
+     "wick_width_pts": {
+      "n": 298,
+      "median": 3.75,
+      "p90": 13.0
+     },
+     "stop_dist_pts": {
+      "n": 298,
+      "median": 3.75,
+      "p90": 8.5
+     },
+     "r_available": {
+      "n": 93,
+      "median": 3.25,
+      "p90": 6.81
+     },
+     "fill_rate": 0.8389,
+     "stop_touched_on_fill_bar_rate": 0.28,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.46,
+      "london": 0.765
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 227,
+     "leg_height_pts": {
+      "n": 227,
+      "median": 39.5,
+      "p90": 90.0
+     },
+     "wick_width_pts": {
+      "n": 227,
+      "median": 4.75,
+      "p90": 16.25
+     },
+     "stop_dist_pts": {
+      "n": 227,
+      "median": 4.25,
+      "p90": 10.25
+     },
+     "r_available": {
+      "n": 47,
+      "median": 3.843,
+      "p90": 8.129
+     },
+     "fill_rate": 0.7885,
+     "stop_touched_on_fill_bar_rate": 0.2123,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.51,
+      "london": 0.824
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.236|height_atr=2.0": {
+   "n_qualified_all_tf": 1002,
+   "triggers_per_session_per_day": {
+    "ny_am": 0.843,
+    "london": 1.175
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 348,
+     "leg_height_pts": {
+      "n": 348,
+      "median": 20.0,
+      "p90": 73.5
+     },
+     "wick_width_pts": {
+      "n": 348,
+      "median": 2.0,
+      "p90": 8.0
+     },
+     "stop_dist_pts": {
+      "n": 348,
+      "median": 3.0,
+      "p90": 6.0
+     },
+     "r_available": {
+      "n": 110,
+      "median": 4.15,
+      "p90": 12.3
+     },
+     "fill_rate": 0.8851,
+     "stop_touched_on_fill_bar_rate": 0.3506,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.647,
+      "ny_am": 0.34
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 236,
+     "leg_height_pts": {
+      "n": 236,
+      "median": 29.125,
+      "p90": 87.25
+     },
+     "wick_width_pts": {
+      "n": 236,
+      "median": 3.0,
+      "p90": 9.75
+     },
+     "stop_dist_pts": {
+      "n": 236,
+      "median": 3.5,
+      "p90": 7.0
+     },
+     "r_available": {
+      "n": 69,
+      "median": 5.333,
+      "p90": 12.85
+     },
+     "fill_rate": 0.8856,
+     "stop_touched_on_fill_bar_rate": 0.3828,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.42,
+      "london": 0.706
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 209,
+     "leg_height_pts": {
+      "n": 209,
+      "median": 43.75,
+      "p90": 112.25
+     },
+     "wick_width_pts": {
+      "n": 209,
+      "median": 4.25,
+      "p90": 15.75
+     },
+     "stop_dist_pts": {
+      "n": 209,
+      "median": 4.25,
+      "p90": 10.0
+     },
+     "r_available": {
+      "n": 40,
+      "median": 5.067,
+      "p90": 14.778
+     },
+     "fill_rate": 0.8756,
+     "stop_touched_on_fill_bar_rate": 0.2896,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.824,
+      "ny_am": 0.44
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 209,
+     "leg_height_pts": {
+      "n": 209,
+      "median": 37.0,
+      "p90": 114.5
+     },
+     "wick_width_pts": {
+      "n": 209,
+      "median": 4.5,
+      "p90": 15.5
+     },
+     "stop_dist_pts": {
+      "n": 209,
+      "median": 4.25,
+      "p90": 9.75
+     },
+     "r_available": {
+      "n": 32,
+      "median": 4.045,
+      "p90": 9.68
+     },
+     "fill_rate": 0.8756,
+     "stop_touched_on_fill_bar_rate": 0.2623,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.882,
+      "ny_am": 0.5
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.382|height_atr=2.0": {
+   "n_qualified_all_tf": 1103,
+   "triggers_per_session_per_day": {
+    "ny_am": 0.891,
+    "london": 1.33
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 440,
+     "leg_height_pts": {
+      "n": 440,
+      "median": 21.375,
+      "p90": 73.0
+     },
+     "wick_width_pts": {
+      "n": 440,
+      "median": 2.0,
+      "p90": 8.0
+     },
+     "stop_dist_pts": {
+      "n": 440,
+      "median": 3.0,
+      "p90": 6.0
+     },
+     "r_available": {
+      "n": 184,
+      "median": 4.246,
+      "p90": 13.25
+     },
+     "fill_rate": 0.9091,
+     "stop_touched_on_fill_bar_rate": 0.3425,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.647,
+      "ny_am": 0.36
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 269,
+     "leg_height_pts": {
+      "n": 269,
+      "median": 32.75,
+      "p90": 87.25
+     },
+     "wick_width_pts": {
+      "n": 269,
+      "median": 3.0,
+      "p90": 10.0
+     },
+     "stop_dist_pts": {
+      "n": 269,
+      "median": 3.5,
+      "p90": 7.0
+     },
+     "r_available": {
+      "n": 81,
+      "median": 4.2,
+      "p90": 12.842
+     },
+     "fill_rate": 0.8773,
+     "stop_touched_on_fill_bar_rate": 0.3517,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.706,
+      "ny_am": 0.41
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 215,
+     "leg_height_pts": {
+      "n": 215,
+      "median": 35.75,
+      "p90": 99.5
+     },
+     "wick_width_pts": {
+      "n": 215,
+      "median": 3.25,
+      "p90": 11.25
+     },
+     "stop_dist_pts": {
+      "n": 215,
+      "median": 3.75,
+      "p90": 7.75
+     },
+     "r_available": {
+      "n": 40,
+      "median": 5.456,
+      "p90": 10.455
+     },
+     "fill_rate": 0.8233,
+     "stop_touched_on_fill_bar_rate": 0.2881,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.4,
+      "london": 0.765
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 179,
+     "leg_height_pts": {
+      "n": 179,
+      "median": 42.5,
+      "p90": 128.0
+     },
+     "wick_width_pts": {
+      "n": 179,
+      "median": 4.75,
+      "p90": 18.25
+     },
+     "stop_dist_pts": {
+      "n": 179,
+      "median": 4.5,
+      "p90": 11.25
+     },
+     "r_available": {
+      "n": 15,
+      "median": 3.381,
+      "p90": 10.25
+     },
+     "fill_rate": 0.8436,
+     "stop_touched_on_fill_bar_rate": 0.2914,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.5,
+      "london": 0.824
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.5|height_atr=2.0": {
+   "n_qualified_all_tf": 802,
+   "triggers_per_session_per_day": {
+    "ny_am": 0.742,
+    "london": 0.873
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 287,
+     "leg_height_pts": {
+      "n": 287,
+      "median": 28.25,
+      "p90": 76.0
+     },
+     "wick_width_pts": {
+      "n": 287,
+      "median": 2.0,
+      "p90": 7.5
+     },
+     "stop_dist_pts": {
+      "n": 287,
+      "median": 3.0,
+      "p90": 5.75
+     },
+     "r_available": {
+      "n": 104,
+      "median": 3.583,
+      "p90": 8.909
+     },
+     "fill_rate": 0.9233,
+     "stop_touched_on_fill_bar_rate": 0.4113,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.647,
+      "ny_am": 0.32
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 203,
+     "leg_height_pts": {
+      "n": 203,
+      "median": 37.0,
+      "p90": 77.75
+     },
+     "wick_width_pts": {
+      "n": 203,
+      "median": 3.0,
+      "p90": 11.25
+     },
+     "stop_dist_pts": {
+      "n": 203,
+      "median": 3.5,
+      "p90": 7.5
+     },
+     "r_available": {
+      "n": 48,
+      "median": 2.972,
+      "p90": 7.556
+     },
+     "fill_rate": 0.8818,
+     "stop_touched_on_fill_bar_rate": 0.3184,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.4,
+      "london": 0.706
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 174,
+     "leg_height_pts": {
+      "n": 174,
+      "median": 40.25,
+      "p90": 112.75
+     },
+     "wick_width_pts": {
+      "n": 174,
+      "median": 3.75,
+      "p90": 13.0
+     },
+     "stop_dist_pts": {
+      "n": 174,
+      "median": 4.0,
+      "p90": 8.5
+     },
+     "r_available": {
+      "n": 25,
+      "median": 3.125,
+      "p90": 10.455
+     },
+     "fill_rate": 0.8333,
+     "stop_touched_on_fill_bar_rate": 0.3172,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.46,
+      "london": 0.765
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 138,
+     "leg_height_pts": {
+      "n": 138,
+      "median": 44.625,
+      "p90": 128.0
+     },
+     "wick_width_pts": {
+      "n": 138,
+      "median": 4.875,
+      "p90": 19.25
+     },
+     "stop_dist_pts": {
+      "n": 138,
+      "median": 4.5,
+      "p90": 11.75
+     },
+     "r_available": {
+      "n": 6,
+      "median": 6.07,
+      "p90": 6.846
+     },
+     "fill_rate": 0.8551,
+     "stop_touched_on_fill_bar_rate": 0.2542,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.56,
+      "london": 0.765
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.236|height_atr=3.0": {
+   "n_qualified_all_tf": 553,
+   "triggers_per_session_per_day": {
+    "ny_am": 0.47,
+    "london": 0.644
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 205,
+     "leg_height_pts": {
+      "n": 205,
+      "median": 28.75,
+      "p90": 81.0
+     },
+     "wick_width_pts": {
+      "n": 205,
+      "median": 2.25,
+      "p90": 7.5
+     },
+     "stop_dist_pts": {
+      "n": 205,
+      "median": 3.0,
+      "p90": 5.75
+     },
+     "r_available": {
+      "n": 36,
+      "median": 6.242,
+      "p90": 16.7
+     },
+     "fill_rate": 0.8829,
+     "stop_touched_on_fill_bar_rate": 0.3481,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.32,
+      "london": 0.647
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 122,
+     "leg_height_pts": {
+      "n": 122,
+      "median": 36.875,
+      "p90": 98.5
+     },
+     "wick_width_pts": {
+      "n": 122,
+      "median": 3.0,
+      "p90": 9.5
+     },
+     "stop_dist_pts": {
+      "n": 122,
+      "median": 3.5,
+      "p90": 6.75
+     },
+     "r_available": {
+      "n": 11,
+      "median": 3.833,
+      "p90": 11.214
+     },
+     "fill_rate": 0.877,
+     "stop_touched_on_fill_bar_rate": 0.3645,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.706,
+      "ny_am": 0.36
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 106,
+     "leg_height_pts": {
+      "n": 106,
+      "median": 51.375,
+      "p90": 109.75
+     },
+     "wick_width_pts": {
+      "n": 106,
+      "median": 4.5,
+      "p90": 13.75
+     },
+     "stop_dist_pts": {
+      "n": 106,
+      "median": 4.25,
+      "p90": 8.75
+     },
+     "r_available": {
+      "n": 9,
+      "median": 4.667,
+      "p90": 6.45
+     },
+     "fill_rate": 0.8491,
+     "stop_touched_on_fill_bar_rate": 0.3222,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.824,
+      "ny_am": 0.48
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 120,
+     "leg_height_pts": {
+      "n": 120,
+      "median": 38.875,
+      "p90": 88.25
+     },
+     "wick_width_pts": {
+      "n": 120,
+      "median": 4.25,
+      "p90": 15.5
+     },
+     "stop_dist_pts": {
+      "n": 120,
+      "median": 4.25,
+      "p90": 9.75
+     },
+     "r_available": {
+      "n": 10,
+      "median": 3.28,
+      "p90": 5.3
+     },
+     "fill_rate": 0.8417,
+     "stop_touched_on_fill_bar_rate": 0.2673,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.941,
+      "ny_am": 0.52
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.382|height_atr=3.0": {
+   "n_qualified_all_tf": 575,
+   "triggers_per_session_per_day": {
+    "ny_am": 0.482,
+    "london": 0.676
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 222,
+     "leg_height_pts": {
+      "n": 222,
+      "median": 34.5,
+      "p90": 89.5
+     },
+     "wick_width_pts": {
+      "n": 222,
+      "median": 2.0,
+      "p90": 7.5
+     },
+     "stop_dist_pts": {
+      "n": 222,
+      "median": 3.0,
+      "p90": 5.75
+     },
+     "r_available": {
+      "n": 56,
+      "median": 4.771,
+      "p90": 11.867
+     },
+     "fill_rate": 0.9144,
+     "stop_touched_on_fill_bar_rate": 0.4089,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.647,
+      "ny_am": 0.33
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 141,
+     "leg_height_pts": {
+      "n": 141,
+      "median": 37.75,
+      "p90": 119.75
+     },
+     "wick_width_pts": {
+      "n": 141,
+      "median": 3.25,
+      "p90": 11.0
+     },
+     "stop_dist_pts": {
+      "n": 141,
+      "median": 3.5,
+      "p90": 7.5
+     },
+     "r_available": {
+      "n": 20,
+      "median": 5.55,
+      "p90": 12.842
+     },
+     "fill_rate": 0.844,
+     "stop_touched_on_fill_bar_rate": 0.4034,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.765,
+      "ny_am": 0.41
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 113,
+     "leg_height_pts": {
+      "n": 113,
+      "median": 45.75,
+      "p90": 133.0
+     },
+     "wick_width_pts": {
+      "n": 113,
+      "median": 4.0,
+      "p90": 12.75
+     },
+     "stop_dist_pts": {
+      "n": 113,
+      "median": 4.0,
+      "p90": 8.5
+     },
+     "r_available": {
+      "n": 11,
+      "median": 5.8,
+      "p90": 12.083
+     },
+     "fill_rate": 0.7965,
+     "stop_touched_on_fill_bar_rate": 0.3,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.46,
+      "london": 0.765
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 99,
+     "leg_height_pts": {
+      "n": 99,
+      "median": 44.5,
+      "p90": 97.5
+     },
+     "wick_width_pts": {
+      "n": 99,
+      "median": 4.5,
+      "p90": 16.25
+     },
+     "stop_dist_pts": {
+      "n": 99,
+      "median": 4.25,
+      "p90": 10.25
+     },
+     "r_available": {
+      "n": 2,
+      "median": 8.25,
+      "p90": 2.0
+     },
+     "fill_rate": 0.8485,
+     "stop_touched_on_fill_bar_rate": 0.2857,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.882,
+      "ny_am": 0.62
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  },
+  "retrace=0.5|height_atr=3.0": {
+   "n_qualified_all_tf": 408,
+   "triggers_per_session_per_day": {
+    "ny_am": 0.363,
+    "london": 0.459
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 139,
+     "leg_height_pts": {
+      "n": 139,
+      "median": 35.75,
+      "p90": 91.0
+     },
+     "wick_width_pts": {
+      "n": 139,
+      "median": 1.75,
+      "p90": 6.25
+     },
+     "stop_dist_pts": {
+      "n": 139,
+      "median": 3.0,
+      "p90": 5.25
+     },
+     "r_available": {
+      "n": 32,
+      "median": 3.864,
+      "p90": 8.375
+     },
+     "fill_rate": 0.8633,
+     "stop_touched_on_fill_bar_rate": 0.375,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.588,
+      "ny_am": 0.31
+     },
+     "mechanically_nonviable": true
+    },
+    "2": {
+     "n_qualified": 115,
+     "leg_height_pts": {
+      "n": 115,
+      "median": 39.5,
+      "p90": 120.5
+     },
+     "wick_width_pts": {
+      "n": 115,
+      "median": 3.0,
+      "p90": 13.5
+     },
+     "stop_dist_pts": {
+      "n": 115,
+      "median": 3.5,
+      "p90": 8.75
+     },
+     "r_available": {
+      "n": 11,
+      "median": 5.2,
+      "p90": 11.0
+     },
+     "fill_rate": 0.8696,
+     "stop_touched_on_fill_bar_rate": 0.4,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.706,
+      "ny_am": 0.42
+     },
+     "mechanically_nonviable": true
+    },
+    "3": {
+     "n_qualified": 85,
+     "leg_height_pts": {
+      "n": 85,
+      "median": 55.5,
+      "p90": 133.0
+     },
+     "wick_width_pts": {
+      "n": 85,
+      "median": 3.75,
+      "p90": 12.75
+     },
+     "stop_dist_pts": {
+      "n": 85,
+      "median": 3.75,
+      "p90": 8.5
+     },
+     "r_available": {
+      "n": 1,
+      "median": 4.0,
+      "p90": 4.0
+     },
+     "fill_rate": 0.8353,
+     "stop_touched_on_fill_bar_rate": 0.3239,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.46,
+      "london": 0.706
+     },
+     "mechanically_nonviable": true
+    },
+    "5": {
+     "n_qualified": 69,
+     "leg_height_pts": {
+      "n": 69,
+      "median": 45.0,
+      "p90": 97.5
+     },
+     "wick_width_pts": {
+      "n": 69,
+      "median": 4.0,
+      "p90": 14.0
+     },
+     "stop_dist_pts": {
+      "n": 69,
+      "median": 4.0,
+      "p90": 9.0
+     },
+     "r_available": null,
+     "fill_rate": 0.8261,
+     "stop_touched_on_fill_bar_rate": 0.2456,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.882,
+      "ny_am": 0.43
+     },
+     "mechanically_nonviable": true
+    }
+   }
+  }
+ }
+}

@@ -161,3 +161,53 @@ governance is only fixed when the window ends. Accordingly, and before any merge
 No conditioning, no cuts, no filtering, no parameter selection, no exit choice, no holdout
 read. The build produces a population only. Later stages get their own declared bars and
 spend looks only on the venues reserved above.
+
+---
+
+## Entry 2 — P-TABLE geometry repair run, declared 2026-08-11 (same day as Entry 1)
+
+Mechanical diagnostics only, no conditioning/cuts/selection/holdout read. Sealed rows
+untouched throughout. Parameter values declared here BEFORE the sweep ran.
+
+**New additive parameter, `MIN_LEG_HEIGHT`** — a second, scale-free leg-qualification
+floor alongside `MIN_LEG_RETRACE`, expressed as a fraction of ATR14 on the leg's own
+timeframe (never in points). Gates pivot CONFIRMATION in the leg tracker (an
+under-height retrace does not terminate the leg; it keeps extending), not row
+existence after the fact — so it composes with `MIN_LEG_RETRACE` rather than
+filtering its output.
+
+- Declared grid, crossed with the existing `MIN_LEG_RETRACE` set:
+  `MIN_LEG_HEIGHT_ATR_FRAC ∈ {0.5, 1.0, 2.0, 3.0}` × `MIN_LEG_RETRACE ∈ {0.236, 0.382, 0.5}`
+  = 12 cells. Default `0.0` (gate disabled) preserves the Entry-1 build byte-for-byte;
+  no previously-built table is invalidated by adding this parameter.
+- Report only: qualified count, triggers/session/day, and per-TF (1/2/3/5m) medians +
+  p90 of `leg_height_pts`, `wick_width_pts`, `stop_dist_pts`, `r_available`, plus a
+  minimal fill/stop-touch check (fill boolean + same-bar stop touch only — no MFE, no
+  exit, no R-multiple) for the stop-touched-on-fill-bar rate. No fill simulation, no
+  outcome statistic, no win rate, no expectancy computed anywhere in this run.
+- Noise floor: median 1-minute true range over the session window (pooled fit era,
+  not per cell) — `output/p_table_geometry_sweep.json`. Cost assumption for anything
+  downstream: DECLARED constant 0.5pt round trip (existing book convention), NOT
+  measured — no book/spread data exists in the fit era.
+
+**Object-definition test (Task 3a/3b of the repair run)** — on the SAME identified
+qualified events (no re-run of leg tracking or trigger detection), recompute wick
+geometry under `WICK_TOP_MODE=candle_high` (the SPEC's own pre-declared, never-built
+alternative to DA-3's `body`) alongside the built `body` mode. `target_price` held at
+its `body`-mode value (declared simplification — the liquidity pool depends on other
+candidates' `level_0`, not on `wick_top_mode`; recomputing it per row under a shifted
+limit is a rebuild, not a recompute). Definition (c) (multi-candle zone) is explicitly
+NOT built — construction pending Angus's ruling.
+
+**Provenance note.** This entry also records a Task-0 finding material to this file:
+`docs/DECLARATIONS-holdout-partition.md` on `origin/claude/tradingview-mcp-agent-setup-ql18v8`
+(and its ancestor `origin/claude/hello-zfmoq6`) declares the M-TABLE programme's
+sealed+gray span as 2023-01-01..2025-05-31 — the exact inverse of Entry 1's P-TABLE
+fit/sealed split. The M-TABLE bar-only holdout there is already closed (spent) as of
+a commit dated within the last day, so no M-TABLE claim is retroactively voidable by
+this table's fit-era work. The live, unresolved risk runs the OTHER direction: this
+P-TABLE's sealed span (2025-06-01..2026-01-30) is the M-TABLE programme's actively
+and extensively explored fit-accessible window (Census A, narrated-day corpus, live
+agent trading tests, through 2026-08-11) — this repository's "written unread" claim
+for that span is true of this session's eyes only, not of the team's collective
+knowledge. No partition change is made in this entry; the decision belongs to Angus.

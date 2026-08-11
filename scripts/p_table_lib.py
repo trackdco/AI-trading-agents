@@ -197,15 +197,21 @@ class LegTracker:
     - Equal extremes: the FIRST bar printing the extreme is the pivot bar.
     """
 
-    def __init__(self, frac: float):
+    def __init__(self, frac: float, min_height_atr_frac: float = 0.0):
         self.frac = frac
+        # ADDITIVE, default-off (0.0 == old behaviour exactly, byte-identical to
+        # every previously-built table). Gates PIVOT CONFIRMATION, not just
+        # candidate creation: below the floor, the leg keeps extending (does not
+        # flip) rather than terminating into an undersized PXL/PXH candidate.
+        # Requires atr_val passed into on_bar; NaN (warm-up) never gates.
+        self.min_height_atr_frac = min_height_atr_frac
         self.dir = 0
         self.start_px = self.ext_px = self.counter_px = None
         self.start_ts = self.ext_ts = None
         self.ext_bar: Bar | None = None
         self.pivots: list[Pivot] = []
 
-    def on_bar(self, bar: Bar) -> list[Pivot]:
+    def on_bar(self, bar: Bar, atr_val: float = float("nan")) -> list[Pivot]:
         if self.dir == 0:
             self.dir = -1 if bar.close < bar.open else 1
             self.start_px, self.start_ts = bar.open, bar.open_ts
@@ -223,7 +229,10 @@ class LegTracker:
             else:
                 self.counter_px = max(self.counter_px, bar.high)
             height = self.start_px - self.ext_px
-            if height > 0 and (self.counter_px - self.ext_px) >= self.frac * height:
+            floor_ok = (self.min_height_atr_frac <= 0 or math.isnan(atr_val)
+                       or height >= self.min_height_atr_frac * atr_val)
+            if height > 0 and floor_ok and \
+                    (self.counter_px - self.ext_px) >= self.frac * height:
                 piv = Pivot("L", self.ext_px, self.ext_ts, self.ext_bar,
                             self.start_px, self.start_ts, height, bar.close_ts)
                 self.pivots.append(piv)
@@ -239,7 +248,10 @@ class LegTracker:
             else:
                 self.counter_px = min(self.counter_px, bar.low)
             height = self.ext_px - self.start_px
-            if height > 0 and (self.ext_px - self.counter_px) >= self.frac * height:
+            floor_ok = (self.min_height_atr_frac <= 0 or math.isnan(atr_val)
+                       or height >= self.min_height_atr_frac * atr_val)
+            if height > 0 and floor_ok and \
+                    (self.ext_px - self.counter_px) >= self.frac * height:
                 piv = Pivot("H", self.ext_px, self.ext_ts, self.ext_bar,
                             self.start_px, self.start_ts, height, bar.close_ts)
                 self.pivots.append(piv)
@@ -303,12 +315,16 @@ def _aligned_run(piv: list[Pivot], direction: int) -> int:
 
 
 def run_tf_pipeline(tf_bars: list[Bar], tf: int, frac: float,
-                    session_start: datetime, session_end: datetime):
+                    session_start: datetime, session_end: datetime,
+                    min_height_atr_frac: float = 0.0):
     """Run legs + candidates + triggers for ONE timeframe.
     Returns (events, candidates). Everything is as-of bar close: a row's existence
     and every pre-decision field depend only on bars up to and including the
-    decision bar (Gate 1's property, by construction)."""
-    tracker = LegTracker(frac)
+    decision bar (Gate 1's property, by construction).
+
+    min_height_atr_frac: ADDITIVE param (default 0.0 preserves prior behaviour
+    byte-for-byte). Gates leg-pivot confirmation on height >= frac * ATR14(tf)."""
+    tracker = LegTracker(frac, min_height_atr_frac)
     trs = true_ranges(tf_bars)
     atr = [float("nan")] * len(tf_bars)
     atr_x = [float("nan")] * len(tf_bars)   # expanding-window fallback: total by
@@ -382,7 +398,7 @@ def run_tf_pipeline(tf_bars: list[Bar], tf: int, frac: float,
                 c.fate, c.fate_ts, c.alive = "penetrated", bar.close_ts, False
 
         # 2) leg tracker update — pivots confirmed at this close
-        for piv in tracker.on_bar(bar):
+        for piv in tracker.on_bar(bar, atr[i]):
             direction = -1 if piv.kind == "L" else 1
             c = Candidate(direction, tf, piv,
                           level_0=piv.px,
