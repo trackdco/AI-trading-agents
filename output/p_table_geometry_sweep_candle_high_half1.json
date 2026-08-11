@@ -1,0 +1,391 @@
+{
+ "wick_top_mode": "candle_high",
+ "noise_floor_median_1m_TR_pts_FIT_ERA_ONLY": {
+  "ny_am": 10.75,
+  "london": 3.75
+ },
+ "corrected_bar_note": "REPLACES the earlier holdout-derived 0.17W / ~11-20pt anchor entirely (that figure traces to the M-TABLE programme's OWN fit-era band-width measurement, which is this table's SEALED span -- using it to judge this table's fit-era geometry was a leak, not just an exposure risk). New bar, declared here: stop_dist_pts >= 1.5x the FIT-ERA-ONLY median 1-minute true range, computed on 2023-01..2025-05 alone.",
+ "corrected_bar_target_pts": {
+  "ny_am": 16.125,
+  "london": 5.625
+ },
+ "cost_assumption_pts_round_trip": 0.5,
+ "cost_assumption_note": "DECLARED constant, matching existing book convention -- NOT measured (no book/spread data exists in the fit era; all flow coverage lies in the sealed span).",
+ "cells": {
+  "retrace=0.236|height_atr=0.0": {
+   "n_qualified_all_tf": 52,
+   "triggers_per_session_per_day": {
+    "ny_am": 0.024,
+    "london": 0.185
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 30,
+     "leg_height_pts": {
+      "n": 30,
+      "median": 6.5,
+      "p90": 22.5
+     },
+     "wick_width_pts": {
+      "n": 30,
+      "median": 2.25,
+      "p90": 5.0
+     },
+     "stop_dist_pts": {
+      "n": 30,
+      "median": 3.25,
+      "p90": 4.5
+     },
+     "r_available": {
+      "n": 25,
+      "median": 1.6,
+      "p90": 2.8
+     },
+     "fill_rate": 0.9,
+     "stop_touched_on_fill_bar_rate": 0.037,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.867,
+      "ny_am": 0.442
+     },
+     "mechanically_nonviable": true,
+     "meets_corrected_bar_1_5x_fit_noise_floor": {
+      "london": false,
+      "ny_am": false
+     }
+    },
+    "2": {
+     "n_qualified": 13,
+     "leg_height_pts": {
+      "n": 13,
+      "median": 11.5,
+      "p90": 17.5
+     },
+     "wick_width_pts": {
+      "n": 13,
+      "median": 3.75,
+      "p90": 14.0
+     },
+     "stop_dist_pts": {
+      "n": 13,
+      "median": 4.0,
+      "p90": 9.0
+     },
+     "r_available": {
+      "n": 10,
+      "median": 1.778,
+      "p90": 3.462
+     },
+     "fill_rate": 0.8462,
+     "stop_touched_on_fill_bar_rate": 0.0909,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 1.0,
+      "ny_am": 0.837
+     },
+     "mechanically_nonviable": true,
+     "meets_corrected_bar_1_5x_fit_noise_floor": {
+      "london": false,
+      "ny_am": false
+     }
+    },
+    "3": {
+     "n_qualified": 6,
+     "leg_height_pts": {
+      "n": 6,
+      "median": 9.0,
+      "p90": 15.25
+     },
+     "wick_width_pts": {
+      "n": 6,
+      "median": 4.125,
+      "p90": 4.75
+     },
+     "stop_dist_pts": {
+      "n": 6,
+      "median": 4.0,
+      "p90": 4.25
+     },
+     "r_available": {
+      "n": 4,
+      "median": 2.337,
+      "p90": 2.923
+     },
+     "fill_rate": 0.8333,
+     "stop_touched_on_fill_bar_rate": 0.0,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 1.067
+     },
+     "mechanically_nonviable": false,
+     "meets_corrected_bar_1_5x_fit_noise_floor": {
+      "london": false
+     }
+    },
+    "5": {
+     "n_qualified": 3,
+     "leg_height_pts": {
+      "n": 3,
+      "median": 18.0,
+      "p90": 18.0
+     },
+     "wick_width_pts": {
+      "n": 3,
+      "median": 6.25,
+      "p90": 6.25
+     },
+     "stop_dist_pts": {
+      "n": 3,
+      "median": 5.25,
+      "p90": 5.25
+     },
+     "r_available": {
+      "n": 1,
+      "median": 2.692,
+      "p90": 2.692
+     },
+     "fill_rate": 0.6667,
+     "stop_touched_on_fill_bar_rate": 0.0,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 1.4
+     },
+     "mechanically_nonviable": false,
+     "meets_corrected_bar_1_5x_fit_noise_floor": {
+      "london": false
+     }
+    }
+   }
+  },
+  "retrace=0.382|height_atr=0.0": {
+   "n_qualified_all_tf": 21,
+   "triggers_per_session_per_day": {
+    "ny_am": 0.016,
+    "london": 0.068
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 13,
+     "leg_height_pts": {
+      "n": 13,
+      "median": 6.25,
+      "p90": 11.25
+     },
+     "wick_width_pts": {
+      "n": 13,
+      "median": 2.5,
+      "p90": 3.5
+     },
+     "stop_dist_pts": {
+      "n": 13,
+      "median": 3.25,
+      "p90": 3.75
+     },
+     "r_available": {
+      "n": 9,
+      "median": 1.2,
+      "p90": 1.5
+     },
+     "fill_rate": 0.9231,
+     "stop_touched_on_fill_bar_rate": 0.0,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.8,
+      "ny_am": 0.465
+     },
+     "mechanically_nonviable": true,
+     "meets_corrected_bar_1_5x_fit_noise_floor": {
+      "london": false,
+      "ny_am": false
+     }
+    },
+    "2": {
+     "n_qualified": 5,
+     "leg_height_pts": {
+      "n": 5,
+      "median": 12.0,
+      "p90": 17.0
+     },
+     "wick_width_pts": {
+      "n": 5,
+      "median": 3.75,
+      "p90": 4.75
+     },
+     "stop_dist_pts": {
+      "n": 5,
+      "median": 4.0,
+      "p90": 4.5
+     },
+     "r_available": {
+      "n": 2,
+      "median": 2.379,
+      "p90": 2.133
+     },
+     "fill_rate": 0.8,
+     "stop_touched_on_fill_bar_rate": 0.25,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 1.0,
+      "ny_am": 0.628
+     },
+     "mechanically_nonviable": true,
+     "meets_corrected_bar_1_5x_fit_noise_floor": {
+      "london": false,
+      "ny_am": false
+     }
+    },
+    "3": {
+     "n_qualified": 1,
+     "leg_height_pts": {
+      "n": 1,
+      "median": 25.25,
+      "p90": 25.25
+     },
+     "wick_width_pts": {
+      "n": 1,
+      "median": 9.25,
+      "p90": 9.25
+     },
+     "stop_dist_pts": {
+      "n": 1,
+      "median": 6.5,
+      "p90": 6.5
+     },
+     "r_available": {
+      "n": 1,
+      "median": 2.923,
+      "p90": 2.923
+     },
+     "fill_rate": 0.0,
+     "stop_touched_on_fill_bar_rate": null,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 1.733
+     },
+     "mechanically_nonviable": false,
+     "meets_corrected_bar_1_5x_fit_noise_floor": {
+      "london": true
+     }
+    },
+    "5": {
+     "n_qualified": 2,
+     "leg_height_pts": {
+      "n": 2,
+      "median": 21.25,
+      "p90": 18.0
+     },
+     "wick_width_pts": {
+      "n": 2,
+      "median": 7.375,
+      "p90": 6.0
+     },
+     "stop_dist_pts": {
+      "n": 2,
+      "median": 5.75,
+      "p90": 5.0
+     },
+     "r_available": {
+      "n": 1,
+      "median": 2.692,
+      "p90": 2.692
+     },
+     "fill_rate": 0.5,
+     "stop_touched_on_fill_bar_rate": 0.0,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 1.533
+     },
+     "mechanically_nonviable": false,
+     "meets_corrected_bar_1_5x_fit_noise_floor": {
+      "london": true
+     }
+    }
+   }
+  },
+  "retrace=0.5|height_atr=0.0": {
+   "n_qualified_all_tf": 5,
+   "triggers_per_session_per_day": {
+    "ny_am": 0.008,
+    "london": 0.012
+   },
+   "per_tf": {
+    "1": {
+     "n_qualified": 2,
+     "leg_height_pts": {
+      "n": 2,
+      "median": 15.875,
+      "p90": 5.0
+     },
+     "wick_width_pts": {
+      "n": 2,
+      "median": 2.625,
+      "p90": 1.75
+     },
+     "stop_dist_pts": {
+      "n": 2,
+      "median": 3.25,
+      "p90": 2.75
+     },
+     "r_available": {
+      "n": 2,
+      "median": 1.479,
+      "p90": 1.091
+     },
+     "fill_rate": 0.5,
+     "stop_touched_on_fill_bar_rate": 0.0,
+     "stop_dist_x_noise_floor_by_session": {
+      "london": 0.867
+     },
+     "mechanically_nonviable": true,
+     "meets_corrected_bar_1_5x_fit_noise_floor": {
+      "london": false
+     }
+    },
+    "2": {
+     "n_qualified": 3,
+     "leg_height_pts": {
+      "n": 3,
+      "median": 17.0,
+      "p90": 17.0
+     },
+     "wick_width_pts": {
+      "n": 3,
+      "median": 4.75,
+      "p90": 4.75
+     },
+     "stop_dist_pts": {
+      "n": 3,
+      "median": 4.5,
+      "p90": 4.5
+     },
+     "r_available": {
+      "n": 1,
+      "median": 2.133,
+      "p90": 2.133
+     },
+     "fill_rate": 1.0,
+     "stop_touched_on_fill_bar_rate": 0.3333,
+     "stop_dist_x_noise_floor_by_session": {
+      "ny_am": 0.628,
+      "london": 1.0
+     },
+     "mechanically_nonviable": true,
+     "meets_corrected_bar_1_5x_fit_noise_floor": {
+      "ny_am": false,
+      "london": false
+     }
+    },
+    "3": {
+     "n_qualified": 0,
+     "leg_height_pts": null,
+     "wick_width_pts": null,
+     "stop_dist_pts": null,
+     "r_available": null,
+     "fill_rate": null,
+     "stop_touched_on_fill_bar_rate": null
+    },
+    "5": {
+     "n_qualified": 0,
+     "leg_height_pts": null,
+     "wick_width_pts": null,
+     "stop_dist_pts": null,
+     "r_available": null,
+     "fill_rate": null,
+     "stop_touched_on_fill_bar_rate": null
+    }
+   }
+  }
+ }
+}

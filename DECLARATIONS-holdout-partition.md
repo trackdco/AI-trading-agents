@@ -225,3 +225,103 @@ table's sealed span (2025-06→2026-01 sits inside the M-TABLE's actively
 explored, currently-fit-accessible window on other branches) stands as a
 recorded, accepted risk — not eliminated, but explicitly not acted on. No
 rebuild, no reseal.
+
+---
+
+## Entry 3 — corrections and amendments, declared 2026-08-11 (same day, following user review)
+
+### 3a. Anchor replacement — the imported target-stop bar is discarded
+
+Entry 2's repair run was briefed against a target stop range of "0.17W, ~11pt in
+2025 bands, ~20pt in 2026 bands." **That figure is discarded.** It traces to the
+M-TABLE programme's own fit-era band-width measurement (`VERDICT-htf-ma-census.md`,
+Census A, "fit only 2025-06..2026-07") — which is this P-TABLE's **sealed** span.
+Using it to judge this table's fit-era geometry work was a direct leak, not merely
+the abstract cross-programme exposure risk Entry 2 §Provenance flagged: the AIMING
+POINT for this table's own diagnostic work was itself derived from the withheld
+span's regime characteristics.
+
+**Replacement bar, self-contained to this table's own fit era:**
+`stop_dist_pts >= 1.5 × median(1-minute true range, session window, fit era ONLY)`.
+Measured fresh, on 2023-01-02..2025-05-31 alone: `ny_am` floor 12.5pt → target
+**18.75pt**; `london` floor 4.25pt → target **6.375pt**. (Split-half check below:
+the per-half floor itself drifts — `ny_am` 10.75→15.0pt, `london` 3.75→5.0pt,
+first half to second — consistent with the SPEC's own band-width-doubling
+rationale for ATR-scaled buffers. The pooled fit-era figure is used as the single
+declared bar; a regime-aware, period-specific bar is a candidate refinement, not
+built here.)
+
+### 3b. Venue degradation — what a future P-TABLE holdout look may claim
+
+Because the M-TABLE programme has extensively characterized this table's sealed
+span's regime (band widths, touch rates, session behavior — Entry 2 §Provenance),
+that venue is **degraded, not destroyed**, for THIS table's own purposes. No
+PXL/PXH-specific selection has occurred there — this table's own claims are not
+literally void — but the design decisions feeding into what gets tested against
+it were made with indirect knowledge of that era's character. Declared now,
+before any such look: **a pass on this table's sealed span reads as "consistent
+with," never as "confirmed," and does not by itself authorise arming anything.**
+Genuine confirmation is deferred to forward-recorded data past whatever this
+table's true look-boundary turns out to be (§3d).
+
+**Split-half discipline inside the fit era is hereby load-bearing, not optional,**
+for any claim this table produces going forward — derive on one chronological
+half, attempt to kill on the other, report the kill rate — mirroring the
+programme's own S1 precedent (ship on fit + split-half when the holdout venue
+cannot cleanly confirm; validate forward via live recording).
+
+### 3c. Virgin-span check
+
+No calendar span past this table's sealed end (2026-01-30) is untouched by both
+programmes. `origin/claude/tradingview-mcp-agent-setup-ql18v8` carries a narrated
+corpus through 2026-06-25, data pulls dated 2026-07-20, and — materially beyond a
+research-exposure question — **live armed trading**: "ARMING AUTHORIZATION
+re-issued (ANGUS 2026-08-05)," real order execution against an eval account,
+through commits dated 2026-08-11 (today). Separately and regardless: this
+repository's own OHLCV ceiling is 2026-01-30 — no P-TABLE row is buildable past
+that date without new data, whether or not a virgin span exists. No new seal is
+declared; none is actionable from this session.
+
+### 3d. `wick_top_mode` — additive parameter, and the finding that supersedes Entry 2's Task 3(a)/(b) headline
+
+`wick_top_mode ∈ {body, candle_high}` threaded through candidate creation in
+`run_tf_pipeline` (default `body`, byte-identical to every previously-built
+table — regression-verified). Unlike `MIN_LEG_HEIGHT`, this parameter changes
+`level_1` at candidate birth, which cascades into the A4 span trigger itself
+(`open > level_1`), not only into the stop/target computed afterward.
+
+**This changes the reading of Entry 2's Task 3(a)/(b) result.** That result
+recomputed geometry retroactively on the events already identified under `body`
+mode — a declared, explicit simplification at the time — and found stop_dist
+roughly doubling, crossing toward the (now-discarded) viability bar. Running
+`candle_high` as the OPERATIVE, trigger-governing object (this entry) instead of
+a retroactive recompute shows a materially different and larger effect: the
+single-bar span condition becomes geometrically hard to satisfy once `level_1` is
+the full candle range rather than the body boundary (a later bar's open must
+clear the PXL/PXH candle's own extreme, not just its body), and the qualified
+population **collapses by roughly 30–120× even before any `MIN_LEG_HEIGHT` floor
+is applied** — fit-era-wide qualified count falls from thousands (built table) to
+15–139 across the three declared `MIN_LEG_RETRACE` values, at trigger frequencies
+of 0.006–0.31 per session per day (orders of magnitude below A4.1 C2's ~1/session
+concern floor). Adding `MIN_LEG_HEIGHT ≥ 2.0×ATR` on top compresses it further, to
+2–10 events across the entire 29-month fit era. The surviving `candle_high`
+population's own stops do not reach the corrected bar either (median 3.5–6.9pt
+vs targets of 18.75/6.375pt) — the self-selected survivors are not systematically
+wider, because clearing a full prior candle's extreme does not require a large
+originating candle.
+
+**Consequence, stated plainly: "adopt (b) as the working object" is not a
+drop-in geometry substitution.** It is coupled to A4's single-bar span
+requirement in a way that breaks that requirement almost entirely at 1-5 minute
+resolution. Adopting `candle_high` cannot be decided independently of also
+reconsidering A4 (e.g., whether the span itself should be allowed to accumulate
+over multiple bars under this object — `break_bars`/`qualified=false,
+reason='multi_bar_break'` rows already exist and are non-zero under `candle_high`,
+unlike single-bar span events). No such redefinition is made here; it would be a
+new hypothesis requiring its own ruling, not a mechanical repair.
+
+**Split-half:** both the object-(a) height-insensitivity finding and the
+object-(b) population-collapse finding replicate independently on both
+chronological halves of the fit era (2023-01-02..2024-03-16 /
+2024-03-17..2025-05-31) — see `output/p_table_geometry_sweep_half{1,2}.json` and
+`output/p_table_geometry_sweep_candle_high_half{1,2}.json`.
