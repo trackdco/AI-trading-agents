@@ -34,11 +34,14 @@ Two consequences that shape everything below:
    never mapped the order ticket. The decisions ARE limit orders — price,
    expiry, cancel rule, fill at the limit — and two paths exist to execute
    them:
-   - **Native — probe first.** `scripts/probe_replay_api.mjs` (read-only)
-     enumerates the internal API for the order-placement surface; KICKOFF
-     Phase B step 2 runs it in the first session. If hits exist, extend the
-     MCP with a `replay_limit_order` tool and the agents' limits become real
-     TradingView orders in replay, brackets included.
+   - **Native — probed, and CLOSED (2026-08-11, first local session).**
+     `scripts/probe_replay_api.mjs` ran both passes on the live app — normal
+     chart, then inside replay with the trading panel open immediately after
+     a hand-placed fill and cancel. **Empty both times** (the only regex hits
+     were `stopReplay`). The native ticket exists in the UI but exposes no
+     scriptable order API where CDP can reach. Do not re-run the probe hoping
+     — the simulated path below is THE path unless TradingView ships a new
+     API surface.
    - **Simulated, otherwise.** The **orchestrator runs the limit lifecycle**
      (placement, expiry, cancel rule, fill detection) against replayed bars,
      and the JSONL log is the authoritative record. **Make the limit VISIBLE
@@ -65,8 +68,12 @@ So never trust the landing:
 
 1. `replay_start` with an explicit-offset ISO string a comfortable margin
    **before** the first minute you care about — e.g. for London of session-day
-   2026-06-25, `date: "2026-06-26T02:30:00-04:00"` (30 min early).
-2. `replay_status` → read `current_date`.
+   2026-06-25, `date: "2026-06-26T02:30:00-04:00"` (30 min early). The
+   explicit offset is non-negotiable everywhere: measured 2026-08-11 on a Mac
+   running AEST (+10), where an offsetless datetime lands 14 hours away.
+2. `replay_status` → read `current_date`. **`replay_start`'s own return can
+   carry stale state** (measured: it reported the pre-jump cursor); the
+   status call after the jump is the real read, always.
 3. `data_get_ohlcv {summary: true}` → read `period.to` (last bar time).
 4. If short of the target, `replay_step` forward — never land long and hope.
    If you overshoot the target, **restart replay earlier**; there is no step
