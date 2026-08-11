@@ -244,12 +244,18 @@ must also never place those paths in a briefing.
 Replay and practice orders only. No live orders under any circumstances
 until scoring has been run and reviewed with him.
 
-The eventual live path is real and architecturally simple: TradingView
-Desktop connected to a broker (Tradovate is how his funded accounts route)
-exposes its trading panel inside the same app this MCP already drives — same
-machine, same chart, no VPS stack. It stays behind two gates, in order:
-**(1)** scoring run and reviewed with him — the rule every doc in this repo
-carries; **(2)** the prop firm's automation policy read in writing first,
-because prop firms routinely restrict automated order entry and a funded
-account lost to a TOS clause is the dumb way to lose one. Nothing in this
-runbook wires a broker.
+**The live execution architecture is DECIDED (Angus, 2026-08-11): orders go
+through the Tradovate API directly; TradingView stays the eyes.** The agents
+keep reading his actual chart via this MCP; the orchestrator places, modifies
+and cancels orders against Tradovate's own API (demo endpoints first, then
+the funded account). Chosen over driving TradingView's trading panel because
+it gives real order acknowledgments instead of UI automation, and because
+**working orders then live at the broker, not on the Mac** — a bracket's stop
+and target keep standing server-side even if the Mac dies mid-position. Lucid
+permits API connection (confirmed by him, 2026-08-11).
+
+It stays behind two gates, in order: **(1)** replay scoring run and reviewed
+with him — the rule every doc in this repo carries; **(2)** the supervised
+ladder (live shadow → demo with him watching → unattended with alerts and a
+kill switch), each rung gated on reviewing the previous rung's logs. Nothing
+in this runbook wires a broker.
