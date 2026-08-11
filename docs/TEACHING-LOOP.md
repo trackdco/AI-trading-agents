@@ -524,3 +524,35 @@ and `docs/CORPUS-narrated-days.md` are Read-DENIED to every agent in
 `.claude/settings.json`; every briefing is built from as-of values only; and the
 per-day leak audit re-derives this from the committed bars. Day 1's one contamination
 was caught, voided and re-run.
+
+## T16 — 2026-08-12 · THE CASH-OPEN BAR IS ~5 MINUTES, NOT 15
+
+**Run:** session-day 2026-06-22 NY_AM. All four candidates were passed, three of
+them citing "first few minutes of the cash open" at minutes 3, 6, 9 and 10.
+
+**His ruling:** *"In a day like this we could have taken a long a few minutes after
+market open. And I wouldn't be mad at all if the agents took a long there —
+probably, if I had to guess, it would have been the 09:38 two-minute candle that
+closed through, retested the two-minute moving average, probably stops below the
+candle that closed through on the three minute at 09:36. That's a day setup for
+me."*
+
+**Consequences:**
+1. Constraint 4 covers roughly **09:30–09:35**. From ~09:36 a clean setup is
+   licensed and judged **on structure, not the clock**.
+2. Do not stack constraint 4 on top of a direction/waiting_for failure to
+   manufacture a pass — name the real reason.
+3. The example carries three specifics worth keeping: the **2m closure** is the
+   signal, the entry is the **retest of the 2m MA**, and the stop goes below the
+   **3m** candle that closed through (09:36), not below the 2m signal candle.
+
+**And his confirmation of the other end of that day:** the ~10:30 sequence my
+supplementary rejection-first scan surfaced — *"1030-ish was a perfect start,
+10:36"* — is the VWAP-mid rejection short he expected, with stops given breathing
+room beyond the VWAP band rather than at the displacement candle.
+
+**Method note:** those candidates are invisible to `two_level_check` (T15-A). The
+orchestrator now runs a supplementary **rejection-first** scan
+(`rejection off a key level → own-MA closure → retest`) alongside it, and both
+candidate sets are adjudicated. On day 2 that scan surfaces 08:10, 09:36, 10:30 and
+10:40 — including both trades he named.

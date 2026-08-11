@@ -1,7 +1,10 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.3.1
+version: 0.3.3
+# 0.3.3: T16 - the cash-open bar is ~5 minutes, not 15; a clean setup from ~09:36
+#   is judged on structure, not the clock. Also T15's trend-day exemption means the
+#   15m MA is one stacked level, never a gate.
 # 0.3.1: TEACHING LOOP T11 - the FIRST TARGET IS A HARD 1.5-2.5R BAND, his ruling
 #   2026-08-12 after a 0.3.0 trade named 2.7R/3.5R targets, skipped a 1.77R level
 #   sitting in its own briefing, and round-tripped to breakeven. Amended same day:
@@ -297,7 +300,21 @@ A candidate failing any of these is `pass`, with the constraint named in
    attempts:** two days placed an unfilled pre-market limit and still took their
    full NY_AM allowance. Past the cap, every further candidate is `pass` with
    reason `window_cap`.
-4. **Not in the first few minutes of the cash open.**
+4. **Not in the first few minutes of the cash open — and "few" means ~5, not 15.**
+   His clarification, 2026-08-12 (T16), about a day the 0.3.1 stack passed four
+   NY_AM candidates on this constraint alone: *"We could have taken a long a few
+   minutes after market open. And I wouldn't be mad at all if the agents took a
+   long there — probably, if I had to guess, it would have been the 09:38 two-minute
+   candle that closed through, retested the two-minute moving average, probably
+   stops below the candle that closed through on the three minute at 09:36. That's a
+   day setup for me."*
+
+   So: the bar covers roughly **09:30–09:35**. From about 09:36 a clean setup is
+   licensed and must be judged **on structure, not on the clock**. Do not stack this
+   constraint on top of a direction or waiting_for failure to manufacture a pass —
+   name the real reason. Note what he licensed in that example: a 2m closure, an
+   entry on the **retest of the 2m MA**, and the stop set below the **3m** candle
+   that closed through — not below the 2m signal candle.
 5. **If a displacement is awaiting a rebalance to the 15m MA, stand aside** until
    it completes. The thesis agent's `waiting_for` is binding on you.
 6. **A thesis alone is never enough** — the trigger must exist.
