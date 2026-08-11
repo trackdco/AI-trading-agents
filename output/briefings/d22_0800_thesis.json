@@ -31,9 +31,9 @@
    "expect": "break_down",
    "act_on_resolution": true
   },
-  "outcome": "BOTH DESTINATIONS ESSENTIALLY PRINTED. Weekly low 29923 broke on the 03:45-04:00 15m (close 29909, body 0.53) and price has closed below it on every 15m since. The second target vwap_m3 29735.88 was missed by 16pt - session low 29752.00. No entry was ever taken: the binding 15m-MA rebalance never arrived and the mechanical detector found no two-level candidate after 03:22."
+  "outcome": "BOTH DESTINATIONS ESSENTIALLY PRINTED. Weekly low 29923 broke on the 03:45-04:00 15m (close 29909, body 0.53) and price has closed below it on every 15m since. The second target vwap_m3 was missed by 16pt - session low 29752.00."
  },
- "what_happened_since_0300": "Continuation, then a base. Price bled from 29969 to the session low 29752.00, then spent roughly three hours grinding sideways in a 29752-29917 band. The last completed 15m (07:45-08:00) closed 29873.25 on a body_ratio of just 0.15 - absorption. Price now sits AT the confluence of vwap_m1 (29848.13) and the 2m BB basis (29848.48), 25pt above.",
+ "what_happened_since_0300": "Continuation, then a base. Price bled from 29969 to the session low 29752.00, then spent roughly three hours grinding sideways in a 29752-29917 band. The last completed 15m (07:45-08:00) closed 29873.25 on a body_ratio of just 0.15 - absorption. Price now sits AT the confluence of vwap_m1 and the 2m BB basis (~29848), 25pt above.",
  "acceptance_note": "Only 15m bars ending at or before 08:00 are knowable here. The decisive-body closes below the weekly low run 04:00, 04:15, 04:30, 04:45, 05:15, 05:45, 06:00, 06:30, 06:45, 07:00, 07:30, 07:45. The level is comprehensively broken and has not been reclaimed.",
  "levels_at_0800_CHART": {
   "vwap": 30133.18,
@@ -88,5 +88,6 @@
   "confidence": "low",
   "news_blackout": false,
   "note": "no scheduled US releases this session-day; next red-folder is Core PCE on 2026-06-25"
- }
+ },
+ "day_character_note": "Judge the day's character explicitly and say which you think you are in - your rebalance rule depends on it. The 15m MA is one key level among many, never a gate on its own."
 }

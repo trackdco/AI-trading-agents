@@ -34,8 +34,8 @@
    "act_on_resolution": true
   }
  },
- "what_happened_since_0800": "Your anticipated resolution PRINTED: the 29752 base low broke and price has continued to a new session low 29675.75, ~43pt below it. The one candidate the trigger agent took (a short at the 29848-29866 confluence) expired unfilled - price never retested the level, so there is no position. The book is FLAT going into the cash open. First target vwap_m2 29563 has NOT printed - closest approach 29675.75.",
- "timing_note": "this is the cash open. Doctrine: no entries in the first few minutes, and open volatility can cook you even when the thesis is right.",
+ "what_happened_since_0800": "Your anticipated resolution PRINTED: the 29752 base low broke and price has continued to a new session low 29675.75, ~43pt below it. Price then bounced to 29718.75 into the bell. First target vwap_m2 has NOT printed - closest approach 29675.75.",
+ "timing_note": "This is the cash open. The no-entry bar covers roughly the first FIVE minutes (09:30-09:35); from about 09:36 a clean setup is judged on structure, not the clock.",
  "levels_at_0930_CHART": {
   "vwap": 30070.32,
   "vwap_p1": 30367.54,
@@ -85,5 +85,6 @@
   "lean": "neutral",
   "confidence": "low",
   "news_blackout": false
- }
+ },
+ "day_character_note": "Judge the day's character explicitly - your rebalance rule depends on it. The 15m MA is one key level among many, never a gate on its own."
 }

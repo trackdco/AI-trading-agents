@@ -10,13 +10,13 @@
  "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d22_c1_0812.png",
  "chart_note": "anchored-weekly VP drawing hidden; weekly levels numeric and DEVELOPING as-of this minute. No agent-drawn positions on the chart.",
  "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows TradingView's CROSSHAIR, not the last bar, and can sit on an earlier bar - never evidence of a leak. Authoritative state is this briefing plus the SELL/BUY ticker. The chart is truncated at the cursor.",
- "level_provenance": "VWAP+bands read off his chart at this minute; BB MAs/profiles/fibs from the research build.",
+ "level_provenance": "VWAP+bands read from his chart's own study series at the last bar; BB MAs/profiles/fibs from the research build.",
  "thesis": {
   "bias": "short",
   "targets": [
    {
-    "level": "vwap_m2",
-    "price": 29563.08
+    "level": "daily_val",
+    "price": 29752.0
    },
    {
     "level": "vwap_m3",
@@ -27,17 +27,17 @@
    "level": "weekly_low",
    "price": 29923.0
   },
-  "waiting_for": "nothing further - rebalance to the 15m MA (29875.30) already happened during the 29752-29917 base",
+  "waiting_for": "a rejection off the weekly low underside (29917-29923) or right here at this confluence, then a 15m decisive-body close back through the 15m MA / vwap_m1 / 2m-BB-basis zone (29848-29875) - short entry on the retest of that broken zone. Trend day: not waiting for a reclaim of a higher 15m MA as a floor.",
   "two_sided": true,
-  "condition_for_other_side": "15m decisive-body close back above weekly low 29923 (reclaim) licenses longs toward the 0.618 fib confluence at prior-day low/weekly VAL (~30338-30343)",
+  "condition_for_other_side": "a 15m decisive-body close back above the weekly low 29923, reclaiming it after this 3hr base, would flip me toward long with the 0.382 fib (30114.61) under the chart VWAP as the next confluence target.",
   "anticipated_resolution": {
-   "level": "daily_val_session_low_29752",
-   "price": 29752.0,
-   "expect": "break_down",
+   "level": "weekly_low",
+   "price": 29923.0,
+   "expect": "holds",
    "act_on_resolution": true
   },
-  "acceptance_rule": "15m close beyond a level with a decisive body, not a wick",
-  "reasoning": "Weekly low 29923 broke decisively (12 straight 15m closes below, no reclaim); both 03:00 targets essentially printed at session low 29752. Since then price based 29752-29917 for 3hrs, tagging the 15m MA (29875) during the base - rebalance done. Last 15m closed 29873, body_ratio 0.15 (absorption) at vwap_m1/2m-BB-basis confluence (~29848). Favor continuation to vwap_m2 29563 then vwap_m3 29278.",
+  "acceptance_rule": "A 15m close back above 29923 with a decisive body reclaims the weekly low and invalidates the short; anything else is the level holding.",
+  "reasoning": "751pt one-way collapse held below the weekly low on 12 straight 15m closes since 04:00 - a trend day, so the 15m-MA floor is suspended. The last 3hrs are a base at the 15m MA/vwap_m1/2m-BB-basis zone (29848-29875), last 15m an absorption candle (0.15 body). Weekly low 29923 overhead; a rejection there with a decisive close back through that zone licenses the short retest.",
   "as_of": "08:00 window_open"
  },
  "macro": {
@@ -122,5 +122,6 @@
  "fills_this_window": 0,
  "window_cap": 1,
  "cap_counts": "fills, not attempts - NY_PRE cap is 1",
- "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price",
+ "supplementary_candidate_note": "This candidate also appears in the orchestrator's supplementary REJECTION-FIRST scan: the 08:06 bar wicked above the 15m MA and closed back below it (a rejection), and this candle then closes down through its own 2m MA. That is his stated grammar - rejection off a key level, then closure through the MA stacked with another level, entry on the retest."
 }

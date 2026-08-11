@@ -1,0 +1,111 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D22R-L1-0324",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-23T03:24 ET",
+ "candle_start": "03:22 (2m) / 03:22 (3m)",
+ "timeframe": "2m and 3m",
+ "leak_check": "pass - truncated at 03:23:59; last completed 2m bar starts 03:22 (verified from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d22r_c1_0324.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows TradingView's CROSSHAIR, not the last bar - never evidence of a leak. Authoritative state is this briefing. The chart is truncated at the cursor.",
+ "chart_note": "anchored-weekly VP drawing hidden; weekly levels numeric and DEVELOPING. No agent-drawn positions on the chart.",
+ "level_provenance": "VWAP+bands read from his chart's own study series at the last bar; BB MAs/profiles/fibs from the research build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 29923.0
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29681.47
+   }
+  ],
+  "invalidation": {
+   "level": "fib0382_dailyVAL_15mMA_confluence",
+   "price": 30236.98
+  },
+  "waiting_for": "rejection off a key level on a bounce (fib 0.382 / daily VAL / 15m MA confluence ~30228-30259, or vwap_m1 30113) - NOT a 15m MA reclaim; this is a trend day so the floor is suspended",
+  "two_sided": false,
+  "condition_for_other_side": "",
+  "anticipated_resolution": {
+   "level": "weekly_low",
+   "price": 29923.0,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond the fib0382/dailyVAL/15mMA confluence with a decisive body would say the collapse is spent",
+  "reasoning": "751pt one-way collapse from the 18:02 high to the 02:59 low with no rebalance; price 290pt below the 15m MA, pressing the weekly low 47pt below. Clear TREND day, so the 15m-MA floor is suspended: wait for a rejection off the fib0.382/dailyVAL/15mMA confluence or vwap_m1 on any bounce, then reload short.",
+  "as_of": "03:00 window_open"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "03:22",
+  "direction": "DOWN",
+  "open": 30033.5,
+  "high": 30033.5,
+  "low": 29995.0,
+  "close": 29995.75,
+  "levels": "closed down through its own 2m MA 30008.58 and the developing daily POC"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "daily_poc"
+ ],
+ "price_action_context": "Price bottomed at 29950.00 on the last bar before the window opened, bounced 83pt to 30033.50 across the first eleven minutes of London, and this candle has broken back down through its own 2m MA. The bounce did NOT reach any of the levels the thesis named as rejection candidates - the nearest, vwap_m1, sits at 30113.16, another 80pt above the bounce high.",
+ "levels_at_decision_CHART": {
+  "vwap": 30329.01,
+  "vwap_p1": 30544.86,
+  "vwap_m1": 30113.16,
+  "vwap_p2": 30760.7,
+  "vwap_m2": 29897.32,
+  "vwap_m3": 29681.47,
+  "bb_2m_basis": 30008.58,
+  "bb_2m_upper": 30061.19,
+  "bb_2m_lower": 29955.96
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_3m": 30011.3,
+  "bb_ma_15m": 30216.84,
+  "day_range_fibs": {
+   "0.382": 30232.96,
+   "0.5": 30322.38,
+   "0.618": 30411.79,
+   "0.705": 30477.71
+  },
+  "day_high": 30701.25,
+  "day_low": 29943.5,
+  "daily_profile": {
+   "poc": 30586.0,
+   "val": 30228.0,
+   "vah": 30701.0,
+   "note": "DEVELOPING"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30355.0,
+   "vah": 30732.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_low": 29923.0,
+  "session_low": 29950.0
+ },
+ "levels_below_for_target_selection": "weekly_low 29923.00 (~73pt below), vwap_m2 29897.32, then a long gap to vwap_m3 29681.47. Apply T11: R = |entry-stop| first, then the NEAREST level inside 1.5R-2.5R; if none qualifies use a FIXED 1.5R target.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

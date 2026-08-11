@@ -81,5 +81,6 @@
   "drivers": [],
   "falsified_by": "n/a - no dated event to falsify",
   "reasoning": "No scheduled US releases printed at or before this minute and none upcoming this session-day; the next red-folder event in the archive is Core PCE on 2026-06-25, two days out. No headlines supplied. No basis for a lean or a blackout."
- }
+ },
+ "day_character_note": "Judge the day's character explicitly and say which you think you are in - your contract's rebalance rule now depends on it. On a ROTATIONAL day the 15m MA is the rebalance floor. On a CLEAR TREND day that floor is suspended: you wait for a REJECTION off a key level (a day-range fib, a profile edge, a VWAP band, a prior-day level) and the trigger agent looks for the closure-through-MA-plus-another-level that proves it. The 15m MA is one key level among many, never a gate on its own."
 }
