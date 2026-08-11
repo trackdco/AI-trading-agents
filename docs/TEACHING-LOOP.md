@@ -152,3 +152,39 @@ lean pass.*
   like having a higher win rate."* Guards the agents against drifting
   toward home-run targeting; consistent with the realized 1.5–2.5R
   distribution and the §7 break-even guard.
+
+**Endorsed by him next turn:** *"Whether it's VWAP or POC, that, like you
+said, is confirming the rejection to me. That's probably the best way to put
+it."* The rejection-first frame is confirmed doctrine for 0.3.0.
+
+## T6 — 2026-08-11 · live latency requirement — stated while watching the loop
+
+**His words:** *"It's definitely going to have to make quicker decisions when
+it's actually trading live… It can't sit on the candle for five minutes and
+make a decision."*
+
+**Consequence:** the replay loop's weight (per-step leak checks, from-scratch
+briefings, screenshots, max thinking effort) is the CALIBRATION profile and
+is not the live profile. Live: incremental context, agent calls only at
+candidates and re-fires, trigger thinking budget cut to seconds. The
+structural budget that makes this viable is his own entry style — a resting
+limit at the retest gives ~30–60s to decide, and no-chase caps the cost of
+being late at "no fill," never "worse fill." **Decision latency becomes a
+first-class measured metric in live-shadow mode, with a budget it must beat
+before demo.**
+
+## T7 — 2026-08-11 · macro weighting — the ceasefire example
+
+**His words:** *"When Trump announces the ceasefire between Iran and the
+U.S., that's obviously going to be very bullish for the Nasdaq. In an
+instance like that, I'm not going to take shorts. That would be retarded…
+it's important to be conscious of especially the really important things
+happening around the world."*
+
+**Consequence:** the macro lean is not merely an input the thesis may weigh —
+when the event is major, obvious, and directional (high-confidence lean,
+unabsorbed), the thesis should treat the counter-side as effectively
+unlicensed absent exceptional structure. Still not a veto, and the original
+constraint stands untouched (an events read that only ever counsels caution
+is a failed component). This is the ACTING side of macro he always said
+mattered more.
