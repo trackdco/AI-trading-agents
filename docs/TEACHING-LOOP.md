@@ -293,3 +293,40 @@ retests."*
    market vs 2.33R on the retest — his own critique") is now understood as
    this artifact rather than as his style. The arithmetic in that section
    stands and its conclusion is strengthened.
+
+## T11 — 2026-08-12 · THE FIRST TARGET IS A HARD 1.5–2.5R BAND
+
+**Run:** first 0.3.0 day, session-day 2026-06-21 LONDON. The agent's only trade:
+entry 30,753 short, stop 30,783.5 (R = 30.5), targets **30,671 (2.7R)** and
+**30,647 (3.5R)**.
+
+**What the tape did:** low 30,687.25 — both named targets missed, T1 by 16.25pt,
+and the trade round-tripped. Prior-day VAH sat at **30,699 = 1.77R**, inside his
+band, *and was printed in the agent's own briefing*.
+
+**His ruling, verbatim:** *"It was not targeting anything valid on this trade
+from what I can see, it easily could've targeted the VAH of the weekly volume
+profile and taken a 1.7:1. I have no idea what it was targeting… The first
+target should always be within that [1.5 to 2.5R]."*
+
+**Consequence — mechanical, in `tv-trigger` 0.3.1 THE TARGETS:** compute
+`R = |entry − stop|`, enumerate every briefing level between entry and the
+furthest idea, and `targets[0]` MUST be the nearest level whose distance falls
+in 1.5R–2.5R. Runners may sit beyond. **If no structure falls inside the band,
+the geometry is wrong — say so and lean `pass`; do not stretch the first target
+to make the trade exist.**
+
+**Second defect recorded the same review, NOT yet ruled on — retest degeneracy.**
+The entry was a genuine `limit_retest` (limit 30,753, signal close 30,752.50) but
+the retest distance was **0.5pt**, and the next bar OPENED at 30,754, already
+through it. Angus: *"why did it market order the short and not wait for a
+retest?"* — it didn't, but the effect was identical. The doctrine ("limit at the
+CLOSEST structure just broken") degenerates whenever the signal candle closes
+within a point or two of the level. **Open question for him: a minimum retest
+distance, or take the next structure out when the close sits that tight?**
+
+**Orchestrator defect, same trade, recorded for honesty:** the first outcome scan
+went fill → stop and recorded a flat −1.0R, skipping the mandatory
+intermediate-structure partial (PLAYBOOK §5). Managed correctly the trade is
++54pt on 75% and flat on the runner. Caught by him on review, corrected before
+anything was committed.

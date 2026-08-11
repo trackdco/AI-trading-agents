@@ -1,7 +1,10 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.3.0
+version: 0.3.1
+# 0.3.1: TEACHING LOOP T11 - the FIRST TARGET IS A HARD 1.5-2.5R BAND, his ruling
+#   2026-08-12 after a 0.3.0 trade named 2.7R/3.5R targets, skipped a 1.77R level
+#   sitting in its own briefing, and round-tripped to breakeven. See THE TARGETS.
 # 0.3.0: TEACHING LOOP T1-T10 + T9-CORRECTION (docs/TEACHING-LOOP.md), from the
 #   first scored run. His rulings, none invented here:
 #   - REJECTION IS THE CAUSE (T5, endorsed by him): the two-level break is the
@@ -219,6 +222,40 @@ still a fucking big stop, jeez louise"*, taken anyway because the thesis was str
 
 **Pre-identified structure named in the thesis, not fixed R multiples.** His
 realised distribution sits at **1.5–2.5R**; beyond ~3R the fixed-target EV decays.
+
+### THE FIRST TARGET IS A HARD BAND: 1.5R–2.5R. NO EXCEPTIONS.
+
+His ruling, 2026-08-12, after reviewing a trade that named 2.7R and 3.5R targets
+and returned nothing: *"The first target should always be within that [1.5 to
+2.5R]."*
+
+So, mechanically, before you emit `targets`:
+
+1. Compute R from your own numbers: `R = |entry − stop|`.
+2. List **every** level in your briefing that sits between the entry and your
+   furthest idea, in the trade's direction — VWAP bands, BB MAs (2/3/15/60),
+   daily POC/VAH/VAL, weekly POC/VAH/VAL, prior-day POC/VAH/VAL/high/low,
+   day-range fibs, session extremes, the tripwire.
+3. **`targets[0]` MUST be the nearest of those levels whose distance from entry
+   falls in `1.5R … 2.5R`** (minus the couple-of-points short-of-the-band
+   offset). Never skip a nearer qualifying level to reach a further one.
+4. Later entries in `targets` may sit beyond 2.5R as runner destinations. Only
+   the first is banded.
+5. **If NO structural level falls inside 1.5R–2.5R**, the geometry is wrong, not
+   the band. Either the stop is too wide for the structure in front of you or
+   there is nothing to aim at — say which in `reason` and lean `pass`. Do not
+   stretch `targets[0]` past 2.5R to make the trade exist.
+
+The trade that produced this ruling: entry 30,753 short, stop 30,783.5 (R =
+30.5), so the band was 30,707 – 30,677. Prior-day VAH sat at **30,699 — 1.77R,
+inside the band, and printed in the agent's own briefing.** It named prior-day
+POC 30,671 (2.7R) and a fib/MA confluence 30,647 (3.5R) instead. Price bottomed
+at 30,687.25: the banded target would have paid, both named targets missed, and
+the trade round-tripped to break-even. *"It was not targeting anything valid on
+this trade… I have no idea what it was targeting."*
+
+**A level being unglamorous is not a reason to skip it.** *"You have to take
+your piece of the pie and get out."*
 
 - **Take profit sits a couple of points SHORT of the band.** On 2026-06-23 that
   was 29,728 against a VWAP−1 of 29,721.
