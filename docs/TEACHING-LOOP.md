@@ -211,3 +211,49 @@ Friday day-character row). Zero in-run lookahead (mechanically verified per
 row), but on these five days agreement partly measures textbook execution.
 The strict walk-forward is post-corpus days (bars run to 2026-07-15) that no
 prompt has seen; that is the proof phase after the week calibration.
+
+## T9 — 2026-08-11 · break-entry license: when the thesis ANTICIPATED the resolution
+
+**His answer to the box-resolution question:** *"My whole thesis coming into
+the New York day was that we were going to be stalling around that low the
+entire day… If I get a break to the upside from here, this price that's been
+stalling and hasn't broken here the entire week, then if it breaks to the
+upside, I'm fucking going for the break."* And the execution correction:
+*"I still limit-ordered on my long, right? I didn't market order that. The
+agent waited for it to pull back and the limit order. That's completely
+fine, and that's completely valid as well."*
+
+**Consequence:** two licensed entry modes at a level resolution, chosen by
+whether the STANDING THESIS anticipated it:
+1. **Break entry** — licensed only when the thesis explicitly expected this
+   long-held level to resolve this way. Executed as a limit at/just behind
+   the breaking level. NEVER a market order, even here.
+2. **Retest entry** — the default, always valid, including at resolutions
+   (he endorsed the agent's retest wait as "completely valid").
+The thesis therefore emits the anticipation (`break_entry`) so the trigger
+knows which mode is licensed. Retest-only is not an error; break-entry
+without thesis anticipation IS chasing and stays forbidden.
+
+## T10 — 2026-08-11 · ACCEPTANCE defined: a 15m close with a decisive body
+
+**His answer, verbatim core:** *"For me, I want to see a bit of a 15-minute
+candle closure… you can't confirm breaking this low and pushing further to
+the downside on a one- or two-minute candle. Once the 15-minute candle
+closes, that could just be a massive wick… I'd wait for a 15-minute candle
+that fucking just blasted through that level, not some wicky kind of
+absorption-looking candle."*
+
+**Consequence:** a MULTI-DAY / major level is broken only on a **15m CLOSE
+beyond it with a decisive body** — not a 1m/2m close, and not a wick-heavy
+absorption candle. Confirmation timeframe scales with the level's
+importance; minor intraday levels may confirm on the trading TFs.
+
+**Graded against the tape the same hour (2026-06-26 morning, the 29,290
+break the stack flipped on at 09:04 via one 2m close):** the only 15m close
+below was 09:00–09:15 at 29,279 — 11pt under on a body/range 0.52 candle —
+immediately reclaimed by the next 15m (close 29,360.75), then the 09:30
+candle printed body/range 0.11 with a 29,181.5 low: the textbook wicky
+absorption/spring. His rule reads that sequence as "the low is being
+defended" — which is what happened (+280pt rip). **His definition, applied
+cold, outperforms the flip the agent made on this exact morning.** Kills the
+open whipsaw (three theses in 8 minutes) as a side effect.
