@@ -43,6 +43,12 @@ rebalance that licenses entry is the one HE names on the higher timeframe
 MA touch alone is not "the rebalance." Open question to him: is 15m the
 floor always, and when does it escalate to the 1h?
 
+**ANSWERED, 2026-08-11:** *"The 15-minute is always the floor."* A 2m/3m MA
+touch alone never licenses entry. Plus a target rule that was nowhere in the
+corpus: when the 15m MA sits only ~1–1.5R from the entry, it is **TP1**, and
+the real target is structure beyond it — the near MA is intermediate
+structure, not the destination.
+
 ## T3 — 2026-08-11 · the missing fib layer, and location-shaped two-sidedness
 
 **Run:** same. The agent passed his 2.45R short on direction: its thesis
@@ -68,6 +74,28 @@ down, we'd go back down now."*
    other side by LOCATION (at the marked retrace / at a named level, "it
    would've been from there") — not only by rejection at an overhead cluster.
 
+**CONVENTION SUPPLIED, 2026-08-11 — the London fib layer is now buildable:**
+- **When:** London continuation days — Asia moved predominantly one way and
+  he is reading London as continuation of that move.
+- **Swing:** *"I'll always mark out the fib from the high of the day to the
+  low of the day"* — the developing session-day range. Objective inputs; no
+  hand-marking needed for this case.
+- **Acting levels:** 0.382, **0.5 (the equilibrium)**, 0.618, **0.705** (his
+  "OT" level, favored especially in New York; deep retrace that
+  statistically holds). Matches the FIBS constant already in
+  `agent_context`.
+- **The meta-rule:** *"What matters more than the fib itself are what levels
+  are in alignment with the fib levels… You can't just take the levels at
+  face value."* A fib acts only in CONFLUENCE with other structure plus
+  price behavior at it.
+- **Behavior flips the read:** a sustained stall at the 0.5 licenses the
+  fade; the same 0.5 BREAKING after that long a stall flips him the other
+  way (*"I'd be expecting a break to the upside"*).
+- **Verified on the tape (2026-06-25):** pre-London H 29,892.75 / L 29,160.5
+  → 0.5 = 29,526.6; VWAP mid 29,490.8; his entry 29,492.75; the London
+  stall 29,44x–29,562.75 straddled exactly that band. It is a ZONE read,
+  not a point read — encode tolerance, not equality.
+
 ## T4 — 2026-08-11 · headroom scope — OPEN, awaiting his answer
 
 **Run:** same. The agent's pass on his short also cited headroom: prior-day
@@ -77,3 +105,13 @@ VAL in the entry path. He took the trade and price sliced the level.
 (constraint 7), or only levels this day's tape is actively respecting — that
 Friday being the weekly profile, by his own read? Unanswered; do not refine
 headroom until he rules.
+
+**ANSWERED, 2026-08-11 — the dichotomy was the wrong shape; his rule is
+distance, role, and behavior:**
+1. A level sitting AT the entry that price has just broken counts toward the
+   trigger, not as obstruction — *"it was kind of sitting right there where
+   the entry was… it broke through two levels."*
+2. Once IN the trade, a nearby level ahead is a **tripwire**: price slicing
+   through it → continue to target; price STALLING at it → *"I'd probably
+   close the trade early."* This is a new management clause for the exit
+   logic, not only an entry filter — nothing in the corpus carried it.
