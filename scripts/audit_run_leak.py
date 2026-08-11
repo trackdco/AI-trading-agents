@@ -206,10 +206,26 @@ def check_e(rows, sess_day, bars, out, by_level=None):
             v = pay.get(f)
             if isinstance(v, (int, float)) and v:
                 quoted.append((f, float(v)))
+        # A FIXED-R target is CONSTRUCTED, not observed: entry +/- k*|entry-stop|.
+        # T11's empty-band fallback (his ruling 2026-08-12) emits these, and they can
+        # legitimately sit outside everything printed so far. They are exempt from the
+        # "new extreme" test ONLY when the arithmetic actually checks out against the
+        # row's own entry and stop - both of which are themselves audited above.
+        entry_px, stop_px = pay.get("entry"), pay.get("stop")
         for tgt in (pay.get("targets") or []):
             v = tgt.get("price") if isinstance(tgt, dict) else tgt
-            if isinstance(v, (int, float)) and v:
-                quoted.append(("target", float(v)))
+            if not (isinstance(v, (int, float)) and v):
+                continue
+            lvl = str(tgt.get("level", "")) if isinstance(tgt, dict) else ""
+            km = re.match(r"^fixed_([0-9.]+)R$", lvl)
+            if km and isinstance(entry_px, (int, float)) and isinstance(stop_px, (int, float)):
+                k, rr = float(km.group(1)), abs(float(entry_px) - float(stop_px))
+                if rr > 0 and min(abs(float(v) - (entry_px + k * rr)),
+                                  abs(float(v) - (entry_px - k * rr))) <= PRICE_TOL:
+                    by_level[0] += 1
+                    checked += 1
+                    continue        # constructed and verified - not an observed price
+            quoted.append(("target", float(v)))
         cir = pay.get("cancel_if_reaches")
         if isinstance(cir, dict) and isinstance(cir.get("price"), (int, float)):
             quoted.append(("cancel_if_reaches", float(cir["price"])))
