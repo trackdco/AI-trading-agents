@@ -10,14 +10,33 @@ Every day's leak audit **exit 0**. Logs in `output/agent_runs/<sess_day>.jsonl`.
 | 2026-06-22 (re-run) | Tue 23 | 1 (+1 no-fill) | **+2.16** | 1/3 (33%) | TREND |
 | 2026-06-23 | Wed 24 | 3 | **−2.00** | 2/2 (100%)* | ROTATIONAL |
 | 2026-06-24 | Thu 25 | 0 | **0.00** | see below | ROTATIONAL → self-corrected to TREND |
-| 2026-06-25 | Fri 26 | **NOT RUN** | — | — | — |
+| 2026-06-25 | Fri 26 | **PARTIAL — not scored** | — | — | ROTATIONAL |
 | **total (4 days)** | | **7 fills** | **+3.15R** | | |
 
 \* the 100% is not trustworthy — see the scorer defect below.
 
-**Day 5 was not run.** Four days of eight windows each consumed the session. The 0.2.0
-run of that day exists at `2026-06-25.jsonl` from the earlier session, but it predates
-every ruling below and should not be read as current.
+**Day 5 is partial and excluded from the totals** — its London window ran, NY_PRE and NY_AM
+did not. Its 0.2.0 predecessor is archived at
+`superseded/2026-06-25_v0.2.0_pre-rulings.jsonl` and predates every ruling below.
+
+> ### ⚠ The most important finding of the week came from day 5, and it is not about R
+>
+> The thesis agent opened its reasoning with: *"this is the contract's own worked example
+> for this exact session."* **It was right.** `tv-thesis` 0.3.2, in its FIB LAYER section,
+> contains a worked example naming this exact session-day: *"his 2026-06-25 London: day high
+> 29,892.75, low 29,160.5 → 0.5 at 29,526.6, with the VWAP mid at 29,490.8 and price stalling
+> across that band. Fib + VWAP + stalling = the short."* The agent recognised the day from its
+> own prompt and reproduced the answer.
+>
+> This is **not** a replay leak — the briefings are clean and the audit passes, because nothing
+> post-decision reached them. It is **prompt contamination**, and it is the sharpest possible
+> instance of what T8 recorded abstractly. `tv-trigger` carries the same problem: its worked
+> examples name the 29,369 POC limit, the Mon N1 market entry, and the −1.0R long.
+>
+> **Consequence:** day 5 is not a valid test of the thesis agent, and the other four days are
+> softened by the same mechanism to a lesser degree. **Before any scored run that means
+> anything, the worked examples must be restated abstractly or the named days excluded** — and
+> the real proof still requires post-corpus days (bars run to 2026-07-15).
 
 ## Your rulings, and what each one did
 
