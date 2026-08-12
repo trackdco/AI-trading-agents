@@ -723,3 +723,38 @@ correction quoted inline so a later version cannot quietly re-introduce it.
 The compounding finding about the cap still stands on its own: a bad take spends
 a scarce slot. The fix for that is taking *better* trades (T20's entry rule,
 T5's rejection-first test), not taking *fewer early* ones.
+
+## T25 — 2026-08-12 · SAFEGUARDS ON THE ESCALATION RULE (his catch)
+
+I flagged the risk when shipping 0.3.5 — *"the escalation rule could over-fire
+and turn Tier 1 into a coin-flipping machine"* — and shipped it anyway with only
+observability, no limit. **His response:** *"if u knew that might happen id hope
+u add a safegate for it planning for that."* Correct, and the ordering was
+backwards: a named failure mode gets a guard in the same change, not a metric to
+watch it happen.
+
+**Safeguards added, both tiers:**
+
+*Trigger side (`tv-trigger` 0.3.5):*
+1. **Budget** — at most 2 escalations per window; spent budget logs
+   `escalation_budget_spent`. Ceiling of 6 re-reads a day, not 30.
+2. **Ratchet** — never escalate the same level + direction twice in a window.
+   Once Tier 1 has ruled on that argument it is settled.
+3. **Qualification** — only a candidate it would OTHERWISE TAKE may escalate:
+   `rejected_level` populated, a **same-candle** two-level break behind it.
+   Sequential pairs never qualify (they already default toward pass under T1).
+4. **Mechanical gates are never escalatable** — window bounds, the cap, news
+   blackout, the 09:35 buffer, an open position.
+5. **One per candidate**, no re-framing.
+
+*Thesis side (`tv-thesis` 0.3.5):* an escalated re-read **may** widen or relocate
+`condition_for_other_side`, clear a spent `waiting_for`, add the escalated
+direction as a licensed second side, and move targets/invalidation. It **may
+not** flip `bias` outright — that still requires the ACCEPTANCE evidence (a 15m
+decisive-body close) or a structural re-fire event — and may not abandon a
+`stand_aside` unless the escalated bar IS the resolution it was waiting for.
+
+Both tiers emit the ratio: `escalation_response` is `accommodated` or
+`reaffirmed` on every escalated re-read. **Mostly reaffirmed ⇒ the trigger's bar
+is too loose, raise the qualification. Mostly accommodated ⇒ the thesis
+conditions were the real problem.** The number decides, not either agent.

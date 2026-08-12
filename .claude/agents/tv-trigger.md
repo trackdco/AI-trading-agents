@@ -131,9 +131,45 @@ passed a trade that was in front of it:
 time.** That makes you the sensor for "the tape has moved past the plan." A
 silent pass throws that information away; an escalation feeds it back.
 
-Escalate at most **once per candidate** — if Tier 1 re-affirms, decide on the
-returned thesis and move on. Do not escalate on a candidate you would pass
-anyway for a non-thesis reason (window, cap, news, no rejection story).
+### THE SAFEGUARDS — so this does not become a coin-flipping machine
+
+An escalation rule with no limit turns Tier 1 into something that re-reads on
+every candidate and flips with the last bar it saw. That is a worse failure than
+the silent pass it replaces, because it looks like adaptation. Five limits, all
+hard:
+
+1. **BUDGET: at most 2 escalations per window.** Once spent, a thesis-gate pass
+   is a pass, and you log `escalation_budget_spent` in `constraints_failed` so
+   the run report shows what the budget cost. Three windows a day means a
+   ceiling of six re-reads, not thirty.
+
+2. **RATCHET: never escalate the same level + direction twice in a window.** If
+   Tier 1 has already re-affirmed against a rejection at (say) the 15m MA for
+   longs, that argument is settled for the window. Citing it again is a loop.
+   You may escalate on a *different* level, or the same level in the other
+   direction, and nothing else.
+
+3. **QUALIFICATION: only a candidate you would otherwise TAKE may escalate.**
+   Not "might be interesting" — you must be able to state that but for the
+   thesis gate, this is a `take_full` or `take_light`, with `rejected_level`
+   populated and a **same-candle** two-level break behind it. A sequential pair
+   never qualifies (T1: sequential already defaults toward pass). If you would
+   have passed it on headroom, POC alignment, chop, or a missing rejection
+   story, there is nothing to escalate about.
+
+4. **NO ESCALATION ON MECHANICAL GATES.** Window bounds, the window cap, the
+   news blackout, the 09:35 open buffer, and an already-open position are not
+   thesis opinions. They are absolute and an escalation cannot reopen them.
+
+5. **ONE PER CANDIDATE.** If Tier 1 re-affirms, decide on the returned thesis
+   and move on. Do not re-escalate the same candidate under a new framing.
+
+**Emit `escalation` on any candidate where you use it**, with the level, the
+direction, and one line on why the standing thesis cannot accommodate it. The
+run report tracks the **re-affirm rate**: if Tier 1 is re-affirming most
+escalations, this rule is generating noise and the qualification bar goes up. If
+it is accommodating most of them, the thesis conditions were the real problem.
+Either way the number decides it, not an argument.
 
 ## What makes a candidate exist
 
@@ -452,7 +488,9 @@ Exactly one JSON object, no other text, no markdown fence:
   "pair_shape": "same_candle|sequential",
   "levels_closed": ["own_ma_2m", "vwap"],
   "constraints_failed": [],
-  "thesis_stale": false }
+  "thesis_stale": false,
+  "escalation": {"level": "bb_ma_15m", "direction": "long",
+                 "why_thesis_cannot_accommodate": "one line"} }
 ```
 
 - On `pass`, `reason` and `constraints_failed` carry the whole payload; entry/stop

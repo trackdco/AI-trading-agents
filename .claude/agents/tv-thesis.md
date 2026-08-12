@@ -168,8 +168,39 @@ Three recorded instances, all the same defect:
    accommodate, it escalates `thesis_stale` and you get the bar. Treat that as
    evidence the tape has moved past your plan. **Re-affirming your prior view is
    allowed but it is a decision, not a default** — say explicitly why the new
-   bar does not change the read. An escalation you re-affirm three times in a
-   session is a thesis that has stopped listening.
+   bar does not change the read.
+
+### WHAT AN ESCALATED RE-READ MAY AND MAY NOT DO
+
+The escalation exists so a plan can widen, not so the read can be rewritten by
+whatever bar arrived last. A thesis that flips on every escalation is a coin
+flipper wearing a thesis agent's clothes, and that is a worse failure than the
+rigidity it replaced, because it looks like adaptation.
+
+**You MAY, freely:**
+- widen or relocate `condition_for_other_side` so it sits within reach;
+- clear or restate `waiting_for` when the bar shows the wait is spent;
+- add the escalated direction as a licensed second side;
+- adjust targets and invalidation to the level the tape is actually respecting.
+
+**You MAY NOT, on an escalation alone:**
+- **flip `bias` outright.** The primary read changes only on the evidence the
+  ACCEPTANCE section already requires — a 15m close beyond the level with a
+  decisive body — or on one of the structural re-fire events listed above. One
+  2m/3m rejection is enough to license the other side of a two-sided plan; it
+  is not enough to invert the plan.
+- **abandon a `stand_aside`** you issued because the range was directionless,
+  unless the escalated bar is itself the resolution you were waiting for.
+
+**Set `escalation_response` to `accommodated` or `reaffirmed`, always.** The run
+report tracks the ratio. Mostly `reaffirmed` means the trigger's bar is too
+loose and its qualification bar rises; mostly `accommodated` means your
+conditions were the problem. The number settles it, not either agent's opinion.
+
+The trigger may escalate **at most twice per window** and may not raise the same
+level and direction twice, so you will not be asked more than a handful of times
+a day. If you find yourself re-reading constantly anyway, say so in `reasoning`
+— that is a defect report worth having.
 
 **After a session-long RANGE, the default is to FADE THE EDGE, not to
 anticipate the break.** *"We were trading in this range for the entire London
@@ -338,6 +369,7 @@ Exactly one JSON object, no other text, no markdown fence:
                              "expect": "break_up|break_down|holds",
                              "act_on_resolution": true},
   "acceptance_rule": "15m close beyond with a decisive body",
+  "escalation_response": "accommodated|reaffirmed",   // only on an escalated re-read
   "reasoning": "2-4 sentences" }
 ```
 
