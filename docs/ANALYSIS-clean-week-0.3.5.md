@@ -123,6 +123,53 @@ target at 0.98R and the 09:42 pass-2 on 2026-06-25 at 0.93R — both outside the
 band. Both were scored exactly as specified rather than re-rolled, because discarding
 a trade after seeing it lose is choosing which results to keep.
 
+## T27 was never wired into the orchestrator
+
+Found on a health check after the week completed, so it is a defect in the *run*, not
+in the agents.
+
+T27 says an opposing valid signal while a position is open produces a **management
+decision** — hold, move to breakeven, close, or close and flip — and T27-A says
+breakeven on a RED position means **flatten**. A management decision is not a new
+entry, so the window fill cap must not block it.
+
+The orchestrator gated every candidate that fired while a position was open as though
+it were a new entry. Ten were gated this way across three session-days and no agent
+saw any of them. Six were opposing the open position and should have been management
+adjudications.
+
+| session-day | open trade | opposing signal | state | actual | under T27-A |
+|---|---|---|---|---:|---:|
+| 06-23 | C5-D23-L3-0327 | 03:48 UP | RED 29,829.50 | −1.00 | −0.76 |
+| 06-23 | C5-D23-NYP1-0816 | 08:18 UP | RED 29,844.75 | −1.00 | −0.39 |
+| 06-24 | C5-D24-NYP1-0806 | 08:18 DOWN | RED 30,135.75 | −1.00 | −0.57 |
+| 06-24 | C5-D24-NYA5-1044 | 10:50 UP | RED 29,672.00 | −1.00 | −0.66 |
+| 06-25 | C5-D25-NYA3-0946 | 09:48 UP | RED 29,318.00 | −1.00 | −0.54 |
+
+**Every affected position was a loser, and in every case the opposing signal fired
+before the stop was hit.** Not one was a case where T27 would have cut a winner short.
+That is exactly the situation the rule exists for.
+
+| session-day | without T27 | with T27 |
+|---|---:|---:|
+| 2026-06-21 | +3.23 / +2.63 | +3.23 / +2.63 |
+| 2026-06-22 | +5.89 / +2.19 | +5.89 / +2.19 |
+| 2026-06-23 | −0.42 / −0.67 | +0.43 / +0.18 |
+| 2026-06-24 | −1.96 / −2.10 | −1.19 / −1.33 |
+| 2026-06-25 | −3.00 / −3.00 | −2.54 / −2.54 |
+| **week** | **+3.74 / −0.95** | **+5.83 / +1.14** |
+
+**This is a ceiling, not a measured result.** The six opposing candidates were never
+adjudicated, so it is not established that a trigger would have judged each one a
+*valid* signal — T27 fires on a valid opposing signal, not on any opposing candidate.
+Where the position is red the *action* is mechanical and needs no judgement, but
+whether the event fires at all is a judgement that was never made. The six
+adjudications were not run and their verdicts were not invented. **The honest headline
+for this run stays −0.95R blended.**
+
+Fix required: route opposing-direction candidates to a management adjudication; the
+cap governs new entries only.
+
 ## Open questions for you
 
 1. **T13 on a green carry.** "BE if green" admits two readings — book flat at the
