@@ -99,6 +99,80 @@ change it: they compete on the axis (accuracy) that is not binding.
    bar-extreme. A broker fill study through actual prints would collapse the
    bracket and give a single verdict instead of a range.
 
+---
+
+# ADDENDUM — bracket test: 50pt stop / 150pt target (Angus's structure)
+
+`python news_lab/bracket_test.py --stop 50 --target 150 --hold 60`
+
+Enter at `close(T−1m)` (the last price actually gettable before the print),
+50pt stop = $1,000 on 1 NQ, 150pt target = $3,000. Path-walked minute by
+minute. A bar touching BOTH stop and target is scored a **stop** — intrabar
+order is unknowable from OHLC, and the release bar routinely spans both.
+
+## The 3:1 target does not pay
+
+153 events, unsealed, high-impact, coin-flip direction:
+
+| outcome | share |
+|---|---|
+| stop | 53.6% |
+| timeout | 36.6% |
+| **target** | **9.8%** |
+
+The $3,000 target is reached **once in ten**. The release bar is violent, but
+a *sustained* 150pt run in one direction without first retracing 50pt is rare.
+Break-even accuracy for this structure: **64.2%** (worst fill), 50.5% (best).
+
+Per family (worst fill, coin-flip): cpi −$640, nfp −$532, ppi −$203,
+fomc −$185, pce −$93 per trade.
+
+## The wider stop IS better — and that is the tell
+
+Sweeping stop × target × hold, the ranking is driven almost entirely by
+**stop width**, not by reward:risk. Break-even accuracy, rr=1:1, 120m hold:
+
+| stop | risk/contract | break-even acc |
+|---|---|---|
+| 50pt | $1,000 | 64.4% |
+| 75pt | $1,500 | 56.7% |
+| 100pt | $2,000 | 53.9% |
+| 150pt | $3,000 | 51.7% |
+| 200pt | $4,000 | 50.6% |
+| 300pt | $6,000 | 50.2% |
+
+**It asymptotes to exactly 50%.** That is the finding. Widening the stop never
+creates an edge — it only removes the stop's own damage, and in the limit you
+hold a symmetric coin flip on direction while risking $6,000 to do it.
+
+So for news entries the stop is **pure cost, never protection**. A tight stop
+does not control risk here; it guarantees you eat the worst part of the
+release bar at the worst available price. That is why 30pt needs 81% accuracy
+and 300pt needs 50%.
+
+## Why this still does not open the lane
+
+Best config found (100pt stop, 100pt target, 120m) needs **53.9%** accuracy —
+plausibly reachable. But:
+
+1. **It cannot be distinguished from a coin flip on this sample.** Wilson CI
+   for 53.9% on 153 events is **[45.7%, 61.3%]** — straddles 50%. PREREG-L3
+   forbids exactly this: "wide-CI fishing is not a lane."
+2. **Risk doubles** to $2,000/contract versus the intended $1,000.
+3. **Coin-flip EV is still negative** at every configuration tested
+   (−$58 to −$640 per trade). Nothing here pays without a real directional
+   edge; the structure only sets the bar that edge must clear.
+
+## What the numbers do endorse
+
+- **pce, consistently.** Least-damaged family at every stop width (−$58/trade
+  at 100pt vs cpi's −$300), lowest stop rate, smallest release bar — and the
+  most predictable release on the calendar via the CPI+PPI feeder chain.
+- **Defined risk.** Every row above is dominated by the gap term. A long
+  option or debit spread deletes that term: max loss is premium, known before
+  entry, with no fill uncertainty at all. It is the only structural change
+  that attacks the actual problem rather than trading around it.
+
 ## Caveats, stated plainly
 
 - Unsealed era only (407 of 444 events); the sealed 37 are untouched.
