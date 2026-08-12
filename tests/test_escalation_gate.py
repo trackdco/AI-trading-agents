@@ -232,3 +232,48 @@ def test_a_non_thesis_pass_reason_is_not_a_missed_escalation():
          "constraints_failed": ["headroom", "chop"],
          "rejected_level": {"level": "daily_poc", "price": 29369.0}}
     assert not EscalationGate.should_have_escalated(v)[0]
+
+
+# -- T25 qualification: only a candidate it would OTHERWISE TAKE may escalate
+
+def test_T25_sequential_pair_cannot_escalate():
+    """Sequential pairs default toward pass under T1, so escalating one asks
+    Tier 1 to re-read on evidence the trigger would not have traded anyway."""
+    g = gate()
+    v = dict(stale("session_high", 30869.75), pair_shape="sequential")
+    r = g.request("c1", v)
+    assert not r.granted and r.reason.startswith("T25_not_same_candle")
+
+
+def test_T25_sequential_refusal_does_not_spend_budget():
+    g = gate()
+    # prices kept far apart so the ratchet does not fire and mask the budget
+    g.request("c1", dict(stale("alpha", 29000.0), pair_shape="sequential"))
+    g.request("c2", dict(stale("beta", 29500.0), pair_shape="sequential"))
+    assert g.request("c3", dict(stale("gamma", 30000.0), pair_shape="same_candle")).granted
+    assert g.request("c4", dict(stale("delta", 30500.0), pair_shape="same_candle")).granted
+    fifth = g.request("c5", dict(stale("epsilon", 31000.0), pair_shape="same_candle"))
+    assert not fifth.granted and fifth.reason.startswith("escalation_budget_exhausted")
+
+
+def test_T25_same_candle_still_qualifies():
+    g = gate()
+    assert g.request("c1", dict(stale(), pair_shape="same_candle")).granted
+
+
+def test_T25_mixed_shape_string_counts_as_same_candle():
+    """'same_candle (3m) / sequential (2m)' has a same-candle leg — it qualifies."""
+    g = gate()
+    v = dict(stale(), pair_shape="same_candle (3m) / sequential (2m)")
+    assert g.request("c1", v).granted
+
+
+def test_T25_applies_to_the_missed_escalation_detector_too():
+    seq = {"decision": "pass", "thesis_stale": False, "pair_shape": "sequential",
+           "constraints_failed": ["direction_mismatch"],
+           "rejected_level": {"level": "session_high", "price": 30869.75}}
+    should, why = EscalationGate.should_have_escalated(seq)
+    assert not should and "T25" in why
+
+    same = dict(seq, pair_shape="same_candle")
+    assert EscalationGate.should_have_escalated(same)[0]

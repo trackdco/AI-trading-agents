@@ -144,6 +144,15 @@ class EscalationGate:
         if not name:
             return deny("no_rejection_named")
 
+        # T25 QUALIFICATION — only a candidate it would OTHERWISE TAKE may
+        # escalate: a same-candle two-level break behind a named rejection.
+        # Sequential pairs never qualify; they already default toward pass under
+        # T1, so escalating one asks Tier 1 to re-read on evidence the trigger
+        # would not have traded anyway.
+        shape = str(verdict.get("pair_shape", "")).lower()
+        if shape and "same_candle" not in shape:
+            return deny(f"T25_not_same_candle:{shape}")
+
         # 4 — once per candidate
         if candidate_id in self._candidates:
             return deny("already_escalated_this_candidate")
@@ -198,8 +207,14 @@ class EscalationGate:
         name = rl.get("level", "") if isinstance(rl, dict) else str(rl)
         if not name:
             return False, "no rejection named — pass is correct"
+        # T25 qualification applies to the inverse detector too: a sequential
+        # pair is not an escalation the trigger owed us, so its pass stands.
+        shape = str(verdict.get("pair_shape", "")).lower()
+        if shape and "same_candle" not in shape:
+            return False, f"T25: pair_shape {shape!r} is not same_candle — pass is correct"
         return True, (f"passed on {sorted(hit)} while naming rejected_level "
-                      f"{name!r}: the contract forbids this combination")
+                      f"{name!r} behind a same-candle break: the contract forbids "
+                      f"this combination")
 
     def record_outcome(self, candidate_id: str, outcome: str) -> None:
         """Tag the most recent granted escalation with accommodated|reaffirmed."""
