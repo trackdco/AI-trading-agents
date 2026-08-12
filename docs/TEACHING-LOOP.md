@@ -701,3 +701,25 @@ the trigger being *more* conservative early in a window than late.
   *"the stop placement was actually perfect."*
 - **Fri 09:58 long, +1.95R** — good but late; he wanted the 09:42 entry, which
   would also have pre-empted the later entry.
+
+## T24 — 2026-08-12 · CORRECTION TO ME: no early-window conservatism
+
+I proposed, after finding that Wednesday's two bad takes consumed the NY_AM cap,
+that the trigger should be "more conservative early in a window than late."
+**He rejected it outright:**
+
+> *"I disagree with that. I think 9:40 to 10:10-ish is usually the window where
+> we get the best trades. I'm just saying wait five minutes after the open so
+> that volatility noise from the open doesn't affect a trade… Don't be more
+> conservative at the start of the window, because I think that's dumb. The
+> first half of the window is not significantly better than the second half, in
+> my opinion, but it's just better."*
+
+**Consequence:** T21 is a **clock buffer only** — 09:35 earliest, because the
+first five minutes are noise. It must NOT be generalised into a caution gradient
+across the window. Encoded explicitly in tv-trigger 0.3.5 constraint 4, with his
+correction quoted inline so a later version cannot quietly re-introduce it.
+
+The compounding finding about the cap still stands on its own: a bad take spends
+a scarce slot. The fix for that is taking *better* trades (T20's entry rule,
+T5's rejection-first test), not taking *fewer early* ones.
