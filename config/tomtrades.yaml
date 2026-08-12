@@ -1,0 +1,168 @@
+# tomtrades CBR detector — every parameter, with the quote it came from.
+#
+# RESEARCH ONLY. Nothing here is validated; this encodes an UNVALIDATED hypothesis
+# catalogue reverse-engineered from public videos. See docs/RESEARCH-tomtrades-audit.md
+# and .claude/skills/tomtrades-model/ (evidence v2).
+#
+# Provenance tag on every value:
+#   [A]  he states it — quote given
+#   [R]  researcher-chosen placeholder for a sweep; he gave no number
+# A value marked [R] is NOT his rule. Never report an [R] default as "his parameter".
+
+instrument:
+  symbol: GC                      # COMEX gold futures — proxy for the XAUUSD he trades
+  tick_size: 0.10                 # GC minimum price increment ($0.10/oz)
+  point_value: 100.0              # GC contract = 100 troy oz
+  timezone: America/New_York      # all logic is NY-anchored; see tz_anchor note below
+
+# The hour boundary his "minute of hour" rules key off. He is AU-based and his charts
+# set the clock; UTC-aligned whole hours are the assumption until that is confirmed.
+# Minute-of-hour is invariant across whole-hour-offset zones, so this is safe for C3 --
+# but NOT for session definitions, which is why those are stated separately.
+tz_anchor: UTC
+
+sessions:
+  # [A] "I trade this in Asia and London session, around the open of each of these
+  #      sessions" and "I trade the second hour of Asia every single day"
+  asia:   {start: "19:00", end: "04:00"}   # NY clock
+  london: {start: "03:00", end: "11:00"}
+  enabled: [asia]                 # [R] which sessions to include; sweep {asia, london, both}
+
+# ---------------------------------------------------------------------------
+# C1 — middle-timeframe range condition
+# [A] "I identify a range as whether on average over those past 5 to 12 plus hours
+#      how much we correct the previous move"  -> a mean-retracement test, NOT width.
+# [A] "I identify that by looking at the past 5 hours of price action"
+c1_range:
+  enabled: true
+  method: mean_retrace            # mean_retrace | median_retrace | efficiency | width_atr
+  lookback_hours: 8               # [A-bounded] sweep 5-12, his stated range
+  leg_tf: 15min                   # [R-interpretation] legs are measured on 15m bars inside
+                                  # his 5-12h window. NOT his words. Forced by measurement:
+                                  # on HOURLY bars an 8h window cannot produce two legs at
+                                  # pivot_k=3, so the statistic is NaN 100% of the time.
+                                  # 15m/8h computes 91% of the time; 5m collapses the
+                                  # distribution to ~1.0 and stops discriminating.
+  retrace_min: 1.05               # [R] sweep 0.5-1.5. NOTE: his implied 0.50 admits ~99%
+                                  # of windows on GC (p10 of the distribution is 0.65), so
+                                  # it is inert as a gate. 1.05 is the measured median --
+                                  # a sweep anchor that splits the sample, NOT his number.
+  efficiency_max: 0.30            # [R] alternative method; sweep 0.15-0.50
+  width_atr_max: 3.0              # [R] control method only; sweep 2.0-6.0
+  pivot_k: 3                      # [R] swing definition for leg detection; sweep 2-5
+
+# ---------------------------------------------------------------------------
+# C2 — hourly overextension
+# [A] "20 to 30 minutes of price action moving in one direction without a pullback"
+# [A] "at least 15 to 30 minutes of price action... push in one direction"
+# [A] "I define a pullback that invalidates an overextension by pulling back to
+#      around 50% or more"   <- his number, not ours
+c2_overextension:
+  enabled: true
+  min_duration_min: 20            # [A] sweep 15-35
+  invalidation_frac: 0.50         # [A] HIS NUMBER; sweep 0.35-0.65
+  require_magnitude: false        # [R] control: does magnitude add anything to duration?
+  atr_mult: 1.0                   # [R] only used when require_magnitude; sweep 0.5-2.0
+  onesided_frac: 0.0              # [R] 0 = off; sweep 0.60-0.90
+  volume_z_min: null              # [R] null = off; sweep 0.5-2.0
+
+# ---------------------------------------------------------------------------
+# C3 — minute-of-hour window
+# [A] variants: 22-52, 30-45, 20-30, "15 or 30", and a favourite of 37.
+# [A] claimed win rates by bucket: 0-10 = 66%, 10-30 = 50%, halfway = 75%.
+# These conflict. They are a sweep, not a constant. Do not reconcile by picking one.
+c3_clock:
+  enabled: true
+  window_start_min: 30            # [A-variant] sweep 15-40
+  window_end_min: 45              # [A-variant] sweep 30-59
+  boundary_buffer_min: 2          # [R] avoid entering just before a 15m open; sweep 0-5
+  # [A] "ideally I don't want to be like entering a trade just before the next
+  #      15-minute candle open"
+
+# ---------------------------------------------------------------------------
+# C4 — correlation (DXY / yen)
+# [A] hard veto: "If both dollar and yen are moving in the same direction with high
+#      volume, I should not be taking a trade."
+# [A] claimed effect: "DXY correlation increase my WR by 17%"
+c4_correlation:
+  mode: veto_only                 # off | veto_only | required  (contradiction -> switch)
+  lookback_min: 30                # [R] sweep 10-60
+  corr_min: 0.30                  # [R] used when mode=required; sweep 0.1-0.6
+  veto_z: 1.0                     # [R] "high volume" threshold for the veto; sweep 0.5-2.0
+
+# ---------------------------------------------------------------------------
+# C5 — area of interest
+# [A] "either overextend into the highs of this range or overextend into the lows of
+#      this range"  -> the AOI is the C1 range boundary. May be redundant with C1;
+#      that redundancy is an explicit test, not an assumption.
+c5_aoi:
+  enabled: true
+  source: range_boundary          # range_boundary | pivots | calendar | beyond_n_day
+  proximity_atr: 0.25             # [R] sweep 0.10-0.50
+  beyond_n_day: 5                 # [R] used when source=beyond_n_day; sweep 3-20
+
+# ---------------------------------------------------------------------------
+# C6 — the shift (trigger)
+# [A] sweep-then-break; a shift is a W-shape swing break, a "change of character" is a
+#      V-shape minor break and is a no-trade.
+# [A] "I mainly use the 5 second chart for fractal shifts" but also accepts 1m:
+#      "we can just wait for a break of these 1-minute candle lows here"
+c6_shift:
+  trigger_tf: 1min                # [A-accepted] 5s unavailable in 1m data
+  pivot_k: 3                      # [R] swing definition; sweep 2-5
+  sweep_min_ticks: 1              # [R] how far past the swing counts as a sweep; sweep 0-2
+  window_bars: 10                 # [R] bars allowed between sweep and break; sweep 3-20
+  shape: W_required               # W_required | any_break  (any_break admits his invalid V)
+  stop_atr_max: 2.5               # [A-tell] "it would be a pretty big stop loss"; sweep 1-4
+
+# ---------------------------------------------------------------------------
+# C7 — fractal shift (shift within a shift)
+# [A] "you simply just look for a shift within that shift. You wait for price to come
+#      into this 50% area, and on this lower timeframe..."
+# [A] claimed uplift: simple shift ~70% WR -> fractal shift ~88% WR
+c7_nested:
+  mode: gate                      # off | label | gate  (promoted to gate at evidence v2)
+  window_bars: 10                 # [R] defaults to c6.window_bars; sweep 3-20
+
+# ---------------------------------------------------------------------------
+# C8 — candle flip. Class D: named in his timeframe stack, never defined across
+# 58 extracted sources. Off by default — undefined evidence does not gate.
+c8_candle_flip:
+  enabled: false
+  tf: 15min                       # [R] entirely researcher-invented if enabled
+
+# ---------------------------------------------------------------------------
+# C9 — volume
+# [A] drive comes "with high volume"; exit when "volume started to decrease";
+#     instrument skipped when "just low volume kind of shit, rangy"
+c9_volume:
+  baseline_days: 20               # [R] same-hour-of-day baseline; sweep 10-60
+  fade_exit_enabled: false        # [R] mechanisation of a discretionary behaviour
+  fade_bars: 3                    # [R] sweep 2-6
+  fade_min_r: 0.5                 # [R] only fade-exit once this far in profit; sweep 0-1
+
+# ---------------------------------------------------------------------------
+# Execution
+execution:
+  entry_retrace_frac: 0.50        # [A] "targeting that 50%"; sweep 0.38-0.70
+  entry_retrace_required: false   # [A] he says "typically", not "always"
+  stop_mode: pattern_extreme      # pattern_extreme | retrace_zone
+  stop_buffer_ticks: 1            # [R] sweep 0-3
+  target_mode: impulse_50         # impulse_50 | fixed_rr | ltf_structure
+  target_impulse_frac: 0.50       # [A] strongest rule in the corpus (7 videos)
+  impulse_def: hour_open_to_extreme  # [A] "50% of the hourly candle extension"
+  fixed_rr: 1.25                  # [A] Gold override "around 1 1.5 risk to reward"
+  trail_enabled: true             # [A] "I trail my stop loss when we break a high in my favour"
+  trail_tf: 1min                  # [R] load-bearing per the repo's other exit work
+
+risk:
+  risk_per_trade_pct: 1.0         # [A] "Risking 0.5% to 1% per trade"; sweep 0.5-1.0
+  max_trades_per_day: 3           # [A] "max 2-3 trades per day"
+  setup_recency_hours: 4.5        # [A] "past 4 to 5 hours"; sweep 3-6
+
+# Filters that map onto the gates above. F6 (Gold Spread) is UNCODABLE — the
+# instrument he refers to has never been identified. Leaving it off and saying so.
+filters:
+  f2_setup_recency: false         # [R] self-referential; needs the detector to define "seen"
+  f6_gold_spread: false           # UNCODABLE — instrument unidentified. Do not guess a ticker.
+  f9_instrument_volume_floor: false
