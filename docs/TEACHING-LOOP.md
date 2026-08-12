@@ -1,5 +1,27 @@
 # TEACHING LOOP — his rulings on agent disagreements, in order
 
+> ## ⛔ NOT RUNTIME MATERIAL. NEVER READ THIS DURING A SCORED RUN.
+>
+> This file quotes him **per-trade on the exact days being replayed** — which
+> setups he wanted, which entries he'd have taken, what each agent decision got
+> wrong. **That is an answer key.**
+>
+> It leaked once, 2026-08-12: a run session was told to read this file first
+> (my instruction, in a paste block) and then fed his verbatim commentary into
+> agent briefings. His words: *"it would look at a trade I took, and it would
+> tell the agents verbatim what I said on those setups… on live they're not
+> going to see verbatim what I said about a trade that already happened."* The
+> whole week had to be re-run.
+>
+> **Two guards now exist.** `.claude/settings.json` denies the Read tool on
+> this path, and `scripts/audit_run_leak.py` check F greps every briefing for
+> the quoted passages below and fails the run if one appears.
+>
+> This file is for **prompt authoring between runs** — read it when writing a
+> new agent version, never while one is executing. The doctrine an agent needs
+> at runtime is already inside its own contract.
+
+
 The refinement substrate. Every entry is a disagreement between a scored
 agent run and his recorded or stated behavior, plus his ruling on it, dated.
 Prompt versions cite entries here when they change. Doctrine that graduates
@@ -758,3 +780,37 @@ Both tiers emit the ratio: `escalation_response` is `accommodated` or
 `reaffirmed` on every escalated re-read. **Mostly reaffirmed ⇒ the trigger's bar
 is too loose, raise the qualification. Mostly accommodated ⇒ the thesis
 conditions were the real problem.** The number decides, not either agent.
+
+
+## T26 — 2026-08-12 · THE STEERED RUN — my instruction caused it
+
+**What happened:** the whole 0.3.5 week run was contaminated and restarted. The
+run session was reading his per-trade commentary and feeding it to the agents.
+*"It would look at a trade I took, and it would tell the agents verbatim what I
+said on those setups. I had to restart the entire week run. Very frustrating
+because, obviously, on live they're not going to see verbatim what I said about
+a trade that already happened."*
+
+**Cause: mine.** My paste block for the 0.3.5 re-run opened with *"read
+docs/TEACHING-LOOP.md first"* — and by then this file contained T17–T24, his
+verbatim per-trade review of the exact five days being replayed. I built the
+answer key, then told a run session to open it.
+
+Same class as the 0.3.4 prompt contamination, and the same reason it is worse
+than a replay leak: timestamps stay clean, checks A–E all pass, and the score
+silently measures recall.
+
+**Three guards, all now in place:**
+1. `.claude/settings.json` denies `Read` on TEACHING-LOOP.md, the analysis docs,
+   and the corpus — the run session cannot open them even if instructed to.
+2. `audit_run_leak.py` **check F** extracts every `*"..."*` passage from the
+   refinement docs (110 of them today) and greps each briefing for it. Verified
+   both ways: fires on a planted quote, clean on the real briefings. Its first
+   version silently failed the planted case because JSON escapes newlines as
+   `\n`; the negative control caught it, which is the entire argument for
+   running one.
+3. **Paste blocks for scored runs must never cite the refinement docs.** The
+   runbook and the agent contracts are the only reading a run session needs.
+
+**Standing rule:** doctrine flows into agents through their **contracts**, at
+version-bump time. It never flows through a briefing, and never mid-run.

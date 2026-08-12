@@ -23,6 +23,10 @@ THE CHECKS
      minute (catches future bars pasted into a payload)
   D  no briefing file carries narrated-corpus markers (trader_time, his
      result/R fields) — i.e. nobody handed the agents the answer key
+  F  no briefing contains HIS VERBATIM COMMENTARY — the refinement docs quote
+     him per-trade on the days being replayed, which is an answer key. This
+     leaked once (2026-08-12) when a run session was told to read the teaching
+     loop and paraphrased his rulings into briefings.
   E  every entry / stop / target price must be explicable at its minute,
      either as a structural level computable AS OF then (VWAP bands, BB
      MAs 2/3/15/60, developing daily profile, anchored weekly profile,
@@ -247,6 +251,62 @@ def check_e(rows, sess_day, bars, out, by_level=None):
     return checked, unexplained
 
 
+
+# ---------------------------------------------------------------- check F
+# HIS VERBATIM COMMENTARY must never reach a briefing. docs/TEACHING-LOOP.md
+# and the analysis docs quote him per-trade on the exact days being replayed
+# ("very disappointed it didn't catch these longs at 9:36", a critique naming
+# the level an entry should have used). That is an answer key. It leaked once,
+# 2026-08-12, because a run session was told to read the teaching loop first
+# and then paraphrased his rulings into agent briefings — the agents were being
+# handed his conclusions about trades that had already happened.
+#
+# Not a replay leak: the timestamps are clean and checks C/E pass. It is the
+# same class as prompt contamination — invisible to every other check, and it
+# turns a score into recall. Hence a dedicated check that greps for his actual
+# sentences.
+DOCTRINE_SOURCES = ("docs/TEACHING-LOOP.md", "docs/ANALYSIS-friday-three-runs.md",
+                    "docs/CORPUS-narrated-days.md")
+QUOTED = re.compile(r'\*"([^"]{40,300})"\*')
+
+
+def _his_quotes(root: Path) -> list[str]:
+    """Every *"..."* passage in the refinement docs — i.e. his own words."""
+    out = []
+    for rel in DOCTRINE_SOURCES:
+        f = root / rel
+        if not f.is_file():
+            continue
+        for q in QUOTED.findall(f.read_text()):
+            norm = " ".join(q.split()).lower()
+            if len(norm) >= 40:
+                out.append(norm)
+    return out
+
+
+def check_f(brief_dir: Path, out) -> int:
+    quotes = _his_quotes(ROOT)
+    if not quotes or not brief_dir.is_dir():
+        return 0
+    hits = 0
+    for f in sorted(brief_dir.glob("*.json")):
+        # JSON escapes newlines as literal \n, which survives a naive
+        # whitespace-join and defeats the match. Unescape first — the negative
+        # control caught this silently passing a planted quote.
+        txt = f.read_text().replace("\\n", " ").replace("\\t", " ")
+        raw = " ".join(txt.split()).lower()
+        for q in quotes:
+            # match on a distinctive interior slice, so light paraphrase at the
+            # edges does not evade it
+            probe = q[:90]
+            if probe in raw:
+                hits += 1
+                out.append(("F", f"{f.name}: contains his verbatim commentary — "
+                                 f'"{q[:70]}…"'))
+                break
+    return len(quotes)
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -264,6 +324,7 @@ def main() -> int:
     n_dec, n_mech = check_a(rows, findings)
     check_b(rows, findings)
     n_brief = check_cd(brief_dir, findings) if brief_dir.is_dir() else 0
+    n_quotes = check_f(brief_dir, findings)
     bars = load_bars_indexed()
     by_level = [0, 0]
     n_px, n_bad = check_e(rows, sess_day, bars, findings, by_level)
@@ -277,6 +338,7 @@ def main() -> int:
         print("  B  decision minutes chronological                            OK")
         print("  C  no briefing mentions a time after its decision minute     OK")
         print("  D  no narrated-corpus answer-key markers in briefings        OK")
+        print(f"  F  none of his {n_quotes} recorded quotes appear in a briefing   OK")
         print(f"  E  all {n_px} quoted prices explicable as-of their minute        OK")
         print(f"       ({by_level[0]} matched an as-of level, {by_level[1]} were inside the\n        printed range — the latter is weak evidence; see E'S REAL SCOPE)")
         print("\n  NO LEAK EVIDENCE FOUND.")
