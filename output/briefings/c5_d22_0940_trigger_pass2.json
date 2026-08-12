@@ -1,0 +1,140 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "C5-D22-NYA3-0940",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-23T09:40 ET",
+ "candle_start": "09:36 (3m) / 09:38 (2m)",
+ "timeframe": "3m and 2m",
+ "leak_check": "pass - truncated at 09:39:59; last completed 2m bar starts 09:38, and the 3m bar starting 09:36 completes AT 09:39",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d22_c5_0940.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "vwap",
+    "price": 30019.89
+   },
+   {
+    "level": "daily_vah",
+    "price": 30139.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 30341.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_low_higher_probe_29699",
+   "price": 29699.5
+  },
+  "waiting_for": "retest of the reclaimed 2m/3m MA cluster, vwap_m1 and daily POC zone (29,718-29,740) holding as support; enter long on that retest, not the breakout candle itself.",
+  "two_sided": true,
+  "condition_for_other_side": "shorts relicensed if price closes back below the reclaimed zone (~29,718-29,730) on the retest; a break below 29,699.5 rules the higher low out entirely.",
+  "anticipated_resolution": {
+   "level": "reclaimed_cluster_vwap_m1_poc",
+   "price": 29718.96,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "these are intraday-only levels (today's vwap_m1, 2m/3m MA, developing POC), not multi-day structure, so a decisive same-candle close through all three off a higher low is sufficient confirmation without needing a 15m close; a held retest confirms the rebalance, a close back below negates it.",
+  "escalation_response": "accommodated",
+  "reasoning": "751pt trend day; the low held higher on the second probe (29,699.5 vs 29,675.75), then this candle broke own 2m/3m MA, vwap_m1 and daily POC together on heavy volume, closing near its high - a real rebalance, not the 43pt stall I was fading. My condition priced vwap_m1 stale (29,773 vs live 29,719); corrected, it's already cleared. Flipping lean long into vwap/.382 confluence ~30,020."
+ },
+ "price_at_decision": 29780.75,
+ "position_state": "FLAT. The 09:36 short was stopped at 29785 one minute ago. NY_AM has 1 of 2 fills used and 80 minutes of window.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "vwap_m1",
+  "daily_poc"
+ ],
+ "levels_at_decision_CHART": {
+  "vwap": 30019.89,
+  "vwap_p1": 30320.83,
+  "vwap_m1": 29718.96,
+  "vwap_m2": 29418.02,
+  "vwap_m3": 29117.09,
+  "bb_2m_basis": 29722.68,
+  "bb_2m_upper": 29763.39,
+  "bb_2m_lower": 29681.96
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29722.67,
+  "bb_ma_3m": 29732.24,
+  "bb_ma_15m": 29819.6,
+  "bb_ma_60m": 30233.24,
+  "day_range_fibs": {
+   "0.382": 30030.87,
+   "0.5": 30158.88,
+   "0.618": 30286.88,
+   "0.705": 30381.25
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29616.5,
+  "daily_profile": {
+   "poc": 29740.0,
+   "val": 29616.0,
+   "vah": 30139.0,
+   "note": "DEVELOPING as-of 09:40"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30341.0,
+   "vah": 30784.0,
+   "note": "DEVELOPING as-of 09:40"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29616.5
+ },
+ "levels_for_target_selection": "ABOVE the close: the 2m BB upper 29763.39 is now BELOW it. The 15m MA 29819.6, the developing daily VAH 30139.0, the 0.382 fib 30030.87, the session VWAP 30019.89. BELOW: the 2m BB basis 29722.68, vwap_m1 29718.96, the 2m BB lower 29681.96, the session low 29675.75.",
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill",
+ "signal_candle_3m": {
+  "start": "09:36",
+  "direction": "UP",
+  "open": 29720.0,
+  "close": 29747.25,
+  "closed_at": "09:39",
+  "levels": "own 3m MA + vwap_m1 + developing daily POC, same candle"
+ },
+ "signal_candle_2m": {
+  "start": "09:38",
+  "direction": "UP",
+  "open": 29713.25,
+  "high": 29797.75,
+  "low": 29699.5,
+  "close": 29780.75,
+  "volume": 5424,
+  "levels": "own 2m MA + vwap_m1 + daily POC, same candle; 98.25pt range, closed 17pt off its high",
+  "closed_at": "09:40"
+ },
+ "session_low_this_window": 29675.75,
+ "probes_of_the_low": {
+  "29675.75": "~20 minutes ago",
+  "29699.5": "this candle"
+ },
+ "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches sits ABOVE both the price and the limit.",
+ "candle_completion_note": "both signal candles are complete at this decision minute. The 3m bar spans 09:36:00-09:38:59 and completes at 09:39; the 2m bar spans 09:38:00-09:39:59 and completes at 09:40. Replay is truncated at 09:39:59, so every value quoted for both bars had printed.",
+ "CORRECTION": "re-issued. The first version labelled closed_at on the 3m candle only, and the trigger correctly refused to adjudicate rather than guess which minute the 2m candle closed on. Both are now labelled. No price or level changed.",
+ "adjudication": "second pass on this candidate; the escalation was granted and Tier 1 has re-read.",
+ "tier_1_response": "accommodated, and it FLIPPED THE BIAS from short to long. It corrected its own stale vwap_m1 price, accepted the higher low as a rebalance rather than a stall, and waived the 15m-close requirement on the grounds that vwap_m1, the 2m/3m MAs and the developing POC are intraday levels rather than multi-day structure. Longs are licensed on a retest of the reclaimed 29,718-29,740 zone holding as support - explicitly not on the breakout candle itself.",
+ "escalation_already_spent": "this candidate has used its one escalation."
+}
