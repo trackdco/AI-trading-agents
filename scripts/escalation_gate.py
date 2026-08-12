@@ -246,3 +246,66 @@ class EscalationGate:
             "reaffirm_rate": (round(rea / len(granted), 3) if granted else None),
             "rows": [vars(r) for r in self.log],
         }
+
+
+# -- entry-order sanity, orchestrator-side ---------------------------------
+def validate_entry_geometry(verdict: dict, price: float) -> list[str]:
+    """Catch limit/cancel placements that are void before the order exists.
+
+    Four distinct T12 failures have now been recorded in replay, and the fourth
+    was pure arithmetic rather than judgement: a LONG whose `cancel_if_reaches`
+    sat BELOW the current price, so the cancel condition was already true at
+    placement and the order died on its first bar. The counterfactual filled two
+    minutes later and ran 304 points.
+
+    That is checkable, so it is checked here rather than trusted to the agent.
+    Returns a list of problems; empty means the geometry is coherent.
+
+    `price` is the close of the last completed bar at the decision minute.
+    """
+    problems: list[str] = []
+    if not str(verdict.get("decision", "")).startswith("take"):
+        return problems
+
+    entry = verdict.get("entry")
+    stop = verdict.get("stop")
+    if entry is None or stop is None:
+        return ["take without an entry or a stop"]
+
+    long_side = stop < entry
+    cancel = verdict.get("cancel_if_reaches") or {}
+    cancel_px = cancel.get("price") if isinstance(cancel, dict) else None
+
+    # T20: the limit must sit between price and where the move came FROM, i.e.
+    # price must come BACK to fill it, never go further.
+    if long_side and entry > price:
+        problems.append(
+            f"T20: long limit {entry} is ABOVE price {price} - it needs further "
+            f"upward displacement to fill, which is a breakout bet")
+    if not long_side and entry < price:
+        problems.append(
+            f"T20: short limit {entry} is BELOW price {price} - it needs further "
+            f"downward displacement to fill, which is a breakout bet")
+
+    # The cancel level is 'the move went without me'. For a long that is UP,
+    # for a short DOWN — and it must not already be violated at placement.
+    if cancel_px is not None:
+        if long_side and cancel_px <= price:
+            problems.append(
+                f"cancel_if_reaches {cancel_px} is at or below price {price} on a "
+                f"LONG - already true at placement, so the order is void on its "
+                f"first bar")
+        if not long_side and cancel_px >= price:
+            problems.append(
+                f"cancel_if_reaches {cancel_px} is at or above price {price} on a "
+                f"SHORT - already true at placement, so the order is void on its "
+                f"first bar")
+        if long_side and cancel_px < entry:
+            problems.append(
+                f"cancel_if_reaches {cancel_px} sits below the long limit {entry} - "
+                f"it can never fire before the fill, so it is inoperative")
+        if not long_side and cancel_px > entry:
+            problems.append(
+                f"cancel_if_reaches {cancel_px} sits above the short limit {entry} - "
+                f"it can never fire before the fill, so it is inoperative")
+    return problems

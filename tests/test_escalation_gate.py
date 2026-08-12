@@ -277,3 +277,48 @@ def test_T25_applies_to_the_missed_escalation_detector_too():
 
     same = dict(seq, pair_shape="same_candle")
     assert EscalationGate.should_have_escalated(same)[0]
+
+
+# -- entry geometry: the fourth T12 failure was arithmetic, so check it -----
+
+from scripts.escalation_gate import validate_entry_geometry as _veg
+
+
+def test_the_cancel_that_was_already_true_at_placement_is_caught():
+    """The real 2026-06-22 09:40 long: cancel 29763.39 with price at 29780.75."""
+    v = {"decision": "take_light", "entry": 29743.0, "stop": 29697.5,
+         "cancel_if_reaches": {"level": "bb_2m_upper", "price": 29763.39}}
+    problems = _veg(v, price=29780.75)
+    assert problems and "already true at placement" in problems[0]
+
+
+def test_a_coherent_long_passes():
+    v = {"decision": "take_light", "entry": 29743.0, "stop": 29697.5,
+         "cancel_if_reaches": {"level": "bb_2m_upper", "price": 29800.0}}
+    assert _veg(v, price=29780.75) == []
+
+
+def test_a_coherent_short_passes():
+    v = {"decision": "take_full", "entry": 30005.5, "stop": 30040.0,
+         "cancel_if_reaches": {"level": "bb_2m_lower", "price": 29955.96}}
+    assert _veg(v, price=29995.75) == []
+
+
+def test_T20_long_limit_above_price_is_a_breakout_bet():
+    v = {"decision": "take_full", "entry": 30100.0, "stop": 30000.0}
+    assert any("breakout bet" in p for p in _veg(v, price=30050.0))
+
+
+def test_T20_short_limit_below_price_is_a_breakout_bet():
+    v = {"decision": "take_full", "entry": 29900.0, "stop": 30000.0}
+    assert any("breakout bet" in p for p in _veg(v, price=29950.0))
+
+
+def test_an_inoperative_cancel_behind_the_limit_is_flagged():
+    v = {"decision": "take_full", "entry": 30005.5, "stop": 30040.0,
+         "cancel_if_reaches": {"level": "x", "price": 30020.0}}
+    assert any("inoperative" in p for p in _veg(v, price=29995.75))
+
+
+def test_a_pass_is_not_geometry_checked():
+    assert _veg({"decision": "pass", "entry": None, "stop": None}, price=1.0) == []

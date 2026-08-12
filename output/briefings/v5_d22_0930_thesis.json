@@ -1,0 +1,130 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills)",
+ "decision_minute": "2026-06-23T09:30 ET (session-day 2026-06-22)",
+ "leak_check": "pass - truncated at 09:29:59; last completed 2m bar starts 09:28 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d22_0930_nyam.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "day_character_note": "Re-judge the day's character. You have called it a TREND day twice with the 15m-MA floor suspended. The cash open is where that most often has to change.",
+ "price_at_decision": 29718.75,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "open": 29690.25,
+  "high": 29721.75,
+  "low": 29675.75,
+  "close": 29718.75,
+  "volume": 3091
+ },
+ "prior_thesis_as_of_0800": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 29563.08
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29278.04
+   }
+  ],
+  "invalidation": {
+   "level": "bounce_high_30035",
+   "price": 30034.75
+  },
+  "waiting_for": "trend day still in force - short licensed on this bounce (now at the vwap_m1 / 2m BB basis / 15m MA confluence, 29,848-29,875) stalling and rolling over wherever it stalls, followed by closure through the 2m/3m MA and retest.",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed AT this same confluence on a hold - absorption there plus a 15m decisive-body close back above it that sticks on retest, opening a move back toward session VWAP (30,133).",
+  "anticipated_resolution": {
+   "level": "vwap_m1_bb2m_15mma_confluence",
+   "price": 29875.3,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close above the confluence (~29,875) with a decisive body, not a wick-heavy absorption candle.",
+  "reasoning": "Trend day held: decline blew through the 03:00 weekly-low target to a fresh session low 29,752, spending both named targets. The 121pt bounce off that low has reached the vwap_m1/2m-BB-basis/15m-MA confluence for the first time all session with zero MA crosses recorded - no acceptance yet, so short stands per T18: rejection wherever this stalls."
+ },
+ "what_happened_since_0800": "the bounce rejected the confluence exactly as you called it and price broke down through the session low. The NY_PRE window licensed a short on that rejection and it went unfilled by 7.75 points - price never retraced to the limit and then ran 224pt in its favour without us. Both of your named targets remain below: vwap_m2 29,475.86 and vwap_m3 29,178.63. Price is now 29,718.75, having just bounced 43pt off a fresh session low.",
+ "position_state": "FLAT, and flat since the London short closed at 03:44. LONDON used 1 of 2 fills, NY_PRE used 0 of 1. NY_AM opens with a fresh cap of 2.",
+ "levels_at_0930_CHART": {
+  "vwap": 30070.32,
+  "vwap_p1": 30367.54,
+  "vwap_m1": 29773.09,
+  "vwap_m2": 29475.86,
+  "vwap_m3": 29178.63,
+  "bb_2m_basis": 29723.5,
+  "bb_2m_upper": 29758.27,
+  "bb_2m_lower": 29688.73
+ },
+ "levels_at_0930_BUILD": {
+  "bb_ma_2m": 29723.5,
+  "bb_ma_3m": 29730.91,
+  "bb_ma_15m": 29823.24,
+  "bb_ma_60m": 30230.14,
+  "day_range_fibs": {
+   "0.382": 30067.49,
+   "0.5": 30188.5,
+   "0.618": 30309.51,
+   "0.705": 30398.73
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29675.75,
+  "daily_profile": {
+   "poc": 29866.0,
+   "val": 29675.0,
+   "vah": 30261.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30343.0,
+   "vah": 30770.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29675.75
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "08:15",
+    "dir": "DOWN",
+    "ma": 29864.05,
+    "close": 29821.0,
+    "body_ratio": 0.58
+   }
+  ],
+  "hourly_closes": {
+   "03:00": 29969.75,
+   "04:00": 29909.0,
+   "05:00": 29827.25,
+   "06:00": 29886.25,
+   "07:00": 29818.0,
+   "08:00": 29873.25,
+   "09:00": 29735.0,
+   "09:30": 29718.75
+  },
+  "note_on_location": "price 29718.75 sits ON the 2m BB basis 29723.50 and 54pt below vwap_m1 29773.09. The session has fallen from an 18:00 open of 30662.75 to a low of 29675.75.",
+  "note_on_the_cash_open": "the last bar carries 3,091 contracts, the heaviest of the session so far, and it closed near its high after a 46pt range. Judge what that is."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "note": "the US calendar for this date is empty; nothing scheduled before 11:00 ET."
+ },
+ "T18_REMINDER": "on a trend day the rejection is wherever the counter-trend bounce ACTUALLY STALLS. You have written this correctly twice today and both times it produced a tradeable condition.",
+ "ADAPTATION_CLAUSE": "name conditions WITHIN REACH - roughly the current 15m BB width - or express them as behaviour. This matters most on the side you are NOT biased toward: a long condition set far above price on a short day disables longs entirely, and the trigger will escalate rather than obey it.",
+ "T21_NOTE": "the trigger cannot enter until 09:35 - an open-volatility buffer on ENTRIES only. It must not make your read more cautious; his prime window is the first half of NY_AM.",
+ "what_to_emit": "your standard thesis JSON for the NY_AM window."
+}
