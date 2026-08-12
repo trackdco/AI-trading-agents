@@ -178,3 +178,57 @@ def test_record_outcome_rejects_unknown_values_and_unknown_candidates():
         g.record_outcome("c1", "maybe")
     with pytest.raises(KeyError):
         g.record_outcome("nope", "accommodated")
+
+
+# -- the inverse: escalations the trigger should have raised ----------------
+
+def test_detects_a_pass_that_named_a_rejection_on_a_thesis_gate():
+    """The expensive failure is the MISSING escalation, not the excess one."""
+    v = {"decision": "pass", "thesis_stale": False,
+         "constraints_failed": ["direction_mismatch"],
+         "rejected_level": {"level": "session_high + vwap_p2", "price": 30869.75}}
+    should, why = EscalationGate.should_have_escalated(v)
+    assert should and "direction_mismatch" in why
+
+
+@pytest.mark.parametrize("gate_name", ["waiting_for_unmet", "waiting_for_not_satisfied", "waiting_for"])
+def test_detects_every_spelling_of_the_waiting_for_gate(gate_name):
+    v = {"decision": "pass", "thesis_stale": False,
+         "constraints_failed": [gate_name],
+         "rejected_level": {"level": "daily_poc", "price": 29369.0}}
+    assert EscalationGate.should_have_escalated(v)[0]
+
+
+def test_no_rejection_named_means_the_pass_was_correct():
+    v = {"decision": "pass", "thesis_stale": False,
+         "constraints_failed": ["waiting_for_unmet"], "rejected_level": None}
+    should, why = EscalationGate.should_have_escalated(v)
+    assert not should and "no rejection named" in why
+
+
+def test_a_mechanical_gate_alongside_a_thesis_gate_excuses_the_pass():
+    """Tier 1 cannot fix a spent cap, so withholding the escalation is right."""
+    v = {"decision": "pass", "thesis_stale": False,
+         "constraints_failed": ["waiting_for_unmet", "window_cap"],
+         "rejected_level": {"level": "daily_poc", "price": 29369.0}}
+    assert not EscalationGate.should_have_escalated(v)[0]
+
+
+def test_a_take_is_never_a_missed_escalation():
+    v = {"decision": "take_full", "thesis_stale": False, "constraints_failed": [],
+         "rejected_level": {"level": "daily_poc", "price": 29369.0}}
+    assert not EscalationGate.should_have_escalated(v)[0]
+
+
+def test_an_actual_escalation_is_not_also_a_missed_one():
+    v = {"decision": "pass", "thesis_stale": True,
+         "constraints_failed": ["waiting_for_unmet"],
+         "rejected_level": {"level": "daily_poc", "price": 29369.0}}
+    assert not EscalationGate.should_have_escalated(v)[0]
+
+
+def test_a_non_thesis_pass_reason_is_not_a_missed_escalation():
+    v = {"decision": "pass", "thesis_stale": False,
+         "constraints_failed": ["headroom", "chop"],
+         "rejected_level": {"level": "daily_poc", "price": 29369.0}}
+    assert not EscalationGate.should_have_escalated(v)[0]

@@ -163,6 +163,44 @@ class EscalationGate:
         self.log.append(rec)
         return rec
 
+    # -- the other direction: an escalation the trigger SHOULD have raised ----
+    @staticmethod
+    def should_have_escalated(verdict: dict) -> tuple[bool, str]:
+        """Detect the combination the 0.3.5 contract forbids.
+
+        The gate above can only REFUSE. It cannot manufacture an escalation the
+        agent never requested — and the expensive failure is the missing one, not
+        the excess one, because a silent pass is precisely what the escalation
+        rule was written to abolish. So the orchestrator also checks the inverse:
+        a verdict that passes on a THESIS-derived gate while naming a rejected
+        level has met the contract's own test ("can I NAME the level that was
+        rejected, and did a two-level break prove it?") and should have escalated.
+
+        The candidate existing at all means a two-level break occurred — that is
+        the definition of a candidate — so naming the rejection is the only open
+        question, and the verdict answers it.
+
+        Returns (True, why) when the verdict should have escalated and did not.
+        """
+        if verdict.get("thesis_stale"):
+            return False, "already escalated"
+        if str(verdict.get("decision", "")).startswith("take"):
+            return False, "not a pass"
+        thesis_gates = {"direction_mismatch", "waiting_for_unmet",
+                        "waiting_for", "waiting_for_not_satisfied", "thesis_gate"}
+        failed = {str(c) for c in (verdict.get("constraints_failed") or [])}
+        if failed & MECHANICAL_GATES:
+            return False, "mechanical gate present — escalation correctly withheld"
+        hit = failed & thesis_gates
+        if not hit:
+            return False, "no thesis-derived gate"
+        rl = verdict.get("rejected_level") or {}
+        name = rl.get("level", "") if isinstance(rl, dict) else str(rl)
+        if not name:
+            return False, "no rejection named — pass is correct"
+        return True, (f"passed on {sorted(hit)} while naming rejected_level "
+                      f"{name!r}: the contract forbids this combination")
+
     def record_outcome(self, candidate_id: str, outcome: str) -> None:
         """Tag the most recent granted escalation with accommodated|reaffirmed."""
         if outcome not in ("accommodated", "reaffirmed"):
