@@ -1,0 +1,126 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "R2-D25-NYP2-0836",
+ "window": "NY_PRE 08:00-09:29 ET",
+ "session": "NY_PRE",
+ "decision_minute": "2026-06-26T08:36 ET",
+ "candle_start": "08:33 (3m) / 08:34 (2m)",
+ "timeframe": "3m and 2m",
+ "leak_check": "pass - truncated at 08:35:59; last completed 2m bar starts 08:34 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/r2_d25_c3_0836.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. This briefing is authoritative. The chart is truncated at the cursor and carries NO trade drawings of any kind.",
+ "chart_note": "the weekly VP drawing is anchored to a different window - ignore it visually; correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "anchored_weekly_val",
+    "price": 29290.0
+   },
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_poc",
+   "price": 29655.0
+  },
+  "waiting_for": "Not a 15m-MA rebalance - price is already well below it (MA 29420.45) and has been pinned in a tight range (29304-29364) since roughly 06:00. Waiting for a 15m decisive-body close below the session low/weekly VAL confluence (~29290-29305) to confirm acceptance, then short the retest of that broken level.",
+  "two_sided": true,
+  "condition_for_other_side": "A 15m decisive-body close back above the 2m BB basis/daily POC cluster (~29364-29369), reclaiming the immediate support-turned-resistance, licenses longs back toward the 0.5 day-range fib/60m MA confluence (29527-29533).",
+  "anticipated_resolution": {
+   "level": "weekly_val",
+   "price": 29290.0,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "A major/multi-day level (weekly VAL, prior-day POC) is broken or reclaimed only on a 15m close beyond it with a decisive body - not a wick or a 1-2m poke.",
+  "reasoning": "Overnight 732pt break to new weekly low; bounce rejected exactly at the called 0.5 fib/BB-2m-upper ceiling (29562.75), then continued lower into 05:00. Last 2hrs went nearly nowhere (29370->29351) - day has shifted from trend to rotational consolidation, pinned between 2m BB basis (29364) and session low (29304.75), daily POC (29369) on top of it. Weekly VAL (29290) is effectively already in play. Short bias holds; a 15m decisive close below licenses continuation to weekly low; a reclaim above 29364-29420 licenses longs back toward 29527."
+ },
+ "waiting_for_status": "NOT satisfied on its face - judge it. The thesis wanted a 15m DECISIVE-BODY CLOSE below 29290-29305 first, and then a short of the RETEST of that broken level. Neither has happened: the session low is 29304.75 and it has not been closed below on any timeframe. What HAS happened is the opposite shape - price rallied off that low to 29400.50 at 08:33, into the 15m MA / daily POC band, was rejected there, and is now closing back down. The archived thesis for this window would have licensed exactly this; yours explicitly declined the rebalance geometry. Decide whether a rejection at resistance counts when your thesis asked for a break of support.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "08:33",
+  "direction": "DOWN",
+  "open": 29400.5,
+  "close": 29360.25,
+  "closed_at": "08:36",
+  "levels": "own 3m MA (29383.31) + developing daily POC (29369), same candle",
+  "volume": 501,
+  "supplementary": "the rejection-first scan also flags this: a rejection of the 15m MA at 08:30 (by 1.69pt) followed by this own-MA closure"
+ },
+ "signal_candle_2m": {
+  "start": "08:34",
+  "direction": "DOWN",
+  "open": 29379.75,
+  "high": 29384.0,
+  "low": 29358.0,
+  "close": 29360.25,
+  "volume": 351,
+  "levels": "own 2m MA (29393.97) + daily POC; sequential, the own-MA leg came at 08:32"
+ },
+ "pair_shape": "same_candle (3m) / sequential (2m)",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "daily_poc"
+ ],
+ "rejection_context": "the bounce off the 07:52 session low 29304.75 topped at 29400.50 - inside the 15m MA 29402.88 / 2m BB upper 29450 / daily POC 29369 band - and failed by 2.4pt of the 15m MA. Third rejection of that band this morning.",
+ "levels_at_decision_CHART": {
+  "vwap": 29468.71,
+  "vwap_p1": 29638.63,
+  "vwap_m1": 29298.79,
+  "vwap_p2": 29808.55,
+  "vwap_m2": 29128.88,
+  "bb_2m_basis": 29393.98,
+  "bb_2m_upper": 29450.28,
+  "bb_2m_lower": 29337.67
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29393.97,
+  "bb_ma_3m": 29383.31,
+  "bb_ma_15m": 29402.88,
+  "bb_ma_60m": 29518.75,
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "session_low_since_0300": 29304.75,
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29552.0,
+   "note": "DEVELOPING"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30083.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "weekly_high": 30968.0
+ },
+ "levels_below_for_target_selection": "the 2m BB lower 29337.67; then a tight cluster of session low 29304.75 / vwap_m1 29298.79 / prior-day low 29295.75 / anchored weekly VAL 29290; then the daily VAL 29225 and the weekly low 29160.5. Apply T11: compute R = |entry-stop| FIRST, then the NEAREST level inside 1.5R-2.5R; a FIXED 1.5R if none qualifies.",
+ "note_on_entry_mechanics": "BOTH London takes this session died on entry mechanics - one cancel level 12pt from the close, one limit priced off a 2m close that price never revisited. Price your limit and your cancel where a normal wiggle reaches neither.",
+ "fills_this_window": 0,
+ "window_cap": 1,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

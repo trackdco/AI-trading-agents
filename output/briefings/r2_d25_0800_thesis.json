@@ -1,0 +1,135 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE 08:00-09:29 ET (cap 1 fill)",
+ "decision_minute": "2026-06-26T08:00 ET (session-day 2026-06-25)",
+ "leak_check": "pass - truncated at 07:59:59; last completed 2m bar starts 07:58 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/r2_d25_0800_nypre.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. This briefing is authoritative. The chart is truncated at the cursor and carries NO trade drawings of any kind.",
+ "chart_note": "the weekly VP drawing is anchored to a different window - ignore it visually; correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "day_character_note": "Re-judge the day's character - your rebalance rule depends on it. At 03:00 you called the overnight down-leg a TREND displacement and suspended the 15m-MA floor on that basis.",
+ "price_at_decision": 29351.0,
+ "last_completed_2m_bar": {
+  "start": "07:58",
+  "open": 29334.5,
+  "high": 29356.5,
+  "low": 29331.0,
+  "close": 29351.0
+ },
+ "prior_thesis_as_of_0300": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   },
+   {
+    "level": "anchored_weekly_val",
+    "price": 29290.0
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_poc",
+   "price": 29655.0
+  },
+  "waiting_for": "rejection at the 0.5 day-range fib / BB-2m-upper confluence (~29527-29530), confirmed by a 15m closure back through a key MA stacked with another level - not a 15m-MA reclaim; the down-leg was a clean displacement so the 15m floor is suspended and it's just one level in the cluster now below price",
+  "two_sided": true,
+  "condition_for_other_side": "a 15m decisive-body close through the 29613-29655 confluence (0.618 fib / prior-day POC / approx 60m MA) licenses longs for a fill toward anchored-weekly POC (29710) / prior-day VAH (29884)",
+  "anticipated_resolution": {
+   "level": "day_range_fib_0.5-bb_2m_upper_confluence",
+   "price": 29528.0,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a major level (weekly low, prior-day POC) is broken/reclaimed only on a 15m close beyond it with a decisive body - not a wick or a 1-2m poke",
+  "reasoning": "Overnight swept near the prior-day VAH/high (29892) then reversed in a clean 732pt one-way slide to a new weekly low (29160.5) - trend-day character on that leg, not rotational. The 3+hr grind back since is slower and still under the 0.5 fib/BB-2m-upper confluence (~29528) and prior-day POC (29655), so fading it back toward the weekly low. A 15m decisive close through 29613-29655 (0.618 fib/POC/60m MA cluster) flips this long toward anchored-weekly POC/prior-day VAH."
+ },
+ "what_happened_since_0300": "Your read paid, though nothing was filled. The 29527-29563 ceiling held - London's high was 29562.75 at 03:32 - and price has bled steadily ever since: 29527 at 04:00, 29399 at 05:00, 29370 at 06:00, 29361 at 07:00, 29351 now. The session low is 29304.75 at 07:52 on the heaviest volume of that stretch. Your first named target (weekly low 29160.5) is 190pt below and untouched; your second (weekly VAL 29290) is 61pt below and untouched. Two trades were licensed in London and NEITHER filled - one cancelled on its first bar, one expired unfilled - so the book is flat and the whole move happened without you.",
+ "position_state": "FLAT. Zero fills all session. LONDON's cap is spent by time, not by use; NY_PRE opens with a cap of 1 fill.",
+ "levels_at_0800_CHART": {
+  "vwap": 29471.98,
+  "vwap_p1": 29645.15,
+  "vwap_m1": 29298.82,
+  "vwap_p2": 29818.32,
+  "vwap_m2": 29125.65,
+  "bb_2m_basis": 29363.9,
+  "bb_2m_upper": 29402.31,
+  "bb_2m_lower": 29325.49
+ },
+ "levels_at_0800_BUILD": {
+  "bb_ma_2m": 29363.9,
+  "bb_ma_3m": 29372.72,
+  "bb_ma_15m": 29420.45,
+  "bb_ma_60m": {
+   "value": 29533.72,
+   "provenance": "rolling 60m series; treat as approximate"
+  },
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "session_low_since_0300": 29304.75,
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29160.5,
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29205.0,
+   "vah": 29558.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30085.0,
+   "note": "DEVELOPING as-of 08:00"
+  }
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "05:00",
+    "dir": "DOWN",
+    "ma": 29408.19,
+    "close": 29399.5,
+    "body_ratio": 0.54
+   },
+   {
+    "t": "05:45",
+    "dir": "UP",
+    "ma": 29419.06,
+    "close": 29421.75,
+    "body_ratio": 0.48
+   }
+  ],
+  "hourly_closes": {
+   "03:00": 29503.75,
+   "04:00": 29527.75,
+   "05:00": 29399.5,
+   "06:00": 29370.75,
+   "07:00": 29361.5,
+   "08:00": 29351.0
+  },
+  "note": "the last two hours have gone almost nowhere - 29370 to 29351 - after the 04:00-05:00 leg did the work. Price is now pinned between the 2m BB basis 29363.90 above and the session low 29304.75 below, with the developing daily POC 29369 right on it.",
+  "note_on_the_low": "the session-day low 29160.5 IS the weekly low - this session made it overnight."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "note": "the 03:00 read holds for the whole day - the US calendar for this date is empty and nothing is scheduled before 11:00 ET."
+ },
+ "what_to_emit": "your standard thesis JSON for the NY_PRE window."
+}

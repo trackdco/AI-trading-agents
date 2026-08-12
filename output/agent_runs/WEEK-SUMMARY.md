@@ -10,8 +10,14 @@ Every day's leak audit **exit 0**. Logs in `output/agent_runs/<sess_day>.jsonl`.
 | 2026-06-22 (re-run) | Tue 23 | 1 (+1 no-fill) | **+2.16** | 1/3 (33%) | TREND |
 | 2026-06-23 | Wed 24 | 3 | **−2.00** | 2/2 (100%)* | ROTATIONAL |
 | 2026-06-24 | Thu 25 | 0 | **0.00** | see below | ROTATIONAL → self-corrected to TREND |
-| 2026-06-25 | Fri 26 | 3 | **+2.45** | 0/3 (0%) | ROTATIONAL, re-judged every window |
-| **total (5 days)** | | **10 fills** | **+5.60R** | | |
+| 2026-06-25 | Fri 26 | 2 | **+1.95** | 1/3 (33%) | TREND overnight → ROTATIONAL |
+| **total (5 days)** | | **9 fills** | **+5.10R** | | |
+
+Friday's row is the **v0.3.4 clean re-run** (2026-08-12), the only day on the week whose agents
+could not recognise the session from their own prompt. It replaced a +2.45R contaminated run,
+archived at `superseded/2026-06-25_v0.3.2_contaminated.jsonl`. Its judgement improved — first
+agreement with him on this day, five takes licensed against three — and its R fell, because three
+of five entries never filled. Full post-mortem: **`docs/ANALYSIS-friday-three-runs.md`**.
 
 \* the 100% is not trustworthy — see the scorer defect below.
 
@@ -77,9 +83,12 @@ away and expired unfilled on a conviction-A setup. Any minimum you set needs a m
    Is the fixed target right, or is a too-wide stop the signal to pass or re-cut?
 4. **Does the news blackout end at the print, or a few minutes after?** Day 4's 08:30 candidate closed
    through **five levels in one candle** — and it was the PCE release bar itself.
-5. **A thesis that gates BOTH sides can veto its own reversal.** Day 5, 09:36 — the clearest
-   single decision of the week. The 09:30 thesis flipped long, then wrote *"No entries until one
-   resolves"* into `waiting_for`, keyed to a cluster 50pt overhead. Six minutes later the session
+5. **`waiting_for` gates the bar the thesis is reasoning FROM, and it is not a phrasing accident.**
+   Day 5, 09:36 — the clearest single decision of the week, and it now **reproduces across two
+   independent runs with different wordings**. The 09:30 thesis flipped long, keyed to a cluster
+   50pt overhead. v0.3.2 used blanket language (*"No entries until one resolves"*); v0.3.4 used a
+   plain condition (*"waiting for X, then long the retest"*). **Both triggers passed the bar**, the
+   second citing constraint 5 and calling `waiting_for` binding. Six minutes later the session
    printed its reversal bar: a 119.5pt bull body off 29,181.5, closing through three levels on
    5,941 contracts — the heaviest bar of the session — landing exactly in the 29,160.5–29,290 zone
    the **08:00** thesis had already licensed longs at. The trigger passed it, correctly, on the

@@ -1,0 +1,26 @@
+{
+ "role": "tv-macro-events",
+ "decision_minute": "2026-06-26T03:00 ET (session-day 2026-06-25)",
+ "window": "LONDON 03:00-04:59 ET, and the NY windows later today",
+ "instrument": "NQ (CME_MINI:NQ1! front month)",
+ "scheduled_events": [
+  {
+   "event": "Core PCE Price Index m/m",
+   "time_et": "08:30",
+   "date": "2026-06-25",
+   "status": "PRINTED yesterday"
+  },
+  {
+   "event": "Personal Income/Spending",
+   "time_et": "08:30",
+   "date": "2026-06-25",
+   "status": "PRINTED yesterday"
+  }
+ ],
+ "scheduled_today": [],
+ "as_of_note": "the US red-folder calendar for 2026-06-26 is EMPTY - data/reference/news_archive.csv has no row dated 2026-06-26. Nothing is scheduled between now and the 11:00 ET end of the NY_AM window.",
+ "headlines": [],
+ "headline_note": "no as-of headline set was supplied for this session. Absence of headlines is not a bearish signal and is not a reason to lean defensive.",
+ "price_context_withheld": "you do not read price and are not given it - the thesis agent owns the directional view.",
+ "what_to_emit": "your standard JSON. neutral is the correct default when you have nothing."
+}

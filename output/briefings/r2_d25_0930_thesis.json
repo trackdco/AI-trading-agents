@@ -1,0 +1,143 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills)",
+ "decision_minute": "2026-06-26T09:30 ET (session-day 2026-06-25)",
+ "leak_check": "pass - truncated at 09:29:59; last completed 2m bar starts 09:28 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/r2_d25_0930_nyam.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. This briefing is authoritative. The chart is truncated at the cursor and carries NO trade drawings of any kind.",
+ "chart_note": "the weekly VP drawing is anchored to a different window - ignore it visually; correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger from his chart's own study series at the last bar (build parity 0.08pt today); BB MAs/profiles/fibs from the build.",
+ "day_character_note": "Re-judge the day's character - your rebalance rule depends on it. You called the overnight leg TREND at 03:00 and the 06:00-08:00 stretch ROTATIONAL consolidation at 08:00. The cash open is where that judgement most often has to change again.",
+ "note_on_your_waiting_for": "your 08:00 waiting_for gated every entry behind a 15m decisive close below 29290-29305. That gate held all window and nothing was taken. You are free to restate it - a gate is not a commitment.",
+ "price_at_decision": 29360.75,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "open": 29338.0,
+  "high": 29367.25,
+  "low": 29317.75,
+  "close": 29360.75,
+  "volume": 1851
+ },
+ "prior_thesis_as_of_0800": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "anchored_weekly_val",
+    "price": 29290.0
+   },
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_poc",
+   "price": 29655.0
+  },
+  "waiting_for": "Not a 15m-MA rebalance - price is already well below it (MA 29420.45) and has been pinned in a tight range (29304-29364) since roughly 06:00. Waiting for a 15m decisive-body close below the session low/weekly VAL confluence (~29290-29305) to confirm acceptance, then short the retest of that broken level.",
+  "two_sided": true,
+  "condition_for_other_side": "A 15m decisive-body close back above the 2m BB basis/daily POC cluster (~29364-29369), reclaiming the immediate support-turned-resistance, licenses longs back toward the 0.5 day-range fib/60m MA confluence (29527-29533).",
+  "anticipated_resolution": {
+   "level": "weekly_val",
+   "price": 29290.0,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "A major/multi-day level (weekly VAL, prior-day POC) is broken or reclaimed only on a 15m close beyond it with a decisive body - not a wick or a 1-2m poke.",
+  "reasoning": "Overnight 732pt break to new weekly low; bounce rejected exactly at the called 0.5 fib/BB-2m-upper ceiling (29562.75), then continued lower into 05:00. Last 2hrs went nearly nowhere (29370->29351) - day has shifted from trend to rotational consolidation, pinned between 2m BB basis (29364) and session low (29304.75), daily POC (29369) on top of it. Weekly VAL (29290) is effectively already in play. Short bias holds; a 15m decisive close below licenses continuation to weekly low; a reclaim above 29364-29420 licenses longs back toward 29527."
+ },
+ "what_happened_since_0800": "Neither of your conditions fired. Price rallied off the 07:52 low to 29400.50 at 08:33 - into the 15m MA / daily POC band - was rejected, and broke back down through the 29305-29369 zone. It bled to 29253.50 by 09:10 and printed 29211.25 at 09:18. That took out the session low 29304.75 and traded THROUGH your anticipated_resolution level (weekly VAL 29290) - but no 15m bar has CLOSED below 29290 with a decisive body, so by your own acceptance rule it is not accepted. Since 09:18 price has rallied 149pt in ten minutes, back to 29360.75, and is now above the developing daily POC again and back inside the range it broke from. Volume on the last 2m bar is 1,851 contracts, the heaviest of the session so far.",
+ "position_state": "FLAT, and flat all session. Three takes were licensed today - two in London, both unfilled on entry mechanics - and NY_PRE took nothing. NY_AM opens with a fresh cap of 2 fills and no carry.",
+ "levels_at_0930_CHART": {
+  "vwap": 29451.03,
+  "vwap_p1": 29619.92,
+  "vwap_m1": 29282.14,
+  "vwap_p2": 29788.82,
+  "vwap_m2": 29113.25,
+  "bb_2m_basis": 29299.4,
+  "bb_2m_upper": 29355.83,
+  "bb_2m_lower": 29242.97
+ },
+ "levels_at_0930_BUILD": {
+  "bb_ma_2m": 29299.4,
+  "bb_ma_3m": 29316.49,
+  "bb_ma_15m": 29373.79,
+  "bb_ma_60m": {
+   "value": 29500.44,
+   "provenance": "rolling 60m series; treat as approximate"
+  },
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "low_since_0300": 29211.25,
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29160.5,
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29224.0,
+   "vah": 29520.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29709.13,
+   "val": 29277.75,
+   "vah": 30072.25,
+   "note": "DEVELOPING as-of 09:30"
+  }
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "05:00",
+    "dir": "DOWN",
+    "ma": 29408.19,
+    "close": 29399.5,
+    "body_ratio": 0.54
+   },
+   {
+    "t": "05:45",
+    "dir": "UP",
+    "ma": 29419.06,
+    "close": 29421.75,
+    "body_ratio": 0.48
+   },
+   {
+    "t": "08:15",
+    "dir": "UP",
+    "ma": 29417.15,
+    "close": 29420.5,
+    "body_ratio": 0.69
+   },
+   {
+    "t": "08:30",
+    "dir": "DOWN",
+    "ma": 29410.21,
+    "close": 29396.75,
+    "body_ratio": 0.31
+   }
+  ],
+  "session_shape": "opened the session at 29742, ran to the day high 29892.75 in the first ninety minutes, then a 732pt one-way bleed into the 29160.5 weekly low overnight, a London bounce that failed at 29562.75, a long grind down to 29304.75 by 07:52, a failed rally to 29400.50, a flush to 29211.25 at 09:18, and a 149pt rally back to here. Day range 732.25pt.",
+  "note_on_the_low": "the session-day low 29160.5 IS the weekly low - this session made it overnight. The 09:18 flush stopped 50.75pt above it."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "note": "the US calendar for this date is empty; nothing is scheduled before 11:00 ET."
+ },
+ "what_to_emit": "your standard thesis JSON for the NY_AM window. Restate the bias from what is in front of you."
+}
