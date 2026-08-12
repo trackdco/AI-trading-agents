@@ -27,6 +27,18 @@
 # itself to a SessionStart hook — the trading sessions that never touch video
 # shouldn't pay an apt round-trip on every start.
 #
+# KNOWN LIMIT — YouTube URLs do not work from Claude Code on the web. yt-dlp gets
+# HTTP 429 then "Sign in to confirm you're not a bot": YouTube blocks the datacenter
+# IP, and every request (including a headless Chromium) egresses through the same
+# agent proxy, so it is the same IP either way. Measured Aug 2026; player_client
+# android_vr got through once and then stopped. Installing a JS runtime (npm i -g
+# deno) clears yt-dlp's EJS deprecation warning but does NOT lift the block.
+#   What still works from here: local video files (/watch <path> is unaffected), and
+#   the youtube MCP server (scripts/setup_youtube_mcp.sh) — the Data API and the
+#   transcript scraper hit googleapis.com/i.ytimg.com, which are not IP-blocked.
+#   For a URL /watch must download: run it on a laptop, or fetch the file first and
+#   pass the local path.
+#
 # Whisper is OPTIONAL. Without a key, /watch still returns frames, and videos that
 # carry captions (most public YouTube) still return a full transcript. A key is only
 # needed to transcribe caption-less sources — local recordings, most TikToks. Set
