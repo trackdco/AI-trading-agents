@@ -5,7 +5,7 @@ backtest. **Nothing here is a recommendation and nothing here is validated.** It
 faithful record of what one trader *says* he does, assembled so it can be tested against
 our own data and, in all likelihood, falsified.
 
-Status: **v1 — partial coverage.** See the coverage ledger before quoting any of it.
+Status: **v1.1 — partial coverage.** See the coverage ledger before quoting any of it.
 
 ---
 
@@ -31,15 +31,20 @@ was dropped — but that guards against invention, not mishearing. Three consequ
    `_model` field in each note records which. A lite model's chart reading is not
    equivalent to a pro model's.
 
-Raw per-video notes and the consolidated corpus live outside the repo in the session
-scratchpad. Anything load-bearing should be re-derived and cited before use.
+The consolidated corpus is committed as `docs/CORPUS-tomtrades-extractions.md` — every
+rule there carries its verbatim quote, timestamp and source video, so any claim in this
+document can be traced back. The per-video JSON notes remain in the session scratchpad.
+Anything load-bearing should be re-derived against the corpus before use.
+
+The method is encoded as a project skill at `.claude/skills/tomtrades-model/`, which
+carries the parameterisation and the citation table keyed to rule IDs.
 
 ## 2. Coverage ledger
 
 | Source | Videos | Runtime | Extracted |
 |---|---|---|---|
 | `@TomTradesJournal` (per-trade breakdowns) | 18 | 5h 0m | **18 / 18** |
-| `@itstomtrades` main channel | 53 (excl. course) | ~15h 30m | **0 / 53** |
+| `@itstomtrades` main channel | 53 (excl. course) | ~15h 30m | **13 / 53** |
 | `@itstomtrades` full course (single video) | 1 | 8h 30m | **0 / 13** segments |
 
 The binding constraint is the **Gemini free tier: 20 requests/day/model**. Rotating the
