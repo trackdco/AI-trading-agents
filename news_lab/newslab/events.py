@@ -89,24 +89,54 @@ def scrape_fomc(session=None) -> pd.DataFrame:
     s.headers.update({"User-Agent": _UA})
     r = s.get(FOMC_CAL_URL, timeout=30)
     r.raise_for_status()
+    html = r.text
     rows = []
-    for chunk in re.split(r'<div class="[^"]*row fomc-meeting"', r.text)[1:]:
-        if "notation vote" in chunk.lower():
-            continue
-        m = _FOMC_STMT_RE.search(chunk)
-        if not m:
-            continue                       # future meeting: no statement yet
-        d = m.group(1)
-        rows.append(dict(family="fomc", date=f"{d[:4]}-{d[4:6]}-{d[6:]}",
-                         time_et="14:00",
-                         sep=("fomcprojtabl" in chunk
-                              or "Projection Materials" in chunk),
-                         source="fed_calendar", needs_verification=False))
+    # Year panels, so a future meeting's row can be dated at all.
+    panels = [(m.group(1), m.end()) for m in
+              re.finditer(r"(\d{4}) FOMC Meetings", html)]
+    for i, (year, start) in enumerate(panels):
+        end = panels[i + 1][1] if i + 1 < len(panels) else len(html)
+        for chunk in re.split(r'<div class="[^"]*row fomc-meeting"',
+                              html[start:end])[1:]:
+            if "notation vote" in chunk.lower():
+                continue
+            m = _FOMC_STMT_RE.search(chunk)
+            if m:                          # decided: the URL IS the date
+                d = m.group(1)
+                rows.append(dict(
+                    family="fomc", date=f"{d[:4]}-{d[4:6]}-{d[6:]}",
+                    time_et="14:00", sep=("fomcprojtabl" in chunk
+                                          or "Projection Materials" in chunk),
+                    source="fed_calendar", needs_verification=False))
+                continue
+            # Scheduled but not yet held: "September" + "15-16*". The decision
+            # is day 2, and the asterisk is the SEP marker (projection PDFs do
+            # not exist yet, so they cannot be used to detect one).
+            mon = re.search(r"fomc-meeting__month[^>]*>\s*(?:<strong>\s*)?"
+                            r"([A-Za-z]+)", chunk)
+            day = re.search(r"fomc-meeting__date[^>]*>\s*([\d\-]+)\s*(\*?)",
+                            chunk)
+            if not (mon and day):
+                continue
+            parts = [p for p in day.group(1).split("-") if p]
+            if not parts:
+                continue
+            first, last = int(parts[0]), int(parts[-1])
+            month = pd.Timestamp(f"{mon.group(1)} 1 2000").month
+            y = int(year)
+            if last < first:               # meeting straddles a month end
+                month += 1
+                if month > 12:
+                    month, y = 1, y + 1
+            rows.append(dict(
+                family="fomc", date=f"{y}-{month:02d}-{last:02d}",
+                time_et="14:00", sep=bool(day.group(2)),
+                source="fed_calendar_scheduled", needs_verification=False))
     if not rows:
         raise RuntimeError(
             "FOMC calendar parse produced 0 rows — page layout changed; "
             "fix parser, do not guess dates.")
-    return pd.DataFrame(rows).drop_duplicates("date")
+    return pd.DataFrame(rows).drop_duplicates("date").sort_values("date")
 
 
 # ---------------------------------------------------------------------------
@@ -310,6 +340,10 @@ FRED_RELEASE_NAMES = {
     "pce":     "Personal Income and Outlays",
     "retail":  "Advance Monthly Sales for Retail and Food Services",
     "gdp_adv": "Gross Domestic Product",
+    "claims":  "Unemployment Insurance Weekly Claims Report",
+    "jolts":   "Job Openings and Labor Turnover Survey",
+    "adp":     "ADP National Employment Report",
+    "umich":   "Surveys of Consumers",
 }
 
 
@@ -376,13 +410,17 @@ def fred_first_print_dates(family: str, start: str = WINDOW_START,
 
 def fred_release_dates(family: str, start: str = WINDOW_START,
                        end: str = WINDOW_END, session=None,
-                       classify: bool = True) -> pd.DataFrame:
+                       classify: bool = True,
+                       include_no_data: bool = False) -> pd.DataFrame:
     """Official release dates for `family` from FRED. Raises on empty.
 
     With classify=True each row is tagged release_kind = print | revision_only.
     For gdp_adv this is what isolates the ADVANCE estimate: FRED bundles
     advance/second/third under one release id, and only the advance is a
     first print, so the flag resolves rather than being carried forward.
+
+    include_no_data=True is REQUIRED for a forward calendar: a scheduled
+    release has no data attached yet, so FRED omits it by default.
     """
     import requests
     s = session or requests.Session()
@@ -390,7 +428,8 @@ def fred_release_dates(family: str, start: str = WINDOW_START,
     r = s.get(FRED_RELEASE_DATES_API, params=dict(
         release_id=rid, api_key=_fred_key(), file_type="json",
         realtime_start=start, realtime_end=end, sort_order="asc",
-        include_release_dates_with_no_data="false", limit=10000), timeout=30)
+        include_release_dates_with_no_data=str(include_no_data).lower(),
+        limit=10000), timeout=30)
     r.raise_for_status()
     dates = sorted({d["date"] for d in r.json().get("release_dates", [])})
     if not dates:

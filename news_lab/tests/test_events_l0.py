@@ -34,6 +34,7 @@ def test_ism_never_lands_on_a_federal_holiday():
 # A notation vote (2025-08-22, Longer-Run Goals statement) carries the same
 # monetaryYYYYMMDDa URL shape as a decision but is NOT a rate decision.
 FOMC_FIXTURE = """
+<h4>2023 FOMC Meetings</h4>
 <div class="row fomc-meeting" ><div class="fomc-meeting__month"><strong>March
 </strong></div><div class="fomc-meeting__date">21-22*</div>
 <div><strong>Statement:</strong>
@@ -75,6 +76,43 @@ def test_scrape_fomc_excludes_notation_votes_and_flags_sep():
     sep = dict(zip(df["date"], df["sep"]))
     assert sep["2023-03-22"] is True or sep["2023-03-22"]   # projections
     assert not sep["2023-05-03"]
+
+
+# A meeting still in the future has no statement PDF, so its date has to come
+# from the month + day-range text, and the asterisk is the only SEP marker.
+FOMC_FUTURE_FIXTURE = """
+<h4>2027 FOMC Meetings</h4>
+<div class="row fomc-meeting" ><div class="fomc-meeting__month"><strong>
+September</strong></div><div class="fomc-meeting__date">14-15*</div></div>
+<div class="row fomc-meeting" ><div class="fomc-meeting__month"><strong>
+October</strong></div><div class="fomc-meeting__date">26-27</div></div>
+"""
+
+
+def test_scrape_fomc_dates_scheduled_meetings_from_text():
+    class Fut(_FakeSession):
+        def get(self, *a, **k):
+            r = _FakeResp()
+            r.text = FOMC_FUTURE_FIXTURE
+            return r
+    df = scrape_fomc(session=Fut()).set_index("date")
+    # decision is day 2 of the meeting, not day 1
+    assert list(df.index) == ["2027-09-15", "2027-10-27"]
+    assert bool(df.loc["2027-09-15", "sep"]) is True     # asterisk
+    assert bool(df.loc["2027-10-27", "sep"]) is False
+
+
+def test_scrape_fomc_rolls_month_when_meeting_straddles_month_end():
+    class Straddle(_FakeSession):
+        def get(self, *a, **k):
+            r = _FakeResp()
+            r.text = ('<h4>2027 FOMC Meetings</h4>'
+                      '<div class="row fomc-meeting" >'
+                      '<div class="fomc-meeting__month"><strong>Jan/Feb</strong>'
+                      '</div><div class="fomc-meeting__date">31-1</div></div>')
+            return r
+    df = scrape_fomc(session=Straddle())
+    assert list(df["date"]) == ["2027-02-01"]   # not 2027-01-01
 
 
 def test_scrape_fomc_raises_rather_than_returning_empty():

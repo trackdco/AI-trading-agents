@@ -1,5 +1,39 @@
 # news_lab — red-folder event study for NQ
 
+## Quick start: the forward US calendar (what to trade, and when)
+
+```
+FRED_API_KEY=... python news_lab/build_calendar.py --months 6
+FRED_API_KEY=... python news_lab/build_calendar.py --months 6 --high-only
+```
+
+Writes `output/us_calendar.{csv,json,parquet}` — one row per UPCOMING US
+release, with `ts_release_et` and `ts_utc` ready for an agent to schedule
+research against. **US only by construction**: every source is a US agency
+(BLS, BEA, Census, Federal Reserve, DOL) plus ADP. No foreign releases exist
+anywhere in this pipeline.
+
+`impact` is the filter that matters:
+
+- **HIGH** — cpi, nfp, fomc, pce, ppi. The prints that reliably move NQ.
+- **MEDIUM** — retail, ISM mfg/svc, claims, GDP advance, JOLTS, ADP,
+  UMich preliminary.
+- **LOW** — GDP 2nd/3rd estimates and the UMich final. Carried so nothing is
+  silently missing, but they are dead events; filter them out.
+
+Two columns exist to stop an agent trusting the wrong thing:
+
+- `needs_verification=True` — the date is RULE-DERIVED, not from an official
+  schedule. Only ISM (behind a login wall) and the UMich preliminary. Confirm
+  before trading them.
+- The script prints a **COVERAGE HORIZON** block on every run. Agencies only
+  publish schedules so far ahead, so "no CPI in January" means *not announced
+  yet*, not *no release*. Re-run when next year's schedules post.
+
+`build_l0.py` is the separate, historical table (2023-01 → 2026-01) that the
+backtest/census layers consume — see GATE-L0.md.
+
+
 Built 12 Aug 2026 in-chat, for handoff to Claude Code on
 `trackdco/AI-trading-agents`. Read SPEC.md first; PREREG-L3.md before any
 sealed scoring. House rules apply: R first / points alongside, no revised

@@ -79,6 +79,17 @@ RELEASES = {
     "ism_svc": dict(tier=2, time_et="10:00", alfred={},
         surprise_field="pmi",
         note="Often the bigger mover of the two ISMs."),
+    # --- added for the forward trading calendar (dates first; ALFRED maps
+    # stay empty until L0b needs actuals for them) ---
+    "jolts": dict(tier=2, time_et="10:00", alfred={},
+        surprise_field="openings_k",
+        note="Lands INSIDE RTH. Fed watches it for labour slack."),
+    "adp": dict(tier=2, time_et="08:15", alfred={},
+        surprise_field="employment_k",
+        note="08:15 — the only pre-08:30 print; sets the tone into NFP week."),
+    "umich": dict(tier=2, time_et="10:00", alfred={},
+        surprise_field="sentiment",
+        note="Inflation EXPECTATIONS sub-index moves more than the headline."),
 }
 
 FAMILIES = list(RELEASES)
