@@ -1,5 +1,28 @@
 # news_lab — red-folder event study for NQ
 
+> ## STATUS 12 Aug 2026 — **NO-TRADE on both lanes.** Read `VERDICT.md` first.
+>
+> The pre-print lane is closed on fill mechanics: even with perfect foresight
+> of direction it needs 64–82% accuracy, because a stop resting through the
+> release bar is a 2.4–5.1R risk, not 1R. The post-print lane shows no edge:
+> 54 configurations swept, 19 nominally profitable, **0 with Wilson CI-low
+> above 0.50**.
+>
+> **Do not build the predictor stack (L0b actuals, consensus, L2) for this.**
+> Direction was never the binding constraint. The one untested idea that
+> attacks the actual mechanism is defined-risk / long-premium, which needs an
+> options data source this repo does not have.
+>
+> The sealed era (2025-10-01 on, 37 events) was never touched and remains a
+> clean one-shot holdout.
+>
+> | doc | what it holds |
+> |---|---|
+> | `VERDICT.md` | the conclusion, what is closed, what is not |
+> | `CEILING-TEST.md` | pre-print numbers + the 50/150 bracket test |
+> | `GATE-L0.md` | event table, 100% of adjusted expected on every family |
+> | `GATE-L1.md` | census, coverage, timezone tripwire, **1 open item for Angus** |
+
 ## Quick start: the forward US calendar (what to trade, and when)
 
 ```

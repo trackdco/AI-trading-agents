@@ -51,9 +51,14 @@ RELEASES = {
         surprise_field="decision_bps",
         note="Two-phase event (14:00 stmt, 14:30 presser). Tag SEP meetings."),
     "ppi": dict(tier=1, time_et="08:30",
-        alfred={"headline_mom": ("PPIFIS", "pch")},
-        # TODO(verify): core PPI (final demand ex food/energy) FRED id before
-        # relying on it — do NOT guess; headline PPIFIS is confirmed.
+        alfred={"headline_mom": ("PPIFIS", "pch"),
+                # VERIFIED 12 Aug 2026 against the FRED series metadata, not
+                # guessed: PPIFES = "Producer Price Index by Commodity: Final
+                # Demand: Final Demand Less Foods and Energy", Seasonally
+                # Adjusted, Monthly. That is the core PPI the market trades.
+                # Rejected: WPSFD4131 is the older FINISHED GOODS ex food/
+                # energy concept, and PPICOR is the same series NSA.
+                "core_mom": ("PPIFES", "pch")},
         surprise_field="headline_mom",
         note="Punches hardest when it confirms/contradicts CPI next day."),
     "pce": dict(tier=1, time_et="08:30",
