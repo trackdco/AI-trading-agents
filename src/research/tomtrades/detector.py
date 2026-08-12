@@ -228,6 +228,7 @@ def simulate(df: pd.DataFrame, signals: pd.DataFrame, cfg: dict) -> pd.DataFrame
     hour_open_px = pd.Series(o).groupby(state["hour_id"].to_numpy()).transform("first").to_numpy()
     max_hold = 240
     out = []
+    skipped_target_passed = 0
     for r in signals.itertuples(index=False):
         i0 = int(r.entry_idx)
         entry = o[i0]
@@ -238,9 +239,20 @@ def simulate(df: pd.DataFrame, signals: pd.DataFrame, cfg: dict) -> pd.DataFrame
             continue
         if ex["target_mode"] == "fixed_rr":
             target = entry + d * float(ex["fixed_rr"]) * risk
-        else:  # impulse_50 — "50% of the hourly candle extension"
+        else:
+            # "50% of the hourly candle extension" — the impulse runs hour_open ->
+            # run EXTREME, not hour_open -> entry. Measuring it from entry puts the
+            # target on the losing side whenever price has already retraced past the
+            # hour open before the fill, which silently books losses as "target" exits.
             ho = hour_open_px[i0]
-            target = ho + (entry - ho) * (1.0 - float(ex["target_impulse_frac"]))
+            run_dir = -d                                   # the trade fades the run
+            extreme = ho + run_dir * float(r.run_displacement)
+            target = extreme - run_dir * float(ex["target_impulse_frac"]) * abs(extreme - ho)
+            # if price already reached the 50% level before the fill there is nothing
+            # left to capture; taking the trade would be a lookahead-flavoured freebie
+            if (d < 0 and target >= entry) or (d > 0 and target <= entry):
+                skipped_target_passed += 1
+                continue
         exit_px, exit_ts, reason = np.nan, pd.NaT, "timeout"
         for j in range(i0, min(i0 + max_hold, len(df))):
             hit_stop = (h[j] >= stop) if d < 0 else (low_[j] <= stop)
@@ -257,6 +269,11 @@ def simulate(df: pd.DataFrame, signals: pd.DataFrame, cfg: dict) -> pd.DataFrame
         pnl_r = d * (exit_px - entry) / risk
         out.append({**r._asdict(), "entry": entry, "target": target, "exit_px": exit_px,
                     "exit_ts": exit_ts, "exit_reason": reason, "pnl_r": pnl_r})
+    if skipped_target_passed:
+        # surfaced rather than silently dropped: a large count means the entry
+        # is arriving after the move it was meant to fade
+        print(f"[simulate] skipped {skipped_target_passed} signals whose 50% "
+              f"target was already reached before the fill", flush=True)
     trades = pd.DataFrame(out)
     if trades.empty:
         return trades

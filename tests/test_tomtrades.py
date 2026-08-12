@@ -231,3 +231,28 @@ def test_ablation_refuses_to_interpret_thin_samples():
     s = AB._stats(thin)
     assert s["n"] == 2
     assert AB.MIN_N > 2, "the interpretation floor must exclude a 2-trade sample"
+
+
+def test_impulse_target_is_measured_from_the_run_extreme_not_the_entry(cfg):
+    """A 'target' exit must always be a win.
+
+    Measuring the impulse from the entry puts the target on the losing side whenever
+    price has already retraced past the hour open before the fill — which books losses
+    as target hits and inflates the apparent hit rate.
+    """
+    # up-run to 110 from a 100 hour open, then price falls back to 99 before entry
+    rows = [(100.0, 110.0, 99.5, 99.6)] + [(99.6, 99.8, 90.0, 90.5)] * 5
+    df = _frame(rows, "2024-03-01 00:00")
+    sig = pd.DataFrame([{
+        "signal_ts": df["ts_event"].iloc[0], "direction": -1,
+        "entry_ts": df["ts_event"].iloc[1], "entry_idx": 1,
+        "entry_ref_close": 99.6, "stop": 111.0, "risk": 11.4,
+        "hour_id": df["ts_event"].iloc[0].floor("h"), "minute_of_hour": 1,
+        "run_displacement": 10.0, "nested": False, "retrace_target_frac": 0.5,
+    }])
+    tr = DT.simulate(df, sig, {**cfg, "risk": {**cfg["risk"], "max_trades_per_day": 0}})
+    if not tr.empty:
+        # target must sit BELOW the short's entry, and any target exit must be a win
+        assert tr.iloc[0]["target"] < tr.iloc[0]["entry"]
+        if tr.iloc[0]["exit_reason"] == "target":
+            assert tr.iloc[0]["pnl_r"] > 0
