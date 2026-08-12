@@ -5,7 +5,7 @@ backtest. **Nothing here is a recommendation and nothing here is validated.** It
 faithful record of what one trader *says* he does, assembled so it can be tested against
 our own data and, in all likelihood, falsified.
 
-Status: **v1.1 — partial coverage.** See the coverage ledger before quoting any of it.
+Status: **v2 — partial coverage.** See the coverage ledger before quoting any of it.
 
 ---
 
@@ -44,7 +44,7 @@ carries the parameterisation and the citation table keyed to rule IDs.
 | Source | Videos | Runtime | Extracted |
 |---|---|---|---|
 | `@TomTradesJournal` (per-trade breakdowns) | 18 | 5h 0m | **18 / 18** |
-| `@itstomtrades` main channel | 53 (excl. course) | ~15h 30m | **13 / 53** |
+| `@itstomtrades` main channel | 53 (excl. course) | ~15h 30m | **40 / 53** |
 | `@itstomtrades` full course (single video) | 1 | 8h 30m | **0 / 13** segments |
 
 The binding constraint is the **Gemini free tier: 20 requests/day/model**. Rotating the

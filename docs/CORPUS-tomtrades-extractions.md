@@ -13,35 +13,74 @@ Sources: 17 video/segment extractions
 
 ## Instruments mentioned
 
-- DXY — 20 videos
-- XAUUSD — 19 videos
-- USDJPY — 11 videos
-- USD/JPY — 3 videos
-- GOLD — 2 videos
+- DXY — 26 videos
+- XAUUSD — 25 videos
+- USDJPY — 19 videos
+- GOLD — 18 videos
+- USD/JPY — 8 videos
+- XAU/USD — 4 videos
 - JPY — 2 videos
 - GOLD (XAU/USD) — 2 videos
 - GOLD SPOT / U.S. DOLLAR — 2 videos
 - GOLD SPREAD — 2 videos
-- XAU/USD — 2 videos
 - GOLD (XAUUSD) — 2 videos
+- EURJPY — 2 videos
+- GBPJPY — 2 videos
+- AUDUSD — 2 videos
+- FOREX — 2 videos
 - JPY BASKET — 1 videos
 - XAU BASKET (GOLD SPREAD) — 1 videos
 - GOLD SPOT — 1 videos
 - YEN BASKET — 1 videos
-- EURJPY — 1 videos
-- GBPJPY — 1 videos
-- AUDUSD — 1 videos
 - EURAUD — 1 videos
 - GBPAUD — 1 videos
+- NQ — 1 videos
+- JXY — 1 videos
+- GE — 1 videos
+- OXY — 1 videos
+- SILVER — 1 videos
+- EURUSD — 1 videos
 - GC — 1 videos
 - U.S. DOLLAR / JAPANESE YEN — 1 videos
 - FUTURES — 1 videos
-- FOREX — 1 videos
 - COMMODITIES — 1 videos
 - EQUITIES — 1 videos
+- CRYPTO — 1 videos
 
 
-## entry_triggers  (44 entries)
+## entry_triggers  (73 entries)
+
+### type 3 shift  [5 mention(s)]
+- **Type 3 Shift — Price takes out a high and then breaks the low on 1m, creating a structural shift, then retraces to 50%.**
+  - > "took out this high here into then taking out this low so really nice 1 minute type 3 shift came back into 50%" @01:03 — _7dUKwc0DNsI.json_
+- **Type 3 Shift — Price extends into high or low of a range, then a Type 3 shift occurs around 30 minutes into the hour.**
+  - > "Take entry on shift around 30m in hour" @08:12 — _K7u2jatqeaM.json_
+- **Type 3 Shift — A shift in market structure on the 1M timeframe.**
+  - > "A type 3, a shift on itself has no positive expectancy. There's no edge there. But when you use this shift with your intuition, with... direction... you can find something, a unique combination of things that work." @11:37 — _Qe1F4rT-RCE.json_
+- **Type 3 Shift — Break of a previous 1-minute candle structure high/low followed by a rejection with volume.**
+  - > "I define as a type 3 shift, it's just simply where you go from breaking a low, a big break of a low to then it rejecting with a lot of volume, big break of a high for a type 3 shift there." @07:37 — _U7ol7iR9oYc.json_
+- **Type 3 Shift — A break of a low followed by a break of a high (bullish) or vice versa (bearish) occurring around 30 minutes into the hourly candle.**
+  - > "a break of a low into a break of a high... a shift in direction." @05:40 — _ghmWUCdD9qs.json_
+
+### type 3  [5 mention(s)]
+- **Type 3 — A shift in market structure**
+  - > "Type 3 is just a shift." @01:10 — _-UaN2tpBTnY.json_
+- **Type 3 — Break of structure (BOS) followed by a pullback**
+  - > "I entered off this little low time frame type 3, you had a break for low, break for high, and on the pullback." @21:05 — _Goz73AVNIDM.json_
+- **Type 3 — Break of structure (BOS) following a clear high and low, ideally in one move, with high volume and decisive movement.**
+  - > "you want a clear high and then a clear low... you want it to be nice volume, decisive move" @00:13 — _LwS6r9foNCk.json_
+- **Type 3 — Higher high, higher low, higher high, break of structure, then test of that level**
+  - > "a higher high, higher low, a higher high, and then a break of structure, and we come back to test this sort of level here" @05:53 — _MWPm9Gohn3g.json_
+- **Type 3 — Market structure shift (CHoCH) with volume.**
+  - > "A type 3 is just a shift in market structure... change of character." @04:40 — _ffeA39JCFow.json_
+
+### type 1  [3 mention(s)]
+- **Type 1 — Candle close from bullish to bearish (or vice versa) on a high time frame, creating a level.**
+  - > "Type 1 is just a candle high time frame candle close bullish to bearish" @10:14 — _LwS6r9foNCk.json_
+- **Type 1 — Hourly candle closes at previous structure, then price pushes up/down in the first 10-15 minutes**
+  - > "we have the hourly candle close at previous structure in the first 10 minutes, 15 minutes of the candle we push up" @08:47 — _MWPm9Gohn3g.json_
+- **Type 1 — Candle close in desired direction after a change.**
+  - > "A type 1 is just a simple candle close... going from a bullish candle close to a bearish candle close." @01:48 — _ffeA39JCFow.json_
 
 ### 1 minute candle low break  [2 mention(s)]
 - **1-Minute Candle Low Break — Enter short on the break of the low of the 1-minute candle that rejected the AOI.**
@@ -49,11 +88,23 @@ Sources: 17 video/segment extractions
 - **1-Minute Candle Low Break — On the 1-minute chart, wait for candles to make higher highs and higher lows, stagnate, and then break the low of the previous 1-minute candle. Enter on the pullback.**
   - > "this 1 minute candles are making higher highs and higher lows, you kind of stagnate a bit, and then you break this 1 minute candle low here... look for an entry off this little pullback here" @18:09 — _u9B9zzjkBRs.json_
 
-### type 3 shift  [2 mention(s)]
-- **Type 3 Shift — Price takes out a high and then breaks the low on 1m, creating a structural shift, then retraces to 50%.**
-  - > "took out this high here into then taking out this low so really nice 1 minute type 3 shift came back into 50%" @01:03 — _7dUKwc0DNsI.json_
-- **Type 3 Shift — A break of a low followed by a break of a high (bullish) or vice versa (bearish) occurring around 30 minutes into the hourly candle.**
-  - > "a break of a low into a break of a high... a shift in direction." @05:40 — _ghmWUCdD9qs.json_
+### market structure shift  [2 mention(s)]
+- **Market Structure Shift — Price breaks a low and then breaks a high on the lower timeframe.**
+  - > "My favorite entry model is just a simple shift in market structure where you break a low and then break a high." @07:17 — _HtjHo8W1i0Q.json_
+- **Market Structure Shift — Wait for a shift in market structure (breaking a low into breaking a high, or vice versa) after a pullback.**
+  - > "I just look to enter after a pullback at when market structure is shifting from, you know, bearish to bullish for bias and vice versa for sells." @02:35 — _JGWvvGOBe8I.json_
+
+### 1 minute shift of structure  [2 mention(s)]
+- **1-minute shift of structure — 1-minute shift of structure (break, retest) within a range**
+  - > "using a 1-minute shift gave me a 75% win rate." @06:54 — _JVVBFZeXvOk.json_
+- **1-minute Shift of Structure — Wait for a 1-minute shift of structure (BOS/CHoCH) on the 1-minute timeframe**
+  - > "whenever I take a trade and it's got that 1-minute shift of structure, I feel like I have a high win rate" @14:18 — _wBfRETp8IRk.json_
+
+### type 2  [2 mention(s)]
+- **Type 2 — Price closes below break of structure, then pulls back to that structure in the first 15 minutes of the new candle**
+  - > "we have a close below this break of structure, new candle opens in the first 15 minutes of that candle if we pull back to the previous break of structure, I'm looking to take a trade" @05:28 — _MWPm9Gohn3g.json_
+- **Type 2 — Candle close beyond a structure level.**
+  - > "you're closing beyond structure, beyond a level." @03:14 — _ffeA39JCFow.json_
 
 ### shift within a shift  [1 mention(s)]
 - **Shift within a Shift — Confirmation on lower timeframes (5s/1s) following a retest of the 50% zone within the 1m shift.**
@@ -145,9 +196,21 @@ Sources: 17 video/segment extractions
 - **Type 2 Shift Inversion Entry — After a high-volume sweep taking out a previous high and low, enter on a candle low break targeting a 50% retracement.**
   - > "took the entry at the break of the candle low targeting that 50%" @13:22 — _zScdfOmUMOE.json_
 
+### gap up mean reversion  [1 mention(s)]
+- **Gap-up mean reversion — When Gold gaps up significantly, take a sell position.**
+  - > "I saw Gold had massively gapped up. I thought, okay, might as well take a sell. It's pushed so high, it can't go any higher than that." @01:42 — _1i70cyZt6to.json_
+
+### type 1 2 3  [1 mention(s)]
+- **Type 1, 2, 3 — Entry based on specific model types**
+  - > "Entry Models... Type 1, Type 2, Type 3" @00:54 — _5u682pWNmpY.json_
+
 ### fractal shift shift within a shift  [1 mention(s)]
 - **Fractal Shift (Shift within a Shift) — Wait for price to reach the 50% retracement of a higher timeframe market structure shift, then execute on a lower timeframe structure shift in the same direction.**
   - > "What a fractal shift is, is that you simply just look for a shift within that shift. You wait for price to come into this 50% area, and on this lower timeframe... you're simply just waiting to look for a type three shift for that continuation." @01:35 — _975HWA-Ar94.json_
+
+### type 3 entry model  [1 mention(s)]
+- **Type 3 Entry Model — 1. Identify Direction. 2. Identify Area of Interest. 3. Wait for LTF (1m) to Shift with HTF direction, CHOCH or BOS.**
+  - > "1. Identify Direction 2. Identify Area of Interest 3. Wait for LTF to Shift with HTF direction, CHOCH or BOS" @06:18 — _EzwR2boaNRs.json_
 
 ### 4h immediate push reversal  [1 mention(s)]
 - **4H Immediate Push Reversal — If a new 4H candle opens and immediately pushes in the direction of the previous 4H close, fade the move at an Area of Interest.**
@@ -157,13 +220,17 @@ Sources: 17 video/segment extractions
 - **Type 1 Entry — Wait for a 15m candle to close in the desired direction after a level is established.**
   - > "You have a 15-minute candle close in your favor... look for an entry." @12:53 — _HZJGbrXwVps.json_
 
-### market structure shift  [1 mention(s)]
-- **Market Structure Shift — Price breaks a low and then breaks a high on the lower timeframe.**
-  - > "My favorite entry model is just a simple shift in market structure where you break a low and then break a high." @07:17 — _HtjHo8W1i0Q.json_
-
 ### multi timeframe candle close alignment  [1 mention(s)]
 - **Multi-Timeframe Candle Close Alignment — Wait for 15m and 5m candles to close in alignment with the higher timeframe bias.**
   - > "We've had a 15-minute candle close bullish... 5-minute Type 3 close bullish... and we have the 4-hour candle flipping and the hourly candle flipping bullish." @06:50 — _HtjHo8W1i0Q.json_
+
+### poi reaction  [1 mention(s)]
+- **POI Reaction — Mark POI, wait for strong reaction prior to the golden 7 minutes of the second half of the hour**
+  - > "You mark your POI, when the chart goes to your POI, I just wait for a great or strong reaction prior to the hour, the golden 7 minutes of the second half of the hour" @09:25 — _JyJXUTLDFJA.json_
+
+### reversal  [1 mention(s)]
+- **Reversal — Price action reversal in range-bound conditions**
+  - > "I only look for reversals in range-bound conditions." @28:42 — _KBQ6Z9A5IE4.json_
 
 ### lower timeframe structure shift  [1 mention(s)]
 - **Lower Timeframe Structure Shift — Wait for a shift of market structure on the 1m or 5s timeframe after an hourly overextension.**
@@ -173,6 +240,22 @@ Sources: 17 video/segment extractions
 - **1m Fractal Shift — 1m structure shifts, wait for a pullback to 50%, then enter on a secondary lower timeframe shift.**
   - > "I will take a one-minute fractal shift... looking to enter on the pullback after that shift to around 50%... and I wait for a second shift within that one-minute shift." @09:39 — _PHbklTEGoEY.json_
 
+### pullback  [1 mention(s)]
+- **Pullback — Wait for a pullback after a break of structure**
+  - > "My pullback approach works when there's enough volume to have a break of structure, but not too much where you don't have a pullback after that break of structure" @11:53 — _PtA9YuiYALw.json_
+
+### ltf reversal  [1 mention(s)]
+- **LTF Reversal — Entry on a low time frame reversal**
+  - > "LTF Reversal" @06:57 — _Q3VSRZassR4.json_
+
+### type 1 type 2 type 3  [1 mention(s)]
+- **Type 1, Type 2, Type 3 — Specific setup types defined in the journal**
+  - > "[ON-CHART ONLY]" @01:16 — _SKUquKC-fAk.json_
+
+### shift in market structure  [1 mention(s)]
+- **Shift in market structure — A shift in market structure on a lower time frame after price enters an area of interest.**
+  - > "We've also had a lower time-frame shift bullish." @03:33 — _TeNTPhNfhx0.json_
+
 ### 30m candle flip  [1 mention(s)]
 - **30m Candle Flip — Wait for 30-minute mark of 1H candle to flip direction post-wick creation.**
   - > "around 30 minutes into that candle I expect it to then push up and flip" @02:04 — _YJirdD2wNYg.json_
@@ -181,17 +264,21 @@ Sources: 17 video/segment extractions
 - **0-15m Continuation — Trade candle direction if volume is high and conditions are directional.**
   - > "[ON-CHART ONLY]" @08:06 — _YJirdD2wNYg.json_
 
-### type 1  [1 mention(s)]
-- **Type 1 — Candle close in desired direction after a change.**
-  - > "A type 1 is just a simple candle close... going from a bullish candle close to a bearish candle close." @01:48 — _ffeA39JCFow.json_
+### range reversal  [1 mention(s)]
+- **Range Reversal — Identify a mid-timeframe range, wait for price to overextend into the high or low of that range, then look for a reversal back towards the 50% level.**
+  - > "My whole strategy can kind of be broken down, wait, into waiting for, you know, identifying a mid-timeframe range, waiting for price to overextend into the higher low of that range, then looking for a retracement back in towards 50%." @00:45 — _eLolPHSwLyk.json_
 
-### type 2  [1 mention(s)]
-- **Type 2 — Candle close beyond a structure level.**
-  - > "you're closing beyond structure, beyond a level." @03:14 — _ffeA39JCFow.json_
+### break and retest  [1 mention(s)]
+- **Break and Retest — Price breaks a high/low, then retests in an area of interest.**
+  - > "We broke some highs, came back into retest in area of interest." @03:26 — _g2zXszOwPaI.json_
 
-### type 3  [1 mention(s)]
-- **Type 3 — Market structure shift (CHoCH) with volume.**
-  - > "A type 3 is just a shift in market structure... change of character." @04:40 — _ffeA39JCFow.json_
+### type 2 shift  [1 mention(s)]
+- **Type 2 Shift — 1-minute market structure shift**
+  - > "looking for a 1 minute type 2 shift" @07:39 — _kj8N4DL8RBM.json_
+
+### ltf market structure shift with candle behavior alignment  [1 mention(s)]
+- **LTF Market Structure Shift with Candle Behavior Alignment — Wait for higher timeframe candle to overextend into the first 0-50 minutes (for continuations) or around 30 minutes (for reversals). Then drop to a lower timefr**
+  - > "I tend to drop down onto, you know, 5 seconds structure, but we can just wait for a break of these, you know, 1-minute candle lows here, we can put our stop above the previous high" @06:17 — _nKy15N79BXM.json_
 
 ### shift in market structure mss  [1 mention(s)]
 - **Shift in Market Structure (MSS) — On the 1M chart, price must take out a previous low and then immediately take out a previous high (for longs), or vice versa (for shorts).**
@@ -200,6 +287,14 @@ Sources: 17 video/segment extractions
 ### type 3 shift in structure  [1 mention(s)]
 - **Type 3 Shift in Structure — Price makes a new high/low, then immediately breaks the opposing structural low/high on the execution timeframe.**
   - > "we're making higher highs, higher lows, we make a high, then we immediately break a low. We have a shift in structure." @02:16 — _nvJPa6SBwWk.json_
+
+### shift of market structure  [1 mention(s)]
+- **Shift of Market Structure — Wait for price to break a high, then immediately break a low (or vice versa) on the 1M timeframe.**
+  - > "The main entry model I use is just a simple shift of market structure here. I'll wait for price to break a high and then immediately break a low" @03:14 — _rV0hGWlakM0.json_
+
+### cbr reversal  [1 mention(s)]
+- **CBR Reversal — Wait for price to overextend into the highs or lows of the range, then look for a reversal around the halfway point of the hour.**
+  - > "Wait for price to... either overextend into the highs of this range or overextend into the lows of this range to look for a reversal around the halfway point of the hour" @01:53 — _srOxm0ABi_U.json_
 
 ### type 3 shift market structure shift  [1 mention(s)]
 - **Type 3 Shift (Market Structure Shift) — A decisive structural shift where price immediately breaks a high and then breaks a low (or vice versa), shifting volume instantly. Entry is taken on the subsequent pullback.**
@@ -217,10 +312,14 @@ Sources: 17 video/segment extractions
 - **Market Structure Shift (MSS) — On LTF, price must break the previous high (for buys) or low (for sells) after the extension.**
   - > "where we go from breaking the previous high into immediately breaking the previous low with pretty high volume" @01:47 — _zFe98gsfbUk.json_
 
+### retest pullback entry  [1 mention(s)]
+- **Retest / Pullback entry — Wait for a market pullback into a prior high or low level, then take a buy/sell on the reaction.**
+  - > "We're looking for a pullback into towards 50% of this previous move here. So if we have a pullback into, you know, around 50% or even more towards 70%" @22:15 — _zIcup9rJSiQ.json_
 
-## confluences  (74 entries)
 
-### dxy correlation  [8 mention(s)]
+## confluences  (117 entries)
+
+### dxy correlation  [12 mention(s)]
 - **DXY Correlation — DXY must align inversely, showing clear bullish structure tapping hourly support levels and shifting bullish.**  _(required)_
   - > "DXY was extremely clean for me and very bullish... shifted break some high so you had DXY shift bullish so everything is kind of aligning" @02:29 — _7dUKwc0DNsI.json_
 - **DXY Correlation — DXY should show a bullish bias or a Type 3 shift to support a short entry on Gold.**  _(optional)_
@@ -233,7 +332,7 @@ Sources: 17 video/segment extractions
   - > "kind of adds to that bullish bias on gold." @02:18 — _cJbeIgr6jrA.json_
 - **DXY Correlation — DXY must be moving in the opposite direction of the trade instrument.**  _(required)_
   - > "DXY's correlation is moving in the opposite direction quite nicely." @01:25 — _gjM_Am5-YfI.json_
-  - _(+2 more mentions)_
+  - _(+6 more mentions)_
 
 ### dxy inverse correlation  [6 mention(s)]
 - **DXY Inverse Correlation — DXY must shift bullish to support a bearish gold entry.**  _(required)_
@@ -249,11 +348,73 @@ Sources: 17 video/segment extractions
 - **DXY Inverse Correlation — Confirm Gold direction by checking if DXY is moving in the opposite direction.**  _(optional)_
   - > "most of the time when the dollar is bullish, gold will be bearish." @17:42 — _nvJPa6SBwWk.json_
 
+### market structure alignment  [4 mention(s)]
+- **Market Structure Alignment — Aligning lower, medium, and higher timeframe structures.**  _(required)_
+  - > "the most important thing in trading is market structure alignment. It's how many different timeframes do you align in your favor." @11:00 — _975HWA-Ar94.json_
+- **Market Structure Alignment — Market structure alignment**  _(required)_
+  - > "1. MS Align" @07:15 — _JVVBFZeXvOk.json_
+- **Market Structure Alignment — Must align with the overall market structure.**
+  - > "1. MS Align" @03:54 — _U7ol7iR9oYc.json_
+- **Market Structure Alignment — Connecting multi-timeframe candle behavior with overall market structure (trend vs range-bound).**  _(required)_
+  - > "you need to give context to any sort of trade you're taking... you need to connect that with overall, you know, market structure, middle timeframe market structure" @07:28 — _nKy15N79BXM.json_
+
+### correlation  [3 mention(s)]
+- **Correlation — Correlation with DXY or Gold spread**  _(required)_
+  - > "3. Correlation" @07:17 — _JVVBFZeXvOk.json_
+- **Correlation — Check DXY for inverse correlation to XAU/USD. If DXY is bearish, look for buys on XAU/USD.**  _(required)_
+  - > "Because Gold and DXY have an inverse correlation. Whenever DXY is moving bearish, you expect Gold to be pushing bullish." @02:01 — _TeNTPhNfhx0.json_
+- **Correlation — Must align with correlated assets.**
+  - > "3. Correlation" @03:54 — _U7ol7iR9oYc.json_
+
+### high volume  [3 mention(s)]
+- **High Volume — High volume must be present at the time of entry.**  _(required)_
+  - > "I want to enter with volume and a shift." @01:30 — _g2zXszOwPaI.json_
+- **High Volume — High volume candle sequence**  _(required)_
+  - > "Jesus, really high volume. That's what gold's been doing recently" @01:11 — _srOxm0ABi_U.json_
+- **High Volume — Extension must be impulsive with high volume.**  _(required)_
+  - > "We want price to overextend with high volume without much of a pullback at all." @01:07 — _zFe98gsfbUk.json_
+
 ### 50 retracement  [2 mention(s)]
 - **50% Retracement — Enter at the 50% area of the 1m shift.**  _(optional)_
   - > "Have a bit of a pull back into 50% on this." @04:46 — _gjM_Am5-YfI.json_
 - **50% Retracement — Wait for price to pull back to the 50% level of the Type 3 shift move before entering.**  _(optional)_
   - > "waiting for price to come into 50% of this previous move to take our entry." @09:31 — _ghmWUCdD9qs.json_
+
+### timeframe alignment  [2 mention(s)]
+- **Timeframe Alignment — Certain timeframes aligning**  _(unclear)_
+  - > "certain time frames aligning" @01:04 — _-UaN2tpBTnY.json_
+- **Timeframe Alignment — Aligning lower timeframe direction with higher/middle timeframe direction.**  _(required)_
+  - > "I'm looking for direction based off the 4 hour or the daily and then entry based off like 15 or 5 minute." @01:05 — _JGWvvGOBe8I.json_
+
+### range bound condition  [2 mention(s)]
+- **Range-bound condition — Market must be in a range-bound condition**  _(required)_
+  - > "I only look for reversals in range-bound conditions." @28:42 — _KBQ6Z9A5IE4.json_
+- **Range-bound condition — Price must be moving sideways over the last 5-10 hours.**  _(required)_
+  - > "The reason here is that you're more likely to have better and bigger reactions or snapbacks of price action within this condition." @02:07 — _rV0hGWlakM0.json_
+
+### volume  [2 mention(s)]
+- **Volume — Analyze volume**  _(required)_
+  - > "As soon as I focused on how volume was affecting my, my trading improved massively" @11:11 — _PtA9YuiYALw.json_
+- **Volume — Trade with volume in trade direction.**  _(required)_
+  - > "You always want to be trading with volume in your direction." @05:08 — _ffeA39JCFow.json_
+
+### market structure shift  [2 mention(s)]
+- **Market Structure Shift — 1m structure break aligned with 1H bias.**  _(required)_
+  - > "we have a break of this little low here... so we could have taken an entry" @04:59 — _YJirdD2wNYg.json_
+- **Market Structure Shift — Look for a low time frame shift of market structure.**  _(required)_
+  - > "Which would want a low time frame shift of market structure." @01:39 — _eLolPHSwLyk.json_
+
+### direction  [2 mention(s)]
+- **Direction — Identify if market is trending or ranging**  _(required)_
+  - > "Is it ranging, is it trending, anything like that" @05:11 — _kj8N4DL8RBM.json_
+- **Direction — Identify the overall direction of the market**  _(required)_
+  - > "Direction, area of interest, and a shift" @01:40 — _wBfRETp8IRk.json_
+
+### area of interest  [2 mention(s)]
+- **Area of Interest — Enter in the lower half of the previous bullish move or at a recent low/ARI**  _(required)_
+  - > "Probably in the lower half of the previous bullish move, maybe around a recent low, or an ARI" @05:20 — _kj8N4DL8RBM.json_
+- **Area of Interest — Identify where price is reacting to**  _(required)_
+  - > "Direction, area of interest, and a shift" @01:40 — _wBfRETp8IRk.json_
 
 ### area of interest aoi hourly level  [1 mention(s)]
 - **Area of Interest (AOI) / Hourly Level — Price must test a key hourly level or range high.**  _(required)_
@@ -395,9 +556,17 @@ Sources: 17 video/segment extractions
 - **Yen Basket Alignment — Yen index/basket shifting bearish to support USDJPY longs.**  _(optional)_
   - > "we want the yen pairs to be pushing bearish if we're looking for buys on UJ" @04:24 — _zScdfOmUMOE.json_
 
-### market structure alignment  [1 mention(s)]
-- **Market Structure Alignment — Aligning lower, medium, and higher timeframe structures.**  _(required)_
-  - > "the most important thing in trading is market structure alignment. It's how many different timeframes do you align in your favor." @11:00 — _975HWA-Ar94.json_
+### wick fills  [1 mention(s)]
+- **Wick Fills — Candle has a bottom or top wick**  _(optional)_
+  - > "if I'm taking a trade, and the candle doesn't have a bottom or top wick, how does that affect that?" @01:21 — _-UaN2tpBTnY.json_
+
+### d c b  [1 mention(s)]
+- **D.C.B — Directional Candle Behavior**  _(required)_
+  - > "Hold Trades when with D.C.B and 3MS.A" @00:01 — _5u682pWNmpY.json_
+
+### 3ms a  [1 mention(s)]
+- **3MS.A — 3 Market Structure Alignment**  _(required)_
+  - > "Hold Trades when with D.C.B and 3MS.A" @00:01 — _5u682pWNmpY.json_
 
 ### hourly candle timing  [1 mention(s)]
 - **Hourly Candle Timing — Execute reversals specifically during the 15-30 minute window of the hourly candle.**  _(required)_
@@ -406,6 +575,10 @@ Sources: 17 video/segment extractions
 ### range bound conditions  [1 mention(s)]
 - **Range-Bound Conditions — Only trade reversals when the market is in a range.**  _(required)_
   - > "you only want to be taking reversals at this time in range-bound conditions" @07:30 — _975HWA-Ar94.json_
+
+### 4h flip  [1 mention(s)]
+- **4H Flip — 4H candle must close in the direction of the trade**
+  - > "if the 4H opens and you immediately push in a certain direction on the 4H, and then maybe around a bit later, a rejection, take out a high, and then the candle flips." @18:39 — _Goz73AVNIDM.json_
 
 ### daily wick bias  [1 mention(s)]
 - **Daily Wick Bias — The start of the Asia session typically creates the daily wick opposite to the previous day's close.**  _(required)_
@@ -419,6 +592,30 @@ Sources: 17 video/segment extractions
 - **Tokyo Session Range Position — Price must be in the lower half of the Tokyo range for longs, or upper half for shorts.**
   - > "If you're kind of near the bottom half of that range, I tend to look for buys." @02:18 — _HtjHo8W1i0Q.json_
 
+### cb timing  [1 mention(s)]
+- **CB Timing — 30 minutes into the hour**  _(required)_
+  - > "2. 1h CB Timing" @07:16 — _JVVBFZeXvOk.json_
+
+### order flow  [1 mention(s)]
+- **Order Flow — Use order flow to improve strategy**  _(required)_
+  - > "order flow so I can improve my strategy" @02:58 — _JyJXUTLDFJA.json_
+
+### data correlation  [1 mention(s)]
+- **Data Correlation — Correlate data**  _(required)_
+  - > "correlate data, it's very important for this type of approach to the to the market" @03:03 — _JyJXUTLDFJA.json_
+
+### over extension  [1 mention(s)]
+- **Over-extension — Price over-extends into high or low of range**  _(required)_
+  - > "Wait for price to extend into H/L" @08:07 — _K7u2jatqeaM.json_
+
+### high time frame direction  [1 mention(s)]
+- **High Time Frame Direction — Must align with high time frame candle behavior (previous daily/4H closes).**  _(required)_
+  - > "it's important to keep in mind your high time frame direction... that's based off can be high time frame candle behavior" @02:14 — _LwS6r9foNCk.json_
+
+### correlated pairs  [1 mention(s)]
+- **Correlated Pairs — Use bearish/bullish bias of correlated pair (e.g. UJ) to confirm trade on Gold**  _(optional)_
+  - > "when I'm looking at sells on Gold, I'm looking at buys on UJ... I can use that bearish UJ as a confluence to buy on Gold" @07:26 — _MWPm9Gohn3g.json_
+
 ### range bound market condition  [1 mention(s)]
 - **Range-Bound Market Condition — Price must be correcting back towards the mean over the past 5-12 hours.**  _(required)_
   - > "I identify a range as whether on average over those past 5 to 12 plus hours how much we correct the previous move" @05:35 — _PHbklTEGoEY.json_
@@ -431,13 +628,29 @@ Sources: 17 video/segment extractions
 - **Specific Timing Window — Reversal entry should occur between 30 to 45 minutes into the hourly candle.**  _(optional)_
   - > "the best reversals happen around 30 minutes into the hour... from 30 to 45 minutes" @07:28 — _PHbklTEGoEY.json_
 
-### market structure shift  [1 mention(s)]
-- **Market Structure Shift — 1m structure break aligned with 1H bias.**  _(required)_
-  - > "we have a break of this little low here... so we could have taken an entry" @04:59 — _YJirdD2wNYg.json_
+### market structure  [1 mention(s)]
+- **Market Structure — Identify market structure**  _(required)_
+  - > "To defining market structure, your technical approach isn't very good for making money" @09:40 — _PtA9YuiYALw.json_
 
-### volume  [1 mention(s)]
-- **Volume — Trade with volume in trade direction.**  _(required)_
-  - > "You always want to be trading with volume in your direction." @05:08 — _ffeA39JCFow.json_
+### condition  [1 mention(s)]
+- **Condition — Trading in a specific market condition (e.g., Trending, Ranging, Volatile, Countertrend, Trending Range)**  _(required)_
+  - > "I'm trading in a countertrend here." @08:26 — _Q3VSRZassR4.json_
+
+### wick fill  [1 mention(s)]
+- **Wick Fill — Price must fill a wick on a higher timeframe.**
+  - > "I'm looking to take a buy here to like fill that wick." @15:57 — _Qe1F4rT-RCE.json_
+
+### confluence  [1 mention(s)]
+- **Confluence — Multiple factors required for a trade**  _(required)_
+  - > "[ON-CHART ONLY]" @01:16 — _SKUquKC-fAk.json_
+
+### 1h 30m level  [1 mention(s)]
+- **1H/30m Level — Price must reach a 1H or 30m level.**
+  - > "2. 1H CB Timing" @03:54 — _U7ol7iR9oYc.json_
+
+### inverse correlation  [1 mention(s)]
+- **Inverse Correlation — DXY and Gold move in opposite directions.**  _(required)_
+  - > "You want DXY to be moving bearish... and Gold to be moving bullish because they have an inverse correlation." @00:40 — _g2zXszOwPaI.json_
 
 ### mtf range  [1 mention(s)]
 - **MTF Range — Price action going sideways for 4-5 hours, correcting over 50% of the previous move.**  _(required)_
@@ -446,6 +659,10 @@ Sources: 17 video/segment extractions
 ### hourly over extension  [1 mention(s)]
 - **Hourly Over-extension — At least 15-30 minutes of high volume push in one direction into range extremes.**  _(required)_
   - > "at least 15 to 30 minutes of price action... push in one direction." @05:07 — _ghmWUCdD9qs.json_
+
+### higher timeframe candle behavior lifecycle  [1 mention(s)]
+- **Higher Timeframe Candle Behavior Lifecycle — Candle behavior: first half of the candle pushes in trend direction or overextends, then second half sees a shift/reversal. Continuations happen in the 0-50 minute window; rev**  _(required)_
+  - > "the best continuations tend to be within the first 0 to 50 minutes of the hourly candle... the best reversals tend to be around 30 minutes into an hourly candle" @02:47 — _nKy15N79BXM.json_
 
 ### area of interest aoi  [1 mention(s)]
 - **Area of Interest (AOI) — Price must be in the lower 50% of the previous bullish move for buys, or upper 50% of the previous bearish move for sells.**  _(required)_
@@ -463,6 +680,14 @@ Sources: 17 video/segment extractions
 - **Candle Behavior Timing — Anticipate daily wick creation in Asia before the main expansion in London/NY.**  _(optional)_
   - > "candle behavior makes it easy to give timing to market structure." @05:21 — _nvJPa6SBwWk.json_
 
+### hourly extension  [1 mention(s)]
+- **Hourly Extension — Price must extend into the high or low of the identified range.**  _(required)_
+  - > "We just want this hourly candle to extend into either the high of that range or into either the low of that range." @02:35 — _rV0hGWlakM0.json_
+
+### range formation  [1 mention(s)]
+- **Range formation — Price must be range-bound**  _(required)_
+  - > "Obviously this isn't very range-bound... so I'll wait for it to be range-bound" @01:03 — _srOxm0ABi_U.json_
+
 ### candle timing wick creation  [1 mention(s)]
 - **Candle Timing / Wick Creation — If the previous high-timeframe candle closed bullish, expect the first half of the new candle (Asia session for Daily, Mon-Wed for Weekly) to move bearish to create the bottom wick before **  _(required)_
   - > "In Asia, if the previous day closes bullish, you should be looking to take sells to create that bottom wick first." @07:56 — _u9B9zzjkBRs.json_
@@ -470,6 +695,10 @@ Sources: 17 video/segment extractions
 ### entry relativity 50 pullback  [1 mention(s)]
 - **Entry Relativity (50% Pullback) — For a sell, the pullback must reach at least the upper 50% (premium) of the previous downward push.**  _(required)_
   - > "I'm looking to enter on the pullback in the upper half for a sell position... looking for it to pullback at least 50%, ideally more" @18:45 — _u9B9zzjkBRs.json_
+
+### candle behavior  [1 mention(s)]
+- **Candle Behavior — Analyze how candles move during the life cycle of a candle**  _(required)_
+  - > "you have market structure, candle behavior" @02:43 — _wBfRETp8IRk.json_
 
 ### entry model inversion dxy  [1 mention(s)]
 - **Entry Model Inversion (DXY) — DXY must show the exact mirror image of the Gold setup simultaneously.**  _(required)_
@@ -483,18 +712,32 @@ Sources: 17 video/segment extractions
 - **Intra-hour Timing — The reversal/MSS should ideally occur between 30 and 45 minutes into the 1H candle.**  _(required)_
   - > "looking for the shift to happen around the halfway point around 30 to 45 minutes within this hourly candle." @02:12 — _zFe98gsfbUk.json_
 
-### high volume  [1 mention(s)]
-- **High Volume — Extension must be impulsive with high volume.**  _(required)_
-  - > "We want price to overextend with high volume without much of a pullback at all." @01:07 — _zFe98gsfbUk.json_
+### market structure higher timeframe alignment  [1 mention(s)]
+- **Market Structure / Higher-Timeframe Alignment — Aligning entry with structural highs and lows or trend direction.**  _(required)_
+  - > "The big thing is like, you know, finding the right conditions, the right structure" @15:42 — _zIcup9rJSiQ.json_
 
 
-## sessions  (35 entries)
+## sessions  (61 entries)
 
-### second hour of asia session  [2 mention(s)]
+### second hour of asia session  [3 mention(s)]
 - **Second hour of Asia session**
   - > "I trade this second hour of Asia session with my Discord every single day" @01:36 — _ffeA39JCFow.json_
 - **Second hour of Asia session**
+  - > "We are trading the second hour of Asia." @00:12 — _g2zXszOwPaI.json_
+- **Second hour of Asia session**
   - > "the best time to trade gold was the second hour of Asia session." @02:30 — _ghmWUCdD9qs.json_
+
+### trade the second hour of the asian session  [2 mention(s)]
+- **Trade the second hour of the Asian session.**
+  - > "I trade the second hour of Asia every single day, the same time" @08:49 — _975HWA-Ar94.json_
+- **Trade the second hour of the Asian session**
+  - > "I started trading at the second hour of Asia, as well." @14:35 — _Goz73AVNIDM.json_
+
+### 30 minutes into the hour  [2 mention(s)]
+- **30 minutes into the hour**
+  - > "reversals in ranges, 30 minutes into the hour, using a 1-minute shift gave me a 75% win rate." @06:49 — _JVVBFZeXvOk.json_
+- **30 minutes into the hour**
+  - > "I'm always looking for a reversal around 30 minutes on into the hourly candle." @05:21 — _TeNTPhNfhx0.json_
 
 ### second half of the hour  [1 mention(s)]
 - **Second half of the hour**
@@ -572,9 +815,17 @@ Sources: 17 video/segment extractions
 - **Trades the second half of the Asian session.**
   - > "trading both gold and UJ second half of Asia again" @00:05 — _zScdfOmUMOE.json_
 
-### trade the second hour of the asian session  [1 mention(s)]
-- **Trade the second hour of the Asian session.**
-  - > "I trade the second hour of Asia every single day, the same time" @08:49 — _975HWA-Ar94.json_
+### avoid trading new york session  [1 mention(s)]
+- **Avoid trading New York session**
+  - > "one night at New York session, and I don't normally trade New York session" @01:39 — _1i70cyZt6to.json_
+
+### trade in the second half of the hour  [1 mention(s)]
+- **Trade in the second half of the hour**
+  - > "I used to look for continuations in the second half of the hour" @06:08 — _5u682pWNmpY.json_
+
+### asia and london session used to trade eurjpy now just trades  [1 mention(s)]
+- **Asia and London session (used to trade EURJPY, now just trades Gold)**
+  - > "Asia and London Session" @06:09 — _EzwR2boaNRs.json_
 
 ### trade the 2nd hour of the tokyo session  [1 mention(s)]
 - **Trade the 2nd hour of the Tokyo session.**
@@ -592,21 +843,85 @@ Sources: 17 video/segment extractions
 - **Use Tokyo session range to determine directional bias**
   - > "If you're kind of near the bottom half of that range, I tend to look for buys... within the upper half, I tend to look for sells." @02:18 — _HtjHo8W1i0Q.json_
 
+### trade only asian session  [1 mention(s)]
+- **Trade only Asian session**
+  - > "I knew that you only trade Asian session, like for two hours" @02:19 — _JyJXUTLDFJA.json_
+
+### avoid new york session for gold  [1 mention(s)]
+- **Avoid New York session for Gold**
+  - > "if you're trading gold, I think avoid New York session always, always" @25:00 — _JyJXUTLDFJA.json_
+
+### second hour of asia  [1 mention(s)]
+- **Second hour of Asia**
+  - > "I only trade reversals in the second hour of Asia. That's it." @02:22 — _K7u2jatqeaM.json_
+
+### reversals in range bound conditions  [1 mention(s)]
+- **Reversals in range-bound conditions**
+  - > "I only look for reversals in range-bound conditions." @28:42 — _KBQ6Z9A5IE4.json_
+
+### london session manipulation  [1 mention(s)]
+- **London session manipulation**
+  - > "a lot of people see that London kind of manipulates, so it might manipulate an Asia high" @09:23 — _LwS6r9foNCk.json_
+
+### first 10 15 minutes of the hourly candle  [1 mention(s)]
+- **First 10-15 minutes of the hourly candle**
+  - > "I'm kind of mainly just looking for hourly continuations in the first 10 minutes" @11:19 — _MWPm9Gohn3g.json_
+
 ### trade asia and london session opens  [1 mention(s)]
 - **Trade Asia and London session opens**
   - > "I trade this in Asia and London session, around the open of each of these sessions" @04:11 — _PHbklTEGoEY.json_
+
+### trade the second hour of asia sometimes the third hour of lo  [1 mention(s)]
+- **Trade the second hour of Asia, sometimes the third hour of London.**
+  - > "This is why we trade the second hour of Asia at the same time every single day... You don't have to be trading the second hour of Asia, you can trade the third hour of London." @40:38 — _Qe1F4rT-RCE.json_
+
+### 15 30 minutes into the hour  [1 mention(s)]
+- **15-30 minutes into the hour**
+  - > "I only look for reversals 15 to 30 minutes into an hourly candle." @06:49 — _U7ol7iR9oYc.json_
 
 ### asia session creates the daily bottom wick  [1 mention(s)]
 - **Asia session creates the daily bottom wick**
   - > "I'm expecting it to first create a bottom wick... in Asia" @03:21 — _YJirdD2wNYg.json_
 
+### wait for asia open  [1 mention(s)]
+- **Wait for Asia open**
+  - > "It is 9:00 AM, so just before Asia open." @00:38 — _eLolPHSwLyk.json_
+
+### wait for new york session  [1 mention(s)]
+- **Wait for New York session**
+  - > "And now we're in New York, approaching New York. Tends to be a bit high volume at this time." @07:49 — _eLolPHSwLyk.json_
+
 ### london session open  [1 mention(s)]
 - **London session open**
   - > "You can also trade the London session open." @02:33 — _ghmWUCdD9qs.json_
 
+### trade during the first 0 10 minutes of the hour for continua  [1 mention(s)]
+- **Trade during the first 0-10 minutes of the hour for continuations**
+  - > "when in the first 0 to 10 minutes of the hour, I have around a 66% win rate" @06:37 — _kj8N4DL8RBM.json_
+
+### trade during the halfway point of the hour for reversals  [1 mention(s)]
+- **Trade during the halfway point of the hour for reversals**
+  - > "around the halfway point of the hour, I have the highest win rate on reversals, a 75% win rate" @06:52 — _kj8N4DL8RBM.json_
+
+### london session specifically second hour third hour of london  [1 mention(s)]
+- **London session, specifically second hour, third hour of London tend to have the nicest high-timeframe reversals**
+  - > "London session. Second hour of London, third hour of London, but I'd say second hour of London tends to have the nicest high timeframe reversals" @09:07 — _nKy15N79BXM.json_
+
 ### daily candle opens just before tokyo open wicks are typicall  [1 mention(s)]
 - **Daily candle opens just before Tokyo open; wicks are typically created during Asia session.**
   - > "the daily candle opens just before Tokyo open... we're going to create that bottom wick, grab liquidity, anything like that, just to then... create that bottom wick in Asia, then reverse in London, push in late London, New York" @08:20 — _nvJPa6SBwWk.json_
+
+### trade within a range bound condition  [1 mention(s)]
+- **Trade within a range-bound condition**
+  - > "Step 1 is to make sure you're trading within a range-bound condition." @02:04 — _rV0hGWlakM0.json_
+
+### wait for an hourly extension  [1 mention(s)]
+- **Wait for an hourly extension**
+  - > "Step 2, which is to wait for an hourly extension." @02:24 — _rV0hGWlakM0.json_
+
+### trade reversals around 37 minutes into the hour  [1 mention(s)]
+- **Trade reversals around 37 minutes into the hour**
+  - > "I like taking trades reversals around 37 minutes into the hour." @02:45 — _srOxm0ABi_U.json_
 
 ### trade exclusively during the second hour of the asian sessio  [1 mention(s)]
 - **Trade exclusively during the second hour of the Asian session.**
@@ -615,6 +930,14 @@ Sources: 17 video/segment extractions
 ### reversals are highly likely to occur at the start of a new 3  [1 mention(s)]
 - **Reversals are highly likely to occur at the start of a new 30-minute candle (the midpoint of the hourly candle).**
   - > "best reversals tend to happen at the start of a new 30 minute candle, so halfway through the hourly candle." @16:14 — _u9B9zzjkBRs.json_
+
+### asia session  [1 mention(s)]
+- **Asia Session**
+  - > "because I trade Asia Asia session, UCTJPY, JPY pair" @06:37 — _wBfRETp8IRk.json_
+
+### 12 00 to 13 00 sydney time  [1 mention(s)]
+- **12:00 to 13:00 Sydney time**
+  - > "My main trading session is 12:00 to 13:00 in my time, Sydney time" @07:28 — _wBfRETp8IRk.json_
 
 ### wait for hourly candle open  [1 mention(s)]
 - **Wait for hourly candle open**
@@ -628,10 +951,14 @@ Sources: 17 video/segment extractions
 - **Trade from the second hour of Asia through the third or fourth hour of London.**
   - > "trade the strategy anywhere from the second hour of Asia all the way to around the third to fourth hour of London session." @00:34 — _zFe98gsfbUk.json_
 
+### avoid trading us new york session if you want lower volatili  [1 mention(s)]
+- **Avoid trading US/New York session if you want lower volatility, or trade London/Asia open.**
+  - > "And then we're going to come into uh New York session, so I might just wait... I don't trade New York, so we'll just wait." @29:28 — _zIcup9rJSiQ.json_
 
-## timeframes  (104 entries)
 
-### 1h  [21 mention(s)]
+## timeframes  (160 entries)
+
+### 1h  [32 mention(s)]
 - **Identify range boundaries and key levels**
   - > "if we just have a look at the previous hourly candles here... we've been relatively range-bound" @00:20 — _6mytsUbeEo4.json_
 - **Higher timeframe structure and bias**
@@ -644,24 +971,9 @@ Sources: 17 video/segment extractions
   - > "all my trades is when the hourly candle is immediately pushing in one direction" @00:44 — _TMbXf_seF_s.json_
 - **Track hourly candle open overextensions and AOIs**
   - > "currently in an hourly AOI" @00:47 — _VI_zwtf53pc.json_
-  - _(+15 more mentions)_
+  - _(+26 more mentions)_
 
-### 15m  [18 mention(s)]
-- **Trade management, candle tracking, and exit timing**
-  - > "pushed into around the halfway point of the 15 minute... once we took out this low around here the previous 15 minute candle low I was looking for an exit" @03:22 — _7dUKwc0DNsI.json_
-- **Medium timeframe structure shift identification**
-  - > "[ON-CHART ONLY]" @00:41 — _DZIgu4mXhDU.json_
-- **Monitor candle opens and high sweeps.**
-  - > "waiting for... a 5 minute, 15 minute candle to open, take out the previous high" @07:50 — _JuvmTSvghFI.json_
-- **Entry candle confirmation and stop order placement.**
-  - > "I waited for this 15-minute candle to close bearish, which was nice." @03:27 — _KgdGtvR43EE.json_
-- **Confirms lower timeframe movement alignment with hourly expansion.**
-  - > "I want the 15 minute candle to also move the exact same way that the hourly candle is moving" @01:08 — _TMbXf_seF_s.json_
-- **Monitor candle opens and wick creation**
-  - > "15 minute candle is opening here" @19:12 — _VI_zwtf53pc.json_
-  - _(+12 more mentions)_
-
-### 1m  [16 mention(s)]
+### 1m  [26 mention(s)]
 - **Entry execution**
   - > "took it at the break of this one-minute candle low here" @01:36 — _6mytsUbeEo4.json_
 - **Primary setup identification and Type 3 shift pattern**
@@ -674,9 +986,24 @@ Sources: 17 video/segment extractions
   - > "1m T3 to HILO at 50%" @02:52 — _cJbeIgr6jrA.json_
 - **Execution and structure identification**
   - > "Wait for it to create some like one minute structure." @00:55 — _gjM_Am5-YfI.json_
-  - _(+10 more mentions)_
+  - _(+20 more mentions)_
 
-### 4h  [10 mention(s)]
+### 15m  [23 mention(s)]
+- **Trade management, candle tracking, and exit timing**
+  - > "pushed into around the halfway point of the 15 minute... once we took out this low around here the previous 15 minute candle low I was looking for an exit" @03:22 — _7dUKwc0DNsI.json_
+- **Medium timeframe structure shift identification**
+  - > "[ON-CHART ONLY]" @00:41 — _DZIgu4mXhDU.json_
+- **Monitor candle opens and high sweeps.**
+  - > "waiting for... a 5 minute, 15 minute candle to open, take out the previous high" @07:50 — _JuvmTSvghFI.json_
+- **Entry candle confirmation and stop order placement.**
+  - > "I waited for this 15-minute candle to close bearish, which was nice." @03:27 — _KgdGtvR43EE.json_
+- **Confirms lower timeframe movement alignment with hourly expansion.**
+  - > "I want the 15 minute candle to also move the exact same way that the hourly candle is moving" @01:08 — _TMbXf_seF_s.json_
+- **Monitor candle opens and wick creation**
+  - > "15 minute candle is opening here" @19:12 — _VI_zwtf53pc.json_
+  - _(+17 more mentions)_
+
+### 4h  [15 mention(s)]
 - **Identify key support/resistance levels and overall market structure.**
   - > "UJ coming into around this 4-hourly level... UJ is a lot more range-bound, we have a lot of structure to play with." @00:20 — _IBHlgXL7bx8.json_
 - **Identify major reaction zones and key levels.**
@@ -689,7 +1016,7 @@ Sources: 17 video/segment extractions
   - > "4-hour candle opened, massively overextended. I'm trading the third 4-hour candle... so a bit of a 4-hour CVR." @15:59 — _tZhVk4opFOM.json_
 - **Identifying key areas of interest.**
   - > "on the four hour timeframe we have an open close so that's an area of interest there" @08:37 — _975HWA-Ar94.json_
-  - _(+4 more mentions)_
+  - _(+9 more mentions)_
 
 ### 5s  [9 mention(s)]
 - **Confirming DXY shift**
@@ -706,7 +1033,7 @@ Sources: 17 video/segment extractions
   - > "on this little kind of shift of structure" @02:18 — _zScdfOmUMOE.json_
   - _(+3 more mentions)_
 
-### 5m  [7 mention(s)]
+### 5m  [9 mention(s)]
 - **Monitor candle opens and high sweeps.**
   - > "waiting for... a 5 minute, 15 minute candle to open, take out the previous high" @07:50 — _JuvmTSvghFI.json_
 - **Timing the exit using candle behavior.**
@@ -719,21 +1046,47 @@ Sources: 17 video/segment extractions
   - > "we have a 5-minute candle close bearish. Next 5-minute candle creates a bit of a top wick, and then we break structure." @13:37 — _tZhVk4opFOM.json_
 - **Lower timeframe candle timing and structure shift timing.**
   - > "using that 5-minute candle behavior" @12:43 — _zScdfOmUMOE.json_
-  - _(+1 more mentions)_
+  - _(+3 more mentions)_
 
-### daily  [3 mention(s)]
+### daily  [5 mention(s)]
 - **Daily candle open and direction bias**
   - > "using this sort of daily candle behavior" @02:04 — _Yt3fYnXuY5k.json_
 - **Determining daily wick bias.**
   - > "Depending on how the previous day closed... you will create the bottom wick... in the inverse direction." @09:11 — _HZJGbrXwVps.json_
+- **Higher timeframe context**
+  - > "If you just go on to the daily, this can be seen even clear, even clearer" @12:13 — _PtA9YuiYALw.json_
+- **High-timeframe candle behavior and trend alignment**
+  - > "using daily and weekly candle behavior, I was using daily and weekly candle behavior." @07:44 — _nKy15N79BXM.json_
 - **Determine overall direction and daily candle bias.**
   - > "If the daily timeframe is looking extremely bullish, I can look for that pullback most likely around the start of Asia." @05:30 — _nvJPa6SBwWk.json_
 
-### 30m  [2 mention(s)]
+### 30m  [4 mention(s)]
 - **Identify entry trigger shifts during the second half of the hourly candle.**
   - > "I tend to see prime time for reversals around the 30-minute mark, maybe into sometimes like the 45-minute mark." @05:48 — _IBHlgXL7bx8.json_
 - **Identify 30-minute AOIs and candle open timing**
   - > "30 minute candle is about to open in a minute" @03:11 — _VI_zwtf53pc.json_
+- **Entry trigger**
+  - > "Take entry on shift around 30m in hour" @08:12 — _K7u2jatqeaM.json_
+- **Market structure**
+  - > "I really like the 30 minute and hourly timeframes" @03:33 — _g2zXszOwPaI.json_
+
+### 1 minute  [4 mention(s)]
+- **Entry model**
+  - > "using a 1-minute shift gave me a 75% win rate." @06:54 — _JVVBFZeXvOk.json_
+- **Lower timeframe market structure / entries**
+  - > "You can actually use higher time frame candle behavior to tell when exactly to enter on that lower timeframe market structure." @00:56 — _nKy15N79BXM.json_
+- **Entry trigger**
+  - > "I feel like whenever I take a trade and it's got that 1-minute shift of structure, I feel like I have a high win rate" @14:18 — _wBfRETp8IRk.json_
+- **Execution and intraday charting**
+  - > "We'll go back onto the 1-minute, so we can't really look at the chart on the 1-minute" @28:18 — _zIcup9rJSiQ.json_
+
+### weekly  [3 mention(s)]
+- **Overall direction and higher timeframe candle behavior**
+  - > "trading around daily candles and weekly candle behavior" @00:21 — _Yt3fYnXuY5k.json_
+- **Weekly candle bias and direction.**
+  - > "what's the weekly candle behavior" @01:18 — _o78T2DVgI3c.json_
+- **Highest timeframe candle behavior for range or trend alignment**
+  - > "I'll get up the weekly timeframe, we can see here that we've been pushing bullish for the first half of that week." @07:48 — _nKy15N79BXM.json_
 
 ### seconds  [2 mention(s)]
 - **Execute entries on lower timeframe market structure shifts.**
@@ -741,11 +1094,17 @@ Sources: 17 video/segment extractions
 - **Low timeframe execution and entry shifts.**
   - > "a really high volume low timeframe like seconds shift" @01:59 — _o78T2DVgI3c.json_
 
-### weekly  [2 mention(s)]
-- **Overall direction and higher timeframe candle behavior**
-  - > "trading around daily candles and weekly candle behavior" @00:21 — _Yt3fYnXuY5k.json_
-- **Weekly candle bias and direction.**
-  - > "what's the weekly candle behavior" @01:18 — _o78T2DVgI3c.json_
+### ltf  [2 mention(s)]
+- **1m, 5m**
+  - > "LTF = 1m, 5m" @00:12 — _JGWvvGOBe8I.json_
+- **Confirm market structure shift for entry.**
+  - > "wait for low timeframe to shift in our direction for a confirmation to take a trade." @01:36 — _zFe98gsfbUk.json_
+
+### middle timeframe  [2 mention(s)]
+- **Range identification**
+  - > "reversals within ranges, specifically middle time frame ranges" @06:51 — _JVVBFZeXvOk.json_
+- **Identify range**
+  - > "Identify the middle timeframe range" @01:41 — _xSVlVpXLuV0.json_
 
 ### htf mtf  [1 mention(s)]
 - **Overall market structure and direction determination**
@@ -783,28 +1142,68 @@ Sources: 17 video/segment extractions
 - **Execution entry trigger**
   - > "I always look to enter on a bit of a break of structure on the seconds." @13:50 — _tZhVk4opFOM.json_
 
+### 1m 5m 15m 30m 1h 4h daily  [1 mention(s)]
+- **Multi-timeframe alignment**
+  - > "[ON-CHART ONLY]" @01:04 — _5u682pWNmpY.json_
+
+### lltf  [1 mention(s)]
+- **Ticks/Seconds**
+  - > "LLTF = Ticks/Seconds" @00:12 — _JGWvvGOBe8I.json_
+
+### mtf  [1 mention(s)]
+- **15m, 30m, 1h**
+  - > "MTF = 15m, 30m, 1h" @00:12 — _JGWvvGOBe8I.json_
+
+### htf  [1 mention(s)]
+- **4h, 1D, 1W**
+  - > "HTF = 4h, 1D, 1W" @00:12 — _JGWvvGOBe8I.json_
+
+### 15s  [1 mention(s)]
+- **Viewing charts**
+  - > "trading view Pro to see charts on 15 seconds" @02:56 — _JyJXUTLDFJA.json_
+
 ### 5h 12h  [1 mention(s)]
 - **Define the middle timeframe range**
   - > "I define middle timeframe by the past 5 to 12 hours of price action." @05:07 — _PHbklTEGoEY.json_
+
+### 1d  [1 mention(s)]
+- **Context**
+  - > "I'm always looking at candle behavior of the micro individual candles on a timeframe and the macro market structure of that whole timeframe." @34:24 — _Qe1F4rT-RCE.json_
+
+### 1m 5m 15m 30m 1h 4h  [1 mention(s)]
+- **Multi-timeframe analysis**
+  - > "[ON-CHART ONLY]" @01:16 — _SKUquKC-fAk.json_
+
+### lower time frame  [1 mention(s)]
+- **Identify shift in market structure**
+  - > "We've also had a lower time-frame shift bullish." @03:33 — _TeNTPhNfhx0.json_
 
 ### 15 30m  [1 mention(s)]
 - **Identify MTF range**
   - > "15-30m reverse" @02:40 — _ghmWUCdD9qs.json_
 
+### hourly 1h  [1 mention(s)]
+- **Candle behavior / intermediate time-frame context**
+  - > "Candles are also cyclical. They have certain patterns of behavior throughout the life cycle of those patterns." @01:39 — _nKy15N79BXM.json_
+
+### 5 minute  [1 mention(s)]
+- **15-minute / 5-minute candle behavior for LTF/MTF alignment**
+  - > "I can look at 15-minute candle behavior here and look at, you know, wait for the 15-minute candle to overextend" @05:49 — _nKy15N79BXM.json_
+
 ### 5m 15m 30m 1h 4h d w  [1 mention(s)]
 - **Used to establish high-timeframe context, candle timing, and overall directional bias.**
   - > "How I use it... Market structure - 1m, 5m, 15m. Candle Behavior - 5m, 15m, 30m, 1h, 4h, D, W." @05:59 — _u9B9zzjkBRs.json_
 
-### middle timeframe  [1 mention(s)]
-- **Identify range**
-  - > "Identify the middle timeframe range" @01:41 — _xSVlVpXLuV0.json_
+### 30 minute  [1 mention(s)]
+- **Candle analysis**
+  - > "I'm mainly trading the first minute of the 30-minute candle" @07:53 — _wBfRETp8IRk.json_
 
-### ltf  [1 mention(s)]
-- **Confirm market structure shift for entry.**
-  - > "wait for low timeframe to shift in our direction for a confirmation to take a trade." @01:36 — _zFe98gsfbUk.json_
+### higher timeframes  [1 mention(s)]
+- **Identifying trend and structural levels**
+  - > "You can look at higher time frame charts to get the overall trend" @18:24 — _zIcup9rJSiQ.json_
 
 
-## stops  (33 entries)
+## stops  (57 entries)
 
 ### place stop loss above the swing high for shorts or below the  [2 mention(s)]
 - **Place stop loss above the swing high for shorts, or below the swing low for longs.**
@@ -892,9 +1291,21 @@ Sources: 17 video/segment extractions
 - **Set stop loss equal to take profit distance (1:1 RR).**
   - > "On average I find the best is around a 1 to 1 with a 60% win rate." @02:11 — _3d8Q4GiIgSE.json_
 
+### place stop loss behind candle high low  [1 mention(s)]
+- **Place stop loss behind candle high/low**
+  - > "Is behind candle high/low" @00:56 — _5u682pWNmpY.json_
+
 ### place the stop loss behind the most recent structural low or  [1 mention(s)]
 - **Place the stop loss behind the most recent structural low or high of the execution timeframe.**
   - > "you can enter at the 50% area with your stop below the most recent low" @02:12 — _975HWA-Ar94.json_
+
+### 1m behind prev candle high low trail stop when in profit wit  [1 mention(s)]
+- **1m behind prev candle high/low, trail stop when in profit with LTF structure, always predetermine stops**
+  - > "[ON-CHART ONLY]" @06:09 — _EzwR2boaNRs.json_
+
+### below the low of the structure shift  [1 mention(s)]
+- **Below the low of the structure shift**
+  - > "where do you put your stop loss? below this low. That's a pretty big stop loss." @28:29 — _Goz73AVNIDM.json_
 
 ### place stop loss above or below the area of interest or the e  [1 mention(s)]
 - **Place stop loss above or below the Area of Interest or the entry candle low/high.**
@@ -908,36 +1319,126 @@ Sources: 17 video/segment extractions
 - **Place stop loss above the previous structural high for shorts.**
   - > "put a stop loss above that [previous high] as well." @10:15 — _HtjHo8W1i0Q.json_
 
+### place stop below the previous 1 minute structure candle low   [1 mention(s)]
+- **Place stop below the previous 1-minute structure candle low (for buys).**
+  - > "I recommend putting your stop below the previous 1-minute structure candle low" @06:05 — _JGWvvGOBe8I.json_
+
+### not specified  [1 mention(s)]
+- **[NOT SPECIFIED]**
+  - > "[NOT SPECIFIED]" @ — _JVVBFZeXvOk.json_
+
+### stop loss must be hit or target hit  [1 mention(s)]
+- **Stop loss must be hit or target hit**
+  - > "just come back to see if the stop loss of the or the take profit got it" @08:52 — _JyJXUTLDFJA.json_
+
+### stop loss placed beyond the high or low of the range  [1 mention(s)]
+- **Stop loss placed beyond the high or low of the range**
+  - > "SL Beyond H/L" @08:14 — _K7u2jatqeaM.json_
+
+### above the high of the range  [1 mention(s)]
+- **Above the high of the range**
+  - > "This is my sell around here, stop above the high." @12:06 — _KBQ6Z9A5IE4.json_
+
+### always above the high for shorts or below the low for longs  [1 mention(s)]
+- **Always above the high (for shorts) or below the low (for longs).**
+  - > "stop is always going to be above the high" @07:10 — _LwS6r9foNCk.json_
+
+### above below the recent structure  [1 mention(s)]
+- **Above/below the recent structure**
+  - > "[ON-CHART ONLY]" @08:33 — _MWPm9Gohn3g.json_
+
 ### place stop loss above below the previous lower timeframe str  [1 mention(s)]
 - **Place stop loss above/below the previous lower timeframe structure high/low.**
   - > "I can place it below this lower timeframe high" @10:11 — _PHbklTEGoEY.json_
+
+### place stop loss at an area where the trade would be invalid  [1 mention(s)]
+- **Place stop loss at an area where the trade would be invalid**
+  - > "Setting a stop loss at an area where you think your trade will be invalid" @09:50 — _PtA9YuiYALw.json_
+
+### always use a stop loss  [1 mention(s)]
+- **Always use a stop loss**
+  - > "always use a stop loss." @00:50 — _Q3VSRZassR4.json_
+
+### below the low of the 30m candle  [1 mention(s)]
+- **Below the low of the 30M candle.**
+  - > "[ON-CHART ONLY]" @52:33 — _Qe1F4rT-RCE.json_
+
+### stop loss  [1 mention(s)]
+- **Stop Loss**
+  - > "[ON-CHART ONLY]" @01:16 — _SKUquKC-fAk.json_
+
+### behind the most recent high or low  [1 mention(s)]
+- **Behind the most recent high or low**
+  - > "I'll take the entry, just for the trade to stop me out." @00:18 — _TeNTPhNfhx0.json_
+
+### above the previous high for a short below the previous low f  [1 mention(s)]
+- **Above the previous high for a short, below the previous low for a long.**
+  - > "stop above the previous high" @09:48 — _U7ol7iR9oYc.json_
 
 ### place stop above previous high for shorts or below previous   [1 mention(s)]
 - **Place stop above previous high for shorts or below previous low for longs.**
   - > "stop above a previous high" @05:01 — _YJirdD2wNYg.json_
 
+### place stop loss above below the high low of the range  [1 mention(s)]
+- **Place stop loss above/below the high/low of the range.**
+  - > "I could take a bit of a stop loss." @02:12 — _eLolPHSwLyk.json_
+
 ### above below wick or previous high low  [1 mention(s)]
 - **Above/below wick or previous high/low.**
   - > "placing my stop loss below the low... that's my invalidation point." @10:02 — _ffeA39JCFow.json_
+
+### below the low for long or above the high for short of the ca  [1 mention(s)]
+- **Below the low (for long) or above the high (for short) of the candle.**
+  - > "Stop below the low, targeting the previous high." @07:31 — _g2zXszOwPaI.json_
 
 ### placed behind the high or low that was broken during the typ  [1 mention(s)]
 - **Placed behind the high or low that was broken during the Type 3 shift.**
   - > "the high that you broke or the low that you broke." @07:05 — _ghmWUCdD9qs.json_
 
+### fixed 1 1 risk to reward  [1 mention(s)]
+- **Fixed 1:1 Risk-to-Reward**
+  - > "You're going to use a 1 to 1 fixed risk to reward" @03:32 — _kj8N4DL8RBM.json_
+
+### stop loss placed above the previous high for shorts or below  [1 mention(s)]
+- **Stop loss placed above the previous high (for shorts) or below the previous low (for longs) on the lower timeframe.**
+  - > "we can put our stop above the previous high" @06:24 — _nKy15N79BXM.json_
+
 ### placed below the low of the market structure shift for longs  [1 mention(s)]
 - **Placed below the low of the market structure shift for longs, or above the high for shorts.**
   - > "putting our stop below the low" @06:30 — _nY2pWOLOXmA.json_
+
+### stop loss placed above below the high low created by the shi  [1 mention(s)]
+- **Stop loss placed above/below the high/low created by the shift.**
+  - > "we can put a stop loss at that low" @05:11 — _rV0hGWlakM0.json_
+
+### above below the swing point  [1 mention(s)]
+- **Above/below the swing point**
+  - > "[ON-CHART ONLY]" @03:00 — _srOxm0ABi_U.json_
 
 ### place the stop loss above the previous high of the 1 minute   [1 mention(s)]
 - **Place the stop loss above the previous high of the 1-minute change of character/shift, ensuring it has breathing room.**
   - > "I just simply set my stop loss above a previous high" @10:23 — _u9B9zzjkBRs.json_
 
+### place stop loss above the high or below the low  [1 mention(s)]
+- **Place stop loss above the high or below the low**
+  - > "[ON-CHART ONLY]" @17:49 — _wBfRETp8IRk.json_
+
 ### place stop behind the most recent high or low of the overext  [1 mention(s)]
 - **Place stop behind the most recent high or low of the overextension.**
   - > "stop behind the most recent high or low" @01:41 — _xSVlVpXLuV0.json_
 
+### set stop loss behind the recent swing high or low structure  [1 mention(s)]
+- **Set stop loss behind the recent swing high or low structure.**
+  - > "Place your stop loss above the high or below the low" @12:35 — _zIcup9rJSiQ.json_
 
-## targets  (31 entries)
+
+## targets  (54 entries)
+
+### fixed 1 1 risk to reward ratio  [2 mention(s)]
+- **Fixed 1:1 Risk-to-Reward ratio.**
+  - > "And with 15-minute CBRs, I mainly just target a 1 to 1 on this." @02:28 — _myuK3dFUdxk.json_
+- **Fixed 1:1 risk-to-reward ratio**
+  - > "Only stick to 1 to 1 risk reward." @00:49 — _Q3VSRZassR4.json_
 
 ### target 50 of the prior extension or a 1 1 risk to reward rat  [1 mention(s)]
 - **Target 50% of the prior extension or a 1:1 risk-to-reward ratio.**
@@ -991,10 +1492,6 @@ Sources: 17 video/segment extractions
 - **Target a 1:2 Risk-to-Reward ratio or the 50% level of the hourly extension.**
   - > "1 to 2 is good enough for me" @16:04 — _m6rbu3S8iw0.json_
 
-### fixed 1 1 risk to reward ratio  [1 mention(s)]
-- **Fixed 1:1 Risk-to-Reward ratio.**
-  - > "And with 15-minute CBRs, I mainly just target a 1 to 1 on this." @02:28 — _myuK3dFUdxk.json_
-
 ### target the 50 retracement level ifs of the previous expansio  [1 mention(s)]
 - **Target the 50% retracement level (IFS) of the previous expansion leg, or aim for a 1 to 1.5 RR.**
   - > "targeting 50% of this move... target a bit of a IFS into 50% of this... Maybe should have just targeted more of a around a 1 to 1.5 or recent second structure low." @07:34 — _o78T2DVgI3c.json_
@@ -1015,9 +1512,21 @@ Sources: 17 video/segment extractions
 - **Set take profit equal to stop loss distance (1:1 RR).**
   - > "On average I find the best is around a 1 to 1 with a 60% win rate." @02:11 — _3d8Q4GiIgSE.json_
 
+### target based on probability  [1 mention(s)]
+- **Target based on probability**
+  - > "Focus on Probability over RR" @00:57 — _5u682pWNmpY.json_
+
 ### target the most recent opposing high low or a key area of in  [1 mention(s)]
 - **Target the most recent opposing high/low or a key area of interest.**
   - > "targeting a previous high or area of interest." @01:10 — _975HWA-Ar94.json_
+
+### tp before next htf level probability over rr positive rr tar  [1 mention(s)]
+- **TP before next HTF Level, Probability over RR, Positive RR, Target around 1.5RR**
+  - > "[ON-CHART ONLY]" @06:09 — _EzwR2boaNRs.json_
+
+### 1 5 rr  [1 mention(s)]
+- **1.5 RR**
+  - > "Average is normally around 1.5." @22:39 — _Goz73AVNIDM.json_
 
 ### target the previous high or low  [1 mention(s)]
 - **Target the previous high or low.**
@@ -1027,21 +1536,81 @@ Sources: 17 video/segment extractions
 - **Target the opposite end of the Tokyo session range or key historical areas of interest.**
   - > "I'll probably just target around this area of interest so we have some previous reactions." @10:21 — _HtjHo8W1i0Q.json_
 
+### 2 1 risk to reward  [1 mention(s)]
+- **2:1 Risk to Reward**
+  - > "75% win rate with a 2 risk to reward" @10:57 — _JVVBFZeXvOk.json_
+
+### target hit  [1 mention(s)]
+- **Target hit**
+  - > "just come back to see if the stop loss of the or the take profit got it" @08:52 — _JyJXUTLDFJA.json_
+
+### target 50 of the previous move  [1 mention(s)]
+- **Target 50% of the previous move**
+  - > "TP Target 50%" @08:18 — _K7u2jatqeaM.json_
+
+### fixed 1 1 risk reward  [1 mention(s)]
+- **Fixed 1:1 Risk-Reward**
+  - > "Use a fixed 1:1 risk-reward." @07:13 — _KBQ6Z9A5IE4.json_
+
+### previous 1 minute lows for shorts  [1 mention(s)]
+- **Previous 1-minute lows (for shorts).**
+  - > "targeting previous 1-minute lows" @07:14 — _LwS6r9foNCk.json_
+
+### 2 to 3 times risk  [1 mention(s)]
+- **2 to 3 times risk**
+  - > "targeting around 2 to 3 risk" @08:35 — _MWPm9Gohn3g.json_
+
 ### target the 50 retracement level of the overextended hourly m  [1 mention(s)]
 - **Target the 50% retracement level of the overextended hourly move.**
   - > "The take profit is always going to be set at 50% of the previous higher timeframe move" @12:13 — _PHbklTEGoEY.json_
+
+### place take profit where price is likely to react or reverse  [1 mention(s)]
+- **Place take profit where price is likely to react or reverse**
+  - > "Or setting a take profit where you think price is going to react to or reverse from" @09:54 — _PtA9YuiYALw.json_
+
+### based on market structure  [1 mention(s)]
+- **Based on market structure.**
+  - > "[ON-CHART ONLY]" @52:13 — _Qe1F4rT-RCE.json_
+
+### take profit  [1 mention(s)]
+- **Take Profit**
+  - > "[ON-CHART ONLY]" @01:16 — _SKUquKC-fAk.json_
+
+### most recent low or high  [1 mention(s)]
+- **Most recent low or high**
+  - > "targeting the most recent low." @06:09 — _TeNTPhNfhx0.json_
+
+### target the previous low for a short or the candle flip  [1 mention(s)]
+- **Target the previous low for a short, or the candle flip.**
+  - > "we can look to target a previous low" @09:50 — _U7ol7iR9oYc.json_
 
 ### target previous structure levels or a fixed 1 2 risk reward   [1 mention(s)]
 - **Target previous structure levels or a fixed 1:2 Risk-Reward ratio.**
   - > "target a let's say a 1 to 2 at around this previous 1 minute structure lows" @06:21 — _YJirdD2wNYg.json_
 
+### target 1 1 risk to reward ratio  [1 mention(s)]
+- **Target 1:1 risk-to-reward ratio.**
+  - > "Target around a 1:1." @02:20 — _eLolPHSwLyk.json_
+
 ### previous lows highs or areas of interest  [1 mention(s)]
 - **Previous lows/highs or areas of interest.**
   - > "targeting a previous low or previous area of interest." @05:21 — _ffeA39JCFow.json_
 
+### previous high low or area of interest  [1 mention(s)]
+- **Previous high/low or area of interest.**
+  - > "My take profit was just at this previous high, previous area of interest." @03:14 — _g2zXszOwPaI.json_
+
 ### target the 50 retracement of the previous major move mean re  [1 mention(s)]
 - **Target the 50% retracement of the previous major move (mean reversion).**
   - > "I tend to target around 50% of the previous move." @06:58 — _ghmWUCdD9qs.json_
+
+### fixed 1 1 risk to reward  [1 mention(s)]
+- **Fixed 1:1 Risk-to-Reward**
+  - > "You're going to use a 1 to 1 fixed risk to reward" @03:32 — _kj8N4DL8RBM.json_
+
+### target around 50 of the previous lower timeframe move or app  [1 mention(s)]
+- **Target around 50% of the previous lower timeframe move, or approximately 1.5 to 2.0 Risk-to-Reward ratio.**
+  - > "I just tend to target, you know, around 50% of the previous low timeframe move, around a 1.5 risk-to-reward on average." @05:13 — _nKy15N79BXM.json_
 
 ### primary target is the 50 midpoint of the range secondary tar  [1 mention(s)]
 - **Primary target is the 50% midpoint of the range; secondary targets include previous highs/lows.**
@@ -1051,9 +1620,21 @@ Sources: 17 video/segment extractions
 - **Target opposing structural lows/highs or key hourly levels.**
   - > "I can target these previous lows or I can target a level... I can target this hourly level here" @13:23 — _nvJPa6SBwWk.json_
 
+### target 50 of the hourly extension  [1 mention(s)]
+- **Target 50% of the hourly extension.**
+  - > "we can target 50% of this hourly overextension here." @05:14 — _rV0hGWlakM0.json_
+
+### 50 of the hourly candle extension  [1 mention(s)]
+- **50% of the hourly candle extension**
+  - > "I'm just targeting like the 50% of the hourly candle extension here" @03:35 — _srOxm0ABi_U.json_
+
 ### target the next high timeframe area of interest htf highs lo  [1 mention(s)]
 - **Target the next high-timeframe area of interest (HTF highs/lows) or a lower-timeframe structural low.**
   - > "target a lower timeframe low or lower timeframe area of interest." @10:26 — _u9B9zzjkBRs.json_
+
+### trail alerts on the lows or highs  [1 mention(s)]
+- **Trail alerts on the lows or highs**
+  - > "I can just trail an alerts on the lows. Let's say I can also put an alert at the highs. If it breaks a high, I can then trail my alert to the next low being created" @17:29 — _wBfRETp8IRk.json_
 
 ### target 50 of the previous overextension move  [1 mention(s)]
 - **Target 50% of the previous overextension move.**
@@ -1063,8 +1644,24 @@ Sources: 17 video/segment extractions
 - **Target the 50% retracement level of the current 1H candle's extension.**
   - > "we will be targeting 50% of the hourly candle extension here." @03:02 — _zFe98gsfbUk.json_
 
+### target a 1 1 1 2 or structural multi r profit target based o  [1 mention(s)]
+- **Target a 1:1, 1:2, or structural multi-R profit target based on recent highs/lows.**
+  - > "We're looking for a 1-to-1, 1-to-2 risk-to-reward." @14:15 — _zIcup9rJSiQ.json_
 
-## risk_sizing  (15 entries)
+
+## risk_sizing  (34 entries)
+
+### 1 risk per trade  [5 mention(s)]
+- **1% risk per trade**
+  - > "1% risk per trade, always use stop losses, max 2-3 trades per day" @24:57 — _K7u2jatqeaM.json_
+- **1% risk per trade**
+  - > "Why you should be using 1% risk." @26:56 — _KBQ6Z9A5IE4.json_
+- **1% risk per trade**
+  - > "if you risk 1% per trade" @01:47 — _kj8N4DL8RBM.json_
+- **1% risk per trade**
+  - > "[ON-CHART ONLY]" @03:17 — _srOxm0ABi_U.json_
+- **1% risk per trade**
+  - > "if it's a fund, prop firm, or if it's a big main account, 1%" @10:50 — _wBfRETp8IRk.json_
 
 ### aim for 1 1 rr to maximize win rate and consistency when siz  [1 mention(s)]
 - **Aim for 1:1 RR to maximize win rate and consistency when sizing up.**
@@ -1106,9 +1703,17 @@ Sources: 17 video/segment extractions
 - **Risk sizing is not specified, but the setup allows for high risk-to-reward ratios.**
   - > "It allows me to get a lot higher of a risk-to-reward while also keeping a pretty good win rate" @00:17 — _xmNJrE9BJ84.json_
 
+### 1 2 setups per day  [1 mention(s)]
+- **1-2 setups per day**
+  - > "Focus on 1-2 Setups Per Day" @00:55 — _5u682pWNmpY.json_
+
 ### aim for a refined risk to reward ratio of 1 2 to 1 3  [1 mention(s)]
 - **Aim for a refined risk-to-reward ratio of 1:2 to 1:3.**
   - > "on average give me around a 1.5 to 2 risk-to-reward." @03:00 — _975HWA-Ar94.json_
+
+### 1 risk per trade max 2 trades per day keep the risk consiste  [1 mention(s)]
+- **1% risk per trade, max 2 trades per day, keep the risk consistent (for prop firms 1-2%)**
+  - > "1% risk per trade. Max 2 trades per day. Keep the risk consistent" @06:19 — _EzwR2boaNRs.json_
 
 ### vague mentions managing risk without specific percentages  [1 mention(s)]
 - **Vague; mentions managing risk without specific percentages.**
@@ -1118,6 +1723,50 @@ Sources: 17 video/segment extractions
 - **Aim for a minimum of 1.5 risk-to-reward ratio.**
   - > "It results in a pretty good win rate with a 1.5 risk to reward on average." @11:51 — _HtjHo8W1i0Q.json_
 
+### not specified  [1 mention(s)]
+- **[NOT SPECIFIED]**
+  - > "[NOT SPECIFIED]" @ — _JVVBFZeXvOk.json_
+
+### risk 0 25 per trade  [1 mention(s)]
+- **Risk 0.25% per trade**
+  - > "I would probably risk like 25% per 0.25%" @13:57 — _JyJXUTLDFJA.json_
+
+### aim for 1 1 risk to reward  [1 mention(s)]
+- **Aim for 1:1 risk-to-reward.**
+  - > "maybe you can get around 1 to 1" @05:19 — _LwS6r9foNCk.json_
+
+### 2 risk per trade  [1 mention(s)]
+- **2% risk per trade**
+  - > "I risk 2% per day" @00:00 — _MWPm9Gohn3g.json_
+
+### risk 0 5 to 1 per trade to maintain a high pass rate  [1 mention(s)]
+- **Risk 0.5% to 1% per trade to maintain a high pass rate.**
+  - > "If we're risking 1%, that's a 73% pass rate. If we want a 90% pass rate, we need to risk around 0.5%." @03:40 — _PFUo228AmJI.json_
+
+### limit to 1 2 trades per day  [1 mention(s)]
+- **Limit to 1-2 trades per day**
+  - > "I only take one to two trades per day" @04:46 — _PtA9YuiYALw.json_
+
+### 1 per day 1 2 trades per day  [1 mention(s)]
+- **1% per day, 1-2 trades per day**
+  - > "1% per day, one or two trades per day" @00:48 — _Q3VSRZassR4.json_
+
+### start small and scale up  [1 mention(s)]
+- **Start small and scale up.**
+  - > "Focus still on learning and testing, bigger focus on practicing and improving psychology... Gradually increase risk and size." @21:41 — _Qe1F4rT-RCE.json_
+
+### risk management  [1 mention(s)]
+- **Risk management**
+  - > "[ON-CHART ONLY]" @01:16 — _SKUquKC-fAk.json_
+
+### risk 1 per trade  [1 mention(s)]
+- **Risk 1% per trade.**
+  - > "Risk 1%" @02:23 — _eLolPHSwLyk.json_
+
+### fixed risk to reward ratio targeting around 1 5r to 5r depen  [1 mention(s)]
+- **Fixed risk-to-reward ratio targeting around 1.5R to 5R depending on setup quality.**
+  - > "around a 1.5 risk-to-reward on average... closed for a nice 5R trade" @05:15 — _nKy15N79BXM.json_
+
 ### focus on 1 to 2 setups per day and keep the risk consistent  [1 mention(s)]
 - **Focus on 1 to 2 setups per day and keep the risk consistent.**
   - > "[ON-CHART ONLY]" @10:51 — _u9B9zzjkBRs.json_
@@ -1126,8 +1775,12 @@ Sources: 17 video/segment extractions
 - **Average risk-to-reward ratio is 1:2.**
   - > "average risk to reward of one to two." @00:24 — _zFe98gsfbUk.json_
 
+### risk a fixed percentage per trade typically 0 5 to 1 of acco  [1 mention(s)]
+- **Risk a fixed percentage per trade, typically 0.5% to 1% of account balance.**
+  - > "Risking 0.5% to 1% per trade" @08:12 — _zIcup9rJSiQ.json_
 
-## filters_avoid  (27 entries)
+
+## filters_avoid  (51 entries)
 
 ### avoid entering trades immediately before a new 15 minute can  [1 mention(s)]
 - **Avoid entering trades immediately before a new 15-minute candle opens.**
@@ -1181,9 +1834,21 @@ Sources: 17 video/segment extractions
 - **Avoid trading if DXY is at the extreme highs of its previous trading range.**
   - > "I also didn't like DXY being in highs of this previous range" @04:35 — _xmNJrE9BJ84.json_
 
+### avoid trading when there is no wick  [1 mention(s)]
+- **Avoid trading when there is no wick**
+  - > "if there's no wick, I kind of recognize that maybe that's more likely for that trade to be a loss" @02:53 — _-UaN2tpBTnY.json_
+
+### avoid no wick candles  [1 mention(s)]
+- **Avoid no-wick candles**
+  - > "I know I should not be trading against no-wick candles" @05:25 — _5u682pWNmpY.json_
+
 ### do not enter directly at the 50 level without a lower timefr  [1 mention(s)]
 - **Do not enter directly at the 50% level without a lower timeframe confirmation shift.**
   - > "by waiting for that extra shift, I avoided entering too early and getting a bad entry." @06:05 — _975HWA-Ar94.json_
+
+### avoid trading when volume is decreasing  [1 mention(s)]
+- **Avoid trading when volume is decreasing**
+  - > "I don't like when volume is decreasing when you're making higher lows and lower highs. I just don't trade those conditions." @24:18 — _Goz73AVNIDM.json_
 
 ### avoid the new york to sydney crossover due to high spreads  [1 mention(s)]
 - **Avoid the New York to Sydney crossover due to high spreads.**
@@ -1197,13 +1862,77 @@ Sources: 17 video/segment extractions
 - **Do not trade against the higher timeframe trend even if the lower timeframe looks clean.**
   - > "They see price is moving bearish on the lower timeframes... and then they get stopped out... because they haven't kept in mind the higher timeframe context." @04:09 — _HtjHo8W1i0Q.json_
 
+### avoid trading outside of the 30 minute mark in the hour  [1 mention(s)]
+- **Avoid trading outside of the 30-minute mark in the hour**
+  - > "I had a pretty low win rate in the later half of the hour." @10:37 — _JVVBFZeXvOk.json_
+
+### no strong reaction at poi  [1 mention(s)]
+- **No strong reaction at POI**
+  - > "When I don't see this kind of reaction, it was like a red flag for me. No strong reaction, probably this level is not valid" @09:36 — _JyJXUTLDFJA.json_
+
+### avoid new york session for gold  [1 mention(s)]
+- **Avoid New York session for Gold**
+  - > "if you're trading gold, I think avoid New York session always, always" @25:00 — _JyJXUTLDFJA.json_
+
+### avoid trading when conditions are not easy or when forcing a  [1 mention(s)]
+- **Avoid trading when conditions are not easy or when forcing a trade**
+  - > "If it ever feels hard to find a setup or to get an entry, you should not be trading." @12:57 — _K7u2jatqeaM.json_
+
+### avoid trading when gold is trending at all time highs  [1 mention(s)]
+- **Avoid trading when gold is trending at all-time highs**
+  - > "When gold is trending at all-time highs, My reversal strategy gets nerfed by that meta." @14:03 — _K7u2jatqeaM.json_
+
+### avoid trading in trending conditions  [1 mention(s)]
+- **Avoid trading in trending conditions**
+  - > "As soon as I try to take continuations within a range, where I try to buy into highs here, well I'm just going to get stopped out." @03:35 — _KBQ6Z9A5IE4.json_
+
+### avoid trades where the break of structure is too small or ta  [1 mention(s)]
+- **Avoid trades where the break of structure is too small or takes too long to return to the area.**
+  - > "if you break too much and then takes an hour for it to come back to the area, that's also not enough" @04:08 — _LwS6r9foNCk.json_
+
+### avoid trading after tokyo open  [1 mention(s)]
+- **Avoid trading after Tokyo open**
+  - > "normally after Tokyo open... it doesn't normally have the best setups, so maybe I can look at just not trading after the open" @12:33 — _MWPm9Gohn3g.json_
+
+### avoid high risk to reward strategies  [1 mention(s)]
+- **Avoid high risk-to-reward strategies.**
+  - > "The biggest mistake I see traders make when they trade prop firms is targeting high risk-to-reward strategies." @03:07 — _PFUo228AmJI.json_
+
 ### an overextension is invalidated if price pulls back 50 or mo  [1 mention(s)]
 - **An overextension is invalidated if price pulls back 50% or more before the 20-30 minute mark.**
   - > "I define a pullback that invalidates an overextension by pulling back to around 50% or more." @07:17 — _PHbklTEGoEY.json_
 
+### do not trade news  [1 mention(s)]
+- **Do not trade news**
+  - > "This is why I don't trade news, or anything like that" @14:00 — _PtA9YuiYALw.json_
+
+### do not manage trades  [1 mention(s)]
+- **Do not manage trades**
+  - > "you're not allowed to manage your trades. You're setting and forgetting." @00:48 — _Q3VSRZassR4.json_
+
+### avoid trading when the market is ranging or has low volume  [1 mention(s)]
+- **Avoid trading when the market is ranging or has low volume.**
+  - > "I exit early when it's ranging or low volume. I don't want to be in a trade for too long because I'm only trading the next 10 minutes." @38:41 — _Qe1F4rT-RCE.json_
+
+### do not trade if correlation does not align with the setup  [1 mention(s)]
+- **Do not trade if correlation does not align with the setup.**
+  - > "So even though you have a nice type-3 shift bullish... you actually wouldn't want to look for a buy, you'd expect it to be pushing bearish because of how that correlation was setting up." @04:32 — _TeNTPhNfhx0.json_
+
+### avoid overextended moves  [1 mention(s)]
+- **Avoid overextended moves.**
+  - > "If I take a trade where it's overextended, I'm buying into a high or selling into a low in more range-bound conditions, this is even worse." @03:23 — _U7ol7iR9oYc.json_
+
 ### don t trade against 1h candle direction in first 15 minutes  [1 mention(s)]
 - **Don't trade against 1H candle direction in first 15 minutes.**
   - > "we wouldn't want to be trading against that especially in the first 0 to 15 minutes of this hour" @04:49 — _YJirdD2wNYg.json_
+
+### avoid trading when price is ranging sideways for too long  [1 mention(s)]
+- **Avoid trading when price is ranging sideways for too long.**
+  - > "I'm not the biggest fan of this price action. We've kind of gone sideways for around, what is that, 5 minutes?" @02:42 — _eLolPHSwLyk.json_
+
+### avoid trading when price is trending  [1 mention(s)]
+- **Avoid trading when price is trending.**
+  - > "The trend is continuing. I'm not the biggest fan of that." @08:16 — _eLolPHSwLyk.json_
 
 ### avoid if type 3 shift occurs against direction  [1 mention(s)]
 - **Avoid if Type 3 shift occurs against direction.**
@@ -1212,6 +1941,14 @@ Sources: 17 video/segment extractions
 ### do not trade if the market is trending strongly or at all ti  [1 mention(s)]
 - **Do not trade if the market is trending strongly or at all-time highs.**
   - > "If gold is at all-time highs, I'm going to go outside and touch some grass." @02:53 — _ghmWUCdD9qs.json_
+
+### avoid trading during the middle of the hour for continuation  [1 mention(s)]
+- **Avoid trading during the middle of the hour for continuations**
+  - > "from around 10 to 30 minutes into the hour, I have around a 50% win rate" @06:34 — _kj8N4DL8RBM.json_
+
+### avoid taking trades at the wrong time e g taking a continuat  [1 mention(s)]
+- **Avoid taking trades at the wrong time (e.g., taking a continuation trade after a candle has already exhausted or taking a reversal trade in a strong trending market without range bounds).**
+  - > "It doesn't matter how good of a trade you take, if you're taking it at the wrong time." @04:42 — _nKy15N79BXM.json_
 
 ### avoid trading when the market is purely trending without for  [1 mention(s)]
 - **Avoid trading when the market is purely trending without forming a range over 4-5 hours.**
@@ -1225,9 +1962,17 @@ Sources: 17 video/segment extractions
 - **Avoid trading if there is too much volume (no pullback) or if the market is in a tight, low-volume range (no clear shift).**
   - > "If it's too much volume, sometimes you just won't get that pullback... or if it's too rangy, you just won't get that clear shift" @03:17 — _nvJPa6SBwWk.json_
 
+### avoid low volume  [1 mention(s)]
+- **Avoid low volume**
+  - > "Obviously low volume stuff like this, I'm not looking to trade it" @04:47 — _srOxm0ABi_U.json_
+
 ### do not trade when the lower timeframe structure is ranging w  [1 mention(s)]
 - **Do not trade when the lower timeframe structure is ranging; wait for it to sweep/take out a high or low first.**
   - > "In the lower timeframe short structure, we're ranging... you wouldn't look to take a trade out of this, you'd look for it to take out a high, take out a low." @12:19 — _u9B9zzjkBRs.json_
+
+### avoid trading on monday  [1 mention(s)]
+- **Avoid trading on Monday**
+  - > "I used to think Mondays were really bad for me" @18:47 — _wBfRETp8IRk.json_
 
 ### avoid trading when gold and dxy strengths are balanced leadi  [1 mention(s)]
 - **Avoid trading when Gold and DXY strengths are balanced, leading to range-bound price action.**
@@ -1237,8 +1982,18 @@ Sources: 17 video/segment extractions
 - **Avoid low-volume extensions or those that pull back 50% before the hour's midpoint.**
   - > "This would be a bad overextension because it's pretty low volume and you're always correcting back to 50% of the previous move." @01:11 — _zFe98gsfbUk.json_
 
+### do not trade during high impact news releases or choppy low   [1 mention(s)]
+- **Do not trade during high-impact news releases or choppy, low-volume periods.**
+  - > "Avoid trading during major news events like FOMC or Non-Farm Payrolls." @19:40 — _zIcup9rJSiQ.json_
 
-## psychology  (32 entries)
+
+## psychology  (66 entries)
+
+### focus on the process not the outcome  [2 mention(s)]
+- **Focus on the process, not the outcome**
+  - > "A good day is a day that you followed your plan. A good day can be a losing day if you followed your plan." @10:26 — _Goz73AVNIDM.json_
+- **Focus on the process, not the outcome**
+  - > "You Guarantee Trading to be harder when you focus on the outcome" @16:21 — _K7u2jatqeaM.json_
 
 ### prioritize high win rate and low drawdown over high risk to   [1 mention(s)]
 - **Prioritize high win rate and low drawdown over high risk-to-reward ratios.**
@@ -1304,6 +2059,22 @@ Sources: 17 video/segment extractions
 - **Accept losses as necessary learning experiences during winning streaks to prevent overconfidence.**
   - > "if I lose I'll learn... losing is a good thing... the less I lose the less I learn" @07:25 — _zScdfOmUMOE.json_
 
+### detach from external reward  [1 mention(s)]
+- **Detach from external reward**
+  - > "Detach yourself from external reward and internally reward yourself for the actions that will lead to long-term results" @02:03 — _-UaN2tpBTnY.json_
+
+### visualize the worst possible outcome  [1 mention(s)]
+- **Visualize the worst possible outcome**
+  - > "I visualize in as much detail as possible the worst possible outcome." @10:21 — _-UaN2tpBTnY.json_
+
+### do not tell friends or family about trading  [1 mention(s)]
+- **Do not tell friends or family about trading**
+  - > "Please do not tell people you trade. Not your friends, definitely not your family, because after over six years of trading, I think this is my biggest regret I ever had." @00:00 — _1i70cyZt6to.json_
+
+### trading is easier when you don t need it to work  [1 mention(s)]
+- **Trading is easier when you don't need it to work**
+  - > "Trading becomes easy when you don't need it to work. The less you care about it, the easier it becomes." @08:00 — _1i70cyZt6to.json_
+
 ### leverage the winner s effect frequent wins chemically boost   [1 mention(s)]
 - **Leverage the Winner's Effect: frequent wins chemically boost confidence and discipline.**
   - > "Success causes physical and chemical changes in your brain, such as increased levels of hormone like testosterone and dopamine, which can boost confidence, focus, and motivation." @03:13 — _3d8Q4GiIgSE.json_
@@ -1316,9 +2087,21 @@ Sources: 17 video/segment extractions
 - **Select a risk-to-reward profile that aligns with your personal emotional tolerance.**
   - > "You just have to choose the one that is sustainable for your own personal psychology." @09:02 — _3d8Q4GiIgSE.json_
 
+### data collection mindset  [1 mention(s)]
+- **Data collection mindset**
+  - > "Every trade is a Gain when you journal" @00:19 — _5u682pWNmpY.json_
+
 ### accept missing trades as a trade off for higher win rates an  [1 mention(s)]
 - **Accept missing trades as a trade-off for higher win rates and better risk-to-reward.**
   - > "Would you rather get paid more for less? I think that's a worthy trade-off." @10:50 — _975HWA-Ar94.json_
+
+### focus on learning not winning in the short term  [1 mention(s)]
+- **Focus on learning not winning in the short term**
+  - > "the person that focused on learning will inevitably overtake the person focused on winning" @01:01 — _EzwR2boaNRs.json_
+
+### accept random outcomes losses are inevitable be intentional   [1 mention(s)]
+- **Accept random outcomes, losses are inevitable - be intentional with trading decisions, be aware of my behaviour patterns.**
+  - > "Accept Random Outcomes, Losses are inevitable - Be intentional with trading decisions, be aware of my behaviour patterns." @07:19 — _EzwR2boaNRs.json_
 
 ### routine consistency leads to consistent results  [1 mention(s)]
 - **Routine consistency leads to consistent results.**
@@ -1328,17 +2111,89 @@ Sources: 17 video/segment extractions
 - **Exercise patience and wait for multi-timeframe confirmation instead of rushing entries.**
   - > "You could buy there, but I'm going to be a bit more patient and wait for some extra confirmation to take a trade." @05:21 — _HtjHo8W1i0Q.json_
 
+### default to not trading  [1 mention(s)]
+- **Default to not trading**
+  - > "My default is not trading. I made it unreasonable for me to do the wrong thing." @15:50 — _JVVBFZeXvOk.json_
+
+### journaling  [1 mention(s)]
+- **Journaling**
+  - > "Journaling is one of the most important things you gave me. You taught me how to good journal" @07:56 — _JyJXUTLDFJA.json_
+
+### emotionless trading  [1 mention(s)]
+- **Emotionless trading**
+  - > "Right now I don't put emotion on my trade. So it's like emotionless" @08:41 — _JyJXUTLDFJA.json_
+
+### associate pain with growth  [1 mention(s)]
+- **Associate pain with growth**
+  - > "I try to associate that pain with growth." @23:36 — _K7u2jatqeaM.json_
+
+### focus on process over outcome  [1 mention(s)]
+- **Focus on process over outcome**
+  - > "Good psychology in trading is simply the ability to execute a proven edge consistently under uncertainty." @24:37 — _KBQ6Z9A5IE4.json_
+
+### accept that higher targets decrease win probability  [1 mention(s)]
+- **Accept that higher targets decrease win probability.**
+  - > "the more you target, the less like you are to win" @13:50 — _LwS6r9foNCk.json_
+
+### focus on probabilities not individual outcomes  [1 mention(s)]
+- **Focus on probabilities, not individual outcomes**
+  - > "you need to just be focusing on the probabilities and not the outcome of each individual trade" @10:13 — _MWPm9Gohn3g.json_
+
+### treat trading like a business  [1 mention(s)]
+- **Treat trading like a business.**
+  - > "So first off you need to treat trading like a business." @00:31 — _PFUo228AmJI.json_
+
+### do not be attached to a single account  [1 mention(s)]
+- **Do not be attached to a single account.**
+  - > "Pretty much all of your problems when it comes to trading prop firm challenges is because you're too attached to one account." @02:39 — _PFUo228AmJI.json_
+
+### focus on consistency over high profitability  [1 mention(s)]
+- **Focus on consistency over high profitability.**
+  - > "You should shift your focus from trying to be the most profitable trader, well actually trying to be the most consistent trader." @05:57 — _PFUo228AmJI.json_
+
 ### reduce screen time and trade frequency to increase profitabi  [1 mention(s)]
 - **Reduce screen time and trade frequency to increase profitability.**
   - > "the less I looked at the charts, the less I traded, the more money I made." @04:00 — _PHbklTEGoEY.json_
+
+### accept emotions as data points  [1 mention(s)]
+- **Accept emotions as data points**
+  - > "Think of your emotions as another data point" @07:47 — _PtA9YuiYALw.json_
+
+### cut losses when feeling hope  [1 mention(s)]
+- **Cut losses when feeling hope**
+  - > "When I'm starting to feel hope in a loss, I cut it immediately" @08:26 — _PtA9YuiYALw.json_
+
+### meditation is the act of controlling focus and attention  [1 mention(s)]
+- **Meditation is the act of controlling focus and attention**
+  - > "Meditation is simply the act of controlling your focus your attention." @11:44 — _Q3VSRZassR4.json_
+
+### use a journal to maintain objectivity  [1 mention(s)]
+- **Use a journal to maintain objectivity.**
+  - > "This will give you objective data, like an accurate answer to all those questions." @13:58 — _Qe1F4rT-RCE.json_
+
+### expect to lose  [1 mention(s)]
+- **Expect to lose**
+  - > "I expected to lose. I expected to take a trade and it to not work out in my favor, and I focused on being okay with taking losses." @03:53 — _SKUquKC-fAk.json_
+
+### lack of discipline is actually a lack of clarity  [1 mention(s)]
+- **Lack of discipline is actually a lack of clarity.**
+  - > "You're Lack of Discipline is actually a lack of Clarity" @01:24 — _U7ol7iR9oYc.json_
 
 ### prioritize timing over entry location  [1 mention(s)]
 - **Prioritize timing over entry location.**
   - > "It's not what type of trade you take, it's not where you enter that trade, it's when you enter that trade that makes you money." @00:34 — _YJirdD2wNYg.json_
 
+### discretion is necessary for manual trading  [1 mention(s)]
+- **Discretion is necessary for manual trading.**
+  - > "And like, if you're manually trading, like every manual trader will, will need discretion. It'll, you know, it's the ability to adapt to conditions." @08:38 — _eLolPHSwLyk.json_
+
 ### focus on process over pnl  [1 mention(s)]
 - **Focus on process over PnL.**
   - > "Process: Think, Feel, Just Do." @00:12 — _ffeA39JCFow.json_
+
+### consistency over perfection  [1 mention(s)]
+- **Consistency over perfection.**
+  - > "I'm just trying to be consistently good, I'm not trying to be perfect and exit at the perfect points." @08:25 — _g2zXszOwPaI.json_
 
 ### focus on improvement through subtraction rather than adding   [1 mention(s)]
 - **Focus on improvement through subtraction rather than adding more complexity.**
@@ -1348,6 +2203,18 @@ Sources: 17 video/segment extractions
 - **Journaling is mandatory to ensure consistency and awareness.**
   - > "You can only do the same thing at the same time if you're tracking it." @10:03 — _ghmWUCdD9qs.json_
 
+### treat first payouts as proof of concept  [1 mention(s)]
+- **Treat first payouts as proof-of-concept**
+  - > "Treat first payouts as proof-of-concept" @12:09 — _kj8N4DL8RBM.json_
+
+### do not copy trade all accounts at once  [1 mention(s)]
+- **Do not copy trade all accounts at once**
+  - > "You'll be tempted to copy trade all accounts at the same time... but this is extremely dangerous" @13:54 — _kj8N4DL8RBM.json_
+
+### do not try to guess direction trade small reactions in price  [1 mention(s)]
+- **Do not try to guess direction; trade small reactions in price action.**
+  - > "I'm not trying to guess the direction. I'm just trying to trade small reactions in price action." @05:32 — _nKy15N79BXM.json_
+
 ### focus on mechanical conditions to avoid emotional trading an  [1 mention(s)]
 - **Focus on mechanical conditions to avoid emotional trading and blowing accounts.**
   - > "you're just going to continue to blow prop firm challenges and waste hundreds of hours" @05:05 — _nY2pWOLOXmA.json_
@@ -1356,9 +2223,21 @@ Sources: 17 video/segment extractions
 - **Transition from mechanical rules to intuitive trading by validating gut feelings through journaling.**
   - > "In trading, we don't want to be robots, we need our feelings to be profitable... rely on that gut feeling, but validate it first through a journal." @07:00 — _nvJPa6SBwWk.json_
 
+### ignore direction focus on reactions  [1 mention(s)]
+- **Ignore direction, focus on reactions.**
+  - > "Trading became easy when I realized direction didn't actually matter." @00:00 — _rV0hGWlakM0.json_
+
+### a good loss is when you trade a condition but the condition   [1 mention(s)]
+- **A good loss is when you trade a condition but the condition changes**
+  - > "A good loss is when you trade a condition but the condition changes, so that's fine." @08:34 — _srOxm0ABi_U.json_
+
 ### success comes from action and behavior not just acquiring mo  [1 mention(s)]
 - **Success comes from action and behavior, not just acquiring more information.**
   - > "Success doesn't come from knowledge. It comes from action & behaviour." @01:17 — _u9B9zzjkBRs.json_
+
+### detach from outcome  [1 mention(s)]
+- **Detach from outcome**
+  - > "Detach yourself from external reward and internally reward yourself for the actions that will lead to long-term results" @04:59 — _wBfRETp8IRk.json_
 
 ### teaching reinforces personal learning  [1 mention(s)]
 - **Teaching reinforces personal learning.**
@@ -1368,23 +2247,27 @@ Sources: 17 video/segment extractions
 - **Journal and review trades to build experience and improve performance.**
   - > "The quickest way to get good at a strategy is to journal and review your trades." @08:40 — _zFe98gsfbUk.json_
 
+### accept losses as part of the statistical edge do not revenge  [1 mention(s)]
+- **Accept losses as part of the statistical edge; do not revenge trade.**
+  - > "You're going to have losses, it's a normal part of the process, do not revenge trade." @09:30 — _zIcup9rJSiQ.json_
 
-## stats_claimed  (37 entries)
 
-### win rate  [9 mention(s)]
+## stats_claimed  (73 entries)
+
+### win rate  [30 mention(s)]
 - **Win Rate — 70%**
   - > "you have a 70% win rate with a 1-to-1 risk-to-reward" @06:06 — _6mytsUbeEo4.json_
 - **Win Rate — 77.75%**
   - > "[ON-CHART ONLY]" @00:22 — _xmNJrE9BJ84.json_
-- **Win Rate — 84%**
-  - > "My simple three-step strategy that gives me an 84% win rate." @00:10 — _HtjHo8W1i0Q.json_
-- **Win Rate — 77.01%**
-  - > "this strategy has around a 77% win rate" @00:13 — _PHbklTEGoEY.json_
-- **Win Rate — 90.476%**
-  - > "I have a 90% win rate just by using this one simple candle behavior entry model" @00:54 — _YJirdD2wNYg.json_
-- **Win Rate — 83%**
-  - > "I have an 83% win rate using this." @00:10 — _ffeA39JCFow.json_
-  - _(+3 more mentions)_
+- **Win rate — 44%**
+  - > "44% win rate" @06:32 — _-UaN2tpBTnY.json_
+- **Win rate — 45%**
+  - > "45% win rate" @06:23 — _-UaN2tpBTnY.json_
+- **Win rate — 60%**
+  - > "I have a 60% win rates" @03:59 — _5u682pWNmpY.json_
+- **Win rate — 56%**
+  - > "56% win rate over what was it like 300 trades." @02:19 — _Goz73AVNIDM.json_
+  - _(+24 more mentions)_
 
 ### single trade profit  [4 mention(s)]
 - **Single trade profit — $17,611.00**
@@ -1412,6 +2295,26 @@ Sources: 17 video/segment extractions
 - **Total Profit — $1,223,211.39**
   - > "responsible for over 1.2 million dollars of my trading profits in the last year." @00:02 — _zFe98gsfbUk.json_
 
+### profit factor  [3 mention(s)]
+- **Profit factor — 6.71**
+  - > "6.71" @01:17 — _JVVBFZeXvOk.json_
+- **Profit factor — 5.98**
+  - > "5.98 profit factor" @00:11 — _K7u2jatqeaM.json_
+- **Profit Factor — 7.06**
+  - > "[ON-CHART ONLY]" @00:19 — _zFe98gsfbUk.json_
+
+### risk to reward  [2 mention(s)]
+- **Risk to reward — 1.85**
+  - > "1.85 risk to reward on average" @00:12 — _K7u2jatqeaM.json_
+- **Risk-to-reward — 2**
+  - > "with on average around a 2 risk-to-reward." @00:59 — _TeNTPhNfhx0.json_
+
+### average risk reward  [2 mention(s)]
+- **Average Risk Reward — 1.97**
+  - > "with an average risk reward of 1.97" @00:15 — _PHbklTEGoEY.json_
+- **Average Risk Reward — 1.9**
+  - > "1.9 risk to reward on average" @12:31 — _srOxm0ABi_U.json_
+
 ### account balance  [1 mention(s)]
 - **Account Balance — $1,328,231.57**
   - > "see if we can get to 2 mil on this account" @05:51 — _7dUKwc0DNsI.json_
@@ -1436,6 +2339,10 @@ Sources: 17 video/segment extractions
 - **Expectancy Formula — (Win rate * average win) - (Loss rate * average loss)**
   - > "your average win rate times your average win, minus your losing rate times your average loss, that will give you your expectancy." @01:06 — _3d8Q4GiIgSE.json_
 
+### win rate with no wick candles  [1 mention(s)]
+- **Win rate with no-wick candles — 40%**
+  - > "I have a 40% win rate when I try to do that" @05:28 — _5u682pWNmpY.json_
+
 ### win rate with basic market structure shift  [1 mention(s)]
 - **Win rate with basic market structure shift — 70%**
   - > "using a simple market structure shift for my entry model I have just under a 70% win rate" @03:20 — _975HWA-Ar94.json_
@@ -1443,6 +2350,10 @@ Sources: 17 video/segment extractions
 ### win rate with fractal shift refinement  [1 mention(s)]
 - **Win rate with fractal shift refinement — 88%**
   - > "adding in a little bit extra refinement looking for these fractal shifts, I now have around an 88% win rate." @04:42 — _975HWA-Ar94.json_
+
+### win rate across 300 trades  [1 mention(s)]
+- **Win rate across ~300 trades — 56%**
+  - > "around almost 300 trades journalled, 56% win rate, that is profitable" @09:21 — _EzwR2boaNRs.json_
 
 ### 4h reversal success rate  [1 mention(s)]
 - **4H Reversal Success Rate — 80-90%**
@@ -1452,13 +2363,41 @@ Sources: 17 video/segment extractions
 - **Average Risk-to-Reward — 1.5**
   - > "It results in a pretty good win rate with a 1.5 risk to reward on average." @11:52 — _HtjHo8W1i0Q.json_
 
-### average risk reward  [1 mention(s)]
-- **Average Risk Reward — 1.97**
-  - > "with an average risk reward of 1.97" @00:15 — _PHbklTEGoEY.json_
+### average win loss  [1 mention(s)]
+- **Average win/loss — 2.04**
+  - > "2.04" @01:18 — _JVVBFZeXvOk.json_
+
+### account growth  [1 mention(s)]
+- **Account growth — 25%**
+  - > "you made 25% on a 100K account" @00:11 — _JyJXUTLDFJA.json_
+
+### win rate 1h continuation  [1 mention(s)]
+- **Win rate (1H continuation) — 73%**
+  - > "that win rate jumps up to 73%" @03:37 — _MWPm9Gohn3g.json_
+
+### pass rate  [1 mention(s)]
+- **Pass rate — 92.7%**
+  - > "92.7% Pass Rate" @03:43 — _PFUo228AmJI.json_
+
+### win rate with dxy correlation  [1 mention(s)]
+- **Win rate with DXY correlation — 73%**
+  - > "It went from 56% to a 73%. That's a pretty big increase." @17:44 — _Qe1F4rT-RCE.json_
+
+### profit  [1 mention(s)]
+- **Profit — $4,000**
+  - > "How I made over $4,000 in just 2 minutes." @00:04 — _g2zXszOwPaI.json_
 
 ### risk reward  [1 mention(s)]
 - **Risk Reward — 1.85**
   - > "a 1.85 risk to reward on average." @00:21 — _ghmWUCdD9qs.json_
+
+### trading volume revenue this year using 1 candle strategy  [1 mention(s)]
+- **Trading volume/revenue this year using 1-candle strategy — over $700,000**
+  - > "has made me over $700,000 trading this year already" @00:07 — _nKy15N79BXM.json_
+
+### single trade profit on gold wednesday  [1 mention(s)]
+- **Single trade profit on Gold (Wednesday) — around $40,000**
+  - > "made around 40k on this one move trading gold on Wednesday" @00:13 — _nKy15N79BXM.json_
 
 ### personal profit  [1 mention(s)]
 - **Personal Profit — $1,000,000+**
@@ -1480,15 +2419,11 @@ Sources: 17 video/segment extractions
 - **Win Rate with Correlation — 83%**
   - > "that win rate jumps from 64% all the way up to an 83% win rate" @00:27 — _xSVlVpXLuV0.json_
 
-### profit factor  [1 mention(s)]
-- **Profit Factor — 7.06**
-  - > "[ON-CHART ONLY]" @00:19 — _zFe98gsfbUk.json_
+
+## trade_examples  (54 entries)
 
 
-## trade_examples  (38 entries)
-
-
-## notable_quotes  (33 entries)
+## notable_quotes  (65 entries)
 
 ### making more money doesn t come from being more profitable it  [1 mention(s)]
 - ****
@@ -1570,13 +2505,37 @@ Sources: 17 video/segment extractions
 - ****
   - > "Price is a push and a pull, it's like a pendulum... you can only be in a certain direction for a certain amount of time until you have to swing back." @14:15 — _zScdfOmUMOE.json_
 
+### no strategy will make you profitable over the long run but y  [1 mention(s)]
+- ****
+  - > "No strategy will make you profitable over the long run, but you can make any strategy profitable through your intuition, discretion, all that stuff, that experience." @00:00 — _-UaN2tpBTnY.json_
+
+### every time you take a trade you re flipping a coin  [1 mention(s)]
+- ****
+  - > "Every time you take a trade, you're flipping a coin." @07:11 — _-UaN2tpBTnY.json_
+
+### all learning in life is error correction  [1 mention(s)]
+- ****
+  - > "All learning in life is error correction." @05:03 — _1i70cyZt6to.json_
+
 ### the best trading system isn t the one that s most mathematic  [1 mention(s)]
 - ****
   - > "The best trading system isn't the one that's most mathematically optimal, it's the one you can execute consistently." @09:36 — _3d8Q4GiIgSE.json_
 
+### you need to be a losing trader in order to be a profitable t  [1 mention(s)]
+- ****
+  - > "You need to be a losing trader in order to be a profitable trader." @08:26 — _5u682pWNmpY.json_
+
 ### if your trades don t look the same you re never going to be   [1 mention(s)]
 - ****
   - > "If your trades don't look the same, you're never going to be consistently profitable. It's as simple as that." @04:47 — _975HWA-Ar94.json_
+
+### success in trading is a bit counter intuitive it s not perfe  [1 mention(s)]
+- ****
+  - > "Success in trading is a bit counter-intuitive. It's not perfectly rational... it's a bit paradoxical. So you don't become profitable by learning how to win, you become profitable by learning how to lose." @01:09 — _EzwR2boaNRs.json_
+
+### trading is all about probabilities  [1 mention(s)]
+- ****
+  - > "Trading is all about probabilities." @00:00 — _Goz73AVNIDM.json_
 
 ### asia session is one of the most underrated sessions for trad  [1 mention(s)]
 - ****
@@ -1586,21 +2545,109 @@ Sources: 17 video/segment extractions
 - ****
   - > "Price is a push and a pull. It's a wrestle between buyers and sellers." @02:38 — _HtjHo8W1i0Q.json_
 
+### you should be thinking about duration of price not timeframe  [1 mention(s)]
+- ****
+  - > "You should be thinking about duration of price, not timeframe." @01:10 — _JGWvvGOBe8I.json_
+
+### the reason you re not profitable isn t because of your strat  [1 mention(s)]
+- ****
+  - > "The reason you're not profitable isn't because of your strategy, your discipline, your risk management or even your psychology. It's simply that you don't have any systems." @00:00 — _JVVBFZeXvOk.json_
+
+### the easiest way to improve your trading isn t by adding thin  [1 mention(s)]
+- ****
+  - > "The easiest way to improve your trading isn't by adding things, it's by removing the unnecessary." @14:16 — _JVVBFZeXvOk.json_
+
+### data is gold  [1 mention(s)]
+- ****
+  - > "Data is gold" @11:55 — _JyJXUTLDFJA.json_
+
+### teaching is the cheat code  [1 mention(s)]
+- ****
+  - > "Teaching is the cheat code" @18:02 — _JyJXUTLDFJA.json_
+
+### the best traders i know are the ones that put the most const  [1 mention(s)]
+- ****
+  - > "The best traders I know are the ones that put the most constraints on themselves." @02:20 — _K7u2jatqeaM.json_
+
+### you are the edge you re the thing that makes the strategy wo  [1 mention(s)]
+- ****
+  - > "You are the edge. You're the thing that makes the strategy work." @05:09 — _KBQ6Z9A5IE4.json_
+
+### i find the hardest part in trading isn t necessarily the ent  [1 mention(s)]
+- ****
+  - > "I find the hardest part in trading isn't necessarily the entry, it's when to exit" @13:35 — _LwS6r9foNCk.json_
+
+### if you want to be consistently profitable you have to be doi  [1 mention(s)]
+- ****
+  - > "if you want to be consistently profitable, you have to be doing this one thing" @00:01 — _MWPm9Gohn3g.json_
+
+### making more money in trading doesn t come from being more pr  [1 mention(s)]
+- ****
+  - > "Making more money in trading doesn't come from being more profitable. It comes from having more money to trade with." @06:18 — _PFUo228AmJI.json_
+
 ### the learning is in the doing it is in having a journal colle  [1 mention(s)]
 - ****
   - > "The learning is in the doing, it is in having a journal collecting data and refining." @00:43 — _PHbklTEGoEY.json_
+
+### trading is all about fighting your human nature  [1 mention(s)]
+- ****
+  - > "Trading is all about fighting your human nature." @05:25 — _PtA9YuiYALw.json_
+
+### the easiest way to succeed in trading is just to avoid failu  [1 mention(s)]
+- ****
+  - > "The easiest way to succeed in trading is just to avoid failure." @00:28 — _Q3VSRZassR4.json_
+
+### it is better to lose and know why it happened than to win an  [1 mention(s)]
+- ****
+  - > "It is better to lose and know why it happened than to win and don't know why." @09:12 — _Q3VSRZassR4.json_
+
+### what gets measured gets managed what gets managed gets impro  [1 mention(s)]
+- ****
+  - > "What gets measured gets managed, what gets managed gets improved." @06:45 — _Qe1F4rT-RCE.json_
+
+### you don t have trading problems you have personal problems  [1 mention(s)]
+- ****
+  - > "You don't have trading problems. You have personal problems." @00:05 — _SKUquKC-fAk.json_
+
+### the game teaches the game  [1 mention(s)]
+- ****
+  - > "The game teaches the game." @02:52 — _SKUquKC-fAk.json_
+
+### it s like getting another perspective to view price action  [1 mention(s)]
+- ****
+  - > "It's like getting another perspective to view price action." @03:17 — _TeNTPhNfhx0.json_
+
+### the one thing you need to stop doing is trading every single  [1 mention(s)]
+- ****
+  - > "The one thing you need to stop doing is trading every single move in the market." @11:06 — _U7ol7iR9oYc.json_
 
 ### the most important factor will always be timing  [1 mention(s)]
 - ****
   - > "The most important factor will always be timing." @00:31 — _YJirdD2wNYg.json_
 
+### the only holy grail in trading is clarity the more clear you  [1 mention(s)]
+- ****
+  - > "The only holy grail in trading is clarity. The more clear you are on what you're doing and what works, the better you're going to be at it." @11:48 — _eLolPHSwLyk.json_
+
 ### the point of ta is to manage risk not make money  [1 mention(s)]
 - ****
   - > "The point of TA is to manage risk, not make money." @00:00 — _ffeA39JCFow.json_
 
+### price action is just mass psychology mass behavior  [1 mention(s)]
+- ****
+  - > "Price action is just mass psychology, mass behavior." @04:57 — _g2zXszOwPaI.json_
+
 ### my goal in trading isn t really to make money anymore it s j  [1 mention(s)]
 - ****
   - > "My goal in trading isn't really to make money anymore. It's just to make every trade look the same." @00:27 — _ghmWUCdD9qs.json_
+
+### all motivation in trading and in life comes from discomfort  [1 mention(s)]
+- ****
+  - > "All motivation in trading and in life comes from discomfort." @09:11 — _kj8N4DL8RBM.json_
+
+### a candle is just time based market structure just like how m  [1 mention(s)]
+- ****
+  - > "A candle is just time-based market structure. Just like how market structure gives you opportunities, patterns that arise within that, candles also give patterns throughout time." @01:24 — _nKy15N79BXM.json_
 
 ### a strategy only works when it s applied to the right conditi  [1 mention(s)]
 - ****
@@ -1610,9 +2657,21 @@ Sources: 17 video/segment extractions
 - ****
   - > "Rules are necessary for consistency, but breaking those rules is necessary for adaptation." @07:19 — _nvJPa6SBwWk.json_
 
+### price is elastic it s like an elastic band the further you s  [1 mention(s)]
+- ****
+  - > "Price is elastic. It's like an elastic band. The further you stretch in a certain direction, the more likely you are for that elastic band to snap back." @00:37 — _rV0hGWlakM0.json_
+
+### i m not the biggest fan of backtesting i think forward testi  [1 mention(s)]
+- ****
+  - > "I'm not the biggest fan of backtesting. I think forward testing is a lot better for quality of data." @00:18 — _srOxm0ABi_U.json_
+
 ### you keep on failing not because you lack information but bec  [1 mention(s)]
 - ****
   - > "You keep on failing, not because you lack information, but because you know too much." @00:56 — _u9B9zzjkBRs.json_
+
+### what gets measured gets managed that gets managed gets impro  [1 mention(s)]
+- ****
+  - > "What gets measured gets managed, that gets managed gets improved." @00:00 — _wBfRETp8IRk.json_
 
 ### you never just trading the inherent value of gold itself you  [1 mention(s)]
 - ****
@@ -1622,8 +2681,12 @@ Sources: 17 video/segment extractions
 - ****
   - > "Price action is like an elastic band. If we stretch too far, we're likely to have a snap back." @03:20 — _zFe98gsfbUk.json_
 
+### the secret to trading is not finding a secret indicator it s  [1 mention(s)]
+- ****
+  - > "The secret to trading is not finding a secret indicator, it's finding a repeatable mechanical process." @03:15 — _zIcup9rJSiQ.json_
 
-## contradictions  (23 entries)
+
+## contradictions  (50 entries)
 
 ### he states he avoids entering trades right before a 15 minute  [1 mention(s)]
 - **He states he avoids entering trades right before a 15-minute candle open, but admits he did exactly that on this trade because of high volume and the DXY shift.**
@@ -1670,8 +2733,23 @@ Sources: 17 video/segment extractions
 ### shorting gold at all time highs despite acknowledging its st  [1 mention(s)]
 - **Shorting Gold at all-time highs despite acknowledging its strong bullish trend.**
 
+### he claims no strategy will make you profitable in the long r  [1 mention(s)]
+- **He claims no strategy will make you profitable in the long run, but then claims you can make any strategy profitable through intuition and experience.**
+
+### he claims he doesn t normally trade new york session 01 39 b  [1 mention(s)]
+- **He claims he doesn't normally trade New York session (01:39) but then describes a specific trade he took during New York session (01:39).**
+
+### claims to be a systematic trader but also says his approach   [1 mention(s)]
+- **Claims to be a 'systematic' trader but also says his approach is 'me trading my feelings, that is validated by data'.**
+
 ### claims an 88 win rate but notes that the strategy requires m  [1 mention(s)]
 - **Claims an 88% win rate but notes that the strategy requires missing many trades and waiting for highly specific alignments.**
+
+### claims to hate watching winning trades get cut short or go w  [1 mention(s)]
+- **Claims to hate watching winning trades get cut short or go without him, but later notes his reward-to-risk and win rate targets smaller chunks (1.5R) because he dislikes watching EURJPY or other positions reverse against**
+
+### states that there is no 100 certain outcome but later claims  [1 mention(s)]
+- **States that 'there is no 100% certain outcome' but later claims 'I am certain over the next 100 or 1000 trades there will be a certain outcome'.**
 
 ### recommends trading the asia session but explicitly advises a  [1 mention(s)]
 - **Recommends trading the Asia session but explicitly advises against trading the Sydney session, which constitutes the start of the Asia session.**
@@ -1679,8 +2757,65 @@ Sources: 17 video/segment extractions
 ### states that tokyo is a low volume range bound session to avo  [1 mention(s)]
 - **States that Tokyo is a low-volume, range-bound session to avoid, but relies entirely on the Tokyo range to establish directional bias for the London session.**
 
+### states all timeframes are almost kind of like meaningless at  [1 mention(s)]
+- **States 'all timeframes are almost kind of like meaningless' at 00:58, but then spends the rest of the video explaining how to align them for entries.**
+
+### claims to be emotionless but admits to still having fear and  [1 mention(s)]
+- **Claims to be emotionless but admits to still having fear and confidence**
+
+### claims to be a zero dollar guy after being profitable  [1 mention(s)]
+- **Claims to be a 'zero dollar guy' after being profitable**
+
+### claims to only trade reversals but later discusses trading c  [1 mention(s)]
+- **Claims to only trade reversals, but later discusses trading continuations in the context of his past failures.**
+
+### claims to use 1 1 rr as a rule but later shows trade example  [1 mention(s)]
+- **Claims to use 1:1 RR as a rule, but later shows trade examples with 1:1.2 RR and 1:22 RR.**
+
+### claims to use 1 risk but later shows a simulation with 5 5 r  [1 mention(s)]
+- **Claims to use 1% risk, but later shows a simulation with 5.5% risk.**
+
+### states that high time frame trades should be held longer 10   [1 mention(s)]
+- **States that high time frame trades should be held longer (10:02), but later says he doesn't want to hold trades that long (07:00).**
+
+### he claims to be consistently profitable but later shows a 50  [1 mention(s)]
+- **He claims to be consistently profitable but later shows a 50% win rate and 'pretty much break even' for the last quarter of 2023.**
+
+### he claims to use a simple system but then describes complex   [1 mention(s)]
+- **He claims to use a 'simple' system but then describes complex multi-timeframe confluence and correlation analysis.**
+
+### he claims to be emotionless at 06 55 but then says you shoul  [1 mention(s)]
+- **He claims to be 'emotionless' at 06:55, but then says 'you should feel your emotions more' at 06:32.**
+
+### claims to use a 1 1 rr strategy but later discusses using mf  [1 mention(s)]
+- **Claims to use a 1:1 RR strategy but later discusses using MFE to improve RR beyond 1:1.**
+
+### he claims to trade the second hour of asia but later says he  [1 mention(s)]
+- **He claims to trade the 'second hour of Asia' but later says he trades the 'first hour of Asia' to look for a daily top wick.**
+
+### he claims to trade the third hour of london but later says h  [1 mention(s)]
+- **He claims to trade the 'third hour of London' but later says he trades the 'first hour of London' for reversals.**
+
+### he claims that a strategy is never going to make me profitab  [1 mention(s)]
+- **He claims that 'a strategy is never going to make me profitable' (05:03) but also emphasizes the importance of having a 'system that suits your psychology' (00:04) and tracking setups (01:16).**
+
+### he claims the strategy is mechanical but repeatedly emphasiz  [1 mention(s)]
+- **He claims the strategy is mechanical but repeatedly emphasizes that it is discretionary and requires adaptation to conditions.**
+
+### he claims to target 1 1 but often adjusts targets based on m  [1 mention(s)]
+- **He claims to target 1:1 but often adjusts targets based on market conditions.**
+
 ### takes long based on ltf shift despite stating htf is bearish  [1 mention(s)]
 - **Takes long based on LTF shift despite stating HTF is bearish.**
+
+### states he wants to enter and exit in one move 01 33 but late  [1 mention(s)]
+- **States he wants to enter and exit in one move (01:33) but later says he could have held the trade longer (08:23).**
+
+### claims to use a 1 1 rr for a 50 win rate break even but late  [1 mention(s)]
+- **Claims to use a 1:1 RR for a 50% win rate (break-even), but later shows a 63% win rate over 400 trades, implying the strategy is profitable, not break-even.**
+
+### states that continuations are best in the first 0 50 minutes  [1 mention(s)]
+- **States that continuations are best in the first 0-50 minutes of an hourly candle, but later mentions 22 to 52 minutes ranges for JPY behavior and flexible session windows.**
 
 ### at 01 59 he advises avoiding trendy and directional markets   [1 mention(s)]
 - **At 01:59, he advises avoiding 'trendy and directional' markets, but at 01:14, he explicitly includes 'Bullish Trending Range' and 'Bearish Trending Range' as valid tradeable conditions.**
@@ -1688,8 +2823,17 @@ Sources: 17 video/segment extractions
 ### claims the strategy is unique and you can t find this in any  [1 mention(s)]
 - **Claims the strategy is unique and 'you can't find this in any system', but later states it uses standard support/resistance and SMC concepts like order blocks and fair value gaps.**
 
+### states he is not a fan of backtesting at 00 18 yet proceeds   [1 mention(s)]
+- **States he is not a fan of backtesting at 00:18, yet proceeds to perform a backtesting session for the remainder of the video.**
+
 ### he states that he only trades the second hour of asia 10 55   [1 mention(s)]
 - **He states that he only trades the second hour of Asia (10:55), but later shows a trade example executed at 12:40 PM (17:06) which he refers to as the 'second half of Asia' (14:25).**
 
+### he claims he doesn t trade on mondays but then says he doesn  [1 mention(s)]
+- **He claims he doesn't trade on Mondays, but then says he doesn't know if he should stop trading on Mondays because he might lose 20% of opportunities.**
+
 ### claims no direction or daily bias needed but uses phrases li  [1 mention(s)]
 - **Claims 'no direction or daily bias needed' but uses phrases like 'shift in our direction' and 'wrong about the direction' during trade reviews.**
+
+### initially claims he never trades new york session but later   [1 mention(s)]
+- **Initially claims he never trades New York session, but later reviews trades taken during New York overlap hours.**

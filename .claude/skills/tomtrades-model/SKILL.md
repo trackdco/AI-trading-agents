@@ -22,11 +22,11 @@ description: >-
 record of what one trader SAYS he does, structured so it can be falsified.** A future
 session must not mistake any of it for a working strategy. Specifically:
 
-1. **Coverage is partial (evidence version: audit v1.1).** @TomTradesJournal is
-   18/18 videos (~5h) — complete. The main channel is **13/53** and the 8h30m course
-   is **0/13 segments** — both still substantially UNREAD, halted by the Gemini
-   free-tier cap of 20 requests/day/model. Most quotes trace to the journal channel.
-   Do not describe coverage as complete.
+1. **Coverage is partial (evidence version: v2, 58 sources).** @TomTradesJournal
+   18/18 (~5h) and the main channel **40/53** are extracted; the 8h30m course is
+   **0/13 segments** and remains UNREAD, halted by the Gemini free-tier cap of 20
+   requests/day/model. The 13 unread main-channel videos are the motivational tail,
+   deprioritised deliberately. Do not describe coverage as complete.
 2. **A model watched the videos; no human did.** Extraction was Gemini-mediated under
    free-tier quota, with model rotation per video. Quotes may be misheard — numbers
    especially ("22 to 52 minutes", "15-20 pips"). Spot-check any figure before it
@@ -47,7 +47,8 @@ session must not mistake any of it for a working strategy. Specifically:
    problem to tune away.
 
 **Upstream source of record:** `docs/RESEARCH-tomtrades-audit.md`, with backing
-evidence in `docs/CORPUS-tomtrades-extractions.md`. If that
+evidence in `docs/CORPUS-tomtrades-extractions.md`. `references/confluence-table.md`
+is at evidence v2 and supersedes anything built against v1. If that
 document is re-issued with fuller coverage, this skill must be regenerated and its
 evidence version bumped — do not patch it piecemeal against a moved source.
 
@@ -76,8 +77,14 @@ you delete; use his words for his concepts.**
 - **Change of character**: a **V-shape minor break**. He does NOT take it:
   *"it wouldn't technically be a shift, it would be more of a change of character."*
   His stated tell for the invalid pattern: it forces an oversized stop.
-- **Shift within a shift**: nested shift on a finer timeframe — his higher-confidence
-  variant.
+- **Fractal shift / shift within a shift**: *"you simply just look for a shift within
+  that shift. You wait for price to come into this 50% area, and on this lower
+  timeframe..."* — after the retrace into the 50% zone, a second shift on a finer TF.
+  He attributes a jump from ~70% to ~88% win rate to this refinement, so v2 treats it
+  as a gate rather than a label.
+- **Type 2 / Type 3 shift**: he names both; only the sweep-then-break pattern is ever
+  described. Types 1 and 2 are undefined in extracted material — **do not invent the
+  taxonomy**, code the described pattern and leave the numbering alone.
 - **Candle flip**: 30m/15m confirmation referenced in his timeframe stack. Mechanism
   never defined in extracted material — thinnest concept in the corpus.
 - **Gold Spread**: an instrument he watches alongside DXY for Gold. Its exact identity
@@ -175,25 +182,31 @@ writing any detector code.** Summary of the parameter surface:
 
 | Param | Default | Sweep | Source |
 |---|---|---|---|
-| `range_lookback_hours` | 8 | 4-16 | quoted "5-12 plus hours"; default researcher-chosen inside his range |
-| `range_efficiency_max` | 0.30 | 0.15-0.50 | researcher-chosen — he gave no width test |
-| `oe_atr_mult` | 1.0 | 0.5-2.0 | researcher-chosen — "overextension" has no stated magnitude |
-| `oe_max_pullback_frac` | 0.33 | 0.20-0.50 | researcher-chosen — "no meaningful pullback" unquantified |
+| `range_lookback_hours` | 8 | 5-12 | quoted "past 5 to 12 plus hours" |
+| `range_retrace_min` | 0.50 | 0.35-0.70 | **v2** — his range test is mean correction depth |
+| `oe_min_duration_min` | 20 | 15-35 | **v2** — quoted "20 to 30 minutes... without a pullback" |
+| `oe_invalidation_frac` | 0.50 | 0.35-0.65 | **v2, his number** — "pulling back to around 50% or more" invalidates |
+| `oe_atr_mult` | 1.0 | 0.5-2.0 | control only — tests whether magnitude adds to duration |
 | `oe_volume_z_min` | 1.0 | 0.5-2.0 | researcher-chosen — "high volume" unquantified |
-| `window_start_min` / `window_end_min` | 30 / 45 | start 15-40, end 30-59 | quoted variants: 22-52, 30-45, 20-30, point 37 — conflict, sweep |
-| `boundary_buffer_min` | 2 | 0-5 | quoted avoidance of 15m opens; buffer size researcher-chosen |
-| `corr_mode` | veto_only | {off, veto_only, required} | required vs optional is an unresolved contradiction |
-| `corr_lookback_min` | 30 | 10-60 | researcher-chosen — no stated lookback |
-| `aoi_proximity_atr` | 0.25 | 0.10-0.50 | researcher-chosen — AOI construction unspecified |
-| `pivot_k` (swing definition) | 3 | 2-5 | researcher-chosen — swing never defined |
-| `shift_shape` | W_required | {W_required, any_break} | quoted W-vs-V distinction; sweep tests whether it matters |
-| `stop_atr_max` (oversized-stop tell) | 2.5 | 1-4 | his stated tell; threshold researcher-chosen |
-| `entry_retrace_frac` | 0.50 | 0.38-0.62 | quoted "targeting that 50%" of the shift leg |
-| `target_impulse_frac` | 0.50 | fixed, ablate impulse definition | quoted, most consistent rule (7 videos) |
-| `gold_rr_override` | 1.25 | 1.0-1.5 | quoted "1 1.5 risk to reward" on Gold |
+| `window_start_min` / `window_end_min` | 30 / 45 | start 15-40, end 30-59 | variants 22-52, 30-45, 20-30, 37 — sweep |
+| `boundary_buffer_min` | 2 | 0-5 | quoted 15m-open avoidance; size researcher-chosen |
+| `corr_mode` | veto_only | {off, veto_only, required} | unresolved contradiction; claimed +17% WR |
+| `corr_lookback_min` | 30 | 10-60 | researcher-chosen |
+| `aoi_proximity_atr` | 0.25 | 0.10-0.50 | researcher-chosen band |
+| `aoi_source` | range_boundary | {range_boundary, pivots, calendar, beyond_n_day} | **v2** — AOI is the C1 range edge |
+| `pivot_k` | 3 | 2-5 | researcher-chosen — swing never defined |
+| `shift_shape` | W_required | {W_required, any_break} | quoted W-vs-V distinction |
+| `nested_required` | **gate** | {off, label, gate} | **v2 promotion** — claimed 70%→88% |
+| `stop_atr_max` | 2.5 | 1-4 | his oversized-stop tell; threshold researcher-chosen |
+| `entry_retrace_frac` | 0.50 | **0.38-0.70** | **v2 widened** — "50% or even more towards 70%" |
+| `impulse_def` | **hour_open_to_extreme** | ablate alternatives | **v2 resolved** — "50% of the hourly candle extension" |
+| `target_mode` | impulse_50 | {impulse_50, fixed_rr, ltf_structure} | **v2** — competing variants stated |
+| `gold_rr_override` | 1.25 | 1.0-1.5 | quoted, coupled to size |
+| `risk_per_trade_pct` | 1.0 | 0.5-1.0 | **v2** — quoted |
+| `max_trades_per_day` | 3 | 1-5 | **v2** — quoted "max 2-3 trades per day" |
 | `setup_recency_hours` | 4.5 | 3-6 | quoted "4 to 5 hours" |
-| `candle_flip_gate` | off | {off, on} | class D — mechanism undefined; off until evidence exists |
-| `trigger_tf` | 1m | {1m, 15s, 5s} | he states 5s; data availability constrains — see below |
+| `candle_flip_gate` | off | {off, on} | class D — undefined across 58 sources |
+| `trigger_tf` | 1m | {1m, 15s, 5s} | he states 5s but accepts 1m explicitly |
 
 Every researcher-chosen default is a placeholder for a sweep, not a claim about the
 method. Sweeps induce multiple comparisons: any surviving parameter region must
@@ -219,17 +232,17 @@ re-confirm on a sealed holdout before it is believed.
 
 Stated plainly so nobody fills these gaps silently:
 
-- **"Overextension" has no numeric definition** — no ATR multiple, distance, or
-  body ratio. The single biggest gap.
-- **"Range condition"** over 5-12h has no width or compression test.
-- **"Area of interest"** — level construction is never mechanically specified.
+- **"Overextension" has no MAGNITUDE definition** — but v2 found it is defined by
+  **duration** instead (15-30 min one-way, invalidated by a 50% pullback). Whether
+  magnitude adds anything to duration is now an open test, not a gap.
+- **"Candle flip"** — named in the timeframe stack, never defined across 58 sources.
+- **Types 1 and 2 shift** — named, never described.
 - **"Type 3 shift"** lacks a precise swing definition (what qualifies as the swept
   high and the broken low).
 - **Correlation alignment** has no threshold — how inverse, over what lookback.
 - **Timezone** — the Asia session, its second-or-third-hour habit, and hour
   boundaries are all clock-dependent and
   unanchored. He is AU-based; his charting platform's hour bars set the clock.
-- **"Candle flip"** — named in the timeframe stack, never defined.
 - **"Gold Spread"** — instrument identity unresolved.
 - **The impulse for the 50% target** — which "previous move" is measured, from where.
 - **Precise stop placement** — "beyond the swing/wick" without tick/buffer rules.
