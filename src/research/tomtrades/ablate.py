@@ -87,6 +87,25 @@ def clock_profile(df: pd.DataFrame, ctx: DT.Context, cfg: dict,
     return prof
 
 
+def _md_table(df: pd.DataFrame) -> str:
+    """Render a markdown table without pandas' ``to_markdown``.
+
+    ``to_markdown`` needs ``tabulate``, which is not on this repo's approved dependency
+    list, and an eight-minute compute should never be lost to a formatting import.
+    """
+    if df.empty:
+        return "_no rows_"
+    cols = [str(c) for c in df.columns]
+    body = [["" if pd.isna(v) else (f"{v:g}" if isinstance(v, (int, float)) else str(v))
+             for v in row] for row in df.itertuples(index=False)]
+    widths = [max(len(cols[i]), *(len(r[i]) for r in body)) for i in range(len(cols))]
+    head = "| " + " | ".join(c.ljust(widths[i]) for i, c in enumerate(cols)) + " |"
+    rule = "|" + "|".join("-" * (w + 2) for w in widths) + "|"
+    rows = ["| " + " | ".join(r[i].ljust(widths[i]) for i in range(len(cols))) + " |"
+            for r in body]
+    return "\n".join([head, rule, *rows])
+
+
 def write_report(path: Path, table: pd.DataFrame, profile: pd.DataFrame,
                  meta: dict) -> None:
     lines = ["# tomtrades CBR — ablation report", ""]
@@ -101,9 +120,8 @@ def write_report(path: Path, table: pd.DataFrame, profile: pd.DataFrame,
     thin = show["n"] < MIN_N
     for c in ("win_pct", "mean_r", "total_r", "target_pct", "delta_mean_r_vs_base"):
         show.loc[thin, c] = np.nan
-    lines.append(show.to_markdown(index=False))
+    lines.append(_md_table(show))
     lines += ["", "## Minute-of-hour profile (C3 disabled)", ""]
-    lines.append(profile.round(2).to_markdown(index=False) if not profile.empty
-                 else "_no trades_")
+    lines.append(_md_table(profile.round(2)) if not profile.empty else "_no trades_")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines) + "\n")
