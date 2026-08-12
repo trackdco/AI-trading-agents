@@ -338,9 +338,52 @@ def fred_release_id(family: str, session=None) -> int:
     return int(hits[0]["id"])
 
 
+# Series whose FIRST PRINT identifies a real release of new data, per family.
+# Only the release DATE metadata is read here — no value is stored at L0.
+FRED_FIRST_PRINT_SERIES = {
+    "cpi": "CPIAUCSL", "ppi": "PPIFIS", "nfp": "PAYEMS",
+    "pce": "PCEPI", "retail": "RSAFS", "gdp_adv": "A191RL1Q225SBEA",
+}
+FRED_OBS_API = "https://api.stlouisfed.org/fred/series/observations"
+
+
+def fred_first_print_dates(family: str, start: str = WINDOW_START,
+                           end: str = WINDOW_END, session=None) -> set[str]:
+    """Dates on which `family` published a NEW reference period.
+
+    output_type=4 is ALFRED's "initial release only" view, so each
+    observation's realtime_start is the date its first print landed. That
+    separates a genuine print from a revision-only release on the same
+    calendar — the February CPI/PPI seasonal recalculations and the late-April
+    Census retail benchmark are releases, but they are not red-folder events
+    and must not enter the study as if they were.
+    """
+    import requests
+    s = session or requests.Session()
+    r = s.get(FRED_OBS_API, params=dict(
+        series_id=FRED_FIRST_PRINT_SERIES[family], api_key=_fred_key(),
+        file_type="json", observation_start="2022-10-01",
+        observation_end=end, realtime_start=start, realtime_end=end,
+        output_type=4), timeout=40)
+    r.raise_for_status()
+    obs = r.json().get("observations", [])
+    if not obs:
+        raise RuntimeError(
+            f"FRED returned 0 initial-release observations for {family} — "
+            f"cannot classify prints; investigate, do not guess.")
+    return {o["realtime_start"] for o in obs}
+
+
 def fred_release_dates(family: str, start: str = WINDOW_START,
-                       end: str = WINDOW_END, session=None) -> pd.DataFrame:
-    """Official release dates for `family` from FRED. Raises on empty."""
+                       end: str = WINDOW_END, session=None,
+                       classify: bool = True) -> pd.DataFrame:
+    """Official release dates for `family` from FRED. Raises on empty.
+
+    With classify=True each row is tagged release_kind = print | revision_only.
+    For gdp_adv this is what isolates the ADVANCE estimate: FRED bundles
+    advance/second/third under one release id, and only the advance is a
+    first print, so the flag resolves rather than being carried forward.
+    """
     import requests
     s = session or requests.Session()
     rid = fred_release_id(family, s)
@@ -349,18 +392,19 @@ def fred_release_dates(family: str, start: str = WINDOW_START,
         realtime_start=start, realtime_end=end, sort_order="asc",
         include_release_dates_with_no_data="false", limit=10000), timeout=30)
     r.raise_for_status()
-    dates = [d["date"] for d in r.json().get("release_dates", [])]
+    dates = sorted({d["date"] for d in r.json().get("release_dates", [])})
     if not dates:
         raise RuntimeError(
             f"FRED returned 0 release dates for {family} (release_id={rid}) "
             f"over {start}..{end} — investigate, do not guess dates.")
+    firsts = (fred_first_print_dates(family, start, end, s) if classify
+              else set(dates))
     return pd.DataFrame([
         dict(family=family, date=d, time_et=RELEASES[family]["time_et"],
              sep=False, source=f"fred_release_{rid}",
-             # GDP bundles advance/second/third estimates under ONE release id,
-             # so those rows are NOT yet identified as the advance print.
-             needs_verification=(family == "gdp_adv"))
-        for d in sorted(set(dates))])
+             release_kind=("print" if d in firsts else "revision_only"),
+             needs_verification=False)
+        for d in dates])
 
 
 def scrape_bea_schedule(session=None) -> pd.DataFrame:
@@ -425,6 +469,39 @@ def scrape_bea_schedule(session=None) -> pd.DataFrame:
 # scrape (consensus.py) — every FF row carries its timestamp, so the calendar
 # join both dates the event AND supplies forecast/actual. Where the two
 # sources disagree on a date, the pipeline flags, never picks silently.
+
+
+# ---------------------------------------------------------------------------
+# Release-time overrides
+# ---------------------------------------------------------------------------
+# config.RELEASES carries each family's STANDARD time. A release displaced by
+# a shutdown can land at a different hour, and a release bar stamped 08:30 that
+# actually printed at 10:00 would silently corrupt the entire L1 census. Each
+# entry below is verified against the release document itself, quoted in the
+# comment. Never add one from a secondary report.
+RELEASE_TIME_OVERRIDES = {
+    # BEA news release, Sept-2025 Personal Income and Outlays (the shutdown
+    # catch-up, originally due 2025-10-31): "EMBARGOED UNTIL RELEASE AT
+    # 10:00 a.m. EST, Friday, December 5, 2025".
+    ("pce", "2025-12-05"): ("10:00", "bea_release_embargo_line"),
+}
+
+# BLS confirmed on bls.gov/bls/2025-lapse-revised-release-dates.htm that every
+# revised CPI/PPI/Employment Situation date kept 8:30 a.m. ET, so no BLS
+# override is needed — checked, not assumed.
+
+
+def apply_time_overrides(ev: pd.DataFrame) -> pd.DataFrame:
+    ev = ev.copy()
+    for (fam, date), (t, src) in RELEASE_TIME_OVERRIDES.items():
+        m = (ev["family"] == fam) & (ev["date"] == date)
+        if not m.any():
+            raise RuntimeError(
+                f"time override for {fam} {date} matches no row — the override "
+                f"table is stale; fix it rather than leaving a wrong time.")
+        ev.loc[m, "time_et"] = t
+        ev.loc[m, "source"] = ev.loc[m, "source"] + f"+{src}"
+    return ev
 
 
 # ---------------------------------------------------------------------------
