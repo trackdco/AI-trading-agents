@@ -168,11 +168,14 @@ Then, stopping to report after each numbered step:
    - tv-macro-events then tv-thesis at each window open and each re-fire;
    - tv-trigger at every candidate — log the passes as carefully as the
      takes. NEW and required (runbook §3.4): every trigger briefing carries
-     the 5m and 15m behaviour at each candidate rejection level — closes
-     through on each timeframe, and whether the far side is wick or body.
-     Without it the agent cannot tell my best shape (2m closing both sides
-     while the 15m wicks and can't close through) from a level that
-     actually failed, and it will grade my best setups of the day as C;
+     the higher-timeframe behaviour at each candidate rejection level.
+     Do NOT compute it yourself — run
+       python -m scripts.htf_level_behavior <sess_day> <HH:MM> \
+           --level <name>=<price> ... --json
+     and paste its JSON into the briefing under `htf` per level. Without it
+     the agent cannot tell my best shape (2m closing both sides while the
+     15m wicks and can't close through) from a level that actually failed,
+     and it will grade my best setups of the day as C;
    - on take_full/take_light run the simulated limit lifecycle and draw the
      resting limit, then the position tool on fill (probe the shape name
      once, record it as position_tool in the run header, reuse it);

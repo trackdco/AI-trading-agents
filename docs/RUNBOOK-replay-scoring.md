@@ -268,15 +268,31 @@ NY_AM 09:30–11:00. After **every** step:
    takes AND passes. **The passes are the valuable rows.**
 
    **The briefing must carry the HIGHER-TIMEFRAME behaviour at the rejected
-   level** (trigger contract 0.4.2, T46). For each level the candidate could be
-   rejecting, include how the **5m and 15m** have treated it so far this session:
-   closes through on each timeframe, and whether the far side is wick or body.
-   Without it the agent cannot tell his highest-conviction shape — 2m closing
-   both sides while the 15m prints a wick that cannot close through — from a
-   level that actually failed, and will grade the best setups of the day as C.
-   Suggested fields per level: `htf: {"5m": {"closes_through": 0, "far_side":
-   "wick"}, "15m": {"closes_through": 0, "far_side": "wick"}}`.
-   Mechanical, computed from bars, no opinion in it.
+   level** (trigger contract 0.4.2, T46). Without it the agent cannot tell his
+   highest-conviction shape — 2m closing both sides while the 15m prints a wick
+   that cannot close through — from a level that actually failed, and will grade
+   the best setups of the day as C.
+
+   **Do not compute this by hand.** It is the input to a conviction grade, so it
+   has to be identical on every day and every run, and under §0c the
+   orchestrator supplies mechanical facts, never judgements — an ad-hoc count is
+   a judgement wearing a number's clothes. Run:
+
+   ```bash
+   python -m scripts.htf_level_behavior <sess_day> <HH:MM> \
+       --level weekly_val=29693.61 --level poc=29821 --json
+   ```
+
+   and paste the JSON into the briefing under `htf` per level. It reports, per
+   timeframe (2m/3m/5m/15m): tests, closes each side, max wick and max **body**
+   beyond, the side price approached from, and a verdict. Two windows, and they
+   answer different questions — the last 60 minutes is the CURRENT test and is
+   what grades the shape; `session_closes_above/below` is whether the level has
+   already been sliced today, which is conviction rubric point 4.
+
+   It truncates per timeframe at the last candle whose CLOSE is at or before the
+   decision minute — a 15m candle that opened at 03:30 is not complete at 03:40
+   and including it would leak the future into the field the grade comes from.
 5. **On `take_full` / `take_light`**: run the limit lifecycle (native tool if
    the Phase B probe found one; simulated otherwise) —
 
