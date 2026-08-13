@@ -1,0 +1,142 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "trigger_escalation",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills, 1 used)",
+ "decision_minute": "2026-06-23T09:40 ET (session-day 2026-06-22)",
+ "leak_check": "pass - truncated at 09:39:59; the 3m bar starting 09:36 completes at 09:39 and the 2m bar starting 09:38 completes at 09:40",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d22_c5_0940.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "price_at_decision": 29780.75,
+ "last_completed_2m_bar": {
+  "start": "09:38",
+  "open": 29713.25,
+  "high": 29797.75,
+  "low": 29699.5,
+  "close": 29780.75,
+  "volume": 5424,
+  "closed_at": "09:40"
+ },
+ "position_state": "FLAT. The 09:36 short was stopped at 29785 one minute ago.",
+ "window_state": {
+  "LONDON": "2 of 2 used, closed by time",
+  "NY_PRE": "0 of 1 used, closed by time",
+  "NY_AM": "1 of 2 used, 80 minutes remaining"
+ },
+ "levels_at_decision_CHART": {
+  "vwap": 30019.89,
+  "vwap_p1": 30320.83,
+  "vwap_m1": 29718.96,
+  "vwap_m2": 29418.02,
+  "vwap_m3": 29117.09,
+  "bb_2m_basis": 29722.68,
+  "bb_2m_upper": 29763.39,
+  "bb_2m_lower": 29681.96
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29722.67,
+  "bb_ma_3m": 29732.24,
+  "bb_ma_15m": 29819.6,
+  "bb_ma_60m": 30233.24,
+  "day_range_fibs": {
+   "0.382": 30030.87,
+   "0.5": 30158.88,
+   "0.618": 30286.88,
+   "0.705": 30381.25
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29616.5,
+  "daily_profile": {
+   "poc": 29740.0,
+   "val": 29616.0,
+   "vah": 30139.0,
+   "note": "DEVELOPING as-of 09:40"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30341.0,
+   "vah": 30784.0,
+   "note": "DEVELOPING as-of 09:40"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29616.5
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "the_escalating_bar": {
+   "3m": {
+    "start": "09:36",
+    "open": 29720.0,
+    "close": 29747.25,
+    "closed_at": "09:39"
+   },
+   "2m": {
+    "start": "09:38",
+    "open": 29713.25,
+    "high": 29797.75,
+    "low": 29699.5,
+    "close": 29780.75,
+    "volume": 5424,
+    "closed_at": "09:40"
+   },
+   "levels_closed": [
+    "own_ma_3m",
+    "own_ma_2m",
+    "vwap_m1",
+    "daily_poc"
+   ],
+   "pair_shape": "same_candle"
+  },
+  "note_on_vwap_m1": "vwap_m1 is a developing band. You priced it at 29,773.09 at 09:30; the chart reads 29,718.96 at this minute.",
+  "session_range_so_far": {
+   "high": 30701.25,
+   "low": 29616.5,
+   "span": 1084.75
+  }
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "what_to_emit": "your standard thesis JSON for this window.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 29475.86
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29178.63
+   }
+  ],
+  "invalidation": {
+   "level": "prior_weekly_low_29923_reclaim",
+   "price": 29923.0
+  },
+  "waiting_for": "the bounce off the fresh weekly low (29,675.75) to stall and roll over, wherever it actually stalls - currently sitting on the 2m/3m BB MA cluster (29,723.50-29,730.91); trend day, so no 15m MA floor requirement. Enter short on the retest of a closure back down through that cluster.",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a 15m decisive-body close back above the 2m/3m BB MA cluster that also reclaims vwap_m1 29,773.09 - a genuine rebalance, not the short-covering bounce we're sitting in now.",
+  "anticipated_resolution": {
+   "level": "vwap_m1",
+   "price": 29773.09,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a 15m close above the 2m/3m BB MA cluster with a decisive body that also reclaims vwap_m1 confirms a genuine reversal; a wick-heavy absorption candle there means the level held and the downtrend resumes",
+  "reasoning": "751pt one-way collapse continued: the 29,843-29,891 confluence gave way, price broke to a fresh weekly low 29,675.75, then bounced 43pt on the session's heaviest volume and now sits on the 2m/3m BB MA, 54pt under vwap_m1. Neither vwap_m2 nor vwap_m3 has printed, so the short thesis stands."
+ },
+ "what_happened_since_the_last_read": "price probed the session low a second time at 29,699.5 - higher than the first probe at 29,675.75 - and reversed 98pt in one candle on 5,424 contracts, closing 17pt off its high at 29,780.75.",
+ "why_you_are_being_re-fired": "The trigger escalated and the gate granted it. Its objection: your condition_for_other_side licenses longs on a 15m close reclaiming vwap_m1 which you priced at 29,773.09, but the chart's live vwap_m1 is 29,718.96 and price at 29,780.75 has already reclaimed it by ~62pt. It reports a same-candle break UP through own 2m and 3m MA, vwap_m1 and the developing daily POC, off a second probe of the session low that held higher than the first (29,699.5 against 29,675.75). Re-read and restate.",
+ "escalation_response_field": "your output must include escalation_response set to either accommodated or reaffirmed."
+}

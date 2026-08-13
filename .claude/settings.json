@@ -13,7 +13,9 @@
       "Read(./data/narrated_days/**)",
       "Read(./docs/CORPUS-narrated-days.md)",
       "Read(./docs/FINDINGS-selection-effect.md)",
-      "Read(./output/agent_runs/**)"
+      "Read(./output/agent_runs/**)",
+      "Read(./docs/TEACHING-LOOP.md)",
+      "Read(./docs/ANALYSIS-friday-three-runs.md)"
     ]
   }
 }

@@ -1,0 +1,123 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "C5-D21-L1-0342",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-22T03:42 ET",
+ "candle_start": "03:39 (3m) / 03:40 (2m)",
+ "timeframe": "3m and 2m",
+ "leak_check": "pass - truncated at 03:41:59; last completed 2m bar starts 03:40, and the 3m bar starting 03:39 completes AT 03:42",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d21_c1_0342.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_high",
+    "price": 30770.75
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_vah",
+   "price": 30699.0
+  },
+  "waiting_for": "acceptance through the 30737-30754 band (VWAP+2, 2m BB upper, developing weekly VAH) on a 15m decisive close before adding to longs; a stall-and-rollover in that same band licenses the short instead - no chasing the raw touch",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed AT the 30737-30754 confluence (VWAP+2 / 2m BB upper / developing weekly VAH) on a rejection that stalls and rolls over, back toward VWAP or prior-day VAH",
+  "anticipated_resolution": {
+   "level": "vwap_p2",
+   "price": 30737.16,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close above the 30737-30754 band with a decisive body, not a wicky poke through it",
+  "reasoning": "Overnight sold off to the session low at 30337.5 then V-reversed hard through VWAP, printing a fresh session high into the London open. Price sits right inside the VWAP+2 / 2m-BB-upper / developing-weekly-VAH band with no 15m acceptance candle yet. Long-biased on the reclaim, but that confluence is live right now, so a stall-and-roll here licenses the fade."
+ },
+ "price_at_decision": 30752.5,
+ "position_state": "FLAT.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "vwap_p2"
+ ],
+ "levels_at_decision_CHART": {
+  "vwap": 30571.59,
+  "vwap_p1": 30668.55,
+  "vwap_m1": 30474.63,
+  "vwap_p2": 30765.52,
+  "vwap_m2": 30377.66,
+  "bb_2m_basis": 30768.01,
+  "bb_2m_upper": 30784.57,
+  "bb_2m_lower": 30751.45
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 30768.01,
+  "bb_ma_3m": 30756.58,
+  "bb_ma_15m": 30643.66,
+  "bb_ma_60m": null,
+  "day_range_fibs": {
+   "0.382": 30507.2,
+   "0.5": 30559.62,
+   "0.618": 30612.05,
+   "0.705": 30650.7
+  },
+  "session_high_so_far": 30781.75,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30563.0,
+   "val": 30471.0,
+   "vah": 30658.0,
+   "note": "DEVELOPING as-of 03:42"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30343.0,
+   "vah": 30756.0,
+   "note": "DEVELOPING as-of 03:42"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "levels_for_target_selection": "ABOVE the close: the 2m BB upper 30784.57, the session high 30783.25, the prior-day high 30770.75. BELOW: the 2m BB lower 30751.45, prior-day VAH 30699.0, the 0.705 fib 30650.7, the 15m MA 30643.66, the 0.618 fib 30612.05, vwap_p1 30668.55, prior-day POC 30668.0, the daily VAH 30658.0, the VWAP 30571.59, the 0.5 fib 30559.62.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill",
+ "signal_candle_3m": {
+  "start": "03:39",
+  "direction": "DOWN",
+  "open": 30772.0,
+  "close": 30752.5,
+  "closed_at": "03:42",
+  "levels": "own 3m MA + vwap_p2, same candle"
+ },
+ "signal_candle_2m": {
+  "start": "03:40",
+  "direction": "DOWN",
+  "open": 30768.75,
+  "high": 30769.5,
+  "low": 30752.5,
+  "close": 30752.5,
+  "volume": 202,
+  "levels": "own 2m MA (30768.01) + vwap_p2 (30765.52), same candle; closed on its low"
+ },
+ "session_high_this_window": 30783.25
+}

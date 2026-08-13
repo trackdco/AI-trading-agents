@@ -1,0 +1,95 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON 03:00-04:59 ET",
+ "decision_minute": "2026-06-26T03:00 ET",
+ "leak_check": "pass - truncated at 02:59:59. All prices builder-derived from committed bars; session extremes developing to this minute.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d25_0300_london.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "price_at_decision": 29503.75,
+ "last_completed_2m_bar": {
+  "start": "02:58",
+  "closed_at": "03:00",
+  "open": 29515.0,
+  "high": 29518.0,
+  "low": 29490.75,
+  "close": 29503.75,
+  "volume": 514
+ },
+ "position_state": "FLAT. First window of the session-day; nothing carried in.",
+ "window_state": {
+  "LONDON": "0 fills of 2 - open",
+  "NY_PRE": "not yet open",
+  "NY_AM": "not yet open"
+ },
+ "levels_at_decision_CHART": {
+  "vwap": 29491.25,
+  "vwap_p1": 29688.11,
+  "vwap_p2": 29884.96,
+  "vwap_m1": 29294.4,
+  "vwap_m2": 29097.55,
+  "bb_ma_2m": 29432.97,
+  "bb_ma_3m": 29396.47,
+  "bb_ma_15m": 29344.55,
+  "bb_ma_60m": 29655.31
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29432.97,
+  "bb_ma_3m": 29396.47,
+  "bb_ma_15m": 29344.55,
+  "bb_ma_60m": 29655.31,
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "session_high_so_far": 29892.75,
+  "session_low_so_far": 29160.5,
+  "daily_profile": {
+   "poc": 29355.0,
+   "val": 29161.0,
+   "vah": 29656.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30099.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29160.5
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "session_open_1800": 29742.0,
+  "overnight_high": 29892.75,
+  "overnight_high_time": "19:25",
+  "overnight_low": 29160.5,
+  "overnight_low_time": "23:38",
+  "hourly_closes_so_far": {
+   "03:00": {
+    "close": 29503.75,
+    "H": 29892.75,
+    "L": 29160.5
+   }
+  },
+  "15m_MA_crosses_so_far": [],
+  "note": "listed only up to this decision minute."
+ },
+ "macro": {
+  "news_blackout": false,
+  "note": "no scheduled release inside this window on the calendar supplied to the run."
+ },
+ "what_to_emit": "your standard thesis JSON for this window."
+}

@@ -1,5 +1,27 @@
 # TEACHING LOOP — his rulings on agent disagreements, in order
 
+> ## ⛔ NOT RUNTIME MATERIAL. NEVER READ THIS DURING A SCORED RUN.
+>
+> This file quotes him **per-trade on the exact days being replayed** — which
+> setups he wanted, which entries he'd have taken, what each agent decision got
+> wrong. **That is an answer key.**
+>
+> It leaked once, 2026-08-12: a run session was told to read this file first
+> (my instruction, in a paste block) and then fed his verbatim commentary into
+> agent briefings. His words: *"it would look at a trade I took, and it would
+> tell the agents verbatim what I said on those setups… on live they're not
+> going to see verbatim what I said about a trade that already happened."* The
+> whole week had to be re-run.
+>
+> **Two guards now exist.** `.claude/settings.json` denies the Read tool on
+> this path, and `scripts/audit_run_leak.py` check F greps every briefing for
+> the quoted passages below and fails the run if one appears.
+>
+> This file is for **prompt authoring between runs** — read it when writing a
+> new agent version, never while one is executing. The doctrine an agent needs
+> at runtime is already inside its own contract.
+
+
 The refinement substrate. Every entry is a disagreement between a scored
 agent run and his recorded or stated behavior, plus his ruling on it, dated.
 Prompt versions cite entries here when they change. Doctrine that graduates
@@ -556,3 +578,239 @@ orchestrator now runs a supplementary **rejection-first** scan
 (`rejection off a key level → own-MA closure → retest`) alongside it, and both
 candidate sets are adjudicated. On day 2 that scan surfaces 08:10, 09:36, 10:30 and
 10:40 — including both trades he named.
+
+---
+
+# TRADE-BY-TRADE REVIEW — the narrated week, his eyes on every fill
+2026-08-12. He walked all 9 fills and the notable passes. Entries T17–T23.
+
+## T17 — FIRST TARGET BAND: 1.5–2.5R becomes **1.0–2.5R**
+
+**His ruling, explicit:** *"We said the first structural target should be within
+1.5 to 2.5R — let's move that to 1 to 2.5, because I'm seeing on a lot of these
+trades the closest structural level was 1R but I like around 1.2, 1.3R. Since I
+said 1.5 to 2.5 it was searching for levels within that range… on a lot of these
+trades, especially on choppy days, it makes sense to not go for as big a
+target."*
+
+**Consequence:** T11's band widens at the bottom. The empty-band fixed-1.5R
+fallback stays, but will now fire far less often, which also defuses the T11 vs
+origin-proximity-stop collision recorded in `ANALYSIS-friday-three-runs.md` §3.
+Worked example he gave: the Friday 10:54 short, where the VWAP mid was the
+obvious target, the agent reached past it, and price *"got like five points from
+his take profit and then it just fucking reversed."*
+
+## T18 — A SHALLOW BOUNCE **IS** A REJECTION ON A TREND DAY
+
+This is the root cause of two of his three complaints, and it answers open
+question #2 from `ANALYSIS-friday-three-runs.md`.
+
+**The Tuesday London short he expected (03:24, passed):** the agent's own reason
+was *"Bounce (29,950→30,033.5) never reached a thesis-named rejection level —
+vwap_m1 sits 80pt higher at 30,113, the fib/VAL/15mMA confluence at
+30,228–30,259."* **His read:** *"London opened and came up, just to continue
+back down. That made complete sense to me… I wanted us to stall out around this
+area anyway, so I don't know why it didn't catch that short."*
+
+**Consequence:** on a trend day the rejection is wherever the counter-trend
+bounce *actually stalls* — it does not have to reach a pre-named level. A thesis
+that names rejection levels 80–200pt from price has effectively written a
+one-sided view, and the trigger then obeys it literally. **Rejection levels in
+`condition_for_other_side` / `waiting_for` must sit within reach of current
+price, and a bounce that stalls and rolls over qualifies on its own.**
+
+## T19 — DIRECTION GATES MUST NOT OUTLIVE THE TAPE (Tue 09:40)
+
+**The trade:** his Tuesday 09:36 3m / 09:38 2m long. Verified on the tape: the
+3m starting 09:36 closed through **both its own MA (29,731.15) and VWAP−1
+(29,721.84) in the same candle** — his cleanest same-candle shape. The agent
+**saw it exactly**, writing *"09:38 2m candle broke UP through own MA/vwap_m1/POC
+and closed at its high"* — then passed it `direction_mismatch`, because the
+standing short thesis licensed longs only on *"a 15m close above weekly_low
+29,923"* with price at 29,780.
+
+**His read:** *"I'm very disappointed it didn't catch these longs at 9:36…
+that would have been a very easy 3R, 4R trade."*
+
+**Consequence:** same family as the Friday NY_PRE defect and T18 — a Tier-1
+condition set too far away silently disables a whole direction for the session.
+Combined with the `waiting_for` finding, the fix is one rule: **a candidate
+carrying a nameable rejection that the standing thesis's own condition cannot
+accommodate must escalate `thesis_stale`, not pass.** Tier 1 then re-reads.
+
+## T20 — ENTRY LEVEL: DO NOT LIMIT DEEP INTO THE MOVE (Wed 09:45, −1.0R)
+
+**His critique of the trade the agent took:** the thesis was sound (the agent
+cited three rejections of the 15m MA/VWAP+1 zone), but the fill sat at ~29,635,
+essentially **at VWAP−2**. *"What was this even a retest of? It was nothing. In
+this instance, where we're entering basically a VWAP−2 short, we're basically
+wanting it to break VWAP−2 to affirm our trade direction, which is not very
+smart… it basically shorted at the VWAP−2 band, and that is just very, very
+dumb."*
+
+**What he wanted:** entry on the retest of the BB MA right after the candle that
+closed through the VWAP mid + MA, stop above that candle's high. *"That would
+have been a beautiful short."* He rates the **stop placement as perfect** and
+the **entry as the whole defect**.
+
+**Consequence:** the existing rule already says limit at the CLOSEST structure to
+price at the trigger's close. This trade violated it by waiting for further
+displacement and then limiting at the far band. **A limit at a level price has
+not yet reached, which requires more displacement to fill, is not a retest —
+it is a breakout bet, and it is forbidden.**
+
+## T21 — WAIT ~5 MINUTES AFTER THE CASH OPEN (Wed 09:34, −1.0R)
+
+**His ruling:** *"It really shouldn't be taking a trade that early. I'd wait at
+least five minutes after market open to let it play out a bit… that can also
+just be open volatility. It's not really showing us anything at that point."*
+
+Refines T16 (which established the open bar is ~5 min, not 15): **09:35 is the
+earliest entry, and a 09:30–09:34 candidate is passed on the clock.**
+
+## T22 — DO NOT BET ON A RANGE BREAKOUT AFTER A RANGING LONDON (Wed 08:18)
+
+**His critique:** *"We were trading in this range for the entire London session,
+and then we were anticipating a breakout of it. To me, that doesn't make sense,
+because it's more likely for price to stall at this high and come to the low of
+the range again."* He would rather have taken **the short 15 minutes later** —
+*"we're not betting on a break of this range, we're saying okay, we've topped
+out this range, let's target the bottom."*
+
+**Consequence:** after a session-long range, the default read is FADE the edge,
+not anticipate the break. Breakout continuation is tradeable only **after** the
+break has happened.
+
+## T23 — TRAIL INTO PROFIT RATHER THAN ROUND-TRIP TO BREAKEVEN
+
+**His ruling on the Friday 10:54 short (0.00R after nearly hitting T1):** *"If I
+didn't take profits at the VWAP middle band, I would have trailed my stops at a
+minimum into some profits. That makes a lot more sense to me."*
+
+He explicitly credits T14 for saving the 1R — *"good on it for catching the
+break-even"* — this is an addition, not a replacement: once a trade has been
+meaningfully in profit and stalls short of target, the stop trails **into
+profit**, not merely to breakeven.
+
+## THE COMPOUNDING FINDING — the two bad Wednesday trades blocked the good one
+
+Wednesday's NY_AM took 09:34 (−1.0R) and 09:45 (−1.0R), which **consumed the
+NY_AM cap of 2**. His third observation for that morning — *"if it missed either
+of those trades, there would have been a really good long"* at 09:48, sweeping
+the low with a massive wick then breaking VWAP−1 and the MA in the same candle,
+*"an easy 1.5R… you could have targeted VWAP+1, that would have been a 3.4"* —
+was therefore **unreachable regardless of merit**. The log confirms it: four
+adjudications that day, the last at 09:45.
+
+**So a bad early take costs more than its R.** It spends a scarce slot. This
+strengthens T21 and T20 well beyond their −1R face value, and is an argument for
+the trigger being *more* conservative early in a window than late.
+
+## WHAT HE APPROVED, recorded so it is not tuned away
+
+- **Mon London short, +1.8R** — *"a good short. It closed through VWAP+2 and it
+  also closed the moving average."*
+- **Mon NY long, +1.67R** — *"definitely a good long. Perfect entry on the retest
+  of the moving average… I have no corrections to make there."*
+- **Mon pre-market long flattened before the open, −0.44R** — mild dislike of the
+  setup, but *"it's good that it flattened it before market opened. It needed to
+  do that."* T13 endorsed.
+- **Wed London, no trades** — *"just a straight chop fest, so completely fine."*
+- **Thu pre-market, no trades into 08:30 news** — *"I don't want to trade
+  pre-market when there's high-impact news like that. That's just stupid."*
+- **Thu open dump, not traded** — *"it didn't do some retarded shit. That's great."*
+- **Tue 10:40 short, +2.16R** — sound trade, entry criticised (see T20 family);
+  *"the stop placement was actually perfect."*
+- **Fri 09:58 long, +1.95R** — good but late; he wanted the 09:42 entry, which
+  would also have pre-empted the later entry.
+
+## T24 — 2026-08-12 · CORRECTION TO ME: no early-window conservatism
+
+I proposed, after finding that Wednesday's two bad takes consumed the NY_AM cap,
+that the trigger should be "more conservative early in a window than late."
+**He rejected it outright:**
+
+> *"I disagree with that. I think 9:40 to 10:10-ish is usually the window where
+> we get the best trades. I'm just saying wait five minutes after the open so
+> that volatility noise from the open doesn't affect a trade… Don't be more
+> conservative at the start of the window, because I think that's dumb. The
+> first half of the window is not significantly better than the second half, in
+> my opinion, but it's just better."*
+
+**Consequence:** T21 is a **clock buffer only** — 09:35 earliest, because the
+first five minutes are noise. It must NOT be generalised into a caution gradient
+across the window. Encoded explicitly in tv-trigger 0.3.5 constraint 4, with his
+correction quoted inline so a later version cannot quietly re-introduce it.
+
+The compounding finding about the cap still stands on its own: a bad take spends
+a scarce slot. The fix for that is taking *better* trades (T20's entry rule,
+T5's rejection-first test), not taking *fewer early* ones.
+
+## T25 — 2026-08-12 · SAFEGUARDS ON THE ESCALATION RULE (his catch)
+
+I flagged the risk when shipping 0.3.5 — *"the escalation rule could over-fire
+and turn Tier 1 into a coin-flipping machine"* — and shipped it anyway with only
+observability, no limit. **His response:** *"if u knew that might happen id hope
+u add a safegate for it planning for that."* Correct, and the ordering was
+backwards: a named failure mode gets a guard in the same change, not a metric to
+watch it happen.
+
+**Safeguards added, both tiers:**
+
+*Trigger side (`tv-trigger` 0.3.5):*
+1. **Budget** — at most 2 escalations per window; spent budget logs
+   `escalation_budget_spent`. Ceiling of 6 re-reads a day, not 30.
+2. **Ratchet** — never escalate the same level + direction twice in a window.
+   Once Tier 1 has ruled on that argument it is settled.
+3. **Qualification** — only a candidate it would OTHERWISE TAKE may escalate:
+   `rejected_level` populated, a **same-candle** two-level break behind it.
+   Sequential pairs never qualify (they already default toward pass under T1).
+4. **Mechanical gates are never escalatable** — window bounds, the cap, news
+   blackout, the 09:35 buffer, an open position.
+5. **One per candidate**, no re-framing.
+
+*Thesis side (`tv-thesis` 0.3.5):* an escalated re-read **may** widen or relocate
+`condition_for_other_side`, clear a spent `waiting_for`, add the escalated
+direction as a licensed second side, and move targets/invalidation. It **may
+not** flip `bias` outright — that still requires the ACCEPTANCE evidence (a 15m
+decisive-body close) or a structural re-fire event — and may not abandon a
+`stand_aside` unless the escalated bar IS the resolution it was waiting for.
+
+Both tiers emit the ratio: `escalation_response` is `accommodated` or
+`reaffirmed` on every escalated re-read. **Mostly reaffirmed ⇒ the trigger's bar
+is too loose, raise the qualification. Mostly accommodated ⇒ the thesis
+conditions were the real problem.** The number decides, not either agent.
+
+
+## T26 — 2026-08-12 · THE STEERED RUN — my instruction caused it
+
+**What happened:** the whole 0.3.5 week run was contaminated and restarted. The
+run session was reading his per-trade commentary and feeding it to the agents.
+*"It would look at a trade I took, and it would tell the agents verbatim what I
+said on those setups. I had to restart the entire week run. Very frustrating
+because, obviously, on live they're not going to see verbatim what I said about
+a trade that already happened."*
+
+**Cause: mine.** My paste block for the 0.3.5 re-run opened with *"read
+docs/TEACHING-LOOP.md first"* — and by then this file contained T17–T24, his
+verbatim per-trade review of the exact five days being replayed. I built the
+answer key, then told a run session to open it.
+
+Same class as the 0.3.4 prompt contamination, and the same reason it is worse
+than a replay leak: timestamps stay clean, checks A–E all pass, and the score
+silently measures recall.
+
+**Three guards, all now in place:**
+1. `.claude/settings.json` denies `Read` on TEACHING-LOOP.md, the analysis docs,
+   and the corpus — the run session cannot open them even if instructed to.
+2. `audit_run_leak.py` **check F** extracts every `*"..."*` passage from the
+   refinement docs (110 of them today) and greps each briefing for it. Verified
+   both ways: fires on a planted quote, clean on the real briefings. Its first
+   version silently failed the planted case because JSON escapes newlines as
+   `\n`; the negative control caught it, which is the entire argument for
+   running one.
+3. **Paste blocks for scored runs must never cite the refinement docs.** The
+   runbook and the agent contracts are the only reading a run session needs.
+
+**Standing rule:** doctrine flows into agents through their **contracts**, at
+version-bump time. It never flows through a briefing, and never mid-run.

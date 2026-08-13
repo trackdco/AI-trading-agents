@@ -1,0 +1,128 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "C5-D23-NYA3-0957",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-24T09:57 ET",
+ "candle_start": "09:54 (3m) / 09:55 (2m)",
+ "timeframe": "3m",
+ "leak_check": "pass - truncated at 09:56:59. The 3m bar starting 09:54 and the 2m bar starting 09:55 both complete AT 09:57. No value in this briefing was typed by hand: every candle, the price at decision and the session extremes are aggregated from committed bars and re-derived a second time by the builder's guard, which refuses to emit a briefing whose stated numbers disagree with the bars or whose candle closes after 09:57.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d23_c7_0957.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "prior_day_val_vwap_m2_confluence",
+    "price": 29637.0
+   },
+   {
+    "level": "weekly_low_prior_day_low",
+    "price": 29577.25
+   }
+  ],
+  "invalidation": {
+   "level": "session_high_so_far",
+   "price": 29891.75
+  },
+  "waiting_for": "a bounce that rejects within the 29711-29739 vwap_m1 / fib0.5 / daily-VAL / prior-day-POC zone, wherever it actually stalls",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a stall or rejection AT the 29577-29610 weekly-low / prior-day-low cluster - that floor was already defended once this session with a 306pt rally",
+  "anticipated_resolution": {
+   "level": "weekly_low_prior_day_low",
+   "price": 29577.25,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a 15m close back above 29891.75 with a decisive body would break this read",
+  "reasoning": "Price is deep in the lower third of the multi-day range, ~134pt above the weekly/prior-day low 29577.25 and well below weekly VAL. The last 90 minutes gave back the entire overnight bounce, closing below the developing VAL on a weak 2m bar. Short on that momentum toward the prior-day-VAL/vwap_m2 pocket then the weekly-low cluster - but that low already produced a 306pt rally once, so a stall there flips me long."
+ },
+ "price_at_decision": 29691.25,
+ "position_state": "FLAT. The window's first trade (short 29634) stopped for -1.00R at 09:42. The 09:54 candidate was passed. Nothing open.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_3m",
+  "session_vwap",
+  "daily_val",
+  "bb_ma_60m"
+ ],
+ "levels_at_decision_CHART": {
+  "vwap": 29752.13,
+  "vwap_p1": 29823.48,
+  "vwap_m1": 29680.78,
+  "vwap_p2": 29894.83,
+  "vwap_m2": 29609.44,
+  "bb_ma_2m": 29719.8,
+  "bb_ma_3m": 29729.88,
+  "bb_ma_15m": 29784.54,
+  "bb_ma_60m": 29759.22
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29719.8,
+  "bb_ma_3m": 29729.88,
+  "bb_ma_15m": 29784.54,
+  "bb_ma_60m": 29759.22,
+  "day_range_fibs": {
+   "0.382": 29688.12,
+   "0.5": 29727.0,
+   "0.618": 29765.88,
+   "0.705": 29794.55
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29562.25,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29697.0,
+   "vah": 29856.0,
+   "note": "DEVELOPING as-of 09:57"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 29972.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 09:57"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29562.25
+ },
+ "levels_for_target_selection": "ABOVE 29691.25: developing daily VAL 29697.0, own 2m MA 29719.8, fib 0.5 29727.0, own 3m MA 29729.88, prior-day POC 29733.0, session VWAP 29752.13, 60m MA 29759.22, fib 0.618 29765.88, 15m MA 29784.54, fib 0.705 29794.55, developing daily POC 29821.0, vwap_p1 29823.48, developing daily VAH 29856.0, session high so far 29891.75, vwap_p2 29894.83, prior-day VAH 29928.0. BELOW: fib 0.382 29688.12, vwap_m1 29680.78, prior-day VAL 29637.0, vwap_m2 29609.44, session low so far 29562.25.",
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill",
+ "signal_candle_3m": {
+  "start": "09:54",
+  "closed_at": "09:57",
+  "open": 29769.5,
+  "high": 29790.0,
+  "low": 29685.25,
+  "close": 29691.25,
+  "volume": 5118,
+  "direction": "DOWN"
+ },
+ "last_completed_2m_bar": {
+  "start": "09:55",
+  "closed_at": "09:57",
+  "open": 29767.25,
+  "high": 29770.0,
+  "low": 29685.25,
+  "close": 29691.25,
+  "volume": 3627
+ },
+ "session_high_this_session": 29891.75,
+ "session_low_this_session": 29562.25,
+ "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches sits ABOVE both the price and the limit; for a SHORT, mirrored."
+}
