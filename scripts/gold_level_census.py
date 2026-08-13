@@ -34,11 +34,13 @@ from src.research.tomtrades import data as D
 def main() -> None:
     n_days = int(sys.argv[sys.argv.index("--days") + 1]) if "--days" in sys.argv else None
     cost = float(sys.argv[sys.argv.index("--cost") + 1]) if "--cost" in sys.argv else 0.2
+    sym = sys.argv[sys.argv.index("--symbol") + 1] if "--symbol" in sys.argv else "gc"
+    tick = float(sys.argv[sys.argv.index("--tick") + 1]) if "--tick" in sys.argv else 0.10
 
-    C.TICK = 0.10          # GC minimum increment
+    C.TICK = tick
     C.COST_PTS = cost      # round-turn, in points; swept rather than assumed
 
-    gc = D.load(str(ROOT / "data/gc_1m.parquet"))
+    gc = D.load(str(ROOT / f"data/{sym}_1m.parquet"))
     bars = (gc.set_index(gc["ts_event"].dt.tz_convert(NY))
               [["open", "high", "low", "close", "volume"]].sort_index())
     sess_days = sorted({str((t.normalize() if t.hour >= 18
@@ -46,7 +48,7 @@ def main() -> None:
                         for t in bars.index})
     if n_days:
         sess_days = sess_days[-n_days:]
-    print(f"GC {len(bars):,} bars · {len(sess_days):,} session-days · "
+    print(f"{sym.upper()} {len(bars):,} bars · {len(sess_days):,} session-days · "
           f"TICK={C.TICK} COST_PTS={C.COST_PTS}", flush=True)
 
     rows = []
@@ -56,7 +58,7 @@ def main() -> None:
             print(f"  {k}/{len(sess_days)} days · {len(rows):,} fights", flush=True)
     out = pd.DataFrame(rows)
     print(f"fights: {len(out):,}", flush=True)
-    p = ROOT / f"output/gold_level_census_cost{cost}.parquet"
+    p = ROOT / f"output/level_census_{sym}_cost{cost}.parquet"
     p.parent.mkdir(parents=True, exist_ok=True)
     out.to_parquet(p, index=False)
     print(f"wrote {p}", flush=True)
