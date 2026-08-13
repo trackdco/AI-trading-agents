@@ -197,8 +197,11 @@ def main() -> int:
     print(f"  bar used        {ref['bar_used']:%Y-%m-%d %H:%M %Z}"
           f"   (last completed bar strictly before the decision minute)")
     print(f"  close           {ref['close']:.2f}")
-    print(f"  weekly anchor   {ref['weekly_anchor']:%Y-%m-%d %H:%M %Z}"
-          f"   (18:00 NY, exactly 7 days back, developing)")
+    wa = ref["weekly_anchor"]
+    sess_open = pd.Timestamp(f"{a.sess_day} 18:00", tz=NY)
+    back_days = (sess_open - wa).days
+    print(f"  weekly anchor   {wa:%Y-%m-%d %H:%M %Z}"
+          f"   ({wa:%A} 18:00 NY, {back_days}d back, developing)")
 
     print(f"\n  VWAP (source={a.vwap_source}, 18:00 anchor)")
     for k in ("vwap_m3", "vwap_m2", "vwap_m1", "vwap",
@@ -257,6 +260,37 @@ def main() -> int:
               f"delta {d:>6.2f}   tol {tol:.1f}   {'ok' if ok else 'FAIL'}")
         if not ok:
             failed.append((k, d, tol))
+
+    # ---- GATE 3b: the anchored weekly profile is anchored where he anchors it.
+    # Added 2026-08-13 at his instruction ("make sure the weekly vp is anchored
+    # correctly too, make sure its in the process"). This is a GATE, not a print,
+    # because the anchor was silently wrong for an entire scored week: it used
+    # same-weekday-minus-7 instead of the week's Monday, moving weekly POC ~900pt.
+    # Anchored-weekly edges are the ONLY levels that grade A on their own and they
+    # are named as thesis targets, so a wrong anchor changes verdicts, not just
+    # numbers. Checked every run so it can never drift back unnoticed.
+    anchor_bad = []
+    if wa.weekday() != 0:
+        anchor_bad.append(f"anchored to a {wa:%A}, not a Monday")
+    if not (0 < back_days <= 7):
+        anchor_bad.append(f"{back_days}d back from the session open; "
+                          "expected 1-7 (this week's Monday, or the prior "
+                          "Monday when the session IS Monday's)")
+    print("\n  ANCHORED WEEKLY -- anchor check")
+    if anchor_bad:
+        print(f"    anchor {wa:%Y-%m-%d %H:%M} ({wa:%A}), {back_days}d back   FAIL")
+        for m in anchor_bad:
+            print(f"      - {m}")
+        print("\n  GATE FAILED -- the anchored weekly profile is anchored wrong.")
+        print("  Weekly POC/VAL/VAH are the only A-grade levels in the conviction")
+        print("  rubric and are named as thesis targets. STOP; do not run a day on")
+        print("  a mis-anchored weekly profile.\n")
+        return 1
+    print(f"    anchor {wa:%Y-%m-%d %H:%M} ({wa:%A}), {back_days}d back   ok")
+    if back_days == 7:
+        print("    NOTE: 7d back means this session IS the week's Monday, so the")
+        print("    profile falls back to the PRIOR Monday and will read as last")
+        print("    week's numbers. That is correct on a Monday, not a bug.")
 
     if failed:
         print("\n  GATE FAILED -- his chart config differs from the research "
