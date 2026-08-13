@@ -1,0 +1,1089 @@
+
+========================================================================================
+  2026-06-21_wk1   —   what the agents were thinking
+    opens Sun 21 Jun 18:00 NY  ·  LONDON and NY trade on Mon 22 Jun  ·  closes Mon 17:00
+========================================================================================
+
+  ── 03:00  THESIS (window_open)
+      bias: short  two-sided
+      targets: daily_vah @ 30705.0, day_range_fib_0.5 @ 30539.88
+      invalidation: prior_day_high @ 30770.75
+      waiting for: rejection at the VWAP+2 / session-high / 2m-BB-upper confluence (~30737-30750), confirmed by a 2m/3m close back below the 2m BB MA (~30722)
+      other side licensed by: 15m decisive-body close above prior-day high 30770.75 (already above weekly VAH 30714) - accept the breakout, go long toward the weekly high
+   reasoning:
+      Monday: no explicit gap figure given, but Asia's behavior is the reason - a
+        405pt flush to 30337.5 (below Friday's 30388 low) fully reclaimed above
+        Friday's VAH (chart 30705) and weekly VAH (30714). Rotational not flush
+        (18/18 15m candles, 0.144 efficiency), so default is fade-the-edge. Price
+        is stretched at VWAP+2/session-high/2m-BB-upper (~30737-30750), 118pt
+        above the 15m MA; fib 0.5 aligns with daily VAL near 30540-48. Friday's
+        high (30770.75) unbroken 34pt above - short the confluence, flip long on a
+        15m decisive close through it.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  03:42  TOOK  WK1-D21-L1-0342   short  [take_light]  conviction C
+      rejected: prior_day_high + vwap_p2 @ 30770.75 — stalled/consolidated at the highs (session_high untested-through in 60m window), then reversed same-candle through 2m+3m own MA and VWAP+2 - shape A off prior_day_high, confluent with VWAP+2
+      broke: own_ma_2m, own_ma_3m, vwap_p2   (same_candle)
+   why:
+      Full-range reversal candle closes 2m+3m own MA + VWAP+2 same-minute after
+        stalling at the prior_day_high/VWAP+2/session_high cluster (session_high
+        never breached in 60m); matches thesis's anticipated resolution. But it
+        fades a sustained rally visible on chart, so counter-trend caps it at C ->
+        light.
+      plan: entry 30753.58  ·  stop 30776.0  ·  target weekly_vah @ 30714.0
+   stop rationale:
+      Candle high 30772 sits inside a 5pt-wide live cluster (vwap_p2 30765.78 /
+        bb_ma_2m 30768.01 / prior_day_high 30770.75); origin near bb_ma_2m
+        confirms it's live. Stop clears the whole zone + candle extreme, short of
+        session_high 30781.75.
+      tripwire: weekly_vah @ 30714.0
+
+      03:51  MANAGE → breakeven  favouring: less
+          at: bb_ma_2m @ 30767.08 — stalled
+          stop → 30753.58
+       why:
+          Rallied against entry to test bb_ma_2m/vwap_p2 resistance
+            (~30765-30770) three times over 6min, lower highs, no close
+            through - a stall not a break. C-conviction, momentum gone against
+            me since fill (MAE -0.6R): tightening to breakeven rather than
+            risking the full -1.00R stop.
+
+      04:11  MANAGE → exit_now  favouring: more
+          at: weekly_vah @ 30714.0 — broken
+       why:
+          Only target (weekly VAH 30714) closed through on the 04:09-04:11 bar
+            to 30709.5, decisive not a wick. Conviction C means 100% out at
+            TP1, no runner - bank the full ~1.97R here rather than holding for
+            more.
+
+      ⟶ OUTCOME  +1.97R  (+1.97R blended)
+
+  ── 08:00  THESIS (window_open)
+      bias: short  two-sided
+      targets: weekly_vah @ 30720.0, prior_day_poc @ 30668.0, day_range_fib_0.618 @ 30640.63
+      invalidation: daily_vah @ 30824.0
+      waiting for: a fresh rejection in the 30770.75-30828 zone (prior-day high through today's high, confluent with daily VAH 30824), confirmed by a 2m/3m close back below the BB MA cluster (~30750-30752)
+      other side licensed by: long licensed on a 15m close above the 30824-30828 cluster with a decisive body (real acceptance of the new high, not another absorption wick) - target continuation toward the weekly high 30975.5
+   reasoning:
+      London short paid into weekly VAH (+1.97R). Since then price ran to a new
+        session high 30828 - through prior-day high 30770.75 and daily VAH 30824 -
+        on a 0.09-body absorption candle, then reversed to 30730 before grinding
+        back to 30757.75: a retest, not acceptance. Rotational session (path_eff
+        0.123, 29/27 15m up/down), so fade-the-edge is default: short on rejection
+        back below the 2m/3m BB MA here, into weekly VAH then the fib 0.618/60m-MA
+        confluence near 30640. A decisive 15m close above 30824-30828 flips me
+        long toward the weekly high 30975.5.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:03  PASSED  WK1-D21-NYP1-0903   long  [pass]
+      broke: own_ma, daily_vah   (same_candle)
+   why:
+      Long break (2m+3m same-candle, own MA + daily VAH) vs short thesis bias.
+        Long flip needs 15m close above 30824-30828 w/ decisive body; only 3min
+        into that 15m bar, unmet. Steady uptrend into breakout, not reject-then-
+        turn - no rejection to escalate on.
+      constraints failed: direction_mismatch, waiting_for_unmet
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:06  PASSED  WK1-D21-NYP2-0906   short  [pass]
+      broke: daily_vah   (sequential)
+   why:
+      Scanner's own_ma leg (08:57) is stale/invalid: this candle closed 30841.5,
+        well above both its own 2m MA (30822.56) and 3m MA (30810.79) - no own-MA
+        break exists, so no valid two-level candidate. Only daily_VAH (30846) was
+        marginally tagged, immediately preceded by a rally to new session highs
+        that already held (never closed above 30869.75). Thesis's waiting_for
+        (2m/3m close back below ~30750-752) is unmet; price still 30841.5, far
+        above.
+      constraints failed: waiting_for_unmet, no_trigger
+
+  ── 09:30  THESIS (window_open)
+      bias: long  two-sided
+      targets: vwap_p2 @ 30903.32, weekly_high @ 30975.5
+      invalidation: prior_day_high @ 30770.75
+      waiting for: reclaim and hold above the 2m/3m BB MA cluster (~30833-30838) that is the retest of the 30824-30828 breakout zone; on this rotational day the 15m MA (30757.5) is the floor if the pullback runs deeper
+      other side licensed by: shorts licensed on a 15m decisive-body close below prior-day high 30770.75 / the 15m MA 30757.5, confirming the breakout above 30824-30828 failed - target the prior-day POC/VAH zone 30668-30699
+   reasoning:
+      09:00 15m candle closed 30858.25 (0.83 body) above 30824-30828 and prior-day
+        high - genuine acceptance, licensing the long per my own NY_PRE condition.
+        09:15 stabbed a new high (30873.5) then reversed to 30822, right at the
+        cluster edge - a retest, not a failed breakout. Rotational session
+        (path_eff 0.148, 32/30 up/down), so I want the retest to hold before
+        entries. Long-leaning toward weekly high 30975.5; a decisive close below
+        30770.75 flips me short into the 30668-30699 zone.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:34  PASSED  WK1-D21-NYA1-0934   short  [gated_not_adjudicated]
+   why:
+      tv-trigger 0.4.2 hard constraint 4: 09:35 is the earliest entry, an open-
+        volatility buffer. 09:34 falls inside it. This is a MECHANICAL gate the
+        orchestrator enforces - not escalatable, and no agent was called.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:36  TOOK  WK1-D21-NYA2-0936   long  [take_full]  conviction A
+      rejected: prior_day_high @ 30770.75 — candle wicked to 30758.25 (14pt below), 0 closes below across 2m/3m/5m all session; bb_ma_15m (30762.85) held in the same wick, stacked-level confluence
+      broke: own_ma_2m, vwap_p1   (same_candle)
+   why:
+      Long matches thesis; clean shape-A rejection of prior_day_high (14pt wick, 0
+        closes below on 2m/3m/5m) w/ bb_ma_15m confluence in same zone. Same-
+        candle break of own_ma_2m+vwap_p1 confirms it. act_on_resolution licenses
+        acting. R~1.51 lands weekly_high, in preferred band.
+      plan: entry 30841.0  ·  stop 30752.0  ·  target weekly_high @ 30975.5
+   stop rationale:
+      Extreme (30758.25) sits on a live cluster: prior_day_high (thesis's own
+        invalidation, 14pt max wick this session, 0 closes below) plus bb_ma_15m
+        (6pt max wick). Stop clears past the deepest wick (~30756.75) with buffer,
+        well above the 0.75x floor.
+      tripwire: daily_vah @ 30904.0
+
+      09:39  MANAGE → trail  favouring: more
+          at: daily_vah @ 30904.0 — broken
+          stop → 30904.0
+       why:
+          Strong 2m bull bar closed at 30916.25, clean through daily_vah 30904
+            into new session highs, up 0.85R - trail stop to 30904, behind the
+            broken level; price must close back under it to stop me out.
+
+      ⟶ OUTCOME  +0.71R  (+0.71R blended)
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:45  PASSED  WK1-D21-NYA3-0945   short  [pass]
+      rejected: bb_ma_cluster_2m3m + vwap_p1 @ 30837.15 — single violent reversal candle, not slow-then-wick; closed through to the downside rather than holding above - not a clean rejection, and counter-trend to the standing long
+      broke: own_ma_3m, vwap_p1   (mixed - 2m sequential, 3m same-candle)
+   why:
+      3m same-candle break down through own_ma+vwap_p1 is counter to the LONG
+        thesis; no significant level rejected (MA/VWAP+1 cluster is low/mid tier,
+        counter-trend caps C). Same candle wicked below prior_day_high but closed
+        back above it - that floor held. Headroom below crowded; 15m short-
+        confirmation hasn't fired.
+      constraints failed: direction_mismatch, headroom_crowded
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:48  TOOK  WK1-D21-NYA4-0948   long  [take_full]  conviction A
+      rejected: prior_day_high+bb_ma_15m @ 30770.75 — 15m/5m/3m/2m all HELD across 60min window - wicked 10-20pt below (10.4pt bb_ma_15m, 14.0pt prior_day_high), body never closed through; 09:15-09:45 pullback reversed at 30822 (this candle's open) without reaching this floor
+      broke: own_ma_2m, own_ma_3m, vwap_p1, daily_poc   (same_candle)
+   why:
+      Long, thesis-aligned & pre-licensed (act_on_resolution:true). 09:15-09:45
+        pullback held cleanly above prior_day_high/bb_ma_15m floor - both HELD w/
+        wick-only on every TF over 60min. This candle then closed
+        own_ma+vwap_p1+POC together on 2m&3m, confirming the retest held per
+        thesis.
+      plan: entry 30849.58  ·  stop 30785.5  ·  target weekly_high @ 30975.5, vwap_p2 @ 30976.7
+   stop rationale:
+      Candle body(open 30789.25)/wick(low 30787.75) isn't on a live level -
+        nearest structure (prior_day_high/bb_ma_15m) is 17-20pt further below, and
+        origin cleared vwap_p1/bb_ma_3m by ~49-51pt. Stop set a few pts beyond
+        body/wick low, clear of all levels the candle broke.
+      tripwire: session_high+daily_vah @ 30927.0
+
+      09:58  MANAGE → trail  favouring: more
+          at: vwap_p1 + bb_ma_2m @ 30854.37 — broken
+          stop → 30805.0
+       why:
+          Clean reclaim: last 2m bar wicked to 848.75 through the cluster then
+            closed 914.25, well above. Already +1.01R. Second setup affirms
+            direction - accept the light add, trail combined stop to its
+            invalidation (30805) to lock in the break.
+
+      10:05  MANAGE → trail  favouring: more
+          at: session_high @ 30926.75 — stalled
+          stop → 30900.0
+       why:
+          Session_high 30926.75 tested repeatedly across 4 bars (wicks to
+            30954.5) with no close-through - a stall, not a break. Already
+            +1.15R and meaningfully in profit, so trailing to 30900 (below the
+            whole consolidation) rather than merely breakeven, per the in-
+            profit-stall rule.
+
+      ⟶ OUTCOME  +0.79R  (+0.79R blended)
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:58  TOOK  WK1-D21-NYA5-0958   long  [take_light]  conviction B
+      rejected: vwap_p1 (+bb_ma_2m confluence) @ 30854.37 — 3m candle opened 852.5 at the cluster, wicked to 842.5 below it, then closed 914.25 well above - long wick, nothing held below; same-candle break of own MA and VWAP+1
+      broke: own_ma_2m, vwap_p1   (same_candle)
+   why:
+      2m/3m displaced through BB MA(854.76)+VWAP+1(854.37) same-candle, wicking to
+        842.5/848.75 then closing 914.25 - exactly the thesis's anticipated
+        cluster reclaim (act_on_resolution:true). Level merit only mid-tier and
+        daily_vah/session_high ~927 crowds the near path, plus this stacks on an
+        already-open A at the same cluster.
+      plan: entry 30857.5  ·  stop 30805.0  ·  target weekly_high @ 30975.5
+   stop rationale:
+      Candle origin (852.5) sits ON the BB MA/VWAP+1 cluster (854.4-854.8), so
+        it's still live and can be wicked; stop clears below developing daily POC
+        (30810) with breathing room, not the candle low which sits inside that
+        same live cluster.
+      tripwire: daily_vah @ 30927.0
+
+      ⟶ OUTCOME  no fill
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  10:18  PASSED  WK1-D21-NYA6-1018   short  [pass]
+      broke: own_ma_2m, own_ma_3m, vwap_p1   (same_candle)
+   why:
+      Short two-level break (own MA + VWAP+1) vs long-biased thesis; short is
+        licensed only on a 15m close below 30770.75/30757.5, ~85pt away and
+        untouched. No level rejected at the 30911.75 swing high - a pullback in a
+        zone already chopping both ways on 2m-15m all session.
+      constraints failed: direction_mismatch
+
+
+========================================================================================
+  2026-06-22_wk1   —   what the agents were thinking
+    opens Mon 22 Jun 18:00 NY  ·  LONDON and NY trade on Tue 23 Jun  ·  closes Tue 17:00
+========================================================================================
+
+  ── 03:00  THESIS (window_open)  [flush]
+      bias: short
+      targets: weekly_low @ 29923.0, vwap_m3 @ 29735.88
+      invalidation: bb_ma_15m @ 30259.3
+      waiting for: a bounce into a nearby key level (2m/3m MA cluster ~30,015-30,039, or VWAP-2 ~29,941) that stalls and rolls over - closure back through the MA stacked with that level, entered on the retest. No 15m MA reclaim required; trend-day floor suspended.
+   reasoning:
+      Clean one-way flush lower since Asia - 0.605 path efficiency, 27:9 down:up
+        15m candles, price hugging the 2m MA the whole leg with no higher-low
+        structure, so this is not a structured trend and counter-trend is off.
+        Price sits ~47pt above the anchored weekly low (29,923); day-range fibs
+        (30,237-30,480) are far overhead and irrelevant until a real retrace
+        starts. Short, with-trend only, until a 15m decisive-body close reclaims
+        the 15m BB MA.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  03:22  PASSED  WK1-D22-L1-0322   long  [pass]
+      broke: own_ma_2m, daily_poc   (same_candle)
+   why:
+      2m candle closed up through own MA (30,008.66) and daily POC (~30,032) - a
+        long, counter-flush candidate against a short thesis carrying
+        flush:true/down. Constraint 0 is absolute and explicitly not escalatable:
+        every counter-flush candidate passes regardless of trigger quality.
+      constraints failed: flush_gate
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  03:24  TOOK  WK1-D22-L2-0324   short  [take_full]  conviction B
+      rejected: daily_poc @ 30032.0 — 3m candle opened 30020.75, wicked to 30034.75 (through POC), closed 29995.75 well below POC+both MAs; POC held as resistance most of trailing hour (2m: 23/30 closes below)
+      broke: bb_ma_2m, daily_poc   (same_candle)
+   why:
+      With-flush short: same-candle close through own 2m MA (30008.58) +
+        developing daily POC (30032.0). 3m wicked above POC to 30034.75, closed
+        29995.75 - matches thesis's anticipated bounce-and-rollover exactly.
+        Target weekly_low, 2.26R, preferred band.
+      plan: entry 30005.5  ·  stop 30042.0  ·  target weekly_low @ 29923.0
+   stop rationale:
+      Candle origin (30033.5) sits at daily POC (30032.0), still live - stop
+        clears 3m high (30034.75) + POC with room, not the reflex extreme.
+      tripwire: daily_val @ 29944.0
+
+      03:45  MANAGE → hold  favouring: more
+          at: daily_val @ 29944.0 — stalled
+       why:
+          Last 2m bar wicked through the daily_val/session-low cluster (low
+            29938.5) but closed back above it at 29949.75 - one candle only,
+            not the 3-5min multi-test stall. Still 1.53R in favor, MAE only
+            6pts, stop untouched. Holding for a second test or a clean close-
+            through before tightening.
+
+      03:48  MANAGE → trail  favouring: more
+          at: daily_val @ 29944.0 — broken
+          stop → 29955.0
+       why:
+          Daily_val 29944 closed through cleanly (bar closed 29942.5) with
+            session low breaking alongside it - level now sits above price as
+            protection, not resistance. Trailing to 29955, just above the
+            breakdown bar's open, banking ~1.4R while leaving room to weekly
+            low.
+
+      03:49  MANAGE → partial  favouring: same
+          at: daily_val @ 29944.0 — stalled
+          booked 75%
+       why:
+          Daily_val/session-low zone tested twice in ~6min (lows 29938.5 then
+            29937, matching MFE) with no sustained close below; last bar
+            round-tripped back above 29944 to close 29946.25. Banking 75% here
+            for B conviction; stop holds at 29955 (1.38R locked) for the
+            runner to target.
+
+      ⟶ OUTCOME  +1.62R  (+1.56R blended)
+
+  ── 08:00  THESIS (window_open)
+      bias: short  two-sided
+      targets: daily_val @ 29751.75, vwap_m2 @ 29563.08
+      invalidation: weekly_val @ 30343.0
+      waiting for: a rejection at the top of this base (~29,880-29,900, where the 2m/3m MA, daily POC and 15m MA have converged) that stalls and rolls over - closure back through the 2m/3m MA, entered on the retest. Fading the range edge, not anticipating a break.
+      other side licensed by: Longs licensed at the range low (~29,752, daily VAL / new weekly low, near daily POC ~29,829) on a defended low - a decisive 07:30 15m reversal candle already printed there - confirmed by a 15m decisive-body close back above this base's high (~29,884-29,900) that holds on retest, targeting vwap_m1 then vwap.
+   reasoning:
+      Hard flush from Asia into NY_PRE (0.605 eff. at 03:00; London with-flush
+        short banked +1.56R) hit a new weekly low at 29,751.75 = daily VAL, but
+        the last 5h ran near-balanced (11 down/9 up 15m candles, eff. now 0.398) -
+        a pause, not reversal, so flush downgrades to false. Price sits exactly on
+        the 15m MA after it converged down through the base. Fading this edge
+        short toward the base low/vwap_m2; longs licensed only on a defended low
+        (07:30 reversal candle) plus reclaim above the base high. Fibs sit far
+        overhead; macro neutral.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  08:12  TOOK  WK1-D22-NYP1-0812   short  [take_light]  conviction C
+      rejected: bb_ma_15m @ 29864.38 — slowed on the rally in, wicked ~4pt beyond (candle high 29868.5) then closed back below 3 stacked levels in the same 3m candle; 2m/3m close together at 08:12
+      broke: own_ma_3m, own_ma_2m, vwap_m1   (same_candle)
+   why:
+      Short matches thesis; 3m same-candle break of bb_ma_2m/3m+vwap_m1 after a
+        wick-reject of bb_ma_15m (2m/3m close together at 08:12). Rejected level
+        is MA-only (C by rule) - chart POC 29829 vs build POC 29866 unresolved,
+        not credited. Clean headroom to daily_val/weekly_low.
+      plan: entry 29841.0  ·  stop 29878.0  ·  target daily_val @ 29751.75
+   stop rationale:
+      Candle open (29860) sits at bb_ma_2m - origin live. High wicked 4pt past
+        bb_ma_15m (29864.38). Stop clears that cluster ~14pt beyond bb_ma_15m, not
+        a reflex candle-extreme placement.
+
+      ⟶ OUTCOME  no fill
+
+  ── 09:30  THESIS (window_open)
+      bias: short  two-sided
+      targets: vwap_m2 @ 29475.86, vwap_m3 @ 29178.63
+      invalidation: weekly_val @ 30343.0
+      waiting for: A rejection of this bounce at the near base (2m/3m MA cluster ~29,724-29,731, recent swing high ~29,791) that stalls and rolls over - closure back below the 29,676 confluence low, entered on the retest. Not licensed while the defended low is still holding this bounce.
+      other side licensed by: Longs licensed AT this defended low (29,675-676 - developing daily VAL, new weekly low, and yesterday's RTH VAL all within a point) on a hold, confirmed by a 15m decisive-body close back through the 2m/3m MA cluster (~29,724-29,731) that holds on retest, targeting the recent base high (~29,791) then daily POC (~29,866).
+   reasoning:
+      Session trended down all day - London short banked +1.56R, NY_PRE short
+        never got its retest as price kept falling - into a rare confluence at
+        29,675-676 where developing daily VAL, the new weekly low, and yesterday's
+        RTH VAL all agree within a point. Eff. 0.44 with small-bodied stairstep
+        candles, not a flush, so it's fadeable at a level. The last 2m bar bounced
+        hard off that low but hasn't reclaimed even the 2m/3m MA, so nothing's
+        accepted yet. Short stays primary toward vwap_m2 until this low fails;
+        longs licensed on a base reclaim that holds on retest.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:34  PASSED  WK1-D22-NYA1-0934   long  [gated_not_adjudicated]
+   why:
+      tv-trigger 0.4.2 hard constraint 4: 09:35 is the earliest entry. 09:34 falls
+        inside the open-volatility buffer. Mechanical, not escalatable, no agent
+        called.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:36  PASSED  WK1-D22-NYA2-0936   short  [pass]
+      broke: own_ma_2m, own_ma_3m, vwap_m1   (same_candle)
+   why:
+      Short matches bias, but thesis's waiting_for (close below 29,676) is unmet;
+        close 29,718.75 stays well above it. High 29,782 missed the noted ~29,791
+        base high - no clean rejection story, and target path is crowded by the
+        unresolved weekly-low/VAL cluster. No escalation: doesn't qualify.
+      constraints failed: waiting_for_unmet, headroom
+
+  ── 09:40  THESIS (escalation)
+      bias: short  two-sided
+      targets: vwap_m2 @ 29415.65, vwap_m3 @ 29113.91
+      invalidation: weekly_val @ 30341.0
+      waiting for: Short re-entry waits for a fresh rejection at a higher level (15m MA ~29,820, or wherever the next bounce actually stalls) that rolls over. Not licensed off the old base anymore - the 29,616-676 confluence held and price has already reclaimed the 2m/3m MA cluster and daily POC intracandle.
+      other side licensed by: Longs are licensed now, not gated on a future 15m close. The rejection already printed: the 09:30-09:45 candle swept the weekly-low/daily-VAL confluence (29,616.5, essentially the same level as the earlier 29,676 test), made a higher low, and reversed immediately to 29,780.75 with no repeated failed attempts - reclaiming the 2m/3m MA cluster (29,722-732) and daily POC (~29,740) in the process. Target the base high (~29,798) then the 15m MA (~29,820), with the 0.382 fib/VWAP confluence (~30,020-30,031) as a stretch objective if the reversal extends.
+      [escalated re-read → accommodated]
+   reasoning:
+      Structured downtrend (eff. 0.401, not a flush) swept the exact weekly-
+        low/daily-VAL confluence and reversed hard on a higher low with no
+        repeated failed attempts, reclaiming the 2m/3m MA cluster and daily POC
+        intracandle. My prior condition demanded a 15m close that can't exist
+        until 09:45 - accommodating: longs are licensed now off the shown
+        rejection. Bias stays short since no decisive break has closed yet; short
+        re-entry needs a fresh rejection higher, not the old base.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:40  PASSED  WK1-D22-NYA3-0940   long  [pass]  conviction C
+      rejected: weekly_low+daily_val_confluence @ 29676.0 — 3m candle opened right at this retest low (open 29676.75, low 29675.25) and reversed sharply to close 29780.75 - a higher-low retest above the session's earlier weekly-low test, immediate strong reversal, no repeated failed attempts
+      broke: own_ma_2m, vwap_m1, daily_poc   (same_candle)
+   why:
+      Long same-candle 3-level break (own_ma_2m+vwap_m1+daily_poc) off a fresh
+        retest of the weekly-low/daily-VAL confluence (~29,676) - nameable
+        rejection, real proof. But thesis licenses longs only on a still-unclosed
+        15m confirmation (candle closes 09:45); escalating thesis_stale rather
+        than a silent direction_mismatch pass.
+      constraints failed: direction_mismatch
+      ↑ escalated: weekly_low+daily_val_confluence
+
+      09:48  MANAGE → partial  favouring: more
+          at: bb_ma_15m @ 29819.6 — broken
+          booked 50%
+       why:
+          TP1 (bb_ma_15m 29819.6) broken cleanly - 09:46-09:48 bar ran
+            29759.75 to 29824.25, closing at its high above the level.
+            Conviction A: bank 50%, hold the rest for the vwap/fib0.382 target
+            at 30030.87.
+
+      09:50  MANAGE → trail  favouring: more
+          at: bb_ma_15m @ 29817.88 — broken
+          stop → 29800.0
+       why:
+          bb_ma_15m closed through at 29824.25, then held on the retest close
+            of 29818.25 despite a wick to 29807.75 - level broken, not
+            stalling. Trailing the runner's stop from 29705 to 29800, beyond
+            that wick, protecting the move while conviction-A runner still
+            targets 30030.87.
+
+      10:11  MANAGE → trail  favouring: same
+          at: vwap @ 30005.49 — stalled
+          stop → 29920.0
+       why:
+          Wicked through VWAP 30005 to 30015 then closed back at 29966 -
+            rejection after ~8min stalling under the level, no close through.
+            Trailing 29800->29920 (below the 29934/35 double low) to bank more
+            profit while holding the A-conviction runner for another look at
+            target.
+
+      10:16  MANAGE → trail  favouring: more
+          at: vwap @ 30005.49 — stalled
+          stop → 29945.0
+       why:
+          VWAP ~30005 rejected on 4 straight 2m bars, ~8min, wicks
+            above/closes below each time - a clean stall, no close through.
+            Cannot go to BE (would loosen the 29920 stop); trailing tighter
+            behind the sharpest rejection candle's low so the A-conviction
+            runner keeps its shot at 30030.87.
+
+      10:17  MANAGE → trail  favouring: more
+          at: vwap @ 30005.49 — broken
+          stop → 29985.0
+       why:
+          10:15-10:17 bar closed decisively above VWAP (30011.5 vs ~30005)
+            after an earlier 10:09-10:11 wick rejection there - trade favours
+            me more than at entry. Trailing stop to 29985, just under the
+            newly broken level, since price must reclaim it to hurt me.
+
+      ⟶ OUTCOME  +6.37R  (+4.25R blended)
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:40  TOOK  WK1-D22-NYA3-0940   long  [take_full]  conviction A
+      rejected: weekly_low+daily_val @ 29616.5 — single test at session/weekly low (29616.5, confluence w/ daily_val 29616.0), no repeated failed attempts, immediate sharp reversal to 29780.75 - clean V, not a grind
+      broke: own_ma_2m, vwap_m1, daily_poc   (same_candle)
+   why:
+      A-grade: weekly-low/daily-VAL confluence (top tier) tested once at session
+        low 29616.5, no repeated failures, sharp reversal reclaiming
+        MA+vwap_m1+POC in one 2m candle (verified on chart). Thesis explicitly
+        accommodated this long. Clean headroom to 15m MA (~2R), prime NY_AM
+        timing.
+      plan: entry 29743.0  ·  stop 29705.0  ·  target bb_ma_15m @ 29819.6, vwap_fib0.382_confluence @ 30030.87
+   stop rationale:
+      Candle open (29713.25) sits near vwap_m1(29717.39)/bb_ma_2m(29722.67)
+        cluster - still live, could get wicked. Oversized 98pt candle: use body
+        not wick. Stop clears whole cluster with buffer below the open.
+      tripwire: bb_ma_15m @ 29819.6
+
+      09:48  MANAGE → partial  favouring: more
+          at: bb_ma_15m @ 29819.6 — broken
+          booked 50%
+       why:
+          TP1 (bb_ma_15m 29819.6) broken cleanly - 09:46-09:48 bar ran
+            29759.75 to 29824.25, closing at its high above the level.
+            Conviction A: bank 50%, hold the rest for the vwap/fib0.382 target
+            at 30030.87.
+
+      09:50  MANAGE → trail  favouring: more
+          at: bb_ma_15m @ 29817.88 — broken
+          stop → 29800.0
+       why:
+          bb_ma_15m closed through at 29824.25, then held on the retest close
+            of 29818.25 despite a wick to 29807.75 - level broken, not
+            stalling. Trailing the runner's stop from 29705 to 29800, beyond
+            that wick, protecting the move while conviction-A runner still
+            targets 30030.87.
+
+      10:11  MANAGE → trail  favouring: same
+          at: vwap @ 30005.49 — stalled
+          stop → 29920.0
+       why:
+          Wicked through VWAP 30005 to 30015 then closed back at 29966 -
+            rejection after ~8min stalling under the level, no close through.
+            Trailing 29800->29920 (below the 29934/35 double low) to bank more
+            profit while holding the A-conviction runner for another look at
+            target.
+
+      10:16  MANAGE → trail  favouring: more
+          at: vwap @ 30005.49 — stalled
+          stop → 29945.0
+       why:
+          VWAP ~30005 rejected on 4 straight 2m bars, ~8min, wicks
+            above/closes below each time - a clean stall, no close through.
+            Cannot go to BE (would loosen the 29920 stop); trailing tighter
+            behind the sharpest rejection candle's low so the A-conviction
+            runner keeps its shot at 30030.87.
+
+      10:17  MANAGE → trail  favouring: more
+          at: vwap @ 30005.49 — broken
+          stop → 29985.0
+       why:
+          10:15-10:17 bar closed decisively above VWAP (30011.5 vs ~30005)
+            after an earlier 10:09-10:11 wick rejection there - trade favours
+            me more than at entry. Trailing stop to 29985, just under the
+            newly broken level, since price must reclaim it to hurt me.
+
+      ⟶ OUTCOME  +6.37R  (+4.25R blended)
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  10:40  TOOK  WK1-D22-NYA4-1040   short  [take_full]  conviction B
+      rejected: vwap_mid + daily_poc confluence @ 29990.08 — slowed and wicked above twice (10:30 +6.5pt, 10:36 +7.6pt), closed back under both times, then rolled over into the MA break
+      broke: own_ma_2m, own_ma_3m   (rejection-first)
+   why:
+      Short re-entry satisfies thesis waiting_for: VWAP/daily-POC confluence
+        (29990/29989) rejected twice (10:30 +6.5pt, 10:36 +7.6pt wicks, closed
+        back under both times), then 2m+3m closed through own MAs together -
+        rejection-first pair, with primary downtrend, POC aligned, TP1 lands 2.4R.
+      plan: entry 29927.85  ·  stop 30010.0  ·  target vwap_m1 @ 29730.0
+   stop rationale:
+      Candle high 29988.75 sits on live VWAP 29990.08/daily POC 29989.0, the level
+        just rejected twice (wick highs to ~29996-98); origin also near this
+        cluster. Stop cleared beyond it, not the candle extreme, since price can
+        wick back to retest.
+      tripwire: bb_ma_15m @ 29833.22
+
+      10:48  MANAGE → hold  favouring: more
+          at: bb_ma_15m @ 29833.22 — approaching
+       why:
+          First test of the 15m MA tripwire: one 2m bar wicked to 29832.75 but
+            closed back above at 29837, no close through. One candle isn't a
+            stall per doctrine - holding for a clean break to trail or 3-5min
+            of rejection to breakeven.
+
+      10:56  MANAGE → trail  favouring: more
+          at: bb_ma_15m @ 29833.22 — broken
+          stop → 29870.0
+       why:
+          15m MA closed through at 29830 after price rallied back near entry
+            then reversed hard; trailing stop beyond the rejecting wick
+            (29865.75) since price must reclaim above it to hurt me now.
+
+      10:58  MANAGE → hold  favouring: less
+          at: bb_ma_15m @ 29833.22 — stalled
+       why:
+          Broke below bb_ma_15m (29833) on the prior bar, then reclaimed above
+            it by close (29850.5) - a failed break, not progress. Stop is
+            already trailed to 29870 from 10:56, snug above the rejection wick
+            (29864.5); tightening further risks routine 2m noise. Holding,
+            still +0.94R.
+
+      11:00  MANAGE → hold  favouring: less
+       why:
+          NY_AM window closed - entries stop, position doesn't. Already
+            trailed to 29870 (+0.70R locked) off the 29812 low (MFE 1.40R).
+            Last two bars stalled/bounced ~42pts to 29854, only 4 min, no
+            fresh level broken - not decisive. Holding to vwap_m1 29730.
+
+      ⟶ OUTCOME  +0.70R  (+0.70R blended)
+
+
+========================================================================================
+  2026-06-23_wk1   —   what the agents were thinking
+    opens Tue 23 Jun 18:00 NY  ·  LONDON and NY trade on Wed 24 Jun  ·  closes Wed 17:00
+========================================================================================
+
+  ── 03:00  THESIS (window_open)
+      bias: short  two-sided
+      targets: vwap @ 29764.06, daily_val @ 29699.0, weekly_val @ 29647.0
+      invalidation: vwap_p1 @ 29834.51
+      waiting for: nothing
+      other side licensed by: a 15m close above the vwap_p1/bb_ma_2m cluster (~29830-29835) with a decisive body licenses longs toward daily_vah 29858 and weekly_vah 29914
+   reasoning:
+      Session-to-date is rotational, not a flush: 0.042 path efficiency and an
+        exact 18up/18down 15m split. The last two 15m candles wicked above the
+        vwap_p1/bb_ma_2m cluster (~29830-29835) and closed back under it both
+        times - a rejection at an in-reach location - so I'm fading it toward
+        vwap/0.618 (~29765) and the daily_val/0.382/vwap_m1 confluence
+        (~29695-29702). A decisive 15m close above the cluster flips me long
+        toward daily_vah/weekly_vah.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  03:00  TOOK  WK1-D23-L1-0300   short  [take_light]  conviction B
+      rejected: vwap_p1+bb_ma_2m/3m cluster @ 29834.51 — 15m: last 2 candles wicked above cluster (~29830-35), closed back under both times per thesis read; 60m aggregate 1/4 15m closes above (mixed, not spotless). 3m signal candle high only 0.25pt beyond open, then closed 12pt below cluster.
+      broke: own_ma_3m, vwap_p1   (same_candle)
+   why:
+      3m closed through own MA + vwap_p1 same-candle, rejecting the cluster thesis
+        flags (last 2 15m candles wicked, closed back under). 2m hadn't freshly
+        broken; entering off 3m per thesis strength. Middle-tier level, TP1 ~1.6R
+        -> light not full.
+      plan: entry 29827.0  ·  stop 29843.0  ·  target fib_0.705 @ 29801.41, vwap @ 29764.06, daily_val @ 29699.0
+   stop rationale:
+      Origin (open 29837) sits ~2.5pt beyond vwap_p1 (29834.51), inside the
+        bb_ma/vwap_p1 zone - still live. Stop set beyond candle high (29837.25)
+        and clear of the whole zone, not at the raw extreme.
+      tripwire: daily_poc @ 29821.0
+
+      03:02  MANAGE → trail  favouring: more
+          at: daily_poc @ 29821.0 — broken
+          stop → 29823.0
+       why:
+          03:00-03:02 bar closed decisively through daily_poc/tripwire (29821)
+            to 29807.25, full-bodied not a wick, after three bars
+            consolidating right at that level. Price now has to reclaim poc to
+            hurt me. Trailing stop to 29823, just above the broken level,
+            locking in profit beyond breakeven.
+
+      03:03  MANAGE → partial  favouring: more
+          at: fib_0.705 @ 29801.41 — broken
+          booked 75%
+       why:
+          TP1 fib_0.705 broken cleanly: 2m bar wicked to 29791.5 and closed
+            29800, through 29801.41 by 1.41. Conviction B: bank 75%, hold
+            runner behind the stop already trailed to 29823 at the POC break.
+
+      03:05  MANAGE → trail  favouring: more
+          at: daily_poc @ 29821.0 — broken
+          stop → 29821.75
+       why:
+          Fresh close through daily_poc (29821) confirms the break on the
+            runner; price closed 29805.5, well below entry. Trailing stop to
+            29821.75, just above the swing high that preceded the break. Last
+            bar's bounce off 29786 to close 29805.5 is one candle, not a
+            stall.
+
+      03:06  MANAGE → trail  favouring: more
+          at: fib_0.705 @ 29801.41 — broken
+          stop → 29810.25
+       why:
+          Fib_0.705 broke in the prior bar, got retested up to 29810 and
+            rejected, then closed back through it again at 29801 - a held
+            retest confirms the break. Trailing the runner just beyond that
+            rejecting wick, tighter than the 29821.75 stop.
+
+      ⟶ OUTCOME  +1.69R  (+1.53R blended)
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  03:24  PASSED  WK1-D23-L2-0324   long  [pass]
+      broke: own_ma_2m, daily_poc   (same_candle)
+   why:
+      2m broke own MA+daily POC but direction is LONG vs SHORT thesis; price 29822
+        hasn't reached the vwap_p1 flip cluster (~29830-35), 15m shows 0 closes
+        above it - reversal condition unmet. No rejection story for the long; 3m
+        didn't confirm (close 29822 < bb_ma_3m 29823.21).
+      constraints failed: direction_mismatch
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  03:27  TOOK  WK1-D23-L3-0327   short  [take_full]  conviction B
+      rejected: vwap_p1 @ 29835.39 — 15m: 0/4 closes above across 4 tests, wicked up to 30pt beyond, body only 5.2pt through - held over last two 15m candles; 2m/3m closed both sides but 15m never resolved above.
+      broke: own_ma_2m, own_ma_3m, daily_poc   (same_candle)
+   why:
+      Short matches thesis. 15m held vwap_p1/bb_ma_2m cluster (0/4 closes above
+        across 4 tests, wicked to 30pt) over last two 15m candles - real
+        rejection. 2m+3m same-candle break of own MA + daily POC proves it. Retest
+        at fib_0.705, clean path to fib_0.5/weekly POC confluence at 1.57R.
+      plan: entry 29800.0  ·  stop 29839.0  ·  target fib_0.5 @ 29738.62, weekly_poc @ 29733.0, daily_val @ 29699.0, weekly_val @ 29647.0
+   stop rationale:
+      Candle opened essentially AT bb_ma_3m/daily_poc (29821-822) and only ~13pt
+        below vwap_p1 (29835), which wicked 20-30pt above on 2 prior 15m tests
+        without closing through - one live zone. Stop clears vwap_p1 with a few
+        points, not just the candle high.
+      tripwire: vwap @ 29765.91
+
+      03:36  MANAGE → breakeven  favouring: same
+          at: bb_ma_60m @ 29776.22 — stalled
+          stop → 29800.0
+       why:
+          Crowded path (4 levels/11pts). Price hit first level bb_ma_60m
+            29776.22, wicked to 29775.75, closed back above at 29784.25 -
+            rejected, not broken. Crowded-path rule: breakeven at first level
+            reached, no stall wait. Stop to entry 29800.
+
+      03:37  MANAGE → trail  favouring: more
+          at: bb_ma_60m @ 29776.22 — broken
+          stop → 29777.0
+       why:
+          High-volume 2m bar closed decisively through the crowded
+            bb_ma_60m/fib_0.618 cluster near its low, not a stall - trade
+            favours me more than at entry. Trailing stop from breakeven to
+            just above the broken cluster so price must reclaim it to hurt me.
+
+      ⟶ OUTCOME  +0.59R
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  03:48  PASSED  WK1-D23-L4-0348   long  [pass]
+      broke: own_ma_2m, own_ma_3m, daily_poc   (sequential)
+   why:
+      Long candidate (sequential MA+POC break, not same-candle) against a short
+        thesis, right at the vwap_p1/bb_ma_2m cluster it's fading. 15m still shows
+        that cluster HELD (4.8pt wick, no close through) - flip-to-long acceptance
+        rule unmet. Sequential also defaults to pass (T1).
+      constraints failed: direction_mismatch
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  03:54  TOOK  WK1-D23-L5-0354   short  [take_light]  conviction B
+      rejected: vwap_p1 @ 29835.75 — 5m & 15m HELD across 2-3 tests, max wick only ~4.6pt, body never closed through; one 3m candle marginally closed 0.88pt above (noise). Thesis itself cites two 15m wicks off this cluster closing back under.
+      broke: own_ma_3m, daily_poc   (same_candle)
+   why:
+      Short matches thesis bias. 3m same-candle break of own MA + daily POC
+        confirms a multi-tf (5m/15m HELD, ~4.6pt wick) rejection at vwap_p1, the
+        level the thesis itself names. POC now behind, not ahead. VWAP barely
+        tested all session -> crowds path; light size, VWAP as tripwire.
+      plan: entry 29800.0  ·  stop 29839.0  ·  target weekly_poc+prior_day_poc @ 29733.0, daily_val @ 29707.0
+   stop rationale:
+      Candle open (29822.25) sits ~1.25pt from daily_poc (29821) - origin AT the
+        level means it's still live; stop clears beyond it AND the vwap_p1 cluster
+        (~29835.75, thesis invalidation) since no structure sits between them.
+      tripwire: vwap @ 29766.86
+
+      03:57  MANAGE → breakeven  favouring: same
+          at: bb_ma_15m @ 29784.56 — broken
+          stop → 29800.0
+       why:
+          Crowded path (4 levels/18pts): broke bb_ma_15m 29784.56 but wicked
+            into bb_ma_60m/fib_0.618 cluster (~29775) and closed back above
+            both same bar. Per crowded-path rule, breakeven at first level
+            reached now rather than trailing or waiting for a stall.
+
+      03:59  MANAGE → trail  favouring: more
+          at: bb_ma_60m @ 29775.71 — broken
+          stop → 29780.0
+       why:
+          Closed through bb_ma_60m 29775.71 and fib_0.618 together on the
+            03:57-59 bar - a clean break, not a stall. Trailing stop to 29780,
+            above the level and this bar's high, since price must reclaim it
+            to hurt me now.
+
+      04:00  MANAGE → hold  favouring: more
+          at: vwap @ 29766.97 — approaching
+       why:
+          VWAP 29766.97 wicked through (low 29764.5) but closed back above at
+            29770.0 - just one 2m bar, not a 3-5min stall and no close-through
+            to call it broken. Stop already trailed to 29780, well past
+            breakeven and in locked profit; holding for confirmation.
+
+      ⟶ OUTCOME  +0.51R  (+0.51R blended)
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  03:58  PASSED  WK1-D23-L6-0358   short  [pass]
+      broke: own_ma_2m   (sequential)
+   why:
+      Scanner's sequential pair is own bb_ma_2m (closed 03:52) + bb_ma_15m (closed
+        now) - MA+MA, not a licensed second leg (must be VWAP band/POC-VAH-
+        VAL/weekly edge). Close 29776.75 remains above vwap, weekly/prior POC,
+        daily_val - no structural level actually broken. No trigger exists yet.
+      constraints failed: no_trigger
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  04:06  PASSED  WK1-D23-L7-0406   long  [pass]
+      broke: own_ma_2m, own_ma_3m, daily_poc   (same_candle)
+   why:
+      Direction mismatch: 04:03-04:06 candle closes UP through own MA (2m/3m) +
+        daily POC while standing thesis is short. No rejection story for the long
+        - straight wickless displacement into resistance, not a slow/wick/turn off
+        support. VWAP+1 (29836) sits ~3.5pt overhead unbroken; 15m acceptance for
+        the long flip (decisive close above cluster) unmet - last complete 15m
+        already wicked and held. Nothing to escalate: no nameable rejected_level,
+        so the qualification bar for thesis_stale isn't met.
+      constraints failed: direction_mismatch
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  04:38  TOOK  WK1-D23-L8-0438   short  [take_light]  conviction B
+      rejected: vwap_p1 + bb_ma_2m cluster @ 29838.48 — 15m: last two complete candles wicked above the cluster and closed back under (one earlier close-above further back in the hour, not the last two); 2m/3m closed both sides overall but mostly below. This 2m candle repeats the pattern: opened above the cluster (29843.75), dove to close below both bb_ma_2m and vwap_p1 in one bar.
+      broke: own_ma_2m, vwap_p1   (same_candle)
+   why:
+      Short matches thesis; 2m closed through own MA + vwap_p1 same-candle,
+        proving the vwap_p1/bb_ma_2m cluster's ongoing rejection (last two 15m
+        candles wicked above it, closed back under). But 3m didn't confirm (closed
+        only 0.5pt above its own MA) - the weaker case per doctrine, so light not
+        full.
+      plan: entry 29828.03  ·  stop 29863.0  ·  target vwap @ 29770.0, daily_val @ 29699.0, weekly_val @ 29647.0
+   stop rationale:
+      2m trigger candle opened 29843.75, only ~5pt beyond vwap_p1 (29838.48) -
+        origin near the level, still live. Stop clears the 3m swing high (29858.5)
+        with clearance past the cluster, not a bare candle-extreme stop.
+      tripwire: bb_ma_15m + fib_0.705 confluence @ 29798.79
+
+      04:40  MANAGE → breakeven  favouring: same
+          at: bb_ma_3m @ 29825.22 — stalled
+          stop → 29828.03
+       why:
+          3m MA (29825.22) wicked both ways over the last 4min (low 29819.5
+            then high 29840.25), closes hugging it (29825.75 then 29823.25) -
+            not a clean break, still basically at entry. BE protects the thin
+            0.14R rather than trail on an unconfirmed break.
+
+      ⟶ OUTCOME  +0.00R
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  04:44  PASSED  WK1-D23-L9-0444   long  [pass]
+      broke: own_ma_2m, vwap_p1   (same_candle)
+   why:
+      2m closed through bb_ma_2m+vwap_p1 (long), counter to standing short thesis.
+        Other-side acceptance_rule needs a 15m CLOSE above the cluster w/ decisive
+        body; current 15m (04:30-04:45) hasn't closed yet - one min early - and
+        last two 15m tests here wicked above and closed back under.
+      constraints failed: direction_mismatch
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  04:48  PASSED  WK1-D23-L10-0448   short  [pass]  conviction B
+      rejected: vwap_p1 + bb_ma_2m cluster @ 29839.27 — 3 failed wicks above the cluster (04:38 +1.3pt, 04:39 +1.24pt, 04:42 +4.86pt), then close-through on 2m (04:44-04:46: own_ma+vwap_p1 same candle) and 3m (04:45-04:48: own_ma+daily_poc same candle); 15m recently wicked above cluster twice with no close through while 2m/3m chopped both sides
+      broke: own_ma_2m, vwap_p1, own_ma_3m, daily_poc   (same_candle + rejection-first)
+   why:
+      Otherwise strong short (triple wick-rejection of vwap_p1/bb_ma_2m cluster,
+        same-candle 2-level breaks on 2m+3m, 15m confirms wick-only). Pass:
+        window_cap is mechanical, non-escalatable; fills_this_window=4 exceeds
+        LONDON cap=2. Briefing's 'LIFTED' note cannot override contract's cap.
+      constraints failed: window_cap
+
+  ── 08:00  THESIS (window_open)
+      bias: long  two-sided
+      targets: session_high_so_far @ 29891.75, weekly_vah @ 29914.0, prior_day_vah @ 29928.0
+      invalidation: bb_ma_2m_vwap_p1_0.705fib_cluster @ 29803.61
+      waiting for: retest of the broken vwap_p1/bb_ma_2m/0.705-fib cluster (~29802-29841, confluent with the 15m MA ~29811) holding as support before longs are licensed
+      other side licensed by: a 15m close back below the bb_ma_2m/vwap_p1/0.705-fib cluster (~29802-29841) with a decisive body relicenses shorts toward daily_val 29737 and weekly_val 29655
+   reasoning:
+      London's short thesis paid (4/4 closed positive/flat) but its own flip
+        condition has now fired: the 07:45 15m candle closed 29862.25 (body_ratio
+        0.75) decisively above the vwap_p1/bb_ma_2m/0.705-fib cluster
+        (~29802-29841), clearing my prior invalidation. Session stays rotational
+        (0.051 path efficiency, 26up/30down, not a flush), so I flip long on
+        acceptance, targeting weekly_vah/vwap_p2 confluence (29914) and
+        prior_day_vah (29928), waiting for a retest of the broken cluster to hold
+        before entries.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  08:16  PASSED  WK1-D23-NYP1-0816   short  [pass]
+      broke: own_ma_2m, vwap_p1   (same_candle)
+   why:
+      2m closed down through own MA (29835.34) and vwap_p1 (29842.28) - a short-
+        direction two-level break against the standing long thesis. No
+        wick/slowdown/turn rejection at any upside level is visible to name, so
+        nothing qualifies to escalate; this reads as a pullback into the retest
+        cluster, not the hold-as-support resolution the thesis is waiting for.
+      constraints failed: direction_mismatch, waiting_for_unmet
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  08:18  TOOK  WK1-D23-NYP2-0818   long  [take_light]  conviction B
+      rejected: vwap_p1+bb_ma_2m+0.705fib+bb_ma_15m cluster (thesis invalidation zone) @ 29803.61 — candle opened at bb_ma_2m, wicked down to 29823.25 inside the broken cluster, closed back above bb_ma_2m (29836.88) and vwap_p1 (29842.45) at 29844.75; 15m closed above this same cluster on the prior two complete 15m candles (incl. the 07:45 flip candle, body_ratio 0.75) - hold confirmed on the higher timeframe, not just the 2m
+      broke: own_ma_2m, vwap_p1   (same_candle)
+   why:
+      Long thesis's own awaited event fires: 2m candle opened ~3.6pt from
+        bb_ma_2m, dipped into the broken vwap_p1/bb_ma_2m/0.705fib/15m-MA cluster
+        (low 29823.25, within thesis's stated 29802-29841 zone) and closed back
+        above both bb_ma_2m and vwap_p1 at 29844.75 - the retest-holds-as-support
+        event, licensed by act_on_resolution. 15m has posted 2 consecutive closes
+        above the cluster since the 07:45 flip candle, not fresh chop. But
+        daily_vah/session_high/vwap_p2 stack closely ahead of TP1 and the
+        acceptance is only 2 candles old - sizing light, not full.
+      plan: entry 29843.25  ·  stop 29799.0  ·  target weekly_vah @ 29914.0, prior_day_vah @ 29928.0
+   stop rationale:
+      Trigger candle opened ~3.6pt from bb_ma_2m - origin near the live cluster,
+        so the doctrine says clear the whole confluent zone
+        (bb_ma_2m/vwap_p1/0.705fib/15m MA), not the candle's own low. Stop sits
+        below the thesis's own invalidation (29803.61), giving real clearance past
+        the zone floor rather than a reflex placement at 29823.25.
+      tripwire: daily_vah @ 29858.0
+
+      08:20  MANAGE → trail  favouring: more
+          at: daily_vah @ 29858.0 — broken
+          stop → 29855.0
+       why:
+          08:18-08:20 bar closed 29868.25, decisively through daily_vah 29858
+            near the bar's high on steady volume - a clean break, not a stall.
+            Trailing stop to 29855, just under the broken level, which must
+            now be reclaimed to hurt me.
+
+      ⟶ OUTCOME  +0.27R  (+0.27R blended)
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  08:32  PASSED  WK1-D23-NYP3-0832   short  [pass]
+      broke: own_ma_2m, vwap_p1   (same_candle)
+   why:
+      2m closed down through own MA (29849.04) and vwap_p1 (29844.4), landing
+        inside the cluster the long thesis is retesting - but closed on its low
+        with no wick/hold shown, direction is short vs the long thesis. Short case
+        is too thin (one wick above daily_vah, tier B) to escalate.
+      constraints failed: direction_mismatch, waiting_for_unmet
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  08:36  PASSED  WK1-D23-NYP4-0836   short  [pass]
+      broke: own_ma_2m, own_ma_3m, daily_poc, bb_ma_15m   (same_candle)
+   why:
+      Two-level break (own_ma+daily_POC) fires DOWN on both 2m and 3m, correcting
+        scanner's 'no 2m leg' claim - but thesis bias is long. No upside rejection
+        precedes this clean full-body close-at-low, so nothing to escalate.
+        Cluster retest is failing to hold, invalidation (29803.61) not yet
+        touched.
+      constraints failed: direction_mismatch
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:26  PASSED  WK1-D23-NYP5-0926   long  [pass]
+      rejected: vwap_m1 @ 29712.78 — single long wick to session low ~29692.5 (20pt below vwap_m1) after a sustained multi-candle decline visible on the chart, closed back above - one bounce candle, not a slowdown or repeated-test rejection, and no named level sits at the low itself
+      broke: own_ma_2m, daily_val   (same_candle)
+   why:
+      Thesis waits for cluster retest (29802-29841) FROM ABOVE holding as support;
+        price broke well below to a fresh low ~29692 instead. This candle is one
+        bounce off vwap_m1 (B-tier), closing 0.17pt above bb_ma_2m. Path to target
+        crowded by 9+ levels incl. that cluster. No escalation.
+      constraints failed: waiting_for_unmet, headroom
+
+  ── 09:28  THESIS (escalation)
+      bias: short  two-sided
+      targets: weekly_val @ 29661.0, prior_day_val @ 29637.0, weekly_low @ 29577.25
+      invalidation: vwap_p1_0.705fib_bbma15m_cluster @ 29838.06
+      waiting for: rebalance toward the 15m MA / broken vwap_p1-0.705fib cluster (~29800-29840) before shorts are licensed - the 09:15 bounce only reached the 2m/3m MA zone (~29744-29763) and rejected there; a shallow 2m/3m touch is not the rebalance on this rotational session
+      other side licensed by: a 15m decisive-body close back above the vwap_p1/0.705fib/15m-MA cluster (~29800-29840) relicenses longs back toward the daily_val/weekly_poc confluence (29733) and the session high
+      [escalated re-read → accommodated]
+   reasoning:
+      Prior thesis's own flip condition - 15m decisive close below the
+        vwap_p1/0.705fib cluster - fired three times (08:30/08:45/09:00, bodies
+        .72/.66/.67), breaking the daily_val/weekly_poc/0.5fib confluence at 29733
+        too. The 09:15 bounce only reached the 2m/3m MA (~29744-29763) and
+        rejected - a shallow touch, not the 15m-MA rebalance this rotational day
+        (0.02 efficiency, 28u/34d) needs before shorts are licensed. Flipping
+        short toward weekly_val then prior_day_val; reclaim of 29800-29840
+        invalidates it.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:28  PASSED  WK1-D23-NYP6-0928   short  [pass]  conviction B
+      rejected: bb_ma_2m_vwap_p1_0.705fib_cluster (thesis's own stated long-invalidation, ~29802-29841) @ 29803.61 — price has closed 74pt below this cluster (29729.75 vs 29803.61); thesis's own condition_for_other_side names a decisive close below it as relicensing shorts toward daily_val/weekly_val
+      broke: own_ma_2m, daily_val   (same_candle)
+   why:
+      2m candle closes through own_ma_2m + daily_val, short direction, vs standing
+        LONG thesis (direction_mismatch). But price is 74pt through the thesis's
+        own invalidation (29803.61) and its stated condition_for_other_side names
+        this exact scenario. Escalating thesis_stale, not silently passing.
+      constraints failed: direction_mismatch
+      ↑ escalated: bb_ma_2m_vwap_p1_0.705fib_cluster
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:28  TOOK  WK1-D23-NYP6-0928   short  [take_light]  conviction A
+      rejected: weekly_poc+daily_val+prior_day_poc confluence @ 29733.0 — 15m closed below in its latest complete bar after 3 prior above-closes (genuine break, not a wick); 2m bounce 09:15-09:28 slowed and topped in the 2m/3m/60m MA cluster (29744-29763) across ~6 candles, failed to reclaim, closed back below same-candle
+      broke: own_ma_2m, daily_val, weekly_poc   (same_candle)
+   why:
+      Escalation accommodated (act_on_resolution=true) at
+        weekly_poc/daily_val/prior_day_poc confluence (29733); 15m already closed
+        below it; 09:15-09:28 bounce topped in 2m/3m MA cluster (29744-29763),
+        rejected, closed back through same-candle. A-tier; TP1~2.0R; light:
+        single-TF fresh cross.
+      plan: entry 29732.0  ·  stop 29768.0  ·  target weekly_val @ 29661.0, prior_day_val @ 29637.0
+   stop rationale:
+      Candle opened 29747, near bb_ma_2m (29743.66, 3.3pt) - MA live, can wick
+        back. Stop clears whole 2m/3m/60m MA cluster (29743.66-29762.67) + buffer,
+        beyond candle high 29756.25 and recent max wick above MA. Placed 29768;
+        R=36pt, above 0.75x-range floor.
+      tripwire: vwap_m1 @ 29712.69
+
+      ⟶ OUTCOME  no fill
+
+  ── 09:30  THESIS (window_open)
+      bias: short  two-sided
+      targets: weekly_val @ 29661.0, prior_day_val @ 29637.0, weekly_low @ 29577.25
+      invalidation: vwap_p1_0.705fib_bbma15m_cluster @ 29838.06
+      waiting for: rebalance to the 15m MA / vwap_p1-0.705fib cluster (~29800-29840) before shorts are licensed - the 09:15 candle's bounce only reached the 2m/3m MA zone (~29740-29762) and rejected, closing at 29711.5 with a body_ratio of just 0.10; a shallow 2m/3m touch is not the rebalance on this rotational session (0.029 path efficiency, 28u/34d - balanced, not lopsided, so no flush)
+      other side licensed by: a 15m decisive-body close back above the vwap_p1/0.705fib/15m-MA cluster (~29800-29840) relicenses longs toward the session high (29891.75) and the broken daily_val/weekly_poc confluence (~29727-29733) as a retest-from-above
+   reasoning:
+      Session round-tripped low 29585.5 to high 29891.75 and is now flushing back
+        down: three straight decisive 15m closes (bodies .72/.66/.67) broke the
+        vwap_p1/0.705fib/15m-MA cluster (~29800-29840) and the
+        daily_val/weekly_poc confluence (~29727-29733). Price sits at
+        VWAP-1/0.382fib now; the 09:15 candle (body .10) only bounced to the 2m/3m
+        MA and rejected, not the 15m-MA rebalance this rotational day (0.029
+        efficiency, 28u/34d, no flush) requires. Staying short toward
+        weekly_val/prior_day_val/weekly_low; a decisive reclaim of 29800-29840
+        relicenses longs.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:34  PASSED  WK1-D23-NYA1-0934   long  [gated_not_adjudicated]
+   why:
+      tv-trigger 0.4.2 hard constraint 4: 09:35 is the earliest entry. Mechanical,
+        not escalatable.
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:42  TOOK  WK1-D23-NYA2-0942   short  [take_full]  conviction B
+      rejected: vwap_p1 @ 29830.7 — trailing-60min rebalance attempt off VWAP+1/0.705fib/15m-MA cluster (broken earlier in session): 2m 3 tests wicked 10.5pt above body never through, 3m 2 tests same, 5m 2 tests same, 15m 0 closes above of 4 candles - slowed, wicked, turned back down
+      broke: own_ma_2m, own_ma_3m, vwap_m1, vwap_m2, weekly_val, daily_val, weekly_poc, prior_day_poc   (same_candle)
+   why:
+      Short-with-thesis: 3m/2m same-candle close through own MA +
+        vwap_m1/vwap_m2/weekly_val/daily_val/weekly_poc, proving the 08:42-09:42
+        bounce rejection at vwap_p1 held clean on 2m/3m/5m/15m (max 10.5pt wick,
+        zero closes above). Headroom to session_low is clear, TP1 lands 1.5-2.5R.
+      plan: entry 29635.0  ·  stop 29662.0  ·  target session_low @ 29585.5, weekly_low @ 29577.25
+   stop rationale:
+      Clears weekly_val (29653, anchored-weekly tier, first close-below of the
+        session on this candle) plus the stacked vwap_m2/prior_day_val cluster
+        with buffer; candle low (29628) is already past that stack, so the raw
+        extreme under-protects a fresh retest entry sitting above it.
+      tripwire: weekly_low @ 29577.25
+
+      ⟶ OUTCOME  -1.00R
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:54  PASSED  WK1-D23-NYA3-0954   long  [pass]
+      rejected: weekly_val @ 29645.0 — chart shows a long lower wick on the 2m candle preceding the trigger, closing well back above the weekly_val/prior_day_val (29637) zone; exact wick low is not in the briefing OHLC, read from the chart's price action, not invented
+      broke: own_ma_3m, vwap, bb_ma_60m   (same_candle)
+   why:
+      Long 3m break (own_ma/vwap/bb_ma_60m) shows a real wick-rejection off
+        weekly_val/prior_day_val (chart), but overhead is crowded
+        (bb_ma_15m/fib_0.705/daily_poc/vwap_p1, 29788-29824) - the cluster needing
+        a 15m close above (0 all session). Fails escalation on headroom.
+      constraints failed: direction_mismatch, headroom, poc_alignment
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  09:57  PASSED  WK1-D23-NYA4-0957   short  [pass]
+      broke: own_ma, vwap, ma60   (same_candle)
+   why:
+      Screenshot's own OHLC readout (O29769.50 H29790.00 L29696.75 C29715.75,
+        SELL/BUY boxes also 29715.75) matches the scanner's 09:54-09:56 2m bar,
+        NOT the briefing's signal_candle_2m (09:55-09:57, C29691.25) or
+        price_at_decision (29691.25) - a 24.5pt gap. Indicator legend matches
+        levels_at_decision_CHART exactly, but the plotted candle looks one bar
+        behind decision_minute. Not adjudicating on candle data I can't verify
+        against the chart myself.
+      constraints failed: briefing_incoherent
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  10:26  PASSED  WK1-D23-NYA5-1026   long  [pass]
+      rejected: weekly_val + prior_day_val confluence @ 29639.0 — 3m wicked to 29618.75 (below both); 2m held at 29639.5. 15m: 3 tests from above, wicked 76-97pt, no close through despite 2m chop (24up/6down over 60min).
+      broke: own_ma_2m, vwap_m1, daily_val   (same_candle)
+   why:
+      Long (2m own MA+vwap_m1) rejects weekly_val/prior_day_val, 15m HELD w/ no
+        close-through despite 2m chop - strong story, but thesis is short awaiting
+        15m reclaim of 29800-29840. Escalation considered, disqualified: 1.5-2.5R
+        path crowded (fib_0.5/POCs/vwap in 40-70pt), POC overhead.
+      constraints failed: direction_mismatch, headroom_crowded, poc_not_aligned
+
+  ── 10:30  THESIS (escalation)
+      bias: long  two-sided
+      targets: weekly_poc @ 29727.0, day_fib_0.705 @ 29783.56, daily_poc @ 29821.0, weekly_vah @ 29888.0
+      invalidation: weekly_val_vwap_m1_cluster @ 29641.0
+      waiting for: nothing further - the weekly_val/vwap_m1 rejection is already proven on 4 15m tests; longs are licensed now, on a retest of the defended zone (~29625-29659) that holds again or on continuation through the 2m/3m MA
+      other side licensed by: shorts relicense on a rejection at the nearer VWAP/15m-MA/0.618fib cluster (~29736-29770) - within reach of current price, unlike the old 29800-29840 zone - or on a 15m decisive-body close back below the weekly_val/vwap_m1 defended zone (~29625-29659)
+      [escalated re-read → accommodated]
+   reasoning:
+      Short thesis paid out and was exceeded - price tagged weekly low 29525,
+        below all three named targets, after rejecting near weekly VAH earlier
+        today. Weekly_val/vwap_m1 (29641-29659) was tested 4x on 15m, wicked to
+        29525, never closed through: held, not broken. Session is non-
+        flush/rotational (0.03 efficiency, 30u/36d), so fading this defended edge
+        back toward value is normal work. Flipping to long-leaning two-sided;
+        shorts relicense only on rejection at the nearer VWAP/15m-MA cluster
+        (~29736-29770).
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  10:30  PASSED  WK1-D23-NYA6-1030   long  [pass]
+      rejected: weekly_val @ 29641.0 — 15m: 4 tests from above, wicked 116pt below, body never closed through (HELD) despite 2m (23up/7down) and 3m (17up/3down) closing both sides intraday; vwap_m1 (29658.97), 18pt away, shows the identical 15m-held pattern
+      broke: bb_ma_3m, daily_val   (same_candle)
+   why:
+      3m candle 10:27-10:30 closes same-candle through bb_ma_3m+daily_val, UP - a
+        but-for-thesis take_full off weekly_val's 15m-held rejection (4 tests,
+        116pt wick, no close-through). Direction mismatches short bias; thesis
+        relicenses longs only on a 15m close above 29800-29840, ~100pt from where
+        price actually turned. Escalating, not passing silently.
+      constraints failed: direction_mismatch
+      ↑ escalated: weekly_val
+
+  ────────────────────────────────────────────────────────────────────────────────────
+  10:30  TOOK  WK1-D23-NYA6-1030   long  [take_light]  conviction A
+      rejected: weekly_val + vwap_m1 @ 29641.0 — 15m HELD: 4 tests from above, max wick 134pt below, body never closed through, despite 2m (23/7) and 3m (17/3) closing both sides. Candle origin (open 29659.25) sits essentially on vwap_m1 (29658.97) - the cluster is live.
+      broke: own_ma_3m, daily_val   (same_candle)
+   why:
+      Long, thesis flipped after accommodated escalation. 3m same-candle break of
+        own MA(29684.49)+daily_val(29675.0); 2m didn't fire, entering off 3m
+        (thesis/level strong). Rejects weekly_val/vwap_m1 - 15m held despite 2m/3m
+        chop, his highest-conviction shape. TP1=1.73R but crosses a stacked
+        VWAP/POC/15m-MA cluster - light size.
+      plan: entry 29687.5  ·  stop 29632.0  ·  target day_fib_0.705 @ 29783.56
+   stop rationale:
+      Candle open (29659.25) sits essentially on vwap_m1 (29658.97), inside the
+        defended weekly_val/prior_day_val cluster (29637-29641) - that zone is
+        live, not the candle low (29657.5). Stop set beyond the whole cluster, not
+        at the candle extreme.
+      tripwire: vwap_15mma_cluster @ 29735.68
+
+      ⟶ OUTCOME  no fill
+
+  Judge the REASONING, not the R (T45). A loser you can reason with is
+  a pass; a winner you cannot is a failure. Where you cannot follow the
+  thinking, that is the next teaching-loop entry.
+
