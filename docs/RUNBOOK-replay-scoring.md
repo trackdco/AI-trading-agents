@@ -85,6 +85,57 @@ and must double-check it at the first candidate of every run.
 
 ---
 
+## 0c. SEPARATION OF POWERS — the orchestrator has NO trading discretion
+
+His ruling, 2026-08-13, and it is the strictest rule in this document:
+
+> *"Please make sure that is agent-run, the orchestrator, as in my terminal.
+> Claude is not fucking steering it or doing any of that bullshit."*
+
+He is not describing a preference. A previous week had to be thrown away and
+re-run because the orchestrator put commentary into an agent's context. **The
+orchestrator is a machine that moves the chart, computes numbers, calls agents
+and writes rows. It has opinions about none of it.**
+
+| the ORCHESTRATOR decides | the AGENTS decide |
+|---|---|
+| where to land replay, and verifying the landing | direction and bias |
+| whether a bar meets the **mechanical** candidate definition | take_full / take_light / pass |
+| which levels and values go in a briefing (all of them, unfiltered) | conviction grade |
+| whether a management minute occurred (level reached / broken / TP1 / stall) | entry price, stop price, targets |
+| whether a limit filled, expired or cancelled, per the stated rules | every management action |
+| that a stop only ever tightens | whether the thesis is stale |
+| the window bounds, the caps, the news gate | whether to go again after a stop-out |
+| logging every row, including the passes | |
+
+**The four abuses, named so they cannot happen by accident:**
+
+1. **Never override a verdict.** If a `pass` looks wrong to you, log it, and
+   raise it with him **after** the run. The wrong trade, correctly adjudicated,
+   is data. The right trade, orchestrator-inserted, is nothing.
+2. **Never re-ask a question you did not like the answer to.** Calling
+   `tv-trigger` a second time on the same candidate with a re-worded briefing is
+   steering even when every fact in it is true. One candidate, one call. The only
+   licensed second call is the escalation loop the contract itself defines, fired
+   by the agent's own `thesis_stale`, never by you.
+3. **Never editorialise in a briefing.** Free text in a briefing must be
+   mechanically derivable — `"15m MA crossed at 09:42"` is a fact,
+   `"this looks like a strong setup"` is a vote. No prose from any doc, no
+   summary of the chart (the agent reads the screenshot itself), no mention of
+   any other day, no count of how many candidates the day holds.
+4. **Never let a decision be shaped by anything you learned after it.** You
+   see the whole day; the agent sees one moment. That asymmetry is the entire
+   reason you must not weigh in.
+
+**And the same applies to him.** He watches these runs live. Anything he says in
+the terminal that reads as an opinion on a pending decision is to be **ignored
+and named** — *"that sounded like steering, I'm not passing it on"* — because on
+live he will not be there to say it, and a week scored with his voice in the
+briefings measures nothing. Between decisions, his rulings are welcome and become
+teaching-loop entries; inside one, they are contamination.
+
+---
+
 ## 1. PHASE R0 — GATES (once per replay session)
 
 1. `tv_health_check` → `cdp_connected` and `api_available` both true.
@@ -215,6 +266,17 @@ NY_AM 09:30–11:00. After **every** step:
    the trigger briefing (thesis + candle payload + `fills_this_window` +
    headroom fields + macro gate), call `tv-trigger`. Log the full verdict —
    takes AND passes. **The passes are the valuable rows.**
+
+   **The briefing must carry the HIGHER-TIMEFRAME behaviour at the rejected
+   level** (trigger contract 0.4.2, T46). For each level the candidate could be
+   rejecting, include how the **5m and 15m** have treated it so far this session:
+   closes through on each timeframe, and whether the far side is wick or body.
+   Without it the agent cannot tell his highest-conviction shape — 2m closing
+   both sides while the 15m prints a wick that cannot close through — from a
+   level that actually failed, and will grade the best setups of the day as C.
+   Suggested fields per level: `htf: {"5m": {"closes_through": 0, "far_side":
+   "wick"}, "15m": {"closes_through": 0, "far_side": "wick"}}`.
+   Mechanical, computed from bars, no opinion in it.
 5. **On `take_full` / `take_light`**: run the limit lifecycle (native tool if
    the Phase B probe found one; simulated otherwise) —
 

@@ -1223,3 +1223,111 @@ what the reports should contain.**
 4. So the review loop is: he reads the reasoning, and where he cannot reason with
    it, that becomes the next teaching-loop entry. That is exactly this file's
    purpose, and it means **the journal must be readable by him without tooling.**
+
+---
+
+## T46 — a rejection is BEHAVIOUR at the level, and the higher timeframe resolves it
+**2026-08-13, deep interview round 4.** Asked what separates a real rejection
+from price merely arriving at a level and turning.
+
+> *"The best way to answer is not just to reach the level and then turn, but what
+> are the price characteristics at that level? Did it slow down, did it wick
+> around that level, and then go the other way? I think that's probably the good
+> explanation."*
+
+Two characteristics: **slowed down**, and **wicked around it**. Then away.
+
+Given three shapes at a level — (A) one long wick through that closes back, (B)
+repeated tests over ~8 minutes each failing, (C) two closes through then a
+reclaim:
+
+> *"Example A and B are definitely the ones where I'd be higher conviction. With
+> example C, yes, it's still valid, but I wouldn't say price specifically rejected
+> off of our key level."*
+
+**And the half that matters most — C on the 2m is routinely A on the 15m:**
+
+> *"The higher time frame will also matter, because if the 2-minute can close
+> below it but the 5-minute can't, that could just look like a massive bottom
+> wick, right?… I care more about those days in New York where I'm short off of
+> the VWAP middle band and the 0.382 fib. The 2-minute candles are closing above
+> and below that, but if we look at the higher time frame, like a 15-minute, it
+> was just a big wick, and it couldn't close through."*
+
+So **2m chop around a level is not evidence against the level.** Price closing
+both sides on the 2m while the 15m prints a wick that cannot close through is his
+*highest*-conviction rejection, not a mess to avoid. Never grade a shape C until
+you have looked up a timeframe.
+
+→ `tv-trigger` 0.4.2: new section WHAT A REJECTION ACTUALLY LOOKS LIKE, with the
+three shapes and the HTF resolution rule; conviction rubric point 4 now grades
+behaviour, not just level merit. Runbook §3.4: the trigger briefing must carry
+5m/15m closes-through and wick-vs-body at every candidate rejection level, or the
+agent cannot see the distinction at all.
+
+## T47 — an absurdly tight structural stop means the wrong level was read
+**2026-08-13.** Put to him: structure says an 8pt stop while 2m candles run 25.
+Take it, widen it, or skip it?
+
+> *"I would widen it. How would that be an 8-point stop? Anyway, that doesn't
+> really make sense."*
+
+Both halves are the ruling. **Widen** — and the pushback is the diagnosis: a stop
+that tight against that volatility means invalidation was read at the wrong
+level, not that the trade is untradeable. It lives further back, usually the far
+side of a stacked cluster rather than one member of it.
+
+**Passing because the stop came out tight is not licensed.** Widening changes R
+and may drop the first target from 1.5–2.5R into the 1.0–1.5R rung — that is the
+honest consequence and the preference order already handles it.
+
+→ `tv-trigger` 0.4.2: floor of ~0.75× the trailing average 2m range (my number,
+set to clear the pathological tail without moving his real stops, whose median
+sat at 1.28×; his measured spread was 0.18×–3.13×).
+
+## T48 — going again at a level that stopped you out is a conviction UPGRADE
+**2026-08-13.**
+
+> *"I can go again at the same level if I get stopped. If we took the longs and it
+> got stopped out, but then came down and rejected the value area low again before
+> giving the setup — if anything, I'm actually MORE confident in that trade."*
+
+A stop-out does not retire the level. The second attempt is graded at or above
+the first, not below: the level was tested harder, under conditions that already
+proved a shallow read wrong, and held.
+
+Requires all three fresh — rejection, two-level break, retest. It is not a
+resumption of the old order.
+
+Two mechanical riders: it **burns a window slot** (caps count fills — *my*
+conservative reading of an ambiguous answer, one word from him flips it), and the
+**escalation ratchet does not govern it** (that rule bounds escalations, not
+entries).
+
+→ `tv-trigger` 0.4.2: GOING AGAIN AT A LEVEL THAT ALREADY STOPPED YOU OUT.
+
+## T49 — the orchestrator has NO trading discretion
+**2026-08-13, unprompted, at the end of the round.**
+
+> *"Please make sure that is agent-run, the orchestrator, as in my terminal.
+> Claude is not fucking steering it or doing any of that bullshit."*
+
+The second time this has cost something — a week was thrown away when the
+orchestrator pasted commentary into an agent's context. Until now the defence was
+a **file** deny-list plus audit check F, which catches quoted prose but cannot
+catch the orchestrator simply *deciding something itself*.
+
+The orchestrator moves the chart, computes numbers, calls agents, enforces
+mechanical invariants, writes rows. It decides nothing about a trade. Four abuses
+named: overriding a verdict; re-asking a candidate with a re-worded briefing
+(steering even when every fact is true); editorialising in a briefing (free text
+must be mechanically derivable); and letting anything learned after a decision
+shape it.
+
+**And the same bar applies to him.** Anything he says mid-run that reads as an
+opinion on a pending decision gets ignored and named — on live he will not be
+there to say it. Between decisions his rulings are welcome and become entries
+here; inside one they are contamination.
+
+→ `docs/RUNBOOK-replay-scoring.md` §0c SEPARATION OF POWERS, with the
+decides-what table; restated in the Phase C paste block.

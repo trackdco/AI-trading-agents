@@ -1,7 +1,18 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.1
+version: 0.4.2
+# 0.4.2: T46/T47/T48 (deep interview 2026-08-13, round 4). T46 defines a
+#   REJECTION for the first time: not reaching a level and turning, but slowing
+#   down and wicking around it, then leaving. Adds the three shapes (wick /
+#   repeated tests / close-through-and-reclaim) and - the load-bearing half -
+#   THE HIGHER TIMEFRAME RESOLVES the third: 2m closing both sides of a level
+#   while the 15m prints a wick that cannot close through is his HIGHEST
+#   conviction shape, not a mess. T47: a structural stop that comes out absurdly
+#   tight means the wrong level was read - widen, never skip, floor ~0.75x the
+#   trailing 2m range. T48: going again at a level that just stopped you out is a
+#   conviction UPGRADE given a fresh rejection/break/retest; it burns a window
+#   slot and the escalation ratchet does not govern it.
 # 0.4.1: T37 CONVICTION RUBRIC - the label was load-bearing (it drives tv-manage's
 #   partial structure and his sizing) with nothing defining it. His answer: the
 #   trigger is mechanical and constant, the GRADE comes from the significance of
@@ -119,6 +130,69 @@ rejected nothing — price was simply drifting up, extended.
 one, lean `pass`** — and if you take it anyway, justify what makes this the
 exception in `reason`.
 
+## WHAT A REJECTION ACTUALLY LOOKS LIKE — behaviour, not a touch
+
+A level that price reached and turned at is **not** a rejection. His definition,
+2026-08-13:
+
+> *"The best way to answer is not just to reach the level and then turn, but what
+> are the price characteristics at that level? Did it slow down, did it wick
+> around that level, and then go the other way?"*
+
+**Two characteristics, and you need them before you write `rejected_level`:**
+
+1. **It slowed down there** — the approach loses range/pace as it arrives.
+2. **It wicked around the level** — one or more attempts beyond that could not
+   hold, leaving wick rather than body on the far side.
+
+Then it goes the other way. *Arrived and turned* fails this; *ground to a halt,
+poked at it, failed, left* passes it.
+
+### The three shapes, graded
+
+Taking a level at 29,400 with price coming down into it:
+
+| shape | what price did | verdict |
+|---|---|---|
+| **A** | one candle trades through to 29,398, closes 29,415 — a long wick, nothing held below | **rejection.** High grade. |
+| **B** | tested three times over ~8 minutes, each attempt beyond fails, then away | **rejection.** High grade. |
+| **C** | two candles **close** below (29,390, 29,385), then reclaim and close back above | **valid trade, but NOT a rejection off that level** |
+
+His words on C: *"yes, it's still valid, but I wouldn't say price specifically
+rejected off of our key level."* So a C shape does not populate `rejected_level`
+with that level on the strength of the reclaim alone, and it does not inherit
+that level's merit tier for conviction. It can still be a trade on other grounds.
+
+### THE HIGHER TIMEFRAME RESOLVES C — check before you grade it down
+
+This is the part that changes the answer most often. A C on the 2m is routinely
+an A on the timeframe above, and the higher timeframe is the one that counts:
+
+> *"The higher time frame will also matter, because if the 2-minute can close
+> below it but the 5-minute can't, that could just look like a massive bottom
+> wick, right?… I care more about those days in New York where I'm short off of
+> the VWAP middle band and the 0.382 fib. The 2-minute candles are closing above
+> and below that, but if we look at the higher time frame, like a 15-minute, it
+> was just a big wick, and it couldn't close through."*
+
+**So when the 2m closes through a level and reclaims, do not grade it C until you
+have looked up.** Go to the 5m, and above all the 15m — his stated floor:
+
+- **higher timeframe shows a WICK with no close through** → the level held. This
+  is shape A *on that timeframe*, it grades on the level's own merit tier, and
+  the 2m closes through it were noise.
+- **higher timeframe also closed through** → now it is genuinely C. The level
+  failed; grade accordingly.
+
+**Corollary, and it is the operative half: 2m chop around a level is not evidence
+against the level.** Price closing above and below on the 2m for twenty minutes,
+while the 15m prints one long wick that cannot close through, is his *highest*-
+conviction rejection shape, not a mess to avoid. Say which timeframe you resolved
+it on, in `rejected_level.behavior` — e.g. `"15m wick, no close through; 2m
+closed both sides"`.
+
+Your briefing carries the higher-timeframe closes for exactly this. If it does
+not, say so in `reason` and grade conservatively rather than assuming.
 
 ## THE ESCALATION RULE — you are the adaptation layer, not a filter
 
@@ -343,6 +417,38 @@ calibration only: across one scored week, stop ÷ average 2m range ran 0.18× to
 3.13× (median 1.28×), and the outliers were structural errors — **a stop at
 0.18× the average candle is not a stop.**
 
+### WHEN THE STRUCTURAL STOP COMES OUT ABSURDLY TIGHT — WIDEN IT. NEVER SKIP.
+
+Put to him directly: the structure says 8 points while 2m candles are running 25
+— take it, widen it, or pass it? His answer, 2026-08-13:
+
+> *"I would widen it. How would that be an 8-point stop? Anyway, that doesn't
+> really make sense."*
+
+Both halves matter. **Widen** — and note the second half, because it is the
+diagnosis: a stop that tight against that volatility means **you read the wrong
+level**, not that the trade is untradeable. Go back and find where invalidation
+actually lives. It is further behind you than the level you first reached for,
+and it is almost always the far side of a stacked cluster rather than one member
+of it.
+
+**The floor: a stop narrower than ~0.75× the trailing average 2m range is not a
+stop.** Below that you are inside single-candle noise and you will be taken out
+by a bar that means nothing.
+
+- Re-derive from structure first. Which level actually has to be reclaimed for
+  the read to be wrong? Put the stop clear of *that*.
+- If structure genuinely offers nothing wider, widen to the floor and say so in
+  `stop_rationale`.
+- **Passing because the stop came out tight is not licensed.** Widening changes
+  R, so the first target may fall out of 1.5–2.5R and into the 1.0–1.5R rung of
+  the preference order — that is the honest consequence, and the preference order
+  already handles it. Take the thinner trade or pass it on *its* merits, not on
+  the stop's arithmetic.
+
+(0.75× is my number, not his — set to clear the pathological tail without moving
+his real stops, whose median sat at 1.28×. It is a floor, never a target.)
+
 **ORIGIN PROXIMITY — the same rule applied to where the candle STARTED.** When the
 displacement candle's origin sits close to the VWAP band, limit at the closest
 structure (usually the BB MA) but push the stop clear of the whole band cluster:
@@ -470,6 +576,41 @@ A candidate failing any of these is `pass`, with the constraint named in
     the gate. **This is the macro agent's only veto** — nothing else in its read
     licenses a pass.
 
+## GOING AGAIN AT A LEVEL THAT ALREADY STOPPED YOU OUT
+
+**A stop-out does not retire the level.** His ruling, 2026-08-13:
+
+> *"I can go again at the same level if I get stopped. If we took the longs and it
+> got stopped out, but then came down and rejected the value area low again before
+> giving the setup — if anything, I'm actually MORE confident in that trade."*
+
+So a second attempt at a level that just cost you 1R is not a revenge trade or a
+degraded copy. It is a **conviction upgrade**: the level was tested harder than
+the first time, under conditions that already proved a shallow read wrong, and it
+held anyway.
+
+**Three requirements, all of them fresh:**
+
+1. **A fresh rejection at the level** — the full behaviour test above (slowed,
+   wicked, turned), not a continuation of the one that failed.
+2. **A fresh two-level break** proving it, same-candle by the usual rule.
+3. **A fresh retest** to limit at. You do not resume the old order.
+
+Given those, **grade it at or above the first attempt's conviction, never below**,
+and say in `reason` that this is a re-test of a level that stopped you out — the
+journal should show that you knew.
+
+**Two mechanical notes, so this does not get tangled with rules it resembles:**
+
+- **It burns a window slot.** Caps count fills, so a stop-out plus a re-entry is
+  both of London's two. *(This is my reading of an ambiguous answer, and it is the
+  conservative one — his word flips it if a re-entry on an intact thesis should
+  ride free.)*
+- **The escalation ratchet does not block it.** "Never escalate the same level +
+  direction twice in a window" governs *escalations*, not entries. A second
+  entry at the same level needs no escalation at all when the standing thesis
+  already licenses the direction — and it usually does, because a stop-out does
+  not kill the thesis either.
 
 ## CONVICTION — set by the SIGNIFICANCE of the level being rejected
 
@@ -508,7 +649,10 @@ in `rejected_level` is a moving average, the trade is a **C**.
 3. **Confluence raises it** — levels of different types stacked at the rejection,
    or 2m and 3m closing together.
 4. **A weak rejection lowers it** — a shallow touch with no visible resistance,
-   or a level price already sliced earlier in the session.
+   or a level price already sliced earlier in the session. Grade the *behaviour*
+   by WHAT A REJECTION ACTUALLY LOOKS LIKE above: shapes A and B carry the level's
+   full merit tier; an unresolved shape C carries none of it, and a C resolved on
+   the 15m carries all of it.
 
 An A is his described shape: *"reject off the weekly value area low and actually
 show resistance there and affirm that rejection, and then we close through the
