@@ -157,7 +157,7 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
 
     ev, seen = [], set()
 
-    def add(ts, reason, level, price):
+    def add(ts, reason, level, price, bar_event=True):
         # Dedupe on (reason, level) for the WHOLE position, not per minute. The
         # first version keyed on the minute too, which re-fired the same
         # "reached"/"stalling" event on every bar - 41 calls for one trade, which
@@ -167,7 +167,14 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
         if k in seen:
             return
         seen.add(k)
-        ev.append({"minute": ts.strftime("%H:%M"), "reason": reason,
+        # `ts` is the START of the 1-minute bar that satisfied the condition, so
+        # that bar has not closed yet at `ts` - calling tier 3 there hands it a
+        # reason_for_call that is not yet true on any bar it can see ("tp1_reached"
+        # before the bar reaching TP1 has closed). The decision minute is the bar's
+        # CLOSE. Measured on 2026-06-21 LONDON: TP1 first printed on the bar
+        # starting 04:10 and the scheduler said 04:10, one minute early.
+        minute = (ts + pd.Timedelta(minutes=1)) if bar_event else ts
+        ev.append({"minute": minute.strftime("%H:%M"), "reason": reason,
                    "level": level, "level_price": price})
 
     touch_log = {}
@@ -204,11 +211,12 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
     if cash_open:
         co = pd.Timestamp(f"{day_next} {cash_open}", tz=NY)
         if t0 < co <= w.index.max():
-            add(co - pd.Timedelta(minutes=2), "pre_cash_open", "cash_open_0930", None)
+            add(co - pd.Timedelta(minutes=2), "pre_cash_open", "cash_open_0930", None,
+            bar_event=False)
     if window_end:
         we = pd.Timestamp(f"{day_next} {window_end}", tz=NY)
         if t0 < we <= w.index.max():
-            add(we, "window_closing", "window_end", None)
+            add(we, "window_closing", "window_end", None, bar_event=False)
 
     # Collapse to at most one CALL per minute: the manager sees the whole book
     # at that minute anyway, so two events in the same minute are one decision.
