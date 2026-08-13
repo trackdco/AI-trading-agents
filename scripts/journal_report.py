@@ -67,6 +67,25 @@ def _wrap(label: str, text, indent: int = 6) -> str:
     return f"{' ' * (indent - 3)}{label}\n{body}\n"
 
 
+def _span(stem: str) -> str:
+    """Say which CALENDAR days a session-day covers, out loud.
+
+    The 18:00 anchor means the label is the evening the session OPENED, so
+    every London and NY trade on it prints the FOLLOWING calendar day. He has
+    twice scrubbed to the label's date, found different price action, and
+    reasonably asked whether the replay was misconfigured. Printing the span
+    costs one line and removes the whole class of confusion.
+    """
+    try:
+        import datetime as _dt
+        d0 = _dt.date.fromisoformat(stem[:10])
+    except ValueError:
+        return ""
+    d1 = d0 + _dt.timedelta(days=1)
+    return (f"  opens {d0:%a %d %b} 18:00 NY  ·  "
+            f"LONDON and NY trade on {d1:%a %d %b}  ·  closes {d1:%a} 17:00")
+
+
 def _level(d) -> str:
     if isinstance(d, dict):
         lv, px = d.get("level", "?"), d.get("price")
@@ -96,6 +115,7 @@ def report(paths: list[Path], show_passes: bool) -> None:
 
         print("\n" + "=" * W)
         print(f"  {p.stem}   —   what the agents were thinking")
+        print(f"  {_span(p.stem)}")
         print("=" * W)
 
         standing = None
