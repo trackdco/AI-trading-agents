@@ -158,7 +158,62 @@ def verify(b):
     px = b.get("price_at_decision")
     if px is not None and abs(float(px) - price_at(day, dec)) > 1e-6:
         raise ValueError(f"price_at_decision {px} is not the last completed minute's close")
+
+    _assert_weekly_profile_is_right(b, day, dec)
     return b
+
+
+def _assert_weekly_profile_is_right(b, day, dec):
+    """Refuse to emit a briefing whose anchored weekly profile is wrong or stale.
+
+    His standing worry, and the single most expensive defect this project has had:
+    *"is it the right weekly VP? Make sure it's developing throughout the day...
+    I don't wanna get halfway through a run just for you to say you fucking
+    anchored the volume profile wrong."*
+
+    Two failures are possible and both are silent without this check:
+
+      1. WRONG ANCHOR - the anchor is not this week's Monday 18:00 (or the prior
+         Monday when the session itself opens on/before Monday). That was live for
+         a whole scored week and moved weekly POC ~900pt.
+      2. STALE VALUES - the anchor is right but the numbers were computed at some
+         other minute and carried forward, so the profile stops developing. The
+         agent would then read a frozen weekly profile as if it were live.
+
+    Weekly edges are the ONLY levels that grade A on their own in the trigger's
+    conviction rubric, and they are named as thesis targets. A wrong one changes
+    verdicts, not just numbers. So this raises rather than warns.
+    """
+    lv = b.get("levels_at_decision_BUILD") or {}
+    blk = lv.get("anchored_weekly_profile")
+    if not blk:
+        return
+    sess_day = _session_day_of_decision(day, dec)
+    t = pd.Timestamp(f"{day} {dec}", tz=NY)
+    live = anchored_weekly_profile(bars(), sess_day, upto=t)
+
+    anchor = live["anchor"]
+    back = (pd.Timestamp(f"{sess_day} 18:00", tz=NY) - anchor).days
+    if anchor.weekday() != 0 or not (0 < back <= 7):
+        raise ValueError(
+            f"anchored weekly is anchored to {anchor:%Y-%m-%d %H:%M %A}, {back}d back "
+            "from the session open - expected a Monday 18:00, 1-7 days back")
+
+    for key, live_key in (("poc", "awPOC"), ("val", "awVAL"), ("vah", "awVAH")):
+        if abs(float(blk[key]) - round(float(live[live_key]), 2)) > 1e-6:
+            raise ValueError(
+                f"anchored weekly {key} in the briefing is {blk[key]}, but recomputing "
+                f"it AT {dec} gives {round(float(live[live_key]), 2)} - the profile is "
+                "stale, not developing")
+    if str(blk.get("anchor")) != str(anchor):
+        raise ValueError(
+            f"anchored weekly anchor in the briefing is {blk.get('anchor')}, live is {anchor}")
+
+
+def _session_day_of_decision(day, dec):
+    """A decision at 03:00-17:00 belongs to the session that opened the evening before."""
+    t = pd.Timestamp(f"{day} {dec}", tz=NY)
+    return str((t - pd.Timedelta(days=1)).date()) if t.hour < 18 else str(t.date())
 
 
 HOWTO = ("The screenshot is the chart at your decision minute with replay truncated there. "
