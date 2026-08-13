@@ -158,11 +158,17 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
     ev, seen = [], set()
 
     def add(ts, reason, level, price):
-        k = (ts.strftime("%H:%M"), reason, level)
-        if k not in seen:
-            seen.add(k)
-            ev.append({"minute": ts.strftime("%H:%M"), "reason": reason,
-                       "level": level, "level_price": price})
+        # Dedupe on (reason, level) for the WHOLE position, not per minute. The
+        # first version keyed on the minute too, which re-fired the same
+        # "reached"/"stalling" event on every bar - 41 calls for one trade, which
+        # is a timer, and the contract is explicit that tier 3 is called at
+        # moments that carry information rather than on a schedule.
+        k = (reason, level)
+        if k in seen:
+            return
+        seen.add(k)
+        ev.append({"minute": ts.strftime("%H:%M"), "reason": reason,
+                   "level": level, "level_price": price})
 
     touch_log = {}
     for ts, r in w.iterrows():
@@ -204,4 +210,19 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
         if t0 < we <= w.index.max():
             add(we, "window_closing", "window_end", None)
 
-    return sorted(ev, key=lambda e: e["minute"])
+    # Collapse to at most one CALL per minute: the manager sees the whole book
+    # at that minute anyway, so two events in the same minute are one decision.
+    by_min = {}
+    for e in sorted(ev, key=lambda x: x["minute"]):
+        by_min.setdefault(e["minute"], []).append(e)
+    out = []
+    for m, es in sorted(by_min.items()):
+        primary = sorted(es, key=lambda e: ["tp1_reached", "intermediate_level_broken",
+                                            "stalling", "intermediate_level_reached",
+                                            "pre_cash_open", "window_closing"].index(e["reason"])
+                         if e["reason"] in ["tp1_reached", "intermediate_level_broken", "stalling",
+                                            "intermediate_level_reached", "pre_cash_open",
+                                            "window_closing"] else 99)[0]
+        out.append({**primary, "also_at_this_minute":
+                    [f'{e["reason"]}:{e["level"]}' for e in es if e is not primary]})
+    return out

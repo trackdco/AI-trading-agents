@@ -265,10 +265,12 @@ def trigger_briefing(sess_day, day_next, dec, cid, window, session, shot, thesis
 
 def manage_briefing(sess_day, day_next, dec, cid, shot, reason, level, level_price,
                     side, entry, stop, targets, conviction, chart_levels, opened_at,
-                    crowded_path, prior_actions):
+                    crowded_path, prior_actions, original_r=None):
     lv = levels_at(sess_day, day_next, dec)
     px = price_at(day_next, dec)
-    R = abs(entry - stop)
+    # Once the stop is at breakeven the CURRENT stop distance is zero, so open
+    # P&L must be measured against the ORIGINAL R the trade was sized on.
+    R = original_r if original_r is not None else abs(entry - stop)
     open_r = ((entry - px) / R) if side.lower().startswith("s") else ((px - entry) / R)
     return verify({
         "role": "tv-manage", "candidate_id": cid,
@@ -280,7 +282,7 @@ def manage_briefing(sess_day, day_next, dec, cid, shot, reason, level, level_pri
         "HOW_TO_READ_THIS_SCREENSHOT": HOWTO,
         "position": {"side": side, "entry": entry, "stop": stop, "targets": targets,
                      "conviction": conviction, "opened_at": opened_at,
-                     "R_in_points": round(R, 2),
+                     "R_in_points": round(R, 2), "current_stop_distance": round(abs(entry - stop), 2),
                      "open_pnl_in_R": round(open_r, 2)},
         "level_in_question": {"level": level, "price": level_price},
         "price_at_decision": px,
