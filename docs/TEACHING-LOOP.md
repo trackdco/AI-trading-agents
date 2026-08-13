@@ -1038,3 +1038,123 @@ Refines T13 (break-even if green, flatten if red before 09:30).
 09:25–09:30 is **closed for the profit available**, not carried and not merely
 moved to break-even. Break-even is for a position with real distance still to
 run; a nearly-complete winner is banked.
+
+## T37 — CONVICTION IS THE SIGNIFICANCE OF THE LEVEL BEING REJECTED
+
+The rubric A/B/C has driven sizing since 0.1.0 and partial structure since T35,
+and until now nothing said what produced one. His answer:
+
+> *"What defines an A from a C would be how significant the key level it is
+> rejecting off of is. If we were to reject off the weekly value area low and
+> actually show resistance there and affirm that rejection, and then we close
+> through the VWAP / the moving average — that's going to be a high-conviction
+> trade for me… The entry is still mechanical: closure through the moving average
+> plus another structural level at once. What matters more is how significant the
+> thing it is rejecting off of is. What kind of merit does that level have?"*
+
+**So the trigger is mechanical and constant; the CONVICTION comes entirely from
+the rejected level's merit.** This closes the loop opened by T5 — rejection is
+the cause of the trade, and the *significance* of what was rejected is the grade
+of the trade.
+
+**And counter-trend caps the grade at C, by his own example:**
+
+> *"C is definitely like if I'm kind of fading the trend. That London short it
+> took when it went through VWAP+2 and the moving average would definitely be a
+> C, even though structurally, yes, a broken VWAP, a broken moving average. That
+> being said, I'm kind of fading the trend, so I'm not targeting as big of a
+> move. I'm just taking my piece of the pie and getting out."*
+
+**Level-merit hierarchy** (his own ordering, from what he names as significant):
+
+| tier | levels | grade contribution |
+|---|---|---|
+| **highest** | anchored **weekly** profile edges (weekly VAL/VAH/POC), weekly high/low | A |
+| high | prior-day VAL/VAH/POC, prior-day high/low; a fib in confluence with any of these | A/B |
+| middle | developing daily profile (POC/VAH/VAL), VWAP ±1/±2 | B |
+| low | VWAP mid alone, the BB MA alone | C |
+
+**The BB MA is the TRIGGER, not the rejection.** A trade whose only "rejected
+level" is a moving average is by definition a C.
+
+**Grading, in order:**
+1. Counter-trend (fading a structured trend) → **C, always**, regardless of level.
+   A flush is not tradeable counter-trend at all (T30).
+2. Otherwise start from the merit tier of the rejected level.
+3. **Confluence raises it** — two or more levels of different types stacked at the
+   rejection, or 2m and 3m closing together (T38).
+4. **A weak rejection lowers it** — a shallow touch, no visible resistance, a
+   level that price has already sliced through earlier in the session.
+
+## T38 — WHEN 2m AND 3m DISAGREE, THE HIGHER TIMEFRAME RULES
+
+> *"The higher the time frame, the better. When both timeframes are in alignment
+> that's high conviction for me — if the 2-minute closes and the 3-minute closes
+> the next minute, that is high conviction right there. If they disagree, it's
+> more about what the higher timeframe says. If the 3-minute closes through
+> cleanly and the 2-minute doesn't, I might — if I'm not fully confident — wait
+> for the 2-minute to close through and enter off the 2-minute. That being said,
+> on a day where I'm confident in my thesis and the levels I'm targeting, I might
+> just enter off the 3-minute. The 3-minute rules over the 2-minute."*
+
+- **Both close (within a minute of each other) → conviction raiser**, already
+  recorded, now confirmed as a grade input.
+- **3m clean, 2m not → the 3m governs.** Two licensed responses: **wait** for the
+  2m and enter off it (the default when conviction is not high), or **enter off
+  the 3m** when the thesis and levels are strong. State which and why.
+- **2m clean, 3m not → the weaker case.** The higher timeframe has not confirmed;
+  treat as lower conviction, and prefer to wait.
+
+## T39 — FOMC: NO NEW YORK. A HARD RULE.
+
+> *"I do not trade FOMC. So if there's FOMC in the afternoon, I just sit out of
+> New York completely."*
+
+Not a caution, not a size reduction — **NY_PRE and NY_AM are closed entirely on
+an FOMC day.** London is unaffected. This joins the news blackout as a
+mechanical gate the macro agent owns, and it is not escalatable.
+
+## T40 — MONDAY IS A GAP DAY, AND LONDON NEEDS A REASON
+
+> *"I'll only trade London on a Monday if there's a massive new week opening gap,
+> and I'm going to follow whatever I'm being given. I'm inclined to think that gap
+> will be filled within the week, or the next week at the longest. The gaps always
+> get filled eventually. How I judge a Monday is kind of just based off what
+> happened in Asia: is there a big new week opening gap? Where are my levels?"*
+
+- **Monday London requires a significant new-week opening gap.** Absent one, the
+  default is no London trades.
+- **The gap is a destination**, and a durable one — his horizon for it filling is
+  the week, not the session.
+- Monday's read is built from Asia's behaviour and the gap, not from a prior
+  session's momentum.
+
+## T41 — NO RISK CAPS YET. DELIBERATE, AND HIS CALL.
+
+> *"I'm not worried about the proper risk parameters right now. I just want to
+> see how the agents are making decisions. There's no point putting caps on it
+> and stuff right now, because we see what the numbers say and then we make
+> educated conclusions from that… the more trades we can judge the agent's
+> judgment against, the better for us right now."*
+
+**Do not implement daily loss limits, stop-for-the-day rules, or the
+London→NY sit-out.** His own behaviour is known — *"usually if I win a really
+good trade in London I might take one trade in New York; if I win a really good
+trade in New York, I'm probably not going to take another"* — and the
+London→NY decision turns on *"the quality of what New York is offering."*
+
+**Both are recorded and deliberately NOT encoded.** Sample size for judging
+decision quality is worth more right now than realistic risk behaviour. Revisit
+once the per-trade judgement is close.
+
+## T42 — THE FIXED-1.5R FALLBACK IS AN EDGE CASE, NOT A BRANCH
+
+> *"If the setup is decent but the structural levels are just a bit out of my
+> ballpark, I'd rather just take the fixed. I don't think there's any instance
+> now where we say it's a fixed 1.5–2.5 preference — if you can't find anything
+> there, look for 1 to 1.5. There are very, very few instances where it will not
+> find anything between 1 and 2.5R."*
+
+Confirms T27's order and demotes the fallback: with the band spanning 1.0–2.5R,
+finding nothing is rare. If an agent is using the fixed target often, that is a
+**level-computation defect to investigate**, not normal operation.

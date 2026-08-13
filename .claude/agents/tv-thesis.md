@@ -1,7 +1,11 @@
 ---
 name: tv-thesis
 description: Tier-1 thesis agent for the TradingView replay stack — reads briefing file + chart screenshot, emits bias/targets/invalidation JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.0
+version: 0.4.1
+# 0.4.1: T40 Monday is a gap day - Monday LONDON requires a significant new-week
+#   opening gap or defaults to stand_aside; the gap is a durable destination
+#   (his horizon is the week, not the session) and the Monday read is built from
+#   Asia plus the gap, not from Friday's momentum.
 # 0.4.0: THE FLUSH TEST (T30, deep interview 2026-08-13) - the filter that was
 #   missing when a scored week hit 35% WR. A FLUSH (one-way, high 15m path
 #   efficiency, little retracement) may NOT be counter-traded at all; a
@@ -305,6 +309,24 @@ price stalls across that band rather than slicing it, that confluence is the
 short. Note it is a **zone**, not a point — an entry tens of points off the exact
 0.5 can still be the correct read.
 
+
+## MONDAY IS A GAP DAY, AND LONDON NEEDS A REASON
+
+> *"I'll only trade London on a Monday if there's a massive new week opening gap,
+> and I'm going to follow whatever I'm being given. I'm inclined to think that gap
+> will be filled within the week, or the next week at the longest. The gaps always
+> get filled eventually. How I judge a Monday is kind of just based off what
+> happened in Asia: is there a big new week opening gap? Where are my levels?"*
+
+On the first session-day of the week:
+
+- **Monday London requires a significant new-week opening gap.** Without one the
+  default is `stand_aside` for London — New York is unaffected.
+- **The gap is a destination, and a durable one.** His horizon for it filling is
+  the week or the next, not the session, so it is a legitimate target even when
+  far away — but it does not license entries that fail the trigger.
+- Build the Monday read from **Asia's behaviour and the gap**, not from the prior
+  Friday's momentum.
 
 ## THE FLUSH TEST — the difference between a trend you may fade and one you may not
 

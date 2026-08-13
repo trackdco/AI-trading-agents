@@ -1,7 +1,15 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.0
+version: 0.4.1
+# 0.4.1: T37 CONVICTION RUBRIC - the label was load-bearing (it drives tv-manage's
+#   partial structure and his sizing) with nothing defining it. His answer: the
+#   trigger is mechanical and constant, the GRADE comes from the significance of
+#   the level being rejected. Weekly-profile edges grade A, prior-day high, daily
+#   profile and VWAP bands B, VWAP mid or the BB MA alone C - and the BB MA is the
+#   trigger, never the rejection. Counter-trend caps at C by his own example. T38
+#   adds the timeframe hierarchy: both closing together raises conviction, and
+#   when they disagree the 3m rules over the 2m.
 # 0.4.0: T30/T31/T27 (deep interview 2026-08-13). FLUSH GATE as constraint 0 -
 #   absolute, outranks everything, not escalatable: under flush every
 #   counter-flush candidate is passed regardless of trigger quality, and only 15m
@@ -454,6 +462,66 @@ A candidate failing any of these is `pass`, with the constraint named in
     high-impact news. That is stupid."* Your briefing's `macro.news_blackout` is
     the gate. **This is the macro agent's only veto** — nothing else in its read
     licenses a pass.
+
+
+## CONVICTION — set by the SIGNIFICANCE of the level being rejected
+
+This label drives his partial structure (`tv-manage` takes 50% at TP1 on an A
+and 100% on a C) and his sizing, so it is load-bearing, not decorative.
+
+> *"What defines an A from a C would be how significant the key level it is
+> rejecting off of is… The entry is still mechanical: closure through the moving
+> average plus another structural level at once. What matters more is how
+> significant the thing it is rejecting off of is. What kind of merit does that
+> level have?"*
+
+**The trigger is constant. The GRADE comes from what was rejected.**
+
+**Level-merit hierarchy:**
+
+| tier | levels | contributes |
+|---|---|---|
+| **highest** | anchored **weekly** profile edges (weekly VAL/VAH/POC), weekly high/low | **A** |
+| high | prior-day VAL/VAH/POC and high/low; a fib in confluence with one of those | A/B |
+| middle | developing daily POC/VAH/VAL, VWAP ±1/±2 | **B** |
+| low | VWAP mid alone, the BB MA alone | **C** |
+
+**The BB MA is the trigger, not the rejection.** If the only level you can name
+in `rejected_level` is a moving average, the trade is a **C**.
+
+**Grade it in this order:**
+
+1. **Counter-trend caps at C, always.** His own example: a short that broke
+   VWAP+2 and the MA while fading a trend — *"that would definitely be a C, even
+   though structurally, yes, a broken VWAP, a broken moving average. I'm kind of
+   fading the trend, so I'm not targeting as big of a move. I'm just taking my
+   piece of the pie and getting out."* (And under `flush: true` you do not take
+   it at all — constraint 0.)
+2. **Start from the merit tier of the rejected level.**
+3. **Confluence raises it** — levels of different types stacked at the rejection,
+   or 2m and 3m closing together.
+4. **A weak rejection lowers it** — a shallow touch with no visible resistance,
+   or a level price already sliced earlier in the session.
+
+An A is his described shape: *"reject off the weekly value area low and actually
+show resistance there and affirm that rejection, and then we close through the
+VWAP / the moving average."* Significant level, real resistance, then the break.
+
+## WHEN 2m AND 3m DISAGREE — the higher timeframe rules
+
+> *"The higher the timeframe, the better… If the 3-minute closes through cleanly
+> and the 2-minute doesn't, I might — if I'm not fully confident — wait for the
+> 2-minute to close through and enter off the 2-minute. On a day where I'm
+> confident in my thesis and the levels I'm targeting, I might just enter off the
+> 3-minute. The 3-minute rules over the 2-minute."*
+
+- **Both close within a minute of each other** → conviction raiser. *"That is
+  high conviction for me right there."*
+- **3m clean, 2m not** → the 3m governs. Two licensed responses: **wait** for the
+  2m and enter off it (default when conviction is not high), or **enter off the
+  3m** when the thesis and levels are strong. Say which and why in `reason`.
+- **2m clean, 3m not** → the weaker case. The higher timeframe has not confirmed;
+  grade lower and prefer to wait.
 
 ## CONVICTION — a label, never a number
 
