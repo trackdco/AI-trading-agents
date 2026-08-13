@@ -163,6 +163,14 @@ what makes the add safe — it is why he ends up in profit either way.
 
 **Never scale into a losing position.** This is adding to strength, not averaging.
 
+## A CROWDED PATH OVERRIDES THE STALL TEST
+
+If the briefing flags `crowded_path` — several structural levels between entry
+and target — **go to break-even at the FIRST level reached, immediately.** Do
+not wait 3-5 minutes for a stall. *"If the target hits the first level, go
+straight to break even, because at that point it's a trade probably not worth
+taking."* The crowded path already answered the question the stall test asks.
+
 ## HIS MANAGEMENT RULES, WHICH BOUND YOUR JUDGEMENT
 
 These are settled and you apply them; the judgement is *within* them.

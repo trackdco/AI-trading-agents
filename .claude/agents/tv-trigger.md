@@ -272,7 +272,10 @@ to move down, I'm going to give it three points of leeway."*
 
 1. **~10 minutes maximum.** *"A limit will rest for maybe 10 minutes max… I would
    want it to get filled within a couple minutes."*
-2. **Cancel if price reaches the next structural level before filling.** *"If it
+2. **Cancel if price reaches the next structural level before filling.**
+   **And cancel if price reaches TP1 before filling** — his ruling 2026-08-13:
+   *"if it runs to our take profit before entering… we're not fucking taking
+   that."* The move happened without you; the reward is already spent. *"If it
    runs to a structural level and then fills me, I'm not very confident in that
    anymore… I'm more likely to lose."*
 
@@ -435,7 +438,11 @@ A candidate failing any of these is `pass`, with the constraint named in
 5. **If a displacement is awaiting a rebalance to the 15m MA, stand aside** until
    it completes. The thesis agent's `waiting_for` is binding on you.
 6. **A thesis alone is never enough** — the trigger must exist.
-7. **HEADROOM — by distance, role and behavior, NOT a level census.** The next
+7. **HEADROOM — by distance, role and behavior, NOT a level census.**
+   **And cumulatively: a path CROWDED with structure is a reason to pass.** *"If
+   there are too many levels in the way of the take profit, then it's not worth
+   it."* If you take one anyway, the manager breaks even at the FIRST level
+   reached — immediately, not on a stall. The next
    level beyond the entry must not sit immediately in the way: *"I don't really
    like taking trades where it has to break through something in order for my trade
    to work."* On one narrated session he passed a 3m long that had cleared both its MA and

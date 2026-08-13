@@ -1158,3 +1158,68 @@ once the per-trade judgement is close.
 Confirms T27's order and demotes the fallback: with the band spanning 1.0–2.5R,
 finding nothing is rare. If an agent is using the fixed target often, that is a
 **level-computation defect to investigate**, not normal operation.
+
+## T43 — TOO MANY LEVELS IN THE PATH: don't take it, or break-even at the first
+
+Extends constraint 7 (headroom) from "the next level must not sit immediately in
+the way" to the cumulative case.
+
+> *"If there are three levels in the way, it's just very strict risk management:
+> if the target hits the first level, go straight to break even, because at that
+> point it's a trade probably not worth taking. If there are too many levels in
+> the way of the take profit, then it's not worth it, in my opinion. I don't
+> think that's a very realistic instance."*
+
+**Two clauses:**
+1. **Entry:** a path crowded with structure between entry and target is a reason
+   to **pass**. Headroom is not only about the *next* level — it is about how
+   much has to break for the trade to work.
+2. **Management:** if such a trade is taken anyway, **break-even at the first
+   level reached**, immediately — not on a stall, not after 3–5 minutes. The
+   ordinary stall test (T32) does not apply; the crowded path already told you.
+
+He expects this to be rare. Frequent firing means the level set is too dense or
+targets are being placed too far.
+
+## T44 — FILLS ARE BINARY, AND A LIMIT THAT MISSED ITS MOVE IS DEAD
+
+> *"I never really get half-filled on a chart. You either get filled or you
+> don't. It's not something that needs to be worried about too much. We're pretty
+> conservative with our fills — we target the closest structural level for the
+> retest. Obviously, if it runs to our take profit before entering, then at least
+> take profit one. We're not fucking taking that."*
+
+- **No partial-fill modelling.** Filled or not filled. The replay's
+  touch-equals-fill model is acceptable to him, and conservative entry level
+  selection (closest structure) is what keeps it honest.
+- **NEW CANCEL CLAUSE, sharper than the existing one:** the standing rule is
+  cancel if price reaches the next structural level before filling. This adds:
+  **if price reaches TP1 before the limit fills, the trade is dead — cancel it.**
+  The move happened without you. Chasing it is taking a trade whose reward is
+  already spent.
+
+## T45 — THE SUCCESS CRITERION IS REASONING, NOT R
+
+**The most important thing he has said about how to judge this, and it reframes
+what the reports should contain.**
+
+> *"I think the biggest thing would just be me going through trade by trade and
+> looking at the journal, looking at what the agents were thinking when it was
+> taking those trades, win or loss. If I can reason with that thinking, then I
+> would be happy. Over this week, you saw how much I caught — I don't expect it
+> to catch that exact amount, simply because I can trade. If we can even get it
+> just taking the same trades, taking its own trades with the right thesis behind
+> them, the right thought process, then I would be quite happy."*
+
+**Consequences:**
+1. **The primary artifact of a run is the JOURNAL, not the scorecard.** Per
+   trade: the standing thesis, why this candidate, the rejected level and its
+   grade, the stop rationale, every management call and its reasoning — in the
+   agents' own words, win or lose.
+2. **A losing trade with sound reasoning is a PASS**, and a winning trade with
+   incoherent reasoning is a **failure**. R is the sanity check, not the target.
+3. **He does not expect it to match his R.** *"I can trade."* The bar is its own
+   trades with the right thought process behind them.
+4. So the review loop is: he reads the reasoning, and where he cannot reason with
+   it, that becomes the next teaching-loop entry. That is exactly this file's
+   purpose, and it means **the journal must be readable by him without tooling.**
