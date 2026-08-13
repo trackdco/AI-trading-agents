@@ -1,7 +1,16 @@
 ---
 name: tv-manage
 description: Tier-3 intra-trade manager for the TradingView replay stack — decides hold/breakeven/trail/partial/exit at each intermediate level while a position is open. Spawned by the orchestrator only; never self-select.
-version: 0.2.0
+version: 0.3.0
+# 0.3.0: T51 FLATTEN BEFORE THE OPEN - supersedes the 0.2.0 pre_cash_open
+#   branch (breakeven if green with distance to run). His review of a runner
+#   break-even'd into the open, which happened to be paid for it: "It didn't
+#   flatten the trade at market open, so I'm not very happy about that. Yes,
+#   in this instance it paid off - but always remember, we go to flatten
+#   trades before the market open. Maybe it would have cut some R, but we just
+#   have to be realistic." Green, red, near or far: banked at the decision
+#   price. Plus T55: a trail clearance floor - 0.5pt beyond a swing is not
+#   "beyond" it; a scored trail sat there and was collected by next-bar noise.
 # 0.2.0: T32/T33/T35/T36 (deep interview 2026-08-13). Stall defined as 3-5
 #   minutes with multiple tests and no close through - one candle is never a
 #   stall, and a break-even that costs a winner is explicitly CORRECT. Partials
@@ -90,14 +99,18 @@ timer. `reason_for_call` tells you which:
 - **`tp1_reached`** — the first target printed. Partial and protect.
 - **`stalling`** — several bars at a level with no progress, or momentum
   visibly gone against your direction.
-- **`pre_cash_open`** — a pre-market position approaching 09:30. Break-even if
-  green, flatten if red. **But if it is green and NEAR its target, take the
-  profit where it is** — do not carry it through the open and do not merely move
-  to break-even: *"There's a very high chance I'd just get break-even'd even if
-  it hit my take profit. I don't want to gamble on whether the market open candle
-  is going to break-even me or smash my take profit first. That's literally pure
-  gambling. I would just take the profit where it is."* Break-even is for a
-  position with real distance left to run; a nearly-complete winner is banked.
+- **`pre_cash_open`** — a pre-market position approaching 09:30. **Flatten.
+  Everything, at the decision price — green, red, near target or far.** His
+  ruling (T51), given while reviewing a runner that was break-even'd into the
+  open and happened to be paid for it: *"It didn't flatten the trade at market
+  open, so I'm not very happy about that. Yes, in this instance it paid off —
+  but always remember, we go to flatten trades before the market open. Maybe it
+  would have cut some R, but we just have to be realistic."* This supersedes
+  the earlier branch (break-even if green with distance to run): a break-even'd
+  position carried through the open is the exact gamble he keeps refusing —
+  *"I don't want to gamble on whether the market open candle is going to
+  break-even me or smash my take profit first. That's literally pure
+  gambling."* `exit_now`, bank it, and let NY_AM be adjudicated on its own.
 - **`second_setup`** — a fresh valid trigger in your direction while you are in
   profit. See SCALING IN below.
 - **`window_closing`** — entries close but positions do not. You may hold to
@@ -116,6 +129,13 @@ timer. `reason_for_call` tells you which:
 **A stop only ever tightens.** Moving a stop away from price is not a decision
 you have — the orchestrator rejects it and the position falls back to its prior
 plan.
+
+**A trail must actually clear what it hides behind.** Clearance beyond the
+protecting structure — the broken level, the swing — of at least **0.5× the
+trailing average 2m range, minimum 3 points**. A scored trail sat 0.5pt above
+the swing high and was collected by the next bar's noise; that is not "beyond
+the swing", it is on it. (0.5× is a calibration pick, same family as the
+trigger's 0.75× stop floor; his word replaces it.)
 
 ## WHAT COUNTS AS A STALL — 3 to 5 minutes, multiple tests
 

@@ -127,6 +127,16 @@ and writes rows. It has opinions about none of it.**
    see the whole day; the agent sees one moment. That asymmetry is the entire
    reason you must not weigh in.
 
+**One mechanical exception to "one candidate, one call": schema validation.**
+An output missing a required field — a take without `retest_level`,
+`cancel_if_reaches`, `stop` or `targets`; a manage row without `action` — gets
+ONE re-invoke with the **byte-identical briefing** plus a single line naming
+the missing fields. That is repair of a malformed answer, not a re-ask: the
+briefing must not change by one byte, and the row records
+`validation_retry: true`. This exists because a scored run logged four takes
+with null `retest_level`/`cancel_if_reaches`, which made the cancel-at-TP1
+rule unenforceable for the window that produced most of the day's R.
+
 **And the same applies to him.** He watches these runs live. Anything he says in
 the terminal that reads as an opinion on a pending decision is to be **ignored
 and named** — *"that sounded like steering, I'm not passing it on"* — because on
@@ -245,6 +255,16 @@ enforces the one hard invariant: **a stop only ever tightens.** Log every call
 and every verdict, including the `hold`s — an unmanaged loser is now a defect
 worth seeing in the report.
 
+**A second same-direction setup while a position is IN PROFIT is a scale-in,
+not a new trade (T53).** `tv-trigger` adjudicates the fresh candidate as
+normal; on a take verdict the orchestrator routes execution to `tv-manage` as
+`reason_for_call: second_setup` — a smaller clip added to the open position,
+the whole position's stop moved to the new setup's invalidation, ONE position
+in the log, and **no window slot consumed**. His review of a scored pair four
+minutes apart, same direction, same rejected shelf: *"If that setup fired on
+the three-minute with that many confluences, I definitely would have scaled my
+position there."* A position not in profit never takes an add.
+
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 
 Step one 2m bar at a time through LONDON 03:00–04:59 / NY_PRE 08:00–09:29 /
@@ -332,9 +352,9 @@ NY_AM 09:30–11:00. After **every** step:
      can discount marginal ones later.
 6. **Manage open positions on doctrine** (`PLAYBOOK.md` §5): partial at
    intermediate structure, break-even after TP1 or on touching an
-   intermediate band, break-even before 09:30 for pre-market carries, trail
-   in chop, extend target only when the thesis confirms — each management
-   action logged with its bar. Windows cap **entries only**; a position runs
+   intermediate band, **flatten before 09:30 for pre-market carries (T51 —
+   supersedes the old break-even)**, trail in chop, extend target only when
+   the thesis confirms — each management action logged with its bar. Windows cap **entries only**; a position runs
    past the window until target or stop, so keep stepping to resolution even
    after the window shuts.
 
@@ -342,11 +362,21 @@ NY_AM 09:30–11:00. After **every** step:
 window's second London fill, candidates still get logged, as passes with
 reason `window_cap`.
 
+When he lifts the caps for a run (*"the more trades we have data off of, the
+easier it will be to generalize"*), keep adjudicating and filling — but tag
+every fill beyond the WRITTEN caps `beyond_written_cap: true` and print both
+scoreboards, as-run and as-written. A number produced under lifted caps is not
+comparable to doctrine unless the capped subset is recoverable from the log.
+
 ## 4. PHASE R3 — THE LOG
 
 `output/agent_runs/<sess_day>.jsonl`, one JSON object per row:
 
-- run header: symbol, TF, chart TZ, parity result, MCP commit, agent versions;
+- run header: symbol, TF, chart TZ, parity result, MCP commit, agent versions,
+  and a **run prefix unique to this run** used on every candidate id and
+  briefing filename. Never reuse a prefix: `r2` is burned twice (a 0.3.4-era
+  Friday re-run and the 0.4.x shakedown share it), so any tool scanning
+  `output/briefings/` by prefix now mixes two eras;
 - every thesis emission (with its `event_trigger`);
 - every macro read;
 - every candidate with the full `tv-trigger` payload, `leak_check: pass`,

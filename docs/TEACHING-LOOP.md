@@ -1331,3 +1331,116 @@ here; inside one they are contamination.
 
 → `docs/RUNBOOK-replay-scoring.md` §0c SEPARATION OF POWERS, with the
 decides-what table; restated in the Phase C paste block.
+
+---
+
+## T50 — in a range, the middle is dead
+**2026-08-13, shakedown review.** On the choppy London he reviewed: *"I
+probably wouldn't have traded London at all, unless we were topping out the
+range or bottoming out the range and just trading within that range."* And on
+the day's high: *"we were failing to break this high since Asia around 8pm —
+it was also the weekly value area high. Even if I were to trade chop like
+that, I'm probably not looking for longs. I don't want to break a level that
+has so much resistance ahead of it."*
+
+The 03:24 loser is the type specimen: a C-grade fib in the middle of the
+range, in chop, taken light. Range-day entries come off the extremes or the
+shelves that bound them; a lone mid-range level is not an edge.
+
+→ `tv-trigger` 0.4.3, constraint 9.
+
+## T51 — FLATTEN before the cash open. Not break-even. Everything.
+**2026-08-13.** Reviewing a runner break-even'd at 09:28 that the open then
+paid: *"It didn't flatten the trade at market open, so I'm not very happy
+about that. Yes, in this instance it paid off — the open volatility went in
+our direction — but always remember, we go to flatten trades before the
+market open. Maybe it would have cut some R, but we just have to be
+realistic."*
+
+SUPERSEDES T35's break-even-if-green branch. Green, red, near target or far:
+banked at the decision price. Note the shape of the ruling: he watched the
+gamble PAY and ruled against it anyway — same character as the 29.2R
+Thursday. Do not learn from the payout.
+
+→ `tv-manage` 0.3.0 `pre_cash_open`; runbook §3.6.
+
+## T52 — NY_PRE entries cut off at 09:05
+**2026-08-13.** On the 09:28 attempt: *"I would never enter that close to
+market open — that's just stupid. If I'm not in a trade around 5 to 10 past
+9, I'm not taking another trade in pre-market... price will slow down and
+then get really volatile in the last couple minutes, and that's not a risk
+that I want to take."*
+
+09:05 chosen as the conservative end of his stated 09:05–09:10 zone — MY
+pick, his word moves it. Entries only; open positions belong to the manager
+(T51).
+
+→ `tv-trigger` 0.4.3, constraint 4b.
+
+## T53 — a second same-direction setup in profit is a SCALE-IN, not a new trade
+**2026-08-13.** On the 08:32/08:36 pair (four minutes apart, same direction,
+same rejected shelf): *"If that setup fired on the three-minute with that
+many confluences, I definitely would have scaled my position there and run it
+out to where it actually ended up going."*
+
+Trigger adjudicates the fresh candidate as normal; a take is routed to
+tv-manage as `second_setup` — smaller clip, whole-position stop to the new
+setup's invalidation, ONE position, NO window slot consumed. (The no-slot
+clause is my inference from "one position"; his word flips it.) Never into a
+losing position.
+
+→ runbook §2c; tv-manage SCALING IN unchanged (it already had the doctrine —
+the orchestrator routing is what was missing).
+
+## T54 — the grade and the size must agree; a pass-reason is not a discount
+**2026-08-13.** The shakedown emitted nine takes, nine take_light — both
+conviction-A trades included. His reaction to the 03:24 trade that argued
+its own pass and took anyway: *"That is worrying that it took the trade even
+though it wasn't confident in the trade itself."*
+
+New defaults: A → take_full, B → take_light (full with stated reason),
+C → take_light or pass. No double-counting a fact already in the grade; an
+objection the contract lists as a PASS reason either holds (pass) or is
+dismissed with cause (gone) — it never shrinks size. If the reason paragraph
+reads as a case for passing, pass.
+
+→ `tv-trigger` 0.4.3, THE GRADE AND THE SIZE MUST AGREE.
+
+## T55 — a trail must clear what it hides behind
+**2026-08-13.** The 04:01 trail sat 0.5pt above the swing high and was
+collected by the next bar. The contract already named "trailing so tight
+that ordinary noise takes you out" as a bad-manager trait; it had no number.
+Floor: clearance ≥ 0.5× trailing avg 2m range, min 3pt — MY calibration,
+same family as the 0.75× stop floor; his word replaces it.
+
+→ `tv-manage` 0.3.0.
+
+## T56 — a level the thesis names as a destination is never a headroom obstacle
+**2026-08-13.** The 04:38 pass counted the 0.705 fib as path-crowding against
+a range-top short — while the standing thesis named that same fib zone as
+where the licensed short was headed. A destination is a TP1 candidate, not
+clutter. Ask of every level ahead: is it in the trade's way, or is it what
+the trade is for?
+
+→ `tv-trigger` 0.4.3, constraint 7.
+
+## T57 — the 04:36 candle: recorded, not legislated
+**2026-08-13.** His review: *"At 4:36 there was a really nice trade there...
+we basically came up, topped out that range, rejected the [weekly] value
+area high, and the same two-minute candle closed through VWAP+1. The moving
+average would have been a really nice entry on retest, stops above the high
+that rejected the value area high, targeting VWAP middle band. Obviously,
+that's hindsight from me, so even then, you have to take it with a grain of
+salt."*
+
+The agent adjudicated that exact candle (decision minute 04:38 — start-time
+convention) and passed it on three legs: (1) the stall was ~12pt SHORT of
+the thesis's licensed 29858–29928 band — the known expectation-vs-
+specification failure shape, at smaller scale than the three cases that
+built the escalation rule; (2) the 0.705 fib counted as path-crowding when
+the thesis named it as the destination — fixed as T56; (3) the 3m closed ON
+its MA, not through — a real T38 weak-case objection that supports waiting.
+
+No band-tolerance number was invented off one hindsight-flagged trade. If
+the licensed-zone literalism recurs on a day he flags live, it gets its own
+rule then.

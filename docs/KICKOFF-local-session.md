@@ -213,6 +213,70 @@ Then STOP. No second day until I have read the journal.
 
 ---
 
+## PHASE D — Monday, session-day 2026-06-21 (after the shakedown review)
+
+The gap-day Monday of the narrated week. One day, same discipline. Changed
+since the shakedown: `tv-trigger` 0.4.3, `tv-manage` 0.3.0, runbook
+§0c / §2c / §3 deltas.
+
+```text
+MONDAY RUN. Session-day 2026-06-21 (the gap-day Monday), and only that day.
+Do not start a second day.
+
+First: git pull, then re-read what changed since the shakedown you ran:
+  1. .claude/agents/tv-trigger.md  0.4.3 — the grade and the size must agree
+     (take_full exists; a pass-reason never becomes a size discount); in a
+     range the MIDDLE is dead; NY_PRE entries cut off at 09:05; a level the
+     thesis names as a destination is never a headroom obstacle
+  2. .claude/agents/tv-manage.md   0.3.0 — FLATTEN everything before the
+     cash open (supersedes break-even-if-green); trail clearance floor
+     (0.5x trailing avg 2m range, min 3pt)
+  3. docs/RUNBOOK-replay-scoring.md — §0c schema-validation retry (the ONE
+     licensed second call: byte-identical briefing, missing fields named,
+     validation_retry: true in the row); §2c second same-direction setup
+     while in profit = SCALE-IN routed to tv-manage as second_setup, one
+     position, no window slot; §3 beyond_written_cap tagging
+
+Everything from the shakedown block still binds: you have no trading
+discretion (§0c), the do-not-open file list, briefings mechanical-only with
+htf_level_behavior JSON per candidate rejection level, tv-manage at every
+management minute, and take rows validated for required fields.
+
+Monday specifics:
+  - MONDAY IS A GAP DAY: tv-thesis's Monday doctrine is live. The session
+    opens Sunday 18:00 against Friday's close; the macro briefing covers the
+    weekend.
+  - The weekly anchored profile on a Monday falls back to the PRIOR Monday
+    (agent_context does this now). Verify at the parity gate: weekly
+    POC/VAL/VAH looking like last week's numbers is CORRECT on a Monday,
+    not a bug.
+  - Caps: run them LIFTED (his standing instruction — more data), but tag
+    every fill beyond the written caps beyond_written_cap: true and print
+    both scoreboards.
+  - Run prefix: NOT r2 — it is burned. Pick a fresh one (e.g. m1) and put
+    it in the run header.
+
+Then, stopping to report after each numbered step:
+1. R0 gates (runbook §1), parity at a minute of 2026-06-21 — exit 1 stops
+   everything — and the no-leak check.
+2. Mechanical pre-scan of decision minutes; show the list; hold it yourself.
+3. Trigger-driven loop: LONDON 03:00-04:59, NY_PRE 08:00-09:05 entries
+   (window runs to 09:29 for management), NY_AM 09:35-11:00.
+4. Log to output/agent_runs/2026-06-21.jsonl; keep the drawings; save
+   2026-06-21_marked.png.
+5. Then, in this order:
+   a. python -m scripts.audit_run_leak output/agent_runs/2026-06-21.jsonl
+      All six checks must pass. If F flags, STOP and show me.
+   b. python -m scripts.journal_report output/agent_runs/2026-06-21.jsonl
+      Paste the FULL output.
+   c. python -m scripts.score_agent_outcome output/agent_runs/2026-06-21.jsonl
+      Brief. One day of R proves nothing.
+
+Then STOP. No second day until I have read the journal.
+```
+
+---
+
 ## What Phase B's limit-order probe decides
 
 TradingView's replay UI itself only offers market buy/sell/close, and the
