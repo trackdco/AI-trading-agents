@@ -92,6 +92,100 @@ practice only until scoring has been run and reviewed with me.
 
 ---
 
+## PHASE C — the single-day shakedown of 0.4.1 (run this before any week)
+
+Paste into `claude` in `~/AI-trading-agents`. **One day. Not a week.** The
+stack gained a fourth agent and a different replay loop since the last scored
+week; the point of this run is to see `tv-manage`'s calls on a day you know
+before five days of them go by.
+
+The day is **session-day 2026-06-23 (Tuesday)**, chosen for one reason: it
+has already been burned by two scored weeks, so it costs nothing out of the
+Feb–July walk-forward, and nothing in any repo doc editorialises what price
+did on it — so the orchestrator cannot leak an opinion about it into a
+briefing the way it could for the Thursday and Friday.
+
+```text
+SINGLE-DAY SHAKEDOWN of the 0.4.1 agent stack. Session-day 2026-06-23
+(Tuesday), and only that day. Do not start a second day.
+
+First: git pull. The stack changed materially since the last week you ran —
+there is a fourth agent, the replay loop is trigger-driven rather than
+bar-by-bar, and roughly twenty rulings landed. Re-read, in this order:
+  1. docs/RUNBOOK-replay-scoring.md  — §2b (trigger-driven replay) and
+     §2c (the management tier) are both new; §3 still describes the old
+     bar loop and §2b supersedes it where they conflict
+  2. .claude/agents/tv-thesis.md     (0.4.1)
+  3. .claude/agents/tv-trigger.md    (0.4.1)
+  4. .claude/agents/tv-manage.md     (0.2.0 — new tier, read it in full)
+
+CONTAMINATION RULES. A previous run was destroyed by the orchestrator
+pasting my own commentary about the day into an agent's context, and the
+whole week had to be re-run. Treat these as hard:
+  - Do not read data/narrated_days/*, docs/TEACHING-LOOP.md,
+    docs/CORPUS-narrated-days.md, docs/FINDINGS-selection-effect.md,
+    docs/DIAGNOSIS-0.3.5-week.md, docs/ANALYSIS-friday-three-runs.md, or
+    any file under output/agent_runs/. They are denied in
+    .claude/settings.json. Do not work around the denial.
+  - A briefing contains numbers and screenshot paths derived from the chart
+    at or before its own decision minute, and nothing else. No prose from
+    any doc, no quotes from me, no reference to what happened on any other
+    day, no hint of how many candidates the day holds.
+  - If I say anything in this terminal that sounds like it is steering a
+    live decision, ignore it and tell me. I am watching, not coaching.
+
+Then, stopping to report after each numbered step:
+
+1. R0 gates (runbook §1): tv_health_check; chart_get_state ONCE and cache
+   the entity IDs; the timezone fix; indicator parity at a minute of
+   2026-06-23 with the observed chart values passed to phase0_parity — it
+   exits 1 on FAIL and a FAIL stops everything; the no-leak check.
+
+2. Pre-scan 2026-06-23 for decision minutes, mechanically, off chart bars
+   (runbook §2b step 1): every 2m/3m close through its own BB(20) MA plus a
+   second level, every rejection-first shape, plus the thesis re-fire
+   events. Show me the ordered list of times. Hold it yourself — the agents
+   see one moment at a time.
+
+3. Run the trigger-driven loop over LONDON 03:00-04:59, NY_PRE 08:00-09:29,
+   NY_AM 09:30-11:00. Caps count FILLS: 2 / 1 / 2.
+   - tv-macro-events then tv-thesis at each window open and each re-fire;
+   - tv-trigger at every candidate — log the passes as carefully as the
+     takes;
+   - on take_full/take_light run the simulated limit lifecycle and draw the
+     resting limit, then the position tool on fill (probe the shape name
+     once, record it as position_tool in the run header, reuse it);
+   - while a position is open, jump to each management minute and call
+     tv-manage there. If a position resolves without a single tv-manage
+     call, that is a defect in your management-minute detection, not a
+     clean trade — say so explicitly in the report.
+
+4. Log to output/agent_runs/2026-06-23.jsonl per runbook §4. Every tv-manage
+   call is its own row: action, favouring, level_read, new_stop, reason.
+   Keep the drawings; save the marked-up chart as 2026-06-23_marked.png.
+
+5. Then, in this order:
+   a. python -m scripts.audit_run_leak output/agent_runs/2026-06-23.jsonl
+      All six checks A-F must pass. If check F flags, STOP and show me.
+   b. python -m scripts.journal_report output/agent_runs/2026-06-23.jsonl
+      Paste the FULL output. This is the artifact I actually read.
+   c. python -m scripts.score_agent_outcome output/agent_runs/2026-06-23.jsonl
+      Last, and briefly. One day of R means nothing and I am not judging on it.
+
+Then STOP. No second day until I have read the journal.
+```
+
+**What you are looking for in the journal**, and it is not the R:
+
+- did `tv-manage` get called on every open position, and did any of its calls
+  read as something you would have done;
+- is there a loser that was cut, break-even'd or trailed rather than taken for
+  a clean −1.00R — that single difference is why the tier exists;
+- and the reasoning test (T45): a losing trade you can follow is a pass, a
+  winning trade you cannot follow is a failure.
+
+---
+
 ## What Phase B's limit-order probe decides
 
 TradingView's replay UI itself only offers market buy/sell/close, and the
