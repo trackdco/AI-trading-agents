@@ -1,6 +1,9 @@
-import pandas as pd, numpy as np
-from src.research.tomtrades import data as D, autopsy as AU
+import numpy as np
+import pandas as pd
+
 from src.research.gold import htf_census as HC
+from src.research.tomtrades import autopsy as AU
+from src.research.tomtrades import data as D
 
 gc = D.load("data/gc_1m.parquet")
 b = gc.set_index(gc["ts_event"].dt.tz_convert(HC.NY))[["open","high","low","close","volume"]]
