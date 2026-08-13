@@ -1,0 +1,139 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "R2-D23-NYP4-0836",
+ "decision_minute": "2026-06-24T09:10 ET",
+ "reason_for_call": "tp1_reached",
+ "leak_check": "pass - replay truncated at 09:09:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/r2_d23_0910_mg.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 29812.0,
+  "stop": 29852.0,
+  "targets": [
+   {
+    "level": "daily_val",
+    "price": 29737.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 29655.0
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "08:36",
+  "R_in_points": 40.0,
+  "current_stop_distance": 40.0,
+  "open_pnl_in_R": 2.02
+ },
+ "level_in_question": {
+  "level": "daily_val",
+  "price": 29737.0
+ },
+ "price_at_decision": 29731.0,
+ "last_completed_2m_bar": {
+  "start": "09:08",
+  "closed_at": "09:10",
+  "open": 29742.75,
+  "high": 29747.5,
+  "low": 29722.0,
+  "close": 29731.0,
+  "volume": 1022,
+  "minutes": 2
+ },
+ "recent_2m_bars": [
+  {
+   "start": "09:02",
+   "closed_at": "09:04",
+   "open": 29764.0,
+   "high": 29779.0,
+   "low": 29758.75,
+   "close": 29763.0,
+   "volume": 454,
+   "minutes": 2
+  },
+  {
+   "start": "09:04",
+   "closed_at": "09:06",
+   "open": 29763.25,
+   "high": 29763.75,
+   "low": 29746.5,
+   "close": 29757.75,
+   "volume": 568,
+   "minutes": 2
+  },
+  {
+   "start": "09:06",
+   "closed_at": "09:08",
+   "open": 29757.75,
+   "high": 29758.75,
+   "low": 29741.25,
+   "close": 29743.0,
+   "volume": 510,
+   "minutes": 2
+  },
+  {
+   "start": "09:08",
+   "closed_at": "09:10",
+   "open": 29742.75,
+   "high": 29747.5,
+   "low": 29722.0,
+   "close": 29731.0,
+   "volume": 1022,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {},
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 29778.87,
+   "vwap_p1": 29842.4,
+   "vwap_p2": 29905.94,
+   "vwap_p3": 29969.47,
+   "vwap_m1": 29715.33,
+   "vwap_m2": 29651.8,
+   "vwap_m3": 29588.26
+  },
+  "bb_ma": {
+   "bb_ma_2m": 29781.01,
+   "bb_ma_3m": 29800.25,
+   "bb_ma_15m": 29807.29,
+   "bb_ma_60m": 29761.21
+  },
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29743.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 09:10"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29837.0,
+   "val": 29659.0,
+   "vah": 29914.0,
+   "high": 30701.25,
+   "low": 29577.25,
+   "anchor": "2026-06-22 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:10"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  }
+ },
+ "crowded_path": false,
+ "management_actions_so_far": [],
+ "what_to_emit": "your management JSON, per your contract.",
+ "tp1_detail": "the first target 29737.0 printed on the bar starting 09:08. Earlier management minutes at 08:37, 08:49, 08:50, 08:53, 09:02 and 09:06 were NOT adjudicated - see the RUN_LIMIT row.",
+ "window_note": "NY_PRE ends 09:29 and the cash open is 09:30. A position still open at 09:30 gets a pre_cash_open call."
+}

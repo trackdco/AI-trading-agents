@@ -814,3 +814,694 @@ silently measures recall.
 
 **Standing rule:** doctrine flows into agents through their **contracts**, at
 version-bump time. It never flows through a briefing, and never mid-run.
+
+## T27 — 2026-08-13 · FIRST TARGET IS A PREFERENCE ORDER (corrects T17)
+
+T17 as I implemented it was a flat 1.0–2.5R band, and it silently relaxed entry
+qualification: 9 trades whose first target sat under 1.5R went 33% WR for
+−2.26R, against 36% WR / +2.83R for the rest. Nearly identical accuracy — the
+band did not worsen the reads, it capped what a correct read could pay.
+
+**His correction:** *"Preferenced first target is 1.5–2.5R, but if there isn't
+anything within that, target something between 1–1.5 instead of further. The
+reason I went to one is because I saw some losers that would've hit in the 1R
+range."*
+
+**Order, strict, first match wins:** prefer `1.5–2.5R`; if empty drop DOWN to
+`1.0–1.5R`; if still empty use a fixed 1.5R. **Never reach past 2.5R.** A
+sub-1.5R target marks a thinner trade — weigh toward `take_light` and expect
+the manager to work harder.
+
+## T28 — 2026-08-13 · INTRA-TRADE MANAGEMENT IS A JUDGEMENT — new tier `tv-manage`
+
+**His ruling:** *"If I see significant resistance at +1, I'll probably move to
+break even. If it breaks through +1, I will trail stops, because that then means
+the trade favours me even more than when I entered — it would have to break
+through VWAP+1 again to the upside to stop me out. I trail, take targets, and do
+these things based on how the trade is favouring me in the moment. That's gotta
+be an intra-trade judgement call."*
+
+**The evidence for building it:** the 0.3.5 week's **11 of 12 losses were clean
+−1.00R full stop-outs** — nothing cut, BE'd or trailed on the way to being
+wrong — while his own narrated week contains −0.46R losers he managed down. At
+a 35% hit rate that difference is the whole expectancy.
+
+**Core doctrine:** an intermediate level is a QUESTION with two opposite
+answers. **Stall/rejection there → tighten (break-even, or exit if decisive).
+Clean break through → TRAIL BEHIND IT**, because the level now sits between
+price and the stop and must be reclaimed to hurt the trade. The second half is
+the one that gets forgotten: a broken level is new protection, not just
+progress.
+
+Fires on `intermediate_level_reached`, `intermediate_level_broken`,
+`tp1_reached`, `stalling`, `pre_cash_open`, `window_closing`. Emits `favouring:
+more|same|less` as the spine of the verdict. Orchestrator enforces
+**stops only ever tighten**.
+
+## T29 — 2026-08-13 · TRIGGER-DRIVEN REPLAY, not bar-by-bar
+
+*"I don't need the agents to go proper minute by minute — I want them to
+replicate how I would do replay. I can get through a week in 30 minutes."*
+
+Pre-scan candidates mechanically, jump to each decision minute, adjudicate, and
+while a position is open jump to the next mechanically-computed management
+minute. **Leak-safe:** the scan applies the trigger definition to bars and
+conveys no outcome — it is the information his eye gets while scrubbing — and
+the agent still sees a chart truncated at its own decision minute with the
+no-leak check run at every landing. One guard: briefings stay per-decision, so
+the thesis is never told how many candidates the day holds.
+
+---
+
+# DEEP SCENARIO INTERVIEW — 2026-08-13. Entries T30–T36.
+
+## T30 — THE FLUSH TEST: you may counter-trade a STRUCTURED trend, never a FLUSH
+
+**The single most important entry filter in this file, and the likeliest cause
+of the 0.3.5 week's 35% win rate.**
+
+> *"If it's a trend day — there was one day, maybe Wednesday, where it took a
+> long in London even though the whole of Asia sold off like 400 points. In an
+> instance like that, yeah we might have a mechanical entry trigger there, but
+> I'm not going to try fade the trend. When it's been dumping the entire day I'm
+> much more inclined to just continue to the downside until we have actual signs
+> of reversal — not just this fucking 2-minute closing through a POC and a moving
+> average. Maybe one in 10 times you'll catch the start of a massive reversal,
+> but it's a matter of probabilities."*
+
+**But this is NOT "never counter-trade a trend."** He explicitly approved a short
+on a bullish trend day, and drew the line himself:
+
+> *"It did take a pretty good short where it closed through VWAP+2 and the moving
+> average… in that instance price was making higher highs and higher lows, it
+> wasn't just flushing to the downside. It wasn't like that London reversal that
+> tried to take, which was just going down and dumped 400 points."*
+
+**So the test is FLUSH vs STRUCTURED, not trend vs no-trend:**
+
+| shape | what it looks like | counter-trade? |
+|---|---|---|
+| **FLUSH** | one-way, nearly every 5m/15m candle in the same direction, little retracement | **NO.** Only trade WITH it. A 2m close through a POC and an MA is not a reversal signal in a flush. |
+| **STRUCTURED trend** | trending, but making higher highs and higher lows (or LH/LL) — it retraces and rebuilds | **YES**, at a level, on a rejection. This is normal work. |
+
+**Measured on the tape, and it separates cleanly.** 15m path efficiency
+(|net move| ÷ total absolute 15m travel) over Asia into the London open:
+
+| session-day | Asia move | 15m down/up | path eff | shape |
+|---|---|---|---|---|
+| 2026-06-21 | +160 | 18/18 | 0.14 | rotational |
+| **2026-06-22** | **−693** | **27/9** | **0.61** | **FLUSH** |
+| 2026-06-23 | +53 | 18/18 | 0.04 | rotational |
+| 2026-06-24 | +16 | 16/20 | 0.02 | rotational |
+| 2026-06-25 | −238 | 23/13 | 0.14 | rotational |
+
+**And the agent proved his point for him on the flush day.** Two London trades,
+two minutes apart, opposite directions:
+- **03:22 LONG** at 30,032 — a reclaim off the session low near a confluence.
+  **−1.0R.** This is the trade he is describing.
+- **03:24 SHORT** at 30,006 — fading the bounce, WITH the flush. **+1.76R.**
+
+**Rule:** the thesis emits a `flush` flag when the session so far is one-way at
+high path efficiency. Under `flush`, counter-trend candidates are passed
+regardless of trigger quality, and only with-trend entries are licensed —
+*"until we have actual signs of reversal,"* which per T10 means acceptance
+evidence on the 15m, not a 2m closure.
+
+## T31 — STOP PLACEMENT IS DECIDED BY WHERE THE CANDLE OPENED
+
+Sharpens the origin-proximity clause into its actual mechanism.
+
+> *"I'll only put it higher if, for example, it broke through the moving average
+> and a VWAP+1 band but the candle started around where the +1 is — I'm going to
+> put it at the high and give it some breathing room, because I'm entering on the
+> retest of the Bollinger Band but there's a very good chance it could come up and
+> wick that VWAP+1 before returning down. Whereas if the 2-minute candle that
+> opened was healthily above VWAP+1 and the Bollinger Band moving average before
+> displacing through them, I'm fine to put my stop at the high of the candle."*
+
+**The test:** how far is the trigger candle's OPEN from the levels it broke?
+
+- **Origin AT/NEAR the broken level** → the level is still live and price can
+  wick back to it. Stop goes **beyond the candle extreme with clearance past
+  that level.**
+- **Origin HEALTHILY BEYOND the broken levels** → the candle displaced from
+  clear air. **The candle extreme is a sufficient stop.**
+
+**This is structural, not a volatility multiple.** *"That changes based off of
+the structure and the criterion around the entry."* Volatility explains why
+Thursday's 90–118pt stops were right; it does not set the stop. Measured across
+the 0.3.5 week, stop ÷ average 2m range ran **0.18× to 3.13×** (median 1.28×) —
+the outliers are structural mistakes, not volatility adaptation. A 10pt stop
+where candles average 54pt (0.18×) is not a stop.
+
+## T32 — "SIGNIFICANT RESISTANCE" IS 3–5 MINUTES AND MULTIPLE TESTS
+
+> *"Three to five minutes. One candle is too little to tell. It's like, okay,
+> we've wicked around on the one minute at least — we've tested this level a few
+> times now and we're not seeming to be able to break it. I would be happy to
+> move that to break even, even if it ends up running. I'd be okay with that."*
+
+**Definition for `tv-manage`:** a stall is **3–5 minutes at the level with
+multiple tests/wicks and no close through.** One candle is never enough. And the
+regret is explicitly accepted — *"even if it ends up running, I'd be okay"* —
+so a break-even that costs a winner is CORRECT, not an error to tune away.
+
+## T33 — A SECOND SETUP IN THE SAME DIRECTION IS A SCALE-IN, NOT A NEW TRADE
+
+> *"I'm going to take the 03:20 setup if it's good and warranted. If we get
+> another one at 03:40 it really depends — am I moving in profits right now? If
+> I'm already up 20-30 points from my long at 03:20, I am happy to scale my
+> position a bit if another entry fires at 03:40, and I'll trail my stops
+> accordingly to where it would invalidate that 03:40 setup. Say I've been five
+> micros from the 03:20 entry and it goes up 20 points and gives me another entry
+> at 03:40 in the same direction — I might enter two or three micros extra on the
+> retest of that entry, and I will trail my stops according to where that trade
+> would have to get invalidated. Either way I'm going to end up in some profits.
+> Another good setup firing at 03:40 would be affirming my trade direction."*
+
+**Three conditions, all required:** the original position is **in profit**; the
+new setup is **same direction**; the new setup is **independently valid**.
+
+**Then:** add a smaller clip (his example: +2–3 on an existing 5, so roughly
+half), and **move the whole position's stop to the NEW setup's invalidation**.
+This is why he ends up in profit either way — the add pays for the trail.
+
+**This is not a second trade.** It does not consume a second slot against the
+window cap; it is one idea, scaled. Do NOT scale into a losing position.
+
+## T34 — A STOP-OUT DOES NOT KILL THE THESIS
+
+> *"No, it doesn't necessarily kill the thesis. There are a lot of instances
+> like that where I get stopped out and then I retake moving the same direction
+> and it plays out. But that's all about market read — which is why I say you
+> can't stick to one thesis from market open and only take trades that are
+> affirming that trade direction."*
+
+Re-entry in the same direction after a stop-out is legitimate when a fresh valid
+trigger appears. The stop-out invalidates the ENTRY, not necessarily the READ.
+Subject to the window cap, which counts fills.
+
+## T35 — PARTIALS ARE SET BY CONVICTION (corrects the fixed 75%)
+
+The recorded default was 75% at TP1 always. **It is conditional:**
+
+> *"That comes down to the conviction behind the setup. If I think this setup's
+> really good, I'll probably only take 50% at TP1. If the trade's really bad I
+> might exit the whole position at TP1 and just target that low-hanging fruit of
+> 1.5R… If there's a really good setup I still take multiple take profits, but I
+> might only exit 50% at TP1 and hold the other 50% all the way. And if it's a
+> pretty mid setup I will exit the whole thing at the first take profit — I won't
+> even have multiple take profits."*
+
+| conviction | structure |
+|---|---|
+| **high (A)** | **50%** at TP1, hold the rest to the full target |
+| **normal (B)** | ~75% at TP1, trail the runner |
+| **low / mid (C)** | **100% out at TP1.** No runner, no second target — take the low-hanging 1.5R |
+
+So the trigger's `conviction` label now drives management, which makes it
+load-bearing rather than decorative.
+
+## T36 — GREEN NEAR TARGET INTO THE CASH OPEN: TAKE IT
+
+Refines T13 (break-even if green, flatten if red before 09:30).
+
+> *"The minutes leading up to market open in pre-market, it slows down. And then
+> a couple of minutes out, a lot of the time it gets very volatile. So if I'm
+> green at 09:25 I'm like — I don't want to move to break even, because there's a
+> very high chance I'd just get break-even'd even if it hit my take profit. I
+> don't want to gamble on whether the market open candle is going to break-even me
+> or smash my take profit first. That's literally pure gambling. I would just take
+> the profit where it is."*
+
+**Rule:** a pre-market position that is green and NEAR its target approaching
+09:25–09:30 is **closed for the profit available**, not carried and not merely
+moved to break-even. Break-even is for a position with real distance still to
+run; a nearly-complete winner is banked.
+
+## T37 — CONVICTION IS THE SIGNIFICANCE OF THE LEVEL BEING REJECTED
+
+The rubric A/B/C has driven sizing since 0.1.0 and partial structure since T35,
+and until now nothing said what produced one. His answer:
+
+> *"What defines an A from a C would be how significant the key level it is
+> rejecting off of is. If we were to reject off the weekly value area low and
+> actually show resistance there and affirm that rejection, and then we close
+> through the VWAP / the moving average — that's going to be a high-conviction
+> trade for me… The entry is still mechanical: closure through the moving average
+> plus another structural level at once. What matters more is how significant the
+> thing it is rejecting off of is. What kind of merit does that level have?"*
+
+**So the trigger is mechanical and constant; the CONVICTION comes entirely from
+the rejected level's merit.** This closes the loop opened by T5 — rejection is
+the cause of the trade, and the *significance* of what was rejected is the grade
+of the trade.
+
+**And counter-trend caps the grade at C, by his own example:**
+
+> *"C is definitely like if I'm kind of fading the trend. That London short it
+> took when it went through VWAP+2 and the moving average would definitely be a
+> C, even though structurally, yes, a broken VWAP, a broken moving average. That
+> being said, I'm kind of fading the trend, so I'm not targeting as big of a
+> move. I'm just taking my piece of the pie and getting out."*
+
+**Level-merit hierarchy** (his own ordering, from what he names as significant):
+
+| tier | levels | grade contribution |
+|---|---|---|
+| **highest** | anchored **weekly** profile edges (weekly VAL/VAH/POC), weekly high/low | A |
+| high | prior-day VAL/VAH/POC, prior-day high/low; a fib in confluence with any of these | A/B |
+| middle | developing daily profile (POC/VAH/VAL), VWAP ±1/±2 | B |
+| low | VWAP mid alone, the BB MA alone | C |
+
+**The BB MA is the TRIGGER, not the rejection.** A trade whose only "rejected
+level" is a moving average is by definition a C.
+
+**Grading, in order:**
+1. Counter-trend (fading a structured trend) → **C, always**, regardless of level.
+   A flush is not tradeable counter-trend at all (T30).
+2. Otherwise start from the merit tier of the rejected level.
+3. **Confluence raises it** — two or more levels of different types stacked at the
+   rejection, or 2m and 3m closing together (T38).
+4. **A weak rejection lowers it** — a shallow touch, no visible resistance, a
+   level that price has already sliced through earlier in the session.
+
+## T38 — WHEN 2m AND 3m DISAGREE, THE HIGHER TIMEFRAME RULES
+
+> *"The higher the time frame, the better. When both timeframes are in alignment
+> that's high conviction for me — if the 2-minute closes and the 3-minute closes
+> the next minute, that is high conviction right there. If they disagree, it's
+> more about what the higher timeframe says. If the 3-minute closes through
+> cleanly and the 2-minute doesn't, I might — if I'm not fully confident — wait
+> for the 2-minute to close through and enter off the 2-minute. That being said,
+> on a day where I'm confident in my thesis and the levels I'm targeting, I might
+> just enter off the 3-minute. The 3-minute rules over the 2-minute."*
+
+- **Both close (within a minute of each other) → conviction raiser**, already
+  recorded, now confirmed as a grade input.
+- **3m clean, 2m not → the 3m governs.** Two licensed responses: **wait** for the
+  2m and enter off it (the default when conviction is not high), or **enter off
+  the 3m** when the thesis and levels are strong. State which and why.
+- **2m clean, 3m not → the weaker case.** The higher timeframe has not confirmed;
+  treat as lower conviction, and prefer to wait.
+
+## T39 — FOMC: NO NEW YORK. A HARD RULE.
+
+> *"I do not trade FOMC. So if there's FOMC in the afternoon, I just sit out of
+> New York completely."*
+
+Not a caution, not a size reduction — **NY_PRE and NY_AM are closed entirely on
+an FOMC day.** London is unaffected. This joins the news blackout as a
+mechanical gate the macro agent owns, and it is not escalatable.
+
+## T40 — MONDAY IS A GAP DAY, AND LONDON NEEDS A REASON
+
+> *"I'll only trade London on a Monday if there's a massive new week opening gap,
+> and I'm going to follow whatever I'm being given. I'm inclined to think that gap
+> will be filled within the week, or the next week at the longest. The gaps always
+> get filled eventually. How I judge a Monday is kind of just based off what
+> happened in Asia: is there a big new week opening gap? Where are my levels?"*
+
+- **Monday London requires a significant new-week opening gap.** Absent one, the
+  default is no London trades.
+- **The gap is a destination**, and a durable one — his horizon for it filling is
+  the week, not the session.
+- Monday's read is built from Asia's behaviour and the gap, not from a prior
+  session's momentum.
+
+## T41 — NO RISK CAPS YET. DELIBERATE, AND HIS CALL.
+
+> *"I'm not worried about the proper risk parameters right now. I just want to
+> see how the agents are making decisions. There's no point putting caps on it
+> and stuff right now, because we see what the numbers say and then we make
+> educated conclusions from that… the more trades we can judge the agent's
+> judgment against, the better for us right now."*
+
+**Do not implement daily loss limits, stop-for-the-day rules, or the
+London→NY sit-out.** His own behaviour is known — *"usually if I win a really
+good trade in London I might take one trade in New York; if I win a really good
+trade in New York, I'm probably not going to take another"* — and the
+London→NY decision turns on *"the quality of what New York is offering."*
+
+**Both are recorded and deliberately NOT encoded.** Sample size for judging
+decision quality is worth more right now than realistic risk behaviour. Revisit
+once the per-trade judgement is close.
+
+## T42 — THE FIXED-1.5R FALLBACK IS AN EDGE CASE, NOT A BRANCH
+
+> *"If the setup is decent but the structural levels are just a bit out of my
+> ballpark, I'd rather just take the fixed. I don't think there's any instance
+> now where we say it's a fixed 1.5–2.5 preference — if you can't find anything
+> there, look for 1 to 1.5. There are very, very few instances where it will not
+> find anything between 1 and 2.5R."*
+
+Confirms T27's order and demotes the fallback: with the band spanning 1.0–2.5R,
+finding nothing is rare. If an agent is using the fixed target often, that is a
+**level-computation defect to investigate**, not normal operation.
+
+## T43 — TOO MANY LEVELS IN THE PATH: don't take it, or break-even at the first
+
+Extends constraint 7 (headroom) from "the next level must not sit immediately in
+the way" to the cumulative case.
+
+> *"If there are three levels in the way, it's just very strict risk management:
+> if the target hits the first level, go straight to break even, because at that
+> point it's a trade probably not worth taking. If there are too many levels in
+> the way of the take profit, then it's not worth it, in my opinion. I don't
+> think that's a very realistic instance."*
+
+**Two clauses:**
+1. **Entry:** a path crowded with structure between entry and target is a reason
+   to **pass**. Headroom is not only about the *next* level — it is about how
+   much has to break for the trade to work.
+2. **Management:** if such a trade is taken anyway, **break-even at the first
+   level reached**, immediately — not on a stall, not after 3–5 minutes. The
+   ordinary stall test (T32) does not apply; the crowded path already told you.
+
+He expects this to be rare. Frequent firing means the level set is too dense or
+targets are being placed too far.
+
+## T44 — FILLS ARE BINARY, AND A LIMIT THAT MISSED ITS MOVE IS DEAD
+
+> *"I never really get half-filled on a chart. You either get filled or you
+> don't. It's not something that needs to be worried about too much. We're pretty
+> conservative with our fills — we target the closest structural level for the
+> retest. Obviously, if it runs to our take profit before entering, then at least
+> take profit one. We're not fucking taking that."*
+
+- **No partial-fill modelling.** Filled or not filled. The replay's
+  touch-equals-fill model is acceptable to him, and conservative entry level
+  selection (closest structure) is what keeps it honest.
+- **NEW CANCEL CLAUSE, sharper than the existing one:** the standing rule is
+  cancel if price reaches the next structural level before filling. This adds:
+  **if price reaches TP1 before the limit fills, the trade is dead — cancel it.**
+  The move happened without you. Chasing it is taking a trade whose reward is
+  already spent.
+
+## T45 — THE SUCCESS CRITERION IS REASONING, NOT R
+
+**The most important thing he has said about how to judge this, and it reframes
+what the reports should contain.**
+
+> *"I think the biggest thing would just be me going through trade by trade and
+> looking at the journal, looking at what the agents were thinking when it was
+> taking those trades, win or loss. If I can reason with that thinking, then I
+> would be happy. Over this week, you saw how much I caught — I don't expect it
+> to catch that exact amount, simply because I can trade. If we can even get it
+> just taking the same trades, taking its own trades with the right thesis behind
+> them, the right thought process, then I would be quite happy."*
+
+**Consequences:**
+1. **The primary artifact of a run is the JOURNAL, not the scorecard.** Per
+   trade: the standing thesis, why this candidate, the rejected level and its
+   grade, the stop rationale, every management call and its reasoning — in the
+   agents' own words, win or lose.
+2. **A losing trade with sound reasoning is a PASS**, and a winning trade with
+   incoherent reasoning is a **failure**. R is the sanity check, not the target.
+3. **He does not expect it to match his R.** *"I can trade."* The bar is its own
+   trades with the right thought process behind them.
+4. So the review loop is: he reads the reasoning, and where he cannot reason with
+   it, that becomes the next teaching-loop entry. That is exactly this file's
+   purpose, and it means **the journal must be readable by him without tooling.**
+
+---
+
+## T46 — a rejection is BEHAVIOUR at the level, and the higher timeframe resolves it
+**2026-08-13, deep interview round 4.** Asked what separates a real rejection
+from price merely arriving at a level and turning.
+
+> *"The best way to answer is not just to reach the level and then turn, but what
+> are the price characteristics at that level? Did it slow down, did it wick
+> around that level, and then go the other way? I think that's probably the good
+> explanation."*
+
+Two characteristics: **slowed down**, and **wicked around it**. Then away.
+
+Given three shapes at a level — (A) one long wick through that closes back, (B)
+repeated tests over ~8 minutes each failing, (C) two closes through then a
+reclaim:
+
+> *"Example A and B are definitely the ones where I'd be higher conviction. With
+> example C, yes, it's still valid, but I wouldn't say price specifically rejected
+> off of our key level."*
+
+**And the half that matters most — C on the 2m is routinely A on the 15m:**
+
+> *"The higher time frame will also matter, because if the 2-minute can close
+> below it but the 5-minute can't, that could just look like a massive bottom
+> wick, right?… I care more about those days in New York where I'm short off of
+> the VWAP middle band and the 0.382 fib. The 2-minute candles are closing above
+> and below that, but if we look at the higher time frame, like a 15-minute, it
+> was just a big wick, and it couldn't close through."*
+
+So **2m chop around a level is not evidence against the level.** Price closing
+both sides on the 2m while the 15m prints a wick that cannot close through is his
+*highest*-conviction rejection, not a mess to avoid. Never grade a shape C until
+you have looked up a timeframe.
+
+→ `tv-trigger` 0.4.2: new section WHAT A REJECTION ACTUALLY LOOKS LIKE, with the
+three shapes and the HTF resolution rule; conviction rubric point 4 now grades
+behaviour, not just level merit. Runbook §3.4: the trigger briefing must carry
+5m/15m closes-through and wick-vs-body at every candidate rejection level, or the
+agent cannot see the distinction at all.
+
+## T47 — an absurdly tight structural stop means the wrong level was read
+**2026-08-13.** Put to him: structure says an 8pt stop while 2m candles run 25.
+Take it, widen it, or skip it?
+
+> *"I would widen it. How would that be an 8-point stop? Anyway, that doesn't
+> really make sense."*
+
+Both halves are the ruling. **Widen** — and the pushback is the diagnosis: a stop
+that tight against that volatility means invalidation was read at the wrong
+level, not that the trade is untradeable. It lives further back, usually the far
+side of a stacked cluster rather than one member of it.
+
+**Passing because the stop came out tight is not licensed.** Widening changes R
+and may drop the first target from 1.5–2.5R into the 1.0–1.5R rung — that is the
+honest consequence and the preference order already handles it.
+
+→ `tv-trigger` 0.4.2: floor of ~0.75× the trailing average 2m range (my number,
+set to clear the pathological tail without moving his real stops, whose median
+sat at 1.28×; his measured spread was 0.18×–3.13×).
+
+## T48 — going again at a level that stopped you out is a conviction UPGRADE
+**2026-08-13.**
+
+> *"I can go again at the same level if I get stopped. If we took the longs and it
+> got stopped out, but then came down and rejected the value area low again before
+> giving the setup — if anything, I'm actually MORE confident in that trade."*
+
+A stop-out does not retire the level. The second attempt is graded at or above
+the first, not below: the level was tested harder, under conditions that already
+proved a shallow read wrong, and held.
+
+Requires all three fresh — rejection, two-level break, retest. It is not a
+resumption of the old order.
+
+Two mechanical riders: it **burns a window slot** (caps count fills — *my*
+conservative reading of an ambiguous answer, one word from him flips it), and the
+**escalation ratchet does not govern it** (that rule bounds escalations, not
+entries).
+
+→ `tv-trigger` 0.4.2: GOING AGAIN AT A LEVEL THAT ALREADY STOPPED YOU OUT.
+
+## T49 — the orchestrator has NO trading discretion
+**2026-08-13, unprompted, at the end of the round.**
+
+> *"Please make sure that is agent-run, the orchestrator, as in my terminal.
+> Claude is not fucking steering it or doing any of that bullshit."*
+
+The second time this has cost something — a week was thrown away when the
+orchestrator pasted commentary into an agent's context. Until now the defence was
+a **file** deny-list plus audit check F, which catches quoted prose but cannot
+catch the orchestrator simply *deciding something itself*.
+
+The orchestrator moves the chart, computes numbers, calls agents, enforces
+mechanical invariants, writes rows. It decides nothing about a trade. Four abuses
+named: overriding a verdict; re-asking a candidate with a re-worded briefing
+(steering even when every fact is true); editorialising in a briefing (free text
+must be mechanically derivable); and letting anything learned after a decision
+shape it.
+
+**And the same bar applies to him.** Anything he says mid-run that reads as an
+opinion on a pending decision gets ignored and named — on live he will not be
+there to say it. Between decisions his rulings are welcome and become entries
+here; inside one they are contamination.
+
+→ `docs/RUNBOOK-replay-scoring.md` §0c SEPARATION OF POWERS, with the
+decides-what table; restated in the Phase C paste block.
+
+---
+
+## T50 — in a range, the middle is dead
+**2026-08-13, shakedown review.** On the choppy London he reviewed: *"I
+probably wouldn't have traded London at all, unless we were topping out the
+range or bottoming out the range and just trading within that range."* And on
+the day's high: *"we were failing to break this high since Asia around 8pm —
+it was also the weekly value area high. Even if I were to trade chop like
+that, I'm probably not looking for longs. I don't want to break a level that
+has so much resistance ahead of it."*
+
+The 03:24 loser is the type specimen: a C-grade fib in the middle of the
+range, in chop, taken light. Range-day entries come off the extremes or the
+shelves that bound them; a lone mid-range level is not an edge.
+
+**AMENDED same day:** *"T50 should only apply when it's a verifiably choppy
+day, just like Monday London."* Scoped to days the standing thesis itself
+reads as chop/rotational; silent on trending or still-forming days.
+
+→ `tv-trigger` 0.4.4, constraint 9.
+
+## T51 — FLATTEN before the cash open. Not break-even. Everything.
+**2026-08-13.** Reviewing a runner break-even'd at 09:28 that the open then
+paid: *"It didn't flatten the trade at market open, so I'm not very happy
+about that. Yes, in this instance it paid off — the open volatility went in
+our direction — but always remember, we go to flatten trades before the
+market open. Maybe it would have cut some R, but we just have to be
+realistic."*
+
+SUPERSEDES T35's break-even-if-green branch. Green, red, near target or far:
+banked at the decision price. Note the shape of the ruling: he watched the
+gamble PAY and ruled against it anyway — same character as the 29.2R
+Thursday. Do not learn from the payout.
+
+**AMENDED same day:** the deadline is hard — *"It needs to be out by
+9:29:59."*
+
+→ `tv-manage` 0.3.1 `pre_cash_open`; runbook §3.6.
+
+## T52 — NY_PRE entries cut off at 09:05
+**2026-08-13.** On the 09:28 attempt: *"I would never enter that close to
+market open — that's just stupid. If I'm not in a trade around 5 to 10 past
+9, I'm not taking another trade in pre-market... price will slow down and
+then get really volatile in the last couple minutes, and that's not a risk
+that I want to take."*
+
+09:05 was chosen as the conservative end of his stated 09:05–09:10 zone —
+my pick, flagged as such. **AMENDED same day, his word: 09:10.** (*"Make the
+NY pre-entries 9:10."*) Entries only; open positions belong to the manager
+(T51).
+
+→ `tv-trigger` 0.4.4, constraint 4b.
+
+## T53 — a second same-direction setup in profit is a SCALE-IN, not a new trade
+**2026-08-13.** On the 08:32/08:36 pair (four minutes apart, same direction,
+same rejected shelf): *"If that setup fired on the three-minute with that
+many confluences, I definitely would have scaled my position there and run it
+out to where it actually ended up going."*
+
+Trigger adjudicates the fresh candidate as normal; a take is routed to
+tv-manage as `second_setup` — smaller clip, whole-position stop to the new
+setup's invalidation, ONE position, NO window slot consumed. (The no-slot
+clause is my inference from "one position"; his word flips it.) Never into a
+losing position.
+
+**AMENDED same day — the C-grade rider:** *"It also depends, though: if it's
+a C-grade conviction, don't trail that. I'd rather just hold to my
+high-conviction stops."* A scale-in requires the second setup to grade B or
+better. A C-grade second trigger is confirmation to HOLD — original stop
+untouched, no add. (The add and its trail read as one package, since the
+trail to the new invalidation is what makes the add safe; his word splits
+them if that is over-read.)
+
+→ runbook §2c; tv-manage 0.3.1 SCALING IN.
+
+## T54 — the grade and the size must agree; a pass-reason is not a discount
+**2026-08-13.** The shakedown emitted nine takes, nine take_light — both
+conviction-A trades included. His reaction to the 03:24 trade that argued
+its own pass and took anyway: *"That is worrying that it took the trade even
+though it wasn't confident in the trade itself."*
+
+New defaults: A → take_full, B → take_light (full with stated reason),
+C → take_light or pass. No double-counting a fact already in the grade; an
+objection the contract lists as a PASS reason either holds (pass) or is
+dismissed with cause (gone) — it never shrinks size. If the reason paragraph
+reads as a case for passing, pass.
+
+→ `tv-trigger` 0.4.3, THE GRADE AND THE SIZE MUST AGREE.
+
+## T55 — a trail must clear what it hides behind
+**2026-08-13.** The 04:01 trail sat 0.5pt above the swing high and was
+collected by the next bar. The contract already named "trailing so tight
+that ordinary noise takes you out" as a bad-manager trait; it had no number.
+Floor: clearance ≥ 0.5× trailing avg 2m range, min 3pt — MY calibration,
+same family as the 0.75× stop floor; his word replaces it.
+
+→ `tv-manage` 0.3.0.
+
+## T56 — a level the thesis names as a destination is never a headroom obstacle
+**2026-08-13.** The 04:38 pass counted the 0.705 fib as path-crowding against
+a range-top short — while the standing thesis named that same fib zone as
+where the licensed short was headed. A destination is a TP1 candidate, not
+clutter. Ask of every level ahead: is it in the trade's way, or is it what
+the trade is for?
+
+→ `tv-trigger` 0.4.3, constraint 7.
+
+## T57 — the 04:36 candle: recorded, not legislated
+**2026-08-13.** His review: *"At 4:36 there was a really nice trade there...
+we basically came up, topped out that range, rejected the [weekly] value
+area high, and the same two-minute candle closed through VWAP+1. The moving
+average would have been a really nice entry on retest, stops above the high
+that rejected the value area high, targeting VWAP middle band. Obviously,
+that's hindsight from me, so even then, you have to take it with a grain of
+salt."*
+
+The agent adjudicated that exact candle (decision minute 04:38 — start-time
+convention) and passed it on three legs: (1) the stall was ~12pt SHORT of
+the thesis's licensed 29858–29928 band — the known expectation-vs-
+specification failure shape, at smaller scale than the three cases that
+built the escalation rule; (2) the 0.705 fib counted as path-crowding when
+the thesis named it as the destination — fixed as T56; (3) the 3m closed ON
+its MA, not through — a real T38 weak-case objection that supports waiting.
+
+No band-tolerance number was invented off one hindsight-flagged trade. If
+the licensed-zone literalism recurs on a day he flags live, it gets its own
+rule then.
+
+
+## T58 — the 0.4.4 veto: a calibration written as a prohibition
+**2026-08-13, same day.** 0.4.4 produced **zero fills across LONDON and
+NY_PRE** on the very day that had filled five times under 0.4.3. His read
+was immediate and correct: *"the adherence definitely looks too strict. if
+anything, might have been better before."*
+
+**My defect, and the mechanism is exact.** T54 clause 2 listed *crowded
+path* among the objections that "can never be a size discount" and closed
+with *"if your reason paragraph reads as a case for passing, pass."*
+Measured against the prior run: **8 of the 9 takes cited a path/structure
+objection as their light reason** — including 08:32 and 08:36, the two he
+called great execution. The clause vetoed almost the entire book.
+
+It also contradicted doctrine already in the stack. T43 tells the manager to
+break even at the first level *on a crowded path* — which only makes sense
+for crowded-path trades you took.
+
+And the closing heuristic was worse than the clause. **It punished the agent
+for naming a downside**, which is precisely the reasoning quality T45 makes
+the success criterion — an agent learns to go quiet to get a trade through.
+
+Three corrections:
+1. Only a **decisive** objection blocks — one that would make you pass
+   standing alone. Weighed trade-offs are what `take_light` is for. The
+   original failure was ONE trade stacking THREE independently-fatal
+   objections and paying for them with size, not the mere presence of a
+   downside.
+2. **Headroom is graded by behaviour, not count** — a level ahead that HELD
+   against your direction on the 15m is an obstacle; one price has been
+   slicing through is on the map, not in the way. Count was always the wrong
+   axis: the +3.92R short had three clusters ahead, and the long he would
+   never take had one shelf that had already rejected the session high.
+3. **"Middle" is defined** — inner half of the session range so far, and
+   never fires on a level the thesis names as a boundary. On a 100pt range
+   everything is arguably the middle; T50 exists to kill the lone fib in dead
+   space, not to shut the session.
+
+**The general lesson, and it is the second time today.** The diagnosis (9/9
+light = the third branch had collapsed) was right. The remedy converted a
+question of degree into a binary, and a binary written by me is a rule he
+never gave. When his own words carry a quantifier — *"too many levels"*, not
+"any level" — the quantifier IS the ruling.
+
+→ `tv-trigger` 0.4.5.

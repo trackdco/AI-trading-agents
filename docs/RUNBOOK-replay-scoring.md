@@ -85,6 +85,67 @@ and must double-check it at the first candidate of every run.
 
 ---
 
+## 0c. SEPARATION OF POWERS — the orchestrator has NO trading discretion
+
+His ruling, 2026-08-13, and it is the strictest rule in this document:
+
+> *"Please make sure that is agent-run, the orchestrator, as in my terminal.
+> Claude is not fucking steering it or doing any of that bullshit."*
+
+He is not describing a preference. A previous week had to be thrown away and
+re-run because the orchestrator put commentary into an agent's context. **The
+orchestrator is a machine that moves the chart, computes numbers, calls agents
+and writes rows. It has opinions about none of it.**
+
+| the ORCHESTRATOR decides | the AGENTS decide |
+|---|---|
+| where to land replay, and verifying the landing | direction and bias |
+| whether a bar meets the **mechanical** candidate definition | take_full / take_light / pass |
+| which levels and values go in a briefing (all of them, unfiltered) | conviction grade |
+| whether a management minute occurred (level reached / broken / TP1 / stall) | entry price, stop price, targets |
+| whether a limit filled, expired or cancelled, per the stated rules | every management action |
+| that a stop only ever tightens | whether the thesis is stale |
+| the window bounds, the caps, the news gate | whether to go again after a stop-out |
+| logging every row, including the passes | |
+
+**The four abuses, named so they cannot happen by accident:**
+
+1. **Never override a verdict.** If a `pass` looks wrong to you, log it, and
+   raise it with him **after** the run. The wrong trade, correctly adjudicated,
+   is data. The right trade, orchestrator-inserted, is nothing.
+2. **Never re-ask a question you did not like the answer to.** Calling
+   `tv-trigger` a second time on the same candidate with a re-worded briefing is
+   steering even when every fact in it is true. One candidate, one call. The only
+   licensed second call is the escalation loop the contract itself defines, fired
+   by the agent's own `thesis_stale`, never by you.
+3. **Never editorialise in a briefing.** Free text in a briefing must be
+   mechanically derivable — `"15m MA crossed at 09:42"` is a fact,
+   `"this looks like a strong setup"` is a vote. No prose from any doc, no
+   summary of the chart (the agent reads the screenshot itself), no mention of
+   any other day, no count of how many candidates the day holds.
+4. **Never let a decision be shaped by anything you learned after it.** You
+   see the whole day; the agent sees one moment. That asymmetry is the entire
+   reason you must not weigh in.
+
+**One mechanical exception to "one candidate, one call": schema validation.**
+An output missing a required field — a take without `retest_level`,
+`cancel_if_reaches`, `stop` or `targets`; a manage row without `action` — gets
+ONE re-invoke with the **byte-identical briefing** plus a single line naming
+the missing fields. That is repair of a malformed answer, not a re-ask: the
+briefing must not change by one byte, and the row records
+`validation_retry: true`. This exists because a scored run logged four takes
+with null `retest_level`/`cancel_if_reaches`, which made the cancel-at-TP1
+rule unenforceable for the window that produced most of the day's R.
+
+**And the same applies to him.** He watches these runs live. Anything he says in
+the terminal that reads as an opinion on a pending decision is to be **ignored
+and named** — *"that sounded like steering, I'm not passing it on"* — because on
+live he will not be there to say it, and a week scored with his voice in the
+briefings measures nothing. Between decisions, his rulings are welcome and become
+teaching-loop entries; inside one, they are contamination.
+
+---
+
 ## 1. PHASE R0 — GATES (once per replay session)
 
 1. `tv_health_check` → `cdp_connected` and `api_available` both true.
@@ -142,6 +203,75 @@ At the landing minute (before the window opens):
 4. Call `tv-thesis` with `event_trigger: "window_open"`, the screenshot path,
    the numeric context, and the macro output. Log the thesis JSON.
 
+
+## 2b. TRIGGER-DRIVEN REPLAY — his actual workflow, and it is leak-safe
+
+**Do not step every bar.** His ruling, 2026-08-13: *"For me when I'm replaying a
+session, I will yes skip through the minutes where there's no action, but as
+soon as a trigger comes I make a judgement call there in a couple of minutes. I
+don't need the agents to go proper minute by minute — I want them to replicate
+how I would do replay. I can get through a week in 30 minutes."*
+
+**Why this is not a shortcut that costs rigour.** The candidate scan is
+mechanical: the trigger definition applied to committed bars. Knowing *a
+candidate exists at 09:36* says nothing about its outcome — it is exactly the
+information his eye gets while scrubbing. The agent still sees a chart truncated
+at its own decision minute, and the no-leak check still runs at every landing.
+
+**The loop:**
+
+1. **Pre-scan the session-day** with the candidate scanner: every 2m/3m
+   two-level close, every rejection-first shape, plus the thesis re-fire events
+   (window opens, 15m MA closes, displacements, extremes taken out). Produces an
+   ordered list of decision minutes.
+2. **Jump replay to each decision minute in turn** (`replay_start` with an
+   explicit `-04:00` offset, then `replay_status` to verify — the start call
+   returns stale state). Run the no-leak check at every landing.
+3. **Adjudicate** exactly as before: screenshot, briefing, `tv-trigger`.
+4. **While a position is open, jump to the next MANAGEMENT minute** — the first
+   bar that reaches an intermediate level, breaks one, hits TP1, or stalls, all
+   computed mechanically from bars. Call `tv-manage` there. Repeat until the
+   position resolves.
+5. **Never jump past an open position's resolution.** Everything else is dead
+   time and may be skipped.
+
+**The one guard:** briefings stay strictly per-decision. The thesis agent must
+never be told how many candidates the day holds or when the later ones fall —
+that is forward information about activity, even though it carries no outcome.
+The orchestrator holds the list; the agents see one moment at a time.
+
+## 2c. THE MANAGEMENT TIER — `tv-manage`
+
+Added 2026-08-13 after a scored week in which **11 of 12 losses were clean
+−1.00R full stop-outs.** Management had been mechanical clauses fired by the
+orchestrator; he described it as a judgement: *"I trail, take targets, and do
+these things based on how the trade is favouring me in the moment. That's gotta
+be an intra-trade judgement call."*
+
+`tv-manage` is called at `intermediate_level_reached`, `intermediate_level_broken`,
+`tp1_reached`, `stalling`, `pre_cash_open` and `window_closing`. It returns
+`hold` / `breakeven` / `trail` / `partial` / `exit_now`, and the orchestrator
+enforces the one hard invariant: **a stop only ever tightens.** Log every call
+and every verdict, including the `hold`s — an unmanaged loser is now a defect
+worth seeing in the report.
+
+**A second same-direction setup while a position is IN PROFIT is a scale-in,
+not a new trade (T53).** `tv-trigger` adjudicates the fresh candidate as
+normal; on a take verdict **graded B or better**, the orchestrator routes
+execution to `tv-manage` as `reason_for_call: second_setup` — a smaller clip
+added to the open position, the whole position's stop moved to the new setup's
+invalidation, ONE position in the log, and **no window slot consumed**. His
+review of a scored pair four minutes apart, same direction, same rejected
+shelf: *"If that setup fired on the three-minute with that many confluences, I
+definitely would have scaled my position there."*
+
+Two exclusions: a position not in profit never takes an add, and a **C-grade
+second trigger is confirmation, not an add** (T53 rider) — route it to
+`tv-manage` as `second_setup` anyway so the confirmation is on the record, but
+the contract holds with the original stop untouched: *"If it's a C-grade
+conviction, don't trail that. I'd rather just hold to my high-conviction
+stops."*
+
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 
 Step one 2m bar at a time through LONDON 03:00–04:59 / NY_PRE 08:00–09:29 /
@@ -163,6 +293,33 @@ NY_AM 09:30–11:00. After **every** step:
    the trigger briefing (thesis + candle payload + `fills_this_window` +
    headroom fields + macro gate), call `tv-trigger`. Log the full verdict —
    takes AND passes. **The passes are the valuable rows.**
+
+   **The briefing must carry the HIGHER-TIMEFRAME behaviour at the rejected
+   level** (trigger contract 0.4.2, T46). Without it the agent cannot tell his
+   highest-conviction shape — 2m closing both sides while the 15m prints a wick
+   that cannot close through — from a level that actually failed, and will grade
+   the best setups of the day as C.
+
+   **Do not compute this by hand.** It is the input to a conviction grade, so it
+   has to be identical on every day and every run, and under §0c the
+   orchestrator supplies mechanical facts, never judgements — an ad-hoc count is
+   a judgement wearing a number's clothes. Run:
+
+   ```bash
+   python -m scripts.htf_level_behavior <sess_day> <HH:MM> \
+       --level weekly_val=29693.61 --level poc=29821 --json
+   ```
+
+   and paste the JSON into the briefing under `htf` per level. It reports, per
+   timeframe (2m/3m/5m/15m): tests, closes each side, max wick and max **body**
+   beyond, the side price approached from, and a verdict. Two windows, and they
+   answer different questions — the last 60 minutes is the CURRENT test and is
+   what grades the shape; `session_closes_above/below` is whether the level has
+   already been sliced today, which is conviction rubric point 4.
+
+   It truncates per timeframe at the last candle whose CLOSE is at or before the
+   decision minute — a 15m candle that opened at 03:30 is not complete at 03:40
+   and including it would leak the future into the field the grade comes from.
 5. **On `take_full` / `take_light`**: run the limit lifecycle (native tool if
    the Phase B probe found one; simulated otherwise) —
 
@@ -202,9 +359,9 @@ NY_AM 09:30–11:00. After **every** step:
      can discount marginal ones later.
 6. **Manage open positions on doctrine** (`PLAYBOOK.md` §5): partial at
    intermediate structure, break-even after TP1 or on touching an
-   intermediate band, break-even before 09:30 for pre-market carries, trail
-   in chop, extend target only when the thesis confirms — each management
-   action logged with its bar. Windows cap **entries only**; a position runs
+   intermediate band, **flatten before 09:30 for pre-market carries (T51 —
+   supersedes the old break-even)**, trail in chop, extend target only when
+   the thesis confirms — each management action logged with its bar. Windows cap **entries only**; a position runs
    past the window until target or stop, so keep stepping to resolution even
    after the window shuts.
 
@@ -212,11 +369,21 @@ NY_AM 09:30–11:00. After **every** step:
 window's second London fill, candidates still get logged, as passes with
 reason `window_cap`.
 
+When he lifts the caps for a run (*"the more trades we have data off of, the
+easier it will be to generalize"*), keep adjudicating and filling — but tag
+every fill beyond the WRITTEN caps `beyond_written_cap: true` and print both
+scoreboards, as-run and as-written. A number produced under lifted caps is not
+comparable to doctrine unless the capped subset is recoverable from the log.
+
 ## 4. PHASE R3 — THE LOG
 
 `output/agent_runs/<sess_day>.jsonl`, one JSON object per row:
 
-- run header: symbol, TF, chart TZ, parity result, MCP commit, agent versions;
+- run header: symbol, TF, chart TZ, parity result, MCP commit, agent versions,
+  and a **run prefix unique to this run** used on every candidate id and
+  briefing filename. Never reuse a prefix: `r2` is burned twice (a 0.3.4-era
+  Friday re-run and the 0.4.x shakedown share it), so any tool scanning
+  `output/briefings/` by prefix now mixes two eras;
 - every thesis emission (with its `event_trigger`);
 - every macro read;
 - every candidate with the full `tv-trigger` payload, `leak_check: pass`,

@@ -1,0 +1,67 @@
+[
+ {
+  "id": "rrkeYH",
+  "name": "horizontal_line",
+  "t": 1782280440,
+  "price": 29734,
+  "label": "NYP6 09:28 LMT 29734 - never filled",
+  "et": "2026-06-24 01:54"
+ },
+ {
+  "id": "xDkh2B",
+  "name": "horizontal_line",
+  "t": 1782245160,
+  "price": 29690.98,
+  "label": "NYA6 10:30 LMT 29687.5 - never filled (conviction A)",
+  "et": "2026-06-23 16:06"
+ },
+ {
+  "id": "aKQjBJ",
+  "name": "long_position",
+  "t": 1782295200,
+  "price": 29819.5,
+  "et": "2026-06-24 06:00"
+ },
+ {
+  "id": "m59FTA",
+  "name": "short_position",
+  "t": 1782295200,
+  "price": 29801.5,
+  "et": "2026-06-24 06:00"
+ },
+ {
+  "id": "ZMEToF",
+  "name": "short_position",
+  "t": 1782303360,
+  "price": 29834,
+  "et": "2026-06-24 08:16"
+ },
+ {
+  "id": "rp5y8W",
+  "name": "short_position",
+  "t": 1782304320,
+  "price": 29842,
+  "et": "2026-06-24 08:32"
+ },
+ {
+  "id": "Fy0KIP",
+  "name": "short_position",
+  "t": 1782304560,
+  "price": 29812,
+  "et": "2026-06-24 08:36"
+ },
+ {
+  "id": "BM5Fjr",
+  "name": "long_position",
+  "t": 1782309240,
+  "price": 29756,
+  "et": "2026-06-24 09:54"
+ },
+ {
+  "id": "x7MDZg",
+  "name": "long_position",
+  "t": 1782311160,
+  "price": 29668,
+  "et": "2026-06-24 10:26"
+ }
+]

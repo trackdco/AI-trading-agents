@@ -102,18 +102,45 @@ def volume_profile(seg: pd.DataFrame, bin_w: float = 1.0,
 
 def anchored_weekly_profile(bars: pd.DataFrame, sess_day: str,
                             upto: pd.Timestamp | None = None):
-    """His actual weekly profile: anchored to the Asia open (18:00 NY) of the
-    SAME WEEKDAY exactly one week earlier, and DEVELOPING to `upto`.
+    """His actual weekly profile: anchored to THIS WEEK'S MONDAY 18:00 NY
+    (the Monday-night Asia open that starts the trading week), DEVELOPING to
+    `upto`. On Monday's own session there is no week-to-date yet, so it falls
+    back to the previous week's Monday.
 
     Declared 2026-08-10: "If I'm trading Monday, I'm gonna anchor it to the
     Asia Open at the beginning of last week. If I'm trading Tuesday, I'm
     gonna anchor it to the Asia Open of Monday night... the last five trading
     days should be exactly a week before, the same day."
 
+    CORRECTED 2026-08-13, by him, mid-run: *"why is the weekly anchored VP not
+    anchored to last monday"* and *"weekly vp has significant levels for us"*.
+
+    The previous implementation anchored to the SAME WEEKDAY one week back, on
+    the strength of the last clause above. That reading cannot be right: the
+    "Monday night" clause is explicit for Tuesday, and a same-weekday-minus-7
+    window is a rolling 5-day profile, not a weekly one - it never resets at the
+    week boundary, so it cannot "look different during London than in New York"
+    in the way a developing weekly does. Measured on session-day 2026-06-23 at
+    08:00 the two differ by ~900pt at the POC:
+
+        same weekday -7d (2026-06-16):  POC 30640  VAL 30012  VAH 30955
+        this week's Monday (06-22):     POC 29733  VAL 29655  VAH 29914
+
+    This matters more than most level errors because anchored-weekly edges are
+    the ONLY levels that grade **A** on their own in the trigger's conviction
+    rubric, and they are named as thesis targets. The old anchor put weekly VAL
+    150pt ABOVE price as a long target; the corrected one puts it below price
+    and puts weekly VAH at 29914, inside the range top the theses kept naming.
+
     Note this is NOT `weekly_levels` below, which is a fixed 5-completed-day
     profile. Both are kept: this one is his, that one is the research build's.
     """
-    anchor = pd.Timestamp(f"{sess_day} 18:00", tz=NY) - pd.Timedelta(days=7)
+    d = pd.Timestamp(f"{sess_day} 18:00", tz=NY)
+    # Monday=0. The session-day is named by the evening it OPENS, so the week's
+    # first session opens on Monday evening.
+    anchor = d - pd.Timedelta(days=int(d.weekday()))
+    if anchor == d:                      # this IS Monday's session: no week-to-date
+        anchor = d - pd.Timedelta(days=7)
     end = upto if upto is not None else (
         pd.Timestamp(f"{sess_day} 18:00", tz=NY) + pd.Timedelta(hours=23))
     seg = bars[(bars.index >= anchor) & (bars.index < end)]

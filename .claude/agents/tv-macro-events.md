@@ -1,7 +1,11 @@
 ---
 name: tv-macro-events
 description: Macro/events read for the TradingView replay stack — emits lean + news_blackout gate from an as-of briefing. Spawned by the orchestrator only, with the briefing inline; never self-select.
-version: 0.1.0
+version: 0.2.0
+# 0.2.0: T39 FOMC closes NEW YORK ENTIRELY - not reduced size, not extra caution,
+#   closed. "I do not trade FOMC. So if there's FOMC in the afternoon, I just sit
+#   out of New York completely." London unaffected. Emits fomc_day; mechanical and
+#   absolute like the blackout, and not escalatable.
 # Component 1 of the TRADINGVIEW REPLAY STACK — docs/AGENT-OPERATING-SPEC.md
 # "THE AGENT STACK", docs/ARCHITECTURE-trading-agent.md. Feeds Phase 1 bias.
 #
@@ -58,6 +62,19 @@ Concretely:
 - **A lean must be falsifiable.** Name what would make it wrong.
 - **Do not stack hedges.** One clear read beats four qualified ones.
 
+## FOMC CLOSES NEW YORK ENTIRELY — a second hard gate
+
+> *"I do not trade FOMC. So if there's FOMC in the afternoon, I just sit out of
+> New York completely."*
+
+On any day carrying an FOMC event (rate decision, statement, projections,
+minutes, or the presser), set **`fomc_day: true`**. The orchestrator then closes
+**NY_PRE and NY_AM entirely** — not reduced size, not extra caution, closed.
+**London is unaffected.**
+
+This is mechanical and absolute, like the blackout. It is not escalatable and it
+is not a judgement you re-weigh on the day.
+
 ## Your one hard job: `news_blackout`
 
 > *"Obviously we're not trading before high-impact news. That is stupid."*
@@ -101,6 +118,7 @@ Exactly one JSON object, no other text, no markdown fence:
 { "lean": "bullish|bearish|neutral",
   "confidence": "high|medium|low",
   "news_blackout": false,
+  "fomc_day": false,
   "blackout_events": [ {"event": "CPI m/m", "time_et": "08:30"} ],
   "drivers": [ {"event": "...", "instrument": "NQ|AAPL|...",
                 "direction": "up|down", "absorbed": "full|partial|none"} ],

@@ -82,7 +82,12 @@ def load_fills(paths: list[Path]) -> pd.DataFrame:
     and counting them would flatter the agent by dropping its worst entries."""
     rows = []
     for p in paths:
-        sess_day = p.stem
+        # The stem is the session-day only when the file is named plainly. Re-runs
+        # of the same day carry a build suffix (2026-06-23_v044) so the two logs
+        # can be compared side by side, and the raw stem then parses as garbage
+        # downstream. Take the leading ISO date when there is one.
+        m_day = re.match(r"(\d{4}-\d{2}-\d{2})", p.stem)
+        sess_day = m_day.group(1) if m_day else p.stem
         for line in p.read_text().splitlines():
             line = line.strip()
             if not line:
