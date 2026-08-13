@@ -56,9 +56,23 @@ def main() -> None:
     src = sys.argv[1] if len(sys.argv) > 1 else "output/gold_level_census_cost0.2.parquet"
     raw = pd.read_parquet(ROOT / src)
     exit_col = sys.argv[2] if len(sys.argv) > 2 else "out_ship"
+    floor = float(sys.argv[3]) if len(sys.argv) > 3 else 0.5
     df = first_of_fight(raw)
     df = df[df[exit_col].notna()].copy()
     df["out"] = df[exit_col].astype(float)
+    df["win"] = (df["out"] > 0).astype(float)
+    df["risk_w"] = df["risk"] / df["w15"]
+
+    # BR-29 on gold, and worse than on NQ: the stop is the trigger candle extreme
+    # +/- one tick, and GC's tick is 0.10 against a price near 3,000, so a flat
+    # trigger candle yields a stop of a few cents and R detonates. Three rows of
+    # 71,328 carry -3.0e11 R between them. The floor is not a statistical
+    # convenience — a stop smaller than the round-turn cost is not a trade — but it
+    # IS a choice, so it is swept below rather than asserted.
+    deg = df[df["risk"] < floor]
+    print(f"risk floor {floor} pts removes {len(deg):,} rows ({100 * len(deg) / len(df):.2f}%) "
+          f"carrying {deg['out'].sum():,.0f}R; kept {len(df) - len(deg):,}", flush=True)
+    df = df[df["risk"] >= floor].copy()
     days_all = np.array(sorted(df.sess_day.unique()))
     print(f"{len(raw):,} triggers -> {len(df):,} first-of-fight rows, "
           f"{df.sess_day.nunique():,} days, exit={exit_col}", flush=True)
@@ -76,8 +90,24 @@ def main() -> None:
     print(t.round(3).to_string(index=False), flush=True)
     t.to_csv(ROOT / "output/gold_level_report.csv", index=False)
 
-    print("\n=== CONFLUENCE SWEEPS (on the whole book) ===")
-    df["risk_w"] = df["risk"] / df["w15"]
+    print("\n=== RISK-FLOOR ROBUSTNESS (does the ranking survive the choice?) ===")
+    base = first_of_fight(raw)
+    base = base[base[exit_col].notna()].copy()
+    base["out"] = base[exit_col].astype(float)
+    base["win"] = (base["out"] > 0).astype(float)
+    frows = []
+    for f in (0.2, 0.3, 0.5, 1.0, 2.0):
+        b = base[base["risk"] >= f]
+        for (lo_, arm), g in b.groupby(["locus", "arm"]):
+            if len(g) < MIN_N:
+                continue
+            frows.append({"floor": f, "cell": f"{lo_} · {arm}", "n": len(g),
+                          "ev": float(g["out"].mean())})
+    fp = pd.DataFrame(frows).pivot(index="cell", columns="floor", values="ev")
+    print(fp.round(3).to_string(), flush=True)
+    fp.to_csv(ROOT / "output/gold_level_floor_sweep.csv")
+
+    print("\n=== CONFLUENCE SWEEPS (on the floored book) ===")
     for col, q in (("risk", 5), ("risk_w", 5), ("w15", 5), ("n_attempts", 0)):
         tab = AU.bucket_table(df, col, q=q) if q else AU.bucket_table(df, col, q=6)
         tab = tab[tab["n"] >= MIN_N]
