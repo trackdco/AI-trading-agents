@@ -1505,3 +1505,71 @@ never gave. When his own words carry a quantifier — *"too many levels"*, not
 "any level" — the quantifier IS the ruling.
 
 → `tv-trigger` 0.4.5.
+
+
+## T59 — the outer band is fade-only
+**2026-08-13, v44 NY_AM review.** The run's one early take: a 09:42
+`take_full A` short whose limit rested at the just-broken **VWAP−2 /
+prior-day VAL**, placed off a 3m candle that had displaced through SIX
+levels in one bar. Filled on the wick-back at 29634, stopped at 29663 on
+the 09:44 bar — two minutes — as the V-reversal ripped through. His verdict:
+
+> *"I think it genuinely entered off of the retest of vwap −2 after the prev
+> candle just closed through it, genuinely the most retarded thing I think
+> I've seen in my life. Please do not be doing this dumb shit."*
+
+Second instance of the shape he condemned in the corpus (*"basically
+shorted at the VWAP−2 band… very, very dumb"*). The T20 breakout-bet test
+did not catch it because its letter is about WHICH SIDE the limit sits on —
+this limit sat correctly between price and the move's origin. The sin is
+the LOCATION: at the outer band the displacement that broke it is the
+exhaustion, not the beginning. Continuation through ±2/±3 is now a hard
+pass; the only trade AT the outer band is the fade back from it — which is
+the shape of the +2.83R long the original run built off this same zone.
+
+Rider: the trade's own thesis licensed LONGS "on a stall or rejection AT
+the weekly VAL / vwap_m2 zone" — and the trigger shorted that zone's
+retest without naming the tension. The thesis licensing the opposite side
+at your entry zone is now a decisive objection requiring refutation.
+
+Note for fairness: the loser was unmanaged for a STRUCTURAL reason (fill
+09:42 bar, stop 09:44 bar — no completed bar between), not a detector
+defect. The week run's tooling needs no patch for this.
+
+→ `tv-trigger` 0.4.6, constraint 0b.
+
+## T60 — an MA never raises a conviction grade
+**2026-08-13, same review.** The 09:57 short graded itself **A** on
+`bb_ma_15m + fib_0.705` — "A-tier confluence" in its own words. The rubric
+already said the MA is the trigger and never the rejection; what it did not
+say is that the MA cannot LIFT a grade either. MA + a lone fib, with no
+profile / prior-day / weekly anchor in the zone, is B at the very best.
+The label drives the partial structure (A holds 50% where C exits 100%)
+and his sizing, so inflation is not cosmetic.
+
+Same trade, recorded not legislated: the entry was the daily VAL retest at
+the bottom of a 100pt trigger candle — mechanically "the closest structure
+to price at the trigger's close," but the candle was so large that the
+closest-structure rule produced a 104pt stop and a ~1.1R first target. If
+oversized trigger candles need a different retest rule, that is HIS call
+with his number; two of my invented numbers already failed today.
+
+→ `tv-trigger` 0.4.6, conviction rubric.
+
+## T61 — the thesis read the same tape in opposite directions
+**2026-08-13, the reproducibility finding.** At 09:30 on the same
+session-day, on identical candles, two runs of the identical tv-thesis
+0.4.1 contract read the same 10%-body 09:15 15m candle as:
+
+- run 1 (r2): "bounced into the cluster… **absorption**" → **long**
+- run 2 (v44): "failed to reclaim… **absorption confirming sellers defend
+  the break**" → **short**
+
+The same word carried both directions. Every downstream difference between
+the two NY_AM sessions — the forbidden 09:42 short existing, the 09:54 long
+not existing — flows from this flip. Against his shipping criterion
+("thinking as if I taught someone my strategy myself"), direction stability
+on ambiguous mornings is now the top open question. Not legislated —
+MEASURED: the week run's third pass over this day, on frozen 0.4.2
+contracts, is the arbitration. If the flip recurs, the fix belongs in
+tv-thesis and it will be built on three samples, not one.
