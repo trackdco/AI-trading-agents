@@ -80,3 +80,35 @@ Cost is assumed, not measured, on every instrument. Room-to-run (BR-32/35) is un
 No size, no payout cap, no graduation — BR-39 records that frequency beats EV under a
 cap, so 4.6 fights/day at +0.148R may still lose to a busier, thinner book. A passing
 replication makes this a candidate, not a strategy.
+
+---
+
+## D7 — Amendment, declared before the XAUUSD compute
+
+Recorded while the 6J and DX controls were running and **before any XAUUSD number
+existed**, because it changes how a failure must be read.
+
+**The candidate locus is built from volume, and the replication venue does not have
+real volume.** VAH is the developing session value-area high, derived from a volume
+profile. On GC that profile is built from exchange-traded contract volume. On Dukascopy
+XAUUSD it would be built from that broker's own tick volume — a liquidity proxy, not a
+consolidated tape, and spot gold has no central volume at all.
+
+Consequences, fixed now:
+
+- **A PASS is still a pass**, and arguably a strong one: if the effect survives a
+  profile built on a different and noisier volume proxy, it is not an artifact of GC's
+  particular tape.
+- **A FAIL is ambiguous and must be reported as such.** It cannot distinguish "the
+  effect is not real" from "the value area cannot be located without real volume." It
+  therefore does **not** trigger the D3 refutation on its own.
+- To break that ambiguity a fail must be followed by one further check, declared now so
+  it is not invented later: re-run the replication on the **non-volume loci only**
+  (bbma15, vwap, vwap_m1, vwap_p1), which need no profile. If those reproduce their GC
+  ordering and only the profile loci break, the volume proxy is the likely cause. If
+  the non-volume loci also scramble, the GC census is the problem.
+
+This weakens the XAUUSD test relative to what D2 implied. The clean replication for a
+volume-derived locus would be another **exchange-traded** metal — silver futures — which
+D2 excluded and which this repo has no data for. That limitation stands on the record
+rather than being worked around.
