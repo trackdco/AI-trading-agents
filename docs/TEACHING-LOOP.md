@@ -1459,3 +1459,49 @@ its MA, not through — a real T38 weak-case objection that supports waiting.
 No band-tolerance number was invented off one hindsight-flagged trade. If
 the licensed-zone literalism recurs on a day he flags live, it gets its own
 rule then.
+
+
+## T58 — the 0.4.4 veto: a calibration written as a prohibition
+**2026-08-13, same day.** 0.4.4 produced **zero fills across LONDON and
+NY_PRE** on the very day that had filled five times under 0.4.3. His read
+was immediate and correct: *"the adherence definitely looks too strict. if
+anything, might have been better before."*
+
+**My defect, and the mechanism is exact.** T54 clause 2 listed *crowded
+path* among the objections that "can never be a size discount" and closed
+with *"if your reason paragraph reads as a case for passing, pass."*
+Measured against the prior run: **8 of the 9 takes cited a path/structure
+objection as their light reason** — including 08:32 and 08:36, the two he
+called great execution. The clause vetoed almost the entire book.
+
+It also contradicted doctrine already in the stack. T43 tells the manager to
+break even at the first level *on a crowded path* — which only makes sense
+for crowded-path trades you took.
+
+And the closing heuristic was worse than the clause. **It punished the agent
+for naming a downside**, which is precisely the reasoning quality T45 makes
+the success criterion — an agent learns to go quiet to get a trade through.
+
+Three corrections:
+1. Only a **decisive** objection blocks — one that would make you pass
+   standing alone. Weighed trade-offs are what `take_light` is for. The
+   original failure was ONE trade stacking THREE independently-fatal
+   objections and paying for them with size, not the mere presence of a
+   downside.
+2. **Headroom is graded by behaviour, not count** — a level ahead that HELD
+   against your direction on the 15m is an obstacle; one price has been
+   slicing through is on the map, not in the way. Count was always the wrong
+   axis: the +3.92R short had three clusters ahead, and the long he would
+   never take had one shelf that had already rejected the session high.
+3. **"Middle" is defined** — inner half of the session range so far, and
+   never fires on a level the thesis names as a boundary. On a 100pt range
+   everything is arguably the middle; T50 exists to kill the lone fib in dead
+   space, not to shut the session.
+
+**The general lesson, and it is the second time today.** The diagnosis (9/9
+light = the third branch had collapsed) was right. The remedy converted a
+question of degree into a binary, and a binary written by me is a rule he
+never gave. When his own words carry a quantifier — *"too many levels"*, not
+"any level" — the quantifier IS the ruling.
+
+→ `tv-trigger` 0.4.5.
