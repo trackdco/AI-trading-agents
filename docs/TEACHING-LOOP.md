@@ -870,3 +870,171 @@ conveys no outcome — it is the information his eye gets while scrubbing — an
 the agent still sees a chart truncated at its own decision minute with the
 no-leak check run at every landing. One guard: briefings stay per-decision, so
 the thesis is never told how many candidates the day holds.
+
+---
+
+# DEEP SCENARIO INTERVIEW — 2026-08-13. Entries T30–T36.
+
+## T30 — THE FLUSH TEST: you may counter-trade a STRUCTURED trend, never a FLUSH
+
+**The single most important entry filter in this file, and the likeliest cause
+of the 0.3.5 week's 35% win rate.**
+
+> *"If it's a trend day — there was one day, maybe Wednesday, where it took a
+> long in London even though the whole of Asia sold off like 400 points. In an
+> instance like that, yeah we might have a mechanical entry trigger there, but
+> I'm not going to try fade the trend. When it's been dumping the entire day I'm
+> much more inclined to just continue to the downside until we have actual signs
+> of reversal — not just this fucking 2-minute closing through a POC and a moving
+> average. Maybe one in 10 times you'll catch the start of a massive reversal,
+> but it's a matter of probabilities."*
+
+**But this is NOT "never counter-trade a trend."** He explicitly approved a short
+on a bullish trend day, and drew the line himself:
+
+> *"It did take a pretty good short where it closed through VWAP+2 and the moving
+> average… in that instance price was making higher highs and higher lows, it
+> wasn't just flushing to the downside. It wasn't like that London reversal that
+> tried to take, which was just going down and dumped 400 points."*
+
+**So the test is FLUSH vs STRUCTURED, not trend vs no-trend:**
+
+| shape | what it looks like | counter-trade? |
+|---|---|---|
+| **FLUSH** | one-way, nearly every 5m/15m candle in the same direction, little retracement | **NO.** Only trade WITH it. A 2m close through a POC and an MA is not a reversal signal in a flush. |
+| **STRUCTURED trend** | trending, but making higher highs and higher lows (or LH/LL) — it retraces and rebuilds | **YES**, at a level, on a rejection. This is normal work. |
+
+**Measured on the tape, and it separates cleanly.** 15m path efficiency
+(|net move| ÷ total absolute 15m travel) over Asia into the London open:
+
+| session-day | Asia move | 15m down/up | path eff | shape |
+|---|---|---|---|---|
+| 2026-06-21 | +160 | 18/18 | 0.14 | rotational |
+| **2026-06-22** | **−693** | **27/9** | **0.61** | **FLUSH** |
+| 2026-06-23 | +53 | 18/18 | 0.04 | rotational |
+| 2026-06-24 | +16 | 16/20 | 0.02 | rotational |
+| 2026-06-25 | −238 | 23/13 | 0.14 | rotational |
+
+**And the agent proved his point for him on the flush day.** Two London trades,
+two minutes apart, opposite directions:
+- **03:22 LONG** at 30,032 — a reclaim off the session low near a confluence.
+  **−1.0R.** This is the trade he is describing.
+- **03:24 SHORT** at 30,006 — fading the bounce, WITH the flush. **+1.76R.**
+
+**Rule:** the thesis emits a `flush` flag when the session so far is one-way at
+high path efficiency. Under `flush`, counter-trend candidates are passed
+regardless of trigger quality, and only with-trend entries are licensed —
+*"until we have actual signs of reversal,"* which per T10 means acceptance
+evidence on the 15m, not a 2m closure.
+
+## T31 — STOP PLACEMENT IS DECIDED BY WHERE THE CANDLE OPENED
+
+Sharpens the origin-proximity clause into its actual mechanism.
+
+> *"I'll only put it higher if, for example, it broke through the moving average
+> and a VWAP+1 band but the candle started around where the +1 is — I'm going to
+> put it at the high and give it some breathing room, because I'm entering on the
+> retest of the Bollinger Band but there's a very good chance it could come up and
+> wick that VWAP+1 before returning down. Whereas if the 2-minute candle that
+> opened was healthily above VWAP+1 and the Bollinger Band moving average before
+> displacing through them, I'm fine to put my stop at the high of the candle."*
+
+**The test:** how far is the trigger candle's OPEN from the levels it broke?
+
+- **Origin AT/NEAR the broken level** → the level is still live and price can
+  wick back to it. Stop goes **beyond the candle extreme with clearance past
+  that level.**
+- **Origin HEALTHILY BEYOND the broken levels** → the candle displaced from
+  clear air. **The candle extreme is a sufficient stop.**
+
+**This is structural, not a volatility multiple.** *"That changes based off of
+the structure and the criterion around the entry."* Volatility explains why
+Thursday's 90–118pt stops were right; it does not set the stop. Measured across
+the 0.3.5 week, stop ÷ average 2m range ran **0.18× to 3.13×** (median 1.28×) —
+the outliers are structural mistakes, not volatility adaptation. A 10pt stop
+where candles average 54pt (0.18×) is not a stop.
+
+## T32 — "SIGNIFICANT RESISTANCE" IS 3–5 MINUTES AND MULTIPLE TESTS
+
+> *"Three to five minutes. One candle is too little to tell. It's like, okay,
+> we've wicked around on the one minute at least — we've tested this level a few
+> times now and we're not seeming to be able to break it. I would be happy to
+> move that to break even, even if it ends up running. I'd be okay with that."*
+
+**Definition for `tv-manage`:** a stall is **3–5 minutes at the level with
+multiple tests/wicks and no close through.** One candle is never enough. And the
+regret is explicitly accepted — *"even if it ends up running, I'd be okay"* —
+so a break-even that costs a winner is CORRECT, not an error to tune away.
+
+## T33 — A SECOND SETUP IN THE SAME DIRECTION IS A SCALE-IN, NOT A NEW TRADE
+
+> *"I'm going to take the 03:20 setup if it's good and warranted. If we get
+> another one at 03:40 it really depends — am I moving in profits right now? If
+> I'm already up 20-30 points from my long at 03:20, I am happy to scale my
+> position a bit if another entry fires at 03:40, and I'll trail my stops
+> accordingly to where it would invalidate that 03:40 setup. Say I've been five
+> micros from the 03:20 entry and it goes up 20 points and gives me another entry
+> at 03:40 in the same direction — I might enter two or three micros extra on the
+> retest of that entry, and I will trail my stops according to where that trade
+> would have to get invalidated. Either way I'm going to end up in some profits.
+> Another good setup firing at 03:40 would be affirming my trade direction."*
+
+**Three conditions, all required:** the original position is **in profit**; the
+new setup is **same direction**; the new setup is **independently valid**.
+
+**Then:** add a smaller clip (his example: +2–3 on an existing 5, so roughly
+half), and **move the whole position's stop to the NEW setup's invalidation**.
+This is why he ends up in profit either way — the add pays for the trail.
+
+**This is not a second trade.** It does not consume a second slot against the
+window cap; it is one idea, scaled. Do NOT scale into a losing position.
+
+## T34 — A STOP-OUT DOES NOT KILL THE THESIS
+
+> *"No, it doesn't necessarily kill the thesis. There are a lot of instances
+> like that where I get stopped out and then I retake moving the same direction
+> and it plays out. But that's all about market read — which is why I say you
+> can't stick to one thesis from market open and only take trades that are
+> affirming that trade direction."*
+
+Re-entry in the same direction after a stop-out is legitimate when a fresh valid
+trigger appears. The stop-out invalidates the ENTRY, not necessarily the READ.
+Subject to the window cap, which counts fills.
+
+## T35 — PARTIALS ARE SET BY CONVICTION (corrects the fixed 75%)
+
+The recorded default was 75% at TP1 always. **It is conditional:**
+
+> *"That comes down to the conviction behind the setup. If I think this setup's
+> really good, I'll probably only take 50% at TP1. If the trade's really bad I
+> might exit the whole position at TP1 and just target that low-hanging fruit of
+> 1.5R… If there's a really good setup I still take multiple take profits, but I
+> might only exit 50% at TP1 and hold the other 50% all the way. And if it's a
+> pretty mid setup I will exit the whole thing at the first take profit — I won't
+> even have multiple take profits."*
+
+| conviction | structure |
+|---|---|
+| **high (A)** | **50%** at TP1, hold the rest to the full target |
+| **normal (B)** | ~75% at TP1, trail the runner |
+| **low / mid (C)** | **100% out at TP1.** No runner, no second target — take the low-hanging 1.5R |
+
+So the trigger's `conviction` label now drives management, which makes it
+load-bearing rather than decorative.
+
+## T36 — GREEN NEAR TARGET INTO THE CASH OPEN: TAKE IT
+
+Refines T13 (break-even if green, flatten if red before 09:30).
+
+> *"The minutes leading up to market open in pre-market, it slows down. And then
+> a couple of minutes out, a lot of the time it gets very volatile. So if I'm
+> green at 09:25 I'm like — I don't want to move to break even, because there's a
+> very high chance I'd just get break-even'd even if it hit my take profit. I
+> don't want to gamble on whether the market open candle is going to break-even me
+> or smash my take profit first. That's literally pure gambling. I would just take
+> the profit where it is."*
+
+**Rule:** a pre-market position that is green and NEAR its target approaching
+09:25–09:30 is **closed for the profit available**, not carried and not merely
+moved to break-even. Break-even is for a position with real distance still to
+run; a nearly-complete winner is banked.
