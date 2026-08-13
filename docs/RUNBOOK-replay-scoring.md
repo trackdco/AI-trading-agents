@@ -142,6 +142,58 @@ At the landing minute (before the window opens):
 4. Call `tv-thesis` with `event_trigger: "window_open"`, the screenshot path,
    the numeric context, and the macro output. Log the thesis JSON.
 
+
+## 2b. TRIGGER-DRIVEN REPLAY — his actual workflow, and it is leak-safe
+
+**Do not step every bar.** His ruling, 2026-08-13: *"For me when I'm replaying a
+session, I will yes skip through the minutes where there's no action, but as
+soon as a trigger comes I make a judgement call there in a couple of minutes. I
+don't need the agents to go proper minute by minute — I want them to replicate
+how I would do replay. I can get through a week in 30 minutes."*
+
+**Why this is not a shortcut that costs rigour.** The candidate scan is
+mechanical: the trigger definition applied to committed bars. Knowing *a
+candidate exists at 09:36* says nothing about its outcome — it is exactly the
+information his eye gets while scrubbing. The agent still sees a chart truncated
+at its own decision minute, and the no-leak check still runs at every landing.
+
+**The loop:**
+
+1. **Pre-scan the session-day** with the candidate scanner: every 2m/3m
+   two-level close, every rejection-first shape, plus the thesis re-fire events
+   (window opens, 15m MA closes, displacements, extremes taken out). Produces an
+   ordered list of decision minutes.
+2. **Jump replay to each decision minute in turn** (`replay_start` with an
+   explicit `-04:00` offset, then `replay_status` to verify — the start call
+   returns stale state). Run the no-leak check at every landing.
+3. **Adjudicate** exactly as before: screenshot, briefing, `tv-trigger`.
+4. **While a position is open, jump to the next MANAGEMENT minute** — the first
+   bar that reaches an intermediate level, breaks one, hits TP1, or stalls, all
+   computed mechanically from bars. Call `tv-manage` there. Repeat until the
+   position resolves.
+5. **Never jump past an open position's resolution.** Everything else is dead
+   time and may be skipped.
+
+**The one guard:** briefings stay strictly per-decision. The thesis agent must
+never be told how many candidates the day holds or when the later ones fall —
+that is forward information about activity, even though it carries no outcome.
+The orchestrator holds the list; the agents see one moment at a time.
+
+## 2c. THE MANAGEMENT TIER — `tv-manage`
+
+Added 2026-08-13 after a scored week in which **11 of 12 losses were clean
+−1.00R full stop-outs.** Management had been mechanical clauses fired by the
+orchestrator; he described it as a judgement: *"I trail, take targets, and do
+these things based on how the trade is favouring me in the moment. That's gotta
+be an intra-trade judgement call."*
+
+`tv-manage` is called at `intermediate_level_reached`, `intermediate_level_broken`,
+`tp1_reached`, `stalling`, `pre_cash_open` and `window_closing`. It returns
+`hold` / `breakeven` / `trail` / `partial` / `exit_now`, and the orchestrator
+enforces the one hard invariant: **a stop only ever tightens.** Log every call
+and every verdict, including the `hold`s — an unmanaged loser is now a defect
+worth seeing in the report.
+
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 
 Step one 2m bar at a time through LONDON 03:00–04:59 / NY_PRE 08:00–09:29 /

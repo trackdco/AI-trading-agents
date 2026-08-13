@@ -814,3 +814,59 @@ silently measures recall.
 
 **Standing rule:** doctrine flows into agents through their **contracts**, at
 version-bump time. It never flows through a briefing, and never mid-run.
+
+## T27 — 2026-08-13 · FIRST TARGET IS A PREFERENCE ORDER (corrects T17)
+
+T17 as I implemented it was a flat 1.0–2.5R band, and it silently relaxed entry
+qualification: 9 trades whose first target sat under 1.5R went 33% WR for
+−2.26R, against 36% WR / +2.83R for the rest. Nearly identical accuracy — the
+band did not worsen the reads, it capped what a correct read could pay.
+
+**His correction:** *"Preferenced first target is 1.5–2.5R, but if there isn't
+anything within that, target something between 1–1.5 instead of further. The
+reason I went to one is because I saw some losers that would've hit in the 1R
+range."*
+
+**Order, strict, first match wins:** prefer `1.5–2.5R`; if empty drop DOWN to
+`1.0–1.5R`; if still empty use a fixed 1.5R. **Never reach past 2.5R.** A
+sub-1.5R target marks a thinner trade — weigh toward `take_light` and expect
+the manager to work harder.
+
+## T28 — 2026-08-13 · INTRA-TRADE MANAGEMENT IS A JUDGEMENT — new tier `tv-manage`
+
+**His ruling:** *"If I see significant resistance at +1, I'll probably move to
+break even. If it breaks through +1, I will trail stops, because that then means
+the trade favours me even more than when I entered — it would have to break
+through VWAP+1 again to the upside to stop me out. I trail, take targets, and do
+these things based on how the trade is favouring me in the moment. That's gotta
+be an intra-trade judgement call."*
+
+**The evidence for building it:** the 0.3.5 week's **11 of 12 losses were clean
+−1.00R full stop-outs** — nothing cut, BE'd or trailed on the way to being
+wrong — while his own narrated week contains −0.46R losers he managed down. At
+a 35% hit rate that difference is the whole expectancy.
+
+**Core doctrine:** an intermediate level is a QUESTION with two opposite
+answers. **Stall/rejection there → tighten (break-even, or exit if decisive).
+Clean break through → TRAIL BEHIND IT**, because the level now sits between
+price and the stop and must be reclaimed to hurt the trade. The second half is
+the one that gets forgotten: a broken level is new protection, not just
+progress.
+
+Fires on `intermediate_level_reached`, `intermediate_level_broken`,
+`tp1_reached`, `stalling`, `pre_cash_open`, `window_closing`. Emits `favouring:
+more|same|less` as the spine of the verdict. Orchestrator enforces
+**stops only ever tighten**.
+
+## T29 — 2026-08-13 · TRIGGER-DRIVEN REPLAY, not bar-by-bar
+
+*"I don't need the agents to go proper minute by minute — I want them to
+replicate how I would do replay. I can get through a week in 30 minutes."*
+
+Pre-scan candidates mechanically, jump to each decision minute, adjudicate, and
+while a position is open jump to the next mechanically-computed management
+minute. **Leak-safe:** the scan applies the trigger definition to bars and
+conveys no outcome — it is the information his eye gets while scrubbing — and
+the agent still sees a chart truncated at its own decision minute with the
+no-leak check run at every landing. One guard: briefings stay per-decision, so
+the thesis is never told how many candidates the day holds.

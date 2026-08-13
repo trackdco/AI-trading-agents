@@ -322,71 +322,32 @@ still a fucking big stop, jeez louise"*, taken anyway because the thesis was str
 **Pre-identified structure named in the thesis, not fixed R multiples.** His
 realised distribution sits at **1.5–2.5R**; beyond ~3R the fixed-target EV decays.
 
-### THE FIRST TARGET IS A HARD BAND: 1.0R–2.5R. NO EXCEPTIONS.
+### THE FIRST TARGET — A PREFERENCE ORDER, NOT A FLAT BAND
 
-**Band WIDENED at the bottom, his ruling 2026-08-12** (was 1.5–2.5R): *"We said
-the first structural target should be within 1.5 to 2.5R — let's move that to 1
-to 2.5, because I'm seeing on a lot of these trades the closest structural level
-was 1R but I like around 1.2, 1.3R. Since I said 1.5 to 2.5 it was searching for
-levels within that range… on a lot of these trades, especially on choppy days,
-it makes sense to not go for as big a target."* A near level you can actually
-reach beats a further one you round-trip away from.
+**Corrected by him 2026-08-13**, after a flat 1.0–2.5R band produced 9 trades
+whose first target sat under 1.5R at 33% win rate for −2.26R:
 
-His ruling, 2026-08-12, after reviewing a trade that named 2.7R and 3.5R targets
-and returned nothing: *"The first target should always be within that [1.0 to
-2.5R]."*
+> *"I guess we could instate a rule where preferenced first target is 1.5–2.5R,
+> but if there isn't anything within that, target something between 1–1.5
+> instead of further. The reason I went to one is because I saw some losers that
+> would've hit in the 1R range."*
 
-So, mechanically, before you emit `targets`:
+So the order is strict, and you take the FIRST rule that produces a level:
 
-1. Compute R from your own numbers: `R = |entry − stop|`.
-2. List **every** level in your briefing that sits between the entry and your
-   furthest idea, in the trade's direction — VWAP bands, BB MAs (2/3/15/60),
-   daily POC/VAH/VAL, weekly POC/VAH/VAL, prior-day POC/VAH/VAL/high/low,
-   day-range fibs, session extremes, the tripwire.
-3. **`targets[0]` MUST be the nearest of those levels whose distance from entry
-   falls in `1.0R … 2.5R`** (minus the couple-of-points short-of-the-band
-   offset). Never skip a nearer qualifying level to reach a further one.
-4. Later entries in `targets` may sit beyond 2.5R as runner destinations. Only
-   the first is banded.
-5. **If NO structural level falls inside 1.0R–2.5R, target a FIXED 1.5R.** His
-   ruling, 2026-08-12: *"if nothing structural fits that within the band
-   that doesnt necessarily mean veto, target a fixed 1.5r."* So the absence of
-   structure in the band is NOT a veto and NOT a licence to reach further — set
-   `targets[0]` to entry ∓ 1.5R, name it `fixed_1.5R` in the level field, and say
-   in `reason` that no structure qualified. **Never stretch `targets[0]` past
-   2.5R to make the trade exist.**
+1. **PREFER structure in `1.5R … 2.5R`.** This is the default and most trades
+   should land here.
+2. **If nothing structural sits in that band, drop DOWN to `1.0R … 1.5R`** — a
+   nearer level you will actually reach. Never reach past 2.5R to find one.
+3. **If nothing structural sits in `1.0R … 2.5R` at all**, target a fixed 1.5R.
+   Absence of structure is not a veto.
 
-The trade that produced this ruling, in R terms only: a short with a 30.5pt risk,
-so the 1.0–2.5R band sat 30–76pt below entry. Prior-day VAH sat at **1.77R,
-inside the band, and printed in the agent's own briefing.** It named prior-day
-the POC (2.7R) and a fib/MA confluence (3.5R) instead. Price bottomed just past
-the 1.77R level: the banded target would have paid, both named targets missed, and
-the trade round-tripped to break-even. *"It was not targeting anything valid on
-this trade… I have no idea what it was targeting."*
+**Reaching further is the error this replaces.** A target beyond 2.5R because
+nothing nearer "qualified" is how a correct read round-trips to breakeven.
 
-**A level being unglamorous is not a reason to skip it.** *"You have to take
-your piece of the pie and get out."*
-
-- **Take profit sits a couple of points SHORT of the band.** On one narrated session that
-  sat ~7pt inside the band.
-- **When two levels cluster, take the further one.** *"Price never touches a value
-  area high and then just runs straight from it. It usually wicks around, and with
-  VWAP right there, I'm inclined to believe it would touch VWAP."* Worth 3.80R
-  instead of ~3.4R on one narrated session.
-- **Target size scales to direction.** A counter-trend rebalance gets a modest
-  target by design — *"it's not going for a big target… more so just looking for a
-  rebalance."*
-- **A NEAR 15m MA IS TP1, NOT THE DESTINATION.** His rule, 2026-08-11: when the
-  15m MA sits only ~1–1.5R away, take it as the first partial and target structure
-  beyond it. A 1R "target" at an intermediate MA is a mislabelled partial.
-- **STYLE ANCHOR, and it caps everything above:** *"I'm never trying to catch
-  these gigantic moves. You have to take your piece of the pie and get out… I like
-  having a higher win rate."* His realised distribution is 1.5–2.5R. If you find
-  yourself reaching for a target because the move *could* be enormous, you are
-  trading someone else's system.
-- **Extend the target when the thesis is confirming** — Fri N1 moved from the
-  developing VAH to VWAP+1 mid-trade, worth ~90 points. **Extend the target, never
-  the risk.**
+**And note what a sub-1.5R target means for the trade.** It is a thinner trade
+by construction: the same read has less to pay you. Say so in `reason`, weigh it
+toward `take_light`, and expect the trade manager to work harder — the run
+where those trades lost money is the run where nothing trailed them.
 
 ## HARD CONSTRAINTS — mechanical, no judgment required
 
