@@ -20,7 +20,8 @@ import pandas as pd
 
 from scripts.agent_context import (anchored_weekly_profile, prev_day_levels,
                                    session_day_of, volume_profile)
-from scripts.replay_tools.htf import bars, body_ratio_15m, flush_inputs, htf_at_level
+from scripts.htf_level_behavior import behavior_at
+from scripts.replay_tools.htf import bars, body_ratio_15m, flush_inputs
 from src.htf_ma.levels import NY, bb_ma_asof, vwap_bands
 
 NEWS = "data/reference/news_archive.csv"
@@ -212,11 +213,14 @@ def trigger_briefing(sess_day, day_next, dec, cid, window, session, shot, thesis
     flat = flat_levels(lv)
     px = price_at(day_next, dec)
 
+    # T46 - his canonical helper (scripts/htf_level_behavior.py), not a local
+    # improvisation. It reports tests, closes each side, max wick vs body and a
+    # one-phrase verdict per timeframe, which is what lets the agent tell a level
+    # that HELD from one that failed.
     htf = {}
     for name in candidate_levels:
         if name in flat:
-            htf[name] = dict(htf_at_level(sess_day, day_next, dec, flat[name], side),
-                             price=flat[name])
+            htf[name] = behavior_at(bars(), sess_day, dec, flat[name])
 
     above = sorted(((v, k) for k, v in flat.items() if v > px))
     below = sorted(((v, k) for k, v in flat.items() if v < px), reverse=True)
