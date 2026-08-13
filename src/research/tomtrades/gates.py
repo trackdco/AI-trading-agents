@@ -24,15 +24,12 @@ def _all_true(n: int) -> np.ndarray:
     return np.ones(n, dtype=bool)
 
 
-def c1_range(df: pd.DataFrame, cfg: dict) -> np.ndarray:
-    """Middle-timeframe range condition. His test is mean give-back, not width.
+def c1_value_series(df: pd.DataFrame, cfg: dict) -> pd.Series:
+    """The raw C1 statistic per completed hour, before any threshold is applied.
 
-    Evaluated on completed 1h bars and forward-filled onto the minute frame, so a minute
-    inside hour H is judged by hours strictly before H.
+    Split out from ``c1_range`` so the autopsy can condition on the continuous value
+    rather than the pass/fail bit. Same computation, one caller away from the gate.
     """
-    n = len(df)
-    if not cfg.get("enabled", True):
-        return _all_true(n)
     hourly = ind.resample_ohlcv(df, "1h")
     leg_tf = cfg.get("leg_tf", "15min")
     legs_df = ind.resample_ohlcv(df, leg_tf)
@@ -69,6 +66,22 @@ def c1_range(df: pd.DataFrame, cfg: dict) -> np.ndarray:
         else:
             raise ValueError(f"unknown c1 method {method!r}")
 
+    return pd.Series(vals, index=hourly["ts_event"], name="c1_value")
+
+
+def c1_range(df: pd.DataFrame, cfg: dict) -> np.ndarray:
+    """Middle-timeframe range condition. His test is mean give-back, not width.
+
+    Evaluated on completed 1h bars and forward-filled onto the minute frame, so a minute
+    inside hour H is judged by hours strictly before H.
+    """
+    n = len(df)
+    if not cfg.get("enabled", True):
+        return _all_true(n)
+    vals_s = c1_value_series(df, cfg)
+    vals = vals_s.to_numpy()
+    method = cfg.get("method", "mean_retrace")
+
     if method in ("mean_retrace", "median_retrace"):
         ok = vals >= float(cfg["retrace_min"])
     elif method == "efficiency":
@@ -77,7 +90,7 @@ def c1_range(df: pd.DataFrame, cfg: dict) -> np.ndarray:
         ok = vals <= float(cfg["width_atr_max"])
     ok &= ~np.isnan(vals)                      # unknown is never "in range"
 
-    flag = pd.Series(ok, index=hourly["ts_event"])
+    flag = pd.Series(ok, index=vals_s.index)
     return flag.reindex(df["ts_event"], method="ffill").fillna(False).to_numpy()
 
 

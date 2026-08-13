@@ -18,6 +18,7 @@ import pytest
 import yaml
 
 from src.research.tomtrades import ablate as AB
+from src.research.tomtrades import autopsy as AU
 from src.research.tomtrades import detector as DT
 from src.research.tomtrades import gates as G
 from src.research.tomtrades import indicators as ind
@@ -256,3 +257,104 @@ def test_impulse_target_is_measured_from_the_run_extreme_not_the_entry(cfg):
         assert tr.iloc[0]["target"] < tr.iloc[0]["entry"]
         if tr.iloc[0]["exit_reason"] == "target":
             assert tr.iloc[0]["pnl_r"] > 0
+
+
+# ----------------------------------------------------------------------------- autopsy
+def _autopsy_fixture(cfg):
+    """Trades from the synthetic series, annotated with entry-time features."""
+    df, c, ctx, masks = _signal_fixture(cfg)
+    c = {**c, "risk": {**c["risk"], "max_trades_per_day": 0}}
+    trades = DT.simulate(df, DT.detect(ctx, c, masks), c)
+    return df, c, ctx, AU.annotate(trades, df, ctx, c)
+
+
+def test_autopsy_features_cannot_see_past_the_signal(cfg):
+    """Truncating the series right after a trade's fill must not move its features.
+
+    This is the property the whole separation question rests on. A rolling window that
+    forgot to shift, or a range boundary computed on the completed hour, would leak the
+    outcome into the predictor and manufacture an AUC out of nothing.
+    """
+    df, c, _ctx, B = _autopsy_fixture(cfg)
+    assert len(B) > 0
+    row = B.iloc[0]
+    cut = int(row["entry_idx"]) + 1
+    tdf = df.iloc[:cut].reset_index(drop=True)
+    tctx = DT.build_context(tdf, c)
+    trunc = AU.annotate(B.iloc[:1].copy(), tdf, tctx, c)
+    for f in AU.FEATURES:
+        if not f.actionable or f.name not in trunc.columns:
+            continue
+        a, b = row[f.name], trunc.iloc[0][f.name]
+        if pd.isna(a) and pd.isna(b):
+            continue
+        assert a == pytest.approx(b, rel=1e-9, abs=1e-9), f"{f.name} moved with future bars"
+
+
+def test_post_entry_columns_are_never_offered_to_the_model():
+    banned = {f.name for f in AU.FEATURES if not f.actionable}
+    assert banned, "the BR-41 guard is pointless if nothing is marked post-entry"
+    assert not banned & set(AU.MODEL_COLS)
+    assert not banned & set(AU.CLEAN_COLS)
+    law2 = {f.name for f in AU.FEATURES if f.law2}
+    assert not law2 & set(AU.CLEAN_COLS), "the _clean run must drop risk-coupled features"
+
+
+def test_permutation_keeps_the_cells_and_the_pairing(cfg):
+    _df, _c, _ctx, B = _autopsy_fixture(cfg)
+    P = AU.permute(B, 1234)
+    for s, g in B.groupby("session"):
+        h = P[P["session"] == s]
+        assert sorted(g["out"]) == pytest.approx(sorted(h["out"])), "cell contents changed"
+    assert ((P["out"] > 0).astype(float) == P["win"]).all(), "out and win came unpaired"
+
+
+def test_direction_is_not_a_permutation_cell(cfg):
+    """If direction were a shuffle cell its own effect could never be refuted."""
+    _df, _c, _ctx, B = _autopsy_fixture(cfg)
+    assert B["mech"].nunique() == 1
+
+
+def test_auc_reads_a_perfect_and_a_useless_score():
+    y = np.array([1, 1, 0, 0], dtype=bool)
+    assert AU.auc(y, np.array([9.0, 8.0, 2.0, 1.0])) == pytest.approx(1.0)
+    assert AU.auc(y, np.array([1.0, 2.0, 8.0, 9.0])) == pytest.approx(0.0)
+    assert AU.auc(y, np.array([5.0, 5.0, 5.0, 5.0])) == pytest.approx(0.5), "ties are half"
+
+
+def test_spearman_is_rank_based_not_linear():
+    x = np.array([1.0, 2.0, 3.0, 4.0])
+    assert AU.spearman(x, np.exp(x)) == pytest.approx(1.0), "monotone => rho 1"
+    assert AU.spearman(x, -x) == pytest.approx(-1.0)
+
+
+def test_cross_validation_never_splits_a_day(cfg):
+    """A day on both sides of the split lets the model score its own session."""
+    _df, _c, _ctx, B = _autopsy_fixture(cfg)
+    fold = AU.day_folds(B, folds=5)
+    per_day = pd.DataFrame({"day": B["sess_day"].to_numpy(), "fold": fold})
+    assert per_day.groupby("day")["fold"].nunique().max() == 1, "a day spanned two folds"
+    assert per_day["day"].nunique() >= 3, "fixture too small to exercise the split"
+    assert per_day.groupby("fold").size().min() >= 1
+
+
+def test_breakeven_stop_only_ever_removes_a_full_loss(cfg):
+    """It may cost a winner, but it must never invent a loss bigger than the stop."""
+    df, c, ctx, _B = _autopsy_fixture(cfg)
+    sig = DT.detect(ctx, c, {k: np.ones(len(df), dtype=bool)
+                             for k in ("session", "c1", "c2", "c3", "c4", "c5")})
+    base = DT.simulate(df, sig, c)
+    be = DT.simulate(df, sig, c, be_trigger_r=0.25)
+    assert len(base) > 0
+    assert len(base) == len(be), "the breakeven rule must not change which trades are taken"
+    assert (be["exit_reason"] == "breakeven").any(), "fixture never armed the rule"
+    assert be["pnl_r"].min() >= base["pnl_r"].min() - 1e-9
+    def full_loss(t):
+        return int((t["pnl_r"] <= -0.999).sum())
+    assert full_loss(be) <= full_loss(base)
+
+
+def test_day_clustered_ci_brackets_the_mean(cfg):
+    _df, _c, _ctx, B = _autopsy_fixture(cfg)
+    lo, hi = AU.dboot_mean(B, "out", draws=400)
+    assert lo <= B["out"].mean() <= hi
