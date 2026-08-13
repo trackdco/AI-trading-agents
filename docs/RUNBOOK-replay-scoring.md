@@ -257,13 +257,20 @@ worth seeing in the report.
 
 **A second same-direction setup while a position is IN PROFIT is a scale-in,
 not a new trade (T53).** `tv-trigger` adjudicates the fresh candidate as
-normal; on a take verdict the orchestrator routes execution to `tv-manage` as
-`reason_for_call: second_setup` — a smaller clip added to the open position,
-the whole position's stop moved to the new setup's invalidation, ONE position
-in the log, and **no window slot consumed**. His review of a scored pair four
-minutes apart, same direction, same rejected shelf: *"If that setup fired on
-the three-minute with that many confluences, I definitely would have scaled my
-position there."* A position not in profit never takes an add.
+normal; on a take verdict **graded B or better**, the orchestrator routes
+execution to `tv-manage` as `reason_for_call: second_setup` — a smaller clip
+added to the open position, the whole position's stop moved to the new setup's
+invalidation, ONE position in the log, and **no window slot consumed**. His
+review of a scored pair four minutes apart, same direction, same rejected
+shelf: *"If that setup fired on the three-minute with that many confluences, I
+definitely would have scaled my position there."*
+
+Two exclusions: a position not in profit never takes an add, and a **C-grade
+second trigger is confirmation, not an add** (T53 rider) — route it to
+`tv-manage` as `second_setup` anyway so the confirmation is on the record, but
+the contract holds with the original stop untouched: *"If it's a C-grade
+conviction, don't trail that. I'd rather just hold to my high-conviction
+stops."*
 
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 

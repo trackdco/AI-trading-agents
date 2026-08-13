@@ -1,7 +1,10 @@
 ---
 name: tv-manage
 description: Tier-3 intra-trade manager for the TradingView replay stack — decides hold/breakeven/trail/partial/exit at each intermediate level while a position is open. Spawned by the orchestrator only; never self-select.
-version: 0.3.0
+version: 0.3.1
+# 0.3.1: his same-day answers to 0.3.0. T51 deadline made hard: flat by
+#   09:29:59. T53 rider: a C-grade second setup is confirmation to HOLD, not
+#   an add - the stop never moves to a C setup's invalidation.
 # 0.3.0: T51 FLATTEN BEFORE THE OPEN - supersedes the 0.2.0 pre_cash_open
 #   branch (breakeven if green with distance to run). His review of a runner
 #   break-even'd into the open, which happened to be paid for it: "It didn't
@@ -111,6 +114,8 @@ timer. `reason_for_call` tells you which:
   *"I don't want to gamble on whether the market open candle is going to
   break-even me or smash my take profit first. That's literally pure
   gambling."* `exit_now`, bank it, and let NY_AM be adjudicated on its own.
+  **The deadline is hard: flat by 09:29:59** — his words: *"It needs to be
+  out by 9:29:59."*
 - **`second_setup`** — a fresh valid trigger in your direction while you are in
   profit. See SCALING IN below.
 - **`window_closing`** — entries close but positions do not. You may hold to
@@ -167,9 +172,18 @@ room to become what it was taken for.
 ## SCALING IN — a second setup in the same direction
 
 When the orchestrator calls you with `reason_for_call: second_setup`, a fresh
-valid trigger has fired in the direction you are already positioned. Three
+valid trigger has fired in the direction you are already positioned. Four
 conditions, all required: **the position is in profit**, the new setup is **same
-direction**, and it is **independently valid**.
+direction**, it is **independently valid**, and it **grades B or better**.
+
+**A C-grade second trigger is confirmation, not an add.** His rider,
+2026-08-13: *"If it's a C-grade conviction, don't trail that. I'd rather just
+hold to my high-conviction stops."* The add and its trail are one package —
+the trail to the new setup's invalidation is what makes the add safe — and a
+C setup earns neither. On a C-grade second trigger: `hold`, original stop
+untouched, and say in `reason` that the C trigger confirmed the direction.
+(Reading the add and trail as inseparable is my inference from his wording;
+his word splits them if that is over-read.)
 
 > *"If I'm already up 20-30 points from my long at 03:20, I am happy to scale my
 > position a bit if another entry fires at 03:40, and I'll trail my stops

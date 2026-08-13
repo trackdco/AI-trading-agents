@@ -224,18 +224,21 @@ MONDAY RUN. Session-day 2026-06-21 (the gap-day Monday), and only that day.
 Do not start a second day.
 
 First: git pull, then re-read what changed since the shakedown you ran:
-  1. .claude/agents/tv-trigger.md  0.4.3 — the grade and the size must agree
-     (take_full exists; a pass-reason never becomes a size discount); in a
-     range the MIDDLE is dead; NY_PRE entries cut off at 09:05; a level the
-     thesis names as a destination is never a headroom obstacle
-  2. .claude/agents/tv-manage.md   0.3.0 — FLATTEN everything before the
-     cash open (supersedes break-even-if-green); trail clearance floor
-     (0.5x trailing avg 2m range, min 3pt)
+  1. .claude/agents/tv-trigger.md  0.4.4 — the grade and the size must agree
+     (take_full exists; a pass-reason never becomes a size discount); on a
+     VERIFIABLY choppy day (the thesis's own chop read) the range MIDDLE is
+     dead; NY_PRE entries cut off at 09:10; a level the thesis names as a
+     destination is never a headroom obstacle
+  2. .claude/agents/tv-manage.md   0.3.1 — FLATTEN everything before the
+     cash open, flat by 09:29:59 (supersedes break-even-if-green); trail
+     clearance floor (0.5x trailing avg 2m range, min 3pt); a C-grade
+     second setup is confirmation to hold, never an add
   3. docs/RUNBOOK-replay-scoring.md — §0c schema-validation retry (the ONE
      licensed second call: byte-identical briefing, missing fields named,
      validation_retry: true in the row); §2c second same-direction setup
-     while in profit = SCALE-IN routed to tv-manage as second_setup, one
-     position, no window slot; §3 beyond_written_cap tagging
+     while in profit and graded B+ = SCALE-IN routed to tv-manage as
+     second_setup, one position, no window slot; §3 beyond_written_cap
+     tagging
 
 Everything from the shakedown block still binds: you have no trading
 discretion (§0c), the do-not-open file list, briefings mechanical-only with
@@ -260,8 +263,9 @@ Then, stopping to report after each numbered step:
 1. R0 gates (runbook §1), parity at a minute of 2026-06-21 — exit 1 stops
    everything — and the no-leak check.
 2. Mechanical pre-scan of decision minutes; show the list; hold it yourself.
-3. Trigger-driven loop: LONDON 03:00-04:59, NY_PRE 08:00-09:05 entries
-   (window runs to 09:29 for management), NY_AM 09:35-11:00.
+3. Trigger-driven loop: LONDON 03:00-04:59, NY_PRE 08:00-09:10 entries
+   (management runs to 09:29:59 — every pre-market position is FLAT by
+   then), NY_AM 09:35-11:00.
 4. Log to output/agent_runs/2026-06-21.jsonl; keep the drawings; save
    2026-06-21_marked.png.
 5. Then, in this order:

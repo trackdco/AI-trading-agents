@@ -1347,7 +1347,11 @@ The 03:24 loser is the type specimen: a C-grade fib in the middle of the
 range, in chop, taken light. Range-day entries come off the extremes or the
 shelves that bound them; a lone mid-range level is not an edge.
 
-→ `tv-trigger` 0.4.3, constraint 9.
+**AMENDED same day:** *"T50 should only apply when it's a verifiably choppy
+day, just like Monday London."* Scoped to days the standing thesis itself
+reads as chop/rotational; silent on trending or still-forming days.
+
+→ `tv-trigger` 0.4.4, constraint 9.
 
 ## T51 — FLATTEN before the cash open. Not break-even. Everything.
 **2026-08-13.** Reviewing a runner break-even'd at 09:28 that the open then
@@ -1362,7 +1366,10 @@ banked at the decision price. Note the shape of the ruling: he watched the
 gamble PAY and ruled against it anyway — same character as the 29.2R
 Thursday. Do not learn from the payout.
 
-→ `tv-manage` 0.3.0 `pre_cash_open`; runbook §3.6.
+**AMENDED same day:** the deadline is hard — *"It needs to be out by
+9:29:59."*
+
+→ `tv-manage` 0.3.1 `pre_cash_open`; runbook §3.6.
 
 ## T52 — NY_PRE entries cut off at 09:05
 **2026-08-13.** On the 09:28 attempt: *"I would never enter that close to
@@ -1371,11 +1378,12 @@ market open — that's just stupid. If I'm not in a trade around 5 to 10 past
 then get really volatile in the last couple minutes, and that's not a risk
 that I want to take."*
 
-09:05 chosen as the conservative end of his stated 09:05–09:10 zone — MY
-pick, his word moves it. Entries only; open positions belong to the manager
+09:05 was chosen as the conservative end of his stated 09:05–09:10 zone —
+my pick, flagged as such. **AMENDED same day, his word: 09:10.** (*"Make the
+NY pre-entries 9:10."*) Entries only; open positions belong to the manager
 (T51).
 
-→ `tv-trigger` 0.4.3, constraint 4b.
+→ `tv-trigger` 0.4.4, constraint 4b.
 
 ## T53 — a second same-direction setup in profit is a SCALE-IN, not a new trade
 **2026-08-13.** On the 08:32/08:36 pair (four minutes apart, same direction,
@@ -1389,8 +1397,15 @@ setup's invalidation, ONE position, NO window slot consumed. (The no-slot
 clause is my inference from "one position"; his word flips it.) Never into a
 losing position.
 
-→ runbook §2c; tv-manage SCALING IN unchanged (it already had the doctrine —
-the orchestrator routing is what was missing).
+**AMENDED same day — the C-grade rider:** *"It also depends, though: if it's
+a C-grade conviction, don't trail that. I'd rather just hold to my
+high-conviction stops."* A scale-in requires the second setup to grade B or
+better. A C-grade second trigger is confirmation to HOLD — original stop
+untouched, no add. (The add and its trail read as one package, since the
+trail to the new invalidation is what makes the add safe; his word splits
+them if that is over-read.)
+
+→ runbook §2c; tv-manage 0.3.1 SCALING IN.
 
 ## T54 — the grade and the size must agree; a pass-reason is not a discount
 **2026-08-13.** The shakedown emitted nine takes, nine take_light — both

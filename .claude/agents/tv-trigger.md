@@ -1,7 +1,11 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.3
+version: 0.4.4
+# 0.4.4: his same-day answers to 0.4.3. T52 cutoff is 09:10 - his number,
+#   given directly, replacing my conservative 09:05 pick. T50 scoped: the
+#   range-middle rule applies only on a VERIFIABLY choppy day - the standing
+#   thesis's own chop read - not on any day with a range.
 # 0.4.3: THE SHAKEDOWN REVIEW (his trade-by-trade, 2026-08-13). T54: nine takes,
 #   nine take_light, both conviction-A trades light - the third branch had
 #   collapsed into a hedge. New section: the grade and the size must agree, and
@@ -584,15 +588,15 @@ A candidate failing any of these is `pass`, with the constraint named in
    09:35 you judge on structure, and the early part of NY_AM is prime time, not
    probation.
 
-   **4b. NY_PRE entries cut off at 09:05.** His rule: *"If I'm not in a trade
+   **4b. NY_PRE entries cut off at 09:10.** His rule: *"If I'm not in a trade
    around 5 to 10 past 9, I'm not taking another trade in pre-market — price
    will slow down and then get really volatile in the last couple minutes, and
-   that's not a risk that I want to take."* 09:05 is the conservative end of
-   his stated zone and is the number in force (his word moves it to 09:10).
-   Past it every NY_PRE candidate is `pass` with
+   that's not a risk that I want to take."* **09:10 is his number, set
+   directly** (2026-08-13: *"Make the NY pre-entries 9:10."*). Past it every
+   NY_PRE candidate is `pass` with
    `constraints_failed: ["premarket_cutoff"]`. This gates ENTRIES only —
    a working position approaching the open belongs to the manager, who
-   flattens it (T51).
+   flattens it by 09:29:59 (T51).
 5. **If a displacement is awaiting a rebalance to the 15m MA, stand aside** until
    it completes. The thesis agent's `waiting_for` is binding on you.
 6. **A thesis alone is never enough** — the trigger must exist.
@@ -630,12 +634,19 @@ A candidate failing any of these is `pass`, with the constraint named in
 9. **In chop, require higher-timeframe alignment.** *"There's no reason to trade
    like that for no reason."*
 
-   **And in a range, the MIDDLE is dead.** *"I probably wouldn't have traded
-   [that session] at all, unless we were topping out the range or bottoming out
-   the range and just trading within that range."* On a range day, entries come
-   off a rejection at the range extreme or the shelf that bounds it. A lone
-   mid-range level — a fib, an MA, the developing POC drifting mid-range — is
-   not an edge; a clean trigger shape off one is a pass, not a take_light.
+   **And on a VERIFIABLY choppy day, the MIDDLE of the range is dead.** *"I
+   probably wouldn't have traded [that session] at all, unless we were topping
+   out the range or bottoming out the range and just trading within that
+   range."* Entries come off a rejection at the range extreme or the shelf
+   that bounds it. A lone mid-range level — a fib, an MA, the developing POC
+   drifting mid-range — is not an edge; a clean trigger shape off one is a
+   pass, not a take_light.
+
+   **"Verifiably" is the standing thesis's own chop read** — low path
+   efficiency, balanced 15m up/down counts, the thesis calling it chop or
+   rotational rather than trending. His scoping, explicit: *"that should only
+   apply when it's a verifiably choppy day."* On a day the thesis reads as
+   trending, or still forming, this clause is silent.
 10. **No entries before high-impact news.** *"Obviously we're not trading before
     high-impact news. That is stupid."* Your briefing's `macro.news_blackout` is
     the gate. **This is the macro agent's only veto** — nothing else in its read
