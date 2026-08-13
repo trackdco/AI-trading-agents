@@ -116,7 +116,8 @@ def main() -> None:
     ap.add_argument("--start", required=True)
     ap.add_argument("--end", required=True)
     ap.add_argument("--rules", default="5s,1min")
-    ap.add_argument("--workers", type=int, default=4)   # 12 gets rate-limited
+    ap.add_argument("--workers", type=int, default=1)   # 4 and 12 both get 429d
+    ap.add_argument("--pace", type=float, default=0.35, help="seconds between requests")
     a = ap.parse_args()
 
     start = dt.datetime.fromisoformat(a.start).replace(tzinfo=dt.timezone.utc)
@@ -131,6 +132,8 @@ def main() -> None:
 
     scale = SCALE.get(a.symbol, 100000.0)
     def one(h):
+        # steady pacing beats bursts: the feed throttles on rate, not on volume
+        time.sleep(a.pace)
         raw, why = fetch_hour(a.symbol, h)
         return decode(raw, h, scale), why
 
@@ -142,7 +145,7 @@ def main() -> None:
             reasons[why] = reasons.get(why, 0) + 1
             if df is not None and not df.empty:
                 frames.append(df)
-            if done % 250 == 0:
+            if done % 25 == 0:
                 print(f"  {done:,}/{len(hours):,} hours  {reasons}", flush=True)
 
     print(f"fetch outcomes: {reasons}", flush=True)
