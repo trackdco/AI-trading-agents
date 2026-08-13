@@ -90,14 +90,32 @@ def bb_ma_asof(bars_1m: pd.DataFrame, tf: int, n: int = 20):
     return ma, width
 
 
-def vwap_bands(bars_1m: pd.DataFrame, source: str = "open") -> pd.DataFrame:
+# What HIS TradingView VWAP is configured to. This is a MEASUREMENT of his
+# chart, never a fit — the only authority for it is what the chart reports.
+#
+# 2026-08-13: re-measured off the live chart at a London bar and moved back to
+# hlc3. See docs/FINDINGS-vwap-calibration.md; the short version is that the
+# 2026-08-10 reading was taken 15 hours into a session where all four sources
+# had converged to a 0.08pt spread and had no power to tell them apart. The
+# 03:00 bar does: source=open missed the LOWER band by 1.12pt (tolerance 1.0)
+# while hlc3 landed every band inside 0.31pt.
+#
+# If his settings change again, re-measure and change THIS, not a call site.
+CHART_VWAP_SOURCE = "hlc3"
+
+
+def vwap_bands(bars_1m: pd.DataFrame,
+               source: str = CHART_VWAP_SOURCE) -> pd.DataFrame:
     """Session VWAP (18:00 anchor) with +/-1/2/3 sd bands, per 1m row, causal.
 
-    source="open" is the calibrated default: the trader's TradingView VWAP is
-    configured to `Session open`, bar-matched to 0.13pt on his 2026-01-07
-    screenshot. The former hlc3 default sat ~0.5pt out — two NQ ticks, enough
-    to flip a borderline "closed through the band" call. Parquet artifacts
-    written before 2026-08-10 were built on hlc3; rebuild before comparing.
+    The default tracks CHART_VWAP_SOURCE above — what his chart is set to, so
+    that the reconstruction and the chart agree by construction. Do not pin a
+    source at a call site; change the constant.
+
+    Note for the census lane: the pre-2026-08-10 parquets were built on hlc3,
+    so this default re-aligns them with their own artifacts. The 2026-08-10 to
+    2026-08-13 window is the inconsistent one — anything built on `open` in
+    that window must be rebuilt before it is compared to anything else.
     """
     df = bars_1m.copy()
     if source == "open":

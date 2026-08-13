@@ -1,5 +1,57 @@
 # FINDINGS — VWAP calibration: the research build was on the wrong source
 
+> ## SUPERSEDED IN PART, 2026-08-13 — the source is `hlc3`, not `open`
+>
+> Measured off his live chart at the **03:00 London bar** of session-day
+> 2026-06-23, during Phase-0 gate 4 of a replay run. The gate failed, and the
+> failure was diagnostic:
+>
+> | source | Δ vwap | Δ +1σ | Δ −1σ | worst |
+> |---|---|---|---|---|
+> | ohlc4 | −0.08 | +0.11 | −0.28 | **0.28** |
+> | **hlc3** | +0.07 | +0.31 | −0.16 | **0.31** |
+> | close | +0.56 | +0.87 | +0.25 | 0.87 |
+> | open | −0.55 | +0.02 | −1.12 | **1.12 → FAIL** |
+>
+> **The tell was the asymmetry.** On `open`, +1σ matched to 0.02pt while −1σ was
+> 1.12pt out. That cannot happen by chance: the build's mid sat 0.55pt low and
+> its σ 0.57pt wide, so the two errors cancel on the upper band and add on the
+> lower one. A mid-only comparison would have shown 0.55pt and passed.
+>
+> **What this bar does and does not settle.** It excludes `open` and `close`
+> outright. It does **not** separate `hlc3` from `ohlc4` — 0.28 vs 0.31pt is
+> an eighth of an NQ tick. `hlc3` is chosen because it is TradingView's
+> documented default for VWAP, not because it won a fit.
+>
+> **Why this bar and not the 2026-01-07 one below.** The section
+> "The single-bar screenshot match cannot discriminate between sources" is the
+> load-bearing caveat, and it applies to its own conclusion. That bar was 15
+> hours into a session with all four sources converged to a **0.08pt spread**.
+> The 03:00 London bar spreads them over **1.12pt** — 14× the resolution. The
+> original reading was taken where the instrument had no power.
+>
+> **What changed in code.** `src/htf_ma/levels.py::CHART_VWAP_SOURCE` is now the
+> single declaration of what his chart is set to, and `vwap_bands` defaults to
+> it. `phase0_parity` prints the fit for **all four sources on every run**, so
+> this is reported rather than re-derived by hand; it warns only on a material
+> gap, since converged sources differing by hundredths mean nothing.
+>
+> **What it invalidates.** Everything built between 2026-08-10 and 2026-08-13
+> ran on `open` — that window contains **the 0.3.5 scored week's briefings**.
+> Per the population table below, |open − hlc3| on VWAP ran a median 0.72pt,
+> p95 1.52pt, max 15.12pt, and on the +1σ band to 38.28pt. So VWAP-adjacent
+> adjudications that week were graded against a line that was systematically
+> off, worst on the lower bands. **That week teaches; it cannot score.** The
+> pre-2026-08-10 census parquets were built on hlc3 and are re-aligned by this
+> change, not broken by it.
+>
+> The general point at the bottom of this file survives intact, and is now
+> twice-demonstrated: **no amount of statistics finds a mis-specified input.
+> Read the level off his chart.** What is new is that reading it off the chart
+> only works if you read it where the sources are still distinguishable.
+
+---
+
 2026-08-10. Prompted by the trader, unprompted by any test:
 
 > *"my vwap is Session open, not OHLC4. i even had it configured wrong from

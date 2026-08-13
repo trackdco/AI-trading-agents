@@ -73,7 +73,7 @@ Then, in this order, stopping to report after each numbered step:
    pip install -r requirements.txt into a venv; if 3.11, install the same
    packages unpinned (the numpy pin needs 3.12 — known, documented).
    Verify: python3 -m scripts.phase0_parity 2026-06-25 04:06 reproduces
-   VWAP 29492.65 and bb_ma_3m 29510.94.
+   VWAP 29492.64 and bb_ma_3m 29510.94.
 
 4. Phase 0 gates per the runbook (R0): symbol/TZ fix, indicator parity at
    a narrated minute with the observed chart values passed to

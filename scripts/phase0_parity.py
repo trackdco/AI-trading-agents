@@ -47,14 +47,16 @@ from scripts.agent_context import (
     weekly_levels,
 )
 from scripts.build_l2_outcomes import load_bars
-from src.htf_ma.levels import NY, bb_ma_asof, vwap_bands
+from src.htf_ma.levels import CHART_VWAP_SOURCE, NY, bb_ma_asof, vwap_bands
 
 VWAP_TOL = 1.0      # spec Phase 0.3
 BB_TOL = 0.5        # spec Phase 0.3
 TFS = (2, 3, 15, 60)
+SOURCES = ("hlc3", "ohlc4", "open", "close")
 
 
-def reference_at(bars: pd.DataFrame, sess_day: str, minute: str) -> dict:
+def reference_at(bars: pd.DataFrame, sess_day: str, minute: str,
+                 source: str = CHART_VWAP_SOURCE) -> dict:
     """Every level the parity gate compares, as-of `minute` on `sess_day`."""
     t0 = pd.Timestamp(f"{sess_day} 18:00", tz=NY)
     t = pd.Timestamp(f"{sess_day} {minute}", tz=NY)
@@ -79,12 +81,20 @@ def reference_at(bars: pd.DataFrame, sess_day: str, minute: str) -> dict:
     out: dict = {"decision_minute": t, "bar_used": bar_t,
                  "close": float(prior.close.iloc[-1])}
 
-    vb = vwap_bands(hist, source="open")
+    vb = vwap_bands(hist, source=source)
     row = vb.reindex([bar_t]).iloc[0]
     for k in ("vwap", "vwap_p1", "vwap_m1", "vwap_p2",
               "vwap_m2", "vwap_p3", "vwap_m3"):
         if k in vb.columns:
             out[k] = float(row[k])
+
+    # Every source, at this bar, so a config drift is REPORTED rather than
+    # diagnosed by hand. See source_fit() and its caller in main().
+    out["_all_sources"] = {}
+    for s in SOURCES:
+        r = vwap_bands(hist, source=s).reindex([bar_t]).iloc[0]
+        out["_all_sources"][s] = {k: float(r[k])
+                                  for k in ("vwap", "vwap_p1", "vwap_m1")}
 
     for tf in TFS:
         ma, _w = bb_ma_asof(hist, tf)
@@ -109,6 +119,56 @@ def reference_at(bars: pd.DataFrame, sess_day: str, minute: str) -> dict:
     return out
 
 
+def source_fit(ref: dict, obs: dict, chosen: str) -> str | None:
+    """Which VWAP source best matches the chart at this bar?
+
+    Printed whenever a chart VWAP is supplied, PASS or FAIL. A source mismatch
+    was found once by hand — the tell was that +1sd matched to 0.02pt while
+    -1sd was 1.12pt out, which cannot happen by chance: a mid that sits low and
+    a sigma that runs wide cancel on the upper band and add on the lower one.
+    That diagnosis should never have to be re-derived, so it runs every time.
+    """
+    have = {k: v for k, v in obs.items() if v is not None}
+    if not have:
+        return None
+    rows = []
+    for s, vals in ref["_all_sources"].items():
+        errs = {k: vals[k] - have[k] for k in have}
+        rows.append((s, max(abs(e) for e in errs.values()), errs))
+    rows.sort(key=lambda r: r[1])
+
+    print("\n  VWAP SOURCE FIT -- build minus chart, per source")
+    cols = list(have)
+    print("    " + f"{'source':<8}" + "".join(f"{c:>12}" for c in cols)
+          + f"{'worst':>9}")
+    for s, worst, errs in rows:
+        mark = "  <- in use" if s == chosen else ""
+        best = "  BEST" if s == rows[0][0] and s != chosen else ""
+        print("    " + f"{s:<8}"
+              + "".join(f"{errs[c]:>+12.2f}" for c in cols)
+              + f"{worst:>9.2f}" + mark + best)
+
+    # Only flag a MATERIAL mismatch. Sources converge as a session accumulates,
+    # so a 0.03pt win is noise and nagging about it trains everyone to ignore
+    # the line that matters. Fire when the source in use is eating a real share
+    # of the tolerance AND something else is clearly better.
+    best_src, best_err, _ = rows[0]
+    mine = next(w for s, w, _ in rows if s == chosen)
+    if best_src != chosen and mine > VWAP_TOL / 2 and (mine - best_err) > 0.25:
+        print(f"\n    !! '{best_src}' fits this chart materially better than "
+              f"'{chosen}' ({best_err:.2f} vs {mine:.2f}pt).")
+        print("       His chart is the authority, never a fit -- confirm the "
+              "VWAP indicator's")
+        print("       Source setting with him, then change CHART_VWAP_SOURCE "
+              "in src/htf_ma/levels.py.")
+        return best_src
+    if best_src != chosen:
+        print(f"\n    ('{best_src}' edges it by {mine - best_err:.2f}pt -- "
+              f"noise at this bar, not a mismatch. Sources converge as a")
+        print("     session accumulates; only a wide gap here means anything.)")
+    return None
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -119,12 +179,17 @@ def main() -> int:
     p.add_argument("--vwap", type=float, help="VWAP read off the chart")
     p.add_argument("--vwap-p1", type=float, help="VWAP+1 read off the chart")
     p.add_argument("--vwap-m1", type=float, help="VWAP-1 read off the chart")
+    p.add_argument("--vwap-source", choices=SOURCES, default=CHART_VWAP_SOURCE,
+                   help="override the source for THIS run only. To change it "
+                        "permanently, edit CHART_VWAP_SOURCE in "
+                        "src/htf_ma/levels.py -- it is a measurement of his "
+                        "chart and every call site reads it from there.")
     for tf in TFS:
         p.add_argument(f"--bb-ma-{tf}m", type=float,
                        dest=f"bb_ma_{tf}m", help=f"{tf}m BB(20) MA off the chart")
     a = p.parse_args()
 
-    ref = reference_at(load_bars_indexed(), a.sess_day, a.minute)
+    ref = reference_at(load_bars_indexed(), a.sess_day, a.minute, a.vwap_source)
 
     print("\nPHASE 0 GATE 3 -- indicator parity")
     print(f"  session-day     {a.sess_day}   (18:00 NY anchor)")
@@ -135,7 +200,7 @@ def main() -> int:
     print(f"  weekly anchor   {ref['weekly_anchor']:%Y-%m-%d %H:%M %Z}"
           f"   (18:00 NY, exactly 7 days back, developing)")
 
-    print("\n  VWAP (source=open, 18:00 anchor)")
+    print(f"\n  VWAP (source={a.vwap_source}, 18:00 anchor)")
     for k in ("vwap_m3", "vwap_m2", "vwap_m1", "vwap",
               "vwap_p1", "vwap_p2", "vwap_p3"):
         if k in ref and np.isfinite(ref[k]):
@@ -175,6 +240,9 @@ def main() -> int:
         print("  Read these off the chart and re-run with --vwap / --bb-ma-2m "
               "etc.\n")
         return 0
+
+    source_fit(ref, {"vwap": a.vwap, "vwap_p1": a.vwap_p1,
+                     "vwap_m1": a.vwap_m1}, a.vwap_source)
 
     print("\n  PARITY")
     failed = []
