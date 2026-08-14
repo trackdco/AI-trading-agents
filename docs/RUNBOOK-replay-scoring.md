@@ -144,6 +144,16 @@ live he will not be there to say it, and a week scored with his voice in the
 briefings measures nothing. Between decisions, his rulings are welcome and become
 teaching-loop entries; inside one, they are contamination.
 
+**ORCHESTRATOR SESSION SETTINGS (2026-08-15, after ultracode cost a day-1
+London 49 minutes of committee meetings).** The orchestrator session runs
+**default thinking effort** and **ultracode/workflow orchestration OFF**. The
+role is a clerk by contract; maximum-effort modes make it slow, and agent
+fan-out makes it WRONG: the decision path contains exactly the four
+contracted `tv-*` agents and nothing else — an uncontracted subagent
+anywhere near a briefing or verdict is a governance breach, not a
+thoroughness bonus. If a session finds either setting on, it says so and
+asks for the toggle before running a day.
+
 ---
 
 ## 1. PHASE R0 — GATES (once per replay session)
