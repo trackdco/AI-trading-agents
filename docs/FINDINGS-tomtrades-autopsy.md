@@ -301,3 +301,58 @@ anything more than a candidate.
 Per the repo's non-negotiables, these divergences are reported, not fixed. No parameter
 was adjusted to improve any number above, and the variant menus in §6 are reported whole
 so the best cell can be read against the size of the menu it came from.
+
+---
+
+# ADDENDUM — fixed dollar targets, and a sign disagreement worth knowing about
+
+Tested: replace the 50%-of-impulse target with a fixed \$50 / \$100 / \$200 / \$300 /
+\$500. A fixed target breaks the coupling the autopsy identified — it does not shrink as
+price retraces, and it is always ahead of the entry, so the **6,073 signals the impulse
+rule discarded come back into the book** (8,484 signals instead of 2,411). Both
+populations are reported so the exit can be judged with the population held fixed.
+
+## No fixed target beats his rule
+
+Zero cost, per trade:
+
+| target | n | win % | mean \$ | total \$ | EV (R) |
+|---|---|---|---|---|---|
+| **impulse 50% (his rule)** | 2,411 | 67.9 | **+\$4.46** | **+\$10,757** | −0.023 |
+| \$50 fixed, all signals | 8,484 | 80.0 | −\$3.37 | −\$28,580 | −0.004 |
+| \$100 fixed, all signals | 8,484 | 68.0 | −\$3.23 | −\$27,380 | −0.007 |
+| \$200 fixed, all signals | 8,484 | 52.9 | −\$4.56 | −\$38,670 | −0.024 |
+| \$300 fixed, all signals | 8,484 | 44.6 | −\$3.14 | −\$26,600 | −0.015 |
+| \$500 fixed, all signals | 8,484 | 34.7 | −\$1.32 | −\$11,170 | −0.021 |
+
+**His target rule is the best of the six tested**, and it is the only one positive in
+dollars. That is a genuine vindication of the one component the autopsy was hardest on.
+
+The reason is that the impulse target *adapts*: it sits close when price has already
+travelled (high probability of collection) and far when it has not. A fixed target throws
+that information away. The \$50 target reproduces the trap exactly — **80% win rate,
+loses money.**
+
+## The sign disagreement
+
+**In dollars the impulse book makes +\$10,757. In R it loses −0.023.** Both numbers are
+correct; they weight differently. R counts every trade equally, dollars weight by each
+trade's own risk — and the autopsy already found EV rising monotonically with stop size
+(−0.191R on sub-1pt stops to +0.227R above 5pt). So the wide-stop trades carry the dollar
+total while the tight-stop trades drag the R average.
+
+Practically: **fixed-contract sizing makes money on this book; fixed-risk sizing does
+not.** BR-10 records the same hazard for a different convention — the same population
+read −0.04R to +0.20R depending on how trades were collapsed. Any claim about this
+strategy has to name its sizing convention or it is not a number.
+
+## It does not survive costs either way
+
+At **one tick round turn (\$10)** every row goes deeply negative, his rule included:
++\$10,757 becomes **−\$13,352**. The dollar edge is \$4.46 a trade against \$10 of
+friction.
+
+So the conclusion stands and sharpens: the target is not the broken part. **The trade is
+too small to pay for itself.** A bigger target does not help because the method's
+excursions do not reach it; the \$500 target hits only 33% of the time. The binding
+constraint is that a two-minute scalp on a \$230 stop cannot carry a \$10 round turn.
