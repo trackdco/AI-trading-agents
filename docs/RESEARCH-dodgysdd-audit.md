@@ -9,18 +9,24 @@ supports each line.
 | | |
 |---|---|
 | channel | `@DodgysDD`, 90,700 subscribers, **1,628 videos**, since 2019-02-26, US |
-| sources extracted | **3 videos** |
-| coverage | **0.2%** |
+| long-form videos (`/videos`) | **474** (the 1,628 count includes Shorts and streams) |
+| transcripts fetched | **42** · 528,037 chars |
+| coverage of long-form | **8.9%** |
 
-Three videos out of sixteen hundred. This is a first pass, not the 58-source corpus the
-tomtrades audit was built on. Rules below are quoted accurately; the *catalogue is
-certainly incomplete*, and any rule stated only once has not been cross-checked against
-the channel's own later revisions.
+Fetch stopped at 42: YouTube rate-limited this host (`IpBlocked` / `RequestBlocked`
+after ~42 successes). The corpus is resumable — `scripts/fetch_channel_transcripts.py`
+skips what is on disk — so coverage rises with each pass.
 
-Extracted so far:
-- `9e9-uzIAniQ` — *My Official \*ONE SETUP FOR LIFE\* Framework* (2023-10-31)
-- `GoU3p4sgxz0` — *These 3 Characteristics define Winning iFVGs* (2024-11-23)
-- `XUJR9e8dtb4` — *How to use Time & Price (ICT Macros)* (2024-08-21)
+**Captions only, no video.** He teaches by drawing on a chart while talking, so every
+visual definition is lost: *"you don't want it to be wick like this… it has to be like
+this."* That is precisely where the quantitative meaning of "abnormal size" and
+"relative to the candles around it" lives. Nothing below is invented, but the visual
+half of this channel's teaching is not in evidence.
+
+Densest sources in the corpus: *The Complete IFVG Masterclass* (50,926 chars), *Raw &
+Real IFVG Masterclass* (37,613), *My full 2026 IFVG model Breakdown*, *IFVG's Don't
+Work.*, *My High Accuracy Inverse Candle Closure Checklist*, *This Gold Trading Strategy
+is Technically UNBEATABLE*.
 
 **Instruments: NQ and ES.** Index futures, not gold. Session is *"the New York am
 session, sometimes the PM."*
@@ -30,6 +36,67 @@ indicator, runs a paid Discord, and every video carries an Apex prop-firm affili
 Sizing advice is given in Apex-account terms. That does not make the rules wrong, but it
 means the claimed accuracy figures are marketing-adjacent and should be treated as
 hypotheses, not evidence.
+
+---
+
+## 0. THE CURRENT MODEL (2026) — and it is not the one in §2
+
+The flagship changed. §2 below is the 2023 *"one setup for life"*; this is what he
+teaches now, from `E1BIVjBwLxQ` *My full 2026 IFVG model Breakdown*. **Anyone coding
+from the older videos would build the wrong system.**
+
+**The base sequence, unchanged:**
+> *"a delivery from a fair value gap… a liquidity sweep, so generally we're down
+> trending, we sweep below inside of a fair value gap, and then we get some sort of
+> inversion fair value gap back to the upside"*
+
+**Context is mandatory, and this is stated as the discriminator:**
+> *"We don't like just an inversion fair value gap in the middle of nowhere. We like it
+> delivering out of a key area, which maybe this is a London low, maybe it's an Asia
+> low, maybe it's a news low, it's equal lows, and then usually we want like a higher
+> time frame fair value gap attached to that"*
+
+**What he says changed in 2026** — *"Yes, but no… I am looking for a lot of other
+confluences lately because of how bad price action's been"*:
+
+| change | quote |
+|---|---|
+| **trend-line liquidity is now the primary draw** | *"The number one draw on liquidity I have used in the past year probably is the trend line liquidity"* — ~45°, built from lower lows/highs |
+| **engineered > session levels** | *"ideally you want to combine like a London low with a relative equal low… That is going to be better than just targeting Asia high, which I did a lot more 2 years ago"* |
+| **momentum entry now required** | *"entering off of good momentum, such as a death candle or birth candle, is the biggest change… I'm barely entering off of choppy closes"* |
+| **added confluences** | order block at the same area, or a CISD |
+| **time shifted earlier** | *"a lot of my trades are during 9:30 to 10:00 more than they ever were… I used to trade a lot more like from 10:00 to 11:00"* |
+| **Judas swing added** | 9:30 open sweeps a high, then reverses — *"at least three times a week in today's market"*, vs *"we did not get that every day"* in 2024 |
+
+**An explicit invalidation, which is rare and worth having:**
+> *"If we had a giant wick sweeping the high, that is not a trend line anymore. All this
+> liquidity right here, right here, and right here have been ran, so therefore even if
+> we did get that long it would have been bad"*
+
+A trend line whose stops are already taken is dead. That is mechanically codable.
+
+**His stated reason for the trend-line focus is a claim about crowding**, not structure:
+> *"we have more retail traders than ever trading, and they're all trading trend lines,
+> and that's why you see all these trend lines being built up"*
+
+## 0b. Win-rate philosophy — a real contrast with tomtrades
+
+He teaches explicitly that a high hit rate is unnecessary, and has a whole video on the
+arithmetic (`m1Ly_P-XnnU`, *How You Can be Profitable with Just 30% Win rate*):
+> *"you don't need more than like a 30% win rate to be profitable taking five setups"*
+> *"at a one to one RR… you need to have a 60% win rate or higher to be profitable. At a
+> nine [R] play, you only need a 10% chance"*
+
+This is the opposite posture to the tomtrades corpus, which sells 76–88% hit rates and
+whose arithmetic failed precisely because payoff was ignored. Dodgy's framing is
+payoff-first and, as arithmetic, it is correct.
+
+**Other stated absolutes worth pinning:**
+- *"I'm always going to keep a hard stop at the swing high no matter what"*
+- *"I'm always going to go to New York session"*
+- *"The most obvious setup for me with IFVGs are always giant swing points"*
+- *"we always want the market to sweep some sort of higher low"*
+- the sweep must be **obvious** — *"it needs to be one, an obvious liquidity sweep"*
 
 ---
 

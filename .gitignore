@@ -37,3 +37,4 @@ output/triggers_hist2326_days/
 # Dukascopy gold ticks, built by scripts/fetch_gold_ticks.py — reproducible,
 # and market data does not belong in git (same rule as data/*.parquet above)
 data/gold/
+data/transcripts/
