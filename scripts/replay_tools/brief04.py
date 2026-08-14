@@ -232,10 +232,15 @@ def _assert_weekly_profile_is_right(b, day, dec):
 
     anchor = live["anchor"]
     back = (pd.Timestamp(f"{sess_day} 18:00", tz=NY) - anchor).days
-    if anchor.weekday() != 0 or not (0 < back <= 7):
+    # back == 0 is legitimate and is the trades-Tuesday case: that session OPENS at
+    # the very Monday 18:00 it anchors to, so the profile develops from zero width.
+    # The old `0 < back` rejected it, which is why this guard never caught the Monday
+    # fallback bug in agent_context - the buggy 7d anchor satisfied the guard and the
+    # correct 0d anchor would have tripped it.
+    if anchor.weekday() != 0 or not (0 <= back <= 7):
         raise ValueError(
             f"anchored weekly is anchored to {anchor:%Y-%m-%d %H:%M %A}, {back}d back "
-            "from the session open - expected a Monday 18:00, 1-7 days back")
+            "from the session open - expected a Monday 18:00, 0-7 days back")
 
     for key, live_key in (("poc", "awPOC"), ("val", "awVAL"), ("vah", "awVAH")):
         if abs(float(blk[key]) - round(float(live[live_key]), 2)) > 1e-6:

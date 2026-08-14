@@ -139,8 +139,25 @@ def anchored_weekly_profile(bars: pd.DataFrame, sess_day: str,
     # Monday=0. The session-day is named by the evening it OPENS, so the week's
     # first session opens on Monday evening.
     anchor = d - pd.Timedelta(days=int(d.weekday()))
-    if anchor == d:                      # this IS Monday's session: no week-to-date
-        anchor = d - pd.Timedelta(days=7)
+    # NO MONDAY FALLBACK. A session-day that opens Monday evening is the one that
+    # TRADES TUESDAY, and his rule for that day is explicit above: "If I'm trading
+    # Tuesday, I'm gonna anchor it to the Asia Open of Monday night" - i.e. to this
+    # very session's own open, developing from zero width. The session that trades
+    # MONDAY cash opens on SUNDAY evening (weekday 6), where the arithmetic above
+    # already reaches back to the prior Monday, which is what "if I'm trading Monday,
+    # I'm gonna anchor it to the Asia Open at the beginning of last week" asks for.
+    #
+    # The removed fallback (`if anchor == d: anchor -= 7d`) could only fire when the
+    # session-day itself was a Monday - i.e. exactly on the trades-Tuesday session -
+    # so it was wrong every time it fired and never once right. It survived the
+    # 2026-08-13 correction because that correction was measured on a Tuesday-opening
+    # session (2026-06-23), which this bug never touched.
+    #
+    # Caught by scripts.gate_weekly_anchor on jn1 session-day 2026-06-01: it anchored
+    # two weeks of tape (7440 bars vs 540) and put weekly VAL at 29773 instead of
+    # 30374 - a 601pt error on a level that grades A on its own and is named as a
+    # thesis target. Affects 5 session-days of the jn1 month: 06-01, 06-08, 06-15,
+    # 06-22 (inside the narrated week) and 06-29.
     end = upto if upto is not None else (
         pd.Timestamp(f"{sess_day} 18:00", tz=NY) + pd.Timedelta(hours=23))
     seg = bars[(bars.index >= anchor) & (bars.index < end)]
