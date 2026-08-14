@@ -277,6 +277,27 @@ enforces the one hard invariant: **a stop only ever tightens.** Log every call
 and every verdict, including the `hold`s — an unmanaged loser is now a defect
 worth seeing in the report.
 
+**CALL DISCIPLINE (2026-08-15, after a day-1 London produced 10 manage calls
+in one window — a detector problem, not a doctrine one).** The contract says
+the manager is called at "moments that carry information, not on a timer";
+the detector must honour that:
+
+- **At most ONE call per position per completed bar.** Multiple reasons
+  firing on the same bar are COALESCED into one call, `reason_for_call`
+  listing all of them; `broken` supersedes `reached` for the same level.
+- **A stall is an EPISODE, not a per-bar condition.** The stall reason fires
+  once per episode; it may fire again only after price has LEFT the level
+  and returned, or a different level is now in question.
+- **A level already ruled on is spent** — a level the manager has already
+  answered (`hold` at its touch, or a trail placed behind it) does not
+  re-trigger `reached` on later touches; only `broken`, or a fresh stall
+  episode there, re-opens it.
+- `pre_cash_open` and `window_closing` fire exactly once each.
+
+None of this changes what the manager may decide — only how often the same
+question is asked. Ten calls that re-ask one stall are nine wasted minutes
+and one journal full of noise.
+
 **A second same-direction setup while a position is IN PROFIT is a scale-in,
 not a new trade (T53).** `tv-trigger` adjudicates the fresh candidate as
 normal; on a take verdict **graded B or better**, the orchestrator routes
