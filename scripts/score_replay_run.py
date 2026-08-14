@@ -137,12 +137,52 @@ def load_run(path: Path) -> list[dict]:
     return [r for r in rows if "decision" in r]
 
 
+def _his_text(d: dict, indent: str = "        ") -> str:
+    """Every textual field of one of his recorded decisions, verbatim.
+
+    Added for the REASONING protocol (his re-anchor, 2026-08-14): the
+    comparison he reads is between ACCOUNTS of a trade, not between decisions
+    — "whether the trade matched is a detail; whether the thinking matched is
+    the finding." So the side-by-side must carry his recorded words next to
+    the agent's reason, or category 2 (different reasoning, same setup — the
+    priority failure) is invisible.
+
+    Schema-agnostic on purpose: the narrated files are heterogeneous, so this
+    prints every string field (and every string inside one level of nesting)
+    rather than assuming key names. Times/ids are skipped as noise.
+    """
+    skip = {"id", "type", "window", "direction", "trader_time"}
+    out = []
+    def emit(k, v):
+        v = " ".join(str(v).split())
+        if v:
+            out.append(f"{indent}{k}: {v}")
+    for k, v in d.items():
+        if k in skip:
+            continue
+        if isinstance(v, str):
+            emit(k, v)
+        elif isinstance(v, dict):
+            for k2, v2 in v.items():
+                if isinstance(v2, str) and not HHMM.fullmatch(v2.strip()):
+                    emit(f"{k}.{k2}", v2)
+        elif isinstance(v, list):
+            for i, v2 in enumerate(v):
+                if isinstance(v2, str):
+                    emit(f"{k}[{i}]", v2)
+    return "\n".join(out)
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("run_jsonl", help="output/agent_runs/<sess_day>.jsonl")
     p.add_argument("--sess-day", default=None,
                    help="override; default = the file's stem")
+    p.add_argument("--reasoning", action="store_true",
+                   help="print his recorded words and the agent's reason on "
+                        "every side-by-side row, plus his pre-session read — "
+                        "the input to the four-category reasoning comparison")
     a = p.parse_args()
 
     run_path = Path(a.run_jsonl)
@@ -154,6 +194,17 @@ def main() -> int:
     print(f"\nAGREEMENT v0 — session-day {sess_day} "
           f"({his_day.get('trader_label', '?')})")
     print(f"  his rows: {len(his)}   agent candidate rows: {len(agent)}\n")
+
+    if a.reasoning:
+        print("  HIS PRE-SESSION READ (recorded before the day, his words):")
+        for k in ("regime_read", "pre_session"):
+            blk = his_day.get(k)
+            if isinstance(blk, dict):
+                txt = _his_text(blk, indent="    ")
+                if txt:
+                    print(f"   [{k}]")
+                    print(txt)
+        print()
 
     print(f"  {'window':<8} {'his T/P/NF':>12} {'agent T/P/NF':>14}")
     for w in WINDOWS:
@@ -193,6 +244,19 @@ def main() -> int:
         print(f"    {w or '?':<8} {label} <-> agent {r.get('decision', '?'):<10}"
               f" {r.get('direction', '?'):<6} Δ{best_dt}m "
               f"{'AGREE' if same else 'DISAGREE'}")
+        if a.reasoning:
+            his_txt = _his_text(d)
+            if his_txt:
+                print("      HIS ACCOUNT:")
+                print(his_txt)
+            ar = " ".join(str(r.get("reason", "")).split())
+            rj = r.get("rejected_level") or {}
+            if isinstance(rj, dict) and rj.get("level"):
+                print(f"      AGENT rejected_level: {rj.get('level')} — "
+                      f"{str(rj.get('behavior') or rj.get('behaviour') or '')[:200]}")
+            if ar:
+                print(f"      AGENT reason: {ar}")
+            print()
     for i, r in enumerate(agent):
         if i not in used:
             print(f"    {r.get('window', '?'):<8} (no his row)          <-> "
