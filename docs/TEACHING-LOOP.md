@@ -1767,3 +1767,41 @@ entry chop into a scratch. OPEN QUESTION for him: does a stall-BE require the
 level to be meaningfully AHEAD of entry (minimum distance or R fraction), or
 real progress banked first? His number, not mine - two of my invented numbers
 died in one day earlier this week.
+
+
+## T70 — three resolutions and one composition (2026-08-14, final round)
+
+**T69 RESOLVED — stall-BE stays UNCHANGED, his ruling:** *"The agent
+management saved more from losers than it took from winners, which would
+therefore make it valid to have... it's worth keeping unchanged."* One
+forgone +1.69R does not outweigh the cut losses; his risk preference, his
+book. The manager contract is not touched. (Kept on file: the level-at-entry
+degenerate case, in case a longer horizon shows it repeating.)
+
+**T68 RESOLVED — the flip, in full, off his Friday NY walkthrough.** The
+mangled "at or above the open" phrase is moot; the mechanics are explicit:
+
+- The 09:42 short: absolved — *"perhaps that's warranted... it would have
+  gotten liquidated before the long presented itself."*
+- The long: the 09:42-09:44 2m candle *"blasted through the VWAP−1 and the
+  moving average"* away from the defended multi-day floor (T67 licence).
+  **Entry:** retest of that candle's MA. **Stop:** NOT below the signal
+  candle - *"it's right at the VWAP−1. What do we say about giving breathing
+  room?"* - but **below the pre-displacement low (the 09:40 low)**, clearing
+  the band. **Target:** the next VWAP band / profile level, modest.
+- **The second short (09:46 T48 re-entry) "shouldn't have happened. It
+  should have taken long there."** → PRIORITY RULE: when the T67 licence
+  fires opposite a just-stopped or open position, the FLIP outranks a T48
+  same-direction re-entry at that level.
+
+**Friday London — composition, not a new rule.** He is *"shocked"* the agent
+went long and calls the short *"easy... sequentially"*: stalled at the day
+0.5, closed back below VWAP mid + MA. T64's equilibrium clause supplies the
+direction; T1 (sequential defaults to pass) still governs the trigger, and
+T1 itself licenses a sequential take given "a rejection story plus a
+positively better reason" - a failed-equilibrium read IS that reason. No
+contract conflict; the missing piece was the thesis naming the equilibrium
+failure. TENSION NOTED for the record: his 2026-08-11 ruling blessed an
+agent PASS on his own Friday sequential short; today he expects it taken
+when the equilibrium read licenses it. The equilibrium read is the
+difference between the two rulings, and both stand.

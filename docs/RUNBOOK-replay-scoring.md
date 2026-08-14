@@ -272,6 +272,19 @@ the contract holds with the original stop untouched: *"If it's a C-grade
 conviction, don't trail that. I'd rather just hold to my high-conviction
 stops."*
 
+**THE FLIP (T68) — opposite direction, defended-level licence.** When a
+candidate fires OPPOSITE an open position AND the standing thesis's
+`defended_level` + displacement satisfy the T67 licence (level with memory,
+tested-and-failed, displacement through band + MA away from it), the
+open-position gate does NOT apply: adjudicate the candidate with `tv-trigger`
+as normal, flagging `flip_candidate: true` in the briefing (a fact, not a
+vote). On a take verdict the orchestrator FLATTENS the open position at the
+decision price (`exit_reason: "flipped"` on its exit row) and runs the new
+limit lifecycle. **The flip outranks a T48 same-direction re-entry at the
+same level** — check the flip before re-entering. Absent the licence, the
+open-position gate stands as before; a flip is never available merely because
+an opposite candidate looks good.
+
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 
 Step one 2m bar at a time through LONDON 03:00–04:59 / NY_PRE 08:00–09:29 /
@@ -289,6 +302,13 @@ NY_AM 09:30–11:00. After **every** step:
 3. **Thesis re-fire events** (extreme taken out, 15m MA close-through,
    displacement ≥ 0.5·W15, rebalance completes, TP1 fills, destination
    prints): pause, screenshot, re-call `tv-thesis` with the event named.
+
+   **Plus, from 0.4.2 (T68): the `other_side_tripwire` is a SENSOR.** Every
+   thesis that emits one gets it checked mechanically at every candle close;
+   the moment the named level+event resolves, re-fire `tv-thesis` with
+   `event_trigger: "other_side_tripwire_resolved"` — do not wait for a
+   candidate to wander in and escalate. A branch the thesis wrote down and
+   was re-read 24 minutes late cost a scored week −2R plus its best trade.
 4. **At each surviving candidate**: freeze (no stepping), screenshot, build
    the trigger briefing (thesis + candle payload + `fills_this_window` +
    headroom fields + macro gate), call `tv-trigger`. Log the full verdict —
@@ -320,6 +340,23 @@ NY_AM 09:30–11:00. After **every** step:
    It truncates per timeframe at the last candle whose CLOSE is at or before the
    decision minute — a 15m candle that opened at 03:30 is not complete at 03:40
    and including it would leak the future into the field the grade comes from.
+
+   **Three more briefing fields, from 0.4.2/0.4.7 (T67/T68 + the cat-3 gaps),
+   computed by `python -m scripts.context_extras <sess_day> <HH:MM> --json` —
+   never by hand:**
+
+   - `nwog` — the New Week Opening Gap: prior Friday's 17:00 close and this
+     week's 18:00 Sunday open, both edges plus filled-or-not as of the
+     decision minute. Both prices are given raw — his convention decides
+     which edge matters; the briefing takes no position.
+   - `swept_lows` / `swept_highs` — prior swing extremes taken out this
+     session, each with the sweep time and whether price closed beyond or
+     reclaimed. "We've taken out that low" is a cause in his reasoning; the
+     agents cannot cite what they cannot see.
+   - `defended_levels` — prior-session and multi-day floors/ceilings within
+     reach: the level, which sessions defended it (memory), tests this
+     session, and closes-beyond count. This is the T67 licence's first
+     condition, mechanically stated.
 5. **On `take_full` / `take_light`**: run the limit lifecycle (native tool if
    the Phase B probe found one; simulated otherwise) —
 

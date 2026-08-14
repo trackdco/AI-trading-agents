@@ -1,7 +1,16 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.6
+version: 0.4.7
+# 0.4.7: THE PATCH (T63/T64/T67/T68/T70, his answers 2026-08-14). The flush
+#   gate gains its ONLY exemption: the DEFENDED-LEVEL licence (a level with
+#   memory, tested and failed, displacement away) - Tuesday's knife-catch
+#   stays banned, Thursday's floor-rebalance long is licensed. THE FLIP: when
+#   that licence fires against an open or just-stopped position, the flip
+#   OUTRANKS a T48 same-direction re-entry ("the second short shouldn't have
+#   happened - it should have taken long there"). Constraint 9 gains the
+#   equilibrium clause. A sequential trigger at a failed-equilibrium read has
+#   its T1 "positively better reason" by construction (T70 composition).
 # 0.4.6: T59/T60 from the v44 NY_AM review. T59: the outer deviation band is
 #   FADE-ONLY - a continuation entry limiting the just-broken vwap -2/-3 (or
 #   +2/+3 for longs) is forbidden regardless of trigger quality; a scored
@@ -597,6 +606,19 @@ A candidate failing any of these is `pass`, with the constraint named in
    lift this. Only acceptance on the 15m (T10) does, and that is Tier 1's call,
    not yours. **This is NOT escalatable** — it is a mechanical gate.
 
+   **THE ONE EXEMPTION — the DEFENDED-LEVEL licence (T67).** A counter-flush
+   candidate IS takeable when the thesis's `defended_level` shows all three:
+   a level with MEMORY (prior session's defended low/high or a multi-day
+   floor), TESTED by this move and FAILED to break (no decisive close
+   beyond), and DISPLACEMENT away from it through a VWAP band + MA. Then the
+   trade is the rebalance off the floor: entry on the MA retest, stop beyond
+   the pre-displacement swing CLEARING the VWAP band (*"I wouldn't put my
+   stops below the candle because it's right at the VWAP−1 — what do we say
+   about giving breathing room?"*), target MODEST — the next band or profile
+   level. Absent any one of the three conditions, the gate stands and the
+   knife-catch stays banned: *"there was no price level it was stalling at...
+   we were trailing along the VWAP−2 with no indication."*
+
    Note what it does not say: a STRUCTURED trend (higher highs and higher lows,
    retracing and rebuilding) may be counter-traded at a level as normal work. The
    gate fires on a flush, not on a trend.
@@ -729,6 +751,14 @@ A candidate failing any of these is `pass`, with the constraint named in
    apply when it's a verifiably choppy day."* On a day the thesis reads as
    trending, or still forming, this clause is silent.
 
+   **And equilibrium failure points AWAY from the failed side (T64/T70).**
+   When the thesis records a stall at the day 0.5 / VWAP mid with a close
+   back through — *"we could not cleanly break the equilibrium of the daily
+   range"* — entries lean the other way, back toward the range's far side. A
+   sequential pair carrying that read has its T1 "positively better reason"
+   by construction: the failed-equilibrium story is the named rejection plus
+   the reason, so T1's default-to-pass is answered, not overridden.
+
    **"Middle" is the inner half of the session range so far, and it only
    disqualifies a level that has no other claim.** Outside that band, or at any
    level the thesis names as a boundary — the shelf, the value-area edge, the
@@ -775,6 +805,26 @@ journal should show that you knew.
   entry at the same level needs no escalation at all when the standing thesis
   already licenses the direction — and it usually does, because a stop-out does
   not kill the thesis either.
+
+## THE FLIP — and it OUTRANKS the re-entry
+
+**Before any T48 same-direction re-entry, check the other side first.** If the
+move that stopped you out is a displacement AWAY from a defended level (the
+T67 licence — the level held, your side failed to break it, price displaced
+through a VWAP band + MA against you), then the level has answered: **the
+trade is now the other way.** His ruling on the scored pair that built this
+rule: the first short *"perhaps that's warranted"* — the second, re-entered
+short at the same level, *"shouldn't have happened. It should have taken long
+there."*
+
+The flip trade is the defended-level rebalance, exactly as the exemption
+above specifies: entry on the displacement candle's MA retest, stop below the
+pre-displacement swing low (clearing the band — never the signal candle's own
+low when it sits on a band), target modest. If a position is still OPEN when
+the licence fires against it, the orchestrator flattens it on your take — you
+adjudicate the new setup on its merits and need not weigh the old position.
+An open position on the wrong side of a defended-level displacement is not a
+reason to pass the right side.
 
 ## CONVICTION — set by the SIGNIFICANCE of the level being rejected
 
