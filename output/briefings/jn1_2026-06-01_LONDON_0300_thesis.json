@@ -1,0 +1,145 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON",
+ "decision_minute": "2026-06-02T03:00 ET",
+ "leak_check": "pass - replay truncated at 02:59:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-01_LONDON_0300_thesis.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30514.5,
+ "last_completed_2m_bar": {
+  "start": "02:58",
+  "closed_at": "03:00",
+  "open": 30515.0,
+  "high": 30515.75,
+  "low": 30506.75,
+  "close": 30514.5,
+  "volume": 143,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "LONDON",
+  "entries": "03:00-04:59",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "source": "data_get_study_values at 02:59:59 cursor",
+  "vwap": 30416.2,
+  "vwap_p1": 30469.88,
+  "vwap_m1": 30362.51,
+  "vwap_p2": 30523.57,
+  "vwap_m2": 30308.83,
+  "vwap_p3": 30577.25,
+  "vwap_m3": 30255.14,
+  "bb_basis_2m_last_completed_plot": 30501.11,
+  "bb_upper": 30521.11,
+  "bb_lower": 30481.12
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30416.22,
+   "vwap_p1": 30469.88,
+   "vwap_p2": 30523.54,
+   "vwap_p3": 30577.2,
+   "vwap_m1": 30362.56,
+   "vwap_m2": 30308.9,
+   "vwap_m3": 30255.25
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30501.11,
+   "bb_ma_3m": 30494.86,
+   "bb_ma_15m": 30416.72,
+   "bb_ma_60m": 30471.97
+  },
+  "day_range_fibs": {
+   "0.382": 30405.42,
+   "0.5": 30432.5,
+   "0.618": 30459.58,
+   "0.705": 30479.55
+  },
+  "session_high_so_far": 30547.25,
+  "session_low_so_far": 30317.75,
+  "daily_profile": {
+   "poc": 30462.0,
+   "val": 30374.0,
+   "vah": 30511.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30462.0,
+   "val": 30374.0,
+   "vah": 30511.0,
+   "high": 30547.25,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "prior_day": {
+   "poc": 30560.0,
+   "val": 30382.0,
+   "vah": 30597.0,
+   "high": 30693.0,
+   "low": 30291.5
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.05,
+  "net_move_15m": -30.25,
+  "total_15m_travel": 604.0,
+  "candles_15m_up": 21,
+  "candles_15m_down": 15,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "02:00",
+   "open": 30476.0,
+   "high": 30492.75,
+   "low": 30469.25,
+   "close": 30482.0,
+   "body_ratio": 0.26
+  },
+  {
+   "start": "02:15",
+   "open": 30482.25,
+   "high": 30503.25,
+   "low": 30481.5,
+   "close": 30487.5,
+   "body_ratio": 0.24
+  },
+  {
+   "start": "02:30",
+   "open": 30486.75,
+   "high": 30509.0,
+   "low": 30469.0,
+   "close": 30496.5,
+   "body_ratio": 0.24
+  },
+  {
+   "start": "02:45",
+   "open": 30496.5,
+   "high": 30515.75,
+   "low": 30494.0,
+   "close": 30514.5,
+   "body_ratio": 0.83
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "A headline or a known outcome on Core PCE (5/28) or ISM Mfg (6/1) surfacing before decision minute with a clear direction on NQ or a heavy constituent would overturn this; none is available now.",
+  "reasoning": "No scheduled events sit ahead of today's entry windows, so no blackout applies. The only recent releases carry no outcome values, and ISM Mfg doesn't gate per trader doctrine anyway. No headlines. Nothing to lean on."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract."
+}
