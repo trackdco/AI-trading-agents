@@ -10,12 +10,18 @@ supports each line.
 |---|---|
 | channel | `@DodgysDD`, 90,700 subscribers, **1,628 videos**, since 2019-02-26, US |
 | long-form videos (`/videos`) | **474** (the 1,628 count includes Shorts and streams) |
-| transcripts fetched | **42** · 528,037 chars |
-| coverage of long-form | **8.9%** |
+| transcripts fetched | **472** · 8,333,142 chars · **168 hours of video** |
+| coverage of long-form | **99.6%** |
+| rules below extracted from | **~42** of those transcripts |
 
-Fetch stopped at 42: YouTube rate-limited this host (`IpBlocked` / `RequestBlocked`
-after ~42 successes). The corpus is resumable — `scripts/fetch_channel_transcripts.py`
-skips what is on disk — so coverage rises with each pass.
+The fetch is complete; the *extraction* is not. Everything quoted below came from the
+first 42 transcripts, and §"corpus weighting" records where that sample misled me.
+
+**Why the fetch works now.** `youtube-transcript-api` hits the timedtext endpoint,
+which blocks datacenter IPs hard — it died at 42 videos with `IpBlocked` and pacing at
+one request per two seconds did not help, because it is a cooldown rather than a rate
+window. **yt-dlp fetches captions through the player response and was never blocked**:
+the same host that could not get video 43 pulled the whole channel in four passes.
 
 **Captions only, no video.** He teaches by drawing on a chart while talking, so every
 visual definition is lost: *"you don't want it to be wick like this… it has to be like
@@ -27,6 +33,35 @@ Densest sources in the corpus: *The Complete IFVG Masterclass* (50,926 chars), *
 Real IFVG Masterclass* (37,613), *My full 2026 IFVG model Breakdown*, *IFVG's Don't
 Work.*, *My High Accuracy Inverse Candle Closure Checklist*, *This Gold Trading Strategy
 is Technically UNBEATABLE*.
+
+## Corpus weighting — where the 42-video sample misled me
+
+Term frequency across all 472 transcripts, which is a better guide to what he actually
+teaches than which videos I happened to open:
+
+| concept | mentions | | concept | mentions |
+|---|---|---|---|---|
+| liquidity | 3,504 | | order block | 1,451 |
+| **break even** | **1,958** | | **SMT** | **1,183** |
+| fair value gap | 1,941 | | inversion | 1,133 |
+| displacement | 576 | | breaker | 545 |
+| trend line | 456 (102 videos) | | macro | 363 |
+| **data high/low** | **320 (66 videos)** | | CISD | 31 |
+
+Three corrections to the sections below, all in the direction of my own sampling bias:
+
+1. **SMT is badly under-covered here.** 1,183 mentions and the audit gives it one
+   passing line. NQ/ES divergence is a first-class component of his model and this
+   document does not yet describe it.
+2. **The breakeven rule is the single most-repeated mechanic in the channel** — 1,958
+   mentions, more than "fair value gap". §5 records it as one row of a table. Its weight
+   in his teaching is much larger than that.
+3. **"Data highs and lows" is not the flagship by volume.** 320 mentions across 66
+   videos, against trend line's 456 across 102. §2 calls it the flagship because a 2023
+   video is *titled* "one setup for life" — that was a title talking, not the corpus.
+   Its refutation (`docs/FINDINGS-dodgy-data-wick.md`) is therefore a smaller result
+   than it first appeared: a real claim, tested and failed, but not the load-bearing
+   pillar of what he teaches now.
 
 **Instruments: NQ and ES.** Index futures, not gold. Session is *"the New York am
 session, sometimes the PM."*
