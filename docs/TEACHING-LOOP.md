@@ -1805,3 +1805,21 @@ failure. TENSION NOTED for the record: his 2026-08-11 ruling blessed an
 agent PASS on his own Friday sequential short; today he expects it taken
 when the equilibrium read licenses it. The equilibrium read is the
 difference between the two rulings, and both stand.
+
+
+## T71 — ISM Manufacturing does not gate entries. His ruling, mid-jn1.
+**2026-08-14, during jn1 day 1, confirmed by him directly the next day**
+(*"i made the ism ruling"*). The vendor calendar classes ISM Manufacturing
+PMI as high impact; his classification overrides for entry-gating:
+
+> *"ISM is not high impact for me so it should take that."*
+
+Recorded where it belongs: `data/reference/blackout_policy.json` — a DATA
+file the orchestrator states as fact in the macro briefing, with the macro
+agent still deciding `news_blackout`. Contracts untouched (verified
+byte-identical to source after the day). The local session's handling was
+exemplary twice over: it recorded the ruling without editing doctrine
+mid-month, and it REFUSED to extend the ruling to ISM *Services* without his
+word — that stays gated as an open question. Same legitimacy class as the
+wk1 caps lift: a config ruling made watching live replay, outcome-blind,
+logged as a config change in the day's log.

@@ -308,6 +308,24 @@ None of this changes what the manager may decide — only how often the same
 question is asked. Ten calls that re-ask one stall are nine wasted minutes
 and one journal full of noise.
 
+**PARALLEL ADJUDICATION (2026-08-15, legalised with a causality rule).**
+Independent candidates may be adjudicated in parallel ONLY while no position
+is open and no limit is resting. The trap: if an earlier parallel candidate
+returns a take, its limit lifecycle (placement → ~10 min expiry) may overlap
+a later candidate's decision minute — and that later briefing was built on a
+position state that is now false. The rule: when an earlier parallel take's
+limit window reaches a later candidate's decision minute, the later verdict
+is VOIDED and re-adjudicated sequentially with true position state. Voided
+rows stay in the log, flagged. Passes never void anything. When in doubt,
+sequential — parallelism is a speed optimisation, never worth a briefing
+that lied about whether an order was working.
+
+**PER-DAY AUDIT (2026-08-15).** Run `python -m scripts.audit_run_leak` on
+the day's log immediately after its commit — do not defer to month-end. A
+leak-class or chronology defect caught on day 2 costs a day; the same defect
+found at month-end costs the month. The month-end sweep remains as the
+final check across all days.
+
 **A second same-direction setup while a position is IN PROFIT is a scale-in,
 not a new trade (T53).** `tv-trigger` adjudicates the fresh candidate as
 normal; on a take verdict **graded B or better**, the orchestrator routes

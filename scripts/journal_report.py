@@ -204,7 +204,10 @@ def report(paths: list[Path], show_passes: bool) -> None:
             # ---- outcome LAST, so reasoning can be judged before the result
             ex = exits.get(cid)
             if ex:
-                rf, rb = ex.get("r_result"), ex.get("r_blended")
+                # jn1 logs renamed the R fields descriptively; accept both.
+                rf = ex.get("r_result",
+                            ex.get("r_full_target_whole_position_at_final_exit"))
+                rb = ex.get("r_blended", ex.get("r_blended_across_partials"))
                 bit = f"{rf:+.2f}R" if isinstance(rf, (int, float)) else "?"
                 if isinstance(rb, (int, float)) and rb != rf:
                     bit += f"  ({rb:+.2f}R blended)"

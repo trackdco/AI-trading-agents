@@ -233,7 +233,8 @@ def realised(paths: list[Path]) -> None:
                 continue
             if r.get("row") != "exit":
                 continue
-            v = r.get("r_result")
+            v = r.get("r_result",
+                      r.get("r_full_target_whole_position_at_final_exit"))
             if isinstance(v, (int, float)):
                 rs.append((p.stem, r.get("candidate_id"), float(v)))
     if not rs:
