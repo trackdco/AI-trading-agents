@@ -1573,3 +1573,32 @@ on ambiguous mornings is now the top open question. Not legislated —
 MEASURED: the week run's third pass over this day, on frozen 0.4.2
 contracts, is the arbitration. If the flip recurs, the fix belongs in
 tv-thesis and it will be built on three samples, not one.
+
+
+---
+
+## T62 — THE ANCHOR: reasoning first, performance is the consequence
+**2026-08-14, his re-anchor after the first full agent week. Standing for
+every testing run from here.** Recorded in full at
+`docs/ANCHOR-reasoning-first.md`; the short form:
+
+> *"We are not trying to make the agent perform better. We are trying to make
+> it think and trade like me. Performance is the consequence, not the target...
+> A change that improves results while moving the agent's reasoning away from
+> mine is a regression. Reject it, and say so explicitly."*
+
+The named structural mismatch: he forms a thesis from the higher timeframe
+BEFORE any trigger exists; the agent evaluates candidates and assembles a
+reason afterward. A thesis is four parts: WHICH MECHANISM (rebalance to a HTF
+MA / tailing a rejection off one / a break), a DESTINATION, BOTH BRANCHES
+named before the decision point resolves, and STRUCTURAL invalidation. Hold a
+read with no trade. Pass on the road, not the pattern. No retroactive
+reasoning. Conviction graded the way he talks.
+
+Comparisons sort on reasoning into four categories (same reasoning /
+different-reasoning-same-setup / no thesis where he had one / thesis where he
+had none), led by category 2 — the failure invisible to results.
+
+First application: `docs/COMPARISON-wk1-reasoning.md` (six category-2
+divergences; the two costliest both sit at the MECHANISM layer). No contract
+changes made — per the anchor, he reads the comparison first, then rules.
