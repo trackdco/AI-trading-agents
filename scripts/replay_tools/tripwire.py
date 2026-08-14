@@ -109,16 +109,25 @@ _DYNAMIC = {"vwap", "vwap_p1", "vwap_p2", "vwap_p3", "vwap_m1", "vwap_m2", "vwap
 
 
 def _level_series(day, name):
-    """Per-1m series for a named moving level, or None if the name is not dynamic."""
+    """Per-1m series for a named moving level, or None if the name is not dynamic.
+
+    The name must match _DYNAMIC EXACTLY. The earlier version accepted any name
+    beginning with "bb_ma_" and parsed the trailing token as a timeframe, which is a
+    trap: a thesis is free to name a COMPOSITE level, and on jn1 session-day
+    2026-06-01 NY_PRE one armed `bb_ma_vah_cluster_30545` (the 2m/3m/15m MAs plus the
+    old VAH, quoted at a fixed 30545). The prefix match would have read the trailing
+    token as a timeframe and silently computed a 30545-MINUTE moving average, then
+    resolved the tripwire against that fabricated series. A level name that is not an
+    exact known moving level must fall back to the armed price instead.
+    """
     from src.htf_ma.levels import vwap_bands
     n = (name or "").strip().lower()
+    if n not in _DYNAMIC:
+        return None
     if n.startswith("bb_ma_"):
-        tf = int(n.split("_")[-1].rstrip("m"))
-        m, _ = bb_ma_asof(day, tf)
+        m, _ = bb_ma_asof(day, int(n.split("_")[-1].rstrip("m")))
         return m
-    if n in _DYNAMIC:
-        return vwap_bands(day)[n]
-    return None
+    return vwap_bands(day)[n]
 
 
 def resolve_tripwire_named(sess_day, day_next, level_name, armed_price, event, side,

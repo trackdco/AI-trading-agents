@@ -234,3 +234,27 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
         out.append({**primary, "also_at_this_minute":
                     [f'{e["reason"]}:{e["level"]}' for e in es if e is not primary]})
     return out
+
+
+def range_strictly_before(day_next, start, end):
+    """(high, low) over [start, end) - the END IS EXCLUSIVE, always.
+
+    Bars are indexed by their START minute, and pandas datetime slicing with
+    b[t0:t1] is INCLUSIVE of both endpoints. So b["09:30":"09:32"] silently
+    includes the bar STARTING 09:32, which closes at 09:33 - one minute after a
+    09:32 decision minute. On jn1 session-day 2026-06-01 that put a session high
+    of 30567.75 into a 09:30 thesis briefing when only 30560.00 had printed, and
+    a low of 30483.75 into a 09:32 briefing when the true low was 30488.00.
+
+    Any free-text price fact in a briefing must come through this function rather
+    than through ad-hoc slicing.
+    """
+    import pandas as pd
+    from src.htf_ma.levels import NY
+    t0 = pd.Timestamp(f"{day_next} {start}", tz=NY)
+    t1 = pd.Timestamp(f"{day_next} {end}", tz=NY)
+    s = bars()
+    s = s[(s.index >= t0) & (s.index < t1)]
+    if not len(s):
+        return None, None
+    return float(s.high.max()), float(s.low.min())

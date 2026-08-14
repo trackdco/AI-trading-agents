@@ -12,13 +12,22 @@ not the doctrine.
 | day | session-day | cash day | status |
 |---|---|---|---|
 | 1 | 2026-05-31 | Mon 1 Jun | **COMMITTED** (2c11d06f). +7.071R full-target / +3.679R blended. Has one open question — see §5. |
-| 2 | 2026-06-01 | Tue 2 Jun | **IN PROGRESS, third attempt, clean.** Log wiped and restarted. |
+| 2 | 2026-06-01 | Tue 2 Jun | **IN PROGRESS, fourth attempt, clean.** LONDON + NY_PRE complete (0.00R). NY_AM running. |
 | 3+ | 2026-06-02 … 2026-06-29 | Wed 3 Jun … Tue 30 Jun | not started |
 
-**Day 2 progress at handoff:** header written; weekly-anchor gate PASS (POC 30462 /
-VAL 30372 / VAH 30497); LONDON macro read done (neutral, no blackout, no FOMC);
-03:00 landing verified and leak-checked; levels captured. **No candidate adjudicated
-yet.** Next step is the LONDON thesis at 03:00.
+**Day 2 progress (attempt 4, the clean one):**
+- **LONDON closed 0.00R** - 4 candidates, 4 passes, 0 fills. Theses v1 short 03:00,
+  v2 long 04:15 (tripwire resolved, 15m close 30556.00 body 0.67 above 30547.25).
+- **NY_PRE closed 0.00R** - 7 candidates (6 agent, 1 orchestrator-mechanical at 09:27
+  on the 09:10 cutoff), 2 takes, 1 fill. Thesis v3 short 08:00. P2 short filled 08:36
+  at 30540.00, R 22.0pt; tv-manage went breakeven at 08:38 on the crowded-path clause
+  and it was collected at 08:39 for 0.00R. P4 take_light B routed to tv-manage as a
+  T53 second_setup.
+- **NY_AM in progress** - thesis v4 VOIDED for an orchestrator leak (see below), re-run
+  clean as v4b long at 09:30. Its tripwire resolves 10:26, so a re-fire is due before
+  the 10:27 candidate. Candidates: 09:33, 09:46, 09:51, then 10:27, 10:34, 10:45.
+
+**Escalations used all day: 0.** No agent has escalated thesis_stale.
 
 Day 2 was attempted twice before and both attempts were voided in full:
 attempt 1 halted when the chart canvas froze; attempt 2 was abandoned after a missed
