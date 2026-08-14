@@ -1670,3 +1670,30 @@ same direction + B-grade.
 - **Management tier overall**: *"the agents' actual trade management is very
   good — I have to give it credit"* — including the Wed 08:18 trade he
   disagreed with, saved by management, and both Thursday NY losses cut early.
+
+
+## T66 — the stand-aside gate is REJECTED, and the working-forward rule
+**2026-08-14, his correction of my proposal:**
+
+> *"When you say 'stand aside until high time frame alignment,' that's kind of
+> going against what we've already said, and that would rule out some genuinely
+> good trades... We have to make sure that we're not working backwards. If
+> you're changing something that we've already disputed before, that's not
+> really working for us."*
+
+He is right twice over. The gate collides with his T21-era ruling ("don't be
+more conservative at the start of the window... 9:40 to 10:10 is where the
+best trades are"), and his own week review graded the Wednesday 03:00 fade -
+taken while his live self sat out - as one of that London's two best shorts.
+The anchor's "hold a read with no trade" is a CAPACITY (theses log with
+nothing against them - already true), never a gate. COMPARISON 2.4 stands as
+a record of a live difference, now ruled by him as not a defect.
+
+**The meta-rule, standing:** every proposed change is checked against prior
+rulings before it is proposed; a conflict is surfaced as a conflict, not
+re-litigated by stealth. The doctrine-keeper's job includes remembering what
+was already decided against.
+
+Scope correction from the same message: *"I'm sure we don't have to change
+the whole thing... we're probably 80% of the way there."* The 0.5.0
+full-rebuild framing is out; the fix list is surgical.
