@@ -47,9 +47,46 @@ def back(day_next, end, minutes):
     return (pd.Timestamp(f"{day_next} {end}", tz=NY) - pd.Timedelta(minutes=minutes)).strftime("%H:%M")
 
 
+def grid_2m(dec):
+    """The last minute <= `dec` at which a 2m chart bar CLOSES.
+
+    2m bars are anchored at the 18:00 session open, and 1080 is even, so a
+    minute sits on the 2m grid exactly when its minute-of-hour is even.
+
+    WHY THIS EXISTS. A candidate's decision minute is the LATER of its 2m and
+    3m closes, so a 3m-driven candidate lands on an odd minute - and on a 2m
+    chart no bar closes there. Quoting a 2m candle or a price at that minute
+    describes a bar the agent cannot see, and the chart it is looking at
+    disagrees with its own briefing. On 2026-06-23 a trigger caught exactly
+    that at 09:57 and correctly refused to adjudicate at all
+    (constraints_failed: ["briefing_incoherent"]), which cost the run a
+    candidate. The 3m candle is still stated separately and is real; it is the
+    2m fields and price_at_decision that must sit on the grid.
+    """
+    h, m = int(dec.split(":")[0]), int(dec.split(":")[1])
+    return dec if m % 2 == 0 else f"{h:02d}:{m - 1:02d}"
+
+
+def grid_note(dec):
+    """Stated only when the decision minute is off the 2m grid. Fact, not opinion."""
+    g = grid_2m(dec)
+    if g == dec:
+        return None
+    return (f"This decision minute is {dec}, which is the close of the 3m candle. A 2m chart has "
+            f"no bar closing on an odd minute, so the last 2m bar that exists closes at {g}. "
+            f"price_at_decision and every 2m field below are that {g} bar - they will not equal "
+            f"the 3m close, and the chart legend will read the {g} bar. Judge the 3m candle and "
+            f"the {g} 2m candle; neither is fabricated.")
+
+
 def price_at(day_next, dec):
+    """Close of the last 2m bar whose close is at or before `dec`.
+
+    On an even minute that is the bar closing at `dec`; on an odd minute it is
+    the bar closing one minute earlier, which is what the 2m chart shows.
+    """
     b = bars()
-    prev = b[b.index < pd.Timestamp(f"{day_next} {dec}", tz=NY)]
+    prev = b[b.index < pd.Timestamp(f"{day_next} {grid_2m(dec)}", tz=NY)]
     return float(prev.iloc[-1].close)
 
 
@@ -157,7 +194,8 @@ def verify(b):
             raise ValueError(f"{key} disagrees with the bars: {bad}")
     px = b.get("price_at_decision")
     if px is not None and abs(float(px) - price_at(day, dec)) > 1e-6:
-        raise ValueError(f"price_at_decision {px} is not the last completed minute's close")
+        raise ValueError(f"price_at_decision {px} is not the close of the last 2m bar at or "
+                         f"before {dec} (grid minute {grid_2m(dec)})")
 
     _assert_weekly_profile_is_right(b, day, dec)
     return b
@@ -239,7 +277,8 @@ def thesis_briefing(sess_day, day_next, dec, window, shot, chart_levels, positio
         "screenshot": f"/Users/barbelldaddy/tradingview-mcp/screenshots/{shot}",
         "HOW_TO_READ_THIS_SCREENSHOT": HOWTO, "level_provenance": PROV,
         "price_at_decision": price_at(day_next, dec),
-        "last_completed_2m_bar": agg(day_next, back(day_next, dec, 2), dec),
+        "last_completed_2m_bar": agg(day_next, back(day_next, grid_2m(dec), 2), grid_2m(dec)),
+        "candle_grid_note": grid_note(dec),
         "position_state": position_state, "window_state": window_state,
         "levels_at_decision_CHART": chart_levels,
         "levels_at_decision_BUILD": lv,
@@ -283,7 +322,8 @@ def trigger_briefing(sess_day, day_next, dec, cid, window, session, shot, thesis
     b = {
         "role": "tv-trigger", "candidate_id": cid, "window": window, "session": session,
         "decision_minute": f"{day_next}T{dec} ET",
-        "candle_start_3m": back(day_next, dec, 3), "candle_start_2m": back(day_next, dec, 2),
+        "candle_start_3m": back(day_next, dec, 3),
+        "candle_start_2m": back(day_next, grid_2m(dec), 2),
         "leak_check": (f"pass - replay truncated at {back(day_next, dec, 1)}:59, verified against "
                        "replay_status. The 3m bar starting {} and the 2m bar starting {} both "
                        "close AT {}. Every candle here is aggregated from committed bars and "
@@ -294,7 +334,8 @@ def trigger_briefing(sess_day, day_next, dec, cid, window, session, shot, thesis
         "thesis": thesis,
         "price_at_decision": px,
         "signal_candle_3m": agg(day_next, back(day_next, dec, 3), dec),
-        "signal_candle_2m": agg(day_next, back(day_next, dec, 2), dec),
+        "signal_candle_2m": agg(day_next, back(day_next, grid_2m(dec), 2), grid_2m(dec)),
+        "candle_grid_note": grid_note(dec),
         "signal_direction_2m_3m": side,
         "pair_shape": pair_shape,
         "levels_closed_SCANNER": levels_closed,
@@ -341,7 +382,8 @@ def manage_briefing(sess_day, day_next, dec, cid, shot, reason, level, level_pri
                      "open_pnl_in_R": round(open_r, 2)},
         "level_in_question": {"level": level, "price": level_price},
         "price_at_decision": px,
-        "last_completed_2m_bar": agg(day_next, back(day_next, dec, 2), dec),
+        "last_completed_2m_bar": agg(day_next, back(day_next, grid_2m(dec), 2), grid_2m(dec)),
+        "candle_grid_note": grid_note(dec),
         "recent_2m_bars": [agg(day_next, back(day_next, dec, 2 * i + 2), back(day_next, dec, 2 * i))
                            for i in range(3, -1, -1)],   # i=0 is the bar ending AT dec
         "levels_at_decision_CHART": chart_levels,
