@@ -95,3 +95,102 @@ and BR-19/21/31 found NQ's selection layers weak — but it is a prior, not a re
 Per the repo's non-negotiables: the full ladder is published, no threshold was chosen to
 improve a number, and the negative result on the bare trigger is reported without
 implying it refutes the full model.
+
+---
+
+# ADDENDUM — does anything the repo already measured rescue it?
+
+He says the bare trigger isn't enough and that context supplies the edge, but never says
+which context. This repo has a *measured* list, so rather than guess his confluences,
+every inversion was annotated with things already known to matter here.
+
+**Three of them help, and one replicates the repo's own census.**
+
+## 1. Locus ordering reproduces BR-12
+
+Pre-cost EV by the nearest of the seven censused levels:
+
+| locus | EV before cost | | BR-12 rank on NQ (break arm) |
+|---|---|---|---|
+| **vwap_m1** | **−0.007** | | **+0.248 — 1st** |
+| **val** | **−0.012** | | **+0.234 — 2nd** |
+| vah | −0.017 | | +0.068 |
+| vwap | −0.030 | | +0.096 |
+| poc | −0.034 | | +0.094 |
+| vwap_p1 | −0.039 | | +0.054 |
+| **bbma15** | **−0.059 — worst** | | +0.105 |
+
+vwap_m1 and val are the two best cells here and were the two both-era survivors in BR-12.
+Two independent triggers, same instrument, same ordering at the top. That is the closest
+thing to a replication in this document.
+
+## 2. Distance to a locus — his own claim, and it holds
+
+| distance to nearest locus | n | EV before cost |
+|---|---|---|
+| **≤ 0.020 W** | 5,304 | **+0.009** |
+| 0.020–0.053 W | 5,304 | −0.034 |
+| 0.053–0.124 W | 5,303 | −0.049 |
+| ≥ 0.124 W | 5,304 | −0.030 |
+
+The nearest bucket is the only positive cell in the entire study. *"We don't like just an
+inversion fair value gap in the middle of nowhere"* is **supported** — measured against
+the repo's level set rather than his intuition.
+
+## 3. Direction relative to the 15m BB MA (BR-1)
+
+Trading toward the MA −0.013 before cost, away from it −0.039. The strongest base rate in
+the repo (89% NQ, 92.85% GC) shows up as a 0.026R tilt on this trigger too.
+
+## And one that REVERSES against the repo
+
+**Room to run runs the wrong way here.** BR-32/35 found room ≥3R was the largest non-flow
+gate on NQ. On this trigger it is monotone *backwards*: ≤0.68R gives +0.003 before cost,
+≥3.9R gives −0.041. Plausible reason — the target here is a fixed 2R, so room beyond that
+is not reward, it is just a measure of being in open space, which for a mean-reverting
+inversion is the wrong place. **A gate does not port between triggers; it has to be
+re-measured, and this one flips sign.**
+
+## Stacking them
+
+| stack | n | /day | EV | 95% CI | **before cost** |
+|---|---|---|---|---|---|
+| all signals | 21,219 | 23.1 | −0.144 | [−0.163, −0.125] | −0.026 |
+| at a locus (≤0.02W) | 5,346 | 5.9 | −0.116 | [−0.153, −0.080] | +0.007 |
+| + toward the 15m MA | 2,656 | 3.1 | −0.105 | [−0.158, −0.051] | +0.020 |
+| **+ locus ∈ {vwap_m1, val}** | 699 | 1.6 | **−0.049** | [−0.155, +0.063] | **+0.073** |
+| + risk_w above bottom quartile | 466 | 1.4 | −0.103 | [−0.222, +0.027] | +0.004 |
+
+Monotone improvement for three rungs — **+0.099R of pre-cost EV**, the largest lever found
+on this trigger — then the risk filter breaks it, so that one does not stack.
+
+## The higher timeframe, which is his own advice
+
+*"Try to go to the higher time frame, use that one instead."* Same trigger on 5-minute
+FVGs, executed on the 1-minute tape:
+
+| | n | /day | median stop | EV | before cost |
+|---|---|---|---|---|---|
+| 1m trigger | 21,219 | 23.1 | 4.5 pt | −0.144 | −0.026 |
+| **5m trigger** | 4,408 | 4.9 | **9.2 pt** | **−0.052** | **+0.020** |
+
+The stop doubles, cost per R halves, and the loss shrinks by two thirds. But H1 is −0.126
+against H2's +0.008, so it is unstable across eras, and the context stack stops adding
+once n falls this far.
+
+## Verdict
+
+**Yes — three things from the other strategies help, and they are the same things the
+repo measured before.** Locus proximity, the vwap_m1/val preference and the BR-1 draw
+together move pre-cost EV from −0.026R to +0.073R, and the higher timeframe fixes most of
+the cost problem.
+
+**None of it, alone or stacked, gets the book above zero after costs.** The best cell is
+−0.049R at 1.6 trades a day with an interval spanning zero and neither era clearing. Two
+separate routes to improvement both land just short of the 0.5-point round turn.
+
+Which localises the problem: this trigger's stops are too small to carry NQ's friction,
+and the fixes that enlarge them also thin the book faster than they add edge. The
+untested route that would change that is a genuinely higher-timeframe structure — his
+model delivers from a *monthly* fair value gap, not a 5-minute one — and that is a
+different study, not another filter.

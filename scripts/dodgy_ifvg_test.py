@@ -55,7 +55,9 @@ def load_nq() -> pd.DataFrame:
     b = (pd.concat(parts, ignore_index=True).drop_duplicates("ts_event")
            .sort_values("ts_event").reset_index(drop=True))
     b["mi"] = pd.to_datetime(b.ts_event, utc=True).dt.tz_convert(NY)
-    return b.set_index("mi")[["open", "high", "low", "close"]]
+    # volume is carried for vwap_bands/profile_at_minutes in the context test;
+    # the trigger itself never reads it
+    return b.set_index("mi")[["open", "high", "low", "close", "volume"]]
 
 
 def signals(bars: pd.DataFrame, require_sweep: bool) -> pd.DataFrame:
@@ -143,7 +145,7 @@ def simulate(bars: pd.DataFrame, sig: pd.DataFrame, be_at_t1: bool) -> pd.DataFr
         else:
             j = min(i0 + MAX_HOLD, n) - 1
             px = c[j]
-        out.append({"sess_day": r.sess_day, "direction": d, "risk": risk,
+        out.append({"i": int(r.i), "sess_day": r.sess_day, "direction": d, "risk": risk,
                     "out": d * (px - entry) / risk - COST_PTS / risk,
                     "reason": why, "hit_t1": int(hit_t1)})
     t = pd.DataFrame(out)
