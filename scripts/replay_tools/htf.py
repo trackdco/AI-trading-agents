@@ -201,9 +201,16 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
         # stop without touching an intermediate level gets NO management call at
         # all, which is precisely the 11-of-12 shape tier 3 was built to stop.
         R = abs(entry - stop)
-        adverse = ((r.close - entry) / R) if short else ((entry - r.close) / R)
-        if adverse >= 0.5:
-            add(ts, "stalling", "adverse_excursion_0.5R", None)
+        # R is EXACTLY 0 once a stop has been moved to breakeven, which is the common
+        # case on any managed trade. Dividing by it yields inf, and inf >= 0.5 fires a
+        # spurious "stalling" call on the first bar that closes against the position.
+        # Measured on jn1 2026-06-01 NY_AM (it warned but did not misfire only because
+        # price never closed back below entry). Below breakeven there is no adverse
+        # EXCURSION to measure - the stop itself is the risk control - so skip the test.
+        if R > 0:
+            adverse = ((r.close - entry) / R) if short else ((entry - r.close) / R)
+            if adverse >= 0.5:
+                add(ts, "stalling", "adverse_excursion_0.5R", None)
         if tp1 is not None and ((short and r.low <= tp1) or (not short and r.high >= tp1)):
             add(ts, "tp1_reached", "target_1", float(tp1))
             break
