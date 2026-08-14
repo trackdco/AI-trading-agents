@@ -1697,3 +1697,73 @@ was already decided against.
 Scope correction from the same message: *"I'm sure we don't have to change
 the whole thing... we're probably 80% of the way there."* The 0.5.0
 full-rebuild framing is out; the fix list is surgical.
+
+
+## T67 — the DEFENDED LEVEL licence: the one rule that settles Tuesday, Thursday and Friday
+**2026-08-14, his answer to the counter-flush question.** The line between the
+banned knife-catch and the licensed counter-flush long is not a mechanism word
+- it is whether the reversal is happening AT A LEVEL WITH MEMORY:
+
+- Tuesday, BANNED: *"There was no price level it was necessarily stalling at...
+  no liquidity causing that reversal at that level. We were trailing along the
+  VWAP-2 with no indication that we were going to go up at any point."*
+- Thursday 10:18, LICENSED: *"We're stalling around the same level we did
+  yesterday in New York PM before market closed and rallied up a billion
+  points. My thesis: if we're really bearish, we're probably going to break
+  this level. We failed to break that level, and instead we start rallying."*
+  Entry on the retest of VWAP-1, stop below the 10:16 low, *"a pretty small R,
+  being aware of the consolidation."*
+- Friday, SAME READ: *"We've bottomed around this level the last three days...
+  if it was going to go bearish for the day, it would have broken this level
+  from Asia, and it didn't. It dumped down and immediately reclaimed it, so I
+  would have been bullish."*
+
+**The licence, mechanically:** (1) a prior session's defended low/high (or a
+multi-day floor) — a level with memory; (2) the current move TESTED it and
+FAILED to break it (no decisive close beyond); (3) displacement AWAY from it
+(through a VWAP band + MA); then entry on the retest, stop beyond the sweep
+low, TARGET SMALL — nearest structure, consolidation-aware. This is the ONLY
+counter-flush exemption; absent a level with memory, the flush gate stands
+exactly as written. It is also the trigger condition for the flip (T68).
+
+Riders from the same answers: the Thursday 10:14 with-flush short is RATIFIED
+(*"I'm just gonna tail the dump... a pretty solid 382 rejection on the fib as
+well"* - his fib anchored to the 09:30 sell-off swing, another marked-swings
+instance). *"Thursday inherently, no matter how you calibrate it, was a losing
+day"* - do not overfit it. And *"London and New York have to be treated a bit
+differently... very different profiles behind how they actually move"* -
+recorded as direction, nothing hard-coded yet.
+
+## T68 — the flip: draft, with the trigger phrase awaiting his restatement
+His ruling stands (agents may close and reverse when a better opposite setup
+presents). The trigger is the T67 licence firing against an open position -
+Friday's shape: short into a defended low that refuses to break, reclaim
+displacement fires, flip long immediately.
+
+One load-bearing phrase needs HIS restatement before wiring - asked verbatim,
+he did not recognise it out of context: *"In this sense, I would say if the
+setup trades at or above the open, then I would reverse the position
+immediately"* (said while describing Friday's open: dumped, failed to break
+the Asia low, immediately reclaimed). Which open - the session open price, or
+the displacement candle's open - is NOT guessed. Unanswered until he restates
+the flip trigger in fresh words. Underwater-vs-winner and frequency caps also
+open.
+
+## T69 — the stall-BE at a level ON the entry: the Thursday London fork
+**2026-08-14.** The disputed trade, settled bar by bar (log + his own chart
+annotation agree): D4 L1-0306 long filled 30,130.5; at 03:10 the manager
+moved to breakeven on a three-test stall at daily VAH 30,132 - a level ONE
+AND A HALF POINTS above entry - and the BE stop was hit inside the same bar
+(MFE while alive: 7.75pt = +0.34R max). The rally to the 30,207 target
+printed ~40 minutes later, positionless. The original 30,108 stop was never
+within 17 points of being touched; unmanaged, the trade pays TP1 +1.69R. The
+chart annotation itself carries both halves: "breakeven at the daily-VAH
+stall, hit inside the same bar / UNMANAGED this made +1.69R."
+
+The doctrine fork this exposes: T32 says a BE that costs a winner is correct
+- but T32's stall was a level being fought mid-trade. Here the "level" sat at
+the entry itself, so the stall test armed at zero progress and converted
+entry chop into a scratch. OPEN QUESTION for him: does a stall-BE require the
+level to be meaningfully AHEAD of entry (minimum distance or R fraction), or
+real progress banked first? His number, not mine - two of my invented numbers
+died in one day earlier this week.
