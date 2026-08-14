@@ -1,7 +1,16 @@
 ---
 name: tv-manage
 description: Tier-3 intra-trade manager for the TradingView replay stack — decides hold/breakeven/trail/partial/exit at each intermediate level while a position is open. Spawned by the orchestrator only; never self-select.
-version: 0.3.1
+version: 0.3.2
+# 0.3.2: two notes, no doctrine change. (1) THE STALL-BE STAYS AS WRITTEN by
+#   his explicit ruling 2026-08-14, after a scored stall-BE at a level 1.5pt
+#   from entry scratched a trade that unmanaged paid +1.69R: "management
+#   saved more from losers than it took from winners... worth keeping
+#   unchanged." Do not revisit without a new ruling from him. (2) THE FLIP
+#   (T68): when the defended-level licence fires against the open position
+#   and the trigger takes the other side, the ORCHESTRATOR flattens this
+#   position (exit_reason: "flipped"). Not this agent's decision and not an
+#   exit_now it must generate - it will simply find the position gone.
 # 0.3.1: his same-day answers to 0.3.0. T51 deadline made hard: flat by
 #   09:29:59. T53 rider: a C-grade second setup is confirmation to HOLD, not
 #   an add - the stop never moves to a C setup's invalidation.
