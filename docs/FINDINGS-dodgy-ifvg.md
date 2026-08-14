@@ -194,3 +194,76 @@ and the fixes that enlarge them also thin the book faster than they add edge. Th
 untested route that would change that is a genuinely higher-timeframe structure — his
 model delivers from a *monthly* fair value gap, not a 5-minute one — and that is a
 different study, not another filter.
+
+---
+
+# CORRECTION — two detector bugs, and the addendum above is partly withdrawn
+
+Everything before this line ran on a **mis-specified detector**. Two bugs, both found by
+auditing my own code rather than by anything failing.
+
+## Bug 1 — I tested the wrong pattern entirely
+
+The gap across bars (i−3, i−2, i−1) is complete at bar i−1, and the loop tested bar i
+against it and nothing else. **Every "inversion" was therefore exactly one bar old.** An
+inversion fair value gap is a gap price *left*, came *back* to, and then closed through —
+minutes or hours later. What I actually measured was "three-bar gap immediately reversed
+on bar four", a different and much noisier pattern.
+
+Fixed by carrying gaps forward in an active list until they invert, expire (240 bars) or
+the session ends, with an optional requirement that price re-enter the zone before the
+breaking close.
+
+## Bug 2 — the book double-counted the same move
+
+With gaps carried forward, one momentum candle can close through several stale gaps at
+once. Each became its own trade, at nearly the same price, in the same direction. That is
+why the corrected trigger first reported **207 signals a day** — an obviously impossible
+number for a model whose author takes one to three trades.
+
+Fixed per BR-9/BR-10: one signal per bar per direction (keeping the oldest, most-respected
+gap), then a 15-bar cooldown per direction. 199,498 → 85,339 signals, 87.7/day. Still
+high, and the convention is now stated rather than implied.
+
+## What the corrected numbers say
+
+| | signals | /day | EV | before cost |
+|---|---|---|---|---|
+| trigger only | 80,593 | 87.7 | **−0.135** [−0.145, −0.125] | **−0.020** |
+| + liquidity sweep | 36,127 | 39.3 | −0.140 | — |
+| + breakeven at T1 | 80,593 | 87.7 | −0.128 | — |
+
+**The verdict does not change.** Still negative, still a coin flip before cost, and the
+sweep still subtracts. The breakeven rule still moves EV by under 0.01R.
+
+**Gap age turns out not to matter at all** — pre-cost EV is flat from −0.015 to −0.023
+across every age quintile from 1 bar to 240. The whole distinction the fix was about makes
+no difference to the outcome, which is itself worth knowing.
+
+## But the addendum's headline does NOT survive
+
+| stack | pre-cost, buggy | pre-cost, **corrected** |
+|---|---|---|
+| all signals | −0.026 | −0.020 |
+| at a locus (≤0.02W) | +0.007 | **+0.003** |
+| + toward the 15m MA | +0.020 | **−0.008** |
+| + locus ∈ {vwap_m1, val} | **+0.073** | **+0.015** |
+
+**The "+0.099R from stacking" claim is withdrawn.** On a correct population the stack is
+worth about +0.035R, not +0.099R, and the BR-1 component — *trading toward the 15m MA* —
+**flips from helping to hurting**. That part of the addendum was an artifact of counting
+one-bar reversals.
+
+What still survives, weakly: **being at a locus beats being between loci** (−0.020 →
++0.003), and **vwap_m1/val remain the best pair** (+0.015). His "not in the middle of
+nowhere" claim holds; the magnitude was inflated three-fold by the bug.
+
+The most selective stack is again the worst cell — aged + locus + toward MA is −0.075
+before cost on 1.7 trades a day.
+
+## Standing conclusion
+
+The model is negative on NQ at every specification tested, before and after costs, with a
+correct detector and a stated clustering convention. The one thing that reliably helps is
+locus proximity, and it is worth roughly +0.023R pre-cost — not enough to reach zero, let
+alone clear a 0.5-point round turn.

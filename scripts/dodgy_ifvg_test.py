@@ -60,13 +60,25 @@ def load_nq() -> pd.DataFrame:
     return b.set_index("mi")[["open", "high", "low", "close", "volume"]]
 
 
-def signals(bars: pd.DataFrame, require_sweep: bool) -> pd.DataFrame:
-    """Every iFVG inversion, with the swing context needed for stops and targets."""
+def signals(bars: pd.DataFrame, require_sweep: bool, max_age: int = 240,
+            require_revisit: bool = True, cluster_bars: int = 15) -> pd.DataFrame:
+    """Every iFVG inversion: a gap that formed EARLIER and is later closed through.
+
+    THIS IS THE FIX. The first version tested the gap across (i-3, i-2, i-1) against
+    bar i and nothing else, so every "inversion" was exactly one bar old — it measured
+    "three-bar gap immediately reversed on bar four", which is not the model and is far
+    noisier than it. An inversion fair value gap is a gap price LEFT, came BACK to, and
+    then closed through, which can be minutes or hours later. Gaps are now carried
+    forward in an active list until they invert, expire, or the session ends.
+
+    ``require_revisit`` enforces the return leg: price must trade back INTO the gap
+    before the close that breaks it. Without it a gap blown straight through by one
+    continuation candle counts, and that is a momentum event, not an inversion.
+    """
     o, h, l_, c = (bars[x].to_numpy() for x in ("open", "high", "low", "close"))
     idx = bars.index
     n = len(bars)
 
-    # confirmed swings, placed at the bar they become knowable (i+K)
     last_hi = np.full(n, np.nan)
     last_lo = np.full(n, np.nan)
     ch = cl = np.nan
@@ -81,38 +93,69 @@ def signals(bars: pd.DataFrame, require_sweep: bool) -> pd.DataFrame:
 
     sday = (idx - pd.Timedelta(hours=18)).date
     rows = []
-    for i in range(PIVOT_K + 3, n - 1):
-        # bullish FVG across (i-3, i-2, i-1): gap between high[i-3] and low[i-1]
-        for d, lo_edge, hi_edge in (
-                (1, h[i - 3], l_[i - 1]),      # bullish gap -> inversion DOWN = short
-                (-1, h[i - 1], l_[i - 3])):    # bearish gap -> inversion UP  = long
-            if not (lo_edge < hi_edge):
+    active: list[dict] = []          # gaps still live: {born, kind, lo, hi, touched}
+    for i in range(3, n - 1):
+        if sday[i] != sday[i - 1]:
+            active.clear()           # a gap does not survive the session break
+
+        # --- age out, then test every live gap for an inversion ------------------
+        still = []
+        for g in active:
+            if i - g["born"] > max_age:
                 continue
-            # inversion: close beyond the FAR edge, against the gap's own direction
-            if d > 0 and not c[i] < lo_edge:
-                continue
-            if d < 0 and not c[i] > hi_edge:
-                continue
-            direction = -d                      # trade the way the inversion broke
-            stop = (hi_edge + TICK) if direction < 0 else (lo_edge - TICK)
-            entry_ref = c[i]
-            risk = abs(stop - entry_ref)
-            if risk < 2.0:                      # BR-29: sub-2pt stops are not a risk unit
-                continue
-            if require_sweep:
-                # "we always want the market to sweep some sort of higher low"
-                sw = (not np.isnan(last_lo[i]) and l_[i - 3:i + 1].min() < last_lo[i]) \
-                    if direction > 0 else \
-                    (not np.isnan(last_hi[i]) and h[i - 3:i + 1].max() > last_hi[i])
-                if not sw:
-                    continue
-            t1 = last_hi[i] if direction > 0 else last_lo[i]
-            if np.isnan(t1) or (direction > 0 and t1 <= entry_ref) or \
-               (direction < 0 and t1 >= entry_ref):
-                t1 = entry_ref + direction * risk      # fall back to 1R
-            rows.append({"i": i, "ts": idx[i], "sess_day": sday[i], "direction": direction,
-                         "stop": stop, "risk": risk, "t1": t1})
-    return pd.DataFrame(rows)
+            # revisit: price has traded back into the gap's zone at some point
+            if l_[i] <= g["hi"] and h[i] >= g["lo"]:
+                g["touched"] = True
+            broke = (c[i] < g["lo"]) if g["kind"] == "bull" else (c[i] > g["hi"])
+            if broke and (g["touched"] or not require_revisit):
+                direction = -1 if g["kind"] == "bull" else 1
+                stop = (g["hi"] + TICK) if direction < 0 else (g["lo"] - TICK)
+                risk = abs(stop - c[i])
+                if risk >= 2.0:
+                    ok = True
+                    if require_sweep:
+                        ok = (not np.isnan(last_lo[i]) and l_[max(0, i - 10):i + 1].min()
+                              < last_lo[i]) if direction > 0 else \
+                             (not np.isnan(last_hi[i]) and h[max(0, i - 10):i + 1].max()
+                              > last_hi[i])
+                    if ok:
+                        t1 = last_hi[i] if direction > 0 else last_lo[i]
+                        if np.isnan(t1) or (direction > 0 and t1 <= c[i]) or \
+                           (direction < 0 and t1 >= c[i]):
+                            t1 = c[i] + direction * risk
+                        rows.append({"i": i, "ts": idx[i], "sess_day": sday[i],
+                                     "direction": direction, "stop": stop, "risk": risk,
+                                     "t1": t1, "age": i - g["born"]})
+                continue             # gap is spent either way
+            still.append(g)
+        active = still
+
+        # --- register the gap completed by bar i ---------------------------------
+        if l_[i] > h[i - 2]:
+            active.append({"born": i, "kind": "bull", "lo": h[i - 2], "hi": l_[i],
+                           "touched": False})
+        elif h[i] < l_[i - 2]:
+            active.append({"born": i, "kind": "bear", "lo": h[i], "hi": l_[i - 2],
+                           "touched": False})
+    sig = pd.DataFrame(rows)
+    if sig.empty:
+        return sig
+    # ONE SIGNAL PER FIGHT (BR-9/BR-10). A single momentum candle can close through
+    # several stale gaps at once, so the raw list counts one move many times — that is
+    # what 207 signals/day was. Keep the OLDEST gap on each bar (the most respected
+    # level), then impose a cooldown so the same push cannot re-fire every few bars.
+    sig = (sig.sort_values(["i", "age"], ascending=[True, False])
+              .drop_duplicates(["i", "direction"], keep="first"))
+    keep, last = [], {}
+    for r in sig.itertuples(index=False):
+        if r.i - last.get(r.direction, -10**9) >= cluster_bars:
+            keep.append(r.Index if hasattr(r, "Index") else True)
+            last[r.direction] = r.i
+        else:
+            keep.append(False)
+    sig = sig[[bool(k) for k in keep]].reset_index(drop=True)
+    sig["sid"] = np.arange(len(sig))
+    return sig
 
 
 def simulate(bars: pd.DataFrame, sig: pd.DataFrame, be_at_t1: bool) -> pd.DataFrame:
@@ -145,7 +188,7 @@ def simulate(bars: pd.DataFrame, sig: pd.DataFrame, be_at_t1: bool) -> pd.DataFr
         else:
             j = min(i0 + MAX_HOLD, n) - 1
             px = c[j]
-        out.append({"i": int(r.i), "sess_day": r.sess_day, "direction": d, "risk": risk,
+        out.append({"sid": int(r.sid), "i": int(r.i), "sess_day": r.sess_day, "direction": d, "risk": risk,
                     "out": d * (px - entry) / risk - COST_PTS / risk,
                     "reason": why, "hit_t1": int(hit_t1)})
     t = pd.DataFrame(out)

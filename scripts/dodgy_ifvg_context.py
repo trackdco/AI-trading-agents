@@ -112,8 +112,8 @@ def main() -> None:
     # JOIN on the signal index, never by position: simulate drops rows non-contiguously
     # (no next bar, sub-floor risk), so slicing would pair each trade with a different
     # signal's context and every table below would be quietly wrong.
-    t = tr.merge(sig[["i", "near_locus", "near_dist_w", "risk_w", "disp_w",
-                      "toward_ma", "br1_state", "room_r"]], on="i", how="left",
+    t = tr.merge(sig[["sid", "near_locus", "near_dist_w", "risk_w", "disp_w",
+                      "toward_ma", "br1_state", "room_r"]], on="sid", how="left",
                  validate="one_to_one")
     print(f"{len(t):,} trades annotated", flush=True)
 
