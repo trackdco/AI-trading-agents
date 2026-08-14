@@ -4,7 +4,7 @@
  "window": "NY_PRE",
  "decision_minute": "2026-06-02T08:00 ET",
  "leak_check": "pass - replay truncated at 07:59:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
- "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-01_NYPRE_0800_thesis.png",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-01_NYPRE_0800.png",
  "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
  "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
  "price_at_decision": 30531.25,
@@ -24,12 +24,14 @@
  },
  "window_state": {
   "window": "NY_PRE",
-  "entries": "08:00-09:29, entries cut off 09:10",
+  "entries": "08:00-09:29 entries cut off 09:10",
   "fills_this_window": 0,
   "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
  },
  "levels_at_decision_CHART": {
-  "source": "data_get_study_values at 07:59:59 cursor",
+  "bb_basis_2m_last_completed_plot": 30548.5,
+  "bb_upper_2m": 30573.06,
+  "bb_lower_2m": 30523.94,
   "vwap": 30457.25,
   "vwap_p1": 30532.77,
   "vwap_m1": 30381.73,
@@ -37,7 +39,17 @@
   "vwap_m2": 30306.21,
   "vwap_p3": 30683.81,
   "vwap_m3": 30230.69,
-  "bb_basis_2m_last_completed_plot": 30548.5
+  "read_at": "08:00 NY off the live chart legend",
+  "_session_calendar": {
+   "session_day_label": "2026-06-01",
+   "session_opens": "2026-06-01 18:00 ET (Monday evening)",
+   "cash_session_traded": "2026-06-02 (Tuesday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
  },
  "levels_at_decision_BUILD": {
   "vwap": {
@@ -136,54 +148,50 @@
   "fomc_day": false,
   "blackout_events": [],
   "drivers": [],
-  "falsified_by": "A high-impact US release (CPI, PCE, NFP/AHE/Unemployment, ISM Services, Retail Sales, Advance GDP, FOMC family, Fed testimony) surfacing on the calendar ahead of the 09:10 entry cutoff, or a mega-cap headline naming a specific NASDAQ constituent, would change this.",
-  "reasoning": "No scheduled US releases fall ahead of today's NY_PRE entry window, and no headlines are present. Core PCE (5/28) is stale and Mfg PMI (6/01) is excluded from this trader's gate by standing classification, so neither is actionable; no outcome values are available for either regardless. Clean neutral, not caution."
+  "falsified_by": "A high-impact US release appearing on the calendar at or before 08:00 ET that is not covered by the ISM Manufacturing PMI carve-out would change the blackout determination.",
+  "reasoning": "No events released so far today and none scheduled later today per the calendar as-of this decision minute. No named catalyst bears on NQ or its heavy constituents at this window, so lean is neutral with no gate triggered."
  },
  "what_to_emit": "your thesis JSON for this window, per your contract.",
  "prior_thesis": {
   "bias": "long",
   "targets": [
    {
-    "level": "session_high",
-    "price": 30547.25
-   },
-   {
-    "level": "prior_day_poc",
-    "price": 30560.0
-   },
-   {
     "level": "prior_day_vah",
     "price": 30597.0
+   },
+   {
+    "level": "prior_day_high",
+    "price": 30693.0
    }
   ],
   "invalidation": {
-   "level": "vwap",
-   "price": 30416.22
+   "level": "daily_weekly_vah_30545",
+   "price": 30545.0
   },
-  "waiting_for": "nothing",
-  "two_sided": true,
-  "condition_for_other_side": "shorts licensed on a stall-and-roll at the immediate overhead cluster now in reach (2m BB upper 30521 / vwap+2 30523.5 / session high 30547.25) - price is pressing all three at once after the value-area-low excursion below 30382",
+  "waiting_for": "retest of the reclaimed breakout cluster (session high 30547 / daily+weekly VAH 30545 / 2m-3m BB MA ~30536-30538) before longs are licensed - do not chase here under the BB-2m upper band 30570.8",
+  "two_sided": false,
+  "condition_for_other_side": "",
   "anticipated_resolution": {
-   "level": "vwap_p2_bb2m_upper_cluster",
-   "price": 30522.0,
+   "level": "prior_day_vah",
+   "price": 30597.0,
    "expect": "break_up",
    "act_on_resolution": true
   },
-  "acceptance_rule": "15m close through the 30521-30547 cluster with a decisive body (like the 0.83-ratio candle that just cleared weekly VAH) confirms continuation; a wick-heavy reject there confirms the fade",
+  "acceptance_rule": "long thesis holds unless undone by a 15m decisive-body close back below the daily/weekly VAH 30545 / prior session-high 30547 cluster",
   "other_side_tripwire": {
-   "level": "bb_ma_2m",
-   "price": 30501.11,
-   "event": "2m_close_through_with_ma"
+   "level": "daily_weekly_vah_30545",
+   "price": 30545.0,
+   "event": "15m_decisive_close"
   },
   "defended_level": {
-   "level": "prior_day_low",
-   "price": 30291.5,
-   "memory": "Monday's session low; this leg dipped to 30317.75 (below Monday's VAL 30382, a value-area-low excursion) without fully retesting 30291.5, then reversed hard",
+   "level": "session_low_near_prior_day_low",
+   "price": 30317.75,
+   "memory": "session dipped near prior-day low 30291.5 then rallied ~250pt to break the range top",
    "status": "holding"
   },
   "flush": false,
   "flush_direction": null,
-  "reasoning": "Session fell below Monday's VAL (30382) to 30317.75, then staged a sustained, band-walking rally (2m chart: steady higher lows hugging vwap+1/+2, no deep flush) back into Monday's value area, closing decisively (0.83 body) through the developing weekly VAH. That's a classic rebalance-to-POC trade, targeting prior-day POC/VAH. Two-sided only because price now presses BB-upper/vwap+2/session-high at once - all within reach - so a stall there is a live, checkable risk to the same long thesis."
+  "reasoning": "My armed other_side_tripwire resolved: the 04:00-04:15 15m candle closed 30556 with body_ratio 0.67, a decisive close above session high 30547.25, clearing daily/weekly VAH 30545 and prior-day POC 30560 in the same move - exactly the acceptance I would have written to license longs. Session round-tripped near the prior-day low before this rally, so that low is a defended level backing the move; flips bias long toward prior-day VAH 30597 then prior-day high 30693, entries on a retest rather than chasing into the BB-2m upper band."
  },
- "what_happened_since_the_last_read": "since the 03:00 read: LONDON produced no fills. Over the bars CLOSING 03:01 through 08:00: high 30586.00, low 30502.50, last close 30531.25. The rally extended through the prior-day POC (30560) region and has been rotating since; your 03:00 read named an overhead cluster near 30521-30547 and a tripwire at 30501.11, all of which sit well below current structure."
+ "what_happened_since_the_last_read": "Since your 04:15 read, stated as price facts only: between 04:15 and this decision minute the session traded a high of 30586.00 and a low of 30502.50. Your 04:15 invalidation was a 15m decisive-body close back below 30545; a mechanical scan of every 15m close from 04:15 to 04:59 found no such close. All levels in levels_at_decision_BUILD, including both profiles and the session extremes, are recomputed as of this minute."
 }

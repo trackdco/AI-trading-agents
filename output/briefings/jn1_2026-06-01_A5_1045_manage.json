@@ -1,0 +1,194 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "A5",
+ "decision_minute": "2026-06-02T10:45 ET",
+ "reason_for_call": "second_setup",
+ "leak_check": "pass - replay truncated at 10:44:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-01_A6_1045.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "long",
+  "entry": 30598.0,
+  "stop": 30598.0,
+  "targets": [
+   {
+    "level": "session_high",
+    "price": 30647.25
+   },
+   {
+    "level": "prior_day_high_vwap_p3_confluence",
+    "price": 30693.0
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "10:34",
+  "R_in_points": 29.0,
+  "current_stop_distance": 0.0,
+  "open_pnl_in_R": 0.59
+ },
+ "level_in_question": {
+  "level": "daily_vah",
+  "price": 30616.0
+ },
+ "price_at_decision": 30615.0,
+ "last_completed_2m_bar": {
+  "start": "10:42",
+  "closed_at": "10:44",
+  "open": 30591.0,
+  "high": 30619.25,
+  "low": 30588.25,
+  "close": 30615.0,
+  "volume": 2133,
+  "minutes": 2
+ },
+ "candle_grid_note": "This decision minute is 10:45, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 10:44. price_at_decision and every 2m field below are that 10:44 bar - they will not equal the 3m close, and the chart legend will read the 10:44 bar. Judge the 3m candle and the 10:44 2m candle; neither is fabricated.",
+ "recent_2m_bars": [
+  {
+   "start": "10:37",
+   "closed_at": "10:39",
+   "open": 30606.5,
+   "high": 30613.5,
+   "low": 30593.75,
+   "close": 30609.5,
+   "volume": 2192,
+   "minutes": 2
+  },
+  {
+   "start": "10:39",
+   "closed_at": "10:41",
+   "open": 30609.5,
+   "high": 30611.25,
+   "low": 30580.75,
+   "close": 30583.75,
+   "volume": 1908,
+   "minutes": 2
+  },
+  {
+   "start": "10:41",
+   "closed_at": "10:43",
+   "open": 30584.5,
+   "high": 30605.75,
+   "low": 30577.75,
+   "close": 30603.0,
+   "volume": 1839,
+   "minutes": 2
+  },
+  {
+   "start": "10:43",
+   "closed_at": "10:45",
+   "open": 30602.0,
+   "high": 30625.0,
+   "low": 30597.25,
+   "close": 30623.75,
+   "volume": 2134,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30601.16,
+  "bb_upper_2m": 30647.47,
+  "bb_lower_2m": 30554.85,
+  "vwap": 30512.79,
+  "vwap_p1": 30590.21,
+  "vwap_m1": 30435.37,
+  "vwap_p2": 30667.63,
+  "vwap_m2": 30357.95,
+  "vwap_p3": 30745.05,
+  "vwap_m3": 30280.53,
+  "read_at": "chart cursor 10:44:59"
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30512.94,
+   "vwap_p1": 30590.41,
+   "vwap_p2": 30667.89,
+   "vwap_p3": 30745.36,
+   "vwap_m1": 30435.46,
+   "vwap_m2": 30357.98,
+   "vwap_m3": 30280.51
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30602.15,
+   "bb_ma_3m": 30591.54,
+   "bb_ma_15m": 30552.79,
+   "bb_ma_60m": 30499.04
+  },
+  "day_range_fibs": {
+   "0.382": 30443.62,
+   "0.5": 30482.5,
+   "0.618": 30521.38,
+   "0.705": 30550.05
+  },
+  "session_high_so_far": 30647.25,
+  "session_low_so_far": 30317.75,
+  "daily_profile": {
+   "poc": 30551.0,
+   "val": 30467.0,
+   "vah": 30622.0,
+   "note": "DEVELOPING as-of 10:45"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30551.0,
+   "val": 30467.0,
+   "vah": 30622.0,
+   "high": 30647.25,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 10:45"
+  },
+  "prior_day": {
+   "poc": 30560.0,
+   "val": 30382.0,
+   "vah": 30597.0,
+   "high": 30693.0,
+   "low": 30291.5
+  }
+ },
+ "crowded_path": {
+  "levels_between_entry_and_tp1": [
+   "bb_ma_2m 30602.15",
+   "daily_vah 30622.0",
+   "weekly_vah 30622.0"
+  ],
+  "count": 3,
+  "crowded_path": true
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "10:44",
+   "reason_for_call": "intermediate_level_reached",
+   "action": "breakeven",
+   "new_stop": 30598.0,
+   "favouring": "same",
+   "reason": "daily_vah reached but not broken (wick 30619.25, close 30615.00); crowded path overrides the stall test"
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract.",
+ "second_setup_detail": {
+  "what_fired": "a fresh same-direction candidate (A6) at this minute returned take_light, conviction B.",
+  "its_rejected_level": "vwap_p1 at 30590.41 - candle opened at the vwap_p1/3m-MA cluster, wicked to 30588.25 below both, closed 30623.75. Shape A.",
+  "its_invalidation_stop": 30583.0,
+  "T53_conditions": "position in profit (+17.00 pts), same direction, independently valid, graded B - all four met, so this is an add rather than confirmation-only.",
+  "STOP_ARITHMETIC": "moving the position stop from its current 30598.00 to the new setup's invalidation 30583.00 would be a WIDENING of 15.00 points on a LONG. A stop only ever tightens - the orchestrator rejects a widening outright, so that trail is NOT available to you. Stated as arithmetic; what you do within that constraint is your decision.",
+  "note": "the orchestrator does not size. Any add is recorded as a smaller clip on ONE position and consumes no window slot."
+ },
+ "also_at_this_minute": {
+  "scheduler_events": [
+   "intermediate_level_broken: daily_vah 30616.00"
+  ],
+  "detail": "the 3m candle closing 10:45 closed 30623.75, through the daily/weekly VAH 30616.00 that was only reached on the prior call.",
+  "note": "two events in one minute are one decision, so they are given together."
+ },
+ "position_pnl_at_this_minute": {
+  "entry": 30598.0,
+  "price_now": 30615.0,
+  "unrealised_pts": 17.0,
+  "unrealised_R": 0.586,
+  "current_stop": 30598.0
+ },
+ "distance_to_tp1": {
+  "tp1": 30647.25,
+  "price_now": 30615.0,
+  "points_away": 32.25
+ }
+}

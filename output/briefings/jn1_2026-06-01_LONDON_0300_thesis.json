@@ -4,7 +4,7 @@
  "window": "LONDON",
  "decision_minute": "2026-06-02T03:00 ET",
  "leak_check": "pass - replay truncated at 02:59:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
- "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-01_LONDON_0300_thesis.png",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-01_LONDON_0300.png",
  "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
  "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
  "price_at_decision": 30514.5,
@@ -29,17 +29,32 @@
   "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
  },
  "levels_at_decision_CHART": {
-  "source": "data_get_study_values at 02:59:59 cursor",
-  "vwap": 30416.2,
-  "vwap_p1": 30469.88,
-  "vwap_m1": 30362.51,
-  "vwap_p2": 30523.57,
-  "vwap_m2": 30308.83,
-  "vwap_p3": 30577.25,
-  "vwap_m3": 30255.14,
-  "bb_basis_2m_last_completed_plot": 30501.11,
-  "bb_upper": 30521.11,
-  "bb_lower": 30481.12
+  "bb_2m": {
+   "basis": 30501.11,
+   "upper": 30521.11,
+   "lower": 30481.12
+  },
+  "vwap_bands": {
+   "vwap": 30416.2,
+   "vwap_p1": 30469.88,
+   "vwap_m1": 30362.51,
+   "vwap_p2": 30523.57,
+   "vwap_m2": 30308.83,
+   "vwap_p3": 30577.25,
+   "vwap_m3": 30255.14
+  },
+  "read_at": "03:00 NY off the live chart legend",
+  "ohlc_ticker_close": 30514.5,
+  "_session_calendar": {
+   "session_day_label": "2026-06-01",
+   "session_opens": "2026-06-01 18:00 ET (Monday evening)",
+   "cash_session_traded": "2026-06-02 (Tuesday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
  },
  "levels_at_decision_BUILD": {
   "vwap": {
@@ -138,8 +153,8 @@
   "fomc_day": false,
   "blackout_events": [],
   "drivers": [],
-  "falsified_by": "A headline or a known outcome on Core PCE (5/28) or ISM Mfg (6/1) surfacing before decision minute with a clear direction on NQ or a heavy constituent would overturn this; none is available now.",
-  "reasoning": "No scheduled events sit ahead of today's entry windows, so no blackout applies. The only recent releases carry no outcome values, and ISM Mfg doesn't gate per trader doctrine anyway. No headlines. Nothing to lean on."
+  "falsified_by": "N/A - no catalyst identified for this window",
+  "reasoning": "No events released so far today and nothing scheduled ahead of this decision minute (LONDON window, 2026-06-02 03:00 ET). No red-folder release sits inside the blackout window. No FOMC event today. Nothing to lean on; neutral is correct."
  },
  "what_to_emit": "your thesis JSON for this window, per your contract."
 }

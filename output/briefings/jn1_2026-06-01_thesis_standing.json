@@ -1,45 +1,45 @@
 {
- "bias": "long",
+ "bias": "short",
  "targets": [
   {
-   "level": "session_high",
-   "price": 30547.25
+   "level": "day_fib_0618",
+   "price": 30521.38
   },
   {
-   "level": "prior_day_poc",
-   "price": 30560.0
+   "level": "vwap",
+   "price": 30509.16
   },
   {
-   "level": "prior_day_vah",
-   "price": 30597.0
+   "level": "daily_val_weekly_val_fib0382_confluence",
+   "price": 30450.0
   }
  ],
  "invalidation": {
-  "level": "vwap",
-  "price": 30416.22
+  "level": "session_high",
+  "price": 30647.25
  },
- "waiting_for": "nothing",
+ "waiting_for": "shorts on hold - the 30550-30560 defended confluence was tested (low 30555.25=open) and already displaced away through VWAP+1 and the 30597-30600 cluster; need a fresh rejection back into/below that zone, or a stall-and-roll-over at 30647/daily VAH 30616, before shorts press again. Longs are licensed now per condition_for_other_side.",
  "two_sided": true,
- "condition_for_other_side": "shorts licensed on a stall-and-roll at the immediate overhead cluster now in reach (2m BB upper 30521 / vwap+2 30523.5 / session high 30547.25) - price is pressing all three at once after the value-area-low excursion below 30382",
+ "condition_for_other_side": "Longs licensed now: the defended prior-day-POC/15m-MA/fib-0.705 confluence (30550-30560) was tested with no further downside (low=open) and displaced 45pts through VWAP+1 and the 30597-30600 prior-day VAH cluster in one forming candle - a same-candle two-level break off my own named defended level, matching my reclaim condition one 15m bar early. Treating that as sufficient for this single-day, non-major cluster (not requiring the full 15m close). Longs target session high 30647 then the prior-day-high/VWAP+3 confluence near 30693.",
  "anticipated_resolution": {
-  "level": "vwap_p2_bb2m_upper_cluster",
-  "price": 30522.0,
+  "level": "session_high_30647",
+  "price": 30647.25,
   "expect": "break_up",
   "act_on_resolution": true
  },
- "acceptance_rule": "15m close through the 30521-30547 cluster with a decisive body (like the 0.83-ratio candle that just cleared weekly VAH) confirms continuation; a wick-heavy reject there confirms the fade",
+ "acceptance_rule": "The 30597-30600 VAH cluster break is confirmed intraday by the same-candle displacement through VWAP+1 and both MAs off a tested, held defended level; a 15m decisive-body close beyond the session high 30647 (or prior-day high 30693) would be full multi-day acceptance and the trigger to flip bias to long outright at the next read.",
  "other_side_tripwire": {
-  "level": "bb_ma_2m",
-  "price": 30501.11,
-  "event": "2m_close_through_with_ma"
+  "level": 30647.25,
+  "event": "15m_decisive_close"
  },
  "defended_level": {
-  "level": "prior_day_low",
-  "price": 30291.5,
-  "memory": "Monday's session low; this leg dipped to 30317.75 (below Monday's VAL 30382, a value-area-low excursion) without fully retesting 30291.5, then reversed hard",
+  "level": "prior_day_poc_15m_ma_fib0705_confluence",
+  "price": 30555.0,
+  "memory": "yesterday's POC (30560) stacks with today's 15m MA (~30552) and day fib 0.705 (30550); tested 10:32-10:34 with low=open (30555.25) and price displaced 45pts away through VWAP+1 and the prior-day VAH cluster in the same candle",
   "status": "holding"
  },
  "flush": false,
  "flush_direction": null,
- "reasoning": "Session fell below Monday's VAL (30382) to 30317.75, then staged a sustained, band-walking rally (2m chart: steady higher lows hugging vwap+1/+2, no deep flush) back into Monday's value area, closing decisively (0.83 body) through the developing weekly VAH. That's a classic rebalance-to-POC trade, targeting prior-day POC/VAH. Two-sided only because price now presses BB-upper/vwap+2/session-high at once - all within reach - so a stall there is a live, checkable risk to the same long thesis."
+ "escalation_response": "accommodated",
+ "reasoning": "The defended POC/15m-MA/fib-0.705 confluence (30550-30560) I flagged untested at 10:30 was tested (low 30555.25=open, no further downside) and displaced 45pts away through VWAP+1 and the 30597-30600 VAH cluster in one candle - a textbook defended-level bounce, one 15m bar early on my own reclaim condition. Not flipping bias without a full 15m close, but accommodating: longs licensed now toward session high 30647 then 30693; shorts paused until a fresh rejection back into the zone or a stall at 30647/daily VAH 30616."
 }
