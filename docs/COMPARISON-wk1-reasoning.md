@@ -222,3 +222,33 @@ indistinguishable (p ≈ 0.79, n = 17). By his own protocol, that number is
 weather. The finding is the six divergences above.
 
 *No changes proposed. Per the anchor: he reads this first, then rules.*
+
+
+---
+
+## ADDENDUM 2026-08-14 — his rulings on the open categories (week review)
+
+**Category 4 rulings (agent views where he had none):**
+- Monday 09:48 re-entry + add → **legitimate**: *"it would have just been a
+  scale-in kind of trade anyways."*
+- Wednesday extra London fades → **split**: the 03:00 and 04:38 edge-fades
+  good (*"the first and the fourth were definitely the best"*), the
+  03:27/03:54 middle-of-range continuations refused (*"not something I scale
+  in on"*) → T64.
+- Thursday NY with-flush shorts → **reasonable in the moment**: *"hindsight
+  says it lost, but in the moment I can see why."* Both losses cut early by
+  the manager, credited.
+- Friday 04:28 London long → **manufactured**: *"that is shocking... the
+  longs were the wrong move there."* → T64 (equilibrium failure points the
+  other way).
+
+**Category 2 updates:** 2.6 (Monday rebalance short passed) softened by him
+to *"completely fine"* — downgraded from failure to gap-worth-knowing. 2.1
+(Friday defended-low) upgraded: he independently named it his *"biggest
+issue of the whole thing"* and issued the flip ruling (T63) as its remedy.
+
+**His verdict on the week:** *"Monday Tuesday Wednesday were pretty good,
+Thursday Friday are the only ones I'd have a couple question marks for."*
+Every praise in his review lands on tier-3 management; every question mark
+lands on the thesis/location layer. His independent read reproduces this
+document's conclusion.

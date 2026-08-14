@@ -1602,3 +1602,71 @@ had none), led by category 2 — the failure invisible to results.
 First application: `docs/COMPARISON-wk1-reasoning.md` (six category-2
 divergences; the two costliest both sit at the MECHANISM layer). No contract
 changes made — per the anchor, he reads the comparison first, then rules.
+
+
+---
+
+## T63 — the flip: a better opposite setup may close and reverse the position
+**2026-08-14, his week review, on the Friday NY shorts (his "biggest issue of
+the whole thing"):**
+
+> *"We weren't able to break this Asia low on the dump... price tried to come
+> down on market open and it reclaimed it immediately... I'm pretty sure it
+> did think the long was valid and didn't take strictly because it was in a
+> short already... The agents should be able to flip their positions if a
+> better setup presents itself in that nature."*
+
+Today an open position blocks the opposite side outright. His ruling: it must
+not — when a genuinely better opposite setup fires, the position is closed
+and reversed. NOT implemented yet: "better" needs criteria (grade relative to
+the open trade? the open trade underwater or merely unresolved? once per
+level?) and it belongs in the thesis-0.5.0 rebuild, where the flip is the
+actuator for acting on the thesis's own written other-side branch — the
+Friday divergence (COMPARISON 2.1) was precisely a written branch with no
+actuator. Design with him before wiring; a cheap flip is a whipsaw machine.
+
+## T64 — the range frame outranks the local trigger
+**2026-08-14, week review — one location doctrine, four instances, both
+directions:**
+
+- Wed 03:27/03:54 shorts: *"kind of in the bottom half of the consolidation
+  range... I wouldn't want to tail that and try anticipate the break of the
+  consolidation. I don't think that's very probable or favorable."*
+- Wed 08:18 long: *"I'm not a fan — we are coming to top out this range...
+  it topped out the range, tried to take longs off it, and the trade reversed
+  quickly. If anything I'm more inclined to short there."* (The agent's
+  thesis had flipped long on a 15m acceptance; his range frame overrode a
+  legitimate-looking acceptance story.)
+- Fri 04:28 long: *"We stalled at the 0.5 of the range of the day and closed
+  back through the VWAP middle band — we could not cleanly break the
+  equilibrium of the daily range. The longs were the wrong move... I'd have
+  been much more inclined to go short"* (his own narrated 04:04 short is the
+  trade he wanted; targeting *"VWAP−1 or some volume profile level"*).
+
+The generalisation, in his frame: while a consolidation is in force, the
+range is the map — fade its edges, do not buy its top, do not chase from its
+middle toward its far side, and a failure to hold equilibrium (day 0.5 /
+VWAP mid) points AWAY from the failed side. Extends T50 from "middle is
+dead" to a full location doctrine. Belongs in the thesis rebuild as part of
+the range mechanism, not as another trigger constraint.
+
+**Rider on T53 (scale-ins), same review:** the Monday re-entry+add he
+ratified (*"it would have just been a scale-in kind of trade anyways"*), but
+the Wednesday middle-of-range continuation he refused: *"in live it would
+have already been in shorts from three o'clock — that's not something I
+scale in on."* A scale-in needs equal-or-better LOCATION, not just profit +
+same direction + B-grade.
+
+## T65 — small notes from the same review, recorded not legislated
+- **The Tuesday trail that cost the runner 0.88R**: noticed, and accepted —
+  *"management like that maybe cuts winners but it also cuts losers, which is
+  a good thing."* No change requested.
+- **Stop preference on the Tuesday 09:40 long**: he'd have placed it *"below
+  the three minute moving average that closed through"* rather than the
+  2m-derived placement — *"also completely valid."* Preference, not a rule.
+- **Monday 10:18 pass** (his ~+3R rebalance short, agent passed): *"completely
+  fine"* — softens COMPARISON 2.6 from a failure to a nice-to-have.
+- **A-conviction 50% partials**: *"seeming to play out pretty well."*
+- **Management tier overall**: *"the agents' actual trade management is very
+  good — I have to give it credit"* — including the Wed 08:18 trade he
+  disagreed with, saved by management, and both Thursday NY losses cut early.
