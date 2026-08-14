@@ -12,26 +12,33 @@ not the doctrine.
 | day | session-day | cash day | status |
 |---|---|---|---|
 | 1 | 2026-05-31 | Mon 1 Jun | **COMMITTED** (2c11d06f). +7.071R full-target / +3.679R blended. Has one open question — see §5. |
-| 2 | 2026-06-01 | Tue 2 Jun | **IN PROGRESS, fourth attempt, clean.** LONDON + NY_PRE complete (0.00R). NY_AM running. |
-| 3+ | 2026-06-02 … 2026-06-29 | Wed 3 Jun … Tue 30 Jun | not started |
+| 2 | 2026-06-01 | Tue 2 Jun | **COMMITTED** (1c94701f). +2.254R full-target / +1.714R blended. |
+| 3 | 2026-06-02 | Wed 3 Jun | **NEXT** |
+| 4+ | 2026-06-03 … 2026-06-29 | Thu 4 Jun … Tue 30 Jun | not started |
 
-**Day 2 progress (attempt 4, the clean one):**
-- **LONDON closed 0.00R** - 4 candidates, 4 passes, 0 fills. Theses v1 short 03:00,
-  v2 long 04:15 (tripwire resolved, 15m close 30556.00 body 0.67 above 30547.25).
-- **NY_PRE closed 0.00R** - 7 candidates (6 agent, 1 orchestrator-mechanical at 09:27
-  on the 09:10 cutoff), 2 takes, 1 fill. Thesis v3 short 08:00. P2 short filled 08:36
-  at 30540.00, R 22.0pt; tv-manage went breakeven at 08:38 on the crowded-path clause
-  and it was collected at 08:39 for 0.00R. P4 take_light B routed to tv-manage as a
-  T53 second_setup.
-- **NY_AM in progress** - thesis v4 VOIDED for an orchestrator leak (see below), re-run
-  clean as v4b long at 09:30. Its tripwire resolves 10:26, so a re-fire is due before
-  the 10:27 candidate. Candidates: 09:33, 09:46, 09:51, then 10:27, 10:34, 10:45.
+**Day 2 final (session-day 2026-06-01, trades Tue 2 Jun): +2.254R full / +1.714R blended.**
+17 candidates (16 agent, 1 orchestrator-mechanical), 5 takes, 3 fills, 12 passes.
+LONDON 0.000R (4 cand, 0 fills) · NY_PRE 0.000R (7 cand, 1 fill) · NY_AM +2.254R (6 cand, 2 fills).
+Every fill inside the written caps, so as-run == as-written. 11 thesis emissions;
+both escalations ACCOMMODATED, none reaffirmed; 6 tripwire resolutions all acted on
+the minute they resolved.
 
-**Escalations used all day: 0.** No agent has escalated thesis_stale.
+**Seven orchestrator defects found on day 2** - four fixed in code, all logged in the
+run file. The one that mattered: an inclusive bar slice put a not-yet-printed session
+high into the 09:30 thesis briefing. That thesis was VOIDED and re-run clean; LONDON,
+NY_PRE and the P2 fill were each measured against the corrected slice and were
+identical, so they stand. See FIXES for the code changes.
 
-Day 2 was attempted twice before and both attempts were voided in full:
-attempt 1 halted when the chart canvas froze; attempt 2 was abandoned after a missed
-tripwire re-fire. Neither produced any net R (the only fill scratched at exactly 0.00R).
+**Standing conventions added on day 2:**
+- every numeric fact in a briefing free-text field is substituted programmatically
+  from a computed variable, never typed. `verify()` does NOT police prose.
+- bar ranges for briefing text go through `htf.range_strictly_before` (end exclusive).
+- `output/briefings/` holds ONLY real briefings (dict-shaped, one per agent call).
+  Tier-3 call schedules go to `output/schedules/` - a list-shaped file in the
+  briefings dir crashes `audit_run_leak`.
+- `mk_thesis` hardcodes `open_position: null`; patch the built JSON when a position
+  is live before spawning.
+- tv-macro-events has NO tools - its briefing is passed INLINE, never as a path.
 
 ---
 
