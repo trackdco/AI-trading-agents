@@ -281,6 +281,84 @@ Then STOP. No second day until I have read the journal.
 
 ---
 
+## PHASE E — the full-June walk-forward on the patched stack
+
+```text
+You are a FRESH local session driving TradingView replay for the
+trading-agent stack. Read docs/RUNBOOK-replay-scoring.md IN FULL first —
+§0c (you have no trading discretion) before anything else. Then run
+tv_health_check and the R0 gates before day one.
+
+FULL JUNE WALK-FORWARD on the patched stack. Cash days Mon 1 Jun through
+Tue 30 Jun 2026 = session-days 2026-05-31 through 2026-06-29, in order.
+Convention reminder: each session-day OPENS 18:00 NY on its label date and
+trades the FOLLOWING calendar day. A day with no session data (holiday) is
+logged and skipped, not a halt.
+
+First: git pull, then verify versions before anything runs:
+  tv-thesis 0.4.2 · tv-trigger 0.4.7 · tv-manage 0.3.2 · tv-macro-events 0.2.0
+If any differ, STOP. Restart Claude Code after the pull so definitions reload.
+
+Read before day one — the patch is new:
+  1. .claude/agents/tv-thesis.md  — THE DEFENDED LEVEL, THE RANGE FRAME,
+     and other_side_tripwire (required, machine-checkable, on two-sided theses)
+  2. .claude/agents/tv-trigger.md — the flush gate's ONLY exemption (the
+     defended-level licence), THE FLIP (outranks T48 re-entry), the
+     equilibrium clause in constraint 9
+  3. docs/RUNBOOK-replay-scoring.md — the tripwire sensor (§2b: check every
+     thesis's other_side_tripwire at every candle close, re-fire tv-thesis
+     with event_trigger "other_side_tripwire_resolved" the minute it
+     resolves), THE FLIP procedure (§2c: the open-position gate lifts ONLY
+     under the licence; on a take, flatten the old position with
+     exit_reason "flipped"), and the three new briefing fields
+  4. Every trigger briefing now also carries the output of:
+     python -m scripts.context_extras <sess_day> <HH:MM> --json
+     (nwog, swept lows/highs, defended_levels) alongside the existing
+     htf_level_behavior fields. Mechanical, no editorial.
+
+Note this run is also the first outing of the 0.4.4-0.4.6 rules (09:10
+NY_PRE cutoff, flatten by 09:29:59, grade/size agreement, the outer-band
+fade-only gate, C-grade scale-in hold, trail clearance floor). wk1 ran on
+rolled-back contracts and never tested them.
+
+Everything standing still binds: no trading discretion (§0c), the
+do-not-open file list including all prior run logs, briefings
+mechanical-only, R0 gates + no-leak check at every landing, tv-manage at
+every management minute, take rows validated (schema-retry: byte-identical
+briefing, once), caps LIFTED with beyond_written_cap tagging and both
+scoreboards per day.
+
+Run prefix: jn1. Logs to output/agent_runs/<sess_day>_jn1.jsonl. COMMIT AND
+PUSH output/ after EVERY day. Per day, one line: date, candidates,
+adjudicated, takes, fills, R full/blended. No interpretation between days.
+
+CONTEXT LIMITS: run days until context runs low, then finish the CURRENT
+day completely, push, and print a resume note naming the next session-day.
+A fresh session pastes this same block and continues from git state. On
+start, if a previous session left an uncommitted or partial jn1 day,
+delete that partial log and re-run that session-day FROM ITS START — never
+resume a day midway. Committed days are done.
+
+The narrated week (session-days 2026-06-21 through 2026-06-25) falls inside
+this month. Run those days exactly like every other day — no prior logs, no
+special treatment.
+
+When the month is complete:
+  a. python -m scripts.audit_run_leak on every day's log — six checks each.
+     Any check F flag goes to the top of the report.
+  b. python -m scripts.journal_report on all days ->
+     output/agent_runs/jn1-journal.txt, committed.
+  c. python -m scripts.score_agent_outcome across the month.
+  d. For the five narrated days only:
+     python -m scripts.score_replay_run <log> --reasoning, saved to
+     output/agent_runs/jn1-narrated-week-reasoning.txt, committed.
+  e. The full month table, both scoreboards. Commit and push everything.
+
+Then STOP.
+```
+
+---
+
 ## What Phase B's limit-order probe decides
 
 TradingView's replay UI itself only offers market buy/sell/close, and the
