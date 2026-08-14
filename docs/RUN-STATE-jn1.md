@@ -13,7 +13,7 @@ not the doctrine.
 |---|---|---|---|
 | 1 | 2026-05-31 | Mon 1 Jun | **COMMITTED** (2c11d06f). +7.071R full-target / +3.679R blended. Has one open question — see §5. |
 | 2 | 2026-06-01 | Tue 2 Jun | **COMMITTED** (1c94701f). +2.254R full-target / +1.714R blended. |
-| 3 | 2026-06-02 | Wed 3 Jun | **NEXT** |
+| 3 | 2026-06-02 | Wed 3 Jun | **NEXT** - started once and cleared; see the day-3 recon below |
 | 4+ | 2026-06-03 … 2026-06-29 | Thu 4 Jun … Tue 30 Jun | not started |
 
 **Day 2 final (session-day 2026-06-01, trades Tue 2 Jun): +2.254R full / +1.714R blended.**
@@ -39,6 +39,48 @@ identical, so they stand. See FIXES for the code changes.
 - `mk_thesis` hardcodes `open_position: null`; patch the built JSON when a position
   is live before spawning.
 - tv-macro-events has NO tools - its briefing is passed INLINE, never as a path.
+
+---
+
+## 1b. DAY 3 RECON (session-day 2026-06-02, trades Wed 3 Jun) - already done, reuse it
+
+Day 3 was opened once and then cleared at the day boundary rather than left partial.
+Nothing was committed. These facts were established and do not need redoing:
+
+- **Weekly-anchor gate PASSES.** Expected == computed Mon 2026-06-01 18:00 EDT (same
+  anchor as day 2 - both session-days sit in the same cash week).
+  Profile at 02:30: POC 30676.00 / VAL 30540.00 / VAH 30721.00.
+- **19 candidates.**
+  LONDON (10): 03:04 D · 03:06 U · 03:34 D · 03:38 U · 03:42 D · 04:03 D · 04:09 U ·
+  04:24 D · 04:28 U · 04:39 D
+  NY_PRE (3): 08:18 D · 09:08 D · 09:27 U (past the 09:10 cutoff -> mechanical)
+  NY_AM (6): 09:36 D · 10:10 U · 10:15 U · 10:51 D · 10:54 U · 10:57 D
+- **ISM SERVICES PMI PRINTS 10:00 ET.** This is the first time Services has appeared in
+  the run, so his open question is LIVE. His ruling exempted ISM *Manufacturing* only;
+  `data/reference/blackout_policy.json` records the conservative reading that Services
+  still gates. Five of NY_AM's six candidates fall after 10:00. LONDON and NY_PRE are
+  unaffected - the macro agent returned `news_blackout: false` for LONDON with the event
+  correctly recorded in `blackout_events`.
+- **The day is a fast-churning rotation.** In the one attempt, the thesis re-fired three
+  times before 03:40 (short 03:00 -> long 03:15 -> short 03:30), every flip licensed by a
+  genuine DECISIVE 15m close through the same 30721-30725 daily/weekly VAH cluster.
+  Expect many tripwire resolutions; budget for them.
+- **The scanner is noisy on this day.** The first three candidates all had their
+  `levels_closed` reading overturned by the agent on the level values - twice because only
+  moving averages had been crossed (a lone MA closure is pending, not a candidate), once
+  because the candle high never reached the level the scanner named.
+
+**Two lessons banked from that attempt, both already in the conventions list:**
+1. Do NOT write anything into a briefing that points at an answer. A re-fire reason
+   ending "...if you judge the level is simply oscillating, say so, because stand_aside is
+   a complete answer" is a vote, caught before spawn. State the countable fact - "second
+   decisive 15m close through the same cluster in thirty minutes, opposite direction" -
+   and stop. The agent reached the oscillation read on its own from that fact alone.
+2. **Possible doctrine gap for his ruling:** the acceptance rule has no hysteresis. A level
+   that whipsaws with decisive 15m bodies re-fires the thesis every 15 minutes by
+   construction. That is different in kind from the old failure of flipping on 2m closes,
+   and it is worth asking whether repeated same-level acceptance should need more than the
+   next decisive close.
 
 ---
 
