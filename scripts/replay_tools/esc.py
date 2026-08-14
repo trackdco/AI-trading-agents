@@ -2,7 +2,7 @@
 import json, sys, os
 sys.path.insert(0,"/Users/barbelldaddy/AI-trading-agents")
 from scripts.escalation_gate import EscalationGate, EscalationRecord
-STATE="/Users/barbelldaddy/.claude/jobs/bdd15866/tmp/esc_state.json"
+STATE=os.path.join(os.environ.get("CLAUDE_JOB_DIR", "/tmp"), "tmp", "esc_state.json")
 
 def load():
     g=EscalationGate()

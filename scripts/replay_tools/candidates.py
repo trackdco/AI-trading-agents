@@ -20,7 +20,7 @@ def collect(day):
                     "rejected":[x.strip() for x in rej.group(1).split(",")] if rej else [],
                     "dec":mins(start)+int(tf)})
     for tf in (2,3):
-        rj=run(f"{V} rejscan.py {day} {tf}","/Users/barbelldaddy/.claude/jobs/bdd15866/tmp")
+        rj=run(f"{V} -m scripts.replay_tools.rejscan {day} {tf}")
         for ln in rj.splitlines():
             m=re.match(r"\s+(\d\d:\d\d) (\w+)\s+(UP|DOWN) own_ma\s+([\d.]+) C ([\d.]+) vol\s+(\d+) \| rejected: (.*?) \| same-candle 2nd: (\[.*\])", ln)
             if not m: continue
