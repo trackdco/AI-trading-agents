@@ -180,6 +180,28 @@ silently fall back to a higher timeframe — a 15m replay cannot adjudicate a
 
 At the landing minute (before the window opens):
 
+0. **THE WEEKLY-ANCHOR GATE — hard, per day, before anything else** (his
+   ask 2026-08-15, after the anchor failed twice — once ~900pt out at the
+   POC, once a Monday anchored to the prior Thursday):
+
+   ```bash
+   python -m scripts.gate_weekly_anchor <sess_day> --minute <landing HH:MM>
+   ```
+
+   Exit 1 stops the day, same standing as a parity FAIL — weekly edges are
+   the only levels that grade A alone, so a day run on a wrong anchor is not
+   worth scoring. The gate re-derives the expected anchor from pure calendar
+   arithmetic (this cash-week's Monday 18:00 NY; a Monday cash session falls
+   back to the prior Monday), compares it to what `agent_context` actually
+   used, and verifies bars exist AT the anchor so the profile cannot
+   silently start at whatever data happens to be loaded. After the first
+   trigger briefing of the day is written, run it once more with
+   `--briefing <path>` so the builder's weekly numbers are cross-checked
+   against the recompute. When he has hand-anchored the chart drawing, pass
+   `--chart-poc/--chart-val/--chart-vah` for the advisory visual check
+   (never a hard fail — the ~30pt binning residual is documented and the
+   chart wins).
+
 1. Build the day context: `data_get_ohlcv` (count sized to cover 18:00 → now;
    465 2m bars covers 18:00→09:30, within the 500 cap), plus
    `scripts/agent_context.py` values for prior-day / weekly levels.
