@@ -240,3 +240,137 @@ Screenshots land in `/Users/barbelldaddy/tradingview-mcp/screenshots/`.
    from older runs). Any unexplained failure stops the next day.
    Known-benign check-C classes: the `-04:00` UTC offset inside anchor timestamps,
    window-bound constants, and scheduled event times.
+
+---
+
+## 10. ESTABLISHED ON DAY 3 (session-day 2026-06-02)
+
+### 10a. NEVER BLOCK (his standing rule, runbook §2d)
+Only three things halt a run: a parity FAIL, an unclearable no-leak check, a
+contract-version mismatch. Everything else — including anything you would want his
+ruling on — applies the **conservative default** (the existing rule as written; or
+`pass` with `reason: awaiting_ruling` if a candidate genuinely cannot be adjudicated
+without him), logs an `open_question` row naming the question, the default applied and
+the rows it touched, and **continues**. Reuse the same default on later days so the
+month stays internally consistent. All open questions are surfaced together in the
+morning report. Never stop overnight to ask anything.
+
+### 10b. `replay_start` needs an explicit `-04:00` offset
+`replay_start` parses a bare `"2026-06-03 04:23:59"` in **AEST (+10)** and silently
+lands **14 hours early** on the wrong day. Always pass
+`"2026-06-03 04:23:59-04:00"`. `replay_start`'s own response echoes the *previous*
+cursor, so the jump is only confirmed by a following `replay_status` — which also
+repaints the canvas, so it is required anyway.
+
+**CORRECTED — this section originally said the landed cursor arriving at `:58` rather
+than `:59` was "a snap to the last tick, not a miss." That was wrong and was never
+checked against the data. It is a real one-minute miss. See §10h.** Request `dec:00`,
+not `dec-1:59`.
+
+### 10c. `price_at_decision` lags at ODD decision minutes
+`brief04.price_at(dec)` returns the close of the **last complete 2m bar**. At an even
+decision minute that is the close of minute `dec-1` and is correct. At an **odd**
+decision minute (a 3m close that is off the 2m grid) it is the close of minute
+`dec-2` — one committed minute stale, even though the chart cursor at `dec-1:59`
+has reached that minute.
+- It is material. At L6 (04:03) it made a short limit at 30710.50 read as marketable
+  against 30711.50 when the true last price was 30705.00 and the limit rested correctly
+  above the market. It also understates adverse excursion on manage calls.
+- **Default applied, reused for the rest of the month:** validate take-row entry
+  geometry against the **last committed 1-minute close** (close of minute `dec-1`).
+  Leave `price_at_decision` untouched so day-3 briefings stay comparable with day 2;
+  instead attach a clearly-labelled `last_committed_1m_close` block **only** to
+  briefings where the two figures would otherwise contradict each other (odd decision
+  minutes, and any manage call whose `reason_for_call` was computed from `dec-1`).
+
+### 10d. Speculative parallel adjudication — the rule that came out of it
+Candidate screenshots and chart-legend reads can be captured far ahead of the agents;
+they are minute-stamped and leak-safe, and they cost no wall-clock while an agent runs.
+Briefings, however, depend on window state. Building several ahead on an assumed
+FLAT/`n`-fills premise cost two voided verdicts on day 3 when L8 came back `take_full`.
+**Rule: only spawn a candidate speculatively when every candidate before it in the same
+window has already returned a pass.** Voided briefings and their unscored verdicts are
+recorded in `void` / `trigger_voided` rows so the discard is auditable.
+
+### 10e. `scripts/replay_tools/mkcand.py`
+Builds one trigger briefing from a small JSON spec: wraps `mk_trigger` and fills the
+standing extras (`chart_truncation_note`, `position_state`, the outer-band gate **with
+its arithmetic spelled out and the fire/no-fire verdict computed**, `escalation_state`,
+`news_note`, `scanner_detail`). Prints the briefing path and whether the outer-band gate
+fires. A candidate is one command instead of hand-assembly.
+
+### 10f. news_blackout is applied to the WHOLE window
+`news_blackout` is emitted per window and consumed per window. A scheduled release
+sitting inside a window (ISM Services PMI 10:00 inside NY_AM 09:30-11:00) gates **every**
+candidate in that window, which become orchestrator-mechanical passes with
+`agent_spawn: "none - ..."` and no tv-trigger call. Logged as an `open_question`
+(whether the gate should instead cover only a band around the print); default reused for
+the rest of the month.
+
+### 10g. Escalation, worked end to end
+Day 3 L6 is the clean template: tv-trigger returned `pass` on `direction_mismatch` with
+`thesis_stale: true` and an escalation. The orchestrator checked all five safeguards
+(otherwise-TAKE with entry/stop/targets and a conviction; `pair_shape` same_candle;
+budget 0 of 2; ratchet clear; no mechanical gate fired; one escalation on this
+candidate), spent one, and re-fired Tier 1 **at the same decision minute on the same
+screenshot** — the day-2 convention, no new capture. Tier 1 came back `accommodated`,
+holding bias and relocating the other-side condition. The candidate was then re-run on a
+briefing byte-identical except `thesis`, `thesis_version`, `escalation_state` and a
+`POST_ESCALATION_NOTE`, and returned `take_full`.
+
+### 10h. CAPTURE CURSOR: request `dec:00`, NOT `dec-1:59`
+Found on day 3 by a tv-trigger agent that refused to adjudicate A1.
+
+`replay_start` with `dec-1:59-04:00` LANDS at `dec-1:58`, at which point minute `dec-1`
+is still forming and has **not committed**. The chart is therefore one minute short of
+the briefing:
+- at an **even** decision minute the 2m signal candle closes AT `dec` and needs minute
+  `dec-1` committed — always short;
+- at an **odd** decision minute the displayed 2m bar closes at `dec-1` and is fine, but
+  the 3m signal candle is still short.
+
+At A1 this showed the chart's last 2m bar as `O30763.75 H30763.75 L30714.00 C30714.25`
+— the **1-minute** bar for 09:34 — against the briefing's true 2m candle
+`L30677.50 C30680.00`. A 34pt divergence in the body.
+
+**Fix: request `dec:00-04:00`.** It lands at `dec-1:59`, commits minute `dec-1`, and is
+still leak-safe (minute `dec` has not started; confirm with `data_get_ohlcv`).
+
+**The freshness self-check cannot catch this.** `levels_at_decision_CHART` is read from
+the same frame as the screenshot, so briefing and capture agree with each other while
+both lag. The legend does move between the stale and correct frames (BB basis 30739.24
+vs 30737.53 at A1) — the check simply had nothing correct to compare against. A real
+detector would compare the chart's last-bar OHLC against the briefing's stated signal
+candle, which is exactly what the agent did.
+
+Day 2 and day 3's LONDON/NY_PRE carry the defect; they were NOT re-run (the briefings
+state every candle numerically in text, and 8 of 9 candidates adjudicated without
+objection). Flagged for his ruling.
+
+### 10i. CLEAR THE CROSSHAIR BEFORE READING THE LEGEND
+Found on day 3 at A4's 10:53 capture.
+
+The indicator legend can display a **HOVERED** bar's values instead of the last bar's.
+At 10:53 it reported BB basis `30760.53` / VWAP `30710.11` against true values of
+`30698.16` / `30682.43` — out by 61.78 and 27.18 points, corresponding to roughly
+08:18, over two hours earlier. It survived a repeated read, a `replay_status` repaint,
+and a full re-jump away and back.
+
+**This falsifies §8's claim that the legend is the reliable freshness signal.** §8
+already noted the top-left OHLC *ticker* can hover; the legend can too — and the legend
+is the exact field `chart_freshness_self_check` asks the agent to compare against. The
+check cannot detect it: the orchestrator reads the legend from the same frame the
+screenshot shows, so briefing and capture agree with each other while both describe the
+wrong bar.
+
+**Fix, two parts:**
+1. **Clear the crosshair** — `ui_mouse_click` on empty chart space to the right (e.g.
+   `x=1350, y=300`) before reading study values or capturing. This restored the correct
+   values immediately.
+2. **Verify every read** — `scripts/replay_tools/verify_legend.py` cross-checks the
+   legend against `bb_ma_2m`, `vwap`, `vwap_p1`, `vwap_m1` computed independently from
+   committed bars, 2.00pt tolerance. A failing read is marked UNVERIFIED in the briefing;
+   the orchestrator states both numbers and never silently substitutes its own.
+
+Sequence per capture: `replay_start(dec:00-04:00)` → `replay_status` → **clear crosshair**
+→ `capture_screenshot` → `data_get_study_values` → `verify_legend.check(...)`.

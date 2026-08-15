@@ -7,10 +7,24 @@
    "ruled_on": "2026-08-14, during jn1 day 1 (session-day 2026-05-31)",
    "note": "the archive lists this event as impact=high; his ruling overrides that for entry-gating purposes.",
    "ruling_quote": "ISM is not high impact for me so it should take that."
+  },
+  {
+   "event_match": "*",
+   "scope": "all red-folder (high-impact) scheduled releases, including ISM Services PMI",
+   "gates_entries": "only inside a band before the print",
+   "blackout_band": {
+    "starts": "event_time minus 10 minutes",
+    "ends": "event_time",
+    "entries_after_event_time": "permitted",
+    "boundary_convention": "the band is inclusive of both endpoints; entries are free from the first minute AFTER the event time. No candidate on the day this was ruled fell on a boundary minute."
+   },
+   "ruled_on": "2026-08-15, during jn1 day 3 (session-day 2026-06-02), in response to a direct question about the ISM Services PMI gate",
+   "ruling_quote": "with 10am red folder news usually just dont enter 10 minutes before it, and i am free to trade after it. thats my rule.",
+   "note": "this supersedes the previous per-window treatment, under which a release anywhere inside a window blacked out the entire window. It also resolves the ISM Services open question: Services is red-folder and does gate, but only inside the band - he did not exempt it the way he exempted ISM Manufacturing."
   }
  ],
  "open_questions": [
-  "ISM Services PMI - he said 'ISM' while looking at a Manufacturing print. The macro contract groups them as one family (ISM Mfg/Services). NOT extended to Services without his word; Services still gates until he rules."
+  "RESOLVED 2026-08-15: ISM Services PMI gates as red-folder news, but only within the 10-minute pre-print band, per his ruling above. The earlier note that Services 'still gates until he rules' is superseded."
  ],
  "_marker_note": "the quote key is named ruling_quote, NOT his_words. scripts.audit_run_leak check D treats 'his_words' as a corpus answer-key marker because that is the key used in data/narrated_days/*.json, and this file being inlined into the macro briefing tripped it on jn1 day 2. The content is a STANDING POLICY ruling about which calendar events gate entries - it says nothing about what happened on any replayed day - but the key name alone is enough to fail the audit, so it was renamed."
 }

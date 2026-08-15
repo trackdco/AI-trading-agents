@@ -1,0 +1,10 @@
+{
+ "lean": "neutral",
+ "confidence": "high",
+ "news_blackout": false,
+ "fomc_day": false,
+ "blackout_events": [],
+ "drivers": [],
+ "falsified_by": "no read to falsify - nothing has printed as of this decision minute and no imminent high-impact release falls within the NY_PRE window",
+ "reasoning": "No US releases have printed today as of 08:00 ET. ISM Services PMI is scheduled for 10:00 ET, well outside the NY_PRE window and not yet gating this entry; per open standing policy, Services is not ruled on and would still gate its own window if it were imminent. No directional catalyst to lean on."
+}
