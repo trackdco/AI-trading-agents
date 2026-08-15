@@ -326,6 +326,36 @@ leak-class or chronology defect caught on day 2 costs a day; the same defect
 found at month-end costs the month. The month-end sweep remains as the
 final check across all days.
 
+## 2d. NEVER BLOCK ON HIM. The overnight rule.
+
+**2026-08-16, after a session ran two days and then sat idle all night
+awaiting a "ruling" that, when he asked, it admitted it did not need.** An
+unattended run that stops to ask a question has not been careful — it has
+destroyed the night, which is the only time these runs get to happen.
+
+**A run NEVER halts for input. There are exactly three hard stops** (parity
+FAIL, an unclearable no-leak check, a contract-version mismatch) and they
+are data-integrity stops, not questions. Everything else continues.
+
+When something genuinely needs his judgement mid-run:
+
+1. **Apply the conservative default and carry on.** The conservative default
+   is always the one that changes nothing: the existing rule as written, the
+   more restrictive reading, or — where a candidate cannot be adjudicated
+   without an answer — log it `pass` with `reason: awaiting_ruling`.
+2. **Log an `open_question` row** in that day's log: what was asked, what
+   default was applied, which rows it touched.
+3. **Keep running.** Later days use the same default, so the month stays
+   internally consistent.
+4. **Surface every open question in the morning report**, together. He rules
+   in one pass; anything affected is re-run then, cheaply, because the rows
+   are flagged.
+
+**Before pausing for any reason, ask: is this a data-integrity stop?** If
+not, it is an `open_question` row and the run continues. A night that
+produces twenty days plus four flagged questions is worth more than a night
+that produces two days and a polite request.
+
 **A second same-direction setup while a position is IN PROFIT is a scale-in,
 not a new trade (T53).** `tv-trigger` adjudicates the fresh candidate as
 normal; on a take verdict **graded B or better**, the orchestrator routes
