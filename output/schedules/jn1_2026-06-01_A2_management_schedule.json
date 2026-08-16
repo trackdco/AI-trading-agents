@@ -1,0 +1,56 @@
+[
+ {
+  "minute": "09:48",
+  "reason": "intermediate_level_broken",
+  "level": "fib_0.705",
+  "level_price": 30506.87,
+  "also_at_this_minute": [
+   "intermediate_level_broken:bb_ma_3m"
+  ]
+ },
+ {
+  "minute": "09:49",
+  "reason": "intermediate_level_reached",
+  "level": "daily_poc",
+  "level_price": 30537.0,
+  "also_at_this_minute": [
+   "intermediate_level_reached:weekly_poc",
+   "intermediate_level_reached:vwap_p1",
+   "intermediate_level_reached:bb_ma_15m"
+  ]
+ },
+ {
+  "minute": "09:50",
+  "reason": "intermediate_level_broken",
+  "level": "daily_poc",
+  "level_price": 30537.0,
+  "also_at_this_minute": [
+   "intermediate_level_broken:weekly_poc",
+   "intermediate_level_broken:vwap_p1",
+   "intermediate_level_broken:bb_ma_15m"
+  ]
+ },
+ {
+  "minute": "09:51",
+  "reason": "intermediate_level_broken",
+  "level": "prior_day_poc",
+  "level_price": 30560.0,
+  "also_at_this_minute": [
+   "intermediate_level_reached:prior_day_poc"
+  ]
+ },
+ {
+  "minute": "09:54",
+  "reason": "tp1_reached",
+  "level": "target_1",
+  "level_price": 30566.0,
+  "also_at_this_minute": []
+ },
+ {
+  "minute": "11:00",
+  "reason": "window_closing",
+  "level": "window_end",
+  "level_price": null,
+  "also_at_this_minute": []
+ }
+]

@@ -1,0 +1,29 @@
+{
+ "briefing_class": "FACT-ONLY",
+ "run_prefix": "jn1",
+ "session_day": "2026-06-01",
+ "trades_calendar_day": "2026-06-02",
+ "decision_minute": "2026-06-02T03:00 America/New_York",
+ "window": "LONDON",
+ "news_as_of": {
+  "released_so_far_today": [],
+  "scheduled_later_today": [],
+  "note": "released_so_far_today is everything on the calendar at or before this minute. scheduled_later_today is the calendar only - times are known in advance and carry no outcome."
+ },
+ "standing_policy": {
+  "_doc": "Standing rulings on which calendar events gate entries (news_blackout). The archive's `impact` column is the vendor calendar's classification; this file records HIS classification where it differs. The orchestrator states these as facts in the macro briefing; the macro agent still decides news_blackout.",
+  "rulings": [
+   {
+    "event_match": "ISM Manufacturing PMI",
+    "gates_entries": false,
+    "his_words": "ISM is not high impact for me so it should take that.",
+    "ruled_on": "2026-08-14, during jn1 day 1 (session-day 2026-05-31)",
+    "note": "the archive lists this event as impact=high; his ruling overrides that for entry-gating purposes."
+   }
+  ],
+  "open_questions": [
+   "ISM Services PMI - he said 'ISM' while looking at a Manufacturing print. The macro contract groups them as one family (ISM Mfg/Services). NOT extended to Services without his word; Services still gates until he rules."
+  ]
+ },
+ "instruction": "Emit your lean and the news_blackout gate for this minute from the rows above and the standing policy. You have no tools; do not attempt to verify anything outside this file."
+}

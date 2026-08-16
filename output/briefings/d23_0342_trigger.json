@@ -1,0 +1,108 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D23-L1-0342",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-24T03:42 ET",
+ "candle_start": "03:40",
+ "timeframe": "2m",
+ "leak_check": "pass - truncated at 03:41:59; last completed 2m bar starts 03:40 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d23_c1_0342.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; weekly levels numeric and DEVELOPING. No agent-drawn positions.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "overnight_high",
+    "price": 29891.75
+   },
+   {
+    "level": "weekly_val",
+    "price": 30036.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29577.25
+  },
+  "waiting_for": "rebalance to the 15m MA / VWAP / 0.618 fib shelf (29764-29775) before longs are licensed",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed on a rejection at the overhead supply near the overnight high / prior-day VAH (29891-29928), or at weekly VAL 30036 if reached",
+  "acceptance_rule": "15m close beyond weekly_low 29577.25 (or the overhead supply zone) with a decisive body - a wick-heavy absorption candle means the level held",
+  "reasoning": "Overnight is two-sided, rangebound - tight VWAP bands and converging BB MAs are the low-directional signature of a ROTATIONAL day, so the 15m MA is the rebalance floor. The overnight low (29585.5), within 8pt of the weekly low, held twice then rallied 306pt to fair value on both profiles. Long off that defended low, waiting for a pullback into the 15m MA/VWAP/0.618 shelf, targeting the overnight high then weekly VAL.",
+  "as_of": "03:00 window_open"
+ },
+ "candidate_source": "SUPPLEMENTARY rejection-first scan (two_level_check also flags candidates around here; this is the rejection-first shape).",
+ "waiting_for_status": "SATISFIED. The thesis wanted a pullback into the 15m MA / VWAP / 0.618 fib shelf at 29764-29775. The 03:36 bar traded down into it and REJECTED it - wicking below the VWAP (29766.23) and the 15m MA and closing back above - and the 03:38 bar re-tested the 15m MA and held. That is the rebalance, and it held.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "03:40",
+  "direction": "UP",
+  "open": 29793.75,
+  "high": 29804.5,
+  "low": 29779.25,
+  "close": 29803.25,
+  "volume": 290,
+  "note": "closed up through its own 2m MA 29801.36"
+ },
+ "rejection_sequence": "03:36 wicked into the VWAP/15m-MA shelf and closed back above (+0.2 beyond VWAP, +9.64 beyond the 15m MA); 03:38 re-tested the 15m MA to within 0.1 and held. Two touches, both defended.",
+ "pair_shape": "rejection_first",
+ "levels_closed": [
+  "own_ma_2m"
+ ],
+ "levels_at_decision_CHART": {
+  "vwap": 29766.23,
+  "vwap_p1": 29835.34,
+  "vwap_m1": 29697.12,
+  "vwap_p2": 29904.46,
+  "vwap_m2": 29628.01,
+  "bb_2m_basis": 29801.36,
+  "bb_2m_upper": 29823.25,
+  "bb_2m_lower": 29779.47
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_3m": 29811.71,
+  "bb_ma_15m": 29776.42,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "day_high": 29891.75,
+  "day_low": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29699.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30036.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "overnight_high": 29891.75,
+  "overnight_low": 29585.5,
+  "weekly_low": 29577.25
+ },
+ "levels_above_for_target_selection": "bb_2m_upper 29823.25, vwap_p1 29835.34, daily_vah 29858, overnight_high 29891.75, vwap_p2 29904.46, prior_day_vah 29928. Apply T11: R = |entry-stop| first, then the NEAREST level inside 1.5R-2.5R; FIXED 1.5R if none qualifies.",
+ "chop_warning": "This session's mechanical detector finds 108 two-level candidates between 03:00 and 11:00 - roughly 5x a normal day - and the thesis calls it rotational. Constraint 9 (in chop, require higher-timeframe alignment) is live.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

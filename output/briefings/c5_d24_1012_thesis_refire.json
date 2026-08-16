@@ -1,0 +1,216 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "invalidation_breached",
+ "window": "NY_AM 09:30-11:00 ET",
+ "decision_minute": "2026-06-25T10:12 ET",
+ "leak_check": "pass - truncated at 10:11:59; session extremes developing to this minute, not the day's final range.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d24_1012.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "price_at_decision": 29664.0,
+ "last_completed_2m_bar": {
+  "start": "10:10",
+  "closed_at": "10:12",
+  "open": 29606.25,
+  "high": 29690.0,
+  "low": 29593.75,
+  "close": 29664.0,
+  "volume": 5559
+ },
+ "position_state": "FLAT. Nothing open, nothing being managed.",
+ "window_state": {
+  "LONDON": "1 fill of 2 - closed",
+  "NY_PRE": "1 fill of 1 - closed and capped",
+  "NY_AM": "0 fills of 2 - open"
+ },
+ "levels_at_decision_CHART": {
+  "vwap": 29887.88,
+  "vwap_p1": 30167.79,
+  "vwap_p2": 30447.7,
+  "vwap_m1": 29607.98,
+  "vwap_m2": 29328.07,
+  "bb_ma_2m": 29658.69,
+  "bb_ma_3m": 29821.0,
+  "bb_ma_15m": 30065.88,
+  "bb_ma_60m": 29961.8
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29658.69,
+  "bb_ma_3m": 29821.0,
+  "bb_ma_15m": 30065.88,
+  "bb_ma_60m": 29961.8,
+  "day_range_fibs": {
+   "0.382": 29665.53,
+   "0.5": 29779.75,
+   "0.618": 29893.97,
+   "0.705": 29978.19
+  },
+  "session_high_so_far": 30263.75,
+  "session_low_so_far": 29295.75,
+  "daily_profile": {
+   "poc": 30067.0,
+   "val": 29651.0,
+   "vah": 30236.0,
+   "note": "DEVELOPING as-of 10:12"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 29780.0,
+   "vah": 30967.0,
+   "note": "DEVELOPING as-of 10:12"
+  },
+  "prior_day": {
+   "poc": 29769.0,
+   "val": 29503.0,
+   "vah": 29892.0,
+   "high": 30157.75,
+   "low": 29264.75
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29264.75
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "session_open_1800": 30089.75,
+  "overnight_high": 30168.5,
+  "overnight_low": 29924.5,
+  "hourly_closes_so_far": {
+   "03:00": {
+    "close": 30105.25,
+    "H": 30168.5,
+    "L": 29924.5
+   },
+   "04:00": {
+    "close": 30181.75,
+    "H": 30186.5,
+    "L": 29924.5
+   },
+   "05:00": {
+    "close": 30119.5,
+    "H": 30219.0,
+    "L": 29924.5
+   },
+   "06:00": {
+    "close": 30131.0,
+    "H": 30219.0,
+    "L": 29924.5
+   },
+   "07:00": {
+    "close": 30160.5,
+    "H": 30219.0,
+    "L": 29924.5
+   },
+   "08:00": {
+    "close": 30131.25,
+    "H": 30219.0,
+    "L": 29924.5
+   },
+   "09:00": {
+    "close": 30201.25,
+    "H": 30263.75,
+    "L": 29924.5
+   },
+   "09:30": {
+    "close": 30151.0,
+    "H": 30263.75,
+    "L": 29924.5
+   },
+   "10:00": {
+    "close": 29316.0,
+    "H": 30263.75,
+    "L": 29295.75
+   }
+  },
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "06:00",
+    "dir": "DOWN",
+    "ma": 30131.56,
+    "close": 30131.0,
+    "body_ratio": 0.59
+   },
+   {
+    "t": "06:15",
+    "dir": "UP",
+    "ma": 30136.1,
+    "close": 30159.25,
+    "body_ratio": 0.75
+   },
+   {
+    "t": "07:30",
+    "dir": "DOWN",
+    "ma": 30147.9,
+    "close": 30117.75,
+    "body_ratio": 0.68
+   },
+   {
+    "t": "08:45",
+    "dir": "UP",
+    "ma": 30150.06,
+    "close": 30192.75,
+    "body_ratio": 0.45
+   },
+   {
+    "t": "09:45",
+    "dir": "DOWN",
+    "ma": 30129.74,
+    "close": 29768.25,
+    "body_ratio": 0.86
+   }
+  ],
+  "displacement_candles_so_far": [
+   {
+    "t": "08:32",
+    "range": 137.75
+   },
+   {
+    "t": "08:34",
+    "range": 46.75
+   },
+   {
+    "t": "09:32",
+    "range": 127.75
+   }
+  ],
+  "note": "listed only up to this decision minute."
+ },
+ "macro": {
+  "news_blackout": false,
+  "note": "no scheduled release inside this window."
+ },
+ "what_to_emit": "your standard thesis JSON for this window.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_vah",
+    "price": 30208.0
+   },
+   {
+    "level": "session_high",
+    "price": 30263.75
+   },
+   {
+    "level": "weekly_poc",
+    "price": 30640.0
+   }
+  ],
+  "invalidation": {
+   "level": "vwap",
+   "price": 30102.93
+  },
+  "waiting_for": "a rebalance-hold at the 15m MA / daily POC / 0.618-0.705 fib confluence (30134-30164) before adding longs",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed on a 15m decisive close below the 15m MA / daily POC zone (below ~30134), targeting vwap 30103 / daily VAL 30055 / 0.5 fib 30094 confluence, then prior-day VAH 29892",
+  "anticipated_resolution": {
+   "level": "15m_ma_daily_poc_confluence",
+   "price": 30150.0,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "the long is invalidated only on a 15m close below the 15m MA / daily POC / vwap zone (below ~30103) with a decisive body; the up-thesis confirms on a 15m close back above daily VAH 30208",
+  "reasoning": "Yesterday made the weekly low then rallied hard; overnight broke above the prior day's high, chopped London with four 15m MA whipsaws, then one NY_PRE 2m candle drove 30130 to 30206 and a new session high 30263.75. Now pulling back exactly into the 15m MA / daily POC / 0.618-0.705 fib confluence at 30151."
+ },
+ "why_you_are_being_re-fired": "Your standing thesis named its invalidation as the session VWAP at 30102.93. Price has traded through it and kept going: the last completed 2m bar closes at 29664.0. The thesis is therefore void and you are being re-fired to produce a fresh one, not asked to defend the old one.\n\nBetween 09:30 and this minute the scanner surfaced NO qualifying candidates - no two-level break and no rejection-first pattern printed during the move - so no trade was taken and none was passed on. That is a fact about the scan, not a judgement about the move.\n\nNY_AM has both of its fills available and the window runs to 11:00."
+}

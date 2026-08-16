@@ -1,0 +1,50 @@
+[
+ {
+  "minute": "08:38",
+  "reason": "intermediate_level_broken",
+  "level": "bb_ma_2m",
+  "level_price": 30537.7,
+  "also_at_this_minute": [
+   "intermediate_level_reached:bb_ma_2m",
+   "intermediate_level_reached:daily_poc",
+   "intermediate_level_broken:daily_poc",
+   "intermediate_level_reached:weekly_poc",
+   "intermediate_level_broken:weekly_poc",
+   "intermediate_level_reached:vwap_p1",
+   "intermediate_level_broken:vwap_p1"
+  ]
+ },
+ {
+  "minute": "08:41",
+  "reason": "stalling",
+  "level": "bb_ma_2m",
+  "level_price": 30537.7,
+  "also_at_this_minute": [
+   "stalling:daily_poc",
+   "stalling:weekly_poc",
+   "stalling:vwap_p1",
+   "stalling:adverse_excursion_0.5R"
+  ]
+ },
+ {
+  "minute": "09:09",
+  "reason": "tp1_reached",
+  "level": "target_1",
+  "level_price": 30506.87,
+  "also_at_this_minute": []
+ },
+ {
+  "minute": "09:28",
+  "reason": "pre_cash_open",
+  "level": "cash_open_0930",
+  "level_price": null,
+  "also_at_this_minute": []
+ },
+ {
+  "minute": "09:29",
+  "reason": "window_closing",
+  "level": "window_end",
+  "level_price": null,
+  "also_at_this_minute": []
+ }
+]

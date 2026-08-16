@@ -1,0 +1,11 @@
+# ARMING AUTHORIZATION — Angus's half of the two-party gate (src/live/arming.py).
+# RE-ISSUED 2026-08-05 against the R16-certified burn-in tip (2d98b29).
+# Supersedes the 2026-08-02 authorization against 1364cb7 (invalidated by the
+# R16 entrypoint requirement). Scope: mechanical entries + agent trade
+# management with the R16 resilience layer; entrypoint scripts.ny_run ONLY;
+# EVAL account. Burn-in evidence 63f0111. Revoking is deleting this file.
+
+token_sha256: a9d6765246a0e4dea34f4128d683fb27e0ab3825b1f8ea03b1b34c9390f7fd0e
+armed_sha: 2d98b29e0f66aa2fde405f65b430eb8cfaee6c7d
+account: LFE050-9YSC047M-TEST001
+entrypoint: scripts.ny_run

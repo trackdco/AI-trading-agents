@@ -1,0 +1,175 @@
+{
+  "trader_label": "Tuesday 23 June 2026",
+  "session_day": "2026-06-22",
+  "note_label": "He opened with 'Tuesday the 23rd' and mid-narration said 'Tuesday the 24th of June'. 23 June 2026 is the Tuesday (15/22 June are Mondays), and every price checks out on 23 June. The 24th is a slip.",
+  "london_clock": "His London narration is London local (BST). London 08:22 = 03:22 NY. Confirmed to the decimal: he read the 2m BB MA at that candle's close as 30,008.5; ours is 30,008.58.",
+
+  "pre_session": {
+    "read": "Asia sold off hard after stalling at all-time highs. A ~400pt New Week Opening Gap from last week's open is unfilled and he expects it to fill.",
+    "target_named": "Top of the wick left on the Friday before, ~29,729; later corrected mid-session to ~29,685.",
+    "bias": "Shorts only. 'I'm not very interested in longs, I think we're too close to some key levels to go for longs right now.'",
+    "urgency": "'I want to get an entry as soon as I can.'",
+    "profile_note": "Anchored the weekly profile and judged it unimportant today: 'the volume profile levels aren't going to be too significant today.'"
+  },
+
+  "decisions": [
+    {
+      "id": "L1", "type": "take", "window": "LONDON", "direction": "short",
+      "trader_time": "08:22 London", "ny_time": "03:22",
+      "build_up": "08:06/08:08 London - broke the 2m BB MA and the developing POC. 08:16 displaced back through POC. 08:18 rejected the 2m MA. 08:20 touched POC again. 08:22 'we rejected POC very hard'.",
+      "trigger": {
+        "tf": 2, "candle_start_ny": "03:22", "candle_close_ny": "03:24",
+        "ohlc": [30033.50, 30033.50, 29995.00, 29995.75],
+        "closed_through": ["bb_ma_2m", "developing_POC"],
+        "levels_verified": {"bb_ma_2m": 30008.58, "developing_poc": 30032.50},
+        "note": "The candle's open 30,033.50 sits on the POC at 30,032.50 - the rejection is literal. The 3m broke its own BB MA on the same move."
+      },
+      "entry": {
+        "type": "limit_on_retest", "price": 30005.5,
+        "level": "2m BB MA at 30,008.5, offset 3pt",
+        "dictated_as": "'30,004 5.5' - garbled. 30,005.5 is pinned by his own arithmetic: it gives exactly the 28pt risk, 82pt target and 2.9R he quotes.",
+        "offset_reasoning": "'I don't know how much it's going to move down for the next candle, and obviously this candle is closed through, so this Bollinger Band is probably going to move down. I'm going to give it three points of leeway.' - the offset is FORWARD-LOOKING, sized for where the MA is travelling.",
+        "filled": true, "fill_ny": "03:25", "trader_words": "Filled to the fucking tick"
+      },
+      "stop": {"price": 30033.5, "risk_pts": 28.0,
+               "rationale": "The displacement candle's high, exactly (30,033.50).",
+               "touched": false},
+      "targets": [{"label": "17 June lows", "price": 29923.25, "hit": true, "hit_ny": "03:54"}],
+      "outcome": {"r": 2.94, "trader_stated": "2.9R", "move_pts": 82.25,
+                  "trader_stated_pts": 82},
+      "aftermath": "London low ran to 29,776 by 04:25. 'I could have held that basically to the new week opening gap fill.' No further London entries."
+    },
+
+    {
+      "id": "P1", "type": "limit_placed_never_filled", "window": "NY_PRE",
+      "direction": "short", "ny_time": "08:09",
+      "trigger": {
+        "tf": 3, "candle_start_ny": "08:09", "candle_close_ny": "08:12",
+        "ohlc": [29860.00, 29861.25, 29827.00, 29827.50],
+        "closed_through": ["bb_ma_3m", "vwap_m1"],
+        "levels_verified": {"bb_ma_3m": 29851.86, "vwap_m1": 29845.05},
+        "note": "He also named POC, but price was already below the developing POC (29,866.50) at that candle's open. Possibly he meant his anchored-weekly POC."
+      },
+      "entry": {"type": "limit_on_retest", "price_inferred": 29839.0,
+                "dictated_as": "'I had my limits at about 8:39' - read as 29,839",
+                "level": "VWAP-1 (29,845.05), a few points inside",
+                "filled": false,
+                "verified": "Highs after that candle topped out at 29,832.75. The limit was never reached."},
+      "level_choice_rule": "'I was obviously limit retest at the closest structural level - so what was closest to price at that candle close. VWAP-1, that was the last thing it would have broken through.'",
+      "outcome": "No trade. Price ran straight down to fill the New Week Opening Gap (pre-market low 29,675.75 vs his ~29,685 gap).",
+      "value": "FIRST RECORDED NO-FILL. Confirms the failure mode that limit-on-retest introduces: the read was right, the direction was right, and he got nothing."
+    },
+
+    {
+      "id": "P2", "type": "pass", "window": "NY_AM", "direction": "short",
+      "ny_time": "09:33",
+      "trigger": {
+        "tf": 3, "candle_start_ny": "09:33", "candle_close_ny": "09:36",
+        "ohlc": [29749.25, 29753.00, 29704.00, 29718.75],
+        "closed_through": ["bb_ma_3m", "vwap_m1"],
+        "levels_verified": {"bb_ma_3m": 29729.91, "vwap_m1": 29732.67},
+        "valid": true
+      },
+      "reason": "'There was technically a valid trade there. We could have taken shorts... Why didn't I? Market open, we filled the new week opening gap. I want a rebalance now, perhaps at least to the 15 minute moving average or maybe even the VWAP middle band.'",
+      "classification": "Valid trigger, PASSED because the day's stated objective had just been achieved and he flipped to expecting a rebalance the other way.",
+      "value": "The thesis completing is itself a reason to stop taking triggers in that direction."
+    },
+
+    {
+      "id": "N1", "type": "take", "window": "NY_AM", "direction": "long",
+      "ny_time": "09:38",
+      "trigger": {
+        "tf": 2, "candle_start_ny": "09:38", "candle_close_ny": "09:40",
+        "ohlc": [29713.25, 29768.75, 29699.50, 29780.75],
+        "closed_through": ["developing_POC", "bb_ma_2m", "vwap_m1"],
+        "levels_verified": {"developing_poc": 29740.50, "bb_ma_2m": 29722.67, "vwap_m1": 29719.12},
+        "note": "He said 'VWAP plus one'; the data and his own stop reasoning both make it VWAP MINUS one. Recorded as a slip."
+      },
+      "entry": {"type": "limit_on_retest", "price": 29741.5,
+                "level": "developing POC 29,740.50, a couple points inside",
+                "filled": true, "fill_ny": "09:42",
+                "level_choice": "POC was the closest structure to price at that candle's close."},
+      "stop": {
+        "price": 29671.0, "risk_pts_approx": 70.0, "trader_stated_risk": 68,
+        "rationale": "Bottom of the 09:36 2m candle, which is also the bottom of the 3m candle that displaced through VWAP-1 and its MA. NOT below the displacement candle itself: 'this candle that displaced through the levels is basically exactly where VWAP minus one is - price can absolutely come down and reject VWAP minus one before it moves back up.'",
+        "touched": false
+      },
+      "targets": [
+        {"label": "pre-market 08:00 high", "price": 29901.0, "level_ours": 29900.75,
+         "size_pct": 75, "hit": true, "hit_ny": "09:53", "r": 2.35,
+         "trader_stated": "about a 2.3 to one"},
+        {"label": "VWAP middle band (near the 0.382 of the day range)",
+         "price": 29992.5, "hit": true, "hit_ny": "10:02", "r": 3.69,
+         "move_pts": 251, "trader_stated_pts": 251}
+      ],
+      "outcome": {"r_full_target": 3.69, "trader_stated": "3RR"},
+      "sizing_note": "'This would have been de-risked with a 68 point stop, maybe two micros.' Stop width drives size."
+    },
+
+    {
+      "id": "N2", "type": "take", "window": "NY_AM", "direction": "short",
+      "ny_time": "10:30", "fill_ny": "10:36",
+      "build_up": "Rejected the 0.382 of the day range and touched the VWAP middle band; displaced through the 15m MA. 'I don't think we're reclaiming much of this sell-off today in New York. If anything, I'm looking for a continuation.' The 10:24 2m closed through POC and the VWAP mid; price then reached the 2m MA and rejected it at 10:26 and 10:28.",
+      "trigger": {
+        "tf": 2, "candle_start_ny": "10:30", "candle_close_ny": "10:32",
+        "ohlc": [29983.50, 29998.00, 29922.00, 29924.50],
+        "closed_through": ["bb_ma_2m"],
+        "rejected": ["vwap_mid", "developing_POC"],
+        "levels_verified": {"bb_ma_2m": 29962.59, "vwap_mid": 29992.08, "developing_poc": 29989.50}
+      },
+      "entry": {"type": "limit_on_retest", "price": 29969.0,
+                "level": "2m BB MA (29,971.31 at fill), a couple points inside",
+                "filled": true, "fill_ny": "10:36"},
+      "stop": {
+        "price": 30046.0, "risk_pts": 77.0,
+        "rationale": "At the high that rejected the 0.382, NOT the trigger candle's high: 'the high of this candle is around that POC / VWAP middle band level that it's been rejecting off of, so I don't feel safe putting that there.'",
+        "touched": false
+      },
+      "confirmation_after_entry": "At 10:38 the 3m also closed through its MA - 'I feel pretty good about this trade.'",
+      "targets": [{"label": "VWAP -1, a couple points early", "price": 29728.0,
+                   "level_ours_at_hit": 29721.13, "hit": true, "hit_ny": "11:24"}],
+      "outcome": {"r": 3.13, "move_pts": 241, "trader_stated": "3RR"},
+      "window_finding": "ENTRY 10:36 and EXIT 11:24 are both outside the declared NY_AM window of 09:30-10:30."
+    }
+  ],
+
+  "declared_rules": [
+    {"id": "R1", "rule": "Entry always requires closure through TWO levels.",
+     "quote": "My entry always needs to be closure through two levels. That's usually what I stick by.",
+     "note": "Holds on all four of today's candidates: 2m MA + POC (L1), 3m MA + VWAP-1 (P1, P2), POC + 2m MA + VWAP-1 (N1). N2 closed through the 2m MA while REJECTING the VWAP mid and POC - rejection appears to count toward the pair."},
+    {"id": "R2", "rule": "The retest level is the CLOSEST structure to price at the trigger candle's close - the last thing price broke through.",
+     "quote": "I was obviously limit retest at the closest structural level, so what was closest to price at that candle close."},
+    {"id": "R3", "rule": "The limit offset is forward-looking: offset in the direction the MA is travelling, because the MA moves before the retest arrives.",
+     "quote": "This candle is closed through, this Bollinger Band is probably going to move down. I'm going to give it three points of leeway."},
+    {"id": "R4", "rule": "Take profit is kept a couple of points short of the target band.",
+     "quote": "I usually keep my take profit a couple points away from the VWAP band."},
+    {"id": "R5", "rule": "The stop does NOT go at the displacement candle's extreme when that extreme sits ON a level price is actively rejecting or could reject. Move it beyond the level instead.",
+     "evidence": "N1 (candle low sat on VWAP-1) and N2 (candle high sat on POC/VWAP mid) both moved the stop out."},
+    {"id": "R6", "rule": "WEEKLY PROFILE ANCHOR, answered explicitly.",
+     "quote": "If I'm trading Monday, I'm gonna anchor it to the Asia Open at the beginning of last week. If I'm trading Tuesday, I'm gonna anchor it to the Asia Open of Monday night... the last five trading days should be exactly a week before, the same day. That's what I anchored it to, and it's developing.",
+     "implementation": "anchor = 18:00 NY exactly 7 days before the session-day's own 18:00 anchor; developing to now. Implemented as scripts/agent_context.py::anchored_weekly_profile."}
+  ],
+
+  "resolved_open_questions": [
+    {"from": "2026-06-22", "question": "Does he quote blended R or full-target R?",
+     "answer": "FULL-TARGET R. He calls N1 '3RR' (3.69R at the full target, 2.35R at TP1) and N2 '3RR' (3.13R). Day 1's '3.6RR' was the 3.80R runner leg, not the 2.96R blended."}
+  ],
+
+  "calibration_status": {
+    "matched_this_day": {
+      "bb_ma_2m": "30,008.58 ours vs his 30,008.5 read off the chart",
+      "developing_POC": "29,740.50 ours vs his 29,741.5 limit (POC + a couple points)",
+      "premarket_high": "29,900.75 ours vs his 29,901 target",
+      "vwap_bands": "VWAP-1 and mid confirmed at every trigger",
+      "every_fill_stop_and_target": "all reproduce on our bars to the minute"
+    },
+    "improved": {
+      "anchored_weekly_profile": "Anchor rule now known and implemented. The value-area ALGORITHM was also wrong and is fixed (see below). Weekly VAH error fell from ~+186pt to a consistent +43pt on both available checks."
+    },
+    "still_open": {
+      "weekly_VAH_residual": "+43pt on both 2026-06-22 checks. The consistency suggests the right construct with a systematic offset (row size, tick-level volume distribution) rather than the wrong construct. Not tuned - two observations is not enough to fit a parameter.",
+      "fib_anchor": "He said the 0.382 of 'this day's range' sat near the VWAP mid (~29,992). Ours, taken on the full session range, gives 29,922 - about 70pt out. His fib anchoring is unconfirmed.",
+      "NY_AM_window": "He entered at 10:36 and exited at 11:24. The 09:30-10:30 window is too tight; it needs to run to at least 11:00 for entries."
+    }
+  }
+}

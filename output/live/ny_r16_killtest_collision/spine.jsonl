@@ -1,0 +1,94 @@
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:1", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:1", "size": 2}
+{"event": "decision", "action": "reject", "rule": "spread", "detail": "spread_rel 2.75 > 2.5", "setup": "ny:2026-07-29:4", "clamped_size": null}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:2", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:2", "size": 4}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:11", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:11", "size": 5}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:14", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:14", "size": 6}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:2", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:2", "size": 6}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:11", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:11", "size": 6}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:14", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:14", "size": 8}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:2", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:2", "size": 6}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:11", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:11", "size": 6}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:14", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:14", "size": 8}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:18", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:18", "size": 7}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:19", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:19", "size": 7}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:18", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:18", "size": 4}
+{"event": "decision", "action": "place", "rule": "ok", "detail": "", "setup": "ny:2026-07-29:19", "clamped_size": null}
+{"event": "shadow_place", "setup": "ny:2026-07-29:19", "size": 4}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:28", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:34", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:35", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:41", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:42", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:28", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:34", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:35", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:41", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:42", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:45", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:28", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:34", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:35", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:41", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:42", "clamped_size": null}
+{"event": "decision", "action": "reject", "rule": "book_crossed", "detail": "book crossed/locked", "setup": "ny:2026-07-29:44", "clamped_size": null}
+{"event": "decision", "action": "halt", "rule": "manual_kill", "detail": "KILL file present", "setup": "ny:2026-07-29:52", "clamped_size": null}
+{"event": "flatten_halt", "rule": "manual_kill", "detail": "KILL file present", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:28", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:34", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:35", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:41", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:42", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:43", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:46", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:47", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:49", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:50", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:51", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:28", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:34", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:35", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:41", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:42", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:43", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:46", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:47", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:49", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:50", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:51", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}
+{"event": "decision", "action": "halt", "rule": "halted", "detail": "spine already halted", "setup": "ny:2026-07-29:52", "clamped_size": null}
+{"event": "flatten_halt", "rule": "halted", "detail": "spine already halted", "account": "FUNDED"}

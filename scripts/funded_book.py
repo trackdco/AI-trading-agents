@@ -13,6 +13,21 @@ ENTRIES (uncapped — the 2/session cap measured as pure cost once the wall cut 
   risk 7-60pt Layer-0 · E3 limits · orders die at session-window end (no distance cancel)
   · news blackout · V8 exits (nothing mechanical beat them; capture gap = agent layer)
 
+EXECUTION SEMANTICS (ANGUS rulings 2026-07-30; overlay output/aikido_cr_{span}.parquet is
+LAW, scripts/apply_close_reverse.py regenerates; holdout ledger looks #3, #4, #5):
+  1. TWO SESSIONS — every pre-session position is market-flattened on the first bar at/
+     after 09:30 ("2 different sessions basically"); engine knob pre_flatten_at, re-run
+     through the real engine.
+  2. CLOSE-AND-REVERSE — an OPPOSING canon fill flattens the open trade at that fill
+     (maker price, no slip) and reverses; the flip is the book's strongest exit signal.
+     An opposing signal that never fills changes nothing.
+  3. ONE PER LEVEL — a same-direction fill is SUPPRESSED while an open same-direction
+     position sits within 3pt of its entry or shares its stop ("im all for trades in the
+     same direction and all but not double entering off the same level"). Adds at
+     genuinely different points still stack. Suppressed trades never existed.
+  ONE sequential pass per day applies 3 then 2 on pre-flattened exits. Fit: 68 flips,
+  193 suppressed (book 956->763). Holdout: 82 flips, 122 suppressed (637->515).
+
 CONVICTION TIERS (multipliers on the profile base; cells era-consistent):
   0.5x  gold score<=3 · pre score 2      (the streaky tier; half for DD, not EV)
   1.0x  gold score 4  · pre score 3
@@ -23,33 +38,47 @@ CONVICTION TIERS (multipliers on the profile base; cells era-consistent):
 PROFILES (risk $ = base_eff x tier; budget and soft de-risk scale WITH the base —
 ANGUS 2026-07-29: "with more buffer, we have more of a daily budget... the daily loss
 should scale with the increased sizing"):
-  lucid      base $150 fixed -> ladder $75/150/225/300, budget $800, soft -$280
-             [ANGUS 2026-07-29: "static 150 is now the lucid" — supersedes the $80/160
-              ladder tested earlier]
-  scaled600  base $150 + $75 per full $2k of buffer past +$3k, capped $600
-             (first step lands at buffer $5k) -> budget $800..$3,200, soft 35% of it
+  lucid      base $160 fixed -> ladder $80/160/240/320, budget $853, soft -$299
+             [ANGUS 2026-07-31: base $150 -> $160 on the agent-layer ship; 2026-07-29
+              "static 150 is now the lucid" superseded the $80/160 ladder before it]
+  scaled600  base $160 + $75 per full $2k of buffer past +$3k, capped $600
+             (first step lands at buffer $5k) -> budget $853..$3,200, soft 35% of it
 
 RISK SPINE (all causal: decisions see only realized-by-fill P&L + in-flight risk):
   daily budget          realized losses + in-flight risk + new risk <= budget, else skip
-                        budget = base_eff x 16/3 ($800 at base $150)
+                        budget = base_eff x 16/3 ($853.33 at base $160)
                         [bounds worst day structurally; realized-loss halts alone fail
                          under overlap — the losses aren't realized when the next fills hit]
   soft de-risk          realized day P&L <= -35% of budget -> half size (both spans)
   live ramp             half size below $1,000 of buffer above the trailing line, half
                         again below $500 (ANGUS 2026-07-30, checked tightest-step-first)
-                        [both steps dormant in 19 months — min buffer $1,621 fit / $1,720
-                         holdout — so they change no measured number; pure insurance]
+                        [both steps dormant in 19 months — min buffer $1,642 fit / $1,698
+                         holdout at base $160 — so they change no measured number;
+                         pure insurance]
   micro clamp 40 · micros = round(risk$/(stop_pts*2)), min 1
 
-REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k):
-  lucid      fit  +$90,015 ($6,924/mo)   worst day -$762    maxDD $1,603  13/13 green
-             holdout +$56,409 ($9,401/mo)  worst day -$780  maxDD $1,503   6/6 green
-  scaled600  fit +$320,662 ($24,666/mo)  worst day -$3,242  maxDD $5,844  13/13 green
-             holdout +$188,325 ($31,388/mo) worst day -$3,092 maxDD $3,618  6/6 green
-  (these supersede the pre-2026-07-29 figures +$89,925 / +$56,408 / +$320,150 / +$188,324,
-   which were computed under an UNSTABLE tie sort — see load_book. The delta is +$90 and
-   +$512 on fit, +$1 on holdout, and no risk metric moved at all.)
-             MC funded-yr (both-span pool, 2000 sims): P(bust) 1.0%, median 28 payouts
+REFERENCE RESULTS (50k account, $2k EOD-trailing, line locks at 50k; ALL THREE rules;
+BASE $160, ANGUS 2026-07-31 — the $150-base ladder below is the historical record):
+  lucid      fit  +$82,543 ($6,350/mo)   worst day -$690    maxDD $1,375  13/13 green
+             holdout +$48,211 ($8,035/mo)  worst day -$737  maxDD $1,548   6/6 green
+  scaled600  fit +$272,847 ($20,988/mo)  worst day -$2,319  maxDD $4,892  13/13 green
+             holdout +$142,565 ($23,761/mo) worst day -$2,740 maxDD $4,986  6/6 green
+  WITH THE SHIPPED AGENT LAYER (trade-manager-v3, row M/N of the Pat handover), fit:
+  lucid +$100,297 worst day -$542 maxDD $878; scaled600 +$327,421 maxDD $3,158.
+  (Ladder, lucid AT THE OLD $150 BASE: 2026-07-29 shipped $90,015/$56,409 -> +CR
+   $97,327/$59,407 -> +two-session $94,695/$56,756 -> +one-per-level $77,202/$44,844
+   -> base $160 $82,543/$48,211. ANGUS on the one-per-level cost: "its fine sacrifcing
+   the profit a bit, big deal" — the multi-TF sibling stack was the book's best
+   per-trade cohort (meanR 0.68) and its removal buys maxDD $1,603->$1,268 fit at 150
+   ($1,375 at 160), worst days -$762->-$670 / -$780->-$685 at 150, and scaled600 worst
+   day -$3,242->-$2,319. The one metric that WORSENS: scaled600 holdout maxDD
+   $4,061->$4,986 — stated, not hidden.)
+             MC funded-yr, AGENT book at base $160 (scripts/mc_funded_lab.py, whole-day
+             bootstrap, 2000 sims, 2k trailing locking at 50k, 54k->2k payouts):
+             P(bust) 0.1% | median 53 payouts (~$106k withdrawn) | eval +3k passes
+             100.0% in median 8 days. Interactive lab with every knob live (sizing,
+             DD, lock, targets, payout rule) published from that script.
+             [historical, PRE-rules mech pool: P(bust) 1.0%, median 28 payouts]
              NOTE fit worst day -$3,242 vs that day's $3,200 budget: one day, $42 through
              (last fill's stop-out landed after the budget check passed) — known, accepted
 
@@ -71,20 +100,44 @@ from src.canon.scorer_ny import ramp_for  # noqa: E402  (one implementation of t
 
 PROFILES = {
     # base fixed: cap == base disables scaling entirely
-    "lucid": dict(base=150.0, per=0.0, step=2000.0, after=3000.0, cap=150.0),
-    "scaled600": dict(base=150.0, per=75.0, step=2000.0, after=3000.0, cap=600.0),
+    # ANGUS 2026-07-31: base $150 -> $160 ("the agents are very good at doing this").
+    "lucid": dict(base=160.0, per=0.0, step=2000.0, after=3000.0, cap=160.0),
+    "scaled600": dict(base=160.0, per=75.0, step=2000.0, after=3000.0, cap=600.0),
 }
-BUDGET_PER_BASE = 800.0 / 150.0     # $800 daily budget at the $150 base
+BUDGET_PER_BASE = 800.0 / 150.0     # budget RATIO anchored $800/$150; scales with base
+                                    # ($853.33/day at the $160 base — by design, see tests)
 SOFT_FRAC = 280.0 / 800.0           # soft de-risk at 35% of that day's budget
 START, TRAIL = 50_000.0, 2_000.0
 MICRO_CLAMP = 40
 
 
-def load_book(span: str) -> pd.DataFrame:
+def load_book(span: str, cr: bool = True) -> pd.DataFrame:
     S = pd.read_parquet(ROOT / f"output/aikido_{span}.parquet")
     V = S[S.valid].copy()
     wall_bad = (V.sess == "gold") & ((V.dep_wall_below_d < 2.75) | (V.WALLSZ == 0))
     V = V[~wall_bad].copy()
+    if cr:
+        # CLOSE-AND-REVERSE (ANGUS ruling 2026-07-30): an opposing canon fill flattens the
+        # open trade at that fill and reverses. The overlay is LAW; regenerate with
+        # scripts/apply_close_reverse.py (which builds from cr=False).
+        f = ROOT / f"output/aikido_cr_{span}.parquet"
+        if not f.exists():
+            raise FileNotFoundError(
+                f"{f} missing — run `python -m scripts.apply_close_reverse` (canon "
+                f"execution semantics, ANGUS 2026-07-30)")
+        O = pd.read_parquet(f).set_index(["ts", "direction"])
+        if "cr_suppressed" in O.columns:      # rule 3: one-per-level — these never existed
+            sup = O[O.cr_suppressed].index
+            V = V[~pd.MultiIndex.from_arrays([V.ts, V.direction]).isin(sup)].copy()
+            O = O[~O.cr_suppressed]
+        idx = pd.MultiIndex.from_arrays([V.ts, V.direction])
+        hit = idx.isin(O.index)
+        V["flipped"] = hit
+        for col, src in (("dollars_1lot", "cr_dollars_1lot"), ("exit_ts", "cr_exit_ts"),
+                         ("exit_price", "cr_exit_price")):
+            V.loc[hit, col] = O.loc[idx[hit], src].to_numpy()
+    else:
+        V["flipped"] = False
     V["fill"] = pd.to_datetime(V.fill_ts, format="mixed", utc=True)
     V["exit"] = pd.to_datetime(V.exit_ts, format="mixed", utc=True)
     s = np.where(V.sess == "gold", V.gold_score, V.pre_score)

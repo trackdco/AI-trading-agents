@@ -1,0 +1,182 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "P2",
+ "decision_minute": "2026-06-02T08:38 ET",
+ "reason_for_call": "second_setup",
+ "leak_check": "pass - replay truncated at 08:37:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-01_P4_0838.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30540.0,
+  "stop": 30562.0,
+  "targets": [
+   {
+    "level": "fib_0.705",
+    "price": 30506.87
+   },
+   {
+    "level": "vwap",
+    "price": 30457.25
+   },
+   {
+    "level": "daily_val",
+    "price": 30395.0
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "08:36",
+  "R_in_points": 22.0,
+  "current_stop_distance": 22.0,
+  "open_pnl_in_R": 0.23
+ },
+ "level_in_question": {
+  "level": "vwap_p1+daily_poc+bb_ma_2m cluster",
+  "price": 30537.0
+ },
+ "price_at_decision": 30535.0,
+ "last_completed_2m_bar": {
+  "start": "08:36",
+  "closed_at": "08:38",
+  "open": 30539.75,
+  "high": 30544.25,
+  "low": 30533.0,
+  "close": 30535.0,
+  "volume": 365,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "08:30",
+   "closed_at": "08:32",
+   "open": 30548.5,
+   "high": 30551.0,
+   "low": 30526.75,
+   "close": 30537.0,
+   "volume": 653,
+   "minutes": 2
+  },
+  {
+   "start": "08:32",
+   "closed_at": "08:34",
+   "open": 30537.0,
+   "high": 30538.5,
+   "low": 30527.75,
+   "close": 30529.0,
+   "volume": 225,
+   "minutes": 2
+  },
+  {
+   "start": "08:34",
+   "closed_at": "08:36",
+   "open": 30529.0,
+   "high": 30539.5,
+   "low": 30528.0,
+   "close": 30539.5,
+   "volume": 208,
+   "minutes": 2
+  },
+  {
+   "start": "08:36",
+   "closed_at": "08:38",
+   "open": 30539.75,
+   "high": 30544.25,
+   "low": 30533.0,
+   "close": 30535.0,
+   "volume": 365,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30537.8,
+  "bb_upper_2m": 30552.5,
+  "bb_lower_2m": 30523.1,
+  "vwap": 30461.6,
+  "vwap_p1": 30537.32,
+  "vwap_m1": 30385.89,
+  "vwap_p2": 30613.04,
+  "vwap_m2": 30310.17,
+  "vwap_p3": 30688.75,
+  "vwap_m3": 30234.46,
+  "read_at": "08:38 NY off the live chart legend"
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30461.55,
+   "vwap_p1": 30537.19,
+   "vwap_p2": 30612.83,
+   "vwap_p3": 30688.47,
+   "vwap_m1": 30385.92,
+   "vwap_m2": 30310.28,
+   "vwap_m3": 30234.64
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30537.8,
+   "bb_ma_3m": 30540.2,
+   "bb_ma_15m": 30545.72,
+   "bb_ma_60m": 30500.56
+  },
+  "day_range_fibs": {
+   "0.382": 30420.22,
+   "0.5": 30451.88,
+   "0.618": 30483.53,
+   "0.705": 30506.87
+  },
+  "session_high_so_far": 30586.0,
+  "session_low_so_far": 30317.75,
+  "daily_profile": {
+   "poc": 30537.0,
+   "val": 30399.0,
+   "vah": 30580.0,
+   "note": "DEVELOPING as-of 08:38"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30537.0,
+   "val": 30399.0,
+   "vah": 30580.0,
+   "high": 30586.0,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 08:38"
+  },
+  "prior_day": {
+   "poc": 30560.0,
+   "val": 30382.0,
+   "vah": 30597.0,
+   "high": 30693.0,
+   "low": 30291.5
+  }
+ },
+ "crowded_path": {
+  "levels_between_entry_and_tp1": [
+   "bb_ma_2m 30537.8",
+   "vwap_p1 30537.19",
+   "weekly_poc 30537.0",
+   "daily_poc 30537.0"
+  ],
+  "count": 4,
+  "crowded_path": true,
+  "note": "mechanical count of named structural levels strictly between entry 30540.00 and TP1 30506.87 at this minute. crowded_path true at 2 or more. Under the crowded-path clause you go to break-even at the FIRST level reached rather than waiting out a 3-5 minute stall."
+ },
+ "management_actions_so_far": [],
+ "what_to_emit": "your management JSON, per your contract.",
+ "second_setup_detail": {
+  "what_fired": "a fresh same-direction candidate (P4) at this minute returned take_light, conviction B.",
+  "its_rejected_level": "vwap_p1 + daily_poc + bb_ma_2m cluster ~30537-30540, price 30537.00",
+  "its_invalidation_stop": 30555.0,
+  "its_behavior_read": "2m opened 30539.75 inside the cluster, wicked to 30544.25 - a LOWER high than the three 07:00-07:30 tests at 30546 / 30549.5 / 30574.5 - and closed 30535.00 below all three levels; the 3m wicked above the same cluster from below and closed back under it in the same candle.",
+  "T53_conditions": "position is in profit (+5.00 pts), same direction, independently valid, graded B - all four met, so this is an add rather than confirmation-only.",
+  "stop_arithmetic": "moving the whole position's stop from 30562.00 to the new setup's invalidation 30555.00 is a TIGHTENING of 7.00 points on a short, so it is permitted. Stated as arithmetic; the decision is yours.",
+  "note": "the orchestrator does not size. Any add is recorded as a smaller clip on ONE position; it consumes no window slot."
+ },
+ "also_at_this_minute": {
+  "scheduler_events": [
+   "intermediate_level_broken: bb_ma_2m 30537.70",
+   "intermediate_level_reached+broken: daily_poc",
+   "intermediate_level_reached+broken: weekly_poc",
+   "intermediate_level_reached+broken: vwap_p1"
+  ],
+  "note": "the mechanical scheduler independently flagged this minute as intermediate_level_broken across four levels. Two events in one minute are one decision, so they are given to you together rather than as separate calls."
+ }
+}

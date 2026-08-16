@@ -1,0 +1,212 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "A2",
+ "decision_minute": "2026-06-02T09:54 ET",
+ "reason_for_call": "tp1_reached",
+ "leak_check": "pass - replay truncated at 09:53:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-01_A2_0954_tp1.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "long",
+  "entry": 30506.0,
+  "stop": 30515.0,
+  "targets": [
+   {
+    "level": "daily_weekly_vah",
+    "price": 30566.0
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 30597.0
+   },
+   {
+    "level": "prior_day_high",
+    "price": 30693.0
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "09:46",
+  "R_in_points": 43.0,
+  "current_stop_distance": 9.0,
+  "open_pnl_in_R": 1.61
+ },
+ "level_in_question": {
+  "level": "target_1_daily_weekly_vah",
+  "price": 30566.0
+ },
+ "price_at_decision": 30575.25,
+ "last_completed_2m_bar": {
+  "start": "09:52",
+  "closed_at": "09:54",
+  "open": 30558.25,
+  "high": 30583.5,
+  "low": 30551.0,
+  "close": 30575.25,
+  "volume": 3556,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "09:46",
+   "closed_at": "09:48",
+   "open": 30508.75,
+   "high": 30533.5,
+   "low": 30497.0,
+   "close": 30529.5,
+   "volume": 3669,
+   "minutes": 2
+  },
+  {
+   "start": "09:48",
+   "closed_at": "09:50",
+   "open": 30529.25,
+   "high": 30550.75,
+   "low": 30528.75,
+   "close": 30550.25,
+   "volume": 3190,
+   "minutes": 2
+  },
+  {
+   "start": "09:50",
+   "closed_at": "09:52",
+   "open": 30549.75,
+   "high": 30564.5,
+   "low": 30540.0,
+   "close": 30559.25,
+   "volume": 3582,
+   "minutes": 2
+  },
+  {
+   "start": "09:52",
+   "closed_at": "09:54",
+   "open": 30558.25,
+   "high": 30583.5,
+   "low": 30551.0,
+   "close": 30575.25,
+   "volume": 3556,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30513.39,
+  "bb_upper_2m": 30583.63,
+  "bb_lower_2m": 30443.14,
+  "vwap": 30479.19,
+  "vwap_p1": 30546.01,
+  "vwap_m1": 30412.36,
+  "vwap_p2": 30612.84,
+  "vwap_m2": 30345.54,
+  "vwap_p3": 30679.66,
+  "vwap_m3": 30278.71,
+  "read_at": "09:54 NY off the live chart legend"
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30478.95,
+   "vwap_p1": 30545.51,
+   "vwap_p2": 30612.07,
+   "vwap_p3": 30678.62,
+   "vwap_m1": 30412.39,
+   "vwap_m2": 30345.84,
+   "vwap_m3": 30279.28
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30513.39,
+   "bb_ma_3m": 30516.4,
+   "bb_ma_15m": 30543.25,
+   "bb_ma_60m": 30500.03
+  },
+  "day_range_fibs": {
+   "0.382": 30420.22,
+   "0.5": 30451.88,
+   "0.618": 30483.53,
+   "0.705": 30506.87
+  },
+  "session_high_so_far": 30586.0,
+  "session_low_so_far": 30317.75,
+  "daily_profile": {
+   "poc": 30533.0,
+   "val": 30449.0,
+   "vah": 30566.0,
+   "note": "DEVELOPING as-of 09:54"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30533.0,
+   "val": 30449.0,
+   "vah": 30566.0,
+   "high": 30586.0,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:54"
+  },
+  "prior_day": {
+   "poc": 30560.0,
+   "val": 30382.0,
+   "vah": 30597.0,
+   "high": 30693.0,
+   "low": 30291.5
+  }
+ },
+ "crowded_path": {
+  "levels_between_tp1_and_tp2": [
+   "session_high 30586.0",
+   "weekly_high 30586.0"
+  ],
+  "count": 2,
+  "crowded_path": true,
+  "note": "the path AHEAD of TP1 now matters for the runner: named structural levels strictly between TP1 30566.00 and the next target 30597.00 at this minute."
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "09:48",
+   "reason_for_call": "intermediate_level_broken",
+   "action": "breakeven",
+   "new_stop": 30506.0,
+   "favouring": "more"
+  },
+  {
+   "minute": "09:50",
+   "reason_for_call": "intermediate_level_broken",
+   "action": "trail",
+   "new_stop": 30515.0,
+   "favouring": "more"
+  },
+  {
+   "minute": "09:51",
+   "reason_for_call": "intermediate_level_broken",
+   "action": "hold",
+   "favouring": "more",
+   "reason": "declined to trail behind a 1.25pt 3m poke through prior_day_poc - inside the clearance floor"
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract.",
+ "tp1_event": {
+  "tp1": 30566.0,
+  "first_printed_on_bar_starting": "09:53",
+  "this_bar": "09:52-09:54 O30558.25 H30583.50 L30551.00 C30575.25",
+  "price_now": 30575.25,
+  "unrealised_pts": 69.25,
+  "unrealised_R_on_original_risk": 1.61,
+  "current_stop": 30515.0,
+  "locked_in_if_stopped": "+9.00 pts (+0.209R)"
+ },
+ "conviction_partial_rule": {
+  "conviction_of_this_position": "B",
+  "contract_default": "B takes roughly 75% at TP1 and trails the runner. A is 50% and holds the rest to the full target; C is 100% out with no runner.",
+  "note": "stated as the contract text, not as an instruction - partial_pct is your decision and is a fraction of what is still open."
+ },
+ "path_ahead": {
+  "next_target": 30597.0,
+  "points_beyond_tp1": 31.0,
+  "thesis_note": "the standing thesis names 30566-30597 as the zone where SHORTS relicense on a rejection, and records it as rejected 3x this session. TP1 sits at the bottom edge of that zone and the next target at its top edge.",
+  "bb_upper_2m_now": 30583.63,
+  "note": "this bar's high 30583.50 tagged the 2m upper band almost exactly."
+ },
+ "thesis_context": {
+  "version": "v4c",
+  "bias": "long",
+  "invalidation": 30483.53,
+  "other_side_tripwire": "the thesis has armed a tripwire on displacement from the 30566 defended cluster. Whether and when it resolves is not knowable at this minute and is not stated here."
+ }
+}

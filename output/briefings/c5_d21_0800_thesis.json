@@ -1,0 +1,153 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE 08:00-09:29 ET (cap 1 fill)",
+ "decision_minute": "2026-06-22T08:00 ET (session-day 2026-06-21)",
+ "leak_check": "pass - truncated at 07:59:59; last completed 2m bar starts 07:58 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d21_0800_nypre.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "price_at_decision": 30757.75,
+ "last_completed_2m_bar": {
+  "start": "07:58",
+  "open": 30754.0,
+  "high": 30757.75,
+  "low": 30752.75,
+  "close": 30757.75,
+  "volume": 102
+ },
+ "position_state": "FLAT. The LONDON short filled at 30754.00, banked its first target at the prior-day VAH at 04:11 and trailed its runner out at 04:44.",
+ "window_state": {
+  "LONDON": "1 of 2 used, closed by time",
+  "NY_PRE": "0 of 1 used, opening now",
+  "NY_AM": "not open"
+ },
+ "levels_at_decision_CHART": {
+  "vwap": 30617.56,
+  "vwap_p1": 30730.02,
+  "vwap_m1": 30505.1,
+  "vwap_p2": 30842.48,
+  "vwap_m2": 30392.65,
+  "bb_2m_basis": 30750.19,
+  "bb_2m_upper": 30768.19,
+  "bb_2m_lower": 30732.19
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 30750.19,
+  "bb_ma_3m": 30751.78,
+  "bb_ma_15m": 30736.61,
+  "bb_ma_60m": null,
+  "day_range_fibs": {
+   "0.382": 30524.87,
+   "0.5": 30582.75,
+   "0.618": 30640.63,
+   "0.705": 30683.3
+  },
+  "session_high_so_far": 30828.0,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30727.0,
+   "val": 30557.0,
+   "vah": 30824.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30762.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "05:45",
+    "dir": "DOWN",
+    "ma": 30708.67,
+    "close": 30708.25,
+    "body_ratio": 0.79
+   },
+   {
+    "t": "06:15",
+    "dir": "UP",
+    "ma": 30719.3,
+    "close": 30750.5,
+    "body_ratio": 0.75
+   },
+   {
+    "t": "06:45",
+    "dir": "DOWN",
+    "ma": 30727.34,
+    "close": 30717.25,
+    "body_ratio": 0.6
+   },
+   {
+    "t": "07:30",
+    "dir": "UP",
+    "ma": 30734.28,
+    "close": 30738.75,
+    "body_ratio": 0.29
+   }
+  ],
+  "hourly_closes": {
+   "03:00": 30736.75,
+   "04:00": 30759.0,
+   "05:00": 30731.25,
+   "06:00": 30699.0,
+   "07:00": 30720.0,
+   "08:00": 30757.75
+  },
+  "session_range_so_far": {
+   "high": 30828.0,
+   "low": 30337.5,
+   "span": 490.5
+  }
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "note": "the US calendar for this date is empty; nothing scheduled before 11:00 ET."
+ },
+ "what_to_emit": "your standard thesis JSON for this window.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_high",
+    "price": 30770.75
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_vah",
+   "price": 30699.0
+  },
+  "waiting_for": "acceptance through the 30737-30754 band (VWAP+2, 2m BB upper, developing weekly VAH) on a 15m decisive close before adding to longs; a stall-and-rollover in that same band licenses the short instead - no chasing the raw touch",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed AT the 30737-30754 confluence (VWAP+2 / 2m BB upper / developing weekly VAH) on a rejection that stalls and rolls over, back toward VWAP or prior-day VAH",
+  "anticipated_resolution": {
+   "level": "vwap_p2",
+   "price": 30737.16,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close above the 30737-30754 band with a decisive body, not a wicky poke through it",
+  "reasoning": "Overnight sold off to the session low at 30337.5 then V-reversed hard through VWAP, printing a fresh session high into the London open. Price sits right inside the VWAP+2 / 2m-BB-upper / developing-weekly-VAH band with no 15m acceptance candle yet. Long-biased on the reclaim, but that confluence is live right now, so a stall-and-roll here licenses the fade."
+ },
+ "what_happened_since_the_last_read": "price fell from 30752.5 to a low of 30687.25 at 04:23, then ground higher for three and a half hours to 30757.75. It is back inside the 30737-30754 band named at 03:00 and 13pt under the prior-day high 30770.75."
+}

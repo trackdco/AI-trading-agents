@@ -1,0 +1,104 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "NYA1-0934",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-26T09:34 ET",
+ "candle_start": "09:32",
+ "timeframe": "2m",
+ "leak_check": "pass \u2014 truncated at 09:33:59; last completed 2m bar starts 09:32",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_0934_open_flush.png",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   },
+   {
+    "level": "vwap_minus_2",
+    "price": 29111.9
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_val_prior_day_low_cluster",
+   "price": 29295.75
+  },
+  "waiting_for": "rebalance into the broken 29290-96 cluster that FAILS as resistance - no chasing minute four of the open. BINDING.",
+  "two_sided": true,
+  "condition_for_other_side": "2m acceptance back above 29295.75 reopens longs toward daily_poc 29369",
+  "as_of": "09:34 re-fire, seconds before this adjudication"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle": {
+  "start": "09:32",
+  "direction": "DOWN",
+  "open": 29356.5,
+  "high": 29369.0,
+  "low": 29197.5,
+  "close": 29199.75,
+  "volume": 5236,
+  "note": "displacement bar - 171pt range, ~2.4x the 0.5*W15 displacement threshold; an oversized displacement candle (stop doctrine: body, not wick, if adjudicating from it)"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m (29294.6)",
+  "vwap_m1 (29277.9)",
+  "daily_val (29225)"
+ ],
+ "additional": "also rejected the 15m MA overhead intrabar (high 29369 vs ma15 29361.4)",
+ "time_context": "minute 4 of the cash open \u2014 constraint 4 territory ('not in the first few minutes of the cash open')",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 29443.9,
+   "m1": 29277.9,
+   "m2": 29111.9
+  },
+  "bb_ma": {
+   "tf_2m": 29294.6,
+   "tf_3m": 29303.0,
+   "tf_15m": 29361.4
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "low": 29295.75,
+   "val": 29465.0
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29197.5
+ },
+ "headroom": {
+  "direction_of_trade": "down",
+  "next_levels_below": [
+   {
+    "level": "weekly_low",
+    "price": 29160.5,
+    "distance_from_close": 39.25
+   },
+   {
+    "level": "vwap_m2",
+    "price": 29111.9
+   }
+  ]
+ },
+ "poc_alignment": {
+  "daily_poc": 29369.0,
+  "position": "far above - with a short"
+ },
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+}

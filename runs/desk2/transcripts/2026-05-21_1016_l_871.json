@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"long\",\"day_type\":\"pullback in uptrend, gap fill\",\"thesis\":\"Prior day strong close 29356 near high; overnight extended to new high 29464 then faded to 29258, testing prior close as support \u2014 pullback rejection longs favored on hold.\",\"invalidates\":\"Loss of overnight low 29113 or acceptance below prior close flips structure bearish\"}",
+ "reread": "{\"bias\":\"short\",\"note\":\"Open range rejected at 29268 (well below overnight high), closed 29212 near range low \u2014 pullback support failed, momentum now bearish.\"}",
+ "turns": [
+  {
+   "minute": "2026-05-21 10:17:00-04:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2026-05-21_1017_s_873) filled at 29261.25 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

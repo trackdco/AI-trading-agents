@@ -1,0 +1,175 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "jn1-0531-P2",
+ "decision_minute": "2026-06-01T08:49 ET",
+ "reason_for_call": "stalling",
+ "leak_check": "pass - replay truncated at 08:48:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-05-31_P2_0849_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "long",
+  "entry": 30455.5,
+  "stop": 30468.25,
+  "targets": [
+   {
+    "level": "vwap",
+    "price": 30505.26
+   },
+   {
+    "level": "day_fib_0705",
+    "price": 30526.22
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "08:26",
+  "R_in_points": 28.0,
+  "current_stop_distance": 12.75,
+  "open_pnl_in_R": 0.85
+ },
+ "level_in_question": {
+  "level": "fib_0.5",
+  "price": 30478.25
+ },
+ "price_at_decision": 30479.25,
+ "last_completed_2m_bar": {
+  "start": "08:46",
+  "closed_at": "08:48",
+  "open": 30480.75,
+  "high": 30487.0,
+  "low": 30477.25,
+  "close": 30479.25,
+  "volume": 441,
+  "minutes": 2
+ },
+ "candle_grid_note": "This decision minute is 08:49, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 08:48. price_at_decision and every 2m field below are that 08:48 bar - they will not equal the 3m close, and the chart legend will read the 08:48 bar. Judge the 3m candle and the 08:48 2m candle; neither is fabricated.",
+ "recent_2m_bars": [
+  {
+   "start": "08:41",
+   "closed_at": "08:43",
+   "open": 30476.5,
+   "high": 30481.0,
+   "low": 30469.25,
+   "close": 30472.0,
+   "volume": 419,
+   "minutes": 2
+  },
+  {
+   "start": "08:43",
+   "closed_at": "08:45",
+   "open": 30471.5,
+   "high": 30489.0,
+   "low": 30466.25,
+   "close": 30484.75,
+   "volume": 811,
+   "minutes": 2
+  },
+  {
+   "start": "08:45",
+   "closed_at": "08:47",
+   "open": 30485.75,
+   "high": 30496.25,
+   "low": 30477.25,
+   "close": 30484.25,
+   "volume": 708,
+   "minutes": 2
+  },
+  {
+   "start": "08:47",
+   "closed_at": "08:49",
+   "open": 30484.75,
+   "high": 30484.75,
+   "low": 30477.5,
+   "close": 30478.25,
+   "volume": 349,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "source": "chart legend in the screenshot is current; last full read 08:25:59",
+  "vwap": 30505.26,
+  "vwap_m1": 30453.59
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30503.22,
+   "vwap_p1": 30554.55,
+   "vwap_p2": 30605.89,
+   "vwap_p3": 30657.23,
+   "vwap_m1": 30451.88,
+   "vwap_m2": 30400.54,
+   "vwap_m3": 30349.21
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30453.06,
+   "bb_ma_3m": 30456.4,
+   "bb_ma_15m": 30473.9,
+   "bb_ma_60m": 30478.12
+  },
+  "day_range_fibs": {
+   "0.382": 30450.64,
+   "0.5": 30478.25,
+   "0.618": 30505.86,
+   "0.705": 30526.22
+  },
+  "session_high_so_far": 30595.25,
+  "session_low_so_far": 30361.25,
+  "daily_profile": {
+   "poc": 30468.0,
+   "val": 30424.0,
+   "vah": 30553.0,
+   "note": "DEVELOPING as-of 08:49"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30043.0,
+   "val": 29773.0,
+   "vah": 30310.0,
+   "high": 30595.25,
+   "low": 29744.0,
+   "anchor": "2026-05-25 18:00:00-04:00",
+   "note": "DEVELOPING as-of 08:49"
+  },
+  "prior_day": {
+   "poc": 30406.0,
+   "val": 30328.0,
+   "vah": 30439.0,
+   "high": 30536.0,
+   "low": 30216.5
+  }
+ },
+ "crowded_path": {
+  "flag": false
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "08:31",
+   "action": "hold"
+  },
+  {
+   "minute": "08:38",
+   "action": "trail",
+   "new_stop": 30452.25
+  },
+  {
+   "minute": "08:39",
+   "action": "trail",
+   "new_stop": 30458.5
+  },
+  {
+   "minute": "08:40",
+   "action": "hold"
+  },
+  {
+   "minute": "08:43",
+   "action": "trail",
+   "new_stop": 30461.5
+  },
+  {
+   "minute": "08:45",
+   "action": "trail",
+   "new_stop": 30468.25,
+   "note": "cluster broken, converted to protection"
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract.",
+ "stall_detector_mechanical": "3+ distinct minutes touching fib_0.5 (30478.25) from ABOVE since the 08:45 break, with no 1m close back below it"
+}

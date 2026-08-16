@@ -1,0 +1,127 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "R2-D25-NYA3-1054",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-26T10:54 ET",
+ "candle_start": "10:51 (3m)",
+ "timeframe": "3m",
+ "leak_check": "pass - truncated at 10:53:59; last completed 2m bar starts 10:52 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/r2_d25_c6_1054.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. This briefing is authoritative. The chart is truncated at the cursor and carries NO trade drawings of any kind.",
+ "chart_note": "the weekly VP drawing is anchored to a different window - ignore it visually; correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger from his chart's own study series at the last bar; BB MAs/fibs from the build; session profile from his chart.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   },
+   {
+    "level": "15m_ma_daily_poc",
+    "price": 29373.79
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_poc",
+   "price": 29655.0
+  },
+  "waiting_for": "A 15m decisive-body close below the 0.5 fib/prior-day POC cluster already printed at 10:30 (close 29493.50, 0.61 body) and price has kept fading. Short the retest of the broken 0.5 fib/2m BB-basis zone (29527-29557) toward prior-day VAL (29465), and if that gives way, the 15m MA/daily POC confluence (29369-29394) - still the floor on this rotational day.",
+  "two_sided": true,
+  "condition_for_other_side": "A 15m decisive-body close back above the prior-day POC/0.618 fib confluence (29613-29655) relicenses longs toward the untested 0.705 fib (29676.74) and today's high.",
+  "anticipated_resolution": {
+   "level": "fib_0.5_bb2m_basis",
+   "price": 29526.62,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "A 15m close with a decisive body beyond a level, not a 1-2m poke or thin-bodied wick - already satisfied to the downside at 10:30 through the 0.5 fib/prior-day POC cluster; the mirror test is a 15m decisive close back above that same cluster.",
+  "reasoning": "All three 09:30 targets printed in 22 minutes (prior-day VAL, 0.5 fib, prior-day POC) - spent. The 10:15 bar was a doji at the highs; the 10:30 bar closed 0.61-body back below the 0.5 fib/prior-day POC, and price has kept fading. Overnight's 732pt leg down frames this as a corrective bounce, so I flip short toward the 15m MA/daily-POC confluence it launched from - still rotational, so that MA stays the floor. Reclaim of the prior-day POC/0.618 zone on a 15m close says I'm wrong."
+ },
+ "waiting_for_status": "SATISFIED, and precisely. The thesis (re-fired nine minutes ago) said: short the RETEST of the broken 0.5-fib / 2m-BB-basis zone, 29527-29557. Price rallied back into that zone - the 10:48-10:51 leg topped at 29580 and this candle opened 29556.25, right on the 2m BB basis 29548 - and has closed back out of it at 29494.75, below the 0.5 fib 29526.62. This is the retest the thesis asked for, and it has failed.",
+ "window_status": "ONE fill of the cap of two is used (the 09:59 long, +1.95R, closed at 10:20). This is the last window of the day and entries close at 11:00 - six minutes from now.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "10:51",
+  "direction": "DOWN",
+  "open": 29556.25,
+  "close": 29494.75,
+  "closed_at": "10:54",
+  "levels": "own 3m MA + developing daily VAH, same candle"
+ },
+ "signal_candle_2m": {
+  "start": "10:52",
+  "direction": "DOWN",
+  "open": 29548.0,
+  "high": 29549.5,
+  "low": 29492.25,
+  "close": 29494.75,
+  "volume": 1841,
+  "levels": "own 2m MA (29548.06) - the close is 53pt below it"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "daily_vah",
+  "day_range_fib_0.5"
+ ],
+ "rejection_context": "the 29527-29557 zone has now been rejected twice since the 10:20 high: the 10:30-10:45 15m bar closed 29493.50 back below it with a 0.61 body, and this candle re-enters it at 29556.25 and is thrown straight back out.",
+ "levels_at_decision_CHART": {
+  "vwap": 29445.87,
+  "vwap_p1": 29598.46,
+  "vwap_m1": 29293.28,
+  "vwap_p2": 29751.05,
+  "vwap_m2": 29140.69,
+  "bb_2m_basis": 29548.06,
+  "bb_2m_upper": 29632.41,
+  "bb_2m_lower": 29463.71
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29548.06,
+  "bb_ma_3m": 29507.04,
+  "bb_ma_15m": 29400.41,
+  "bb_ma_60m": 29489.38,
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "session_high_since_open": 29665.25,
+  "session_low_since_open": 29181.5,
+  "daily_profile": {
+   "poc": 29322.75,
+   "val": 29219.5,
+   "vah": 29514.5,
+   "note": "DEVELOPING"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29709.13,
+   "val": 29248.0,
+   "vah": 30023.25,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "weekly_high": 30968.0
+ },
+ "levels_below_for_target_selection": "the 2m BB lower 29463.71 and prior-day VAL 29465 are one cluster ~30pt below; then the VWAP 29445.87 and the 0.382 fib 29440.22; then the 15m MA 29400.41 and the 60m MA 29489.38 (note the 60m sits ABOVE the 15m here); then the daily POC 29322.75 and vwap_m1 29293.28. Apply T11: compute R = |entry-stop| FIRST, then the NEAREST level inside 1.5R-2.5R; a FIXED 1.5R if none qualifies.",
+ "note_on_entry_mechanics": "five takes have been licensed today and only ONE filled - the two London limits died on entry mechanics, one to a cancel level 12pt from the close and one to a limit priced off a stale 2m close. Price your limit and your cancel where an ordinary wiggle reaches neither.",
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

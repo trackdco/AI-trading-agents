@@ -1,0 +1,160 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON",
+ "decision_minute": "2026-06-03T03:00 ET",
+ "leak_check": "pass - replay truncated at 02:59:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-02_LONDON_0300.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30698.0,
+ "last_completed_2m_bar": {
+  "start": "02:58",
+  "closed_at": "03:00",
+  "open": 30693.75,
+  "high": 30699.25,
+  "low": 30693.75,
+  "close": 30698.0,
+  "volume": 66,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "LONDON",
+  "entries": "03:00-04:59",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30695.46,
+  "bb_upper_2m": 30711.28,
+  "bb_lower_2m": 30679.65,
+  "vwap": 30683.3,
+  "vwap_p1": 30721.64,
+  "vwap_m1": 30644.96,
+  "vwap_p2": 30759.98,
+  "vwap_m2": 30606.61,
+  "vwap_p3": 30798.33,
+  "vwap_m3": 30568.27,
+  "read_at": "03:00 NY off the live chart legend",
+  "_session_calendar": {
+   "session_day_label": "2026-06-02",
+   "session_opens": "2026-06-02 18:00 ET (Tuesday evening)",
+   "cash_session_traded": "2026-06-03 (Wednesday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30683.73,
+   "vwap_p1": 30721.61,
+   "vwap_p2": 30759.48,
+   "vwap_p3": 30797.36,
+   "vwap_m1": 30645.86,
+   "vwap_m2": 30607.99,
+   "vwap_m3": 30570.11
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30695.46,
+   "bb_ma_3m": 30694.76,
+   "bb_ma_15m": 30698.04,
+   "bb_ma_60m": 30661.06
+  },
+  "day_range_fibs": {
+   "0.382": 30636.03,
+   "0.5": 30659.12,
+   "0.618": 30682.22,
+   "0.705": 30699.25
+  },
+  "session_high_so_far": 30757.0,
+  "session_low_so_far": 30561.25,
+  "daily_profile": {
+   "poc": 30678.0,
+   "val": 30670.0,
+   "vah": 30725.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30676.0,
+   "val": 30542.0,
+   "vah": 30721.0,
+   "high": 30763.25,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "prior_day": {
+   "poc": 30676.0,
+   "val": 30532.0,
+   "vah": 30713.0,
+   "high": 30763.25,
+   "low": 30317.75
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.076,
+  "net_move_15m": -43.75,
+  "total_15m_travel": 573.75,
+  "candles_15m_up": 17,
+  "candles_15m_down": 18,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "02:00",
+   "open": 30689.75,
+   "high": 30716.0,
+   "low": 30670.25,
+   "close": 30682.75,
+   "body_ratio": 0.15
+  },
+  {
+   "start": "02:15",
+   "open": 30682.25,
+   "high": 30696.25,
+   "low": 30674.75,
+   "close": 30691.75,
+   "body_ratio": 0.44
+  },
+  {
+   "start": "02:30",
+   "open": 30690.25,
+   "high": 30718.0,
+   "low": 30679.75,
+   "close": 30705.0,
+   "body_ratio": 0.39
+  },
+  {
+   "start": "02:45",
+   "open": 30706.25,
+   "high": 30707.5,
+   "low": 30688.25,
+   "close": 30698.0,
+   "body_ratio": 0.43
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [
+   {
+    "event": "ISM Services PMI",
+    "time_et": "10:00"
+   }
+  ],
+  "drivers": [],
+  "falsified_by": "a dated pre-decision event naming NQ or a heavy constituent",
+  "reasoning": "No events released today. ISM Services PMI prints seven hours later in NY_AM, not ahead of this LONDON entry, so it does not gate here."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract."
+}

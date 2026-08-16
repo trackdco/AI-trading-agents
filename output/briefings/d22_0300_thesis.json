@@ -1,0 +1,86 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON 03:00-04:59 ET",
+ "decision_minute": "2026-06-23T03:00 ET (session-day 2026-06-22, 18:00 NY anchor)",
+ "leak_check": "pass - replay truncated at 02:59:59; last completed 2m bar starts 02:58 (verified via the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d22_0300_open.png",
+ "chart_note": "The anchored-weekly VP DRAWING is hidden (a 7-days-back anchor is unreachable inside replay). Its levels are given numerically below and are DEVELOPING - recomputed as-of every decision minute, so treat them as a snapshot, not fixed rails.",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The OHLC legend in the chart header follows TradingView's CROSSHAIR, not the last bar, and can sit on an earlier bar. It is never evidence of a leak. Authoritative state is this briefing plus the SELL/BUY ticker top-left. The chart is truncated at the cursor.",
+ "level_provenance": "VWAP and its bands are READ DIRECTLY OFF HIS CHART at this minute. BB MAs, profiles and fibs come from the research build, which reconciles to the chart exactly on those quantities (BB MA delta 0.00-0.01). See parity_note.",
+ "parity_note": "At this minute the research build's VWAP sits 1.28pt above the chart's and its -1sigma 2.38pt above - outside the 1.0pt tolerance, while BB MA matched to 0.01. Diagnosed: not timing (same error at a quiet minute), not bar-timeframe (1m/2m/3m all tested), not a broken build (matches an independent recomputation to 0.00 on all five days), not his config (day 1 passed at 0.06). Residual cause is small volume differences between the research parquet and TradingView's feed, which only VWAP is sensitive to. Resolution: use the CHART's VWAP, which is what he actually trades off.",
+ "price_at_decision": 29969.75,
+ "overnight": {
+  "open_18et": 30662.75,
+  "high": 30701.25,
+  "high_t": "18:02",
+  "low": 29950.0,
+  "low_t": "02:59",
+  "character": "a one-way collapse. The high printed at 18:02 and price has bled 751pt through the entire Asia session, making its low 29950.00 on the very last bar before this open. There has been no meaningful bounce."
+ },
+ "levels_at_0300_CHART": {
+  "vwap": 30351.64,
+  "vwap_p1": 30556.89,
+  "vwap_m1": 30146.39,
+  "vwap_p2": 30762.14,
+  "vwap_m2": 29941.13,
+  "vwap_p3": 30967.39,
+  "vwap_m3": 29735.88,
+  "bb_2m_basis": 30015.33,
+  "bb_2m_upper": 30052.06,
+  "bb_2m_lower": 29978.59,
+  "source": "read off his chart at this minute"
+ },
+ "levels_at_0300_BUILD": {
+  "bb_ma_3m": 30038.92,
+  "bb_ma_15m": 30259.3,
+  "daily_profile": {
+   "poc": 30586.0,
+   "val": 30228.0,
+   "vah": 30701.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30355.0,
+   "vah": 30732.0,
+   "anchor": "2026-06-15 18:00 ET",
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "day_range_fibs": {
+  "0.382": 30236.98,
+  "0.5": 30325.62,
+  "0.618": 30414.27,
+  "0.705": 30479.63,
+  "swing": "developing session-day high 30701.25 to low 29950.00 (his objective convention). Asia moved predominantly DOWN, so continuation framing applies and these are retracement levels for a bounce.",
+  "confluence": "0.382 (30236.98) sits near daily VAL 30228; 0.5 (30325.62) near anchored weekly VAL 30355 and the 15m MA 30259; 0.618 (30414.27) near weekly POC 30445"
+ },
+ "observations_mechanical": [
+  "price 29969.75 sits just ABOVE vwap_m2 29941.13 and 177pt below vwap_m1 30146.39 - deeply extended below the mean, near the -2 sigma band",
+  "the session low 29950.00 printed on the LAST bar before this open: price enters London at its lows with no rebalance at all",
+  "the weekly low 29923.00 is 47pt below and the overnight low is pressing toward it",
+  "price is below every profile edge - daily VAL 30228, anchored weekly VAL 30355, prior-day low 30337.5 all sit far overhead",
+  "no BB MA has been touched from below in hours; 2m basis 30015.33 is 46pt above price, 15m MA 30259.30 is 290pt above"
+ ],
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "n/a - no dated event to falsify",
+  "reasoning": "No scheduled US releases printed at or before this minute and none upcoming this session-day; the next red-folder event in the archive is Core PCE on 2026-06-25, two days out. No headlines supplied. No basis for a lean or a blackout."
+ },
+ "day_character_note": "Judge the day's character explicitly and say which you think you are in - your contract's rebalance rule now depends on it. On a ROTATIONAL day the 15m MA is the rebalance floor. On a CLEAR TREND day that floor is suspended: you wait for a REJECTION off a key level (a day-range fib, a profile edge, a VWAP band, a prior-day level) and the trigger agent looks for the closure-through-MA-plus-another-level that proves it. The 15m MA is one key level among many, never a gate on its own."
+}

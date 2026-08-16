@@ -1,0 +1,125 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D21-NYA7-1018",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-22T10:18 ET",
+ "candle_start": "10:15 (3m) / 10:16 (2m)",
+ "timeframe": "3m and 2m, simultaneous",
+ "leak_check": "pass - truncated at 10:17:59; last completed 2m bar starts 10:16",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d21_c4_1018_v2.png",
+ "chart_note": "anchored-weekly VP drawing hidden; weekly levels numeric and DEVELOPING as-of this minute. No agent-drawn positions on the chart.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   },
+   {
+    "level": "vwap_p2",
+    "price": 31009.69
+   }
+  ],
+  "invalidation": {
+   "level": "reclaim_below_30823",
+   "price": 30823.0
+  },
+  "waiting_for": "nothing",
+  "two_sided": true,
+  "condition_for_other_side": "shorts relicensed on a HARD REJECTION at the weekly_high/vwap_p2 cluster (30975.5-31009.69), the top of the multi-day range and never exceeded this week",
+  "anticipated_resolution": {
+   "level": "weekly_high",
+   "price": 30975.5,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond the level with a decisive body, not a 1-2m poke and not an absorption wick",
+  "as_of": "10:02 re-fire"
+ },
+ "rejection_context": "The long thesis's destination was tested and FAILED: price ran to 30968.00 at 10:14 - 7.5pt short of the weekly high 30975.5, the multi-day range top that has not been exceeded all week - and turned. The last four 2m bars are a monotone slide 30949.75 -> 30920.75 -> 30912.25 -> 30898.5 -> 30855.25 on rising volume (2897, 1706, 2454, 3210). The 10:15 15m is still forming; the completed 10:00-10:15 15m closed 30909.75 on a 0.37 body - no decisive acceptance above the cluster ever printed. So the thesis's own condition_for_other_side (hard rejection at the weekly-high cluster) is the live question for you.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "10:15",
+  "direction": "DOWN",
+  "open": 30909.75,
+  "close": 30855.25,
+  "closed_at": "10:18",
+  "levels": "own 3m MA + vwap_p1, same candle"
+ },
+ "signal_candle_2m": {
+  "start": "10:16",
+  "direction": "DOWN",
+  "open": 30897.75,
+  "high": 30897.75,
+  "low": 30848.0,
+  "close": 30855.25,
+  "volume": 3210,
+  "levels": "own 2m MA + vwap_p1, same candle"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "own_ma_3m",
+  "vwap_p1"
+ ],
+ "levels_below_for_target_selection": "vwap_p1 30887.06 (just closed through), daily_poc printed below, fib_0.705 30782.00, bb_ma_15m 30784.78, fib_0.618 30727.15, prior_day_high 30770.75, fib_0.5 30652.75, prior_day_vah 30699, prior_day_poc 30668, vwap_mid 30735.94, prior_day_val 30568. Apply T11: R = |entry-stop| first, then the NEAREST of these inside 1.5R-2.5R; fixed 1.5R if none qualifies.",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 30735.94,
+   "p1": 30887.06,
+   "p2": 31038.19,
+   "m1": 30584.81
+  },
+  "bb_ma": {
+   "tf_2m": 30894.74,
+   "tf_3m": 30878.96,
+   "tf_15m": 30784.78,
+   "tf_60m": null
+  },
+  "day_range_fibs": {
+   "0.382": 30578.35,
+   "0.5": 30652.75,
+   "0.618": 30727.15,
+   "0.705": 30782.0
+  },
+  "day_high": 30968.0,
+  "day_low": 30337.5,
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "session_high": 30968.0,
+  "daily_profile": {
+   "poc": 30810.0,
+   "val": 30644.0,
+   "vah": 30969.0,
+   "note": "DEVELOPING as-of 10:18"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30349.0,
+   "vah": 30798.0,
+   "note": "DEVELOPING as-of 10:18"
+  }
+ },
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "cap_counts": "fills, not attempts",
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price",
+ "poc_alignment": {
+  "daily_poc": 30810.0,
+  "position": "45pt BELOW the signal close - it sits in a short's path, not behind it",
+  "weekly_poc": 30443.0,
+  "position2": "far below"
+ },
+ "HOW_TO_READ_THIS_SCREENSHOT": "IMPORTANT: the OHLC legend in the chart header reflects the bar under TradingView's CROSSHAIR, which is parked on an earlier bar (it reads O30936.25 H30954.50 L30907.50 C30937.00 - the 10:00 bar). It is NOT the last completed bar and it is NOT evidence of a leak: that bar is 16 minutes BEFORE this decision minute. The authoritative state is the numbers in this briefing - last completed 2m bar starts 10:16 and closed 30855.25, which is also what the SELL/BUY ticker at the top-left shows (30855.25). The chart is truncated at the cursor; nothing after 10:17:59 is rendered."
+}

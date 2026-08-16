@@ -55,10 +55,16 @@ def test_next_roll_from_paper_window():
     assert roll_day == date(2026, 9, 16) and frm == "NQU26" and to == "NQZ26"
 
 
-def test_resolve_paths():
-    scid = resolve_scid_path("C:/SierraChart/Data", date(2026, 9, 15))
+def test_resolve_paths(tmp_path):
+    """HERMETIC on purpose: this used to point at the literal C:/SierraChart/Data, which
+    EXISTS on the box and holds both naming variants — the most-recently-written file won
+    (by design) and the hardcoded assertion failed there while passing everywhere the
+    path is absent (found during the 2026-08-01 R13 certification). An empty tmp dir
+    pins the DEFAULT-pattern fallback deterministically on every machine; the by-evidence
+    behavior is pinned separately by test_resolve_depth_path_detects_the_box_naming."""
+    scid = resolve_scid_path(tmp_path, date(2026, 9, 15))
     assert scid.name == "NQU26-CME.scid"
-    dep = resolve_depth_path("C:/SierraChart/Data", date(2026, 9, 16), day="2026-09-16")
+    dep = resolve_depth_path(tmp_path, date(2026, 9, 16), day="2026-09-16")
     assert dep.name == "NQZ26-CME.2026-09-16.depth" and dep.parent.name == "MarketDepthData"
 
 

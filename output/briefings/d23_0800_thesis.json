@@ -1,0 +1,85 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE 08:00-09:29 ET (cap 1 fill)",
+ "decision_minute": "2026-06-24T08:00 ET (session-day 2026-06-23)",
+ "leak_check": "pass - truncated at 07:59:59; last completed 2m bar starts 07:58 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d23_0800_nypre.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; weekly levels numeric and DEVELOPING as-of this minute.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the research build.",
+ "day_character_note": "Re-judge the day's character - your rebalance rule depends on it. At 03:00 you called it ROTATIONAL and kept the 15m-MA floor.",
+ "price_at_decision": 29862.25,
+ "prior_thesis_as_of_0300": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "overnight_high",
+    "price": 29891.75
+   },
+   {
+    "level": "weekly_val",
+    "price": 30036.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29577.25
+  },
+  "waiting_for": "rebalance to the 15m MA / VWAP / 0.618 fib shelf (29764-29775)",
+  "two_sided": true,
+  "condition_for_other_side": "shorts on a rejection at the overnight high / prior-day VAH (29891-29928), or at weekly VAL 30036"
+ },
+ "what_happened_since_0300": "Five hours of tight two-way rotation. The 29764-29775 shelf was tested and held around 03:36, price ground up to ~29843 by 04:06, then oscillated in a roughly 29,776-29,862 band for the rest of the session. It sits at 29862.25 now, the upper edge of that band and just under your first target (the overnight high 29891.75). The 15m MA has been crossed seven times since 03:00 - 04:00 DOWN, 04:15 UP, 05:30 DOWN, 07:00 DOWN, 07:45 UP, 08:45 DOWN, all with bodies between 0.64 and 0.91 - which is the signature of a market with no side.",
+ "levels_at_0800_CHART": {
+  "vwap": 29776.02,
+  "vwap_p1": 29840.62,
+  "vwap_m1": 29711.41,
+  "vwap_p2": 29905.23,
+  "vwap_m2": 29646.8,
+  "bb_2m_basis": 29803.61,
+  "bb_2m_upper": 29878.18,
+  "bb_2m_lower": 29729.04
+ },
+ "levels_at_0800_BUILD": {
+  "bb_ma_3m": 29796.28,
+  "bb_ma_15m": 29810.67,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "day_high": 29891.75,
+  "day_low": 29585.5,
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "overnight_high": 29891.75,
+  "overnight_low": 29585.5,
+  "weekly_low": 29577.25,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29737.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 08:00 - value area only 121pt wide after 14 hours"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30012.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 08:00"
+  }
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false,
+  "note": "no scheduled US releases this session-day; next red-folder is Core PCE tomorrow, 2026-06-25 08:30"
+ }
+}

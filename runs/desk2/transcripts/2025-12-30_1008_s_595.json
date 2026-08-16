@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"neutral\",\"day_type\":\"tight overnight balance\",\"thesis\":\"O/N range 25685-25755 holds above prior close 25746, drifting to highs; no directional edge pre-open, watch both range extremes for pullback rejection.\",\"invalidates\":\"clean break/hold outside 25685-25755 shifts bias with the break\"}",
+ "reread": "{\"bias\":\"short\",\"note\":\"Opening range rejected 25734 (near O/N high 25755) and faded to close 25692 near lows \u2014 sellers in control, favor pullback-rejection shorts into gold.\"}",
+ "turns": [
+  {
+   "minute": "2025-12-30 10:09:00-05:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2025-12-30_1009_l_597) filled at 25715.25 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

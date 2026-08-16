@@ -176,3 +176,80 @@ def test_price_scale_multiplies_out_and_divides_back():
         c.close()
     finally:
         s.stop()
+
+
+# --------------------------------------------------------------------------- pairing enforcement
+def test_dead_treats_any_non_alive_non_filled_status_as_dead():
+    """2026-08-05 incident: the old check only recognized ORDER_STATUS_REJECTED as a
+    failed leg. Sierra's own UI showed a stop leg as "Error", a label the DTC protocol's
+    OrderStatusEnum has no distinct numeric code for -- so the old check never saw it.
+    _dead() must catch REJECTED, CANCELED, and any unrecognized code, while never
+    flagging an alive or genuinely filled leg (including the PENDING_CHILD state a
+    bracket's stop child sits in until its parent fills)."""
+    dead = DTCBroker._dead
+    for status in (D.ORDER_STATUS_REJECTED, D.ORDER_STATUS_CANCELED, 99, -1, 12345):
+        assert dead({"OrderStatus": status}) is True, status
+    for status in (D.ORDER_STATUS_OPEN, D.ORDER_STATUS_PENDING_CHILD,
+                  D.ORDER_STATUS_ORDER_SENT, D.ORDER_STATUS_PENDING_OPEN,
+                  D.ORDER_STATUS_FILLED, D.ORDER_STATUS_PARTIALLY_FILLED):
+        assert dead({"OrderStatus": status}) is False, status
+    assert dead({}) is False                            # no update yet is not itself bad news
+
+
+def test_submit_bracket_flattens_when_a_filled_entrys_stop_errors():
+    """The exact 2026-08-05 incident: entry fills, its protective stop comes back with a
+    status Sierra's UI calls "Error" that isn't REJECTED. The old code could only cancel
+    a survivor -- but you cannot cancel a fill. The only safe response left is to flatten
+    the resulting naked position immediately."""
+    s = MockDTCServer(order_mode="fill_entry_stop_errors")
+    try:
+        b, c = _broker(s)
+        b.submit_bracket(_intent())
+        # flatten() cancels working orders (the already-dead stop cancel-rejects, the
+        # already-filled entry cancel-rejects -- both harmless) then market-closes
+        assert any(o.get("OpenOrClose") == 2 and o["OrderType"] == D.ORDER_TYPE_MARKET
+                  for o in s.orders), "expected a market reduce order after the flatten"
+        c.close()
+    finally:
+        s.stop()
+
+
+def test_submit_bracket_cancels_a_still_resting_entry_when_its_stop_dies_unrecognized():
+    """The non-fill-race case: the entry is still resting (no fill race), and its stop
+    dies with an unrecognized status. The survivor -- the still-working entry -- must be
+    cancelled, same as the pre-existing REJECTED-only behavior, now for any dead status."""
+    s = MockDTCServer(order_mode="stop_errors")           # entry rests OPEN, stop errors
+    try:
+        b, c = _broker(s)
+        ref = b.submit_bracket(_intent())
+        assert ref in s.cancelled                        # the resting entry was pulled
+        c.close()
+    finally:
+        s.stop()
+
+
+# --------------------------------------------------------------------------- keepalive
+def test_ensure_connected_survives_a_true_idle_drop():
+    """The 2026-08-02/03 incident, reproduced: a socket that dies during a QUIET stretch
+    (nothing calls _pump — no submit/cancel/status) must still be caught. ensure_connected
+    is the standalone entry point the live loop's idle-independent keepalive calls."""
+    s = MockDTCServer(order_mode="none")
+    try:
+        b, c = _broker(s)
+        assert b.ensure_connected() is True             # freshly connected: trivially alive
+        c._sock.close()                                 # simulate the reaped idle socket
+        assert b.ensure_connected() is True              # heals itself, no order needed
+        assert c.logged_on is True
+        c.close()
+    finally:
+        s.stop()
+
+
+def test_ensure_connected_never_raises_when_the_server_is_gone():
+    """A keepalive failure must degrade to False, never an exception — this runs on every
+    poll cycle of the live loop and must never be the thing that crashes it."""
+    s = MockDTCServer(order_mode="none")
+    b, c = _broker(s)
+    s.stop()                                            # server gone entirely
+    c._sock.close()
+    assert b.ensure_connected() is False                # no server to reconnect to: False

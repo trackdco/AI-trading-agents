@@ -1,0 +1,15 @@
+{
+ "lean": "neutral",
+ "confidence": "high",
+ "news_blackout": false,
+ "fomc_day": false,
+ "blackout_events": [
+  {
+   "event": "ISM Services PMI",
+   "time_et": "10:00"
+  }
+ ],
+ "drivers": [],
+ "falsified_by": "a dated pre-decision event naming NQ or a heavy constituent",
+ "reasoning": "No events released today. ISM Services PMI prints seven hours later in NY_AM, not ahead of this LONDON entry, so it does not gate here."
+}

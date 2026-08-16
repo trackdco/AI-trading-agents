@@ -1,0 +1,496 @@
+<title>LTF Trigger Re-Census — findings</title>
+<style>
+  /* ---------- tokens: light is the bare :root, complete on its own ------- */
+  :root{
+    --paper:#F6F5F2; --surface:#FFFFFF; --sunk:#EDEBE6;
+    --ink:#14161A; --ink-2:#3C424B; --slate:#6A717C; --rule:#D8D5CE;
+    --accent:#2A5A7A; --accent-soft:#E3EBF1;
+    --pass:#2C6A4C; --fail:#8E2F26; --warn:#8A6420;
+    /* trigger-timeframe ramp — an ordinal encoding, not decoration */
+    --tf1:#B9C2CB; --tf2:#8FA3B4; --tf3:#68859D; --tf5:#456B87; --tf15:#2A5A7A;
+    --shadow:0 1px 2px rgba(20,22,26,.06), 0 8px 24px -16px rgba(20,22,26,.28);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#101215; --surface:#171A1F; --sunk:#1D2127;
+      --ink:#E4E6E9; --ink-2:#B4BAC2; --slate:#8C949E; --rule:#2A2F37;
+      --accent:#79ADCD; --accent-soft:#1B2933;
+      --pass:#5FB287; --fail:#D5786B; --warn:#C9A159;
+      --tf1:#39424C; --tf2:#4A5E70; --tf3:#5A7E96; --tf5:#6A9BBC; --tf15:#79ADCD;
+      --shadow:0 1px 2px rgba(0,0,0,.5), 0 8px 24px -16px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#101215; --surface:#171A1F; --sunk:#1D2127;
+    --ink:#E4E6E9; --ink-2:#B4BAC2; --slate:#8C949E; --rule:#2A2F37;
+    --accent:#79ADCD; --accent-soft:#1B2933;
+    --pass:#5FB287; --fail:#D5786B; --warn:#C9A159;
+    --tf1:#39424C; --tf2:#4A5E70; --tf3:#5A7E96; --tf5:#6A9BBC; --tf15:#79ADCD;
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+
+  /* no sans anywhere on this page: serif for prose, mono for every figure */
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:Charter,"Bitstream Charter","Sitka Text",Cambria,"Palatino Linotype",Georgia,serif;
+    font-size:17px; line-height:1.62; margin:0;
+    padding:0 clamp(18px,5vw,56px) 120px;
+  }
+  .wrap{ max-width:1000px; margin:0 auto; }
+  .col{ max-width:66ch; }
+  p{ margin:0 0 1.05em; color:var(--ink-2); }
+  strong{ color:var(--ink); font-weight:600; }
+  a{ color:var(--accent); }
+  :focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:2px; }
+
+  .mono,code,td.n,th.n{
+    font-family:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1;
+  }
+  .lbl{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--slate); font-weight:500;
+  }
+
+  /* ---------- masthead ---------- */
+  header{ padding:clamp(48px,9vw,104px) 0 0; }
+  h1{
+    font-size:clamp(34px,5.6vw,58px); line-height:1.04; margin:.34em 0 0;
+    letter-spacing:-.018em; font-weight:600; text-wrap:balance; color:var(--ink);
+  }
+  .verdict{
+    margin:1.5em 0 0; font-size:clamp(20px,2.5vw,25px); line-height:1.42;
+    max-width:30ch; text-wrap:balance; color:var(--ink);
+  }
+  .verdict em{ font-style:normal; box-shadow:inset 0 -.42em 0 var(--accent-soft); }
+  .meta{
+    display:flex; flex-wrap:wrap; gap:0 34px; margin-top:2.6em;
+    padding-top:16px; border-top:1px solid var(--rule);
+  }
+  .meta div{ padding:6px 0; }
+  .meta .v{ display:block; font-size:15px; color:var(--ink); margin-top:1px; }
+
+  /* ---------- sections ---------- */
+  section{ margin-top:clamp(56px,8vw,92px); }
+  h2{
+    font-size:clamp(23px,3vw,29px); line-height:1.2; margin:0 0 .1em;
+    font-weight:600; letter-spacing:-.012em; text-wrap:balance;
+  }
+  h2 + .kicker{ margin:0 0 1.5em; color:var(--slate); font-size:16px; max-width:62ch; }
+  h3{ font-size:18px; margin:2.1em 0 .5em; font-weight:600; }
+  .rule{ border:0; border-top:1px solid var(--rule); margin:0 0 26px; }
+
+  /* ---------- data panel ---------- */
+  .panel{
+    background:var(--surface); border:1px solid var(--rule); border-radius:3px;
+    box-shadow:var(--shadow); margin:26px 0; overflow:hidden;
+  }
+  .panel > .cap{
+    padding:13px 18px; border-bottom:1px solid var(--rule); background:var(--sunk);
+  }
+  .scroll{ overflow-x:auto; }
+  table{ border-collapse:collapse; width:100%; font-size:14.5px; }
+  th,td{ padding:9px 14px; text-align:left; border-bottom:1px solid var(--rule); }
+  thead th{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--slate); font-weight:500; white-space:nowrap;
+  }
+  td.n,th.n{ text-align:right; white-space:nowrap; }
+  tbody tr:last-child td{ border-bottom:0; }
+  tbody tr.hi td{ background:var(--accent-soft); }
+  .pos{ color:var(--pass); } .neg{ color:var(--fail); }
+
+  /* ---------- EV bar chart ---------- */
+  .chart{ padding:26px 18px 8px; }
+  .row{ display:grid; grid-template-columns:58px 1fr 96px; align-items:center; gap:14px; margin-bottom:11px; }
+  .row .tf{ text-align:right; font-size:13px; color:var(--ink); }
+  .track{ position:relative; height:26px; background:var(--sunk); border-radius:2px; }
+  .zero{ position:absolute; top:-6px; bottom:-6px; width:1px; background:var(--slate); opacity:.75; }
+  .bar{ position:absolute; top:4px; bottom:4px; border-radius:1px; }
+  .row .ev{ font-size:14px; text-align:right; }
+  .axis{ display:grid; grid-template-columns:58px 1fr 96px; gap:14px; margin-top:2px; }
+  .axis .t{ position:relative; height:20px; font-size:11px; color:var(--slate); }
+  .axis .t span{ position:absolute; transform:translateX(-50%);
+    font-family:ui-monospace,Menlo,Consolas,monospace; }
+
+  /* ---------- gates ---------- */
+  .gates{ display:grid; gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:3px; overflow:hidden; }
+  @media(min-width:720px){ .gates{ grid-template-columns:1fr 1fr; } }
+  .gate{ background:var(--surface); padding:16px 18px; }
+  .gate .h{ display:flex; align-items:baseline; gap:9px; margin-bottom:3px; }
+  .gate .h b{ font-size:15px; font-weight:600; }
+  .tick{ color:var(--pass); font-size:13px; }
+  .gate p{ margin:0; font-size:14.5px; line-height:1.5; }
+
+  /* ---------- scoreboard ---------- */
+  .score{ border-top:1px solid var(--rule); }
+  .pred{
+    display:grid; gap:4px 22px; padding:20px 0; border-bottom:1px solid var(--rule);
+    grid-template-columns:28px 1fr;
+  }
+  @media(min-width:760px){ .pred{ grid-template-columns:28px 1fr 1.15fr 118px; align-items:start; } }
+  .pred .num{ font-size:13px; color:var(--slate);
+    font-family:ui-monospace,Menlo,Consolas,monospace; padding-top:3px; }
+  .pred .claim{ font-size:16px; color:var(--ink); }
+  .pred .found{ font-size:15px; color:var(--ink-2); }
+  .pred .found .mono{ font-size:13.5px; }
+  .tag{
+    display:inline-block; font-family:ui-monospace,Menlo,Consolas,monospace;
+    font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+    padding:4px 9px; border-radius:2px; border:1px solid currentColor; white-space:nowrap;
+  }
+  .tag.ok{ color:var(--pass); } .tag.no{ color:var(--fail); } .tag.mid{ color:var(--warn); }
+
+  /* ---------- callout ---------- */
+  .note{
+    border-left:2px solid var(--accent); padding:2px 0 2px 20px; margin:26px 0;
+    max-width:64ch;
+  }
+  .note p:last-child{ margin-bottom:0; }
+  .flag{
+    background:var(--sunk); border:1px solid var(--rule); border-radius:3px;
+    padding:18px 20px; margin:26px 0; max-width:70ch;
+  }
+  .flag p:last-child{ margin-bottom:0; }
+  ul{ margin:0 0 1.05em; padding-left:1.15em; color:var(--ink-2); }
+  li{ margin-bottom:.42em; }
+  footer{ margin-top:96px; padding-top:20px; border-top:1px solid var(--rule); }
+  footer p{ font-size:14px; color:var(--slate); max-width:70ch; }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="lbl">Fit 2025-06-01 → 2026-07-14 · declared before the run · holdout unspent</div>
+  <h1>The raw book and the traded book disagree about the trigger candle.</h1>
+  <p class="verdict">On unselected substrate the 15-minute candle wins, monotonically. Hold trades&nbsp;per&nbsp;day constant and <em>3 and 5 minutes beat it</em> — because a tighter stop does not enlarge the move, it makes room-to-run selectable.</p>
+  <div class="meta mono">
+    <div><span class="lbl">Session days</span><span class="v">291</span></div>
+    <div><span class="lbl">Triggers walked</span><span class="v">81,457</span></div>
+    <div><span class="lbl">Cells declared</span><span class="v">168</span></div>
+    <div><span class="lbl">Cells clearing a bar</span><span class="v">0</span></div>
+    <div><span class="lbl">Gates</span><span class="v">all passed</span></div>
+  </div>
+</header>
+
+<section>
+  <hr class="rule">
+  <div class="flag" style="max-width:none;border-color:var(--accent);background:var(--accent-soft)">
+    <p class="lbl" style="margin:0 0 8px;color:var(--accent)">Correction, before anything was acted on</p>
+    <p>The first version of this document concluded <strong>“the short-timeframe trigger family is closed”</strong> from the raw result. <strong>That conclusion was wrong and is withdrawn.</strong> The objection that produced the correction: the raw book is unselected substrate — a population full of trades nobody would take — so raw-versus-raw cannot settle which trigger timeframe supports the better <em>traded</em> book.</p>
+    <p style="margin-top:.9em">The objection is right. The test is <a href="#matched">below</a>. What survives unchanged: every gate, every raw number, the refutation of predictions 3 and 5, the stop-rule defect, and the verdict on the momentum condition. What is withdrawn: the closure of the family, and the cancellation of the cross-timeframe union.</p>
+  </div>
+</section>
+
+<section>
+  <hr class="rule">
+  <h2>Answer one — the raw substrate</h2>
+  <p class="kicker">Every trigger, every locus, both arms, no selection. Executable first-of-fight book, shipped exit, both arms entering at the next 1-minute open, X = 0.5W. One convention throughout, so the timeframes are comparable to each other and to the control.</p>
+
+  <div class="panel">
+    <div class="cap lbl">Book expectancy by trigger timeframe — R per fight</div>
+    <div class="chart">
+      <div class="row">
+        <div class="tf mono">1m</div>
+        <div class="track"><div class="zero" style="left:24%"></div><div class="bar" style="background:var(--tf1);right:76%;width:9.5%"></div></div>
+        <div class="ev mono neg">−0.071</div>
+      </div>
+      <div class="row">
+        <div class="tf mono">2m</div>
+        <div class="track"><div class="zero" style="left:24%"></div><div class="bar" style="background:var(--tf2);left:24%;width:3.7%"></div></div>
+        <div class="ev mono pos">+0.028</div>
+      </div>
+      <div class="row">
+        <div class="tf mono">3m</div>
+        <div class="track"><div class="zero" style="left:24%"></div><div class="bar" style="background:var(--tf3);left:24%;width:7.6%"></div></div>
+        <div class="ev mono pos">+0.057</div>
+      </div>
+      <div class="row">
+        <div class="tf mono">5m</div>
+        <div class="track"><div class="zero" style="left:24%"></div><div class="bar" style="background:var(--tf5);left:24%;width:12.8%"></div></div>
+        <div class="ev mono pos">+0.096</div>
+      </div>
+      <div class="row">
+        <div class="tf mono">15m</div>
+        <div class="track"><div class="zero" style="left:24%"></div><div class="bar" style="background:var(--tf15);left:24%;width:23.5%"></div></div>
+        <div class="ev mono pos">+0.176</div>
+      </div>
+      <div class="axis">
+        <div></div>
+        <div class="t"><span style="left:0%">−0.10</span><span style="left:24%">0</span><span style="left:48%">+0.10</span><span style="left:72%">+0.20</span><span style="left:96%">+0.30</span></div>
+        <div></div>
+      </div>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>trigger</th><th class="n">book EV</th><th class="n">fights / day</th><th class="n">median stop</th><th class="n">stop in W</th><th class="n">cost as % of R</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1m</td><td class="n mono neg">−0.071</td><td class="n mono">26.03</td><td class="n mono">8.25 pt</td><td class="n mono">0.092</td><td class="n mono">6.1%</td></tr>
+          <tr><td class="mono">2m</td><td class="n mono pos">+0.028</td><td class="n mono">24.60</td><td class="n mono">11.75 pt</td><td class="n mono">0.130</td><td class="n mono">4.3%</td></tr>
+          <tr><td class="mono">3m</td><td class="n mono pos">+0.057</td><td class="n mono">23.34</td><td class="n mono">14.25 pt</td><td class="n mono">0.155</td><td class="n mono">3.5%</td></tr>
+          <tr><td class="mono">5m</td><td class="n mono pos">+0.096</td><td class="n mono">21.97</td><td class="n mono">18.50 pt</td><td class="n mono">0.204</td><td class="n mono">2.7%</td></tr>
+          <tr class="hi"><td class="mono">15m <span class="lbl">control</span></td><td class="n mono pos">+0.176</td><td class="n mono">18.62</td><td class="n mono">30.75 pt</td><td class="n mono">0.345</td><td class="n mono">1.6%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col">
+    <p>The ordering holds at <strong>every</strong> clustering width — 0.25W, 0.5W, 1.0W, 2.0W — so it is not an artefact of how fights are counted. It also holds <strong>inside every risk quintile</strong>, so it is not an artefact of stop size alone.</p>
+    <p>One number deserves separating out. Raw triggers rise <span class="mono">3.50×</span> from 15m to 1m. <strong>Fights rise only <span class="mono">1.40×</span></strong> — 18.6 to 26.0 a day. Most of the extra triggers are not extra opportunities; they are the same fight, seen more often.</p>
+    <p>At around 20 trades a day this book is nobody’s book. That is what makes the next section necessary rather than optional.</p>
+  </div>
+</section>
+
+<section id="matched">
+  <hr class="rule">
+  <h2>Answer two — at matched selectivity</h2>
+  <p class="kicker">Hold trades per day constant and compare. The same three filters at every timeframe — a 2-point risk floor, room-to-run of 3R or open space, then top flow concordance until the rate hits target. Selectivity is swept, not tuned. Only the timeframe changes.</p>
+
+  <div class="panel"><div class="scroll">
+    <table>
+      <thead><tr><th>trades / day</th><th class="n">1m</th><th class="n">2m</th><th class="n">3m</th><th class="n">5m</th><th class="n">15m control</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1.0</td><td class="n mono">+0.317</td><td class="n mono">+0.366</td><td class="n mono pos"><strong>+0.453</strong></td><td class="n mono">+0.400</td><td class="n mono">+0.256</td></tr>
+        <tr><td class="mono">2.0</td><td class="n mono">+0.264</td><td class="n mono">+0.334</td><td class="n mono pos"><strong>+0.446</strong></td><td class="n mono">+0.427</td><td class="n mono">+0.306</td></tr>
+        <tr><td class="mono">3.0</td><td class="n mono">+0.232</td><td class="n mono">+0.350</td><td class="n mono pos"><strong>+0.406</strong></td><td class="n mono">+0.386</td><td class="n mono">+0.328</td></tr>
+        <tr><td class="mono">4.0</td><td class="n mono">+0.211</td><td class="n mono">+0.300</td><td class="n mono pos"><strong>+0.363</strong></td><td class="n mono">+0.348</td><td class="n mono">+0.282</td></tr>
+        <tr><td class="mono">6.0</td><td class="n mono">+0.120</td><td class="n mono">+0.247</td><td class="n mono" style="color:var(--slate)">max 5.4/d</td><td class="n mono" style="color:var(--slate)">max 5.1/d</td><td class="n mono" style="color:var(--slate)">max 4.7/d</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <div class="col">
+    <p><strong>The raw ordering reverses.</strong> At every rung from one to four trades a day, 3m and 5m beat the control by <span class="mono">+0.12</span> to <span class="mono">+0.20R</span>. At the 2-a-day rung the intervals clear zero in <strong>both eras</strong> at 2m, 3m, 5m and 15m — and <strong>not</strong> at 1m. Split-half on the frozen day-split: all five positive on both halves, 5m the steadiest at <span class="mono">+0.435 / +0.418</span>.</p>
+    <p><strong>The advantage lives exactly where you operate.</strong> As selectivity loosens the books converge and the 15-minute book <em>improves</em> — <span class="mono">+0.256 → +0.328</span> — while the short-timeframe books decay. The raw comparison was measuring a twenty-trades-a-day regime that nobody trades.</p>
+  </div>
+
+  <h3>Why — and this is the useful part</h3>
+  <p class="col">The reversal is carried <strong>entirely by one filter</strong>. Remove room-to-run and the raw ordering returns intact:</p>
+  <div class="panel"><div class="scroll">
+    <table>
+      <thead><tr><th>filter stack, at 2 trades/day</th><th class="n">1m</th><th class="n">3m</th><th class="n">5m</th><th class="n">15m</th></tr></thead>
+      <tbody>
+        <tr><td>risk floor + room + concordance</td><td class="n mono">+0.264</td><td class="n mono pos"><strong>+0.446</strong></td><td class="n mono">+0.427</td><td class="n mono">+0.306</td></tr>
+        <tr><td>room + concordance <span class="lbl">no risk floor</span></td><td class="n mono">+0.256</td><td class="n mono pos"><strong>+0.421</strong></td><td class="n mono">+0.418</td><td class="n mono">+0.304</td></tr>
+        <tr><td>risk floor + concordance <span class="lbl">no room</span></td><td class="n mono">+0.050</td><td class="n mono">+0.168</td><td class="n mono">+0.165</td><td class="n mono pos"><strong>+0.234</strong></td></tr>
+        <tr><td>concordance only</td><td class="n mono">+0.043</td><td class="n mono">+0.169</td><td class="n mono">+0.165</td><td class="n mono pos"><strong>+0.234</strong></td></tr>
+      </tbody>
+    </table>
+  </div></div>
+  <p class="col">The mechanism is arithmetic, and it <em>explains</em> the refutation of prediction 3 instead of contradicting it. <strong>At 15 minutes the median next level sits only <span class="mono">0.40R</span> away</strong> — the stop is so wide that everything is close by in R terms, so a room filter has almost nothing to select. At 3 and 5 minutes the same distances are <span class="mono">0.83R</span> and <span class="mono">0.67R</span> with a far longer right tail, and the filter has real range to work in.</p>
+
+  <div class="note">
+    <p><strong>The tighter stop’s payoff is not a bigger move. It is that room-to-run becomes a measurable, selectable quantity.</strong> Prediction 3 said the excursion table would shift up. It did not, and it still has not. What shifts is the <em>selectability</em> of the population.</p>
+  </div>
+
+  <div class="flag">
+    <p class="lbl" style="margin:0 0 8px">What this is not</p>
+    <p>Fit-side and post-hoc. The filter stack was assembled after seeing the raw result. Room-to-run was declared a reported column and explicitly <em>not</em> a filter this pass; concordance failed its own gate bar. Two of the three filters are being used in ways their own declarations forbade for this pass. The split-half passes, but it was run on an object chosen by looking — a stability check, not a confirmation.</p>
+    <p style="margin-top:.9em"><strong>Nothing here ships.</strong> What it does is reopen a family this document had wrongly closed, and hand the next declaration a specific, mechanism-backed hypothesis instead of a vague one.</p>
+  </div>
+</section>
+
+<section>
+  <hr class="rule">
+  <h2>Gates, before any row was read</h2>
+  <p class="kicker">Each of these could have invalidated the run. They were specified in the declaration and run first.</p>
+  <div class="gates">
+    <div class="gate">
+      <div class="h"><b>Pre-flight sanity</b><span class="tick mono">PASS</span></div>
+      <p>Trigger counts only, no outcome walks. Max cell <span class="mono">6.01</span>/day against a <span class="mono">50</span>/day halt bar. Counts scale <em>sub</em>-linearly — 1m yields 3.50× the 15m rate against 15× the candles. Zero super-linear cells.</p>
+    </div>
+    <div class="gate">
+      <div class="h"><b>Calibration, trigger stage</b><span class="tick mono">EXACT</span></div>
+      <p>The 15m path reproduced the existing level census bit for bit: <span class="mono">8,107</span> vs <span class="mono">8,107</span> triggers, zero rows either way, matched on day, time, locus, arm and side.</p>
+    </div>
+    <div class="gate">
+      <div class="h"><b>Calibration, outcome stage</b><span class="tick mono">EXACT</span></div>
+      <p>The rewritten outcome walk was checked row by row against the old one on 353 matched rows. Entry, stop, risk, MFE and all three exit conventions identical to <span class="mono">1e-9</span>. It runs in three minutes instead of hours.</p>
+    </div>
+    <div class="gate">
+      <div class="h"><b>Entry price, all four timeframes</b><span class="tick mono">PASS</span></div>
+      <p>Flatten, next-open, and a new probe built for this run: shift every post-decision bar 50 points and confirm the momentum condition never flips. It never did.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <hr class="rule">
+  <h2>The five predictions, scored</h2>
+  <p class="kicker">Written down before the run, so the result means something either way. Numbering is theirs, not decoration.</p>
+  <div class="score">
+    <div class="pred">
+      <div class="num">01</div>
+      <div class="claim">Fights per day go up.</div>
+      <div class="found">True, but far smaller than it looks at the trigger level: <span class="mono">18.6 → 26.0</span> a day, <span class="mono">1.40×</span>.</div>
+      <div><span class="tag ok">confirmed</span></div>
+    </div>
+    <div class="pred">
+      <div class="num">02</div>
+      <div class="claim">Stop width falls 2–3×.</div>
+      <div class="found">Falls <span class="mono">3.7×</span> — <span class="mono">30.75 → 8.25</span> points, <span class="mono">0.345 → 0.092</span> W.</div>
+      <div><span class="tag ok">confirmed</span></div>
+    </div>
+    <div class="pred">
+      <div class="num">03</div>
+      <div class="claim">The MFE-in-R table shifts substantially up.</div>
+      <div class="found">It shifted <em>down</em>. London median <span class="mono">1.11R → 0.75R</span>, and <strong>P(MFE ≥ 3R) is flat at 27.4% → 27.1%</strong>. Only the far tail stretched.</div>
+      <div><span class="tag no">refuted</span></div>
+    </div>
+    <div class="pred">
+      <div class="num">04</div>
+      <div class="claim">The partial relocates away from 3R.</div>
+      <div class="found">Essentially invariant. T=5 was already best in London at 15m and stays best at every timeframe; NY_AM moves 3 → 5.</div>
+      <div><span class="tag mid">invariant</span></div>
+    </div>
+    <div class="pred">
+      <div class="num">05</div>
+      <div class="claim">Flow gets markedly stronger at the event minute.</div>
+      <div class="found">It gets <em>weaker</em>. Bar-window features fall at 1m; the pre-bar features stay flat, which is the control proving the comparison is fair.</div>
+      <div><span class="tag no">refuted</span></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><strong>Prediction 3 is the one that matters.</strong> The premise was: same excursion, smaller denominator, therefore a bigger R multiple. What actually happens is that excursion is denominated in band width, not in your stop. Cutting the stop 3.7× left the body of the MFE distribution alone and moved the losers. The quantity the 75%-at-3R leg depends on did not move at all.</p>
+  </div>
+</section>
+
+<section>
+  <hr class="rule">
+  <h2>Why the raw book loses</h2>
+  <p class="kicker">Two mechanisms, both measured, and only one of them is about cost.</p>
+
+  <h3>1 — Costs, exactly as the declaration warned</h3>
+  <div class="panel"><div class="scroll">
+    <table>
+      <thead><tr><th>trigger</th><th class="n">EV @ 0.5 pt</th><th class="n">EV @ 1.0 pt</th><th class="n">EV @ 1.5 pt</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1m</td><td class="n mono neg">−0.071</td><td class="n mono neg">−0.180</td><td class="n mono neg">−0.289</td></tr>
+        <tr><td class="mono">5m</td><td class="n mono pos">+0.096</td><td class="n mono pos">+0.044</td><td class="n mono neg">−0.007</td></tr>
+        <tr class="hi"><td class="mono">15m</td><td class="n mono pos">+0.176</td><td class="n mono pos">+0.147</td><td class="n mono pos">+0.118</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+  <p class="col">Only the 15-minute book survives an adverse-fill assumption. But cost explains roughly a third of the gap, not the whole of it.</p>
+
+  <h3>2 — The stop rule itself degenerates</h3>
+  <p class="col">“Stop at the trigger candle’s extreme, plus a tick” is a sound risk unit when the candle is 30 points tall. At 1 minute the candle’s own range is sometimes a single point — and then risk stops being a risk unit. The stop sits inside the noise, and cost as a fraction of R explodes.</p>
+  <div class="panel"><div class="scroll">
+    <table>
+      <thead><tr><th>trigger</th><th class="n">5th pct stop</th><th class="n">share under 2 pt</th><th class="n">EV of those rows</th><th class="n">EV of the rest</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1m</td><td class="n mono">1.50 pt</td><td class="n mono">7.6%</td><td class="n mono neg">−0.667</td><td class="n mono neg">−0.022</td></tr>
+        <tr><td class="mono">5m</td><td class="n mono">3.00 pt</td><td class="n mono">2.0%</td><td class="n mono neg">−0.598</td><td class="n mono pos">+0.110</td></tr>
+        <tr class="hi"><td class="mono">15m</td><td class="n mono">5.50 pt</td><td class="n mono">0.7%</td><td class="n mono neg">−0.599</td><td class="n mono pos">+0.182</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+  <p class="col"><strong>This is a defect in the stop rule at short timeframes, not a fact about short timeframes</strong> — and it is separable, which matters for what comes next.</p>
+
+  <div class="flag">
+    <p class="lbl" style="margin:0 0 8px">Contamination this exposes</p>
+    <p>For a long, the stop is the candle’s low, so <span class="mono">risk ≈ closeloc × range</span>. A candle that closed near its own stop has a near-zero denominator. <strong><span class="mono">closeloc</span> is the strongest single feature in the whole flow table</strong> — Spearman <span class="mono">+0.35</span> at every timeframe — and that correlation is partly mechanical. Any future use of it, including the bar-only proxy, has to be re-measured on a risk-floored population.</p>
+  </div>
+</section>
+
+
+
+<section>
+  <hr class="rule">
+  <h2>The momentum condition adds nothing</h2>
+  <p class="kicker">Condition B — the same candle closing through its own timeframe’s middle band — priced by the declared marginal-lift arithmetic, not by whether each population clears its own bar.</p>
+  <p class="col">Bar: lift ≥ <span class="mono">+0.05R</span> with the bootstrap interval on the <em>lift</em> clear of zero in both eras. Result: <strong>0 of 30 cells pass.</strong> The verdict recorded is the declared one — B adds nothing, the trigger stays A-only.</p>
+  <p class="col">That stands. But the two arms failed differently and the difference is on the record:</p>
+  <ul class="col">
+    <li><strong>Reject arm</strong> — B is a savage filter, removing 93–98% of 1-minute triggers. Point estimates are positive in <strong>14 of 15 cells</strong>, median about <span class="mono">+0.18R</span>, and hit rate and expectancy <em>agree</em> — this is not the wall-quality inversion. It fails on power, not sign: 30–170 kept rows per cell.</li>
+    <li><strong>Break arm</strong> — estimates straddle zero, 7 of 15 negative. Here B genuinely adds nothing.</li>
+  </ul>
+  <p class="col">The sign consistency is not a clean 15-cell sign test: the cells share populations across timeframes, so the effective independent count is far smaller. It earns a fresh declaration on the 15-minute reject book, where the kept set would be roughly seven times larger. Nothing more.</p>
+  <div class="note">
+    <p><span class="lbl">Wiring check</span><br>At 15 minutes the locus <em>is</em> that timeframe’s own middle band, so B must be trivially true for every break and trivially false for every reject. Observed: <span class="mono">100.0%</span> and <span class="mono">0.0%</span>. Both identities hold exactly, and at 1 minute the same locus gives <span class="mono">21.9% / 5.7%</span> — so B is a genuinely independent condition down there, which is what made the test worth running. A side effect worth stating plainly: <strong>the incumbent 15-minute reject book is precisely the population B throws away.</strong></p>
+  </div>
+</section>
+
+<section>
+  <hr class="rule">
+  <h2>Flow, at the exact event minute</h2>
+  <p class="kicker">The claim that motivated the entire re-census. It has now been tested rather than argued.</p>
+  <div class="panel"><div class="scroll">
+    <table>
+      <thead><tr><th>feature</th><th class="n">1m</th><th class="n">2m</th><th class="n">3m</th><th class="n">5m</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="mono">flowconf</td><td class="n mono">+0.196</td><td class="n mono">+0.199</td><td class="n mono">+0.201</td><td class="n mono"><strong>+0.237</strong></td><td>weaker at 1m</td></tr>
+        <tr><td class="mono">volx</td><td class="n mono">+0.197</td><td class="n mono">+0.221</td><td class="n mono">+0.240</td><td class="n mono"><strong>+0.261</strong></td><td>weaker at 1m</td></tr>
+        <tr><td class="mono">eff_result</td><td class="n mono">—</td><td class="n mono">+0.157</td><td class="n mono">+0.132</td><td class="n mono">+0.113</td><td>—</td></tr>
+        <tr><td class="mono">thru_delta_conf</td><td class="n mono"><strong>+0.196</strong></td><td class="n mono">+0.194</td><td class="n mono">+0.175</td><td class="n mono">+0.122</td><td>see below</td></tr>
+        <tr><td class="mono">pre-bar delta set</td><td class="n mono">≈0</td><td class="n mono">≈0</td><td class="n mono">≈0</td><td class="n mono">≈0</td><td>flat — the control</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+  <p class="col">The bar-window features get <strong>weaker</strong> at one minute, not stronger. The pre-bar features are flat across every timeframe — exactly as they must be, since they never used the bar window — and that is the internal control confirming the comparison is fair.</p>
+  <p class="col">The one feature that appears to strengthen is the same number arriving twice: at a 1-minute trigger, <span class="mono">thru_delta_conf</span> and <span class="mono">flowconf</span> are <span class="mono">100.0%</span> identical. Its rise is arithmetic, not evidence.</p>
+  <div class="note">
+    <p><strong>This closes a question that has been open since the beginning.</strong> The flow family is genuinely weak, not mis-measured. Aligning delta to the exact event minute does not rescue it. That is a result, and it is recorded as one.</p>
+    <p style="margin-top:.9em">One thing did move, honestly: the concordance count <em>ranks</em> the short-timeframe population better than it ranked the 15-minute one (<span class="mono">+0.19</span> to <span class="mono">+0.24</span> on the reject arm, against <span class="mono">+0.129</span> before). It still has no gate value — 96 cut cells searched, <strong>0</strong> clearing the bar in both eras.</p>
+  </div>
+</section>
+
+<section>
+  <hr class="rule">
+  <h2>The one live lead</h2>
+  <p class="kicker">Room-to-run: how far the next level sits ahead of entry, measured in R. Declared as a reported column and explicitly <em>not</em> a filter this pass.</p>
+  <div class="panel"><div class="scroll">
+    <table>
+      <thead><tr><th>trigger</th><th class="n">room ≥ 3R, or open space</th><th class="n">room &lt; 3R</th><th class="n">gap</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1m</td><td class="n mono neg">−0.050</td><td class="n mono neg">−0.081</td><td class="n mono">0.031</td></tr>
+        <tr><td class="mono">3m</td><td class="n mono pos">+0.207</td><td class="n mono">+0.006</td><td class="n mono">0.201</td></tr>
+        <tr><td class="mono">5m</td><td class="n mono pos">+0.272</td><td class="n mono pos">+0.039</td><td class="n mono">0.233</td></tr>
+        <tr class="hi"><td class="mono">15m</td><td class="n mono pos">+0.287</td><td class="n mono pos">+0.138</td><td class="n mono">0.149</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+  <p class="col">With a 2-point risk floor, as a gate with the paired interval on the lift, it clears <strong>both eras</strong> at 2m, 3m and 5m (<span class="mono">+0.185 / +0.212 / +0.214</span>). And the obvious confound runs <em>against</em> it: small stops inflate the ratio and predict bad outcomes, so the room-rich group is loaded with the worst population and beats the book anyway.</p>
+  <p class="col"><strong>This is not a result.</strong> It was found by looking, after the fact, across a table that also holds 168 other cells. It is the candidate that has earned the next blind declaration — and it is the room-to-run law restated in the data: select on how far it can go, not on whether it arrives.</p>
+</section>
+
+<section>
+  <hr class="rule">
+  <h2>What this pass costs, and what it buys</h2>
+  <div class="col">
+    <h3>Closed</h3>
+    <p>The <strong>1-minute</strong> trigger. It loses raw, it is worst at every matched-selectivity rung, and it is the only timeframe that fails the both-era check under selection. And the momentum condition — the stated grammar’s own confirmation requirement — adds nothing at any timeframe.</p>
+    <h3>Buys</h3>
+    <ul>
+      <li>The flow question is closed: weak, not mis-measured. That has been open since the beginning.</li>
+      <li>Everything the last six months of base rates was measured on is <strong>re-validated as the right population</strong>. The invalidation list in the declaration is withdrawn.</li>
+      <li>A stop-rule defect is now visible that was invisible at 15 minutes — and it contaminates <span class="mono">closeloc</span> at every timeframe.</li>
+      <li>A mechanism, not just a ranking: room-to-run is worth roughly three times more at 3–5 minutes than at 15, and the reason is measurable.</li>
+    </ul>
+    <h3>Reopened</h3>
+    <ul>
+      <li><strong>The 3-and-5-minute trigger family.</strong> Wrongly closed in the first draft of this document.</li>
+      <li><strong>Cross-timeframe union.</strong> The cancellation was conditional on no short-timeframe book being competitive. Two are. It still needs a declared de-duplication rule before it can be built.</li>
+      <li><strong>Depth at the short-timeframe decision bar</strong> — the staleness argument now has a book to select inside.</li>
+    </ul>
+    <h3>Still sealed</h3>
+    <p><strong>Holdout look #1 stays halted</strong>, but for a different reason than before. Not “the trigger set is closed” — the trigger set is reopened at 3 and 5 minutes. Spending the look now would burn it on a question the next declaration is about to reframe.</p>
+  </div>
+
+  <div class="note" style="border-left-color:var(--accent)">
+    <p class="lbl" style="margin:0 0 8px;color:var(--accent)">The next declaration, in one line</p>
+    <p>Blind, before any of it is measured: <strong>at 3 and 5 minutes, does a room-to-run gate clear +0.05R of marginal lift with both-era intervals, per session, at matched trades per day against the 15-minute control?</strong> Everything in “answer two” is the hypothesis, not the answer.</p>
+  </div>
+</section>
+
+<footer>
+  <p class="lbl">Provenance</p>
+  <p>Declaration written and committed before a single row existed. Every gate passed before any outcome was read. Fit span only — the holdout is sealed and unspent. Base rates BR-27 through BR-32.</p>
+</footer>
+
+</div>

@@ -1,0 +1,90 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills; none used)",
+ "decision_minute": "2026-06-23T09:30 ET (session-day 2026-06-22)",
+ "leak_check": "pass - truncated at 09:29:59; last completed 2m bar starts 09:28 (verified via the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d22_0930_nyam.png",
+ "chart_note": "anchored-weekly VP drawing hidden; its levels are numeric below and DEVELOPING as-of this minute.",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows TradingView's CROSSHAIR, not the last bar - never evidence of a leak. Authoritative state is this briefing plus the SELL/BUY ticker. The chart is truncated at the cursor.",
+ "level_provenance": "VWAP+bands read off his chart at this minute; BB MAs/profiles/fibs from the research build.",
+ "price_at_decision": 29718.75,
+ "prior_thesis_as_of_0800": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 29563.08
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29278.04
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29923.0
+  },
+  "waiting_for": "nothing further",
+  "two_sided": true,
+  "condition_for_other_side": "15m decisive close back above weekly low 29923 licenses longs toward ~30338-30343",
+  "anticipated_resolution": {
+   "level": "daily_val_session_low_29752",
+   "expect": "break_down",
+   "act_on_resolution": true
+  }
+ },
+ "what_happened_since_0800": "Your anticipated resolution PRINTED: the 29752 base low broke and price has continued to a new session low 29675.75, ~43pt below it. Price then bounced to 29718.75 into the bell. First target vwap_m2 has NOT printed - closest approach 29675.75.",
+ "timing_note": "This is the cash open. The no-entry bar covers roughly the first FIVE minutes (09:30-09:35); from about 09:36 a clean setup is judged on structure, not the clock.",
+ "levels_at_0930_CHART": {
+  "vwap": 30070.32,
+  "vwap_p1": 30367.54,
+  "vwap_m1": 29773.09,
+  "vwap_p2": 30664.77,
+  "vwap_m2": 29475.86,
+  "vwap_m3": 29178.63,
+  "bb_2m_basis": 29723.5,
+  "bb_2m_upper": 29758.27,
+  "bb_2m_lower": 29688.73
+ },
+ "levels_at_0930_BUILD": {
+  "bb_ma_3m": 29730.91,
+  "bb_ma_15m": 29823.24,
+  "day_range_fibs": {
+   "0.382": 30067.49,
+   "0.5": 30188.5,
+   "0.618": 30309.51,
+   "0.705": 30398.73
+  },
+  "day_high": 30701.25,
+  "day_low": 29675.75,
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_low_broken": 29923.0,
+  "old_base_low": 29752.0,
+  "daily_profile": {
+   "poc": 29866.0,
+   "val": 29675.0,
+   "vah": 30261.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30343.0,
+   "vah": 30770.0,
+   "note": "DEVELOPING as-of 09:30"
+  }
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "day_character_note": "Judge the day's character explicitly - your rebalance rule depends on it. The 15m MA is one key level among many, never a gate on its own."
+}

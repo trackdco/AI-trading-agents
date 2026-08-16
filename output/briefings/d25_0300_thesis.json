@@ -1,0 +1,87 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON 03:00-04:59 ET",
+ "decision_minute": "2026-06-26T03:00 ET (session-day 2026-06-25, 18:00 NY anchor)",
+ "leak_check": "pass - truncated at 02:59:59; last completed 2m bar starts 02:58 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d25_0300_open.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing is visible again but is anchored to a DIFFERENT window than this session-day's; ignore it visually. Its correct levels are given numerically below and are DEVELOPING as-of this minute.",
+ "level_provenance": "VWAP+bands read from his chart's own study series at the last bar; BB MAs, profiles and fibs from the research build.",
+ "day_character_note": "Judge the day's character explicitly - your rebalance rule depends on it. ROTATIONAL keeps the 15m-MA floor; a clear TREND day suspends it and you wait for a rejection off a key level instead. The 15m MA is one key level among many, never a gate on its own.",
+ "price_at_decision": 29503.75,
+ "overnight": {
+  "open": 29742.0,
+  "close": 29503.75,
+  "high": 29892.75,
+  "high_t": "19:25",
+  "low": 29160.5,
+  "low_t": "23:38",
+  "character": "a violent two-sided night. Price fell to a new weekly low, then reversed and climbed back through the session, entering London at 29503.75 near the top of the overnight recovery."
+ },
+ "levels_at_0300_CHART": {
+  "vwap": 29491.27,
+  "vwap_p1": 29688.35,
+  "vwap_m1": 29294.19,
+  "vwap_p2": 29885.43,
+  "vwap_m2": 29097.11,
+  "bb_2m_basis": 29432.98,
+  "bb_2m_upper": 29530.03,
+  "bb_2m_lower": 29335.92
+ },
+ "levels_at_0300_BUILD": {
+  "bb_ma_3m": 29396.47,
+  "bb_ma_15m": 29344.55,
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "daily_profile": {
+   "poc": 29355.0,
+   "val": 29161.0,
+   "vah": 29656.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30099.0,
+   "anchor": "2026-06-18 18:00 ET",
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29160.5
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false,
+  "blackout_events": [
+   {
+    "event": "Core PCE Price Index m/m (already printed)",
+    "time_et": "2026-06-25T08:30"
+   }
+  ],
+  "drivers": [],
+  "falsified_by": "a catalyst knowable before 03:00 ET that the market is still pricing",
+  "reasoning": "The only event in scope is Core PCE, which printed ~18.5 hours before this decision minute; its number is not in this briefing so it cannot ground a direction. No red-folder releases are scheduled through the end of this session-day, so no blackout applies. Neutral is the read, not a hedge."
+ },
+ "observations_mechanical": [
+  "price 29503.75 sits essentially ON the chart VWAP 29491.27 and on the day-range 0.5 fib 29526.62 - the equilibrium of both measures",
+  "the overnight low 29160.50 IS the weekly low - a new weekly low printed last night and was reclaimed by 343pt",
+  "price is above the anchored weekly VAL 29290 and above the developing daily POC 29355, but below prior-day VAL 29465... (check: 29503.75 is ABOVE prior-day VAL 29465)",
+  "the 15m MA 29344.55 sits 159pt BELOW price; the 2m basis 29432.98 is 71pt below - the moving averages are all beneath, trailing a recovery"
+ ]
+}

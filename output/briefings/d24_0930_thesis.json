@@ -1,0 +1,86 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2; none used)",
+ "decision_minute": "2026-06-25T09:30 ET (session-day 2026-06-24)",
+ "leak_check": "pass - truncated at 09:29:59; last completed 2m bar starts 09:28 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d24_0930_nyam.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; levels numeric and DEVELOPING.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "day_character_note": "Re-judge the day's character - your rebalance rule depends on it. At 03:00 you called it ROTATIONAL and kept the 15m-MA floor.",
+ "timing_note": "This is the cash open. The no-entry bar covers roughly the first FIVE minutes (09:30-09:35); from ~09:36 judge on structure, not the clock.",
+ "price_at_decision": 30151.0,
+ "prior_thesis_as_of_0300": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_vah",
+    "price": 30130.0
+   },
+   {
+    "level": "day_high",
+    "price": 30168.5
+   }
+  ],
+  "invalidation": {
+   "level": "daily_val",
+   "price": 30007.0
+  },
+  "waiting_for": "rebalance to the 15m MA / VWAP / 0.5-fib confluence (~30045)",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed AT the daily VAH / 3m MA / 2m BB shelf (~30110-30130) on a rejection there, no rebalance required"
+ },
+ "what_happened_since_0300": "The coil resolved UPWARD and both your targets printed. Price ground from 30105 through the daily VAH and on to a session high of 30206.00 around 08:30, then chopped in a 30130-30206 band for the last hour. It sits at 30151.00, back inside that band, having just closed two down bars. Core PCE printed at 08:30 - the blackout that barred the NY_PRE window has now expired.",
+ "macro_status": "the 08:30 Core PCE release has PRINTED. news_blackout no longer applies to this window. The outcome of the release is not part of this briefing and you must not reason about what the number was - only that the event has passed.",
+ "levels_at_0930_CHART": {
+  "vwap": 30103.27,
+  "vwap_p1": 30175.9,
+  "vwap_m1": 30030.65,
+  "vwap_p2": 30248.53,
+  "vwap_m2": 29958.02,
+  "bb_2m_basis": 30172.54,
+  "bb_2m_upper": 30220.6,
+  "bb_2m_lower": 30124.48
+ },
+ "levels_at_0930_BUILD": {
+  "bb_ma_3m": 30182.85,
+  "bb_ma_15m": 30149.05,
+  "day_range_fibs": {
+   "0.382": 30054.09,
+   "0.5": 30094.12,
+   "0.618": 30134.16,
+   "0.705": 30163.67
+  },
+  "day_high": 30263.75,
+  "day_low": 29924.5,
+  "prior_day": {
+   "poc": 29769.0,
+   "val": 29503.0,
+   "vah": 29892.0,
+   "high": 30157.75,
+   "low": 29264.75
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29264.75,
+  "daily_profile": {
+   "poc": 30161.0,
+   "val": 30055.0,
+   "vah": 30208.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 29796.0,
+   "vah": 30967.0,
+   "note": "DEVELOPING as-of 09:30"
+  }
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "note": "Core PCE has printed; the blackout has expired. No directional lean - the number is not knowable to you."
+ }
+}

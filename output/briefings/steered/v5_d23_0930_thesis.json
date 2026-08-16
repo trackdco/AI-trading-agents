@@ -1,0 +1,175 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills)",
+ "decision_minute": "2026-06-24T09:30 ET (session-day 2026-06-23)",
+ "leak_check": "pass - truncated at 09:29:59; last completed 2m bar starts 09:28 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d23_0930_nyam.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "day_character_note": "Re-judge the day's character. You have called it a RANGE day at 03:00 and again at 08:00, and T22 fade-the-edge has now paid three times. But look at where price is: the range you have been fading has broken DOWNWARD.",
+ "price_at_decision": 29711.5,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "open": 29728.75,
+  "high": 29728.75,
+  "low": 29703.0,
+  "close": 29711.5,
+  "volume": 1921
+ },
+ "prior_thesis_as_of_0800": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "bb_ma_15m",
+    "price": 29810.67
+   },
+   {
+    "level": "vwap",
+    "price": 29776.02
+   },
+   {
+    "level": "daily_val",
+    "price": 29737.0
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29637.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_high",
+   "price": 29891.75
+  },
+  "waiting_for": "nothing - short licensed now at the range-top confluence (daily VAH 29858 / 2m BB upper 29878.18 / session high 29891.75), the third test of this edge per T22 fade-the-edge",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a 15m close above session_high 29891.75 with a decisive body - genuine acceptance of a range breakout, not a poke through. ~29.5pt from price, well within the 149pt 2m BB width, so within reach.",
+  "anticipated_resolution": {
+   "level": "range_high_29891",
+   "price": 29891.75,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond 29891.75 with a decisive body, not a wick-heavy absorption candle at the range high",
+  "reasoning": "Overnight rotation with multiple 15m MA crosses both ways keeps this a range day - T22 fade-the-edge still applies. Price has cleared the vwap_p1/VAH zone that funded the first two fades and is pressing the actual range high for the third time - weaker than the first two, but no 15m close beyond 29891.75 has printed."
+ },
+ "what_happened_since_0800": "your third fade paid and kept paying. The NY_PRE short filled at 29,835.34, banked the session VWAP at 08:49 and the daily VAL at 09:08, and price has continued down to 29,703 - through the prior-day VAL 29,637? no, not yet, but well past both banked targets. The range low that anchored this session was 29585.5. Price at 29,711.5 is now BELOW the session VWAP 29,774.60, below vwap_m1 29,711.97 by a whisker, and below the 2m BB basis. The 2m BB lower is 29,697.86, essentially at price.",
+ "THE_QUESTION_FOR_YOU": "a range that breaks is no longer a range. You have applied T22 three times on the read that price would rotate back inside. Price has now left the range on the DOWNSIDE. Decide whether this is the fourth rotation or the break, and note that T22's own second half says continuation is tradeable AFTER a break has happened.",
+ "position_state": "FLAT. LONDON spent both fills, NY_PRE spent its one. NY_AM opens with a fresh cap of 2 and 90 minutes.",
+ "levels_at_0930_CHART": {
+  "vwap": 29774.6,
+  "vwap_p1": 29837.23,
+  "vwap_m1": 29711.97,
+  "vwap_p2": 29899.86,
+  "vwap_m2": 29649.34,
+  "vwap_m3": 29586.71,
+  "bb_2m_basis": 29740.45,
+  "bb_2m_upper": 29783.04,
+  "bb_2m_lower": 29697.86
+ },
+ "levels_at_0930_BUILD": {
+  "bb_ma_2m": 29740.45,
+  "bb_ma_3m": 29761.76,
+  "bb_ma_15m": 29799.6,
+  "bb_ma_60m": 29760.24,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29731.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30000.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29577.25
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "04:00",
+    "dir": "DOWN",
+    "ma": 29783.67,
+    "close": 29770.0,
+    "body_ratio": 0.64
+   },
+   {
+    "t": "04:15",
+    "dir": "UP",
+    "ma": 29790.29,
+    "close": 29858.25,
+    "body_ratio": 0.9
+   },
+   {
+    "t": "05:30",
+    "dir": "DOWN",
+    "ma": 29817.6,
+    "close": 29807.0,
+    "body_ratio": 0.66
+   },
+   {
+    "t": "07:00",
+    "dir": "DOWN",
+    "ma": 29816.45,
+    "close": 29794.75,
+    "body_ratio": 0.84
+   },
+   {
+    "t": "07:45",
+    "dir": "UP",
+    "ma": 29808.7,
+    "close": 29813.25,
+    "body_ratio": 0.76
+   },
+   {
+    "t": "08:45",
+    "dir": "DOWN",
+    "ma": 29814.05,
+    "close": 29793.0,
+    "body_ratio": 0.72
+   }
+  ],
+  "hourly_closes": {
+   "03:00": 29822.75,
+   "04:00": 29770.0,
+   "05:00": 29820.0,
+   "06:00": 29808.25,
+   "07:00": 29794.75,
+   "08:00": 29862.25,
+   "09:00": 29762.0,
+   "09:30": 29711.5
+  },
+  "note_on_the_open": "the last bar carries 1,921 contracts, the heaviest since the cash open approach, and closed near its low after a 25.75pt range.",
+  "note_on_location": "price is sitting ON vwap_m1 and ON the 2m BB lower simultaneously. Below: vwap_m2 29,649.34, prior-day VAL 29637.0, vwap_m3 29,586.71."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "note": "the US calendar for this date is empty; nothing scheduled before 11:00 ET."
+ },
+ "T22_REMINDER": "after a session-long range the default is FADE THE EDGE - but continuation IS tradeable after a break has happened. A range that breaks is no longer a range.",
+ "ADAPTATION_CLAUSE": "name rejection levels WITHIN REACH or express them as behaviour. This matters most on the side you are NOT biased toward.",
+ "T21_NOTE": "the trigger cannot enter for roughly the first five minutes after the cash open - an open-volatility buffer on ENTRIES only. It must not make your read more cautious; the early part of NY_AM is prime time, not probation.",
+ "what_to_emit": "your standard thesis JSON for the NY_AM window."
+}

@@ -22,11 +22,22 @@ treat it as truth; do not trust any number produced before the rebuild.
 | Live re-arm status, behavioural diff, open rulings | `docs/ARMING-REFERENCE.md` |
 | Why each ruling exists (session Q&A) | `docs/CANON-QA-LOG.md` |
 
-Headline (reproduce with `python -m scripts.funded_book`): **lucid** profile fit +$90,015 /
-holdout +$56,409; **scaled600** fit +$320,662 / holdout +$188,325; every month green in
-both spans under both profiles. (These supersede +$89,925 / +$56,408 / +$320,150 /
-+$188,324, computed before an unstable tie-sort in `load_book` was fixed — see
-`docs/ARMING-REFERENCE.md` §2. No risk metric moved.)
+Headline (reproduce with `python -m scripts.funded_book`; execution semantics rulings
+ANGUS 2026-07-30): **lucid** profile fit +$77,202 / holdout +$44,844; **scaled600** fit
++$271,653 / holdout +$141,389; every month green in both spans under both profiles.
+THREE execution rules are law (overlay `output/aikido_cr_{span}.parquet`, built by
+`scripts/apply_close_reverse.py`, one sequential pass per day): (1) TWO SESSIONS — every
+pre-market position is flattened at 09:30, pre never rides into RTH; (2) CLOSE-AND-REVERSE
+— an opposing canon fill flattens the open trade at that fill and reverses (68 fit / 82
+holdout flips; no simultaneous opposite-direction positions exist anywhere); (3) ONE PER
+LEVEL — a same-direction fill is suppressed while an open same-direction position sits
+within 3pt of its entry or shares its stop (193 fit / 122 holdout suppressed; book
+956→763 / 637→515; adds at different points still stack). Reference ladder, lucid:
+$90,015/$56,409 → +CR $97,327/$59,407 → +two-session $94,695/$56,756 → +one-per-level
+$77,202/$44,844 — each cost ruled worth its discipline by ANGUS. Risk improves nearly
+everywhere (fit maxDD $1,603→$1,268, worst days −$762→−$670 / −$780→−$685, scaled600
+worst day −$3,242→−$2,319); the one metric that worsens is scaled600 holdout maxDD
+$4,061→$4,986 — stated, not hidden.
 
 ## What survived from before (kept deliberately, NOT canon claims)
 

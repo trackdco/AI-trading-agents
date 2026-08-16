@@ -5,8 +5,17 @@ against a certified commit (`src/live/arming.py`, two-party). What follows is th
 that has to be signed off *before* that step, plus an explicit list of what is still
 unwired — read §5 before deciding anything.
 
+> **UPDATED 2026-07-31 (was stale — Pat caught it).** Since this doc was first written the
+> canon shipped THREE execution rulings (close-and-reverse J / two-session pre-flatten K /
+> one-per-level L), the AGENT MANAGEMENT LAYER (row M), and the sizing base moved
+> **$150 → $160** (row N). Rows I–N of `docs/HANDOVER-pat-arming.md` §3 are LAW and part
+> of this sign-off package. All reference numbers below are refreshed to the three-rule
+> canon at the $160 base; anything citing $90,015/$56,409 or a $150 base was the pre-rules
+> book and must not be certified against.
+
 Companion docs: `docs/CANON.md` (what the canon is), `scripts/funded_book.py` docstring
-(the spec), `docs/CANON-QA-LOG.md` (why each rule exists).
+(the spec), `docs/CANON-QA-LOG.md` (why each rule exists), `docs/HANDOVER-pat-arming.md`
+(rows I–N + the agent layer arming detail), `docs/REPORT-desk-run-2.md` (agent-layer grading).
 
 ---
 
@@ -22,8 +31,9 @@ Companion docs: `docs/CANON.md` (what the canon is), `scripts/funded_book.py` do
 | Order life | `src/canon/order_watch.py` | **no distance cancel**; each order dies at its own session end; struct event tracked bar-by-bar |
 | Backstops | `src/live/risk.py`, `src/canon/spine.py` | account-level, above the canon budget (§3) |
 
-Profiles: **`lucid`** (base $150 → $75/150/225/300, budget $800) and **`scaled600`**
-(base $150 +$75 per $2k of buffer past +$3k, cap $600; budget and soft scale with the base).
+Profiles: **`lucid`** (base $160 → $80/160/240/320, budget $853.33) and **`scaled600`**
+(base $160 +$75 per $2k of buffer past +$3k, cap $600; budget and soft scale with the
+base). Base $150 → $160 ANGUS 2026-07-31 (row N of the handover).
 
 ---
 
@@ -40,7 +50,9 @@ rather than reading the parquet's precomputed `valid` / `gold_score` / `pre_scor
 therefore proves the live re-derivation of W, D, the wall-quality cut, the scores and the
 tiers — not merely the arithmetic downstream of them.
 
-Reproduced from the live path: fit **+$90,015**, holdout **+$56,409** (lucid).
+Reproduced from the live path (three-rule canon, base $160): fit **+$82,543**, holdout
+**+$48,211** (lucid). The suite also pins the CR overlay replay (suppressed rows dropped,
+flip/pre-flatten exits merged) and the $160 tier ladders, spine halts and ramp floors.
 
 ### Two defects this conformance work found
 
@@ -66,12 +78,12 @@ Each of these is a live-visible change and is why this document exists.
 |---|---|---|---|
 | A | **Entries uncapped.** No 2/day slot, no nth-escalation, no day ladder, no governor, no cold trail. | The shared cap was the original defect; uncapped measured strictly better once the wall cut landed. | More trades/day than the old stack ever placed. Capacity is now the budget. |
 | B | `RiskLimits.max_trades_per_day` default **3 → None**. | The old 3 was a backstop above a 2/day engine cap that no longer exists. Against a ~4/day book it would announce a halt on most days and stand the account down mid-session. | **This was the single most dangerous stale default.** |
-| C | Spine `daily_loss_halt_r` **−4R → −8R**. | −4R against the $150 base is −$600, *below* the canon's own $800 budget — an outer guard that front-runs the inner one truncates the measured book. −8R is exactly 1.5× the budget at every base. | A halt inside the budget silently trades a smaller book than the one validated. |
+| C | Spine `daily_loss_halt_r` **−4R → −8R**. | −4R against the base is *below* the canon's own daily budget (at the $160 base: −$640 vs $853.33) — an outer guard that front-runs the inner one truncates the measured book. −8R is exactly 1.5× the budget at every base, and tracks the base automatically ($−1,280 at $160). | A halt inside the budget silently trades a smaller book than the one validated. |
 | D | **No distance cancel.** Orders live until their session window ends. | The 22pt `t_cancel` measured inverted: kept −0.180R, killed +0.015R. | Orders rest longer; more fills. |
 | E | **The resting rule**: an order rests exactly while a fill right now would be admissible — dormant through the 09:30–09:40 gap, may revive in gold, hard-dropped at 10:30. | The book counts a pre trigger's gold fill as a GOLD trade, so a birth-window cutoff would remove measured trades. | `NYRunner` enforces it. |
 | F | Gold window **09:40–10:30** (was 09:40–10:00); **no 09:55–10:00 dead zone**. | The rebuilt canon was validated without one. | — |
-| G | Sizing base **$200 → $150**, ladder is now tier × base. | The $200 schedule belonged to the broken canon. | Every order size changes. |
-| H | De-risk ladder near the line: **half size below $1,000 of buffer, half again below $500** (ANGUS 2026-07-30), instead of a linear taper to zero between $1,500 and $100. | Angus's ruling. Both steps are dormant across all 19 months (min buffer $1,621 / $1,720), so no measured number changes; the spine's $100 hard halt is the floor beneath them. | Resolved. |
+| G | Sizing base **$200 → $150**, ladder is now tier × base. **Superseded: $150 → $160** (ANGUS 2026-07-31, handover row N). | The $200 schedule belonged to the broken canon. | Every order size changes — certify against the $160 ladder ($80/160/240/320). |
+| H | De-risk ladder near the line: **half size below $1,000 of buffer, half again below $500** (ANGUS 2026-07-30), instead of a linear taper to zero between $1,500 and $100. | Angus's ruling. Both steps are dormant across all 19 months at the $160 base (min buffer $1,642 fit / $1,698 holdout), so no measured number changes; the spine's $100 hard halt is the floor beneath them. | Resolved. |
 
 ---
 
@@ -79,7 +91,7 @@ Each of these is a live-visible change and is why this document exists.
 
 | Gate | Requirement | State |
 |---|---|---|
-| R1 | Live scorer reproduces the shipped book on both spans, both profiles | ✅ 18/18 |
+| R1 | Live scorer reproduces the shipped book on both spans, both profiles | ✅ 19/19 (three-rule overlay + $160 base pins) |
 | R2 | Sizing schedule has exactly one implementation | ✅ `gate_evidence` imports the profile |
 | R3 | No trade-count cap anywhere in the risk path | ✅ pinned by test |
 | R4 | Account backstops sit above the canon budget | ✅ pinned by test, both profiles |
@@ -89,9 +101,14 @@ Each of these is a live-visible change and is why this document exists.
 | R8 | Full suite green | ⚠️ 739 pass, 2 fail — both long-standing and unrelated (`london_depth.DIR`, `build_ny_substrate.canon_config` attribute drift), confirmed failing before any of this work |
 | R9 | Live LANE exists and reproduces the book on real days | ✅ `src/canon/ny_lane.py`, 25/25 fit days via `scripts/ny_lane_replay.py` |
 | R10 | Depth parity HARNESS exists and is self-clean | ✅ `scripts/depth_parity.py` — 180 archive minutes via `DepthBook` and an MBO capture via `OrderBook`, both 100% gate agreement |
-| R10b | Depth parity run against a REAL captured session | ❌ needs one capture — Pat, `docs/HANDOVER-pat-arming.md` §4.2 |
+| R10b | Depth parity run against a REAL captured session | ✅ CLOSED (ANGUS 2026-07-31, relayed via Pat): capture 2026-07-29 at 93.06% vs the 88.12% same-day 500ms vendor self-skew floor, all bias checks clean — bar re-specced per `docs/REPORT-parity-2026-07-29.md` §6; any feed/config change REOPENS with a fresh capture + floor |
 | R11 | Runner orchestration (detector → orders → lane, struct_event joined) | ✅ `src/live/ny_runner.py`, 16 tests — Pat wires four calls + action execution |
 | R12 | Angus's token against a certified commit | ❌ yours to issue |
+| R13 | Three-rule execution semantics enforced by the runner (handover rows J/K/L: close-and-reverse in one ticket · pre flat at 09:30 · one-per-level dedupe) | ✅ CLOSED 2026-08-01 — execution layer (`src/live/ny_execution.py`) certified via four on-box practice-day replays of 2026-07-31 (`docs/RUNBOOK-cert-saturday.md`): surfaced + fixed 100x bar scale, 1pm-ET day roll, tick-record aggregation, and the cancel/fill same-bar race (ny:20 — day-4 journal shows the fill surfaced and scratched flat). Bars paritied vs the reference on 2026-07-14 (100% identical H/L, 72=72 triggers). Residual arm-day pins stand: DTC `_entry_working` read-back on the first armed session; stacked-position stop verification is account-level (fails toward flat). |
+| R14 | Checkout reproduces the $160-base references (this doc §2) — the suite FAILS on a $150 checkout by design | ⬜ run `pytest tests/test_canon_scorer_ny.py -q` on the arming checkout |
+| R15a | **PHASE 1 — MECH-ONLY ARM** (ANGUS 2026-07-31, final ruling — supersedes the same-day "ship with agents now"): the first arm is the mechanical canon alone; certified book = $82,543 fit / $48,211 holdout references. The first live session(s) double as the DATA CAPTURE for phase 2: depth capture for R10b, plus recorded minute CVD + MBP-10 streams to wire and dry-run the agent briefings against. | ❌ Pat wires + certifies |
+| R15b | **PHASE 2 — AGENT LAYER ON**: wire per handover §7 against the captured live feeds, certify with the dry-run day + agent kill-test, then switch on. Certified book becomes the $100,297 agent book. Switch-on is a BEHAVIOR CHANGE and re-runs the two-party step: fresh written confirmation from Pat + Angus's token re-committed against the new certified SHA. | ✅ CLOSED 2026-08-02 — commit `1364cb7`, `docs/RUNBOOK-cert-r15.md`: agents managed real trades on 2026-07-29 (one +0.26R on a flow-flip read where mech rode to −0.43R), kill-test murdered the agent process mid-trade 7/7 turns, trade completed mechanically. Authorization re-issued `f6b297e`. |
+| R16 | **24/7 OPERATIONAL RESILIENCE** (2026-08-03 audit, after two armed sessions both found the order socket dead — DTC connection had no idle keepalive, so a quiet market let it die unnoticed for hours). Closes: DTC idle-keepalive (`DTCBroker.ensure_connected` now called every 10s independent of trading activity — the existing, already-tested reconnect logic was simply never wired to a cadence), market-calendar-aware stale guard (the loop no longer self-halts at the daily 17:00 ET maintenance break — that was the actual reason a human had to manually restart it every session), boot/reconnect position reconciliation (refuses to arm — or blocks new entries mid-session — if the broker disagrees with tracked state; never guesses a recovery), the arming lock scoped to one entrypoint (`entrypoint:` field — `canon_run.py` and `ny_run.py` shared the same lock; a phrase for one could arm the other on a different account), and trade-level Telegram alerts (placed/filled/closed/agent open+settle — previously infra-only). New burn-in tooling: `scripts/dtc_connectivity_check.py` (hours-long, order-submission-code-never-imported, proves the reconnect survives real idle time against the real DTC server — the exact condition no replay can produce) and `scripts/watchdog.ps1` (crash/reboot auto-restart, respects the KILL file absolutely, crash-loop capped). 62 new/updated tests, 836 passed full suite. | ⬜ burn-in + fresh replay cert required before next arm — `docs/RUNBOOK-burnin-r16.md` |
 
 ---
 

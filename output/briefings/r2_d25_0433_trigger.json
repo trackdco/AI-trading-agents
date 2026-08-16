@@ -1,0 +1,127 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "R2-D25-L4-0433",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-26T04:33 ET",
+ "candle_start": "04:30 (3m) / 04:30 (2m)",
+ "timeframe": "3m and 2m",
+ "leak_check": "pass - truncated at 04:32:59; last completed 2m bar starts 04:30 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/r2_d25_c2_0433.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. This briefing is authoritative. The chart is truncated at the cursor and carries NO trade drawings of any kind.",
+ "chart_note": "the weekly VP drawing is anchored to a different window - ignore it visually; correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   },
+   {
+    "level": "anchored_weekly_val",
+    "price": 29290.0
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_poc",
+   "price": 29655.0
+  },
+  "waiting_for": "rejection at the 0.5 day-range fib / BB-2m-upper confluence (~29527-29530), confirmed by a 15m closure back through a key MA stacked with another level - not a 15m-MA reclaim; the down-leg was a clean displacement so the 15m floor is suspended and it's just one level in the cluster now below price",
+  "two_sided": true,
+  "condition_for_other_side": "a 15m decisive-body close through the 29613-29655 confluence (0.618 fib / prior-day POC / approx 60m MA) licenses longs for a fill toward anchored-weekly POC (29710) / prior-day VAH (29884)",
+  "anticipated_resolution": {
+   "level": "day_range_fib_0.5-bb_2m_upper_confluence",
+   "price": 29528.0,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a major level (weekly low, prior-day POC) is broken/reclaimed only on a 15m close beyond it with a decisive body - not a wick or a 1-2m poke",
+  "reasoning": "Overnight swept near the prior-day VAH/high (29892) then reversed in a clean 732pt one-way slide to a new weekly low (29160.5) - trend-day character on that leg, not rotational. The 3+hr grind back since is slower and still under the 0.5 fib/BB-2m-upper confluence (~29528) and prior-day POC (29655), so fading it back toward the weekly low. A 15m decisive close through 29613-29655 (0.618 fib/POC/60m MA cluster) flips this long toward anchored-weekly POC/prior-day VAH."
+ },
+ "waiting_for_status": "SATISFIED, and now CONFIRMED on the timeframe the thesis asked for. The 04:00-04:15 15m bar closed 29467.00 with a 0.61 body, below both the VWAP and the 2m MA - the '15m closure back through a key MA stacked with another level' the thesis wanted. The rejection it confirms is the 29527-29563 confluence, touched three times between 03:32 and 04:00 and not accepted once.",
+ "prior_adjudications_this_window": "one take, zero fills. The 04:06 short (same idea, earlier) was adjudicated take_light and its limit was CANCELLED unfilled on the first minute of its life when price ran through the 29465 cancel level. The window still has both fills available. You are not adding to a position; you are placing the same idea again after a missed entry.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "04:30",
+  "direction": "DOWN",
+  "open": 29504.5,
+  "close": 29484.5,
+  "closed_at": "04:33",
+  "levels": "own 3m MA (29503.74) + VWAP (29492.50), same candle"
+ },
+ "signal_candle_2m": {
+  "start": "04:30",
+  "direction": "DOWN",
+  "open": 29504.5,
+  "high": 29504.5,
+  "low": 29482.25,
+  "close": 29493.0,
+  "volume": 180,
+  "levels": "own 2m MA (29497.12); the supplementary scan also flags this as a rejection-first shape - a rejection of the VWAP at 04:24 followed by this own-MA closure",
+  "note": "the 2m close 29493.00 is essentially ON the VWAP 29492.50, half a point below it. The 3m close 29484.50 is 8pt below. Judge whether that is a closure or a straddle."
+ },
+ "pair_shape": "same_candle (3m) / rejection-first (2m)",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "vwap"
+ ],
+ "rejection_context": "after the 04:06 flush to 29457.25 price rebuilt to 29514.00 (04:08) and then 29506.75 (04:24) - both rejected under the VWAP band and well under the 29527-29563 ceiling. This candle rolls over from the second of those.",
+ "volume_note": "180 contracts on the 2m signal candle, against 617 on the 04:00 reversal bar and 402 on the 04:24 push. This is the quietest part of the London session so far.",
+ "levels_at_decision_CHART": {
+  "vwap": 29492.5,
+  "vwap_p1": 29677.68,
+  "vwap_m1": 29307.33,
+  "vwap_p2": 29862.85,
+  "vwap_m2": 29122.15,
+  "bb_2m_basis": 29497.13,
+  "bb_2m_upper": 29536.43,
+  "bb_2m_lower": 29457.82
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29497.12,
+  "bb_ma_3m": 29503.74,
+  "bb_ma_15m": 29408.75,
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "london_high_so_far": 29562.75,
+  "london_low_so_far": 29456.75,
+  "daily_profile": {
+   "poc": 29355.0,
+   "val": 29161.0,
+   "vah": 29656.0,
+   "note": "DEVELOPING"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29709.13,
+   "val": 29325.0,
+   "vah": 30119.5,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "weekly_high": 30968.0
+ },
+ "levels_below_for_target_selection": "prior-day VAL 29465 (~28pt below), the 2m BB lower 29457.82, the 0.382 fib 29440.22, the 15m MA 29408.75, the developing daily POC 29355, the weekly VAL 29325, vwap_m1 29307.33, then the weekly low 29160.5. Apply T11: compute R = |entry-stop| FIRST, then the NEAREST level inside 1.5R-2.5R; a FIXED 1.5R if none qualifies.",
+ "note_on_the_cancel_level": "the previous candidate died because its cancel level sat 12pt from the close and price wiggled through it before the limit filled. Place yours where a normal wiggle will not reach it.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

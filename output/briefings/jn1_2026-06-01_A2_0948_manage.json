@@ -1,0 +1,192 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "A2",
+ "decision_minute": "2026-06-02T09:48 ET",
+ "reason_for_call": "intermediate_level_broken",
+ "leak_check": "pass - replay truncated at 09:47:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-01_A2_0948_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "long",
+  "entry": 30506.0,
+  "stop": 30463.0,
+  "targets": [
+   {
+    "level": "daily_weekly_vah",
+    "price": 30566.0
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 30597.0
+   },
+   {
+    "level": "prior_day_high",
+    "price": 30693.0
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "09:46",
+  "R_in_points": 43.0,
+  "current_stop_distance": 43.0,
+  "open_pnl_in_R": 0.55
+ },
+ "level_in_question": {
+  "level": "fib_0.705",
+  "price": 30506.87
+ },
+ "price_at_decision": 30529.5,
+ "last_completed_2m_bar": {
+  "start": "09:46",
+  "closed_at": "09:48",
+  "open": 30508.75,
+  "high": 30533.5,
+  "low": 30497.0,
+  "close": 30529.5,
+  "volume": 3669,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "09:40",
+   "closed_at": "09:42",
+   "open": 30464.5,
+   "high": 30468.0,
+   "low": 30423.75,
+   "close": 30464.25,
+   "volume": 6218,
+   "minutes": 2
+  },
+  {
+   "start": "09:42",
+   "closed_at": "09:44",
+   "open": 30465.5,
+   "high": 30487.25,
+   "low": 30452.25,
+   "close": 30485.0,
+   "volume": 4228,
+   "minutes": 2
+  },
+  {
+   "start": "09:44",
+   "closed_at": "09:46",
+   "open": 30485.0,
+   "high": 30522.0,
+   "low": 30472.75,
+   "close": 30507.75,
+   "volume": 4555,
+   "minutes": 2
+  },
+  {
+   "start": "09:46",
+   "closed_at": "09:48",
+   "open": 30508.75,
+   "high": 30533.5,
+   "low": 30497.0,
+   "close": 30529.5,
+   "volume": 3669,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30503.81,
+  "bb_upper_2m": 30560.99,
+  "bb_lower_2m": 30446.64,
+  "vwap": 30474.64,
+  "vwap_p1": 30540.59,
+  "vwap_m1": 30408.68,
+  "vwap_p2": 30606.55,
+  "vwap_m2": 30342.73,
+  "vwap_p3": 30672.5,
+  "vwap_m3": 30276.77,
+  "read_at": "09:48 NY off the live chart legend"
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30474.51,
+   "vwap_p1": 30540.3,
+   "vwap_p2": 30606.09,
+   "vwap_p3": 30671.88,
+   "vwap_m1": 30408.71,
+   "vwap_m2": 30342.92,
+   "vwap_m3": 30277.13
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30503.81,
+   "bb_ma_3m": 30514.35,
+   "bb_ma_15m": 30540.96,
+   "bb_ma_60m": 30497.74
+  },
+  "day_range_fibs": {
+   "0.382": 30420.22,
+   "0.5": 30451.88,
+   "0.618": 30483.53,
+   "0.705": 30506.87
+  },
+  "session_high_so_far": 30586.0,
+  "session_low_so_far": 30317.75,
+  "daily_profile": {
+   "poc": 30533.0,
+   "val": 30447.0,
+   "vah": 30566.0,
+   "note": "DEVELOPING as-of 09:48"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30533.0,
+   "val": 30447.0,
+   "vah": 30566.0,
+   "high": 30586.0,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:48"
+  },
+  "prior_day": {
+   "poc": 30560.0,
+   "val": 30382.0,
+   "vah": 30597.0,
+   "high": 30693.0,
+   "low": 30291.5
+  }
+ },
+ "crowded_path": {
+  "levels_between_entry_and_tp1": [
+   "fib_0.705 30506.87",
+   "bb_ma_3m 30514.35",
+   "daily_poc 30533.0",
+   "weekly_poc 30533.0",
+   "vwap_p1 30540.3",
+   "bb_ma_15m 30540.96",
+   "prior_day_poc 30560.0"
+  ],
+  "count": 7,
+  "crowded_path": true,
+  "note": "mechanical count of named structural levels strictly between entry 30506.00 and TP1 30566.00 at this minute. crowded_path true at 2 or more."
+ },
+ "management_actions_so_far": [],
+ "what_to_emit": "your management JSON, per your contract.",
+ "position_pnl_at_this_minute": {
+  "entry": 30506.0,
+  "price_now": 30529.5,
+  "unrealised_pts": 23.5,
+  "unrealised_R": 0.547,
+  "note": "stated as arithmetic only"
+ },
+ "also_at_this_minute": {
+  "scheduler_events": [
+   "intermediate_level_broken: fib_0.705 30506.87",
+   "intermediate_level_broken: bb_ma_3m"
+  ],
+  "note": "two events in one minute are one decision, so they are given together rather than as separate calls."
+ },
+ "thesis_context": {
+  "version": "v4c",
+  "bias": "long",
+  "invalidation": 30483.53,
+  "waiting_for_note": "the standing thesis licensed this long on the current retest after an accommodated escalation.",
+  "targets_named_by_thesis": [
+   30566.0,
+   30597.0,
+   30693.0
+  ]
+ }
+}

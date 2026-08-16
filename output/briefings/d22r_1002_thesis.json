@@ -1,0 +1,83 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "invalidation_broken",
+ "window": "NY_AM (entries to 11:00; cap 2, none used)",
+ "decision_minute": "2026-06-23T10:02 ET (session-day 2026-06-22)",
+ "leak_check": "pass - truncated at 10:01:59; last completed 2m bar starts 10:00 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d22r_refire_1002.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; weekly levels numeric and DEVELOPING.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "event_detail": "Your invalidation has broken. The 09:45-10:00 15m closed 29926.00 with body_ratio 0.79 - a decisive close ABOVE the weekly low 29923.00, which your 09:30 read named as the level that kills the short. Price has continued to 29989.75 and the last 2m closed 29982.25.",
+ "price_at_decision": 29982.25,
+ "prior_thesis_as_of_0930": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 29475.86
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29178.63
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29923.0
+  },
+  "waiting_for": "rejection off the 2m/3m MA / vwap_m1 confluence, close back below, entered on the retest",
+  "two_sided": true,
+  "condition_for_other_side": "15m decisive close above weekly low 29923 licenses longs toward weekly_val ~30343 - NOW MET"
+ },
+ "what_happened_since_0930": "A V-reversal. New session low 29675.75 just after the bell, then a sustained rally: 29699 -> 29797 (09:38), a shallow pause, then continuation through the weekly low to 29989.75. The rally has now retraced ~314pt of the day's 1025pt decline. Price sits just under the chart VWAP 29994.40 for the first time since the collapse began.",
+ "levels_at_1002_CHART": {
+  "vwap": 29994.4,
+  "vwap_p1": 30279.51,
+  "vwap_m1": 29709.28,
+  "vwap_m2": 29424.17,
+  "bb_2m_basis": 29795.38,
+  "bb_2m_upper": 29960.7,
+  "bb_2m_lower": 29630.05
+ },
+ "levels_at_1002_BUILD": {
+  "bb_ma_3m": 29778.38,
+  "bb_ma_15m": 29827.04,
+  "day_range_fibs": {
+   "0.382": 30030.87,
+   "0.5": 30158.88,
+   "0.618": 30286.88,
+   "0.705": 30381.25
+  },
+  "day_high": 30701.25,
+  "day_low": 29616.5,
+  "daily_profile": {
+   "poc": 29866.0,
+   "val": 29675.0,
+   "vah": 30261.0,
+   "note": "DEVELOPING as-of 10:02"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30343.0,
+   "vah": 30770.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_low_now_reclaimed": 29923.0,
+  "session_low": 29675.75
+ },
+ "day_character_note": "Re-judge the day's character. It opened as a clear trend day; a 314pt counter-rally that reclaims a broken weekly low may or may not change that. Say which you think you are in - your rebalance rule depends on it.",
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

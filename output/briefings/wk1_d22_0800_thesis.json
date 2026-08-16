@@ -1,0 +1,191 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE",
+ "decision_minute": "2026-06-23T08:00 ET",
+ "leak_check": "pass - replay truncated at 07:59:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/wk1_d22_0800.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 29873.25,
+ "last_completed_2m_bar": {
+  "start": "07:58",
+  "closed_at": "08:00",
+  "open": 29874.75,
+  "high": 29883.0,
+  "low": 29869.5,
+  "close": 29873.25,
+  "volume": 392,
+  "minutes": 2
+ },
+ "position_state": {
+  "open_position": null,
+  "fills_today": 1,
+  "closed_today": [
+   {
+    "candidate": "WK1-D22-L2-0324",
+    "window": "LONDON",
+    "side": "short",
+    "entry": 30005.5,
+    "exits": "75% at 29946.25, 25% at 29955.00 (trail)",
+    "result_R_blended": 1.563,
+    "closed_at": "03:49"
+   }
+  ]
+ },
+ "window_state": {
+  "window": "NY_PRE",
+  "opens": "08:00",
+  "closes": "09:29",
+  "fills_this_window": 0,
+  "cap": "LIFTED for this run (written cap 1)"
+ },
+ "levels_at_decision_CHART": {
+  "read_at": "2026-06-23T08:00 ET, from the chart's own study series",
+  "bb_ma_2m": 29848.48,
+  "vwap": 30133.18,
+  "vwap_p1": 30418.22,
+  "vwap_m1": 29848.13,
+  "vwap_p2": 30703.27,
+  "vwap_m2": 29563.08,
+  "vwap_m3": 29278.04,
+  "svp_hd": {
+   "poc": 29829.38,
+   "vah": 30352.5,
+   "val": 29751.75
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30133.24,
+   "vwap_p1": 30418.09,
+   "vwap_p2": 30702.94,
+   "vwap_p3": 30987.79,
+   "vwap_m1": 29848.39,
+   "vwap_m2": 29563.54,
+   "vwap_m3": 29278.69
+  },
+  "bb_ma": {
+   "bb_ma_2m": 29848.47,
+   "bb_ma_3m": 29843.08,
+   "bb_ma_15m": 29875.3,
+   "bb_ma_60m": 30314.79
+  },
+  "day_range_fibs": {
+   "0.382": 30114.61,
+   "0.5": 30226.62,
+   "0.618": 30338.64,
+   "0.705": 30421.22
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29752.0,
+  "daily_profile": {
+   "poc": 29833.0,
+   "val": 29752.0,
+   "vah": 30356.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30343.0,
+   "vah": 30754.0,
+   "high": 30975.5,
+   "low": 29752.0,
+   "anchor": "2026-06-15 18:00:00-04:00",
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.398,
+  "net_move_15m": -789.5,
+  "total_15m_travel": 1982.25,
+  "candles_15m_up": 18,
+  "candles_15m_down": 38,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "07:00",
+   "open": 29818.5,
+   "high": 29851.75,
+   "low": 29787.5,
+   "close": 29848.0,
+   "body_ratio": 0.46
+  },
+  {
+   "start": "07:15",
+   "open": 29848.0,
+   "high": 29869.0,
+   "low": 29806.0,
+   "close": 29814.0,
+   "body_ratio": 0.54
+  },
+  {
+   "start": "07:30",
+   "open": 29812.5,
+   "high": 29872.75,
+   "low": 29801.5,
+   "close": 29867.75,
+   "body_ratio": 0.78
+  },
+  {
+   "start": "07:45",
+   "open": 29867.75,
+   "high": 29884.0,
+   "low": 29848.25,
+   "close": 29873.25,
+   "body_ratio": 0.15
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "Any high-impact scheduled event or as-of headline bearing on NQ or a heavy constituent entering the record before decision_minute - none is present in this briefing.",
+  "reasoning": "Calendar shows nothing released so far today and nothing scheduled later today; no headlines provided. No dated, falsifiable catalyst for NQ or its constituents, so neutral is the correct default."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 29923.0
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29735.88
+   }
+  ],
+  "invalidation": {
+   "level": "bb_ma_15m",
+   "price": 30259.3
+  },
+  "waiting_for": "a bounce into a nearby key level (2m/3m MA cluster ~30,015-30,039, or VWAP-2 ~29,941) that stalls and rolls over - closure back through the MA stacked with that level, entered on the retest. No 15m MA reclaim required; trend-day floor suspended.",
+  "two_sided": false,
+  "condition_for_other_side": "",
+  "anticipated_resolution": {
+   "level": "weekly_low",
+   "price": 29923.0,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a 15m close beyond the 15m BB MA (30,259.3) with a decisive body, not a wick or absorption candle, would signal the flush is over",
+  "flush": true,
+  "flush_direction": "down",
+  "reasoning": "Clean one-way flush lower since Asia - 0.605 path efficiency, 27:9 down:up 15m candles, price hugging the 2m MA the whole leg with no higher-low structure, so this is not a structured trend and counter-trend is off. Price sits ~47pt above the anchored weekly low (29,923); day-range fibs (30,237-30,480) are far overhead and irrelevant until a real retrace starts. Short, with-trend only, until a 15m decisive-body close reclaims the 15m BB MA.",
+  "emitted_at": "2026-06-23T03:00 ET (LONDON window_open)"
+ },
+ "what_happened_since_the_last_read": "LONDON traded one with-flush short from 30005.50, banked 75% at 29946.25 on a stall at daily VAL and had the 25% runner trailed out at 29955.00. Price has continued lower since and sits at 29873.25 at this minute."
+}

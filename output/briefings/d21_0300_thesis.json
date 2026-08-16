@@ -1,0 +1,80 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON 03:00-04:59 ET",
+ "decision_minute": "2026-06-22T03:00 ET (session-day 2026-06-21, 18:00 NY anchor)",
+ "leak_check": "pass - replay truncated at 02:59:59; last completed 2m bar starts 02:58; parity gate PASSED this minute (vwap d0.06, vwap_p1 d0.22, bb_ma_2m d0.01)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d21_0300_open.png",
+ "chart_note": "The anchored-weekly VP DRAWING is hidden on this chart: TradingView replay exposes only ~4.5 days of history behind the cursor, so a 7-days-back anchor cannot be placed. Its levels are given below as NUMBERS, recomputed as-of this minute. They are DEVELOPING - POC/VAH/VAL move as the session progresses - so treat them as a snapshot at 03:00, not fixed rails.",
+ "price_at_decision": 30736.75,
+ "overnight": {
+  "open": 30577.0,
+  "close": 30736.75,
+  "high": 30742.25,
+  "high_t": "02:55",
+  "low": 30337.5,
+  "low_t": "19:59",
+  "character": "one-way climb: low 30337.5 at 19:59, then a stairstep grind all night to 30742.25 at 02:55; price enters London at 30736.75, 6pt off the overnight high and 399pt off the low"
+ },
+ "levels_at_0300": {
+  "vwap": {
+   "mid": 30560.93,
+   "p1": 30648.86,
+   "p2": 30736.8,
+   "m1": 30473.0,
+   "m2": 30385.06,
+   "source": "open, 18:00 NY anchor"
+  },
+  "bb_ma": {
+   "tf_2m": 30721.83,
+   "tf_3m": 30706.34,
+   "tf_15m": 30618.17,
+   "tf_60m": null
+  },
+  "daily_profile": {
+   "poc": 30563.0,
+   "val": 30487.0,
+   "vah": 30658.0,
+   "note": "developing, as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30343.0,
+   "vah": 30754.0,
+   "anchor": "2026-06-14 18:00 ET (7 days back)",
+   "note": "DEVELOPING - as-of 03:00"
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0,
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  }
+ },
+ "day_range_fibs": {
+  "0.382": 30492.11,
+  "0.5": 30539.88,
+  "0.618": 30587.64,
+  "0.705": 30622.85,
+  "swing": "developing session-day high 30742.25 to low 30337.50 (his objective convention); Asia moved predominantly UP so continuation framing applies",
+  "confluence": "0.5 (30539.88) sits near VWAP mid 30560.93 and daily POC 30563; 0.705 (30622.85) sits on the 15m MA 30618.17"
+ },
+ "observations_mechanical": [
+  "price 30736.75 is pressing vwap_p2 30736.80; weekly VAH 30754 is 17pt overhead, then prior-day high 30770.75",
+  "weekly high 30975.5 is the top of the multi-day range, 239pt overhead",
+  "price above every BB MA; no 15m MA touch since ~20:30 - the move is extended and un-rebalanced"
+ ],
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "n/a - no dated event to falsify",
+  "reasoning": "No scheduled events printed at or before the decision minute and no headlines in the briefing. Archive shows no red-folder US releases in the prior 7 days; next one (Core PCE) is three days out, outside the blackout window. No basis for a directional lean or a blackout."
+ }
+}

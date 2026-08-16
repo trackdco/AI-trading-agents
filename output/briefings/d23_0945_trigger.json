@@ -1,0 +1,109 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D23-NYA2-0945",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-24T09:45 ET",
+ "candle_start": "09:42 (3m)",
+ "timeframe": "3m",
+ "leak_check": "pass - truncated at 09:44:59; last completed 2m bar starts 09:44 and the 3m 09:42-09:45 is complete (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d23_c4_0945.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; weekly levels numeric and DEVELOPING. No agent-drawn positions.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 29649.34
+   },
+   {
+    "level": "weekly_low",
+    "price": 29577.25
+   }
+  ],
+  "invalidation": {
+   "level": "overnight_high",
+   "price": 29891.75
+  },
+  "waiting_for": "retest of the broken 15m MA / VWAP / developing POC zone (~29775-29821) from below, on rejection there",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed if the vwap_m1/0.382-fib support cluster (~29702-29712) holds on a rejection there",
+  "anticipated_resolution": {
+   "level": "vwap_m1_0382_fib_confluence",
+   "price": 29711.97,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond overnight high 29891.75 with a decisive body",
+  "as_of": "09:30 window_open"
+ },
+ "open_position": "NONE. The book is flat.",
+ "prior_activity_this_window": "One NY_AM fill has already been used (a long, now closed). The cap is 1 of 2 - one slot remains.",
+ "candidate_source": "SUPPLEMENTARY rejection-first scan (3m).",
+ "rejection_sequence": "The thesis's short trigger zone was tested and rejected: the 09:30 3m wicked 14.9pt above the 15m MA and closed back below; the 09:33 and 09:36 3m bars each wicked ~7-8pt above vwap_p1 and closed back below. This 09:42 3m then closed DOWN through its own 3m MA and vwap_m1 together.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "09:42",
+  "direction": "DOWN",
+  "open": 29749.45,
+  "close": 29629.75,
+  "closed_at": "09:45",
+  "volume": 7382,
+  "note": "a ~120pt bar on 7,382 contracts. Closed through its own 3m MA and vwap_m1. Displacement-sized."
+ },
+ "pair_shape": "rejection_first",
+ "levels_closed": [
+  "own_ma_3m",
+  "vwap_m1"
+ ],
+ "levels_at_decision_CHART": {
+  "vwap": 29763.44,
+  "vwap_p1": 29829.96,
+  "vwap_m1": 29696.91,
+  "vwap_m2": 29630.39,
+  "vwap_m3": 29563.87,
+  "bb_2m_basis": 29727.59,
+  "bb_2m_upper": 29824.38,
+  "bb_2m_lower": 29630.8
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_3m": 29737.46,
+  "bb_ma_15m": 29784.1,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "day_high": 29891.75,
+  "day_low": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29731.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "overnight_low": 29585.5,
+  "weekly_low": 29577.25,
+  "session_low_so_far": 29603.0
+ },
+ "levels_below_for_target_selection": "vwap_m2 29630.39 and the 2m BB lower 29630.80 are essentially AT the current price (29633.50) - already reached. Below them: prior_day_val 29637 (also at price), overnight_low 29585.5, weekly_low 29577.25, vwap_m3 29563.87. NOTE how compressed this is: the next real structure below price is ~48-70pt away. Apply T11 carefully - compute R = |entry-stop| first, then the NEAREST level inside 1.5R-2.5R; if none qualifies use a FIXED 1.5R target.",
+ "displacement_note": "oversized displacement candle - use the BODY not the wick for the stop, and apply origin-proximity if the origin sits on a live level. NOTE: a previous trade this session had its stop pushed 171pt away by a mechanical reading of origin-proximity, which then forced an unstructured target. Judge the stop on where invalidation actually lives.",
+ "chop_warning": "the thesis called this session ROTATIONAL at 03:00 and 08:00; at 09:30 it noted the character shifting toward downside continuation. Constraint 9 (in chop, require higher-timeframe alignment) is live.",
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

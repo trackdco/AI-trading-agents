@@ -1,0 +1,101 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D24-NYA1-1014",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-25T10:14 ET",
+ "candle_start": "10:12",
+ "timeframe": "2m",
+ "leak_check": "pass - truncated at 10:13:59; last completed 2m bar starts 10:12 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d24_c1_1014.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; levels numeric and DEVELOPING. No agent-drawn positions.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_vah",
+    "price": 30208.0
+   },
+   {
+    "level": "day_high",
+    "price": 30263.75
+   }
+  ],
+  "invalidation": {
+   "level": "day_range_fib_0.5_vwap_equilibrium",
+   "price": 30094.12
+  },
+  "waiting_for": "nothing further - price has arrived at the 15m MA/0.618 fib confluence (~30134-30149), the awaited rebalance; entries license on it holding",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed AT the 15m MA/0.618 fib confluence (~30134-30150) on a decisive rejection/close-through, or at the developing daily VAH/day high on a hard rejection there",
+  "anticipated_resolution": {
+   "level": "15m_ma_0618_fib_confluence",
+   "price": 30140.0,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m decisive-body close below the fib 0.5/VWAP equilibrium band (~30094-30103) - a wick-only poke doesn't count",
+  "reasoning": "03:00 long paid out past both targets, so that thesis is spent. Rotational confirmed: the pullback came straight back to the 15m MA. Sitting at that MA/0.618 confluence, above VWAP, inside developing value - favour long continuation on a hold; a decisive close back through equilibrium flips this toward daily VAL.",
+  "as_of": "09:30 window_open"
+ },
+ "THESIS_STATUS_WARNING": "The standing thesis is LONG and its stated invalidation - a decisive close below the fib-0.5/VWAP equilibrium at ~30094 - has been comprehensively breached. Price is now 29578.75, roughly 515pt below that level. The thesis is almost certainly stale; you have thesis_stale for exactly this. Consider whether to escalate rather than adjudicate against a dead view.",
+ "what_happened_since_0930": "A collapse. From 30151 at the bell price has fallen ~615pt in 44 minutes to a low of 29553.25, breaking the equilibrium band, the VWAP, VWAP-1 and the whole developing value area on the way. The 2m Bollinger bands have expanded from ~48pt wide at the open to ~860pt now. Volume on the signal bar is 4,831.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "note": "Core PCE printed at 08:30; the blackout has expired. The number itself is not knowable to you."
+ },
+ "signal_candle_2m": {
+  "start": "10:12",
+  "direction": "DOWN",
+  "open": 29663.75,
+  "high": 29677.75,
+  "low": 29553.25,
+  "close": 29578.75,
+  "volume": 4831,
+  "note": "a 124.5pt bar closing through its own 2m MA 29635.15 and vwap_m1 29597.34 together. Displacement-sized."
+ },
+ "rejection_sequence": "vwap_m1 was rejected at 10:08 - price wicked 1.92pt above it and closed back below - before this candle closed through it.",
+ "pair_shape": "rejection_first",
+ "levels_closed": [
+  "own_ma_2m",
+  "vwap_m1"
+ ],
+ "levels_at_decision_CHART": {
+  "vwap": 29876.52,
+  "vwap_p1": 30155.69,
+  "vwap_m1": 29597.34,
+  "vwap_m2": 29318.17,
+  "vwap_m3": 29038.99,
+  "bb_2m_basis": 29635.15,
+  "bb_2m_upper": 30065.44,
+  "bb_2m_lower": 29204.86
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_3m": 29791.76,
+  "bb_ma_15m": 30061.61,
+  "day_range_fibs": {
+   "0.382": 29665.53,
+   "0.5": 29779.75,
+   "0.618": 29893.97,
+   "0.705": 29978.19
+  },
+  "day_high": 30263.75,
+  "day_low": 29295.75,
+  "prior_day": {
+   "poc": 29769.0,
+   "val": 29503.0,
+   "vah": 29892.0,
+   "high": 30157.75,
+   "low": 29264.75
+  },
+  "weekly_low": 29264.75
+ },
+ "levels_below_for_target_selection": "prior_day_val 29503, weekly_low / prior_day_low 29264.75, vwap_m2 29318.17. Apply T11: R = |entry-stop| first, then the NEAREST level inside 1.5R-2.5R; FIXED 1.5R if none qualifies. NOTE the bands are enormously wide right now - a stop sized off this displacement candle will make R very large, which has already twice this week pushed the first target beyond all structure.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

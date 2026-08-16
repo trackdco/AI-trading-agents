@@ -1,0 +1,70 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "destination_printed",
+ "event_detail": "your primary destination prior_day_val 29465 PRINTED on the bar closing 10:02 \u2014 and overshot: high 29529, close 29501.5 on 4385 contracts, accepting ABOVE it. Your waiting_for (rebalance to the 15m MA ~29352) never came; price ran away instead. Second target daily_vah 29540 is 11pt above the high; third, prior_day_poc 29655.",
+ "window": "NY_AM (entries to 11:00; cap 2, 1 used and completed \u2014 book flat).",
+ "decision_minute": "2026-06-26T10:02 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 10:01:59; last completed 2m bar starts 10:00",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_1002_pdval_print.png",
+ "price_at_decision": 29501.5,
+ "prior_thesis_as_of_0958": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   },
+   {
+    "level": "daily_vah",
+    "price": 29540.0
+   },
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_val",
+   "price": 29290.0
+  },
+  "waiting_for": "rebalance to the 15m MA",
+  "two_sided": false
+ },
+ "what_happened_since_0958": "No rebalance \u2014 continuation: 29440.5 close at 10:00 (the 15m bar also closed up through the 15m MA), then 29529 high / 29501.5 close at 10:02. The V off the 29181.5 spring is now 320pt in 26 minutes. The London-session high 29562.75 sits 33pt overhead; VWAP mid 29434 is now BELOW price.",
+ "levels_at_1002": {
+  "vwap": {
+   "mid": 29434.0,
+   "m1": 29268.0,
+   "note": "computed at 10:02"
+  },
+  "bb_ma": {
+   "tf_2m": 29335.0,
+   "tf_3m": 29334.0,
+   "tf_15m": 29376.0
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "low": 29295.75,
+   "val": 29465.0,
+   "poc": 29655.0
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29181.5,
+  "london_session_high": 29562.75
+ },
+ "fib_source": "past 10:00 NY now \u2014 but NY-range fibs require HIS manually marked swings; none are marked in replay, so none are available. Do not improvise a fib from a session range (that landed ~70pt off on 2026-06-23).",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

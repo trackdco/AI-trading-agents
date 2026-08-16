@@ -1,0 +1,93 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON 03:00-04:59 ET (cap 2 fills)",
+ "decision_minute": "2026-06-26T03:00 ET (session-day 2026-06-25)",
+ "leak_check": "pass - truncated at 02:59:59; last completed 2m bar starts 02:58 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/r2_d25_0300_london.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind.",
+ "chart_note": "the weekly VP drawing is anchored to a different window than this session-day; ignore it visually. Correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands read from his chart's own study series at the last bar (build parity today 0.02pt); BB MAs/profiles/fibs from the research build.",
+ "day_character_note": "This is the first read of the session. Judge the day's character from what is in front of you - your rebalance rule depends on it.",
+ "price_at_decision": 29503.75,
+ "last_completed_2m_bar": {
+  "start": "02:58",
+  "open": 29515.0,
+  "high": 29518.0,
+  "low": 29490.75,
+  "close": 29503.75
+ },
+ "overnight_so_far": {
+  "open_1800": 29742.0,
+  "high": 29892.75,
+  "high_time": "19:25",
+  "low": 29160.5,
+  "low_time": "23:38",
+  "close_at_0300": 29503.75,
+  "shape": "opened 29742, pushed to 29892.75 inside the first ninety minutes, then bled ~732pt in a near-continuous slide into 29160.5 at 23:38, based there, and has spent the small hours grinding back up. Price at 03:00 is 343pt off the low and 389pt off the high - roughly the middle of the overnight range."
+ },
+ "levels_at_0300_CHART": {
+  "vwap": 29491.27,
+  "vwap_p1": 29688.35,
+  "vwap_m1": 29294.19,
+  "vwap_p2": 29885.43,
+  "vwap_m2": 29097.11,
+  "bb_2m_basis": 29432.98,
+  "bb_2m_upper": 29530.03,
+  "bb_2m_lower": 29335.92
+ },
+ "levels_at_0300_BUILD": {
+  "bb_ma_2m": 29432.97,
+  "bb_ma_3m": 29396.47,
+  "bb_ma_15m": 29344.55,
+  "bb_ma_60m": {
+   "value": 29655.31,
+   "provenance": "rolling 60m series - the session-anchored 60m MA has too few bars this early; treat as approximate"
+  },
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29160.5,
+  "daily_profile": {
+   "poc": 29355.0,
+   "val": 29161.0,
+   "vah": 29656.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30099.0,
+   "note": "DEVELOPING as-of 03:00"
+  }
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [],
+  "note_on_the_low": "the session-day low 29160.5 IS the weekly low - this session made it overnight.",
+  "note_on_the_weekly_range": "weekly high 30968.0, weekly low 29160.5. Price at 29503.75 sits 343pt above the bottom of a 1807pt weekly range."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "A red-folder US release or a mega-cap headline dated on or before 2026-06-26T03:00 ET surfacing in a future briefing would give this a directional basis it currently lacks.",
+  "reasoning": "Core PCE and Personal Income/Spending printed yesterday (2026-06-25) and are already absorbed, not live catalysts. The 2026-06-26 calendar is empty through the NY_AM window and no as-of headlines were supplied, so there is no event to name a lean on."
+ },
+ "what_to_emit": "your standard thesis JSON for the LONDON window."
+}

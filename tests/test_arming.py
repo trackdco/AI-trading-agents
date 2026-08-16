@@ -17,12 +17,14 @@ from src.live.arming import (
     load_authorization,
     provenance_error,
     token_matches,
+    verify_for_arming,
 )
 from src.live.route_b import build_shadow_instrument
 
 WORD = "correct horse battery staple"
 AUTH = ArmingAuthorization(token_sha256=hashlib.sha256(WORD.encode()).hexdigest(),
-                           armed_sha="a" * 40, account="LUCID-FUNDED-1")
+                           armed_sha="a" * 40, account="LUCID-FUNDED-1",
+                           entrypoint="scripts.ny_run")
 
 
 # ---- token ------------------------------------------------------------------
@@ -57,16 +59,55 @@ def test_missing_authorization_file_refuses(tmp_path):
 
 def test_incomplete_authorization_refuses(tmp_path):
     p = tmp_path / "arming.yaml"
-    p.write_text(f"token_sha256: {AUTH.token_sha256}\narmed_sha: {'a' * 40}\n")  # no account
+    p.write_text(f"token_sha256: {AUTH.token_sha256}\narmed_sha: {'a' * 40}\n"
+                 f"entrypoint: scripts.ny_run\n")  # no account
     with pytest.raises(ArmingError, match="account"):
+        load_authorization(p)
+
+
+def test_authorization_without_an_entrypoint_refuses(tmp_path):
+    """2026-08-03 audit: entrypoint is required, no default — an old-shape file (from
+    before this fix) must refuse rather than silently arm on an unscoped basis."""
+    p = tmp_path / "arming.yaml"
+    p.write_text(f"token_sha256: {AUTH.token_sha256}\n"
+                 f"armed_sha: {AUTH.armed_sha}\naccount: {AUTH.account}\n")
+    with pytest.raises(ArmingError, match="entrypoint"):
         load_authorization(p)
 
 
 def test_roundtrip_load(tmp_path):
     p = tmp_path / "arming.yaml"
     p.write_text(f"token_sha256: {AUTH.token_sha256}\n"
-                 f"armed_sha: {AUTH.armed_sha}\naccount: {AUTH.account}\n")
+                 f"armed_sha: {AUTH.armed_sha}\naccount: {AUTH.account}\n"
+                 f"entrypoint: {AUTH.entrypoint}\n")
     assert load_authorization(p) == AUTH
+
+
+# ---- entrypoint scoping (2026-08-03 audit) -----------------------------------
+def test_verify_for_arming_refuses_a_different_entrypoint(tmp_path, monkeypatch):
+    """The concrete incident this closes: canon_run.py and ny_run.py share this file.
+    A phrase Angus wrote for one must not arm the other, even with a matching token and
+    a HEAD that happens to equal armed_sha."""
+    p = tmp_path / "arming.yaml"
+    p.write_text(f"token_sha256: {AUTH.token_sha256}\n"
+                 f"armed_sha: {head_sha_for_test()}\naccount: {AUTH.account}\n"
+                 f"entrypoint: scripts.ny_run\n")
+    with pytest.raises(ArmingError, match="scripts.canon_run.*scripts.ny_run|issued for"):
+        verify_for_arming(WORD, entrypoint="scripts.canon_run", path=p)
+
+
+def test_verify_for_arming_succeeds_for_the_matching_entrypoint(tmp_path):
+    p = tmp_path / "arming.yaml"
+    p.write_text(f"token_sha256: {AUTH.token_sha256}\n"
+                 f"armed_sha: {head_sha_for_test()}\naccount: {AUTH.account}\n"
+                 f"entrypoint: scripts.ny_run\n")
+    auth = verify_for_arming(WORD, entrypoint="scripts.ny_run", path=p)
+    assert auth.entrypoint == "scripts.ny_run"
+
+
+def head_sha_for_test() -> str:
+    from src.live.arming import head_sha
+    return head_sha(".")
 
 
 # ---- the armed assembly ------------------------------------------------------

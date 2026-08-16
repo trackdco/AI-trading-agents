@@ -1,0 +1,71 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "invalidation_broken_and_displacement",
+ "event_detail": "your 09:30 kill fired 4 minutes later: the 09:32 bar flushed 29369 -> 29197.5 (171pt range, 5236 contracts; the 09:30 bar before it did 6763 \u2014 the two heaviest bars of the day) and CLOSED 29199.75, below your hammer-low invalidation 29211.25. This is also the first displacement of the open regime (range >= 0.5*W15 by a wide margin). Doctrine: after a displacement, wait for the rebalance.",
+ "window": "NY_AM 09:30-11:00 (open; cap 2, none used). It is 09:34 \u2014 still the first minutes of the cash open.",
+ "decision_minute": "2026-06-26T09:34 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 09:33:59; last completed 2m bar starts 09:32",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_0934_open_flush.png",
+ "price_at_decision": 29199.75,
+ "prior_thesis_as_of_0930": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_poc",
+    "price": 29369.0
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   },
+   {
+    "level": "daily_vah",
+    "price": 29540.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_low_hammer",
+   "price": 29211.25
+  },
+  "waiting_for": "open to settle, then a rebalance - no chasing",
+  "two_sided": false,
+  "kill_stated": "acceptance back below the hammer kills it"
+ },
+ "what_happened_since_0930": "One bar up-fake to 29371.75, then the flush. The 29290-29295.75 cluster that was reclaimed pre-open gave way intrabar without a fight. New session low 29197.5 sits 37pt above weekly_low 29160.5. Daily VAL (29225) was traded through again.",
+ "levels_at_0934": {
+  "vwap": {
+   "mid": 29443.9,
+   "m1": 29277.9,
+   "m2": 29111.9,
+   "note": "computed at 09:34"
+  },
+  "bb_ma": {
+   "tf_2m": 29294.6,
+   "tf_3m": 29303.0,
+   "tf_15m": 29361.4
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "session_low_new": 29197.5
+ },
+ "fib_source": "none",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

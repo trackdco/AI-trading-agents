@@ -1,0 +1,153 @@
+{
+  "trader_label": "Friday 26 June 2026",
+  "session_day": "2026-06-25",
+  "character": "Three trades, three winners: +2.45R, +2.35R, +2.90R. About +7.7R on the day. The cleanest execution of the week and the best demonstration of the two-level rule being WAITED for rather than forced.",
+
+  "pre_session": {
+    "read": "Bottoming out the weekly range - the lows from Wednesday and Thursday, with a rejection off the weekly value area low. Haven't been able to break that low.",
+    "bias": "Long-leaning but explicitly two-sided. 'I'm inclined to take longs. A rebalance to the one-hour or around that VWAP+1 level would be good. That being said, I'm also not fully opposed to shorts.'",
+    "fib_read": "'We can see the increment to the high of the day. We're at around that 0.5 level right now, and we've already had some resistance around this level. If we are to go back down, we'd go back down now.'",
+    "stance": "'I'm open to both ways. We just got to see what the market gives us.'"
+  },
+
+  "decisions": [
+    {
+      "id": "L1", "type": "take", "window": "LONDON", "direction": "short",
+      "trader_time": "09:04 London / 04:04 NY", "result": "WIN",
+      "sizing": {"note": "LIGHT SIZE - explicitly stated before entry",
+                 "quote": "I don't mind shorts here back to the value area low. I'd probably take this one with light size because it's not like a full-conviction trade."},
+      "the_wait": {
+        "first_candle": "The 2m candle 04:00-04:01 (his 09:00 London) closed through the 2m BB MA at 29,523.97 but its close of 29,502.50 was still ABOVE VWAP at 29,492.61 - ONE level only.",
+        "his_words": "We closed through the moving average. We didn't close through VWAP. I waited for it to close through VWAP as well.",
+        "second_candle": "The 2m candle 04:04-04:05 opened 29,503.75 and closed 29,477.25, THROUGH VWAP at 29,492.65. Two levels, so the candidate exists.",
+        "significance": "This is the two-level rule being WAITED for in real time, verified on the tape. The best single illustration of R1 in the corpus."
+      },
+      "confirmation": "3m also closed through both on the same move (ma3 29,510.94, VWAP 29,492.65). 'We look at the 3-minute really quick first as well.'",
+      "entry": {"type": "limit_on_retest", "price": 29492.75,
+                "level": "VWAP - ours reads 29,492.65 at that minute, so his limit sits 0.10pt away",
+                "filled": true, "fill_ny": "04:07"},
+      "stop": {"price": 29550.0, "risk_pts": 57.25,
+               "rationale": "Above the high of the choppy range - specifically the high of the candle that first closed through the MA.",
+               "note": "That candle's high is 29,557.75, so his 29,550 sits 7.75pt inside it. Minor.",
+               "touched": false},
+      "targets": [{"label": "daily value area low / the VWAP-1 region", "named": true}],
+      "outcome": {"exit_approx": 29352.75, "exit_ny": "05:18-05:21",
+                  "trader_stated": "around 10:18 London, like 140 points, an easy 2.5R",
+                  "pts": 140.0, "r": 2.45,
+                  "note": "The exit sits ABOVE both named targets (daily VAL 29,161.50, weekly VAL 29,290, VWAP-1 29,305). He banked it early rather than holding to the level."}
+    },
+
+    {
+      "id": "PRE1", "type": "take", "window": "NY_PRE", "direction": "short",
+      "ny_time": "08:33", "result": "WIN",
+      "context": {
+        "htf": "'The 15 minute candle that opened at 8:15 ended up rejecting the moving average to the downside, so I might look for some quick shorts here.'",
+        "fib": "'I marked the high from London at 3:30 - that was the top of this range - and the low at 7:54. This is the second time rejecting off of the 0.5 of that range.'",
+        "fib_VERIFIED": "High near 03:30 = 29,562.75; low near 07:54 = 29,304.75; range 258.00; the 0.5 = 29,433.75. Pre-market highs cluster at 29,435.75-29,450.00. He is right - price rejected that level twice.",
+        "expectation": "'I expect us to stall towards the bottom of this, so I'm not looking for anything crazy.'"
+      },
+      "trigger": {
+        "tf": 3, "candle_start_ny": "08:33", "candle_close_ny": "08:36",
+        "ohlc": [29400.50, 29401.00, 29358.00, 29360.25],
+        "closed_through": ["bb_ma_3m", "developing_POC"],
+        "levels_verified": {"bb_ma_3m": 29383.31, "developing_poc": 29369.50}
+      },
+      "entry": {"type": "limit_on_retest", "price": 29369.0,
+                "level": "developing POC 29,369.50 - 'the closest structural level'",
+                "filled": true, "fill_ny": "08:36",
+                "trader_words": "On the 8:36 candle it retested the POC."},
+      "stop": {"price": 29400.0, "risk_pts": 31.0,
+               "rationale": "Above the candle that displaced through (its high is 29,401.00).",
+               "touched": false},
+      "targets": [{"label": "VWAP-1", "level_ours": 29299.38, "exit": 29296.0,
+                   "hit": true, "hit_ny": "09:00"}],
+      "outcome": {"r": 2.35, "trader_stated": "2.3R", "pts": 73.0},
+      "the_point": {
+        "quote": "It never even retested the three minute moving average before hitting take profit - you see, that's why I enter on the closest structural level.",
+        "VERIFIED": "The 3m MA sat at 29,382.79. The highest price after his fill was 29,377.00. It never got there. Had he limited the MA instead of the POC, he would have had no trade at all.",
+        "significance": "Direct evidence for R2 (limit the CLOSEST structure), and the clearest demonstration of why in the corpus."
+      },
+      "also": "'We also got to the weekly value area low.' Ours: awVAL 29,290 - price reached 29,296 exactly there."
+    },
+
+    {
+      "id": "N1", "type": "take", "window": "NY_AM", "direction": "long",
+      "ny_time": "09:34", "result": "WIN",
+      "context": "Repeated wicks at the developing VAL (09:18 and 09:33), rejection of both the weekly and daily value area lows. 'We haven't been able to clearly break this weekly value area low, same with the daily value area low. I'm looking for longs.'",
+      "the_discipline_row": {
+        "temptation": "The 09:34 2m candle was a valid trigger but oversized: 'if it wasn't so fucking big I'd probably take that... I don't like how big that stop is.' He then considered limiting at VWAP-1 or the VAL instead of the MA to get a tighter stop, and rejected the idea.",
+        "quote": "I really do think it's gonna go up. I don't really wanna miss a good entry because I'm being [tight] with where I place my limits. Nah, I'm sticking to my rules. I gotta stick to my fucking rules.",
+        "significance": "He explicitly considered loosening his own entry rule to avoid missing a move he believed in, and refused. This is the counterpart to the 2026-06-25 break-even: the rule holds when it is inconvenient."
+      },
+      "trigger": {
+        "tf": 2, "candle_start_ny": "09:34", "candle_close_ny": "09:36",
+        "ohlc": [29199.75, 29254.00, 29181.50, 29231.75],
+        "closed_through": ["vwap_m1", "bb_ma_2m"],
+        "rejected": ["weekly_VAL", "developing_VAL"],
+        "trader_words": "We rejected the weekly value area low and the daily developing value area low, and we displaced heavily through VWAP-1 and the moving average."
+      },
+      "entry": {"type": "limit_on_retest", "price": 29296.25,
+                "level": "2m BB MA (ours 29,293.66 at fill)",
+                "filled": true, "fill_ny": "09:36"},
+      "stop": {"price_inferred": 29199.0, "risk_pts": 97.25,
+               "basis": "Implied by his own '2.9R' on a 281.75pt move; ~29,199 is the 09:34 candle's open and just above its low of 29,181.50.",
+               "trader_words": "That's still a fucking big stop, jeez louise.",
+               "touched": false, "closest_approach": 29217.75, "approach_ny": "09:40"},
+      "targets": [
+        {"label": "VWAP middle band", "size_pct": 75, "hit": true, "hit_ny": "09:56",
+         "level_ours": 29415.59, "r": 1.23, "trader_stated": "like 1.5R"},
+        {"label": "VWAP+1 - EXTENDED mid-trade", "price": 29578.0,
+         "level_ours": 29578.92, "hit": true, "hit_ny": "10:06-10:08", "r": 2.90}
+      ],
+      "target_extension": {
+        "original": "the developing value area high",
+        "changed_to": "VWAP+1",
+        "quote": "I might go for the VWAP+1 because I do think my thesis is playing out well. I thought we were gonna stall around the low of this range and start coming back up.",
+        "note": "The VAH sat at 29,489.50; VWAP+1 at 29,578.92. Extending was worth ~90 points. Targets are revised UP when the thesis is confirming - the first instance of this in the corpus."
+      },
+      "outcome": {"r": 2.90, "trader_stated": "2.9R", "pts": 281.75,
+                  "trader_stated_pts": 280}
+    },
+
+    {
+      "id": "P1", "type": "pass", "window": "NY_AM", "scope": "rest_of_window",
+      "reason": "'Nothing else really happened in my window. I'm not gonna look for shorts just because I think we've bottomed out the range for the day and actually the week. If I take anything it would be longs. I don't think any good long setup will occur in my trading period any more.'",
+      "value": "Directional exclusion after the thesis has paid: he will not take the other side once he believes the range has bottomed."
+    }
+  ],
+
+  "day_pnl_r": {"L1": 2.45, "PRE1": 2.35, "N1": 2.90, "net": 7.70},
+
+  "declared_rules": [
+    {"id": "R17", "rule": "SIZE SCALES TO CONVICTION. A setup that is acceptable but not full-conviction is taken with light size rather than passed.",
+     "quote": "I'd probably take this one with light size because it's not like a full-conviction trade.",
+     "note": "This is a third option beyond take/pass and the log must carry it."},
+    {"id": "R18", "rule": "EXTEND THE TARGET when the thesis is confirming; do not extend the risk.",
+     "quote": "I might go for the VWAP+1 because I do think my thesis is playing out well.",
+     "evidence": "Worth ~90 points on N1."},
+    {"id": "R19", "rule": "FIBS ARE DRAWN ON MANUALLY MARKED SWINGS, not a fixed session range.",
+     "quote": "I marked the high from London at 3:30 and the low at 7:54.",
+     "verified": "That range gives a 0.5 at 29,433.75; pre-market highs cluster 29,435.75-29,450.00, rejecting it twice.",
+     "implication": "This RESOLVES the 2026-06-23 fib mismatch, where a full-session range was used and landed ~70pt off. Identifying the swing is a judgment call the agent must make, not a formula it can apply."},
+    {"id": "R20", "rule": "Do not take the opposite side once the thesis has played out and the range is believed to have bottomed or topped.",
+     "quote": "I'm not gonna look for shorts just because I think we've bottomed out the range for the day and actually week."}
+  ],
+
+  "calibration_status": {
+    "matched_this_day": {
+      "vwap": "29,492.65 ours vs his 29,492.75 limit - 0.10pt",
+      "developing_POC": "29,369.50 ours vs his 29,369 limit",
+      "vwap_m1": "29,299.38 ours vs his 29,296 exit",
+      "vwap_p1": "29,578.92 ours vs his 29,578 full exit",
+      "bb_ma_2m": "29,293.66 ours vs his 29,296.25 limit",
+      "anchored_weekly_VAL": "29,290 ours; he said 'we also got to the weekly value area low' and price reached 29,296",
+      "fib_0.5": "29,433.75 ours from his marked swings vs rejections at 29,435.75-29,450.00"
+    },
+    "verdict": "Every level he named on the final day reproduces. The indicator stack, both volume profiles, and now the fib construction are all calibrated."
+  },
+
+  "trader_closing": {
+    "quote": "Now you have the full week of me going through with you trading. So you better fucking figure it out now. I narrated my thesis, I narrated everything for an entire week of trading, so you can't fuck this shit up now.",
+    "response": "Week captured and fully reconciled. Distilled decision procedure written to docs/PLAYBOOK.md."
+  }
+}
