@@ -76,6 +76,30 @@ The offline scanner is deterministic code: 31/44 string-identical, every
 disagreement traced to Mac wording/choice, not arithmetic. The bridge test
 compares CANDIDATE SETS, not tag strings.
 
+## CONTRACT DELIVERY — subagents hold the SESSION-START contract
+
+**Found the hard way, 2026-08-17, mid-experiment.** A contract amendment was
+written to `.claude/agents/tv-trigger.md` and an A/B launched immediately. A
+probe agent then graded a candidate **A** while citing *"4th failed test since
+03:15"* — precisely what the amendment forbids. Asked directly, the agent
+reported its loaded contract had **no frontmatter version and no such
+section**: subagent definitions are read when the session starts, so both
+arms of that A/B were running the OLD contract against itself. The run was
+killed before it produced a number.
+
+This is the same defect that historically forced "restart the session" on the
+Mac side, and it is exactly why the harness inlines contract text:
+
+- **the harness must deliver contract text IN THE PROMPT**, never rely on the
+  file on disk having been re-read;
+- it makes version-vs-version A/B possible in one session, which is the whole
+  point of M4;
+- **for any A/B over the corpus the amendment must be stripped of empirical
+  results from the very days being re-adjudicated.** The shipped contract
+  carries its justification numbers (the audit trail of why a rule exists);
+  the A/B copy must not, or the agent is being told the aggregate outcome of
+  the sessions it is judging. Two copies, one purpose each.
+
 ## Not regenerable, by design
 
 - **Cascade fields** (`thesis`, `macro`, `prior_thesis`): outputs of earlier
