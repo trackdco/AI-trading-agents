@@ -303,9 +303,30 @@ as normal, flagging `flip_candidate: true` in the briefing (a fact, not a
 vote). On a take verdict the orchestrator FLATTENS the open position at the
 decision price (`exit_reason: "flipped"` on its exit row) and runs the new
 limit lifecycle. **The flip outranks a T48 same-direction re-entry at the
-same level** — check the flip before re-entering. Absent the licence, the
-open-position gate stands as before; a flip is never available merely because
-an opposite candidate looks good.
+same level** — check the flip before re-entering.
+
+**T68 WIDENED (his ruling, 2026-08-16).** The defended-level licence is no
+longer required. He allows the flip on the trigger's own comparative
+judgement: *"make sure it can also flip trades and stuff as well… If it
+thinks the short setup looks better than the long setup, then take the short
+flip positions right there. Close the long. Set the limit order for the
+short. Make sure that is a rule because I have allowed that."* So: ANY
+candidate firing opposite an open position is a flip candidate. The briefing
+flags `flip_candidate: true` and states the open position as a fact; the
+agent adjudicates the new setup on its merits. On a take the orchestrator
+FLATTENS the open position at the decision price (`exit_reason: "flipped"`)
+and runs the new limit lifecycle. On a pass the open position simply stands.
+The superseded sentence read "a flip is never available merely because an
+opposite candidate looks good" — that is exactly the case he has now allowed.
+
+**THE FLIP AND THE WRITTEN CAP (his ruling, 2026-08-16).** A flip does NOT
+consume a fresh window slot. *"ny can have a cap of 2 if its flipping into a
+trade it believes will payoff better. id disregard the first trade in that
+instance for that."* The position that was flipped OUT is disregarded when
+counting fills against the written cap — the flip inherits its slot rather than
+taking a new one, the same way a T53 scale-in consumes no slot. Its realised R
+still scores in full: a flipped-out loss is a real loss and is never dropped from
+the scoreboard. Only the CAP ACCOUNTING disregards it.
 
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 

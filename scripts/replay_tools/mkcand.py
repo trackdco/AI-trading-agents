@@ -37,8 +37,38 @@ def build(s):
     from scripts.replay_tools.preflight import check as _pf
     _ok, _rep = _pf(sd, s["dn"], dec, s["chart_levels"], s.get("last_bar_epoch"))
     if not _ok:
-        raise SystemExit("PREFLIGHT FAILED - briefing NOT written:\n" + json.dumps(_rep, indent=1))
+        # An override exists so that a DIAGNOSED false positive does not silently halt a
+        # window, but it is deliberately awkward: it demands a written reason, it refuses
+        # to touch the cursor or forward-leak checks (those are never overridable - they
+        # are the leak surface), and it stamps the failure INTO the briefing so the agent
+        # sees the same divergence the orchestrator saw.
+        ov = s.get("preflight_override")
+        cursor_ok = _rep["checks"]["cursor"]["ok"]
+        leak_ok = _rep["checks"]["no_forward_leak"]["ok"]
+        if not (ov and ov.get("reason") and cursor_ok and leak_ok):
+            # mk_trigger has already written the file, so remove it - otherwise the
+            # message is a lie and a stale briefing sits on disk for an agent to find.
+            try:
+                os.remove(out)
+            except OSError:
+                pass
+            raise SystemExit("PREFLIGHT FAILED - briefing deleted, NOT emitted:\n" + json.dumps(_rep, indent=1))
+        _override_block = {
+            "status": "this briefing was emitted over a FAILED preflight legend check",
+            "what_failed": _rep["checks"]["legend"],
+            "checks_that_still_passed": {"cursor": _rep["checks"]["cursor"],
+                                         "no_forward_leak": _rep["checks"]["no_forward_leak"]},
+            "reason": ov["reason"],
+            "what_it_means_for_you": ov.get("agent_note",
+                "treat the diverging level as carrying that much uncertainty."),
+            "never_overridable": ("the cursor-position and no-forward-leak checks cannot be overridden by "
+                                  "this mechanism. Only the legend cross-check can, and only with a reason."),
+        }
+    else:
+        _override_block = None
     b = json.load(open(out))
+    if _override_block:
+        b["PREFLIGHT_OVERRIDE"] = _override_block
     px = b["price_at_decision"]
     cl = b["levels_at_decision_CHART"]
     up = s["side"] == "up"
