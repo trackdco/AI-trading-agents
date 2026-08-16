@@ -1,7 +1,15 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.7
+version: 0.4.8
+# 0.4.8: FRESHNESS CAPS THE GRADE (measured, 2026-08-16). Rubric point 4 said
+#   a level "already sliced earlier in the session" grades lower; the two
+#   complete agent weeks say the same of a level already TRADED this session or
+#   repeatedly tested on the 15m. Fresh rejections: +18.81R over 20 takes; stale:
+#   +0.86R over 20, and the split replicates independently on both weeks. Stale
+#   A-grades were -1.78R while fresh A-grades were +8.87R - the largest size was
+#   riding the worst population. Only a FRESH level may grade A; a 3rd visit caps
+#   at C. Caps the grade, never the licence: T48 re-entry stays licensed.
 # 0.4.7: THE PATCH (T63/T64/T67/T68/T70, his answers 2026-08-14). The flush
 #   gate gains its ONLY exemption: the DEFENDED-LEVEL licence (a level with
 #   memory, tested and failed, displacement away) - Tuesday's knife-catch
@@ -883,6 +891,54 @@ drives his partial structure and his sizing, so grade inflation is not cosmetic.
    by WHAT A REJECTION ACTUALLY LOOKS LIKE above: shapes A and B carry the level's
    full merit tier; an unresolved shape C carries none of it, and a C resolved on
    the 15m carries all of it.
+5. **FRESHNESS CAPS THE GRADE.** See the section below — a level you have
+   already traded this session, or one the 15m has tested repeatedly, cannot
+   carry its full merit tier no matter how good the tier is.
+
+## FRESHNESS — the first touch is the trade (0.4.8)
+
+**This is rubric point 4 taken to its conclusion, and it is measured, not
+asserted.** Across the narrated week and the unseen June week — 40 graded
+takes, both weeks agreeing independently:
+
+| the rejected level was… | n | total | mean | WR |
+|---|---|---|---|---|
+| **FRESH** (first trade at it this session, ≤2 tests on the 15m in 60 min) | 20 | **+18.81R** | **+0.94R** | 55% |
+| STALE (anything else) | 20 | +0.86R | +0.04R | 45% |
+
+On **A-grades specifically** the split is the whole story: fresh A's ran
+**+8.87R (mean +2.22R, 75% WR)**; stale A's ran **−1.78R (mean −0.25R, 29%
+WR)**. The A licence was being handed to worn-out levels, and A is his
+largest size — the worst-performing population was carrying the most money.
+
+**Why this is his reasoning and not a fitted number.** The best trade of
+either week (+6.37R) graded itself A citing, in the agent's own words,
+*"tested once at session low, **no repeated failures**"*. The four worst
+graded themselves A citing *"tested 3-4x since 03:15, no decisive close
+beyond"* — reading repetition as strength. His own doctrine already says the
+opposite in rubric point 4, in `THE RANGE FRAME` (*"the middle is dead"* — a
+level being revisited all session IS the middle of a range), and in his
+review of the narrated Wednesday, where repeatedly fading one level was the
+thing he disliked most.
+
+**The rule:**
+
+- **Only a FRESH level can grade A.** A stale level tops out at **B**.
+- **Third or later trade at the same level this session tops out at C.**
+- FRESH = your briefing's `level_visits_this_session` is 1 for the level in
+  `rejected_level`, AND that level shows **≤2 tests on the 15m** in the
+  60-minute window of `higher_timeframe_at_candidate_levels`.
+
+**This caps the GRADE. It never blocks a trade.** T48 stands untouched — a
+re-entry at a level that stopped you out is still licensed and you should
+still take it when it earns a take. What it no longer does is come at A
+size. *(Flagged for his ruling: T48 says of a same-level re-entry "if
+anything, I'm actually more confident," and the measured 2nd-visit mean is
+−0.03R over 9 trades. The licence is preserved and only the size is cut, but
+the tension is real and his to settle.)*
+
+A level that has held four tests and is being faded for the third time may
+still be a trade. It is not an A.
 
 An A is his described shape: *"reject off the weekly value area low and actually
 show resistance there and affirm that rejection, and then we close through the

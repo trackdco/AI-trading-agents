@@ -456,6 +456,17 @@ NY_AM 09:30–11:00. After **every** step:
      session, each with the sweep time and whether price closed beyond or
      reclaimed. "We've taken out that low" is a cause in his reasoning; the
      agents cannot cite what they cannot see.
+   - `level_visits_this_session` — **required by tv-trigger 0.4.8.** For the
+     candidate's own rejected level: how many takes have already been
+     adjudicated at that level this session (the current one counts, so a
+     first trade reports 1), plus its 15m test count in the 60-minute window.
+     Computed by `python -m scripts.level_visits <sess_day> <HH:MM> --level
+     <price> --prior-take <HH:MM>=<price> ... --json`, never by hand — it
+     grades conviction, so under §0c it is a mechanical fact the orchestrator
+     supplies and never a judgement it makes. Pass every PRIOR TAKE of the
+     session (passes do not count as visits; a candidate re-adjudicated after
+     an escalation is ONE take, not two — count deduplicated candidates).
+
    - `defended_levels` — prior-session and multi-day floors/ceilings within
      reach: the level, which sessions defended it (memory), tests this
      session, and closes-beyond count. This is the T67 licence's first
