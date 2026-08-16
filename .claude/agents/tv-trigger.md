@@ -921,6 +921,25 @@ level being revisited all session IS the middle of a range), and in his
 review of the narrated Wednesday, where repeatedly fading one level was the
 thing he disliked most.
 
+**WHAT THIS RULE IS NOT — checked, and the check failed.** It is NOT a claim
+that a level weakens each time it is tested. That was tested on **3,424
+mechanical triggers across 87 independent session-days** and it is **false**:
+raw outcome does not decay with visit number (mean MFE 3.35R / 3.69R / 3.93R
+at visits 1 / 2 / 3). Never reason *"this level has been tested twice, so it
+is about to break"* — the tape does not support it.
+
+What that same data DOES support is a **day-level** effect. Sorting those
+days by how much price rotates back through its own trigger levels: the least
+rotational quarter carried mean MFE 5.16R with 42% of triggers reaching 2R;
+the most rotational quarter, 3.10R and 30.8%. Trigger COUNT says the same
+(fewest-trigger days 5.03R / 39%; most-trigger days 2.86R / 29.8%).
+
+So read this rule for what it is: **finding yourself back at a level you have
+already traded today is information about the SESSION, not about the level.**
+It says the day is rotational, and a rotational day is one to take smaller
+on. That is exactly why the rule caps size and never blocks a trade — a stale
+level is not a worse setup, it is the same setup on a worse day.
+
 **The rule:**
 
 - **Only a FRESH level can grade A.** A stale level tops out at **B**.

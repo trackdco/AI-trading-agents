@@ -142,12 +142,67 @@ multiplicity is uncontrolled by design, and any detector that looks good here
 must survive pre-registered re-measurement on the holdout before it can ever
 gate anything.
 
+---
+
+## §1 RESULT — MEASURED 2026-08-17. REPORT-ONLY, NOTHING ADOPTED.
+
+Run on **86 session-days, 2026-01-01…04-30** — the spendable fit span. Not
+May (reserved as the untouched confirmation month), not the 2023-24 holdout,
+not either agent week. Substrate is `raw_trigger_census.py`, as registered.
+
+**§1 asked one question and it now has an answer: the damage is at the DAY
+level, not the trade level.** A session-level gate is therefore the cheap fix
+and a trigger-level one is not — which is the decision §1 was written to
+settle, settled in the direction registered as possible in advance.
+
+Two day-level measures, both computable DURING a session:
+
+| days sorted by ROTATION (mean revisit count of its own trigger levels) | n | mean trigger MFE | P(MFE≥2R) | triggers/day |
+|---|---|---|---|---|
+| Q1 least rotational | 21 | **5.16R** | **42.0%** | 26.8 |
+| Q2 | 21 | 3.56R | 33.1% | 38.0 |
+| Q3 | 21 | 2.82R | 32.3% | 41.9 |
+| Q4 most rotational | 23 | **3.10R** | **30.8%** | 51.5 |
+
+corr(rotation, day mean MFE) = **−0.351**; corr(rotation, P(MFE≥2R)) = **−0.368**.
+
+| days sorted by TRIGGER COUNT | n | triggers/day | mean MFE | P(MFE≥2R) |
+|---|---|---|---|---|
+| Q1 fewest | 21 | 22.3 | **5.03R** | **39.0%** |
+| Q4 most | 23 | 58.7 | **2.86R** | **29.8%** |
+
+**This is §0, his hypothesis, holding on data it was not built from.** His
+words were: *"In chop, VWAP, POC, the MA and the bands compress into the same
+few points — so a nothing candle crosses two of them trivially… my trigger
+becomes structurally easier exactly when it should be getting harder."* The
+trigger-count table is that statement measured: **the days that fire the most
+triggers are the days whose triggers are worth the least.** Trigger density
+is not a neutral fact about a session; it is a warning about it.
+
+**A NEGATIVE RESULT, recorded because it constrains what may be built.** The
+same 3,424 triggers show **no per-trade decay by visit number** (mean MFE
+3.35R / 3.69R / 3.93R at visits 1/2/3). So "a level weakens each time it is
+tested" is FALSE on this data. Any future gate must be justified at the
+session level; a trigger-level version of this idea has been tested and has
+no support.
+
+**Standing conditions honoured.** Counts and base rates only; report-only;
+fit-only; nothing adopted; no threshold selected; no gate shipped; the
+holdout untouched. `tv-trigger` 0.4.8's freshness cap was written before this
+measurement and is a *sizing* rule sourced to his conviction rubric — its
+contract text has been corrected to state the negative result above and to
+frame revisiting as a signal about the SESSION rather than the level.
+
+**§2 and §3 are not run.** §2's separation test is the natural next stage and
+is now the more interesting one, because §1 says the mechanism operates
+day-wide.
+
 ## STAGE STATUS
 
 | stage | status |
 |---|---|
 | §0 hypothesis | registered 2026-08-16, unmeasured |
-| §1 day-clustering | not yet run |
+| §1 day-clustering | **RUN 2026-08-17 — day-level effect confirmed, report-only, nothing adopted** |
 | §2 mechanism test | not yet run |
 | §3 detector base rates | not yet run |
 | §4 state machine | design only, not built |
