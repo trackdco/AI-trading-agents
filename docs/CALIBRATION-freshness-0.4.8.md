@@ -143,6 +143,79 @@ recorded because it argues against going further, not for it.
 
 ---
 
+## 3b. THE CHECK THAT FAILED — and the bigger finding it produced
+
+Before trusting the rule I tested its implied MECHANISM on data neither week
+touched: **3,424 mechanical triggers across 87 session-days (2026-01…04)** —
+the spendable fit span, not May, not the holdout.
+
+**The mechanism is false.** Raw trigger outcome does NOT decay with visit
+number:
+
+| visit to that price level | n | mean MFE |
+|---|---|---|
+| 1st | 631 | 3.35R |
+| 2nd | 499 | 3.69R |
+| 3rd | 399 | 3.93R |
+| 4th+ | 1,895 | 3.12R |
+
+So "a level weakens each time it is tested" is not true on the tape. The
+effect measured in the agent weeks is about the AGENTS, not about levels —
+and at n=40 it could partly be noise.
+
+**But the same data produced something stronger, at the DAY level:**
+
+| days by ROTATION (how much price revisits its own trigger levels) | n | mean MFE | P(MFE≥2R) |
+|---|---|---|---|
+| least rotational quarter | 21 | **5.16R** | **42.0%** |
+| most rotational quarter | 23 | **3.10R** | **30.8%** |
+
+| days by TRIGGER COUNT | n | triggers/day | mean MFE | P(MFE≥2R) |
+|---|---|---|---|---|
+| fewest | 21 | 22.3 | **5.03R** | **39.0%** |
+| most | 23 | 58.7 | **2.86R** | **29.8%** |
+
+corr(rotation, day MFE) = −0.351.
+
+**This is HIS pre-registered chop hypothesis, holding on data it was not
+built from.** He wrote, before any measurement: *"In chop… a nothing candle
+crosses two of them trivially… my trigger becomes structurally easier exactly
+when it should be getting harder."* The trigger-count table is that sentence
+measured — **the days that fire the most triggers are the days whose triggers
+are worth the least.**
+
+It also settles the fork his chop prereg §1 registered in advance: the damage
+is **session-level, not trade-level**, so a day gate is the cheap fix and a
+trigger gate is not. Per his own standing conditions on that prereg
+(*"report-only… nothing adopted from this pass"*), **nothing was built from
+it.** Recorded in `docs/PREREG-chop-regime-gate.md`.
+
+**How this reframes 0.4.8, which the contract text now states honestly:**
+finding yourself back at a level you already traded today is information
+about the SESSION being rotational, not about the level decaying. That is
+exactly why the rule caps size and never blocks — a stale level is not a
+worse setup, it is the same setup on a worse day.
+
+## 3c. THE AGENT RE-RUN — status, and two methodology findings
+
+Re-adjudicating both weeks' takes through the real agent, baseline vs
+amended, is running (52 candidates × 2 arms). It is the slowest and weakest
+leg of the night and it is **not** what the conclusions above rest on. Two
+things it has already established, both worth more than its headline number:
+
+1. **Subagents hold the contract loaded at SESSION START.** The first A/B was
+   killed because a probe graded a candidate **A** citing *"4th failed test
+   since 03:15"* — the exact behaviour the amendment forbids — and, asked
+   directly, reported its loaded contract had no such section. Both arms had
+   been running the old contract against itself. Contract text must be
+   delivered IN THE PROMPT. (Recorded in `docs/OFFLINE-HARNESS.md`.)
+2. **The screenshot does real work.** Early results show candidates that were
+   TAKES on the Mac coming back as PASSES offline at a high rate. Both arms
+   carry the identical no-chart note so the A/B stays internally valid, but
+   it corrects something I told him earlier: trigger briefings are
+   numerically self-contained, and that is **not** the same as behaviourally
+   self-contained. It raises the priority of the M3 chart renderer.
+
 ## 4. WHAT I DELIBERATELY DID NOT CHANGE
 
 - **The management tier.** The counterfactual (`scripts/mech_manage_whatif.py`)
