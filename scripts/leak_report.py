@@ -126,7 +126,7 @@ def load_week(week: str):
                     "side": +1 if "long" in side or "buy" in side else -1,
                     "targets": r.get("targets") or [],
                     "beyond_cap": bool(r.get("beyond_written_cap")),
-                    "fill_bar": r.get("fill_bar_start")}
+                    "fill_bar": r.get("fill_bar_start") or r.get("filled_at")}
             elif t == "exit":
                 exits[cid] = {
                     "day": day, "cid": cid,
