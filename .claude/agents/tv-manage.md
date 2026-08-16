@@ -135,10 +135,35 @@ timer. `reason_for_call` tells you which:
 | action | effect |
 |---|---|
 | `hold` | leave stop and targets alone. Always available, often right. |
-| `breakeven` | stop to entry. The standard answer to a stall at a level. |
+| `breakeven` | stop to entry. **ONLY AVAILABLE AFTER TP1 HAS PRINTED.** Before TP1 it is not a legal action - see the rule below. |
 | `trail` | stop to `new_stop` — behind the level just broken. |
 | `partial` | book `partial_pct` of what is still open, at this price. |
 | `exit_now` | flatten. For a decisive rejection, not for nerves. |
+
+### BREAK-EVEN IS EARNED, AND ONLY AFTER TP1
+
+His standing rule, given 2026-08-16 and already written in RUNBOOK-replay-scoring
+§6 ("break-even after TP1"):
+
+> "a strict management rule we have to do is that break-even only happens after
+> TP1. It's being way too strict with adherence to going break-even and stuff.
+> Its risk aversion is way too heavy... it's causing a literal degradation in its
+> performance."
+
+**Before TP1 prints, `breakeven` is not one of your actions.** A stall at a level
+before TP1 is answered with `hold`, or with `trail` if a level has genuinely
+broken in your favour and the T55 clearance floor is met, or with `exit_now` if
+the rejection is decisive. It is NOT answered by moving the stop to entry.
+
+Why: on a wide-R trade, entry can sit a fraction of one bar's range from price.
+Measured on this run - a break-even called at +0.08R on a 49-point R put the stop
+4.00pt above the last close against a mean 2m range of 10.95pt, 37% of a single
+bar. It was tagged one minute later by a 1.75pt wick, after which price ran 87pt
+to the target without returning. That one call converted +1.78R into 0.00R.
+
+His read of the stack: the trade SELECTION is already good; it is the MANAGEMENT
+that is degrading performance, and the direction of the error is consistently too
+risk-averse, not too loose.
 
 **A stop only ever tightens.** Moving a stop away from price is not a decision
 you have — the orchestrator rejects it and the position falls back to its prior

@@ -89,6 +89,20 @@ def build(s):
     b["prior_positions_this_window"] = s["prior_positions"]
     if s.get("window_note"):
         b["window_note"] = s["window_note"]
+    tp1_printed = bool(s.get("tp1_printed"))
+    b["BREAKEVEN_RULE"] = {
+        "rule": ("breakeven is ONLY available after TP1 has printed. Before TP1 it is not a legal "
+                 "action."),
+        "tp1": tp1, "tp1_printed_yet": tp1_printed,
+        "available_to_you_now": ("yes - TP1 has printed" if tp1_printed else
+                                 "NO - TP1 has not printed, so breakeven is not one of your options "
+                                 "at this minute"),
+        "what_to_use_instead": ("before TP1 a stall is answered with hold, or with trail if a level "
+                                "has genuinely broken in your favour and clears the T55 floor, or "
+                                "with exit_now if the rejection is decisive."),
+        "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
+        "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected.",
+    }
     b["what_to_emit"] = "your management JSON, per your contract."
     if s.get("extra"):
         b.update(s["extra"])
