@@ -1,0 +1,10 @@
+{
+ "lean": "neutral",
+ "confidence": "high",
+ "news_blackout": false,
+ "fomc_day": false,
+ "blackout_events": [],
+ "drivers": [],
+ "falsified_by": "N/A - no catalyst identified for this window",
+ "reasoning": "No scheduled events released or pending in the calendar for this minute; nothing to gate or lean on. Neutral is the correct default absent a named catalyst."
+}

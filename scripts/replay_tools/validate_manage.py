@@ -16,6 +16,12 @@ sys.path.insert(0, "/Users/barbelldaddy/AI-trading-agents")
 def check(action, side, entry, cur_stop, new_stop, tp1_printed, last_price):
     short = str(side).lower().startswith("s")
     errs = []
+    # a hold never changes the stop, and an exit_now closes the position so the stop
+    # stops mattering. Agents sometimes emit new_stop 0.0 or null on both even though
+    # the contract says to omit it; that is inert noise, not a stop move. A `partial`
+    # is NOT in this list - a partial can legitimately move the stop, so it stays checked.
+    if action in ("hold", "exit_now"):
+        new_stop = None
     if action == "breakeven" and not tp1_printed:
         errs.append("BREAKEVEN BEFORE TP1 - not a legal action. His ruling of 2026-08-16 and "
                     "RUNBOOK section 6: break-even only after TP1 has printed.")

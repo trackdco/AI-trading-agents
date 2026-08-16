@@ -1,0 +1,129 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "V5-D23-L5-0354",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-24T03:54 ET",
+ "candle_start": "03:51 (3m)",
+ "timeframe": "3m",
+ "leak_check": "pass - truncated at 03:53:59; the 3m bar starting 03:51 completes AT 03:54, and the last completed 2m bar starts 03:52",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d23_c3_0354.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap",
+    "price": 29764.06
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29637.0
+   },
+   {
+    "level": "weekly_low",
+    "price": 29577.25
+   }
+  ],
+  "invalidation": {
+   "level": "session_high",
+   "price": 29891.75
+  },
+  "waiting_for": "nothing - short licensed now at the range-top confluence (vwap_p1 29834.51 / 2m BB basis 29829.79 / 2m BB upper 29854.46 / daily VAH 29858), per T22 fade-the-edge",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a 15m close above session_high 29891.75 (confluence with 2m BB upper and vwap_p2 29904.96) with a decisive body - an actual range breakout, not a poke through",
+  "anticipated_resolution": {
+   "level": "range_high_29891",
+   "price": 29891.75,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond 29891.75 with a decisive body, not a wick-heavy absorption candle",
+  "reasoning": "Overnight rotated in a ~306pt range (29585.5-29891.75) through several full swings since 18:00 - a range day, so T22 applies: fade the edge, don't anticipate the break. Price sits in the vwap_p1/2m-BB-basis confluence; the last 2m candle wicked to 29837 and closed back under both."
+ },
+ "waiting_for_status": "SATISFIED BY CONSTRUCTION - the thesis licenses shorts at the range top with no gate, and its invalidation (the range high 29891.75) has not been closed above.",
+ "POSITION_STATE": "FLAT. The 03:00 short banked its first target at the 15m MA at 03:35 and its runner at the session VWAP at 03:37. LONDON has used 1 of its 2 fills; ONE REMAINS and 65 minutes of window.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "03:51",
+  "direction": "DOWN",
+  "open": 29822.25,
+  "close": 29787.75,
+  "closed_at": "03:54",
+  "levels": "own 3m MA + developing daily POC, same candle",
+  "note": "the supplementary scan independently flags BOTH the 2m and 3m as rejection-first shapes here - a rejection of vwap_p1 at 03:45-03:46 followed by the own-MA closure. Volume 175 (2m) / 261 (3m)."
+ },
+ "last_completed_2m_bar": {
+  "start": "03:52",
+  "open": 29811.5,
+  "high": 29811.5,
+  "low": 29787.75,
+  "close": 29787.75,
+  "volume": 175
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_3m",
+  "daily_poc"
+ ],
+ "rejection_context": "price bounced from the 03:37 low back to 29829.5 at 03:45-03:46, failed at vwap_p1 (29835.75) for the second time this window, and has rolled over again. This is the same range-top fade the 03:00 trade took, one rotation later - but the book is FLAT now, so it stands on its own rather than stacking.",
+ "CAUTION": "volume is thin - 175 contracts on the 2m, 261 on the 3m. And the previous trade already took this idea from 29827 down to the VWAP. Ask whether there is anything LEFT in the move: the session VWAP 29766.86 is only 21pt below and the 2m BB lower 29776.27 is 11.5pt below.",
+ "levels_at_decision_CHART": {
+  "vwap": 29766.86,
+  "vwap_p1": 29835.75,
+  "vwap_m1": 29697.97,
+  "vwap_p2": 29904.63,
+  "vwap_m2": 29629.08,
+  "bb_2m_basis": 29803.4,
+  "bb_2m_upper": 29830.53,
+  "bb_2m_lower": 29776.27
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29803.4,
+  "bb_ma_3m": 29808.7,
+  "bb_ma_15m": 29784.56,
+  "bb_ma_60m": 29775.71,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29707.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 03:54"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30032.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 03:54"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29577.25
+ },
+ "levels_below_for_target_selection": "the 2m BB lower 29776.27 (11.5pt), the session VWAP 29766.86 (21pt), the 15m MA 29784.56, vwap_m1 29697.97, prior-day VAL 29637.0, the session low 29585.5. Apply T17: R = |entry-stop| FIRST, then the NEAREST level inside 1.0R-2.5R; fixed 1.5R only if none qualifies.",
+ "T17_REMINDER": "the band is 1.0R-2.5R, widened at the bottom from 1.5R - a near level you can actually reach beats a further one you round-trip away from.",
+ "T20_REMINDER": "your limit must sit BETWEEN current price and where the move came FROM (above, 29822.25). A limit below 29787.75 needs further downward displacement and is FORBIDDEN. The orchestrator checks this arithmetically.",
+ "ENTRY_GEOMETRY": "for a SHORT: limit ABOVE current price; cancel_if_reaches BELOW both price and the limit, not already violated, and able to fire before the fill.",
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

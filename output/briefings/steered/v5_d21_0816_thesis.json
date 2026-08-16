@@ -1,0 +1,123 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "INVALIDATION_BREACHED - re-fire, not a window open",
+ "window": "NY_PRE 08:00-09:29 ET (cap 1 fill, 0 used)",
+ "decision_minute": "2026-06-22T08:16 ET (session-day 2026-06-21)",
+ "why_you_are_being_re-fired": "YOUR INVALIDATION HAS BEEN BREACHED, and on your own acceptance rule. You named prior-day high 30770.75 as invalidation and required 'a 15m close beyond it with a decisive body, not a wick-heavy absorption candle'. The 08:00-08:15 15m bar closed 30780.50 with a body ratio of 0.71. That is the acceptance you specified, and it also satisfies your condition_for_other_side verbatim. Your short thesis is dead as written. Restate it.",
+ "leak_check": "pass - truncated at 08:15:59; last completed 2m bar starts 08:14 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d21_0816_refire.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "day_character_note": "Re-judge the day's character. You have now called it a range twice and applied T22 to fade its top edge; the top edge has just been accepted through. A range that breaks is no longer a range.",
+ "price_at_decision": 30780.0,
+ "last_completed_2m_bar": {
+  "start": "08:14",
+  "open": 30781.25,
+  "high": 30787.25,
+  "low": 30773.5,
+  "close": 30780.0,
+  "volume": 304
+ },
+ "the_15m_bar_that_re-fired_you": {
+  "start": "08:00",
+  "open": 30755.75,
+  "high": 30787.25,
+  "low": 30752.5,
+  "close": 30780.5,
+  "body_ratio": 0.71
+ },
+ "prior_thesis_as_of_0800": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_p1",
+    "price": 30730.02
+   },
+   {
+    "level": "day_range_fib_0.705",
+    "price": 30683.3
+   },
+   {
+    "level": "session_vwap",
+    "price": 30617.56
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_high",
+   "price": 30770.75
+  },
+  "waiting_for": "a stall and roll-over at the cluster price is already inside - prior-day-high 30770.75 / developing weekly VAH ~30762 / 2m-BB-upper 30768.19 (price 30757.75) - then closure through the 2m/3m MA on the retest down. No entries chasing untested into new highs above the cluster.",
+  "two_sided": true,
+  "condition_for_other_side": "a 15m decisive-body close above the prior-day high 30770.75 / developing weekly VAH ~30762 - the same cluster this thesis fades - licenses longs toward the weekly high 30975.5.",
+  "anticipated_resolution": {
+   "level": "prior_day_high_weekly_vah_cluster",
+   "price": 30770.75,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond the prior-day high 30770.75 (and weekly VAH ~30762) with a decisive body, not a wick-heavy absorption candle - the last 15m MA cross (07:30, body_ratio 0.29) was itself absorption-shaped, not acceptance.",
+  "reasoning": "11hr, 445pt range: low 30337.5 (19:59), high 30783.25 (03:32). London's short off this exact cluster paid (TP1 banked at prior-day VAH 30701) before price rotated 96pt back up to retest the same prior-day-high/weekly-VAH/2m-BB-upper zone, now 13pt under invalidation. T22: after a session-long range, default is fade the edge, not anticipate the break. The 04:23 low 30687.25 lines up with the 0.705 day-range fib, a real downside target if rejection repeats."
+ },
+ "position_state": "FLAT. NY_PRE cap of 1 fill unused.",
+ "levels_at_0816_CHART": {
+  "vwap": 30619.86,
+  "vwap_p1": 30733.0,
+  "vwap_m1": 30506.71,
+  "vwap_p2": 30846.15,
+  "vwap_m2": 30393.56,
+  "bb_2m_basis": 30760.53,
+  "bb_2m_upper": 30782.91,
+  "bb_2m_lower": 30738.14
+ },
+ "levels_at_0816_BUILD": {
+  "bb_ma_2m": 30760.53,
+  "bb_ma_3m": 30755.79,
+  "bb_ma_15m": 30737.76,
+  "bb_ma_60m": null,
+  "day_range_fibs": {
+   "0.382": 30524.87,
+   "0.5": 30582.75,
+   "0.618": 30640.63,
+   "0.705": 30683.3
+  },
+  "day_high": 30828.0,
+  "day_low": 30337.5,
+  "session_high_so_far": 30828.0,
+  "daily_profile": {
+   "poc": 30727.0,
+   "val": 30559.0,
+   "vah": 30824.0,
+   "note": "DEVELOPING as-of 08:16"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30762.0,
+   "note": "DEVELOPING as-of 08:16"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0,
+  "session_low_so_far": 30337.5
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "note": "the session high is 30828.00, printed at 07:06. The 08:00-08:15 breakout bar topped at 30787.25, still 40pt UNDER that high - so this is a 15m acceptance through the prior-day-high cluster, not a new session high. Above: vwap_p2 30846.15, then the developing weekly VAH, then the weekly high 30975.5.",
+  "T22_note": "T22 says continuation is tradeable AFTER a break has happened, not in anticipation of one. The break has now happened."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "REMINDER_0_3_5": "name conditions within reach of price - roughly the current 15m BB width - or express them as behaviour.",
+ "what_to_emit": "your standard thesis JSON. Both a flip and a re-affirmation are valid, but a re-affirmation must say why a 0.71-body 15m close through your own invalidation does not change the read.",
+ "CORRECTION": "This briefing was re-issued at 08:16. The first version carried session_high_so_far = 30787.25, a number I typed rather than derived; the true session high as of this minute is 30828.00, printed at 07:06 and correctly reflected in the build's day_high and in the fibs. The first thesis emission spotted the contradiction and discarded the fib levels because of it. Nothing about the error revealed the future - an understated high is conservative, and the audit's check E is unaffected - but it made the briefing internally inconsistent and it changed the output, so the emission is voided and re-taken on corrected inputs."
+}
