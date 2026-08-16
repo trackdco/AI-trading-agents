@@ -179,43 +179,39 @@ retractions.
 testing whether a cell's mean differs from zero. If it ever returns a null identical to the
 real value, that is a test with no power, not a result.
 
-## 6. THE BLOCKER — the gold data is not in git
+## 6. Data — resolved, the gold bars are now committed
 
-This is the first thing to check and the reason a fresh clone cannot reproduce anything
-above.
+This was the blocker. It is fixed as of commit `748df23`: the three gold-track parquets
+are **in git on this branch**. A fresh clone reproduces everything above.
 
 | file | ~size | state |
 |---|---|---|
-| `data/gc_1m.parquet` | 20 MB | **gitignored — container-local only** |
-| `data/dx_1m.parquet` | 14 MB | **gitignored — container-local only** |
-| `data/6j_1m.parquet` | 17 MB | **gitignored — container-local only** |
-| `data/transcripts/dodgysdd/` | 473 JSON | gitignored, but **re-fetchable** |
+| `data/gc_1m.parquet` | 20 MB | **committed** (748df23) |
+| `data/dx_1m.parquet` | 14 MB | **committed** (748df23) |
+| `data/6j_1m.parquet` | 17 MB | **committed** (748df23) |
 | `data/reference/nq_1m_master.parquet` | 22 MB | tracked — safe |
+| `data/transcripts/dodgysdd/` | 473 JSON, 22 MB | **still gitignored** — re-fetchable, see below |
 
-`.gitignore` line 8 excludes `data/*.parquet`; `data/reference/` is deliberately committed
-as ground truth. **The three gold-track parquets exist only in this session's ephemeral
-container and are destroyed when it is reclaimed.**
+Contents: 1m OHLCV + `symbol` + `roll`, continuous front month. GC 1,276,717 bars
+2023-01-02 → 2026-08-11; DX 970,929 bars → 2026-07-24; 6J 1,256,667 bars → 2026-08-11.
 
-Contents, so they can be identified if re-sourced: 1m OHLCV + `symbol` + `roll`, continuous
-front month, GC 1,276,717 bars 2023-01-02 → 2026-08-11, DX 970,929 bars → 2026-07-24,
-6J 1,256,667 bars → 2026-08-11.
+**Why they are committed against the repo's own convention.** `data/*.parquet` is ignored
+on the grounds that it is regenerable from `data/raw/` via `src/engine/data.py`. That is
+true of the NQ pipeline's output and **false of these three** — no script in this repo
+builds them and their provenance was never recorded, so the ignore rule meant every gold
+result died with the container holding the files. `.gitignore` now carries an explicit
+negation for the three, so the exception is visible rather than invisible repo state.
 
-**No committed script produces them** and no doc records their provenance — that is a real
-gap in this stream's reproducibility, and it is mine. The user has declined to pay for
-Databento ("I am not paying $130"), so re-sourcing needs a free route.
+**Provenance is still unknown** and that remains a real gap. If these ever need rebuilding:
+the user has declined Databento ("I am not paying $130"), so it needs a free route.
 `scripts/ingest_dukascopy.py` and `scripts/fetch_gold_ticks.py` are the free path that was
-being built for XAUUSD; that download died at 1,000 of 1,623 hours and was never finished.
+being built for XAUUSD — that download died at 1,000 of 1,623 hours and was never finished.
+Note spot gold has no real volume, which breaks VAH/POC/VAL; that is already recorded as an
+amendment in `docs/DECLARATIONS-gold-vah-break.md`.
 
-**Options for the new session, in order:**
-1. If the user still has the container alive, force-add the three parquets
-   (`git add -f`) — ~51 MB, against the repo's stated convention, so it is the user's call.
-2. Re-source GC 1m from wherever these came from.
-3. Finish the Dukascopy XAUUSD ingest and re-run on spot gold — note spot has no real
-   volume, which breaks VAH/POC/VAL (already recorded as an amendment in
-   `docs/DECLARATIONS-gold-vah-break.md`).
-
-Until one of those lands, **every gold number above is unreproducible** and the only
-runnable track is NQ, which is Angus's lane.
+**The transcripts are not committed.** 473 DodgysDD caption files, 22 MB, re-fetchable with
+`python scripts/fetch_channel_transcripts.py` (yt-dlp — read §7 before touching it). Ask
+the user before committing them; they were not part of the data request.
 
 ## 7. Environment facts that cost me time
 
