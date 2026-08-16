@@ -88,6 +88,12 @@ def swept(bars: pd.DataFrame, sess_day: str, minute: str) -> dict:
     hist = bars[(bars.index >= t0 - pd.Timedelta(hours=30)) & (bars.index < t)]
     two = hist.resample("2min", label="right", closed="left").agg(
         {"open": "first", "high": "max", "low": "min", "close": "last"}).dropna()
+    # drop the final PARTIAL bucket: with 1m bars truncated strictly before t, a
+    # right-labeled bucket > t is a 2m bar that had not closed at the decision
+    # minute - presenting it as closed is the unclosed-bar defect the candidate
+    # clusterer already fixed, and it surfaced here as swept_at 08:04 in an
+    # 08:03 briefing (caught by a trigger agent on 2026-05-31 P1).
+    two = two[two.index <= t]
     out = {"lows": [], "highs": []}
     if len(two) < 2 * SWING_W + 2:
         return out
@@ -138,6 +144,7 @@ def defended(bars: pd.DataFrame, sess_day: str, minute: str, days_back: int = 4)
         return {"floors": [], "ceilings": []}
     two = ses.resample("2min", label="right", closed="left").agg(
         {"open": "first", "high": "max", "low": "min", "close": "last"}).dropna()
+    two = two[two.index <= t]          # same partial-bucket rule as swept()
     px = float(ses.close.iloc[-1])
     days = []
     for d in range(1, days_back + 1):

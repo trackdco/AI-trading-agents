@@ -1,0 +1,126 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "V5-D21-NYA3-0944",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-22T09:44 ET",
+ "candle_start": "09:42 (2m and 3m)",
+ "timeframe": "2m and 3m",
+ "leak_check": "pass - truncated at 09:43:59; last completed 2m bar starts 09:42 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d21_c5_0944.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "vwap_p2",
+    "price": 30969.81
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_vah",
+   "price": 30782.0
+  },
+  "waiting_for": "Longs (adds): hold above the 30833-30845 2m/3m-MA+vwap_p1 stack with a retest, or a rebalance to the 30760-30782 weekly-VAH/PDH/15m-MA confluence that holds and turns up. Shorts: licensed now - the 09:42 3m candle already closed through that same 30833-30845 stack off a confirmed double-top rejection at 30847-30850 on volume heavier than the reversal bar; retest of the broken stack from below is the entry, targeting the 30760-30782 confluence.",
+  "two_sided": true,
+  "condition_for_other_side": "Met, within reach: double-top rejection at 30847-30850 plus a same-candle 3m close through both its own 3m MA and vwap_p1 (~30833-30845). Shorts licensed on the retest of that broken stack toward the 30760-30782 weekly-VAH/PDH/15m-MA confluence.",
+  "anticipated_resolution": {
+   "level": "weekly_vah_pdh_15mma_confluence",
+   "price": 30770.75,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond the 30760-30782 weekly-VAH/PDH/15m-MA confluence with a decisive body, not a wick-heavy absorption candle - that is what actually breaks the trend-day long thesis.",
+  "reasoning": "Trend day: invalidation hasn't taken a 15m decisive close, so long stays the core lean and the open long isn't structurally wrong. Genuine adaptation, not default re-affirm: the 09:36 reclaim failed to hold - double-rejected at 30847-850, then closed through its own 3m MA and vwap_p1 on volume heavier than the reversal. That's an in-reach rejection, so shorts are licensed now on the retest toward 30760-782."
+ },
+ "waiting_for_status": "SATISFIED FOR A SHORT. The thesis now names the retest of the broken 30833-30845 stack as the entry and 30760-30782 as the destination. Price is 30798.25, below the broken stack. Judge the trade on its merits - the licence is no longer the obstacle.",
+ "POSITION_STATE": "LONG and underwater. The 09:36 long filled at 30841.50 with a stop at 30755 and a first target at 30932.71; price is 30798.25, so it is 43pt against. This candle is a signal in the OPPOSITE direction to a position you are holding. Note carefully: the orchestrator does NOT treat an open position as a mechanical bar on your judgement here - a genuine reversal signal against a live position is exactly the information the escalation rule wants surfaced. What it does bar is a same-direction re-entry.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "09:42",
+  "direction": "DOWN",
+  "open": 30842.75,
+  "high": 30847.75,
+  "low": 30763.0,
+  "close": 30798.25,
+  "volume": 5599,
+  "levels": "own 2m MA (30845.36) + vwap_p1 (30830.26); SEQUENTIAL, the own-MA leg came at 09:40",
+  "pair_shape": "sequential (+2m)"
+ },
+ "signal_candle_3m": {
+  "start": "09:42",
+  "direction": "DOWN",
+  "open": 30842.75,
+  "close": 30790.0,
+  "levels": "own 3m MA + vwap_p1, SAME CANDLE",
+  "pair_shape": "same_candle"
+ },
+ "context": "the 09:34 reversal bar ran 30758.25 -> 30850 and the two candles since have given all of it back, closing 30790-30798 on 5,599 contracts - heavier than the reversal bar itself. Price has now been rejected twice at 30847-30850.",
+ "levels_at_decision_CHART": {
+  "vwap": 30690.7,
+  "vwap_p1": 30830.26,
+  "vwap_m1": 30551.15,
+  "vwap_p2": 30969.81,
+  "vwap_m2": 30411.6,
+  "bb_2m_basis": 30845.36,
+  "bb_2m_upper": 30905.13,
+  "bb_2m_lower": 30785.59
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 30845.36,
+  "bb_ma_3m": 30837.56,
+  "bb_ma_15m": 30760.42,
+  "bb_ma_60m": null,
+  "day_range_fibs": {
+   "0.382": 30562.59,
+   "0.5": 30632.12,
+   "0.618": 30701.66,
+   "0.705": 30752.92
+  },
+  "day_high": 30926.75,
+  "day_low": 30337.5,
+  "session_high_so_far": 30926.75,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30727.0,
+   "val": 30603.0,
+   "vah": 30926.0,
+   "note": "DEVELOPING"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30782.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "levels_below_for_target_selection": "the 2m BB lower 30785.59, then the weekly-VAH/prior-day-high confluence 30766-30776, the 09:34 low 30758.25, the 15m MA 30760.42, vwap 30690.7. Apply T17: R = |entry-stop| FIRST, then the NEAREST level inside 1.0R-2.5R; FIXED 1.5R if none qualifies.",
+ "T20_REMINDER": "your limit must sit BETWEEN current price and where the move came FROM (above, 30847.75). A limit below 30798.25 is a breakout bet and is forbidden.",
+ "ESCALATION_NOTE": "the orchestrator's gate will refuse an escalation that names no rejected level, that repeats a level already escalated this window (the session-high/vwap_p2 confluence at 30869.75 was escalated in NY_PRE, but this is a new window and the ratchet has reset), or that exceeds the window budget of 2. One escalation remains unused in NY_AM... in fact both do.",
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill",
+ "ADJUDICATION": "SECOND PASS on the same candidate, after YOUR escalation was granted and Tier 1 re-fired.",
+ "what_tier_1_did": "ACCOMMODATED. It kept the long as the core lean - the invalidation has still not taken a 15m decisive close - but it has LICENSED YOUR SHORT explicitly and now: 'Shorts: licensed now... retest of the broken stack from below is the entry, targeting the 30760-30782 confluence.' It also moved the whole geometry up to where price actually is (30833-30845), noting the levels it named at 09:30 have drifted as the session VWAP rose. Your objection was accepted on its merits.",
+ "POSITION_CONFLICT_YOU_MUST_WEIGH": "the book is LONG at 30841.50 with a stop at 30755, and this short's destination (30760-30782) sits AT that stop. Taking it means holding both sides into the same zone. The window cap permits a second fill; whether that is one trade too many on the same idea is your call, and the contract's chop and HTF-alignment constraints apply.",
+ "escalation_already_spent": "This candidate has used its one escalation. A second will be refused by the orchestrator's gate."
+}

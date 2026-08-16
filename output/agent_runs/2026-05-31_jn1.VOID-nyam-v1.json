@@ -1,0 +1,321 @@
+[
+ {
+  "row": "macro",
+  "window": "NY_AM",
+  "decision_minute": "2026-06-01T09:30 ET",
+  "agent_spawn": "tv-macro-events 0.2.0",
+  "briefing_class": "FACT-ONLY (calendar rows as-of, no outcome values)",
+  "output": {
+   "lean": "neutral",
+   "confidence": "high",
+   "news_blackout": true,
+   "fomc_day": false,
+   "blackout_events": [
+    {
+     "event": "ISM Manufacturing PMI",
+     "time_et": "10:00"
+    }
+   ],
+   "drivers": [],
+   "falsified_by": "A dated, pre-decision-minute catalyst naming NQ or a heavy constituent with a clear direction would replace this neutral read.",
+   "reasoning": "ISM Manufacturing PMI (high-impact) prints at 10:00 ET inside the NY_AM window, gating entries around it. Core PCE from 2026-05-28 carries no outcome value in the archive and is three sessions stale, so it offers no usable directional bias."
+  },
+  "gate_effect_mechanical": "news_blackout true gates ENTRIES ahead of the 10:00 ISM print; candidates after the release get a fresh as-of macro read"
+ },
+ {
+  "row": "thesis",
+  "window": "NY_AM",
+  "event_trigger": "window_open",
+  "decision_minute": "2026-06-01T09:30 ET",
+  "agent_spawn": "tv-thesis 0.4.2",
+  "briefing": "output/briefings/jn1_2026-05-31_NYAM_0930_thesis.json",
+  "screenshot": "jn1_2026-05-31_NYAM_0930_thesis.png",
+  "leak_check": "pass - replay truncated at 09:29:59, verified via data_get_ohlcv period.to",
+  "output": {
+   "bias": "long",
+   "targets": [
+    {
+     "level": "vwap_m1",
+     "price": 30398.01
+    },
+    {
+     "level": "prior_day_poc",
+     "price": 30406.0
+    },
+    {
+     "level": "day_fib_0382",
+     "price": 30407.53
+    }
+   ],
+   "invalidation": {
+    "level": "weekly_vah",
+    "price": 30312.0
+   },
+   "waiting_for": "displacement through vwap_m1 + 2m/3m MA (30394-30418) confirming the bounce off the defended weekly VAH",
+   "two_sided": true,
+   "condition_for_other_side": "shorts re-license on a rejection at the vwap_m1/prior-day-POC/day-fib-0.382 cluster (~30398-30408) that fails to close through with a decisive body, or on a 15m decisive close back below weekly VAH (30312) confirming the defense failed - target weekly POC (30043) then weekly VAL (29773)",
+   "anticipated_resolution": {
+    "level": "weekly_vah",
+    "price": 30312.0,
+    "expect": "holds",
+    "act_on_resolution": true
+   },
+   "acceptance_rule": "A 15m close below weekly VAH (30312) with a decisive body confirms the defended level failed and re-opens downside toward weekly POC/VAL; a 15m close back above the prior defended zone (~30454, day-fib-0.382/daily-VAL-POC/prior-day-VAH confluence) with a decisive body confirms the rebalance extending beyond the modest target",
+   "other_side_tripwire": {
+    "level": "weekly_vah",
+    "price": 30312.0,
+    "event": "15m_decisive_close"
+   },
+   "defended_level": {
+    "level": "weekly_vah",
+    "price": 30312.0,
+    "memory": "top of the anchored 5-day weekly value area; today's session printed a new week high (30595.25) then a 98.5pt 3m displacement broke the earlier defended zone (~30454); cash open (09:30) swept to session low 30291.5 right at this level and snapped back - the 09:15 15m candle closed 30343, body_ratio 0.05, textbook absorption on the level's first test",
+    "status": "holding"
+   },
+   "flush": false,
+   "flush_direction": null,
+   "reasoning": "New weekly high (30595.25) got rejected; a 98.5pt 3m displacement broke the earlier defended zone (~30454). Cash open swept to session low 30291.5 right at weekly VAH (30312) and snapped back - the 09:15 15m candle closed 30343, body_ratio 0.05, absorption on the level's first test. Rotational day (path efficiency 0.075, 32/30 split) argues for fading this edge back toward prior-day value, not chasing the flush. Long-biased for a modest rebalance; shorts re-license on rejection at the vwap_m1/prior-day-POC cluster or a 15m close back below weekly VAH."
+  },
+  "tripwire_sensor": "armed: 15m decisive close below weekly_vah 30312"
+ },
+ {
+  "row": "trigger",
+  "candidate_id": "jn1-0531-A1",
+  "window": "NY_AM",
+  "decision_minute": "2026-06-01T09:34 ET",
+  "agent_spawn": "tv-trigger 0.4.7",
+  "tool_uses": 4,
+  "leak_check": "pass - replay truncated at , verified via replay_status and data_get_ohlcv period.to",
+  "briefing": "output/briefings/jn1_2026-05-31_A1_0934_trigger.json",
+  "screenshot": "jn1_2026-05-31_A1_0934.png",
+  "briefing_class": "FACT-ONLY",
+  "decision": "take_light",
+  "output": {
+   "decision": "take_light",
+   "reason": "2m clean break of own_ma_2m+vwap_m1 off highest-tier weekly VAH (double-confirmed: 15m absorption + 3m wick-reclaim), but 3m own MA not yet through - weaker case - and same candle wicked/rejected the 30406-410 cluster once, unconfirmed on 15m.",
+   "rejected_level": {
+    "level": "weekly_vah",
+    "price": 30312.0,
+    "behavior": "09:15 15m closed 30343 (body_ratio 0.05) off sweep to 30291.5; signal 3m candle re-wicked to 30309.5 then closed 30392.75 - double-confirmed, no decisive close through"
+   },
+   "entry_type": "limit_retest",
+   "entry": 30387,
+   "retest_level": "bb_ma_2m",
+   "tripwire_level": {
+    "level": "prior_day_poc",
+    "price": 30406.0
+   },
+   "limit_expiry_minutes": 10,
+   "cancel_if_reaches": {
+    "level": "prior_day_poc",
+    "price": 30406.0
+   },
+   "stop": 30350,
+   "stop_rationale": "2m signal candle low (30353.5) sits on no live level; stop clears it by ~3.5pt. Not widened to weekly VAH - entry cluster (vwap_m1/bb_ma_2m) already sits well clear of that defended zone.",
+   "targets": [
+    {
+     "level": "day_fib_0.5",
+     "price": 30443.38
+    },
+    {
+     "level": "vwap",
+     "price": 30461.43
+    },
+    {
+     "level": "daily_poc",
+     "price": 30468.0
+    }
+   ],
+   "conviction": "B",
+   "pair_shape": "same_candle",
+   "levels_closed": [
+    "own_ma_2m",
+    "vwap_m1"
+   ],
+   "constraints_failed": [],
+   "thesis_stale": false,
+   "escalation": null
+  },
+  "conviction": "B",
+  "executed": false,
+  "orchestrator_mechanical_gate": {
+   "result": "NO FILL - execution blocked by two mechanical gates the orchestrator owns (RUNBOOK 0c: window bounds, caps, news gate)",
+   "gates": [
+    {
+     "gate": "cash_open_buffer",
+     "contract": "tv-trigger 0.4.7 constraint 4 - 09:35 is the earliest entry",
+     "fact": "decision minute 09:34, one minute inside the buffer"
+    },
+    {
+     "gate": "news_blackout",
+     "contract": "tv-trigger 0.4.7 constraint 10 - macro.news_blackout is the gate",
+     "fact": "briefing macro.news_blackout = true (ISM Manufacturing PMI 10:00 ET)"
+    }
+   ],
+   "agent_output_preserved": "the take_light B verdict is logged verbatim above and is the scored decision; only execution is blocked",
+   "defect_note": "the agent did not name either gate in constraints_failed despite both being stated in its briefing (window_clock_mechanical block and macro.news_blackout). Both are hard, non-escalatable gates in its own contract. Surfaced for the teaching loop; no doctrine change mid-run."
+  }
+ },
+ {
+  "row": "trigger",
+  "candidate_id": "jn1-0531-A2",
+  "window": "NY_AM",
+  "decision_minute": "2026-06-01T09:57 ET",
+  "agent_spawn": "tv-trigger 0.4.7",
+  "tool_uses": 4,
+  "leak_check": "pass - replay truncated at , verified via replay_status and data_get_ohlcv period.to",
+  "briefing": "output/briefings/jn1_2026-05-31_A2_0957_trigger.json",
+  "screenshot": "jn1_2026-05-31_A2_0957.png",
+  "briefing_class": "FACT-ONLY",
+  "decision": "pass",
+  "output": {
+   "decision": "pass",
+   "reason": "Down 2-lvl break (vwap_m1+own MA) rejects vwap/bb_ma_15m cluster - C tier, no anchor confluence. Opposite thesis long bias. Only ~63pt room to thesis's own 'holding' weekly VAH/daily_val/prior_day_val cluster vs ~90pt structural stop = <1R: decisive headroom fail, so T1 escalation doesn't qualify. Also inside ISM 10:00 news blackout.",
+   "rejected_level": null,
+   "entry_type": "limit_retest",
+   "entry": null,
+   "retest_level": null,
+   "tripwire_level": null,
+   "limit_expiry_minutes": null,
+   "cancel_if_reaches": null,
+   "stop": null,
+   "stop_rationale": null,
+   "targets": [],
+   "conviction": "C",
+   "pair_shape": "same_candle",
+   "levels_closed": [
+    "own_ma_2m",
+    "vwap_m1"
+   ],
+   "constraints_failed": [
+    "direction_mismatch",
+    "news_blackout"
+   ],
+   "thesis_stale": false,
+   "escalation": null
+  }
+ },
+ {
+  "row": "macro",
+  "window": "NY_AM",
+  "decision_minute": "2026-06-01T10:42 ET",
+  "agent_spawn": "tv-macro-events 0.2.0",
+  "briefing_class": "FACT-ONLY (calendar rows as-of, no outcome values)",
+  "output": {
+   "lean": "neutral",
+   "confidence": "high",
+   "news_blackout": false,
+   "fomc_day": false,
+   "blackout_events": [],
+   "drivers": [],
+   "falsified_by": "Would be falsified by outcome data on the ISM Manufacturing PMI (or Core PCE) showing a print materially away from consensus with a clear directional bearing on NQ or its mega-cap constituents, or by fresh headlines before the window closes.",
+   "reasoning": "Core PCE (5/28) and ISM Mfg PMI (10:00, 42 min before decision minute) are calendar rows only - no outcome values in the archive, so I cannot say whether either printed hot/cold or how it was absorbed. No scheduled events sit ahead of NY_AM to gate. Absent any usable outcome or headline, neutral is the correct read."
+  },
+  "gate_effect_mechanical": "ISM printed 10:00; blackout lifted for decisions after it"
+ },
+ {
+  "row": "trigger",
+  "candidate_id": "jn1-0531-A3",
+  "window": "NY_AM",
+  "decision_minute": "2026-06-01T10:42 ET",
+  "agent_spawn": "tv-trigger 0.4.7",
+  "tool_uses": 3,
+  "leak_check": "pass - replay truncated at , verified via replay_status and data_get_ohlcv period.to",
+  "briefing": "output/briefings/jn1_2026-05-31_A3_1042_trigger.json",
+  "screenshot": "jn1_2026-05-31_A3_1042.png",
+  "briefing_class": "FACT-ONLY",
+  "decision": "pass",
+  "output": {
+   "decision": "pass",
+   "reason": "Sequential pair (MA leg 10:30, POC leg 10:42, 9m gap) confirms the thesis's anticipated MA/vwap_m1 displacement off the defended weekly VAH, but VWAP (30429) sits ~7pt/<0.3R overhead and HELD on 15m (2 tests, 37.8pt wick, no close through) - decisive block in the path of every 1-2.5R target; also entry sits at the dead-middle of a verifiably rotational day.",
+   "rejected_level": {
+    "level": "weekly_vah",
+    "price": 30312.0,
+    "behavior": "cash-open sweep to 30291.5, 09:15 15m close 30343 body_ratio 0.05 - slowed/wicked, held; origin rejection for the session's long bias, not this candle's own"
+   },
+   "entry_type": "limit_retest",
+   "entry": null,
+   "retest_level": null,
+   "tripwire_level": {
+    "level": "vwap",
+    "price": 30429.43
+   },
+   "limit_expiry_minutes": null,
+   "cancel_if_reaches": null,
+   "stop": null,
+   "stop_rationale": null,
+   "targets": [],
+   "conviction": "B",
+   "pair_shape": "sequential",
+   "levels_closed": [
+    "own_ma_3m",
+    "daily_poc"
+   ],
+   "constraints_failed": [
+    "headroom",
+    "midrange_chop"
+   ],
+   "thesis_stale": false,
+   "escalation": null
+  }
+ },
+ {
+  "row": "window_close",
+  "window": "NY_AM",
+  "summary_mechanical": {
+   "candidates": 3,
+   "adjudications": 3,
+   "escalations": 0,
+   "fills": 0,
+   "passes": 2,
+   "take_blocked_by_mechanical_gate": 1,
+   "open_position_at_close": null,
+   "tripwire_fired": false
+  }
+ },
+ {
+  "row": "day_summary",
+  "session_day": "2026-05-31",
+  "trades_calendar_day": "2026-06-01",
+  "candidates": 12,
+  "adjudicated": 13,
+  "escalations": 1,
+  "takes": 4,
+  "fills": 2,
+  "no_fill_expired": 1,
+  "second_setup_declined": 1,
+  "blocked_by_mechanical_gate": 1,
+  "passes": 7,
+  "day_r_full_target": 7.071,
+  "day_r_blended_across_partials": 3.679,
+  "r_detail": [
+   {
+    "candidate": "jn1-0531-L1",
+    "side": "short",
+    "r_full_target": 6.571,
+    "r_blended": 3.179
+   },
+   {
+    "candidate": "jn1-0531-P2",
+    "side": "long",
+    "r_full_target": 0.5,
+    "r_blended": 0.5
+   }
+  ],
+  "as_written_caps_subset": "identical - LONDON 1 fill (cap 2), NY_PRE 1 fill (cap 1), NY_AM 0 fills (cap 2); no fill was beyond_written_cap, so as-run == as-written",
+  "windows": {
+   "LONDON": {
+    "candidates": 5,
+    "fills": 1
+   },
+   "NY_PRE": {
+    "candidates": 4,
+    "fills": 1
+   },
+   "NY_AM": {
+    "candidates": 3,
+    "fills": 0
+   }
+  }
+ }
+]

@@ -1,0 +1,190 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "jn1-0531-L1",
+ "decision_minute": "2026-06-01T03:27 ET",
+ "reason_for_call": "tp1_reached",
+ "leak_check": "pass - replay truncated at 03:26:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-05-31_L1_0327_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30579.5,
+  "stop": 30541.75,
+  "targets": [
+   {
+    "level": "vwap",
+    "price": 30524.34
+   },
+   {
+    "level": "daily_val",
+    "price": 30512.0
+   },
+   {
+    "level": "day_fib_0.5",
+    "price": 30478.25
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 30439.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 29773.0
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "03:12",
+  "R_in_points": 10.5,
+  "current_stop_distance": 37.75,
+  "open_pnl_in_R": 4.62
+ },
+ "level_in_question": {
+  "level": "target_2_vwap",
+  "price": 30524.34
+ },
+ "price_at_decision": 30531.0,
+ "last_completed_2m_bar": {
+  "start": "03:24",
+  "closed_at": "03:26",
+  "open": 30539.25,
+  "high": 30541.25,
+  "low": 30529.25,
+  "close": 30531.0,
+  "volume": 426,
+  "minutes": 2
+ },
+ "candle_grid_note": "This decision minute is 03:27, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 03:26. price_at_decision and every 2m field below are that 03:26 bar - they will not equal the 3m close, and the chart legend will read the 03:26 bar. Judge the 3m candle and the 03:26 2m candle; neither is fabricated.",
+ "recent_2m_bars": [
+  {
+   "start": "03:19",
+   "closed_at": "03:21",
+   "open": 30554.25,
+   "high": 30554.5,
+   "low": 30546.0,
+   "close": 30551.5,
+   "volume": 500,
+   "minutes": 2
+  },
+  {
+   "start": "03:21",
+   "closed_at": "03:23",
+   "open": 30552.5,
+   "high": 30553.5,
+   "low": 30540.0,
+   "close": 30541.0,
+   "volume": 388,
+   "minutes": 2
+  },
+  {
+   "start": "03:23",
+   "closed_at": "03:25",
+   "open": 30541.0,
+   "high": 30544.25,
+   "low": 30536.5,
+   "close": 30538.25,
+   "volume": 297,
+   "minutes": 2
+  },
+  {
+   "start": "03:25",
+   "closed_at": "03:27",
+   "open": 30539.25,
+   "high": 30539.5,
+   "low": 30521.25,
+   "close": 30523.75,
+   "volume": 733,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "source": "chart legend in the screenshot is current; last full read 03:17:59",
+  "vwap": 30524.25,
+  "vwap_m1": 30467.8,
+  "vwap_m2": 30411.34
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30524.91,
+   "vwap_p1": 30580.55,
+   "vwap_p2": 30636.19,
+   "vwap_p3": 30691.82,
+   "vwap_m1": 30469.27,
+   "vwap_m2": 30413.63,
+   "vwap_m3": 30357.99
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30568.97,
+   "bb_ma_3m": 30569.35,
+   "bb_ma_15m": 30562.97,
+   "bb_ma_60m": 30455.96
+  },
+  "day_range_fibs": {
+   "0.382": 30450.64,
+   "0.5": 30478.25,
+   "0.618": 30505.86,
+   "0.705": 30526.22
+  },
+  "session_high_so_far": 30595.25,
+  "session_low_so_far": 30361.25,
+  "daily_profile": {
+   "poc": 30558.0,
+   "val": 30516.0,
+   "vah": 30591.0,
+   "note": "DEVELOPING as-of 03:27"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30043.0,
+   "val": 29773.0,
+   "vah": 30306.0,
+   "high": 30595.25,
+   "low": 29744.0,
+   "anchor": "2026-05-25 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:27"
+  },
+  "prior_day": {
+   "poc": 30406.0,
+   "val": 30328.0,
+   "vah": 30439.0,
+   "high": 30536.0,
+   "low": 30216.5
+  }
+ },
+ "crowded_path": {
+  "flag": false
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "03:14",
+   "action": "breakeven",
+   "new_stop": 30579.5
+  },
+  {
+   "minute": "03:17",
+   "action": "trail",
+   "new_stop": 30569.75
+  },
+  {
+   "minute": "03:18",
+   "action": "partial",
+   "partial_pct": 0.75,
+   "at": 30558.0
+  },
+  {
+   "minute": "03:19",
+   "action": "hold",
+   "note": "second_setup add declined"
+  },
+  {
+   "minute": "03:26",
+   "action": "trail",
+   "new_stop": 30541.75
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract.",
+ "target_print": {
+  "level": "vwap (target 2 of the original ladder; the runner 25% is what remains)",
+  "price": 30524.34,
+  "printed_during_bar_starting": "03:26",
+  "decision_minute": "03:27"
+ }
+}

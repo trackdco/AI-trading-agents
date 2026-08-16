@@ -157,7 +157,7 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
 
     ev, seen = [], set()
 
-    def add(ts, reason, level, price):
+    def add(ts, reason, level, price, bar_event=True):
         # Dedupe on (reason, level) for the WHOLE position, not per minute. The
         # first version keyed on the minute too, which re-fired the same
         # "reached"/"stalling" event on every bar - 41 calls for one trade, which
@@ -167,7 +167,14 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
         if k in seen:
             return
         seen.add(k)
-        ev.append({"minute": ts.strftime("%H:%M"), "reason": reason,
+        # `ts` is the START of the 1-minute bar that satisfied the condition, so
+        # that bar has not closed yet at `ts` - calling tier 3 there hands it a
+        # reason_for_call that is not yet true on any bar it can see ("tp1_reached"
+        # before the bar reaching TP1 has closed). The decision minute is the bar's
+        # CLOSE. Measured on 2026-06-21 LONDON: TP1 first printed on the bar
+        # starting 04:10 and the scheduler said 04:10, one minute early.
+        minute = (ts + pd.Timedelta(minutes=1)) if bar_event else ts
+        ev.append({"minute": minute.strftime("%H:%M"), "reason": reason,
                    "level": level, "level_price": price})
 
     touch_log = {}
@@ -194,9 +201,16 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
         # stop without touching an intermediate level gets NO management call at
         # all, which is precisely the 11-of-12 shape tier 3 was built to stop.
         R = abs(entry - stop)
-        adverse = ((r.close - entry) / R) if short else ((entry - r.close) / R)
-        if adverse >= 0.5:
-            add(ts, "stalling", "adverse_excursion_0.5R", None)
+        # R is EXACTLY 0 once a stop has been moved to breakeven, which is the common
+        # case on any managed trade. Dividing by it yields inf, and inf >= 0.5 fires a
+        # spurious "stalling" call on the first bar that closes against the position.
+        # Measured on jn1 2026-06-01 NY_AM (it warned but did not misfire only because
+        # price never closed back below entry). Below breakeven there is no adverse
+        # EXCURSION to measure - the stop itself is the risk control - so skip the test.
+        if R > 0:
+            adverse = ((r.close - entry) / R) if short else ((entry - r.close) / R)
+            if adverse >= 0.5:
+                add(ts, "stalling", "adverse_excursion_0.5R", None)
         if tp1 is not None and ((short and r.low <= tp1) or (not short and r.high >= tp1)):
             add(ts, "tp1_reached", "target_1", float(tp1))
             break
@@ -204,11 +218,12 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
     if cash_open:
         co = pd.Timestamp(f"{day_next} {cash_open}", tz=NY)
         if t0 < co <= w.index.max():
-            add(co - pd.Timedelta(minutes=2), "pre_cash_open", "cash_open_0930", None)
+            add(co - pd.Timedelta(minutes=2), "pre_cash_open", "cash_open_0930", None,
+            bar_event=False)
     if window_end:
         we = pd.Timestamp(f"{day_next} {window_end}", tz=NY)
         if t0 < we <= w.index.max():
-            add(we, "window_closing", "window_end", None)
+            add(we, "window_closing", "window_end", None, bar_event=False)
 
     # Collapse to at most one CALL per minute: the manager sees the whole book
     # at that minute anyway, so two events in the same minute are one decision.
@@ -226,3 +241,27 @@ def management_minutes(day_next, fill_minute, side, entry, stop, targets, levels
         out.append({**primary, "also_at_this_minute":
                     [f'{e["reason"]}:{e["level"]}' for e in es if e is not primary]})
     return out
+
+
+def range_strictly_before(day_next, start, end):
+    """(high, low) over [start, end) - the END IS EXCLUSIVE, always.
+
+    Bars are indexed by their START minute, and pandas datetime slicing with
+    b[t0:t1] is INCLUSIVE of both endpoints. So b["09:30":"09:32"] silently
+    includes the bar STARTING 09:32, which closes at 09:33 - one minute after a
+    09:32 decision minute. On jn1 session-day 2026-06-01 that put a session high
+    of 30567.75 into a 09:30 thesis briefing when only 30560.00 had printed, and
+    a low of 30483.75 into a 09:32 briefing when the true low was 30488.00.
+
+    Any free-text price fact in a briefing must come through this function rather
+    than through ad-hoc slicing.
+    """
+    import pandas as pd
+    from src.htf_ma.levels import NY
+    t0 = pd.Timestamp(f"{day_next} {start}", tz=NY)
+    t1 = pd.Timestamp(f"{day_next} {end}", tz=NY)
+    s = bars()
+    s = s[(s.index >= t0) & (s.index < t1)]
+    if not len(s):
+        return None, None
+    return float(s.high.max()), float(s.low.min())

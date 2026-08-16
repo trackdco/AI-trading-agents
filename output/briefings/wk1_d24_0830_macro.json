@@ -1,0 +1,24 @@
+{
+ "role": "tv-macro-events",
+ "decision_minute": "2026-06-25T08:30 ET",
+ "window": "NY_PRE",
+ "session_day": "2026-06-24",
+ "leak_check": "pass - news archive filtered to datetime_ET <= this minute.",
+ "scheduled_events": {
+  "released_so_far_today": [
+   {
+    "datetime_ET": "2026-06-25T08:30",
+    "date": "2026-06-25",
+    "time_et": "08:30",
+    "currency": "USD",
+    "event": "Core PCE Price Index m/m",
+    "impact": "high"
+   }
+  ],
+  "scheduled_later_today": [],
+  "note": "released_so_far_today is everything on the calendar at or before this minute. scheduled_later_today is the calendar only - times are known in advance and carry no outcome."
+ },
+ "window_bounds": "NY_PRE runs 08:00-09:29 ET.",
+ "why_you_are_being_re-read": "your 08:00 read for this window returned news_blackout TRUE for Core PCE Price Index m/m at 08:30 ET. The decision minute has advanced to 08:30 and the as-of filter on the archive now returns a different set - that event has moved from scheduled_later_today into released_so_far_today. This is a fresh as-of read on changed inputs, not a re-ask of the same question. The archive carries the event's existence and time; it never carries the number or the market's reaction, and you must not infer either.",
+ "what_to_emit": "your macro read JSON for this window, per your contract."
+}

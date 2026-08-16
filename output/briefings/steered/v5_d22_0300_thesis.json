@@ -1,0 +1,94 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON 03:00-04:59 ET (cap 2 fills)",
+ "decision_minute": "2026-06-23T03:00 ET (session-day 2026-06-22)",
+ "leak_check": "pass - truncated at 02:59:59; last completed 2m bar starts 02:58 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d22_0300_london.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "day_character_note": "First read of the session. Judge the day's character - both your rebalance rule and your REJECTION rule depend on it. Note especially where price sits relative to the VWAP bands.",
+ "price_at_decision": 29969.75,
+ "last_completed_2m_bar": {
+  "start": "02:58",
+  "open": 30003.25,
+  "high": 30003.5,
+  "low": 29950.0,
+  "close": 29969.75,
+  "volume": 1213
+ },
+ "overnight_so_far": {
+  "open_1800": 30662.75,
+  "high": 30701.25,
+  "high_time": "18:02",
+  "low": 29950.0,
+  "low_time": "02:59",
+  "close_at_0300": 29969.75
+ },
+ "levels_at_0300_CHART": {
+  "vwap": 30351.64,
+  "vwap_p1": 30556.89,
+  "vwap_m1": 30146.39,
+  "vwap_p2": 30762.14,
+  "vwap_m2": 29941.13,
+  "vwap_m3": 29735.88,
+  "bb_2m_basis": 30015.33,
+  "bb_2m_upper": 30052.06,
+  "bb_2m_lower": 29978.59
+ },
+ "levels_at_0300_BUILD": {
+  "bb_ma_2m": 30015.33,
+  "bb_ma_3m": 30038.92,
+  "bb_ma_15m": 30259.3,
+  "bb_ma_60m": 30541.81,
+  "day_range_fibs": {
+   "0.382": 30236.98,
+   "0.5": 30325.62,
+   "0.618": 30414.27,
+   "0.705": 30479.63
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29950.0,
+  "daily_profile": {
+   "poc": 30586.0,
+   "val": 30228.0,
+   "vah": 30701.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30355.0,
+   "vah": 30732.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [],
+  "note_on_location": "price 29969.75 is sitting between vwap_m2 (29941.13) and vwap_m1 (30146.39), and 382pt BELOW the session VWAP. It is also below the 2m BB lower. That is a long way from value.",
+  "note_on_the_move": "the session has travelled from an 18:00 open of 30662.75 to here. Judge whether that is a trend leg or a range."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "a red-folder US release or a mega-cap headline dated on or before the decision minute appearing in a later briefing",
+  "reasoning": "the US red-folder calendar for this date is empty and no as-of headline set was supplied.",
+  "provenance": "orchestrator-supplied, verified against data/reference/news_archive.csv: no row dated 2026-06-23."
+ },
+ "T18_REMINDER_READ_THIS": "his ruling, and it is the one that cost the most: ON A TREND DAY THE REJECTION IS WHEREVER THE COUNTER-TREND BOUNCE ACTUALLY STALLS. It does not have to reach a pre-named level. 'London opened and came up, just to continue back down. That made complete sense to me... I wanted us to stall out around this area anyway, so I don't know why it didn't catch that short.' If you name a rejection level far from price, you disable that direction for the session - so name it WITHIN REACH (roughly the current 15m BB width) or express it as BEHAVIOUR: 'a bounce that stalls and rolls over, wherever it stalls'.",
+ "ADAPTATION_CLAUSE": "your conditions are read LITERALLY by the trigger. It will now ESCALATE rather than silently obey an unreachable condition, which costs you a re-fire you could have avoided by writing the condition in reach.",
+ "what_to_emit": "your standard thesis JSON for the LONDON window."
+}

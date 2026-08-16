@@ -144,16 +144,6 @@ live he will not be there to say it, and a week scored with his voice in the
 briefings measures nothing. Between decisions, his rulings are welcome and become
 teaching-loop entries; inside one, they are contamination.
 
-**ORCHESTRATOR SESSION SETTINGS (2026-08-15, after ultracode cost a day-1
-London 49 minutes of committee meetings).** The orchestrator session runs
-**default thinking effort** and **ultracode/workflow orchestration OFF**. The
-role is a clerk by contract; maximum-effort modes make it slow, and agent
-fan-out makes it WRONG: the decision path contains exactly the four
-contracted `tv-*` agents and nothing else — an uncontracted subagent
-anywhere near a briefing or verdict is a governance breach, not a
-thoroughness bonus. If a session finds either setting on, it says so and
-asks for the toggle before running a day.
-
 ---
 
 ## 1. PHASE R0 — GATES (once per replay session)
@@ -287,44 +277,56 @@ enforces the one hard invariant: **a stop only ever tightens.** Log every call
 and every verdict, including the `hold`s — an unmanaged loser is now a defect
 worth seeing in the report.
 
-**CALL DISCIPLINE (2026-08-15, after a day-1 London produced 10 manage calls
-in one window — a detector problem, not a doctrine one).** The contract says
-the manager is called at "moments that carry information, not on a timer";
-the detector must honour that:
+**A second same-direction setup while a position is IN PROFIT is a scale-in,
+not a new trade (T53).** `tv-trigger` adjudicates the fresh candidate as
+normal; on a take verdict **graded B or better**, the orchestrator routes
+execution to `tv-manage` as `reason_for_call: second_setup` — a smaller clip
+added to the open position, the whole position's stop moved to the new setup's
+invalidation, ONE position in the log, and **no window slot consumed**. His
+review of a scored pair four minutes apart, same direction, same rejected
+shelf: *"If that setup fired on the three-minute with that many confluences, I
+definitely would have scaled my position there."*
 
-- **At most ONE call per position per completed bar.** Multiple reasons
-  firing on the same bar are COALESCED into one call, `reason_for_call`
-  listing all of them; `broken` supersedes `reached` for the same level.
-- **A stall is an EPISODE, not a per-bar condition.** The stall reason fires
-  once per episode; it may fire again only after price has LEFT the level
-  and returned, or a different level is now in question.
-- **A level already ruled on is spent** — a level the manager has already
-  answered (`hold` at its touch, or a trail placed behind it) does not
-  re-trigger `reached` on later touches; only `broken`, or a fresh stall
-  episode there, re-opens it.
-- `pre_cash_open` and `window_closing` fire exactly once each.
+Two exclusions: a position not in profit never takes an add, and a **C-grade
+second trigger is confirmation, not an add** (T53 rider) — route it to
+`tv-manage` as `second_setup` anyway so the confirmation is on the record, but
+the contract holds with the original stop untouched: *"If it's a C-grade
+conviction, don't trail that. I'd rather just hold to my high-conviction
+stops."*
 
-None of this changes what the manager may decide — only how often the same
-question is asked. Ten calls that re-ask one stall are nine wasted minutes
-and one journal full of noise.
+**THE FLIP (T68) — opposite direction, defended-level licence.** When a
+candidate fires OPPOSITE an open position AND the standing thesis's
+`defended_level` + displacement satisfy the T67 licence (level with memory,
+tested-and-failed, displacement through band + MA away from it), the
+open-position gate does NOT apply: adjudicate the candidate with `tv-trigger`
+as normal, flagging `flip_candidate: true` in the briefing (a fact, not a
+vote). On a take verdict the orchestrator FLATTENS the open position at the
+decision price (`exit_reason: "flipped"` on its exit row) and runs the new
+limit lifecycle. **The flip outranks a T48 same-direction re-entry at the
+same level** — check the flip before re-entering.
 
-**PARALLEL ADJUDICATION (2026-08-15, legalised with a causality rule).**
-Independent candidates may be adjudicated in parallel ONLY while no position
-is open and no limit is resting. The trap: if an earlier parallel candidate
-returns a take, its limit lifecycle (placement → ~10 min expiry) may overlap
-a later candidate's decision minute — and that later briefing was built on a
-position state that is now false. The rule: when an earlier parallel take's
-limit window reaches a later candidate's decision minute, the later verdict
-is VOIDED and re-adjudicated sequentially with true position state. Voided
-rows stay in the log, flagged. Passes never void anything. When in doubt,
-sequential — parallelism is a speed optimisation, never worth a briefing
-that lied about whether an order was working.
+**T68 WIDENED (his ruling, 2026-08-16).** The defended-level licence is no
+longer required. He allows the flip on the trigger's own comparative
+judgement: *"make sure it can also flip trades and stuff as well… If it
+thinks the short setup looks better than the long setup, then take the short
+flip positions right there. Close the long. Set the limit order for the
+short. Make sure that is a rule because I have allowed that."* So: ANY
+candidate firing opposite an open position is a flip candidate. The briefing
+flags `flip_candidate: true` and states the open position as a fact; the
+agent adjudicates the new setup on its merits. On a take the orchestrator
+FLATTENS the open position at the decision price (`exit_reason: "flipped"`)
+and runs the new limit lifecycle. On a pass the open position simply stands.
+The superseded sentence read "a flip is never available merely because an
+opposite candidate looks good" — that is exactly the case he has now allowed.
 
-**PER-DAY AUDIT (2026-08-15).** Run `python -m scripts.audit_run_leak` on
-the day's log immediately after its commit — do not defer to month-end. A
-leak-class or chronology defect caught on day 2 costs a day; the same defect
-found at month-end costs the month. The month-end sweep remains as the
-final check across all days.
+**THE FLIP AND THE WRITTEN CAP (his ruling, 2026-08-16).** A flip does NOT
+consume a fresh window slot. *"ny can have a cap of 2 if its flipping into a
+trade it believes will payoff better. id disregard the first trade in that
+instance for that."* The position that was flipped OUT is disregarded when
+counting fills against the written cap — the flip inherits its slot rather than
+taking a new one, the same way a T53 scale-in consumes no slot. Its realised R
+still scores in full: a flipped-out loss is a real loss and is never dropped from
+the scoreboard. Only the CAP ACCOUNTING disregards it.
 
 ## 2d. NEVER BLOCK ON HIM. The overnight rule.
 

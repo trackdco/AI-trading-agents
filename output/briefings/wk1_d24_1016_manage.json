@@ -1,0 +1,146 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "WK1-D24-NYA3-1014",
+ "decision_minute": "2026-06-25T10:16 ET",
+ "reason_for_call": "intermediate_level_broken",
+ "leak_check": "pass - replay truncated at 10:15:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/wk1_d24_1016_mg.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 29594.34,
+  "stop": 29732.0,
+  "targets": [
+   {
+    "level": "session_low_so_far",
+    "price": 29295.75
+   },
+   {
+    "level": "prior_day_low_weekly_low",
+    "price": 29264.75
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "10:14",
+  "R_in_points": 137.66,
+  "current_stop_distance": 137.66,
+  "open_pnl_in_R": 0.4
+ },
+ "level_in_question": {
+  "level": "weekly_val",
+  "price": 29577.0
+ },
+ "price_at_decision": 29538.75,
+ "last_completed_2m_bar": {
+  "start": "10:14",
+  "closed_at": "10:16",
+  "open": 29579.75,
+  "high": 29610.5,
+  "low": 29528.75,
+  "close": 29538.75,
+  "volume": 4773,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "10:08",
+   "closed_at": "10:10",
+   "open": 29573.75,
+   "high": 29615.25,
+   "low": 29543.5,
+   "close": 29605.25,
+   "volume": 4393,
+   "minutes": 2
+  },
+  {
+   "start": "10:10",
+   "closed_at": "10:12",
+   "open": 29606.25,
+   "high": 29690.0,
+   "low": 29593.75,
+   "close": 29664.0,
+   "volume": 5559,
+   "minutes": 2
+  },
+  {
+   "start": "10:12",
+   "closed_at": "10:14",
+   "open": 29663.75,
+   "high": 29677.75,
+   "low": 29553.25,
+   "close": 29578.75,
+   "volume": 4831,
+   "minutes": 2
+  },
+  {
+   "start": "10:14",
+   "closed_at": "10:16",
+   "open": 29579.75,
+   "high": 29610.5,
+   "low": 29528.75,
+   "close": 29538.75,
+   "volume": 4773,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "read_at": "2026-06-25T10:16 ET, from the chart's own study series"
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 29873.56,
+   "vwap_p1": 30153.42,
+   "vwap_p2": 30433.29,
+   "vwap_p3": 30713.15,
+   "vwap_m1": 29593.69,
+   "vwap_m2": 29313.83,
+   "vwap_m3": 29033.97
+  },
+  "bb_ma": {
+   "bb_ma_2m": 29607.74,
+   "bb_ma_3m": 29759.83,
+   "bb_ma_15m": 30030.16,
+   "bb_ma_60m": 29955.54
+  },
+  "day_range_fibs": {
+   "0.382": 29665.53,
+   "0.5": 29779.75,
+   "0.618": 29893.97,
+   "0.705": 29978.19
+  },
+  "session_high_so_far": 30263.75,
+  "session_low_so_far": 29295.75,
+  "daily_profile": {
+   "poc": 30067.0,
+   "val": 29633.0,
+   "vah": 30236.0,
+   "note": "DEVELOPING as-of 10:16"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29727.0,
+   "val": 29575.0,
+   "vah": 30038.0,
+   "high": 30701.25,
+   "low": 29264.75,
+   "anchor": "2026-06-22 18:00:00-04:00",
+   "note": "DEVELOPING as-of 10:16"
+  },
+  "prior_day": {
+   "poc": 29769.0,
+   "val": 29503.0,
+   "vah": 29892.0,
+   "high": 30157.75,
+   "low": 29264.75
+  }
+ },
+ "crowded_path": false,
+ "management_actions_so_far": [],
+ "what_to_emit": "your management JSON, per your contract.",
+ "why_this_call": "price closed through the anchored weekly VAL 29577.0, a structural level between your entry and your first target.",
+ "excursion_since_fill": {
+  "mfe": 117.09,
+  "mae": 16.16,
+  "R_in_points": 137.66
+ }
+}

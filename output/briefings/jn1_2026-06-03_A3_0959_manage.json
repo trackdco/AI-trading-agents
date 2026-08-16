@@ -1,0 +1,218 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "A3",
+ "decision_minute": "2026-06-04T09:59 ET",
+ "reason_for_call": "intermediate_level_reached",
+ "leak_check": "pass - replay truncated at 09:58:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-03_A3_0959_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30300.0,
+  "stop": 30319.53,
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 30171.29
+   },
+   {
+    "level": "weekly_low",
+    "price": 30164.25
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "09:52",
+  "R_in_points": 60.0,
+  "current_stop_distance": 19.53,
+  "open_pnl_in_R": 0.31
+ },
+ "level_in_question": {
+  "level": "bb_ma_2m",
+  "price": 30292.78
+ },
+ "price_at_decision": 30281.25,
+ "last_completed_2m_bar": {
+  "start": "09:56",
+  "closed_at": "09:58",
+  "open": 30243.75,
+  "high": 30292.75,
+  "low": 30234.5,
+  "close": 30281.25,
+  "volume": 3559,
+  "minutes": 2
+ },
+ "candle_grid_note": "This decision minute is 09:59, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 09:58. price_at_decision and every 2m field below are that 09:58 bar - they will not equal the 3m close, and the chart legend will read the 09:58 bar. Judge the 3m candle and the 09:58 2m candle; neither is fabricated.",
+ "recent_2m_bars": [
+  {
+   "start": "09:51",
+   "closed_at": "09:53",
+   "open": 30257.75,
+   "high": 30316.0,
+   "low": 30244.25,
+   "close": 30267.5,
+   "volume": 5742,
+   "minutes": 2
+  },
+  {
+   "start": "09:53",
+   "closed_at": "09:55",
+   "open": 30268.0,
+   "high": 30288.0,
+   "low": 30228.75,
+   "close": 30245.25,
+   "volume": 4764,
+   "minutes": 2
+  },
+  {
+   "start": "09:55",
+   "closed_at": "09:57",
+   "open": 30247.0,
+   "high": 30268.25,
+   "low": 30232.25,
+   "close": 30257.5,
+   "volume": 3528,
+   "minutes": 2
+  },
+  {
+   "start": "09:57",
+   "closed_at": "09:59",
+   "open": 30257.0,
+   "high": 30305.0,
+   "low": 30254.25,
+   "close": 30291.5,
+   "volume": 4121,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30285.99,
+  "bb_upper_2m": 30362.85,
+  "bb_lower_2m": 30209.12,
+  "vwap": 30335.99,
+  "vwap_p1": 30427.32,
+  "vwap_m1": 30244.67,
+  "vwap_p2": 30518.65,
+  "vwap_m2": 30153.34,
+  "vwap_p3": 30609.97,
+  "vwap_m3": 30062.01,
+  "read_at": "chart cursor 09:58:59. The 2m bar 09:58-10:00 is IN PROGRESS, so the last COMPLETED 2m plot is the 09:56-09:58 bar. The 1-minute candle 09:58 IS committed and closed 30291.50."
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30335.22,
+   "vwap_p1": 30427.08,
+   "vwap_p2": 30518.94,
+   "vwap_p3": 30610.79,
+   "vwap_m1": 30243.36,
+   "vwap_m2": 30151.5,
+   "vwap_m3": 30059.64
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30284.3,
+   "bb_ma_3m": 30292.03,
+   "bb_ma_15m": 30273.26,
+   "bb_ma_60m": 30447.08
+  },
+  "day_range_fibs": {
+   "0.382": 30309.51,
+   "0.5": 30354.38,
+   "0.618": 30399.24,
+   "0.705": 30432.33
+  },
+  "session_high_so_far": 30544.5,
+  "session_low_so_far": 30164.25,
+  "daily_profile": {
+   "poc": 30260.0,
+   "val": 30186.0,
+   "vah": 30397.0,
+   "note": "DEVELOPING as-of 09:59"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30485.0,
+   "vah": 30734.0,
+   "high": 30807.75,
+   "low": 30164.25,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:59"
+  },
+  "prior_day": {
+   "poc": 30685.0,
+   "val": 30577.0,
+   "vah": 30724.0,
+   "high": 30807.75,
+   "low": 30478.25
+  }
+ },
+ "crowded_path": {
+  "levels_between_tp1_and_tp2": [],
+  "count": 0,
+  "crowded_path": false,
+  "note": "named structural levels strictly between TP1 30171.29 and the next target 30164.25 at this minute."
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "09:54",
+   "reason_for_call": "intermediate_level_broken / bb_ma_2m 30292.78",
+   "action": "trail",
+   "new_stop": 30327.56,
+   "favouring": "more",
+   "reason": "Bar opened at bb_ma_2m, spiked to 30316 (adverse wick) but closed decisively below at 30259.5 - level broken in our favor pre-TP1. Trailing stop above the level and the intrabar high, clearing both by >0.5x avg 2m range."
+  },
+  {
+   "minute": "09:55",
+   "reason_for_call": "intermediate_level_broken / daily_poc 30251.00",
+   "action": "trail",
+   "new_stop": 30319.53,
+   "favouring": "more",
+   "reason": "Short: bar 09:53-09:55 closed 30245.25, decisively through daily_poc 30251, confirmed by last 1m close (0.91R). Trail stop above that bar's high (30288)+0.5x avg 2m range(63), tightening 30327.56->30319.53; still pre-TP1 so no breakeven."
+  },
+  {
+   "minute": "09:57",
+   "reason_for_call": "stalling / daily_poc 30251.00",
+   "action": "hold",
+   "favouring": "more",
+   "reason": "Short ~50-56pt through entry; bb_ma_2m and daily_poc already broken and trailed (stop 30319.53, ~60-75pt clear of price). Last 2-4 bars are a shallow single-bar retest (30257.5 close, only 6.5pt above poc) inside normal 40-70pt bar noise, not a 3-5min decisive reclaim. No new level broken to trail behind; holding."
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract.",
+ "last_committed_1m_close": {
+  "minute": "09:58",
+  "close": 30291.5,
+  "open_pnl_in_R_on_this_price": 0.142,
+  "why": "09:59 is an odd decision minute, so price_at_decision above is the close of the last COMPLETE 2m bar and lags the last committed minute by one. Both are stated so they reconcile. Nothing here is later than 09:58:59."
+ },
+ "conviction_partial_rule": {
+  "conviction_of_this_position": "B",
+  "contract_default": "B takes roughly 75% at TP1 and trails the runner. A is 50% and holds the rest to the full target; C is 100% out with no runner.",
+  "note": "stated as the contract text, not as an instruction - partial_pct is your decision and is a fraction of what is still open."
+ },
+ "thesis_context": {
+  "version": "v5",
+  "primary_bias": "short",
+  "invalidation": 30302.0,
+  "aligned": "this position is with the thesis - v5 is short toward daily_val / vwap_m2 / the twice-defended weekly low.",
+  "other_side_tripwire": "weekly_low 30164.25, displacement_from_defended_level - not resolved as of this minute",
+  "note": "stated because it bears on how much runner is worth carrying, not as a view on your decision."
+ },
+ "prior_positions_this_window": {
+  "count": 0,
+  "detail": "this is the first fill of the NY_AM window. Earlier today: L1 short made target +1.776R, P1 short closed -0.921R, P3 short stopped -1.000R.",
+  "note": "stated as run state, not as a view on this position."
+ },
+ "window_note": {
+  "window": "NY_AM",
+  "entries_end": "11:00",
+  "text": "the NY_AM window ends at 11:00. A position open at that minute is not force-flattened; the window_closing tier-3 call at 11:00 is where carrying it is decided.",
+  "news": "the calendar is empty for this cash day - no blackout anywhere."
+ },
+ "BREAKEVEN_RULE": {
+  "rule": "breakeven is ONLY available after TP1 has printed. Before TP1 it is not a legal action.",
+  "tp1": 30171.29,
+  "tp1_printed_yet": false,
+  "available_to_you_now": "NO - TP1 has not printed, so breakeven is not one of your options at this minute",
+  "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
+  "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
+  "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+ }
+}

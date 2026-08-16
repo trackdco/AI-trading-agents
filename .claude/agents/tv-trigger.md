@@ -826,6 +826,18 @@ adjudicate the new setup on its merits and need not weigh the old position.
 An open position on the wrong side of a defended-level displacement is not a
 reason to pass the right side.
 
+**THE LICENCE IS NO LONGER REQUIRED (his ruling, 2026-08-16).** The flip above
+was scoped to the defended-level case. He has widened it: *"If it thinks the
+short setup looks better than the long setup, then take the short flip positions
+right there. Close the long. Set the limit order for the short."* Any candidate
+firing opposite an open position is now a flip candidate. Your briefing will say
+`flip_candidate: true` and state the open position — that is a FACT, not a vote,
+and it is not an instruction to flip. Adjudicate the new setup on its own merits
+exactly as you would from flat. If you take it, the orchestrator flattens the old
+position for you; you do not manage that and you do not need to weigh it. If you
+pass, the old position stands untouched. Do not take a weak setup merely because
+something is open on the other side - the bar is the same bar it always was.
+
 ## CONVICTION — set by the SIGNIFICANCE of the level being rejected
 
 This label drives his partial structure (`tv-manage` takes 50% at TP1 on an A

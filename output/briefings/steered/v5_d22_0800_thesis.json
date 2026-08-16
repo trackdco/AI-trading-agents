@@ -1,0 +1,120 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE 08:00-09:29 ET (cap 1 fill)",
+ "decision_minute": "2026-06-23T08:00 ET (session-day 2026-06-22)",
+ "leak_check": "pass - truncated at 07:59:59; last completed 2m bar starts 07:58 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d22_0800_nypre.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "day_character_note": "Re-judge the day's character. At 03:00 you called it a TREND day and suspended the 15m-MA floor under T15.",
+ "price_at_decision": 29873.25,
+ "last_completed_2m_bar": {
+  "start": "07:58",
+  "open": 29874.75,
+  "high": 29883.0,
+  "low": 29869.5,
+  "close": 29873.25,
+  "volume": 392
+ },
+ "prior_thesis_as_of_0300": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 29923.0
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29735.88
+   }
+  ],
+  "invalidation": {
+   "level": "bb_ma_15m",
+   "price": 30259.3
+  },
+  "waiting_for": "trend day - 15m MA floor suspended (T15). Short licensed either on a 15m decisive-body close below the weekly low (29,923) with entry on the retest, or - if a countertrend bounce forms first - on that bounce stalling and rolling over wherever it stalls, followed by closure through the 2m/3m MA and retest.",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed AT the weekly low/session low cluster (29,923-29,950), on a hold there - absorption plus reclaim back above vwap_m2 (29,941) and vwap_m1 (30,146).",
+  "anticipated_resolution": {
+   "level": "weekly_low_29923",
+   "price": 29923.0,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond the level with a decisive body (high body_ratio), not a wick-heavy absorption candle.",
+  "reasoning": "Overnight round-tripped: a brief push right after the 18:00 open, then a relentless one-way decline to session/weekly lows with almost no rotation - a trend day, not a range. Price sits 382pt below VWAP, below the 2m BB lower band, and 289pt below the 15m MA, so the 15m floor is suspended (T15). Weekly low (29,923) is only 47pt below and is the immediate destination."
+ },
+ "what_happened_since_0300": "your read paid. You wrote the short condition as behaviour - a bounce stalling and rolling over wherever it stalls - and that is exactly what happened: the counter-trend bounce topped at 30,034.75, rolled over, and the London window took one short that banked its first target at the 2m BB lower and ran the runner to the session low. Your first named target, the weekly low 29,923, also printed. Price has continued lower since and is now 29,873.25.",
+ "position_state": "FLAT. LONDON used 1 of its 2 fills and is closed by time. NY_PRE opens with a cap of 1 fill.",
+ "levels_at_0800_CHART": {
+  "vwap": 30133.18,
+  "vwap_p1": 30418.22,
+  "vwap_m1": 29848.13,
+  "vwap_p2": 30703.27,
+  "vwap_m2": 29563.08,
+  "vwap_m3": 29278.04,
+  "bb_2m_basis": 29848.48,
+  "bb_2m_upper": 29891.16,
+  "bb_2m_lower": 29805.79
+ },
+ "levels_at_0800_BUILD": {
+  "bb_ma_2m": 29848.47,
+  "bb_ma_3m": 29843.08,
+  "bb_ma_15m": 29875.3,
+  "bb_ma_60m": 30314.79,
+  "day_range_fibs": {
+   "0.382": 30114.61,
+   "0.5": 30226.62,
+   "0.618": 30338.64,
+   "0.705": 30421.22
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29752.0,
+  "daily_profile": {
+   "poc": 29833.0,
+   "val": 29752.0,
+   "vah": 30356.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30343.0,
+   "vah": 30754.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29752.0
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [],
+  "hourly_closes": {
+   "03:00": 29969.75,
+   "04:00": 29909.0,
+   "05:00": 29827.25,
+   "06:00": 29886.25,
+   "07:00": 29818.0,
+   "08:00": 29873.25
+  },
+  "note_on_location": "price 29873.25 is sitting ON vwap_m1 (29848.13) and the 2m BB basis (29848.48), 260pt below the session VWAP. Your first target, the weekly low, is now BEHIND you - it printed and price kept going.",
+  "note_on_targets": "both your 03:00 targets are spent or nearly so. A thesis with no destination left is not a thesis."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "note": "the US calendar for this date is empty; nothing scheduled through the end of the NY_AM window."
+ },
+ "T18_REMINDER": "on a trend day the rejection is wherever the counter-trend bounce ACTUALLY STALLS - it does not have to reach a pre-named level. Your 03:00 thesis wrote this correctly and it is why the London short existed at all. Keep doing that.",
+ "ADAPTATION_CLAUSE": "name conditions WITHIN REACH - roughly the current 15m BB width - or express them as behaviour. An unreachable condition disables that direction and the trigger will escalate rather than obey it.",
+ "what_to_emit": "your standard thesis JSON for the NY_PRE window."
+}
