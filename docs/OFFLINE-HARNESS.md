@@ -104,12 +104,59 @@ path — they see this schema. The differences, enumerated:
    the harness, a deterministic script does. The script is the more
    repeatable of the two.
 
+## The candidate scanner (`scripts/offline_scan.py`) — M2 part 1
+
+The candidate set IS the day: agent quality is irrelevant if the two paths
+never see the same moments. So the scanner is bridge-tested against the
+minutes his Mac actually adjudicated, recovered from **briefing filenames +
+their own `decision_minute`** — the outcome-bearing run logs are never
+opened.
+
+| Mac run | session-day | minutes reproduced |
+|---|---|---|
+| v44 (0.4.x, full day) | 2026-06-23 | **19/19 — 100%** |
+| m1 (0.4.5 wk1) | 2026-06-21 | **3/3 — 100%** |
+| d21 / d22 / d24 / d25 | narrated week | **100% each** |
+| d23 (earliest era) | 2026-06-23 | 2/4 — the two misses are `rejection_first`, recovered with `--rejection-first` (3/4; the last is an old-era 09:45 with no scanner prose to reconstruct) |
+
+**Misses are defects; extras are triage.** An extra is a candidate the
+harness's state machine may legitimately never adjudicate — a window at its
+fill cap, a position open, a spent level. Misses cannot be explained away,
+and there are none on any current-era day.
+
+Three scanner rules were RECOVERED FROM HIS MAC rather than assumed, each
+paid for by a miss:
+
+1. **Inside one candle the second leg must be a close-through.** The runbook's
+   "rejection counts" first read as "a rejected level can be the second leg";
+   his Mac disproves it — on 2026-06-23 the 3m closing 03:45 crossed its own
+   MA and rejected the daily POC, and the Mac opened no candidate, holding
+   the leg to pair with the next candle that CLOSED the POC (the 03:48
+   sequential, "own-MA leg at 03:42"). Rejections ride along as recorded
+   colour.
+2. **Pending legs are a QUEUE, not a slot.** On 2026-06-22 the Mac paired
+   09:06 with an MA leg from the 08:57 bar while a newer 09:00 leg existed
+   and a same-candle candidate had already fired at 09:03. Legs expire only
+   by age; forming a candidate extinguishes nothing; a pairing takes the
+   oldest live leg of matching direction.
+3. **An own-MA close always becomes a live leg**, even when it also pairs
+   backwards as rejection-first — letting one branch consume it cost two real
+   v44 candidates.
+
+`rejection_first` (the mirror of sequential: level rejected → own-MA close,
+spanning candles) is implemented but **default OFF**: both current-era
+corpora reproduce at 100% without it and it only appears in the earliest
+prefix, whose whole schema predates the current one. Switchable so the
+question stays his. The rejection geometry itself is un-thresholded — the
+narrowest reading of his words, no invented constant — and is **unratified**.
+
 ## Milestones
 
 | # | deliverable | gate | status |
 |---|---|---|---|
 | M1 | briefing generator | byte-diff vs all served briefings | **DONE — current era 100.0%** |
-| M2 | day harness (scan → thesis → trigger → manage → fills → log) | bridge test: reproduce the narrated-week and June-day-1–4 books from the same frozen contracts | next |
+| M2a | candidate scanner | reproduce the Mac's adjudicated minutes | **DONE — 100% on every current-era day** |
+| M2b | day state machine (thesis/trigger/manage cadence, caps, limit lifecycle, touch fills, run log) | bridge test: reproduce the June week-1 book from the same frozen contracts | in progress |
 | M3 | chart renderer for thesis | same-day thesis output vs real-screenshot run | after M2 |
 | M4 | open history: parallel days, version-vs-version | M2 gate passed | after M2 |
 
