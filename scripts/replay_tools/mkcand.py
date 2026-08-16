@@ -33,6 +33,11 @@ def build(s):
     if r.returncode:
         raise SystemExit("mk_trigger failed:\n" + r.stderr[-3000:])
 
+    # HARD GATE - a capture that fails preflight never reaches an agent.
+    from scripts.replay_tools.preflight import check as _pf
+    _ok, _rep = _pf(sd, s["dn"], dec, s["chart_levels"], s.get("last_bar_epoch"))
+    if not _ok:
+        raise SystemExit("PREFLIGHT FAILED - briefing NOT written:\n" + json.dumps(_rep, indent=1))
     b = json.load(open(out))
     px = b["price_at_decision"]
     cl = b["levels_at_decision_CHART"]

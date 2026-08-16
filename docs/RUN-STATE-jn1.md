@@ -374,3 +374,22 @@ wrong bar.
 
 Sequence per capture: `replay_start(dec:00-04:00)` → `replay_status` → **clear crosshair**
 → `capture_screenshot` → `data_get_study_values` → `verify_legend.check(...)`.
+
+### 10j. KEEP BRIEFINGS LEAN — cap candidate levels at 3
+Raised by him after day 3: "watching the setups and verdicts playing out, it seems
+like there was a decline in judgement/performance."
+
+Outcome-independent defect counts back him up — validation failures 0/1/3 across
+days 1-3, voids 0/2/6, and tv-manage held **3 of 3** adverse-excursion calls into a
+full stop on day 3 having done so 0 times before.
+
+The likeliest self-inflicted cause: **I grew the briefings**. Mean trigger briefing
+13.1 KB (day 1) -> 22.3 -> 23.9 KB; manage 3.9 -> 6.0 KB. The dominant driver is
+`higher_timeframe_at_candidate_levels`, 2.85 -> 8.55 -> 9.64 KB, about 85% of all
+growth, because `cand_levels` per briefing went **1.9 -> 5.7 -> 6.4**. Every extra
+level spawns a full four-timeframe behaviour block.
+
+**Rule: pass at most 3 candidate levels.** The scanner's own MA, the second level the
+scanner flagged, and the thesis-named level if it differs. Do not cast a wide net
+"in case it is useful" — day 1 had the leanest briefings and the cleanest verdicts.
+Correlation over three days, not proof, but it is free to reverse.
