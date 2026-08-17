@@ -175,7 +175,7 @@
  "window_note": {
   "window": "LONDON",
   "entries_end": "04:59",
-  "text": "the LONDON window runs to 04:59. No further LONDON candidates exist on the scanner. T51 does not apply here - it governs positions carried into the 09:30 cash open, which is over five hours away.",
+  "text": "the LONDON window runs to 04:59. T51 does not apply to this position - T51 governs positions carried into the 09:30 cash open, which is hours away.",
   "news": "the calendar for this cash day is empty - no blackout anywhere."
  },
  "BREAKEVEN_RULE": {
