@@ -75,6 +75,23 @@ field. The contract will not behave correctly without them.
 them; it never decides from them and never editorialises. Run the scripts —
 do not work either out by hand.
 
+## WHERE THE LOGS GO — read `output/books/README.md`
+
+**Not `output/agent_runs/`.** That directory is deny-listed for Read on
+purpose, so a run cannot read other runs' outcomes, and it stays that way.
+Write the live books to:
+
+```
+output/books/w49/<sess_day>_w49.jsonl
+output/books/j49/<sess_day>_j49.jsonl
+```
+
+which is readable — so every row can be verified, audited and resumed as it
+is written. `git add -f` still applies (`output/*` is gitignored).
+
+**When a run is complete, scored and committed, MOVE its logs into
+`output/agent_runs/`.** That seals them as outcome data for good.
+
 ## MODEL
 
 **Run all four agents on Sonnet.** His instruction, and his reasoning:
