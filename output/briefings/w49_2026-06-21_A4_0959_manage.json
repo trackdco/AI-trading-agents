@@ -169,7 +169,7 @@
  "window_note": {
   "window": "NY_AM",
   "entries_end": "11:00",
-  "text": "the NY_AM window runs to 11:00. T51 does not apply - this position opened inside the cash session. One candidate remains: A6 at 10:18, which is SHORT against this long and would be a flip candidate under T68. That is run machinery, not a view on your decision.",
+  "text": "the NY_AM window runs to 11:00. This position was opened INSIDE the cash session, so T51 does not apply to it - T51 governs positions carried into the 09:30 cash open. Further candidates may or may not be adjudicated inside this position; whether any fire, when, and in which direction is not known to you and is not stated here.",
   "news": "the calendar for this cash day is empty - no blackout anywhere."
  },
  "BREAKEVEN_RULE": {

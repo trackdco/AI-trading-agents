@@ -168,7 +168,7 @@
  "window_note": {
   "window": "LONDON",
   "entries_end": "04:59",
-  "text": "the LONDON window runs to 04:59. This is not a pre-market carry in the T51 sense - T51 governs positions carried into the 09:30 cash open, which is hours away. There are no further LONDON candidates on the scanner after this one.",
+  "text": "the LONDON window runs to 04:59. T51 does not apply to this position - T51 governs positions carried into the 09:30 cash open, which is hours away.",
   "news": "the calendar for this cash day is empty - no blackout anywhere."
  },
  "BREAKEVEN_RULE": {

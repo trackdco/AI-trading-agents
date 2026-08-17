@@ -43,6 +43,22 @@ def assert_no_future_minutes(text, dec, label=""):
         t = int(m.group(1)) * 60 + int(m.group(2))
         if t > dmin:
             bad.append(tok)
+    # A clock time is not the only way to leak the future. "There are no further
+    # candidates on the scanner" names no minute but still tells the manager the
+    # window is structurally quiet ahead - and the scanner list is derived from the
+    # WHOLE day's bars, so stating it leaks the scan. The time regex missed this
+    # entirely; these phrases are blacklisted outright.
+    FORWARD_PHRASES = ("further candidate", "further london candidate",
+                       "no further", "still to be adjudicated", "are still to be",
+                       "remaining candidate", "candidates remain", "will fire",
+                       "upcoming candidate", "later candidate")
+    low = str(text).lower()
+    hit = [p for p in FORWARD_PHRASES if p in low]
+    if hit:
+        raise SystemExit(
+            f"FORWARD REFERENCE IN BRIEFING TEXT ({label}) at decision {dec}: {hit}.\n"
+            "A briefing may not tell an agent what the scanner will or will not do next - "
+            "the scanner list is derived from the whole day's bars. Rewrite without it.")
     if bad:
         raise SystemExit(
             f"FUTURE MINUTES IN BRIEFING TEXT ({label}) at decision {dec}: {sorted(set(bad))}.\n"

@@ -9,7 +9,7 @@
  "position": {
   "side": "long",
   "entry": 30849.5,
-  "stop": 30898.25,
+  "stop": 30899.75,
   "targets": [
    {
     "level": "weekly_high",
@@ -19,7 +19,7 @@
   "conviction": "B",
   "opened_at": "09:54",
   "R_in_points": 76.25,
-  "current_stop_distance": 48.75,
+  "current_stop_distance": 50.25,
   "open_pnl_in_R": 1.07
  },
  "level_in_question": {
@@ -150,8 +150,8 @@
   {
    "minute": "09:59",
    "action": "trail",
-   "new_stop": 30898.25,
-   "reason": "3m/2m close 30929.5 cleared session high/VAH 30926.75 cleanly - trade favours me more than at entry. TP1 not printed (single target 30975.5), so no breakeven. Trailing stop to 30898.25 = level minus 0.5x avg 2m range (28.5, on 57pt avg), clearing what price just broke."
+   "new_stop": 30899.75,
+   "reason": "09:57-09:59 bar closed 30929.5 (high 30932) through session-high/VAH 30926.75, well above entry 30849.5 and prior 30919.5 high. Trailing behind it with ~27pt clearance (0.5x avg 2m range); level must now be reclaimed to stop me out."
   }
  ],
  "what_to_emit": "your management JSON, per your contract.",
@@ -176,7 +176,7 @@
  "window_note": {
   "window": "NY_AM",
   "entries_end": "11:00",
-  "text": "the NY_AM window runs to 11:00. T51 does not apply. One candidate remains, A6 at 10:18, which is SHORT against this long and would be a flip candidate under T68. Run machinery, not a view on your decision.",
+  "text": "the NY_AM window runs to 11:00. This position was opened INSIDE the cash session, so T51 does not apply to it - T51 governs positions carried into the 09:30 cash open. Further candidates may or may not be adjudicated inside this position; whether any fire, when, and in which direction is not known to you and is not stated here.",
   "news": "the calendar for this cash day is empty - no blackout anywhere."
  },
  "BREAKEVEN_RULE": {
