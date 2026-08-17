@@ -56,12 +56,7 @@
    ],
    "as_of": "2026-06-22 03:00",
    "doctrine": "CHOP + in_middle -> the middle is dead. CHOP + at an edge -> the only licensed trade is from that edge toward the opposite edge.",
-   "_source": "scripts.chop_state - MECHANICAL FACT under runbook 0c, stated never judged."
-  },
-  "_legend_verified": {
-   "verified": true,
-   "worst_diff_pts": 0.38,
-   "note": "legend cross-checked against independently computed values from committed bars (scripts.replay_tools.verify_legend), tolerance 2.0pt"
+   "_source": "scripts.chop_state - MECHANICAL FACT under runbook 0c, stated never judged. His definition implemented literally: a SMALL range (bottom quartile of the normal 3-hour NQ range, ~104pt over 44 days) that has LASTED about three hours. Size and duration only."
   },
   "_session_calendar": {
    "session_day_label": "2026-06-21",
@@ -171,8 +166,8 @@
   "fomc_day": false,
   "blackout_events": [],
   "drivers": [],
-  "falsified_by": "no catalyst exists to falsify; would revisit if a scheduled event or dated constituent-moving headline appears in a later briefing for this window",
-  "reasoning": "No releases have printed and none are scheduled for this session day, so there is no calendar-based gate and no dated catalyst to lean on for the LONDON window at 03:00 ET."
+  "falsified_by": "no active driver to falsify",
+  "reasoning": "No scheduled or released events on the calendar at or before this decision minute. No named catalyst bears on NQ or its heavy constituents; default to neutral with no gate."
  },
  "what_to_emit": "your thesis JSON for this window, per your contract."
 }
