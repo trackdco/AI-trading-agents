@@ -315,12 +315,12 @@
   "prior_day_low 29577.25",
   "vwap_m3 29555.77"
  ],
- "fills_this_window": 0,
+ "fills_this_window": 1,
  "window_cap": {
   "window": "LONDON",
   "written_cap": 2,
   "caps_lifted": true,
-  "fills_so_far": 0
+  "fills_so_far": 1
  },
  "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
  "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
@@ -432,10 +432,24 @@
  "context_extras_note": "nwog / swept lows-highs / defended_levels computed by scripts.context_extras as-of the decision minute. Mechanical, no editorial.",
  "chart_truncation_note": "decision minute 03:24; the last COMPLETE 2m bar closes 03:24. Deliberate and leak-safe; legend values were read at that cursor.",
  "position_state": {
-  "state": "FLAT",
-  "fills_this_window": 0,
-  "detail": "no open position. This is the first window of the session-day.",
-  "cap_note": "the written LONDON cap is 2 fills and 0 are used."
+  "state": "OPEN",
+  "fills_this_window": 1,
+  "open_position": {
+   "cid": "L1",
+   "side": "short",
+   "entry": 29827.5,
+   "opened_at": "03:00",
+   "original_stop": 29843.0,
+   "current_stop": 29831.0,
+   "original_r_pts": 15.5,
+   "conviction": "B",
+   "size_remaining_pct": 25,
+   "banked_so_far": "75% at 29797.50 (target_1, fib_0.705) at 03:03 for +1.9355R on that portion",
+   "management_so_far": "03:02 trail 29843.00 -> 29831.00 on daily_poc breaking (before TP1 printed, so breakeven was not a legal action); 03:03 partial 75% at TP1, stop left unchanged",
+   "note": "the runner's stop sits 3.50pt ABOVE entry, so this quarter can still lose - worst case -0.2258R."
+  },
+  "detail": "one position open - a 25% runner from L1. This is the first fill of the session-day.",
+  "cap_note": "the written LONDON cap is 2 fills and 1 is used."
  },
  "MECHANICAL_GATE_outer_band_fade_only": {
   "rule": "a SHORT at/through vwap_m2/m3 or a LONG at/through vwap_p2/p3 is a pass regardless of trigger quality.",
@@ -671,5 +685,20 @@
   "doctrine": "CHOP + in_middle -> the middle is dead. CHOP + at an edge -> the only licensed trade is from that edge toward the opposite edge.",
   "_source": "scripts.chop_state - MECHANICAL FACT under runbook 0c. His definition implemented literally: a SMALL range (bottom quartile of the normal 3-hour NQ range, ~104pt over 44 days) that has LASTED about three hours. Size and duration only.",
   "_what_it_governs": "tv-trigger 0.4.9: chop tells you HOW to trade, not whether to. In CHOP an edge trigger is licensed toward the far side, targeting the STRUCTURAL level near it rather than the range extreme; the middle is dead; and an edge fade is NOT counter-trend, so it does not cap at C."
+ },
+ "flip_candidate": {
+  "flip_candidate": true,
+  "why_you_are_seeing_this": "this candidate fires OPPOSITE an open position. Under T68 as HE widened it on 2026-08-16, any candidate firing opposite an open position is a flip candidate - the defended-level licence is no longer required.",
+  "open_position_it_would_flip": {
+   "cid": "L1",
+   "side": "short",
+   "entry": 29827.5,
+   "size_remaining_pct": 25,
+   "current_stop": 29831.0,
+   "note": "75% of L1 is already banked at +1.9355R. Only the 25% runner is exposed, and its stop sits 3.50pt above entry."
+  },
+  "what_a_take_means_mechanically": "on a TAKE verdict the orchestrator FLATTENS the open short at the decision price with exit_reason 'flipped', then runs your limit lifecycle. On a PASS the open short simply stands.",
+  "what_this_is_not": "a vote. It is stated as a fact so you know the consequence of your own verdict. Whether the long setup is better than continuing to hold the short runner is YOUR comparative judgement - his words: 'If it thinks the short setup looks better than the long setup, then take the short flip positions right there.'",
+  "source": "RUNBOOK-replay-scoring.md T68 / T68 WIDENED. MECHANICAL FACT under runbook 0c."
  }
 }
