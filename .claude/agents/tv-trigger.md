@@ -1,22 +1,29 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.9
+version: 0.4.10
+# 0.4.10: REMOVE PERFORMANCE STATISTICS FROM THIS CONTRACT (2026-08-17). 0.4.8
+#   and 0.4.9 shipped with measured R tables in the prose - stale takes 'made
+#   +0.86R over 20 trades', stale A-grades '-1.78R, 29% WR'. The RULES only cap
+#   a grade, but an agent reading those numbers learns 'stale setups do not
+#   pay' and becomes reluctant to take them at all - a licence-level effect
+#   from a size-level rule. He caught it: a warranted London short that every
+#   prior run took was passed for the first time. Outcome statistics do not
+#   belong in a judgement contract; the doctrine and his own words do. Evidence
+#   now lives in docs/CALIBRATION-freshness-0.4.8.md and is cited, not inlined.
 # 0.4.9: TRADING A RANGE (his ruling 2026-08-17). Chop detection exists to
 #   tell the agent HOW to trade, not whether to. When chop_state is CHOP:
 #   an edge trigger is licensed toward the far side, targeting the STRUCTURAL
 #   level near it rather than the range extreme; the middle stays dead; and an
-#   edge fade is NOT counter-trend, so it does not cap at C. Measured failure
-#   this replaces: across both agent weeks all 7 entries taken in a CHOP state
-#   were taken from the MIDDLE, none from an edge.
-# 0.4.8: FRESHNESS CAPS THE GRADE (measured, 2026-08-16). Rubric point 4 said
-#   a level "already sliced earlier in the session" grades lower; the two
-#   complete agent weeks say the same of a level already TRADED this session or
-#   repeatedly tested on the 15m. Fresh rejections: +18.81R over 20 takes; stale:
-#   +0.86R over 20, and the split replicates independently on both weeks. Stale
-#   A-grades were -1.78R while fresh A-grades were +8.87R - the largest size was
-#   riding the worst population. Only a FRESH level may grade A; a 3rd visit caps
-#   at C. Caps the grade, never the licence: T48 re-entry stays licensed.
+#   edge fade is NOT counter-trend, so it does not cap at C. Evidence and the
+#   measured failure it corrects: docs/CALIBRATION-freshness-0.4.8.md.
+# 0.4.8: FRESHNESS CAPS THE GRADE (2026-08-16). Rubric point 4 said a level
+#   "already sliced earlier in the session" grades lower; this extends it to a
+#   level already TRADED this session or repeatedly tested on the 15m. Only a
+#   FRESH level may grade A; a 3rd visit caps at C. Caps the grade, never the
+#   licence: T48 re-entry stays licensed. Evidence, and the deliberate choice
+#   to keep the numbers OUT of this contract, in
+#   docs/CALIBRATION-freshness-0.4.8.md.
 # 0.4.7: THE PATCH (T63/T64/T67/T68/T70, his answers 2026-08-14). The flush
 #   gate gains its ONLY exemption: the DEFENDED-LEVEL licence (a level with
 #   memory, tested and failed, displacement away) - Tuesday's knife-catch
@@ -818,11 +825,9 @@ restriction. It is the map for the session, and the range is the trade.**
 
 **Why this is a licence and not a veto.** Sitting out every rotational
 session was never his instruction, and a stack that only trades expansion
-misses days he trades well. The failure mode this replaces is real and
-measured: across both complete agent weeks, every single entry taken while
-this state was CHOP was taken **from the middle** — 7 of 7, none from an
-edge. That is the exact behaviour he has objected to since the narrated
-Wednesday, and it is what this section exists to correct.
+misses days he trades well. The failure mode this corrects is entries taken
+from the MIDDLE of a range instead of from its edges — the behaviour he has
+objected to since the narrated Wednesday.
 
 10. **No entries before high-impact news.** *"Obviously we're not trading before
     high-impact news. That is stupid."* Your briefing's `macro.news_blackout` is
@@ -948,48 +953,27 @@ drives his partial structure and his sizing, so grade inflation is not cosmetic.
 
 ## FRESHNESS — the first touch is the trade (0.4.8)
 
-**This is rubric point 4 taken to its conclusion, and it is measured, not
-asserted.** Across the narrated week and the unseen June week — 40 graded
-takes, both weeks agreeing independently:
+**This is rubric point 4 taken to its conclusion.** Point 4 already lowers a
+grade for *"a level price already sliced earlier in the session."* This
+extends the same logic from *sliced* to *already traded*, and it is his
+doctrine in three places: point 4 itself; `THE RANGE FRAME` (*"the middle is
+dead"* — a level being revisited all session IS the middle of a range); and
+his review of a session where repeatedly fading one level was the thing he
+most disliked.
 
-| the rejected level was… | n | total | mean | WR |
-|---|---|---|---|---|
-| **FRESH** (first trade at it this session, ≤2 tests on the 15m in 60 min) | 20 | **+18.81R** | **+0.94R** | 55% |
-| STALE (anything else) | 20 | +0.86R | +0.04R | 45% |
+His own words on the shape that earns an A, from the best trade of a scored
+week: *"tested once at session low, **no repeated failures**, sharp
+reversal."* The shape that does not: *"tested 3-4x since 03:15, no decisive
+close beyond"* — reading repetition as strength.
 
-On **A-grades specifically** the split is the whole story: fresh A's ran
-**+8.87R (mean +2.22R, 75% WR)**; stale A's ran **−1.78R (mean −0.25R, 29%
-WR)**. The A licence was being handed to worn-out levels, and A is his
-largest size — the worst-performing population was carrying the most money.
-
-**Why this is his reasoning and not a fitted number.** The best trade of
-either week (+6.37R) graded itself A citing, in the agent's own words,
-*"tested once at session low, **no repeated failures**"*. The four worst
-graded themselves A citing *"tested 3-4x since 03:15, no decisive close
-beyond"* — reading repetition as strength. His own doctrine already says the
-opposite in rubric point 4, in `THE RANGE FRAME` (*"the middle is dead"* — a
-level being revisited all session IS the middle of a range), and in his
-review of the narrated Wednesday, where repeatedly fading one level was the
-thing he disliked most.
-
-**WHAT THIS RULE IS NOT — checked, and the check failed.** It is NOT a claim
-that a level weakens each time it is tested. That was tested on **3,424
-mechanical triggers across 87 independent session-days** and it is **false**:
-raw outcome does not decay with visit number (mean MFE 3.35R / 3.69R / 3.93R
-at visits 1 / 2 / 3). Never reason *"this level has been tested twice, so it
-is about to break"* — the tape does not support it.
-
-What that same data DOES support is a **day-level** effect. Sorting those
-days by how much price rotates back through its own trigger levels: the least
-rotational quarter carried mean MFE 5.16R with 42% of triggers reaching 2R;
-the most rotational quarter, 3.10R and 30.8%. Trigger COUNT says the same
-(fewest-trigger days 5.03R / 39%; most-trigger days 2.86R / 29.8%).
-
-So read this rule for what it is: **finding yourself back at a level you have
-already traded today is information about the SESSION, not about the level.**
-It says the day is rotational, and a rotational day is one to take smaller
-on. That is exactly why the rule caps size and never blocks a trade — a stale
-level is not a worse setup, it is the same setup on a worse day.
+**WHAT THIS RULE IS NOT.** It is NOT a claim that a level weakens each time
+it is tested — that was tested against thousands of independent triggers and
+is false on the tape. Never reason *"this level has been tested twice, so it
+is about to break."* Finding yourself back at a level you have already traded
+today is information about the SESSION being rotational, not about the level
+decaying — which is exactly why this caps size and never blocks a trade. A
+stale level is not a worse setup; it is the same setup on a worse day.
+(Measurements behind both statements: `docs/CALIBRATION-freshness-0.4.8.md`.)
 
 **The rule:**
 
