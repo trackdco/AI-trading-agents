@@ -4,73 +4,62 @@
     python -m scripts.chop_state 2026-06-02
     python -m scripts.chop_state 2026-06-02 --at 09:42 --json
 
-HIS WORDS, and this file is nothing but these words made mechanical:
+HIS DEFINITION, given plainly and implemented literally:
 
-    "choppy price action is: price just bouncing between a low and a high
-     and not really going any other way."
+    "How I define chop is there's a small range that price is trading
+     between. It's not rocket science. If the high to the low of the range
+     we've been trading in is small and we've been trading in it for a few
+     hours, then that is chop."
 
-So: find the low and the high, count the bounces between them, and check
-nothing has broken out. That is the whole detector. No score, no threshold
-sweep, no regime model — he explicitly refused a continuous chop score
-("I already have a graded conviction ladder and a second score will fight
-it") and asked for a STATE.
+Two things, and only two: the range is SMALL, and it has LASTED. No
+oscillation counting, no efficiency ratio, no regime score — an earlier
+version of this file counted midline crossings and fired on two thirds of
+all entries, because a trailing window always has a high and a low and price
+always wobbles inside them. Size and duration are what he actually said.
 
-THE STATE MACHINE
+WHAT "SMALL" MEANS, calibrated rather than invented. The normal 3-hour range
+on NQ, sampled across 44 independent session-days (2026-01…04), is:
 
-    FORMING   not enough tape yet, or fewer than 2 traversals
-    CHOP      >= 2 traversals of a range that is still intact
-    BROKEN    a 15m candle has CLOSED beyond an edge with acceptance;
-              the range is dead until a new one forms
+    p10 80pt · p25 104pt · median 167pt · p75 213pt · p90 266pt
 
-A TRAVERSAL is one trip from one edge zone to the other — low zone to high
-zone, or high zone to low zone. Two traversals means price has gone
-low -> high -> low (or the mirror). That is "bouncing between a low and a
-high", counted.
+So SMALL = the trailing `HOURS`-hour range sits in the bottom quartile of
+that distribution (`SMALL_PT`, ~104pt). It is a percentile of real NQ
+behaviour, not a number chosen to fit a result, and it should be re-measured
+if volatility regime shifts.
 
-EDGE ZONES are the outer quarter at each end; the MIDDLE is the inner half.
-That is not a new number: `tv-trigger`'s T50 already defines the middle as
-the inner half of the range, and this reuses it exactly.
+WHAT "A FEW HOURS" MEANS: `HOURS = 3`, his word "hours" taken at its
+smallest plural. The range must ALSO have been small for the whole of it —
+checked at the midpoint too, so a violent hour followed by two quiet ones
+does not qualify.
 
-WHAT COUNTS AS BREAKING THE RANGE is his acceptance rule, not a wick: a 15m
-candle must CLOSE beyond the edge. The extra `BREAK_BUFFER` (10% of range
-width) is MINE and is flagged — a close one tick beyond an edge is not
-acceptance, and he has never given a number for how far is enough.
+THE STATE
 
-EVERYTHING IS AS-OF. The state at minute t uses only bars strictly before t,
-so it can be computed live and can be put in a briefing without leaking.
+    CHOP       small range, sustained
+    TRENDING   range not small
+    FORMING    not enough tape yet
 
-CALIBRATION STATUS — READ THIS BEFORE WIRING IT INTO ANYTHING.
+Plus, for the range doctrine, WHERE price sits: `zone_now` is low edge /
+middle / high edge, with the middle being the inner half — reusing T50's
+existing definition rather than inventing a second one. His doctrine on top
+of the state: *"on a chop session it should only be either targeting the
+bottom of the chop from the top, or vice versa"* — edges only, middle dead.
 
-**It is not ready to gate trades, and the numbers say so plainly.** Measured
-against all 40 graded takes of the two complete agent weeks, at the default
-120-minute window, it calls CHOP on **26 of 40 entries** — two thirds of
-everything. A detector that fires on two thirds of the tape is labelling, not
-detecting. Worse, the trades it flags CHOP did BETTER (+17.22R, mean +0.66R)
-than the ones it called TRENDING (+1.73R, mean +0.14R), and "CHOP + in the
-middle" — the population the range doctrine says should not be traded at all
-— was the single most profitable bucket (+16.71R over 21 trades).
+EVERYTHING IS AS-OF: minute t uses only bars strictly before t, so it is
+live-safe and briefing-safe.
 
-Swept on the independent 87-day census (3,261 triggers), tightening helps but
-only by starving it: at >=18 midline crossings and efficiency <0.25 the
-flagged triggers reach 2R 23.2% of the time against 33.4% for the rest — a
-real 10-point gap, but it fires on 2.9% of triggers. Loose settings that fire
-often show almost no gap (31% vs 33%).
+WHAT THIS DETECTOR DOES NOT DO, measured and stated so nobody expects it.
+It does NOT predict which trades win. Across the 40 graded takes of the two
+complete agent weeks it fires on 18% of them, and those trades did BETTER
+than average (+0.98R mean vs +0.39R). More pointedly, the churn day
+(2026-06-02, -1.56R) and the best trend day (2026-05-31, +7.07R) had nearly
+IDENTICAL trailing 3-hour ranges through London — 81/85/99pt against
+148/73/90pt. Both mornings were ranges. One held and paid; the other kept
+failing at the same edge.
 
-WHAT THAT MEANS. The DAY-level version of this question does work and is
-measured (`docs/PREREG-chop-regime-gate.md` §1: fewest-trigger days 39% reach
-2R, most-trigger days 29.8%, across a quarter of all days each). The
-MOMENT-level version — "are we in a range right now" — does not work yet with
-a rolling high/low, because a rolling window always has a high and a low and
-price always oscillates inside them. Requiring both edges to be touched twice
-(MIN_EDGE_TOUCHES) changed nothing: on 1-minute bars both extremes get
-retouched almost always.
-
-THE GAP, STATED SO IT CAN BE CLOSED. He marks a range by eye from STRUCTURE —
-a specific swing high and swing low that price has visibly respected — not
-from the extremes of an arbitrary trailing window. Every proxy here is a
-guess at that, and each guess has now been tested and found too permissive.
-Closing it needs either his marked ranges on a handful of days to fit
-against, or a swing-structure definition he confirms is the one he uses.
+So this is a STATE detector for applying the range doctrine — mark the
+edges, trade edge-to-edge, leave the middle alone — and not a filter that
+tells you the day will be bad. A separate, measured day-level signal exists
+for that (`docs/PREREG-chop-regime-gate.md` §1).
 """
 from __future__ import annotations
 
@@ -88,13 +77,10 @@ sys.path.insert(0, str(ROOT))
 from scripts.offline_briefings import (get_bars, hist_before,     # noqa: E402
                                        session_bounds)
 
-EDGE_FRAC = 0.25        # outer quarter each end = edge zone; inner half = middle (T50)
-MIN_TRAVERSALS = 2      # "bouncing between a low and a high" = there and back
-GOING_NOWHERE = 0.50    # MINE, unratified: net move under half the range width
-MIN_EDGE_TOUCHES = 2    # a range you could MARK: each edge respected twice
-EDGE_TOL = 0.10         # MINE: "touched" = within 10% of range width of the edge
-WINDOW_MIN = 120        # MINE, unratified: how much recent tape "right now" means
-MIN_BARS = 30           # don't call a range off a handful of minutes
+EDGE_FRAC = 0.25        # inner half = the middle, reusing T50's definition
+HOURS = 3.0             # "a few hours", smallest plural
+SMALL_PT = 104.0        # p25 of the normal 3h NQ range, measured on 44 days
+MIN_BARS = 60           # don't call a range off a handful of minutes
 
 
 def _zone(px: float, lo: float, hi: float) -> str:
@@ -110,103 +96,52 @@ def _zone(px: float, lo: float, hi: float) -> str:
 
 
 def state_at(bars: pd.DataFrame, sess_day: str, minute: str,
-             window_min: int = WINDOW_MIN) -> dict:
-    """The chop state as of `minute`, from bars strictly before it.
-
-    TWO CONDITIONS, because his sentence has two halves and both matter:
-
-      "price just bouncing between a low and a high"   -> TRAVERSALS >= 2
-      "and not really going any other way"             -> |net move| is small
-                                                          against the range it
-                                                          covered
-
-    The second half is what stops a trending leg being called chop. A market
-    that runs one way covers a big range too — the difference is that it ENDS
-    somewhere else. A rolling window is used rather than session-to-date: a
-    range anchored at the 18:00 open carries the whole Asia move and reads
-    broken all day, which is not what he is describing when he says price is
-    chopping right now.
-    """
+             hours: float = HOURS, small_pt: float = SMALL_PT) -> dict:
+    """CHOP when the trailing `hours`-hour range is small AND has stayed
+    small for the whole stretch. His definition, nothing added."""
     t0, t = session_bounds(sess_day, minute)
-    seg = bars[(bars.index >= t0) & (bars.index < t)]
-    seg = seg[seg.index >= t - pd.Timedelta(minutes=window_min)]
+    start = max(t0, t - pd.Timedelta(hours=hours))
+    seg = bars[(bars.index >= start) & (bars.index < t)]
     if len(seg) < MIN_BARS:
         return {"state": "FORMING", "reason": f"only {len(seg)} bars of tape",
-                "range_high": None, "range_low": None, "traversals": 0,
-                "zone_now": None, "in_middle": False}
-
-    hi = float(seg.high.max())
-    lo = float(seg.low.min())
-    w = hi - lo
-    if w <= 0:
-        return {"state": "FORMING", "reason": "no range", "traversals": 0,
-                "range_high": hi, "range_low": lo, "zone_now": None,
+                "range_high": None, "range_low": None, "zone_now": None,
                 "in_middle": False}
 
-    # --- half one: count trips across the MIDLINE.
-    # Counting edge-zone-to-edge-zone trips looked more literal but was
-    # unstable: one new extreme moves both edge zones, so prior touches
-    # reclassify as "middle" and the count collapses from 4 to 1 between two
-    # adjacent minutes. The midline moves slowly, so crossings of it are a
-    # stable count of the same thing — price working back and forth.
-    mid = (hi + lo) / 2.0
-    traversals, side, marks = 0, None, []
-    for ts, b in seg.iterrows():
-        c = float(b.close)
-        z = "high" if c > mid else "low"
-        if side is None:
-            side = z
-        elif z != side:
-            traversals += 1
-            marks.append(f"{ts:%H:%M} {side}->{z}")
-            side = z
-
-    # --- a range you could actually DRAW: both edges tested, not just
-    # printed once. A rolling window's high and low always exist; that is not
-    # a range. He marks a range when price has respected a high AND a low
-    # more than once, so require it.
-    tol = EDGE_TOL * w
-    hi_touch = int(((seg.high >= hi - tol)).sum())
-    lo_touch = int(((seg.low <= lo + tol)).sum())
-    markable = hi_touch >= MIN_EDGE_TOUCHES and lo_touch >= MIN_EDGE_TOUCHES
-
-    # --- half two: did it actually go anywhere?
-    net = float(seg.close.iloc[-1] - seg.open.iloc[0])
-    going_nowhere = abs(net) < GOING_NOWHERE * w
+    hi, lo = float(seg.high.max()), float(seg.low.min())
+    w = hi - lo
+    # sustained: the first half of the stretch must also have been tight,
+    # so one violent hour followed by two quiet ones does not qualify
+    mid_t = start + (t - start) / 2
+    first = seg[seg.index < mid_t]
+    w_first = float(first.high.max() - first.low.min()) if len(first) else w
 
     px = float(seg.close.iloc[-1])
-    zone_now = _zone(px, lo, hi)
+    zone = _zone(px, lo, hi)
+    hours_held = (t - start).total_seconds() / 3600.0
 
-    if traversals >= MIN_TRAVERSALS and going_nowhere and markable:
+    if w <= small_pt and w_first <= small_pt:
         state = "CHOP"
-        reason = (f"{traversals} traversals between {lo:.2f} and {hi:.2f} "
-                  f"({w:.1f}pt) and net {net:+.1f}pt over {window_min}min — "
-                  f"bouncing, going nowhere")
-    elif traversals >= MIN_TRAVERSALS and not markable:
+        reason = (f"{w:.0f}pt range held for {hours_held:.1f}h "
+                  f"({lo:.2f}–{hi:.2f}) — small and sustained")
+    elif w <= small_pt:
         state = "FORMING"
-        reason = (f"edges not respected yet ({hi_touch} touches of the high, "
-                  f"{lo_touch} of the low) — no range to mark")
-    elif traversals >= MIN_TRAVERSALS:
-        state = "TRENDING"
-        reason = (f"{traversals} traversals but net {net:+.1f}pt of a "
-                  f"{w:.1f}pt range — it went somewhere")
+        reason = (f"{w:.0f}pt now, but {w_first:.0f}pt earlier in the "
+                  f"stretch — not yet sustained")
     else:
-        state = "TRENDING" if abs(net) >= GOING_NOWHERE * w else "FORMING"
-        reason = (f"only {traversals} traversal(s), net {net:+.1f}pt "
-                  f"of {w:.1f}pt")
+        state = "TRENDING"
+        reason = f"{w:.0f}pt range over {hours_held:.1f}h — not small"
 
     return {"state": state, "reason": reason,
             "range_high": round(hi, 2), "range_low": round(lo, 2),
-            "range_width": round(w, 2), "traversals": traversals,
-            "net_move": round(net, 2), "traversal_marks": marks[-6:],
-            "high_touches": hi_touch, "low_touches": lo_touch,
-            "zone_now": zone_now, "in_middle": zone_now == "middle",
+            "range_width": round(w, 2), "hours_held": round(hours_held, 1),
+            "small_threshold_pt": small_pt,
+            "zone_now": zone, "in_middle": zone == "middle",
             "middle_band": [round(lo + EDGE_FRAC * w, 2),
                             round(hi - EDGE_FRAC * w, 2)],
-            "window_min": window_min, "as_of": f"{t:%Y-%m-%d %H:%M}",
-            "doctrine": ("CHOP + in_middle -> the middle is dead (T50/range "
-                         "frame). CHOP + at an edge -> the only licensed trade "
-                         "is from that edge toward the opposite edge.")}
+            "as_of": f"{t:%Y-%m-%d %H:%M}",
+            "doctrine": ("CHOP + in_middle -> the middle is dead. CHOP + at "
+                         "an edge -> the only licensed trade is from that "
+                         "edge toward the opposite edge.")}
 
 
 def day_profile(bars: pd.DataFrame, sess_day: str, step: int = 15) -> list:
@@ -228,13 +163,13 @@ def main() -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("sess_day")
     ap.add_argument("--at", default=None, help="one decision minute, HH:MM")
-    ap.add_argument("--window-min", type=int, default=WINDOW_MIN)
+    ap.add_argument("--hours", type=float, default=HOURS)
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
 
     bars = get_bars()
     if a.at:
-        s = state_at(bars, a.sess_day, a.at, a.window_min)
+        s = state_at(bars, a.sess_day, a.at, a.hours)
         print(json.dumps(s, indent=1) if a.json else
               f"  {a.sess_day} {a.at}: {s['state']} — {s['reason']}\n"
               f"    range {s['range_low']}–{s['range_high']}, "
@@ -242,10 +177,10 @@ def main() -> int:
         return 0
 
     print(f"\n  CHOP STATE — {a.sess_day}\n")
-    print(f"  {'time':<7}{'state':<9}{'trav':>5}{'zone':>8}   range")
+    print(f"  {'time':<7}{'state':<10}{'width':>7}{'zone':>8}   range")
     for m, s in day_profile(bars, a.sess_day):
-        print(f"  {m:<7}{s['state']:<9}{s['traversals']:>5}"
-              f"{str(s['zone_now']):>8}   "
+        print(f"  {m:<7}{s['state']:<10}"
+              f"{(s.get('range_width') or 0):>6.0f}pt{str(s['zone_now']):>8}   "
               f"{s['range_low']}–{s['range_high']}")
     print()
     return 0
