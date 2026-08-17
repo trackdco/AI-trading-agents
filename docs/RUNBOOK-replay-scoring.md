@@ -456,6 +456,16 @@ NY_AM 09:30–11:00. After **every** step:
      session, each with the sweep time and whether price closed beyond or
      reclaimed. "We've taken out that low" is a cause in his reasoning; the
      agents cannot cite what they cannot see.
+   - `chop_state` — **required by tv-trigger 0.4.9.** His definition of a
+     choppy market, computed by `python -m scripts.chop_state <sess_day>
+     --at <HH:MM> --json`: a small range (bottom quartile of the normal 3-hour
+     NQ range, ~104pt) that has held for hours. Supplies `state`
+     (CHOP/TRENDING/FORMING), `range_high`, `range_low`, `middle_band` and
+     `zone_now`. A mechanical fact under §0c — the orchestrator computes and
+     states it, never decides from it. It is a LICENCE to trade the range
+     edge-to-edge, never a veto, and the trigger contract owns what to do
+     with it.
+
    - `level_visits_this_session` — **required by tv-trigger 0.4.8.** For the
      candidate's own rejected level: how many takes have already been
      adjudicated at that level this session (the current one counts, so a
