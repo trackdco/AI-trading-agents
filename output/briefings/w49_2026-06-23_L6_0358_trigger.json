@@ -316,12 +316,12 @@
   "prior_day_low 29577.25",
   "vwap_m3 29560.08"
  ],
- "fills_this_window": 1,
+ "fills_this_window": 2,
  "window_cap": {
   "window": "LONDON",
   "written_cap": 2,
   "caps_lifted": true,
-  "fills_so_far": 1
+  "fills_so_far": 2
  },
  "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
  "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
@@ -433,10 +433,24 @@
  "context_extras_note": "nwog / swept lows-highs / defended_levels computed by scripts.context_extras as-of the decision minute. Mechanical, no editorial.",
  "chart_truncation_note": "decision minute 03:58; the last COMPLETE 2m bar closes 03:58. Deliberate and leak-safe; legend values were read at that cursor.",
  "position_state": {
-  "state": "FLAT",
-  "fills_this_window": 1,
-  "detail": "no open position. LONDON has had ONE position this window (L1, short 29827.50 filled 03:00) which was scaled into once under T53 and is now fully closed: 75% banked 29797.50 at 03:03 (+1.9355R), the 25% runner stopped 29831.00 at 03:47 (-0.2258R), and a T53 scale-in clip filled 29809.25 at 03:30 also stopped 29831.00 at 03:47 (-1.0000R). The scale-in did NOT consume a window slot. Stated as run state, not as a view on this candidate.",
-  "cap_note": "the written LONDON cap is 2 fills and 1 is used - the T53 scale-in consumes no slot."
+  "state": "OPEN",
+  "fills_this_window": 2,
+  "open_position": {
+   "cid": "L5",
+   "side": "short",
+   "entry": 29801.0,
+   "opened_at": "03:55",
+   "original_stop": 29830.0,
+   "current_stop": 29796.0,
+   "original_r_pts": 29.0,
+   "conviction": "B",
+   "size_remaining_pct": 100,
+   "banked_so_far": "nothing banked - TP1 has not printed",
+   "management_so_far": "03:57 trail 29830.00 -> 29796.00 on bb_ma_15m breaking. The stop now sits 5.00pt BELOW entry, so the position can no longer lose - minimum +0.1724R.",
+   "target": "day_fib_0.5 29738.62"
+  },
+  "detail": "one position open (L5). Earlier this window L1 ran short 29827.50, banked 75% at +1.9355R, had its runner stopped and a T53 scale-in clip stopped, finishing +1.1452R combined.",
+  "cap_note": "the written LONDON cap is 2 fills and BOTH are now used. A further fill would be tagged beyond_written_cap - caps are LIFTED for this run, so it is permitted, but it must be tagged."
  },
  "MECHANICAL_GATE_outer_band_fade_only": {
   "rule": "a SHORT at/through vwap_m2/m3 or a LONG at/through vwap_p2/p3 is a pass regardless of trigger quality.",
@@ -673,5 +687,19 @@
   "doctrine": "CHOP + in_middle -> the middle is dead. CHOP + at an edge -> the only licensed trade is from that edge toward the opposite edge.",
   "_source": "scripts.chop_state - MECHANICAL FACT under runbook 0c. His definition implemented literally: a SMALL range (bottom quartile of the normal 3-hour NQ range, ~104pt over 44 days) that has LASTED about three hours. Size and duration only.",
   "_what_it_governs": "tv-trigger 0.4.9: chop tells you HOW to trade, not whether to. In CHOP an edge trigger is licensed toward the far side, targeting the STRUCTURAL level near it rather than the range extreme; the middle is dead; and an edge fade is NOT counter-trend, so it does not cap at C."
+ },
+ "SAME_DIRECTION_T53": {
+  "what": "this candidate fires in the SAME direction as the open L5 short. Under T53 that makes it a SCALE-IN question, not a fresh entry.",
+  "contract_text": "tv-trigger adjudicates the fresh candidate as normal; on a take verdict graded B or better, the orchestrator routes execution to tv-manage as reason_for_call: second_setup - a smaller clip added to the open position, the whole position's stop moved to the new setup's invalidation, ONE position in the log, and no window slot consumed.",
+  "what_it_means_for_you": "adjudicate this candidate ON ITS OWN MERITS exactly as you would any other. Do not treat the open position as a reason to take it, nor as a reason to decline it. If you take it at B or better it becomes a scale-in; the orchestrator handles that routing, not you.",
+  "open_position": {
+   "cid": "L5",
+   "side": "short",
+   "entry": 29801.0,
+   "current_stop": 29796.0,
+   "note": "its stop is already below entry, so that position can no longer lose."
+  },
+  "cap": "both written LONDON fills are used. A T53 scale-in consumes NO window slot, so the cap does not bar it.",
+  "source": "RUNBOOK-replay-scoring.md T53. MECHANICAL FACT under runbook 0c."
  }
 }
