@@ -1,0 +1,212 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "escalation",
+ "window": "LONDON",
+ "decision_minute": "2026-06-22T03:42 ET",
+ "leak_check": "pass - replay truncated at 03:41:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/w49_2026-06-21_L1_0342.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30752.5,
+ "last_completed_2m_bar": {
+  "start": "03:40",
+  "closed_at": "03:42",
+  "open": 30768.75,
+  "high": 30769.5,
+  "low": 30752.5,
+  "close": 30752.5,
+  "volume": 202,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "LONDON",
+  "entries": "03:00-04:59",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30768.01,
+  "bb_upper_2m": 30784.57,
+  "bb_lower_2m": 30751.45,
+  "vwap": 30571.59,
+  "vwap_p1": 30668.55,
+  "vwap_m1": 30474.63,
+  "vwap_p2": 30765.52,
+  "vwap_m2": 30377.66,
+  "vwap_p3": 30862.48,
+  "vwap_m3": 30280.7,
+  "read_at": "chart cursor 03:41:59. The 2m bar 03:40-03:42 is COMPLETE and closes at 03:42; minute 03:42 has not started.",
+  "_chop_state": {
+   "state": "TRENDING",
+   "reason": "258pt range over 3.0h \u2014 not small",
+   "range_high": 30781.75,
+   "range_low": 30524.0,
+   "range_width": 257.75,
+   "hours_held": 3.0,
+   "small_threshold_pt": 104.0,
+   "zone_now": "high",
+   "in_middle": false,
+   "middle_band": [
+    30588.44,
+    30717.31
+   ],
+   "as_of": "2026-06-22 03:42",
+   "doctrine": "CHOP + in_middle -> the middle is dead. CHOP + at an edge -> the only licensed trade is from that edge toward the opposite edge.",
+   "_source": "scripts.chop_state - MECHANICAL FACT under runbook 0c, stated never judged."
+  },
+  "_legend_verified": {
+   "verified": true,
+   "worst_diff_pts": 0.37,
+   "note": "legend cross-checked against independently computed values from committed bars, tolerance 2.0pt"
+  },
+  "_session_calendar": {
+   "session_day_label": "2026-06-21",
+   "session_opens": "2026-06-21 18:00 ET (Sunday evening)",
+   "cash_session_traded": "2026-06-22 (Monday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30571.43,
+   "vwap_p1": 30668.6,
+   "vwap_p2": 30765.78,
+   "vwap_p3": 30862.95,
+   "vwap_m1": 30474.26,
+   "vwap_m2": 30377.09,
+   "vwap_m3": 30279.92
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30768.01,
+   "bb_ma_3m": 30756.58,
+   "bb_ma_15m": 30643.66,
+   "bb_ma_60m": 30619.06
+  },
+  "day_range_fibs": {
+   "0.382": 30507.2,
+   "0.5": 30559.62,
+   "0.618": 30612.05,
+   "0.705": 30650.7
+  },
+  "session_high_so_far": 30781.75,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30563.0,
+   "val": 30471.0,
+   "vah": 30658.0,
+   "note": "DEVELOPING as-of 03:42"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30353.0,
+   "vah": 30714.0,
+   "high": 30975.5,
+   "low": 29923.0,
+   "anchor": "2026-06-15 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:42"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.15,
+  "net_move_15m": 175.5,
+  "total_15m_travel": 1168.0,
+  "candles_15m_up": 20,
+  "candles_15m_down": 19,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "02:45",
+   "open": 30724.75,
+   "high": 30742.25,
+   "low": 30720.5,
+   "close": 30736.75,
+   "body_ratio": 0.55
+  },
+  {
+   "start": "03:00",
+   "open": 30737.25,
+   "high": 30775.75,
+   "low": 30733.5,
+   "close": 30763.25,
+   "body_ratio": 0.62
+  },
+  {
+   "start": "03:15",
+   "open": 30764.5,
+   "high": 30781.75,
+   "low": 30759.0,
+   "close": 30774.25,
+   "body_ratio": 0.43
+  },
+  {
+   "start": "03:30",
+   "open": 30773.75,
+   "high": 30779.5,
+   "low": 30752.5,
+   "close": 30752.5,
+   "body_ratio": 0.79
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "no catalyst exists to falsify; would revisit if a scheduled event or dated constituent-moving headline appears in a later briefing for this window",
+  "reasoning": "No releases have printed and none are scheduled for this session day, so there is no calendar-based gate and no dated catalyst to lean on for the LONDON window at 03:00 ET."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "stand_aside",
+  "targets": [],
+  "invalidation": {
+   "level": "weekly_val",
+   "price": 30353.0
+  },
+  "waiting_for": "a confirmed significant new-week opening gap (none evidenced) or a material structural event before London entries are licensed; NY windows unaffected by this default",
+  "two_sided": false,
+  "condition_for_other_side": "",
+  "anticipated_resolution": {
+   "level": "session_high_30742_bb2m_upper_vwap_p2_cluster",
+   "price": 30742.25,
+   "expect": "holds",
+   "act_on_resolution": false
+  },
+  "acceptance_rule": "15m close beyond a level with a decisive body; a 2m/3m poke does not count",
+  "other_side_tripwire": {
+   "level": "session_high_30742",
+   "price": 30742.25,
+   "event": "15m_decisive_close"
+  },
+  "defended_level": {
+   "level": "none",
+   "price": 0.0,
+   "memory": "no defended level named - no bias held this window",
+   "status": "untested"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "This is the week's first session-day (Mon London) and requires a confirmed, significant new-week opening gap to trade - none is evidenced: session low (30337.5) sits right at weekly VAL (30353), only ~50pt below Friday's low, and price has already rallied back through Friday's POC/VAH (30668/30699) into the weekly VAH (30714), now pinned at the local 3h range high against the 2m BB upper/VWAP+2 cluster (~30737-30750). 15m up/down candles are balanced (18/18) with low path efficiency (0.144) - no flush, no independent edge. Per doctrine, default to stand_aside for London; NY is unaffected. Watching for a 15m decisive close beyond the session high, or a break of weekly VAL, to re-open a directional read."
+ },
+ "what_happened_since_the_last_read": "Since your 03:00 read, stated as price facts only: between 03:00 and this decision minute the session traded a high of 30781.75 and a low of 30733.50. All levels in levels_at_decision_BUILD are recomputed as of this minute.",
+ "why_you_are_being_re-fired": "Tier 2 escalated thesis_stale at 03:42 on candidate L1. It named the rejected level thu_defended_ceiling_30783 at 30783.25 (tested 7 times this session, 0 closes above; session high 30781.75 never closed through) and proved it with a SAME-CANDLE 2m+3m two-level break closing through own MA and VWAP+2 together. Its stated reason the standing thesis cannot accommodate this: \"Stand_aside is a Monday no-confirmed-weekly-gap default with two_sided:false; it names no ceiling/rejection logic and so cannot evaluate this session-long defended-high rejection proven by a same-candle 2m+3m two-level break.\" Direction escalated: SHORT. Re-read the chart at this minute and either ADAPT the thesis or RE-AFFIRM stand_aside. This is the one escalation permitted for this candidate. Emit a full thesis JSON either way."
+}
