@@ -1,0 +1,210 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM",
+ "decision_minute": "2026-06-25T09:30 ET",
+ "leak_check": "pass - replay truncated at 09:29:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/w49_2026-06-24_NY_AM_0930.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30151.0,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "closed_at": "09:30",
+  "open": 30178.25,
+  "high": 30179.25,
+  "low": 30149.0,
+  "close": 30151.0,
+  "volume": 1991,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_AM",
+  "entries": "09:30-11:00 earliest entry 09:35",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30172.54,
+  "bb_upper_2m": 30220.6,
+  "bb_lower_2m": 30124.48,
+  "vwap": 30103.27,
+  "vwap_p1": 30175.9,
+  "vwap_m1": 30030.65,
+  "vwap_p2": 30248.53,
+  "vwap_m2": 29958.02,
+  "vwap_p3": 30321.15,
+  "vwap_m3": 29885.39,
+  "read_at": "chart cursor 09:30-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "_chop_state": {
+   "state": "TRENDING",
+   "reason": "165pt range over 3.0h \u2014 not small",
+   "range_high": 30263.75,
+   "range_low": 30099.0,
+   "range_width": 164.75,
+   "hours_held": 3.0,
+   "small_threshold_pt": 104.0,
+   "zone_now": "middle",
+   "in_middle": true,
+   "middle_band": [
+    30140.19,
+    30222.56
+   ],
+   "as_of": "2026-06-25 09:30",
+   "doctrine": "CHOP + in_middle -> the middle is dead. CHOP + at an edge -> the only licensed trade is from that edge toward the opposite edge."
+  },
+  "_session_calendar": {
+   "session_day_label": "2026-06-24",
+   "session_opens": "2026-06-24 18:00 ET (Wednesday evening)",
+   "cash_session_traded": "2026-06-25 (Thursday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30103.91,
+   "vwap_p1": 30177.28,
+   "vwap_p2": 30250.65,
+   "vwap_p3": 30324.02,
+   "vwap_m1": 30030.54,
+   "vwap_m2": 29957.17,
+   "vwap_m3": 29883.8
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30172.54,
+   "bb_ma_3m": 30182.85,
+   "bb_ma_15m": 30149.05,
+   "bb_ma_60m": 29989.71
+  },
+  "day_range_fibs": {
+   "0.382": 30054.09,
+   "0.5": 30094.12,
+   "0.618": 30134.16,
+   "0.705": 30163.67
+  },
+  "session_high_so_far": 30263.75,
+  "session_low_so_far": 29924.5,
+  "daily_profile": {
+   "poc": 30161.0,
+   "val": 30055.0,
+   "vah": 30208.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29727.0,
+   "val": 29591.0,
+   "vah": 30008.0,
+   "high": 30701.25,
+   "low": 29264.75,
+   "anchor": "2026-06-22 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "prior_day": {
+   "poc": 29769.0,
+   "val": 29503.0,
+   "vah": 29892.0,
+   "high": 30157.75,
+   "low": 29264.75
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.056,
+  "net_move_15m": 61.25,
+  "total_15m_travel": 1095.5,
+  "candles_15m_up": 34,
+  "candles_15m_down": 28,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "08:30",
+   "open": 30130.75,
+   "high": 30263.75,
+   "low": 30126.0,
+   "close": 30192.75,
+   "body_ratio": 0.45
+  },
+  {
+   "start": "08:45",
+   "open": 30193.75,
+   "high": 30227.25,
+   "low": 30187.75,
+   "close": 30201.25,
+   "body_ratio": 0.19
+  },
+  {
+   "start": "09:00",
+   "open": 30202.75,
+   "high": 30214.75,
+   "low": 30143.5,
+   "close": 30163.5,
+   "body_ratio": 0.55
+  },
+  {
+   "start": "09:15",
+   "open": 30165.0,
+   "high": 30179.25,
+   "low": 30130.0,
+   "close": 30151.0,
+   "body_ratio": 0.28
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [
+   {
+    "event": "Core PCE Price Index m/m",
+    "time_et": "08:30"
+   }
+  ],
+  "drivers": [],
+  "falsified_by": "A materially outsized Core PCE surprise that visibly repriced mega-cap tech or NQ ahead of this minute would falsify neutral, but no outcome/print value is in this briefing to assess that.",
+  "reasoning": "Core PCE m/m printed at 08:30 ET, before this decision minute, but the briefing carries no outcome value - only that it released - so no direction can be named. Per standing policy the pre-market blackout closed entries only through 08:30; NY_AM at 09:30 is clear. No FOMC event today."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "stand_aside",
+  "targets": [],
+  "invalidation": {
+   "level": "range_low_30099",
+   "price": 30099.0
+  },
+  "waiting_for": "PCE print (08:30) to clear the mechanical blackout, then price to tag an edge of the 3h 30099-30193 range for a fade, or a 15m decisive-body close beyond an edge for a continuation trade - nothing has resolved from the dead middle yet",
+  "two_sided": false,
+  "condition_for_other_side": "",
+  "anticipated_resolution": {
+   "level": "range_high_30193",
+   "price": 30193.0,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond either range edge (30099 / 30193) with a decisive body (>~0.4 body_ratio) - a wick-heavy absorption candle at either edge is not a break, it's the range holding",
+  "other_side_tripwire": {
+   "level": "range_low_30099",
+   "price": 30099.0,
+   "event": "15m_decisive_close"
+  },
+  "defended_level": {
+   "level": "3h_range_low",
+   "price": 30099.0,
+   "memory": "floor of the 3h 30099-30193 consolidation; tested exactly at 07:30 (low print 30099.00) and bounced immediately, closing that same candle back up at 30130.50",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "London's short thesis was invalidated by a break above the 30128-30132 cluster to a new session high of 30219; price has since spent 3h chopping in a 94pt range (30099-30193), rejecting the top at 07:00 and bouncing the low at 07:30, and now sits dead in the middle at the 0.705 day-fib/BB-MA confluence (~30126-30132) on a doji. Core PCE prints at 08:30 inside a mechanical blackout with no directional catalyst pre-print (macro neutral). CHOP + in_middle: no edge, no thesis until price tags a boundary or the range breaks with a decisive 15m close."
+ },
+ "what_happened_since_the_last_read": "Since your 08:00 read, stated as price facts only: between 08:00 and this decision minute the session traded a high of 30263.75 and a low of 30117.00. All levels in levels_at_decision_BUILD are recomputed as of this minute."
+}
