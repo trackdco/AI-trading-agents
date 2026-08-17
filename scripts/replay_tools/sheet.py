@@ -85,6 +85,13 @@ def main():
                 print(q(o.get("reasoning")), "\n")
             for r in wr:
                 t = r.get("row")
+                # SUPERSEDED rows are retained in the book as evidence of a
+                # correction, but they are not the scored decision and must not
+                # appear in the sheet he reads.
+                if r.get("SUPERSEDED"):
+                    continue
+                if t in ("trigger", "manage") and "output" not in r:
+                    continue
                 if t == "trigger":
                     o = r["output"]
                     dec = o.get("decision")
