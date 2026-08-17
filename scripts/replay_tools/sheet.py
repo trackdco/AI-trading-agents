@@ -33,16 +33,29 @@ def fmt_cs(cs):
             f"range {cs.get('range_width')}pt over {cs.get('hours_held')}h")
 
 
-def fmt_lv(lv):
+def fmt_lv(lv, named=None):
+    """Show what BINDS: every stale level, plus the level the agent actually named.
+    Dumping all 26 buries the two or three that matter."""
     if not lv:
         return "_not recorded_"
+    rows = {n: d for n, d in lv.items() if not n.startswith("_")}
+    if not rows:
+        return "_not recorded_"
+    stale = {n: d for n, d in rows.items() if not d.get("fresh")}
+    show = dict(stale)
+    if named:
+        for n, d in rows.items():
+            if n in str(named) or str(named) in n:
+                show[n] = d
     parts = []
-    for n, d in lv.items():
-        if n.startswith("_"):
-            continue
+    for n, d in show.items():
         tag = "FRESH" if d.get("fresh") else "STALE"
         parts.append(f"`{n}` {d.get('price')} — visit {d.get('visits')}, "
                      f"{d.get('tests_15m_60min')} tests/60m → **{tag}**")
+    if not parts:
+        parts.append(f"all {len(rows)} levels FRESH — 0.4.8 imposes no grade cap here")
+    else:
+        parts.append(f"_({len(rows)} levels supplied, {len(stale)} stale)_")
     s = "<br>".join(parts)
     if lv.get("_note"):
         s += f"<br>_{lv['_note']}_"
@@ -91,11 +104,29 @@ def main():
                     if o.get("constraints_failed"):
                         print(f"- **constraints failed:** `{'`, `'.join(o['constraints_failed'])}`")
                     print(f"- **chop_state:** {fmt_cs(r.get('chop_state_in_force'))}")
-                    print(f"- **level_visits:** {fmt_lv(r.get('level_visits_in_force'))}")
+                    print(f"- **level_visits:** {fmt_lv(r.get('level_visits_in_force'), (rl or {}).get('level'))}")
                     print("\n**its reason, verbatim:**\n")
                     print(q(o.get("reason")), "\n")
+                    esc = o.get("escalation")
+                    if esc:
+                        print(f"- ⚡ **ESCALATED** `{esc.get('level')}` "
+                              f"{esc.get('direction')} — thesis_stale\n")
+                        print("**why the standing thesis could not accommodate it:**\n")
+                        print(q(esc.get("why_thesis_cannot_accommodate")), "\n")
+                        if o.get("entry"):
+                            print(f"- the plan it carried: {o.get('entry_type')} "
+                                  f"{o.get('entry')} · stop {o.get('stop')} · target "
+                                  + ", ".join(f"{x['level']} {x['price']}"
+                                              for x in (o.get("targets") or []))
+                                  + f" · conviction {o.get('conviction')}\n")
+                    if r.get("escalation_outcome"):
+                        print(f"- **Tier 1 returned:** {r['escalation_outcome']}\n")
                     if r.get("grade_note"):
                         print(f"_{r['grade_note']}_\n")
+                    if r.get("contract_comparison"):
+                        cc = r["contract_comparison"]
+                        print("> **contract comparison** — "
+                              f"{cc.get('what_changed','')}\n")
                 elif t == "fill":
                     print(f"**FILL {r['candidate_id']}** — {r['side']} {r['fill_price']} at "
                           f"{r['filled_at']} · stop {r['stop']} · R = {r['original_r_pts']}pt"
