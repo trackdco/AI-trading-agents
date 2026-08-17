@@ -11,36 +11,46 @@
  "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
  "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
  "thesis": {
-  "bias": "stand_aside",
-  "targets": [],
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_vah",
+    "price": 30714.0
+   },
+   {
+    "level": "vwap_p1_prior_day_poc_confluence",
+    "price": 30668.5
+   }
+  ],
   "invalidation": {
-   "level": "weekly_val",
-   "price": 30353.0
+   "level": "defended_ceiling_30783",
+   "price": 30783.25
   },
-  "waiting_for": "a confirmed significant new-week opening gap (none evidenced) or a material structural event before London entries are licensed; NY windows unaffected by this default",
-  "two_sided": false,
-  "condition_for_other_side": "",
+  "waiting_for": "nothing further - displacement through the ceiling is already confirmed by the same-candle 2m+3m break; short entries licensed on the retest of the broken 2m MA/VWAP+2 zone (~30765-30768)",
+  "two_sided": true,
+  "condition_for_other_side": "longs relicensed on a defended-level bounce AT the VWAP+1/prior-day-POC confluence (~30668-30670) - a test that holds with displacement back up - since the session is still net +444pt off its low and the higher-timeframe trend remains up",
   "anticipated_resolution": {
-   "level": "session_high_30742_bb2m_upper_vwap_p2_cluster",
-   "price": 30742.25,
+   "level": "vwap_p1_prior_day_poc_30668",
+   "price": 30668.5,
    "expect": "holds",
-   "act_on_resolution": false
+   "act_on_resolution": true
   },
-  "acceptance_rule": "15m close beyond a level with a decisive body; a 2m/3m poke does not count",
+  "acceptance_rule": "the defended ceiling (~30783) is only confirmed broken on a 15m close above it with a decisive body; today's 2m/3m displacement down is sufficient to license the counter-move under the defended-level doctrine but does not itself define acceptance of a new level",
   "other_side_tripwire": {
-   "level": "session_high_30742",
-   "price": 30742.25,
-   "event": "15m_decisive_close"
+   "level": "vwap_p1_prior_day_poc_30668",
+   "price": 30668.5,
+   "event": "displacement_from_defended_level"
   },
   "defended_level": {
-   "level": "none",
-   "price": 0.0,
-   "memory": "no defended level named - no bias held this window",
-   "status": "untested"
+   "level": "session_high_defended_ceiling_30783",
+   "price": 30783.25,
+   "memory": "tested 7x this session, high extended to 30781.75 but never closed above; 03:40-03:42 2m candle (body ratio 0.96) closed decisively through both its own MA (30768.01) and VWAP+2 (30765.5) together, displacing away from the ceiling",
+   "status": "holding"
   },
   "flush": false,
   "flush_direction": null,
-  "reasoning": "This is the week's first session-day (Mon London) and requires a confirmed, significant new-week opening gap to trade - none is evidenced: session low (30337.5) sits right at weekly VAL (30353), only ~50pt below Friday's low, and price has already rallied back through Friday's POC/VAH (30668/30699) into the weekly VAH (30714), now pinned at the local 3h range high against the 2m BB upper/VWAP+2 cluster (~30737-30750). 15m up/down candles are balanced (18/18) with low path efficiency (0.144) - no flush, no independent edge. Per doctrine, default to stand_aside for London; NY is unaffected. Watching for a 15m decisive close beyond the session high, or a break of weekly VAL, to re-open a directional read."
+  "escalation_response": "accommodated",
+  "reasoning": "The Monday no-gap default held through 03:00, but this is now a genuine defended-level licence, not a gap play: 7 failed tests of 30783, then a same-candle 2m+3m break through the 2m MA and VWAP+2 with a 0.96 body ratio - displacement away exactly as T64 requires. This is also the resolution my prior tripwire (15m close beyond the high cluster) was watching for, resolving as 'held' rather than broken. Adapting to a modest short toward the VWAP+1/prior-day-POC confluence, not a trend call - the session is still +444pt off its low (path_efficiency 0.15, not a flush), so longs remain live on a defended reclaim at that confluence."
  },
  "price_at_decision": 30752.5,
  "signal_candle_3m": {
@@ -444,7 +454,9 @@
  "context_extras_note": "nwog / swept lows-highs / defended_levels computed by scripts.context_extras as-of the decision minute. Mechanical, no editorial.",
  "chart_truncation_note": "decision minute 03:42; the last COMPLETE 2m bar closes 03:42. Deliberate and leak-safe; legend values were read at that cursor.",
  "position_state": {
-  "state": "FLAT"
+  "state": "FLAT",
+  "fills_this_window": 0,
+  "detail": "no open position. This is the first candidate of the session-day. Stated as run state, not as a view on this candidate."
  },
  "MECHANICAL_GATE_outer_band_fade_only": {
   "rule": "a SHORT at/through vwap_m2/m3 or a LONG at/through vwap_p2/p3 is a pass regardless of trigger quality.",
@@ -466,9 +478,10 @@
  "escalation_state": {
   "window": "LONDON",
   "budget": 2,
-  "used": 0,
-  "remaining": 2,
-  "ratchet": "no level+direction escalated yet in this window",
+  "used": 1,
+  "remaining": 1,
+  "ratchet": "thu_defended_ceiling_30783 SHORT was escalated at this minute by this candidate, and Tier 1 ACCOMMODATED - the standing thesis was adapted from stand_aside to short (v1b).",
+  "this_candidate": "L1 has already spent its ONE permitted escalation. Under the escalation rule you may not re-escalate the same candidate under a new framing. Decide on the thesis as returned.",
   "note": "stated as run state."
  },
  "news_note": "news_blackout false. The calendar for 2026-06-22 is EMPTY in all three windows.",
@@ -477,133 +490,133 @@
  "level_visits_this_session": {
   "by_level": {
    "vwap": {
-    "level": 30193.25,
+    "level": 30571.43,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "vwap_p1": {
-    "level": 30267.67,
+    "level": 30668.6,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "vwap_p2": {
-    "level": 30342.08,
+    "level": 30765.78,
     "level_visits_this_session": 1,
-    "tests_15m_60min": 0,
+    "tests_15m_60min": 2,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "vwap_p3": {
-    "level": 30416.5,
+    "level": 30862.95,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "vwap_m1": {
-    "level": 30118.83,
+    "level": 30474.26,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "vwap_m2": {
-    "level": 30044.41,
+    "level": 30377.09,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "vwap_m3": {
-    "level": 29969.99,
+    "level": 30279.92,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "bb_ma_2m": {
-    "level": 30107.8,
+    "level": 30768.01,
     "level_visits_this_session": 1,
-    "tests_15m_60min": 0,
+    "tests_15m_60min": 2,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "bb_ma_3m": {
-    "level": 30113.46,
+    "level": 30756.58,
     "level_visits_this_session": 1,
-    "tests_15m_60min": 0,
+    "tests_15m_60min": 1,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "bb_ma_15m": {
-    "level": 30169.7,
+    "level": 30643.66,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "bb_ma_60m": {
-    "level": 30304.56,
+    "level": 30619.06,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "daily_poc": {
-    "level": NaN,
+    "level": 30563.0,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "daily_val": {
-    "level": NaN,
+    "level": 30471.0,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "daily_vah": {
-    "level": NaN,
+    "level": 30658.0,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "weekly_poc": {
-    "level": NaN,
+    "level": 30443.0,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "weekly_val": {
-    "level": NaN,
+    "level": 30353.0,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "weekly_vah": {
-    "level": NaN,
+    "level": 30714.0,
     "level_visits_this_session": 1,
-    "tests_15m_60min": 0,
+    "tests_15m_60min": 1,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "weekly_high": {
-    "level": NaN,
+    "level": 30975.5,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "weekly_low": {
-    "level": NaN,
+    "level": 29923.0,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,
@@ -645,14 +658,14 @@
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "session_high_so_far": {
-    "level": NaN,
+    "level": 30781.75,
     "level_visits_this_session": 1,
-    "tests_15m_60min": 0,
+    "tests_15m_60min": 1,
     "fresh": true,
     "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
    },
    "session_low_so_far": {
-    "level": NaN,
+    "level": 30337.5,
     "level_visits_this_session": 1,
     "tests_15m_60min": 0,
     "fresh": true,

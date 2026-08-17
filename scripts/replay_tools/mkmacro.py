@@ -5,6 +5,10 @@ sys.path.insert(0, "/Users/barbelldaddy/AI-trading-agents")
 from scripts.replay_tools.brief04 import macro_rows
 
 POLICY = json.load(open("/Users/barbelldaddy/.claude/jobs/2411401a/tmp/d5_macro_LONDON.json"))["standing_policy"]
+# _marker_note explains that the quote key was renamed away from `his_words` so
+# audit_run_leak check D would stop firing - and the note itself contains the literal
+# strings "his_words" and "narrated_days", so it trips the very check it documents.
+POLICY = {k: v for k, v in POLICY.items() if k != "_marker_note"}
 
 def build(prefix, sd, dn, dec, window, out):
     b = {"briefing_class": "FACT-ONLY", "run_prefix": prefix, "session_day": sd,

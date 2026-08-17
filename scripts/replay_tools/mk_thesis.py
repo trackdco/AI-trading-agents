@@ -17,6 +17,16 @@ since = sys.argv[11] if len(sys.argv) > 11 and sys.argv[11] != "-" else None
 refire = sys.argv[12] if len(sys.argv) > 12 and sys.argv[12] != "-" else None
 chart_levels = json.loads(chart_levels_json)
 macro = json.load(open(macro_path))
+# GUARD. The macro BRIEFING carries standing_policy - his verbatim rulings on which
+# events gate entries. The macro AGENT needs those to decide news_blackout; a thesis
+# agent does not, and inlining them puts his commentary in front of a tier that is
+# supposed to reason from the chart (audit_run_leak checks D and F). Pass the macro
+# OUTPUT here, never the briefing. Caught on w49p049_2026-06-21_NYAM_0930_thesis.json.
+if isinstance(macro, dict) and "standing_policy" in macro:
+    raise SystemExit(
+        f"REFUSING to build a thesis briefing from a MACRO BRIEFING ({macro_path}).\n"
+        "It contains standing_policy - his verbatim rulings - which must not reach a "
+        "thesis agent. Pass the macro agent's OUTPUT json instead.")
 ps = {"open_position": None}
 ws = {"window": window, "entries": {"LONDON": "03:00-04:59", "NY_PRE": "08:00-09:29 entries cut off 09:10",
       "NY_AM": "09:30-11:00 earliest entry 09:35"}[window],
