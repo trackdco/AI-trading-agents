@@ -90,10 +90,13 @@ def main():
                     dec = o.get("decision")
                     mark = {"take_full": "🟢 TAKE_FULL", "take_light": "🟡 TAKE_LIGHT",
                             "pass": "⚪ PASS"}.get(dec, dec)
+                    prov = " · _PROVISIONAL, pending Tier 1_" if r.get(
+                        "decision_is_provisional") else ""
+                    seq = f"  \n_{r['sequence']}_" if r.get("sequence") else ""
                     print(f"#### {r['candidate_id']} · {r['decision_minute'].split('T')[-1]} "
                           f"· {mark}"
                           + (f" · conviction **{o.get('conviction')}**" if dec != "pass" else "")
-                          + "\n")
+                          + prov + seq + "\n")
                     rl = o.get("rejected_level") or {}
                     print(f"- **level:** {rl.get('level')} @ {rl.get('price')}")
                     if dec != "pass":

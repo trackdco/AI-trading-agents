@@ -1,0 +1,221 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE",
+ "decision_minute": "2026-06-22T08:00 ET",
+ "leak_check": "pass - replay truncated at 07:59:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/w49_2026-06-21_NY_PRE_0800.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30757.75,
+ "last_completed_2m_bar": {
+  "start": "07:58",
+  "closed_at": "08:00",
+  "open": 30754.0,
+  "high": 30757.75,
+  "low": 30752.75,
+  "close": 30757.75,
+  "volume": 102,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_PRE",
+  "entries": "08:00-09:29 entries cut off 09:10",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30750.19,
+  "bb_upper_2m": 30768.19,
+  "bb_lower_2m": 30732.19,
+  "vwap": 30617.56,
+  "vwap_p1": 30730.02,
+  "vwap_m1": 30505.1,
+  "vwap_p2": 30842.48,
+  "vwap_m2": 30392.65,
+  "vwap_p3": 30954.94,
+  "vwap_m3": 30280.19,
+  "read_at": "chart cursor 07:59:59 - the 2m bar 07:58-08:00 is COMPLETE and closes at 08:00; minute 08:00 has not started",
+  "_chop_state": {
+   "state": "TRENDING",
+   "reason": "129pt range over 3.0h \u2014 not small",
+   "range_high": 30828.0,
+   "range_low": 30699.0,
+   "range_width": 129.0,
+   "hours_held": 3.0,
+   "small_threshold_pt": 104.0,
+   "zone_now": "middle",
+   "in_middle": true,
+   "middle_band": [
+    30731.25,
+    30795.75
+   ],
+   "as_of": "2026-06-22 08:00",
+   "doctrine": "CHOP + in_middle -> the middle is dead. CHOP + at an edge -> the only licensed trade is from that edge toward the opposite edge.",
+   "_source": "scripts.chop_state - MECHANICAL FACT under runbook 0c, stated never judged."
+  },
+  "_legend_verified": {
+   "verified": true,
+   "worst_diff_pts": 0.35,
+   "note": "legend cross-checked against independently computed values from committed bars, tolerance 2.0pt"
+  },
+  "_session_calendar": {
+   "session_day_label": "2026-06-21",
+   "session_opens": "2026-06-21 18:00 ET (Sunday evening)",
+   "cash_session_traded": "2026-06-22 (Monday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30617.51,
+   "vwap_p1": 30730.26,
+   "vwap_p2": 30843.01,
+   "vwap_p3": 30955.76,
+   "vwap_m1": 30504.75,
+   "vwap_m2": 30392.0,
+   "vwap_m3": 30279.25
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30750.19,
+   "bb_ma_3m": 30751.78,
+   "bb_ma_15m": 30736.61,
+   "bb_ma_60m": 30640.83
+  },
+  "day_range_fibs": {
+   "0.382": 30524.87,
+   "0.5": 30582.75,
+   "0.618": 30640.63,
+   "0.705": 30683.3
+  },
+  "session_high_so_far": 30828.0,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30727.0,
+   "val": 30557.0,
+   "vah": 30824.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30353.0,
+   "vah": 30720.0,
+   "high": 30975.5,
+   "low": 29923.0,
+   "anchor": "2026-06-15 18:00:00-04:00",
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.123,
+  "net_move_15m": 180.75,
+  "total_15m_travel": 1468.0,
+  "candles_15m_up": 29,
+  "candles_15m_down": 27,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "07:00",
+   "open": 30720.25,
+   "high": 30828.0,
+   "low": 30710.75,
+   "close": 30730.5,
+   "body_ratio": 0.09
+  },
+  {
+   "start": "07:15",
+   "open": 30730.5,
+   "high": 30750.75,
+   "low": 30722.0,
+   "close": 30738.75,
+   "body_ratio": 0.29
+  },
+  {
+   "start": "07:30",
+   "open": 30738.0,
+   "high": 30771.0,
+   "low": 30736.75,
+   "close": 30749.75,
+   "body_ratio": 0.34
+  },
+  {
+   "start": "07:45",
+   "open": 30749.0,
+   "high": 30762.0,
+   "low": 30727.0,
+   "close": 30757.75,
+   "body_ratio": 0.25
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "any red-folder US release or FOMC event appearing on the calendar for this session day that isn't currently listed would need to be re-evaluated for blackout/gate purposes",
+  "reasoning": "No events released so far and none scheduled later today per the briefing calendar; nothing to gate and no catalyst to lean on. Correct default is neutral with high confidence given the calendar is empty."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_vah",
+    "price": 30714.0
+   },
+   {
+    "level": "vwap_p1_prior_day_poc_confluence",
+    "price": 30668.5
+   }
+  ],
+  "invalidation": {
+   "level": "defended_ceiling_30783",
+   "price": 30783.25
+  },
+  "waiting_for": "nothing further - displacement through the ceiling is already confirmed by the same-candle 2m+3m break; short entries licensed on the retest of the broken 2m MA/VWAP+2 zone (~30765-30768)",
+  "two_sided": true,
+  "condition_for_other_side": "longs relicensed on a defended-level bounce AT the VWAP+1/prior-day-POC confluence (~30668-30670) - a test that holds with displacement back up - since the session is still net +444pt off its low and the higher-timeframe trend remains up",
+  "anticipated_resolution": {
+   "level": "vwap_p1_prior_day_poc_30668",
+   "price": 30668.5,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "the defended ceiling (~30783) is only confirmed broken on a 15m close above it with a decisive body; today's 2m/3m displacement down is sufficient to license the counter-move under the defended-level doctrine but does not itself define acceptance of a new level",
+  "other_side_tripwire": {
+   "level": "vwap_p1_prior_day_poc_30668",
+   "price": 30668.5,
+   "event": "displacement_from_defended_level"
+  },
+  "defended_level": {
+   "level": "session_high_defended_ceiling_30783",
+   "price": 30783.25,
+   "memory": "tested 7x this session, high extended to 30781.75 but never closed above; 03:40-03:42 2m candle (body ratio 0.96) closed decisively through both its own MA (30768.01) and VWAP+2 (30765.5) together, displacing away from the ceiling",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "escalation_response": "accommodated",
+  "reasoning": "The Monday no-gap default held through 03:00, but this is now a genuine defended-level licence, not a gap play: 7 failed tests of 30783, then a same-candle 2m+3m break through the 2m MA and VWAP+2 with a 0.96 body ratio - displacement away exactly as T64 requires. This is also the resolution my prior tripwire (15m close beyond the high cluster) was watching for, resolving as 'held' rather than broken. Adapting to a modest short toward the VWAP+1/prior-day-POC confluence, not a trend call - the session is still +444pt off its low (path_efficiency 0.15, not a flush), so longs remain live on a defended reclaim at that confluence."
+ },
+ "what_happened_since_the_last_read": "Since your 03:00 read, stated as price facts only: between 03:00 and this decision minute the session traded a high of 30828.00 and a low of 30687.25. All levels in levels_at_decision_BUILD are recomputed as of this minute."
+}
