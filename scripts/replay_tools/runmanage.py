@@ -18,6 +18,38 @@ def tp1_printed(dn, fill_at, dec, side, tp1):
     return bool((w.low <= tp1).any() if side.startswith("s") else (w.high >= tp1).any())
 
 
+# LEAK GUARD. A manage briefing's window_note must never name FUTURE candidate
+# minutes or their directions. Doing so tells a manager holding a position that
+# the scanner will fire at 10:18 and that it will be SHORT - forward information
+# about the tape, caught by audit_run_leak check C on 2026-06-21. The window_note
+# may describe the window and standing rules; it may not describe what is coming.
+import re as _re
+
+
+def assert_no_future_minutes(text, dec, label=""):
+    """Raise if `text` names a clock time strictly after the decision minute."""
+    # Window and rule BOUNDARIES are contract constants the agent legitimately needs -
+    # they describe the schedule, not the tape, and they are identical on every day.
+    # Anything else later than the decision minute is a fact about what is coming.
+    ALLOWED = {"03:00", "04:59", "08:00", "09:10", "09:29", "09:30", "09:35",
+               "11:00", "18:00", "09:00", "10:00"}
+    dh, dm = int(dec[:2]), int(dec[3:5])
+    dmin = dh * 60 + dm
+    bad = []
+    for m in _re.finditer(r"\b([0-2]?\d):([0-5]\d)\b", str(text)):
+        tok = m.group(0)
+        if tok in ALLOWED:
+            continue
+        t = int(m.group(1)) * 60 + int(m.group(2))
+        if t > dmin:
+            bad.append(tok)
+    if bad:
+        raise SystemExit(
+            f"FUTURE MINUTES IN BRIEFING TEXT ({label}) at decision {dec}: {sorted(set(bad))}.\n"
+            "A briefing may not name a clock time after its own decision minute - that is "
+            "forward information about the tape. Rewrite the text without them.")
+
+
 def build(run, sd, dn, dec, cid, shot, reason, level, level_price, side, entry, stop,
           targets, conviction, chart_levels, opened_at, prior_actions, original_r,
           thesis_ctx, prior_positions, window_note, out):
@@ -37,6 +69,7 @@ def build(run, sd, dn, dec, cid, shot, reason, level, level_price, side, entry, 
                 "decision and is a fraction of what is still open."}
     b["thesis_context"] = thesis_ctx
     b["prior_positions_this_window"] = prior_positions
+    assert_no_future_minutes(window_note.get("text", ""), dec, "window_note")
     b["window_note"] = window_note
     b["BREAKEVEN_RULE"] = {
         "rule": "breakeven is ONLY available after TP1 has printed. Before TP1 it is not a legal action.",
