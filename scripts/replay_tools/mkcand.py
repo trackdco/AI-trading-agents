@@ -20,7 +20,10 @@ PY = f"{ROOT}/.venv/bin/python"
 
 def build(s):
     dec, cid, sd = s["dec"], s["cid"], s["sd"]
-    out = s.get("out") or f"{ROOT}/output/briefings/jn1_{sd}_{cid}_{dec.replace(':','')}_trigger.json"
+    # run prefix comes from the spec - a briefing must be named for the run that
+    # produced it, or two runs over the same tape overwrite each other.
+    pfx = s.get("prefix", "jn1")
+    out = s.get("out") or f"{ROOT}/output/briefings/{pfx}_{sd}_{cid}_{dec.replace(':','')}_trigger.json"
     cap = {"window": s["window"], "written_cap": s["cap_written"],
            "caps_lifted": True, "fills_so_far": s["fills"]}
     r = subprocess.run(

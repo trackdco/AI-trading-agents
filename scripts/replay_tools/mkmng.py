@@ -26,7 +26,10 @@ def build(s):
     import pandas as pd
 
     dec, cid, sd, dn = s["dec"], s["cid"], s["sd"], s["dn"]
-    out = s.get("out") or f"{ROOT}/output/briefings/jn1_{sd}_{cid}_{dec.replace(':','')}_manage.json"
+    # run prefix comes from the spec - a briefing must be named for the run that
+    # produced it, or two runs over the same tape overwrite each other.
+    pfx = s.get("prefix", "jn1")
+    out = s.get("out") or f"{ROOT}/output/briefings/{pfx}_{sd}_{cid}_{dec.replace(':','')}_manage.json"
     tg = s["targets"]
     tp1 = tg[0]["price"]
     tp2 = tg[1]["price"] if len(tg) > 1 else None
