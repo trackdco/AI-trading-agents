@@ -37,7 +37,36 @@ def main():
     json.dump(spec, open(f"{T}/{run}_{sd}_{cid}.json", "w"), indent=1)
 
     lsets = json.load(open(f"{T}/lsets/{sd}.json"))
-    out, fires, lv, cs = mk49.build(spec, lsets[dec], prior)
+    ls = lsets[dec]
+
+    # GUARD. The level-set is PRECOMPUTED, so preflight cannot vouch for it -
+    # preflight compares the chart legend against a live recompute and never looks
+    # at this file. A corrupt level-set would therefore reach the agent unchallenged
+    # inside level_visits_this_session. It happened once (2026-06-21 03:42 came back
+    # with session-open values and NaN profiles after a parallel run raced two writers
+    # onto one file), so the two are now tied together: bb_ma_2m is computed from bar
+    # closes and must equal the chart's BB basis, which the legend already carries.
+    import math
+    nan = [k for k, v in ls.items()
+           if v is None or (isinstance(v, float) and math.isnan(v))]
+    if nan:
+        raise SystemExit(f"LEVEL-SET CORRUPT at {sd} {dec}: NaN levels {nan}. "
+                         "Recompute serially before adjudicating.")
+    # Tolerance is deliberately LOOSE (25pt). This is a CORRUPTION detector, not a
+    # parity check - parity is preflight's job, against a live recompute. At an ODD
+    # decision minute the chart legend describes the bar closing at dec-1 while the
+    # level-set computes as-of dec, so the two sit one bar apart and legitimately
+    # differ by a few points (measured 2.12pt at 09:03, 2.57pt at 09:45). A 2pt
+    # tolerance would halt every odd minute. The failure this exists to catch was
+    # 660pt wide.
+    legend_bb = legend.get("bb_basis_2m_last_completed_plot")
+    if legend_bb is not None and abs(float(ls["bb_ma_2m"]) - float(legend_bb)) > 25.0:
+        raise SystemExit(
+            f"LEVEL-SET DISAGREES WITH THE CHART at {sd} {dec}: level-set bb_ma_2m "
+            f"{ls['bb_ma_2m']} vs chart BB basis {legend_bb}. Both are the 20-period "
+            "mean of 2m closes and cannot be this far apart. Recompute serially.")
+
+    out, fires, lv, cs = mk49.build(spec, ls, prior)
     print(out)
     print("  outer_band_gate_fires", fires)
     print("  chop_state", cs["state"], "| zone", cs["zone_now"], "|", cs["reason"])
