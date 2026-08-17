@@ -66,14 +66,43 @@ def assert_no_future_minutes(text, dec, label=""):
             "forward information about the tape. Rewrite the text without them.")
 
 
+def _crowded(sd, dn, dec, side, targets):
+    """The TP1-to-TP2 corridor, stated as a fact.
+
+    Previously this was only populated for SINGLE-target positions and passed as
+    null whenever there were two - which is exactly the case where a corridor can
+    exist. Caught on 2026-06-22 L2, where weekly_low and session_low_so_far both
+    sat at 29943.50, immediately inside the TP1->TP2 path, and the manager was
+    never told. Now computed for real.
+    """
+    tp1 = targets[0]["price"]
+    if len(targets) == 1:
+        return {"levels_between_tp1_and_tp2": [], "count": 0, "crowded_path": False,
+                "note": f"this position has a single target ({tp1:.2f}), so there is no "
+                        "TP1-to-TP2 corridor to be crowded."}
+    tp2 = targets[1]["price"]
+    from scripts.replay_tools.levelset import levelset
+    ls = levelset(sd, dn, dec)
+    lo, hi = (tp2, tp1) if tp2 < tp1 else (tp1, tp2)
+    between = sorted(({"level": n, "price": round(float(v), 2)}
+                      for n, v in ls.items() if lo < float(v) < hi),
+                     key=lambda d: d["price"], reverse=side.lower().startswith("s"))
+    return {"levels_between_tp1_and_tp2": between, "count": len(between),
+            "crowded_path": len(between) > 0,
+            "tp1": tp1, "tp2": tp2,
+            "note": ("structural levels sitting between your first and second target. "
+                     "Stated as a fact - whether a crowded path is a reason to bank more "
+                     "at TP1 or to carry the runner anyway is YOUR call."
+                     if between else
+                     "no structural level sits between TP1 and TP2 - the corridor is clear.")}
+
+
 def build(run, sd, dn, dec, cid, shot, reason, level, level_price, side, entry, stop,
           targets, conviction, chart_levels, opened_at, prior_actions, original_r,
           thesis_ctx, prior_positions, window_note, out):
     tp1 = targets[0]["price"]
     printed = tp1_printed(dn, opened_at, dec, side, tp1)
-    crowded = {"levels_between_tp1_and_tp2": [], "count": 0, "crowded_path": False,
-               "note": f"this position has a single target ({tp1:.2f}), so there is no "
-                       "TP1-to-TP2 corridor to be crowded."} if len(targets) == 1 else None
+    crowded = _crowded(sd, dn, dec, side, targets)
     b = manage_briefing(sd, dn, dec, cid, shot, reason, level, level_price, side,
                         entry, stop, targets, conviction, chart_levels, opened_at,
                         crowded, prior_actions, original_r=original_r)
