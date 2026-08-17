@@ -149,15 +149,12 @@ def main():
     else:
         ov = auto_override(sd, dn, dec, legend, lg["bar_start"])
 
-    _th = json.load(open(thesis))
-    _drift = anchor_drift(_th, ls)
     spec = mkspec.build(run, sd, dn, c, cid,
                         f"{run}_{sd}_{cid}_{dec.replace(':','')}.png",
                         thesis, macro, legend, lg["bar_start"], int(fills),
                         ps, esc,
                         levels_closed=closed or mkspec.levels_closed_from(c),
-                        override=ov,
-                        extra=({"thesis_anchor_drift": _drift} if _drift else None))
+                        override=ov)
     json.dump(spec, open(f"{T}/{run}_{sd}_{cid}.json", "w"), indent=1)
 
     lsets = json.load(open(f"{T}/lsets/{sd}.json"))
@@ -189,6 +186,13 @@ def main():
             f"LEVEL-SET DISAGREES WITH THE CHART at {sd} {dec}: level-set bb_ma_2m "
             f"{ls['bb_ma_2m']} vs chart BB basis {legend_bb}. Both are the 20-period "
             "mean of 2m closes and cannot be this far apart. Recompute serially.")
+
+    # Anchor drift is computed AFTER the level-set is loaded and validated, then
+    # merged into the spec's extras so it rides into the briefing.
+    _drift = anchor_drift(json.load(open(thesis)), ls)
+    if _drift:
+        spec.setdefault("extra", {})["thesis_anchor_drift"] = _drift
+        json.dump(spec, open(f"{T}/{run}_{sd}_{cid}.json", "w"), indent=1)
 
     out, fires, lv, cs = mk49.build(spec, ls, prior)
     print(out)
