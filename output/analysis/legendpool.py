@@ -14,13 +14,46 @@ usage:  legendpool.py index                       -> report pool size
 import glob, json, os, sys
 
 T = "/Users/barbelldaddy/.claude/jobs/2411401a/tmp"
-# tape-day 03:00 ET anchors
-ANCHOR = {
-    "2026-06-01": 1780635600, "2026-06-02": 1780722000, "2026-06-03": 1780808400,
-    "2026-06-04": 1780894800, "2026-06-05": 1780981200,
-    "2026-06-22": 1782111600, "2026-06-23": 1782198000, "2026-06-24": 1782284400,
-    "2026-06-25": 1782370800, "2026-06-26": 1782457200,
-}
+# Tape-day 03:00 ET anchors, DERIVED from the capture artefacts rather than typed. They were
+# typed once and the jr1 values were wrong, so every jr1 manage frame missed the pool and looked
+# like it needed a live capture pass. A legend file keys each frame by its wall-clock minute and
+# carries that frame's cursor epoch, so the anchor falls straight out:
+#     anchor = cursor - (mins(minute) - 180) * 60 + 1
+# Same principle as mkps/mkesc: read it off the artefacts, never retype it.
+NEXT_DAY = {"2026-05-31": "2026-06-01", "2026-06-01": "2026-06-02", "2026-06-02": "2026-06-03",
+            "2026-06-03": "2026-06-04", "2026-06-04": "2026-06-05",
+            "2026-06-21": "2026-06-22", "2026-06-22": "2026-06-23", "2026-06-23": "2026-06-24",
+            "2026-06-24": "2026-06-25", "2026-06-25": "2026-06-26"}
+
+
+def _derive_anchors():
+    import collections
+    votes = collections.defaultdict(collections.Counter)
+    for path in glob.glob(f"{T}/*_legends.json"):
+        base = os.path.basename(path)
+        parts = base.split("_")
+        if len(parts) < 3:
+            continue
+        sd = parts[1]
+        if sd not in NEXT_DAY:
+            continue
+        try:
+            d = json.load(open(path))
+        except Exception:
+            continue
+        for k, v in (d.get("frames", d) or {}).items():
+            if not isinstance(v, dict) or "cursor" not in v or ":" not in k:
+                continue
+            try:
+                m = int(k[:2]) * 60 + int(k[3:])
+            except ValueError:
+                continue
+            votes[NEXT_DAY[sd]][int(v["cursor"]) - (m - 180) * 60 + 1] += 1
+    return {dn: c.most_common(1)[0][0] for dn, c in votes.items() if c}
+
+
+ANCHOR = _derive_anchors()
+
 NEED = ("bb_basis_2m_last_completed_plot", "vwap", "vwap_p1", "vwap_m1")
 
 # Two capture schemas exist on disk: the flattened one written by the candidate pass, and the

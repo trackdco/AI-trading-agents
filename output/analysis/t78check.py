@@ -38,9 +38,10 @@ def audit(run, days):
             if FIXED_R.match(lvl) or not lvl:
                 rows_out.append((sd, cid, dec, "TP2_NOT_A_LEVEL", f"TP2 level={lvl!r}"))
             # spacing: TP2 should sit at least ~1R past TP1
-            e, s = r.get("entry"), r.get("stop")
+            e = r.get("entry", o.get("entry"))
+            s = r.get("stop", o.get("stop"))
             if e and s and tg[0].get("price") and tg[1].get("price"):
-                R = abs(float(e) - float(s))
+                R = abs(float(e) - float(s))  # noqa
                 gap = abs(float(tg[1]["price"]) - float(tg[0]["price"]))
                 if R and gap < 0.75 * R:
                     rows_out.append((sd, cid, dec, "TP2_TOO_CLOSE",
