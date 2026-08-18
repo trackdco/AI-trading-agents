@@ -32,7 +32,19 @@ for r in sorted([r for r in live("manage") if r.get("candidate_id") == cid],
                     "new_stop": r.get("new_stop") or o.get("new_stop")})
 
 targets = [t["price"] if isinstance(t, dict) else t for t in (out.get("targets") or [])]
+
+# A runner whose plan names no rung beyond TP1 has nothing to close it: the trail is never
+# hit and no target exists to reach, so it would sit open forever. Precedent in this run
+# (d2 A4) marks it out on the 15:58 cash-close bar rather than leaving it open or carrying
+# it overnight, which the contract does not provide for. Explicit flag, never automatic -
+# a position that closes on its own must never be silently overridden.
+reason = None
+if "--markout" in sys.argv:
+    m = sys.argv[sys.argv.index("--markout") + 1]
+    actions.append({"minute": m, "action": "exit_now", "partial_pct": None, "new_stop": None})
+    reason = "partial_at_tp1_then_runner_marked_out_at_cash_close"
+
 res = exitrow.write(run, sd, cid, fill["window"], fill["side"], fill["entry"], fill["stop"],
                     targets, str(fill.get("fill_minute"))[-5:], actions,
-                    conviction=fill.get("conviction"), dry=dry)
+                    conviction=fill.get("conviction"), exit_reason=reason, dry=dry)
 print(res if dry else "written")

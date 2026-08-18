@@ -44,6 +44,6 @@ sched = st["sched"] if isinstance(st.get("sched"), list) else list(st.get("sched
 if closed:
     dead = [m for m in sched if m > closed]
     print(f"{sd} {cid}: CLOSED at {closed} -> "
-          + (f"DROP {dead}" if dead else "no scheduled minute survives it"))
+          + (f"DROP {dead}" if dead else "every scheduled minute precedes it - all valid"))
 else:
     print(f"{sd} {cid}: OPEN, {res['unclosed_fraction']:.3f} unclosed, sched {sched}")
