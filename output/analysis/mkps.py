@@ -78,10 +78,16 @@ def build(run, sd, window, dec):
         ev.append((_hhmm(r.get("manage_minute")), 1, "manage", r))
     for r in _live(rows, "exit"):
         ev.append((_hhmm(r.get("exit_minute")), 2, "exit", r))
-    ev = [e for e in ev if e[0] is not None and e[0] <= dec]
+    # STRICTLY BEFORE the decision minute. A decision at minute M is taken at M's OPEN - the
+    # instant the prior bar closed - so anything that resolves during M's own bar (a fill from a
+    # standing limit, a stop, a target) has NOT happened yet and must not appear in the state the
+    # agent is handed. Using <= here instead counted same-minute events as already done, which
+    # made a candidate adjudicated at the same minute its predecessor stopped out look like it
+    # had been judged against stale state when it had not.
+    ties = [f"{k} {r.get('candidate_id')} at {m}" for m, _, k, r in ev
+            if m is not None and m == dec]
+    ev = [e for e in ev if e[0] is not None and e[0] < dec]
     ev.sort(key=lambda e: (e[0], e[1]))
-
-    ties = [f"{k} {r.get('candidate_id')} at {m}" for m, _, k, r in ev if m == dec]
 
     pos = {}       # cid -> live position dict
     closed = []    # (cid, window, exit dict)
@@ -195,9 +201,14 @@ def build(run, sd, window, dec):
             "fills_this_window": n_fills, "detail": detail,
             "earlier_windows": earlier, "cap_note": cap_note,
             "note": "stated as run state.",
-            "_ties": ties or None,
+            "_ties": (ties or None) and
+                     {"events_resolving_during_this_minute": ties,
+                      "note": ("these land on the decision minute itself and are DELIBERATELY EXCLUDED "
+                               "from the state above - at this minute's open they have not happened. "
+                               "Listed so the reviewer can see the boundary was applied, not missed.")},
             "_derivation": (f"read off {run}'s own book for {sd} by mkps.py - every LIVE "
-                            f"fill/manage/exit row with a minute <= {dec}, replayed in order. "
+                            f"fill/manage/exit row with a minute STRICTLY BEFORE {dec}, replayed in "
+                            "order. "
                             "Rows flagged SUPERSEDED or VOID are excluded. Nothing after the "
                             "cursor is read, and nothing here is carried over from another run "
                             "or hand-authored.")}
