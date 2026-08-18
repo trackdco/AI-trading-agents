@@ -25,6 +25,24 @@ NEED = ("bb_basis_2m_last_completed_plot", "vwap", "vwap_p1", "vwap_m1")
 
 # Two capture schemas exist on disk: the flattened one written by the candidate pass, and the
 # raw nested MCP shape written by the manage pass. Same numbers, different key names.
+def _num(x):
+    """Captures store numbers three ways: float, "30719.21", and "30,719.21"."""
+    if x is None or isinstance(x, (int, float)):
+        return x
+    try:
+        return float(str(x).replace(",", "").strip())
+    except ValueError:
+        return None
+
+
+def _band(vw, *names):
+    """Sigma bands are keyed "+1sigma" in some captures and "+1\u03c3" in others."""
+    for n in names:
+        if n in vw:
+            return _num(vw[n])
+    return None
+
+
 def normalise(v):
     if all(f in v for f in NEED):
         return v
@@ -34,11 +52,12 @@ def normalise(v):
         return None
     out = {k: v[k] for k in ("cid", "cursor", "bar_start", "status", "screenshot") if k in v}
     out.update({
-        "bb_basis_2m_last_completed_plot": bb.get("Basis"),
-        "bb_upper_2m": bb.get("Upper"), "bb_lower_2m": bb.get("Lower"),
-        "vwap": vw.get("VWAP"), "vwap_p1": vw.get("+1sigma"), "vwap_m1": vw.get("-1sigma"),
-        "vwap_p2": vw.get("+2sigma"), "vwap_m2": vw.get("-2sigma"),
-        "vwap_p3": vw.get("+3sigma"), "vwap_m3": vw.get("-3sigma"),
+        "bb_basis_2m_last_completed_plot": _num(bb.get("Basis")),
+        "bb_upper_2m": _num(bb.get("Upper")), "bb_lower_2m": _num(bb.get("Lower")),
+        "vwap": _num(vw.get("VWAP")),
+        "vwap_p1": _band(vw, "+1sigma", "+1\u03c3"), "vwap_m1": _band(vw, "-1sigma", "-1\u03c3"),
+        "vwap_p2": _band(vw, "+2sigma", "+2\u03c3"), "vwap_m2": _band(vw, "-2sigma", "-2\u03c3"),
+        "vwap_p3": _band(vw, "+3sigma", "+3\u03c3"), "vwap_m3": _band(vw, "-3sigma", "-3\u03c3"),
         "read_at": v.get("read_at"),
     })
     return out if all(out.get(f) is not None for f in NEED) else None

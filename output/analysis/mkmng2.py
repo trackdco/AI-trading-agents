@@ -63,12 +63,24 @@ def build(run, sd, dn, cid, win_end):
             "new_stop": r.get("new_stop"), "reason": o.get("reason")})
 
     targets = [dict(t) for t in (out.get("targets") or [])]
-    tg_prices = [float(t["price"]) for t in targets if t.get("price") is not None]
+    # The ladder advances: each banked partial retires one rung, so the schedule ahead is
+    # computed from the last manage minute toward the rungs that are still live. Computing it
+    # once at fill time against the whole ladder returns only "tp1 reached" and "window
+    # closing" and leaves the runner unmanaged between them - which is how a runner with a
+    # destination still ends up drifting.
+    n_banked = sum(1 for r in mrows if r.get("action") == "partial" and r.get("partial_pct"))
+    live_targets = targets[n_banked:]
+    sched_from = prior_actions[-1]["minute"] if prior_actions else opened_at
+    for i, t in enumerate(targets):
+        if i < n_banked:
+            t["status"] = f"REACHED and banked ({prior_actions[i]['minute']})" if i < len(prior_actions) else "REACHED"
+    tg_prices = [float(t["price"]) for t in live_targets if t.get("price") is not None]
 
-    lv = levelset(sd, dn, opened_at)
-    sched_raw = htf.management_minutes(dn, opened_at, fill["side"], float(fill["entry"]),
+    lv = levelset(sd, dn, sched_from)
+    sched_raw = htf.management_minutes(dn, sched_from, fill["side"], float(fill["entry"]),
                                        float(fill["stop"]), tg_prices, lv, win_end)
     sched = {x["minute"]: [x["reason"], x.get("level"), x.get("level_price")] for x in sched_raw}
+    sched = {m: v for m, v in sched.items() if m > sched_from or not prior_actions}
 
     # frames for every scheduled minute, served from the cross-run pool
     frames, misses, prov = legendpool.get(dn, sorted(sched))
