@@ -4,24 +4,45 @@
 
 ## Where it stands
 
-Adjudication, by `output/analysis/complete.py jr1`:
+Adjudication has gone 61 outstanding -> 16. Run `output/analysis/complete.py jr1` for the
+live list; the count moves UP when a take or a thesis re-fire supersedes downstream verdicts,
+which is correct, not a regression.
 
 | day | LONDON | NY_PRE | NY_AM |
 |---|---|---|---|
-| 2026-05-31 | done | done (P2 filled 08:26 @30455.00 long) | done (A2 took 09:57, limit EXPIRED unfilled 10:07) |
-| 2026-06-01 | done | done (P2 filled 08:35 @30538.00 short) | A2 filled 09:46 @30505.00 long; A3-A6 rebuilt, re-adjudication in flight |
-| 2026-06-02 | done (L3 filled 03:37, L8 filled 04:25, cap reached) | done | A1/A2/A3 adjudicated; **escalation open at 09:36** |
-| 2026-06-03 | done | P1/P2/P3 done, **both escalations spent**; P4/P5 rebuilt, not yet adjudicated | not started (briefings building) |
-| 2026-06-04 | done | done (P2 filled 08:44 @30118.00 long) | not started |
+| 2026-05-31 | done | done | done |
+| 2026-06-01 | done | done | done |
+| 2026-06-02 | done | done | A1 done; A2-A6 rebuilt after the bias flip, not yet re-adjudicated |
+| 2026-06-03 | done | done | A1/A2/A3 done; A4-A9 rebuilt after A3's fill, not yet adjudicated |
+| 2026-06-04 | done | done | A1 done; A2-A6 briefings building |
+
+### The ten live fills, none of them managed or scored yet
+
+    2026-05-31 P2 NY_PRE 08:26 long  30455.00  stop 30434.00
+    2026-06-01 P2 NY_PRE 08:35 short 30538.00  stop 30558.00
+    2026-06-01 A2 NY_AM  09:46 long  30505.00  stop 30460.00
+    2026-06-01 A3 NY_AM  09:55 long  30545.00  stop 30493.00
+    2026-06-02 L3 LONDON 03:37 short 30705.50  stop 30730.00
+    2026-06-02 L8 LONDON 04:25 short 30712.00  stop 30735.00
+    2026-06-03 L1 LONDON 03:22 short 30498.00  stop 30549.00
+    2026-06-03 A3 NY_AM  09:52 short 30299.00  stop 30357.00
+    2026-06-04 L1 LONDON 03:44 long  30122.50  stop 30099.00
+    2026-06-04 P2 NY_PRE 08:44 long  30118.00  stop 30083.00
+
+Two takes did NOT fill and must not be counted against a cap: 05-31 A2 (limit expired 10:07)
+and 06-03 P4 (limit ran 08:48).
 
 ## What is NOT done
 
-1. **Trigger adjudication** — the days marked above. Run `complete.py jr1` for the live list.
-2. **Manage chains and exits** — NO jr1 position has been managed or scored yet. Three fills
-   from before this session (06-02 L3, 06-03 L1, 06-04 L1) are still unmanaged, plus every
-   fill listed above.
-3. **Window closes and day summaries** — none written.
-4. **Scoring** — `score.py` has no DAYS entry for jr1; add one before running it.
+1. **16 trigger adjudications** - the days marked above.
+2. **Every manage chain and every exit.** No jr1 position has been managed or scored. This is
+   the larger half of the remaining work and it needs frames: run `mkmng2.py` per fill to see
+   what `legendpool` already serves and what needs a live capture pass on the j49 tape
+   (2026-06-01..05). wr2's 47-frame pass is committed and pools by cursor, so some j49 minutes
+   may already be served.
+3. **Window closes and day summaries** - none written. `closeday.py` refuses to write if the
+   day-summary total and the scorer disagree, so run it last.
+4. **Scoring** - `score.py` has no DAYS entry for jr1; add one before running it.
 
 ## The loop, in order
 
