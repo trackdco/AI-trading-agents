@@ -1,0 +1,180 @@
+{
+ "frames": {
+  "wr2|2026-06-25|P2|08:53": {
+   "cid": "P2",
+   "cursor": 1782478379,
+   "bar_start": 1782478260,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782478379 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29373.63,
+    "Upper": 29449.16,
+    "Lower": 29298.09
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29466.11,
+    "+1sigma": 29635.0,
+    "-1sigma": 29297.22,
+    "+2sigma": 29803.88,
+    "-2sigma": 29128.34,
+    "+3sigma": 29972.77,
+    "-3sigma": 28959.45
+   },
+   "screenshot": "wr2_2026-06-25_P2_0853_manage.png"
+  },
+  "wr2|2026-06-25|P2|09:01": {
+   "cid": "P2",
+   "cursor": 1782478859,
+   "bar_start": 1782478620,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782478859 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29372.69,
+    "Upper": 29449.75,
+    "Lower": 29295.62
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29464.53,
+    "+1sigma": 29633.1,
+    "-1sigma": 29295.97,
+    "+2sigma": 29801.67,
+    "-2sigma": 29127.4,
+    "+3sigma": 29970.23,
+    "-3sigma": 28958.83
+   },
+   "screenshot": "wr2_2026-06-25_P2_0901_manage.png"
+  },
+  "wr2|2026-06-25|P2|09:29": {
+   "cid": "P2",
+   "cursor": 1782480539,
+   "bar_start": 1782480420,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782480539 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29315.34,
+    "Upper": 29383.11,
+    "Lower": 29247.57
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29452.57,
+    "+1sigma": 29621.82,
+    "-1sigma": 29283.31,
+    "+2sigma": 29791.07,
+    "-2sigma": 29114.06,
+    "+3sigma": 29960.33,
+    "-3sigma": 28944.8
+   },
+   "screenshot": "wr2_2026-06-25_P2_0929_manage.png"
+  },
+  "wr2|2026-06-23|P2|08:20": {
+   "cid": "P2",
+   "cursor": 1782303599,
+   "bar_start": 1782303480,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782303599 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29820.83,
+    "Upper": 29891.54,
+    "Lower": 29750.11
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29778.0,
+    "+1sigma": 29842.75,
+    "-1sigma": 29713.25,
+    "+2sigma": 29907.5,
+    "-2sigma": 29648.5,
+    "+3sigma": 29972.25,
+    "-3sigma": 29583.75
+   },
+   "screenshot": "wr2_2026-06-23_P2_0820_manage.png"
+  },
+  "wr2|2026-06-23|P2|08:24": {
+   "cid": "P2",
+   "cursor": 1782303839,
+   "bar_start": 1782303660,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782303839 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29826.38,
+    "Upper": 29891.96,
+    "Lower": 29760.79
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29778.56,
+    "+1sigma": 29843.44,
+    "-1sigma": 29713.68,
+    "+2sigma": 29908.32,
+    "-2sigma": 29648.8,
+    "+3sigma": 29973.19,
+    "-3sigma": 29583.93
+   },
+   "screenshot": "wr2_2026-06-23_P2_0824_manage.png"
+  },
+  "wr2|2026-06-21|A2|10:03": {
+   "cid": "A2",
+   "cursor": 1782136979,
+   "bar_start": 1782136800,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782136979 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30861.84,
+    "Upper": 30934.86,
+    "Lower": 30788.82
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30721.62,
+    "+1sigma": 30868.07,
+    "-1sigma": 30575.17,
+    "+2sigma": 31014.53,
+    "-2sigma": 30428.71,
+    "+3sigma": 31160.98,
+    "-3sigma": 30282.26
+   },
+   "screenshot": "wr2_2026-06-21_A2_1003_manage.png"
+  },
+  "wr2|2026-06-21|A2|10:09": {
+   "cid": "A2",
+   "cursor": 1782137339,
+   "bar_start": 1782137160,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782137339 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30872.96,
+    "Upper": 30959.56,
+    "Lower": 30786.36
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30727.88,
+    "+1sigma": 30876.73,
+    "-1sigma": 30579.04,
+    "+2sigma": 31025.57,
+    "-2sigma": 30430.19,
+    "+3sigma": 31174.42,
+    "-3sigma": 30281.35
+   },
+   "screenshot": "wr2_2026-06-21_A2_1009_manage.png"
+  },
+  "wr2|2026-06-21|A2|10:12": {
+   "cid": "A2",
+   "cursor": 1782137519,
+   "bar_start": 1782137340,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782137519 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30876.68,
+    "Upper": 30964.77,
+    "Lower": 30788.58
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30731.82,
+    "+1sigma": 30881.92,
+    "-1sigma": 30581.71,
+    "+2sigma": 31032.02,
+    "-2sigma": 30431.61,
+    "+3sigma": 31182.12,
+    "-3sigma": 30281.51
+   },
+   "screenshot": "wr2_2026-06-21_A2_1012_manage.png"
+  }
+ }
+}

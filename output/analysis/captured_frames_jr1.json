@@ -1,0 +1,92 @@
+{
+ "frames": {
+  "jr1|2026-06-02|L3|03:39": {
+   "cid": "L3",
+   "cursor": 1780472339,
+   "bar_start": 1780472160,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified against expected_cursor 1780472339 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30708.78,
+    "Upper": 30734.18,
+    "Lower": 30683.37
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30685.85,
+    "+1sigma": 30723.04,
+    "-1sigma": 30648.67,
+    "+2sigma": 30760.23,
+    "-2sigma": 30611.48,
+    "+3sigma": 30797.41,
+    "-3sigma": 30574.29
+   },
+   "screenshot": "jr1_2026-06-02_L3_0339_manage.png"
+  },
+  "jr1|2026-06-02|L3|03:40": {
+   "cid": "L3",
+   "cursor": 1780472399,
+   "bar_start": 1780472160,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780472399 via replay_status. Same last-completed 3m plot as 03:39 (bar_start 1780472160) so the BB/VWAP legend is identical by construction; session volume moved 836 -> 840 over the same read, which is the positive evidence that the canvas is live rather than frozen.",
+   "bollinger_bands": {
+    "Basis": 30708.78,
+    "Upper": 30734.18,
+    "Lower": 30683.37
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30685.85,
+    "+1sigma": 30723.04,
+    "-1sigma": 30648.67,
+    "+2sigma": 30760.23,
+    "-2sigma": 30611.48,
+    "+3sigma": 30797.41,
+    "-3sigma": 30574.29
+   },
+   "screenshot": "jr1_2026-06-02_L3_0340_manage.png"
+  },
+  "jr1|2026-06-02|L3|03:45": {
+   "cid": "L3",
+   "cursor": 1780472699,
+   "bar_start": 1780472520,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780472699 via replay_status; new completed 3m plot (bar_start 1780472520) and the legend moved with it",
+   "bollinger_bands": {
+    "Basis": 30707.51,
+    "Upper": 30734.16,
+    "Lower": 30680.86
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30685.97,
+    "+1sigma": 30722.98,
+    "-1sigma": 30648.96,
+    "+2sigma": 30759.99,
+    "-2sigma": 30611.95,
+    "+3sigma": 30797.0,
+    "-3sigma": 30574.94
+   },
+   "screenshot": "jr1_2026-06-02_L3_0345_manage.png"
+  },
+  "jr1|2026-06-02|L3|03:59": {
+   "cid": "L3",
+   "cursor": 1780473539,
+   "bar_start": 1780473420,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780473539 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30711.59,
+    "Upper": 30735.42,
+    "Lower": 30687.75
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30686.28,
+    "+1sigma": 30723.15,
+    "-1sigma": 30649.4,
+    "+2sigma": 30760.03,
+    "-2sigma": 30612.52,
+    "+3sigma": 30796.91,
+    "-3sigma": 30575.64
+   },
+   "screenshot": "jr1_2026-06-02_L3_0359_manage.png"
+  }
+ }
+}
