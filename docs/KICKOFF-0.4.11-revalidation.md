@@ -1,4 +1,4 @@
-# KICKOFF — 0.4.11 batch revalidation: `wr1`, then `jr1`, then stop
+# KICKOFF — 0.4.11 batch revalidation: `wr1`, then `jl1`, then stop
 
 For the Mac session. The batch is his narration of 2026-08-18 turned into
 contract text, plus the j49 post-mortem's plumbing. Stack for both runs:
@@ -23,22 +23,27 @@ remains materially the approved one (small variance expected; structural
 degradation — lost trades he praised, new losing shapes — is a STOP, and the
 batch gets re-examined before anything else runs).
 
-## RUN 2 — `jr1`: the j49 tape (2026-05-31…06-04)
+## RUN 2 — `jl1`: a fresh July week, 2026-07-05…09
 
-The check. Reviewer's receipts, from his narration — **NOTE: this section is
-for the reviewer AFTER the book lands. None of it reaches any agent, any
-briefing, or any prompt. Agents see contracts and briefings only, as
-always.**
+**His call, 2026-08-18:** *"i reckon [run 2] should be a week from another
+month. lets do july for good measure."* Right call — his narration of the
+j49 days is now IN the contracts verbatim, so re-running that tape would
+have been partly self-fulfilling. July is a clean test.
 
-- **Mon 05-31, 03:12/03:18** — adjudicated on merits; no calendar
-  stand-aside exists any more. Whatever the verdict, the reason must be
-  structural.
-- **Tue 06-01** — bias LONG by the open under T71–T74 ("that was longs all
-  day"). The shapes he named: a VWAP+1-retest long after the multi-level
-  reclaim near 09:48–09:51, and the re-break re-entry near 10:33; targets
-  VWAP+2 first, prior-day high (30693) as the full destination.
-- **Thu 06-03, 03:22** — if taken, the stop sits per T75 beyond the
-  rejected W/D VAH (breathing room for a retest), not tucked at the swing.
+The week: session-days **2026-07-05 … 2026-07-09** (trading Mon Jul 6 –
+Fri Jul 10). The only complete July week in the committed bars (the Jul 1
+week has the holiday half-day; the dataset ends mid-Jul 15). No agent has
+ever run it, no narration exists for it, no FOMC inside it.
+`gate_offline_causality` run over all five days 2026-08-18: **ALL PASS**
+(data coherent, every offline briefing field causal, scanner stable).
+
+What the reviewer checks when the book lands (none of this reaches any
+agent): the batch's machinery visible in the rows — `thesis_fresh` +
+`thesis_reconciled` at every window open, any level-truth bounces logged,
+the re-read counter firing on the second licence-only pass, the PRE hard
+cap enforcing, stops placed per T75 (beyond the rejected level, not the
+swing) — and then the only question that decides anything: **his
+trade-by-trade read.**
 
 ## Windows — his 2026-08-18 ruling in force
 
@@ -58,8 +63,10 @@ Fresh prefixes `wr1` / `jr1` (never reuse a prefix); books to
 sequence, leak checks, §2d never-block, weekly-anchor hard gate; move books
 to `output/agent_runs/` only when scored and sealed.
 
-## After `jr1`: STOP
+## After `jl1`: STOP
 
-He reviews both books before the fresh out-of-fit week
-(**2026-06-07…11**) is green-lit. That week is the real test of the batch —
-j49 is teaching data now and can never be the test again.
+He reviews both books. `jl1` IS the out-of-fit test of the batch — if it
+reads like him, the path is paper days (HALT wiring first), Tradovate, the
+execution agent. **2026-06-07…11** stays in reserve as a second OOS week if
+anything needs a re-test; the j49 tape is teaching data and is never a test
+again.
