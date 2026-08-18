@@ -319,12 +319,12 @@
   "vwap_m2 29122.19",
   "vwap_m3 28937.04"
  ],
- "fills_this_window": 1,
+ "fills_this_window": 2,
  "window_cap": {
   "window": "LONDON",
   "written_cap": 2,
   "caps_lifted": true,
-  "fills_so_far": 1
+  "fills_so_far": 2
  },
  "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
  "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
@@ -448,9 +448,9 @@
  "chart_truncation_note": "decision minute 04:33; the last COMPLETE 2m bar closes 04:32. Deliberate and leak-safe; legend values were read at that cursor.",
  "position_state": {
   "state": "FLAT",
-  "fills_this_window": 1,
-  "detail": "no open position. L1 was the one fill: long 29493.00 filled 03:18, 75% banked 29520.50 at 03:29 (+0.8333R), runner stopped at breakeven 29493.00 at 04:02 (0.0000R), blended +0.6250R.",
-  "cap_note": "the written LONDON cap is 2 fills and 1 is used."
+  "fills_this_window": 2,
+  "detail": "no open position, but TWO fills have now been taken in this window. L1: long 29493.00 filled 03:18, 75% banked 29520.50 at 03:29 (+0.8333R), runner stopped at breakeven 29493.00 at 04:02 (0.0000R), blended +0.6250R. L3: long 29499.50 filled 04:29, STOPPED on its original 29478.00 stop at 04:32 for -1.0000R - it closed one minute before this decision minute. L3 was a long taken into the SAME 29526.62 day-0.5-fib / 3h-range-high edge that is in play now, and that level rejected it. The window is -0.3750R.",
+  "cap_note": "the written LONDON cap is 2 fills and BOTH are now used. A take here is beyond the written cap. Caps are lifted for this run, so this is not a refusal - it is tagged beyond_written_cap and the extra licence is yours to justify."
  },
  "MECHANICAL_GATE_outer_band_fade_only": {
   "rule": "a SHORT at/through vwap_m2/m3 or a LONG at/through vwap_p2/p3 is a pass regardless of trigger quality.",

@@ -1,0 +1,203 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "L1",
+ "decision_minute": "2026-06-24T03:04 ET",
+ "reason_for_call": "tp1_reached",
+ "leak_check": "pass - replay truncated at 03:03:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/w49_2026-06-23_L1_0304_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 29827.5,
+  "stop": 29831.0,
+  "targets": [
+   {
+    "level": "fib_0.705",
+    "price": 29801.41
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "03:00",
+  "R_in_points": 15.5,
+  "current_stop_distance": 3.5,
+  "open_pnl_in_R": 2.39
+ },
+ "level_in_question": {
+  "level": "target_1",
+  "price": 29801.41
+ },
+ "price_at_decision": 29790.5,
+ "last_completed_2m_bar": {
+  "start": "03:02",
+  "closed_at": "03:04",
+  "open": 29809.75,
+  "high": 29811.5,
+  "low": 29786.25,
+  "close": 29790.5,
+  "volume": 312,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "02:56",
+   "closed_at": "02:58",
+   "open": 29827.75,
+   "high": 29837.75,
+   "low": 29822.25,
+   "close": 29827.25,
+   "volume": 165,
+   "minutes": 2
+  },
+  {
+   "start": "02:58",
+   "closed_at": "03:00",
+   "open": 29826.75,
+   "high": 29837.0,
+   "low": 29820.25,
+   "close": 29822.75,
+   "volume": 272,
+   "minutes": 2
+  },
+  {
+   "start": "03:00",
+   "closed_at": "03:02",
+   "open": 29824.25,
+   "high": 29840.75,
+   "low": 29803.75,
+   "close": 29807.25,
+   "volume": 515,
+   "minutes": 2
+  },
+  {
+   "start": "03:02",
+   "closed_at": "03:04",
+   "open": 29809.75,
+   "high": 29811.5,
+   "low": 29786.25,
+   "close": 29790.5,
+   "volume": 312,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 29827.95,
+  "bb_upper_2m": 29858.46,
+  "bb_lower_2m": 29797.44,
+  "vwap": 29764.47,
+  "vwap_p1": 29834.74,
+  "vwap_m1": 29694.21,
+  "vwap_p2": 29905.0,
+  "vwap_m2": 29623.95,
+  "vwap_p3": 29975.27,
+  "vwap_m3": 29553.68,
+  "read_at": "chart cursor 03:04-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "provenance": "captured live via the full runbook sequence."
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 29764.57,
+   "vwap_p1": 29835.08,
+   "vwap_p2": 29905.59,
+   "vwap_p3": 29976.11,
+   "vwap_m1": 29694.05,
+   "vwap_m2": 29623.54,
+   "vwap_m3": 29553.03
+  },
+  "bb_ma": {
+   "bb_ma_2m": 29827.95,
+   "bb_ma_3m": 29827.06,
+   "bb_ma_15m": 29771.33,
+   "bb_ma_60m": 29775.85
+  },
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29701.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 03:04"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29733.0,
+   "val": 29647.0,
+   "vah": 29914.0,
+   "high": 30701.25,
+   "low": 29577.25,
+   "anchor": "2026-06-22 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:04"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  }
+ },
+ "crowded_path": {
+  "levels_between_tp1_and_tp2": [],
+  "count": 0,
+  "crowded_path": false,
+  "note": "this position has a single target (29801.41), so there is no TP1-to-TP2 corridor to be crowded."
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "03:02",
+   "reason_for_call": "intermediate_level_broken / daily_poc",
+   "action": "trail",
+   "new_stop": 29831.0,
+   "favouring": "more",
+   "reason": "(unchanged - this call is at an even decision minute and its briefing carried no leaked bar)"
+  },
+  {
+   "minute": "03:03",
+   "reason_for_call": "tp1_reached / target_1 29801.41",
+   "action": "hold",
+   "new_stop": null,
+   "favouring": "more",
+   "reason": "Last clean bar wicked to 29803.75, bounced to 29807.25 - still above the 29801.41 target, not printed. Same bar already used for the POC trail to 29831; nothing new to act on. Holding, not booking a partial on an unhit target."
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract.",
+ "conviction_partial_rule": {
+  "conviction_of_this_position": "B",
+  "contract_default": "B takes roughly 75% at TP1 and trails the runner. A is 50% and holds the rest to the full target; C is 100% out with no runner.",
+  "note": "stated as the contract text, not as an instruction - partial_pct is your decision and is a fraction of what is still open."
+ },
+ "thesis_context": {
+  "version": "v2",
+  "primary_bias": "long",
+  "invalidation": 29577.25,
+  "aligned": "this position is the SHORT leg v2 licensed on escalation - down into the VWAP/15m-MA/day-fib-0.5 confluence (29738.62-29772.78). Long remains the primary bias; this leg is the awaited rebalance, not a flip.",
+  "other_side_tripwire": "day_fib_0.5_and_15m_ma 29738.62, 15m_decisive_close - not resolved as of this minute",
+  "note": "stated because it bears on how much runner is worth carrying, not as a view on your decision."
+ },
+ "prior_positions_this_window": {
+  "count": 0,
+  "detail": "this is the first fill of the session-day.",
+  "note": "stated as run state."
+ },
+ "window_note": {
+  "window": "LONDON",
+  "entries_end": "04:59",
+  "text": "the LONDON window runs to 04:59. T51 does not apply to this position - T51 governs positions carried into the 09:30 cash open, which is hours away.",
+  "news": "the calendar for this cash day is empty - no blackout anywhere.",
+  "follow_up_note": "this call was ADDED by the orchestrator. The scheduled tp1_reached call at 03:03 fired before the target print was visible on any COMPLETED 2m bar, because htf.management_minutes shifts a bar event one minute past the 1-minute bar that triggered it while your briefing and your chart are anchored on the last complete 2m bar. You correctly declined to bank a target you could not see. The print is visible now. Nothing else about the position has changed."
+ },
+ "BREAKEVEN_RULE": {
+  "rule": "breakeven is ONLY available after TP1 has printed. Before TP1 it is not a legal action.",
+  "tp1": 29801.41,
+  "tp1_printed_yet": true,
+  "available_to_you_now": "YES - TP1 has printed",
+  "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
+  "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
+  "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+ }
+}

@@ -9,7 +9,7 @@
  "position": {
   "side": "short",
   "entry": 29801.0,
-  "stop": 29796.0,
+  "stop": 29830.0,
   "targets": [
    {
     "level": "day_fib_0.5",
@@ -19,7 +19,7 @@
   "conviction": "B",
   "opened_at": "03:55",
   "R_in_points": 29.0,
-  "current_stop_distance": 5.0,
+  "current_stop_distance": 53.25,
   "open_pnl_in_R": 0.84
  },
  "level_in_question": {
@@ -40,43 +40,43 @@
  "candle_grid_note": "This decision minute is 03:59, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 03:58. price_at_decision and every 2m field below are that 03:58 bar - they will not equal the 3m close, and the chart legend will read the 03:58 bar. Judge the 3m candle and the 03:58 2m candle; neither is fabricated.",
  "recent_2m_bars": [
   {
-   "start": "03:51",
-   "closed_at": "03:53",
-   "open": 29822.25,
-   "high": 29822.25,
-   "low": 29795.25,
-   "close": 29800.0,
-   "volume": 191,
+   "start": "03:50",
+   "closed_at": "03:52",
+   "open": 29827.75,
+   "high": 29828.25,
+   "low": 29811.0,
+   "close": 29812.75,
+   "volume": 137,
    "minutes": 2
   },
   {
-   "start": "03:53",
-   "closed_at": "03:55",
-   "open": 29800.25,
-   "high": 29802.25,
-   "low": 29785.25,
-   "close": 29796.5,
-   "volume": 165,
+   "start": "03:52",
+   "closed_at": "03:54",
+   "open": 29811.5,
+   "high": 29811.5,
+   "low": 29787.75,
+   "close": 29787.75,
+   "volume": 175,
    "minutes": 2
   },
   {
-   "start": "03:55",
-   "closed_at": "03:57",
-   "open": 29796.75,
+   "start": "03:54",
+   "closed_at": "03:56",
+   "open": 29787.5,
    "high": 29804.25,
-   "low": 29774.0,
-   "close": 29778.25,
-   "volume": 273,
+   "low": 29785.25,
+   "close": 29789.25,
+   "volume": 210,
    "minutes": 2
   },
   {
-   "start": "03:57",
-   "closed_at": "03:59",
-   "open": 29778.75,
-   "high": 29779.5,
+   "start": "03:56",
+   "closed_at": "03:58",
+   "open": 29788.25,
+   "high": 29790.5,
    "low": 29771.75,
-   "close": 29774.75,
-   "volume": 166,
+   "close": 29776.75,
+   "volume": 252,
    "minutes": 2
   }
  ],
@@ -150,10 +150,10 @@
   {
    "minute": "03:57",
    "reason_for_call": "intermediate_level_broken / bb_ma_15m 29785.00",
-   "action": "trail",
-   "new_stop": 29796.0,
-   "partial_pct": 0.0,
-   "your_reason_then": "Price closed decisively through bb_ma_15m (29785) to 29778.25, well beyond noise; short now favoured more than at entry. Trailing stop to 29796, clearing the broken level by >0.5x avg 2m range, letting runner work to 29738.62."
+   "action": "hold",
+   "new_stop": null,
+   "favouring": "more",
+   "reason": "Short is already +0.41R after two minutes; one bar wicked to 29785.25 near the 15m MA then closed back at 29789.25, still above it - a single test, no close through, no 3-5min stall yet. TP1 unprinted so breakeven isn't legal; holding, let it prove the break or reject properly."
   }
  ],
  "what_to_emit": "your management JSON, per your contract.",
@@ -189,5 +189,68 @@
   "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
   "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
   "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+ },
+ "_recent_2m_bars_corrected": {
+  "was": [
+   {
+    "start": "03:51",
+    "closed_at": "03:53",
+    "open": 29822.25,
+    "high": 29822.25,
+    "low": 29795.25,
+    "close": 29800.0,
+    "volume": 191,
+    "minutes": 2
+   },
+   {
+    "start": "03:53",
+    "closed_at": "03:55",
+    "open": 29800.25,
+    "high": 29802.25,
+    "low": 29785.25,
+    "close": 29796.5,
+    "volume": 165,
+    "minutes": 2
+   },
+   {
+    "start": "03:55",
+    "closed_at": "03:57",
+    "open": 29796.75,
+    "high": 29804.25,
+    "low": 29774.0,
+    "close": 29778.25,
+    "volume": 273,
+    "minutes": 2
+   },
+   {
+    "start": "03:57",
+    "closed_at": "03:59",
+    "open": 29778.75,
+    "high": 29779.5,
+    "low": 29771.75,
+    "close": 29774.75,
+    "volume": 166,
+    "minutes": 2
+   }
+  ],
+  "why": "brief04.py anchors this series on `dec` while every other field in this briefing - price_at_decision, last_completed_2m_bar, chart_levels and the screenshot - is anchored on grid_2m(dec). They differ whenever dec is ODD, and the final bar then contained the still-forming minute's close, high and low: price action AFTER the cursor. Re-anchored on grid_2m(dec).",
+  "leaked_close": 29774.75,
+  "true_close_at_decision": 29776.75
+ },
+ "_repointed": {
+  "was_stop": 29796.0,
+  "now_stop": 29830.0,
+  "was_actions": [
+   {
+    "minute": "03:57",
+    "reason_for_call": "intermediate_level_broken / bb_ma_15m 29785.00",
+    "action": "trail",
+    "new_stop": 29796.0,
+    "partial_pct": 0.0,
+    "your_reason_then": "Price closed decisively through bb_ma_15m (29785) to 29778.25, well beyond noise; short now favoured more than at entry. Trailing stop to 29796, clearing the broken level by >0.5x avg 2m range, letting runner work to 29738.62."
+   }
+  ],
+  "why": "the 03:57 call was re-taken on a leak-free briefing and came back HOLD where the leaked run trailed to 29796.00. The working stop at this minute is therefore the original 29830.00.",
+  "note": "only position.stop, current_stop_distance and management_actions_so_far were changed. Every other field depends on the decision minute alone, not on the prior calls, so none of them was touched."
  }
 }

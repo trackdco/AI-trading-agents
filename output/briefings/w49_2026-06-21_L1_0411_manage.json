@@ -44,43 +44,43 @@
  "candle_grid_note": "This decision minute is 04:11, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 04:10. price_at_decision and every 2m field below are that 04:10 bar - they will not equal the 3m close, and the chart legend will read the 04:10 bar. Judge the 3m candle and the 04:10 2m candle; neither is fabricated.",
  "recent_2m_bars": [
   {
-   "start": "04:03",
-   "closed_at": "04:05",
-   "open": 30737.75,
-   "high": 30745.25,
-   "low": 30725.0,
-   "close": 30730.25,
-   "volume": 382,
+   "start": "04:02",
+   "closed_at": "04:04",
+   "open": 30756.0,
+   "high": 30761.75,
+   "low": 30736.25,
+   "close": 30742.25,
+   "volume": 320,
    "minutes": 2
   },
   {
-   "start": "04:05",
-   "closed_at": "04:07",
+   "start": "04:04",
+   "closed_at": "04:06",
+   "open": 30743.0,
+   "high": 30745.0,
+   "low": 30725.0,
+   "close": 30730.75,
+   "volume": 331,
+   "minutes": 2
+  },
+  {
+   "start": "04:06",
+   "closed_at": "04:08",
    "open": 30731.0,
    "high": 30732.75,
-   "low": 30719.75,
-   "close": 30721.0,
-   "volume": 348,
-   "minutes": 2
-  },
-  {
-   "start": "04:07",
-   "closed_at": "04:09",
-   "open": 30723.25,
-   "high": 30727.75,
    "low": 30716.75,
-   "close": 30725.75,
-   "volume": 184,
+   "close": 30722.75,
+   "volume": 368,
    "minutes": 2
   },
   {
-   "start": "04:09",
-   "closed_at": "04:11",
-   "open": 30725.75,
+   "start": "04:08",
+   "closed_at": "04:10",
+   "open": 30723.25,
    "high": 30728.0,
-   "low": 30709.5,
-   "close": 30709.5,
-   "volume": 220,
+   "low": 30716.25,
+   "close": 30719.25,
+   "volume": 174,
    "minutes": 2
   }
  ],
@@ -179,5 +179,52 @@
   "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
   "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
   "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+ },
+ "_recent_2m_bars_corrected": {
+  "was": [
+   {
+    "start": "04:03",
+    "closed_at": "04:05",
+    "open": 30737.75,
+    "high": 30745.25,
+    "low": 30725.0,
+    "close": 30730.25,
+    "volume": 382,
+    "minutes": 2
+   },
+   {
+    "start": "04:05",
+    "closed_at": "04:07",
+    "open": 30731.0,
+    "high": 30732.75,
+    "low": 30719.75,
+    "close": 30721.0,
+    "volume": 348,
+    "minutes": 2
+   },
+   {
+    "start": "04:07",
+    "closed_at": "04:09",
+    "open": 30723.25,
+    "high": 30727.75,
+    "low": 30716.75,
+    "close": 30725.75,
+    "volume": 184,
+    "minutes": 2
+   },
+   {
+    "start": "04:09",
+    "closed_at": "04:11",
+    "open": 30725.75,
+    "high": 30728.0,
+    "low": 30709.5,
+    "close": 30709.5,
+    "volume": 220,
+    "minutes": 2
+   }
+  ],
+  "why": "brief04.py anchors this series on `dec` while every other field in this briefing - price_at_decision, last_completed_2m_bar, chart_levels and the screenshot - is anchored on grid_2m(dec). They differ whenever dec is ODD, and the final bar then contained the still-forming minute's close, high and low: price action AFTER the cursor. Re-anchored on grid_2m(dec).",
+  "leaked_close": 30709.5,
+  "true_close_at_decision": 30719.25
  }
 }

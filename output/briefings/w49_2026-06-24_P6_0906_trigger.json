@@ -509,22 +509,9 @@
  "context_extras_note": "nwog / swept lows-highs / defended_levels computed by scripts.context_extras as-of the decision minute. Mechanical, no editorial.",
  "chart_truncation_note": "decision minute 09:06; the last COMPLETE 2m bar closes 09:06. Deliberate and leak-safe; legend values were read at that cursor.",
  "position_state": {
-  "state": "OPEN",
+  "state": "FLAT",
   "fills_this_window": 0,
-  "open_position": {
-   "cid": "L4",
-   "side": "short",
-   "entry": 30136.0,
-   "opened_at": "04:51",
-   "original_stop": 30161.5,
-   "current_stop": 30161.5,
-   "original_r_pts": 25.5,
-   "conviction": "B",
-   "size_remaining_pct": 100,
-   "target": "vwap_and_day_fib_0.5 30068.51",
-   "note": "a LONDON position still open. 11:00 and 04:59 gate ENTRIES, not holds - his standing ruling - so it was carried past the LONDON close."
-  },
-  "detail": "one position open, carried from LONDON. NY_PRE has taken no fills.",
+  "detail": "no open position and no fill in this window. P1 (08:06), P2 (08:18), P3 (08:24), P4 (08:30) and P5 (08:33) were all adjudicated and all PASSED. LONDON earlier took one fill: L4 short 30136.00, carried past the window close and stopped at 30161.50 at 06:12 for -1.0000R.",
   "cap_note": "the written NY_PRE cap is 2 fills and 0 are used."
  },
  "MECHANICAL_GATE_outer_band_fade_only": {
@@ -550,7 +537,7 @@
   "budget": 2,
   "used": 0,
   "remaining": 2,
-  "ratchet": "no level+direction escalated yet in THIS window. LONDON closed with 0 escalations used.",
+  "ratchet": "no level+direction escalated yet in THIS window. LONDON used 0 of 2.",
   "note": "stated as run state."
  },
  "news_note": "news_blackout TRUE for this window. Gating event(s): Core PCE Price Index m/m at 08:30. Per his standing ruling a red-folder release scheduled inside or at the end of the pre-market session closes ALL pre-market entries from the start of the window THROUGH the event time INCLUSIVE; entries are free from the first minute after. THIS decision minute (09:06) is AFTER the event time, so it falls OUTSIDE the blackout - entries are free at this minute. Stated as a mechanical fact; the gate is yours to apply.",

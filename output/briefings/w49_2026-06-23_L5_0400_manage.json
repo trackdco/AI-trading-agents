@@ -9,7 +9,7 @@
  "position": {
   "side": "short",
   "entry": 29801.0,
-  "stop": 29796.0,
+  "stop": 29830.0,
   "targets": [
    {
     "level": "day_fib_0.5",
@@ -19,7 +19,7 @@
   "conviction": "B",
   "opened_at": "03:55",
   "R_in_points": 29.0,
-  "current_stop_distance": 5.0,
+  "current_stop_distance": 60.0,
   "open_pnl_in_R": 1.07
  },
  "level_in_question": {
@@ -150,10 +150,18 @@
   {
    "minute": "03:57",
    "reason_for_call": "intermediate_level_broken / bb_ma_15m 29785.00",
-   "action": "trail",
-   "new_stop": 29796.0,
-   "partial_pct": 0.0,
-   "your_reason_then": "Price closed decisively through bb_ma_15m (29785) to 29778.25, well beyond noise; short now favoured more than at entry. Trailing stop to 29796, clearing the broken level by >0.5x avg 2m range, letting runner work to 29738.62."
+   "action": "hold",
+   "new_stop": null,
+   "favouring": "more",
+   "reason": "Short is already +0.41R after two minutes; one bar wicked to 29785.25 near the 15m MA then closed back at 29789.25, still above it - a single test, no close through, no 3-5min stall yet. TP1 unprinted so breakeven isn't legal; holding, let it prove the break or reject properly."
+  },
+  {
+   "minute": "03:59",
+   "reason_for_call": "intermediate_level_broken / bb_ma_60m 29776.15",
+   "action": "hold",
+   "new_stop": null,
+   "favouring": "more",
+   "reason": "Short is +0.84R off entry; this 2m bar wicked below the 60m MA/0.618 fib confluence (low 29771.75) but closed back at 29776.75, still on the entry side of it - one bar, not a closed break or a 3-5min stall, so no trail. Breakeven isn't legal pre-target anyway. Holding stop at 29830, letting the level get a fair test."
   }
  ],
  "what_to_emit": "your management JSON, per your contract.",
@@ -189,5 +197,21 @@
   "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
   "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
   "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+ },
+ "_repointed": {
+  "was_stop": 29796.0,
+  "now_stop": 29830.0,
+  "was_actions": [
+   {
+    "minute": "03:57",
+    "reason_for_call": "intermediate_level_broken / bb_ma_15m 29785.00",
+    "action": "trail",
+    "new_stop": 29796.0,
+    "partial_pct": 0.0,
+    "your_reason_then": "Price closed decisively through bb_ma_15m (29785) to 29778.25, well beyond noise; short now favoured more than at entry. Trailing stop to 29796, clearing the broken level by >0.5x avg 2m range, letting runner work to 29738.62."
+   }
+  ],
+  "why": "both prior calls (03:57, 03:59) were re-taken on leak-free briefings and both came back HOLD, where the leaked runs had trailed to 29796.00 then 29787.00. The working stop here is therefore the original 29830.00.",
+  "note": "only position.stop, current_stop_distance and management_actions_so_far were changed. Every other field depends on the decision minute alone, not on the prior calls, so none of them was touched."
  }
 }

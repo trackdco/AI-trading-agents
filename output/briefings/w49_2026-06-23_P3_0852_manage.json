@@ -212,10 +212,15 @@
  "BREAKEVEN_RULE": {
   "rule": "breakeven is ONLY available after TP1 has printed. Before TP1 it is not a legal action.",
   "tp1": 29738.62,
-  "tp1_printed_yet": false,
-  "available_to_you_now": "NO - TP1 has not printed, so breakeven is not one of your options at this minute",
+  "tp1_printed_yet": true,
+  "available_to_you_now": "YES - TP1 has printed and 75% was banked at 08:50. The target named in `tp1` below is the RUNNER's remaining target, not the gate.",
   "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
   "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
-  "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+  "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected.",
+  "_runner_gate_corrected": {
+   "was_tp1_printed_yet": false,
+   "was_tp1": 29738.62,
+   "why": "this position's TP1 HAS printed - 75% of it was banked at 08:50. The briefing lists only the runner's remaining target, so runmanage.build computed `tp1` from that target instead and re-locked the gate. Breakeven IS available on this runner."
+  }
  }
 }

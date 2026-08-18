@@ -9,7 +9,7 @@
  "position": {
   "side": "short",
   "entry": 30754.5,
-  "stop": 30722.0,
+  "stop": 30785.5,
   "targets": [
    {
     "level": "prior_day_vah",
@@ -23,7 +23,7 @@
   "conviction": "C",
   "opened_at": "03:43",
   "R_in_points": 31.0,
-  "current_stop_distance": 32.5,
+  "current_stop_distance": 86.25,
   "open_pnl_in_R": 1.78
  },
  "level_in_question": {
@@ -148,9 +148,11 @@
  "management_actions_so_far": [
   {
    "minute": "04:11",
-   "action": "trail",
-   "new_stop": 30722.0,
-   "reason": "Weekly VAH 30714 closed through decisively (last 2m close 30709.5, 4.5pt clear); +1.14R, TP1 (30699) not printed so no breakeven. Trailing to 30722, above the broken level with clearance so it must reclaim to stop me out."
+   "reason_for_call": "intermediate_level_broken / weekly_vah 30714.00",
+   "action": "hold",
+   "new_stop": null,
+   "favouring": "more",
+   "reason": "Grinding into weekly VAH 30714 - last two 2m lows (30716.75, 30716.25) test it but neither closed through, and closes are still near lows, not a rejection. No clean break to trail behind yet, no TP1 yet for break-even, so I'm letting it work and watching for a real close through 30714."
   }
  ],
  "what_to_emit": "your management JSON, per your contract.",
@@ -186,5 +188,19 @@
   "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
   "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
   "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+ },
+ "_repointed": {
+  "was_stop": 30722.0,
+  "now_stop": 30785.5,
+  "was_actions": [
+   {
+    "minute": "04:11",
+    "action": "trail",
+    "new_stop": 30722.0,
+    "reason": "Weekly VAH 30714 closed through decisively (last 2m close 30709.5, 4.5pt clear); +1.14R, TP1 (30699) not printed so no breakeven. Trailing to 30722, above the broken level with clearance so it must reclaim to stop me out."
+   }
+  ],
+  "why": "the 04:11 call was re-taken on a briefing with the recent_2m_bars leak removed and came back HOLD, where the leaked run had trailed to 30722.00. So at this minute the working stop is the original 30785.50, not 30722.00, and the prior-action list must quote the verdict that actually stands.",
+  "note": "only position.stop, current_stop_distance and management_actions_so_far were changed. Every other field depends on the decision minute alone, not on the prior calls, so none of them was touched."
  }
 }
