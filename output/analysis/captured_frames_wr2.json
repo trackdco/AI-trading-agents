@@ -461,6 +461,248 @@
     "-3sigma": 29015.41
    },
    "screenshot": "wr2_2026-06-24_A4_1041_manage.png"
+  },
+  "wr2|2026-06-24|A5|10:47": {
+   "cid": "A5",
+   "cursor": 1782398819,
+   "bar_start": 1782398700,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782398819 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29570.55,
+    "Upper": 29760.0,
+    "Lower": 29381.1
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29832.18,
+    "+1sigma": 30104.85,
+    "-1sigma": 29559.5,
+    "+2sigma": 30377.53,
+    "-2sigma": 29286.82,
+    "+3sigma": 30650.2,
+    "-3sigma": 29014.15
+   },
+   "screenshot": "wr2_2026-06-24_A5_1047_manage.png"
+  },
+  "wr2|2026-06-24|A4|10:52": {
+   "cid": "A4",
+   "cursor": 1782399119,
+   "bar_start": 1782398880,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782399119 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29571.03,
+    "Upper": 29761.37,
+    "Lower": 29380.68
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29828.64,
+    "+1sigma": 30100.18,
+    "-1sigma": 29557.11,
+    "+2sigma": 30371.71,
+    "-2sigma": 29285.58,
+    "+3sigma": 30643.25,
+    "-3sigma": 29014.04
+   },
+   "screenshot": "wr2_2026-06-24_A4_1052_manage.png"
+  },
+  "wr2|2026-06-24|A5|10:52": {
+   "cid": "A5",
+   "cursor": 1782399119,
+   "bar_start": 1782398880,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782399119 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29571.03,
+    "Upper": 29761.37,
+    "Lower": 29380.68
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29828.64,
+    "+1sigma": 30100.18,
+    "-1sigma": 29557.11,
+    "+2sigma": 30371.71,
+    "-2sigma": 29285.58,
+    "+3sigma": 30643.25,
+    "-3sigma": 29014.04
+   },
+   "screenshot": "wr2_2026-06-24_A5_1052_manage.png"
+  },
+  "wr2|2026-06-24|A4|10:53": {
+   "cid": "A4",
+   "cursor": 1782399179,
+   "bar_start": 1782399060,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782399179 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29584.81,
+    "Upper": 29778.88,
+    "Lower": 29390.75
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29827.92,
+    "+1sigma": 30098.82,
+    "-1sigma": 29557.01,
+    "+2sigma": 30369.72,
+    "-2sigma": 29286.11,
+    "+3sigma": 30640.63,
+    "-3sigma": 29015.21
+   },
+   "screenshot": "wr2_2026-06-24_A4_1053_manage.png"
+  },
+  "wr2|2026-06-24|A5|10:53": {
+   "cid": "A5",
+   "cursor": 1782399179,
+   "bar_start": 1782399060,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782399179 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29584.81,
+    "Upper": 29778.88,
+    "Lower": 29390.75
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29827.92,
+    "+1sigma": 30098.82,
+    "-1sigma": 29557.01,
+    "+2sigma": 30369.72,
+    "-2sigma": 29286.11,
+    "+3sigma": 30640.63,
+    "-3sigma": 29015.21
+   },
+   "screenshot": "wr2_2026-06-24_A5_1053_manage.png"
+  },
+  "wr2|2026-06-24|A4|10:55": {
+   "cid": "A4",
+   "cursor": 1782399299,
+   "bar_start": 1782399060,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782399299 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29585.46,
+    "Upper": 29781.53,
+    "Lower": 29389.39
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29826.95,
+    "+1sigma": 30096.67,
+    "-1sigma": 29557.22,
+    "+2sigma": 30366.39,
+    "-2sigma": 29287.5,
+    "+3sigma": 30636.11,
+    "-3sigma": 29017.78
+   },
+   "screenshot": "wr2_2026-06-24_A4_1055_manage.png"
+  },
+  "wr2|2026-06-24|A5|10:55": {
+   "cid": "A5",
+   "cursor": 1782399299,
+   "bar_start": 1782399060,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782399299 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29585.46,
+    "Upper": 29781.53,
+    "Lower": 29389.39
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29826.95,
+    "+1sigma": 30096.67,
+    "-1sigma": 29557.22,
+    "+2sigma": 30366.39,
+    "-2sigma": 29287.5,
+    "+3sigma": 30636.11,
+    "-3sigma": 29017.78
+   },
+   "screenshot": "wr2_2026-06-24_A5_1055_manage.png"
+  },
+  "wr2|2026-06-24|A4|10:56": {
+   "cid": "A4",
+   "cursor": 1782399359,
+   "bar_start": 1782399240,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782399359 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29604.24,
+    "Upper": 29796.3,
+    "Lower": 29412.18
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29826.71,
+    "+1sigma": 30095.96,
+    "-1sigma": 29557.45,
+    "+2sigma": 30365.22,
+    "-2sigma": 29288.2,
+    "+3sigma": 30634.47,
+    "-3sigma": 29018.95
+   },
+   "screenshot": "wr2_2026-06-24_A4_1056_manage.png"
+  },
+  "wr2|2026-06-24|A5|10:56": {
+   "cid": "A5",
+   "cursor": 1782399359,
+   "bar_start": 1782399240,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782399359 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29604.24,
+    "Upper": 29796.3,
+    "Lower": 29412.18
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29826.71,
+    "+1sigma": 30095.96,
+    "-1sigma": 29557.45,
+    "+2sigma": 30365.22,
+    "-2sigma": 29288.2,
+    "+3sigma": 30634.47,
+    "-3sigma": 29018.95
+   },
+   "screenshot": "wr2_2026-06-24_A5_1056_manage.png"
+  },
+  "wr2|2026-06-24|A4|10:57": {
+   "cid": "A4",
+   "cursor": 1782399419,
+   "bar_start": 1782399240,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782399419 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29601.54,
+    "Upper": 29785.42,
+    "Lower": 29417.65
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29825.87,
+    "+1sigma": 30094.15,
+    "-1sigma": 29557.59,
+    "+2sigma": 30362.43,
+    "-2sigma": 29289.31,
+    "+3sigma": 30630.71,
+    "-3sigma": 29021.03
+   },
+   "screenshot": "wr2_2026-06-24_A4_1057_manage.png"
+  },
+  "wr2|2026-06-24|A5|10:57": {
+   "cid": "A5",
+   "cursor": 1782399419,
+   "bar_start": 1782399240,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782399419 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29601.54,
+    "Upper": 29785.42,
+    "Lower": 29417.65
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29825.87,
+    "+1sigma": 30094.15,
+    "-1sigma": 29557.59,
+    "+2sigma": 30362.43,
+    "-2sigma": 29289.31,
+    "+3sigma": 30630.71,
+    "-3sigma": 29021.03
+   },
+   "screenshot": "wr2_2026-06-24_A5_1057_manage.png"
   }
  }
 }
