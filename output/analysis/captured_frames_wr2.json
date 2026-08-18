@@ -307,6 +307,94 @@
     "-3sigma": 29120.39
    },
    "screenshot": "wr2_2026-06-22_A3_0953_manage.png"
+  },
+  "wr2|2026-06-23|A5|10:33": {
+   "cid": "A5",
+   "cursor": 1782311579,
+   "bar_start": 1782311400,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782311579 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29682.88,
+    "Upper": 29801.85,
+    "Lower": 29563.9
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29737.79,
+    "+1sigma": 29810.06,
+    "-1sigma": 29665.52,
+    "+2sigma": 29882.33,
+    "-2sigma": 29593.24,
+    "+3sigma": 29954.61,
+    "-3sigma": 29520.97
+   },
+   "screenshot": "wr2_2026-06-23_A5_1033_manage.png"
+  },
+  "wr2|2026-06-23|A5|10:34": {
+   "cid": "A5",
+   "cursor": 1782311639,
+   "bar_start": 1782311400,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782311639 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29682.88,
+    "Upper": 29801.85,
+    "Lower": 29563.9
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29737.79,
+    "+1sigma": 29810.06,
+    "-1sigma": 29665.52,
+    "+2sigma": 29882.33,
+    "-2sigma": 29593.24,
+    "+3sigma": 29954.61,
+    "-3sigma": 29520.97
+   },
+   "screenshot": "wr2_2026-06-23_A5_1034_manage.png"
+  },
+  "wr2|2026-06-23|A5|10:36": {
+   "cid": "A5",
+   "cursor": 1782311759,
+   "bar_start": 1782311580,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782311759 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29680.83,
+    "Upper": 29791.64,
+    "Lower": 29570.01
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29738.08,
+    "+1sigma": 29809.98,
+    "-1sigma": 29666.18,
+    "+2sigma": 29881.89,
+    "-2sigma": 29594.27,
+    "+3sigma": 29953.79,
+    "-3sigma": 29522.37
+   },
+   "screenshot": "wr2_2026-06-23_A5_1036_manage.png"
+  },
+  "wr2|2026-06-24|A4|10:27": {
+   "cid": "A4",
+   "cursor": 1782397619,
+   "bar_start": 1782397440,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782397619 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29678.91,
+    "Upper": 30149.73,
+    "Lower": 29208.1
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 29850.92,
+    "+1sigma": 30129.01,
+    "-1sigma": 29572.83,
+    "+2sigma": 30407.1,
+    "-2sigma": 29294.74,
+    "+3sigma": 30685.19,
+    "-3sigma": 29016.65
+   },
+   "screenshot": "wr2_2026-06-24_A4_1027_manage.png"
   }
  }
 }
