@@ -141,3 +141,19 @@ the sealed window. Two consequences, recorded rather than absorbed:
 
 The v3.1 config was also run on train: **EV −0.000R, PF 0.98, −$2,177**, against PF 1.67 and
 +$26,501 on the window it was designed from. It does not clear D4 and Phase 4 stays unrun.
+
+## D9 — Phase 3B outcome
+
+Four single-axis sweeps (anchor, Crabel contraction, participation, OR window) plus a fine
+OR grid and a cost-denominator control. **No cell reached +0.10R on train. Phase 4 remains
+unrun and 2025-09-01 → 2026-03-01 remains sealed.**
+
+Risk caps re-expressed scale-free; only the ATR form transfers across eras (8.8% vs 7.1%
+firing rate), percent-of-price does not (19.4% vs 52.7%), which locates the regime shift in
+volatility rather than price level. Self-tests now 32.
+
+Predictions marked: the 09:30-is-arbitrary hypothesis is **not supported** (09:30 is best in
+R; London 03:00 is significantly negative at 2 ticks); Crabel contraction **fails with an
+inverted dose-response** (the strictest form, ID/NR4, is the worst cell in the study); the
+5-minute OR result from equities **inverts on gold** (worst length tested). Best cell is
+OR 35m at +0.063R, PF 1.101 — below both gates.

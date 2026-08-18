@@ -50,7 +50,13 @@ class Config:
 
     # --- v3 (a) hard risk cap ---------------------------------------------
     risk_mode: str = "off"         # off | cap | skip
-    max_risk_pts: float = 30.0
+    # Point caps are NOT comparable across eras: gold's opening range quadrupled between
+    # 2023 and 2026, so a 30-pt cap binds 0.6% of 2023-25 trades and 18.5% of 2026 days.
+    # The ATR and %-of-price forms are scale-free and fire at a stable rate in both.
+    # Whichever of the three are set, the tightest binds.
+    max_risk_pts: float | None = None
+    max_risk_atr: float | None = None    # x prior-day ATR14
+    max_risk_pct: float | None = None    # % of entry price
 
     # --- v3 (b) profit ratchet --------------------------------------------
     ratchet: bool = False
@@ -71,10 +77,17 @@ class Config:
     weekly_stop_r: float | None = None   # e.g. -4.0
     consec_loss_halt: int | None = None  # e.g. 3; counter resets WEEKLY
 
-    # --- range filter (M3-base) ---------------------------------------------
+    # --- range filter (M3-base), already ATR-relative -------------------------
     atr_lo: float | None = None    # min OR width as a multiple of prior-day ATR
     atr_hi: float | None = None
     atr_days: int = 14
+
+    # --- Crabel contraction gate (the original ORB precondition) --------------
+    crabel: str | None = None      # nr4 | nr7 | inside | idnr4 — read on the PRIOR day
+
+    # --- participation on the breakout bar ------------------------------------
+    min_relvol: float | None = None    # breakout-bar volume / slot-matched 14-day mean
+    min_bar_atr: float | None = None   # breakout-bar range / ATR14 of the entry TF
 
     def label(self) -> str:
         bits = [f"{self.anchor}", f"OR{self.or_minutes}", f"tf{self.entry_tf}",
@@ -139,12 +152,47 @@ def daily_context(b: pd.DataFrame, atr_days: int) -> pd.DataFrame:
     out = pd.DataFrame(index=d.index)
     out["pdc"] = d.close.shift(1)                       # prior day's close
     out["atr"] = tr.rolling(atr_days).mean().shift(1)   # ATR through YESTERDAY
+
+    # Crabel contraction, all read on the PRIOR day so they are known at today's open.
+    rng = d.hi - d.lo
+    nr4 = rng == rng.rolling(4).min()
+    nr7 = rng == rng.rolling(7).min()
+    ins = (d.hi < d.hi.shift(1)) & (d.lo > d.lo.shift(1))
+    out["nr4"] = nr4.shift(1).fillna(False)
+    out["nr7"] = nr7.shift(1).fillna(False)
+    out["inside"] = ins.shift(1).fillna(False)
+    out["idnr4"] = (ins & nr4).shift(1).fillna(False)
     return out
 
 
 # ---------------------------------------------------------------------------
 # the backtest
 # ---------------------------------------------------------------------------
+
+def entry_frame(bars: pd.DataFrame, anchor: int, tf: int) -> pd.DataFrame:
+    """Every entry-timeframe candle in the sample, with participation features.
+
+    Both features are strictly backward-looking: the ATR and the volume baseline are
+    shifted so the bar being judged is never part of its own benchmark. The volume
+    baseline is SLOT-MATCHED — the 10:00 bar is compared with the last 14 10:00 bars, not
+    with the session average — because intraday volume has a shape and comparing a bar to
+    a flat mean would just rediscover the time of day.
+    """
+    d = bars[bars.tmin >= anchor].copy()
+    d["slot"] = (d.tmin - anchor) // tf
+    c = (d.groupby(["cal", "slot"], sort=True)
+           .agg(open=("open", "first"), high=("high", "max"), low=("low", "min"),
+                close=("close", "last"), vol=("volume", "sum"), tmin=("tmin", "first"))
+           .reset_index().sort_values(["cal", "slot"]).reset_index(drop=True))
+    pc = c.close.shift()
+    tr = pd.concat([c.high - c.low, (c.high - pc).abs(), (c.low - pc).abs()],
+                   axis=1).max(axis=1)
+    c["atr_tf"] = tr.rolling(14).mean().shift(1)
+    c["rng_atr"] = (c.high - c.low) / c.atr_tf
+    base = c.groupby("slot").vol.transform(lambda s: s.rolling(14).mean().shift(1))
+    c["relvol"] = c.vol / base.replace(0, np.nan)
+    return c
+
 
 def _tf_candles(day: pd.DataFrame, start_mod: int, tf: int) -> pd.DataFrame:
     """Aggregate 1m bars into entry-timeframe candles aligned to the anchor."""
@@ -169,6 +217,12 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.
         c_h, c_m = (int(x) for x in cfg.cutoff.split(":"))
         cut = c_h * 60 + c_m
     slip = cfg.slip_ticks * TICK
+
+    EF = None
+    if cfg.min_relvol is not None or cfg.min_bar_atr is not None:
+        ef = entry_frame(bars, or_end, cfg.entry_tf)
+        EF = {k: dict(zip(g.tmin.astype(int), zip(g.relvol, g.rng_atr)))
+              for k, g in ef.groupby("cal", sort=False)}
 
     trades: list[dict] = []
     week_r, week_id, consec = 0.0, None, 0
@@ -202,9 +256,14 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.
             if cfg.atr_hi is not None and width > cfg.atr_hi * atr:
                 continue
 
+        if cfg.crabel is not None:
+            if row is None or not bool(row[cfg.crabel]):
+                continue
+
         cand = _tf_candles(day, or_end, cfg.entry_tf)
         if cand.empty:
             continue
+        feat = EF.get(cal) if EF is not None else None
         if cfg.exit_tf > 1:
             one = _tf_candles(day, anchor, cfg.exit_tf).set_index("tmin")
         else:
@@ -222,6 +281,15 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.
                 d_ = -1
             else:
                 continue
+            if feat is not None and (cfg.min_relvol is not None or cfg.min_bar_atr is not None):
+                f = feat.get(int(c.tmin))
+                if f is None:
+                    continue
+                rv, ra = f
+                if cfg.min_relvol is not None and not (rv >= cfg.min_relvol):
+                    continue
+                if cfg.min_bar_atr is not None and not (ra >= cfg.min_bar_atr):
+                    continue
             fill_mod = int(c.tmin) + cfg.entry_tf          # next candle's open
             if cut is not None and fill_mod > cut:
                 break
@@ -242,11 +310,19 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.
 
             stop = or_lo if d_ > 0 else or_hi
             capped = False
-            if cfg.risk_mode != "off" and abs(entry - stop) > cfg.max_risk_pts:
-                if cfg.risk_mode == "skip":
-                    break
-                stop = entry - d_ * cfg.max_risk_pts
-                capped = True
+            if cfg.risk_mode != "off":
+                caps = []
+                if cfg.max_risk_pts is not None:
+                    caps.append(cfg.max_risk_pts)
+                if cfg.max_risk_atr is not None and atr is not None and np.isfinite(atr):
+                    caps.append(cfg.max_risk_atr * atr)
+                if cfg.max_risk_pct is not None:
+                    caps.append(cfg.max_risk_pct / 100.0 * entry)
+                if caps and abs(entry - stop) > min(caps):
+                    if cfg.risk_mode == "skip":
+                        break
+                    stop = entry - d_ * min(caps)
+                    capped = True
             risk = abs(entry - stop)
             if risk < TICK:
                 break

@@ -309,3 +309,149 @@ data on this branch. Spend it once, on a candidate that has already cleared trai
 
 None has. Phase 4 remains unrun.
 
+
+---
+
+# PHASE 3B — four single-axis sweeps, scale-free parameters. **Nothing clears +0.10R.**
+
+Train 2023-01-02 → 2025-08-31, 656 baseline trades over 656 days. 2010–2021 was requested
+and is unavailable: the data begins 2023-01-02 and there is no Databento key. Costs now
+include the **$3/round-turn commission** read off the v3.1 export, which earlier phases
+omitted. Bare ORB (1.5R, no cap, no gates, no management) is re-run as the control inside
+every axis. Entry window held at 150 min after each anchor so the anchor comparison is fair.
+
+**Verdict, stated plainly as instructed: no cell reaches +0.10R on train, so nothing has
+earned the holdout. Sep 2025 – Feb 2026 stays sealed.**
+
+## Engine changes first
+
+**The risk cap is now scale-free**, and the re-expression itself produced a finding:
+
+| cap form | fires on train | fires in 2026 | comparable? |
+|---|---|---|---|
+| 30 points (v3) | 0.6% | 29.5% | **no** |
+| **0.5 × prior-day ATR** | **8.8%** | **7.1%** | **yes** |
+| 1.0 × prior-day ATR | 0.3% | 0.9% | yes |
+| 0.5 % of price | 19.4% | 52.7% | **no** |
+| 0.25 % of price | 78.4% | 93.8% | **no** |
+
+Only the ATR form transfers. **Percent-of-price does not**, which says the 2023→2026 shift
+is a change in *volatility*, not merely in price level — gold's daily range grew faster than
+gold did. Eight new self-tests cover the ATR/pct caps, the four Crabel flags and the
+participation features (32 total, all passing). VWAP stays on 1m.
+
+## A. ANCHOR — the headline hypothesis is not supported
+
+| anchor | n | win % | **avg R @1t** | 95% CI | @2t | PF@1t | $ @1t | 2023 | 2024 | 2025 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **09:30 ET** | 656 | 47.1 | **+0.023** | [−0.050, +0.094] | −0.013 | 1.046 | +$10,472 | −0.004 | +0.025 | +0.060 |
+| 08:20 ET (COMEX pit) | 670 | 45.1 | +0.008 | [−0.072, +0.088] | −0.019 | **1.099** | **+$25,705** | −0.025 | −0.036 | **+0.123** |
+| 03:00 ET (London) | 660 | 42.0 | **−0.055** | [−0.139, +0.032] | **−0.094** | 0.914 | −$14,075 | −0.062 | −0.089 | +0.011 |
+
+**09:30 is the best of the three in R.** The premise — that 09:30 is an equity convention
+gold has no reason to respect — does not survive its own test. 08:20 wins on dollars and
+profit factor while losing on R, the same dual-currency split as before, and it is entirely
+a 2025 phenomenon (−0.025 / −0.036 / **+0.123**), so it fails stability outright.
+
+**London 03:00 is refuted**, not merely weak: at 2 ticks its interval is [−0.172, −0.012],
+one of only two cells in the whole programme clear of zero, and it is on the wrong side.
+
+## B. CRABEL CONTRACTION — fails, and fails with the wrong dose-response
+
+| prior day | n | win % | **avg R @1t** | 95% CI | @2t | PF | 2023 | 2024 | 2025 |
+|---|---|---|---|---|---|---|---|---|---|
+| no gate | 656 | 47.1 | +0.023 | [−0.049, +0.096] | −0.013 | 1.046 | −0.004 | +0.025 | +0.060 |
+| nr4 | 156 | 45.5 | +0.004 | [−0.148, +0.153] | −0.022 | 1.018 | −0.120 | +0.037 | +0.142 |
+| **nr7** | 74 | 51.4 | **+0.116** | [−0.092, +0.334] | +0.083 | 1.324 | −0.058 | +0.175 | +0.307 |
+| inside | 114 | 47.4 | −0.055 | [−0.214, +0.103] | −0.077 | 0.993 | −0.282 | +0.029 | +0.216 |
+| **idnr4** | 76 | 42.1 | **−0.137** | [−0.326, +0.058] | −0.161 | **0.765** | −0.400 | −0.016 | +0.136 |
+
+nr7 is the **only cell above +0.10R anywhere in this programme** and it fails every other
+test at once: n=74, an interval 0.43R wide that straddles zero, 2023 negative, and three
+neighbours at +0.004, −0.055 and −0.137. A lone spike among four variants of one idea.
+
+The dose-response runs backwards, which is the decisive part. **ID/NR4 is the strictest
+form of contraction and it is the worst cell in the entire study** (−0.137R, PF 0.765). A
+real precondition gets *better* as you tighten it. Crabel's contraction filter does not
+transfer to gold here.
+
+## C. PARTICIPATION — one right shape, far too small
+
+| filter | n | win % | **avg R @1t** | @2t | PF@2t | medRisk | 2023 | 2024 | 2025 |
+|---|---|---|---|---|---|---|---|---|---|
+| none | 656 | 47.1 | +0.023 | −0.013 | 0.978 | 8.1 | −0.004 | +0.025 | +0.060 |
+| relvol ≥ 1.2 | 413 | 47.7 | +0.021 | −0.001 | 1.012 | 11.0 | −0.012 | +0.089 | −0.034 |
+| **relvol ≥ 1.5** | 306 | 49.0 | **+0.047** | +0.031 | 1.142 | 11.9 | −0.053 | +0.162 | +0.026 |
+| relvol ≥ 2.0 | 195 | 47.2 | +0.008 | −0.009 | 0.890 | 14.7 | −0.017 | +0.017 | +0.027 |
+| range ≥ 0.5×ATR | 655 | 47.2 | +0.023 | −0.013 | 0.978 | 8.1 | −0.004 | +0.022 | +0.066 |
+| range ≥ 1.0×ATR | 631 | 47.2 | +0.028 | −0.007 | 0.997 | 8.1 | −0.010 | +0.025 | +0.097 |
+| **range ≥ 1.5×ATR** | 529 | 48.2 | **+0.046** | +0.014 | 1.021 | 8.4 | −0.003 | +0.095 | +0.055 |
+
+**Relative volume is a spike**: 1.2 → +0.021, 1.5 → +0.047, 2.0 → +0.008. Non-monotone, with
+both neighbours far below the peak and 2023 negative. Not stable.
+
+**Breakout-bar range is monotone** — +0.023 → +0.028 → +0.046 as the threshold tightens.
+That is the shape a real effect makes, and it is the only clean dose-response in the whole
+programme. It is also worth +0.023R over the control and dies to +0.014R at two ticks. The
+billing as "best independent evidence of any filter" is directionally vindicated and
+quantitatively irrelevant.
+
+## D. OR WINDOW — the 5-minute hypothesis is refuted; the ridge is at 30–35m
+
+| OR | n | win % | **avg R @1t** | 95% CI | @2t | PF@2t | 2023 | 2024 | 2025 |
+|---|---|---|---|---|---|---|---|---|---|
+| 5m | 686 | 42.4 | **−0.034** | — | **−0.083** | 0.889 | −0.139 | +0.008 | +0.062 |
+| 10m | 671 | 44.9 | −0.020 | [−0.098, +0.059] | −0.051 | 0.922 | −0.059 | −0.021 | +0.039 |
+| 15m | 656 | 47.1 | +0.023 | [−0.046, +0.095] | −0.013 | 0.978 | −0.004 | +0.025 | +0.060 |
+| 20m | 609 | 48.1 | +0.013 | [−0.054, +0.086] | −0.013 | 0.992 | −0.050 | +0.055 | +0.043 |
+| 25m | 569 | 48.9 | +0.012 | [−0.054, +0.075] | −0.008 | 0.978 | +0.028 | −0.006 | +0.016 |
+| **30m** | 534 | 49.4 | **+0.053** | [−0.007, +0.115] | **+0.031** | **1.156** | +0.076 | +0.015 | +0.079 |
+| **35m** | 467 | 50.7 | **+0.063** | **[+0.004, +0.122]** | **+0.044** | 1.101 | +0.128 | +0.034 | +0.010 |
+| 40m | 390 | 48.2 | +0.032 | [−0.029, +0.095] | +0.016 | 1.004 | +0.087 | −0.027 | +0.051 |
+| 45m | 391 | 50.1 | +0.024 | [−0.033, +0.081] | +0.006 | 0.976 | +0.141 | −0.087 | +0.037 |
+| 60m | 254 | 48.0 | +0.002 | [−0.063, +0.065] | −0.013 | 0.900 | +0.045 | −0.079 | +0.062 |
+
+**The 5-minute result from the equity literature inverts on gold.** 5m is the worst OR
+length tested — −0.034R at one tick, −0.083R at two — and 10m is second worst. The grid is
+monotone improving from 5m to 35m and then decays.
+
+**30m and 35m are the only cells in the programme that survive two ticks with all three
+years positive**, and they are adjacent, so this is a two-cell ridge rather than a lone
+spike. 35m's one-tick interval [+0.004, +0.122] is the only one on the positive side of
+zero anywhere in this work. Nobody proposed either length.
+
+### And it is not the cost denominator
+
+Everything that helped also carried a wider stop, which mechanically lifts EV because fixed
+costs enter as `cost/risk`. Tested directly:
+
+| | spread across the OR grid |
+|---|---|
+| EV **after** cost | 0.083R |
+| EV **before** cost | 0.067R |
+| the cost term itself | **0.020R** |
+| corr(median stop, EV after cost) | +0.375 |
+| corr(median stop, EV before cost) | **+0.137** |
+
+Pre-cost EV still peaks at 30–35m (+0.077 and +0.084, intervals [+0.014, +0.139] and
+[+0.024, +0.144], both clear of zero). The cleanest disproof is 60m: it carries the widest
+stop of all and the *worst* pre-cost EV of the upper half. The ridge is small and real, not
+arithmetic — but the denominator does account for roughly a fifth of its apparent size.
+
+## Verdict
+
+**Nothing clears +0.10R on train, so we stop.**
+
+The best cell in the programme is **OR 35m at +0.063R** after one tick and commission —
+63% of the required expectancy — with **PF 1.101** against a required 1.30. It survives two
+ticks, it is neighbour-stable against 30m, its pre-cost interval clears zero, and all three
+years are positive. It is still not promotable, and 35m's 2025 is +0.010, so what edge there
+is looks to be decaying.
+
+Nine OR lengths were tested. One interval clearing zero out of nine is roughly what
+multiplicity buys at 95%, and that should be weighed against the ridge before anyone treats
+35m as a finding rather than a lead.
+
+**Holdout untouched: 2025-09-01 → 2026-03-01 remains sealed.** If it is ever spent, spend it
+on OR 30–35m with the breakout-range filter — the only two things here with the right shape
+— and only after they have been shown to clear +0.10R on data that is not this train set.

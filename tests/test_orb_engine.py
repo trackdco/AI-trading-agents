@@ -299,3 +299,111 @@ def test_truncating_the_future_cannot_change_a_closed_trade():
     a, b = go([full], Config()).iloc[0], go([cut], Config()).iloc[0]
     for k in ("entry", "stop", "exit_px", "r", "reason"):
         assert a[k] == b[k], k
+
+
+# --------------------------------------------------------------------------
+# scale-free risk cap  (points are not comparable across eras)
+# --------------------------------------------------------------------------
+
+def test_atr_risk_cap_scales_with_volatility():
+    """The same ATR multiple must bind at a different POINT distance in a wider market."""
+    from src.research.orb.engine import daily_context as dc
+    prior = [day_bars(d, {570: (2000, 2000 + w, 2000 - w, 2000)})
+             for d, w in zip(pd.bdate_range("2023-12-01", periods=20).strftime("%Y-%m-%d"),
+                             [10] * 20)]
+    after = {**step(599, 2062), 600: (2062, 2062, 2062, 2062)}
+    cur = orday("2023-12-29", 2060, 1960, after)
+    t = go(prior + [cur], Config(risk_mode="cap", max_risk_atr=1.0))
+    atr = dc(prep(pd.concat(prior + [cur], ignore_index=True)), 14).iloc[-1].atr
+    assert len(t) == 1
+    assert t.iloc[0].risk_pts == pytest.approx(atr, rel=1e-6)
+    assert bool(t.iloc[0].capped)
+
+
+def test_pct_of_price_risk_cap():
+    after = {**step(599, 2062), 600: (2062, 2062, 2062, 2062)}
+    d = orday("2024-01-03", 2060, 1960, after)
+    t = go([d], Config(risk_mode="cap", max_risk_pct=1.0))     # 1% of 2062
+    assert t.iloc[0].risk_pts == pytest.approx(20.62)
+
+
+def test_tightest_cap_binds_when_several_are_set():
+    after = {**step(599, 2062), 600: (2062, 2062, 2062, 2062)}
+    d = orday("2024-01-03", 2060, 1960, after)
+    t = go([d], Config(risk_mode="cap", max_risk_pts=30, max_risk_pct=1.0))
+    assert t.iloc[0].risk_pts == pytest.approx(20.62)          # 1% < 30pt
+
+
+# --------------------------------------------------------------------------
+# Crabel contraction gate
+# --------------------------------------------------------------------------
+
+def _wide(date, w=40.0):
+    return day_bars(date, {570: (2000, 2000 + w, 2000 - w, 2000)})
+
+
+def _narrow(date, w=2.0, after=None):
+    p = {570: (2000, 2000 + w, 2000 - w, 2000)}
+    if after:
+        p.update(after)
+    return day_bars(date, p)
+
+
+def test_nr4_gate_fires_only_after_a_narrowest_of_four_day():
+    """Widths are deliberately DISTINCT: with equal ranges every day ties the rolling
+    minimum and NR4 is true everywhere, which silently makes the gate a no-op."""
+    after = {**step(599, 2012), 600: (2012, 2012, 2012, 2012)}
+    base = [_wide("2024-01-02", 30), _wide("2024-01-03", 35), _wide("2024-01-04", 40)]
+    cur = orday("2024-01-08", 2010, 1990, after)
+    assert len(go(base + [_narrow("2024-01-05", 5)] + [cur], Config(crabel="nr4"))) == 1
+    assert go(base + [_wide("2024-01-05", 50)] + [cur], Config(crabel="nr4")).empty
+
+
+def test_inside_day_gate():
+    after = {**step(599, 2012), 600: (2012, 2012, 2012, 2012)}
+    outer = day_bars("2024-01-03", {570: (2000, 2100, 1900, 2000)})
+    ins = day_bars("2024-01-04", {570: (2000, 2050, 1950, 2000)})     # inside
+    cur = orday("2024-01-05", 2010, 1990, after)
+    assert len(go([outer, ins, cur], Config(crabel="inside"))) == 1
+    notins = day_bars("2024-01-04", {570: (2000, 2200, 1800, 2000)})  # outside
+    assert go([outer, notins, cur], Config(crabel="inside")).empty
+
+
+def test_crabel_flags_are_prior_day_shifted():
+    """Today's own range must never set today's gate — that would be lookahead."""
+    from src.research.orb.engine import daily_context as dc
+    days = [_wide("2024-01-02"), _wide("2024-01-03"), _wide("2024-01-04"),
+            _narrow("2024-01-05")]
+    ctx = dc(prep(pd.concat(days, ignore_index=True)), 14)
+    assert not bool(ctx.iloc[3].nr4)      # the NR4 day itself is NOT gated on
+    days.append(_wide("2024-01-08"))
+    ctx = dc(prep(pd.concat(days, ignore_index=True)), 14)
+    assert bool(ctx.iloc[4].nr4)          # the day AFTER it is
+
+
+# --------------------------------------------------------------------------
+# participation
+# --------------------------------------------------------------------------
+
+def test_relvol_gate_blocks_a_quiet_breakout_bar():
+    after = {**step(599, 2012), 600: (2012, 2012, 2012, 2012)}
+    hist = [orday(d, 2010, 1990, {}) for d in
+            pd.bdate_range("2023-12-01", periods=20).strftime("%Y-%m-%d")]
+    cur = orday("2023-12-29", 2010, 1990, after)
+    cur.loc[cur.ts_event.dt.hour * 60 + cur.ts_event.dt.minute >= 585, "volume"] = 1.0
+    assert go(hist + [cur], Config(min_relvol=1.5)).empty
+    loud = cur.copy()
+    loud.loc[loud.ts_event.dt.hour * 60 + loud.ts_event.dt.minute >= 585, "volume"] = 1e5
+    assert len(go(hist + [loud], Config(min_relvol=1.5))) == 1
+
+
+def test_relvol_baseline_excludes_the_bar_it_judges():
+    """A bar cannot be part of its own benchmark, or a lone spike gates itself in."""
+    from src.research.orb.engine import entry_frame
+    days = [orday(d, 2010, 1990, {}) for d in
+            pd.bdate_range("2023-12-01", periods=20).strftime("%Y-%m-%d")]
+    b = prep(pd.concat(days, ignore_index=True))
+    ef = entry_frame(b, 585, 15)
+    g = ef[ef.slot == 0].reset_index(drop=True)
+    assert np.isnan(g.relvol.iloc[0])          # nothing to compare the first one to
+    assert g.relvol.iloc[15] == pytest.approx(1.0)   # flat volume -> exactly the baseline
