@@ -22,6 +22,15 @@ def resolve(run, sd, cid, minute):
     for cand in sorted(glob.glob(f"{S}/*_{sd}_*_{hh}_manage.png")):
         shutil.copy(cand, want)
         return want, f"reused from {os.path.basename(cand)} - same tape day, same cursor minute"
+    # A CANDIDATE frame at the same session-day and minute is also the same chart at the same
+    # cursor - the manage/candidate distinction is in the filename and the briefing, never in
+    # the pixels. Falling back to it avoids a live navigation pass for a frame already on disk.
+    for cand in sorted(glob.glob(f"{S}/*_{sd}_*_{hh}.png")):
+        if cand.endswith("_manage.png"):
+            continue
+        shutil.copy(cand, want)
+        return want, (f"reused from CANDIDATE frame {os.path.basename(cand)} - same tape day, "
+                      "same cursor minute, so the same chart")
     return None, "NEEDS_CAPTURE"
 
 

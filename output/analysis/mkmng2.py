@@ -70,7 +70,13 @@ def build(run, sd, dn, cid, win_end):
     # destination still ends up drifting.
     n_banked = sum(1 for r in mrows if r.get("action") == "partial" and r.get("partial_pct"))
     live_targets = targets[n_banked:]
-    sched_from = prior_actions[-1]["minute"] if prior_actions else opened_at
+    # Anchor the schedule on the last LADDER ADVANCE (a banked partial), not on the last
+    # action of any kind. Recomputing after a trail or a hold re-derives the intermediate
+    # minutes from a new start and makes them drift - the call list has to be stable between
+    # rungs or the runner gets a different set of minutes every time it is touched.
+    last_partial = [a["minute"] for a in prior_actions
+                    if a.get("action") == "partial" and a.get("partial_pct")]
+    sched_from = last_partial[-1] if last_partial else opened_at
     for i, t in enumerate(targets):
         if i < n_banked:
             t["status"] = f"REACHED and banked ({prior_actions[i]['minute']})" if i < len(prior_actions) else "REACHED"
@@ -80,7 +86,8 @@ def build(run, sd, dn, cid, win_end):
     sched_raw = htf.management_minutes(dn, sched_from, fill["side"], float(fill["entry"]),
                                        float(fill["stop"]), tg_prices, lv, win_end)
     sched = {x["minute"]: [x["reason"], x.get("level"), x.get("level_price")] for x in sched_raw}
-    sched = {m: v for m, v in sched.items() if m > sched_from or not prior_actions}
+    seen_min = prior_actions[-1]["minute"] if prior_actions else None
+    sched = {m: v for m, v in sched.items() if seen_min is None or m > seen_min}
 
     # frames for every scheduled minute, served from the cross-run pool
     frames, misses, prov = legendpool.get(dn, sorted(sched))
