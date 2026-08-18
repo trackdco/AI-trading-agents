@@ -1,5 +1,14 @@
 # RULING — NY_PRE IS CUT. London and New York AM only.
 
+> **SUPERSEDED 2026-08-18 — NY_PRE STAYS, HARD-CAPPED AT 1.** His ruling,
+> after seeing the counter-facts (PRE booked **+2.32R on the losing j49
+> week** — its second-best trades — and +1.46R on the fit week): *"we will
+> allow a ny pre cap of 1 for now."* One PRE fill per session-day, enforced
+> hard even in lifted-caps runs; later PRE candidates pass with reason
+> `window_cap`. The 09:10 entry cut stands. "For now" = provisional — the
+> one-line reversal below still applies in either direction. The original
+> ruling and its full case are preserved unchanged beneath this note.
+
 **His decision, 2026-08-17, stated twice:** *"im thinking of cutting ny pre
 entirely im not gonna lie"* … *"id be happy to just cut ny pre and run london
 an ny am."*

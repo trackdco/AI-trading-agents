@@ -567,6 +567,13 @@ every fill beyond the WRITTEN caps `beyond_written_cap: true` and print both
 scoreboards, as-run and as-written. A number produced under lifted caps is not
 comparable to doctrine unless the capped subset is recoverable from the log.
 
+**EXCEPTION — NY_PRE is HARD-capped at 1** (his ruling 2026-08-18: *"we will
+allow a ny pre cap of 1 for now"* — superseding the full cut of
+`docs/RULING-cut-ny-pre.md`). Even in a lifted-caps run, once a NY_PRE fill
+exists, every later PRE candidate is a pass with reason `window_cap` — never
+tagged-and-taken. LONDON and NY_AM lifting is unchanged, and the 09:10
+entry cut stands.
+
 ## 4. PHASE R3 — THE LOG
 
 `output/agent_runs/<sess_day>.jsonl`, one JSON object per row:

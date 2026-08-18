@@ -40,13 +40,16 @@ always.**
 - **Thu 06-03, 03:22** — if taken, the stop sits per T75 beyond the
   rejected W/D VAH (breathing room for a retest), not tucked at the swing.
 
-## Windows — measurement parity
+## Windows — his 2026-08-18 ruling in force
 
-Run all three windows (LONDON / NY_PRE / NY_AM entries-to-09:10) in BOTH
-runs, so the books compare like-for-like with w49/j49/jn1. The NY_PRE cut
-(`docs/RULING-cut-ny-pre.md`) is a LIVE-config ruling and is awaiting his
-reconfirm (PRE booked +2.32R on j49 and +1.46R on w49 — the counter-facts
-are on his desk). Do not apply it to measurement runs.
+All three windows run, with **NY_PRE HARD-capped at 1 fill per session-day**
+(his ruling: *"we will allow a ny pre cap of 1 for now"* — it supersedes the
+full cut; `docs/RULING-cut-ny-pre.md` carries the note). After a PRE fill,
+later PRE candidates are passes with reason `window_cap`, never
+tagged-and-taken. LONDON/NY_AM caps stay lifted-with-tags as before; the
+09:10 entry cut stands. Scoring note: w49/jn1 books ran PRE uncapped, so
+when comparing, apply the cap to their PRE rows arithmetically (first fill
+only) for the like-for-like view.
 
 ## Mechanics — unchanged
 
