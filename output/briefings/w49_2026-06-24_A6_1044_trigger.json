@@ -319,12 +319,12 @@
   "prior_day_low 29264.75",
   "vwap_m3 29010.35"
  ],
- "fills_this_window": 0,
+ "fills_this_window": 1,
  "window_cap": {
   "window": "NY_AM",
   "written_cap": 2,
   "caps_lifted": true,
-  "fills_so_far": 0
+  "fills_so_far": 1
  },
  "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
  "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
@@ -479,9 +479,9 @@
  "chart_truncation_note": "decision minute 10:44; the last COMPLETE 2m bar closes 10:44. Deliberate and leak-safe; legend values were read at that cursor.",
  "position_state": {
   "state": "FLAT",
-  "fills_this_window": 0,
-  "detail": "no open position. LONDON took one fill (L4 short 30136.00, filled 04:51, carried past the window close and stopped 30161.50 at 06:12 for -1.0000R). NY_PRE took none - four candidates fell inside the Core PCE pre-market blackout and the window's thesis stood aside on CHOP. Stated as run state, not as a view on this candidate.",
-  "cap_note": "the written NY_AM cap is 2 fills and 0 are used."
+  "fills_this_window": 1,
+  "detail": "no open position. A3 was the one NY_AM fill: short 29598.00 filled 10:15, 75% banked 29500.75 at 10:17 (+0.9725R), runner trailed out 29638.50 at 10:20 (-0.4050R), blended +0.6281R. Earlier: LONDON L4 short stopped -1.0000R at 06:12; NY_PRE took none (Core PCE blackout).",
+  "cap_note": "the written NY_AM cap is 2 fills and 1 is used."
  },
  "MECHANICAL_GATE_outer_band_fade_only": {
   "rule": "a SHORT at/through vwap_m2/m3 or a LONG at/through vwap_p2/p3 is a pass regardless of trigger quality.",

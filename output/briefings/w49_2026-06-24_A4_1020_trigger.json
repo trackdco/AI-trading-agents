@@ -11,49 +11,50 @@
  "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
  "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
  "thesis": {
-  "bias": "short",
+  "bias": "long",
   "targets": [
    {
-    "level": "range_low_30099",
-    "price": 30099.0
+    "level": "weekly_poc",
+    "price": 29727.0
    },
    {
-    "level": "day_range_fib_0.382",
-    "price": 30054.09
+    "level": "day_range_fib_0.5",
+    "price": 29779.75
    },
    {
     "level": "weekly_vah",
-    "price": 30008.0
+    "price": 29930.0
    }
   ],
   "invalidation": {
-   "level": "range_top_reclaim_30193",
-   "price": 30193.0
+   "level": "prior_day_val",
+   "price": 29503.0
   },
-  "waiting_for": "rebalance up into the 2m/3m MA / VWAP+1 confluence (~30172-30183) and rejection there, or a 15m decisive-body close back below the 30099 range low confirming the breakdown - a 2m touch alone doesn't license this on a rotational day",
+  "waiting_for": "nothing - defended-level reclaim already printed: prior_day_val rejected (wick to 29488) and closed back above it plus the 2m MA (29563.94) and VWAP-1 (29580.09) in the same last 2m bar",
   "two_sided": true,
-  "condition_for_other_side": "longs licensed on a 15m decisive close back above the 30193 old range top/VWAP+2 zone (breakout reconfirmed), or on a third successful defense of 30099-30117 with displacement back up through the 2m/3m MA",
+  "condition_for_other_side": "shorts re-licensed on a 15m decisive close back below prior_day_val 29503 (reclaim fails, flush resumes toward weekly VAL 29427/session low 29295.75), or a stall-and-rollover in the 29727-29780 weekly POC/day-0.5-fib zone that closes back below the 2m/3m MA",
   "anticipated_resolution": {
-   "level": "vwap_p1_2m3m_ma_cluster",
-   "price": 30176.0,
-   "expect": "holds",
+   "level": "weekly_poc_3m_ma_cluster",
+   "price": 29727.0,
+   "expect": "break_up",
    "act_on_resolution": true
   },
-  "acceptance_rule": "15m close beyond either 30193 (up) or 30099 (down) with a decisive body (~0.4+ body_ratio) - a wick-heavy absorption candle at either level is the level holding, not a break",
+  "acceptance_rule": "15m close beyond a level with a decisive body (~0.4+ body_ratio); the 09:45 15m candle closed decisively below weekly VAL 29427 (0.87 body) but the very next 15m candle (10:00, 0.6 body) reclaimed it - a failed breakdown is bullish info, not confirmation of the break",
   "other_side_tripwire": {
-   "level": "range_top_30193",
-   "price": 30193.0,
+   "level": "prior_day_val_29503",
+   "price": 29503.0,
    "event": "15m_decisive_close"
   },
   "defended_level": {
-   "level": "3h_range_low_30099",
-   "price": 30099.0,
-   "memory": "floor of the 3h 30099-30193 range, tested and held at 07:30 (low print 30099, closed that candle back up at 30130.50); not retested since the 08:30 breakout",
+   "level": "prior_day_val",
+   "price": 29503.0,
+   "memory": "prior trading day's value-area low; also sits just above weekly VAL (29427), which itself suffered a 15m decisive breakdown close at 09:45 and was reclaimed by the next 15m candle",
    "status": "holding"
   },
   "flush": false,
   "flush_direction": null,
-  "reasoning": "The 3h 30099-30193 range broke up to a new session high of 30263.75 on the 08:30 candle, but absorbed at the top (08:45, body_ratio 0.19) and reversed hard on 09:00 (body_ratio 0.55, closing back below the old range top and the 2m/3m MA). Price has drifted to 30151, sitting on the 15m MA - a failed breakout is real information pointing down, per the fade-the-tested-edge doctrine - but session path efficiency is only 0.056 (pure chop, not a trend/flush), so I'm leaning short into the range low/weekly VAH rather than fully committed, with longs licensed on a reclaim of 30193 or another successful defense of 30099."
+  "escalation_response": "accommodated",
+  "reasoning": "The short thesis's destinations (30099/30054/30008) all printed and were blown through in an 837pt, two-candle flush (0.86/0.87 body ratio) to a new session low that closed a 15m candle below weekly VAL - then the next 15m candle reclaimed it, a failed breakdown. The last 2m bar then wicked to prior_day_val and closed back above it plus the 2m MA/VWAP-1 in one candle - a textbook defended-level licence. Short thesis is spent; flipping primary to long off this rebalance with modest targets, shorts only re-licensed on losing prior_day_val again or a rejection at weekly POC/day-0.5-fib."
  },
  "price_at_decision": 29612.25,
  "signal_candle_3m": {
@@ -388,12 +389,12 @@
   "prior_day_low 29264.75",
   "vwap_m3 29018.46"
  ],
- "fills_this_window": 0,
+ "fills_this_window": 1,
  "window_cap": {
   "window": "NY_AM",
   "written_cap": 2,
   "caps_lifted": true,
-  "fills_so_far": 0
+  "fills_so_far": 1
  },
  "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
  "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
@@ -548,9 +549,9 @@
  "chart_truncation_note": "decision minute 10:20; the last COMPLETE 2m bar closes 10:20. Deliberate and leak-safe; legend values were read at that cursor.",
  "position_state": {
   "state": "FLAT",
-  "fills_this_window": 0,
-  "detail": "no open position. LONDON took one fill (L4 short 30136.00, filled 04:51, carried past the window close and stopped 30161.50 at 06:12 for -1.0000R). NY_PRE took none - four candidates fell inside the Core PCE pre-market blackout and the window's thesis stood aside on CHOP. Stated as run state, not as a view on this candidate.",
-  "cap_note": "the written NY_AM cap is 2 fills and 0 are used."
+  "fills_this_window": 1,
+  "detail": "no open position. A3 was the one NY_AM fill: short 29598.00 filled 10:15, 75% banked 29500.75 at 10:17 (+0.9725R), runner trailed out 29638.50 at 10:20 (-0.4050R), blended +0.6281R. Earlier: LONDON L4 short stopped -1.0000R at 06:12; NY_PRE took none (Core PCE blackout).",
+  "cap_note": "the written NY_AM cap is 2 fills and 1 is used."
  },
  "MECHANICAL_GATE_outer_band_fade_only": {
   "rule": "a SHORT at/through vwap_m2/m3 or a LONG at/through vwap_p2/p3 is a pass regardless of trigger quality.",
@@ -573,28 +574,14 @@
  "escalation_state": {
   "window": "NY_AM",
   "budget": 2,
-  "used": 0,
-  "remaining": 2,
-  "ratchet": "no level+direction escalated yet in THIS window. LONDON and NY_PRE each closed with 0 escalations used.",
+  "used": 1,
+  "remaining": 1,
+  "ratchet": "prior_day_val LONG was escalated at 10:20 and ACCOMMODATED - the thesis re-fired as v4, declared the short thesis SPENT and flipped primary bias to long. That level+direction pair is now covered by the standing thesis and must NOT be escalated again.",
   "note": "stated as run state."
  },
  "news_note": "news_blackout false this window. The calendar does carry Core PCE Price Index m/m at 08:30, but the macro agent judged it does not gate this window.",
  "scanner_detail": "10:20 UP, n=1, source two_level. 10:18 2m same-candle        O29535.25 C29612.25 ['own_ma', 'vwap_m1'] rej=['VAL']",
  "ENTRY_CUTOFF_NOTE": "NY_AM runs 09:30-11:00 and the earliest permitted ENTRY is 09:35. This decision minute is 10:20. Stated as a mechanical fact; the gate is yours to apply.",
- "thesis_anchor_drift": {
-  "drifted": [
-   {
-    "role": "target",
-    "level": "weekly_vah",
-    "price_named_by_thesis": 30008.0,
-    "price_recomputed_now": 29930.0,
-    "drift_pts": -78.0
-   }
-  ],
-  "_source": "MECHANICAL FACT under runbook 0c. The thesis named these prices at its own decision minute; the values beside them are the same levels recomputed as of THIS minute from committed bars.",
-  "_what_it_means": "the thesis's stated prices are FROZEN at the window open while the developing daily profile and the VWAP bands keep moving. Where they have drifted, a condition written against the old number may no longer be testable at the new one. Both numbers are stated; which to use, and whether the condition is met, is YOUR call - the orchestrator states and never judges.",
-  "tolerance_pts": 8.0
- },
  "level_visits_this_session": {
   "by_level": {
    "vwap": {
@@ -802,5 +789,11 @@
   "_source": "scripts.chop_state - MECHANICAL FACT under runbook 0c. His definition implemented literally: a SMALL range (bottom quartile of the normal 3-hour NQ range, ~104pt over 44 days) that has LASTED about three hours. Size and duration only.",
   "_what_it_governs": "tv-trigger 0.4.9: chop tells you HOW to trade, not whether to. In CHOP an edge trigger is licensed toward the far side, targeting the STRUCTURAL level near it rather than the range extreme; the middle is dead; and an edge fade is NOT counter-trend, so it does not cap at C."
  },
- "_news_note_corrected": "recomputed from this briefing's own macro block. mkspec.py hardcodes news_blackout False and a fixed 'calendar is EMPTY' string which mkcand then copies over the derived value, so the shipped note is independent of the actual calendar."
+ "_news_note_corrected": "recomputed from this briefing's own macro block. mkspec.py hardcodes news_blackout False and a fixed 'calendar is EMPTY' string which mkcand then copies over the derived value, so the shipped note is independent of the actual calendar.",
+ "ESCALATION_RESOLVED": {
+  "you_escalated_this_candidate": "you set thesis_stale=true and escalated prior_day_val LONG, because the short thesis had been blown through by ~540pt and never addressed this zone.",
+  "tier_1_response": "ACCOMMODATED and FLIPPED. It agreed the short thesis was spent - 'destinations (30099/30054/30008) all printed and were blown through in an 837pt, two-candle flush' - and re-emitted as LONG off the prior_day_val reclaim, with targets 29727 / 29779.75 / 29930 and shorts re-licensed only on losing 29503 again.",
+  "what_that_means_for_you": "the thesis in this briefing is v4 and is now long-biased, keyed to the very level you named. Re-adjudicate on the merits against it.",
+  "escalation_budget": "1 of 2 used in this window. This level+direction is now covered and may not be escalated again."
+ }
 }

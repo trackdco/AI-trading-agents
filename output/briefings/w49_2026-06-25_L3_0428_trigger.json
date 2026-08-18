@@ -319,12 +319,12 @@
   "vwap_m2 29121.52",
   "vwap_m3 28936.04"
  ],
- "fills_this_window": 0,
+ "fills_this_window": 1,
  "window_cap": {
   "window": "LONDON",
   "written_cap": 2,
   "caps_lifted": true,
-  "fills_so_far": 0
+  "fills_so_far": 1
  },
  "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
  "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
@@ -448,9 +448,9 @@
  "chart_truncation_note": "decision minute 04:28; the last COMPLETE 2m bar closes 04:28. Deliberate and leak-safe; legend values were read at that cursor.",
  "position_state": {
   "state": "FLAT",
-  "fills_this_window": 0,
-  "detail": "no open position. This is the first window of the session-day.",
-  "cap_note": "the written LONDON cap is 2 fills and 0 are used."
+  "fills_this_window": 1,
+  "detail": "no open position. L1 was the one fill: long 29493.00 filled 03:18, 75% banked 29520.50 at 03:29 (+0.8333R), runner stopped at breakeven 29493.00 at 04:02 (0.0000R), blended +0.6250R.",
+  "cap_note": "the written LONDON cap is 2 fills and 1 is used."
  },
  "MECHANICAL_GATE_outer_band_fade_only": {
   "rule": "a SHORT at/through vwap_m2/m3 or a LONG at/through vwap_p2/p3 is a pass regardless of trigger quality.",
