@@ -39,12 +39,20 @@ targets = [t["price"] if isinstance(t, dict) else t for t in (out.get("targets")
 # it overnight, which the contract does not provide for. Explicit flag, never automatic -
 # a position that closes on its own must never be silently overridden.
 reason = None
+horizon = 6
 if "--markout" in sys.argv:
     m = sys.argv[sys.argv.index("--markout") + 1]
     actions.append({"minute": m, "action": "exit_now", "partial_pct": None, "new_stop": None})
     reason = "partial_at_tp1_then_runner_marked_out_at_cash_close"
+    # exitcalc's replay window defaults to 6h from the fill. A position filled early in
+    # NY_AM reaches the cash close AFTER that, so the mark-out would fall outside the
+    # window and silently never apply. Size the horizon to the mark-out itself.
+    fm = str(fill.get("fill_minute"))[-5:]
+    span = (int(m[:2]) * 60 + int(m[3:])) - (int(fm[:2]) * 60 + int(fm[3:]))
+    horizon = max(6, span / 60 + 1)
 
 res = exitrow.write(run, sd, cid, fill["window"], fill["side"], fill["entry"], fill["stop"],
                     targets, str(fill.get("fill_minute"))[-5:], actions,
-                    conviction=fill.get("conviction"), exit_reason=reason, dry=dry)
+                    conviction=fill.get("conviction"), exit_reason=reason, dry=dry,
+                    horizon_hours=horizon)
 print(res if dry else "written")

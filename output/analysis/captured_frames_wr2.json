@@ -285,6 +285,28 @@
     "-3sigma": 30316.52
    },
    "screenshot": "wr2_2026-06-21_A2_1100_manage.png"
+  },
+  "wr2|2026-06-22|A3|09:53": {
+   "cid": "A3",
+   "cursor": 1782222779,
+   "bar_start": 1782222660,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1782222779 via replay_status",
+   "bollinger_bands": {
+    "Basis": 29747.95,
+    "Upper": 29834.87,
+    "Lower": 29661.03
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30001.07,
+    "+1sigma": 30294.63,
+    "-1sigma": 29707.51,
+    "+2sigma": 30588.19,
+    "-2sigma": 29413.95,
+    "+3sigma": 30881.75,
+    "-3sigma": 29120.39
+   },
+   "screenshot": "wr2_2026-06-22_A3_0953_manage.png"
   }
  }
 }
