@@ -455,3 +455,37 @@ multiplicity buys at 95%, and that should be weighed against the ridge before an
 **Holdout untouched: 2025-09-01 → 2026-03-01 remains sealed.** If it is ever spent, spend it
 on OR 30–35m with the breakout-range filter — the only two things here with the right shape
 — and only after they have been shown to clear +0.10R on data that is not this train set.
+
+
+---
+
+# CORRECTION (19 Aug 2026) — a bias-gate defect, and every affected number moved against the strategy
+
+Found while parameterising the engine for handover. The VWAP and prior-day-close gates
+`break`-ed out of the day on the first blocked candidate; the Pine reference re-evaluates
+every bar. The engine silently under-traded every gated day.
+
+| | before fix | after fix |
+|---|---|---|
+| parity, day-level match | 89.0% (65/73) | **100.0% (73/73)** |
+| parity, exit reason | 96.9% | 98.6% |
+| v3.1 on train, EV | −0.000R | **−0.0118R** |
+| v3.1 on train, PF | 0.98 | **0.947** |
+| v3.1 on train, net | −$2,177 | **−$7,579** |
+| v3.1 on train @2 ticks | −$10,560 | **−$17,906** |
+| stack effect on PF, 2026 vs train | +0.54 / +0.01 | **+0.49 / −0.02** |
+
+**Two things this changes.**
+
+First, the Phase 2 conclusion that the parity residual was VWAP *granularity* — 1-minute
+against TradingView's 15-minute accumulation — **was wrong.** Granularity was worth under
+three points of it; the defect was worth eleven. The corrected diff is a clean 100% on days
+and direction. That earlier attribution is withdrawn.
+
+Second, the mechanism stack now **subtracts on train** (bare PF 0.97 → full stack 0.95)
+while still adding +0.49 in the window it was designed on. The in-sample reading is
+sharper than before, not softer.
+
+**Nothing in Phase 3B moves.** Those sweeps ran a bare ORB control with no VWAP or PDC
+gate, so the defect could not touch them. The +0.10R gate result, the four axis verdicts and
+the 30–35m ridge stand exactly as published above.

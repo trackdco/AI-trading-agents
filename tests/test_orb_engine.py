@@ -407,3 +407,52 @@ def test_relvol_baseline_excludes_the_bar_it_judges():
     g = ef[ef.slot == 0].reset_index(drop=True)
     assert np.isnan(g.relvol.iloc[0])          # nothing to compare the first one to
     assert g.relvol.iloc[15] == pytest.approx(1.0)   # flat volume -> exactly the baseline
+
+
+# --------------------------------------------------------------------------
+# the signal interface — the harness must not care where candidates come from
+# --------------------------------------------------------------------------
+
+def test_a_custom_signal_drops_into_the_same_harness():
+    """The ORB generator is retired; the harness is not. A replacement signal supplies
+    (signal_tmin, fill_tmin, direction, stop_ref) and everything downstream still runs."""
+    from src.research.orb.engine import Candidate
+
+    def always_long_at_1000(day, cfg, row, feat, anchor, or_end):
+        return [Candidate(585, 600, 1, 1990.0, {"why": "fixed-time probe"})]
+
+    after = {600: (2012, 2012, 2012, 2012), 601: (2012, 2050, 2012, 2050)}
+    t = go([orday("2024-01-03", 2010, 1990, after)], Config(), )
+    t2 = run(prep(orday("2024-01-03", 2010, 1990, after)), Config(),
+             signal_fn=always_long_at_1000)
+    assert len(t2) == 1
+    r = t2.iloc[0]
+    assert r["dir"] == 1 and r.entry == 2012 and r.stop == 1990
+    assert r.reason == "target" and r.r == pytest.approx(1.5)
+    assert r.why == "fixed-time probe"          # meta is carried onto the trade row
+
+
+def test_the_cap_ratchet_and_time_stop_apply_to_a_custom_signal_too():
+    from src.research.orb.engine import Candidate
+
+    def probe(day, cfg, row, feat, anchor, or_end):
+        return [Candidate(585, 600, 1, 1960.0, {})]      # 102-pt raw risk
+
+    after = {600: (2062, 2062, 2062, 2062)}
+    b = prep(orday("2024-01-03", 2060, 1960, after, base=2000.0))
+    t = run(b, Config(risk_mode="cap", max_risk_pts=30), signal_fn=probe)
+    assert t.iloc[0].risk_pts == pytest.approx(30.0) and bool(t.iloc[0].capped)
+
+
+def test_a_failed_bias_gate_does_not_kill_the_rest_of_the_day():
+    """Regression: the VWAP/PDC gates used to `break`, so one blocked candidate silently
+    discarded every later one. Pine re-evaluates each bar, and so must this."""
+    prev = day_bars("2024-01-03", {960: (2200, 2200, 2200, 2200)})
+    # 09:45 candle closes BELOW the prior close (gate blocks), 10:00 candle closes above it
+    after = {**step(599, 2012), 600: (2012, 2012, 2012, 2012),
+             **step(614, 2250), 615: (2250, 2250, 2250, 2250),
+             616: (2250, 2400, 2250, 2400)}
+    cur = orday("2024-01-04", 2010, 1990, after)
+    t = go([prev, cur], Config(pdc_gate=True))
+    assert len(t) == 1, "the second candidate must still be reachable"
+    assert t.iloc[0].entry_min == 615

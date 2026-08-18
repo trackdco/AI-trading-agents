@@ -166,6 +166,74 @@ def daily_context(b: pd.DataFrame, atr_days: int) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------------------
+# the signal interface
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Candidate:
+    """One trade candidate. This is the ONLY thing a replacement signal must produce.
+
+    Everything downstream — fills, the risk cap, the ratchet, the time stop, the forced
+    flat, the breakers and the cost model — is signal-agnostic and works unchanged.
+
+    signal_tmin  minute-of-day of the bar whose CLOSE produced the signal
+    fill_tmin    minute-of-day of the bar whose OPEN fills it (no same-bar fills)
+    direction    +1 long, -1 short
+    stop_ref     price the protective stop sits at BEFORE any cap is applied
+    meta         free-form, copied onto the trade row for later analysis
+    """
+    signal_tmin: int
+    fill_tmin: int
+    direction: int
+    stop_ref: float
+    meta: dict = field(default_factory=dict)
+
+
+def orb_candidates(day: pd.DataFrame, cfg: Config, row, feat, anchor: int,
+                   or_end: int) -> list[Candidate]:
+    """The opening-range-breakout generator. RETIRED as an edge (see the skill's
+    references/null-result.md); kept as the reference implementation of the interface."""
+    o = day[(day.tmin >= anchor) & (day.tmin < or_end)]
+    if len(o) < cfg.or_minutes:
+        return []                                     # incomplete opening range
+    or_hi, or_lo = float(o.high.max()), float(o.low.min())
+    width = or_hi - or_lo
+    if width <= 0:
+        return []
+
+    atr = None if row is None else row.atr
+    if cfg.atr_lo is not None or cfg.atr_hi is not None:
+        if atr is None or not np.isfinite(atr):
+            return []
+        if cfg.atr_lo is not None and width < cfg.atr_lo * atr:
+            return []
+        if cfg.atr_hi is not None and width > cfg.atr_hi * atr:
+            return []
+
+    out = []
+    for _, c in _tf_candles(day, or_end, cfg.entry_tf).iterrows():
+        if c.close > or_hi:
+            d_ = 1
+        elif c.close < or_lo:
+            d_ = -1
+        else:
+            continue
+        if feat is not None and (cfg.min_relvol is not None or cfg.min_bar_atr is not None):
+            f = feat.get(int(c.tmin))
+            if f is None:
+                continue
+            rv, ra = f
+            if cfg.min_relvol is not None and not (rv >= cfg.min_relvol):
+                continue
+            if cfg.min_bar_atr is not None and not (ra >= cfg.min_bar_atr):
+                continue
+        out.append(Candidate(int(c.tmin), int(c.tmin) + cfg.entry_tf, d_,
+                             or_lo if d_ > 0 else or_hi,
+                             {"or_hi": or_hi, "or_lo": or_lo, "or_width": width}))
+    return out
+
+
+# ---------------------------------------------------------------------------
 # the backtest
 # ---------------------------------------------------------------------------
 
@@ -206,7 +274,8 @@ def _tf_candles(day: pd.DataFrame, start_mod: int, tf: int) -> pd.DataFrame:
     return out
 
 
-def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.DataFrame:
+def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None,
+        signal_fn=orb_candidates) -> pd.DataFrame:
     if ctx is None:
         ctx = daily_context(bars, cfg.atr_days)
     a_h, a_m = (int(x) for x in cfg.anchor.split(":"))
@@ -238,59 +307,29 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.
         if day.dow.iloc[0] in cfg.skip_weekdays:
             continue
 
-        o = day[(day.tmin >= anchor) & (day.tmin < or_end)]
-        if len(o) < cfg.or_minutes:
-            continue                                  # incomplete opening range
-        or_hi, or_lo = float(o.high.max()), float(o.low.min())
-        width = or_hi - or_lo
-        if width <= 0:
-            continue
-
         row = ctx.loc[cal] if cal in ctx.index else None
         atr = None if row is None else row.atr
-        if cfg.atr_lo is not None or cfg.atr_hi is not None:
-            if atr is None or not np.isfinite(atr):
-                continue
-            if cfg.atr_lo is not None and width < cfg.atr_lo * atr:
-                continue
-            if cfg.atr_hi is not None and width > cfg.atr_hi * atr:
-                continue
 
         if cfg.crabel is not None:
             if row is None or not bool(row[cfg.crabel]):
                 continue
 
-        cand = _tf_candles(day, or_end, cfg.entry_tf)
-        if cand.empty:
-            continue
         feat = EF.get(cal) if EF is not None else None
+        cands = signal_fn(day, cfg, row, feat, anchor, or_end)
+        if not cands:
+            continue
         if cfg.exit_tf > 1:
             one = _tf_candles(day, anchor, cfg.exit_tf).set_index("tmin")
         else:
             one = day.set_index("tmin")
         day_r, taken = 0.0, 0
 
-        for slot, c in cand.iterrows():
+        for cd in cands:
             if taken >= cfg.max_trades_per_day:
                 break
             if cfg.daily_stop_r is not None and day_r <= cfg.daily_stop_r:
                 break
-            if c.close > or_hi:
-                d_ = 1
-            elif c.close < or_lo:
-                d_ = -1
-            else:
-                continue
-            if feat is not None and (cfg.min_relvol is not None or cfg.min_bar_atr is not None):
-                f = feat.get(int(c.tmin))
-                if f is None:
-                    continue
-                rv, ra = f
-                if cfg.min_relvol is not None and not (rv >= cfg.min_relvol):
-                    continue
-                if cfg.min_bar_atr is not None and not (ra >= cfg.min_bar_atr):
-                    continue
-            fill_mod = int(c.tmin) + cfg.entry_tf          # next candle's open
+            d_, fill_mod = cd.direction, cd.fill_tmin
             if cut is not None and fill_mod > cut:
                 break
             nxt = day[day.tmin == fill_mod]
@@ -298,17 +337,17 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.
                 break
             entry = float(nxt.open.iloc[0]) + d_ * slip
 
+            # Directional bias gates. These CONTINUE rather than break: a later candidate
+            # on the same day can still qualify, which is what the Pine reference does.
+            # They used to break, which silently under-traded every gated day.
             if cfg.pdc_gate:
-                if row is None or not np.isfinite(row.pdc):
-                    break
-                if (entry - row.pdc) * d_ <= 0:
-                    break
+                if row is None or not np.isfinite(row.pdc) or (entry - row.pdc) * d_ <= 0:
+                    continue
             if cfg.vwap_gate:
-                v = float(nxt.vwap.iloc[0])
-                if (entry - v) * d_ <= 0:
-                    break
+                if (entry - float(nxt.vwap.iloc[0])) * d_ <= 0:
+                    continue
 
-            stop = or_lo if d_ > 0 else or_hi
+            stop = cd.stop_ref
             capped = False
             if cfg.risk_mode != "off":
                 caps = []
@@ -320,12 +359,12 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.
                     caps.append(cfg.max_risk_pct / 100.0 * entry)
                 if caps and abs(entry - stop) > min(caps):
                     if cfg.risk_mode == "skip":
-                        break
+                        continue
                     stop = entry - d_ * min(caps)
                     capped = True
             risk = abs(entry - stop)
             if risk < TICK:
-                break
+                continue
 
             t = _walk(one, fill_mod, d_, entry, stop, risk, cfg, anchor)
             gross = d_ * (t["exit_px"] - entry) - slip
@@ -333,7 +372,7 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.
             r = pnl_usd / (risk * POINT_USD)
             trades.append({
                 "cal": cal, "dow": day.dow.iloc[0], "dir": d_,
-                "or_hi": or_hi, "or_lo": or_lo, "or_width": width,
+                **cd.meta,
                 "entry_min": fill_mod, "entry": entry, "stop": stop,
                 "risk_pts": risk, "capped": capped, "atr": atr,
                 "exit_min": t["exit_min"], "exit_px": t["exit_px"],

@@ -157,3 +157,17 @@ R; London 03:00 is significantly negative at 2 ticks); Crabel contraction **fail
 inverted dose-response** (the strictest form, ID/NR4, is the worst cell in the study); the
 5-minute OR result from equities **inverts on gold** (worst length tested). Best cell is
 OR 35m at +0.063R, PF 1.101 — below both gates.
+
+## D10 — Programme closed
+
+Retired. The null is written up as a standalone reference at
+`.claude/skills/gold-orb-models/references/null-result.md`, SKILL.md marks M2/M3 refuted on
+GC and M1 untested, and the engine is parameterised behind a `signal_fn` interface so the
+retired candidate generator can be replaced without touching exits, risk or costs.
+
+A bias-gate defect was found during handover and fixed; it moved parity from 89.0% to 100.0%
+and moved every train figure against the strategy (see the CORRECTION section of
+`docs/FINDINGS-gold-orb.md`). Phase 3B is unaffected — its control carried no bias gates.
+
+**2025-09-01 → 2026-03-01 remains sealed and unspent**, and is reserved for the next gold
+hypothesis rather than for re-testing this one.
