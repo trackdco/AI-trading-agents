@@ -10,23 +10,28 @@ book row; nothing is asserted from memory.
 
 The full audit (`output/analysis/t78check.py`, run against the live book):
 
-    T78 audit wr2: 15 take(s) adjudicated, 13 defect(s)
-      8 x SINGLE_TARGET        - no TP2 named at all
-      5 x TP2_TOO_CLOSE        - TP2 inside the ~1R spacing floor
+    T78 audit wr2: 19 take(s) adjudicated, 17 defect(s)
+      10 x SINGLE_TARGET       - no TP2 named at all
+       7 x TP2_TOO_CLOSE       - TP2 inside the ~1R spacing floor
 
-**Only two of fifteen takes carry a correctly-spaced ladder**: `06-22 L2` (TP2 1.28R past TP1)
-and `06-25 P2` (three rungs, TP2 1.68R past TP1). That is 13%.
+**Only two of nineteen takes carry a correctly-spaced ladder** — `06-22 L2` (TP2 1.28R past TP1)
+and `06-25 P2` (three rungs, TP2 1.68R past TP1). **That is 10.5%.**
 
-For contrast, wr1 under 0.4.11 produced 2 ladders out of 7 takes (29%) — so on the headline
-rate **0.4.12 has not improved matters at all**, and the sample is now large enough that this is
-not noise. T78 changed the contract text; it did not change the output.
+For contrast, wr1 under 0.4.11 produced 2 ladders out of 7 takes (29%). On the headline rate
+**0.4.12 is no better than the contract it replaced**, on a sample nearly three times larger.
+T78 changed the contract text; it did not change the output.
 
-### The spacing rule looks inert
-The five TP2_TOO_CLOSE gaps are 0.34R, 0.40R, 0.41R, 0.46R, 0.58R. That tight a cluster, all
-well under the 1.0R floor and none near it, says the trigger is **naming the next adjacent
-structure and stopping** — not measuring the gap at all. T78 rule 2 ("at least ~1R past it")
-and rule 3 ("keep walking the level list until one clears the spacing") appear to be read as
-"name a second level", with the distance test dropped.
+### The spacing rule is inert
+Every TP2_TOO_CLOSE gap in the run: **0.34, 0.38, 0.40, 0.41, 0.46, 0.58, 0.67R.**
+**Not one has cleared the 1.0R floor.** Seven for seven, clustered well below it, none even
+close. That is not a judgement call going marginally wrong seven times — it says the trigger is
+**naming the next adjacent structure and stopping**, without measuring the gap at all. T78
+rule 2 ("at least ~1R past it") and rule 3 ("keep walking the level list until one clears the
+spacing") are being read as "name a second level", with the distance test dropped entirely.
+
+**If only one thing is changed before the next run, it should be this**: the spacing test needs
+to be something the trigger must show its work on — a stated gap in R between TP1 and TP2 — not
+a qualifier inside a sentence.
 
 The failures are not one thing, and the breakdown matters more than the headline.
 
