@@ -40,6 +40,7 @@ class Config:
     entry_tf: int = 15             # minutes per entry candle
     target_r: float = 1.5
     flat_minutes: int = 240
+    flat_from_anchor: bool = False  # True = flat at anchor+N (Pine v3.1), False = entry+N
     max_trades_per_day: int = 1
     cutoff: str | None = None      # e.g. "12:00" — no ENTRY after this candle opens
     slip_ticks: float = 0.0        # per side
@@ -250,7 +251,7 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.
             if risk < TICK:
                 break
 
-            t = _walk(one, fill_mod, d_, entry, stop, risk, cfg)
+            t = _walk(one, fill_mod, d_, entry, stop, risk, cfg, anchor)
             gross = d_ * (t["exit_px"] - entry) - slip
             pnl_usd = gross * POINT_USD - cfg.commission_usd
             r = pnl_usd / (risk * POINT_USD)
@@ -272,13 +273,13 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None) -> pd.
 
 
 def _walk(one: pd.DataFrame, fill_mod: int, d_: int, entry: float, stop: float,
-          risk: float, cfg: Config) -> dict:
+          risk: float, cfg: Config, anchor: int) -> dict:
     """Minute-by-minute exit walk. Returns the first exit that triggers."""
     target = entry + d_ * cfg.target_r * risk
     live_stop = stop
     mfe = mae = 0.0
     ratchet_on = False
-    deadline = fill_mod + cfg.flat_minutes
+    deadline = (anchor if cfg.flat_from_anchor else fill_mod) + cfg.flat_minutes
     ts_at = fill_mod + cfg.time_stop_min if cfg.time_stop_min else None
 
     mods = one.index.to_numpy()

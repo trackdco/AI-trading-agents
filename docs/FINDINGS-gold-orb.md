@@ -225,3 +225,87 @@ number, every swept value is published including the ones that lose, the UNDEFIN
 parameters were enumerated rather than silently defaulted, and the two figures that could
 not be reproduced (TV's MFE ladder, the landmark OR widths) are reported as unreconciled
 rather than quietly dropped.
+---
+
+# PHASE 2, REDO — the literal trade-for-trade diff, and what it costs the v3.1 result
+
+The v1 116-trade export never arrived. A **v3.1 export did** (75 trades, COMEX:GC1!, 15m,
+2026-03-03 → 2026-08-18), and it carries per-trade direction, both timestamps, fill prices,
+exit signal, MFE/MAE and P&L. That is the gate this programme could not previously run.
+
+Config was read off the export's own Properties sheet, not guessed: target **1.0R**, entry
+cutoff 150 min after anchor, **force-flat 240 min after the ANCHOR** (13:30 ET, not 240 min
+after entry — the engine gained a `flat_from_anchor` mode for this), 30-pt cap, ratchet
+1.0→+0.25R, time stop 90 min @0.5R, VWAP gate ON, skipMon ON, breakers ON, 1 tick/side
+slippage, $3/trade commission, qty floored at 1 contract throughout.
+
+## The diff
+
+Our data ends 2026-08-11, so 2 of the 75 TV trades are past it; 73 are comparable.
+
+| | |
+|---|---|
+| day-level match | **65/73 = 89.0%** |
+| **direction, on matched days** | **65/65 = 100%** |
+| entry timestamp | 62/63 = 98.4% |
+| entry price | **median &#124;diff&#124; 0.00 pt** (60/63 within 5 ticks) |
+| exit reason | 63/65 = 96.9% |
+| per-trade P&L | median &#124;diff&#124; **$10** |
+| total | $23,729 vs TV $25,161 (5.7%) |
+| days we traded that TV did not | **0** — strictly a subset |
+
+Exit-reason confusion is one cell: a single target that the engine resolved as a stop.
+Stops 14/14, targets 27/28, scratches 21/21.
+
+**The whole residual is one gate, and it is identified.** Ablation recovers 10/10 of the
+missed days by dropping the VWAP gate and nothing else — not the breakers (0/10), not the
+cap (0/10). TV computes `ta.vwap` on 15-minute bars; the engine computed it on 1-minute
+bars. Rebuilding VWAP at 15m moves the match 86.3% → 89.0% and confirms the mechanism; the
+last handful are marginal days where the two VWAPs straddle the entry price, consistent with
+the feed differences already documented in the opening range.
+
+**Verdict: calibrated.** 100% directional agreement, zero median entry-price error, 96.9%
+exit-reason agreement, one named and measured residual. 89.0% is a day short of the literal
+90% bar (65 of 73 against 66 needed) and the shortfall is entirely inside the explained
+class, so the gate is met in substance and missed in letter. Recorded that way rather than
+rounded up.
+
+## The finding that matters more: v3.1 does not survive its own window
+
+The exported run looks strong — 75 trades, 62.7% win rate, PF 1.56, **+$25,161**. Run the
+**identical config** on 2023-01-02 → 2025-08-31:
+
+| | 2026 window | | train 2023–25 | |
+|---|---|---|---|---|
+| | PF | net | PF | net |
+| **v3.1 full stack** | **1.67** | **+$26,501** | **0.98** | **−$2,177** |
+| bare ORB 1.0R, all mechanisms off | 1.13 | +$12,404 | 0.97 | −$6,628 |
+
+v3.1 on train: n=419, 48.4% WR, **EV −0.000R** [−0.076, +0.069], and −$10,560 at 2
+ticks/side. Every ablation sits inside that interval. The ratchet and the risk cap are
+**bit-identical** to leaving them off — on train they never fire.
+
+This is in-sample by construction, and the briefing says so itself: the 30-pt cap exists
+because of trade #2 *in that window*, the ratchet because of "the giveback seven" *in that
+window*, the time stop because of the flats *in that window*, skipMon because of Monday *in
+that window*. Five mechanisms fitted to 116 trades, then scored on the same 116 trades'
+window.
+
+**The decomposition splits the +$25k roughly in half.** The bare strategy already makes
++$12,404 there while losing −$6,628 on train, so about half the result is the 2026 regime
+being favourable to ORB at all. The other half is the mechanism stack, which lifts PF by
+**+0.54 in 2026 and +0.01 on train** — a fifty-fold difference in effect size between the
+window it was designed on and every other year available.
+
+The mechanisms are not pure noise: they do move train from −$6,628 to −$2,177. They are
+simply nowhere near large enough to matter once the regime that motivated them is gone.
+
+## Consequences for the seal
+
+The Mar–Aug 2026 window is now **irreversibly disclosed** — the user supplied a full trade
+list for it. It cannot serve as holdout for anything in this programme again. What remains
+sealed is **2025-09-01 → 2026-03-01 only**, roughly six months, and it is the last untouched
+data on this branch. Spend it once, on a candidate that has already cleared train.
+
+None has. Phase 4 remains unrun.
+

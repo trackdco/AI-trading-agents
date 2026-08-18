@@ -123,3 +123,21 @@ Full write-up in `docs/FINDINGS-gold-orb.md`. Summary against this declaration:
 - Governing finding: gold's 15-minute opening range went from a 4.5-point median in 2023 to
   18.5 in 2026 (0.23% → 0.40% of price). The v3 mechanisms were designed on the late regime
   and are inert on the early one — the 30-point cap binds 0.6% of train trades.
+
+
+## D8 — AMENDMENT, after the v3.1 export was supplied (post-hoc, flagged as such)
+
+The user supplied a 75-trade v3.1 TradingView export for 2026-03-03 → 2026-08-18 covering
+the sealed window. Two consequences, recorded rather than absorbed:
+
+1. **D3 is discharged.** The literal trade-for-trade diff ran against this export: 89.0%
+   day match, 100% direction, 0.00 pt median entry-price error, 96.9% exit reason, single
+   explained residual (TV computes `ta.vwap` on 15m bars, the engine did so on 1m). The
+   engine is calibrated. 89.0% is one day short of the literal 90% bar and the shortfall
+   lies wholly inside the explained class.
+2. **The seal over Mar–Aug 2026 is now permanently gone**, by disclosure rather than by a
+   run. Remaining untouched: **2025-09-01 → 2026-03-01 only.** That is the last holdout on
+   this branch and must not be spent on a candidate that has not already cleared train.
+
+The v3.1 config was also run on train: **EV −0.000R, PF 0.98, −$2,177**, against PF 1.67 and
++$26,501 on the window it was designed from. It does not clear D4 and Phase 4 stays unrun.
