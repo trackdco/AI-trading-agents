@@ -7,7 +7,7 @@ Everything below is traceable to a book row; nothing is asserted from memory.
 
 ---
 
-## 1. T78 IS NOT PRODUCING LADDERS — 13 of 15 takes fail it
+## 1. T78 IS NOT PRODUCING LADDERS — 18 of 20 takes fail it
 
 The full audit (`output/analysis/t78check.py`, run against the live book):
 
