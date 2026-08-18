@@ -1,0 +1,236 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "L10",
+ "decision_minute": "2026-06-03T04:50 ET",
+ "reason_for_call": "intermediate_level_broken",
+ "leak_check": "pass - replay truncated at 04:49:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/j49_2026-06-02_L10_0450_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30723.0,
+  "stop": 30738.0,
+  "targets": [
+   {
+    "level": "fib_0.705",
+    "price": 30699.25
+   },
+   {
+    "level": "session_low",
+    "price": 30561.25
+   },
+   {
+    "level": "weekly_val",
+    "price": 30542.0
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "04:48",
+  "R_in_points": 15.0,
+  "current_stop_distance": 15.0,
+  "open_pnl_in_R": 0.35
+ },
+ "level_in_question": {
+  "level": "bb_ma_3m",
+  "price": 30719.3
+ },
+ "price_at_decision": 30717.75,
+ "last_completed_2m_bar": {
+  "start": "04:48",
+  "closed_at": "04:50",
+  "open": 30720.25,
+  "high": 30726.0,
+  "low": 30715.5,
+  "close": 30717.75,
+  "volume": 304,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "04:42",
+   "closed_at": "04:44",
+   "open": 30716.0,
+   "high": 30722.0,
+   "low": 30708.5,
+   "close": 30718.0,
+   "volume": 253,
+   "minutes": 2
+  },
+  {
+   "start": "04:44",
+   "closed_at": "04:46",
+   "open": 30717.5,
+   "high": 30718.75,
+   "low": 30713.0,
+   "close": 30718.0,
+   "volume": 105,
+   "minutes": 2
+  },
+  {
+   "start": "04:46",
+   "closed_at": "04:48",
+   "open": 30717.5,
+   "high": 30722.5,
+   "low": 30710.75,
+   "close": 30721.0,
+   "volume": 189,
+   "minutes": 2
+  },
+  {
+   "start": "04:48",
+   "closed_at": "04:50",
+   "open": 30720.25,
+   "high": 30726.0,
+   "low": 30715.5,
+   "close": 30717.75,
+   "volume": 304,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "delta_s": 119,
+  "read_at": "2026-08-18T07:17:49Z",
+  "screenshot": "j49_2026-06-02_L10_0450_manage.png",
+  "bb_basis": 30725.35,
+  "bb_upper": 30748.04,
+  "bb_lower": 30702.66,
+  "vwap": 30689.16,
+  "vwap_p1sigma": 30726.97,
+  "vwap_m1sigma": 30651.35,
+  "vwap_p2sigma": 30764.77,
+  "vwap_m2sigma": 30613.55,
+  "vwap_p3sigma": 30802.58,
+  "vwap_m3sigma": 30575.74,
+  "svp_up": 0,
+  "svp_down": 0,
+  "svp_total": 0,
+  "provenance": "captured live via the full runbook sequence."
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30689.51,
+   "vwap_p1": 30726.87,
+   "vwap_p2": 30764.23,
+   "vwap_p3": 30801.59,
+   "vwap_m1": 30652.15,
+   "vwap_m2": 30614.79,
+   "vwap_m3": 30577.43
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30725.35,
+   "bb_ma_3m": 30722.55,
+   "bb_ma_15m": 30711.24,
+   "bb_ma_60m": 30680.05
+  },
+  "day_range_fibs": {
+   "0.382": 30636.03,
+   "0.5": 30659.12,
+   "0.618": 30682.22,
+   "0.705": 30699.25
+  },
+  "session_high_so_far": 30757.0,
+  "session_low_so_far": 30561.25,
+  "daily_profile": {
+   "poc": 30708.0,
+   "val": 30672.0,
+   "vah": 30727.0,
+   "note": "DEVELOPING as-of 04:50"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30676.0,
+   "val": 30542.0,
+   "vah": 30723.0,
+   "high": 30763.25,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 04:50"
+  },
+  "prior_day": {
+   "poc": 30676.0,
+   "val": 30532.0,
+   "vah": 30713.0,
+   "high": 30763.25,
+   "low": 30317.75
+  }
+ },
+ "crowded_path": {
+  "levels_between_tp1_and_tp2": [
+   {
+    "level": "vwap",
+    "price": 30689.51
+   },
+   {
+    "level": "bb_ma_60m",
+    "price": 30680.05
+   },
+   {
+    "level": "weekly_poc",
+    "price": 30676.0
+   },
+   {
+    "level": "prior_day_poc",
+    "price": 30676.0
+   },
+   {
+    "level": "daily_val",
+    "price": 30672.0
+   },
+   {
+    "level": "vwap_m1",
+    "price": 30652.15
+   },
+   {
+    "level": "vwap_m2",
+    "price": 30614.79
+   },
+   {
+    "level": "vwap_m3",
+    "price": 30577.43
+   }
+  ],
+  "count": 8,
+  "crowded_path": true,
+  "tp1": 30699.25,
+  "tp2": 30561.25,
+  "note": "structural levels sitting between your first and second target. Stated as a fact - whether a crowded path is a reason to bank more at TP1 or to carry the runner anyway is YOUR call."
+ },
+ "management_actions_so_far": [],
+ "what_to_emit": "your management JSON, per your contract.",
+ "conviction_partial_rule": {
+  "conviction_of_this_position": "B",
+  "contract_default": "B takes roughly 75% at TP1 and trails the runner. A is 50% and holds the rest to the full target; C is 100% out with no runner.",
+  "note": "stated as the contract text, not as an instruction - partial_pct is your decision and is a fraction of what is still open."
+ },
+ "thesis_context": {
+  "version": "v1 (LONDON 03:00)",
+  "primary_bias": "short",
+  "invalidation": null,
+  "aligned": "this position is WITH the thesis - v1 read short and named the failed-push-into-VAH shape this entry took.",
+  "defended_level": "the daily VAH / weekly VAH / VWAP+1 cluster around 30723-30729. This is its THIRD fade of the session from this side of the book. The first two both lost: L6 short 30713.00 from 04:03 stopped at 30728.00, and L8 short 30711.00 from 04:25 stopped at 30735.00. This stop, 30738.00, was placed above L8's proven failure point rather than at the candle high.",
+  "contested_note": "the trigger's own words: the 15m has closed BOTH sides of this cluster this hour, 2 up and 2 down - 'genuinely contested, not a clean slow-and-wick rejection'. It graded the entry take_LIGHT for that reason, and because it is the third attempt."
+ },
+ "prior_positions_this_window": {
+  "count": 3,
+  "detail": "L10 is LONDON's THIRD fill, one beyond the written cap of 2. The two before it both faded this same cluster and both were stopped, for -2.0000R on the window so far: L6 (short 30713.00, 04:03, stopped 30728.00 at 04:05) and L8 (short 30711.00, 04:25, stopped 30735.00 at 04:28). Each got exactly one manage call and each was a hold. L1-L5, L7 and L9 passed.",
+  "earlier_windows": "none - LONDON is the first window of the session-day.",
+  "what_this_means_for_you": "you are managing the third attempt at a trade that has failed twice in the last forty-five minutes, on the tightest R of the three (15.0pt). The two prior stop-outs are the reason the entry was graded down to take_light and the reason the stop sits where it does."
+ },
+ "window_note": {
+  "window": "LONDON",
+  "entries_end": "04:59",
+  "earliest_entry": "03:00",
+  "text": "the LONDON window runs 03:00-04:59. A position open at the close is not force-flattened - his standing ruling is that the window end gates TAKING trades, not holding them, so if this position is still open at the window end it is carried rather than flattened. T51 does not apply here; it governs pre-market carries into the 09:30 cash open.",
+  "news": "the calendar for 2026-06-03 carries ISM Services at 10:00 - NY_AM, hours after this window. Nothing scheduled inside LONDON.",
+  "cap_note": "this fill is BEYOND the written LONDON cap of 2 and is tagged beyond_written_cap. Caps are lifted for this run so it was permitted, and the trigger itself listed beyond_written_cap among its constraints_failed - it took the trade knowing that."
+ },
+ "BREAKEVEN_RULE": {
+  "rule": "breakeven is ONLY available after TP1 has printed. Before TP1 it is not a legal action.",
+  "tp1": 30699.25,
+  "tp1_printed_yet": false,
+  "available_to_you_now": "NO - TP1 has not printed, so breakeven is not one of your options at this minute",
+  "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
+  "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
+  "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+ }
+}

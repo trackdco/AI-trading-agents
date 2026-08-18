@@ -1,0 +1,188 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "escalation",
+ "window": "LONDON",
+ "decision_minute": "2026-06-01T03:12 ET",
+ "leak_check": "pass - replay truncated at 03:11:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/j49_2026-05-31_L1_0312.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30577.5,
+ "last_completed_2m_bar": {
+  "start": "03:10",
+  "closed_at": "03:12",
+  "open": 30580.75,
+  "high": 30586.5,
+  "low": 30577.25,
+  "close": 30577.5,
+  "volume": 180,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "LONDON",
+  "entries": "03:00-04:59",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30577.99,
+  "bb_upper_2m": 30590.79,
+  "bb_lower_2m": 30565.19,
+  "vwap": 30523.59,
+  "vwap_p1": 30580.26,
+  "vwap_m1": 30466.93,
+  "vwap_p2": 30636.92,
+  "vwap_m2": 30410.27,
+  "vwap_p3": 30693.58,
+  "vwap_m3": 30353.61,
+  "read_at": "chart cursor 03:12-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "_session_calendar": {
+   "session_day_label": "2026-05-31",
+   "session_opens": "2026-05-31 18:00 ET (Sunday evening)",
+   "cash_session_traded": "2026-06-01 (Monday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30523.68,
+   "vwap_p1": 30580.34,
+   "vwap_p2": 30637.01,
+   "vwap_p3": 30693.68,
+   "vwap_m1": 30467.01,
+   "vwap_m2": 30410.34,
+   "vwap_m3": 30353.67
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30577.99,
+   "bb_ma_3m": 30575.44,
+   "bb_ma_15m": 30565.24,
+   "bb_ma_60m": 30458.65
+  },
+  "day_range_fibs": {
+   "0.382": 30450.64,
+   "0.5": 30478.25,
+   "0.618": 30505.86,
+   "0.705": 30526.22
+  },
+  "session_high_so_far": 30595.25,
+  "session_low_so_far": 30361.25,
+  "daily_profile": {
+   "poc": 30558.0,
+   "val": 30510.0,
+   "vah": 30591.0,
+   "note": "DEVELOPING as-of 03:12"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30043.0,
+   "val": 29773.0,
+   "vah": 30304.0,
+   "high": 30595.25,
+   "low": 29744.0,
+   "anchor": "2026-05-25 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:12"
+  },
+  "prior_day": {
+   "poc": 30406.0,
+   "val": 30328.0,
+   "vah": 30439.0,
+   "high": 30536.0,
+   "low": 30216.5
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.434,
+  "net_move_15m": 162.0,
+  "total_15m_travel": 373.25,
+  "candles_15m_up": 23,
+  "candles_15m_down": 14,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "02:15",
+   "open": 30575.25,
+   "high": 30578.0,
+   "low": 30554.5,
+   "close": 30558.5,
+   "body_ratio": 0.71
+  },
+  {
+   "start": "02:30",
+   "open": 30557.75,
+   "high": 30580.5,
+   "low": 30556.0,
+   "close": 30568.5,
+   "body_ratio": 0.44
+  },
+  {
+   "start": "02:45",
+   "open": 30567.75,
+   "high": 30589.0,
+   "low": 30567.5,
+   "close": 30578.75,
+   "body_ratio": 0.51
+  },
+  {
+   "start": "03:00",
+   "open": 30578.75,
+   "high": 30591.75,
+   "low": 30571.5,
+   "close": 30577.5,
+   "body_ratio": 0.06
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "Any red-folder US release printing before 2026-06-01T03:00 ET, or a policy change reclassifying ISM Manufacturing PMI as gating, would falsify this read.",
+  "reasoning": "No events released so far today. The only calendar item, ISM Manufacturing PMI 10:00 ET, is explicitly exempted by ruling 1 (event_match override, gates_entries: FALSE) regardless of the generic 10-minute band rule. No printed catalyst exists at this minute; neutral is the correct read."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "stand_aside",
+  "targets": [],
+  "invalidation": {
+   "level": "weekly_high_cluster_vwap_p1_bb_upper_daily_vah",
+   "price": 30595.25
+  },
+  "waiting_for": "nothing this window - sitting out London per the Monday no-massive-gap rule; watching the 30578-30595 confluence (VWAP+1 30578.73 / BB upper 30588.32 / developing VAH 30591 / weekly high 30595.25) resolve into NY",
+  "two_sided": false,
+  "condition_for_other_side": "",
+  "anticipated_resolution": {
+   "level": "weekly_high_cluster",
+   "price": 30595.25,
+   "expect": "holds",
+   "act_on_resolution": false
+  },
+  "acceptance_rule": "15m close beyond ~30595 with a decisive body would be the breakout; a stall/rollover here without that close is the level holding",
+  "other_side_tripwire": {
+   "level": "n/a",
+   "price": 0.0,
+   "event": "not applicable - no active bias this window"
+  },
+  "defended_level": {
+   "level": "session_low_30361",
+   "price": 30361.25,
+   "memory": "untested since the low print, no rejection behavior observed yet",
+   "status": "untested"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "This is the first session-day of the week (cash trades Mon 6/1) and Asia's low (30361.25) sat inside Friday's established 30216.5-30536 range, not below it - this is grind-up continuation during Asia, not a massive new-week opening gap, so his Monday rule says no London trade. Asia rallied to a marginal new 5-day high (30595.25) and is now stalling right at the VWAP+1/BB-upper/developing-VAH cluster (30578-30591) after a shallow 02:15 pullback and bounce, with no 15m close through it yet - nothing to fade or join with confidence. Standing aside for London only; NY is unaffected and will re-read off how this cluster resolves (accept above vs. reject back into value)."
+ },
+ "why_you_are_being_re-fired": "L1 at 03:12 escalated to you. The trigger reports a same-candle two-level break DOWN (own 2m MA + VWAP+1) off a nameable rejected level: the weekly-high cluster at 30595.25 (weekly_high 30595.25 / daily_vah 30591 / bb_upper_daily 30590.79 / vwap_p1 30580.34). On the 15m, vwap_p1 was tested 3x from below in the last hour and wicked 9.2pt above without a body ever closing through - it HELD. The local high 30589 set at 02:50 was swept at 03:06, closed_beyond false, and reclaimed. It set thesis_stale=true. Its stated reason: \"Monday no-gap rule keeps me flat in London here, but I can't wave this off - the 15m held that weekly-high/VWAP+1/VAH cluster clean and we just closed through our own 2m MA and VWAP+1 in the same candle off it.\" Note your v1 set bias stand_aside with act_on_resolution false, on the Monday no-confirmed-gap rule, and named this same cluster as the thing you were watching. Re-emit your thesis for the tape as it now stands."
+}

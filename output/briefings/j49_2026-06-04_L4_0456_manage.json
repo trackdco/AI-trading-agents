@@ -1,0 +1,208 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "L4",
+ "decision_minute": "2026-06-05T04:56 ET",
+ "reason_for_call": "intermediate_level_reached",
+ "leak_check": "pass - replay truncated at 04:55:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/j49_2026-06-04_L4_0456_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30165.0,
+  "stop": 30197.0,
+  "targets": [
+   {
+    "level": "daily_val",
+    "price": 30116.0
+   },
+   {
+    "level": "weekly_low",
+    "price": 30052.25
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "04:54",
+  "R_in_points": 32.0,
+  "current_stop_distance": 32.0,
+  "open_pnl_in_R": 0.05
+ },
+ "level_in_question": {
+  "level": "bb_ma_15m",
+  "price": 30163.44
+ },
+ "price_at_decision": 30163.5,
+ "last_completed_2m_bar": {
+  "start": "04:54",
+  "closed_at": "04:56",
+  "open": 30160.75,
+  "high": 30170.0,
+  "low": 30160.25,
+  "close": 30163.5,
+  "volume": 163,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "04:48",
+   "closed_at": "04:50",
+   "open": 30176.5,
+   "high": 30182.75,
+   "low": 30172.75,
+   "close": 30180.25,
+   "volume": 178,
+   "minutes": 2
+  },
+  {
+   "start": "04:50",
+   "closed_at": "04:52",
+   "open": 30180.5,
+   "high": 30182.5,
+   "low": 30174.5,
+   "close": 30177.0,
+   "volume": 169,
+   "minutes": 2
+  },
+  {
+   "start": "04:52",
+   "closed_at": "04:54",
+   "open": 30177.5,
+   "high": 30178.75,
+   "low": 30155.25,
+   "close": 30161.0,
+   "volume": 459,
+   "minutes": 2
+  },
+  {
+   "start": "04:54",
+   "closed_at": "04:56",
+   "open": 30160.75,
+   "high": 30170.0,
+   "low": 30160.25,
+   "close": 30163.5,
+   "volume": 163,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "delta": 119,
+  "read_at": "2026-08-18T20:58:00Z",
+  "screenshot": "j49_2026-06-04_L4_0456_manage.png",
+  "bollinger_bands": {
+   "basis": 30182.0,
+   "upper": 30219.36,
+   "lower": 30144.64
+  },
+  "vwap_deviation_bands": {
+   "vwap": 30190.26,
+   "plus1sigma": 30261.3,
+   "minus1sigma": 30119.21,
+   "plus2sigma": 30332.35,
+   "minus2sigma": 30048.17,
+   "plus3sigma": 30403.4,
+   "minus3sigma": 29977.12
+  },
+  "session_volume_profile_hd": {
+   "up": 179,
+   "down": 231,
+   "total": 410,
+   "first_visible_bar_time": 1780630440000,
+   "last_visible_bar_time": 1780649640000
+  },
+  "provenance": "captured live via the full runbook sequence."
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30190.22,
+   "vwap_p1": 30261.34,
+   "vwap_p2": 30332.45,
+   "vwap_p3": 30403.57,
+   "vwap_m1": 30119.11,
+   "vwap_m2": 30047.99,
+   "vwap_m3": 29976.88
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30182.0,
+   "bb_ma_3m": 30168.94,
+   "bb_ma_15m": 30163.56,
+   "bb_ma_60m": 30299.66
+  },
+  "day_range_fibs": {
+   "0.382": 30193.49,
+   "0.5": 30237.12,
+   "0.618": 30280.76,
+   "0.705": 30312.92
+  },
+  "session_high_so_far": 30422.0,
+  "session_low_so_far": 30052.25,
+  "daily_profile": {
+   "poc": 30188.0,
+   "val": 30116.0,
+   "vah": 30233.0,
+   "note": "DEVELOPING as-of 04:56"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30429.0,
+   "vah": 30750.0,
+   "high": 30807.75,
+   "low": 30052.25,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 04:56"
+  },
+  "prior_day": {
+   "poc": 30484.0,
+   "val": 30304.0,
+   "vah": 30597.0,
+   "high": 30603.25,
+   "low": 30151.0
+  }
+ },
+ "crowded_path": {
+  "levels_between_tp1_and_tp2": [],
+  "count": 0,
+  "crowded_path": false,
+  "tp1": 30116.0,
+  "tp2": 30052.25,
+  "note": "no structural level sits between TP1 and TP2 - the corridor is clear."
+ },
+ "management_actions_so_far": [],
+ "what_to_emit": "your management JSON, per your contract.",
+ "conviction_partial_rule": {
+  "conviction_of_this_position": "B",
+  "contract_default": "B takes roughly 75% at TP1 and trails the runner. A is 50% and holds the rest to the full target; C is 100% out with no runner.",
+  "note": "stated as the contract text, not as an instruction - partial_pct is your decision and is a fraction of what is still open."
+ },
+ "thesis_context": {
+  "version": "v1 (LONDON 03:00)",
+  "primary_bias": "short",
+  "invalidation": 30188.0,
+  "aligned": "this position is WITH the thesis - v1 read short, and the trigger faded the daily_poc / vwap_mid / 0.382-fib confluence around 30188-30193 that the thesis itself names as its invalidation zone. This is the run's only take_full so far.",
+  "other_side_tripwire": "vwap_m2 / weekly_low zone 30057.00 on displacement from the defended level - essentially at your second target.",
+  "defended_level": "session_low_weekly_low 30052.25, status holding - this session's own low, matching the anchored weekly low, which produced a ~370pt rally when tested once this session. It is your SECOND target.",
+  "invalidation_note": "the thesis invalidation, 30188.00, sits 9pt BELOW your 30197.00 stop. If your stop is hit, the thesis is invalidated too."
+ },
+ "prior_positions_this_window": {
+  "count": 2,
+  "detail": "L4 is LONDON's SECOND fill. The first, L2, was short 30132.00 from 04:05 off a 15m-MA rejection, stopped at 30168.00 at 04:21 for -1.0000R after one manage call. L1 and L3 both passed - both were longs against the short thesis with no nameable rejection.",
+  "earlier_windows": "none - LONDON is the first window of the session-day.",
+  "what_this_means_for_you": "the window has already lost 1.0000R on a short from 33 points above this entry. This one was graded take_full where L2 was take_light, and it is faded at a higher-quality confluence - the level that capped the session's rally twice."
+ },
+ "window_note": {
+  "window": "LONDON",
+  "entries_end": "04:59",
+  "earliest_entry": "03:00",
+  "text": "the LONDON window runs 03:00-04:59. A position open at the close is not force-flattened - his standing ruling is that the window end gates TAKING trades, not holding them, so if this position is still open at the window end it is carried rather than flattened. T51 does not apply here; it governs pre-market carries into the 09:30 cash open.",
+  "news": "the calendar for 2026-06-05 carries the NFP / Average Hourly Earnings / Unemployment Rate trio at 08:30 - NY_PRE, hours after this window. The pre-market full-stop is scoped to NY_PRE only and does not reach LONDON.",
+  "cap_note": "this fill puts LONDON AT its written cap of 2, not beyond it."
+ },
+ "BREAKEVEN_RULE": {
+  "rule": "breakeven is ONLY available after TP1 has printed. Before TP1 it is not a legal action.",
+  "tp1": 30116.0,
+  "tp1_printed_yet": false,
+  "available_to_you_now": "NO - TP1 has not printed, so breakeven is not one of your options at this minute",
+  "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
+  "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
+  "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+ }
+}

@@ -1,0 +1,210 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "A6",
+ "decision_minute": "2026-06-02T11:02 ET",
+ "reason_for_call": "intermediate_level_reached",
+ "leak_check": "pass - replay truncated at 11:01:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/j49_2026-06-01_A6_1102_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "long",
+  "entry": 30605.0,
+  "stop": 30620.0,
+  "targets": [
+   {
+    "level": "vwap_p2",
+    "price": 30667.89
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "10:47",
+  "R_in_points": 30.0,
+  "current_stop_distance": 15.0,
+  "open_pnl_in_R": 1.3
+ },
+ "level_in_question": {
+  "level": "weekly_high",
+  "price": 30647.25
+ },
+ "price_at_decision": 30644.0,
+ "last_completed_2m_bar": {
+  "start": "11:00",
+  "closed_at": "11:02",
+  "open": 30642.5,
+  "high": 30649.0,
+  "low": 30628.75,
+  "close": 30644.0,
+  "volume": 2712,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "10:54",
+   "closed_at": "10:56",
+   "open": 30623.25,
+   "high": 30630.5,
+   "low": 30616.5,
+   "close": 30627.25,
+   "volume": 1268,
+   "minutes": 2
+  },
+  {
+   "start": "10:56",
+   "closed_at": "10:58",
+   "open": 30627.25,
+   "high": 30636.25,
+   "low": 30621.25,
+   "close": 30634.25,
+   "volume": 1394,
+   "minutes": 2
+  },
+  {
+   "start": "10:58",
+   "closed_at": "11:00",
+   "open": 30635.0,
+   "high": 30643.5,
+   "low": 30626.0,
+   "close": 30642.25,
+   "volume": 1653,
+   "minutes": 2
+  },
+  {
+   "start": "11:00",
+   "closed_at": "11:02",
+   "open": 30642.5,
+   "high": 30649.0,
+   "low": 30628.75,
+   "close": 30644.0,
+   "volume": 2712,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "expected_cursor": 1780412519,
+  "delta": 119,
+  "expected_delta": 119,
+  "read_at": "2026-08-18T21:25:00Z",
+  "screenshot": "j49_2026-06-01_A6_1102_manage.png",
+  "bb_basis": 30605.21,
+  "bb_upper": 30656.9,
+  "bb_lower": 30553.53,
+  "vwap": 30519.05,
+  "vwap_p1sigma": 30598.61,
+  "vwap_m1sigma": 30439.49,
+  "vwap_p2sigma": 30678.17,
+  "vwap_m2sigma": 30359.93,
+  "vwap_p3sigma": 30757.73,
+  "vwap_m3sigma": 30280.37,
+  "svp_up": 0,
+  "svp_down": 0,
+  "svp_total": 0,
+  "provenance": "captured live via the full runbook sequence."
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30518.8,
+   "vwap_p1": 30598.29,
+   "vwap_p2": 30677.78,
+   "vwap_p3": 30757.26,
+   "vwap_m1": 30439.32,
+   "vwap_m2": 30359.83,
+   "vwap_m3": 30280.34
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30605.21,
+   "bb_ma_3m": 30609.11,
+   "bb_ma_15m": 30560.83,
+   "bb_ma_60m": 30500.99
+  },
+  "day_range_fibs": {
+   "0.382": 30444.29,
+   "0.5": 30483.38,
+   "0.618": 30522.46,
+   "0.705": 30551.28
+  },
+  "session_high_so_far": 30649.0,
+  "session_low_so_far": 30317.75,
+  "daily_profile": {
+   "poc": 30551.0,
+   "val": 30471.0,
+   "vah": 30632.0,
+   "note": "DEVELOPING as-of 11:02"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30551.0,
+   "val": 30471.0,
+   "vah": 30632.0,
+   "high": 30649.0,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 11:02"
+  },
+  "prior_day": {
+   "poc": 30560.0,
+   "val": 30382.0,
+   "vah": 30597.0,
+   "high": 30693.0,
+   "low": 30291.5
+  }
+ },
+ "crowded_path": {
+  "levels_between_tp1_and_tp2": [],
+  "count": 0,
+  "crowded_path": false,
+  "note": "this position has a single target (30667.89), so there is no TP1-to-TP2 corridor to be crowded."
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "10:52",
+   "reason_for_call": "intermediate_level_broken / daily_vah 30622.00",
+   "action": "hold",
+   "new_stop": null,
+   "reason": "Close 30622.25 is only ~0.25pt through daily_vah 30622 (prior bar wicked to 30622.75 then rejected to 30608.5) - far short of the ~7.9pt clearance floor (0.5x avg 2m range) needed to trail behind it. Holding stop 30575; +0.57R, favours more than entry."
+  },
+  {
+   "minute": "11:00",
+   "reason_for_call": "window_closing / window_end",
+   "action": "trail",
+   "new_stop": 30620.0,
+   "reason": "Window closes but position carries per standing rule - held toward single target. Session VAH (30630), the level the 10:52 hold was watching, is now cleanly closed through twice (30634.25, 30642.25) with 12+pt clearance vs the ~8.5pt floor - genuine break, not a touch. Trailing stop to 30620, below both the VAH and the recent swing low (30621.25), so price must reclaim VAH to hurt me. +1.24R now, still 0.87R short of the single 30667.89 target."
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract.",
+ "conviction_partial_rule": {
+  "conviction_of_this_position": "B",
+  "contract_default": "B takes roughly 75% at TP1 and trails the runner. A is 50% and holds the rest to the full target; C is 100% out with no runner.",
+  "note": "stated as the contract text, not as an instruction - partial_pct is your decision and is a fraction of what is still open."
+ },
+ "thesis_context": {
+  "version": "v3 (NY_AM 09:30)",
+  "primary_bias": "short",
+  "invalidation": null,
+  "aligned": "this LONG runs against the thesis's primary short bias. It was licensed by the thesis's own two-sided relicense clause - longs come back on a 15m decisive-body close above the 30580-30586 VAH confluence - and the trigger argued that condition was MET from the briefing's own 15m closes rather than escalating. That is the ground it stands on; the standing bias still points the other way.",
+  "single_target_note": "this position has ONE target, vwap_p2 30667.89, at 2.096R. There is no second target behind it. Taking it in full ends the trade; taking a partial means running a remainder with no written target above it, which is your call to make and to justify.",
+  "defended_level": "the daily/weekly VAH confluence around 30580-30586, which rejected once at 07:45 on a 0.86-body 15m reversal and then failed to hold on its second test. It is now BELOW this entry, and your stop at 30575.00 sits below it - so the level that licensed the trade is also what the stop is protecting."
+ },
+ "prior_positions_this_window": {
+  "count": 2,
+  "detail": "A6 is NY_AM's SECOND fill. The first, A4, was a short 30556.85 filled 10:29 at the same VAH confluence this long is taken off the other side of - it was stopped at 30595.00 at 10:31 for -1.0000R after two minutes, and received NO management call at all before it died. A2, A3 and A5 passed; A1 was refused by the entry gate.",
+  "earlier_windows": "LONDON -1.0000R across one fill (L4, stopped on the next bar). NY_PRE 0.0000R across zero fills - seven candidates, seven passes.",
+  "what_this_means_for_you": "the window already tried the SHORT side of this exact level and lost. This position is the same level traded the other way, after the level failed to hold."
+ },
+ "window_note": {
+  "window": "NY_AM",
+  "entries_end": "11:00",
+  "earliest_entry": "09:35",
+  "text": "the NY_AM window runs to 11:00. A position open at that minute is not force-flattened; his standing ruling is that 11:00 gates TAKING trades, not holding them, so it is carried rather than closed.",
+  "news": "the calendar for 2026-06-02 carries ISM Manufacturing at 10:00 - already released, inside this window and before this entry.",
+  "cap_note": "this fill puts NY_AM AT its written cap of 2, not beyond it."
+ },
+ "BREAKEVEN_RULE": {
+  "rule": "breakeven is ONLY available after TP1 has printed. Before TP1 it is not a legal action.",
+  "tp1": 30667.89,
+  "tp1_printed_yet": false,
+  "available_to_you_now": "NO - TP1 has not printed, so breakeven is not one of your options at this minute",
+  "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
+  "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
+  "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+ }
+}
