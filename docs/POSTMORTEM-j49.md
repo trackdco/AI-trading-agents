@@ -90,23 +90,35 @@ skips on a gapless Monday?**
 
 ## 4. Day 2, −3.75R: a short thesis that never let go
 
-06-01 was an upward grind. The thesis went short-biased and set the
-other-side relicense at *"a 15m decisive close above 30580–586 (VAH)."*
-That close never printed — price ground up through the level cluster
-anyway — and the trigger, correctly obeying tier separation, passed **five
-long candidates on that one bar**: P3 08:36, P5 08:42, A2 09:46, A3 09:51,
-A5 10:34. **A2 09:46 and A5 10:34 are jn1's two winners on the day
-(+2.12R, +0.14R), passed minute-for-minute.** Meanwhile the licensed side
-produced L4 (−1.00) and A4 (−1.00), and the day's only green was the late
-flip long, A6 10:47 (+0.50).
+06-01 was an upward grind, and three defects stack in the book:
 
-The sharpest row: one trigger observed that the thesis's relicense level
-was **stale** — *"the TRUE current daily/weekly VAH (30616, not thesis's
-stale 30580–586)"* — and obeyed anyway, because obeying is its contract.
-The machinery for exactly this situation (escalation) was never invoked on
-day 2. Open question for his read: when the thesis's own named level is
-provably stale against the live chart, is that an escalation trigger, a
-thesis refresh trigger, or nothing?
+**(a) Bias anchoring.** v1 03:00 short → v2 08:00 short → v3 09:30 short —
+three window-open reads, one inherited story, the same 30580–586 zone
+numbers carried through all three, on a day that ground upward from 08:00
+on. jn1's stack, on the same tape, was long by 09:46. Five long candidates
+were passed against that bias — P3 08:36, P5 08:42, A2 09:46, A3 09:51,
+A5 10:34 — **A2 09:46 and A5 10:34 being jn1's two winners on the day,
+minute-for-minute.** (Fairness note: P3/P5/A3 passed substantially on the
+licence alone; A2 and A5 also raised their own headroom objections, so a
+fresh thesis alone might not have flipped every one of them.) The licensed
+side produced L4 (−1.00) and A4 (−1.00); the day's only green was the late
+flip, A6 (+0.50).
+
+**(b) Condition semantics.** The relicense bar DID print — 15m closes
+30601.75 at 10:00 and 30633.75 at 10:15 — then the 10:30 close dipped back
+to 30559.5. At 10:34 one trigger read the test as instantaneous (*"unmet —
+last complete 15m closed ~30557"*) and passed; at 10:45 another read it as
+a preponderance (*"3/4 of last 4 15m closes sit above… condition met"*)
+and took the flip. **Same sentence, opposite readings, 11 minutes apart.**
+Neither agent is wrong; the sentence is — it never said whether a decisive
+close latches or evaporates.
+
+**(c) Frozen numbers.** The thesis's 30580–586 was stale against the live
+VAH (30616) by mid-morning; two triggers said so in their own reasons —
+*"the TRUE current daily/weekly VAH (30616, not thesis's stale
+30580–586)"* — and had no lane to act on it, because obeying the standing
+thesis is their contract. Escalation, the lane built for exactly this, was
+never invoked on day 2 — five thesis-licence passes, zero escalations.
 
 ## 5. Days 3–5, −1.21R: the same book, one stop apart
 
