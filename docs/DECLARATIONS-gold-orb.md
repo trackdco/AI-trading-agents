@@ -109,4 +109,17 @@ Anything concentrated in a single year is reported as regime-dependent and not p
 
 ## D7 — RESULTS
 
-Appended after the runs. See `docs/FINDINGS-gold-orb.md`.
+Full write-up in `docs/FINDINGS-gold-orb.md`. Summary against this declaration:
+
+- **D4 gate not met by any configuration.** Best train EV +0.046R against +0.10 required;
+  best PF 1.11 against 1.30. Everything except skipMon is negative at 2 ticks/side.
+- **Phase 4 was NOT unlocked.** 2025-09-01 → 2026-03-01 remains sealed.
+- D6.1 confirmed, D6.2 split (08:20 wins dollars and PF, loses R, concentrated in 2025),
+  **D6.3 refuted** (shorter targets are worse, not better), D6.4 confirmed by inertness,
+  D6.5 confirmed — and a placebo showed **skip-Wednesday beats skip-Monday on train**, so
+  the weekday effect inverts across eras and is not an effect.
+- The D2 contamination cost turned out to be nil: the weekday shape the seal leaked does
+  not hold on train.
+- Governing finding: gold's 15-minute opening range went from a 4.5-point median in 2023 to
+  18.5 in 2026 (0.23% → 0.40% of price). The v3 mechanisms were designed on the late regime
+  and are inert on the early one — the 30-point cap binds 0.6% of train trades.
