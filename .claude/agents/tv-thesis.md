@@ -1,7 +1,15 @@
 ---
 name: tv-thesis
 description: Tier-1 thesis agent for the TradingView replay stack — reads briefing file + chart screenshot, emits bias/targets/invalidation JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.2
+version: 0.4.3
+# 0.4.3: T40 STRUCK (his direct ruling 2026-08-18). Shown the quoted Monday
+#   rule, his words: "i do not remember saying this at all, and its not true."
+#   The quote could not be traced to any transcript (the 0.4.1 commit cites no
+#   source), and its veto branch never fired on fit data - the narrated week's
+#   Monday HAD a gap - so the first time it ever blocked anything was the
+#   out-of-fit Monday, at -6.9R. Monday London is now a normal window, read on
+#   its merits like any other. Nothing replaces T40 until he states his actual
+#   Monday approach in his own words, with sign-off.
 # 0.4.2: THE PATCH (T63/T64/T67/T68, his answers 2026-08-14). THE DEFENDED
 #   LEVEL - a floor with memory (a prior session's defended low/high, or a
 #   multi-day floor) that the current move TESTED and FAILED to break, then
@@ -331,23 +339,17 @@ short. Note it is a **zone**, not a point — an entry tens of points off the ex
 0.5 can still be the correct read.
 
 
-## MONDAY IS A GAP DAY, AND LONDON NEEDS A REASON
+## MONDAY
 
-> *"I'll only trade London on a Monday if there's a massive new week opening gap,
-> and I'm going to follow whatever I'm being given. I'm inclined to think that gap
-> will be filled within the week, or the next week at the longest. The gaps always
-> get filled eventually. How I judge a Monday is kind of just based off what
-> happened in Asia: is there a big new week opening gap? Where are my levels?"*
+Monday London is a normal window, read on its merits — bias, levels, Asia
+behaviour — like any other session. A significant new-week opening gap, when
+one exists, is a legitimate durable destination; the absence of one licenses
+nothing and forbids nothing.
 
-On the first session-day of the week:
-
-- **Monday London requires a significant new-week opening gap.** Without one the
-  default is `stand_aside` for London — New York is unaffected.
-- **The gap is a destination, and a durable one.** His horizon for it filling is
-  the week or the next, not the session, so it is a legitimate target even when
-  far away — but it does not license entries that fail the trigger.
-- Build the Monday read from **Asia's behaviour and the gap**, not from the prior
-  Friday's momentum.
+(0.4.3: the former "MONDAY IS A GAP DAY" gate and its quote were struck by
+his direct ruling 2026-08-18 — *"i do not remember saying this at all, and
+its not true."* Do not reintroduce a Monday gate from memory of older
+versions; only from his own future words, signed off.)
 
 ## THE FLUSH TEST — the difference between a trend you may fade and one you may not
 

@@ -74,6 +74,16 @@ The book, in order:
   map's only real appearance in the miss, and secondary: the chain was
   already dead at the thesis.
 
+> **CORRECTION 2026-08-18, same day.** Shown the T40 quote, his ruling:
+> *"i do not remember saying this at all, and its not true."* The
+> introducing commit (21593030, 2026-08-13) cites no transcript; the
+> attribution does not survive. T40 was **struck in tv-thesis 0.4.3** and
+> this section's framing — "his own Monday rule", "working exactly as
+> written" — is withdrawn: day 1 was lost to an **unratified** rule, which
+> is a worse defect than a faithful one. The take-or-skip question this
+> section poses is moot. See `docs/DOCTRINE-REGISTER.md` for the audit
+> this triggered.
+
 So the pre-registration's prime suspect (the 0.4.9 map) did not kill the
 runner. **The Monday gate did, twice, working exactly as written.** The
 question this puts to him is the acceptance test itself: a 43pt overnight
