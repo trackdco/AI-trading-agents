@@ -1,0 +1,204 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "escalation",
+ "window": "NY_PRE",
+ "decision_minute": "2026-06-04T08:33 ET",
+ "leak_check": "pass - replay truncated at 08:32:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jr1_2026-06-03_P2_0833.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30282.0,
+ "last_completed_2m_bar": {
+  "start": "08:30",
+  "closed_at": "08:32",
+  "open": 30249.0,
+  "high": 30282.0,
+  "low": 30246.0,
+  "close": 30282.0,
+  "volume": 1441,
+  "minutes": 2
+ },
+ "candle_grid_note": "This decision minute is 08:33, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 08:32. price_at_decision and every 2m field below are that 08:32 bar - they will not equal the 3m close, and the chart legend will read the 08:32 bar. Judge the 3m candle and the 08:32 2m candle; neither is fabricated.",
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_PRE",
+  "entries": "08:00-09:29 entries cut off 09:10",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30253.88,
+  "bb_upper_2m": 30287.32,
+  "bb_lower_2m": 30220.43,
+  "vwap": 30373.69,
+  "vwap_p1": 30473.06,
+  "vwap_m1": 30274.32,
+  "vwap_p2": 30572.42,
+  "vwap_m2": 30174.95,
+  "vwap_p3": 30671.79,
+  "vwap_m3": 30075.59,
+  "read_at": "chart cursor 08:33-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "_session_calendar": {
+   "session_day_label": "2026-06-03",
+   "session_opens": "2026-06-03 18:00 ET (Wednesday evening)",
+   "cash_session_traded": "2026-06-04 (Thursday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30373.51,
+   "vwap_p1": 30473.27,
+   "vwap_p2": 30573.03,
+   "vwap_p3": 30672.79,
+   "vwap_m1": 30273.75,
+   "vwap_m2": 30173.99,
+   "vwap_m3": 30074.23
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30254.64,
+   "bb_ma_3m": 30238.99,
+   "bb_ma_15m": 30301.03,
+   "bb_ma_60m": 30461.09
+  },
+  "day_range_fibs": {
+   "0.382": 30309.51,
+   "0.5": 30354.38,
+   "0.618": 30399.24,
+   "0.705": 30432.33
+  },
+  "session_high_so_far": 30544.5,
+  "session_low_so_far": 30164.25,
+  "daily_profile": {
+   "poc": 30259.0,
+   "val": 30223.0,
+   "vah": 30460.0,
+   "note": "DEVELOPING as-of 08:33"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30525.0,
+   "vah": 30730.0,
+   "high": 30807.75,
+   "low": 30164.25,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 08:33"
+  },
+  "prior_day": {
+   "poc": 30685.0,
+   "val": 30577.0,
+   "vah": 30724.0,
+   "high": 30807.75,
+   "low": 30478.25
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.129,
+  "net_move_15m": -178.25,
+  "total_15m_travel": 1380.25,
+  "candles_15m_up": 29,
+  "candles_15m_down": 30,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "07:45",
+   "open": 30196.5,
+   "high": 30282.75,
+   "low": 30191.25,
+   "close": 30280.75,
+   "body_ratio": 0.92
+  },
+  {
+   "start": "08:00",
+   "open": 30279.25,
+   "high": 30286.0,
+   "low": 30224.25,
+   "close": 30237.5,
+   "body_ratio": 0.68
+  },
+  {
+   "start": "08:15",
+   "open": 30237.25,
+   "high": 30253.75,
+   "low": 30223.0,
+   "close": 30248.0,
+   "body_ratio": 0.35
+  },
+  {
+   "start": "08:30",
+   "open": 30249.0,
+   "high": 30282.0,
+   "low": 30246.0,
+   "close": 30274.75,
+   "body_ratio": 0.72
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "a red-folder release scheduled inside or at the end of NY_PRE would close pre-market entries per standing policy through its event time; the calendar carries none, so the pre-market blackout rule has nothing to bind to",
+  "reasoning": "Calendar for 2026-06-04 remains empty at 08:00 ET - no releases, released or scheduled, in pre-market or elsewhere. No pre-market news-blackout condition is met because there is no event to trigger it.",
+  "_provenance": "tv-macro-events 0.2.0 output carried forward from the j49 run. The macro contract is UNCHANGED in the 0.4.11 batch and its entire input is the economic calendar plus standing policy - no chart, no bars, no prices - so for the same session-day and window the input is byte-identical and re-spawning could only reproduce it. Carried rather than re-run, and said so here rather than passed off as fresh."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "vwap_m1",
+    "price": 30279.96
+   },
+   {
+    "level": "prior_defended_low",
+    "price": 30317.75
+   },
+   {
+    "level": "vwap",
+    "price": 30378.13
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low_new",
+   "price": 30164.25
+  },
+  "waiting_for": "for longs: a clean 2m close reclaiming vwap_m1 (not a wick) with the 2m/3m MA held above it, before the rebalance case toward the 30308-341 cluster is back in play. For shorts: nothing further - the vwap_m1 rejection is already confirmed (3x in 14 min, 0.7-3.5pt wicks) and the 08:00 15m candle closed with 83pt of body below vwap_m1 vs 1pt above; shorts are tradeable now on continued failure at or below vwap_m1, not only at the higher cluster.",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed on a 2m close back through the 2m/3m BB MA away from a stalled bounce - AT vwap_m1 (~30280, already rejected 3x, this condition is currently met) or, if price first reclaims vwap_m1, higher up at the daily VAL/old weekly-low/15m MA cluster (30308-341). Instantaneous per close, not latched - a decisive 2m reclaim of vwap_m1 un-licenses the immediate short and reopens the rebalance long.",
+  "anticipated_resolution": {
+   "level": "vwap_m1",
+   "price": 30279.96,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a 2m close reclaiming vwap_m1 with the 2m/3m MA held above it keeps the rebalance long alive toward 30308-341; a 15m close beyond that cluster with a decisive body confirms full reclaim toward vwap/daily POC. A 15m close below the new weekly low (30164.25) with a decisive body confirms breakdown resumption. A wick-heavy poke through any of these does not count.",
+  "other_side_tripwire": {
+   "level": "vwap_m1",
+   "price": 30279.96,
+   "event": "2m_close_through_with_ma"
+  },
+  "defended_level": {
+   "level": "prior_defended_low",
+   "price": 30317.75,
+   "memory": "session dumped and held near this level for hours before rallying into the weekly VAL/VWAP+2 cluster; broken decisively at 07:30 (15m close 30196.75, body_ratio 0.6) and extended to a new weekly low of 30164.25 before the 07:45 reversal candle (body_ratio 0.92)",
+   "status": "failed"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "escalation_response": "accommodated",
+  "reasoning": "Standing long thesis licensed shorts only at the 30308-341 cluster, but since 08:00 price rejected vwap_m1 (~30280) three times in 14 min with 0.7-3.5pt wicks, and the forming 15m candle is 83:1 body below vs above it - a real, close-range stall the condition couldn't reach. I'm relocating the short license to vwap_m1 itself, tradeable now. Bias stays long because no 15m decisive close has broken a major level to invert the plan - a 2m-level rejection licenses the other side, it doesn't flip the read."
+ },
+ "what_happened_since_the_last_read": "Since your 08:14 read, stated as price facts only: between 08:14 and this decision minute the session traded a high of 30282.00 and a low of 30223.00. All levels in levels_at_decision_BUILD are recomputed as of this minute.",
+ "why_you_are_being_re-fired": "ESCALATION RE-FIRE (second of the window's budget of 2; the first, at 08:14, you ACCOMMODATED by relocating the short licence to vwap_m1). The trigger agent adjudicating the 08:33 candidate (P2) PASSED it rather than override you, and raised this case, verbatim: 'Thesis requires a clean 2m vwap_m1 close AND 2m/3m MA held above it before re-licensing the rebalance long; this candle delivered a decisive 8pt same-candle 3-level close (MA2m+vwap_m1+POC) off the fresh weekly-low reversal, but the MA-above-vwap_m1 half of the gate is unmet (MA still ~19pt under), leaving a nameable rejection and proven break stuck behind an unconfirmed sub-condition.' It grades the setup take_light B but for that gate. Accommodate or reaffirm - if you reaffirm, say why the MA-above-vwap_m1 half of your gate must hold when the close-through half already has."
+}
