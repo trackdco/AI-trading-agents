@@ -106,12 +106,23 @@ def build(run, sd, dn, dec, cid, shot, reason, level, level_price, side, entry, 
     b = manage_briefing(sd, dn, dec, cid, shot, reason, level, level_price, side,
                         entry, stop, targets, conviction, chart_levels, opened_at,
                         crowded, prior_actions, original_r=original_r)
+    # tv-manage 0.3.3 retired the conviction-keyed schedule. This block used to quote it
+    # (A 50 / B 75 / C 100) as `contract_default` - i.e. it handed the manager the RETIRED
+    # contract as if it were the one in force, and did so at exactly the call where the
+    # split is decided. On a C-grade position the stale text said "100% out with no
+    # runner", the opposite of what 0.3.3 requires. Quoted from the contract now.
     b["conviction_partial_rule"] = {
         "conviction_of_this_position": conviction,
-        "contract_default": "B takes roughly 75% at TP1 and trails the runner. A is 50% "
-                            "and holds the rest to the full target; C is 100% out with no runner.",
+        "contract_default": "at TP1, take 50% and hold the rest toward the full target - "
+                            "every trade, every grade. Uniform 50/50 (tv-manage 0.3.3, his "
+                            "ruling 2026-08-17). The conviction label still arrives with your "
+                            "briefing and is still recorded; it no longer changes the schedule.",
+        "retired_do_not_apply": "the conviction-keyed schedule (A 50% / B 75% / C 100%) is "
+                                "RETIRED. If you remember it from an older version, it is not "
+                                "the contract in force.",
         "note": "stated as the contract text, not as an instruction - partial_pct is your "
-                "decision and is a fraction of what is still open."}
+                "decision and is a fraction of what is still open. The schedule is the "
+                "default, not a cage: your judgement at this level still overrides it."}
     b["thesis_context"] = thesis_ctx
     b["prior_positions_this_window"] = prior_positions
     assert_no_future_minutes(window_note.get("text", ""), dec, "window_note")
