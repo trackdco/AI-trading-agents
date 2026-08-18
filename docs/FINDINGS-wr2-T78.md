@@ -6,10 +6,29 @@ book row; nothing is asserted from memory.
 
 ---
 
-## 1. T78 is changing behaviour, but not reliably, and the failures have FOUR distinct causes
+## 1. T78 IS NOT PRODUCING LADDERS — 13 of 15 takes fail it
 
-Across wr2's takes so far, roughly a third carry a correctly-spaced ladder. That headline is
-less useful than the breakdown, because the failures are not one thing.
+The full audit (`output/analysis/t78check.py`, run against the live book):
+
+    T78 audit wr2: 15 take(s) adjudicated, 13 defect(s)
+      8 x SINGLE_TARGET        - no TP2 named at all
+      5 x TP2_TOO_CLOSE        - TP2 inside the ~1R spacing floor
+
+**Only two of fifteen takes carry a correctly-spaced ladder**: `06-22 L2` (TP2 1.28R past TP1)
+and `06-25 P2` (three rungs, TP2 1.68R past TP1). That is 13%.
+
+For contrast, wr1 under 0.4.11 produced 2 ladders out of 7 takes (29%) — so on the headline
+rate **0.4.12 has not improved matters at all**, and the sample is now large enough that this is
+not noise. T78 changed the contract text; it did not change the output.
+
+### The spacing rule looks inert
+The five TP2_TOO_CLOSE gaps are 0.34R, 0.40R, 0.41R, 0.46R, 0.58R. That tight a cluster, all
+well under the 1.0R floor and none near it, says the trigger is **naming the next adjacent
+structure and stopping** — not measuring the gap at all. T78 rule 2 ("at least ~1R past it")
+and rule 3 ("keep walking the level list until one clears the spacing") appear to be read as
+"name a second level", with the distance test dropped.
+
+The failures are not one thing, and the breakdown matters more than the headline.
 
 **(a) The fixed-R TP1 fallback swallows TP2.** — `2026-06-22 A3`
 The agent walked T27's TP1 preference order correctly, found nothing structural in 1.0R–2.5R,
