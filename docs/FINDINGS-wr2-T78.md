@@ -1,8 +1,9 @@
 # FINDINGS — `wr2`, the 0.4.12 / T78 revalidation
 
-Written mid-run for the reviewer. Numbers here are **provisional**: wr2's adjudication is
-not finished and several fills are still unmanaged. Everything below is traceable to a
-book row; nothing is asserted from memory.
+**wr2's adjudication is COMPLETE: all 76 candidates are in the book.** The T78 numbers below
+are final. The SCOREBOARD is not - 13 fills exist and 5 have exits written; the other 8 still
+need their manage chains, several of which are blocked on chart frames no earlier run captured.
+Everything below is traceable to a book row; nothing is asserted from memory.
 
 ---
 
@@ -10,12 +11,12 @@ book row; nothing is asserted from memory.
 
 The full audit (`output/analysis/t78check.py`, run against the live book):
 
-    T78 audit wr2: 19 take(s) adjudicated, 17 defect(s)
-      10 x SINGLE_TARGET       - no TP2 named at all
+    T78 audit wr2: 20 take(s) adjudicated, 18 defect(s)     <- FINAL, all 76 candidates adjudicated
+      11 x SINGLE_TARGET       - no TP2 named at all
        7 x TP2_TOO_CLOSE       - TP2 inside the ~1R spacing floor
 
-**Only two of nineteen takes carry a correctly-spaced ladder** — `06-22 L2` (TP2 1.28R past TP1)
-and `06-25 P2` (three rungs, TP2 1.68R past TP1). **That is 10.5%.**
+**Only two of twenty takes carry a correctly-spaced ladder** — `06-22 L2` (TP2 1.28R past TP1)
+and `06-25 P2` (three rungs, TP2 1.68R past TP1). **That is 10%.**
 
 For contrast, wr1 under 0.4.11 produced 2 ladders out of 7 takes (29%). On the headline rate
 **0.4.12 is no better than the contract it replaced**, on a sample nearly three times larger.
