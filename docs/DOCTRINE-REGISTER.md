@@ -58,10 +58,12 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | — | INFO | **UNSOURCED** |  |
 | | | | *initial. Tier 1 of the TRADINGVIEW REPLAY STACK — docs/ARCHITECTURE-trading-agent.md, docs/AGENT-OPE…* | |
 
-## tv-trigger (now 0.4.11)
+## tv-trigger (now 0.4.12)
 
 | ver | rules | class | provenance | his verdict |
 |-----|-------|-------|------------|-------------|
+| 0.4.12 | T78,T27 | VETO/SIZE/SHAPE | cites him, 2026-08-18 | sourced: his ruling 2026-08-18 after pulling the plug on wr1 |
+| | | | *T78 THE LADDER (his ruling 2026-08-18, after pulling the plug on wr1). Every plan carries TP1 AND TP…* | |
 | 0.4.11 | T75,T77 | SHAPE | cites him, 2026-08-18 | sourced: his narration 2026-08-18, in-chat |
 | | | | *T75-T77 (his narration 2026-08-18, in-chat, verbatim) - stops live beyond the REJECTED LEVEL with br…* | |
 | 0.4.10 | — | SIZE/SHAPE | cites him, 2026-08-17 |  |
@@ -101,10 +103,12 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | — | INFO | **UNSOURCED** |  |
 | | | | *initial. Tier 2 of the TRADINGVIEW REPLAY STACK — docs/AGENT-OPERATING-SPEC.md Phase 2, doctrine in…* | |
 
-## tv-manage (now 0.3.3)
+## tv-manage (now 0.3.4)
 
 | ver | rules | class | provenance | his verdict |
 |-----|-------|-------|------------|-------------|
+| 0.3.4 | T78 | SHAPE | cites him, 2026-08-18 | paired with T78, same ruling 2026-08-18 |
+| | | | *THE RUNNER'S MANDATE IS THE LADDER (paired with tv-trigger 0.4.12 T78, his ruling 2026-08-18). At TP…* | |
 | 0.3.3 | — | SIZE/SHAPE | cites him, 2026-08-17 | 50/50 per his ruling 2026-08-17; trail clause is disambiguation, no new doctrine |
 | | | | *two changes. (1) PARTIALS UNIFORM 50/50 (his ruling 2026-08-17, executed with the 0.4.11 batch): the…* | |
 | 0.3.2 | T68 | SHAPE | cites him, 2026-08-14 |  |
@@ -118,7 +122,7 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | T14,T23,T4 | SHAPE | cites him, 2026-08-13 |  |
 | | | | *NEW TIER, his ruling 2026-08-13. Management was a set of mechanical clauses (T14 break-even on a ban…* | |
 
-**37 versioned rule entries; 11 carry no source
-citation at all. 32 quoted blocks are presented as his voice across
+**39 versioned rule entries; 11 carry no source
+citation at all. 33 quoted blocks are presented as his voice across
 the four contracts — every one of them is subject to the same
 challenge T40 failed.**

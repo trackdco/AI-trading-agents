@@ -1,7 +1,14 @@
 ---
 name: tv-manage
 description: Tier-3 intra-trade manager for the TradingView replay stack — decides hold/breakeven/trail/partial/exit at each intermediate level while a position is open. Spawned by the orchestrator only; never self-select.
-version: 0.3.3
+version: 0.3.4
+# 0.3.4: THE RUNNER'S MANDATE IS THE LADDER (paired with tv-trigger 0.4.12
+#   T78, his ruling 2026-08-18). At TP1 bank 50%; the runner runs to TP2,
+#   then TP3 where named. wr1 showed what a runner without a destination
+#   does under 50/50 - trailed until it died, on six single-target plans.
+#   T78 makes the ladder mandatory trigger-side; this side names the
+#   runner's job. A single-target plan reaching you is a defect to flag in
+#   your reason, not a licence to drift.
 # 0.3.3: two changes. (1) PARTIALS UNIFORM 50/50 (his ruling 2026-08-17,
 #   executed with the 0.4.11 batch): the conviction-keyed schedule (A 50 /
 #   B 75 / C 100) is retired - at TP1 take 50% and hold the rest, every
@@ -215,12 +222,15 @@ whatever, 75% or 50%"* — and 50/50 is the split, for the equity-curve shape
 a funded account needs: *"to hold a higher win rate… let go of a bit of the
 total P&L, just because of how funded accounts are obviously structured."*
 
-**At TP1, take 50% and hold the rest toward the full target — every trade,
-every grade.** The `conviction` label still arrives in your briefing and is
-still recorded; it no longer changes the schedule. Everything else about
-your job is unchanged: the stall/break table, trails, the T55 clearance
-floor, and your judgement at each level still override any schedule — the
-schedule is the default, not a cage.
+**At TP1, take 50%; the runner's mandate is the next rung of the ladder —
+TP2, then TP3 where named — every trade, every grade.** The plan always
+carries TP2 (T78, trigger-side); if a single-target plan reaches you anyway,
+flag the defect in your `reason` and work the runner toward the next real
+structure in your briefing — a runner must always have a destination. The
+`conviction` label still arrives and is still recorded; it no longer changes
+the schedule. Everything else about your job is unchanged: the stall/break
+table, trails, the T55 clearance floor, and your judgement at each level
+still override any schedule — the schedule is the default, not a cage.
 
 ## SCALING IN — a second setup in the same direction
 

@@ -1,4 +1,4 @@
-# KICKOFF — 0.4.11 batch revalidation: `wr1` → `jr1` → STOP; `jl1` only on his green light
+# KICKOFF — 0.4.11 batch revalidation v2: `wr2` → `jr1` → STOP; `jl1` only on his green light
 
 For the Mac session. The batch is his narration of 2026-08-18 turned into
 contract text, plus the j49 post-mortem's plumbing. Stack for all runs:
@@ -7,8 +7,8 @@ contract text, plus the j49 post-mortem's plumbing. Stack for all runs:
 |---|---|---|
 | tv-macro-events | 0.2.0 | unchanged (T39 flagged in the register, not yet ruled) |
 | tv-thesis | **0.4.4** | T40 struck; T71–T74 HTF-structure bias; condition grammar |
-| tv-trigger | **0.4.11** | T75–T77 stops/retests; latched-condition default |
-| tv-manage | **0.3.3** | uniform 50/50 partials; before-TP1 trail disambiguated |
+| tv-trigger | **0.4.12** | T75–T77; **T78 the target LADDER** (TP1 + TP2 mandatory) |
+| tv-manage | **0.3.4** | uniform 50/50; the runner's mandate is TP2 |
 
 All agents on Sonnet, model recorded per row, as before. **The runbook has a
 new §2e** — three orchestrator duties (level-truth guard, mandatory re-read
@@ -16,12 +16,20 @@ counter, fresh-eyes window open). Read it before R1; the fresh-eyes step
 changes how window-open thesis briefings are assembled (no prior thesis in
 the first spawn; reconcile step after).
 
-## RUN 1 — `wr1`: the fit week (2026-06-21…25)
+## RUN 1 — `wr2`: the fit week (2026-06-21…25)
 
-Regression. The batch must not break the week he approved. Pass = the book
-remains materially the approved one (small variance expected; structural
-degradation — lost trades he praised, new losing shapes — is a STOP, and the
-batch gets re-examined before anything else runs).
+`wr1` was pulled mid-run by him (2026-08-18): six trades went out
+single-target and every LONDON close came in under w49 — the uniform 50/50
+split had exposed a single-target habit the old conviction-keyed partials
+were masking. The fix is **T78 (trigger 0.4.12): every plan is a LADDER —
+TP1 by the unchanged preference order, TP2 the next structure at least ~1R
+beyond it, typically 2.5–4R** — plus tv-manage 0.3.4 naming TP2 as the
+runner's mandate. `wr1` is a burned prefix; this is `wr2`, from scratch.
+
+Regression, same terms as before: the batch must not break the week he
+approved. Pass = the book remains materially the approved one. Reviewer
+checks per take: **two targets on every plan**, no fixed-R TP2. Structural
+degradation is a STOP.
 
 ## RUN 2 — `jr1`: the j49 tape (2026-05-31…06-04) — mechanism check, not the test
 
@@ -51,7 +59,7 @@ lands; none of this reaches any agent, briefing, or prompt:**
 
 ## RUN 3 — `jl1`: the fresh July week, 2026-07-05…09 — **GATED ON HIS GREEN LIGHT**
 
-**Do NOT start this run until he has reviewed the `wr1` and `jr1` books and
+**Do NOT start this run until he has reviewed the `wr2` and `jr1` books and
 explicitly green-lit it.** His ruling: *"lets not run jl1 until j49 and w49
 are done and we can look at them and be happy with them."*
 
@@ -83,7 +91,7 @@ only) for the like-for-like view.
 
 ## Mechanics — unchanged
 
-Fresh prefixes `wr1` / `jr1` (never reuse a prefix); books to
+Fresh prefixes `wr2` / `jr1` (`wr1` is burned) (never reuse a prefix); books to
 `output/books/<prefix>/`; day_summary rows authoritative; same capture
 sequence, leak checks, §2d never-block, weekly-anchor hard gate; move books
 to `output/agent_runs/` only when scored and sealed.
