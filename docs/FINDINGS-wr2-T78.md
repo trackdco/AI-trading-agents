@@ -100,6 +100,19 @@ withdrawn. All are retained in the book flagged `SUPERSEDED_BY_ESCALATION` / `VO
 
 ---
 
+## 2b. A counter-example the reviewer should weigh — `06-22 A4`
+
+The single-target defect does not always cost. On `06-22 A4` the runner was banked 50% at TP1,
+moved to breakeven, and then **price fell a further 238 points in its favour** — roughly 3R of
+unbanked move — with **no target to close it on**. The breakeven stop was never touched over a
+20-hour horizon. It had to be **marked out administratively at the cash close** for +2.10R.
+
+Read that carefully: the missing rung did not lose money here, it gained. But it gained *by
+accident*. No decision in the system closed that trade; the orchestrator did, by fiat, because
+the plan had run out of instructions. That is not a repeatable process, and it is the strongest
+argument for T78 in the whole book — not because the ladder would have made more, but because
+without one the system had **nothing to say** about a position it was still holding.
+
 ## 3. Management is adding, not subtracting
 
 On wr2's closed trades so far: **as-run +3.02R against an unmanaged full-target hold of +1.68R.**
