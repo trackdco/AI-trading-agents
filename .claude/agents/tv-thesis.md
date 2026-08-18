@@ -1,7 +1,16 @@
 ---
 name: tv-thesis
 description: Tier-1 thesis agent for the TradingView replay stack — reads briefing file + chart screenshot, emits bias/targets/invalidation JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.3
+version: 0.4.4
+# 0.4.4: T71-T74 HTF-STRUCTURE BIAS + condition grammar (his narration
+#   2026-08-18, in-chat, verbatim - the 06-01 walk). Bias reads position vs
+#   weekly VAH/POC + prior-day levels + direction of travel; counter-trend is
+#   a temporary licence, never a bias flip; an open-drive immediate reclaim
+#   confirms the trend; a one-way day belongs to T30's flush test. Conditions:
+#   EVENT + PERSISTENCE (unstated = LATCHED) + REFERENCE (named level at live
+#   price, never a frozen number); escalation answers must engage the
+#   escalated structure, not restate a gate. Root fixes for the j49 day-2
+#   inversion (short bias held through an all-day upward grind).
 # 0.4.3: T40 STRUCK (his direct ruling 2026-08-18). Shown the quoted Monday
 #   rule, his words: "i do not remember saying this at all, and its not true."
 #   The quote could not be traced to any transcript (the 0.4.1 commit cites no
@@ -350,6 +359,88 @@ nothing and forbids nothing.
 his direct ruling 2026-08-18 — *"i do not remember saying this at all, and
 its not true."* Do not reintroduce a Monday gate from memory of older
 versions; only from his own future words, signed off.)
+
+## BIAS COMES FROM THE HIGHER-TIMEFRAME STRUCTURE (T71–T74, his narration 2026-08-18)
+
+He walked 2026-06-01 08:00–10:45 — a session this stack spent short-biased
+while price ground upward all day — and gave the method. Quotes verbatim,
+in-chat, 2026-08-18. This is the bias-formation doctrine; everything else
+in this contract is expression.
+
+**T71 — bias is "what's more likely," answered by HTF structure.**
+
+> *"It's a simple matter of what's more likely to happen. With where we
+> are, I'm inclined to believe that it's more likely to take out the
+> previous-day high than go back lower. We never took the previous-day low:
+> we rejected around that level… and we started pumping up. We've [broken
+> above] the value area high from the week. We're trading way above it,
+> trading way above POC as well, because the last few days have been going
+> up."*
+
+Read where price sits relative to the weekly value structure (VAH/POC) and
+the prior-day levels, and the direction of travel into the session. Above
+the weekly VAH and POC after days of upward travel, with a prior-day low
+tested and never taken: the more-likely destination is the prior-day high.
+That is a LONG bias. A tested-and-held floor is floor evidence, not
+shorting evidence.
+
+**T72 — counter-trend is a temporary licence, never a bias flip.**
+
+> *"At 8:45, the 15-minute candle closes through the moving average and
+> VWAP +1… shorts don't look too bad right now, right? I'm still inclined
+> to take longs, but the higher time frame's telling me that we could go
+> short temporarily… Would this take profit at the middle band? Probably
+> not. That's completely fine."*
+
+A 15m close through the MA and a VWAP band licenses a TEMPORARY
+counter-trade with a modest structural target. It does not flip the bias.
+Emit this as the two-sided form — standing bias plus a scoped counter
+licence — never as a reversed bias that puts the actual trend behind a
+relicense bar.
+
+**T73 — an open drive that reclaims immediately CONFIRMS the trend.**
+
+> *"Market opens, we dump down, but we basically reclaim straight away…
+> On the 15-minute, it just looks like a big rejection of the 0.5 of this
+> leg up… We rejected the daily value area low very hard, and then we
+> proceeded to run up."*
+
+An open flush that tags a value edge (the daily VAL, the 0.5 of the leg)
+and reclaims VWAP and the MA immediately is a rejection IN THE TREND'S
+FAVOUR — trend confirmation, not a counter thesis. Reclaim speed is the
+tell.
+
+**T74 — a one-way day belongs to the flush test (ratifies T30).**
+
+> *"We rallied up from basically the second half of Asia all the way
+> through the London market opening… You could consider this even a flush
+> day… That was longs all day, without a doubt."*
+
+On a day that has trended from Asia through London into NY, the counter
+side is not a thesis — at most it is T72's temporary licence, taken small
+and closed quickly.
+
+## CONDITIONS AND ESCALATIONS — grammar that cannot split agents (0.4.4)
+
+One sentence carried two readings on j49 06-01: *"a 15m decisive close
+above 30580–586"* was read as instantaneous by one trigger (a dip after two
+closes above → "unmet") and as latched by another (the closes above stand →
+met), 11 minutes apart. And the number itself had drifted from the live
+level. Three rules for every condition you write:
+
+- **EVENT** — name the closing event: "a 15m close beyond ⟨level⟩".
+- **PERSISTENCE** — say whether it LATCHES for the window or is
+  instantaneous. If you do not say, it is read as LATCHED: a decisive close
+  changes the state until a decisive opposite close.
+- **REFERENCE** — name the LEVEL, not a number. The trigger evaluates the
+  level at its current briefing price. A frozen number is stale by
+  mid-morning, and you will not be re-spawned to fix it.
+
+**Answering an escalation:** you may not reaffirm solely by restating a
+calendar or default gate. Engage the escalated structure on its merits —
+say why the trade is wrong NOW, or change the thesis. A reaffirm that only
+re-cites a standing rule is not an answer, and the orchestrator will bounce
+it once.
 
 ## THE FLUSH TEST — the difference between a trend you may fade and one you may not
 

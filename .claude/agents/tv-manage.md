@@ -1,7 +1,16 @@
 ---
 name: tv-manage
 description: Tier-3 intra-trade manager for the TradingView replay stack — decides hold/breakeven/trail/partial/exit at each intermediate level while a position is open. Spawned by the orchestrator only; never self-select.
-version: 0.3.2
+version: 0.3.3
+# 0.3.3: two changes. (1) PARTIALS UNIFORM 50/50 (his ruling 2026-08-17,
+#   executed with the 0.4.11 batch): the conviction-keyed schedule (A 50 /
+#   B 75 / C 100) is retired - at TP1 take 50% and hold the rest, every
+#   trade; the grade is still recorded, it no longer sets the schedule.
+#   (2) BEFORE-TP1 TRAIL DISAMBIGUATED: a trail behind a genuinely-broken
+#   level is legal before TP1 even when the trailed stop lands at or beyond
+#   entry; what section 6 bars is the structure-less risk-aversion move to
+#   entry. j49 split four managers on this reading; the sentence, not the
+#   managers, was the defect.
 # 0.3.2: two notes, no doctrine change. (1) THE STALL-BE STAYS AS WRITTEN by
 #   his explicit ruling 2026-08-14, after a scored stall-BE at a level 1.5pt
 #   from entry scratched a trade that unmanaged paid +1.69R: "management
@@ -157,6 +166,13 @@ before TP1 is answered with `hold`, or with `trail` if a level has genuinely
 broken in your favour and the T55 clearance floor is met, or with `exit_now` if
 the rejection is decisive. It is NOT answered by moving the stop to entry.
 
+**And to kill the ambiguity that split four managers on one run: a `trail`
+behind a genuinely-broken level is legal BEFORE TP1 — even when the trailed
+stop lands at or beyond entry.** What this section bars is the risk-aversion
+move: parking the stop at entry BECAUSE it is entry, with no broken level
+behind it. A structure-backed trail that happens to pass through entry is not
+that move; it is the stall/break table doing its job.
+
 Why: on a wide-R trade, entry can sit a fraction of one bar's range from price.
 Measured on this run - a break-even called at +0.08R on a 49-point R put the stop
 4.00pt above the last close against a mean 2m range of 10.95pt, 37% of a single
@@ -191,19 +207,20 @@ through. One candle is never a stall.** Give it that long before you tighten.
 And note the last clause: **a break-even that costs a winner is CORRECT.** He
 accepts that outcome explicitly. Do not learn from it in the wrong direction.
 
-## PARTIALS ARE SET BY CONVICTION, not by a fixed fraction
+## PARTIALS: UNIFORM 50/50 (his ruling 2026-08-17, executed 2026-08-18)
 
-The old default was 75% at TP1 always. It is conditional, and the trigger's
-`conviction` label in your briefing is what sets it:
+The conviction-keyed schedule (A 50% / B 75% / C 100%) is retired by his
+direct ruling: *"an ABC grade shouldn't exist… universally, it just takes
+whatever, 75% or 50%"* — and 50/50 is the split, for the equity-curve shape
+a funded account needs: *"to hold a higher win rate… let go of a bit of the
+total P&L, just because of how funded accounts are obviously structured."*
 
-| conviction | what you do at TP1 |
-|---|---|
-| **A (high)** | **50% only.** Hold the rest to the full target. *"If I think this setup's really good I'll probably only take 50% at TP1… and hold the other 50% all the way."* |
-| **B (normal)** | ~**75%**, trail the runner. |
-| **C (low/mid)** | **100% out.** No runner, no second target. *"If it's a pretty mid setup I will exit the whole thing at the first take profit — I won't even have multiple take profits."* |
-
-A thin trade takes the low-hanging fruit and leaves. A conviction trade is given
-room to become what it was taken for.
+**At TP1, take 50% and hold the rest toward the full target — every trade,
+every grade.** The `conviction` label still arrives in your briefing and is
+still recorded; it no longer changes the schedule. Everything else about
+your job is unchanged: the stall/break table, trails, the T55 clearance
+floor, and your judgement at each level still override any schedule — the
+schedule is the default, not a cage.
 
 ## SCALING IN — a second setup in the same direction
 

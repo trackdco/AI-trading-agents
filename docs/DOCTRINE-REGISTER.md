@@ -28,13 +28,15 @@ STRUCK = he disavowed, removed from the contract.
 
 | ver | rules | class | provenance | his verdict |
 |-----|-------|-------|------------|-------------|
-| 0.2.0 | T39 | VETO/SIZE | **UNSOURCED** |  |
+| 0.2.0 | T39 | VETO/SIZE | **UNSOURCED** | **FLAGGED**: T39 FOMC is an unsourced VETO — awaiting his verdict |
 | | | | *T39 FOMC closes NEW YORK ENTIRELY - not reduced size, not extra caution, closed. "I do not trade FOM…* | |
 
-## tv-thesis (now 0.4.3)
+## tv-thesis (now 0.4.4)
 
 | ver | rules | class | provenance | his verdict |
 |-----|-------|-------|------------|-------------|
+| 0.4.4 | T71,T74,T30 | VETO/SHAPE | cites him, 2026-08-18 | sourced: his narration 2026-08-18, in-chat — the source IS the sign-off |
+| | | | *T71-T74 HTF-STRUCTURE BIAS + condition grammar (his narration 2026-08-18, in-chat, verbatim - the 06…* | |
 | 0.4.3 | T40 | VETO | cites him, 2026-08-18 | his ruling 2026-08-18 (the strike itself) |
 | | | | *T40 STRUCK (his direct ruling 2026-08-18). Shown the quoted Monday rule, his words: "i do not rememb…* | |
 | 0.4.2 | T63,T64,T67,T68 | VETO/SHAPE | cites him, 2026-08-14 |  |
@@ -56,15 +58,17 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | — | INFO | **UNSOURCED** |  |
 | | | | *initial. Tier 1 of the TRADINGVIEW REPLAY STACK — docs/ARCHITECTURE-trading-agent.md, docs/AGENT-OPE…* | |
 
-## tv-trigger (now 0.4.10)
+## tv-trigger (now 0.4.11)
 
 | ver | rules | class | provenance | his verdict |
 |-----|-------|-------|------------|-------------|
+| 0.4.11 | T75,T77 | SHAPE | cites him, 2026-08-18 | sourced: his narration 2026-08-18, in-chat |
+| | | | *T75-T77 (his narration 2026-08-18, in-chat, verbatim) - stops live beyond the REJECTED LEVEL with br…* | |
 | 0.4.10 | — | SIZE/SHAPE | cites him, 2026-08-17 |  |
 | | | | *REMOVE PERFORMANCE STATISTICS FROM THIS CONTRACT (2026-08-17). 0.4.8 and 0.4.9 shipped with measured…* | |
 | 0.4.9 | — | SIZE/SHAPE | cites him, 2026-08-17 |  |
 | | | | *TRADING A RANGE (his ruling 2026-08-17). Chop detection exists to tell the agent HOW to trade, not w…* | |
-| 0.4.8 | T48 | VETO/SIZE/SHAPE | **UNSOURCED** |  |
+| 0.4.8 | T48 | VETO/SIZE/SHAPE | **UNSOURCED** | **FLAGGED**: unsourced, and his narration 2026-08-18 (T77 re-break re-entry) cuts against the cap — awaiting his verdict |
 | | | | *FRESHNESS CAPS THE GRADE (2026-08-16). Rubric point 4 said a level "already sliced earlier in the se…* | |
 | 0.4.7 | T63,T64,T67,T68,T70,T48,T1 | VETO/SHAPE | cites him, 2026-08-14 |  |
 | | | | *THE PATCH (T63/T64/T67/T68/T70, his answers 2026-08-14). The flush gate gains its ONLY exemption: th…* | |
@@ -97,10 +101,12 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | — | INFO | **UNSOURCED** |  |
 | | | | *initial. Tier 2 of the TRADINGVIEW REPLAY STACK — docs/AGENT-OPERATING-SPEC.md Phase 2, doctrine in…* | |
 
-## tv-manage (now 0.3.2)
+## tv-manage (now 0.3.3)
 
 | ver | rules | class | provenance | his verdict |
 |-----|-------|-------|------------|-------------|
+| 0.3.3 | — | SIZE/SHAPE | cites him, 2026-08-17 | 50/50 per his ruling 2026-08-17; trail clause is disambiguation, no new doctrine |
+| | | | *two changes. (1) PARTIALS UNIFORM 50/50 (his ruling 2026-08-17, executed with the 0.4.11 batch): the…* | |
 | 0.3.2 | T68 | SHAPE | cites him, 2026-08-14 |  |
 | | | | *two notes, no doctrine change. (1) THE STALL-BE STAYS AS WRITTEN by his explicit ruling 2026-08-14,…* | |
 | 0.3.1 | T51,T53 | VETO/SIZE/SHAPE | cites him, NO DATE |  |
@@ -112,7 +118,7 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | T14,T23,T4 | SHAPE | cites him, 2026-08-13 |  |
 | | | | *NEW TIER, his ruling 2026-08-13. Management was a set of mechanical clauses (T14 break-even on a ban…* | |
 
-**34 versioned rule entries; 11 carry no source
-citation at all. 25 quoted blocks are presented as his voice across
+**37 versioned rule entries; 11 carry no source
+citation at all. 32 quoted blocks are presented as his voice across
 the four contracts — every one of them is subject to the same
 challenge T40 failed.**

@@ -1,6 +1,14 @@
 # PROPOSAL — the j49 fixes (drafted, NOT applied)
 
-**Status: nothing in this document is in any contract.** Per the standing
+> **STATUS 2026-08-18, later the same day: EXECUTED.** His narration
+> answered B2 (Tuesday) and B3 (the stop) and his rulings resolved B1 (T40
+> struck) and B5 (uniform 50/50). The batch shipped as tv-thesis 0.4.4 /
+> tv-trigger 0.4.11 / tv-manage 0.3.3 + runbook §2e — see
+> `docs/KICKOFF-0.4.11-revalidation.md` for the wr1/jr1 revalidation plan.
+> Still open on his desk: the register pass (T39, 0.4.8 flagged) and the
+> NY_PRE reconfirm (B4).
+
+**Status as originally drafted: nothing in this document is in any contract.** Per the standing
 rule, contract edits wait for his verdict pass on the trade sheet. Section
 A is plumbing — it encodes no trading opinion and is ready to land the
 moment he says go. Section B encodes trading judgement and is written as

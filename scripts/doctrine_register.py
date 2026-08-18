@@ -32,6 +32,11 @@ CONTRACTS = ["tv-macro-events", "tv-thesis", "tv-trigger", "tv-manage"]
 STATUS = {
     ("tv-thesis", "0.4.1"): "**STRUCK 0.4.3** — his ruling 2026-08-18",
     ("tv-thesis", "0.4.3"): "his ruling 2026-08-18 (the strike itself)",
+    ("tv-thesis", "0.4.4"): "sourced: his narration 2026-08-18, in-chat — the source IS the sign-off",
+    ("tv-trigger", "0.4.11"): "sourced: his narration 2026-08-18, in-chat",
+    ("tv-manage", "0.3.3"): "50/50 per his ruling 2026-08-17; trail clause is disambiguation, no new doctrine",
+    ("tv-trigger", "0.4.8"): "**FLAGGED**: unsourced, and his narration 2026-08-18 (T77 re-break re-entry) cuts against the cap — awaiting his verdict",
+    ("tv-macro-events", "0.2.0"): "**FLAGGED**: T39 FOMC is an unsourced VETO — awaiting his verdict",
 }
 
 VETO_PAT = re.compile(r"stand_aside|closed|blackout|may NOT|never |no entries"

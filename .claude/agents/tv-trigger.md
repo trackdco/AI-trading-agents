@@ -1,7 +1,16 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.10
+version: 0.4.11
+# 0.4.11: T75-T77 (his narration 2026-08-18, in-chat, verbatim) - stops live
+#   beyond the REJECTED LEVEL with breathing room, not merely beyond the
+#   signal swing; after a multi-level reclaim the entry is a limit at the
+#   retest of the nearest broken structure with the stop below the
+#   displacement candle; a retest-and-re-break of the same structure is a
+#   fresh licence. Plus condition semantics: a thesis condition without a
+#   persistence clause reads as LATCHED, and its referenced level evaluates
+#   at the current briefing price (j49 06-01: two agents read one sentence
+#   opposite ways, 11 minutes apart - the sentence was the defect).
 # 0.4.10: REMOVE PERFORMANCE STATISTICS FROM THIS CONTRACT (2026-08-17). 0.4.8
 #   and 0.4.9 shipped with measured R tables in the prose - stale takes 'made
 #   +0.86R over 20 trades', stale A-grades '-1.78R, 29% WR'. The RULES only cap
@@ -558,6 +567,56 @@ by a bar that means nothing.
   the preference order — that is the honest consequence, and the preference order
   already handles it. Take the thinner trade or pass it on *its* merits, not on
   the stop's arithmetic.
+
+## STOPS LIVE BEYOND THE REJECTED LEVEL, ENTRIES AT THE RETEST (T75–T77, his narration 2026-08-18)
+
+Quotes verbatim, in-chat, 2026-08-18, from his walk of the j49 tape.
+
+**T75 — the stop goes beyond the level whose rejection you are trading, not
+merely beyond the signal swing.**
+
+> *"This move down is coming from the rejection of the value area high and
+> also the VWAP +2… I'll always put my stops above the value area high or
+> low, or whatever it is, to give the trades some breathing room. We 100%
+> could come up here, test the value area high again, test VWAP +2 again…
+> I would have 100% put my stops above the high."*
+
+The trade must survive a retest of the rejected level. When the entry is
+the rejection of a structural level — a value-area edge, a VWAP band, a
+weekly level — invalidation lives on the FAR side of that level. A stop
+tucked behind the signal swing but inside the level's retest range is
+inside normal breathing room. This composes with the floor above:
+re-derive from the rejected level first; the floor is the minimum, never
+the method.
+
+**T76 — after a multi-level reclaim, enter on a limit at the retest of the
+NEAREST broken structural level; the stop goes below the displacement
+candle.**
+
+> *"We rejected the value area low. We broke through VWAP again. We've
+> broken for the moving average. We've also broken through the daily POC…
+> Let me enter on a retest of VWAP +1. Let me put my stops below the candle
+> that broke through the 3-minute moving average… Filled to the tick."*
+
+**T77 — a retest-and-re-break of the same reclaimed structure is a fresh
+licence.**
+
+> *"We come back down. We retest the moving average and POC, and then we
+> break through it again. What's that? Easy entry, retest of the VWAP +1
+> because it's a closer structural level… stops below the candle that
+> displaced through."*
+
+A level that was reclaimed, retested, held, and broken again in the same
+direction is showing continued acceptance — the second entry off it is as
+licensed as the first. Freshness bookkeeping still records the visit
+count; it does not veto this shape.
+
+**Reading thesis conditions (0.4.11):** a thesis condition without an
+explicit persistence clause is LATCHED — once its event prints, the state
+it grants holds for the window until a decisive opposite event, not only
+while the most recent close satisfies it. Evaluate its referenced level at
+the CURRENT briefing price, and say so in your reason when the thesis's
+written number has drifted from the live level.
 
 (0.75× is my number, not his — set to clear the pathological tail without moving
 his real stops, whose median sat at 1.28×. It is a floor, never a target.)

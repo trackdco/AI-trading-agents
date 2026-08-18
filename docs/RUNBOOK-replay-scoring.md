@@ -388,6 +388,37 @@ same level** — check the flip before re-entering. Absent the licence, the
 open-position gate stands as before; a flip is never available merely because
 an opposite candidate looks good.
 
+## 2e. THESIS INTEGRITY — three orchestrator duties (0.4.11 era, from the j49 post-mortem)
+
+All three are mechanical. None gives the orchestrator trading discretion
+(§0c stands): it checks arithmetic, counts rows, and orders spawns — it
+never judges content.
+
+1. **LEVEL-TRUTH GUARD.** After every thesis emit (window open, refresh, or
+   escalation), diff each level PRICE the thesis names against the same
+   level in the live briefing. Any named level off by more than
+   max(8pt, 0.25× the current 15m ATR) → bounce once: re-spawn with the
+   note *"your ⟨level⟩ is ⟨live price⟩ now — restate with current levels."*
+   One bounce, then proceed with the restated thesis. (j49 06-01: the
+   thesis's relicense zone sat 30pt below the live VAH by mid-morning; two
+   triggers flagged it in their reasons and had no lane.)
+
+2. **MANDATORY RE-READ COUNTER.** Count trigger `pass` rows in the current
+   window whose stated ground rests on thesis licence (the bias, a
+   relicense bar, a side-lock). At the SECOND same-direction such pass,
+   force a thesis re-read (escalation spawn) before the next candidate is
+   adjudicated. The count is mechanical; the answer is the thesis tier's.
+   (j49 06-01: five licence passes, zero escalations.)
+
+3. **FRESH-EYES WINDOW OPEN.** At window open, spawn the thesis WITHOUT the
+   prior thesis in its briefing: it commits bias + levels from chart and
+   briefing alone. Then reconcile: show it its own prior thesis; it may
+   keep the fresh read or revise with a stated reason. Log both rows
+   (`thesis_fresh`, `thesis_reconciled`); the reconciled thesis is the one
+   in force. Escalations and mid-window refreshes still receive the
+   standing thesis as before. (j49 06-01: v1→v2→v3 carried one short story
+   and one stale zone through three window opens of an upward grind.)
+
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 
 Step one 2m bar at a time through LONDON 03:00–04:59 / NY_PRE 08:00–09:29 /
