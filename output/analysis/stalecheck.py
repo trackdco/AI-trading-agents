@@ -30,6 +30,10 @@ def audit(run, days):
         for r in rows:
             if r.get("row") != "trigger" or r.get("SUPERSEDED"):
                 continue
+            # Mechanical rows (window_cap, gate refusals) are not adjudications - no agent read a
+            # briefing, so there is no briefing-vs-book disagreement to have.
+            if r.get("MECHANICAL") or r.get("adjudicated") is False:
+                continue
             cid, window = r.get("candidate_id"), r.get("window")
             dec = str(r.get("decision_minute"))[-5:]
             bp = r.get("briefing") or ""
