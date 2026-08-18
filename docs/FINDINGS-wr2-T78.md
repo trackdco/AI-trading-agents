@@ -155,3 +155,45 @@ printed**. Its +1.09R says nothing about whether the ladder works.
 Every orchestrator error this run was caught **downstream by an agent refusing to act on an
 incoherent briefing**, or by a mechanical sweep written after wr1's diagnosis — never by a check
 written in advance of the work. That was the central lesson of wr1 and it held again here.
+
+---
+
+## RESULT — wr2 vs w49, same five session-days
+
+Both books fit session-days 2026-06-21..25. wr2 ran tv-trigger 0.4.12 with T78 in force;
+w49 ran the contract it replaced.
+
+| book | trades | as-run | per trade |
+|---|---|---|---|
+| w49 | 23 | +14.7758R | +0.6424R |
+| **wr2** | **17** | **+16.5304R** | **+0.9724R** |
+
+wr2 is ahead on both totals and per-trade, on six fewer trades. Held whole on their original
+stops the same 17 wr2 positions return +11.0002R, so the management added +5.5302R over the
+week. (w49's exit rows carry no full-target field, so that leg cannot be compared.)
+
+**Read this carefully, because it does NOT vindicate T78.** Section 1 shows T78's ladder rule
+was inert for 18 of 20 takes — only two takes carried a correctly-spaced TP2, and the seven
+TP2_TOO_CLOSE gaps never once cleared the 1.0R floor. Whatever produced the improvement, it
+was not the second target, because 15 of the 17 scored positions never had a usable one. Three
+of the four biggest contributors (d1 A6 +4.7533R, d2 A4 +2.1042R, d5 A5 +1.7853R) are
+SINGLE_TARGET plans whose runners had to be marked out at the cash close because nothing in
+the plan could close them.
+
+So the honest statement is: **the week improved, and T78 is not why.** The spacing test still
+needs to be a measured gap rather than "name the next structure", exactly as section 1 says.
+
+### The trail decided more trades than the ladder did
+
+Eleven of seventeen exits were resolved by a trailed stop. Measured against holding whole:
+
+- trail SAVED: d1 A2 (+0.90 vs -1.00), d4 A4 (-0.18 vs -1.00), d4 A5 (+0.59 vs -1.00),
+  d5 A12 (+0.80 vs -1.00), d3 P2 (+0.09 vs -1.00), d5 P2 (+1.09 vs -1.00)
+- trail COST: d3 A4 (0.48 vs 1.70), d3 A5 (1.33 vs 3.82), d5 A8 (0.79 vs 1.89),
+  d2 A3 (1.15 vs 1.50), d1 L1 (0.84 vs 1.71)
+
+Net strongly positive, consistent with his dead-zone ruling. The separate T55 clearance
+question — the rule measures clearance off the LEVEL with no regard for where that level sits
+inside the range actually trading, which on d3 A4 put the stop 31pt above a level in the
+middle of a 100pt range and cost 1.2287R — is logged as a harness_finding on 2026-06-23 A4
+and is his call, not the manager's.
