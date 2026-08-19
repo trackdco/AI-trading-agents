@@ -108,4 +108,52 @@ the ORB precedent) if none of the above holds but a monotone dose-response is pr
 
 ## D5 — RESULTS
 
-Appended after the runs.
+Four axes, 32 cells, on train (2023-01-02 → 2025-08-31, 829 days). Run by
+`Workflow('gold-turn-detector-sweep')`, run ID `wf_2b25c2c0-f68`; one candidate cell was
+adversarially verified before being ruled out. **No cell clears the D4 gate. The rule is
+retired.** Full tables in `docs/FINDINGS-gold-turn-detector.md`.
+
+**D3 predictions marked:**
+1. *"The bare rule will not clear +0.10R"* — **confirmed**, decisively. Baseline (EMA=10,
+   1.5R, cooldown=12, no volume filter): n=4,922, EV **−0.100R** [−0.130, −0.072], PF 0.926.
+   Every one of the 32 cells is negative; the day-clustered 95% CI excludes zero in all 32
+   and excludes +0.10R in all 32.
+2. *"Volume confirmation will look like the ORB result: real but small, or a non-monotone
+   spike, not a rescue"* — **confirmed exactly.** 1.2× is the least-bad cell (−0.066R), then
+   1.5× and 2.0× both get worse again — a hump, not a dose-response. And the verification
+   pass showed even that hump is mostly artifact: pre-cost EV at 1.2× (+0.021R) is nearly
+   identical to baseline's pre-cost EV (+0.018R); the apparent gain is a wider stop (median
+   3.40 pts vs 2.50) diluting the fixed per-trade cost, the same cost-denominator pattern
+   documented in the ORB programme.
+3. *"Shorter EMA spans will be noisier... but expect a frequency/quality trade rather than a
+   monotone win for either end"* — **partially confirmed.** No monotone ordering by span
+   (EMA=10 is least-bad; 5, 20 and 40 are all worse with no clean trend either direction),
+   but trade count is also essentially flat across spans (4,903–4,928) because the 12-bar
+   cooldown and the 6-trade daily cap dominate frequency far more than the smoother does —
+   so the predicted frequency/quality trade never materializes; span just doesn't matter much.
+4. *"Check the direction-flip alternative before concluding the curvature signal carries
+   nothing"* — **checked, and it rules out sign-convention error as the explanation.**
+   Mirroring direction on the one verified cell gives avg R **−0.384R** — far worse than the
+   original −0.066R, not similar. A pure noise process would look roughly the same either
+   way; this doesn't, so the D1 direction mapping (concave-down→up = long) is doing
+   something, it is simply the wrong side of a loss, not an arbitrary coin flip.
+
+**Target R is a near-null lever** (−0.094R to −0.100R across 1.0R–2.5R at 1 tick) — it only
+trades win rate against payoff on a fixed stop, exactly as arithmetic predicts, and never
+escapes the same narrow negative band.
+
+**Cooldown is a near-null lever for a different reason**: the signal saturates the 6-trade
+daily cap at 94–100% of days regardless of cooldown value (0 to 24 bars), so lengthening it
+mostly discards same-direction re-fires the cap would have truncated anyway.
+
+**Not concentrated in one year.** 2023 is the worst year in every single cell across all
+four axes; 2024 and 2025 are smaller losses but uniformly negative too. This is a broad,
+multi-year failure of the underlying rule, not a regime artifact.
+
+**Verdict: retired.** One promising-looking cell (volume ≥1.2×) was adversarially verified
+and does not survive — it is net-negative on its own terms (never approached the gate) and
+what modest relative improvement it showed over baseline is mostly the cost-denominator
+effect, not edge. No axis, alone or by implication in combination, offers a path to +0.10R.
+Per the task's own words: *"if nothing clears +0.10R on train, say so plainly and we
+stop."* Nothing did. The sealed 2025-09-01 → 2026-03-01 holdout was not touched and stays
+sealed — nothing here earned it.
