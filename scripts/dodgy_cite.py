@@ -76,7 +76,9 @@ def load() -> dict[str, tuple[str, str, list[int]]]:
     for f in sorted(glob.glob(str(SRC / "*.jsonl"))):
         vid = Path(f).stem
         parts, flat, idx = [], [], []
-        for line in open(f):
+        with open(f) as fh:
+            raw = fh.readlines()
+        for line in raw:
             ln = json.loads(line)
             txt = ln["text"].replace("\n", " ") + " "
             parts.append(txt)
@@ -103,7 +105,7 @@ def main() -> None:
     for rid, label, pat in RULES:
         # strip whitespace from the pattern's literal runs so it matches the flat text
         flat_pat = re.sub(r"\s+", "", pat)
-        rx = re.compile(flat_pat, re.I)
+        rx = re.compile(flat_pat, re.IGNORECASE)
         found = None
         for vid, (_disp, flat, idx) in docs.items():
             m = rx.search(flat)
