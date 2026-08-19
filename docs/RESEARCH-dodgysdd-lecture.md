@@ -601,3 +601,34 @@ semantics:
 **Seven of twelve exist, two are trivial, two need work, one is dropped.** The structural
 target (§11 item 1) therefore is *not* blocked; only the equal-highs ladder (item 4) is,
 and on one function rather than a module.
+
+## C-8 — E5 rule 4 is refuted, and it was my top-ranked new predicate
+
+I wrote that rule 4 is *"the most valuable new predicate in this document… mechanical,
+unambiguous, cheap to code… the one rule with a plausible mechanism that the repo's own
+results do not already contradict."* Tested on 08:30-11:00 as a rejecting filter with the
+exit held constant (`FINDINGS-dodgy-near-draw.md` §3): **it rejects 2.0% of the book and
+moves EV by −0.001R**, and the trades it removes read better, not worse, than the ones it
+keeps. On 1-minute NQ there is essentially always some unswept structure ahead, so the
+predicate almost never fires. Mechanical and cheap it is; valuable it is not.
+
+The ranking entry in §11 that placed it second is **withdrawn**.
+
+## C-9 — the L1 probability ladder fails, and my §3 framing of it was too credulous
+
+I called it *"the single most testable claim in the lecture"* — correct — and implied that
+its testability was the interesting part. It is refuted
+(`FINDINGS-dodgy-near-draw.md` §4) in both directions: his floor is far too low (two
+adjacent wicks are taken 92-98% of the time within a session, not ~50%; a single wick,
+which he does not count as a level, is taken 89-97%), and the ladder's **shape vanishes
+once distance is controlled** — more wicks simply means a nearer level, and within a
+distance band the hit rate is flat across 1, 2, 3 and 4+ wicks.
+
+## C-10 — "this bounds the result" understated the case, in my favour
+
+`FINDINGS-dodgy-structural-target.md` said the missing L1/L9 levels bounded its result and
+that the gap was *"unlikely to be hiding a rescue"*. Too weak. Under a nearest-level-ahead
+rule the additive near draw set **provably cannot change the test**: an equal-highs level is
+the maximum of a pivot cluster, and an intermediate-term high is itself a pivot high, so the
+nearest raw swing dominates both. Stating it as an empirical uncertainty when it was
+arithmetic left an open question that did not exist.

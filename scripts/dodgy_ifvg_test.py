@@ -124,12 +124,18 @@ def signals(bars: pd.DataFrame, require_sweep: bool, max_age: int = 240,
                               > last_hi[i])
                     if ok:
                         t1 = last_hi[i] if direction > 0 else last_lo[i]
-                        if np.isnan(t1) or (direction > 0 and t1 <= c[i]) or \
-                           (direction < 0 and t1 >= c[i]):
+                        # t1_synth marks the fallback: no confirmed swing survives ahead
+                        # of price, so the "target" is a manufactured 1R and not a level
+                        # at all. E5 rule 4 says these are no-trades; the incumbent book
+                        # keeps them. Flagged rather than dropped so the published
+                        # population is unchanged and downstream can decide.
+                        t1_synth = bool(np.isnan(t1) or (direction > 0 and t1 <= c[i]) or
+                                        (direction < 0 and t1 >= c[i]))
+                        if t1_synth:
                             t1 = c[i] + direction * risk
                         rows.append({"i": i, "ts": idx[i], "sess_day": sday[i],
                                      "direction": direction, "stop": stop, "risk": risk,
-                                     "t1": t1, "age": i - g["born"]})
+                                     "t1": t1, "t1_synth": t1_synth, "age": i - g["born"]})
                 continue             # gap is spent either way
             still.append(g)
         active = still

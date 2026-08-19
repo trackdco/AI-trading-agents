@@ -1,5 +1,10 @@
 # FINDINGS — his exit is the wrong one: the structural target buys win rate and sells expectancy
 
+> **This title is false as stated — see CORRECTION 1 at the foot of this document.**
+> The verdict (his exit is worse) survives; the win-rate mechanism was a bug in the
+> draw set. Do not cite the headline, §"The result", or §"Why: the pool is nearer
+> than two units of risk" without it.
+
 NQ, 1,251,240 one-minute bars, 2023-01 → 2026-07. **85,277 inversion signals**, 88/day.
 2-point risk floor, 240-bar max hold, 0.5-point round turn, day-clustered intervals, both
 era halves, win% and EV on every row.
@@ -113,3 +118,54 @@ Next, in order:
    backwards, keeping the trade with a synthetic target).
 3. **F1, big overnight move ⇒ choppy NY AM.** No entry model needed, and untouched by any
    of this.
+
+---
+
+# CORRECTION 1 — the verdict stands, the mechanism above is wrong
+
+Found while building the near draw set this document asked for
+(`FINDINGS-dodgy-near-draw.md` §0).
+
+**What was wrong.** `signals()` falls back to a manufactured `close + 1R` when no confirmed
+swing survives ahead of price. `attach_target()` fed that column into the draw set as a
+candidate target. Because the synthetic sits exactly 1R away, it wins the nearest-level
+contest almost every time it appears — so **24.4% of the "structural" arm's targets in the
+08:30–11:00 window, and 31.2% of the full book's signals, were a level the market never
+printed.**
+
+**Full book, synthetics removed:**
+
+| | n | win % | EV | median RR | $/trade |
+|---|---|---|---|---|---|
+| fixed 2R | 81,038 | 32.80 | −0.128 | 2.00 | −$11.31 |
+| structural, as published above | 79,971 | **43.06** | −0.143 | **1.07** | −$13.50 |
+| **structural, corrected** | 78,761 | **33.25** | **−0.141** | **2.14** | −$13.71 |
+
+**What survives.** The conclusion. The structural exit is worse than fixed 2R in R
+(−0.141 vs −0.128) and in dollars (−$13.71 vs −$11.31), on the full book and in every
+session of `FINDINGS-dodgy-session-split.md`. Correcting his exit mismatch still moves the
+book the wrong way.
+
+**What does not survive — the section "Why: the pool is nearer than two units of risk".**
+That whole explanation was the artifact. Corrected:
+
+- the nearest unswept structural pool sits at **2.14R median, slightly FURTHER than 2R**,
+  not at 1.07R;
+- the win rate is **33.25%, not 43.06%** — statistically the same book as fixed 2R's
+  32.80%, not a 10.3pp gain;
+- so this is **not** an instance of the BR-20/46/48 dual-currency inversion, and the claim
+  above that it is "the fourth instance on the record" is **withdrawn**. The real structural
+  arm buys no win rate and sells a little expectancy. It is a marginally worse version of
+  the same trade, not a different trade.
+
+The headline of this document — *"the structural target buys win rate and sells
+expectancy"* — is therefore false as stated. The accurate headline is: **his exit is
+indistinguishable from a 2R target in both currencies and slightly worse in both.**
+
+**Why it was not caught.** The median reward:risk of 1.07 was read as confirmation of a
+prior expectation — that his pools sit closer than 2R — when it was diagnostic of a bug.
+The earlier median of 16.7, recorded above, was caught precisely *because* it was absurd.
+A plausible summary statistic gets less scrutiny than an implausible one, which is an
+argument for checking the composition of a distribution and not only its shape:
+`struct_name.value_counts()` would have shown a quarter of the book targeting `SYNTH` on
+the first run.
