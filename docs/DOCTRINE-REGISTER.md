@@ -60,10 +60,12 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | — | INFO | **UNSOURCED** |  |
 | | | | *initial. Tier 1 of the TRADINGVIEW REPLAY STACK — docs/ARCHITECTURE-trading-agent.md, docs/AGENT-OPE…* | |
 
-## tv-trigger (now 0.4.14)
+## tv-trigger (now 0.4.15)
 
 | ver | rules | class | provenance | his verdict |
 |-----|-------|-------|------------|-------------|
+| 0.4.15 | — | VETO/SHAPE | cites him, 2026-08-19 | chop v2 sourced: his correction 2026-08-19 (window-local, 60m London / 20m NY; his 50pt = p28 measured) |
+| | | | *CHOP DETECTOR v2 (his correction 2026-08-19). "I'm not looking at whether it's been choppy the last…* | |
 | 0.4.14 | T79 | SHAPE | cites him, 2026-08-19 | T79 sourced: his confirm 2026-08-19 ('Yeah, all right, that's fine') on the proposed scoping, after the 03:22 three-run flip |
 | | | | *T79 - MIDDLE-DEAD IS ABOUT THE LEVEL, NOT THE ZONE (his confirm 2026-08-19). The chop map's middle-d…* | |
 | 0.4.13 | T78 | SHAPE | **UNSOURCED** | mechanical enforcement of T78 (no new doctrine) — schema example + runbook bounce |
@@ -128,7 +130,7 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | T14,T23,T4 | SHAPE | cites him, 2026-08-13 |  |
 | | | | *NEW TIER, his ruling 2026-08-13. Management was a set of mechanical clauses (T14 break-even on a ban…* | |
 
-**42 versioned rule entries; 13 carry no source
+**43 versioned rule entries; 13 carry no source
 citation at all. 33 quoted blocks are presented as his voice across
 the four contracts — every one of them is subject to the same
 challenge T40 failed.**

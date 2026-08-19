@@ -1,65 +1,60 @@
 #!/usr/bin/env python3
-"""ARE WE CHOPPING? — his definition, hard-coded.
+"""ARE WE CHOPPING? — his definition, v2 (window-local), hard-coded.
 
     python -m scripts.chop_state 2026-06-02
     python -m scripts.chop_state 2026-06-02 --at 09:42 --json
 
-HIS DEFINITION, given plainly and implemented literally:
+V2, from his correction 2026-08-19, verbatim:
 
-    "How I define chop is there's a small range that price is trading
-     between. It's not rocket science. If the high to the low of the range
-     we've been trading in is small and we've been trading in it for a few
-     hours, then that is chop."
+    "When I'm in London, if we're taking a trade in the second half of
+     London and the first half of London was just chopping in a given
+     range, then I'm gonna say that's chop. If, in New York, we have 20
+     minutes of candles stalling, I call that chop. I'm not looking at
+     whether it's been choppy the last three hours and I'm not looking at
+     whether it's in a specific point range... if in the last hour we've
+     traded in a 50-point range in London... in the second half of London
+     I'm gonna be like, this is choppy price action. I got to be careful
+     with how I trade this."
 
-Two things, and only two: the range is SMALL, and it has LASTED. No
-oscillation counting, no efficiency ratio, no regime score — an earlier
-version of this file counted midline crossings and fired on two thirds of
-all entries, because a trailing window always has a high and a low and price
-always wobbles inside them. Size and duration are what he actually said.
+So chop is WINDOW-LOCAL and TIMESCALE-ADAPTIVE, not a fixed 3-hour rolling
+window (v1's mistake — HOURS=3.0 / SMALL_PT=104.0 was a literal reading of
+an earlier, looser description; he corrected it):
 
-WHAT "SMALL" MEANS, calibrated rather than invented. The normal 3-hour range
-on NQ, sampled across 44 independent session-days (2026-01…04), is:
+    LONDON context (clock < 08:00): the trailing 60 MINUTES — "the first
+        half of London" once you are in the second half, the pre-open hour
+        when you are coming in.
+    NY context (clock >= 08:00): the trailing 20 MINUTES — "20 minutes of
+        candles stalling."
 
-    p10 80pt · p25 104pt · median 167pt · p75 213pt · p90 266pt
+WHAT "SMALL" MEANS — calibrated, and it validates his feel. Trailing
+ranges pooled across the 87 session-days of 2026-01..04 (frozen BEFORE the
+test months; recomputing over 2023+ days deflates the thresholds because
+NQ traded at half the price):
 
-So SMALL = the trailing `HOURS`-hour range sits in the bottom quartile of
-that distribution (`SMALL_PT`, ~104pt). It is a percentile of real NQ
-behaviour, not a number chosen to fit a result, and it should be re-measured
-if volatility regime shifts.
+    LONDON 60m: p10 36 · p25 44.5 · median 63 · p75 95.5
+    NY     20m: p10 36 · p25 53   · median 86 · p75 128
 
-WHAT "A FEW HOURS" MEANS: `HOURS = 3`, his word "hours" taken at its
-smallest plural. The range must ALSO have been small for the whole of it —
-checked at the midpoint too, so a violent hour followed by two quiet ones
-does not qualify.
+His illustrative number — "a 50-point range in London" — sits at p28 of
+the measured London distribution. Feel and measurement agree; the London
+threshold uses HIS 50, the NY threshold uses the same percentile (53).
 
 THE STATE
 
-    CHOP       small range, sustained
-    TRENDING   range not small
+    CHOP       trailing window-local range is small (bottom ~quartile)
+    TRENDING   it is not
     FORMING    not enough tape yet
 
-Plus, for the range doctrine, WHERE price sits: `zone_now` is low edge /
-middle / high edge, with the middle being the inner half — reusing T50's
-existing definition rather than inventing a second one. His doctrine on top
-of the state: *"on a chop session it should only be either targeting the
-bottom of the chop from the top, or vice versa"* — edges only, middle dead.
+Plus WHERE price sits for the range map: `zone_now` low/middle/high with
+the middle as the inner half (T50's definition, unchanged). NOTE (T79):
+the map's middle-dead veto is judged by the REJECTED LEVEL, never by
+`zone_now` — this detector supplies the state and the edges, it does not
+veto anything.
 
-EVERYTHING IS AS-OF: minute t uses only bars strictly before t, so it is
-live-safe and briefing-safe.
+EVERYTHING IS AS-OF: minute t uses only bars strictly before t.
 
-WHAT THIS DETECTOR DOES NOT DO, measured and stated so nobody expects it.
-It does NOT predict which trades win. Across the 40 graded takes of the two
-complete agent weeks it fires on 18% of them, and those trades did BETTER
-than average (+0.98R mean vs +0.39R). More pointedly, the churn day
-(2026-06-02, -1.56R) and the best trend day (2026-05-31, +7.07R) had nearly
-IDENTICAL trailing 3-hour ranges through London — 81/85/99pt against
-148/73/90pt. Both mornings were ranges. One held and paid; the other kept
-failing at the same edge.
-
-So this is a STATE detector for applying the range doctrine — mark the
-edges, trade edge-to-edge, leave the middle alone — and not a filter that
-tells you the day will be bad. A separate, measured day-level signal exists
-for that (`docs/PREREG-chop-regime-gate.md` §1).
+WHAT THIS DETECTOR STILL DOES NOT DO: predict which trades win. It is a
+caution flag and a map ("I got to be careful with how I trade this"), not
+a day-quality filter.
 """
 from __future__ import annotations
 
@@ -68,23 +63,28 @@ import json
 import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.offline_briefings import (get_bars, hist_before,     # noqa: E402
-                                       session_bounds)
+from scripts.offline_briefings import (get_bars, session_bounds)   # noqa: E402
 
-EDGE_FRAC = 0.25        # inner half = the middle, reusing T50's definition
-HOURS = 3.0             # "a few hours", smallest plural
-SMALL_PT = 104.0        # p25 of the normal 3h NQ range, measured on 44 days
-MIN_BARS = 60           # don't call a range off a handful of minutes
+EDGE_FRAC = 0.25          # inner half = the middle (T50), unchanged
+NY_CLOCK = 8 * 60         # minutes-of-day boundary between contexts
+
+# his 2026-08-19 definition, calibrated 2026-01..04 (87 days), FROZEN:
+LOOKBACK_MIN = {"LONDON": 60, "NY": 20}
+SMALL_PT = {"LONDON": 50.0,   # his number; p28 of the measured distribution
+            "NY": 53.0}       # the same percentile of the NY 20m distribution
+
+
+def _context(minute: str) -> str:
+    hh, mm = minute.split(":")
+    return "NY" if int(hh) * 60 + int(mm) >= NY_CLOCK else "LONDON"
 
 
 def _zone(px: float, lo: float, hi: float) -> str:
-    """Which third of the range price is in: low edge, middle, high edge."""
     w = hi - lo
     if w <= 0:
         return "middle"
@@ -96,56 +96,52 @@ def _zone(px: float, lo: float, hi: float) -> str:
 
 
 def state_at(bars: pd.DataFrame, sess_day: str, minute: str,
-             hours: float = HOURS, small_pt: float = SMALL_PT) -> dict:
-    """CHOP when the trailing `hours`-hour range is small AND has stayed
-    small for the whole stretch. His definition, nothing added."""
+             lookback_min: int | None = None,
+             small_pt: float | None = None) -> dict:
+    """CHOP when the window-local trailing range is small. His v2
+    definition, nothing added: London judges the trailing hour, NY the
+    trailing 20 minutes."""
+    ctx = _context(minute)
+    lb = lookback_min or LOOKBACK_MIN[ctx]
+    thr = small_pt or SMALL_PT[ctx]
     t0, t = session_bounds(sess_day, minute)
-    start = max(t0, t - pd.Timedelta(hours=hours))
+    start = max(t0, t - pd.Timedelta(minutes=lb))
     seg = bars[(bars.index >= start) & (bars.index < t)]
-    if len(seg) < MIN_BARS:
-        return {"state": "FORMING", "reason": f"only {len(seg)} bars of tape",
+    if len(seg) < lb * 0.8:
+        return {"state": "FORMING", "reason": f"only {len(seg)} bars of the "
+                f"trailing {lb}m", "context": ctx,
                 "range_high": None, "range_low": None, "zone_now": None,
                 "in_middle": False}
 
     hi, lo = float(seg.high.max()), float(seg.low.min())
     w = hi - lo
-    # sustained: the first half of the stretch must also have been tight,
-    # so one violent hour followed by two quiet ones does not qualify
-    mid_t = start + (t - start) / 2
-    first = seg[seg.index < mid_t]
-    w_first = float(first.high.max() - first.low.min()) if len(first) else w
-
     px = float(seg.close.iloc[-1])
     zone = _zone(px, lo, hi)
-    hours_held = (t - start).total_seconds() / 3600.0
 
-    if w <= small_pt and w_first <= small_pt:
+    if w <= thr:
         state = "CHOP"
-        reason = (f"{w:.0f}pt range held for {hours_held:.1f}h "
-                  f"({lo:.2f}–{hi:.2f}) — small and sustained")
-    elif w <= small_pt:
-        state = "FORMING"
-        reason = (f"{w:.0f}pt now, but {w_first:.0f}pt earlier in the "
-                  f"stretch — not yet sustained")
+        reason = (f"{w:.0f}pt trailing {lb}m range ({lo:.2f}–{hi:.2f}) — "
+                  f"small for {ctx} (threshold {thr:.0f}pt): "
+                  f"'this is choppy price action, be careful how you trade it'")
     else:
         state = "TRENDING"
-        reason = f"{w:.0f}pt range over {hours_held:.1f}h — not small"
+        reason = f"{w:.0f}pt trailing {lb}m range — not small for {ctx}"
 
-    return {"state": state, "reason": reason,
+    return {"state": state, "reason": reason, "context": ctx,
+            "lookback_min": lb, "small_threshold_pt": thr,
             "range_high": round(hi, 2), "range_low": round(lo, 2),
-            "range_width": round(w, 2), "hours_held": round(hours_held, 1),
-            "small_threshold_pt": small_pt,
+            "range_width": round(w, 2),
             "zone_now": zone, "in_middle": zone == "middle",
             "middle_band": [round(lo + EDGE_FRAC * w, 2),
                             round(hi - EDGE_FRAC * w, 2)],
             "as_of": f"{t:%Y-%m-%d %H:%M}",
-            "doctrine": ("CHOP + in_middle -> the middle is dead. CHOP + at "
-                         "an edge -> the only licensed trade is from that "
-                         "edge toward the opposite edge.")}
+            "doctrine": ("CHOP is a caution and a map: edges are the trade, "
+                         "structural targets govern (0.4.9); the middle-dead "
+                         "veto is judged by the REJECTED LEVEL, not by "
+                         "zone_now (T79).")}
 
 
 def day_profile(bars: pd.DataFrame, sess_day: str, step: int = 15) -> list:
-    """State every `step` minutes across the trading windows — a day's shape."""
     out = []
     for hm in range(3 * 60, 11 * 60 + 1, step):
         m = f"{hm // 60:02d}:{hm % 60:02d}"
@@ -163,23 +159,22 @@ def main() -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("sess_day")
     ap.add_argument("--at", default=None, help="one decision minute, HH:MM")
-    ap.add_argument("--hours", type=float, default=HOURS)
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
 
     bars = get_bars()
     if a.at:
-        s = state_at(bars, a.sess_day, a.at, a.hours)
+        s = state_at(bars, a.sess_day, a.at)
         print(json.dumps(s, indent=1) if a.json else
               f"  {a.sess_day} {a.at}: {s['state']} — {s['reason']}\n"
               f"    range {s['range_low']}–{s['range_high']}, "
               f"price in the {s['zone_now']} zone")
         return 0
 
-    print(f"\n  CHOP STATE — {a.sess_day}\n")
-    print(f"  {'time':<7}{'state':<10}{'width':>7}{'zone':>8}   range")
+    print(f"\n  CHOP STATE v2 — {a.sess_day}\n")
+    print(f"  {'time':<7}{'ctx':<8}{'state':<10}{'width':>7}{'zone':>8}   range")
     for m, s in day_profile(bars, a.sess_day):
-        print(f"  {m:<7}{s['state']:<10}"
+        print(f"  {m:<7}{s.get('context','?'):<8}{s['state']:<10}"
               f"{(s.get('range_width') or 0):>6.0f}pt{str(s['zone_now']):>8}   "
               f"{s['range_low']}–{s['range_high']}")
     print()
