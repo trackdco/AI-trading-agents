@@ -267,3 +267,53 @@ The model is negative on NQ at every specification tested, before and after cost
 correct detector and a stated clustering convention. The one thing that reliably helps is
 locus proximity, and it is worth roughly +0.023R pre-cost — not enough to reach zero, let
 alone clear a 0.5-point round turn.
+
+---
+
+# CORRECTION 2 — `require_revisit` does not do what its docstring says
+
+Found by an adversarial audit of the DodgysDD lecture catalogue, not by anything failing.
+
+`signals()` takes `require_revisit`, documented as *"price must trade back INTO the gap
+before the close that breaks it. Without it a gap blown straight through by one
+continuation candle counts, and that is a momentum event, not an inversion."* That is the
+substantive half of the Bug-1 fix — the thing that separates an inversion from a
+blow-through.
+
+**It is functionally inert.** `scripts/dodgy_ifvg_test.py:105-110` sets `g["touched"]` from
+bar `i` and then evaluates `broke` on the same bar `i`. Any candle that closes through the
+zone has necessarily spanned it, so it sets its own touch flag one line before the flag is
+read.
+
+Measured on NQ 2026-01-01 → 2026-07-15, 190,264 bars, `require_sweep=False`:
+
+| | signals |
+|---|---|
+| `require_revisit=True` | 14,103 |
+| `require_revisit=False` | 14,103 |
+| **bars differing** | **22 — 0.16%** |
+
+It is not literally a no-op: it rejects a bar whose **high never reaches the zone**, i.e. a
+true price gap clean through. That is 22 cases in 14,103. **It never rejects the momentum
+blow-through the docstring is about**, which is the large population it was written to
+remove.
+
+**Blast radius.** Every number in the CORRECTION table above was produced with
+`require_revisit=True` believing it excluded blow-throughs. It did not. The corrected
+trigger population is therefore still contaminated with the momentum events Bug 1 was
+supposed to remove, and **−0.135R after cost / −0.020R before is measured on that
+population**.
+
+The fix is two lines — snapshot the flag before updating it:
+
+```python
+was_touched = g["touched"]
+if l_[i] <= g["hi"] and h[i] >= g["lo"]:
+    g["touched"] = True
+broke = ...
+if broke and (was_touched or not require_revisit):
+```
+
+**Not yet applied, and the headline numbers are not yet re-run.** Recorded first because
+this is the third detector bug in the same file and the pattern — a flag that reads as a
+gate and cannot reject — is the one worth carrying forward, not the individual fix.

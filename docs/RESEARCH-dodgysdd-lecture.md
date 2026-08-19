@@ -468,3 +468,108 @@ corpus.
 **And what is already refuted, so it should not be re-run as if open:** the bare trigger
 (E1), the sweep requirement (Q1), obviousness (E5 rule 2), the NY session restriction (K2),
 the break-even rule as specified (T3), and the data-wick premise (§9).
+
+---
+
+# CORRECTIONS — an adversarial audit of this document, and four claims withdrawn
+
+Four independent lenses were run against the first draft: redundancy against what is
+already measured, falsifiability of the free parameters, a code survey, and a methodology
+check against `docs/CANON.md`. They found real errors. The errors are recorded here rather
+than edited away, per the repo's convention.
+
+## C-1 — WITHDRAWN: "every one of these is codable against the existing census machinery"
+
+§3 said the twelve draw levels L1–L12 could be built on the level-census machinery. **That
+is false, and it was the load-bearing false claim in the document** — items 1, 4 and 7 of
+the §11 ranking all inherit from it.
+
+The census's entire vocabulary is `LOCI = ["bbma15", "poc", "val", "vah", "vwap",
+"vwap_m1", "vwap_p1"]` (`scripts/htf_ma_level_census.py:42`), built from three primitives
+in `src/htf_ma/levels.py`. **All seven are developing statistical levels** — a moving
+average, VWAP bands, a volume profile. Not one of them is a session high, a previous-day
+extreme, an equal-highs cluster or an opening gap. **The census supplies zero of L1–L12.**
+
+What does exist is `src/engine/sessions.py`. What has to be written is a
+`draw_levels(hist, seg_index)` mirroring `level_series`'s as-of contract but returning
+liquidity prices. That is a new module, not a parameterisation.
+
+## C-2 — WITHDRAWN: the room-to-run justification for ranking T1 first
+
+§11 ranked the structural target first partly on the claim that the fixed-2R exit *"is the
+reason room-to-run reversed sign"*. **That measurement lives in the ADDENDUM, which the
+CORRECTION withdrew, and room-to-run was never re-run on the corrected population.** The
+source's own wording is *"Plausible reason"*, not "the reason". Overstated; withdrawn.
+
+**T1 still ranks first**, but on the plain fact that he targets structural liquidity and
+the test used fixed 2R — an exit mismatch — not on a withdrawn number.
+
+## C-3 — CORRECTED: the HTF nest is partly measured, and it landed short
+
+§11 item 2 was ranked as new. **The nearest rung was already measured** and this document
+should have reported it: same trigger on **5-minute** FVGs executed on the 1m tape —
+n=4,408, median stop **9.2pt vs 4.5pt**, EV **−0.052** after cost, **+0.020** before, and
+**era-unstable** (H1 −0.126 / H2 +0.008). It halved the cost problem and still landed short
+of the round turn.
+
+It also sits *above* the CORRECTION line, so it ran on the mis-specified detector and has
+never been re-measured. The honest status is **"measured once, short of cost, era-unstable,
+on a withdrawn detector"** — not "new".
+
+## C-4 — WITHDRAWN: "the daily lockout cannot improve per-trade EV by construction"
+
+False, and it is a BR-41 violation. Whether trade #3 exists depends on the outcomes of #1
+and #2, which is outcome-conditioned selection. BR-42 records a between-day variance share
+of 24–56%, so outcomes cluster within a day and the lockout is not neutral.
+
+**The lockout must be reported only as a daily-R distribution result** — worst-day R, max
+non-breaching size, per BR-36/39 — and never as a per-trade EV row beside pre-entry
+filters. The pre- and post-lockout books are different estimands.
+
+## C-5 — the spec as written cannot produce a negative result
+
+The falsifiability lens calibrated a day-clustered `sigma_eff = 1.42R` from five published
+CIs and computed the joint sweep grid this file implies: **~2×10⁵ cells excluding the trend
+line, ~1.2×10⁸ including it.** At that grid size, a cost-clearing survivor is the *expected
+outcome of running the study*, not evidence about the model.
+
+The `trendline:` block alone carries five tagged parameters plus three untagged ones
+(fractal order, wick-vs-body touch, points-per-fit) — **600+ cells before the untagged
+ones**, against a cost hurdle of +0.138R. `FINDINGS-dodgy-ifvg.md` pre-warned about exactly
+this: *"a trend line has free parameters that a census does not."*
+
+**Consequence: the trend-line block is dropped from the testable spec.** L2 stays in the
+catalogue as a thing he says; it does not become a gate. Q2's `min_ratio` sweep is
+similarly cosmetic while "the prior leg" has no mechanical definition — its grid is not
+large, it is *uncountable*.
+
+## C-6 — methodology omissions, all of them silent
+
+Neither artifact mentioned day-clustering, dual currency, both-era clearance, Law 2, BR-41
+or a multiplicity budget. Specifically:
+
+- **Law 2.** `stop_anchor: htf_zone` and `merge_stacked_gaps` both widen the R denominator
+  against a fixed 0.50-point cost. Any EV lift they produce is **cost/R arithmetic, not a
+  market fact** — and the first draft celebrated exactly that arithmetic as the point of the
+  change. They must run as declared Law-2 arms reporting median stop, cost_R and dollars.
+- **Law 3.** The spec stacks three mechanics this repo has three times recorded as buying
+  hit rate and selling expectancy — a sub-2R structural target, a 50% partial, and
+  breakeven at 1R — and required a win-rate column nowhere.
+- **BR-9/BR-10 mislabelled.** A 15-bar time cooldown is not first-trigger-per-structural-
+  fight. BR-9's convention is a **price-distance** band swept over X ∈ {0.25, 0.5, 1.0,
+  2.0}W. Under the HTF nest the fight should be one per HTF zone per direction.
+- **E1.4 and non-stationarity.** `min_overnight_range_pts: 300` is ~2.4% of price in early
+  2023 and ~1.4% by 2026, so F1 selects disproportionately for the first era **by
+  construction** — BR-77 is the identical confound already on the record. Every raw-point
+  threshold must be re-expressed in W, ATR or percent.
+- **Missing parameters.** The file claimed "every parameter" and omitted the **2-point risk
+  floor** and the **240-bar max hold**, both of which are hard-coded in the incumbent
+  harness and both of which change the headline.
+
+## C-7 — and one thing that is cheaper than claimed
+
+**E5 rule 4, "the target must still be unswept", is already computed** — and used
+backwards. `scripts/dodgy_ifvg_test.py:122-125` tests exactly that condition and, when it
+is true, *substitutes a synthetic 1R target and keeps the trade*. Turning it into a filter
+that rejects is one line. Q2's two operands (`last_hi`, `last_lo`) are likewise already in
+scope at the row-append site — one derived column, not a new pass.
