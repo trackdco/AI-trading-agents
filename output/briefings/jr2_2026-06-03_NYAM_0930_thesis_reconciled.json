@@ -1,0 +1,199 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM",
+ "decision_minute": "2026-06-04T09:30 ET",
+ "leak_check": "pass - replay truncated at 09:29:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jr2_2026-06-03_NY_AM_0930.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30268.25,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "closed_at": "09:30",
+  "open": 30282.75,
+  "high": 30291.0,
+  "low": 30265.25,
+  "close": 30268.25,
+  "volume": 2950,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_AM",
+  "entries": "09:30-11:00 earliest entry 09:35",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30306.51,
+  "bb_upper_2m": 30333.79,
+  "bb_lower_2m": 30279.24,
+  "vwap": 30364.48,
+  "vwap_p1": 30460.81,
+  "vwap_m1": 30268.16,
+  "vwap_p2": 30557.13,
+  "vwap_m2": 30171.84,
+  "vwap_p3": 30653.46,
+  "vwap_m3": 30075.51,
+  "read_at": "chart cursor 09:30-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "_session_calendar": {
+   "session_day_label": "2026-06-03",
+   "session_opens": "2026-06-03 18:00 ET (Wednesday evening)",
+   "cash_session_traded": "2026-06-04 (Thursday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30364.55,
+   "vwap_p1": 30461.18,
+   "vwap_p2": 30557.81,
+   "vwap_p3": 30654.44,
+   "vwap_m1": 30267.92,
+   "vwap_m2": 30171.29,
+   "vwap_m3": 30074.66
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30306.51,
+   "bb_ma_3m": 30301.46,
+   "bb_ma_15m": 30282.92,
+   "bb_ma_60m": 30445.91
+  },
+  "day_range_fibs": {
+   "0.382": 30309.51,
+   "0.5": 30354.38,
+   "0.618": 30399.24,
+   "0.705": 30432.33
+  },
+  "session_high_so_far": 30544.5,
+  "session_low_so_far": 30164.25,
+  "daily_profile": {
+   "poc": 30302.0,
+   "val": 30220.0,
+   "vah": 30451.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30517.0,
+   "vah": 30730.0,
+   "high": 30807.75,
+   "low": 30164.25,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "prior_day": {
+   "poc": 30685.0,
+   "val": 30577.0,
+   "vah": 30724.0,
+   "high": 30807.75,
+   "low": 30478.25
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.127,
+  "net_move_15m": -184.75,
+  "total_15m_travel": 1456.5,
+  "candles_15m_up": 30,
+  "candles_15m_down": 32,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "08:30",
+   "open": 30249.0,
+   "high": 30312.25,
+   "low": 30246.0,
+   "close": 30309.5,
+   "body_ratio": 0.91
+  },
+  {
+   "start": "08:45",
+   "open": 30308.75,
+   "high": 30330.0,
+   "low": 30289.75,
+   "close": 30309.75,
+   "body_ratio": 0.02
+  },
+  {
+   "start": "09:00",
+   "open": 30310.25,
+   "high": 30317.0,
+   "low": 30287.75,
+   "close": 30301.75,
+   "body_ratio": 0.29
+  },
+  {
+   "start": "09:15",
+   "open": 30300.25,
+   "high": 30330.75,
+   "low": 30265.25,
+   "close": 30268.25,
+   "body_ratio": 0.49
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "a red-folder release with event_time landing in the 09:20-09:30 gate band (or an FOMC event anywhere on the calendar) would change this read; none is on the calendar",
+  "reasoning": "Calendar for 2026-06-04 is empty through the cash open - no events released so far today and none scheduled later. No 10-minute pre-event band applies because no red-folder release exists to define one.",
+  "_provenance": "tv-macro-events 0.2.0 output carried forward from the j49 run. The macro contract is UNCHANGED in the 0.4.11 batch and its entire input is the economic calendar plus standing policy - no chart, no bars, no prices - so for the same session-day and window the input is byte-identical and re-spawning could only reproduce it. Carried rather than re-run, and said so here rather than passed off as fresh."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 30164.25
+   },
+   {
+    "level": "vwap_m3",
+    "price": 30083.62
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_low",
+   "price": 30478.25
+  },
+  "waiting_for": "shorts license on a rebalance bounce that stalls and rejects wherever it actually stalls (confirmed by a same-candle close through its own MA plus another key level - VWAP band, POC, prior support-turned-resistance) - not only at the far 15m MA/day-fib-0.5 zone (~30340-354), which price never even reached this window (high since 08:00 was 30286). A 15m decisive close through that far zone still licenses the scoped T72 temporary long instead of a bias flip.",
+  "two_sided": true,
+  "condition_for_other_side": "temporary longs licensed on a 15m decisive close through the 15m MA (30340.85)/day fib 0.5 (30354.38) zone - location + behavior, a scoped T72 counter-trade, not a bias flip; full invalidation of the short view still requires a 15m decisive close back above the broken prior-day low (30478.25).",
+  "anticipated_resolution": {
+   "level": "bb_ma_15m",
+   "price": 30340.85,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "A 15m close below the weekly low (30164.25) with a decisive body confirms continuation lower; a 15m close back above the broken prior-day low (30478.25) with a decisive body means the flush was a stop-run and invalidates the short view.",
+  "other_side_tripwire": {
+   "level": "bb_ma_15m",
+   "price": 30340.85,
+   "event": "15m_decisive_close"
+  },
+  "defended_level": {
+   "level": "prior_day_low",
+   "price": 30478.25,
+   "memory": "prior day's session low; held and was defended at the 03:00 read via the 02:30 15m displacement candle",
+   "status": "failed"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "escalation_response": "accommodated",
+  "reasoning": "This is a structured trend day (low path_efficiency 0.162, balanced 15m up/down count, big legs with rebuilding, not one-way), so per T15 the rejection is wherever the counter-trend bounce actually stalls, not a pre-named far zone. My 30340-354 waiting_for sat ~105-119pt above price and was never reached; the escalation's vwap_m1 triple-test-and-fail into a same-candle break of the 3m MA and daily POC is exactly the T15 shape and is accommodated. Bias stays short - weekly low is already tagged, vwap_m3 is the live target - and the far-zone condition still gates only the scoped T72 long."
+ },
+ "what_happened_since_the_last_read": "Since your 08:14 read, stated as price facts only: between 08:14 and this decision minute the session traded a high of 30330.75 and a low of 30223.00. All levels in levels_at_decision_BUILD are recomputed as of this minute."
+}

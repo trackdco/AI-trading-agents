@@ -1,0 +1,202 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE",
+ "decision_minute": "2026-06-04T08:00 ET",
+ "leak_check": "pass - replay truncated at 07:59:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jr2_2026-06-03_NY_PRE_0800.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30280.75,
+ "last_completed_2m_bar": {
+  "start": "07:58",
+  "closed_at": "08:00",
+  "open": 30279.75,
+  "high": 30282.5,
+  "low": 30261.5,
+  "close": 30280.75,
+  "volume": 722,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_PRE",
+  "entries": "08:00-09:29 entries cut off 09:10",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30241.28,
+  "bb_upper_2m": 30308.52,
+  "bb_lower_2m": 30174.03,
+  "vwap": 30382.86,
+  "vwap_p1": 30479.89,
+  "vwap_m1": 30285.83,
+  "vwap_p2": 30576.92,
+  "vwap_m2": 30188.79,
+  "vwap_p3": 30673.95,
+  "vwap_m3": 30091.76,
+  "read_at": "chart cursor 08:00-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "_session_calendar": {
+   "session_day_label": "2026-06-03",
+   "session_opens": "2026-06-03 18:00 ET (Wednesday evening)",
+   "cash_session_traded": "2026-06-04 (Thursday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30382.85,
+   "vwap_p1": 30480.29,
+   "vwap_p2": 30577.73,
+   "vwap_p3": 30675.17,
+   "vwap_m1": 30285.41,
+   "vwap_m2": 30187.97,
+   "vwap_m3": 30090.53
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30241.28,
+   "bb_ma_3m": 30242.84,
+   "bb_ma_15m": 30340.85,
+   "bb_ma_60m": 30477.56
+  },
+  "day_range_fibs": {
+   "0.382": 30309.51,
+   "0.5": 30354.38,
+   "0.618": 30399.24,
+   "0.705": 30432.33
+  },
+  "session_high_so_far": 30544.5,
+  "session_low_so_far": 30164.25,
+  "daily_profile": {
+   "poc": 30440.0,
+   "val": 30308.0,
+   "vah": 30531.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30525.0,
+   "vah": 30726.0,
+   "high": 30807.75,
+   "low": 30164.25,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "prior_day": {
+   "poc": 30685.0,
+   "val": 30577.0,
+   "vah": 30724.0,
+   "high": 30807.75,
+   "low": 30478.25
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.132,
+  "net_move_15m": -172.25,
+  "total_15m_travel": 1302.0,
+  "candles_15m_up": 27,
+  "candles_15m_down": 29,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "07:00",
+   "open": 30245.25,
+   "high": 30264.75,
+   "low": 30228.25,
+   "close": 30246.5,
+   "body_ratio": 0.03
+  },
+  {
+   "start": "07:15",
+   "open": 30245.0,
+   "high": 30279.5,
+   "low": 30228.25,
+   "close": 30270.0,
+   "body_ratio": 0.49
+  },
+  {
+   "start": "07:30",
+   "open": 30272.25,
+   "high": 30290.0,
+   "low": 30164.25,
+   "close": 30196.75,
+   "body_ratio": 0.6
+  },
+  {
+   "start": "07:45",
+   "open": 30196.5,
+   "high": 30282.75,
+   "low": 30191.25,
+   "close": 30280.75,
+   "body_ratio": 0.92
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "a red-folder release scheduled inside or at the end of NY_PRE would close pre-market entries per standing policy through its event time; the calendar carries none, so the pre-market blackout rule has nothing to bind to",
+  "reasoning": "Calendar for 2026-06-04 remains empty at 08:00 ET - no releases, released or scheduled, in pre-market or elsewhere. No pre-market news-blackout condition is met because there is no event to trigger it.",
+  "_provenance": "tv-macro-events 0.2.0 output carried forward from the j49 run. The macro contract is UNCHANGED in the 0.4.11 batch and its entire input is the economic calendar plus standing policy - no chart, no bars, no prices - so for the same session-day and window the input is byte-identical and re-spawning could only reproduce it. Carried rather than re-run, and said so here rather than passed off as fresh."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "weekly_val",
+    "price": 30539.0
+   },
+   {
+    "level": "prior_day_val",
+    "price": 30577.0
+   },
+   {
+    "level": "weekly_poc",
+    "price": 30677.0
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_low",
+   "price": 30478.25
+  },
+  "waiting_for": "nothing further for longs - defended-level reclaim already displaced; entries on a pullback to reclaimed structure (2m/3m MA, prior-day low). Shorts wait for a stall/rollover at weekly VAL.",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed on a rejection AT weekly VAL (30539) / the VWAP+2-+3 zone the tape is already extended into - a stall there and roll-over, not a fixed number further out.",
+  "anticipated_resolution": {
+   "level": "weekly_val",
+   "price": 30539.0,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond weekly VAL with a decisive body confirms continuation; a wick-heavy low-body-ratio close there is absorption and the level held, favoring the short side instead.",
+  "other_side_tripwire": {
+   "level": "weekly_val",
+   "price": 30539.0,
+   "event": "2m_close_through_with_ma"
+  },
+  "defended_level": {
+   "level": "prior_day_low",
+   "price": 30478.25,
+   "memory": "prior day's session low; the 02:00-02:15 15m candles wicked to 30465.5 intraday but never closed below it on the 15m, then the 02:30 candle (body_ratio 0.63) displaced decisively back through the 2m/3m/15m MAs",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "Session flushed to 30352.5 (never reached the weekly low at 30317.75) then reversed off a defended prior-day-low retest, displacing decisively through the 2m/3m/15m MAs on the 02:30 15m candle. Price now sits at session highs, 11pt under weekly VAL and already above VWAP+2 - extended but momentum-backed. Not a flush (path efficiency 0.11, 21/15 candle split), so a rejection at weekly VAL is a real tradeable location; primary read stays long into it, shorts only on a stall/roll-over there."
+ },
+ "what_happened_since_the_last_read": "Since your 03:00 read, stated as price facts only: between 03:00 and this decision minute the session traded a high of 30544.50 and a low of 30164.25. All levels in levels_at_decision_BUILD are recomputed as of this minute."
+}
