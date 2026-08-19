@@ -30,24 +30,28 @@ a **researcher candidate** carrying a sweep. An `[R]` value is never his paramet
 
 ---
 
-## §0 — PROVENANCE DEFECT, stated before anything is built on this
+## §0 — PROVENANCE, resolved
 
-The transcript arrived as pasted text. It therefore has **no video id, no timestamps and
-no verifiable chain to the channel**. Every other rule catalogue in this repo
-(`references/citations.md`) carries video id + timestamp per quote, and
-`scripts/mine_rules.py` exists specifically to produce that.
+The first draft of this document was built from a pasted transcript with no video id and
+no timestamps, and said so. **That defect is now closed.** Both parts were re-fetched from
+the channel and every rule below is attached to a video id and a timestamp in
+`docs/CITATIONS-dodgysdd-lecture.md` — 38 of 38, no unattached rules.
 
-**Nothing in this document should be quoted as evidence in a findings doc until the
-lecture is re-fetched with `scripts/fetch_channel_transcripts.py` and the quotes are
-re-attached to timestamps.** The rules below are almost certainly right — they are
-internally consistent and consistent with the v2 audit — but "almost certainly right" is
-not the standard the rest of this corpus is held to.
+| | |
+|---|---|
+| part 1 | `WQycR82IOD4` — 11:57:19, 99,528 words |
+| part 2 | `r43i9rRIjoQ` — 11:59:53, 93,167 words |
+| total | **23h 56m, 192,695 words** |
 
-Second-order defect: an auto-caption transcript mis-renders his vocabulary. Confirmed
-corruptions in this text include *"data wick"* rendered as *"dataix"*, *"IFVG"* as
-*"IPG"/"IFG"/"I if I"*, *"bisi/sibi"* as *"busy"/"civvy"/"city"*, *"CISD"* absent
-entirely, and *"Judas"* as *"Judah"/"Juna"/"Judith"*. Any regex mining of this text must
-allow for that.
+The fetched captions reproduce the supplied transcript verbatim, including its
+corruptions, which is the check that matters: the paste was faithful, it just had no
+provenance. Identity is confirmed from the primary source — *"DD stands for due
+diligence"*, `WQycR82IOD4 @ 09:36:38`.
+
+**Caption corruption is systematic.** IFVG renders as *IPG / IFG*, fair value gap as
+*"for value gap" / "fair rally gap" / "reality gap"*, Judas as *Judah*, data wick as
+*dataix*, bisi/sibi as *busy / civvy / city*; CISD never appears at all. Words also join
+across cue boundaries. Any regex mining of this corpus must allow for both.
 
 ---
 
