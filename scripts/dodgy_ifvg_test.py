@@ -103,11 +103,15 @@ def signals(bars: pd.DataFrame, require_sweep: bool, max_age: int = 240,
         for g in active:
             if i - g["born"] > max_age:
                 continue
-            # revisit: price has traded back into the gap's zone at some point
+            # revisit: price traded back into the zone on some EARLIER bar. Snapshot
+            # before updating -- reading the flag after setting it from bar i made the
+            # gate inert, because any candle that closes through has already spanned the
+            # zone and set its own flag. See FINDINGS-dodgy-ifvg CORRECTION 2.
+            was_touched = g["touched"]
             if l_[i] <= g["hi"] and h[i] >= g["lo"]:
                 g["touched"] = True
             broke = (c[i] < g["lo"]) if g["kind"] == "bull" else (c[i] > g["hi"])
-            if broke and (g["touched"] or not require_revisit):
+            if broke and (was_touched or not require_revisit):
                 direction = -1 if g["kind"] == "bull" else 1
                 stop = (g["hi"] + TICK) if direction < 0 else (g["lo"] - TICK)
                 risk = abs(stop - c[i])

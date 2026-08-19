@@ -573,3 +573,31 @@ backwards. `scripts/dodgy_ifvg_test.py:122-125` tests exactly that condition and
 is true, *substitutes a synthetic 1R target and keeps the trade*. Turning it into a filter
 that rejects is one line. Q2's two operands (`last_hi`, `last_lo`) are likewise already in
 scope at the row-append site — one derived column, not a new pass.
+
+## C-1a — the C-1 correction was itself overstated
+
+C-1 said the draw set "needs a new module". That repeated the audit's framing and it is
+wrong. The *census* supplies zero of L1–L12 — that part stands, and the reason is worth
+stating precisely: the census computes **statistics** (on one session `bbma15` changed
+value on 99.1% of minutes over a 759-point range, `vwap` on 100%), whereas he targets
+**events** — one fixed price, printed once, that never moves and that *dies once swept*.
+A moving average is never swept. The census has no representation for that state, which is
+the entire content of Q3.
+
+But `src/engine/sessions.py` already carries most of the draw set, with no-lookahead as-of
+semantics:
+
+| level | status |
+|---|---|
+| L3/L4/L5/L12 session highs & lows | **exists** — `running_session_extremes` |
+| L6 previous day | **exists** — `prior_day_levels`, "the PRIOR completed CME session's H/L (no lookahead)" |
+| L7 weekly | **exists** — `prior_week_levels` |
+| L8 news / data levels | **exists** — `data_levels` + `config/news_calendar.csv` |
+| L10/L11 opening gaps | trivial — two timestamps |
+| L1 equal highs / lows | **real work** — swing detection, clustering, tolerance |
+| L9 intermediate-term | **real work** — FVG-aware pivots |
+| L2 trend line | dropped as unfalsifiable (C-5) |
+
+**Seven of twelve exist, two are trivial, two need work, one is dropped.** The structural
+target (§11 item 1) therefore is *not* blocked; only the equal-highs ladder (item 4) is,
+and on one function rather than a module.
