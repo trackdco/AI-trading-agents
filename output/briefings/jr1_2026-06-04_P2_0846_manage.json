@@ -1,0 +1,186 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "P2",
+ "decision_minute": "2026-06-05T08:46 ET",
+ "reason_for_call": "intermediate_level_broken",
+ "leak_check": "pass - replay truncated at 08:45:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jr1_2026-06-04_P2_0846_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "long",
+  "entry": 30118.0,
+  "stop": 30083.0,
+  "targets": [
+   {
+    "level": "daily_poc",
+    "price": 30186.0
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "08:44",
+  "R_in_points": 35.0,
+  "current_stop_distance": 35.0,
+  "open_pnl_in_R": 0.34
+ },
+ "level_in_question": {
+  "level": "bb_ma_3m",
+  "price": 30129.25
+ },
+ "price_at_decision": 30130.0,
+ "last_completed_2m_bar": {
+  "start": "08:44",
+  "closed_at": "08:46",
+  "open": 30121.5,
+  "high": 30131.75,
+  "low": 30117.0,
+  "close": 30130.0,
+  "volume": 1069,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "08:38",
+   "closed_at": "08:40",
+   "open": 30075.75,
+   "high": 30094.0,
+   "low": 30071.0,
+   "close": 30085.5,
+   "volume": 1412,
+   "minutes": 2
+  },
+  {
+   "start": "08:40",
+   "closed_at": "08:42",
+   "open": 30085.75,
+   "high": 30106.0,
+   "low": 30084.5,
+   "close": 30102.5,
+   "volume": 1185,
+   "minutes": 2
+  },
+  {
+   "start": "08:42",
+   "closed_at": "08:44",
+   "open": 30101.25,
+   "high": 30123.0,
+   "low": 30087.25,
+   "close": 30121.75,
+   "volume": 1241,
+   "minutes": 2
+  },
+  {
+   "start": "08:44",
+   "closed_at": "08:46",
+   "open": 30121.5,
+   "high": 30131.75,
+   "low": 30117.0,
+   "close": 30130.0,
+   "volume": 1069,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "screenshot": "jr1_2026-06-04_P2_0846_manage.png",
+  "bb_basis_2m_last_completed_plot": 30129.19,
+  "bb_upper_2m": 30183.78,
+  "bb_lower_2m": 30074.6,
+  "vwap": 30179.74,
+  "vwap_p1": 30247.45,
+  "vwap_m1": 30112.04,
+  "vwap_p2": 30315.16,
+  "vwap_m2": 30044.33,
+  "vwap_p3": 30382.86,
+  "vwap_m3": 29976.63,
+  "read_at": "live capture, res 3, cursor verified 1780663559 via replay_status",
+  "_pooled_from": "caplive_jr1_mng_all.json",
+  "provenance": "captured live via the full runbook sequence."
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30179.56,
+   "vwap_p1": 30247.9,
+   "vwap_p2": 30316.24,
+   "vwap_p3": 30384.58,
+   "vwap_m1": 30111.23,
+   "vwap_m2": 30042.89,
+   "vwap_m3": 29974.55
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30115.54,
+   "bb_ma_3m": 30126.88,
+   "bb_ma_15m": 30175.01,
+   "bb_ma_60m": 30266.59
+  },
+  "day_range_fibs": {
+   "0.382": 30187.47,
+   "0.5": 30232.25,
+   "0.618": 30277.03,
+   "0.705": 30310.05
+  },
+  "session_high_so_far": 30422.0,
+  "session_low_so_far": 30042.5,
+  "daily_profile": {
+   "poc": 30186.0,
+   "val": 30116.0,
+   "vah": 30231.0,
+   "note": "DEVELOPING as-of 08:46"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30417.0,
+   "vah": 30758.0,
+   "high": 30807.75,
+   "low": 30042.5,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 08:46"
+  },
+  "prior_day": {
+   "poc": 30484.0,
+   "val": 30304.0,
+   "vah": 30597.0,
+   "high": 30603.25,
+   "low": 30151.0
+  }
+ },
+ "crowded_path": {
+  "levels_between_tp1_and_tp2": [],
+  "count": 0,
+  "crowded_path": false,
+  "note": "this position has a single target (30186.00), so there is no TP1-to-TP2 corridor to be crowded."
+ },
+ "management_actions_so_far": [],
+ "what_to_emit": "your management JSON, per your contract.",
+ "conviction_partial_rule": {
+  "conviction_of_this_position": "B",
+  "contract_default": "at TP1, take 50% and hold the rest toward the full target - every trade, every grade. Uniform 50/50 (tv-manage 0.3.3, his ruling 2026-08-17). The conviction label still arrives with your briefing and is still recorded; it no longer changes the schedule.",
+  "retired_do_not_apply": "the conviction-keyed schedule (A 50% / B 75% / C 100%) is RETIRED. If you remember it from an older version, it is not the contract in force.",
+  "note": "stated as the contract text, not as an instruction - partial_pct is your decision and is a fraction of what is still open. The schedule is the default, not a cage: your judgement at this level still overrides it."
+ },
+ "thesis_context": {
+  "version": "NY_PRE window-open thesis, reconciled - the one in force",
+  "primary_bias": "short",
+  "invalidation": 30186.0,
+  "aligned": "stated as run state: compare this position's side against the bias above yourself. The orchestrator does not judge alignment for you."
+ },
+ "prior_positions_this_window": {
+  "count": 1,
+  "detail": "a position is OPEN: P2 - long 30118.00 filled 08:44, conviction B, original risk 35.0pt. Nothing has been banked; the full position is still on. Working stop 30083.00 (as placed at entry; no manage action yet). The plan's ladder: daily_poc 30186.0.",
+  "earlier_windows": "LONDON: 1 fill(s) - STILL OPEN: L1."
+ },
+ "window_note": {
+  "window": "NY_PRE",
+  "entries_end": "09:29",
+  "text": "the NY_PRE window runs 08:00-09:29 with entries cut at 09:10. T51 DOES apply: this position must be flat by 09:29:59, before the cash open.",
+  "disclosure": "Nothing about any later setup in this window is disclosed to you here."
+ },
+ "BREAKEVEN_RULE": {
+  "rule": "breakeven is ONLY available after TP1 has printed. Before TP1 it is not a legal action.",
+  "tp1": 30186.0,
+  "tp1_printed_yet": false,
+  "available_to_you_now": "NO - TP1 has not printed, so breakeven is not one of your options at this minute",
+  "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
+  "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
+  "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected."
+ }
+}

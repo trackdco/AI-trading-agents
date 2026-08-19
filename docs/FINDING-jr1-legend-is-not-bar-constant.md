@@ -116,3 +116,57 @@ clean - all 38 frames carry a VWAP within 250pt of their position's entry
 
 The 09:59 read was caught and corrected before storage, so no frame in the pool carries a
 raced legend. The check is cheap and stays on for the rest of the run.
+
+---
+
+# THIRD DEFECT: a partial booked on a non-`partial` action was silently dropped
+
+Found resolving 2026-06-03 L1. At TP1 the manager returned:
+
+```json
+{ "action": "breakeven", "new_stop": 30498.0, "partial_pct": 0.5,
+  "reason": "TP1 30412 traded ... bank 50% here, stop tightened 30507 -> breakeven 30498." }
+```
+
+`exitcalc.replay` booked the stop move but **not** the 50%, because the partial leg was gated
+on `act == "partial"`:
+
+```python
+elif act == "partial" and a.get("partial_pct"):
+```
+
+So the whole position rode to the stop and the banked half vanished.
+
+## Why the manager was right and the code was wrong
+
+tv-manage 0.3.4 mandates *both* things at TP1 - bank 50% **and** tighten the stop - and the
+action taxonomy has no single verb for that pair. Returning `breakeven` + `partial_pct: 0.5`
+is the honest encoding of the mandate. The scorer, not the manager, had the bug.
+
+## Fix
+
+The partial now books whenever `partial_pct > 0`, whatever the action verb says; the stop
+move still applies independently.
+
+## Blast radius: one row
+
+Audited all three books (wr1/wr2/jr1) for manage rows carrying `partial_pct > 0` on a
+non-`partial` action:
+
+```
+1 manage row(s) carry partial_pct>0 on a non-'partial' action:
+   ('jr1', '2026-06-03', 'L1', '04:15', 'breakeven', 0.5)
+```
+
+Only the row that exposed it. No already-scored position changes.
+
+## Regression check
+
+Re-resolved 2026-06-01 A3, which books a genuine `partial` action, before and after the fix:
+
+```
+EXIT jr1 2026-06-01 A3: +0.5913R blended / +1.0000R full-target  [partial_50pct -> stopped]
+```
+
+Byte-identical to the stored row. (The re-run appended a second exit row, which was removed;
+the two were confirmed identical first - that comparison *is* the regression evidence.)
