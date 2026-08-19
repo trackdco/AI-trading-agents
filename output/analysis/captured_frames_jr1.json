@@ -109,6 +109,424 @@
     "-3sigma": 30349.75
    },
    "screenshot": "jr1_2026-05-31_P2_0831_manage.png"
+  },
+  "jr1|2026-06-01|P2|08:37": {
+   "cid": "P2",
+   "cursor": 1780403819,
+   "bar_start": 1780403580,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780403819 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30541.73,
+    "Upper": 30561.18,
+    "Lower": 30522.27
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30461.17,
+    "+1sigma": 30536.67,
+    "-1sigma": 30385.67,
+    "+2sigma": 30612.17,
+    "-2sigma": 30310.18,
+    "+3sigma": 30687.67,
+    "-3sigma": 30234.68
+   },
+   "screenshot": "jr1_2026-06-01_P2_0837_manage.png"
+  },
+  "jr1|2026-06-01|P2|08:40": {
+   "cid": "P2",
+   "cursor": 1780403999,
+   "bar_start": 1780403760,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780403999 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30540.21,
+    "Upper": 30556.49,
+    "Lower": 30523.94
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30461.46,
+    "+1sigma": 30536.96,
+    "-1sigma": 30385.96,
+    "+2sigma": 30612.46,
+    "-2sigma": 30310.46,
+    "+3sigma": 30687.96,
+    "-3sigma": 30234.95
+   },
+   "screenshot": "jr1_2026-06-01_P2_0840_manage.png"
+  },
+  "jr1|2026-06-01|P2|08:41": {
+   "cid": "P2",
+   "cursor": 1780404059,
+   "bar_start": 1780403940,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780404059 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30539.59,
+    "Upper": 30554.57,
+    "Lower": 30524.61
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30461.5,
+    "+1sigma": 30537.0,
+    "-1sigma": 30386.0,
+    "+2sigma": 30612.51,
+    "-2sigma": 30310.49,
+    "+3sigma": 30688.01,
+    "-3sigma": 30234.99
+   },
+   "screenshot": "jr1_2026-06-01_P2_0841_manage.png"
+  },
+  "jr1|2026-06-01|A2|09:48": {
+   "cid": "A2",
+   "cursor": 1780408079,
+   "bar_start": 1780407900,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408079 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30514.35,
+    "Upper": 30571.57,
+    "Lower": 30457.13
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30474.66,
+    "+1sigma": 30540.37,
+    "-1sigma": 30408.96,
+    "+2sigma": 30606.07,
+    "-2sigma": 30343.26,
+    "+3sigma": 30671.77,
+    "-3sigma": 30277.55
+   },
+   "screenshot": "jr1_2026-06-01_A2_0948_manage.png"
+  },
+  "jr1|2026-06-01|A2|09:49": {
+   "cid": "A2",
+   "cursor": 1780408139,
+   "bar_start": 1780407900,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408139 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30514.35,
+    "Upper": 30571.57,
+    "Lower": 30457.13
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30474.66,
+    "+1sigma": 30540.37,
+    "-1sigma": 30408.96,
+    "+2sigma": 30606.07,
+    "-2sigma": 30343.26,
+    "+3sigma": 30671.77,
+    "-3sigma": 30277.55
+   },
+   "screenshot": "jr1_2026-06-01_A2_0949_manage.png"
+  },
+  "jr1|2026-06-01|A2|09:50": {
+   "cid": "A2",
+   "cursor": 1780408199,
+   "bar_start": 1780407900,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408199 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30514.35,
+    "Upper": 30571.57,
+    "Lower": 30457.13
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30474.66,
+    "+1sigma": 30540.37,
+    "-1sigma": 30408.96,
+    "+2sigma": 30606.07,
+    "-2sigma": 30343.26,
+    "+3sigma": 30671.77,
+    "-3sigma": 30277.55
+   },
+   "screenshot": "jr1_2026-06-01_A2_0950_manage.png"
+  },
+  "jr1|2026-06-01|A2|09:54": {
+   "cid": "A2",
+   "cursor": 1780408439,
+   "bar_start": 1780408260,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408439 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30516.4,
+    "Upper": 30579.5,
+    "Lower": 30453.3
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30479.4,
+    "+1sigma": 30546.19,
+    "-1sigma": 30412.61,
+    "+2sigma": 30612.97,
+    "-2sigma": 30345.82,
+    "+3sigma": 30679.76,
+    "-3sigma": 30279.04
+   },
+   "screenshot": "jr1_2026-06-01_A2_0954_manage.png"
+  },
+  "jr1|2026-06-01|A2|09:55": {
+   "cid": "A2",
+   "cursor": 1780408499,
+   "bar_start": 1780408260,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408499 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30516.4,
+    "Upper": 30579.5,
+    "Lower": 30453.3
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30479.4,
+    "+1sigma": 30546.19,
+    "-1sigma": 30412.61,
+    "+2sigma": 30612.97,
+    "-2sigma": 30345.82,
+    "+3sigma": 30679.76,
+    "-3sigma": 30279.04
+   },
+   "screenshot": "jr1_2026-06-01_A2_0955_manage.png"
+  },
+  "jr1|2026-06-01|A3|09:55": {
+   "cid": "A3",
+   "cursor": 1780408499,
+   "bar_start": 1780408260,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408499 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30516.4,
+    "Upper": 30579.5,
+    "Lower": 30453.3
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30479.4,
+    "+1sigma": 30546.19,
+    "-1sigma": 30412.61,
+    "+2sigma": 30612.97,
+    "-2sigma": 30345.82,
+    "+3sigma": 30679.76,
+    "-3sigma": 30279.04
+   },
+   "screenshot": "jr1_2026-06-01_A3_0955_manage.png"
+  },
+  "jr1|2026-06-01|A2|09:56": {
+   "cid": "A2",
+   "cursor": 1780408559,
+   "bar_start": 1780408260,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408559 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30516.4,
+    "Upper": 30579.5,
+    "Lower": 30453.3
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30479.4,
+    "+1sigma": 30546.19,
+    "-1sigma": 30412.61,
+    "+2sigma": 30612.97,
+    "-2sigma": 30345.82,
+    "+3sigma": 30679.76,
+    "-3sigma": 30279.04
+   },
+   "screenshot": "jr1_2026-06-01_A2_0956_manage.png"
+  },
+  "jr1|2026-06-01|A2|09:57": {
+   "cid": "A2",
+   "cursor": 1780408619,
+   "bar_start": 1780408440,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408619 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30517.65,
+    "Upper": 30583.21,
+    "Lower": 30452.09
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30481.72,
+    "+1sigma": 30548.86,
+    "-1sigma": 30414.59,
+    "+2sigma": 30615.99,
+    "-2sigma": 30347.45,
+    "+3sigma": 30683.12,
+    "-3sigma": 30280.32
+   },
+   "screenshot": "jr1_2026-06-01_A2_0957_manage.png"
+  },
+  "jr1|2026-06-01|A3|09:57": {
+   "cid": "A3",
+   "cursor": 1780408619,
+   "bar_start": 1780408440,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408619 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30517.65,
+    "Upper": 30583.21,
+    "Lower": 30452.09
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30481.72,
+    "+1sigma": 30548.86,
+    "-1sigma": 30414.59,
+    "+2sigma": 30615.99,
+    "-2sigma": 30347.45,
+    "+3sigma": 30683.12,
+    "-3sigma": 30280.32
+   },
+   "screenshot": "jr1_2026-06-01_A3_0957_manage.png"
+  },
+  "jr1|2026-06-01|A3|09:58": {
+   "cid": "A3",
+   "cursor": 1780408679,
+   "bar_start": 1780408440,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408679 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30517.65,
+    "Upper": 30583.21,
+    "Lower": 30452.09
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30481.72,
+    "+1sigma": 30548.86,
+    "-1sigma": 30414.59,
+    "+2sigma": 30615.99,
+    "-2sigma": 30347.45,
+    "+3sigma": 30683.12,
+    "-3sigma": 30280.32
+   },
+   "screenshot": "jr1_2026-06-01_A3_0958_manage.png"
+  },
+  "jr1|2026-06-01|A2|09:59": {
+   "cid": "A2",
+   "cursor": 1780408739,
+   "bar_start": 1780408440,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408739 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30517.65,
+    "Upper": 30583.21,
+    "Lower": 30452.09
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30481.72,
+    "+1sigma": 30548.86,
+    "-1sigma": 30414.59,
+    "+2sigma": 30615.99,
+    "-2sigma": 30347.45,
+    "+3sigma": 30683.12,
+    "-3sigma": 30280.32
+   },
+   "screenshot": "jr1_2026-06-01_A2_0959_manage.png"
+  },
+  "jr1|2026-06-01|A3|09:59": {
+   "cid": "A3",
+   "cursor": 1780408739,
+   "bar_start": 1780408440,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408739 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30517.65,
+    "Upper": 30583.21,
+    "Lower": 30452.09
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30481.72,
+    "+1sigma": 30548.86,
+    "-1sigma": 30414.59,
+    "+2sigma": 30615.99,
+    "-2sigma": 30347.45,
+    "+3sigma": 30683.12,
+    "-3sigma": 30280.32
+   },
+   "screenshot": "jr1_2026-06-01_A3_0959_manage.png"
+  },
+  "jr1|2026-06-01|A2|10:00": {
+   "cid": "A2",
+   "cursor": 1780408799,
+   "bar_start": 1780408620,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408799 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30521.25,
+    "Upper": 30596.3,
+    "Lower": 30446.2
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30485.44,
+    "+1sigma": 30554.11,
+    "-1sigma": 30416.78,
+    "+2sigma": 30622.77,
+    "-2sigma": 30348.11,
+    "+3sigma": 30691.44,
+    "-3sigma": 30279.45
+   },
+   "screenshot": "jr1_2026-06-01_A2_1000_manage.png"
+  },
+  "jr1|2026-06-01|A3|10:00": {
+   "cid": "A3",
+   "cursor": 1780408799,
+   "bar_start": 1780408620,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780408799 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30521.25,
+    "Upper": 30596.3,
+    "Lower": 30446.2
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30485.44,
+    "+1sigma": 30554.11,
+    "-1sigma": 30416.78,
+    "+2sigma": 30622.77,
+    "-2sigma": 30348.11,
+    "+3sigma": 30691.44,
+    "-3sigma": 30279.45
+   },
+   "screenshot": "jr1_2026-06-01_A3_1000_manage.png"
+  },
+  "jr1|2026-06-01|A2|11:00": {
+   "cid": "A2",
+   "cursor": 1780412399,
+   "bar_start": 1780412220,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780412399 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30605.86,
+    "Upper": 30651.8,
+    "Lower": 30559.93
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30517.96,
+    "+1sigma": 30596.74,
+    "-1sigma": 30439.18,
+    "+2sigma": 30675.52,
+    "-2sigma": 30360.4,
+    "+3sigma": 30754.3,
+    "-3sigma": 30281.62
+   },
+   "screenshot": "jr1_2026-06-01_A2_1100_manage.png"
+  },
+  "jr1|2026-06-01|A3|11:00": {
+   "cid": "A3",
+   "cursor": 1780412399,
+   "bar_start": 1780412220,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780412399 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30605.86,
+    "Upper": 30651.8,
+    "Lower": 30559.93
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30517.96,
+    "+1sigma": 30596.74,
+    "-1sigma": 30439.18,
+    "+2sigma": 30675.52,
+    "-2sigma": 30360.4,
+    "+3sigma": 30754.3,
+    "-3sigma": 30281.62
+   },
+   "screenshot": "jr1_2026-06-01_A3_1100_manage.png"
   }
  }
 }
