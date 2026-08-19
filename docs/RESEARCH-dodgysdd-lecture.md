@@ -39,8 +39,8 @@ the channel and every rule below is attached to a video id and a timestamp in
 
 | | |
 |---|---|
-| part 1 | `WQycR82IOD4` — 11:57:19, 99,528 words |
-| part 2 | `r43i9rRIjoQ` — 11:59:53, 93,167 words |
+| **part 1** | `r43i9rRIjoQ` — 11:59:59, 93,167 words |
+| **part 2** | `WQycR82IOD4` — 11:57:29, 99,528 words |
 | total | **23h 56m, 192,695 words** |
 
 The fetched captions reproduce the supplied transcript verbatim, including its

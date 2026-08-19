@@ -5,8 +5,8 @@ a video id and a timestamp. Regenerate with `python scripts/dodgy_cite.py`.
 
 | | |
 |---|---|
-| part 1 | `WQycR82IOD4` — 11:57:19, 5,986 caption lines, 99,528 words |
-| part 2 | `r43i9rRIjoQ` — 11:59:53, 5,795 caption lines, 93,167 words |
+| **part 1** | `r43i9rRIjoQ` — 11:59:59, 5,795 caption lines, 93,167 words |
+| **part 2** | `WQycR82IOD4` — 11:57:29, 5,986 caption lines, 99,528 words |
 | total | **23h 56m, 192,695 words** |
 | backend | yt-dlp `json3` auto-captions, `player_client=ios` |
 | fetched | 2026-08-19 |
@@ -116,3 +116,36 @@ P5     WQycR82IOD4   01:09:02   premium/discount, buy discount
                                 "...kay,thisisathat'sthenumberonePDarrayinmyopinionandit'sapremiumanddiscountarraywhichIrememberwho'srememberwhenwetalkedaboutpremiumdiscountkindoffromtheYouTubev..."
 --------------------------------------------------------------------------------------------------------------
 attached 38/38 rules; 0 unattached
+
+---
+
+## Coverage gap — the lecture is 24 hours, he calls it 36
+
+Channel titles confirm only **two** parts exist: *"I Taught Day Trading From Scratch at
+UCLA (Part 1)"* `r43i9rRIjoQ` and *"(Part 2)"* `WQycR82IOD4`. Together they run **23h 56m**.
+
+He repeatedly frames the class as *"this next 36 hours"* and, near the end of part 2, says
+*"I got about 11 hours left"* with material still to cover — SMT, breaker blocks and macro
+times are all delivered at speed in the closing stretch. **Roughly a third of the class he
+describes is not in these two uploads**, and no part 3 exists on the channel as of this
+fetch.
+
+Consequence for the catalogue: absence of a rule from this corpus is **not** evidence he
+does not teach it. Anything the lecture leaves as class D may well be defined in the
+missing material or in the 470-odd other channel videos.
+
+## Adjacent videos worth pulling next
+
+The 2026 model post-dates this lecture and the v2 audit already flagged that the flagship
+model changed. These are the relevant ones on the channel:
+
+| id | dur | title |
+|---|---|---|
+| `E1BIVjBwLxQ` | 8m10 | **The new 2026 IFVG trading model** |
+| `KB4yG424nfk` | 9m51 | The Simplest IFVG Trading Model You'll Ever Have |
+| `3C56Omm69As` | 31m38 | Raw & Real IFVG Masterclass in Under 30 Mins |
+| `zAZqCeckrwg` | 8m41 | **IFVG's Don't Work.** |
+| `nTA6vCGMQAI` | 8m19 | How I Caught my Best Trade this Month Using iFVGs (10R) |
+
+`zAZqCeckrwg` is the one to read first — a title that concedes the model fails is the
+cheapest possible source of the conditions under which he thinks it fails.
