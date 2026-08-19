@@ -60,6 +60,35 @@ BARS_PER_DAY = 1380      # 23h of 1m bars, the 18:00-anchored session
 WIN = (510, 660)
 
 
+def realized_risk(sig: pd.DataFrame, bars: pd.DataFrame) -> np.ndarray:
+    """Risk the REAL book actually traded: |next open - stop|, not the signal-bar figure.
+
+    simulate() derives risk from (entry, stop) and entry is the next open, so matching on
+    sig.risk -- measured from the signal-bar CLOSE -- would leave a small mismatch exactly
+    where the whole comparison lives.
+    """
+    o = bars["open"].to_numpy()
+    return np.abs(o[np.minimum(sig.i.to_numpy() + 1, len(o) - 1)] - sig.stop.to_numpy())
+
+
+def restop(p: pd.DataFrame, bars: pd.DataFrame, risk: np.ndarray) -> pd.DataFrame:
+    """Place the control's stop at `risk` points on the LOSING side of its own entry.
+
+    THIS IS THE WHOLE MATCH, and the first version of this script got it wrong: it carried
+    the real signal's absolute stop PRICE onto a different bar (or a flipped direction),
+    where that price is unrelated to the new entry and frequently sits on the WINNING side.
+    simulate() then triggers its stop check on the entry bar itself and books an instant
+    +1R, which is why the flip control came back winning 99.98% of the time. A control that
+    cannot lose is not a control. See FINDINGS-dodgy-placebo CORRECTION.
+    """
+    o = bars["open"].to_numpy()
+    i0 = np.minimum(p.i.to_numpy() + 1, len(o) - 1)
+    d = p.direction.to_numpy()
+    p = p.copy()
+    p["stop"] = o[i0] - d * risk
+    return p
+
+
 def placebo(sig: pd.DataFrame, bars: pd.DataFrame, mode: str,
             rng: np.random.Generator) -> list[pd.DataFrame]:
     """Return K matched control books (1 for the deterministic modes)."""
@@ -68,35 +97,59 @@ def placebo(sig: pd.DataFrame, bars: pd.DataFrame, mode: str,
     mod = (ts.hour * 60 + ts.minute).to_numpy()
     sday = (ts - pd.Timedelta(hours=18)).date
     last = n - MAX_HOLD - 2                       # room for entry + full hold
+    risk = realized_risk(sig, bars)
 
     if mode == "flip":
         p = sig.copy()
         p["direction"] = -p["direction"]
-        return [p]
+        return [restop(p, bars, risk)]
 
     if mode == "shift_1d":
         p = sig.copy()
         p["i"] = p["i"] + BARS_PER_DAY
-        return [p[p.i < last].reset_index(drop=True)]
+        keep = (p.i < last).to_numpy()
+        return [restop(p[keep].reset_index(drop=True), bars, risk[keep])]
 
     # random_day: same minute of day, a different session day
-    pool = {m: np.flatnonzero((mod == m) & (np.arange(n) < last))
-            for m in np.unique(sig.i.map(lambda x: mod[x]).to_numpy())}
     si = sig.i.to_numpy()
     smin = mod[si]
     sd = sday[si]
+    pool = {m: np.flatnonzero((mod == m) & (np.arange(n) < last))
+            for m in np.unique(smin)}
     out = []
     for _ in range(K):
         newi = np.empty(len(sig), dtype=np.int64)
         for m in np.unique(smin):
             w = np.flatnonzero(smin == m)
             newi[w] = rng.choice(pool[m], size=len(w), replace=True)
-        collide = (sday[newi] == sd).mean()
         p = sig.copy()
         p["i"] = newi
-        p.attrs["collide"] = collide
+        p = restop(p, bars, risk)
+        p.attrs["collide"] = (sday[newi] == sd).mean()
         out.append(p)
     return out
+
+
+def audit(real: pd.DataFrame, ctrl: list[pd.DataFrame], bars: pd.DataFrame,
+          label: str) -> None:
+    """Hard guards. The first version of this script would have failed all three."""
+    o = bars["open"].to_numpy()
+    ref = pd.Series(realized_risk(real, bars), index=real.sid.to_numpy())
+    for c in ctrl:
+        i0 = np.minimum(c.i.to_numpy() + 1, len(o) - 1)
+        d = c.direction.to_numpy()
+        # Only rows that actually trade: simulate() discards risk < 2.0, and a handful
+        # of real signals have a next open sitting exactly ON their stop (risk 0), which
+        # would otherwise trip this check on trades that never happen.
+        cr_all = realized_risk(c, bars)
+        live = cr_all >= 2.0
+        wrong_side = ((o[i0] - c.stop.to_numpy()) * d <= 0)[live].mean()
+        assert wrong_side == 0, f"{label}: {100 * wrong_side:.2f}% of stops on the winning side"
+        cr = pd.Series(realized_risk(c, bars), index=c.sid.to_numpy())
+        assert np.allclose(cr.to_numpy(), ref.loc[cr.index].to_numpy(), atol=1e-9), \
+            f"{label}: risk not matched"
+    print(f"  [audit] {label}: stops all on the losing side, risk matched to 1e-9",
+          flush=True)
 
 
 def paired(real: pd.DataFrame, ctrl: list[pd.DataFrame], bars: pd.DataFrame,
@@ -137,6 +190,7 @@ def main() -> None:
         for mode in ("random_day", "shift_1d", "flip"):
             rng = np.random.default_rng(SEED)
             ctrl = placebo(s, bars, mode, rng)
+            audit(s, ctrl, bars, mode)
             if mode == "random_day":
                 print(f"  same-session-day collisions: "
                       f"{100 * ctrl[0].attrs['collide']:.2f}% (biases TOWARD the null)",
