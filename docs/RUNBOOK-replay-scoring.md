@@ -419,6 +419,14 @@ never judges content.
    standing thesis as before. (j49 06-01: v1→v2→v3 carried one short story
    and one stale zone through three window opens of an upward grind.)
 
+4. **THE LADDER BOUNCE (T78).** A `take_full`/`take_light` whose `targets`
+   list has fewer than TWO entries is re-spawned once with the note *"T78:
+   name TP2 — the next structure at least ~1R beyond TP1."* One bounce,
+   then proceed with what it gives (§2d), tagging the row
+   `t78_single_target: true` so the defect is countable. Counting targets
+   is arithmetic, not judgement. (wr2/jr1 proved prose alone does not
+   bind: T78 was violated on the majority of takes while in force.)
+
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 
 Step one 2m bar at a time through LONDON 03:00–04:59 / NY_PRE 08:00–09:29 /

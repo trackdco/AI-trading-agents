@@ -1,5 +1,14 @@
 # RECEIPT — the dead-zone trail ban, priced before shipping
 
+> **CORRECTION 2026-08-19** (from `docs/FINDING-duplicate-exit-rows.md`,
+> the Mac session's find): w49 carries duplicate exit rows on ten trades,
+> and three of this ledger's as-run values quoted the stale row — w49
+> 06-23 L1 is **+1.5684** (not +1.145), 06-23 L5 is **+0.3879** (not
+> +0.483), 06-25 A2 is **+4.8648** (not +2.740). Corrected as-run total:
+> **+12.72R**, HOLD total unchanged at +8.48R — **the ban costs ≈ −4.2R,
+> not −1.8R**. The errors ran in the direction that reinforces the ruling:
+> the ban still does not ship, by a wider margin.
+
 **Status: the rule does NOT ship.** He approved it in principle
 (2026-08-18: *"yes"*) and required the receipt first (*"but see what the
 outcome would be without it"*). The receipt reverses the recommendation.

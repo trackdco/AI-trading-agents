@@ -1,7 +1,15 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.12
+version: 0.4.13
+# 0.4.13: T78 ENFORCEMENT (2026-08-19, from the wr2/jr1 books). T78 was in
+#   force and was violated on the MAJORITY of takes (jr1 4/12 compliant,
+#   wr2 7/18): the doctrine said "two targets" 600 lines before an output
+#   example showing a ONE-element targets list, and the agents copied the
+#   example. Schema beats prose. Fix: the example now shows two rungs and
+#   says so, and the runbook (2e duty 4) bounces any take with fewer than
+#   two targets back once. No doctrine change - this makes the existing
+#   ruling actually bind.
 # 0.4.12: T78 THE LADDER (his ruling 2026-08-18, after pulling the plug on
 #   wr1). Every plan carries TP1 AND TP2. Six wr1 trades went out
 #   single-target and the one two-target plan beat w49 - the old
@@ -1152,7 +1160,8 @@ Exactly one JSON object, no other text, no markdown fence:
   "cancel_if_reaches": {"level": "vwap", "price": 0.0},
   "stop": 0.0,
   "stop_rationale": "which level, and why not the candle extreme",
-  "targets": [ {"level": "weekly_val", "price": 0.0} ],
+  "targets": [ {"level": "weekly_val", "price": 0.0},
+               {"level": "prior_day_low", "price": 0.0} ],
   "conviction": "A|B|C",
   "pair_shape": "same_candle|sequential",
   "levels_closed": ["own_ma_2m", "vwap"],
@@ -1162,6 +1171,10 @@ Exactly one JSON object, no other text, no markdown fence:
                  "why_thesis_cannot_accommodate": "one line"} }
 ```
 
+- `targets` is the LADDER (T78): **minimum TWO rungs on every take** — TP1 by
+  the preference order, TP2 the next structure at least ~1R beyond it. The
+  two-element example above is the minimum shape, not a coincidence. A
+  single-target take will be bounced back to you once to name TP2.
 - On `pass`, `reason` and `constraints_failed` carry the whole payload; entry/stop
   fields may be null. **A pass still gets logged in full** — the passes are the
   valuable rows and they are what define the boundary.
