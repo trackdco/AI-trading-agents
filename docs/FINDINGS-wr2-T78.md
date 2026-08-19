@@ -197,3 +197,44 @@ question — the rule measures clearance off the LEVEL with no regard for where 
 inside the range actually trading, which on d3 A4 put the stop 31pt above a level in the
 middle of a 100pt range and cost 1.2287R — is logged as a harness_finding on 2026-06-23 A4
 and is his call, not the manager's.
+
+---
+
+## jr1 counter-example to the dead-zone-trail ruling: 2026-06-04 A5
+
+The 5pt-trail ruling (dead-zone trail nets POSITIVE across all three books; manage 0.3.4
+stands as written) is not disturbed by this, and no manage change is proposed. But jr1 threw
+the cleanest single counter-example the run has produced, and it belongs in the ledger.
+
+**06-04 A5, short 29883, stop 29940 (57pt risk).**
+
+| minute | action | stop | note |
+|---|---|---|---|
+| 10:26 | trail | 29940 -> **29884.83** | bb_ma_2m (29859.83) closed through; clearance 25pt |
+| 10:34 | hold | 29884.83 | bounce chopped back above bb_ma_2m, "not yet decisive" |
+| 10:34 | stopped | | |
+
+Result: **-0.0321R blended vs +2.1930R full-target.**
+
+The trail was legal - a genuine closed break of bb_ma_2m with T55 clearance. But it moved the
+stop to 1.83pt above a 29883 entry, i.e. effectively to scratch, on a **2-minute** moving
+average: the fastest structure on the board. The next bounce took it out, and the trade then
+went on to reach its target. Management converted a +2.19R winner into a scratch.
+
+Contrast the same day's P2, where the identical instinct was worth +0.97R:
+
+| | trailed to | vs entry | blended | full-target | management |
+|---|---|---|---|---|---|
+| 06-04 P2 | 30117 | -1pt | **-0.0286R** | -1.0000R | **+0.97R** |
+| 06-04 A5 | 29884.83 | +1.83pt | **-0.0321R** | +2.1930R | **-2.23R** |
+
+Two trades, same session-day, same manager behaviour - trail to roughly scratch off a
+fast-MA break - and the outcomes differ by 3.2R purely on whether the trade was going to work
+out. That is the trail behaving as a coin-flip on fresh positions, which is precisely what the
+dead-zone ledger measured in aggregate and found net-positive.
+
+**What this is evidence for:** not that the trail is wrong, but that the level it trails
+*behind* matters. Both of these trailed behind a 2m/3m moving average rather than structure.
+The winners in this run (06-03 A3 +1.53R, 06-03 L1 +2.13R) trailed behind *named structure* -
+daily POC, daily VAL, VWAP+1, TP2 itself. Worth a look when the trail question is next opened;
+logged, not acted on.
