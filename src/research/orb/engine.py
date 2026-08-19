@@ -362,6 +362,16 @@ def run(bars: pd.DataFrame, cfg: Config, ctx: pd.DataFrame | None = None,
                         continue
                     stop = entry - d_ * min(caps)
                     capped = True
+            # The stop must sit on the PROTECTIVE side of the entry -- below for a long,
+            # above for a short. ORB's stop (the opposite OR boundary) satisfies this by
+            # construction and this never fires for it. A signal whose stop reference is
+            # computed from bars strictly before the fill bar (any reversal/turn signal)
+            # can have price run past that reference before the fill actually happens; take
+            # that trade and _walk() would exit on its very first bar at a price ON THE
+            # WRONG SIDE of entry, recording a "stop" that is arithmetically a WIN. Caught by
+            # test_a_stop_on_the_wrong_side_of_entry_is_rejected_not_mispriced.
+            if (entry - stop) * d_ <= 0:
+                continue
             risk = abs(entry - stop)
             if risk < TICK:
                 continue
