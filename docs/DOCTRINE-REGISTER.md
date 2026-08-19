@@ -28,7 +28,7 @@ STRUCK = he disavowed, removed from the contract.
 
 | ver | rules | class | provenance | his verdict |
 |-----|-------|-------|------------|-------------|
-| 0.2.0 | T39 | VETO/SIZE | **UNSOURCED** | **FLAGGED**: T39 FOMC is an unsourced VETO — awaiting his verdict |
+| 0.2.0 | T39 | VETO/SIZE | **UNSOURCED** | **CONFIRMED** — his ruling 2026-08-19: "fomc does close ny entirely. that is enforced." |
 | | | | *T39 FOMC closes NEW YORK ENTIRELY - not reduced size, not extra caution, closed. "I do not trade FOM…* | |
 
 ## tv-thesis (now 0.4.4)

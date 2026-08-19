@@ -5,9 +5,9 @@ contract text, plus the j49 post-mortem's plumbing. Stack for all runs:
 
 | tier | contract | note |
 |---|---|---|
-| tv-macro-events | 0.2.0 | unchanged (T39 flagged in the register, not yet ruled) |
+| tv-macro-events | 0.2.0 | unchanged — T39 CONFIRMED by his ruling 2026-08-19 |
 | tv-thesis | **0.4.4** | T40 struck; T71–T74 HTF-structure bias; condition grammar |
-| tv-trigger | **0.4.12** | T75–T77; **T78 the target LADDER** (TP1 + TP2 mandatory) |
+| tv-trigger | **0.4.13** | T75–T78 + LADDER ENFORCEMENT (two-rung example, §2e bounce) |
 | tv-manage | **0.3.4** | uniform 50/50; the runner's mandate is TP2 |
 
 All agents on Sonnet, model recorded per row, as before. **The runbook has a
@@ -57,9 +57,24 @@ lands; none of this reaches any agent, briefing, or prompt:**
   forcing a thesis re-read on the second licence-only pass, the PRE hard
   cap enforcing.
 
+## RUN 2c — `jr2`: the j49 tape under ENFORCED T78 (his call, 2026-08-19)
+
+Status first: `wr2` DONE (+16.5304R, regression passed), `jr1` DONE
+(+3.0837R). But jr1 ran with T78 violated on 8 of 12 takes (the schema-
+example defect, fixed in 0.4.13), so the enforcement itself — and the
+50/50 split, which only pays when TP2 exists — went untested. His call:
+*"wouldnt it make sense to run jr1 with t78 enforced if it wasnt enforced
+before."* Yes. `jr2`: same tape (2026-05-31…06-04 week), trigger 0.4.13,
+the §2e duty-4 ladder bounce LIVE (re-spawn any take with <2 targets once,
+tag `t78_single_target`), everything else identical to jr1. Fresh prefix
+`jr2`, books to `output/books/jr2/`. Then STOP for his review.
+Reviewer receipts: same three as jr1, PLUS: every take two-rung (bounces
+counted), and the runner-vs-full-target decomposition re-cut with real
+ladders.
+
 ## RUN 3 — `jl1`: the fresh July week, 2026-07-05…09 — **GATED ON HIS GREEN LIGHT**
 
-**Do NOT start this run until he has reviewed the `wr2` and `jr1` books and
+**Do NOT start this run until he has reviewed the `wr2`/`jr1`/`jr2` books and
 explicitly green-lit it.** His ruling: *"lets not run jl1 until j49 and w49
 are done and we can look at them and be happy with them."*
 

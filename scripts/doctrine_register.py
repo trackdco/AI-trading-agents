@@ -39,7 +39,7 @@ STATUS = {
     ("tv-manage", "0.3.4"): "paired with T78, same ruling 2026-08-18",
     ("tv-manage", "0.3.3"): "50/50 per his ruling 2026-08-17; trail clause is disambiguation, no new doctrine",
     ("tv-trigger", "0.4.8"): "**FLAGGED**: unsourced, and his narration 2026-08-18 (T77 re-break re-entry) cuts against the cap — awaiting his verdict",
-    ("tv-macro-events", "0.2.0"): "**FLAGGED**: T39 FOMC is an unsourced VETO — awaiting his verdict",
+    ("tv-macro-events", "0.2.0"): "**CONFIRMED** — his ruling 2026-08-19: \"fomc does close ny entirely. that is enforced.\"",
 }
 
 VETO_PAT = re.compile(r"stand_aside|closed|blackout|may NOT|never |no entries"
