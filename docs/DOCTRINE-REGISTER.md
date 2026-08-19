@@ -31,10 +31,12 @@ STRUCK = he disavowed, removed from the contract.
 | 0.2.0 | T39 | VETO/SIZE | **UNSOURCED** | **CONFIRMED** — his ruling 2026-08-19: "fomc does close ny entirely. that is enforced." |
 | | | | *T39 FOMC closes NEW YORK ENTIRELY - not reduced size, not extra caution, closed. "I do not trade FOM…* | |
 
-## tv-thesis (now 0.4.4)
+## tv-thesis (now 0.4.5)
 
 | ver | rules | class | provenance | his verdict |
 |-----|-------|-------|------------|-------------|
+| 0.4.5 | T18,T19 | VETO/SHAPE | **UNSOURCED** | mechanical enforcement of T18/T19 (no new doctrine) — reach bounce, §2e duty 5 |
+| | | | *T18/T19 ENFORCEMENT (2026-08-19, from the jr1-vs-jr2 variance decomposition). Same tape, same contra…* | |
 | 0.4.4 | T71,T74,T30 | VETO/SHAPE | cites him, 2026-08-18 | sourced: his narration 2026-08-18, in-chat — the source IS the sign-off |
 | | | | *T71-T74 HTF-STRUCTURE BIAS + condition grammar (his narration 2026-08-18, in-chat, verbatim - the 06…* | |
 | 0.4.3 | T40 | VETO | cites him, 2026-08-18 | his ruling 2026-08-18 (the strike itself) |
@@ -124,7 +126,7 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | T14,T23,T4 | SHAPE | cites him, 2026-08-13 |  |
 | | | | *NEW TIER, his ruling 2026-08-13. Management was a set of mechanical clauses (T14 break-even on a ban…* | |
 
-**40 versioned rule entries; 12 carry no source
+**41 versioned rule entries; 13 carry no source
 citation at all. 33 quoted blocks are presented as his voice across
 the four contracts — every one of them is subject to the same
 challenge T40 failed.**

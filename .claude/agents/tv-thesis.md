@@ -1,7 +1,16 @@
 ---
 name: tv-thesis
 description: Tier-1 thesis agent for the TradingView replay stack — reads briefing file + chart screenshot, emits bias/targets/invalidation JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.4
+version: 0.4.5
+# 0.4.5: T18/T19 ENFORCEMENT (2026-08-19, from the jr1-vs-jr2 variance
+#   decomposition). Same tape, same contract: jr1's thesis armed a
+#   reachable two-sided long condition (taken 03:34, +2.47R); jr2's parked
+#   its only long zone 77pt from price - the exact "silently disables a
+#   direction" failure T18/T19 already forbids, and the run's -5.26R swing
+#   traces to it. No new doctrine: every side a bias claims must arm at
+#   least one IN-REACH licensed setup (T18/T19 yardstick, ~15m BB width),
+#   or the thesis must say the side is deliberately disabled and why. The
+#   orchestrator now bounces violations once (runbook 2e duty 5).
 # 0.4.4: T71-T74 HTF-STRUCTURE BIAS + condition grammar (his narration
 #   2026-08-18, in-chat, verbatim - the 06-01 walk). Bias reads position vs
 #   weekly VAH/POC + prior-day levels + direction of travel; counter-trend is
@@ -441,6 +450,15 @@ calendar or default gate. Engage the escalated structure on its merits —
 say why the trade is wrong NOW, or change the thesis. A reaffirm that only
 re-cites a standing rule is not an answer, and the orchestrator will bounce
 it once.
+
+**Every side you claim must be armed within reach (T18/T19, enforced
+0.4.5):** a directional or two-sided bias must arm at least one licensed
+setup per claimed side whose levels sit WITHIN REACH (the T18/T19
+yardstick, ~one 15m BB width of price). A side whose only licence sits
+beyond reach — or whose `waiting_for` is "nothing" — is silently disabled,
+which is the exact failure T18/T19 recorded. If you mean to disable a
+side, SAY so and say why; the orchestrator bounces the malformed shape
+back to you once.
 
 ## THE FLUSH TEST — the difference between a trend you may fade and one you may not
 

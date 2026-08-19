@@ -427,6 +427,18 @@ never judges content.
    is arithmetic, not judgement. (wr2/jr1 proved prose alone does not
    bind: T78 was violated on the majority of takes while in force.)
 
+5. **THE REACH BOUNCE (T18/T19).** For every side a thesis claims
+   (directional bias, both sides of a two-sided, `other_side_tripwire`,
+   relicense zones): compute the distance from current price to the
+   NEAREST level in that side's licence. If a claimed side's only licence
+   sits beyond one 15m BB width (from the briefing), or its `waiting_for`
+   is empty, bounce once: *"your ⟨side⟩ licence is ⟨N⟩pt from price —
+   beyond the T18/T19 reach bound; restate within reach, or state the side
+   is deliberately disabled and why."* One bounce, then proceed, tagging
+   `t18_out_of_reach: true`. Distance is arithmetic, not judgement.
+   (jr1-vs-jr2: the −5.26R swing traces to jr2 parking its long zone 77pt
+   from price — a silent disable T18/T19 already forbade.)
+
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 
 Step one 2m bar at a time through LONDON 03:00–04:59 / NY_PRE 08:00–09:29 /

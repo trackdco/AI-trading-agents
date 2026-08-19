@@ -33,6 +33,7 @@ STATUS = {
     ("tv-thesis", "0.4.1"): "**STRUCK 0.4.3** — his ruling 2026-08-18",
     ("tv-thesis", "0.4.3"): "his ruling 2026-08-18 (the strike itself)",
     ("tv-thesis", "0.4.4"): "sourced: his narration 2026-08-18, in-chat — the source IS the sign-off",
+    ("tv-thesis", "0.4.5"): "mechanical enforcement of T18/T19 (no new doctrine) — reach bounce, §2e duty 5",
     ("tv-trigger", "0.4.11"): "sourced: his narration 2026-08-18, in-chat",
     ("tv-trigger", "0.4.12"): "sourced: his ruling 2026-08-18 after pulling the plug on wr1",
     ("tv-trigger", "0.4.13"): "mechanical enforcement of T78 (no new doctrine) — schema example + runbook bounce",
