@@ -1,5 +1,19 @@
 # RULING — NY_PRE IS CUT. London and New York AM only.
 
+> **REINSTATED 2026-08-19 — THE CUT IS BACK, effective jl1 onward.** His
+> words: *"I'm not a fan of New York pre-market. I'm more than happy to
+> just drop that entirely, if I'm being honest… I rarely trade pre-market
+> anyways, and we can see here it's not really sustaining anything good."*
+> The receipt that settled it: under the current stack PRE is negative on
+> ALL THREE j49-tape runs (jn1 +0.38 → jr1 −2.03 → jr2 −2.45, capped at 1),
+> and cutting it IMPROVES every current-era book — jr1 +3.08→+5.11, jr2
+> −2.18→+0.27 — while costing the fit tape ~1.2R (wr2 +16.53→+15.35).
+> Mechanics: the NY_PRE window is not traded at all — no candidate
+> adjudication, no fills, and the 08:00 thesis read is skipped (NY_AM
+> opens with its own fresh-eyes read at 09:30). The one-line reversal
+> below still applies. The cap-of-1 era lasted one day and two runs; its
+> note is preserved beneath.
+
 > **SUPERSEDED 2026-08-18 — NY_PRE STAYS, HARD-CAPPED AT 1.** His ruling,
 > after seeing the counter-facts (PRE booked **+2.32R on the losing j49
 > week** — its second-best trades — and +1.46R on the fit week): *"we will

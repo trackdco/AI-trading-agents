@@ -93,16 +93,14 @@ cap enforcing, stops placed per T75 (beyond the rejected level, not the
 swing) — and then the only question that decides anything: **his
 trade-by-trade read.**
 
-## Windows — his 2026-08-18 ruling in force
+## Windows — his 2026-08-19 ruling: NY_PRE IS CUT (jl1 onward)
 
-All three windows run, with **NY_PRE HARD-capped at 1 fill per session-day**
-(his ruling: *"we will allow a ny pre cap of 1 for now"* — it supersedes the
-full cut; `docs/RULING-cut-ny-pre.md` carries the note). After a PRE fill,
-later PRE candidates are passes with reason `window_cap`, never
-tagged-and-taken. LONDON/NY_AM caps stay lifted-with-tags as before; the
-09:10 entry cut stands. Scoring note: w49/jn1 books ran PRE uncapped, so
-when comparing, apply the cap to their PRE rows arithmetically (first fill
-only) for the like-for-like view.
+Trading windows for `jl1` are **LONDON 03:00–04:59 and NY_AM 09:30–11:00
+only**. NY_PRE is not traded: no candidate adjudication, no fills, and the
+08:00 thesis read is skipped — NY_AM opens with its own fresh-eyes read at
+09:30. (`docs/RULING-cut-ny-pre.md` carries his words and the receipt: PRE
+negative on all three j49-tape runs; cutting it improves every current-era
+book.) LONDON/NY_AM caps stay lifted-with-tags; the 09:10 rule is moot.
 
 ## Mechanics — unchanged
 

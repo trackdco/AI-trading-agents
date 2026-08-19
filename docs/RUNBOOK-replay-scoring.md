@@ -587,12 +587,13 @@ every fill beyond the WRITTEN caps `beyond_written_cap: true` and print both
 scoreboards, as-run and as-written. A number produced under lifted caps is not
 comparable to doctrine unless the capped subset is recoverable from the log.
 
-**EXCEPTION — NY_PRE is HARD-capped at 1** (his ruling 2026-08-18: *"we will
-allow a ny pre cap of 1 for now"* — superseding the full cut of
-`docs/RULING-cut-ny-pre.md`). Even in a lifted-caps run, once a NY_PRE fill
-exists, every later PRE candidate is a pass with reason `window_cap` — never
-tagged-and-taken. LONDON and NY_AM lifting is unchanged, and the 09:10
-entry cut stands.
+**NY_PRE IS CUT (his ruling 2026-08-19, reinstating the 2026-08-17 cut —
+`docs/RULING-cut-ny-pre.md`).** The window is not traded: no PRE candidates
+are adjudicated, no PRE fills exist, and the 08:00 thesis read is skipped —
+NY_AM opens with its own fresh-eyes read at 09:30. Trading windows are
+LONDON 03:00–04:59 and NY_AM 09:30–11:00 only. (History: a hard cap of 1
+ran for jr1/jr2 on 2026-08-18–19; PRE was negative under it on both.)
+LONDON and NY_AM cap-lifting is unchanged.
 
 ## 4. PHASE R3 — THE LOG
 
