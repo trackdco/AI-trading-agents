@@ -170,3 +170,48 @@ EXIT jr1 2026-06-01 A3: +0.5913R blended / +1.0000R full-target  [partial_50pct 
 
 Byte-identical to the stored row. (The re-run appended a second exit row, which was removed;
 the two were confirmed identical first - that comparison *is* the regression evidence.)
+
+---
+
+# FOURTH DEFECT: score.py's 75/25 counterfactual had the same verb gate
+
+The same bug as the third, in the place where it does the most damage. `counterfactual_75`
+gated on:
+
+```python
+if not done and a.get("action") == "partial" and a.get("partial_pct"):
+```
+
+So a trade whose 50% was booked on a `breakeven` row was **silently excluded from the
+like-for-like sample** - and that sample is the entire basis of the 75/25 split ruling. jr1
+reported `n=1` when the truth was `n=2`.
+
+Fixed to match exitcalc: the first row carrying `partial_pct > 0` is the partial, whatever
+the verb.
+
+## Before / after (jr1)
+
+```
+before:  LIKE-FOR-LIKE subtotal   0.5913        0.8534   <- 1 trade
+after:   LIKE-FOR-LIKE subtotal   2.7214        2.8302   <- 2 trades
+```
+
+wr2 is unchanged (`16.5304 / 11.0002`, n=4, 75/25 ahead by 0.5397R), as the blast-radius
+audit predicted - no wr2 row books a partial on a non-`partial` verb.
+
+## What the recovered trade actually says
+
+06-03 L1 is the first jr1 trade whose runner reached **target_2**, and it is the first trade
+in any book where 75/25 **loses**:
+
+| trade | runner outcome | as-run | 75/25 | 75/25 delta |
+|---|---|---|---|---|
+| 06-01 A3 | stopped | 0.5913 | 0.8534 | **+0.2621** |
+| 06-03 L1 | reached target_2 | 2.1301 | 1.9768 | **-0.1533** |
+
+That is the mechanism stated plainly: banking 75% early wins when the runner is going to
+fail, and loses when the runner is going to reach TP2. Which is precisely why T78 matters -
+the split ruling and the two-target mandate are the same question asked twice. A book where
+runners reliably reach a real TP2 should prefer a *smaller* early partial, not a larger one.
+
+Sample is still 2 trades. This is the mechanism, not the verdict.
