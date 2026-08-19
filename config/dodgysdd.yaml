@@ -1,0 +1,170 @@
+# DodgysDD iFVG model — every parameter, with the quote it came from.
+#
+# RESEARCH ONLY. This encodes an UNVALIDATED hypothesis catalogue reverse-engineered
+# from a public lecture. See docs/RESEARCH-dodgysdd-lecture.md for the quotes and
+# docs/FINDINGS-dodgy-ifvg.md for what is ALREADY MEASURED AND NEGATIVE.
+#
+# PROVENANCE DEFECT: the lecture transcript has no video id and no timestamps.
+# Re-fetch before citing. See docs/RESEARCH-dodgysdd-lecture.md §0.
+#
+# Provenance tag on every value:
+#   [A]  he states it — quote given
+#   [R]  researcher-chosen placeholder for a sweep; he gave no number
+#   [X]  ALREADY TESTED — result recorded, do not re-run as if open
+# A value marked [R] is NOT his rule. Never report an [R] default as "his parameter".
+
+instrument:
+  symbol: NQ                      # he trades NQ/MNQ; ES only as the SMT reference
+  tick_size: 0.25
+  point_value: 20.0               # NQ mini; MNQ = 2.0
+  timezone: America/New_York
+  smt_reference: ES               # [A] "NASDAQ and S&P go hand in hand"
+
+# ---------------------------------------------------------------------------
+# E1 — the trigger. ALREADY MEASURED: -0.135R after cost, -0.020R before.
+trigger:
+  kind: ifvg                      # [A] "everything I do revolves around fair value gaps"
+  require_body_close: true        # [A][X] "the bodies tell the story, the wicks do the damage"
+  require_reentry: true           # price must re-enter the zone before the breaking close
+  max_gap_age_bars: 240           # [R] gap age measured INERT across all quintiles
+  one_signal_per_bar_per_dir: true  # BR-9/BR-10 clustering convention
+  cooldown_bars: 15               # BR-9/BR-10
+
+# E2 — entry convention. HIS is market_on_close; the ICT model he abandoned is retrace.
+# These are SEPARATE BOOKS, never merged.
+entry:
+  mode: market_on_close           # [A] "I get in the second this candle closes"
+                                  # sweep {market_on_close, retrace_limit, retrace_ce}
+
+# E4 — displacement quality. He names it, never sizes it.
+displacement:
+  enabled: true                   # [A] "drake candle" / "death candle"
+  method: body_over_range         # [R] {body_over_range, body_over_atr, body_over_median}
+  min_body_over_range: 0.60       # [R] sweep 0.4-0.8 — HIS NUMBER DOES NOT EXIST
+  atr_lookback: 14                # [R]
+
+# E5 — his four stated rules on WHICH iFVG to take.
+gap_selection:
+  singular_only: true             # [A] "the IPG must be singular"
+  merge_stacked_gaps: true        # [A] "you can combine them... make it one giant zone"
+  obviousness_pct: null           # [A][X] REFUTED — p50/p75/p90 moved EV -0.019/-0.027/-0.029
+  require_target_unswept: true    # [A] "we haven't already taken out those highs"
+                                  #     ** the most valuable untested predicate here **
+
+# ---------------------------------------------------------------------------
+# Q — liquidity sweep. ALREADY MEASURED as subtractive (80,593 -> 36,127, EV -0.135 -> -0.140).
+sweep:
+  required: true                  # [A][X] "that is the one thing you should be looking for"
+  lookback_bars: 60               # [R]
+  # Q2 — the NEW magnitude test separating a sweep from a real break.
+  displacement_vs_prior_leg:
+    enabled: true                 # [A] "is it the same size as the range we just put in?"
+    min_ratio: 0.50               # [R] sweep {0.25, 0.5, 0.75, 1.0} — HIS NUMBER DOES NOT EXIST
+  delete_spent_levels: true       # [A] "after we use the level, does it matter anymore? No"
+
+# ---------------------------------------------------------------------------
+# L — the draw. Twelve level types, his closed list.
+draw:
+  enabled_levels:                 # [A] all twelve stated
+    - equal_highs_lows            # L1
+    - trendline                   # L2
+    - london_hi_lo                # L3
+    - asia_hi_lo                  # L4
+    - ny_hi_lo                    # L5
+    - prev_day_hi_lo              # L6
+    - weekly_hi_lo                # L7
+    - news_data_hi_lo             # L8  [X] premise refuted, see FINDINGS-dodgy-data-wick
+    - intermediate_term_hi_lo     # L9  "a low that bounces off an old fair value gap"
+    - new_week_opening_gap        # L10
+    - new_day_opening_gap         # L11
+    - session_hi_lo               # L12
+  equal_level_tolerance_ticks: 2  # [R] "to the tick" is his phrase; tolerance is not
+  equal_level_min_touches: 2      # [A] ladder at 2 / 3 / 4+
+  # L1 ladder — HIS CLAIMED HIT RATES. Directly falsifiable, no entry model needed.
+  claimed_hit_rate:
+    two_adjacent: 0.50            # [A]
+    two_apart: 0.75               # [A] "70 80%"
+    three_plus: 0.89              # [A]
+    four_plus_to_the_tick: 0.925  # [A] "90 to 95%"
+
+trendline:                        # L2 — free parameters are REAL, this is the honest risk
+  min_touches: 3                  # [R] sweep {3,4,5} — [A] "more touches the better"
+  touch_tolerance_w: 0.02         # [R] in units of the 15m BB width W
+  max_age_bars: 480               # [R]
+  fit_to: swing_points            # [R] {swing_points, extremes}
+  prefer_slope_deg: 45            # [A] "I really prefer trend lines... 45 degree angles"
+  slope_tolerance_deg: 25         # [R]
+
+# ---------------------------------------------------------------------------
+# X — the higher-timeframe nest. THE component the prior findings most wanted tested.
+htf_nest:
+  enabled: true                   # [A] "a trade off of a trade"
+  htf: 60min                      # [A] "the one or 4 hour" — sweep {15min, 60min, 240min}
+  zone_kinds: [fvg, order_block]  # [A]
+  require_price_inside_zone: true # [A] stage 1 gate before the 1m trigger fires
+  stop_anchor: htf_zone           # [A] "we still held the five-minute for gap"
+                                  # sweep {ltf_zone, htf_zone, sweep_low}
+
+# ---------------------------------------------------------------------------
+# T — targets and management. T1 IS A DIFFERENT EXIT, NOT A FILTER.
+exit:
+  target: structural              # [A] "95% of my targets are always highs and lows"
+                                  # sweep {structural, fixed_2r} — fixed_2r is what was tested
+  min_rr: 1.0                     # [A] "never take a trade below one R"
+  partials:
+    enabled: true                 # [A]
+    first_partial_frac: 0.50      # [R] he varies; "sell three... one... one"
+  breakeven:
+    enabled: true                 # [A][X] measured +0.007R on a fixed-2R book — re-run under structural
+    trigger_r: 1.0                # [A] "if you're up one R... move your stop to break even"
+  trail_on_opposing_structure: true  # [A] trails to the last opposing FVG/trendline
+
+risk:
+  account_size: 50000             # [A] the prop account he recommends
+  max_risk_per_trade: 250         # [A] "$250 per trade. That's max"
+  same_size_every_trade: true     # [A] "never size up or down after a loss"
+  max_losses_per_day: 2           # [A] the two-loss rule
+  daily_lockout: true             # [A] book-level constraint, cannot change per-trade EV
+  cost_pts: 0.50                  # the incumbent census assumption for NQ
+
+# ---------------------------------------------------------------------------
+# K/M — time. The SESSION restriction is already refuted; the MACROS are not.
+time:
+  sessions:                       # [A] all ET
+    london:  {start: "02:00", end: "05:00"}
+    ny_am:   {start: "08:30", end: "11:00"}   # [X] REFUTED: pre-cost EV -0.026 -> -0.071
+    asia:    {start: "20:00", end: "00:00"}   # [A] "Asia equals consolidation" — avoid
+  enabled_sessions: []            # [R] empty = no restriction; the restriction MADE IT WORSE
+  macros:                         # [A] NEVER TESTED — narrower than the session
+    - {start: "08:50", end: "09:10"}
+    - {start: "09:50", end: "10:10"}
+    - {start: "10:50", end: "11:10"}
+  reversal_hour: "10:00"          # [A] "10 a.m. equals great reversal time" (4h close)
+  judas_window: {start: "09:30", end: "10:00"}  # [A] confluence, NOT an entry
+  overnight_chop_filter:          # F1 — cheap, falsifiable, no entry model needed
+    enabled: true                 # [A] "big overnight move equals choppy NY AM session"
+    min_overnight_range_pts: 300  # [A] "anything above like 300 points is pretty substantial"
+
+# ---------------------------------------------------------------------------
+# S — SMT. Demoted by his own account.
+smt:
+  enabled: false                  # [A] "this is like fifth in my checklist", "do not trade
+                                  #      this religiously" — NOT a standalone gate
+  reference: ES
+  at_extremes_only: true          # [A] bullish SMT at lows, bearish at highs
+
+# ---------------------------------------------------------------------------
+# P — the other PD arrays.
+order_block:
+  enabled: true                   # [A] sandwich candle
+  entry_line: open                # [A] "the open of the order block"
+  reject_wicky: true              # [A] "do not use wicky candles for order blocks"
+  max_wick_over_body: 1.0         # [R] "wicky" is never defined
+breaker_block:
+  enabled: false                  # [A] requires OB at a swing point + a prior sweep
+  require_swing_point: true       # [A]
+  require_sweep: true             # [A] without it, it is a "mitigation block" — he skips
+premium_discount:
+  enabled: true                   # [A] longs in discount, shorts in premium
+  equilibrium: 0.5                # [A]
+  impulse_leg_selection: manual   # [D] "it's got to be very, very obvious" is not a rule
