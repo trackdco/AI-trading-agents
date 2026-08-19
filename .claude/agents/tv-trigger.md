@@ -1,7 +1,14 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.13
+version: 0.4.14
+# 0.4.14: T79 - MIDDLE-DEAD IS ABOUT THE LEVEL, NOT THE ZONE (his confirm
+#   2026-08-19). The chop map's middle-dead was being applied by price's
+#   trailing-range zone, so a VWAP+2/VAH rejection short from mid-zone
+#   (06-03 03:22) flipped verdicts across three runs; his narration calls
+#   that trade good. Scoped: an entry off a structural edge level is an
+#   edge trade wherever zone_now puts price; dead means the REJECTED LEVEL
+#   itself is mid-range (lone MA, drifting POC, chop fib).
 # 0.4.13: T78 ENFORCEMENT (2026-08-19, from the wr2/jr1 books). T78 was in
 #   force and was violated on the MAJORITY of takes (jr1 4/12 compliant,
 #   wr2 7/18): the doctrine said "two targets" 600 lines before an output
@@ -922,9 +929,17 @@ restriction. It is the map for the session, and the range is the trade.**
   levels."* Pick it the way you always do — the ordinary first-target
   preference order and its R band still govern. The far edge tells you which
   direction has room; the level tells you where to get out.
-- **The middle stays dead.** No entries from the middle toward either side —
-  that is the existing rule, now with a real measured range behind it instead
-  of "the session range so far."
+- **The middle stays dead — and "middle" is judged by the REJECTED LEVEL,
+  not by where price sits in the trailing range (T79, his confirm
+  2026-08-19).** An entry whose rejected level is a structural edge — an
+  outer VWAP band, a value-area edge, a weekly level, the mapped range's
+  own boundary — is an EDGE trade even when `zone_now` reads "middle".
+  What stays dead is an entry whose rejected level itself sits inside the
+  middle: a lone mid-range MA, the drifting POC, a fib in the chop. (The
+  03:22 VWAP+2/VAH rejection short flipped on this exact boundary in three
+  separate runs; his read of it: *"this is looking like a pretty good
+  trade"* — the veto that passed it was reading price's zone, not the
+  level's.)
 - **A range fade from an edge is NOT counter-trend.** Do not cap it at C on
   those grounds. In a `CHOP` state there is no trend to be counter to; the
   edge trade is the with-the-structure trade. Grade it on the merit of the

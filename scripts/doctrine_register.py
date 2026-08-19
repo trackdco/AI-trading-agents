@@ -37,6 +37,7 @@ STATUS = {
     ("tv-trigger", "0.4.11"): "sourced: his narration 2026-08-18, in-chat",
     ("tv-trigger", "0.4.12"): "sourced: his ruling 2026-08-18 after pulling the plug on wr1",
     ("tv-trigger", "0.4.13"): "mechanical enforcement of T78 (no new doctrine) — schema example + runbook bounce",
+    ("tv-trigger", "0.4.14"): "T79 sourced: his confirm 2026-08-19 ('Yeah, all right, that's fine') on the proposed scoping, after the 03:22 three-run flip",
     ("tv-manage", "0.3.4"): "paired with T78, same ruling 2026-08-18",
     ("tv-manage", "0.3.3"): "50/50 per his ruling 2026-08-17; trail clause is disambiguation, no new doctrine",
     ("tv-trigger", "0.4.8"): "**FLAGGED**: unsourced, and his narration 2026-08-18 (T77 re-break re-entry) cuts against the cap — awaiting his verdict",
