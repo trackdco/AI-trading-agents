@@ -6,6 +6,12 @@ output/*
 !output/.gitkeep
 # generated validated dataset (Step 2 output) — reproducible from data/raw/ via src/engine/data.py
 data/*.parquet
+# EXCEPTION: the gold-track 1m bars are committed. They are NOT reproducible — no script
+# in this repo builds them and their provenance was never recorded, so the ignore rule
+# above meant every gold result died with the container that held them.
+!data/gc_1m.parquet
+!data/dx_1m.parquet
+!data/6j_1m.parquet
 
 # secrets — API keys and tokens live in .env, never committed
 .env
@@ -33,3 +39,8 @@ output/triggers_hist2326_days/
 # (these contain live skill content pulled off the Hermes host)
 .hermes-rebuild/
 .venv-freeze/
+
+# Dukascopy gold ticks, built by scripts/fetch_gold_ticks.py — reproducible,
+# and market data does not belong in git (same rule as data/*.parquet above)
+data/gold/
+data/transcripts/
