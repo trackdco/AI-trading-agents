@@ -90,8 +90,15 @@ def restop(p: pd.DataFrame, bars: pd.DataFrame, risk: np.ndarray) -> pd.DataFram
 
 
 def placebo(sig: pd.DataFrame, bars: pd.DataFrame, mode: str,
-            rng: np.random.Generator) -> list[pd.DataFrame]:
-    """Return K matched control books (1 for the deterministic modes)."""
+            rng: np.random.Generator,
+            pool_mask: np.ndarray | None = None) -> list[pd.DataFrame]:
+    """Return K matched control books (1 for the deterministic modes).
+
+    ``pool_mask`` restricts where random_day may place a control. For a SUBPOPULATION
+    arm it must be the subpopulation's own mask -- drawing controls from the whole tape
+    would ask whether the subpopulation is a good place to be, which is a different and
+    much easier question than whether the trigger beats a coin flip taken there.
+    """
     n = len(bars)
     ts = bars.index
     mod = (ts.hour * 60 + ts.minute).to_numpy()
@@ -114,8 +121,13 @@ def placebo(sig: pd.DataFrame, bars: pd.DataFrame, mode: str,
     si = sig.i.to_numpy()
     smin = mod[si]
     sd = sday[si]
-    pool = {m: np.flatnonzero((mod == m) & (np.arange(n) < last))
-            for m in np.unique(smin)}
+    ok = (np.arange(n) < last)
+    if pool_mask is not None:
+        ok &= pool_mask
+    pool = {m: np.flatnonzero((mod == m) & ok) for m in np.unique(smin)}
+    thin = [m for m, v in pool.items() if len(v) < 20]
+    if thin:
+        raise ValueError(f"{len(thin)} minutes have <20 control bars; pool too thin")
     out = []
     for _ in range(K):
         newi = np.empty(len(sig), dtype=np.int64)
