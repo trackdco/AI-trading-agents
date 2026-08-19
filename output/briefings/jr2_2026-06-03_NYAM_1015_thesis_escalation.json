@@ -1,0 +1,200 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "escalation",
+ "window": "NY_AM",
+ "decision_minute": "2026-06-04T10:15 ET",
+ "leak_check": "pass - replay truncated at 10:14:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jr2_2026-06-03_A5_1015.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30262.75,
+ "last_completed_2m_bar": {
+  "start": "10:12",
+  "closed_at": "10:14",
+  "open": 30268.0,
+  "high": 30282.5,
+  "low": 30241.0,
+  "close": 30262.75,
+  "volume": 4744,
+  "minutes": 2
+ },
+ "candle_grid_note": "This decision minute is 10:15, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 10:14. price_at_decision and every 2m field below are that 10:14 bar - they will not equal the 3m close, and the chart legend will read the 10:14 bar. Judge the 3m candle and the 10:14 2m candle; neither is fabricated.",
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_AM",
+  "entries": "09:30-11:00 earliest entry 09:35",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30253.28,
+  "bb_upper_2m": 30348.88,
+  "bb_lower_2m": 30157.67,
+  "vwap": 30320.56,
+  "vwap_p1": 30415.0,
+  "vwap_m1": 30226.11,
+  "vwap_p2": 30509.45,
+  "vwap_m2": 30131.67,
+  "vwap_p3": 30603.89,
+  "vwap_m3": 30037.22,
+  "read_at": "chart cursor 10:15-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "_session_calendar": {
+   "session_day_label": "2026-06-03",
+   "session_opens": "2026-06-03 18:00 ET (Wednesday evening)",
+   "cash_session_traded": "2026-06-04 (Thursday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30320.08,
+   "vwap_p1": 30414.96,
+   "vwap_p2": 30509.85,
+   "vwap_p3": 30604.73,
+   "vwap_m1": 30225.19,
+   "vwap_m2": 30130.31,
+   "vwap_m3": 30035.42
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30251.29,
+   "bb_ma_3m": 30271.38,
+   "bb_ma_15m": 30272.01,
+   "bb_ma_60m": 30426.72
+  },
+  "day_range_fibs": {
+   "0.382": 30301.32,
+   "0.5": 30347.75,
+   "0.618": 30394.18,
+   "0.705": 30428.42
+  },
+  "session_high_so_far": 30544.5,
+  "session_low_so_far": 30151.0,
+  "daily_profile": {
+   "poc": 30261.0,
+   "val": 30165.0,
+   "vah": 30364.0,
+   "note": "DEVELOPING as-of 10:15"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30469.0,
+   "vah": 30734.0,
+   "high": 30807.75,
+   "low": 30151.0,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 10:15"
+  },
+  "prior_day": {
+   "poc": 30685.0,
+   "val": 30577.0,
+   "vah": 30724.0,
+   "high": 30807.75,
+   "low": 30478.25
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.112,
+  "net_move_15m": -173.75,
+  "total_15m_travel": 1550.75,
+  "candles_15m_up": 32,
+  "candles_15m_down": 33,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "09:15",
+   "open": 30300.25,
+   "high": 30330.75,
+   "low": 30265.25,
+   "close": 30268.25,
+   "body_ratio": 0.49
+  },
+  {
+   "start": "09:30",
+   "open": 30268.25,
+   "high": 30364.5,
+   "low": 30210.0,
+   "close": 30227.25,
+   "body_ratio": 0.27
+  },
+  {
+   "start": "09:45",
+   "open": 30226.25,
+   "high": 30316.0,
+   "low": 30187.75,
+   "close": 30248.0,
+   "body_ratio": 0.17
+  },
+  {
+   "start": "10:00",
+   "open": 30247.75,
+   "high": 30282.5,
+   "low": 30151.0,
+   "close": 30279.25,
+   "body_ratio": 0.24
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "a red-folder release with event_time landing in the 09:20-09:30 gate band (or an FOMC event anywhere on the calendar) would change this read; none is on the calendar",
+  "reasoning": "Calendar for 2026-06-04 is empty through the cash open - no events released so far today and none scheduled later. No 10-minute pre-event band applies because no red-folder release exists to define one.",
+  "_provenance": "tv-macro-events 0.2.0 output carried forward from the j49 run. The macro contract is UNCHANGED in the 0.4.11 batch and its entire input is the economic calendar plus standing policy - no chart, no bars, no prices - so for the same session-day and window the input is byte-identical and re-spawning could only reproduce it. Carried rather than re-run, and said so here rather than passed off as fresh."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 30164.25
+   },
+   {
+    "level": "vwap_m3",
+    "price": 30075.51
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_low",
+   "price": 30478.25
+  },
+  "waiting_for": "nothing further at the thesis level - the rebalance bounce already stalled short of the far zone (high only 30330.75, never reaching 30340-354) and the 09:15 15m candle closed back through its own MA and the daily POC (30302); shorts are licensed on a retest of that broken 15m-MA/POC zone or on continuation toward weekly low then vwap_m3.",
+  "two_sided": true,
+  "condition_for_other_side": "temporary T72 longs re-anchored closer to price: licensed on a 15m decisive close back above the declining 15m MA stacked with the daily POC (currently ~30283-302), not the old far zone (30340-354 fib-0.5/former-MA) which price never reached and is now well out of reach; full invalidation of the short still requires a 15m decisive close back above the broken prior-day low (30478.25).",
+  "anticipated_resolution": {
+   "level": "weekly_low",
+   "price": 30164.25,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "A 15m close below the weekly low (30164.25) with a decisive body confirms continuation lower; a 15m close back above the broken prior-day low (30478.25) with a decisive body means the flush was a stop-run and invalidates the short view.",
+  "other_side_tripwire": {
+   "level": "bb_ma_15m",
+   "price": 30282.92,
+   "event": "15m_decisive_close"
+  },
+  "defended_level": {
+   "level": "prior_day_low",
+   "price": 30478.25,
+   "memory": "prior day's session low; held and was defended at the 03:00 read via the 02:30 15m displacement candle",
+   "status": "failed"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "escalation_response": "accommodated",
+  "reasoning": "Structured trend day continues (path_efficiency 0.127, balanced 15m up/down count) - the T15 rebalance bounce played out exactly as anticipated: price stalled well short of the 30340-354 far zone and the 09:15 15m candle closed back through its own MA and the daily POC. Short bias reaffirmed; weekly low (tested, not yet 15m-closed-through) stays the live target ahead of vwap_m3. T72 counter-long condition re-anchored to the now-nearer 15m-MA/POC zone since the old far zone is out of reach."
+ },
+ "what_happened_since_the_last_read": "Since your 09:30 read, stated as price facts only: between 09:30 and this decision minute the session traded a high of 30364.50 and a low of 30151.00. All levels in levels_at_decision_BUILD are recomputed as of this minute.",
+ "why_you_are_being_re-fired": "TIER-2 ESCALATION, candidate A5, decision minute 10:15 (NY_AM), direction LONG.\n\nThe trigger did NOT override you. It passed and raised. Its case, verbatim:\n\n  decision: take_light (LONG), conviction B, thesis_stale: true\n  reason: \"Long opposes reaffirmed short trend thesis; other-side condition (15m close\n    above declining 15m MA/POC) is met on recomputed live levels (30272.01/30261.0) but\n    thesis's own ~30283-302 zone (untracked >8pt drift) is not reached - escalating rather\n    than deciding unilaterally. POC/MA all stale, caps B.\"\n  rejected_level: daily_poc 30261.0 - \"3m candle (10:12-10:15) wicked 20pt below POC to a\n    low of 30241, then closed back above at 30279.25 - reclaim/rejection shape, same candle\n    also closed through own 3m MA (30271.38) and 15m MA (30272.01)\"\n  escalation.level: bb_ma_15m+daily_poc\n  escalation.direction: long\n  escalation.why_thesis_cannot_accommodate: \"Thesis's T72 other-side long condition names a\n    ~30283-302 zone for the stacked 15m-MA/POC, but recomputed live levels sit at\n    30272.01/30261.0 (drift not tracked in thesis_anchor_drift, >8pt tolerance). This\n    candle's close (30279.25) clears the live levels via a nameable POC rejection +\n    same-candle own-MA/15m-MA break, but falls short of the thesis's stated zone floor\n    (30283) - Tier 1 should confirm whether the re-anchored long condition is genuinely\n    satisfied or whether the ~30283-302 estimate still governs.\"\n\nYOUR STANDING TEXT that this bears on:\n  other_side_tripwire: {level: bb_ma_15m, price: 30282.92, event: 15m_decisive_close}\n  condition_for_other_side: \"temporary T72 longs re-anchored closer to price: licensed on a\n    15m decisive close back above the declining 15m MA stacked with the daily POC (currently\n    ~30283-302) ... full invalidation of the short still requires a 15m decisive close back\n    above the broken prior-day low (30478.25).\"\n\nTHE QUESTION PUT TO YOU: your other-side tripwire is priced at 30282.92 and gated on a 15m\nDECISIVE CLOSE. The trigger is citing a 3m close at 30279.25 against a re-anchored 15m MA at\n30272.01. Decide, on the frame in front of you, whether (a) the re-anchored level genuinely\nsatisfies your other-side condition and you ACCOMMODATE the long, or (b) the ~30283-302 zone\nand the 15m-close requirement still govern and you REAFFIRM the short. Re-price your levels\noff the legend you are given, not off the drifted estimate.\n\nMECHANICAL FACTS you do not have to re-derive, and which are NOT yours to reopen:\n  - A SHORT position is OPEN (A3, filled 09:52 @ 30299.0, stop 30365.0, R=66.0pt).\n  - Your re-fired thesis is in force from ITS OWN MINUTE forward. It does not retroactively\n    re-decide A1-A4, which were adjudicated under the standing read.\n  - This is escalation 1 of a budget of 2 for the NY_AM window on this session-day."
+}

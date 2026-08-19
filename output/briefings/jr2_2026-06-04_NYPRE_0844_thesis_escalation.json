@@ -1,0 +1,212 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "escalation",
+ "window": "NY_PRE",
+ "decision_minute": "2026-06-05T08:44 ET",
+ "leak_check": "pass - replay truncated at 08:43:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jr2_2026-06-04_P2_0844.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30121.75,
+ "last_completed_2m_bar": {
+  "start": "08:42",
+  "closed_at": "08:44",
+  "open": 30101.25,
+  "high": 30123.0,
+  "low": 30087.25,
+  "close": 30121.75,
+  "volume": 1241,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_PRE",
+  "entries": "08:00-09:29 entries cut off 09:10",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30115.28,
+  "bb_upper_2m": 30162.38,
+  "bb_lower_2m": 30068.17,
+  "vwap": 30180.23,
+  "vwap_p1": 30248.23,
+  "vwap_m1": 30112.23,
+  "vwap_p2": 30316.23,
+  "vwap_m2": 30044.23,
+  "vwap_p3": 30384.23,
+  "vwap_m3": 29976.23,
+  "read_at": "chart cursor 08:44-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "_session_calendar": {
+   "session_day_label": "2026-06-04",
+   "session_opens": "2026-06-04 18:00 ET (Thursday evening)",
+   "cash_session_traded": "2026-06-05 (Friday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30179.94,
+   "vwap_p1": 30248.35,
+   "vwap_p2": 30316.77,
+   "vwap_p3": 30385.19,
+   "vwap_m1": 30111.52,
+   "vwap_m2": 30043.11,
+   "vwap_m3": 29974.69
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30115.3,
+   "bb_ma_3m": 30129.25,
+   "bb_ma_15m": 30176.06,
+   "bb_ma_60m": 30266.17
+  },
+  "day_range_fibs": {
+   "0.382": 30187.47,
+   "0.5": 30232.25,
+   "0.618": 30277.03,
+   "0.705": 30310.05
+  },
+  "session_high_so_far": 30422.0,
+  "session_low_so_far": 30042.5,
+  "daily_profile": {
+   "poc": 30186.0,
+   "val": 30116.0,
+   "vah": 30233.0,
+   "note": "DEVELOPING as-of 08:44"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30417.0,
+   "vah": 30758.0,
+   "high": 30807.75,
+   "low": 30042.5,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 08:44"
+  },
+  "prior_day": {
+   "poc": 30484.0,
+   "val": 30304.0,
+   "vah": 30597.0,
+   "high": 30603.25,
+   "low": 30151.0
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.218,
+  "net_move_15m": -292.25,
+  "total_15m_travel": 1341.75,
+  "candles_15m_up": 22,
+  "candles_15m_down": 37,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "07:45",
+   "open": 30178.0,
+   "high": 30180.5,
+   "low": 30144.75,
+   "close": 30147.75,
+   "body_ratio": 0.85
+  },
+  {
+   "start": "08:00",
+   "open": 30147.5,
+   "high": 30149.0,
+   "low": 30107.5,
+   "close": 30112.75,
+   "body_ratio": 0.84
+  },
+  {
+   "start": "08:15",
+   "open": 30111.5,
+   "high": 30157.5,
+   "low": 30103.0,
+   "close": 30115.25,
+   "body_ratio": 0.07
+  },
+  {
+   "start": "08:30",
+   "open": 30116.0,
+   "high": 30151.75,
+   "low": 30042.5,
+   "close": 30121.75,
+   "body_ratio": 0.05
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": true,
+  "fomc_day": false,
+  "blackout_events": [
+   {
+    "event": "Non-Farm Employment Change",
+    "time_et": "08:30"
+   },
+   {
+    "event": "Average Hourly Earnings m/m",
+    "time_et": "08:30"
+   },
+   {
+    "event": "Unemployment Rate",
+    "time_et": "08:30"
+   }
+  ],
+  "drivers": [],
+  "falsified_by": "Any dated pre-08:00 catalyst on NQ or a heavy constituent that I've missed - none is present in the briefing, so this stands as a clean neutral read pending the print.",
+  "reasoning": "Nothing has released as of 08:00 ET; three high-impact 08:30 prints (NFP, AHE, Unemployment Rate) are scheduled but unknown in outcome. Policy 3 applies: pre-market news closes NY_PRE entries 08:00-08:30 inclusive, free from 08:31. No directional read possible pre-print, so lean is neutral.",
+  "_provenance": "tv-macro-events 0.2.0 output carried forward from the j49 run. The macro contract is UNCHANGED in the 0.4.11 batch and its entire input is the economic calendar plus standing policy - no chart, no bars, no prices - so for the same session-day and window the input is byte-identical and re-spawning could only reproduce it. Carried rather than re-run, and said so here rather than passed off as fresh."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 30052.25
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29994.25
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_low",
+   "price": 30151.0
+  },
+  "waiting_for": "nothing",
+  "two_sided": true,
+  "condition_for_other_side": "Longs licensed AT the weekly low / VWAP-2 confluence (~30,052-30,065) on a hold or rejection there. That zone has now been defended TWICE since the plunge - the original 30,052.25 print pre-03:00 and a second test at 30,062 between 03:00-08:00 - each producing a 200+pt rally that stalled into the 0.382 day-fib / BB-upper-2m confluence (~30,190-30,194) and rolled back over. A third hold/rejection there with displacement back through VWAP-1 and the 15m MA licenses another rebalance long, targeting VWAP-1/prior-day low as before, not the zone that's already capped two bounces.",
+  "anticipated_resolution": {
+   "level": "weekly_low_vwap_m2_confluence",
+   "price": 30052.25,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "A 15m close beyond the weekly low/VWAP-2 zone (~30,052-30,065) with a decisive body confirms the breakdown finally continuing; a 15m close back above the prior-day low (30,151) with a decisive body would show the reclaim extending further than either prior bounce and negates shorts for now.",
+  "other_side_tripwire": {
+   "level": "weekly_low_vwap_m2_confluence",
+   "price": 30052.25,
+   "event": "displacement_from_defended_level"
+  },
+  "defended_level": {
+   "level": "session_weekly_low",
+   "price": 30052.25,
+   "memory": "made as this session's (and anchor-period weekly) low pre-03:00; retested at 30,062 between 03:00-08:00 without a decisive close below either print, each test rallying 200+pts before rolling over",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "Since 03:00 price twice retested the defended weekly low (30,052.25, then 30,062) without a decisive close below it, rallying 200+pts each time into the 0.382 day-fib/BB-upper-2m confluence (~30,193) before rolling over; the 07:45 15m candle closed decisively bearish back below the 15m MA. Price remains far below weekly VAL/POC after the session's plunge, so short stays the more-likely HTF destination, but the level's proven memory keeps this two-sided for a third test. NFP/AHE/Unemployment at 08:30 is a blackout the trigger enforces mechanically, not a directional lean here."
+ },
+ "what_happened_since_the_last_read": "Since your 08:00 read, stated as price facts only: between 08:00 and this decision minute the session traded a high of 30157.50 and a low of 30042.50. All levels in levels_at_decision_BUILD are recomputed as of this minute.",
+ "why_you_are_being_re-fired": "TIER-2 ESCALATION, candidate P2, decision minute 08:44 (NY_PRE), direction LONG.\n\nThe trigger did NOT override you. It passed and raised. Its case, verbatim:\n\n  decision: pass (with thesis_stale: true), provisional plan LONG, conviction B\n  reason: \"Long same-candle break of own 2m MA+VWAP-1+daily VAL off the highest-tier\n    weekly-low/VWAP-2 defended zone (2x prior 200+pt defenses). Thesis's other-side bar also\n    needs a 15m MA close (30,176), still 54pt away - trigger fired ahead of the written bar.\n    Escalating rather than passing direction_mismatch.\"\n  rejected_level: weekly_low + vwap_m2 @ 30052.25 - \"defended twice since the plunge\n    (pre-03:00 print, 30,062 retest 03:00-08:00), each producing a 200+pt rally; chart shows a\n    fresh sweep into this zone around the 08:30 NFP print before this candle's reversal\"\n  signal candle (08:41-08:44 3m / 08:42-08:44 2m): O30101-30102, H30123, L30087.25, C30121.75\n    - closes through own 2m BB MA (30115.3), VWAP-1 (30111.52) and daily VAL (30116.0)\n  escalation.why_thesis_cannot_accommodate: \"Thesis's other-side condition requires\n    displacement through VWAP-1 AND the 15m MA (30,176.06) to license this long; the\n    same-candle break only clears VWAP-1 + own MA + daily VAL, 54pt under the 15m MA, while\n    the rejection + two-level break at the highest-tier defended level has already fired.\"\n\nYOUR STANDING TEXT that this bears on:\n  defended_level: {level: session_weekly_low, price: 30052.25, status: holding} - \"made as\n    this session's (and anchor-period weekly) low pre-03:00; retested at 30,062 between\n    03:00-08:00 without a decisive close below either print, each test rallying 200+pts\"\n  condition_for_other_side: \"Longs licensed AT the weekly low / VWAP-2 confluence\n    (~30,052-30,065) on a hold or rejection there ... A third hold/rejection there with\n    displacement back through VWAP-1 and the 15m MA licenses another rebalance long.\"\n\nTHE QUESTION PUT TO YOU: you named a THIRD hold at that zone as the long licence, and the\ntrigger says the third hold has now happened with a fresh sweep into the zone around the NFP\nprint and a same-candle reversal back through VWAP-1. But your written bar also requires the\n15m MA, which is 54pt above this close. Decide, on the frame in front of you, whether the\nthird defence you were waiting for has genuinely occurred and you ACCOMMODATE the long, or\nwhether the 15m-MA half of your condition still governs and you REAFFIRM the short. Re-price\nevery level off the legend you are given.\n\nMECHANICAL FACTS you do not have to re-derive, and which are NOT yours to reopen:\n  - The book is FLAT. No position is open.\n  - The 08:30 NFP blackout has expired; entries are free from 08:31. NY_PRE entries cut at 09:10.\n  - Your re-fired thesis is in force from ITS OWN MINUTE forward. It does not retroactively\n    re-decide P1, which was passed on the blackout.\n  - This is escalation 1 of a budget of 2 for the NY_PRE window on this session-day."
+}

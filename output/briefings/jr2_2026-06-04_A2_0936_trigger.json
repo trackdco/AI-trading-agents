@@ -1,0 +1,815 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "A2",
+ "window": "NY_AM",
+ "session": "2026-06-04",
+ "decision_minute": "2026-06-05T09:36 ET",
+ "candle_start_3m": "09:33",
+ "candle_start_2m": "09:34",
+ "leak_check": "pass - replay truncated at 09:35:59, verified against replay_status. The 3m bar starting 09:33 and the 2m bar starting 09:34 both close AT 09:36. Every candle here is aggregated from committed bars and re-checked before emission.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jr2_2026-06-04_A2_0936.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m3",
+    "price": 29934.99
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_low",
+   "price": 30151.0
+  },
+  "waiting_for": "nothing",
+  "two_sided": true,
+  "condition_for_other_side": "Longs licensed only as a scoped, temporary counter AT the fresh session/weekly low (30,013.00) / VWAP-2 confluence (~30,010-30,020), on a hold or rejection there with a 2m close back through the 2m/3m BB MA cluster (~30,053-30,066). The old 30,052/30,062 zone that earned two-sidedness at 08:00 has now failed - it broke on the 09:00 and 09:15 15m closes - so this new zone has no proven memory, just a single absorption wick. A long here targets no further than that 2m/3m MA, not the invalidation zone.",
+  "anticipated_resolution": {
+   "level": "prior_day_low_bb_ma15_confluence",
+   "price": 30151.0,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "A 15m decisive-body close above the prior-day-low/15m-MA confluence (~30,151-30,157) - beyond the single spike-and-reject already seen this window - would show the reclaim finally extending and negates shorts; a 15m decisive-body close below VWAP-2 (~30,011) opens the way to VWAP-3.",
+  "other_side_tripwire": {
+   "level": "bb_ma_3m",
+   "price": 30065.86,
+   "event": "2m_close_through_with_ma"
+  },
+  "defended_level": {
+   "level": "session_weekly_low",
+   "price": 30052.25,
+   "memory": "defended twice since the plunge (pre-03:00 print, then 30,062 retest 03:00-08:00, each rallying 200+pts) but broken this window - 09:00 15m candle closed 30,039.5 (body 0.37) and 09:15 closed 30,036.25 (body 0.06), with an intraday low of 30,013.00, a new session/anchored-weekly low",
+   "status": "failed"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "NFP spiked price to the prior-day-low/15m-MA confluence (~30,151-30,157) and was rejected immediately - the 08:30 candle closed back at 30,121 on a 0.05 body ratio, confirmation not invalidation. The double-defended 30,052/30,062 zone then broke (15m closes 30,039.5, 30,036.25), printing a new session/weekly low at 30,013 before a thin absorption bounce to 30,036.25. HTF stays short - price is far below weekly VAL/POC with a fresh weekly low just made - so the other side is now only a scoped counter off the unproven fresh low, not a bias flip."
+ },
+ "price_at_decision": 30035.25,
+ "signal_candle_3m": {
+  "start": "09:33",
+  "closed_at": "09:36",
+  "open": 30080.75,
+  "high": 30091.75,
+  "low": 30017.0,
+  "close": 30035.25,
+  "volume": 10907,
+  "minutes": 3
+ },
+ "signal_candle_2m": {
+  "start": "09:34",
+  "closed_at": "09:36",
+  "open": 30061.75,
+  "high": 30063.75,
+  "low": 30017.0,
+  "close": 30035.25,
+  "volume": 7552,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "signal_direction_2m_3m": "short",
+ "pair_shape": "3m same-candle",
+ "levels_closed_SCANNER": [
+  "own 3m BB MA",
+  "VWAP-1",
+  "daily VAL"
+ ],
+ "levels_closed_note": "this is the mechanical scanner's reading of which levels the candle closed through. Verify it against the level values below and correct it in your verdict if it does not hold.",
+ "higher_timeframe_at_candidate_levels": {
+  "bb_ma_2m": {
+   "level": 30049.76,
+   "decision_minute": "2026-06-05 09:36",
+   "session_open": "2026-06-04 18:00",
+   "window_from": "08:36",
+   "window_min": 60,
+   "by_tf": {
+    "2m": {
+     "candles": 30,
+     "approach": "above",
+     "last_complete": "09:36",
+     "tests": 11,
+     "closes_above": 20,
+     "closes_below": 10,
+     "max_wick_above": 48.99,
+     "max_body_above": 47.49,
+     "max_wick_below": 51.01,
+     "max_body_below": 15.26,
+     "session_closes_above": 458,
+     "session_closes_below": 10,
+     "verdict": "closed BOTH sides (20 up / 10 down), approached from above"
+    },
+    "3m": {
+     "candles": 20,
+     "approach": "above",
+     "last_complete": "09:36",
+     "tests": 8,
+     "closes_above": 13,
+     "closes_below": 7,
+     "max_wick_above": 50.74,
+     "max_body_above": 35.49,
+     "max_wick_below": 51.01,
+     "max_body_below": 15.26,
+     "session_closes_above": 305,
+     "session_closes_below": 7,
+     "verdict": "closed BOTH sides (13 up / 7 down), approached from above"
+    },
+    "5m": {
+     "candles": 12,
+     "approach": "above",
+     "last_complete": "09:35",
+     "tests": 6,
+     "closes_above": 7,
+     "closes_below": 5,
+     "max_wick_above": 50.74,
+     "max_body_above": 35.74,
+     "max_wick_below": 51.01,
+     "max_body_below": 14.01,
+     "session_closes_above": 182,
+     "session_closes_below": 5,
+     "verdict": "closed BOTH sides (7 up / 5 down), approached from above"
+    },
+    "15m": {
+     "candles": 4,
+     "approach": "above",
+     "last_complete": "09:30",
+     "tests": 3,
+     "closes_above": 2,
+     "closes_below": 2,
+     "max_wick_above": 101.99,
+     "max_body_above": 71.24,
+     "max_wick_below": 36.76,
+     "max_body_below": 13.51,
+     "session_closes_above": 60,
+     "session_closes_below": 2,
+     "verdict": "closed BOTH sides (2 up / 2 down), approached from above"
+    }
+   }
+  },
+  "vwap_m1": {
+   "level": 30067.22,
+   "decision_minute": "2026-06-05 09:36",
+   "session_open": "2026-06-04 18:00",
+   "window_from": "08:36",
+   "window_min": 60,
+   "by_tf": {
+    "2m": {
+     "candles": 30,
+     "approach": "above",
+     "last_complete": "09:36",
+     "tests": 8,
+     "closes_above": 12,
+     "closes_below": 18,
+     "max_wick_above": 33.28,
+     "max_body_above": 30.53,
+     "max_wick_below": 68.47,
+     "max_body_below": 31.47,
+     "session_closes_above": 449,
+     "session_closes_below": 19,
+     "verdict": "closed BOTH sides (12 up / 18 down), approached from above"
+    },
+    "3m": {
+     "candles": 20,
+     "approach": "above",
+     "last_complete": "09:36",
+     "tests": 6,
+     "closes_above": 7,
+     "closes_below": 13,
+     "max_wick_above": 33.28,
+     "max_body_above": 20.03,
+     "max_wick_below": 68.47,
+     "max_body_below": 31.97,
+     "session_closes_above": 299,
+     "session_closes_below": 13,
+     "verdict": "closed BOTH sides (7 up / 13 down), approached from above"
+    },
+    "5m": {
+     "candles": 12,
+     "approach": "above",
+     "last_complete": "09:35",
+     "tests": 5,
+     "closes_above": 4,
+     "closes_below": 8,
+     "max_wick_above": 59.53,
+     "max_body_above": 58.53,
+     "max_wick_below": 68.47,
+     "max_body_below": 31.47,
+     "session_closes_above": 178,
+     "session_closes_below": 9,
+     "verdict": "closed BOTH sides (4 up / 8 down), approached from above"
+    },
+    "15m": {
+     "candles": 4,
+     "approach": "above",
+     "last_complete": "09:30",
+     "tests": 3,
+     "closes_above": 1,
+     "closes_below": 3,
+     "max_wick_above": 84.53,
+     "max_body_above": 54.78,
+     "max_wick_below": 35.47,
+     "max_body_below": 27.72,
+     "session_closes_above": 59,
+     "session_closes_below": 3,
+     "verdict": "closed BOTH sides (1 up / 3 down), approached from above"
+    }
+   }
+  },
+  "daily_val": {
+   "level": 30068.0,
+   "decision_minute": "2026-06-05 09:36",
+   "session_open": "2026-06-04 18:00",
+   "window_from": "08:36",
+   "window_min": 60,
+   "by_tf": {
+    "2m": {
+     "candles": 30,
+     "approach": "above",
+     "last_complete": "09:36",
+     "tests": 8,
+     "closes_above": 12,
+     "closes_below": 18,
+     "max_wick_above": 32.5,
+     "max_body_above": 29.75,
+     "max_wick_below": 69.25,
+     "max_body_below": 32.25,
+     "session_closes_above": 449,
+     "session_closes_below": 19,
+     "verdict": "closed BOTH sides (12 up / 18 down), approached from above"
+    },
+    "3m": {
+     "candles": 20,
+     "approach": "above",
+     "last_complete": "09:36",
+     "tests": 6,
+     "closes_above": 7,
+     "closes_below": 13,
+     "max_wick_above": 32.5,
+     "max_body_above": 19.25,
+     "max_wick_below": 69.25,
+     "max_body_below": 32.75,
+     "session_closes_above": 298,
+     "session_closes_below": 13,
+     "verdict": "closed BOTH sides (7 up / 13 down), approached from above"
+    },
+    "5m": {
+     "candles": 12,
+     "approach": "above",
+     "last_complete": "09:35",
+     "tests": 5,
+     "closes_above": 4,
+     "closes_below": 8,
+     "max_wick_above": 58.75,
+     "max_body_above": 57.75,
+     "max_wick_below": 69.25,
+     "max_body_below": 32.25,
+     "session_closes_above": 178,
+     "session_closes_below": 9,
+     "verdict": "closed BOTH sides (4 up / 8 down), approached from above"
+    },
+    "15m": {
+     "candles": 4,
+     "approach": "above",
+     "last_complete": "09:30",
+     "tests": 3,
+     "closes_above": 1,
+     "closes_below": 3,
+     "max_wick_above": 83.75,
+     "max_body_above": 54.0,
+     "max_wick_below": 36.25,
+     "max_body_below": 28.5,
+     "session_closes_above": 59,
+     "session_closes_below": 3,
+     "verdict": "closed BOTH sides (1 up / 3 down), approached from above"
+    }
+   }
+  }
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30049.76,
+  "bb_upper_2m": 30084.54,
+  "bb_lower_2m": 30014.98,
+  "vwap": 30149.93,
+  "vwap_p1": 30229.59,
+  "vwap_m1": 30070.28,
+  "vwap_p2": 30309.24,
+  "vwap_m2": 29990.62,
+  "vwap_p3": 30388.89,
+  "vwap_m3": 29910.97,
+  "read_at": "chart cursor 09:36-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "status": "OK"
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30148.61,
+   "vwap_p1": 30230.01,
+   "vwap_p2": 30311.4,
+   "vwap_p3": 30392.79,
+   "vwap_m1": 30067.22,
+   "vwap_m2": 29985.83,
+   "vwap_m3": 29904.43
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30049.76,
+   "bb_ma_3m": 30063.8,
+   "bb_ma_15m": 30150.47,
+   "bb_ma_60m": 30240.62
+  },
+  "day_range_fibs": {
+   "0.382": 30160.43,
+   "0.5": 30210.38,
+   "0.618": 30260.32,
+   "0.705": 30297.14
+  },
+  "session_high_so_far": 30422.0,
+  "session_low_so_far": 29998.75,
+  "daily_profile": {
+   "poc": 30186.0,
+   "val": 30068.0,
+   "vah": 30235.0,
+   "note": "DEVELOPING as-of 09:36"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30397.0,
+   "vah": 30758.0,
+   "high": 30807.75,
+   "low": 29998.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:36"
+  },
+  "prior_day": {
+   "poc": 30484.0,
+   "val": 30304.0,
+   "vah": 30597.0,
+   "high": 30603.25,
+   "low": 30151.0
+  }
+ },
+ "levels_above_price": [
+  "bb_ma_2m 30049.76",
+  "bb_ma_3m 30063.8",
+  "vwap_m1 30067.22",
+  "daily_val 30068.0",
+  "vwap 30148.61",
+  "bb_ma_15m 30150.47",
+  "prior_day_low 30151.0",
+  "fib_0.382 30160.43",
+  "daily_poc 30186.0",
+  "fib_0.5 30210.38",
+  "vwap_p1 30230.01",
+  "daily_vah 30235.0",
+  "bb_ma_60m 30240.62",
+  "fib_0.618 30260.32",
+  "fib_0.705 30297.14",
+  "prior_day_val 30304.0",
+  "vwap_p2 30311.4",
+  "vwap_p3 30392.79",
+  "weekly_val 30397.0",
+  "session_high 30422.0",
+  "prior_day_poc 30484.0",
+  "prior_day_vah 30597.0",
+  "prior_day_high 30603.25",
+  "weekly_poc 30677.0",
+  "weekly_vah 30758.0",
+  "weekly_high 30807.75"
+ ],
+ "levels_below_price": [
+  "weekly_low 29998.75",
+  "session_low 29998.75",
+  "vwap_m2 29985.83",
+  "vwap_m3 29904.43"
+ ],
+ "fills_this_window": 0,
+ "window_cap": {
+  "window": "NY_AM",
+  "written_cap": 2,
+  "caps_lifted": true,
+  "fills_so_far": 0
+ },
+ "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
+ "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [
+   {
+    "event": "Average Hourly Earnings m/m",
+    "time_et": "08:30"
+   },
+   {
+    "event": "Non-Farm Employment Change",
+    "time_et": "08:30"
+   },
+   {
+    "event": "Unemployment Rate",
+    "time_et": "08:30"
+   }
+  ],
+  "drivers": [],
+  "falsified_by": "Would need outcome data on the 08:30 NFP/AHE/Unemployment prints showing a surprise not yet reflected by 09:30 - that data isn't available to me here, so no directional call can be formed either way.",
+  "reasoning": "Ruling 2 applies: the red-folder band for the 08:30 NFP release runs 08:20-08:30 inclusive; decision_minute is 09:30, a full hour past event time, so entries are free and news_blackout is false for NY_AM. I'm told the three releases printed but not their outcome, so I have no directional read - neutral is correct, not a hedge.",
+  "_provenance": "tv-macro-events 0.2.0 output carried forward from the j49 run. The macro contract is UNCHANGED in the 0.4.11 batch and its entire input is the economic calendar plus standing policy - no chart, no bars, no prices - so for the same session-day and window the input is byte-identical and re-spawning could only reproduce it. Carried rather than re-run, and said so here rather than passed off as fresh."
+ },
+ "session_calendar": {
+  "session_day_label": "2026-06-04",
+  "session_opens": "2026-06-04 18:00 ET (Thursday evening)",
+  "cash_session_traded": "2026-06-05 (Friday)",
+  "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+ },
+ "chart_freshness_self_check": {
+  "expected_legend_at_this_decision_minute": {
+   "BB_20_SMA_close_2_basis": 30049.76,
+   "VWAP": 30149.93,
+   "VWAP_p1": 30229.59,
+   "VWAP_m1": 30070.28
+  },
+  "why": "the chart canvas can freeze and serve a frame from an earlier minute. These are the values the orchestrator read off the live chart AT this decision minute.",
+  "instruction": "compare against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: return decision pass with constraints_failed [\"stale_chart\"] and say so. Do NOT adjudicate a stale chart."
+ },
+ "context_extras": {
+  "nwog": {
+   "available": true,
+   "prior_friday_close": 30389.5,
+   "week_open": 30415.5,
+   "gap_pts": 26.0,
+   "filled": true,
+   "edges_touched_since_open": {
+    "lower": true,
+    "upper": true
+   }
+  },
+  "swept": {
+   "lows": [
+    {
+     "level": 30042.5,
+     "set": "Fri 08:38",
+     "swept_at": "09:08",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30052.25,
+     "set": "Thu 21:28",
+     "swept_at": "08:38",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30062.0,
+     "set": "Fri 03:22",
+     "swept_at": "08:36",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30107.5,
+     "set": "Fri 08:16",
+     "swept_at": "08:30",
+     "closed_beyond": true,
+     "reclaimed": true
+    }
+   ],
+   "highs": [
+    {
+     "level": 30145.0,
+     "set": "Fri 02:56",
+     "swept_at": "03:38",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30158.25,
+     "set": "Fri 03:40",
+     "swept_at": "04:02",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30204.25,
+     "set": "Fri 00:28",
+     "swept_at": "00:42",
+     "closed_beyond": true,
+     "reclaimed": true
+    },
+    {
+     "level": 30212.75,
+     "set": "Fri 05:54",
+     "swept_at": "06:22",
+     "closed_beyond": true,
+     "reclaimed": true
+    }
+   ]
+  },
+  "defended_levels": {
+   "floors": [
+    {
+     "level": 30151.0,
+     "defended_by": [
+      "Thu"
+     ],
+     "memory": 1,
+     "tests_this_session": 154,
+     "closes_below": 132,
+     "held": false
+    }
+   ],
+   "ceilings": []
+  }
+ },
+ "context_extras_note": "nwog / swept lows-highs / defended_levels computed by scripts.context_extras as-of the decision minute. Mechanical, no editorial.",
+ "PREFLIGHT_OVERRIDE": {
+  "status": "this briefing was emitted over a FAILED preflight legend check",
+  "what_failed": {
+   "ok": false,
+   "worst_diff_pts": 3.06,
+   "compared_as_of": "09:36",
+   "tolerance_pts": 2.0
+  },
+  "checks_that_still_passed": {
+   "cursor": {
+    "ok": true,
+    "last_bar_starts": "09:34",
+    "expected_starts": "09:34",
+    "why": "at cursor dec-1:59 the last COMPLETE 2m bar starts at grid_2m(dec)-2min"
+   },
+   "no_forward_leak": {
+    "ok": true,
+    "last_bar_closes": "09:36",
+    "decision_minute": "09:36",
+    "why": "the last bar must close at or before the decision minute"
+   }
+  },
+  "reason": "AUTO-OVERRIDE under the standing post-open ruling. DIAGNOSED FALSE POSITIVE of the legend staleness check, not a stale frame, and every condition was checked mechanically rather than asserted: (1) cursor and no_forward_leak both PASS and were NOT overridden - they are the leak surface and are never overridable; (2) bb_basis_2m matches the independently computed value to 0.00pt, and the BB basis is the mean of 2m CLOSES rather than a volume-weighted quantity, so a stale frame would move it first; (3) the residual is a pure (VWAP, sigma) offset - vwap differs by +1.32pt and the sigma delta implied independently by the +1 and -1 bands agree to 0.00pt. A stale bar cannot produce an exact BB basis alongside a self-consistent sigma offset. Mechanism: VWAP and its sigma are volume-weighted and the cash open carries roughly twenty times the preceding per-bar volume. Worst diff 3.06pt against a 2.0pt tolerance calibrated pre-open.",
+  "what_it_means_for_you": "treat the diverging level as carrying that much uncertainty.",
+  "never_overridable": "the cursor-position and no-forward-leak checks cannot be overridden by this mechanism. Only the legend cross-check can, and only with a reason."
+ },
+ "chart_truncation_note": "decision minute 09:36; the last COMPLETE 2m bar closes 09:36. Deliberate and leak-safe; legend values were read at that cursor.",
+ "position_state": {
+  "window": "NY_AM",
+  "as_of": "09:36",
+  "state": "FLAT",
+  "fills_this_window": 0,
+  "detail": "no open position.",
+  "earlier_windows": "LONDON: 1 fill(s) - L2 -1.0R (None); NY_PRE: 0 fill(s).",
+  "cap_note": "the written NY_AM cap is 2 fill(s) and 0 are used. Caps are LIFTED-WITH-TAGS here: a fill past the written cap is taken and tagged beyond_written_cap, not refused.",
+  "note": "stated as run state.",
+  "_ties": null,
+  "_derivation": "read off jr2's own book for 2026-06-04 by mkps.py - every LIVE fill/manage/exit row with a minute STRICTLY BEFORE 09:36, replayed in order. Rows flagged SUPERSEDED or VOID are excluded. Nothing after the cursor is read, and nothing here is carried over from another run or hand-authored."
+ },
+ "MECHANICAL_GATE_outer_band_fade_only": {
+  "rule": "a SHORT at/through vwap_m2/m3 or a LONG at/through vwap_p2/p3 is a pass regardless of trigger quality.",
+  "arithmetic": "down candidate; vwap_m2 29990.62 vs price 30035.25 - gate does NOT fire.",
+  "_corrected": "recomputed by the orchestrator. mkcand.py tests `s['side'] == 'up'` but mkspec.py only ever writes 'long' or 'short', so the shipped block tested the SHORT band (vwap_m2) for every candidate including longs, and labelled them all 'down candidate'. This block is the correct evaluation for this candidate's actual direction."
+ },
+ "VALID_RETEST_ANCHORS": {
+  "rule": "an entry retest level must be one of: a 2-minute, 3-minute or 5-minute moving average; a VWAP level; or a volume-profile level.",
+  "not_valid": "moving averages on any timeframe higher than 5 minutes (including the 15m and 60m MAs), Bollinger outer bands, and Fibonacci retracement levels. None of these may be used as retest_level.",
+  "source": "his standing rulings of 2026-08-15",
+  "scope": "this constrains retest_level only. It says nothing about direction, conviction, targets, stop placement, or whether to take at all.",
+  "orchestrator_enforcement": "the orchestrator validates retest_level against this rule before simulating a fill and rejects a take row that violates it."
+ },
+ "CANCEL_IF_REACHES_RULE": {
+  "rule": "cancel_if_reaches is ALWAYS your first target. If price reaches TP1 before the limit fills, the move has gone without you and the order is cancelled.",
+  "consequence": "your choice of TP1 therefore does two jobs: it sets the first target AND it sets the distance the order will tolerate before being abandoned.",
+  "source": "his standing ruling of 2026-08-15",
+  "orchestrator_enforcement": "the orchestrator rejects a take row whose cancel_if_reaches price is not equal to targets[0].price."
+ },
+ "escalation_state": {
+  "window": "NY_AM",
+  "budget": 2,
+  "used": 0,
+  "remaining": 2,
+  "ratchet": "no level+direction has been escalated in THIS window. LONDON ran with 0 escalation(s) used; NY_PRE ran with 0 escalation(s) used.",
+  "note": "stated as run state.",
+  "_derivation": "read off jr2's own book for 2026-06-04 by mkesc.py - the count is the number of live trigger rows in this window carrying ESCALATION_RAISED, and the cross-window line counts the same flag in earlier windows. Nothing here is carried over from another run."
+ },
+ "news_note": "news_blackout false this window. The calendar does carry Average Hourly Earnings m/m at 08:30; Non-Farm Employment Change at 08:30; Unemployment Rate at 08:30, but the macro agent judged it does not gate this window.",
+ "scanner_detail": "09:36 DOWN, n=1, source two_level. 09:33 3m same-candle        O30080.75 C30035.25 ['own_ma', 'vwap_m1', 'VAL'] rej=[]",
+ "ENTRY_CUTOFF_NOTE": "NY_AM runs 09:30-11:00 and the earliest permitted ENTRY is 09:35. This decision minute is 09:36. Stated as a mechanical fact; the gate is yours to apply.",
+ "thesis_anchor_drift": {
+  "drifted": [
+   {
+    "role": "target",
+    "level": "vwap_m3",
+    "price_named_by_thesis": 29934.99,
+    "price_recomputed_now": 29904.43,
+    "drift_pts": -30.56
+   }
+  ],
+  "_source": "MECHANICAL FACT under runbook 0c. The thesis named these prices at its own decision minute; the values beside them are the same levels recomputed as of THIS minute from committed bars.",
+  "_what_it_means": "the thesis's stated prices are FROZEN at the window open while the developing daily profile and the VWAP bands keep moving. Where they have drifted, a condition written against the old number may no longer be testable at the new one. Both numbers are stated; which to use, and whether the condition is met, is YOUR call - the orchestrator states and never judges.",
+  "tolerance_pts": 8.0
+ },
+ "level_visits_this_session": {
+  "by_level": {
+   "vwap": {
+    "level": 30148.61,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 1,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "vwap_p1": {
+    "level": 30230.01,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "vwap_p2": {
+    "level": 30311.4,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "vwap_p3": {
+    "level": 30392.79,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "vwap_m1": {
+    "level": 30067.22,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 3,
+    "fresh": false,
+    "note": "STALE \u2014 visit 1, 3 tests on the 15m in 60 min"
+   },
+   "vwap_m2": {
+    "level": 29985.83,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "vwap_m3": {
+    "level": 29904.43,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "bb_ma_2m": {
+    "level": 30049.76,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 3,
+    "fresh": false,
+    "note": "STALE \u2014 visit 1, 3 tests on the 15m in 60 min"
+   },
+   "bb_ma_3m": {
+    "level": 30063.8,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 3,
+    "fresh": false,
+    "note": "STALE \u2014 visit 1, 3 tests on the 15m in 60 min"
+   },
+   "bb_ma_15m": {
+    "level": 30150.47,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 1,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "bb_ma_60m": {
+    "level": 30240.62,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "daily_poc": {
+    "level": 30186.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "daily_val": {
+    "level": 30068.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 3,
+    "fresh": false,
+    "note": "STALE \u2014 visit 1, 3 tests on the 15m in 60 min"
+   },
+   "daily_vah": {
+    "level": 30235.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "weekly_poc": {
+    "level": 30677.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "weekly_val": {
+    "level": 30397.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "weekly_vah": {
+    "level": 30758.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "weekly_high": {
+    "level": 30807.75,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "weekly_low": {
+    "level": 29998.75,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "prior_day_poc": {
+    "level": 30484.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "prior_day_val": {
+    "level": 30304.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "prior_day_vah": {
+    "level": 30597.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "prior_day_high": {
+    "level": 30603.25,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "prior_day_low": {
+    "level": 30151.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 1,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "session_high_so_far": {
+    "level": 30422.0,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   },
+   "session_low_so_far": {
+    "level": 29998.75,
+    "level_visits_this_session": 1,
+    "tests_15m_60min": 0,
+    "fresh": true,
+    "note": "FRESH \u2014 first trade at this level this session and the 15m has tested it at most twice in the last hour"
+   }
+  },
+  "_source": "scripts.level_visits - MECHANICAL FACT under runbook 0c. Counts takes already adjudicated at this level THIS SESSION (the current candidate counts as visit 1) and completed 15m candles in the last 60 minutes whose range contained it. Passes are not visits. A candidate re-adjudicated after an escalation is ONE take.",
+  "_what_it_governs": "tv-trigger 0.4.8: freshness CAPS THE GRADE and nothing else. Only a fresh level may grade A; a stale one tops out at B; a third visit caps at C. The LICENCE is untouched - a T48 re-entry stays licensed, it just no longer comes at A size."
+ },
+ "chop_state": {
+  "state": "TRENDING",
+  "reason": "231pt range over 3.0h \u2014 not small",
+  "range_high": 30230.0,
+  "range_low": 29998.75,
+  "range_width": 231.25,
+  "hours_held": 3.0,
+  "small_threshold_pt": 104.0,
+  "zone_now": "low",
+  "in_middle": false,
+  "middle_band": [
+   30056.56,
+   30172.19
+  ],
+  "as_of": "2026-06-05 09:36",
+  "doctrine": "CHOP + in_middle -> the middle is dead. CHOP + at an edge -> the only licensed trade is from that edge toward the opposite edge.",
+  "_source": "scripts.chop_state - MECHANICAL FACT under runbook 0c. His definition implemented literally: a SMALL range (bottom quartile of the normal 3-hour NQ range, ~104pt over 44 days) that has LASTED about three hours. Size and duration only.",
+  "_what_it_governs": "tv-trigger 0.4.9: chop tells you HOW to trade, not whether to. In CHOP an edge trigger is licensed toward the far side, targeting the STRUCTURAL level near it rather than the range extreme; the middle is dead; and an edge fade is NOT counter-trend, so it does not cap at C."
+ },
+ "_news_note_corrected": "recomputed from this briefing's own macro block. mkspec.py hardcodes news_blackout False and a fixed 'calendar is EMPTY' string which mkcand then copies over the derived value, so the shipped note is independent of the actual calendar."
+}

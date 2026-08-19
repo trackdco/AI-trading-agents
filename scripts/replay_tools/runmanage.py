@@ -48,8 +48,16 @@ def assert_no_future_minutes(text, dec, label=""):
     # window is structurally quiet ahead - and the scanner list is derived from the
     # WHOLE day's bars, so stating it leaks the scan. The time regex missed this
     # entirely; these phrases are blacklisted outright.
+    # "no further" on its own is too broad: it fires on ordinary thesis prose about a
+    # price ceiling ("a long here targets no further than that 2m/3m MA"), which names no
+    # minute and leaks nothing about the scanner. It refused five jr2 briefings on 2026-06-04
+    # NY_AM. The guard is about what the SCANNER will do next, so the bare phrase is replaced
+    # by its candidate/setup-scoped forms; "further candidate" already covers "no further
+    # candidates", and the added variants keep the non-candidate wordings caught.
     FORWARD_PHRASES = ("further candidate", "further london candidate",
-                       "no further", "still to be adjudicated", "are still to be",
+                       "no further candidate", "no further setup", "no further signal",
+                       "no further trigger", "no further scan",
+                       "still to be adjudicated", "are still to be",
                        "remaining candidate", "candidates remain", "will fire",
                        "upcoming candidate", "later candidate")
     low = str(text).lower()

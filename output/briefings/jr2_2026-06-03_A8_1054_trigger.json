@@ -11,46 +11,50 @@
  "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
  "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
  "thesis": {
-  "bias": "short",
+  "bias": "long",
   "targets": [
    {
-    "level": "weekly_low",
-    "price": 30164.25
+    "level": "vwap",
+    "price": 30320.56
    },
    {
-    "level": "vwap_m3",
-    "price": 30075.51
+    "level": "day_range_fib_0.5",
+    "price": 30347.75
+   },
+   {
+    "level": "daily_vah",
+    "price": 30364.0
    }
   ],
   "invalidation": {
-   "level": "prior_day_low",
-   "price": 30478.25
-  },
-  "waiting_for": "nothing further at the thesis level - the rebalance bounce already stalled short of the far zone (high only 30330.75, never reaching 30340-354) and the 09:15 15m candle closed back through its own MA and the daily POC (30302); shorts are licensed on a retest of that broken 15m-MA/POC zone or on continuation toward weekly low then vwap_m3.",
-  "two_sided": true,
-  "condition_for_other_side": "temporary T72 longs re-anchored closer to price: licensed on a 15m decisive close back above the declining 15m MA stacked with the daily POC (currently ~30283-302), not the old far zone (30340-354 fib-0.5/former-MA) which price never reached and is now well out of reach; full invalidation of the short still requires a 15m decisive close back above the broken prior-day low (30478.25).",
-  "anticipated_resolution": {
    "level": "weekly_low",
-   "price": 30164.25,
-   "expect": "break_down",
+   "price": 30151.0
+  },
+  "waiting_for": "nothing further at the thesis level - the 10:00-10:15 15m candle already opened below both the 15m MA (30272.01) and daily POC (30261.0), wicked to the new weekly low (30151.0), and closed above both with displacement through vwap_m1 (30226.11); longs are licensed now on a retest of the 15m-MA/POC zone or vwap_m1.",
+  "two_sided": true,
+  "condition_for_other_side": "shorts re-license on a stall/rejection of this bounce wherever it actually stalls (T15 - no fixed level required) inside the vwap/day-fib-0.5/daily-VAH zone (~30320-364), or on a fresh 15m decisive close back below the just-defended weekly low (30151.0) reopening the breakdown toward vwap_m3.",
+  "anticipated_resolution": {
+   "level": "day_range_fib_0.5",
+   "price": 30347.75,
+   "expect": "holds",
    "act_on_resolution": true
   },
-  "acceptance_rule": "A 15m close below the weekly low (30164.25) with a decisive body confirms continuation lower; a 15m close back above the broken prior-day low (30478.25) with a decisive body means the flush was a stop-run and invalidates the short view.",
+  "acceptance_rule": "A 15m close above the vwap/day-fib-0.5/daily-VAH cluster (~30320-364) with a decisive body confirms the rebalance extending; a 15m close back below the weekly low (30151.0) with a decisive body reopens the breakdown and invalidates this long.",
   "other_side_tripwire": {
-   "level": "bb_ma_15m",
-   "price": 30282.92,
+   "level": "weekly_low",
+   "price": 30151.0,
    "event": "15m_decisive_close"
   },
   "defended_level": {
-   "level": "prior_day_low",
-   "price": 30478.25,
-   "memory": "prior day's session low; held and was defended at the 03:00 read via the 02:30 15m displacement candle",
+   "level": "weekly_low",
+   "price": 30151.0,
+   "memory": "multi-day anchored weekly low; the 10:00-10:15 15m candle wicked to it and closed back near its own high, above the 15m MA and daily POC, same candle",
    "status": "failed"
   },
   "flush": false,
   "flush_direction": null,
   "escalation_response": "accommodated",
-  "reasoning": "Structured trend day continues (path_efficiency 0.127, balanced 15m up/down count) - the T15 rebalance bounce played out exactly as anticipated: price stalled well short of the 30340-354 far zone and the 09:15 15m candle closed back through its own MA and the daily POC. Short bias reaffirmed; weekly low (tested, not yet 15m-closed-through) stays the live target ahead of vwap_m3. T72 counter-long condition re-anchored to the now-nearer 15m-MA/POC zone since the old far zone is out of reach."
+  "reasoning": "Weekly-low target (30164.25) already printed and was undercut to 30151.0 between 09:30-10:15 - the short thesis paid out. The candle that tagged it opened below both the recomputed 15m MA (30272.01) and daily POC (30261.0) and closed above both, displacing through vwap_m1 - a full traversal, not absorption; low body_ratio here is a wick artifact of the deep low tag, not a failed break. Day stays non-flush (path_efficiency 0.112, 32/33 split), licensing the counter-move. Flipping to a modest rebalance long; short stays live only on a rejection at the target zone or a fresh close back below 30151."
  },
  "price_at_decision": 30302.5,
  "signal_candle_3m": {
@@ -316,12 +320,12 @@
   "vwap_m2 30142.14",
   "vwap_m3 30053.95"
  ],
- "fills_this_window": 0,
+ "fills_this_window": 1,
  "window_cap": {
   "window": "NY_AM",
   "written_cap": 2,
   "caps_lifted": true,
-  "fills_so_far": 0
+  "fills_so_far": 1
  },
  "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
  "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
@@ -458,10 +462,10 @@
   "window": "NY_AM",
   "as_of": "10:54",
   "state": "FLAT",
-  "fills_this_window": 0,
-  "detail": "no open position.",
-  "earlier_windows": "LONDON: 0 fill(s); NY_PRE: 1 fill(s) - STILL OPEN: P3.",
-  "cap_note": "the written NY_AM cap is 2 fill(s) and 0 are used. Caps are LIFTED-WITH-TAGS here: a fill past the written cap is taken and tagged beyond_written_cap, not refused.",
+  "fills_this_window": 1,
+  "detail": "no open position. Already resolved in this window: A3 exited 10:10 at 30210.44 (None, 1.3418R).",
+  "earlier_windows": "LONDON: 0 fill(s); NY_PRE: 1 fill(s) - P3 -1.0R (None).",
+  "cap_note": "the written NY_AM cap is 2 fill(s) and 1 is used. Caps are LIFTED-WITH-TAGS here: a fill past the written cap is taken and tagged beyond_written_cap, not refused.",
   "note": "stated as run state.",
   "_ties": null,
   "_derivation": "read off jr2's own book for 2026-06-03 by mkps.py - every LIVE fill/manage/exit row with a minute STRICTLY BEFORE 10:54, replayed in order. Rows flagged SUPERSEDED or VOID are excluded. Nothing after the cursor is read, and nothing here is carried over from another run or hand-authored."
@@ -500,24 +504,10 @@
   "drifted": [
    {
     "role": "target",
-    "level": "weekly_low",
-    "price_named_by_thesis": 30164.25,
-    "price_recomputed_now": 30151.0,
-    "drift_pts": -13.25
-   },
-   {
-    "role": "target",
-    "level": "vwap_m3",
-    "price_named_by_thesis": 30075.51,
-    "price_recomputed_now": 30053.95,
-    "drift_pts": -21.56
-   },
-   {
-    "role": "anticipated_resolution",
-    "level": "weekly_low",
-    "price_named_by_thesis": 30164.25,
-    "price_recomputed_now": 30151.0,
-    "drift_pts": -13.25
+    "level": "daily_vah",
+    "price_named_by_thesis": 30364.0,
+    "price_recomputed_now": 30350.0,
+    "drift_pts": -14.0
    }
   ],
   "_source": "MECHANICAL FACT under runbook 0c. The thesis named these prices at its own decision minute; the values beside them are the same levels recomputed as of THIS minute from committed bars.",

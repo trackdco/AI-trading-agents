@@ -457,12 +457,12 @@
   "vwap_m2 30130.31",
   "vwap_m3 30035.42"
  ],
- "fills_this_window": 0,
+ "fills_this_window": 1,
  "window_cap": {
   "window": "NY_AM",
   "written_cap": 2,
   "caps_lifted": true,
-  "fills_so_far": 0
+  "fills_so_far": 1
  },
  "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
  "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
@@ -598,11 +598,11 @@
  "position_state": {
   "window": "NY_AM",
   "as_of": "10:15",
-  "state": "FLAT",
-  "fills_this_window": 0,
-  "detail": "no open position.",
-  "earlier_windows": "LONDON: 0 fill(s); NY_PRE: 0 fill(s).",
-  "cap_note": "the written NY_AM cap is 2 fill(s) and 0 are used. Caps are LIFTED-WITH-TAGS here: a fill past the written cap is taken and tagged beyond_written_cap, not refused.",
+  "state": "OPEN",
+  "fills_this_window": 1,
+  "detail": "a position is OPEN: A3 - short 30299.00 filled 09:52, conviction B, original risk 66.0pt. Nothing has been banked; the full position is still on. Working stop 30365.00 (as placed at entry; no manage action yet). The plan's ladder: weekly_low 30164.25, vwap_m3 30075.51.",
+  "earlier_windows": "LONDON: 0 fill(s); NY_PRE: 1 fill(s) - STILL OPEN: P3.",
+  "cap_note": "the written NY_AM cap is 2 fill(s) and 1 is used. Caps are LIFTED-WITH-TAGS here: a fill past the written cap is taken and tagged beyond_written_cap, not refused.",
   "note": "stated as run state.",
   "_ties": null,
   "_derivation": "read off jr2's own book for 2026-06-03 by mkps.py - every LIVE fill/manage/exit row with a minute STRICTLY BEFORE 10:15, replayed in order. Rows flagged SUPERSEDED or VOID are excluded. Nothing after the cursor is read, and nothing here is carried over from another run or hand-authored."
