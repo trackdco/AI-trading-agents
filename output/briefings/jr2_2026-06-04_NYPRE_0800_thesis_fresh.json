@@ -1,0 +1,172 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE",
+ "decision_minute": "2026-06-05T08:00 ET",
+ "leak_check": "pass - replay truncated at 07:59:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jr2_2026-06-04_NY_PRE_0800.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30147.75,
+ "last_completed_2m_bar": {
+  "start": "07:58",
+  "closed_at": "08:00",
+  "open": 30148.5,
+  "high": 30154.25,
+  "low": 30144.75,
+  "close": 30147.75,
+  "volume": 125,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_PRE",
+  "entries": "08:00-09:29 entries cut off 09:10",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30170.75,
+  "bb_upper_2m": 30193.93,
+  "bb_lower_2m": 30147.57,
+  "vwap": 30190.47,
+  "vwap_p1": 30255.88,
+  "vwap_m1": 30125.07,
+  "vwap_p2": 30321.29,
+  "vwap_m2": 30059.66,
+  "vwap_p3": 30386.7,
+  "vwap_m3": 29994.25,
+  "read_at": "chart cursor 08:00-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "_session_calendar": {
+   "session_day_label": "2026-06-04",
+   "session_opens": "2026-06-04 18:00 ET (Thursday evening)",
+   "cash_session_traded": "2026-06-05 (Friday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30190.38,
+   "vwap_p1": 30255.89,
+   "vwap_p2": 30321.41,
+   "vwap_p3": 30386.92,
+   "vwap_m1": 30124.87,
+   "vwap_m2": 30059.36,
+   "vwap_m3": 29993.85
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30170.75,
+   "bb_ma_3m": 30175.41,
+   "bb_ma_15m": 30174.31,
+   "bb_ma_60m": 30280.78
+  },
+  "day_range_fibs": {
+   "0.382": 30193.49,
+   "0.5": 30237.12,
+   "0.618": 30280.76,
+   "0.705": 30312.92
+  },
+  "session_high_so_far": 30422.0,
+  "session_low_so_far": 30052.25,
+  "daily_profile": {
+   "poc": 30186.0,
+   "val": 30122.0,
+   "vah": 30227.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30427.0,
+   "vah": 30758.0,
+   "high": 30807.75,
+   "low": 30052.25,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "prior_day": {
+   "poc": 30484.0,
+   "val": 30304.0,
+   "vah": 30597.0,
+   "high": 30603.25,
+   "low": 30151.0
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.205,
+  "net_move_15m": -266.25,
+  "total_15m_travel": 1297.5,
+  "candles_15m_up": 20,
+  "candles_15m_down": 36,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "07:00",
+   "open": 30194.25,
+   "high": 30197.0,
+   "low": 30172.0,
+   "close": 30184.25,
+   "body_ratio": 0.4
+  },
+  {
+   "start": "07:15",
+   "open": 30183.25,
+   "high": 30186.0,
+   "low": 30135.5,
+   "close": 30184.25,
+   "body_ratio": 0.02
+  },
+  {
+   "start": "07:30",
+   "open": 30184.0,
+   "high": 30194.25,
+   "low": 30167.5,
+   "close": 30177.25,
+   "body_ratio": 0.25
+  },
+  {
+   "start": "07:45",
+   "open": 30178.0,
+   "high": 30180.5,
+   "low": 30144.75,
+   "close": 30147.75,
+   "body_ratio": 0.85
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": true,
+  "fomc_day": false,
+  "blackout_events": [
+   {
+    "event": "Non-Farm Employment Change",
+    "time_et": "08:30"
+   },
+   {
+    "event": "Average Hourly Earnings m/m",
+    "time_et": "08:30"
+   },
+   {
+    "event": "Unemployment Rate",
+    "time_et": "08:30"
+   }
+  ],
+  "drivers": [],
+  "falsified_by": "Any dated pre-08:00 catalyst on NQ or a heavy constituent that I've missed - none is present in the briefing, so this stands as a clean neutral read pending the print.",
+  "reasoning": "Nothing has released as of 08:00 ET; three high-impact 08:30 prints (NFP, AHE, Unemployment Rate) are scheduled but unknown in outcome. Policy 3 applies: pre-market news closes NY_PRE entries 08:00-08:30 inclusive, free from 08:31. No directional read possible pre-print, so lean is neutral.",
+  "_provenance": "tv-macro-events 0.2.0 output carried forward from the j49 run. The macro contract is UNCHANGED in the 0.4.11 batch and its entire input is the economic calendar plus standing policy - no chart, no bars, no prices - so for the same session-day and window the input is byte-identical and re-spawning could only reproduce it. Carried rather than re-run, and said so here rather than passed off as fresh."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "what_happened_since_the_last_read": "Since your 03:00 read, stated as price facts only: between 03:00 and this decision minute the session traded a high of 30259.00 and a low of 30062.00. All levels in levels_at_decision_BUILD are recomputed as of this minute.",
+ "why_you_are_being_re-fired": "FRESH-EYES WINDOW OPEN (runbook 2e duty 3). You are being asked to read this window from the chart and this briefing ALONE. No prior thesis is included, deliberately - not because none exists, but because the first read should be yours. Commit a bias and the levels you are reading it from. You will be shown the standing thesis immediately afterwards and given the chance to keep this read or revise it.",
+ "_provenance": "tape inputs cloned from the jr1 capture of the same cursor by setup_jr2.py. The frame, the legend and the levels are properties of the tape, not of the run. No verdict, no book state and no prior thesis is carried over - this is a fresh-eyes briefing and jr2 produces its own thesis from it."
+}
