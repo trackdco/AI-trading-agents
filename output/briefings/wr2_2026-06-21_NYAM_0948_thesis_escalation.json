@@ -1,0 +1,205 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "escalation",
+ "window": "NY_AM",
+ "decision_minute": "2026-06-22T09:48 ET",
+ "leak_check": "pass - replay truncated at 09:47:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/wr2_2026-06-21_A4_0948.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30873.75,
+ "last_completed_2m_bar": {
+  "start": "09:46",
+  "closed_at": "09:48",
+  "open": 30822.5,
+  "high": 30873.75,
+  "low": 30808.75,
+  "close": 30873.75,
+  "volume": 4229,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": "a position is OPEN: A2 - long 30841.00 filled 09:36, conviction A, original risk 93.0pt. Nothing has been banked; the full position is still on. Working stop 30748.00 (as placed at entry; no manage action yet). The plan's ladder: vwap_p2 30938.68, weekly_high 30975.5.",
+  "note": "a position from an earlier window is STILL RUNNING into this one. Your thesis governs what may be ENTERED here; the open position is managed by tv-manage against the plan it was taken on, not re-adjudicated by you.",
+  "_derivation": "read off wr2's own book for 2026-06-21 by mkps.py - every LIVE fill/manage/exit row with a minute STRICTLY BEFORE 09:48, replayed in order. Rows flagged SUPERSEDED or VOID are excluded. Nothing after the cursor is read, and nothing here is carried over from another run or hand-authored."
+ },
+ "window_state": {
+  "window": "NY_AM",
+  "fills_this_window": 1,
+  "earlier_windows": "LONDON: 1 fill(s) - L1 0.8423R (partial_at_target_then_runner_stopped_at_breakeven); NY_PRE: 0 fill(s).",
+  "caps": "the written NY_AM cap is 2 fill(s) and 1 is used. Caps are LIFTED-WITH-TAGS here: a fill past the written cap is taken and tagged beyond_written_cap, not refused."
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30846.58,
+  "bb_upper_2m": 30908.1,
+  "bb_lower_2m": 30785.05,
+  "vwap": 30697.68,
+  "vwap_p1": 30837.19,
+  "vwap_m1": 30558.17,
+  "vwap_p2": 30976.7,
+  "vwap_m2": 30418.67,
+  "vwap_p3": 31116.2,
+  "vwap_m3": 30279.16,
+  "read_at": "chart cursor 09:47:59. The 2m bar 09:46-09:48 is COMPLETE and closes at 09:48; minute 09:48 has not started.",
+  "_session_calendar": {
+   "session_day_label": "2026-06-21",
+   "session_opens": "2026-06-21 18:00 ET (Sunday evening)",
+   "cash_session_traded": "2026-06-22 (Monday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30697.86,
+   "vwap_p1": 30838.15,
+   "vwap_p2": 30978.44,
+   "vwap_p3": 31118.73,
+   "vwap_m1": 30557.58,
+   "vwap_m2": 30417.29,
+   "vwap_m3": 30277.0
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30846.58,
+   "bb_ma_3m": 30840.45,
+   "bb_ma_15m": 30767.14,
+   "bb_ma_60m": 30662.3
+  },
+  "day_range_fibs": {
+   "0.382": 30562.59,
+   "0.5": 30632.12,
+   "0.618": 30701.66,
+   "0.705": 30752.92
+  },
+  "session_high_so_far": 30926.75,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30810.0,
+   "val": 30608.0,
+   "vah": 30927.0,
+   "note": "DEVELOPING as-of 09:48"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30740.0,
+   "high": 30975.5,
+   "low": 29923.0,
+   "anchor": "2026-06-15 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:48"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.167,
+  "net_move_15m": 296.75,
+  "total_15m_travel": 1772.25,
+  "candles_15m_up": 33,
+  "candles_15m_down": 31,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "09:00",
+   "open": 30801.0,
+   "high": 30869.75,
+   "low": 30801.0,
+   "close": 30858.25,
+   "body_ratio": 0.83
+  },
+  {
+   "start": "09:15",
+   "open": 30858.5,
+   "high": 30873.5,
+   "low": 30815.5,
+   "close": 30822.0,
+   "body_ratio": 0.63
+  },
+  {
+   "start": "09:30",
+   "open": 30822.75,
+   "high": 30926.75,
+   "low": 30756.75,
+   "close": 30790.0,
+   "body_ratio": 0.19
+  },
+  {
+   "start": "09:45",
+   "open": 30789.25,
+   "high": 30873.75,
+   "low": 30787.75,
+   "close": 30873.75,
+   "body_ratio": 0.98
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "n/a - no dated event or catalyst identified for this decision minute",
+  "reasoning": "Calendar is empty: no releases so far today and none scheduled later today, so no FOMC gate and no blackout band applies. No catalyst to name, so lean is neutral by default per the no-catalyst rule.",
+  "_provenance": "tv-macro-events 0.2.0 output carried forward from the w49 run. The macro contract is UNCHANGED in the 0.4.11 batch and its entire input is the economic calendar plus standing policy - no chart, no bars, no prices - so for the same session-day and window the input is byte-identical and re-spawning could only reproduce it. Carried rather than re-run, and said so here rather than passed off as fresh."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_vah",
+    "price": 30872.0
+   },
+   {
+    "level": "vwap_p2",
+    "price": 30903.32
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_vah",
+   "price": 30699.0
+  },
+  "waiting_for": "a clean rebalance/retest into the 15m MA / VWAP+1 zone (~30757-30776) - LATCHED until it prints - before fresh longs are licensed at new highs; the 09:15 rejection to 30822 (0.63-body) was a shallow pullback still well above that zone, not this rebalance",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed EITHER on a stall/rejection right at the current top - daily VAH / session high / 2m BB upper (~30872-30880), wherever it actually stalls - OR on a 15m decisive close through the 15m MA/VWAP+1 zone (~30757-30776) per T72's temporary counter; LATCHED once triggered, target back to the 15m MA/VWAP+1 rebalance zone, never a bias flip",
+  "anticipated_resolution": {
+   "level": "daily_vah",
+   "price": 30872.0,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a 15m close with a decisive body above daily VAH/session-high zone (~30872-30880) confirms continuation toward VWAP+2 (30903)/weekly high (30975.5); a low body-ratio close there is absorption and favors fading back to the 15m MA/VWAP+1 rebalance zone instead",
+  "other_side_tripwire": {
+   "level": "vwap_p1",
+   "price": 30775.59,
+   "event": "15m_decisive_close"
+  },
+  "defended_level": {
+   "level": "prior_day_vah",
+   "price": 30699.0,
+   "memory": "session dipped to 30687.25 (below prior-day VAH and weekly VAH) between 03:00-08:00, reclaimed hard, since pushed to a new session high of 30873.5",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "Keeping long: rotational uptrend (path_efficiency 0.148, 32/30 15m up/down, not flush) that already fully rebalanced once through the 15m MA (687.25 dip, reclaimed). The standing thesis's target/tripwire (prior-day high 30770.75) is spent - price broke it and tagged a new session high of 30873.5 at daily-VAH/2m-BB-upper confluence, then the 09:15 candle closed back to 30822 on a moderate 0.63-ratio body: a shallow pullback still well above the 15m MA/VWAP+1, per T71/T73, not a decisive rejection. Relocating targets and the other-side condition to the now-live top-of-range and 15m-MA/VWAP+1 levels since the old cluster already resolved."
+ },
+ "what_happened_since_the_last_read": "Since your 09:30 read, stated as price facts only: between 09:30 and this decision minute the session traded a high of 30926.75 and a low of 30756.75. All levels in levels_at_decision_BUILD are recomputed as of this minute.",
+ "why_you_are_being_re-fired": "ESCALATION RE-FIRE. The trigger agent adjudicating the 09:48 candidate PASSED it rather than override you, and raised an escalation instead. Its case, verbatim: your LATCHED rebalance gate - a retest into the 15m MA / VWAP+1 zone around 30757-30776 - has never printed, because the pullback stopped at 30822 well above it; meanwhile price has just produced a clean same-candle three-level break (own MA + VWAP+1 + daily POC) off a POC-zone sweep and reclaim. It is asking whether the gate still governs, or whether the tape has moved past the framing that set it. ACCOMMODATE it or REAFFIRM your thesis - either is a full answer - and say which and why. Set escalation_response to 'accommodated' or 'reaffirmed'. Whatever you emit is the thesis in force from this minute."
+}

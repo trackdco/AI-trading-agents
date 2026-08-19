@@ -1,0 +1,246 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "L1",
+ "decision_minute": "2026-06-22T04:30 ET",
+ "reason_for_call": "stalling",
+ "leak_check": "pass - replay truncated at 04:29:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/wr1_2026-06-21_L1_0430_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30754.0,
+  "stop": 30708.25,
+  "targets": [
+   {
+    "level": "daily_vah",
+    "price": 30658.0
+   }
+  ],
+  "conviction": "C",
+  "opened_at": "03:42",
+  "R_in_points": 33.0,
+  "current_stop_distance": 45.75,
+  "open_pnl_in_R": 1.57
+ },
+ "level_in_question": {
+  "level": "prior_day_vah",
+  "price": 30699.0
+ },
+ "price_at_decision": 30702.25,
+ "last_completed_2m_bar": {
+  "start": "04:28",
+  "closed_at": "04:30",
+  "open": 30712.0,
+  "high": 30713.5,
+  "low": 30697.0,
+  "close": 30702.25,
+  "volume": 193,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "04:22",
+   "closed_at": "04:24",
+   "open": 30713.75,
+   "high": 30715.0,
+   "low": 30687.25,
+   "close": 30695.75,
+   "volume": 329,
+   "minutes": 2
+  },
+  {
+   "start": "04:24",
+   "closed_at": "04:26",
+   "open": 30696.25,
+   "high": 30713.75,
+   "low": 30695.75,
+   "close": 30710.25,
+   "volume": 230,
+   "minutes": 2
+  },
+  {
+   "start": "04:26",
+   "closed_at": "04:28",
+   "open": 30708.75,
+   "high": 30715.0,
+   "low": 30706.5,
+   "close": 30714.25,
+   "volume": 105,
+   "minutes": 2
+  },
+  {
+   "start": "04:28",
+   "closed_at": "04:30",
+   "open": 30712.0,
+   "high": 30713.5,
+   "low": 30697.0,
+   "close": 30702.25,
+   "volume": 193,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "read_at": "2026-08-18T23:42:26+10:00",
+  "bollinger_bands": {
+   "Basis": "30,737.90",
+   "Upper": "30,789.66",
+   "Lower": "30,686.14"
+  },
+  "vwap_deviation_bands": {
+   "VWAP": "30,582.12",
+   "+1\u03c3": "30,683.15",
+   "-1\u03c3": "30,481.09",
+   "+2\u03c3": "30,784.17",
+   "-2\u03c3": "30,380.07",
+   "+3\u03c3": "30,885.20",
+   "-3\u03c3": "30,279.04"
+  },
+  "session_volume_profile_hd": {
+   "Up": "0",
+   "Down": "0",
+   "Total": "0"
+  },
+  "screenshot": "wr1_2026-06-21_L1_0430_manage.png",
+  "provenance": "captured live via the full runbook sequence."
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30581.45,
+   "vwap_p1": 30683.18,
+   "vwap_p2": 30784.92,
+   "vwap_p3": 30886.65,
+   "vwap_m1": 30479.72,
+   "vwap_m2": 30377.98,
+   "vwap_m3": 30276.25
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30728.0,
+   "bb_ma_3m": 30737.9,
+   "bb_ma_15m": 30665.72,
+   "bb_ma_60m": 30623.0
+  },
+  "day_range_fibs": {
+   "0.382": 30507.2,
+   "0.5": 30559.62,
+   "0.618": 30612.05,
+   "0.705": 30650.7
+  },
+  "session_high_so_far": 30781.75,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30563.0,
+   "val": 30443.0,
+   "vah": 30660.0,
+   "note": "DEVELOPING as-of 04:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30353.0,
+   "vah": 30716.0,
+   "high": 30975.5,
+   "low": 29923.0,
+   "anchor": "2026-06-15 18:00:00-04:00",
+   "note": "DEVELOPING as-of 04:30"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  }
+ },
+ "crowded_path": {
+  "levels_between_tp1_and_tp2": [],
+  "count": 0,
+  "crowded_path": false,
+  "note": "this position has a single target (30658.00), so there is no TP1-to-TP2 corridor to be crowded."
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "04:11",
+   "reason_for_call": "intermediate_level_broken / weekly_vah 30714.00",
+   "action": "hold",
+   "new_stop": null,
+   "favouring": "more",
+   "reason": "Call flags 'broken' but the 04:10 2m close 30719.25 and its low 30716.25 both held above weekly_vah (~30714-16) - a test, not a closed break. Already +1.05R, TP1 not printed so breakeven is illegal; no genuine break to trail behind. Hold stop/targets."
+  },
+  {
+   "minute": "04:12",
+   "reason_for_call": "tp1_reached / target_1 30699.00",
+   "action": "partial",
+   "partial_pct": 0.65,
+   "new_stop": null,
+   "favouring": "more",
+   "reason": "TP1 (prior_day_vah 30699) broken cleanly on a strong-momentum bar (low 30698, close 30699.25), not a stall. +1.66R. Path to TP2 is crowded (4 levels in ~20pt band), so banking 65% here; 35% runs with stop unchanged pending next level."
+  },
+  {
+   "minute": "04:14",
+   "reason_for_call": "intermediate_level_broken / bb_ma_2m 30751.15",
+   "action": "breakeven",
+   "new_stop": 30754.0,
+   "favouring": "less",
+   "reason": "Runner bounced 28pt off the 30699.5 low on a 656-vol bar, closing 30727.5 back above weekly_vah (~30714-16) it had just broken minutes earlier; bb_ma_2m (30751) untouched, not broken. TP1 printed, so stop to breakeven 30754 to protect the 35% runner while leaving room to daily_vah 30658."
+  },
+  {
+   "minute": "04:17",
+   "reason_for_call": "intermediate_level_broken / weekly_vah 30716.00",
+   "action": "hold",
+   "new_stop": null,
+   "favouring": "same",
+   "reason": "Tag says 'broken' but the 04:14-16 bar wicked to weekly_vah (low 30716) and closed 30729, ~13pt above - a rejected test, not a close-through, echoing the 04:11 precedent. Runner already breakeven'd from the prior reversal; price flat since (30727.5->30729). Hold."
+  },
+  {
+   "minute": "04:24",
+   "reason_for_call": "intermediate_level_broken / prior_day_vah 30699.00",
+   "action": "trail",
+   "new_stop": 30708.25,
+   "favouring": "more",
+   "reason": "04:22-24 bar closed 30695.75, well below prior_day_vah 30699 and weekly_vah ~30716, on rising volume (329) near the bar low - decisive break, not a stall. Trail runner stop to 30708.25 (30699 + 0.5x avg 2m range), price must reclaim the level to stop me."
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract.",
+ "conviction_partial_rule": {
+  "conviction_of_this_position": "C",
+  "contract_default": "at TP1, take 50% and hold the rest toward the full target - every trade, every grade. Uniform 50/50 (tv-manage 0.3.3, his ruling 2026-08-17). The conviction label still arrives with your briefing and is still recorded; it no longer changes the schedule.",
+  "retired_do_not_apply": "the conviction-keyed schedule (A 50% / B 75% / C 100%) is RETIRED. If you remember it from an older version, it is not the contract in force.",
+  "note": "stated as the contract text, not as an instruction - partial_pct is your decision and is a fraction of what is still open. The schedule is the default, not a cage: your judgement at this level still overrides it."
+ },
+ "thesis_context": {
+  "version": "v1 (LONDON 03:00, reconciled)",
+  "primary_bias": "long",
+  "invalidation": 30658.0,
+  "aligned": "this position is AGAINST the thesis's primary bias. v1 read LONG toward prior-day high 30770.75 and weekly high 30975.50, and took this short only under its own explicit two-sided licence: shorts were licensed AT the session-high / 2m-BB-upper cluster (~30742-30749.5) on a stall that rolls over. You are managing the licensed counter-trend leg of a long-biased thesis, so the thesis's own targets are not your destination.",
+  "other_side_tripwire": "bb_ma_2m 30721.83 on a 2m close through it WITH the MA. That is the level at which the thesis said the long side gives way - i.e. a 2m close below 30721.83 with the MA turning down is the thesis conceding your direction, not opposing it.",
+  "defended_level": "session_low_30337 30337.50, status untested - Asia bottomed there before the 405pt rally into the zone you faded.",
+  "thesis_targets": "prior_day_high 30770.75 and weekly_high 30975.50 - both ABOVE your entry, because they are the LONG thesis's targets. Your own targets are the trigger's: prior_day_vah 30699.00 then daily_vah 30658.00, the latter being the thesis's own stated invalidation level."
+ },
+ "prior_positions_this_window": {
+  "count": 1,
+  "detail": "L1 is the window's first candidate and its first fill.",
+  "earlier_windows": "none - LONDON is the first window of the session-day."
+ },
+ "window_note": {
+  "window": "LONDON",
+  "entries_end": "04:59",
+  "earliest_entry": "03:00",
+  "text": "the LONDON window runs 03:00-04:59. T51 does not apply to this position - T51 governs positions carried into the 09:30 cash open, which is hours away. A position open at the window close is not force-flattened; the window gates TAKING trades, not holding them. Nothing about any later setup in this window is disclosed to you here.",
+  "news": "the calendar for this cash day is empty - no blackout anywhere.",
+  "follow_up_note": "65% of this position was banked at 04:12. What is left is the 35% runner, resting on the plan's second target (daily_vah 30658.00) on the ORIGINAL 30787.00 stop - no breakeven was set. partial_pct at any later call is a fraction of that remaining 35%, not of the original size."
+ },
+ "BREAKEVEN_RULE": {
+  "rule": "breakeven is ONLY available after TP1 has printed. Before TP1 it is not a legal action.",
+  "tp1": 30658.0,
+  "tp1_printed_yet": true,
+  "available_to_you_now": "YES - TP1 has printed and 65% was banked at 04:12. The target named in `tp1` below is the RUNNER's remaining target, not the gate.",
+  "what_to_use_instead": "before TP1 a stall is answered with hold, or with trail if a level has genuinely broken in your favour and clears the T55 floor, or with exit_now if the rejection is decisive.",
+  "source": "his standing ruling of 2026-08-16, and RUNBOOK-replay-scoring section 6",
+  "orchestrator_enforcement": "a breakeven returned before TP1 has printed is rejected.",
+  "_runner_gate_corrected": {
+   "was_tp1_printed_yet": false,
+   "was_tp1": 30658.0,
+   "why": "this position's TP1 HAS printed - 65% of it was banked at 04:12. The briefing lists only the runner's remaining target, so runmanage.build computed `tp1` from that target instead and re-locked the gate. Breakeven IS available on this runner."
+  }
+ }
+}

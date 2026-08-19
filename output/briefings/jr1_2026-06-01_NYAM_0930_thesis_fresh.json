@@ -1,0 +1,158 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM",
+ "decision_minute": "2026-06-02T09:30 ET",
+ "leak_check": "pass - replay truncated at 09:29:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jr1_2026-06-01_NY_AM_0930.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30557.0,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "closed_at": "09:30",
+  "open": 30546.5,
+  "high": 30560.0,
+  "low": 30540.0,
+  "close": 30557.0,
+  "volume": 1830,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_AM",
+  "entries": "09:30-11:00 earliest entry 09:35",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30525.0,
+  "bb_upper_2m": 30563.26,
+  "bb_lower_2m": 30486.74,
+  "vwap": 30469.37,
+  "vwap_p1": 30543.89,
+  "vwap_m1": 30394.85,
+  "vwap_p2": 30618.41,
+  "vwap_m2": 30320.32,
+  "vwap_p3": 30692.93,
+  "vwap_m3": 30245.8,
+  "read_at": "chart cursor 09:30-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "_session_calendar": {
+   "session_day_label": "2026-06-01",
+   "session_opens": "2026-06-01 18:00 ET (Monday evening)",
+   "cash_session_traded": "2026-06-02 (Tuesday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30469.3,
+   "vwap_p1": 30543.74,
+   "vwap_p2": 30618.19,
+   "vwap_p3": 30692.64,
+   "vwap_m1": 30394.85,
+   "vwap_m2": 30320.4,
+   "vwap_m3": 30245.95
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30525.0,
+   "bb_ma_3m": 30531.97,
+   "bb_ma_15m": 30544.14,
+   "bb_ma_60m": 30499.11
+  },
+  "day_range_fibs": {
+   "0.382": 30420.22,
+   "0.5": 30451.88,
+   "0.618": 30483.53,
+   "0.705": 30506.87
+  },
+  "session_high_so_far": 30586.0,
+  "session_low_so_far": 30317.75,
+  "daily_profile": {
+   "poc": 30537.0,
+   "val": 30415.0,
+   "vah": 30580.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30537.0,
+   "val": 30415.0,
+   "vah": 30580.0,
+   "high": 30586.0,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "prior_day": {
+   "poc": 30560.0,
+   "val": 30382.0,
+   "vah": 30597.0,
+   "high": 30693.0,
+   "low": 30291.5
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.013,
+  "net_move_15m": 12.25,
+  "total_15m_travel": 969.0,
+  "candles_15m_up": 32,
+  "candles_15m_down": 30,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "08:30",
+   "open": 30548.5,
+   "high": 30560.0,
+   "low": 30526.75,
+   "close": 30554.25,
+   "body_ratio": 0.17
+  },
+  {
+   "start": "08:45",
+   "open": 30555.5,
+   "high": 30555.75,
+   "low": 30526.5,
+   "close": 30529.75,
+   "body_ratio": 0.88
+  },
+  {
+   "start": "09:00",
+   "open": 30529.75,
+   "high": 30536.25,
+   "low": 30481.25,
+   "close": 30493.75,
+   "body_ratio": 0.65
+  },
+  {
+   "start": "09:15",
+   "open": 30493.25,
+   "high": 30560.0,
+   "low": 30488.5,
+   "close": 30557.0,
+   "body_ratio": 0.89
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "any red-folder release scheduled at or before 09:30 ET that would fall inside its 10-minute pre-event band, or any dated event bearing on NQ/its heavy constituents",
+  "reasoning": "Calendar for 2026-06-02 stays empty through the cash open - no releases at all, so standing policy #2's 10-minute band has nothing to gate. Neutral, high confidence in the empty read.",
+  "_provenance": "tv-macro-events 0.2.0 output carried forward from the j49 run. The macro contract is UNCHANGED in the 0.4.11 batch and its entire input is the economic calendar plus standing policy - no chart, no bars, no prices - so for the same session-day and window the input is byte-identical and re-spawning could only reproduce it. Carried rather than re-run, and said so here rather than passed off as fresh."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "what_happened_since_the_last_read": "Since your 03:00 read, stated as price facts only: between 03:00 and this decision minute the session traded a high of 30586.00 and a low of 30481.25. All levels in levels_at_decision_BUILD are recomputed as of this minute.",
+ "why_you_are_being_re-fired": "FRESH-EYES WINDOW OPEN (runbook 2e duty 3). You are being asked to read this window from the chart and this briefing ALONE. No prior thesis is included, deliberately - not because none exists, but because the first read should be yours. Commit a bias and the levels you are reading it from. You will be shown the standing thesis immediately afterwards and given the chance to keep this read or revise it."
+}

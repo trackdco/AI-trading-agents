@@ -1,0 +1,217 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "reconcile",
+ "window": "NY_AM",
+ "decision_minute": "2026-06-24T09:30 ET",
+ "leak_check": "pass - replay truncated at 09:29:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/wr1_2026-06-23_NY_AM_0930.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 29711.5,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "closed_at": "09:30",
+  "open": 29728.75,
+  "high": 29728.75,
+  "low": 29703.0,
+  "close": 29711.5,
+  "volume": 1921,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_AM",
+  "entries": "09:30-11:00 earliest entry 09:35",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 29740.45,
+  "bb_upper_2m": 29783.04,
+  "bb_lower_2m": 29697.86,
+  "vwap": 29774.6,
+  "vwap_p1": 29837.23,
+  "vwap_m1": 29711.97,
+  "vwap_p2": 29899.86,
+  "vwap_m2": 29649.34,
+  "vwap_p3": 29962.49,
+  "vwap_m3": 29586.71,
+  "read_at": "chart cursor 09:30-1s. Last COMPLETE 2m bar per the 2m grid.",
+  "_chop_state": {
+   "state": "TRENDING",
+   "reason": "180pt range over 3.0h \u2014 not small",
+   "range_high": 29872.75,
+   "range_low": 29692.5,
+   "range_width": 180.25,
+   "hours_held": 3.0,
+   "small_threshold_pt": 104.0,
+   "zone_now": "low",
+   "in_middle": false,
+   "middle_band": [
+    29737.56,
+    29827.69
+   ],
+   "as_of": "2026-06-24 09:30",
+   "doctrine": "CHOP + in_middle -> the middle is dead. CHOP + at an edge -> the only licensed trade is from that edge toward the opposite edge."
+  },
+  "_session_calendar": {
+   "session_day_label": "2026-06-23",
+   "session_opens": "2026-06-23 18:00 ET (Tuesday evening)",
+   "cash_session_traded": "2026-06-24 (Wednesday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 29774.7,
+   "vwap_p1": 29837.56,
+   "vwap_p2": 29900.42,
+   "vwap_p3": 29963.29,
+   "vwap_m1": 29711.83,
+   "vwap_m2": 29648.97,
+   "vwap_m3": 29586.11
+  },
+  "bb_ma": {
+   "bb_ma_2m": 29740.45,
+   "bb_ma_3m": 29761.76,
+   "bb_ma_15m": 29799.6,
+   "bb_ma_60m": 29760.24
+  },
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29731.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29727.0,
+   "val": 29661.0,
+   "vah": 29914.0,
+   "high": 30701.25,
+   "low": 29577.25,
+   "anchor": "2026-06-22 18:00:00-04:00",
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.029,
+  "net_move_15m": -58.5,
+  "total_15m_travel": 1990.5,
+  "candles_15m_up": 28,
+  "candles_15m_down": 34,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "08:30",
+   "open": 29851.75,
+   "high": 29865.75,
+   "low": 29784.25,
+   "close": 29793.0,
+   "body_ratio": 0.72
+  },
+  {
+   "start": "08:45",
+   "open": 29792.25,
+   "high": 29798.0,
+   "low": 29752.5,
+   "close": 29762.0,
+   "body_ratio": 0.66
+  },
+  {
+   "start": "09:00",
+   "open": 29764.25,
+   "high": 29790.75,
+   "low": 29698.75,
+   "close": 29703.0,
+   "body_ratio": 0.67
+  },
+  {
+   "start": "09:15",
+   "open": 29705.0,
+   "high": 29756.25,
+   "low": 29692.5,
+   "close": 29711.5,
+   "body_ratio": 0.1
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "no basis to falsify; no dated events bear on NQ or its constituents as of this decision minute",
+  "reasoning": "No scheduled or released events at or before 2026-06-24 09:30 ET. Calendar is empty for both released_so_far_today and scheduled_later_today, so there is no gate and no directional read to offer.",
+  "_provenance": "tv-macro-events 0.2.0 output carried forward from the w49 run. The macro contract is UNCHANGED in the 0.4.11 batch and its entire input is the economic calendar plus standing policy - no chart, no bars, no prices - so for the same session-day and window the input is byte-identical and re-spawning could only reproduce it. Carried rather than re-run, and said so here rather than passed off as fresh."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "weekly_vah",
+    "price": 29914.0
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 29928.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low_prior_day_low",
+   "price": 29577.25
+  },
+  "waiting_for": "nothing - price already pushing through the daily VAH into the weekly VAH/session-high cluster on decisive bullish 15m closes; long continuation live",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed on a rejection within the 29878-29914 band (2m BB upper / 3h range high / session high / weekly VAH), a stall that rolls back below daily VAH (~29858) and the 2m BB MA - wherever within that band it stalls, not a distant cluster",
+  "anticipated_resolution": {
+   "level": "session_high_29892_weekly_vah_cluster",
+   "price": 29891.75,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "A 15m close with a decisive body beyond either extreme - below 29577.25 (defended weekly/prior-day low) or above 29891.75/29914 (session high / weekly VAH) - confirms the break; a wick-heavy poke on the 1-2m does not.",
+  "other_side_tripwire": {
+   "level": "daily_vah_29858",
+   "price": 29858.0,
+   "event": "2m close back below ~29858 (daily VAH) with the 2m BB MA turning down, rolling away from the cluster - licenses the short back toward the day's 0.5 fib / weekly POC (~29734-29738)"
+  },
+  "defended_level": {
+   "level": "weekly_low_prior_day_low",
+   "price": 29577.25,
+   "memory": "prior session-day's one-way dump set this as both the prior-day low and the anchored weekly low; today's session low (29585.5) retested it within 8pts, could not break it, displaced sharply away, pulled back to a higher low at the day 0.5 fib/weekly POC (~29734), and has now pushed through daily POC/VWAP+1/BB MA into daily VAH",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "escalation_response": "reaffirmed_standing",
+  "reasoning": "The fresh short read expected rejection at 29858-29914, but the last two 15m candles (07:30, 07:45, body_ratio 0.76/0.75) closed decisively bullish straight through daily POC/VWAP+1/BB MA into daily VAH with no wick or stall - that's displacement, not rejection. Reaffirming the standing bottoming thesis: weekly/prior-day low still defended, a fresh higher low printed at the day 0.5 fib/weekly POC before this push, target stays weekly VAH/prior-day VAH. Shorts remain licensed only on an actual rollover in the 29878-29914 band, not on mere proximity to it."
+ },
+ "what_happened_since_the_last_read": "Since your 03:00 read, stated as price facts only: between 03:00 and this decision minute the session traded a high of 29872.75 and a low of 29692.50. All levels in levels_at_decision_BUILD are recomputed as of this minute.",
+ "why_you_are_being_re-fired": "RECONCILE STEP (runbook 2e duty 3). Minutes ago you read this window with fresh eyes and emitted: bias 'long'; invalidation {\"level\": \"3h_range_low_vwap_m1\", \"price\": 29692.5}; targets [{\"level\": \"day_fib_0.618_vwap\", \"price\": 29774.7}, {\"level\": \"daily_poc\", \"price\": 29821.0}]; waiting_for 'nothing - price is already at the confluence support'. Your reasoning was: 'Session round-tripped: rallied to 29891.75 then reversed 180pt over the last 3h into a tight stack of VWAP-1 (29711.97), day fib 0.382 (29702.49), BB-2m lower (29697.86) and the 3h range low (29692.5), and the last 15m candle absorbed (body_ratio 0.10) instead of closing through. Price still sits inside the weekly value area (VAL 29661/POC 29727) and flush_inputs show a rotational, not one-way, day (0.029 path efficiency). Leaning long for a rebalance to the 0.618 fib/VWAP/daily POC, but three straight strong-bodied down 15m candles keep this genuinely two-sided - a decisive 15m close below ~29692 flips it toward weekly VAL and the session low.'. You are now shown the STANDING thesis carried into this window: bias 'long'; invalidation {\"level\": \"weekly_low_prior_day_low\", \"price\": 29577.25}; targets [{\"level\": \"weekly_vah\", \"price\": 29914.0}, {\"level\": \"prior_day_vah\", \"price\": 29928.0}]; condition_for_other_side 'shorts licensed on a rejection within the 29878-29914 band (2m BB upper / 3h range high / session high / weekly VAH), a stall that rolls back below daily VAH (~29858) and the 2m BB MA - wherever within that band it stalls, not a distant cluster'. Its reasoning was: \"The fresh short read expected rejection at 29858-29914, but the last two 15m candles (07:30, 07:45, body_ratio 0.76/0.75) closed decisively bullish straight through daily POC/VWAP+1/BB MA into daily VAH with no wick or stall - that's displacement, not rejection. Reaffirming the standing bottoming thesis: weekly/prior-day low still defended, a fresh higher low printed at the day 0.5 fib/weekly POC before this push, target stays weekly VAH/prior-day VAH. Shorts remain licensed only on an actual rollover in the 29878-29914 band, not on mere proximity to it.\". KEEP your fresh read or REVISE it, and say which and why in your reasoning. Keeping it is a full answer and needs no apology; so is revising. What is not acceptable is carrying a level or a story forward because it was there before - if the standing read names a price the chart has left behind, say so. Whatever you emit here is the thesis in force for this window."
+}
