@@ -70,3 +70,49 @@ unaffected - only the numeric legend in the briefing is stale, by at most one mi
   decision rule the manager applies, the direction is backward-looking, and their PNGs were
   correct. Re-running would require re-navigating tapes already left behind.
 - Flagged for ruling. If the ruling is to re-run them, the nine frames above are the list.
+
+---
+
+# SECOND DEFECT: `data_get_study_values` can race a resolution change
+
+Found while capturing 2026-06-03 A3 09:59. The read returned:
+
+```
+BB Basis 30513.68  VWAP 30453.98      <- WRONG: this is the LONDON price regime
+```
+
+immediately after `chart_set_timeframe(3)`. A3 is short at 30299 in NY_AM; two minutes
+earlier (09:57) the same study read 30292.94 / 30336.76. A 20-period SMA cannot move 220 pt
+in two minutes, and if price had actually reached 30514 the position would have been stopped
+out at 30357 long before.
+
+`replay_status` confirmed the cursor was correct (1780581539). Re-issuing the identical call
+returned:
+
+```
+BB Basis 30291.51  VWAP 30336.29      <- correct, continuous with 09:57
+```
+
+So the first call returned values computed against the **previous** chart state, before the
+resolution change had settled. `capture_screenshot` with `wait_for_render: true` is not
+affected - the PNG file sizes cluster cleanly by price regime (LONDON captures ~234-244 KB,
+NY_AM ~208-212 KB) and the 09:59 PNG is 211,879 bytes, i.e. correctly in the NY_AM regime.
+Only the numeric study read raced.
+
+## Why this one is more dangerous than the legend drift
+
+The legend-drift defect above is bounded at ~1 pt and is always backward-looking. This one is
+unbounded: it silently substitutes a legend from a completely different part of the session,
+220 pt away. A manager handed those numbers would read every level wrong.
+
+## Guard now in force
+
+Every stored legend is sanity-checked against its own position's entry price before it is
+written. Audit of all 38 frames captured so far:
+
+```
+clean - all 38 frames carry a VWAP within 250pt of their position's entry
+```
+
+The 09:59 read was caught and corrected before storage, so no frame in the pool carries a
+raced legend. The check is cheap and stays on for the rest of the run.

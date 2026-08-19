@@ -681,6 +681,160 @@
     "-3sigma": 30335.68
    },
    "screenshot": "jr1_2026-06-03_L1_0403_manage.png"
+  },
+  "jr1|2026-06-03|L1|04:04": {
+   "cid": "L1",
+   "cursor": 1780560239,
+   "bar_start": 1780560000,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780560239 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30513.16,
+    "Upper": 30542.22,
+    "Lower": 30484.1
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30456.32,
+    "+1sigma": 30496.53,
+    "-1sigma": 30416.1,
+    "+2sigma": 30536.74,
+    "-2sigma": 30375.89,
+    "+3sigma": 30576.95,
+    "-3sigma": 30335.68
+   },
+   "screenshot": "jr1_2026-06-03_L1_0404_manage.png"
+  },
+  "jr1|2026-06-03|L1|04:08": {
+   "cid": "L1",
+   "cursor": 1780560479,
+   "bar_start": 1780560360,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780560479 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30505.99,
+    "Upper": 30544.75,
+    "Lower": 30467.23
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30456.41,
+    "+1sigma": 30496.42,
+    "-1sigma": 30416.41,
+    "+2sigma": 30536.42,
+    "-2sigma": 30376.4,
+    "+3sigma": 30576.43,
+    "-3sigma": 30336.39
+   },
+   "screenshot": "jr1_2026-06-03_L1_0408_manage.png"
+  },
+  "jr1|2026-06-03|L1|04:15": {
+   "cid": "L1",
+   "cursor": 1780560899,
+   "bar_start": 1780560720,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780560899 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30492.71,
+    "Upper": 30558.8,
+    "Lower": 30426.62
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30455.67,
+    "+1sigma": 30495.48,
+    "-1sigma": 30415.87,
+    "+2sigma": 30535.28,
+    "-2sigma": 30376.07,
+    "+3sigma": 30575.08,
+    "-3sigma": 30336.27
+   },
+   "screenshot": "jr1_2026-06-03_L1_0415_manage.png"
+  },
+  "jr1|2026-06-03|L1|04:59": {
+   "cid": "L1",
+   "cursor": 1780563539,
+   "bar_start": 1780563420,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780563539 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30386.28,
+    "Upper": 30466.75,
+    "Lower": 30305.8
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30445.7,
+    "+1sigma": 30492.54,
+    "-1sigma": 30398.85,
+    "+2sigma": 30539.39,
+    "-2sigma": 30352.0,
+    "+3sigma": 30586.24,
+    "-3sigma": 30305.16
+   },
+   "screenshot": "jr1_2026-06-03_L1_0459_manage.png"
+  },
+  "jr1|2026-06-03|A3|09:55": {
+   "cid": "A3",
+   "cursor": 1780581299,
+   "bar_start": 1780581060,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780581299 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30295.66,
+    "Upper": 30352.21,
+    "Lower": 30239.11
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30338.64,
+    "+1sigma": 30429.62,
+    "-1sigma": 30247.66,
+    "+2sigma": 30520.6,
+    "-2sigma": 30156.68,
+    "+3sigma": 30611.57,
+    "-3sigma": 30065.71
+   },
+   "screenshot": "jr1_2026-06-03_A3_0955_manage.png"
+  },
+  "jr1|2026-06-03|A3|09:57": {
+   "cid": "A3",
+   "cursor": 1780581419,
+   "bar_start": 1780581240,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780581419 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30292.94,
+    "Upper": 30351.3,
+    "Lower": 30234.57
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30336.76,
+    "+1sigma": 30427.64,
+    "-1sigma": 30245.88,
+    "+2sigma": 30518.51,
+    "-2sigma": 30155.0,
+    "+3sigma": 30609.39,
+    "-3sigma": 30064.13
+   },
+   "screenshot": "jr1_2026-06-03_A3_0957_manage.png"
+  },
+  "jr1|2026-06-03|A3|09:59": {
+   "cid": "A3",
+   "cursor": 1780581539,
+   "bar_start": 1780581420,
+   "status": "OK",
+   "read_at": "live capture, res 3, cursor verified 1780581539 via replay_status",
+   "bollinger_bands": {
+    "Basis": 30291.51,
+    "Upper": 30349.56,
+    "Lower": 30233.47
+   },
+   "vwap_deviation_bands": {
+    "VWAP": 30336.29,
+    "+1sigma": 30426.97,
+    "-1sigma": 30245.61,
+    "+2sigma": 30517.65,
+    "-2sigma": 30154.93,
+    "+3sigma": 30608.33,
+    "-3sigma": 30064.25
+   },
+   "screenshot": "jr1_2026-06-03_A3_0959_manage.png"
   }
  }
 }
