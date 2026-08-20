@@ -439,6 +439,20 @@ never judges content.
    (jr1-vs-jr2: the −5.26R swing traces to jr2 parking its long zone 77pt
    from price — a silent disable T18/T19 already forbade.)
 
+6. **THE WINDOW-OPEN VOTE (2-of-3).** At each window open, spawn the
+   fresh-eyes thesis THREE times — identical briefing, independent spawns,
+   none aware of the others. The MAJORITY bias is elected: the first
+   majority spawn's full output (levels, conditions, tripwires) becomes
+   the fresh read and proceeds to the reconcile step; all three are logged
+   as `thesis_vote` rows plus the elected one. A three-way split elects a
+   TWO-SIDED read with both sides' tripwires armed in reach (duty 5).
+   Escalations and mid-window refreshes stay single-spawn. Cost: +2 thesis
+   spawns per window open (≈+10–15% per week at two windows). Bought: the
+   same tape producing the same read twice — jr1-vs-jr2 diverged ±5R on
+   single-spawn window-open reads, and his floor is *"5R in a week is a
+   bare minimum."* Strike this duty with one word if the cost isn't worth
+   it.
+
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 
 Step one 2m bar at a time through LONDON 03:00–04:59 / NY_PRE 08:00–09:29 /

@@ -1,7 +1,16 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.15
+version: 0.4.16
+# 0.4.16: T80 - SEQUENTIAL PAIRS JUDGED BY THE SECOND LEG (his leeway
+#   ruling 2026-08-19). The T1 default-toward-pass was discarding winners:
+#   4 of 12 sequential passes across wr2/jr1/jr2 ran >=2R mechanically,
+#   and ALL FOUR had structural second legs; the MA-only ones went
+#   nowhere. Scoped: structural second leg (VWAP band / profile level /
+#   prior-day level) = adjudicate on merits like same-candle - the
+#   structural leg IS the "positively better reason"; MA-only keeps the
+#   old default. His arithmetic: "it might take six and it might take
+#   three winners, and that would be a profitable pool."
 # 0.4.15: CHOP DETECTOR v2 (his correction 2026-08-19). "I'm not looking
 #   at whether it's been choppy the last three hours and I'm not looking
 #   at whether it's in a specific point range" - v1's fixed 3h/104pt was a
@@ -446,13 +455,26 @@ Three qualifications, all of which the week established:
 
    **A lone MA closure is `pending`, not a candidate.**
 
-   **A SEQUENTIAL PAIR DEFAULTS TOWARD `pass`.** His ruling, 2026-08-11, on his
-   own sequential trade: *"I usually instate it has to break another level along
-   with the MA in the same candle. This was a heavily discretionary reading."* So
-   same-candle is the rule and sequential is discretion layered on top. Passing a
-   sequential pair is always defensible. **Taking one requires a rejection story
-   you can name plus a positively better reason, stated in `reason`** — and note
-   that the 0.2.0 run's only loser was a sequential pair taken without one.
+   **A SEQUENTIAL PAIR: judged by its SECOND LEG (T80, his ruling
+   2026-08-19).** The old T1 default — sequential always leans `pass` — was
+   discarding winners: across three scored runs, the sequential passes that
+   went on to run were the ones whose second leg closed through a
+   STRUCTURAL level, every single time. His ruling on giving the gate
+   leeway: *"If we move that around, that doesn't mean it's suddenly going
+   to take all 12 of those. It might take six and it might take three
+   winners, and that would be a profitable pool."* So:
+
+   - **Second leg through a structural level** (a VWAP band, daily/weekly
+     profile level, prior-day level, weekly high/low — not an MA) →
+     **adjudicate on the merits, exactly like a same-candle pair.** The
+     structural second leg IS the T1 "positively better reason". Judge it;
+     take it or pass it on what you see.
+   - **MA-only second leg** → the old default stands: leans `pass`, taking
+     one still requires a named rejection story plus a positively better
+     reason. (His original 2026-08-11 ruling — *"I usually instate it has
+     to break another level along with the MA in the same candle"* — was
+     always about LEVELS, and an MA alone is not one.)
+
    `SEQ_CANDLES = 3` is a guess, not his number.
 
 **Timeframes are 2m and 3m.** Simultaneous closure across both raises conviction

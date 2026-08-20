@@ -6,13 +6,13 @@ contract text, plus the j49 post-mortem's plumbing. Stack for all runs:
 | tier | contract | note |
 |---|---|---|
 | tv-macro-events | 0.2.0 | unchanged — T39 CONFIRMED by his ruling 2026-08-19 |
-| tv-thesis | **0.4.4** | T40 struck; T71–T74 HTF-structure bias; condition grammar |
-| tv-trigger | **0.4.13** | T75–T78 + LADDER ENFORCEMENT (two-rung example, §2e bounce) |
+| tv-thesis | **0.4.5** | T40 struck; T71–T74; condition grammar; T18/19 reach enforced |
+| tv-trigger | **0.4.16** | T75–T80 + chop v2 + all enforcement (see version header) |
 | tv-manage | **0.3.4** | uniform 50/50; the runner's mandate is TP2 |
 
 All agents on Sonnet, model recorded per row, as before. **The runbook has a
-new §2e** — three orchestrator duties (level-truth guard, mandatory re-read
-counter, fresh-eyes window open). Read it before R1; the fresh-eyes step
+new §2e** — SIX orchestrator duties (level-truth guard, re-read counter,
+fresh-eyes open, ladder bounce, reach bounce, 2-of-3 window-open vote). Read it before R1; the fresh-eyes step
 changes how window-open thesis briefings are assembled (no prior thesis in
 the first spawn; reconcile step after).
 
