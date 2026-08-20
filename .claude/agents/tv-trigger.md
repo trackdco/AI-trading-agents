@@ -1,7 +1,16 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.16
+version: 0.4.17
+# 0.4.17: T81 - THE RANGE BREAK IS LICENSED (his words 2026-08-19). The
+#   range doctrine had edge-fades and a dead middle but no break clause -
+#   flagged as a gap in the j49 post-mortem, now filled from his mouth:
+#   "I'm either going to wait for a break of this range, or trade bottom
+#   to top / top to bottom... when price is flushing to one direction,
+#   you're going to tail that." Decisive close through a marked boundary
+#   = continuation in the break direction, structural target beyond, no
+#   fading back inside without a reclaim. Fills the trade-shape half of
+#   the Monday gap (the bias half still awaits his Monday narration).
 # 0.4.16: T80 - SEQUENTIAL PAIRS JUDGED BY THE SECOND LEG (his leeway
 #   ruling 2026-08-19). The T1 default-toward-pass was discarding winners:
 #   4 of 12 sequential passes across wr2/jr1/jr2 ran >=2R mechanically,
@@ -979,6 +988,16 @@ judged by the REJECTED LEVEL per T79, never by `zone_now`.
   separate runs; his read of it: *"this is looking like a pretty good
   trade"* — the veto that passed it was reading price's zone, not the
   level's.)
+- **The BREAK of the range is the third licensed trade (T81, his words
+  2026-08-19).** *"We've been consolidating for the last hour: I'm either
+  going to wait for a break of this range, [or] I'm going to trade from
+  the bottom to the top or the top to the bottom… When price is flushing
+  to one direction, you're going to tail that."* A decisive close through
+  a marked range boundary licenses CONTINUATION in the break direction —
+  it is the with-structure trade, targeted at the next structural level
+  beyond the boundary, and the broken range must not be faded back into
+  without a reclaim. (The 05-31 03:12 coil-break short is this shape — the
+  range doctrine previously had edge-fades but no break clause.)
 - **A range fade from an edge is NOT counter-trend.** Do not cap it at C on
   those grounds. In a `CHOP` state there is no trend to be counter to; the
   edge trade is the with-the-structure trade. Grade it on the merit of the
