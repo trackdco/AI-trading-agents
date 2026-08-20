@@ -459,6 +459,16 @@ never judges content.
    bare minimum."* Strike this duty with one word if the cost isn't worth
    it.
 
+7. **THE T82 CHECK (London same-edge).** Before spawning the trigger on a
+   LONDON candidate, if the session already has a stopped-out London fill
+   in the same direction whose entry sits within 15pt of this candidate's
+   trigger price, say so IN the briefing (*"T82: prior long stopped at
+   ⟨entry⟩ this window, ⟨N⟩pt from here"*) — and if the trigger takes it
+   anyway without naming a genuinely different rejected level, bounce
+   once. Arithmetic on fill rows, no judgement. (jl1 day 1: L9 long at
+   29845.5 filled after L1's long at 29847.0 stopped — 1.5pt apart, same
+   window, same direction; T82 was in force and unenforced, −1R.)
+
 ## 3. PHASE R2 — THE BAR LOOP (per window)
 
 Step one 2m bar at a time through LONDON 03:00–04:59 / NY_PRE 08:00–09:29 /
