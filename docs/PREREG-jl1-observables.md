@@ -24,9 +24,10 @@ into doctrine with his sign-off if it repeats. Registered 2026-08-19.
    +1.83 (total +3.12R; the five 2nd+ London fills were net −3.12R, and
    three of the five were same-edge re-attempts of the 06-02 type). jl1
    check: count 2nd+ London fills and their outcomes, split same-edge
-   re-attempt vs genuinely-different setup. Candidate rules if it repeats:
-   hard London cap of 1, or the narrower "no re-attempt at the same failed
-   edge" (a T48 tightening). His call, with jl1's receipt.
+   re-attempt vs genuinely-different setup. UPDATE 2026-08-19: his ruling shipped the
+   experiment as **T82** (cap stays 2, same-edge re-attempts passed) —
+   jl1 now measures the different-setup second trades that remain: do
+   they earn the slot, or is cap-1 the end state?
 
 4. **Vote reproducibility (§2e duty 6).** All `thesis_vote` rows: how often
    did the three spawns agree 3-0, 2-1, 1-1-1? A high split rate on jl1

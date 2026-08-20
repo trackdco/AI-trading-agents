@@ -7,7 +7,7 @@ contract text, plus the j49 post-mortem's plumbing. Stack for all runs:
 |---|---|---|
 | tv-macro-events | 0.2.0 | unchanged — T39 CONFIRMED by his ruling 2026-08-19 |
 | tv-thesis | **0.4.5** | T40 struck; T71–T74; condition grammar; T18/19 reach enforced |
-| tv-trigger | **0.4.16** | T75–T80 + chop v2 + all enforcement (see version header) |
+| tv-trigger | **0.4.18** | T75–T82 + chop v2 + all enforcement (see version header) |
 | tv-manage | **0.3.4** | uniform 50/50; the runner's mandate is TP2 |
 
 All agents on Sonnet, model recorded per row, as before. **The runbook has a

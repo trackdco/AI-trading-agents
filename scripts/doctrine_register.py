@@ -41,6 +41,7 @@ STATUS = {
     ("tv-trigger", "0.4.15"): "chop v2 sourced: his correction 2026-08-19 (window-local, 60m London / 20m NY; his 50pt = p28 measured)",
     ("tv-trigger", "0.4.16"): "T80 sourced: his leeway ruling 2026-08-19; receipts in header",
     ("tv-trigger", "0.4.17"): "T81 sourced: his words 2026-08-19 (the range-break clause)",
+    ("tv-trigger", "0.4.18"): "T82 sourced: his ruling 2026-08-19 (cap 2 + no same-edge re-attempt in London; his experiment design)",
     ("tv-manage", "0.3.4"): "paired with T78, same ruling 2026-08-18",
     ("tv-manage", "0.3.3"): "50/50 per his ruling 2026-08-17; trail clause is disambiguation, no new doctrine",
     ("tv-trigger", "0.4.8"): "**FLAGGED**: unsourced, and his narration 2026-08-18 (T77 re-break re-entry) cuts against the cap — awaiting his verdict",

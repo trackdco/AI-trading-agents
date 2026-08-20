@@ -60,10 +60,12 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | — | INFO | **UNSOURCED** |  |
 | | | | *initial. Tier 1 of the TRADINGVIEW REPLAY STACK — docs/ARCHITECTURE-trading-agent.md, docs/AGENT-OPE…* | |
 
-## tv-trigger (now 0.4.17)
+## tv-trigger (now 0.4.18)
 
 | ver | rules | class | provenance | his verdict |
 |-----|-------|-------|------------|-------------|
+| 0.4.18 | T82,T48 | SIZE/SHAPE | cites him, 2026-08-19 | T82 sourced: his ruling 2026-08-19 (cap 2 + no same-edge re-attempt in London; his experiment design) |
+| | | | *T82 - THE LONDON SAME-EDGE EXCEPTION (his ruling 2026-08-19). In London, T48 re-entry does not apply…* | |
 | 0.4.17 | T81 | SHAPE | cites him, 2026-08-19 | T81 sourced: his words 2026-08-19 (the range-break clause) |
 | | | | *T81 - THE RANGE BREAK IS LICENSED (his words 2026-08-19). The range doctrine had edge-fades and a de…* | |
 | 0.4.16 | T80,T1 | INFO | cites him, 2026-08-19 | T80 sourced: his leeway ruling 2026-08-19; receipts in header |
@@ -134,7 +136,7 @@ STRUCK = he disavowed, removed from the contract.
 | 0.1.0 | T14,T23,T4 | SHAPE | cites him, 2026-08-13 |  |
 | | | | *NEW TIER, his ruling 2026-08-13. Management was a set of mechanical clauses (T14 break-even on a ban…* | |
 
-**45 versioned rule entries; 13 carry no source
-citation at all. 33 quoted blocks are presented as his voice across
+**46 versioned rule entries; 13 carry no source
+citation at all. 34 quoted blocks are presented as his voice across
 the four contracts — every one of them is subject to the same
 challenge T40 failed.**

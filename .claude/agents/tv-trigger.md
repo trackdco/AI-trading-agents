@@ -1,7 +1,14 @@
 ---
 name: tv-trigger
 description: Tier-2 trigger agent for the TradingView replay stack — adjudicates one candidate against the standing thesis, emits take_full/take_light/pass JSON. Spawned by the orchestrator only; never self-select.
-version: 0.4.17
+version: 0.4.18
+# 0.4.18: T82 - THE LONDON SAME-EDGE EXCEPTION (his ruling 2026-08-19).
+#   In London, T48 re-entry does not apply: a re-attempt at the same
+#   failed edge this window is a pass (t82_same_edge_london); the cap
+#   stays 2 with the second slot reserved for a genuinely different
+#   setup. His experiment design: it separates "second London trades are
+#   bad" from "same-edge re-attempts are bad" - jl1 measures the second
+#   trades that remain. NY windows keep T48 unchanged.
 # 0.4.17: T81 - THE RANGE BREAK IS LICENSED (his words 2026-08-19). The
 #   range doctrine had edge-fades and a dead middle but no break clause -
 #   flagged as a gap in the j49 post-mortem, now filled from his mouth:
@@ -1046,6 +1053,22 @@ journal should show that you knew.
   both of London's two. *(This is my reading of an ambiguous answer, and it is the
   conservative one — his word flips it if a re-entry on an intact thesis should
   ride free.)*
+**T82 — THE LONDON EXCEPTION (his ruling 2026-08-19).** In LONDON, T48 does
+NOT apply: a re-attempt at the same failed edge — the same level or zone
+(within ~15pt) in the same direction that already stopped you out this
+window — is a `pass`, with `t82_same_edge_london` in `constraints_failed`.
+His design, an experiment with its measurement built in:
+
+> *"Having a cap of 2 and then saying no re-attempt at the same failed edge
+> would make sense… That way, we can see if it's the fact that it's filling
+> that second spot up with just a re-attempt of a trade that failed
+> already, or if it would just be more profitable to do one trade."*
+
+The London cap stays 2; the second slot is reserved for a genuinely
+DIFFERENT setup — a different level or a different side. NY windows keep
+T48 unchanged. (Motivating receipts live in
+`docs/PREREG-jl1-observables.md` §3, deliberately not inlined here.)
+
 - **The escalation ratchet does not block it.** "Never escalate the same level +
   direction twice in a window" governs *escalations*, not entries. A second
   entry at the same level needs no escalation at all when the standing thesis
