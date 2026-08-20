@@ -1,0 +1,67 @@
+{
+ "briefing_class": "FACT-ONLY",
+ "run_prefix": "jl1",
+ "session_day": "2026-07-07",
+ "trades_calendar_day": "2026-07-08",
+ "decision_minute": "2026-07-08T03:00 America/New_York",
+ "window": "LONDON",
+ "news_as_of": {
+  "released_so_far_today": [],
+  "scheduled_later_today": [
+   {
+    "datetime_ET": "2026-07-08T14:00",
+    "date": "2026-07-08",
+    "time_et": "14:00",
+    "currency": "USD",
+    "event": "FOMC Meeting Minutes",
+    "impact": "high"
+   }
+  ],
+  "note": "released_so_far_today is everything on the calendar at or before this minute. scheduled_later_today is the calendar only - times are known in advance and carry no outcome."
+ },
+ "standing_policy": {
+  "_doc": "Standing rulings on which calendar events gate entries (news_blackout). The archive's `impact` column is the vendor calendar's classification; this file records HIS classification where it differs. The orchestrator states these as facts in the macro briefing; the macro agent still decides news_blackout.",
+  "rulings": [
+   {
+    "event_match": "ISM Manufacturing PMI",
+    "gates_entries": false,
+    "ruled_on": "2026-08-14, during jn1 day 1 (session-day 2026-05-31)",
+    "note": "the archive lists this event as impact=high; his ruling overrides that for entry-gating purposes.",
+    "ruling_quote": "ISM is not high impact for me so it should take that."
+   },
+   {
+    "event_match": "*",
+    "scope": "all red-folder (high-impact) scheduled releases, including ISM Services PMI",
+    "gates_entries": "only inside a band before the print",
+    "blackout_band": {
+     "starts": "event_time minus 10 minutes",
+     "ends": "event_time",
+     "entries_after_event_time": "permitted",
+     "boundary_convention": "the band is inclusive of both endpoints; entries are free from the first minute AFTER the event time. No candidate on the day this was ruled fell on a boundary minute."
+    },
+    "ruled_on": "2026-08-15, during jn1 day 3 (session-day 2026-06-02), in response to a direct question about the ISM Services PMI gate",
+    "ruling_quote": "with 10am red folder news usually just dont enter 10 minutes before it, and i am free to trade after it. thats my rule.",
+    "note": "this supersedes the previous per-window treatment, under which a release anywhere inside a window blacked out the entire window. It also resolves the ISM Services open question: Services is red-folder and does gate, but only inside the band - he did not exempt it the way he exempted ISM Manufacturing."
+   },
+   {
+    "event_match": "any red-folder (high-impact) release scheduled inside or at the end of the PRE-MARKET session",
+    "scope": "the NY_PRE window (08:00-09:29). Applies to the 08:30 releases - NFP, Average Hourly Earnings, Unemployment Rate, CPI, PPI and the like.",
+    "gates_entries": "ALL pre-market entries before the release time. Not a band - the whole pre-market session ahead of the print is closed.",
+    "cutoff": {
+     "no_entries_from": "the start of the pre-market window",
+     "through": "the event time inclusive",
+     "entries_permitted_from": "the first minute AFTER the event time",
+     "example": "an 08:30 NFP closes NY_PRE entries from 08:00 to 08:30 inclusive. 08:31 onward is free."
+    },
+    "ruled_on": "2026-08-16, during jn1 day 5 prep (session-day 2026-06-04), when the NFP band was about to be applied as a 10-minute window",
+    "ruling_quote": "no, for pre market news it cannot trade before that news in pre market full stop. 8:30 cut off.",
+    "relationship_to_the_10_minute_band": "this SUPERSEDES the 10-minute band FOR PRE-MARKET NEWS ONLY. The 10-minute band still governs intraday releases inside a trading window - his original words for that were 'with 10am red folder news usually just dont enter 10 minutes before it', which was about a 10:00 print during NY_AM. The two rules are different because the situations are different: a pre-market print is the event the whole session is positioning for, an intraday print interrupts a session already in progress.",
+    "scoping_note": "scoped to the pre-market session as he stated ('in pre market'). It is NOT applied to LONDON (03:00-04:59), which is a separate window hours earlier. If he intends LONDON to be gated by a later pre-market release too, that is a widening he has not yet asked for."
+   }
+  ],
+  "open_questions": [
+   "RESOLVED 2026-08-15: ISM Services PMI gates as red-folder news, but only within the 10-minute pre-print band, per his ruling above. The earlier note that Services 'still gates until he rules' is superseded."
+  ]
+ },
+ "instruction": "Emit your lean and the news_blackout gate for this minute from the rows above and the standing policy. You have no tools; do not attempt to verify anything outside this file."
+}
