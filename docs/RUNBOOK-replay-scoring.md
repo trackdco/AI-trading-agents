@@ -220,7 +220,13 @@ At the landing minute (before the window opens):
    what he would actually be looking at. Unattended sessions run on the
    computed values alone; that is fine and expected.
 2. Build the macro briefing **as-of**: `data/reference/news_archive.csv`
-   filtered to `datetime_ET <= decision_minute`. Call `tv-macro-events`.
+   filtered to `datetime_ET <= decision_minute`. Call `tv-macro-events`
+   **with the briefing INLINE in the spawn prompt — never a file path.**
+   That agent has NO tools by design (the leak-tightest tier: it cannot
+   open files, so it can never read anything it wasn't handed); a path
+   spawns it blind. (jl1 finding, 2026-08-19 — the contract's description
+   always said inline; this line makes the orchestrator side match it
+   permanently.)
 3. `capture_screenshot {region: "chart", waitForRender: true}` → PNG path.
 4. Call `tv-thesis` with `event_trigger: "window_open"`, the screenshot path,
    the numeric context, and the macro output. Log the thesis JSON.
