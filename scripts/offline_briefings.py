@@ -71,7 +71,12 @@ def get_bars() -> pd.DataFrame:
 def session_bounds(sess_day: str, minute: str):
     """(t0, t): session open and the decision minute inside that session."""
     t0 = pd.Timestamp(f"{sess_day} 18:00", tz=NY)
-    t = pd.Timestamp(f"{sess_day} {minute}", tz=NY)
+    # DST-safe: fall-back makes 01:00-01:59 ambiguous, spring-forward makes
+    # 02:00-02:59 nonexistent. Neither can occur in the certified 03:00+
+    # windows, so this changes nothing there; it makes the full-day Asia
+    # sweep (00:00-02:59) survive the two transition nights a year.
+    t = pd.Timestamp(f"{sess_day} {minute}").tz_localize(
+        NY, ambiguous=True, nonexistent="shift_forward")
     if t < t0:
         t += pd.Timedelta(days=1)
     if not (t0 <= t < t0 + pd.Timedelta(hours=23)):
