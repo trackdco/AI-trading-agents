@@ -40,6 +40,21 @@ re-model. Corpus-scale pre-tests already run (see `docs/GAP-LEDGER.md`
 outperformance is real at scale; sequential-leg-type and London-ordering
 effects are NOT (small-n artifacts, documented).
 
+## The acceptance bars (his ruling 2026-08-20)
+
+Two gates, in series, never blurred:
+
+1. **The mechanical bar (v2's):** sweep target-distance bands on the
+   full-day multi-year set — his prior: the definitive winner sits in
+   **1.5–2.5R**. The system must hold **≥50% win rate to target inside
+   the chosen band**, walk-forward and holdout. His words: *"until we are
+   holding 50%+ win rate in that bound its a fucking failure."* For
+   scale: the unselected corpus baseline reaches 2R ~26% of the time —
+   the selection layer's job is roughly to double the raw hit rate.
+2. **The live bar (his):** *"what matters more is when an agent is live
+   on a chart, is that it is thinking like me"* — judged by him reading
+   its trades. Passing one gate without the other ships nothing.
+
 ## What v2 sends back
 
 1. `grading.py` input schema → the corpus re-export becomes one command.
