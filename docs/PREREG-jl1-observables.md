@@ -6,8 +6,12 @@ into doctrine with his sign-off if it repeats. Registered 2026-08-19.
 
 1. **T80 effect (shipped as doctrine, measured here).** Sequential pairs
    with structural second legs are now adjudicated on merits. Count them,
-   their verdicts, their outcomes. Baseline: 4 of 12 sequential passes ran
-   ≥2R mechanically, all four structural.
+   their verdicts, their outcomes. CORPUS CORRECTION 2026-08-20: the
+   "all four winners structural" receipt was a base-rate artifact — 93%
+   of all sequential candidates are structural, and at n=3,442 the leg
+   type sorts nothing (24.6% vs 25.8% 2R-rate). T80 stands on his leeway
+   ruling alone; jl1 measures whether adjudicated sequentials earn their
+   keep, not the leg-type story.
 
 2. **Freshness at the taken level (his instinct 2026-08-19).** Current-era
    fills, uniform sizing (so no treatment confound): fresh-level takes
@@ -17,7 +21,12 @@ into doctrine with his sign-off if it repeats. Registered 2026-08-19.
    better."* Note the prior contradicting test (old books, mechanical
    visit-count MFE) and the small n. jl1 check: does the gap repeat? If
    yes, freshness gets teeth back (0.4.8 is currently grade-only = inert
-   under uniform sizing) with his sign-off.
+   under uniform sizing) with his sign-off. CORPUS NOTE 2026-08-20: the
+   zone-touch PROXY inverts at scale (0-1 touches 12.3% vs hammered
+   26.7%) — but that proxy measures untouched PRICE SPACE (session
+   extremes = the T30/T59 knife-catch), not his "first test of a named
+   structural level". His claim remains open; testing it properly needs
+   level-anchored features (v2 grading or the build_levels path).
 
 3. **The second London fill (his question 2026-08-19).** First-London-fill-
    only improves or ties every book: w49 +0.61, wr2 +0.00, jr1 +0.68, jr2
