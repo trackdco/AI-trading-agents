@@ -75,6 +75,15 @@ from src.htf_ma.levels import NY, bb_ma_asof, vwap_bands         # noqa: E402
 WINDOWS = {"LONDON": ("03:00", "04:59"),
            "NY_PRE": ("08:00", "09:29"),
            "NY_AM": ("09:30", "11:00")}
+# FULL-DAY sweep (his frequency ruling 2026-08-20: "let it trade all day.
+# there is setups in asia, there is setups in london, all day every day.
+# entry mechanism stays the same"). Session boxes per his v1.2 spec
+# (Asia 18:00-03:00 with the 19:00 VWAP warm-up, London 03:00-09:30
+# incl. pre-market, NY 09:30 to the 15:55 flatten). Used for the corpus
+# export; the agent-stack windows above are untouched.
+FULL_WINDOWS = {"ASIA": ("19:00", "02:59"),
+                "LONDON": ("03:00", "09:29"),
+                "NY": ("09:30", "15:55")}
 SIGNAL_TFS = (2, 3)
 # Second-leg population, pinned by certification against served
 # `levels_closed_SCANNER` lists (see scripts/offline_briefings.SCANNER_LEVELS).

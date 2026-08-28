@@ -47,7 +47,7 @@ sys.path.insert(0, str(ROOT))
 
 import scripts.offline_briefings as OB                            # noqa: E402
 from scripts.chop_state import state_at                           # noqa: E402
-from scripts.offline_scan import scan_day                         # noqa: E402
+from scripts.offline_scan import scan_day, FULL_WINDOWS           # noqa: E402
 
 RESERVED = {
     # tapes already consumed by agent runs / narration — flag for holdout
@@ -88,21 +88,25 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--since", default=None)
-    ap.add_argument("--out", default="output/analysis/candidate_corpus.jsonl.gz")
+    ap.add_argument("--full-day", action="store_true",
+                    help="sweep ASIA/LONDON/NY full-day windows (his 2026-08-20 frequency ruling)")
+    ap.add_argument("--out", default=None)
     a = ap.parse_args()
 
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
     if a.since:
         days = [d for d in days if d >= a.since]
-    out = ROOT / a.out
+    out = ROOT / (a.out or ("output/analysis/candidate_corpus_fullday.jsonl.gz"
+                            if a.full_day else "output/analysis/candidate_corpus.jsonl.gz"))
+    win = FULL_WINDOWS if a.full_day else None
     out.parent.mkdir(parents=True, exist_ok=True)
 
     n = 0
     with gzip.open(out, "wt") as fh:
         for i, day in enumerate(days):
             try:
-                cands = scan_day(bars, day)
+                cands = scan_day(bars, day, windows=win) if win else scan_day(bars, day)
             except Exception as e:
                 print(f"{day}: scan failed ({type(e).__name__})", flush=True)
                 continue
