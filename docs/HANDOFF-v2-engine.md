@@ -40,6 +40,14 @@ re-model. Corpus-scale pre-tests already run (see `docs/GAP-LEDGER.md`
 outperformance is real at scale; sequential-leg-type and London-ordering
 effects are NOT (small-n artifacts, documented).
 
+## The substrate baseline (output/analysis/substrate_readout.json)
+
+Uncapped 240m walk of all 74,398 v2 candidates — P(reach X R before the
+mechanical stop), the unselected floor selection lifts from:
+overall 1.5R 37.8% / 2.0R 30.0% / 2.5R 24.1%. Sessions near-uniform
+(Asia 31.2% at 2R, London 31.5%, NY 27.2%); years stationary
+(29–31.5% at 2R across 2023–2026); CHOP beats TRENDING at every band.
+
 ## The acceptance bars (his ruling 2026-08-20)
 
 Two gates, in series, never blurred:
