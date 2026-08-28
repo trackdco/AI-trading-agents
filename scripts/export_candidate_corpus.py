@@ -47,7 +47,8 @@ sys.path.insert(0, str(ROOT))
 
 import scripts.offline_briefings as OB                            # noqa: E402
 from scripts.chop_state import state_at                           # noqa: E402
-from scripts.offline_scan import scan_day, FULL_WINDOWS           # noqa: E402
+from scripts.offline_scan import (scan_day, FULL_WINDOWS,          # noqa: E402
+                                  SECOND_LEGS, SECOND_LEGS_EXTENDED)
 
 RESERVED = {
     # tapes already consumed by agent runs / narration — flag for holdout
@@ -90,6 +91,8 @@ def main() -> int:
     ap.add_argument("--since", default=None)
     ap.add_argument("--full-day", action="store_true",
                     help="sweep ASIA/LONDON/NY full-day windows (his 2026-08-20 frequency ruling)")
+    ap.add_argument("--extended-legs", action="store_true",
+                    help="prior-day VP/extremes + weekly profile as trigger second legs (his 2026-08-20 ruling)")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
 
@@ -97,16 +100,21 @@ def main() -> int:
     days = OB.all_session_days(bars)
     if a.since:
         days = [d for d in days if d >= a.since]
-    out = ROOT / (a.out or ("output/analysis/candidate_corpus_fullday.jsonl.gz"
-                            if a.full_day else "output/analysis/candidate_corpus.jsonl.gz"))
+    default_out = ("output/analysis/candidate_corpus_fullday_v2.jsonl.gz"
+                   if a.extended_legs else
+                   "output/analysis/candidate_corpus_fullday.jsonl.gz"
+                   if a.full_day else "output/analysis/candidate_corpus.jsonl.gz")
+    out = ROOT / (a.out or default_out)
     win = FULL_WINDOWS if a.full_day else None
+    legs = SECOND_LEGS_EXTENDED if a.extended_legs else SECOND_LEGS
     out.parent.mkdir(parents=True, exist_ok=True)
 
     n = 0
     with gzip.open(out, "wt") as fh:
         for i, day in enumerate(days):
             try:
-                cands = scan_day(bars, day, windows=win) if win else scan_day(bars, day)
+                cands = scan_day(bars, day, windows=win, second_legs=legs) if win \
+                    else scan_day(bars, day, second_legs=legs)
             except Exception as e:
                 print(f"{day}: scan failed ({type(e).__name__})", flush=True)
                 continue

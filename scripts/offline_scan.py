@@ -90,6 +90,16 @@ SIGNAL_TFS = (2, 3)
 SECOND_LEGS = ("vwap", "vwap_p1", "vwap_p2", "vwap_p3",
                "vwap_m1", "vwap_m2", "vwap_m3",
                "daily_poc", "daily_val", "daily_vah", "bb_ma_15m", "bb_ma_60m")
+# EXTENDED set (his ruling 2026-08-20: prior-day VP breaks/rejections are
+# big, weekly anchored likewise). Corpus/V3 track ONLY for now - the live
+# agent scanner keeps the pinned set above until post-jl1 recertification.
+# All additions are session-start constants: prior session's profile and
+# extremes, Monday-anchored weekly profile as-of session open. Causal by
+# construction (bars strictly before t0 < t).
+SECOND_LEGS_EXTENDED = SECOND_LEGS + (
+    "prior_day_vah", "prior_day_val", "prior_day_poc",
+    "prior_day_high", "prior_day_low",
+    "weekly_vah", "weekly_val", "weekly_poc")
 
 
 def _crossed(o: float, c: float, lv: float) -> bool:
@@ -125,6 +135,28 @@ def day_levels(bars: pd.DataFrame, sess_day: str) -> dict:
     out = {"t0": t0, "hist": hist,
            "vwap": vwap_bands(hist),
            "ma": {tf: bb_ma_asof(hist, tf)[0] for tf in (2, 3, 15, 60)}}
+    # session-start constants for the EXTENDED leg set (as-of t0, causal)
+    const = {}
+    before = hist[hist.index < t0]
+    if len(before):
+        last = before.index[-1]
+        pa = last.normalize() + pd.Timedelta(hours=18)
+        if last < pa:
+            pa -= pd.Timedelta(days=1)
+        pseg = before[(before.index >= pa) & (before.index < pa + pd.Timedelta(hours=23))]
+        if len(pseg) >= 200:
+            poc, val, vah = volume_profile(pseg)
+            const.update({"prior_day_poc": poc, "prior_day_val": val,
+                          "prior_day_vah": vah,
+                          "prior_day_high": round(float(pseg.high.max()), 2),
+                          "prior_day_low": round(float(pseg.low.min()), 2)})
+        wk = t0 - pd.Timedelta(days=(t0.weekday() - 6) % 7)
+        wseg = before[before.index >= wk]
+        if len(wseg) >= 200:
+            poc, val, vah = volume_profile(wseg)
+            const.update({"weekly_poc": poc, "weekly_val": val,
+                          "weekly_vah": vah})
+    out["const"] = const
     return out
 
 
@@ -147,21 +179,24 @@ def levels_asof(D: dict, t: pd.Timestamp) -> dict:
     seg = seg[(seg.index >= D["t0"]) & (seg.index < t)]
     poc, val, vah = volume_profile(seg)
     lv["daily_poc"], lv["daily_val"], lv["daily_vah"] = poc, val, vah
+    lv.update(D.get("const") or {})
     return lv
 
 
-def _legs(cndl: dict, lv: dict) -> tuple[list[str], list[str]]:
+def _legs(cndl: dict, lv: dict,
+          legs: tuple = SECOND_LEGS) -> tuple[list[str], list[str]]:
     """(second levels closed through, second levels rejected)."""
-    closed = [n for n in SECOND_LEGS
+    closed = [n for n in legs
               if n in lv and _crossed(cndl["open"], cndl["close"], lv[n])]
-    rej = [n for n in SECOND_LEGS
+    rej = [n for n in legs
            if n in lv and _rejected(cndl, lv[n])]
     return closed, rej
 
 
 def scan_day(bars: pd.DataFrame, sess_day: str,
              windows: dict | None = None,
-             rejection_first: bool = False) -> list[dict]:
+             rejection_first: bool = False,
+             second_legs: tuple = SECOND_LEGS) -> list[dict]:
     """Every candidate of one session-day, in chronological order.
 
     `rejection_first` is OFF by default and that is an evidence call, not
@@ -212,7 +247,7 @@ def scan_day(bars: pd.DataFrame, sess_day: str,
                 if own is None:
                     continue
                 own_now = _crossed(c["open"], c["close"], own)
-                closed, rej = _legs(c, lv)
+                closed, rej = _legs(c, lv, second_legs)
                 d = 1 if c["close"] > c["open"] else -1
 
                 start = f"{t - pd.Timedelta(minutes=tf):%H:%M}"
