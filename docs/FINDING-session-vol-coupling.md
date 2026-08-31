@@ -56,3 +56,27 @@ direction signal (the coin flip says so). It is an EXPECTATION field:
 `overnight_range_pct` — the trailing-120-day percentile of the 18:00→09:30
 range — as a briefing context field for the NY thesis. Mechanical, as-of,
 one number. For v2/V3 it is a ready-made context feature either way.
+
+## 4. Part 2 (same day): what DOES sort "better or worse" for the strategy
+
+His follow-up: *"how does this help for when I know trading with my
+strategy may be better or worse."* Tested at corpus scale:
+
+- **TRIGGER DENSITY is the real signal — within the window, as it
+  happens.** Days by candidate count: sparsest quartile 30.0% 2R-rate,
+  densest 22.3% (corr −0.425, monotone, 914 days). Within London alone,
+  concurrent: −0.330. Confirms the old n=10 prereg §1 finding at ~90× the
+  sample: when the tape is begging you to trade, the offers are worse.
+- **But it barely forecasts ACROSS windows** (morning density → NY
+  quality: −0.085; only the most spam-heavy morning quartile shows NY
+  degradation, 22.9% vs ~26%). And per-candidate quality does not persist
+  across windows at all (London day-rate vs NY day-rate corr +0.05; Asia
+  vs rest +0.05). **Each window re-rolls.**
+- Combined with Part 1's nulls (vol regime, direction, calendar, year all
+  R-flat): day quality is not forecastable — it REVEALS itself, window by
+  window, through the window's own trigger pace and states.
+
+**Proposed (awaiting his word):** a `trigger_pace` briefing field —
+candidates so far this window vs the trailing-120-day typical count by the
+same clock time, as a percentile. Mechanical, as-of. High pace = the
+churn-day signature his T82/06-02 experience already knows.
