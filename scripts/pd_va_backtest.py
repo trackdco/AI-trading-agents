@@ -137,24 +137,41 @@ def stop_for(sig):
 
 
 def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
-                 fill_through=False):
+                 fill_through=False, sar=False, counters=None):
     """One forward pass, one position at a time, latest pending wins.
 
     fill_through=True is the adverse-selection sensitivity: a fill counts
     only if price trades one full tick THROUGH the level (guaranteed fill),
     still booked at the level. Kills the bounce-to-the-tick winners a real
-    resting limit might miss; the honest lower bound on fill quality."""
+    resting limit might miss; the honest lower bound on fill quality.
+
+    sar=True is his 2026-09-02 rule: an opposing-direction crossing close
+    printing MID-TRADE flattens the position at that 3m close, and the
+    opposing signal is then worked as the next retest entry (the flip
+    trade uses the normal entry mechanism). Exits booked res="SAR" with
+    the mark-to-close partial R; WR convention elsewhere keeps counting
+    only TARGET vs STOP.
+
+    counters, if a dict, accumulates the signal funnel:
+    sig / skip_in_pos / replaced / expired / filled."""
     trades = []
     i = 0
     t_free = ts[0] - 1
     n = len(ts)
     thru = TICK if fill_through else 0.0
+
+    def bump(k):
+        if counters is not None:
+            counters[k] = counters.get(k, 0) + 1
+
     while i < len(sigs):
         s = sigs[i]
         t_sig = s["t"].value
         if t_sig <= t_free:
+            bump("skip_in_pos")
             i += 1
             continue
+        bump("sig")
         start = np.searchsorted(ts, t_sig)
         if start >= n:
             break
@@ -165,8 +182,11 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
         seg_lo, seg_hi = lo[start:cancel], hi[start:cancel]
         touch = (seg_lo <= L - thru) if d == 1 else (seg_hi >= L + thru)
         if not touch.any():
+            bump("replaced" if cancel == nxt_idx and nxt_idx < min(pend_cut_idx, n)
+                 else "expired")
             i += 1
             continue
+        bump("filled")
         fill = start + int(np.argmax(touch))
         stop = stop_for(s)
         risk = abs(L - stop)
@@ -180,8 +200,22 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             t_hit = w_lo <= tgt
         s_idx = fill + int(np.argmax(s_hit)) if s_hit.any() else n
         t_idx = fill + int(np.argmax(t_hit)) if t_hit.any() else n
+        sar_idx, sar_px = n + 1, None
+        if sar:
+            for j in range(i + 1, len(sigs)):
+                if sigs[j]["dir"] == -d and sigs[j]["t"].value > ts[fill]:
+                    # close prints at the candle boundary: it pre-empts any
+                    # stop/target touch in bars at/after that boundary
+                    sar_idx = int(np.searchsorted(ts, sigs[j]["t"].value))
+                    sar_px = sigs[j]["close"]
+                    break
         ambig = s_idx == t_idx and s_idx < n
-        if s_idx <= t_idx and s_idx < n:          # stop first (ties -> stop)
+        first = min(s_idx, t_idx)
+        if sar_idx <= first and sar_idx <= n:     # flatten on opposing close
+            exit_idx = min(sar_idx, n - 1)
+            r = d * (sar_px - L) / risk
+            res = "SAR"
+        elif s_idx <= t_idx and s_idx < n:        # stop first (ties -> stop)
             exit_idx, r = s_idx, -1.0
             res = "STOP"
         elif t_idx < s_idx:
@@ -199,7 +233,12 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             "res": res, "r": round(r, 4), "pts": round(r * risk, 2),
             "ambig": bool(ambig), "hold_min": int((ts[exit_idx] - ts[fill]) / 6e10),
         })
-        t_free = ts[exit_idx]
+        if res == "SAR":
+            # free exactly AT the opposing close so that very signal is the
+            # next one processed (the flip trade), not skipped as in-position
+            t_free = ts[min(sar_idx, n - 1)] - 1
+        else:
+            t_free = ts[exit_idx]
         i += 1
     return trades
 
@@ -209,8 +248,11 @@ def main() -> int:
     ap.add_argument("--fill-through", action="store_true",
                     help="fills require a tick THROUGH the level (adverse-"
                          "selection sensitivity); writes *_through dump")
+    ap.add_argument("--sar", action="store_true",
+                    help="his stop-and-reverse rule: opposing crossing close "
+                         "mid-trade flattens at that close and works the flip")
     a = ap.parse_args()
-    suffix = "_through" if a.fill_through else ""
+    suffix = ("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
     trades_out = gzip.open(
@@ -252,17 +294,20 @@ def main() -> int:
           f"({day_cache[0][0]} -> {day_cache[-1][0]})", flush=True)
 
     n_cfg = 0
+    funnel = {}
     for depth in DEPTHS:
         sig_cache = [day_signals(c3, vah, val, depth)
                      for (_, _, _, _, _, c3, vah, val, _) in day_cache]
         for tr in TARGETS:
             n_cfg += 1
             n_trades = 0
+            cnt = funnel.setdefault(f"depth{depth:g}_R{tr:g}", {})
             for (day, ts, hi, lo, cl, _, _, _, pcut), sigs in zip(day_cache, sig_cache):
                 if not sigs:
                     continue
                 for t in simulate_day(ts, hi, lo, cl, sigs, pcut, tr,
-                                      fill_through=a.fill_through):
+                                      fill_through=a.fill_through,
+                                      sar=a.sar, counters=cnt):
                     t.update({"day": day, "depth": depth, "target_r": tr})
                     trades_out.write(json.dumps(t) + "\n")
                     n_trades += 1
@@ -271,6 +316,8 @@ def main() -> int:
     trades_out.close()
     (ROOT / "output/analysis/pd_va_days.json").write_text(
         json.dumps(per_day_meta))
+    (ROOT / f"output/analysis/pd_va_funnel{suffix}.json").write_text(
+        json.dumps(funnel, indent=1))
     print(f"DONE -> output/analysis/pd_va_trades{suffix}.jsonl.gz", flush=True)
     return 0
 

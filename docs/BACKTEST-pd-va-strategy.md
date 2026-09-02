@@ -105,9 +105,55 @@ architecture already ruled.
 - One month of hand-testing cannot distinguish 43-month regimes; this is
   not a criticism of the eye, it is why the corpus exists.
 
+## 7. Stop-and-reverse rule + frequency + fill-wait (added 2026-09-02)
+
+His additions: *"if at any point the 3 min closes through in the opposing
+direction mid trade, flatten it, take the flip trade"*; why is frequency
+low; does performance degrade when the retest takes long to fill.
+
+**SAR implemented** (`--sar`): opposing crossing close mid-trade exits at
+that 3m close (res="SAR", partial R), and the opposing signal is worked
+as the normal retest entry. WR convention still TARGET/(TARGET+STOP).
+
+**The frequency mystery is the in-position skips.** Funnel at any-tick
+1.5R, 908 days: 11,242 crossings → base rules skipped 5,783 in-position,
+575 never filled, 5,084 traded. With SAR the skips become flips: 10,473
+traded. Asia+London goes 3.0 → **6.5 trades/day**, 48% of days print 5+,
+and zero-trade days stay 282/908 (31%) — days price never touches either
+level; no rule changes those. His "0 or 5+" claim describes the SAR
+system, and it reproduces. So does his WR band: SAR 1.5R WR = 58.3%
+(SAR scratches, netting −0.29R avg, no longer count as losses).
+
+**SAR economics** (AL, any-tick):
+
+| config | net raw | R/day | after 0.5pt costs |
+|---|---:|---:|---:|
+| base 1.0R | +370R | +0.59 | +180R |
+| SAR 1.0R | **+566R** | **+0.90** | +149R |
+| base 1.5R | +207R | +0.33 | +43R |
+| SAR 1.5R | +325R | +0.52 | **−89R** |
+
+2026-only SAR 1R: +1.18R/day raw. Read: SAR adds real gross edge (cuts
+losers at −0.29R instead of −1R, flips catch the reversal) but DOUBLES
+trade count, so friction decides — at 0.5pt/trade it is a wash at 1R and
+clearly worse at 1.5R+. Live value depends on his actual costs.
+
+**Fill-wait: his hypothesis INVERTS.** EV by minutes from signal to fill
+(SAR, AL+NY, both targets): the 0–2m insta-fills are the WEAKEST bucket
+(+0.02 to +0.09R/trade) and quality RISES with wait — fills after 30m run
++0.19R, after 60m +0.21R (1R), same shape in every session, strongest in
+NY (>60m: +0.32R). An expiry rule would delete the best trades: cancelling
+unfilled orders at 30min costs −130R of the 1R total. Mechanically it
+reads right: an instant fill means price never left the level (chop at
+the level); a slow fill means real displacement then a genuine retest —
+the T76 shape from his own narrations. **No expiry rule.**
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
 2. Does a 1R-target, ≥3pt-depth version interest him despite sitting
    below his 1.5R band, or does this fold into the v2/Pat grading queue
    as a condition family (PD-VA break-retest) for the selection layer?
+3. His marked-up days (levels + executions) for the alignment pass —
+   promised, awaited; the spec is provisional until the sim reproduces
+   his trades on his levels.
