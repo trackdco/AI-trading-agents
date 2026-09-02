@@ -200,6 +200,16 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             t_hit = w_lo <= tgt
         s_idx = fill + int(np.argmax(s_hit)) if s_hit.any() else n
         t_idx = fill + int(np.argmax(t_hit)) if t_hit.any() else n
+        # uncapped favourable run before the stop prints, ignoring the target
+        # and any SAR exit — the setup's potential, for target-band selection
+        # (his "most of the winners would have run for 2r" check). The stop
+        # bar itself is excluded: intrabar order there is unknowable.
+        s_rel = (s_idx if s_idx < n else n) - fill
+        if s_rel > 0:
+            run_r = ((float(w_hi[:s_rel].max()) - L) if d == 1
+                     else (L - float(w_lo[:s_rel].min()))) / risk
+        else:
+            run_r = 0.0
         sar_idx, sar_px = n + 1, None
         if sar:
             for j in range(i + 1, len(sigs)):
@@ -231,6 +241,7 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             "leg": LEG[(s["level_name"], d)], "dir": d,
             "entry": L, "stop": round(stop, 2), "risk": round(risk, 2),
             "res": res, "r": round(r, 4), "pts": round(r * risk, 2),
+            "run_r": round(max(run_r, 0.0), 3),
             "ambig": bool(ambig), "hold_min": int((ts[exit_idx] - ts[fill]) / 6e10),
         })
         if res == "SAR":

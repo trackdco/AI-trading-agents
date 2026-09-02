@@ -148,12 +148,57 @@ reads right: an instant fill means price never left the level (chop at
 the level); a slow fill means real displacement then a genuine retest —
 the T76 shape from his own narrations. **No expiry rule.**
 
+## 8. His marked-up days + run potential (added 2026-09-02)
+
+He sent four annotated screenshots: Sunday 09 / Monday 10 August 2026,
+3m chart, one SVP level at 29,847.75 (VA 70), ~10 executions Sunday
+evening through Monday morning, net positive. What they settle without
+any replay:
+
+- **SAR was native to the system all along** — "long closed and then
+  flipped short", plus two "small loss since candle closed other way"
+  scratches: exactly the `--sar` exit-at-close mechanics.
+- **The 20:30 candle "did both in same candle lol"** — the ambiguous
+  same-bar case; the sim books those as losses (conservative), he
+  couldn't call it by hand either.
+- **One level, both directions, all session** — matches crossing logic.
+- **His chart runs THIS repo's session convention**: the same PD level
+  serves Sunday 18:00 through Monday morning — one session-day, prior
+  day = Friday. And SVP VA 70 = `volume_profile(value_frac=0.70)`.
+- Aug 9/10 is a Monday-anchor session trading high-frequency and net
+  positive — the frequency the SAR sim shows (6.5/day mean).
+
+**"Most of the winners would have run for 2r" — CONFIRMED at scale.**
+`run_r` (uncapped favourable run before the stop, ignoring target/SAR)
+now tracked per trade. Asia+London filled entries: of setups reaching 1R,
+**64–65% run to 2R; the median 1R-reacher runs 2.77–2.81R** (identical in
+2026). And yet the fixed-target EV frontier still slopes toward small
+targets (all-history +0.141R/trade at 0.5R → +0.055 at 2R; 2026 near-flat
+0.5–1.5R: +0.184/+0.170/+0.162): a bigger fixed target loses more on the
+winners it converts to losers than it gains on the ones that run. Both
+facts together are the T78 shape: fixed-target leaves the 2.8R median
+tail on the table — the structure that prices it is partial-at-TP1 +
+runner, which needs one more tracked field (post-1R pullback-to-entry)
+to cost a breakeven-stop runner honestly. Not built until he asks.
+
+**Exact trade-matching is gated on bars**: offline data ends 2026-07-15
+and the TradingView MCP lives on the Mac. Protocol: Mac exports 1m NQ
+bars 2026-07-15 → present as `data/reference/nq_1m_jul_sep2026.parquet`
+(same schema as `nq_1m_feb_jul2026.parquet`) and pushes; this side adds
+it to `BARFILES` (scripts/build_l2_outcomes.py) and runs
+`scripts/pd_va_align.py --day 2026-08-09 --vah 29847.75 --sar` — the
+harness overrides computed levels with his chart's, prints every
+crossing/trade with clock times for annotation-by-annotation diff, and
+reports the level residual (computed Friday profile vs his 29,847.75)
+on the exact day that matters.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
 2. Does a 1R-target, ≥3pt-depth version interest him despite sitting
    below his 1.5R band, or does this fold into the v2/Pat grading queue
    as a condition family (PD-VA break-retest) for the selection layer?
-3. His marked-up days (levels + executions) for the alignment pass —
-   promised, awaited; the spec is provisional until the sim reproduces
-   his trades on his levels.
+3. Aug bars from the Mac (see §8) → run the alignment on his 09–10 Aug
+   annotations. Was the 29,847.75 line Friday's VAH or VAL?
+4. Whether to price the partial+runner exit structure (§8) against the
+   fixed targets.
