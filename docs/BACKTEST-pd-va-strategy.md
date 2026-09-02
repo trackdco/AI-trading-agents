@@ -401,6 +401,33 @@ his spec to write if he wants the engine. Complementary to PD-VA by
 construction: ~10–40 events/year vs ~800 trades, hours-long holds vs
 7 minutes, tail-shaped vs grind-shaped.
 
+## 14. The prop lens (his frame, 2026-09-02): EOD drawdown -> daily
+## distribution is the metric, full day is the frequency answer
+
+His point: Lucid drawdown marks at EOD, so intraday excursion is free
+and frequency drives prop EV (his BB MA did 1–2/day; London/pre-market
+were frequency hunts). Champion config, honest fills, cost-adjusted,
+daily P&L profile:
+
+| | tr/active day | green | mean/day | worst day | max EOD DD |
+|---|---|---|---|---|---|
+| AL, 43mo | 5.2 | 56% | +3.4pt | −80pt | −203pt |
+| FULL day, 43mo | 10.1 | 67% | +14.1pt | −108pt | −168pt |
+| AL, 2026 | 7.9 | 65% | +9.8pt | −49pt | −81pt |
+| FULL day, 2026 | 13.6 | 69% | +26.6pt | −82pt | −168pt |
+
+Adding NY raises every prop-relevant stat (frequency, green-day rate,
+mean day) — the NY_PRE/NY cuts were agent-stack rulings, not mechanical
+ones; his call whether NY runs live here.
+
+Drive-day MFE (his "would be crazy" — confirmed): median champion entry
+runs 1.51R before stop on drive days (vs 1.15R normal); 29% reach 3R,
+19% reach 5R. The 1R target amputates the entire tail. With EOD-only
+drawdown, partial-at-1R + breakeven-runner is the account-shaped exit —
+the third independent argument for the runner structure (run-potential
+distribution §8, Asia 2026 tail §11, prop rules here). Still un-built;
+his word.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
