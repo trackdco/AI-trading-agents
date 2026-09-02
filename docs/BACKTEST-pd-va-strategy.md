@@ -243,6 +243,32 @@ and the reversion_down/reversion_up asymmetry are the two prereg
 candidates worth carrying into a walk-forward pass; nothing here earns a
 rule tonight. Multiple-comparisons caveat applies to all of it.
 
+**Overfit challenge (his, 2026-09-02) and the three receipts.** "3.3
+from 11 trades a day seems like a massive overfit... extracted a small
+winning substrate in a broad dataset." Conceded in part: ~40 configs were
+swept and one was named, so the full-sample +280R carries winner's-curse
+bias — treat it as the optimistic end. But every swept axis was HIS
+pre-registered question (depth is in the flight note verbatim, the tf
+sweep was his ask, SAR his rule), and three checks say ridge, not spike:
+
+1. **Monotone gradients, no isolated cell** (honest fills, cost-adj, tf1):
+   depth −12 → +189 → +280R at 1R; the same ordering at 1.5R and 2R; the
+   same depth/target gradients at tf3. Noise-mined winners sit alone;
+   this cell is the corner of four smooth slopes.
+2. **Positive every year** honest-fill cost-adjusted: 2023 +111pt, 2024
+   +155pt, 2025 +648pt, 2026 +1,033pt (through July).
+3. **Walk-forward config selection**: scored on 2023–24 ONLY, the grid
+   picks the SAME cell (≥3pt/1R is the only clearly positive config:
+   +54R; all others negative). That frozen choice then earns **+225.6R /
+   +1,681pt on 2025–26 it never saw**. The evaluation period did not
+   choose the config.
+
+Monthly POINTS, champion, honest fills, after 0.5pt/trade: every 2026
+month positive (+162/+152/+160/+30/+7/+284/+238 Jan–Jul); all-43-month
+median +23pt (touch +50pt), positive 30/43, worst −67pt, best +284pt.
+The typical month is a grinder; 2026 is where it pays ~+150pt/month per
+contract.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
