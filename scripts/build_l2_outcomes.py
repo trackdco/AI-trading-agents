@@ -51,7 +51,8 @@ from src.engine.triggers import Trigger  # noqa: E402
 
 NY = "America/New_York"
 LOOKBACK_DAYS = 7
-BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul2026.parquet"]
+BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul2026.parquet",
+            "data/reference/nq_1m_aug_sep2026.parquet"]
 
 _BARS: pd.DataFrame | None = None       # per-process cache (fork inherits the parent's copy)
 

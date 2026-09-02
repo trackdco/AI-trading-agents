@@ -282,6 +282,31 @@ Implication: the floor does not depend on execution cleverness, and the
 1-tick front-run is a legitimate live choice (same EV, zero fill
 uncertainty). At 1.5R the toll bites the thinner edge (2-tick: +84pt).
 
+## 10. The 5pt floor at 1m + first true forward test (2026-09-02)
+
+**His floor question:** MIN_RISK=5.0 is enforced at every signal TF — no
+3–4pt stops can exist. At 1m it binds hard: **41% of champion-config
+trades sit exactly at the 5pt floor** (vs 20% at 3m; median stop 6.0pt).
+Floored cohort: 60.3% WR, +390pt cost-adjusted — profitable but weaker
+than structural stops (66.9%, +1,556pt; the 5–8pt structural bucket is
+the sweet spot at 68.1%). The floor value is load-bearing at 1m; a
+4/5/6/7pt sensitivity pass is queued behind the calibration work.
+
+**Data status:** the Mac's TradingView export could only reach 1m bars
+back to 2026-08-23 (`nq_1m_aug_sep2026.parquet`, wired into BARFILES;
+the 07-15→08-22 hole self-guards via the day-prep minimums). His Aug
+9–10 annotated days remain out of 1m reach — the June 10 calibration
+day is the primary alignment path; backfilling the hole needs the
+deeper-history source that built `nq_1m_master.parquet`.
+
+**Forward test — 7 sessions no sweep ever saw** (Aug 24 → Sep 1, the
+champion config frozen beforehand, honest fills, after 0.5pt/trade):
+70 trades, **73.7% WR, +152pt**, six of seven sessions non-negative,
+one textbook zero-trade day (Aug 26 — price never came back to PD
+value). Pace ≈ +22pt/session — at or above the 2026 backtest rate.
+Seven days prove nothing alone; they are simply the first evidence of
+the right kind, on tape that postdates every parameter choice.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)

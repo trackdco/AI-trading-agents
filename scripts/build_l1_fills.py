@@ -58,7 +58,8 @@ BAND_END = "11:00"
 STRUCT_ACCEPT = 5.0             # pts traded beyond a level = acceptance, not a rejection
 STRUCT_REJECT = 8.0             # pts back off a touched level = "rejects hard"
 
-BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul2026.parquet"]
+BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul2026.parquet",
+            "data/reference/nq_1m_aug_sep2026.parquet"]
 
 
 def load_bars() -> pd.DataFrame:
