@@ -345,6 +345,31 @@ in the current regime, but +33pt over ~400 trades in one era is a
 watch-item, not a switch. The data keeps pointing at partial+runner
 (§8), not bigger fixed targets. Spec stays 1R static both sessions.
 
+## 12. Trend-month hypothesis (his, 2026-09-02): half-confirmed, mechanism found
+
+His claim: the strategy "did shit in May" because the month trended, and
+a second trend-specific strategy could complement this one.
+
+Measured: May 2026 WAS the 3rd-most-trending of 42 months (one-way
+efficiency 0.51) — but the strategy did not starve there (167 trades,
+its most active month). Decomposition: with-trend longs +73pt
+(breakout_up 32W/16L), counter-trend shorts −66pt, SAR flip churn
+−181pt, costs −84pt. In a one-way tape the always-flip rule pays the
+trend tax, not the entry.
+
+Across 42 months, trendiness vs monthly P&L corr = −0.08 (top trending
+tercile +44pt/mo vs +50 bottom) — the strategy is roughly regime-neutral
+in aggregate, so a trend strategy diversifies by edge type, not by
+anti-correlated timing.
+
+HYPOTHESIS (one month of evidence, untested): in trending regimes, take
+only with-trend crossings and flatten-without-reversing on opposing
+closes. Testable across all trending months, split-half, on his word.
+For his separate trend-strategy search the substrate facts stand: CHOP >
+TRENDING reach at every band, breakout-continuation is the worst
+measured bucket, pullback-continuation with HTF bias (T71–T74, his
+narration shape) is the supported form.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
