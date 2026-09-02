@@ -329,10 +329,12 @@ right (Asia and London optima differ by ~2pt within an era) but the ERA
 dominates: the optimum was ~6–8pt all-history and is ~10pt+ in 2026 —
 any fixed number is an implicit volatility bet that goes stale. (3)
 Structural stops are the only variant that wins across both eras with no
-parameter, because they scale with the candles automatically. The
-candidate that formalizes his point without a magic number: a vol-scaled
-stop (k × trailing range, floored) — NOT built; queued behind June-10
-calibration on his word.
+parameter, because they scale with the candles automatically.
+
+**HIS RULING (2026-09-02): "yeah structural makes more sense" — stops
+stay structural** (candle extreme → prior-candle escalation → 5pt floor).
+Fixed and vol-scaled stop variants CLOSED; `--fixed-stop` remains in the
+sim as an experiment flag only.
 
 ## OPEN (his word needed)
 
