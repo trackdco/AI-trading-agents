@@ -370,6 +370,37 @@ TRENDING reach at every band, breakout-continuation is the worst
 measured bucket, pullback-continuation with HTF bias (T71–T74, his
 narration shape) is the supported form.
 
+## 13. Drive-day engine seed (his ask, 2026-09-02): the stretch is real,
+## the trigger must be intraday
+
+His memory: ~3 weeks from late April where "press buy on Asia open, hold
+EOD" printed, price supposedly never visiting PD levels — the regime to
+build a second engine around.
+
+**Day-by-day, Apr 14 – May 14 2026, confirmed:** up-drives of +364,
++367, +366, +398, +455, +337, +718, +394pt from Asia open to EOD. Two
+assumptions corrected: PD levels WERE visited on 21/23 stretch days
+(87% of all drive days vs 90% normal — an up-day's VAH sits near its
+high; the next Asia dips into it), and the champion strategy earns MORE
+on drive days (+7.4pt/day vs +1.5 normal) — no cannibalization.
+
+**Follow-yesterday is dead:** P(drive | yesterday drive) = 20% vs 10%
+base, but direction persists only 28% — consecutive drives REVERSE more
+than continue. Buy-Asia-open after an up-drive day: −937pt total; sell
+after a down-drive: −4,602pt. Yesterday's drive is exhaustion, not
+momentum, at day granularity.
+
+**Join-mid-flight is alive (prototype):** if by a checkpoint price sits
+≥X beyond Asia open with the open never revisited, enter at market, hold
+EOD (no stop). All-history: 22:00/50pt +2,456pt (n=83, 53% win);
+03:00/100–150pt +1,800–2,000pt (n=20–40). 2026: 03:00/100pt = +1,753pt
+on 13 events (mean +135, median −27 — tails carry, the trend-engine
+signature). This is T72 open-drive doctrine mechanized at day scale.
+Prototype-grade: 9 cells eyeballed, no stop, no exit design —
+his spec to write if he wants the engine. Complementary to PD-VA by
+construction: ~10–40 events/year vs ~800 trades, hours-long holds vs
+7 minutes, tail-shaped vs grind-shaped.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
