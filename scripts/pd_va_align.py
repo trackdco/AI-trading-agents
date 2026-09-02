@@ -41,6 +41,8 @@ def main() -> int:
     ap.add_argument("--val", type=float, default=None, help="his chart PD VAL")
     ap.add_argument("--depth", type=float, default=0.0)
     ap.add_argument("--target", type=float, default=1.5)
+    ap.add_argument("--tf", type=int, default=3,
+                    help="signal candle timeframe in minutes")
     ap.add_argument("--sar", action="store_true")
     ap.add_argument("--fill-through", action="store_true")
     a = ap.parse_args()
@@ -68,10 +70,11 @@ def main() -> int:
                  f"vah {vah - c_vah:+.2f} " if a.vah else "")
               + (f"val {val - c_val:+.2f}" if a.val else ""))
 
-    c3 = sess.resample("3min").agg(
+    c3 = sess.resample(f"{a.tf}min").agg(
         {"open": "first", "high": "max", "low": "min", "close": "last"}).dropna()
     hrs3 = (c3.index - t0).total_seconds() / 3600
-    c3 = c3[(hrs3 >= SIG_START_H - 0.06) & (hrs3 < SIG_END_H)]
+    c3 = c3[(hrs3 >= SIG_START_H - a.tf / 60 - 0.02)
+            & (hrs3 + a.tf / 60 <= SIG_END_H + 1e-6)]
     ts = sess.index.view("int64")
     pcut = int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=PEND_CUT_H)).value))
 
@@ -80,10 +83,10 @@ def main() -> int:
     use_val = val if (a.val is not None or a.vah is None) else np.nan
     sigs = []
     if np.isfinite(use_vah):
-        sigs += [s for s in day_signals(c3, use_vah, -1e12, a.depth)
+        sigs += [s for s in day_signals(c3, use_vah, -1e12, a.depth, tf=a.tf)
                  if s["level_name"] == "vah"]
     if np.isfinite(use_val):
-        sigs += [s for s in day_signals(c3, 1e12, use_val, a.depth)
+        sigs += [s for s in day_signals(c3, 1e12, use_val, a.depth, tf=a.tf)
                  if s["level_name"] == "val"]
     sigs.sort(key=lambda s: s["t"])
 

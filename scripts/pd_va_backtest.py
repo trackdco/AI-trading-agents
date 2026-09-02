@@ -69,7 +69,7 @@ MIN_RISK = 5.0
 DEPTHS = (0.0, 1.0, 2.0, 3.0)          # 0.0 -> any tick beyond
 TARGETS = (1.0, 1.5, 2.0, 2.5, 3.0)
 SIG_START_H = 1.0                      # 19:00 session-relative
-SIG_END_H = 21 + 52 / 60               # last 3m candle STARTS 15:52, ends 15:55
+SIG_END_H = 21 + 55 / 60               # signal candles must END by 15:55
 PEND_CUT_H = 22.0                      # resting limits die at 16:00
 SESS_H = 23.0
 
@@ -85,15 +85,15 @@ def window_of(hrs: float) -> str:
     return "NY"
 
 
-def day_signals(c3, vah, val, depth):
-    """Crossing closes of either level on the 3m candles, chronological."""
+def day_signals(c3, vah, val, depth, tf=3):
+    """Crossing closes of either level on the signal-TF candles, chronological."""
     thr = max(depth, TICK)
     out = []
     cl = c3.close.to_numpy()
     op = c3.open.to_numpy()
     hi = c3.high.to_numpy()
     lo = c3.low.to_numpy()
-    ends = c3.index + pd.Timedelta(minutes=3)
+    ends = c3.index + pd.Timedelta(minutes=tf)
     for name, L in (("vah", vah), ("val", val)):
         for i in range(1, len(c3)):
             d = 0
@@ -262,8 +262,11 @@ def main() -> int:
     ap.add_argument("--sar", action="store_true",
                     help="his stop-and-reverse rule: opposing crossing close "
                          "mid-trade flattens at that close and works the flip")
+    ap.add_argument("--tf", type=int, default=3,
+                    help="signal candle timeframe in minutes (default 3)")
     a = ap.parse_args()
-    suffix = ("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
+    suffix = (("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
+              + (f"_tf{a.tf}" if a.tf != 3 else ""))
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
     trades_out = gzip.open(
@@ -287,10 +290,12 @@ def main() -> int:
             continue
         vah = round(vah * 4) / 4
         val = round(val * 4) / 4
-        c3 = sess.resample("3min").agg(
+        c3 = sess.resample(f"{a.tf}min").agg(
             {"open": "first", "high": "max", "low": "min", "close": "last"}).dropna()
         hrs3 = (c3.index - t0).total_seconds() / 3600
-        c3 = c3[(hrs3 >= SIG_START_H - 0.06) & (hrs3 < SIG_END_H)]
+        # keep one pre-19:00 candle as the crossing's prev; ends by 15:55
+        c3 = c3[(hrs3 >= SIG_START_H - a.tf / 60 - 0.02)
+                & (hrs3 + a.tf / 60 <= SIG_END_H + 1e-6)]
         if len(c3) < 50:
             continue
         ts = sess.index.view("int64")
@@ -307,7 +312,7 @@ def main() -> int:
     n_cfg = 0
     funnel = {}
     for depth in DEPTHS:
-        sig_cache = [day_signals(c3, vah, val, depth)
+        sig_cache = [day_signals(c3, vah, val, depth, tf=a.tf)
                      for (_, _, _, _, _, c3, vah, val, _) in day_cache]
         for tr in TARGETS:
             n_cfg += 1

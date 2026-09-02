@@ -192,6 +192,57 @@ crossing/trade with clock times for annotation-by-annotation diff, and
 reports the level residual (computed Friday profile vs his 29,847.75)
 on the exact day that matters.
 
+## 9. Signal-timeframe sweep + winner/loser features (added 2026-09-02)
+
+His asks: try 1/2/5m signal candles against the 3m; mechanically find
+what distinguishes winners from losers; test confluence on entries.
+
+**Timeframe: faster is better, monotone everywhere.** SAR, AL, raw net at
+1R: tf1 +900R > tf2 +679 > tf3 +566 > tf5 +301 (WR 77.2/72.9/71.1/66.7%).
+The 1m close-through fires earlier in the same move: tighter stops
+(median 6.0pt vs 8.2pt at ≥3pt depth), earlier flips, more setups. At
+any-tick depth the extra trades die to costs (tf1: 11.4/day, +21R after
+0.5pt); the depth filter is what makes speed pay.
+
+**The champion cell: 1m signals, ≥3pt close-through, 1R target, SAR.**
+3.3 trades/day. It survives BOTH honesty haircuts:
+
+| fills | WR | raw | after 0.5pt | 2026 after 0.5pt |
+|---|---:|---:|---:|---:|
+| touch | 66.8% | +666R | **+443R** | +152R |
+| tick-through | 63.9% | +501R | **+280R** | **+118R** |
+
+(+118R cost-adjusted honest-fill in 2026 alone ≈ +15R/month. Same cell at
+1.5R: 48.9% WR honest-fill — brushing his 50% bar — +99R 2026 adjusted.)
+
+**Features (n=5,919 SAR AL trades, split-half by day), stated honestly:**
+
+- NULL: **attempt number** — the 5th+ crossing of the level trades as well
+  as the 1st (58–60% WR both halves). No same-edge fatigue in this
+  strategy; the level stays live all day.
+- NULL: **his vwap/bb confluence count** at this granularity (IS says 1
+  co-closed level best, OOS says 2+; no stable ordering). The hypothesis
+  isn't dead — this counts levels inside the candle body, a crude proxy —
+  but as measured it sorts nothing.
+- NULL: VA width quartile, day-of-week. Notably **Monday trading (Sunday
+  anchor) is fine mechanically** (57.9%/60.2% WR) — more evidence the
+  agents' Monday problem is a thesis problem, not a tape problem.
+- SURVIVES: **close-through depth** (avgR +0.01→+0.10/+0.03→+0.12 from
+  <3pt to 6pt+, both halves) — independently re-confirms the depth
+  filter, the one lever already in the champion config.
+- MODERATE: **displacement quality** — close-through candle ≥2× the
+  median recent range: 61.2%→66.1% WR, avgR +0.13 OOS (IS avgR flat).
+- MILD: **leg tilt** — reversion_down (short back through VAH into value)
+  best in both halves (61.3/61.1%); reversion_up weakest and degrades
+  OOS (58.5→51.1%). OOS favors shorts generally — regime risk, flagged.
+- MILD: small prior-day range (Q1) slightly better, consistent sign.
+
+Read: after tf/depth/target/SAR, the remaining filters are thin —
+structure beats selection in this strategy so far. Displacement-quality
+and the reversion_down/reversion_up asymmetry are the two prereg
+candidates worth carrying into a walk-forward pass; nothing here earns a
+rule tonight. Multiple-comparisons caveat applies to all of it.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
