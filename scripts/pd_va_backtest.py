@@ -137,7 +137,8 @@ def stop_for(sig):
 
 
 def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
-                 fill_through=False, sar=False, counters=None):
+                 fill_through=False, sar=False, counters=None,
+                 entry_off=0.0):
     """One forward pass, one position at a time, latest pending wins.
 
     fill_through=True is the adverse-selection sensitivity: a fill counts
@@ -151,6 +152,14 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
     trade uses the normal entry mechanism). Exits booked res="SAR" with
     the mark-to-close partial R; WR convention elsewhere keeps counting
     only TARGET vs STOP.
+
+    entry_off (points) is his front-run adjustment: the limit rests that
+    far on the NEAR side of the level (long: above it, short: below it),
+    so the fill is guaranteed whenever price merely approaches the level
+    that closely, at the cost of a worse entry on every trade. With
+    fill_through, off=0.25 buys the touch-fill fill set with certainty
+    for one tick per trade. Stops stay structure-anchored, so risk widens
+    by the offset too.
 
     counters, if a dict, accumulates the signal funnel:
     sig / skip_in_pos / replaced / expired / filled."""
@@ -179,8 +188,9 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
         nxt_idx = np.searchsorted(ts, nxt) if nxt is not None else n
         cancel = min(nxt_idx, pend_cut_idx, n)
         L, d = s["L"], s["dir"]
+        E = L + d * entry_off
         seg_lo, seg_hi = lo[start:cancel], hi[start:cancel]
-        touch = (seg_lo <= L - thru) if d == 1 else (seg_hi >= L + thru)
+        touch = (seg_lo <= E - thru) if d == 1 else (seg_hi >= E + thru)
         if not touch.any():
             bump("replaced" if cancel == nxt_idx and nxt_idx < min(pend_cut_idx, n)
                  else "expired")
@@ -189,8 +199,8 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
         bump("filled")
         fill = start + int(np.argmax(touch))
         stop = stop_for(s)
-        risk = abs(L - stop)
-        tgt = L + d * target_r * risk
+        risk = abs(E - stop)
+        tgt = E + d * target_r * risk
         w_lo, w_hi = lo[fill:], hi[fill:]
         if d == 1:
             s_hit = w_lo <= stop
@@ -206,8 +216,8 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
         # bar itself is excluded: intrabar order there is unknowable.
         s_rel = (s_idx if s_idx < n else n) - fill
         if s_rel > 0:
-            run_r = ((float(w_hi[:s_rel].max()) - L) if d == 1
-                     else (L - float(w_lo[:s_rel].min()))) / risk
+            run_r = ((float(w_hi[:s_rel].max()) - E) if d == 1
+                     else (E - float(w_lo[:s_rel].min()))) / risk
         else:
             run_r = 0.0
         sar_idx, sar_px = n + 1, None
@@ -223,7 +233,7 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
         first = min(s_idx, t_idx)
         if sar_idx <= first and sar_idx <= n:     # flatten on opposing close
             exit_idx = min(sar_idx, n - 1)
-            r = d * (sar_px - L) / risk
+            r = d * (sar_px - E) / risk
             res = "SAR"
         elif s_idx <= t_idx and s_idx < n:        # stop first (ties -> stop)
             exit_idx, r = s_idx, -1.0
@@ -232,14 +242,14 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             exit_idx, r = t_idx, target_r
             res = "TARGET"
         else:
-            exit_idx, r = n - 1, d * (cl[-1] - L) / risk
+            exit_idx, r = n - 1, d * (cl[-1] - E) / risk
             res = "FLAT"
         hrs = (t_sig - ts[0]) / 3.6e12
         trades.append({
             "t_sig_hrs": round(hrs, 3), "window": window_of(hrs),
             "fill_hrs": round((ts[fill] - ts[0]) / 3.6e12, 3),
             "leg": LEG[(s["level_name"], d)], "dir": d,
-            "entry": L, "stop": round(stop, 2), "risk": round(risk, 2),
+            "entry": E, "stop": round(stop, 2), "risk": round(risk, 2),
             "res": res, "r": round(r, 4), "pts": round(r * risk, 2),
             "run_r": round(max(run_r, 0.0), 3),
             "ambig": bool(ambig), "hold_min": int((ts[exit_idx] - ts[fill]) / 6e10),
@@ -264,9 +274,13 @@ def main() -> int:
                          "mid-trade flattens at that close and works the flip")
     ap.add_argument("--tf", type=int, default=3,
                     help="signal candle timeframe in minutes (default 3)")
+    ap.add_argument("--entry-offset", type=float, default=0.0,
+                    help="rest the limit this many POINTS on the near side "
+                         "of the level (0.25 = 1 tick front-run)")
     a = ap.parse_args()
     suffix = (("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
-              + (f"_tf{a.tf}" if a.tf != 3 else ""))
+              + (f"_tf{a.tf}" if a.tf != 3 else "")
+              + (f"_off{int(round(a.entry_offset / 0.25))}" if a.entry_offset else ""))
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
     trades_out = gzip.open(
@@ -323,7 +337,8 @@ def main() -> int:
                     continue
                 for t in simulate_day(ts, hi, lo, cl, sigs, pcut, tr,
                                       fill_through=a.fill_through,
-                                      sar=a.sar, counters=cnt):
+                                      sar=a.sar, counters=cnt,
+                                      entry_off=a.entry_offset):
                     t.update({"day": day, "depth": depth, "target_r": tr})
                     trades_out.write(json.dumps(t) + "\n")
                     n_trades += 1

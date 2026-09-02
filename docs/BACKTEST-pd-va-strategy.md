@@ -269,6 +269,19 @@ median +23pt (touch +50pt), positive 30/43, worst −67pt, best +284pt.
 The typical month is a grinder; 2026 is where it pays ~+150pt/month per
 contract.
 
+**Front-run offset (his idea, 2026-09-02): tested, a wash — and that is
+good news.** `--entry-offset` rests the limit N points on the near side
+of the level (guaranteed fill whenever price approaches that closely,
+worse entry every trade). Champion config, guaranteed-fill ladder,
+cost-adjusted at 1R: through-at-level +1,947pt, 1-tick front +1,887pt,
+2-tick front +1,929pt — identical within noise, all ~1,000pt below the
+touch ceiling (+2,996pt). The toll exactly cancels the regained
+bounce-to-the-tick winners; the touch premium is queue-position money,
+harvestable only by placing at the level the instant the signal prints.
+Implication: the floor does not depend on execution cleverness, and the
+1-tick front-run is a legitimate live choice (same EV, zero fill
+uncertainty). At 1.5R the toll bites the thinner edge (2-tick: +84pt).
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
