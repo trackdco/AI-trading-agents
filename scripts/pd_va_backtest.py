@@ -1,0 +1,279 @@
+#!/usr/bin/env python3
+"""PD VAH/VAL BREAK-RETEST — his flight-note strategy, mechanically, all history.
+
+    python -m scripts.pd_va_backtest
+
+His spec (2026-09-02, verbatim intent):
+  * 3m candle CLOSES through prior-day VAH or VAL -> limit order at the retest
+    of the level. Direction = the direction of the crossing close (stop goes
+    beyond the candle that closed through, so it is a continuation entry).
+  * Asia + London are the strategy; full day simulated anyway so NY's expected
+    failure is measured, not assumed.
+  * Stop: beyond the close-through candle. If the close-through candle's OPEN
+    is < 5pt from the level, use the candle before it as well (stop beyond
+    both). 5pt minimum risk floor after all of that. One tick of air (0.25).
+  * Fixed-R targets, swept: 1.0 / 1.5 / 2.0 / 2.5 / 3.0.
+  * Close-through depth swept: any tick / 1pt / 2pt / 3pt beyond the level.
+
+Interpretation decisions (documented because the note is a note):
+  - PD VAH/VAL from the certified `volume_profile` (agent_context) over the
+    full prior session-day (prev 18:00 anchor -> this 18:00 anchor), exactly
+    as `build_levels` computes `prior_day`, rounded to tick. KNOWN CAVEAT:
+    that function carries a ~30pt worst-case residual vs TradingView's own
+    profile rows; his hand-test marked levels off the chart. The depth sweep
+    absorbs some of this, not all.
+  - "Closes through" = a CROSSING close: previous 3m close on or inside the
+    level, this close beyond it by >= max(depth, one tick).
+  - Both levels, both directions, tagged per leg:
+      VAH up-cross  = breakout_up      VAH down-cross = reversion_down
+      VAL down-cross = breakout_down   VAL up-cross   = reversion_up
+    so the report shows which legs carry it rather than presuming.
+  - One position at a time. One resting limit at a time; a new signal while
+    flat replaces an unfilled pending (latest signal wins). Signals while in
+    a position are ignored. Pendings rest until 16:00 at the latest.
+  - Fill = first 1m bar at/after the signal candle's end that touches the
+    level (long: low <= L, short: high >= L), filled AT the level.
+  - Exits walked on 1m bars from the fill bar inclusive; stop checked before
+    target inside any single bar (conservative); same-bar stop+target counted
+    and reported. Session end (t0+23h) force-flats at last close for partial R.
+  - Signals accepted 19:00 -> 15:55 (full-day sim). The Asia/London strategy
+    is the subset with signal AND fill before 09:30 (pending pulled at the
+    bell) — provably identical to a separate AL-only sim because NY signals
+    cannot affect earlier occupancy.
+
+Outputs: printed progress + per-trade dump for the report layer
+  output/analysis/pd_va_trades.jsonl.gz  (every config, every trade)
+  output/analysis/pd_va_days.json        (per-day PD range / VA geometry)
+No lookahead anywhere: levels are prior-day, signals are closed candles,
+fills/exits read strictly forward bars.
+"""
+from __future__ import annotations
+
+import argparse
+import gzip
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+import scripts.offline_briefings as OB                            # noqa: E402
+from scripts.agent_context import volume_profile                  # noqa: E402
+
+TICK = 0.25
+MIN_RISK = 5.0
+DEPTHS = (0.0, 1.0, 2.0, 3.0)          # 0.0 -> any tick beyond
+TARGETS = (1.0, 1.5, 2.0, 2.5, 3.0)
+SIG_START_H = 1.0                      # 19:00 session-relative
+SIG_END_H = 21 + 52 / 60               # last 3m candle STARTS 15:52, ends 15:55
+PEND_CUT_H = 22.0                      # resting limits die at 16:00
+SESS_H = 23.0
+
+LEG = {("vah", 1): "breakout_up", ("vah", -1): "reversion_down",
+       ("val", -1): "breakout_down", ("val", 1): "reversion_up"}
+
+
+def window_of(hrs: float) -> str:
+    if hrs < 9.0:
+        return "ASIA"
+    if hrs < 15.5:
+        return "LONDON"
+    return "NY"
+
+
+def day_signals(c3, vah, val, depth):
+    """Crossing closes of either level on the 3m candles, chronological."""
+    thr = max(depth, TICK)
+    out = []
+    cl = c3.close.to_numpy()
+    op = c3.open.to_numpy()
+    hi = c3.high.to_numpy()
+    lo = c3.low.to_numpy()
+    ends = c3.index + pd.Timedelta(minutes=3)
+    for name, L in (("vah", vah), ("val", val)):
+        for i in range(1, len(c3)):
+            d = 0
+            if cl[i - 1] <= L and cl[i] >= L + thr:
+                d = 1
+            elif cl[i - 1] >= L and cl[i] <= L - thr:
+                d = -1
+            if not d:
+                continue
+            out.append({
+                "t": ends[i], "dir": d, "level_name": name, "L": L,
+                "ct_open": op[i], "ct_hi": hi[i], "ct_lo": lo[i],
+                "pv_hi": hi[i - 1], "pv_lo": lo[i - 1], "close": cl[i],
+            })
+    # same-candle double-cross (huge candle, narrow VA): trade the level
+    # nearest the close — sort so it comes first, keep-first on dedupe
+    out.sort(key=lambda s: (s["t"], abs(s["close"] - s["L"])))
+    ded = {}
+    for s in out:
+        ded.setdefault(s["t"], s)
+    return [ded[t] for t in sorted(ded)]
+
+
+def stop_for(sig):
+    """His stop rule: beyond the close-through candle (+1 tick); if that
+    candle's open is <5pt from the level, beyond the prior candle too;
+    5pt minimum risk floor."""
+    L, d = sig["L"], sig["dir"]
+    use_prev = abs(sig["ct_open"] - L) < MIN_RISK
+    if d == 1:
+        ref = min(sig["ct_lo"], sig["pv_lo"]) if use_prev else sig["ct_lo"]
+        stop = ref - TICK
+        if L - stop < MIN_RISK:
+            stop = L - MIN_RISK
+    else:
+        ref = max(sig["ct_hi"], sig["pv_hi"]) if use_prev else sig["ct_hi"]
+        stop = ref + TICK
+        if stop - L < MIN_RISK:
+            stop = L + MIN_RISK
+    return stop
+
+
+def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+                 fill_through=False):
+    """One forward pass, one position at a time, latest pending wins.
+
+    fill_through=True is the adverse-selection sensitivity: a fill counts
+    only if price trades one full tick THROUGH the level (guaranteed fill),
+    still booked at the level. Kills the bounce-to-the-tick winners a real
+    resting limit might miss; the honest lower bound on fill quality."""
+    trades = []
+    i = 0
+    t_free = ts[0] - 1
+    n = len(ts)
+    thru = TICK if fill_through else 0.0
+    while i < len(sigs):
+        s = sigs[i]
+        t_sig = s["t"].value
+        if t_sig <= t_free:
+            i += 1
+            continue
+        start = np.searchsorted(ts, t_sig)
+        if start >= n:
+            break
+        nxt = sigs[i + 1]["t"].value if i + 1 < len(sigs) else None
+        nxt_idx = np.searchsorted(ts, nxt) if nxt is not None else n
+        cancel = min(nxt_idx, pend_cut_idx, n)
+        L, d = s["L"], s["dir"]
+        seg_lo, seg_hi = lo[start:cancel], hi[start:cancel]
+        touch = (seg_lo <= L - thru) if d == 1 else (seg_hi >= L + thru)
+        if not touch.any():
+            i += 1
+            continue
+        fill = start + int(np.argmax(touch))
+        stop = stop_for(s)
+        risk = abs(L - stop)
+        tgt = L + d * target_r * risk
+        w_lo, w_hi = lo[fill:], hi[fill:]
+        if d == 1:
+            s_hit = w_lo <= stop
+            t_hit = w_hi >= tgt
+        else:
+            s_hit = w_hi >= stop
+            t_hit = w_lo <= tgt
+        s_idx = fill + int(np.argmax(s_hit)) if s_hit.any() else n
+        t_idx = fill + int(np.argmax(t_hit)) if t_hit.any() else n
+        ambig = s_idx == t_idx and s_idx < n
+        if s_idx <= t_idx and s_idx < n:          # stop first (ties -> stop)
+            exit_idx, r = s_idx, -1.0
+            res = "STOP"
+        elif t_idx < s_idx:
+            exit_idx, r = t_idx, target_r
+            res = "TARGET"
+        else:
+            exit_idx, r = n - 1, d * (cl[-1] - L) / risk
+            res = "FLAT"
+        hrs = (t_sig - ts[0]) / 3.6e12
+        trades.append({
+            "t_sig_hrs": round(hrs, 3), "window": window_of(hrs),
+            "fill_hrs": round((ts[fill] - ts[0]) / 3.6e12, 3),
+            "leg": LEG[(s["level_name"], d)], "dir": d,
+            "entry": L, "stop": round(stop, 2), "risk": round(risk, 2),
+            "res": res, "r": round(r, 4), "pts": round(r * risk, 2),
+            "ambig": bool(ambig), "hold_min": int((ts[exit_idx] - ts[fill]) / 6e10),
+        })
+        t_free = ts[exit_idx]
+        i += 1
+    return trades
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--fill-through", action="store_true",
+                    help="fills require a tick THROUGH the level (adverse-"
+                         "selection sensitivity); writes *_through dump")
+    a = ap.parse_args()
+    suffix = "_through" if a.fill_through else ""
+    bars = OB.get_bars()
+    days = OB.all_session_days(bars)
+    trades_out = gzip.open(
+        ROOT / f"output/analysis/pd_va_trades{suffix}.jsonl.gz", "wt")
+    per_day_meta = {}
+
+    day_cache = []
+    prev_t0 = None
+    for day in days:
+        t0 = pd.Timestamp(f"{day} 18:00", tz=OB.NY)
+        if prev_t0 is None:
+            prev_t0 = t0
+            continue
+        pseg = bars[(bars.index >= prev_t0) & (bars.index < t0)]
+        sess = bars[(bars.index >= t0) & (bars.index < t0 + pd.Timedelta(hours=SESS_H))]
+        prev_t0 = t0
+        if len(pseg) < 300 or len(sess) < 600:
+            continue
+        _, val, vah = volume_profile(pseg)
+        if not (np.isfinite(val) and np.isfinite(vah)):
+            continue
+        vah = round(vah * 4) / 4
+        val = round(val * 4) / 4
+        c3 = sess.resample("3min").agg(
+            {"open": "first", "high": "max", "low": "min", "close": "last"}).dropna()
+        hrs3 = (c3.index - t0).total_seconds() / 3600
+        c3 = c3[(hrs3 >= SIG_START_H - 0.06) & (hrs3 < SIG_END_H)]
+        if len(c3) < 50:
+            continue
+        ts = sess.index.view("int64")
+        pend_cut = int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=PEND_CUT_H)).value))
+        day_cache.append((day, ts, sess.high.to_numpy(), sess.low.to_numpy(),
+                          sess.close.to_numpy(), c3, vah, val, pend_cut))
+        per_day_meta[day] = {
+            "pd_range": round(float(pseg.high.max() - pseg.low.min()), 2),
+            "vah": vah, "val": val, "va_width": round(vah - val, 2)}
+
+    print(f"{len(day_cache)} tradeable days "
+          f"({day_cache[0][0]} -> {day_cache[-1][0]})", flush=True)
+
+    n_cfg = 0
+    for depth in DEPTHS:
+        sig_cache = [day_signals(c3, vah, val, depth)
+                     for (_, _, _, _, _, c3, vah, val, _) in day_cache]
+        for tr in TARGETS:
+            n_cfg += 1
+            n_trades = 0
+            for (day, ts, hi, lo, cl, _, _, _, pcut), sigs in zip(day_cache, sig_cache):
+                if not sigs:
+                    continue
+                for t in simulate_day(ts, hi, lo, cl, sigs, pcut, tr,
+                                      fill_through=a.fill_through):
+                    t.update({"day": day, "depth": depth, "target_r": tr})
+                    trades_out.write(json.dumps(t) + "\n")
+                    n_trades += 1
+            print(f"[{n_cfg}/{len(DEPTHS) * len(TARGETS)}] depth={depth} "
+                  f"R={tr}: {n_trades} trades", flush=True)
+    trades_out.close()
+    (ROOT / "output/analysis/pd_va_days.json").write_text(
+        json.dumps(per_day_meta))
+    print(f"DONE -> output/analysis/pd_va_trades{suffix}.jsonl.gz", flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
