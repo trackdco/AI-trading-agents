@@ -336,6 +336,15 @@ stay structural** (candle extreme → prior-candle escalation → 5pt floor).
 Fixed and vol-scaled stop variants CLOSED; `--fixed-stop` remains in the
 sim as an experiment flag only.
 
+**Per-session fixed-R check (his question, same day):** no target beats
+1R static in either session over 43 months (Asia: 1R +720pt vs 1.5R
++318; London: 1R +1,226pt vs 1.5R +28, 2R+ −700 to −900 — London
+punishes patience in every era). 2026 wrinkle: Asia 1.5R noses ahead
+(+632 vs +599, 57% WR) and even 3R prints +544 — the Asia tail is real
+in the current regime, but +33pt over ~400 trades in one era is a
+watch-item, not a switch. The data keeps pointing at partial+runner
+(§8), not bigger fixed targets. Spec stays 1R static both sessions.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
