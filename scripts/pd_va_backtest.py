@@ -138,7 +138,7 @@ def stop_for(sig):
 
 def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                  fill_through=False, sar=False, counters=None,
-                 entry_off=0.0):
+                 entry_off=0.0, fixed_stop=None):
     """One forward pass, one position at a time, latest pending wins.
 
     fill_through=True is the adverse-selection sensitivity: a fill counts
@@ -198,7 +198,9 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             continue
         bump("filled")
         fill = start + int(np.argmax(touch))
-        stop = stop_for(s)
+        # fixed_stop: his 2026-09-02 experiment — a flat S-point bracket off
+        # the level, structure ignored entirely (no escalation, no floor)
+        stop = (L - d * fixed_stop) if fixed_stop else stop_for(s)
         risk = abs(E - stop)
         tgt = E + d * target_r * risk
         w_lo, w_hi = lo[fill:], hi[fill:]
@@ -277,10 +279,13 @@ def main() -> int:
     ap.add_argument("--entry-offset", type=float, default=0.0,
                     help="rest the limit this many POINTS on the near side "
                          "of the level (0.25 = 1 tick front-run)")
+    ap.add_argument("--fixed-stop", type=float, default=None,
+                    help="flat S-point stop off the level, structure ignored")
     a = ap.parse_args()
     suffix = (("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
               + (f"_tf{a.tf}" if a.tf != 3 else "")
-              + (f"_off{int(round(a.entry_offset / 0.25))}" if a.entry_offset else ""))
+              + (f"_off{int(round(a.entry_offset / 0.25))}" if a.entry_offset else "")
+              + (f"_fs{a.fixed_stop:g}" if a.fixed_stop else ""))
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
     trades_out = gzip.open(
@@ -338,7 +343,8 @@ def main() -> int:
                 for t in simulate_day(ts, hi, lo, cl, sigs, pcut, tr,
                                       fill_through=a.fill_through,
                                       sar=a.sar, counters=cnt,
-                                      entry_off=a.entry_offset):
+                                      entry_off=a.entry_offset,
+                                      fixed_stop=a.fixed_stop):
                     t.update({"day": day, "depth": depth, "target_r": tr})
                     trades_out.write(json.dumps(t) + "\n")
                     n_trades += 1

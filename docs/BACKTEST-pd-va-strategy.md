@@ -307,6 +307,33 @@ value). Pace ≈ +22pt/session — at or above the 2026 backtest rate.
 Seven days prove nothing alone; they are simply the first evidence of
 the right kind, on tape that postdates every parameter choice.
 
+## 11. Fixed stops (his question, 2026-09-02): work at ~8pt, but the
+## optimum drifts with regime — structure self-adjusts
+
+`--fixed-stop S` = flat S-point bracket off the level, structure ignored.
+Champion frame (tf1, ≥3pt, 1R, SAR, honest fills), cost-adjusted:
+
+| stop | ALL 43mo AL | 2026 AL | ASIA opt | LONDON opt |
+|---|---:|---:|---|---|
+| structural | **+1,947pt** | +1,033pt | — | — |
+| fixed 4pt | +372 | −157 | | |
+| fixed 5pt | +1,148 | +325 | | |
+| fixed 6pt | +1,688 | +723 | | London best all-hist (+1,129) |
+| fixed 8pt | +1,911 | +1,171 | Asia best all-hist (+817) | |
+| fixed 10pt | +1,351 | **+1,284** | Asia best 2026 (+736) | London best 2026 (+548) |
+
+Reads: (1) a fixed stop DOES work — 8pt ties structural over 43 months —
+but 4–5pt sits inside single-candle noise (2026 median 1m candle: Asia
+6.8pt, London 8.5pt) and dies. (2) His session instinct is directionally
+right (Asia and London optima differ by ~2pt within an era) but the ERA
+dominates: the optimum was ~6–8pt all-history and is ~10pt+ in 2026 —
+any fixed number is an implicit volatility bet that goes stale. (3)
+Structural stops are the only variant that wins across both eras with no
+parameter, because they scale with the candles automatically. The
+candidate that formalizes his point without a magic number: a vol-scaled
+stop (k × trailing range, floored) — NOT built; queued behind June-10
+calibration on his word.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
