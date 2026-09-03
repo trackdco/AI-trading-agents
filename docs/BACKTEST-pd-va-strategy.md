@@ -794,6 +794,47 @@ green days); half risk = ~+1.8R/day at ~-7.3R. Every point dominates
 the single-stream book. Per-family post-merge: va +1,133R (keeps its
 levels by priority), wva +662, pdhl +626, poc +518, wpoc +216.
 
+## 27. Gold 8-level book (2026-09-03)
+
+Same --levels all machinery, gold constants (merge floor 1.5pt).
+2023-24: dead as expected (+12/-24R - the friction era; the vol dial
+owns this). **2025-26: +307R / +351R, +1.69R/day, 62%% green days,
+18/20 months positive (median +25.1R, worst -7.0R), maxDD -16.9R,
+30.5 trades/day in 2026.** All five families positive on gold too -
+second instrument, same generality.
+
+## 28. VWAP-REVOLVENT (his idea, 2026-09-03): retest passes, market dies
+
+His spec: "candle close through vwap band, market order and target x r.
+other thing is enter on retest. try 1, 3 and 5 min." Implemented in
+`scripts/vwap_revolve.py`: bands = certified session VWAP +/-1/2 sigma,
+MOVING levels frozen at the signal close (limit rests at the frozen
+value), same stop waterfall / SAR-across-bands / news gate / honest
+fills / EOD conventions. Prereg: judged at depth 3 / 1R; pair-in needs
+positive both halves + corr <0.5 vs the 8-level book.
+
+Grid verdict (net R, cost-adj, depth 3):
+- **MARKET ENTRY: NEGATIVE at every tf and every target** (tf1 -1,624R
+  at 1R). Chasing the close-through pays the displacement; killed.
+- **RETEST: positive both halves at all three tfs at 1R**, and the two
+  gradients replicate AGAIN (4th/5th independent time): tf1 +3,949R >
+  tf3 +1,522 > tf5 +798; 1R > 1.5R > 2R everywhere; depth-0 negative
+  everywhere (noise closes at moving bands are worse than at static
+  levels).
+
+**VWAP champion (tf1 retest depth3 1R): +3,949R over 34,166 trades,
+64.5%% WR, +0.116R/trade, all four years +815 to +1,148R, 45/45 months
+positive (median +78.9R, worst +0.1R), +4.29R/day, 75%% green days,
+maxDD -17.8R.** Bigger than the entire 8-level book, every band
+positive (vwap +923, +/-1 sigma ~+1,000 each, +/-2 thinner).
+
+**Pairing: PASSES ALL GATES.** Daily corr vs the 8-level book +0.104.
+Combined NQ book (8 levels + VWAP bands, full risk each): **+7.71R/day,
+83%% green days, maxDD -22.7R (3 average days deep), 45/45 months
+positive, median month +157.3R, worst month +10.0R.** ~70 trades/day -
+automation only. Open: VWAP-band proximity interaction with the level
+books (no cross-book merge yet; corr says small), gold VWAP variant.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a

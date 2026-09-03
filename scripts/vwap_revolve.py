@@ -1,0 +1,251 @@
+#!/usr/bin/env python3
+"""VWAP-REVOLVENT — his 2026-09-03 idea: the certified grammar on VWAP bands.
+
+    python -m scripts.vwap_revolve --tf 3 --style retest
+    python -m scripts.vwap_revolve --tf 1 --style market
+
+"candle close through vwap band, market order and target x r. other
+thing is enter on retest. try this on the 1,3 and 5 min timeframes."
+
+Levels = session VWAP and its +/-1, +/-2 sigma bands (the certified
+`vwap_bands`, per-1m, causal, 18:00 anchor). Bands MOVE, so the level is
+FROZEN at the signal close: crossings are detected against the moving
+series (prev close vs prev band value, close vs current), and the frozen
+value anchors the retest limit, the stop rule, and the floor exactly as
+the PD-level engine does. One book across all five bands, one position
+at a time, SAR on any opposing band crossing, structural stops with the
+prior-candle escalation and 5pt floor, news gate, pendings die at 16:00,
+EOD force-flat. NQ only for now.
+
+Entry styles:
+  retest  - limit at the frozen band value; fills honest (one tick
+            through) like the certified spec
+  market  - filled at the signal candle's close price on the next bar
+            (no pending phase; always filled)
+
+Depth grid {0, 3}pt x targets {1.0, 1.5, 2.0, 2.5, 3.0}. Output:
+  output/analysis/vwap_rev_tf{N}_{style}.jsonl.gz
+"""
+from __future__ import annotations
+
+import argparse
+import gzip
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+import scripts.offline_briefings as OB                            # noqa: E402
+from src.htf_ma.levels import vwap_bands                          # noqa: E402
+
+TICK = 0.25
+MIN_RISK = 5.0
+DEPTHS = (0.0, 3.0)
+TARGETS = (1.0, 1.5, 2.0, 2.5, 3.0)
+BANDS = ("vwap", "vwap_p1", "vwap_p2", "vwap_m1", "vwap_m2")
+SIG_START_H = 1.0
+SIG_END_H = 21 + 55 / 60
+PEND_CUT_H = 22.0
+SESS_H = 23.0
+
+
+def window_of(hrs):
+    return "ASIA" if hrs < 9.0 else ("LONDON" if hrs < 15.5 else "NY")
+
+
+def day_signals(c3, band_at, depth, tf):
+    """Crossing closes of any band; the band value at the signal candle's
+    last bar is FROZEN as the trade's level."""
+    thr = max(depth, TICK)
+    cl = c3.close.to_numpy()
+    op = c3.open.to_numpy()
+    hi = c3.high.to_numpy()
+    lo = c3.low.to_numpy()
+    ends = c3.index + pd.Timedelta(minutes=tf)
+    out = []
+    for name in BANDS:
+        B = band_at[name]
+        for i in range(1, len(c3)):
+            b_prev, b_now = B[i - 1], B[i]
+            if not (np.isfinite(b_prev) and np.isfinite(b_now)):
+                continue
+            d = 0
+            if cl[i - 1] <= b_prev and cl[i] >= b_now + thr:
+                d = 1
+            elif cl[i - 1] >= b_prev and cl[i] <= b_now - thr:
+                d = -1
+            if not d:
+                continue
+            L = round(b_now / TICK) * TICK
+            out.append({"t": ends[i], "dir": d, "band": name, "L": L,
+                        "ct_open": op[i], "ct_hi": hi[i], "ct_lo": lo[i],
+                        "pv_hi": hi[i - 1], "pv_lo": lo[i - 1],
+                        "close": cl[i]})
+    out.sort(key=lambda s: (s["t"], abs(s["close"] - s["L"])))
+    ded = {}
+    for s in out:
+        ded.setdefault(s["t"], s)          # nearest band to the close wins
+    return [ded[t] for t in sorted(ded)]
+
+
+def stop_for(sig):
+    L, d = sig["L"], sig["dir"]
+    use_prev = abs(sig["ct_open"] - L) < MIN_RISK
+    if d == 1:
+        ref = min(sig["ct_lo"], sig["pv_lo"]) if use_prev else sig["ct_lo"]
+        stop = ref - TICK
+        if L - stop < MIN_RISK:
+            stop = L - MIN_RISK
+    else:
+        ref = max(sig["ct_hi"], sig["pv_hi"]) if use_prev else sig["ct_hi"]
+        stop = ref + TICK
+        if stop - L < MIN_RISK:
+            stop = L + MIN_RISK
+    return stop
+
+
+def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block):
+    trades = []
+    i = 0
+    t_free = ts[0] - 1
+    n = len(ts)
+    while i < len(sigs):
+        s = sigs[i]
+        t_sig = s["t"].value
+        if t_sig <= t_free:
+            i += 1
+            continue
+        start = int(np.searchsorted(ts, t_sig))
+        if start >= n:
+            break
+        if block is not None and block[0] <= start < block[1]:
+            i += 1
+            continue
+        L, d = s["L"], s["dir"]
+        stop = stop_for(s)
+        if style == "market":
+            fill = start
+            E = float(s["close"])
+        else:
+            nxt = sigs[i + 1]["t"].value if i + 1 < len(sigs) else None
+            nxt_idx = int(np.searchsorted(ts, nxt)) if nxt is not None else n
+            cancel = min(nxt_idx, pend_cut_idx, n)
+            if block is not None and start < block[0]:
+                cancel = min(cancel, block[0])
+            seg_lo, seg_hi = lo[start:cancel], hi[start:cancel]
+            touch = (seg_lo <= L - TICK) if d == 1 else (seg_hi >= L + TICK)
+            if not touch.any():
+                i += 1
+                continue
+            fill = start + int(np.argmax(touch))
+            E = L
+        risk = abs(E - stop)
+        if risk <= 0:
+            i += 1
+            continue
+        tgt = E + d * target_r * risk
+        w_lo, w_hi = lo[fill:], hi[fill:]
+        s_hit = (w_lo <= stop) if d == 1 else (w_hi >= stop)
+        t_hit = (w_hi >= tgt) if d == 1 else (w_lo <= tgt)
+        s_idx = fill + int(np.argmax(s_hit)) if s_hit.any() else n
+        t_idx = fill + int(np.argmax(t_hit)) if t_hit.any() else n
+        sar_idx, sar_px = n + 1, None
+        for sj in sigs[i + 1:]:
+            if sj["dir"] == -d and sj["t"].value > ts[fill]:
+                sar_idx = int(np.searchsorted(ts, sj["t"].value))
+                sar_px = sj["close"]
+                break
+        first = min(s_idx, t_idx)
+        if sar_idx <= first and sar_idx <= n:
+            exit_idx = min(sar_idx, n - 1)
+            r = d * (sar_px - E) / risk
+            res = "SAR"
+        elif s_idx <= t_idx and s_idx < n:
+            exit_idx, r = s_idx, -1.0
+            res = "STOP"
+        elif t_idx < s_idx:
+            exit_idx, r = t_idx, target_r
+            res = "TARGET"
+        else:
+            exit_idx, r = n - 1, d * (cl[-1] - E) / risk
+            res = "FLAT"
+        hrs = (t_sig - ts[0]) / 3.6e12
+        trades.append({"t_sig_hrs": round(hrs, 3), "window": window_of(hrs),
+                       "band": s["band"], "dir": d, "entry": round(E, 2),
+                       "risk": round(risk, 2), "res": res, "r": round(r, 4),
+                       "pts": round(r * risk, 2)})
+        t_free = ts[min(sar_idx, n - 1)] - 1 if res == "SAR" else ts[exit_idx]
+        i += 1
+    return trades
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--tf", type=int, required=True, choices=(1, 3, 5))
+    ap.add_argument("--style", required=True, choices=("retest", "market"))
+    a = ap.parse_args()
+
+    nf = pd.read_csv(ROOT / "data/reference/news_archive.csv")
+    news_days = set(nf[(nf.impact == "high") & (nf.time_et >= "08:00")
+                       & (nf.time_et < "09:30")].date)
+    bars = OB.get_bars()
+    days = OB.all_session_days(bars)
+    out = ROOT / f"output/analysis/vwap_rev_tf{a.tf}_{a.style}.jsonl.gz"
+    fh = gzip.open(out, "wt")
+    n_all = 0
+    for di, day in enumerate(days):
+        t0 = pd.Timestamp(f"{day} 18:00", tz=OB.NY)
+        sess = bars[(bars.index >= t0)
+                    & (bars.index < t0 + pd.Timedelta(hours=SESS_H))]
+        if len(sess) < 600:
+            continue
+        vw = vwap_bands(sess)
+        c3 = sess.resample(f"{a.tf}min").agg(
+            {"open": "first", "high": "max", "low": "min",
+             "close": "last"}).dropna()
+        hrs3 = (c3.index - t0).total_seconds() / 3600
+        keep = (hrs3 >= SIG_START_H - a.tf / 60 - 0.02) \
+            & (hrs3 + a.tf / 60 <= SIG_END_H + 1e-6)
+        c3 = c3[keep]
+        if len(c3) < 50:
+            continue
+        # band value at each candle's LAST bar (known at candle close)
+        last_idx = np.searchsorted(sess.index.view("int64"),
+                                   (c3.index + pd.Timedelta(minutes=a.tf)
+                                    ).view("int64")) - 1
+        last_idx = np.clip(last_idx, 0, len(sess) - 1)
+        band_at = {b: vw[b].to_numpy()[last_idx] for b in BANDS}
+        ts = sess.index.view("int64")
+        pcut = int(np.searchsorted(
+            ts, (t0 + pd.Timedelta(hours=PEND_CUT_H)).value))
+        blk = None
+        if str((t0 + pd.Timedelta(hours=15)).date()) in news_days:
+            blk = (int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=14)).value)),
+                   int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=15.5)).value)))
+        hi_ = sess.high.to_numpy()
+        lo_ = sess.low.to_numpy()
+        cl_ = sess.close.to_numpy()
+        for depth in DEPTHS:
+            sigs = day_signals(c3, band_at, depth, a.tf)
+            if not sigs:
+                continue
+            for tr in TARGETS:
+                for t in simulate(ts, hi_, lo_, cl_, sigs, pcut, tr,
+                                  a.style, blk):
+                    t.update({"day": day, "depth": depth, "target_r": tr})
+                    fh.write(json.dumps(t) + "\n")
+                    n_all += 1
+        if di % 100 == 0:
+            print(f"[{di}/{len(days)}] {day} - {n_all} rows", flush=True)
+    fh.close()
+    print(f"DONE {n_all} -> {out}", flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
