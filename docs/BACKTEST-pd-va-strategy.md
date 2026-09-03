@@ -428,6 +428,17 @@ the third independent argument for the runner structure (run-potential
 distribution §8, Asia 2026 tail §11, prop rules here). Still un-built;
 his word.
 
+**Daily-loss-cutoff receipt (his DD complaint, 2026-09-03): cutoffs make
+the drawdown WORSE.** Stop-at-−20/−30/−40pt on the full-day champion:
+max EOD DD −168 → −217/−227/−248pt, total −1,000 to −2,800pt. Mechanism
+= his own EOD principle: red mornings routinely heal by the close;
+a daily stop realizes intraday lows into EOD prints. NO daily stop.
+The −168pt episode: 2026-05-26 → 06-02 (trend-churn tail), recovered
+06-09. Working levers: MNQ sizing until buffer > DD envelope ($336/MNQ);
+AL-only as the eval-phase variant (2026 DD −81pt at +9.8/day); and the
+§12 with-trend-only hypothesis, which targets this exact episode —
+untested, his word.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
