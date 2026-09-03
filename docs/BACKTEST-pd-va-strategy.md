@@ -832,8 +832,17 @@ positive (vwap +923, +/-1 sigma ~+1,000 each, +/-2 thinner).
 Combined NQ book (8 levels + VWAP bands, full risk each): **+7.71R/day,
 83%% green days, maxDD -22.7R (3 average days deep), 45/45 months
 positive, median month +157.3R, worst month +10.0R.** ~70 trades/day -
-automation only. Open: VWAP-band proximity interaction with the level
-books (no cross-book merge yet; corr says small), gold VWAP variant.
+automation only.
+
+**Overlap measured (his ask, 2026-09-03):** 8%% of VWAP trades overlap
+a level-book position in time; 6%% same direction; **3.7%% (1,261
+trades) are true double-risk** (same direction, entries within one
+floor). Combined-book concurrency peaks at 2 positions on most days
+(635/921), 3 on 98, 4 on 22, never more. The double-risk trades net
+**-120R at 57.5%% WR** - so the CROSS-BOOK DEDUPE RULE (skip a VWAP
+entry when a level-book position is open same-direction within 5pt) is
+free on both axes: removes the double exposure AND adds +120R. RULE IN
+for the live spec. Remaining open: gold VWAP variant.
 
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 

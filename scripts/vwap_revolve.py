@@ -178,7 +178,9 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block):
         trades.append({"t_sig_hrs": round(hrs, 3), "window": window_of(hrs),
                        "band": s["band"], "dir": d, "entry": round(E, 2),
                        "risk": round(risk, 2), "res": res, "r": round(r, 4),
-                       "pts": round(r * risk, 2)})
+                       "pts": round(r * risk, 2),
+                       "fill_hrs": round((ts[fill] - ts[0]) / 3.6e12, 3),
+                       "hold_min": int((ts[min(exit_idx, n - 1)] - ts[fill]) / 6e10)})
         t_free = ts[min(sar_idx, n - 1)] - 1 if res == "SAR" else ts[exit_idx]
         i += 1
     return trades
