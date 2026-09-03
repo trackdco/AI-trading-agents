@@ -958,6 +958,25 @@ His closing arithmetic, confirmed: ~+0.10-0.15R expectancy is the whole
 business model - it only needs to be real and repeatable at 40-70
 pulls/day, and three books x four years say it is.
 
+## 32. THE RAILED EMPIRE - closing statement (2026-09-03)
+
+All three NQ books under the G-stack (post-hoc chronological rail pass;
+exact joint sim is executor-stage). G3 removed 2,009 duplicate entries;
+the G5/G6 caps never once bound - they are pure insurance.
+
+**74,616 trades / 81.0 per day / WR 65.6%% / expectancy +0.1347R /
++10,052R total / +10.91R per day / 89%% green days / worst day -19.8R
+/ maxDD -19.8R (the deepest drawdown in four years is one single day)
+/ 45 of 45 months positive / median month +213R / worst month +8.1R /
+best +381R.** Monthly WR pinned at 63-70%% for 45 straight months.
+Yearly: 2023 +2,181R / 2024 +2,820R / 2025 +2,972R / 2026 +2,079R
+(through Sep 1), R/day rising +8.45 -> +14.14 with frequency.
+
+Scaling dial: x0.50 = +5.46R/day at -9.9R maxDD; x0.33 = +3.64R/day at
+-6.6R. Standing caveats unchanged: winner's-curse shaving on swept
+cells, sim-vs-live gap, 81 trades/day is automation-only, and the
+whole edifice awaits Pat's seven gates and the paper-trading bridge.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
