@@ -21,6 +21,7 @@ OUT, TICK, COST = QL / "output/analysis", 0.25, CS.COST_PTS
 BARS17 = QL / "data/reference/nq_2017_2019_1m.parquet"
 ROLLS17 = QL / "data/reference/nq_2017_2019_roll_days.json"
 FROZEN = dict(floor=5.0, depth=3.0, cap=30.0, bin=1.0)
+SCORE_FROM, SCORE_TO = "2017-01-01", "2019-12-31"   # Amendment 1: declared window, hard filter
 
 
 def bars17():
@@ -39,6 +40,7 @@ def gate0():
     rolls = set(json.loads(ROLLS17.read_text()))
     sess = (b.index - pd.Timedelta(hours=18)).normalize().strftime("%Y-%m-%d")
     b = b[~pd.Series(sess, index=b.index).isin(rolls)]
+    b = b[(b.index >= pd.Timestamp(f"{SCORE_FROM} 00:00", tz=OB.NY)) & (b.index < pd.Timestamp("2020-01-01 00:00", tz=OB.NY))]
     print("GATE 0 - tick screen (02:00-16:00 ET median 1m high-low; law: >=20 ticks; NQ 2023-26 = 28)")
     act = b[(b.index.hour >= 2) & (b.index.hour < 16)]
     ticks = {}
@@ -74,6 +76,9 @@ def load(name, cell=None):
     if not f.exists():
         print(f"  MISSING {name}"); return None
     ts = [json.loads(l) for l in gzip.open(f, "rt")]
+    pre = sum(1 for t in ts if t["day"] < SCORE_FROM)
+    ts = [t for t in ts if SCORE_FROM <= t["day"] <= SCORE_TO]
+    if pre: print(f"  ({name}: {pre:,} warmup-period trades before {SCORE_FROM} excluded from scoring)")
     return [t for t in ts if t["depth"] == cell[0] and t["target_r"] == cell[1]] if cell else ts
 
 

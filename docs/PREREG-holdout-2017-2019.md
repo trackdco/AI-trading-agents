@@ -117,3 +117,23 @@ in-sample and stays on the page as a documented failure.
 
 No further NQ history exists on Databento GLBX.MDP3 at 1m before mid-2010s
 that this program has budget for; after this, validation is forward time.
+
+---
+
+## Amendment 1 (2026-09-03, written after the file arrived, before it was decompressed)
+
+The delivered pull is `glbx-mdp3-20160902-20200101`, i.e. **2016-09-02 → 2020-01-01**,
+wider at the front than the declared 2017-01-01 and one day shorter at the back.
+
+Ruling, fixed now:
+- **The scored period is unchanged: 2017-01-01 → 2019-12-31.** Every test in §4
+  and every prediction in §5 is computed on trades whose session-day falls in
+  that window. The scorer enforces this with a hard `SCORE_FROM` filter.
+- **2016-09 → 2016-12 is warmup only** (weekly value-area and 20-day medians
+  need history). It is reported as a separate information row, never pooled.
+- `m_era` for Run B is measured on 2017–2019 only, as declared.
+- The 2020-01-01 overlap day is absent (Databento end is exclusive), so the
+  boundary check uses the Amendment-1 substitute from the first pre-reg: a
+  clean join (<96h gap, no duplicated minutes) instead of bar-for-bar identity.
+- Price-range gate unchanged (low 4,500–5,500; high 8,300–9,300); NQ in Sep 2016
+  traded ~4,750, inside it.

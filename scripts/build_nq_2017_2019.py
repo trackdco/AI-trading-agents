@@ -56,7 +56,7 @@ def main() -> int:
     lo, hi = float(cont.low.min()), float(cont.high.max())
     if not (4_500 <= lo <= 5_500 and 8_300 <= hi <= 9_300):
         raise SystemExit(f"price range {lo:.2f}-{hi:.2f} implausible for NQ 2017-19")
-    if cont.sess.nunique() < 700:
+    if cont[cont.sess >= "2017-01-01"].sess.nunique() < 700:
         raise SystemExit(f"only {cont.sess.nunique()} session-days")
 
     cont.to_parquet(out / "nq_2017_2019_1m.parquet")
