@@ -30,6 +30,7 @@ sys.path.insert(0, str(ROOT))
 
 import scripts.offline_briefings as OB                            # noqa: E402
 from scripts.agent_context import volume_profile                  # noqa: E402
+import scripts.pd_va_backtest as BT                               # noqa: E402
 from scripts.pd_va_backtest import (day_signals, simulate_day,     # noqa: E402
                                     SESS_H, PEND_CUT_H, SIG_START_H, SIG_END_H)
 
@@ -45,9 +46,18 @@ def main() -> int:
                     help="signal candle timeframe in minutes")
     ap.add_argument("--sar", action="store_true")
     ap.add_argument("--fill-through", action="store_true")
+    ap.add_argument("--instrument", choices=tuple(BT.INSTRUMENTS), default="nq")
     a = ap.parse_args()
 
-    bars = OB.get_bars()
+    inst = BT.INSTRUMENTS[a.instrument]
+    BT.TICK, BT.MIN_RISK, BT.BIN_W = inst["tick"], inst["min_risk"], inst["bin_w"]
+    if inst["bars"]:
+        b = pd.read_parquet(ROOT / inst["bars"])
+        b["mi"] = pd.to_datetime(b.ts_event, utc=True).dt.tz_convert(OB.NY)
+        bars = b.set_index("mi").sort_index()[
+            ["open", "high", "low", "close", "volume"]]
+    else:
+        bars = OB.get_bars()
     days = OB.all_session_days(bars)
     if a.day not in days:
         print(f"{a.day} not in bars ({days[0]} -> {days[-1]}); "
@@ -58,11 +68,11 @@ def main() -> int:
     pa = pd.Timestamp(f"{days[i - 1]} 18:00", tz=OB.NY)
     pseg = bars[(bars.index >= pa) & (bars.index < t0)]
     sess = bars[(bars.index >= t0) & (bars.index < t0 + pd.Timedelta(hours=SESS_H))]
-    _, c_val, c_vah = volume_profile(pseg)
+    _, c_val, c_vah = volume_profile(pseg, bin_w=BT.BIN_W)
     print(f"computed PD profile (prior sess {days[i-1]}): "
           f"VAH {c_vah:.2f} / VAL {c_val:.2f}")
-    vah = a.vah if a.vah is not None else round(c_vah * 4) / 4
-    val = a.val if a.val is not None else round(c_val * 4) / 4
+    vah = a.vah if a.vah is not None else round(c_vah / BT.TICK) * BT.TICK
+    val = a.val if a.val is not None else round(c_val / BT.TICK) * BT.TICK
     if a.vah is not None or a.val is not None:
         print(f"using chart override: VAH {vah if a.vah else '(unused)'} / "
               f"VAL {val if a.val else '(unused)'}"

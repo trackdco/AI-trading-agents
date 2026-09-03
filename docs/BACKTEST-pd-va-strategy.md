@@ -690,6 +690,23 @@ moving to a neighbor on this sweep would be picking noise off a flat
 ridge. The ratio method is hereby validated as a starting prior that
 native calibration confirmed rather than overturned.
 
+## 23. Gold alignment: his Aug 23-24 walkthrough vs the sim (2026-09-03)
+
+His 3m narration of the Sunday-23 -> Monday-24 GC session, replayed with
+his chart levels (his VAH 4,690.0 vs computed 4,689.9 - 0.1pt; his VAL
+16pt off but untouched all day): every narrated event maps to the log
+with 1-3min candle-label shifts - the 20:09 early cut, the 20:18 short
+that ran hours, the 10:45/10:48 fill-to-TP-in-one-candle, the 11:09
+fill that ran multi-R, the 1:33 not-full-loss, the 3:48-4:27 scratch
+cluster, and the 4:36->5:33 winner via the prior-candle escalation
+(ran 12.4R). One disagreement: the 01:51 long he hedged on. Day net at
+1R: -2.91R - an honest red day. His two observations confirmed at
+scale (GC 3m 2025-26): 23%% of trades scratch at avg -0.46R (not -1),
+and 35%% of entries run >=2R / 20%% >=4R before their stop - yet the
+target frontier still votes 1R (+98R) over 1.5R (-23) and 2R (-84):
+the tail is real and mechanically unharvestable, third combination in
+a row. Discretionary runner management stays the agent stack's job.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
