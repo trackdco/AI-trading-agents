@@ -334,7 +334,7 @@ index d15ba60..c891ed3 100644
                                    "family": fam})
                          trades_out.write(json.dumps(t) + "\n")
 diff --git a/scripts/vwap_revolve.py b/scripts/vwap_revolve.py
-index 312230f..9e0c5af 100644
+index 312230f..53c3838 100644
 --- a/scripts/vwap_revolve.py
 +++ b/scripts/vwap_revolve.py
 @@ -41,8 +41,13 @@ ROOT = Path(__file__).resolve().parents[1]
@@ -506,7 +506,7 @@ index 312230f..9e0c5af 100644
              t = json.loads(l)
              bb[t["day"]].append((t["fill_hrs"],
                                   t["fill_hrs"] + t["hold_min"] / 60,
-@@ -238,22 +329,56 @@ def main() -> int:
+@@ -238,22 +329,61 @@ def main() -> int:
          print(f"dedupe: level-book positions loaded for {len(book_by_day)} days",
                flush=True)
  
@@ -514,9 +514,14 @@ index 312230f..9e0c5af 100644
 -    news_days = set(nf[(nf.impact == "high") & (nf.time_et >= "08:00")
 -                       & (nf.time_et < "09:30")].date)
 -    bars = OB.get_bars()
-+    global TICK, MIN_RISK
++    global TICK, MIN_RISK, DEPTHS
 +    inst = INSTRUMENTS[a.instrument]
 +    TICK, MIN_RISK = inst["tick"], inst["min_risk"]
++    # Depth grid follows the instrument too: {0, certified depth}. For nq that
++    # is (0.0, 3.0) - identical to the old hard-coded value, so NQ output is
++    # unchanged. For gc it becomes (0.0, 0.9); 3.0pt on gold would be 2x the
++    # stop floor and no signal would ever fire.
++    DEPTHS = (0.0, max(inst["depths"]))
 +
 +    news_days = set()
 +    if not a.no_news_gate:
@@ -569,7 +574,7 @@ index 312230f..9e0c5af 100644
              continue
          if a.anchor == "ny":
              nyseg = sess[sess.index >= t0 + pd.Timedelta(hours=15.5)]
-@@ -296,7 +421,10 @@ def main() -> int:
+@@ -296,7 +426,10 @@ def main() -> int:
                  for t in simulate(ts, hi_, lo_, cl_, sigs, pcut, tr,
                                    a.style, blk,
                                    book_pos=book_by_day.get(day),
