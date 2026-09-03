@@ -197,7 +197,7 @@
 <div class="wrap">
 
 <header class="mast">
-  <div class="eyebrow">NQ futures · 4 years in sample · 6 years held out · receipts §1–34</div>
+  <div class="eyebrow">NQ futures · 4 years in sample · 6 years held out · gold as a second stream · receipts §1–34</div>
   <h1>The Railed Empire</h1>
   <p class="deck">One entry grammar, three books of reference levels, run under a measured risk stack. Here is what four years of it looks like, the two layers that finally beat it — and what happened when the whole thing was pointed at three years nobody had looked at.</p>
   <div class="meta">
@@ -205,6 +205,7 @@
     <span><b>Session-days</b> 954</span>
     <span><b>Trades</b> 75,481</span>
     <span><b>Holdouts</b> 2020–22 passed · 2017–19 failed the bar, and said why</span>
+    <span><b>Gold</b> on its dial, armed · +18% R, no added drawdown</span>
   </div>
 </header>
 
@@ -235,7 +236,7 @@
     <div class="tile"><div class="tile-k">Green days</div><div class="tile-v">89%</div><div class="tile-n">daily Sharpe 1.153</div></div>
   </div>
 
-  <p class="col" style="margin-top:22px"><b>The drawdown number is the unusual one.</b> The deepest hole in four years is a single trading day. Losses never chain across days, so the max drawdown and the worst day are the same figure. Daily loss cutoffs were tested and made it <em class="term">worse</em> — red mornings routinely heal by the close, and a cutoff realises the intraday low into an end-of-day print.</p>
+  <p class="col" style="margin-top:22px"><b>The drawdown number is the unusual one — and it is a 2023–26 fact, not a property of the strategy.</b> In these four years the deepest hole is a single trading day, so the max drawdown and the worst day are the same figure. Both holdouts then showed losses <em class="term">can</em> chain: a three-day slide to −39.4R in November 2022, and −88.5R against an −8.4R worst day in 2017. Size to the deeper number. Daily loss cutoffs were tested and made it <em class="term">worse</em> — red mornings routinely heal by the close, and a cutoff realises the intraday low into an end-of-day print.</p>
 
   <div class="panel">
     <div class="panel-head">
@@ -426,7 +427,7 @@
       </tbody>
     </table>
   </div>
-  <p class="note">All three pre-registered conditions cleared: every year positive ✓ · win rate ≥60% (65.4%) ✓ · expectancy ≥+0.08R (+0.1354) ✓. Four integrity gates on the raw data were checked and passed <em class="term">before</em> any result was computed.</p>
+  <p class="note">All three pre-registered conditions cleared: every year positive ✓ · win rate ≥60% (65.4%) ✓ · expectancy ≥+0.08R (+0.1354) ✓. Four integrity gates on the raw data were checked and passed <em class="term">before</em> any result was computed. One correction, found later and logged: the news calendar starts in 2023, so this run had <em class="term">no</em> news gate — it silently matched zero dates. On 2023–26 the gate is worth +2R over four years, so the verdict stands, but the holdout certifies the grammar without G8, not with it.</p>
 
   <div class="figs">
     <div class="fig">
@@ -664,6 +665,87 @@
   <p class="note">Full tables, the bootstrap, and the caveats — including that these features were selected from this same four years — are in <code>docs/FINDINGS-conviction-sizing.md</code>.</p>
 </section>
 
+<section id="gold">
+  <div class="sec-head"><span class="sec-ref">in-engine · 2023–26 · in-sample</span><h2>Gold: the second stream</h2></div>
+  <span class="stamp">Verdict · additive beside NQ, lesser alone</span>
+  <p class="col lede">The same five moves, the same three books, the same rails and the same arming rule — on gold futures, at gold's own tick (0.10) and stop floor (1.5pt). The first time the VWAP books, the rail pass or arming had been run on any instrument but NQ.</p>
+  <p class="col">Gold answers the question NQ can't: does the grammar price <em class="term">a different market</em>, driven by different things? And it repeats, independently, the lesson both holdouts taught.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>The tick screen decides gold, exactly as it decided NQ 2017–19</caption>
+      <thead><tr><th>Year</th><th>Median 1m candle, in gold ticks</th><th>Screen (law ≥20)</th><th>Volatility dial on</th></tr></thead>
+      <tbody>
+        <tr><td>2023</td><td>5.0</td><td class="neg">dead zone</td><td>0% of days</td></tr>
+        <tr><td>2024</td><td>7.0</td><td class="neg">dead zone</td><td>0%</td></tr>
+        <tr><td>2025</td><td>11.0</td><td>flickers</td><td>52%</td></tr>
+        <tr><td>2026</td><td><b>20.5</b></td><td class="pos">on</td><td><b>100%</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Gold 2023–24 is NQ 2017–19: a tape that cannot reach a 1.5-point stop. The volatility dial — trade only when the trailing 20-day median 1-minute candle is at least 1.0pt — was derived on gold a day <em class="term">before</em> the NQ holdout produced the same rule from the other direction. Two instruments, one law, found twice.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>The empire on gold, railed — with and without the dial</caption>
+      <thead><tr><th></th><th>Days</th><th>Trades/day</th><th>Win rate</th><th>Per trade</th><th>Net R</th><th>R / day</th><th>Max DD</th><th>Sharpe</th><th>Green</th></tr></thead>
+      <tbody>
+        <tr><td>Flat, no dial</td><td>918</td><td>34</td><td>61.3%</td><td>+0.055</td><td class="pos">+1,742</td><td>+1.90</td><td class="neg">−84.1</td><td>0.30</td><td>57%</td></tr>
+        <tr><td>Flat + dial</td><td>300</td><td>75</td><td>62.8%</td><td>+0.074</td><td class="pos">+1,656</td><td>+5.52</td><td class="neg">−20.0</td><td>0.65</td><td>73%</td></tr>
+        <tr><td>Armed, no dial</td><td>914</td><td>29</td><td>61.7%</td><td>+0.083</td><td class="pos">+2,153</td><td>+2.36</td><td class="neg">−63.1</td><td>0.38</td><td>60%</td></tr>
+        <tr class="total"><td>Armed + dial</td><td>300</td><td>61</td><td>63.1%</td><td class="pos">+0.107</td><td class="pos">+1,944</td><td class="pos">+6.48</td><td class="neg">−17.8</td><td>0.80</td><td>81%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Without the dial gold is untradeable</b> — a −84R hole for the same money. With it, the dial keeps 95% of the R on a third of the days and cuts the hole to −20. Armed on top: per-trade edge +0.074 → +0.107, drawdown −17.8, four green days in five. By year, armed: 2023 −10 · 2024 +23 · 2025 +987 · 2026 +1,153.</p>
+
+  <div class="figs">
+    <div class="fig">
+      <div class="fig-v">+23% / +43%</div>
+      <div class="fig-k">arming on gold, drawdown-matched, both halves</div>
+      <div class="fig-d">The same ≥+5% rule NQ was adopted under. Passes on dialed gold in both halves — the third tape arming has held on. (Undialed it "fails", but only because the first half is 2023–24, where flat gold is negative and the ratio means nothing.)</div>
+    </div>
+    <div class="fig">
+      <div class="fig-v">+0.014</div>
+      <div class="fig-k">daily correlation with NQ, 299 shared days</div>
+      <div class="fig-d">Zero. On the days both trade, NQ is red 6% of the time, gold 19%, <b>both red 1%</b>. Different tape, different drivers — the dollar and fear rather than tech and rates.</div>
+    </div>
+  </div>
+
+  <div class="t-scroll">
+    <table>
+      <caption>NQ and gold together, both armed, gold on its dial, 2023–26</caption>
+      <thead><tr><th></th><th>Net R</th><th>R / day</th><th>Max DD</th><th>Sharpe</th><th>Green</th></tr></thead>
+      <tbody>
+        <tr><td>NQ alone</td><td class="pos">+10,863</td><td>+11.45</td><td class="neg">−14.0</td><td>1.21</td><td>91%</td></tr>
+        <tr><td>Gold alone <span style="color:var(--ink-3);font-weight:400">— zero on dial-off days</span></td><td class="pos">+1,944</td><td>+2.05</td><td class="neg">−17.8</td><td>0.38</td><td>26%</td></tr>
+        <tr class="total"><td>NQ + gold, full size each</td><td class="pos">+12,806</td><td class="pos">+13.49</td><td class="neg">−14.0</td><td>1.18</td><td>92%</td></tr>
+        <tr><td>Half NQ + half gold</td><td class="pos">+6,403</td><td>+6.75</td><td class="neg">−7.0</td><td>1.18</td><td>92%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="two">
+    <div>
+      <h3>What gold is</h3>
+      <ul class="plain">
+        <li><b>+18% more R at zero added drawdown.</b> The empire's worst hole is −14.0 with gold in or out. That is what a zero correlation buys, and it cannot be had from more NQ.</li>
+        <li><b>On NQ's 20 worst days, gold averaged +4.4R</b> — on for a third of them.</li>
+        <li><b>In 2026, the one year gold is fully on:</b> combined max drawdown −3.2 against NQ alone −10.7. Same money, a third of the hole. Sharpe 1.66 vs 1.42.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>What gold is not</h3>
+      <ul class="plain">
+        <li><b>Not better on any single-stream number.</b> Half NQ's edge per trade and per day, worse drawdown, worse Sharpe, on one day in three.</li>
+        <li><b>Not validated out of sample.</b> Constants and dial were derived on this tape; the dial-on sample is 300 days. Read it the way arming was read before its holdouts.</li>
+        <li><b>Not a book that runs itself.</b> The dial is the whole instrument. When gold goes quiet again — and 2023–24 says it does — the dial switches it off, and the executor must honour that.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Engine fix found on the way: the VWAP engine had NQ's signal depth hard-coded, twice gold's stop floor, which would have produced no gold signals at all. Caught before the run. Full tables: <code>docs/FINDINGS-gold-empire.md</code>.</p>
+</section>
+
 <section id="kills">
   <div class="sec-head"><span class="sec-ref">§14–§16 · §20–§21 · §28–§29</span><h2>What was tried and died</h2></div>
   <p class="col">Every addition was pre-registered — the pass/fail rule written before the result was read — and the failures are logged as loudly as the survivors. Two layers survived, in four years of trying. Everything below did not.</p>
@@ -679,6 +761,8 @@
     <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>G3b — widening first-in-wins to any distance.</b> Cost −414R flat, −114R armed. The audit bucket said the blocked trades earned nothing; run as a rule they were earning +0.258R at 72%. See the callout above.</div></div>
     <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>SMT divergence against ES.</b> Both encodings. The first version printed a clean survivor — until the confirmation window was found to include ES signals up to 15 minutes <em class="term">after</em> the NQ signal. Fixed to causal-only; the edge went to zero.</div></div>
     <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>The euro (6E) and the S&amp;P (ES).</b> 6E fails the ≥20-tick screen outright at 3 ticks a candle. ES is flat at +0.13R/day with 93% of it from 2026 alone. NQ's 28-tick minute is the resource the grammar spends.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>Asia at half size.</b> A pure multiplier on 18:00–03:00 fills, drawdown-matched, flat and armed, three eras: 0 of 6 passed, 9 of 12 half-cells negative. The deep days are New York days, so shrinking Asia buys no room and just forgoes +1R a day.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>A slower signal bar on a quiet tape.</b> 3-minute and 5-minute close-throughs on 2017–19: −0.006 and +0.001 per trade against 1-minute's +0.074. A slower bar widens the stop without putting ticks back in the tape. Same result 6E gave.</div></div>
     <div class="kill"><span class="kill-tag k-live">kept</span><div><b>More level families, the rails, and arming.</b> The things that worked were additions and timing, not exclusions: new books to price, mechanical rules to stop the books doubling up, and holding the order back until the move proves itself.</div></div>
   </div>
   <p class="note">The one honest lever the feature hunt did find is allocation, not exclusion — VWAP trades earn two to four times more per trade in New York than overnight. Recorded as an option, not a rule.</p>
@@ -723,7 +807,7 @@
         <li><b>No cost shocks, no missed sessions</b> — which is part of why a simulated Sharpe should not be read as a live forecast.</li>
         <li><b>~80 trades a day is automation only.</b> None of this is hand-tradeable, and it was never designed to be.</li>
         <li><b>Arming's magnitude is still 2023–26 only.</b> Its direction has held in three eras; its size (+30% per trade, −23% drawdown) has been measured cleanly on one.</li>
-        <li><b>Gold sits outside this stream</b> — its own constants, its own volatility dial, certified separately.</li>
+        <li><b>Gold is in-sample.</b> Its constants and its volatility dial were derived on the same 2023–26 tape the gold section reports on, and its dial-on sample is 300 days. It has had no sealed holdout.</li>
       </ul>
     </div>
   </div>
@@ -767,6 +851,7 @@
 <footer>
   <p>Receipts: <code>docs/BACKTEST-pd-va-strategy.md</code> §1–34, branch <code>claude/tradingview-mcp-agent-setup-ql18v8</code>. Later rounds: <code>docs/FINDINGS-*.md</code> and <code>docs/PREREG-holdout-2020-2022.md</code>. Simulators: <code>scripts/pd_va_backtest.py</code>, <code>scripts/vwap_revolve.py</code>. Validation: <code>scripts/validation_pbo_dsr.py</code>. All figures on this page are transcribed from those receipts — nothing here is estimated or interpolated.</p>
   <p style="margin-top:10px">Headline, books, sizing dial, arming and holdout figures are measured on the spliced <b>954-day</b> tape (2023-01-02 → 2026-09-02). Sections explicitly marked "921-day tape" — the stop-cap comparison, the PBO/DSR audit, conviction sizing and the queue/latency stress — were run before the 2026 gap was filled and have not been re-run; on the fuller tape the empire's Sharpe moves 1.158 → 1.153 and the max drawdown is identical, so none of those verdicts turns.</p>
+  <p style="margin-top:10px">Gold: <code>docs/FINDINGS-gold-empire.md</code>, engines pointed at <code>--instrument gc</code>, patch in <code>docs/patches/engine-alt-tapes.patch</code>.</p>
   <p style="margin-top:10px">Nothing on this page changes Angus's original mechanical strategy. Every layer tested here is an off-by-default flag in the engine, and the frozen spec re-runs bit-for-bit identical with the flags off — verified by diffing 22,187 trades across every field.</p>
 </footer>
 
