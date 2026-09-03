@@ -915,6 +915,49 @@ Open for the live spec: vwap-vs-vwap cross-anchor dedupe (same rule
 shape as S28) and the full-empire joint DD recompute with all dedupes -
 executor-stage work.
 
+## 31. THE GUARD RAILS - live-spec risk stack (2026-09-03)
+
+His frame: all streams together is a lot of trades that will overlap;
+build the rails. Measured first, designed second.
+
+New receipts: NY-vwap entries duplicating an open session-vwap position
+= 5.0%% of that book and net **-78R** (the level-vwap pair was -120R) -
+the dedupe principle is now receipt-backed on both measured pairs, and
+both times the duplicate entries were net LOSERS. Empire concurrency
+(all three NQ books): daily peak is 2 positions on 68%% of days, 3 on
+20%%, 4 on 3.7%%, 5 on 0.2%%; same-direction stacks peak at 2 on 74%%
+of days, 4 on 0.3%%.
+
+THE STACK (each rule mechanical, most already receipted):
+G1  Per-book: max 1 position + 1 working limit; newest own-book signal
+    replaces an unfilled pending. (as certified)
+G2  18:00 static-level merge: levels within one stop-floor collapse to
+    the stronger family (S26 priority order). (as certified)
+G3  FIRST-IN WINS, universal: no book opens a same-direction position
+    within one stop-floor of ANY open position, across all books.
+    (Receipts: +120R and +78R saved on the two measured pairs.)
+G4  Pending hygiene: a resting limit is PULLED the moment a same-
+    direction position opens within one floor of its price - the
+    order-level form of G3, so duplicates die before they fill.
+G5  Global concurrency cap: 4 open positions empire-wide (p99.8 of the
+    measured distribution; binds ~2 days in 921). Signals at cap are
+    skipped.
+G6  Same-direction cap: 3 (binds ~0.3%% of days).
+G7  Open-risk cap: total open risk <= 4R equivalent - explicit form of
+    G5 for when per-stream sizing varies.
+G8  News gate 08:00-09:30 on high-impact days; pendings die 16:00;
+    flat by session end. (as certified)
+G9  Executor health (wiring-stage): 18:00 level sanity check vs price;
+    stale-feed rule (no bar for 2min -> pull pendings, manage-only);
+    order-reject or fill-mismatch -> halt new entries, alert; daily
+    position reconcile against the broker.
+G10 Instrument dials: GC trades only with its vol dial on (S24);
+    NQ undialed.
+
+His closing arithmetic, confirmed: ~+0.10-0.15R expectancy is the whole
+business model - it only needs to be real and repeatable at 40-70
+pulls/day, and three books x four years say it is.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
