@@ -865,6 +865,33 @@ market-order style, negative at every tf and target (S28). The loser-
 cutting he wants is already structural - the limit at the frozen band
 is the filter.
 
+## 29. VWAP diagnosis: band x year + loss anatomy round 3 (2026-09-03)
+
+His ask: per-band per-year breakdown and a pre-entry loser-classifier
+hunt. Prereg: cut only buckets NEGATIVE both halves, n>=400/half.
+
+Band x year: ALL 20 cells positive (EV +0.057 to +0.179, WR 59-67%%),
+every band positive every year - stationary through both regimes.
+
+Nine-feature screen on 33,340 trades: **ZERO cut candidates.** Notable
+gradients, all positive-both-halves and therefore not cuttable:
+- WINDOW is the big sort: NY +0.173/+0.137 per trade vs ASIA
+  +0.027/+0.091 and LONDON +0.056/+0.104. VWAP-band trades earn 2-4x
+  more in NY; overnight is thin but real.
+- Stop-floor trades weakest again (+0.097/+0.095) - same gradient as
+  the level books, still profitable.
+- Post-loss entries outperform AGAIN (+0.141/+0.124) - third
+  independent book showing prevL > prevW; first-trade-of-day weakest
+  (sign flips, tiny n). The grammar warms up with the tape.
+- Slope alignment, band width, dow, flip: null. No hour negative both
+  halves (overnight hours thin +0.02-0.09, NY hours rich +0.12-0.20).
+
+**Verdict: the WR boost does not exist as a subtraction.** Fifty-plus
+cells, nothing negative twice. The honest lever is ALLOCATION: at full
+automation take everything; a leaner human-watched variant is NY-only
+VWAP (n=17,045, EV ~+0.15/trade), the concentrate. Recorded as an
+option, not a rule.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
