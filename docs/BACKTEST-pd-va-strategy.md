@@ -631,13 +631,23 @@ dead flat - remarkable in itself.
 At this n, a >=0.05R conditional edge across these dimensions would
 have been found. His instinct was right, and the mining stops here.
 
-## OPEN (his word needed)
+## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
-1. Which month was the hand-test? (If June 2026: confirmed found.)
-2. Does a 1R-target, ≥3pt-depth version interest him despite sitting
-   below his 1.5R band, or does this fold into the v2/Pat grading queue
-   as a condition family (PD-VA break-retest) for the selection layer?
-3. Aug bars from the Mac (see §8) → run the alignment on his 09–10 Aug
-   annotations. Was the 29,847.75 line Friday's VAH or VAL?
-4. Whether to price the partial+runner exit structure (§8) against the
-   fixed targets.
+His verdict: "fully mechanical system, performs like this... we have a
+65-70%% win rate high frequency strategy." The spec is frozen as
+certified (S19): 1m close >=3pt through PD VAH/VAL, limit retest,
+structural stop (5pt floor), 1R full exit, SAR flip, all sessions,
+news gate 08:00-09:30, sized per R. Every proposed modification was
+tested; the survivors are in, the kills are logged (S15, S16, S20,
+S21).
+
+Open threads, in his order:
+1. GOLD PORT - he expects the same mechanics to hold on GC with higher
+   R targets. Blocked on multi-year GC 1m bars (TradingView lookback
+   insufficient; needs the deep source that built nq_1m_master).
+   Same schema: ts_event UTC + OHLCV(+roll) parquet. On arrival:
+   re-derive instrument constants from GC's own tape (tick 0.10, floor
+   from median 1m range as on NQ, depth grid, cost model), then the
+   identical pipeline and discipline rerun end to end.
+2. Pat seven-gate treatment of the certified NQ spec.
+3. Live path: paper days on the Mac against real-time TradingView.
