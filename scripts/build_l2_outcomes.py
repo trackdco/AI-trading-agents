@@ -77,8 +77,16 @@ def l2_cfg(t_cancel: float = 100000.0):
 
 
 def load_bars() -> pd.DataFrame:
-    parts = [pd.read_parquet(ROOT / f).drop(columns=["roll"], errors="ignore")
-             for f in BARFILES]
+    # a BARFILES entry may exist on only one machine (the jul_sep2026 splice
+    # was built where the holdout ran); skip absentees so the tape degrades
+    # to its documented holes instead of crashing every consumer
+    parts = []
+    for f in BARFILES:
+        if not (ROOT / f).exists():
+            print(f"load_bars: {f} missing here - skipped", flush=True)
+            continue
+        parts.append(pd.read_parquet(ROOT / f).drop(columns=["roll"],
+                                                    errors="ignore"))
     return (pd.concat(parts, ignore_index=True)
             .drop_duplicates("ts_event").sort_values("ts_event").reset_index(drop=True))
 

@@ -1194,6 +1194,53 @@ Next honest step, preregistered on their branch: 2017-2019 - arming's
 first true out-of-sample era. And the S33 artifact carries the
 2023-26 armed stream; its era caveat is now printed on the page.
 
+## 37. VALIDATION SUITE 2: PBO + DSR + WALK-FORWARD ON SEVEN YEARS (2026-09-03)
+
+His ask after the holdout landed: "run a pbo, deflated sharpe, etc on
+what we have now. also walk forward validation." Receipt:
+`scripts/validation_wf.py` - verdicts preregistered in the header
+before anything ran, grid re-run fresh on both eras with the current
+spec's in-engine 30pt cap. Union surface: 20 cells x 1,452 days,
+2020-01-02 -> 2026-09-01 (the 39-day 2026 splice lives on the other
+machine; immaterial, self-guarding).
+
+**PBO (CSCV, S=16, 12,870 splits): 0.000 - PASS** (bar <0.10). The
+champion cell's OOS relative rank across all splits: median 0.95,
+minimum 0.90. Seven years now, same zero.
+
+**WALK-FORWARD (IS 252d rolling -> OOS 63d, 20 folds, selection = IS
+daily Sharpe): PASS by every margin.**
+- **WFE = 1.01** - the out-of-sample edge is 101% of the in-sample
+  edge (bar was 0.50; Pardo's "robust" convention is ~0.5-0.6). The
+  selection process loses NOTHING going out of sample.
+- **20 of 20 OOS folds positive** (bar was 70%).
+- Selection stability: the roll re-picks the SAME cell (depth 3 / 1R)
+  in 18 of 20 folds; the two exceptions picked the neighbouring depth
+  and still printed positive OOS. The champion is not an artefact of
+  one lucky window - a naive quant re-optimizing every quarter for
+  seven years keeps re-discovering it. (Both deviations UNDERperformed
+  the frozen cell OOS - +0.41 vs +0.77, +0.87 vs +0.90 - which is one
+  more receipt for freezing rather than re-optimizing.)
+- Stitched OOS-only equity (VA book alone, single-book scale):
+  +1,549R over 1,200 unseen days, +1.29R/day, maxDD -18.2R.
+- **EDGE DECAY: none - the slope is POSITIVE.** Frozen-champion
+  fold-OOS R/day regressed on time: +0.028 R/day per fold, t = +1.76.
+  The edge has been mildly strengthening through time (not significant
+  as growth; decisively not decaying). This is the direct answer to
+  "the likelihood of the edge holding moving into the future": across
+  seven years there is no measurable decay to extrapolate.
+
+**Deflated Sharpe (union armed empire, T=1,686 days): 1.000 - PASS.**
+SR_daily 1.088 (~17.3 annualized), skew +0.54, kurt 3.4; the max-SR
+haircut for even 10,000 hypothetical trials is 0.066. Standing framing
+unchanged: a sim Sharpe this size mostly reflects sim idealizations -
+PBO and walk-forward are the load-bearing tests.
+
+Scope, honestly: the walked surface is the VA-family depth x target
+grid - the search that actually happened. The other families were
+adopted at the frozen cell with no search (S25), and arming carries
+its own guard (prereg bucket edge + out-of-era re-pass, S35-S36).
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
