@@ -104,3 +104,27 @@ What gold is *not*: better per trade, per day, or on drawdown alone. What it
 *is*: a second, independent source of R that shows up when its own tape is
 loud, and does not deepen the hole when NQ's is. In the one year both were
 fully on, it cut the combined drawdown by two-thirds.
+
+## 7. Do NQ and gold hold positions at the same time? (his ask)
+
+Minute-resolved, NQ armed empire vs gold armed + dial, on the 299 days both traded.
+
+| | share of minutes with anything open |
+|---|---:|
+| NQ only | 48.6% |
+| gold only | 45.6% |
+| **both at once** | **5.7%** |
+
+- 13% of gold fills happen while NQ already holds a position.
+- Of the both-open minutes, 60% are same-direction. That is not a doubled bet
+  the way two NQ books are — different market, +0.014 correlation — so G3
+  (first-in-wins) does not apply across instruments.
+- Simultaneous open positions across both: 1 open 91% of in-market minutes,
+  2 open 8.5%, 3 open 0.7%, 4+ open 0.1%. Max ever 6.
+- Per-day peak: 2 on 27% of days, 3 on 62%, 4 on 10%, 5–6 on 1%.
+- Overlap clusters in the NY morning: 09:00–12:00 ET carry 42% of the
+  both-open minutes.
+
+**Executor consequence:** the combined book needs a global open-risk cap
+across instruments — G7's "open risk ≤ 4R" extended to the sum — and on
+~11% of days it would bind at 4. Per-instrument G5/G6 stay as they are.
