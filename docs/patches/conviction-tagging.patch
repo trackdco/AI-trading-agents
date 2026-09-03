@@ -1,8 +1,39 @@
 diff --git a/scripts/pd_va_backtest.py b/scripts/pd_va_backtest.py
-index d15ba60..4829933 100644
+index d15ba60..484a187 100644
 --- a/scripts/pd_va_backtest.py
 +++ b/scripts/pd_va_backtest.py
-@@ -131,6 +131,24 @@ def day_signals(c3, vah, val, depth, tf=3):
+@@ -51,6 +51,7 @@ from __future__ import annotations
+ 
+ import argparse
+ import gzip
++import math
+ import json
+ import sys
+ from pathlib import Path
+@@ -66,6 +67,7 @@ from scripts.agent_context import (anchored_weekly_profile,       # noqa: E402
+                                    volume_profile)
+ 
+ TICK = 0.25
++PX_DP = 2          # price decimals in the dump; recomputed per instrument
+ MIN_RISK = 5.0
+ BIN_W = 1.0
+ DEPTHS = (0.0, 1.0, 2.0, 3.0)          # 0.0 -> any tick beyond
+@@ -81,6 +83,14 @@ INSTRUMENTS = {
+                depths=(0.0, 0.3, 0.6, 0.9),
+                bars="data/reference/gc_1m.parquet",
+                rolls="data/reference/gc_roll_days.json"),
++    # 6E (euro FX future), constants at the same ratios off its own tape.
++    # Median active-session 1m candle is 3.0 TICKS (NQ 28, GC 21), so the
++    # ratio-derived profile bin lands sub-tick and is floored at one tick -
++    # the first sign the grid is too coarse for this grammar.
++    "6e": dict(tick=0.00005, min_risk=0.0001, bin_w=0.00005,
++               depths=(0.0, 0.00005, 0.0001, 0.00015),
++               bars="data/reference/6e_1m.parquet",
++               rolls="data/reference/6e_roll_days.json"),
+ }
+ SIG_START_H = 1.0                      # 19:00 session-relative
+ SIG_END_H = 21 + 55 / 60               # signal candles must END by 15:55
+@@ -131,6 +141,24 @@ def day_signals(c3, vah, val, depth, tf=3):
      return [ded[t] for t in sorted(ded)]
  
  
@@ -27,17 +58,18 @@ index d15ba60..4829933 100644
  def stop_for(sig):
      """His stop rule: beyond the close-through candle (+1 tick); if that
      candle's open is <5pt from the level, beyond the prior candle too;
-@@ -221,7 +239,8 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -221,7 +249,9 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                   fill_through=False, sar=False, counters=None,
                   entry_off=0.0, fixed_stop=None, tflag=None,
                   runner=False, runner_tp2=None, runner_stop="be",
 -                 block=None, max_risk=None):
 +                 block=None, max_risk=None, pd_range=None,
-+                 conviction=False, arm_after=None):
++                 conviction=False, arm_after=None, thru_ticks=1,
++                 arm_delay=0):
      """One forward pass, one position at a time, latest pending wins.
  
      fill_through=True is the adverse-selection sensitivity: a fill counts
-@@ -255,6 +274,19 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -255,13 +285,34 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
      target trades are unchanged at −1R full size. Trade r is the blend:
      0.5*target_r + 0.5*runner_r; fields r_run/run_res carry the detail.
  
@@ -57,10 +89,15 @@ index d15ba60..4829933 100644
      counters, if a dict, accumulates the signal funnel:
      sig / skip_in_pos / replaced / expired / filled."""
      trades = []
-@@ -262,6 +294,10 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+     i = 0
      t_free = ts[0] - 1
      n = len(ts)
-     thru = TICK if fill_through else 0.0
+-    thru = TICK if fill_through else 0.0
++    # thru_ticks is the queue proxy (2026-09-03): a resting limit is only
++    # counted filled once price trades this many ticks THROUGH the level.
++    # 1 tick is the certified honest-fill rule; larger values stand in for
++    # a queue that needs more volume through the price to clear.
++    thru = TICK * thru_ticks if fill_through else 0.0
 +    # conviction tagging changes NOTHING about which trades are taken, when
 +    # they exit, or their R — it only labels them (2026-09-03 audit).
 +    run_hi = np.maximum.accumulate(hi) if conviction else None
@@ -68,7 +105,7 @@ index d15ba60..4829933 100644
      runner_until = -1                      # bar idx the live runner dies at
  
      def bump(k):
-@@ -312,15 +348,47 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -312,15 +363,47 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
              cancel = min(cancel, block[0])
          L, d = s["L"], s["dir"]
          E = L + d * entry_off
@@ -98,7 +135,7 @@ index d15ba60..4829933 100644
 +                bump("unarmed")
 +                i += 1
 +                continue
-+            live = si0 + int(np.argmax(armed)) + 1      # strictly after
++            live = si0 + int(np.argmax(armed)) + 1 + arm_delay   # strictly after
 +            if live >= cancel:
 +                bump("unarmed")
 +                i += 1
@@ -125,7 +162,17 @@ index d15ba60..4829933 100644
          # fixed_stop: his 2026-09-02 experiment — a flat S-point bracket off
          # the level, structure ignored entirely (no escalation, no floor)
          stop = (L - d * fixed_stop) if fixed_stop else stop_for(s)
-@@ -419,6 +487,16 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -412,13 +495,24 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+             "t_sig_hrs": round(hrs, 3), "window": window_of(hrs),
+             "fill_hrs": round((ts[fill] - ts[0]) / 3.6e12, 3),
+             "leg": LEG[(s["level_name"], d)], "dir": d,
+-            "entry": E, "stop": round(stop, 2), "risk": round(risk, 2),
+-            "res": res, "r": round(r, 4), "pts": round(r * risk, 2),
++            "entry": round(E, PX_DP), "stop": round(stop, PX_DP),
++            "risk": round(risk, PX_DP),
++            "res": res, "r": round(r, 4), "pts": round(r * risk, PX_DP),
+             "run_r": round(max(run_r, 0.0), 3),
+             "r_run": None if r_run is None else round(r_run, 4),
              "run_res": run_res,
              "ambig": bool(ambig), "hold_min": int((ts[exit_idx] - ts[fill]) / 6e10),
          })
@@ -142,10 +189,19 @@ index d15ba60..4829933 100644
          if res == "SAR":
              # free exactly AT the opposing close so that very signal is the
              # next one processed (the flip trade), not skipped as in-position
-@@ -478,6 +556,20 @@ def main() -> int:
+@@ -478,13 +572,40 @@ def main() -> int:
      ap.add_argument("--max-risk", type=float, default=None,
                      help="stop cap in points: signals with wider structural "
                           "stops are never placed")
++    ap.add_argument("--arm-delay", type=int, default=0,
++                    help="latency stress: extra 1m bars between arming and "
++                         "the order going live (the sim already withholds "
++                         "the arming bar itself, i.e. up to 60s of implicit "
++                         "latency; this adds whole minutes on top)")
++    ap.add_argument("--thru-ticks", type=int, default=1,
++                    help="queue proxy: ticks price must trade THROUGH the "
++                         "level before a resting limit counts as filled "
++                         "(1 = the certified honest-fill rule)")
 +    ap.add_argument("--targets", default=None,
 +                    help="override the target grid (comma-separated R), "
 +                         "including in --levels all mode where it is "
@@ -163,7 +219,19 @@ index d15ba60..4829933 100644
      ap.add_argument("--depths", default=None,
                      help="override the close-through depth grid, "
                           "comma-separated points")
-@@ -493,8 +585,9 @@ def main() -> int:
+     a = ap.parse_args()
+     inst = INSTRUMENTS[a.instrument]
+-    global TICK, MIN_RISK, BIN_W, DEPTHS
++    global TICK, MIN_RISK, BIN_W, DEPTHS, PX_DP
+     TICK, MIN_RISK = inst["tick"], inst["min_risk"]
++    # enough decimals to represent one tick: 2 for NQ (0.25) and GC (0.10),
++    # 6 for 6E (0.00005). Without this every FX risk rounds to 0.0 and the
++    # cost overlay (cost/risk) divides by zero.
++    PX_DP = max(2, math.ceil(-math.log10(TICK)) + 1)
+     BIN_W, DEPTHS = inst["bin_w"], inst["depths"]
+     if a.min_risk is not None:
+         MIN_RISK = a.min_risk
+@@ -493,8 +614,9 @@ def main() -> int:
      targets = TARGETS
      if a.levels == "all":
          DEPTHS = (inst["depths"][-1],)
@@ -175,18 +243,20 @@ index d15ba60..4829933 100644
                f"proximity merge at {MIN_RISK}pt", flush=True)
      suffix = ((f"_{a.instrument}" if a.instrument != "nq" else "")
                + (f"_lv{a.levels}" if a.levels != "va" else "")
-@@ -507,7 +600,9 @@ def main() -> int:
+@@ -507,7 +629,11 @@ def main() -> int:
                + (f"_twf{a.trend_x_pct:g}" if a.trend_filter else "")
                + ((f"_run{a.runner_stop}{f'tp{a.runner_tp2:g}' if a.runner_tp2 else ''}")
                   if a.runner else "")
 -              + ("_ng" if a.news_gate else ""))
 +              + ("_ng" if a.news_gate else "")
 +              + (f"_arm{a.arm_after:g}" if a.arm_after is not None else "")
-+              + ("_tg" if a.targets else ""))
++              + ("_tg" if a.targets else "")
++              + (f"_q{a.thru_ticks}" if a.thru_ticks != 1 else "")
++              + (f"_lag{a.arm_delay}" if a.arm_delay else ""))
      news_days = set()
      if a.news_gate:
          nf = pd.read_csv(ROOT / "data/reference/news_archive.csv")
-@@ -599,7 +694,8 @@ def main() -> int:
+@@ -599,7 +725,8 @@ def main() -> int:
          ts = sess.index.view("int64")
          pend_cut = int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=PEND_CUT_H)).value))
          day_cache.append((day, ts, sess.high.to_numpy(), sess.low.to_numpy(),
@@ -196,7 +266,7 @@ index d15ba60..4829933 100644
          if not isinstance(vah, dict):
              per_day_meta[day] = {
                  "pd_range": round(float(pseg.high.max() - pseg.low.min()), 2),
-@@ -612,7 +708,7 @@ def main() -> int:
+@@ -612,7 +739,7 @@ def main() -> int:
      funnel = {}
      for depth in DEPTHS:
          sig_cache = []
@@ -205,7 +275,7 @@ index d15ba60..4829933 100644
              if isinstance(vah, dict):
                  sig_cache.append({f: day_signals(c3, v1, v2, depth, tf=a.tf)
                                    for f, (v1, v2) in vah.items()})
-@@ -623,7 +719,7 @@ def main() -> int:
+@@ -623,7 +750,7 @@ def main() -> int:
              n_cfg += 1
              n_trades = 0
              cnt = funnel.setdefault(f"depth{depth:g}_R{tr:g}", {})
@@ -214,7 +284,7 @@ index d15ba60..4829933 100644
                  if not any(sigmap.values()):
                      continue
                  tfl = None
-@@ -648,7 +744,10 @@ def main() -> int:
+@@ -648,7 +775,12 @@ def main() -> int:
                                            runner=a.runner,
                                            runner_tp2=a.runner_tp2,
                                            runner_stop=a.runner_stop,
@@ -222,12 +292,14 @@ index d15ba60..4829933 100644
 +                                          block=blk, max_risk=a.max_risk,
 +                                          pd_range=pdr,
 +                                          conviction=a.conviction,
-+                                          arm_after=a.arm_after):
++                                          arm_after=a.arm_after,
++                                          thru_ticks=a.thru_ticks,
++                                          arm_delay=a.arm_delay):
                          t.update({"day": day, "depth": depth, "target_r": tr,
                                    "family": fam})
                          trades_out.write(json.dumps(t) + "\n")
 diff --git a/scripts/vwap_revolve.py b/scripts/vwap_revolve.py
-index 312230f..7503d05 100644
+index 312230f..c9dabf0 100644
 --- a/scripts/vwap_revolve.py
 +++ b/scripts/vwap_revolve.py
 @@ -93,6 +93,24 @@ def day_signals(c3, band_at, depth, tf):
@@ -261,7 +333,7 @@ index 312230f..7503d05 100644
  def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
 -             book_pos=None, max_risk=None):
 +             book_pos=None, max_risk=None, pd_range=None,
-+             conviction=False, arm_after=None):
++             conviction=False, arm_after=None, thru_ticks=1):
      """book_pos: list of (fill_hrs, end_hrs, dir, entry) level-book
      positions for the cross-book dedupe rule (2026-09-03): a VWAP entry
      is skipped when a level-book position is open at the fill moment,
@@ -283,20 +355,22 @@ index 312230f..7503d05 100644
      max_risk: his stop-cap rule (2026-09-03) — a signal whose structural
      stop exceeds the cap in points is never placed (risk-on gated only;
      SAR flattens unaffected; same pending-replacement semantics as the
-@@ -124,6 +156,8 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
+@@ -124,6 +156,9 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
      i = 0
      t_free = ts[0] - 1
      n = len(ts)
++    thru = TICK * thru_ticks          # queue proxy, see pd_va_backtest
 +    run_hi = np.maximum.accumulate(hi) if conviction else None
 +    run_lo = np.minimum.accumulate(lo) if conviction else None
      while i < len(sigs):
          s = sigs[i]
          t_sig = s["t"].value
-@@ -152,12 +186,26 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
+@@ -152,12 +187,26 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
              cancel = min(nxt_idx, pend_cut_idx, n)
              if block is not None and start < block[0]:
                  cancel = min(cancel, block[0])
 -            seg_lo, seg_hi = lo[start:cancel], hi[start:cancel]
+-            touch = (seg_lo <= L - TICK) if d == 1 else (seg_hi >= L + TICK)
 +            lo_w, hi_w = start, cancel
 +            if arm_after is not None:
 +                si0 = max(start - 1, 0)
@@ -312,7 +386,7 @@ index 312230f..7503d05 100644
 +                    i += 1
 +                    continue
 +            seg_lo, seg_hi = lo[lo_w:hi_w], hi[lo_w:hi_w]
-             touch = (seg_lo <= L - TICK) if d == 1 else (seg_hi >= L + TICK)
++            touch = (seg_lo <= L - thru) if d == 1 else (seg_hi >= L + thru)
              if not touch.any():
                  i += 1
                  continue
@@ -321,7 +395,7 @@ index 312230f..7503d05 100644
              E = L
          risk = abs(E - stop)
          if risk <= 0:
-@@ -202,6 +250,16 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
+@@ -202,6 +251,16 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
                         "pts": round(r * risk, 2),
                         "fill_hrs": round((ts[fill] - ts[0]) / 3.6e12, 3),
                         "hold_min": int((ts[min(exit_idx, n - 1)] - ts[fill]) / 6e10)})
@@ -338,10 +412,13 @@ index 312230f..7503d05 100644
          t_free = ts[min(sar_idx, n - 1)] - 1 if res == "SAR" else ts[exit_idx]
          i += 1
      return trades
-@@ -218,6 +276,13 @@ def main() -> int:
+@@ -218,6 +277,16 @@ def main() -> int:
      ap.add_argument("--dedupe", action="store_true",
                      help="cross-book rule: skip entries duplicating an open "
                           "level-book position (same dir, within one floor)")
++    ap.add_argument("--thru-ticks", type=int, default=1,
++                    help="queue proxy: ticks price must trade THROUGH the "
++                         "band before a resting limit counts as filled")
 +    ap.add_argument("--arm-after", type=float, default=None,
 +                    help="arm-after-displacement: the resting limit is not "
 +                         "live until price trades this multiple of the "
@@ -352,24 +429,26 @@ index 312230f..7503d05 100644
      ap.add_argument("--max-risk", type=float, default=None,
                      help="stop cap in points: signals with wider structural "
                           "stops are never placed (dedupe then reads the "
-@@ -228,8 +293,9 @@ def main() -> int:
+@@ -228,8 +297,10 @@ def main() -> int:
          import collections
          bb = collections.defaultdict(list)
          xr = f"_xr{a.max_risk:g}" if a.max_risk is not None else ""
 +        am = f"_arm{a.arm_after:g}" if a.arm_after is not None else ""
++        qq = f"_q{a.thru_ticks}" if a.thru_ticks != 1 else ""
          for l in gzip.open(ROOT / "output/analysis/"
 -                           f"pd_va_trades_lvall{xr}_sar_through_tf1_ng.jsonl.gz", "rt"):
-+                           f"pd_va_trades_lvall{xr}_sar_through_tf1_ng{am}.jsonl.gz", "rt"):
++                           f"pd_va_trades_lvall{xr}_sar_through_tf1_ng{am}{qq}.jsonl.gz", "rt"):
              t = json.loads(l)
              bb[t["day"]].append((t["fill_hrs"],
                                   t["fill_hrs"] + t["hold_min"] / 60,
-@@ -246,11 +312,20 @@ def main() -> int:
+@@ -246,11 +317,21 @@ def main() -> int:
      out = ROOT / (f"output/analysis/vwap_rev_tf{a.tf}_{a.style}"
                    + (f"_xr{a.max_risk:g}" if a.max_risk is not None else "")
                    + ("_nyanc" if a.anchor == "ny" else "")
 -                  + ("_dd" if a.dedupe else "") + ".jsonl.gz")
 +                  + ("_dd" if a.dedupe else "")
 +                  + (f"_arm{a.arm_after:g}" if a.arm_after is not None else "")
++                  + (f"_q{a.thru_ticks}" if a.thru_ticks != 1 else "")
 +                  + ".jsonl.gz")
      fh = gzip.open(out, "wt")
      n_all = 0
@@ -385,14 +464,15 @@ index 312230f..7503d05 100644
          sess = bars[(bars.index >= t0)
                      & (bars.index < t0 + pd.Timedelta(hours=SESS_H))]
          if len(sess) < 600:
-@@ -296,7 +371,9 @@ def main() -> int:
+@@ -296,7 +377,10 @@ def main() -> int:
                  for t in simulate(ts, hi_, lo_, cl_, sigs, pcut, tr,
                                    a.style, blk,
                                    book_pos=book_by_day.get(day),
 -                                  max_risk=a.max_risk):
 +                                  max_risk=a.max_risk, pd_range=pdr,
 +                                  conviction=a.conviction,
-+                                  arm_after=a.arm_after):
++                                  arm_after=a.arm_after,
++                                  thru_ticks=a.thru_ticks):
                      t.update({"day": day, "depth": depth, "target_r": tr})
                      fh.write(json.dumps(t) + "\n")
                      n_all += 1
