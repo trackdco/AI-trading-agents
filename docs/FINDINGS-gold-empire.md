@@ -79,3 +79,28 @@ NQ + dialed-GC armed book is the natural next number and has not been run.**
 byte-identical, gold gets (0.0, 0.9). Caught before the gold VWAP jobs ran.
 
 Scripts: `scripts/run_gold_empire.sh`, `scripts/gold_empire.py`.
+
+## 6. NQ + gold combined, both armed, gold on its dial (his "what makes gold better")
+
+Daily series added, 2023-01 → 2026-09; gold contributes 0 on dial-off days.
+
+| | net R | R/day | maxDD | Sharpe | green | worst day |
+|---|---:|---:|---:|---:|---:|---:|
+| NQ alone | +10,863 | +11.45 | −14.0 | 1.206 | 91% | −14.0 |
+| GC alone (0 on off-days) | +1,944 | +2.05 | −17.8 | 0.376 | 26% | −11.7 |
+| **NQ + GC, full size each** | **+12,806** | **+13.49** | **−14.0** | 1.177 | 92% | −14.0 |
+| NQ + GC at half size | +11,835 | +12.47 | −14.0 | **1.227** | 91% | −14.0 |
+| half NQ + half GC | +6,403 | +6.75 | −7.0 | 1.177 | 92% | −7.0 |
+
+- Correlation on the 299 days both traded: **+0.014**. On those days NQ is red
+  6%, gold is red 19%, **both red 1%**.
+- Gold adds +1,944R (+18%) at **zero added drawdown** — the empire's max
+  drawdown is −14.0 with or without it. That is what zero correlation buys.
+- On NQ's 20 worst days gold averaged **+4.4R** (on for 35% of them).
+- **2026, gold fully on:** NQ +2,557 / GC +1,153; combined maxDD **−3.2 vs
+  NQ alone −10.7**; Sharpe 1.66 vs 1.42.
+
+What gold is *not*: better per trade, per day, or on drawdown alone. What it
+*is*: a second, independent source of R that shows up when its own tape is
+loud, and does not deepen the hole when NQ's is. In the one year both were
+fully on, it cut the combined drawdown by two-thirds.
