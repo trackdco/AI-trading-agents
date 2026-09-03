@@ -197,14 +197,14 @@
 <div class="wrap">
 
 <header class="mast">
-  <div class="eyebrow">NQ futures · 4 years in sample · 3 years held out · receipts §1–34</div>
+  <div class="eyebrow">NQ futures · 4 years in sample · 6 years held out · receipts §1–34</div>
   <h1>The Railed Empire</h1>
   <p class="deck">One entry grammar, three books of reference levels, run under a measured risk stack. Here is what four years of it looks like, the two layers that finally beat it — and what happened when the whole thing was pointed at three years nobody had looked at.</p>
   <div class="meta">
     <span><b>Sample</b> 2023-01-02 → 2026-09-02</span>
     <span><b>Session-days</b> 954</span>
     <span><b>Trades</b> 75,481</span>
-    <span><b>Holdout</b> 2020–2022 · passed</span>
+    <span><b>Holdouts</b> 2020–22 passed · 2017–19 failed the bar, and said why</span>
   </div>
 </header>
 
@@ -409,7 +409,7 @@
 </section>
 
 <section id="holdout">
-  <div class="sec-head"><span class="sec-ref">pre-registered · 2026-09-03</span><h2>The holdout: three unseen years</h2></div>
+  <div class="sec-head"><span class="sec-ref">pre-registered · 2026-09-03</span><h2>The first holdout: three unseen years</h2></div>
   <span class="stamp">Verdict · pass</span>
   <p class="col lede">The pass/fail rule was written down, committed to git, and time-stamped <em class="term">before the data existed</em>. Then three years of NQ that had never been in any test — 2020, 2021, 2022 — were run on the frozen constants and scored mechanically against that rule.</p>
   <p class="col">This is the strongest evidence on the page, because there was no way to move the goalposts after seeing the answer. The commit history proves the order.</p>
@@ -460,11 +460,69 @@
   </div>
 
   <div class="callout">
-    <h3>What this does not cover</h3>
-    <p>The pre-registration declared <b>one</b> configuration — the prior-day value-area book on frozen constants. That is what passed. The 8-level book, both VWAP books, arming and conviction sizing are all still validated on 2023–26 <b>only</b>.</p>
-    <p class="rule-line">And the holdout is now <b>spent</b>. 2020–2022 has been seen; it can never serve as a clean test again. The next honest out-of-sample test needs 2017–2019, or forward time.</p>
+    <h3>What this one did not cover</h3>
+    <p>The pre-registration declared <b>one</b> configuration — the prior-day value-area book on frozen constants. That is what passed. The 8-level book, both VWAP books, arming and conviction sizing were then <em class="term">replicated</em> on these years (all three books within a hair of their 2023–26 expectancy; arming +29% / +34%) — but on data already seen, so as support, not proof. The second holdout below was written to close that gap.</p>
   </div>
   <p class="note">Protocol: <code>docs/PREREG-holdout-2020-2022.md</code> (commit <code>80c3f23</code>, written before the pull). Result: <code>docs/FINDINGS-holdout-2020-2022.md</code>.</p>
+</section>
+
+<section id="holdout2">
+  <div class="sec-head"><span class="sec-ref">pre-registered · 2026-09-03</span><h2>The second holdout: 2017–2019, and the tick screen</h2></div>
+  <span class="stamp" style="color:var(--neg)">Verdict · grammar fails the bar</span>
+  <p class="col lede">This time <em class="term">every</em> layer was declared up front with its own pass/fail rule — the base grammar, all three books, the rails, arming, conviction sizing — plus six predictions. Then three more untouched years were pulled: 2017, 2018, 2019.</p>
+  <p class="col">The base grammar <b>failed</b> its bar (+0.074R per trade against a required +0.08). So did the three-book empire. And the measurement taken <em class="term">before</em> any trade result — predicted in writing as the likely reason — says why.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Gate 0 — median active-session 1-minute candle, in ticks. The grammar's screening law is ≥20.</caption>
+      <thead><tr><th>Year</th><th>Ticks per candle</th><th>Screen</th><th>Value-area book</th></tr></thead>
+      <tbody>
+        <tr><td>2017</td><td><b>4.0</b></td><td class="neg">fails</td><td>153 trades · +0.006R · +1R for the year</td></tr>
+        <tr><td>2018</td><td>10.0</td><td class="neg">fails</td><td>751 trades · +0.094R · +70R</td></tr>
+        <tr><td>2019</td><td>9.0</td><td class="neg">fails</td><td>481 trades · +0.065R · +31R</td></tr>
+        <tr class="total"><td>2023–26, for scale</td><td>28</td><td class="pos">passes</td><td>7,307 trades · +0.156R</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">NQ traded at 5,000–9,000 in 2017–19 and barely moved a point a minute. A 5-point stop floor on a tape whose median candle is 1 point fires 1,385 times in three years — against 7,307 on the modern tape — and each fill pays the same one-tick honest-fill tax and 0.5pt cost. Scaling the constants down to the era (declared as Run B) made it <em class="term">worse</em>: −0.161R per trade, the same mechanism that killed the euro.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Post-hoc, exploratory — taken after the verdicts. Every month of all seven years, bucketed by that month's own tick count.</caption>
+      <thead><tr><th>Ticks per candle</th><th>Months</th><th>Trades</th><th>Per trade</th><th>Months positive</th><th>Which eras</th></tr></thead>
+      <tbody>
+        <tr><td>0–8</td><td>20</td><td>410</td><td>+0.012</td><td class="neg">45%</td><td>2017–19</td></tr>
+        <tr><td>8–12</td><td>9</td><td>365</td><td>+0.112</td><td>56%</td><td>2017–19, 2020–22</td></tr>
+        <tr><td>12–16</td><td>10</td><td>886</td><td>+0.091</td><td>80%</td><td>2017–19, 2020–22</td></tr>
+        <tr><td>16–20</td><td>12</td><td>1,370</td><td class="pos">+0.175</td><td class="pos">100%</td><td>all three</td></tr>
+        <tr><td>20–28</td><td>35</td><td>5,119</td><td class="pos">+0.141</td><td class="pos">100%</td><td>2020–22, 2023–26</td></tr>
+        <tr><td>28–40</td><td>18</td><td>3,523</td><td class="pos">+0.153</td><td class="pos">100%</td><td>2020–22, 2023–26</td></tr>
+        <tr><td>40+</td><td>13</td><td>2,497</td><td class="pos">+0.143</td><td class="pos">100%</td><td>2020–22, 2023–26</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Under 8 ticks the grammar is a coin flip. From 16 ticks up it has never had a losing month, in any era.</b> Inside 2017–19 itself, Q4 2018 — the one stretch that reached 15–18 ticks — printed +0.18 / +0.25 / +0.23 per trade, as good as any quarter on the modern tape. This is the fourth confirmation of the screening law (ES 6–7 flat, 6E 3 dead, NQ 2017 4 dead, NQ 2020+ works) and the first on NQ's own history.</p>
+
+  <div class="two">
+    <div>
+      <h3>What passed anyway</h3>
+      <ul class="plain">
+        <li><b>Arming, mechanically.</b> Per-trade EV +0.070 → +0.103, drawdown −84.8 → −55.4R, clearing its ≥+5% drawdown-matched bar in both halves. But the flat base is a twentieth of the modern tape's, so the percentage (+136% / +72%) is not comparable and its prediction band was missed. What survives: the <em class="term">direction</em> has now held in three eras.</li>
+        <li><b>The 1R target</b> beats every larger one at every depth — fourth instrument-era running.</li>
+        <li><b>Frozen constants beat era-scaled</b>, as in 2020–22. The constants stay frozen.</li>
+        <li><b>Losses chain</b> across days here too (2017: max drawdown −88.5R against a worst day of −8.4R). The 2023–26 "worst day equals max drawdown" line is now scoped to 2023–26 twice over.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>What it changes</h3>
+      <ul class="plain">
+        <li><b>The edge is a property of the tape's granularity</b>, not of the year. NQ has had ≥20 ticks since 2020 and has 28 now. If its volatility ever collapses to 2017 levels, expect the edge to go to <em class="term">zero</em> — not negative — with a tenth of the trades.</li>
+        <li><b>A regime check belongs in the executor:</b> trailing 20-day median active-session candle, in ticks. Day-level and causal, so a bucket on it <em class="term">is</em> the rule effect. The threshold sits somewhere in 12–16 and should be pre-registered on forward data, not fitted to this table.</li>
+        <li><b>Both holdouts are spent</b>, and no earlier 1-minute NQ is in budget. Validation from here is forward time.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Protocol: <code>docs/PREREG-holdout-2017-2019.md</code> (commit <code>62e707b</code>, written before the pull; Amendment 1 before decompression). Verdict as printed: <code>docs/holdout17_verdict.txt</code>. Result: <code>docs/FINDINGS-holdout-2017-2019.md</code>.</p>
 </section>
 
 <section id="conviction">
@@ -557,7 +615,7 @@
       <ul class="plain">
         <li><b>Every year, all four.</b> Armed beats flat in 2023, 2024, 2025 and 2026 — +2,280 / +2,918 / +3,108 / +2,557.</li>
         <li><b>45 of 45 months still positive</b>, worst month +20.1R.</li>
-        <li><b>Selected on this same four years.</b> Arming was found in the 2023–26 audit and has <em class="term">not</em> been tested out of sample — the 2020–22 holdout below declared one configuration, and it was not this one.</li>
+        <li><b>Direction confirmed in three eras, magnitude in one.</b> Found on 2023–26; replicated on 2020–22 (+29% / +34% drawdown-matched, on seen data); and on the sealed 2017–19 holdout it again raised per-trade EV (+0.070 → +0.103) and cut drawdown (−84.8 → −55.4R) — but on a tape where the base grammar itself is marginal, so the percentage there means little.</li>
         <li><b>It does not stack with conviction sizing.</b> The armed book is displaced by construction, so 2:1 displacement sizing on top of it is a literal no-op: +0.0%.</li>
       </ul>
     </div>
@@ -664,7 +722,7 @@
         <li><b>The cross-book rail pass is post-hoc chronological.</b> An exact joint simulation is executor-stage work.</li>
         <li><b>No cost shocks, no missed sessions</b> — which is part of why a simulated Sharpe should not be read as a live forecast.</li>
         <li><b>~80 trades a day is automation only.</b> None of this is hand-tradeable, and it was never designed to be.</li>
-        <li><b>Arming and conviction sizing are in-sample only</b> — found in 2023–26, and not covered by the holdout.</li>
+        <li><b>Arming's magnitude is still 2023–26 only.</b> Its direction has held in three eras; its size (+30% per trade, −23% drawdown) has been measured cleanly on one.</li>
         <li><b>Gold sits outside this stream</b> — its own constants, its own volatility dial, certified separately.</li>
       </ul>
     </div>
