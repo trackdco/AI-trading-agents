@@ -521,6 +521,27 @@ expected by chance). NY 09:00-15:00 is the best block - every hour
 positive in both halves, ~77%% of total R. 01:00 is the single best
 hour (+0.32R/trade, 75%% WR, n=123).
 
+
+## 18. Level calibration against his chart (2026-09-03): PASSED
+
+Four sessions read off his TradingView SVP (VA70) vs the computed
+profile, 8 edges: mean error -1.6pt (NO systematic bias), median -2.5pt,
+5/8 within 12pt, 8/8 within 25pt. VA widths match to 1pt on the 450pt
+session. Worst day ~20pt on both edges (Tue16->Wed17). Errors are
+day-specific volume-modeling noise, not an offset.
+
+Jitter receipt: champion config re-run with levels perturbed by the
+MEASURED error distribution (N(0,12) clipped +/-25, 3 seeds): +1,027 /
++985 / +1,001R vs +1,150R baseline - the strategy keeps ~86-89%% of its
+edge under the level noise; months positive 98%% (worst month ~-5R).
+The edge lives in the level's NEIGHBORHOOD, not tick placement. And
+since the computed levels are themselves ~one noise-draw off his
+chart-true levels, the backtest most likely UNDERSTATES the chart-level
+version by roughly the same ~10-14%%.
+
+Remaining gate: the June 10 TRADE tagging (crossing/retest/flip
+language), levels now calibrated.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
