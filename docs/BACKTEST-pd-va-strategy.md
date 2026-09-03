@@ -1022,8 +1022,10 @@ min(withdraw% x profit, max payout $2k). All of it configurable +
 edge-haircut slider (removes X% of the mean, keeps the volatility,
 default 30%). Outputs: pass/breach/timeout, days-to-pass histogram,
 equity fan vs target and floor, start-to-first-payout odds and days.
-Data regenerates via the validation script
-(`output/analysis/empire_trades.json`, `empire_daily.npy`).
+Source committed at `docs/artifacts/funded_sim.html` (replace the
+`__TRADES__` token with `output/analysis/empire_trades.json` to
+rebuild; that file and `empire_daily.npy` regenerate via
+`scripts/validation_pbo_dsr.py`).
 
 ## 34. THE STOP CAP (his ruling, 2026-09-03): skip stops wider than 30pt
 

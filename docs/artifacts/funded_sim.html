@@ -1,0 +1,413 @@
+<title>Empire Funded Sim</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+  :root{
+    --ink:#0A0E14; --panel:#111823; --well:#0D1420; --edge:#223048; --edge2:#1A2434;
+    --text:#D9E1EC; --dim:#7E8CA0; --gold:#E9B44C; --pass:#46C28E; --breach:#E4635E; --fan:#4E86C2;
+    --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+    --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --cond:'Barlow Condensed','Arial Narrow',var(--sans);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ink);color:var(--text);font:14px/1.5 var(--sans)}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px 24px 48px}
+
+  .masthead{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 22px;border-bottom:1px solid var(--edge);padding-bottom:14px;margin-bottom:20px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .tickmark{width:14px;height:26px;border-left:3px solid var(--gold);border-bottom:3px solid var(--gold);transform:translateY(-3px)}
+  h1{font:600 30px/1 var(--cond);letter-spacing:.04em;text-transform:uppercase;margin:0;text-wrap:balance}
+  .prov{margin:0;color:var(--dim);font-size:12.5px;max-width:72ch}
+  .prov b{color:var(--text);font-family:var(--mono);font-weight:500}
+
+  .desk{display:grid;grid-template-columns:296px minmax(0,1fr);gap:20px;align-items:start}
+  @media(max-width:880px){.desk{grid-template-columns:1fr}}
+
+  /* ---- control rail ---- */
+  .rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:14px}
+  @media(max-width:880px){.rail{position:static}}
+  fieldset{border:1px solid var(--edge);background:var(--panel);border-radius:4px;padding:12px 14px 14px;margin:0;min-width:0}
+  legend{font:600 13.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);padding:0 6px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px}
+  .row label{color:var(--dim);font-size:12.5px}
+  input[type=number],select{background:var(--well);border:1px solid var(--edge);border-radius:3px;color:var(--text);font:500 13px var(--mono);padding:5px 7px;width:104px;text-align:right}
+  select{width:auto;text-align:left}
+  input[type=number]:focus,select:focus,input[type=range]:focus,button:focus{outline:2px solid var(--gold);outline-offset:1px}
+  input[type=range]{width:100%;accent-color:var(--gold);margin:2px 0 0}
+  input[type=checkbox]{accent-color:var(--gold);width:15px;height:15px}
+  .slider-row{margin-top:10px}
+  .slider-head{display:flex;justify-content:space-between;align-items:baseline}
+  .slider-head label{color:var(--dim);font-size:12.5px}
+  .slider-head .val{font:600 15px var(--mono);color:var(--gold);font-variant-numeric:tabular-nums}
+  .presets{display:flex;gap:6px;margin-top:9px}
+  .presets button,.reroll{flex:1;background:var(--well);border:1px solid var(--edge);border-radius:3px;color:var(--text);font:500 12px var(--mono);padding:6px 4px;cursor:pointer}
+  .presets button:hover,.reroll:hover{border-color:var(--gold);color:var(--gold)}
+  @media(prefers-reduced-motion:no-preference){.presets button,.reroll{transition:border-color .12s,color .12s}}
+  .hint{color:var(--dim);font-size:11.5px;margin:8px 0 0;line-height:1.45}
+  .derived{border-top:1px solid var(--edge2);margin-top:11px;padding-top:9px;font:12px/1.7 var(--mono);color:var(--dim)}
+  .derived b{color:var(--text);font-weight:500}
+
+  /* ---- results ---- */
+  .results{display:flex;flex-direction:column;gap:16px;min-width:0}
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:680px){.tiles{grid-template-columns:repeat(2,1fr)}}
+  .tile{background:var(--panel);border:1px solid var(--edge);border-radius:4px;padding:12px 14px 13px}
+  .tile .eyebrow{font:600 12px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .tile .big{font:600 36px/1.15 var(--mono);font-variant-numeric:tabular-nums;margin-top:6px;letter-spacing:-.01em}
+  .tile .big.pass{color:var(--pass)} .tile .big.breach{color:var(--breach)} .tile .big.gold{color:var(--gold)}
+  .tile .sub{color:var(--dim);font-size:11.5px;margin-top:5px;font-family:var(--mono)}
+  .tile .rule{height:2px;background:var(--gold);opacity:.55;width:26px;margin-top:9px}
+  .simmeta{color:var(--dim);font:11.5px var(--mono);text-align:right;margin:-6px 2px 0}
+
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:880px){.charts{grid-template-columns:1fr}}
+  figure{background:var(--panel);border:1px solid var(--edge);border-radius:4px;padding:12px 14px;margin:0;min-width:0}
+  figcaption{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+  figcaption .t{font:600 14px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase}
+  .legend{display:flex;gap:12px;color:var(--dim);font-size:11px}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;transform:translateY(1px)}
+  canvas{width:100%;height:250px;display:block;margin-top:8px}
+
+  .panelblock{background:var(--panel);border:1px solid var(--edge);border-radius:4px;padding:13px 16px 15px}
+  .panelblock h2{font:600 14px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px}
+  .statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px 24px}
+  @media(max-width:680px){.statgrid{grid-template-columns:1fr 1fr}}
+  .stat{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dotted var(--edge2);padding:5px 0;font-size:12.5px}
+  .stat span{color:var(--dim)}
+  .stat b{font:500 12.5px var(--mono);font-variant-numeric:tabular-nums;color:var(--text);white-space:nowrap}
+  .stat b.pass{color:var(--pass)} .stat b.breach{color:var(--breach)} .stat b.gold{color:var(--gold)}
+  .notes ul{margin:0;padding-left:18px;color:var(--dim);font-size:12.5px;line-height:1.65}
+  .notes li b{color:var(--text);font-weight:500}
+</style>
+
+<div class="wrap">
+<header class="masthead">
+  <div class="brand"><div class="tickmark"></div><h1>Empire Funded Sim</h1></div>
+  <p class="prov">Bootstrap Monte Carlo on the railed three-book NQ stack (8-level book + session VWAP + NY VWAP) —
+  <b>921 sessions</b> / <b>74,616 trades</b>, Jan 2023 → Sep 2026 · sized in whole MNQ micros (<b>$2</b>/pt) · costs &amp; guard rails included.</p>
+</header>
+
+<div class="desk">
+<aside class="rail">
+  <fieldset>
+    <legend>Evaluation</legend>
+    <div class="presets">
+      <button type="button" data-dd="2000" data-tg="3000" data-ftg="4000" data-cap="2000">50K</button>
+      <button type="button" data-dd="4000" data-tg="6000" data-ftg="8000" data-cap="4000">100K</button>
+      <button type="button" data-dd="6000" data-tg="9000" data-ftg="12000" data-cap="6000">150K</button>
+    </div>
+    <div class="row"><label for="dd">Trailing max drawdown</label><input id="dd" type="number" value="2000" min="100" step="100"></div>
+    <div class="row"><label for="target">Profit target</label><input id="target" type="number" value="3000" min="100" step="100"></div>
+    <div class="row"><label for="minDays">Min eval days</label><input id="minDays" type="number" value="1" min="0" step="1" style="width:64px"></div>
+    <div class="row"><label for="lock">Floor locks at start bal.</label><input id="lock" type="checkbox" checked></div>
+    <p class="hint">The 50K shape: $3k target over $2k EOD-trailing drawdown — up $2k (52k) the floor locks at the 50k start and stops trailing; pass at 53k. Drawdown is checked end-of-day only. Presets scale that shape; edit to your firm's sheet.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Sizing &amp; skepticism</legend>
+    <div class="row"><label for="mode">Sizing mode</label><select id="mode">
+      <option value="flat" selected>Flat micros</option>
+      <option value="budget">Risk budget → micros</option>
+      <option value="exact">Exact $/R (idealized)</option>
+    </select></div>
+    <div class="row"><label for="scap">Stop cap (pts, 0 = off)</label><input id="scap" type="number" value="30" min="0" step="5" style="width:72px"></div>
+    <div class="slider-row" id="rowFlat">
+      <div class="slider-head"><label for="micros">Micros per trade</label><span class="val" id="microsv">1</span></div>
+      <input id="micros" type="range" min="1" max="10" step="1" value="1">
+    </div>
+    <div class="slider-row" id="rowBudget" hidden>
+      <div class="slider-head"><label for="budget">Risk budget per trade</label><span class="val" id="budgetv">$100</span></div>
+      <input id="budget" type="range" min="25" max="500" step="25" value="100">
+    </div>
+    <div class="slider-row" id="rowExact" hidden>
+      <div class="slider-head"><label for="perR">Risk per trade ($ / R)</label><span class="val" id="perRv">$50</span></div>
+      <input id="perR" type="range" min="10" max="300" step="5" value="50">
+    </div>
+    <div class="slider-row">
+      <div class="slider-head"><label for="haircut">Edge haircut</label><span class="val" id="haircutv">30%</span></div>
+      <input id="haircut" type="range" min="0" max="80" step="5" value="30">
+    </div>
+    <p class="hint">Flat: same contracts every trade — a wide-stop trade carries big $ risk. Budget: floor($ ÷ stop × $2) micros per trade, skipping stops too wide for even one micro. Exact $/R is the idealized comparator. Haircut removes that share of the edge, keeps the volatility.</p>
+    <div class="derived" id="derived"></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Funded — Flex rules</legend>
+    <div class="row"><label for="ftarget">Funded profit target</label><input id="ftarget" type="number" value="4000" min="100" step="100"></div>
+    <div class="row"><label for="wpct">Withdraw % of profit</label><input id="wpct" type="number" value="50" min="5" max="100" step="5" style="width:64px"></div>
+    <div class="row"><label for="cap">Max payout</label><input id="cap" type="number" value="2000" min="100" step="100"></div>
+    <div class="row"><label for="minFunded">Min funded days</label><input id="minFunded" type="number" value="10" min="0" step="1" style="width:64px"></div>
+    <p class="hint">Fresh 50k with the same trailing drawdown and start-balance lock. Sim runs to your funded target (54k on the 50K shape), then banks min(withdraw% × profit, max payout).</p>
+    <div class="derived" id="bankline"></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Simulation</legend>
+    <div class="row"><label for="sims">Runs</label><select id="sims">
+      <option>1000</option><option>2000</option><option selected>5000</option><option>10000</option><option>20000</option>
+    </select></div>
+    <div class="row"><label for="maxDays">Day cap per phase</label><input id="maxDays" type="number" value="120" min="10" step="10" style="width:72px"></div>
+    <div class="row"><label for="block">5-day block bootstrap</label><input id="block" type="checkbox" checked></div>
+    <div class="row"><label for="seed">Seed</label><input id="seed" type="number" value="1337" step="1" style="width:88px"></div>
+    <button type="button" class="reroll" id="reroll" style="margin-top:9px;width:100%">Reroll seed</button>
+    <p class="hint">Block bootstrap keeps 5-day streaks from the tape intact — slightly harsher on drawdown than shuffling single days.</p>
+  </fieldset>
+</aside>
+
+<section class="results">
+  <div class="tiles">
+    <div class="tile"><div class="eyebrow">Pass rate</div><div class="big pass" id="tPass">—</div><div class="sub" id="tPassSub"></div><div class="rule"></div></div>
+    <div class="tile"><div class="eyebrow">Breach rate</div><div class="big breach" id="tBreach">—</div><div class="sub" id="tBreachSub"></div><div class="rule"></div></div>
+    <div class="tile"><div class="eyebrow">Days to pass</div><div class="big" id="tDays">—</div><div class="sub" id="tDaysSub"></div><div class="rule"></div></div>
+    <div class="tile"><div class="eyebrow">Start → payout</div><div class="big gold" id="tPayout">—</div><div class="sub" id="tPayoutSub"></div><div class="rule"></div></div>
+  </div>
+  <div class="simmeta" id="simMeta"></div>
+
+  <div class="charts">
+    <figure>
+      <figcaption><span class="t">Evaluation outcomes by trading day</span>
+        <span class="legend"><span><i style="background:var(--pass)"></i>passed</span><span><i style="background:var(--breach)"></i>breached</span></span>
+      </figcaption>
+      <canvas id="histC"></canvas>
+    </figure>
+    <figure>
+      <figcaption><span class="t">Equity fan — first 60 days</span>
+        <span class="legend"><span><i style="background:var(--fan)"></i>p5–p95 / p25–p75 / median</span><span><i style="background:var(--gold)"></i>target</span><span><i style="background:var(--breach)"></i>start floor</span></span>
+      </figcaption>
+      <canvas id="fanC"></canvas>
+    </figure>
+  </div>
+
+  <div class="panelblock">
+    <h2>Funded phase</h2>
+    <div class="statgrid">
+      <div class="stat"><span>Sims reaching funded</span><b id="fN">—</b></div>
+      <div class="stat"><span>Reach funded target</span><b class="pass" id="fPay">—</b></div>
+      <div class="stat"><span>Median funded days to payout</span><b id="fDays">—</b></div>
+      <div class="stat"><span>Breach while funded</span><b class="breach" id="fBreach">—</b></div>
+      <div class="stat"><span>Banked at first payout</span><b class="gold" id="fBank">—</b></div>
+      <div class="stat"><span>Median total days, start → payout</span><b class="gold" id="fTotal">—</b></div>
+    </div>
+  </div>
+
+  <div class="panelblock notes">
+    <h2>What this sim assumes</h2>
+    <ul>
+      <li><b>The sample is the backtest, not the future.</b> Every trade (stop size + result) is resampled from the 921-session certified run (§32 spec, guard rails G3/G5/G6, 0.5pt round-trip cost per contract). The haircut slider is the built-in dose of doubt.</li>
+      <li><b>Drawdown is checked end-of-day only</b>, trailing the EOD high-water mark, and in both phases the floor locks at the start balance once you're up the drawdown amount — the Lucid frame.</li>
+      <li><b>The funded phase restarts a fresh balance</b> under the same rule; “payout” means the funded target was reached after the minimum funded days, banking min(withdraw% × profit, max payout).</li>
+      <li><b>Sizing is quantized to whole MNQ micros ($2/pt).</b> Flat mode passes stop-size variance straight into $ risk (stops run 8.5pt median, 270pt uncapped max); budget mode floors to affordable micros and skips what doesn't fit. Switch modes to see the cost of quantization against the idealized $/R stream.</li>
+      <li><b>The stop cap skips trades whose structural stop exceeds it</b> — the §34 rule (default 30pt keeps 96% of trades and ~98% of the R; the skipped tail is the book's weakest segment). Here the cap drops trades from the recorded stream; the in-engine version frees the book for the next signal, so live is the same or slightly better.</li>
+      <li><b>Days are trading days</b> (~21 per month), every day trades the full three-book NQ program (the GC book is not in this stream), no missed sessions, no discretion.</li>
+    </ul>
+  </div>
+</section>
+</div>
+</div>
+
+<script>
+'use strict';
+const TR = __TRADES__;
+const OFF = TR.day_off, STOPS = TR.stops, RS = TR.rs, ND = OFF.length - 1;
+const CO = {pass:'#46C28E',breach:'#E4635E',gold:'#E9B44C',fan:'#4E86C2',dim:'#7E8CA0',edge:'#223048',text:'#D9E1EC'};
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const $=id=>document.getElementById(id);
+function params(){
+  return{dd:+$('dd').value||2000,target:+$('target').value||3000,minDays:+$('minDays').value||0,
+    lock:$('lock').checked,mode:$('mode').value,micros:+$('micros').value,scap:+$('scap').value||1e9,
+    budget:+$('budget').value,perR:+$('perR').value,haircut:+$('haircut').value/100,
+    ftarget:+$('ftarget').value||4000,wpct:+$('wpct').value||50,cap:+$('cap').value||2000,
+    minFunded:+$('minFunded').value||0,
+    sims:+$('sims').value,maxDays:Math.max(10,+$('maxDays').value||120),
+    block:$('block').checked,seed:(+$('seed').value|0)||1};
+}
+function buildDays(P){
+  const out=new Float64Array(ND),risks=[];let skip=0,ctot=0,capskip=0;
+  for(let d=0;d<ND;d++){let s=0;
+    for(let i=OFF[d];i<OFF[d+1];i++){
+      const st=STOPS[i],r=RS[i];
+      if(st>P.scap){capskip++;continue}
+      if(P.mode==='flat'){s+=P.micros*2*(r*st-0.5);risks.push(P.micros*2*st);ctot+=P.micros}
+      else if(P.mode==='budget'){const c=Math.floor(P.budget/(2*st));if(c<1){skip++;continue}s+=c*2*(r*st-0.5);risks.push(c*2*st);ctot+=c}
+      else{s+=P.perR*(r-0.5/st);risks.push(P.perR)}
+    }
+    out[d]=s;
+  }
+  let mu=0;for(let d=0;d<ND;d++)mu+=out[d];mu/=ND;
+  return{out,mu,risks,skip,ctot,capskip,ntr:STOPS.length};
+}
+function makeSampler(rng,block,days,shift){
+  if(!block)return()=>days[(rng()*ND)|0]-shift;
+  let buf=null,p=5;
+  return()=>{if(p>=5){const s=(rng()*ND)|0;buf=[days[s%ND],days[(s+1)%ND],days[(s+2)%ND],days[(s+3)%ND],days[(s+4)%ND]];p=0}return buf[p++]-shift};
+}
+function runSim(P,D,shift){
+  const rng=mulberry32(P.seed);
+  const out={passDays:[],breachDays:[],timeouts:0,fundedPay:[],fundedBreach:0,fundedCap:0,totalDays:[]};
+  for(let s=0;s<P.sims;s++){
+    const draw=makeSampler(rng,P.block,D.out,shift);
+    let bal=0,peak=0,days=0,res=0;
+    while(days<P.maxDays){
+      bal+=draw();days++;
+      if(bal>peak)peak=bal;
+      let fl=peak-P.dd;if(P.lock&&fl>0)fl=0;
+      if(bal<=fl){res=2;break}
+      if(bal>=P.target&&days>=P.minDays){res=1;break}
+    }
+    if(res===2){out.breachDays.push(days);continue}
+    if(res===0){out.timeouts++;continue}
+    out.passDays.push(days);
+    let fb=0,fp=0,fd=0,fres=0;
+    while(fd<P.maxDays){
+      fb+=draw();fd++;
+      if(fb>fp)fp=fb;
+      let fl=fp-P.dd;if(P.lock&&fl>0)fl=0;
+      if(fb<=fl){fres=2;break}
+      if(fb>=P.ftarget&&fd>=P.minFunded){fres=1;break}
+    }
+    if(fres===1){out.fundedPay.push(fd);out.totalDays.push(days+fd)}
+    else if(fres===2)out.fundedBreach++;else out.fundedCap++;
+  }
+  return out;
+}
+function runFan(P,D,shift){
+  const rng=mulberry32(P.seed^0x9E3779B9);
+  const DYS=Math.min(60,P.maxDays),N=400,paths=[];
+  for(let i=0;i<N;i++){const draw=makeSampler(rng,P.block,D.out,shift);let b=0;const p=new Float64Array(DYS);
+    for(let d=0;d<DYS;d++){b+=draw();p[d]=b}paths.push(p)}
+  const q=[0.05,0.25,0.5,0.75,0.95],bands=q.map(()=>new Float64Array(DYS)),col=new Float64Array(N);
+  for(let d=0;d<DYS;d++){for(let i=0;i<N;i++)col[i]=paths[i][d];
+    const s=Float64Array.from(col).sort();
+    q.forEach((f,k)=>{const x=(N-1)*f,lo=Math.floor(x),hi=Math.ceil(x);bands[k][d]=s[lo]+(s[hi]-s[lo])*(x-lo)})}
+  return{D:DYS,bands};
+}
+const med=a=>{if(!a.length)return NaN;const s=[...a].sort((x,y)=>x-y),m=(s.length-1)/2;return(s[Math.floor(m)]+s[Math.ceil(m)])/2};
+const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN;
+const pct=x=>isFinite(x)?(x*100).toFixed(1)+'%':'—';
+const money=x=>(x<0?'−$':'$')+Math.round(Math.abs(x)).toLocaleString('en-US');
+const d1=x=>isFinite(x)?(Math.round(x*10)/10).toString():'—';
+
+function canvasCtx(c){
+  const r=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+  c.width=Math.max(1,r.width*dpr);c.height=Math.max(1,r.height*dpr);
+  const g=c.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);
+  return[g,r.width,r.height];
+}
+function drawHist(res){
+  const[g,W,H]=canvasCtx($('histC'));g.clearRect(0,0,W,H);
+  const all=res.passDays.concat(res.breachDays);
+  g.font='11px "IBM Plex Mono",monospace';
+  if(!all.length){g.fillStyle=CO.dim;g.fillText('no resolutions — raise the day cap',16,H/2);return}
+  const s=[...all].sort((a,b)=>a-b);
+  const xMax=Math.max(10,s[Math.min(s.length-1,Math.floor(s.length*0.99))]+1);
+  const bw=Math.max(1,Math.ceil(xMax/36)),nb=Math.ceil(xMax/bw);
+  const hp=new Array(nb).fill(0),hb=new Array(nb).fill(0);
+  for(const d of res.passDays){const i=Math.min(nb-1,Math.floor((d-1)/bw));hp[i]++}
+  for(const d of res.breachDays){const i=Math.min(nb-1,Math.floor((d-1)/bw));hb[i]++}
+  let yMax=1;for(let i=0;i<nb;i++)yMax=Math.max(yMax,hp[i]+hb[i]);
+  {const p=Math.pow(10,Math.floor(Math.log10(yMax))),m=yMax/p;yMax=(m<=1?1:m<=2?2:m<=4?4:m<=5?5:m<=8?8:10)*p}
+  const L=42,R=8,T=8,B=26,pw=W-L-R,ph=H-T-B;
+  const x=i=>L+pw*i/nb,y=v=>T+ph*(1-v/yMax);
+  g.strokeStyle=CO.edge;g.lineWidth=1;
+  for(const f of[0.25,0.5,0.75,1]){const yy=y(yMax*f);g.beginPath();g.moveTo(L,yy);g.lineTo(W-R,yy);g.stroke();
+    g.fillStyle=CO.dim;g.textAlign='right';g.fillText(Math.round(yMax*f),L-6,yy+4)}
+  for(let i=0;i<nb;i++){
+    const wpx=Math.max(1,pw/nb-1.5);
+    if(hp[i]){g.fillStyle=CO.pass;g.fillRect(x(i),y(hp[i]),wpx,ph*(hp[i]/yMax))}
+    if(hb[i]){g.fillStyle=CO.breach;g.fillRect(x(i),y(hp[i]+hb[i]),wpx,ph*(hb[i]/yMax))}
+  }
+  g.fillStyle=CO.dim;g.textAlign='center';
+  const step=Math.max(bw,Math.ceil(xMax/6/bw)*bw);
+  for(let d=step;d<=xMax;d+=step)g.fillText(d,L+pw*(d/(nb*bw)),H-9);
+  g.textAlign='right';g.fillText('sims',W-R,T+10);
+}
+function drawFan(fan,P){
+  const[g,W,H]=canvasCtx($('fanC'));g.clearRect(0,0,W,H);
+  const{D,bands}=fan;
+  let lo=Math.min(-P.dd,...bands[0]),hi=Math.max(P.target,...bands[4]);
+  const pad=(hi-lo)*0.08;lo-=pad;hi+=pad;
+  const L=56,R=8,T=8,B=26,pw=W-L-R,ph=H-T-B;
+  const x=d=>L+pw*d/(D-1),y=v=>T+ph*(1-(v-lo)/(hi-lo));
+  g.font='11px "IBM Plex Mono",monospace';g.lineWidth=1;
+  const kfmt=v=>{const a=Math.abs(v)>=1000?(v/1000).toFixed(1).replace(/\.0$/,'')+'k':Math.round(v);return(v<0?'−':'')+String(a).replace('-','')};
+  const ticks=5;
+  for(let i=0;i<=ticks;i++){const v=lo+(hi-lo)*i/ticks,yy=y(v);
+    g.strokeStyle=CO.edge;g.beginPath();g.moveTo(L,yy);g.lineTo(W-R,yy);g.stroke();
+    g.fillStyle=CO.dim;g.textAlign='right';g.fillText('$'+kfmt(v),L-6,yy+4)}
+  const band=(a,b,alpha)=>{g.beginPath();
+    for(let d=0;d<D;d++)g.lineTo(x(d),y(bands[a][d]));
+    for(let d=D-1;d>=0;d--)g.lineTo(x(d),y(bands[b][d]));
+    g.closePath();g.fillStyle='rgba(78,134,194,'+alpha+')';g.fill()};
+  band(0,4,0.16);band(1,3,0.26);
+  g.strokeStyle=CO.fan;g.lineWidth=1.6;g.beginPath();
+  for(let d=0;d<D;d++)g.lineTo(x(d),y(bands[2][d]));g.stroke();
+  const hline=(v,col,label)=>{if(v<lo||v>hi)return;const yy=y(v);
+    g.strokeStyle=col;g.setLineDash([5,4]);g.lineWidth=1.2;
+    g.beginPath();g.moveTo(L,yy);g.lineTo(W-R,yy);g.stroke();g.setLineDash([]);
+    g.fillStyle=col;g.textAlign='left';g.fillText(label,L+6,yy-5)};
+  hline(0,'rgba(217,225,236,0.35)','');
+  hline(P.target,CO.gold,'target '+money(P.target));
+  hline(-P.dd,CO.breach,'start floor −'+money(P.dd).slice(0));
+  g.fillStyle=CO.dim;g.textAlign='center';
+  for(const d of[10,20,30,40,50,60])if(d<=D)g.fillText(d,x(d-1),H-9);
+}
+let last=null;
+function recompute(){
+  const P=params();
+  $('microsv').textContent=P.micros;
+  $('budgetv').textContent='$'+P.budget;
+  $('perRv').textContent='$'+P.perR;
+  $('haircutv').textContent=Math.round(P.haircut*100)+'%';
+  $('rowFlat').hidden=P.mode!=='flat';
+  $('rowBudget').hidden=P.mode!=='budget';
+  $('rowExact').hidden=P.mode!=='exact';
+  const D=buildDays(P),shift=P.haircut*D.mu;
+  let sd=0;for(let d=0;d<ND;d++)sd+=(D.out[d]-D.mu)*(D.out[d]-D.mu);sd=Math.sqrt(sd/(ND-1));
+  let worst=Infinity,oneDay=0;
+  for(let d=0;d<ND;d++){const v=D.out[d]-shift;if(v<worst)worst=v;if(v<=-P.dd)oneDay++}
+  const rsort=Float64Array.from(D.risks).sort();
+  const rmed=rsort.length?rsort[rsort.length>>1]:0,rmax=rsort.length?rsort[rsort.length-1]:0;
+  let dv='';
+  if(P.mode==='flat')dv='risk/trade median <b>'+money(rmed)+'</b> · max <b>'+money(rmax)+'</b>';
+  else if(P.mode==='budget')dv='realized risk median <b>'+money(rmed)+'</b> · skipped <b>'+pct(D.skip/D.ntr)+'</b> · avg <b>'+(D.ctot/(D.ntr-D.skip)).toFixed(1)+'</b> micros';
+  else dv='fixed <b>'+money(P.perR)+'</b> risk every trade';
+  const muA=D.mu-shift;
+  $('derived').innerHTML=dv+(D.capskip?'<br>stop cap skips <b>'+pct(D.capskip/D.ntr)+'</b> of trades':'')+
+    '<br>avg day <b>'+(muA<0?'−':'+')+money(Math.abs(muA)).slice(1)+'</b> · σ <b>'+money(sd)+
+    '</b><br>worst sampled day <b>'+money(worst)+'</b> · one-day breach odds <b>'+pct(oneDay/ND)+'</b>';
+  const bank=Math.min(P.wpct/100*P.ftarget,P.cap);
+  $('bankline').innerHTML='banked at payout: <b>'+money(bank)+'</b>';
+  const res=runSim(P,D,shift),fan=runFan(P,D,shift);last={res,fan,P};
+  const n=P.sims,np=res.passDays.length,nb=res.breachDays.length;
+  $('tPass').textContent=pct(np/n);
+  $('tPassSub').textContent=np.toLocaleString()+' of '+n.toLocaleString()+' sims';
+  $('tBreach').textContent=pct(nb/n);
+  $('tBreachSub').textContent='eval phase, EOD check';
+  $('tDays').textContent=d1(med(res.passDays));
+  $('tDaysSub').textContent='median · mean '+d1(mean(res.passDays));
+  const pAll=res.totalDays.length/n;
+  $('tPayout').textContent=pct(pAll);
+  $('tPayoutSub').textContent='pass + bank '+money(bank);
+  $('simMeta').textContent=n.toLocaleString()+' sims · seed '+P.seed+(P.block?' · 5-day blocks':' · iid days')+
+    (res.timeouts?' · '+pct(res.timeouts/n)+' unresolved at day cap':'');
+  $('fN').textContent=np.toLocaleString();
+  $('fPay').textContent=np?pct(res.fundedPay.length/np):'—';
+  $('fDays').textContent=d1(med(res.fundedPay));
+  $('fBreach').textContent=np?pct(res.fundedBreach/np):'—';
+  $('fBank').textContent=money(bank);
+  $('fTotal').textContent=d1(med(res.totalDays));
+  drawHist(res);drawFan(fan,P);
+}
+let deb=null;
+function queue(){clearTimeout(deb);deb=setTimeout(recompute,120)}
+for(const id of['dd','target','minDays','lock','mode','scap','micros','budget','perR','haircut','ftarget','wpct','cap','minFunded','sims','maxDays','block','seed'])
+  $(id).addEventListener('input',queue);
+document.querySelectorAll('.presets button').forEach(b=>b.addEventListener('click',()=>{
+  $('dd').value=b.dataset.dd;$('target').value=b.dataset.tg;
+  $('ftarget').value=b.dataset.ftg;$('cap').value=b.dataset.cap;recompute()}));
+$('reroll').addEventListener('click',()=>{$('seed').value=1+Math.floor(Math.random()*999999);recompute()});
+let rdeb=null;
+window.addEventListener('resize',()=>{clearTimeout(rdeb);rdeb=setTimeout(()=>{if(last){drawHist(last.res);drawFan(last.fan,last.P)}},150)});
+recompute();
+</script>
