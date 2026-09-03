@@ -542,6 +542,38 @@ version by roughly the same ~10-14%%.
 Remaining gate: the June 10 TRADE tagging (crossing/retest/flip
 language), levels now calibrated.
 
+
+## 19. TRADE-LANGUAGE ALIGNMENT: CERTIFIED (2026-09-03) + the news gate
+
+His June-10 tagging (session 2026-06-09, 1m chart, 1R, SAR live) vs the
+sim, same session: **7/7 of his NY trades found within 1-2 minutes, 6/7
+same result** (9:35 L, 11:00-fill W, 11:09 W, 11:26 SAR-scratch ->
+11:28 flip W, 11:45 same-candle-ambig L booked exactly as he books it,
+12:02 W; only the 11:57 fill diverged W/L). Asia empty in both. His
+"first break ~6:42, 7:02 to-the-tick fill, 6.5pt prior-candle stop,
+~20R run" trade exists in the sim shifted by ONE POINT of level: his
+VAL 28,845 vs computed 28,846 - the sim's version filled at the 08:30
+news candle instead and died. Individual trades can flip on 1pt; the
+aggregate cannot (S18 jitter receipt). HIS RULING: within-a-point
+levels "not going to affect the statistics much" - tolerance accepted.
+
+**Pre-market defined: 08:00-09:30 ET (his ruling).**
+
+**News gate implemented** (`--news-gate`, news_archive.csv, 172
+high-impact pre-market dates 2023-2026): on those days no entries
+08:00-09:30 and pendings pulled at 08:00 (the June-10 stale-limit-
+filled-by-the-8:30-candle case is exactly what it deletes). Effect on
+the champion: +1,131R -> +1,133R, maxDD -9.7 -> -10.8R - a WASH on
+totals, removing 191 trades that were sim-positive (+0.09R/trade avg)
+but whose news-candle fills are the least trustworthy prices in the
+whole dataset. Zero measured cost, real model-risk removed. RULE IN.
+
+With the Aug/Sep forward days included the gated profile reads 45/45
+months positive, worst month +2.5R.
+
+STATUS: spec certified against his eyes end to end - levels (S18),
+grammar and results (this section). Ready for the seven-gate hand-off.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)

@@ -172,7 +172,8 @@ def trend_flag(ts, hi, lo, cl, t0_ns, x_pct=0.35):
 def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                  fill_through=False, sar=False, counters=None,
                  entry_off=0.0, fixed_stop=None, tflag=None,
-                 runner=False, runner_tp2=None, runner_stop="be"):
+                 runner=False, runner_tp2=None, runner_stop="be",
+                 block=None):
     """One forward pass, one position at a time, latest pending wins.
 
     fill_through=True is the adverse-selection sensitivity: a fill counts
@@ -232,6 +233,14 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                 bump("skip_counter_trend")   # regime on, signal against it
                 i += 1
                 continue
+        sig_idx0 = np.searchsorted(ts, t_sig)
+        if block is not None and block[0] <= sig_idx0 < block[1]:
+            # his 2026-09-03 news rule: high-impact release in pre-market
+            # (08:00-09:30) -> no new entries in that window. SAR flattens
+            # still fire (this skip is entry-only); open positions ride.
+            bump("skip_news")
+            i += 1
+            continue
         bump("sig")
         start = np.searchsorted(ts, t_sig)
         if start >= n:
@@ -239,6 +248,11 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
         nxt = sigs[i + 1]["t"].value if i + 1 < len(sigs) else None
         nxt_idx = np.searchsorted(ts, nxt) if nxt is not None else n
         cancel = min(nxt_idx, pend_cut_idx, n)
+        if block is not None and start < block[0]:
+            # sit out entirely: a resting limit from before 08:00 is pulled
+            # at the window open (the June-10 case: stale pending filled by
+            # the 08:30 news candle and stopped same minute)
+            cancel = min(cancel, block[0])
         L, d = s["L"], s["dir"]
         E = L + d * entry_off
         seg_lo, seg_hi = lo[start:cancel], hi[start:cancel]
@@ -388,6 +402,11 @@ def main() -> int:
     ap.add_argument("--runner-stop", choices=("be", "orig"), default="be",
                     help="runner stop: breakeven (default) or the original "
                          "structural stop")
+    ap.add_argument("--news-gate", action="store_true",
+                    help="his 2026-09-03 rule: on days with a high-impact "
+                         "USD release in pre-market (08:00-09:30 ET), take "
+                         "no entries in that window and pull pendings at "
+                         "08:00 (data/reference/news_archive.csv)")
     a = ap.parse_args()
     suffix = (("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
               + (f"_tf{a.tf}" if a.tf != 3 else "")
@@ -395,7 +414,16 @@ def main() -> int:
               + (f"_fs{a.fixed_stop:g}" if a.fixed_stop else "")
               + (f"_twf{a.trend_x_pct:g}" if a.trend_filter else "")
               + ((f"_run{a.runner_stop}{f'tp{a.runner_tp2:g}' if a.runner_tp2 else ''}")
-                 if a.runner else ""))
+                 if a.runner else "")
+              + ("_ng" if a.news_gate else ""))
+    news_days = set()
+    if a.news_gate:
+        nf = pd.read_csv(ROOT / "data/reference/news_archive.csv")
+        hi_pm = nf[(nf.impact == "high")
+                   & (nf.time_et >= "08:00") & (nf.time_et < "09:30")]
+        news_days = set(hi_pm.date)
+        print(f"news gate: {len(news_days)} pre-market high-impact dates "
+              f"({min(news_days)} -> {max(news_days)})", flush=True)
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
     trades_out = gzip.open(
@@ -454,6 +482,13 @@ def main() -> int:
                 if a.trend_filter:
                     t0_ns = pd.Timestamp(f"{day} 18:00", tz=OB.NY).value
                     tfl = trend_flag(ts, hi, lo, cl, t0_ns, x_pct=a.trend_x_pct)
+                blk = None
+                if a.news_gate:
+                    t0 = pd.Timestamp(f"{day} 18:00", tz=OB.NY)
+                    morning = str((t0 + pd.Timedelta(hours=15)).date())
+                    if morning in news_days:
+                        blk = (int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=14)).value)),
+                               int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=15.5)).value)))
                 for t in simulate_day(ts, hi, lo, cl, sigs, pcut, tr,
                                       fill_through=a.fill_through,
                                       sar=a.sar, counters=cnt,
@@ -461,7 +496,8 @@ def main() -> int:
                                       fixed_stop=a.fixed_stop, tflag=tfl,
                                       runner=a.runner,
                                       runner_tp2=a.runner_tp2,
-                                      runner_stop=a.runner_stop):
+                                      runner_stop=a.runner_stop,
+                                      block=blk):
                     t.update({"day": day, "depth": depth, "target_r": tr})
                     trades_out.write(json.dumps(t) + "\n")
                     n_trades += 1
