@@ -664,6 +664,17 @@ stops) and 36%% floored trades. As a second, likely-uncorrelated
 stream beside NQ it is additive; as a solo instrument it is the
 lesser tape. His call.
 
+**Timeframe + session anatomy re-derived on GC (his check, 2026-09-03):**
+the tf gradient replicates independently — depth-analog 1R, honest,
+gated, 2025-26: tf1 +224R > tf2 +117 > tf3 +98 > tf5 +16 (WR 62.2 ->
+59.3%%), same monotone faster-wins shape as NQ. Session anatomy too: NY
+is the best window on gold as well (67.4%% WR, half the total R), and
+23:00 is a bottom-three hour on BOTH instruments (the Tokyo-lunch lull
+is market structure, not an NQ artifact). Three structural patterns now
+replicate cross-instrument with zero shared fitting: the 1R-dominant
+target frontier, the faster-signal gradient, and the session/hour map.
+GC's tf1 choice stands on gold's own evidence, not inheritance.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
