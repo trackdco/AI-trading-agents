@@ -150,6 +150,40 @@ def stop_for(sig):
     return stop
 
 
+def merge_levels(fams, floor):
+    """His 2026-09-03 proximity rule: levels within one stop-floor of each
+    other MERGE at session start - the stronger family keeps the level,
+    the weaker book skips it for the day. Priority = measured standalone
+    strength (S25). Deterministic, ex-ante, no knobs."""
+    PRI = ("va", "wva", "pdhl", "poc", "wpoc")
+    pts = []
+    for f, (v1, v2) in fams.items():
+        for slot, v in (("hi", v1), ("lo", v2)):
+            if v is not None and np.isfinite(v):
+                pts.append((float(v), f, slot))
+    dropped = 0
+    changed = True
+    while changed:
+        changed = False
+        pts.sort()
+        for i in range(len(pts) - 1):
+            if pts[i + 1][0] - pts[i][0] <= floor:
+                a_, b_ = pts[i], pts[i + 1]
+                drop = a_ if PRI.index(a_[1]) > PRI.index(b_[1]) else b_
+                pts.remove(drop)
+                dropped += 1
+                changed = True
+                break
+    keep = {(f, slot) for _, f, slot in pts}
+    out = {}
+    for f, (v1, v2) in fams.items():
+        k1 = v1 if (f, "hi") in keep and v1 is not None else np.nan
+        k2 = v2 if (f, "lo") in keep and v2 is not None else np.nan
+        if np.isfinite(k1) or np.isfinite(k2):
+            out[f] = (k1, k2)
+    return out, dropped
+
+
 def trend_flag(ts, hi, lo, cl, t0_ns, x_pct=0.35):
     """Per-bar trend-DAY flag, causal, LATCHED: the first close >= x_pct
     of the Asia open beyond that open marks the day trending in that
@@ -423,7 +457,8 @@ def main() -> int:
                          "08:00 (data/reference/news_archive.csv)")
     ap.add_argument("--instrument", choices=tuple(INSTRUMENTS), default="nq",
                     help="which tape: constants + bars swap per instrument")
-    ap.add_argument("--levels", choices=("va", "pdhl", "poc", "wva", "wpoc"),
+    ap.add_argument("--levels",
+                    choices=("va", "pdhl", "poc", "wva", "wpoc", "all"),
                     default="va",
                     help="level family: PD value area (default), PD high/low, "
                          "PD POC, weekly VA, weekly POC - identical grammar, "
@@ -443,6 +478,12 @@ def main() -> int:
         MIN_RISK = a.min_risk
     if a.depths is not None:
         DEPTHS = tuple(float(x) for x in a.depths.split(","))
+    targets = TARGETS
+    if a.levels == "all":
+        DEPTHS = (inst["depths"][-1],)
+        targets = (1.0,)
+        print(f"levels=all: certified cell only (depth {DEPTHS[0]}, 1R), "
+              f"proximity merge at {MIN_RISK}pt", flush=True)
     suffix = ((f"_{a.instrument}" if a.instrument != "nq" else "")
               + (f"_lv{a.levels}" if a.levels != "va" else "")
               + (f"_mr{a.min_risk:g}" if a.min_risk is not None else "")
@@ -479,6 +520,7 @@ def main() -> int:
     per_day_meta = {}
 
     day_cache = []
+    MERGE_DROPS = []
     prev_t0 = None
     for day in days:
         t0 = pd.Timestamp(f"{day} 18:00", tz=OB.NY)
@@ -490,7 +532,27 @@ def main() -> int:
         prev_t0 = t0
         if len(pseg) < 300 or len(sess) < 600 or day in roll_skip:
             continue    # roll days: prior profile sits in the old contract
-        if a.levels == "va":
+        if a.levels == "all":
+            poc_, val, vah = volume_profile(pseg, bin_w=BIN_W)
+            if not (np.isfinite(vah) and np.isfinite(val)):
+                continue
+            fams = {"va": (vah, val),
+                    "pdhl": (float(pseg.high.max()), float(pseg.low.min())),
+                    "poc": (poc_, np.nan)}
+            try:
+                aw = anchored_weekly_profile(
+                    bars, day, upto=t0 + pd.Timedelta(hours=1))
+                fams["wva"] = (float(aw["awVAH"]), float(aw["awVAL"]))
+                fams["wpoc"] = (float(aw["awPOC"]), np.nan)
+            except Exception:
+                pass
+            fams = {f: (round(v1 / TICK) * TICK if np.isfinite(v1) else np.nan,
+                        round(v2 / TICK) * TICK if np.isfinite(v2) else np.nan)
+                    for f, (v1, v2) in fams.items()}
+            fams, ndrop = merge_levels(fams, MIN_RISK)
+            MERGE_DROPS.append(ndrop)
+            vah, val = fams, np.nan          # dict rides the vah slot
+        elif a.levels == "va":
             _, val, vah = volume_profile(pseg, bin_w=BIN_W)
         elif a.levels == "pdhl":
             vah, val = float(pseg.high.max()), float(pseg.low.min())
@@ -506,12 +568,13 @@ def main() -> int:
                 vah, val = float(aw["awVAH"]), float(aw["awVAL"])
             else:
                 vah, val = float(aw["awPOC"]), np.nan
-        if not np.isfinite(vah):
-            continue
-        if a.levels not in ("poc", "wpoc") and not np.isfinite(val):
-            continue
-        vah = round(vah / TICK) * TICK
-        val = round(val / TICK) * TICK if np.isfinite(val) else np.nan
+        if not isinstance(vah, dict):
+            if not np.isfinite(vah):
+                continue
+            if a.levels not in ("poc", "wpoc") and not np.isfinite(val):
+                continue
+            vah = round(vah / TICK) * TICK
+            val = round(val / TICK) * TICK if np.isfinite(val) else np.nan
         c3 = sess.resample(f"{a.tf}min").agg(
             {"open": "first", "high": "max", "low": "min", "close": "last"}).dropna()
         hrs3 = (c3.index - t0).total_seconds() / 3600
@@ -524,9 +587,10 @@ def main() -> int:
         pend_cut = int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=PEND_CUT_H)).value))
         day_cache.append((day, ts, sess.high.to_numpy(), sess.low.to_numpy(),
                           sess.close.to_numpy(), c3, vah, val, pend_cut))
-        per_day_meta[day] = {
-            "pd_range": round(float(pseg.high.max() - pseg.low.min()), 2),
-            "vah": vah, "val": val, "va_width": round(vah - val, 2)}
+        if not isinstance(vah, dict):
+            per_day_meta[day] = {
+                "pd_range": round(float(pseg.high.max() - pseg.low.min()), 2),
+                "vah": vah, "val": val, "va_width": round(vah - val, 2)}
 
     print(f"{len(day_cache)} tradeable days "
           f"({day_cache[0][0]} -> {day_cache[-1][0]})", flush=True)
@@ -534,14 +598,20 @@ def main() -> int:
     n_cfg = 0
     funnel = {}
     for depth in DEPTHS:
-        sig_cache = [day_signals(c3, vah, val, depth, tf=a.tf)
-                     for (_, _, _, _, _, c3, vah, val, _) in day_cache]
-        for tr in TARGETS:
+        sig_cache = []
+        for (_, _, _, _, _, c3, vah, val, _) in day_cache:
+            if isinstance(vah, dict):
+                sig_cache.append({f: day_signals(c3, v1, v2, depth, tf=a.tf)
+                                  for f, (v1, v2) in vah.items()})
+            else:
+                sig_cache.append({a.levels: day_signals(c3, vah, val, depth,
+                                                        tf=a.tf)})
+        for tr in targets:
             n_cfg += 1
             n_trades = 0
             cnt = funnel.setdefault(f"depth{depth:g}_R{tr:g}", {})
-            for (day, ts, hi, lo, cl, _, _, _, pcut), sigs in zip(day_cache, sig_cache):
-                if not sigs:
+            for (day, ts, hi, lo, cl, _, _, _, pcut), sigmap in zip(day_cache, sig_cache):
+                if not any(sigmap.values()):
                     continue
                 tfl = None
                 if a.trend_filter:
@@ -554,19 +624,23 @@ def main() -> int:
                     if morning in news_days:
                         blk = (int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=14)).value)),
                                int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=15.5)).value)))
-                for t in simulate_day(ts, hi, lo, cl, sigs, pcut, tr,
-                                      fill_through=a.fill_through,
-                                      sar=a.sar, counters=cnt,
-                                      entry_off=a.entry_offset,
-                                      fixed_stop=a.fixed_stop, tflag=tfl,
-                                      runner=a.runner,
-                                      runner_tp2=a.runner_tp2,
-                                      runner_stop=a.runner_stop,
-                                      block=blk):
-                    t.update({"day": day, "depth": depth, "target_r": tr})
-                    trades_out.write(json.dumps(t) + "\n")
-                    n_trades += 1
-            print(f"[{n_cfg}/{len(DEPTHS) * len(TARGETS)}] depth={depth} "
+                for fam, sigs in sigmap.items():
+                    if not sigs:
+                        continue
+                    for t in simulate_day(ts, hi, lo, cl, sigs, pcut, tr,
+                                          fill_through=a.fill_through,
+                                          sar=a.sar, counters=cnt,
+                                          entry_off=a.entry_offset,
+                                          fixed_stop=a.fixed_stop, tflag=tfl,
+                                          runner=a.runner,
+                                          runner_tp2=a.runner_tp2,
+                                          runner_stop=a.runner_stop,
+                                          block=blk):
+                        t.update({"day": day, "depth": depth, "target_r": tr,
+                                  "family": fam})
+                        trades_out.write(json.dumps(t) + "\n")
+                        n_trades += 1
+            print(f"[{n_cfg}/{len(DEPTHS) * len(targets)}] depth={depth} "
                   f"R={tr}: {n_trades} trades", flush=True)
     trades_out.close()
     if a.levels == "va":
@@ -576,6 +650,10 @@ def main() -> int:
             json.dumps(per_day_meta))
     (ROOT / f"output/analysis/pd_va_funnel{suffix}.json").write_text(
         json.dumps(funnel, indent=1))
+    if MERGE_DROPS:
+        print(f"proximity merge: {sum(MERGE_DROPS)} levels dropped across "
+              f"{len(MERGE_DROPS)} days (avg {np.mean(MERGE_DROPS):.2f}/day)",
+              flush=True)
     print(f"DONE -> output/analysis/pd_va_trades{suffix}.jsonl.gz", flush=True)
     return 0
 

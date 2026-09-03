@@ -768,6 +768,32 @@ worst month +3.0R. DD-efficiency 18.4%% of maxDD earned per day vs
 Full-risk-each: +4.2R/day at -22.8R, ~31 trades/day - automation
 territory. GC families and the live wiring are the open ends.
 
+## 26. THE 8-LEVEL BOOK: proximity rule + full picture (2026-09-03)
+
+**His proximity rule, concrete:** at session start, levels within one
+stop-floor of each other (5pt NQ) MERGE - the stronger family keeps the
+level (priority PD VA > weekly VA > PD H/L > PD POC > weekly POC), the
+weaker book skips it that day. Ex-ante, deterministic, no knobs.
+It binds 1.32 levels/day (1,204 drops over 915 days) and removes ~700R
+of double-counted overlap vs the naive five-book sum.
+
+**Full picture (--levels all, certified cell, honest fills, gated):**
+23,102 trades, WR 66.4%%, expectancy +0.137R/trade, 17%% scratches,
+**+3,154R total, +3.60R/day at full risk per stream, maxDD -14.6R** -
+the drawdown is now four average days deep (vs 8.7 for the single
+book). Yearly: 2023 +652R / 2024 +942R / 2025 +951R / 2026 +609R
+(R/day rising +2.67 -> +4.38; green days 69-76%%; no yearly maxDD worse
+than -14.6R). Frequency: 19 -> 38 trades/day across the era.
+
+**45/45 months positive. Median month +72.4R. WORST MONTH +9.8R.**
+The book has never printed a losing month, and its worst month clears
+most funded-account monthly targets on its own.
+
+Sizing dial: 1/5 risk per stream = +0.72R/day at maxDD **-2.9R** (73%%
+green days); half risk = ~+1.8R/day at ~-7.3R. Every point dominates
+the single-stream book. Per-family post-merge: va +1,133R (keeps its
+levels by priority), wva +662, pdhl +626, poc +518, wpoc +216.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
