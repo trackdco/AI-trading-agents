@@ -46,6 +46,22 @@ Inputs (regenerate with --conviction on both engines):
   output/analysis/vwap_rev_tf1_retest_xr30_dd.jsonl.gz
   output/analysis/vwap_rev_tf1_retest_xr30_nyanc_dd.jsonl.gz
 Output: printed tables + output/analysis/conviction_sizing.json
+
+ARM-AFTER-DISPLACEMENT (added 2026-09-03, his ask). Run with --arm to
+compare the armed empire against flat and against conviction sizing.
+Unlike sizing, arming CHANGES THE TRADE SET: a pending that never runs
+arm x risk past the level expires unfilled and frees the book, and one
+that displaces late fills later. So it is a genuine engine run, not
+arithmetic on a tagged dump.
+
+PREREGISTERED for the armed test — written before any armed result was
+read, same shape as the sizing test:
+  ADOPT if drawdown-matched R/day improves >= 5% vs flat in BOTH halves.
+  Judged additionally against the incumbent (conviction sizing), since
+  a layer that is merely as good as what is already adopted adds knobs
+  for nothing. Arm multiple 1.0 is the preregistered value: it is the
+  audit's own tier threshold, fixed before results were read. 0.5 is
+  carried on the level book only, as a sensitivity read.
 """
 from __future__ import annotations
 
@@ -178,7 +194,20 @@ def stats(days, v, label, scale=1.0):
     }
 
 
+def empire(suffix=""):
+    lv = load(f"pd_va_trades_lvall_xr30_sar_through_tf1_ng{suffix}.jsonl.gz")
+    sv = load(f"vwap_rev_tf1_retest_xr30_dd{suffix}.jsonl.gz", champ_cell=True)
+    nv = load(f"vwap_rev_tf1_retest_xr30_nyanc_dd{suffix}.jsonl.gz", champ_cell=True)
+    for nm, b in (("8-level", lv), ("vwap-session", sv), ("vwap-ny", nv)):
+        assert all("tier" in t for t in b), f"{nm}{suffix} untagged"
+    print(f"books{suffix or ' (flat)'}: {len(lv):,} + {len(sv):,} + {len(nv):,}")
+    return rail_pass([lv, sv, nv])
+
+
 def main() -> int:
+    import sys
+    if "--arm" in sys.argv:
+        return armed_report()
     lv = load("pd_va_trades_lvall_xr30_sar_through_tf1_ng.jsonl.gz")
     sv = load("vwap_rev_tf1_retest_xr30_dd.jsonl.gz", champ_cell=True)
     nv = load("vwap_rev_tf1_retest_xr30_nyanc_dd.jsonl.gz", champ_cell=True)
@@ -318,6 +347,84 @@ def main() -> int:
         st["verdict"] = v
     (OUT / "conviction_sizing.json").write_text(json.dumps(report, indent=1))
     print(f"\n-> {OUT / 'conviction_sizing.json'}")
+    return 0
+
+
+ARM_SIZE = {"A": 1.0, "B": 1.0, "C": 0.5, "D": 0.5}   # the adopted 2:1 rule
+
+
+def armed_report() -> int:
+    """Armed empire vs flat vs the adopted sizing layer."""
+    base = empire("")
+    arm = empire("_arm1")
+    days_b, v_b = daily(base, SCHEMES["flat"])
+    flat_dd, flat_sd = maxdd(v_b), float(v_b.std())
+    n_b = sum(len(x) for x in base.values())
+    n_a = sum(len(x) for x in arm.values())
+    print(f"\narming kept {n_a:,} of {n_b:,} trades ({n_a/n_b:.1%}); "
+          f"{n_b - n_a:,} pendings never displaced")
+
+    rows = [("flat (frozen spec)", base, SCHEMES["flat"]),
+            ("conviction 2:1 (adopted)", base, ARM_SIZE),
+            ("ARMED 1R, flat size", arm, SCHEMES["flat"]),
+            ("ARMED 1R + 2:1 sizing", arm, ARM_SIZE)]
+    print("\nDRAWDOWN-MATCHED vs flat (preregistered bar: +5% R/day BOTH halves)")
+    print(f"  {'variant':<26}{'trades':>8}{'R/day':>9}{'vs flat':>9}{'IS':>9}"
+          f"{'OOS':>9}{'Sharpe':>8}{'total R':>9}{'mean size':>10}")
+    out = {}
+    for label, kept, mult in rows:
+        days, v = daily(kept, mult)
+        assert days == days_b or len(days) == len(days_b), "day grid moved"
+        sc = flat_dd / maxdd(v)
+        st = stats(days, v, label, sc)
+        d_is = st["R_day_IS"] / stats(days_b, v_b, "f")["R_day_IS"] - 1
+        d_oos = st["R_day_OOS"] / stats(days_b, v_b, "f")["R_day_OOS"] - 1
+        ms = float(np.mean([mult[t["tier"]] for ts in kept.values() for t in ts])) * sc
+        print(f"  {label:<26}{sum(len(x) for x in kept.values()):>8,}"
+              f"{st['R_day']:>9.3f}{st['R_day']/(v_b.mean()) - 1:>+9.1%}"
+              f"{d_is:>+9.1%}{d_oos:>+9.1%}{st['sharpe']:>8.3f}"
+              f"{st['total_R']:>9.0f}{ms:>10.3f}")
+        out[label] = dict(st, vs_flat_IS=round(d_is, 4), vs_flat_OOS=round(d_oos, 4))
+
+    print("\nVOLATILITY-MATCHED (the conservative floor)")
+    print(f"  {'variant':<26}{'R/day':>9}{'vs flat':>9}{'Sharpe':>8}{'maxDD':>8}")
+    for label, kept, mult in rows:
+        days, v = daily(kept, mult)
+        sc = flat_sd / float(v.std())
+        st = stats(days, v, label, sc)
+        print(f"  {label:<26}{st['R_day']:>9.3f}"
+              f"{st['R_day']/v_b.mean() - 1:>+9.1%}{st['sharpe']:>8.3f}{st['maxDD']:>8.1f}")
+
+    print("\nSAME AVERAGE POSITION SIZE (no normalisation)")
+    print(f"  {'variant':<26}{'total R':>9}{'R/day':>9}{'maxDD':>8}{'green':>7}"
+          f"{'worst d':>9}{'mo +':>8}{'worst mo':>9}")
+    for label, kept, mult in rows:
+        days, v = daily(kept, mult)
+        mr = float(np.mean([mult[t["tier"]] for ts in kept.values() for t in ts]))
+        v = v / mr
+        mo = defaultdict(float)
+        for d, x in zip(days, v):
+            mo[d[:7]] += x
+        mv = np.array(list(mo.values()))
+        print(f"  {label:<26}{v.sum():>9.0f}{v.mean():>9.2f}{maxdd(v):>8.1f}"
+              f"{(v > 0).mean():>7.0%}{v.min():>9.1f}"
+              f"{(mv > 0).sum():>4}/{len(mv):<3}{mv.min():>9.1f}")
+
+    print("\nTIER CENSUS OF THE ARMED BOOK (arming should purge C/D)")
+    for label, kept in (("flat", base), ("armed", arm)):
+        cen = defaultdict(lambda: [0, 0.0])
+        for ts in kept.values():
+            for t in ts:
+                c = cen[t["tier"]]
+                c[0] += 1
+                c[1] += t["r"] - COST_PTS / t["risk"]
+        tot = sum(c[0] for c in cen.values())
+        print(f"  {label:<7}" + "  ".join(
+            f"{k}: {cen[k][0]:>6,} ({cen[k][0]/tot:>5.1%}, EV {cen[k][1]/max(cen[k][0],1):+.3f})"
+            for k in sorted(cen)))
+
+    (OUT / "arm_after.json").write_text(json.dumps(out, indent=1))
+    print(f"\n-> {OUT / 'arm_after.json'}")
     return 0
 
 
