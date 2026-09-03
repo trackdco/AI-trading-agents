@@ -600,6 +600,37 @@ The edge is uniform across everything observable - the signature of a
 real mechanical edge rather than a conditional one. Further filtering
 is the path the killed experiments (S15, S16) already walked.
 
+
+## 21. Loss anatomy round 2 - heavy machinery, prereg'd rule (2026-09-03)
+
+His ask: more pre-entry features, using everything available; his own
+caveat that high-frequency + low bounding makes a separator unlikely,
+but the sample (n=7.6k) gives the power to know. Eleven bars-based
+features (VWAP side + stretch, 15m MA alignment, weekly VA, session
+position, chop v2, level touch count, time-since-touch, day density,
+2h drift alignment, open-vs-VA gap), split-half, with the verdict rule
+FIXED before results: survivor = same extreme ordering both halves +
+>=0.05R spread both + n>=400 per extreme per half.
+
+**ZERO SURVIVORS.** Three watch-items, all pointing the same mild way:
+with_drift beats against_drift (+0.04R both halves), toward weekly
+value beats inside (+0.03 both), and the 7th+ trade of the day beats
+the 1st-2nd (+0.05, OOS misses the bar by 0.001). A faint with-trend/
+toward-value tailwind, none of it actionable alone, and stacking
+watch-items post hoc is the fishing the rule forbids.
+
+The rule earned its keep visibly: vwap stretch z2+ printed +0.264R
+in-sample and collapsed to +0.036 out-of-sample - the textbook
+half-flip a naive screen would have shipped. touches 0-5 did the same
+(0.179 -> 0.074). time-since-touch turned out degenerate by
+construction (the crossing candle just touched the level) - a design
+flaw owned, not data. VWAP-relative direction and 15m-MA alignment:
+dead flat - remarkable in itself.
+
+**Conclusion, with real power this time: the edge is unconditional.**
+At this n, a >=0.05R conditional edge across these dimensions would
+have been found. His instinct was right, and the mining stops here.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
