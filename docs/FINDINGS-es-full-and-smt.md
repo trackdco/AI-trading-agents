@@ -119,3 +119,68 @@ audit's `excur`.
   native sweep was not run — there was no positive result to defend.
 - Cost model is $4/RT plus one tick on market exits. At $2/RT commission
   ES's best cell reaches roughly +0.03R/trade; still not tradeable.
+
+---
+
+## 5. Level-SMT on the full history: NULL — and a lookahead caught
+
+Second SMT encoding, his ask: is ES closing through **its own** prior-day
+value area in the same direction as the NQ signal? Cleaner than the
+fill-based version — ES *signals* are computed directly (crossing closes
+of ES's own PD VAH/VAL at ES's certified depth, 11.0 signals/day over 931
+days), so the feature is "did the other index break its level", not "did
+the other index's retest happen to fill".
+
+Population: the production **8-level NQ book**, 22,048 trades over 875
+days — three times the PD-VA-only population, chosen because the oppose
+bucket was the binding constraint (250/half) on the first pass.
+
+**The first run printed SURVIVOR. It was wrong.**
+
+| ±15 min window (`abs()`) | n | WR | net EV | IS | OOS |
+|---|---:|---:|---:|---:|---:|
+| confirm | 5,886 | 68.5% | +0.1844 | +0.2198 | +0.1598 |
+| oppose | 1,406 | 62.2% | +0.0573 | +0.0775 | +0.0423 |
+
+confirm − oppose: IS +0.1422 / OOS +0.1175, smallest half-cell 598 —
+clears every arm of the rule.
+
+**The window used `abs(h - t_sig)`, so ES signals in the 15 minutes
+AFTER the NQ signal counted as confirmation.** That is lookahead, and it
+is the worst kind: if ES breaks its level in the same direction shortly
+after the NQ signal, the move continued — which is exactly what makes the
+NQ trade win. The feature was reading the outcome.
+
+Causal fix — only ES signals **at or before** the NQ signal minute:
+
+| ES signal in the preceding 15 min (PRIMARY) | n | share | WR | net EV | IS | OOS |
+|---|---:|---:|---:|---:|---:|---:|
+| confirm | 3,685 | 16.7% | 67.7% | +0.1649 | +0.1913 | +0.1475 |
+| oppose | 1,287 | 5.8% | 68.6% | **+0.1824** | +0.1949 | +0.1736 |
+| silent | 17,076 | 77.4% | 65.8% | +0.1328 | +0.1439 | +0.1252 |
+
+**confirm − oppose: IS −0.0036 / OOS −0.0261. NULL.** Oppose is very
+slightly *better*. The preceding-5-minute sensitivity agrees (IS +0.0070
+/ OOS −0.0599, and n<400). Direction of the other index's break carries
+nothing.
+
+The one consistent pattern is not SMT: **"ES did something at its own
+level recently" (+0.1695) beats "ES was silent" (+0.1328)** regardless of
+direction — spread IS +0.0484 / OOS +0.0289, which lands just under the
+0.03 WATCH floor and is anyway an activity/volatility proxy already
+covered by the conviction audit's session-progress and displacement
+features. Not new information.
+
+**Both SMT encodings are now dead.** The swing version was null because
+confirm and diverge were identical; the level version is null once the
+lookahead is removed. Cross-market confirmation does not price this book.
+
+### Process note
+
+That is the third instrument-level error caught in this program's own
+work today, and the pattern is the same each time: a feature that reads
+the future looks like a strong, clean, split-half-consistent survivor.
+The candle-shape leak (round-tripped timestamps pulling the fill bar into
+signal features), and now this. **A result that looks unusually good is
+the signal to re-audit the indexing, not to celebrate.** Both are logged
+rather than quietly fixed.
