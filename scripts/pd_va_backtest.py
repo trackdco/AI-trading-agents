@@ -221,7 +221,7 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                  fill_through=False, sar=False, counters=None,
                  entry_off=0.0, fixed_stop=None, tflag=None,
                  runner=False, runner_tp2=None, runner_stop="be",
-                 block=None):
+                 block=None, max_risk=None):
     """One forward pass, one position at a time, latest pending wins.
 
     fill_through=True is the adverse-selection sensitivity: a fill counts
@@ -289,6 +289,15 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             bump("skip_news")
             i += 1
             continue
+        if max_risk is not None and not fixed_stop:
+            # his stop-cap rule (2026-09-03): a signal whose structural stop
+            # exceeds the cap is never placed. Risk-on gated only - SAR
+            # flattens still fire; same pending-replacement semantics as the
+            # other entry-time skips.
+            if abs((s["L"] + s["dir"] * entry_off) - stop_for(s)) > max_risk:
+                bump("skip_stop_cap")
+                i += 1
+                continue
         bump("sig")
         start = np.searchsorted(ts, t_sig)
         if start >= n:
@@ -466,6 +475,9 @@ def main() -> int:
     ap.add_argument("--min-risk", type=float, default=None,
                     help="override the stop floor (also the escalation "
                          "trigger), in instrument points")
+    ap.add_argument("--max-risk", type=float, default=None,
+                    help="stop cap in points: signals with wider structural "
+                         "stops are never placed")
     ap.add_argument("--depths", default=None,
                     help="override the close-through depth grid, "
                          "comma-separated points")
@@ -487,6 +499,7 @@ def main() -> int:
     suffix = ((f"_{a.instrument}" if a.instrument != "nq" else "")
               + (f"_lv{a.levels}" if a.levels != "va" else "")
               + (f"_mr{a.min_risk:g}" if a.min_risk is not None else "")
+              + (f"_xr{a.max_risk:g}" if a.max_risk is not None else "")
               + ("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
               + (f"_tf{a.tf}" if a.tf != 3 else "")
               + (f"_off{int(round(a.entry_offset / 0.25))}" if a.entry_offset else "")
@@ -635,7 +648,7 @@ def main() -> int:
                                           runner=a.runner,
                                           runner_tp2=a.runner_tp2,
                                           runner_stop=a.runner_stop,
-                                          block=blk):
+                                          block=blk, max_risk=a.max_risk):
                         t.update({"day": day, "depth": depth, "target_r": tr,
                                   "family": fam})
                         trades_out.write(json.dumps(t) + "\n")

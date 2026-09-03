@@ -110,11 +110,16 @@ def stop_for(sig):
 
 
 def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
-             book_pos=None):
+             book_pos=None, max_risk=None):
     """book_pos: list of (fill_hrs, end_hrs, dir, entry) level-book
     positions for the cross-book dedupe rule (2026-09-03): a VWAP entry
     is skipped when a level-book position is open at the fill moment,
-    same direction, entries within one stop-floor."""
+    same direction, entries within one stop-floor.
+
+    max_risk: his stop-cap rule (2026-09-03) — a signal whose structural
+    stop exceeds the cap in points is never placed (risk-on gated only;
+    SAR flattens unaffected; same pending-replacement semantics as the
+    other entry-time skips)."""
     trades = []
     i = 0
     t_free = ts[0] - 1
@@ -133,6 +138,11 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
             continue
         L, d = s["L"], s["dir"]
         stop = stop_for(s)
+        if max_risk is not None:
+            e_pros = float(s["close"]) if style == "market" else L
+            if abs(e_pros - stop) > max_risk:
+                i += 1
+                continue
         if style == "market":
             fill = start
             E = float(s["close"])
@@ -208,13 +218,18 @@ def main() -> int:
     ap.add_argument("--dedupe", action="store_true",
                     help="cross-book rule: skip entries duplicating an open "
                          "level-book position (same dir, within one floor)")
+    ap.add_argument("--max-risk", type=float, default=None,
+                    help="stop cap in points: signals with wider structural "
+                         "stops are never placed (dedupe then reads the "
+                         "matching capped level-book dump)")
     a = ap.parse_args()
     book_by_day = {}
     if a.dedupe:
         import collections
         bb = collections.defaultdict(list)
+        xr = f"_xr{a.max_risk:g}" if a.max_risk is not None else ""
         for l in gzip.open(ROOT / "output/analysis/"
-                           "pd_va_trades_lvall_sar_through_tf1_ng.jsonl.gz", "rt"):
+                           f"pd_va_trades_lvall{xr}_sar_through_tf1_ng.jsonl.gz", "rt"):
             t = json.loads(l)
             bb[t["day"]].append((t["fill_hrs"],
                                  t["fill_hrs"] + t["hold_min"] / 60,
@@ -229,6 +244,7 @@ def main() -> int:
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
     out = ROOT / (f"output/analysis/vwap_rev_tf{a.tf}_{a.style}"
+                  + (f"_xr{a.max_risk:g}" if a.max_risk is not None else "")
                   + ("_nyanc" if a.anchor == "ny" else "")
                   + ("_dd" if a.dedupe else "") + ".jsonl.gz")
     fh = gzip.open(out, "wt")
@@ -279,7 +295,8 @@ def main() -> int:
             for tr in TARGETS:
                 for t in simulate(ts, hi_, lo_, cl_, sigs, pcut, tr,
                                   a.style, blk,
-                                  book_pos=book_by_day.get(day)):
+                                  book_pos=book_by_day.get(day),
+                                  max_risk=a.max_risk):
                     t.update({"day": day, "depth": depth, "target_r": tr})
                     fh.write(json.dumps(t) + "\n")
                     n_all += 1

@@ -1025,13 +1025,65 @@ equity fan vs target and floor, start-to-first-payout odds and days.
 Data regenerates via the validation script
 (`output/analysis/empire_trades.json`, `empire_daily.npy`).
 
+## 34. THE STOP CAP (his ruling, 2026-09-03): skip stops wider than 30pt
+
+His reaction to the funded sim's flat-micro readout ("max $540 risk...
+i do not want to be entering a trade with that big of a stop man. stop
+cap needs to be put in place for sure"). Diagnosis first, then the
+rule, in-engine receipts for both.
+
+**Where monster stops come from.** The structural stop is one tick
+beyond the close-through candle extreme — so a giant 1m candle makes a
+giant stop. The tail is event days, not one book: 2025-04-06/08
+(tariff crash, stops 179-270pt across poc/pdhl/vwap books), 2024-08-04
+(yen unwind), 2026-07-09. Distribution: median 8.5pt, p95 27pt, p99
+47pt, max 269.8pt; 3.9% of trades carry stops >30pt.
+
+**The tail is the weakest segment of the book.** Net expectancy by
+stop bucket decays monotonically past 15pt: 5-10pt +0.140 / 10-15
++0.150 / 15-20 +0.120 / 20-30 +0.103 / 30-50 +0.072 / 50+ +0.055R,
+with the same ordering in both halves of the sample and positive in
+every year (so the cap is not free money — the skipped trades still
+made +198R over four years). Under micro sizing that is the worst
+possible allocation: flat contracts bet the MOST dollars on the
+lowest-expectancy trades. The cap fixes an allocation absurdity and
+costs a little R.
+
+**Cap sweep (post-hoc)**: 15pt keeps 80.0% of trades / 84% of R (too
+expensive); 20pt 89.2% / 93%; 25pt 93.7% / 96%; **30pt 96.1% / 98%**;
+40pt+ barely binds. 30pt chosen: kills every event-day monster, caps
+one micro's risk at $60 (his budget example number), costs ~2% of R.
+
+**In-engine receipt** (`--max-risk 30` added to pd_va_backtest.py and
+vwap_revolve.py: a signal whose structural stop exceeds the cap is
+never placed — risk-on gated only, SAR flattens untouched, flip
+signals gated the same; the vwap dedupe reads the matching capped
+level book). Rail-passed empire, capped vs uncapped:
+
+  uncapped   74,616 tr  exp +0.1347R  +10,052R  +10.91R/d  worst day -19.8R
+  cap 30pt   71,961 tr  exp +0.1375R   +9,896R  +10.74R/d  worst day -18.1R
+
+Expectancy RISES, daily Sharpe ticks up (1.156 -> 1.158), 45/45 months
+still positive, all four years solid (2023 +2,179 / 2024 +2,802 /
+2025 +2,893 / 2026 +2,022R). In-engine beats the post-hoc estimate by
++41R (224 recovered trades — a skipped signal frees the book), so the
+post-hoc knob in the artifact is the conservative view. Flat 1-micro $
+stream: worst day -$485 -> -$363, max single-trade risk $540 -> $60.
+
+**Spec amendment**: stop cap 30pt on NQ, adopted. As a vol ratio:
+30pt = 4.2x the NQ 2026 median 1m candle (7.1pt) — the GC equivalent
+is ~9pt (4.2 x 2.10), to be certified on gold's own tape before the
+gold book goes live. The funded-sim artifact carries the cap as a knob
+(default 30, post-hoc semantics).
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
 65-70%% win rate high frequency strategy." The spec is frozen as
 certified (S19): 1m close >=3pt through PD VAH/VAL, limit retest,
-structural stop (5pt floor), 1R full exit, SAR flip, all sessions,
-news gate 08:00-09:30, sized per R. Every proposed modification was
+structural stop (5pt floor, 30pt cap per S34 - wider-stop signals are
+never placed), 1R full exit, SAR flip, all sessions, news gate
+08:00-09:30, sized per R. Every proposed modification was
 tested; the survivors are in, the kills are logged (S15, S16, S20,
 S21).
 
