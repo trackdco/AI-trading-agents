@@ -171,7 +171,8 @@ def trend_flag(ts, hi, lo, cl, t0_ns, x_pct=0.35):
 
 def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                  fill_through=False, sar=False, counters=None,
-                 entry_off=0.0, fixed_stop=None, tflag=None):
+                 entry_off=0.0, fixed_stop=None, tflag=None,
+                 runner=False, runner_tp2=None, runner_stop="be"):
     """One forward pass, one position at a time, latest pending wins.
 
     fill_through=True is the adverse-selection sensitivity: a fill counts
@@ -194,6 +195,17 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
     for one tick per trade. Stops stay structure-anchored, so risk widens
     by the offset too.
 
+    runner=True is his 2026-09-03 partial+runner build: when the target
+    prints, HALF banks at target_r and the other half free-rolls with the
+    stop at breakeven (entry). The runner dies on the first of: BE touch
+    (0R), an opposing crossing close (SAR mark — chop kills it fast,
+    drives keep it alive), runner_tp2 if given, or session end. The
+    runner does NOT occupy — new signals trade normally (prop frequency
+    preserved) — and at most one runner is alive at a time (a target
+    print while one rides banks in full at target_r). Stopped-before-
+    target trades are unchanged at −1R full size. Trade r is the blend:
+    0.5*target_r + 0.5*runner_r; fields r_run/run_res carry the detail.
+
     counters, if a dict, accumulates the signal funnel:
     sig / skip_in_pos / replaced / expired / filled."""
     trades = []
@@ -201,6 +213,7 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
     t_free = ts[0] - 1
     n = len(ts)
     thru = TICK if fill_through else 0.0
+    runner_until = -1                      # bar idx the live runner dies at
 
     def bump(k):
         if counters is not None:
@@ -272,6 +285,7 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                     break
         ambig = s_idx == t_idx and s_idx < n
         first = min(s_idx, t_idx)
+        r_run, run_res = None, None
         if sar_idx <= first and sar_idx <= n:     # flatten on opposing close
             exit_idx = min(sar_idx, n - 1)
             r = d * (sar_px - E) / risk
@@ -282,6 +296,43 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
         elif t_idx < s_idx:
             exit_idx, r = t_idx, target_r
             res = "TARGET"
+            if runner and t_idx >= runner_until:
+                # half banks at target; half free-rolls from the TP1 bar.
+                # runner_stop "be": stop at entry (0R stop-out);
+                # runner_stop "orig": the structural stop stays (-1R
+                # stop-out, blended 0.0 worst case — his 50/50 doctrine).
+                # Conservative: the TP1 bar itself can stop the runner.
+                rs_px = E if runner_stop == "be" else stop
+                rs_r = 0.0 if runner_stop == "be" else -1.0
+                w2_lo, w2_hi = lo[t_idx:], hi[t_idx:]
+                be_hit = (w2_lo <= rs_px) if d == 1 else (w2_hi >= rs_px)
+                be_idx = t_idx + int(np.argmax(be_hit)) if be_hit.any() else n
+                opp_idx, opp_px = n + 1, None
+                for sj in sigs:
+                    if sj["dir"] == -d and sj["t"].value > ts[t_idx]:
+                        opp_idx = int(np.searchsorted(ts, sj["t"].value))
+                        opp_px = sj["close"]
+                        break
+                tp2_idx = n + 1
+                if runner_tp2:
+                    tgt2 = E + d * runner_tp2 * risk
+                    t2 = (w2_hi >= tgt2) if d == 1 else (w2_lo <= tgt2)
+                    tp2_idx = t_idx + int(np.argmax(t2)) if t2.any() else n + 1
+                if opp_idx <= min(be_idx, tp2_idx, n - 1):
+                    r_run, run_res = d * (opp_px - E) / risk, "SAR"
+                    runner_until = opp_idx
+                elif be_idx <= min(tp2_idx, n - 1):
+                    r_run, run_res = rs_r, "BE" if runner_stop == "be" else "RSTOP"
+                    runner_until = be_idx
+                elif tp2_idx <= n - 1:
+                    r_run, run_res = runner_tp2, "TP2"
+                    runner_until = tp2_idx
+                else:
+                    r_run, run_res = d * (cl[-1] - E) / risk, "EOD"
+                    runner_until = n - 1
+                r = 0.5 * target_r + 0.5 * r_run
+            elif runner:
+                run_res = "BANKED_FULL"    # a runner already rides; full out
         else:
             exit_idx, r = n - 1, d * (cl[-1] - E) / risk
             res = "FLAT"
@@ -293,6 +344,8 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             "entry": E, "stop": round(stop, 2), "risk": round(risk, 2),
             "res": res, "r": round(r, 4), "pts": round(r * risk, 2),
             "run_r": round(max(run_r, 0.0), 3),
+            "r_run": None if r_run is None else round(r_run, 4),
+            "run_res": run_res,
             "ambig": bool(ambig), "hold_min": int((ts[exit_idx] - ts[fill]) / 6e10),
         })
         if res == "SAR":
@@ -326,12 +379,23 @@ def main() -> int:
                          "fires; the flip is not taken)")
     ap.add_argument("--trend-x-pct", type=float, default=0.35,
                     help="drive threshold as %% of Asia open (default 0.35)")
+    ap.add_argument("--runner", action="store_true",
+                    help="partial+runner exit: half banks at target, half "
+                         "free-rolls at breakeven until BE/opposing close/"
+                         "TP2/EOD")
+    ap.add_argument("--runner-tp2", type=float, default=None,
+                    help="optional fixed R target for the runner half")
+    ap.add_argument("--runner-stop", choices=("be", "orig"), default="be",
+                    help="runner stop: breakeven (default) or the original "
+                         "structural stop")
     a = ap.parse_args()
     suffix = (("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
               + (f"_tf{a.tf}" if a.tf != 3 else "")
               + (f"_off{int(round(a.entry_offset / 0.25))}" if a.entry_offset else "")
               + (f"_fs{a.fixed_stop:g}" if a.fixed_stop else "")
-              + (f"_twf{a.trend_x_pct:g}" if a.trend_filter else ""))
+              + (f"_twf{a.trend_x_pct:g}" if a.trend_filter else "")
+              + ((f"_run{a.runner_stop}{f'tp{a.runner_tp2:g}' if a.runner_tp2 else ''}")
+                 if a.runner else ""))
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
     trades_out = gzip.open(
@@ -394,7 +458,10 @@ def main() -> int:
                                       fill_through=a.fill_through,
                                       sar=a.sar, counters=cnt,
                                       entry_off=a.entry_offset,
-                                      fixed_stop=a.fixed_stop, tflag=tfl):
+                                      fixed_stop=a.fixed_stop, tflag=tfl,
+                                      runner=a.runner,
+                                      runner_tp2=a.runner_tp2,
+                                      runner_stop=a.runner_stop):
                     t.update({"day": day, "depth": depth, "target_r": tr})
                     trades_out.write(json.dumps(t) + "\n")
                     n_trades += 1

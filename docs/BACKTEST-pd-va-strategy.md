@@ -471,6 +471,43 @@ unchanged; the −168pt DD is managed by sizing / the AL eval variant
 (§14).** The kill is logged as loudly as a confirm, per register
 discipline.
 
+## 16. Partial+runner: TESTED AND KILLED. The DD answer is sizing (2026-09-03)
+
+**Runner build** (`--runner`, `--runner-stop be|orig`, `--runner-tp2`):
+half banks at 1R, half free-rolls; runner dies on BE-or-orig stop /
+opposing close / TP2 / EOD; does not occupy (frequency preserved); one
+runner at a time. Risk-normalized, cost-adjusted, champion frame:
+
+| exit | total | R/day | green | maxDD |
+|---|---:|---:|---:|---:|
+| **full out at 1R (baseline)** | **+1,131R** | +1.48 | 69% | **−9.7R** |
+| runner, BE stop | −428R | −0.56 | 38% | −433R |
+| runner, BE + TP2 2.5 | −420R | −0.55 | 44% | −427R |
+| runner, orig stop | +485R | +0.63 | 39% | −115R |
+| runner, orig + TP2 2.5 | +677R | +0.88 | 58% | −26R |
+
+Mechanism: entries sit AT the most-retested price on the chart, so the
+BE runner dies on 4,203 of 4,318 spawns (the ~115 tails average +10R
+but pay for nothing); the orig-stop runner rides 2,232 halves back to
+the full stop. The run-potential distribution (§8) measured what price
+does AFTER entries; the runner must survive the level being retested,
+and it can't. **Every variant loses to the plain 1R full exit. The
+"three arrows" argument is falsified — the exit was already right.**
+Second consecutive kill; logged per register discipline.
+
+**The real DD answer — the −168pt was a sizing artifact.** Fixed 1
+contract puts 5–10x the dollar risk on wide-stop (NY) days, and the DD
+lived there. RISK-NORMALIZED (fixed $ per R; MNQ makes it practical:
+contracts = budget / stop):
+
+- FULL day, 43mo: **+1.48R/day, 69% green, max EOD DD −9.7R**
+  (2026: +1.80R/day, −9.5R). Total +1,131R.
+- Full-day is SMOOTHER than AL-only in R (−9.7R vs −20.7R maxDD) —
+  session diversification works.
+- Mapping: $/R = 60% of trailing buffer ÷ 9.7 → $154/R on $2.5k,
+  $215/R on $3.5k, $308/R on $5k. At $215/R: ~$320/day average,
+  historical worst EOD DD ≈ −$2,090.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
