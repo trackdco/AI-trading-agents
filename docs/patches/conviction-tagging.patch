@@ -1,0 +1,219 @@
+diff --git a/scripts/pd_va_backtest.py b/scripts/pd_va_backtest.py
+index d15ba60..882a087 100644
+--- a/scripts/pd_va_backtest.py
++++ b/scripts/pd_va_backtest.py
+@@ -131,6 +131,24 @@ def day_signals(c3, vah, val, depth, tf=3):
+     return [ded[t] for t in sorted(ded)]
+ 
+ 
++
++def conviction_tier(run_hi, run_lo, hi, lo, si, fill, L, d, pd_range):
++    """Excursion + session progress at FILL time (2026-09-03 audit).
++
++    ex   = furthest the tape ran PAST the level between the signal
++           candle's last bar (si) and the bar BEFORE the fill, in points.
++           The fill bar is excluded: its intrabar order is unknowable, and
++           a live executor amending a resting order can only have acted on
++           bars that already closed.
++    sess = session range so far at the signal bar / prior-day range.
++    """
++    seg_hi, seg_lo = hi[si:max(fill, si + 1)], lo[si:max(fill, si + 1)]
++    ex = (float(seg_hi.max()) - L) if d == 1 else (L - float(seg_lo.min()))
++    sess = ((float(run_hi[si]) - float(run_lo[si])) / pd_range
++            if pd_range and pd_range > 0 else float("nan"))
++    return max(ex, 0.0), sess
++
++
+ def stop_for(sig):
+     """His stop rule: beyond the close-through candle (+1 tick); if that
+     candle's open is <5pt from the level, beyond the prior candle too;
+@@ -221,7 +239,8 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+                  fill_through=False, sar=False, counters=None,
+                  entry_off=0.0, fixed_stop=None, tflag=None,
+                  runner=False, runner_tp2=None, runner_stop="be",
+-                 block=None, max_risk=None):
++                 block=None, max_risk=None, pd_range=None,
++                 conviction=False):
+     """One forward pass, one position at a time, latest pending wins.
+ 
+     fill_through=True is the adverse-selection sensitivity: a fill counts
+@@ -262,6 +281,10 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+     t_free = ts[0] - 1
+     n = len(ts)
+     thru = TICK if fill_through else 0.0
++    # conviction tagging changes NOTHING about which trades are taken, when
++    # they exit, or their R — it only labels them (2026-09-03 audit).
++    run_hi = np.maximum.accumulate(hi) if conviction else None
++    run_lo = np.minimum.accumulate(lo) if conviction else None
+     runner_until = -1                      # bar idx the live runner dies at
+ 
+     def bump(k):
+@@ -419,6 +442,16 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+             "run_res": run_res,
+             "ambig": bool(ambig), "hold_min": int((ts[exit_idx] - ts[fill]) / 6e10),
+         })
++        if conviction:
++            ex_pts, sess_pct = conviction_tier(
++                run_hi, run_lo, hi, lo, max(start - 1, 0), fill, L, d, pd_range)
++            ex_r = ex_pts / risk
++            hi_ex, hi_ss = ex_r >= 1.0, sess_pct >= 0.5
++            trades[-1].update({
++                "excur_r": round(ex_r, 3),
++                "sess_pct": None if sess_pct != sess_pct else round(sess_pct, 3),
++                "tier": ("A" if hi_ex and hi_ss else "B" if hi_ex
++                         else "C" if hi_ss else "D")})
+         if res == "SAR":
+             # free exactly AT the opposing close so that very signal is the
+             # next one processed (the flip trade), not skipped as in-position
+@@ -478,6 +511,11 @@ def main() -> int:
+     ap.add_argument("--max-risk", type=float, default=None,
+                     help="stop cap in points: signals with wider structural "
+                          "stops are never placed")
++    ap.add_argument("--conviction", action="store_true",
++                    help="tag each trade with the 2026-09-03 audit tier "
++                         "(A/B/C/D from run-past-the-level x session "
++                         "progress) for the sizing test. LABELS ONLY: the "
++                         "trade set, R and dump filename are unchanged")
+     ap.add_argument("--depths", default=None,
+                     help="override the close-through depth grid, "
+                          "comma-separated points")
+@@ -599,7 +637,8 @@ def main() -> int:
+         ts = sess.index.view("int64")
+         pend_cut = int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=PEND_CUT_H)).value))
+         day_cache.append((day, ts, sess.high.to_numpy(), sess.low.to_numpy(),
+-                          sess.close.to_numpy(), c3, vah, val, pend_cut))
++                          sess.close.to_numpy(), c3, vah, val, pend_cut,
++                          float(pseg.high.max() - pseg.low.min())))
+         if not isinstance(vah, dict):
+             per_day_meta[day] = {
+                 "pd_range": round(float(pseg.high.max() - pseg.low.min()), 2),
+@@ -612,7 +651,7 @@ def main() -> int:
+     funnel = {}
+     for depth in DEPTHS:
+         sig_cache = []
+-        for (_, _, _, _, _, c3, vah, val, _) in day_cache:
++        for (_, _, _, _, _, c3, vah, val, _, _) in day_cache:
+             if isinstance(vah, dict):
+                 sig_cache.append({f: day_signals(c3, v1, v2, depth, tf=a.tf)
+                                   for f, (v1, v2) in vah.items()})
+@@ -623,7 +662,7 @@ def main() -> int:
+             n_cfg += 1
+             n_trades = 0
+             cnt = funnel.setdefault(f"depth{depth:g}_R{tr:g}", {})
+-            for (day, ts, hi, lo, cl, _, _, _, pcut), sigmap in zip(day_cache, sig_cache):
++            for (day, ts, hi, lo, cl, _, _, _, pcut, pdr), sigmap in zip(day_cache, sig_cache):
+                 if not any(sigmap.values()):
+                     continue
+                 tfl = None
+@@ -648,7 +687,9 @@ def main() -> int:
+                                           runner=a.runner,
+                                           runner_tp2=a.runner_tp2,
+                                           runner_stop=a.runner_stop,
+-                                          block=blk, max_risk=a.max_risk):
++                                          block=blk, max_risk=a.max_risk,
++                                          pd_range=pdr,
++                                          conviction=a.conviction):
+                         t.update({"day": day, "depth": depth, "target_r": tr,
+                                   "family": fam})
+                         trades_out.write(json.dumps(t) + "\n")
+diff --git a/scripts/vwap_revolve.py b/scripts/vwap_revolve.py
+index 312230f..b7f2153 100644
+--- a/scripts/vwap_revolve.py
++++ b/scripts/vwap_revolve.py
+@@ -93,6 +93,24 @@ def day_signals(c3, band_at, depth, tf):
+     return [ded[t] for t in sorted(ded)]
+ 
+ 
++
++def conviction_tier(run_hi, run_lo, hi, lo, si, fill, L, d, pd_range):
++    """Excursion + session progress at FILL time (2026-09-03 audit).
++
++    ex   = furthest the tape ran PAST the level between the signal
++           candle's last bar (si) and the bar BEFORE the fill, in points.
++           The fill bar is excluded: its intrabar order is unknowable, and
++           a live executor amending a resting order can only have acted on
++           bars that already closed.
++    sess = session range so far at the signal bar / prior-day range.
++    """
++    seg_hi, seg_lo = hi[si:max(fill, si + 1)], lo[si:max(fill, si + 1)]
++    ex = (float(seg_hi.max()) - L) if d == 1 else (L - float(seg_lo.min()))
++    sess = ((float(run_hi[si]) - float(run_lo[si])) / pd_range
++            if pd_range and pd_range > 0 else float("nan"))
++    return max(ex, 0.0), sess
++
++
+ def stop_for(sig):
+     L, d = sig["L"], sig["dir"]
+     use_prev = abs(sig["ct_open"] - L) < MIN_RISK
+@@ -110,7 +128,8 @@ def stop_for(sig):
+ 
+ 
+ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
+-             book_pos=None, max_risk=None):
++             book_pos=None, max_risk=None, pd_range=None,
++             conviction=False):
+     """book_pos: list of (fill_hrs, end_hrs, dir, entry) level-book
+     positions for the cross-book dedupe rule (2026-09-03): a VWAP entry
+     is skipped when a level-book position is open at the fill moment,
+@@ -124,6 +143,8 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
+     i = 0
+     t_free = ts[0] - 1
+     n = len(ts)
++    run_hi = np.maximum.accumulate(hi) if conviction else None
++    run_lo = np.minimum.accumulate(lo) if conviction else None
+     while i < len(sigs):
+         s = sigs[i]
+         t_sig = s["t"].value
+@@ -202,6 +223,16 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
+                        "pts": round(r * risk, 2),
+                        "fill_hrs": round((ts[fill] - ts[0]) / 3.6e12, 3),
+                        "hold_min": int((ts[min(exit_idx, n - 1)] - ts[fill]) / 6e10)})
++        if conviction:
++            ex_pts, sess_pct = conviction_tier(
++                run_hi, run_lo, hi, lo, max(start - 1, 0), fill, L, d, pd_range)
++            ex_r = ex_pts / risk
++            hi_ex, hi_ss = ex_r >= 1.0, sess_pct >= 0.5
++            trades[-1].update({
++                "excur_r": round(ex_r, 3),
++                "sess_pct": None if sess_pct != sess_pct else round(sess_pct, 3),
++                "tier": ("A" if hi_ex and hi_ss else "B" if hi_ex
++                         else "C" if hi_ss else "D")})
+         t_free = ts[min(sar_idx, n - 1)] - 1 if res == "SAR" else ts[exit_idx]
+         i += 1
+     return trades
+@@ -218,6 +249,9 @@ def main() -> int:
+     ap.add_argument("--dedupe", action="store_true",
+                     help="cross-book rule: skip entries duplicating an open "
+                          "level-book position (same dir, within one floor)")
++    ap.add_argument("--conviction", action="store_true",
++                    help="tag each trade with the 2026-09-03 audit tier "
++                         "(LABELS ONLY; trade set, R and filename unchanged)")
+     ap.add_argument("--max-risk", type=float, default=None,
+                     help="stop cap in points: signals with wider structural "
+                          "stops are never placed (dedupe then reads the "
+@@ -249,8 +283,15 @@ def main() -> int:
+                   + ("_dd" if a.dedupe else "") + ".jsonl.gz")
+     fh = gzip.open(out, "wt")
+     n_all = 0
++    prev_t0 = None
+     for di, day in enumerate(days):
+         t0 = pd.Timestamp(f"{day} 18:00", tz=OB.NY)
++        # prior SESSION segment, same anchor convention as the level engine
++        pseg = (bars[(bars.index >= prev_t0) & (bars.index < t0)]
++                if prev_t0 is not None else bars.iloc[:0])
++        prev_t0 = t0
++        pdr = (float(pseg.high.max() - pseg.low.min())
++               if len(pseg) >= 300 else None)
+         sess = bars[(bars.index >= t0)
+                     & (bars.index < t0 + pd.Timedelta(hours=SESS_H))]
+         if len(sess) < 600:
+@@ -296,7 +337,8 @@ def main() -> int:
+                 for t in simulate(ts, hi_, lo_, cl_, sigs, pcut, tr,
+                                   a.style, blk,
+                                   book_pos=book_by_day.get(day),
+-                                  max_risk=a.max_risk):
++                                  max_risk=a.max_risk, pd_range=pdr,
++                                  conviction=a.conviction):
+                     t.update({"day": day, "depth": depth, "target_r": tr})
+                     fh.write(json.dumps(t) + "\n")
+                     n_all += 1

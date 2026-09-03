@@ -186,7 +186,7 @@
 <header class="mast">
   <div class="eyebrow">NQ futures · 4 years · receipts §1–34</div>
   <h1>The Railed Empire</h1>
-  <p class="deck">One entry grammar, three books of reference levels, run under a measured risk stack. Here is what four years of it looks like.</p>
+  <p class="deck">One entry grammar, three books of reference levels, run under a measured risk stack. Here is what four years of it looks like — and the one layer that finally beat it.</p>
   <div class="meta">
     <span><b>Sample</b> 2023-01-03 → 2026-09-01</span>
     <span><b>Session-days</b> 921</span>
@@ -445,6 +445,46 @@
     </div>
   </div>
   <p class="note">Full tables and the pre-registered rule: <code>docs/FINDINGS-conviction-audit.md</code>, script <code>scripts/conviction_audit.py</code>. Recommendations, in order: widen first-in-wins to any distance (G3b); size by tier instead of filtering; test arm-after-displacement and a volatility-ratio stop cap in-engine.</p>
+</section>
+
+<section id="sizing">
+  <div class="sec-head"><span class="sec-ref">in-engine · 2026-09-03</span><h2>Conviction sizing: the first survivor</h2></div>
+  <p class="col lede">Every conditional layer before this was tried as a filter — trade or don't trade — and every one died. This one is not a filter. It takes the same trades and moves size from the low-conviction ones to the high-conviction ones.</p>
+  <p class="col">The rule: <em class="term">full size when price ran at least 1R past the level before the retest, half size when it did not.</em> One feature, two sizes, about 70% of trades take the bigger size.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Same average position size as the frozen spec — size merely redistributed</caption>
+      <thead><tr><th></th><th>Total R</th><th>R / day</th><th>Max DD</th><th>Sharpe</th><th>Worst day</th><th>Months +</th><th>Worst month</th><th>Median month</th></tr></thead>
+      <tbody>
+        <tr><td>Flat (frozen spec)</td><td class="pos">+9,896</td><td class="pos">+10.74</td><td class="neg">−18.1</td><td>1.158</td><td class="neg">−18.1</td><td>45/45</td><td class="pos">+8.1</td><td>+210.3</td></tr>
+        <tr class="total"><td>2:1 on displacement</td><td class="pos">+11,370</td><td class="pos">+12.35</td><td class="neg">−17.7</td><td>1.197</td><td class="neg">−17.7</td><td>45/45</td><td class="pos">+10.5</td><td>+258.3</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>+1,474R over four years for the same average risk — and the worst day gets smaller, not bigger.</b> Still 45 of 45 months positive; the worst month improves from +8.1R to +10.5R. Pre-registered bar was +5% R/day in both halves at matched drawdown; it delivered +16.3% in-sample and +17.8% out-of-sample, and +16 to +18% in every one of the four years.</p>
+
+  <div class="two">
+    <div>
+      <h3>How big, honestly</h3>
+      <ul class="plain">
+        <li>Normalise by <b>daily volatility</b> — the conservative floor — and it is <b>+3.4%</b> (Sharpe 1.158 → 1.197).</li>
+        <li>Normalise by <b>drawdown</b> and it is <b>+17%</b>. Tiered sizing shrinks the bad tail faster than it shrinks the mean, because it downsizes exactly the trades that cluster into bad days.</li>
+        <li>A funded account's binding constraint is a trailing drawdown, not a variance — so the larger number is the one that pays the bills, and the smaller one is the floor.</li>
+        <li>Block bootstrap: 97.4% of draws clear the +5% bar.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Why it's believable</h3>
+      <ul class="plain">
+        <li><b>The negative control failed.</b> Sizing on session progress alone is <em class="term">worse</em> than flat (−9.4%). It isn't "any tiering helps" — it's displacement specifically.</li>
+        <li><b>The engine patch changes nothing.</b> Re-run and diffed against the pre-patch dump: 22,187 trades, 0 differing fields. The flag adds labels; the frozen spec is untouched.</li>
+        <li><b>The rail pass reproduces the receipts exactly</b> — 71,961 trades, 921 days, +9,896R, −18.1R drawdown.</li>
+        <li><b>Not free plumbing:</b> displacement is known at fill time, so the executor must be able to raise a resting order's size mid-flight.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Full tables, the bootstrap, and the caveats — including that these features were selected from this same four years — are in <code>docs/FINDINGS-conviction-sizing.md</code>.</p>
 </section>
 
 <section id="kills">
