@@ -508,6 +508,19 @@ contracts = budget / stop):
   $215/R on $3.5k, $308/R on $5k. At $215/R: ~$320/day average,
   historical worst EOD DD ≈ −$2,090.
 
+
+## 17. Hour-of-day breakdown (his ask, 2026-09-03)
+
+Champion frame, risk-normalized, split-half checked per hour. No hour
+heavily underperforms (worst ~-0.04R/trade vs +0.18 average). Exactly
+two hours are negative in BOTH halves: 23:00 and 02:00 - the two
+lowest-liquidity transition hours (Tokyo lunch; pre-Frankfurt dead
+hour). Cutting them: -267 trades (~3%), ~+10R saved - logged as an
+OPTIONAL TRIM, not doctrine (22 buckets tested; some consistency is
+expected by chance). NY 09:00-15:00 is the best block - every hour
+positive in both halves, ~77%% of total R. 01:00 is the single best
+hour (+0.32R/trade, 75%% WR, n=123).
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
