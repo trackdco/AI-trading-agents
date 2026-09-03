@@ -977,6 +977,47 @@ Scaling dial: x0.50 = +5.46R/day at -9.9R maxDD; x0.33 = +3.64R/day at
 cells, sim-vs-live gap, 81 trades/day is automation-only, and the
 whole edifice awaits Pat's seven gates and the paper-trading bridge.
 
+## 33. OVERFIT AUDIT: PBO + DEFLATED SHARPE + MONTE CARLO (2026-09-03)
+
+His ask: "lets run a PBO test, deflated sharpe, etc. also a monte carlo
+sim... i heavily suspect we have not overfitted shit but better safe
+than sorry." Receipt: `scripts/validation_pbo_dsr.py` (reruns both
+tests end to end from the trade dumps).
+
+**PBO via CSCV (Bailey et al.)** — the informative test. Take the full
+20-cell selection grid the tf1 champion came from (4 depths x 5
+targets, daily P&L per cell, 796 days), split into S=16 blocks, and for
+every one of the C(16,8) = 12,870 IS/OOS partitions ask: does the
+config that looks best in-sample fall below the median out-of-sample?
+**PBO = 0.000.** Not one split of 12,870. The champion cell (depth 3 /
+1R) holds OOS relative rank 0.95 — median AND minimum. A strategy
+family picked by overfitting scores PBO near 0.5; <0.1 is the
+"excellent" bar. This is what "the ridge is monotone, the cell choice
+barely matters" looks like in the formal test.
+
+**Deflated Sharpe (Bailey & Lopez de Prado)** on the railed empire
+daily series (§32 rail pass, cost overlay in): T=921 days, SR_daily
+1.156 (~18.3 annualized), skew +0.39, kurt 3.3. DSR = 1.000000 for any
+trial count up to 10,000 — the expected-max-SR haircut for even 10k
+searched configs is 0.09, noise against 1.16. Flag kept attached: a
+sim-level Sharpe this size mostly reflects the sim's idealizations
+(limit-fill grammar, no cost shocks, no missed sessions); DSR here says
+"not a selection fluke," not "expect 18 live." PBO carries the weight.
+
+**Monte Carlo funded-account simulator** — interactive artifact:
+https://claude.ai/code/artifact/8e20fbfe-4728-4120-9c8f-9de246ea9729
+Bootstraps the 921-day empire R series (5-day blocks by default, iid
+optional, seeded) through a Lucid-style account: EOD-trailing drawdown
+(his frame: "drawdown is EOD"), floor lock at start balance, profit
+target, min days, then a funded phase to first payout. Knobs: max DD $,
+target $, $/R, payout figure, min funded days, sim count, and an
+edge-haircut slider (removes X% of the mean, keeps the volatility —
+the "live won't fill like the sim" dial, default 30%). Outputs: pass /
+breach / timeout rates, days-to-pass distribution, equity fan vs
+target and floor lines, start-to-first-payout odds and days. The daily
+array regenerates via the validation script
+(`output/analysis/empire_daily.npy`).
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
@@ -988,12 +1029,12 @@ tested; the survivors are in, the kills are logged (S15, S16, S20,
 S21).
 
 Open threads, in his order:
-1. GOLD PORT - he expects the same mechanics to hold on GC with higher
-   R targets. Blocked on multi-year GC 1m bars (TradingView lookback
-   insufficient; needs the deep source that built nq_1m_master).
-   Same schema: ts_event UTC + OHLCV(+roll) parquet. On arrival:
-   re-derive instrument constants from GC's own tape (tick 0.10, floor
-   from median 1m range as on NQ, depth grid, cost model), then the
-   identical pipeline and discipline rerun end to end.
-2. Pat seven-gate treatment of the certified NQ spec.
-3. Live path: paper days on the Mac against real-time TradingView.
+1. GOLD PORT - DONE (S22-S27): constants re-derived from GC's own tape,
+   gold-native sweep confirmed the ratios, walkthrough certified
+   (S23), vol dial G10 keeps +201R of +203R on 29% of days.
+2. Overfit audit - DONE (S33): PBO 0.000 across 12,870 CSCV splits,
+   DSR 1.0, Monte Carlo funded-account artifact live.
+3. Pat seven-gate treatment of the certified specs.
+4. Executor-stage exact joint sim of the railed empire (S32 rail pass
+   is post-hoc chronological), then paper days on the Mac against
+   real-time TradingView.
