@@ -574,6 +574,32 @@ months positive, worst month +2.5R.
 STATUS: spec certified against his eyes end to end - levels (S18),
 grammar and results (this section). Ready for the seven-gate hand-off.
 
+
+## 20. Final-spec breakdown + loss anatomy (2026-09-03)
+
+News-gated champion, risk-normalized, honest fills, costs in. Yearly:
+2023 +234R (67.2%% WR, +1.11R/day) / 2024 +350R (68.7%%, +1.67) /
+2025 +323R (67.1%%, +1.48) / 2026 +226R (66.2%%, +1.81). Green days
+68-73%% every year; per-year maxDD never past -10.8R. Monthly: 45/45
+positive, median +25.3R, worst +2.5R, best +47.3R.
+
+Loss anatomy - nine pre-entry features, split-half: **no loss filter
+exists.** Nothing knowable before entry consistently marks losers.
+Stable findings, both halves:
+- Stop-size is the one gradient: 5pt-floored trades earn about half
+  the EV of 5-10pt-stop trades (+0.09-0.15 vs +0.19-0.21) but remain
+  clearly profitable - a size-of-edge gradient, not a filter.
+- FLIP entries beat fresh entries (+0.19 both halves vs +0.13-0.16):
+  his SAR rule's re-entry is the best entry type in the book.
+- 4th+ attempts at a level trade as well as the 1st (no fatigue), and
+  entries AFTER A LOSS at the level outperform entries after a win
+  (+0.18/+0.18 vs +0.16/+0.14) - a failed attempt cleans the level.
+- Asia EV flips sign between halves (unstable, not actionable); leg,
+  VA width, PD range, day-of-week: flat.
+The edge is uniform across everything observable - the signature of a
+real mechanical edge rather than a conditional one. Further filtering
+is the path the killed experiments (S15, S16) already walked.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
