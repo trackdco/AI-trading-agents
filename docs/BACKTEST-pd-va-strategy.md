@@ -1006,17 +1006,24 @@ sim-level Sharpe this size mostly reflects the sim's idealizations
 
 **Monte Carlo funded-account simulator** — interactive artifact:
 https://claude.ai/code/artifact/8e20fbfe-4728-4120-9c8f-9de246ea9729
-Bootstraps the 921-day empire R series (5-day blocks by default, iid
-optional, seeded) through a Lucid-style account: EOD-trailing drawdown
-(his frame: "drawdown is EOD"), floor lock at start balance, profit
-target, min days, then a funded phase to first payout. Knobs: max DD $,
-target $, $/R, payout figure, min funded days, sim count, and an
-edge-haircut slider (removes X% of the mean, keeps the volatility —
-the "live won't fill like the sim" dial, default 30%). Outputs: pass /
-breach / timeout rates, days-to-pass distribution, equity fan vs
-target and floor lines, start-to-first-payout odds and days. The daily
-array regenerates via the validation script
-(`output/analysis/empire_daily.npy`).
+v2 after his corrections ("$ risk isnt accurate... contract sizing";
+"funded accounts... its 2 phase"). Resamples PER TRADE (stop size +
+result, all 74,616 railed trades; 5-day blocks default, seeded) so
+sizing can quantize to whole MNQ micros ($2/pt, 0.5pt cost per
+contract). Three sizing modes: flat N micros (his ask — passes
+stop-size variance into $ risk; stops run 8.5pt median / 270pt max),
+risk-budget floored to micros (his $100/30pt-stop example; skips
+unaffordable stops), exact $/R as the idealized comparator. Account
+mechanics per his Lucid sheet: eval 50K = $3k target over $2k
+EOD-trailing DD, floor locks at start balance once up the DD amount
+(52k -> locked 50k), pass at 53k; funded (Flex) restarts fresh under
+the same rule, runs to a funded target (54k default), banks
+min(withdraw% x profit, max payout $2k). All of it configurable +
+edge-haircut slider (removes X% of the mean, keeps the volatility,
+default 30%). Outputs: pass/breach/timeout, days-to-pass histogram,
+equity fan vs target and floor, start-to-first-payout odds and days.
+Data regenerates via the validation script
+(`output/analysis/empire_trades.json`, `empire_daily.npy`).
 
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 

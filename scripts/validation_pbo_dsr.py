@@ -91,8 +91,14 @@ def pbo_cscv(S=16):
           f"median {np.median(champ_ranks):.2f}, min {min(champ_ranks):.2f}")
 
 
-def empire_daily():
-    """The §32 rail pass: three books, G3/G5/G6, cost overlay."""
+def empire_trades():
+    """The §32 rail pass: three books, G3/G5/G6 — kept trades per day.
+
+    Returns {day: [(stop_pts, gross_r), ...]} so downstream consumers
+    can size per trade (the Monte Carlo artifact quantizes to whole
+    MNQ micros; gross r keeps the 0.5pt cost overlay applicable per
+    contract at sizing time).
+    """
     lv = load("pd_va_trades_lvall_sar_through_tf1_ng.jsonl.gz")
     sv = [t for t in load("vwap_rev_tf1_retest_dd.jsonl.gz")
           if t["depth"] == 3.0 and t["target_r"] == 1.0]
@@ -101,7 +107,7 @@ def empire_daily():
     byday = defaultdict(list)
     for t in lv + sv + nv:
         byday[t["day"]].append(t)
-    kept = defaultdict(float)
+    kept = defaultdict(list)
     for d, ts in byday.items():
         ts.sort(key=lambda t: (t["fill_hrs"], t["t_sig_hrs"]))
         open_pos = []
@@ -116,8 +122,38 @@ def empire_daily():
             if sum(1 for *_, dr, _ in open_pos if dr == t["dir"]) >= 3:
                 continue                                   # G6 same-dir cap
             open_pos.append((f, en, t["dir"], t["entry"]))
-            kept[d] += net_r(t)
-    return np.array([kept[d] for d in sorted(kept)])
+            kept[d].append((t["risk"], t["r"]))
+    return kept
+
+
+def empire_daily():
+    kept = empire_trades()
+    return np.array([sum(r - COST_PTS / st for st, r in kept[d])
+                     for d in sorted(kept)])
+
+
+def export_trades(kept):
+    """Flat-array dump for the Monte Carlo artifact: per-day offsets +
+    (stop_pts, gross_r) per kept trade, MNQ-sizable in JS."""
+    days = sorted(kept)
+    off, stops, rs = [0], [], []
+    for d in days:
+        for st, r in kept[d]:
+            stops.append(round(st, 2))
+            rs.append(round(r, 3))
+        off.append(len(stops))
+    path = OUT / "empire_trades.json"
+    path.write_text(json.dumps(
+        {"day_off": off, "stops": stops, "rs": rs}, separators=(",", ":")))
+    pts = np.array([sum(r * st - COST_PTS for st, r in kept[d])
+                    for d in days])
+    st_all = np.array(stops)
+    print(f"\nempire_trades.json: {len(stops)} trades / {len(days)} days "
+          f"({path.stat().st_size/1e3:.0f} KB)")
+    print(f"  stops: mean {st_all.mean():.1f}pt  median "
+          f"{np.median(st_all):.1f}pt  max {st_all.max():.1f}pt")
+    print(f"  net day points: mean {pts.mean():+.1f}  std {pts.std():.1f}  "
+          f"worst {pts.min():+.1f}  best {pts.max():+.1f}")
 
 
 def deflated_sharpe(v):
@@ -141,8 +177,10 @@ def deflated_sharpe(v):
 
 if __name__ == "__main__":
     pbo_cscv()
-    v = empire_daily()
+    kept = empire_trades()
+    v = np.array([sum(r - COST_PTS / st for st, r in kept[d])
+                  for d in sorted(kept)])
     deflated_sharpe(v)
     np.save(OUT / "empire_daily.npy", v)
-    print(f"\nempire_daily.npy saved ({len(v)} values) — "
-          f"the array embedded in the Monte Carlo artifact")
+    print(f"\nempire_daily.npy saved ({len(v)} values)")
+    export_trades(kept)
