@@ -128,3 +128,29 @@ Minute-resolved, NQ armed empire vs gold armed + dial, on the 299 days both trad
 **Executor consequence:** the combined book needs a global open-risk cap
 across instruments — G7's "open risk ≤ 4R" extended to the sum — and on
 ~11% of days it would bind at 4. Per-instrument G5/G6 stay as they are.
+
+## 8. One position at a time, across everything (his rule: "no trades can ever overlap")
+
+A global first-in-wins: a trade is kept only if nothing is open at its fill
+minute — any book, any instrument. Post-hoc chronological rail, same standing
+caveat as G3. Armed books, 2023–26, gold on its dial.
+
+| | trades | /day | net R | R/day | maxDD | Sharpe | green |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| NQ as it ships (up to 4 open) | 61,194 | 64.6 | +10,863 | +11.46 | −14.0 | 1.208 | 91% |
+| NQ, one at a time | 59,352 | 62.6 | +10,382 | +10.95 | −14.0 | 1.179 | 90% |
+| NQ + gold, as they ship (can overlap) | 79,436 | 83.8 | +12,807 | +13.51 | −14.0 | 1.179 | 92% |
+| **NQ + gold, one at a time across all** | 74,911 | 79.0 | **+11,913** | **+12.57** | **−14.0** | 1.165 | 91% |
+
+- The strict combined book drops 5,952 trades (7.5%) and 894R (7.0%). Max
+  drawdown is **unchanged** at −14.0, so drawdown-matched it is a straight
+  −7.0%.
+- NQ alone, one at a time, costs 4.4%. Gold alone, 3.8%.
+- The strict combined book (+11,913 / +12.57 per day) still beats NQ as it
+  ships (+10,863 / +11.46) by **+9.7% R at the same drawdown**. Gold's seat
+  survives the constraint.
+- Slot split: NQ 57,858 trades, gold 17,053.
+
+Net: the rule costs about 7% of the combined R and nothing on drawdown. It
+also removes the need for the cross-instrument G7 extension in §7 — with one
+position ever open, open risk is 1R by construction.
