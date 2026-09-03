@@ -631,6 +631,39 @@ dead flat - remarkable in itself.
 At this n, a >=0.05R conditional edge across these dimensions would
 have been found. His instinct was right, and the mining stops here.
 
+## 22. GOLD PORT (2026-09-03): the mechanics transfer; higher-R rejected
+
+Databento GC raw batch (all instruments) -> volume-rolled continuous
+(`scripts/gc_continuous.py`: outrights only, front by session volume,
+19 rolls flagged and their day-pairs excluded). Constants derived from
+GC's own tape at the NQ certification ratios (tick 0.10, floor 1.5pt,
+depths 0/0.3/0.6/0.9, bin 0.3, cost 0.15/RT). `--instrument gc` swaps
+everything; the pipeline is otherwise byte-identical.
+
+**Structural confirmation:** WR at every target within ~1pt of NQ
+(1R 62.2%% vs 63.9; 1.5R 47.9 vs 48.9; 2R 39.1 vs 39.4; 3R 28.9 vs
+29.9) with zero behavioral re-tuning. The level grammar is auction
+physics, not an NQ artifact.
+
+**His higher-R hypothesis: REJECTED.** Gold's target frontier has the
+same shape as NQ's - 1R dominates, everything >=1.5R negative after
+honesty haircuts, big-target WRs marginally LOWER than NQ's.
+
+**Regime split:** 2023-24 flat-to-negative (+17/-41R) - partly real
+(quiet gold), partly constants-era mismatch (0.4-0.5pt candles vs the
+2026-anchored 1.5pt floor; adaptive floors deliberately not fitted).
+2025-26: **+224R over 20 months, +0.71R/day, WR 63-65%%, 14/20 green
+months (median +9.7R, worst -6.2R), maxDD -14.6R.** Walk-forward
+receipt: the 2023-24 grid picks the SAME cell (>=0.9/1R, the only
+near-positive config), which then earns the +224R on unseen 2025-26.
+Cost sensitivity: 0.10/0.15/0.20 per RT -> +285/+224/+163R.
+
+Read: in the current regime GC runs the same machine at roughly half
+NQ's daily rate, with heavier relative cost drag (0.15pt on ~1.7pt
+stops) and 36%% floored trades. As a second, likely-uncorrelated
+stream beside NQ it is additive; as a solo instrument it is the
+lesser tape. His call.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a

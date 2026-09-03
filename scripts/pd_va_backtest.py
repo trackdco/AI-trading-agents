@@ -66,8 +66,21 @@ from scripts.agent_context import volume_profile                  # noqa: E402
 
 TICK = 0.25
 MIN_RISK = 5.0
+BIN_W = 1.0
 DEPTHS = (0.0, 1.0, 2.0, 3.0)          # 0.0 -> any tick beyond
 TARGETS = (1.0, 1.5, 2.0, 2.5, 3.0)
+
+# per-instrument constants, each derived from that instrument's own tape
+# (ratios anchored on the NQ certification: floor ~0.7x the recent median
+# 1m candle, depth grid ~0.14/0.28/0.42x, profile bin ~1/7x)
+INSTRUMENTS = {
+    "nq": dict(tick=0.25, min_risk=5.0, bin_w=1.0,
+               depths=(0.0, 1.0, 2.0, 3.0), bars=None, rolls=None),
+    "gc": dict(tick=0.10, min_risk=1.5, bin_w=0.3,
+               depths=(0.0, 0.3, 0.6, 0.9),
+               bars="data/reference/gc_1m.parquet",
+               rolls="data/reference/gc_roll_days.json"),
+}
 SIG_START_H = 1.0                      # 19:00 session-relative
 SIG_END_H = 21 + 55 / 60               # signal candles must END by 15:55
 PEND_CUT_H = 22.0                      # resting limits die at 16:00
@@ -407,8 +420,15 @@ def main() -> int:
                          "USD release in pre-market (08:00-09:30 ET), take "
                          "no entries in that window and pull pendings at "
                          "08:00 (data/reference/news_archive.csv)")
+    ap.add_argument("--instrument", choices=tuple(INSTRUMENTS), default="nq",
+                    help="which tape: constants + bars swap per instrument")
     a = ap.parse_args()
-    suffix = (("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
+    inst = INSTRUMENTS[a.instrument]
+    global TICK, MIN_RISK, BIN_W, DEPTHS
+    TICK, MIN_RISK = inst["tick"], inst["min_risk"]
+    BIN_W, DEPTHS = inst["bin_w"], inst["depths"]
+    suffix = ((f"_{a.instrument}" if a.instrument != "nq" else "")
+              + ("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
               + (f"_tf{a.tf}" if a.tf != 3 else "")
               + (f"_off{int(round(a.entry_offset / 0.25))}" if a.entry_offset else "")
               + (f"_fs{a.fixed_stop:g}" if a.fixed_stop else "")
@@ -424,7 +444,17 @@ def main() -> int:
         news_days = set(hi_pm.date)
         print(f"news gate: {len(news_days)} pre-market high-impact dates "
               f"({min(news_days)} -> {max(news_days)})", flush=True)
-    bars = OB.get_bars()
+    if inst["bars"]:
+        b = pd.read_parquet(ROOT / inst["bars"])
+        b["mi"] = pd.to_datetime(b.ts_event, utc=True).dt.tz_convert(OB.NY)
+        bars = b.set_index("mi").sort_index()[
+            ["open", "high", "low", "close", "volume"]]
+        roll_skip = set(json.loads((ROOT / inst["rolls"]).read_text()))
+        print(f"{a.instrument}: {len(bars):,} bars, "
+              f"{len(roll_skip)} roll days excluded", flush=True)
+    else:
+        bars = OB.get_bars()
+        roll_skip = set()
     days = OB.all_session_days(bars)
     trades_out = gzip.open(
         ROOT / f"output/analysis/pd_va_trades{suffix}.jsonl.gz", "wt")
@@ -440,13 +470,13 @@ def main() -> int:
         pseg = bars[(bars.index >= prev_t0) & (bars.index < t0)]
         sess = bars[(bars.index >= t0) & (bars.index < t0 + pd.Timedelta(hours=SESS_H))]
         prev_t0 = t0
-        if len(pseg) < 300 or len(sess) < 600:
-            continue
-        _, val, vah = volume_profile(pseg)
+        if len(pseg) < 300 or len(sess) < 600 or day in roll_skip:
+            continue    # roll days: prior profile sits in the old contract
+        _, val, vah = volume_profile(pseg, bin_w=BIN_W)
         if not (np.isfinite(val) and np.isfinite(vah)):
             continue
-        vah = round(vah * 4) / 4
-        val = round(val * 4) / 4
+        vah = round(vah / TICK) * TICK
+        val = round(val / TICK) * TICK
         c3 = sess.resample(f"{a.tf}min").agg(
             {"open": "first", "high": "max", "low": "min", "close": "last"}).dropna()
         hrs3 = (c3.index - t0).total_seconds() / 3600
@@ -504,7 +534,9 @@ def main() -> int:
             print(f"[{n_cfg}/{len(DEPTHS) * len(TARGETS)}] depth={depth} "
                   f"R={tr}: {n_trades} trades", flush=True)
     trades_out.close()
-    (ROOT / "output/analysis/pd_va_days.json").write_text(
+    days_name = ("pd_va_days.json" if a.instrument == "nq"
+                 else f"pd_va_days_{a.instrument}.json")
+    (ROOT / "output/analysis" / days_name).write_text(
         json.dumps(per_day_meta))
     (ROOT / f"output/analysis/pd_va_funnel{suffix}.json").write_text(
         json.dumps(funnel, indent=1))
