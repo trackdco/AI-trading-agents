@@ -65,7 +65,10 @@ def gate0():
                f'                  depths={dep},\n'
                f'                  bars="data/reference/nq_2017_2019_1m.parquet",\n'
                f'                  rolls="data/reference/nq_2017_2019_roll_days.json"),\n')
-        s = re.sub(r'(    "nq17a": dict\(.*?\),\n)', lambda m: m.group(1) + blk, s, count=1, flags=re.S)
+        # anchor on the nq17a dict's LAST line (its rolls= entry), not its first "),\n" -
+        # the first attempt matched the depths tuple's close and spliced nq17b inside nq17a
+        s = re.sub(r'(    "nq17a": dict\(.*?rolls="data/reference/nq_2017_2019_roll_days\.json"\),\n)',
+                   lambda m: m.group(1) + blk, s, count=1, flags=re.S)
         p.write_text(s); print("  nq17b added to INSTRUMENTS")
     return 0
 

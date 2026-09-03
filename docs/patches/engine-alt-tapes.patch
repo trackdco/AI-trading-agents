@@ -1,5 +1,5 @@
 diff --git a/scripts/pd_va_backtest.py b/scripts/pd_va_backtest.py
-index d15ba60..daae90a 100644
+index d15ba60..c891ed3 100644
 --- a/scripts/pd_va_backtest.py
 +++ b/scripts/pd_va_backtest.py
 @@ -51,6 +51,7 @@ from __future__ import annotations
@@ -18,7 +18,7 @@ index d15ba60..daae90a 100644
  MIN_RISK = 5.0
  BIN_W = 1.0
  DEPTHS = (0.0, 1.0, 2.0, 3.0)          # 0.0 -> any tick beyond
-@@ -81,6 +83,43 @@ INSTRUMENTS = {
+@@ -81,6 +83,49 @@ INSTRUMENTS = {
                 depths=(0.0, 0.3, 0.6, 0.9),
                 bars="data/reference/gc_1m.parquet",
                 rolls="data/reference/gc_roll_days.json"),
@@ -42,6 +42,12 @@ index d15ba60..daae90a 100644
 +                  depths=(0.0, 1.0, 2.0, 3.0),
 +                  bars="data/reference/nq_2017_2019_1m.parquet",
 +                  rolls="data/reference/nq_2017_2019_roll_days.json"),
++    # nq17b = Run B, era constants by the declared formula: k = 0.2381
++    #         (m_era 1.25 / m_now 5.25), each rounded to the 0.25 tick.
++    "nq17b": dict(tick=0.25, min_risk=1.25, bin_w=0.25,
++                  depths=(0.0, 0.25, 0.5, 0.75),
++                  bars="data/reference/nq_2017_2019_1m.parquet",
++                  rolls="data/reference/nq_2017_2019_roll_days.json"),
 +    # ES (e-mini S&P), constants at the same ratios off its own tape.
 +    # Median active-session 1m candle 1.75pt = 7.0 TICKS (NQ 28, GC 21):
 +    # FAILS the >=20-tick screen in docs/FINDINGS-6e-euro-port.md S5. Run
@@ -62,7 +68,7 @@ index d15ba60..daae90a 100644
  }
  SIG_START_H = 1.0                      # 19:00 session-relative
  SIG_END_H = 21 + 55 / 60               # signal candles must END by 15:55
-@@ -131,6 +170,24 @@ def day_signals(c3, vah, val, depth, tf=3):
+@@ -131,6 +176,24 @@ def day_signals(c3, vah, val, depth, tf=3):
      return [ded[t] for t in sorted(ded)]
  
  
@@ -87,7 +93,7 @@ index d15ba60..daae90a 100644
  def stop_for(sig):
      """His stop rule: beyond the close-through candle (+1 tick); if that
      candle's open is <5pt from the level, beyond the prior candle too;
-@@ -221,7 +278,9 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -221,7 +284,9 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                   fill_through=False, sar=False, counters=None,
                   entry_off=0.0, fixed_stop=None, tflag=None,
                   runner=False, runner_tp2=None, runner_stop="be",
@@ -98,7 +104,7 @@ index d15ba60..daae90a 100644
      """One forward pass, one position at a time, latest pending wins.
  
      fill_through=True is the adverse-selection sensitivity: a fill counts
-@@ -255,13 +314,34 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -255,13 +320,34 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
      target trades are unchanged at −1R full size. Trade r is the blend:
      0.5*target_r + 0.5*runner_r; fields r_run/run_res carry the detail.
  
@@ -134,7 +140,7 @@ index d15ba60..daae90a 100644
      runner_until = -1                      # bar idx the live runner dies at
  
      def bump(k):
-@@ -312,15 +392,47 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -312,15 +398,47 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
              cancel = min(cancel, block[0])
          L, d = s["L"], s["dir"]
          E = L + d * entry_off
@@ -191,7 +197,7 @@ index d15ba60..daae90a 100644
          # fixed_stop: his 2026-09-02 experiment — a flat S-point bracket off
          # the level, structure ignored entirely (no escalation, no floor)
          stop = (L - d * fixed_stop) if fixed_stop else stop_for(s)
-@@ -412,13 +524,24 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -412,13 +530,24 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
              "t_sig_hrs": round(hrs, 3), "window": window_of(hrs),
              "fill_hrs": round((ts[fill] - ts[0]) / 3.6e12, 3),
              "leg": LEG[(s["level_name"], d)], "dir": d,
@@ -218,7 +224,7 @@ index d15ba60..daae90a 100644
          if res == "SAR":
              # free exactly AT the opposing close so that very signal is the
              # next one processed (the flip trade), not skipped as in-position
-@@ -478,13 +601,40 @@ def main() -> int:
+@@ -478,13 +607,40 @@ def main() -> int:
      ap.add_argument("--max-risk", type=float, default=None,
                      help="stop cap in points: signals with wider structural "
                           "stops are never placed")
@@ -260,7 +266,7 @@ index d15ba60..daae90a 100644
      BIN_W, DEPTHS = inst["bin_w"], inst["depths"]
      if a.min_risk is not None:
          MIN_RISK = a.min_risk
-@@ -493,8 +643,9 @@ def main() -> int:
+@@ -493,8 +649,9 @@ def main() -> int:
      targets = TARGETS
      if a.levels == "all":
          DEPTHS = (inst["depths"][-1],)
@@ -272,7 +278,7 @@ index d15ba60..daae90a 100644
                f"proximity merge at {MIN_RISK}pt", flush=True)
      suffix = ((f"_{a.instrument}" if a.instrument != "nq" else "")
                + (f"_lv{a.levels}" if a.levels != "va" else "")
-@@ -507,7 +658,11 @@ def main() -> int:
+@@ -507,7 +664,11 @@ def main() -> int:
                + (f"_twf{a.trend_x_pct:g}" if a.trend_filter else "")
                + ((f"_run{a.runner_stop}{f'tp{a.runner_tp2:g}' if a.runner_tp2 else ''}")
                   if a.runner else "")
@@ -285,7 +291,7 @@ index d15ba60..daae90a 100644
      news_days = set()
      if a.news_gate:
          nf = pd.read_csv(ROOT / "data/reference/news_archive.csv")
-@@ -599,7 +754,8 @@ def main() -> int:
+@@ -599,7 +760,8 @@ def main() -> int:
          ts = sess.index.view("int64")
          pend_cut = int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=PEND_CUT_H)).value))
          day_cache.append((day, ts, sess.high.to_numpy(), sess.low.to_numpy(),
@@ -295,7 +301,7 @@ index d15ba60..daae90a 100644
          if not isinstance(vah, dict):
              per_day_meta[day] = {
                  "pd_range": round(float(pseg.high.max() - pseg.low.min()), 2),
-@@ -612,7 +768,7 @@ def main() -> int:
+@@ -612,7 +774,7 @@ def main() -> int:
      funnel = {}
      for depth in DEPTHS:
          sig_cache = []
@@ -304,7 +310,7 @@ index d15ba60..daae90a 100644
              if isinstance(vah, dict):
                  sig_cache.append({f: day_signals(c3, v1, v2, depth, tf=a.tf)
                                    for f, (v1, v2) in vah.items()})
-@@ -623,7 +779,7 @@ def main() -> int:
+@@ -623,7 +785,7 @@ def main() -> int:
              n_cfg += 1
              n_trades = 0
              cnt = funnel.setdefault(f"depth{depth:g}_R{tr:g}", {})
@@ -313,7 +319,7 @@ index d15ba60..daae90a 100644
                  if not any(sigmap.values()):
                      continue
                  tfl = None
-@@ -648,7 +804,12 @@ def main() -> int:
+@@ -648,7 +810,12 @@ def main() -> int:
                                            runner=a.runner,
                                            runner_tp2=a.runner_tp2,
                                            runner_stop=a.runner_stop,
