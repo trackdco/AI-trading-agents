@@ -136,9 +136,42 @@ def stop_for(sig):
     return stop
 
 
+def trend_flag(ts, hi, lo, cl, t0_ns, x_pct=0.35):
+    """Per-bar trend-DAY flag, causal, LATCHED: the first close >= x_pct
+    of the Asia open beyond that open marks the day trending in that
+    direction from that minute onward (T74: the day has revealed itself);
+    a later close through the opposite threshold re-latches the other way
+    (V-day). 0 before any threshold prints.
+
+    Design iterations, both amended before any aggregate filtered result
+    was read: (1) a 10pt never-revisited grace failed to arm on known
+    drive days — one median 1m candle of early wiggle killed it; (2) an
+    unlatched "currently stretched" flag armed but never intersected the
+    trades — signals fire at PD levels, and price AT a level is rarely
+    stretched at that same minute (0-1 skips on known trend days). The
+    latch is the operative form of his hypothesis: counter-trend fades
+    at level touches ON revealed trend days are the bleed."""
+    n = len(ts)
+    flag = np.zeros(n, dtype=np.int8)
+    a0 = np.searchsorted(ts, t0_ns + int(3.6e12))          # 19:00
+    if a0 >= n:
+        return flag
+    ao = float(cl[a0])  # first Asia bar close as the open anchor's proxy
+    X = ao * x_pct / 100.0
+    net = cl[a0:] - ao
+    s = np.zeros(n - a0, dtype=np.int8)
+    s[net >= X] = 1
+    s[net <= -X] = -1
+    nz = np.flatnonzero(s)
+    if len(nz):
+        last = np.maximum.accumulate(np.where(s != 0, np.arange(n - a0), -1))
+        flag[a0:][last >= 0] = s[last[last >= 0]]
+    return flag
+
+
 def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                  fill_through=False, sar=False, counters=None,
-                 entry_off=0.0, fixed_stop=None):
+                 entry_off=0.0, fixed_stop=None, tflag=None):
     """One forward pass, one position at a time, latest pending wins.
 
     fill_through=True is the adverse-selection sensitivity: a fill counts
@@ -180,6 +213,12 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             bump("skip_in_pos")
             i += 1
             continue
+        if tflag is not None:
+            fi = np.searchsorted(ts, t_sig) - 1
+            if 0 <= fi < n and tflag[fi] * s["dir"] < 0:
+                bump("skip_counter_trend")   # regime on, signal against it
+                i += 1
+                continue
         bump("sig")
         start = np.searchsorted(ts, t_sig)
         if start >= n:
@@ -281,11 +320,18 @@ def main() -> int:
                          "of the level (0.25 = 1 tick front-run)")
     ap.add_argument("--fixed-stop", type=float, default=None,
                     help="flat S-point stop off the level, structure ignored")
+    ap.add_argument("--trend-filter", action="store_true",
+                    help="with-trend-only regime filter: skip counter-trend "
+                         "signals while the drive flag is on (flatten still "
+                         "fires; the flip is not taken)")
+    ap.add_argument("--trend-x-pct", type=float, default=0.35,
+                    help="drive threshold as %% of Asia open (default 0.35)")
     a = ap.parse_args()
     suffix = (("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
               + (f"_tf{a.tf}" if a.tf != 3 else "")
               + (f"_off{int(round(a.entry_offset / 0.25))}" if a.entry_offset else "")
-              + (f"_fs{a.fixed_stop:g}" if a.fixed_stop else ""))
+              + (f"_fs{a.fixed_stop:g}" if a.fixed_stop else "")
+              + (f"_twf{a.trend_x_pct:g}" if a.trend_filter else ""))
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
     trades_out = gzip.open(
@@ -340,11 +386,15 @@ def main() -> int:
             for (day, ts, hi, lo, cl, _, _, _, pcut), sigs in zip(day_cache, sig_cache):
                 if not sigs:
                     continue
+                tfl = None
+                if a.trend_filter:
+                    t0_ns = pd.Timestamp(f"{day} 18:00", tz=OB.NY).value
+                    tfl = trend_flag(ts, hi, lo, cl, t0_ns, x_pct=a.trend_x_pct)
                 for t in simulate_day(ts, hi, lo, cl, sigs, pcut, tr,
                                       fill_through=a.fill_through,
                                       sar=a.sar, counters=cnt,
                                       entry_off=a.entry_offset,
-                                      fixed_stop=a.fixed_stop):
+                                      fixed_stop=a.fixed_stop, tflag=tfl):
                     t.update({"day": day, "depth": depth, "target_r": tr})
                     trades_out.write(json.dumps(t) + "\n")
                     n_trades += 1

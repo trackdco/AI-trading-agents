@@ -439,6 +439,38 @@ AL-only as the eval-phase variant (2026 DD −81pt at +9.8/day); and the
 §12 with-trend-only hypothesis, which targets this exact episode —
 untested, his word.
 
+## 15. With-trend-only filter (§12 hypothesis): TESTED AND KILLED (2026-09-03)
+
+His go-ahead ran the experiment. Regime flag (prereg'd, two mechanism
+amendments made before reading any aggregate result, both in the
+`trend_flag` docstring): a day LATCHES trending the first minute its
+close sits ≥0.35% of the Asia open beyond that open (T74 "revealed
+day"); opposite threshold re-latches. While latched: counter-trend
+crossings skipped, SAR flattens but never flips counter-trend.
+Flag-off days verified byte-identical to baseline.
+
+Result — worse everywhere that matters, BOTH halves (champion frame,
+honest fills, cost-adj):
+
+| FULL day | total | mean/day | maxDD |
+|---|---:|---:|---:|
+| baseline | +10,766pt | +14.1 | −168pt |
+| filtered 0.35% | +5,492pt | +7.3 | −206pt |
+| filtered 0.50% | +6,159pt | +8.2 | −204pt |
+
+Split-half: IS +3,987→+1,876, OOS +6,778→+3,616 — degrades in both.
+The one thing it fixed is the thing it was built from: the May26–Jun2
+hole (−52 → +68pt). Everywhere else it skipped 3,474 of ~8,400 signals
+and most of those counter-trend fades were WINNERS — the latch fires on
+~most 2026 days (0.35% ≈ 100pt), and fading a stretched tape at a PD
+level is a large share of the strategy's whole edge. May was an outlier
+month, exactly what the one-month-of-evidence caveat warned.
+
+**Hypothesis killed at this operationalization. Baseline stands
+unchanged; the −168pt DD is managed by sizing / the AL eval variant
+(§14).** The kill is logged as loudly as a confirm, per register
+discipline.
+
 ## OPEN (his word needed)
 
 1. Which month was the hand-test? (If June 2026: confirmed found.)
