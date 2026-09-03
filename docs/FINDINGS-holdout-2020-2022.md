@@ -90,9 +90,26 @@ they were not. The tighter era floor simply admitted more marginal trades
 ## 6. What this does and does not establish
 
 **Does:** the *base grammar* — 1m close ≥3pt through prior-day VAH/VAL,
-limit at the retest, structural stop, 1R exit, SAR, news gate, honest
-fills, cost — holds on unseen data across a crash, a melt-up and a bear
-market, with no re-tuning. Combined with PBO 0.000 and the GC and ES
+limit at the retest, structural stop, 1R exit, SAR, honest fills, cost —
+holds on unseen data across a crash, a melt-up and a bear market, with
+no re-tuning.
+
+> **Correction (2026-09-03, found while answering a question about
+> coverage): the news gate did not actually apply to this run.**
+> `run_hold_A.log` prints "news gate: 172 pre-market high-impact dates
+> (2023-01-06 → 2026-07-16)" — the loader ran, but every one of those
+> dates is outside 2020–22, so **zero** entries were gated. There is no
+> high-impact calendar in the repo for those years, and the engine
+> matched nothing silently rather than warning.
+>
+> Direction and size: on 2023–26 the gate is a wash on totals (§19:
+> +1,131R → +1,133R) and removes 191 sim-*positive* trades at +0.09R
+> each, purely to delete untrustworthy news-candle fills. So its absence
+> here is worth roughly nothing in R and the PASS verdict is unaffected —
+> but 2020–22 did trade through pre-market CPI/NFP prints that 2023–26
+> sits out, and those fills carry the model risk the gate exists to
+> remove. Read the holdout as certifying the grammar **without** G8, not
+> with it. Combined with PBO 0.000 and the GC and ES
 replications, the case that this is auction physics rather than a fitted
 artefact is now much stronger than it was this morning. The standing
 winner's-curse caveat can be quantified at roughly 13% rather than left
