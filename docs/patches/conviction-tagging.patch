@@ -1,5 +1,24 @@
+diff --git a/scripts/build_l2_outcomes.py b/scripts/build_l2_outcomes.py
+index 26e6fbd..4e92f30 100644
+--- a/scripts/build_l2_outcomes.py
++++ b/scripts/build_l2_outcomes.py
+@@ -51,7 +51,13 @@ from src.engine.triggers import Trigger  # noqa: E402
+ 
+ NY = "America/New_York"
+ LOOKBACK_DAYS = 7
+-BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul2026.parquet",
++# nq_1m_jul_sep2026 closes the 2026-07-16 -> 2026-08-22 hole (spliced
++# 2026-09-03, after the 2020-22 holdout was scored so that the holdout's
++# baseline table kept describing the 927-day tape it was computed on).
++# Overlap check on 14,616 shared minutes: 1 price bar differed (2.5pt on a
++# low), 9 volume bars differed - ordinary vendor revision.
++BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_jul_sep2026.parquet",
++            "data/reference/nq_1m_feb_jul2026.parquet",
+             "data/reference/nq_1m_aug_sep2026.parquet"]
+ 
+ _BARS: pd.DataFrame | None = None       # per-process cache (fork inherits the parent's copy)
 diff --git a/scripts/pd_va_backtest.py b/scripts/pd_va_backtest.py
-index d15ba60..8309b17 100644
+index d15ba60..733c752 100644
 --- a/scripts/pd_va_backtest.py
 +++ b/scripts/pd_va_backtest.py
 @@ -51,6 +51,7 @@ from __future__ import annotations
@@ -18,10 +37,23 @@ index d15ba60..8309b17 100644
  MIN_RISK = 5.0
  BIN_W = 1.0
  DEPTHS = (0.0, 1.0, 2.0, 3.0)          # 0.0 -> any tick beyond
-@@ -81,6 +83,23 @@ INSTRUMENTS = {
+@@ -81,6 +83,36 @@ INSTRUMENTS = {
                 depths=(0.0, 0.3, 0.6, 0.9),
                 bars="data/reference/gc_1m.parquet",
                 rolls="data/reference/gc_roll_days.json"),
++    # 2020-2022 NQ HOLDOUT (docs/PREREG-holdout-2020-2022.md).
++    # nq20a = Run A, frozen 2026-anchored constants, untouched.
++    # nq20b = Run B, era constants: the certified values scaled by
++    #         k = m_era/m_now = 0.8571 (like-for-like median 1m candle,
++    #         roll days excluded), each rounded to the 0.25 tick.
++    "nq20a": dict(tick=0.25, min_risk=5.0, bin_w=1.0,
++                  depths=(0.0, 1.0, 2.0, 3.0),
++                  bars="data/reference/nq_2020_2022_1m.parquet",
++                  rolls="data/reference/nq_2020_2022_roll_days.json"),
++    "nq20b": dict(tick=0.25, min_risk=4.25, bin_w=0.75,
++                  depths=(0.0, 0.75, 1.75, 2.5),
++                  bars="data/reference/nq_2020_2022_1m.parquet",
++                  rolls="data/reference/nq_2020_2022_roll_days.json"),
 +    # ES (e-mini S&P), constants at the same ratios off its own tape.
 +    # Median active-session 1m candle 1.75pt = 7.0 TICKS (NQ 28, GC 21):
 +    # FAILS the >=20-tick screen in docs/FINDINGS-6e-euro-port.md S5. Run
@@ -42,7 +74,7 @@ index d15ba60..8309b17 100644
  }
  SIG_START_H = 1.0                      # 19:00 session-relative
  SIG_END_H = 21 + 55 / 60               # signal candles must END by 15:55
-@@ -131,6 +150,24 @@ def day_signals(c3, vah, val, depth, tf=3):
+@@ -131,6 +163,24 @@ def day_signals(c3, vah, val, depth, tf=3):
      return [ded[t] for t in sorted(ded)]
  
  
@@ -67,7 +99,7 @@ index d15ba60..8309b17 100644
  def stop_for(sig):
      """His stop rule: beyond the close-through candle (+1 tick); if that
      candle's open is <5pt from the level, beyond the prior candle too;
-@@ -221,7 +258,9 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -221,7 +271,9 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                   fill_through=False, sar=False, counters=None,
                   entry_off=0.0, fixed_stop=None, tflag=None,
                   runner=False, runner_tp2=None, runner_stop="be",
@@ -78,7 +110,7 @@ index d15ba60..8309b17 100644
      """One forward pass, one position at a time, latest pending wins.
  
      fill_through=True is the adverse-selection sensitivity: a fill counts
-@@ -255,13 +294,34 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -255,13 +307,34 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
      target trades are unchanged at −1R full size. Trade r is the blend:
      0.5*target_r + 0.5*runner_r; fields r_run/run_res carry the detail.
  
@@ -114,7 +146,7 @@ index d15ba60..8309b17 100644
      runner_until = -1                      # bar idx the live runner dies at
  
      def bump(k):
-@@ -312,15 +372,47 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -312,15 +385,47 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
              cancel = min(cancel, block[0])
          L, d = s["L"], s["dir"]
          E = L + d * entry_off
@@ -171,7 +203,7 @@ index d15ba60..8309b17 100644
          # fixed_stop: his 2026-09-02 experiment — a flat S-point bracket off
          # the level, structure ignored entirely (no escalation, no floor)
          stop = (L - d * fixed_stop) if fixed_stop else stop_for(s)
-@@ -412,13 +504,24 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
+@@ -412,13 +517,24 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
              "t_sig_hrs": round(hrs, 3), "window": window_of(hrs),
              "fill_hrs": round((ts[fill] - ts[0]) / 3.6e12, 3),
              "leg": LEG[(s["level_name"], d)], "dir": d,
@@ -198,7 +230,7 @@ index d15ba60..8309b17 100644
          if res == "SAR":
              # free exactly AT the opposing close so that very signal is the
              # next one processed (the flip trade), not skipped as in-position
-@@ -478,13 +581,40 @@ def main() -> int:
+@@ -478,13 +594,40 @@ def main() -> int:
      ap.add_argument("--max-risk", type=float, default=None,
                      help="stop cap in points: signals with wider structural "
                           "stops are never placed")
@@ -240,7 +272,7 @@ index d15ba60..8309b17 100644
      BIN_W, DEPTHS = inst["bin_w"], inst["depths"]
      if a.min_risk is not None:
          MIN_RISK = a.min_risk
-@@ -493,8 +623,9 @@ def main() -> int:
+@@ -493,8 +636,9 @@ def main() -> int:
      targets = TARGETS
      if a.levels == "all":
          DEPTHS = (inst["depths"][-1],)
@@ -252,7 +284,7 @@ index d15ba60..8309b17 100644
                f"proximity merge at {MIN_RISK}pt", flush=True)
      suffix = ((f"_{a.instrument}" if a.instrument != "nq" else "")
                + (f"_lv{a.levels}" if a.levels != "va" else "")
-@@ -507,7 +638,11 @@ def main() -> int:
+@@ -507,7 +651,11 @@ def main() -> int:
                + (f"_twf{a.trend_x_pct:g}" if a.trend_filter else "")
                + ((f"_run{a.runner_stop}{f'tp{a.runner_tp2:g}' if a.runner_tp2 else ''}")
                   if a.runner else "")
@@ -265,7 +297,7 @@ index d15ba60..8309b17 100644
      news_days = set()
      if a.news_gate:
          nf = pd.read_csv(ROOT / "data/reference/news_archive.csv")
-@@ -599,7 +734,8 @@ def main() -> int:
+@@ -599,7 +747,8 @@ def main() -> int:
          ts = sess.index.view("int64")
          pend_cut = int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=PEND_CUT_H)).value))
          day_cache.append((day, ts, sess.high.to_numpy(), sess.low.to_numpy(),
@@ -275,7 +307,7 @@ index d15ba60..8309b17 100644
          if not isinstance(vah, dict):
              per_day_meta[day] = {
                  "pd_range": round(float(pseg.high.max() - pseg.low.min()), 2),
-@@ -612,7 +748,7 @@ def main() -> int:
+@@ -612,7 +761,7 @@ def main() -> int:
      funnel = {}
      for depth in DEPTHS:
          sig_cache = []
@@ -284,7 +316,7 @@ index d15ba60..8309b17 100644
              if isinstance(vah, dict):
                  sig_cache.append({f: day_signals(c3, v1, v2, depth, tf=a.tf)
                                    for f, (v1, v2) in vah.items()})
-@@ -623,7 +759,7 @@ def main() -> int:
+@@ -623,7 +772,7 @@ def main() -> int:
              n_cfg += 1
              n_trades = 0
              cnt = funnel.setdefault(f"depth{depth:g}_R{tr:g}", {})
@@ -293,7 +325,7 @@ index d15ba60..8309b17 100644
                  if not any(sigmap.values()):
                      continue
                  tfl = None
-@@ -648,7 +784,12 @@ def main() -> int:
+@@ -648,7 +797,12 @@ def main() -> int:
                                            runner=a.runner,
                                            runner_tp2=a.runner_tp2,
                                            runner_stop=a.runner_stop,
