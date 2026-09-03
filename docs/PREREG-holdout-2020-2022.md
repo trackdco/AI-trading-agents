@@ -168,3 +168,35 @@ evidence, and one that fails is a correction I cannot quietly drop.
 *Committed before the data was pulled. Baseline figures in §4 come from
 `output/analysis/pd_va_trades_xr30_sar_through_tf1_ng.jsonl.gz`, the PD
 value-area run on the current sample.*
+
+---
+
+## AMENDMENT 1 — 2026-09-03, before any result was read
+
+**What changed.** §1's integrity gate "the 2023-01-02 overlap day matches
+`nq_1m_master` bar for bar" cannot be run as written. The delivered pull
+ends 2023-01-02 00:00 UTC; `nq_1m_master` begins 2023-01-02 18:00 ET
+(= 23:00 UTC the same day), so the two do not overlap by a single bar.
+
+**Substituted gate, agreed before the run:** boundary continuity instead
+of a bar-for-bar match —
+- the last session in the 2020–22 series butts cleanly against the first
+  session of `nq_1m_master` with no duplicated minutes
+- no implausible price jump across the boundary (the front contract's
+  close-to-open gap is within normal session-gap range)
+- the front-month symbol at the boundary is consistent with a legitimate
+  quarterly roll
+
+This is weaker than a bar-for-bar match but catches the failure modes
+that matter: wrong contract, mis-scaled prices, a botched roll.
+
+**Why this does not compromise the holdout.** The change is forced by
+data availability, was agreed and committed *before* the file was
+decompressed, and is unrelated to any result. No pass/fail condition in
+§4, no configuration in §2, and no constant rule in §3 is altered.
+
+**Also fixed by agreement, and unrelated to the holdout:** the
+2026-07-16 → 2026-08-22 gap in `nq_1m_master` will be filled only
+*after* this holdout is scored, so that §4's baseline table continues to
+describe exactly the 927-session-day tape it was computed on. Splicing
+first would shift every baseline figure the bar is measured against.
