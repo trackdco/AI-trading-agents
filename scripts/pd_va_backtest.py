@@ -422,12 +422,23 @@ def main() -> int:
                          "08:00 (data/reference/news_archive.csv)")
     ap.add_argument("--instrument", choices=tuple(INSTRUMENTS), default="nq",
                     help="which tape: constants + bars swap per instrument")
+    ap.add_argument("--min-risk", type=float, default=None,
+                    help="override the stop floor (also the escalation "
+                         "trigger), in instrument points")
+    ap.add_argument("--depths", default=None,
+                    help="override the close-through depth grid, "
+                         "comma-separated points")
     a = ap.parse_args()
     inst = INSTRUMENTS[a.instrument]
     global TICK, MIN_RISK, BIN_W, DEPTHS
     TICK, MIN_RISK = inst["tick"], inst["min_risk"]
     BIN_W, DEPTHS = inst["bin_w"], inst["depths"]
+    if a.min_risk is not None:
+        MIN_RISK = a.min_risk
+    if a.depths is not None:
+        DEPTHS = tuple(float(x) for x in a.depths.split(","))
     suffix = ((f"_{a.instrument}" if a.instrument != "nq" else "")
+              + (f"_mr{a.min_risk:g}" if a.min_risk is not None else "")
               + ("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
               + (f"_tf{a.tf}" if a.tf != 3 else "")
               + (f"_off{int(round(a.entry_offset / 0.25))}" if a.entry_offset else "")

@@ -675,6 +675,21 @@ replicate cross-instrument with zero shared fitting: the 1R-dominant
 target frontier, the faster-signal gradient, and the session/hour map.
 GC's tf1 choice stands on gold's own evidence, not inheritance.
 
+**Gold-native floor/depth calibration (his push-back, 2026-09-03):**
+"we can't base it on a ratio of NQ" — swept natively: floors 1.0-3.0pt
+x depths 0.3-1.5pt, picked on 2025, verified on 2026. Result: gold's
+own grid lands ON the ratio-derived cell. The ridge is floor 1.0-1.5 x
+depth 0.9-1.5, flat across it (2025 best 1.0/0.9 +138R vs analog
+1.5/0.9 +130R; on unseen 2026 the analog VERIFIES BETTER, +93R vs
++84R, with floor-1.5 the best row: d1.2 +99, d1.5 +108). Both
+gradients are monotone and mechanical: floors >=2pt bleed in every era
+(oversized bracket vs a 2.1pt candle), depth 0.3 bleeds everywhere
+(sub-noise closes). Even 2023-24 prefers the same corner shape - it
+just cannot clear costs. RULING KEPT: floor 1.5 / depth 0.9 stays;
+moving to a neighbor on this sweep would be picking noise off a flat
+ridge. The ratio method is hereby validated as a starting prior that
+native calibration confirmed rather than overturned.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
