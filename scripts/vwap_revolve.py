@@ -201,6 +201,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tf", type=int, required=True, choices=(1, 3, 5))
     ap.add_argument("--style", required=True, choices=("retest", "market"))
+    ap.add_argument("--anchor", choices=("session", "ny"), default="session",
+                    help="vwap anchor: 18:00 session open (default) or the "
+                         "09:30 NY open (fresh accumulation, signals from "
+                         "09:45 after a 15-min sigma warmup)")
     ap.add_argument("--dedupe", action="store_true",
                     help="cross-book rule: skip entries duplicating an open "
                          "level-book position (same dir, within one floor)")
@@ -225,6 +229,7 @@ def main() -> int:
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
     out = ROOT / (f"output/analysis/vwap_rev_tf{a.tf}_{a.style}"
+                  + ("_nyanc" if a.anchor == "ny" else "")
                   + ("_dd" if a.dedupe else "") + ".jsonl.gz")
     fh = gzip.open(out, "wt")
     n_all = 0
@@ -234,12 +239,19 @@ def main() -> int:
                     & (bars.index < t0 + pd.Timedelta(hours=SESS_H))]
         if len(sess) < 600:
             continue
-        vw = vwap_bands(sess)
+        if a.anchor == "ny":
+            nyseg = sess[sess.index >= t0 + pd.Timedelta(hours=15.5)]
+            if len(nyseg) < 120:
+                continue
+            vw = vwap_bands(nyseg).reindex(sess.index)   # NaN before 09:30
+        else:
+            vw = vwap_bands(sess)
         c3 = sess.resample(f"{a.tf}min").agg(
             {"open": "first", "high": "max", "low": "min",
              "close": "last"}).dropna()
         hrs3 = (c3.index - t0).total_seconds() / 3600
-        keep = (hrs3 >= SIG_START_H - a.tf / 60 - 0.02) \
+        sig_start = 15.75 if a.anchor == "ny" else SIG_START_H
+        keep = (hrs3 >= sig_start - a.tf / 60 - 0.02) \
             & (hrs3 + a.tf / 60 <= SIG_END_H + 1e-6)
         c3 = c3[keep]
         if len(c3) < 50:

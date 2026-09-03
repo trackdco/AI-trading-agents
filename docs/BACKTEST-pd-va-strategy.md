@@ -892,6 +892,29 @@ automation take everything; a leaner human-watched variant is NY-only
 VWAP (n=17,045, EV ~+0.15/trade), the concentrate. Recorded as an
 option, not a rule.
 
+## 30. NY-ANCHORED VWAP (his ask, 2026-09-03): a new independent family
+
+09:30-anchored VWAP (fresh accumulation at the equity open, certified
+band math on the sliced frame, 15-min sigma warmup, NY signals only,
+--anchor ny, cross-book dedupe on):
+
+**Champion (tf1 retest depth3 1R): 20,183 trades, 66.7%% WR, +0.154
+exp/trade, +3,108R, IS/OOS +1,541/+1,567, every year +464 to +930R.**
+Per-band uniform (+0.137 to +0.169; +2 sigma the best band here). Even
+1.5R holds 52.5%% WR / +0.090 exp on this family - the strongest
+1.5R cell in the program - though 1R still dominates.
+
+Head-to-head vs the session-anchored book's NY trades: identical
+per-trade quality (+0.154 vs +0.154) but 18%% more trades, and daily
+corr between them is just **+0.096** - different anchor, different band
+locations, different trades. NOT a replacement: a THIRD near-independent
+NQ stream (~+3.4R/day NY hours). Both anchors work; the 09:30 anchor
+he does not even chart is additive to the one he does.
+
+Open for the live spec: vwap-vs-vwap cross-anchor dedupe (same rule
+shape as S28) and the full-empire joint DD recompute with all dedupes -
+executor-stage work.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
