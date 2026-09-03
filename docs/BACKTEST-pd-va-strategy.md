@@ -1078,14 +1078,63 @@ is ~9pt (4.2 x 2.10), to be certified on gold's own tape before the
 gold book goes live. The funded-sim artifact carries the cap as a knob
 (default 30, post-hoc semantics).
 
+## 35. ARM-AFTER-DISPLACEMENT: ADOPTED (Brake's find, verified here, 2026-09-03)
+
+The parallel session ("Brake", branch tradingview-mcp-results-so6866,
+merged here) ran the conviction audit -> sizing -> arming line. Full
+receipts in docs/FINDINGS-conviction-audit.md, -conviction-sizing.md,
+-arm-after-displacement.md, -g3b-and-queue.md; engine changes arrived
+as docs/patches/conviction-tagging.patch, applied on this branch.
+
+**The rule**: the retest limit rests DARK until price has traded 1R
+(the trade's own risk) beyond the level; only then can a retest fill.
+Conservative on intrabar order: the arming bar must strictly precede
+the touch bar. This weaponizes the S7 slow-fill gradient - the fast
+bounce-back retests it excludes were the weak half all along.
+
+**Verified on this branch's own runs** (--arm-after 1.0 on all three
+books, rail-passed): 58,401 trades / 63.4 per day, EV +0.1792 (IS
++0.1883 / OOS +0.1726), +10,467R, maxDD -14.0R (still one single day),
+daily Sharpe 1.207, 45/45 months positive - identical to Brake's
+numbers to the trade. vs the S34 spec: 19% fewer trades, +30% EV per
+trade, +571R MORE total R, 23% less drawdown. Drawdown-matched +36.1%
+(their prereg bar was +5%); volatility-matched floor +4.2%. Empire
+ridge across arm 0.5/1.0/1.5 is monotone in EV; total R peaks at 1.0.
+Flat 1-micro $ stream: avg +$226/day, worst day -$363 -> -$226.
+
+**Substitutes, not a stack** (their S3): the armed book IS the
+high-displacement tier, so conviction sizing (their other ADOPT,
++11,370R at maxDD -17.7 via 2:1 size on displacement) adds nothing on
+top of it - pick one. ARMED CHOSEN for the spec: less drawdown, 19%
+fewer trades, and no order-modify requirement (sizing needs the
+executor to amend a resting order's quantity mid-flight; arming just
+places it later). The sizing receipt stays on the shelf if the
+preference flips to total R.
+
+**Executor requirements inherited from their queue/latency stress**
+(FINDINGS-g3b-and-queue.md S2): (1) the arming check must fire and the
+order reach the exchange within the SAME minute the arming bar closes
+- a poll that acts one bar late costs a third of the edge; (2) the
+1-tick-through fill assumption is supported by MBP-10 depth data
+(median 3 contracts resting at a level; our levels only ~10% thicker
+than anywhere else) but the edge dies at 2-4 ticks of required
+penetration, so the paper bridge MUST log fill penetration per trade.
+Their G3b variant (dedupe at any distance) is KILLED - do not add it.
+
+Also killed on their branch, receipts merged: conditional targets by
+displacement (kill #6 - third independent confirmation 1R full exit is
+right), SMT divergence both encodings, ES port (economics knife-edge,
+7-tick candles fail the >=20-tick instrument screen), 6E port (dead
+before costs; yields the instrument screening law).
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
 65-70%% win rate high frequency strategy." The spec is frozen as
-certified (S19): 1m close >=3pt through PD VAH/VAL, limit retest,
-structural stop (5pt floor, 30pt cap per S34 - wider-stop signals are
-never placed), 1R full exit, SAR flip, all sessions, news gate
-08:00-09:30, sized per R. Every proposed modification was
+certified (S19): 1m close >=3pt through PD VAH/VAL, limit retest ARMED
+only after price runs 1R past the level (S35), structural stop (5pt
+floor, 30pt cap per S34 - wider-stop signals are never placed), 1R
+full exit, SAR flip, all sessions, news gate 08:00-09:30, sized per R. Every proposed modification was
 tested; the survivors are in, the kills are logged (S15, S16, S20,
 S21).
 

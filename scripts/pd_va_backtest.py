@@ -51,6 +51,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import math
 import json
 import sys
 from pathlib import Path
@@ -66,6 +67,7 @@ from scripts.agent_context import (anchored_weekly_profile,       # noqa: E402
                                    volume_profile)
 
 TICK = 0.25
+PX_DP = 2          # price decimals in the dump; recomputed per instrument
 MIN_RISK = 5.0
 BIN_W = 1.0
 DEPTHS = (0.0, 1.0, 2.0, 3.0)          # 0.0 -> any tick beyond
@@ -81,6 +83,23 @@ INSTRUMENTS = {
                depths=(0.0, 0.3, 0.6, 0.9),
                bars="data/reference/gc_1m.parquet",
                rolls="data/reference/gc_roll_days.json"),
+    # ES (e-mini S&P), constants at the same ratios off its own tape.
+    # Median active-session 1m candle 1.75pt = 7.0 TICKS (NQ 28, GC 21):
+    # FAILS the >=20-tick screen in docs/FINDINGS-6e-euro-port.md S5. Run
+    # anyway because ES sits between GC (works) and 6E (dead) and locates
+    # the boundary.
+    "es": dict(tick=0.25, min_risk=1.25, bin_w=0.25,
+               depths=(0.0, 0.25, 0.5, 0.75),
+               bars="data/reference/es_1m.parquet",
+               rolls="data/reference/es_roll_days.json"),
+    # 6E (euro FX future), constants at the same ratios off its own tape.
+    # Median active-session 1m candle is 3.0 TICKS (NQ 28, GC 21), so the
+    # ratio-derived profile bin lands sub-tick and is floored at one tick -
+    # the first sign the grid is too coarse for this grammar.
+    "6e": dict(tick=0.00005, min_risk=0.0001, bin_w=0.00005,
+               depths=(0.0, 0.00005, 0.0001, 0.00015),
+               bars="data/reference/6e_1m.parquet",
+               rolls="data/reference/6e_roll_days.json"),
 }
 SIG_START_H = 1.0                      # 19:00 session-relative
 SIG_END_H = 21 + 55 / 60               # signal candles must END by 15:55
@@ -129,6 +148,24 @@ def day_signals(c3, vah, val, depth, tf=3):
     for s in out:
         ded.setdefault(s["t"], s)
     return [ded[t] for t in sorted(ded)]
+
+
+
+def conviction_tier(run_hi, run_lo, hi, lo, si, fill, L, d, pd_range):
+    """Excursion + session progress at FILL time (2026-09-03 audit).
+
+    ex   = furthest the tape ran PAST the level between the signal
+           candle's last bar (si) and the bar BEFORE the fill, in points.
+           The fill bar is excluded: its intrabar order is unknowable, and
+           a live executor amending a resting order can only have acted on
+           bars that already closed.
+    sess = session range so far at the signal bar / prior-day range.
+    """
+    seg_hi, seg_lo = hi[si:max(fill, si + 1)], lo[si:max(fill, si + 1)]
+    ex = (float(seg_hi.max()) - L) if d == 1 else (L - float(seg_lo.min()))
+    sess = ((float(run_hi[si]) - float(run_lo[si])) / pd_range
+            if pd_range and pd_range > 0 else float("nan"))
+    return max(ex, 0.0), sess
 
 
 def stop_for(sig):
@@ -221,7 +258,9 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                  fill_through=False, sar=False, counters=None,
                  entry_off=0.0, fixed_stop=None, tflag=None,
                  runner=False, runner_tp2=None, runner_stop="be",
-                 block=None, max_risk=None):
+                 block=None, max_risk=None, pd_range=None,
+                 conviction=False, arm_after=None, thru_ticks=1,
+                 arm_delay=0):
     """One forward pass, one position at a time, latest pending wins.
 
     fill_through=True is the adverse-selection sensitivity: a fill counts
@@ -255,13 +294,34 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
     target trades are unchanged at −1R full size. Trade r is the blend:
     0.5*target_r + 0.5*runner_r; fields r_run/run_res carry the detail.
 
+arm_after (points as a MULTIPLE of the trade's own risk) is his
+    2026-09-03 arm-after-displacement rule: the limit rests but is NOT
+    live until price has traded arm_after x risk BEYOND the level. Only
+    then can it fill. Unlike conviction sizing (which leaves the trade set
+    untouched) this changes occupancy: a pending that never displaces
+    expires without filling, freeing the book for the next signal, and a
+    pending that displaces late fills later than it otherwise would.
+    Conservative on intrabar order: the arming bar must be STRICTLY
+    before the touch bar, because within one bar it is unknowable whether
+    the run past the level came before or after the pullback to it. The
+    signal candle's own last bar counts toward arming (its high/low is
+    known at the signal close, so it is legal information).
+
     counters, if a dict, accumulates the signal funnel:
     sig / skip_in_pos / replaced / expired / filled."""
     trades = []
     i = 0
     t_free = ts[0] - 1
     n = len(ts)
-    thru = TICK if fill_through else 0.0
+    # thru_ticks is the queue proxy (2026-09-03): a resting limit is only
+    # counted filled once price trades this many ticks THROUGH the level.
+    # 1 tick is the certified honest-fill rule; larger values stand in for
+    # a queue that needs more volume through the price to clear.
+    thru = TICK * thru_ticks if fill_through else 0.0
+    # conviction tagging changes NOTHING about which trades are taken, when
+    # they exit, or their R — it only labels them (2026-09-03 audit).
+    run_hi = np.maximum.accumulate(hi) if conviction else None
+    run_lo = np.minimum.accumulate(lo) if conviction else None
     runner_until = -1                      # bar idx the live runner dies at
 
     def bump(k):
@@ -312,15 +372,47 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             cancel = min(cancel, block[0])
         L, d = s["L"], s["dir"]
         E = L + d * entry_off
-        seg_lo, seg_hi = lo[start:cancel], hi[start:cancel]
-        touch = (seg_lo <= E - thru) if d == 1 else (seg_hi >= E + thru)
-        if not touch.any():
-            bump("replaced" if cancel == nxt_idx and nxt_idx < min(pend_cut_idx, n)
-                 else "expired")
-            i += 1
-            continue
-        bump("filled")
-        fill = start + int(np.argmax(touch))
+        if arm_after is not None and not fixed_stop:
+            # the limit is dark until price has run arm_after x risk past
+            # the level; arming must COMPLETE strictly before the touch bar
+            stop_p = stop_for(s)
+            risk_p = abs(E - stop_p)
+            si0 = max(start - 1, 0)
+            if si0 >= cancel:
+                bump("unarmed")
+                i += 1
+                continue
+            thr_px = L + d * arm_after * risk_p
+            seg = hi[si0:cancel] if d == 1 else lo[si0:cancel]
+            armed = (seg >= thr_px) if d == 1 else (seg <= thr_px)
+            if not armed.any():
+                bump("unarmed")
+                i += 1
+                continue
+            live = si0 + int(np.argmax(armed)) + 1 + arm_delay   # strictly after
+            if live >= cancel:
+                bump("unarmed")
+                i += 1
+                continue
+            seg_lo, seg_hi = lo[live:cancel], hi[live:cancel]
+            touch = (seg_lo <= E - thru) if d == 1 else (seg_hi >= E + thru)
+            if not touch.any():
+                bump("replaced" if cancel == nxt_idx and nxt_idx < min(pend_cut_idx, n)
+                     else "expired")
+                i += 1
+                continue
+            bump("filled")
+            fill = live + int(np.argmax(touch))
+        else:
+            seg_lo, seg_hi = lo[start:cancel], hi[start:cancel]
+            touch = (seg_lo <= E - thru) if d == 1 else (seg_hi >= E + thru)
+            if not touch.any():
+                bump("replaced" if cancel == nxt_idx and nxt_idx < min(pend_cut_idx, n)
+                     else "expired")
+                i += 1
+                continue
+            bump("filled")
+            fill = start + int(np.argmax(touch))
         # fixed_stop: his 2026-09-02 experiment — a flat S-point bracket off
         # the level, structure ignored entirely (no escalation, no floor)
         stop = (L - d * fixed_stop) if fixed_stop else stop_for(s)
@@ -412,13 +504,24 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
             "t_sig_hrs": round(hrs, 3), "window": window_of(hrs),
             "fill_hrs": round((ts[fill] - ts[0]) / 3.6e12, 3),
             "leg": LEG[(s["level_name"], d)], "dir": d,
-            "entry": E, "stop": round(stop, 2), "risk": round(risk, 2),
-            "res": res, "r": round(r, 4), "pts": round(r * risk, 2),
+            "entry": round(E, PX_DP), "stop": round(stop, PX_DP),
+            "risk": round(risk, PX_DP),
+            "res": res, "r": round(r, 4), "pts": round(r * risk, PX_DP),
             "run_r": round(max(run_r, 0.0), 3),
             "r_run": None if r_run is None else round(r_run, 4),
             "run_res": run_res,
             "ambig": bool(ambig), "hold_min": int((ts[exit_idx] - ts[fill]) / 6e10),
         })
+        if conviction:
+            ex_pts, sess_pct = conviction_tier(
+                run_hi, run_lo, hi, lo, max(start - 1, 0), fill, L, d, pd_range)
+            ex_r = ex_pts / risk
+            hi_ex, hi_ss = ex_r >= 1.0, sess_pct >= 0.5
+            trades[-1].update({
+                "excur_r": round(ex_r, 3),
+                "sess_pct": None if sess_pct != sess_pct else round(sess_pct, 3),
+                "tier": ("A" if hi_ex and hi_ss else "B" if hi_ex
+                         else "C" if hi_ss else "D")})
         if res == "SAR":
             # free exactly AT the opposing close so that very signal is the
             # next one processed (the flip trade), not skipped as in-position
@@ -478,13 +581,40 @@ def main() -> int:
     ap.add_argument("--max-risk", type=float, default=None,
                     help="stop cap in points: signals with wider structural "
                          "stops are never placed")
+    ap.add_argument("--arm-delay", type=int, default=0,
+                    help="latency stress: extra 1m bars between arming and "
+                         "the order going live (the sim already withholds "
+                         "the arming bar itself, i.e. up to 60s of implicit "
+                         "latency; this adds whole minutes on top)")
+    ap.add_argument("--thru-ticks", type=int, default=1,
+                    help="queue proxy: ticks price must trade THROUGH the "
+                         "level before a resting limit counts as filled "
+                         "(1 = the certified honest-fill rule)")
+    ap.add_argument("--targets", default=None,
+                    help="override the target grid (comma-separated R), "
+                         "including in --levels all mode where it is "
+                         "otherwise pinned to the certified 1R cell")
+    ap.add_argument("--arm-after", type=float, default=None,
+                    help="arm-after-displacement: the resting limit is not "
+                         "live until price trades this multiple of the "
+                         "trade's own risk BEYOND the level. Changes the "
+                         "trade set (unfilled pendings free the book)")
+    ap.add_argument("--conviction", action="store_true",
+                    help="tag each trade with the 2026-09-03 audit tier "
+                         "(A/B/C/D from run-past-the-level x session "
+                         "progress) for the sizing test. LABELS ONLY: the "
+                         "trade set, R and dump filename are unchanged")
     ap.add_argument("--depths", default=None,
                     help="override the close-through depth grid, "
                          "comma-separated points")
     a = ap.parse_args()
     inst = INSTRUMENTS[a.instrument]
-    global TICK, MIN_RISK, BIN_W, DEPTHS
+    global TICK, MIN_RISK, BIN_W, DEPTHS, PX_DP
     TICK, MIN_RISK = inst["tick"], inst["min_risk"]
+    # enough decimals to represent one tick: 2 for NQ (0.25) and GC (0.10),
+    # 6 for 6E (0.00005). Without this every FX risk rounds to 0.0 and the
+    # cost overlay (cost/risk) divides by zero.
+    PX_DP = max(2, math.ceil(-math.log10(TICK)) + 1)
     BIN_W, DEPTHS = inst["bin_w"], inst["depths"]
     if a.min_risk is not None:
         MIN_RISK = a.min_risk
@@ -493,8 +623,9 @@ def main() -> int:
     targets = TARGETS
     if a.levels == "all":
         DEPTHS = (inst["depths"][-1],)
-        targets = (1.0,)
-        print(f"levels=all: certified cell only (depth {DEPTHS[0]}, 1R), "
+        targets = (1.0,) if a.targets is None else tuple(
+            float(x) for x in a.targets.split(","))
+        print(f"levels=all: depth {DEPTHS[0]}, targets {targets}, "
               f"proximity merge at {MIN_RISK}pt", flush=True)
     suffix = ((f"_{a.instrument}" if a.instrument != "nq" else "")
               + (f"_lv{a.levels}" if a.levels != "va" else "")
@@ -507,7 +638,11 @@ def main() -> int:
               + (f"_twf{a.trend_x_pct:g}" if a.trend_filter else "")
               + ((f"_run{a.runner_stop}{f'tp{a.runner_tp2:g}' if a.runner_tp2 else ''}")
                  if a.runner else "")
-              + ("_ng" if a.news_gate else ""))
+              + ("_ng" if a.news_gate else "")
+              + (f"_arm{a.arm_after:g}" if a.arm_after is not None else "")
+              + ("_tg" if a.targets else "")
+              + (f"_q{a.thru_ticks}" if a.thru_ticks != 1 else "")
+              + (f"_lag{a.arm_delay}" if a.arm_delay else ""))
     news_days = set()
     if a.news_gate:
         nf = pd.read_csv(ROOT / "data/reference/news_archive.csv")
@@ -599,7 +734,8 @@ def main() -> int:
         ts = sess.index.view("int64")
         pend_cut = int(np.searchsorted(ts, (t0 + pd.Timedelta(hours=PEND_CUT_H)).value))
         day_cache.append((day, ts, sess.high.to_numpy(), sess.low.to_numpy(),
-                          sess.close.to_numpy(), c3, vah, val, pend_cut))
+                          sess.close.to_numpy(), c3, vah, val, pend_cut,
+                          float(pseg.high.max() - pseg.low.min())))
         if not isinstance(vah, dict):
             per_day_meta[day] = {
                 "pd_range": round(float(pseg.high.max() - pseg.low.min()), 2),
@@ -612,7 +748,7 @@ def main() -> int:
     funnel = {}
     for depth in DEPTHS:
         sig_cache = []
-        for (_, _, _, _, _, c3, vah, val, _) in day_cache:
+        for (_, _, _, _, _, c3, vah, val, _, _) in day_cache:
             if isinstance(vah, dict):
                 sig_cache.append({f: day_signals(c3, v1, v2, depth, tf=a.tf)
                                   for f, (v1, v2) in vah.items()})
@@ -623,7 +759,7 @@ def main() -> int:
             n_cfg += 1
             n_trades = 0
             cnt = funnel.setdefault(f"depth{depth:g}_R{tr:g}", {})
-            for (day, ts, hi, lo, cl, _, _, _, pcut), sigmap in zip(day_cache, sig_cache):
+            for (day, ts, hi, lo, cl, _, _, _, pcut, pdr), sigmap in zip(day_cache, sig_cache):
                 if not any(sigmap.values()):
                     continue
                 tfl = None
@@ -648,7 +784,12 @@ def main() -> int:
                                           runner=a.runner,
                                           runner_tp2=a.runner_tp2,
                                           runner_stop=a.runner_stop,
-                                          block=blk, max_risk=a.max_risk):
+                                          block=blk, max_risk=a.max_risk,
+                                          pd_range=pdr,
+                                          conviction=a.conviction,
+                                          arm_after=a.arm_after,
+                                          thru_ticks=a.thru_ticks,
+                                          arm_delay=a.arm_delay):
                         t.update({"day": day, "depth": depth, "target_r": tr,
                                   "family": fam})
                         trades_out.write(json.dumps(t) + "\n")

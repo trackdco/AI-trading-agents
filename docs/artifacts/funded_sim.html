@@ -84,7 +84,7 @@
 <header class="masthead">
   <div class="brand"><div class="tickmark"></div><h1>Empire Funded Sim</h1></div>
   <p class="prov">Bootstrap Monte Carlo on the railed three-book NQ stack (8-level book + session VWAP + NY VWAP) —
-  <b>921 sessions</b> / <b>74,616 trades</b>, Jan 2023 → Sep 2026 · sized in whole MNQ micros (<b>$2</b>/pt) · costs &amp; guard rails included.</p>
+  <b>921 sessions</b> / <b>58,401 trades</b>, Jan 2023 → Sep 2026 · armed 1R + 30pt stop cap (§34–35) · sized in whole MNQ micros (<b>$2</b>/pt) · costs &amp; guard rails included.</p>
 </header>
 
 <div class="desk">
@@ -193,11 +193,11 @@
   <div class="panelblock notes">
     <h2>What this sim assumes</h2>
     <ul>
-      <li><b>The sample is the backtest, not the future.</b> Every trade (stop size + result) is resampled from the 921-session certified run (§32 spec, guard rails G3/G5/G6, 0.5pt round-trip cost per contract). The haircut slider is the built-in dose of doubt.</li>
+      <li><b>The sample is the backtest, not the future.</b> Every trade (stop size + result) is resampled from the 921-session certified run (§32 spec + §35 arming, guard rails G3/G5/G6, 0.5pt round-trip cost per contract). The haircut slider is the built-in dose of doubt.</li>
       <li><b>Drawdown is checked end-of-day only</b>, trailing the EOD high-water mark, and in both phases the floor locks at the start balance once you're up the drawdown amount — the Lucid frame.</li>
       <li><b>The funded phase restarts a fresh balance</b> under the same rule; “payout” means the funded target was reached after the minimum funded days, banking min(withdraw% × profit, max payout).</li>
-      <li><b>Sizing is quantized to whole MNQ micros ($2/pt).</b> Flat mode passes stop-size variance straight into $ risk (stops run 8.5pt median, 270pt uncapped max); budget mode floors to affordable micros and skips what doesn't fit. Switch modes to see the cost of quantization against the idealized $/R stream.</li>
-      <li><b>The stop cap skips trades whose structural stop exceeds it</b> — the §34 rule (default 30pt keeps 96% of trades and ~98% of the R; the skipped tail is the book's weakest segment). Here the cap drops trades from the recorded stream; the in-engine version frees the book for the next signal, so live is the same or slightly better.</li>
+      <li><b>Sizing is quantized to whole MNQ micros ($2/pt).</b> Flat mode passes stop-size variance straight into $ risk (stops run 7.2pt median, 30pt max by construction); budget mode floors to affordable micros and skips what doesn't fit. Switch modes to see the cost of quantization against the idealized $/R stream.</li>
+      <li><b>The embedded stream already carries the in-engine 30pt cap and 1R arming</b> (§34–35: the limit rests dark until price runs 1R past the level — 19% fewer trades, +30% expectancy, maxDD −18.1R → −14.0R). The stop-cap field can only tighten further from 30; here a tighter cap drops trades post-hoc, so live would be the same or slightly better.</li>
       <li><b>Days are trading days</b> (~21 per month), every day trades the full three-book NQ program (the GC book is not in this stream), no missed sessions, no discretion.</li>
     </ul>
   </div>

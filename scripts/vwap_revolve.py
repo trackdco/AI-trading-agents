@@ -93,6 +93,24 @@ def day_signals(c3, band_at, depth, tf):
     return [ded[t] for t in sorted(ded)]
 
 
+
+def conviction_tier(run_hi, run_lo, hi, lo, si, fill, L, d, pd_range):
+    """Excursion + session progress at FILL time (2026-09-03 audit).
+
+    ex   = furthest the tape ran PAST the level between the signal
+           candle's last bar (si) and the bar BEFORE the fill, in points.
+           The fill bar is excluded: its intrabar order is unknowable, and
+           a live executor amending a resting order can only have acted on
+           bars that already closed.
+    sess = session range so far at the signal bar / prior-day range.
+    """
+    seg_hi, seg_lo = hi[si:max(fill, si + 1)], lo[si:max(fill, si + 1)]
+    ex = (float(seg_hi.max()) - L) if d == 1 else (L - float(seg_lo.min()))
+    sess = ((float(run_hi[si]) - float(run_lo[si])) / pd_range
+            if pd_range and pd_range > 0 else float("nan"))
+    return max(ex, 0.0), sess
+
+
 def stop_for(sig):
     L, d = sig["L"], sig["dir"]
     use_prev = abs(sig["ct_open"] - L) < MIN_RISK
@@ -110,11 +128,25 @@ def stop_for(sig):
 
 
 def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
-             book_pos=None, max_risk=None):
+             book_pos=None, max_risk=None, pd_range=None,
+             conviction=False, arm_after=None, thru_ticks=1):
     """book_pos: list of (fill_hrs, end_hrs, dir, entry) level-book
     positions for the cross-book dedupe rule (2026-09-03): a VWAP entry
     is skipped when a level-book position is open at the fill moment,
     same direction, entries within one stop-floor.
+
+arm_after (points as a MULTIPLE of the trade's own risk) is his
+    2026-09-03 arm-after-displacement rule: the limit rests but is NOT
+    live until price has traded arm_after x risk BEYOND the level. Only
+    then can it fill. Unlike conviction sizing (which leaves the trade set
+    untouched) this changes occupancy: a pending that never displaces
+    expires without filling, freeing the book for the next signal, and a
+    pending that displaces late fills later than it otherwise would.
+    Conservative on intrabar order: the arming bar must be STRICTLY
+    before the touch bar, because within one bar it is unknowable whether
+    the run past the level came before or after the pullback to it. The
+    signal candle's own last bar counts toward arming (its high/low is
+    known at the signal close, so it is legal information).
 
     max_risk: his stop-cap rule (2026-09-03) — a signal whose structural
     stop exceeds the cap in points is never placed (risk-on gated only;
@@ -124,6 +156,9 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
     i = 0
     t_free = ts[0] - 1
     n = len(ts)
+    thru = TICK * thru_ticks          # queue proxy, see pd_va_backtest
+    run_hi = np.maximum.accumulate(hi) if conviction else None
+    run_lo = np.minimum.accumulate(lo) if conviction else None
     while i < len(sigs):
         s = sigs[i]
         t_sig = s["t"].value
@@ -152,12 +187,26 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
             cancel = min(nxt_idx, pend_cut_idx, n)
             if block is not None and start < block[0]:
                 cancel = min(cancel, block[0])
-            seg_lo, seg_hi = lo[start:cancel], hi[start:cancel]
-            touch = (seg_lo <= L - TICK) if d == 1 else (seg_hi >= L + TICK)
+            lo_w, hi_w = start, cancel
+            if arm_after is not None:
+                si0 = max(start - 1, 0)
+                thr_px = L + d * arm_after * abs(L - stop)
+                seg = hi[si0:cancel] if d == 1 else lo[si0:cancel]
+                armed = ((seg >= thr_px) if d == 1 else (seg <= thr_px)) \
+                    if si0 < cancel else np.zeros(0, bool)
+                if not armed.any():
+                    i += 1
+                    continue
+                lo_w = si0 + int(np.argmax(armed)) + 1     # strictly after
+                if lo_w >= cancel:
+                    i += 1
+                    continue
+            seg_lo, seg_hi = lo[lo_w:hi_w], hi[lo_w:hi_w]
+            touch = (seg_lo <= L - thru) if d == 1 else (seg_hi >= L + thru)
             if not touch.any():
                 i += 1
                 continue
-            fill = start + int(np.argmax(touch))
+            fill = lo_w + int(np.argmax(touch))
             E = L
         risk = abs(E - stop)
         if risk <= 0:
@@ -202,6 +251,16 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
                        "pts": round(r * risk, 2),
                        "fill_hrs": round((ts[fill] - ts[0]) / 3.6e12, 3),
                        "hold_min": int((ts[min(exit_idx, n - 1)] - ts[fill]) / 6e10)})
+        if conviction:
+            ex_pts, sess_pct = conviction_tier(
+                run_hi, run_lo, hi, lo, max(start - 1, 0), fill, L, d, pd_range)
+            ex_r = ex_pts / risk
+            hi_ex, hi_ss = ex_r >= 1.0, sess_pct >= 0.5
+            trades[-1].update({
+                "excur_r": round(ex_r, 3),
+                "sess_pct": None if sess_pct != sess_pct else round(sess_pct, 3),
+                "tier": ("A" if hi_ex and hi_ss else "B" if hi_ex
+                         else "C" if hi_ss else "D")})
         t_free = ts[min(sar_idx, n - 1)] - 1 if res == "SAR" else ts[exit_idx]
         i += 1
     return trades
@@ -218,6 +277,16 @@ def main() -> int:
     ap.add_argument("--dedupe", action="store_true",
                     help="cross-book rule: skip entries duplicating an open "
                          "level-book position (same dir, within one floor)")
+    ap.add_argument("--thru-ticks", type=int, default=1,
+                    help="queue proxy: ticks price must trade THROUGH the "
+                         "band before a resting limit counts as filled")
+    ap.add_argument("--arm-after", type=float, default=None,
+                    help="arm-after-displacement: the resting limit is not "
+                         "live until price trades this multiple of the "
+                         "trade's own risk BEYOND the frozen band value")
+    ap.add_argument("--conviction", action="store_true",
+                    help="tag each trade with the 2026-09-03 audit tier "
+                         "(LABELS ONLY; trade set, R and filename unchanged)")
     ap.add_argument("--max-risk", type=float, default=None,
                     help="stop cap in points: signals with wider structural "
                          "stops are never placed (dedupe then reads the "
@@ -228,8 +297,10 @@ def main() -> int:
         import collections
         bb = collections.defaultdict(list)
         xr = f"_xr{a.max_risk:g}" if a.max_risk is not None else ""
+        am = f"_arm{a.arm_after:g}" if a.arm_after is not None else ""
+        qq = f"_q{a.thru_ticks}" if a.thru_ticks != 1 else ""
         for l in gzip.open(ROOT / "output/analysis/"
-                           f"pd_va_trades_lvall{xr}_sar_through_tf1_ng.jsonl.gz", "rt"):
+                           f"pd_va_trades_lvall{xr}_sar_through_tf1_ng{am}{qq}.jsonl.gz", "rt"):
             t = json.loads(l)
             bb[t["day"]].append((t["fill_hrs"],
                                  t["fill_hrs"] + t["hold_min"] / 60,
@@ -246,11 +317,21 @@ def main() -> int:
     out = ROOT / (f"output/analysis/vwap_rev_tf{a.tf}_{a.style}"
                   + (f"_xr{a.max_risk:g}" if a.max_risk is not None else "")
                   + ("_nyanc" if a.anchor == "ny" else "")
-                  + ("_dd" if a.dedupe else "") + ".jsonl.gz")
+                  + ("_dd" if a.dedupe else "")
+                  + (f"_arm{a.arm_after:g}" if a.arm_after is not None else "")
+                  + (f"_q{a.thru_ticks}" if a.thru_ticks != 1 else "")
+                  + ".jsonl.gz")
     fh = gzip.open(out, "wt")
     n_all = 0
+    prev_t0 = None
     for di, day in enumerate(days):
         t0 = pd.Timestamp(f"{day} 18:00", tz=OB.NY)
+        # prior SESSION segment, same anchor convention as the level engine
+        pseg = (bars[(bars.index >= prev_t0) & (bars.index < t0)]
+                if prev_t0 is not None else bars.iloc[:0])
+        prev_t0 = t0
+        pdr = (float(pseg.high.max() - pseg.low.min())
+               if len(pseg) >= 300 else None)
         sess = bars[(bars.index >= t0)
                     & (bars.index < t0 + pd.Timedelta(hours=SESS_H))]
         if len(sess) < 600:
@@ -296,7 +377,10 @@ def main() -> int:
                 for t in simulate(ts, hi_, lo_, cl_, sigs, pcut, tr,
                                   a.style, blk,
                                   book_pos=book_by_day.get(day),
-                                  max_risk=a.max_risk):
+                                  max_risk=a.max_risk, pd_range=pdr,
+                                  conviction=a.conviction,
+                                  arm_after=a.arm_after,
+                                  thru_ticks=a.thru_ticks):
                     t.update({"day": day, "depth": depth, "target_r": tr})
                     fh.write(json.dumps(t) + "\n")
                     n_all += 1

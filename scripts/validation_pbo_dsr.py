@@ -99,10 +99,13 @@ def empire_trades():
     MNQ micros; gross r keeps the 0.5pt cost overlay applicable per
     contract at sizing time).
     """
-    lv = load("pd_va_trades_lvall_sar_through_tf1_ng.jsonl.gz")
-    sv = [t for t in load("vwap_rev_tf1_retest_dd.jsonl.gz")
+    # CURRENT SPEC dumps: 30pt stop cap (S34) + armed 1R (S35). The S33
+    # DSR figures were computed on the pre-cap, pre-arm stream (T=921,
+    # SR_daily 1.156); the armed spec prints its own (SR_daily 1.207).
+    lv = load("pd_va_trades_lvall_xr30_sar_through_tf1_ng_arm1.jsonl.gz")
+    sv = [t for t in load("vwap_rev_tf1_retest_xr30_dd_arm1.jsonl.gz")
           if t["depth"] == 3.0 and t["target_r"] == 1.0]
-    nv = [t for t in load("vwap_rev_tf1_retest_nyanc_dd.jsonl.gz")
+    nv = [t for t in load("vwap_rev_tf1_retest_xr30_nyanc_dd_arm1.jsonl.gz")
           if t["depth"] == 3.0 and t["target_r"] == 1.0]
     byday = defaultdict(list)
     for t in lv + sv + nv:
