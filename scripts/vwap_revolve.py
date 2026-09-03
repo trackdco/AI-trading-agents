@@ -41,8 +41,13 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 import scripts.offline_briefings as OB                            # noqa: E402
+from scripts.pd_va_backtest import INSTRUMENTS                    # noqa: E402
 from src.htf_ma.levels import vwap_bands                          # noqa: E402
 
+# Defaults are the certified NQ values. --instrument rebinds them in main()
+# from the level engine's own INSTRUMENTS table, so the two books can never
+# drift apart on tick size or stop floor. With --instrument nq (the default)
+# nothing is rebound and every output path is unchanged.
 TICK = 0.25
 MIN_RISK = 5.0
 DEPTHS = (0.0, 3.0)
@@ -287,6 +292,16 @@ def main() -> int:
     ap.add_argument("--conviction", action="store_true",
                     help="tag each trade with the 2026-09-03 audit tier "
                          "(LABELS ONLY; trade set, R and filename unchanged)")
+    ap.add_argument("--instrument", choices=tuple(INSTRUMENTS), default="nq",
+                    help="which tape to price. Reads bars, roll days, tick "
+                         "and stop floor from the level engine's INSTRUMENTS "
+                         "table so both books stay in lockstep. Default nq "
+                         "keeps the certified 2023-26 behaviour byte for byte.")
+    ap.add_argument("--no-news-gate", action="store_true",
+                    help="run without G8. Required on tapes the news archive "
+                         "does not cover (it starts 2023-01-04); makes the "
+                         "absence explicit in the filename instead of the "
+                         "gate silently matching zero dates.")
     ap.add_argument("--max-risk", type=float, default=None,
                     help="stop cap in points: signals with wider structural "
                          "stops are never placed (dedupe then reads the "
@@ -296,11 +311,16 @@ def main() -> int:
     if a.dedupe:
         import collections
         bb = collections.defaultdict(list)
+        # Must name the SAME tape and the SAME gate as this run, or G4 would
+        # dedupe against a level book from a different era. Mirrors the level
+        # engine's own suffix rules exactly (pd_va_backtest, "suffix = ").
+        iz = f"_{a.instrument}" if a.instrument != "nq" else ""
+        ng = "" if a.no_news_gate else "_ng"
         xr = f"_xr{a.max_risk:g}" if a.max_risk is not None else ""
         am = f"_arm{a.arm_after:g}" if a.arm_after is not None else ""
         qq = f"_q{a.thru_ticks}" if a.thru_ticks != 1 else ""
         for l in gzip.open(ROOT / "output/analysis/"
-                           f"pd_va_trades_lvall{xr}_sar_through_tf1_ng{am}{qq}.jsonl.gz", "rt"):
+                           f"pd_va_trades{iz}_lvall{xr}_sar_through_tf1{ng}{am}{qq}.jsonl.gz", "rt"):
             t = json.loads(l)
             bb[t["day"]].append((t["fill_hrs"],
                                  t["fill_hrs"] + t["hold_min"] / 60,
@@ -309,12 +329,36 @@ def main() -> int:
         print(f"dedupe: level-book positions loaded for {len(book_by_day)} days",
               flush=True)
 
-    nf = pd.read_csv(ROOT / "data/reference/news_archive.csv")
-    news_days = set(nf[(nf.impact == "high") & (nf.time_et >= "08:00")
-                       & (nf.time_et < "09:30")].date)
-    bars = OB.get_bars()
+    global TICK, MIN_RISK
+    inst = INSTRUMENTS[a.instrument]
+    TICK, MIN_RISK = inst["tick"], inst["min_risk"]
+
+    news_days = set()
+    if not a.no_news_gate:
+        nf = pd.read_csv(ROOT / "data/reference/news_archive.csv")
+        news_days = set(nf[(nf.impact == "high") & (nf.time_et >= "08:00")
+                           & (nf.time_et < "09:30")].date)
+        print(f"news gate: {len(news_days)} pre-market high-impact dates "
+              f"({min(news_days)} -> {max(news_days)})", flush=True)
+    else:
+        print("news gate: OFF (--no-news-gate)", flush=True)
+
+    if inst["bars"]:
+        b = pd.read_parquet(ROOT / inst["bars"])
+        b["mi"] = pd.to_datetime(b.ts_event, utc=True).dt.tz_convert(OB.NY)
+        bars = b.set_index("mi").sort_index()[
+            ["open", "high", "low", "close", "volume"]]
+        roll_skip = set(json.loads((ROOT / inst["rolls"]).read_text()))
+        print(f"{a.instrument}: {len(bars):,} bars, "
+              f"{len(roll_skip)} roll days excluded, "
+              f"tick {TICK:g} floor {MIN_RISK:g}", flush=True)
+    else:
+        bars = OB.get_bars()
+        roll_skip = set()
     days = OB.all_session_days(bars)
     out = ROOT / (f"output/analysis/vwap_rev_tf{a.tf}_{a.style}"
+                  + (f"_{a.instrument}" if a.instrument != "nq" else "")
+                  + ("_ng0" if a.no_news_gate else "")
                   + (f"_xr{a.max_risk:g}" if a.max_risk is not None else "")
                   + ("_nyanc" if a.anchor == "ny" else "")
                   + ("_dd" if a.dedupe else "")
@@ -334,7 +378,7 @@ def main() -> int:
                if len(pseg) >= 300 else None)
         sess = bars[(bars.index >= t0)
                     & (bars.index < t0 + pd.Timedelta(hours=SESS_H))]
-        if len(sess) < 600:
+        if len(sess) < 600 or day in roll_skip:
             continue
         if a.anchor == "ny":
             nyseg = sess[sess.index >= t0 + pd.Timedelta(hours=15.5)]

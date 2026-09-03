@@ -199,6 +199,7 @@
       <li><b>Sizing is quantized to whole MNQ micros ($2/pt).</b> Flat mode passes stop-size variance straight into $ risk (stops run 7.2pt median, 30pt max by construction); budget mode floors to affordable micros and skips what doesn't fit. Switch modes to see the cost of quantization against the idealized $/R stream.</li>
       <li><b>The embedded stream already carries the in-engine 30pt cap and 1R arming</b> (§34–35: the limit rests dark until price runs 1R past the level — 19% fewer trades, +30% expectancy, maxDD −18.1R → −14.0R). The stop-cap field can only tighten further from 30; here a tighter cap drops trades post-hoc, so live would be the same or slightly better.</li>
       <li><b>Days are trading days</b> (~21 per month), every day trades the full three-book NQ program (the GC book is not in this stream), no missed sessions, no discretion.</li>
+      <li><b>This era is the optimistic drawdown regime.</b> The 2020–22 replication (§36) earned the same per-trade expectancy but drew down 2.2× deeper (−30R armed, with losses chaining across days in late 2022 — something 2023–26 never did). Whatever size this page suggests, the robust number is about half of it until sizing is re-derived across both eras.</li>
     </ul>
   </div>
 </section>

@@ -83,6 +83,19 @@ INSTRUMENTS = {
                depths=(0.0, 0.3, 0.6, 0.9),
                bars="data/reference/gc_1m.parquet",
                rolls="data/reference/gc_roll_days.json"),
+    # 2020-2022 NQ HOLDOUT (docs/PREREG-holdout-2020-2022.md).
+    # nq20a = Run A, frozen 2026-anchored constants, untouched.
+    # nq20b = Run B, era constants: the certified values scaled by
+    #         k = m_era/m_now = 0.8571 (like-for-like median 1m candle,
+    #         roll days excluded), each rounded to the 0.25 tick.
+    "nq20a": dict(tick=0.25, min_risk=5.0, bin_w=1.0,
+                  depths=(0.0, 1.0, 2.0, 3.0),
+                  bars="data/reference/nq_2020_2022_1m.parquet",
+                  rolls="data/reference/nq_2020_2022_roll_days.json"),
+    "nq20b": dict(tick=0.25, min_risk=4.25, bin_w=0.75,
+                  depths=(0.0, 0.75, 1.75, 2.5),
+                  bars="data/reference/nq_2020_2022_1m.parquet",
+                  rolls="data/reference/nq_2020_2022_roll_days.json"),
     # ES (e-mini S&P), constants at the same ratios off its own tape.
     # Median active-session 1m candle 1.75pt = 7.0 TICKS (NQ 28, GC 21):
     # FAILS the >=20-tick screen in docs/FINDINGS-6e-euro-port.md S5. Run

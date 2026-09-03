@@ -51,7 +51,13 @@ from src.engine.triggers import Trigger  # noqa: E402
 
 NY = "America/New_York"
 LOOKBACK_DAYS = 7
-BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_feb_jul2026.parquet",
+# nq_1m_jul_sep2026 closes the 2026-07-16 -> 2026-08-22 hole (spliced
+# 2026-09-03, after the 2020-22 holdout was scored so that the holdout's
+# baseline table kept describing the 927-day tape it was computed on).
+# Overlap check on 14,616 shared minutes: 1 price bar differed (2.5pt on a
+# low), 9 volume bars differed - ordinary vendor revision.
+BARFILES = ["data/reference/nq_1m_master.parquet", "data/reference/nq_1m_jul_sep2026.parquet",
+            "data/reference/nq_1m_feb_jul2026.parquet",
             "data/reference/nq_1m_aug_sep2026.parquet"]
 
 _BARS: pd.DataFrame | None = None       # per-process cache (fork inherits the parent's copy)

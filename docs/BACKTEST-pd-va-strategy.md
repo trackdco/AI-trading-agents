@@ -1127,6 +1127,73 @@ right), SMT divergence both encodings, ES port (economics knife-edge,
 7-tick candles fail the >=20-tick instrument screen), 6E port (dead
 before costs; yields the instrument screening law).
 
+## 36. THE 2020-2022 HOLDOUT: EDGE HOLDS, RISK ENVELOPE DOES NOT (2026-09-03)
+
+Brake pulled three years the program had never seen - the COVID crash,
+the zero-rate melt-up, the 2022 bear - with the protocol preregistered
+BEFORE the data existed (docs/PREREG-holdout-2020-2022.md, commit
+80c3f23). Full receipts: FINDINGS-holdout-2020-2022.md (single-book
+holdout), FINDINGS-replication-2020-2022-empire.md (full stack),
+FINDINGS-rebaseline-954.md (2026 gap spliced; 2023-26 baseline is now
+954 unbroken days, nothing structural moved), FINDINGS-funded-sim-armed
+.md, FINDINGS-loser-autopsy.md. All merged here; engine additions
+(--instrument for vwap_revolve, --no-news-gate, nq20a/b tapes) applied
+from their patches; the news gate is inert pre-2023 (archive starts
+2023-01-04) - every holdout figure is ng0.
+
+**Verified on this branch's own runs** (all six books re-run here,
+hold_empire.py reproduces their tables to the trade):
+
+  2020-22 empire   trades  EV/trade   net R   R/day   maxDD  Sharpe
+  flat frozen      52,680   +0.1348  +7,101   +9.28   -39.4   0.945
+  armed 1R         42,839   +0.1666  +7,135   +9.33   -30.1   0.962
+
+**What holds - basically everything that is a claim about the EDGE:**
+- Preregistered single-book holdout: PASS on frozen constants (65.4%
+  WR, +0.1354 EV, all years positive; 2020 - the crash year - the BEST
+  of the three at +0.1588). ~13% EV shave = the predicted winner's
+  curse.
+- All three books at near-identical per-trade EV (session VWAP within
+  0.0002R of its 2023-26 figure; NY VWAP better out of era).
+- ARMING (his question): re-passes its own adoption rule out of era by
+  6x the bar - drawdown-matched +29.0% IS / +34.2% OOS, EV +23.6%,
+  DD -23.7%. Found in-sample, holds on a different decade.
+- 36/36 months positive, both variants. 81/81 months lifetime.
+- G5/G6 never bind (same as 2023-26); the structural gradients repeat.
+
+**What does NOT hold - the risk envelope:**
+- maxDD -30.1R armed (-39.4 flat) vs -14.0 (-18.1) on 2023-26: 2.2x.
+- Losses CHAIN across days out of era (late-Nov 2022: -21.0R then
+  -9.1R armed, back to back). "maxDD = worst single day" is a 2023-26
+  FACT, not a strategy property - scope every statement of it.
+- The worst 2020-22 day (-24.6R flat) exceeds anything in 2023-26.
+- Sizing consequence: FINDINGS-funded-sim-armed's "armed book carries
+  16 micros at >=80% start-to-payout odds" is conditioned on the
+  2023-26 drawdown distribution - the optimistic era of the two.
+  On the 2020-22 tape carryable size is roughly HALF. Until sizing is
+  re-derived on the union of eras, treat 8 micros as the robust
+  number and 16 as the good-regime number.
+
+**Constants across eras - his price-scaling question answered by
+measurement.** NQ 2020-22 traded at less than half today's price, so
+the natural suspicion is that a 5pt floor / 30pt cap is mis-sized for
+that tape and stops should scale with PRICE. The tape says no: the
+like-for-like median 1m candle was 4.50pt in 2020-22 vs 5.25pt in
+2023-26 - k = 0.857 - while price scaled ~0.45. Point volatility, not
+price, is the stable quantity (percentage vol was ~2x higher in that
+era; the two nearly cancel), which is exactly why FROZEN constants
+passed the holdout and the era-scaled Run B (floor 4.25) came out
+WORSE (+0.1206 vs +0.1354). Price-proportional constants (floor
+~2.3pt, HALF the era's median candle) would sit inside one candle of
+noise and be structurally wrong. Doctrine unchanged: constants are
+ratios of the trailing median 1m candle, re-derived per instrument and
+era (the GC port, S22); across THIS pair of eras even that was nearly
+a no-op.
+
+Next honest step, preregistered on their branch: 2017-2019 - arming's
+first true out-of-sample era. And the S33 artifact carries the
+2023-26 armed stream; its era caveat is now printed on the page.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
