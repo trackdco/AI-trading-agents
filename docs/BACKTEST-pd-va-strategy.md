@@ -738,6 +738,36 @@ per-instrument risk. "Which is better today" has a boring answer - NQ,
 every day - and a useful one - GC earns its seat only when its tape is
 big enough to clear its costs.
 
+## 25. THE GRAMMAR IS GENERAL: four new level families, all pass (2026-09-03)
+
+His push: "built only on 2 levels... surely there must be a way we can
+add some mechanical counterparts... maybe ur just not testing the right
+mechanisms." He was right - the answer was never filters (subtraction),
+it was more level families (addition). Four new families ran the FROZEN
+certified spec untouched - PD high/low, PD POC, weekly VAH/VAL, weekly
+POC - prereg gates: positive both halves, daily corr <0.5 vs VA, DD.
+
+| family | n | WR | net R | IS/OOS | corr vs VA |
+|---|---|---|---|---|---|
+| PD VA (certified) | 7,623 | 67.3%% | +1,133 | +515/+618 | - |
+| PD HIGH/LOW | 5,647 | 65.5%% | +705 | +320/+384 | +0.06 |
+| PD POC | 4,490 | 65.0%% | +549 | +260/+289 | +0.03 |
+| WEEKLY VA | 7,091 | 66.9%% | +964 | +409/+555 | +0.31 |
+| WEEKLY POC | 3,720 | 66.3%% | +496 | +191/+305 | +0.09 |
+
+ALL FIVE positive in both halves at 65-67%% WR with zero re-tuning and
+near-zero cross-correlation. No selection occurred - every family
+tested passed. The close-through -> retest grammar prices ANY structural
+reference level; PD VAH/VAL was one instance of a general edge.
+
+**The five-book answers his DD complaint:** equal-risk five-stream book
+= +0.84R/day, 71%% green days, **maxDD -4.6R**, 45/45 months positive,
+worst month +3.0R. DD-efficiency 18.4%% of maxDD earned per day vs
+11.5%% for VA alone - any sizing on the dial dominates the single book
+(at VA-alone's +1.24R/day rate the five-book carries ~-7R DD vs -10.8).
+Full-risk-each: +4.2R/day at -22.8R, ~31 trades/day - automation
+territory. GC families and the live wiring are the open ends.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a

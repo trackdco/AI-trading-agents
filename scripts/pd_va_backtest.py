@@ -62,7 +62,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 import scripts.offline_briefings as OB                            # noqa: E402
-from scripts.agent_context import volume_profile                  # noqa: E402
+from scripts.agent_context import (anchored_weekly_profile,       # noqa: E402
+                                   volume_profile)
 
 TICK = 0.25
 MIN_RISK = 5.0
@@ -422,6 +423,11 @@ def main() -> int:
                          "08:00 (data/reference/news_archive.csv)")
     ap.add_argument("--instrument", choices=tuple(INSTRUMENTS), default="nq",
                     help="which tape: constants + bars swap per instrument")
+    ap.add_argument("--levels", choices=("va", "pdhl", "poc", "wva", "wpoc"),
+                    default="va",
+                    help="level family: PD value area (default), PD high/low, "
+                         "PD POC, weekly VA, weekly POC - identical grammar, "
+                         "levels swapped")
     ap.add_argument("--min-risk", type=float, default=None,
                     help="override the stop floor (also the escalation "
                          "trigger), in instrument points")
@@ -438,6 +444,7 @@ def main() -> int:
     if a.depths is not None:
         DEPTHS = tuple(float(x) for x in a.depths.split(","))
     suffix = ((f"_{a.instrument}" if a.instrument != "nq" else "")
+              + (f"_lv{a.levels}" if a.levels != "va" else "")
               + (f"_mr{a.min_risk:g}" if a.min_risk is not None else "")
               + ("_sar" if a.sar else "") + ("_through" if a.fill_through else "")
               + (f"_tf{a.tf}" if a.tf != 3 else "")
@@ -483,11 +490,28 @@ def main() -> int:
         prev_t0 = t0
         if len(pseg) < 300 or len(sess) < 600 or day in roll_skip:
             continue    # roll days: prior profile sits in the old contract
-        _, val, vah = volume_profile(pseg, bin_w=BIN_W)
-        if not (np.isfinite(val) and np.isfinite(vah)):
+        if a.levels == "va":
+            _, val, vah = volume_profile(pseg, bin_w=BIN_W)
+        elif a.levels == "pdhl":
+            vah, val = float(pseg.high.max()), float(pseg.low.min())
+        elif a.levels == "poc":
+            vah, val = volume_profile(pseg, bin_w=BIN_W)[0], np.nan
+        else:
+            try:
+                aw = anchored_weekly_profile(
+                    bars, day, upto=t0 + pd.Timedelta(hours=1))
+            except Exception:
+                continue
+            if a.levels == "wva":
+                vah, val = float(aw["awVAH"]), float(aw["awVAL"])
+            else:
+                vah, val = float(aw["awPOC"]), np.nan
+        if not np.isfinite(vah):
+            continue
+        if a.levels not in ("poc", "wpoc") and not np.isfinite(val):
             continue
         vah = round(vah / TICK) * TICK
-        val = round(val / TICK) * TICK
+        val = round(val / TICK) * TICK if np.isfinite(val) else np.nan
         c3 = sess.resample(f"{a.tf}min").agg(
             {"open": "first", "high": "max", "low": "min", "close": "last"}).dropna()
         hrs3 = (c3.index - t0).total_seconds() / 3600
@@ -545,10 +569,11 @@ def main() -> int:
             print(f"[{n_cfg}/{len(DEPTHS) * len(TARGETS)}] depth={depth} "
                   f"R={tr}: {n_trades} trades", flush=True)
     trades_out.close()
-    days_name = ("pd_va_days.json" if a.instrument == "nq"
-                 else f"pd_va_days_{a.instrument}.json")
-    (ROOT / "output/analysis" / days_name).write_text(
-        json.dumps(per_day_meta))
+    if a.levels == "va":
+        days_name = ("pd_va_days.json" if a.instrument == "nq"
+                     else f"pd_va_days_{a.instrument}.json")
+        (ROOT / "output/analysis" / days_name).write_text(
+            json.dumps(per_day_meta))
     (ROOT / f"output/analysis/pd_va_funnel{suffix}.json").write_text(
         json.dumps(funnel, indent=1))
     print(f"DONE -> output/analysis/pd_va_trades{suffix}.jsonl.gz", flush=True)
