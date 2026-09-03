@@ -109,7 +109,12 @@ def stop_for(sig):
     return stop
 
 
-def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block):
+def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
+             book_pos=None):
+    """book_pos: list of (fill_hrs, end_hrs, dir, entry) level-book
+    positions for the cross-book dedupe rule (2026-09-03): a VWAP entry
+    is skipped when a level-book position is open at the fill moment,
+    same direction, entries within one stop-floor."""
     trades = []
     i = 0
     t_free = ts[0] - 1
@@ -148,6 +153,12 @@ def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block):
         if risk <= 0:
             i += 1
             continue
+        if book_pos:
+            fh = (ts[fill] - ts[0]) / 3.6e12
+            if any(f2 <= fh < e2 and d2 == d and abs(p2 - E) <= MIN_RISK
+                   for f2, e2, d2, p2 in book_pos):
+                i += 1
+                continue
         tgt = E + d * target_r * risk
         w_lo, w_hi = lo[fill:], hi[fill:]
         s_hit = (w_lo <= stop) if d == 1 else (w_hi >= stop)
@@ -190,14 +201,31 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tf", type=int, required=True, choices=(1, 3, 5))
     ap.add_argument("--style", required=True, choices=("retest", "market"))
+    ap.add_argument("--dedupe", action="store_true",
+                    help="cross-book rule: skip entries duplicating an open "
+                         "level-book position (same dir, within one floor)")
     a = ap.parse_args()
+    book_by_day = {}
+    if a.dedupe:
+        import collections
+        bb = collections.defaultdict(list)
+        for l in gzip.open(ROOT / "output/analysis/"
+                           "pd_va_trades_lvall_sar_through_tf1_ng.jsonl.gz", "rt"):
+            t = json.loads(l)
+            bb[t["day"]].append((t["fill_hrs"],
+                                 t["fill_hrs"] + t["hold_min"] / 60,
+                                 t["dir"], t["entry"]))
+        book_by_day = dict(bb)
+        print(f"dedupe: level-book positions loaded for {len(book_by_day)} days",
+              flush=True)
 
     nf = pd.read_csv(ROOT / "data/reference/news_archive.csv")
     news_days = set(nf[(nf.impact == "high") & (nf.time_et >= "08:00")
                        & (nf.time_et < "09:30")].date)
     bars = OB.get_bars()
     days = OB.all_session_days(bars)
-    out = ROOT / f"output/analysis/vwap_rev_tf{a.tf}_{a.style}.jsonl.gz"
+    out = ROOT / (f"output/analysis/vwap_rev_tf{a.tf}_{a.style}"
+                  + ("_dd" if a.dedupe else "") + ".jsonl.gz")
     fh = gzip.open(out, "wt")
     n_all = 0
     for di, day in enumerate(days):
@@ -238,7 +266,8 @@ def main() -> int:
                 continue
             for tr in TARGETS:
                 for t in simulate(ts, hi_, lo_, cl_, sigs, pcut, tr,
-                                  a.style, blk):
+                                  a.style, blk,
+                                  book_pos=book_by_day.get(day)):
                     t.update({"day": day, "depth": depth, "target_r": tr})
                     fh.write(json.dumps(t) + "\n")
                     n_all += 1

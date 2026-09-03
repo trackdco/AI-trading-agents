@@ -842,7 +842,28 @@ floor). Combined-book concurrency peaks at 2 positions on most days
 **-120R at 57.5%% WR** - so the CROSS-BOOK DEDUPE RULE (skip a VWAP
 entry when a level-book position is open same-direction within 5pt) is
 free on both axes: removes the double exposure AND adds +120R. RULE IN
-for the live spec. Remaining open: gold VWAP variant.
+for the live spec (implemented in-sim as --dedupe; official champion is
+now the deduped book: 33,340 trades, +3,932R). Remaining open: gold
+VWAP variant.
+
+**Band-direction asymmetry (his hypothesis, 2026-09-03): REJECTED on
+the retest book - and his instinct is vindicated elsewhere.** Prereg:
+cut extending-at-outer-band trades if negative both halves. Measured:
+ALL TEN band x direction cells positive in BOTH halves; extend_2sig
+runs +0.121 EV at 65.6%% WR - indistinguishable from reverting trades -
+and his exact example, SHORT at -2 sigma, is the single BEST cell in
+the book (67.8%% WR, +0.157 EV, +0.191/+0.135 by half). Weakest cell:
+LONG at +2 sigma, still +0.073 and positive both halves. NOTHING
+qualifies for a cut.
+
+The mechanism: the RETEST converts the trade he fears into the trade he
+loves. Shorting a -2 sigma close-through via retest means waiting for
+price to pull back UP to the band and shorting the bounce - a
+with-trend pullback entry (the T76 shape), not a chase. The chase
+version of his intuition IS real and IS dead: it is exactly the
+market-order style, negative at every tf and target (S28). The loser-
+cutting he wants is already structural - the limit at the frozen band
+is the filter.
 
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
