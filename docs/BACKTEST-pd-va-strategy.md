@@ -707,6 +707,37 @@ target frontier still votes 1R (+98R) over 1.5R (-23) and 2R (-84):
 the tail is real and mechanically unharvestable, third combination in
 a row. Discretionary runner management stays the agent stack's job.
 
+## 24. NQ x GC correlation + the rotation question (2026-09-03)
+
+Daily correlation between the two certified books: **-0.018** (monthly
+-0.053) - not the negative coupling his eye suggested, but zero, which
+is the diversification jackpot anyway: 894 shared days, both-green 19%%,
+both-red 28%%, split 53%%.
+
+Combined-book receipts (risk-normalized): 50/50 blend +0.73R/day, 63%%
+green days, maxDD -7.2R (vs NQ alone -10.8R, GC alone -46.1R) - a third
+less drawdown at NQ's Sharpe. Both at full risk each: +1.45R/day, 63%%
+green, maxDD -14.3R.
+
+**Day-rotation: KILLED on the fair baseline.** Trailing-5-day P&L
+picking today's instrument beats the half-size blend in both halves -
+but that was a sizing artifact (picker rides full risk); against
+ALWAYS-NQ at full risk it loses in both halves (0.891 vs 1.095 IS,
+1.081 vs 1.344 OOS). No daily classifier beats simply owning the
+better instrument. Caught pre-ship by the fair-baseline check.
+
+**The real classifier is GC's own vol dial, not rotation:** GC trades
+only when its trailing-20-day median 1m candle >= 1.0pt. That keeps GC
+on for just 29%% of days yet captures +201R of its +203R total, and
+zeroes the 2023-24 bleed. Mechanism-backed (the friction arithmetic of
+S22), receipt-shaped as same-money-less-exposure. At 1.5pt the dial is
+too tight (-39R).
+
+RULING CANDIDATE: NQ always on; GC on its vol dial; both at full
+per-instrument risk. "Which is better today" has a boring answer - NQ,
+every day - and a useful one - GC earns its seat only when its tape is
+big enough to clear its costs.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
