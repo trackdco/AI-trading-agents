@@ -292,7 +292,7 @@
 
 <section id="books">
   <div class="sec-head"><span class="sec-ref">§26 · §28 · §30</span><h2>Three books, one grammar</h2></div>
-  <p class="col">The same five moves priced against three different lists of reference levels. They are near-independent: daily correlation between any pair sits around +0.10, so they add rather than overlap.</p>
+  <p class="col">The same five moves priced against three different lists of reference levels. They are near-independent: daily correlation between any pair sits between +0.10 and +0.18, so they add rather than overlap.</p>
 
   <div class="t-scroll">
     <table>
@@ -804,6 +804,7 @@
       <h3>Known idealisations</h3>
       <ul class="plain">
         <li><b>Queue position is assumed, not modelled.</b> Stress-tested below — this is still the biggest gap.</li>
+        <li><b>Sharpe 1.208 is a daily ratio.</b> Annualised it is about 19 — a number no live book prints, and the clearest measure of how much the simulator idealises execution.</li>
         <li><b>The cross-book rail pass is post-hoc chronological.</b> An exact joint simulation is executor-stage work.</li>
         <li><b>No cost shocks, no missed sessions</b> — which is part of why a simulated Sharpe should not be read as a live forecast.</li>
         <li><b>~80 trades a day is automation only.</b> None of this is hand-tradeable, and it was never designed to be.</li>
@@ -811,6 +812,19 @@
         <li><b>Gold is in-sample.</b> Its constants and its volatility dial were derived on the same 2023–26 tape the gold section reports on, and its dial-on sample is 300 days. It has had no sealed holdout.</li>
       </ul>
     </div>
+  </div>
+
+  <div class="callout" style="border-left-color:var(--pos)">
+    <h3>Audited, adversarially, on 2026-09-03</h3>
+    <p>Every number on this page was re-derived with fresh code: an independently written rail pass, a replay of <b>3,000 random armed trades against the raw 1-minute bars</b> (signal, stop, arming, fill, exit — 3,000 of 3,000 consistent), a determinism re-run (0 differing lines), the funded-account simulation rebuilt under its own rules (within one point), both holdouts, the selection grid, the queue and latency tables. <b>Nothing is false.</b> Seven places where the wording here is simpler than the exact truth:</p>
+    <ul class="plain" style="font-size:13.5px">
+      <li><b>Same-minute pairs.</b> 545 kept trades fill in the same minute and at the same level as a trade that entered and exited inside that bar. The rail counts the first as already closed; live, both would fill. They earn +198R — <b>1.8%</b> of the armed total. Strictest reading: +10,665R, not +10,863R.</li>
+      <li><b>"Ambiguity counts as a loss."</b> 2,229 of 2,244 ambiguous bars scored −1; 15 were pre-empted by an opposing close and scored there (mean −0.63). None scored as a win.</li>
+      <li><b>Roll days.</b> The 2023–26 tape does not exclude quarterly roll sessions; the holdout tapes do. The 14 first-post-roll sessions earned +86R above average days — 0.8%, borderline noise, but a consistency gap. To be excluded.</li>
+      <li><b>16 micros at ≥80%</b> lands at 80.0% on the fuller tape. On the line.</li>
+      <li>Book correlations are +0.10 to +0.18, not "around +0.10". Three VWAP fills of 61,194 sit on a rail boundary. The VWAP trade files carry no ambiguity flag, but every tie bar sampled from them was scored −1.</li>
+    </ul>
+    <p class="rule-line">What the audit cannot say: whether these rules describe <em class="term">live</em> fills. That closes only in paper trading. Full report: <code>docs/FINDINGS-audit-armed-empire.md</code>.</p>
   </div>
 
   <h3 style="font-family:Archivo,sans-serif;font-size:16px;font-weight:600;margin:34px 0 0">Where it actually breaks</h3>
