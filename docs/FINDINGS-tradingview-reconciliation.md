@@ -90,3 +90,26 @@ supports the engine's 100%. TradingView's bar-shape rule lands within 0.01R/trad
 zero-edge strategy before costs and a loser after them. Nothing in this repository should be traded or
 funded. The frozen spec must be changed to scan for the exit from the bar AFTER the fill bar (or use
 intrabar data), and every number re-derived before any further work.**
+
+
+## Full re-run with the corrected rule (2026-09-04)
+Engine flag `--exit-next-bar` (off by default; `docs/patches/engine-exit-next-bar-plus-alt-tapes.patch`):
+the target is scanned from the bar after the fill bar; the stop scan is unchanged. Seven books, rails
+applied, all three tapes, armed and flat. Full table: `docs/FINDINGS-exit-next-bar-rerun.txt`.
+
+| tape | mode | rule | trades | win rate | R per trade | net R | every year |
+|---|---|---|---|---|---|---|---|
+| 2023-26 | armed | original | 61,194 | 66.0% | +0.178 | +10,863 | all positive |
+| 2023-26 | armed | **corrected** | 58,523 | 47.5% | **-0.183** | **-10,728** | all negative |
+| 2023-26 | flat | original | 75,481 | 65.3% | +0.136 | +10,273 | all positive |
+| 2023-26 | flat | **corrected** | 72,507 | 49.3% | **-0.163** | **-11,793** | all negative |
+| 2020-22 | armed | corrected | 41,185 | 48.0% | -0.175 | -7,198 | all negative |
+| 2020-22 | flat | corrected | 50,817 | 50.1% | -0.147 | -7,488 | all negative |
+| 2017-19 | armed | corrected | 10,604 | 49.7% | -0.150 | -1,588 | all negative |
+| 2017-19 | flat | corrected | 12,784 | 50.8% | -0.136 | -1,738 | all negative |
+
+The corrected rule credits none of the same-bar targets, and the 1-second replay showed about a third of
+them are genuine, so it is a floor. The 1-second replay itself (+0.03R per trade gross on 571 trades) is the
+best estimate. The honest range is therefore -0.18R to +0.03R per trade before costs, and below zero after
+the 0.5pt cost in every case. Win rate with a 1R stop and a 1R target is a coin flip: 47-51% in every tape,
+armed or flat. **Ten years, three tapes, seven books: no edge.**
