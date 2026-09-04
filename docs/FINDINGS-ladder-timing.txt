@@ -1,0 +1,14 @@
+
+=== real edge = 100% of backtest ===
+  eval @8 micros -> +$3,000                            pass  99.8%   median   3 days   slow-90%   6 days
+  funded @4 micros -> floor locks (+$2,000)            pass 100.0%   median   3 days   slow-90%   7 days
+  funded @4 micros -> first payout (+$4,000, >=10d)    pass 100.0%   median  10 days   slow-90%  11 days
+  funded @8 micros -> a $4,000 payout cycle            pass  99.7%   median  10 days   slow-90%  10 days
+  funded @8 micros -> a $10,000 cycle                  pass  99.7%   median  10 days   slow-90%  13 days
+
+=== real edge = 50% of backtest ===
+  eval @8 micros -> +$3,000                            pass  77.8%   median   4 days   slow-90%   9 days
+  funded @4 micros -> floor locks (+$2,000)            pass  92.6%   median   6 days   slow-90%  15 days
+  funded @4 micros -> first payout (+$4,000, >=10d)    pass  91.1%   median  11 days   slow-90%  23 days
+  funded @8 micros -> a $4,000 payout cycle            pass  77.1%   median  10 days   slow-90%  12 days
+  funded @8 micros -> a $10,000 cycle                  pass  75.9%   median  11 days   slow-90%  24 days
