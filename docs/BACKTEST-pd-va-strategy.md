@@ -1241,6 +1241,53 @@ grid - the search that actually happened. The other families were
 adopted at the frozen cell with no search (S25), and arming carries
 its own guard (prereg bucket edge + out-of-era re-pass, S35-S36).
 
+## 38. EXTERNAL AUDIT - Pat's pipeline on the VA cell: 10/11 gates (2026-09-04)
+
+Pat's bot ran the frozen PD-VA cell (as accepted 2026-09-03, 5-30pt
+structural stops so the S34 cap is in; pre-arming) through their own
+Interrogate -> Freeze -> Validate pipeline: a from-scratch
+re-implementation written from our documented rules against their own
+independently-fetched NQ 1m data, Jan 2023 - Jan 2026 pre-holdout,
+$2.50/side + 1 tick slip (DOUBLED for the stressed grade ~= 3x our
+0.5pt overlay), 1 NQ contract fixed.
+
+**The independence receipt - the strongest external validation this
+program has.** Their first pass disagreed (5,610 vs our 7,338 trades);
+tracing it found a one-bar labeling bug ON THEIR SIDE, fixed by
+diffing against our script on the same session; after the fix: exact
+trade-by-trade match (direction, stop, exit) on the traced session,
+7,599 vs 7,338 full-run - a 3.6% gap read as float-level noise in the
+volume-profile math. An adversarial port converged on our numbers.
+Their 7-round blind spec interrogation (8->6->4->4->2->2->0 open
+questions) also produced a zero-ambiguity prose spec - the ideal
+source text for the executor build (requested for the repo).
+
+**Their scorecard: 10 of 11 gates PASS** - cost-stressed
+profitability (+$71,745 net at DOUBLED costs), outlier dependency
+(best trade 0.1% of gross), timing jitter 20/20, walk-forward WFE
+0.927 with 12/12 quarterly folds green (our seven-year run: 1.01,
+20/20 - S37), no-lookahead, sample/coverage/regime gates all clear;
+MCPT significance still running (moot for their verdict).
+
+**The one FAIL, read correctly: trailing drawdown $4,245 vs the
+$2,000 Lucid-50k limit AT 1 FULL NQ CONTRACT FIXED.** That is a
+sizing-frame fact, not an edge finding - the S16 lesson (fixed-
+contract point-DD is the artifact-prone frame) arriving through an
+independent pipeline. The answer their gate's own arithmetic gives:
+at MNQ ($2/pt) the same worst stretch is $424.50, so the same account
+fits ~4 micros inside $2,000 with room - no re-tuning, same trade
+sequence, 0.1x the multiplier. Consistent with the S33 funded sim
+(3-book armed at 4 micros: 99.9% pass). Standing scope from S36
+attaches: their window is the calm-drawdown era; union-era sizing
+halves the size again. Asked of Pat: re-grade the DD gate at micro
+sizing, run the current armed spec hash when their pipeline has room,
+commit the interrogated spec, and send their trade log so the 3.6%
+count gap gets pinned trade by trade.
+
+**Adopted onto our list from their suite**: MCPT (permutation
+significance) - the one test their pipeline runs that ours does not;
+their p-value lands first, an in-house permutation null can follow.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
