@@ -1288,6 +1288,48 @@ count gap gets pinned trade by trade.
 significance) - the one test their pipeline runs that ours does not;
 their p-value lands first, an in-house permutation null can follow.
 
+## 39. PAT'S 11 GATES, IN-HOUSE, ON THE ARMED EMPIRE: 11/11 (2026-09-04)
+
+His ask: "run the same tests on what we have now, the ARM1R."
+Receipt: `scripts/pat_gates.py` - the S38 external scorecard's gates
+and cost conventions ($2.50/side + 1 tick/side = 0.75pt/RT, DOUBLED
+to 1.5pt for the stressed grade - 3x this repo's own overlay; 1
+contract per trade, no sizing search; $2,000 EOD-trailing account),
+applied to the armed three-book empire on the union tape.
+
+**101,240 railed trades / 1,686 days / 2020-01 -> 2026-09. 11 OF 11
+GATES PASS.** Net R by year (own 0.5pt overlay): 2020 +2,408 / 2021
++1,852 / 2022 +2,874 / 2023 +2,280 / 2024 +2,918 / 2025 +3,108 /
+2026 +2,161 (through Sep 1) - every year of seven above +1,850R.
+
+- Cost-stressed profitability: +144,806pt base / +68,876pt at doubled
+  costs - the edge survives 3x the certified overlay.
+- Outlier dependency: best trade is 0.01% of gross profit.
+- Fill-price jitter 20/20 (and the stronger in-house form, the S18
+  level-jitter RE-SIM, already showed 86-89% R retained).
+- **Trailing drawdown: PASS at the sizing the program trades.** Worst
+  seven-year stretch $596 at 1 MICRO per trade -> fits 3 micros
+  inside the $2,000 Lucid-50k limit ON THE LITERAL HISTORICAL PATH,
+  2020-22 chains included. At 1 big NQ it is $5,955 - fails exactly
+  as their VA-cell grade did, same frame, consistent math. (The S33
+  funded sim's higher micro counts answer a different question -
+  bootstrapped >=80% pass odds on the calm era; the union-tape
+  never-breach number is the honest sizing floor.)
+- Walk-forward: OOS/IS 1.133 across 23 rolling folds (frozen spec,
+  no selection - pure persistence), 23/23 folds and 27/27 calendar
+  quarters profitable.
+- No lookahead: 0 ordering violations in 101,240 trades.
+- Coverage: 27 quarters; vol terciles (median day-risk proxy) carry
+  18.5k / 32.8k / 49.9k trades.
+- Significance: p = 0.0001 vs a zero-edge null (10,000 mean-centered
+  5-day block permutations) - the resolution floor of the test.
+
+Two honest deltas from their pipeline, in the script header: their
+MCPT permutes ENTRIES inside a re-sim (stronger; theirs is still
+running), and their jitter lives inside their engine (ours is
+fill-price jitter + the S18 re-sim). Everything else is their gate,
+their costs, their account, our current spec.
+
 ## STATUS (2026-09-03): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
