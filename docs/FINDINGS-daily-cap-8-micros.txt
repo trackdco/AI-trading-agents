@@ -1,0 +1,6 @@
+8 micros, 1713 days, no cap: mean $1,638/day, worst $-2,704, days <-$1,200: 0.9%, days <-$2,000: 0.12%
+cap -$  800: mean $1,498/day (-8.5%), worst $-1,192, days hitting cap 10.0%, days <-$2,000 0.00%
+cap -$ 1000: mean $1,567/day (-4.3%), worst $-1,364, days hitting cap 5.3%, days <-$2,000 0.00%
+cap -$ 1200: mean $1,596/day (-2.6%), worst $-1,556, days hitting cap 3.2%, days <-$2,000 0.00%
+cap -$ 1500: mean $1,610/day (-1.7%), worst $-1,764, days hitting cap 1.8%, days <-$2,000 0.00%
+cap -$ 2000: mean $1,637/day (-0.1%), worst $-2,184, days hitting cap 0.4%, days <-$2,000 0.29%
