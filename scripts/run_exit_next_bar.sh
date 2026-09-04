@@ -14,3 +14,12 @@ for inst in nq nq20a nq17a; do
 done
 printf '%s\n' "${jobs[@]}" | xargs -P 4 -I{} bash -c "{}"
 echo "=== XN RUNS DONE ==="
+
+# reality gate: results are not quoted until this passes for every tape
+for inst in nq nq20a nq17a; do
+  i=""; ng="_ng"; ng0=""; [ "$inst" != "nq" ] && { i="_$inst"; ng=""; ng0="_ng0"; }
+  python3 /home/user/AI-trading-agents/scripts/reality_gate.py \
+    output/analysis/pd_va_trades${i}_lvall_xr30_sar_through_tf1${ng}_arm1_xn.jsonl.gz \
+    output/analysis/vwap_rev_tf1_retest${i}${ng0}_xr30_dd_arm1_xn.jsonl.gz \
+    output/analysis/vwap_rev_tf1_retest${i}${ng0}_xr30_nyanc_dd_arm1_xn.jsonl.gz --depth 3.0 --target 1.0
+done
