@@ -1,0 +1,4 @@
+# Extra deps for src/quant (the quant-strategy video series). Not needed by the engine.
+polars>=1.0
+torch>=2.2
+matplotlib>=3.8
