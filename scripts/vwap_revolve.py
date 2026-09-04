@@ -134,7 +134,8 @@ def stop_for(sig):
 
 def simulate(ts, hi, lo, cl, sigs, pend_cut_idx, target_r, style, block,
              book_pos=None, max_risk=None, pd_range=None,
-             conviction=False, arm_after=None, thru_ticks=1):
+             conviction=False, arm_after=None, thru_ticks=1,
+             exit_next_bar=False):
     """book_pos: list of (fill_hrs, end_hrs, dir, entry) level-book
     positions for the cross-book dedupe rule (2026-09-03): a VWAP entry
     is skipped when a level-book position is open at the fill moment,
@@ -224,11 +225,16 @@ arm_after (points as a MULTIPLE of the trade's own risk) is his
                 i += 1
                 continue
         tgt = E + d * target_r * risk
-        w_lo, w_hi = lo[fill:], hi[fill:]
+        # 2026-09-04 look-ahead fix (Brake): scan exits STRICTLY AFTER the
+        # fill bar - the fill bar's range holds pre-fill movement, so
+        # crediting a stop/target from it books phantom wins. See
+        # pd_va_backtest for the full note. Off = leaked pre-catch behaviour.
+        ex0 = (fill + 1) if exit_next_bar else fill
+        w_lo, w_hi = lo[ex0:], hi[ex0:]
         s_hit = (w_lo <= stop) if d == 1 else (w_hi >= stop)
         t_hit = (w_hi >= tgt) if d == 1 else (w_lo <= tgt)
-        s_idx = fill + int(np.argmax(s_hit)) if s_hit.any() else n
-        t_idx = fill + int(np.argmax(t_hit)) if t_hit.any() else n
+        s_idx = ex0 + int(np.argmax(s_hit)) if s_hit.any() else n
+        t_idx = ex0 + int(np.argmax(t_hit)) if t_hit.any() else n
         sar_idx, sar_px = n + 1, None
         for sj in sigs[i + 1:]:
             if sj["dir"] == -d and sj["t"].value > ts[fill]:
@@ -306,6 +312,10 @@ def main() -> int:
                     help="stop cap in points: signals with wider structural "
                          "stops are never placed (dedupe then reads the "
                          "matching capped level-book dump)")
+    ap.add_argument("--exit-next-bar", action="store_true",
+                    help="2026-09-04 look-ahead fix (Brake): scan stop/target "
+                         "only from the bar AFTER the fill. Reads the matching "
+                         "_xnb level-book dedupe dump.")
     a = ap.parse_args()
     book_by_day = {}
     if a.dedupe:
@@ -319,8 +329,9 @@ def main() -> int:
         xr = f"_xr{a.max_risk:g}" if a.max_risk is not None else ""
         am = f"_arm{a.arm_after:g}" if a.arm_after is not None else ""
         qq = f"_q{a.thru_ticks}" if a.thru_ticks != 1 else ""
+        xnb = "_xnb" if a.exit_next_bar else ""
         for l in gzip.open(ROOT / "output/analysis/"
-                           f"pd_va_trades{iz}_lvall{xr}_sar_through_tf1{ng}{am}{qq}.jsonl.gz", "rt"):
+                           f"pd_va_trades{iz}_lvall{xr}_sar_through_tf1{ng}{am}{qq}{xnb}.jsonl.gz", "rt"):
             t = json.loads(l)
             bb[t["day"]].append((t["fill_hrs"],
                                  t["fill_hrs"] + t["hold_min"] / 60,
@@ -364,6 +375,7 @@ def main() -> int:
                   + ("_dd" if a.dedupe else "")
                   + (f"_arm{a.arm_after:g}" if a.arm_after is not None else "")
                   + (f"_q{a.thru_ticks}" if a.thru_ticks != 1 else "")
+                  + ("_xnb" if a.exit_next_bar else "")
                   + ".jsonl.gz")
     fh = gzip.open(out, "wt")
     n_all = 0
@@ -424,7 +436,8 @@ def main() -> int:
                                   max_risk=a.max_risk, pd_range=pdr,
                                   conviction=a.conviction,
                                   arm_after=a.arm_after,
-                                  thru_ticks=a.thru_ticks):
+                                  thru_ticks=a.thru_ticks,
+                                  exit_next_bar=a.exit_next_bar):
                     t.update({"day": day, "depth": depth, "target_r": tr})
                     fh.write(json.dumps(t) + "\n")
                     n_all += 1

@@ -273,7 +273,7 @@ def simulate_day(ts, hi, lo, cl, sigs, pend_cut_idx, target_r,
                  runner=False, runner_tp2=None, runner_stop="be",
                  block=None, max_risk=None, pd_range=None,
                  conviction=False, arm_after=None, thru_ticks=1,
-                 arm_delay=0):
+                 arm_delay=0, exit_next_bar=False, entry_style="retest"):
     """One forward pass, one position at a time, latest pending wins.
 
     fill_through=True is the adverse-selection sensitivity: a fill counts
@@ -367,7 +367,9 @@ arm_after (points as a MULTIPLE of the trade's own risk) is his
             # exceeds the cap is never placed. Risk-on gated only - SAR
             # flattens still fire; same pending-replacement semantics as the
             # other entry-time skips.
-            if abs((s["L"] + s["dir"] * entry_off) - stop_for(s)) > max_risk:
+            e_pros = (float(s["close"]) if entry_style == "market"
+                      else s["L"] + s["dir"] * entry_off)
+            if abs(e_pros - stop_for(s)) > max_risk:
                 bump("skip_stop_cap")
                 i += 1
                 continue
@@ -385,7 +387,17 @@ arm_after (points as a MULTIPLE of the trade's own risk) is his
             cancel = min(cancel, block[0])
         L, d = s["L"], s["dir"]
         E = L + d * entry_off
-        if arm_after is not None and not fixed_stop:
+        if entry_style == "market":
+            # his 2026-09-04 ask: MARKET order at the signal candle's close.
+            # No intrabar fill ambiguity - the entry price is fixed at the
+            # candle boundary and the position is live for the whole of the
+            # next 1m bar, so exits scan from `fill` inclusive with no
+            # look-ahead. This is the structure the retest engine could not
+            # test honestly, and it is what he actually traded by hand.
+            fill = start
+            E = float(s["close"])
+            bump("filled")
+        elif arm_after is not None and not fixed_stop:
             # the limit is dark until price has run arm_after x risk past
             # the level; arming must COMPLETE strictly before the touch bar
             stop_p = stop_for(s)
@@ -431,20 +443,31 @@ arm_after (points as a MULTIPLE of the trade's own risk) is his
         stop = (L - d * fixed_stop) if fixed_stop else stop_for(s)
         risk = abs(E - stop)
         tgt = E + d * target_r * risk
-        w_lo, w_hi = lo[fill:], hi[fill:]
+        # 2026-09-04 (Brake's TradingView-seconds catch): the exit scan must
+        # start STRICTLY AFTER the fill bar. We enter mid-bar at a limit
+        # touch; that same 1m bar's high/low also contains movement from
+        # BEFORE the fill, so crediting a stop/target from the fill bar is a
+        # look-ahead - it books wins for a run that already happened when the
+        # order filled. ex0 = fill+1 removes it. The old fill-inclusive path
+        # (exit_next_bar=False) is kept only to reproduce the pre-catch dumps.
+        # market entries fill AT a bar boundary, so bar `fill` is entirely
+        # post-entry and carries no ambiguity - the +1 applies to limit fills
+        # only, which are the ones that land at an unknown moment inside a bar
+        ex0 = (fill + 1) if (exit_next_bar and entry_style != "market") else fill
+        w_lo, w_hi = lo[ex0:], hi[ex0:]
         if d == 1:
             s_hit = w_lo <= stop
             t_hit = w_hi >= tgt
         else:
             s_hit = w_hi >= stop
             t_hit = w_lo <= tgt
-        s_idx = fill + int(np.argmax(s_hit)) if s_hit.any() else n
-        t_idx = fill + int(np.argmax(t_hit)) if t_hit.any() else n
+        s_idx = ex0 + int(np.argmax(s_hit)) if s_hit.any() else n
+        t_idx = ex0 + int(np.argmax(t_hit)) if t_hit.any() else n
         # uncapped favourable run before the stop prints, ignoring the target
         # and any SAR exit — the setup's potential, for target-band selection
         # (his "most of the winners would have run for 2r" check). The stop
         # bar itself is excluded: intrabar order there is unknowable.
-        s_rel = (s_idx if s_idx < n else n) - fill
+        s_rel = (s_idx if s_idx < n else n) - ex0
         if s_rel > 0:
             run_r = ((float(w_hi[:s_rel].max()) - E) if d == 1
                      else (E - float(w_lo[:s_rel].min()))) / risk
@@ -612,6 +635,19 @@ def main() -> int:
                          "live until price trades this multiple of the "
                          "trade's own risk BEYOND the level. Changes the "
                          "trade set (unfilled pendings free the book)")
+    ap.add_argument("--entry-style", choices=("retest", "market"),
+                    default="retest",
+                    help="retest = limit at the level (the certified spec, and "
+                         "the one exposed to the 2026-09-04 fill-bar leak); "
+                         "market = buy/sell AT the signal candle's close on "
+                         "the next bar - no intrabar fill ambiguity, so it is "
+                         "structurally leak-free")
+    ap.add_argument("--exit-next-bar", action="store_true",
+                    help="2026-09-04 look-ahead fix (Brake): scan stop/target "
+                         "ONLY from the bar after the fill. The fill bar's "
+                         "range contains pre-fill movement, so crediting an "
+                         "exit from it books phantom wins. Off = the leaked "
+                         "pre-catch behaviour, kept only for reproduction.")
     ap.add_argument("--conviction", action="store_true",
                     help="tag each trade with the 2026-09-03 audit tier "
                          "(A/B/C/D from run-past-the-level x session "
@@ -655,7 +691,9 @@ def main() -> int:
               + (f"_arm{a.arm_after:g}" if a.arm_after is not None else "")
               + ("_tg" if a.targets else "")
               + (f"_q{a.thru_ticks}" if a.thru_ticks != 1 else "")
-              + (f"_lag{a.arm_delay}" if a.arm_delay else ""))
+              + (f"_lag{a.arm_delay}" if a.arm_delay else "")
+              + ("_xnb" if a.exit_next_bar else "")
+              + ("_mkt" if a.entry_style == "market" else ""))
     news_days = set()
     if a.news_gate:
         nf = pd.read_csv(ROOT / "data/reference/news_archive.csv")
@@ -802,7 +840,9 @@ def main() -> int:
                                           conviction=a.conviction,
                                           arm_after=a.arm_after,
                                           thru_ticks=a.thru_ticks,
-                                          arm_delay=a.arm_delay):
+                                          arm_delay=a.arm_delay,
+                                          exit_next_bar=a.exit_next_bar,
+                                          entry_style=a.entry_style):
                         t.update({"day": day, "depth": depth, "target_r": tr,
                                   "family": fam})
                         trades_out.write(json.dumps(t) + "\n")

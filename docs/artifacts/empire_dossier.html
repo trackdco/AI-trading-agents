@@ -3,7 +3,7 @@
 <style>
   :root{
     --ink:#0A0E14; --panel:#111823; --well:#0D1420; --edge:#223048; --edge2:#1A2434;
-    --text:#D9E1EC; --dim:#7E8CA0; --gold:#E9B44C; --pass:#46C28E; --fail:#E4635E; --blue:#4E86C2;
+    --text:#D9E1EC; --dim:#7E8CA0; --gold:#E9B44C; --pass:#46C28E; --fail:#E4635E;
     --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
     --sans:'IBM Plex Sans',system-ui,sans-serif;
     --cond:'Barlow Condensed','Arial Narrow',var(--sans);
@@ -11,257 +11,117 @@
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ink);color:var(--text);font:14.5px/1.62 var(--sans)}
-  .wrap{max-width:880px;margin:0 auto;padding:30px 24px 70px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .tickmark{width:14px;height:26px;border-left:3px solid var(--gold);border-bottom:3px solid var(--gold);transform:translateY(-3px)}
-  h1{font:600 34px/1 var(--cond);letter-spacing:.04em;text-transform:uppercase;margin:0;text-wrap:balance}
-  .sub{color:var(--dim);font-size:13px;margin:10px 0 0;max-width:66ch}
+  .wrap{max-width:860px;margin:0 auto;padding:30px 24px 70px}
+  .stamp{display:inline-block;font:600 12px/1 var(--cond);letter-spacing:.18em;text-transform:uppercase;
+    color:var(--fail);border:1px solid rgba(228,99,94,.5);background:rgba(228,99,94,.1);
+    padding:7px 12px;border-radius:3px}
+  h1{font:600 34px/1 var(--cond);letter-spacing:.04em;text-transform:uppercase;margin:14px 0 0;text-wrap:balance}
+  h1 .strike{text-decoration:line-through;text-decoration-color:rgba(228,99,94,.7);color:var(--dim)}
+  .sub{color:var(--dim);font-size:13px;margin:10px 0 0;max-width:68ch}
   .sub b{color:var(--text);font-family:var(--mono);font-weight:500}
-  .rule{height:1px;background:var(--edge);margin:20px 0}
 
-  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0 8px}
-  @media(max-width:640px){.tiles{grid-template-columns:repeat(2,1fr)}}
-  .tile{background:var(--panel);border:1px solid var(--edge);border-radius:4px;padding:12px 14px}
-  .tile .eyebrow{font:600 11.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-  .tile .big{font:600 30px/1.15 var(--mono);font-variant-numeric:tabular-nums;margin-top:6px}
-  .tile .big.pass{color:var(--pass)}.tile .big.gold{color:var(--gold)}
-  .tile .s{color:var(--dim);font-size:11.5px;font-family:var(--mono);margin-top:4px}
+  .verdict{background:var(--panel);border:1px solid var(--edge);border-left:3px solid var(--fail);
+    border-radius:4px;padding:18px 20px;margin:24px 0}
+  .verdict p{margin:0 0 10px;max-width:70ch}
+  .verdict p:last-child{margin-bottom:0}
+  .verdict .lede{font-size:16px;font-weight:600;color:var(--text)}
 
-  h2{font:600 17px/1.2 var(--cond);letter-spacing:.1em;text-transform:uppercase;margin:44px 0 6px;display:flex;gap:10px;align-items:baseline}
-  h2 .no{color:var(--gold);font-size:14px}
-  h2 .ref{color:var(--dim);font:400 11.5px var(--mono);letter-spacing:0;text-transform:none}
+  h2{font:600 17px/1.2 var(--cond);letter-spacing:.1em;text-transform:uppercase;margin:38px 0 6px}
   p{margin:10px 0;max-width:70ch}
-  p b{font-weight:600}
-  .mono,td,th{font-family:var(--mono);font-variant-numeric:tabular-nums}
-  .num{color:var(--gold)}
-
-  .spec{background:var(--panel);border:1px solid var(--edge);border-left:3px solid var(--gold);border-radius:4px;padding:14px 18px;font-size:13.5px;line-height:1.7}
-  .spec .lbl{font:600 12px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
-
-  .tblwrap{overflow-x:auto;border:1px solid var(--edge);border-radius:4px;margin:12px 0}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--well);border:1px solid var(--edge);
+    border-radius:3px;padding:1px 5px}
+  .tblwrap{overflow-x:auto;border:1px solid var(--edge);border-radius:4px;margin:14px 0}
   table{border-collapse:collapse;width:100%;font-size:12.5px;background:var(--panel)}
-  th{font:600 11.5px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-align:left;padding:8px 12px;border-bottom:1px solid var(--edge);white-space:nowrap}
-  td{padding:7px 12px;border-bottom:1px solid var(--edge2);white-space:nowrap}
+  th{font:600 11.5px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+    text-align:left;padding:8px 12px;border-bottom:1px solid var(--edge);white-space:nowrap}
+  td{padding:7px 12px;border-bottom:1px solid var(--edge2);white-space:nowrap;
+    font-family:var(--mono);font-variant-numeric:tabular-nums}
+  td:first-child{font-family:var(--sans)}
   tr:last-child td{border-bottom:0}
   td.r,th.r{text-align:right}
-  .pill{display:inline-block;font:600 10.5px var(--mono);letter-spacing:.06em;padding:2px 8px;border-radius:3px}
-  .pill.pass{color:var(--pass);background:rgba(70,194,142,.12);border:1px solid rgba(70,194,142,.35)}
-  .pill.fail{color:var(--fail);background:rgba(228,99,94,.12);border:1px solid rgba(228,99,94,.35)}
-
-  .chart{background:var(--panel);border:1px solid var(--edge);border-radius:4px;padding:14px 16px 8px;margin:14px 0}
-  .chart .t{font:600 12px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-
-  .callout{background:var(--well);border:1px solid var(--edge);border-left:3px solid var(--fail);border-radius:4px;padding:12px 16px;font-size:13.5px;margin:14px 0;max-width:none}
-  .callout.goldb{border-left-color:var(--gold)}
-  .kills{columns:2;column-gap:28px;font-size:13px;color:var(--dim);margin:10px 0;padding-left:18px}
-  @media(max-width:640px){.kills{columns:1}}
-  .kills li{margin-bottom:5px;break-inside:avoid}
-  .kills b{color:var(--text);font-weight:500}
-  ul.cv{font-size:13.5px;color:var(--dim);line-height:1.65;padding-left:18px;max-width:74ch}
-  ul.cv li{margin-bottom:8px}
-  ul.cv b{color:var(--text);font-weight:600}
-
-  .asks{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
-  @media(max-width:640px){.asks{grid-template-columns:1fr}}
-  .ask{background:var(--panel);border:1px solid var(--edge);border-radius:4px;padding:14px 18px}
-  .ask h3{font:600 14px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
-  .ask ol{margin:0;padding-left:18px;font-size:13px;color:var(--dim);line-height:1.6}
-  .ask li{margin-bottom:6px}
-  .ask b{color:var(--text);font-weight:500}
-
-  footer{margin-top:50px;border-top:1px solid var(--edge);padding-top:14px;color:var(--dim);font:11.5px var(--mono);line-height:1.7}
+  .bad{color:var(--fail)} .old{color:var(--dim)}
+  ul{font-size:13.5px;color:var(--dim);line-height:1.7;padding-left:18px;max-width:72ch}
+  li{margin-bottom:9px}
+  li b{color:var(--text);font-weight:600}
+  footer{margin-top:46px;border-top:1px solid var(--edge);padding-top:14px;color:var(--dim);
+    font:11.5px var(--mono);line-height:1.7}
 </style>
 
 <div class="wrap">
 <header>
-  <div class="brand"><div class="tickmark"></div><h1>Armed Empire Dossier</h1></div>
-  <p class="sub">State of the fully mechanical NQ program as of <b>2026-09-04</b> — frozen spec, seven-year ledger, and every validation receipt.
-  Prepared for Pat (external 11-gate pipeline) and Brake (holdout &amp; arming line). Repo: <b>trackdco/ai-trading-agents</b>,
-  branch <b>claude/tradingview-mcp-agent-setup-ql18v8</b>, master doc §1–39.</p>
+  <div class="stamp">Retracted 2026-09-04 · no edge</div>
+  <h1><span class="strike">Armed Empire Dossier</span></h1>
+  <p class="sub">This page previously presented a seven-year validation record for a mechanical NQ program.
+  <b>That record was produced by a look-ahead bug and is withdrawn in full.</b> The page is kept, corrected,
+  because the failure is more useful than the claim was. Repo <b>trackdco/ai-trading-agents</b>, doc §40.</p>
 </header>
 
-<div class="tiles">
-  <div class="tile"><div class="eyebrow">Railed trades</div><div class="big">101,240</div><div class="s">1,686 days · 2020-01 → 2026-09</div></div>
-  <div class="tile"><div class="eyebrow">Months positive</div><div class="big pass">81 / 81</div><div class="s">27/27 quarters · 7/7 years</div></div>
-  <div class="tile"><div class="eyebrow">PBO · 12,870 splits</div><div class="big gold">0.000</div><div class="s">CSCV S=16, union surface</div></div>
-  <div class="tile"><div class="eyebrow">Gate scorecards</div><div class="big">11/11</div><div class="s">in-house · external 10/11 (VA cell)</div></div>
+<div class="verdict">
+  <p class="lede">The strategy has no edge. It is not fundable and not tradeable.</p>
+  <p>The backtest scanned for stop and target exits starting on the <b>fill bar itself</b>. A limit order fills at an
+  unknown moment inside a one-minute bar, but that bar's high and low also contain movement from <i>before</i> the fill —
+  so every target that happened to sit within the fill bar's range was booked as a win, including runs that were already
+  over by the time the order filled.</p>
+  <p>Caught by Brake, running the same spec against TradingView seconds data where the true intrabar path is visible:
+  571 trades across six days, engine <b>+176R</b> versus seconds <b>+18R</b>. Reproduced independently in our own engines
+  by scanning exits strictly after the fill bar.</p>
 </div>
 
-<h2><span class="no">01</span> The frozen spec <span class="ref">doc §19 · §34 · §35</span></h2>
-<div class="spec">
-  <span class="lbl">Grammar</span> — 1-minute candle closes ≥ depth through a reference level → limit rests at the retest,
-  <b>armed only after price has run 1R (the trade's own risk) beyond the level</b> → structural stop one tick past the
-  close-through candle's extreme (prior-candle escalation; 5pt floor, <b>30pt cap — wider-stop signals are never placed</b>) →
-  <b>1R full exit</b> → stop-and-reverse on an opposing crossing close → high-impact news gate 08:00–09:30 ET →
-  pendings die 16:00, flat by session end.<br><br>
-  <span class="lbl">Books</span> — three: an 8-level book (prior-day VA / POC / high-low + weekly VA / POC, proximity-merged),
-  session-anchored VWAP bands (±1σ, ±2σ), and a 09:30-anchored NY VWAP. Guard rails: first-in-wins dedupe within one floor,
-  global cap 4, same-direction cap 3.<br><br>
-  <span class="lbl">Honesty stack</span> — fills count only when price trades a full tick <i>through</i> the level; 0.5pt/RT cost;
-  same-bar ambiguity scored as a loss; stop checked before target inside every bar; risk-normalized sizing.
-</div>
-
-<h2><span class="no">02</span> Seven years, every year deep green <span class="ref">§37 · §39</span></h2>
-<div class="chart"><div class="t">Net R by year · armed empire, union tape (0.5pt/RT overlay)</div>
-  <svg viewBox="0 0 800 210" style="width:100%;height:auto;display:block" role="img" aria-label="Net R by year 2020 to 2026">
-    <!-- max 3108 -> y scale: 170px / 3300 -->
-    <g font-family="IBM Plex Mono,monospace" font-size="12" fill="#7E8CA0">
-      <line x1="40" y1="180" x2="790" y2="180" stroke="#223048"/>
-      <line x1="40" y1="128.5" x2="790" y2="128.5" stroke="#1A2434"/>
-      <line x1="40" y1="77" x2="790" y2="77" stroke="#1A2434"/>
-      <line x1="40" y1="25.5" x2="790" y2="25.5" stroke="#1A2434"/>
-      <text x="36" y="184" text-anchor="end">0</text>
-      <text x="36" y="132" text-anchor="end">1k</text>
-      <text x="36" y="81" text-anchor="end">2k</text>
-      <text x="36" y="29" text-anchor="end">3k</text>
-    </g>
-    <g fill="#46C28E">
-      <rect x="62"  y="56.1" width="72" height="123.9"/>
-      <rect x="166" y="84.7" width="72" height="95.3"/>
-      <rect x="270" y="32.1" width="72" height="147.9"/>
-      <rect x="374" y="62.7" width="72" height="117.3"/>
-      <rect x="478" y="29.8" width="72" height="150.2"/>
-      <rect x="582" y="20.0" width="72" height="160.0"/>
-      <rect x="686" y="68.8" width="72" height="111.2" fill="#3B9B77"/>
-    </g>
-    <g font-family="IBM Plex Mono,monospace" font-size="12" fill="#D9E1EC" text-anchor="middle">
-      <text x="98"  y="49">+2,408</text><text x="202" y="78">+1,852</text>
-      <text x="306" y="25">+2,874</text><text x="410" y="56">+2,280</text>
-      <text x="514" y="23">+2,918</text><text x="618" y="13">+3,108</text>
-      <text x="722" y="62">+2,161</text>
-    </g>
-    <g font-family="IBM Plex Mono,monospace" font-size="12" fill="#7E8CA0" text-anchor="middle">
-      <text x="98"  y="198">2020</text><text x="202" y="198">2021</text>
-      <text x="306" y="198">2022</text><text x="410" y="198">2023</text>
-      <text x="514" y="198">2024</text><text x="618" y="198">2025</text>
-      <text x="722" y="198">2026*</text>
-    </g>
-  </svg>
-  <p style="color:var(--dim);font-size:11.5px;margin:6px 0 6px">*2026 through Sep 1. Worst of seven years: +1,852R. Union: <span class="mono">+17,602R · +0.174R/trade · +10.4R/day · daily Sharpe 1.09</span>.</p>
-</div>
-
+<h2>The correction</h2>
 <div class="tblwrap"><table>
-  <tr><th>era</th><th class="r">trades</th><th class="r">/day</th><th class="r">EV/trade</th><th class="r">net R</th><th class="r">maxDD</th><th class="r">Sharpe</th><th class="r">months +</th></tr>
-  <tr><td>2023-26 (spec era)</td><td class="r">58,401</td><td class="r">63.4</td><td class="r num">+0.1792</td><td class="r">+10,467</td><td class="r">−14.0R</td><td class="r">1.207</td><td class="r">45/45</td></tr>
-  <tr><td>2020-22 (holdout era)</td><td class="r">42,839</td><td class="r">56.0</td><td class="r num">+0.1666</td><td class="r">+7,135</td><td class="r">−30.1R</td><td class="r">0.962</td><td class="r">36/36</td></tr>
+  <tr><th>full armed empire · 3 books · 2023–26 · 921 days</th><th class="r">as published</th><th class="r">corrected</th></tr>
+  <tr><td>trades</td><td class="r old">58,401</td><td class="r">55,130</td></tr>
+  <tr><td>win rate</td><td class="r old">60.1%</td><td class="r bad">43.1%</td></tr>
+  <tr><td>R per trade, before costs</td><td class="r old">+0.2478</td><td class="r bad">−0.1192</td></tr>
+  <tr><td>R per trade, after costs</td><td class="r old">+0.1792</td><td class="r bad">−0.1876</td></tr>
+  <tr><td>total R</td><td class="r old">+10,467</td><td class="r bad">−10,344</td></tr>
+  <tr><td>green days</td><td class="r old">91%</td><td class="r bad">13%</td></tr>
+  <tr><td>2023 / 2024 / 2025 / 2026</td><td class="r old">+2,280 / +2,918 / +3,108 / +2,161</td><td class="r bad">−1,782 / −2,292 / −3,636 / −2,633</td></tr>
 </table></div>
+<p>The result does not decay toward zero — it <b>inverts</b>, in a near-perfect mirror. The entire edge was the leak.
+The 65–70% win rate quoted throughout the original was the bug's most visible fingerprint; honest fills give 43%.</p>
 
-<h2><span class="no">03</span> Arming — the last adopted rule <span class="ref">§35</span></h2>
-<p>The limit rests dark until price runs <b>1R past the level</b>; arming bar strictly before the touch bar.
-Versus the pre-arm spec: <b>19% fewer trades, +30% EV/trade (+0.1375 → +0.1792, up in both halves), max drawdown −23%
-(−18.1R → −14.0R), +571R more total</b>. Drawdown-matched uplift <span class="mono num">+36.1%</span> against a
-preregistered +5% bar. Re-applied to the 2020-22 era it had never seen: <span class="mono num">+29.0% / +34.2%</span>
-by half — <b>six times its own adoption bar, out of era</b>. Verified independently by both sessions to the trade.</p>
-
-<h2><span class="no">04</span> Selection audits <span class="ref">§33 · §37</span></h2>
-<p><b>PBO (CSCV), union surface</b> — 20-cell depth × target grid, 1,452 days, S=16, all 12,870 IS/OOS partitions:
-<b class="mono num">PBO = 0.000</b>. The in-sample winner never once falls below the out-of-sample median; the shipped
-cell's OOS relative rank holds <span class="mono">0.95 median / 0.90 minimum</span>.</p>
-<p><b>Deflated Sharpe</b> — union armed daily series, T=1,686: SR<sub>daily</sub> 1.088 (~17 annualized), skew +0.54.
-<b class="mono num">DSR = 1.000</b> up to 10,000 hypothetical trials (max-SR haircut 0.066). Framing kept attached:
-a sim Sharpe this size mostly reflects sim idealizations — PBO and walk-forward carry the weight.</p>
-
-<h2><span class="no">05</span> Walk-forward <span class="ref">§37 · §39</span></h2>
-<p><b>With selection</b> (252d rolling IS → 63d OOS, pick best grid cell by IS Sharpe, 20 folds):
-<b class="mono num">WFE = 1.01</b> — the out-of-sample edge is 101% of in-sample. <b>20/20 folds positive.</b>
-The roll re-picks the exact frozen cell in 18 of 20 folds, and both deviations <i>underperformed</i> it out-of-sample —
-re-optimizing is worse than freezing. <b>Frozen persistence</b> (no selection): OOS/IS <span class="mono num">1.133</span>,
-23/23 folds, 27/27 calendar quarters. <b>Edge decay: none</b> — frozen-cell OOS R/day regressed on time slopes
-<i>positive</i> (+0.028/fold, t = +1.76). Across seven years there is no decay to extrapolate.</p>
-
-<h2><span class="no">06</span> The out-of-era holdout — Brake's line <span class="ref">§36 · PREREG + 5 FINDINGS docs</span></h2>
-<p>Protocol preregistered <b>before the data was pulled</b>; verdict applied mechanically. Three years the program had
-never seen — the COVID crash, the melt-up, the 2022 bear — on <b>frozen constants</b>: <b>PASS.</b> The crash year was the
-best of the three. Per-book EV, other decade vs spec era:</p>
-<div class="tblwrap"><table>
-  <tr><th>book</th><th class="r">2020-22 EV</th><th class="r">2023-26 EV</th><th class="r">gap</th></tr>
-  <tr><td>8-level</td><td class="r">+0.1312</td><td class="r">+0.1395</td><td class="r">−0.008</td></tr>
-  <tr><td>session VWAP</td><td class="r">+0.1184</td><td class="r">+0.1186</td><td class="r num">−0.0002</td></tr>
-  <tr><td>NY VWAP</td><td class="r">+0.1630</td><td class="r">+0.1571</td><td class="r num">+0.006</td></tr>
-</table></div>
-<p>Constants ruling by measurement: price halved across eras but the median 1m candle scaled only 0.857 — <b>stops follow
-point volatility, not price</b>; frozen constants beat era-scaled ones on the holdout.</p>
-<div class="callout"><b>What did not replicate: the risk envelope.</b> Max drawdown −30.1R armed (2.2× the spec era),
-and losses chained across days (late-Nov 2022) — something 2023-26 never did. "maxDD = worst single day" is an era fact,
-not a strategy property. All sizing is scoped to the union of eras accordingly (§08 below).</div>
-
-<h2><span class="no">07</span> External adversarial audit — Pat's pipeline <span class="ref">§38</span></h2>
-<p>A from-scratch re-implementation written from the documented rules against independently-fetched data, VA cell only,
-seven rounds of blind spec interrogation to zero open questions. After fixing a one-bar bug <i>on the auditing side</i>:
-<b>exact trade-by-trade match on the traced session</b>; 7,599 vs 7,338 trades full-run — a 3.6% gap read as
-volume-profile float noise. Scorecard: <b>10 of 11 gates PASS</b> at doubled costs; the single FAIL — trailing drawdown
-$4,245 vs a $2,000 account — was graded at <b>1 full NQ contract fixed</b>. At the micro sizing the program actually
-trades, the same sequence worst-stretches $424.50.</p>
-<p><b>The same 11 gates, run in-house on the current armed empire</b> (their cost model: 0.75pt/RT doubled to 1.5pt —
-3× our overlay; 1 contract/trade; $2,000 trailing account):</p>
-<div class="tblwrap"><table>
-  <tr><th></th><th>gate</th><th>detail</th></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>Sample size</td><td>101,240 trades</td></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>Cost-stressed profitability</td><td>+144,806pt base / +68,876pt at doubled costs</td></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>Outlier dependency</td><td>best trade = 0.01% of gross profit</td></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>Fill-price jitter</td><td>20/20 trials ±1pt (level-jitter re-sim: 86–89% retained)</td></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>Trailing drawdown</td><td>$596 worst stretch at 1 micro → 3 micros fit $2,000 on the literal 7-yr path (1 big NQ = $5,955: fails, matching their frame)</td></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>Walk-forward efficiency</td><td>OOS/IS 1.133 over 23 rolling folds</td></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>Walk-forward consistency</td><td>27/27 calendar quarters profitable</td></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>No lookahead</td><td>0 ordering violations in 101,240 trades</td></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>Data coverage</td><td>27 distinct quarters</td></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>Regime coverage</td><td>vol terciles: 18.5k / 32.8k / 49.9k trades</td></tr>
-  <tr><td><span class="pill pass">PASS</span></td><td>Significance</td><td>p = 0.0001 vs zero-edge null, 10,000 block permutations (entry-permutation MCPT pending, Pat's side)</td></tr>
-</table></div>
-
-<h2><span class="no">08</span> The kill ledger <span class="ref">§15–16 · §20–21 · Brake's FINDINGS</span></h2>
-<p>Every conditional layer proposed was tested under a preregistered verdict rule, and the kills are logged as loudly
-as the confirms — the edge is unconditional or it isn't there:</p>
-<ul class="kills">
-  <li><b>Trend filter</b> — killed</li>
-  <li><b>Partial + runner exits</b> — all four variants killed</li>
-  <li><b>Daily-loss cutoffs</b> — killed</li>
-  <li><b>Pending-expiry rule</b> — killed</li>
-  <li><b>Market-entry VWAP style</b> — killed (retest only)</li>
-  <li><b>NQ/GC day-rotation picker</b> — killed (sizing artifact caught)</li>
-  <li><b>~20 pre-entry features, 3 loss-anatomy rounds</b> — all null</li>
-  <li><b>Conditional targets by displacement</b> — killed (kill #6; third confirmation the 1R exit is right)</li>
-  <li><b>Conviction sizing</b> — passed, then superseded: arming is the same information with less drawdown and no order-modify path</li>
-  <li><b>G3b any-distance dedupe</b> — killed in-engine (would have removed 72%-WR trades)</li>
-  <li><b>SMT divergence, both encodings</b> — null after a lookahead was removed</li>
-  <li><b>ES port</b> — knife-edge, not run · <b>6E port</b> — dead before costs (instrument screen: ≥20-tick median candle)</li>
+<h2>Why eleven gates, PBO 0.000 and a seven-year walk-forward all missed it</h2>
+<p>This is the part worth keeping. Every validation on the original page — PBO across 12,870 CSCV splits, deflated Sharpe,
+walk-forward efficiency 1.01, the preregistered 2020–22 holdout, and an external 11-gate audit — consumed <b>the same trade
+dumps</b>. Each of those tests asks whether a P&amp;L series is overfit, cherry-picked, or non-persistent.
+<b>None of them asks whether the P&amp;L was computed correctly.</b></p>
+<ul>
+  <li><b>A look-ahead leak passes overfitting tests by design.</b> The leaked series is genuinely stable and genuinely
+  persistent across eras and folds — it simply is not obtainable. PBO 0.000 and WFE 1.01 measured a bug with great precision.</li>
+  <li><b>The independent rebuild was not independent.</b> It was written from the same prose spec, which never stated the
+  fill-bar convention, so it inherited the same optimistic assumption and matched trade-for-trade. Its 10-of-11 is void
+  for the same reason.</li>
+  <li><b>Neither was the human check.</b> Marking trades on a chart makes the identical assumption: you see the level
+  tagged, then a run to target, and infer the fill came first. Two copies of one error agreeing is not validation.</li>
+  <li><b>The out-of-era holdout "passing" proved only determinism</b> — a bug reproduces in every era, which is exactly
+  what it did.</li>
+  <li><b>The most attractive result was the leak at its most concentrated.</b> The arming rule required price to reach
+  the target price before the entry could fill, which selected precisely the setups whose fill bar already contained
+  the target. That is why it read as +30% expectancy for free.</li>
 </ul>
 
-<h2><span class="no">09</span> Standing caveats — read before believing any of it <span class="ref">§36 · §38 · queue findings</span></h2>
-<ul class="cv">
-  <li><b>Sim ≠ live.</b> Tick-through fills and a 0.5pt overlay are the model's floor, but there is no queue or latency model.
-  MBP-10 depth (Apr 2026: median 3 contracts resting at a level; these levels only ~10% thicker than anywhere else) supports
-  the 1-tick fill assumption at retail size — and the edge dies at 2–4 ticks of required penetration. <b>The paper bridge's
-  first job is logging fill penetration per trade.</b></li>
-  <li><b>Executor latency is load-bearing:</b> the arming check must fire and the order reach the exchange within the same
-  minute the arming bar closes; acting one bar late costs a third of the edge.</li>
-  <li><b>The drawdown envelope is regime-dependent.</b> Union-tape literal path: 3 micros fit a $2,000 trailing account;
-  bootstrapped ≥80%-odds sizing on the calm era alone says more. Size to the union, not to 2023-26.</li>
-  <li><b>The rail pass is post-hoc chronological;</b> the exact joint sim of the three books is executor-stage work.</li>
-  <li>~60 trades/day is <b>automation-only</b>. News gate is inert pre-2023 (archive starts 2023-01). No untouched forward
-  holdout exists for arming — <b>2017–2019 is preregistered as its first true out-of-sample era.</b></li>
-</ul>
+<h2>What was tested after the fix</h2>
+<p>A market order at the signal candle's close has no intrabar fill ambiguity — the entry price is fixed at a bar
+boundary — so it is structurally leak-free and is the honest form of the question. Tested on prior-day VAH/VAL across
+1, 3 and 5-minute signal candles, targets 1.0R to 3.0R, four close-through depths — 60 configurations:
+<b>every one net negative, none positive in both halves of the sample.</b> The best sit near −0.01R per trade, which is
+approximately zero before costs and negative after — matching the seconds-data finding independently.</p>
+<p>Note the earlier kill of "market-style entry" was a comparison against the leaked limit baseline, so it was void too.
+This was its first fair test, and it is also negative.</p>
 
-<h2><span class="no">10</span> Asks</h2>
-<div class="asks">
-  <div class="ask"><h3>Pat</h3><ol>
-    <li>Re-grade the drawdown gate at <b>micro sizing (0.1×)</b> — same sequence, same rules.</li>
-    <li>Run the <b>current armed spec hash</b> through the full 11 gates when the pipeline has room.</li>
-    <li><b>Commit the interrogated prose spec</b> to the repo — it is the executor's source text.</li>
-    <li>Send the run's <b>trade log</b> so the 3.6% count gap gets pinned trade by trade.</li>
-    <li>The <b>MCPT p-value</b> when the permutation pass completes.</li>
-  </ol></div>
-  <div class="ask"><h3>Brake</h3><ol>
-    <li>Execute the <b>2017–2019 prereg</b> — arming's first true out-of-sample era.</li>
-    <li><b>Union-era sizing pass</b> (funded-account odds on 2020-26, not 2023-26 alone).</li>
-    <li>Engines live on <b>ql18v8</b>; both patch stacks are merged there — build from it, not from patches.</li>
-    <li>Push <b>nq_1m_jul_sep2026.parquet</b> (splice referenced in BARFILES but only local to your machine).</li>
-  </ol></div>
-</div>
+<h2>What survives</h2>
+<p>The data pipeline, the volume-profile level computation, the news archive, the position-rail and dedupe machinery,
+and the practice of writing verdict rules before reading results. The engines survive with the fix committed
+(<code>--exit-next-bar</code>) and the leaked path retained only to reproduce the retracted dumps.
+Nothing about the edge survives.</p>
+<p><b>The standing rule that comes out of this:</b> no strategy gets a "real" verdict until its fill and exit
+conventions have been validated against sub-minute data. Overfitting tests are not correctness tests, and no number
+of them substitutes for one.</p>
 
 <footer>
-  trackdco/ai-trading-agents · branch claude/tradingview-mcp-agent-setup-ql18v8 · master doc docs/BACKTEST-pd-va-strategy.md §1–39<br>
-  receipts: scripts/validation_pbo_dsr.py · validation_wf.py · pat_gates.py · hold_empire.py · PREREG-holdout-2020-2022.md · docs/FINDINGS-*<br>
-  compiled 2026-09-04 · all figures reproduce from the committed scripts against the committed tapes
+  trackdco/ai-trading-agents · branch claude/tradingview-mcp-agent-setup-ql18v8 · doc §40 supersedes §32–39<br>
+  fix and reproduction: scripts/pd_va_backtest.py, scripts/vwap_revolve.py (--exit-next-bar, --entry-style market)<br>
+  original finding: Brake, TradingView seconds data, 2026-09-04 · retraction compiled 2026-09-04
 </footer>
 </div>

@@ -1330,7 +1330,102 @@ running), and their jitter lives inside their engine (ours is
 fill-price jitter + the S18 re-sim). Everything else is their gate,
 their costs, their account, our current spec.
 
-## STATUS (2026-09-03): ACCEPTED AND FROZEN
+## 40. FILL-BAR LOOK-AHEAD: THE EDGE WAS NOT REAL (2026-09-04)
+
+**Brake caught a look-ahead bug that invalidates S1-S39. Reproduced
+here in our own engines. The strategy has no edge. Do not fund it, do
+not trade it.**
+
+**The bug.** `simulate_day` scanned exits from the FILL BAR INCLUSIVE
+(`w_lo, w_hi = lo[fill:], hi[fill:]`; same line in vwap_revolve). A
+limit fills at an unknown moment INSIDE a 1m bar, but that bar's
+high/low also contains movement from BEFORE the fill. So any target
+sitting inside the fill bar's range was booked as a win - including
+runs that had already happened when the order filled. The
+"conservative" same-bar rule we were proud of (stop checked before
+target) only ever guarded the stop side; the target side was wide
+open. Brake found it by running the spec against TradingView seconds
+data, where the true intrabar path is visible: 571 trades over six
+days, engine +176R vs seconds +18R.
+
+**Reproduced (fix = `--exit-next-bar`, exits scanned strictly after
+the fill bar; both engines, flag committed):**
+
+  8-level armed book   leaked            FIXED
+    trades             18,582            18,273
+    win rate           59.5%             43.1%
+    raw R/trade        +0.2477           -0.1124   (before costs)
+    net R/trade        +0.1791           -0.1808
+    net R              +3,327            -3,304
+
+  Full armed empire (3 books, 2023-26, 921 days):
+    leaked  58,401 tr, WR 60.1%, +0.1792R/tr, +10,467R, 91% green days
+    FIXED   55,130 tr, WR 43.1%, -0.1876R/tr, -10,344R, 13% green days
+    by year FIXED: 2023 -1,782 / 2024 -2,292 / 2025 -3,636 / 2026 -2,633
+
+The result does not decay to zero, it INVERTS - near-perfect mirror.
+The entire seven-year edge was the leak. The 65-70% win rate, quoted
+throughout this document, was its most visible fingerprint: honest
+fills give 43%.
+
+**Why no audit caught it, and this is the lesson.** PBO, deflated
+Sharpe, walk-forward, the 2020-22 holdout, and Pat's 11 gates ALL
+consume the same trade dumps. Every one of them tests whether a P&L
+series is overfit, selected, or persistent - NONE tests whether the
+P&L was computed correctly. A look-ahead leak is invisible to all of
+them by construction, and it will pass them with flying colours,
+because the leaked series is genuinely stable and genuinely
+persistent - it is just not obtainable. PBO 0.000 and WFE 1.01 were
+measuring a bug with great precision. "Not overfit" was confused with
+"real".
+
+Worse, the two independent-looking confirmations were not independent:
+- Pat's from-scratch port matched to the trade because it was built
+  from the same written spec, which never stated the fill-bar
+  convention - so it inherited the same optimistic assumption. Its
+  10/11 is void for the same reason.
+- The S19/S23 "certified against his eyes" runs matched his hand-marked
+  days because reading a chart makes the SAME assumption: you see a
+  tag and then a run to target and infer the fill came first. Two
+  copies of one error agreeing is not validation.
+
+**Market-on-close, tested at his ask (`--entry-style market`, added
+here).** A market order at the signal candle's close has no intrabar
+ambiguity - the entry price is fixed at a bar boundary - so it is
+structurally leak-free and was the honest way to ask the question.
+VAH/VAL, tf 1/3/5, targets 1.0-3.0R, depths 0-3pt, news gate on, 60
+cells: **every cell net negative, ZERO positive in both halves.**
+Best cells sit at -0.01 to -0.02R/trade, i.e. roughly zero BEFORE the
+0.5pt cost and negative after - the same arithmetic Brake reported
+(+0.03R before costs against a 0.05R cost). NOTE: the S28 kill of
+"market style" was a comparison against the leaked retest, so it was
+void too; this is its first fair test, and it is also negative.
+
+**Status of everything downstream.** S32-S39 (railed empire, funded
+sim, PBO/DSR, walk-forward, holdout, both gate scorecards, the
+dossier artifact) are RETRACTED. The 2020-22 holdout "PASS" was the
+leak reproducing in another era, which is what a deterministic bug
+does. Arming's +30% was the leak concentrating: arming requires price
+to reach L+1R (the target price) before the fill, so it selected
+exactly the setups where the fill bar's range already contained the
+target. That is why it looked like free money.
+
+What survives: the data pipeline, the level computation, the news
+archive, the rail/dedupe machinery, the discipline of preregistered
+verdicts - and the engines, now with the fix. Nothing about the edge.
+
+**Standing rule going forward:** no strategy in this repo gets a
+"real" verdict until its fill and exit conventions have been validated
+against sub-minute data. Overfitting tests are not correctness tests.
+
+## STATUS (2026-09-04): RETRACTED - NO EDGE
+
+Superseded by S40. The frozen spec's measured edge was a fill-bar
+look-ahead; corrected, it is negative before costs and worse after,
+in both eras and in every entry style tested. Not fundable, not
+tradeable. Prior STATUS text preserved below for the record only.
+
+## STATUS (2026-09-03, SUPERSEDED): ACCEPTED AND FROZEN
 
 His verdict: "fully mechanical system, performs like this... we have a
 65-70%% win rate high frequency strategy." The spec is frozen as
