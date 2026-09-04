@@ -64,4 +64,29 @@ the same minute reach the target before any second reaches the stop? The share t
 same-bar win rate. If it is near TradingView's 62%, the strategy is a loser after costs. If it is near 100%,
 TradingView is wrong and the engine stands.
 
-Until that test is run, nothing in this repository should be traded or funded.
+## Definitive test: run (2026-09-04, 1-second bars)
+Databento `ohlcv-1s` for six sessions (2026-08-04, 08-05; 2025-04-10; 2024-06-20; 2023-12-26, 12-27), front
+month by volume, 301,095 one-second bars; they roll up to the 1-minute tape with 0 mismatches over 8,220
+minutes (`data/reference/nq_1s_samples/`, `scripts/sec_replay.py`, `docs/sec_replay_results.csv`).
+
+Every engine trade on those sessions was replayed second by second: fill = first second trading one tick
+through the level; then the first touch of stop vs target, same second = STOP (the engine's own tie rule).
+
+| | count | result |
+|---|---|---|
+| zero-minute TARGETs | 273 | the minute's extreme printed **before** the fill second in **88%** |
+| of which target reached after the fill inside the same minute | 95 (35%) | true same-bar wins |
+| of which won in a later minute | 85 (31%) | |
+| of which stopped | 93 (34%) | |
+| replay net | **+87R** | engine booked +273R; TradingView booked +0.33R/trade, replay +0.32R/trade |
+| controls: TARGETs held >0 min | 77 | replay wins 100% |
+| controls: STOPs | 174 | replay losses 92% (8% reach the target first at 1s resolution) |
+| all TARGET+STOP trades on the six sessions | 571 | engine **+176R**, replay **+18R** (+0.03R/trade gross, below the 0.5pt cost) |
+
+By day the zero-minute win rate is 56-80% (n small on the quiet days), by book 58-77%. No day and no book
+supports the engine's 100%. TradingView's bar-shape rule lands within 0.01R/trade of the truth.
+
+**Verdict: the engine's edge was the fill-bar accounting. At one-second resolution the grammar is a
+zero-edge strategy before costs and a loser after them. Nothing in this repository should be traded or
+funded. The frozen spec must be changed to scan for the exit from the bar AFTER the fill bar (or use
+intrabar data), and every number re-derived before any further work.**

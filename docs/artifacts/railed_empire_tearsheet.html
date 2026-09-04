@@ -197,7 +197,7 @@
 <div class="wrap">
 
 <header class="mast">
-  <div class="eyebrow" style="color:var(--neg)">Superseded 2026-09-04 · the edge sits inside the fill bar · see the notice below</div>
+  <div class="eyebrow" style="color:var(--neg)">Superseded 2026-09-04 · verified on 1-second data · the edge was fill-bar accounting · no edge after costs</div>
   <h1>The Railed Empire</h1>
   <p class="deck">One entry grammar, three books of reference levels, run under a measured risk stack. Here is what four years of it looks like, the two layers that finally beat it — and what happened when the whole thing was pointed at three years nobody had looked at.</p>
   <div class="meta">
@@ -213,7 +213,7 @@
   <h3 style="color:var(--neg)">Superseded on 2026-09-04 — read this before anything below</h3>
   <p><b>The edge on this page sits inside the fill bar.</b> The Pine port of every book was run on a TradingView 1-minute NQ chart from September 2023 to September 2026 and the trade lists were reconciled against the engine: entries match the engine <b>96–98% to the minute</b>, stops match, flips match. But <b>74% of the engine's target exits are booked on the same bar as the fill</b>, and TradingView wins only 62–64% of those at +0.35R, against the engine's +1.0R. Every engine target that took a minute or longer wins 100% in TradingView.</p>
   <p>The spec scans for the exit from the fill bar inclusive. A resting buy limit fills on the way down, so a fill bar whose high reaches the target almost always printed that high <em class="term">before</em> the pullback that filled the order. The engine books a win for a move that happened before it was in the trade. Take those same-bar targets out and the seven books are <b>−12,639R</b> over the span instead of +9,388R. Re-scored with TradingView's within-bar rule, every book flips from about +0.17R to about −0.16R per trade. TradingView's own result across all seven books: −1,954 points gross, −$585k after commissions on 54,578 trades.</p>
-  <p>The audit, the blind re-implementation, PBO/DSR and both holdouts all reproduced the spec faithfully — none tested the spec's intrabar assumption against finer data. TradingView's bar-shape rule is also an assumption, so the definitive test is 1-second bars from Databento for a handful of days. <b>Until that test is run, nothing on this page should be traded, funded or scaled.</b> Every figure below is left as it was, as the record of what was believed and why. Full reconciliation: <code>docs/FINDINGS-tradingview-reconciliation.md</code>.</p>
+  <p>The audit, the blind re-implementation, PBO/DSR and both holdouts all reproduced the spec faithfully — none tested the spec's intrabar assumption against finer data. The 1-second test was then run on six sessions (301,095 one-second bars, 571 engine trades): in <b>88%</b> of the same-bar targets the minute's high printed <em class="term">before</em> the fill second. Replayed second by second those trades earn +87R where the engine booked +273R, and all 571 trades earn <b>+18R</b> where the engine booked +176R — below the 0.5pt cost. TradingView's rule landed within 0.01R per trade of the seconds. <b>Verdict: the grammar has no edge after costs. Nothing on this page should be traded, funded or scaled.</b> Every figure below is left as it was, as the record of what was believed and why. Full reconciliation: <code>docs/FINDINGS-tradingview-reconciliation.md</code>.</p>
 </div>
 
 <section id="grammar">
