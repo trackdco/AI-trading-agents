@@ -49,6 +49,8 @@ from zoneinfo import ZoneInfo
 
 RETEST_VERSION = "1.0"
 HERE = Path(__file__).resolve().parent
+if str(HERE) not in sys.path:
+    sys.path.insert(0, str(HERE))
 BOT_ROOT = Path(os.environ.get("NQ_BOT_ROOT", "/home/user/prat617/ai-trading-bot/nq_bot_vscode"))
 ET = ZoneInfo("America/New_York")
 
@@ -76,6 +78,7 @@ for _name in (
     globals()[_name] = getattr(fb, _name)
 
 import execution.scale_out_executor as _sxe  # noqa: E402  (bot module; for the id patch)
+import fast_features  # noqa: E402  (exact fast paths for the feature engine; --fast-features)
 
 
 # ── Patch 1: bounded write-only lists ────────────────────────────────────────────────────
@@ -484,7 +487,10 @@ async def run(args) -> dict:
                    "rth_only": args.rth_only, "cap_lifted": args.cap_lifted,
                    "slippage_mult": args.slippage_mult,
                    "perf_patch": not args.no_perf_patch,
-                   "deterministic_ids": args.deterministic_ids}
+                   "deterministic_ids": args.deterministic_ids,
+                   "fast_features": args.fast_features}
+    if args.fast_features:
+        fast_features.install()
     if args.deterministic_ids:
         apply_deterministic_ids()
     config = fb.BotConfig()
@@ -564,7 +570,8 @@ async def run(args) -> dict:
                 engine.executor._paper_enter = paper_enter
 
     print(f"Replaying: stop_floor={args.stop_floor} rr_gate={args.rr_gate} "
-          f"rth_only={args.rth_only} cap_lifted={args.cap_lifted} perf_patch={not args.no_perf_patch}")
+          f"rth_only={args.rth_only} cap_lifted={args.cap_lifted} perf_patch={not args.no_perf_patch} "
+          f"fast_features={args.fast_features}")
     t0 = time_module.time()
     t_int = t0
     total = len(bars_2m)
@@ -673,6 +680,7 @@ def main():
     ap.add_argument("--cap-lifted", action="store_true", help="disclosed sensitivity only")
     ap.add_argument("--slippage-mult", type=float, default=1.0)
     ap.add_argument("--no-perf-patch", action="store_true")
+    ap.add_argument("--fast-features", action="store_true", help="install fast_features.py (exact fast paths for the feature engine's zone bookkeeping)")
     ap.add_argument("--no-deterministic-ids", dest="deterministic_ids", action="store_false")
     ap.add_argument("--progress", type=int, default=25_000)
     ap.add_argument("--checkpoint", default=None, help="pickle path for exact checkpoints (deleted on completion)")
