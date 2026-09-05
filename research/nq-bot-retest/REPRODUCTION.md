@@ -112,3 +112,33 @@ refuses if it is not found). Test:
 | run to 09-05 (`--final-checkpoint`) then continue to 09-10 (`--continue-from`) | `c777cb56…5256` (identical, 42 records) |
 
 Sealed outputs: `data/verification/cont_test_*.json.gz`.
+
+## 6. `fast_features.py` — exact fast paths for the feature engine (added after the first dev launch)
+
+**Why.** With the logging lists bounded, the development runs still slowed from ~250 to ~50 bars/s
+by bar 125k. A profile from a live checkpoint at bar 150k put 99% of per-bar time in the bot's
+`NQFeatureEngine` zone bookkeeping: 12,263 order blocks (69 active) and 21,515 fair-value gaps,
+every one scanned every bar; the order-block duplicate check scanning all blocks per candidate;
+and an unused `recent_sweeps` comprehension calling `list.index` for each sweep. These structures
+are *behavioural* (mitigation flags and fills feed the score boosts), so they cannot be bounded —
+but the same computations can be done faster with identical results. `fast_features.py` replaces
+five methods in-process (bucket index for the duplicate check; active-only validity loop once the
+500-bar buffer is full, where the age threshold is constant and a mitigated block can never change
+state again; vectorised gap fill using the same float64 expressions; the dead comprehension
+omitted). The bot's files are untouched; the driver flag is `--fast-features`.
+
+**Evidence.**
+
+| test | result |
+|---|---|
+| From the same slow-engine checkpoint at bar 150,000 (12,480 blocks, 21,931 gaps after the test), replay 4,000 bars with the original methods and with the fast ones; dump every per-bar snapshot field (ATR, VWAP, OB/FVG/sweep flags, structural stops, active counts), every block and gap with its flags and fill, engine counters, trade records, pending entry | **identical on every item**: 4,000 snapshots, 12,480 blocks, 21,931 gaps, 50 sweeps, 6 counters, 68 records, pending entry (`compare_fast_dumps.py`) |
+| From scratch, untouched configuration, data start → 2021-12-31 | **347/347 exact** vs the bot's log; records sha256 `49e72a78…0767`, identical to runs A/B/U |
+| Speed | 4,000-bar replay in the grown state: 55.7 → 378.1 bars/s (×6.8, both under load); slice: 225 → 1,577 bars/s |
+
+Sealed evidence: `data/verification/fast_features_state_test_{ORIGINAL,FAST}_150k_4000bars.json.gz`
+(+ `.sha256`), `slice_2021-09-01_2021-12-31_untouched_FAST.json.gz`.
+
+**Consequence.** The five development runs were stopped (partial logs kept in
+`data/dev/slow_engine_partial_logs/`, nothing read from them) and restarted from scratch on the
+fast engine, so that every sealed run is produced by one engine version. The bot's own 4-year log
+remains the external reference: the full-window untouched run must reproduce it trade for trade.

@@ -1,0 +1,61 @@
+Loading 1-minute data...
+  /home/user/prat617/ai-trading-bot/nq_bot_vscode/data/historical/combined_1min.csv: 1,234,891 1m bars
+Aggregating to 2-minute execution bars (bot's aggregate_to_2m)...
+  500,430 2m bars: 2021-09-01 00:00:00-04:00 -> 2024-12-31 16:58:00-05:00
+Loading HTF data...
+    5m:  247,068 bars
+    15m:   82,356 bars
+    30m:   41,181 bars
+    1H:   20,594 bars
+    4H:    5,583 bars
+    1D:      902 bars
+Replaying: stop_floor=a5_10pt rr_gate=kept rth_only=True cap_lifted=False perf_patch=True
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2021-09-28 11:00:00-04:00
+  [    25,000] 2021-10-21 09:18 | Trades: 58 | PnL: $+665.72 | HTF: bearish(0.50) | Regime: ranging
+  [   25,000/500,430] 2021-10-21 09:18 |  265.8 bars/s | entries 58 | PnL $+665.72
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2021-12-09 15:26:00-05:00
+  [    50,000] 2021-12-12 23:22 | Trades: 132 | PnL: $+1,395.96 | HTF: bullish(0.50) | Regime: low_liquidity
+  [   50,000/500,430] 2021-12-12 23:22 |  117.5 bars/s | entries 132 | PnL $+1,395.96
+Loading 1-minute data...
+  /home/user/prat617/ai-trading-bot/nq_bot_vscode/data/historical/combined_1min.csv: 1,234,891 1m bars
+Aggregating to 2-minute execution bars (bot's aggregate_to_2m)...
+  500,430 2m bars: 2021-09-01 00:00:00-04:00 -> 2024-12-31 16:58:00-05:00
+Loading HTF data...
+    5m:  247,068 bars
+    15m:   82,356 bars
+    30m:   41,181 bars
+    1H:   20,594 bars
+    4H:    5,583 bars
+    1D:      902 bars
+  resumed from data/dev/ckpt/dev_C1a_C3b.pkl at bar 50,000 (132 entries so far)
+Replaying: stop_floor=a5_10pt rr_gate=kept rth_only=True cap_lifted=False perf_patch=True
+  [    75,000] 2022-02-02 08:42 | Trades: 277 | PnL: $+6,375.68 | HTF: bullish(0.50) | Regime: trending_down
+  [   75,000/500,430] 2022-02-02 08:42 |   96.3 bars/s | entries 277 | PnL $+6,375.68
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2022-02-11 13:22:00-05:00
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2022-02-14 20:00:00-05:00
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2022-03-01 16:16:00-05:00
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2022-03-22 10:46:00-04:00
+  [   100,000] 2022-03-24 19:02 | Trades: 486 | PnL: $+11,717.54 | HTF: bullish(0.83) | Regime: trending_down
+  [  100,000/500,430] 2022-03-24 19:02 |   67.9 bars/s | entries 486 | PnL $+11,717.54
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2022-04-04 12:10:00-04:00
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2022-04-13 10:42:00-04:00
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2022-04-18 15:56:00-04:00
+  [   125,000] 2022-05-17 00:22 | Trades: 666 | PnL: $+15,429.96 | HTF: bullish(0.50) | Regime: trending_up
+  [  125,000/500,430] 2022-05-17 00:22 |   50.8 bars/s | entries 666 | PnL $+15,429.96
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2022-06-30 13:20:00-04:00
+  [   150,000] 2022-07-06 18:42 | Trades: 804 | PnL: $+17,702.96 | HTF: bullish(0.67) | Regime: ranging
+  [  150,000/500,430] 2022-07-06 18:42 |   38.0 bars/s | entries 804 | PnL $+17,702.96
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2022-07-11 11:58:00-04:00
+KILL SWITCH ACTIVATED: Consecutive losses: 5
+Resume at: 2022-07-21 10:40:00-04:00
