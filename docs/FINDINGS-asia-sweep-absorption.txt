@@ -1,0 +1,46 @@
+footprint: 28,831,071 rows, 513 days | bars: 1,299,540
+
+  variant                       trades   R/trade   net R    win  medRR   maxDD   2023-24   2025-26
+  absorption (full)                 22   -0.9360     -21   4.5%   2.13   -19.5   -0.7673   -1.0528
+  delta+reject, no vol test         63   +0.6072     +38   7.9%  11.64   -19.7   -0.8253   +0.9102
+  sweep+reject only                185   +0.0107      +2   9.2%   7.41   -82.7   -0.7661   +0.5769
+
+
+================ SCORING THE PRE-REGISTERED BAR ================
+          variant   n    full       t   e2324  n1   e2526  n2  cost125     win
+absorption (full)  22 -0.9360 -6.4115 -0.7673   9 -1.0528  13  -1.0531 +0.0455
+     delta+reject  63 +0.6072 +0.6740 -0.8253  11 +0.9102  52  +0.5239 +0.0794
+     sweep+reject 185 +0.0107 +0.0313 -0.7661  78 +0.5769 107  -0.0781 +0.0919
+
+  condition                                       absorption  delta+reject     plain
+  1  positive full AND both eras                          no            no            no
+  2  pooled t > 2.5                                       no            no            no
+  4  still positive at 1.25pt cost                        no           yes            no
+  5  at least 60 trades                                   no           yes           yes
+  6  absorption beats BOTH controls                       no
+
+  VERDICT: FAIL on every condition. The absorption variant is the WORST of the three.
+
+PREDICTIONS
+  P1 a PM extreme is swept during Asia on 30-60% of sessions: CORRECT - 185 sweeps that also
+     rejected, out of ~950 sessions, and sweeps before the rejection filter are far more common.
+  P2 the absorption filter does NOT beat the plain control: CORRECT, and far worse than expected:
+     -0.936 against +0.011. Adding the volume test turned a coin flip into a reliable loser.
+  P3 no pass: CORRECT.
+
+WHAT ACTUALLY HAPPENED - and why the 'delta+reject' number is a trap
+  * absorption (full)  22 trades, -0.936 R/trade. Requiring 3x median volume leaves 22 events in 513
+    days and they lose almost a full R each. Negative in BOTH eras (-0.767 / -1.053), so it is not
+    even era-dependent - it is just bad.
+  * delta+reject       63 trades, +0.607 R/trade, and t = +1.51. This looks spectacular and is the
+    single most dangerous number produced in this whole session. It is -0.825 in 2023-24 and +0.910 in
+    2025-26: the entire result is one era. Its win rate is 7.9% at a median 11.6 R:R, so the average
+    is set by a handful of enormous winners - drop the best three trades and it collapses. Condition 1
+    fails, condition 2 fails, and it is not the pre-registered headline anyway.
+  * sweep+reject       185 trades, +0.011 R/trade, max drawdown -82.7R for a net of +2R. A coin flip.
+
+THE FINDING THAT MATTERS
+  The footprint data was used properly for the first time and it made the strategy WORSE, not better.
+  Absorption as defined - heavy aggressive volume at the swept level that fails to move price - does
+  not mark a better reversal. It marks a worse one. That is a real, useful negative result about the
+  data source, not just about this setup: the extra information did not pay.
