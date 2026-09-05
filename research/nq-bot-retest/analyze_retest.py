@@ -138,6 +138,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("runs", nargs="+", help="LABEL=PATH")
     ap.add_argument("--stress", nargs="*", help="LABEL=PATH of the 2x-slippage run for the same LABEL")
+    ap.add_argument("--control", nargs="*", help="LABEL=PATH reported in the table but never part of the verdict (the untouched bot)")
     ap.add_argument("--verdict", action="store_true")
     ap.add_argument("--count-from", default=None, help="count only trades whose entry (ET date) >= this")
     ap.add_argument("--count-to", default=None, help="count only trades whose entry (ET date) <= this")
@@ -148,10 +149,14 @@ def main():
     count_to = date.fromisoformat(a.count_to) if a.count_to else None
 
     results = {}
-    for lab, path in parse_pairs(a.runs):
+    controls = set()
+    for lab, path in parse_pairs(a.runs) + [(l, p) for l, p in parse_pairs(a.control)]:
         doc, trades = load(path, count_from, count_to)
         st = stats(trades)
         st["empty_by_construction"] = empty_by_construction(doc["meta"]["config"])
+        if (lab, path) in parse_pairs(a.control):
+            controls.add(lab)
+            st["control"] = True
         st["file"] = path
         st["file_sha256"] = sha256_file(path)
         st["trades_sha256"] = doc["meta"].get("trades_sha256")
@@ -172,8 +177,9 @@ def main():
             note = "empty by construction (§1-bis)" if st.get("empty_by_construction") else ""
             lines.append(f"| {lab} | 0 {note} | | | | | | | | | | | |")
             continue
+        tag = " (control, not a candidate)" if lab in controls else ""
         lines.append(
-            f"| {lab} | {st['n']} | {st['win_rate_pct']} | {st['profit_factor']} | {st['total_net']:+,.0f} "
+            f"| {lab}{tag} | {st['n']} | {st['win_rate_pct']} | {st['profit_factor']} | {st['total_net']:+,.0f} "
             f"| {st['mean_net']:+.2f} | {st['bootstrap_lb95']:+.2f} | {st['max_dd']:,.0f} | {st['rth_share_pct']} "
             f"| {st['mean_stop']} | {st['profitable_months']}/{st['months']} "
             f"| {'yes' if st['cond_mean_pos'] else 'NO'} | {'yes' if st['cond_lb_pos'] else 'NO'} |")
@@ -190,7 +196,8 @@ def main():
     verdict = None
     if a.verdict:
         aborts = []
-        live = {lab: st for lab, st in results.items() if not st.get("empty_by_construction")}
+        live = {lab: st for lab, st in results.items()
+                if not st.get("empty_by_construction") and lab not in controls}
         for lab, st in live.items():
             if st["n"] < MIN_TRADES:
                 aborts.append(f"{lab}: n={st['n']} < {MIN_TRADES}")
