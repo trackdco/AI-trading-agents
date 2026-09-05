@@ -152,3 +152,61 @@ costs, robust to the two documented readings of each change. It does **not** say
 what its code narrates (round-number overshoots, not institutional sweeps, carry the profit), that
 the edge exceeds a few thousand dollars a year per two micro contracts, or that live fills match
 the 0.5/1.0pt model. Those are the next questions, not this one.
+
+---
+
+## §1-bis — Erratum, dated 2026-09-05 (during development, before any holdout data exists)
+
+**The C1b × C3b cell is empty by construction.** From §1 alone, with no data:
+
+- Under C1b the stop is `max(min(ATR14×2, structural), 2×ATR14)`. Since `min(2A, s) ≤ 2A`, this is
+  **exactly `2×ATR14`** for every signal — the sweep's structural stop is neutralised entirely.
+- The C3b gate (kept as-is) rejects unless `(ATR14×1.5) / stop ≥ 1.5`, i.e. unless `stop ≤ ATR14`.
+- `2×ATR14 ≤ ATR14` is impossible for any positive ATR. **No signal can pass.**
+
+I wrote both halves of this argument in §1 ("by construction passes only when the stop is ≤ ATR";
+"this reading will collide with the cap") and failed to put them together. It surfaced from the
+development trade counter (the C1b×C3b run had 0 entries after 25,000 bars) and was then confirmed
+by the derivation above; no outcome figure was consulted.
+
+**Consequence, fixed now:**
+1. The fork set has **three non-empty combinations: C1a×C3a, C1a×C3b, C1b×C3a.** The verdict in
+   §4 is the minimum across those three. The empty cell is still built and run and is reported as
+   "0 trades — empty by construction", so the record shows it rather than hides it.
+2. Abort condition 1 (n < 300) exists to catch an under-powered sample; a null set is not a sample.
+   It is **not** triggered by the empty cell. It still applies, unchanged, to the three live cells.
+3. Nothing else in §1–§4 changes. §1–§4 above are left exactly as written; this erratum is appended,
+   not merged. Original document blob (before this erratum): git `e23d2fb95aa481df9f6812db474c782ad16c9f85`.
+
+Also noted, for the record and without consequence: under C1b the sweep-wick stop never binds, so
+"C1b" is more precisely *replace* the bot's stop with 2×ATR14 than *floor* it. That is what A22
+prescribes, and it is what was pre-registered; the label is kept.
+
+## §5-bis — Holdout procedure, fixed 2026-09-05 before the holdout export is requested
+
+Written after §5.4's development runs were **launched** and before any of them was read, so that
+no procedural choice is made in sight of a holdout figure.
+
+1. **State continuity, not a cold start.** Every development run saves its full engine state after
+   the last bar of 2024-12-31 (`retest_backtest.py --final-checkpoint`), sealed by sha256 and
+   stamped with that run's records hash. Holdout runs load it (`--continue-from`) and replay
+   2025-01-01 → the end of the fresh export in one pass. This mirrors how the bot's own 4-year
+   result was produced (one continuous replay; its cumulative kill switch counts from run start)
+   and removes any warm-up decision. The driver checks that the HTF series is a continuation of
+   the saved run's and refuses otherwise (REPRODUCTION.md §3-bis).
+2. **Data.** The 1-minute series is the union of the checked-in TradingView exports and the fresh
+   export, de-duplicated on timestamp with the checked-in bar kept where both exist; HTF files are
+   rebuilt from the union with the bot's own `prepare_historical_data.py`. Any overlap between the
+   two sources is compared bar by bar before the run and the discrepancy count reported.
+3. **Segments, by the entry bar's ET date.** 2025-01-01 → 2025-08-31 = contaminated semi-holdout
+   (reported only); **≥ 2025-09-01 = holdout (verdict, §4, minimum across the three non-empty
+   combinations per §1-bis)**. The C1b×C3b cell is run and reported as empty.
+4. **Control.** The untouched bot is continued the same way and reported next to the combinations.
+   It is a comparison, not a candidate: it is not part of the pass mark and cannot rescue or
+   overturn the verdict.
+5. **Sensitivity and stress.** The 30pt-cap-lifted sensitivity and the 2×-slippage stress (§4
+   abort condition 2) each branch from the *same* 2024-12-31 state with the altered rule in force
+   from 2025-01-01; both segments are reported for each.
+6. **Reads.** One holdout read covers everything in 1–5. The fresh export is not requested until
+   the five development outputs are sealed and committed, and it is not opened by anyone other
+   than the driver until the run is complete.

@@ -52,12 +52,20 @@ def sha256_file(path: str) -> str:
     return h.hexdigest()
 
 
-def load(path: str, count_from: date | None):
+def load(path: str, count_from: date | None, count_to: date | None = None):
     doc = json.load(open(path))
     trades = doc["complete_trades"]
-    if count_from:
-        trades = [t for t in trades if datetime.fromisoformat(t["entry_ts"]).astimezone(ET).date() >= count_from]
+    if count_from or count_to:
+        def keep(t):
+            d = datetime.fromisoformat(t["entry_ts"]).astimezone(ET).date()
+            return (count_from is None or d >= count_from) and (count_to is None or d <= count_to)
+        trades = [t for t in trades if keep(t)]
     return doc, trades
+
+
+def empty_by_construction(cfg: dict) -> bool:
+    """PREREGISTRATION.md §1-bis: C1b (2xATR14 floor) x C3b (gate kept) admits no signal."""
+    return cfg.get("stop_floor") == "a22_2xatr" and cfg.get("rr_gate") == "kept"
 
 
 def block_bootstrap_lb(trades, n_iter=N_BOOT, alpha=ALPHA, seed=SEED):
@@ -132,15 +140,18 @@ def main():
     ap.add_argument("--stress", nargs="*", help="LABEL=PATH of the 2x-slippage run for the same LABEL")
     ap.add_argument("--verdict", action="store_true")
     ap.add_argument("--count-from", default=None, help="count only trades whose entry (ET date) >= this")
+    ap.add_argument("--count-to", default=None, help="count only trades whose entry (ET date) <= this")
     ap.add_argument("--md", default=None)
     ap.add_argument("--json", default=None)
     a = ap.parse_args()
     count_from = date.fromisoformat(a.count_from) if a.count_from else None
+    count_to = date.fromisoformat(a.count_to) if a.count_to else None
 
     results = {}
     for lab, path in parse_pairs(a.runs):
-        doc, trades = load(path, count_from)
+        doc, trades = load(path, count_from, count_to)
         st = stats(trades)
+        st["empty_by_construction"] = empty_by_construction(doc["meta"]["config"])
         st["file"] = path
         st["file_sha256"] = sha256_file(path)
         st["trades_sha256"] = doc["meta"].get("trades_sha256")
@@ -150,7 +161,7 @@ def main():
         results[lab] = st
     stress = {}
     for lab, path in parse_pairs(a.stress):
-        _, trades = load(path, count_from)
+        _, trades = load(path, count_from, count_to)
         stress[lab] = stats(trades)
 
     lines = []
@@ -158,7 +169,8 @@ def main():
     lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|")
     for lab, st in results.items():
         if st["n"] == 0:
-            lines.append(f"| {lab} | 0 | | | | | | | | | | | |")
+            note = "empty by construction (§1-bis)" if st.get("empty_by_construction") else ""
+            lines.append(f"| {lab} | 0 {note} | | | | | | | | | | | |")
             continue
         lines.append(
             f"| {lab} | {st['n']} | {st['win_rate_pct']} | {st['profit_factor']} | {st['total_net']:+,.0f} "
@@ -178,7 +190,8 @@ def main():
     verdict = None
     if a.verdict:
         aborts = []
-        for lab, st in results.items():
+        live = {lab: st for lab, st in results.items() if not st.get("empty_by_construction")}
+        for lab, st in live.items():
             if st["n"] < MIN_TRADES:
                 aborts.append(f"{lab}: n={st['n']} < {MIN_TRADES}")
             st2 = stress.get(lab)
@@ -187,12 +200,12 @@ def main():
         if aborts:
             verdict = "ABORT — no verdict read: " + "; ".join(aborts)
         else:
-            all_pass = all(st["cond_mean_pos"] and st["cond_lb_pos"] for st in results.values())
-            worst = min(results.items(), key=lambda kv: (kv[1]["bootstrap_lb95"] if kv[1]["bootstrap_lb95"] is not None else -1e9))
+            all_pass = all(st["cond_mean_pos"] and st["cond_lb_pos"] for st in live.values())
+            worst = min(live.items(), key=lambda kv: (kv[1]["bootstrap_lb95"] if kv[1]["bootstrap_lb95"] is not None else -1e9))
             verdict = ("PASS — every combination clears mean>0 and LB95>0" if all_pass
                        else f"NO EDGE DEMONSTRATED — minimum across combinations fails ({worst[0]}: "
                             f"mean {worst[1]['mean_net']:+.2f}, LB95 {worst[1]['bootstrap_lb95']:+.2f})")
-        print("\nVERDICT (minimum across combinations):", verdict)
+        print(f"\nVERDICT (minimum across the {len(live)} non-empty combinations):", verdict)
 
     if a.md:
         with open(a.md, "w") as f:

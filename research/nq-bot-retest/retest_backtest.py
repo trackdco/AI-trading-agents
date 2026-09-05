@@ -27,6 +27,10 @@ Both are gated by the exact-reproduction check recorded in REPRODUCTION.md.
 
 Checkpoints (`--checkpoint PATH --checkpoint-every N`, `--resume`) pickle the whole engine;
 a resumed run reproduces a straight run byte-for-byte (tested in REPRODUCTION.md).
+`--final-checkpoint PATH` saves the engine state after the last bar; `--continue-from PATH`
+loads it and processes only the bars AFTER the saved last bar (same 1m series, HTF files that
+are a continuation of the saved run's). The C1/C2/C3 readings must match the saved state;
+`--cap-lifted` and `--slippage-mult` may differ (branch point disclosed in meta).
 """
 import argparse
 import asyncio
@@ -462,6 +466,13 @@ async def run(args) -> dict:
         bars_2m = [b for b in bars_2m
                    if (start is None or et_date(b["timestamp"]) >= start)
                    and (end is None or et_date(b["timestamp"]) <= end)]
+    base_state = None
+    if args.continue_from:
+        with open(args.continue_from, "rb") as f:
+            base_state = pickle.load(f)
+        last_ts = base_state["last_bar_ts"]
+        bars_2m = [b for b in bars_2m if b["timestamp"] > last_ts]
+        print(f"  continuation: dropping bars <= {last_ts.isoformat()} (saved last bar)")
     if not bars_2m:
         sys.exit("no bars in window")
     print(f"  {len(bars_2m):,} 2m bars: {bars_2m[0]['timestamp']} -> {bars_2m[-1]['timestamp']}")
@@ -481,6 +492,7 @@ async def run(args) -> dict:
     start_idx = 0
     rate_log = []
     prior_elapsed = 0.0
+    continued_from = None
     ckpt = Path(args.checkpoint) if args.checkpoint else None
     if ckpt and args.resume and ckpt.exists():
         with open(ckpt, "rb") as f:
@@ -497,6 +509,38 @@ async def run(args) -> dict:
         rate_log = st["rate_log"]
         prior_elapsed = st["elapsed"]
         print(f"  resumed from {ckpt} at bar {start_idx:,} ({engine._entry_count} entries so far)")
+    elif base_state is not None:
+        base_cfg = base_state["config"]
+        for k in ("stop_floor", "rr_gate", "rth_only"):
+            if base_cfg[k] != config_dict[k]:
+                sys.exit(f"--continue-from state has {k}={base_cfg[k]!r}; this run asks {config_dict[k]!r}")
+        engine = base_state["engine"]
+        engine._patch_executor()
+        engine.cap_lifted = args.cap_lifted            # may branch here (sensitivity)
+        for tf, fed_ts in base_state["sched_last_fed"].items():
+            if tf not in scheduler._queues:
+                continue
+            if fed_ts is None:
+                scheduler._indices[tf] = 0
+                continue
+            q = scheduler._queues[tf]
+            pos = next((i for i, b in enumerate(q) if b["timestamp"] == fed_ts), None)
+            if pos is None:
+                sys.exit(f"HTF {tf}: last fed bar {fed_ts} not found under {args.htf_dir} — "
+                         f"HTF files are not a continuation of the saved run")
+            scheduler._indices[tf] = pos + 1
+        if args.deterministic_ids:
+            _sxe.uuid.n = base_state["ids"]
+        continued_from = {
+            "path": str(args.continue_from), "sha256": sha256_file(Path(args.continue_from)),
+            "base_config": base_cfg, "last_bar_ts": base_state["last_bar_ts"].isoformat(),
+            "base_trades_sha256": base_state.get("trades_sha256"),
+            "base_entry_count": engine._entry_count,
+            "records_before_continuation": len(engine.trades),
+            "base_lineage": base_state.get("lineage"),
+        }
+        print(f"  continuing from {args.continue_from}: {engine._entry_count} entries so far, "
+              f"last bar {continued_from['last_bar_ts']}")
     else:
         engine = RetestEngine(config, stop_floor=args.stop_floor, rr_gate=args.rr_gate,
                               rth_only=args.rth_only, cap_lifted=args.cap_lifted)
@@ -546,6 +590,35 @@ async def run(args) -> dict:
     if ckpt and ckpt.exists():
         ckpt.unlink()
 
+    trades_sha256 = hashlib.sha256(
+        json.dumps(engine.trades, sort_keys=True, default=str).encode()).hexdigest()
+    final_ckpt = None
+    if args.final_checkpoint:
+        fc = Path(args.final_checkpoint)
+        fc.parent.mkdir(parents=True, exist_ok=True)
+        paper_enter = engine.executor.__dict__.pop("_paper_enter", None)
+        try:
+            st = {"config": config_dict, "engine": engine,
+                  "last_bar_ts": bars_2m[-1]["timestamp"],
+                  "sched_last_fed": {tf: (scheduler._queues[tf][idx - 1]["timestamp"] if idx > 0 else None)
+                                     for tf, idx in scheduler._indices.items()},
+                  "ids": _sxe.uuid.n if args.deterministic_ids else None,
+                  "trades_sha256": trades_sha256, "entry_count": engine._entry_count,
+                  "retest_version": RETEST_VERSION, "bot_commit": bot_commit(),
+                  "lineage": ([continued_from["base_lineage"]] if continued_from and continued_from.get("base_lineage") else []) +
+                             [{"window_first_bar": bars_2m[0]["timestamp"].isoformat(),
+                               "window_last_bar": bars_2m[-1]["timestamp"].isoformat(),
+                               "config": config_dict, "trades_sha256": trades_sha256}]}
+            tmp = str(fc) + ".tmp"
+            with open(tmp, "wb") as f:
+                pickle.dump(st, f, protocol=pickle.HIGHEST_PROTOCOL)
+            os.replace(tmp, fc)
+        finally:
+            if paper_enter is not None:
+                engine.executor._paper_enter = paper_enter
+        final_ckpt = {"path": str(fc), "sha256": sha256_file(fc)}
+        print(f"  final state saved: {fc}  sha256={final_ckpt['sha256']}")
+
     complete = fb.build_complete_trades(engine.trades)
     entries_by_id = {t["trade_id"]: t for t in engine.trades if t["action"] == "entry"}
     for c in complete:  # carry is_rth of the entry bar into the complete record
@@ -572,8 +645,9 @@ async def run(args) -> dict:
             "elapsed_seconds": round(elapsed, 1),
             "bars_per_second_overall": round(total / elapsed, 1) if elapsed > 0 else None,
             "resumed_from_bar": start_idx or None,
-            "trades_sha256": hashlib.sha256(
-                json.dumps(engine.trades, sort_keys=True, default=str).encode()).hexdigest(),
+            "trades_sha256": trades_sha256,
+            "continued_from": continued_from,
+            "final_checkpoint": final_ckpt,
             "rate_log": rate_log,
             "retest_counters": engine.retest_counters,
             "open_at_end_excluded": open_at_end,
@@ -605,6 +679,8 @@ def main():
     ap.add_argument("--checkpoint-every", type=int, default=25_000)
     ap.add_argument("--resume", action="store_true", help="resume from --checkpoint if it exists")
     ap.add_argument("--stop-after-bar", type=int, default=None, help="(test only) exit right after the first checkpoint at/after this bar")
+    ap.add_argument("--final-checkpoint", default=None, help="save the engine state after the last bar (for --continue-from)")
+    ap.add_argument("--continue-from", default=None, help="engine state saved by --final-checkpoint; only bars after its last bar are processed")
     args = ap.parse_args()
 
     out = asyncio.run(run(args))

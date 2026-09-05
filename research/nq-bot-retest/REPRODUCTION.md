@@ -97,3 +97,18 @@ overall, with the same within-slice decline in all three (444 → ~170 bars/s ac
 so on a 4-month slice the decline is contention/regime, not list growth; the growth effect only
 emerges over hundreds of thousands of bars. The development runs' 25k-bar rate logs are kept in
 each output's `meta.rate_log` and summarised in RESULT.md.
+
+## 3-bis. Final-state save / continuation is exact
+
+For the holdout, each configuration continues from its sealed 2024-12-31 engine state instead of
+cold-starting (PREREGISTRATION.md §5-bis). `--final-checkpoint` saves the state after the last
+bar; `--continue-from` loads it, drops every bar at or before the saved last bar, and re-positions
+each HTF queue just after the last bar the saved run had fed (located by timestamp — the driver
+refuses if it is not found). Test:
+
+| | trades_sha256 (all records) |
+|---|---|
+| straight run 2021-09-01 → 09-10 | `c777cb56…5256` |
+| run to 09-05 (`--final-checkpoint`) then continue to 09-10 (`--continue-from`) | `c777cb56…5256` (identical, 42 records) |
+
+Sealed outputs: `data/verification/cont_test_*.json.gz`.
