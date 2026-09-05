@@ -1,0 +1,73 @@
+footprint: 28,831,071 rows, 513 days | bars: 1,299,540
+
+  variant                       trades   R/trade   net R    win  medRR   maxDD   2023-24   2025-26
+  target R1                        186   -0.0158      -3  52.2%   1.00   -19.0   -0.1327   +0.0686
+  target R1.5                      186   +0.0164      +3  43.0%   1.50   -23.9   -0.1199   +0.1148
+  target R2                        186   +0.0379      +7  36.6%   2.00   -26.0   -0.0814   +0.1241
+  target R3                        186   +0.1773     +33  30.6%   3.00   -23.0   -0.0311   +0.3278
+  target R4                        186   +0.1074     +20  23.1%   4.00   -25.3   -0.0311   +0.2074
+  target R5                        186   +0.1048     +19  18.8%   5.00   -28.4   -0.1527   +0.2908
+  target R8                        186   +0.0323      +6  11.3%   8.00   -64.7   -0.3065   +0.2771
+  target EXT                       185   +0.0107      +2   9.2%   7.41   -82.7   -0.7661   +0.5769
+
+
+================ SCRUTINY OF THE TARGET SWEEP ================
+ tgt   n     net       t   e2324   e2526     win     med   drop3    c125    maxdd
+  R1 186 -0.0158 -0.2163 -0.1327 +0.0686 +0.5215 +0.7981 -0.0324 -0.1041 -18.9957
+R1.5 186 +0.0164 +0.1811 -0.1199 +0.1148 +0.4301 -1.0168 -0.0078 -0.0719 -23.8942
+  R2 186 +0.0379 +0.3585 -0.0814 +0.1241 +0.3656 -1.0233 +0.0058 -0.0504 -26.0393
+  R3 186 +0.1773 +1.3114 -0.0311 +0.3278 +0.3065 -1.0263 +0.1311 +0.0890 -23.0393
+  R4 186 +0.1074 +0.6949 -0.0311 +0.2074 +0.2312 -1.0336 +0.0437 +0.0191 -25.2946
+  R5 186 +0.1048 +0.6052 -0.1527 +0.2908 +0.1882 -1.0360 +0.0247 +0.0165 -28.3680
+  R8 186 +0.0323 +0.1519 -0.3065 +0.2771 +0.1129 -1.0400 -0.0981 -0.0559 -64.7043
+ EXT 185 +0.0107 +0.0313 -0.7661 +0.5769 +0.0919 -1.0417 -0.4708 -0.0781 -82.7482
+
+  net    = R/trade after 0.5pt cost      t      = t-statistic
+  e2324  = 2023-24 only                  e2526  = 2025-26 only
+  med    = MEDIAN trade                  drop3  = mean after removing the 3 best trades
+  c125   = R/trade at a realistic 1.25pt cost
+
+CONDITIONS (positive both eras / t>2.5 / survives 1.25pt / >=60 trades / ridge):
+  R1    both eras NO   t -0.22 no  1.25pt no  n 186  -> FAIL
+  R1.5  both eras NO   t +0.18 no  1.25pt no  n 186  -> FAIL
+  R2    both eras NO   t +0.36 no  1.25pt no  n 186  -> FAIL
+  R3    both eras NO   t +1.31 no  1.25pt ok  n 186  -> FAIL
+  R4    both eras NO   t +0.69 no  1.25pt ok  n 186  -> FAIL
+  R5    both eras NO   t +0.61 no  1.25pt ok  n 186  -> FAIL
+  R8    both eras NO   t +0.15 no  1.25pt no  n 186  -> FAIL
+  EXT   both eras NO   t +0.03 no  1.25pt no  n 185  -> FAIL
+
+THE PEAK CELL, R3, IN FULL
+  186 trades, +0.1773 R/trade, total +33R, win 30.6% (break-even 25.0%), max DD -23.0R
+  per year: 2023 -0.037 (36)  2024 -0.026 (42)  2025 +0.126 (51)  2026 +0.509 (57)
+  outlier dependence: all +0.177 | drop best 1 +0.162 | drop 3 +0.131 | drop 5 +0.100
+  cost: 0.50 +0.177 | 0.75 +0.148 | 1.00 +0.118 | 1.25 +0.089
+  median stop 11.8 pts -> 3R target is 35 points away, not 141
+
+
+================ VERDICT ================
+The target was my error, and fixing it changes the picture. 3R is the best reward-to-risk, not the
+opposite extreme. On a median 11.8-point stop that is a 35-point target, not 141.
+
+WHAT IS GENUINELY GOOD ABOUT R3
+  * It is a smooth hump, not a spike: R2 +0.038, R3 +0.177, R4 +0.107, R5 +0.105. Neighbours agree.
+  * It survives realistic costs. +0.089 R/trade at 1.25 points, where every other idea this session died.
+  * It survives its outliers. Removing the three best trades still leaves +0.131; removing five leaves
+    +0.100. The EXT version collapsed to -0.471 on the same test. This is not one lucky trade.
+  * Max drawdown improves from -82.7R to -23.0R for a bigger total.
+  * The reality gate passes cleanly, including the edge-over-cost check at 3.01x.
+  * Win rate 30.6% against a 25.0% break-even. That is a real, modest, believable edge shape.
+
+WHY IT IS STILL A FAIL
+  * 2023-24 is NEGATIVE (-0.031) and 2025-26 is +0.328. Condition 1 fails. Per year: -0.037, -0.026,
+    +0.126, +0.509. The whole result is the last two years, and 2026 alone is nearly three times 2025.
+  * t = +1.31. On 186 trades that is not distinguishable from zero. To reach t = 2.5 would take roughly
+    680 trades - at 0.19 setups per session, about 14 years.
+  * Eight target variants were swept AFTER the original failed. R3 was found by looking.
+
+HONEST SUMMARY
+This is the least-dead thing tested in this session, and the first to survive a realistic cost, its own
+outliers and the reality gate simultaneously. It is still one era of data, found by sweeping, on a
+t-statistic of 1.3. It is a candidate to pre-register on data nobody has looked at - not a result.
+The only untouched data that could test it: NQ before 2023 (both older tapes are already spent on
+other tests, but neither has seen THIS setup), and forward time.

@@ -20,7 +20,7 @@ def load_all():
     b = pd.concat(bars); b = b[~b.index.duplicated()].sort_index()
     return fp, b
 
-def run(fp, bars, mode, cost=0.5):
+def run(fp, bars, mode, tmode='EXT', cost=0.5):
     """mode: 'absorb' (full), 'nodelta' (volume test dropped), 'plain' (no footprint test at all)"""
     bars = bars.copy(); bars["sess"] = (bars.index - pd.Timedelta(hours=18)).normalize()
     dmin = fp.groupby(["ts","side"]).volume.sum().unstack("side").fillna(0)
@@ -59,7 +59,9 @@ def run(fp, bars, mode, cost=0.5):
             if not ((delta > 0) if d == -1 else (delta < 0)): continue   # aggressors pushed through
             if mode == "absorb" and vol < 3.0 * med: continue
         E = float(C[j]); stop = ext + TICK*(1 if d == -1 else -1); risk = abs(E - stop)
-        if risk <= 0 or (d*(tgt - E)) <= 0: continue
+        if risk <= 0: continue
+        if tmode != "EXT": tgt = E + d*float(tmode[1:])*risk
+        if (d*(tgt - E)) <= 0: continue
         fwd = s[s.index > ts[j]]
         if len(fwd) < 2: continue
         FH, FL, FC = fwd.high.values, fwd.low.values, fwd.close.values
@@ -78,8 +80,9 @@ if __name__ == "__main__":
     fp, bars = load_all()
     print(f"footprint: {len(fp):,} rows, {pd.DatetimeIndex(fp.ts).normalize().nunique()} days | bars: {len(bars):,}")
     print(f"\n  {'variant':<28}{'trades':>8}{'R/trade':>10}{'net R':>8}{'win':>7}{'medRR':>7}{'maxDD':>8}{'2023-24':>10}{'2025-26':>10}")
-    for mode, lab in (("absorb","absorption (full)"),("nodelta","delta+reject, no vol test"),("plain","sweep+reject only")):
-        tr = run(fp, bars, mode)
+    for mode, tm in [("plain", t) for t in ("R1","R1.5","R2","R3","R4","R5","R8","EXT")]:
+        lab = f"target {tm}"
+        tr = run(fp, bars, mode, tm)
         if len(tr) == 0: print(f"  {lab:<28}   no trades"); continue
         tr["netr"] = tr.r - 0.5/tr.risk
         day = tr.groupby("day").netr.sum(); cum = day.cumsum(); dd = (cum-cum.cummax()).min()
@@ -88,5 +91,5 @@ if __name__ == "__main__":
         print(f"  {lab:<28}{len(tr):>8}{tr.netr.mean():>+10.4f}{tr.netr.sum():>+8.0f}{(tr.res=='TARGET').mean():>7.1%}"
               f"{(wn.r.median() if len(wn) else float('nan')):>7.2f}{dd:>+8.1f}"
               f"{(e1.mean() if len(e1) else float('nan')):>+10.4f}{(e2.mean() if len(e2) else float('nan')):>+10.4f}")
-        with gzip.open(f"{a.out}_{mode}.jsonl.gz","wt") as fh:
+        with gzip.open(f"{a.out}_{mode}_{tm}.jsonl.gz","wt") as fh:
             for _,t in tr.iterrows(): fh.write(json.dumps({q:(v.item() if hasattr(v,'item') else v) for q,v in t.items()})+"\n")
