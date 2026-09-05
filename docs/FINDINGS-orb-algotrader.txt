@@ -1,0 +1,96 @@
+  sym  exit        trades  /sess   R/trade    net R    win  medHold    maxDD   @5tick       H1       H2
+  NQ   GIVEBACK      4100   2.57   -0.0486     -199  32.0%        3   -225.9  -0.1271  -0.0568  -0.0391
+  NQ   R1            4148   2.60   -0.1615     -670  44.5%        3   -680.0  -0.2400  -0.1723  -0.1491
+  NQ   R2            4100   2.57   -0.0930     -381  32.0%        3   -405.6  -0.1716  -0.0941  -0.0918
+  NQ   R3            4079   2.56   -0.0739     -301  24.4%        3   -334.0  -0.1524  -0.0676  -0.0810
+  ES   GIVEBACK      4130   2.60   -0.3010    -1243  30.1%        3  -1234.3  -0.6927  -0.3552  -0.2389
+  ES   R1            4176   2.62   -0.4061    -1696  42.9%        3  -1686.0  -0.7980  -0.4437  -0.3631
+  ES   R2            4130   2.60   -0.3623    -1496  30.1%        3  -1487.5  -0.7540  -0.4170  -0.2996
+  ES   R3            4112   2.58   -0.3484    -1433  22.9%        3  -1424.7  -0.7404  -0.3815  -0.3103
+  RTY  GIVEBACK      3758   2.36   -0.1415     -532  32.4%        3   -544.1  -0.3602  -0.1659  -0.1137
+  RTY  R1            3810   2.39   -0.2503     -953  44.8%        3   -955.0  -0.4689  -0.2536  -0.2465
+  RTY  R2            3758   2.36   -0.1745     -656  32.4%        3   -663.2  -0.3931  -0.1736  -0.1755
+  RTY  R3            3734   2.35   -0.1718     -641  24.3%        6   -655.5  -0.3904  -0.1688  -0.1752
+  YM   GIVEBACK      4028   2.53   -0.0581     -234  33.1%        3   -341.5  -0.2619  -0.1263  +0.0196
+  YM   R1            4077   2.56   -0.2433     -992  44.6%        3   -993.6  -0.4475  -0.2665  -0.2169
+  YM   R2            4028   2.53   -0.1438     -579  33.1%        3   -584.0  -0.3476  -0.1806  -0.1018
+  YM   R3            4005   2.52   -0.1088     -436  25.7%        6   -430.8  -0.3126  -0.1591  -0.0513
+  GC   GIVEBACK      3548   2.23   -0.2659     -943  28.3%        3   -981.9  -0.5804  -0.3499  -0.1803
+  GC   R1            3586   2.26   -0.4109    -1473  40.0%        3  -1473.1  -0.7260  -0.4735  -0.3471
+  GC   R2            3548   2.23   -0.3608    -1280  28.3%        3  -1294.7  -0.6753  -0.4270  -0.2933
+  GC   R3            3529   2.22   -0.3653    -1289  21.1%        6  -1299.1  -0.6799  -0.4327  -0.2966
+
+
+================ WHY IT LOSES: THE STOP IS INSIDE ONE BAR ================
+  sym     median 0.5xATR stop   median 3m bar range  stop / bar range  stopped on bar 1
+  NQ                    10.37                  9.00              1.15             59.6%
+  ES                     2.11                  2.00              1.05             60.0%
+  RTY                    1.50                  1.10              1.36             57.5%
+  YM                    15.95                 13.00              1.23             58.9%
+  GC                     1.10                  1.10              1.00             54.7%
+
+  A 0.5 x ATR(20) stop on 3-minute bars is roughly HALF the size of a single bar's range. So the very
+  next bar's noise takes it out. 63-70% of trades die on bar one. This is the fourth time in this
+  session a strategy has failed on a stop narrower than the bar it trades on - and the first time it
+  was the source repo's own constant rather than my choice.
+
+================ DIAGNOSTIC: first break of the day only ================
+  Their loop re-enters on every fresh break, giving 2.2-2.6 trades a session. Classic ORB takes
+  only the first. Re-run, GIVEBACK exit, first break per session only:
+
+  sym    trades  /sess   R/trade   @5tick
+  NQ       1185   0.74   -0.0490  -0.1283
+  ES       1179   0.74   -0.2634  -0.6677
+  RTY      1189   0.75   -0.0964  -0.3061
+  YM       1197   0.75   -0.0966  -0.2993
+  GC       1115   0.70   -0.1521  -0.4452
+
+================ DIAGNOSTIC: a stop wide enough to survive a bar ================
+  Same entries, stop = 2.0 x ATR(20) instead of 0.5, GIVEBACK exit:
+
+  sym    trades   R/trade    win  medHold   @5tick
+  NQ       2474   -0.0327  30.9%       45  -0.0524
+  ES       2623   -0.1126  31.1%       39  -0.2100
+  RTY      2336   -0.0694  30.0%       45  -0.1226
+  YM       2526   -0.0968  29.8%       42  -0.1477
+  GC       2044   -0.0544  28.5%       45  -0.1325
+
+
+================ VERDICT: FAIL, comprehensively ================
+Condition 1 (positive on NQ and 3 of 5 instruments): FAIL. Every one of the 20 instrument x exit
+cells is negative, on both halves, at both cost levels. Conditions 2-6 are not reached.
+
+Correction to the note above: the stop is roughly 1.0-1.4x the median bar range, not half it - but the
+conclusion stands and is worse than it looks. A stop the size of ONE bar means the next bar alone can
+end the trade, and 55-60% of trades die on bar one. Median hold is a single 3-minute bar.
+
+Three diagnostics, none of which rescue it:
+  * FIRST BREAK ONLY (the classic ORB, rather than their re-entering loop): still negative on all
+    five, -0.049 to -0.263 R/trade, and worse at a realistic cost.
+  * A STOP 4x WIDER (2.0 x ATR instead of 0.5): median hold rises from 3 to ~45 minutes and the losses
+    shrink to -0.033 to -0.113, but nothing turns positive. Widening the stop stops the bleeding; it
+    does not create an edge.
+  * The exit ladder is monotone again - NQ runs R1 -0.162, R2 -0.093, R3 -0.074, GIVEBACK -0.049. The
+    giveback shaping IS the best of the four exits on every instrument, which is a genuine point in
+    the source repo's favour. It is simply the best way to lose slightly less.
+
+PREDICTIONS
+  P1 ORB fires on more than 40% of sessions: CORRECT - 2.2 to 2.6 per session as coded, 0.70-0.75 as
+     a first-break-only rule.
+  P2 GIVEBACK beats fixed 1R but loses to 2R or 3R: HALF WRONG - it beats fixed 1R everywhere, and it
+     also beats 2R and 3R everywhere. The repo's exit shaping is the best of the four tested.
+  P3 no variant passes: CORRECT.
+
+WHAT THIS SAYS ABOUT THE SOURCE REPO
+  Nothing dishonest - it publishes no performance claim, and its exit design measurably outperforms
+  the fixed-target alternatives. What is untested by this run is its ML entry grader, which is the
+  entire point of the system: the mechanical entries are meant to be FILTERED down to the graded few,
+  not all taken. Those models ship pre-trained with no training script, so the filter cannot be
+  audited or reproduced here. The honest statement is: the raw ORB entry is a loser on 3-minute bars
+  across five instruments and five years, and whether the grader turns it into a winner is unknown
+  and unverifiable from this repository.
+
+WHAT WAS GAINED
+  3,014,547 verified bars across five instruments, 2021-2026, now in data/reference/algotrader_3min/.
+  That is the real prize: five instruments instead of one, which is the only cheap fix for the sample
+  size problem that has limited every test in this programme.
