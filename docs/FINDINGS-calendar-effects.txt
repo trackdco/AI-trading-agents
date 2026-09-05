@@ -1,0 +1,61 @@
+ALL-DAYS BASELINE (day session, points/day after cost)
+  NQ 2023-26: day session +4.22 pts/day over 912 sessions | buy & hold +17.74 pts/day (roll excluded)
+  NQ 2020-22: day session +0.28 pts/day over 751 sessions | buy & hold +8.50 pts/day (roll excluded)
+  NQ 2017-19: day session +0.63 pts/day over 827 sessions | buy & hold +3.84 pts/day (roll excluded)
+
+NINE PRE-DECLARED BUCKETS - day-session points per day, and gap vs that tape's all-days mean
+                 bucket  NQ 2023-26 n  NQ 2023-26 pts  NQ 2023-26 vs all  NQ 2020-22 n  NQ 2020-22 pts  NQ 2020-22 vs all  NQ 2017-19 n  NQ 2017-19 pts  NQ 2017-19 vs all  pooled n  pooled pts  pooled t
+        A turn of month           179          +36.39             +32.17           144           +3.86              +3.58           160           -0.42              -1.05       483      +14.50     +1.97
+    B last day of month            45          +12.80              +8.58            36           +9.27              +8.99            40           -5.15              -5.78       121       +5.82     +0.40
+   C first day of month            45          +26.06             +21.83            36           +9.16              +8.88            40           -5.65              -6.28       121      +10.55     +0.70
+D quarterly expiry week            67          -12.98             -17.20            60           -7.90              -8.18            70           -3.96              -4.59       197       -8.23     -0.68
+  E monthly expiry week           212          -14.22             -18.44           176          -11.58             -11.86           197           +1.10              +0.47       585       -8.27     -1.33
+ F day before a holiday            37           +4.65              +0.43            26          +18.60             +18.32            30          -12.90             -13.53        93       +2.89     +0.20
+  G day after a holiday            37          -18.90             -23.12            26          +13.00             +12.72            30          +22.51             +21.88        93       +3.38     +0.25
+ H last session of week           192           +3.99              -0.24           157           -6.28              -6.56           174           -2.62              -3.25       523       -1.29     -0.18
+I first session of week           192          +34.83             +30.60           157          +16.90             +16.63           174           -0.29              -0.92       523      +17.76     +2.89
+
+SCORING THE FOUR PRE-REGISTERED CONDITIONS
+bucket                      1 beats all-days x3  2 pooled t>2.5  3 same sign x3  4 beats buy&hold x3   VERDICT
+A turn of month                              no           +1.97              no                   no      FAIL
+B last day of month                          no           +0.40              no                   no      FAIL
+C first day of month                         no           +0.70              no                   no      FAIL
+D quarterly expiry week                      no           -0.68             yes                   no      FAIL
+E monthly expiry week                        no           -1.33              no                   no      FAIL
+F day before a holiday                       no           +0.20              no                   no      FAIL
+G day after a holiday                        no           +0.25              no                   no      FAIL
+H last session of week                       no           -0.18              no                   no      FAIL
+I first session of week                      no           +2.89              no                   no      FAIL
+
+Buckets passing all four: NONE
+
+PREDICTIONS
+  P1 turn of month is the strongest bucket: WRONG (strongest = I first session of week)
+  P2 at least one bucket clears t>2.5 but fails the all-three-tapes test: CORRECT (['I first session of week'])
+  P3 no bucket passes all four: CORRECT
+
+
+================ VERDICT: FAIL, all nine buckets ================
+Nothing clears the four pre-registered conditions. The single best-looking bucket is the trap the
+pre-registration predicted:
+
+  "I first session of week" pools to +17.76 pts/day at t = +2.89 - the only bucket over the t>2.5
+  bar - and it is +34.83 on 2023-26, +16.90 on 2020-22, and **-0.29 on 2017-19**. Two strong tapes
+  and one flat one. It also loses to buy and hold (+34.83 vs +17.74 is a win on 2023-26 only; on
+  2017-19 it is -0.29 vs +3.84). Testing nine buckets at once is expected to throw up about one
+  t>2 by chance, and this is it. Had the bar been "t>2 pooled", this would have been reported as a
+  Monday-morning edge worth trading.
+
+Other notes, all consistent with the earlier work:
+  * expiry weeks are NEGATIVE on the day session in every tape (monthly -8.27 pooled, quarterly
+    -8.23). Consistent, but the wrong sign for a long, and it fails the tape test too.
+  * turn of month is +32 pts/day on 2023-26 and -1 on 2017-19. Era-specific, not an effect.
+  * holiday buckets swing from +18.60 to -12.90 across tapes on 26-37 observations. Pure noise.
+  * the day session's all-days mean (+4.22 / +0.28 / +0.63) is a small fraction of buy and hold
+    (+17.74 / +8.50 / +3.84), so almost every long-only bucket fails condition 4 on arithmetic alone.
+
+Predictions: P1 wrong (the strongest bucket was first-session-of-week, not turn of month), P2 correct,
+P3 correct. The multiple-comparisons guard did the job it was declared for.
+
+Idea 3 of 5 closed. The calendar-SPREAD test (front vs back contract) is untouched and still needs a
+per-contract Databento pull; it is a different claim and is not answered by this result.

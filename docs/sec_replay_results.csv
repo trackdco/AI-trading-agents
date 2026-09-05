@@ -1,0 +1,572 @@
+book,day,res,hold,cls,rep,ext_before,hit_fill_sec,secs,tv_r,risk
+Weekly value area,2023-12-27,TARGET,0,stopped,-1.0,True,False,175,-0.95,5.0
+Weekly value area,2023-12-27,TARGET,2,target later minute,1.0,False,False,138,1.05,5.0
+Weekly value area,2023-12-27,TARGET,10,target later minute,1.0,False,False,560,1.0357142857142858,7.0
+Weekly value area,2023-12-27,TARGET,3,target later minute,1.0,False,False,144,1.05,5.0
+Weekly value area,2023-12-27,STOP,0,stopped,-1.0,False,False,34,-0.55,5.0
+Weekly value area,2023-12-27,TARGET,2,target later minute,1.0,False,False,141,1.0217391304347827,11.5
+Weekly value area,2023-12-27,TARGET,4,target later minute,1.0,False,False,187,1.05,5.0
+Weekly value area,2023-12-27,STOP,2,stopped,-1.0,False,False,133,-0.9523809523809523,5.25
+Weekly value area,2026-08-05,SAR,1,target later minute,1.0,False,False,403,-0.3037974683544304,19.75
+Weekly value area,2026-08-05,TARGET,2,target later minute,1.0,False,False,58,1.0222222222222221,11.25
+Weekly value area,2026-08-05,TARGET,0,target later minute,1.0,True,False,43,1.027027027027027,9.25
+Weekly value area,2026-08-05,STOP,0,stopped,-1.0,True,False,1,-0.95,5.0
+Weekly value area,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,3,1.025,10.0
+Weekly value area,2026-08-05,SAR,1,stopped,-1.0,False,False,81,-0.18085106382978725,23.5
+Weekly value area,2026-08-05,TARGET,0,"target after fill, same minute",1.0,False,False,30,1.0121951219512195,20.5
+Weekly value area,2026-08-05,TARGET,0,stopped,-1.0,True,False,115,-0.34,12.5
+Weekly value area,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,19,1.0119047619047619,21.0
+Weekly value area,2026-08-05,TARGET,0,target later minute,1.0,True,False,47,1.0136986301369864,18.25
+Weekly value area,2026-08-05,STOP,0,stopped,-1.0,True,False,3,-0.95,5.0
+PD high/low,2023-12-26,TARGET,0,stopped,-1.0,True,False,126,-0.9583333333333334,6.0
+PD high/low,2023-12-26,TARGET,0,"target after fill, same minute",1.0,True,False,17,1.0454545454545454,5.5
+PD high/low,2023-12-26,TARGET,0,stopped,-1.0,True,False,23,1.0454545454545454,5.5
+PD high/low,2023-12-26,TARGET,9,target later minute,1.0,False,False,452,1.05,5.0
+PD high/low,2023-12-26,STOP,0,stopped,-1.0,True,False,11,-0.95,5.0
+PD high/low,2023-12-27,STOP,0,stopped,-1.0,False,False,9,-0.95,5.0
+PD high/low,2023-12-27,TARGET,4,target later minute,1.0,False,False,243,1.0204081632653061,12.25
+PD high/low,2023-12-27,STOP,0,stopped,-1.0,False,False,12,-0.95,5.0
+PD high/low,2023-12-27,TARGET,3,target later minute,1.0,False,False,206,1.0285714285714285,8.75
+PD high/low,2026-08-05,TARGET,0,"target after fill, same minute",1.0,False,False,10,1.024390243902439,10.25
+PD high/low,2026-08-05,TARGET,0,target later minute,1.0,True,False,46,1.0217391304347827,11.5
+PD high/low,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,13,1.0256410256410255,9.75
+PD high/low,2026-08-05,STOP,0,stopped,-1.0,True,False,9,-0.95,5.0
+PD high/low,2026-08-05,STOP,0,stopped,-1.0,False,False,21,-0.9863013698630136,18.25
+PD high/low,2026-08-05,TARGET,2,target later minute,1.0,False,False,47,1.0188679245283019,13.25
+PD high/low,2026-08-05,TARGET,0,stopped,-1.0,True,False,27,-0.95,5.0
+PD high/low,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,4,1.032258064516129,7.75
+PD high/low,2026-08-05,TARGET,0,"target after fill, same minute",1.0,False,False,12,1.05,5.0
+PD high/low,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,True,2,1.05,5.0
+PD high/low,2026-08-05,STOP,0,stopped,-1.0,True,False,24,-0.9855072463768116,17.25
+PD high/low,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,18,1.0121951219512195,20.5
+PD high/low,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,3,1.0256410256410255,9.75
+PD high/low,2026-08-05,TARGET,0,target later minute,1.0,True,False,121,-0.2087912087912088,22.75
+PD high/low,2026-08-05,TARGET,0,stopped,-1.0,True,False,48,-0.9836065573770492,15.25
+PD high/low,2026-08-05,TARGET,3,target later minute,1.0,False,False,205,1.0112359550561798,22.25
+PD high/low,2026-08-05,TARGET,0,"target after fill, same minute",1.0,False,False,50,1.0217391304347827,11.5
+PD high/low,2026-08-05,TARGET,0,target later minute,1.0,True,False,82,1.027027027027027,9.25
+PD high/low,2026-08-05,TARGET,0,stopped,-1.0,True,False,165,-0.9818181818181818,13.75
+PD high/low,2026-08-05,TARGET,0,stopped,-1.0,True,False,22,-0.46875,8.0
+PD high/low,2026-08-05,TARGET,0,target later minute,1.0,True,False,31,-0.358974358974359,9.75
+PD high/low,2026-08-05,STOP,0,stopped,-1.0,True,False,20,-0.95,5.0
+PD high/low,2026-08-05,TARGET,2,target later minute,1.0,False,False,128,1.064516129032258,7.75
+PD high/low,2026-08-05,TARGET,0,target later minute,1.0,True,False,91,1.0333333333333334,7.5
+PD high/low,2026-08-05,STOP,0,stopped,-1.0,True,False,2,,5.0
+PD high/low,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,33,1.05,5.0
+PD high/low,2026-08-05,TARGET,0,target later minute,1.0,True,False,186,1.0277777777777777,9.0
+PD high/low,2026-08-05,SAR,5,target later minute,1.0,False,False,295,-0.11320754716981132,13.25
+PD high/low,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,29,1.05,5.0
+PD high/low,2026-08-05,TARGET,0,stopped,-1.0,True,False,21,-0.4,7.5
+PD high/low,2026-08-05,SAR,1,stopped,-1.0,False,False,278,-0.4230769230769231,13.0
+PD high/low,2026-08-05,STOP,0,stopped,-1.0,True,False,17,-0.9583333333333334,6.0
+PD high/low,2026-08-05,TARGET,0,stopped,-1.0,True,False,67,-0.9666666666666667,7.5
+PD value area,2023-12-26,TARGET,2,target later minute,1.0,False,False,114,1.0256410256410255,9.75
+PD value area,2023-12-26,STOP,2,stopped,-1.0,False,False,152,-0.9565217391304348,5.75
+PD value area,2023-12-26,TARGET,0,"target after fill, same minute",1.0,True,False,43,-0.95,5.0
+PD value area,2023-12-26,TARGET,0,target later minute,1.0,True,False,20,1.0476190476190477,5.25
+PD value area,2023-12-27,TARGET,0,target later minute,1.0,True,False,23,1.05,5.0
+PD value area,2023-12-27,STOP,0,stopped,-1.0,True,False,39,-0.96,6.25
+PD value area,2023-12-27,STOP,2,stopped,-1.0,False,False,132,-0.9615384615384616,6.5
+PD value area,2023-12-27,STOP,2,stopped,-1.0,False,False,123,-0.9545454545454546,5.5
+PD value area,2023-12-27,STOP,1,stopped,-1.0,False,False,73,-0.95,5.0
+PD value area,2024-06-20,STOP,1,stopped,-1.0,False,False,45,-0.972972972972973,9.25
+PD value area,2024-06-20,TARGET,0,stopped,-1.0,True,False,95,-0.9705882352941176,8.5
+PD value area,2024-06-20,TARGET,0,"target after fill, same minute",1.0,False,False,20,1.0227272727272727,11.0
+PD value area,2024-06-20,TARGET,0,"target after fill, same minute",1.0,True,False,22,1.0333333333333334,7.5
+PD value area,2024-06-20,TARGET,0,target later minute,1.0,True,False,71,1.0277777777777777,9.0
+PD value area,2024-06-20,TARGET,0,target later minute,1.0,True,False,53,1.0344827586206897,7.25
+PD value area,2024-06-20,STOP,1,target later minute,1.0,False,False,36,1.0357142857142858,7.0
+PD value area,2024-06-20,SAR,1,stopped,-1.0,False,False,137,-0.5806451612903226,7.75
+PD value area,2024-06-20,TARGET,0,target later minute,1.0,True,False,68,-0.46153846153846156,6.5
+PD value area,2024-06-20,TARGET,1,target later minute,1.0,False,False,98,1.0384615384615385,6.5
+PD value area,2024-06-20,TARGET,0,"target after fill, same minute",1.0,True,False,23,1.05,5.0
+PD value area,2025-04-10,STOP,0,stopped,-1.0,False,False,29,-0.9906542056074766,26.75
+PD value area,2025-04-10,TARGET,0,"target after fill, same minute",1.0,False,False,5,1.0212765957446808,11.75
+PD value area,2025-04-10,STOP,0,target only inside the fill second,-1.0,False,True,4,-0.9705882352941176,8.5
+PD value area,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,4,1.0285714285714285,8.75
+PD value area,2025-04-10,TARGET,0,stopped,-1.0,True,False,46,-0.9848484848484849,16.5
+PD value area,2025-04-10,STOP,0,stopped,-1.0,False,False,5,-0.9777777777777777,11.25
+PD value area,2025-04-10,STOP,0,stopped,-1.0,False,False,6,-0.9838709677419355,15.5
+PD value area,2025-04-10,TARGET,0,stopped,-1.0,True,False,54,-0.9791666666666666,12.0
+PD value area,2025-04-10,STOP,0,stopped,-1.0,True,False,8,-0.9722222222222222,9.0
+PD value area,2025-04-10,STOP,0,stopped,-1.0,False,False,47,-0.9896907216494846,24.25
+PD value area,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,18,1.0344827586206897,7.25
+PD value area,2025-04-10,TARGET,0,stopped,-1.0,True,False,26,-0.9850746268656716,16.75
+PD value area,2025-04-10,STOP,0,stopped,-1.0,False,False,44,-0.9888888888888889,22.5
+PD value area,2025-04-10,SAR,1,target later minute,1.0,False,False,74,-0.43333333333333335,22.5
+PD value area,2025-04-10,TARGET,0,target later minute,1.0,True,False,23,-0.2807017543859649,14.25
+PD value area,2026-08-04,STOP,0,stopped,-1.0,True,False,3,-0.95,5.0
+PD value area,2026-08-04,SAR,1,stopped,-1.0,False,False,77,-0.34782608695652173,11.5
+PD value area,2026-08-04,TARGET,0,"target after fill, same minute",1.0,False,False,8,1.0285714285714285,8.75
+PD value area,2026-08-04,STOP,7,stopped,-1.0,False,False,137,-0.9736842105263158,9.5
+PD value area,2026-08-04,STOP,0,stopped,-1.0,True,False,13,-0.95,5.0
+PD value area,2026-08-04,TARGET,0,target later minute,1.0,True,False,38,1.0263157894736843,9.5
+PD value area,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,8,1.0303030303030303,8.25
+PD value area,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,20,1.0166666666666666,15.0
+PD value area,2026-08-04,STOP,0,stopped,-1.0,True,False,16,-0.9782608695652174,11.5
+PD value area,2026-08-04,SAR,2,stopped,-1.0,False,False,151,-0.23684210526315788,28.5
+PD value area,2026-08-04,TARGET,0,stopped,-1.0,True,False,64,-0.25,25.0
+NY VWAP,2023-12-26,TARGET,0,"target after fill, same minute",1.0,False,False,33,1.0416666666666667,6.0
+NY VWAP,2023-12-26,TARGET,0,target later minute,1.0,True,False,75,0.3333333333333333,5.25
+NY VWAP,2023-12-26,STOP,1,stopped,-1.0,False,False,31,-0.95,5.0
+NY VWAP,2023-12-26,STOP,0,stopped,-1.0,False,False,31,-0.95,5.0
+NY VWAP,2023-12-26,TARGET,0,"target after fill, same minute",1.0,True,False,9,1.05,5.0
+NY VWAP,2023-12-26,TARGET,5,target later minute,1.0,False,False,301,1.0476190476190477,5.25
+NY VWAP,2023-12-26,STOP,1,stopped,-1.0,False,False,38,-0.95,5.0
+NY VWAP,2023-12-26,STOP,2,stopped,-1.0,False,False,103,-0.95,5.0
+NY VWAP,2023-12-26,STOP,3,stopped,-1.0,False,False,152,-0.95,5.0
+NY VWAP,2023-12-26,STOP,1,stopped,-1.0,False,False,79,-0.95,5.0
+NY VWAP,2023-12-26,TARGET,1,target later minute,1.0,False,False,80,1.05,5.0
+NY VWAP,2023-12-26,TARGET,1,target later minute,1.0,False,False,76,1.0416666666666667,6.0
+NY VWAP,2023-12-26,TARGET,1,target later minute,1.0,False,False,80,1.05,5.0
+NY VWAP,2023-12-26,STOP,3,stopped,-1.0,False,False,176,-0.9795918367346939,12.25
+NY VWAP,2023-12-26,STOP,10,stopped,-1.0,False,False,534,-0.975,10.0
+NY VWAP,2023-12-26,TARGET,6,target later minute,1.0,False,False,317,1.05,5.0
+NY VWAP,2023-12-26,STOP,3,stopped,-1.0,False,False,188,-0.9615384615384616,6.5
+NY VWAP,2023-12-26,TARGET,0,target later minute,1.0,True,False,42,1.0384615384615385,6.5
+NY VWAP,2023-12-26,STOP,0,stopped,-1.0,False,False,34,-0.95,5.0
+NY VWAP,2023-12-27,TARGET,1,target later minute,1.0,False,False,31,1.05,5.0
+NY VWAP,2023-12-27,STOP,4,target later minute,1.0,False,False,226,1.05,5.0
+NY VWAP,2023-12-27,STOP,1,stopped,-1.0,False,False,25,-0.95,5.0
+NY VWAP,2023-12-27,STOP,0,stopped,-1.0,False,False,15,-0.95,5.0
+NY VWAP,2023-12-27,TARGET,4,target later minute,1.0,False,False,219,1.04,6.25
+NY VWAP,2023-12-27,STOP,8,stopped,-1.0,False,False,438,-0.95,5.0
+NY VWAP,2023-12-27,STOP,2,stopped,-1.0,False,False,105,-0.95,5.0
+NY VWAP,2023-12-27,TARGET,0,stopped,-1.0,True,False,28,-0.9629629629629629,6.75
+NY VWAP,2023-12-27,TARGET,18,target later minute,1.0,False,False,983,1.025,10.0
+NY VWAP,2023-12-27,SAR,1,target later minute,1.0,False,False,406,-0.8,5.0
+NY VWAP,2023-12-27,TARGET,1,target later minute,1.0,False,False,37,1.05,5.0
+NY VWAP,2023-12-27,SAR,1,target later minute,1.0,False,False,568,-0.2222222222222222,6.75
+NY VWAP,2023-12-27,TARGET,10,target later minute,1.0,False,False,559,1.0357142857142858,7.0
+NY VWAP,2023-12-27,STOP,1,stopped,-1.0,False,False,47,-0.95,5.0
+NY VWAP,2024-06-20,SAR,1,target later minute,1.0,False,False,88,-0.04081632653061224,12.25
+NY VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,74,-0.9736842105263158,9.5
+NY VWAP,2024-06-20,TARGET,0,"target after fill, same minute",1.0,True,False,2,1.05,5.0
+NY VWAP,2024-06-20,TARGET,0,"target after fill, same minute",1.0,True,False,24,1.037037037037037,6.75
+NY VWAP,2024-06-20,TARGET,0,"target after fill, same minute",1.0,False,False,29,1.05,5.0
+NY VWAP,2024-06-20,TARGET,5,target later minute,1.0,False,False,327,1.0161290322580645,15.5
+NY VWAP,2024-06-20,TARGET,0,"target after fill, same minute",1.0,False,False,19,1.0454545454545454,5.5
+NY VWAP,2024-06-20,STOP,0,stopped,-1.0,True,False,5,-0.9523809523809523,5.25
+NY VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,53,-0.95,5.0
+NY VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,102,-0.9565217391304348,5.75
+NY VWAP,2024-06-20,STOP,0,stopped,-1.0,True,False,40,-0.95,5.0
+NY VWAP,2024-06-20,SAR,1,stopped,-1.0,False,False,53,-0.8888888888888888,6.75
+NY VWAP,2024-06-20,TARGET,0,"target after fill, same minute",1.0,False,False,6,1.0333333333333334,7.5
+NY VWAP,2024-06-20,TARGET,0,"target after fill, same minute",1.0,True,False,24,1.05,5.0
+NY VWAP,2024-06-20,STOP,1,stopped,-1.0,False,False,67,-0.95,5.0
+NY VWAP,2024-06-20,SAR,1,stopped,-1.0,False,False,56,-0.7,5.0
+NY VWAP,2024-06-20,TARGET,4,target later minute,1.0,False,False,234,1.024390243902439,10.25
+NY VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,11,1.0172413793103448,14.5
+NY VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,False,False,37,1.0126582278481013,19.75
+NY VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,18,-0.16049382716049382,20.25
+NY VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,9,1.0087719298245614,28.5
+NY VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,29,-0.29,25.0
+NY VWAP,2025-04-10,STOP,0,stopped,-1.0,False,False,7,-0.98,12.5
+NY VWAP,2025-04-10,STOP,0,"target after fill, same minute",1.0,True,True,1,-0.9642857142857143,7.0
+NY VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,20,1.0086206896551724,29.0
+NY VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,3,1.0158730158730158,15.75
+NY VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,False,False,20,-0.22580645161290322,23.25
+NY VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,83,-0.2767857142857143,28.0
+NY VWAP,2025-04-10,STOP,0,stopped,-1.0,False,False,12,-0.9615384615384616,6.5
+NY VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,129,-0.273972602739726,18.25
+NY VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,14,-0.9777777777777777,11.25
+NY VWAP,2025-04-10,SAR,1,stopped,-1.0,False,False,57,-0.46938775510204084,24.5
+NY VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,80,-0.6352941176470588,21.25
+NY VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,12,-0.9866666666666667,18.75
+NY VWAP,2025-04-10,STOP,0,stopped,-1.0,False,False,55,-0.989247311827957,23.25
+NY VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,46,1.00990099009901,25.25
+NY VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,32,-0.59375,16.0
+NY VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,52,-0.34408602150537637,23.25
+NY VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,False,False,10,1.0136986301369864,18.25
+NY VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,12,1.0105263157894737,23.75
+NY VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,4,-0.9830508474576272,14.75
+NY VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,8,1.0166666666666666,15.0
+NY VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,9,1.0238095238095237,10.5
+NY VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,41,-0.9803921568627451,12.75
+NY VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,10,1.025,10.0
+NY VWAP,2026-08-04,STOP,0,"target after fill, same minute",1.0,False,False,12,1.0153846153846153,16.25
+NY VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,25,1.0277777777777777,9.0
+NY VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,False,False,5,1.0175438596491229,14.25
+NY VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,16,1.0303030303030303,8.25
+NY VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,61,,14.5
+NY VWAP,2026-08-04,STOP,0,"target after fill, same minute",1.0,False,False,6,1.0333333333333334,7.5
+NY VWAP,2026-08-04,STOP,0,stopped,-1.0,False,False,10,-0.972972972972973,9.25
+NY VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,8,,7.5
+NY VWAP,2026-08-04,TARGET,1,target later minute,1.0,False,False,60,1.0149253731343284,16.75
+NY VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,43,-0.3611111111111111,9.0
+NY VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,14,-0.9655172413793104,7.25
+NY VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,103,1.02,12.5
+NY VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,31,1.0416666666666667,6.0
+NY VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,10,,5.0
+NY VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,32,1.02,12.5
+NY VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,22,,5.0
+NY VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,161,1.0303030303030303,8.25
+NY VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,13,1.05,5.0
+NY VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,2,1.0166666666666666,15.0
+NY VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,119,-0.9887640449438202,22.25
+NY VWAP,2026-08-05,STOP,0,"target after fill, same minute",1.0,False,False,1,-0.9666666666666667,7.5
+NY VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,115,-0.98,12.5
+NY VWAP,2026-08-05,SAR,1,stopped,-1.0,False,False,57,-0.8507462686567164,16.75
+NY VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,6,-0.95,5.0
+NY VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,41,1.0161290322580645,15.5
+NY VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,82,1.0277777777777777,9.0
+NY VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,165,-0.9814814814814815,13.5
+NY VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,22,-0.48484848484848486,8.25
+NY VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,32,-0.3902439024390244,10.25
+NY VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,20,-0.9523809523809523,5.25
+NY VWAP,2026-08-05,TARGET,2,target later minute,1.0,False,False,128,1.0344827586206897,7.25
+NY VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,91,1.032258064516129,7.75
+NY VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,2,,5.0
+NY VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,33,1.05,5.0
+NY VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,130,1.0294117647058822,8.5
+NY VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,36,1.0476190476190477,5.25
+NY VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,21,-0.9629629629629629,6.75
+NY VWAP,2026-08-05,STOP,1,stopped,-1.0,False,False,73,-0.96875,8.0
+Session VWAP,2023-12-26,TARGET,2,target later minute,1.0,False,False,37,1.05,5.0
+Session VWAP,2023-12-26,TARGET,5,target later minute,1.0,False,False,214,1.05,5.0
+Session VWAP,2023-12-26,STOP,0,stopped,-1.0,True,False,16,-0.95,5.0
+Session VWAP,2023-12-26,TARGET,0,target later minute,1.0,True,False,296,1.0285714285714285,8.75
+Session VWAP,2023-12-26,TARGET,0,"target after fill, same minute",1.0,True,False,20,1.05,5.0
+Session VWAP,2023-12-26,STOP,1,stopped,-1.0,False,False,31,-0.95,5.0
+Session VWAP,2023-12-26,TARGET,0,stopped,-1.0,True,False,672,0.16,12.5
+Session VWAP,2023-12-26,TARGET,1,target later minute,1.0,False,False,83,1.0294117647058822,8.5
+Session VWAP,2023-12-26,TARGET,0,"target after fill, same minute",1.0,False,False,31,1.0454545454545454,5.5
+Session VWAP,2023-12-26,TARGET,1,target later minute,1.0,False,False,62,1.05,5.0
+Session VWAP,2023-12-26,TARGET,12,target later minute,1.0,False,False,630,1.05,5.0
+Session VWAP,2023-12-26,STOP,3,stopped,-1.0,False,False,152,-0.95,5.0
+Session VWAP,2023-12-26,TARGET,0,"target after fill, same minute",1.0,True,False,49,1.05,5.0
+Session VWAP,2023-12-26,STOP,1,stopped,-1.0,False,False,78,-0.96,6.25
+Session VWAP,2023-12-26,STOP,10,stopped,-1.0,False,False,534,-0.9743589743589743,9.75
+Session VWAP,2023-12-26,TARGET,2,target later minute,1.0,False,False,90,1.04,6.25
+Session VWAP,2023-12-26,TARGET,0,target later minute,1.0,True,False,42,1.037037037037037,6.75
+Session VWAP,2023-12-26,STOP,0,stopped,-1.0,False,False,34,-0.95,5.0
+Session VWAP,2023-12-27,STOP,17,stopped,-1.0,False,False,355,-0.95,5.0
+Session VWAP,2023-12-27,STOP,2,stopped,-1.0,False,False,64,-0.95,5.0
+Session VWAP,2023-12-27,TARGET,0,stopped,-1.0,True,False,46,-0.9583333333333334,6.0
+Session VWAP,2023-12-27,TARGET,0,target later minute,1.0,True,False,219,1.05,5.0
+Session VWAP,2023-12-27,TARGET,4,target later minute,1.0,False,False,232,1.0344827586206897,7.25
+Session VWAP,2023-12-27,TARGET,0,target later minute,1.0,True,False,48,1.05,5.0
+Session VWAP,2023-12-27,TARGET,0,target later minute,1.0,True,False,32,,5.0
+Session VWAP,2023-12-27,STOP,1,stopped,-1.0,False,False,76,-0.95,5.0
+Session VWAP,2023-12-27,TARGET,3,target later minute,1.0,False,False,170,1.05,5.0
+Session VWAP,2023-12-27,STOP,0,stopped,-1.0,True,False,27,-0.95,5.0
+Session VWAP,2023-12-27,TARGET,0,stopped,-1.0,True,False,25,-0.95,5.0
+Session VWAP,2023-12-27,TARGET,3,target later minute,1.0,False,False,136,1.05,5.0
+Session VWAP,2023-12-27,TARGET,0,"target after fill, same minute",1.0,False,False,8,1.03125,8.0
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,91,-0.95,5.0
+Session VWAP,2024-06-20,STOP,17,stopped,-1.0,False,False,231,-0.95,5.0
+Session VWAP,2024-06-20,TARGET,5,target later minute,1.0,False,False,125,1.0344827586206897,7.25
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,110,-0.95,5.0
+Session VWAP,2024-06-20,TARGET,4,target later minute,1.0,False,False,151,1.0476190476190477,5.25
+Session VWAP,2024-06-20,SAR,1,target later minute,1.0,False,False,63,-0.18181818181818182,8.25
+Session VWAP,2024-06-20,TARGET,3,target later minute,1.0,False,False,134,1.018181818181818,13.75
+Session VWAP,2024-06-20,STOP,8,stopped,-1.0,False,False,335,-0.9615384615384616,6.5
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,47,-0.95,5.0
+Session VWAP,2024-06-20,STOP,3,stopped,-1.0,False,False,139,-0.95,5.0
+Session VWAP,2024-06-20,SAR,3,target later minute,1.0,False,False,452,-0.42424242424242425,8.25
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,149,-0.9583333333333334,6.0
+Session VWAP,2024-06-20,TARGET,1,target later minute,1.0,False,False,40,1.05,5.0
+Session VWAP,2024-06-20,TARGET,0,target later minute,1.0,True,False,15,1.0133333333333334,18.75
+Session VWAP,2024-06-20,TARGET,0,target later minute,1.0,True,False,17,1.05,5.0
+Session VWAP,2024-06-20,TARGET,0,"target after fill, same minute",1.0,True,False,16,,9.25
+Session VWAP,2024-06-20,STOP,0,stopped,-1.0,True,False,14,-0.9642857142857143,7.0
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,234,-0.39622641509433965,13.25
+Session VWAP,2024-06-20,TARGET,0,"target after fill, same minute",1.0,False,False,22,1.0232558139534884,10.75
+Session VWAP,2024-06-20,TARGET,5,target later minute,1.0,False,False,321,1.018181818181818,13.75
+Session VWAP,2024-06-20,TARGET,0,target later minute,1.0,True,False,63,1.0263157894736843,9.5
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,41,-0.9811320754716981,13.25
+Session VWAP,2024-06-20,TARGET,0,target later minute,1.0,True,False,60,1.032258064516129,7.75
+Session VWAP,2024-06-20,SAR,1,target later minute,1.0,False,False,140,-0.3191489361702128,11.75
+Session VWAP,2024-06-20,STOP,1,stopped,-1.0,False,False,108,-0.9642857142857143,7.0
+Session VWAP,2024-06-20,TARGET,0,target later minute,1.0,True,False,102,1.05,5.0
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,48,-0.95,5.0
+Session VWAP,2024-06-20,TARGET,0,"target after fill, same minute",1.0,True,False,18,1.0357142857142858,7.0
+Session VWAP,2024-06-20,STOP,1,stopped,-1.0,False,False,92,-0.9782608695652174,11.5
+Session VWAP,2024-06-20,TARGET,0,target later minute,1.0,True,False,27,1.0476190476190477,5.25
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,72,-0.95,5.0
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,115,-0.95,5.0
+Session VWAP,2024-06-20,TARGET,0,target later minute,1.0,True,False,52,1.05,5.0
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,11,-0.95,5.0
+Session VWAP,2024-06-20,STOP,0,stopped,-1.0,False,False,18,-0.95,5.0
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,37,-0.9523809523809523,5.25
+Session VWAP,2024-06-20,TARGET,2,target later minute,1.0,False,False,123,1.027027027027027,9.25
+Session VWAP,2024-06-20,TARGET,0,stopped,-1.0,True,False,79,-0.95,5.0
+Session VWAP,2024-06-20,STOP,1,stopped,-1.0,False,False,96,-0.9615384615384616,6.5
+Session VWAP,2024-06-20,STOP,0,stopped,-1.0,False,False,3,-0.9583333333333334,6.0
+Session VWAP,2025-04-10,STOP,1,stopped,-1.0,False,False,50,-0.9736842105263158,9.5
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,7,-0.9545454545454546,5.5
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,False,False,5,-0.4772727272727273,11.0
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,110,0.2727272727272727,24.75
+Session VWAP,2025-04-10,STOP,3,stopped,-1.0,False,False,98,-0.9868421052631579,19.0
+Session VWAP,2025-04-10,TARGET,1,target later minute,1.0,False,False,26,1.0232558139534884,10.75
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,57,1.0136986301369864,18.25
+Session VWAP,2025-04-10,STOP,0,target only inside the fill second,-1.0,True,True,1,-0.95,5.0
+Session VWAP,2025-04-10,SAR,1,stopped,-1.0,False,False,59,-0.6206896551724138,29.0
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,47,1.0105263157894737,23.75
+Session VWAP,2025-04-10,SAR,1,stopped,-1.0,False,False,31,-0.28125,16.0
+Session VWAP,2025-04-10,SAR,1,stopped,-1.0,False,False,48,-0.013513513513513514,18.5
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,False,False,20,1.0092592592592593,27.0
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,True,3,1.05,5.0
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,False,False,13,1.0188679245283019,13.25
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,28,1.0217391304347827,11.5
+Session VWAP,2025-04-10,SAR,1,target later minute,1.0,False,False,302,-0.17307692307692307,26.0
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,8,-0.9814814814814815,13.5
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,24,1.018181818181818,13.75
+Session VWAP,2025-04-10,TARGET,2,target later minute,1.0,False,False,46,1.0232558139534884,10.75
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,False,False,4,-0.9714285714285714,8.75
+Session VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,79,-0.9795918367346939,12.25
+Session VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,26,1.0294117647058822,8.5
+Session VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,65,-0.9882352941176471,21.25
+Session VWAP,2025-04-10,STOP,0,"target after fill, same minute",1.0,False,False,6,-0.96875,8.0
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,10,-0.9666666666666667,7.5
+Session VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,42,-0.9827586206896551,14.5
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,5,1.027027027027027,9.25
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,5,1.032258064516129,7.75
+Session VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,17,-0.29850746268656714,16.75
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,29,-0.37815126050420167,29.75
+Session VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,11,0.24,12.5
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,26,1.02,12.5
+Session VWAP,2025-04-10,SAR,1,stopped,-1.0,False,False,47,-0.47692307692307695,16.25
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,11,-0.9803921568627451,12.75
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,43,1.0113636363636365,22.0
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,7,1.0357142857142858,7.0
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,2,1.0227272727272727,11.0
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,False,False,6,-0.9736842105263158,9.5
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,1,-0.9629629629629629,6.75
+Session VWAP,2025-04-10,TARGET,3,target later minute,1.0,False,False,171,1.0126582278481013,19.75
+Session VWAP,2025-04-10,STOP,0,"target after fill, same minute",1.0,True,False,5,-0.9906542056074766,26.75
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,False,False,48,-0.9903846153846154,26.0
+Session VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,37,-0.26881720430107525,23.25
+Session VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,20,-0.9911504424778761,28.25
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,70,1.0091743119266054,27.25
+Session VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,101,-0.9883720930232558,21.5
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,24,-0.9811320754716981,13.25
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,33,-0.9883720930232558,21.5
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,44,-0.5,23.0
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,34,1.0158730158730158,15.75
+Session VWAP,2025-04-10,TARGET,0,stopped,-1.0,True,False,24,-0.8409090909090909,11.0
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,24,1.0151515151515151,16.5
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,27,1.0285714285714285,8.75
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,11,-0.9722222222222222,9.0
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,9,-0.9743589743589743,9.75
+Session VWAP,2025-04-10,TARGET,2,target later minute,1.0,False,False,138,1.0083333333333333,30.0
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,17,1.0208333333333333,12.0
+Session VWAP,2025-04-10,SAR,1,stopped,-1.0,False,False,76,-0.45,20.0
+Session VWAP,2025-04-10,SAR,1,target later minute,1.0,False,False,122,-0.42528735632183906,21.75
+Session VWAP,2025-04-10,STOP,0,stopped,-1.0,True,False,9,-0.9666666666666667,7.5
+Session VWAP,2025-04-10,TARGET,0,target later minute,1.0,True,False,34,1.013157894736842,19.0
+Session VWAP,2025-04-10,STOP,0,"target after fill, same minute",1.0,True,True,4,-0.9642857142857143,7.0
+Session VWAP,2025-04-10,TARGET,1,target later minute,1.0,False,False,53,1.00990099009901,25.25
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,False,False,6,1.0126582278481013,19.75
+Session VWAP,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,19,1.0185185185185186,13.5
+Session VWAP,2026-08-04,TARGET,1,target later minute,1.0,False,False,40,1.0285714285714285,8.75
+Session VWAP,2026-08-04,TARGET,3,target later minute,1.0,False,False,41,1.05,5.0
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,9,-0.95,5.0
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,29,-0.4411764705882353,8.5
+Session VWAP,2026-08-04,TARGET,1,target later minute,1.0,False,False,29,1.0952380952380953,10.5
+Session VWAP,2026-08-04,SAR,1,target later minute,1.0,False,False,44,-0.6666666666666666,15.75
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,5,-0.9772727272727273,11.0
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,60,-0.41304347826086957,11.5
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,34,-0.9743589743589743,9.75
+Session VWAP,2026-08-04,SAR,2,target later minute,1.0,False,False,329,-0.24561403508771928,14.25
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,10,-0.9615384615384616,6.5
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,17,-0.972972972972973,9.25
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,False,False,6,1.0238095238095237,10.5
+Session VWAP,2026-08-04,SAR,1,target later minute,1.0,False,False,97,-0.4909090909090909,13.75
+Session VWAP,2026-08-04,SAR,1,stopped,-1.0,False,False,33,-0.49056603773584906,13.25
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,74,-0.14893617021276595,11.75
+Session VWAP,2026-08-04,SAR,1,stopped,-1.0,False,False,169,-0.4444444444444444,15.75
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,38,-0.96,6.25
+Session VWAP,2026-08-04,SAR,1,stopped,-1.0,False,False,80,-0.39655172413793105,14.5
+Session VWAP,2026-08-04,STOP,4,stopped,-1.0,False,False,110,-0.9782608695652174,11.5
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,26,-0.96,6.25
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,24,-0.9655172413793104,7.25
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,47,-0.4090909090909091,5.5
+Session VWAP,2026-08-04,TARGET,2,target later minute,1.0,False,False,65,1.0256410256410255,9.75
+Session VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,63,1.0344827586206897,7.25
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,29,-0.95,5.0
+Session VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,42,1.15,5.0
+Session VWAP,2026-08-04,TARGET,2,target later minute,1.0,False,False,37,1.0344827586206897,7.25
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,100,-0.95,5.0
+Session VWAP,2026-08-04,TARGET,4,target later minute,1.0,False,False,65,1.2,5.0
+Session VWAP,2026-08-04,TARGET,3,target later minute,1.0,False,False,68,1.05,5.0
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,40,-0.95,5.0
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,False,False,20,-0.95,5.0
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,False,False,2,-0.95,5.0
+Session VWAP,2026-08-04,TARGET,6,target later minute,1.0,False,False,181,1.0166666666666666,15.0
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,17,-0.96,6.25
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,4,1.0333333333333334,7.5
+Session VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,55,1.0277777777777777,9.0
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,1,-0.95,5.0
+Session VWAP,2026-08-04,SAR,1,stopped,-1.0,False,False,42,-0.15,15.0
+Session VWAP,2026-08-04,STOP,5,stopped,-1.0,False,False,167,-0.9807692307692307,13.0
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,False,False,3,-0.95,5.0
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,False,False,29,-0.9807692307692307,13.0
+Session VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,87,1.05,5.0
+Session VWAP,2026-08-04,TARGET,2,target later minute,1.0,False,False,79,1.0212765957446808,11.75
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,26,-0.9736842105263158,9.5
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,54,-0.95,5.0
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,False,False,45,-0.9807692307692307,13.0
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,False,False,38,-0.9866666666666667,18.75
+Session VWAP,2026-08-04,TARGET,13,target later minute,1.0,False,False,531,1.0120481927710843,20.75
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,False,False,18,1.04,6.25
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,33,1.0121951219512195,20.5
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,42,1.0114942528735633,21.75
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,65,-0.9871794871794872,19.5
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,5,-0.975609756097561,10.25
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,39,1.0151515151515151,16.5
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,True,False,8,-0.9803921568627451,12.75
+Session VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,18,-0.47368421052631576,14.25
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,False,False,24,1.0119047619047619,21.0
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,34,1.0142857142857142,17.5
+Session VWAP,2026-08-04,STOP,0,stopped,-1.0,False,False,20,-0.9878048780487805,20.5
+Session VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,54,1.0135135135135136,18.5
+Session VWAP,2026-08-04,STOP,0,"target after fill, same minute",1.0,True,False,1,-0.9629629629629629,6.75
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,False,False,57,1.0135135135135136,18.5
+Session VWAP,2026-08-04,SAR,1,stopped,-1.0,False,False,132,-0.5643564356435643,25.25
+Session VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,130,0.18333333333333332,15.0
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,74,-0.9787234042553191,11.75
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,136,-0.2037037037037037,13.5
+Session VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,20,1.02,12.5
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,14,1.0256410256410255,9.75
+Session VWAP,2026-08-04,TARGET,0,"target after fill, same minute",1.0,True,False,9,1.0256410256410255,9.75
+Session VWAP,2026-08-04,TARGET,0,target later minute,1.0,True,False,23,1.0172413793103448,14.5
+Session VWAP,2026-08-04,TARGET,0,stopped,-1.0,True,False,14,-0.3888888888888889,9.0
+Session VWAP,2026-08-04,TARGET,6,target later minute,1.0,False,False,356,1.0083333333333333,30.0
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,3,-0.95,5.0
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,False,False,1,-0.95,5.0
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,3,-0.9743589743589743,9.75
+Session VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,114,-0.08333333333333333,18.0
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,4,-0.9696969696969697,8.25
+Session VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,78,-0.1774193548387097,15.5
+Session VWAP,2026-08-05,SAR,1,stopped,-1.0,False,False,31,-0.5106382978723404,11.75
+Session VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,18,1.0277777777777777,9.0
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,1,-0.95,5.0
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,21,-0.95,5.0
+Session VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,57,-0.9767441860465116,10.75
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,4,-0.9655172413793104,7.25
+Session VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,29,1.037037037037037,6.75
+Session VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,2,-0.95,5.0
+Session VWAP,2026-08-05,STOP,3,stopped,-1.0,False,False,111,-0.9696969696969697,8.25
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,False,False,9,-0.9629629629629629,6.75
+Session VWAP,2026-08-05,STOP,1,stopped,-1.0,False,False,21,-0.9761904761904762,10.5
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,3,-0.95,5.0
+Session VWAP,2026-08-05,TARGET,2,target later minute,1.0,False,False,49,1.03125,8.0
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,5,-0.95,5.0
+Session VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,15,-0.967741935483871,7.75
+Session VWAP,2026-08-05,SAR,3,stopped,-1.0,False,False,163,-0.6666666666666666,11.25
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,4,-1.0,5.0
+Session VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,7,1.15625,8.0
+Session VWAP,2026-08-05,TARGET,2,target later minute,1.0,False,False,56,1.024390243902439,10.25
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,False,False,11,-0.9655172413793104,7.25
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,False,False,14,-0.972972972972973,9.25
+Session VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,74,-0.5,7.0
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,6,-0.9761904761904762,10.5
+Session VWAP,2026-08-05,SAR,1,stopped,-1.0,False,False,103,-0.3939393939393939,16.5
+Session VWAP,2026-08-05,TARGET,3,target later minute,1.0,False,False,84,1.0217391304347827,11.5
+Session VWAP,2026-08-05,SAR,1,stopped,-1.0,False,False,25,-0.2,5.0
+Session VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,18,1.037037037037037,6.75
+Session VWAP,2026-08-05,SAR,5,stopped,-1.0,False,False,181,-0.20833333333333334,12.0
+Session VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,11,-0.9642857142857143,7.0
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,False,False,17,-0.9615384615384616,6.5
+Session VWAP,2026-08-05,STOP,4,stopped,-1.0,False,False,119,-0.9811320754716981,13.25
+Session VWAP,2026-08-05,TARGET,1,target later minute,1.0,False,False,42,1.03125,8.0
+Session VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,31,-0.972972972972973,9.25
+Session VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,30,1.0416666666666667,6.0
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,True,False,1,-0.95,5.0
+Session VWAP,2026-08-05,TARGET,1,target later minute,1.0,False,False,23,1.0333333333333334,7.5
+Session VWAP,2026-08-05,STOP,0,target only inside the fill second,-1.0,False,True,29,-0.9824561403508771,14.25
+Session VWAP,2026-08-05,TARGET,3,target later minute,1.0,False,False,157,1.010752688172043,23.25
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,False,False,5,-0.96,6.25
+Session VWAP,2026-08-05,STOP,1,stopped,-1.0,False,False,58,-0.9696969696969697,8.25
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,False,False,22,-0.9821428571428571,14.0
+Session VWAP,2026-08-05,TARGET,1,target later minute,1.0,False,False,101,1.010204081632653,24.5
+Session VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,14,-0.984375,16.0
+Session VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,58,1.00990099009901,25.25
+Session VWAP,2026-08-05,SAR,1,target later minute,1.0,False,False,99,-0.3770491803278688,15.25
+Session VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,36,1.025,10.0
+Session VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,17,1.0277777777777777,9.0
+Session VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,False,False,47,1.024390243902439,10.25
+Session VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,True,5,1.0454545454545454,5.5
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,False,False,23,-0.9761904761904762,10.5
+Session VWAP,2026-08-05,TARGET,0,stopped,-1.0,True,False,95,-0.5102040816326531,12.25
+Session VWAP,2026-08-05,TARGET,0,target later minute,1.0,True,False,168,-0.29411764705882354,12.75
+Session VWAP,2026-08-05,SAR,1,stopped,-1.0,False,False,858,-0.234375,16.0
+Session VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,True,False,31,1.027027027027027,9.25
+Session VWAP,2026-08-05,SAR,1,stopped,-1.0,False,False,63,-0.6938775510204082,12.25
+Session VWAP,2026-08-05,TARGET,5,target later minute,1.0,False,False,284,1.0163934426229508,15.25
+Session VWAP,2026-08-05,TARGET,1,target later minute,1.0,False,False,15,1.03125,8.0
+Session VWAP,2026-08-05,SAR,2,stopped,-1.0,False,False,311,-0.32075471698113206,13.25
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,False,False,19,-0.9807692307692307,13.0
+Session VWAP,2026-08-05,TARGET,0,"target after fill, same minute",1.0,False,False,7,1.0232558139534884,10.75
+Session VWAP,2026-08-05,STOP,0,stopped,-1.0,False,False,16,-0.9767441860465116,10.75
+Weekly POC,2025-04-10,STOP,0,stopped,-1.0,False,False,9,-0.9814814814814815,13.5
+Weekly POC,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,26,1.015625,16.0
+Weekly POC,2025-04-10,SAR,1,stopped,-1.0,False,False,112,-0.7741935483870968,23.25
+Weekly POC,2025-04-10,TARGET,0,target later minute,1.0,True,False,70,-0.37333333333333335,18.75
+Weekly POC,2025-04-10,TARGET,0,target later minute,1.0,True,False,11,1.0217391304347827,11.5
+Weekly POC,2025-04-10,STOP,1,stopped,-1.0,False,False,22,-0.9876543209876543,20.25
+Weekly POC,2025-04-10,SAR,1,target later minute,1.0,False,False,73,-0.2191780821917808,18.25
+Weekly POC,2025-04-10,STOP,0,stopped,-1.0,False,False,2,-0.98,12.5
+Weekly POC,2025-04-10,TARGET,0,target later minute,1.0,True,False,16,1.1833333333333333,15.0
+Weekly POC,2025-04-10,SAR,1,stopped,-1.0,False,False,22,-0.5612244897959183,24.5
+Weekly POC,2025-04-10,TARGET,0,stopped,-1.0,True,False,123,-0.23684210526315788,19.0
+Weekly POC,2025-04-10,TARGET,1,target later minute,1.0,False,False,21,1.0169491525423728,14.75
+Weekly POC,2025-04-10,STOP,0,"target after fill, same minute",1.0,True,False,8,-0.95,5.0
+Weekly POC,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,7,1.05,5.0
+Weekly POC,2025-04-10,STOP,0,stopped,-1.0,True,False,6,-0.972972972972973,9.25
+Weekly POC,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,8,1.0277777777777777,9.0
+Weekly POC,2025-04-10,TARGET,0,stopped,-1.0,True,False,9,-0.9846153846153847,16.25
+Weekly POC,2025-04-10,STOP,0,stopped,-1.0,True,False,9,-0.9761904761904762,10.5
+PD POC,2024-06-20,TARGET,4,target later minute,1.0,False,False,99,1.05,5.0
+PD POC,2024-06-20,STOP,0,stopped,-1.0,False,False,34,-0.95,5.0
+PD POC,2024-06-20,STOP,1,stopped,-1.0,False,False,47,-0.9523809523809523,5.25
+PD POC,2024-06-20,TARGET,1,target later minute,1.0,False,False,42,1.0384615384615385,6.5
+PD POC,2024-06-20,TARGET,0,"target after fill, same minute",1.0,False,True,1,1.05,5.0
+PD POC,2024-06-20,TARGET,0,"target after fill, same minute",1.0,True,False,26,1.0285714285714285,8.75
+PD POC,2024-06-20,TARGET,3,target later minute,1.0,False,False,182,1.0344827586206897,7.25
+PD POC,2024-06-20,STOP,2,stopped,-1.0,False,False,120,-0.9523809523809523,5.25
+PD POC,2025-04-10,STOP,0,stopped,-1.0,False,False,30,-0.9743589743589743,9.75
+PD POC,2025-04-10,TARGET,0,target later minute,1.0,True,False,56,1.0120481927710843,20.75
+PD POC,2025-04-10,STOP,0,"target after fill, same minute",1.0,True,False,7,-0.95,5.0
+PD POC,2025-04-10,TARGET,0,stopped,-1.0,True,False,74,-0.5,10.5
+PD POC,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,15,1.032258064516129,7.75
+PD POC,2025-04-10,TARGET,1,target later minute,1.0,False,False,46,1.0285714285714285,8.75
+PD POC,2025-04-10,STOP,0,stopped,-1.0,True,False,1,-0.9864864864864865,18.5
+PD POC,2025-04-10,TARGET,0,stopped,-1.0,True,False,11,-0.046153846153846156,16.25
+PD POC,2025-04-10,SAR,1,target later minute,1.0,False,False,120,-0.1619047619047619,26.25
+PD POC,2025-04-10,TARGET,0,stopped,-1.0,True,False,31,-0.27586206896551724,21.75
+PD POC,2025-04-10,TARGET,1,target later minute,1.0,False,False,38,1.010752688172043,23.25
+PD POC,2025-04-10,TARGET,0,stopped,-1.0,True,False,133,-0.18292682926829268,20.5
+PD POC,2025-04-10,TARGET,0,target later minute,1.0,True,False,269,1.010989010989011,22.75
+PD POC,2025-04-10,STOP,0,stopped,-1.0,True,False,48,-0.9879518072289156,20.75
+PD POC,2025-04-10,TARGET,0,stopped,-1.0,True,False,38,-0.39285714285714285,28.0
+PD POC,2025-04-10,TARGET,0,stopped,-1.0,True,False,38,-0.4157303370786517,22.25
+PD POC,2025-04-10,STOP,0,stopped,-1.0,False,False,29,-0.9880952380952381,21.0
+PD POC,2025-04-10,STOP,0,"target after fill, same minute",1.0,True,False,4,-0.9846153846153847,16.25
+PD POC,2025-04-10,TARGET,0,"target after fill, same minute",1.0,True,False,14,1.0093457943925233,26.75
+PD POC,2025-04-10,STOP,0,stopped,-1.0,False,False,11,-0.9818181818181818,13.75
+PD POC,2025-04-10,TARGET,1,target later minute,1.0,False,False,31,1.0113636363636365,22.0
+PD POC,2026-08-04,TARGET,2,target later minute,1.0,False,False,68,1.0344827586206897,7.25
+PD POC,2026-08-04,TARGET,0,stopped,-1.0,True,False,6,-0.9523809523809523,5.25
+PD POC,2026-08-04,STOP,1,stopped,-1.0,False,False,49,-0.95,5.0
+PD POC,2026-08-04,TARGET,0,target later minute,1.0,True,False,65,1.0285714285714285,8.75
+PD POC,2026-08-04,TARGET,0,stopped,-1.0,True,False,13,-0.9523809523809523,5.25
+PD POC,2026-08-04,TARGET,0,"target after fill, same minute",1.0,False,False,4,1.05,5.0
+PD POC,2026-08-04,TARGET,0,target later minute,1.0,True,False,23,1.027027027027027,9.25
+PD POC,2026-08-04,TARGET,3,target later minute,1.0,False,False,73,1.0303030303030303,8.25
+PD POC,2026-08-04,STOP,0,stopped,-1.0,True,False,1,-0.9523809523809523,5.25
+PD POC,2026-08-04,TARGET,0,stopped,-1.0,True,False,50,-0.95,5.0
+PD POC,2026-08-04,SAR,1,stopped,-1.0,False,False,44,-0.55,5.0
+PD POC,2026-08-04,STOP,0,stopped,-1.0,True,False,8,-0.95,5.0
+PD POC,2026-08-04,STOP,5,target later minute,1.0,False,False,104,1.0303030303030303,8.25
+PD POC,2026-08-04,TARGET,0,"target after fill, same minute",1.0,False,False,1,1.05,5.0
+PD POC,2026-08-04,TARGET,0,"target after fill, same minute",1.0,False,False,15,1.0121951219512195,20.5
+PD POC,2026-08-04,STOP,0,stopped,-1.0,False,False,22,-0.9836065573770492,15.25
+PD POC,2026-08-04,STOP,0,stopped,-1.0,True,False,19,-0.9836065573770492,15.25
+PD POC,2026-08-04,TARGET,0,target later minute,1.0,True,False,74,1.011111111111111,22.5
+PD POC,2026-08-04,STOP,0,stopped,-1.0,True,False,24,-0.926829268292683,10.25
+PD POC,2026-08-04,TARGET,0,stopped,-1.0,True,False,149,-0.3088235294117647,17.0
+PD POC,2026-08-04,STOP,0,stopped,-1.0,False,False,16,-0.9705882352941176,8.5
+PD POC,2026-08-04,TARGET,0,target later minute,1.0,True,False,13,1.0384615384615385,6.5
+PD POC,2026-08-04,TARGET,0,target later minute,1.0,True,False,182,1.0098039215686274,25.5

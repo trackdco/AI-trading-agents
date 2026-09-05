@@ -1,0 +1,492 @@
+//@version=6
+// ============================================================================
+//  NQ ARMED EMPIRE  -  one book per strategy instance
+//
+//  The engine runs SEVEN independent books, each holding one position at a time:
+//    PD value area (VAH/VAL) | Weekly value area | PD high/low | PD POC | Weekly POC
+//    Session VWAP bands (18:00 anchor) | NY VWAP bands (09:30 anchor)
+//  A Pine strategy can hold only ONE net position, so this script trades ONE
+//  book. Add it to the chart once per book you want and pick the book in the
+//  settings. Chart: NQ1! or MNQ1!, 1-MINUTE bars. Times are forced to New York.
+//
+//  Grammar: 1m close >= 3pt through the level -> limit at the level, dark until
+//  price runs 1R past it -> structural stop (one tick past the signal candle,
+//  prior candle too if it opened within 5pt of the level; 5pt floor, 30pt cap,
+//  above the cap the signal is skipped) -> 1R target -> flip (SAR) on an
+//  opposing crossing close -> no entries 08:00-09:30 on red-folder days ->
+//  pendings die 16:00 -> flat by 17:00.
+//
+//  Known differences from the Python engine (small, all disclosed):
+//   * The cross-book rail (same direction within 5pt of another book's open
+//     entry is skipped) cannot run across separate strategy instances. It
+//     removed 1.6% of trades in the backtest, worth +71R over 954 days, so
+//     this port will show slightly MORE trades.
+//   * Entry fills one tick through the level, like the engine, but at the
+//     through price (level -/+ 0.25) instead of the level itself.
+//   * SAR and end-of-day flats fill at the NEXT bar's open, not this close.
+//   * A bar that touches both stop and target: the engine scores STOP; the
+//     TradingView emulator guesses from the bar shape.
+//   * Roll days are not skipped. The first session on the chart has no prior
+//     profile, and weekly levels are wrong until the first Monday 18:00 loads.
+//   * Level books other than PD value area start at 19:00 (weekly levels are
+//     read at 19:00), the engine starts them at 18:59.
+//   * If price is already through the level when the order arms, TradingView
+//     fills the marketable limit at the next open (better than the engine's
+//     fill at the level). Rare, and in your favour.
+//   * On early-close days the last two candles before the close are not traded.
+//   * Red-folder and early-close lists end 2026-07-16 / 2026-07-03: add dates.
+// ============================================================================
+strategy("NQ Armed Empire (one book)", shorttitle="Armed Empire", overlay=true,
+     pyramiding=0, default_qty_type=strategy.fixed, default_qty_value=1,
+     initial_capital=100000, currency=currency.USD,
+     commission_type=strategy.commission.cash_per_contract, commission_value=5.0,
+     margin_long=0, margin_short=0, max_lines_count=500)
+// commission 5.0 = $5 per contract per side = $10 round trip = 0.5pt on NQ.
+// On MNQ set it to 0.5 to keep the same 0.5pt cost.
+// margin_long/short = 0 is REQUIRED: Pine v6 defaults them to 100%, and one NQ
+// contract (~$580k notional) then exceeds the $100k capital, so TradingView
+// silently refuses every order and the tester shows "requires trade data".
+
+// ---------------------------------------------------------------- inputs ----
+TZ   = "America/New_York"
+TICK = 0.25
+BK_VA   = "PD value area (VAH/VAL)"
+BK_WVA  = "Weekly value area"
+BK_PDHL = "PD high/low"
+BK_POC  = "PD POC"
+BK_WPOC = "Weekly POC"
+BK_VS   = "Session VWAP bands"
+BK_VN   = "NY VWAP bands"
+book      = input.string(BK_VA, "Book (one strategy instance per book)", options=[BK_VA, BK_WVA, BK_PDHL, BK_POC, BK_WPOC, BK_VS, BK_VN])
+depthPts  = input.float(3.0,  "Displacement: close through level (pts)", step=0.25)
+armR      = input.float(1.0,  "Arming: run past level before limit is live (R)", step=0.25)
+floorPts  = input.float(5.0,  "Stop floor (pts)", step=0.25)
+capPts    = input.float(30.0, "Stop cap (pts) - signal skipped above", step=1.0)
+tgtR      = input.float(1.0,  "Target (R)", step=0.25)
+useNews   = input.bool(true,  "News gate: no entries 08:00-09:30 on red-folder days")
+newsDays  = input.string("20230106,20230112,20230118,20230126,20230127,20230203,20230214,20230215,20230224,20230310,20230314,20230315,20230331,20230407,20230412,20230414,20230427,20230428,20230505,20230510,20230516,20230526,20230602,20230613,20230615,20230630,20230707,20230712,20230718,20230727,20230728,20230804,20230810,20230815,20230831,20230901,20230913,20230914,20230929,20231006,20231012,20231017,20231026,20231027,20231103,20231114,20231115,20231130,20231208,20231212,20231214,20231222,20240105,20240111,20240117,20240125,20240126,20240202,20240213,20240215,20240229,20240308,20240312,20240314,20240329,20240405,20240410,20240415,20240425,20240426,20240503,20240515,20240531,20240607,20240612,20240618,20240628,20240705,20240711,20240716,20240725,20240726,20240802,20240814,20240815,20240830,20240906,20240911,20240917,20240927,20241004,20241010,20241017,20241030,20241031,20241101,20241113,20241115,20241206,20241211,20241217,20241220,20250110,20250115,20250116,20250130,20250131,20250207,20250212,20250214,20250228,20250307,20250312,20250317,20250328,20250404,20250410,20250416,20250430,20250502,20250513,20250515,20250530,20250606,20250611,20250617,20250627,20250703,20250715,20250717,20250730,20250731,20250801,20250812,20250815,20250829,20250905,20250911,20250916,20250926,20251024,20251120,20251125,20251216,20251218,20260109,20260113,20260114,20260210,20260211,20260213,20260220,20260306,20260311,20260313,20260401,20260403,20260409,20260410,20260421,20260430,20260508,20260512,20260514,20260528,20260605,20260610,20260617,20260625,20260702,20260714,20260716", "Red-folder days YYYYMMDD, comma list")
+earlyDays = input.string("20230116-1300,20230220-1300,20230407-0915,20230529-1300,20230619-1300,20230703-1315,20230704-1300,20230904-1300,20231123-1300,20231124-1315,20240115-1300,20240219-1300,20240527-1300,20240619-1300,20240703-1315,20240704-1300,20240902-1300,20241128-1300,20241129-1315,20241224-1315,20250109-0930,20250120-1300,20250217-1300,20250526-1300,20250619-1300,20250703-1315,20250704-1300,20250901-1300,20251127-1300,20251128-1315,20251224-1315,20260119-1300,20260216-1300,20260403-0915,20260525-1300,20260619-1300,20260703-1300", "Early closes YYYYMMDD-HHMM (close time ET), comma list")
+showLv    = input.bool(true,  "Draw this book's levels")
+
+if not timeframe.isminutes or timeframe.multiplier != 1
+    runtime.error("Armed Empire must run on a 1-minute chart.")
+
+isVS  = book == BK_VS
+isVN  = book == BK_VN
+isLvl = not isVS and not isVN
+myPri = book == BK_VA ? 0 : book == BK_WVA ? 1 : book == BK_PDHL ? 2 : book == BK_POC ? 3 : book == BK_WPOC ? 4 : -1
+
+// ------------------------------------------------------------ session clock ----
+hr      = hour(time, TZ)
+mn      = minute(time, TZ)
+mos     = (hr * 60 + mn - 1080 + 1440) % 1440        // minutes since 18:00 ET
+newSess = na(mos[1]) or mos < mos[1]
+dkey    = year(time, TZ) * 10000 + month(time, TZ) * 100 + dayofmonth(time, TZ)
+dstr    = str.tostring(dkey)
+// the two date lookups are done once per calendar date, not every bar
+var bool isNewsDay = false
+var int  flatMos   = 1378                             // 16:58 -> the flat fills on the 16:59 bar
+if dkey != nz(dkey[1], 0)
+    isNewsDay := useNews and str.contains(newsDays, dstr)
+    flatMos   := 1378
+    if str.contains(earlyDays, dstr)
+        p = str.pos(earlyDays, dstr)
+        if p + 13 <= str.length(earlyDays) and str.substring(earlyDays, p + 8, p + 9) == "-"
+            hh = str.tonumber(str.substring(earlyDays, p + 9, p + 11))
+            mm = str.tonumber(str.substring(earlyDays, p + 11, p + 13))
+            if not na(hh) and not na(mm) and hh >= 0 and hh < 24 and mm >= 0 and mm < 60
+                flatMos := int((hh * 60 + mm - 1080 + 1440) % 1440) - 2   // two bars before the close
+// a signal whose candle ENDS inside 08:00-09:30 is skipped; a resting order is
+// pulled at the close of the 07:59 bar so it is not live from 08:00
+newsWin = isNewsDay and mos >= 839 and mos < 929
+vol   = nz(volume)
+cPrev = close[1]
+lo1   = low[1]
+hi1   = high[1]
+
+// ----------------------------------------------------------------- helpers ----
+round025(float x) => math.round(x / TICK) * TICK
+
+addBar(map<int, float> m) =>
+    b0 = int(math.floor(low))
+    b1 = int(math.floor(high))
+    v  = vol / (b1 - b0 + 1)
+    for b = b0 to b1
+        m.put(b, nz(m.get(b)) + v)
+
+// volume profile: 1pt bins, POC = max bin (lowest on tie), VA expands two bins
+// at a time from the POC (ties go up) until it holds 70% of volume.
+profile(map<int, float> m) =>
+    float poc = na
+    float val = na
+    float vah = na
+    keys = map.keys(m)
+    if keys.size() > 0
+        int bmin = int(array.min(keys))
+        int bmax = int(array.max(keys))
+        n = bmax - bmin + 1
+        rows = array.new<float>(n, 0.0)
+        for k in keys
+            rows.set(k - bmin, m.get(k))
+        total = rows.sum()
+        if total > 0
+            int i  = rows.indexof(rows.max())
+            int lo = i
+            int hi = i
+            float cum = rows.get(i)
+            while cum < 0.7 * total and (lo > 0 or hi < n - 1)
+                float up = hi < n - 1 ? rows.get(hi + 1) + (hi + 2 <= n - 1 ? rows.get(hi + 2) : 0.0) : -1.0
+                float dn = lo > 0 ? rows.get(lo - 1) + (lo - 2 >= 0 ? rows.get(lo - 2) : 0.0) : -1.0
+                if up >= dn and hi < n - 1
+                    nh = math.min(hi + 2, n - 1)
+                    for j = hi + 1 to nh
+                        cum += rows.get(j)
+                    hi := nh
+                else if lo > 0
+                    nl = math.max(lo - 2, 0)
+                    for j = nl to lo - 1
+                        cum += rows.get(j)
+                    lo := nl
+                else
+                    break
+            poc := (bmin + i) * 1.0
+            val := (bmin + lo) * 1.0
+            vah := (bmin + hi + 1) * 1.0
+    [poc, val, vah]
+
+// structural stop: one tick past the signal candle; if the candle opened within
+// the floor of the level, use the prior candle too; never inside the floor.
+stopFor(int d, float L, float loPrev, float hiPrev) =>
+    usePrev = math.abs(open - L) < floorPts
+    float st = na
+    if d == 1
+        ref = usePrev ? math.min(low, loPrev) : low
+        st := ref - TICK
+        if L - st < floorPts
+            st := L - floorPts
+    else
+        ref = usePrev ? math.max(high, hiPrev) : high
+        st := ref + TICK
+        if st - L < floorPts
+            st := L + floorPts
+    st
+
+addLv(array<float> px, array<int> pr, float v, int r) =>
+    if not na(v)
+        px.push(round025(v))
+        pr.push(r)
+
+// proximity merge: two levels within one floor of each other -> the weaker
+// family drops (equal family: the higher price drops); repeat until none.
+mergeLv(array<float> px, array<int> pr) =>
+    bool changed = true
+    while changed and px.size() > 1
+        changed := false
+        for a = 0 to px.size() - 2
+            for c = 0 to px.size() - 2 - a
+                if px.get(c) > px.get(c + 1)
+                    swapP = px.get(c)
+                    px.set(c, px.get(c + 1))
+                    px.set(c + 1, swapP)
+                    swapR = pr.get(c)
+                    pr.set(c, pr.get(c + 1))
+                    pr.set(c + 1, swapR)
+        for c = 0 to px.size() - 2
+            if px.get(c + 1) - px.get(c) <= floorPts
+                drop = pr.get(c) > pr.get(c + 1) ? c : c + 1
+                px.remove(drop)
+                pr.remove(drop)
+                changed := true
+                break
+
+// a signal = previous close on one side of the level, this close >= depth
+// through it. Several levels on one candle: the one nearest the close wins.
+sigLevels(array<float> lv, array<float> lvPrev, float closePrev) =>
+    int d = 0
+    float L = na
+    float best = 1e9
+    if lv.size() > 0
+        for k = 0 to lv.size() - 1
+            x  = lv.get(k)
+            xp = lvPrev.get(k)
+            if na(x) or na(xp)
+                continue
+            Lk = round025(x)
+            int dd = 0
+            if closePrev <= xp and close >= x + depthPts
+                dd := 1
+            else if closePrev >= xp and close <= x - depthPts
+                dd := -1
+            if dd != 0 and math.abs(close - Lk) < best
+                best := math.abs(close - Lk)
+                d := dd
+                L := Lk
+    [d, L]
+
+// ----------------------------------------------------- level construction ----
+var pdMap  = map.new<int, float>()
+var wkMap  = map.new<int, float>()
+var int   wkKey  = 0
+var bool  lvRead = false
+var int   pdBars = 0
+var float sessHi = na
+var float sessLo = na
+var float pdPOC = na
+var float pdVAL = na
+var float pdVAH = na
+var float pdH   = na
+var float pdL   = na
+var myLv = array.new<float>()          // this book's levels for the day
+
+if newSess
+    [p, vl, vh] = profile(pdMap)
+    ok = pdBars >= 300 and not na(vh) and not na(vl)
+    pdPOC := ok ? p  : na
+    pdVAL := ok ? vl : na
+    pdVAH := ok ? vh : na
+    pdH   := ok ? sessHi : na
+    pdL   := ok ? sessLo : na
+    pdMap.clear()
+    pdBars := 0
+    sessHi := high
+    sessLo := low
+    myLv.clear()
+    lvRead := false
+    // weekly profile anchors to the most recent Monday 18:00 (this session's own
+    // open on a Monday; the previous Monday on a Sunday open)
+    t0   = time - mos * 60000                     // this session's 18:00
+    dow  = dayofweek(t0, TZ)
+    back = dow == dayofweek.sunday ? 6 : dow - 2
+    aT   = t0 - back * 86400000
+    aKey = year(aT, TZ) * 10000 + month(aT, TZ) * 100 + dayofmonth(aT, TZ)
+    if aKey != wkKey
+        wkMap.clear()
+        wkKey := aKey
+    // PD value area never loses a level to another family, so it is live from 18:00
+    if myPri == 0 and ok
+        px = array.new<float>()
+        pr = array.new<int>()
+        addLv(px, pr, pdVAH, 0)
+        addLv(px, pr, pdVAL, 0)
+        mergeLv(px, pr)
+        myLv := px
+else
+    sessHi := math.max(sessHi, high)
+    sessLo := math.min(sessLo, low)
+
+// weekly levels are read at 19:00 (first bar at or after it) from the profile
+// up to, not including, this bar
+if mos >= 60 and not lvRead and isLvl and not na(pdVAH)
+    lvRead := true
+    [wp, wvl, wvh] = profile(wkMap)
+    px = array.new<float>()
+    pr = array.new<int>()
+    addLv(px, pr, pdVAH, 0)
+    addLv(px, pr, pdVAL, 0)
+    addLv(px, pr, wvh, 1)
+    addLv(px, pr, wvl, 1)
+    addLv(px, pr, pdH, 2)
+    addLv(px, pr, pdL, 2)
+    addLv(px, pr, pdPOC, 3)
+    addLv(px, pr, wp, 4)
+    mergeLv(px, pr)
+    myLv.clear()
+    if px.size() > 0
+        for c = 0 to px.size() - 1
+            if pr.get(c) == myPri
+                myLv.push(px.get(c))
+    if showLv and myLv.size() > 0
+        tEnd = time + 22 * 60 * 60 * 1000
+        for c = 0 to myLv.size() - 1
+            line.new(time, myLv.get(c), tEnd, myLv.get(c), xloc=xloc.bar_time, color=color.new(color.orange, 30), width=1)
+
+addBar(pdMap)
+addBar(wkMap)
+pdBars += 1
+
+// ------------------------------------------------------------- VWAP books ----
+var float pvS = 0.0
+var float vvS = 0.0
+var float p2S = 0.0
+var float pvN = 0.0
+var float vvN = 0.0
+var float p2N = 0.0
+var bool  nyOn = false
+if newSess
+    pvS := 0.0
+    vvS := 0.0
+    p2S := 0.0
+    nyOn := false
+if mos >= 930 and mos < 1380 and not nyOn
+    pvN := 0.0
+    vvN := 0.0
+    p2N := 0.0
+    nyOn := true
+tp = hlc3
+pvS += tp * vol
+vvS += vol
+p2S += tp * tp * vol
+vwS = vvS > 0 ? pvS / vvS : na
+sdS = vvS > 0 ? math.sqrt(math.max(p2S / vvS - vwS * vwS, 0.0)) : na
+if nyOn
+    pvN += tp * vol
+    vvN += vol
+    p2N += tp * tp * vol
+vwN = nyOn and vvN > 0 ? pvN / vvN : na
+sdN = nyOn and vvN > 0 ? math.sqrt(math.max(p2N / vvN - vwN * vwN, 0.0)) : na
+
+var bS = array.new<float>(5, na)
+var bN = array.new<float>(5, na)
+bSprev = array.copy(bS)
+bNprev = array.copy(bN)
+bS := array.from(vwS, vwS + sdS, vwS + 2 * sdS, vwS - sdS, vwS - 2 * sdS)
+bN := array.from(vwN, vwN + sdN, vwN + 2 * sdN, vwN - sdN, vwN - 2 * sdN)
+
+plot(isVS ? vwS : na, "Session VWAP", color=color.new(color.blue, 0))
+plot(isVS ? vwS + sdS : na, "S +1", color=color.new(color.blue, 60))
+plot(isVS ? vwS - sdS : na, "S -1", color=color.new(color.blue, 60))
+plot(isVS ? vwS + 2 * sdS : na, "S +2", color=color.new(color.blue, 80))
+plot(isVS ? vwS - 2 * sdS : na, "S -2", color=color.new(color.blue, 80))
+plot(isVN ? vwN : na, "NY VWAP", color=color.new(color.purple, 0))
+plot(isVN ? vwN + sdN : na, "N +1", color=color.new(color.purple, 60))
+plot(isVN ? vwN - sdN : na, "N -1", color=color.new(color.purple, 60))
+plot(isVN ? vwN + 2 * sdN : na, "N +2", color=color.new(color.purple, 80))
+plot(isVN ? vwN - 2 * sdN : na, "N -2", color=color.new(color.purple, 80))
+
+// ----------------------------------------------------------------- signal ----
+sigFrom = isVN ? 944 : (isVS or myPri == 0) ? 59 : 60   // first signal candle: 09:44 / 18:59 / 19:00
+inWin   = mos >= sigFrom and mos <= 1314                 // signal candle closes by 15:55
+int   sd = 0
+float sL = na
+if inWin
+    if isVS
+        [a, b] = sigLevels(bS, bSprev, cPrev)
+        sd := a
+        sL := b
+    else if isVN
+        [a, b] = sigLevels(bN, bNprev, cPrev)
+        sd := a
+        sL := b
+    else
+        [a, b] = sigLevels(myLv, myLv, cPrev)
+        sd := a
+        sL := b
+
+// ------------------------------------------------------------ book engine ----
+var bool  pendOn   = false
+var bool  pendArm  = false
+var bool  placed   = false      // a real limit order is resting
+var int   pendD    = 0
+var float pendL    = na
+var float pendStop = na
+var float pendRisk = na
+var bool  posOn    = false
+var int   posD     = 0
+var float posStop  = na
+var float posTgt   = na
+
+if newSess
+    strategy.cancel_all()
+    strategy.close_all(comment="new session safety flat")
+    pendOn  := false
+    pendArm := false
+    placed  := false
+    posOn   := false
+dayDone = mos >= flatMos                 // after the flat time nothing new is worked
+
+// --- did the resting limit fill this bar? (entered and maybe exited within the bar)
+filledNow = false
+if strategy.opentrades > 0 and strategy.opentrades.entry_bar_index(strategy.opentrades - 1) == bar_index
+    filledNow := true
+else if strategy.closedtrades > 0 and strategy.closedtrades.entry_bar_index(strategy.closedtrades - 1) == bar_index
+    filledNow := true
+if placed and pendOn and filledNow
+    posOn    := strategy.position_size != 0
+    posD     := pendD
+    posStop  := pendStop
+    posTgt   := pendL + pendD * tgtR * pendRisk
+    pendOn   := false
+    pendArm  := false
+    placed   := false
+else if posOn and strategy.position_size == 0
+    posOn := false                                   // stop or target filled
+
+// --- keep the protective exit attached while in a trade
+if posOn
+    strategy.exit(posD == 1 ? "xL" : "xS", from_entry = posD == 1 ? "L" : "S", stop = posStop, limit = posTgt)
+
+// --- a new signal
+if sd != 0 and not dayDone
+    if posOn and sd != posD
+        // SAR: an opposing crossing close flattens; the opposing signal is worked next
+        strategy.close(posD == 1 ? "L" : "S", comment="SAR")
+        posOn := false
+    if not posOn
+        // the newest signal replaces whatever was resting (even if it is then skipped)
+        pendOn  := false
+        pendArm := false
+        if placed
+            strategy.cancel_all()
+            placed := false
+        st = stopFor(sd, sL, lo1, hi1)
+        rk = math.abs(sL - st)
+        if rk <= capPts and not newsWin
+            pendOn   := true
+            pendD    := sd
+            pendL    := sL
+            pendStop := st
+            pendRisk := rk
+
+// --- pending management
+if pendOn and not dayDone
+    if mos >= 1319 or newsWin
+        // pendings die at 16:00 (cancelled at the 15:59 close); pulled at 08:00 on news days
+        pendOn  := false
+        pendArm := false
+        if placed
+            strategy.cancel_all()
+            placed := false
+    else
+        if not pendArm
+            // arming: price must run 1R past the level first (the signal candle counts)
+            thr = pendL + pendD * armR * pendRisk
+            if (pendD == 1 and high >= thr) or (pendD == -1 and low <= thr)
+                pendArm := true
+        if pendArm
+            // limit is live from the NEXT bar (arming bar strictly before the touch bar)
+            eid = pendD == 1 ? "L" : "S"
+            strategy.entry(eid, pendD == 1 ? strategy.long : strategy.short, limit = pendD == 1 ? pendL - TICK : pendL + TICK, comment = eid + " @ " + str.tostring(pendL))
+            strategy.exit("x" + eid, from_entry = eid, stop = pendStop, limit = pendL + pendD * tgtR * pendRisk)
+            placed := true
+
+// --- flat by the close: normal days 16:58 (fills on the 16:59 bar), early-close days from the list
+if dayDone and (not dayDone[1] or strategy.position_size != 0 or placed or pendOn)
+    strategy.cancel_all()
+    strategy.close_all(comment="EOD flat")
+    pendOn  := false
+    pendArm := false
+    placed  := false
+    posOn   := false
+
+// ------------------------------------------------------------------ visuals ----
+bgcolor(newsWin ? color.new(color.red, 92) : na)
+plotshape(sd == 1, "long signal", shape.triangleup, location.belowbar, color.new(color.green, 40), size=size.tiny)
+plotshape(sd == -1, "short signal", shape.triangledown, location.abovebar, color.new(color.red, 40), size=size.tiny)
+
+// -------------------------------------------------------------- status box ----
+// top-right box so you can see what the script sees on the last bar
+var tbl = table.new(position.top_right, 2, 8, border_width=1)
+cell(int r, string k, string v) =>
+    table.cell(tbl, 0, r, k, text_color=color.white, bgcolor=color.new(color.black, 20), text_halign=text.align_left)
+    table.cell(tbl, 1, r, v, text_color=color.white, bgcolor=color.new(color.black, 20), text_halign=text.align_left)
+if barstate.islast
+    lvTxt = isLvl ? str.tostring(myLv.size()) + " level(s)" : isVS ? (na(vwS) ? "no VWAP yet" : "5 bands") : (na(vwN) ? "waits for 09:30" : "5 bands")
+    stTxt = posOn ? (posD == 1 ? "LONG @ " + str.tostring(pendL) : "SHORT @ " + str.tostring(pendL)) : pendOn ? (pendArm ? "armed, limit resting @ " + str.tostring(pendL) : "signal @ " + str.tostring(pendL) + ", waiting for 1R run") : "flat"
+    cell(0, "Book", book)
+    cell(1, "Bars on chart", str.tostring(bar_index + 1))
+    cell(2, "Prior day VAH / VAL", na(pdVAH) ? "none (first session or <300 bars)" : str.tostring(pdVAH) + " / " + str.tostring(pdVAL))
+    cell(3, "Levels today", lvTxt)
+    cell(4, "State", stTxt)
+    cell(5, "Closed trades", str.tostring(strategy.closedtrades))
+    cell(6, "Net profit", str.tostring(strategy.netprofit, "#.##"))
+    cell(7, "Check", strategy.closedtrades == 0 and bar_index > 3000 ? "no trades: 1-min chart? margin=0? volume on?" : "ok")

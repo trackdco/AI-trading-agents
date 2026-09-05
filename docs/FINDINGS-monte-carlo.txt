@@ -1,0 +1,36 @@
+union armed: 1713 days | +102.3 pt/day, sd 105.1 | +10.51 R/day | 104,033 trades, +0.1730 R/trade
+literal path at 1 micro: total $350,638, max DD $515, worst day $-338, worst 20-day $420
+
+(1) ONE YEAR (250 days) AT 1 MICRO, block bootstrap x10,000
+  backtest edge          year P&L: median $ 50,978  bad5% $ 43,117  good95% $ 59,587 | losing-year odds  0.0% | maxDD median $221 bad5% $515 worst $1,030 | worst-20d median $1,633 | longest red streak median 2d, 95th 3d
+
+(2) SAME, BUT THE REAL EDGE IS SMALLER THAN THE BACKTEST (subtract a slice of the mean from every day)
+  edge cut 25%           year P&L: median $ 38,189  bad5% $ 30,552  good95% $ 46,605 | losing-year odds  0.0% | maxDD median $366 bad5% $669 worst $1,438 | worst-20d median $589 | longest red streak median 4d, 95th 6d
+  edge cut 50%           year P&L: median $ 25,475  bad5% $ 17,640  good95% $ 34,123 | losing-year odds  0.0% | maxDD median $798 bad5% $1,377 worst $3,076 | worst-20d median $-450 | longest red streak median 7d, 95th 11d
+  edge cut 75%           year P&L: median $ 12,639  bad5% $  4,879  good95% $ 21,196 | losing-year odds  0.4% | maxDD median $1,854 bad5% $3,441 worst $8,517 | worst-20d median $-1,462 | longest red streak median 9d, 95th 15d
+  edge cut 100%          year P&L: median $   -129  bad5% $ -7,923  good95% $  8,233 | losing-year odds 51.0% | maxDD median $5,020 bad5% $9,963 worst $17,244 | worst-20d median $-2,468 | longest red streak median 13d, 95th 20d
+
+(3) ODDS OF A $2,000 PEAK-TO-TROUGH HIT (account death on a $2k trailing drawdown) — within 120 days / within a year
+  micros      120d     1yr   | edge cut 50%:   120d   1yr
+       1      0.0%    0.0%   |                 0.1%  0.3%
+       2      0.0%    0.0%   |                11.5% 24.5%
+       4      5.3%   11.3%   |                73.1% 93.9%
+       6      7.0%   14.3%   |                96.1% 99.9%
+       8     14.8%   28.6%   |                99.7%100.0%
+      10     30.9%   53.9%   |               100.0%100.0%
+      12     64.1%   88.7%   |               100.0%100.0%
+      16     80.2%   96.5%   |               100.0%100.0%
+
+(4) DOES CLUSTERING MATTER?  max DD in R over one year: trades shuffled independently vs days kept in 5-day blocks
+  trade-shuffle MDD: median -18.1R, bad5% -24.6R | block-day MDD: median -13.2R, bad5% -30.1R | literal 7-yr: -30.1R
+
+(3b) SAME BUT THE FLOOR LOCKS AT BREAKEVEN once you are $2,000 up (how Lucid-style trailing DD actually works) — death odds within a year
+  micros  full edge  cut 25%  cut 50%
+       1       0.0%     0.0%     0.1%
+       2       0.0%     0.0%     2.0%
+       4       0.2%     0.7%    11.5%
+       6       0.2%     2.1%    21.2%
+       8       0.5%     4.2%    26.7%
+      10       0.9%     7.8%    31.2%
+      12       2.2%    10.1%    35.0%
+      16       2.9%    14.8%    39.8%

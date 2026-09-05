@@ -1,0 +1,96 @@
+ES FALSE-BREAKDOWN RECLAIM (long only) - pre-registered in docs/PREREG-es-false-breakdown.md
+Source of the claim: a Reddit post. Claimed ~60% win, ~1:1.3 RR, 3-5 trades/week.
+Data: ES 3-min, 1,277 sessions, 266 weeks, 2021-04-28 to 2026-06-04, roll days excluded.
+Cost 0.50 pt round turn. Exits scanned from the bar AFTER entry; a bar touching both = STOP.
+
+================ HEADLINE: no risk cap ================
+ target level   n  per_wk       R    netR     win   medRR  medRisk  t_stat      H1      H2    rand    edge
+   10.0   PDL 397  1.4917 -0.0648   -25.7  54.16%  0.7143     14.0 -1.3659 -0.0647 -0.0649 -0.0844 +0.0196
+   10.0   ONL 607  2.2807 -0.1298   -78.8  47.61%  0.9091     11.0 -3.0020 -0.1532 -0.1043 -0.1264 -0.0034
+   10.0   MHL 715  2.6865 -0.0815   -58.3  48.81%  0.9302     10.8 -1.9950 -0.1634 +0.0053 -0.1015 +0.0199
+   12.0   PDL 397  1.4917 -0.1086   -43.1  47.10%  0.8571     14.0 -2.1449 -0.1094 -0.1077 -0.1476 +0.0389
+   12.0   ONL 607  2.2807 -0.1301   -79.0  43.00%  1.0909     11.0 -2.7985 -0.1721 -0.0845 -0.0987 -0.0314
+   12.0   MHL 715  2.6865 -0.0902   -64.5  43.36%  1.1163     10.8 -2.0368 -0.1955 +0.0215 -0.1199 +0.0297
+   15.0   PDL 397  1.4917 -0.1117   -44.4  40.55%  1.0714     14.0 -1.9850 -0.1227 -0.0993 -0.0786 -0.0332
+   15.0   ONL 607  2.2807 -0.1548   -93.9  36.24%  1.3636     11.0 -3.0234 -0.1777 -0.1298 -0.2140 +0.0592
+   15.0   MHL 715  2.6865 -0.0973   -69.5  37.06%  1.3953     10.8 -1.9996 -0.1723 -0.0177 -0.1527 +0.0555
+
+9 of 9 cells negative.
+
+================ POST-HOC: cap the stop so the RR can match the claim ================
+Explicitly a second pass, not pre-registered. Caps at 8 / 11 / 15 pts, 27 further cells.
+27 of 27 negative, and TIGHTENING THE STOP MADE IT WORSE at every cap:
+  no cap        -0.1085 R   n=1719   win 44.1%
+  stop <= 15    -0.1679 R   n=1090   win 33.6%
+  stop <= 11    -0.1993 R   n= 845   win 29.0%
+  stop <=  8    -0.2296 R   n= 579   win 24.7%
+36 of 36 cells tested are negative.
+
+================ THE DECISIVE PICTURE ================
+Win rate by realised reward:risk bucket, against the break-even line 1/(1+RR):
+   RR bucket    n    win   medRR  breakeven  excess(pts)   R/trade
+   <0.5       305  66.6%   0.36     73.8%       -7.2       -0.010
+   0.5-0.75   298  59.4%   0.62     61.6%       -2.2       +0.012
+   0.75-1     219  49.8%   0.89     52.9%       -3.2       -0.073
+   1-1.25     167  38.9%   1.12     47.3%       -8.3       -0.147
+   1.25-1.5   167  40.1%   1.37     42.2%       -2.0       -0.095
+   1.5-2      210  28.1%   1.71     36.8%       -8.7       -0.210
+   2-3        220  25.5%   2.40     29.4%       -4.0       -0.200
+   >3         133  16.5%   4.00     20.0%       -3.5       -0.321
+
+The observed win rate tracks the break-even line at every single reward ratio, sitting
+2-9 points BELOW it. That is a fair bet minus costs. The entry rule adds nothing.
+
+At the exact ratio the post claims:
+   posted    win 60.0%  RR 1.30  break-even 43.5%  excess +16.5 pts   +0.38 R/trade
+   measured  win 40.6%  RR 1.30  break-even 43.5%  excess  -2.9 pts   -0.083 R/trade  (n=165)
+
+================ THE RANDOM CONTROL (first time we have run one) ================
+Matched random entries: same session, same risk, same target, random RTH bar.
+The rule beat random in 5 of 9 uncapped cells and lost in 4; the gap runs -0.03 to +0.06 R.
+Both the rule and the coin flip lose, by about the same amount. The declared bar wanted
+the rule to beat random by >0.10 R. It does not.
+
+================ SCORING THE PRE-REGISTERED BAR ================
+ 1 positive after cost on both halves ......... FAIL (negative in 17 of 18 half-cells)
+ 2 win rate >= 50% ............................ FAIL (44.1% at target 12; 54.2% only at
+                                                 the widest-stop cell, where break-even
+                                                 is 58.5% - still losing)
+ 3 median RR >= 1.0 ........................... PASS (1.09-1.40 at targets 12 and 15)
+ 4 frequency 1-10 per week .................... PASS (1.5-2.7 per level, ~6.5 pooled)
+ 5 expectancy >= +0.15 R ...................... FAIL (best cell -0.065)
+ 6 pooled t > 2.0 ............................. FAIL (every t is negative)
+ 7 beats random by > 0.10 R ................... FAIL
+VERDICT: DEAD as a mechanical rule. 2 of 7 conditions met, and both are descriptive
+(how often it fires, what shape it is), not profitability.
+
+================ PREDICTIONS ================
+ P1 stop far wider than the claim implies, realised RR below 1.3 .... CORRECT
+    median stop 11.5 pts, mean 15.8, 90th pct 32.2, max 324.8.
+    46.7% of setups have a stop BIGGER than the 12-pt target.
+    Only 44.4% have a stop tight enough for RR >= 1.2.
+ P2 win rate below 60% ............................................. CORRECT (44.1%)
+ P3 MHL will be the weakest level .................................. WRONG.
+    MHL was consistently the LEAST bad (-0.08 to -0.16); ONL was the worst
+    (-0.13 to -0.38). Prediction was backwards.
+ P4 random control not far behind .................................. CORRECT
+
+================ WHAT THIS DOES AND DOES NOT SAY ================
+DOES: the rule as literally written - break a prior-day / overnight / multi-hour low,
+reclaim it, hold above it for two bars, stop under the dip, target 10-15 - has no edge on
+five years of ES. It is a fair bet that loses the spread. Every stop size, every target,
+every level, both halves.
+
+DOES NOT: prove the poster is wrong about their own results. Their edge, if real, is
+entirely in the parts that were not written down - which level to trust, which reclaims
+look right, which to skip. That is consistent with what they said themselves: "takes lots
+of reps to get right." A mechanical version cannot inherit that, and this test shows the
+mechanical skeleton on its own is worth nothing.
+
+Footnote: the claim itself trips our own reality gate. 60% win at 1:1.3 is +16.5 points
+above break-even; the gate hard-fails anything over +15. That check is calibrated for
+BACKTESTS, where such a number means a lookahead bug. A live discretionary record is a
+different kind of evidence and the gate does not apply to it. But it does say the claim
+sits at the edge of what a backtest would ever be allowed to assert.
+
+Repro: python3 scripts/es_false_breakdown.py [--maxrisk N] [--cost C] [--targets a,b,c]
