@@ -2,7 +2,7 @@
 """Trend + hard counter-push rejected at the Bollinger band.
 Rules frozen in docs/PREREG-trend-band-rejection.md. Exits from the bar AFTER entry."""
 import argparse, gzip, json, numpy as np, pandas as pd
-TICK = 0.25
+TICK = 0.25   # overridden by --tick
 
 def load(path):
     b = pd.read_parquet(path); t = pd.to_datetime(b.ts_event)
@@ -22,7 +22,7 @@ def frame(s):
     m["bb_u"], m["bb_l"] = ma+2*sv, ma-2*sv
     return m.dropna(subset=["vwap","sd"])
 
-def run(bars, stop_mode, target, cost=0.5):
+def run(bars, stop_mode, target, cost=0.5, tick=None):
     out = []
     for day, s in bars.groupby("sess"):
         if len(s) < 600: continue
@@ -63,7 +63,10 @@ def run(bars, stop_mode, target, cost=0.5):
                     if inside: pushing = False; ext = np.nan
         if sig is None: continue
         i, d, ext = sig; E = c[i]
-        stop = (ext - TICK*d) if stop_mode == "X" else (E - d*float(stop_mode[1:]))
+        tk = tick if tick else TICK
+        if stop_mode == "X":      stop = ext - tk*d
+        elif stop_mode[0] == "P": stop = E - d*E*float(stop_mode[1:])/10000.0
+        else:                     stop = E - d*float(stop_mode[1:])
         risk = abs(E-stop)
         if risk <= 0: continue
         sfull = s[s.index >= act.index[i]+pd.Timedelta(minutes=5)]
@@ -85,15 +88,19 @@ def run(bars, stop_mode, target, cost=0.5):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--bars", required=True); ap.add_argument("--label", required=True)
-    ap.add_argument("--out", required=True); a = ap.parse_args()
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--tick", type=float, default=0.25)
+    ap.add_argument("--cost", type=float, default=0.5)
+    ap.add_argument("--stops", default="X,F20,F30")
+    a = ap.parse_args()
     bars = load(a.bars); nd = bars.sess.nunique()
     print(f"\n{a.label}  ({nd:,} sessions)")
     print(f"  {'stop':<5}{'target':<7}{'trades':>8}{'/sess':>7}{'R/trade':>10}{'net R':>8}{'win':>7}{'medRR':>7}{'maxDD':>8}{'medRisk':>9}")
-    for sm in ("X","F20","F30"):
+    for sm in a.stops.split(","):
         for tg in ("VWAP","1SIG","EDGE"):
-            tr = run(bars, sm, tg)
+            tr = run(bars, sm, tg, cost=a.cost, tick=a.tick)
             if len(tr) == 0: print(f"  {sm:<5}{tg:<7}   no trades"); continue
-            tr["netr"] = tr.r - 0.5/tr.risk
+            tr["netr"] = tr.r - a.cost/tr.risk
             day = tr.groupby("day").netr.sum(); cum = day.cumsum(); dd = (cum-cum.cummax()).min()
             wn = tr[tr.res=="TARGET"]
             print(f"  {sm:<5}{tg:<7}{len(tr):>8}{len(tr)/nd:>7.3f}{tr.netr.mean():>+10.4f}{tr.netr.sum():>+8.0f}"
