@@ -44,3 +44,45 @@ THE FINDING THAT MATTERS
   Absorption as defined - heavy aggressive volume at the swept level that fails to move price - does
   not mark a better reversal. It marks a worse one. That is a real, useful negative result about the
   data source, not just about this setup: the extra information did not pay.
+
+
+================ THE PLAIN SETUP, NO FOOTPRINT AT ALL ================
+Sweep a NY PM extreme during Asia, close back inside within 5 minutes, trade to the opposite extreme.
+
+  185 trades over ~950 sessions (0.19 per session)
+  net R/trade +0.0107  |  median R/trade -1.0417  |  total +2R
+  win rate 9.2%  |  median R:R on wins 7.41  |  win x RR = 0.68
+  max drawdown -82.7R against a total of +2R
+  t-statistic +0.03
+
+PER YEAR
+  2023:   36 trades  -0.8027 R/trade   -28.9R  win 3%
+  2024:   42 trades  -0.7348 R/trade   -30.9R  win 5%
+  2025:   50 trades  +0.3590 R/trade   +18.0R  win 8%
+  2026:   57 trades  +0.7681 R/trade   +43.8R  win 18%
+
+IS THE 2025-26 POSITIVE REAL, OR A FEW MONSTERS?
+  2025-26: 107 trades, mean +0.5769, MEDIAN -1.0323
+    drop the top 0 winners -> mean +0.5769 over 107 trades
+    drop the top 1 winners -> mean +0.1941 over 106 trades
+    drop the top 2 winners -> mean -0.1333 over 105 trades
+    drop the top 3 winners -> mean -0.2493 over 104 trades
+    drop the top 5 winners -> mean -0.4660 over 102 trades
+  the single best trade is +41.2R, worth 67% of the era's entire profit
+
+COST SENSITIVITY (full sample)
+  0.50 pt/RT: +0.0107 R/trade
+  0.75 pt/RT: -0.0189 R/trade
+  1.00 pt/RT: -0.0485 R/trade
+  1.25 pt/RT: -0.0781 R/trade
+
+STOP AND TARGET GEOMETRY
+  median stop 11.8 pts  |  median distance to target 141 pts  |  median R:R offered 12.3
+
+READ:
+  Without the footprint this is a 9% win rate lottery ticket at roughly 7:1. Over ten years of Asia
+  sessions it made +2R in total while going -82.7R underwater on the way. The median trade loses.
+  The 2025-26 half looks strong until you remove the best trade, which alone is a third of that era's
+  profit; take out three and the era is barely above water.
+  So the honest answer to "what is it without": a coin flip with a fat right tail. Not a strategy,
+  and the footprint version was worse.
