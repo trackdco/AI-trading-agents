@@ -1149,3 +1149,15 @@ refunded per the standing rule), one more than the original plan allocated to th
 the 5 remain for whatever comes next**, not the 4 the original Stage 4 (≤3) + Stage 5 (×1) plan
 assumed would be available. This is stated plainly rather than silently absorbed: the discard
 cost more than its own slot — it also ate into the margin the later stages were planned around.
+
+## NQ-bot re-test (separate pre-registration, `research/nq-bot-retest/`) — 2026-09-06
+
+Subject: the third-party MNQ liquidity-sweep bot (`Prat617/ai-trading-bot` @ d1e5ec7), not the
+VWAP/BB strategy; its N_trials accounting is independent of the one above (that stays 2 of 5).
+
+- `PREREGISTRATION.md` committed before any code (§1-bis erratum: C1b×C3b empty by construction;
+  §5-bis holdout procedure), `REPRODUCTION.md` (driver reproduces the bot's own 4-year log
+  4,508/4,508 over the development window; fast paths verified equivalent), `RESULT.md` part A.
+- **Development reads done and sealed** (`data/dev/`, 5 runs). They decide nothing.
+- **Holdout: not requested until now; not run.** One read, covering the four combinations, the
+  untouched control, the cap-lifted sensitivity and the 2× slippage stress (`run_holdout.sh`).

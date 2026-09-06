@@ -1,6 +1,6 @@
 # RESULT — NQ-bot re-test
 
-**Status: DRAFT — development runs in progress (not yet sealed); holdout NOT yet run.** This file is written in two parts. Part A
+**Status: development runs SEALED (2026-09-06); holdout NOT yet run.** This file is written in two parts. Part A
 (below) records the development-window runs and everything fixed before the holdout. Part B will
 be appended once, after the single holdout read (PREREGISTRATION.md §5–§5-bis).
 
@@ -29,4 +29,86 @@ be appended once, after the single holdout read (PREREGISTRATION.md §5–§5-bi
 
 ## A. Development window (2021-09-01 → 2024-12-31) — reads that decide nothing
 
-*(to be filled from the sealed outputs in `data/dev/`)*
+**A.1 External validation of the whole pipeline.** The untouched configuration, run by
+`retest_backtest.py --fast-features` from the data start to 2024-12-31 (500,430 two-minute bars),
+reproduces the bot's own 4-year trade log **trade for trade: 4,508 of 4,508 comparable trades
+identical** on all 14 entry and 11 exit fields, sum of adjusted PnL +14,786.98 on both sides
+(`compare_trades.py`). The reference has one more entry in the window — a short signalled at
+2024-12-31 15:58 that exits in 2025 — which is excluded on both sides as open at the window end.
+So the driver, the bounded logging lists, the deterministic IDs and the fast feature paths together
+are the bot's engine, verified over 3.3 years against a log produced months earlier by a different
+process on a different machine.
+
+**A.2 The five runs.** All produced by one engine version (fast paths), from scratch, each in
+~25 minutes wall time running five-wide on four cores (the bot's own run took 13 hours). Bootstrap:
+10,000 iterations, blocks = CME trading days of entry, seed fixed before any holdout exists.
+
+| config | n | WR% | PF | net $ | mean $/tr | boot LB95 | maxDD $ | RTH% | mean stop | months + | mean>0 | LB>0 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| C1a_C3a | 4299 | 56.94 | 1.307 | +47,802 | +11.12 | +7.99 | 3,187 | 99.5 | 16.07 | 31/34 | yes | yes |
+| C1a_C3b | 2598 | 54.54 | 1.271 | +27,807 | +10.70 | +6.40 | 3,735 | 99.5 | 13.05 | 29/34 | yes | yes |
+| C1b_C3a | 2103 | 63.86 | 1.378 | +23,981 | +11.40 | +7.65 | 2,094 | 99.3 | 23.01 | 30/34 | yes | yes |
+| C1b_C3b | 0 empty by construction (§1-bis) | | | | | | | | | | | |
+| untouched (control, not a candidate) | 4508 | 46.41 | 1.095 | +14,787 | +3.28 | +0.47 | 6,728 | 59.8 | 9.75 | 20/34 | yes | yes |
+
+Per-year net $ (by entry month):
+
+| config | 2021 (Sep–Dec) | 2022 | 2023 (Mar–Aug missing) | 2024 |
+|---|---|---|---|---|
+| C1a_C3a | +2,294 | +26,682 | +7,480 | +11,346 |
+| C1a_C3b | +2,248 | +16,484 | +4,486 | +4,588 |
+| C1b_C3a | +2,560 | +9,547 | +2,074 | +9,800 |
+| untouched | -138 | +6,135 | +5,489 | +3,301 |
+
+Gate counters — how the changes bit:
+
+| config | C1 floor raised the stop | …then rejected by 30pt cap | all 30pt-cap rejections | C3 gate rejections (kept) | C3 would-have-rejected (removed) | C2 RTH rejections |
+|---|---|---|---|---|---|---|
+| untouched | 0 | 0 | 1,620 | 7,122 | 0 | 0 |
+| C1a_C3a | 4,441 | 0 | 1,553 | 0 | 8,042 | 7,152 |
+| C1a_C3b | 4,683 | 0 | 1,662 | 8,725 | 0 | 1,235 |
+| C1b_C3a | 11,769 | 5,371 | 6,200 | 0 | 8,542 | 6,429 |
+| C1b_C3b | 13,175 | 5,647 | 6,537 | 9,848 | 0 | 0 |
+
+**A.3 What these numbers are, and are not.** Every non-empty combination is positive on this
+window with a positive bootstrap lower bound, and each roughly triples the untouched bot's mean
+per trade. That is **exactly what PREREGISTRATION.md's opening paragraph predicted a fitted result
+would look like**: the three changes were chosen from arguments that predate this data, but their
+*magnitudes* were first seen in slices of this very log (`TRADE-AND-ENTRY-REVIEW.md`), and
+2021–2024 is most of that log. These reads therefore carry **no evidential weight for the verdict**
+and change nothing in §1–§5. What they do establish, legitimately:
+
+- the changes do not break the mechanism (2,103–4,299 trades over 3.3 years, i.e. roughly
+  640–1,300 per year, so a 12-month holdout should clear the n ≥ 300 abort threshold in all three
+  live cells);
+- the C1b×C3b cell is empty in fact as it is by construction (13,175 floored signals, 9,848 of
+  them rejected by the kept gate, the rest by the 30pt cap; 0 admitted);
+- under C1b the 30pt cap rejects 6,200 signals versus 1,620 untouched — the collision §1 warned of;
+- C2 alone rejected 6,429–7,152 signals in the C3a cells (the overnight population);
+- the untouched bot's development-window figures (PF 1.095, mean +$3.28, LB95 +$0.47) are the
+  bot's own result on the same bars, restated by an independent replay.
+
+**A.4 Seals.**
+
+| config | output | file sha256 | records sha256 | final-state sha256 |
+|---|---|---|---|---|
+| untouched | `dev_untouched.json` | `02e555cc4c49c02a…` | `5000dd67fc16749d…` | `3fe19ad394acace4…` |
+| C1a_C3a | `dev_C1a_C3a.json` | `d0630818a44e1e33…` | `c451fd8221e829e3…` | `5d24a57422474286…` |
+| C1a_C3b | `dev_C1a_C3b.json` | `e74180490c323ce9…` | `f83c8d2eb67f40ec…` | `ff27f478389449e0…` |
+| C1b_C3a | `dev_C1b_C3a.json` | `8b6b817be4562cd6…` | `8f48bd3152d953f0…` | `947687a04ee87cab…` |
+| C1b_C3b | `dev_C1b_C3b.json` | `dfe871d54f785b2f…` | `4f53cda18c2baa0c…` | `8875b4e25942425f…` |
+
+Outputs are committed gzipped (`data/dev/*.json.gz`); the sha256 files refer to the uncompressed
+JSON. Final-state pickles (`data/dev/final/*.pkl`, `FINAL_STATES.sha256`) are not committed; they
+are regenerated deterministically by re-running with the same flags, and a regeneration is verified
+by the records sha256 above.
+
+**A.5 Throughput.** Untouched run, bars/s per 25k-bar interval, five processes on four cores:
+1853 → 502 → 358 → 355 → 203 → 182. The
+residual decline is the bot's own fair-value-gap list (never pruned, tens of thousands of entries
+by 2024) being scanned each bar — now as a numpy pass rather than a Python loop.
+
+## B. Holdout — NOT YET RUN
+
+To be appended once, after the single holdout read (§5-bis). The fresh export has not been
+requested before this section's predecessor was sealed and committed.
