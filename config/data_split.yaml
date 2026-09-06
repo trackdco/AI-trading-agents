@@ -96,3 +96,19 @@ behaviour_sample_window:
   start: "2025-01-06"
   end:   "2025-01-31"
   sessions: 19
+
+# RULING 2026-09-06 — seal acknowledged for the NQ-bot re-test (research/nq-bot-retest/)
+nq_bot_retest_read:
+  ruled_by: "Angus, in session, 2026-09-06: 'acknowledge seal, run the holdout'"
+  what: >
+    The bot re-test's holdout replay reads the repository's NQ 1-minute tape from
+    2025-08-01 onward, which overlaps the sealed holdout sessions 2025-02-01 .. 2026-01-30.
+    The outcomes computed are those of a DIFFERENT strategy (the third-party liquidity-sweep
+    bot with three pre-registered changes), not of the VWAP/BB strategy this seal protects.
+  exposure: >
+    The analyst sees the bot's trades and PnL on those sessions. No VWAP/BB quantity is
+    computed. Recorded as a partial exposure of the sealed span; any later VWAP/BB holdout
+    result on these sessions must carry this entry.
+  note: >
+    On the repository's newer branches this file no longer exists and 2025-06 .. 2026-07
+    bars were already used as fit data by the successor programme.
