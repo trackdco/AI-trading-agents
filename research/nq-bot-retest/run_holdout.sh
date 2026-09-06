@@ -26,7 +26,7 @@ run() {  # run <out_name> <dev_base> <driver flags...>
   nohup "$P" "$HERE/retest_backtest.py" --data "$DATA_DIR/combined_1min.csv" --htf-dir "$DATA_DIR" \
     --continue-from "$HERE/data/dev/final/$base.pkl" "${ENDARG[@]}" \
     --out "$OUT/$name.json" --checkpoint "$OUT/ckpt/$name.pkl" --checkpoint-every 25000 --resume \
-    --progress 25000 "$@" > "$OUT/logs/$name.log" 2>&1 &
+    --progress 25000 --fast-features "$@" > "$OUT/logs/$name.log" 2>&1 &
   echo "  launched $name (pid $!)"
 }
 
