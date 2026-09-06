@@ -120,7 +120,21 @@ by the records sha256 above.
 residual decline is the bot's own fair-value-gap list (never pruned, tens of thousands of entries
 by 2024) being scanned each bar — now as a numpy pass rather than a Python loop.
 
-## B. Holdout — NOT YET RUN
+## B. Holdout — RUN LAUNCHED 2026-09-06 06:48 UTC (results appended below when sealed)
+
+### B.0 Holdout data — provenance, fixed before the read
+
+| item | value |
+|---|---|
+| source | the repository's own canonical NQ 1-minute tape: `data/reference/nq_1m_master.parquet` (→ 2026-07-15), `nq_1m_jul_sep2026.parquet` (2026-07-13 → 09-02, on branch `tradingview-mcp-results-so6866`), `nq_1m_feb_jul2026.parquet`, `nq_1m_aug_sep2026.parquet`; assembled in the repository's own `BARFILES` precedence, de-duplicated on timestamp (`tape_to_csv.py`) |
+| construction | **unadjusted NQ front month**, Databento GLBX.MDP3 ohlcv-1m, rolling on the Monday of expiry week (verified against raw per-contract bars on workbench dates: identical OHLC and volume except the four pre-expiry days, `check_master_vs_databento.py`) |
+| instrument | NQ — the same instrument the bot's own "MNQ1!" development series turns out to be (§0). Volumes identical minute for minute over the August 2025 overlap (29,338 bars, ratio 1.000) |
+| junction | the bot's adjusted series ends **1.00 pt below** the raw tape (offset −1.00, sd 0.03 over the overlap). The union keeps the bot's bars where both exist, so the level shift at 2025-09-01 is one point — immaterial against a 10-point floor, disclosed |
+| window | union series 2021-09-01 → **2026-09-02 16:59 ET** (1,591,448 bars); holdout = entries ≥ 2025-09-01; contaminated segment 2025-01-01 → 2025-08-31; HTF files rebuilt from the union by the bot's `prepare_historical_data.py`; prefix through 2025-08-31 verified byte-identical to the bot's original files (all seven) |
+| substitution | PREREGISTRATION.md §3 named a fresh TradingView `MNQ1!` export supplied by the user. Neither was obtainable (anonymous TradingView feed capped at ~1 week; no Databento key). The user directed the repository tape be used instead. Same exchange contract prices, same volume series, true round numbers. Disclosed, not a change to any rule |
+| seal | the tape's 2025-02-01 → 2026-01-30 sessions were sealed for the VWAP/BB study (`config/data_split.yaml`). **Read under the user's explicit ruling of 2026-09-06 ("acknowledge seal, run the holdout")**, recorded in that file; a different strategy's outcomes are computed, no VWAP/BB quantity. The repository's one-week Feb 2026 TradingView file (§0) is now moot: the same sessions come from the tape |
+| reads | one. `run_holdout.sh` runs the four combinations, the untouched control, the cap-lifted sensitivity and the 2× slippage stress, each continued from its sealed 2024-12-31 state, then applies §4 |
+
 
 To be appended once, after the single holdout read (§5-bis). The fresh export was requested only
 after section A was sealed and committed.

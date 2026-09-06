@@ -111,7 +111,7 @@ def main():
     ap.add_argument("--min-date", default="2025-09-01", help="fresh bars before this ET date are ignored (overlap check still reports them)")
     a = ap.parse_args()
 
-    out_dir = Path(a.out_dir)
+    out_dir = Path(a.out_dir).resolve()
     union_dir = out_dir / "union_txt"
     union_dir.mkdir(parents=True, exist_ok=True)
 
