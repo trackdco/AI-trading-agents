@@ -9,6 +9,7 @@ the bar-by-bar overlap between the fresh export and the checked-in data.
 Accepted fresh-export formats (auto-detected per file):
   * bot .txt:   `YYYY-MM-DD HH:MM:SS,open,high,low,close,volume` (naive ET), title/blank lines skipped
   * TradingView CSV: header `time,open,high,low,close,Volume`, `time` = UNIX seconds or ISO-8601 (UTC)
+  * Databento ohlcv-1m CSV: header with `ts_event` (ISO-8601 UTC or ns epoch), open, high, low, close, volume
 
 usage: prepare_holdout_data.py --fresh FILE [FILE ...] --out-dir DIR
        [--checked-in-dir /home/user/prat617/ai-trading-bot/data/tradingview]
@@ -38,7 +39,25 @@ def parse_fresh(path: Path):
     with open(path, "r", encoding="utf-8-sig") as f:
         first = f.readline()
         f.seek(0)
-        if first.lower().startswith("time,"):
+        if "ts_event" in first:
+            # Databento ohlcv-1m CSV: ts_event (ISO-8601 UTC or ns epoch), open, high, low, close, volume
+            reader = csv.DictReader(f)
+            for r in reader:
+                try:
+                    raw = r["ts_event"].strip()
+                    if raw.isdigit():
+                        ts = datetime.fromtimestamp(int(raw) / 1e9, tz=timezone.utc)
+                    else:
+                        ts = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+                        if ts.tzinfo is None:
+                            ts = ts.replace(tzinfo=timezone.utc)
+                    ts = ts.astimezone(ET)
+                    rows.append((ts.strftime("%Y-%m-%d %H:%M:%S"), float(r["open"]), float(r["high"]),
+                                 float(r["low"]), float(r["close"]), int(float(r["volume"] or 0))))
+                except (ValueError, KeyError, TypeError):
+                    continue
+            fmt = "databento-ohlcv-1m"
+        elif first.lower().startswith("time,"):
             reader = csv.DictReader(f)
             for r in reader:
                 try:

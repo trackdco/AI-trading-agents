@@ -110,5 +110,15 @@ by 2024) being scanned each bar — now as a numpy pass rather than a Python loo
 
 ## B. Holdout — NOT YET RUN
 
-To be appended once, after the single holdout read (§5-bis). The fresh export has not been
-requested before this section's predecessor was sealed and committed.
+To be appended once, after the single holdout read (§5-bis). The fresh export was requested only
+after section A was sealed and committed.
+
+**Data-acquisition attempt, disclosed (2026-09-06).** With the user's explicit authorisation
+("Fetch"), a programmatic pull of `CME_MINI:MNQ1!` 1-minute bars from TradingView's chart datafeed
+was attempted (`fetch_tradingview.py`, anonymous session). The anonymous feed returns at most the
+latest ~1 week (6,900 bars, 2026-08-30 22:00 → 2026-09-04 20:59 UTC) regardless of the bar count,
+range, or "request more data" paging asked for. Only bar counts and timestamps of that fragment
+were printed; it was **discarded, not used, and not committed**. The holdout therefore still needs
+a logged-in export from the user — TradingView's own export, or a Databento `ohlcv-1m` pull of the
+same contract series (both formats are accepted by `prepare_holdout_data.py`). The 200-bar probe
+that preceded the attempt printed six rows of 2026-09-04 prices; noted for completeness.
