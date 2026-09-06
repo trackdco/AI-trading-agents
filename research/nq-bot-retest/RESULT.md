@@ -1,6 +1,6 @@
 # RESULT — NQ-bot re-test
 
-**Status: development runs SEALED (2026-09-06); holdout NOT yet run.** This file is written in two parts. Part A
+**Status: HOLDOUT READ 2026-09-06 — VERDICT: PASS under the pre-registered rule, with the weakest of the three live combinations clearing zero by $0.16 per trade. One read; this pre-registration is finished.** This file is written in two parts. Part A
 (below) records the development-window runs and everything fixed before the holdout. Part B will
 be appended once, after the single holdout read (PREREGISTRATION.md §5–§5-bis).
 
@@ -120,7 +120,7 @@ by the records sha256 above.
 residual decline is the bot's own fair-value-gap list (never pruned, tens of thousands of entries
 by 2024) being scanned each bar — now as a numpy pass rather than a Python loop.
 
-## B. Holdout — RUN LAUNCHED 2026-09-06 06:48 UTC (results appended below when sealed)
+## B. Holdout — read once, 2026-09-06 (runs 06:48–09:05 UTC, analysis 09:08 UTC)
 
 ### B.0 Holdout data — provenance, fixed before the read
 
@@ -148,3 +148,153 @@ were printed; it was **discarded, not used, and not committed**. The holdout the
 a logged-in export from the user — TradingView's own export, or a Databento `ohlcv-1m` pull of the
 same contract series (both formats are accepted by `prepare_holdout_data.py`). The 200-bar probe
 that preceded the attempt printed six rows of 2026-09-04 prices; noted for completeness.
+
+### B.1 Verdict — PREREGISTRATION.md §4 with §1-bis
+
+Holdout = trades whose entry bar falls on or after 2025-09-01, through the last bar 2026-09-02 16:59 ET
+(12 months and two days; 13 calendar months touched). Each combination continued from its sealed
+2024-12-31 state through the contaminated 2025 segment into the holdout, on the fast engine.
+
+| config | n | WR% | PF | net $ | mean $/tr | boot LB95 | maxDD $ | RTH% | mean stop | months + | mean>0 | LB>0 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| C1a_C3a | 1431 | 55.9 | 1.405 | +27,398 | +19.15 | +11.67 | 2,198 | 99.6 | 16.98 | 12/13 | yes | yes |
+| C1a_C3b | 1123 | 54.14 | 1.453 | +25,517 | +22.72 | +13.68 | 2,285 | 99.8 | 15.41 | 13/13 | yes | yes |
+| C1b_C3a | 330 | 63.94 | 1.277 | +3,070 | +9.30 | +0.16 | 920 | 98.8 | 23.71 | 10/13 | yes | yes |
+| C1b_C3b | 0 empty by construction (§1-bis) | | | | | | | | | | | |
+| untouched (control, not a candidate) | 2531 | 48.91 | 1.211 | +22,198 | +8.77 | +4.15 | 2,817 | 42.9 | 11.89 | 10/13 | yes | yes |
+
+| config | mean $/tr (1x) | mean $/tr (2x slippage) | sign flip |
+|---|---|---|---|
+| C1a_C3a | 19.146 | 15.505 | no |
+| C1a_C3b | 22.722 | 18.642 | no |
+| C1b_C3a | 9.302 | 3.534 | no |
+| C1b_C3b | empty (0 trades) | empty (0 trades) | n/a |
+
+**VERDICT:** PASS — every combination clears mean>0 and LB95>0
+
+**Minimum across the three non-empty combinations: mean +$9.30 per trade and bootstrap LB95 +$0.16
+per trade, both in C1b×C3a. Both above zero → PASS.**
+
+Abort conditions, none fired:
+1. n ≥ 300 in every live cell — the smallest is **330** (C1b×C3a), thirty above the threshold.
+2. No sign flip of the mean under 2× slippage: +15.51 / +18.64 / +3.53 per trade.
+3. The engine's own checks on all 13 outputs: 0 causality violations (every entry after its signal
+   bar), 0 adverse-slippage violations, commission $5.16 on every trade, sum of trade PnL equal to
+   the running total to the cent.
+
+### B.2 How thin the minimum is — said plainly
+
+The pass rests on the 2×ATR14 reading (C1b×C3a) clearing zero by **$0.16 per trade on 330 trades**,
+10 of 13 months positive, and its LB95 turns to −$5.64 under 2× slippage (the mean stays positive,
+so the pre-registered abort does not fire). That cell is fragile and would not survive a slightly
+worse cost model. The two 10-point-floor cells are not marginal: 1,123–1,431 trades, PF 1.40–1.45,
+LB95 +$11.67 and +$13.68, 12 and 13 of 13 months positive, max drawdown ≈ $2,200–2,300 on two
+micro contracts. The verdict is a conjunction by design: the family passes, and the reader should
+know that one of its three readings passes barely.
+
+Monthly net by entry month (holdout):
+- C1a×C3a: 25-09:+47 25-10:-674 25-11:+3,712 25-12:+2,729 26-01:+967 26-02:+3,059 26-03:+5,899 26-04:+2,278 26-05:+2,710 26-06:+2,011 26-07:+739 26-08:+3,805 26-09:+117
+- C1a×C3b: 25-09:+312 25-10:+5 25-11:+3,282 25-12:+2,196 26-01:+393 26-02:+3,903 26-03:+5,178 26-04:+3,203 26-05:+1,082 26-06:+1,993 26-07:+194 26-08:+3,580 26-09:+195
+- C1b×C3a: 25-09:+304 25-10:-475 25-11:+107 25-12:+344 26-01:+214 26-02:+348 26-03:+6 26-04:+1,039 26-05:+617 26-06:-106 26-07:-457 26-08:+863 26-09:+265
+- untouched (control): 25-09:-110 25-10:-432 25-11:+3,783 25-12:+1,290 26-01:-1,133 26-02:+6,015 26-03:+2,963 26-04:+2,360 26-05:+202 26-06:+2,003 26-07:+1,175 26-08:+3,434 26-09:+648
+
+### B.3 The control, and what the period was like
+
+The untouched bot on the same twelve months: 2,531 trades, mean **+$8.77**, LB95 +$4.15, PF 1.21,
+10 of 13 months, max DD $2,817 — considerably better than its own 2021–2024 record (+$3.28,
+PF 1.10). The period was favourable to the mechanism as a whole; part of every combination's result
+is the period. Against that control the 10-point-floor cells roughly double or treble the mean per
+trade on 45–57% as many trades with lower drawdown; the 2×ATR cell trades 13% as often at a similar
+mean. Reported as a comparison; not a candidate and not part of the pass mark.
+
+### B.4 Disclosed sensitivity — 30pt cap lifted (never a candidate)
+
+| config | n | WR% | PF | net $ | mean $/tr | boot LB95 | maxDD $ | RTH% | mean stop | months + | mean>0 | LB>0 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| C1a_C3a | 1831 | 62.48 | 1.484 | +48,764 | +26.63 | +18.93 | 4,468 | 99.6 | 32.95 | 11/13 | yes | yes |
+| C1a_C3b | 1210 | 54.38 | 1.416 | +27,077 | +22.38 | +14.08 | 2,378 | 99.8 | 18.17 | 13/13 | yes | yes |
+| C1b_C3a | 1673 | 72.38 | 1.575 | +56,025 | +33.49 | +24.20 | 3,554 | 99.6 | 57.15 | 13/13 | yes | yes |
+| C1b_C3b | 0 empty by construction (§1-bis) | | | | | | | | | | | |
+
+Every live cell improves substantially, most of all C1b×C3a (1,673 trades instead of 330, mean
+stop 57pt, +$33.49 per trade). The 30-point cap — deliberately left unchanged by PREREGISTRATION.md
+§2 — binds hard in 2025–26, when ATR14 on 2-minute bars often exceeds 15 points, so the 2×ATR floor
+collides with it on most signals (§1 predicted the collision; this is its size). Lifting the cap is
+a fourth change and would need its own pre-registration and fresh data; it is reported, exactly as
+market-at-open is under A16, and not selected.
+
+### B.5 Stress — 2× slippage (1.00 RTH / 2.00 ETH per fill)
+
+| config | n | WR% | PF | net $ | mean $/tr | boot LB95 | maxDD $ | RTH% | mean stop | months + | mean>0 | LB>0 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| C1a_C3a | 1418 | 53.31 | 1.316 | +21,986 | +15.51 | +8.13 | 2,384 | 99.6 | 17.0 | 11/13 | yes | yes |
+| C1a_C3b | 1117 | 52.46 | 1.358 | +20,823 | +18.64 | +9.58 | 2,474 | 99.8 | 15.42 | 11/13 | yes | yes |
+| C1b_C3a | 326 | 59.2 | 1.097 | +1,152 | +3.53 | -5.64 | 1,560 | 98.8 | 23.76 | 7/13 | yes | NO |
+| C1b_C3b | 0 empty by construction (§1-bis) | | | | | | | | | | | |
+
+No sign flips. The 10-point cells keep LB95 above +$8; the 2×ATR cell's LB95 goes negative.
+
+### B.6 Contaminated semi-holdout, 2025-01-01 → 2025-08-31 (reported only)
+
+| config | n | WR% | PF | net $ | mean $/tr | boot LB95 | maxDD $ | RTH% | mean stop | months + | mean>0 | LB>0 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| C1a_C3a | 1029 | 55.0 | 1.282 | +13,182 | +12.81 | +5.43 | 2,472 | 99.5 | 16.81 | 7/8 | yes | yes |
+| C1a_C3b | 770 | 51.04 | 1.163 | +6,016 | +7.81 | -0.27 | 3,634 | 99.5 | 14.34 | 5/8 | yes | NO |
+| C1b_C3a | 339 | 64.6 | 1.651 | +7,055 | +20.81 | +9.18 | 848 | 99.4 | 23.97 | 7/8 | yes | yes |
+| C1b_C3b | 0 empty by construction (§1-bis) | | | | | | | | | | | |
+| untouched (control, not a candidate) | 1481 | 47.2 | 1.188 | +10,466 | +7.07 | +1.34 | 3,039 | 51.2 | 10.99 | 5/8 | yes | yes |
+
+C1a×C3b's LB95 is −$0.27 here. This segment was inspected before the hypotheses were written and
+carries no weight; it is shown because §3 said it would be.
+
+### B.7 What a pass means here, and what it does not (PREREGISTRATION.md §6, revisited)
+
+- On twelve months no run of this test had seen, a version of the bot with a 10-point stop floor,
+  RTH-only entries, and no phantom-target gate has positive expectancy after modelled costs, and it
+  is robust to the documented readings of each change — barely so for the 2×ATR reading.
+- The holdout used **real prices** (unadjusted NQ front month), so the 50-point grid sat on true
+  round numbers; the bot's own development history (§0) had it 400–950 points off. The effect
+  survived the move to true round numbers, and the untouched bot also did well on them. Whether real
+  round numbers matter or any 50-point grid would do remains unresolved; this test cannot separate
+  them.
+- Not established: that live fills match 0.5/1.0-point slippage on MNQ; that the roll gaps a live
+  front-month chart shows four times a year (absent from the bot's adjusted development data,
+  present in this holdout) are handled acceptably around prior-day levels; that the edge exceeds a
+  few thousand dollars a year per two micro contracts; that the period's favourability persists.
+- Deviations from the pre-registration, all disclosed above: holdout data from the repository's NQ
+  tape rather than a user-supplied TradingView MNQ1! export (§B.0); the sealed VWAP/BB sessions read
+  under the user's ruling (§B.0); the verdict taken over three live cells per §1-bis.
+
+### B.8 Reads and seals
+
+One holdout read, covering everything in B.1–B.6. This pre-registration is finished: a second look
+under revised rules requires a new document and new data.
+
+**Analysis-code note.** The first automated analysis pass crashed while building the 2× slippage
+table on the empty C1b×C3b cell (a `KeyError` before any table was printed). A two-line guard for
+empty cells was added to `analyze_retest.py` and the four analysis commands were re-run unchanged.
+No number was read before the fix; no rule or threshold was touched.
+
+| output | sha256 |
+|---|---|
+| `HOLDOUT_verdict.json` | `7ff9e79be04f8974…` |
+| `contaminated_2025-01_08.json` | `8b642eb178f8be5c…` |
+| `hold_C1a_C3a.json` | `5693b98c35663dba…` |
+| `hold_C1a_C3b.json` | `7281db77774d85a4…` |
+| `hold_C1b_C3a.json` | `1e26fc3e902e919c…` |
+| `hold_C1b_C3b.json` | `b312ef9feb460b07…` |
+| `hold_untouched.json` | `c824662e83312069…` |
+| `sens_C1a_C3a.json` | `2c23079567d0dd54…` |
+| `sens_C1a_C3b.json` | `e27af610e535c6c1…` |
+| `sens_C1b_C3a.json` | `877194eafd68adc6…` |
+| `sens_C1b_C3b.json` | `7bd9aa63fa14844c…` |
+| `sensitivity_cap_lifted_holdout.json` | `df7aabe3a48af6ef…` |
+| `stress_2x_slippage_holdout.json` | `3ec576d022042b12…` |
+| `stress_C1a_C3a.json` | `b3476ae8543aeeb2…` |
+| `stress_C1a_C3b.json` | `de679a0ab4fb1c5d…` |
+| `stress_C1b_C3a.json` | `042ac3099667ee66…` |
+| `stress_C1b_C3b.json` | `850dc601e4ecd500…` |
+
+Outputs are committed gzipped (`data/holdout/*.json.gz`); the seals refer to the uncompressed JSON.
+Analysis tables: `data/holdout/HOLDOUT_verdict.{md,json}`, `contaminated_2025-01_08.*`,
+`sensitivity_cap_lifted_holdout.*`, `stress_2x_slippage_holdout.*`.

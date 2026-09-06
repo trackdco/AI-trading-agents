@@ -2,3 +2,7 @@ logs/
 logs_slow_attempt/
 ckpt/
 *.json
+!HOLDOUT_verdict.json
+!contaminated_2025-01_08.json
+!sensitivity_cap_lifted_holdout.json
+!stress_2x_slippage_holdout.json

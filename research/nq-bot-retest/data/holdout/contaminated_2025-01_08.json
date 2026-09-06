@@ -1,0 +1,279 @@
+{
+ "results": {
+  "C1a_C3a": {
+   "n": 1029,
+   "win_rate_pct": 55.0,
+   "profit_factor": 1.282,
+   "total_net": 13181.68,
+   "mean_net": 12.81,
+   "sd_net": 153.5,
+   "bootstrap_lb95": 5.431,
+   "trading_days": 170,
+   "max_dd": 2471.78,
+   "rth_share_pct": 99.5,
+   "mean_stop": 16.81,
+   "months": 8,
+   "profitable_months": 7,
+   "monthly": {
+    "2025-01": 1128.6200000000003,
+    "2025-02": 906.04,
+    "2025-03": 3949.000000000009,
+    "2025-04": 3601.140000000004,
+    "2025-05": 700.2999999999973,
+    "2025-06": -1140.0600000000013,
+    "2025-07": 1335.5799999999983,
+    "2025-08": 2701.060000000003
+   },
+   "cond_mean_pos": true,
+   "cond_lb_pos": true,
+   "abort_n": false,
+   "empty_by_construction": false,
+   "file": "/home/user/AI-trading-agents/research/nq-bot-retest/data/holdout/hold_C1a_C3a.json",
+   "file_sha256": "5693b98c35663dba43e91528da180011861fb037b7a687e97e2d2c7854bdd089",
+   "trades_sha256": "88698b3128057b52759349afecc8c41ad8b12fafeec35a1e5c9463b0840af09b",
+   "config": {
+    "stop_floor": "a5_10pt",
+    "rr_gate": "removed",
+    "rth_only": true,
+    "cap_lifted": false,
+    "slippage_mult": 1.0,
+    "perf_patch": true,
+    "deterministic_ids": true,
+    "fast_features": true
+   },
+   "counters": {
+    "c1_floor_applied": 7197,
+    "c1_floor_then_over_cap": 0,
+    "c3_rr_gate_rejected": 0,
+    "c3_rr_gate_would_have_rejected": 13300,
+    "c2_rth_rejected": 13856,
+    "cap_lifted_admitted_over_30": 0,
+    "max_stop_rejected": 4222
+   },
+   "window": {
+    "start": null,
+    "end": "2026-09-02",
+    "first_bar": "2025-01-01T18:00:00-05:00",
+    "last_bar": "2026-09-02T16:58:00-04:00",
+    "bars_2m": 295502
+   }
+  },
+  "C1a_C3b": {
+   "n": 770,
+   "win_rate_pct": 51.04,
+   "profit_factor": 1.163,
+   "total_net": 6016.4,
+   "mean_net": 7.814,
+   "sd_net": 154.51,
+   "bootstrap_lb95": -0.273,
+   "trading_days": 166,
+   "max_dd": 3633.78,
+   "rth_share_pct": 99.5,
+   "mean_stop": 14.34,
+   "months": 8,
+   "profitable_months": 5,
+   "monthly": {
+    "2025-01": 809.480000000001,
+    "2025-02": 592.7400000000004,
+    "2025-03": 4393.140000000009,
+    "2025-04": 2484.500000000002,
+    "2025-05": -1114.5399999999995,
+    "2025-06": -1211.0599999999995,
+    "2025-07": -36.29999999999973,
+    "2025-08": 98.44000000000042
+   },
+   "cond_mean_pos": true,
+   "cond_lb_pos": false,
+   "abort_n": false,
+   "empty_by_construction": false,
+   "file": "/home/user/AI-trading-agents/research/nq-bot-retest/data/holdout/hold_C1a_C3b.json",
+   "file_sha256": "7281db77774d85a46679d198edf789e2fc37dbd8ddd9d7527da855dad17b3593",
+   "trades_sha256": "a81b840aa98c722361398a01c19e83838a4ecbf4e96aad89408a42d277e2c482",
+   "config": {
+    "stop_floor": "a5_10pt",
+    "rr_gate": "kept",
+    "rth_only": true,
+    "cap_lifted": false,
+    "slippage_mult": 1.0,
+    "perf_patch": true,
+    "deterministic_ids": true,
+    "fast_features": true
+   },
+   "counters": {
+    "c1_floor_applied": 7523,
+    "c1_floor_then_over_cap": 0,
+    "c3_rr_gate_rejected": 14221,
+    "c3_rr_gate_would_have_rejected": 0,
+    "c2_rth_rejected": 3469,
+    "cap_lifted_admitted_over_30": 0,
+    "max_stop_rejected": 4400
+   },
+   "window": {
+    "start": null,
+    "end": "2026-09-02",
+    "first_bar": "2025-01-01T18:00:00-05:00",
+    "last_bar": "2026-09-02T16:58:00-04:00",
+    "bars_2m": 295502
+   }
+  },
+  "C1b_C3a": {
+   "n": 339,
+   "win_rate_pct": 64.6,
+   "profit_factor": 1.651,
+   "total_net": 7055.3,
+   "mean_net": 20.812,
+   "sd_net": 131.83,
+   "bootstrap_lb95": 9.175,
+   "trading_days": 106,
+   "max_dd": 848.02,
+   "rth_share_pct": 99.4,
+   "mean_stop": 23.97,
+   "months": 8,
+   "profitable_months": 7,
+   "monthly": {
+    "2025-01": 1428.2599999999998,
+    "2025-02": 1125.18,
+    "2025-03": -45.73999999999995,
+    "2025-04": 239.81999999999996,
+    "2025-05": 875.2799999999996,
+    "2025-06": 452.4400000000006,
+    "2025-07": 1743.3800000000008,
+    "2025-08": 1236.6799999999996
+   },
+   "cond_mean_pos": true,
+   "cond_lb_pos": true,
+   "abort_n": false,
+   "empty_by_construction": false,
+   "file": "/home/user/AI-trading-agents/research/nq-bot-retest/data/holdout/hold_C1b_C3a.json",
+   "file_sha256": "1e26fc3e902e919ca2172db2600d253af0b09c14c190ee1280d4fc568ee4a5d6",
+   "trades_sha256": "e019acf05838ccd4feaf04557299c19346b07b5e19c181a397018c512df6d9e8",
+   "config": {
+    "stop_floor": "a22_2xatr",
+    "rr_gate": "removed",
+    "rth_only": true,
+    "cap_lifted": false,
+    "slippage_mult": 1.0,
+    "perf_patch": true,
+    "deterministic_ids": true,
+    "fast_features": true
+   },
+   "counters": {
+    "c1_floor_applied": 23010,
+    "c1_floor_then_over_cap": 12407,
+    "c3_rr_gate_rejected": 0,
+    "c3_rr_gate_would_have_rejected": 13878,
+    "c2_rth_rejected": 11090,
+    "cap_lifted_admitted_over_30": 0,
+    "max_stop_rejected": 14326
+   },
+   "window": {
+    "start": null,
+    "end": "2026-09-02",
+    "first_bar": "2025-01-01T18:00:00-05:00",
+    "last_bar": "2026-09-02T16:58:00-04:00",
+    "bars_2m": 295502
+   }
+  },
+  "C1b_C3b": {
+   "n": 0,
+   "empty_by_construction": true,
+   "file": "/home/user/AI-trading-agents/research/nq-bot-retest/data/holdout/hold_C1b_C3b.json",
+   "file_sha256": "b312ef9feb460b0793748195ac56e45cae935a8c5008d3867d1d3976e2182d62",
+   "trades_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+   "config": {
+    "stop_floor": "a22_2xatr",
+    "rr_gate": "kept",
+    "rth_only": true,
+    "cap_lifted": false,
+    "slippage_mult": 1.0,
+    "perf_patch": true,
+    "deterministic_ids": true,
+    "fast_features": true
+   },
+   "counters": {
+    "c1_floor_applied": 24869,
+    "c1_floor_then_over_cap": 12784,
+    "c3_rr_gate_rejected": 15579,
+    "c3_rr_gate_would_have_rejected": 0,
+    "c2_rth_rejected": 0,
+    "cap_lifted_admitted_over_30": 0,
+    "max_stop_rejected": 14785
+   },
+   "window": {
+    "start": null,
+    "end": "2026-09-02",
+    "first_bar": "2025-01-01T18:00:00-05:00",
+    "last_bar": "2026-09-02T16:58:00-04:00",
+    "bars_2m": 295502
+   }
+  },
+  "untouched": {
+   "n": 1481,
+   "win_rate_pct": 47.2,
+   "profit_factor": 1.188,
+   "total_net": 10466.04,
+   "mean_net": 7.067,
+   "sd_net": 136.17,
+   "bootstrap_lb95": 1.345,
+   "trading_days": 170,
+   "max_dd": 3039.44,
+   "rth_share_pct": 51.2,
+   "mean_stop": 10.99,
+   "months": 8,
+   "profitable_months": 5,
+   "monthly": {
+    "2025-01": 1247.8599999999985,
+    "2025-02": 379.94000000000176,
+    "2025-03": 4068.3600000000133,
+    "2025-04": 6511.680000000024,
+    "2025-05": -629.759999999999,
+    "2025-06": -571.0199999999994,
+    "2025-07": 130.78000000000046,
+    "2025-08": -671.7999999999987
+   },
+   "cond_mean_pos": true,
+   "cond_lb_pos": true,
+   "abort_n": false,
+   "empty_by_construction": false,
+   "control": true,
+   "file": "/home/user/AI-trading-agents/research/nq-bot-retest/data/holdout/hold_untouched.json",
+   "file_sha256": "c824662e83312069773cbe7481a11c53a14822dd0f39baf697a23572fb3f34f5",
+   "trades_sha256": "40ddc92561b3f376de02bee1e3258b6477ab2beaf546d51108479c6151f81e56",
+   "config": {
+    "stop_floor": "none",
+    "rr_gate": "kept",
+    "rth_only": false,
+    "cap_lifted": false,
+    "slippage_mult": 1.0,
+    "perf_patch": true,
+    "deterministic_ids": true,
+    "fast_features": true
+   },
+   "counters": {
+    "c1_floor_applied": 0,
+    "c1_floor_then_over_cap": 0,
+    "c3_rr_gate_rejected": 11441,
+    "c3_rr_gate_would_have_rejected": 0,
+    "c2_rth_rejected": 0,
+    "cap_lifted_admitted_over_30": 0,
+    "max_stop_rejected": 4080
+   },
+   "window": {
+    "start": null,
+    "end": "2026-09-02",
+    "first_bar": "2025-01-01T18:00:00-05:00",
+    "last_bar": "2026-09-02T16:58:00-04:00",
+    "bars_2m": 295502
+   }
+  }
+ },
+ "stress": {},
+ "verdict": null,
+ "bootstrap": {
+  "n_iter": 10000,
+  "alpha": 0.05,
+  "seed": 20260905,
+  "prng": "numpy PCG64"
+ },
+ "count_from": "2025-01-01"
+}

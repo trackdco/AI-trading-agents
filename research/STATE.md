@@ -1161,3 +1161,8 @@ VWAP/BB strategy; its N_trials accounting is independent of the one above (that 
 - **Development reads done and sealed** (`data/dev/`, 5 runs). They decide nothing.
 - **Holdout: not requested until now; not run.** One read, covering the four combinations, the
   untouched control, the cap-lifted sensitivity and the 2× slippage stress (`run_holdout.sh`).
+- **2026-09-06 — HOLDOUT READ (one read): VERDICT PASS** under the pre-registered rule; minimum
+  across the three live combinations is C1b×C3a at mean +$9.30 / LB95 +$0.16 per trade on 330
+  trades (fragile); the 10pt-floor cells LB95 +$11.67 / +$13.68 on 1,431 / 1,123 trades. Untouched
+  control +$8.77 / LB95 +$4.15. Data: the repository's own NQ tape to 2026-09-02, sealed sessions
+  read under Angus's ruling (config/data_split.yaml). `research/nq-bot-retest/RESULT.md` §B.

@@ -189,8 +189,12 @@ def main():
         lines.append("|---|---|---|---|")
         for lab, st2 in stress.items():
             st1 = results.get(lab)
-            flip = (st1 is not None and st1["n"] and st2["n"] and (st1["mean_net"] > 0) != (st2["mean_net"] > 0))
-            lines.append(f"| {lab} | {st1['mean_net'] if st1 else 'n/a'} | {st2['mean_net']} | {'YES' if flip else 'no'} |")
+            if st1 is None or not st1["n"] or not st2["n"]:
+                lines.append(f"| {lab} | {'empty (0 trades)' if (st1 is None or not st1['n']) else st1['mean_net']} | "
+                             f"{'empty (0 trades)' if not st2['n'] else st2['mean_net']} | n/a |")
+                continue
+            flip = (st1["mean_net"] > 0) != (st2["mean_net"] > 0)
+            lines.append(f"| {lab} | {st1['mean_net']} | {st2['mean_net']} | {'YES' if flip else 'no'} |")
     print("\n".join(lines))
 
     verdict = None
