@@ -1172,3 +1172,8 @@ VWAP/BB strategy; its N_trials accounting is independent of the one above (that 
   in the 10pt cells. Cap question closed; the passed family stands. Controls: the passed 10pt cells
   earn +$5.37 / +$6.82 per trade on 2018–21; untouched bot −$1.31. `RESULT-2.md`. No unseen bar
   data remains in the repository for this bot.
+- **2026-09-07 — PRE-REGISTRATION 3 (confluence features + conviction sizing): NO FEATURE HOLDS.**
+  Twelve confluences (VWAP bands, prior-day VA/POC, Fibonacci ×2, EMA20/50/200, opening range)
+  measured on the sealed C1a×C3a trades: one fit-half candidate (against-EMA50 fades, +$6/trade,
+  2018–24) reversed on the test half (−$8/trade, 2025–26). Sizing test not run per §4. Flat sizing
+  stands. `RESULT-3.md`.

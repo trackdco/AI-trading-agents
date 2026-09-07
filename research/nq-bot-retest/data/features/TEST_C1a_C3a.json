@@ -1,0 +1,82 @@
+[
+ {
+  "feature": "F1",
+  "best": "inside \u00b11\u03c3",
+  "worst": "1\u20132\u03c3",
+  "gap": 8.413307704931963,
+  "gap_lb95": -2.5209446426913247,
+  "candidate": false
+ },
+ {
+  "feature": "F2",
+  "best": "away",
+  "worst": "toward",
+  "gap": 8.31471002710027,
+  "gap_lb95": -4.075085942926753,
+  "candidate": false
+ },
+ {
+  "feature": "F3",
+  "best": "below VAL",
+  "worst": "inside VA",
+  "gap": 7.786509900598938,
+  "gap_lb95": -6.3905522532021655,
+  "candidate": false
+ },
+ {
+  "feature": "F6",
+  "best": "toward",
+  "worst": "away",
+  "gap": 2.807997386905761,
+  "gap_lb95": -9.436045191584139,
+  "candidate": false
+ },
+ {
+  "feature": "F7",
+  "best": "0.25\u20130.75",
+  "worst": ">0.75",
+  "gap": 15.46468214841723,
+  "gap_lb95": -1.1565480746196448,
+  "candidate": false
+ },
+ {
+  "feature": "F8",
+  "best": ">0.75",
+  "worst": "0.25\u20130.75",
+  "gap": 9.735595492797032,
+  "gap_lb95": -4.867777326937905,
+  "candidate": false
+ },
+ {
+  "feature": "F9",
+  "best": "flat",
+  "worst": "with",
+  "gap": 9.935031598639684,
+  "gap_lb95": -12.9889016687344,
+  "candidate": false
+ },
+ {
+  "feature": "F10",
+  "best": "\u22120.5\u20130.5",
+  "worst": "< \u22120.5",
+  "gap": 16.423450598918123,
+  "gap_lb95": 2.1441604410293764,
+  "candidate": true
+ },
+ {
+  "feature": "F11",
+  "best": "with",
+  "worst": "against",
+  "gap": 8.026665689633058,
+  "gap_lb95": -3.1689631335675204,
+  "candidate": false
+ },
+ {
+  "feature": "F12",
+  "best": "forming",
+  "worst": "beyond in direction",
+  "gap": 21.103585024472622,
+  "gap_lb95": 6.820402107726193,
+  "candidate": true
+ }
+]

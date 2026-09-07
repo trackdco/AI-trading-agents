@@ -1,0 +1,82 @@
+[
+ {
+  "feature": "F1",
+  "best": "inside \u00b11\u03c3",
+  "worst": "1\u20132\u03c3",
+  "gap": 15.498230838485977,
+  "gap_lb95": 2.8983458109395857,
+  "candidate": true
+ },
+ {
+  "feature": "F2",
+  "best": "away",
+  "worst": "toward",
+  "gap": 9.530053513662333,
+  "gap_lb95": -5.166354563667257,
+  "candidate": false
+ },
+ {
+  "feature": "F3",
+  "best": "above VAH",
+  "worst": "inside VA",
+  "gap": 17.842335488268613,
+  "gap_lb95": 2.667528485775331,
+  "candidate": true
+ },
+ {
+  "feature": "F6",
+  "best": "away",
+  "worst": "toward",
+  "gap": 2.526558117991586,
+  "gap_lb95": -12.364965342134857,
+  "candidate": false
+ },
+ {
+  "feature": "F7",
+  "best": "0.25\u20130.75",
+  "worst": ">0.75",
+  "gap": 11.38950922001662,
+  "gap_lb95": -7.809825949268473,
+  "candidate": false
+ },
+ {
+  "feature": "F8",
+  "best": ">0.75",
+  "worst": "\u22640.25",
+  "gap": 8.881517507582021,
+  "gap_lb95": -13.553133918179967,
+  "candidate": false
+ },
+ {
+  "feature": "F9",
+  "best": "against",
+  "worst": "with",
+  "gap": 3.0994566259358614,
+  "gap_lb95": -15.00352767673385,
+  "candidate": false
+ },
+ {
+  "feature": "F10",
+  "best": "\u22120.5\u20130.5",
+  "worst": "< \u22120.5",
+  "gap": 21.922999381097306,
+  "gap_lb95": 6.021303389437051,
+  "candidate": true
+ },
+ {
+  "feature": "F11",
+  "best": "with",
+  "worst": "against",
+  "gap": 9.828531416719615,
+  "gap_lb95": -3.4734982275908632,
+  "candidate": false
+ },
+ {
+  "feature": "F12",
+  "best": "forming",
+  "worst": "beyond in direction",
+  "gap": 19.446660518854184,
+  "gap_lb95": 3.4451680098537327,
+  "candidate": true
+ }
+]
