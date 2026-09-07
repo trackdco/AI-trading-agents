@@ -1,0 +1,90 @@
+[
+ {
+  "feature": "F1",
+  "best": "beyond 2\u03c3",
+  "worst": "inside \u00b11\u03c3",
+  "gap": 11.701140586189767,
+  "gap_lb95": -2.418174795707821,
+  "candidate": false
+ },
+ {
+  "feature": "F2",
+  "best": "toward",
+  "worst": "away",
+  "gap": 5.940035578437221,
+  "gap_lb95": -1.8433549464934225,
+  "candidate": false
+ },
+ {
+  "feature": "F3",
+  "best": "above VAH",
+  "worst": "inside VA",
+  "gap": 4.302325720036523,
+  "gap_lb95": -3.7717720634463685,
+  "candidate": false
+ },
+ {
+  "feature": "F5",
+  "best": ">1.5",
+  "worst": "0.5\u20131.5",
+  "gap": 3.5090464144185365,
+  "gap_lb95": -8.531933036950791,
+  "candidate": false
+ },
+ {
+  "feature": "F6",
+  "best": "toward",
+  "worst": "away",
+  "gap": 0.36356010442867337,
+  "gap_lb95": -7.237551867442266,
+  "candidate": false
+ },
+ {
+  "feature": "F7",
+  "best": "\u22640.25",
+  "worst": "0.25\u20130.75",
+  "gap": 9.638665243754545,
+  "gap_lb95": -4.782227507382731,
+  "candidate": false
+ },
+ {
+  "feature": "F8",
+  "best": "\u22640.25",
+  "worst": "0.25\u20130.75",
+  "gap": 6.222246531220772,
+  "gap_lb95": -4.821706919595262,
+  "candidate": false
+ },
+ {
+  "feature": "F9",
+  "best": "against",
+  "worst": "with",
+  "gap": 7.415083761447397,
+  "gap_lb95": -1.8924262172928956,
+  "candidate": false
+ },
+ {
+  "feature": "F10",
+  "best": "< \u22120.5",
+  "worst": "\u22120.5\u20130.5",
+  "gap": 10.26562406595805,
+  "gap_lb95": 1.457215349471371,
+  "candidate": true
+ },
+ {
+  "feature": "F11",
+  "best": "against",
+  "worst": "with",
+  "gap": 10.988713586713835,
+  "gap_lb95": 3.8298976915471465,
+  "candidate": true
+ },
+ {
+  "feature": "F12",
+  "best": "beyond in direction",
+  "worst": "inside OR",
+  "gap": 4.094708405622187,
+  "gap_lb95": -3.6576963873704074,
+  "candidate": false
+ }
+]

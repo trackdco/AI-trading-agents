@@ -1,0 +1,98 @@
+[
+ {
+  "feature": "F1",
+  "best": "beyond 2\u03c3",
+  "worst": "inside \u00b11\u03c3",
+  "gap": 6.730474427960306,
+  "gap_lb95": -1.8752106605856387,
+  "candidate": false
+ },
+ {
+  "feature": "F2",
+  "best": "toward",
+  "worst": "away",
+  "gap": 2.2342854462069184,
+  "gap_lb95": -2.9495451450708168,
+  "candidate": false
+ },
+ {
+  "feature": "F3",
+  "best": "below VAL",
+  "worst": "inside VA",
+  "gap": 4.019629459322683,
+  "gap_lb95": -1.640573383104722,
+  "candidate": false
+ },
+ {
+  "feature": "F4",
+  "best": "at edge",
+  "worst": "not",
+  "gap": 3.637703740607524,
+  "gap_lb95": -6.380599805010485,
+  "candidate": false
+ },
+ {
+  "feature": "F5",
+  "best": ">1.5",
+  "worst": "<0.5",
+  "gap": 9.28626139287065,
+  "gap_lb95": -3.949323301011414,
+  "candidate": false
+ },
+ {
+  "feature": "F6",
+  "best": "away",
+  "worst": "toward",
+  "gap": 2.073487822321363,
+  "gap_lb95": -2.484922032915076,
+  "candidate": false
+ },
+ {
+  "feature": "F7",
+  "best": "\u22640.25",
+  "worst": ">0.75",
+  "gap": 3.699299268682374,
+  "gap_lb95": -4.658683108313434,
+  "candidate": false
+ },
+ {
+  "feature": "F8",
+  "best": "\u22640.25",
+  "worst": "0.25\u20130.75",
+  "gap": 5.3454048136550805,
+  "gap_lb95": -2.239395586438158,
+  "candidate": false
+ },
+ {
+  "feature": "F9",
+  "best": "flat",
+  "worst": "with",
+  "gap": 3.0869567646892833,
+  "gap_lb95": -3.7771224056492607,
+  "candidate": false
+ },
+ {
+  "feature": "F10",
+  "best": "< \u22120.5",
+  "worst": "\u22120.5\u20130.5",
+  "gap": 5.705781247572442,
+  "gap_lb95": -0.5701980139607453,
+  "candidate": false
+ },
+ {
+  "feature": "F11",
+  "best": "against",
+  "worst": "with",
+  "gap": 5.951981709101933,
+  "gap_lb95": 1.0751294897215873,
+  "candidate": true
+ },
+ {
+  "feature": "F12",
+  "best": "forming",
+  "worst": "beyond in direction",
+  "gap": 4.479421378205525,
+  "gap_lb95": -0.9382333092042265,
+  "candidate": false
+ }
+]
