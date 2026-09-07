@@ -137,6 +137,7 @@ def parse_pairs(items):
 
 
 def main():
+    global ALPHA, SEED
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("runs", nargs="+", help="LABEL=PATH")
     ap.add_argument("--stress", nargs="*", help="LABEL=PATH of the 2x-slippage run for the same LABEL")
@@ -149,7 +150,6 @@ def main():
     ap.add_argument("--alpha", type=float, default=ALPHA, help="one-sided bootstrap level (PREREGISTRATION-2: 0.025)")
     ap.add_argument("--seed", type=int, default=SEED, help="PRNG seed (PREREGISTRATION-2: 20260907)")
     a = ap.parse_args()
-    global ALPHA, SEED
     ALPHA, SEED = a.alpha, a.seed
     count_from = date.fromisoformat(a.count_from) if a.count_from else None
     count_to = date.fromisoformat(a.count_to) if a.count_to else None
