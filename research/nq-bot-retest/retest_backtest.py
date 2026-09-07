@@ -522,7 +522,11 @@ async def run(args) -> dict:
                    "deterministic_ids": args.deterministic_ids,
                    "fast_features": args.fast_features,
                    "intrabar_stops": args.intrabar_stops,
-                   "record_levels": args.record_levels}
+                   "record_levels": args.record_levels,
+                   "no_kill_switch": args.no_kill_switch}
+    if args.no_kill_switch:   # diagnostic only: the bot's cumulative $1,000 kill switch made inert
+        fb.KILL_SWITCH_LIMIT = 1e12
+        print("  DIAGNOSTIC: cumulative kill switch disabled (KILL_SWITCH_LIMIT=1e12)")
     if args.fast_features:
         fast_features.install()
     if args.deterministic_ids:
@@ -726,6 +730,7 @@ def main():
     ap.add_argument("--fast-features", action="store_true", help="install fast_features.py (exact fast paths for the feature engine's zone bookkeeping)")
     ap.add_argument("--intrabar-stops", action="store_true", help="resting-order stop model on 1-minute bars (intrabar.py); an execution-model change, disclosed in meta")
     ap.add_argument("--record-levels", action="store_true", help="diagnostic: copy the sweep detector's swept levels into each entry record")
+    ap.add_argument("--no-kill-switch", action="store_true", help="diagnostic only: disable the bot's cumulative $1,000 kill switch so an execution-model comparison is not cut short by it")
     ap.add_argument("--no-deterministic-ids", dest="deterministic_ids", action="store_false")
     ap.add_argument("--progress", type=int, default=25_000)
     ap.add_argument("--checkpoint", default=None, help="pickle path for exact checkpoints (deleted on completion)")
