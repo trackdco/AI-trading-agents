@@ -330,3 +330,37 @@ measured median half-spread, and the 2× stress in §B.5 (1.00 pt/fill) covers s
 without a sign flip. The micro contract's book is not the mini's, but its spread in points is not
 wider. What a backtest cannot supply is only execution plumbing — latency, partial fills, the
 bot's own order handling — which is a matter for the live stack, not for another study.
+
+### B.10 Loser autopsy (2026-09-07; post-hoc diagnostic on the sealed holdout, reported not binding)
+
+Full tables: `HOLDOUT-LOSER-AUTOPSY-C1a_C3a.md`, `…-C1a_C3b.md` (`loser_autopsy.py`). Headline
+facts for C1a×C3a (1,431 holdout trades, 631 losers); C1a×C3b agrees on every point.
+
+1. **No fat tail.** Average loss $107 against average win $119 (payoff 1.11); breakeven win rate
+   47.4% against 55.9% realised, a margin of 8.5 points (the untouched bot's 4-year margin was 2.9).
+   The worst 5% of losers carry 13% of losses, the worst single trade −$463. Max 8 consecutive
+   losers, 46% losing days, worst day −$675, max drawdown $2,198 (2026-07-10 → 07-23).
+2. **Losers die at once.** 90% of losers are both contracts stopped, median holding **one 2-minute
+   bar** (winners: eight). The ten largest are all 09:34–10:02 entries on high-ATR days stopped on
+   the entry bar itself.
+3. **A stop is not the stop.** Median realised loss is **1.5× the nominal stop distance**. Cause, in
+   the bot's executor (`_manage_phase_1` → `_close_all(trade, price, …)`): the initial stop is
+   evaluated on the 2-minute bar close and **filled at that close**, however far beyond the stop it
+   is; trailing and breakeven exits, by contrast, fill at their stop level. So the backtest's hard
+   stop is pessimistic on size (fills beyond the level) and optimistic on frequency (intrabar wicks
+   through the level never trigger). The net sign is unknowable from 2-minute bars; a resting stop
+   order in live trading would be stopped more often and lose less per stop. This is the one
+   finding here that bears on live behaviour and it cuts both ways.
+4. **Where losses sit.** The first 30 minutes are 29% of trades and 42% of losses (mean loss −$138
+   against −$96 midday) — and the most profitable bucket, +$12.2k of +$27.4k: high variance, not a
+   defect. Only the 14:00 hour and October 2025 net negative. Low volatility is the dead weight:
+   signals with ATR14 < 15 are 23% of trades and net −$500; ATR14 ≥ 30 carry +$16.8k. Signals scored
+   0.90–1.00 (9% of trades) net −$500, the same non-monotonic score the 4-year review found.
+   Floor-bound stops (exactly 10 pt, 25% of trades) are the weakest positive bucket (WR 48%,
+   +$11 per trade); 15–25 pt stops the best (WR 60–64%). Counter-HTF sweeps outperform with-trend
+   ones on small samples (short with HTF bullish +$51 per trade, n=138).
+5. **Friction** is 35% of pre-cost gross ($13.2k on $40.6k), $9.25 per trade, 9% of a mean loss —
+   no longer the dominant term it was for the untouched bot.
+
+None of these slices is a rule. Each was chosen after seeing the outcome; a rule built from any of
+them needs its own pre-registration and data none of this has touched.
