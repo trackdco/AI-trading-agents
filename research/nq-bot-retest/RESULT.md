@@ -298,3 +298,35 @@ No number was read before the fix; no rule or threshold was touched.
 Outputs are committed gzipped (`data/holdout/*.json.gz`); the seals refer to the uncompressed JSON.
 Analysis tables: `data/holdout/HOLDOUT_verdict.{md,json}`, `contaminated_2025-01_08.*`,
 `sensitivity_cap_lifted_holdout.*`, `stress_2x_slippage_holdout.*`.
+
+### B.9 Post-read diagnostics from data already in the repository (2026-09-07; reported, not binding)
+
+Written after the verdict, at the user's prompt ("why can't you just use what we already have").
+Two questions §B.7 called open are answerable from existing material; neither changes the verdict.
+
+**Contract rolls.** The holdout tape is a real front-month series, so the bot traded through four
+quarterly rolls, each visible as a session-open gap of +237 (2025-09-16), +261 (2025-12-15),
++165 (2026-03-16) and +513 pt (2026-06-15) against a median session gap of 9 pt. Its prior-day and
+prior-week levels are therefore off by the gap for the first session or two after each roll — the
+situation its adjusted development data never contained. Trades entered on the roll session or the
+next one (8 sessions of ~260):
+
+| combination | roll-session trades | mean $/trade | total $ | all other sessions: mean $/trade |
+|---|---|---|---|---|
+| C1a×C3a | 45 | +16.41 | +739 | +19.23 |
+| C1a×C3b | 33 | +30.22 | +997 | +22.49 |
+| C1b×C3a | 10 | −2.87 | −29 | +9.68 |
+| untouched (control) | 76 | −1.33 | −101 | +9.08 |
+
+Trade frequency on roll sessions is unchanged; the 10-point cells are unharmed; the 2×ATR cell and
+the untouched bot are a little worse on small samples. No evidence of roll damage; the largest roll
+in the set (+513 pt) is inside the window. Eight sessions cannot show more than that.
+
+**Slippage.** The repository's own MBP-10 book snapshots already measure the NQ top-of-book
+spread: median 0.75 pt over 5,781 RTH snapshots on 99 sessions, 2026-02-02 → 2026-07-08
+(`config/data_split.yaml`, `research/STATE.md` COSTS). A market order at the next bar's open pays
+about half of that plus queue and latency, so the bot's 0.50 pt/fill RTH model sits at or above the
+measured median half-spread, and the 2× stress in §B.5 (1.00 pt/fill) covers spreads up to 2 pt
+without a sign flip. The micro contract's book is not the mini's, but its spread in points is not
+wider. What a backtest cannot supply is only execution plumbing — latency, partial fills, the
+bot's own order handling — which is a matter for the live stack, not for another study.
