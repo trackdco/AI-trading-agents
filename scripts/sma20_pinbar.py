@@ -78,7 +78,7 @@ def next_dol(h, l, ph, pl, i, d, E, risk, n):
             if pl[j] and l[j] < E: return min(l[j], lim)
     return lim
 
-def scan(b, tf, sess, T, W, U, B, targets, cost, maxhold, dol_k=10, rng=None):
+def scan(b, tf, sess, T, W, U, B, targets, cost, maxhold, dol_k=10, minrisk=0.0, rng=None):
     o, h, l, c = (b[x].values.astype(float) for x in ("open", "high", "low", "close"))
     n = len(c)
     sma = pd.Series(c).rolling(20).mean().values
@@ -104,7 +104,7 @@ def scan(b, tf, sess, T, W, U, B, targets, cost, maxhold, dol_k=10, rng=None):
         E = c[i]
         stop = (l[i] - B*TICK) if d == 1 else (h[i] + B*TICK)
         risk = (E - stop) if d == 1 else (stop - E)
-        if risk <= 0: continue
+        if risk <= 0 or risk < minrisk: continue   # too small to pay its own toll
         busy_until = i + 1
         for tg in targets:
             T_px = next_dol(h, l, dph, dpl, i, d, E, risk, n) if tg == "DOL" \
@@ -148,6 +148,7 @@ def main():
     ap.add_argument("--buf", default="2")
     ap.add_argument("--targets", default="R1,R2,DOL")
     ap.add_argument("--tapes", default="2023-26,2020-22,2017-19")
+    ap.add_argument("--minrisk", type=float, default=0.0, help="skip setups whose stop is narrower than this (pts)")
     ap.add_argument("--dolk", type=int, default=10, help="pivot strength (bars each side) for the DOL target")
     ap.add_argument("--out", default="data/debug/sma20_pinbar.csv")
     a = ap.parse_args()
@@ -163,10 +164,10 @@ def main():
         for tf in TFs:
             b = resample(raw, tf)
             for sess, T, W, U, B in itertools.product(SESS, TR, Ws, Us, Bs):
-                books = scan(b, tf, sess, T, W, U, B, TGs, a.cost, a.maxhold, a.dolk)
+                books = scan(b, tf, sess, T, W, U, B, TGs, a.cost, a.maxhold, a.dolk, a.minrisk)
                 for tg, rows in books.items():
                     s = summarise(rows, tape, dict(tf=tf, sess=sess, trend=T, W=W, U=U,
-                                                   buf=B, tgt=tg, dolk=a.dolk))
+                                                   buf=B, tgt=tg, dolk=a.dolk, minrisk=a.minrisk))
                     if s: out.append(s)
         print(f"  ..{tape} done", flush=True)
     df = pd.DataFrame(out)
