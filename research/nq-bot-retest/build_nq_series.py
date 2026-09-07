@@ -41,12 +41,16 @@ def third_friday(y, m):
     return d
 
 
-def expiry(sym):
+def expiry(sym, bar_year):
+    """Contract expiry from the one-digit year code, resolved relative to the bar's year: a row for
+    a contract can only exist before that contract expires, so the code names the first year >= the
+    bar's year with that last digit (NQH9 seen in 2018 -> 2019; NQZ8 seen in 2018 -> 2018)."""
     m = OUTRIGHT.match(sym)
     if not m:
         return None
     yd = int(m.group(2))
-    return third_friday(2020 + yd if yd < 8 else 2010 + yd, MONTH[m.group(1)])
+    year = bar_year + ((yd - bar_year % 10) % 10)
+    return third_friday(year, MONTH[m.group(1)])
 
 
 def trading_day(ts_utc):
@@ -97,10 +101,11 @@ def main():
         f.write("ts_event,rtype,publisher_id,instrument_id,open,high,low,close,volume,symbol\n")
         for ts in sorted(bars):
             td = trading_day(ts)
+            exps = {s: expiry(s, td.year) for s in bars[ts]}
             if rule == "expiry_day":
-                cands = [(expiry(s), s) for s in bars[ts] if expiry(s) and td < expiry(s)]
+                cands = [(e, s) for s, e in exps.items() if e and td < e]
             else:
-                cands = [(expiry(s), s) for s in bars[ts] if expiry(s) and td < roll_monday(expiry(s))]
+                cands = [(e, s) for s, e in exps.items() if e and td < roll_monday(e)]
             if not cands:
                 continue
             sym = min(cands)[1]
