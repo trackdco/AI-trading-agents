@@ -59,7 +59,8 @@ def summary(tr):
 def fmt(s):
     if s["n"] == 0:
         return "| 0 |"
-    return (f"| {s['n']} | {s['WR']:.1f} | {s['mean']:+.2f} | {s['lb95']:+.2f} | {s['PF']:.3f} | {s['total']:+,.0f} | {s['dd']:,.0f} | "
+    lb = f"{s['lb95']:+.2f}" if s['lb95'] is not None else "n/a"
+    return (f"| {s['n']} | {s['WR']:.1f} | {s['mean']:+.2f} | {lb} | {s['PF']:.3f} | {s['total']:+,.0f} | {s['dd']:,.0f} | "
             f"{s['avg_win']:+.1f} / {s['avg_loss']:+.1f} | {s['both_stop_pct']:.0f}% | {s['loss_R_med']:.2f} | {s['hold_med_bars']:.0f} |")
 
 
@@ -122,7 +123,8 @@ def table(title, tr, key, order=None):
         for y in (2021, 2022, 2023, 2024):
             xy = [t for t in x if t["year"] == y]
             yrs.append(f"{st.mean(t['pnl'] for t in xy):+.1f} ({len(xy)})" if xy else "—")
-        print(f"| {k} | {s['n']} | {100*s['n']/len(tr):.0f}% | {s['WR']:.1f} | {s['mean']:+.2f} | {s['lb95']:+.2f} | {s['total']:+,.0f} | " + " | ".join(yrs) + " |")
+        lb = f"{s['lb95']:+.2f}" if s['lb95'] is not None else "n/a"
+        print(f"| {k} | {s['n']} | {100*s['n']/len(tr):.0f}% | {s['WR']:.1f} | {s['mean']:+.2f} | {lb} | {s['total']:+,.0f} | " + " | ".join(yrs) + " |")
 
 
 def step2(path):

@@ -389,3 +389,36 @@ low and the cap too tight. Widening stops raises the loss per stop-out and the d
 $3.5–4.5k), so it is a risk decision, not a free improvement. Any such change is a new
 pre-registration on data none of this has touched — which now means data before 2021-09 or after
 2026-09-02.
+
+## C. After the verdict — three steps run in order (2026-09-07)
+
+Everything in this section is development-window measurement (2021-09 → 2024-12) on the sealed
+configuration C1a×C3a unless stated. It decides nothing; it informs a second pre-registration.
+
+### C.2 Step 2 — which level was swept (instrumented run, verified equivalent)
+
+`--record-levels` copies the sweep detector's own output (level names, depth, reclaim bars, volume
+ratio) into each entry record. The instrumented run reproduces the sealed development run
+**4,299 of 4,299 trades identical** on every compared field, so the numbers below are the sealed
+trades, labelled. Full tables: `data/dev_diag/LEVELS_C1a_C3a.md`.
+
+| level class | share | mean $/trade | LB95 | 2021 / 2022 / 2023 / 2024 mean |
+|---|---|---|---|---|
+| round number only | 75% | +11.08 | +7.48 | +6.1 / +15.6 / +7.9 / +8.8 |
+| prior-day / prior-week only | 15% | +10.31 | +3.28 | +7.3 / +21.6 / +8.6 / +2.5 |
+| round + structural | 10% | +13.19 | +3.19 | +8.8 / +14.0 / +15.4 / +12.4 |
+| VWAP | 0.6% (24 trades) | — | — | too few to say |
+
+**Finding: no level type is a candidate for exclusion.** Every class is positive in every year.
+The VWAP-sweep losses seen on the untouched bot in `TRADE-AND-ENTRY-REVIEW.md` were an overnight
+population; RTH-only already removed them (24 trades left in 3.3 years). The detector's own
+"confluence" inputs do not rank outcomes either: the 3–8 pt depth band the score rewards is the
+*weakest* depth band (+8.98 vs +22.54 for 8–15 pt); the "≥2 levels" bonus makes no difference
+(+11.08 vs +11.83); a volume ratio ≥3 helps modestly (+18.32, positive every year) but 2–3 does not
+(+9.95). One curiosity, stable across years: sweeps of the odd 50s (x50 only) earn +14.92 and beat
+sweeps of the rounder x100 levels (+6.67, negative in 2023) — the opposite of what a
+"psychological level" story predicts, and consistent with the effect being the overshoot-and-revert
+mechanics, not the number. It is an observation, not a rule.
+
+**Consequence for step 3:** the level-type change is withdrawn. Only the stop-width change remains
+as a candidate.
