@@ -79,6 +79,7 @@ for _name in (
 
 import execution.scale_out_executor as _sxe  # noqa: E402  (bot module; for the id patch)
 import fast_features  # noqa: E402  (exact fast paths for the feature engine; --fast-features)
+import intrabar  # noqa: E402  (resting-order stop model; --intrabar-stops)
 
 
 # ── Patch 1: bounded write-only lists ────────────────────────────────────────────────────
@@ -131,6 +132,7 @@ class RetestEngine(fb.CausalReplayEngine):
         self.rr_gate = rr_gate
         self.rth_only = rth_only
         self.cap_lifted = cap_lifted
+        self.record_levels = False
         self._shadow_count = 0
         self.retest_counters = {
             "c1_floor_applied": 0,            # floor raised the stop
@@ -379,6 +381,26 @@ class RetestEngine(fb.CausalReplayEngine):
             "htf_direction": htf_dir,
             "htf_strength": round(htf_str, 3),
         }
+        if self.record_levels:   # [RETEST diagnostic] which levels the sweep detector reported
+            self._pending_entry["levels"] = {
+                "swept_levels": list(sweep_signal.swept_levels),
+                "sweep_depth_pts": sweep_signal.sweep_depth_pts,
+                "reclaim_bars": sweep_signal.reclaim_bars,
+                "volume_ratio": sweep_signal.volume_ratio,
+                "sweep_candle_time": sweep_signal.sweep_candle_time.isoformat() if sweep_signal.sweep_candle_time else None,
+                "sweep_stop_override": sweep_stop_override,
+            }
+
+    async def _execute_pending_entry(self, bar):
+        pend = self._pending_entry
+        rec = await super()._execute_pending_entry(bar)
+        if rec is not None and pend and pend.get("levels"):
+            rec.update(pend["levels"])
+        return rec
+
+
+class IntrabarRetestEngine(intrabar.IntrabarMixin, RetestEngine):
+    """RetestEngine with resting-order stops evaluated on 1-minute bars (intrabar.py)."""
 
 
 # ── Data, run loop, output ───────────────────────────────────────────────────────────────
@@ -462,6 +484,16 @@ async def run(args) -> dict:
     bars_1m = load_bars(args.data)
     print("Aggregating to 2-minute execution bars (bot's aggregate_to_2m)...")
     bars_2m = fb.aggregate_to_2m(bars_1m)
+    if args.intrabar_stops:
+        sb = {}
+        for b in bars_1m:
+            ts = b["timestamp"]
+            bt = ts.replace(minute=(ts.minute // 2) * 2, second=0, microsecond=0)
+            sb.setdefault(bt, []).append((ts, b["open"], b["high"], b["low"], b["close"]))
+        for v in sb.values():
+            v.sort(key=lambda x: x[0])
+        IntrabarRetestEngine.sub_bars = sb
+        print(f"  intrabar stop model: {len(sb):,} 2m buckets with 1m sub-bars")
     del bars_1m
     start = date.fromisoformat(args.start) if args.start else None
     end = date.fromisoformat(args.end) if args.end else None
@@ -488,7 +520,9 @@ async def run(args) -> dict:
                    "slippage_mult": args.slippage_mult,
                    "perf_patch": not args.no_perf_patch,
                    "deterministic_ids": args.deterministic_ids,
-                   "fast_features": args.fast_features}
+                   "fast_features": args.fast_features,
+                   "intrabar_stops": args.intrabar_stops,
+                   "record_levels": args.record_levels}
     if args.fast_features:
         fast_features.install()
     if args.deterministic_ids:
@@ -509,6 +543,9 @@ async def run(args) -> dict:
         engine = st["engine"]
         engine._patch_executor()
         scheduler._indices = st["sched_indices"]
+        if args.intrabar_stops and not isinstance(engine, IntrabarRetestEngine):
+            engine.__class__ = IntrabarRetestEngine
+        engine.record_levels = args.record_levels
         if args.deterministic_ids:
             _sxe.uuid.n = st["ids"]
         start_idx = st["next_bar"]
@@ -523,6 +560,9 @@ async def run(args) -> dict:
         engine = base_state["engine"]
         engine._patch_executor()
         engine.cap_lifted = args.cap_lifted            # may branch here (sensitivity)
+        if args.intrabar_stops and not isinstance(engine, IntrabarRetestEngine):
+            engine.__class__ = IntrabarRetestEngine      # execution-model branch (disclosed in meta)
+        engine.record_levels = args.record_levels
         for tf, fed_ts in base_state["sched_last_fed"].items():
             if tf not in scheduler._queues:
                 continue
@@ -548,8 +588,10 @@ async def run(args) -> dict:
         print(f"  continuing from {args.continue_from}: {engine._entry_count} entries so far, "
               f"last bar {continued_from['last_bar_ts']}")
     else:
-        engine = RetestEngine(config, stop_floor=args.stop_floor, rr_gate=args.rr_gate,
-                              rth_only=args.rth_only, cap_lifted=args.cap_lifted)
+        cls = IntrabarRetestEngine if args.intrabar_stops else RetestEngine
+        engine = cls(config, stop_floor=args.stop_floor, rr_gate=args.rr_gate,
+                     rth_only=args.rth_only, cap_lifted=args.cap_lifted)
+        engine.record_levels = args.record_levels
         if not args.no_perf_patch:
             apply_perf_patch(engine)
 
@@ -657,6 +699,7 @@ async def run(args) -> dict:
             "final_checkpoint": final_ckpt,
             "rate_log": rate_log,
             "retest_counters": engine.retest_counters,
+            "intrabar_counters": getattr(engine, "intrabar_counters", None),
             "open_at_end_excluded": open_at_end,
             "wall_seconds": round(time_module.time() - wall0, 1),
         },
@@ -681,6 +724,8 @@ def main():
     ap.add_argument("--slippage-mult", type=float, default=1.0)
     ap.add_argument("--no-perf-patch", action="store_true")
     ap.add_argument("--fast-features", action="store_true", help="install fast_features.py (exact fast paths for the feature engine's zone bookkeeping)")
+    ap.add_argument("--intrabar-stops", action="store_true", help="resting-order stop model on 1-minute bars (intrabar.py); an execution-model change, disclosed in meta")
+    ap.add_argument("--record-levels", action="store_true", help="diagnostic: copy the sweep detector's swept levels into each entry record")
     ap.add_argument("--no-deterministic-ids", dest="deterministic_ids", action="store_false")
     ap.add_argument("--progress", type=int, default=25_000)
     ap.add_argument("--checkpoint", default=None, help="pickle path for exact checkpoints (deleted on completion)")
