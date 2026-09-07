@@ -364,3 +364,28 @@ facts for C1a×C3a (1,431 holdout trades, 631 losers); C1a×C3b agrees on every 
 
 None of these slices is a rule. Each was chosen after seeing the outcome; a rule built from any of
 them needs its own pre-registration and data none of this has touched.
+
+### B.11 Are the autopsy's slices stable? Development window vs holdout (2026-09-07, diagnostic)
+
+The same slices on C1a×C3a in the development window (2021-09 → 2024-12, 4,299 trades) and the
+holdout (1,431). A pattern that flips between them is noise; only a pattern present in both is a
+candidate for a pre-registered hypothesis.
+
+| slice | development: mean $/trade (n) | holdout: mean $/trade (n) | stable? |
+|---|---|---|---|
+| ATR14 < 15 at signal | **+8.7 (2,060)**, +$17.9k; in 2024 it made +$8.2k of +$11.3k | −1.5 (324), −$0.5k | **no** — a "drop low-ATR signals" filter would have cost $17.9k in development |
+| score 0.90–1.00 | +12.3 (410) | −4.0 (124) | no |
+| entry 09:30–10:00 | +15.5 (1,239), best bucket | +29.6 (413), best bucket | yes — and it is the highest-variance bucket, not a filter target |
+| against HTF bias | +7.5 (658), below with-HTF +11.6 | +46.9 (215), far above | no |
+| stop bound at the 10pt floor | **+8.6 (1,154), WR 52%, weakest** | **+11.0 (351), WR 48%, weakest** | **yes** |
+| stop 20–30 pt | **+20.6 (1,165), WR 64%, best** | **+27.3 (465), WR 60%, best** | **yes** |
+
+Reading: every *entry-selection* pattern the holdout suggested flips sign or rank in development.
+The one stable pattern is about **stop width**, not entry choice — floor-bound stops are the weakest
+positive bucket and 20–30 pt structural stops the best in both windows, which is the same direction
+as the cap-lifted sensitivity (§B.4) and the same argument as A5/A22. It is not a filter (floor-bound
+trades are profitable in both windows; removing them removes profit); it says the floor may be too
+low and the cap too tight. Widening stops raises the loss per stop-out and the drawdown (§B.4:
+$3.5–4.5k), so it is a risk decision, not a free improvement. Any such change is a new
+pre-registration on data none of this has touched — which now means data before 2021-09 or after
+2026-09-02.
