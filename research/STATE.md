@@ -1177,3 +1177,5 @@ VWAP/BB strategy; its N_trials accounting is independent of the one above (that 
   measured on the sealed C1a×C3a trades: one fit-half candidate (against-EMA50 fades, +$6/trade,
   2018–24) reversed on the test half (−$8/trade, 2025–26). Sizing test not run per §4. Flat sizing
   stands. `RESULT-3.md`.
+- **2026-09-07 — NQ-bot programme CLOSED** by Angus: not good enough to trade (edge ≈ friction, not
+  gradable, close-evaluated exits). `research/nq-bot-retest/CLOSED.md` is the index. Tooling retained.

@@ -1,6 +1,6 @@
 # RESULT — NQ-bot re-test
 
-**Status: HOLDOUT READ 2026-09-06 — VERDICT: PASS under the pre-registered rule, with the weakest of the three live combinations clearing zero by $0.16 per trade. One read; this pre-registration is finished.** This file is written in two parts. Part A
+**Status: HOLDOUT READ 2026-09-06 — VERDICT: PASS under the pre-registered rule, with the weakest of the three live combinations clearing zero by $0.16 per trade. One read; this pre-registration is finished. PROGRAMME CLOSED 2026-09-07 — see `CLOSED.md`.** This file is written in two parts. Part A
 (below) records the development-window runs and everything fixed before the holdout. Part B will
 be appended once, after the single holdout read (PREREGISTRATION.md §5–§5-bis).
 
