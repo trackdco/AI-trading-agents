@@ -67,7 +67,8 @@ def trend_flags(c, sma, h, l, ph, pl, mode):
     raise ValueError(mode)
 
 def next_dol(h, l, ph, pl, i, d, E, risk, n):
-    """Next prominent swing level in the trade's direction, floored at 1R."""
+    """Next PROMINENT swing level in the trade's direction, floored at 1R.
+    ph/pl here are strong pivots (dol_k each side), not the 2-bar structure pivots."""
     lim = E + risk if d == 1 else E - risk
     if d == 1:
         for j in range(i - 1, max(0, i - 400), -1):
@@ -77,11 +78,12 @@ def next_dol(h, l, ph, pl, i, d, E, risk, n):
             if pl[j] and l[j] < E: return min(l[j], lim)
     return lim
 
-def scan(b, tf, sess, T, W, U, B, targets, cost, maxhold, rng=None):
+def scan(b, tf, sess, T, W, U, B, targets, cost, maxhold, dol_k=10, rng=None):
     o, h, l, c = (b[x].values.astype(float) for x in ("open", "high", "low", "close"))
     n = len(c)
     sma = pd.Series(c).rolling(20).mean().values
-    ph, pl = pivots(h, l)
+    ph, pl = pivots(h, l)                      # 2-bar: short-term structure for HHHL
+    dph, dpl = pivots(h, l, k=dol_k)           # strong pivots: the draw on liquidity
     lo_t, sh_t = trend_flags(c, sma, h, l, ph, pl, T)
     tmin = (b.index.hour * 60 + b.index.minute).values
     t0, t1 = SESSIONS[sess]
@@ -105,7 +107,7 @@ def scan(b, tf, sess, T, W, U, B, targets, cost, maxhold, rng=None):
         if risk <= 0: continue
         busy_until = i + 1
         for tg in targets:
-            T_px = next_dol(h, l, ph, pl, i, d, E, risk, n) if tg == "DOL" \
+            T_px = next_dol(h, l, dph, dpl, i, d, E, risk, n) if tg == "DOL" \
                    else (E + d*float(tg[1:])*risk)
             res, pnl, k = "FLAT", None, i
             for k in range(i+1, min(n, i+1+hold)):
@@ -146,6 +148,7 @@ def main():
     ap.add_argument("--buf", default="2")
     ap.add_argument("--targets", default="R1,R2,DOL")
     ap.add_argument("--tapes", default="2023-26,2020-22,2017-19")
+    ap.add_argument("--dolk", type=int, default=10, help="pivot strength (bars each side) for the DOL target")
     ap.add_argument("--out", default="data/debug/sma20_pinbar.csv")
     a = ap.parse_args()
     TFs   = [int(x) for x in a.tfs.split(",")]
@@ -160,10 +163,10 @@ def main():
         for tf in TFs:
             b = resample(raw, tf)
             for sess, T, W, U, B in itertools.product(SESS, TR, Ws, Us, Bs):
-                books = scan(b, tf, sess, T, W, U, B, TGs, a.cost, a.maxhold)
+                books = scan(b, tf, sess, T, W, U, B, TGs, a.cost, a.maxhold, a.dolk)
                 for tg, rows in books.items():
                     s = summarise(rows, tape, dict(tf=tf, sess=sess, trend=T, W=W, U=U,
-                                                   buf=B, tgt=tg))
+                                                   buf=B, tgt=tg, dolk=a.dolk))
                     if s: out.append(s)
         print(f"  ..{tape} done", flush=True)
     df = pd.DataFrame(out)
