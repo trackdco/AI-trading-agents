@@ -68,8 +68,10 @@ def empty_by_construction(cfg: dict) -> bool:
     return cfg.get("stop_floor") == "a22_2xatr" and cfg.get("rr_gate") == "kept"
 
 
-def block_bootstrap_lb(trades, n_iter=N_BOOT, alpha=ALPHA, seed=SEED):
+def block_bootstrap_lb(trades, n_iter=N_BOOT, alpha=None, seed=None):
     """One-sided lower bound on mean net $/trade, blocks = trading days of entry."""
+    alpha = ALPHA if alpha is None else alpha
+    seed = SEED if seed is None else seed
     by_day = defaultdict(list)
     for t in trades:
         by_day[get_trading_day(datetime.fromisoformat(t["entry_ts"]))].append(t["adjusted_pnl"])
@@ -144,7 +146,11 @@ def main():
     ap.add_argument("--count-to", default=None, help="count only trades whose entry (ET date) <= this")
     ap.add_argument("--md", default=None)
     ap.add_argument("--json", default=None)
+    ap.add_argument("--alpha", type=float, default=ALPHA, help="one-sided bootstrap level (PREREGISTRATION-2: 0.025)")
+    ap.add_argument("--seed", type=int, default=SEED, help="PRNG seed (PREREGISTRATION-2: 20260907)")
     a = ap.parse_args()
+    global ALPHA, SEED
+    ALPHA, SEED = a.alpha, a.seed
     count_from = date.fromisoformat(a.count_from) if a.count_from else None
     count_to = date.fromisoformat(a.count_to) if a.count_to else None
 

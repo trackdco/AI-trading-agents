@@ -10,7 +10,7 @@ Prints only counts, timestamps and the quoted cost — no prices.
 
 The API key is read from the DATABENTO_API_KEY environment variable and never printed.
 
-usage: fetch_databento.py OUT.csv START(YYYY-MM-DD) END(YYYY-MM-DD) [--dry-run]
+usage: fetch_databento.py OUT.csv START END [--dry-run] [--parent]   (--parent: NQ.FUT, all contracts)
 """
 import os
 import sys
@@ -25,8 +25,10 @@ if not key:
     sys.exit("DATABENTO_API_KEY is not set")
 
 client = db.Historical(key)
-params = dict(dataset="GLBX.MDP3", schema="ohlcv-1m", symbols=["MNQ.c.0"], stype_in="continuous",
-              start=start, end=end)
+parent = "--parent" in sys.argv          # PREREGISTRATION-2: every NQ contract, front month built locally
+params = (dict(dataset="GLBX.MDP3", schema="ohlcv-1m", symbols=["NQ.FUT"], stype_in="parent", start=start, end=end)
+          if parent else
+          dict(dataset="GLBX.MDP3", schema="ohlcv-1m", symbols=["MNQ.c.0"], stype_in="continuous", start=start, end=end))
 avail = client.metadata.get_dataset_range(dataset="GLBX.MDP3")
 print(f"GLBX.MDP3 available range: {avail}")
 cost = client.metadata.get_cost(**params)

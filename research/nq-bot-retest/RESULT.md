@@ -422,3 +422,38 @@ mechanics, not the number. It is an observation, not a rule.
 
 **Consequence for step 3:** the level-type change is withdrawn. Only the stop-width change remains
 as a candidate.
+
+### C.1 Step 1 — the stop model, measured
+
+**What the bot actually does, live and in its backtest.** Every exit is evaluated in software on the
+bar close: `main.py` calls `executor.update(bar.close, bar.timestamp)` once per execution candle
+(2-minute candles from the IBKR portal client), and no resting stop order is ever placed — the
+executor's `stop_order_id` is never assigned. The hard stop fills at the close that breached it;
+trailing and breakeven exits fill at their level. **The backtest's close-based model is therefore
+faithful to the bot's mechanics, not a simplification of them.**
+
+**The counterfactual — the same parameters with resting-order stops** (`intrabar.py`: hard stop,
+C1 trail and C2 stop trigger on 1-minute lows/highs and fill at the level, everything else
+unchanged; the bot's cumulative kill switch disabled so the comparison runs the full window — with
+it on, every configuration tripped it inside the first two months of 2021 and never traded again):
+
+| dev window 2021-09 → 2024-12 | n | WR% | mean $/trade | LB95 | PF | net | max DD | C1 leg mean | C2 leg mean |
+|---|---|---|---|---|---|---|---|---|---|
+| C1a×C3a, close-evaluated (sealed) | 4,299 | 56.9 | **+11.12** | +7.99 | 1.31 | +$47,802 | $3,187 | +$6.51 | +$6.69 |
+| C1a×C3a, resting-order stops | 4,446 | 44.7 | **−9.73** | −11.48 | 0.68 | −$43,244 | $43,663 | −$4.09 | −$3.58 |
+| untouched, close-evaluated (sealed) | 4,508 | 46.4 | +3.28 | +0.47 | 1.10 | +$14,787 | $6,728 | | |
+| untouched, resting-order stops | 3,836 | 30.2 | −11.44 | −13.00 | 0.56 | −$43,896 | $44,238 | | |
+
+Negative in every year under resting stops. The mechanism: with a 2.5-point trail and a
+breakeven-plus-one stop, an intrabar wick takes the C1 leg off at half a point and the C2 leg at one
+point (2,457 and 2,372 intrabar exits of 4,446 trades), and the hard stop is touched 28% more often.
+The bot's parameters are inseparable from close-based evaluation.
+
+**What this means, plainly.**
+1. There is no "fix" to apply: the model used for the verdict is the bot's real behaviour.
+2. The edge is conditional on *not* holding resting protective stops with these parameters. That is
+   implementable (it is what the bot does), and it has a price the backtest does include — losses
+   run 1.4–1.7× the nominal stop (fills at the breaching close) — plus a tail it cannot show: a
+   fast move between two 2-minute closes is exited at whatever the next close is.
+3. Anyone running this bot must not "improve" it by adding broker stop orders at the modelled
+   distances. Full tables: `data/dev_diag/STOPMODEL_dev.md`.

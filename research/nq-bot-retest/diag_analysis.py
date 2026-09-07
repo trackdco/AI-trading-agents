@@ -49,7 +49,7 @@ def summary(tr):
         cum += x; peak = max(peak, cum); dd = max(dd, peak - cum)
     lb, _ = block_bootstrap_lb(tr)
     both_stop = sum(1 for t in tr if t["c1r"] == "stop" and t["c2r"] == "stop")
-    lossR = [(-t["pnl"]) / (t["stop"] * 4) for t in tr if t["pnl"] < 0]
+    lossR = [(-t["pnl"]) / (t["stop"] * 4) for t in tr if t["pnl"] < 0 and t["stop"] > 0]
     return {"n": n, "WR": 100 * len(w) / n, "mean": st.mean(p), "lb95": lb, "PF": (sum(w) / -sum(l)) if l else float("inf"),
             "total": sum(p), "dd": dd, "avg_win": st.mean(w) if w else 0, "avg_loss": st.mean(l) if l else 0,
             "both_stop_pct": 100 * both_stop / n, "loss_R_med": st.median(lossR) if lossR else 0,

@@ -15,7 +15,8 @@ The repository's config/data_split.yaml seals sessions 2025-02-01 .. 2026-01-30.
 overlaps them is refused unless --acknowledge-seal is given; passing it records that the user
 ruled the bot re-test may read those sessions, and the exposure is disclosed in RESULT.md.
 
-usage: build_nq_series.py OUT.csv START END [--acknowledge-seal]
+usage: build_nq_series.py OUT.csv START END [--acknowledge-seal] [--roll expiry_day|monday_of_expiry_week]
+       (--input-glob GLOB to read files other than the repository's; PREREGISTRATION-2 uses monday_of_expiry_week)
 """
 import glob
 import io
@@ -53,17 +54,29 @@ def trading_day(ts_utc):
     return (et + timedelta(days=1)).date() if et.hour >= 18 else et.date()
 
 
+def roll_monday(exp):
+    """Start of the expiry week's Monday session: the repository tape's convention."""
+    return exp - timedelta(days=exp.weekday())          # third Friday -> that week's Monday
+
+
 def main():
     out, start, end = sys.argv[1], date.fromisoformat(sys.argv[2]), date.fromisoformat(sys.argv[3])
     ack = "--acknowledge-seal" in sys.argv
+    rule = "monday_of_expiry_week" if "--roll" in sys.argv and sys.argv[sys.argv.index("--roll") + 1] == "monday_of_expiry_week" else "expiry_day"
+    if "--roll" in sys.argv:
+        rule = sys.argv[sys.argv.index("--roll") + 1]
+    assert rule in ("expiry_day", "monday_of_expiry_week"), rule
+    print("roll rule:", rule)
     if start <= SEAL_END and end >= SEAL_START and not ack:
         sys.exit(f"requested {start}..{end} overlaps the sealed holdout {SEAL_START}..{SEAL_END}; "
                  f"refusing without --acknowledge-seal (see docstring)")
-    files = sorted(glob.glob(f"{REPO}/glbx-mdp3-*.ohlcv-1m.csv.zst"))
+    pattern = sys.argv[sys.argv.index("--input-glob") + 1] if "--input-glob" in sys.argv else f"{REPO}/glbx-mdp3-*.ohlcv-1m.csv.zst"
+    files = sorted(glob.glob(pattern))
     bars = {}          # ts -> dict(sym -> row)
     for p in files:
         with open(p, "rb") as fh:
-            reader = io.TextIOWrapper(zstandard.ZstdDecompressor().stream_reader(fh), encoding="utf-8")
+            reader = (io.TextIOWrapper(zstandard.ZstdDecompressor().stream_reader(fh), encoding="utf-8")
+                      if p.endswith(".zst") else io.TextIOWrapper(fh, encoding="utf-8"))
             cols = reader.readline().strip().split(",")
             ix = {c: i for i, c in enumerate(cols)}
             for line in reader:
@@ -84,7 +97,10 @@ def main():
         f.write("ts_event,rtype,publisher_id,instrument_id,open,high,low,close,volume,symbol\n")
         for ts in sorted(bars):
             td = trading_day(ts)
-            cands = [(expiry(s), s) for s in bars[ts] if expiry(s) and td < expiry(s)]
+            if rule == "expiry_day":
+                cands = [(expiry(s), s) for s in bars[ts] if expiry(s) and td < expiry(s)]
+            else:
+                cands = [(expiry(s), s) for s in bars[ts] if expiry(s) and td < roll_monday(expiry(s))]
             if not cands:
                 continue
             sym = min(cands)[1]
