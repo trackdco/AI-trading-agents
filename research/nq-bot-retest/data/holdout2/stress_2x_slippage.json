@@ -1,0 +1,179 @@
+{
+ "results": {
+  "V2-1_C1a_C3a": {
+   "n": 571,
+   "win_rate_pct": 49.91,
+   "profit_factor": 0.965,
+   "total_net": -540.2,
+   "mean_net": -0.946,
+   "sd_net": 76.47,
+   "bootstrap_lb95": -6.301,
+   "trading_days": 154,
+   "max_dd": 2536.56,
+   "rth_share_pct": 99.6,
+   "mean_stop": 12.78,
+   "months": 8,
+   "profitable_months": 4,
+   "monthly": {
+    "2018-09": -366.7399999999998,
+    "2018-10": 723.9200000000005,
+    "2018-11": 527.5400000000003,
+    "2018-12": 816.8600000000004,
+    "2019-01": 15.760000000000176,
+    "2019-02": -1230.8399999999995,
+    "2019-03": -566.56,
+    "2019-04": -460.1399999999999
+   },
+   "cond_mean_pos": false,
+   "cond_lb_pos": false,
+   "abort_n": false,
+   "empty_by_construction": false,
+   "file": "/home/user/AI-trading-agents/research/nq-bot-retest/data/holdout2/h2_stress_V21.json",
+   "file_sha256": "25715c1b6f868efb063a0aab6c464fe324a90dc2a3e6473bd0739144e77b22ba",
+   "trades_sha256": "03b2c3720a3dc3e50249bea928ad67f0b1db9b11df936e2861fd510c2e181a5f",
+   "config": {
+    "stop_floor": "a5_10pt",
+    "rr_gate": "removed",
+    "rth_only": true,
+    "cap_lifted": true,
+    "slippage_mult": 2.0,
+    "perf_patch": true,
+    "deterministic_ids": true,
+    "fast_features": true,
+    "intrabar_stops": false,
+    "record_levels": true,
+    "no_kill_switch": false
+   },
+   "counters": {
+    "c1_floor_applied": 679,
+    "c1_floor_then_over_cap": 0,
+    "c3_rr_gate_rejected": 0,
+    "c3_rr_gate_would_have_rejected": 991,
+    "c2_rth_rejected": 450,
+    "cap_lifted_admitted_over_30": 8,
+    "max_stop_rejected": 0
+   },
+   "window": {
+    "start": "2018-08-01",
+    "end": "2021-08-31",
+    "first_bar": "2018-08-01T00:00:00-04:00",
+    "last_bar": "2021-08-31T23:58:00-04:00",
+    "bars_2m": 540547
+   }
+  },
+  "V2-2_C1a_C3b": {
+   "n": 185,
+   "win_rate_pct": 45.41,
+   "profit_factor": 0.844,
+   "total_net": -1027.58,
+   "mean_net": -5.554,
+   "sd_net": 91.32,
+   "bootstrap_lb95": -18.318,
+   "trading_days": 105,
+   "max_dd": 1415.0,
+   "rth_share_pct": 99.5,
+   "mean_stop": 11.19,
+   "months": 16,
+   "profitable_months": 9,
+   "monthly": {
+    "2018-09": 111.9,
+    "2018-10": -353.1,
+    "2018-11": 70.8000000000001,
+    "2018-12": 69.78000000000024,
+    "2019-01": -133.89999999999998,
+    "2019-03": -64.63999999999999,
+    "2019-04": 9.84,
+    "2019-05": -20.659999999999975,
+    "2019-06": 65.36000000000001,
+    "2019-08": -97.95999999999992,
+    "2019-09": 78.98000000000002,
+    "2019-10": 0.9400000000000261,
+    "2019-11": 13.84,
+    "2019-12": 104.02000000000001,
+    "2020-01": -75.49999999999999,
+    "2020-02": -807.28
+   },
+   "cond_mean_pos": false,
+   "cond_lb_pos": false,
+   "abort_n": true,
+   "empty_by_construction": false,
+   "file": "/home/user/AI-trading-agents/research/nq-bot-retest/data/holdout2/h2_stress_V22.json",
+   "file_sha256": "74b83950f419c554d280862de5cb15780e61e6b35cd97afc9dcf030df79a30da",
+   "trades_sha256": "eeca5d9c3db269967ac001a557d0cb2fe5dc4722575c50d09b086e6b7e45bba9",
+   "config": {
+    "stop_floor": "a5_10pt",
+    "rr_gate": "kept",
+    "rth_only": true,
+    "cap_lifted": true,
+    "slippage_mult": 2.0,
+    "perf_patch": true,
+    "deterministic_ids": true,
+    "fast_features": true,
+    "intrabar_stops": false,
+    "record_levels": true,
+    "no_kill_switch": false
+   },
+   "counters": {
+    "c1_floor_applied": 1853,
+    "c1_floor_then_over_cap": 0,
+    "c3_rr_gate_rejected": 2742,
+    "c3_rr_gate_would_have_rejected": 0,
+    "c2_rth_rejected": 29,
+    "cap_lifted_admitted_over_30": 28,
+    "max_stop_rejected": 0
+   },
+   "window": {
+    "start": "2018-08-01",
+    "end": "2021-08-31",
+    "first_bar": "2018-08-01T00:00:00-04:00",
+    "last_bar": "2021-08-31T23:58:00-04:00",
+    "bars_2m": 540547
+   }
+  },
+  "V2-3_C1b_C3a": {
+   "n": 0,
+   "empty_by_construction": false,
+   "file": "/home/user/AI-trading-agents/research/nq-bot-retest/data/holdout2/h2_stress_V23.json",
+   "file_sha256": "259c9f75e7fc7c74851064efd04c10b5c5274cfff6cbff79a93a1b40a24f05cd",
+   "trades_sha256": "1cf4e07e26907d41a41dfca2d0e459339fd9744cf252367fb6092e4cdfe09e7a",
+   "config": {
+    "stop_floor": "a22_2xatr",
+    "rr_gate": "removed",
+    "rth_only": true,
+    "cap_lifted": true,
+    "slippage_mult": 2.0,
+    "perf_patch": true,
+    "deterministic_ids": true,
+    "fast_features": true,
+    "intrabar_stops": false,
+    "record_levels": true,
+    "no_kill_switch": false
+   },
+   "counters": {
+    "c1_floor_applied": 25,
+    "c1_floor_then_over_cap": 0,
+    "c3_rr_gate_rejected": 0,
+    "c3_rr_gate_would_have_rejected": 53,
+    "c2_rth_rejected": 21,
+    "cap_lifted_admitted_over_30": 0,
+    "max_stop_rejected": 0
+   },
+   "window": {
+    "start": "2018-08-01",
+    "end": "2021-08-31",
+    "first_bar": "2018-08-01T00:00:00-04:00",
+    "last_bar": "2021-08-31T23:58:00-04:00",
+    "bars_2m": 540547
+   }
+  }
+ },
+ "stress": {},
+ "verdict": null,
+ "bootstrap": {
+  "n_iter": 10000,
+  "alpha": 0.025,
+  "seed": 20260907,
+  "prng": "numpy PCG64"
+ },
+ "count_from": "2018-09-01"
+}

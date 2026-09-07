@@ -1166,3 +1166,9 @@ VWAP/BB strategy; its N_trials accounting is independent of the one above (that 
   trades (fragile); the 10pt-floor cells LB95 +$11.67 / +$13.68 on 1,431 / 1,123 trades. Untouched
   control +$8.77 / LB95 +$4.15. Data: the repository's own NQ tape to 2026-09-02, sealed sessions
   read under Angus's ruling (config/data_split.yaml). `research/nq-bot-retest/RESULT.md` §B.
+- **2026-09-07 — PRE-REGISTRATION 2 (30pt cap removed) READ ON HOLDOUT-2 (2018-09..2021-08,
+  repo's raw GLBX NQ.FUT): VERDICT ABORT** — V2-3 (2×ATR) tripped the bot's cumulative kill switch
+  on trade 101 of the cold start (56 holdout trades), and the mean flips negative under 2× slippage
+  in the 10pt cells. Cap question closed; the passed family stands. Controls: the passed 10pt cells
+  earn +$5.37 / +$6.82 per trade on 2018–21; untouched bot −$1.31. `RESULT-2.md`. No unseen bar
+  data remains in the repository for this bot.
