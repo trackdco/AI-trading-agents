@@ -46,8 +46,30 @@ destroyed the result. Here same-bar handling is CONSERVATIVE - the book is bette
 it. A same-bar stop on a limit fill (price trades down to the limit and continues to the
 stop) is a real loss and is correctly booked as one.
 
-The genuinely lookahead-prone subset is small: 57 same-bar TARGET exits, 3.0% of the book.
-Those should be re-scored with exits scanned from the bar after the fill.
+CORRECTED 2026-09-08: the count of 57 was WRONG. It used hold <= 0 only. The correct test
+is hold < the bar's own duration, which gives 140 same-bar TARGET exits on fit (7.5% of the
+book) and 55 on holdout (5.9%). The 57 figure appears in the original commit message for
+this file and in two chat reports; it is withdrawn.
+
+Those 140 fit trades booked +356.1R of the book's +672.7R total. 53% of the fit book's
+profit came from 7.5% of its trades, all resolved inside their own fill bar.
+
+BRACKETED RE-SCORE (V8 exits are not specified anywhere available, so the exits cannot be
+re-walked exactly; the truth lies inside this range). Same-bar STOPS untouched throughout.
+
+  FIT (1,874 trades)                  PF      win    meanR    netR   maxDD
+    as booked                       1.860   44.6%   +0.359    +673   32.1R
+    suspects -> scratch (0R)        1.405   37.1%   +0.169    +317   44.6R
+    suspects -> full stop (worst)   1.191   37.1%   +0.094    +177   50.9R
+
+  HOLDOUT (929 trades)                PF      win    meanR    netR   maxDD
+    as booked                       2.131   52.3%   +0.407    +378   18.2R
+    suspects -> scratch (0R)        1.767   46.4%   +0.276    +256   19.6R
+    suspects -> full stop (worst)   1.517   46.4%   +0.217    +201   22.6R
+
+The fix costs 53% of fit mean R and 32% of holdout mean R. The FIT span now FAILS the
+PF 1.3 filter in the worst case (1.191) and its drawdown blows out to 50.9R (51% at 1%
+risk, double the 25% limit). The HOLDOUT passes the PF filter under all three treatments.
 
 ================ WHAT STILL TRIPS THE REALITY GATE ================
 scripts/reality_gate.py exits 1 on BOTH spans, two hard checks each:
