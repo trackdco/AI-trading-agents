@@ -47,7 +47,10 @@ At the exact ratio the post claims:
 
 ================ THE RANDOM CONTROL (first time we have run one) ================
 Matched random entries: same session, same risk, same target, random RTH bar.
-The rule beat random in 5 of 9 uncapped cells and lost in 4; the gap runs -0.03 to +0.06 R.
+The rule beat random in 6 of 9 uncapped cells and lost in 3; the gap runs -0.03 to +0.06 R.
+(CORRECTED 2026-09-08 (audit): this line originally read "5 of 9 ... and lost in 4", which
+contradicted the edge column in the table above it. The table is right: 6 positive, 3 negative.
+The conclusion is unchanged - the declared bar wanted >0.10 R and the largest gap is +0.06.)
 Both the rule and the coin flip lose, by about the same amount. The declared bar wanted
 the rule to beat random by >0.10 R. It does not.
 

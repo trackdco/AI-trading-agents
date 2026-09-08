@@ -58,7 +58,12 @@
 
 ================ VERDICT: FAIL, comprehensively ================
 Condition 1 (positive on NQ and 3 of 5 instruments): FAIL. Every one of the 20 instrument x exit
-cells is negative, on both halves, at both cost levels. Conditions 2-6 are not reached.
+cells is negative at both cost levels. Conditions 2-6 are not reached.
+
+CORRECTED 2026-09-08 (audit): the original wording here said negative "on both halves" too. That
+was one cell wrong. Of the 40 half-cells, 39 are negative and ONE is positive - YM GIVEBACK H2 at
++0.0196, against -0.1263 in its own first half. It changes nothing about the verdict, but "every
+half-cell" was an overclaim and is withdrawn.
 
 Correction to the note above: the stop is roughly 1.0-1.4x the median bar range, not half it - but the
 conclusion stands and is worse than it looks. A stop the size of ONE bar means the next bar alone can
