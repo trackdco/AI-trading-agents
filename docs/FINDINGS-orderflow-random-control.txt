@@ -1,0 +1,70 @@
+IS THE ORDER-FLOW FILTER REAL? — the follow-up the last verdict demanded (2026-09-08)
+
+Context: docs/FINDINGS-random-control-verdict.txt showed the pin-bar ENTRY carries no
+information — it loses to a matched random entry on 4 of 5 surfaces. The only thing that
+ever moved its number was the order-flow filter. So the question became: is that filter a
+real edge, or is it just selecting bars with a particular delta sign, which would work on
+ANY entry and collapse the whole family?
+
+Test: apply the SAME filter to matched RANDOM entries. Bar delta is defined on any bar, so
+this is a fair comparison. (The wick-absorption half needs a wick and has no random
+counterpart, so only the bar-delta half is tested — on both arms.)
+Matched: same day, same NY window, same DIRECTION, same risk in points, same 3R target,
+same max hold, same 0.75pt cost. Only the entry bar is randomised. 10 randoms per signal.
+
+================ RESULT: THE FILTER AND THE PATTERN INTERACT ================
+2023-26 footprint days, 1-min, W1, min stop 8pt.
+
+  trend gate   filter lift on RANDOM   filter lift on PIN BAR   edge (both filtered)
+  SIDE               -0.0322                  +0.1424                 +0.1306
+  SLOPE              +0.0304                  +0.1715                 +0.1650
+  NONE               +0.0282                  +0.1484                 +0.1288
+
+The filter is worth roughly ZERO on random entries (-0.03 to +0.03) and +0.14 to +0.17 on
+pin bars. Five-fold difference, same direction on all three gates.
+
+CAVEAT ON THOSE THREE ROWS: the gates are NESTED (NONE contains SLOPE contains SIDE), so
+they are one surface seen three ways, not three confirmations. The real check is the time
+split below.
+
+================ TIME SPLIT (NONE surface, 1,019 signals, cut 2025-10-27) ================
+                        pin bar        random        EDGE
+  FIRST HALF  filtered   +0.0884       -0.0256      +0.1140   (n=188 vs 2,574)
+              unfiltered -0.0729       -0.0432      -0.0297   (n=509 vs 5,090)
+  SECOND HALF filtered   +0.1663       +0.0255      +0.1408   (n=199 vs 2,507)
+              unfiltered +0.0329       -0.0140      +0.0469   (n=510 vs 5,100)
+
+Both halves say the same thing: unfiltered, the pin bar is worth nothing against random
+(-0.030 and +0.047). Filtered, it is worth +0.114 and +0.141.
+
+================ WHAT IS ACTUALLY TRUE ================
+  the pin bar alone            worthless   (loses to random on 4 of 5 surfaces)
+  bar delta alone              worthless   (lifts random entries by ~0)
+  pin bar AND bar delta        +0.13 to +0.17 R over filtered random
+
+This is an INTERACTION, not an additive edge. Neither ingredient works by itself. The
+reading: a hammer that closes back through the SMA while net aggression over the whole bar
+was still AGAINST the trade is a different event from either a hammer or a negative-delta
+bar. The candle says where; the delta says the move was fought and the fight was lost by
+the side that had control.
+
+Declared condition 6 of docs/PREREG-sma20-pinbar-reclaim.md ("beats a matched random entry
+by > 0.10 R") FAILS for the pin bar alone and PASSES for the filtered pin bar on every
+surface and in both time halves.
+
+================ WHAT THIS DOES NOT ESTABLISH ================
+- t-stats on the filtered real arms are 1.24 / 1.89 / 1.38. Individually not significant.
+  The random arms are tight (n 1,621-5,081); the real arms are the noisy side.
+- Footprint coverage begins 2023-07. There is NO out-of-sample test in time available. The
+  2017-19 and 2020-22 tapes cannot be used because no order-flow data exists for them.
+- Only the bar-delta half was tested. The wick-absorption half of the filter remains
+  untested against any null and cannot be tested this way.
+- 362 distinct days. At ~1 filtered signal per day this is a small book however it is cut.
+
+================ CONSEQUENCE ================
+The pin-bar family is not dead, but its name was wrong. It is not a 20-SMA pin-bar
+strategy — that component fails its own control. It is an ORDER-FLOW strategy that uses
+the pin bar to locate candidate bars. Any future work should treat the delta condition as
+the thesis and the candle as the scanner.
+
+Repro: python3 scripts/sma20_of_random_control.py --tape 2023-26 --trend NONE --repeats 10
