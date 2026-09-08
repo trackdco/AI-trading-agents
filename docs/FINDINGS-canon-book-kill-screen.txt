@@ -1,0 +1,76 @@
+THE CANON / AIKIDO FUNDED BOOK — scored against the five kill filters (2026-09-08)
+
+FOUND BY AUDIT, NOT BY THE ORIGINAL SCAN. My earlier repo scan searched docs/FINDINGS-*
+and scripts/ only, and missed src/, output/, context/, strategy-definition-v1.2.md,
+docs/CANON.md, docs/PLAYBOOK.md and the SPEC-* files. A completeness critic flagged 20
+strategies absent from my 276-name catalogue; every file it cited exists. This is the most
+important of them - docs/CANON.md calls it "the law" and the repo's declared shipped book.
+
+Spec: scripts/funded_book.py (docstring is the spec). Data: output/aikido_{fit,holdout}.parquet.
+Entry: cluster-confluence displacement / rejection block, E3 reclaim-limit, pre 08:00-09:30
+(W==1) and gold 09:40-10:30 (D==1 + wall-quality cut). Fit 2025-06..2026-07, sealed 2023/24
+holdout.
+
+================ MEASURED, PER-TRADE (valid trades only) ================
+  span      trades   win     PF     W/L   meanR   maxDD(R)   netR   months green
+  fit        1,874  44.6%  1.860   2.31  +0.359     32.1     +673      13 / 13
+  holdout      929  52.3%  2.131   1.94  +0.407     18.2     +378       6 / 6
+
+================ THE FIVE KILL FILTERS ================
+                          fit                     holdout
+  PF >= 1.3               1.860  PASS             2.131  PASS
+  MaxDD <= 25%            32.1%  FAIL at 1% risk  18.2%  PASS
+                                 (PASS at <=0.75% risk per trade)
+  trades >= 100           1,874  PASS               929  PASS
+  W/L >= 1.0               2.31  PASS              1.94  PASS
+  not (win>80% & W/L<1.2)  n/a   PASS               n/a  PASS
+
+The HOLDOUT span passes all five. The fit span fails only the drawdown filter, and only at
+1% risk per trade - that filter is a sizing choice, not a property of the book.
+
+On these numbers the canon book is a STRONGER survivor than either strategy in
+docs/FINDINGS-kill-screen.txt (PF 2.13 vs 1.33 and 1.32; 929 trades vs 224 and 186).
+
+================ IT DOES NOT SHARE THE FILL-BAR BUG ================
+This was the first thing checked, because the book predates the 2026-09-04 fill-bar finding
+by five weeks. It is CLEAN on that specific failure, and the evidence is unambiguous:
+
+  304 of 1,874 fit trades (16.2%) have exit_ts == fill_ts. Their composition:
+      247 stops, 57 targets. Win rate among them 18.8% (vs 49.6% for the rest).
+      Mean R +0.149 vs +0.400 for the rest. They DRAG the book down.
+  Removing every zero-hold trade:            meanR +0.359 -> +0.400, PF 1.860 -> 1.941
+  Removing all same-bar resolution entirely: meanR +0.359 -> +0.567, PF 1.860 -> 2.571
+
+The empire's bug ran the other way: 74% of its TARGET wins were same-bar and removing them
+destroyed the result. Here same-bar handling is CONSERVATIVE - the book is better without
+it. A same-bar stop on a limit fill (price trades down to the limit and continues to the
+stop) is a real loss and is correctly booked as one.
+
+The genuinely lookahead-prone subset is small: 57 same-bar TARGET exits, 3.0% of the book.
+Those should be re-scored with exits scanned from the bar after the fill.
+
+================ WHAT STILL TRIPS THE REALITY GATE ================
+scripts/reality_gate.py exits 1 on BOTH spans, two hard checks each:
+
+  [TRIP] winners exiting on their own fill bar   12.8% fit / 8.7% holdout   limit 5%
+  [TRIP] annualised Sharpe (daily net R)          5.91 fit / 7.64 holdout   limit 3
+
+The first is the 3.0% target subset above plus same-bar winners with positive hold; it is
+bounded and explainable. The second is not explained and is the open question: a Sharpe of
+5.9 to 7.6 is not a number live books print. Also unexplained: 13/13 and 6/6 green months.
+
+================ VERDICT ================
+RETEST ONCE - and it is the best candidate in the repo, ahead of both previously reported
+survivors. Two things must happen before any number here is quoted:
+  1. Re-score the 57 same-bar TARGET exits with --exit-next-bar semantics. Expected impact
+     is small (3.0% of the book) but it must be measured, not assumed.
+  2. Explain the Sharpe. 5.9-7.6 annualised with a 13/13 green-month record is the profile
+     that the reality gate exists to catch. Until it is explained it is a modelling
+     artefact by default, not an edge.
+
+CREDIT WHERE DUE: this book was fit on 2025-06..2026-07 and confirmed on a SEALED 2023/24
+holdout with a written pre-registration (docs/HOLDOUT-2023-24-PREREGISTRATION.md). That is
+better discipline than anything else in the repo, and the holdout numbers are BETTER than
+the fit numbers, which is the opposite of the overfitting signature.
+
+Repro: python3 -m scripts.funded_book | reality gate as converted in this session.
