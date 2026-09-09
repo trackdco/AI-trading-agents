@@ -1,0 +1,97 @@
+THE DTE METHOD — raw triggers, gate test, and loser autopsy (2026-09-09)
+Pre-registered in docs/PREREG-dte-method.md. NQ 1-min, 09:30-11:00 ET, cost 0.75pt,
+exits scanned from the bar AFTER entry, 1:2 target. Three tapes kept separate.
+11,019 raw trades. Source claimed a 70-80% win rate.
+
+================ THE RAW E TRIGGER IS NEGATIVE ON ALL THREE TAPES ================
+V-spike inversion FVG alone (W=6, displacement >=0.6), no D or T gate:
+  2017-19  n=3,641  R -0.1205  t -5.24
+  2020-22  n=3,385  R -0.0374  t -1.56
+  2023-26  n=3,993  R -0.0546  t -2.50   win 30.6% against a 33.3% break-even
+
+================ THE GATES, MEASURED AS FILTERS ================
+R/trade by tape. Every gate applied to the same raw population.
+
+  gate            2017-19   2020-22   2023-26   trade counts (17/20/23)
+  raw E only      -0.1205   -0.0374   -0.0546   3641 / 3385 / 3993
+  D 15m FVG       -0.1134   +0.1294   +0.0440    448 /  352 /  476
+  D 1h FVG        +0.0576   +0.1174   +0.1584    482 /  428 /  571   <- all three positive
+  D 4h FVG        +0.0845   +0.1081   +0.1619    562 /  492 /  643   <- all three positive
+  D any of three  -0.0426   +0.1041   +0.1141   1109 /  967 / 1205
+  T LRLQ >= 3     -0.0942   -0.0604   -0.0540   2026 / 2121 / 2486   <- NEGATIVE on all three
+  FULL DTE        -0.0304   +0.0663   +0.1355    850 /  809 / 1017
+
+FINDING 1 — DELIVERY IS THE WHOLE EDGE, AND ONLY ON THE HIGHER TIMEFRAMES.
+D on the 1h or 4h FVG is positive on all three tapes (+0.058/+0.117/+0.158 and
++0.085/+0.108/+0.162). It flips a losing trigger into a winning one. The 15m version
+FAILS 2017-19 (-0.113) and "any of the three" inherits that failure. Higher timeframe is
+strictly better: 4h > 1h >> 15m.
+
+FINDING 2 — LOW-RESISTANCE LIQUIDITY DOES NOTHING. IT SLIGHTLY HURTS.
+The source calls it "the most important aspect of this whole video" and "if I do not have
+lower resistance liquidity, I do not take a trade". Measured, it is NEGATIVE on all three
+tapes and every threshold:
+  LRLQ >= 1  -0.061   >= 2  -0.061   >= 3  -0.054   >= 4  -0.037  (2023-26)
+Prediction P2 said it would move R by less than 0.05. It moved it by 0.001.
+
+FULL DTE pooled across all three tapes: n=2,676, R +0.0619, win 35.7% (break-even 33.3%,
+so +2.4 points of excess), PF 1.095, t +2.23, maxDD 64.8R, drop-3-best +0.0597.
+It fails the pre-registered bar: NOT positive on all three tapes (2017-19 is -0.030),
+and pooled t is 2.23 against a required 2.5.
+
+================ ORDER FLOW: NOTHING, AND FOR A STRUCTURAL REASON ================
+Footprint attached to the 2023-26 trades (1,766 with coverage):
+  wick absorption delta   gap +0.020   corr with R -0.014
+  delta over the V window gap +0.008   corr -0.011
+  delta over inversion bar gap +0.150  corr +0.027   but n=37 versus n=1,729
+
+Only 2% of DTE signals have delta running against the trade. On the 20-SMA pin bar it was
+39%. The reason is structural: DTE REQUIRES a displacement candle closing in the trade
+direction, and that condition selects for delta agreeing. The pin-bar edge came from the
+opposite population — a candle closing one way while aggression ran the other. DTE's own
+trigger definition excludes the thing that made order flow useful. Order flow cannot help
+this strategy, and that is a property of the rule, not of the data.
+
+================ THE AUTOPSY, AND A CORRECTION ================
+23 features screened on 2023-26, then re-checked per tape. What SURVIVES a same-sign test
+across all three tapes:
+  V window length (vwin)   +0.032 / +0.027 / +0.123   LONGER V is better
+  ATR at entry             +0.158 / +0.059 / +0.122   higher volatility is better
+Winners have a median 3-candle V, losers 2. The source stresses a fast "quick up, quick
+down" move; faster is measurably worse.
+
+WHAT DOES NOT SURVIVE — CORRECTING A CLAIM MADE EARLIER THIS SESSION.
+On 2023-26 alone, distance from the 20 SMA (t +2.37), fib 0.5 (t +2.20), fib 0.705
+(t +2.01) and fib 0.382 (t +1.97) all said the same thing: being FAR from a level is
+better than being near it. I reported that as a finding and linked it to the prior-day POC
+result on the pin bar ("that's now twice"). It DOES NOT REPLICATE:
+  d_sma20     -0.051 / -0.078 / +0.104   sign flips
+  d_fib0.5    -0.026 / +0.005 / +0.154   sign flips
+  d_fib0.618  +0.086 / -0.007 / +0.089   sign flips
+  d_vwap      -0.038 / -0.081 / +0.070   sign flips
+That was a single-tape artifact and the claim is withdrawn. 23 features at |t|>1.95 give
+about 1 false positive by chance; I found 4 and at least 3 of them were noise.
+
+VWAP bands added nothing anywhere: five measurements (VWAP, +/-1sd, +/-2sd, sd position),
+best t 1.61 on the discovery tape, no replication.
+
+================ PREDICTIONS SCORED ================
+ P1 win rate nowhere near 70-80% ......................... CORRECT. 30.6% raw, 35.7% full DTE.
+ P2 LRLQ moves R by less than 0.05 ....................... CORRECT. It moved it by 0.001,
+                                                           and in the wrong direction.
+ P3 delivery cuts trade count hard without improving R ... WRONG. It cuts to 12-16% AND is
+                                                           the only thing that improves R.
+ P4 it will fail the random-entry control ................ NOT YET RUN.
+ P5 1:1 beats 1:2 on win rate but not on R .............. pending the 324-cell grid.
+
+================ VERDICT ================
+The strategy as taught is not what works in it. The execution trigger loses on all three
+tapes. The gate the source calls most important is worthless. The gate that does the work
+is higher-timeframe fair-value-gap delivery on the 1h and 4h, which is positive on all
+three tapes but only reaches t 2.23 pooled and fails 2017-19 in its full form.
+
+Not dead, and the one surviving component is worth isolating: D on 1h/4h alone, without
+the LRLQ gate, scores +0.058/+0.117/+0.158. That is the next test, plus the random control.
+
+Repro: python3 scripts/dte_autopsy.py --tapes 2023-26 --flow
+       python3 scripts/dte_method.py --htf none,15,15+60+240 --L 0,3

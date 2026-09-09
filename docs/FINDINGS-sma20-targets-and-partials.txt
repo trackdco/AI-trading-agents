@@ -1,0 +1,58 @@
+TARGET SIZE AND TRADE MANAGEMENT — 20-SMA PIN BAR
+Config: 1-min, SIDE trend, W1, buf 2 ticks, min stop 8 pts, cost 0.75, max hold 120 min.
+Exits scanned from the bar AFTER entry; a bar touching both stop and target counts STOP.
+
+================ WHY THE WIN RATE LOOKED LOW ================
+It looked low because every result up to now used a 3R target, where break-even is 25%.
+The win rate at 1R is exactly what a discretionary trader would expect.
+
+Order flow + small signal bar filter, 2023-26 footprint days (n as shown):
+  target   n    win    break-even   edge (pts)   R/trade
+    1R    90   52.2%     50.0%         +2.2       -0.017
+  1.5R    90   47.8%     40.0%         +7.8       +0.133
+    2R    90   41.1%     33.3%         +7.8       +0.172
+  2.5R    90   35.6%     28.6%         +7.0       +0.183
+    3R    90   32.2%     25.0%         +7.2       +0.227
+
+At 1R you need 53.1% to cover 0.75 pt on a 12 pt stop. We get 52.2%. Short by a point.
+
+THE STRUCTURAL POINT
+The filters add +7 to +8 points of edge at 1.5R and beyond, but only +2.2 at 1R. So the
+edge is not "price bounces here" - it is "price CONTINUES after it bounces". A 1R target
+exits before the information pays.
+
+Corollary, and it is counterintuitive: ORDER FLOW MAKES 1R WORSE.
+  raw at 1R              51.3% win
+  order-flow filtered    49.0% win
+The order-flow filter selects for trades that travel FAR, not trades that go RIGHT.
+Pairing it with a 1R target is actively counterproductive.
+
+================ TRADE MANAGEMENT SCHEMES (all three tapes) ================
+                        2017-19   2020-22   2023-26   share finishing positive
+  flat 1R               +0.0321   +0.0047   -0.0212        52-55%
+  flat 3R               -0.0258   -0.0676   +0.0711        25-28%
+  half@1R -> 3R         +0.0032   -0.0315   +0.0250        25-28%
+  half@1R, BE, -> 3R    +0.0611   +0.0047   +0.0189        51-55%   <- only all-positive
+  half@1R -> 5R         -0.0397   +0.0186   +0.0211        17-20%
+  third@1R -> 3R        -0.0065   -0.0435   +0.0403        25-28%
+
+Share of pins that reach 1R at all: 55.1% / 52.9% / 51.5% - stable across nine years.
+
+WHY THE BREAKEVEN MOVE IS LOAD-BEARING
+Without it, banking half at 1R and then getting stopped gives back the +0.5R, so the
+trade nets negative - which is why "half@1R -> 3R" has the same 26% positive rate as a
+flat 3R. Move the stop to entry and a failed runner costs nothing, so the booked half
+survives. That single change is what converts a 26% scheme into a 52% scheme AND makes
+it the only one positive on all three tapes.
+
+================ WHAT THIS DOES NOT ESTABLISH ================
+- Magnitude is small: +0.061 / +0.005 / +0.019, averaging +0.028 R. 2020-22 is ~zero.
+- The breakeven stop is flattered by bar data. If a 1-min bar spikes to 1R and returns
+  through entry within the same bar, this code books the partial and only applies the
+  BE stop from the NEXT bar. Real sequencing could stop at breakeven first. Sizing that
+  error needs 1-second data on a sample.
+- Six schemes were compared. One clearing on all three tapes is roughly what chance
+  would give, so this is a lead, not a result.
+- The partial test ran WITHOUT order flow, since footprint only covers 2023-26.
+
+Repro: python3 scripts/sma20_partials.py

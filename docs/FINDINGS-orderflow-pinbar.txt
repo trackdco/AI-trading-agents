@@ -1,0 +1,63 @@
+STAGE 3 - ORDER FLOW ON THE 20-SMA PIN BAR
+Pre-registered in docs/PREREG-orderflow-bardelta.md. Footprint: 513 days, 28.8M rows.
+COVERAGE: footprint starts 2023-07. NO order-flow data exists for the 2017-19 or
+2020-22 tapes. Nothing here has been tested out of sample in time.
+
+================ H1 REPLICATION ================
+H1: a pin bar whose NET delta over the whole bar still ran AGAINST the trade scores
+better than one where net delta ran with it. Split on sign only, no tuning.
+
+ surface     n   n_against  n_with   R_against   R_with     gap   win_ag  win_with
+ 1m_NONE   1019       387     632      +0.128   -0.111   +0.239   29.5%    22.8%
+ 1m_SLOPE   537       227     310      +0.235   -0.062   +0.297   32.2%    23.9%
+ 1m_side    337       155     182      +0.185   -0.079   +0.264   31.0%    23.6%
+ 3m_SLOPE   252        84     168      +0.049   -0.058   +0.107   20.2%    19.6%
+ 3m_side    148        48     100      +0.165   -0.064   +0.229   22.9%    19.0%   <- discovery
+
+Out-of-sample surfaces: 4. Same sign: 4/4. Gap > +0.10: 4/4. Mean gap +0.227.
+VERDICT: H1 HOLDS.
+
+PREDICTIONS SCORED
+ P1 "H1 will NOT replicate cleanly" ............ WRONG. It replicated 4 for 4.
+ P2 "wick delta stays uninformative everywhere"  HALF WRONG. It does not rank winners
+    (corr with R is -0.07 to -0.01 everywhere), but on the larger samples the ABSENCE
+    of absorption is strongly negative. The 148-trade pass had only n=20 in that
+    bucket, which is why it looked flat.
+
+================ THE TWO TESTS, COMBINED ================
+ A = absorption present   (delta inside the rejected wick ran against the trade)
+ B = bar delta against    (net delta over the whole bar still ran against the trade)
+
+Largest STANDALONE surface (1-min, no trend filter, 362 days, 2023-07 to 2026-07).
+The other surfaces are nested subsets of this one, so pooling them inflates n and t.
+
+  filter       n     share    R/trade      t     win
+  raw       1019      100%    -0.0199   -0.37   25.3%
+  A and B    382       37%    +0.1335   +1.43   29.6%
+  neither    148       15%    -0.3839   -3.15   16.2%
+
+  filtered book halves: H1 +0.112 (n=191)  H2 +0.155 (n=191)
+  drop the 3 best trades: +0.111
+
+================ THE ACTUAL FINDING ================
+The strongest thing order flow gives us is a rule for what NOT to take, not a rule for
+what to take. The 15% of pin bars with neither absorption in the wick nor net selling
+across the bar lose 0.38 R each at t = -3.15. Removing them lifts a book from -0.02 to
++0.13 without touching anything else.
+
+Pat's mechanism is REAL: 85-89% of these pin bars do show the aggressive side hitting
+into the wick and failing. But because it is present on nearly every pin, it cannot
+rank them - it can only flag the minority where it is missing, and those are the ones
+that bleed.
+
+The counterintuitive half is B. The best pins are the ones where the aggressive side
+was in control for the WHOLE bar and still could not close it their way. If net flow
+has already flipped to our side by the close, the move has happened and we are late.
+
+================ WHAT THIS DOES NOT ESTABLISH ================
+- Standalone t is +1.43, not > 2.5. This is real but not proven.
+- Zero coverage before 2023-07. No out-of-sample test in time is possible with the
+  footprint data we hold.
+- The 3-min surfaces are thin (148-252 trades) and 3m_SLOPE showed the weakest gap.
+
+Repro: python3 scripts/sma20_orderflow.py --tf 1 --trend NONE --W 1.0 --mult 3.0 --minrisk 8

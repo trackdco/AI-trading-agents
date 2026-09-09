@@ -1,0 +1,895 @@
+<title>Railed Empire Tearsheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+  :root{
+    --paper:#EFF1F4;
+    --surface:#FFFFFF;
+    --surface-2:#E7EAEF;
+    --ink:#12161D;
+    --ink-2:#48505E;
+    --ink-3:#767F8D;
+    --rule:#D3D8E0;
+    --rule-soft:#E2E6EC;
+    --accent:#2E4E8F;
+    --accent-soft:#DBE2F2;
+    --pos:#17796A;
+    --neg:#A83E2B;
+    --warn:#8A6410;
+    --shadow:0 1px 2px rgba(18,22,29,.06), 0 8px 24px -12px rgba(18,22,29,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F1218; --surface:#161A22; --surface-2:#1D222B;
+      --ink:#E8EBF0; --ink-2:#A8B1BF; --ink-3:#79828F;
+      --rule:#282E38; --rule-soft:#20252E;
+      --accent:#8AAAEC; --accent-soft:#22304C;
+      --pos:#4EB79F; --neg:#E27A63; --warn:#D3A03C;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1218; --surface:#161A22; --surface-2:#1D222B;
+    --ink:#E8EBF0; --ink-2:#A8B1BF; --ink-3:#79828F;
+    --rule:#282E38; --rule-soft:#20252E;
+    --accent:#8AAAEC; --accent-soft:#22304C;
+    --pos:#4EB79F; --neg:#E27A63; --warn:#D3A03C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:940px;margin:0 auto;padding:0 24px 96px}
+  .col{max-width:64ch}
+
+  h1,h2,h3,.mono,.eyebrow,th,.tile-v,.step-n{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+  .mono,.num,td,.tile-v,.tick,.axis{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+  .eyebrow{
+    font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-3);font-family:"IBM Plex Mono",ui-monospace,monospace;
+  }
+
+  /* masthead */
+  header.mast{padding:64px 0 32px;border-bottom:1px solid var(--rule)}
+  h1{
+    font-size:clamp(40px,7vw,68px);line-height:.98;letter-spacing:-.03em;font-weight:700;
+    margin:14px 0 0;text-wrap:balance;
+  }
+  .deck{font-size:20px;line-height:1.45;color:var(--ink-2);margin:18px 0 0;max-width:56ch}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:26px;font-size:12.5px;color:var(--ink-3)}
+  .meta b{color:var(--ink-2);font-weight:500}
+
+  /* section shell */
+  section{padding-top:56px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+  .sec-ref{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);
+    border:1px solid var(--rule);border-radius:3px;padding:2px 7px;white-space:nowrap;
+  }
+  h2{font-size:27px;letter-spacing:-.02em;font-weight:600;margin:0;text-wrap:balance}
+  h3{font-size:15px;letter-spacing:.02em;font-weight:600;margin:0 0 10px}
+  p{margin:14px 0}
+  .lede{font-size:18.5px}
+  em.term{font-style:normal;font-weight:600}
+
+  /* grammar strip */
+  .grammar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:4px;overflow:hidden;margin-top:26px}
+  .step{background:var(--surface);padding:16px 16px 18px}
+  .step-n{font-size:11px;letter-spacing:.1em;color:var(--accent);font-weight:600}
+  .step-t{font-size:15.5px;font-weight:600;margin-top:8px;line-height:1.3;font-family:Archivo,sans-serif}
+  .step-d{font-size:13px;color:var(--ink-2);margin-top:6px;line-height:1.45}
+  .gates{margin-top:12px;font-size:13.5px;color:var(--ink-2)}
+  .gates b{font-weight:600;color:var(--ink)}
+
+  /* stat band */
+  .band{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));
+    gap:1px;background:var(--rule);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-top:28px}
+  .tile{background:var(--paper);padding:20px 18px 22px}
+  .tile-k{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);
+    font-family:"IBM Plex Mono",monospace}
+  .tile-v{font-size:32px;font-weight:700;letter-spacing:-.02em;margin-top:10px;line-height:1;
+    font-variant-numeric:tabular-nums}
+  .tile-v.p{color:var(--pos)}
+  .tile-n{font-size:12.5px;color:var(--ink-3);margin-top:8px;line-height:1.4}
+
+  /* panels & charts */
+  .panel{background:var(--surface);border:1px solid var(--rule);border-radius:5px;
+    padding:22px 22px 12px;margin-top:26px;box-shadow:var(--shadow)}
+  .panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+  .panel-title{font-family:Archivo,sans-serif;font-weight:600;font-size:15px}
+  .panel-sub{font-size:12.5px;color:var(--ink-3)}
+  .chart-scroll{overflow-x:auto}
+  svg{display:block;width:100%;min-width:520px;height:auto}
+  .tick{font-size:11px;fill:var(--ink-3)}
+  .axis{font-size:12px;fill:var(--ink-2)}
+  .vlabel{font-size:12.5px;fill:var(--ink);font-weight:500}
+  .grid{stroke:var(--rule-soft);stroke-width:1}
+  .base{stroke:var(--rule);stroke-width:1}
+  .bar{fill:var(--accent)}
+  .bar-mute{fill:var(--ink-3);opacity:.55}
+  .bar:hover,.bar-mute:hover{opacity:.85}
+  .legend{display:flex;gap:20px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);padding:4px 0 14px}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;vertical-align:baseline}
+
+  /* tables */
+  .t-scroll{overflow-x:auto;margin-top:24px}
+  table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
+  caption{text-align:left;font-family:Archivo,sans-serif;font-weight:600;font-size:15px;padding-bottom:10px}
+  th{
+    text-align:right;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+    font-weight:600;padding:0 0 8px 18px;border-bottom:1px solid var(--rule);white-space:nowrap;
+  }
+  th:first-child,td:first-child{text-align:left;padding-left:0}
+  td{text-align:right;padding:9px 0 9px 18px;border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+  td:first-child{font-family:Archivo,sans-serif;font-weight:500;white-space:normal}
+  tr:last-child td{border-bottom:none}
+  tbody tr.total td{border-top:1px solid var(--rule);font-weight:600}
+  .pos{color:var(--pos)}
+  .neg{color:var(--neg)}
+  .note{font-size:13px;color:var(--ink-3);margin-top:12px;max-width:64ch}
+
+  /* two-up */
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;margin-top:26px}
+
+  /* big figure pair */
+  .figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:26px;margin-top:26px}
+  .fig{border-left:3px solid var(--accent);padding:4px 0 4px 18px}
+  .fig-v{font-family:Archivo,sans-serif;font-size:44px;font-weight:700;letter-spacing:-.03em;line-height:1}
+  .fig-k{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+    font-family:"IBM Plex Mono",monospace;margin-top:10px}
+  .fig-d{font-size:14px;color:var(--ink-2);margin-top:10px;line-height:1.5}
+
+  /* rails + kills */
+  .rails{margin-top:24px;border-top:1px solid var(--rule)}
+  .rail{display:grid;grid-template-columns:52px 1fr;gap:16px;padding:12px 0;border-bottom:1px solid var(--rule-soft);
+    font-size:14.5px;color:var(--ink-2)}
+  .rail code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--accent);font-weight:500}
+  .rail b{color:var(--ink);font-weight:600}
+
+  .kill{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--rule-soft);
+    font-size:14.5px;color:var(--ink-2)}
+  .kill-tag{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    padding:3px 8px;border-radius:3px;height:fit-content;white-space:nowrap}
+  .k-dead{background:var(--surface-2);color:var(--neg);border:1px solid var(--rule)}
+  .k-live{background:var(--surface-2);color:var(--pos);border:1px solid var(--rule)}
+  .kill b{color:var(--ink);font-weight:600}
+
+  /* callout */
+  .callout{margin-top:26px;background:var(--surface);border:1px solid var(--rule);
+    border-left:3px solid var(--neg);border-radius:5px;padding:18px 20px}
+  .callout h3{font-family:Archivo,sans-serif;font-size:15px;font-weight:600;margin:0 0 8px}
+  .callout p{font-size:14px;color:var(--ink-2);margin:8px 0;line-height:1.55;max-width:70ch}
+  .callout b{color:var(--ink);font-weight:600}
+  .rule-line{border-top:1px solid var(--rule-soft);padding-top:10px;margin-top:12px!important}
+
+  /* verdict stamp */
+  .stamp{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;
+    letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:3px;
+    background:var(--surface-2);border:1px solid var(--rule);color:var(--pos);margin-bottom:14px}
+
+  ul.plain{margin:14px 0;padding-left:20px}
+  ul.plain li{margin:8px 0;color:var(--ink-2)}
+  ul.plain li b{color:var(--ink);font-weight:600}
+
+  footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-3)}
+  footer code{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2)}
+
+  #tip{
+    position:fixed;z-index:9;pointer-events:none;opacity:0;transform:translate(-50%,-120%);
+    background:var(--ink);color:var(--paper);font-family:"IBM Plex Mono",monospace;font-size:12px;
+    padding:6px 9px;border-radius:4px;white-space:nowrap;transition:opacity .1s linear;
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  a{color:var(--accent)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow" style="color:var(--neg)">Superseded 2026-09-04 · verified on 1-second data · the edge was fill-bar accounting · no edge after costs</div>
+  <h1>The Railed Empire</h1>
+  <p class="deck">One entry grammar, three books of reference levels, run under a measured risk stack. Here is what four years of it looks like, the two layers that finally beat it — and what happened when the whole thing was pointed at three years nobody had looked at.</p>
+  <div class="meta">
+    <span><b>Sample</b> 2023-01-02 → 2026-09-02</span>
+    <span><b>Session-days</b> 954</span>
+    <span><b>Trades</b> 75,481</span>
+    <span><b>Holdouts</b> 2020–22 passed · 2017–19 failed the bar, and said why</span>
+    <span><b>Gold</b> on its dial, armed · +18% R, no added drawdown</span>
+  </div>
+</header>
+
+<div class="callout" style="margin-top:28px;border-left-color:var(--neg);background:var(--surface)">
+  <h3 style="color:var(--neg)">Superseded on 2026-09-04 — read this before anything below</h3>
+  <p><b>The edge on this page sits inside the fill bar.</b> The Pine port of every book was run on a TradingView 1-minute NQ chart from September 2023 to September 2026 and the trade lists were reconciled against the engine: entries match the engine <b>96–98% to the minute</b>, stops match, flips match. But <b>74% of the engine's target exits are booked on the same bar as the fill</b>, and TradingView wins only 62–64% of those at +0.35R, against the engine's +1.0R. Every engine target that took a minute or longer wins 100% in TradingView.</p>
+  <p>The spec scans for the exit from the fill bar inclusive. A resting buy limit fills on the way down, so a fill bar whose high reaches the target almost always printed that high <em class="term">before</em> the pullback that filled the order. The engine books a win for a move that happened before it was in the trade. Take those same-bar targets out and the seven books are <b>−12,639R</b> over the span instead of +9,388R. Re-scored with TradingView's within-bar rule, every book flips from about +0.17R to about −0.16R per trade. TradingView's own result across all seven books: −1,954 points gross, −$585k after commissions on 54,578 trades.</p>
+  <p>The audit, the blind re-implementation, PBO/DSR and both holdouts all reproduced the spec faithfully — none tested the spec's intrabar assumption against finer data. The 1-second test was then run on six sessions (301,095 one-second bars, 571 engine trades): in <b>88%</b> of the same-bar targets the minute's high printed <em class="term">before</em> the fill second. Replayed second by second those trades earn +87R where the engine booked +273R, and all 571 trades earn <b>+18R</b> where the engine booked +176R — below the 0.5pt cost. TradingView's rule landed within 0.01R per trade of the seconds. The full seven-year re-run with the corrected rule (target scanned from the bar after the fill) is negative in every year of every tape, armed and flat: 2023–26 armed <b>−10,728R</b> at −0.18R per trade, win rate 47.5%; 2020–22 −7,198R; 2017–19 −1,588R. <b>Verdict: the grammar has no edge after costs. Nothing on this page should be traded, funded or scaled.</b> Every figure below is left as it was, as the record of what was believed and why. Full reconciliation: <code>docs/FINDINGS-tradingview-reconciliation.md</code>.</p>
+</div>
+
+<section id="grammar">
+  <div class="sec-head"><span class="sec-ref">§19 · §34</span><h2>The grammar</h2></div>
+  <p class="col lede">Every trade in every book is the same five moves. Nothing in the four years below comes from a different rule — only from a different list of levels.</p>
+
+  <div class="grammar">
+    <div class="step"><div class="step-n">SIGNAL</div><div class="step-t">Close through</div><div class="step-d">A 1-minute candle closes ≥3pt beyond a reference level.</div></div>
+    <div class="step"><div class="step-n">ENTRY</div><div class="step-t">Limit at the retest</div><div class="step-d">Rest an order back at the level. No chasing — market entry is a tested loser.</div></div>
+    <div class="step"><div class="step-n">RISK</div><div class="step-t">Structural stop</div><div class="step-d">One tick past the close-through candle. 5pt floor, 30pt cap — wider signals are never placed.</div></div>
+    <div class="step"><div class="step-n">EXIT</div><div class="step-t">Full out at 1R</div><div class="step-d">No partials, no runners. Both were built and both lost.</div></div>
+    <div class="step"><div class="step-n">FLIP</div><div class="step-t">Stop and reverse</div><div class="step-d">An opposing close through the same level turns the position around.</div></div>
+  </div>
+  <p class="gates col"><b>Gates:</b> no entries 08:00–09:30 on high-impact news days · pendings die at 16:00 · flat by session end · every trade sized by its own R.</p>
+</section>
+
+<section id="headline">
+  <div class="sec-head"><span class="sec-ref">§32 · §34</span><h2>Four years, railed and capped</h2></div>
+  <p class="col">All three books together, run through the risk stack chronologically, with the 30pt stop cap enforced inside the engine.</p>
+
+  <div class="band">
+    <div class="tile"><div class="tile-k">Per trade</div><div class="tile-v p">+0.1361R</div><div class="tile-n">expectancy over 75,481 trades</div></div>
+    <div class="tile"><div class="tile-k">Per day</div><div class="tile-v p">+10.84R</div><div class="tile-n">≈80 trades a day, full risk per stream</div></div>
+    <div class="tile"><div class="tile-k">Win rate</div><div class="tile-v">65.3%</div><div class="tile-n">measured on the rail pass before the cap</div></div>
+    <div class="tile"><div class="tile-k">Months positive</div><div class="tile-v">45 / 45</div><div class="tile-n">worst month +18.3R, median +224R</div></div>
+    <div class="tile"><div class="tile-k">Worst day</div><div class="tile-v neg">−18.1R</div><div class="tile-n">which is also the max drawdown</div></div>
+    <div class="tile"><div class="tile-k">Green days</div><div class="tile-v">89%</div><div class="tile-n">daily Sharpe 1.153</div></div>
+  </div>
+
+  <p class="col" style="margin-top:22px"><b>The drawdown number is the unusual one — and it is a 2023–26 fact, not a property of the strategy.</b> In these four years the deepest hole is a single trading day, so the max drawdown and the worst day are the same figure. Both holdouts then showed losses <em class="term">can</em> chain: a three-day slide to −39.4R in November 2022, and −88.5R against an −8.4R worst day in 2017. Size to the deeper number. Daily loss cutoffs were tested and made it <em class="term">worse</em> — red mornings routinely heal by the close, and a cutoff realises the intraday low into an end-of-day print.</p>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title">Net R by year</div>
+      <div class="panel-sub">capped empire · 2026 through Sep 2</div>
+    </div>
+    <div class="chart-scroll">
+      <svg viewBox="0 0 720 300" role="img" aria-label="Net R by year: 2023 +2,179R, 2024 +2,802R, 2025 +2,893R, 2026 +2,399R through September 2.">
+        <text class="axis" x="0" y="14">net R</text>
+        <line class="grid" x1="64" y1="20"  x2="700" y2="20"></line>
+        <line class="grid" x1="64" y1="96.7" x2="700" y2="96.7"></line>
+        <line class="grid" x1="64" y1="173.3" x2="700" y2="173.3"></line>
+        <line class="base" x1="64" y1="250" x2="700" y2="250"></line>
+        <text class="tick" x="56" y="24"    text-anchor="end">3,000</text>
+        <text class="tick" x="56" y="100.7" text-anchor="end">2,000</text>
+        <text class="tick" x="56" y="177.3" text-anchor="end">1,000</text>
+        <text class="tick" x="56" y="254"   text-anchor="end">0</text>
+
+        <path class="bar" data-tip="2023 · +2,179R · +8.45R/day" d="M99.5,250 L99.5,87 Q99.5,83 103.5,83 L183.5,83 Q187.5,83 187.5,87 L187.5,250 Z"></path>
+        <path class="bar" data-tip="2024 · +2,802R" d="M258.5,250 L258.5,39.2 Q258.5,35.2 262.5,35.2 L342.5,35.2 Q346.5,35.2 346.5,39.2 L346.5,250 Z"></path>
+        <path class="bar" data-tip="2025 · +2,893R" d="M417.5,250 L417.5,32.2 Q417.5,28.2 421.5,28.2 L501.5,28.2 Q505.5,28.2 505.5,32.2 L505.5,250 Z"></path>
+        <path class="bar" data-tip="2026 · +2,399R in 8 months · +14.1R/day" d="M576.5,250 L576.5,70.1 Q576.5,66.1 580.5,66.1 L660.5,66.1 Q664.5,66.1 664.5,70.1 L664.5,250 Z"></path>
+
+        <text class="vlabel" x="143.5" y="74"   text-anchor="middle">+2,179</text>
+        <text class="vlabel" x="302.5" y="26.2" text-anchor="middle">+2,802</text>
+        <text class="vlabel" x="461.5" y="19.2" text-anchor="middle">+2,893</text>
+        <text class="vlabel" x="620.5" y="57.1" text-anchor="middle">+2,399</text>
+
+        <text class="axis" x="143.5" y="272" text-anchor="middle">2023</text>
+        <text class="axis" x="302.5" y="272" text-anchor="middle">2024</text>
+        <text class="axis" x="461.5" y="272" text-anchor="middle">2025</text>
+        <text class="axis" x="620.5" y="272" text-anchor="middle">2026</text>
+        <text class="tick" x="620.5" y="290" text-anchor="middle">8 months</text>
+      </svg>
+    </div>
+  </div>
+  <p class="note">2026 is short a third of a year and has already beaten 2023: the rate per day rose from +8.45R in 2023 to +14.1R in 2026, because trade frequency roughly doubled across the era. Monthly win rate never left the 63–70% band in 45 months.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>The sizing dial</caption>
+      <thead><tr><th>Risk per stream</th><th>R / day</th><th>Max drawdown</th></tr></thead>
+      <tbody>
+        <tr><td>Full</td><td class="pos">+10.84</td><td class="neg">−18.1R</td></tr>
+        <tr><td>Half</td><td class="pos">+5.42</td><td class="neg">−9.0R</td></tr>
+        <tr><td>One third</td><td class="pos">+3.61</td><td class="neg">−6.0R</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Drawdown scales with size and the edge per trade does not — so the dial is the whole risk conversation, not a filter.</p>
+</section>
+
+<section id="books">
+  <div class="sec-head"><span class="sec-ref">§26 · §28 · §30</span><h2>Three books, one grammar</h2></div>
+  <p class="col">The same five moves priced against three different lists of reference levels. They are near-independent: daily correlation between any pair sits between +0.10 and +0.18, so they add rather than overlap.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Each book measured standalone, honest fills, costs in</caption>
+      <thead><tr><th>Book</th><th>Trades</th><th>Win rate</th><th>Per trade</th><th>Net R</th><th>Max DD</th></tr></thead>
+      <tbody>
+        <tr><td>8-level book <span style="color:var(--ink-3);font-weight:400">— prior-day VA/POC/high-low + weekly VA/POC, proximity-merged</span></td><td>23,320</td><td>66.1%</td><td class="pos">+0.1395</td><td class="pos">+3,253</td><td class="neg">−15.6R</td></tr>
+        <tr><td>Session VWAP bands <span style="color:var(--ink-3);font-weight:400">— ±1σ, ±2σ, frozen at signal</span></td><td>34,100</td><td>64.3%</td><td class="pos">+0.1186</td><td class="pos">+4,044</td><td class="neg">−18.5R</td></tr>
+        <tr><td>NY VWAP <span style="color:var(--ink-3);font-weight:400">— anchored 09:30, NY signals only</span></td><td>19,984</td><td>66.3%</td><td class="pos">+0.1571</td><td class="pos">+3,139</td><td class="neg">−15.9R</td></tr>
+        <tr class="total"><td>Railed together, capped</td><td>75,481</td><td>65.3%</td><td class="pos">+0.1361</td><td class="pos">+10,273</td><td class="neg">−18.1R</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">The books sum to 77,404 trades; the rails remove 1,923 duplicate entries and the 30pt cap skips the rest. Duplicates were measured before they were banned — the level/VWAP pair lost 120R and the VWAP/VWAP pair lost 78R, so cutting them costs nothing and pays twice.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Inside the 8-level book: five level families, zero re-tuning</caption>
+      <thead><tr><th>Level family</th><th>Trades</th><th>Win rate</th><th>Net R</th><th>In / out of sample</th><th>Corr vs PD VA</th></tr></thead>
+      <tbody>
+        <tr><td>Prior-day value area</td><td>7,623</td><td>67.3%</td><td class="pos">+1,133</td><td>+515 / +618</td><td>—</td></tr>
+        <tr><td>Weekly value area</td><td>7,091</td><td>66.9%</td><td class="pos">+964</td><td>+409 / +555</td><td>+0.31</td></tr>
+        <tr><td>Prior-day high / low</td><td>5,647</td><td>65.5%</td><td class="pos">+705</td><td>+320 / +384</td><td>+0.06</td></tr>
+        <tr><td>Prior-day POC</td><td>4,490</td><td>65.0%</td><td class="pos">+549</td><td>+260 / +289</td><td>+0.03</td></tr>
+        <tr><td>Weekly POC</td><td>3,720</td><td>66.3%</td><td class="pos">+496</td><td>+191 / +305</td><td>+0.09</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Every family tested passed, first time, in both halves of the sample, at 65–67% — no family was tried and dropped. That is the finding: the grammar prices <em class="term">any</em> structural reference level. Prior-day VAH/VAL was one instance of a general edge, not the edge itself.</p>
+</section>
+
+<section id="cap">
+  <div class="sec-head"><span class="sec-ref">§34</span><h2>The 30pt stop cap</h2></div>
+  <p class="col">A structural stop sits one tick past the signal candle, so a giant 1-minute candle makes a giant stop — the tail is event days (the April 2025 tariff crash ran stops of 179–270pt). Stops run 8.5pt median, 27pt at p95, 269.8pt at the extreme; 3.9% of signals asked for more than 30pt.</p>
+  <p class="col">Those wide-stop trades are also the weakest part of the book. Under flat contract sizing that is the worst possible allocation: the most dollars on the lowest-expectancy trades.</p>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title">Expectancy decays with stop width</div>
+      <div class="panel-sub">net R per trade, by structural stop size</div>
+    </div>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--accent)"></span>placed</span>
+      <span><span class="swatch" style="background:var(--ink-3);opacity:.55"></span>skipped by the cap</span>
+    </div>
+    <div class="chart-scroll">
+      <svg viewBox="0 0 720 300" role="img" aria-label="Expectancy per trade by stop bucket: 5 to 10 points +0.140R, 10 to 15 +0.150R, 15 to 20 +0.120R, 20 to 30 +0.103R, 30 to 50 +0.072R, 50 plus +0.055R.">
+        <text class="axis" x="0" y="14">R / trade</text>
+        <line class="grid" x1="64" y1="34.4"  x2="700" y2="34.4"></line>
+        <line class="grid" x1="64" y1="106.25" x2="700" y2="106.25"></line>
+        <line class="grid" x1="64" y1="178.1" x2="700" y2="178.1"></line>
+        <line class="base" x1="64" y1="250" x2="700" y2="250"></line>
+        <text class="tick" x="56" y="38.4"   text-anchor="end">0.15</text>
+        <text class="tick" x="56" y="110.25" text-anchor="end">0.10</text>
+        <text class="tick" x="56" y="182.1"  text-anchor="end">0.05</text>
+        <text class="tick" x="56" y="254"    text-anchor="end">0</text>
+
+        <path class="bar" data-tip="5–10pt · +0.140R per trade" d="M84,250 L84,52.75 Q84,48.75 88,48.75 L146,48.75 Q150,48.75 150,52.75 L150,250 Z"></path>
+        <path class="bar" data-tip="10–15pt · +0.150R per trade" d="M190,250 L190,38.4 Q190,34.4 194,34.4 L252,34.4 Q256,34.4 256,38.4 L256,250 Z"></path>
+        <path class="bar" data-tip="15–20pt · +0.120R per trade" d="M296,250 L296,81.5 Q296,77.5 300,77.5 L358,77.5 Q362,77.5 362,81.5 L362,250 Z"></path>
+        <path class="bar" data-tip="20–30pt · +0.103R per trade" d="M402,250 L402,105.9 Q402,101.9 406,101.9 L464,101.9 Q468,101.9 468,105.9 L468,250 Z"></path>
+        <path class="bar-mute" data-tip="30–50pt · +0.072R per trade · skipped" d="M508,250 L508,150.5 Q508,146.5 512,146.5 L570,146.5 Q574,146.5 574,150.5 L574,250 Z"></path>
+        <path class="bar-mute" data-tip="50pt+ · +0.055R per trade · skipped" d="M614,250 L614,174.9 Q614,170.9 618,170.9 L676,170.9 Q680,170.9 680,174.9 L680,250 Z"></path>
+
+        <line x1="488" y1="24" x2="488" y2="250" stroke="var(--neg)" stroke-width="1.5" stroke-dasharray="4 4"></line>
+        <text x="480" y="20" text-anchor="end" class="vlabel" style="fill:var(--neg)">30pt cap</text>
+
+        <text class="vlabel" x="117" y="40"    text-anchor="middle">+0.140</text>
+        <text class="vlabel" x="223" y="25.4"  text-anchor="middle">+0.150</text>
+        <text class="vlabel" x="329" y="68.5"  text-anchor="middle">+0.120</text>
+        <text class="vlabel" x="435" y="92.9"  text-anchor="middle">+0.103</text>
+        <text class="vlabel" x="541" y="137.5" text-anchor="middle">+0.072</text>
+        <text class="vlabel" x="647" y="161.9" text-anchor="middle">+0.055</text>
+
+        <text class="axis" x="117" y="272" text-anchor="middle">5–10pt</text>
+        <text class="axis" x="223" y="272" text-anchor="middle">10–15</text>
+        <text class="axis" x="329" y="272" text-anchor="middle">15–20</text>
+        <text class="axis" x="435" y="272" text-anchor="middle">20–30</text>
+        <text class="axis" x="541" y="272" text-anchor="middle">30–50</text>
+        <text class="axis" x="647" y="272" text-anchor="middle">50+</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Capped versus uncapped, measured in-engine <span style="font-weight:400;color:var(--ink-3)">— on the earlier 921-day tape, not re-run since the splice</span></caption>
+      <thead><tr><th></th><th>Trades</th><th>Per trade</th><th>Net R</th><th>R / day</th><th>Worst day</th><th>Worst $ day, 1 micro</th></tr></thead>
+      <tbody>
+        <tr><td>Uncapped</td><td>74,616</td><td class="pos">+0.1347</td><td class="pos">+10,052</td><td class="pos">+10.91</td><td class="neg">−19.8R</td><td class="neg">−$485</td></tr>
+        <tr><td>30pt cap</td><td>71,961</td><td class="pos">+0.1375</td><td class="pos">+9,896</td><td class="pos">+10.74</td><td class="neg">−18.1R</td><td class="neg">−$363</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">The cap keeps 96% of trades and 98% of the R, raises expectancy, ticks the daily Sharpe up, and drops the largest single-trade risk from $540 to $60 on one micro. It is not free money — the skipped trades did make +198R over four years — it is a fix for an allocation absurdity. Tighter caps cost real edge: 15pt keeps only 84% of the R.</p>
+</section>
+
+<section id="overfit">
+  <div class="sec-head"><span class="sec-ref">§33</span><h2>Is it curve-fitted?</h2></div>
+  <p class="col lede">Two formal tests, both run end to end from the trade dumps rather than quoted from memory.</p>
+
+  <div class="figs">
+    <div class="fig">
+      <div class="fig-v">0.000</div>
+      <div class="fig-k">Probability of backtest overfitting</div>
+      <div class="fig-d">Across all 12,870 in-sample / out-of-sample partitions of the 20-cell selection grid, the configuration that looked best in-sample never once fell below median out-of-sample. Its out-of-sample rank held at 0.95 — as its median <em class="term">and</em> its minimum. A family picked by overfitting scores near 0.50; under 0.10 is the "excellent" bar.</div>
+    </div>
+    <div class="fig">
+      <div class="fig-v">1.000</div>
+      <div class="fig-k">Deflated Sharpe ratio</div>
+      <div class="fig-d">Daily Sharpe 1.156 over the 921-day tape, skew +0.39. The haircut for having searched even 10,000 configurations is 0.09 — noise against 1.16. Read this as "not a selection fluke", not as a forecast: a Sharpe this size in simulation still reflects the simulator's idealisations. Both tests were run before the 2026 gap was spliced; the re-baselined Sharpe on 948 days is 1.153, so neither verdict is close to turning.</div>
+    </div>
+  </div>
+  <p class="col">The plain-language version of PBO 0.000: the choice of settings barely matters. The performance ridge is monotone — depth and target move results smoothly and in the same direction in every slice of the data — so there was no lucky cell to find.</p>
+  <p class="col">Both tests are internal, though. They ask whether the best cell was picked by luck <em class="term">from data we had already seen</em>. The only test that answers the real question is data nobody has looked at — which is the next section.</p>
+</section>
+
+<section id="holdout">
+  <div class="sec-head"><span class="sec-ref">pre-registered · 2026-09-03</span><h2>The first holdout: three unseen years</h2></div>
+  <span class="stamp">Verdict · pass</span>
+  <p class="col lede">The pass/fail rule was written down, committed to git, and time-stamped <em class="term">before the data existed</em>. Then three years of NQ that had never been in any test — 2020, 2021, 2022 — were run on the frozen constants and scored mechanically against that rule.</p>
+  <p class="col">This is the strongest evidence on the page, because there was no way to move the goalposts after seeing the answer. The commit history proves the order.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Run A — frozen constants, nothing re-tuned for the era</caption>
+      <thead><tr><th>Year</th><th>Trades</th><th>Win rate</th><th>Per trade</th><th>Net R</th><th>R / day</th><th>Regime</th></tr></thead>
+      <tbody>
+        <tr><td>2020</td><td>1,737</td><td>66.8%</td><td class="pos">+0.1588</td><td class="pos">+276</td><td class="pos">+1.32</td><td>COVID crash &amp; melt-up</td></tr>
+        <tr><td>2021</td><td>1,505</td><td>64.3%</td><td class="pos">+0.1229</td><td class="pos">+185</td><td class="pos">+0.88</td><td>zero-rate grind</td></tr>
+        <tr><td>2022</td><td>2,236</td><td>65.2%</td><td class="pos">+0.1257</td><td class="pos">+281</td><td class="pos">+1.33</td><td>sustained bear market</td></tr>
+        <tr class="total"><td>Pooled</td><td>5,478</td><td>65.4%</td><td class="pos">+0.1354</td><td class="pos">+742</td><td class="pos">+1.17</td><td>bar was ≥+0.08</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">All three pre-registered conditions cleared: every year positive ✓ · win rate ≥60% (65.4%) ✓ · expectancy ≥+0.08R (+0.1354) ✓. Four integrity gates on the raw data were checked and passed <em class="term">before</em> any result was computed. One correction, found later and logged: the news calendar starts in 2023, so this run had <em class="term">no</em> news gate — it silently matched zero dates. On 2023–26 the gate is worth +2R over four years, so the verdict stands, but the holdout certifies the grammar without G8, not with it.</p>
+
+  <div class="figs">
+    <div class="fig">
+      <div class="fig-v">97.3%</div>
+      <div class="fig-k">of the win rate retained</div>
+      <div class="fig-d">67.2% in sample → 65.4% out of sample. The grammar keeps working; it does not degrade into a coin flip.</div>
+    </div>
+    <div class="fig">
+      <div class="fig-v">86.9%</div>
+      <div class="fig-k">of the expectancy retained</div>
+      <div class="fig-d">+0.1559 → +0.1354 per trade. A ~13% haircut is exactly the winner's-curse magnitude the standing caveat predicted — and it lands well clear of the bar.</div>
+    </div>
+  </div>
+
+  <div class="two">
+    <div>
+      <h3>The line that matters most</h3>
+      <p style="font-size:14.5px;color:var(--ink-2);line-height:1.55">2020 — the COVID year, the most violent tape available — was the <b>best of the three</b> at +0.1588 per trade. And 2022's year-long bear market still printed +0.1257. The strategy did not need a calm market, a bull market, or the volatility regime it was built in.</p>
+      <p style="font-size:14.5px;color:var(--ink-2);line-height:1.55">A second run with constants rescaled to the era also passed (+0.1206, 6,381 trades) — but did <em class="term">worse</em> than leaving them frozen. The strategy did not need re-tuning either.</p>
+    </div>
+    <div>
+      <h3>Predictions, scored</h3>
+      <ul class="plain">
+        <li><b>P1 — era constants beat frozen.</b> <span style="color:var(--neg)">Wrong.</span> Frozen won.</li>
+        <li><b>P2 — win rate lands 60–68%.</b> <span style="color:var(--pos)">Correct.</span> 65.5%.</li>
+        <li><b>P3 — 2020 is the most extreme on every measure.</b> <span style="color:var(--neg)">Mostly wrong.</span> 2022 had the wider stops.</li>
+        <li><b>P4 — the 1R target beats every larger one.</b> <span style="color:var(--pos)">Correct</span>, at all four depths.</li>
+      </ul>
+      <p class="note">Two of four. Scoring predictions is not decoration — it is the check on whether the story told about <em class="term">why</em> it works is also true.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h3>What this one did not cover</h3>
+    <p>The pre-registration declared <b>one</b> configuration — the prior-day value-area book on frozen constants. That is what passed. The 8-level book, both VWAP books, arming and conviction sizing were then <em class="term">replicated</em> on these years (all three books within a hair of their 2023–26 expectancy; arming +29% / +34%) — but on data already seen, so as support, not proof. The second holdout below was written to close that gap.</p>
+  </div>
+  <p class="note">Protocol: <code>docs/PREREG-holdout-2020-2022.md</code> (commit <code>80c3f23</code>, written before the pull). Result: <code>docs/FINDINGS-holdout-2020-2022.md</code>.</p>
+</section>
+
+<section id="holdout2">
+  <div class="sec-head"><span class="sec-ref">pre-registered · 2026-09-03</span><h2>The second holdout: 2017–2019, and the tick screen</h2></div>
+  <span class="stamp" style="color:var(--neg)">Verdict · grammar fails the bar</span>
+  <p class="col lede">This time <em class="term">every</em> layer was declared up front with its own pass/fail rule — the base grammar, all three books, the rails, arming, conviction sizing — plus six predictions. Then three more untouched years were pulled: 2017, 2018, 2019.</p>
+  <p class="col">The base grammar <b>failed</b> its bar (+0.074R per trade against a required +0.08). So did the three-book empire. And the measurement taken <em class="term">before</em> any trade result — predicted in writing as the likely reason — says why.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Gate 0 — median active-session 1-minute candle, in ticks. The grammar's screening law is ≥20.</caption>
+      <thead><tr><th>Year</th><th>Ticks per candle</th><th>Screen</th><th>Value-area book</th></tr></thead>
+      <tbody>
+        <tr><td>2017</td><td><b>4.0</b></td><td class="neg">fails</td><td>153 trades · +0.006R · +1R for the year</td></tr>
+        <tr><td>2018</td><td>10.0</td><td class="neg">fails</td><td>751 trades · +0.094R · +70R</td></tr>
+        <tr><td>2019</td><td>9.0</td><td class="neg">fails</td><td>481 trades · +0.065R · +31R</td></tr>
+        <tr class="total"><td>2023–26, for scale</td><td>28</td><td class="pos">passes</td><td>7,307 trades · +0.156R</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">NQ traded at 5,000–9,000 in 2017–19 and barely moved a point a minute. A 5-point stop floor on a tape whose median candle is 1 point fires 1,385 times in three years — against 7,307 on the modern tape — and each fill pays the same one-tick honest-fill tax and 0.5pt cost. Scaling the constants down to the era (declared as Run B) made it <em class="term">worse</em>: −0.161R per trade, the same mechanism that killed the euro.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Post-hoc, exploratory — taken after the verdicts. Every month of all seven years, bucketed by that month's own tick count.</caption>
+      <thead><tr><th>Ticks per candle</th><th>Months</th><th>Trades</th><th>Per trade</th><th>Months positive</th><th>Which eras</th></tr></thead>
+      <tbody>
+        <tr><td>0–8</td><td>20</td><td>410</td><td>+0.012</td><td class="neg">45%</td><td>2017–19</td></tr>
+        <tr><td>8–12</td><td>9</td><td>365</td><td>+0.112</td><td>56%</td><td>2017–19, 2020–22</td></tr>
+        <tr><td>12–16</td><td>10</td><td>886</td><td>+0.091</td><td>80%</td><td>2017–19, 2020–22</td></tr>
+        <tr><td>16–20</td><td>12</td><td>1,370</td><td class="pos">+0.175</td><td class="pos">100%</td><td>all three</td></tr>
+        <tr><td>20–28</td><td>35</td><td>5,119</td><td class="pos">+0.141</td><td class="pos">100%</td><td>2020–22, 2023–26</td></tr>
+        <tr><td>28–40</td><td>18</td><td>3,523</td><td class="pos">+0.153</td><td class="pos">100%</td><td>2020–22, 2023–26</td></tr>
+        <tr><td>40+</td><td>13</td><td>2,497</td><td class="pos">+0.143</td><td class="pos">100%</td><td>2020–22, 2023–26</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Under 8 ticks the grammar is a coin flip. From 16 ticks up it has never had a losing month, in any era.</b> Inside 2017–19 itself, Q4 2018 — the one stretch that reached 15–18 ticks — printed +0.18 / +0.25 / +0.23 per trade, as good as any quarter on the modern tape. This is the fourth confirmation of the screening law (ES 6–7 flat, 6E 3 dead, NQ 2017 4 dead, NQ 2020+ works) and the first on NQ's own history.</p>
+
+  <div class="two">
+    <div>
+      <h3>What passed anyway</h3>
+      <ul class="plain">
+        <li><b>Arming, mechanically.</b> Per-trade EV +0.070 → +0.103, drawdown −84.8 → −55.4R, clearing its ≥+5% drawdown-matched bar in both halves. But the flat base is a twentieth of the modern tape's, so the percentage (+136% / +72%) is not comparable and its prediction band was missed. What survives: the <em class="term">direction</em> has now held in three eras.</li>
+        <li><b>The 1R target</b> beats every larger one at every depth — fourth instrument-era running.</li>
+        <li><b>Frozen constants beat era-scaled</b>, as in 2020–22. The constants stay frozen.</li>
+        <li><b>Losses chain</b> across days here too (2017: max drawdown −88.5R against a worst day of −8.4R). The 2023–26 "worst day equals max drawdown" line is now scoped to 2023–26 twice over.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>What it changes</h3>
+      <ul class="plain">
+        <li><b>The edge is a property of the tape's granularity</b>, not of the year. NQ has had ≥20 ticks since 2020 and has 28 now. If its volatility ever collapses to 2017 levels, expect the edge to go to <em class="term">zero</em> — not negative — with a tenth of the trades.</li>
+        <li><b>A regime check belongs in the executor:</b> trailing 20-day median active-session candle, in ticks. Day-level and causal, so a bucket on it <em class="term">is</em> the rule effect. The threshold sits somewhere in 12–16 and should be pre-registered on forward data, not fitted to this table.</li>
+        <li><b>Both holdouts are spent</b>, and no earlier 1-minute NQ is in budget. Validation from here is forward time.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Protocol: <code>docs/PREREG-holdout-2017-2019.md</code> (commit <code>62e707b</code>, written before the pull; Amendment 1 before decompression). Verdict as printed: <code>docs/holdout17_verdict.txt</code>. Result: <code>docs/FINDINGS-holdout-2017-2019.md</code>.</p>
+</section>
+
+<section id="conviction">
+  <div class="sec-head"><span class="sec-ref">audit · 2026-09-03</span><h2>Which setups carry the most conviction?</h2></div>
+  <p class="col">Fourteen as-of-signal features, two books, the same pre-registered rule as every earlier round, all R net of cost. Two features sorted the trades in both books and both halves of the sample; twelve did not.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Displacement before the retest — how far price ran past the level, in stops, before pulling back</caption>
+      <thead><tr><th>Run past the level</th><th>8-level trades</th><th>Win rate</th><th>Net per trade</th><th>VWAP trades</th><th>Win rate</th><th>Net per trade</th></tr></thead>
+      <tbody>
+        <tr><td>2R or more</td><td>9,323</td><td>66.9%</td><td class="pos">+0.202</td><td>10,907</td><td>66.1%</td><td class="pos">+0.205</td></tr>
+        <tr><td>1–2R</td><td>6,774</td><td>67.3%</td><td class="pos">+0.165</td><td>12,024</td><td>64.6%</td><td class="pos">+0.131</td></tr>
+        <tr><td>0.5–1R</td><td>4,571</td><td>62.8%</td><td>+0.027</td><td>7,800</td><td>61.0%</td><td>+0.018</td></tr>
+        <tr><td>Under 0.5R</td><td>1,519</td><td>65.7%</td><td class="neg">−0.002</td><td>2,370</td><td>64.1%</td><td class="neg">−0.022</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">A retest of a level that price has already run the target distance past — the 1R target sits inside the swing that just happened — earns about +0.20R. A retest of a shallow poke, where the target needs a brand-new high or low, is a scratch. It is not stop width in disguise: the ordering holds inside every stop-size bucket.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>The two survivors crossed: displacement × how far the day has already moved (post-hoc view, shown split-half)</caption>
+      <thead><tr><th>Tier</th><th>8-level share of trades</th><th>Net per trade</th><th>IS / OOS</th><th>Share of book R</th><th>VWAP share of trades</th><th>Net per trade</th><th>Share of book R</th></tr></thead>
+      <tbody>
+        <tr><td>A — ran ≥1R past the level, and the session has already moved ≥½ of yesterday's range</td><td>41%</td><td class="pos">+0.223</td><td>+0.25 / +0.21</td><td class="pos">66%</td><td>34%</td><td class="pos">+0.194</td><td class="pos">56%</td></tr>
+        <tr><td>B — displaced only</td><td>31%</td><td class="pos">+0.137</td><td>+0.14 / +0.14</td><td>30%</td><td>35%</td><td class="pos">+0.139</td><td>42%</td></tr>
+        <tr><td>C — moved-day only</td><td>17%</td><td>+0.034</td><td>+0.03 / +0.04</td><td>4%</td><td>15%</td><td>+0.046</td><td>6%</td></tr>
+        <tr><td>D — neither</td><td>11%</td><td class="neg">−0.002</td><td>+0.02 / −0.02</td><td>0%</td><td>16%</td><td class="neg">−0.027</td><td class="neg">−4%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="two">
+    <div>
+      <h3>Consistent, but short of the rule</h3>
+      <ul class="plain">
+        <li><b>Stop vs recent range.</b> Stops under 1× the recent 1-minute range earn +0.20; over 2× earn ≈0. Monotone in both books — the 30pt cap in volatility units.</li>
+        <li><b>The other book already holds the same side, more than 5pt away.</b> −0.07 net in all four half-cells (n ≈ 1,000). Outside what G3 currently bans.</li>
+        <li><b>First trade of the day</b> is the weakest, again.</li>
+        <li><b>02:00, 22:00, 23:00</b> on the level book are ≈0 net.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Does not sort — in either book</h3>
+      <ul class="plain">
+        <li>Signal-candle body or volume (the first pass said otherwise — that was a one-bar indexing leak reading the fill bar, caught and fixed).</li>
+        <li>Other levels stacked nearby, a level in the path to target, distance to a VWAP band — "confluence" in the classic sense, tested three ways now.</li>
+        <li>Prior-day shape, cumulative day P&amp;L, level family, VWAP band.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Full tables and the pre-registered rule: <code>docs/FINDINGS-conviction-audit.md</code>, script <code>scripts/conviction_audit.py</code>. Three recommendations came out of this audit. Two were built and survived (size by tier; arm after displacement). One — widening first-in-wins to any distance, "G3b" — was built and <em class="term">failed</em>, which is the useful lesson below.</p>
+
+  <div class="callout">
+    <h3>The mistake worth keeping</h3>
+    <p>The audit said the trades G3b would block earn nothing, so blocking them looked free. Run in-engine, G3b cost <b>−414R</b> flat. The blocked bucket was actually earning +0.258R at 72% win rate, because a rail pass is chronological: refusing one trade changes which trades are open — and therefore available — for the rest of the day.</p>
+    <p class="rule-line"><b>The rule:</b> an audit bucket is not a rule effect, whenever the rule changes what else can be open. Measure the rule, never the bucket.</p>
+  </div>
+</section>
+
+<section id="arming">
+  <div class="sec-head"><span class="sec-ref">in-engine · 954 days</span><h2>Arming: the layer that won</h2></div>
+  <p class="col lede">The audit above says a retest only pays when price has already run a full stop's distance past the level. Arming is that finding turned into a rule — and it is the single biggest improvement anything has made to this strategy.</p>
+  <p class="col">The rule: <em class="term">the limit order stays dark until price runs 1R past the level. Only then does it go live.</em> Same levels, same stop, same target, same rails. The only change is that the order does not exist until the move has proved itself.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Frozen spec versus armed, both on the full 954-day tape</caption>
+      <thead><tr><th></th><th>Trades</th><th>Per day</th><th>Per trade</th><th>Net R</th><th>R / day</th><th>Max DD</th><th>Sharpe</th><th>Green days</th></tr></thead>
+      <tbody>
+        <tr><td>Flat (frozen spec)</td><td>75,481</td><td>79.6</td><td class="pos">+0.1361</td><td class="pos">+10,273</td><td class="pos">+10.84</td><td class="neg">−18.1</td><td>1.153</td><td>89%</td></tr>
+        <tr class="total"><td>Armed at 1R</td><td>61,194</td><td>64.6</td><td class="pos">+0.1775</td><td class="pos">+10,863</td><td class="pos">+11.46</td><td class="neg">−14.0</td><td>1.208</td><td>91%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Fewer trades, more money, smaller hole.</b> Arming throws away 19% of the trades — the shallow pokes — and still earns more R in total, because the ones it keeps earn <b>+30% each</b>. The drawdown drops from −18.1R to −14.0R, which is the number that actually decides how big you can trade.</p>
+
+  <div class="two">
+    <div>
+      <h3>Why it matters more than the R</h3>
+      <ul class="plain">
+        <li><b>It doubles carryable size.</b> On a $2,000 trailing-drawdown funded account, the flat book carries 8 micros at ≥80% pass odds; the armed book carries <b>16</b>. Same account, same rules, twice the position.</li>
+        <li><b>It is free to build.</b> Displacement is known before the order goes live — the executor simply holds the order back. No mid-flight size change, unlike conviction sizing.</li>
+        <li><b>The ridge is monotone.</b> Arm at 0R, 1R, 1.5R: +0.0%, +36.1%, +40.2% on the full empire. Not a lucky cell.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>What it costs, honestly</h3>
+      <ul class="plain">
+        <li><b>Every year, all four.</b> Armed beats flat in 2023, 2024, 2025 and 2026 — +2,280 / +2,918 / +3,108 / +2,557.</li>
+        <li><b>45 of 45 months still positive</b>, worst month +20.1R.</li>
+        <li><b>Direction confirmed in three eras, magnitude in one.</b> Found on 2023–26; replicated on 2020–22 (+29% / +34% drawdown-matched, on seen data); and on the sealed 2017–19 holdout it again raised per-trade EV (+0.070 → +0.103) and cut drawdown (−84.8 → −55.4R) — but on a tape where the base grammar itself is marginal, so the percentage there means little.</li>
+        <li><b>It does not stack with conviction sizing.</b> The armed book is displaced by construction, so 2:1 displacement sizing on top of it is a literal no-op: +0.0%.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Full tables and the parameter sweep: <code>docs/FINDINGS-arm-after-displacement.md</code>. Funded-account sizing: <code>docs/FINDINGS-funded-sim-armed.md</code>.</p>
+</section>
+
+<section id="sizing">
+  <div class="sec-head"><span class="sec-ref">in-engine · 921-day tape</span><h2>Conviction sizing: the other survivor</h2></div>
+  <p class="col lede">Every conditional layer before these two was tried as a filter — trade or don't trade — and every one died. This one is not a filter. It takes the same trades and moves size from the low-conviction ones to the high-conviction ones.</p>
+  <p class="col">The rule: <em class="term">full size when price ran at least 1R past the level before the retest, half size when it did not.</em> One feature, two sizes, about 70% of trades take the bigger size. Note that it reads the <em class="term">same</em> feature as arming — so it is an <b>alternative</b> to arming, not an addition to it. Pick one.</p>
+  <p class="note" style="margin-top:14px">Figures below were measured on the earlier 921-day tape, before the 2026 gap was spliced. Not re-run since; the comparison is internally consistent because both rows come from that same tape.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Same average position size as the frozen spec — size merely redistributed</caption>
+      <thead><tr><th></th><th>Total R</th><th>R / day</th><th>Max DD</th><th>Sharpe</th><th>Worst day</th><th>Months +</th><th>Worst month</th><th>Median month</th></tr></thead>
+      <tbody>
+        <tr><td>Flat (frozen spec)</td><td class="pos">+9,896</td><td class="pos">+10.74</td><td class="neg">−18.1</td><td>1.158</td><td class="neg">−18.1</td><td>45/45</td><td class="pos">+8.1</td><td>+210.3</td></tr>
+        <tr class="total"><td>2:1 on displacement</td><td class="pos">+11,370</td><td class="pos">+12.35</td><td class="neg">−17.7</td><td>1.197</td><td class="neg">−17.7</td><td>45/45</td><td class="pos">+10.5</td><td>+258.3</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>+1,474R over four years for the same average risk — and the worst day gets smaller, not bigger.</b> Still 45 of 45 months positive; the worst month improves from +8.1R to +10.5R. Pre-registered bar was +5% R/day in both halves at matched drawdown; it delivered +16.3% in-sample and +17.8% out-of-sample, and +16 to +18% in every one of the four years.</p>
+
+  <div class="two">
+    <div>
+      <h3>How big, honestly</h3>
+      <ul class="plain">
+        <li>Normalise by <b>daily volatility</b> — the conservative floor — and it is <b>+3.4%</b> (Sharpe 1.158 → 1.197).</li>
+        <li>Normalise by <b>drawdown</b> and it is <b>+17%</b>. Tiered sizing shrinks the bad tail faster than it shrinks the mean, because it downsizes exactly the trades that cluster into bad days.</li>
+        <li>A funded account's binding constraint is a trailing drawdown, not a variance — so the larger number is the one that pays the bills, and the smaller one is the floor.</li>
+        <li>Block bootstrap: 97.4% of draws clear the +5% bar.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Why it's believable</h3>
+      <ul class="plain">
+        <li><b>The negative control failed.</b> Sizing on session progress alone is <em class="term">worse</em> than flat (−9.4%). It isn't "any tiering helps" — it's displacement specifically.</li>
+        <li><b>The engine patch changes nothing.</b> Re-run and diffed against the pre-patch dump: 22,187 trades, 0 differing fields. The flag adds labels; the frozen spec is untouched.</li>
+        <li><b>The rail pass reproduces the receipts exactly</b> — 71,961 trades, 921 days, +9,896R, −18.1R drawdown.</li>
+        <li><b>Not free plumbing:</b> displacement is known at fill time, so the executor must be able to raise a resting order's size mid-flight.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Full tables, the bootstrap, and the caveats — including that these features were selected from this same four years — are in <code>docs/FINDINGS-conviction-sizing.md</code>.</p>
+</section>
+
+<section id="gold">
+  <div class="sec-head"><span class="sec-ref">in-engine · 2023–26 · in-sample</span><h2>Gold: the second stream</h2></div>
+  <span class="stamp">Verdict · additive beside NQ, lesser alone</span>
+  <p class="col lede">The same five moves, the same three books, the same rails and the same arming rule — on gold futures, at gold's own tick (0.10) and stop floor (1.5pt). The first time the VWAP books, the rail pass or arming had been run on any instrument but NQ.</p>
+  <p class="col">Gold answers the question NQ can't: does the grammar price <em class="term">a different market</em>, driven by different things? And it repeats, independently, the lesson both holdouts taught.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>The tick screen decides gold, exactly as it decided NQ 2017–19</caption>
+      <thead><tr><th>Year</th><th>Median 1m candle, in gold ticks</th><th>Screen (law ≥20)</th><th>Volatility dial on</th></tr></thead>
+      <tbody>
+        <tr><td>2023</td><td>5.0</td><td class="neg">dead zone</td><td>0% of days</td></tr>
+        <tr><td>2024</td><td>7.0</td><td class="neg">dead zone</td><td>0%</td></tr>
+        <tr><td>2025</td><td>11.0</td><td>flickers</td><td>52%</td></tr>
+        <tr><td>2026</td><td><b>20.5</b></td><td class="pos">on</td><td><b>100%</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Gold 2023–24 is NQ 2017–19: a tape that cannot reach a 1.5-point stop. The volatility dial — trade only when the trailing 20-day median 1-minute candle is at least 1.0pt — was derived on gold a day <em class="term">before</em> the NQ holdout produced the same rule from the other direction. Two instruments, one law, found twice.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>The empire on gold, railed — with and without the dial</caption>
+      <thead><tr><th></th><th>Days</th><th>Trades/day</th><th>Win rate</th><th>Per trade</th><th>Net R</th><th>R / day</th><th>Max DD</th><th>Sharpe</th><th>Green</th></tr></thead>
+      <tbody>
+        <tr><td>Flat, no dial</td><td>918</td><td>34</td><td>61.3%</td><td>+0.055</td><td class="pos">+1,742</td><td>+1.90</td><td class="neg">−84.1</td><td>0.30</td><td>57%</td></tr>
+        <tr><td>Flat + dial</td><td>300</td><td>75</td><td>62.8%</td><td>+0.074</td><td class="pos">+1,656</td><td>+5.52</td><td class="neg">−20.0</td><td>0.65</td><td>73%</td></tr>
+        <tr><td>Armed, no dial</td><td>914</td><td>29</td><td>61.7%</td><td>+0.083</td><td class="pos">+2,153</td><td>+2.36</td><td class="neg">−63.1</td><td>0.38</td><td>60%</td></tr>
+        <tr class="total"><td>Armed + dial</td><td>300</td><td>61</td><td>63.1%</td><td class="pos">+0.107</td><td class="pos">+1,944</td><td class="pos">+6.48</td><td class="neg">−17.8</td><td>0.80</td><td>81%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Without the dial gold is untradeable</b> — a −84R hole for the same money. With it, the dial keeps 95% of the R on a third of the days and cuts the hole to −20. Armed on top: per-trade edge +0.074 → +0.107, drawdown −17.8, four green days in five. By year, armed: 2023 −10 · 2024 +23 · 2025 +987 · 2026 +1,153.</p>
+
+  <div class="figs">
+    <div class="fig">
+      <div class="fig-v">+23% / +43%</div>
+      <div class="fig-k">arming on gold, drawdown-matched, both halves</div>
+      <div class="fig-d">The same ≥+5% rule NQ was adopted under. Passes on dialed gold in both halves — the third tape arming has held on. (Undialed it "fails", but only because the first half is 2023–24, where flat gold is negative and the ratio means nothing.)</div>
+    </div>
+    <div class="fig">
+      <div class="fig-v">+0.014</div>
+      <div class="fig-k">daily correlation with NQ, 299 shared days</div>
+      <div class="fig-d">Zero. On the days both trade, NQ is red 6% of the time, gold 19%, <b>both red 1%</b>. Different tape, different drivers — the dollar and fear rather than tech and rates.</div>
+    </div>
+  </div>
+
+  <div class="t-scroll">
+    <table>
+      <caption>NQ and gold together, both armed, gold on its dial, 2023–26</caption>
+      <thead><tr><th></th><th>Net R</th><th>R / day</th><th>Max DD</th><th>Sharpe</th><th>Green</th></tr></thead>
+      <tbody>
+        <tr><td>NQ alone</td><td class="pos">+10,863</td><td>+11.45</td><td class="neg">−14.0</td><td>1.21</td><td>91%</td></tr>
+        <tr><td>Gold alone <span style="color:var(--ink-3);font-weight:400">— zero on dial-off days</span></td><td class="pos">+1,944</td><td>+2.05</td><td class="neg">−17.8</td><td>0.38</td><td>26%</td></tr>
+        <tr class="total"><td>NQ + gold, full size each</td><td class="pos">+12,806</td><td class="pos">+13.49</td><td class="neg">−14.0</td><td>1.18</td><td>92%</td></tr>
+        <tr><td>Half NQ + half gold</td><td class="pos">+6,403</td><td>+6.75</td><td class="neg">−7.0</td><td>1.18</td><td>92%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="two">
+    <div>
+      <h3>What gold is</h3>
+      <ul class="plain">
+        <li><b>+18% more R at zero added drawdown.</b> The empire's worst hole is −14.0 with gold in or out. That is what a zero correlation buys, and it cannot be had from more NQ.</li>
+        <li><b>On NQ's 20 worst days, gold averaged +4.4R</b> — on for a third of them.</li>
+        <li><b>In 2026, the one year gold is fully on:</b> combined max drawdown −3.2 against NQ alone −10.7. Same money, a third of the hole. Sharpe 1.66 vs 1.42.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>What gold is not</h3>
+      <ul class="plain">
+        <li><b>Not better on any single-stream number.</b> Half NQ's edge per trade and per day, worse drawdown, worse Sharpe, on one day in three.</li>
+        <li><b>Not validated out of sample.</b> Constants and dial were derived on this tape; the dial-on sample is 300 days. Read it the way arming was read before its holdouts.</li>
+        <li><b>Not a book that runs itself.</b> The dial is the whole instrument. When gold goes quiet again — and 2023–24 says it does — the dial switches it off, and the executor must honour that.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Engine fix found on the way: the VWAP engine had NQ's signal depth hard-coded, twice gold's stop floor, which would have produced no gold signals at all. Caught before the run. Full tables: <code>docs/FINDINGS-gold-empire.md</code>.</p>
+</section>
+
+<section id="kills">
+  <div class="sec-head"><span class="sec-ref">§14–§16 · §20–§21 · §28–§29</span><h2>What was tried and died</h2></div>
+  <p class="col">Every addition was pre-registered — the pass/fail rule written before the result was read — and the failures are logged as loudly as the survivors. Two layers survived, in four years of trying. Everything below did not.</p>
+
+  <div class="kills">
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>Trade only with the trend.</b> A latched daily regime flag skipping counter-trend crossings. Halved the total and deepened the drawdown, in both halves of the sample — fading a stretched tape at a level is a large share of the whole edge.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>Partial at 1R plus a runner.</b> Entries sit at the most-retested price on the chart, so a breakeven runner dies on 4,203 of 4,318 spawns. Every variant lost to the plain full exit.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>A daily loss cutoff.</b> Made the max drawdown worse at −20, −30 and −40pt alike. Red mornings heal by the close; a cutoff prints the low.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>Market entry on the close-through.</b> Negative at every timeframe and every target. Chasing pays the displacement — the resting limit <em class="term">is</em> the filter.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>Cutting the "wrong-way" band trades.</b> All ten band × direction cells came back positive in both halves; the feared trade — shorting a −2σ break — is the single best cell in the book, because the retest turns a chase into a pullback entry.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>~20 pre-entry features over three rounds.</b> Slope alignment, band width, day of week, hour, prior result, stop width and more. Across fifty-plus buckets, nothing was negative in both halves — so nothing qualified for a cut.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>Conditional targets.</b> Letting high-displacement setups aim past 1R. No bucket preferred a larger target in both halves — and the first screen said "build" only because the script checked the wrong comparison. Bug logged, verdict reversed.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>G3b — widening first-in-wins to any distance.</b> Cost −414R flat, −114R armed. The audit bucket said the blocked trades earned nothing; run as a rule they were earning +0.258R at 72%. See the callout above.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>SMT divergence against ES.</b> Both encodings. The first version printed a clean survivor — until the confirmation window was found to include ES signals up to 15 minutes <em class="term">after</em> the NQ signal. Fixed to causal-only; the edge went to zero.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>The euro (6E) and the S&amp;P (ES).</b> 6E fails the ≥20-tick screen outright at 3 ticks a candle. ES is flat at +0.13R/day with 93% of it from 2026 alone. NQ's 28-tick minute is the resource the grammar spends.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>Asia at half size.</b> A pure multiplier on 18:00–03:00 fills, drawdown-matched, flat and armed, three eras: 0 of 6 passed, 9 of 12 half-cells negative. The deep days are New York days, so shrinking Asia buys no room and just forgoes +1R a day.</div></div>
+    <div class="kill"><span class="kill-tag k-dead">killed</span><div><b>A slower signal bar on a quiet tape.</b> 3-minute and 5-minute close-throughs on 2017–19: −0.006 and +0.001 per trade against 1-minute's +0.074. A slower bar widens the stop without putting ticks back in the tape. Same result 6E gave.</div></div>
+    <div class="kill"><span class="kill-tag k-live">kept</span><div><b>More level families, the rails, and arming.</b> The things that worked were additions and timing, not exclusions: new books to price, mechanical rules to stop the books doubling up, and holding the order back until the move proves itself.</div></div>
+  </div>
+  <p class="note">The one honest lever the feature hunt did find is allocation, not exclusion — VWAP trades earn two to four times more per trade in New York than overnight. Recorded as an option, not a rule.</p>
+</section>
+
+<section id="rails">
+  <div class="sec-head"><span class="sec-ref">§31</span><h2>The guard rails</h2></div>
+  <p class="col">Three books firing at once will overlap. Each rail below is mechanical, and most were measured before they were written — the caps have never once bound in four years, which is the point of insurance.</p>
+
+  <div class="rails">
+    <div class="rail"><code>G1</code><div><b>One per book.</b> Max one position plus one working limit; a newer own-book signal replaces the unfilled pending.</div></div>
+    <div class="rail"><code>G2</code><div><b>Merge crowded levels.</b> At 18:00, levels within one stop floor collapse to the stronger family. Binds 1.3 levels a day.</div></div>
+    <div class="rail"><code>G3</code><div><b>First in wins.</b> No book opens a same-direction position within one stop floor of any open position. Removed 1,923 duplicate entries — which were net losers. Widening it past one stop floor was tested and lost badly.</div></div>
+    <div class="rail"><code>G4</code><div><b>Pending hygiene.</b> A resting limit is pulled the moment a same-direction position opens near its price, so duplicates die before they fill.</div></div>
+    <div class="rail"><code>G5</code><div><b>Four positions, empire-wide.</b> The 99.8th percentile of what was actually measured; binds about 2 days in 948.</div></div>
+    <div class="rail"><code>G6</code><div><b>Three in one direction.</b> Binds on 0.3% of days.</div></div>
+    <div class="rail"><code>G7</code><div><b>Open risk ≤ 4R</b> in total, for when per-stream sizing varies.</div></div>
+    <div class="rail"><code>G8</code><div><b>News gate.</b> No entries 08:00–09:30 on high-impact days; pendings die at 16:00; flat by session end.</div></div>
+    <div class="rail"><code>G9</code><div><b>Executor health.</b> Level sanity check at 18:00; no bar for 2 minutes means pull pendings and manage only; any reject or fill mismatch halts new entries; daily reconcile against the broker.</div></div>
+    <div class="rail"><code>G10</code><div><b>Instrument dials.</b> Gold trades only with its volatility dial on; NQ runs undialled.</div></div>
+  </div>
+</section>
+
+<section id="honesty">
+  <div class="sec-head"><span class="sec-ref">§2 · §6 · §32</span><h2>The honesty stack, and what to attack</h2></div>
+  <div class="two">
+    <div>
+      <h3>Haircuts already taken</h3>
+      <ul class="plain">
+        <li><b>Fills must earn it.</b> A limit only fills if price trades a full tick through the level. Touch fills would flatter the raw edge by roughly 40%.</li>
+        <li><b>Costs in, per contract.</b> 0.5pt per round trip, subtracted in R against each trade's own stop.</li>
+        <li><b>Ambiguity counts as a loss.</b> When a bar could have hit stop and target, it is scored a loss. Fill-bar stop-outs are taken.</li>
+        <li><b>No lookahead.</b> Prior-day levels, closed candles, forward-only fills and exits.</li>
+        <li><b>Levels are computed, not read off a chart</b> — and re-running with the measured level error injected keeps 86–89% of the edge.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Known idealisations</h3>
+      <ul class="plain">
+        <li><b>Queue position is assumed, not modelled.</b> Stress-tested below — this is still the biggest gap.</li>
+        <li><b>Sharpe 1.208 is a daily ratio.</b> Annualised it is about 19 — a number no live book prints, and the clearest measure of how much the simulator idealises execution.</li>
+        <li><b>The cross-book rail pass is post-hoc chronological.</b> An exact joint simulation is executor-stage work.</li>
+        <li><b>No cost shocks, no missed sessions</b> — which is part of why a simulated Sharpe should not be read as a live forecast.</li>
+        <li><b>~80 trades a day is automation only.</b> None of this is hand-tradeable, and it was never designed to be.</li>
+        <li><b>Arming's magnitude is still 2023–26 only.</b> Its direction has held in three eras; its size (+30% per trade, −23% drawdown) has been measured cleanly on one.</li>
+        <li><b>Gold is in-sample.</b> Its constants and its volatility dial were derived on the same 2023–26 tape the gold section reports on, and its dial-on sample is 300 days. It has had no sealed holdout.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout" style="border-left-color:var(--pos)">
+    <h3>Audited, adversarially, on 2026-09-03</h3>
+    <p>Every number on this page was re-derived with fresh code: an independently written rail pass, a replay of <b>3,000 random armed trades against the raw 1-minute bars</b> (signal, stop, arming, fill, exit — 3,000 of 3,000 consistent), a determinism re-run (0 differing lines), the funded-account simulation rebuilt under its own rules (within one point), both holdouts, the selection grid, the queue and latency tables. <b>Nothing is false.</b> Seven places where the wording here is simpler than the exact truth:</p>
+    <ul class="plain" style="font-size:13.5px">
+      <li><b>Same-minute pairs.</b> 545 kept trades fill in the same minute and at the same level as a trade that entered and exited inside that bar. The rail counts the first as already closed; live, both would fill. They earn +198R — <b>1.8%</b> of the armed total. Strictest reading: +10,665R, not +10,863R.</li>
+      <li><b>"Ambiguity counts as a loss."</b> 2,229 of 2,244 ambiguous bars scored −1; 15 were pre-empted by an opposing close and scored there (mean −0.63). None scored as a win.</li>
+      <li><b>Roll days.</b> The 2023–26 tape does not exclude quarterly roll sessions; the holdout tapes do. The 14 first-post-roll sessions earned +86R above average days — 0.8%, borderline noise, but a consistency gap. To be excluded.</li>
+      <li><b>16 micros at ≥80%</b> lands at 80.0% on the fuller tape. On the line.</li>
+      <li>Book correlations are +0.10 to +0.18, not "around +0.10". Three VWAP fills of 61,194 sit on a rail boundary. The VWAP trade files carry no ambiguity flag, but every tie bar sampled from them was scored −1.</li>
+    </ul>
+    <p class="rule-line">What the audit cannot say: whether these rules describe <em class="term">live</em> fills. That closes only in paper trading. Full report: <code>docs/FINDINGS-audit-armed-empire.md</code>.</p>
+  </div>
+
+  <h3 style="font-family:Archivo,sans-serif;font-size:16px;font-weight:600;margin:34px 0 0">Where it actually breaks</h3>
+  <p class="col">Two stress tests, both run in-engine, that say how much of this survives an imperfect executor.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Queue proxy — require price to trade N ticks through the level before the limit counts as filled</caption>
+      <thead><tr><th>Fill requirement</th><th>Trades</th><th>Per trade</th><th>Net R</th><th>Max DD</th><th>Sharpe</th></tr></thead>
+      <tbody>
+        <tr><td>1 tick through <span style="color:var(--ink-3);font-weight:400">— the frozen assumption</span></td><td>71,961</td><td class="pos">+0.1375</td><td class="pos">+9,896</td><td class="neg">−18.1</td><td>1.158</td></tr>
+        <tr><td>2 ticks through</td><td>71,390</td><td class="pos">+0.1040</td><td class="pos">+7,422</td><td class="neg">−29.1</td><td>0.895</td></tr>
+        <tr><td>4 ticks through</td><td>—</td><td>+0.030</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>8 ticks through</td><td>—</td><td class="neg">−0.123</td><td>—</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>The edge dies between 2 and 4 ticks.</b> Doubling the fill requirement costs 25% of the R and 61% more drawdown — the tail rots faster than the mean, because the fills you still get are the ones where price kept running against you. What supports the 1-tick assumption: April 2026 depth data over 173,980 level observations shows median resting size of just <b>3 contracts</b>, and the strategy's own levels are only ~10% thicker than the rest of the book. The feared "everyone stacks orders at the obvious level" does not appear in the data — at retail size.</p>
+
+  <div class="t-scroll">
+    <table>
+      <caption>Latency — extra whole bars between the arming trigger and the order going live</caption>
+      <thead><tr><th>Extra delay</th><th>Trades kept</th><th>Per trade</th><th>Win rate</th><th>Max DD</th></tr></thead>
+      <tbody>
+        <tr><td>None</td><td>100%</td><td class="pos">+0.1791</td><td>67.0%</td><td class="neg">−12.1</td></tr>
+        <tr><td>+1 bar (60 seconds)</td><td>92%</td><td class="pos">+0.1173 <span style="color:var(--neg)">−34.5%</span></td><td>63.6%</td><td class="neg">−17.2</td></tr>
+        <tr><td>+2 bars</td><td>84%</td><td>+0.0814 <span style="color:var(--neg)">−54.5%</span></td><td>61.6%</td><td class="neg">−28.1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">One bar is 60 seconds — roughly a thousand times real network latency — so this is not about the connection. It is about the shape of the executor's loop. <b>Requirement: the arming check must fire and the order must reach the exchange within the same minute the arming bar closes.</b> An executor that polls once a bar and acts on the next one gives away a third of the edge.</p>
+
+  <div class="callout" style="border-left-color:var(--accent)">
+    <h3>The one thing to instrument first</h3>
+    <p>Log the <b>fill penetration</b> of every resting limit in paper trading — how far did price actually trade through the level before the fill came back? Compare that distribution against the 1-tick assumption. It is a small amount of executor code, and it converts the largest remaining unknown in the whole program from a guess into a measurement.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Receipts: <code>docs/BACKTEST-pd-va-strategy.md</code> §1–34, branch <code>claude/tradingview-mcp-agent-setup-ql18v8</code>. Later rounds: <code>docs/FINDINGS-*.md</code> and <code>docs/PREREG-holdout-2020-2022.md</code>. Simulators: <code>scripts/pd_va_backtest.py</code>, <code>scripts/vwap_revolve.py</code>. Validation: <code>scripts/validation_pbo_dsr.py</code>. All figures on this page are transcribed from those receipts — nothing here is estimated or interpolated.</p>
+  <p style="margin-top:10px">Headline, books, sizing dial, arming and holdout figures are measured on the spliced <b>954-day</b> tape (2023-01-02 → 2026-09-02). Sections explicitly marked "921-day tape" — the stop-cap comparison, the PBO/DSR audit, conviction sizing and the queue/latency stress — were run before the 2026 gap was filled and have not been re-run; on the fuller tape the empire's Sharpe moves 1.158 → 1.153 and the max drawdown is identical, so none of those verdicts turns.</p>
+  <p style="margin-top:10px">Gold: <code>docs/FINDINGS-gold-empire.md</code>, engines pointed at <code>--instrument gc</code>, patch in <code>docs/patches/engine-alt-tapes.patch</code>.</p>
+  <p style="margin-top:10px">Nothing on this page changes Angus's original mechanical strategy. Every layer tested here is an off-by-default flag in the engine, and the frozen spec re-runs bit-for-bit identical with the flags off — verified by diffing 22,187 trades across every field.</p>
+</footer>
+
+</div>
+
+<div id="tip" role="status"></div>
+<script>
+  (function(){
+    var tip = document.getElementById('tip');
+    document.querySelectorAll('[data-tip]').forEach(function(el){
+      el.addEventListener('mousemove', function(e){
+        tip.textContent = el.getAttribute('data-tip');
+        tip.style.left = e.clientX + 'px';
+        tip.style.top  = e.clientY + 'px';
+        tip.style.opacity = '1';
+      });
+      el.addEventListener('mouseleave', function(){ tip.style.opacity = '0'; });
+    });
+  })();
+</script>

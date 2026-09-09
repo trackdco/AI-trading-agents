@@ -1,0 +1,91 @@
+STAGE 4 - LOSER AUTOPSY, 20-SMA PIN BAR
+Config: 1-min, SIDE trend, W1, buf 2 ticks, target 3R, min stop 8 pts, cost 0.75.
+1,359 trades. Discovery on 2020-22 + 2023-26 (1,290). Held back: 2017-19 (only 69).
+34 features screened - at |t|>1.95 roughly 2 false positives are expected by chance.
+
+================ HEADLINE: WINNERS AND LOSERS LOOK ALMOST IDENTICAL ================
+Median value of each feature, winners vs losers, discovery tapes:
+
+  feature        winners   losers    difference
+  bar_rng_atr      0.997    1.040        -4%
+  risk_atr         0.864    0.900        -4%
+  wick_body        2.317    2.154        +8%
+  wick_atr         0.580    0.585        -1%
+  stretch          2.391    2.320        +3%
+  vol_z            0.867    0.913        -5%
+  vix             18.140   19.330        -6%
+  d_pval           8.958    9.941       -10%
+  d_fib0.382       2.305    2.534        -9%
+  d_sma15          2.541    2.651        -4%
+
+Nothing separates by more than 10%. At the moment of entry a winner and a loser are
+close to indistinguishable on every measurable feature. That is the finding. The edge
+is not in picking better setups; it is a small statistical tilt spread across all of
+them.
+
+================ CONFLUENCE RANKING (what actually helps) ================
+Gap in R between the half of trades CLOSE to the level and the half FAR from it,
+per tape. Same sign on all three tapes = the only ones worth anything.
+
+  level / feature      2020-22   2023-26   2017-19   all 3 agree
+  small signal bar      -0.175    -0.301    -0.890      YES   <- strongest
+  prior-day VAL         -0.288    -0.130    -0.444      YES
+  prior-day LOW         -0.257    -0.069    -0.908      YES
+  opening-range HIGH    -0.373    -0.051    -0.205      YES
+  prior-day POC         +0.111    +0.150    +0.039      YES   <- FURTHER is better
+  stop size vs ATR      -0.047    -0.114    -1.356      YES
+  fib 0.382             -0.357    -0.162       n/a      2 of 2
+  VIX (calm regime)     -0.002    -0.030    +0.049      no
+  fib 0.5               -0.410    +0.098       n/a      NO - flips sign
+  fib 0.618              near zero everywhere (t = -0.32)
+  15-min 20 SMA          weak (t = -0.73)
+  round numbers, Asia H/L, London H/L, prior-day HIGH, overnight H  nothing
+
+THREE THINGS WORTH SAYING OUT LOUD
+1. The fib result is the OPPOSITE of the video. 0.618 does nothing, 0.5 flips sign
+   between tapes, and 0.382 - the level the video says to ignore - is the one that
+   shows up. Given 5 fib levels were tested, one clearing by luck is expected, so
+   treat 0.382 as unproven rather than as a discovery.
+2. Being NEAR the prior-day POC is BAD, not good. Consistent on all three tapes.
+   That is the opposite of how POC is normally used as confluence.
+3. The single best chart feature is a SMALL signal bar relative to ATR. A big
+   dramatic pin bar is worse than a quiet one.
+
+================ HOW BIAS IS BEST IDENTIFIED ================
+Four definitions were tested as the trend gate (see FINDINGS from stage 2):
+  SIDE  (12 of the last 15 closes on one side of the 20 SMA) ..... best
+  HHHL  (last two swing highs AND swing lows both rising) ........ second
+  SLOPE (SMA above its own value 10 bars back) ................... third
+  NONE  (no filter at all) ....................................... worst
+Simple "which side of the SMA has price been living on" beats swing-structure
+counting. Both beat nothing, so the trend gate is doing real work.
+
+================ STACKING, AND WHY IT IS NOT PROOF ================
+Discovery, small signal bar + VIX <= 20:
+  raw +0.016 (n=1290)  ->  filtered +0.265 (n=382, 30% kept, t +2.75, win 33.2%)
+Holdout 2017-19:
+  raw -0.026 (n=69)    ->  filtered +0.061 (n=21, t +0.15)
+The holdout has 21 trades. The sign is right and that is all that can be said.
+
+With order flow joined (337 trades, 2023-26 footprint days only):
+  raw                            n=337  +0.043  t +0.44  win 27.0%
+  order flow (absorb + bar delta) n=153  +0.202  t +1.34  win 31.4%
+  small signal bar               n=189  +0.189  t +1.40  win 31.2%
+  orderflow + small bar          n= 90  +0.227  t +1.15  win 32.2%
+  orderflow + small bar + calm   n= 76  +0.304  t +1.39  win 34.2%
+
+The filters ARE independent - pairwise correlations between them run -0.02 to +0.29 -
+so in principle they stack. But every stacked cell has t around 1.3. Stacking three
+filters onto 337 trades leaves 76, and 76 trades cannot settle anything.
+
+================ VERDICT ================
+Order flow (stage 3) remains the strongest single filter and it works mainly by
+identifying what to avoid. The chart confluences add a real but small tilt, led by
+"small signal bar" and proximity to prior-day VAL / prior-day low / opening-range
+high. Fib levels are close to worthless here and the two the video recommends are
+the two that do least.
+
+What is NOT established: any of the stacked results. They need either more footprint
+days or a walk-forward on the 1,290-trade chart-only book.
+
+Repro: python3 scripts/sma20_autopsy.py --tf 1 --trend SIDE --W 1.0
