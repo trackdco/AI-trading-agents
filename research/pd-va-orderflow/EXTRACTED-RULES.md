@@ -103,3 +103,26 @@ forward test). The bias-and-levels half of this video is that strategy. Read it 
 
 09:30–16:00; 18:00–09:29; 45-contract big-trade filter; opacity 80; "70 to 75%", "75 to even 80%"
 bias accuracy (claimed); one example 1:8 (hindsight). Everything else is shape, not number.
+
+## 11. The bias rule, tested (2026-09-09)
+
+`bias_accuracy.py`, output in `BIAS-ACCURACY.txt`. NQ 1-minute bars, 1,809 cash sessions 2018-08 →
+2026-09 (79 roll-week sessions in the unadjusted segments excluded). Definitions fixed before the
+run: bias from the 09:30 open against the previous cash session's 70% value area; "correct" =
+close > open for bullish, close < open for bearish, close inside the previous value area for
+neutral. Baselines: the unconditional up-day rate and the plain gap rule on the same days.
+
+| bias | sessions | correct | baseline on the same days |
+|---|---|---|---|
+| bullish (open > VAH) | 710 (39%) | **52.3%** close > open | gap rule 52.4%; unconditional up-day 53.6% |
+| bearish (open < VAL) | 510 (28%) | **44.7%** close < open | gap rule 46.9% — most "bearish" days close up |
+| directional combined | 1,220 | **49.1%** | gap rule 50.1% |
+| neutral (open inside) | 589 (33%) | 29.5% close inside PD VA | 20.7% of all days do; range below median 51.3% vs 49.9% |
+
+No year reaches 57% on directional days; 2020 bearish days closed down 24% of the time. The
+claimed 70–80% is not there under any reading tried: not close-vs-open, not the day's larger
+excursion (46% in the bias direction), not the gap-rule baseline. The one small effect is the
+neutral case: a day that opens inside yesterday's value closes inside it 29.5% of the time against
+a 20.7% base rate. The level is reached often — bullish days pull back to VAH 62.5% of the time,
+bearish days rally to VAL 62.0% — which is where the video's trade would occur; the direction claim
+that justifies it does not hold.
