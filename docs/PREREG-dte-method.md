@@ -67,3 +67,39 @@ Cost 0.75 pt round turn. One position at a time. Session 09:30-11:00 ET (he trad
 - **P3** The HTF delivery gate will cut trade count hard without improving R/trade.
 - **P4** It will fail the random-entry control, like the pin bar did.
 - **P5** The 1:1 target will beat 1:2 on win rate but not on R, as in every prior test.
+
+---
+
+## ADDENDUM 2026-09-09 — cross-market port of DTE + D(1h/4h)
+
+Declared BEFORE the run. The rule that survived on NQ 1-minute is now ported to other
+instruments. Only the market changes; the rule is frozen exactly as it stands in
+docs/FINDINGS-dte-delivery-isolated.txt.
+
+**Data.** `data/reference/algotrader_3min/{NQ,ES,RTY,YM,GC}_3min.parquet` — 3-minute bars,
+2021-04 to 2026-06, ~1,590 sessions each, verified 99.4% against our Databento NQ.
+
+**Timeframe change, and why NQ must be re-run.** The finding is on 1-minute bars. These
+reference files are 3-minute. 3-minute is inside the source's stated 1-3 minute entry
+range, so it is a fair venue — but a positive ES or GC result means nothing unless NQ is
+ALSO positive on 3-minute. NQ-3min is therefore the control, run on the same file, and the
+port is judged against it, not against the 1-minute number.
+
+**Cost normalisation.** 3 ticks round turn per market, matching NQ's 0.75pt = 3 ticks:
+NQ 0.75 / ES 0.75 / RTY 0.30 / YM 3.0 / GC 0.30. Max risk 320 ticks.
+
+**The bar.** The port succeeds on a market only if: R/trade > 0 after cost, positive on
+both halves of that market's sample, and the win rate clears the 33.3% break-even for the
+1:2 target. The PORT AS A WHOLE succeeds only if NQ-3min is positive (else the venue is
+invalid) and at least 3 of 5 markets are positive.
+
+**Predictions, scored after the run**
+- **P1** NQ-3min will be positive but weaker than NQ-1min, with far fewer trades.
+- **P2** ES will be positive and weaker than NQ — it is the more efficient contract and
+  the prior ES port of the empire came out "dead flat".
+- **P3** GC will be the weakest or negative. Different participant structure, and gold has
+  already failed two ports in this repo (gold empire, trend-band rejection).
+- **P4** At least one market will fail. The 6E finding was "the grammar transfers, the
+  instrument does not"; a rule built on NQ order-flow-shaped behaviour should not travel
+  cleanly to every contract.
+- **P5** Trade frequency will scale with each market's tick-to-range ratio, not uniformly.
