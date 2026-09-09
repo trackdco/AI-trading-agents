@@ -82,3 +82,32 @@ un-inverted higher-timeframe fair value gap.
 
 Repro: python3 scripts/dte_random_control.py --htf 60,240
        python3 scripts/dte_autopsy.py --tapes 2023-26 --flow
+
+================ KILLED 2026-09-09 - ON ECONOMICS, NOT ON EVIDENCE ================
+Pat's call, and it is the right one. The statistical case here is the strongest in the
+repo and it is not in dispute: positive on three equity index contracts, beats a matched
+random control with the same delivery gate by +0.128 R at t 4.01, passes all five hard
+reality-gate checks, not tail-dependent. None of that is withdrawn.
+
+It dies on the arithmetic. Drawdown reduction worked - longs only plus a -2R daily stop
+takes the worst single-tape drawdown from 57.6R to 24.0R AND raises R/trade from +0.103 to
++0.170, return/DD 7.50. But to survive a 24R drawdown inside a 50k prop account's $2,000
+trailing limit you can risk $83 a trade, which is 2.1 NQ micros on the median 20-point
+stop. At 109 trades a year that is about $1,550 per funded account per year.
+
+The edge is real and too small for the drawdown limits of the accounts it would be traded
+in. Twenty correlated accounts would gross ~$30k/yr on a rule with a 1.7x cost margin that
+has never seen a live fill. Not worth the operational risk.
+
+ALSO CORRECTED HERE: I first attributed the 57.6R drawdown to concatenating three
+non-contiguous tapes into one artificial equity curve. That was wrong. The 2017-19 tape
+ALONE draws down 57.6R for only +37R net (return/DD 0.65). The pooled figure is not an
+artifact; one tape is genuinely that bad. Per tape: 57.6R / 30.4R / 38.1R.
+
+NOT PURSUED, recorded for whoever picks this up: the "longs + delivery on BOTH 1h and 4h"
+cell showed +0.258 R/trade on a 15.0R drawdown - 2.5x the baseline edge. 359 trades, ~37 a
+year. If that survives a per-tape check, drop-3, and its own random control, the economics
+change completely. It was never tested.
+
+ALSO NOT RUN: the 324-cell DTE grid (docs/PREREG-dte-method.md sweep) was stopped
+mid-flight when this was killed, so prediction P5 (1:1 versus 1:2 target) is unscored.
