@@ -1,0 +1,84 @@
+DTE, DELIVERY ISOLATED — the strongest result in this repository (2026-09-09)
+Pre-registered in docs/PREREG-dte-method.md. NQ 1-min, 09:30-11:00 ET, 1:2 target,
+cost 0.75pt, exits scanned from the bar AFTER entry, three tapes kept separate.
+
+RULE: the V-spike inversion FVG trigger (E), taken ONLY when price sits inside an
+un-inverted 1-hour or 4-hour fair value gap with matching direction (D). The 15-minute
+delivery timeframe and the entire low-resistance-liquidity gate are DROPPED - the 15m
+version fails 2017-19 and LRLQ is negative on all three tapes.
+
+================ THE BOOK ================
+  n = 2,410 trades   4.8 per week   median stop 19.8 pts   over 9.68 years
+  R/trade  +0.1034     PF 1.164     win 36.7% against a 33.3% break-even
+  pooled t +3.53      maxDD 58.3R
+  per tape:  2017-19 +0.047   2020-22 +0.080   2023-26 +0.170
+  halves:    H1 +0.0372 (n=1,205)   H2 +0.1696 (n=1,205)
+  drop 3 best +0.1011   drop 10 best +0.0956
+  top 5 trades are 4% of total profit - this book is NOT tail-dependent
+
+================ THE RANDOM CONTROL, WITH THE SAME D GATE APPLIED ================
+The decisive test. Matched random entries - same day, session, direction, risk in points,
+2R target, max hold, cost - and the random entry bar must ALSO pass the D gate. Only the
+entry bar is randomised. 10 randoms per signal.
+
+  tape       DTE+D              RANDOM+D            EDGE
+  2023-26    +0.1845 (n=881)    +0.0292 (n=5,716)   +0.1553
+  2020-22    +0.1230 (n=678)    +0.0356 (n=4,118)   +0.0874
+  2017-19    +0.0430 (n=756)    -0.0858 (n=4,999)   +0.1288
+  POOLED     +0.1203 (n=2,315)  -0.0078 (n=14,833)  +0.1280   t +4.01
+
+Random entries inside higher-timeframe FVGs score ZERO (-0.008 pooled). So the D gate is
+not the edge by itself. And the E trigger alone is NEGATIVE on all three tapes
+(-0.121 / -0.037 / -0.055). Neither component works alone. Together they are worth
++0.128 R over the matched null.
+
+This is the same interaction structure found on the 20-SMA pin bar with order flow:
+two individually worthless conditions that are worth something jointly.
+
+================ SCORING THE PRE-REGISTERED BAR — 5 of 6 ================
+ 1 positive on all three tapes ......... PASS  (+0.047 / +0.080 / +0.170)
+ 2 win rate > break-even by 5 points ... FAIL  +3.3 points (36.7% vs 33.3%)
+ 3 pooled t > 2.5 ...................... PASS  +3.53
+ 4 survives dropping the 3 best ........ PASS  +0.1011 (and +0.0956 dropping 10)
+ 5 beats random by > 0.10 R ............ PASS pooled +0.128; per tape +0.155 / +0.087 /
+                                         +0.129, so 2020-22 at +0.087 is UNDER the bar
+ 6 ridge, not a spike ................. PASS  12 of 12 cells positive across 4 D
+                                         variants x 3 tapes
+
+================ THE REALITY GATE PASSES ================
+scripts/reality_gate.py exits 0. All five hard checks clear:
+  same-bar winners            0.0%   limit > 5%
+  win rate above break-even   4.9    limit > +15 points
+  annualised Sharpe           0.87   limit > 3
+  worst day vs max drawdown  10.2%   limit within 1%
+  red months                 54/121  limit 0
+One soft warning: net edge per trade divided by cost per trade is 1.70 against a limit of
+3.0 - "an edge this thin is inside the slippage error band".
+
+This is the FIRST strategy in this repository to post a positive result that passes the
+reality gate. Every prior candidate either tripped it (the empire, the canon book) or
+failed a random control (the pin bar).
+
+================ WHAT IS STILL WRONG WITH IT ================
+- The edge is only 1.70x the cost. At 1.25pt cost instead of 0.75 it would roughly halve.
+- maxDD 58.3R. At 1% risk per trade that is 58% of the account; it needs about 0.4% risk
+  to stay inside a 25% drawdown limit.
+- Win excess is +3.3 points, which FAILS the declared 5-point condition.
+- 2017-19 is only +0.047 at t 0.92 - positive, but it is carrying almost nothing.
+- H1 +0.037 versus H2 +0.170. The first half of the sample is much weaker.
+- Never forward tested. Nothing here is live evidence.
+
+Scale, for orientation only: 249 trades/yr x +0.1034 R on a 20pt median stop is about
++25.7 R/yr, or roughly $10,200 per year on one NQ mini contract.
+
+================ WHAT THE SOURCE GOT WRONG ================
+Its execution trigger loses money on all three tapes. Its self-described most important
+element (low-resistance liquidity) is negative on all three tapes. Its 15-minute delivery
+timeframe fails the oldest tape. Its emphasis on a fast "quick up, quick down" V is
+backwards - winners have a median 3-candle V, losers 2. And the claimed 70-80% win rate
+is 36.7%.
+What it got right, and it is the whole thing: trade only when price is delivering from an
+un-inverted higher-timeframe fair value gap.
+
+Repro: python3 scripts/dte_random_control.py --htf 60,240
+       python3 scripts/dte_autopsy.py --tapes 2023-26 --flow
