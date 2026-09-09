@@ -1179,3 +1179,7 @@ VWAP/BB strategy; its N_trials accounting is independent of the one above (that 
   stands. `RESULT-3.md`.
 - **2026-09-07 — NQ-bot programme CLOSED** by Angus: not good enough to trade (edge ≈ friction, not
   gradable, close-evaluated exits). `research/nq-bot-retest/CLOSED.md` is the index. Tooling retained.
+- **2026-09-09 — video method (PD value-area bias + order-flow entries) CLOSED.** Bias rule 49.1%
+  directional accuracy on 1,809 sessions (claimed 70–80%); order-flow confirmation at the levels
+  NOT DEMONSTRATED on 13 months of footprint (7/8 readings negative, raises win rate not expectancy).
+  `research/pd-va-orderflow/CLOSED.md`.
