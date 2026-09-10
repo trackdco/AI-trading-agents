@@ -1446,3 +1446,67 @@ Open threads, in his order:
 4. Executor-stage exact joint sim of the railed empire (S32 rail pass
    is post-hoc chronological), then paper days on the Mac against
    real-time TradingView.
+
+## 41. OROCHI AS A BIAS ENGINE — real information, sub-friction (2026-09-10)
+
+His ask, after S40: stop treating the framework as a trade trigger and test
+whether it works as a mechanical BIAS — classify the state, predict where
+price goes next. Receipts: `scripts/orochi_bias_census.py`,
+`orochi_bias_report.py`, `orochi_bias_episodes.py`. Verdict rule
+preregistered in the census docstring before anything was run.
+
+**Why this test could not repeat S40.** It places no orders. State is
+classified from bars up to minute t's close; the measurement is
+close(t) -> close(t+h). No fill, no intrabar path, no stop/target race —
+nothing a look-ahead can hide in. Source corpus: the 22 Orochi transcripts
+already in the repo (branch canon-rebuild-deployment, research/transcripts/
+orochi/) plus the RESPEC's as-taught definitions. Tapes: 2020-22 holdout +
+2023-26, ~1,690 sessions.
+
+**Step 1, the census (every qualifying minute) looked enormous:**
+price below prior-day VAL -> +15.2pt excess over the same-era baseline at
+60m, t_day +11.8, same sign in all three eras (+10.1 / +14.7 / +25.2);
+above VAH -> -11.8pt; 46 of ~90 state-horizon cells graded SIGNAL.
+
+**Step 2 killed most of it.** Those means are inflated by PERSISTENCE:
+price sitting below VAL for three hours is ONE episode, not 180
+observations. Re-measured at one observation per state ENTRY per session:
+
+  state (60m horizon)      n      mean      sd   mean/sd   hit%   all eras?
+  event=ACC_BACK_UP      4,680   +2.35pt   63.7    +0.037   53.9%   yes
+  valoc=below_val        8,796   +2.01pt   62.8    +0.032   53.7%   yes
+  zone=gt_sd2_dn        14,823   +0.34pt   54.7    +0.006   53.1%   yes
+  valoc=above_vah       10,755   -0.14pt   52.3    -0.003   47.9%   NO
+  zone=gt_sd2_up        15,721   -0.00pt   47.7    -0.000   48.9%   NO
+
+Baseline 60m: +0.43pt, sd 47.5, P(up) 52.1%.
+
+The +15.2pt became +2.0pt — a ~7x persistence inflation. This is the same
+class of error as S40 (a number that is arithmetically true and
+operationally meaningless), caught this time BEFORE it was reported as a
+result.
+
+**Verdict: WEAK, per the preregistered rule.** Two states replicate in all
+three eras with |t| >= 2: acceptance-back-inside-up (his flagship failed
+auction) and price-below-prior-value. Excess over drift is ~+1.6 to +1.9pt
+at a 60-minute horizon, hit rate ~53.8% against a 52.1% baseline, and
+mean/sd ~0.035 — i.e. noise is roughly 30x the signal per observation. That
+sits AT or BELOW the ~2pt MNQ bar-level friction ceiling the intake dossier
+cited. Real information; not a trade by itself.
+
+**What does NOT survive.** The short side does not replicate at all
+(above_vah 47.9% hit, era signs flip), and his flagship sd2 rotation fade
+is null at episode level (48.9% hit, mean 0.00). The surviving edge is
+long-only and therefore partly the equity drift itself — treat the +1.6pt
+as an upper bound, not a floor. Note also a coding choice: the DIRECTIONAL
+map treats imbalance as mean-reverting, which is the OPPOSITE of what he
+teaches; read the IMB rows sign-flipped. Either way they are ~null.
+
+**What this licenses, and what it does not.** It does NOT license a
+strategy built on the bias alone — sub-friction is sub-friction. It DOES
+say the framework's state carries genuine directional information that
+replicates across seven years and a sealed era, which is more than the
+entire PD-VA program ever had. The only honest use is as a FILTER on an
+entry whose precision comes from somewhere candle geometry cannot provide
+(S40 proved retest fills cannot be priced from 1m bars). Any next step
+starts with sub-minute or flow data, not with another bar-level sweep.
