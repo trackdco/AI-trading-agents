@@ -1510,3 +1510,58 @@ entire PD-VA program ever had. The only honest use is as a FILTER on an
 entry whose precision comes from somewhere candle geometry cannot provide
 (S40 proved retest fills cannot be priced from 1m bars). Any next step
 starts with sub-minute or flow data, not with another bar-level sweep.
+
+## 42. OROCHI AT SPEC — his application, not mine (2026-09-10)
+
+Angus: "their shit works, ur application of it doesnt." He was right, and
+the repo already said so a month earlier (RESPEC commit 64d72be7 caught a
+prior session coding the same strawman). S41's four deviations, corrected:
+prior-day VA -> multi-day COMPOSITE balance (frozen def from
+scripts/nya_composites.py) + developing weekly; 3x1-min acceptance -> Nx30-min
+(1h/2h/3h); <=60-min horizons -> 2h/4h/8h/1 session/1.5 sessions; 1-min
+condition read -> 30-min structure. Receipt: `scripts/orochi_bias_v2.py`.
+Still leak-proof: no orders, close-to-close, weekend-gap-guarded windows,
+episode-level only.
+
+**The result moved a long way.** S41 measured a ~+1.6pt sub-friction bias
+and called the framework WEAK. At spec, 2 of 40 cells clear the bar:
+
+  state                h     n     mean     hit%    t     20-22   23-24   25-26
+  BELOW_COMP          23h   335   +29.4pt  56.7%  +2.33   +29.1   +32.6   +22.8
+  ACC_BACK_UP_n4       8h   153   +21.6pt  56.9%  +2.12   +26.2    +8.3   +33.5
+
+Baseline drift is +11.5pt at 23h and +3.9pt at 8h, so the excesses are
+~+18pt at both — roughly 9x the ~2pt friction ceiling, where S41's best was
+0.8x it. Measuring the right levels over the right horizon changed the
+verdict, exactly as he said it would.
+
+**Why this is a LEAD and not a result — four reasons, all disqualifying on
+their own until answered:**
+1. **2 of 40 cells is the false-positive count.** At p<0.05, 40 tests yield
+   ~2 hits by chance. The pattern is indistinguishable from noise on count
+   alone; it needs out-of-sample confirmation, not a bigger table.
+2. **Neighbour cells are unstable.** ACC_BACK_UP_n4 at 23h reads +63.8 /
+   +60.6 / **-76.9** by era, and at 34.5h +94.0 / +19.7 / **-99.4**. A real
+   effect should not invert in the most recent era one horizon over.
+3. **BELOW_COMP may be dip-buying, not alpha.** Long-only, in an index with
+   strong drift, holding ~a day. Drift is subtracted, but conditional
+   dip-buying in a bull tape is a known beta effect. The short side
+   (ABOVE_COMP) is null at every horizon — the same asymmetry S41 found.
+4. **Samples are thin**: n=153-335 events across SEVEN years.
+
+**The strategic tension worth naming.** His stated prop requirement is high
+frequency with small positive expectancy. Orochi AT SPEC is the opposite
+shape: BELOW_COMP fires ~48x/year, ACC_BACK_UP_n4 ~22x/year — about one
+trade a week, with a large per-trade edge. Those are two different machines.
+Note also that the PD-VA program WAS the high-frequency small-expectancy
+shape (60-80/day, +0.18R) and it was an artifact; the cited MNQ friction
+result says bar-level HF gross edge sits under friction on this instrument.
+So HF-small-edge is achievable honestly only with information that is not in
+candles (flow/depth) or with costs retail cannot get. Low-frequency
+large-edge is the shape the evidence actually supports here.
+
+**What would settle it, cheaply:** freeze these two cells as a written
+prediction and test them on data neither has touched — the 2017-2019 pull
+already preregistered on Brake's branch. Two cells, one direction each,
+declared in advance. That is a real out-of-sample test and it costs one data
+pull. Nothing should be sized on this before that runs.
