@@ -5,6 +5,7 @@ import { services, getService, formatPrice } from "@/lib/services";
 import { site, smsHref, telHref } from "@/lib/site";
 import { Picture } from "@/components/site/picture";
 import { LoopVideo } from "@/components/site/loop-video";
+import { BeforeAfter } from "@/components/site/before-after";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
 import { Booking } from "@/components/site/booking";
@@ -62,6 +63,8 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           )}
         </div>
       </section>
+
+      {s.compare && <BeforeAfter {...s.compare} title="Swirls in. Gloss out." />}
 
       <section className="border-t border-border">
         <div className="container-x mx-auto grid max-w-6xl gap-12 py-14 md:grid-cols-12 md:py-20">

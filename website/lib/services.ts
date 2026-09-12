@@ -15,6 +15,8 @@ export type Service = {
   imageAlt: string;
   /** Short silent loop for cards and the page hero; the poster is the still. */
   video?: { base: string; poster: string };
+  /** A before/after pair for the compare slider, when there is honest footage for it. */
+  compare?: { before: string; after: string; caption: string };
   intro: string;
   forWho: string;
   why: string[];
@@ -96,6 +98,11 @@ export const services: Service[] = [
     image: "paint-correction",
     imageAlt: "Corrected black Mercedes under LED inspection lights, reflections razor sharp",
     video: { base: "/media/paint-correction-720", poster: "/media/paint-correction-poster.jpg" },
+    compare: {
+      before: "correction-before",
+      after: "correction-after",
+      caption: "A Ford Raptor tailgate under the inspection light. Swirl marks and wash scratches on one side, the corrected finish on the other.",
+    },
     intro:
       "Paint correction is a multi-stage machine polish that removes defects inside your clear coat, instead of hiding them under a glaze. Swirls, wash marring, scratches, oxidation and water spots come out. True gloss and clarity go back in.",
     forWho:
