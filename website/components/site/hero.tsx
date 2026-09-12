@@ -127,10 +127,17 @@ export function Hero() {
             <b className="font-semibold text-foreground">${prices.correction}</b>. Full detail from{" "}
             <b className="font-semibold text-foreground">${prices.full}</b>. We come to your driveway or office car park, anywhere in {site.area}.
           </p>
+          {/* Phones text; laptops can't, so there the main button jumps to the quote form. */}
           <div className="hero-cta mt-7 flex flex-col gap-3 sm:flex-row md:mt-8">
             <a
+              href="#book"
+              className="hidden min-h-[54px] items-center justify-center rounded-full bg-accent px-7 text-base font-semibold text-accent-foreground no-underline shadow-[0_0_40px_rgba(58,143,224,0.35)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_60px_rgba(58,143,224,0.5)] md:inline-flex"
+            >
+              Get a quote
+            </a>
+            <a
               href={smsHref()}
-              className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-accent px-7 text-base font-semibold text-accent-foreground no-underline shadow-[0_0_40px_rgba(58,143,224,0.35)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_60px_rgba(58,143,224,0.5)]"
+              className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-accent px-7 text-base font-semibold text-accent-foreground no-underline shadow-[0_0_40px_rgba(58,143,224,0.35)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_60px_rgba(58,143,224,0.5)] md:hidden"
             >
               Text us your car
             </a>

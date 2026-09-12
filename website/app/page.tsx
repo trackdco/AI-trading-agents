@@ -23,12 +23,12 @@ export default function HomePage() {
       <ProofBand />
       <ServicesCoverflow />
       <PriceGuide />
+      <Booking />
       <Work />
       {correction && <BeforeAfter {...correction} />}
       <Process />
       <ReviewsMarquee />
       <RecentWork />
-      <Booking />
     </>
   );
 }
