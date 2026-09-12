@@ -62,12 +62,20 @@ for path in glob.glob(f'{SRC}/**/index.html', recursive=True):
     os.makedirs(os.path.dirname(out), exist_ok=True)
     open(out,'w',encoding='utf-8').write(s)
     pages.append(rel)
+# The artifact host keeps its own runtime on the main page (that's how it pushes republishes
+# to open viewers), so the main page must stay put: it frames the site on desktop and only
+# redirects on touch screens, where nested frames scroll badly. Every inner URL carries the
+# build id so no browser can serve an old page from cache.
 open(f'{DST}/index.html','w',encoding='utf-8').write(
     '<title>Imperium Detailing</title>'
-    f'<meta http-equiv="refresh" content="0; url=site/index.html?v={BUILD_ID}">'
-    f'<script>location.replace(new URL("site/index.html?v={BUILD_ID}",document.baseURI).href);</script>'
-    '<style>body{background:#050608;color:#f3f5f8;font-family:system-ui,sans-serif;padding:32px 16px}a{color:#3a8fe0}</style>'
-    f'<p>Opening the Imperium Detailing preview. If nothing happens, <a href="site/index.html?v={BUILD_ID}">open it here</a>.</p>')
+    '<style>html,body{height:100%;margin:0;background:#050608}'
+    '.frame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#050608}'
+    '.open{position:fixed;right:12px;bottom:12px;z-index:2;font:500 13px system-ui,sans-serif;color:#f3f5f8;'
+    'background:rgba(12,15,20,.85);border:1px solid rgba(194,200,208,.25);border-radius:999px;padding:8px 12px;'
+    'text-decoration:none;backdrop-filter:blur(8px)}.open:hover{border-color:rgba(194,200,208,.6)}</style>'
+    f'<script>if(matchMedia("(pointer: coarse)").matches){{location.replace(new URL("site/index.html?v={BUILD_ID}",document.baseURI).href);}}</script>'
+    f'<iframe class="frame" src="site/index.html?v={BUILD_ID}" title="Imperium Detailing website" allow="autoplay; fullscreen"></iframe>'
+    f'<a class="open" href="site/index.html?v={BUILD_ID}" target="_blank" rel="noopener">Open full screen</a>')
 files=[]
 for root,_,fs in os.walk(DST):
     for f in fs:
