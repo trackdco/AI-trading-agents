@@ -4,7 +4,7 @@ import type { Faq as FaqItem } from "@/lib/services";
 export function Faq({ items, title = "Common questions" }: { items: FaqItem[]; title?: string }) {
   return (
     <div>
-      <h2 className="display text-3xl md:text-5xl">{title}</h2>
+      <h2 className="display-caps text-3xl md:text-5xl">{title}</h2>
       <div className="mt-6 border-t border-border">
         {items.map((f) => (
           <details key={f.q} className="group border-b border-border">

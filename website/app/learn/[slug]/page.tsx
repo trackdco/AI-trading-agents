@@ -42,14 +42,14 @@ export default async function ArticlePage({ params }: { params: Promise<Params> 
             Guides
           </Link>
         </p>
-        <h1 className="display mt-3 max-w-4xl text-5xl md:text-7xl">{a.h1}</h1>
+        <h1 className="display-caps mt-3 max-w-4xl text-5xl md:text-7xl">{a.h1}</h1>
         <p className="mt-6 max-w-[62ch] text-lg text-secondary-foreground">{a.intro}</p>
 
         <div className="mt-10 grid gap-10 md:grid-cols-12">
           <div className="grid gap-10 md:col-span-8">
             {a.sections.map((s) => (
               <section key={s.h}>
-                <h2 className="display text-3xl md:text-4xl">{s.h}</h2>
+                <h2 className="display-caps text-3xl md:text-4xl">{s.h}</h2>
                 {s.p?.map((p) => (
                   <p key={p.slice(0, 40)} className="mt-4 max-w-[64ch] text-[17px] text-secondary-foreground">
                     {p}

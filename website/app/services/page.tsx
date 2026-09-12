@@ -24,12 +24,12 @@ export default function ServicesPage() {
                 <Picture name={s.image} alt={s.imageAlt} sizes="(min-width: 768px) 25vw, 100vw" className="aspect-[4/3] w-full rounded-md object-cover" />
               </div>
               <div className="md:col-span-6">
-                <h2 className="display text-3xl">{s.name}</h2>
+                <h2 className="display-caps text-3xl">{s.name}</h2>
                 <p className="mt-2 text-[15px] text-muted-foreground">{s.description}</p>
               </div>
               <div className="md:col-span-3 md:text-right">
                 <span className="text-sm text-muted-foreground">from</span>
-                <span className="display block text-4xl">{formatPrice(s.priceFrom)}</span>
+                <span className="display-caps block text-4xl">{formatPrice(s.priceFrom)}</span>
                 <span className="mt-1 block text-sm text-muted-foreground">{s.duration}</span>
               </div>
             </Link>

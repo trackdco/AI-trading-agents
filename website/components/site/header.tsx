@@ -9,12 +9,26 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
+  const [solid, setSolid] = useState(false);
+
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
+  // Clear over the hero, solid once you scroll.
+  useEffect(() => {
+    const onScroll = () => setSolid(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
+    <header
+      className={`sticky top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-500 ${
+        solid || open ? "border-border bg-background/85 backdrop-blur-md" : "border-transparent bg-transparent"
+      }`}
+    >
       <a
         href="#content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-[60] focus:rounded-md focus:bg-accent focus:px-3 focus:py-2 focus:text-accent-foreground"
@@ -32,7 +46,7 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-[15px] text-secondary-foreground no-underline transition-colors hover:text-foreground"
+              className="link-slide text-[15px] text-secondary-foreground no-underline transition-colors hover:text-foreground"
             >
               {item.label}
             </Link>
@@ -45,7 +59,7 @@ export function Header() {
           </a>
           <Link
             href="/book/"
-            className="inline-flex h-11 items-center rounded-lg bg-accent px-5 text-[15px] font-semibold text-accent-foreground no-underline hover:bg-[#5aa6f0]"
+            className="inline-flex h-11 items-center rounded-full bg-accent px-5 text-[15px] font-semibold text-accent-foreground no-underline transition-colors hover:bg-[#5aa6f0]"
           >
             Get a quote
           </Link>

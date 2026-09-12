@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Big_Shoulders, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { JsonLd } from "@/components/site/json-ld";
 import { Analytics } from "@/components/site/analytics";
+import { Intro } from "@/components/site/intro";
+import { SmoothScroll } from "@/components/site/smooth-scroll";
+import { ScrollFx } from "@/components/site/scroll-fx";
 import { site } from "@/lib/site";
 
 // Google folded "Big Shoulders Display" into the variable "Big Shoulders" family;
@@ -53,6 +57,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-AU" className={`${display.variable} ${sans.variable} dark h-full`}>
       <body className="flex min-h-full flex-col">
+        {/* Runs before paint: marks that JS is on (so reveals may start hidden) and skips the
+            intro curtain on repeat visits in this tab. */}
+        <Script id="flags" strategy="beforeInteractive">{`try{var d=document.documentElement;d.dataset.js="1";if(sessionStorage.getItem("imperium-intro"))d.dataset.intro="done";}catch(e){}`}</Script>
+        <Intro />
+        <SmoothScroll />
+        <ScrollFx />
         <Header />
         <main id="content" className="flex-1">
           {children}

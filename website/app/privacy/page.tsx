@@ -8,12 +8,12 @@ export const metadata: Metadata = {
 };
 
 const P = ({ children }: { children: React.ReactNode }) => <p className="mt-4 max-w-[64ch] text-[17px] text-secondary-foreground">{children}</p>;
-const H = ({ children }: { children: React.ReactNode }) => <h2 className="display mt-10 text-3xl md:text-4xl">{children}</h2>;
+const H = ({ children }: { children: React.ReactNode }) => <h2 className="display-caps mt-10 text-3xl md:text-4xl">{children}</h2>;
 
 export default function PrivacyPage() {
   return (
     <section className="container-x mx-auto max-w-6xl py-14 md:py-20">
-      <h1 className="display max-w-4xl text-5xl md:text-7xl">Privacy policy.</h1>
+      <h1 className="display-caps max-w-4xl text-5xl md:text-7xl">Privacy policy.</h1>
       <P>Imperium Detailing ({site.legalName}, Canberra ACT) respects your privacy. This page explains what we collect, why, and what you can do about it. It's written to be read, not to be scrolled past.</P>
 
       <H>What we collect</H>

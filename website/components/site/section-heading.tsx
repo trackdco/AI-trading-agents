@@ -8,16 +8,21 @@ type Props = {
   size?: "lg" | "xl";
 };
 
-// Left-aligned section opener: one heading, an optional intro, no labels above it.
+// Left-aligned section opener: one big uppercase heading that rises out of a mask, an
+// optional intro, no labels above it.
 export function SectionHeading({ id, title, intro, as = "h2", size = "lg" }: Props) {
   const Tag = as;
-  const cls = size === "xl" ? "display text-5xl md:text-7xl" : "display text-4xl md:text-6xl";
+  const cls = size === "xl" ? "display-caps text-[clamp(3rem,8vw,7.4rem)]" : "display-caps text-[clamp(2.6rem,6.4vw,5.8rem)]";
   return (
-    <div className="mb-10 max-w-3xl md:mb-14">
-      <Tag id={id} className={cls}>
+    <div className="mb-10 max-w-4xl md:mb-14">
+      <Tag id={id} className={cls} data-reveal="lines">
         {title}
       </Tag>
-      {intro && <p className="mt-5 max-w-[60ch] text-lg text-muted-foreground">{intro}</p>}
+      {intro && (
+        <p className="mt-6 max-w-[58ch] text-lg text-muted-foreground" data-reveal="up">
+          {intro}
+        </p>
+      )}
     </div>
   );
 }

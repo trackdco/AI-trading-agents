@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/site/hero";
-import { ProofStrip } from "@/components/site/proof-strip";
+import { ProofBand } from "@/components/site/proof-band";
 import { ServicesCoverflow } from "@/components/site/services-coverflow";
 import { Work } from "@/components/site/work";
 import { Process } from "@/components/site/process";
@@ -15,7 +15,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <ProofStrip />
+      <ProofBand />
       <ServicesCoverflow />
       <Work />
       <Process />

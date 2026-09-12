@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { site, smsHref, telHref, prices } from "@/lib/site";
+import { services } from "@/lib/services";
+import { Marquee } from "@/components/site/marquee";
 
 gsap.registerPlugin(useGSAP);
 
@@ -13,14 +15,12 @@ export function Hero() {
   const root = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [state, setState] = useState<PlayState>("playing");
-  const [reduce, setReduce] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const wide = window.matchMedia("(min-width: 900px)").matches;
-    setReduce(reduced);
 
     // Pick the size for this screen; WebM first, MP4 as the fallback.
     const base = wide ? "/media/opening-1080" : "/media/opening-720";
@@ -35,12 +35,8 @@ export function Hero() {
 
     const onEnded = () => setState("ended");
     video.addEventListener("ended", onEnded);
-
-    if (reduced) {
-      setState("reduced");
-    } else {
-      video.play().then(() => setState("playing")).catch(() => setState("blocked"));
-    }
+    if (reduced) setState("reduced");
+    else video.play().then(() => setState("playing")).catch(() => setState("blocked"));
     return () => video.removeEventListener("ended", onEnded);
   }, []);
 
@@ -51,27 +47,39 @@ export function Hero() {
     v.play().then(() => setState("playing")).catch(() => setState("blocked"));
   };
 
-  // One orchestrated load sequence. gsap.from means the page is at rest without it.
+  // The one orchestrated moment: waits for the intro curtain, then lines rise out of
+  // their masks while the panel settles into place.
   useGSAP(
     () => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-      tl.from(".hero-panel", { opacity: 0, duration: 0.9, ease: "power2.out" }, 0.1)
-        .from(".hero-line > span", { yPercent: 112, duration: 1.05, stagger: 0.14 }, 0.25)
-        .from(".hero-sub", { opacity: 0, y: 14, duration: 0.6 }, 0.95)
-        .from(".hero-cta", { opacity: 0, y: 14, duration: 0.6 }, 1.1)
-        .from(".hero-note", { opacity: 0, y: 14, duration: 0.6 }, 1.2);
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+      tl.from(".hero-panel", { opacity: 0, y: 40, scale: 0.97, duration: 1.3, ease: "expo.out" }, 0)
+        .from(".hero-line > span", { yPercent: 110, duration: 1.15, stagger: 0.11 }, 0.15)
+        .from(".hero-sub", { opacity: 0, y: 16, duration: 0.7 }, 0.85)
+        .from(".hero-cta > *", { opacity: 0, y: 16, duration: 0.7, stagger: 0.08 }, 0.95)
+        .from(".hero-note", { opacity: 0, duration: 0.6 }, 1.15)
+        .from(".hero-strip", { opacity: 0, duration: 0.8 }, 1.2);
+      if (document.documentElement.dataset.intro === "done") tl.play();
+      else window.addEventListener("intro:done", () => tl.play(), { once: true });
     },
     { scope: root },
   );
 
   const playLabel = state === "ended" ? "Play again" : state === "blocked" || state === "reduced" ? "Play the clip" : null;
+  const strip = [...services.map((s) => s.name), "Mobile across Canberra and Queanbeyan", "No call-out fee"];
 
   return (
-    <section ref={root} aria-label="Imperium Detailing" className="relative">
-      <div className="container-x relative mx-auto grid min-h-[calc(100svh-72px)] max-w-6xl items-end pb-8 md:min-h-[calc(84vh-72px)] md:grid-cols-12 md:items-center md:gap-10 md:py-8">
-        {/* Video: a tall panel on desktop, the full background on phones. */}
-        <div className="hero-panel absolute inset-0 md:relative md:col-span-5 md:col-start-8 md:order-2 md:justify-self-end md:aspect-[9/16] md:h-[min(74vh,760px)] md:w-auto">
+    <section ref={root} aria-label="Imperium Detailing" className="relative overflow-hidden">
+      {/* Full-bleed backdrop: a blurred frame of the footage, so the header floats over it. */}
+      <div aria-hidden="true" className="absolute inset-x-0 -top-[72px] bottom-0 -z-10">
+        <img src="/media/opening-poster.jpg" alt="" className="h-full w-full scale-125 object-cover opacity-40 blur-3xl saturate-125" />
+        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_70%_40%,rgba(31,111,196,0.22),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(5,6,8,0.55),rgba(5,6,8,0.15)_35%,rgba(5,6,8,0.6)_75%,#050608_100%)]" />
+      </div>
+
+      <div className="container-x relative mx-auto grid min-h-[calc(100svh-72px)] max-w-6xl items-end pb-10 md:min-h-[calc(92vh-72px)] md:grid-cols-12 md:items-center md:pb-0 md:pt-6">
+        {/* Video: a glowing portrait panel on desktop, the full background on phones. */}
+        <div className="hero-panel absolute inset-0 md:relative md:col-span-5 md:col-start-8 md:row-start-1 md:aspect-[9/16] md:h-[min(76vh,780px)] md:w-auto md:justify-self-end">
           <video
             ref={videoRef}
             muted
@@ -79,7 +87,7 @@ export function Hero() {
             preload="auto"
             poster="/media/opening-poster.jpg"
             aria-label="Washing and drying a green BMW M4 in a Canberra driveway, ending on an Imperium Detailing towel"
-            className="absolute inset-0 h-full w-full object-cover bg-card md:static md:rounded-md"
+            className="panel-glow absolute inset-0 h-full w-full bg-card object-cover md:static md:rounded-xl"
           >
             <source src="/media/opening-720.mp4" type="video/mp4" />
           </video>
@@ -87,49 +95,56 @@ export function Hero() {
             <button
               type="button"
               onClick={replay}
-              className="absolute right-4 top-4 z-10 text-sm text-secondary-foreground underline underline-offset-4 hover:text-foreground md:left-0 md:right-0 md:top-auto md:-bottom-10 md:mx-auto md:w-max"
+              className="absolute right-4 top-4 z-10 rounded-full border border-white/20 bg-background/60 px-4 py-2 text-sm text-foreground backdrop-blur hover:bg-background/80"
             >
               {playLabel}
             </button>
           )}
-          {/* Phone-only scrim so the text reads over the footage. */}
           <div
             aria-hidden="true"
             className="absolute inset-0 md:hidden"
-            style={{ background: "linear-gradient(to top, rgba(5,6,8,.94) 0%, rgba(5,6,8,.62) 42%, rgba(5,6,8,.18) 72%, rgba(5,6,8,0) 100%)" }}
+            style={{ background: "linear-gradient(to top, rgba(5,6,8,.96) 0%, rgba(5,6,8,.66) 40%, rgba(5,6,8,.2) 70%, rgba(5,6,8,0) 100%)" }}
           />
         </div>
 
-        <div className="relative z-10 pt-[52vh] md:col-span-7 md:col-start-1 md:order-1 md:pt-0">
-          <h1 className="display">
-            <span className="hero-line block overflow-hidden pb-[.08em] -mb-[.08em] text-2xl md:text-[clamp(1.9rem,3.4vw,3.4rem)] font-bold">
-              <span className="inline-block will-change-transform">Not the cheapest detailer in Canberra.</span>
+        {/* Copy: sits on top of the panel's inner edge on desktop. */}
+        <div className="relative z-10 pt-[54vh] md:col-span-8 md:col-start-1 md:row-start-1 md:pt-0">
+          <h1 className="display-caps text-[clamp(2.5rem,5.7vw,6.1rem)]">
+            <span className="hero-line block overflow-x-visible overflow-y-clip pb-[.06em] -mb-[.06em] text-secondary-foreground">
+              <span className="inline-block whitespace-nowrap will-change-transform">Not the cheapest</span>
             </span>
-            <span className="hero-line block overflow-hidden pb-[.08em] -mb-[.08em] text-[clamp(2.9rem,13.5vw,4.4rem)] md:text-[clamp(3.4rem,8.4vw,8.4rem)]">
-              <span className="inline-block will-change-transform">The most careful one.</span>
+            <span className="hero-line block overflow-x-visible overflow-y-clip pb-[.06em] -mb-[.06em] text-secondary-foreground">
+              <span className="inline-block whitespace-nowrap will-change-transform">detailer in Canberra.</span>
+            </span>
+            <span className="hero-line block overflow-x-visible overflow-y-clip pb-[.06em] -mb-[.06em]">
+              <span className="inline-block whitespace-nowrap will-change-transform">The most careful one.</span>
             </span>
           </h1>
-          <p className="hero-sub mt-5 max-w-[34rem] text-base text-muted-foreground md:mt-7 md:text-lg">
-            Ceramic coating from <b className="font-medium text-foreground">${prices.ceramic}</b>. Paint correction from{" "}
-            <b className="font-medium text-foreground">${prices.correction}</b>. Full detail from{" "}
-            <b className="font-medium text-foreground">${prices.full}</b>. We come to your driveway or office car park, anywhere in {site.area}.
+          <p className="hero-sub mt-6 max-w-[32rem] text-base text-secondary-foreground md:mt-8 md:text-lg">
+            Ceramic coating from <b className="font-semibold text-foreground">${prices.ceramic}</b>. Paint correction from{" "}
+            <b className="font-semibold text-foreground">${prices.correction}</b>. Full detail from{" "}
+            <b className="font-semibold text-foreground">${prices.full}</b>. We come to your driveway or office car park, anywhere in {site.area}.
           </p>
-          <div className="hero-cta mt-6 flex flex-col gap-3 sm:flex-row md:mt-7">
+          <div className="hero-cta mt-7 flex flex-col gap-3 sm:flex-row md:mt-8">
             <a
               href={smsHref()}
-              className="inline-flex min-h-[52px] items-center justify-center rounded-lg bg-accent px-6 text-base font-semibold text-accent-foreground no-underline hover:bg-[#5aa6f0]"
+              className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-accent px-7 text-base font-semibold text-accent-foreground no-underline shadow-[0_0_40px_rgba(58,143,224,0.35)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_60px_rgba(58,143,224,0.5)]"
             >
               Text us your car
             </a>
             <a
               href={telHref}
-              className="inline-flex min-h-[52px] items-center justify-center rounded-lg border border-border px-6 text-base font-semibold text-foreground no-underline hover:border-secondary-foreground/50"
+              className="inline-flex min-h-[54px] items-center justify-center rounded-full border border-white/20 bg-background/40 px-7 text-base font-semibold text-foreground no-underline backdrop-blur transition-colors hover:border-white/50"
             >
               Call {site.phoneDisplay}
             </a>
           </div>
           <p className="hero-note mt-4 text-[15px] text-muted-foreground">{site.quotePromise}</p>
         </div>
+      </div>
+
+      <div className="hero-strip relative border-t border-white/10 py-4">
+        <Marquee items={strip} />
       </div>
     </section>
   );

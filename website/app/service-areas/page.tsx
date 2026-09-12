@@ -24,7 +24,7 @@ export default function AreasPage() {
           {areas.map((a) => (
             <li key={a.slug}>
               <Link href={`/service-areas/${a.slug}/`} className="block h-full rounded-lg border border-border bg-card p-6 no-underline transition-colors hover:border-secondary-foreground/40">
-                <h2 className="display text-3xl">{a.name}</h2>
+                <h2 className="display-caps text-3xl">{a.name}</h2>
                 <p className="mt-2 text-[15px] text-muted-foreground">{a.blurb}</p>
                 <p className="mt-3 text-sm text-secondary-foreground">{a.suburbs.slice(0, 5).join(", ")}{a.suburbs.length > 5 ? " and more" : ""}</p>
               </Link>

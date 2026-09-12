@@ -42,7 +42,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           <p className="m-0 text-[15px] text-muted-foreground">
             From <b className="font-medium text-foreground">{formatPrice(s.priceFrom)}</b> · {s.duration}
           </p>
-          <h1 className="display mt-3 text-5xl md:text-7xl">{s.h1}</h1>
+          <h1 className="display-caps mt-3 text-5xl md:text-7xl">{s.h1}</h1>
           <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">{s.intro}</p>
           <p className="mt-4 max-w-[60ch] text-muted-foreground">{s.forWho}</p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -61,7 +61,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
       <section className="border-t border-border">
         <div className="container-x mx-auto grid max-w-6xl gap-12 py-14 md:grid-cols-12 md:py-20">
           <div className="md:col-span-7">
-            <h2 className="display text-3xl md:text-5xl">How we do it</h2>
+            <h2 className="display-caps text-3xl md:text-5xl">How we do it</h2>
             <div className="mt-6 grid max-w-[64ch] gap-4 text-[17px] text-secondary-foreground">
               {s.why.map((p) => (
                 <p key={p.slice(0, 40)} className="m-0">

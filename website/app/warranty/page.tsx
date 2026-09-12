@@ -10,13 +10,13 @@ export const metadata: Metadata = {
 };
 
 const P = ({ children }: { children: React.ReactNode }) => <p className="mt-4 max-w-[64ch] text-[17px] text-secondary-foreground">{children}</p>;
-const H = ({ children }: { children: React.ReactNode }) => <h2 className="display mt-12 text-3xl md:text-4xl">{children}</h2>;
+const H = ({ children }: { children: React.ReactNode }) => <h2 className="display-caps mt-12 text-3xl md:text-4xl">{children}</h2>;
 
 export default function WarrantyPage() {
   return (
     <>
       <section className="container-x mx-auto max-w-6xl py-14 md:py-20">
-        <h1 className="display max-w-4xl text-5xl md:text-7xl">Coating warranty, in writing.</h1>
+        <h1 className="display-caps max-w-4xl text-5xl md:text-7xl">Coating warranty, in writing.</h1>
         <P>
           Every ceramic coating we apply comes with a written warranty: 3, 5 or 7 years depending on the tier you choose. The full terms are handed to you with the car and match what's on this page. Local competitors don't publish theirs. We do.
         </P>

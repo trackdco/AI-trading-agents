@@ -19,7 +19,7 @@ export default function LearnPage() {
           {articles.map((a) => (
             <li key={a.slug}>
               <Link href={`/learn/${a.slug}/`} className="block h-full rounded-lg border border-border bg-card p-6 no-underline hover:border-secondary-foreground/40 md:p-8">
-                <h2 className="display text-3xl md:text-4xl">{a.h1}</h2>
+                <h2 className="display-caps text-3xl md:text-4xl">{a.h1}</h2>
                 <p className="mt-3 text-[15px] text-muted-foreground">{a.description}</p>
                 <span className="mt-4 inline-block text-[15px] text-foreground underline underline-offset-4">Read the guide</span>
               </Link>

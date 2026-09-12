@@ -38,7 +38,7 @@ export default async function AreaPage({ params }: { params: Promise<Params> }) 
           </Link>{" "}
           / {a.name}
         </p>
-        <h1 className="display mt-3 text-5xl md:text-7xl">Mobile car detailing in {a.name}.</h1>
+        <h1 className="display-caps mt-3 text-5xl md:text-7xl">Mobile car detailing in {a.name}.</h1>
         <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">{a.blurb}</p>
         <p className="mt-4 max-w-[60ch] text-muted-foreground">
           We're a fully mobile detailer: no shop, no drop-off, no travel fee. We come to your driveway, car park or workplace anywhere in {a.name} with the van, the water and the power. {site.quotePromise}
@@ -59,7 +59,7 @@ export default async function AreaPage({ params }: { params: Promise<Params> }) 
             {best && (
               <Link href={`/services/${best.slug}/`} className="block rounded-lg border border-border bg-card p-6 no-underline hover:border-secondary-foreground/40">
                 <p className="m-0 text-sm text-muted-foreground">Most booked in {a.name}</p>
-                <h2 className="display mt-1 text-3xl">{best.name}</h2>
+                <h2 className="display-caps mt-1 text-3xl">{best.name}</h2>
                 <p className="mt-2 text-[15px] text-muted-foreground">{best.description}</p>
                 <p className="mt-3 text-[15px] text-foreground">From {formatPrice(best.priceFrom)}</p>
               </Link>

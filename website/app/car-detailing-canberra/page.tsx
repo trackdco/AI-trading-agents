@@ -20,7 +20,7 @@ export default function CarDetailingCanberraPage() {
           {services.map((s) => (
             <li key={s.slug}>
               <Link href={`/services/${s.slug}/`} className="block h-full rounded-lg border border-border bg-card p-5 no-underline hover:border-secondary-foreground/40">
-                <h2 className="display text-2xl">{s.name}</h2>
+                <h2 className="display-caps text-2xl">{s.name}</h2>
                 <p className="mt-2 text-[15px] text-muted-foreground">{s.forWho}</p>
                 <p className="mt-3 text-[15px] text-foreground">From {formatPrice(s.priceFrom)}</p>
               </Link>

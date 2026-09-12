@@ -106,3 +106,95 @@
 .radial-glow {
   background: radial-gradient(closest-side, rgba(31, 111, 196, 0.35), rgba(15, 61, 110, 0.15), rgba(5, 6, 8, 0) 70%);
 }
+
+/* ---------- v2: premium layer ---------- */
+
+/* Uppercase condensed display: the automotive voice of the brand. */
+.display-caps {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.006em;
+  line-height: 0.88;
+  text-wrap: balance;
+}
+
+/* Scroll reveals: hidden only when JS is running (the inline flag script sets data-js),
+   so crawlers and no-JS visitors always get the content. scroll-fx.tsx animates them in. */
+html[data-js] [data-reveal="up"],
+html[data-js] [data-reveal="img"] {
+  opacity: 0;
+}
+html[data-js] [data-reveal="lines"] {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-js] [data-reveal] {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Intro curtain: skipped instantly on repeat visits within the same tab. */
+html[data-intro="done"] .intro {
+  display: none;
+}
+
+/* Marquee strip. */
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.marquee-track {
+  animation: marquee var(--marquee-duration, 42s) linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* Film grain over everything: what makes flat dark panels feel like a surface. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+::selection {
+  background: rgba(58, 143, 224, 0.45);
+  color: #fff;
+}
+
+/* Glow behind the hero panel and the coverflow. */
+.panel-glow {
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.7),
+    0 0 120px rgba(31, 111, 196, 0.22);
+}
+
+/* Gradient-faded giant wordmark in the footer. */
+.wordmark-fade {
+  background: linear-gradient(180deg, rgba(243, 245, 248, 0.92) 0%, rgba(243, 245, 248, 0.18) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Underline that slides in on hover for text links. */
+.link-slide {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.link-slide:hover {
+  background-size: 100% 1px;
+}

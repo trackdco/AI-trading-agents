@@ -101,7 +101,6 @@ export interface TestimonialsMarqueeProps {
   testimonials: Testimonial[];
   heading?: string;
   intro?: string;
-  label?: string;
   columns?: 2 | 3;
   maxHeight?: number;
 }
@@ -110,7 +109,6 @@ export function TestimonialsMarquee({
   testimonials,
   heading = "Trusted by Canberra's most particular owners.",
   intro,
-  label = "Reviews",
   columns = 3,
   maxHeight = 680,
 }: TestimonialsMarqueeProps) {
@@ -121,12 +119,15 @@ export function TestimonialsMarquee({
   return (
     <section aria-labelledby="testimonials-heading" className="relative overflow-hidden bg-transparent py-16 md:py-24">
       <div className="container-x z-10 mx-auto w-full max-w-6xl">
-        <div className="mb-12 max-w-2xl">
-          {label && <p className="m-0 mb-3 text-sm text-muted-foreground">{label}</p>}
-          <h2 id="testimonials-heading" className="display text-4xl md:text-6xl">
+        <div className="mb-12 max-w-4xl">
+          <h2 id="testimonials-heading" className="display-caps text-[clamp(2.6rem,6.4vw,5.8rem)]" data-reveal="lines">
             {heading}
           </h2>
-          {intro && <p className="mt-5 max-w-xl text-lg text-muted-foreground">{intro}</p>}
+          {intro && (
+            <p className="mt-6 max-w-[58ch] text-lg text-muted-foreground" data-reveal="up">
+              {intro}
+            </p>
+          )}
         </div>
 
         <div

@@ -9,12 +9,12 @@ export const metadata: Metadata = {
 };
 
 const P = ({ children }: { children: React.ReactNode }) => <p className="mt-4 max-w-[64ch] text-[17px] text-secondary-foreground">{children}</p>;
-const H = ({ children }: { children: React.ReactNode }) => <h2 className="display mt-10 text-3xl md:text-4xl">{children}</h2>;
+const H = ({ children }: { children: React.ReactNode }) => <h2 className="display-caps mt-10 text-3xl md:text-4xl">{children}</h2>;
 
 export default function TermsPage() {
   return (
     <section className="container-x mx-auto max-w-6xl py-14 md:py-20">
-      <h1 className="display max-w-4xl text-5xl md:text-7xl">Terms, in plain English.</h1>
+      <h1 className="display-caps max-w-4xl text-5xl md:text-7xl">Terms, in plain English.</h1>
       <P>These are the terms that apply when you book Imperium Detailing. They're short because the way we work is simple.</P>
 
       <H>Quotes and prices</H>
