@@ -9,6 +9,7 @@ import { Analytics } from "@/components/site/analytics";
 import { Intro } from "@/components/site/intro";
 import { SmoothScroll } from "@/components/site/smooth-scroll";
 import { ScrollFx } from "@/components/site/scroll-fx";
+import { MobileBar } from "@/components/site/mobile-bar";
 import { site } from "@/lib/site";
 
 // Google folded "Big Shoulders Display" into the variable "Big Shoulders" family;
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <Footer />
+        <MobileBar />
         <JsonLd />
         <Analytics />
       </body>

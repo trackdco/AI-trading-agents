@@ -2,7 +2,9 @@ import { BookingForm } from "@/components/site/booking-form";
 import { SectionHeading } from "@/components/site/section-heading";
 import { site, telHref } from "@/lib/site";
 
-export function Booking({ title = "Book your detail.", headingAs = "h2" }: { title?: string; headingAs?: "h1" | "h2" }) {
+type Props = { title?: string; headingAs?: "h1" | "h2"; defaultService?: string };
+
+export function Booking({ title = "Book your detail.", headingAs = "h2", defaultService }: Props) {
   return (
     <section id="book" className="border-t border-border py-16 md:py-24">
       <div className="container-x mx-auto grid max-w-6xl gap-12 md:grid-cols-12">
@@ -22,7 +24,7 @@ export function Booking({ title = "Book your detail.", headingAs = "h2" }: { tit
           </ul>
         </div>
         <div className="rounded-lg border border-border bg-card p-6 md:col-span-7 md:p-8">
-          <BookingForm />
+          <BookingForm defaultService={defaultService} />
         </div>
       </div>
     </section>

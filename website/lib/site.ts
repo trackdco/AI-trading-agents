@@ -15,8 +15,9 @@ export const site = {
   // The response promise shown next to every call to action. Keep it true.
   quotePromise: "You'll have a quote back within a few hours, 7 days a week.",
   stats: { cars: "400+", rating: "4.9", reviewCount: 45, warrantyYears: 7 },
-  // Replace with the "Write a review" / profile link from your Google Business Profile.
+  // Google Business Profile: where the reviews are read, and the direct "write a review" link.
   googleReviewsUrl: "https://www.google.com/maps/search/Imperium+Detailing+Canberra",
+  googleWriteReviewUrl: "https://g.page/r/CSwRG2iKFelCEBM/review",
   // Integrations. Set these in .env.local (see README); empty means "not loaded".
   formEndpoint: process.env.NEXT_PUBLIC_FORM_ENDPOINT ?? "",
   metaPixelId: process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "",

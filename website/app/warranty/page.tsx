@@ -44,7 +44,12 @@ export default function WarrantyPage() {
         <P>Damage from accidents, stone chips, scratches through the coating, paint failure underneath it, improper washing, chemical spills, or work on the coated panels by anyone else. Coatings protect against the environment; they are not a substitute for paint protection film against impact, and they do not protect against hail.</P>
 
         <H>Annual inspection</H>
-        <P>An optional annual check is included at no extra cost. We inspect the coating, decontaminate the panels and top up the hydrophobic layer if needed. It's the easiest way to get the full life out of the coating.</P>
+        <P>An optional annual check is included at no extra cost. We inspect the coating, decontaminate the panels and top up the hydrophobic layer if needed. It's the easiest way to get the full life out of the coating.{" If you'd rather not think about washing at all, a "}
+          <Link href="/maintenance/" className="underline underline-offset-4">
+            maintenance plan
+          </Link>{" "}
+          keeps it washed the right way between inspections.
+        </P>
 
         <H>How to claim</H>
         <P>

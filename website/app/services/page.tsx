@@ -35,6 +35,15 @@ export default function ServicesPage() {
             </Link>
           ))}
         </div>
+        <Link href="/maintenance/" className="mt-4 grid gap-4 rounded-lg border border-border p-5 no-underline transition-colors hover:bg-card md:grid-cols-12 md:items-center md:p-6">
+          <div className="md:col-span-9">
+            <h2 className="display-caps text-3xl">Maintenance plans</h2>
+            <p className="mt-2 text-[15px] text-muted-foreground">
+              Already detailed? We come back every 2, 4 or 8 weeks and keep it that way. One fixed price per visit, quoted for your car.
+            </p>
+          </div>
+          <div className="text-[15px] font-semibold text-foreground md:col-span-3 md:text-right">How the plans work</div>
+        </Link>
       </section>
       <CtaBand title="Not sure which one your car needs?" />
     </>

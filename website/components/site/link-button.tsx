@@ -7,6 +7,7 @@ type Props = {
   variant?: "primary" | "ghost";
   className?: string;
   external?: boolean;
+  newTab?: boolean;
 };
 
 const base =
@@ -16,11 +17,11 @@ const variants = {
   ghost: "border border-border text-foreground hover:border-secondary-foreground/50",
 };
 
-export function LinkButton({ href, children, variant = "primary", className = "", external }: Props) {
+export function LinkButton({ href, children, variant = "primary", className = "", external, newTab }: Props) {
   const cls = `${base} ${variants[variant]} ${className}`;
   if (external || href.startsWith("tel:") || href.startsWith("sms:") || href.startsWith("mailto:") || href.startsWith("http")) {
     return (
-      <a href={href} className={cls}>
+      <a href={href} className={cls} target={newTab ? "_blank" : undefined} rel={newTab ? "noopener" : undefined}>
         {children}
       </a>
     );

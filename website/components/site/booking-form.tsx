@@ -23,7 +23,7 @@ type Status = "idle" | "sending" | "sent" | "fallback" | "error";
 const selectClass =
   "flex h-11 w-full rounded-md border border-input bg-background px-3 text-base text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
-export function BookingForm({ compact = false }: { compact?: boolean }) {
+export function BookingForm({ compact = false, defaultService = "" }: { compact?: boolean; defaultService?: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
 
@@ -96,7 +96,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
       <div className={`grid gap-5 ${compact ? "" : "sm:grid-cols-2"}`}>
         <div className="grid gap-2">
           <Label htmlFor="bf-service">Which service?</Label>
-          <select id="bf-service" name="service" required className={selectClass} defaultValue="">
+          <select id="bf-service" name="service" required className={selectClass} defaultValue={defaultService}>
             <option value="" disabled>
               Choose one
             </option>

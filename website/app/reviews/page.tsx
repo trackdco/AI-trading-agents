@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { reviews } from "@/lib/reviews";
 import { site } from "@/lib/site";
 import { SectionHeading } from "@/components/site/section-heading";
+import { LinkButton } from "@/components/site/link-button";
 import { CtaBand } from "@/components/site/cta-band";
 
 export const metadata: Metadata = {
@@ -28,16 +29,21 @@ export default function ReviewsPage() {
           as="h1"
           size="xl"
           title="What Canberra owners say."
-          intro={
-            <>
-              {site.stats.rating} stars across {site.stats.reviewCount} reviews. Every review here is from a real customer.{" "}
-              <a href={site.googleReviewsUrl} rel="noopener" className="text-foreground underline underline-offset-4">
-                Read them on Google
-              </a>
-              .
-            </>
-          }
+          intro={`${site.stats.rating} stars across ${site.stats.reviewCount} reviews. Every review here is from a real customer.`}
         />
+        <div className="-mt-4 mb-10 md:-mt-6 md:mb-14" data-reveal="up">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <LinkButton href={site.googleWriteReviewUrl} newTab>
+              Write a review on Google
+            </LinkButton>
+            <LinkButton href={site.googleReviewsUrl} variant="ghost" newTab>
+              Read them on Google
+            </LinkButton>
+          </div>
+          <p className="mt-4 max-w-[52ch] text-[15px] text-muted-foreground">
+            {"Had your car done by us? A review takes a minute, and it's what keeps a small business booked."}
+          </p>
+        </div>
         <ul className="m-0 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
           {reviews.map((r, i) => (
             <li key={`${r.name}-${i}`} className="rounded-lg border border-border bg-card p-6">

@@ -21,7 +21,7 @@ export function Footer() {
             {site.quotePromise}
           </p>
         </div>
-        <div className="flex shrink-0 flex-col gap-3 sm:flex-row" data-reveal="up">
+        <div id="footer-cta" className="flex shrink-0 flex-col gap-3 sm:flex-row" data-reveal="up">
           <a
             href={smsHref()}
             className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-accent px-7 text-base font-semibold text-accent-foreground no-underline shadow-[0_0_40px_rgba(58,143,224,0.3)] transition-transform duration-300 hover:-translate-y-0.5"
@@ -73,6 +73,9 @@ export function Footer() {
                 {s.name}
               </Link>
             ))}
+            <Link href="/maintenance/" className={link}>
+              Maintenance plans
+            </Link>
             <Link href="/services/" className={link}>
               All services and prices
             </Link>
@@ -96,6 +99,9 @@ export function Footer() {
             <Link href="/reviews/" className={link}>
               Reviews
             </Link>
+            <a href={site.googleWriteReviewUrl} target="_blank" rel="noopener" className={link}>
+              Write a Google review
+            </a>
             {articles.map((a) => (
               <Link key={a.slug} href={`/learn/${a.slug}/`} className={link}>
                 {a.h1}
