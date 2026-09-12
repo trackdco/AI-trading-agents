@@ -100,7 +100,7 @@ export const services: Service[] = [
     video: { base: "/media/paint-correction-720", poster: "/media/paint-correction-poster.jpg" },
     compare: {
       before: "correction-before",
-      after: "correction-after",
+      after: "correction-after-2",
       caption: "A Ford Raptor tailgate under the inspection light. Swirl marks and wash scratches on one side, the corrected finish on the other.",
     },
     intro:
