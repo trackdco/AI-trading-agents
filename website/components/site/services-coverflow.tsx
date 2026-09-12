@@ -20,6 +20,7 @@ const items: CarouselItem[] = services.map((s) => ({
   img: imageSrc(s.image, 480),
   imgSrcSet: imageSrcSet(s.image),
   imgAlt: s.imageAlt,
+  video: s.video ? { mp4: `${s.video.base}.mp4`, webm: `${s.video.base}.webm`, poster: s.video.poster } : undefined,
   ctaText: "See what's included",
   ctaUrl: `/services/${s.slug}/`,
 }));

@@ -27,6 +27,8 @@ export interface CarouselItem {
   img: string;
   imgSrcSet?: string;
   imgAlt?: string;
+  /** Optional loop shown instead of the photo; it only plays on the centre card. */
+  video?: { mp4: string; webm?: string; poster: string };
   ctaText?: string;
   ctaUrl?: string;
 }
@@ -56,7 +58,17 @@ export function CoverFlowCarousel({
   const [compact, setCompact] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const touchStartX = useRef(0);
+  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
   const total = items.length;
+
+  // Only the centre card moves; the rest sit on their posters.
+  useEffect(() => {
+    Object.entries(videoRefs.current).forEach(([i, v]) => {
+      if (!v) return;
+      if (Number(i) === currentIndex && !reduceMotion) v.play().catch(() => {});
+      else v.pause();
+    });
+  }, [currentIndex, reduceMotion]);
 
   const nextSlide = useCallback(() => setCurrentIndex((prev) => (prev + 1) % total), [total]);
   const prevSlide = useCallback(() => setCurrentIndex((prev) => (prev - 1 + total) % total), [total]);
@@ -225,15 +237,33 @@ export function CoverFlowCarousel({
                   cursor: isCenter ? "default" : "pointer",
                 }}
               >
-                <img
-                  src={item.img}
-                  srcSet={item.imgSrcSet}
-                  sizes={`${card.w}px`}
-                  alt={item.imgAlt ?? item.titleLine1}
-                  loading="lazy"
-                  decoding="async"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                />
+                {item.video ? (
+                  <video
+                    ref={(el) => {
+                      videoRefs.current[idx] = el;
+                    }}
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    poster={item.video.poster}
+                    aria-label={item.imgAlt ?? item.titleLine1}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                  >
+                    {item.video.webm && <source src={item.video.webm} type="video/webm" />}
+                    <source src={item.video.mp4} type="video/mp4" />
+                  </video>
+                ) : (
+                  <img
+                    src={item.img}
+                    srcSet={item.imgSrcSet}
+                    sizes={`${card.w}px`}
+                    alt={item.imgAlt ?? item.titleLine1}
+                    loading="lazy"
+                    decoding="async"
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                )}
 
                 <div
                   style={{

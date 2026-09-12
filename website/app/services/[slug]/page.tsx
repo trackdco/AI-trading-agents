@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { services, getService, formatPrice } from "@/lib/services";
 import { site, smsHref, telHref } from "@/lib/site";
 import { Picture } from "@/components/site/picture";
+import { LoopVideo } from "@/components/site/loop-video";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
 import { Booking } from "@/components/site/booking";
@@ -54,7 +55,11 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           <p className="mt-4 text-[15px] text-muted-foreground">{site.quotePromise}</p>
         </div>
         <div className="md:col-span-5">
-          <Picture name={s.image} alt={s.imageAlt} sizes="(min-width: 768px) 40vw, 100vw" priority className="aspect-[4/5] w-full rounded-md object-cover" />
+          {s.video ? (
+            <LoopVideo base={s.video.base} poster={s.video.poster} label={s.imageAlt} className="panel-glow aspect-[4/5] w-full rounded-xl bg-card object-cover" />
+          ) : (
+            <Picture name={s.image} alt={s.imageAlt} sizes="(min-width: 768px) 40vw, 100vw" priority className="panel-glow aspect-[4/5] w-full rounded-xl object-cover" />
+          )}
         </div>
       </section>
 

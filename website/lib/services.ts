@@ -13,6 +13,8 @@ export type Service = {
   duration: string;
   image: string;
   imageAlt: string;
+  /** Short silent loop for cards and the page hero; the poster is the still. */
+  video?: { base: string; poster: string };
   intro: string;
   forWho: string;
   why: string[];
@@ -40,6 +42,7 @@ export const services: Service[] = [
     duration: "A full day. Leave the car undercover for 24 hours after.",
     image: "beading-poster",
     imageAlt: "Water beading tightly on a freshly ceramic-coated white car",
+    video: { base: "/media/beading-720", poster: "/media/beading-poster.jpg" },
     intro:
       "A ceramic coating is a semi-permanent glass-like layer that bonds to your car's clear coat and protects it from UV, frost, tree sap, bird droppings, industrial fallout and wash marring. It's the highest level of paint protection we offer, and once it's on, it stays on.",
     forWho:
@@ -144,6 +147,7 @@ export const services: Service[] = [
     duration: "About 2.5 hours for a sedan; 2.5 to 4 hours for SUVs, utes and 4WDs.",
     image: "m4-foam-pov",
     imageAlt: "Foam gun in hand, a green BMW M4 covered in snow foam in a Canberra driveway",
+    video: { base: "/media/opening-720", poster: "/media/opening-poster.jpg" },
     intro:
       "A full detail is a complete inside-and-out reset for your car: a proper decontamination wash, a machine-applied protection layer on the paint, and a top-to-bottom interior clean. It's the service to book if you want the car looking and feeling close to new again.",
     forWho:
@@ -193,8 +197,9 @@ export const services: Service[] = [
     h1: "Interior detailing that actually gets the kid mess out",
     priceFrom: prices.interior,
     duration: "About 1.5 hours for a tidy interior; longer for heavy stains or pet hair.",
-    image: "lambo-interior",
-    imageAlt: "Detailed leather interior of a Lamborghini, seats and stitching spotless",
+    image: "interior-mclaren",
+    imageAlt: "Inside a McLaren after an interior detail: steering wheel, seats and carbon trim",
+    video: { base: "/media/interior-mclaren-720", poster: "/media/interior-mclaren-poster.jpg" },
     intro:
       "An interior detail is a deep clean of everything inside your car: seats, carpets, roof lining, boot, plastics, leather, glass and all the little touch points that pick up grime. It's the service for a car that's been through school runs, weekend sport and long trips.",
     forWho:
@@ -245,8 +250,9 @@ export const services: Service[] = [
     h1: "Exterior detailing and paint protection",
     priceFrom: prices.exterior,
     duration: "About 1.5 to 2 hours.",
-    image: "m4-rinse",
-    imageAlt: "Rinsing a green BMW M4, water sheeting off the bonnet",
+    image: "exterior-huracan",
+    imageAlt: "Lamborghini Huracán covered in snow foam during an exterior detail",
+    video: { base: "/media/exterior-huracan-720", poster: "/media/exterior-huracan-poster.jpg" },
     intro:
       "An exterior detail is a proper wash and decontamination of the outside of your car: paint, wheels, glass, plastic trim and tyres, finished with a spray coating or sealant that shields the paint for months, not days.",
     forWho:
