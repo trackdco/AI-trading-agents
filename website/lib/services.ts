@@ -93,8 +93,9 @@ export const services: Service[] = [
     h1: "Paint correction. Swirls, scratches, gone.",
     priceFrom: prices.correction,
     duration: "Half a day to a full day, depending on stages.",
-    image: "correction-suv",
-    imageAlt: "Black SUV with corrected, mirror-finish paint in a covered workspace",
+    image: "paint-correction",
+    imageAlt: "Corrected black Mercedes under LED inspection lights, reflections razor sharp",
+    video: { base: "/media/paint-correction-720", poster: "/media/paint-correction-poster.jpg" },
     intro:
       "Paint correction is a multi-stage machine polish that removes defects inside your clear coat, instead of hiding them under a glaze. Swirls, wash marring, scratches, oxidation and water spots come out. True gloss and clarity go back in.",
     forWho:
