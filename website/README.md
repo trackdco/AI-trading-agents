@@ -57,3 +57,13 @@ Save `public/images/<name>-480.webp`, `<name>-960.webp` and `<name>-<fullwidth>.
 ```
 
 Use it with `<Picture name="<name>" alt="..." />`.
+
+## Sharing a preview from a sub-folder
+
+`out/` assumes it is served from the root of a domain. To host it from a folder (a preview link, a GitHub Pages project page), run:
+
+```bash
+python3 scripts/preview-export.py preview
+```
+
+It writes `preview/site/` with relative paths plus a redirect page, and `preview.files.json` listing every file.
