@@ -9,7 +9,7 @@ import { Marquee } from "@/components/site/marquee";
 
 gsap.registerPlugin(useGSAP);
 
-type PlayState = "playing" | "ended" | "blocked" | "reduced";
+type PlayState = "playing" | "blocked" | "reduced";
 
 export function Hero() {
   const root = useRef<HTMLDivElement>(null);
@@ -23,7 +23,7 @@ export function Hero() {
     const wide = window.matchMedia("(min-width: 900px)").matches;
 
     // Pick the size for this screen; WebM first, MP4 as the fallback.
-    const base = wide ? "/media/opening-1080" : "/media/opening-720";
+    const base = wide ? "/media/hero-1080" : "/media/hero-720";
     while (video.firstChild) video.removeChild(video.firstChild);
     for (const [ext, type] of [["webm", "video/webm"], ["mp4", "video/mp4"]] as const) {
       const s = document.createElement("source");
@@ -33,11 +33,8 @@ export function Hero() {
     }
     video.load();
 
-    const onEnded = () => setState("ended");
-    video.addEventListener("ended", onEnded);
     if (reduced) setState("reduced");
     else video.play().then(() => setState("playing")).catch(() => setState("blocked"));
-    return () => video.removeEventListener("ended", onEnded);
   }, []);
 
   const replay = () => {
@@ -65,14 +62,14 @@ export function Hero() {
     { scope: root },
   );
 
-  const playLabel = state === "ended" ? "Play again" : state === "blocked" || state === "reduced" ? "Play the clip" : null;
+  const playLabel = state === "blocked" || state === "reduced" ? "Play the clip" : null;
   const strip = [...services.map((s) => s.name), "Mobile across Canberra and Queanbeyan", "No call-out fee"];
 
   return (
     <section ref={root} aria-label="Imperium Detailing" className="relative overflow-hidden">
       {/* Full-bleed backdrop: a blurred frame of the footage, so the header floats over it. */}
       <div aria-hidden="true" className="absolute inset-x-0 -top-[72px] bottom-0 -z-10">
-        <img src="/media/opening-poster.jpg" alt="" className="h-full w-full scale-125 object-cover opacity-40 blur-3xl saturate-125" />
+        <img src="/media/hero-poster.jpg" alt="" className="h-full w-full scale-125 object-cover opacity-40 blur-3xl saturate-125" />
         <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_70%_40%,rgba(31,111,196,0.22),transparent_70%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(5,6,8,0.55),rgba(5,6,8,0.15)_35%,rgba(5,6,8,0.6)_75%,#050608_100%)]" />
       </div>
@@ -83,13 +80,14 @@ export function Hero() {
           <video
             ref={videoRef}
             muted
+            loop
             playsInline
             preload="auto"
-            poster="/media/opening-poster.jpg"
+            poster="/media/hero-poster.jpg"
             aria-label="Washing and drying a green BMW M4 in a Canberra driveway, ending on an Imperium Detailing towel"
             className="panel-glow absolute inset-0 h-full w-full bg-card object-cover md:static md:rounded-xl"
           >
-            <source src="/media/opening-720.mp4" type="video/mp4" />
+            <source src="/media/hero-720.mp4" type="video/mp4" />
           </video>
           {playLabel && (
             <button
