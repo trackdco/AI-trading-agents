@@ -101,7 +101,7 @@ export const services: Service[] = [
     compare: {
       before: "correction-before",
       after: "correction-after-2",
-      caption: "A Ford Raptor tailgate under the inspection light. Swirl marks and wash scratches on one side, the corrected finish on the other.",
+      caption: "A Ford Raptor tailgate under the inspection light. Swirl marks and wash scratches on one side. On the other, the finish after a two-step paint correction and a ceramic coating.",
     },
     intro:
       "Paint correction is a multi-stage machine polish that removes defects inside your clear coat, instead of hiding them under a glaze. Swirls, wash marring, scratches, oxidation and water spots come out. True gloss and clarity go back in.",

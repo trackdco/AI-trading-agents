@@ -12,7 +12,7 @@ export function BeforeAfter({ before, after, caption, title = "Before and after.
         <div className="md:col-span-6">
           <SectionHeading title={title} intro={intro ?? caption} />
           <p className="max-w-[46ch] text-[15px] text-muted-foreground" data-reveal="up">
-            Drag the handle. Same tailgate, same light, nothing edited.
+            Drag the handle. Same tailgate, same light. Two-step correction, then a ceramic coating.
           </p>
         </div>
         <div className="md:col-span-6 md:col-start-7" data-reveal="up">
@@ -20,7 +20,7 @@ export function BeforeAfter({ before, after, caption, title = "Before and after.
             before={before}
             after={after}
             beforeAlt="Tailgate before paint correction: swirl marks and wash scratches under the inspection light"
-            afterAlt="The same tailgate after paint correction: a clear, mirror-flat reflection"
+            afterAlt="The same tailgate after a two-step paint correction and ceramic coating: a clear, mirror-flat reflection"
           />
         </div>
       </div>
