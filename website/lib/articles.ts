@@ -16,9 +16,9 @@ export type Article = {
 export const articles: Article[] = [
   {
     slug: "car-detailing-cost-canberra",
-    title: "How Much Does Car Detailing Cost in Canberra? (2026)",
+    title: "Car Detailing Cost in Canberra (2026)",
     description:
-      "Real Canberra detailing prices: what a full detail, interior detail, exterior detail, paint correction and ceramic coating actually cost, and what changes the price.",
+      "Real Canberra detailing prices: what a full detail, interior, exterior, paint correction and ceramic coating actually cost, and what moves the price.",
     h1: "How much does car detailing cost in Canberra?",
     intro:
       "In Canberra in 2026, a mobile exterior detail runs $110 to $140, an interior detail $140 to $170, and a full detail (inside and out) $225 to $270 depending on vehicle size. Paint correction starts at $397 and a 3-year ceramic coating starts at $997. These are real, no-surprise prices, not \"from\" hooks.",
@@ -80,7 +80,7 @@ export const articles: Article[] = [
   },
   {
     slug: "ceramic-coating-vs-paint-correction",
-    title: "Ceramic Coating vs Paint Correction: Which Do You Need?",
+    title: "Ceramic Coating vs Paint Correction",
     description:
       "The difference between paint correction and ceramic coating, which order they happen in, and how to tell which one your car needs.",
     h1: "Ceramic coating vs paint correction: which do you need?",
@@ -133,9 +133,9 @@ export const articles: Article[] = [
   },
   {
     slug: "dealer-paint-protection-vs-ceramic-coating",
-    title: "Dealer Paint Protection vs Ceramic Coating: What You're Actually Buying",
+    title: "Dealer Paint Protection vs Ceramic",
     description:
-      "What the paint protection package in the dealer's finance office usually is, what a proper ceramic coating is, the questions to ask before you sign, and what to do if you already paid for it.",
+      "What the dealer's paint protection package usually is, what a real ceramic coating is, and the questions to ask before you sign for either.",
     h1: "Dealer paint protection vs a ceramic coating",
     intro:
       "The car is nearly yours, and the finance manager has one more thing: paint protection, often well over a thousand dollars, sometimes rolled into the loan. Here's what that usually buys, what a ceramic coating from a detailer buys, and how to tell the difference before you sign.",

@@ -41,7 +41,7 @@ export function Intro() {
   return (
     <div ref={ref} aria-hidden="true" className="intro fixed inset-0 z-[100] flex items-center justify-center bg-background">
       <div className="intro-mark flex flex-col items-center gap-6 opacity-0">
-        <img src="/brand/logo-mark-192.png" width={118} height={72} alt="" className="h-16 w-auto md:h-20" />
+        <img src="/brand/logo-mark-192.webp" width={118} height={72} alt="" className="h-16 w-auto md:h-20" />
         <span className="intro-rule block h-px w-44 origin-left bg-accent/80" />
       </div>
     </div>

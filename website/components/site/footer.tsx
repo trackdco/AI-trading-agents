@@ -5,8 +5,8 @@ import { areas } from "@/lib/areas";
 import { articles } from "@/lib/articles";
 import { Marquee } from "@/components/site/marquee";
 
-const col = "flex flex-col gap-2.5 text-[15px]";
-const link = "link-slide text-secondary-foreground no-underline hover:text-foreground";
+const col = "flex flex-col gap-1.5 text-[15px]";
+const link = "link-slide py-1 text-secondary-foreground no-underline hover:text-foreground";
 
 export function Footer() {
   return (
@@ -47,7 +47,7 @@ export function Footer() {
 
       <div className="container-x mx-auto grid max-w-6xl gap-12 py-16 md:grid-cols-12">
         <div className="md:col-span-4">
-          <img src="/brand/logo-full-dark-320.png" width={375} height={320} alt="Imperium Detailing" className="h-24 w-auto" />
+          <img src="/brand/logo-full-dark-192.webp" width={225} height={192} alt="Imperium Detailing" loading="lazy" decoding="async" className="h-24 w-auto" />
           <p className="mt-5 max-w-xs text-[15px] text-muted-foreground">
             Premium mobile detailing, ceramic coatings and paint correction across {site.area}. We come to your driveway or office car park.
           </p>
@@ -61,7 +61,7 @@ export function Footer() {
             <a href={site.instagram} className={link} rel="noopener">
               Instagram {site.instagramHandle}
             </a>
-            <span className="text-muted-foreground">Canberra, ACT. {site.hours}</span>
+            <span className="text-muted-foreground">Canberra, ACT. {site.hours}.</span>
           </div>
         </div>
 

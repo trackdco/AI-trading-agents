@@ -6,7 +6,7 @@ import { Booking } from "@/components/site/booking";
 
 // Keeps the existing /car-detailing-canberra URL alive for search traffic.
 export const metadata: Metadata = {
-  title: "Car Detailing Canberra | Full Details from $225",
+  title: "Car Detailing Canberra from $225",
   description: "Mobile car detailing in Canberra: full details from $225, interior from $140, exterior from $110. We come to your driveway or workplace, no call-out fee.",
   alternates: { canonical: "/car-detailing-canberra/" },
 };

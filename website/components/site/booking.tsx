@@ -10,8 +10,18 @@ export function Booking({ title = "Book your detail.", headingAs = "h2", default
       <div className="container-x mx-auto grid max-w-6xl gap-12 md:grid-cols-12">
         <div className="md:col-span-5">
           <SectionHeading as={headingAs} title={title} intro="Tell us about the car and we'll come back with availability and a fixed quote." />
-          <ul className="m-0 grid list-none gap-3 p-0 text-[15px] text-secondary-foreground">
-            <li>Free, no-obligation quote</li>
+          <ol className="m-0 grid list-none gap-3 p-0 text-[15px] text-secondary-foreground">
+            {["You send the car and your suburb.", "We text back a fixed price and the next open days.", "You pick a day. For coatings and correction we call to confirm the details."].map((step, i) => (
+              <li key={step} className="flex gap-3">
+                <span aria-hidden="true" className="display-caps mt-px w-5 shrink-0 text-xl leading-none text-accent">
+                  {i + 1}
+                </span>
+                {step}
+              </li>
+            ))}
+          </ol>
+          <ul className="m-0 mt-6 grid list-none gap-3 p-0 text-[15px] text-secondary-foreground">
+            <li>{site.notice}</li>
             <li>Mobile service across Canberra and Queanbeyan, no call-out fee</li>
             <li>Fully insured and finish-guaranteed</li>
             <li>

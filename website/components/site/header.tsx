@@ -10,14 +10,26 @@ export function Header() {
   const pathname = usePathname();
 
   const [solid, setSolid] = useState(false);
+  const [tucked, setTucked] = useState(false);
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  // Clear over the hero, solid once you scroll.
+  // Clear over the hero, solid once you scroll. On phones it tucks away while you scroll
+  // down and returns the moment you scroll up, so the screen is all page.
   useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 24);
+    let last = window.scrollY;
+    const phone = window.matchMedia("(max-width: 767px)");
+    const onScroll = () => {
+      const y = window.scrollY;
+      setSolid(y > 24);
+      if (phone.matches) {
+        if (y > 140 && y > last + 4) setTucked(true);
+        else if (y < last - 4 || y <= 140) setTucked(false);
+      } else setTucked(false);
+      last = y;
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -25,9 +37,9 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-500 ${
+      className={`sticky top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter,transform] duration-500 motion-reduce:transition-none ${
         solid || open ? "border-border bg-background/85 backdrop-blur-md" : "border-transparent bg-transparent"
-      }`}
+      } ${tucked && !open ? "-translate-y-full" : "translate-y-0"}`}
     >
       <a
         href="#content"
@@ -37,7 +49,7 @@ export function Header() {
       </a>
       <div className="container-x mx-auto flex h-[72px] max-w-6xl items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-3 no-underline" aria-label="Imperium Detailing, home">
-          <img src="/brand/logo-mark-96.png" width={59} height={36} alt="" className="h-9 w-auto" />
+          <img src="/brand/logo-mark-96.webp" width={59} height={36} alt="" className="h-9 w-auto" />
           <span className="display text-xl tracking-wide text-foreground">Imperium Detailing</span>
         </Link>
 
@@ -59,7 +71,7 @@ export function Header() {
           </a>
           <Link
             href="/book/"
-            className="inline-flex h-11 items-center rounded-full bg-accent px-5 text-[15px] font-semibold text-accent-foreground no-underline transition-colors hover:bg-[#5aa6f0]"
+            className="lift inline-flex h-11 items-center rounded-full bg-accent px-5 text-[15px] font-semibold text-accent-foreground no-underline hover:bg-[#5aa6f0]"
           >
             Get a quote
           </Link>

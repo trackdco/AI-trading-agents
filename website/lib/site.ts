@@ -11,7 +11,9 @@ export const site = {
   instagramHandle: "@imperiumdetailing_",
   address: { locality: "Canberra", region: "ACT", postcode: "2600", country: "AU" },
   area: "Canberra and Queanbeyan",
-  hours: "7 days a week, by appointment",
+  hours: "Every day, 8:30am to 5:30pm",
+  notice: "Book at least a day ahead. Same-day is sometimes possible by phone.",
+  notOffered: ["Paint protection film (PPF)", "Window tinting", "Rim repairs"],
   // The response promise shown next to every call to action. Keep it true.
   quotePromise: "You'll have a quote back within a few hours, 7 days a week.",
   stats: { cars: "400+", rating: "4.9", reviewCount: 45, warrantyYears: 7 },

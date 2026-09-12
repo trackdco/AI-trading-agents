@@ -24,7 +24,7 @@ export function RecentWork() {
             return (
               <li key={p.code} className="relative h-[560px] max-w-[400px] overflow-hidden rounded-xl border border-border bg-card">
                 <a href={postUrl(p)} target="_blank" rel="noopener" className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center no-underline">
-                  <img src="/brand/logo-mark-96.png" width={59} height={36} alt="" className="h-9 w-auto opacity-70" />
+                  <img src="/brand/logo-mark-96.webp" width={59} height={36} alt="" className="h-9 w-auto opacity-70" />
                   <span className="text-[15px] font-semibold text-foreground">{label || "Watch this one on Instagram"}</span>
                   <span className="text-sm text-muted-foreground">{site.instagramHandle}</span>
                 </a>

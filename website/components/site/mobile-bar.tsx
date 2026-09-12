@@ -45,7 +45,7 @@ export function MobileBar() {
       <div
         id="phone-bar"
         inert={!show}
-        className={`fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/90 backdrop-blur-md transition-transform duration-300 ease-out motion-reduce:transition-none md:hidden ${
+        className={`fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 transition-transform duration-300 ease-out motion-reduce:transition-none md:hidden ${
           show ? "translate-y-0" : "translate-y-full"
         }`}
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}

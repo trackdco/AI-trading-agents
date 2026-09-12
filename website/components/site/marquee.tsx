@@ -15,7 +15,7 @@ export function Marquee({ items, className = "", duration = 42 }: Props) {
         {row.map((t, i) => (
           <span key={i} className="display-caps flex items-center gap-8 pr-8 text-[clamp(1.4rem,2.4vw,2rem)] text-secondary-foreground/80">
             {t}
-            <img src="/brand/logo-mark-96.png" width={26} height={16} alt="" className="h-4 w-auto opacity-50" />
+            <img src="/brand/logo-mark-96.webp" width={26} height={16} alt="" className="h-4 w-auto opacity-50" />
           </span>
         ))}
       </div>

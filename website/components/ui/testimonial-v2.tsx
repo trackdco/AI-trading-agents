@@ -1,11 +1,8 @@
-"use client";
-
 import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
 
-// Scrolling testimonial columns. Adapted for Imperium Detailing: fed with real
-// reviews, brand colours, an initials disc when there's no photo, and the
-// marquee stops for people who've asked for reduced motion.
+// Scrolling testimonial columns, animated in CSS (transform only). Adapted for
+// Imperium Detailing: fed with real reviews, brand colours, an initials disc when
+// there's no photo, and the marquee stops for people who've asked for reduced motion.
 
 export interface Testimonial {
   text: string;
@@ -24,7 +21,7 @@ const initials = (name: string) =>
 
 const Avatar = ({ name, image }: { name: string; image?: string }) =>
   image ? (
-    <img width={40} height={40} src={image} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-border" />
+    <img width={40} height={40} src={image} alt="" loading="lazy" className="h-10 w-10 rounded-full object-cover ring-2 ring-border" />
   ) : (
     <span
       aria-hidden="true"
@@ -47,55 +44,23 @@ const Card = ({ text, name, role, image }: Testimonial) => (
   </blockquote>
 );
 
-const cardClass =
-  "w-full max-w-xs rounded-2xl border border-border bg-card p-7 shadow-lg shadow-black/30 cursor-default select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/60";
+const cardClass = "w-full max-w-xs rounded-2xl border border-border bg-card p-7 shadow-lg shadow-black/30 select-none";
 
-const TestimonialsColumn = (props: { className?: string; testimonials: Testimonial[]; duration?: number }) => {
-  const reduce = useReducedMotion();
-
-  if (reduce) {
-    return (
-      <div className={props.className}>
-        <ul className="m-0 flex list-none flex-col gap-6 p-0">
+const TestimonialsColumn = (props: { className?: string; testimonials: Testimonial[]; duration?: number }) => (
+  <div className={props.className}>
+    <ul className="tcol m-0 flex list-none flex-col gap-6 p-0 pb-6" style={{ ["--tcol-duration" as string]: `${props.duration ?? 30}s` }}>
+      {[0, 1].map((copy) => (
+        <React.Fragment key={copy}>
           {props.testimonials.map((t, i) => (
-            <li key={i} className={cardClass}>
+            <li key={`${copy}-${i}`} aria-hidden={copy === 1 ? "true" : undefined} className={cardClass}>
               <Card {...t} />
             </li>
           ))}
-        </ul>
-      </div>
-    );
-  }
-
-  return (
-    <div className={props.className}>
-      <motion.ul
-        animate={{ translateY: "-50%" }}
-        transition={{ duration: props.duration || 10, repeat: Infinity, ease: "linear", repeatType: "loop" }}
-        className="m-0 flex list-none flex-col gap-6 p-0 pb-6"
-      >
-        {[
-          ...new Array(2).fill(0).map((_, index) => (
-            <React.Fragment key={index}>
-              {props.testimonials.map((t, i) => (
-                <motion.li
-                  key={`${index}-${i}`}
-                  aria-hidden={index === 1 ? "true" : "false"}
-                  tabIndex={index === 1 ? -1 : 0}
-                  whileHover={{ scale: 1.015, transition: { duration: 0.25 } }}
-                  whileFocus={{ scale: 1.015, transition: { duration: 0.25 } }}
-                  className={cardClass}
-                >
-                  <Card {...t} />
-                </motion.li>
-              ))}
-            </React.Fragment>
-          )),
-        ]}
-      </motion.ul>
-    </div>
-  );
-};
+        </React.Fragment>
+      ))}
+    </ul>
+  </div>
+);
 
 export interface TestimonialsMarqueeProps {
   testimonials: Testimonial[];
@@ -114,7 +79,7 @@ export function TestimonialsMarquee({
 }: TestimonialsMarqueeProps) {
   const cols: Testimonial[][] = Array.from({ length: columns }, () => []);
   testimonials.forEach((t, i) => cols[i % columns].push(t));
-  const durations = [26, 32, 29];
+  const durations = [34, 42, 38];
 
   return (
     <section aria-labelledby="testimonials-heading" className="relative overflow-hidden bg-transparent py-16 md:py-24">
@@ -130,19 +95,9 @@ export function TestimonialsMarquee({
           )}
         </div>
 
-        <div
-          className="mask-fade-y flex justify-center gap-6 overflow-hidden"
-          style={{ maxHeight: `${maxHeight}px` }}
-          role="region"
-          aria-label="Customer reviews"
-        >
+        <div className="mask-fade-y tcols flex justify-center gap-6 overflow-hidden" style={{ maxHeight: `${maxHeight}px` }} role="region" aria-label="Customer reviews">
           {cols.map((c, i) => (
-            <TestimonialsColumn
-              key={i}
-              testimonials={c}
-              duration={durations[i % durations.length]}
-              className={i === 0 ? "" : i === 1 ? "hidden md:block" : "hidden lg:block"}
-            />
+            <TestimonialsColumn key={i} testimonials={c} duration={durations[i % durations.length]} className={i === 0 ? "" : i === 1 ? "hidden md:block" : "hidden lg:block"} />
           ))}
         </div>
       </div>

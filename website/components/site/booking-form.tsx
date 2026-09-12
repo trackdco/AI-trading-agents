@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { site, smsHref, telHref } from "@/lib/site";
+import { track } from "@/lib/track";
 
 // The playbook's four qualifying questions plus contact details.
 const serviceOptions = [
@@ -26,6 +27,13 @@ const selectClass =
 export function BookingForm({ compact = false, defaultService = "" }: { compact?: boolean; defaultService?: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
+  const serviceRef = useRef<HTMLSelectElement>(null);
+
+  // A link can pre-pick the service: /book/?service=Ceramic%20coating
+  useEffect(() => {
+    const wanted = new URLSearchParams(window.location.search).get("service");
+    if (wanted && serviceRef.current && serviceOptions.includes(wanted)) serviceRef.current.value = wanted;
+  }, []);
 
   const compose = (data: FormData) =>
     [
@@ -59,6 +67,7 @@ export function BookingForm({ compact = false, defaultService = "" }: { compact?
           body: JSON.stringify(Object.fromEntries(data.entries())),
         });
         if (!res.ok) throw new Error(String(res.status));
+        track("generate_lead", { method: "form", service: String(data.get("service")) });
         setStatus("sent");
         form.reset();
       } catch {
@@ -68,6 +77,7 @@ export function BookingForm({ compact = false, defaultService = "" }: { compact?
     }
 
     // No form endpoint configured yet: hand the composed message to their messaging app.
+    track("generate_lead", { method: "sms", service: String(data.get("service")) });
     setStatus("fallback");
     if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) window.location.href = smsHref(text);
   };
@@ -96,7 +106,7 @@ export function BookingForm({ compact = false, defaultService = "" }: { compact?
       <div className={`grid gap-5 ${compact ? "" : "sm:grid-cols-2"}`}>
         <div className="grid gap-2">
           <Label htmlFor="bf-service">Which service?</Label>
-          <select id="bf-service" name="service" required className={selectClass} defaultValue={defaultService}>
+          <select id="bf-service" ref={serviceRef} name="service" required className={selectClass} defaultValue={defaultService}>
             <option value="" disabled>
               Choose one
             </option>
@@ -154,7 +164,7 @@ export function BookingForm({ compact = false, defaultService = "" }: { compact?
         <button
           type="submit"
           disabled={status === "sending"}
-          className="inline-flex min-h-[52px] items-center justify-center rounded-lg bg-accent px-6 text-base font-semibold text-accent-foreground hover:bg-[#5aa6f0] disabled:opacity-60"
+          className="lift inline-flex min-h-[52px] items-center justify-center rounded-lg bg-accent px-6 text-base font-semibold text-accent-foreground hover:bg-[#5aa6f0] disabled:opacity-60"
         >
           {status === "sending" ? "Sending…" : "Request my quote"}
         </button>

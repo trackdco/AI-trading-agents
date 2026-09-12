@@ -6,11 +6,12 @@ import { Picture } from "@/components/site/picture";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
 import { Booking } from "@/components/site/booking";
+import { Breadcrumbs } from "@/components/site/breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Car Maintenance Plans Canberra (Mobile)",
+  title: "Maintenance Plans Canberra from $150",
   description:
-    "A regular maintenance plan from Imperium Detailing, from $150 a month: we come back every month or every fortnight for a coating-safe hand wash and interior reset, at your home or work across Canberra and Queanbeyan.",
+    "Monthly maintenance plans from $150: a coating-safe hand wash and interior reset at your home or work, every month or fortnight, across Canberra.",
   alternates: { canonical: "/maintenance/" },
 };
 
@@ -77,7 +78,8 @@ export default function MaintenancePage() {
 
       <section className="container-x mx-auto grid max-w-6xl gap-10 py-14 md:grid-cols-12 md:items-center md:py-20">
         <div className="md:col-span-7">
-          <p className="m-0 text-[15px] text-muted-foreground">
+          <Breadcrumbs items={[{ href: "/services/", label: "Services" }, { href: "/maintenance/", label: "Maintenance plans" }]} />
+          <p className="m-0 mt-4 text-[15px] text-muted-foreground">
             Monthly from <b className="font-medium text-foreground">{formatPrice(prices.maintenanceMonthly)}</b>. Fortnightly quoted on request.
           </p>
           <h1 className="display-caps mt-3 text-5xl md:text-7xl">Detailed once. Kept that way.</h1>

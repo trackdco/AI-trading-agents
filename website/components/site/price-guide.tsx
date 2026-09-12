@@ -5,19 +5,20 @@ import Link from "next/link";
 import gsap from "gsap";
 import { site, smsHref, telHref } from "@/lib/site";
 import { formatPrice } from "@/lib/services";
-import { sizes, jobs, ceramicTiers, guidePrice, type JobId, type SizeId, type Tier } from "@/lib/pricing";
+import { sizes, jobs, tiers, ceramicTiers, guidePrice, type JobId, type SizeId, type Tier } from "@/lib/pricing";
 import { SectionHeading } from "@/components/site/section-heading";
 
 const chip = (on: boolean) =>
-  `flex cursor-pointer flex-col rounded-lg border px-4 py-3 text-left transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring ${
+  `flex cursor-pointer flex-col rounded-lg border px-4 py-3 text-left transition-[border-color,background-color,transform] duration-200 active:scale-[0.985] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring ${
     on ? "border-accent bg-accent/10 text-foreground" : "border-border text-secondary-foreground hover:border-secondary-foreground/50"
   }`;
 
-// Pick the car and the job, get the real from-price, take it to a text message.
+// Pick the vehicle and the job, get the real price, take it to a text message.
 export function PriceGuide({ title = "Your price in ten seconds." }: { title?: string }) {
   const [size, setSize] = useState<SizeId>("sedan");
   const [job, setJob] = useState<JobId>("full");
   const [tier, setTier] = useState<Tier>(3);
+  const panel = useRef<HTMLDivElement>(null);
 
   const guide = guidePrice(job, size, tier);
   const jobMeta = jobs.find((j) => j.id === job)!;
@@ -38,21 +39,31 @@ export function PriceGuide({ title = "Your price in ten seconds." }: { title?: s
     };
   }, [guide.price]);
 
+  // On a phone the answer sits below the choices, so picking the job brings it into view.
+  const picked = useRef(false);
+  useEffect(() => {
+    if (!picked.current) return;
+    if (!window.matchMedia("(max-width: 767px)").matches) return;
+    const instant = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    panel.current?.scrollIntoView({ behavior: instant ? "auto" : "smooth", block: "start" });
+  }, [job, tier]);
+
   const label = jobMeta.label.toLowerCase();
+  const vehicle = sizeMeta.label.toLowerCase();
   const sms =
     guide.price === null
-      ? smsHref(`Hi Imperium, I'd like a quote for a ${label} on my ${sizeMeta.label.toLowerCase()}.\nCar: \nSuburb: `)
-      : smsHref(`Hi Imperium, I'd like to lock in a ${label} for my ${sizeMeta.label.toLowerCase()}. Guide price ${formatPrice(guide.price)}${guide.suffix}.\nCar: \nSuburb: `);
+      ? smsHref(`Hi Imperium, I'd like a quote for a ${label} on my ${vehicle}.\nVehicle: \nSuburb: `)
+      : smsHref(`Hi Imperium, I'd like to lock in a ${label} for my ${vehicle}. Guide price ${formatPrice(guide.price)}${guide.suffix}.\nVehicle: \nSuburb: `);
 
   return (
     <section id="price-guide" className="border-t border-border py-20 md:py-28">
       <div className="container-x mx-auto max-w-6xl">
-        <SectionHeading title={title} intro="Pick the car and the job. That's the number, not a hook to get you on the phone." />
+        <SectionHeading title={title} intro="Pick the vehicle and the job. That's the number, not a hook to get you on the phone." />
         <div className="grid gap-8 md:grid-cols-12 md:gap-12">
           <div className="grid gap-8 md:col-span-7">
             <fieldset className="m-0 min-w-0 border-0 p-0">
-              <legend className="mb-3 text-sm font-semibold text-foreground">Your car</legend>
-              <div className="grid gap-2 sm:grid-cols-3">
+              <legend className="mb-3 text-sm font-semibold text-foreground">Your vehicle</legend>
+              <div className="grid gap-2 sm:grid-cols-2">
                 {sizes.map((s) => (
                   <label key={s.id} className={chip(size === s.id)}>
                     <input type="radio" name="pg-size" value={s.id} checked={size === s.id} onChange={() => setSize(s.id)} className="sr-only" />
@@ -61,6 +72,7 @@ export function PriceGuide({ title = "Your price in ten seconds." }: { title?: s
                   </label>
                 ))}
               </div>
+              <p className="mt-3 text-sm text-muted-foreground">Trucks are quoted by phone.</p>
             </fieldset>
 
             <fieldset className="m-0 min-w-0 border-0 p-0">
@@ -68,7 +80,17 @@ export function PriceGuide({ title = "Your price in ten seconds." }: { title?: s
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {jobs.map((j) => (
                   <label key={j.id} className={chip(job === j.id)}>
-                    <input type="radio" name="pg-job" value={j.id} checked={job === j.id} onChange={() => setJob(j.id)} className="sr-only" />
+                    <input
+                      type="radio"
+                      name="pg-job"
+                      value={j.id}
+                      checked={job === j.id}
+                      onChange={() => {
+                        picked.current = true;
+                        setJob(j.id);
+                      }}
+                      className="sr-only"
+                    />
                     <span className="text-[15px] font-semibold">{j.label}</span>
                   </label>
                 ))}
@@ -79,10 +101,21 @@ export function PriceGuide({ title = "Your price in ten seconds." }: { title?: s
               <fieldset className="m-0 min-w-0 border-0 p-0">
                 <legend className="mb-3 text-sm font-semibold text-foreground">Warranty</legend>
                 <div className="grid gap-2 sm:grid-cols-3">
-                  {ceramicTiers.map((t) => (
-                    <label key={t.years} className={chip(tier === t.years)}>
-                      <input type="radio" name="pg-tier" value={t.years} checked={tier === t.years} onChange={() => setTier(t.years)} className="sr-only" />
-                      <span className="text-[15px] font-semibold">{t.years} years</span>
+                  {tiers.map((t) => (
+                    <label key={t} className={chip(tier === t)}>
+                      <input
+                        type="radio"
+                        name="pg-tier"
+                        value={t}
+                        checked={tier === t}
+                        onChange={() => {
+                          picked.current = true;
+                          setTier(t);
+                        }}
+                        className="sr-only"
+                      />
+                      <span className="text-[15px] font-semibold">{t} years</span>
+                      <span className="mt-0.5 text-xs text-muted-foreground">{formatPrice(ceramicTiers[size][t])}</span>
                     </label>
                   ))}
                 </div>
@@ -91,14 +124,16 @@ export function PriceGuide({ title = "Your price in ten seconds." }: { title?: s
           </div>
 
           <div className="md:col-span-5">
-            <div className="panel-glow rounded-xl border border-border bg-card p-6 md:sticky md:top-24 md:p-8">
+            <div ref={panel} style={{ scrollMarginTop: 88 }} className="panel-glow rounded-xl border border-border bg-card p-6 md:sticky md:top-24 md:p-8">
               <p className="m-0 text-sm text-muted-foreground">
-                {jobMeta.label}, {sizeMeta.label.toLowerCase()}
+                {jobMeta.label}, {vehicle}
               </p>
               {guide.price === null ? (
-                <p className="display-caps m-0 mt-2 text-4xl md:text-5xl">Quoted for your car</p>
+                <p key="quoted" className="price-in display-caps m-0 mt-2 text-4xl md:text-5xl">
+                  Quoted for you
+                </p>
               ) : (
-                <p className="m-0 mt-2 flex items-baseline gap-2">
+                <p key={`${guide.price}${guide.suffix}`} className="price-in m-0 mt-2 flex items-baseline gap-2">
                   <span className="text-sm text-muted-foreground">from</span>
                   <span aria-hidden="true" className="display-caps text-6xl tabular-nums md:text-7xl">
                     {formatPrice(display)}
@@ -113,10 +148,10 @@ export function PriceGuide({ title = "Your price in ten seconds." }: { title?: s
               <p className="mt-4 text-[15px] text-secondary-foreground">{guide.why}</p>
               <p className="mt-2 text-[15px] text-muted-foreground">{jobMeta.note}</p>
               <div className="mt-6 flex flex-col gap-3">
-                <a href={sms} className="inline-flex min-h-[52px] items-center justify-center rounded-lg bg-accent px-6 text-base font-semibold text-accent-foreground no-underline hover:bg-[#5aa6f0]">
-                  {guide.price === null ? "Get it quoted by text" : "Lock it in by text"}
+                <a href={sms} className="lift inline-flex min-h-[52px] items-center justify-center rounded-lg bg-accent px-6 text-base font-semibold text-accent-foreground no-underline hover:bg-[#5aa6f0]">
+                  {guide.cta}
                 </a>
-                <a href={telHref} className="inline-flex min-h-[52px] items-center justify-center rounded-lg border border-border px-6 text-base font-semibold text-foreground no-underline hover:border-secondary-foreground/50">
+                <a href={telHref} className="lift inline-flex min-h-[52px] items-center justify-center rounded-lg border border-border px-6 text-base font-semibold text-foreground no-underline hover:border-secondary-foreground/50">
                   Call {site.phoneDisplay}
                 </a>
               </div>

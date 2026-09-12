@@ -9,6 +9,8 @@ import { BeforeAfter } from "@/components/site/before-after";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
 import { Booking } from "@/components/site/booking";
+import { Breadcrumbs } from "@/components/site/breadcrumbs";
+import { articles } from "@/lib/articles";
 
 type Params = { slug: string };
 
@@ -34,14 +36,36 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
     "@type": "FAQPage",
     mainEntity: s.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
+  const serviceLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: s.name,
+    serviceType: s.name,
+    description: s.description,
+    url: `${site.url}/services/${s.slug}/`,
+    provider: { "@id": `${site.url}/#business` },
+    areaServed: "Canberra and Queanbeyan",
+    offers: { "@type": "Offer", priceCurrency: "AUD", price: s.priceFrom, priceSpecification: { "@type": "PriceSpecification", minPrice: s.priceFrom, priceCurrency: "AUD" } },
+  };
+  const reading = {
+    "ceramic-coating-canberra": ["dealer-paint-protection-vs-ceramic-coating", "ceramic-coating-vs-paint-correction"],
+    "paint-correction-canberra": ["ceramic-coating-vs-paint-correction", "car-detailing-cost-canberra"],
+  }[s.slug] ?? ["car-detailing-cost-canberra"];
+  const guides = reading.map((slug) => articles.find((a) => a.slug === slug)).filter((a) => a !== undefined);
+  const more =
+    s.slug === "ceramic-coating-canberra"
+      ? [{ href: "/tesla-ev-detailing-canberra/", label: "Tesla and EV detailing" }, { href: "/warranty/", label: "The coating warranty" }]
+      : [{ href: "/maintenance/", label: "Maintenance plans" }, { href: "/service-areas/", label: "Where we go" }];
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceLd) }} />
 
       <section className="container-x mx-auto grid max-w-6xl gap-10 py-14 md:grid-cols-12 md:items-center md:py-20">
         <div className="md:col-span-7">
-          <p className="m-0 text-[15px] text-muted-foreground">
+          <Breadcrumbs items={[{ href: "/services/", label: "Services" }, { href: `/services/${s.slug}/`, label: s.name }]} />
+          <p className="m-0 mt-4 text-[15px] text-muted-foreground">
             From <b className="font-medium text-foreground">{formatPrice(s.priceFrom)}</b> · {s.duration}
           </p>
           <h1 className="display-caps mt-3 text-5xl md:text-7xl">{s.h1}</h1>
@@ -105,6 +129,32 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
       <section className="border-t border-border">
         <div className="container-x mx-auto max-w-6xl py-14 md:py-20">
           <Faq items={s.faq} />
+          <div className="mt-12 grid gap-6 border-t border-border pt-8 md:grid-cols-2">
+            <div>
+              <h2 className="text-lg font-semibold">Keep reading</h2>
+              <ul className="m-0 mt-3 grid list-none gap-2 p-0 text-[15px]">
+                {guides.map((g) => (
+                  <li key={g.slug}>
+                    <Link href={`/learn/${g.slug}/`} className="link-slide text-secondary-foreground no-underline hover:text-foreground">
+                      {g.h1}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold">Also useful</h2>
+              <ul className="m-0 mt-3 grid list-none gap-2 p-0 text-[15px]">
+                {more.map((m) => (
+                  <li key={m.href}>
+                    <Link href={m.href} className="link-slide text-secondary-foreground no-underline hover:text-foreground">
+                      {m.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
           {related.length > 0 && (
             <p className="mt-10 text-[15px] text-muted-foreground">
               Also see:{" "}
@@ -122,7 +172,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         </div>
       </section>
 
-      <Booking title={`Book a ${s.name.toLowerCase()}.`} />
+      <Booking title={`Book a ${s.name.toLowerCase()}.`} defaultService={s.name} />
     </>
   );
 }

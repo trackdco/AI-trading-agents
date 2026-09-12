@@ -5,6 +5,7 @@ import { articles, getArticle } from "@/lib/articles";
 import { services, formatPrice } from "@/lib/services";
 import { Faq } from "@/components/site/faq";
 import { CtaBand } from "@/components/site/cta-band";
+import { Breadcrumbs } from "@/components/site/breadcrumbs";
 
 type Params = { slug: string };
 
@@ -37,11 +38,7 @@ export default async function ArticlePage({ params }: { params: Promise<Params> 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       <article className="container-x mx-auto max-w-6xl py-14 md:py-20">
-        <p className="m-0 text-[15px] text-muted-foreground">
-          <Link href="/learn/" className="underline underline-offset-4">
-            Guides
-          </Link>
-        </p>
+        <Breadcrumbs items={[{ href: "/learn/", label: "Guides" }, { href: `/learn/${a.slug}/`, label: a.title }]} />
         <h1 className="display-caps mt-3 max-w-4xl text-5xl md:text-7xl">{a.h1}</h1>
         <p className="mt-6 max-w-[62ch] text-lg text-secondary-foreground">{a.intro}</p>
 

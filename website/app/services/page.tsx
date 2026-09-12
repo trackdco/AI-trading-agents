@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { services, formatPrice } from "@/lib/services";
-import { prices } from "@/lib/site";
+import { prices, site } from "@/lib/site";
 import { Picture } from "@/components/site/picture";
 import { SectionHeading } from "@/components/site/section-heading";
 import { CtaBand } from "@/components/site/cta-band";
@@ -10,7 +10,7 @@ import { PriceGuide } from "@/components/site/price-guide";
 export const metadata: Metadata = {
   title: "Services and Prices",
   description:
-    "Every Imperium Detailing service with real from-prices: full detail from $225, interior from $140, exterior from $110, paint correction from $397, ceramic coating from $997.",
+    "Every Imperium Detailing service with real from-prices: full detail $225, interior $140, exterior $110, paint correction $397, ceramic coating $997.",
   alternates: { canonical: "/services/" },
 };
 
@@ -22,8 +22,8 @@ export default function ServicesPage() {
         <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border">
           {services.map((s) => (
             <Link key={s.slug} href={`/services/${s.slug}/`} className="grid gap-5 bg-background p-5 no-underline transition-colors hover:bg-card md:grid-cols-12 md:items-center md:p-6">
-              <div className="md:col-span-3">
-                <Picture name={s.image} alt={s.imageAlt} sizes="(min-width: 768px) 25vw, 100vw" className="aspect-[4/3] w-full rounded-md object-cover" />
+              <div className="zoom-media overflow-hidden rounded-md md:col-span-3">
+                <Picture name={s.image} alt={s.imageAlt} sizes="(min-width: 768px) 25vw, 100vw" className="aspect-[4/3] w-full object-cover" />
               </div>
               <div className="md:col-span-6">
                 <h2 className="display-caps text-3xl">{s.name}</h2>
@@ -50,6 +50,16 @@ export default function ServicesPage() {
             <span className="mt-1 block text-sm text-muted-foreground">a month</span>
           </div>
         </Link>
+        <Link href="/tesla-ev-detailing-canberra/" className="mt-4 grid gap-4 rounded-lg border border-border p-5 no-underline transition-colors hover:bg-card md:grid-cols-12 md:items-center md:p-6">
+          <div className="md:col-span-9">
+            <h2 className="display-caps text-3xl">Tesla and EV owners</h2>
+            <p className="mt-2 text-[15px] text-muted-foreground">Soft paint, cameras, glass roofs and white seats, handled properly. Same prices as any car.</p>
+          </div>
+          <div className="text-[15px] font-semibold text-foreground md:col-span-3 md:text-right">How we do EVs</div>
+        </Link>
+        <p className="mt-8 max-w-[64ch] text-[15px] text-muted-foreground">
+          Bikes are welcome, trucks are quoted by phone. We don&apos;t do {site.notOffered.map((n) => n.toLowerCase()).join(", ")}, so you&apos;re not waiting on a quote for those.
+        </p>
       </section>
       <PriceGuide title="Check your price." />
       <CtaBand title="Not sure which one your car needs?" />

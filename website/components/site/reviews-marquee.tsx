@@ -4,7 +4,8 @@ import { reviews } from "@/lib/reviews";
 import { site } from "@/lib/site";
 
 export function ReviewsMarquee() {
-  const items = reviews.map((r) => ({ text: r.quote, name: r.name, role: r.time }));
+  // Fifteen is plenty for three moving columns; the reviews page has all of them.
+  const items = reviews.slice(0, 15).map((r) => ({ text: r.quote, name: r.name, role: r.time }));
   return (
     <div id="reviews" className="border-t border-border">
       <TestimonialsMarquee

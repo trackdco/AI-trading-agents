@@ -33,6 +33,10 @@ export function Picture({ name, alt, className, sizes = "100vw", priority = fals
   );
 }
 
+export const imageSize = (name: string) => {
+  const m = images[name];
+  return m ? { width: m.w, height: m.h } : {};
+};
 export const imageSrc = (name: string, w = 480) => `/images/${name}-${w}.webp`;
 export const imageSrcSet = (name: string) => {
   const m = images[name];

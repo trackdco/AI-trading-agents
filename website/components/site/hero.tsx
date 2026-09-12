@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { preload } from "react-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { site, smsHref, telHref, prices } from "@/lib/site";
@@ -12,6 +13,7 @@ gsap.registerPlugin(useGSAP);
 type PlayState = "playing" | "blocked" | "reduced";
 
 export function Hero() {
+  preload("/media/hero-poster.webp", { as: "image", fetchPriority: "high" });
   const root = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [state, setState] = useState<PlayState>("playing");
@@ -31,6 +33,7 @@ export function Hero() {
       s.type = type;
       video.appendChild(s);
     }
+    video.preload = "auto";
     video.load();
 
     if (reduced) setState("reduced");
@@ -69,8 +72,8 @@ export function Hero() {
   return (
     <section ref={root} aria-label="Imperium Detailing" className="relative overflow-hidden">
       {/* Full-bleed backdrop: a blurred frame of the footage, so the header floats over it. */}
-      <div aria-hidden="true" className="absolute inset-x-0 -top-[72px] bottom-0 -z-10">
-        <img src="/media/hero-poster.jpg" alt="" className="h-full w-full scale-125 object-cover opacity-40 blur-3xl saturate-125" />
+      <div aria-hidden="true" className="absolute inset-x-0 -top-[72px] bottom-0 -z-10 hidden md:block">
+        <img src="/media/hero-poster.webp" width={720} height={1280} alt="" className="h-full w-full scale-125 object-cover opacity-40 blur-3xl saturate-125" />
         <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_70%_40%,rgba(31,111,196,0.22),transparent_70%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(5,6,8,0.55),rgba(5,6,8,0.15)_35%,rgba(5,6,8,0.6)_75%,#050608_100%)]" />
       </div>
@@ -83,8 +86,8 @@ export function Hero() {
             muted
             loop
             playsInline
-            preload="auto"
-            poster="/media/hero-poster.jpg"
+            preload="none"
+            poster="/media/hero-poster.webp"
             aria-label="Washing and drying a green BMW M4 in a Canberra driveway, ending on an Imperium Detailing towel"
             className="panel-glow absolute inset-0 h-full w-full bg-card object-cover md:static md:rounded-xl"
           >

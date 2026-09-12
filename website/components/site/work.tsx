@@ -20,7 +20,7 @@ const frames = [
   { name: "m4-clean-front", alt: "Green BMW M4, freshly washed and glossy", title: "BMW M4 Competition", sub: "Full detail" },
 ];
 
-const tile = "relative shrink-0 overflow-hidden rounded-xl bg-card aspect-[4/5] lg:h-[62vh] lg:w-auto lg:aspect-[4/5]";
+const tile = "zoom-media relative shrink-0 overflow-hidden rounded-xl bg-card aspect-[4/5] lg:h-[62vh] lg:w-auto lg:aspect-[4/5]";
 const media = "absolute inset-0 h-full w-full object-cover";
 
 export function Work() {

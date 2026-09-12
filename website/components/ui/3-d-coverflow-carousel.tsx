@@ -144,6 +144,10 @@ export function CoverFlowCarousel({
         <img
           src={items[currentIndex]?.img}
           alt=""
+            width={480}
+            height={640}
+            loading="lazy"
+            decoding="async"
           style={{
             width: "100%",
             height: "100%",
@@ -245,7 +249,7 @@ export function CoverFlowCarousel({
                     muted
                     loop
                     playsInline
-                    preload="metadata"
+                    preload="none"
                     poster={item.video.poster}
                     aria-label={item.imgAlt ?? item.titleLine1}
                     style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}

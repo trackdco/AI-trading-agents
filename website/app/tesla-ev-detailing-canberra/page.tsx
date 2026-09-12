@@ -6,11 +6,12 @@ import { LoopVideo } from "@/components/site/loop-video";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
 import { Booking } from "@/components/site/booking";
+import { Breadcrumbs } from "@/components/site/breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Tesla and EV Detailing Canberra | Ceramic Coating for Soft Paint",
+  title: "Tesla and EV Detailing Canberra",
   description:
-    "Mobile detailing, paint correction and ceramic coating for Tesla and electric cars in Canberra. Soft paint handled properly, cameras kept clear, light interiors cleaned safely. We come to you.",
+    "Tesla and EV detailing in Canberra: soft paint corrected and ceramic coated, cameras kept clear, light interiors cleaned safely. We come to you.",
   alternates: { canonical: "/tesla-ev-detailing-canberra/" },
 };
 
@@ -60,7 +61,8 @@ export default function EvPage() {
 
       <section className="container-x mx-auto grid max-w-6xl gap-10 py-14 md:grid-cols-12 md:items-center md:py-20">
         <div className="md:col-span-7">
-          <p className="m-0 text-[15px] text-muted-foreground">Soft paint. Glass roof. White seats. We know the car.</p>
+          <Breadcrumbs items={[{ href: "/services/", label: "Services" }, { href: "/tesla-ev-detailing-canberra/", label: "Tesla and EV detailing" }]} />
+          <p className="m-0 mt-4 text-[15px] text-muted-foreground">Soft paint. Glass roof. White seats. We know the car.</p>
           <h1 className="display-caps mt-3 text-5xl md:text-7xl">Tesla and EV detailing in Canberra.</h1>
           <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">
             One in four new cars registered in the ACT is electric, and most of them wear paint that marks the first time it meets a brush. This is the detailing an EV actually needs: a careful hand wash, a light correction, and a coating that goes on while the car is still perfect. Done at your home, no call-out fee.
@@ -75,7 +77,7 @@ export default function EvPage() {
           <p className="mt-4 text-[15px] text-muted-foreground">{site.quotePromise}</p>
         </div>
         <div className="md:col-span-5">
-          <LoopVideo base="/media/beading-720" poster="/media/beading-poster.jpg" label="Water beading tightly on freshly coated paint" className="panel-glow aspect-[4/5] w-full rounded-xl bg-card object-cover" />
+          <LoopVideo base="/media/beading-720" poster="/media/beading-poster.webp" label="Water beading tightly on freshly coated paint" className="panel-glow aspect-[4/5] w-full rounded-xl bg-card object-cover" />
         </div>
       </section>
 

@@ -5,6 +5,7 @@ import { areas, getArea } from "@/lib/areas";
 import { getService, services, formatPrice } from "@/lib/services";
 import { site } from "@/lib/site";
 import { Booking } from "@/components/site/booking";
+import { Breadcrumbs } from "@/components/site/breadcrumbs";
 
 type Params = { slug: string };
 
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!a) return {};
   return {
     title: `Mobile Car Detailing ${a.name}`,
-    description: `Mobile car detailing, ceramic coating and paint correction in ${a.name}: ${a.suburbs.slice(0, 4).join(", ")} and surrounds. We come to you, no call-out fee.`,
+    description: `Mobile detailing, ceramic coating and paint correction in ${a.name}: ${a.suburbs.slice(0, 3).join(", ")} and nearby. We come to you, no call-out fee.`,
     alternates: { canonical: `/service-areas/${a.slug}/` },
   };
 }
@@ -32,12 +33,7 @@ export default async function AreaPage({ params }: { params: Promise<Params> }) 
   return (
     <>
       <section className="container-x mx-auto max-w-6xl py-14 md:py-20">
-        <p className="m-0 text-[15px] text-muted-foreground">
-          <Link href="/service-areas/" className="underline underline-offset-4">
-            Areas we serve
-          </Link>{" "}
-          / {a.name}
-        </p>
+        <Breadcrumbs items={[{ href: "/service-areas/", label: "Areas we serve" }, { href: `/service-areas/${a.slug}/`, label: a.name }]} />
         <h1 className="display-caps mt-3 text-5xl md:text-7xl">Mobile car detailing in {a.name}.</h1>
         <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">{a.blurb}</p>
         <p className="mt-4 max-w-[60ch] text-muted-foreground">

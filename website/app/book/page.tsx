@@ -3,7 +3,7 @@ import { Booking } from "@/components/site/booking";
 
 export const metadata: Metadata = {
   title: "Get a Quote",
-  description: "Tell us about your car and suburb and we'll come back with availability and a fixed quote. Mobile detailing, ceramic coating and paint correction across Canberra and Queanbeyan.",
+  description: "Tell us the car and your suburb and we'll text back a fixed quote and the next available days. Mobile detailing across Canberra and Queanbeyan.",
   alternates: { canonical: "/book/" },
 };
 

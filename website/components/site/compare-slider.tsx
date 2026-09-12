@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { imageSrc, imageSrcSet } from "@/components/site/picture";
+import { imageSrc, imageSrcSet, imageSize } from "@/components/site/picture";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -46,7 +46,10 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, className = 
         src={imageSrc(before, 960)}
         srcSet={imageSrcSet(before)}
         sizes="(min-width: 768px) 42vw, 100vw"
+        {...imageSize(before)}
         alt={beforeAlt}
+        loading="lazy"
+        decoding="async"
         draggable={false}
         className="absolute inset-0 h-full w-full object-cover"
       />
@@ -54,7 +57,10 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, className = 
         src={imageSrc(after, 960)}
         srcSet={imageSrcSet(after)}
         sizes="(min-width: 768px) 42vw, 100vw"
+        {...imageSize(after)}
         alt={afterAlt}
+        loading="lazy"
+        decoding="async"
         draggable={false}
         className="absolute inset-0 h-full w-full object-cover"
         style={{ clipPath: `inset(0 0 0 ${pos}%)` }}

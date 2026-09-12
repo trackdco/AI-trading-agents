@@ -41,10 +41,10 @@ export const services: Service[] = [
       "Multi-layer Si02 ceramic coating applied at your home, with a written 3, 5 or 7-year warranty. Prep, polish and coating by the same two people, from $997.",
     h1: "Ceramic coating for Canberra conditions",
     priceFrom: prices.ceramic,
-    duration: "A full day. Leave the car undercover for 24 hours after.",
+    duration: "Around 5 hours on site. Leave the car undercover for 24 hours after.",
     image: "beading-poster",
     imageAlt: "Water beading tightly on a freshly ceramic-coated white car",
-    video: { base: "/media/beading-720", poster: "/media/beading-poster.jpg" },
+    video: { base: "/media/beading-720", poster: "/media/beading-poster.webp" },
     intro:
       "A ceramic coating is a semi-permanent glass-like layer that bonds to your car's clear coat and protects it from UV, frost, tree sap, bird droppings, industrial fallout and wash marring. It's the highest level of paint protection we offer, and once it's on, it stays on.",
     forWho:
@@ -91,13 +91,13 @@ export const services: Service[] = [
     short: "Correction",
     title: "Paint Correction Canberra",
     description:
-      "Multi-stage machine polishing that removes swirls, scratches, oxidation and water spots from the clear coat. Measured with a paint depth gauge, inspected under LED. From $397.",
+      "Mobile paint correction in Canberra from $397. Swirl marks, scratches and haze machine-polished out at your home, with photos before and after.",
     h1: "Paint correction. Swirls, scratches, gone.",
     priceFrom: prices.correction,
     duration: "Half a day to a full day, depending on stages.",
     image: "paint-correction",
     imageAlt: "Corrected black Mercedes under LED inspection lights, reflections razor sharp",
-    video: { base: "/media/paint-correction-720", poster: "/media/paint-correction-poster.jpg" },
+    video: { base: "/media/paint-correction-720", poster: "/media/paint-correction-poster.webp" },
     compare: {
       before: "correction-before",
       after: "correction-after-2",
@@ -152,10 +152,10 @@ export const services: Service[] = [
       "A complete inside-and-out reset: decontamination wash, machine-applied protection, and a top-to-bottom interior clean, in your driveway. From $225.",
     h1: "Full car detailing, anywhere in Canberra",
     priceFrom: prices.full,
-    duration: "About 2.5 hours for a sedan; 2.5 to 4 hours for SUVs, utes and 4WDs.",
+    duration: "About 3 hours for a sedan; longer for SUVs, utes and 4WDs.",
     image: "full-detail",
     imageAlt: "Green BMW M4 mid full detail: snow foam, wash mitt, rinse and towel dry",
-    video: { base: "/media/full-detail-720", poster: "/media/full-detail-poster.jpg" },
+    video: { base: "/media/full-detail-720", poster: "/media/full-detail-poster.webp" },
     intro:
       "A full detail is a complete inside-and-out reset for your car: a proper decontamination wash, a machine-applied protection layer on the paint, and a top-to-bottom interior clean. It's the service to book if you want the car looking and feeling close to new again.",
     forWho:
@@ -186,7 +186,7 @@ export const services: Service[] = [
       },
       {
         q: "How long does a full detail take?",
-        a: "Around 2.5 hours for a sedan or hatch. Larger SUVs, utes and 4WDs typically take 2.5 to 4 hours. We'll give you a realistic time window when we quote so you can plan your day.",
+        a: "Around 3 hours for a sedan or hatch. Larger SUVs, utes and 4WDs take longer. We'll give you a realistic time window when we quote so you can plan your day.",
       },
       {
         q: "Do I need to be home?",
@@ -201,13 +201,13 @@ export const services: Service[] = [
     short: "Interior",
     title: "Interior Car Detailing Canberra",
     description:
-      "Deep clean of seats, carpets, roof lining, boot, leather and every touch point, with hot-water extraction and steam. Kid mess, pet hair and odours handled at the source. From $140.",
+      "Interior car detailing in Canberra from $140: vacuum, steam, hot-water extraction and leather conditioning at your home or work. No call-out fee.",
     h1: "Interior detailing that actually gets the kid mess out",
     priceFrom: prices.interior,
     duration: "About 1.5 hours for a tidy interior; longer for heavy stains or pet hair.",
     image: "interior-mclaren",
     imageAlt: "Inside a McLaren after an interior detail: steering wheel, seats and carbon trim",
-    video: { base: "/media/interior-mclaren-720", poster: "/media/interior-mclaren-poster.jpg" },
+    video: { base: "/media/interior-mclaren-720", poster: "/media/interior-mclaren-poster.webp" },
     intro:
       "An interior detail is a deep clean of everything inside your car: seats, carpets, roof lining, boot, plastics, leather, glass and all the little touch points that pick up grime. It's the service for a car that's been through school runs, weekend sport and long trips.",
     forWho:
@@ -257,10 +257,10 @@ export const services: Service[] = [
       "Proper wash and chemical decontamination of paint, wheels, glass and trim, finished with a spray coating or sealant that protects for months. From $110.",
     h1: "Exterior detailing and paint protection",
     priceFrom: prices.exterior,
-    duration: "About 1.5 to 2 hours.",
+    duration: "About an hour.",
     image: "exterior-huracan",
     imageAlt: "Lamborghini Huracán covered in snow foam during an exterior detail",
-    video: { base: "/media/exterior-huracan-720", poster: "/media/exterior-huracan-poster.jpg" },
+    video: { base: "/media/exterior-huracan-720", poster: "/media/exterior-huracan-poster.webp" },
     intro:
       "An exterior detail is a proper wash and decontamination of the outside of your car: paint, wheels, glass, plastic trim and tyres, finished with a spray coating or sealant that shields the paint for months, not days.",
     forWho:

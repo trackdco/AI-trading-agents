@@ -29,7 +29,8 @@ ASSET=re.compile(r'(?<=["\'(,\s])/(_next|images|media|brand)/')
 PAGES=[p for p in glob.glob(f'{SRC}/**/index.html', recursive=True) if not os.path.relpath(p, SRC).startswith('_not-found')]
 ROUTES=sorted({os.path.dirname(os.path.relpath(p, SRC)).replace(os.sep,'/') for p in PAGES}-{''})
 ROUTE=re.compile(r'(?<=["\'])/(' + '|'.join(re.escape(r) for r in ROUTES) + r')/(?=["\'#?\\])')
-HOME=re.compile(r'(?<=["\'])/(?=["\'#\\])')
+# only link targets: a bare "/" elsewhere (a breadcrumb separator in the RSC payload, say) must stay as it is
+HOME=re.compile(r'(?:(?<=href=["\'])|(?<="href":"))/(?=["\'#\\])')
 
 def click_script(prefix):
     # Client components (header nav) carry root-relative hrefs in their JS, so the Next router would

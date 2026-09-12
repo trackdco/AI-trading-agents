@@ -11,7 +11,7 @@ type Props = {
 };
 
 const base =
-  "inline-flex min-h-[52px] whitespace-nowrap items-center justify-center rounded-lg px-6 text-base font-semibold no-underline transition-colors duration-150 active:scale-[0.985]";
+  "lift inline-flex min-h-[52px] whitespace-nowrap items-center justify-center rounded-lg px-6 text-base font-semibold no-underline";
 const variants = {
   primary: "bg-accent text-accent-foreground hover:bg-[#5aa6f0]",
   ghost: "border border-border text-foreground hover:border-secondary-foreground/50",

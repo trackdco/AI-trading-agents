@@ -172,6 +172,84 @@ body::after {
   color: #fff;
 }
 
+/* Phones skip the grain: a fixed full-screen layer is paint work a small GPU doesn't need. */
+@media (max-width: 767px) {
+  body::after {
+    display: none;
+  }
+}
+
+/* Review columns: a CSS loop on transform, paused under the pointer, off for reduced motion. */
+.tcol {
+  animation: tcol var(--tcol-duration, 30s) linear infinite;
+  will-change: transform;
+}
+@keyframes tcol {
+  to {
+    transform: translateY(-50%);
+  }
+}
+.tcols:hover .tcol {
+  animation-play-state: paused;
+}
+
+/* Micro-interactions: buttons lift, a new price settles in, an answer opens softly, media leans in. */
+.lift {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+.lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.lift:active {
+  transform: translateY(0) scale(0.985);
+  box-shadow: none;
+}
+@keyframes price-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.price-in {
+  animation: price-in 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes faq-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+details[open] > :not(summary) {
+  animation: faq-in 0.3s ease-out both;
+}
+.zoom-media img,
+.zoom-media video {
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.zoom-media:hover img,
+.zoom-media:hover video {
+  transform: scale(1.04);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tcol,
+  .price-in,
+  details[open] > :not(summary) {
+    animation: none;
+  }
+  .lift,
+  .lift:hover,
+  .zoom-media img,
+  .zoom-media video {
+    transition: none;
+    transform: none;
+  }
+}
+
 /* Page-wipe curtain: parked below the viewport, covering from first paint when a wipe started this load. */
 .wipe {
   transform: translateY(100%);

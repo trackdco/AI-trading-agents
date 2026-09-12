@@ -33,11 +33,11 @@ const sans = Instrument_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "Mobile Car Detailing Canberra | Ceramic Coating & Paint Correction · Imperium Detailing",
+    default: "Mobile Car Detailing Canberra | Imperium Detailing",
     template: "%s · Imperium Detailing",
   },
   description:
-    "Canberra's premium mobile car detailing. Ceramic coatings from $997, paint correction from $397, full details from $225. We come to you across Canberra and Queanbeyan.",
+    "Canberra's premium mobile car detailing. Ceramic coatings from $997, paint correction from $397, full details from $225. We come to you, no call-out fee.",
   openGraph: {
     type: "website",
     locale: "en_AU",
