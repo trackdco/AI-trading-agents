@@ -13,6 +13,13 @@
       "headers": {
         "x-api-key": "${TWENTYFIRST_API_KEY}"
       }
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
     }
   }
 }
