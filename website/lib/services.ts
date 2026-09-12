@@ -145,9 +145,9 @@ export const services: Service[] = [
     h1: "Full car detailing, anywhere in Canberra",
     priceFrom: prices.full,
     duration: "About 2.5 hours for a sedan; 2.5 to 4 hours for SUVs, utes and 4WDs.",
-    image: "m4-foam-pov",
-    imageAlt: "Foam gun in hand, a green BMW M4 covered in snow foam in a Canberra driveway",
-    video: { base: "/media/opening-720", poster: "/media/opening-poster.jpg" },
+    image: "full-detail",
+    imageAlt: "Green BMW M4 mid full detail: snow foam, wash mitt, rinse and towel dry",
+    video: { base: "/media/full-detail-720", poster: "/media/full-detail-poster.jpg" },
     intro:
       "A full detail is a complete inside-and-out reset for your car: a proper decontamination wash, a machine-applied protection layer on the paint, and a top-to-bottom interior clean. It's the service to book if you want the car looking and feeling close to new again.",
     forWho:
