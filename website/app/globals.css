@@ -1,0 +1,108 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Imperium Detailing colour tokens — carried over exactly from the current site. */
+:root {
+  --background: #050608;
+  --foreground: #f3f5f8;
+  --card: #0c0f14;
+  --card-foreground: #f3f5f8;
+  --popover: #0c0f14;
+  --popover-foreground: #f3f5f8;
+  --primary: #1f6fc4;
+  --primary-foreground: #f3f5f8;
+  --secondary: #11161d;
+  --secondary-foreground: #c2c8d0;
+  --muted: #11161d;
+  --muted-foreground: #8a909a;
+  --accent: #3a8fe0;
+  --accent-foreground: #050608;
+  --destructive: #b3261e;
+  --destructive-foreground: #f3f5f8;
+  --border: rgba(194, 200, 208, 0.12);
+  --input: rgba(194, 200, 208, 0.18);
+  --ring: #3a8fe0;
+  --radius: 0.5rem;
+  --glow: #1f6fc4;
+  --glow-deep: #0f3d6e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-glow: var(--glow);
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-big-shoulders), "Arial Narrow", "Helvetica Neue", sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+}
+
+/* Side gutter used by every section: never less than 16px, scales with the viewport. */
+@utility container-x {
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+}
+
+/* Display type: the condensed face carries every headline. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+
+.mask-fade-y {
+  mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+}
+
+/* The blue radial glow the current site uses behind panels — kept, used sparingly. */
+.radial-glow {
+  background: radial-gradient(closest-side, rgba(31, 111, 196, 0.35), rgba(15, 61, 110, 0.15), rgba(5, 6, 8, 0) 70%);
+}
