@@ -1,4 +1,4 @@
-import { site } from "@/lib/site";
+import { site, prices } from "@/lib/site";
 import { services } from "@/lib/services";
 import { areas } from "@/lib/areas";
 
@@ -40,14 +40,24 @@ export function JsonLd() {
       reviewCount: site.stats.reviewCount,
       bestRating: "5",
     },
-    makesOffer: services.map((s) => ({
-      "@type": "Offer",
-      name: s.name,
-      url: `${site.url}/services/${s.slug}/`,
-      priceCurrency: "AUD",
-      price: s.priceFrom,
-      priceSpecification: { "@type": "PriceSpecification", minPrice: s.priceFrom, priceCurrency: "AUD" },
-    })),
+    makesOffer: [
+      ...services.map((s) => ({
+        "@type": "Offer",
+        name: s.name,
+        url: `${site.url}/services/${s.slug}/`,
+        priceCurrency: "AUD",
+        price: s.priceFrom,
+        priceSpecification: { "@type": "PriceSpecification", minPrice: s.priceFrom, priceCurrency: "AUD" },
+      })),
+      {
+        "@type": "Offer",
+        name: "Maintenance plan",
+        url: `${site.url}/maintenance/`,
+        priceCurrency: "AUD",
+        price: prices.maintenanceMonthly,
+        priceSpecification: { "@type": "UnitPriceSpecification", minPrice: prices.maintenanceMonthly, priceCurrency: "AUD", unitText: "month" },
+      },
+    ],
   };
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
 }

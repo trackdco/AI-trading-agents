@@ -31,6 +31,8 @@ export const prices = {
   full: 225,
   correction: 397,
   ceramic: 997,
+  /** Maintenance plan, per month. Fortnightly visits are quoted per car. */
+  maintenanceMonthly: 150,
 };
 
 export const defaultSmsBody = "Hi Imperium, I'd like a quote.\nCar: \nSuburb: \nService: ";

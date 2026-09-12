@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { services, formatPrice } from "@/lib/services";
+import { prices } from "@/lib/site";
 import { Picture } from "@/components/site/picture";
 import { SectionHeading } from "@/components/site/section-heading";
 import { CtaBand } from "@/components/site/cta-band";
@@ -39,10 +40,14 @@ export default function ServicesPage() {
           <div className="md:col-span-9">
             <h2 className="display-caps text-3xl">Maintenance plans</h2>
             <p className="mt-2 text-[15px] text-muted-foreground">
-              Already detailed? We come back every 2, 4 or 8 weeks and keep it that way. One fixed price per visit, quoted for your car.
+              Already detailed? We come back every month, or every fortnight, and keep it that way. Monthly plans are quoted for your car; fortnightly on request.
             </p>
           </div>
-          <div className="text-[15px] font-semibold text-foreground md:col-span-3 md:text-right">How the plans work</div>
+          <div className="md:col-span-3 md:text-right">
+            <span className="text-sm text-muted-foreground">from</span>
+            <span className="display-caps block text-4xl">{formatPrice(prices.maintenanceMonthly)}</span>
+            <span className="mt-1 block text-sm text-muted-foreground">a month</span>
+          </div>
         </Link>
       </section>
       <CtaBand title="Not sure which one your car needs?" />

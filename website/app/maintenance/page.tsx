@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { site, smsHref, telHref } from "@/lib/site";
-import type { Faq as FaqItem } from "@/lib/services";
+import { site, prices, smsHref, telHref } from "@/lib/site";
+import { formatPrice, type Faq as FaqItem } from "@/lib/services";
 import { Picture } from "@/components/site/picture";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
@@ -10,25 +10,22 @@ import { Booking } from "@/components/site/booking";
 export const metadata: Metadata = {
   title: "Car Maintenance Plans Canberra (Mobile)",
   description:
-    "A regular maintenance plan from Imperium Detailing: we come back every 2, 4 or 8 weeks for a coating-safe hand wash and interior reset, at your home or work across Canberra and Queanbeyan.",
+    "A regular maintenance plan from Imperium Detailing, from $150 a month: we come back every month or every fortnight for a coating-safe hand wash and interior reset, at your home or work across Canberra and Queanbeyan.",
   alternates: { canonical: "/maintenance/" },
 };
 
 const rhythms = [
   {
+    every: "Every month",
+    who: "Most cars. Garaged overnight, driven daily, and you want it to stay the way we left it. The rhythm we recommend for coated cars.",
+    price: `From ${formatPrice(prices.maintenanceMonthly)} a month`,
+    note: "Quoted for your car",
+  },
+  {
     every: "Every 2 weeks",
-    who: "Daily drivers that live on the street, dark colours that show every mark, cars that carry kids or dogs.",
-    note: "It never looks washed. It looks detailed.",
-  },
-  {
-    every: "Every 4 weeks",
-    who: "Most cars. Garaged overnight, driven daily, and you want it to stay the way we left it.",
-    note: "The rhythm we recommend for coated cars.",
-  },
-  {
-    every: "Every 8 weeks",
-    who: "Weekend and second cars, low kilometres, mostly under cover.",
-    note: "Enough to keep a coating clean and working.",
+    who: "Daily drivers that live on the street, dark colours that show every mark, cars that carry kids or dogs. It never looks washed. It looks detailed.",
+    price: "Quote on request",
+    note: "Text us the car",
   },
 ];
 
@@ -50,7 +47,7 @@ const faq: FaqItem[] = [
   },
   {
     q: "How is it priced?",
-    a: "One fixed price per visit, quoted for your car from its size, colour and how it's used. It's the same number every visit, and the number you're quoted is the number you pay.",
+    a: "Monthly plans start at $150 a month, quoted for your car from its size, colour and how it's used. Fortnightly visits are quoted on request. It's the same number every month, and the number you're quoted is the number you pay.",
   },
   {
     q: "Do I need to be home?",
@@ -62,7 +59,7 @@ const faq: FaqItem[] = [
   },
   {
     q: "Can I change how often you come?",
-    a: "Yes. Start on one rhythm and move to another as the seasons change. Winter grit and spring pollen usually call for closer visits; a garaged summer needs fewer.",
+    a: "Yes. Start monthly and move to fortnightly as the seasons change, or the other way. Winter grit and spring pollen usually call for closer visits.",
   },
 ];
 
@@ -80,7 +77,9 @@ export default function MaintenancePage() {
 
       <section className="container-x mx-auto grid max-w-6xl gap-10 py-14 md:grid-cols-12 md:items-center md:py-20">
         <div className="md:col-span-7">
-          <p className="m-0 text-[15px] text-muted-foreground">Every 2, 4 or 8 weeks. One fixed price per visit.</p>
+          <p className="m-0 text-[15px] text-muted-foreground">
+            Monthly from <b className="font-medium text-foreground">{formatPrice(prices.maintenanceMonthly)}</b>. Fortnightly quoted on request.
+          </p>
           <h1 className="display-caps mt-3 text-5xl md:text-7xl">Detailed once. Kept that way.</h1>
           <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">
             A maintenance plan is us coming back on a schedule: a proper hand wash, the interior reset, the protection topped up. The car never slides back to needing a full detail, and a coated car gets the life it was promised.
@@ -113,10 +112,13 @@ export default function MaintenancePage() {
           <p className="mt-4 max-w-[58ch] text-lg text-muted-foreground">{"We'll suggest one when we quote. You can change it any time."}</p>
           <div className="mt-8 grid gap-px overflow-hidden rounded-lg border border-border bg-border">
             {rhythms.map((r) => (
-              <div key={r.every} className="grid gap-3 bg-background p-5 md:grid-cols-12 md:items-baseline md:p-6">
+              <div key={r.every} className="grid gap-3 bg-background p-5 md:grid-cols-12 md:items-center md:p-6">
                 <h3 className="display-caps m-0 text-3xl md:col-span-3">{r.every}</h3>
                 <p className="m-0 text-[15px] text-secondary-foreground md:col-span-6">{r.who}</p>
-                <p className="m-0 text-[15px] text-muted-foreground md:col-span-3 md:text-right">{r.note}</p>
+                <div className="md:col-span-3 md:text-right">
+                  <span className="display-caps block text-2xl">{r.price}</span>
+                  <span className="mt-1 block text-sm text-muted-foreground">{r.note}</span>
+                </div>
               </div>
             ))}
           </div>
