@@ -82,8 +82,8 @@ const TestimonialsColumn = (props: { className?: string; testimonials: Testimoni
                   key={`${index}-${i}`}
                   aria-hidden={index === 1 ? "true" : "false"}
                   tabIndex={index === 1 ? -1 : 0}
-                  whileHover={{ scale: 1.03, y: -8, transition: { type: "spring", stiffness: 400, damping: 17 } }}
-                  whileFocus={{ scale: 1.03, y: -8, transition: { type: "spring", stiffness: 400, damping: 17 } }}
+                  whileHover={{ scale: 1.015, transition: { duration: 0.25 } }}
+                  whileFocus={{ scale: 1.015, transition: { duration: 0.25 } }}
                   className={cardClass}
                 >
                   <Card {...t} />

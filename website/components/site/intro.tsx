@@ -25,11 +25,13 @@ export function Intro() {
       finish();
       return;
     }
+    // The hero starts revealing the moment the curtain begins to lift, so nothing waits.
     const tl = gsap.timeline({ onComplete: finish });
-    tl.fromTo(".intro-mark", { opacity: 0, scale: 0.94, y: 8 }, { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "expo.out" }, 0.15)
-      .fromTo(".intro-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power3.inOut" }, 0.35)
-      .to(".intro-mark", { opacity: 0, y: -10, duration: 0.3, ease: "power2.in" }, 1.35)
-      .to(el, { yPercent: -100, duration: 0.9, ease: "expo.inOut" }, 1.45);
+    tl.fromTo(".intro-mark", { opacity: 0, scale: 0.96, y: 6 }, { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "expo.out" }, 0.1)
+      .fromTo(".intro-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.25)
+      .to(".intro-mark", { opacity: 0, y: -8, duration: 0.25, ease: "power2.in" }, 0.95)
+      .add(() => window.dispatchEvent(new Event("intro:lifting")), 1.05)
+      .to(el, { yPercent: -100, duration: 0.8, ease: "expo.inOut" }, 1.05);
     return () => {
       tl.kill();
     };

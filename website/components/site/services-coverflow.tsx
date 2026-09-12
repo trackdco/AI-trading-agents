@@ -34,7 +34,7 @@ export function ServicesCoverflow() {
           intro="Real from-prices. The number you're quoted is the number you pay, anywhere in Canberra and Queanbeyan, with no call-out fee. Swipe or use the arrows."
         />
       </div>
-      <CoverFlowCarousel items={items} autoplayDelay={6000} />
+      <CoverFlowCarousel items={items} autoplayDelay={8000} />
       <div className="container-x mx-auto mt-8 max-w-6xl">
         <Link href="/services/" className="text-[15px] text-secondary-foreground underline underline-offset-4 hover:text-foreground">
           Compare all five services and prices

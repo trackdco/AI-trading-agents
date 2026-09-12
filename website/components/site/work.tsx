@@ -27,6 +27,7 @@ export function Work() {
   const root = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
+  const bar = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
@@ -44,9 +45,12 @@ export function Work() {
             start: "top top",
             end: () => `+=${distance()}`,
             pin: true,
-            scrub: 0.9,
+            scrub: 0.8,
             anticipatePin: 1,
             invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              if (bar.current) bar.current.style.transform = `scaleX(${self.progress})`;
+            },
           },
         });
       });
@@ -56,7 +60,11 @@ export function Work() {
 
   return (
     <section ref={root} id="work" aria-labelledby="work-heading" className="border-t border-border">
-      <div ref={pin} className="lg:flex lg:h-svh lg:items-center lg:overflow-hidden">
+      <div ref={pin} className="relative lg:flex lg:h-svh lg:items-center lg:overflow-hidden">
+        {/* How far through the gallery you are. */}
+        <div aria-hidden="true" className="absolute bottom-8 left-[clamp(1rem,4vw,3.5rem)] hidden h-px w-48 bg-border lg:block">
+          <span ref={bar} className="block h-full w-full origin-left bg-accent" style={{ transform: "scaleX(0)" }} />
+        </div>
         <div ref={track} className="container-x mx-auto grid max-w-6xl grid-cols-2 gap-3 py-16 lg:mx-0 lg:flex lg:max-w-none lg:items-center lg:gap-6 lg:py-0 lg:pr-[8vw]">
           <div className="col-span-2 mb-6 lg:mb-0 lg:w-[34vw] lg:shrink-0 lg:pr-10">
             <h2 id="work-heading" className="display-caps text-[clamp(2.6rem,6.4vw,5.8rem)]" data-reveal="lines">
@@ -70,7 +78,7 @@ export function Work() {
             </p>
           </div>
 
-          <figure className={`${tile} m-0`} data-reveal="img">
+          <figure className={`${tile} m-0`}>
             <BeadingVideo className={media} />
             <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 to-transparent p-5 pt-14">
               <span className="display-caps block text-2xl">Water beading</span>
@@ -79,7 +87,7 @@ export function Work() {
           </figure>
 
           {frames.map((f) => (
-            <figure key={f.name} className={`${tile} m-0`} data-reveal="img">
+            <figure key={f.name} className={`${tile} m-0`}>
               <Picture name={f.name} alt={f.alt} sizes="(min-width: 1024px) 50vh, 50vw" className={media} />
               <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 to-transparent p-5 pt-14">
                 <span className="display-caps block text-2xl">{f.title}</span>

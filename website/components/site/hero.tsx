@@ -53,14 +53,14 @@ export function Hero() {
     () => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
-      tl.from(".hero-panel", { opacity: 0, y: 40, scale: 0.97, duration: 1.3, ease: "expo.out" }, 0)
-        .from(".hero-line > span", { yPercent: 110, duration: 1.15, stagger: 0.11 }, 0.15)
-        .from(".hero-sub", { opacity: 0, y: 16, duration: 0.7 }, 0.85)
-        .from(".hero-cta > *", { opacity: 0, y: 16, duration: 0.7, stagger: 0.08 }, 0.95)
-        .from(".hero-note", { opacity: 0, duration: 0.6 }, 1.15)
-        .from(".hero-strip", { opacity: 0, duration: 0.8 }, 1.2);
+      tl.from(".hero-panel", { opacity: 0, y: 28, duration: 1.0 }, 0)
+        .from(".hero-line > span", { yPercent: 110, duration: 0.9, stagger: 0.09 }, 0.1)
+        .from(".hero-sub", { opacity: 0, y: 12, duration: 0.55 }, 0.55)
+        .from(".hero-cta > *", { opacity: 0, y: 12, duration: 0.55, stagger: 0.06 }, 0.65)
+        .from(".hero-note", { opacity: 0, duration: 0.5 }, 0.8)
+        .from(".hero-strip", { opacity: 0, duration: 0.6 }, 0.85);
       if (document.documentElement.dataset.intro === "done") tl.play();
-      else window.addEventListener("intro:done", () => tl.play(), { once: true });
+      else window.addEventListener("intro:lifting", () => tl.play(), { once: true });
     },
     { scope: root },
   );
