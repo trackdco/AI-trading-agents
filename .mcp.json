@@ -6,6 +6,13 @@
       "env": {
         "TV_CDP_PORT": "${TV_CDP_PORT:-9222}"
       }
+    },
+    "21st": {
+      "type": "http",
+      "url": "https://21st.dev/api/mcp",
+      "headers": {
+        "x-api-key": "${TWENTYFIRST_API_KEY}"
+      }
     }
   }
 }
