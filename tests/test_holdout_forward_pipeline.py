@@ -67,13 +67,16 @@ def test_engine_stop_floor_is_off_by_default():
     """Layer 0 gates 7-60pt downstream. An engine-level floor vetoes at FILL time, and since
     max_trades_per_day is enforced there, each veto hands the cap slot to a trade the
     rulebook never saw — which is exactly what broke the first holdout run."""
-    cfg = build_ny_substrate.canon_config(stop_gate=False)
+    # canon_config(stop_gate=) became canon_windows(stop_gate=, cap_mode=), which returns
+    # [(tag, cfg, keep_window)]. cap_mode="day" is the single-window form the old helper
+    # returned, so [0][1] is the same config this test has always asserted on.
+    cfg = build_ny_substrate.canon_windows(stop_gate=False, cap_mode="day")[0][1]
     assert cfg.min_stop_points == 0.0
     assert cfg.post_open_min_stop == 0.0
     assert cfg.max_trades_per_day == 2          # PER BOOK
     assert (cfg.win_start.hour, cfg.win_end.hour, cfg.win_end.minute) == (8, 10, 15)
 
-    gated = build_ny_substrate.canon_config(stop_gate=True)
+    gated = build_ny_substrate.canon_windows(stop_gate=True, cap_mode="day")[0][1]
     assert gated.min_stop_points > 0, "stop-gate=on must restore the live floor"
 
 
