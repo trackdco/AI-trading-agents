@@ -172,6 +172,14 @@ body::after {
   color: #fff;
 }
 
+/* Page-wipe curtain: parked below the viewport, covering from first paint when a wipe started this load. */
+.wipe {
+  transform: translateY(100%);
+}
+html[data-wipe] .wipe {
+  transform: none;
+}
+
 /* Anchor targets stop just under the sticky header. */
 section[id],
 div[id] {

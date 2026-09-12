@@ -131,6 +131,74 @@ export const articles: Article[] = [
       },
     ],
   },
+  {
+    slug: "dealer-paint-protection-vs-ceramic-coating",
+    title: "Dealer Paint Protection vs Ceramic Coating: What You're Actually Buying",
+    description:
+      "What the paint protection package in the dealer's finance office usually is, what a proper ceramic coating is, the questions to ask before you sign, and what to do if you already paid for it.",
+    h1: "Dealer paint protection vs a ceramic coating",
+    intro:
+      "The car is nearly yours, and the finance manager has one more thing: paint protection, often well over a thousand dollars, sometimes rolled into the loan. Here's what that usually buys, what a ceramic coating from a detailer buys, and how to tell the difference before you sign.",
+    sections: [
+      {
+        h: "What the dealer package usually is",
+        p: [
+          "Most dealer paint protection is a sealant or a thin coating applied in the dealership's wash bay or by a subcontractor, in an hour or two, on a car that has come straight off a truck. There is rarely any decontamination and almost never any paint correction, so whatever transport marring and wash marks are already in the clear coat get sealed in.",
+          "The warranty is the part worth reading. Many are long on years and short on cover: they often require paid annual inspections or reapplications to stay valid, exclude the things that actually damage paint, and pay out only when the product itself has visibly failed.",
+          "None of this makes the product useless. It makes it expensive for what it is, and the price is usually negotiable, which tells you something about the margin.",
+        ],
+      },
+      {
+        h: "What a ceramic coating from a detailer is",
+        p: [
+          "A proper coating is mostly preparation. The car is washed and chemically stripped of iron, tar and any old sealant, then machine polished so the surface is level and clear before anything goes on. The coating is applied panel by panel, wiped in the right window, and left to cure.",
+          "You get a written warranty you can read before you pay, a wash guide so you don't undo the work, and the same two people who did the job answering the phone afterwards. Our tiers and prices are on the ceramic coating page.",
+        ],
+      },
+      {
+        h: "Questions to ask before you sign",
+        list: [
+          "Who applies it, and where? A trained detailer in a booth, or whoever is free in the wash bay?",
+          "What preparation is done first? If the answer is a wash, the marks under it stay.",
+          "Can I read the warranty terms now, not after delivery?",
+          "What do I have to pay for each year to keep the warranty valid?",
+          "What does it exclude? Bird droppings, sap, wash marks and fallout are what paint actually suffers from.",
+          "What happens to the price if I say no? If it drops by half, you have your answer.",
+          "Can it be removed from the contract entirely? It's an optional extra, and the manufacturer's paint warranty doesn't depend on it.",
+        ],
+      },
+      {
+        h: "If you already paid for it",
+        p: [
+          "It isn't wasted, but it isn't a base for a coating either. A ceramic coating bonds to bare clear coat, so the dealer product has to come off first. If you want the real thing, we strip it as part of the standard prep, correct the paint and coat it.",
+        ],
+      },
+      {
+        h: "What we'd do with a new car",
+        p: [
+          "Book it in the first few weeks, before the first automatic wash. A light single-stage correction removes what the transporter and the dealer prep left behind, then a 5 or 7-year coating goes on while the paint is as good as it will ever be. In Canberra that also means it's protected before its first frost and its first pollen season.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Is dealer paint protection worth it?",
+        a: "Rarely at the price offered. You're paying a dealership margin for a product applied without correction, on warranty terms that usually require ongoing paid visits. The same money, or less, buys a properly prepared ceramic coating with a warranty you can read first.",
+      },
+      {
+        q: "Can you put a ceramic coating over dealer paint protection?",
+        a: "Not over it. A coating has to bond to the clear coat, so we strip the dealer product during prep, correct the paint and apply the coating to a clean surface. It's the same prep every coating gets.",
+      },
+      {
+        q: "Will saying no affect my new-car warranty?",
+        a: "No. The manufacturer's paint warranty stands on its own. Paint protection is an optional add-on sold by the dealership, and declining it changes nothing about the car's factory cover.",
+      },
+      {
+        q: "When should a new car be coated?",
+        a: "Within the first few weeks is ideal, before wash marks build up. If the car has already done a few months, it just means a little more correction before the coating goes on.",
+      },
+    ],
+  },
 ];
 
 export const getArticle = (slug: string) => articles.find((a) => a.slug === slug);

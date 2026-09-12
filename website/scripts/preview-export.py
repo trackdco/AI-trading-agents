@@ -8,7 +8,7 @@ GitHub Pages project page, a shared preview link) need relative paths, so this r
 page and points the Turbopack runtime at the relative chunk base. Output: <output-folder>/site/
 plus a small redirect page at <output-folder>/index.html.
 """
-import re, os, shutil, glob, json, sys, time
+import json, re, os, shutil, glob, sys, time
 BUILD_ID=time.strftime('%Y%m%d%H%M%S')
 SRC=os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'out')
 DST=sys.argv[1]
@@ -26,30 +26,31 @@ for js in glob.glob(f'{DST}/site/_next/static/chunks/*.js'):
     u=u.replace('"\ufffd"', '"\\ufffd"')
     if u!=t: open(js,'w',encoding='utf-8').write(u); print('patched', os.path.basename(js), t.count('"/media/')+t.count('"/brand/'), 'literals')
 ASSET=re.compile(r'(?<=["\'(,\s])/(_next|images|media|brand)/')
-ROUTE=re.compile(r'(?<=["\'])/((?:services|service-areas|learn|reviews|book|warranty|privacy|terms|car-detailing-canberra)/(?:[A-Za-z0-9-]+/)?)(?=["\'#?\\])')
+PAGES=[p for p in glob.glob(f'{SRC}/**/index.html', recursive=True) if not os.path.relpath(p, SRC).startswith('_not-found')]
+ROUTES=sorted({os.path.dirname(os.path.relpath(p, SRC)).replace(os.sep,'/') for p in PAGES}-{''})
+ROUTE=re.compile(r'(?<=["\'])/(' + '|'.join(re.escape(r) for r in ROUTES) + r')/(?=["\'#?\\])')
 HOME=re.compile(r'(?<=["\'])/(?=["\'#\\])')
 
 def click_script(prefix):
     # Client components (header nav) carry root-relative hrefs in their JS, so the Next router would
     # navigate to paths the preview host doesn't have. Route every internal click to the relative file.
-    return ('<script>(function(){var P=%r;var V=%r;var R=/^\\/(services|service-areas|learn|reviews|book|warranty|privacy|terms|car-detailing-canberra)\\/([A-Za-z0-9-]+\\/)?$/;'
-      'function map(h){var hash=h.indexOf("#")>=0?h.slice(h.indexOf("#")):"";var path=h.split("#")[0].split("?")[0];'
-      'if(path==="/")return P+"index.html"+hash;if(R.test(path))return P+path.slice(1)+"index.html"+hash;return null;}'
+    return ('<script>(function(){var P=%r;var V=%r;var S=new Set(%s);'
+      'function map(h){var hash=h.indexOf("#")>=0?h.slice(h.indexOf("#")):"";var path=h.split("#")[0].split("?")[0].replace(/^\\/|\\/$/g,"");'
+      'if(path==="")return P+"index.html"+hash;if(S.has(path))return P+path+"/index.html"+hash;return null;}'
       'document.addEventListener("click",function(e){if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;'
       'var a=e.target&&e.target.closest?e.target.closest("a[href]"):null;if(!a)return;var h=a.getAttribute("href")||"";var t=null;'
       'if(h.charAt(0)==="/"&&h.charAt(1)!=="/"){t=map(h);if(!t)return;}else if(/^(\\.\\.?\\/|index\\.html|[a-z-]+\\/)/.test(h)){t=h;}else return;'
       'e.preventDefault();e.stopImmediatePropagation();var u=new URL(t,document.baseURI);u.searchParams.set("v",V);'
-      'if(u.pathname===location.pathname&&u.hash){location.hash=u.hash;return;}location.assign(u.href);},true);})();</script>') % (prefix, BUILD_ID)
+      'if(u.pathname===location.pathname&&u.hash){location.hash=u.hash;return;}if(self.__wipe){self.__wipe(u.href);return;}location.assign(u.href);},true);})();</script>') % (prefix, BUILD_ID, json.dumps(ROUTES))
 
 pages=[]
-for path in glob.glob(f'{SRC}/**/index.html', recursive=True):
+for path in PAGES:
     rel=os.path.relpath(path, SRC)
-    if rel.startswith('_not-found'): continue
     depth=rel.count('/')
     prefix='../'*depth
     s=open(path, encoding='utf-8').read()
     s=ASSET.sub(lambda m: f'{prefix}{m.group(1)}/', s)
-    s=ROUTE.sub(lambda m: f'{prefix}{m.group(1)}index.html', s)
+    s=ROUTE.sub(lambda m: f'{prefix}{m.group(1)}/index.html', s)
     s=HOME.sub(f'{prefix}index.html', s)
     # must equal the prefix used in the <script src> attributes, as a plain string (the runtime compares raw attributes)
     base=f'<script>var TURBOPACK_CHUNK_BASE_PATH="{prefix}_next/";self.__ART=new URL("{prefix}./",document.baseURI).href.replace(/\\/$/,"");</script>'+click_script(prefix)

@@ -56,7 +56,8 @@ export function Hero() {
         .from(".hero-cta > *", { opacity: 0, y: 12, duration: 0.55, stagger: 0.06 }, 0.65)
         .from(".hero-note", { opacity: 0, duration: 0.5 }, 0.8)
         .from(".hero-strip", { opacity: 0, duration: 0.6 }, 0.85);
-      if (document.documentElement.dataset.intro === "done") tl.play();
+      const root = document.documentElement;
+      if (root.dataset.intro === "done" && !root.dataset.wipe) tl.play();
       else window.addEventListener("intro:lifting", () => tl.play(), { once: true });
     },
     { scope: root },

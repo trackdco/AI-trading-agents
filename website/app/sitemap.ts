@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/services/", 0.9),
     ...services.map((s) => page(`/services/${s.slug}/`, 0.9)),
     page("/maintenance/", 0.7),
+    page("/tesla-ev-detailing-canberra/", 0.7),
     page("/car-detailing-canberra/", 0.7),
     page("/service-areas/", 0.7),
     ...areas.map((a) => page(`/service-areas/${a.slug}/`, 0.6)),

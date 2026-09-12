@@ -5,6 +5,7 @@ import { prices } from "@/lib/site";
 import { Picture } from "@/components/site/picture";
 import { SectionHeading } from "@/components/site/section-heading";
 import { CtaBand } from "@/components/site/cta-band";
+import { PriceGuide } from "@/components/site/price-guide";
 
 export const metadata: Metadata = {
   title: "Services and Prices",
@@ -50,6 +51,7 @@ export default function ServicesPage() {
           </div>
         </Link>
       </section>
+      <PriceGuide title="Check your price." />
       <CtaBand title="Not sure which one your car needs?" />
     </>
   );

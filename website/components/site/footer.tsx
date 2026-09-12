@@ -107,6 +107,9 @@ export function Footer() {
                 {a.h1}
               </Link>
             ))}
+            <Link href="/tesla-ev-detailing-canberra/" className={link}>
+              Tesla and EV detailing
+            </Link>
             <Link href="/book/" className={link}>
               Get a quote
             </Link>

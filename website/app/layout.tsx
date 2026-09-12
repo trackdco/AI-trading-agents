@@ -10,6 +10,7 @@ import { Intro } from "@/components/site/intro";
 import { SmoothScroll } from "@/components/site/smooth-scroll";
 import { ScrollFx } from "@/components/site/scroll-fx";
 import { MobileBar } from "@/components/site/mobile-bar";
+import { PageWipe } from "@/components/site/page-wipe";
 import { site } from "@/lib/site";
 
 // Google folded "Big Shoulders Display" into the variable "Big Shoulders" family;
@@ -58,9 +59,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-AU" className={`${display.variable} ${sans.variable} dark h-full`}>
       <body className="flex min-h-full flex-col">
-        {/* Runs before paint: marks that JS is on (so reveals may start hidden) and skips the
-            intro curtain on repeat visits in this tab. */}
-        <Script id="flags" strategy="beforeInteractive">{`try{var d=document.documentElement;d.dataset.js="1";if(sessionStorage.getItem("imperium-intro"))d.dataset.intro="done";}catch(e){}`}</Script>
+        {/* Runs before paint: marks that JS is on (so reveals may start hidden), skips the intro
+            curtain on repeat visits in this tab, and keeps the page-wipe curtain down when a wipe
+            started this page load. */}
+        <Script id="flags" strategy="beforeInteractive">{`try{var d=document.documentElement;d.dataset.js="1";if(sessionStorage.getItem("imperium-intro"))d.dataset.intro="done";if(sessionStorage.getItem("imperium-wipe")){d.dataset.wipe="1";sessionStorage.removeItem("imperium-wipe");}}catch(e){}`}</Script>
         <Intro />
         <SmoothScroll />
         <ScrollFx />
@@ -70,6 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
         <Footer />
         <MobileBar />
+        <PageWipe />
         <JsonLd />
         <Analytics />
       </body>
