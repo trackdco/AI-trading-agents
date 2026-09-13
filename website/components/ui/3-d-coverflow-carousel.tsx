@@ -187,9 +187,14 @@ export function CoverFlowCarousel({
 
         {/* 3D stage */}
         <div
-          className="relative w-full flex justify-center items-center mb-6 outline-none"
+          // It takes focus and answers arrow keys, but killed the outline without
+          // putting anything back, so a keyboard user landed here seeing nothing.
+          className="relative mb-6 flex w-full items-center justify-center rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           style={{ perspective: "1400px", height: `${stageH}px` }}
           tabIndex={0}
+          role="group"
+          aria-roledescription="carousel"
+          aria-label="Services. Use the left and right arrow keys to move between them."
           onKeyDown={handleKeyDown}
           aria-live="polite"
         >
