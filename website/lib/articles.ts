@@ -99,7 +99,7 @@ export const articles: Article[] = [
         p: [
           "Both services touch the paint, but they do opposite jobs. Getting them mixed up is the single most expensive mistake we see in Canberra: coating an uncorrected car and locking swirl marks in for years.",
           "Paint correction fixes what's there. Machine polishing with a compound or polish physically removes a microscopic layer of clear coat, and the swirl marks, holograms, water spots and light scratches sitting in it. Nothing is added; a tiny amount is taken away.",
-          "Ceramic coating protects corrected paint. A liquid Si02 coating chemically bonds to the clear coat and cures into a hard, hydrophobic layer on top. It repels water, resists chemicals and makes contaminants easier to wash off. It's always applied after correction so the surface is defect-free before it's sealed.",
+          "Ceramic coating protects corrected paint. A liquid SiO2 coating chemically bonds to the clear coat and cures into a hard, hydrophobic layer on top. It repels water, resists chemicals and makes contaminants easier to wash off. It's always applied after correction so the surface is defect-free before it's sealed.",
         ],
       },
       {
