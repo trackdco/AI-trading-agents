@@ -1,10 +1,15 @@
 import { Counter } from "@/components/site/counter";
 import { site } from "@/lib/site";
 
+// The counter animates a number, but site.stats holds display strings like "400+",
+// so split each one rather than retyping the figure and letting the two drift.
+const num = (s: string) => parseFloat(s);
+const tail = (s: string) => s.replace(/^[\d.]+/, "");
+
 // The four numbers a careful owner asks about, big enough to read from across the room.
 const stats = [
-  { value: 400, suffix: "+", label: "cars detailed in the last year" },
-  { value: 4.9, decimals: 1, label: "stars across Google reviews" },
+  { value: num(site.stats.cars), suffix: tail(site.stats.cars), label: "cars detailed in the last year" },
+  { value: num(site.stats.rating), decimals: 1, label: "stars across Google reviews" },
   { value: site.stats.reviewCount, label: "reviews, every one from a real customer" },
   { value: site.stats.warrantyYears, suffix: " yr", label: "written warranty on ceramic coatings" },
 ];
