@@ -6,6 +6,7 @@ import { formatPrice, type Faq as FaqItem } from "@/lib/services";
 import { Picture } from "@/components/site/picture";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
+import { QuoteCta } from "@/components/site/quote-cta";
 import { Booking } from "@/components/site/booking";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 
@@ -91,7 +92,7 @@ export default function MaintenancePage() {
             {"For daily drivers that live outside, dark cars that show every wash mark, family cars, and anyone who'd rather spend Saturday morning on something other than a bucket."}
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <LinkButton href={sms}>Text us your car</LinkButton>
+            <QuoteCta sms={sms} />
             <LinkButton href={telHref} variant="ghost">
               Call {site.phoneDisplay}
             </LinkButton>

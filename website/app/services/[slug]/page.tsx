@@ -9,6 +9,7 @@ import { LoopVideo } from "@/components/site/loop-video";
 import { BeforeAfter } from "@/components/site/before-after";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
+import { QuoteCta } from "@/components/site/quote-cta";
 import { Booking } from "@/components/site/booking";
 import { SectionHeading } from "@/components/site/section-heading";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
@@ -74,7 +75,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">{s.intro}</p>
           <p className="mt-4 max-w-[60ch] text-muted-foreground">{s.forWho}</p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <LinkButton href={smsHref(`Hi Imperium, I'd like a quote for ${anA(s.name.toLowerCase())}.\nCar: \nSuburb: `)}>Text us your car</LinkButton>
+            <QuoteCta sms={smsHref(`Hi Imperium, I'd like a quote for ${anA(s.name.toLowerCase())}.\nCar: \nSuburb: `)} />
             <LinkButton href={telHref} variant="ghost">
               Call {site.phoneDisplay}
             </LinkButton>

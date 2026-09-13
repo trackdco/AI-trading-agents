@@ -6,6 +6,7 @@ import { services, formatPrice, type Faq as FaqItem } from "@/lib/services";
 import { LoopVideo } from "@/components/site/loop-video";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
+import { QuoteCta } from "@/components/site/quote-cta";
 import { Booking } from "@/components/site/booking";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 
@@ -70,7 +71,7 @@ export default function EvPage() {
           </p>
           <p className="mt-4 max-w-[60ch] text-muted-foreground">For new Model 3 and Model Y owners, and anyone in a BYD, Polestar, Kia, Hyundai, BMW or Mercedes EV.</p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <LinkButton href={sms}>Text us your car</LinkButton>
+            <QuoteCta sms={sms} />
             <LinkButton href={telHref} variant="ghost">
               Call {site.phoneDisplay}
             </LinkButton>
