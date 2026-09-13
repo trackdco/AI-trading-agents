@@ -9,6 +9,27 @@ a claim could not be sourced it was cut rather than softened: **118 claims were
 removed across the nine pages**, including some that were true but decorative.
 Each page carries at most three hard figures.
 
+## Claims outside the district pages
+
+This ledger began as a district-page audit, so a statistic anywhere else on the
+site had nothing checking it. One got through on that basis and is recorded here.
+
+- ~~"One in four new cars registered in the ACT is electric"~~ (/tesla-ev-detailing-canberra/)
+  — STALE, and it was never sourced here. The figure was real: 23.9 per cent of
+  new ACT registrations in November 2023, reported again in March 2024. But it
+  was written in the present tense with no date, and it has not held — the ACT
+  ran 13 per cent in Q1 2025 and 21 per cent in Q2 2025. A number that moves
+  every quarter cannot be stated flat.
+  Replaced with "The ACT takes up electric cars faster than any other state or
+  territory", which is durable and carries the same argument.
+  - Source: ACT has the highest per-capita EV uptake in Australia, consistently
+    across years, at roughly 2-3x the national average — https://www.whichcar.com.au/news/act-led-electric-vehicle-sales-per-capita-in-2022
+    and https://thedriven.io/2024/03/26/one-in-four-new-car-sales-in-australias-national-capital-is-fully-electric/
+    Quarterly share: https://www.canberratimes.com.au/story/9041081/one-in-five-new-cars-in-the-act-were-electric-new-data-shows/
+
+**The rule this establishes:** a statistic that changes with time either carries
+its date and its source, or is rewritten as the durable claim underneath it.
+
 ## Why this file exists
 
 An early draft invented four decimal tree-canopy figures and attributed them to

@@ -66,7 +66,7 @@ export default function EvPage() {
           <p className="m-0 mt-4 text-[15px] text-muted-foreground">Soft paint. Glass roof. White seats. We know the car.</p>
           <h1 className="display-caps mt-3 text-5xl md:text-7xl">Tesla and EV detailing in Canberra.</h1>
           <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">
-            One in four new cars registered in the ACT is electric, and most of them wear paint that marks the first time it meets a brush. This is the detailing an EV actually needs: a careful hand wash, a light correction, and a coating that goes on while the car is still perfect. Done at your home, no call-out fee.
+            The ACT takes up electric cars faster than any other state or territory, and most of them wear paint that marks the first time it meets a brush. This is the detailing an EV actually needs: a careful hand wash, a light correction, and a coating that goes on while the car is still perfect. Done at your home, no call-out fee.
           </p>
           <p className="mt-4 max-w-[60ch] text-muted-foreground">For new Model 3 and Model Y owners, and anyone in a BYD, Polestar, Kia, Hyundai, BMW or Mercedes EV.</p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
