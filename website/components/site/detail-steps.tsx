@@ -1,9 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { detailSteps, type StepId } from "@/lib/detail-steps";
+import { detailSteps, type DetailStep, type StepId } from "@/lib/detail-steps";
 import { SectionHeading } from "@/components/site/section-heading";
-import { LoopVideo } from "@/components/site/loop-video";
 
 const icons: Record<StepId, React.ReactNode> = {
   foam: (
@@ -41,18 +40,79 @@ const icons: Record<StepId, React.ReactNode> = {
   ),
 };
 
+// One step's media. Only mounted once its button has been used, so nothing loads
+// for a step nobody opened. The poster sits under the video at all times, which
+// covers a slow load, a failed load, and reduced motion with the same markup.
+function StepMedia({ step, active, reduced }: { step: DetailStep; active: boolean; reduced: boolean }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [broken, setBroken] = useState(false);
+
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || reduced) return;
+    if (active) void v.play().catch(() => {});
+    else v.pause();
+  }, [active, reduced]);
+
+  return (
+    <div
+      aria-hidden={!active}
+      className={`absolute inset-0 transition-opacity duration-[250ms] ease-out motion-reduce:transition-none ${
+        active ? "opacity-100" : "opacity-0"
+      }`}
+    >
+      <img src={step.poster} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+      {step.video && !broken && !reduced && (
+        <video
+          ref={ref}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={step.poster}
+          aria-label={step.alt}
+          onError={() => setBroken(true)}
+          className="absolute inset-0 h-full w-full object-cover"
+        >
+          <source src={step.video} type="video/mp4" />
+        </video>
+      )}
+      {!step.video && (
+        <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-border bg-background/80 px-4 py-2 text-sm text-muted-foreground backdrop-blur">
+          Footage coming soon
+        </span>
+      )}
+    </div>
+  );
+}
+
 export function DetailSteps() {
-  const [active, setActive] = useState<StepId>("foam");
+  const [active, setActive] = useState<StepId>(detailSteps[0].id);
+  // A step's media is created the first time it is opened, and kept from then on.
+  const [opened, setOpened] = useState<StepId[]>([detailSteps[0].id]);
+  const [reduced, setReduced] = useState(false);
+
   const railRef = useRef<HTMLDivElement>(null);
   const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
 
   const step = detailSteps.find((s) => s.id === active)!;
 
-  // The sliding pill behind the buttons: measured, so it works at any text size.
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const open = useCallback((id: StepId) => {
+    setActive(id);
+    setOpened((prev) => (prev.includes(id) ? prev : [...prev, id]));
+  }, []);
+
+  // The sliding marker behind the buttons, measured so it holds at any text size.
   const movePill = useCallback(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const btn = rail.querySelector<HTMLButtonElement>(`[data-step="${active}"]`);
+    const btn = railRef.current?.querySelector<HTMLButtonElement>(`[data-step="${active}"]`);
     if (!btn) return;
     setPill({ left: btn.offsetLeft, width: btn.offsetWidth });
     btn.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
@@ -67,24 +127,27 @@ export function DetailSteps() {
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     const i = detailSteps.findIndex((s) => s.id === active);
-    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-      e.preventDefault();
-      const next = (i + (e.key === "ArrowRight" ? 1 : detailSteps.length - 1)) % detailSteps.length;
-      setActive(detailSteps[next].id);
-      railRef.current?.querySelector<HTMLButtonElement>(`[data-step="${detailSteps[next].id}"]`)?.focus();
-    }
+    let next = -1;
+    if (e.key === "ArrowRight") next = (i + 1) % detailSteps.length;
+    else if (e.key === "ArrowLeft") next = (i - 1 + detailSteps.length) % detailSteps.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = detailSteps.length - 1;
+    if (next < 0) return;
+    e.preventDefault();
+    open(detailSteps[next].id);
+    railRef.current?.querySelector<HTMLButtonElement>(`[data-step="${detailSteps[next].id}"]`)?.focus();
   };
 
   return (
     <section id="in-a-detail" className="border-t border-border py-20 md:py-28">
       <div className="container-x mx-auto max-w-6xl">
         <SectionHeading
-          title="What a detail actually is."
-          intro="Five stages, in the order they happen. Pick one to see what it does and why it matters. Most of it is invisible by the time you see the car, which is exactly why people think a detail is just a wash."
+          title="What's included in a detail."
+          intro="Five stages, in the order they happen. Pick one to see it on the car. Most of it is invisible by the time you get the keys back, which is exactly why people think a detail is just a wash."
         />
       </div>
 
-      {/* The toggle rail. Scrolls sideways on a phone, all five fit on a laptop. */}
+      {/* Buttons: one row on a laptop, a scrolling strip on a phone. Never five stacked blocks. */}
       <div className="container-x mx-auto max-w-5xl">
         <div
           ref={railRef}
@@ -107,11 +170,13 @@ export function DetailSteps() {
                 key={s.id}
                 type="button"
                 role="tab"
+                id={`step-tab-${s.id}`}
                 data-step={s.id}
                 aria-selected={on}
+                aria-controls="step-panel"
                 tabIndex={on ? 0 : -1}
-                onClick={() => setActive(s.id)}
-                className={`relative z-10 flex min-h-[52px] flex-1 shrink-0 snap-start items-center justify-center gap-2.5 whitespace-nowrap rounded-full px-4 text-[15px] font-semibold transition-colors duration-300 sm:px-5 ${
+                onClick={() => open(s.id)}
+                className={`relative z-10 flex min-h-[52px] flex-1 shrink-0 snap-start items-center justify-center gap-2.5 whitespace-nowrap rounded-full px-4 text-[15px] font-semibold transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:px-5 ${
                   on ? "text-foreground" : "text-muted-foreground hover:text-secondary-foreground"
                 }`}
               >
@@ -136,25 +201,24 @@ export function DetailSteps() {
         </div>
       </div>
 
-      {/* The car: one lap around it, on loop. */}
+      {/* The stage. Its 16:9 box is reserved up front, so the page never jumps while it loads. */}
       <div className="container-x mx-auto mt-6 max-w-5xl md:mt-8">
-        <div className="overflow-hidden rounded-2xl border border-border bg-[#0a0e14]">
-          <LoopVideo
-            base="/media/m4-360"
-            poster="/media/m4-360-poster.webp"
-            label="A slow lap around a green BMW M4 detailed by Imperium"
-            className="block w-full"
-          />
+        <div
+          id="step-panel"
+          role="tabpanel"
+          aria-labelledby={`step-tab-${active}`}
+          className="relative aspect-video w-full overflow-hidden rounded-2xl border border-border bg-[#0a0e14]"
+        >
+          {detailSteps
+            .filter((s) => opened.includes(s.id))
+            .map((s) => (
+              <StepMedia key={s.id} step={s} active={s.id === active} reduced={reduced} />
+            ))}
         </div>
-      </div>
 
-      {/* The words. Always here, whether the 3D loads or not. */}
-      <div className="container-x mx-auto mt-8 max-w-5xl md:mt-10">
-        <div key={step.id} className="price-in grid gap-6 md:grid-cols-12">
-          <h3 className="display-caps text-4xl md:col-span-4 md:text-5xl">{step.title}</h3>
-          <p className="m-0 max-w-[52ch] text-[17px] text-secondary-foreground md:col-span-4">{step.what}</p>
-          <p className="m-0 max-w-[52ch] text-[17px] text-muted-foreground md:col-span-4">{step.why}</p>
-        </div>
+        <p key={step.id} className="price-in mt-5 max-w-[70ch] text-[17px] text-secondary-foreground">
+          <b className="font-semibold text-foreground">{step.label}.</b> {step.short}
+        </p>
       </div>
     </section>
   );
