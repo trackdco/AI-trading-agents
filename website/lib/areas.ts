@@ -310,13 +310,15 @@ export const areas: Area[] = [
       {
         h: "Two off-street spaces, not always covered",
         p: [
-          "## Two off-street spaces, not always covered",
+          "Most houses on this side of the border have two off-street spaces. So in Karabar, Crestwood, Jerrabomberra and Googong there is nearly always a driveway to work on. What you do not always get is a roof over it. A carport or an open hardstand is fine for an exterior detail, an interior or a full detail.",
+          "Paint correction and ceramic coating are the exception. Those need a garage or covered space for the day, out of sun, wind and dust. It is worth settling that before the booking rather than on the morning.",
         ],
       },
       {
         h: "Work utes and the good car",
         p: [
-          "Most houses on this side of the border have two off-street spaces. So in Karabar, Crestwood, Jerrabomberra and Googong there is nearly always a driveway to work on. What the rule does not ask for is a garage. A carport or an open hardstand ticks the box just as well.",
+          "Trades are a bigger share of the working population here than across the state — 13.3 per cent of employed people at the last census — and about a quarter of households keep three vehicles or more, well above the NSW rate. Put those together and a driveway in Karabar or Googong often has a work ute on it, a family car, and one the owner actually cares about.",
+          "That is three different jobs at one address, and it is the easiest day we get: nothing goes on driving between suburbs, and it is one tap and one power point for the lot. A work ute is priced as an SUV and the good car by its own size, the same as they would be anywhere else.",
         ],
       },
     ],

@@ -378,7 +378,18 @@ ahead, the Gungahlin line needs changing.
 
 ## Queanbeyan
 
-`/service-areas/queanbeyan/` — 3 hard figures.
+`/service-areas/queanbeyan/` — 2 hard figures.
+
+**Note, 2026-09-13:** this page had lost most of its content to a bad edit. The
+first section's only paragraph was the literal string `"## Two off-street spaces,
+not always covered"`, which rendered on the live page as that text under a real
+heading of the same words, and the parking paragraph had slid down under the
+wrong heading. The page was the thinnest on the site at 407 words as a result.
+Both ABS figures below were re-verified against QuickStats directly before being
+put back on the page — 13.3% technicians and trades against 11.9% for NSW, and
+25.4% of dwellings with three or more vehicles against 17.5%. The DCP parking
+control is NOT reinstated: this file contradicts itself on whether the PDF could
+be read, so the page keeps the observable wording instead.
 
 **Kept:**
 
