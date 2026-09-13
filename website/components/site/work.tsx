@@ -20,7 +20,8 @@ const frames = [
   { name: "m4-clean-front", alt: "Green BMW M4, freshly washed and glossy", title: "BMW M4 Competition", sub: "Full detail" },
 ];
 
-const tile = "zoom-media relative shrink-0 overflow-hidden rounded-xl bg-card aspect-[4/5] lg:h-[62vh] lg:w-auto lg:aspect-[4/5]";
+const tile =
+  "zoom-media relative shrink-0 overflow-hidden rounded-xl bg-card aspect-[4/5] lg:h-[62vh] lg:w-auto lg:aspect-[4/5] lg:motion-reduce:h-auto lg:motion-reduce:w-full";
 const media = "absolute inset-0 h-full w-full object-cover";
 
 export function Work() {
@@ -60,20 +61,30 @@ export function Work() {
 
   return (
     <section ref={root} id="work" aria-labelledby="work-heading" className="border-t border-border">
-      <div ref={pin} className="relative lg:flex lg:h-svh lg:items-center lg:overflow-hidden">
+      <div
+        ref={pin}
+        // The horizontal scroll is the only thing that ever moves the track, and GSAP
+        // gates it behind prefers-reduced-motion: no-preference. Without this, a
+        // desktop visitor with Reduce Motion on saw two of the six photos and had
+        // no way to reach the rest. Under Reduce Motion it becomes a plain grid.
+        className="relative lg:flex lg:h-svh lg:items-center lg:overflow-hidden lg:motion-reduce:block lg:motion-reduce:h-auto lg:motion-reduce:overflow-visible"
+      >
         {/* How far through the gallery you are. */}
-        <div aria-hidden="true" className="absolute bottom-8 left-[clamp(1rem,4vw,3.5rem)] hidden h-px w-48 bg-border lg:block">
+        <div aria-hidden="true" className="absolute bottom-8 left-[clamp(1rem,4vw,3.5rem)] hidden h-px w-48 bg-border lg:block lg:motion-reduce:hidden">
           <span ref={bar} className="block h-full w-full origin-left bg-accent" style={{ transform: "scaleX(0)" }} />
         </div>
-        <div ref={track} className="container-x mx-auto grid max-w-6xl grid-cols-2 gap-3 py-16 lg:mx-0 lg:flex lg:max-w-none lg:items-center lg:gap-6 lg:py-0 lg:pr-[8vw]">
-          <div className="col-span-2 mb-6 lg:mb-0 lg:w-[34vw] lg:shrink-0 lg:pr-10">
+        <div
+          ref={track}
+          className="container-x mx-auto grid max-w-6xl grid-cols-2 gap-3 py-16 lg:mx-0 lg:flex lg:max-w-none lg:items-center lg:gap-6 lg:py-0 lg:pr-[8vw] lg:motion-reduce:mx-auto lg:motion-reduce:grid lg:motion-reduce:max-w-6xl lg:motion-reduce:grid-cols-3 lg:motion-reduce:gap-4 lg:motion-reduce:py-16 lg:motion-reduce:pr-0"
+        >
+          <div className="col-span-2 mb-6 lg:mb-0 lg:w-[34vw] lg:shrink-0 lg:pr-10 lg:motion-reduce:col-span-3 lg:motion-reduce:mb-6 lg:motion-reduce:w-full lg:motion-reduce:pr-0">
             <h2 id="work-heading" className="display-caps text-[clamp(2.6rem,6.4vw,5.8rem)]" data-reveal="lines">
               Finishes that speak for themselves.
             </h2>
             <p className="mt-6 max-w-[40ch] text-lg text-muted-foreground" data-reveal="up">
               Real cars, real driveways, photographed on the day. Every vehicle leaves with a finish we&apos;d put our name on, because we do.
             </p>
-            <p className="mt-6 hidden text-sm text-muted-foreground lg:block" data-reveal="up">
+            <p className="mt-6 hidden text-sm text-muted-foreground lg:block lg:motion-reduce:hidden" data-reveal="up">
               Keep scrolling to move through the work.
             </p>
           </div>
@@ -99,7 +110,7 @@ export function Work() {
           <a
             href={site.instagram}
             rel="noopener"
-            className="col-span-2 flex min-h-[140px] items-center justify-center rounded-xl border border-border bg-card/40 p-6 text-center no-underline transition-colors hover:border-secondary-foreground/40 lg:h-[62vh] lg:w-[28vw] lg:shrink-0"
+            className="col-span-2 flex min-h-[140px] items-center justify-center rounded-xl border border-border bg-card/40 p-6 text-center no-underline transition-colors hover:border-secondary-foreground/40 lg:h-[62vh] lg:w-[28vw] lg:shrink-0 lg:motion-reduce:col-span-3 lg:motion-reduce:h-auto lg:motion-reduce:w-full"
           >
             <span>
               <span className="display-caps block text-3xl text-foreground">More on Instagram</span>
