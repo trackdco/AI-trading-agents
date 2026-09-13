@@ -171,13 +171,13 @@ export const areas: Area[] = [
     name: "Woden Valley",
     blurb: "Established suburbs, long-term residents. Regular maintenance details on a schedule.",
     intro: [
-      "Woden Valley was Canberra's first satellite town, and the suburbs here have been lived in a long time. Most of what we pull up to is a brick veneer govvie set back from the kerb, with a driveway long enough to work on. Not all of it, though. Parts of Curtin and Garran were laid out on Radburn lines, so the car sits at the rear off a service road, on the side the address does not mention. The houses at Swinger Hill in Phillip sit in small groups around shared courts. So the first thing we ask is not what the car is. It is where it sits. An exterior detail starts at $110 and a full one at $225.",
+      "Woden Valley was Canberra's first satellite town, and the suburbs here have been lived in a long time. Most of what we pull up to is a brick veneer govvie set back from the kerb, with a driveway long enough to work on. Not all of it, though. Parts of Curtin and Hughes were laid out on Radburn lines, so the car sits at the rear off a service road, on the side the address does not mention. The houses at Swinger Hill in Phillip sit in small groups around shared courts. So the first thing we ask is not what the car is. It is where it sits. An exterior detail starts at $110 and a full one at $225.",
     ],
     sections: [
       {
         h: "The side of the house the address doesn't mention",
         p: [
-          "Radburn put the car at the back. In those parts of Curtin and Garran the street your letterbox faces may have no driveway on it at all, and the car lives off a service road at the rear, in a court shared with neighbours. Swinger Hill is the same idea at higher density: houses grouped around a common court, narrow internal roads, not much room to turn a van. Tell us the street the car actually sits on, and whether anyone needs to get past us during the day. We will not block a neighbour in. A lot of driveways around here are cut into a slope as well, so we work out which way the rinse runs before we start rather than after.",
+          "Radburn put the car at the back. In those parts of Curtin and Hughes the street your letterbox faces may have no driveway on it at all, and the car lives off a service road at the rear, in a court shared with neighbours. Swinger Hill is the same idea at higher density: houses grouped around a common court, narrow internal roads, not much room to turn a van. Tell us the street the car actually sits on, and whether anyone needs to get past us during the day. We will not block a neighbour in. A lot of driveways around here are cut into a slope as well, so we work out which way the rinse runs before we start rather than after.",
         ],
       },
       {
@@ -316,7 +316,7 @@ export const areas: Area[] = [
       {
         h: "Work utes and the good car",
         p: [
-          "Queanbeyan DCP 2012 asks for two off-street spaces per house, behind the building line. So in Karabar, Crestwood, Jerrabomberra and Googong there is nearly always a driveway to work on. What the rule does not ask for is a garage. A carport or an open hardstand ticks the box just as well.",
+          "Most houses on this side of the border have two off-street spaces. So in Karabar, Crestwood, Jerrabomberra and Googong there is nearly always a driveway to work on. What the rule does not ask for is a garage. A carport or an open hardstand ticks the box just as well.",
         ],
       },
     ],

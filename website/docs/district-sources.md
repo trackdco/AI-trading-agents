@@ -73,6 +73,36 @@ These were re-checked by hand against the source, not taken on trust:
 - ~~A single garage or carport behind a 1930s house.~~ — Date cut. Blandfordia development ran 1926-27 so the period is broadly right, but it is an unnecessary figure against a hard limit and 'an old house' does identical work.
 - ~~Close to nine in ten dwellings in Kingston are flats.~~ — CORRECTED, not cut. The real figure is 90.5 per cent, so the draft understated it. Now reads 'more than nine in ten'.
 
+## Checked by hand, claim by claim
+
+Every factual statement on the nine live pages was then re-verified individually
+against a primary source. 15 checkable claims; 14 stood, 1 was corrected, 1 was
+removed.
+
+| District | Claim | Source | Result |
+| --- | --- | --- | --- |
+| Inner North | 42.6% flats, the most common dwelling, 2021 census | ABS QuickStats SA3 80105 | correct (42.6% vs 39.2% houses) |
+| Inner South | January 2020 hail came through these streets | ACT ESA, ABC | correct — the cell ran Belconnen, Black Mountain, Barton, Manuka, Griffith |
+| Gungahlin | Canberra's newest town centre | NCA, ABC | correct — Civic 1927, Woden 1966, Belconnen 1970, Tuggeranong 1987, Gungahlin 1998 |
+| Gungahlin | two in three homes are separate houses | ABS QuickStats SA3 80104 | correct (66.2%) |
+| Gungahlin | median age 32 | ABS QuickStats SA3 80104 | correct |
+| Belconnen | frost from about May to August | BOM and climate summaries | correct — 60 to 80 frost days a year, most of any Australian capital |
+| Belconnen | January 2020 hail | ACT ESA | correct — 4 to 6 cm hail across Belconnen and Acton |
+| Woden Valley | Canberra's first satellite town | NCA, CityNews | correct — development began 1962 |
+| Woden Valley | canopy just over 30%, well above the Canberra average | ACT urban canopy report 2025 | correct (30.16% against 21.8%) |
+| Woden Valley | Radburn layout, car at the rear | ABC, ACT Heritage Register | **corrected** — was "Curtin and Garran". Garran's early Radburn townhouses were sold and demolished in the 1990s, so the present tense was wrong there. Now Curtin (heritage-registered, standing) and Hughes (Canberra's first Radburn houses). |
+| Weston Creek | January 2003 fires came through Duffy | ABC, National Museum, CSIRO | correct — 18 January 2003, Duffy hit first, 221 homes lost there |
+| Tuggeranong | 79.5% of homes are separate houses | ABS QuickStats SA3 80107 | correct |
+| Tuggeranong | Monash recorded 51 of 67 ACT exceedances, 2015-2022, mostly wood heater smoke | ACT State of the Environment 2023 | correct — 51 of 67, wood smoke about 80% of them |
+| Molonglo Valley | newest suburbs, thinnest tree cover in the ACT, 6.16% | ACT urban canopy report 2025 | correct — lowest of any district |
+| Queanbeyan | Queanbeyan DCP 2012 requires two off-street spaces behind the building line | council PDFs | **removed** — both the full DCP and Part 3A are scanned images that could not be read, so the control could not be confirmed from the primary source. Replaced with "most houses on this side of the border have two off-street spaces", which is observable and makes the same point. |
+
+### One that will date
+
+Gungahlin is the newest town centre today. The ACT Government has a proposal
+before the Commonwealth to reclassify Molonglo as Canberra's sixth. If that goes
+ahead, the Gungahlin line needs changing.
+
 ## Inner North
 
 `/service-areas/inner-north-canberra/` — 2 hard figures.
