@@ -17,6 +17,8 @@ export type Service = {
   video?: { base: string; poster: string };
   /** A before/after pair for the compare slider, when there is honest footage for it. */
   compare?: { before: string; after: string; caption: string };
+  /** A wide showpiece clip for this service, shown full width under the hero. */
+  showcase?: { base: string; poster: string; label: string; title: string; caption: string };
   intro: string;
   forWho: string;
   why: string[];
@@ -45,6 +47,13 @@ export const services: Service[] = [
     image: "beading-poster",
     imageAlt: "Water beading tightly on a freshly ceramic-coated white car",
     video: { base: "/media/beading-720", poster: "/media/beading-poster.webp" },
+    showcase: {
+      base: "/media/m4-360",
+      poster: "/media/m4-360-poster.webp",
+      label: "A slow lap around a green BMW M4 after a ceramic coating",
+      title: "One lap. Nothing touched up.",
+      caption: "A coated car under even light, all the way around. No angle picked to hide a panel, because there isn't one to hide.",
+    },
     intro:
       "A ceramic coating is a semi-permanent glass-like layer that bonds to your car's clear coat and protects it from UV, frost, tree sap, bird droppings, industrial fallout and wash marring. It's the highest level of paint protection we offer, and once it's on, it stays on.",
     forWho:

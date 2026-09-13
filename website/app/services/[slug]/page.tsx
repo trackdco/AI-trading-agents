@@ -9,6 +9,7 @@ import { BeforeAfter } from "@/components/site/before-after";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
 import { Booking } from "@/components/site/booking";
+import { SectionHeading } from "@/components/site/section-heading";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { articles } from "@/lib/articles";
 
@@ -87,6 +88,19 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           )}
         </div>
       </section>
+
+      {s.showcase && (
+        <section className="border-t border-border py-16 md:py-24">
+          <div className="container-x mx-auto max-w-6xl">
+            <SectionHeading title={s.showcase.title} intro={s.showcase.caption} />
+          </div>
+          <div className="container-x mx-auto max-w-5xl">
+            <div className="overflow-hidden rounded-2xl border border-border bg-[#0a0e14]">
+              <LoopVideo base={s.showcase.base} poster={s.showcase.poster} label={s.showcase.label} className="block w-full" />
+            </div>
+          </div>
+        </section>
+      )}
 
       {s.compare && <BeforeAfter {...s.compare} title="Swirls in. Gloss out." />}
 
