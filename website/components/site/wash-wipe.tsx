@@ -15,6 +15,18 @@ const RADIUS_PHONE = 30;
 const REST_MS = 3200;
 const REFOAM_MS = 1100;
 
+/** The demo pass: how long a full wash takes, and the beats either side of it. */
+const AUTO_WASH_MS = 7000;
+const AUTO_HOLD_MS = 1500;
+const AUTO_GAP_MS = 700;
+const AUTO_START_MS = 600;
+
+// Where the foam actually sits in the frame, measured off the two images: above
+// the roofline and below the puddle they are identical, so a pass up there wipes
+// nothing anyone can see. The demo starts on the roof and works down, like a wash.
+const FOAM_TOP = 0.31;
+const FOAM_BOTTOM = 0.93;
+
 // Every path below is a plain double-quoted literal on purpose. The artifact
 // preview rewriter only patches those, so a URL assembled inside a template
 // literal resolves to nothing when the site is served from a sub-path.
@@ -67,6 +79,43 @@ function coverRect(iw: number, ih: number, bw: number, bh: number) {
   return { dx: (bw - dw) / 2, dy: (bh - dh) / 2, dw, dh };
 }
 
+// The path the demo sponge takes: side to side from the top, down a row at the
+// end of each pass, until it runs out of car.
+type Sweep = { left: number; right: number; top: number; spacing: number; rows: number; travel: number; total: number; radius: number };
+
+function sweep(w: number, h: number, radius: number, bandTop: number, bandBottom: number): Sweep {
+  // A machine pass is a sponge held flat, so it covers more ground than the mitt
+  // someone drags by hand. Tied to the box height, so a phone gets fewer rows and
+  // the car still comes clean in the same seven seconds.
+  const r = Math.max(radius, h / 14);
+  const spacing = r * 1.4;
+  const left = r * 0.7;
+  const right = Math.max(left + 1, w - r * 0.7);
+  const rows = Math.max(1, Math.round((bandBottom - bandTop) / spacing) + 1);
+  const travel = right - left;
+  return {
+    left,
+    right,
+    top: bandTop,
+    spacing,
+    rows,
+    travel,
+    total: rows * travel + (rows - 1) * spacing,
+    radius: r,
+  };
+}
+
+function sweepAt(d: number, s: Sweep) {
+  const leg = s.travel + s.spacing;
+  const row = Math.min(s.rows - 1, Math.floor(d / leg));
+  const along = d - row * leg;
+  const rightward = row % 2 === 0;
+  const y = s.top + row * s.spacing;
+  if (along <= s.travel) return { x: rightward ? s.left + along : s.right - along, y };
+  // Turning at the end of a row and dropping onto the next one.
+  return { x: rightward ? s.right : s.left, y: y + (along - s.travel) };
+}
+
 type Engine = {
   ctx: CanvasRenderingContext2D;
   /** Offscreen record of everything wiped so far, so the foam can fade back in. */
@@ -83,6 +132,10 @@ type Engine = {
   pointer: number | null;
   rest: number;
   raf: number;
+  /** Set the moment someone wipes it themselves. The demo then stays out of the way. */
+  taken: boolean;
+  auto: number;
+  cycle: number;
 };
 
 // A soft round mitt rather than a hard disc, so the wiped edge feathers into the
@@ -149,14 +202,32 @@ export function WashWipe({ live = true, reduced = false }: { live?: boolean; red
   const [failed, setFailed] = useState(false);
   const [touched, setTouched] = useState(false);
   const [peek, setPeek] = useState(false);
+  /** The demo is running, so the sponge shows even on a phone with no cursor. */
+  const [autoOn, setAutoOn] = useState(false);
+  const runAutoRef = useRef<() => void>(undefined);
 
   const canvasMode = near && !reduced && !failed;
+
+  // Position lives on the outer span with no transition, so the sponge never lags
+  // behind the mouse. The squash is on the inner one, which is what animates.
+  const moveCursor = (x: number, y: number) => {
+    const c = cursorRef.current;
+    if (c) c.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+  };
+
+  const pressCursor = (down: boolean) => {
+    const s = spongeRef.current;
+    if (s) s.style.transform = `rotate(-12deg) scale(${down ? 0.86 : 1})`;
+  };
+
 
   const stopTimers = useCallback(() => {
     const e = engineRef.current;
     if (!e) return;
     window.clearTimeout(e.rest);
+    window.clearTimeout(e.cycle);
     cancelAnimationFrame(e.raf);
+    cancelAnimationFrame(e.auto);
   }, []);
 
   // Nothing is built until the section is close to the viewport.
@@ -218,6 +289,9 @@ export function WashWipe({ live = true, reduced = false }: { live?: boolean; red
           pointer: null,
           rest: 0,
           raf: 0,
+          taken: false,
+          auto: 0,
+          cycle: 0,
         };
         engineRef.current = e;
         render(e);
@@ -289,6 +363,74 @@ export function WashWipe({ live = true, reduced = false }: { live?: boolean; red
     e.raf = requestAnimationFrame(tick);
   }, []);
 
+  // Wash the car on its own: side to side from the top, a row lower each pass,
+  // then hold the clean paint, foam it back up and go again. Any touch stops it
+  // for good, because from then on the person is doing the washing.
+  const runAuto = useCallback(() => {
+    const e = engineRef.current;
+    if (!e || e.taken) return;
+    // The band is in image space, so map it through the same cover maths the
+    // canvas is drawn with to land on the right rows of the box.
+    const box = coverRect(e.foam.naturalWidth, e.foam.naturalHeight, e.w, e.h);
+    const path = sweep(
+      e.w,
+      e.h,
+      e.radius,
+      Math.max(0, box.dy + FOAM_TOP * box.dh),
+      Math.min(e.h, box.dy + FOAM_BOTTOM * box.dh),
+    );
+    const speed = path.total / (AUTO_WASH_MS / 1000);
+    let covered = 0;
+    let from = sweepAt(0, path);
+    let stampedAt = performance.now();
+
+    setAutoOn(true);
+    moveCursor(from.x, from.y);
+    pressCursor(true);
+
+    const tick = (now: number) => {
+      const live = engineRef.current;
+      if (!live || live.taken) return;
+      covered += ((now - stampedAt) / 1000) * speed;
+      stampedAt = now;
+      const to = sweepAt(Math.min(covered, path.total), path);
+      live.ctx.globalCompositeOperation = "destination-out";
+      stroke(live.ctx, from, to, path.radius);
+      live.ctx.globalCompositeOperation = "source-over";
+      stroke(live.mctx, from, to, path.radius);
+      from = to;
+      moveCursor(to.x, to.y);
+
+      if (covered < path.total) {
+        live.auto = requestAnimationFrame(tick);
+        return;
+      }
+      pressCursor(false);
+      setAutoOn(false);
+      live.cycle = window.setTimeout(() => {
+        refoam();
+        live.cycle = window.setTimeout(() => runAutoRef.current?.(), REFOAM_MS + AUTO_GAP_MS);
+      }, AUTO_HOLD_MS);
+    };
+    e.auto = requestAnimationFrame(tick);
+  }, [refoam]);
+
+  useEffect(() => {
+    runAutoRef.current = runAuto;
+  }, [runAuto]);
+
+  // Start the demo when the step opens, and drop it the moment the step closes.
+  useEffect(() => {
+    const e = engineRef.current;
+    if (!ready || !e || !live || e.taken) return;
+    e.cycle = window.setTimeout(() => runAutoRef.current?.(), AUTO_START_MS);
+    return () => {
+      window.clearTimeout(e.cycle);
+      cancelAnimationFrame(e.auto);
+      setAutoOn(false);
+    };
+  }, [live, ready]);
+
   const restart = useCallback(() => {
     const e = engineRef.current;
     if (!e) return;
@@ -301,23 +443,16 @@ export function WashWipe({ live = true, reduced = false }: { live?: boolean; red
     return { x: e.clientX - box.left, y: e.clientY - box.top };
   };
 
-  // Position lives on the outer span with no transition, so the sponge never lags
-  // behind the mouse. The squash is on the inner one, which is what animates.
-  const moveCursor = (x: number, y: number) => {
-    const c = cursorRef.current;
-    if (c) c.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-  };
-
-  const pressCursor = (down: boolean) => {
-    const s = spongeRef.current;
-    if (s) s.style.transform = `rotate(-12deg) scale(${down ? 0.86 : 1})`;
-  };
-
   const onPointerDown = (ev: React.PointerEvent<HTMLDivElement>) => {
     const e = engineRef.current;
     if (!e) return;
+    // Their hands on the wheel: the demo stands down and does not come back.
+    e.taken = true;
+    setAutoOn(false);
     window.clearTimeout(e.rest);
+    window.clearTimeout(e.cycle);
     cancelAnimationFrame(e.raf);
+    cancelAnimationFrame(e.auto);
     bake(e);
     e.pointer = ev.pointerId;
     e.last = point(ev);
@@ -418,7 +553,12 @@ export function WashWipe({ live = true, reduced = false }: { live?: boolean; red
           <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
           {/* The mitt itself: the same sponge as the step's tab, so the tool in
               your hand and the step you picked are plainly the same thing. */}
-          <span ref={cursorRef} className="pointer-events-none absolute left-0 top-0 hidden [@media(pointer:fine)]:block">
+          <span
+            ref={cursorRef}
+            className={`pointer-events-none absolute left-0 top-0 ${
+              autoOn ? "block" : "hidden [@media(pointer:fine)]:block"
+            }`}
+          >
             <span
               ref={spongeRef}
               className="block text-accent transition-transform duration-150 ease-out motion-reduce:transition-none"
