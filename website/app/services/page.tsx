@@ -57,6 +57,13 @@ export default function ServicesPage() {
           </div>
           <div className="text-[15px] font-semibold text-foreground md:col-span-3 md:text-right">How we do EVs</div>
         </Link>
+        <Link href="/fleet-detailing-canberra/" className="mt-4 grid gap-4 rounded-lg border border-border p-5 no-underline transition-colors hover:bg-card md:grid-cols-12 md:items-center md:p-6">
+          <div className="md:col-span-9">
+            <h2 className="display-caps text-3xl">More than one vehicle</h2>
+            <p className="mt-2 text-[15px] text-muted-foreground">Utes, vans, pool cars and trucks done at your yard or car park. Same price per vehicle, and an estimator that adds the fleet up on screen.</p>
+          </div>
+          <div className="text-[15px] font-semibold text-foreground md:col-span-3 md:text-right">Fleet detailing</div>
+        </Link>
         <p className="mt-8 max-w-[64ch] text-[15px] text-muted-foreground">
           Bikes are welcome, trucks are quoted by phone. We don&apos;t do {site.notOffered.map((n) => n.toLowerCase()).join(", ")}, so you&apos;re not waiting on a quote for those. Film is the one with a caveat: we don&apos;t fit it, but we will coat over film that&apos;s already on the car.
         </p>

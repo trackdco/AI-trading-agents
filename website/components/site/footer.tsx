@@ -77,6 +77,9 @@ export function Footer() {
             <Link href="/maintenance/" className={link}>
               Maintenance plans
             </Link>
+            <Link href="/fleet-detailing-canberra/" className={link}>
+              Fleet and business
+            </Link>
             <Link href="/services/" className={link}>
               All services and prices
             </Link>
