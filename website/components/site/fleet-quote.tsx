@@ -27,8 +27,10 @@ const chip = (on: boolean) =>
     on ? "border-accent bg-accent/10 text-foreground" : "border-border text-secondary-foreground hover:border-secondary-foreground/50"
   }`;
 
+// Matched to the Input component beside it: same radius, same fill, same padding.
+// They sit in one grid, so a different corner and a different ground read as a bug.
 const selectClass =
-  "flex h-11 w-full rounded-md border border-input bg-background px-3 text-base text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
+  "flex h-11 w-full rounded-lg border border-input bg-transparent px-2.5 text-base text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30";
 
 const stepBtn =
   "flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border text-xl leading-none text-foreground transition-colors hover:border-secondary-foreground/50 aria-disabled:opacity-35";
@@ -312,7 +314,9 @@ export function FleetQuote() {
                         <span className="min-w-0">
                           <span className="block text-[15px] font-semibold text-foreground">{s.label}</span>
                           <span className="block text-xs text-muted-foreground">
-                            {each === null ? `${s.eg} — quoted` : `${s.eg} — ${formatPrice(each)} each`}
+                            {each === null
+                              ? `${s.eg} — quoted`
+                              : `${s.eg} — ${formatPrice(each)} ${g.service === "maintenance" ? "each a month" : "each"}`}
                           </span>
                         </span>
                         <span className="flex shrink-0 items-center gap-1.5">
@@ -475,9 +479,14 @@ export function FleetQuote() {
             <span aria-hidden="true" className="display-caps text-6xl tabular-nums md:text-7xl">
               {oneOff > 0 ? formatPrice(shown) : monthly > 0 ? `${formatPrice(monthly)}/mo` : quotedVehicles > 0 ? "Quoted" : "—"}
             </span>
+            {/* The visible figure has four branches; this has to say the same
+                thing, or a truck-only fleet is announced as "from $0". */}
             <span className="sr-only" aria-live="polite" aria-atomic="true">
-              {summary}, from {formatPrice(oneOff)}
-              {monthly > 0 && `, plus ${formatPrice(monthly)} a month`}
+              {summary}
+              {oneOff > 0 && `, from ${formatPrice(oneOff)}`}
+              {monthly > 0 && `, ${formatPrice(monthly)} a month`}
+              {oneOff === 0 && monthly === 0 && quotedVehicles > 0 && ", quoted for you"}
+              {totalVehicles === 0 && ", no price yet"}
             </span>
           </p>
 

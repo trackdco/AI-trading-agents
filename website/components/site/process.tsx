@@ -42,7 +42,7 @@ export function Process() {
         </div>
 
         <div className="mt-20" data-reveal="up">
-          <h3 className="display-caps text-3xl">Nine districts, one van.</h3>
+          <h3 className="display-caps text-3xl">Nine service areas, one van.</h3>
           <ul className="mt-5 flex list-none flex-wrap gap-2 p-0">
             {areas.map((a) => (
               <li key={a.slug}>

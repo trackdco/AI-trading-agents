@@ -23,7 +23,11 @@
   --destructive: #b3261e;
   --destructive-foreground: #f3f5f8;
   --border: rgba(194, 200, 208, 0.12);
-  --input: rgba(194, 200, 208, 0.18);
+  /* 0.18 composited to #27292c on the page, a 1.39:1 edge — WCAG 1.4.11 asks for
+     3:1 on the boundary of a control you are meant to type in. 0.46 reaches 3.16:1.
+     --border stays at 0.12: it draws dividers and card edges, which are decoration,
+     not controls, so the rule does not apply to it. */
+  --input: rgba(194, 200, 208, 0.46);
   --ring: #3a8fe0;
   --radius: 0.5rem;
   --glow: #1f6fc4;

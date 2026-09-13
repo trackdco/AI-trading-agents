@@ -21,8 +21,10 @@ const whenOptions = ["As soon as possible", "In the next 1 to 2 weeks", "In the 
 
 type Status = "idle" | "sending" | "sent" | "fallback" | "error";
 
+// Matched to the Input component beside it: same radius, same fill, same padding.
+// They sit in one grid, so a different corner and a different ground read as a bug.
 const selectClass =
-  "flex h-11 w-full rounded-md border border-input bg-background px-3 text-base text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
+  "flex h-11 w-full rounded-lg border border-input bg-transparent px-2.5 text-base text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30";
 
 export function BookingForm({ compact = false, defaultService = "" }: { compact?: boolean; defaultService?: string }) {
   const [status, setStatus] = useState<Status>("idle");

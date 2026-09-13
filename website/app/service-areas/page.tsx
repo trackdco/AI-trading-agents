@@ -7,7 +7,7 @@ import { CtaBand } from "@/components/site/cta-band";
 
 export const metadata: Metadata = {
   title: "Mobile Detailing Service Areas Canberra",
-  description: "Fully mobile car detailing across nine Canberra districts and Queanbeyan: no shop, no call-out fee. We come to your driveway, car park or workplace.",
+  description: "Fully mobile car detailing across eight Canberra districts and Queanbeyan: no shop, no call-out fee. We come to your driveway, car park or workplace.",
   alternates: { canonical: "/service-areas/" }, openGraph: og("/service-areas/"),
 };
 
