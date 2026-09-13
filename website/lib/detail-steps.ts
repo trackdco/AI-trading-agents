@@ -1,4 +1,4 @@
-export type StepId = "foam" | "wash" | "clay" | "iron" | "coat";
+export type StepId = "prewash" | "wash" | "iron" | "clay" | "coat";
 
 export type DetailStep = {
   id: StepId;
@@ -26,8 +26,8 @@ const PLACEHOLDER = "/media/steps/placeholder.webp";
 // the whole config: adding footage for a step is one line, the `video` path.
 export const detailSteps: DetailStep[] = [
   {
-    id: "foam",
-    label: "Snow foam",
+    id: "prewash",
+    label: "Prewash",
     short: "A thick layer of foam sits on the paint and lifts the loose grit off before anything touches it.",
     video: "/media/steps/snow-foam.mp4",
     poster: "/media/steps/snow-foam.webp",
@@ -44,20 +44,20 @@ export const detailSteps: DetailStep[] = [
     widget: "wash",
   },
   {
-    id: "clay",
-    label: "Clay bar",
-    short: "Clay glides over lubricated paint and pulls out what's bonded into it: overspray, rail dust and sap.",
-    video: "/media/steps/clay-bar.mp4",
-    poster: "/media/steps/clay-bar.webp",
-    alt: "A clay bar being worked across lubricated paint",
-  },
-  {
     id: "iron",
     label: "Iron decon",
     short: "A chemical that reacts with the iron thrown off your brakes and turns deep purple as it dissolves it.",
     video: "/media/steps/iron-decon.mp4",
     poster: "/media/steps/iron-decon.webp",
     alt: "Iron remover bleeding purple down a panel",
+  },
+  {
+    id: "clay",
+    label: "Clay bar",
+    short: "Clay glides over lubricated paint and pulls out what's bonded into it: overspray, rail dust and sap.",
+    video: "/media/steps/clay-bar.mp4",
+    poster: "/media/steps/clay-bar.webp",
+    alt: "A clay bar being worked across lubricated paint",
   },
   {
     id: "coat",

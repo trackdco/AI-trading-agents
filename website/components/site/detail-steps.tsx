@@ -7,7 +7,7 @@ import { useSpin, hintPillClass } from "@/lib/use-spin";
 import { WashWipe } from "@/components/site/wash-wipe";
 
 const icons: Record<StepId, React.ReactNode> = {
-  foam: (
+  prewash: (
     <>
       <circle cx="8.5" cy="8.5" r="3.3" />
       <circle cx="15.8" cy="6.9" r="2.1" />
@@ -20,18 +20,18 @@ const icons: Record<StepId, React.ReactNode> = {
       <path d="M19 9.5c1.3 1.4 1.3 4.6 0 6" />
     </>
   ),
+  iron: (
+    <>
+      <path d="M12 2.6c3.3 4.1 5 6.7 5 8.9a5 5 0 0 1-10 0c0-2.2 1.7-4.8 5-8.9Z" />
+      <path d="M8.4 18.8v2.6M12 19.6v2M15.6 18.8v2.6" />
+    </>
+  ),
   clay: (
     <>
       <rect x="4.5" y="5.5" width="15" height="6.4" rx="2.6" />
       <circle cx="8" cy="17" r="1" />
       <circle cx="12.4" cy="18.4" r="1" />
       <circle cx="16.6" cy="16.4" r="1" />
-    </>
-  ),
-  iron: (
-    <>
-      <path d="M12 2.6c3.3 4.1 5 6.7 5 8.9a5 5 0 0 1-10 0c0-2.2 1.7-4.8 5-8.9Z" />
-      <path d="M8.4 18.8v2.6M12 19.6v2M15.6 18.8v2.6" />
     </>
   ),
   coat: (
