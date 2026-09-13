@@ -50,8 +50,8 @@ export const articles: Article[] = [
           "Interior condition. A tidy interior takes about 1.5 hours to deep-clean. Years of pet hair, sand or spilled milk can double that, and stains that need multiple extraction passes cost more product too.",
           "Paint condition. Regular decontamination is priced into every exterior detail. Heavy bonded contamination or oxidation on an unwaxed daily driver may push you into paint-correction territory.",
           "Coating tier. Longer warranties mean more layers, more prep and more time. Expect a step-up of roughly $150 to $250 per tier.",
-          "Correction stages. A single-stage correction removes light swirl marks and haze. Multi-stage correction for deep scratches and heavier defects is usually 1.5 to 2 times the single-stage price.",
-          "Add-ons. Engine bay clean, headlight polishing, plastic trim restoration and leather conditioning are add-on line items, usually $30 to $80 each.",
+          "Correction stages. A single-stage correction removes light swirl marks and haze. Multi-stage correction for deep scratches and heavier defects is quoted from photos, because what it takes depends on how deep the damage goes and there is no honest multiplier for that.",
+          "Add-ons. Engine bay cleaning, headlight polishing and plastic trim restoration sit outside the standard details and are quoted on the car. Leather cleaning and conditioning is not one of them: it is in every interior detail and every full detail already.",
         ],
       },
       {

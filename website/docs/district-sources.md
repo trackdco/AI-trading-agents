@@ -27,6 +27,21 @@ site had nothing checking it. One got through on that basis and is recorded here
     and https://thedriven.io/2024/03/26/one-in-four-new-car-sales-in-australias-national-capital-is-fully-electric/
     Quarterly share: https://www.canberratimes.com.au/story/9041081/one-in-five-new-cars-in-the-act-were-electric-new-data-shows/
 
+- ~~"Add-ons. Engine bay clean, headlight polishing, plastic trim restoration and
+  leather conditioning are add-on line items, usually $30 to $80 each."~~
+  (/learn/car-detailing-cost-canberra/) — INVENTED, twice over. No $30-$80 exists
+  anywhere in lib/pricing.ts or lib/site.ts; the range was made up in a content
+  file. And leather cleaning and conditioning is not an add-on at all — it is in
+  the included list of BOTH the interior detail and the full detail, so the guide
+  was selling something the service pages give away. Rewritten to say the three
+  real add-ons are quoted on the car, and that leather is already included.
+- ~~"Multi-stage correction ... is usually 1.5 to 2 times the single-stage price."~~
+  (same page) — INVENTED, and it contradicted the rest of the site.
+  lib/pricing.ts says deep scratches are "quoted from photos", and the fleet page
+  repeats it. Rewritten to match: quoted from photos.
+- KEPT: "a step-up of roughly $150 to $250 per tier" on the same page. Checked
+  against ceramicTiers — the real steps are $150, $200 and $250. Accurate.
+
 **The rule this establishes:** a statistic that changes with time either carries
 its date and its source, or is rewritten as the durable claim underneath it.
 
