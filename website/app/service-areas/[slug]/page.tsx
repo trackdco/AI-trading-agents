@@ -35,10 +35,27 @@ export default async function AreaPage({ params }: { params: Promise<Params> }) 
       <section className="container-x mx-auto max-w-6xl py-14 md:py-20">
         <Breadcrumbs items={[{ href: "/service-areas/", label: "Areas we serve" }, { href: `/service-areas/${a.slug}/`, label: a.name }]} />
         <h1 className="display-caps mt-3 text-5xl md:text-7xl">Mobile car detailing in {a.name}.</h1>
-        <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">{a.blurb}</p>
-        <p className="mt-4 max-w-[60ch] text-muted-foreground">
-          We're a fully mobile detailer: no shop, no drop-off, no travel fee. We come to your driveway, car park or workplace anywhere in {a.name} with the van, the gear and the product. All we need on site is an outdoor tap and a power point. {site.quotePromise}
-        </p>
+        {a.intro.map((t, i) => (
+          <p key={i} className={`max-w-[62ch] text-secondary-foreground ${i === 0 ? "mt-6 text-lg" : "mt-4"}`}>
+            {t}
+          </p>
+        ))}
+        <p className="mt-4 max-w-[62ch] text-muted-foreground">{site.quotePromise}</p>
+
+        {/* The substance of the page. Nine near-identical pages is how a set of
+            location pages gets ignored, and this is what makes each its own. */}
+        <div className="mt-12 grid gap-x-10 gap-y-10 md:grid-cols-3">
+          {a.sections.map((sec) => (
+            <section key={sec.h}>
+              <h2 className="display-caps text-2xl md:text-[1.75rem]">{sec.h}</h2>
+              {sec.p.map((t, i) => (
+                <p key={i} className="mt-3 text-[15px] leading-relaxed text-secondary-foreground">
+                  {t}
+                </p>
+              ))}
+            </section>
+          ))}
+        </div>
 
         <div className="mt-10 grid gap-8 md:grid-cols-12">
           <div className="md:col-span-7">
