@@ -8,6 +8,21 @@ import { nav, site, telHref } from "@/lib/site";
 export function Header() {
   const [open, setOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
+  // "/#work" in the menu left it open over the section it had just scrolled to.
+  // usePathname() ignores the hash so the effect above never ran; the router
+  // navigates by pushState so there is no hashchange and no load; and an onClick
+  // prop fires on a plain anchor here but not on a next/link Link. A native
+  // listener in the capture phase sees the click before any of that.
+  const menu = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = menu.current;
+    if (!el) return;
+    const onClick = (e: MouseEvent) => {
+      if ((e.target as Element | null)?.closest("a")) setOpen(false);
+    };
+    el.addEventListener("click", onClick, true);
+    return () => el.removeEventListener("click", onClick, true);
+  }, []);
   const pathname = usePathname();
 
   const [solid, setSolid] = useState(false);
@@ -106,7 +121,10 @@ export function Header() {
         </button>
       </div>
 
-      <div id="mobile-menu" hidden={!open} className="border-t border-border bg-background lg:hidden">
+      <div ref={menu} id="mobile-menu" hidden={!open} className="border-t border-border bg-background lg:hidden">
+        {/* Closing on a pathname change misses "/#work", which only moves the
+            hash — so the menu stayed open over the section it had just
+            scrolled to. Any tap inside the menu closes it. */}
         <nav aria-label="Mobile" className="container-x flex flex-col py-2">
           {nav.map((item) => (
             <Link key={item.href} href={item.href} className="border-b border-border py-4 text-lg text-foreground no-underline">
@@ -118,6 +136,7 @@ export function Header() {
           </a>
           <Link
             href="/book/"
+           
             className="my-4 inline-flex min-h-[52px] items-center justify-center rounded-lg bg-accent text-base font-semibold text-accent-foreground no-underline"
           >
             Get a quote

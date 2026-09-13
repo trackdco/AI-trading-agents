@@ -268,6 +268,13 @@ div[id] {
   scroll-margin-top: 80px;
 }
 
+/* The header is 72px and sticky, so anything the browser scrolls to on its own
+   — a keyboard user tabbing to a field below the fold, or the browser restoring
+   a position — lands underneath it without this. */
+html {
+  scroll-padding-top: 88px;
+}
+
 /* Glow behind the hero panel and the coverflow. */
 .panel-glow {
   box-shadow:
