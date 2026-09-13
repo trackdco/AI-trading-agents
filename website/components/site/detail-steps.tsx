@@ -2,10 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { detailSteps, type StepId } from "@/lib/detail-steps";
-import type { CarSpin } from "@/components/site/car-spin";
 import { SectionHeading } from "@/components/site/section-heading";
-
-const FRAME_COUNT = 40;
+import { LoopVideo } from "@/components/site/loop-video";
 
 const icons: Record<StepId, React.ReactNode> = {
   foam: (
@@ -45,14 +43,7 @@ const icons: Record<StepId, React.ReactNode> = {
 
 export function DetailSteps() {
   const [active, setActive] = useState<StepId>("foam");
-  const [ready, setReady] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const [hinted, setHinted] = useState(false);
-
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<CarSpin | null>(null);
   const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
 
   const step = detailSteps.find((s) => s.id === active)!;
@@ -74,69 +65,6 @@ export function DetailSteps() {
     return () => ro.disconnect();
   }, [movePill]);
 
-  // three.js is a big download, so it only starts once this section is nearly on
-  // screen, and the loop only runs while it's actually in view.
-  useEffect(() => {
-    const stage = stageRef.current;
-    const canvas = canvasRef.current;
-    if (!stage || !canvas) return;
-
-    let cancelled = false;
-    let started = false;
-
-    const start = async () => {
-      started = true;
-      try {
-        if (!document.createElement("canvas").getContext("webgl2")) throw new Error("no webgl2");
-        const { createCarSpin } = await import("@/components/site/car-spin");
-        if (cancelled) return;
-        const lowPower = window.matchMedia("(max-width: 767px)").matches;
-        // Phones take every second frame: half the download, still smooth enough to spin.
-        const stepBy = lowPower ? 2 : 1;
-        const frames = Array.from({ length: Math.floor(FRAME_COUNT / stepBy) }, (_, i) =>
-          `/media/m4/${String(i * stepBy).padStart(2, "0")}.webp`,
-        );
-        sceneRef.current = createCarSpin(canvas, frames, {
-          reduced: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-          lowPower,
-          onReady: () => {
-            if (!cancelled) setReady(true);
-          },
-        });
-        sceneRef.current.setStep(active);
-      } catch {
-        if (!cancelled) setFailed(true);
-      }
-    };
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        const on = entries[0].isIntersecting;
-        if (on && !started) void start();
-        sceneRef.current?.setActive(on);
-      },
-      { rootMargin: "200px 0px" },
-    );
-    io.observe(stage);
-
-    const onVisibility = () => sceneRef.current?.setActive(!document.hidden);
-    document.addEventListener("visibilitychange", onVisibility);
-
-    return () => {
-      cancelled = true;
-      io.disconnect();
-      document.removeEventListener("visibilitychange", onVisibility);
-      sceneRef.current?.dispose();
-      sceneRef.current = null;
-    };
-    // Runs once: `active` is only read to set the opening stage.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    sceneRef.current?.setStep(active);
-  }, [active]);
-
   const onKeyDown = (e: React.KeyboardEvent) => {
     const i = detailSteps.findIndex((s) => s.id === active);
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
@@ -152,7 +80,7 @@ export function DetailSteps() {
       <div className="container-x mx-auto max-w-6xl">
         <SectionHeading
           title="What a detail actually is."
-          intro="Five stages, in the order they happen. Pick one and watch it play out on the paint. Most of this is invisible by the time you see the car, which is exactly why people think a detail is just a wash."
+          intro="Five stages, in the order they happen. Pick one to see what it does and why it matters. Most of it is invisible by the time you see the car, which is exactly why people think a detail is just a wash."
         />
       </div>
 
@@ -182,10 +110,7 @@ export function DetailSteps() {
                 data-step={s.id}
                 aria-selected={on}
                 tabIndex={on ? 0 : -1}
-                onClick={() => {
-                  setActive(s.id);
-                  setHinted(true);
-                }}
+                onClick={() => setActive(s.id)}
                 className={`relative z-10 flex min-h-[52px] flex-1 shrink-0 snap-start items-center justify-center gap-2.5 whitespace-nowrap rounded-full px-4 text-[15px] font-semibold transition-colors duration-300 sm:px-5 ${
                   on ? "text-foreground" : "text-muted-foreground hover:text-secondary-foreground"
                 }`}
@@ -211,31 +136,15 @@ export function DetailSteps() {
         </div>
       </div>
 
-      {/* The car. */}
+      {/* The car: one lap around it, on loop. */}
       <div className="container-x mx-auto mt-6 max-w-5xl md:mt-8">
-        <div
-          ref={stageRef}
-          className="relative aspect-[1100/418] w-full overflow-hidden rounded-2xl border border-border bg-[#0a0e14]"
-        >
-          <canvas ref={canvasRef} className="absolute inset-0 h-full w-full cursor-grab touch-pan-y active:cursor-grabbing" aria-hidden="true" />
-
-          {!ready && !failed && (
-            <div className="absolute inset-0 grid place-items-center">
-              <span className="text-[15px] text-muted-foreground">Rolling the car in…</span>
-            </div>
-          )}
-          {failed && (
-            <div className="absolute inset-0 grid place-items-center px-6 text-center">
-              <span className="max-w-[34ch] text-[15px] text-muted-foreground">
-                Your browser can&apos;t show the spinning car. The five stages are written out below.
-              </span>
-            </div>
-          )}
-          {ready && !hinted && (
-            <span className="pointer-events-none absolute right-4 top-4 rounded-full border border-white/15 bg-background/70 px-4 py-2 text-sm text-muted-foreground backdrop-blur">
-              Drag to spin it
-            </span>
-          )}
+        <div className="overflow-hidden rounded-2xl border border-border bg-[#0a0e14]">
+          <LoopVideo
+            base="/media/m4-360"
+            poster="/media/m4-360-poster.webp"
+            label="A slow lap around a green BMW M4 detailed by Imperium"
+            className="block w-full"
+          />
         </div>
       </div>
 
