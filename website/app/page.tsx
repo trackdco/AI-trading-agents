@@ -10,6 +10,7 @@ import { ReviewsMarquee } from "@/components/site/reviews-marquee";
 import { Booking } from "@/components/site/booking";
 import { PriceGuide } from "@/components/site/price-guide";
 import { RecentWork } from "@/components/site/recent-work";
+import { DetailSteps } from "@/components/site/detail-steps";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -25,6 +26,7 @@ export default function HomePage() {
       <PriceGuide />
       <Booking />
       <Work />
+      <DetailSteps />
       {correction && <BeforeAfter {...correction} />}
       <Process />
       <ReviewsMarquee />
