@@ -55,6 +55,15 @@ export function Process() {
               </li>
             ))}
           </ul>
+          {/* The fleet page had one contextual link into it, from /services/. A
+              business owner landing here had no way of knowing the work exists. */}
+          <p className="mt-6 max-w-[60ch] text-[15px] text-muted-foreground">
+            More than one vehicle?{" "}
+            <Link href="/fleet-detailing-canberra/" className="text-foreground underline underline-offset-4">
+              Fleet and business detailing
+            </Link>{" "}
+            is priced per car, at your yard, your depot or the office car park. Utes, vans, pool cars and trucks.
+          </p>
         </div>
       </div>
     </section>
