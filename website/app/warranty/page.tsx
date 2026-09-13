@@ -6,7 +6,7 @@ import { CtaBand } from "@/components/site/cta-band";
 export const metadata: Metadata = {
   title: "Ceramic Coating Warranty",
   description: "What Imperium Detailing's written 3, 5 and 7-year ceramic coating warranty covers, what keeps it valid, and how to make a claim.",
-  alternates: { canonical: "/warranty/" },
+  alternates: { canonical: "/warranty/" }, openGraph: { url: "/warranty/" },
 };
 
 const P = ({ children }: { children: React.ReactNode }) => <p className="mt-4 max-w-[64ch] text-[17px] text-secondary-foreground">{children}</p>;

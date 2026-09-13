@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Services and Prices",
   description:
     "Every Imperium Detailing service with real from-prices: full detail $225, interior $140, exterior $110, paint correction $397, ceramic coating $997.",
-  alternates: { canonical: "/services/" },
+  alternates: { canonical: "/services/" }, openGraph: { url: "/services/" },
 };
 
 export default function ServicesPage() {

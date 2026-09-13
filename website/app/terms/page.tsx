@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "The plain-English terms for booking a mobile detail, paint correction or ceramic coating with Imperium Detailing.",
-  alternates: { canonical: "/terms/" },
+  alternates: { canonical: "/terms/" }, openGraph: { url: "/terms/" },
 };
 
 const P = ({ children }: { children: React.ReactNode }) => <p className="mt-4 max-w-[64ch] text-[17px] text-secondary-foreground">{children}</p>;

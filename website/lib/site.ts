@@ -19,7 +19,10 @@ export const site = {
   quotePromise: "You'll have a quote back within a few hours, 7 days a week.",
   stats: { cars: "400+", rating: "4.9", reviewCount: 45, warrantyYears: 7 },
   // Google Business Profile: where the reviews are read, and the direct "write a review" link.
-  googleReviewsUrl: "https://www.google.com/maps/search/Imperium+Detailing+Canberra",
+  // The business profile itself, not a Maps search — a search can list competitors
+  // alongside Imperium and renders differently on different devices. Same profile
+  // ID as the write-a-review link below.
+  googleReviewsUrl: "https://g.page/r/CSwRG2iKFelCEBM/",
   googleWriteReviewUrl: "https://g.page/r/CSwRG2iKFelCEBM/review",
   // Integrations. Set these in .env.local (see README); empty means "not loaded".
   // Web3Forms takes the quote form and emails it. Its access key is public by

@@ -13,7 +13,7 @@ import { RecentWork } from "@/components/site/recent-work";
 import { DetailSteps } from "@/components/site/detail-steps";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/" }, openGraph: { url: "/" },
 };
 
 export default function HomePage() {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { articles, getArticle } from "@/lib/articles";
+import { site } from "@/lib/site";
 import { services, formatPrice } from "@/lib/services";
 import { Faq } from "@/components/site/faq";
 import { CtaBand } from "@/components/site/cta-band";
@@ -17,7 +18,17 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params;
   const a = getArticle(slug);
   if (!a) return {};
-  return { title: a.title, description: a.description, alternates: { canonical: `/learn/${a.slug}/` } };
+  return {
+    title: a.title,
+    description: a.description,
+    alternates: { canonical: `/learn/${a.slug}/` },
+    openGraph: {
+      url: `/learn/${a.slug}/`,
+      type: "article",
+      publishedTime: a.published,
+      modifiedTime: a.updated,
+    },
+  };
 }
 
 export default async function ArticlePage({ params }: { params: Promise<Params> }) {
@@ -25,13 +36,24 @@ export default async function ArticlePage({ params }: { params: Promise<Params> 
   const a = getArticle(slug);
   if (!a) notFound();
 
+  const url = `${site.url}/learn/${a.slug}/`;
   const ld = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: a.h1,
     description: a.description,
-    author: { "@type": "Organization", name: "Imperium Detailing" },
-    publisher: { "@type": "Organization", name: "Imperium Detailing" },
+    // Without these a guide has no age, and Google has nothing to freshen it on.
+    datePublished: a.published,
+    dateModified: a.updated,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    image: `${site.url}/brand/og-image.jpg`,
+    author: { "@type": "Organization", name: site.name, url: site.url },
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      url: site.url,
+      logo: { "@type": "ImageObject", url: `${site.url}/brand/logo-full-dark-640.png` },
+    },
   };
 
   return (
@@ -41,6 +63,12 @@ export default async function ArticlePage({ params }: { params: Promise<Params> 
         <Breadcrumbs items={[{ href: "/learn/", label: "Guides" }, { href: `/learn/${a.slug}/`, label: a.title }]} />
         <h1 className="display-caps mt-3 max-w-4xl text-5xl md:text-7xl">{a.h1}</h1>
         <p className="mt-6 max-w-[62ch] text-lg text-secondary-foreground">{a.intro}</p>
+        <p className="mt-4 text-sm text-muted-foreground">
+          Last updated{" "}
+          <time dateTime={a.updated}>
+            {new Date(a.updated).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}
+          </time>
+        </p>
 
         <div className="mt-10 grid gap-10 md:grid-cols-12">
           <div className="grid gap-10 md:col-span-8">

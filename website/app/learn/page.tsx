@@ -7,7 +7,7 @@ import { CtaBand } from "@/components/site/cta-band";
 export const metadata: Metadata = {
   title: "Detailing Guides and Pricing",
   description: "Straight answers to the questions we get asked most: real Canberra prices, what each service actually does, and how to work out which one your car needs.",
-  alternates: { canonical: "/learn/" },
+  alternates: { canonical: "/learn/" }, openGraph: { url: "/learn/" },
 };
 
 export default function LearnPage() {

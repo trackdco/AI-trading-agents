@@ -34,7 +34,17 @@ export function JsonLd() {
         closes: "17:30",
       },
     ],
-    sameAs: [site.instagram],
+    // Canberra's centre. A mobile business has no shopfront to pin, but Google
+    // still wants a point to measure "near me" searches from.
+    geo: { "@type": "GeoCoordinates", latitude: -35.2802, longitude: 149.131 },
+    // The van travels; this is the radius it covers, which is what a service-area
+    // business declares instead of a street address.
+    serviceArea: {
+      "@type": "GeoCircle",
+      geoMidpoint: { "@type": "GeoCoordinates", latitude: -35.2802, longitude: 149.131 },
+      geoRadius: "40000",
+    },
+    sameAs: [site.instagram, site.googleReviewsUrl],
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: site.stats.rating,

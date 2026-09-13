@@ -90,6 +90,14 @@ export function Footer() {
                 {a.name}
               </Link>
             ))}
+            {/* This page targets the broadest local search there is and had no
+                inbound link anywhere on the site, so nothing passed to it. */}
+            <Link href="/car-detailing-canberra/" className={link}>
+              Car detailing Canberra
+            </Link>
+            <Link href="/service-areas/" className={link}>
+              All areas
+            </Link>
           </div>
         </div>
 

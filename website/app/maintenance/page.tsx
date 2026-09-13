@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Maintenance Plans Canberra from $150",
   description:
     "Monthly maintenance plans from $150: a coating-safe hand wash and interior reset at your home or work, every month or fortnight, across Canberra.",
-  alternates: { canonical: "/maintenance/" },
+  alternates: { canonical: "/maintenance/" }, openGraph: { url: "/maintenance/" },
 };
 
 const rhythms = [

@@ -8,7 +8,7 @@ import { CtaBand } from "@/components/site/cta-band";
 export const metadata: Metadata = {
   title: "Customer Reviews",
   description: `${site.stats.rating} stars across ${site.stats.reviewCount} reviews. What Canberra owners say about Imperium Detailing's ceramic coatings, paint correction and full details.`,
-  alternates: { canonical: "/reviews/" },
+  alternates: { canonical: "/reviews/" }, openGraph: { url: "/reviews/" },
 };
 
 const Stars = () => (

@@ -4,6 +4,9 @@ export type Section = { h: string; p?: string[]; list?: string[] };
 
 export type Article = {
   slug: string;
+  /** ISO dates. Google wants these on a guide, and wants them to match what the page shows. */
+  published: string;
+  updated: string;
   title: string;
   description: string;
   h1: string;
@@ -16,6 +19,8 @@ export type Article = {
 export const articles: Article[] = [
   {
     slug: "car-detailing-cost-canberra",
+    published: "2026-09-12",
+    updated: "2026-09-13",
     title: "Car Detailing Cost in Canberra (2026)",
     description:
       "Real Canberra detailing prices: what a full detail, interior, exterior, paint correction and ceramic coating actually cost, and what moves the price.",
@@ -80,6 +85,8 @@ export const articles: Article[] = [
   },
   {
     slug: "ceramic-coating-vs-paint-correction",
+    published: "2026-09-12",
+    updated: "2026-09-13",
     title: "Ceramic Coating vs Paint Correction",
     description:
       "The difference between paint correction and ceramic coating, which order they happen in, and how to tell which one your car needs.",
@@ -133,6 +140,8 @@ export const articles: Article[] = [
   },
   {
     slug: "dealer-paint-protection-vs-ceramic-coating",
+    published: "2026-09-12",
+    updated: "2026-09-13",
     title: "Dealer Paint Protection vs Ceramic",
     description:
       "What the dealer's paint protection package usually is, what a real ceramic coating is, and the questions to ask before you sign for either.",

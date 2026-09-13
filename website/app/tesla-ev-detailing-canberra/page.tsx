@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Tesla and EV Detailing Canberra",
   description:
     "Tesla and EV detailing in Canberra: soft paint corrected and ceramic coated, cameras kept clear, light interiors cleaned safely. We come to you.",
-  alternates: { canonical: "/tesla-ev-detailing-canberra/" },
+  alternates: { canonical: "/tesla-ev-detailing-canberra/" }, openGraph: { url: "/tesla-ev-detailing-canberra/" },
 };
 
 const onTheDay = [
