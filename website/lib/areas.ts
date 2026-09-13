@@ -32,7 +32,7 @@ export const areas: Area[] = [
           "Braddon and Turner are nearly all flats. A short drive out, Ainslie and O'Connor are still mostly houses. The two jobs look nothing alike.",
           "In the older streets we are beside a cottage where the garage went in decades later at the back of the block, down a long narrow drive. The drive decides whether the van gets past the house at all.",
           "In the flats the car is in a numbered bay, and access is the whole question. Ramp clearance first. Then an outdoor tap we can reach with a hose, and a 240V point near the bay rather than three levels up. We bring the rest.",
-          "A basement may or may not suit. That depends on the building. Tell us where you park and we settle it before quoting, not on the morning.",
+          "The last one is permission. Some complexes are fine with a detailer in the car park and some are not, so that gets asked before the booking, not on the morning. Water, power and a yes from the building, and we are down there.",
         ],
       },
       {
@@ -48,7 +48,7 @@ export const areas: Area[] = [
         p: [
           "This is the leafy end of Canberra. Park under the pines at Haig Park, or along the older streets, and needles collect in shuts, cowls and roof rails. Resin marks the flat panels. Spring adds pollen on top. A full detail from $225 takes that back off. The $150 a month plan is what keeps it off.",
           "Cold is the other half of a winter job. Panels are cold, water will not leave the surface and a coating cures slowly. Winter coating work gets a longer booking window, and we will move a day before we cut a cure short.",
-          "Two of us, one van, three jobs a day across the inner north. No shop and no drop-off. We do not do paint protection film, window tinting or rim repairs.",
+          "Two of us, one van, three jobs a day across the inner north. No shop and no drop-off. We do not fit paint protection film, window tinting or rim repairs.",
         ],
       },
     ],
@@ -67,7 +67,7 @@ export const areas: Area[] = [
       {
         h: "Car parks and old garages",
         p: [
-          "If the car lives in a building car park, whether we can work down there depends on the building, not the suburb. Ring us and we will work it out. The things that decide it: whether the van clears the ramp and can turn at the bottom, whether there is an outdoor tap and a 240V point we can reach, and whether building management is happy with it. Plenty of car parks have no tap at all. No water, no exterior work, and we would rather tell you that on the phone than on the day.",
+          "We do work in building car parks. Three things decide it: an outdoor tap we can run a hose from, a 240V point we can reach, and a building manager who is happy to have us down there. Past that it is the van — whether it clears the ramp and can turn at the bottom. Plenty of car parks have no tap at all. No water, no exterior work, and we would rather tell you that on the phone than on the day. Ring us with the building and we settle it before you book.",
           "The older detached streets are a different job. There is a driveway, and usually something at the rear, but rarely a modern double garage. A single garage or carport behind an old house is not getting any wider. Measure the inside of it before you book correction or coating. And tell us if your drive is one of the steep ones on the Red Hill slope.",
         ],
       },
@@ -106,7 +106,7 @@ export const areas: Area[] = [
         p: [
           "Blocks in the newer streets up north are small. Put a decent house on one and the side of the block is a footpath, so the driveway and whatever sits under the roof line is the whole job. The second car comes off the driveway for the day and stays off.",
           "One car out of a double garage is usually enough room to walk a panel and light it properly, which is what correction wants. An enclosed garage, a carport, or two uncovered spaces are three different jobs. None of them rules you out. They change what we can finish in a day.",
-          "If the car lives in a basement bay in the town centre, that one depends on the building — clearance, where the tap is, whether there is a power point we can reach. Tell us the building and we will sort it out before the booking, not on the day.",
+          "If the car lives in a basement bay in the town centre we can work down there, as long as there is a tap, a power point within reach and the complex allows it. Ramp clearance is the other one. Tell us the building and we check all of it before the booking, not on the day.",
         ],
       },
       {
@@ -143,7 +143,7 @@ export const areas: Area[] = [
         p: [
           "Most of this happens on your driveway. We need an outdoor tap and a 240V power point. We bring the rest.",
           "We will not put wheels on the nature strip. That is illegal parking in the ACT, and the verge is where the street trees keep their roots.",
-          "Paint correction and ceramic coating need a garage or a covered space, and that is the part worth sorting out early. More than half of households here keep two cars or more, so a single garage is often already full. Townhouse complex or a basement car park, it depends on the building. Tell us the address and we will let you know before you book.",
+          "Paint correction and ceramic coating need a garage or a covered space, and that is the part worth sorting out early. More than half of households here keep two cars or more, so a single garage is often already full. Townhouse complex or a basement car park, we work in both, as long as there is water, a power point and the complex's permission. Tell us the address and we will confirm it before you book.",
         ],
       },
       {
@@ -158,7 +158,7 @@ export const areas: Area[] = [
         p: [
           "Frost sits on anything left out on the driveway from about May to August. Summer runs the other way and the paint bakes dry more often than it gets rinsed. Neither is kind to a clear coat.",
           "Then there was January 2020. Hail of four to six centimetres fell across Belconnen and on through the city, and plenty of cars around here still wear it. Paint with that history usually wants correction first, from $397, before a ceramic coating from $997 is worth doing.",
-          "Two of us, one van, three jobs a day. No shop and no drop-off. We do not do paint protection film, window tinting or rim repairs, and we will tell you that rather than take the booking.",
+          "Two of us, one van, three jobs a day. No shop and no drop-off. We do not fit paint protection film, window tinting or rim repairs, and we will tell you that rather than take the booking.",
         ],
       },
     ],
@@ -208,7 +208,7 @@ export const areas: Area[] = [
       {
         h: "Cover decides what we can do",
         p: [
-          "Paint correction and ceramic coating have to be done under cover, so we ask what you have before booking rather than finding out on the day. It varies house by house here, not suburb by suburb. Past that we need an outdoor tap, a 240V power point, and room on the driveway to walk around the car. The rest is in the van. If you are in a unit and the only space is a basement park, tell us the building and we will work out whether it suits.",
+          "Paint correction and ceramic coating have to be done under cover, so we ask what you have before booking rather than finding out on the day. It varies house by house here, not suburb by suburb. Past that we need an outdoor tap, a 240V power point, and room on the driveway to walk around the car. The rest is in the van. If you are in a unit and the only space is a basement bay, that works too, provided there is water down there, a power point, and the complex is happy with it. Tell us the building and we will check.",
         ],
       },
       {
@@ -220,7 +220,7 @@ export const areas: Area[] = [
       {
         h: "Mobile, so the car stays home",
         p: [
-          "There is no industrial pocket in this district, so a workshop detail means crossing town and going without the car for the day. We come to you instead. Two of us, one van, three jobs a day at most, and no shop to hurry back to. Ceramic coating runs from $997 for three years up to $1,597 for seven years on a large 4WD, and the $150 a month plan after it is what stops your own weekend wash turning back into decontamination work. We do not do paint protection film, window tinting or rim repairs, so if that is what you are after, we are the wrong van.",
+          "There is no industrial pocket in this district, so a workshop detail means crossing town and going without the car for the day. We come to you instead. Two of us, one van, three jobs a day at most, and no shop to hurry back to. Ceramic coating runs from $997 for three years up to $1,597 for seven years on a large 4WD, and the $150 a month plan after it is what stops your own weekend wash turning back into decontamination work. We do not fit paint protection film, window tinting or rim repairs, so if that is what you are after, we are the wrong van.",
         ],
       },
     ],
@@ -241,7 +241,7 @@ export const areas: Area[] = [
         p: [
           "The housing is mostly 1970s to early-1990s stock, and 79.5 per cent of homes in Tuggeranong are separate houses. A driveway is close to certain, and there is usually room to work around one car.",
           "Cover is the part that varies. Plenty of these blocks have an open carport rather than a garage. Exterior and interior work is fine in the open. Paint correction and ceramic coating are not, so we check what you have before we book anything.",
-          "We need an outdoor tap and a 240V power point. We bring the rest. If your car lives in a basement under an apartment block in Greenway, it depends on the building. Tell us which one and we will sort it out.",
+          "We need an outdoor tap and a 240V power point. We bring the rest. If your car lives in a basement under an apartment block in Greenway, we can work in the bay, as long as there is water and power down there and the complex lets us in. Tell us which one and we will check.",
         ],
       },
       {
@@ -256,7 +256,7 @@ export const areas: Area[] = [
         p: [
           "These streets were planted when the town went in, so the trees are mature eucalypts now. Old enough to drop limbs, shed bark and put gum nuts on whatever is parked underneath. Add a decade of automatic brush washes and you get the swirls and the flat patches under the streetlight.",
           "Paint correction from $397 is what takes that back. A ceramic coating holds the result afterwards, $997 for three years up to $1,597 for seven on a large 4WD. The $150 a month maintenance plan is there so you keep it rather than pay for it twice.",
-          "We do not do paint protection film, window tinting or rim repairs.",
+          "We do not fit paint protection film, window tinting or rim repairs.",
         ],
       },
     ],
@@ -282,7 +282,7 @@ export const areas: Area[] = [
         h: "Where the van sits",
         p: [
           "Blocks across Molonglo are small and the houses fill them. Some streets load from a rear lane rather than the front, so tell us how yours works. It decides where the van sits.",
-          "Paint correction and ceramic coating both need a garage or covered space, and a full day of it, dry and lit. A carport is not enough. There are apartments and terraces out here as well as houses. If your car lives in a basement bay, ask us, because the answer depends on the building.",
+          "Paint correction and ceramic coating both need a garage or covered space, and a full day of it, dry and lit. A carport is not enough. There are apartments and terraces out here as well as houses. If your car lives in a basement bay, we can work down there wherever there is a tap, a power point and the complex's okay.",
           "Wherever we end up we need an outdoor tap, a 240V power point and hard standing to work off. We bring the rest. We cover Denman Prospect, Whitlam, Wright and Coombs.",
         ],
       },

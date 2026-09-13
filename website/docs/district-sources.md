@@ -330,8 +330,15 @@ ahead, the Gungahlin line needs changing.
   - Source: Owner-supplied (Pat's brief) — not an external research claim, so not counted against the three-figure limit
 - Site requirements: outdoor tap, 240V power point, hard standing; garage or covered space needed for paint correction and ceramic coating; mobile only.
   - Source: Owner-supplied (Pat's brief)
-- Basement bays: 'ask us, because the answer depends on the building' — the only line permitted. Copy does not claim Imperium can or cannot work in a basement car park.
-  - Source: Owner-supplied constraint (Pat's brief)
+- Basement bays: Imperium works in an apartment basement when three things are
+  there — water, a 240V power point, and the complex's permission. All nine
+  pages now say that plainly instead of hedging. Copy must keep all three
+  conditions; dropping one turns it into a promise Pat did not make.
+  - Source: Pat, 2026-09-13, answering directly: "Depends on if there's water and electricity and if the complex allows it"
+- PPF: Imperium does not **fit** paint protection film, but does coat over film
+  already on the car. The Ferrari GTC4Lusso post is that job. Copy says "do not
+  fit", never "do not do".
+  - Source: Pat, 2026-09-13, asked whether the Ferrari's film was fitted or coated over: "Coated over"
 
 **Cut (12):**
 

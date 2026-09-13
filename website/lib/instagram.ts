@@ -11,10 +11,10 @@ export const posts: Post[] = [
   { code: "DcgQsoKPaX0", kind: "reel" },
   { code: "DcXqRumP51s", kind: "reel", car: "Ford Raptor", service: "Maintenance wash" },
   { code: "DapWgJpDxbp", kind: "p", car: "Audi RS5", service: "Full detail" },
-  // The caption says "PPF coating & full detail", but the site lists PPF under
-  // what Imperium does not offer, so this reads as a coating over PPF that was
-  // already on the car. Labelled with the part that is not in doubt until Pat says.
-  { code: "DZCId30D0CY", kind: "p", car: "Ferrari GTC4Lusso", service: "Full detail" },
+  // Pat confirmed this one: the film was already on the car and we coated over
+  // it. That is the distinction the site draws — we do not fit PPF, we will
+  // coat film someone else fitted. See the coating FAQ in lib/services.ts.
+  { code: "DZCId30D0CY", kind: "p", car: "Ferrari GTC4Lusso", service: "Ceramic coating over PPF and full detail" },
   { code: "DY_wU84j9Rs", kind: "p", car: "Porsche 911 GT3", service: "Exterior detail" },
   { code: "DYyp09BPZik", kind: "reel", car: "BMW M3" },
   { code: "DYl7UpwD92X", kind: "p", car: "BMW M3 CS and M3 Competition", service: "Exterior detail" },

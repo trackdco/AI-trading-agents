@@ -91,6 +91,10 @@ export const services: Service[] = [
         q: "Do I need paint correction before coating?",
         a: "If your car has visible swirls, scratches or holograms, yes. A coating locks in whatever the paint looks like underneath, defects and all. On new or near-new cars we do a single-stage polish and prep, which is included. On older paint we'll quote paint correction first.",
       },
+      {
+        q: "My car already has PPF. Can you coat over it?",
+        a: "Yes. We don't fit paint protection film, but we will coat film that's already on the car — the Ferrari GTC4Lusso on our Instagram was done that way. The coating sits on top, so the film sheds dirt and water the way coated paint does and is easier to wash. Tell us which panels are wrapped when you ask for a quote.",
+      },
     ],
     related: ["paint-correction-canberra", "full-car-detail-canberra"],
   },

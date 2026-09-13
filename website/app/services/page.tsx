@@ -58,7 +58,7 @@ export default function ServicesPage() {
           <div className="text-[15px] font-semibold text-foreground md:col-span-3 md:text-right">How we do EVs</div>
         </Link>
         <p className="mt-8 max-w-[64ch] text-[15px] text-muted-foreground">
-          Bikes are welcome, trucks are quoted by phone. We don&apos;t do {site.notOffered.map((n) => n.toLowerCase()).join(", ")}, so you&apos;re not waiting on a quote for those.
+          Bikes are welcome, trucks are quoted by phone. We don&apos;t do {site.notOffered.map((n) => n.toLowerCase()).join(", ")}, so you&apos;re not waiting on a quote for those. Film is the one with a caveat: we don&apos;t fit it, but we will coat over film that&apos;s already on the car.
         </p>
       </section>
       <PriceGuide title="Check your price." />
