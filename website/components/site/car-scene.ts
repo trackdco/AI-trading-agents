@@ -26,26 +26,28 @@ const mix = (a: number, b: number, t: number) => a + (b - a) * t;
 
 // ---------------------------------------------------------------- car geometry
 
-// The side view, drawn once and extruded across the car's width. A deep bevel
-// rounds every edge, which is what stops it reading as a slab.
+// The side view, traced off a straight-on photo of a real coupe and kept to its
+// actual proportions: 4.79 long, 1.34 tall, 2.86 between the axles. Extruded
+// across the width, with a bevel that rounds every edge.
 function bodyProfile() {
   const s = new THREE.Shape();
-  s.moveTo(-2.3, 0.36);
-  s.lineTo(-1.86, 0.3);
-  s.quadraticCurveTo(-1.42, 1.24, -0.98, 0.3); // front arch
-  s.lineTo(0.86, 0.3);
-  s.quadraticCurveTo(1.3, 1.24, 1.74, 0.3); // rear arch
-  s.lineTo(2.26, 0.36);
-  s.quadraticCurveTo(2.42, 0.46, 2.4, 0.72); // tail
-  s.quadraticCurveTo(2.32, 0.9, 2.06, 0.95); // boot lid
-  s.lineTo(1.6, 0.99);
-  s.quadraticCurveTo(1.22, 1.26, 0.78, 1.3); // rear screen
-  s.lineTo(0.08, 1.31); // roof
-  s.quadraticCurveTo(-0.36, 1.29, -0.58, 1.14);
-  s.quadraticCurveTo(-0.86, 0.95, -1.16, 0.88); // windscreen
-  s.lineTo(-1.76, 0.8);
-  s.quadraticCurveTo(-2.16, 0.76, -2.32, 0.6); // bonnet
-  s.quadraticCurveTo(-2.44, 0.48, -2.3, 0.36); // nose
+  s.moveTo(-2.38, 0.34); // nose, low
+  s.lineTo(-1.95, 0.2); // under the front bumper
+  s.quadraticCurveTo(-1.46, 1.4, -0.97, 0.2); // front arch, peaking at 0.80
+  s.lineTo(0.9, 0.16); // side skirt
+  s.quadraticCurveTo(1.4, 1.36, 1.89, 0.2); // rear arch
+  s.lineTo(2.34, 0.26);
+  s.quadraticCurveTo(2.42, 0.5, 2.4, 0.82); // tail face
+  s.quadraticCurveTo(2.36, 0.98, 2.24, 1.0); // ducktail lip
+  s.lineTo(2.12, 0.96);
+  s.lineTo(1.66, 1.01); // boot lid
+  s.quadraticCurveTo(1.28, 1.18, 0.94, 1.29); // rear screen
+  s.lineTo(0.12, 1.34); // roof
+  s.quadraticCurveTo(-0.24, 1.3, -0.44, 1.14);
+  s.quadraticCurveTo(-0.58, 1.02, -0.78, 0.96); // windscreen into the cowl
+  s.lineTo(-1.5, 0.84); // bonnet
+  s.quadraticCurveTo(-2.06, 0.74, -2.26, 0.63);
+  s.quadraticCurveTo(-2.44, 0.52, -2.38, 0.34); // nose
   return s;
 }
 
@@ -55,7 +57,7 @@ const smoothstep = (a: number, b: number, x: number) => {
 };
 
 function buildBody(material: THREE.Material, lowPower: boolean) {
-  const depth = 1.72;
+  const depth = 1.63;
   const geo = new THREE.ExtrudeGeometry(bodyProfile(), {
     depth,
     bevelEnabled: true,
@@ -76,10 +78,14 @@ function buildBody(material: THREE.Material, lowPower: boolean) {
     const x = pos.getX(i);
     const y = pos.getY(i);
     const z = pos.getZ(i);
-    const cabin = 1 - 0.4 * smoothstep(0.78, 1.32, y); // roof narrower than the doors
-    const ends = 1 - 0.3 * smoothstep(1.45, 2.5, Math.abs(x)); // nose and tail pull in
-    const sill = 1 - 0.16 * smoothstep(0.46, 0.12, y); // bottom tucks under
-    pos.setZ(i, z * cabin * ends * sill);
+    // Only the greenhouse narrows. Squeezing purely by height would pinch the
+    // bonnet and the boot too, which is what turns a coupe into a ute.
+    const greenhouse = smoothstep(-1.05, -0.62, x) * (1 - smoothstep(1.5, 1.9, x));
+    const cabin = 1 - 0.44 * smoothstep(0.92, 1.22, y) * greenhouse;
+    const nose = 1 - 0.26 * smoothstep(1.7, 2.45, -x); // the front tapers hard
+    const tail = 1 - 0.1 * smoothstep(2.0, 2.45, x); // the rear stays broad
+    const sill = 1 - 0.14 * smoothstep(0.42, 0.14, y); // skirts tuck under
+    pos.setZ(i, z * cabin * nose * tail * sill);
   }
   pos.needsUpdate = true;
   geo.computeVertexNormals();
@@ -91,14 +97,14 @@ function buildWheel(lowPower: boolean) {
   const seg = lowPower ? 18 : 32;
 
   const tyre = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.46, 0.46, 0.32, seg),
+    new THREE.CylinderGeometry(0.36, 0.36, 0.34, seg),
     new THREE.MeshPhysicalMaterial({ color: 0x0a0b0d, roughness: 0.8, metalness: 0, clearcoat: 0.2 }),
   );
   tyre.rotation.x = Math.PI / 2;
   g.add(tyre);
 
   const rim = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.3, 0.3, 0.35, seg),
+    new THREE.CylinderGeometry(0.25, 0.25, 0.36, seg),
     new THREE.MeshPhysicalMaterial({ color: 0x9099a6, roughness: 0.22, metalness: 1 }),
   );
   rim.rotation.x = Math.PI / 2;
@@ -108,14 +114,14 @@ function buildWheel(lowPower: boolean) {
   const spokeMat = new THREE.MeshPhysicalMaterial({ color: 0x9aa4b2, roughness: 0.19, metalness: 1 });
   for (let i = 0; i < 5; i++) {
     const a = (i / 5) * Math.PI * 2;
-    const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.26, 0.35), spokeMat);
-    spoke.position.set(Math.cos(a) * 0.13, Math.sin(a) * 0.13, 0);
+    const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.22, 0.36), spokeMat);
+    spoke.position.set(Math.cos(a) * 0.11, Math.sin(a) * 0.11, 0);
     spoke.rotation.z = a;
     g.add(spoke);
   }
 
   const disc = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.19, 0.19, 0.07, seg),
+    new THREE.CylinderGeometry(0.16, 0.16, 0.07, seg),
     new THREE.MeshPhysicalMaterial({ color: 0x262b31, roughness: 0.5, metalness: 0.9 }),
   );
   disc.rotation.x = Math.PI / 2;
@@ -206,15 +212,15 @@ function paintMaterial(): { material: THREE.MeshPhysicalMaterial; uniforms: Unif
     uSpeck: { value: 0 },
     uClayX: { value: -3.4 },
     uIron: { value: 0 },
-    uIronRun: { value: 1.9 },
+    uIronRun: { value: 1.7 },
     uGloss: { value: 0 },
     uBeads: { value: 0 },
   };
 
   const material = new THREE.MeshPhysicalMaterial({
-    color: 0x3d4c60,
-    metalness: 0.66,
-    roughness: 0.27,
+    color: 0x11694b,
+    metalness: 0.62,
+    roughness: 0.24,
     clearcoat: 0.55,
     clearcoatRoughness: 0.1,
     envMapIntensity: 1.5,
@@ -237,9 +243,9 @@ ${NOISE}
 // Scratch values handed from the colour pass down to the roughness and normal passes.
 float sDirt; float sFoam; float sSpeck; float sGlass; float sBead; vec3 sBeadDir;
 float glassMask(vec3 p){
-  return smoothstep(0.92, 1.02, p.y)
-       * smoothstep(-1.22, -1.0, p.x)
-       * (1.0 - smoothstep(1.42, 1.62, p.x));
+  return smoothstep(0.97, 1.08, p.y)
+       * smoothstep(-0.82, -0.56, p.x)
+       * (1.0 - smoothstep(1.5, 1.76, p.x));
 }`,
       )
       .replace(
@@ -253,7 +259,7 @@ float glassMask(vec3 p){
   diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.012, 0.017, 0.025), glass * 0.93);
 
   // Road grime: patchy, and always worst down low.
-  float low = 1.0 - smoothstep(0.34, 1.12, P.y);
+  float low = 1.0 - smoothstep(0.28, 1.0, P.y);
   float grime = fbm(P * 2.4) * 0.72 + 0.32;
   float dirt = uDirt * smoothstep(uWashX - 0.3, uWashX + 0.06, P.x) * grime * mix(0.48, 1.0, low);
   dirt = clamp(dirt, 0.0, 1.0);
@@ -272,7 +278,7 @@ float glassMask(vec3 p){
   diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.29, 0.015, 0.2), ironAmt * 0.88);
 
   // Snow foam pouring down over the lot.
-  float foamLine = mix(1.85, -0.25, uFoam);
+  float foamLine = mix(1.68, -0.25, uFoam);
   float fn = fbm(P * 3.4 + vec3(0.0, -uTime * 0.15, 0.0));
   float foam = clamp(smoothstep(foamLine - 0.32, foamLine + 0.1, P.y + (fn - 0.5) * 0.6) * uFoamFade, 0.0, 1.0);
   float bubbles = smoothstep(0.42, 0.74, fbm(P * 17.0)) * 0.13;
@@ -343,13 +349,13 @@ export function createCarScene(canvas: HTMLCanvasElement, opts: Opts): CarScene 
   car.add(buildBody(paint, lowPower));
 
   for (const [x, z] of [
-    [-1.42, 0.78],
-    [-1.42, -0.78],
-    [1.3, 0.78],
-    [1.3, -0.78],
+    [-1.46, 0.76],
+    [-1.46, -0.76],
+    [1.4, 0.76],
+    [1.4, -0.76],
   ]) {
     const wheel = buildWheel(lowPower);
-    wheel.position.set(x, 0.46, z);
+    wheel.position.set(x, 0.36, z);
     car.add(wheel);
   }
   scene.add(car);
@@ -425,7 +431,7 @@ export function createCarScene(canvas: HTMLCanvasElement, opts: Opts): CarScene 
     u.uSpeck.value = 0;
     u.uClayX.value = -3.4;
     u.uIron.value = 0;
-    u.uIronRun.value = 1.9;
+    u.uIronRun.value = 1.7;
     u.uGloss.value = 0;
     u.uBeads.value = 0;
     paint.clearcoat = 0.5;
@@ -446,7 +452,7 @@ export function createCarScene(canvas: HTMLCanvasElement, opts: Opts): CarScene 
       u.uGloss.value = sweep * 0.4;
     } else if (step === "iron") {
       u.uIron.value = at(1.2);
-      u.uIronRun.value = mix(1.9, -0.4, at(3.4, 0.3));
+      u.uIronRun.value = mix(1.7, -0.35, at(3.4, 0.3));
     } else if (step === "coat") {
       const g = at(1.8);
       u.uGloss.value = g;
@@ -493,13 +499,13 @@ export function createCarScene(canvas: HTMLCanvasElement, opts: Opts): CarScene 
     elevation += (targetEl - elevation) * k;
 
     // Narrow screens need a little more room to keep the whole car in frame.
-    const dist = width / height < 1.15 ? 8.6 : 7.4;
+    const dist = width / height < 1.15 ? 8.2 : 7.1;
     camera.position.set(
       Math.sin(azimuth) * Math.cos(elevation) * dist,
       0.9 + Math.sin(elevation) * dist,
       Math.cos(azimuth) * Math.cos(elevation) * dist,
     );
-    camera.lookAt(0, 0.72, 0);
+    camera.lookAt(0, 0.66, 0);
 
     driveUniforms(clock - stepStart);
     renderer.render(scene, camera);
