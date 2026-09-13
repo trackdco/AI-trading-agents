@@ -18,12 +18,13 @@ export function RecentWork() {
         </div>
       )}
       <div className="container-x mx-auto mt-10 max-w-6xl md:mt-14">
-        <ul className="m-0 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="m-0 grid list-none gap-4 p-0 [&>li:nth-child(n+5)]:hidden sm:grid-cols-2 sm:[&>li:nth-child(n+5)]:block lg:grid-cols-3">
           {posts.map((p) => {
             const label = [p.car, p.service, p.suburb].filter(Boolean).join(", ");
             return (
               <li key={p.code} className="relative h-[560px] max-w-[400px] overflow-hidden rounded-xl border border-border bg-card">
-                <a href={postUrl(p)} target="_blank" rel="noopener" className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center no-underline">
+                <a href={postUrl(p)} target="_blank" rel="noopener" tabIndex={-1}
+                  className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center no-underline">
                   <img src="/brand/logo-mark-96.webp" width={59} height={36} alt="" className="h-9 w-auto opacity-70" />
                   <span className="text-[15px] font-semibold text-foreground">{label || "Watch this one on Instagram"}</span>
                   <span className="text-sm text-muted-foreground">{site.instagramHandle}</span>

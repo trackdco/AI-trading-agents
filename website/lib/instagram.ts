@@ -2,7 +2,23 @@
 // (instagram.com/reel/CODE/ or instagram.com/p/CODE/) and, if you like, what the job was.
 export type Post = { code: string; kind: "reel" | "p"; car?: string; service?: string; suburb?: string };
 
-export const posts: Post[] = [{ code: "DYyp09BPZik", kind: "reel" }];
+// Pulled from @imperiumdetailing_ and each one opened to confirm it loads.
+// A car or service is only set where the caption actually said so — the top two
+// reels are captioned "DM us CERAMIC" and "😬😬😬", so they run without a label
+// rather than carry a guess. No caption names a suburb, so none is set.
+export const posts: Post[] = [
+  { code: "Dcn6xptPICV", kind: "reel" },
+  { code: "DcgQsoKPaX0", kind: "reel" },
+  { code: "DcXqRumP51s", kind: "reel", car: "Ford Raptor", service: "Maintenance wash" },
+  { code: "DapWgJpDxbp", kind: "p", car: "Audi RS5", service: "Full detail" },
+  // The caption says "PPF coating & full detail", but the site lists PPF under
+  // what Imperium does not offer, so this reads as a coating over PPF that was
+  // already on the car. Labelled with the part that is not in doubt until Pat says.
+  { code: "DZCId30D0CY", kind: "p", car: "Ferrari GTC4Lusso", service: "Full detail" },
+  { code: "DY_wU84j9Rs", kind: "p", car: "Porsche 911 GT3", service: "Exterior detail" },
+  { code: "DYyp09BPZik", kind: "reel", car: "BMW M3" },
+  { code: "DYl7UpwD92X", kind: "p", car: "BMW M3 CS and M3 Competition", service: "Exterior detail" },
+];
 
 // One line per recent job for the strip. Real cars, real work; add a line after each job.
 export const recentJobs: { car: string; service: string; suburb?: string }[] = [
