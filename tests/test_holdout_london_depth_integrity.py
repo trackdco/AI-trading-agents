@@ -70,14 +70,11 @@ def test_london_depth_loader_reads_the_holdout(frames):
     """The real integration: london_depth.load_day pointed at the holdout folder."""
     import scripts.london_depth as L
 
-    original = L.DIR
-    try:
-        L.DIR = DEPTH
-        day = min(frames)
-        d = L.load_day(day)
-        assert d is not None and len(d) == 2400, f"{day}: {0 if d is None else len(d)} rows"
-        assert set(d.side.unique()) == {"bid", "ask"}
-        f = L.depth_at(d, d.ts.iloc[len(d) // 2], float(d.price.median()), "long")
-        assert f and f["dep_thick"] > 0
-    finally:
-        L.DIR = original
+    # load_day takes the directory as an argument now, so pointing it at the holdout no
+    # longer means swapping a module global back and forth.
+    day = min(frames)
+    d = L.load_day(day, DEPTH)
+    assert d is not None and len(d) == 2400, f"{day}: {0 if d is None else len(d)} rows"
+    assert set(d.side.unique()) == {"bid", "ask"}
+    f = L.depth_at(d, d.ts.iloc[len(d) // 2], float(d.price.median()), "long")
+    assert f and f["dep_thick"] > 0
