@@ -45,7 +45,7 @@ const icons: Record<StepId, React.ReactNode> = {
 // One step's media. Only mounted once its button has been used, so nothing loads
 // for a step nobody opened. The poster sits under the video at all times, which
 // covers a slow load, a failed load, and reduced motion with the same markup.
-function StepMedia({ step, active, reduced }: { step: DetailStep; active: boolean; reduced: boolean }) {
+function StepMedia({ step, active, reduced, onScreen }: { step: DetailStep; active: boolean; reduced: boolean; onScreen: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [broken, setBroken] = useState(false);
 
@@ -56,10 +56,10 @@ function StepMedia({ step, active, reduced }: { step: DetailStep; active: boolea
   useEffect(() => {
     const v = ref.current;
     if (!v || reduced) return;
-    if (active) void v.play().catch(() => {});
+    if (active && onScreen) void v.play().catch(() => {});
     else v.pause();
     return clear;
-  }, [active, reduced, clear]);
+  }, [active, onScreen, reduced, clear]);
 
   return (
     <div
@@ -107,6 +107,11 @@ export function DetailSteps() {
   const [opened, setOpened] = useState<StepId[]>([detailSteps[0].id]);
   const [reduced, setReduced] = useState(false);
 
+  const sectionRef = useRef<HTMLElement>(null);
+  // The first step is active from mount, so on the home page — where this sits
+  // seven sections down — its video downloaded before anyone had scrolled to it.
+  // Nothing plays until the section is actually near the viewport.
+  const [onScreen, setOnScreen] = useState(false);
   const railRef = useRef<HTMLDivElement>(null);
   const settled = useRef(false);
   const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
@@ -119,6 +124,14 @@ export function DetailSteps() {
     update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting), { rootMargin: "200px" });
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
   const open = useCallback((id: StepId) => {
@@ -166,7 +179,7 @@ export function DetailSteps() {
   };
 
   return (
-    <section id="in-a-detail" className="border-t border-border py-20 md:py-28">
+    <section ref={sectionRef} id="in-a-detail" className="border-t border-border py-20 md:py-28">
       <div className="container-x mx-auto max-w-6xl">
         <SectionHeading
           title="What's included in a detail."
@@ -239,7 +252,7 @@ export function DetailSteps() {
           {detailSteps
             .filter((s) => opened.includes(s.id))
             .map((s) => (
-              <StepMedia key={s.id} step={s} active={s.id === active} reduced={reduced} />
+              <StepMedia key={s.id} step={s} active={s.id === active} reduced={reduced} onScreen={onScreen} />
             ))}
         </div>
 
