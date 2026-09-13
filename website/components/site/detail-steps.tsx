@@ -108,6 +108,7 @@ export function DetailSteps() {
   const [reduced, setReduced] = useState(false);
 
   const railRef = useRef<HTMLDivElement>(null);
+  const settled = useRef(false);
   const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
 
   const step = detailSteps.find((s) => s.id === active)!;
@@ -127,10 +128,21 @@ export function DetailSteps() {
 
   // The sliding marker behind the buttons, measured so it holds at any text size.
   const movePill = useCallback(() => {
-    const btn = railRef.current?.querySelector<HTMLButtonElement>(`[data-step="${active}"]`);
-    if (!btn) return;
+    const rail = railRef.current;
+    const btn = rail?.querySelector<HTMLButtonElement>(`[data-step="${active}"]`);
+    if (!rail || !btn) return;
     setPill({ left: btn.offsetLeft, width: btn.offsetWidth });
-    btn.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+
+    // Scroll the rail itself rather than calling scrollIntoView on the button.
+    // scrollIntoView walks every scrollable ancestor, so on mount — when this
+    // section is still far below the fold — it dragged the whole page down to
+    // meet it. Moving scrollLeft by hand keeps the active tab in view and
+    // leaves the page where the visitor put it.
+    const target = btn.offsetLeft - (rail.clientWidth - btn.offsetWidth) / 2;
+    const left = Math.max(0, Math.min(target, rail.scrollWidth - rail.clientWidth));
+    // The first pass is the initial layout, so it should not animate.
+    rail.scrollTo({ left, behavior: settled.current ? "smooth" : "auto" });
+    settled.current = true;
   }, [active]);
 
   useEffect(() => {
