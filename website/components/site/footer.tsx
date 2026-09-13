@@ -5,8 +5,9 @@ import { areas } from "@/lib/areas";
 import { articles } from "@/lib/articles";
 import { Marquee } from "@/components/site/marquee";
 
-const col = "flex flex-col gap-1.5 text-[15px]";
-const link = "link-slide py-1 text-secondary-foreground no-underline hover:text-foreground";
+const col = "flex flex-col text-[15px]";
+// py-2.5 on a 19px line is a 44px target, which is what a thumb needs.
+const link = "link-slide inline-flex min-h-[44px] items-center py-2.5 text-secondary-foreground no-underline hover:text-foreground";
 
 export function Footer() {
   return (

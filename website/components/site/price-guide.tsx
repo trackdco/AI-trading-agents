@@ -22,6 +22,9 @@ export function PriceGuide({ title = "Your price in ten seconds." }: { title?: s
 
   const guide = guidePrice(job, size, tier);
   const jobMeta = jobs.find((j) => j.id === job)!;
+  // The quote form's dropdown uses these names. Everything matches except the
+  // plan, which the form spells out in full.
+  const formService = jobMeta.label === "Maintenance plan" ? "Regular maintenance plan" : jobMeta.label;
   const sizeMeta = sizes.find((s) => s.id === size)!;
 
   // The number rolls to its new value instead of snapping (or snaps, for reduced motion).
@@ -151,6 +154,15 @@ export function PriceGuide({ title = "Your price in ten seconds." }: { title?: s
                 <a href={sms} className="lift inline-flex min-h-[52px] items-center justify-center rounded-lg bg-accent px-6 text-base font-semibold text-accent-foreground no-underline hover:bg-[#5aa6f0]">
                   {guide.cta}
                 </a>
+                {/* On a laptop a tel: and an sms: link both do nothing, so without
+                    this there was no way to act at the moment someone has just
+                    been shown their price. The service carries across. */}
+                <Link
+                  href={`/book/?service=${encodeURIComponent(formService)}`}
+                  className="lift inline-flex min-h-[52px] items-center justify-center rounded-lg border border-border px-6 text-base font-semibold text-foreground no-underline hover:border-secondary-foreground/50"
+                >
+                  Send it through the form
+                </Link>
                 <a href={telHref} className="lift inline-flex min-h-[52px] items-center justify-center rounded-lg border border-border px-6 text-base font-semibold text-foreground no-underline hover:border-secondary-foreground/50">
                   Call {site.phoneDisplay}
                 </a>
