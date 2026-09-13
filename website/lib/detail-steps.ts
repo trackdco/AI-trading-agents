@@ -16,6 +16,8 @@ export type DetailStep = {
    * -g 15 -keyint_min 15 -sc_threshold 0
    */
   spin?: boolean;
+  /** An interactive stage instead of footage. Takes over the whole panel. */
+  widget?: "wash";
 };
 
 const PLACEHOLDER = "/media/steps/placeholder.webp";
@@ -39,6 +41,7 @@ export const detailSteps: DetailStep[] = [
     video: null,
     poster: PLACEHOLDER,
     alt: "A two-bucket contact wash",
+    widget: "wash",
   },
   {
     id: "clay",

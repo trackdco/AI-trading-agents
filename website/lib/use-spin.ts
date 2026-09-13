@@ -62,5 +62,5 @@ export function useSpin(ref: React.RefObject<HTMLVideoElement | null>, enabled: 
 }
 
 /** The nudge that tells people the car can be turned. Hidden once they've tried it. */
-export const spinHintClass =
+export const hintPillClass =
   "pointer-events-none absolute right-4 top-4 rounded-full border border-border bg-background/80 px-4 py-2 text-sm text-muted-foreground backdrop-blur";

@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { detailSteps, type DetailStep, type StepId } from "@/lib/detail-steps";
 import { SectionHeading } from "@/components/site/section-heading";
-import { useSpin, spinHintClass } from "@/lib/use-spin";
+import { useSpin, hintPillClass } from "@/lib/use-spin";
+import { WashWipe } from "@/components/site/wash-wipe";
 
 const icons: Record<StepId, React.ReactNode> = {
   foam: (
@@ -63,11 +64,17 @@ function StepMedia({ step, active, reduced }: { step: DetailStep; active: boolea
   return (
     <div
       aria-hidden={!active}
+      // The steps are stacked, so the ones behind have to stop taking pointers or
+      // whichever was opened last would swallow every drag meant for the front one.
       className={`absolute inset-0 transition-opacity duration-[250ms] ease-out motion-reduce:transition-none ${
-        active ? "opacity-100" : "opacity-0"
+        active ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >
-      <img src={step.poster} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+      {step.widget === "wash" ? (
+        <WashWipe live={active} reduced={reduced} />
+      ) : (
+        <img src={step.poster} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+      )}
       {step.video && !broken && !reduced && (
         <video
           ref={ref}
@@ -84,8 +91,8 @@ function StepMedia({ step, active, reduced }: { step: DetailStep; active: boolea
           <source src={step.video} type="video/mp4" />
         </video>
       )}
-      {spinnable && !spin.dragged && <span className={spinHintClass}>Drag to turn the car</span>}
-      {!step.video && (
+      {spinnable && !spin.dragged && <span className={hintPillClass}>Drag to turn the car</span>}
+      {!step.video && !step.widget && (
         <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-border bg-background/80 px-4 py-2 text-sm text-muted-foreground backdrop-blur">
           Footage coming soon
         </span>

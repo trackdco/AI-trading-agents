@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSpin, spinHintClass } from "@/lib/use-spin";
+import { useSpin, hintPillClass } from "@/lib/use-spin";
 
 type Props = {
   base: string;
@@ -62,7 +62,7 @@ export function LoopVideo({ base, poster, label, className = "", webm = true, sp
   return (
     <div className="relative">
       {video}
-      {!turn.dragged && <span className={spinHintClass}>Drag to turn the car</span>}
+      {!turn.dragged && <span className={hintPillClass}>Drag to turn the car</span>}
     </div>
   );
 }
