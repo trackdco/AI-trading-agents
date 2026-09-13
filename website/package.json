@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check": "python3 scripts/check-site.py"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

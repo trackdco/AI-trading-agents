@@ -8,6 +8,7 @@ Premium mobile car detailing, Canberra and Queanbeyan. Built with Next.js (stati
 npm install
 npm run dev        # http://localhost:3000
 npm run build      # static export into ./out
+npm run check      # pre-deploy checks on ./out — links, metadata, schema, images
 ```
 
 `out/` is a plain folder of HTML, CSS, JS and media. Deploy it to Vercel, Cloudflare Pages, Netlify, or any static host. On Vercel, just import the repo and set the root directory to `website`.
