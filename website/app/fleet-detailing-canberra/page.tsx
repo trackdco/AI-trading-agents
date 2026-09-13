@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import Link from "next/link";
 import { site, telHref, smsHref } from "@/lib/site";
 import { formatPrice } from "@/lib/services";
@@ -15,17 +16,10 @@ export const metadata: Metadata = {
   description:
     "Mobile fleet detailing for Canberra businesses. Utes, vans, pool cars and trucks done at your yard. Same price per vehicle, no call-out fee.",
   alternates: { canonical: "/fleet-detailing-canberra/" },
-  // Next replaces the layout's openGraph object wholesale rather than merging it,
-  // so the shared image and locale have to be restated or the card ships bare.
-  openGraph: {
-    url: "/fleet-detailing-canberra/",
-    type: "website",
-    locale: "en_AU",
-    siteName: site.name,
+  openGraph: og("/fleet-detailing-canberra/", {
     title: "Fleet Detailing Canberra",
     description: "Utes, vans, pool cars and trucks detailed at your yard. Same price per vehicle a private customer pays.",
-    images: [{ url: "/brand/og-image.jpg", width: 1200, height: 630, alt: "Imperium Detailing" }],
-  },
+  }),
 };
 
 const COLS: { id: SizeId; label: string; eg: string }[] = [

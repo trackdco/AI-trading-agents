@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import Link from "next/link";
 import { site, prices, smsHref, telHref } from "@/lib/site";
 import { formatPrice, type Faq as FaqItem } from "@/lib/services";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
   title: "Maintenance Plans Canberra from $150",
   description:
     "Monthly maintenance plans from $150: a coating-safe hand wash and interior reset at your home or work, every month or fortnight, across Canberra.",
-  alternates: { canonical: "/maintenance/" }, openGraph: { url: "/maintenance/" },
+  alternates: { canonical: "/maintenance/" }, openGraph: og("/maintenance/"),
 };
 
 const rhythms = [

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "How Imperium Detailing collects, uses and protects the personal information you share when you request a quote or book a detail.",
-  alternates: { canonical: "/privacy/" }, openGraph: { url: "/privacy/" },
+  alternates: { canonical: "/privacy/" }, openGraph: og("/privacy/"),
 };
 
 const P = ({ children }: { children: React.ReactNode }) => <p className="mt-4 max-w-[64ch] text-[17px] text-secondary-foreground">{children}</p>;

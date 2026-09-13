@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import Link from "next/link";
 import { services, formatPrice } from "@/lib/services";
 import { SectionHeading } from "@/components/site/section-heading";
@@ -8,7 +9,7 @@ import { Booking } from "@/components/site/booking";
 export const metadata: Metadata = {
   title: "Car Detailing Canberra from $225",
   description: "Mobile car detailing in Canberra: full details from $225, interior from $140, exterior from $110. We come to your driveway or workplace, no call-out fee.",
-  alternates: { canonical: "/car-detailing-canberra/" }, openGraph: { url: "/car-detailing-canberra/" },
+  alternates: { canonical: "/car-detailing-canberra/" }, openGraph: og("/car-detailing-canberra/"),
 };
 
 export default function CarDetailingCanberraPage() {

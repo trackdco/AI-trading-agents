@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import Link from "next/link";
 import { services, formatPrice } from "@/lib/services";
 import { prices, site } from "@/lib/site";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   title: "Services and Prices",
   description:
     "Every Imperium Detailing service with real from-prices: full detail $225, interior $140, exterior $110, paint correction $397, ceramic coating $997.",
-  alternates: { canonical: "/services/" }, openGraph: { url: "/services/" },
+  alternates: { canonical: "/services/" }, openGraph: og("/services/"),
 };
 
 export default function ServicesPage() {

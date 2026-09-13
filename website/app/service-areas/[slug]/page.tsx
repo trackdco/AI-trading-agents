@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { areas, getArea } from "@/lib/areas";
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   return {
     title: `Mobile Car Detailing ${a.name}`,
     description: `Mobile detailing, ceramic coating and paint correction in ${a.name}: ${a.suburbs.slice(0, 3).join(", ")} and nearby. We come to you, no call-out fee.`,
-    alternates: { canonical: `/service-areas/${a.slug}/` }, openGraph: { url: `/service-areas/${a.slug}/` },
+    alternates: { canonical: `/service-areas/${a.slug}/` }, openGraph: og(`/service-areas/${a.slug}/`),
   };
 }
 

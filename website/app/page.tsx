@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import { Hero } from "@/components/site/hero";
 import { ProofBand } from "@/components/site/proof-band";
 import { ServicesCoverflow } from "@/components/site/services-coverflow";
@@ -13,7 +14,7 @@ import { RecentWork } from "@/components/site/recent-work";
 import { DetailSteps } from "@/components/site/detail-steps";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/" }, openGraph: { url: "/" },
+  alternates: { canonical: "/" }, openGraph: og("/"),
 };
 
 export default function HomePage() {

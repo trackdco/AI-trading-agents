@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import Link from "next/link";
 import { articles } from "@/lib/articles";
 import { SectionHeading } from "@/components/site/section-heading";
@@ -7,7 +8,7 @@ import { CtaBand } from "@/components/site/cta-band";
 export const metadata: Metadata = {
   title: "Detailing Guides and Pricing",
   description: "Straight answers to the questions we get asked most: real Canberra prices, what each service actually does, and how to work out which one your car needs.",
-  alternates: { canonical: "/learn/" }, openGraph: { url: "/learn/" },
+  alternates: { canonical: "/learn/" }, openGraph: og("/learn/"),
 };
 
 export default function LearnPage() {

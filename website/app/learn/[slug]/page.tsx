@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { articles, getArticle } from "@/lib/articles";
@@ -22,12 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     title: a.title,
     description: a.description,
     alternates: { canonical: `/learn/${a.slug}/` },
-    openGraph: {
-      url: `/learn/${a.slug}/`,
-      type: "article",
-      publishedTime: a.published,
-      modifiedTime: a.updated,
-    },
+    openGraph: og(`/learn/${a.slug}/`, { type: "article", publishedTime: a.published, modifiedTime: a.updated }),
   };
 }
 
@@ -56,9 +52,20 @@ export default async function ArticlePage({ params }: { params: Promise<Params> 
     },
   };
 
+  // The guides render a FAQ accordion but never told Google it was one, so three
+  // pages of real questions and answers were invisible to rich results.
+  const faqLd = a.faq?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: a.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+      }
+    : null;
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+      {faqLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />}
       <article className="container-x mx-auto max-w-6xl py-14 md:py-20">
         <Breadcrumbs items={[{ href: "/learn/", label: "Guides" }, { href: `/learn/${a.slug}/`, label: a.title }]} />
         <h1 className="display-caps mt-3 max-w-4xl text-5xl md:text-7xl">{a.h1}</h1>

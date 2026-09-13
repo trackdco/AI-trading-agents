@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import { Booking } from "@/components/site/booking";
 
 export const metadata: Metadata = {
   title: "Get a Quote",
   description: "Tell us the car and your suburb and we'll text back a fixed quote and the next available days. Mobile detailing across Canberra and Queanbeyan.",
-  alternates: { canonical: "/book/" }, openGraph: { url: "/book/" },
+  alternates: { canonical: "/book/" }, openGraph: og("/book/"),
 };
 
 export default function BookPage() {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import { reviews } from "@/lib/reviews";
 import { site } from "@/lib/site";
 import { SectionHeading } from "@/components/site/section-heading";
@@ -8,7 +9,7 @@ import { CtaBand } from "@/components/site/cta-band";
 export const metadata: Metadata = {
   title: "Customer Reviews",
   description: `${site.stats.rating} stars across ${site.stats.reviewCount} reviews. What Canberra owners say about Imperium Detailing's ceramic coatings, paint correction and full details.`,
-  alternates: { canonical: "/reviews/" }, openGraph: { url: "/reviews/" },
+  alternates: { canonical: "/reviews/" }, openGraph: og("/reviews/"),
 };
 
 export default function ReviewsPage() {

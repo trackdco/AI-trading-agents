@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { services, getService, formatPrice } from "@/lib/services";
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params;
   const s = getService(slug);
   if (!s) return {};
-  return { title: s.title, description: s.description, alternates: { canonical: `/services/${s.slug}/` }, openGraph: { url: `/services/${s.slug}/` } };
+  return { title: s.title, description: s.description, alternates: { canonical: `/services/${s.slug}/` }, openGraph: og(`/services/${s.slug}/`) };
 }
 
 export default async function ServicePage({ params }: { params: Promise<Params> }) {
