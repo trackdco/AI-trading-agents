@@ -46,7 +46,7 @@ export const articles: Article[] = [
         h: "What actually changes the price",
         p: ["Six things move the number up or down, in order of impact."],
         list: [
-          "Vehicle size. A LandCruiser has roughly double the panel area of a Corolla and takes noticeably longer. Every price scales with size.",
+          "Vehicle size. A LandCruiser has a lot more paint on it than a Corolla, and more of it up high where you need a step to reach. Every price scales with size.",
           "Interior condition. A tidy interior takes about 1.5 hours to deep-clean. Years of pet hair, sand or spilled milk can double that, and stains that need multiple extraction passes cost more product too.",
           "Paint condition. Regular decontamination is priced into every exterior detail. Heavy bonded contamination or oxidation on an unwaxed daily driver may push you into paint-correction territory.",
           "Coating tier. Longer warranties mean more layers, more prep and more time. Expect a step-up of roughly $150 to $250 per tier.",

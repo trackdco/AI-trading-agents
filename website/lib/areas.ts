@@ -44,7 +44,7 @@ export const areas: Area[] = [
         ],
       },
       {
-        h: "Pines overhead, four degrees at nine",
+        h: "Pines overhead, cold panels",
         p: [
           "This is the leafy end of Canberra. Park under the pines at Haig Park, or along the older streets, and needles collect in shuts, cowls and roof rails. Resin marks the flat panels. Spring adds pollen on top. A full detail from $225 takes that back off. The $150 a month plan is what keeps it off.",
           "Cold is the other half of a winter job. Panels are cold, water will not leave the surface and a coating cures slowly. Winter coating work gets a longer booking window, and we will move a day before we cut a cure short.",
@@ -157,7 +157,7 @@ export const areas: Area[] = [
         h: "Frost, sun and the 2020 hail",
         p: [
           "Frost sits on anything left out on the driveway from about May to August. Summer runs the other way and the paint bakes dry more often than it gets rinsed. Neither is kind to a clear coat.",
-          "Then there was January 2020. Hail of four to six centimetres fell across Belconnen and on through the city, and plenty of cars around here still wear it. Paint with that history usually wants correction first, from $397, before a ceramic coating from $997 is worth doing.",
+          "Then there was January 2020. Hail of four to six centimetres fell across the southern half of Belconnen and on through Acton to the inner south, and plenty of cars from those streets still wear it. Paint with that history usually wants correction first, from $397, before a ceramic coating from $997 is worth doing.",
           "Two of us, one van, three jobs a day. No shop and no drop-off. We do not fit paint protection film, window tinting or rim repairs, and we will tell you that rather than take the booking.",
         ],
       },

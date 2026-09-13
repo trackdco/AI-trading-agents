@@ -42,6 +42,32 @@ site had nothing checking it. One got through on that basis and is recorded here
 - KEPT: "a step-up of roughly $150 to $250 per tier" on the same page. Checked
   against ceramicTiers — the real steps are $150, $200 and $250. Accurate.
 
+- ~~"Hail of four to six centimetres fell across Belconnen and on through the
+  city"~~ (/service-areas/belconnen/) — OVERSTATED against the page's own cited
+  source. I re-fetched knowledge.aidr.org.au/resources/hailstorm-act-january-2020/:
+  it says the 4-6cm hail fell "across a region extending from **the southern half
+  of Belconnen** north-west of the city centre, through Acton to the inner
+  southern suburbs." This page's suburb list is mostly the northern half — Evatt,
+  McKellar, Florey, Page, Scullin, Hawker, Weetangera, Macquarie — so it was
+  telling those owners their car probably wears 2020 hail. Corrected to the
+  source's own wording.
+- ~~H2 "Pines overhead, four degrees at nine"~~ (/service-areas/inner-north-canberra/)
+  — CUT. The figure is a rounding of a BOM 9am July mean, and this file records it
+  BOTH ways: the summary table says "Canberra Airport July 9am mean 3.9C — could
+  not verify, cut", and the detail entry says it was verified against 71 years of
+  record. I could not settle it either: bom.gov.au returns 403. On top of that, no
+  paragraph under the heading mentioned a temperature, so a reader met an
+  unexplained number. Now reads "Pines overhead, cold panels", which is what the
+  body is actually about.
+- ~~"A LandCruiser has roughly double the panel area of a Corolla"~~
+  (/learn/car-detailing-cost-canberra/) — INVENTED. A measurable ratio with no
+  source, and not even close: a 300 Series is roughly 1.5x a Corolla in length.
+  Rewritten without a number.
+
+**A second contradiction in this file.** The Queanbeyan DCP entry and the BOM 9am
+entry are both recorded as verified in one place and cut in another. Where this
+file disagrees with itself, the claim does not go on the page.
+
 **The rule this establishes:** a statistic that changes with time either carries
 its date and its source, or is rewritten as the durable claim underneath it.
 
