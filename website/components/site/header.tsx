@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { nav, site, telHref } from "@/lib/site";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const toggle = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
 
   const [solid, setSolid] = useState(false);
@@ -15,6 +16,19 @@ export function Header() {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  // Escape is how anyone expects to back out of an open menu, and without it a
+  // keyboard user has to tab through every link to get out of one.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      toggle.current?.focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
 
   // Clear over the hero, solid once you scroll. On phones it tucks away while you scroll
   // down and returns the moment you scroll up, so the screen is all page.
@@ -78,6 +92,7 @@ export function Header() {
         </div>
 
         <button
+          ref={toggle}
           type="button"
           className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-border text-foreground lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
