@@ -141,6 +141,7 @@ export function WashWipe({ live = true, reduced = false }: { live?: boolean; red
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cursorRef = useRef<HTMLSpanElement>(null);
+  const spongeRef = useRef<HTMLSpanElement>(null);
   const engineRef = useRef<Engine | null>(null);
 
   const [near, setNear] = useState(false);
@@ -300,9 +301,16 @@ export function WashWipe({ live = true, reduced = false }: { live?: boolean; red
     return { x: e.clientX - box.left, y: e.clientY - box.top };
   };
 
+  // Position lives on the outer span with no transition, so the sponge never lags
+  // behind the mouse. The squash is on the inner one, which is what animates.
   const moveCursor = (x: number, y: number) => {
     const c = cursorRef.current;
     if (c) c.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+  };
+
+  const pressCursor = (down: boolean) => {
+    const s = spongeRef.current;
+    if (s) s.style.transform = `rotate(-12deg) scale(${down ? 0.86 : 1})`;
   };
 
   const onPointerDown = (ev: React.PointerEvent<HTMLDivElement>) => {
@@ -313,6 +321,8 @@ export function WashWipe({ live = true, reduced = false }: { live?: boolean; red
     bake(e);
     e.pointer = ev.pointerId;
     e.last = point(ev);
+    moveCursor(e.last.x, e.last.y);
+    pressCursor(true);
     // Capture can be refused if the pointer is already gone; the wipe still works.
     try {
       ev.currentTarget.setPointerCapture(ev.pointerId);
@@ -346,6 +356,7 @@ export function WashWipe({ live = true, reduced = false }: { live?: boolean; red
     if (!e || e.pointer !== ev.pointerId) return;
     e.pointer = null;
     e.last = null;
+    pressCursor(false);
     if (ev.currentTarget.hasPointerCapture?.(ev.pointerId)) ev.currentTarget.releasePointerCapture(ev.pointerId);
     restart();
   };
@@ -405,10 +416,42 @@ export function WashWipe({ live = true, reduced = false }: { live?: boolean; red
           className="absolute inset-0 touch-pan-y [@media(pointer:fine)]:cursor-none"
         >
           <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
-          <span
-            ref={cursorRef}
-            className="pointer-events-none absolute left-0 top-0 hidden h-10 w-10 rounded-full border border-accent/70 bg-white/15 [@media(pointer:fine)]:block"
-          />
+          {/* The mitt itself: the same sponge as the step's tab, so the tool in
+              your hand and the step you picked are plainly the same thing. */}
+          <span ref={cursorRef} className="pointer-events-none absolute left-0 top-0 hidden [@media(pointer:fine)]:block">
+            <span
+              ref={spongeRef}
+              className="block text-accent transition-transform duration-150 ease-out motion-reduce:transition-none"
+              style={{ transform: "rotate(-12deg)" }}
+            >
+              {/* Sized so the sponge is as wide as the trail it leaves: the body is
+                  18 of the 24 viewBox units, and the mitt is 40px across. */}
+              <svg
+                width="54"
+                height="54"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                className="drop-shadow-[0_2px_7px_rgba(0,0,0,0.6)]"
+              >
+                <rect x="3" y="7" width="18" height="10" rx="3.4" fill="currentColor" />
+                {/* The scrub pad along the bottom, and a few pores up top. */}
+                <path d="M3.5 13.5h17" stroke="rgba(5,6,8,0.42)" strokeWidth="1.2" />
+                <circle cx="8" cy="10.2" r="1" fill="rgba(5,6,8,0.3)" />
+                <circle cx="12.6" cy="11" r="0.8" fill="rgba(5,6,8,0.3)" />
+                <circle cx="16.6" cy="9.9" r="0.9" fill="rgba(5,6,8,0.3)" />
+                <rect
+                  x="3"
+                  y="7"
+                  width="18"
+                  height="10"
+                  rx="3.4"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.55)"
+                  strokeWidth="0.9"
+                />
+              </svg>
+            </span>
+          </span>
         </div>
       )}
 
