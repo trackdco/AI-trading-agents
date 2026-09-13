@@ -4,5 +4,37 @@
       "source": "/(media|images|brand)/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=2592000" }]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/mobile-detailing-canberra",
+      "destination": "/car-detailing-canberra/",
+      "permanent": true
+    },
+    {
+      "source": "/mobile-car-detailing-canberra",
+      "destination": "/car-detailing-canberra/",
+      "permanent": true
+    },
+    {
+      "source": "/car-cleaning-canberra",
+      "destination": "/car-detailing-canberra/",
+      "permanent": true
+    },
+    {
+      "source": "/ceramic-coating-canberra",
+      "destination": "/services/ceramic-coating-canberra/",
+      "permanent": true
+    },
+    {
+      "source": "/car-ceramic-coating-canberra",
+      "destination": "/services/ceramic-coating-canberra/",
+      "permanent": true
+    },
+    {
+      "source": "/paint-protection-canberra",
+      "destination": "/services/ceramic-coating-canberra/",
+      "permanent": true
+    }
   ]
 }
