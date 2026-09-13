@@ -16,11 +16,8 @@ type Group = { service: JobId; tier: Tier; counts: Counts };
 type Status = "idle" | "sending" | "sent" | "fallback" | "error";
 
 const EMPTY: Counts = { sedan: 0, suv: 0, large: 0, truck: 0 };
-const MAX_PER_SIZE = 20;
+const MAX_PER_SIZE = 15;
 const MAX_GROUPS = 3;
-// Past this, the day is more than one visit. We still price it, we just say so
-// rather than handing back a number that implies it happens in an afternoon.
-const BIG_FLEET = 12;
 
 const newGroup = (service: JobId = "exterior"): Group => ({ service, tier: 3, counts: { ...EMPTY } });
 
@@ -34,7 +31,7 @@ const selectClass =
   "flex h-11 w-full rounded-md border border-input bg-background px-3 text-base text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 const stepBtn =
-  "flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border text-xl leading-none text-foreground transition-colors hover:border-secondary-foreground/50 disabled:opacity-35";
+  "flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border text-xl leading-none text-foreground transition-colors hover:border-secondary-foreground/50 aria-disabled:opacity-35";
 
 /**
  * A truck has no published rate and the maintenance plan only has one for a
@@ -68,6 +65,7 @@ export function FleetQuote() {
   const setCount = (i: number, size: FleetSizeId, raw: number) => {
     // A cleared input gives NaN and a pasted value can be anything, so clamp both.
     const n = Number.isFinite(raw) ? Math.min(MAX_PER_SIZE, Math.max(0, Math.floor(raw))) : 0;
+    if (n > 0) setError("");
     setGroups((gs) => gs.map((g, k) => (k === i ? { ...g, counts: { ...g.counts, [size]: n } } : g)));
   };
 
@@ -261,7 +259,7 @@ export function FleetQuote() {
               </div>
 
               <fieldset className="m-0 mt-3 min-w-0 border-0 p-0">
-                <legend className="sr-only">Which service for this group of vehicles?</legend>
+                <legend className="sr-only">{i === 0 ? "Which service?" : `Which service for group ${i + 1}?`}</legend>
                 <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   {jobs.map((j) => (
                     <label key={j.id} className={chip(g.service === j.id)}>
@@ -302,7 +300,7 @@ export function FleetQuote() {
               )}
 
               <fieldset className="m-0 mt-5 min-w-0 border-0 p-0">
-                <legend className="mb-3 text-sm font-semibold text-foreground">How many of each</legend>
+                <legend className="mb-3 text-sm font-semibold text-foreground">How many of each{i > 0 ? ` (group ${i + 1})` : ""}</legend>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {fleetSizes.map((s, si) => {
                     const n = g.counts[s.id];
@@ -319,8 +317,10 @@ export function FleetQuote() {
                           <button
                             type="button"
                             className={stepBtn}
-                            disabled={n === 0}
-                            onClick={() => setCount(i, s.id, n - 1)}
+                            // aria-disabled, not disabled: a keyboard user stepping this
+                            // down to zero would otherwise lose focus to <body>.
+                            aria-disabled={n === 0}
+                            onClick={() => n > 0 && setCount(i, s.id, n - 1)}
                             aria-label={`One fewer ${s.label}`}
                           >
                             &minus;
@@ -339,8 +339,8 @@ export function FleetQuote() {
                           <button
                             type="button"
                             className={stepBtn}
-                            disabled={n >= MAX_PER_SIZE}
-                            onClick={() => setCount(i, s.id, n + 1)}
+                            aria-disabled={n >= MAX_PER_SIZE}
+                            onClick={() => n < MAX_PER_SIZE && setCount(i, s.id, n + 1)}
                             aria-label={`One more ${s.label}`}
                           >
                             +
@@ -377,6 +377,12 @@ export function FleetQuote() {
               {site.phoneDisplay}
             </a>
             .
+          </p>
+        )}
+
+        {error && (
+          <p role="alert" className="mt-6 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-[15px]">
+            {error}
           </p>
         )}
 
@@ -463,11 +469,11 @@ export function FleetQuote() {
             {lines.filter((l) => l.count > 0).length > 1 && `, ${lines.filter((l) => l.count > 0).length} services`}
           </p>
           <p className="m-0 mt-2 flex items-baseline gap-2">
-            <span className="text-sm text-muted-foreground">from</span>
+            {oneOff > 0 && <span className="text-sm text-muted-foreground">from</span>}
             <span aria-hidden="true" className="display-caps text-6xl tabular-nums md:text-7xl">
-              {formatPrice(shown)}
+              {oneOff > 0 ? formatPrice(shown) : monthly > 0 ? `${formatPrice(monthly)}/mo` : quotedVehicles > 0 ? "Quoted" : "—"}
             </span>
-            <span className="sr-only" aria-live="polite">
+            <span className="sr-only" aria-live="polite" aria-atomic="true">
               {summary}, from {formatPrice(oneOff)}
               {monthly > 0 && `, plus ${formatPrice(monthly)} a month`}
             </span>
@@ -484,8 +490,11 @@ export function FleetQuote() {
                       {l.g.service === "ceramic" && ` (${l.g.tier}yr)`}
                       <span className="block text-xs text-muted-foreground">{l.parts.map((p) => `${p.n} × ${p.size.label}`).join(", ")}</span>
                     </span>
-                    <span className="shrink-0 tabular-nums text-foreground">
+                    <span className="shrink-0 text-right tabular-nums text-foreground">
                       {l.total > 0 ? `${formatPrice(l.total)}${l.monthly ? "/mo" : ""}` : "quoted"}
+                      {l.total > 0 && l.quoted > 0 && (
+                        <span className="block text-xs font-normal text-muted-foreground">+ {l.quoted} quoted</span>
+                      )}
                     </span>
                   </li>
                 ))}
@@ -502,12 +511,8 @@ export function FleetQuote() {
             {conditionCeiling > 0 && (
               <p className="m-0">
                 Condition can add up to {formatPrice(conditionCeiling)} across the {conditionVehicles} interior and full{" "}
-                {conditionVehicles === 1 ? "detail" : "details"}, agreed with you before we start. Worst case {formatPrice(oneOff + conditionCeiling)}.
-              </p>
-            )}
-            {totalVehicles > BIG_FLEET && (
-              <p className="m-0">
-                That&apos;s more than a single visit. We&apos;ll work out with you how to stage it across days that suit the fleet.
+                {conditionVehicles === 1 ? "detail" : "details"}, agreed with you before we start. Worst case {formatPrice(oneOff + conditionCeiling)}
+                {quotedVehicles > 0 ? ", plus whatever the quoted vehicles come to" : ""}.
               </p>
             )}
             <p className="m-0">This is a guide at our published per-car prices. Nothing is booked and nothing is charged until we confirm it with you.</p>
@@ -515,12 +520,6 @@ export function FleetQuote() {
               No volume discount, and no business mark-up. We come back with the price per vehicle, how many days it takes and the dates we have open.
             </p>
           </div>
-
-          {error && (
-            <p role="alert" className="m-0 mt-5 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-[15px]">
-              {error}
-            </p>
-          )}
 
           <div className="mt-6 flex flex-col gap-3">
             <button

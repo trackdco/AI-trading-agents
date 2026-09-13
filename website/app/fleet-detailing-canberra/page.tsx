@@ -9,14 +9,23 @@ import { Picture } from "@/components/site/picture";
 import { LinkButton } from "@/components/site/link-button";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { FleetQuote } from "@/components/site/fleet-quote";
-import { CtaBand } from "@/components/site/cta-band";
 
 export const metadata: Metadata = {
   title: "Fleet Detailing Canberra",
   description:
-    "Mobile fleet and commercial detailing across Canberra and Queanbeyan. Utes, vans, pool cars and trucks done at your yard or car park. Same price per vehicle a private customer pays.",
+    "Mobile fleet detailing for Canberra businesses. Utes, vans, pool cars and trucks done at your yard. Same price per vehicle, no call-out fee.",
   alternates: { canonical: "/fleet-detailing-canberra/" },
-  openGraph: { url: "/fleet-detailing-canberra/" },
+  // Next replaces the layout's openGraph object wholesale rather than merging it,
+  // so the shared image and locale have to be restated or the card ships bare.
+  openGraph: {
+    url: "/fleet-detailing-canberra/",
+    type: "website",
+    locale: "en_AU",
+    siteName: site.name,
+    title: "Fleet Detailing Canberra",
+    description: "Utes, vans, pool cars and trucks detailed at your yard. Same price per vehicle a private customer pays.",
+    images: [{ url: "/brand/og-image.jpg", width: 1200, height: 630, alt: "Imperium Detailing" }],
+  },
 };
 
 const COLS: { id: SizeId; label: string; eg: string }[] = [
@@ -208,7 +217,7 @@ export default function FleetPage() {
               front than have that conversation eight times in your car park.
             </P>
             <P>
-              A motorbike full detail is $135. Trucks we quote over the phone, because a prime mover, a tipper and a rigid are not the same job and
+              A motorbike full detail is {price("full", "bike")}. Trucks we quote over the phone, because a prime mover, a tipper and a rigid are not the same job and
               none of them comes off a price list.
             </P>
             <P>
@@ -349,7 +358,7 @@ export default function FleetPage() {
             <P>
               One note on leased and salary-packaged cars, because an office manager often ends up arranging these for staff. A hand-back detail is
               priced the same as any other detail, by size. What your novated lease does or does not cover is a question for your leasing company, not
-              for us, and we will not tell you otherwise.
+              for us, and we will not pretend to know.
             </P>
           </div>
         </div>
@@ -440,8 +449,7 @@ export default function FleetPage() {
           <div className="mt-6 grid max-w-[64ch] gap-4 text-[17px] text-secondary-foreground">
             <P>We do not fit paint protection film, we do not tint windows and we do not repair rims. If PPF is already on a vehicle, we will ceramic coat over it.</P>
             <P>
-              We are not a bulk wash service. Our cheapest exterior detail is {price("exterior", "sedan")} and it is an hour of hand work, not a pass through a
-              machine. If what the fleet needs is a cheap weekly wash, that is a different product at a different price and we are not trying to match
+              We are not a bulk wash service. An exterior detail is an hour of hand work on one vehicle, not a pass through a machine. If what the fleet needs is a cheap weekly wash, that is a different product at a different price and we are not trying to match
               it.
             </P>
             <P>
@@ -463,11 +471,11 @@ export default function FleetPage() {
             <h2 className="display-caps text-3xl md:text-5xl">For your accounts people</h2>
             <div className="mt-6 grid gap-4 text-[17px] text-secondary-foreground">
               <P>
-                We are not going to show you a wall of client logos. We have not asked those businesses for permission to use their names, so their
-                names are not going on a web page.
+                Other businesses trust us with their vehicles. We have not asked them for permission to use their names, so you will not find a wall
+                of client logos here.
               </P>
               <P>
-                What we can show you is the work: more than {site.stats.cars} cars detailed in the last year, and {site.stats.rating} from{" "}
+                What we can show you is the work: {site.stats.cars} cars detailed in the last year, and {site.stats.rating} from{" "}
                 {site.stats.reviewCount}{" "}
                 <Link href="/reviews/" className="text-foreground underline underline-offset-4">
                   Google reviews
@@ -569,7 +577,25 @@ export default function FleetPage() {
         </div>
       </section>
 
-      <CtaBand title="Send us the fleet." />
+      {/* Not <CtaBand>: its button is "Text us your car" with a one-car message
+          template, which is the wrong ask at the bottom of a fleet page. */}
+      <section className="border-t border-border bg-card/40 py-14 md:py-20">
+        <div className="container-x mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 className="display-caps text-4xl md:text-6xl">Send us the fleet.</h2>
+            <p className="mt-4 max-w-[52ch] text-muted-foreground">
+              Tell us what the fleet is made of and where it parks. We come back with the price per vehicle, how many days it takes, and the dates we
+              have open.
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+            <LinkButton href="#book">Price your fleet</LinkButton>
+            <LinkButton href={sms} variant="ghost">
+              Text the numbers
+            </LinkButton>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

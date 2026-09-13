@@ -1,10 +1,16 @@
-import { prices } from "./site";
-import { sizes, type SizeId } from "./pricing";
+import { formatPrice } from "./services";
+import { guidePrice, conditionRange, sizes, type JobId, type SizeId } from "./pricing";
 
 /**
  * The fleet page's own content. Prices live in lib/pricing.ts and are read from
  * there, never retyped, so a price change in one place changes this page too.
  */
+
+/** Every price below comes through here, so none of them is retyped. */
+const at = (job: JobId, size: SizeId) => {
+  const g = guidePrice(job, size, 3);
+  return g.price === null ? "quoted" : formatPrice(g.price);
+};
 
 /** The sizes a business picks from. Bikes are not fleet work; trucks are, and they are quoted. */
 export type FleetSizeId = Exclude<SizeId, "bike"> | "truck";
@@ -102,7 +108,7 @@ export const fleetPaperwork: { term: string; detail: string }[] = [
 export const fleetFaq: { q: string; a: string }[] = [
   {
     q: "Do we get a discount for multiple vehicles?",
-    a: `No. The price is the same per vehicle as it would be for a private customer, set by the size of the car: exterior $${prices.exterior}, $120 or $140, interior $${prices.interior}, $165 or $170, full detail $${prices.full}, $250 or $270. Two of us and one van do the same work on car six as on car one, so car six costs what car one did. Nothing is marked up because you are a business either.`,
+    a: `No. The price is the same per vehicle as it would be for a private customer, set by the size of the car: exterior ${at("exterior", "sedan")}, ${at("exterior", "suv")} or ${at("exterior", "large")}, interior ${at("interior", "sedan")}, ${at("interior", "suv")} or ${at("interior", "large")}, full detail ${at("full", "sedan")}, ${at("full", "suv")} or ${at("full", "large")}. Two of us and one van do the same work on car six as on car one, so car six costs what car one did. Nothing is marked up because you are a business either.`,
   },
   {
     q: "What do we need to have on site?",
@@ -110,11 +116,11 @@ export const fleetFaq: { q: string; a: string }[] = [
   },
   {
     q: "Our depot has no tap or no power point. Can you still come?",
-    a: "Not as a standard booking. The tap and the power point are the two things we ask you to supply. Most fleets get around it by having us come to whichever address does have both, whether that is head office, a workshop or a yard. Tell us the site and we will tell you straight before you commit to anything.",
+    a: "Not as a standard booking. The tap and the power point are the two things we ask you to supply. The way around it is to have us come to whichever address does have both, whether that is head office, a workshop or a yard. Tell us the site and we will tell you straight before you commit to anything.",
   },
   {
     q: "How many vehicles can you do in a day?",
-    a: "It depends on the vehicles and which service they are getting, so we will not guess at it on a web page. Send your numbers through and we will come back with how many days the fleet takes and the dates we have open. What we will not do is promise a fleet finished in an afternoon.",
+    a: "Work it from the times: about an hour a vehicle for an exterior detail, an hour and a half for an interior, three hours for a full detail on a sedan, and longer on anything bigger. There are two of us working at once, from 8:30am to 5:30pm. Send your numbers and we will come back with the actual days rather than a round figure that suits us."
   },
   {
     q: "Can you work in our basement or office car park?",
@@ -122,7 +128,7 @@ export const fleetFaq: { q: string; a: string }[] = [
   },
   {
     q: "Which of our vehicles counts as what size?",
-    a: `Hatches and sedans are the sedan price. SUVs and utes are the SUV price. 4WDs, vans and 8-seaters are the large price. A motorbike full detail is $135. Trucks we quote over the phone, because a prime mover and a rigid are not the same job.`,
+    a: `Hatches and sedans are the sedan price. SUVs and utes are the SUV price. 4WDs, vans and 8-seaters are the large price. A motorbike full detail is ${at("full", "bike")}. Trucks we quote over the phone, because a prime mover and a rigid are not the same job.`,
   },
   {
     q: "Do trays, canopies, roof racks and van shelving cost more?",
@@ -142,11 +148,11 @@ export const fleetFaq: { q: string; a: string }[] = [
   },
   {
     q: "Can we try you on one vehicle first?",
-    a: "Yes, and we would rather you did. One vehicle is priced exactly the same as it would be for anyone else, so a single ute is $120 for an exterior detail or $250 for a full detail. See the work before you hand over the fleet.",
+    a: `Yes, and we would rather you did. One vehicle is priced exactly the same as it would be for anyone else, so a single ute is ${at("exterior", "suv")} for an exterior detail or ${at("full", "suv")} for a full detail. See the work before you hand over the fleet.`,
   },
   {
-    q: `What is the up-to-$75 condition charge?`,
-    a: "It applies to full and interior details only, it is capped at $75 a vehicle, and it is agreed with you before any work starts, never added afterwards. On a work fleet, assume it is in play. Send photos of the worst two with your enquiry and we will price it in before the day.",
+    q: `What is the up-to-${formatPrice(conditionRange)} condition charge?`,
+    a: `It applies to full and interior details only, it is capped at ${formatPrice(conditionRange)} a vehicle, and it is agreed with you before any work starts, never added afterwards. On a work fleet, assume it is in play. Send photos of the worst two with your enquiry and we will price it in before the day.`,
   },
   {
     q: "When do we pay, and what does it cost to get you out here?",
