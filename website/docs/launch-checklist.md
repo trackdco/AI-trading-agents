@@ -8,7 +8,7 @@ Tick every line before the domain points at the new site. Lines marked "needs Pa
 - [ ] Point `imperiumdetailing.com.au` and `www` at Vercel (needs Pat, domain registrar login).
 - [ ] Confirm HTTPS works on both, and that `http://` and the non-www version redirect to `https://www.`.
 - [ ] Open `/sitemap.xml` and `/robots.txt` on the live domain.
-- [ ] Set `NEXT_PUBLIC_FORM_ENDPOINT` to the LeadConnector webhook (needs Pat).
+- [ ] Nothing to set for the quote form: it posts to Web3Forms and the access key lives in `lib/site.ts`, because a Web3Forms key is public by design. `NEXT_PUBLIC_FORM_ENDPOINT` and `NEXT_PUBLIC_FORM_ACCESS_KEY` only need setting if the form ever moves.
 - [ ] Set `NEXT_PUBLIC_META_PIXEL_ID` if the pixel exists (needs Pat).
 
 ## Content truth check (needs Pat)
@@ -18,14 +18,15 @@ Tick every line before the domain points at the new site. Lines marked "needs Pa
 - [ ] Opening hours: every day, 8:30am to 5:30pm.
 - [ ] Review count and rating match Google.
 - [ ] Warranty page matches the warranty document you hand over.
-- [ ] Not offered: PPF, window tinting, rim repairs. Trucks by phone. Boats never.
+- [ ] Not offered: window tinting and rim repairs. PPF is not FITTED, but film someone else fitted is coated over. Trucks are done, quoted by phone. Boats never.
 
 ## Lead flow
 
-- [ ] Send the quote form from a phone and from a laptop. Confirm the lead lands in the CRM and an automatic text goes back.
+- [ ] **Send one real quote from the live site, from a phone and from a laptop, and confirm the email arrives.** This is the single most important line on this page and it has never been tested end to end — the sandbox blocks Web3Forms, so it could not be verified from here. Do the fleet form too: `/fleet-detailing-canberra/`.
 - [ ] Tap every "Text us" button on a phone. The message should open with the job, price and blanks for car and suburb.
 - [ ] Tap "Call". It should dial 0426 661 820.
 - [ ] Open `/book/?service=Ceramic%20coating` and confirm the service is pre-picked.
+- [ ] On `/fleet-detailing-canberra/`, count a few vehicles into the estimator and send it. Confirm the email lists the vehicles by size and the guide total.
 - [ ] Check the Google review link opens the review box: https://g.page/r/CSwRG2iKFelCEBM/review
 
 ## Tracking
@@ -37,7 +38,7 @@ Tick every line before the domain points at the new site. Lines marked "needs Pa
 
 ## SEO
 
-- [ ] Every page has a unique title under 60 characters and a description under 160 (checked, all 30 pages).
+- [ ] Every page has a unique title under 60 characters and a description between 70 and 160 (checked, all 31 pages).
 - [ ] One H1 per page, no heading jumps (checked).
 - [ ] All images have alt text and dimensions (checked).
 - [ ] Breadcrumb, Service, FAQ, Article and LocalBusiness data validate at https://search.google.com/test/rich-results on the live domain.
@@ -66,7 +67,7 @@ Tick every line before the domain points at the new site. Lines marked "needs Pa
 
 - [ ] Privacy policy matches what the form and the pixel actually collect.
 - [ ] Terms match the warranty and the condition-based price range.
-- [ ] Add the ABN to the footer (needs Pat).
+- [x] ABN in the footer.
 
 ## Launch day
 
@@ -78,5 +79,5 @@ Tick every line before the domain points at the new site. Lines marked "needs Pa
 
 - [ ] Check Search Console for crawl errors after one week.
 - [ ] Compare leads per week with the old site.
-- [ ] Add three to six recent Instagram post codes to the strip.
+- [x] Eight Instagram post codes in the strip, each opened to confirm it loads.
 - [ ] Add a photo of the two of you and a short "who's doing the work" block.

@@ -164,8 +164,10 @@ export function FleetQuote() {
         const payload: Record<string, string> = {};
         for (const [k, v] of data.entries()) payload[k] = String(v);
         delete payload.company;
-        // The vehicle counts live in React state, not in the form, so they are
-        // composed into two readable lines rather than arriving as qty_1_suv.
+        // The chips are real radio inputs, so FormData sweeps up service_0 and
+        // tier_0. Those are machine noise in an inbox; the readable version is
+        // composed below from state instead.
+        for (const k of Object.keys(payload)) if (/^(qty|service|tier)_\d+$/.test(k)) delete payload[k];
         payload.fleet = fleetLines;
         payload.estimate = estimateLine;
         payload.access_key = site.formAccessKey;
