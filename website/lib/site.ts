@@ -2,6 +2,7 @@
 export const site = {
   name: "Imperium Detailing",
   legalName: "Imperium Detailing",
+  abn: "81 254 863 265",
   url: "https://www.imperiumdetailing.com.au",
   tagline: "Not the cheapest detailer in Canberra. The most careful one.",
   phoneDisplay: "0426 661 820",
@@ -21,7 +22,13 @@ export const site = {
   googleReviewsUrl: "https://www.google.com/maps/search/Imperium+Detailing+Canberra",
   googleWriteReviewUrl: "https://g.page/r/CSwRG2iKFelCEBM/review",
   // Integrations. Set these in .env.local (see README); empty means "not loaded".
-  formEndpoint: process.env.NEXT_PUBLIC_FORM_ENDPOINT ?? "",
+  // Web3Forms takes the quote form and emails it. Its access key is public by
+  // design — it ships inside the page the same way a form action does, and any
+  // NEXT_PUBLIC_ value would too — so it lives here rather than in an env var
+  // that has to be set again on every host. If it ever attracts spam, turn on
+  // domain restriction or hCaptcha in the Web3Forms dashboard.
+  formEndpoint: process.env.NEXT_PUBLIC_FORM_ENDPOINT ?? "https://api.web3forms.com/submit",
+  formAccessKey: process.env.NEXT_PUBLIC_FORM_ACCESS_KEY ?? "9711fb99-65d5-4280-811a-ff2cb61b6565",
   metaPixelId: process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "",
   googleAdsId: process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? "AW-17065776345",
   chatWidgetId: process.env.NEXT_PUBLIC_CHAT_WIDGET_ID ?? "6a43315455ef5e64138101d7",
@@ -36,6 +43,12 @@ export const prices = {
   /** Maintenance plan, per month. Fortnightly visits are quoted per car. */
   maintenanceMonthly: 150,
 };
+
+/**
+ * "a full detail" but "an exterior detail". Every service name the site owns
+ * starts with a plain consonant or vowel sound, so the first letter decides it.
+ */
+export const anA = (noun: string) => `${/^[aeiou]/i.test(noun.trim()) ? "an" : "a"} ${noun}`;
 
 export const defaultSmsBody = "Hi Imperium, I'd like a quote.\nCar: \nSuburb: \nService: ";
 

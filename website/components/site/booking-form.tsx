@@ -27,7 +27,15 @@ const selectClass =
 export function BookingForm({ compact = false, defaultService = "" }: { compact?: boolean; defaultService?: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
+  const [copied, setCopied] = useState(false);
   const serviceRef = useRef<HTMLSelectElement>(null);
+  const fallbackRef = useRef<HTMLDivElement>(null);
+
+  // The fallback panel appends below the submit button, so on a laptop it can
+  // land off-screen and read as "nothing happened". Bring it into view.
+  useEffect(() => {
+    if (status === "fallback" || status === "error") fallbackRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [status]);
 
   // A link can pre-pick the service: /book/?service=Ceramic%20coating
   useEffect(() => {
@@ -58,33 +66,58 @@ export function BookingForm({ compact = false, defaultService = "" }: { compact?
     const text = compose(data);
     setMessage(text);
 
-    if (site.formEndpoint) {
+    if (site.formEndpoint && site.formAccessKey) {
       setStatus("sending");
       try {
+        const payload: Record<string, string> = {};
+        for (const [k, v] of data.entries()) payload[k] = String(v);
+        delete payload.company; // our own honeypot, never worth mailing on
+        payload.access_key = site.formAccessKey;
+        // What Pat sees in his inbox before he opens anything.
+        payload.subject = `Quote request: ${data.get("service")} in ${data.get("suburb")}`;
+        payload.from_name = `${data.get("name")} — ${site.name} website`;
+        const email = String(data.get("email") ?? "");
+        if (email) payload.replyto = email; // so he can just hit reply
+
+        // A dead network otherwise leaves the button on "Sending…" for ever, so
+        // give up after twelve seconds and show them the text-us way out.
+        const giveUp = new AbortController();
+        const timer = window.setTimeout(() => giveUp.abort(), 12000);
         const res = await fetch(site.formEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify(Object.fromEntries(data.entries())),
-        });
-        if (!res.ok) throw new Error(String(res.status));
+          body: JSON.stringify(payload),
+          signal: giveUp.signal,
+        }).finally(() => window.clearTimeout(timer));
+        // Web3Forms answers 200 with {success:false} for a rejected send, so the
+        // status code alone is not enough to call it delivered.
+        const body = await res.json().catch(() => null);
+        if (!res.ok || (body && body.success === false)) throw new Error(body?.message ?? String(res.status));
         track("generate_lead", { method: "form", service: String(data.get("service")) });
         setStatus("sent");
         form.reset();
       } catch {
+        // Say plainly that it did not send, and still hand them the text-and-email
+        // way out rather than a dead end they have to retype their way through.
         setStatus("error");
       }
       return;
     }
 
-    // No form endpoint configured yet: hand the composed message to their messaging app.
-    track("generate_lead", { method: "sms", service: String(data.get("service")) });
+    // No endpoint configured: hand the composed message to their messaging app.
+    // Only a phone actually opens one, so only count it as a lead there.
     setStatus("fallback");
-    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) window.location.href = smsHref(text);
+    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      track("generate_lead", { method: "sms", service: String(data.get("service")) });
+      window.location.href = smsHref(text);
+    }
   };
 
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(message);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2200);
     } catch {
       /* clipboard unavailable: the text is on screen to select */
     }
@@ -93,7 +126,7 @@ export function BookingForm({ compact = false, defaultService = "" }: { compact?
   if (status === "sent") {
     return (
       <div className="rounded-lg border border-border bg-card p-6" role="status">
-        <h3 className="text-xl font-semibold">Done. We'll text you shortly.</h3>
+        <h3 className="text-xl font-semibold">{"Done. We'll text you shortly."}</h3>
         <p className="mt-2 text-muted-foreground">
           {site.quotePromise} It will come from {site.phoneDisplay}, so save the number.
         </p>
@@ -157,6 +190,8 @@ export function BookingForm({ compact = false, defaultService = "" }: { compact?
         <div className="hidden" aria-hidden="true">
           <label htmlFor="bf-company">Company</label>
           <input id="bf-company" name="company" tabIndex={-1} autoComplete="off" />
+          {/* Web3Forms runs its own trap on a field with this exact name. */}
+          <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" />
         </div>
       </div>
 
@@ -185,15 +220,19 @@ export function BookingForm({ compact = false, defaultService = "" }: { compact?
 
       {status === "error" && (
         <p role="alert" className="m-0 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-[15px]">
-          That didn't send. Call or text {site.phoneDisplay} and we'll sort it straight away.
+          {"That didn't send. Call or text "}
+          {site.phoneDisplay}
+          {" and we'll sort it straight away."}
         </p>
       )}
 
-      {status === "fallback" && (
-        <div role="status" className="rounded-lg border border-border bg-card p-5">
+      {(status === "fallback" || status === "error") && (
+        <div ref={fallbackRef} role="status" className="rounded-lg border border-border bg-card p-5">
           <h3 className="text-lg font-semibold">Send this to us as a text</h3>
           <p className="mt-1 text-[15px] text-muted-foreground">
-            On a phone, your messages app should have opened with the details filled in. If it didn't, copy them and text {site.phoneDisplay}, or email{" "}
+            {"On a phone, your messages app should have opened with the details filled in. If it didn't, copy them and text "}
+            {site.phoneDisplay}
+            {", or email "}
             <a href={`mailto:${site.email}?subject=Quote%20request&body=${encodeURIComponent(message)}`} className="underline underline-offset-4">
               {site.email}
             </a>
@@ -205,7 +244,7 @@ export function BookingForm({ compact = false, defaultService = "" }: { compact?
               Open in messages
             </a>
             <button type="button" onClick={copy} className="inline-flex min-h-[44px] items-center rounded-md border border-border px-4 text-[15px] font-semibold">
-              Copy details
+              {copied ? "Copied" : "Copy details"}
             </button>
           </div>
         </div>

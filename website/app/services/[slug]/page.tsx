@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { services, getService, formatPrice } from "@/lib/services";
-import { site, smsHref, telHref } from "@/lib/site";
+import { site, smsHref, telHref, anA } from "@/lib/site";
 import { Picture } from "@/components/site/picture";
 import { LoopVideo } from "@/components/site/loop-video";
 import { BeforeAfter } from "@/components/site/before-after";
@@ -73,7 +73,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">{s.intro}</p>
           <p className="mt-4 max-w-[60ch] text-muted-foreground">{s.forWho}</p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <LinkButton href={smsHref(`Hi Imperium, I'd like a quote for a ${s.name.toLowerCase()}.\nCar: \nSuburb: `)}>Text us your car</LinkButton>
+            <LinkButton href={smsHref(`Hi Imperium, I'd like a quote for ${anA(s.name.toLowerCase())}.\nCar: \nSuburb: `)}>Text us your car</LinkButton>
             <LinkButton href={telHref} variant="ghost">
               Call {site.phoneDisplay}
             </LinkButton>
@@ -186,7 +186,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         </div>
       </section>
 
-      <Booking title={`Book a ${s.name.toLowerCase()}.`} defaultService={s.name} />
+      <Booking title={`Book ${anA(s.name.toLowerCase())}.`} defaultService={s.name} />
     </>
   );
 }

@@ -18,7 +18,7 @@ export default function AreasPage() {
           as="h1"
           size="xl"
           title="Nine districts. One mobile van."
-          intro="No shop to drop your car at. We turn up at your driveway, apartment car park or workplace with the van, the water and the power. No travel fee anywhere in the ACT or Queanbeyan: the price you're quoted is the price you pay."
+          intro="No shop to drop your car at. We turn up at your driveway, apartment car park or workplace with the van, the gear and the product, and use your outdoor tap and power point. No travel fee anywhere in the ACT or Queanbeyan: the price you're quoted is the price you pay."
         />
         <ul className="m-0 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
           {areas.map((a) => (

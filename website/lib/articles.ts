@@ -26,7 +26,7 @@ export const articles: Article[] = [
       {
         h: "Pricing by service and vehicle size",
         p: [
-          "All prices are AUD for a mobile service with water and power supplied on site. Ceramic coating and paint correction need a covered garage or workspace.",
+          "All prices are AUD for a mobile service. You supply an outdoor tap and a 240V power point; we bring the van, the gear and the product. Ceramic coating and paint correction need a covered garage or workspace.",
           "Sedan pricing covers most hatches too. The 4WD and 8-seater bracket includes LandCruiser, Patrol, Ram, LDV and full-size 4WDs. A condition-based adjustment of up to $75 applies to genuinely extreme jobs, and we tell you before we start.",
         ],
         list: [
@@ -44,7 +44,7 @@ export const articles: Article[] = [
           "Vehicle size. A LandCruiser has roughly double the panel area of a Corolla and takes noticeably longer. Every price scales with size.",
           "Interior condition. A tidy interior takes about 1.5 hours to deep-clean. Years of pet hair, sand or spilled milk can double that, and stains that need multiple extraction passes cost more product too.",
           "Paint condition. Regular decontamination is priced into every exterior detail. Heavy bonded contamination or oxidation on an unwaxed daily driver may push you into paint-correction territory.",
-          "Coating tier. Longer warranties mean more layers, more prep and more time. Expect a step-up of roughly $300 to $500 per tier.",
+          "Coating tier. Longer warranties mean more layers, more prep and more time. Expect a step-up of roughly $150 to $250 per tier.",
           "Correction stages. A single-stage correction removes light swirl marks and haze. Multi-stage correction for deep scratches and heavier defects is usually 1.5 to 2 times the single-stage price.",
           "Add-ons. Engine bay clean, headlight polishing, plastic trim restoration and leather conditioning are add-on line items, usually $30 to $80 each.",
         ],
@@ -53,7 +53,7 @@ export const articles: Article[] = [
         h: "What isn't extra",
         list: [
           "Travel to your suburb: no call-out fee anywhere in the ACT or Queanbeyan",
-          "Water and power: we're fully self-contained",
+          "Consumables and product: you supply the tap and the power point, we bring everything else",
           "Consumables, product and disposal",
           "Card or transfer payment fees",
         ],

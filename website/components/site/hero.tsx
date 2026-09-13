@@ -91,7 +91,11 @@ export function Hero() {
             aria-label="Washing and drying a green BMW M4 in a Canberra driveway, ending on an Imperium Detailing towel"
             className="panel-glow absolute inset-0 h-full w-full bg-card object-cover md:static md:rounded-xl"
           >
-            <source src="/media/hero-720.mp4" type="video/mp4" />
+            {/* No <source> here on purpose. The effect above picks the right size
+                for the screen and appends its own pair; a hard-coded one was
+                fetched in full on every load and then thrown away — 1.9MB wasted
+                before anyone had scrolled. Without JS the poster stands in, which
+                is what a preload="none" video with no autoplay would show anyway. */}
           </video>
           {playLabel && (
             <button
@@ -110,8 +114,8 @@ export function Hero() {
         </div>
 
         {/* Copy: sits on top of the panel's inner edge on desktop. */}
-        <div className="relative z-10 pt-[54vh] md:col-span-8 md:col-start-1 md:row-start-1 md:pt-0">
-          <h1 className="display-caps text-[clamp(2.5rem,5.7vw,6.1rem)]">
+        <div className="relative z-10 pt-[40vh] md:col-span-8 md:col-start-1 md:row-start-1 md:pt-0">
+          <h1 className="display-caps text-[clamp(2.5rem,5.7vw,6.1rem)] max-[399px]:text-[8.6vw]">
             <span className="hero-line block overflow-x-visible overflow-y-clip pb-[.06em] -mb-[.06em] text-secondary-foreground">
               <span className="inline-block whitespace-nowrap will-change-transform">Not the cheapest</span>
             </span>

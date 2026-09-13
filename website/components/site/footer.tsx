@@ -126,7 +126,9 @@ export function Footer() {
         </div>
       </div>
       <div className="container-x mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-t border-border py-6 text-sm text-muted-foreground">
-        <span>© {new Date().getFullYear()} Imperium Detailing. All rights reserved.</span>
+        <span>
+          © {new Date().getFullYear()} {site.legalName}. All rights reserved. ABN {site.abn}.
+        </span>
         <span>Showroom finish. Every time.</span>
       </div>
     </footer>

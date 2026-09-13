@@ -58,6 +58,9 @@ export function CoverFlowCarousel({
   const [compact, setCompact] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const touchStartX = useRef(0);
+  const rootRef = useRef<HTMLElement>(null);
+  // Nothing here plays, and so nothing downloads, until the carousel is on screen.
+  const [onScreen, setOnScreen] = useState(false);
   const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
   const total = items.length;
 
@@ -65,10 +68,21 @@ export function CoverFlowCarousel({
   useEffect(() => {
     Object.entries(videoRefs.current).forEach(([i, v]) => {
       if (!v) return;
-      if (Number(i) === currentIndex && !reduceMotion) v.play().catch(() => {});
+      if (Number(i) === currentIndex && !reduceMotion && onScreen) v.play().catch(() => {});
       else v.pause();
     });
-  }, [currentIndex, reduceMotion]);
+  }, [currentIndex, reduceMotion, onScreen]);
+
+  // preload="none" holds the clips back until something calls play(), so the
+  // autoplay below was pulling all five down while this was still far below the
+  // fold — about 4MB before the visitor had scrolled anywhere near it.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting), { rootMargin: "200px" });
+    io.observe(root);
+    return () => io.disconnect();
+  }, []);
 
   const nextSlide = useCallback(() => setCurrentIndex((prev) => (prev + 1) % total), [total]);
   const prevSlide = useCallback(() => setCurrentIndex((prev) => (prev - 1 + total) % total), [total]);
@@ -91,10 +105,10 @@ export function CoverFlowCarousel({
   }, []);
 
   useEffect(() => {
-    if (!autoplay || isHovered || reduceMotion || total <= 1) return;
+    if (!autoplay || isHovered || reduceMotion || total <= 1 || !onScreen) return;
     const interval = setInterval(nextSlide, autoplayDelay);
     return () => clearInterval(interval);
-  }, [autoplay, autoplayDelay, isHovered, reduceMotion, nextSlide, total]);
+  }, [autoplay, autoplayDelay, isHovered, reduceMotion, nextSlide, total, onScreen]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowLeft") {
@@ -130,6 +144,7 @@ export function CoverFlowCarousel({
 
   return (
     <section
+      ref={rootRef}
       className={`relative w-full flex items-center justify-center overflow-hidden py-10 select-none ${className}`}
       style={{ backgroundColor: BG, color: "#f3f5f8" }}
       onMouseEnter={() => setIsHovered(true)}

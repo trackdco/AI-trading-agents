@@ -37,7 +37,7 @@ export default async function AreaPage({ params }: { params: Promise<Params> }) 
         <h1 className="display-caps mt-3 text-5xl md:text-7xl">Mobile car detailing in {a.name}.</h1>
         <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">{a.blurb}</p>
         <p className="mt-4 max-w-[60ch] text-muted-foreground">
-          We're a fully mobile detailer: no shop, no drop-off, no travel fee. We come to your driveway, car park or workplace anywhere in {a.name} with the van, the water and the power. {site.quotePromise}
+          We're a fully mobile detailer: no shop, no drop-off, no travel fee. We come to your driveway, car park or workplace anywhere in {a.name} with the van, the gear and the product. All we need on site is an outdoor tap and a power point. {site.quotePromise}
         </p>
 
         <div className="mt-10 grid gap-8 md:grid-cols-12">

@@ -53,7 +53,7 @@ export function Header() {
           <span className="display text-xl tracking-wide text-foreground">Imperium Detailing</span>
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-7 md:flex">
+        <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -65,7 +65,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-5 md:flex">
+        <div className="hidden items-center gap-5 lg:flex">
           <a href={telHref} className="text-[15px] text-secondary-foreground no-underline hover:text-foreground">
             {site.phoneDisplay}
           </a>
@@ -79,7 +79,7 @@ export function Header() {
 
         <button
           type="button"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-border text-foreground md:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-border text-foreground lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-menu"
@@ -91,7 +91,7 @@ export function Header() {
         </button>
       </div>
 
-      <div id="mobile-menu" hidden={!open} className="border-t border-border bg-background md:hidden">
+      <div id="mobile-menu" hidden={!open} className="border-t border-border bg-background lg:hidden">
         <nav aria-label="Mobile" className="container-x flex flex-col py-2">
           {nav.map((item) => (
             <Link key={item.href} href={item.href} className="border-b border-border py-4 text-lg text-foreground no-underline">

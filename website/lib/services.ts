@@ -147,7 +147,7 @@ export const services: Service[] = [
       },
       {
         q: "Is machine polishing safe for my paint?",
-        a: "Not when it's done properly is the wrong answer; yes, when it's done properly. We measure paint thickness before and after each pass, use the least aggressive pad and compound that will work, and stop well before we'd risk the clear coat.",
+        a: "Yes, when it's done properly. We measure paint thickness before and after each pass, use the least aggressive pad and compound that will work, and stop well before we'd risk the clear coat.",
       },
     ],
     related: ["ceramic-coating-canberra", "exterior-car-detailing-canberra"],

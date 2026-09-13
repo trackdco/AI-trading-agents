@@ -12,11 +12,12 @@ export function JsonLd() {
     url: site.url,
     telephone: site.phoneE164,
     email: site.email,
+    taxID: site.abn.replace(/\s/g, ""),
     image: `${site.url}/brand/og-image.jpg`,
     logo: `${site.url}/brand/logo-full-dark-640.png`,
     description:
       "Premium mobile car detailing in Canberra and Queanbeyan: ceramic coatings, paint correction, full, interior and exterior details at your home or workplace.",
-    priceRange: "$110 - $2500",
+    priceRange: "$110 - $1597",
     address: {
       "@type": "PostalAddress",
       addressLocality: site.address.locality,
