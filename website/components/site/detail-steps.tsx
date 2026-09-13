@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { detailSteps, type StepId } from "@/lib/detail-steps";
-import type { CarScene } from "@/components/site/car-scene";
+import type { CarSpin } from "@/components/site/car-spin";
 import { SectionHeading } from "@/components/site/section-heading";
+
+const FRAME_COUNT = 40;
 
 const icons: Record<StepId, React.ReactNode> = {
   foam: (
@@ -50,7 +52,7 @@ export function DetailSteps() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<CarScene | null>(null);
+  const sceneRef = useRef<CarSpin | null>(null);
   const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
 
   const step = detailSteps.find((s) => s.id === active)!;
@@ -85,16 +87,23 @@ export function DetailSteps() {
     const start = async () => {
       started = true;
       try {
-        const probe = document.createElement("canvas").getContext("webgl2") ?? document.createElement("canvas").getContext("webgl");
-        if (!probe) throw new Error("no webgl");
-        const { createCarScene } = await import("@/components/site/car-scene");
+        if (!document.createElement("canvas").getContext("webgl2")) throw new Error("no webgl2");
+        const { createCarSpin } = await import("@/components/site/car-spin");
         if (cancelled) return;
-        sceneRef.current = createCarScene(canvas, {
+        const lowPower = window.matchMedia("(max-width: 767px)").matches;
+        // Phones take every second frame: half the download, still smooth enough to spin.
+        const stepBy = lowPower ? 2 : 1;
+        const frames = Array.from({ length: Math.floor(FRAME_COUNT / stepBy) }, (_, i) =>
+          `/media/m4/${String(i * stepBy).padStart(2, "0")}.webp`,
+        );
+        sceneRef.current = createCarSpin(canvas, frames, {
           reduced: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-          lowPower: window.matchMedia("(max-width: 767px)").matches,
+          lowPower,
+          onReady: () => {
+            if (!cancelled) setReady(true);
+          },
         });
         sceneRef.current.setStep(active);
-        setReady(true);
       } catch {
         if (!cancelled) setFailed(true);
       }
@@ -206,19 +215,19 @@ export function DetailSteps() {
       <div className="container-x mx-auto mt-6 max-w-5xl md:mt-8">
         <div
           ref={stageRef}
-          className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-[radial-gradient(70%_70%_at_50%_28%,rgba(43,86,142,0.4),rgba(9,13,19,0.9)_72%)] sm:aspect-[16/10] md:aspect-[16/9]"
+          className="relative aspect-[1100/418] w-full overflow-hidden rounded-2xl border border-border bg-[#0a0e14]"
         >
-          <canvas ref={canvasRef} className="absolute inset-0 h-full w-full touch-pan-y" aria-hidden="true" />
+          <canvas ref={canvasRef} className="absolute inset-0 h-full w-full cursor-grab touch-pan-y active:cursor-grabbing" aria-hidden="true" />
 
           {!ready && !failed && (
             <div className="absolute inset-0 grid place-items-center">
-              <span className="text-[15px] text-muted-foreground">Warming up the lights…</span>
+              <span className="text-[15px] text-muted-foreground">Rolling the car in…</span>
             </div>
           )}
           {failed && (
             <div className="absolute inset-0 grid place-items-center px-6 text-center">
               <span className="max-w-[34ch] text-[15px] text-muted-foreground">
-                Your browser can&apos;t show the 3D car. The five stages are written out below.
+                Your browser can&apos;t show the spinning car. The five stages are written out below.
               </span>
             </div>
           )}
