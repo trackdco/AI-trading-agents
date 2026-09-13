@@ -42,7 +42,8 @@ Tick every line before the domain points at the new site. Lines marked "needs Pa
 - [ ] One H1 per page, no heading jumps (checked).
 - [ ] All images have alt text and dimensions (checked).
 - [ ] Breadcrumb, Service, FAQ, Article and LocalBusiness data validate at https://search.google.com/test/rich-results on the live domain.
-- [ ] Old URLs from the previous site redirect to the matching new pages (needs the old URL list).
+- [x] Old URLs from the previous site redirect to the matching new pages. Checked against the live sitemap at imperiumdetailing.com.au on 2026-09-13: all 26 URLs it lists either exist on the new site or already have a redirect in `vercel.json`. `/contact-us` was the only gap — it is from an older iteration, already 404s live, and is still indexed, so it now redirects to `/book/`.
+- [ ] **Two other websites are live on this brand and need a decision (needs Pat).** `imperiumdetailing.org` is indexed, with `/pages/best-ceramic-coating-service-in-canberra` and a Canberra detailing blog, and lists `management@imperiumdetailing.org`. `imperiumdetailing.square.site` also resolves. If both are yours, redirect them at the domain level to the matching `.com.au` pages — otherwise they compete with you for the same Canberra searches and split every mention Google has for the brand.
 
 ## Speed
 

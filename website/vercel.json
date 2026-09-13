@@ -7,6 +7,11 @@
   ],
   "redirects": [
     {
+      "source": "/contact-us",
+      "destination": "/book/",
+      "permanent": true
+    },
+    {
       "source": "/mobile-detailing-canberra",
       "destination": "/car-detailing-canberra/",
       "permanent": true

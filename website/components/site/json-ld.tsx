@@ -45,12 +45,13 @@ export function JsonLd() {
       geoRadius: "40000",
     },
     sameAs: [site.instagram, site.googleReviewsUrl],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: site.stats.rating,
-      reviewCount: site.stats.reviewCount,
-      bestRating: "5",
-    },
+    // No aggregateRating here on purpose. Google does not show review rich
+    // results when the business being reviewed controls the markup — a business
+    // rating itself is "self-serving" and simply ignored — so the stars it looks
+    // like it should buy never appear. The 4.9 from 45 stays in visible text on
+    // the page and on /reviews/, and the stars come from the Google Business
+    // Profile, which is where they are eligible.
+    // https://developers.google.com/search/docs/appearance/structured-data/review-snippet
     makesOffer: [
       ...services.map((s) => ({
         "@type": "Offer",
