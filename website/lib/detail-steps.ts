@@ -10,6 +10,12 @@ export type DetailStep = {
   poster: string;
   /** What the footage shows, for anyone who can't see it. */
   alt: string;
+  /**
+   * True when the clip is one lap around the car, which lets people drag it to
+   * turn the car. Encode those with dense keyframes or the drag feels sticky:
+   * -g 15 -keyint_min 15 -sc_threshold 0
+   */
+  spin?: boolean;
 };
 
 const PLACEHOLDER = "/media/steps/placeholder.webp";
@@ -24,6 +30,7 @@ export const detailSteps: DetailStep[] = [
     video: "/media/steps/snow-foam.mp4",
     poster: "/media/steps/snow-foam.webp",
     alt: "Thick white snow foam being laid over a car and sliding down the panels",
+    spin: true,
   },
   {
     id: "wash",

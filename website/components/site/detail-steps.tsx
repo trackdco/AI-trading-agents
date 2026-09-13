@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { detailSteps, type DetailStep, type StepId } from "@/lib/detail-steps";
 import { SectionHeading } from "@/components/site/section-heading";
+import { useSpin, spinHintClass } from "@/lib/use-spin";
 
 const icons: Record<StepId, React.ReactNode> = {
   foam: (
@@ -47,12 +48,17 @@ function StepMedia({ step, active, reduced }: { step: DetailStep; active: boolea
   const ref = useRef<HTMLVideoElement>(null);
   const [broken, setBroken] = useState(false);
 
+  const spinnable = Boolean(step.spin && step.video && !broken && !reduced);
+  const spin = useSpin(ref, spinnable);
+  const { clear } = spin;
+
   useEffect(() => {
     const v = ref.current;
     if (!v || reduced) return;
     if (active) void v.play().catch(() => {});
     else v.pause();
-  }, [active, reduced]);
+    return clear;
+  }, [active, reduced, clear]);
 
   return (
     <div
@@ -72,11 +78,13 @@ function StepMedia({ step, active, reduced }: { step: DetailStep; active: boolea
           poster={step.poster}
           aria-label={step.alt}
           onError={() => setBroken(true)}
-          className="absolute inset-0 h-full w-full object-cover"
+          {...spin.handlers}
+          className={`absolute inset-0 h-full w-full object-cover ${spin.className}`}
         >
           <source src={step.video} type="video/mp4" />
         </video>
       )}
+      {spinnable && !spin.dragged && <span className={spinHintClass}>Drag to turn the car</span>}
       {!step.video && (
         <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-border bg-background/80 px-4 py-2 text-sm text-muted-foreground backdrop-blur">
           Footage coming soon

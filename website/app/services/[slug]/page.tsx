@@ -96,7 +96,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           </div>
           <div className="container-x mx-auto max-w-5xl">
             <div className="overflow-hidden rounded-2xl border border-border bg-[#0a0e14]">
-              <LoopVideo base={s.showcase.base} poster={s.showcase.poster} label={s.showcase.label} className="block w-full" />
+              <LoopVideo base={s.showcase.base} poster={s.showcase.poster} label={s.showcase.label} className="block w-full" webm={false} spin />
             </div>
           </div>
         </section>
