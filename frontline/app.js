@@ -17,6 +17,55 @@
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ------------------------------------------------------------ the hero --
+     The page's one orchestrated moment, played once on load: the headline rises
+     line by line, the handset lights, the notification drops onto the lock
+     screen and the phone kicks as if it had just buzzed. The class is added from
+     here rather than sitting in the markup so that a reader with JavaScript off,
+     or with reduced motion on, simply gets the finished state. */
+  const phone = document.getElementById('phone');
+  if (!reduced) {
+    document.documentElement.classList.add('anim');
+    if (phone) {
+      // Matches the note-card's 1320ms delay plus its 520ms drop.
+      setTimeout(() => phone.classList.add('kick'), 1780);
+    }
+  }
+
+  /* ---------------------------------------------------------- the device --
+     The Imperium screenshot scrolls inside the handset as the handset travels
+     up the viewport, so the reader scrolls a real 32-page site without leaving
+     this one. Driven off scroll rather than a loop: a loop would move while
+     nobody is looking, and this way the gesture is theirs. */
+  const device = document.getElementById('device');
+  if (device && !reduced) {
+    const reel = device.querySelector('.reel');
+    const screen = device.querySelector('.screen');
+    let visible = false;
+    let queued = false;
+
+    function frame() {
+      queued = false;
+      const box = device.getBoundingClientRect();
+      const travel = reel.offsetHeight - screen.clientHeight;
+      if (travel <= 0) return;
+      // 0 when the device first enters from below, 1 when it has fully left.
+      const t = (innerHeight - box.top) / (innerHeight + box.height);
+      const y = Math.min(1, Math.max(0, t)) * travel;
+      reel.style.transform = `translate3d(0, ${-y.toFixed(1)}px, 0)`;
+    }
+    function onScroll() {
+      if (visible && !queued) { queued = true; requestAnimationFrame(frame); }
+    }
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible) frame();
+    }, { rootMargin: '100px' }).observe(device);
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll, { passive: true });
+    if (reel.complete) frame(); else reel.addEventListener('load', frame);
+  }
+
   /* ------------------------------------------------------------ the log --
      Tapping a tier relights the log. The point of the control is that the page
      never has to describe what a tier includes in the abstract — you can see

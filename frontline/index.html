@@ -23,7 +23,7 @@
 <link rel="icon" href="/assets/frontline-icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#e9eae6">
+<meta name="theme-color" content="#141517">
 
 <link rel="preload" href="/assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-sans-3.woff2" as="font" type="font/woff2" crossorigin>
@@ -84,6 +84,21 @@
     <a class="btn" href="#start">Book the setup call — from $500</a>
     <p class="cta-note">Every account is opened in your name, on your card. I never hold a password.</p>
     <a class="btn-2" href="https://www.imperiumdetailing.com.au" target="_blank" rel="noopener">See the site I built</a>
+  </div>
+
+  <!-- The notification is spelled out in accessible text in the log below, so the
+       handset is hidden from screen readers rather than read out twice. -->
+  <div class="phone" id="phone" aria-hidden="true">
+    <div class="screen">
+      <span class="notch"></span>
+      <span class="lock-time tnum">7:42</span>
+      <span class="lock-date">Thursday evening</span>
+      <div class="note-card">
+        <div class="top"><span class="dot"></span>KAMBAH GUTTER CO<span class="at">now</span></div>
+        <div class="msg">New quote request<span> &mdash; Dave, Kambah, gutter clean, 0412&nbsp;xxx&nbsp;xxx.</span></div>
+      </div>
+      <span class="hint">That is the whole product.</span>
+    </div>
   </div>
 </section>
 
@@ -250,12 +265,14 @@
   <p>That&rsquo;s my own mobile detailing business, here in Canberra. I built it, my own leads run through it, and it&rsquo;s the one site I can show you from the first word to the last &mdash; because I&rsquo;m the client and the builder, so there&rsquo;s nothing I have to be vague about.</p>
   <p>Don&rsquo;t take my word for any of it. Open it on your phone. Time how fast it loads. Run the price calculator. Fill in the quote form with your own number and see how long the reply takes.</p>
 
-  <div class="shots">
-    <img src="/assets/proof-hero-360.webp" srcset="/assets/proof-hero-360.webp 360w, /assets/proof-hero-720.webp 720w" sizes="(min-width:620px) 190px, 30vw" width="360" height="779" loading="lazy" decoding="async" alt="The Imperium Detailing home page on a phone.">
-    <img src="/assets/proof-price-360.webp" srcset="/assets/proof-price-360.webp 360w, /assets/proof-price-720.webp 720w" sizes="(min-width:620px) 190px, 30vw" width="360" height="779" loading="lazy" decoding="async" alt="The price calculator, showing a quote worked out on screen.">
-    <img src="/assets/proof-book-360.webp" srcset="/assets/proof-book-360.webp 360w, /assets/proof-book-720.webp 720w" sizes="(min-width:620px) 190px, 30vw" width="360" height="779" loading="lazy" decoding="async" alt="The booking form, and the three steps after you send it.">
+  <div class="device" id="device">
+    <div class="screen">
+      <span class="notch"></span>
+      <img class="reel" src="/assets/imperium-reel.webp" width="460" height="6968" loading="lazy" decoding="async" alt="The Imperium Detailing site scrolling from the top of the home page, through the price calculator, the gallery of finished cars and the booking form.">
+      <span class="glass"></span>
+    </div>
   </div>
-  <p class="micro">Three screens from it. Better to open the real thing.</p>
+  <p class="micro" style="text-align:center">Scroll and it scrolls. Better still, <a href="https://www.imperiumdetailing.com.au" target="_blank" rel="noopener">open the real thing</a>.</p>
 
   <h3 style="margin-top:24px">Here&rsquo;s what&rsquo;s in it, in things you can count</h3>
   <ul class="specs">
@@ -309,7 +326,7 @@
       <li>No extra pages</li>
     </ul>
     <p class="terms tnum">$500 books the call, $397 on the day it goes live. If that&rsquo;s tight, three payments of $299 &mdash; same total, I don&rsquo;t discount.</p>
-    <div class="cta-block"><a class="btn" href="#start">Book the setup call — from $500</a></div>
+    <div class="cta-block"><a class="btn ghost" href="#start">Book the setup call — from $500</a></div>
   </div>
 
   <div class="doc tier pick">
@@ -354,7 +371,7 @@
       <li>No monthly reporting, because there&rsquo;s no monthly anything</li>
     </ul>
     <p class="terms tnum">$1,748.50 books the call, $1,748.50 on the day it goes live.</p>
-    <div class="cta-block"><a class="btn" href="#start">Book the setup call — from $500</a></div>
+    <div class="cta-block"><a class="btn ghost" href="#start">Book the setup call — from $500</a></div>
   </div>
 
   <p class="small">No tier includes online payments, a shop, calendar bookings, logo design, ads or monthly SEO. That list is <a href="#scope">just below</a>, in full.</p>

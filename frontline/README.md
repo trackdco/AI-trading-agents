@@ -7,10 +7,34 @@ and it works; drag the folder onto any host and it works there too.
     privacy/index.html  privacy policy
     styles.css          all styling, tokens at the top
     app.js              tier switcher, sticky bar, form
-    assets/             logo, favicons, fonts, proof screenshots, share card
+    assets/             logo, favicons, fonts, the Imperium reel, share card
     assets/trace-logo.py  regenerates the logo SVGs from logo-orig.png
 
-First load is about **81 KB** over the wire, and 62 KB of that is the two fonts.
+First load is about **85 KB** over the wire, and 62 KB of that is the two fonts.
+`imperium-reel.webp` (172 KB) is lazy-loaded well below the fold.
+
+## The look
+
+Deep charcoal, navy as structure, hi-vis as the only thing that acts — a night
+job site rather than another dark SaaS page. Two fixed layers do the lighting: a
+soft navy key light and a fine grain at 3.5% on overlay. The grain is what stops
+a dark page reading flat; remove it and the whole thing goes plastic.
+
+Hi-vis is rationed hard. It is the primary button, the rail on the one log row
+the business rests on, the tick marks, and nothing else. The two non-recommended
+pricing tiers deliberately carry the same words on a lighter button, so the solid
+yellow always means "this one".
+
+Two handsets carry the argument. The hero one is built in CSS and plays the
+product happening — lock screen, 7:42, the notification dropping in, one kick.
+The second, in the proof section, runs a real screenshot of
+imperiumdetailing.com.au that scrolls as the page scrolls.
+
+Regenerating that reel: serve a production build of the Imperium site locally and
+run `scratchpad/imperium/fl-reel.mjs`. It captures band by band on purpose — that
+site pauses its videos off-screen, so a single full-page grab catches them as
+black holes, and every off-box request has to be blocked or the sandbox proxy's
+TLS retries take the browser down.
 
 ---
 
@@ -115,7 +139,7 @@ This is also the template for the $897 and $1,897 builds. To rebuild it as a
 client's site:
 
 1. Copy the folder.
-2. Change the nine token values at the top of `styles.css`. That is the whole
+2. Change the token values at the top of `styles.css`. That is the whole
    palette. The `theme-factory` skill in `.claude/skills/` has ten ready-made
    colour and font pairings — use a different one per client so no two builds
    look like the same site recoloured.
