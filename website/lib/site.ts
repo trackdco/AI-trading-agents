@@ -43,7 +43,9 @@ export const prices = {
   full: 225,
   correction: 397,
   ceramic: 997,
-  /** Maintenance plan, per month. Fortnightly visits are quoted per car. */
+  /** Exterior-only maintenance plan, per month. The entry price on the plans page. */
+  maintenanceExterior: 90,
+  /** Inside-and-out maintenance plan, per month. Fortnightly visits are quoted per car. */
   maintenanceMonthly: 150,
 };
 

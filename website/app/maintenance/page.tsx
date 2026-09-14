@@ -3,6 +3,7 @@ import { og } from "@/lib/seo";
 import Link from "next/link";
 import { site, prices, smsHref, telHref } from "@/lib/site";
 import { formatPrice, type Faq as FaqItem } from "@/lib/services";
+import { LoopVideo } from "@/components/site/loop-video";
 import { Picture } from "@/components/site/picture";
 import { Faq } from "@/components/site/faq";
 import { LinkButton } from "@/components/site/link-button";
@@ -11,16 +12,22 @@ import { Booking } from "@/components/site/booking";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Maintenance Plans Canberra from $150",
+  title: "Maintenance Plans Canberra from $90",
   description:
-    "Monthly maintenance plans from $150: a coating-safe hand wash and interior reset at your home or work, every month or fortnight, across Canberra.",
+    "Monthly car maintenance in Canberra. Exterior from $90 a month, inside and out from $150. A coating-safe hand wash at your place, monthly or fortnightly.",
   alternates: { canonical: "/maintenance/" }, openGraph: og("/maintenance/"),
 };
 
-const rhythms = [
+const plans = [
   {
-    every: "Every month",
-    who: "Most cars. Garaged overnight, driven daily, and you want it to stay the way we left it. The rhythm we recommend for coated cars.",
+    every: "Exterior, monthly",
+    who: "The outside kept the way we left it. The cheapest way onto a schedule, and enough for a car that lives in a garage and carries nobody but you.",
+    price: `From ${formatPrice(prices.maintenanceExterior)} a month`,
+    note: "Quoted for your car",
+  },
+  {
+    every: "Inside and out, monthly",
+    who: "The exterior visit plus the interior reset. Most cars that carry people every day sit here, and it is the rhythm we recommend for coated cars.",
     price: `From ${formatPrice(prices.maintenanceMonthly)} a month`,
     note: "Quoted for your car",
   },
@@ -32,15 +39,22 @@ const rhythms = [
   },
 ];
 
-const visit = [
+// Split so the two prices mean something: the first list is the $90 visit, the
+// second is what the extra $60 buys.
+const outside = [
   "Pre-rinse and snow foam, so grit lifts off before anything touches the paint",
   "Two-bucket, pH-neutral hand wash with clean mitts, never a brush",
   "Wheels, tyres and arches cleaned, tyres dressed",
-  "Door jambs, and glass inside and out",
-  "Interior vacuum, with the dash, console and door cards wiped down",
+  "Door jambs and exterior glass",
   "Bonded contamination checked and spot-treated",
   "Protection topped up: a coating booster on coated cars, a sealant on the rest",
   "A quick note on anything we notice: stone chips, swirl marks, coating health",
+];
+
+const inside = [
+  "Interior vacuum, front and back",
+  "Dash, console and door cards wiped down",
+  "Interior glass",
 ];
 
 const faq: FaqItem[] = [
@@ -50,7 +64,11 @@ const faq: FaqItem[] = [
   },
   {
     q: "How is it priced?",
-    a: "Monthly plans start at $150 a month, quoted for your car from its size, colour and how it's used. Fortnightly visits are quoted on request. It's the same number every month, and the number you're quoted is the number you pay.",
+    a: "The exterior plan starts at $90 a month and inside and out starts at $150, quoted for your car from its size, colour and how it's used. Fortnightly visits are quoted on request. It's the same number every month, and the number you're quoted is the number you pay.",
+  },
+  {
+    q: "What's the difference between the $90 plan and the $150 one?",
+    a: "The $90 plan is the outside: snow foam, a two-bucket hand wash, wheels and arches, glass, and the protection topped up. The $150 plan is that visit plus the interior reset, so the vacuum, the dash, console and door cards, and the inside of the glass. Both are the same two people, the same month, at your place.",
   },
   {
     q: "Do I need to be home?",
@@ -82,7 +100,8 @@ export default function MaintenancePage() {
         <div className="md:col-span-7">
           <Breadcrumbs items={[{ href: "/services/", label: "Services" }, { href: "/maintenance/", label: "Maintenance plans" }]} />
           <p className="m-0 mt-4 text-[15px] text-muted-foreground">
-            Monthly from <b className="font-medium text-foreground">{formatPrice(prices.maintenanceMonthly)}</b>. Fortnightly quoted on request.
+            Exterior from <b className="font-medium text-foreground">{formatPrice(prices.maintenanceExterior)}</b> a month. Inside and out from{" "}
+            <b className="font-medium text-foreground">{formatPrice(prices.maintenanceMonthly)}</b>. Fortnightly quoted on request.
           </p>
           <h1 className="display-caps mt-3 text-5xl md:text-7xl">Detailed once. Kept that way.</h1>
           <p className="mt-6 max-w-[60ch] text-lg text-secondary-foreground">
@@ -112,10 +131,10 @@ export default function MaintenancePage() {
 
       <section className="border-t border-border">
         <div className="container-x mx-auto max-w-6xl py-14 md:py-20">
-          <h2 className="display-caps text-3xl md:text-5xl">Pick a rhythm.</h2>
+          <h2 className="display-caps text-3xl md:text-5xl">Pick a plan.</h2>
           <p className="mt-4 max-w-[58ch] text-lg text-muted-foreground">{"We'll suggest one when we quote. You can change it any time."}</p>
           <div className="mt-8 grid gap-px overflow-hidden rounded-lg border border-border bg-border">
-            {rhythms.map((r) => (
+            {plans.map((r) => (
               <div key={r.every} className="grid gap-3 bg-background p-5 md:grid-cols-12 md:items-center md:p-6">
                 <h3 className="display-caps m-0 text-3xl md:col-span-3">{r.every}</h3>
                 <p className="m-0 text-[15px] text-secondary-foreground md:col-span-6">{r.who}</p>
@@ -133,8 +152,22 @@ export default function MaintenancePage() {
         <div className="container-x mx-auto grid max-w-6xl gap-12 py-14 md:grid-cols-12 md:py-20">
           <div className="md:col-span-7">
             <h2 className="display-caps text-3xl md:text-5xl">What a visit covers</h2>
-            <ul className="mt-6 grid max-w-[64ch] list-none gap-2.5 p-0 text-[17px] text-secondary-foreground">
-              {visit.map((t) => (
+            <h3 className="mt-6 text-lg font-semibold">
+              Every visit, from {formatPrice(prices.maintenanceExterior)} a month
+            </h3>
+            <ul className="mt-4 grid max-w-[64ch] list-none gap-2.5 p-0 text-[17px] text-secondary-foreground">
+              {outside.map((t) => (
+                <li key={t} className="flex gap-3">
+                  <span aria-hidden="true" className="mt-[.6em] h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                  {t}
+                </li>
+              ))}
+            </ul>
+            <h3 className="mt-8 text-lg font-semibold">
+              Inside and out adds, from {formatPrice(prices.maintenanceMonthly)} a month
+            </h3>
+            <ul className="mt-4 grid max-w-[64ch] list-none gap-2.5 p-0 text-[17px] text-secondary-foreground">
+              {inside.map((t) => (
                 <li key={t} className="flex gap-3">
                   <span aria-hidden="true" className="mt-[.6em] h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
                   {t}
@@ -158,6 +191,33 @@ export default function MaintenancePage() {
               </ul>
             </div>
           </aside>
+        </div>
+      </section>
+
+      <section className="border-t border-border">
+        <div className="container-x mx-auto grid max-w-6xl items-center gap-10 py-14 md:grid-cols-12 md:py-20">
+          <div className="md:col-span-5">
+            <LoopVideo
+              base="/media/maintenance-wash-720"
+              poster="/media/maintenance-wash-poster.webp"
+              label="A monthly maintenance wash on a work ute: snow foam, a hand wash with a mitt, the wheels, then dried by hand"
+              className="panel-glow aspect-[4/5] w-full rounded-xl bg-card object-cover"
+            />
+          </div>
+          <div className="md:col-span-7">
+            <h2 className="display-caps text-3xl md:text-5xl">One visit, start to finish.</h2>
+            <p className="mt-5 max-w-[56ch] text-lg text-secondary-foreground">
+              Snow foam first so the grit lifts off, then a hand wash with a clean mitt, the wheels and arches, and a hand dry. No brushes touch the
+              paint. That is the whole visit, and it looks the same every month.
+            </p>
+            <p className="mt-4 max-w-[56ch] text-muted-foreground">
+              This one is a work ute on a monthly exterior plan. The exterior maintenance plan starts at{" "}
+              <b className="font-medium text-foreground">{formatPrice(prices.maintenanceExterior)} a month</b>, quoted for your vehicle.
+            </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <QuoteCta sms={sms} />
+            </div>
+          </div>
         </div>
       </section>
 

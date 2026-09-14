@@ -5,16 +5,39 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Picture } from "@/components/site/picture";
-import { BeadingVideo } from "@/components/site/beading-video";
+import { LoopVideo } from "@/components/site/loop-video";
 import { site } from "@/lib/site";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 // Every photo is shot on a phone in portrait. On desktop the gallery pins and scrolls
 // sideways, one big frame after another; on phones it's a two-up grid.
-const frames = [
+//
+// A tile is a photo unless it carries `video`, in which case it's a silent loop
+// with the same frame and caption. Ordinary cars are deliberately mixed in with
+// the supercars: the price guide quotes on a Corolla or a RAV4, so the gallery
+// should show one.
+type Frame = { name: string; alt: string; title: string; sub: string; video?: { base: string; poster: string } };
+
+const frames: Frame[] = [
+  {
+    name: "beading",
+    alt: "Water beading and sliding off a ceramic-coated panel",
+    title: "Water beading",
+    sub: "Ceramic coating",
+    video: { base: "/media/beading-720", poster: "/media/beading-poster.webp" },
+  },
   { name: "mclaren-650s", alt: "White McLaren 650S after a full detail in a Canberra driveway", title: "McLaren 650S", sub: "Full detail" },
+  { name: "audi-s4", alt: "Blue Audi S4 sedan in a driveway, snow foam still on the ground around it", title: "Audi S4", sub: "Sedan" },
   { name: "correction-suv", alt: "Black SUV with corrected, mirror-finish paint", title: "Nissan Patrol", sub: "Paint correction" },
+  {
+    name: "m3-gtr",
+    alt: "A black BMW M3 CS and a black Nissan GT-R, finished and parked together",
+    title: "M3 CS and GT-R",
+    sub: "Recent work",
+    video: { base: "/media/m3-gtr-720", poster: "/media/m3-gtr-poster.webp" },
+  },
+  { name: "rav4-hybrid", alt: "Black Toyota RAV4 Hybrid, washed and dried, outside a shed", title: "Toyota RAV4 Hybrid", sub: "Mid-size SUV" },
   { name: "huracan-driveway", alt: "Lamborghini Huracán after an exterior detail", title: "Lamborghini Huracán", sub: "Exterior detail" },
   { name: "lambo-interior", alt: "Detailed leather interior of a Lamborghini", title: "Huracán interior", sub: "Interior detail" },
   { name: "m4-clean-front", alt: "Green BMW M4, freshly washed and glossy", title: "BMW M4 Competition", sub: "Full detail" },
@@ -89,17 +112,13 @@ export function Work() {
             </p>
           </div>
 
-          <figure className={`${tile} m-0`}>
-            <BeadingVideo className={media} />
-            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 to-transparent p-5 pt-14">
-              <span className="display-caps block text-2xl">Water beading</span>
-              <span className="text-sm text-secondary-foreground">Ceramic coating</span>
-            </figcaption>
-          </figure>
-
           {frames.map((f) => (
             <figure key={f.name} className={`${tile} m-0`}>
-              <Picture name={f.name} alt={f.alt} sizes="(min-width: 1024px) 50vh, 50vw" className={media} />
+              {f.video ? (
+                <LoopVideo base={f.video.base} poster={f.video.poster} label={f.alt} className={media} />
+              ) : (
+                <Picture name={f.name} alt={f.alt} sizes="(min-width: 1024px) 50vh, 50vw" className={media} />
+              )}
               <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 to-transparent p-5 pt-14">
                 <span className="display-caps block text-2xl">{f.title}</span>
                 <span className="text-sm text-secondary-foreground">{f.sub}</span>

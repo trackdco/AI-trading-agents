@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { og } from "@/lib/seo";
 import Link from "next/link";
-import { site, telHref, smsHref } from "@/lib/site";
+import { site, prices, telHref, smsHref } from "@/lib/site";
 import { formatPrice } from "@/lib/services";
 import { guidePrice, ceramicTiers, conditionRange, type JobId, type SizeId } from "@/lib/pricing";
 import { fleetSegments, fleetProcess, fleetSiteNeeds, fleetPaperwork, fleetFaq } from "@/lib/fleet";
@@ -46,7 +46,7 @@ const price = (job: JobId, size: SizeId) => {
 const cell = (job: JobId, size: SizeId) => {
   const g = guidePrice(job, size, 3);
   if (g.price === null) return "Quoted";
-  // The plan's $150 is a floor for a sedan, not a flat sedan rate.
+  // The plan's price is a floor for a sedan, not a flat sedan rate.
   return `${job === "maintenance" ? "From " : ""}${formatPrice(g.price)}${g.suffix}`;
 };
 
@@ -137,6 +137,23 @@ export default function FleetPage() {
               </li>
             ))}
           </ul>
+
+          {/* The three photos further down this page are all trucks. Most fleet
+              work is dual cabs, so the page should show one. */}
+          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+            {[
+              { name: "hilux-sr5", alt: "Grey Toyota HiLux SR5 dual cab, washed and dried, on a driveway", title: "Toyota HiLux SR5" },
+              { name: "ranger-wildtrak", alt: "Silver Ford Ranger Wildtrak dual cab, finished, in a workshop shed", title: "Ford Ranger Wildtrak" },
+            ].map((f) => (
+              <figure key={f.name} className="zoom-media relative m-0 aspect-[4/5] overflow-hidden rounded-xl bg-card">
+                <Picture name={f.name} alt={f.alt} sizes="(min-width: 640px) 45vw, 100vw" className="absolute inset-0 h-full w-full object-cover" />
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 to-transparent p-5 pt-14">
+                  <span className="display-caps block text-2xl">{f.title}</span>
+                  <span className="text-sm text-secondary-foreground">Dual cab</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -398,8 +415,9 @@ export default function FleetPage() {
                 that case regular details, or a plan where we do the washing, is the better spend, and we will say so.
               </P>
               <P>
-                Keeping them that way is a different product. A maintenance plan is us coming back on a schedule, and it starts at{" "}
-                {price("maintenance", "sedan")} a month for a hatch or sedan, with larger vehicles quoted for the vehicle. What a visit covers is set out on the{" "}
+                Keeping them that way is a different product. A maintenance plan is us coming back on a schedule. The exterior plan starts at{" "}
+                {price("maintenance", "sedan")} a month for a hatch or sedan and inside and out starts at {formatPrice(prices.maintenanceMonthly)}, with larger vehicles quoted for
+                the vehicle. What a visit covers is set out on the{" "}
                 <Link href="/maintenance/" className="text-foreground underline underline-offset-4">
                   maintenance plans page
                 </Link>

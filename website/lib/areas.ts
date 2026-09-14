@@ -46,7 +46,7 @@ export const areas: Area[] = [
       {
         h: "Pines overhead, cold panels",
         p: [
-          "This is the leafy end of Canberra. Park under the pines at Haig Park, or along the older streets, and needles collect in shuts, cowls and roof rails. Resin marks the flat panels. Spring adds pollen on top. A full detail from $225 takes that back off. The $150 a month plan is what keeps it off.",
+          "This is the leafy end of Canberra. Park under the pines at Haig Park, or along the older streets, and needles collect in shuts, cowls and roof rails. Resin marks the flat panels. Spring adds pollen on top. A full detail from $225 takes that back off. The monthly plan, from $90 for the exterior, is what keeps it off.",
           "Cold is the other half of a winter job. Panels are cold, water will not leave the surface and a coating cures slowly. Winter coating work gets a longer booking window, and we will move a day before we cut a cure short.",
           "Two of us, one van, three jobs a day across the inner north. No shop and no drop-off. We do not fit paint protection film, window tinting or rim repairs.",
         ],
@@ -83,7 +83,7 @@ export const areas: Area[] = [
         h: "Why mobile in the inner south",
         p: [
           "Nothing around here is far from a workshop, so convenience is a thin reason to book a mobile detailer and we are not going to pretend otherwise. The reason is the day itself. Correction from $397, or a coating from $997 for three years up to $1,597 for a large 4WD on seven, takes the car out of your hands for most of a day plus two trips either end. Mobile, it never leaves the spot it already parks in. Two of us, three jobs a day, no more.",
-          "If the car is a daily commuter that parks underground and sits under leaves at the other end, interior from $140 or the $150 a month plan is the honest place to start, not a coating.",
+          "If the car is a daily commuter that parks underground and sits under leaves at the other end, interior from $140 or the monthly plan from $90 is the honest place to start, not a coating.",
           "On site we need an outdoor tap and a 240V point. Correction and coating also need a garage or covered space. We bring the rest.",
         ],
       },
@@ -122,7 +122,7 @@ export const areas: Area[] = [
         p: [
           "The median age here is 32, and the cars match it. Kids, sport, the weekly shop, something spilled in the boot. The cabin usually needs more work than the paint does, which is why the interior detail starts at $140 and the full detail at $225.",
           "Dropping a car at a workshop costs you most of a day and two runs across the city. Working at the house costs you the driveway. That is the whole argument for doing it this way.",
-          "If the car works that hard every week, the $150 monthly plan is what keeps a corrected finish from sliding back.",
+          "If the car works that hard every week, the monthly plan, from $90, is what keeps a corrected finish from sliding back.",
         ],
       },
     ],
@@ -189,7 +189,7 @@ export const areas: Area[] = [
       {
         h: "Cars that stay put",
         p: [
-          "About a third of homes here are owned outright, more than the ACT as a whole. People in Woden stay, and the same car sits in the same driveway under the same tree for years. That is a maintenance job rather than a one-off, which is what the $150 a month plan is for. Paint correction from $397 and ceramic coating from $997 both need dry covered space for the day, and in the rear courts that cover is often shared with a neighbour, so we settle it before booking. From the house we need an outdoor tap and a 240V point. Everything else is in the van. Two of us, three jobs a day at the most.",
+          "About a third of homes here are owned outright, more than the ACT as a whole. People in Woden stay, and the same car sits in the same driveway under the same tree for years. That is a maintenance job rather than a one-off, which is what the monthly plan, from $90, is for. Paint correction from $397 and ceramic coating from $997 both need dry covered space for the day, and in the rear courts that cover is often shared with a neighbour, so we settle it before booking. From the house we need an outdoor tap and a 240V point. Everything else is in the van. Two of us, three jobs a day at the most.",
         ],
       },
     ],
@@ -220,7 +220,7 @@ export const areas: Area[] = [
       {
         h: "Mobile, so the car stays home",
         p: [
-          "There is no industrial pocket in this district, so a workshop detail means crossing town and going without the car for the day. We come to you instead. Two of us, one van, three jobs a day at most, and no shop to hurry back to. Ceramic coating runs from $997 for three years up to $1,597 for seven years on a large 4WD, and the $150 a month plan after it is what stops your own weekend wash turning back into decontamination work. We do not fit paint protection film, window tinting or rim repairs, so if that is what you are after, we are the wrong van.",
+          "There is no industrial pocket in this district, so a workshop detail means crossing town and going without the car for the day. We come to you instead. Two of us, one van, three jobs a day at most, and no shop to hurry back to. Ceramic coating runs from $997 for three years up to $1,597 for seven years on a large 4WD, and the monthly plan from $90 after it is what stops your own weekend wash turning back into decontamination work. We do not fit paint protection film, window tinting or rim repairs, so if that is what you are after, we are the wrong van.",
         ],
       },
     ],
@@ -255,7 +255,7 @@ export const areas: Area[] = [
         h: "Old gums and a decade of brush washes",
         p: [
           "These streets were planted when the town went in, so the trees are mature eucalypts now. Old enough to drop limbs, shed bark and put gum nuts on whatever is parked underneath. Add a decade of automatic brush washes and you get the swirls and the flat patches under the streetlight.",
-          "Paint correction from $397 is what takes that back. A ceramic coating holds the result afterwards, $997 for three years up to $1,597 for seven on a large 4WD. The $150 a month maintenance plan is there so you keep it rather than pay for it twice.",
+          "Paint correction from $397 is what takes that back. A ceramic coating holds the result afterwards, $997 for three years up to $1,597 for seven on a large 4WD. The monthly maintenance plan, from $90, is there so you keep it rather than pay for it twice.",
           "We do not fit paint protection film, window tinting or rim repairs.",
         ],
       },
@@ -291,7 +291,7 @@ export const areas: Area[] = [
         p: [
           "A lot of the paint out here has never had a bad year. That changes what a coating is buying. On a car that has been through years of brush washes, the correction has to happen first, and that is a full day before the coating starts. On paint still close to original, the spend goes into the coating instead of into undoing damage. Three years from $997. Seven years on a large 4WD, $1,597.",
           "New is not the same as perfect. Cars come off transport and out of dealer washbays with marks already in them, so we put a light across the panels before quoting, not after.",
-          "Parts of the district are still a building site. Earthworks and truck traffic put grit in the air, and it settles and stays. That is what the $150 a month plan is for. Upkeep, not rescue.",
+          "Parts of the district are still a building site. Earthworks and truck traffic put grit in the air, and it settles and stays. That is what the monthly plan, from $90, is for. Upkeep, not rescue.",
         ],
       },
     ],

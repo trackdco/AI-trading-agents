@@ -66,8 +66,10 @@ export function JsonLd() {
         name: "Maintenance plan",
         url: `${site.url}/maintenance/`,
         priceCurrency: "AUD",
-        price: prices.maintenanceMonthly,
-        priceSpecification: { "@type": "UnitPriceSpecification", minPrice: prices.maintenanceMonthly, priceCurrency: "AUD", unitText: "month" },
+        // The cheapest plan on offer, which is what minPrice means. Inside and
+        // out is prices.maintenanceMonthly.
+        price: prices.maintenanceExterior,
+        priceSpecification: { "@type": "UnitPriceSpecification", minPrice: prices.maintenanceExterior, priceCurrency: "AUD", unitText: "month" },
       },
     ],
   };

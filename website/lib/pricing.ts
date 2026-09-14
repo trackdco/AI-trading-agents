@@ -17,7 +17,7 @@ export const jobs: { id: JobId; label: string; slug: string; note: string }[] = 
   { id: "interior", label: "Interior detail", slug: "/services/interior-car-detailing-canberra/", note: "Vacuum, steam, hot-water extraction, leather and trim conditioned. About 1.5 hours for a tidy interior." },
   { id: "correction", label: "Paint correction", slug: "/services/paint-correction-canberra/", note: "Single-stage machine correction for swirl marks and haze. Deep scratches need a multi-stage job, quoted from photos." },
   { id: "ceramic", label: "Ceramic coating", slug: "/services/ceramic-coating-canberra/", note: "Decontamination, a single-stage polish, then the coating. Around 5 hours on site; leave the car undercover for 24 hours after." },
-  { id: "maintenance", label: "Maintenance plan", slug: "/maintenance/", note: "A monthly visit: coating-safe hand wash, interior reset, protection topped up. Fortnightly visits are quoted on request." },
+  { id: "maintenance", label: "Maintenance plan", slug: "/maintenance/", note: `A visit on a schedule, at your place. Exterior only from $${prices.maintenanceExterior} a month; inside and out from $${prices.maintenanceMonthly}. Fortnightly visits are quoted on request.` },
 ];
 
 // Real prices by vehicle size, in AUD. null means it's quoted for the vehicle.
@@ -26,7 +26,9 @@ const table: Record<Exclude<JobId, "ceramic">, Record<SizeId, number | null>> = 
   exterior: { sedan: prices.exterior, suv: 120, large: 140, bike: null },
   interior: { sedan: prices.interior, suv: 165, large: 170, bike: null },
   correction: { sedan: prices.correction, suv: 497, large: 547, bike: null },
-  maintenance: { sedan: prices.maintenanceMonthly, suv: null, large: null, bike: null },
+  // The exterior-only plan, which is the cheapest way onto a schedule. Inside and
+  // out is prices.maintenanceMonthly, set out on /maintenance/.
+  maintenance: { sedan: prices.maintenanceExterior, suv: null, large: null, bike: null },
 };
 
 // Ceramic tiers by warranty length. Bike coatings skip the correction stage.
@@ -60,7 +62,12 @@ export function guidePrice(job: JobId, size: SizeId, tier: Tier = 3): Guide {
   if (job === "maintenance") {
     return p === null
       ? quoted("Monthly plans for larger vehicles are quoted for the vehicle. Text us the model and how it's used.")
-      : { price: p, suffix: " a month", why: "One fixed price every month, quoted for your car.", cta: lock };
+      : {
+          price: p,
+          suffix: " a month",
+          why: `Exterior only: wash, wheels, glass, protection topped up. Inside and out is $${prices.maintenanceMonthly} a month. Same number every month.`,
+          cta: lock,
+        };
   }
   if (p === null) return quoted("Text us the vehicle and we'll quote it the same day.");
   if (job === "correction") {

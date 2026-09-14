@@ -42,12 +42,12 @@ export default function ServicesPage() {
           <div className="md:col-span-9">
             <h2 className="display-caps text-3xl">Maintenance plans</h2>
             <p className="mt-2 text-[15px] text-muted-foreground">
-              Already detailed? We come back every month, or every fortnight, and keep it that way. Monthly plans are quoted for your car; fortnightly on request.
+              Already detailed? We come back every month, or every fortnight, and keep it that way. Exterior only from $90 a month, inside and out from $150, quoted for your car.
             </p>
           </div>
           <div className="md:col-span-3 md:text-right">
             <span className="text-sm text-muted-foreground">from</span>
-            <span className="display-caps block text-4xl">{formatPrice(prices.maintenanceMonthly)}</span>
+            <span className="display-caps block text-4xl">{formatPrice(prices.maintenanceExterior)}</span>
             <span className="mt-1 block text-sm text-muted-foreground">a month</span>
           </div>
         </Link>
