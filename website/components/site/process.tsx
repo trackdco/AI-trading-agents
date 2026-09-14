@@ -2,6 +2,7 @@ import Link from "next/link";
 import { areas } from "@/lib/areas";
 import { site } from "@/lib/site";
 import { SectionHeading } from "@/components/site/section-heading";
+import { LoopVideo } from "@/components/site/loop-video";
 
 // A real sequence, so the numbering carries information.
 const steps = [
@@ -39,6 +40,28 @@ export function Process() {
               </li>
             ))}
           </ol>
+        </div>
+
+        {/* The three steps say what happens. This is the middle one happening. */}
+        <div className="mt-16 grid items-center gap-8 md:mt-20 md:grid-cols-12" data-reveal="up">
+          <div className="md:col-span-5">
+            <LoopVideo
+              base="/media/m4-wash-720"
+              poster="/media/m4-wash-poster.webp"
+              label="A BMW M4 washed on site: snow foam and a rinse, a hand wash with a mitt, then dried with an Imperium Detailing towel"
+              className="panel-glow aspect-[4/5] w-full rounded-xl bg-card object-cover"
+            />
+          </div>
+          <div className="md:col-span-7">
+            <h3 className="display-caps text-3xl">What the wash actually is.</h3>
+            <p className="mt-5 max-w-[52ch] text-[17px] text-secondary-foreground">
+              Snow foam and a rinse first, so the grit lifts before a mitt ever touches the paint. Then a two-bucket hand wash, panel by panel, and a
+              dry by hand. Nothing spins, and nothing gets dragged across the clear coat.
+            </p>
+            <p className="mt-4 max-w-[52ch] text-[15px] text-muted-foreground">
+              That is our own drying towel in the clip, and our own gear in the van. All we need from the house is the tap and the power point.
+            </p>
+          </div>
         </div>
 
         <div className="mt-20" data-reveal="up">
