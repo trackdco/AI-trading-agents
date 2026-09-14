@@ -45,11 +45,14 @@ Tick every line before the domain points at the new site. Lines marked "needs Pa
 - [ ] All images have alt text and dimensions (checked).
 - [ ] Breadcrumb, Service, FAQ, Article and LocalBusiness data validate at https://search.google.com/test/rich-results on the live domain.
 - [x] Old URLs from the previous site redirect to the matching new pages. Checked against the live sitemap at imperiumdetailing.com.au on 2026-09-13: all 26 URLs it lists either exist on the new site or already have a redirect in `vercel.json`. `/contact-us` was the only gap — it is from an older iteration, already 404s live, and is still indexed, so it now redirects to `/book/`.
-- [ ] **`imperiumdetailing.org` is Pat's and has been cancelled.** If the registration has not lapsed yet,
-      point it at `https://www.imperiumdetailing.com.au/` with a 301 while he still controls it. Google has
-      `/pages/best-ceramic-coating-service-in-canberra` and a Canberra detailing blog indexed there; a
-      redirect hands that credit to the new site, and letting it expire throws it away. Once it lapses the
-      chance is gone, and the domain can be bought by anyone.
+- [ ] **`imperiumdetailing.org`: optional, and parked.** Registry lookup on 2026-09-14: registrar
+      Automattic (WordPress.com), registered 2024-12-25, transferred 2025-06-02, **expires 2026-12-25**,
+      status `client transfer prohibited`, nameservers on Google Cloud DNS. So it is still Pat's; what was
+      cancelled is the site, not the registration, and the DNS zone lives in a Google account rather than at
+      the registrar. Pat cannot get into the WordPress.com account, so this is parked rather than open.
+      If he ever does get in, forwarding it to `https://www.imperiumdetailing.com.au/` hands Google the
+      credit for the pages it still has indexed there. If not, it lapses in December and the only thing
+      worth deciding is whether to re-register it purely to hold the brand name.
 - [ ] **Check `management@imperiumdetailing.org` is not in use anywhere.** It was published on the `.org`
       site. When that domain lapses the mailbox dies with it. The new site uses the Gmail address, so this
       is about anything outside the site: Google Business Profile, invoices, Square, ad accounts.
