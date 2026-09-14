@@ -40,7 +40,16 @@ const frames: Frame[] = [
   { name: "rav4-hybrid", alt: "Black Toyota RAV4 Hybrid, washed and dried, outside a shed", title: "Toyota RAV4 Hybrid", sub: "Mid-size SUV" },
   { name: "huracan-driveway", alt: "Lamborghini Huracán after an exterior detail", title: "Lamborghini Huracán", sub: "Exterior detail" },
   { name: "lambo-interior", alt: "Detailed leather interior of a Lamborghini", title: "Huracán interior", sub: "Interior detail" },
-  { name: "m4-clean-front", alt: "Green BMW M4, freshly washed and glossy", title: "BMW M4 Competition", sub: "Full detail" },
+  {
+    // The hero at the top of this page is the same car, the same wash. Pointing at
+    // the 720 cut rather than the 1080 one means a phone, which the hero also gives
+    // 720, fetches nothing extra for this tile.
+    name: "m4-hero",
+    alt: "Washing and drying a green BMW M4 in a Canberra driveway, ending on an Imperium Detailing towel",
+    title: "BMW M4 Competition",
+    sub: "Full detail",
+    video: { base: "/media/hero-720", poster: "/media/hero-poster.webp" },
+  },
 ];
 
 const tile =
