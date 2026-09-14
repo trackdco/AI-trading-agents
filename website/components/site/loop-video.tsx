@@ -14,6 +14,30 @@ type Props = {
   spin?: boolean;
 };
 
+/**
+ * A phone decodes video in hardware, but only so many streams at once. The home
+ * page gallery is a two-up grid on a phone, so four tiles sit on screen together,
+ * and four clips decoding at once is what makes scrolling stutter.
+ *
+ * So every loop on the page registers here with how much of itself is showing, and
+ * only the two most visible ones actually play. The rest sit on their poster frame,
+ * which costs nothing. Pausing is what frees the decoder; hiding would not.
+ */
+const MAX_PLAYING = 2;
+const onScreen = new Map<HTMLVideoElement, number>();
+
+function arbitrate() {
+  const ranked = [...onScreen.entries()].filter(([, r]) => r > 0.25).sort((a, b) => b[1] - a[1]);
+  const wanted = new Set(ranked.slice(0, MAX_PLAYING).map(([el]) => el));
+  for (const el of onScreen.keys()) {
+    if (wanted.has(el)) {
+      if (el.paused) el.play().catch(() => {});
+    } else if (!el.paused) {
+      el.pause();
+    }
+  }
+}
+
 // A silent loop that plays only while on screen, and never for people who asked for
 // reduced motion (they get the poster). `base` is the path without extension; WebM
 // is offered first with MP4 as the fallback.
@@ -26,16 +50,20 @@ export function LoopVideo({ base, poster, label, className = "", webm = true, sp
     const v = ref.current;
     if (!v) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    onScreen.set(v, 0);
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) v.play().catch(() => {});
-        else v.pause();
+        onScreen.set(v, entry.intersectionRatio);
+        arbitrate();
       },
-      { threshold: 0.25 },
+      // Several steps, so the ranking knows which tile is most visible, not just
+      // that it crossed one line.
+      { threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
     io.observe(v);
     return () => {
       io.disconnect();
+      onScreen.delete(v);
       clear();
     };
   }, [clear]);
@@ -46,7 +74,7 @@ export function LoopVideo({ base, poster, label, className = "", webm = true, sp
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="none"
       poster={poster}
       aria-label={label}
       {...turn.handlers}

@@ -81,7 +81,7 @@ function StepMedia({ step, active, reduced, onScreen }: { step: DetailStep; acti
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           poster={step.poster}
           aria-label={step.alt}
           onError={() => setBroken(true)}

@@ -40,6 +40,23 @@ export function Hero() {
     else video.play().then(() => setState("playing")).catch(() => setState("blocked"));
   }, []);
 
+  // Otherwise the hero keeps decoding the whole way down the page: a full video
+  // stream's worth of work while you are looking at something else entirely. On a
+  // phone that is the difference between the gallery scrolling smoothly and not.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || state !== "playing") return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      },
+      { threshold: 0.1 },
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, [state]);
+
   const replay = () => {
     const v = videoRef.current;
     if (!v) return;
