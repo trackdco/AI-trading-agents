@@ -140,16 +140,17 @@ export default function FleetPage() {
 
           {/* The three photos further down this page are all trucks. Most fleet
               work is dual cabs, so the page should show one. */}
-          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+          <div className="mt-12 grid gap-4 sm:grid-cols-3">
             {[
-              { name: "hilux-sr5", alt: "Grey Toyota HiLux SR5 dual cab, washed and dried, on a driveway", title: "Toyota HiLux SR5" },
-              { name: "ranger-wildtrak", alt: "Silver Ford Ranger Wildtrak dual cab, finished, in a workshop shed", title: "Ford Ranger Wildtrak" },
+              { name: "hilux-sr5", alt: "Grey Toyota HiLux SR5 dual cab, washed and dried, on a driveway", title: "Toyota HiLux SR5", kind: "Dual cab" },
+              { name: "ranger-wildtrak", alt: "Silver Ford Ranger Wildtrak dual cab, finished, in a workshop shed", title: "Ford Ranger Wildtrak", kind: "Dual cab" },
+              { name: "rav4-hybrid", alt: "Black Toyota RAV4 Hybrid, washed and dried, outside a shed", title: "Toyota RAV4 Hybrid", kind: "Pool car" },
             ].map((f) => (
               <figure key={f.name} className="zoom-media relative m-0 aspect-[4/5] overflow-hidden rounded-xl bg-card">
-                <Picture name={f.name} alt={f.alt} sizes="(min-width: 640px) 45vw, 100vw" className="absolute inset-0 h-full w-full object-cover" />
+                <Picture name={f.name} alt={f.alt} sizes="(min-width: 640px) 30vw, 100vw" className="absolute inset-0 h-full w-full object-cover" />
                 <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 to-transparent p-5 pt-14">
                   <span className="display-caps block text-2xl">{f.title}</span>
-                  <span className="text-sm text-secondary-foreground">Dual cab</span>
+                  <span className="text-sm text-secondary-foreground">{f.kind}</span>
                 </figcaption>
               </figure>
             ))}

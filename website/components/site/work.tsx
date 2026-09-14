@@ -28,8 +28,20 @@ const frames: Frame[] = [
     video: { base: "/media/beading-720", poster: "/media/beading-poster.webp" },
   },
   { name: "mclaren-650s", alt: "White McLaren 650S after a full detail in a Canberra driveway", title: "McLaren 650S", sub: "Full detail" },
-  { name: "audi-s4", alt: "Blue Audi S4 sedan in a driveway, snow foam still on the ground around it", title: "Audi S4", sub: "Sedan" },
-  { name: "correction-suv", alt: "Black SUV with corrected, mirror-finish paint", title: "Nissan Patrol", sub: "Paint correction" },
+  {
+    name: "x6",
+    alt: "Black BMW X6 finished in a driveway: the flank, the boot, the red leather interior and the wheels",
+    title: "BMW X6",
+    sub: "Full detail",
+    video: { base: "/media/x6-detail-360", poster: "/media/x6-detail-poster.webp" },
+  },
+  {
+    name: "r8",
+    alt: "Black Audi R8 detailed on a driveway: snow foam, the wash, the wheels and the finished car",
+    title: "Audi R8",
+    sub: "Full detail",
+    video: { base: "/media/r8-detail-720", poster: "/media/r8-detail-poster.webp" },
+  },
   {
     name: "m3-gtr",
     alt: "A black BMW M3 CS and a black Nissan GT-R, finished and parked together",
@@ -37,7 +49,13 @@ const frames: Frame[] = [
     sub: "Recent work",
     video: { base: "/media/m3-gtr-720", poster: "/media/m3-gtr-poster.webp" },
   },
-  { name: "rav4-hybrid", alt: "Black Toyota RAV4 Hybrid, washed and dried, outside a shed", title: "Toyota RAV4 Hybrid", sub: "Mid-size SUV" },
+  {
+    name: "m3-comp",
+    alt: "White BMW M3 Competition, snow foamed and then finished, parked beside a red Audi R8",
+    title: "BMW M3 Competition",
+    sub: "Full detail",
+    video: { base: "/media/m3-comp-720", poster: "/media/m3-comp-poster.webp" },
+  },
   { name: "huracan-driveway", alt: "Lamborghini Huracán after an exterior detail", title: "Lamborghini Huracán", sub: "Exterior detail" },
   { name: "lambo-interior", alt: "Detailed leather interior of a Lamborghini", title: "Huracán interior", sub: "Interior detail" },
   {
