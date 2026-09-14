@@ -9,7 +9,9 @@ Tick every line before the domain points at the new site. Lines marked "needs Pa
 - [ ] Confirm HTTPS works on both, and that `http://` and the non-www version redirect to `https://www.`.
 - [ ] Open `/sitemap.xml` and `/robots.txt` on the live domain.
 - [ ] Nothing to set for the quote form: it posts to Web3Forms and the access key lives in `lib/site.ts`, because a Web3Forms key is public by design. `NEXT_PUBLIC_FORM_ENDPOINT` and `NEXT_PUBLIC_FORM_ACCESS_KEY` only need setting if the form ever moves.
-- [ ] Set `NEXT_PUBLIC_META_PIXEL_ID` if the pixel exists (needs Pat).
+- [x] Meta pixel: not needed. Pat confirmed on 2026-09-14 that he does not run Meta ads.
+      `components/site/analytics.tsx` already skips the whole script when the ID is empty,
+      so nothing loads and nothing breaks. Set `NEXT_PUBLIC_META_PIXEL_ID` if that changes.
 
 ## Content truth check (needs Pat)
 
@@ -32,7 +34,7 @@ Tick every line before the domain points at the new site. Lines marked "needs Pa
 ## Tracking
 
 - [ ] Google Ads: create conversion actions for `contact_call`, `contact_text` and `generate_lead`, then fire each once and confirm they show.
-- [ ] Meta: confirm `Contact` and `Lead` events appear in Events Manager after the pixel ID is set.
+- [x] Meta: nothing to do, no pixel. See the note under Domain and hosting.
 - [ ] Google Search Console: add the property, submit `/sitemap.xml`.
 - [ ] Google Business Profile: website link points at the new domain.
 
@@ -43,7 +45,18 @@ Tick every line before the domain points at the new site. Lines marked "needs Pa
 - [ ] All images have alt text and dimensions (checked).
 - [ ] Breadcrumb, Service, FAQ, Article and LocalBusiness data validate at https://search.google.com/test/rich-results on the live domain.
 - [x] Old URLs from the previous site redirect to the matching new pages. Checked against the live sitemap at imperiumdetailing.com.au on 2026-09-13: all 26 URLs it lists either exist on the new site or already have a redirect in `vercel.json`. `/contact-us` was the only gap — it is from an older iteration, already 404s live, and is still indexed, so it now redirects to `/book/`.
-- [ ] **Two other websites are live on this brand and need a decision (needs Pat).** `imperiumdetailing.org` is indexed, with `/pages/best-ceramic-coating-service-in-canberra` and a Canberra detailing blog, and lists `management@imperiumdetailing.org`. `imperiumdetailing.square.site` also resolves. If both are yours, redirect them at the domain level to the matching `.com.au` pages — otherwise they compete with you for the same Canberra searches and split every mention Google has for the brand.
+- [ ] **`imperiumdetailing.org` is Pat's and has been cancelled.** If the registration has not lapsed yet,
+      point it at `https://www.imperiumdetailing.com.au/` with a 301 while he still controls it. Google has
+      `/pages/best-ceramic-coating-service-in-canberra` and a Canberra detailing blog indexed there; a
+      redirect hands that credit to the new site, and letting it expire throws it away. Once it lapses the
+      chance is gone, and the domain can be bought by anyone.
+- [ ] **Check `management@imperiumdetailing.org` is not in use anywhere.** It was published on the `.org`
+      site. When that domain lapses the mailbox dies with it. The new site uses the Gmail address, so this
+      is about anything outside the site: Google Business Profile, invoices, Square, ad accounts.
+- [ ] **`imperiumdetailing.square.site` is NOT Pat's and is still live** (HTTP 200, checked 2026-09-14; it
+      renders in the browser only, so its content could not be read from the sandbox). Pat should open it
+      and decide: if someone else is trading under the name, that is a business problem rather than a code
+      one. If it is a dormant page nobody runs, outranking it is enough.
 
 ## Speed
 
