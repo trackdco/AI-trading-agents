@@ -1,0 +1,159 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE 08:00-09:29 ET (cap 1 fill)",
+ "decision_minute": "2026-06-24T08:00 ET (session-day 2026-06-23)",
+ "leak_check": "pass - truncated at 07:59:59; last completed 2m bar starts 07:58 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d23_0800_nypre.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "day_character_note": "Re-judge the day's character. At 03:00 you called it a RANGE day and applied T22 fade-the-edge, which paid twice.",
+ "price_at_decision": 29862.25,
+ "last_completed_2m_bar": {
+  "start": "07:58",
+  "open": 29848.75,
+  "high": 29862.25,
+  "low": 29844.5,
+  "close": 29862.25,
+  "volume": 220
+ },
+ "prior_thesis_as_of_0300": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap",
+    "price": 29764.06
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29637.0
+   },
+   {
+    "level": "weekly_low",
+    "price": 29577.25
+   }
+  ],
+  "invalidation": {
+   "level": "session_high",
+   "price": 29891.75
+  },
+  "waiting_for": "nothing - short licensed now at the range-top confluence (vwap_p1 29834.51 / 2m BB basis 29829.79 / 2m BB upper 29854.46 / daily VAH 29858), per T22 fade-the-edge",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a 15m close above session_high 29891.75 (confluence with 2m BB upper and vwap_p2 29904.96) with a decisive body - an actual range breakout, not a poke through",
+  "anticipated_resolution": {
+   "level": "range_high_29891",
+   "price": 29891.75,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond 29891.75 with a decisive body, not a wick-heavy absorption candle",
+  "reasoning": "Overnight rotated in a ~306pt range (29585.5-29891.75) through several full swings since 18:00 - a range day, so T22 applies: fade the edge, don't anticipate the break. Price sits in the vwap_p1/2m-BB-basis confluence; the last 2m candle wicked to 29837 and closed back under both."
+ },
+ "what_happened_since_0300": "your range read paid twice. The LONDON window faded the range-top confluence at 03:00 for a banked first target at the 15m MA and runner at the session VWAP, then again at 04:48 for a first target at the 0.5 fib. Both used the cap, and the window closed. Price has since come all the way back: it is 29,862.25, which is ABOVE the vwap_p1 29,840.62 and the daily VAH, and only 29.5pt under the range high 29,891.75 that has capped this session since 20:42 last night. Your invalidation has not been closed above, but price is knocking on it for the third time.",
+ "position_state": "FLAT. LONDON used both of its fills and is closed by time. NY_PRE opens with a cap of 1 fill.",
+ "levels_at_0800_CHART": {
+  "vwap": 29776.02,
+  "vwap_p1": 29840.62,
+  "vwap_m1": 29711.41,
+  "vwap_p2": 29905.23,
+  "vwap_m2": 29646.8,
+  "bb_2m_basis": 29803.61,
+  "bb_2m_upper": 29878.18,
+  "bb_2m_lower": 29729.04
+ },
+ "levels_at_0800_BUILD": {
+  "bb_ma_2m": 29803.61,
+  "bb_ma_3m": 29796.28,
+  "bb_ma_15m": 29810.67,
+  "bb_ma_60m": 29769.65,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29737.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30012.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29577.25
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "04:00",
+    "dir": "DOWN",
+    "ma": 29783.67,
+    "close": 29770.0,
+    "body_ratio": 0.64
+   },
+   {
+    "t": "04:15",
+    "dir": "UP",
+    "ma": 29790.29,
+    "close": 29858.25,
+    "body_ratio": 0.9
+   },
+   {
+    "t": "05:30",
+    "dir": "DOWN",
+    "ma": 29817.6,
+    "close": 29807.0,
+    "body_ratio": 0.66
+   },
+   {
+    "t": "07:00",
+    "dir": "DOWN",
+    "ma": 29816.45,
+    "close": 29794.75,
+    "body_ratio": 0.84
+   },
+   {
+    "t": "07:45",
+    "dir": "UP",
+    "ma": 29808.7,
+    "close": 29813.25,
+    "body_ratio": 0.76
+   }
+  ],
+  "hourly_closes": {
+   "03:00": 29822.75,
+   "04:00": 29770.0,
+   "05:00": 29820.0,
+   "06:00": 29808.25,
+   "07:00": 29794.75,
+   "08:00": 29862.25
+  },
+  "note_on_the_range": "the session high 29891.75 and low 29585.5 give a range of 306.25pt. Price at 29,862.25 sits in the upper part of it. The 2m Bollinger has widened to 149pt (29,729-29,878), which is much wider than it was in London.",
+  "note_on_the_edge": "this is the THIRD approach to the range high. T22 says fade the edge on a range day - but it also says continuation is tradeable AFTER a break. Judge which regime you are in, and remember a level tested three times is weaker than a level tested once."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "note": "the US calendar for this date is empty; nothing scheduled through the end of the NY_AM window."
+ },
+ "T22_REMINDER": "after a session-long range the default is FADE THE EDGE, not anticipate the break. Continuation is tradeable AFTER a break has happened, not in anticipation of one.",
+ "ADAPTATION_CLAUSE": "name rejection levels WITHIN REACH - roughly the current 15m BB width - or express them as behaviour. An unreachable condition disables that direction and the trigger will escalate rather than obey it.",
+ "what_to_emit": "your standard thesis JSON for the NY_PRE window."
+}

@@ -1,0 +1,198 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "other_side_tripwire_resolved",
+ "window": "LONDON",
+ "decision_minute": "2026-06-02T04:15 ET",
+ "leak_check": "pass - replay truncated at 04:14:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-01_LONDON_0415_refire.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30566.0,
+ "last_completed_2m_bar": {
+  "start": "04:12",
+  "closed_at": "04:14",
+  "open": 30546.5,
+  "high": 30566.5,
+  "low": 30546.5,
+  "close": 30566.0,
+  "volume": 226,
+  "minutes": 2
+ },
+ "candle_grid_note": "This decision minute is 04:15, which is the close of the 3m candle. A 2m chart has no bar closing on an odd minute, so the last 2m bar that exists closes at 04:14. price_at_decision and every 2m field below are that 04:14 bar - they will not equal the 3m close, and the chart legend will read the 04:14 bar. Judge the 3m candle and the 04:14 2m candle; neither is fabricated.",
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "LONDON",
+  "entries": "03:00-04:59",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30536.14,
+  "bb_upper_2m": 30570.8,
+  "bb_lower_2m": 30501.48,
+  "vwap": 30430.81,
+  "vwap_p1": 30494.82,
+  "vwap_m1": 30366.8,
+  "vwap_p2": 30558.83,
+  "vwap_m2": 30302.78,
+  "vwap_p3": 30622.84,
+  "vwap_m3": 30238.77,
+  "read_at": "chart cursor 04:14:59 - the last COMPLETE 2m bar closes 04:14; your decision minute 04:15 is a 15m close",
+  "_session_calendar": {
+   "session_day_label": "2026-06-01",
+   "session_opens": "2026-06-01 18:00 ET (Monday evening)",
+   "cash_session_traded": "2026-06-02 (Tuesday)",
+   "note": "the session-day is LABELLED by the evening it OPENS; the cash session it trades is the FOLLOWING calendar day. Weekday-specific doctrine keys off the CASH day traded, not the label."
+  },
+  "_freshness_self_check": {
+   "why": "the chart canvas can freeze and serve a frame from an earlier minute. The values in this block were read off the live chart AT this decision minute.",
+   "instruction": "compare them against the on-chart indicator legend in your screenshot. If they do not match, the capture is STALE: say so in reasoning and emit stand_aside rather than reading a stale chart."
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30431.04,
+   "vwap_p1": 30495.16,
+   "vwap_p2": 30559.28,
+   "vwap_p3": 30623.39,
+   "vwap_m1": 30366.93,
+   "vwap_m2": 30302.81,
+   "vwap_m3": 30238.7
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30537.79,
+   "bb_ma_3m": 30536.14,
+   "bb_ma_15m": 30461.33,
+   "bb_ma_60m": 30478.42
+  },
+  "day_range_fibs": {
+   "0.382": 30413.73,
+   "0.5": 30443.38,
+   "0.618": 30473.02,
+   "0.705": 30494.88
+  },
+  "session_high_so_far": 30569.0,
+  "session_low_so_far": 30317.75,
+  "daily_profile": {
+   "poc": 30462.0,
+   "val": 30376.0,
+   "vah": 30545.0,
+   "note": "DEVELOPING as-of 04:15"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30462.0,
+   "val": 30376.0,
+   "vah": 30545.0,
+   "high": 30569.0,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 04:15"
+  },
+  "prior_day": {
+   "poc": 30560.0,
+   "val": 30382.0,
+   "vah": 30597.0,
+   "high": 30693.0,
+   "low": 30291.5
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.017,
+  "net_move_15m": 11.25,
+  "total_15m_travel": 658.75,
+  "candles_15m_up": 24,
+  "candles_15m_down": 17,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "03:15",
+   "open": 30535.25,
+   "high": 30547.25,
+   "low": 30526.25,
+   "close": 30531.0,
+   "body_ratio": 0.2
+  },
+  {
+   "start": "03:30",
+   "open": 30532.0,
+   "high": 30539.25,
+   "low": 30520.25,
+   "close": 30529.75,
+   "body_ratio": 0.12
+  },
+  {
+   "start": "03:45",
+   "open": 30529.25,
+   "high": 30531.0,
+   "low": 30511.0,
+   "close": 30529.5,
+   "body_ratio": 0.01
+  },
+  {
+   "start": "04:00",
+   "open": 30529.75,
+   "high": 30569.0,
+   "low": 30529.75,
+   "close": 30556.0,
+   "body_ratio": 0.67
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "N/A - no catalyst identified for this window",
+  "reasoning": "No events released so far today and nothing scheduled ahead of this decision minute (LONDON window, 2026-06-02 03:00 ET). No red-folder release sits inside the blackout window. No FOMC event today. Nothing to lean on; neutral is correct."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "daily_poc",
+    "price": 30462.0
+   },
+   {
+    "level": "daily_val",
+    "price": 30374.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_high",
+   "price": 30547.25
+  },
+  "waiting_for": "rejection at the 30511-30524 resistance cluster (daily VAH / BB-2m upper / VWAP+2) - displacement back below the 2m/3m MA before shorts are licensed",
+  "two_sided": true,
+  "condition_for_other_side": "clean acceptance above the 30521-30547 cluster (BB-2m upper / vwap_p2 / session high) - longs licensed on a 15m decisive close above session high 30547.25, targeting prior-day POC 30560 and VAH 30597",
+  "anticipated_resolution": {
+   "level": "vah_bb_upper_cluster",
+   "price": 30521.11,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond session high 30547.25 with a decisive body, not a wick-heavy absorption candle",
+  "other_side_tripwire": {
+   "level": "session_high_30547",
+   "price": 30547.25,
+   "event": "15m_decisive_close"
+  },
+  "defended_level": {
+   "level": "session_low_near_prior_day_low",
+   "price": 30317.75,
+   "memory": "session round-tripped down toward prior-day low 30291.5 then rallied ~230pt away",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "Asia round-tripped the whole session (low 30317.75 near prior-day low 30291.5, high 30547.25 near prior POC 30560) net-flat, path_efficiency 0.05 with 21u/15d 15m candles - rotational, not a flush. Price is now pressing back into the top of that range at the VAH/BB-upper/VWAP+2 cluster on a strong but unconfirmed 15m candle. Range-frame doctrine says fade this edge rather than chase it - short toward daily POC/VAL - but the broader multi-day structure is uptrending, so a 15m decisive close through session high licenses longs instead."
+ },
+ "what_happened_since_the_last_read": "Since your 03:00 read, stated as price facts only: the session high 30547.25 that you named as this thesis's invalidation was taken out. The 15m candle spanning 04:00-04:15 closed at 30556.00 with body ratio 0.67 (|close-open|/range), i.e. above 30547.25 with a decisive body by the >=0.50 test. Session high so far and all profile values in levels_at_decision_BUILD are recomputed as of this minute.",
+ "why_you_are_being_re-fired": "Your other_side_tripwire fired. You armed level session_high_30547 at 30547.25 with event 15m_decisive_close; a mechanical scan of every 15m close from 03:00 resolved it at 04:15 (close 30556.00, body_ratio 0.67). RUNBOOK 2b requires re-firing you the minute a tripwire resolves rather than waiting for a candidate to escalate. This is the branch YOU wrote down, now resolved - it is not a trigger escalation, so the escalation limits and escalation_response do not apply. Re-read and emit a fresh thesis."
+}

@@ -1,0 +1,68 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills; fresh window)",
+ "decision_minute": "2026-06-26T09:30 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 09:29:59; last completed 2m bar starts 09:28",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/window_0930_nyam_open.png",
+ "price_at_decision": 29360.75,
+ "prior_thesis_as_of_0920": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_poc",
+    "price": 29369.0
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_low_hammer",
+   "price": 29211.25
+  },
+  "waiting_for": "acceptance above the 29290-29295.75 cluster once the cash open settles",
+  "two_sided": true,
+  "condition_for_other_side": "acceptance below the 29211.25 hammer low spends the responsive buyer and reopens shorts to weekly_low 29160.5"
+ },
+ "what_happened_since_0920": "V-reversal off the 29211 hammer accelerated INTO the open: 29305.25 close at 09:22 (1533 contracts), shallow retest holding 29275.5, then 29309.5 at 09:26 and 29337.75 at 09:28 \u2014 the acceptance above the 29290-29295.75 cluster your gate wanted printed at 09:26 and confirmed 09:28, both BEFORE the bell. The 09:28 bar ran to 29367.25 on 1851 contracts and closed 29360.75, a tick under your first destination daily_poc 29369. The cash open is NOW \u2014 doctrine: no entries in its first few minutes, and open volatility can cook you even when the thesis is right.",
+ "levels_at_0930": {
+  "vwap": {
+   "mid": 29457.5,
+   "m1": 29290.6,
+   "m2": 29123.6,
+   "note": "computed at 09:30"
+  },
+  "bb_ma": {
+   "tf_2m": 29305.5,
+   "tf_3m": 29303.0,
+   "tf_15m": 29361.4,
+   "note": "computed at 09:30; price sits AT the 15m MA"
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29211.25,
+  "session_high": 29562.75
+ },
+ "fib_source": "none \u2014 NY-range fibs come after 10:00 on manually marked swings",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

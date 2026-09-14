@@ -32,8 +32,8 @@ from pathlib import Path
 # on both spans. One implementation, so the spine's "was this order the right size?" check
 # can never drift from the sizer that produced it. The old $200-floor / +$75-per-$1k / linear
 # $1,500->$100 taper belonged to the broken canon and is gone; the shipped profiles are:
-#   lucid      base $150 flat            -> ladder $75 / $150 / $225 / $300
-#   scaled600  base $150 +$75 per $2k of buffer past +$3k, capped $600
+#   lucid      base $160 flat            -> ladder $80 / $160 / $240 / $320
+#   scaled600  base $160 +$75 per $2k of buffer past +$3k, capped $600
 # with a two-step de-risk ladder near the line (half below $1,000 of buffer, half again below
 # $500 — ANGUS 2026-07-30) rather than a taper to zero, and micros floored at 1: the canon
 # either takes a trade at >=1 micro or does not take it at all.

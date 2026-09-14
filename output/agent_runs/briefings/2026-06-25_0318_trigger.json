@@ -1,0 +1,113 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "L1-0318",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-26T03:18 ET",
+ "candle_start": "03:16",
+ "timeframe": "2m",
+ "leak_check": "pass \u2014 series truncated at 03:17:59; last completed bar starts 03:16; screenshot verified",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/candidate_0318_2mUP.png",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   },
+   {
+    "level": "weekly_poc",
+    "price": 29710.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_val",
+   "price": 29290.0
+  },
+  "waiting_for": "nothing",
+  "two_sided": true,
+  "condition_for_other_side": "hard rejection at the 29655-29710 cluster licenses shorts back toward weekly_val 29290",
+  "as_of": "03:18 re-fire, rebalance_completed"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle": {
+  "direction": "UP",
+  "open": 29490.5,
+  "high": 29530.5,
+  "low": 29488.75,
+  "close": 29530.0,
+  "volume": 1110,
+  "volume_context": "heaviest 2m bar since the 03:00 open (next highest 356)"
+ },
+ "pair_shape": "sequential",
+ "sequential_detail": "own 2m MA leg closed at candle_start 03:10 (bar closed 29471 reclaiming the rising 2m MA after the 03:08 pullback to 29435); VWAP-mid leg closed on this 03:16 candle (closed 29530 through vwap 29490.79). Gap between legs: 6 minutes (3 candles) \u2014 at the SEQ_CANDLES=3 boundary. Doctrine: sequential is the exception and needs a positively better reason than same-candle.",
+ "levels_closed": [
+  "own_ma_2m@03:10 (sequential leg)",
+  "vwap (this candle)"
+ ],
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 29490.79,
+   "p1": 29683.97,
+   "m1": 29297.6
+  },
+  "bb_ma": {
+   "tf_2m": 29471.24,
+   "tf_3m": 29443.78,
+   "tf_15m": 29351.91
+  },
+  "daily_profile": {
+   "poc": 29355.0,
+   "val": 29161.0,
+   "vah": 29652.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30097.0
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "recent_swing_high_0255": 29535.25
+ },
+ "headroom": {
+  "direction_of_trade": "up",
+  "next_levels_overhead": [
+   {
+    "level": "recent_swing_high_0255",
+    "price": 29535.25,
+    "distance_from_close": 5.25
+   },
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   },
+   {
+    "level": "daily_vah",
+    "price": 29652.0
+   }
+  ],
+  "note": "the 02:55 swing high 29535.25 sits 5.25pt above the signal close"
+ },
+ "poc_alignment": {
+  "daily_poc": 29355.0,
+  "position": "below price \u2014 with an up trade",
+  "weekly_poc": 29710.0,
+  "position_weekly": "overhead \u2014 it is the destination"
+ },
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "cap_counts": "fills, not attempts",
+ "candidate_3m_confirmation": "the 3m MA (29443.78) was not closed through on a 3m candle at this minute \u2014 2m only",
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price; emit entry, expiry, cancel rule per doctrine"
+}

@@ -1,0 +1,157 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills)",
+ "decision_minute": "2026-06-22T09:30 ET (session-day 2026-06-21)",
+ "leak_check": "pass - truncated at 09:29:59; last completed 2m bar starts 09:28 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d21_0930_nyam.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "price_at_decision": 30822.0,
+ "last_completed_2m_bar": {
+  "start": "09:28",
+  "open": 30830.0,
+  "high": 30837.5,
+  "low": 30815.5,
+  "close": 30822.0,
+  "volume": 1578
+ },
+ "position_state": "FLAT. The NY_PRE long filled at 30847.00 and was flattened at the 09:30 cash open at 30822.75, red.",
+ "window_state": {
+  "LONDON": "1 of 2 used, closed by time",
+  "NY_PRE": "1 of 1 used, closed by time",
+  "NY_AM": "0 of 2 used, opening now"
+ },
+ "levels_at_decision_CHART": {
+  "vwap": 30647.86,
+  "vwap_p1": 30775.59,
+  "vwap_m1": 30520.13,
+  "vwap_p2": 30903.32,
+  "vwap_m2": 30392.4,
+  "bb_2m_basis": 30838.55,
+  "bb_2m_upper": 30880.15,
+  "bb_2m_lower": 30796.95
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 30838.55,
+  "bb_ma_3m": 30833.49,
+  "bb_ma_15m": 30757.5,
+  "bb_ma_60m": null,
+  "day_range_fibs": {
+   "0.382": 30542.25,
+   "0.5": 30605.5,
+   "0.618": 30668.75,
+   "0.705": 30715.38
+  },
+  "session_high_so_far": 30873.5,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30727.0,
+   "val": 30571.0,
+   "vah": 30872.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30770.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "05:45",
+    "dir": "DOWN",
+    "ma": 30708.67,
+    "close": 30708.25,
+    "body_ratio": 0.79
+   },
+   {
+    "t": "06:15",
+    "dir": "UP",
+    "ma": 30719.3,
+    "close": 30750.5,
+    "body_ratio": 0.75
+   },
+   {
+    "t": "06:45",
+    "dir": "DOWN",
+    "ma": 30727.34,
+    "close": 30717.25,
+    "body_ratio": 0.6
+   },
+   {
+    "t": "07:30",
+    "dir": "UP",
+    "ma": 30734.28,
+    "close": 30738.75,
+    "body_ratio": 0.29
+   }
+  ],
+  "hourly_closes": {
+   "03:00": 30736.75,
+   "04:00": 30759.0,
+   "05:00": 30731.25,
+   "06:00": 30699.0,
+   "07:00": 30720.0,
+   "08:00": 30757.75,
+   "09:00": 30800.5,
+   "09:30": 30822.0
+  },
+  "session_range_so_far": {
+   "high": 30873.5,
+   "low": 30337.5,
+   "span": 536.0
+  },
+  "last_bar_volume_note": "1,578 contracts on the 09:28 bar, the heaviest of the last hour"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "note": "the US calendar for this date is empty; nothing scheduled before 11:00 ET."
+ },
+ "what_to_emit": "your standard thesis JSON for this window.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_high",
+    "price": 30770.75
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_vah",
+   "price": 30699.0
+  },
+  "waiting_for": "acceptance through the 30757-30771 confluence (developing weekly VAH 30762 / prior-day high 30770.75 / 2m BB upper 30768.19) on a 15m decisive close before adding to longs; a stall-and-rollover in that same band - which already produced the London short - licenses the short again, no chasing the raw touch",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed AT the 30757-30771 confluence on a rejection that stalls and rolls over, the same location that paid the London short, back toward prior-day VAH 30699",
+  "anticipated_resolution": {
+   "level": "weekly_vah",
+   "price": 30762.0,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close above the 30757-30771 band with a decisive body, not the low-body-ratio absorption seen on the last MA cross",
+  "reasoning": "Session V-reversed off the 30337.5 low; the same VWAP+2/2m-BB-upper/weekly-VAH confluence that paid London's short has been retested after a steady 2h grind up from 30699. No 15m decisive close through it yet - last MA cross at 07:30 was a low-body-ratio absorption candle. Long-biased on the reclaim, but a second stall here re-licenses the short toward prior-day VAH."
+ },
+ "what_happened_since_the_last_read": "price ran from 30780 to a session high of 30873.50 at 09:15, then faded to 30815.5 and is 30822.0 now. The prior-day high 30770.75 named as a target was exceeded at 08:35; the weekly high 30975.5 was not approached.",
+ "window_clock_note": "entries in this window are barred for roughly the first five minutes after the cash open."
+}

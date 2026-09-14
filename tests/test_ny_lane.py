@@ -149,9 +149,9 @@ def test_absent_struct_event_never_escalates():
 
 # ---------------------------------------------------------------- bookkeeping
 def test_confirm_consumes_budget_and_exit_frees_it():
-    lane = _lane(profile=SCALED600, buffer=3_000.0)   # base 150 -> budget 800
+    lane = _lane(profile=SCALED600, buffer=3_000.0)   # base 160 -> budget 853.33
     before = lane.status()["room"]
-    v = _cand(lane, struct_event="broke")             # elite: $300 of risk
+    v = _cand(lane, struct_event="broke")             # elite: $320 of risk
     lane.confirm(v)
     assert lane.status()["inflight_risk"] == pytest.approx(v["risk_dollars"])
     assert lane.status()["room"] == pytest.approx(before - v["risk_dollars"])

@@ -1,0 +1,10 @@
+{
+ "lean": "neutral",
+ "confidence": "high",
+ "news_blackout": false,
+ "fomc_day": false,
+ "blackout_events": [],
+ "drivers": [],
+ "falsified_by": "N/A - no catalyst identified for this window",
+ "reasoning": "No events released so far today and nothing scheduled ahead of this decision minute (LONDON window, 2026-06-02 03:00 ET). No red-folder release sits inside the blackout window. No FOMC event today. Nothing to lean on; neutral is correct."
+}

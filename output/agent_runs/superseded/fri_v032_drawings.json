@@ -1,0 +1,29 @@
+[
+ {
+  "id": "fQnSCQ",
+  "shape": "short_position",
+  "t": 1782477360,
+  "p": 29366,
+  "stopLevel": 168,
+  "profitLevel": 258,
+  "label": "NYP2 +1.54R"
+ },
+ {
+  "id": "J5JIkD",
+  "shape": "short_position",
+  "t": 1782481560,
+  "p": 29256,
+  "stopLevel": 480,
+  "profitLevel": 720,
+  "label": "NYA2 -1.00R"
+ },
+ {
+  "id": "8YQHsM",
+  "shape": "long_position",
+  "t": 1782482280,
+  "p": 29419.32,
+  "stopLevel": 493,
+  "profitLevel": 943,
+  "label": "NYA3 +1.91R"
+ }
+]

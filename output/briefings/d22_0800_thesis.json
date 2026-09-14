@@ -1,0 +1,93 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE 08:00-09:29 ET (cap 1 fill)",
+ "decision_minute": "2026-06-23T08:00 ET (session-day 2026-06-22)",
+ "leak_check": "pass - truncated at 07:59:59; last completed 2m bar starts 07:58 (verified via the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d22_0800_nypre.png",
+ "chart_note": "anchored-weekly VP drawing hidden; its levels are numeric below and DEVELOPING as-of this minute.",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows TradingView's CROSSHAIR, not the last bar, and can sit on an earlier bar. It is never evidence of a leak. Authoritative state is this briefing plus the SELL/BUY ticker. The chart is truncated at the cursor.",
+ "level_provenance": "VWAP and its bands are read DIRECTLY off his chart at this minute; BB MAs, profiles and fibs come from the research build (which matches his chart on those to 0.01).",
+ "price_at_decision": 29873.25,
+ "prior_thesis_as_of_0300": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_low",
+    "price": 29923.0
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29735.88
+   }
+  ],
+  "invalidation": {
+   "level": "anchored_weekly_val",
+   "price": 30355.0
+  },
+  "waiting_for": "rebalance to the 15m MA at 30259.30 - NEVER HAPPENED; price never came within 230pt of it",
+  "anticipated_resolution": {
+   "level": "weekly_low_29923",
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "outcome": "BOTH DESTINATIONS ESSENTIALLY PRINTED. Weekly low 29923 broke on the 03:45-04:00 15m (close 29909, body 0.53) and price has closed below it on every 15m since. The second target vwap_m3 was missed by 16pt - session low 29752.00."
+ },
+ "what_happened_since_0300": "Continuation, then a base. Price bled from 29969 to the session low 29752.00, then spent roughly three hours grinding sideways in a 29752-29917 band. The last completed 15m (07:45-08:00) closed 29873.25 on a body_ratio of just 0.15 - absorption. Price now sits AT the confluence of vwap_m1 and the 2m BB basis (~29848), 25pt above.",
+ "acceptance_note": "Only 15m bars ending at or before 08:00 are knowable here. The decisive-body closes below the weekly low run 04:00, 04:15, 04:30, 04:45, 05:15, 05:45, 06:00, 06:30, 06:45, 07:00, 07:30, 07:45. The level is comprehensively broken and has not been reclaimed.",
+ "levels_at_0800_CHART": {
+  "vwap": 30133.18,
+  "vwap_p1": 30418.22,
+  "vwap_m1": 29848.13,
+  "vwap_p2": 30703.27,
+  "vwap_m2": 29563.08,
+  "vwap_m3": 29278.04,
+  "bb_2m_basis": 29848.48,
+  "bb_2m_upper": 29891.16,
+  "bb_2m_lower": 29805.79,
+  "source": "read off his chart at this minute"
+ },
+ "levels_at_0800_BUILD": {
+  "bb_ma_3m": 29843.08,
+  "bb_ma_15m": 29875.3,
+  "daily_profile": {
+   "poc": 29833.0,
+   "val": 29752.0,
+   "vah": 30356.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30343.0,
+   "vah": 30754.0,
+   "note": "DEVELOPING as-of 08:00"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low_now_broken": 29923.0,
+  "session_high": 30701.25,
+  "session_low": 29752.0
+ },
+ "day_range_fibs": {
+  "0.382": 30114.61,
+  "0.5": 30226.62,
+  "0.618": 30338.64,
+  "0.705": 30421.22,
+  "swing": "developing session-day high 30701.25 to low 29752.00",
+  "confluence": "0.382 (30114.61) sits just under the chart VWAP 30133.18; 0.5 (30226.62) near nothing; 0.618 (30338.64) at prior-day low 30337.5 and weekly VAL 30343"
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false,
+  "note": "no scheduled US releases this session-day; next red-folder is Core PCE on 2026-06-25"
+ },
+ "day_character_note": "Judge the day's character explicitly and say which you think you are in - your rebalance rule depends on it. The 15m MA is one key level among many, never a gate on its own."
+}

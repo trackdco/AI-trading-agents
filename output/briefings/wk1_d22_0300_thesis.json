@@ -1,0 +1,149 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON",
+ "decision_minute": "2026-06-23T03:00 ET",
+ "leak_check": "pass - replay truncated at 02:59:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/wk1_d22_0300.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 29969.75,
+ "last_completed_2m_bar": {
+  "start": "02:58",
+  "closed_at": "03:00",
+  "open": 30003.25,
+  "high": 30003.5,
+  "low": 29950.0,
+  "close": 29969.75,
+  "volume": 1213,
+  "minutes": 2
+ },
+ "position_state": {
+  "open_position": null,
+  "fills_today": 0
+ },
+ "window_state": {
+  "window": "LONDON",
+  "opens": "03:00",
+  "closes": "04:59",
+  "fills_this_window": 0,
+  "cap": "LIFTED for this run (written cap 2)"
+ },
+ "levels_at_decision_CHART": {
+  "read_at": "2026-06-23T03:00 ET, from the chart's own study series",
+  "bb_ma_2m": 30015.33,
+  "vwap": 30351.64,
+  "vwap_p1": 30556.89,
+  "vwap_m1": 30146.39,
+  "vwap_p2": 30762.14,
+  "vwap_m2": 29941.13,
+  "vwap_p3": 30967.39,
+  "vwap_m3": 29735.88,
+  "svp_hd": {
+   "poc": 30587.38,
+   "vah": 30700.25,
+   "val": 30229.5
+  }
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30351.52,
+   "vwap_p1": 30556.58,
+   "vwap_p2": 30761.63,
+   "vwap_p3": 30966.68,
+   "vwap_m1": 30146.47,
+   "vwap_m2": 29941.42,
+   "vwap_m3": 29736.37
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30015.33,
+   "bb_ma_3m": 30038.92,
+   "bb_ma_15m": 30259.3,
+   "bb_ma_60m": 30541.81
+  },
+  "day_range_fibs": {
+   "0.382": 30236.98,
+   "0.5": 30325.62,
+   "0.618": 30414.27,
+   "0.705": 30479.63
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29950.0,
+  "daily_profile": {
+   "poc": 30586.0,
+   "val": 30228.0,
+   "vah": 30701.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30355.0,
+   "vah": 30732.0,
+   "high": 30975.5,
+   "low": 29923.0,
+   "anchor": "2026-06-15 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.605,
+  "net_move_15m": -693.0,
+  "total_15m_travel": 1144.75,
+  "candles_15m_up": 9,
+  "candles_15m_down": 27,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "02:00",
+   "open": 30107.25,
+   "high": 30133.25,
+   "low": 30067.75,
+   "close": 30086.5,
+   "body_ratio": 0.32
+  },
+  {
+   "start": "02:15",
+   "open": 30087.0,
+   "high": 30108.75,
+   "low": 30003.75,
+   "close": 30020.5,
+   "body_ratio": 0.63
+  },
+  {
+   "start": "02:30",
+   "open": 30020.75,
+   "high": 30054.25,
+   "low": 29979.25,
+   "close": 30003.5,
+   "body_ratio": 0.23
+  },
+  {
+   "start": "02:45",
+   "open": 30004.0,
+   "high": 30038.25,
+   "low": 29950.0,
+   "close": 29969.75,
+   "body_ratio": 0.39
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "no read to falsify - no events in briefing",
+  "reasoning": "Briefing shows no red-folder releases printed today and none scheduled ahead of this LONDON window. No dated catalyst to name, so no lean."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract."
+}

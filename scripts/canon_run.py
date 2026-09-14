@@ -238,7 +238,7 @@ def build_canon_live(cfg: dict, alerts: LaunchAlerts, log: logging.Logger,
         from src.live.arming import ArmingError, verify_for_arming
         token = _collect_arm_token()
         try:
-            auth = verify_for_arming(token)
+            auth = verify_for_arming(token, entrypoint="scripts.canon_run")
         except ArmingError as e:
             raise SystemExit(f"ARM REFUSED: {e}") from e
         broker, client = build_armed_broker(cfg, auth, log)

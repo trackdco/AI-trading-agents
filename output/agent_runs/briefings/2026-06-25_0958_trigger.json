@@ -1,0 +1,117 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "NYA8-0958",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-26T09:58 ET",
+ "candle_start": "09:56",
+ "timeframe": "2m",
+ "leak_check": "pass \u2014 truncated at 09:57:59; last completed 2m bar starts 09:56",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_0958_box_resolved.png",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   },
+   {
+    "level": "daily_vah",
+    "price": 29540.0
+   },
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_val",
+   "price": 29290.0
+  },
+  "waiting_for": "rebalance to the 15m MA (~29352) \u2014 BINDING; the thesis explicitly declined to chase this displacement 22pt under prior_day_val",
+  "two_sided": false,
+  "as_of": "09:58 re-fire, box_resolved_up \u2014 seconds before this adjudication"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle": {
+  "start": "09:56",
+  "direction": "UP",
+  "open": 29322.75,
+  "high": 29454.0,
+  "low": 29311.75,
+  "close": 29443.0,
+  "volume": 5243,
+  "note": "~140pt displacement thrust; the box-resolution bar itself"
+ },
+ "pair_shape": "sequential",
+ "sequential_detail": "own-MA leg at 09:50; this candle closed VWAP mid (~29437), daily POC 29369 and ma15 \u2014 sequential +6m, at the SEQ_CANDLES=3 boundary",
+ "levels_closed": [
+  "own_ma_2m@09:50 (sequential leg)",
+  "vwap_mid",
+  "daily_poc",
+  "bb_ma_15m"
+ ],
+ "open_position": {
+  "candidate_id": "NYA2-0936-readjudication",
+  "side": "LONG",
+  "entry": 29298.0,
+  "stop": 29298.0,
+  "status": "25% runner at breakeven after the 75% partial at 29369; target 29465",
+  "note": "your verdict is about THIS new candidate only"
+ },
+ "time_context": "09:58 \u2014 cash-open displacement regime; every bar since 09:30 displacement-sized",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 29437.0,
+   "m1": 29271.0
+  },
+  "bb_ma": {
+   "tf_2m": 29310.0,
+   "tf_3m": 29317.0,
+   "tf_15m": 29352.0
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "low": 29295.75,
+   "val": 29465.0,
+   "poc": 29655.0
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29181.5
+ },
+ "headroom": {
+  "direction_of_trade": "up (candidate)",
+  "next_levels_overhead": [
+   {
+    "level": "prior_day_val",
+    "price": 29465.0,
+    "distance_from_close": 22.0
+   },
+   {
+    "level": "daily_vah",
+    "price": 29540.0
+   }
+  ],
+  "note": "prior_day_val sits 22pt above the signal close, immediately in an up-trade's path \u2014 it is also the thesis's first target"
+ },
+ "poc_alignment": {
+  "daily_poc": 29369.0,
+  "position": "below price \u2014 with a long, freshly reclaimed"
+ },
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+}

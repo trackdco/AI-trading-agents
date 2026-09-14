@@ -1,0 +1,89 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON 03:00-04:59 ET",
+ "decision_minute": "2026-06-25T03:00 ET (session-day 2026-06-24, 18:00 NY anchor)",
+ "leak_check": "pass - truncated at 02:59:59; last completed 2m bar starts 02:58 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d24_0300_open.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; its levels are numeric below and DEVELOPING as-of this minute.",
+ "level_provenance": "VWAP+bands read from his chart's own study series; BB MAs/profiles/fibs from the research build.",
+ "day_character_note": "Judge the day's character explicitly - your rebalance rule depends on it. ROTATIONAL keeps the 15m-MA floor; a clear TREND day suspends it and you wait for a rejection off a key level instead. The 15m MA is one key level among many, never a gate on its own.",
+ "price_at_decision": 30105.25,
+ "overnight": {
+  "open": 30089.75,
+  "close": 30105.25,
+  "high": 30168.5,
+  "high_t": "18:01",
+  "low": 29924.5,
+  "low_t": "22:16",
+  "character": "a steady grind higher off the evening low, then a tight coil into the London open. Price enters at 30105.25."
+ },
+ "levels_at_0300_CHART": {
+  "vwap": 30045.76,
+  "vwap_p1": 30098.45,
+  "vwap_m1": 29993.07,
+  "vwap_p2": 30151.13,
+  "vwap_m2": 29940.38,
+  "bb_2m_basis": 30112.35,
+  "bb_2m_upper": 30127.78,
+  "bb_2m_lower": 30096.92,
+  "note": "the 2m Bollinger bands are only ~31pt wide - an extremely tight coil"
+ },
+ "levels_at_0300_BUILD": {
+  "bb_ma_3m": 30110.21,
+  "bb_ma_15m": 30044.89,
+  "day_range_fibs": {
+   "0.382": 30017.71,
+   "0.5": 30046.5,
+   "0.618": 30075.29,
+   "0.705": 30096.52
+  },
+  "day_high": 30168.5,
+  "day_low": 29924.5,
+  "daily_profile": {
+   "poc": 30067.0,
+   "val": 30007.0,
+   "vah": 30130.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 29790.0,
+   "vah": 30969.0,
+   "anchor": "2026-06-17 18:00 ET",
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "prior_day": {
+   "poc": 29769.0,
+   "val": 29503.0,
+   "vah": 29892.0,
+   "high": 30157.75,
+   "low": 29264.75
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29264.75
+ },
+ "MACRO_NOTE": "Core PCE m/m prints at 08:30 ET today - inside the NY_PRE window. The macro read below flags news_blackout=true. That gate is enforced mechanically by the trigger agent, not by you, and it bars ENTRIES in that window; it does not stop you forming a view.",
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": true,
+  "blackout_events": [
+   {
+    "event": "Core PCE Price Index m/m",
+    "time_et": "08:30"
+   }
+  ],
+  "drivers": [],
+  "falsified_by": "Would flip from neutral if a dated, pre-decision-minute event surfaced bearing directionally on NQ or a heavy constituent; none exists in this briefing.",
+  "reasoning": "No scheduled events have printed at or before the 03:00 ET decision minute and no headlines were supplied, so there is no dated catalyst to lean on. Core PCE (08:30) is upcoming, unprinted, and falls inside the NY_PRE window, so it is flagged as a blackout rather than a directional read."
+ },
+ "observations_mechanical": [
+  "price 30105.25 sits between the chart VWAP 30045.76 and vwap_p1 30098.45 - just above the +1 band",
+  "the 2m BB basis 30112.35 is 7pt above price and the band is only ~31pt wide: a very tight coil",
+  "price is INSIDE the developing daily value area (VAL 30007 / VAH 30130) and well ABOVE the anchored weekly VAL 29790 - trading in the upper part of last week's range",
+  "prior-day high 30157.75 sits 52pt overhead; the prior day's range was enormous (30157.75 to 29264.75, 893pt)"
+ ]
+}

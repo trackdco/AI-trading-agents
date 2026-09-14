@@ -1,0 +1,95 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "LONDON 03:00-04:59 ET (cap 2 fills)",
+ "decision_minute": "2026-06-24T03:00 ET (session-day 2026-06-23)",
+ "leak_check": "pass - truncated at 02:59:59; last completed 2m bar starts 02:58 (read from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d23_0300_london.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "day_character_note": "First read of the session. Judge the day's character - your rebalance rule, your rejection rule and T22 all turn on it. Look hard at whether this is a range or a trend.",
+ "price_at_decision": 29822.75,
+ "last_completed_2m_bar": {
+  "start": "02:58",
+  "open": 29826.75,
+  "high": 29837.0,
+  "low": 29820.25,
+  "close": 29822.75,
+  "volume": 272
+ },
+ "overnight_so_far": {
+  "open_1800": 29770.0,
+  "high": 29891.75,
+  "high_time": "20:42",
+  "low": 29585.5,
+  "low_time": "19:08",
+  "close_at_0300": 29822.75,
+  "range": 306.25
+ },
+ "levels_at_0300_CHART": {
+  "vwap": 29764.06,
+  "vwap_p1": 29834.51,
+  "vwap_m1": 29693.61,
+  "vwap_p2": 29904.96,
+  "vwap_m2": 29623.16,
+  "bb_2m_basis": 29829.79,
+  "bb_2m_upper": 29854.46,
+  "bb_2m_lower": 29805.11
+ },
+ "levels_at_0300_BUILD": {
+  "bb_ma_2m": 29829.79,
+  "bb_ma_3m": 29829.11,
+  "bb_ma_15m": 29772.78,
+  "bb_ma_60m": 29777.22,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29699.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30036.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 03:00"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29577.25
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "15m_MA_crosses_so_far": [],
+  "note_on_location": "price 29822.75 sits between the session VWAP 29764.06 and vwap_p1 29834.51, and inside the 2m Bollinger band. The overnight range is 306.25pt.",
+  "note_on_shape": "compare the overnight range against the previous two sessions in the fibs and prior-day levels below. If this has been rotating rather than trending, T22 applies to how you frame the edges."
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "a red-folder US release or a mega-cap headline dated on or before the decision minute appearing in a later briefing",
+  "reasoning": "the US red-folder calendar for this date is empty and no as-of headline set was supplied.",
+  "provenance": "orchestrator-supplied, verified against data/reference/news_archive.csv: no row dated 2026-06-24."
+ },
+ "T22_REMINDER": "after a session-long RANGE the default is to FADE THE EDGE, not to anticipate the break. His ruling: 'we were trading in this range for the entire London session, and then we were anticipating a breakout of it. To me that doesn't make sense, because it's more likely for price to stall at this high and come to the low of the range again.' Continuation is tradeable AFTER a break, not in anticipation of one.",
+ "T18_REMINDER": "on a TREND day the rejection is wherever the counter-trend bounce actually stalls - it does not have to reach a pre-named level.",
+ "ADAPTATION_CLAUSE": "name rejection levels WITHIN REACH - roughly the current 15m BB width - or express them as behaviour. An unreachable condition disables that direction for the session and the trigger will escalate rather than obey it.",
+ "what_to_emit": "your standard thesis JSON for the LONDON window."
+}

@@ -1,0 +1,15 @@
+{
+ "lean": "neutral",
+ "confidence": "medium",
+ "news_blackout": false,
+ "fomc_day": false,
+ "blackout_events": [
+  {
+   "event": "ISM Services PMI",
+   "time_et": "10:00"
+  }
+ ],
+ "drivers": [],
+ "falsified_by": "Any dated pre-decision-minute event naming NQ or a heavy constituent with a clear direction and absorption state would override this neutral.",
+ "reasoning": "Nothing has released today as of 09:30 ET. ISM Services PMI at 10:00 is red-folder but its 10-minute blackout band (09:50-10:00) hasn't started at this decision minute, so no gate applies. No catalyst to lean on."
+}

@@ -1,0 +1,74 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "awaited_rebalance_completed",
+ "event_detail": "your waiting_for was 'rebalance to the 15m MA ~29409'. The 15m bar 05:30-05:45 closed 29421.75, UP THROUGH the 15m MA 29419.06 at exactly 05:45 \u2014 the rebalance completed and overshot to a close on the far side. Session low extended to 29344 (~05:30) before the bounce.",
+ "window": "between windows (NY_PRE opens 08:00). This read governs until then.",
+ "decision_minute": "2026-06-26T05:46 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 05:45:59; last completed 2m bar starts 05:44",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_0545_rebalance_15m.png",
+ "price_at_decision": 29430.0,
+ "prior_thesis_as_of_0502": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_val",
+    "price": 29290.0
+   },
+   {
+    "level": "vwap_m1",
+    "price": 29307.96
+   },
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_val",
+   "price": 29465.0
+  },
+  "waiting_for": "rebalance to the 15m MA ~29409",
+  "two_sided": true,
+  "condition_for_other_side": "failed breakdown at weekly_val 29290 / prior-day low 29295.75 with 2m closes reclaiming vwap_m1 29308 licenses longs toward prior_day_val 29465"
+ },
+ "what_happened_since_0502": "Bled 29380 -> 29344 (new session low ~05:30), then a sharp bounce 29377 -> 29443 into 05:45; the 15m bar closed through its MA. Price 29430 now sits between the 15m MA 29411 and your invalidation prior_day_val 29465, 35pt below it.",
+ "levels_at_0546": {
+  "vwap": {
+   "mid": 29484.46,
+   "p1": 29663.33,
+   "m1": 29305.58,
+   "m2": 29126.71
+  },
+  "bb_ma": {
+   "tf_2m": 29387.78,
+   "tf_3m": 29393.76,
+   "tf_15m": 29427.06
+  },
+  "daily_profile": {
+   "poc": 29355.0,
+   "val": 29161.0,
+   "vah": 29642.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30093.0
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "session_high": 29562.75,
+  "session_low": 29344.0
+ },
+ "fib_source": "none",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

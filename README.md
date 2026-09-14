@@ -37,16 +37,21 @@ one commit per completed spec step (`step-N: ...`).
 
 ## Setup
 
-Python 3.11+ (validated on 3.12). Approved dependencies: pandas, numpy, pydantic v2,
+Python 3.12+ (validated on 3.12). Approved dependencies: pandas, numpy, pydantic v2,
 PyYAML, pytest, ruff, plus **pyarrow** (parquet I/O). Exact versions are pinned in
 `requirements.txt`.
+
+3.12 is a hard floor, not a preference: the pinned `numpy==2.5.1` declares
+`Requires-Python >=3.12`, so `pip install -r requirements.txt` fails outright on 3.11,
+and `scripts/htf_ma_next_test.py` uses a multi-line f-string expression (PEP 701),
+which 3.11 rejects with a `SyntaxError` at collection.
 
 Reproducible runtime — a repo-local venv (`.venv/` is gitignored):
 
 ```bash
-python3.12 -m venv .venv            # any interpreter >= 3.11
+python3.12 -m venv .venv            # 3.12 or newer
 source .venv/bin/activate           # (deactivate with `deactivate`)
-pip install -r requirements.txt     # exact pinned versions — no shims needed on 3.11+
+pip install -r requirements.txt     # exact pinned versions
 ```
 
 Databento API key and Telegram credentials live in `.env` (gitignored, never committed);

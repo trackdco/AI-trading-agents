@@ -1,0 +1,41 @@
+{
+ "bias": "short",
+ "targets": [
+  {
+   "level": "vwap",
+   "price": 30452.75
+  },
+  {
+   "level": "daily_val",
+   "price": 30412.0
+  }
+ ],
+ "invalidation": {
+  "level": "weekly_val",
+  "price": 30539.0
+ },
+ "waiting_for": "nothing",
+ "two_sided": true,
+ "condition_for_other_side": "longs re-licensed on a 15m decisive-body close back above the weekly VAL / 2m-BB-upper cluster (30535-30544), reclaiming the level just rejected - reopens the path toward weekly POC 30677.",
+ "anticipated_resolution": {
+  "level": "weekly_val_bb_upper_cluster",
+  "price": 30539.0,
+  "expect": "holds",
+  "act_on_resolution": true
+ },
+ "acceptance_rule": "15m close beyond the weekly VAL/BB-upper cluster (~30535-30544) with a decisive body; the 03:00 15m candle wicked to 30544.5 but closed body_ratio 0.10 at 30533.25 - absorption, not acceptance, so the level held.",
+ "other_side_tripwire": {
+  "level": "weekly_val",
+  "price": 30539.0,
+  "event": "15m_decisive_close"
+ },
+ "defended_level": {
+  "level": "weekly_val",
+  "price": 30539.0,
+  "memory": "anchored 5-day value-area low, tested from below on this session's flush-and-reverse rally into the London open",
+  "status": "holding"
+ },
+ "flush": false,
+ "flush_direction": null,
+ "reasoning": "Session flushed near the weekly low then reversed hard, tagging session high 30544.5 right into the weekly VAL/BB-upper cluster my prior read had already conditioned shorts on. The 03:00 15m candle wicked into that cluster but closed low-body (0.10) - absorption - and the next 2m candle closed 30513.25 through vwap_p2 and the 2m MA, the exact stall-and-displace the tripwire named. Flipping active lean to short toward VWAP/daily POC confluence (~30452); weekly POC stays the long target above only on a 15m reclaim of the cluster, not before."
+}

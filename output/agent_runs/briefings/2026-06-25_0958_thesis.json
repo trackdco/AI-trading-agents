@@ -1,0 +1,51 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "box_resolved_up",
+ "event_detail": "your 09:42 waiting_for is answered: the 29225-29290 box resolved UP. The 09:54 3m closed 29414 through its MA, POC and ma15; then the 09:56 2m bar ran 29311.75 -> 29454 on 5243 contracts and closed 29443 \u2014 through VWAP mid (~29437), daily POC 29369 and the 15m MA in one candle, its low holding above the 29290 cluster. Closes since 09:54: 29325.25, 29443 with lows 29278.25 / 29311.75 \u2014 the tape has left the box.",
+ "window": "NY_AM (entries to 11:00; cap 2, 1 used by the NYA2 long \u2014 which just partialed at 29369 and rides a 25% runner, BE stop 29298, target 29465).",
+ "decision_minute": "2026-06-26T09:58 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 09:57:59; last completed 2m bar starts 09:56",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_0958_box_resolved.png",
+ "price_at_decision": 29443.0,
+ "prior_thesis_as_of_0942": {
+  "bias": "stand_aside",
+  "waiting_for": "resolution of the 29225-29290 box: fail-as-resistance reopens shorts to 29160.5; 2m acceptance above 29290 holding as support restores longs toward daily_poc 29369"
+ },
+ "what_happened_since_0942": "Six more whipsaw bars straddling 29290 (29327/29252/29318/29267.75/29323.25/29285.75), then the resolution thrust: 09:54 and 09:56 both up, the spring low 29181.5 never retested, daily_val held every probe. Price is now AT VWAP mid / prior_day_val territory: vwap 29437, prior_day_val 29465 is 22pt overhead.",
+ "levels_at_0958": {
+  "vwap": {
+   "mid": 29437.0,
+   "m1": 29271.0,
+   "note": "computed at 09:58"
+  },
+  "bb_ma": {
+   "tf_2m": 29310.0,
+   "tf_3m": 29317.0,
+   "tf_15m": 29352.0
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "low": 29295.75,
+   "val": 29465.0,
+   "poc": 29655.0
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29181.5,
+  "session_high_since_0300": 29562.75
+ },
+ "fib_source": "10:00 NY approaches \u2014 NY-range fibs become available only after 10:00 on HIS manually marked swings; none marked, so still none",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

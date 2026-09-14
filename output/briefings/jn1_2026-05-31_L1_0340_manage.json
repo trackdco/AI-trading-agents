@@ -1,0 +1,200 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "jn1-0531-L1",
+ "decision_minute": "2026-06-01T03:40 ET",
+ "reason_for_call": "tp1_reached",
+ "leak_check": "pass - replay truncated at 03:39:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-05-31_L1_0340_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30579.5,
+  "stop": 30532.0,
+  "targets": [
+   {
+    "level": "daily_val",
+    "price": 30512.0
+   },
+   {
+    "level": "day_fib_0.5",
+    "price": 30478.25
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 30439.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 29773.0
+   }
+  ],
+  "conviction": "B",
+  "opened_at": "03:12",
+  "R_in_points": 10.5,
+  "current_stop_distance": 47.5,
+  "open_pnl_in_R": 6.93
+ },
+ "level_in_question": {
+  "level": "target_3_daily_val",
+  "price": 30512.0
+ },
+ "price_at_decision": 30506.75,
+ "last_completed_2m_bar": {
+  "start": "03:38",
+  "closed_at": "03:40",
+  "open": 30527.75,
+  "high": 30527.75,
+  "low": 30505.25,
+  "close": 30506.75,
+  "volume": 467,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "03:32",
+   "closed_at": "03:34",
+   "open": 30524.5,
+   "high": 30527.25,
+   "low": 30518.75,
+   "close": 30520.0,
+   "volume": 204,
+   "minutes": 2
+  },
+  {
+   "start": "03:34",
+   "closed_at": "03:36",
+   "open": 30521.0,
+   "high": 30530.0,
+   "low": 30521.0,
+   "close": 30527.25,
+   "volume": 151,
+   "minutes": 2
+  },
+  {
+   "start": "03:36",
+   "closed_at": "03:38",
+   "open": 30527.0,
+   "high": 30530.0,
+   "low": 30523.5,
+   "close": 30528.25,
+   "volume": 102,
+   "minutes": 2
+  },
+  {
+   "start": "03:38",
+   "closed_at": "03:40",
+   "open": 30527.75,
+   "high": 30527.75,
+   "low": 30505.25,
+   "close": 30506.75,
+   "volume": 467,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "source": "chart legend in the screenshot is current; last full read 03:17:59",
+  "vwap": 30524.25,
+  "vwap_m1": 30467.8,
+  "vwap_m2": 30411.34
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30524.81,
+   "vwap_p1": 30579.59,
+   "vwap_p2": 30634.37,
+   "vwap_p3": 30689.15,
+   "vwap_m1": 30470.03,
+   "vwap_m2": 30415.24,
+   "vwap_m3": 30360.46
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30550.89,
+   "bb_ma_3m": 30556.66,
+   "bb_ma_15m": 30560.74,
+   "bb_ma_60m": 30455.11
+  },
+  "day_range_fibs": {
+   "0.382": 30450.64,
+   "0.5": 30478.25,
+   "0.618": 30505.86,
+   "0.705": 30526.22
+  },
+  "session_high_so_far": 30595.25,
+  "session_low_so_far": 30361.25,
+  "daily_profile": {
+   "poc": 30558.0,
+   "val": 30514.0,
+   "vah": 30589.0,
+   "note": "DEVELOPING as-of 03:40"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30043.0,
+   "val": 29773.0,
+   "vah": 30306.0,
+   "high": 30595.25,
+   "low": 29744.0,
+   "anchor": "2026-05-25 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:40"
+  },
+  "prior_day": {
+   "poc": 30406.0,
+   "val": 30328.0,
+   "vah": 30439.0,
+   "high": 30536.0,
+   "low": 30216.5
+  }
+ },
+ "crowded_path": {
+  "flag": false
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "03:14",
+   "action": "breakeven",
+   "new_stop": 30579.5
+  },
+  {
+   "minute": "03:17",
+   "action": "trail",
+   "new_stop": 30569.75
+  },
+  {
+   "minute": "03:18",
+   "action": "partial",
+   "partial_pct": 0.75,
+   "at": 30558.0
+  },
+  {
+   "minute": "03:19",
+   "action": "hold",
+   "note": "second_setup add declined"
+  },
+  {
+   "minute": "03:26",
+   "action": "trail",
+   "new_stop": 30541.75
+  },
+  {
+   "minute": "03:27",
+   "action": "hold"
+  },
+  {
+   "minute": "03:29",
+   "action": "trail",
+   "new_stop": 30532.0
+  },
+  {
+   "minute": "03:35",
+   "action": "hold",
+   "note": "stall = failed retest from below, resistance confirmed"
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract.",
+ "target_print": {
+  "level": "daily_val (target 3 of the original ladder; the thesis anticipated_resolution names this level, expect break_down, act_on_resolution true)",
+  "price": 30512.0,
+  "printed_during_bar_starting": "03:39",
+  "decision_minute": "03:40"
+ }
+}

@@ -1,0 +1,304 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "S4-D23-L4-0348",
+ "window": "LONDON 03:00-04:59 ET",
+ "session": "LONDON",
+ "decision_minute": "2026-06-24T03:48 ET",
+ "candle_start_3m": "03:45",
+ "candle_start_2m": "03:46",
+ "leak_check": "pass - replay truncated at 03:47:59, verified against replay_status. The 3m bar starting 03:45 and the 2m bar starting 03:46 both close AT 03:48. Every candle here is aggregated from committed bars and re-checked before emission.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/s4_d23_0348.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "thesis": {
+  "bias": "long",
+  "escalation_response": "reaffirmed",
+  "condition_for_other_side": "shorts licensed on a rejection at today's high / prior-day VAH zone (29890-29930) that stalls and rolls over - not on mid-range VWAP/BB-basis chop below daily VAH",
+  "waiting_for": "rebalance to the 15m MA (~29773) before longs are licensed",
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29577.25
+  },
+  "flush": false,
+  "reasoning": "The escalated rejection at vwap_p1 is mixed and weak across timeframes - 2m 6/15, 5m 2/6, 15m 0/3 wick only - and sits essentially at price and the BB 2m basis in mid-range chop, not the 29890-29930 top-of-range cluster the short condition names. Neither side is licensed at this spot."
+ },
+ "price_at_decision": 29829.5,
+ "signal_candle_3m": {
+  "start": "03:45",
+  "closed_at": "03:48",
+  "open": 29815.5,
+  "high": 29836.0,
+  "low": 29812.0,
+  "close": 29829.5,
+  "volume": 388,
+  "minutes": 3
+ },
+ "signal_candle_2m": {
+  "start": "03:46",
+  "closed_at": "03:48",
+  "open": 29818.0,
+  "high": 29836.0,
+  "low": 29816.25,
+  "close": 29829.5,
+  "volume": 321,
+  "minutes": 2
+ },
+ "signal_direction_2m_3m": "long",
+ "pair_shape": "sequential",
+ "levels_closed_SCANNER": [
+  "own_ma_3m_at_03:42",
+  "daily_poc"
+ ],
+ "levels_closed_note": "this is the mechanical scanner's reading of which levels the candle closed through. Verify it against the level values below and correct it in your verdict if it does not hold.",
+ "higher_timeframe_at_candidate_levels": {
+  "daily_poc": {
+   "recent_30m": {
+    "2m": {
+     "closes_through": 13,
+     "far_side": "body",
+     "bars": 15
+    },
+    "5m": {
+     "closes_through": 6,
+     "far_side": "body",
+     "bars": 7
+    },
+    "15m": {
+     "closes_through": 2,
+     "far_side": "body",
+     "bars": 3
+    }
+   },
+   "session_to_date": {
+    "2m": {
+     "closes_through": 206,
+     "far_side": "body",
+     "bars": 294
+    },
+    "5m": {
+     "closes_through": 82,
+     "far_side": "body",
+     "bars": 118
+    },
+    "15m": {
+     "closes_through": 28,
+     "far_side": "body",
+     "bars": 40
+    }
+   },
+   "far_side_is": "below",
+   "note": "closes_through counts closes on the FAR side of the level; far_side is body if anything closed there, wick if price traded there without closing there, untouched if it never reached. A 15m wick with no close through in the recent window, while the 2m closed both sides, is the level holding. Level prices are the value AT this minute; VWAP bands and MAs move, so the session-to-date count for those is indicative only.",
+   "price": 29821.0
+  },
+  "vwap_p1": {
+   "recent_30m": {
+    "2m": {
+     "closes_through": 15,
+     "far_side": "body",
+     "bars": 15
+    },
+    "5m": {
+     "closes_through": 7,
+     "far_side": "body",
+     "bars": 7
+    },
+    "15m": {
+     "closes_through": 3,
+     "far_side": "body",
+     "bars": 3
+    }
+   },
+   "session_to_date": {
+    "2m": {
+     "closes_through": 248,
+     "far_side": "body",
+     "bars": 294
+    },
+    "5m": {
+     "closes_through": 100,
+     "far_side": "body",
+     "bars": 118
+    },
+    "15m": {
+     "closes_through": 35,
+     "far_side": "body",
+     "bars": 40
+    }
+   },
+   "far_side_is": "below",
+   "note": "closes_through counts closes on the FAR side of the level; far_side is body if anything closed there, wick if price traded there without closing there, untouched if it never reached. A 15m wick with no close through in the recent window, while the 2m closed both sides, is the level holding. Level prices are the value AT this minute; VWAP bands and MAs move, so the session-to-date count for those is indicative only.",
+   "price": 29835.99
+  },
+  "bb_ma_15m": {
+   "recent_30m": {
+    "2m": {
+     "closes_through": 2,
+     "far_side": "body",
+     "bars": 15
+    },
+    "5m": {
+     "closes_through": 0,
+     "far_side": "wick",
+     "bars": 7
+    },
+    "15m": {
+     "closes_through": 0,
+     "far_side": "wick",
+     "bars": 3
+    }
+   },
+   "session_to_date": {
+    "2m": {
+     "closes_through": 141,
+     "far_side": "body",
+     "bars": 294
+    },
+    "5m": {
+     "closes_through": 57,
+     "far_side": "body",
+     "bars": 118
+    },
+    "15m": {
+     "closes_through": 18,
+     "far_side": "body",
+     "bars": 40
+    }
+   },
+   "far_side_is": "below",
+   "note": "closes_through counts closes on the FAR side of the level; far_side is body if anything closed there, wick if price traded there without closing there, untouched if it never reached. A 15m wick with no close through in the recent window, while the 2m closed both sides, is the level holding. Level prices are the value AT this minute; VWAP bands and MAs move, so the session-to-date count for those is indicative only.",
+   "price": 29786.65
+  },
+  "bb_ma_3m": {
+   "recent_30m": {
+    "2m": {
+     "closes_through": 12,
+     "far_side": "body",
+     "bars": 15
+    },
+    "5m": {
+     "closes_through": 4,
+     "far_side": "body",
+     "bars": 7
+    },
+    "15m": {
+     "closes_through": 1,
+     "far_side": "body",
+     "bars": 3
+    }
+   },
+   "session_to_date": {
+    "2m": {
+     "closes_through": 179,
+     "far_side": "body",
+     "bars": 294
+    },
+    "5m": {
+     "closes_through": 69,
+     "far_side": "body",
+     "bars": 118
+    },
+    "15m": {
+     "closes_through": 20,
+     "far_side": "body",
+     "bars": 40
+    }
+   },
+   "far_side_is": "below",
+   "note": "closes_through counts closes on the FAR side of the level; far_side is body if anything closed there, wick if price traded there without closing there, untouched if it never reached. A 15m wick with no close through in the recent window, while the 2m closed both sides, is the level holding. Level prices are the value AT this minute; VWAP bands and MAs move, so the session-to-date count for those is indicative only.",
+   "price": 29811.12
+  }
+ },
+ "levels_at_decision_CHART": {},
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 29766.75,
+   "vwap_p1": 29835.99,
+   "vwap_p2": 29905.22,
+   "vwap_p3": 29974.45,
+   "vwap_m1": 29697.52,
+   "vwap_m2": 29628.29,
+   "vwap_m3": 29559.06
+  },
+  "bb_ma": {
+   "bb_ma_2m": 29803.72,
+   "bb_ma_3m": 29811.12,
+   "bb_ma_15m": 29786.65,
+   "bb_ma_60m": 29777.8
+  },
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29707.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 03:48"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30032.0,
+   "vah": 30955.0,
+   "high": 30968.0,
+   "low": 29577.25,
+   "anchor": "2026-06-16 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:48"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  }
+ },
+ "levels_above_price": [
+  "vwap_p1 29835.99",
+  "daily_vah 29858.0",
+  "session_high 29891.75",
+  "vwap_p2 29905.22",
+  "prior_day_vah 29928.0",
+  "vwap_p3 29974.45",
+  "weekly_val 30032.0",
+  "weekly_poc 30640.0",
+  "prior_day_high 30701.25",
+  "weekly_vah 30955.0",
+  "weekly_high 30968.0"
+ ],
+ "levels_below_price": [
+  "daily_poc 29821.0",
+  "bb_ma_3m 29811.12",
+  "bb_ma_2m 29803.72",
+  "fib_0.705 29801.41",
+  "bb_ma_15m 29786.65",
+  "bb_ma_60m 29777.8",
+  "fib_0.618 29774.76",
+  "vwap 29766.75",
+  "fib_0.5 29738.62",
+  "prior_day_poc 29733.0",
+  "daily_val 29707.0",
+  "fib_0.382 29702.49",
+  "vwap_m1 29697.52",
+  "prior_day_val 29637.0",
+  "vwap_m2 29628.29",
+  "session_low 29585.5",
+  "weekly_low 29577.25",
+  "prior_day_low 29577.25",
+  "vwap_m3 29559.06"
+ ],
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated by the orchestrator: touch-equals-fill.",
+ "entry_geometry_note": "the orchestrator validates entry arithmetic before simulating. For a LONG the limit sits BELOW current price and cancel_if_reaches ABOVE both; for a SHORT, mirrored.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "drivers": []
+ },
+ "scanner_detail": "SEQUENTIAL pair. The 3m bar starting 03:45 closed through the daily POC, with its own-MA leg recorded at 03:42 (+3m); the 2m bar starting 03:46 closed the same pair with its own-MA leg at 03:40 (+6m). The scanner also records vwap_p1 rejected."
+}

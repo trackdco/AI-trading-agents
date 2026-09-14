@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"long\",\"day_type\":\"gap-up hold, tight consolidation\",\"thesis\":\"Gapped +69, overnight range held above prior close, now coiling near highs 23610-14 below O/N high 23629 \u2014 favors pullback longs on dips\",\"invalidates\":\"Break/hold below overnight low 23568 or fill of gap toward 23543\"}",
+ "reread": "{\"bias\":\"short\",\"note\":\"Gap filled hard\u2014dropped from 23610s to 23524 low, closing 23553 near prior close 23543; premarket long thesis invalidated, favor pullback shorts\"}",
+ "turns": [
+  {
+   "minute": "2025-08-27 10:04:00-04:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2025-08-27_1004_l_242) filled at 23531.0 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

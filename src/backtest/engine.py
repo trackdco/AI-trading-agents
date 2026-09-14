@@ -92,6 +92,29 @@ class BacktestConfig(BaseModel):
     v8_partial_pct: float = 50.0  # pass-17 V8 (ANGUS March style): % booked at first structure;
                                   # runner TRAILS the prior completed 5m swing; premarket fills
                                   # go BE at 09:29 ("BE before the open for volatility")
+    # exit-lab fixed-R partial family (ANGUS queued 2026-07-30: "X% partial at +1R, BE
+    # variants, runner policies"). All three default to the shipped V8 behavior — the
+    # canon path is untouched unless a sweep patches them.
+    v8_partial_at_r: float | None = None  # when set, the V8 partial books at entry + this*R
+                                  # (V7-style fixed milestone) instead of the first structure
+    v8_be_at_partial: bool = False  # booking the partial also moves the stop to entry
+                                  # (pending — takes effect NEXT bar, like every stop move)
+    v8_runner: str = "trail"      # runner policy after the partial: "trail" (shipped prior-
+                                  # 5m-swing trail) | "hold" (no trail, structural target)
+                                  # | "hold2r" (no trail; runner banks at entry+2R when that
+                                  # is nearer than the structural target) | "eod" (no trail,
+                                  # NO target — the runner rides to stop/BE/EOD-flatten only)
+    v8_partial_min_r: float | None = None  # exit-lab (ANGUS: "minimum r for the first
+                                  # structural target"): the V8 partial books at the FIRST
+                                  # STRUCTURE whose RR vs the limit clears this floor,
+                                  # walking past shallower ones; none clears -> no partial
+                                  # leg (the trade runs whole to the target). Mutually
+                                  # exclusive with v8_partial_at_r (fixed-R wins if both).
+    pre_flatten_at: dtime | None = None  # ANGUS 2026-07-30: "i want all pre market trades
+                                  # to be flattened by market open. 2 different sessions" —
+                                  # a position FILLED before this time is market-flattened
+                                  # on the first bar at/after it (open +/- slip, like the
+                                  # EOD flatten). None = off, byte-identical.
     max_trades_per_day: int       # §10
     halt_losses: int
     halt_r: float
@@ -160,6 +183,12 @@ def load_backtest_config(config_path: Path = Path("config/strategy.yaml")) -> Ba
         rr_floor_partial=c["targets"].get("rr_floor_partial", 1.5),
         v7_partial_r=c["management"].get("v7_partial_r", 1.5),
         v8_partial_pct=c["management"].get("v8_partial_pct", 50.0),
+        v8_partial_at_r=c["management"].get("v8_partial_at_r"),
+        v8_be_at_partial=c["management"].get("v8_be_at_partial", False),
+        v8_runner=c["management"].get("v8_runner", "trail"),
+        v8_partial_min_r=c["management"].get("v8_partial_min_r"),
+        pre_flatten_at=(_hhmm(c["management"]["pre_flatten_at"])
+                        if c.get("management", {}).get("pre_flatten_at") else None),
         oversized_stop=c["sizing"]["oversized_stop_points"],
         late_window_after=_hhmm(c["sizing"]["late_window_after"]),
         require_bb_vwap=c["sizing"].get("require_bb_vwap", True),
@@ -432,6 +461,9 @@ def default_target_resolver(df_1m: pd.DataFrame, calendar: pd.DataFrame | None,
         sts = [lv for lv in beyond if lv.type in _STRUCTURAL]   # distance-ordered structurals
         if sts:
             aux["partial_level"] = float(sts[0].price)     # V4/V5/V6 first structure (§8)
+            # exit-lab: the FULL structural ladder, so order-build can walk past shallow
+            # structures when a first-leg floor (v8_partial_min_r) is configured.
+            aux["structural_menu"] = [float(lv.price) for lv in sts]
         if len(sts) > 1:                                   # V5 runner -> NEXT structural (ANGUS)
             aux["structural_2"] = (sts[1].name, float(sts[1].price))
         if len(sts) > 2:                                   # V6 runner -> the one BEYOND (ANGUS)
@@ -642,6 +674,12 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                 sl = slip.ticks(ts)
                 px = o - sign * sl * cfg.tick
                 close_trade(pos, px, "eod", ts, sl)
+            elif (cfg.pre_flatten_at is not None
+                    and pos.fill_ts.time() < cfg.pre_flatten_at
+                    and tod >= cfg.pre_flatten_at):          # ANGUS two-session rule: pre
+                sl = slip.ticks(ts)                          # positions die at the open
+                px = o - sign * sl * cfg.tick
+                close_trade(pos, px, "open_flatten", ts, sl)
             else:
                 through = cfg.through_ticks * cfg.tick
                 stop_hit = (lo <= pos.stop) if sign == 1 else (h >= pos.stop)
@@ -659,8 +697,13 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                     # books at a FIXED +kR milestone computed from the fill.
                     if (pos is not None and cfg.mgmt_variant in ("V4", "V5", "V6", "V7", "V8")
                             and not pos.partial_done):
+                        fixed_r = (cfg.mgmt_variant == "V7"
+                                   or (cfg.mgmt_variant == "V8"
+                                       and cfg.v8_partial_at_r is not None))
                         if cfg.mgmt_variant == "V7":
                             plvl = pos.entry + sign * cfg.v7_partial_r * pos.risk_pts
+                        elif fixed_r:
+                            plvl = pos.entry + sign * cfg.v8_partial_at_r * pos.risk_pts
                         else:
                             plvl = pos.partial_level
                         if plvl is not None:
@@ -669,11 +712,36 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                                 pct = (cfg.v4_partial_pct if cfg.mgmt_variant == "V4"
                                        else cfg.v8_partial_pct if cfg.mgmt_variant == "V8"
                                        else cfg.v5_partial_pct)
-                                reason = "partial_r_milestone" if cfg.mgmt_variant == "V7" \
+                                reason = "partial_r_milestone" if fixed_r \
                                     else "partial_structural"
                                 close_trade(pos, plvl, reason, ts, 0, frac=pct / 100.0)
                                 if pos is not None:
                                     pos.partial_done = True
+                                    # exit-lab BE-at-partial: stop to entry, pending (next
+                                    # bar), and only ever TIGHTENS — never past a stop the
+                                    # trail already ratcheted beyond entry. be_done=True so
+                                    # the 09:29 premarket BE cannot later loosen it back.
+                                    if (cfg.mgmt_variant == "V8" and cfg.v8_be_at_partial
+                                            and not pos.be_done):
+                                        cur = (pos.pending_stop if pos.pending_stop is not None
+                                               else pos.stop)
+                                        if sign * (pos.entry - cur) > 0:
+                                            pos.pending_stop = pos.entry
+                                        pos.be_done = True
+                    # exit-lab hold2r runner: once the partial is booked, the runner banks at
+                    # entry+2R when that is NEARER than the structural target (recomputed on
+                    # this bar so a partial+2R same-bar trade-through books both, price-ordered).
+                    if (pos is not None and cfg.mgmt_variant == "V8"
+                            and cfg.v8_runner == "hold2r" and pos.partial_done):
+                        cand = _round_tick(pos.entry + sign * 2.0 * pos.risk_pts, cfg.tick)
+                        if sign * (tgt - cand) > 0:
+                            tgt = cand
+                            tgt_fill = (h >= tgt + through) if sign == 1 else (lo <= tgt - through)
+                    # exit-lab eod runner: once the partial books, the runner has NO target —
+                    # it rides to stop/BE/EOD-flatten only.
+                    if (pos is not None and cfg.mgmt_variant == "V8"
+                            and cfg.v8_runner == "eod" and pos.partial_done):
+                        tgt_fill = False
                     if pos is not None and tgt_fill:
                         close_trade(pos, tgt, "target", ts, 0)
                     elif pos is not None and not pos.be_done:
@@ -695,7 +763,7 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                         if (not pos.be_done and pos.fill_ts.time() < dtime(9, 29)
                                 and tod >= dtime(9, 29)):
                             pos.pending_stop, pos.be_done = pos.entry, True
-                        if pos.partial_done and v8_fm is not None:
+                        if pos.partial_done and v8_fm is not None and cfg.v8_runner == "trail":
                             j = v8_fm[0].searchsorted(ts, side="right") - 1
                             if j >= 0:
                                 cand = float(v8_fm[2][j]) if sign == 1 else float(v8_fm[1][j])
@@ -942,6 +1010,17 @@ def simulate(df_1m: pd.DataFrame, triggers: list[Trigger], cfg: BacktestConfig,
                     veto(t, "vetoed_rr_floor",
                          f"RR {reward / risk:.2f} < {cfg.rr_floor} (target {name})")
                     continue
+            # exit-lab first-leg floor (ANGUS): the V8 partial books at the FIRST structure
+            # clearing v8_partial_min_r vs the limit, walking past shallower ones. None
+            # clears, or the survivor sits at/beyond the working target -> no partial leg.
+            if (cfg.mgmt_variant == "V8" and cfg.v8_partial_min_r is not None
+                    and cfg.v8_partial_at_r is None):
+                plvl = None
+                for sp in aux.get("structural_menu", []):
+                    if (sgn * (sp - limit) / risk >= cfg.v8_partial_min_r
+                            and sgn * (working - sp) > 0):
+                        plvl = sp
+                        break
             order = _Order(trig=t, limit=limit, stop=stop, target_name=name,
                            target_level=level, working_target=working, placed=ts,
                            partial_level=plvl,

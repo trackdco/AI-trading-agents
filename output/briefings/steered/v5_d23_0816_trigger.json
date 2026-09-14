@@ -1,0 +1,126 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "V5-D23-NYP1-0816",
+ "window": "NY_PRE 08:00-09:29 ET",
+ "session": "NY_PRE",
+ "decision_minute": "2026-06-24T08:16 ET",
+ "candle_start": "08:14 (2m)",
+ "timeframe": "2m",
+ "leak_check": "pass - truncated at 08:15:59; last completed 2m bar starts 08:14 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d23_c6_0816.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "bb_ma_15m",
+    "price": 29810.67
+   },
+   {
+    "level": "vwap",
+    "price": 29776.02
+   },
+   {
+    "level": "daily_val",
+    "price": 29737.0
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29637.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_high",
+   "price": 29891.75
+  },
+  "waiting_for": "nothing - short licensed now at the range-top confluence (daily VAH 29858 / 2m BB upper 29878.18 / session high 29891.75), the third test of this edge per T22 fade-the-edge",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a 15m close above session_high 29891.75 with a decisive body - genuine acceptance of a range breakout, not a poke through. ~29.5pt from price, well within the 149pt 2m BB width, so within reach.",
+  "anticipated_resolution": {
+   "level": "range_high_29891",
+   "price": 29891.75,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond 29891.75 with a decisive body, not a wick-heavy absorption candle at the range high",
+  "reasoning": "Overnight rotation with multiple 15m MA crosses both ways keeps this a range day - T22 fade-the-edge still applies. Price has cleared the vwap_p1/VAH zone that funded the first two fades and is pressing the actual range high for the third time - weaker than the first two, but no 15m close beyond 29891.75 has printed."
+ },
+ "waiting_for_status": "SATISFIED BY CONSTRUCTION - the thesis licenses shorts at the range-top confluence with no gate, and the range high 29,891.75 has still not been closed above on any 15m bar.",
+ "POSITION_STATE": "FLAT. LONDON spent both its fills and closed by time. NY_PRE has a cap of 1 and 73 minutes of window - spend it well.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "08:14",
+  "direction": "DOWN",
+  "open": 29847.5,
+  "high": 29854.75,
+  "low": 29831.75,
+  "close": 29833.0,
+  "volume": 486,
+  "levels": "own 2m MA (29835.34) + vwap_p1 (29842.28), same candle"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "vwap_p1"
+ ],
+ "rejection_context": "the third approach to the range high topped at 29,871.5 and could not reach 29,891.75. Price has turned back through vwap_p1 and its own 2m MA together.",
+ "CAUTION_THIS_IS_A_SINGLE_TIMEFRAME": "there is no 3m companion here - the 3m bar covering this move has not produced a two-level close. A 2m-only signal is thinner evidence than the same-candle pairs that funded the London fills, and the cap is ONE. Ask whether this is the instance worth spending it on, or whether a fuller shape is likely inside the next 73 minutes.",
+ "levels_at_decision_CHART": {
+  "vwap": 29777.6,
+  "vwap_p1": 29842.28,
+  "vwap_m1": 29712.92,
+  "vwap_p2": 29906.97,
+  "vwap_m2": 29648.24,
+  "bb_2m_basis": 29835.34,
+  "bb_2m_upper": 29872.42,
+  "bb_2m_lower": 29798.26
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29835.34,
+  "bb_ma_3m": 29814.69,
+  "bb_ma_15m": 29814.21,
+  "bb_ma_60m": 29771.41,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29739.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 08:16"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30010.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 08:16"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29577.25
+ },
+ "levels_below_for_target_selection": "the 2m BB lower 29798.26, the 15m MA 29814.21, the session VWAP 29777.60, the developing daily VAL 29739.0, then vwap_m1 29712.92 and prior-day VAL 29637.0. Apply T17: R = |entry-stop| FIRST, then the NEAREST level inside 1.0R-2.5R; fixed 1.5R only if none qualifies.",
+ "T17_REMINDER": "the band is 1.0R-2.5R, widened at the bottom from 1.5R.",
+ "T20_REMINDER": "your limit must sit BETWEEN current price and where the move came FROM (above, 29854.75). A limit below 29833 is FORBIDDEN - checked arithmetically.",
+ "ENTRY_GEOMETRY": "for a SHORT: limit ABOVE current price; cancel_if_reaches BELOW both price and the limit, not already violated, and able to fire before the fill.",
+ "fills_this_window": 0,
+ "window_cap": 1,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}
