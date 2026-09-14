@@ -55,8 +55,9 @@ export function Process() {
           <div className="md:col-span-7">
             <h3 className="display-caps text-3xl">What the wash actually is.</h3>
             <p className="mt-5 max-w-[52ch] text-[17px] text-secondary-foreground">
-              Snow foam and a rinse first, so the grit lifts before a mitt ever touches the paint. Then a two-bucket hand wash, panel by panel, and a
-              dry by hand. Nothing spins, and nothing gets dragged across the clear coat.
+              Snow foam and a rinse first, so the grit lifts before a mitt ever touches the paint. Then a two-bucket hand wash, panel by panel. Iron
+              decon and a clay bar pull out what the wash cannot, a ceramic sealant goes on, and the car is dried by hand. Nothing spins, and nothing
+              gets dragged across the clear coat.
             </p>
             <p className="mt-4 max-w-[52ch] text-[15px] text-muted-foreground">
               That is our own drying towel in the clip, and our own gear in the van. All we need from the house is the tap and the power point.
