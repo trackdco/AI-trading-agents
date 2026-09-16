@@ -19,6 +19,12 @@
      only. Setup is in README.md — about five minutes, no card, no accounts. */
   const ENDPOINT = '';
 
+  /* The two codes. They live in the page, so anyone who views source can read
+     them — this is a lid that keeps the crew out of the pay figures, not a lock
+     on the data. The link is the real key. */
+  const STAFF_CODE = '0000';
+  const ADMIN_CODE = '1906';
+
   const DEFAULT_RATE = 27;
   const DEFAULT_CREW = ['Lucas', 'AJ', 'Nick', 'Gus', 'Ananth'];
   const POLL_MS = 20000;               // how often a sheet-backed page re-reads
@@ -37,7 +43,9 @@
   let busy = false;
   let editingId = null;
   let backMinutes = 0;                  // how far back a shift should start
-  let adminUnlocked = false;
+  let role = null;                      // 'staff' or 'admin', set at the gate
+  let entry = '';                       // digits typed into the keypad
+  const isAdmin = () => role === 'admin';
 
   /* =============================================================== helpers == */
   const pad = n => String(n).padStart(2, '0');
@@ -269,6 +277,7 @@
   }
 
   function addStaff() {
+    if (!isAdmin()) return;
     const name = $('newName').value.trim();
     if (!name) return $('newName').focus();
     const raw = parseFloat($('newRate').value);
@@ -281,6 +290,7 @@
   }
 
   function removeStaff(id) {
+    if (!isAdmin()) return;
     const s = staff.find(x => x.id === id);
     if (!s || !confirm(`Take ${s.name} off the crew? Their past shifts stay on the timesheet.`)) return;
     staff = staff.filter(x => x.id !== id);
@@ -289,6 +299,7 @@
   }
 
   function deleteShift(id) {
+    if (!isAdmin()) return;
     const s = shifts.find(x => x.id === id);
     if (!s || !confirm('Delete this shift? It can’t be undone.')) return;
     shifts = shifts.filter(x => x.id !== id);
@@ -335,6 +346,7 @@
 
   /* ============================================================ edit shift == */
   function openEdit(id) {
+    if (!isAdmin()) return;
     editingId = id;
     const sh = id ? shifts.find(s => s.id === id) : null;
     $('editTitle').textContent = sh ? 'Edit shift' : 'Add a past shift';
@@ -383,47 +395,47 @@
     commit({ kind: 'shift', value });
   }
 
-  /* ================================================================== PIN === */
-  function openPin(forUnlock) {
-    $('pinTitle').textContent = forUnlock ? 'Enter the admin PIN' : (settings.pin ? 'Change the PIN' : 'Set a PIN');
-    $('pinIn').value = '';
-    $('pinErr').hidden = true;
-    $('pinClear').hidden = !(settings.pin && !forUnlock);
-    $('pinSave').textContent = forUnlock ? 'Unlock' : 'Save';
-    $('pinDlg').dataset.forUnlock = forUnlock ? '1' : '';
-    $('pinDlg').showModal();
-    setTimeout(() => $('pinIn').focus(), 50);
+  /* ================================================================= gate === */
+  function paintDots() {
+    const dots = $('dots').children;
+    for (let i = 0; i < dots.length; i++) dots[i].toggleAttribute('data-on', i < entry.length);
   }
-  function savePin() {
-    const v = $('pinIn').value.trim();
-    const forUnlock = $('pinDlg').dataset.forUnlock === '1';
-    if (forUnlock) {
-      if (v !== String(settings.pin)) {
-        $('pinErr').textContent = 'That’s not the PIN.';
-        $('pinErr').hidden = false;
-        return;
-      }
-      adminUnlocked = true;
-      $('pinDlg').close();
-      $('adminBox').open = true;
-      render();
-      return;
-    }
-    if (!/^\d{4}$/.test(v)) {
-      $('pinErr').textContent = 'Four digits, please.';
-      $('pinErr').hidden = false;
-      return;
-    }
-    settings = { ...settings, pin: v };
-    adminUnlocked = true;
-    $('pinDlg').close();
-    commit({ kind: 'settings' });
+
+  function setRole(next) {
+    role = next;
+    try {
+      if (next) localStorage.setItem('imp.role', next);
+      else localStorage.removeItem('imp.role');
+    } catch {}
+    $('gate').hidden = !!next;
+    $('app').hidden = !next;
+    if (!next) { entry = ''; paintDots(); $('gateSub').textContent = 'Enter your code'; $('gateSub').className = 'gate-sub'; }
+    render();
   }
-  function clearPin() {
-    settings = { ...settings, pin: '' };
-    adminUnlocked = true;
-    $('pinDlg').close();
-    commit({ kind: 'settings' });
+
+  function key(k) {
+    const sub = $('gateSub');
+    if (k === 'clear') { entry = ''; paintDots(); return; }
+    if (k === 'back') { entry = entry.slice(0, -1); paintDots(); return; }
+    if (entry.length >= 4) return;
+    entry += k;
+    paintDots();
+    if (entry.length < 4) return;
+
+    if (entry === ADMIN_CODE) return setRole('admin');
+    if (entry === STAFF_CODE) return setRole('staff');
+
+    sub.textContent = 'That code isn\u2019t right.';
+    sub.className = 'gate-sub bad';
+    const box = $('gateIn');
+    box.setAttribute('data-wrong', '');
+    setTimeout(() => {
+      box.removeAttribute('data-wrong');
+      entry = '';
+      paintDots();
+      sub.textContent = 'Enter your code';
+      sub.className = 'gate-sub';
+    }, 620);
   }
 
   /* ================================================================== CSV === */
@@ -514,11 +526,12 @@
     $('sOn').textContent = shifts.filter(s => !s.end).length;
     $('shiftScope').textContent = shifts.length ? 'Everyone, newest first' : '';
 
-    $('pinState').textContent = settings.pin
-      ? 'A PIN is set. The crew can still clock on and off without it.'
-      : 'No PIN set. Anyone who opens the page can see this panel.';
-    $('pinBtn').textContent = settings.pin ? 'Change or remove the PIN' : 'Set a PIN';
     $('storeNote').textContent = store ? store.note : '';
+
+    // Everything that changes the record is admin-only. The crew can clock on
+    // and off, and read the list, and that is the whole of it.
+    $('adminBox').hidden = !isAdmin();
+    $('roleNote').textContent = isAdmin() ? 'Signed in as admin.' : 'Signed in as crew.';
 
     renderShifts(now);
     renderWeek(now);
@@ -551,10 +564,10 @@
               ${s.job ? `<div class="job">${esc(s.job)}</div>` : ''}
             </div>
             <div class="dur tnum">${hm(hoursOf(s, now))}</div>
-            <div class="acts">
+            ${isAdmin() ? `<div class="acts">
               <button class="btn-2" data-edit="${s.id}" type="button">Edit</button>
               <button class="btn-2 danger" data-del="${s.id}" type="button">Delete</button>
-            </div>
+            </div>` : ''}
           </div>`;
         }).join('') + '</div>');
     }
@@ -621,25 +634,23 @@
   $('csvBtn').addEventListener('click', exportCsv);
   $('prevWeek').addEventListener('click', () => { weekOffset--; render(); });
   $('nextWeek').addEventListener('click', () => { weekOffset = Math.min(0, weekOffset + 1); render(); });
-  $('pinBtn').addEventListener('click', () => openPin(false));
-  $('pinCancel').addEventListener('click', () => $('pinDlg').close());
-  $('pinClear').addEventListener('click', clearPin);
-  $('pinSave').addEventListener('click', savePin);
-  $('pinIn').addEventListener('keydown', e => { if (e.key === 'Enter') savePin(); });
+
+  $('pad').addEventListener('click', e => {
+    const b = e.target.closest('[data-k]');
+    if (b) key(b.dataset.k);
+  });
+  addEventListener('keydown', e => {
+    if ($('gate').hidden) return;
+    if (/^[0-9]$/.test(e.key)) key(e.key);
+    else if (e.key === 'Backspace') key('back');
+    else if (e.key === 'Escape') key('clear');
+  });
+  $('signOut').addEventListener('click', () => setRole(null));
 
   $('backLink').addEventListener('click', () => {
     const chips = $('backChips');
     chips.hidden = !chips.hidden;
     if (!chips.hidden) applyBack(backMinutes);
-  });
-
-  // The admin panel opens behind the PIN when one is set.
-  $('adminBox').addEventListener('toggle', () => {
-    const box = $('adminBox');
-    if (box.open && settings.pin && !adminUnlocked) {
-      box.open = false;
-      openPin(true);
-    }
   });
 
   // One delegated listener rather than rebinding every row on each render.
@@ -658,7 +669,14 @@
 
   /* ================================================================== boot == */
   (async () => {
-    try { me = localStorage.getItem('imp.me'); } catch {}
+    try {
+      me = localStorage.getItem('imp.me');
+      const saved = localStorage.getItem('imp.role');
+      if (saved === 'staff' || saved === 'admin') role = saved;
+    } catch {}
+    $('gate').hidden = !!role;
+    $('app').hidden = !role;
+    paintDots();
     if (!reduced) document.documentElement.classList.add('anim');
     setInterval(tick, 1000);
 

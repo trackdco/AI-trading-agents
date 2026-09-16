@@ -516,6 +516,82 @@ dialog .acts .btn-2 { flex: 1; min-height: 50px; }
 }
 .people button:hover, .people button[aria-pressed="true"] { border-color: var(--accent); background: rgba(58, 143, 224, 0.12); }
 
+/* ------------------------------------------------------------------ gate --
+   The code screen. A real keypad rather than a text box: on a phone it is one
+   thumb, no OS keyboard sliding up, and it reads like an app instead of a form. */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--bg);
+}
+.gate::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 90%;
+  pointer-events: none;
+  background: radial-gradient(48vw 40vh at 50% 0%, rgba(58, 143, 224, 0.22), transparent 70%);
+}
+.gate[hidden] { display: none; }
+.gate-in { position: relative; width: 100%; max-width: 320px; text-align: center; }
+.gate-in img { height: 44px; width: auto; margin: 0 auto 14px; display: block; }
+.gate-in h1 { font-size: 34px; line-height: 1; letter-spacing: -0.01em; }
+.gate-sub { margin: 10px 0 0; font-size: var(--t-small); color: var(--muted); min-height: 1.5em; }
+.gate-sub.bad { color: var(--warn); }
+
+.dots { display: flex; justify-content: center; gap: 14px; margin: 22px 0 26px; }
+.dots i {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  transition: background 160ms var(--ease), border-color 160ms var(--ease), transform 160ms var(--ease);
+}
+.dots i[data-on] { background: var(--accent); border-color: var(--accent); transform: scale(1.12); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gate-in[data-wrong] { animation: nope 420ms var(--ease); }
+  @keyframes nope {
+    0%, 100% { transform: translateX(0); }
+    18% { transform: translateX(-9px); }
+    38% { transform: translateX(9px); }
+    58% { transform: translateX(-5px); }
+    78% { transform: translateX(3px); }
+  }
+}
+
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.pad button {
+  min-height: 66px;
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  background: var(--raise);
+  color: var(--ink);
+  font: 600 26px var(--display);
+  font-variant-numeric: tabular-nums lining-nums;
+  cursor: pointer;
+  transition: background 120ms var(--ease), transform 90ms var(--ease);
+}
+.pad button:hover { background: #151922; }
+.pad button:active { transform: scale(0.96); }
+.pad button.soft { font: 500 15px var(--sans); color: var(--muted); background: transparent; }
+
+.foot-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.foot-row button {
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: 500 var(--t-micro) var(--sans);
+  cursor: pointer;
+}
+.foot-row button:hover { border-color: var(--accent); color: var(--ink); }
+
 footer.foot {
   margin-top: 36px;
   padding-top: 18px;
@@ -527,7 +603,31 @@ footer.foot {
 </head>
 
 <body>
-<div class="shell wrap">
+
+<div class="gate" id="gate">
+  <div class="gate-in" id="gateIn">
+    <img src="logo.webp" alt="Imperium Detailing" width="72" height="44">
+    <h1>Timesheets</h1>
+    <p class="gate-sub" id="gateSub">Enter your code</p>
+    <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+    <div class="pad" id="pad">
+      <button type="button" data-k="1">1</button>
+      <button type="button" data-k="2">2</button>
+      <button type="button" data-k="3">3</button>
+      <button type="button" data-k="4">4</button>
+      <button type="button" data-k="5">5</button>
+      <button type="button" data-k="6">6</button>
+      <button type="button" data-k="7">7</button>
+      <button type="button" data-k="8">8</button>
+      <button type="button" data-k="9">9</button>
+      <button type="button" class="soft" data-k="clear">Clear</button>
+      <button type="button" data-k="0">0</button>
+      <button type="button" class="soft" data-k="back">Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell wrap" id="app" hidden>
 
   <header class="head">
     <img src="logo.webp" alt="Imperium Detailing" width="49" height="30">
@@ -608,15 +708,16 @@ footer.foot {
       <p style="font-size:14px;color:var(--muted)">Add a job nobody clocked, or fix one that&rsquo;s wrong.</p>
       <button class="btn-2" id="manualBtn" type="button">Add a past shift</button>
 
-      <h3>Admin PIN</h3>
-      <p style="font-size:14px;color:var(--muted)" id="pinState">No PIN set. Anyone who opens the page can see this panel.</p>
-      <button class="btn-2" id="pinBtn" type="button">Set a PIN</button>
     </div>
   </details>
 
   <footer class="foot">
     Imperium Detailing. Times come from each phone&rsquo;s own clock, so keep them set
     to automatic. <span id="storeNote"></span>
+    <div class="foot-row">
+      <span id="roleNote"></span>
+      <button id="signOut" type="button">Sign out</button>
+    </div>
   </footer>
 </div>
 
@@ -665,23 +766,6 @@ footer.foot {
   <div class="acts">
     <button class="btn-2" id="tCancel" type="button">Cancel</button>
     <button class="btn-2 go" id="tSave" type="button">Use this time</button>
-  </div>
-</dialog>
-
-<dialog id="pinDlg">
-  <h3 id="pinTitle">Admin PIN</h3>
-  <div class="grid">
-    <div>
-      <label class="lab" for="pinIn">4-digit PIN</label>
-      <input id="pinIn" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="––––">
-    </div>
-    <p id="pinErr" style="margin:0;color:var(--warn);font-size:14px" hidden></p>
-    <p style="margin:0;font-size:13px;color:var(--muted)">This just keeps the crew out of the pay figures. It is not a lock on the data &mdash; anyone with the link can open the page.</p>
-  </div>
-  <div class="acts">
-    <button class="btn-2" id="pinCancel" type="button">Cancel</button>
-    <button class="btn-2" id="pinClear" type="button" hidden>Remove PIN</button>
-    <button class="btn-2 go" id="pinSave" type="button">Save</button>
   </div>
 </dialog>
 

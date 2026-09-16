@@ -76,19 +76,36 @@ are, so after the first time it's: open, tap **Start shift**.
   right even when nobody remembered at the time.
 - **Your today / your week / on now.** "On now" is how many are still clocked on.
 - **Shifts list.** Everyone, newest first, grouped by day with a daily total.
-  Edit or delete any of them.
-- **Admin.** Hours and pay per person per week, with previous/next week. Add or
-  remove crew and set rates. Add a shift nobody clocked. Download the week as CSV.
+  Everyone can read it; only admin can change it.
+- **Admin only.** Hours and pay per person per week, with previous/next week.
+  **Edit or delete any shift.** Add or remove crew and set rates. Add a shift
+  nobody clocked. Download the week as CSV.
 
-### The admin PIN
+### The two codes
 
-Under Admin you can set a 4-digit PIN. After that, opening Admin asks for it, so
-the crew can still clock on and off but won't be poking at pay figures.
+The page opens on a keypad. There are two codes, set at the top of `app.js`:
 
-**It is a lid, not a lock.** Anyone with the link can open the page, and the
-hours live in a Google Sheet that the web app reads without a password. Treat the
-link as the actual key and only give it to people who should have it. If you need
-real access control, that's a different build with proper logins.
+| Code | Who | What they can do |
+| --- | --- | --- |
+| **0000** | The crew | Pick their name, clock on and off, backdate a start, read the shift list. |
+| **1906** | Admin | All of that, plus **edit and delete any shift**, add and remove crew, set rates, add a past shift, see hours and pay per person, download the CSV. |
+
+The code is remembered on the phone, so it's asked once. **Sign out** at the
+bottom of the page clears it — use that to hand a phone over, or to switch
+between crew and admin on your own.
+
+On 0000 there are no Edit or Delete buttons on a shift and no Admin panel at all.
+Those checks are on the actions themselves, not just the buttons, so hiding them
+is not the only thing stopping a staff member deleting a shift.
+
+**It is a lid, not a lock.** Both codes sit in the page, so anyone who knows how
+to view source can read them, and anyone with the link can open the page at all.
+It keeps the crew out of the pay figures; it is not security. **The link is the
+real key** — only give it to people who should have it. Real access control means
+proper accounts and a login server, which is a different build.
+
+To change either code, edit `STAFF_CODE` and `ADMIN_CODE` near the top of
+`app.js` and deploy again.
 
 ---
 
