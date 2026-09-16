@@ -45,6 +45,7 @@
   let backMinutes = 0;                  // how far back a shift should start
   let role = null;                      // 'staff' or 'admin', set at the gate
   let entry = '';                       // digits typed into the keypad
+  let linkOk = true;                    // is the shared timesheet answering?
   const isAdmin = () => role === 'admin';
 
   /* =============================================================== helpers == */
@@ -77,11 +78,12 @@
     return new Date(y, m - 1, d).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
   }
 
-  // Australian payroll weeks run Monday to Sunday.
+  // Pay weeks run Wednesday to Tuesday. Wednesday is day 3, so (day + 4) % 7 is
+  // how many days back the week that is running now began.
   function weekStart(offset = 0) {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + offset * 7);
+    d.setDate(d.getDate() - ((d.getDay() + 4) % 7) + offset * 7);
     return d;
   }
 
@@ -96,6 +98,27 @@
     el.className = 'note' + (bad ? ' bad' : '');
     el.textContent = msg;
     box.appendChild(el);
+  }
+
+  /* The browser's own confirm() is blocked inside an embedded viewer: the call
+     just returns false, so the delete silently never ran. Asking in the page
+     works everywhere and matches the rest of the app. */
+  let askDone = null;
+  function ask(title, body, yes) {
+    return new Promise(resolve => {
+      $('askTitle').textContent = title;
+      $('askBody').textContent = body || '';
+      $('askBody').hidden = !body;
+      $('askYes').textContent = yes || 'Delete';
+      askDone = resolve;
+      $('askDlg').showModal();
+    });
+  }
+  function closeAsk(answer) {
+    const done = askDone;
+    askDone = null;
+    $('askDlg').close();
+    if (done) done(answer);
   }
 
   /* ================================================================ stores ==
@@ -146,12 +169,18 @@
       }
     }
     async function pull() {
-      const res = await fetch(url + '?action=load&t=' + Date.now());
-      if (!res.ok) throw new Error('http ' + res.status);
-      const out = await res.json();
-      staff = out.staff || [];
-      shifts = out.shifts || [];
-      settings = out.settings || {};
+      try {
+        const res = await fetch(url + '?action=load&t=' + Date.now());
+        if (!res.ok) throw new Error('http ' + res.status);
+        const out = await res.json();
+        staff = out.staff || [];
+        shifts = out.shifts || [];
+        settings = out.settings || {};
+        linkOk = true;
+      } catch (err) {
+        linkOk = false;
+        throw err;
+      }
       cb({ staff, shifts, settings });
     }
     return {
@@ -164,9 +193,9 @@
         clearInterval(timer);
         // Re-read on a timer, and immediately whenever the phone comes back to
         // the page — that is when somebody is actually about to look at it.
-        timer = setInterval(() => pull().catch(() => {}), POLL_MS);
+        timer = setInterval(() => pull().catch(render), POLL_MS);
         document.addEventListener('visibilitychange', () => {
-          if (!document.hidden) pull().catch(() => {});
+          if (!document.hidden) pull().catch(render);
         });
       },
       async save(change) {
@@ -223,16 +252,29 @@
   }
 
   async function pickStore() {
-    if (ENDPOINT) {
-      const s = sheetsStore(ENDPOINT);
-      try { await s.init(); return s; } catch {
-        toast('Can’t reach the shared timesheet, so this phone is keeping its own copy for now.', true);
-      }
-    }
+    /* The artifact viewer is sandboxed and cannot reach Google at all, so
+       trying the sheet from there only produces a confusing half-state: the app
+       looks fine and the spreadsheet never changes. Check for it first, use the
+       artifact's own store, and let the banner call it a preview. */
     try {
       const db = typeof claude !== 'undefined' && claude.use ? await claude.use('db') : null;
       if (db) { const s = artifactStore(db); await s.init(); return s; }
     } catch {}
+
+    if (ENDPOINT) {
+      const s = sheetsStore(ENDPOINT);
+      for (let i = 0; i < 3; i++) {
+        try { await s.init(); return s; } catch {}
+        await new Promise(r => setTimeout(r, 500 * (i + 1)));
+      }
+      /* Stay pointed at the sheet rather than quietly starting a second,
+         private timesheet on this phone: two records of the same week is worse
+         than one that says it is offline. The banner says so, and the poll
+         keeps trying. */
+      linkOk = false;
+      return s;
+    }
+
     const s = localStore();
     await s.init();
     return s;
@@ -301,19 +343,26 @@
     commit({ kind: 'staff', value: person });
   }
 
-  function removeStaff(id) {
+  async function removeStaff(id) {
     if (!isAdmin()) return;
     const s = staff.find(x => x.id === id);
-    if (!s || !confirm(`Take ${s.name} off the crew? Their past shifts stay on the timesheet.`)) return;
+    if (!s) return;
+    const yes = await ask(`Take ${s.name} off the crew?`,
+      'Their past shifts stay on the timesheet.', 'Remove');
+    if (!yes) return;
     staff = staff.filter(x => x.id !== id);
     if (me === id) setMe(null);
     commit({ kind: 'staff', value: s, remove: true });
   }
 
-  function deleteShift(id) {
+  async function deleteShift(id) {
     if (!isAdmin()) return;
     const s = shifts.find(x => x.id === id);
-    if (!s || !confirm('Delete this shift? It can’t be undone.')) return;
+    if (!s) return;
+    const at = new Date(s.start);
+    const yes = await ask('Delete this shift?',
+      `${s.staffName || 'Unknown'}, ${dayLabel(dayKey(at))} at ${clock(at)}. It can’t be undone.`);
+    if (!yes) return;
     shifts = shifts.filter(x => x.id !== id);
     commit({ kind: 'shift', value: s, remove: true });
   }
@@ -538,6 +587,24 @@
     $('sOn').textContent = shifts.filter(s => !s.end).length;
     $('shiftScope').textContent = shifts.length ? 'Everyone, newest first' : '';
 
+    /* Where the hours are going, said out loud whenever it is not the sheet. */
+    const link = $('linkNote');
+    if (mode === 'sheets' && !linkOk) {
+      link.hidden = false;
+      link.dataset.tone = 'bad';
+      link.innerHTML = '<b>Not connected to the timesheet.</b> Nothing is saving. Tap to try again.';
+    } else if (mode === 'artifact') {
+      link.hidden = false;
+      link.dataset.tone = 'warn';
+      link.innerHTML = '<b>Preview.</b> Hours here do not reach the Google Sheet \u2014 open the real link for that.';
+    } else if (mode === 'local') {
+      link.hidden = false;
+      link.dataset.tone = 'warn';
+      link.innerHTML = '<b>This phone only.</b> Hours are not shared with anyone else.';
+    } else {
+      link.hidden = true;
+    }
+
     $('storeNote').textContent = store ? store.note : '';
 
     // Everything that changes the record is admin-only. The crew can clock on
@@ -596,11 +663,11 @@
       cur.h += hoursOf(s, now);
       per.set(k, cur);
     }
-    const label = `${from.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })} – ` +
-      `${new Date(to.getTime() - 864e5).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}`;
+    const fmt = t => t.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
+    const label = `${fmt(from)} – ${fmt(new Date(to.getTime() - 864e5))}`;
     const host = $('weekTotals');
     if (!per.size) {
-      host.innerHTML = `<div class="empty">Nothing logged ${weekOffset === 0 ? 'this week' : 'that week'} (${label}).</div>`;
+      host.innerHTML = `<div class="empty">Nothing logged ${weekOffset === 0 ? 'this pay week' : 'that pay week'} (${label}).</div>`;
       return;
     }
     let totH = 0, totP = 0;
@@ -644,6 +711,17 @@
   $('tCancel').addEventListener('click', () => $('timeDlg').close());
   $('tSave').addEventListener('click', saveTimePick);
   $('csvBtn').addEventListener('click', exportCsv);
+  $('askYes').addEventListener('click', () => closeAsk(true));
+  $('askNo').addEventListener('click', () => closeAsk(false));
+  // Esc counts as "no".
+  $('askDlg').addEventListener('close', () => closeAsk(false));
+
+  $('linkNote').addEventListener('click', async () => {
+    if (mode !== 'sheets' || linkOk) return;
+    toast('Reconnecting\u2026');
+    try { await store.init(); toast(''); } catch { toast('Still can\u2019t reach the timesheet.', true); }
+    render();
+  });
   $('prevWeek').addEventListener('click', () => { weekOffset--; render(); });
   $('nextWeek').addEventListener('click', () => { weekOffset = Math.min(0, weekOffset + 1); render(); });
 
@@ -697,7 +775,7 @@
 
     // The crew Pat named, so nobody has to set the app up before using it. Only
     // for the stores this page owns — the artifact store is seeded server-side.
-    if (mode !== 'artifact' && !staff.length) {
+    if (mode !== 'artifact' && linkOk && !staff.length) {
       staff = DEFAULT_CREW.map(name => ({ id: uid(), name, rate: DEFAULT_RATE }))
         .sort((a, b) => a.name.localeCompare(b.name));
       for (const person of staff) {

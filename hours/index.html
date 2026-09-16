@@ -487,6 +487,26 @@ details.admin[open] > summary::after { content: "\2212"; }
   color: var(--body);
 }
 .note.bad { border-left-color: var(--warn); }
+
+/* Says where the hours are actually going. Only shows when that is not the
+   shared timesheet, because that is the only time it matters. */
+.link-note {
+  display: block;
+  width: 100%;
+  margin: 0 0 18px;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--warn);
+  border-radius: 10px;
+  background: var(--raise);
+  color: var(--body);
+  font: inherit;
+  font-size: var(--t-small);
+  text-align: left;
+  cursor: pointer;
+}
+.link-note b { color: var(--ink); }
+.link-note[data-tone="warn"] { border-left-color: var(--accent); cursor: default; }
 .empty { padding: 24px 4px; color: var(--muted); font-size: var(--t-small); }
 
 /* --------------------------------------------------------------- dialogs -- */
@@ -503,6 +523,7 @@ dialog h3 { font-size: var(--t-2); margin-bottom: 12px; }
 dialog .grid { display: grid; gap: 12px; }
 dialog .acts { display: flex; gap: 10px; margin-top: 18px; }
 dialog .acts .btn-2 { flex: 1; min-height: 50px; }
+dialog .ask-body { margin: 0; color: var(--muted); font-size: var(--t-small); }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .people { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .people button {
@@ -635,6 +656,8 @@ footer.foot {
     <button class="who" id="whoBtn" type="button"><span class="dot"></span><span id="whoName">Who are you?</span></button>
   </header>
 
+  <button class="link-note" id="linkNote" type="button" hidden></button>
+
   <!-- On a phone this is the whole page: one number, one button. -->
   <div class="clock" id="clock">
     <span class="state"><span class="pip"></span><span id="stateLabel">Not clocked on</span></span>
@@ -682,8 +705,9 @@ footer.foot {
     <summary>Admin</summary>
     <div class="panel">
 
-      <h3>Hours this week</h3>
-      <div id="weekTotals"><div class="empty">No shifts this week yet.</div></div>
+      <h3>Hours this pay week</h3>
+      <p style="margin:-6px 0 12px;color:var(--muted);font-size:14px">Pay weeks run Wednesday to Tuesday.</p>
+      <div id="weekTotals"><div class="empty">No shifts this pay week yet.</div></div>
       <div class="btn-wrap">
         <button class="btn-2" id="prevWeek" type="button">&larr; Previous week</button>
         <button class="btn-2" id="nextWeek" type="button">Next week &rarr;</button>
@@ -766,6 +790,17 @@ footer.foot {
   <div class="acts">
     <button class="btn-2" id="tCancel" type="button">Cancel</button>
     <button class="btn-2 go" id="tSave" type="button">Use this time</button>
+  </div>
+</dialog>
+
+<!-- The browser's own confirm() box is blocked inside an embedded viewer, which
+     made Delete look broken. This asks in the page instead, so it works anywhere. -->
+<dialog id="askDlg">
+  <h3 id="askTitle">Are you sure?</h3>
+  <p class="ask-body" id="askBody"></p>
+  <div class="acts">
+    <button class="btn-2" id="askNo" type="button">Cancel</button>
+    <button class="btn-2 danger" id="askYes" type="button">Delete</button>
   </div>
 </dialog>
 

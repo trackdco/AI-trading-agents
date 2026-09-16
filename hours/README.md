@@ -8,8 +8,9 @@ Clock on, clock off, see everyone's hours. One page, no build step, no framework
     manifest.webmanifest  what makes "Add to Home Screen" open it like an app
     logo.webp, icon-*.png brand assets, copied from the main site
 
-The crew is pre-loaded — **Lucas, AJ, Nick, Gus, Ananth, all on $27/hour** — so
-nobody has to set anything up before using it. Change any of that under Admin.
+The crew is already in the Sheet — **Lucas, AJ, Nick, Gus, Ananth, all on
+$27/hour** — so nobody has to set anything up before using it. Change any of that
+under Admin.
 
 ---
 
@@ -19,20 +20,26 @@ The page picks one of three, in this order, at startup:
 
 | | When | What it means |
 | --- | --- | --- |
-| **Google Sheet** | `ENDPOINT` is filled in at the top of `app.js` | **The real one.** Every phone shares one timesheet, no accounts, and the hours land in a spreadsheet you can read and fix. |
-| claude.ai artifact | published as an artifact | Syncs, but only for people signed in to your Claude workspace. Fine for testing, no good for the crew. |
-| This phone only | neither of the above | Nothing is lost, but nothing is shared. |
+| **Google Sheet** | the page is on a normal web address | **The real one.** Every phone shares one timesheet, no accounts, and the hours land in a spreadsheet you can read and fix. |
+| claude.ai artifact | opened as a Claude artifact | A **preview**. The artifact viewer is sandboxed and cannot reach Google at all, so nothing typed there ever reaches the Sheet. |
+| This phone only | `ENDPOINT` left empty | Nothing is lost, but nothing is shared. |
 
-It works out of the box on the third one. **Do the Sheets setup and it becomes
-the real thing.**
+The page now says which one it is on, in a strip under the header, whenever it
+is not the Sheet. That strip exists because the preview used to look identical
+to the real thing while the spreadsheet stayed empty — the app must never be
+quiet about where the hours are going.
+
+**So: the Sheet only fills up once the page is hosted at a real address.** Steps
+are below.
 
 ---
 
 ## Sheets setup — **already done**
 
 `ENDPOINT` is filled in and the deployed script was tested against live on
-16 Sep 2026: a read returned JSON, a write landed in the sheet, and a delete
-removed it again. Nothing further is needed unless the sheet is ever rebuilt.
+16 Sep 2026: a read returned JSON, a write landed in the sheet, a delete removed
+it again, and the five crew names were written into the Staff tab. Nothing
+further is needed unless the sheet is ever rebuilt.
 
 One thing that testing turned up, worth knowing before anyone "fixes" it: a POST
 to an Apps Script web app answers with a 302 to a one-shot
@@ -72,11 +79,24 @@ New version*, or the URL keeps serving the old code.
 
 ## Putting it on the crew's phones
 
-Host it somewhere first. It's plain static files, so anywhere works. On Vercel:
-import the folder, add a domain like `hours.imperiumdetailing.com.au`, done.
-`vercel.json` already sets `noindex` so it never turns up in a search.
+### 1. Give it an address
 
-Then send them the link and one line:
+It's plain static files, so any host works. On Vercel, which already runs the
+main site:
+
+1. **vercel.com** → *Add New* → *Project* → import this repository.
+2. Set **Root Directory** to `hours`. Leave the framework as *Other*.
+3. **Deploy.** You get a link straight away.
+4. Optional: *Settings → Domains* → add `hours.imperiumdetailing.com.au`.
+
+`vercel.json` already sets `noindex`, so it never turns up in a search.
+
+Open that link once and the strip under the header disappears — that is the page
+telling you it is talking to the Sheet.
+
+### 2. Send the crew the link
+
+One line to send with it:
 
 > **iPhone:** open the link in Safari → Share button → *Add to Home Screen*.
 > **Android:** open in Chrome → ⋮ menu → *Add to Home screen*.
@@ -112,6 +132,10 @@ The code is remembered on the phone, so it's asked once. **Sign out** at the
 bottom of the page clears it — use that to hand a phone over, or to switch
 between crew and admin on your own.
 
+Delete asks first, in a panel drawn by the page. It deliberately does **not**
+use the browser's own pop-up: inside an embedded viewer that pop-up is blocked
+and simply answers "no", which made Delete look broken.
+
 On 0000 there are no Edit or Delete buttons on a shift and no Admin panel at all.
 Those checks are on the actions themselves, not just the buttons, so hiding them
 is not the only thing stopping a staff member deleting a shift.
@@ -130,7 +154,8 @@ To change either code, edit `STAFF_CODE` and `ADMIN_CODE` near the top of
 ## Things worth knowing
 
 - Times come from each phone's own clock, so keep phones on automatic time.
-- Payroll weeks run **Monday to Sunday**, the Australian convention.
+- Pay weeks run **Wednesday to Tuesday**. The admin panel and the CSV both use
+  that week, and *Previous week* steps back a whole Wed–Tue block.
 - A finish time earlier than the start is read as a shift that ran past midnight.
 - Anything over 20 hours is rejected as a typo.
 - The Sheet is the record. If something looks wrong, fix it in the Sheet or with
