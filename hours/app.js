@@ -17,7 +17,7 @@
      Paste the Apps Script web app URL between the quotes and the whole crew
      shares one timesheet. Leave it empty and the page keeps hours on this phone
      only. Setup is in README.md — about five minutes, no card, no accounts. */
-  const ENDPOINT = '';
+  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbwkodRGuMD3Myt6K7VtwCNENen6v3n8oFNIVzWRB3pmZ3IcjoKoPbn7eoYLGiomaRt8mw/exec';
 
   /* The two codes. They live in the page, so anyone who views source can read
      them — this is a lid that keeps the crew out of the pay figures, not a lock
@@ -130,14 +130,20 @@
     let cb = () => {};
     let timer = null;
 
-    // Sent as text/plain on purpose: that keeps it a "simple" cross-origin
-    // request, so the browser skips the preflight Apps Script cannot answer.
+    /* Sent as text/plain on purpose: that keeps it a "simple" cross-origin
+       request, so the browser skips the preflight Apps Script cannot answer.
+
+       The reply is deliberately ignored. A POST to a web app answers with a 302
+       to a one-shot script.googleusercontent.com URL, and re-requesting that can
+       land on a Google error page even though the write went through — measured
+       against the live endpoint. So the write is fire-and-forget and `save`
+       below confirms it by re-reading. The sheet is the truth, not the reply. */
     async function post(body) {
-      const res = await fetch(url, { method: 'POST', body: JSON.stringify(body) });
-      if (!res.ok) throw new Error('http ' + res.status);
-      const out = await res.json();
-      if (!out.ok) throw new Error(out.error || 'refused');
-      return out;
+      try {
+        await fetch(url, { method: 'POST', body: JSON.stringify(body) });
+      } catch {
+        /* A network failure still shows up as the change not landing. */
+      }
     }
     async function pull() {
       const res = await fetch(url + '?action=load&t=' + Date.now());
@@ -168,9 +174,15 @@
         await post(change.kind === 'settings'
           ? { action: 'settings', value: settings }
           : { action: change.remove ? 'remove' : 'upsert', kind: change.kind, value: change.value });
-        cb({ staff, shifts, settings });
-        // Re-read so this phone picks up anything the others changed meanwhile.
-        pull().catch(() => {});
+
+        // Re-read, which both confirms the write and picks up whatever the other
+        // phones have done since.
+        await pull();
+
+        if (change.kind === 'settings') return;
+        const list = change.kind === 'staff' ? staff : shifts;
+        const there = list.some(x => String(x.id) === String(change.value.id));
+        if (there === !!change.remove) throw new Error('write did not land');
       },
     };
   }

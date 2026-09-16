@@ -28,7 +28,23 @@ the real thing.**
 
 ---
 
-## Sheets setup — about five minutes, free, no card
+## Sheets setup — **already done**
+
+`ENDPOINT` is filled in and the deployed script was tested against live on
+16 Sep 2026: a read returned JSON, a write landed in the sheet, and a delete
+removed it again. Nothing further is needed unless the sheet is ever rebuilt.
+
+One thing that testing turned up, worth knowing before anyone "fixes" it: a POST
+to an Apps Script web app answers with a 302 to a one-shot
+`script.googleusercontent.com` URL, and following that can produce a Google error
+page **even though the write succeeded**. So `post()` deliberately ignores the
+reply and `save()` re-reads the sheet to confirm the change landed. The sheet is
+the truth, never the response body.
+
+<details>
+<summary>How it was set up, if it ever needs rebuilding</summary>
+
+### About five minutes, free, no card
 
 1. Go to **sheets.new**. Name it *Imperium Hours*.
 2. **Extensions → Apps Script**. Delete whatever is in the editor.
@@ -49,6 +65,8 @@ the Sheet on first use — Shifts, Staff, Settings — and you can edit them by 
 
 **If you ever change the script**, use *Deploy → Manage deployments → edit →
 New version*, or the URL keeps serving the old code.
+
+</details>
 
 ---
 
