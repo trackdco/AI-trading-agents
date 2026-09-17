@@ -21,38 +21,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700&family=Instrument+Sans:wght@400;500;600&display=swap">
 
+<link rel="stylesheet" href="tokens.css">
+
 <style>
 /* Imperium Detailing — timesheets.
-   The palette is the one from imperiumdetailing.com.au, so this reads as part of
-   the same business. On a phone in a driveway it has one job: start a shift,
-   finish a shift. Everything else is a record you scroll to. */
-:root {
-  --bg: #050608;
-  --raise: #0e1014;
-  --well: #090b0f;
-  --accent: #3a8fe0;
-  --ink: #f3f5f8;          /* 17.5:1 on --bg */
-  --body: #c2c8d2;         /* 11.4:1 */
-  --muted: #8e97a5;        /* 6.4:1 — still AA */
-  --line: rgba(243, 245, 248, 0.09);
-  --line-2: rgba(243, 245, 248, 0.18);
-  --live: #4ade80;
-  --warn: #ff9d95;
-
-  --gutter: 18px;
-  --measure: 32rem;
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-
-  --t-micro: 12px;
-  --t-small: 14px;
-  --t-body: 16px;
-  --t-3: 20px;
-  --t-2: 26px;
-
-  --sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --display: "Big Shoulders Display", var(--sans);
-}
-@media (min-width: 620px) { :root { --gutter: 28px; --t-2: 30px; } }
+   On a phone in a driveway this has one job: start a shift, finish a shift.
+   Everything else is a record you scroll to. The palette is in tokens.css. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -488,6 +462,13 @@ details.admin[open] > summary::after { content: "\2212"; }
 }
 .note.bad { border-left-color: var(--warn); }
 
+/* The way through to the other page. Deliberately quiet: the clock is still the
+   thing to use, and this is the apology for the day nobody pressed anything. */
+.elsewhere { margin: 14px 0 0; font-size: var(--t-small); text-align: center; }
+.elsewhere a { color: var(--muted); text-decoration-color: var(--line-2); }
+.elsewhere a:hover { color: var(--accent); }
+.elsewhere em { font-style: normal; color: var(--body); }
+
 /* Says where the hours are actually going. Only shows when that is not the
    shared timesheet, because that is the only time it matters. */
 .link-note {
@@ -685,6 +666,8 @@ footer.foot {
     </div>
   </div>
 
+  <p class="elsewhere"><a href="log.html">Forgot to press start <em>and</em> stop? Log a whole day &rarr;</a></p>
+
   <div class="stats" id="stats">
     <div class="stat"><div class="k" id="kToday">Today</div><div class="v tnum" id="sToday">0<small>h</small></div></div>
     <div class="stat"><div class="k" id="kWeek">This week</div><div class="v tnum" id="sWeek">0<small>h</small></div></div>
@@ -765,9 +748,15 @@ footer.foot {
       <label class="lab" for="eDate">Date</label>
       <input id="eDate" type="date">
     </div>
-    <div class="two">
+    <div class="two" id="eTimes">
       <div><label class="lab" for="eStart">Start</label><input id="eStart" type="time"></div>
       <div><label class="lab" for="eEnd">Finish</label><input id="eEnd" type="time"></div>
+    </div>
+    <!-- Shown instead of the times when the day was logged as a number of hours
+         because nobody clocked on. There are no real times to show. -->
+    <div id="eHoursWrap" hidden>
+      <label class="lab" for="eHours">Hours worked</label>
+      <input id="eHours" type="number" inputmode="decimal" min="0.25" max="20" step="0.25">
     </div>
     <div>
       <label class="lab" for="eJob">Job or customer</label>
@@ -804,6 +793,7 @@ footer.foot {
   </div>
 </dialog>
 
+<script src="config.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -14,7 +14,9 @@ var SHIFTS = 'Shifts';
 var STAFF = 'Staff';
 var SETTINGS = 'Settings';
 
-var SHIFT_COLS = ['id', 'staffId', 'staffName', 'start', 'end', 'job'];
+// 'hours' is set only for a day nobody clocked on for, logged as a number
+// because there are no real times to keep. See dayShift() in config.js.
+var SHIFT_COLS = ['id', 'staffId', 'staffName', 'start', 'end', 'job', 'hours'];
 var STAFF_COLS = ['id', 'name', 'rate'];
 
 /** Writes from different phones can land in the same instant, so every write
@@ -35,6 +37,11 @@ function sheet(name, cols) {
     sh.setFrozenRows(1);
   }
   if (cols && sh.getLastRow() === 0) sh.appendRow(cols);
+  // A sheet made before a column existed is missing it from the header row.
+  // Put the full header back so a person reading the tab knows what is what.
+  if (cols && sh.getLastColumn() < cols.length) {
+    sh.getRange(1, 1, 1, cols.length).setValues([cols]);
+  }
   return sh;
 }
 
@@ -55,6 +62,7 @@ function readRows(name, cols) {
     }
     if (obj.end === '' || obj.end === null) obj.end = null;
     if (cols === STAFF_COLS) obj.rate = Number(obj.rate) || 0;
+    if (cols === SHIFT_COLS) obj.hours = Number(obj.hours) || 0;
     out.push(obj);
   }
   return out;

@@ -14,20 +14,14 @@
   'use strict';
 
   /* ================================================================ config ==
-     Paste the Apps Script web app URL between the quotes and the whole crew
-     shares one timesheet. Leave it empty and the page keeps hours on this phone
-     only. Setup is in README.md — about five minutes, no card, no accounts. */
-  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbwkodRGuMD3Myt6K7VtwCNENen6v3n8oFNIVzWRB3pmZ3IcjoKoPbn7eoYLGiomaRt8mw/exec';
-
-  /* The two codes. They live in the page, so anyone who views source can read
-     them — this is a lid that keeps the crew out of the pay figures, not a lock
-     on the data. The link is the real key. */
-  const STAFF_CODE = '0000';
-  const ADMIN_CODE = '1906';
-
-  const DEFAULT_RATE = 27;
-  const DEFAULT_CREW = ['Lucas', 'AJ', 'Nick', 'Gus', 'Ananth'];
-  const POLL_MS = 20000;               // how often a sheet-backed page re-reads
+     Shared with log.html, so it lives in config.js and is only typed once. */
+  const CFG = window.IMP || {};
+  const ENDPOINT = CFG.ENDPOINT || '';
+  const STAFF_CODE = CFG.STAFF_CODE || '0000';
+  const ADMIN_CODE = CFG.ADMIN_CODE || '1906';
+  const DEFAULT_RATE = CFG.DEFAULT_RATE || 27;
+  const DEFAULT_CREW = CFG.DEFAULT_CREW || [];
+  const POLL_MS = CFG.POLL_MS || 20000;   // how often a sheet-backed page re-reads
 
   const $ = id => document.getElementById(id);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -56,7 +50,27 @@
     const s = Math.max(0, Math.floor(ms / 1000));
     return `${Math.floor(s / 3600)}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
   }
+  /* A day nobody clocked is stored as a plain number of hours, because there
+     are no real times to keep. It still carries a start and end covering the
+     same span, so a total is right even from a sheet that has not been updated
+     to hold the hours column. */
+  const loggedHours = sh => {
+    const h = Number(sh.hours);
+    if (Number.isFinite(h) && h > 0) return h;
+    /* A sheet deployed before the hours column existed drops that field, so the
+       same thing is readable from the times: these start at exactly local
+       midnight, which no real clock-on ever does. */
+    const a = new Date(sh.start);
+    if (sh.end && a.getHours() === 0 && a.getMinutes() === 0 &&
+        a.getSeconds() === 0 && a.getMilliseconds() === 0) {
+      const span = (Date.parse(sh.end) - a.getTime()) / 3600000;
+      if (span > 0) return span;
+    }
+    return 0;
+  };
   function hoursOf(sh, now) {
+    const logged = loggedHours(sh);
+    if (logged) return logged;
     const a = Date.parse(sh.start);
     const b = sh.end ? Date.parse(sh.end) : now;
     return Number.isFinite(a) && b > a ? (b - a) / 3600000 : 0;
@@ -78,14 +92,9 @@
     return new Date(y, m - 1, d).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
   }
 
-  // Pay weeks run Wednesday to Tuesday. Wednesday is day 3, so (day + 4) % 7 is
-  // how many days back the week that is running now began.
-  function weekStart(offset = 0) {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() - ((d.getDay() + 4) % 7) + offset * 7);
-    return d;
-  }
+  // Pay weeks run Wednesday to Tuesday. The rule lives in config.js so this
+  // page and log.html cannot end up disagreeing about which week a shift is in.
+  const weekStart = (offset = 0) => CFG.weekStart(offset);
 
   const esc = s => String(s).replace(/[&<>"']/g,
     c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -421,6 +430,14 @@
     $('eStart').value = `${pad(start.getHours())}:${pad(start.getMinutes())}`;
     $('eEnd').value = end ? `${pad(end.getHours())}:${pad(end.getMinutes())}` : '';
     $('eJob').value = sh ? (sh.job || '') : '';
+
+    // A day that was logged as a number has no real times to edit, so it gets
+    // the number instead. Editing it keeps it that way.
+    const logged = sh ? loggedHours(sh) : 0;
+    $('eTimes').hidden = !!logged;
+    $('eHoursWrap').hidden = !logged;
+    $('eHours').value = logged ? String(Number(logged.toFixed(2))) : '';
+
     $('editDlg').showModal();
   }
 
@@ -432,6 +449,28 @@
     const err = m => { const p = $('eErr'); p.textContent = m; p.hidden = false; };
 
     if (!staffId) return err('Pick who worked it.');
+
+    if (!$('eHoursWrap').hidden) {
+      if (!date) return err('A shift needs a date.');
+      const h = parseFloat($('eHours').value);
+      if (!Number.isFinite(h) || h <= 0) return err('How many hours were worked?');
+      if (h > 20) return err('That is over 20 hours. Check the number.');
+      const who = staff.find(s => s.id === staffId);
+      const logged = CFG.dayShift({
+        id: editingId || uid(),
+        staffId,
+        staffName: who ? who.name : 'Unknown',
+        date,
+        hours: h,
+        job: $('eJob').value.trim(),
+      });
+      const at = shifts.findIndex(s => s.id === logged.id);
+      if (at >= 0) shifts[at] = logged; else shifts.unshift(logged);
+      shifts.sort((a, b) => Date.parse(b.start) - Date.parse(a.start));
+      $('editDlg').close();
+      return commit({ kind: 'shift', value: logged });
+    }
+
     if (!date || !st) return err('A shift needs a date and a start time.');
 
     const start = new Date(`${date}T${st}`);
@@ -448,6 +487,7 @@
       start: start.toISOString(),
       end: end ? end.toISOString() : null,
       job: $('eJob').value.trim(),
+      hours: '',
     };
     const i = shifts.findIndex(s => s.id === value.id);
     if (i >= 0) shifts[i] = value; else shifts.unshift(value);
@@ -515,8 +555,9 @@
     for (const s of rows) {
       const h = hoursOf(s, now), rate = rateOf(s.staffId), d = new Date(s.start);
       lines.push([
-        d.toLocaleDateString('en-AU'), s.staffName || '', clock(d),
-        s.end ? clock(new Date(s.end)) : 'still on',
+        d.toLocaleDateString('en-AU'), s.staffName || '',
+        loggedHours(s) ? 'logged' : clock(d),
+        loggedHours(s) ? 'logged' : s.end ? clock(new Date(s.end)) : 'still on',
         h.toFixed(2), rate ? rate.toFixed(2) : '', rate ? (h * rate).toFixed(2) : '', s.job || '',
       ].map(cell).join(','));
     }
@@ -635,7 +676,9 @@
       out.push(`<div class="day"><div class="date"><span>${dayLabel(k)}</span><b>${hm(total)} h</b></div>` +
         list.slice().sort((a, b) => Date.parse(b.start) - Date.parse(a.start)).map(s => {
           const st = new Date(s.start);
-          const times = s.end ? `${clock(st)} – ${clock(new Date(s.end))}` : `${clock(st)} – still on`;
+          const times = loggedHours(s) ? 'Hours logged, no times'
+            : s.end ? `${clock(st)} – ${clock(new Date(s.end))}`
+            : `${clock(st)} – still on`;
           return `<div class="row"${s.end ? '' : ' data-open'}>
             <div class="main">
               <div class="person">${esc(s.staffName || 'Unknown')}</div>

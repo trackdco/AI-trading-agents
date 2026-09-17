@@ -1,12 +1,17 @@
 # Imperium Timesheets
 
-Clock on, clock off, see everyone's hours. One page, no build step, no framework.
+Clock on, clock off, see everyone's hours. Two pages, no build step, no framework.
 
-    index.html            the page
-    app.js                everything it does, tokens and config at the top
+    index.html, app.js    the clock — start a shift, finish a shift, the record
+    log.html, log.js      log a whole day, for when nobody pressed anything
+    config.js             the endpoint, the codes, the rates, the pay week
+    tokens.css            the colours and type sizes both pages use
     apps-script.gs        the Google Sheets backend
     manifest.webmanifest  what makes "Add to Home Screen" open it like an app
     logo.webp, icon-*.png brand assets, copied from the main site
+
+Anything shared lives in `config.js` and `tokens.css` so the two pages cannot
+drift apart — one place to change a code, a rate, or when the pay week starts.
 
 The crew is already in the Sheet — **Lucas, AJ, Nick, Gus, Ananth, all on
 $27/hour** — so nobody has to set anything up before using it. Change any of that
@@ -106,6 +111,40 @@ are, so after the first time it's: open, tap **Start shift**.
 
 ---
 
+## Three ways a day gets recorded
+
+| | When | What it does |
+| --- | --- | --- |
+| **Start / Finish** | normal | The clock runs. Real times, to the second. |
+| **Forgot to press start** | you remember partway | Start the shift 15, 30, 45, 60, 90 or 120 minutes ago, or at a time you pick. Real times again. |
+| **Log a whole day** | nobody pressed anything | Pick the day, say how many hours. **No times at all**, because there weren't any. |
+
+The third one is `log.html`. Pick a name, pick a day from the last week (or any
+date), set the hours with four quick buttons and 15-minute nudges, and save. It
+reads back "6 hours 30 minutes" under the number so 6:30 can't be mistaken for
+half past six, and the button says exactly what it will do — *Log 6:30 for
+yesterday*. **Undo** sits next to the confirmation for the tap that was wrong.
+
+A logged day shows up on the clock page as **"Hours logged, no times"** and
+counts towards the week like any other shift. Admin can edit it — the edit box
+swaps the Start and Finish fields for a single Hours field, because inventing
+times for it would be a lie.
+
+Signing in works across both pages, so the crew enter a code once.
+
+### One thing to do in the Sheet, when you get a minute
+
+The Shifts tab has a new **hours** column. Until the Apps Script is redeployed
+it won't be there, and logged days are still counted correctly — the page can
+read them from the times instead. Redeploying just makes the spreadsheet easier
+to read by hand.
+
+Extensions → Apps Script → paste `apps-script.gs` over what's there → Save →
+**Deploy → Manage deployments → edit (pencil) → Version: New version → Deploy.**
+The URL stays the same. Nothing else changes.
+
+---
+
 ## What it does
 
 - **Big live clock.** Counts while a shift runs; the card lights green.
@@ -115,6 +154,7 @@ are, so after the first time it's: open, tap **Start shift**.
 - **Your today / your week / on now.** "On now" is how many are still clocked on.
 - **Shifts list.** Everyone, newest first, grouped by day with a daily total.
   Everyone can read it; only admin can change it.
+- **Forgot both?** A link under the clock goes to *Log a whole day*.
 - **Admin only.** Hours and pay per person per week, with previous/next week.
   **Edit or delete any shift.** Add or remove crew and set rates. Add a shift
   nobody clocked. Download the week as CSV.
@@ -146,8 +186,8 @@ It keeps the crew out of the pay figures; it is not security. **The link is the
 real key** — only give it to people who should have it. Real access control means
 proper accounts and a login server, which is a different build.
 
-To change either code, edit `STAFF_CODE` and `ADMIN_CODE` near the top of
-`app.js` and deploy again.
+To change either code, edit `STAFF_CODE` and `ADMIN_CODE` in `config.js` and
+deploy again. Both pages pick it up.
 
 ---
 
