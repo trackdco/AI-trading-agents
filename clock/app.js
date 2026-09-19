@@ -50,6 +50,7 @@
   let linkOk = true;
   let queue = [];                       // writes waiting for signal
   let wasRunning = false;               // so the dial only ignites on a change
+  let askedWho = false;                 // the name is asked once per unlock
 
   const isAdmin = () => role === 'admin';
 
@@ -401,7 +402,11 @@
 
   function openWho() {
     $('whoList').innerHTML = staff.length
-      ? staff.map(s => `<button type="button" data-me="${s.id}" aria-pressed="${s.id === me}">${esc(s.name)}</button>`).join('')
+      ? staff.map(s => {
+          const open = shifts.find(x => x.staffId === s.id && !x.end);
+          return `<button type="button" data-me="${s.id}" aria-pressed="${s.id === me}">${esc(s.name)}` +
+            (open ? `<small>on the clock since ${clock(new Date(open.start))}</small>` : '') + '</button>';
+        }).join('')
       : '<p style="grid-column:1/-1;margin:0;color:var(--slate);font-size:14px">Nobody on the crew yet. Add names under Admin.</p>';
     $('whoDlg').showModal();
   }
@@ -899,18 +904,25 @@
     for (let i = 0; i < dots.length; i++) dots[i].toggleAttribute('data-on', i < entry.length);
   }
 
+  /* The code is asked for on every launch. It is kept in sessionStorage, which
+     survives switching to another app and back but not a fresh open, so the
+     lock screen is what the crew see first. A running shift is not touched by
+     any of this: it lives in the sheet, and the dial picks it straight back up
+     once the right name is chosen. */
   function setRole(next) {
     role = next;
     try {
-      if (next) localStorage.setItem('imp.role', next);
-      else localStorage.removeItem('imp.role');
+      if (next) sessionStorage.setItem('imp.role', next);
+      else sessionStorage.removeItem('imp.role');
     } catch {}
     $('gate').hidden = !!next;
     $('app').hidden = !next;
     if (!next) {
+      askedWho = false;
       entry = ''; paintDots();
       $('gateSub').textContent = 'Enter your code';
       $('gateSub').className = 'gate-sub';
+      for (const d of document.querySelectorAll('dialog[open]')) d.close();
     } else if (tab === 'admin' && !isAdmin()) {
       tab = 'clock';
       $('v-admin').hidden = true;
@@ -946,8 +958,14 @@
     }, 620);
   }
 
+  /* Asked once per unlock, whoever was picked last time: phones get handed
+     around, and "it stayed as the last person" was the complaint. The last name
+     is still highlighted, so the common case is one tap. Waits for the crew
+     list if it has not arrived yet. */
   function maybeAskWho() {
-    if (!me && role && staff.length && !$('whoDlg').open) openWho();
+    if (askedWho || !role || !staff.length || $('whoDlg').open) return;
+    askedWho = true;
+    openWho();
   }
 
   /* ================================================================ wiring == */
@@ -964,7 +982,7 @@
   $('csvBtn').addEventListener('click', exportCsv);
   $('prevWeek').addEventListener('click', () => { weekOffset--; render(); });
   $('nextWeek').addEventListener('click', () => { weekOffset = Math.min(0, weekOffset + 1); render(); });
-  $('signOut').addEventListener('click', () => setRole(null));
+  $('lockBtn').addEventListener('click', () => setRole(null));
 
   $('askYes').addEventListener('click', () => closeAsk(true));
   $('askNo').addEventListener('click', () => closeAsk(false));
@@ -1039,7 +1057,7 @@
     loadQueue();
     try {
       me = localStorage.getItem('imp.me');
-      const saved = localStorage.getItem('imp.role');
+      const saved = sessionStorage.getItem('imp.role');
       if (saved === 'staff' || saved === 'admin') role = saved;
     } catch {}
     $('gate').hidden = !!role;
