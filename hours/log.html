@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Log a day — Imperium Timesheets</title>
+<meta name="description" content="Log a whole day's hours when nobody pressed start or finish.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#050608">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hours">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700&family=Instrument+Sans:wght@400;500;600&display=swap">
+
+<link rel="stylesheet" href="tokens.css">
+
+<style>
+/* Imperium Detailing — logging a whole day.
+
+   The other page is a stopwatch. This one is for the evening you realise nobody
+   pressed anything all day, so the only honest thing left is a number. The
+   number is therefore the biggest thing on the page and the only thing you have
+   to get right; the day and the note sit either side of it. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--body);
+  font: 400 var(--t-body)/1.55 var(--sans);
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+/* Same two fixed layers as the clock page: a soft key light and a fine grain,
+   so the two pages read as one app. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25vh -20vw auto;
+  height: 130vh;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(54vw 44vh at 74% 2%, rgba(58, 143, 224, 0.20), transparent 68%),
+    radial-gradient(68vw 38vh at 10% 20%, rgba(31, 111, 192, 0.14), transparent 72%);
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.shell { position: relative; z-index: 2; }
+
+h1, h2, h3 { margin: 0; color: var(--ink); font-family: var(--display); font-weight: 700; }
+p { margin: 0 0 0.9em; }
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.tnum { font-variant-numeric: tabular-nums lining-nums; }
+[hidden] { display: none !important; }
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--measure) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ------------------------------------------------------------------ head -- */
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: calc(18px + env(safe-area-inset-top)) 6px;
+}
+.head .back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  color: var(--muted);
+  font-size: var(--t-small);
+  font-weight: 500;
+  text-decoration: none;
+}
+.head .back:hover { color: var(--accent); }
+.head .name {
+  font-family: var(--display);
+  font-size: var(--t-3);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.head .who {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 6px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--body);
+  font: 500 var(--t-small) var(--sans);
+  cursor: pointer;
+}
+.head .who:hover { border-color: var(--accent); color: var(--ink); }
+.head .who .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: none; }
+
+.lede { margin: 10px 0 0; color: var(--muted); font-size: var(--t-small); }
+
+/* ---------------------------------------------------------------- blocks -- */
+.block { margin-top: 26px; }
+.lab {
+  display: block;
+  margin: 0 0 10px;
+  font-family: var(--sans);
+  font-size: var(--t-micro);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Days run newest first and wrap; a week back covers anything anyone is going
+   to remember, and the date field is there for the rest. */
+.days { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+.days button {
+  min-height: 62px;
+  padding: 8px 6px;
+  border: 1px solid var(--line-2);
+  border-radius: 13px;
+  background: transparent;
+  color: var(--body);
+  font: 500 var(--t-small)/1.25 var(--sans);
+  cursor: pointer;
+  transition: border-color 140ms var(--ease), background 140ms var(--ease);
+}
+.days button b { display: block; color: var(--ink); font-weight: 600; }
+.days button small { display: block; color: var(--muted); font-size: var(--t-micro); }
+.days button:hover { border-color: var(--accent); }
+.days button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: rgba(58, 143, 224, 0.14);
+}
+.days button[aria-pressed="true"] b, .days button[aria-pressed="true"] small { color: var(--ink); }
+
+input {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--well);
+  color: var(--ink);
+  /* 16px floor, or iOS Safari zooms the page when a field takes focus. */
+  font: 400 var(--t-body)/1.4 var(--sans);
+  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease);
+}
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(58, 143, 224, 0.2);
+}
+#pickWrap { margin-top: 10px; }
+
+/* ------------------------------------------------------------------ dial -- */
+.dial-card {
+  margin-top: 10px;
+  padding: 22px 18px 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: linear-gradient(180deg, var(--raise), #0a0c10);
+  text-align: center;
+}
+.dial-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.step {
+  flex: none;
+  width: 56px; height: 56px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font: 400 28px/1 var(--sans);
+  cursor: pointer;
+  transition: border-color 140ms var(--ease), background 140ms var(--ease), transform 90ms var(--ease);
+}
+.step:hover { border-color: var(--accent); background: rgba(58, 143, 224, 0.1); }
+.step:active { transform: scale(0.94); }
+.step:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.big {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(52px, 16vw, 80px);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.big.zero { color: var(--muted); }
+.dial-sub { margin: 8px 0 0; font-size: var(--t-small); color: var(--muted); min-height: 1.5em; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 16px; }
+.chip {
+  min-height: 42px;
+  padding: 8px 15px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--body);
+  font: 500 var(--t-small) var(--sans);
+  font-variant-numeric: tabular-nums lining-nums;
+  cursor: pointer;
+}
+.chip:hover { border-color: var(--accent); color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #04121f; font-weight: 600; }
+
+/* --------------------------------------------------------------- buttons -- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 62px;
+  margin-top: 24px;
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--accent);
+  color: #04121f;
+  font: 600 var(--t-3)/1.2 var(--sans);
+  text-align: center;
+  cursor: pointer;
+  transition: background 160ms var(--ease), transform 110ms var(--ease);
+}
+.btn:hover { background: #4b9ff0; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-2 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--body);
+  font: 500 var(--t-small) var(--sans);
+  cursor: pointer;
+}
+.btn-2:hover { border-color: var(--accent); color: var(--ink); }
+
+/* ----------------------------------------------------------------- notes -- */
+.note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--live);
+  border-radius: 10px;
+  background: var(--raise);
+  font-size: var(--t-small);
+  color: var(--body);
+}
+.note.bad { border-left-color: var(--warn); }
+.note span { flex: 1; }
+.note b { color: var(--ink); }
+
+.link-note {
+  display: block;
+  width: 100%;
+  margin: 16px 0 0;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--warn);
+  border-radius: 10px;
+  background: var(--raise);
+  color: var(--body);
+  font: inherit;
+  font-size: var(--t-small);
+  text-align: left;
+  cursor: pointer;
+}
+.link-note b { color: var(--ink); }
+.link-note[data-tone="warn"] { border-left-color: var(--accent); cursor: default; }
+
+/* ------------------------------------------------------------------ list -- */
+.sec-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 14px;
+  margin-bottom: 10px;
+}
+.sec-head h2 { flex: none; font-size: var(--t-2); line-height: 1.1; }
+.sec-head .aside { font-size: var(--t-small); color: var(--muted); }
+.line {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--line);
+}
+.line .d { color: var(--ink); font-weight: 600; }
+.line .j { color: var(--muted); font-size: var(--t-small); overflow-wrap: anywhere; }
+.line .h {
+  margin-left: auto;
+  font-family: var(--display);
+  font-size: 23px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+.line.total .d, .line.total .h { color: var(--accent); }
+.empty { padding: 20px 4px; color: var(--muted); font-size: var(--t-small); }
+
+footer.foot {
+  margin-top: 34px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-micro);
+  color: var(--muted);
+}
+.foot-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.foot-row button {
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: 500 var(--t-micro) var(--sans);
+  cursor: pointer;
+}
+.foot-row button:hover { border-color: var(--accent); color: var(--ink); }
+
+/* --------------------------------------------------------------- dialogs -- */
+dialog {
+  width: min(420px, calc(100vw - 32px));
+  padding: 22px;
+  border: 1px solid var(--line-2);
+  border-radius: 18px;
+  background: var(--raise);
+  color: var(--body);
+}
+dialog::backdrop { background: rgba(3, 4, 6, 0.78); }
+dialog h3 { font-size: var(--t-2); margin-bottom: 12px; }
+dialog .acts { display: flex; gap: 10px; margin-top: 18px; }
+dialog .acts .btn-2 { flex: 1; min-height: 50px; }
+.people { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.people button {
+  min-height: 58px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  font: 600 var(--t-body) var(--sans);
+  cursor: pointer;
+}
+.people button:hover, .people button[aria-pressed="true"] { border-color: var(--accent); background: rgba(58, 143, 224, 0.12); }
+
+/* ------------------------------------------------------------------ gate -- */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--bg);
+}
+.gate::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 90%;
+  pointer-events: none;
+  background: radial-gradient(48vw 40vh at 50% 0%, rgba(58, 143, 224, 0.22), transparent 70%);
+}
+.gate[hidden] { display: none; }
+.gate-in { position: relative; width: 100%; max-width: 320px; text-align: center; }
+.gate-in img { height: 44px; width: auto; margin: 0 auto 14px; display: block; }
+.gate-in h1 { font-size: 34px; line-height: 1; letter-spacing: -0.01em; }
+.gate-sub { margin: 10px 0 0; font-size: var(--t-small); color: var(--muted); min-height: 1.5em; }
+.gate-sub.bad { color: var(--warn); }
+
+.dots { display: flex; justify-content: center; gap: 14px; margin: 22px 0 26px; }
+.dots i {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  transition: background 160ms var(--ease), border-color 160ms var(--ease), transform 160ms var(--ease);
+}
+.dots i[data-on] { background: var(--accent); border-color: var(--accent); transform: scale(1.12); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gate-in[data-wrong] { animation: nope 420ms var(--ease); }
+  @keyframes nope {
+    0%, 100% { transform: translateX(0); }
+    18% { transform: translateX(-9px); }
+    38% { transform: translateX(9px); }
+    58% { transform: translateX(-5px); }
+    78% { transform: translateX(3px); }
+  }
+}
+
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.pad button {
+  min-height: 66px;
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  background: var(--raise);
+  color: var(--ink);
+  font: 600 26px var(--display);
+  font-variant-numeric: tabular-nums lining-nums;
+  cursor: pointer;
+  transition: background 120ms var(--ease), transform 90ms var(--ease);
+}
+.pad button:hover { background: #151922; }
+.pad button:active { transform: scale(0.96); }
+.pad button.soft { font: 500 15px var(--sans); color: var(--muted); background: transparent; }
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="gate-in" id="gateIn">
+    <img src="logo.webp" alt="Imperium Detailing" width="72" height="44">
+    <h1>Timesheets</h1>
+    <p class="gate-sub" id="gateSub">Enter your code</p>
+    <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+    <div class="pad" id="pad">
+      <button type="button" data-k="1">1</button>
+      <button type="button" data-k="2">2</button>
+      <button type="button" data-k="3">3</button>
+      <button type="button" data-k="4">4</button>
+      <button type="button" data-k="5">5</button>
+      <button type="button" data-k="6">6</button>
+      <button type="button" data-k="7">7</button>
+      <button type="button" data-k="8">8</button>
+      <button type="button" data-k="9">9</button>
+      <button type="button" class="soft" data-k="clear">Clear</button>
+      <button type="button" data-k="0">0</button>
+      <button type="button" class="soft" data-k="back">Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell wrap" id="app" hidden>
+
+  <header class="head">
+    <a class="back" href="./">&larr; Clock</a>
+    <span class="name">Log a day</span>
+    <button class="who" id="whoBtn" type="button"><span class="dot"></span><span id="whoName">Who are you?</span></button>
+  </header>
+
+  <p class="lede">For a day nobody pressed Start or Finish. Pick the day, say how long it took.</p>
+
+  <button class="link-note" id="linkNote" type="button" hidden></button>
+
+  <section class="block">
+    <h2 class="lab">Which day</h2>
+    <div class="days" id="days"></div>
+    <div id="pickWrap" hidden>
+      <label class="lab" for="pickDate" style="margin-top:12px">Or pick a date</label>
+      <input id="pickDate" type="date">
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="lab">How long</h2>
+    <div class="dial-card">
+      <div class="dial-row">
+        <button class="step" id="minus" type="button" aria-label="Fifteen minutes less">&minus;</button>
+        <div class="big tnum zero" id="big" role="status" aria-live="polite">0:00</div>
+        <button class="step" id="plus" type="button" aria-label="Fifteen minutes more">+</button>
+      </div>
+      <p class="dial-sub" id="dialSub">Tap a number, then nudge it 15 minutes at a time.</p>
+      <div class="chips" id="quick">
+        <button class="chip" type="button" data-h="2">2h</button>
+        <button class="chip" type="button" data-h="4">4h</button>
+        <button class="chip" type="button" data-h="6">6h</button>
+        <button class="chip" type="button" data-h="8">8h</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <label class="lab" for="note">What was the job? (optional)</label>
+    <input id="note" type="text" placeholder="e.g. Huracán full detail, Kambah" autocomplete="off">
+  </section>
+
+  <button class="btn" id="save" type="button">Log it</button>
+  <div id="status"></div>
+
+  <section class="block">
+    <div class="sec-head">
+      <h2>Your week</h2>
+      <span class="aside" id="weekRange"></span>
+    </div>
+    <div id="mine"><div class="empty">Loading&hellip;</div></div>
+  </section>
+
+  <footer class="foot">
+    A logged day has no start or finish time, because there wasn&rsquo;t one. It counts
+    towards the week the same as any other shift. <span id="storeNote"></span>
+    <div class="foot-row">
+      <span id="roleNote"></span>
+      <button id="signOut" type="button">Sign out</button>
+    </div>
+  </footer>
+</div>
+
+<dialog id="whoDlg">
+  <h3>Who are you?</h3>
+  <div class="people" id="whoList"></div>
+  <div class="acts">
+    <button class="btn-2" id="whoCancel" type="button">Cancel</button>
+  </div>
+</dialog>
+
+<script src="config.js"></script>
+<script src="log.js"></script>
+</body>
+</html>
