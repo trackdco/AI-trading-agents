@@ -38,6 +38,25 @@ window.IMP.weekStart = function (offset) {
   return d;
 };
 
+/* Calendar arithmetic. Adding 24h of milliseconds is wrong twice a year in
+   Canberra: the night daylight saving starts or ends is 23 or 25 hours long, so
+   "yesterday" skips or repeats a day and a pay-week boundary lands an hour off.
+   setDate() moves by calendar days and lets the clock sort itself out. */
+window.IMP.addDays = function (d, n) {
+  const x = new Date(d);
+  x.setDate(x.getDate() + n);
+  return x;
+};
+window.IMP.daysAgo = function (n) {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - n);
+  return d;
+};
+window.IMP.weekEnd = function (offset) {
+  return window.IMP.weekStart((offset || 0) + 1);
+};
+
 window.IMP.dayShift = function (o) {
   const h = Math.round(Number(o.hours) * 4) / 4;
   const start = new Date(o.date + 'T00:00:00');     // local midnight, that day

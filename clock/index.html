@@ -85,7 +85,7 @@ a { color: var(--imperium); text-underline-offset: 3px; }
 :focus-visible { outline: 2px solid var(--imperium); outline-offset: 3px; border-radius: 6px; }
 .tnum { font-variant-numeric: tabular-nums lining-nums; }
 [hidden] { display: none !important; }
-button { font: inherit; cursor: pointer; }
+button { font: inherit; cursor: pointer; touch-action: manipulation; }
 
 .wrap {
   width: 100%;
@@ -249,7 +249,8 @@ body[data-running] .dial .arc { opacity: 1; }
 }
 body[data-running] .state { color: var(--amber); }
 
-.read {
+.read { display: block; }
+.read .strips {
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -616,9 +617,10 @@ h3.sub:first-child { margin-top: 2px; }
   inset: 0;
   z-index: 60;
   display: grid;
-  place-items: center;
+  place-items: start center;
   padding: 24px;
   background: var(--graphite);
+  overflow: hidden auto;      /* a phone on its side must still reach the 0 */
 }
 .gate::before {
   content: "";
@@ -629,7 +631,7 @@ h3.sub:first-child { margin-top: 2px; }
   background: radial-gradient(46vw 38vh at 50% 0%, rgba(255, 176, 32, 0.13), transparent 70%);
 }
 .gate[hidden] { display: none; }
-.gate-in { position: relative; width: 100%; max-width: 318px; text-align: center; }
+.gate-in { position: relative; width: 100%; max-width: 318px; margin-block: auto; text-align: center; }
 .gate-in img { height: 40px; width: auto; margin: 0 auto 13px; display: block; }
 .gate-in h1 { font-size: 32px; line-height: 1; letter-spacing: 0.01em; }
 .gate-sub { margin: 9px 0 0; font-size: var(--t-small); color: var(--slate); min-height: 1.5em; }
@@ -741,6 +743,11 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
   .dial-wrap { width: min(42vh, 200px); margin-top: 6px; }
   .read { font-size: clamp(32px, 9vh, 44px); }
   .stats { margin-top: 18px; }
+  .gate-in img { display: none; }
+  .gate-in h1 { font-size: 24px; }
+  .dots { margin: 10px 0 12px; }
+  .pad { gap: 8px; }
+  .pad button { min-height: 46px; }
 }
 
 /* ================================================================= motion = */
@@ -818,7 +825,7 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
                   transform="rotate(-90 120 120)" stroke-dasharray="552.9" stroke-dashoffset="552.9"></circle>
         </svg>
         <div class="readout">
-          <span class="state" id="stateLabel">Not on the clock</span>
+          <span class="state" id="stateLabel" aria-live="polite">Not on the clock</span>
           <div class="read tnum" id="read" role="timer" aria-live="off"></div>
         </div>
       </div>
@@ -906,7 +913,7 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
 
   <div id="status"></div>
 
-  <nav class="tabs" id="tabs" aria-label="Sections">
+  <nav class="tabs" id="tabs" aria-label="Sections" style="--tabs: 2">
     <button type="button" data-tab="clock" aria-selected="true">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
       Clock
@@ -915,7 +922,7 @@ dialog .ask-body { margin: 0; color: var(--slate); font-size: var(--t-small); }
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
       Timesheet
     </button>
-    <button type="button" data-tab="admin" aria-selected="false">
+    <button type="button" data-tab="admin" aria-selected="false" hidden>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="10" cy="17" r="2"/></svg>
       Admin
     </button>

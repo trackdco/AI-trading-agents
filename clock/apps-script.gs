@@ -84,8 +84,11 @@ function upsert(name, cols, value) {
     var row = [];
     for (var c = 0; c < cols.length; c++) {
       var v = value[cols[c]];
-      // Leading apostrophe keeps Sheets from reinterpreting an ISO timestamp.
-      row.push(v === null || v === undefined ? '' : (cols[c] === 'start' || cols[c] === 'end' ? "'" + v : v));
+      // Every string is written with a leading apostrophe, which Sheets reads
+      // as "this is text" and does not store. Without it a job note beginning
+      // with "=" becomes a live formula, a phone number becomes a number, and
+      // an ISO timestamp becomes a Date that reads back an hour off.
+      row.push(v === null || v === undefined ? '' : (typeof v === 'string' ? "'" + v : v));
     }
     var at = findRow(sh, value.id);
     if (at) sh.getRange(at, 1, 1, cols.length).setValues([row]);

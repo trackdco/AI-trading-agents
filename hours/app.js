@@ -86,9 +86,10 @@
   function dayLabel(key) {
     const [y, m, d] = key.split('-').map(Number);
     const today = dayKey(new Date());
-    const yest = dayKey(new Date(Date.now() - 864e5));
+    const yest = new Date(); yest.setDate(yest.getDate() - 1);
+    const yestKey = dayKey(yest);
     if (key === today) return 'Today';
-    if (key === yest) return 'Yesterday';
+    if (key === yestKey) return 'Yesterday';
     return new Date(y, m - 1, d).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
   }
 
@@ -476,7 +477,7 @@
     const start = new Date(`${date}T${st}`);
     let end = en ? new Date(`${date}T${en}`) : null;
     // A finish before the start means the shift ran past midnight.
-    if (end && end <= start) end = new Date(end.getTime() + 864e5);
+    if (end && end <= start) end.setDate(end.getDate() + 1);   // next calendar day, DST-safe
     if (end && end - start > 20 * 3600000) return err('That shift is over 20 hours. Check the times.');
 
     const person = staff.find(s => s.id === staffId);
@@ -545,7 +546,7 @@
     .slice().sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
 
   async function exportCsv() {
-    const from = weekStart(weekOffset), to = new Date(from.getTime() + 7 * 864e5);
+    const from = weekStart(weekOffset), to = weekStart(weekOffset + 1);   // next Wednesday, DST-safe
     const rows = weekShifts(from, to);
     if (!rows.length) return toast('No shifts in that week to export.', true);
 
@@ -697,7 +698,7 @@
   }
 
   function renderWeek(now) {
-    const from = weekStart(weekOffset), to = new Date(from.getTime() + 7 * 864e5);
+    const from = weekStart(weekOffset), to = weekStart(weekOffset + 1);   // next Wednesday, DST-safe
     const rows = weekShifts(from, to);
     const per = new Map();
     for (const s of rows) {
@@ -707,7 +708,8 @@
       per.set(k, cur);
     }
     const fmt = t => t.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
-    const label = `${fmt(from)} – ${fmt(new Date(to.getTime() - 864e5))}`;
+    const last = new Date(to); last.setDate(last.getDate() - 1);
+    const label = `${fmt(from)} – ${fmt(last)}`;
     const host = $('weekTotals');
     if (!per.size) {
       host.innerHTML = `<div class="empty">Nothing logged ${weekOffset === 0 ? 'this pay week' : 'that pay week'} (${label}).</div>`;
