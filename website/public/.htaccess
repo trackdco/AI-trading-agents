@@ -1,0 +1,59 @@
+# Apache / LiteSpeed config for hosts like Hostinger, cPanel and most shared hosting.
+# Vercel reads vercel.json instead and ignores this file, so the two stay in step
+# by hand: every redirect below has a twin in vercel.json.
+
+# ----------------------------------------------------------------------------
+# Old URLs from earlier versions of the site. Google still has some of these
+# indexed, so they move people to the matching new page instead of a 404.
+# ----------------------------------------------------------------------------
+RewriteEngine On
+
+RewriteRule ^contact-us/?$                      /book/ [R=301,L]
+RewriteRule ^mobile-detailing-canberra/?$       /car-detailing-canberra/ [R=301,L]
+RewriteRule ^mobile-car-detailing-canberra/?$   /car-detailing-canberra/ [R=301,L]
+RewriteRule ^car-cleaning-canberra/?$           /car-detailing-canberra/ [R=301,L]
+RewriteRule ^ceramic-coating-canberra/?$        /services/ceramic-coating-canberra/ [R=301,L]
+RewriteRule ^car-ceramic-coating-canberra/?$    /services/ceramic-coating-canberra/ [R=301,L]
+RewriteRule ^paint-protection-canberra/?$       /services/ceramic-coating-canberra/ [R=301,L]
+
+# One address per page: force https and www, so Google never sees four versions
+# of the same page. Comment these two out if the host already does it.
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://www.imperiumdetailing.com.au/$1 [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^imperiumdetailing\.com\.au$ [NC]
+RewriteRule ^(.*)$ https://www.imperiumdetailing.com.au/$1 [R=301,L]
+
+ErrorDocument 404 /404.html
+
+# ----------------------------------------------------------------------------
+# Photos and video never change once published: their filenames carry the size,
+# and a new version gets a new name. So they can be cached for a week, which is
+# what makes a second visit load from the phone rather than the network.
+# ----------------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp "access plus 7 days"
+  ExpiresByType image/jpeg "access plus 7 days"
+  ExpiresByType image/png  "access plus 7 days"
+  ExpiresByType video/mp4  "access plus 7 days"
+  ExpiresByType video/webm "access plus 7 days"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(webp|jpg|jpeg|png|mp4|webm|woff2|ico)$">
+    Header set Cache-Control "public, max-age=604800, stale-while-revalidate=2592000"
+  </FilesMatch>
+  # HTML is checked every time, so a change to the site shows up straight away.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# Some shared hosts do not know these yet, and a video will not play without it.
+<IfModule mod_mime.c>
+  AddType video/webm  .webm
+  AddType image/webp  .webp
+  AddType font/woff2  .woff2
+</IfModule>

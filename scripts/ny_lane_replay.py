@@ -141,6 +141,14 @@ def main() -> None:
     S["fill"] = pd.to_datetime(S.fill_ts, format="mixed", utc=True)
     S["exit"] = pd.to_datetime(S.exit_ts, format="mixed", utc=True)
     S = S.sort_values("fill", kind="mergesort")
+    # ONE-PER-LEVEL (rule L, ANGUS 2026-07-30): the canon book drops same-level sibling
+    # entries via the CR overlay; live, the RUNNER refuses to place them (handover row L).
+    # The lane never sees those candidates, so the harness must not feed them either —
+    # without this drop the replay "takes" suppressed siblings and DIFFs against the book.
+    O = pd.read_parquet(ROOT / f"output/aikido_cr_{a.span}.parquet")
+    if "cr_suppressed" in O.columns:
+        sup = set(map(tuple, O.loc[O.cr_suppressed, ["ts", "direction"]].itertuples(index=False)))
+        S = S[[(t, d) not in sup for t, d in zip(S.ts, S.direction)]]
 
     days = [a.day] if a.day else sorted(book.day.unique())[-a.days:]
     bars = load_bars()

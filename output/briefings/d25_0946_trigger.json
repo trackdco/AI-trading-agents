@@ -1,0 +1,115 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D25-NYA2-0946",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-26T09:46 ET",
+ "candle_start": "09:44 (2m)",
+ "timeframe": "2m",
+ "leak_check": "pass - truncated at 09:45:59; last completed 2m bar starts 09:44 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d25_c3_0946.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. This briefing is authoritative. The chart is truncated at the cursor and carries NO trade drawings of any kind.",
+ "chart_note": "the weekly VP drawing is anchored to a different window - ignore it visually; correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger from his chart's own study series at the last bar; BB MAs/fibs from the build; session profile read from his chart.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   },
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29160.5
+  },
+  "waiting_for": "Resolution of the 29369-29374 cluster (daily POC / 15m MA, the top of the zone broken this morning): a 15m decisive-body close through it licenses longs; a rejection there without that close licenses shorts per condition_for_other_side. No entries until one resolves.",
+  "two_sided": true,
+  "condition_for_other_side": "Shorts licensed on a rejection AT the 29369-29374 cluster (daily POC/15m MA/2m-BB-upper) without a 15m close through it - resume toward the 29225 daily VAL and the 29160.5-29290 weekly-VAL/weekly-low confluence, with a further break of 29160.5 on a decisive 15m close resuming the downtrend.",
+  "anticipated_resolution": {
+   "level": "daily_poc",
+   "price": 29369.0,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "A 15m close through 29369-29374 (daily POC/15m MA) with a decisive body (not wick-heavy absorption) confirms the reversal; a 15m close back below 29225 (daily VAL) with a decisive body confirms the downtrend resumes instead.",
+  "reasoning": "A 730pt overnight-high-to-weekly-low bleed climaxed at 29211.25, 50pt shy of the round weekly low, then reversed 149pt in 10 min - a clear rejection exactly at the weekly-VAL/weekly-low confluence licensed for longs at 08:00, and the failed break means that floor held. Character has flipped from that trend leg to rotational; price now retests the 29369/29374 daily-POC/15m-MA cluster it broke from. Leaning long on acceptance there toward prior-day VAL/POC; a rejection re-licenses shorts toward 29225/29160.5."
+ },
+ "waiting_for_status": "THE SHORT SIDE HAS ARGUABLY FIRED - judge it. condition_for_other_side licenses shorts on 'a rejection AT the 29369-29374 cluster (daily POC/15m MA/2m-BB-upper) without a 15m close through it'. This candle's high is 29365.25: it tagged the daily POC (29365) and the 2m BB upper (29365.50), stopped 2pt under the 15m MA (29361.12 - note the 15m MA has fallen INTO the cluster and now sits BELOW the POC), and closed 113pt lower at 29252.00. No 15m close through the cluster has occurred - the 09:45 15m bar is still open. Decide whether tagging 29365.25 counts as a rejection AT a cluster you named as 29369-29374.",
+ "prior_adjudications_this_window": "three candidates already passed on the waiting_for embargo (09:36 long, 09:40/09:42 short, 09:44 long). Zero fills. This is the first candidate where the thesis's own other-side condition is in play.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "09:44",
+  "direction": "DOWN",
+  "open": 29327.0,
+  "high": 29365.25,
+  "low": 29247.0,
+  "close": 29252.0,
+  "volume": 4251,
+  "levels": "own 2m MA + vwap_m1, same candle; rejected the 15m MA / daily POC at the high"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "vwap_m1"
+ ],
+ "rejection_context": "the 09:42 bar ran 29251.25 -> 29360.50 and this bar extended to 29365.25 before failing. That is the third attempt at this ceiling since the cash open (09:30 high 29371.75, 09:42 high 29360.50, 09:44 high 29365.25) and each has been sold.",
+ "structure_note": "since the cash open price has been range-bound roughly 29217-29372 - a 155pt box - with the 15m MA sloping down into the top of it. The session is 16 minutes old.",
+ "levels_at_decision_CHART": {
+  "vwap": 29424.02,
+  "vwap_p1": 29589.89,
+  "vwap_m1": 29258.15,
+  "vwap_p2": 29755.76,
+  "vwap_m2": 29092.27,
+  "bb_2m_basis": 29286.6,
+  "bb_2m_upper": 29365.5,
+  "bb_2m_lower": 29207.7
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29286.6,
+  "bb_ma_3m": 29297.74,
+  "bb_ma_15m": 29361.12,
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "day_high": 29892.75,
+  "day_low": 29160.5,
+  "session_low_since_open": 29181.5,
+  "daily_profile": {
+   "poc": 29365.0,
+   "val": 29216.0,
+   "vah": 29490.0,
+   "note": "DEVELOPING, read from his chart's session profile"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29709.13,
+   "val": 29249.75,
+   "vah": 30056.5,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "weekly_high": 30968.0
+ },
+ "levels_below_for_target_selection": "vwap_m1 29258.15 is essentially AT the close. Below that: anchored weekly VAL 29249.75, daily VAL 29216, 2m BB lower 29207.70, the 09:34 session low 29181.5, the weekly/day low 29160.5, then vwap_m2 29092.27. Apply T11: compute R = |entry-stop| FIRST, then take the NEAREST level inside 1.5R-2.5R; a FIXED 1.5R if none qualifies.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

@@ -235,6 +235,12 @@ class NYRunner:
         self.watch.mark_gone(ref)
 
     # ---- introspection --------------------------------------------------------------
+    def trigger_for(self, ref: str):
+        """The committed candidate's originating detector trigger (R15: the agent's
+        NEW-POSITION briefing carries its pattern). None if the candidate is gone."""
+        c = self._cands.get(ref)
+        return c.trigger if c is not None else None
+
     def status(self) -> dict:
         return {**self.lane.status(),
                 "candidates": len(self._cands),

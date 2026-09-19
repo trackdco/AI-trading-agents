@@ -1,0 +1,13 @@
+{
+ "role": "tv-macro-events",
+ "decision_minute": "2026-06-26T09:30 ET",
+ "window": "NY_AM",
+ "session_day": "2026-06-25",
+ "leak_check": "pass - news archive filtered to datetime_ET <= this minute.",
+ "scheduled_events": {
+  "released_so_far_today": [],
+  "scheduled_later_today": [],
+  "note": "released_so_far_today is everything on the calendar at or before this minute. scheduled_later_today is the calendar only - times are known in advance and carry no outcome."
+ },
+ "what_to_emit": "your macro read JSON for this window, per your contract."
+}

@@ -1,0 +1,41 @@
+[
+ {
+  "id": "ot9vUw",
+  "shape": "short_position",
+  "t": 1782462960,
+  "p": 29369,
+  "stopLevel": 144,
+  "profitLevel": 308
+ },
+ {
+  "id": "ynElXu",
+  "shape": "long_position",
+  "t": 1782466560,
+  "p": 29298,
+  "stopLevel": 404,
+  "profitLevel": 668
+ },
+ {
+  "id": "cMC9ZJ",
+  "shape": "long_position",
+  "t": 1782468120,
+  "p": 29467,
+  "stopLevel": 156,
+  "profitLevel": 364
+ },
+ {
+  "id": "iAS6uD",
+  "shape": "long_position",
+  "t": 1782443880,
+  "p": 29493,
+  "stopLevel": 124,
+  "profitLevel": 636
+ },
+ {
+  "id": "Uveq5x",
+  "shape": "text",
+  "t": 1782443880,
+  "p": 29900,
+  "text": "FRI 26 \u2014 these 4 are the SUPERSEDED v0.2.0 run (before your rulings): -1.0R, +2.14R, +1.65R, +2.33R. The 0.3.x re-run of Friday took NO trades (London only, both passed)."
+ }
+]

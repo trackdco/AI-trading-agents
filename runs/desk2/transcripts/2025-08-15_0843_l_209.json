@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"neutral\",\"day_type\":\"tight overnight range, no edge\",\"thesis\":\"Gap -13, overnight range only 92pts, price coiled 23917-23922 near flat; wait for pullback rejection signal in either direction\",\"invalidates\":\"clean break/hold beyond 23963 or 23871 with flow confirmation\"}",
+ "reread": "{\"bias\":\"short\",\"note\":\"Cash open dropped hard 23909->23853, broke overnight low 23871, strong downside momentum; favor short pullback rejections into gold session\"}",
+ "turns": [
+  {
+   "minute": "2025-08-15 08:44:00-04:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2025-08-15_0844_s_210) filled at 23907.0 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

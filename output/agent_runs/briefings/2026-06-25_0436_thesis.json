@@ -1,0 +1,70 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "session_extreme_taken_out",
+ "event_detail": "the 04:34 2m bar traded 29453.5, breaking the London-session low 29456.75 (set 04:20); the post-03:00 session low is now broken while the window's entry period runs to 04:59",
+ "window": "LONDON 03:00-04:59 ET",
+ "decision_minute": "2026-06-26T04:36 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 04:35:59; last completed bar starts 04:34",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_0436_london_low_break.png",
+ "price_at_decision": 29460.75,
+ "prior_thesis_as_of_0318": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   },
+   {
+    "level": "weekly_poc",
+    "price": 29710.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_val",
+   "price": 29290.0
+  },
+  "waiting_for": "nothing",
+  "two_sided": true,
+  "condition_for_other_side": "hard rejection at the 29655-29710 cluster licenses shorts back toward weekly_val 29290"
+ },
+ "what_happened_since_0318": "Filled long 29493 off the 03:16 signal; rally stalled 29562.75 (03:34) and 29557.75 (04:00), both short of the 29652-29655 destination; broke back below VWAP mid 04:04; stopped 29462 on the 04:06 bar. Since: three VWAP-mid whips (29457-29562 range), and now the session low has broken with price 29460.75, below VWAP mid 29492.44 and below the 2m/3m MAs (29490.44/29499.96).",
+ "levels_at_0436": {
+  "vwap": {
+   "mid": 29492.44,
+   "p1": 29677.1,
+   "m1": 29307.79,
+   "m2": 29123.13
+  },
+  "bb_ma": {
+   "tf_2m": 29490.44,
+   "tf_3m": 29499.96,
+   "tf_15m": 29407.14
+  },
+  "daily_profile": {
+   "poc": 29355.0,
+   "val": 29161.0,
+   "vah": 29642.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30093.0
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "session_high": 29562.75,
+  "broken_session_low": 29456.75
+ },
+ "fib_source": "none",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

@@ -1,0 +1,75 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_PRE 08:00-09:29 ET",
+ "decision_minute": "2026-06-26T08:00 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 07:59:59; last completed 2m bar starts 07:58",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/window_0800_nypre_open.png",
+ "price_at_decision": 29351.0,
+ "prior_thesis_as_of_0546": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_val",
+    "price": 29290.0
+   },
+   {
+    "level": "vwap_m1",
+    "price": 29305.58
+   },
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_val",
+   "price": 29465.0
+  },
+  "waiting_for": "nothing",
+  "two_sided": true,
+  "condition_for_other_side": "15m acceptance above prior_day_val 29465 flips long toward daily_vah/prior_day_poc; failed breakdown at weekly_val 29290/prior-day low 29295.75 with vwap_m1 reclaim licenses longs toward prior_day_val"
+ },
+ "what_happened_since_0546": "The short leg continued in stairsteps: 29430 -> lows 29317.75 (~07:00) -> a 07:52 flush to 29304.75 (heaviest bar of the stretch, 665 contracts), which is 9pt above prior-day low 29295.75 and 15pt above weekly_val 29290 - the destination shelf was approached but has NOT printed. Bounced to 29351 into the open. VWAP mid has drifted down to 29477; price has not seen it since 04:04.",
+ "levels_at_0800": {
+  "vwap": {
+   "mid": 29472.32,
+   "p1": 29645.17,
+   "m1": 29299.47,
+   "m2": 29126.62
+  },
+  "bb_ma": {
+   "tf_2m": 29363.9,
+   "tf_3m": 29372.72,
+   "tf_15m": 29420.45
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29205.0,
+   "vah": 29558.0,
+   "note": "developing - POC has migrated down to 29369 with the overnight bleed"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30085.0
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "session_high": 29562.75,
+  "session_low": 29304.75
+ },
+ "scheduled_news": "none through end of session day (archive); macro read unchanged",
+ "fib_source": "none",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

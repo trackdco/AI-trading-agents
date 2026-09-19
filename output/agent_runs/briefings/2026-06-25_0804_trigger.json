@@ -1,0 +1,114 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "NYP1-0804",
+ "window": "NY_PRE 08:00-09:29 ET",
+ "session": "NY_PRE",
+ "decision_minute": "2026-06-26T08:04 ET",
+ "candle_start": "08:00 (3m) / 08:02 (2m)",
+ "timeframe": "3m same-candle + 2m sequential echo",
+ "leak_check": "pass \u2014 truncated at 08:03:59; last completed 2m bar starts 08:02",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/candidate_0804_upquartet.png",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "weekly_val",
+    "price": 29290.0
+   },
+   {
+    "level": "weekly_low",
+    "price": 29160.5
+   }
+  ],
+  "invalidation": {
+   "level": "prior_day_val",
+   "price": 29465.0
+  },
+  "waiting_for": "rebalance to the 15m MA (~29415) \u2014 BINDING",
+  "two_sided": true,
+  "condition_for_other_side": "a sweep of the weekly_val 29290 / prior-day low 29295.75 shelf that FAILS, then a 15m close back above the 15m MA, flips long. The shelf has never printed (low 29304.75).",
+  "as_of": "08:00 window_open"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "08:00",
+  "direction": "UP",
+  "open": 29350.0,
+  "close": 29375.5,
+  "closed_at": "08:03",
+  "levels": "own 3m MA + daily POC 29369, same candle"
+ },
+ "signal_candle_2m": {
+  "start": "08:02",
+  "direction": "UP",
+  "open": 29365.5,
+  "high": 29384.0,
+  "low": 29364.0,
+  "close": 29379.75,
+  "volume": 393,
+  "levels": "daily POC; own-MA leg was the 08:00 2m (sequential +2m); own 2m MA also shows a rejection"
+ },
+ "pair_shape": "same_candle (3m) / sequential (2m)",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 29471.81,
+   "p1": 29644.43,
+   "m1": 29299.19
+  },
+  "bb_ma": {
+   "tf_2m": 29364.14,
+   "tf_3m": 29372.0,
+   "tf_15m": 29415.11
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29205.0,
+   "vah": 29558.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30085.0
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "low": 29295.75
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29304.75
+ },
+ "headroom": {
+  "direction_of_trade": "up",
+  "next_levels_overhead": [
+   {
+    "level": "bb_ma_15m",
+    "price": 29415.11,
+    "distance_from_close": 35.36
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   },
+   {
+    "level": "vwap",
+    "price": 29471.81
+   }
+  ]
+ },
+ "poc_alignment": {
+  "daily_poc": 29369.0,
+  "position": "just below price \u2014 behind an up trade",
+  "weekly_poc": 29710.0,
+  "position_weekly": "far overhead"
+ },
+ "fills_this_window": 0,
+ "window_cap": 1,
+ "cap_counts": "fills, not attempts \u2014 NY_PRE cap is 1",
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+}

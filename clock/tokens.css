@@ -1,0 +1,56 @@
+/* Imperium Clock — the material.
+
+   Not a dashboard. An instrument: the cluster of a good car at night. The
+   ground is warm graphite rather than the blue-black every dark app defaults
+   to, the dial is brushed metal, and time runs in amber because that is the
+   colour of a gauge that is live. Imperium blue stays as the identity thread —
+   navigation, focus, the brand — so it is still unmistakably theirs. */
+:root {
+  /* Ground — warm, not blue. Read them as trim, not as "dark mode". */
+  --void:    #09090A;   /* behind everything */
+  --graphite:#121113;   /* the body */
+  --panel:   #1A181B;   /* raised */
+  --panel-2: #221F23;   /* raised, pressed or hovered */
+  --steel:   #35323A;   /* hard edges, unlit ticks */
+
+  /* Ink — warm white, never #fff. A pure white on warm graphite looks broken. */
+  --ivory: #F4F1EC;     /* 16.8:1 on --graphite */
+  --ash:   #C3BEB8;     /* 10.0:1 — body copy */
+  --slate: #928D89;     /* 5.3:1 — still passes for normal text */
+
+  /* Live. Amber is the instrument running. */
+  --amber:      #FFB020;
+  --amber-lit:  #FFCB63;
+  --amber-deep: #8A5B08;
+  --amber-glow: rgba(255, 176, 32, 0.22);
+
+  /* Imperium. Kept small on purpose: identity, not decoration. */
+  --imperium:      #4E9BE8;
+  --imperium-deep: #18324C;
+
+  --good: #57D08A;
+  --warn: #FF7A66;
+
+  --line:   rgba(244, 241, 236, 0.08);
+  --line-2: rgba(244, 241, 236, 0.16);
+
+  --gutter: 20px;
+  --measure: 30rem;
+  --tab-h: 62px;
+
+  /* One easing family, three speeds. A single duration on everything is the
+     tell of a template; these are picked by distance travelled. */
+  --snap:  140ms cubic-bezier(0.2, 0, 0, 1);
+  --move:  260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  --sweep: 620ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  --t-micro: 12px;
+  --t-small: 14px;
+  --t-body:  16px;
+  --t-3:     19px;
+  --t-2:     25px;
+
+  --sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Big Shoulders Display", var(--sans);
+}
+@media (min-width: 620px) { :root { --gutter: 32px; --t-2: 29px; } }

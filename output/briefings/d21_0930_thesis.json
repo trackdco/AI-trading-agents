@@ -1,0 +1,91 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "window_open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills; none used)",
+ "decision_minute": "2026-06-22T09:30 ET (session-day 2026-06-21)",
+ "leak_check": "pass - truncated at 09:29:59; last completed 2m bar starts 09:28",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d21_0930_nyam_clean.png",
+ "chart_note": "anchored-weekly VP drawing hidden; weekly levels numeric and DEVELOPING as-of this minute. No agent-drawn positions on the chart.",
+ "price_at_decision": 30822.0,
+ "prior_thesis_as_of_0800": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "session_high",
+    "price": 30828.0
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "anchored_weekly_val",
+   "price": 30351.0
+  },
+  "waiting_for": "15m decisive close above 30781 - SATISFIED at 08:30 (close 30823.25, body 0.74)",
+  "two_sided": true,
+  "condition_for_other_side": "rejection back down through the 30737-30781 cluster relicenses shorts toward 30683-30701, deeper to 30557-30617"
+ },
+ "open_position": {
+  "id": "D21-NYP1-0902",
+  "side": "LONG",
+  "entry": 30847.0,
+  "stop": 30790.0,
+  "target": 30972.5,
+  "status": "OPEN and in drawdown at this minute - last close 30822 vs entry 30847. Its best print since the 09:04 fill was 30873.50 (+26.5pt); it has never approached its 30972.5 target.",
+  "carry_rule": "per his standing rule a pre-market position is resolved AT this 09:30 open: flattened if in drawdown, moved to break-even if in profit. This one is in drawdown, so the orchestrator flattens it here. You do not manage it; your read decides whether its thesis still stands."
+ },
+ "what_happened_since_0800": "The 08:30 acceptance close (30823.25, body 0.74) licensed longs and price ran to a session high of 30873.50, then rolled over into the bell: the last three 2m bars are 30873.5 -> 30854 -> 30829 -> 30822 on rising volume (891, 854, 1578 - the 1578 is the heaviest of the day). Price is now back BELOW the 08:30 acceptance close.",
+ "levels_at_0930": {
+  "vwap": {
+   "mid": 30647.38,
+   "p1": 30774.65,
+   "p2": 30901.93,
+   "m1": 30520.11
+  },
+  "bb_ma": {
+   "tf_2m": 30838.55,
+   "tf_3m": 30833.49,
+   "tf_15m": 30757.5,
+   "tf_60m": null
+  },
+  "day_range_fibs": {
+   "0.382": 30542.25,
+   "0.5": 30605.5,
+   "0.618": 30668.75,
+   "0.705": 30715.38
+  },
+  "day_high": 30873.5,
+  "day_low": 30337.5,
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "session_high": 30873.5,
+  "daily_profile": {
+   "poc": 30727.0,
+   "val": 30571.0,
+   "vah": 30872.0,
+   "note": "DEVELOPING as-of 09:30"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30770.0,
+   "note": "DEVELOPING as-of 09:30"
+  }
+ },
+ "timing_note": "this is the cash open. Doctrine: no entries in the first few minutes of the cash open, and open volatility can cook you even when the thesis is right.",
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "HOW_TO_READ_THIS_SCREENSHOT": "The OHLC legend in the chart header follows TradingView's CROSSHAIR, not the last bar, and can be parked on an earlier bar. It is never evidence of a leak. The authoritative state is this briefing plus the SELL/BUY ticker top-left. The chart is truncated at the cursor."
+}

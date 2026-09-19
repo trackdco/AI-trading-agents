@@ -1,0 +1,116 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D21-NYP1-0902",
+ "window": "NY_PRE 08:00-09:29 ET",
+ "session": "NY_PRE",
+ "decision_minute": "2026-06-22T09:02 ET",
+ "candle_start": "09:00",
+ "timeframe": "2m (the 3m starting 09:00 is still developing; it completes at 09:03)",
+ "leak_check": "pass - truncated at 09:01:59; last completed 2m bar starts 09:00",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d21_c2_0902.png",
+ "chart_note": "anchored-weekly VP drawing hidden; weekly levels numeric and DEVELOPING as-of this minute",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "session_high",
+    "price": 30828.0
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "anchored_weekly_val",
+   "price": 30351.0
+  },
+  "waiting_for": "15m decisive-body close above 30781 before longs are licensed",
+  "two_sided": true,
+  "condition_for_other_side": "a rejection back down through the 30737-30781 cluster relicenses shorts toward the 30683-30701 confluence, or deeper to 30557-30617",
+  "anticipated_resolution": {
+   "level": "prior_day_high_weekly_vah_cluster",
+   "price": 30770.75,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close above 30781 with a decisive body - not a wick-heavy poke, and not the weak 0.29-body reclaim",
+  "reasoning": "The 03:00 short from this same cluster already paid to prior-day VAH for +1.8R; since then price has whipsawed a 30699-30781 band for 90min on four 15m MA crosses and two failed displacement bars, the latest reclaim closing on a weak 0.29 body - no acceptance either way. Daily POC has migrated up ~164pt and the anchored weekly VA is rising too, so I lean long on a decisive close above 30781, but repeated failures keep this two-sided.",
+  "as_of": "08:00 window_open"
+ },
+ "waiting_for_status": "SATISFIED at 08:30 - the 08:15-08:30 15m closed 30823.25 with body_ratio 0.74, a decisive-body close above 30781. Longs are licensed. (Subsequent 15m closes: 08:45 30806.25 body 0.47, 09:00 30800.50 body 0.32 - both still above 30781.)",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "09:00",
+  "direction": "UP",
+  "open": 30801.0,
+  "high": 30869.75,
+  "low": 30801.0,
+  "close": 30856.75,
+  "volume": 1562,
+  "note": "55.75pt range on 1562 contracts - ~5x the session average; the heaviest bar of the day so far"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "daily_vah"
+ ],
+ "price_action_context": "After the 08:30 acceptance close above 30781, price ran to the session high 30844.75 (08:45 15m), pulled back to 30796-30800 across three quiet 2m bars, and this candle has now broken up through its own 2m MA and the developing daily VAH on a 5x-volume expansion, printing a new session high 30869.75. Note this is 28 minutes before the cash open (09:30).",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 30634.13,
+   "p1": 30754.32,
+   "p2": 30874.52,
+   "m1": 30513.93
+  },
+  "bb_ma": {
+   "tf_2m": 30818.14,
+   "tf_3m": 30807.33,
+   "tf_15m": 30751.44,
+   "tf_60m": null
+  },
+  "day_range_fibs": {
+   "0.382": 30540.82,
+   "0.5": 30603.62,
+   "0.618": 30666.43,
+   "0.705": 30712.74
+  },
+  "day_high": 30869.75,
+  "day_low": 30337.5,
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "daily_profile": {
+   "poc": 30727.0,
+   "val": 30563.0,
+   "vah": 30844.0,
+   "note": "DEVELOPING as-of 09:02"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30766.0,
+   "note": "DEVELOPING as-of 09:02"
+  }
+ },
+ "levels_above_for_target_selection": "Above the 30856.75 close: daily_vah 30844 has just been closed through (now behind), session_high 30869.75, vwap_p1 30754.32, vwap_p2 30874.52, weekly_high 30975.5. NOTE the T11 band rule - compute R from your own entry/stop first, then pick the nearest of these inside 1.5R-2.5R; if none qualifies, use a fixed 1.5R target.",
+ "poc_alignment": {
+  "daily_poc": 30727.0,
+  "position": "below price - with a long",
+  "weekly_poc": 30443.0,
+  "position2": "far below - with a long"
+ },
+ "fills_this_window": 0,
+ "window_cap": 1,
+ "cap_counts": "fills, not attempts - NY_PRE cap is 1",
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+}

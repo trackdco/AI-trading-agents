@@ -1,0 +1,85 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "acceptance_close_against_thesis",
+ "window": "NY_AM (entries to 11:00; cap 2, none used)",
+ "event_detail": "your 09:30 short read named its own flip: 'longs relicensed on reclaiming back above the 08:30 acceptance close (30823) with a decisive body'. The 09:45-10:00 15m closed 30937.00 with body_ratio 0.99 - the most decisive close of the day, 114pt above 30823. Your short's waiting_for (decisive 15m close BELOW 30774-30781) never printed. Price is now 30937, a new session high territory, with the weekly high 30975.5 just 38pt overhead.",
+ "decision_minute": "2026-06-22T10:02 ET (session-day 2026-06-21)",
+ "leak_check": "pass - truncated at 10:01:59; last completed 2m bar starts 10:00",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d21_refire_1002.png",
+ "chart_note": "anchored-weekly VP drawing hidden; weekly levels numeric and DEVELOPING as-of this minute. No agent-drawn positions on the chart.",
+ "price_at_decision": 30937.0,
+ "prior_thesis_as_of_0930": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_p1",
+    "price": 30774.65
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 30699.0
+   },
+   {
+    "level": "prior_day_val",
+    "price": 30568.0
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_high",
+   "price": 30975.5
+  },
+  "waiting_for": "15m decisive close below 30774-30781 - NEVER MET",
+  "two_sided": true,
+  "condition_for_other_side": "longs relicensed on reclaiming above 30823 with a decisive body - NOW MET (10:00 close 30937, body 0.99)"
+ },
+ "what_happened_since_0930": "Whipsaw first: 30763 -> 30926.75 -> 30763 across the opening six bars on 4400-5600 lots each. Then a clean impulse leg - four consecutive up bars 30852 -> 30914 -> 30937 -> 30937 on 2900-4900 lots, printing 30954.5. The book is FLAT: the pre-market long was flattened at the 09:30 open per the carry rule, and no NY_AM entry has been taken.",
+ "levels_at_1002": {
+  "vwap": {
+   "mid": 30718.4,
+   "p1": 30864.05,
+   "p2": 31009.69,
+   "m1": 30572.76
+  },
+  "bb_ma": {
+   "tf_2m": 30862.55,
+   "tf_3m": 30862.31,
+   "tf_15m": 30779.96,
+   "tf_60m": null
+  },
+  "day_range_fibs": {
+   "0.382": 30573.19,
+   "0.5": 30646.0,
+   "0.618": 30718.81,
+   "0.705": 30772.49
+  },
+  "day_high": 30954.5,
+  "day_low": 30337.5,
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "note_weekly_high": "the top of the multi-day range, 38pt overhead and never exceeded this week",
+  "daily_profile": {
+   "poc": 30810.0,
+   "val": 30626.0,
+   "vah": 30955.0,
+   "note": "DEVELOPING as-of 10:02 - POC has migrated up 83pt since the open"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30792.0,
+   "note": "DEVELOPING as-of 10:02"
+  }
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

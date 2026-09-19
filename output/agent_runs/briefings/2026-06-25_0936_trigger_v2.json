@@ -1,0 +1,110 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "NYA2-0936-readjudication",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-26T09:36 ET",
+ "candle_start": "09:34",
+ "timeframe": "2m",
+ "leak_check": "pass \u2014 truncated at 09:35:59; last completed 2m bar starts 09:34",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/candidate_0936_open_reversal.png",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_poc",
+    "price": 29369.0
+   },
+   {
+    "level": "vwap_mid",
+    "price": 29441.0
+   },
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_low_spring",
+   "price": 29181.5
+  },
+  "waiting_for": "rebalance into the reclaimed 29290-96 cluster (weekly_val / prior-day low / 2m-3m BB MA) that holds as support \u2014 BINDING, but note the doctrine: the entry is a limit on the retest, and a resting limit at the cluster IS how a hold-test gets bought. Judge whether placing the retest limit satisfies or violates the gate.",
+  "two_sided": true,
+  "condition_for_other_side": "2m acceptance back below 29290 with the cluster failing on retest kills the spring and reopens shorts at weekly_low 29160.5",
+  "as_of": "09:36 Tier-1 re-read after your stale flag"
+ },
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle": {
+  "start": "09:34",
+  "direction": "UP",
+  "open": 29199.75,
+  "high": 29333.0,
+  "low": 29181.5,
+  "close": 29319.25,
+  "volume": 5941,
+  "note": "151.5pt reversal bar. Its low 29181.5 is a NEW session low that approached weekly_low 29160.5 to within 21pt and held; its close 29319.25 is back ABOVE the thesis invalidation cluster 29295.75. Displacement-sized again."
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m (29294.6)",
+  "vwap_m1 (29277.9)",
+  "daily_val (29225)"
+ ],
+ "thesis_tension_note": "resolved \u2014 Tier-1 re-read flipped long on the failed breakdown; this is the re-adjudication of the same 09:34 signal candle against the fresh thesis",
+ "time_context": "minute 6 of the cash open \u2014 constraint 4 is yours to weigh; the signal is the reversal bar itself",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 29441.0,
+   "m1": 29275.5,
+   "m2": 29110.0,
+   "note": "computed at 09:36"
+  },
+  "bb_ma": {
+   "tf_2m": 29290.0,
+   "tf_3m": 29295.0,
+   "tf_15m": 29359.0,
+   "note": "computed at 09:36"
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "low": 29295.75,
+   "val": 29465.0
+  },
+  "weekly_low": 29160.5,
+  "session_low_new": 29181.5
+ },
+ "headroom": {
+  "direction_of_trade": "up (candidate)",
+  "next_levels_overhead": [
+   {
+    "level": "bb_ma_15m",
+    "price": 29359.0,
+    "distance_from_close": 39.75
+   },
+   {
+    "level": "daily_poc",
+    "price": 29369.0
+   }
+  ]
+ },
+ "poc_alignment": {
+  "daily_poc": 29369.0,
+  "position": "overhead \u2014 it is the long flip's stated destination"
+ },
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price"
+}

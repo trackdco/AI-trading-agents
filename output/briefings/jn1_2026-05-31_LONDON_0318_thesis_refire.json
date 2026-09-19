@@ -1,0 +1,203 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "tp1_filled",
+ "window": "LONDON",
+ "decision_minute": "2026-06-01T03:18 ET",
+ "leak_check": "pass - replay truncated at 03:17:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-05-31_L1L2_0318.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30556.0,
+ "last_completed_2m_bar": {
+  "start": "03:16",
+  "closed_at": "03:18",
+  "open": 30566.5,
+  "high": 30567.75,
+  "low": 30554.0,
+  "close": 30556.0,
+  "volume": 523,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": {
+   "candidate_id": "jn1-0531-L1",
+   "side": "short",
+   "entry": 30579.5,
+   "opened_at": "03:12",
+   "stop": 30569.75,
+   "open_fraction": 0.25,
+   "banked": "75% at 30558 (TP1) this minute",
+   "next_target": {
+    "level": "vwap",
+    "price": 30523.68
+   }
+  }
+ },
+ "window_state": {
+  "window": "LONDON",
+  "entries": "03:00-04:59",
+  "fills_this_window": 1,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "source": "data_get_study_values at 03:17:59 cursor",
+  "vwap": 30524.25,
+  "vwap_p1": 30580.71,
+  "vwap_m1": 30467.8,
+  "vwap_p2": 30637.16,
+  "vwap_m2": 30411.34,
+  "bb_basis_2m_last_completed_plot": 30576.45
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30524.34,
+   "vwap_p1": 30580.8,
+   "vwap_p2": 30637.27,
+   "vwap_p3": 30693.74,
+   "vwap_m1": 30467.87,
+   "vwap_m2": 30411.41,
+   "vwap_m3": 30354.94
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30576.45,
+   "bb_ma_3m": 30574.34,
+   "bb_ma_15m": 30564.59,
+   "bb_ma_60m": 30457.58
+  },
+  "day_range_fibs": {
+   "0.382": 30450.64,
+   "0.5": 30478.25,
+   "0.618": 30505.86,
+   "0.705": 30526.22
+  },
+  "session_high_so_far": 30595.25,
+  "session_low_so_far": 30361.25,
+  "daily_profile": {
+   "poc": 30558.0,
+   "val": 30512.0,
+   "vah": 30591.0,
+   "note": "DEVELOPING as-of 03:18"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30043.0,
+   "val": 29773.0,
+   "vah": 30304.0,
+   "high": 30595.25,
+   "low": 29744.0,
+   "anchor": "2026-05-25 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:18"
+  },
+  "prior_day": {
+   "poc": 30406.0,
+   "val": 30328.0,
+   "vah": 30439.0,
+   "high": 30536.0,
+   "low": 30216.5
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.356,
+  "net_move_15m": 140.5,
+  "total_15m_travel": 394.5,
+  "candles_15m_up": 23,
+  "candles_15m_down": 15,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "02:30",
+   "open": 30557.75,
+   "high": 30580.5,
+   "low": 30556.0,
+   "close": 30568.5,
+   "body_ratio": 0.44
+  },
+  {
+   "start": "02:45",
+   "open": 30567.75,
+   "high": 30589.0,
+   "low": 30567.5,
+   "close": 30578.75,
+   "body_ratio": 0.51
+  },
+  {
+   "start": "03:00",
+   "open": 30578.75,
+   "high": 30591.75,
+   "low": 30565.25,
+   "close": 30570.75,
+   "body_ratio": 0.3
+  },
+  {
+   "start": "03:15",
+   "open": 30570.5,
+   "high": 30573.25,
+   "low": 30554.0,
+   "close": 30556.0,
+   "body_ratio": 0.75
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "A specific, dated high-impact catalyst bearing on NQ or a heavy constituent, with an unabsorbed direction, would move this off neutral.",
+  "reasoning": "No fresh, unabsorbed catalyst for NQ in the London window (03:00-04:59 ET): Core PCE (5/28) is a stale calendar row with no outcome value on file, and ISM Manufacturing PMI doesn't print until 10:00 ET, well outside this window. Nothing actionable to lean on."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap",
+    "price": 30523.68
+   },
+   {
+    "level": "daily_val",
+    "price": 30510.0
+   },
+   {
+    "level": "day_fib_0.5",
+    "price": 30478.25
+   },
+   {
+    "level": "prior_day_vah",
+    "price": 30439.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 29773.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_weekly_high_vah_cluster",
+   "price": 30595.25
+  },
+  "waiting_for": "nothing further - rejection already confirmed (3x 15m tests of vwap_p1/VAH held, max wick 9.2pt, no close through) plus the 03:12 2m close through both its own MA and vwap_p1 in one candle; entries licensed on a retest of the broken vwap_p1/2m MA cluster (~30578-30580)",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed only on a stall-and-reclaim at the vwap/daily-VAL / day-fib-0.618 confluence (~30506-30524) or deeper at vwap-1 (30467) - a defended floor, not a mid-range chase back toward the highs.",
+  "acceptance_rule": "A 15m close above the VAH/weekly-high cluster (~30591-30595.25) with a decisive body would mean the ceiling didn't actually hold. Until then: three 15m tests with sub-10pt wicks and no body close through, plus the same-candle 2m displacement below vwap_p1 and its own MA, keep this a rejection.",
+  "other_side_tripwire": {
+   "level": "vwap_daily_val_confluence",
+   "price": 30510.0,
+   "event": "displacement_from_defended_level"
+  },
+  "defended_level": {
+   "level": "vah_weekly_high_cluster",
+   "price": 30591.0,
+   "memory": "session/weekly high (30595.25) sitting on developing VAH (30591); 3 tests over the last 60m on 15m, max wick 9.2pt beyond, no close through - the 03:00 15m candle wicked to 30591.75 and closed back at its own open (body_ratio 0.06)",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "escalation_response": "accommodated",
+  "reasoning": "Prior stand_aside was the Monday-gap rule, which doesn't cover what's now on the tape: Asia already rallied into the weekly-high/VAH confluence and got rejected three times on the 15m with sub-10pt wicks and no close through - a defended ceiling, not a range-directionless read. The 03:12 2m candle then closed through both its own MA and vwap_p1 in one candle, displacing away from that ceiling, and the chart shows the last few 2m candles chopping right under it rather than reclaiming. Not a flush (efficiency 0.434, 23/14 mixed 15m count), so this is a structured topping-range short with a modest first target at the vwap/daily-VAL zone, not a v-reversal jackpot; longs stay live only on a hold at that lower confluence."
+ },
+ "what_happened_since_the_last_read": "03:12 short filled 30579.5; TP1 daily_poc 30558 printed during the 03:17 1m bar and 75% was banked there this minute; bb_ma_2m/3m broken 03:14, bb_ma_15m broken 03:17; runner stop 30569.75",
+ "why_you_are_being_re-fired": "your named first destination zone (vwap/daily-VAL ladder started at daily_poc TP1) has begun printing - TP1 filled"
+}

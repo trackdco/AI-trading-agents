@@ -67,31 +67,31 @@ class MockBroker:
 # construction — gate_evidence imports the profile rather than restating it — and the scorer
 # is in turn conformance-tested against scripts/funded_book.py on both spans.
 def test_base_dollar_is_the_lucid_base_by_default():
-    assert base_dollar(None) == 150.0 and base_dollar(3000) == 150.0
-    assert base_dollar(50_000) == 150.0, "lucid never scales with buffer"
+    assert base_dollar(None) == 160.0 and base_dollar(3000) == 160.0
+    assert base_dollar(50_000) == 160.0, "lucid never scales with buffer"
 
 
 def test_base_dollar_scaled_profile_steps_and_caps():
-    assert base_dollar(3000, "scaled600") == 150.0
-    assert base_dollar(4999, "scaled600") == 150.0    # first step lands at +$5k
-    assert base_dollar(5000, "scaled600") == 225.0    # +$75 per $2k past $3k
-    assert base_dollar(7000, "scaled600") == 300.0
+    assert base_dollar(3000, "scaled600") == 160.0
+    assert base_dollar(4999, "scaled600") == 160.0    # first step lands at +$5k
+    assert base_dollar(5000, "scaled600") == 235.0    # +$75 per $2k past $3k
+    assert base_dollar(7000, "scaled600") == 310.0
     assert base_dollar(99_000, "scaled600") == 600.0  # hard cap
 
 
 def test_expected_micros_ladder():
-    # lucid ladder: 0.5=$75, 1.0=$150, 1.5=$225, 2.0=$300; micros = risk$/(stop x $2)
-    assert expected_micros(0.5, 10.0) == 4        # 75 / 20 = 3.75 -> 4
-    assert expected_micros(1.0, 10.0) == 8        # 150 / 20 = 7.5 -> 8
-    assert expected_micros(1.5, 10.0) == 11       # 225 / 20 = 11.25 -> 11
-    assert expected_micros(2.0, 10.0) == 15       # 300 / 20 = 15 (the elite tier)
-    assert expected_micros(1.0, 1.0) == 40        # 150/2 = 75 -> clamped to 40
+    # lucid ladder: 0.5=$80, 1.0=$160, 1.5=$240, 2.0=$320; micros = risk$/(stop x $2)
+    assert expected_micros(0.5, 10.0) == 4        # 80 / 20 = 4
+    assert expected_micros(1.0, 10.0) == 8        # 160 / 20 = 8
+    assert expected_micros(1.5, 10.0) == 12       # 240 / 20 = 12
+    assert expected_micros(2.0, 10.0) == 16       # 320 / 20 = 16 (the elite tier)
+    assert expected_micros(1.0, 1.0) == 40        # 160/2 = 80 -> clamped to 40
 
 
 def test_micros_never_round_to_zero():
     """The canon takes a trade at >=1 micro or does not take it. A 0-micro 'trade' is a
     phantom fill in the journal and a divergence from the measured book."""
-    assert micros_for(75.0, 60.0) == 1            # 75/120 = 0.625 -> 1, not 0
+    assert micros_for(80.0, 60.0) == 1            # 80/120 = 0.667 -> 1, not 0
     assert expected_micros(0.5, 60.0) == 1
 
 
@@ -99,13 +99,13 @@ def test_dd_ramp_ladder_halves_at_1k_and_again_at_500():
     """ANGUS 2026-07-30: half size from $1,000 of remaining drawdown, half again from $500.
     Dormant across all 19 months of history — pure insurance — so it must actually be wired,
     and the TIGHTEST applicable step must win."""
-    assert base_dollar(1000) == 150.0                 # at the boundary: not yet ramped
-    assert base_dollar(999) == 75.0                   # first step
-    assert base_dollar(500) == 75.0                   # at the boundary: still first step
-    assert base_dollar(499) == 37.5                   # second step, not 75
-    assert base_dollar(120) == 37.5                   # stays quartered to the spine's halt
-    assert expected_micros(1.0, 10.0, available_dd=999) == 4     # 75/20 = 3.75 -> 4
-    assert expected_micros(1.0, 10.0, available_dd=499) == 2     # 37.5/20 = 1.875 -> 2
+    assert base_dollar(1000) == 160.0                 # at the boundary: not yet ramped
+    assert base_dollar(999) == 80.0                   # first step
+    assert base_dollar(500) == 80.0                   # at the boundary: still first step
+    assert base_dollar(499) == 40.0                   # second step, not 80
+    assert base_dollar(120) == 40.0                   # stays quartered to the spine's halt
+    assert expected_micros(1.0, 10.0, available_dd=999) == 4     # 80/20 = 4
+    assert expected_micros(1.0, 10.0, available_dd=499) == 2     # 40/20 = 2
 
 
 def test_check_sizing_pass_and_fail():

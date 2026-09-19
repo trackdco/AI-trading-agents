@@ -1,0 +1,124 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "TRIGGER_ESCALATION - re-fire, not a window open",
+ "window": "NY_AM 09:30-11:00 ET (cap 2 fills, 1 used)",
+ "decision_minute": "2026-06-23T09:40 ET (session-day 2026-06-22)",
+ "why_you_are_being_re-fired": "THE TRIGGER RAISED A QUALIFYING ESCALATION AND THE GATE GRANTED IT. It named the rejected level - the weekly-low / developing-VAL confluence at 29,675-29,681, which YOU named as a long licence - and a SAME-CANDLE two-level break proved it on BOTH timeframes: the 3m closed through own MA + vwap_m1 + daily POC, and the 2m did the same on 5,424 contracts, the second-heaviest bar of the session. Its objection is precise: 'Thesis licenses this long only after a 15m decisive-body confirmation close (~5 min away); the same-candle 2m+3m two-level break already proves what the confirmation clause is meant to verify.'",
+ "leak_check": "pass - truncated at 09:39:59; the 3m bar starting 09:36 completes AT 09:39",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d22_c5_0940.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "price_at_decision": 29780.75,
+ "the_escalating_bar": {
+  "3m": {
+   "start": "09:36",
+   "open": 29720.0,
+   "close": 29747.25
+  },
+  "2m": {
+   "start": "09:38",
+   "open": 29713.25,
+   "high": 29797.75,
+   "low": 29699.5,
+   "close": 29780.75,
+   "volume": 5424
+  },
+  "levels_closed": [
+   "own_ma_3m",
+   "own_ma_2m",
+   "vwap_m1",
+   "daily_poc"
+  ],
+  "pair_shape": "same_candle",
+  "rejected_level": {
+   "level": "weekly_low / developing VAL confluence",
+   "price": 29675.75,
+   "behavior": "held on two probes - 29,675.75 twenty minutes ago and 29,699.5 on this candle - closed near its high both times, and has now reclaimed 98pt off the low"
+  }
+ },
+ "prior_thesis_as_of_0930": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 29475.86
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29178.63
+   }
+  ],
+  "invalidation": {
+   "level": "bounce_high_30035",
+   "price": 30034.75
+  },
+  "waiting_for": "short licensed on this bounce (currently testing the 2m BB basis / bb_ma_3m confluence, 29,718-29,731) stalling and rolling over - wherever it stalls - followed by closure through the 2m/3m MA and retest, resuming toward vwap_m2/vwap_m3.",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed AT the weekly-low/developing-VAL confluence (29,675-29,681) on a hold - the session's heaviest-volume 2m bar already printed there and closed near its high; confirm with a 15m decisive-body close back above the 2m BB basis/vwap_m1 band (~29,723-29,773) that sticks on retest.",
+  "anticipated_resolution": {
+   "level": "bb_2m_basis_29723",
+   "price": 29723.5,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close above 30,034.75 with a decisive body, not a wick-heavy absorption candle.",
+  "reasoning": "Still a TREND day: 987pt decline from the 18:00 open to a fresh low at 29,675.75, also the weekly low and developing VAL, with no 15m close back above the vwap_m1/15m-MA confluence that rejected this morning's bounce. That low printed on the session's heaviest volume, closing near its high at a rare weekly-low/VAL confluence, so longs get a location-based license on a hold there."
+ },
+ "POSITION_STATE": "FLAT. The 09:36 short you licensed was stopped at 29,790 one minute ago for -1.0R. This candle is the one that stopped it. Nothing is riding on the answer.",
+ "what_happened_since_0930": "you licensed a short on the bounce rolling over; it filled at 29,721.64 and was stopped three minutes later. The candle that stopped it is the same candle now in front of you, and it is a two-level same-candle break UP off the exact confluence you named as a long location.",
+ "HIS_RULING_THAT_BEARS_ON_THIS": "'for me i obviously have a bias but im not gonna only take trades that support that direction. if i am bullish but in that specific moment it has clearly rejected a key level and broken my levels down, its my judgement call on shorts. im not gonna necessarily flake that short just because of my bias coming into the day.' The mirror applies here: a short bias is not a veto on a long the tape has just proven.",
+ "levels_at_0940_CHART": {
+  "vwap": 30019.89,
+  "vwap_p1": 30320.83,
+  "vwap_m1": 29718.96,
+  "vwap_m2": 29418.02,
+  "vwap_m3": 29117.09,
+  "bb_2m_basis": 29722.68,
+  "bb_2m_upper": 29763.39,
+  "bb_2m_lower": 29681.96
+ },
+ "levels_at_0940_BUILD": {
+  "bb_ma_2m": 29722.67,
+  "bb_ma_3m": 29732.24,
+  "bb_ma_15m": 29819.6,
+  "bb_ma_60m": 30233.24,
+  "day_range_fibs": {
+   "0.382": 30030.87,
+   "0.5": 30158.88,
+   "0.618": 30286.88,
+   "0.705": 30381.25
+  },
+  "session_high_so_far": 30701.25,
+  "session_low_so_far": 29616.5,
+  "daily_profile": {
+   "poc": 29740.0,
+   "val": 29616.0,
+   "vah": 30139.0,
+   "note": "DEVELOPING as-of 09:40"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30445.0,
+   "val": 30341.0,
+   "vah": 30784.0,
+   "note": "DEVELOPING as-of 09:40"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29616.5
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "YOUR_CONTRACT_ON_THIS": "0.3.5 THE ADAPTATION CLAUSE rule 3: re-affirming is allowed but it is a DECISION, not a default - say explicitly why the new bar does not change the read. T25 bounds what you may do: you MAY widen or relocate condition_for_other_side, clear a spent waiting_for, add the escalated direction as a licensed second side, and move targets and invalidation. You may NOT flip bias outright without acceptance evidence (a 15m decisive-body close) or a structural re-fire event.",
+ "what_to_emit": "your standard thesis JSON, including the escalation_response field set to accommodated or reaffirmed."
+}

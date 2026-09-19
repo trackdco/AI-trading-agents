@@ -1,0 +1,188 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "other_side_tripwire_resolved",
+ "window": "NY_PRE",
+ "decision_minute": "2026-06-01T08:26 ET",
+ "leak_check": "pass - replay truncated at 08:25:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-05-31_P2_0826.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 30458.75,
+ "last_completed_2m_bar": {
+  "start": "08:24",
+  "closed_at": "08:26",
+  "open": 30443.25,
+  "high": 30458.75,
+  "low": 30443.25,
+  "close": 30458.75,
+  "volume": 600,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "position_state": {
+  "open_position": null
+ },
+ "window_state": {
+  "window": "NY_PRE",
+  "entries": "08:00-09:29, entries cut off 09:10",
+  "fills_this_window": 0,
+  "caps": "written caps LONDON 2 / NY_PRE 1 / NY_AM 2; caps LIFTED for this run, fills beyond written cap are tagged"
+ },
+ "levels_at_decision_CHART": {
+  "source": "data_get_study_values at 08:25:59 cursor",
+  "vwap": 30505.26,
+  "vwap_p1": 30556.94,
+  "vwap_m1": 30453.59,
+  "vwap_p2": 30608.62,
+  "vwap_m2": 30401.91,
+  "bb_basis_2m_last_completed_plot": 30452.59
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30505.26,
+   "vwap_p1": 30557.05,
+   "vwap_p2": 30608.84,
+   "vwap_p3": 30660.63,
+   "vwap_m1": 30453.47,
+   "vwap_m2": 30401.68,
+   "vwap_m3": 30349.88
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30452.59,
+   "bb_ma_3m": 30460.84,
+   "bb_ma_15m": 30476.75,
+   "bb_ma_60m": 30477.15
+  },
+  "day_range_fibs": {
+   "0.382": 30450.64,
+   "0.5": 30478.25,
+   "0.618": 30505.86,
+   "0.705": 30526.22
+  },
+  "session_high_so_far": 30595.25,
+  "session_low_so_far": 30361.25,
+  "daily_profile": {
+   "poc": 30468.0,
+   "val": 30452.0,
+   "vah": 30563.0,
+   "note": "DEVELOPING as-of 08:26"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30043.0,
+   "val": 29773.0,
+   "vah": 30310.0,
+   "high": 30595.25,
+   "low": 29744.0,
+   "anchor": "2026-05-25 18:00:00-04:00",
+   "note": "DEVELOPING as-of 08:26"
+  },
+  "prior_day": {
+   "poc": 30406.0,
+   "val": 30328.0,
+   "vah": 30439.0,
+   "high": 30536.0,
+   "low": 30216.5
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.055,
+  "net_move_15m": 43.25,
+  "total_15m_travel": 792.0,
+  "candles_15m_up": 31,
+  "candles_15m_down": 27,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "07:30",
+   "open": 30460.5,
+   "high": 30502.25,
+   "low": 30451.75,
+   "close": 30484.5,
+   "body_ratio": 0.48
+  },
+  {
+   "start": "07:45",
+   "open": 30483.75,
+   "high": 30491.25,
+   "low": 30460.25,
+   "close": 30462.5,
+   "body_ratio": 0.69
+  },
+  {
+   "start": "08:00",
+   "open": 30462.25,
+   "high": 30464.25,
+   "low": 30419.0,
+   "close": 30422.75,
+   "body_ratio": 0.87
+  },
+  {
+   "start": "08:15",
+   "open": 30422.75,
+   "high": 30458.75,
+   "low": 30415.0,
+   "close": 30458.75,
+   "body_ratio": 0.82
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "fomc_day": false,
+  "blackout_events": [],
+  "drivers": [],
+  "falsified_by": "A headline or release surfaces with actual directional content bearing on NQ or a heavy constituent before entry; absent that, this read stands.",
+  "reasoning": "Core PCE (5/28) is a calendar row only, no outcome value in the archive, and no headlines exist for this session. ISM Mfg PMI prints at 10:00 ET, well after the 09:10 NY_PRE entry cutoff, so it does not blackout this window. No FOMC event today. No actionable catalyst -> neutral."
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "prior_day_vah",
+    "price": 30439.0
+   },
+   {
+    "level": "prior_day_poc",
+    "price": 30406.0
+   },
+   {
+    "level": "weekly_val",
+    "price": 29773.0
+   }
+  ],
+  "invalidation": {
+   "level": "session_weekly_high_vah_cluster",
+   "price": 30595.25
+  },
+  "waiting_for": "a bounce into the equilibrium/vwap-1 rebalance band (day-fib-0.5 to 0.618, ~30478-30506) that rejects, confirming continuation lower; a fresh short from current price at the low edge of the rotation is not licensed",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed on a genuine displacement away from the defended ~30450-30468 zone (day-fib-0.382 / daily VAL-POC, just above prior-day VAH) - a 2m/3m close back through vwap-1 (30459.8) with the MA reclaiming and holding, targeting back to equilibrium/vwap (30478-30510). The zone has held on three tests (04:32, 07:15, 07:30) with no decisive close below it, so a fresh knife-catch short straight into it is not favored either.",
+  "anticipated_resolution": {
+   "level": "defended_zone_day_fib_0382_daily_val",
+   "price": 30454.0,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond the ~30450 defended zone with a decisive body confirms breakdown continuation toward prior-day-VAH/weekly-VAL; a 15m close above the equilibrium/vwap-1 band (~30478-30510) with a decisive body would start to favor upside toward vwap-flat/day-fib-0.705 instead.",
+  "other_side_tripwire": {
+   "level": "vwap_m1_defended_low",
+   "price": 30459.8,
+   "event": "displacement_from_defended_level"
+  },
+  "defended_level": {
+   "level": "day_fib_0382_daily_val_poc_confluence",
+   "price": 30454.0,
+   "memory": "day-fib-0.382 (30450.64) aligned with today's developing daily VAL (30454)/POC (30468), just above prior-day VAH (30439); tested at the 04:32 sweep-reclaim and again on the 07:15 (low 30452) and 07:30 (low 30451.75) 15m candles, no 15m decisive close below any of the three",
+   "status": "holding"
+  },
+  "flush": false,
+  "flush_direction": null,
+  "reasoning": "London's topping-range short off the weekly-high/VAH cluster (30595) already paid - TP1 banked, runner trailed 30510.5 - and price has since swept down to stall at the day-fib-0.382/daily-VAL-POC confluence just above prior-day VAH. That floor has failed to break on three tests while the bounce into equilibrium (day-fib-0.5) also failed to hold (07:30 close above reversed straight back down 07:45): a tight, session-long rotation with no edge from current mid-band price. Staying short-biased strategically toward prior-day-VAH/weekly-VAL given the still-huge premium to weekly value, but the defended low is more likely to hold near-term (his own bounce-off-a-defended-level precedent), so longs license on a real displacement away rather than a fresh short chased into the floor."
+ },
+ "what_happened_since_the_last_read": "since 08:00: the defended 30450-30454 zone was dumped through 08:20-08:24 (session low print 30433, below day-fib-0.382 30450.64 and prior-day VAH proximity) and reclaimed immediately; the 2m bar closing 08:26 closed 30458.75 - back through the zone toward vwap_m1 (chart vwap_m1 now 30453.59, the close is above it) with the own 2m MA (30452.59 last-completed plot) also below the close",
+ "why_you_are_being_re-fired": "your other_side_tripwire resolved mechanically: displacement from the defended low - the 2m bar closing 08:26 closed above vwap_m1 and its own 2m MA after the 08:20-08:24 sweep-and-reclaim of the defended 30450-30454 zone (wick low 30433, no 2m close held below the zone)"
+}

@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"neutral\",\"day_type\":\"balance near highs, no break yet\",\"thesis\":\"O/N held 25603-25692 inside PDH 25685 zone; last bar faded 25664->25657, momentum stalling but no confirmed rejection\",\"invalidates\":\"clean break/hold above 25692 flips long; loss of 25603 flips short\"}",
+ "reread": "{\"bias\":\"short\",\"note\":\"Open swept new high 25713 then dumped to 25551 (below O/N range), closed 25617 well off highs \u2014 failed breakout, aggressive rejection selling\"}",
+ "turns": [
+  {
+   "minute": "2025-12-04 10:09:00-05:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2025-12-04_1009_s_527) filled at 25586.5 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

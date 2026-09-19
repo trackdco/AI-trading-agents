@@ -1,0 +1,109 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D23-NYA1-0934",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-24T09:34 ET",
+ "candle_start": "09:32",
+ "timeframe": "2m",
+ "leak_check": "pass - truncated at 09:33:59; last completed 2m bar starts 09:32 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d23_c3_0934.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; weekly levels numeric and DEVELOPING. No agent-drawn positions.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 29649.34
+   },
+   {
+    "level": "weekly_low",
+    "price": 29577.25
+   }
+  ],
+  "invalidation": {
+   "level": "overnight_high",
+   "price": 29891.75
+  },
+  "waiting_for": "retest of the broken 15m MA / VWAP / developing POC zone (~29775-29821) from below, on rejection there",
+  "two_sided": true,
+  "condition_for_other_side": "longs licensed if the vwap_m1/0.382-fib support cluster (~29702-29712) holds on a rejection there, back into the 15m MA/VWAP/POC zone",
+  "anticipated_resolution": {
+   "level": "vwap_m1_0382_fib_confluence",
+   "price": 29711.97,
+   "expect": "break_down",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond overnight high 29891.75 with a decisive body - a wick-only poke doesn't count",
+  "reasoning": "Anticipated breakout above the overnight high failed 19pt short, then reversed hard: 170pt in an hour, an 08:45 15m close through the MA on a 0.72 body, also breaking VWAP and the developing POC. Character shifting from rotational toward downside continuation. Short toward vwap_m2 then weekly low, on a retest of the broken zone. Two-sided: a hold at vwap_m1/0.382 support instead licenses longs back into that zone.",
+  "as_of": "09:30 window_open"
+ },
+ "timing_note": "decision minute 09:34 - four minutes after the bell. Your contract puts the no-entry bar at roughly 09:30-09:35, so this one IS inside it. Weigh that against the structure and say which governs.",
+ "candidate_source": "SUPPLEMENTARY rejection-first scan. two_level_check also flags this bar.",
+ "rejection_sequence": "The vwap_m1 / 0.382-fib support cluster your thesis named for the other side was tested three times and held: 09:24 wicked 19.4pt below vwap_m1 and closed back above, 09:28 wicked 8.2pt below, and 09:30 wicked 4.65pt below vwap_m2 - each closing back above. This candle then closed UP through its own 2m MA, the VWAP and vwap_m1 together.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "09:32",
+  "direction": "UP",
+  "open": 29666.0,
+  "high": 29840.0,
+  "low": 29666.0,
+  "close": 29818.25,
+  "volume": 7243,
+  "note": "a 174pt bar on 7,243 contracts - by far the largest of the session. It opened at its low and closed near its high, closing through its own 2m MA, the VWAP and vwap_m1 in one candle. This is a displacement bar (range >= 0.5*W15)."
+ },
+ "pair_shape": "rejection_first",
+ "levels_closed": [
+  "own_ma_2m",
+  "vwap",
+  "vwap_m1",
+  "bb_ma_15m"
+ ],
+ "levels_at_decision_CHART": {
+  "vwap": 29768.35,
+  "vwap_p1": 29832.54,
+  "vwap_m1": 29704.16,
+  "vwap_m2": 29639.97,
+  "bb_2m_basis": 29737.69,
+  "bb_2m_upper": 29798.97,
+  "bb_2m_lower": 29676.4
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_3m": 29759.88,
+  "bb_ma_15m": 29798.7,
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "day_high": 29891.75,
+  "day_low": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29731.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  },
+  "overnight_high": 29891.75,
+  "weekly_low": 29577.25
+ },
+ "levels_above_for_target_selection": "vwap_p1 29832.54, daily_vah 29858, overnight_high 29891.75, prior_day_vah 29928. Apply T11: R = |entry-stop| first, then the NEAREST level inside 1.5R-2.5R; FIXED 1.5R if none qualifies.",
+ "displacement_note": "this is an oversized displacement candle. Your contract says use the BODY not the wick for the stop, and the origin-proximity clause applies if the origin sits on a live level.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

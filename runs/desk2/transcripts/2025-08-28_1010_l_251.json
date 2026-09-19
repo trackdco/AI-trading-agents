@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"neutral\",\"day_type\":\"tight overnight range, no edge yet\",\"thesis\":\"Price coiled 23588-23598 into 07:40, no rejection trigger printed pre-open; wait for mechanical pullback signal at open\",\"invalidates\":\"clean break/reject beyond 23488-23662 overnight range with volume\"}",
+ "reread": "{\"bias\":\"long\",\"note\":\"Strong opening drive 23630->23742->23719 holding gains, gap-fill and reclaim of range; favors long pullback rejections into gold session\"}",
+ "turns": [
+  {
+   "minute": "2025-08-28 10:11:00-04:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2025-08-28_1011_s_252) filled at 23661.5 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

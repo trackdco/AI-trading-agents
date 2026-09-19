@@ -1,0 +1,126 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D21-NYA4-0948",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-22T09:48 ET",
+ "candle_start": "09:45 (3m) / 09:46 (2m)",
+ "timeframe": "3m and 2m, simultaneous",
+ "leak_check": "pass - truncated at 09:47:59; last completed 2m bar starts 09:46",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d21_c5_0948.png",
+ "chart_note": "anchored-weekly VP drawing hidden; weekly levels numeric and DEVELOPING as-of this minute. No agent-drawn positions on the chart.",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The OHLC legend in the chart header follows TradingView's CROSSHAIR, not the last bar, and can be parked on an earlier bar. It is never evidence of a leak. Authoritative state is this briefing plus the SELL/BUY ticker top-left. The chart is truncated at the cursor.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "session_high",
+    "price": 30873.5
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "0930_support_cluster_low",
+   "price": 30737.0
+  },
+  "waiting_for": "rebalance to the 30737-30781 confluence (15m MA / VWAP+1 / prior-day high) - the 15m is the floor",
+  "two_sided": true,
+  "condition_for_other_side": "a 15m decisive-body close below 30737 relicenses shorts",
+  "anticipated_resolution": {
+   "level": "0930_support_cluster_30737_781",
+   "price": 30757.5,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "as_of": "09:30 window_open"
+ },
+ "waiting_for_status": "SATISFIED. The 09:42 bar traded down to 30763.00 - inside the 30737-30781 rebalance confluence - and held it, then the last two bars have turned up (30822.5, then 30873.75). The thesis's anticipated_resolution was 'the 30737-30781 cluster HOLDS', with act_on_resolution true; that is what has just happened.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "09:45",
+  "direction": "UP",
+  "open": 30798.75,
+  "close": 30873.75,
+  "closed_at": "09:48",
+  "levels": "own 3m MA + vwap_p1 + daily POC, same candle"
+ },
+ "signal_candle_2m": {
+  "start": "09:46",
+  "direction": "UP",
+  "open": 30822.5,
+  "high": 30873.75,
+  "low": 30808.75,
+  "close": 30873.75,
+  "volume": 4229,
+  "levels": "own 2m MA + vwap_p1, same candle; closes AT the session high 30873.50"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "own_ma_3m",
+  "vwap_p1",
+  "daily_poc"
+ ],
+ "price_action_context": "Cash-open whipsaw: 30763 -> 30926.75 -> 30763 in the first twelve minutes on 4400-5600 lots a bar. The 09:42 flush into the rebalance zone held at 30763 and price has now recovered the whole leg, closing this candle at 30873.75 - at/through the session high 30873.50 that is the thesis's first target.",
+ "levels_at_decision": {
+  "vwap": {
+   "mid": 30696.79,
+   "p1": 30836.2,
+   "p2": 30975.61,
+   "m1": 30557.39
+  },
+  "bb_ma": {
+   "tf_2m": 30846.58,
+   "tf_3m": 30840.45,
+   "tf_15m": 30767.14,
+   "tf_60m": null
+  },
+  "day_range_fibs": {
+   "0.382": 30562.59,
+   "0.5": 30632.12,
+   "0.618": 30701.66,
+   "0.705": 30752.92
+  },
+  "day_high": 30926.75,
+  "day_low": 30337.5,
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "session_high": 30926.75,
+  "daily_profile": {
+   "poc": 30810.0,
+   "val": 30608.0,
+   "vah": 30927.0,
+   "note": "DEVELOPING as-of 09:48"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30351.0,
+   "vah": 30784.0,
+   "note": "DEVELOPING as-of 09:48"
+  }
+ },
+ "levels_above_for_target_selection": "session_high 30926.75, weekly_high 30975.5, vwap_p2 30975.61. NOTE the thesis's first target (session_high 30873.5) has just been reached by this very candle, so the live structure above is 30926.75 then 30975.5. Apply T11: compute R from your own entry/stop, then take the NEAREST of these inside 1.5R-2.5R; if none qualifies, a FIXED 1.5R target.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "cap_counts": "fills, not attempts",
+ "fill_model_note": "limits are simulated: touch-equals-fill at the limit price",
+ "poc_alignment": {
+  "daily_poc": 30810.0,
+  "position": "below price and just closed through - with a long",
+  "weekly_poc": 30443.0,
+  "position2": "far below - with a long"
+ }
+}

@@ -1,0 +1,175 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "L1",
+ "decision_minute": "2026-06-04T03:32 ET",
+ "reason_for_call": "stalling",
+ "leak_check": "pass - replay truncated at 03:31:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-03_L1_0332_manage.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30499.0,
+  "stop": 30548.0,
+  "targets": [
+   {
+    "level": "daily_val",
+    "price": 30412.0
+   }
+  ],
+  "conviction": "A",
+  "opened_at": "03:22",
+  "R_in_points": 49.0,
+  "current_stop_distance": 49.0,
+  "open_pnl_in_R": -0.57
+ },
+ "level_in_question": {
+  "level": "adverse_excursion_0.5R",
+  "price": null
+ },
+ "price_at_decision": 30527.0,
+ "last_completed_2m_bar": {
+  "start": "03:30",
+  "closed_at": "03:32",
+  "open": 30518.75,
+  "high": 30527.5,
+  "low": 30514.75,
+  "close": 30527.0,
+  "volume": 221,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "03:24",
+   "closed_at": "03:26",
+   "open": 30507.0,
+   "high": 30516.25,
+   "low": 30505.75,
+   "close": 30507.5,
+   "volume": 216,
+   "minutes": 2
+  },
+  {
+   "start": "03:26",
+   "closed_at": "03:28",
+   "open": 30508.25,
+   "high": 30509.25,
+   "low": 30497.5,
+   "close": 30499.75,
+   "volume": 197,
+   "minutes": 2
+  },
+  {
+   "start": "03:28",
+   "closed_at": "03:30",
+   "open": 30498.0,
+   "high": 30519.75,
+   "low": 30496.25,
+   "close": 30518.0,
+   "volume": 193,
+   "minutes": 2
+  },
+  {
+   "start": "03:30",
+   "closed_at": "03:32",
+   "open": 30518.75,
+   "high": 30527.5,
+   "low": 30514.75,
+   "close": 30527.0,
+   "volume": 221,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30521.1,
+  "bb_upper_2m": 30545.41,
+  "bb_lower_2m": 30496.79,
+  "vwap": 30453.93,
+  "vwap_p1": 30493.94,
+  "vwap_m1": 30413.92,
+  "vwap_p2": 30533.95,
+  "vwap_m2": 30373.91,
+  "vwap_p3": 30573.96,
+  "vwap_m3": 30333.91,
+  "read_at": "chart cursor 03:31:59 - the 2m bar 03:30-03:31 is COMPLETE and closes at 03:32; minute 03:32 has not started"
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30454.03,
+   "vwap_p1": 30494.21,
+   "vwap_p2": 30534.38,
+   "vwap_p3": 30574.56,
+   "vwap_m1": 30413.85,
+   "vwap_m2": 30373.67,
+   "vwap_m3": 30333.49
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30521.1,
+   "bb_ma_3m": 30517.92,
+   "bb_ma_15m": 30487.72,
+   "bb_ma_60m": 30554.74
+  },
+  "day_range_fibs": {
+   "0.382": 30425.84,
+   "0.5": 30448.5,
+   "0.618": 30471.16,
+   "0.705": 30487.86
+  },
+  "session_high_so_far": 30544.5,
+  "session_low_so_far": 30352.5,
+  "daily_profile": {
+   "poc": 30452.0,
+   "val": 30412.0,
+   "vah": 30503.0,
+   "note": "DEVELOPING as-of 03:32"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30537.0,
+   "vah": 30720.0,
+   "high": 30807.75,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:32"
+  },
+  "prior_day": {
+   "poc": 30685.0,
+   "val": 30577.0,
+   "vah": 30724.0,
+   "high": 30807.75,
+   "low": 30478.25
+  }
+ },
+ "crowded_path": {
+  "levels_between_tp1_and_tp2": [],
+  "count": 0,
+  "crowded_path": false,
+  "note": "this position has a single target (30412.00), so there is no TP1-to-TP2 corridor to be crowded."
+ },
+ "management_actions_so_far": [],
+ "what_to_emit": "your management JSON, per your contract.",
+ "conviction_partial_rule": {
+  "conviction_of_this_position": "A",
+  "contract_default": "B takes roughly 75% at TP1 and trails the runner. A is 50% and holds the rest to the full target; C is 100% out with no runner.",
+  "note": "stated as the contract text, not as an instruction - partial_pct is your decision and is a fraction of what is still open."
+ },
+ "thesis_context": {
+  "version": "v2",
+  "primary_bias": "short",
+  "invalidation": 30539.0,
+  "aligned": "this position is with the thesis - v2 is short toward vwap/daily_val after the weekly VAL cluster held.",
+  "other_side_tripwire": "weekly_val 30539.00, 15m_decisive_close - not resolved as of this minute",
+  "note": "stated because it bears on how much runner is worth carrying, not as a view on your decision."
+ },
+ "prior_positions_this_window": {
+  "count": 0,
+  "detail": "this is the first fill of the session-day.",
+  "note": "stated as run state, not as a view on this position."
+ },
+ "window_note": {
+  "window": "LONDON",
+  "entries_end": "04:59",
+  "text": "the LONDON entry window ends at 04:59. A position open at that minute is not force-flattened; the window_closing tier-3 call at 04:59 is where carrying it is decided.",
+  "news": "the calendar is empty for this cash day - no blackout anywhere."
+ }
+}

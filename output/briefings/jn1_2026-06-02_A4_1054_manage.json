@@ -1,0 +1,199 @@
+{
+ "role": "tv-manage",
+ "candidate_id": "A4",
+ "decision_minute": "2026-06-03T10:54 ET",
+ "reason_for_call": "intermediate_level_reached",
+ "leak_check": "pass - replay truncated at 10:53:59, verified against replay_status.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/jn1_2026-06-02_A5_1054.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "position": {
+  "side": "short",
+  "entry": 30684.0,
+  "stop": 30714.0,
+  "targets": [
+   {
+    "level": "vwap_m1",
+    "price": 30617.22
+   },
+   {
+    "level": "weekly_val",
+    "price": 30547.0
+   },
+   {
+    "level": "session_low",
+    "price": 30496.0
+   }
+  ],
+  "conviction": "A",
+  "opened_at": "10:51",
+  "R_in_points": 30.0,
+  "current_stop_distance": 30.0,
+  "open_pnl_in_R": -0.24
+ },
+ "level_in_question": {
+  "level": "prior_day_poc",
+  "price": 30676.0
+ },
+ "price_at_decision": 30691.25,
+ "last_completed_2m_bar": {
+  "start": "10:52",
+  "closed_at": "10:54",
+  "open": 30698.0,
+  "high": 30698.75,
+  "low": 30674.5,
+  "close": 30691.25,
+  "volume": 2156,
+  "minutes": 2
+ },
+ "candle_grid_note": null,
+ "recent_2m_bars": [
+  {
+   "start": "10:46",
+   "closed_at": "10:48",
+   "open": 30703.5,
+   "high": 30723.0,
+   "low": 30696.25,
+   "close": 30706.25,
+   "volume": 2092,
+   "minutes": 2
+  },
+  {
+   "start": "10:48",
+   "closed_at": "10:50",
+   "open": 30706.0,
+   "high": 30709.5,
+   "low": 30673.5,
+   "close": 30681.25,
+   "volume": 2713,
+   "minutes": 2
+  },
+  {
+   "start": "10:50",
+   "closed_at": "10:52",
+   "open": 30680.25,
+   "high": 30699.25,
+   "low": 30656.25,
+   "close": 30697.75,
+   "volume": 3577,
+   "minutes": 2
+  },
+  {
+   "start": "10:52",
+   "closed_at": "10:54",
+   "open": 30698.0,
+   "high": 30698.75,
+   "low": 30674.5,
+   "close": 30691.25,
+   "volume": 2156,
+   "minutes": 2
+  }
+ ],
+ "levels_at_decision_CHART": {
+  "bb_basis_2m_last_completed_plot": 30699.26,
+  "bb_upper_2m": 30733.84,
+  "bb_lower_2m": 30664.69,
+  "vwap": 30682.46,
+  "vwap_p1": 30747.06,
+  "vwap_m1": 30617.86,
+  "vwap_p2": 30811.66,
+  "vwap_m2": 30553.26,
+  "vwap_p3": 30876.27,
+  "vwap_m3": 30488.66,
+  "read_at": "chart cursor 10:53:59 - the 2m bar 10:52-10:53 is COMPLETE and closes at 10:54; minute 10:54 has not started",
+  "legend_verified": "YES - crosshair cleared before the read and cross-checked against independently computed values"
+ },
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 30682.95,
+   "vwap_p1": 30747.62,
+   "vwap_p2": 30812.28,
+   "vwap_p3": 30876.95,
+   "vwap_m1": 30618.28,
+   "vwap_m2": 30553.61,
+   "vwap_m3": 30488.94
+  },
+  "bb_ma": {
+   "bb_ma_2m": 30699.26,
+   "bb_ma_3m": 30672.35,
+   "bb_ma_15m": 30729.25,
+   "bb_ma_60m": 30702.65
+  },
+  "day_range_fibs": {
+   "0.382": 30615.09,
+   "0.5": 30651.88,
+   "0.618": 30688.66,
+   "0.705": 30715.78
+  },
+  "session_high_so_far": 30807.75,
+  "session_low_so_far": 30496.0,
+  "daily_profile": {
+   "poc": 30687.0,
+   "val": 30663.0,
+   "vah": 30790.0,
+   "note": "DEVELOPING as-of 10:54"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30677.0,
+   "val": 30547.0,
+   "vah": 30736.0,
+   "high": 30807.75,
+   "low": 30317.75,
+   "anchor": "2026-06-01 18:00:00-04:00",
+   "note": "DEVELOPING as-of 10:54"
+  },
+  "prior_day": {
+   "poc": 30676.0,
+   "val": 30532.0,
+   "vah": 30713.0,
+   "high": 30763.25,
+   "low": 30317.75
+  }
+ },
+ "crowded_path": {
+  "levels_between_tp1_and_tp2": [
+   "fib_0.382 30615.09",
+   "vwap_m2 30553.61"
+  ],
+  "count": 2,
+  "crowded_path": true,
+  "note": "named structural levels strictly between TP1 30617.22 and the next target 30547.00 at this minute."
+ },
+ "management_actions_so_far": [
+  {
+   "minute": "10:53",
+   "reason_for_call": "intermediate_level_broken / vwap 30682.91",
+   "action": "hold",
+   "new_stop": null,
+   "favouring": "same",
+   "reason": "2min old A-short round-tripped: dipped to 30656 then spiked to 30699 testing 2m MA/BB basis (30698), wicked only ~1pt through, closed back near vwap (30681, ~+0.1R). One candle, no held break either way - hold, stop 30714 untouched."
+  }
+ ],
+ "what_to_emit": "your management JSON, per your contract.",
+ "conviction_partial_rule": {
+  "conviction_of_this_position": "A",
+  "contract_default": "B takes roughly 75% at TP1 and trails the runner. A is 50% and holds the rest to the full target; C is 100% out with no runner.",
+  "note": "stated as the contract text, not as an instruction - partial_pct is your decision and is a fraction of what is still open."
+ },
+ "thesis_context": {
+  "version": "v6",
+  "primary_bias": "short",
+  "invalidation": 30799.0,
+  "aligned": "this position is with the thesis - v6 is short and licenses shorts on a rebalance to the 2m/3m MA following the breakdown, which is what this entry took.",
+  "other_side_tripwire": "bb_ma_15m/weekly_vah confluence 30736.00, 2m_close_through_with_ma - not resolved as of this minute",
+  "note": "stated because it bears on how much runner is worth carrying, not as a view on your decision."
+ },
+ "prior_positions_this_window": {
+  "count": 1,
+  "detail": "A1 short from 30711.00 opened 09:38; 50% took target 30554.00 at 09:48 for +1.7253R and the runner was stopped on the trail at 30613.94 at 09:52 for +1.0666R. Window is +1.7253R on the full-target scoreboard.",
+  "earlier_windows": "LONDON -2.00R across three fills; NY_PRE no fills.",
+  "note": "stated as run state, not as a view on this position."
+ },
+ "window_note": {
+  "window": "NY_AM",
+  "entries_end": "11:00",
+  "earliest_entry": "09:35",
+  "text": "the NY_AM window runs to 11:00. A position open at that minute is not force-flattened; the window_closing tier-3 call at 11:00 is where carrying it is decided.",
+  "news": "ISM Services PMI printed at 10:00. The entry blackout band 09:50-10:00 has closed and in any case gates ENTRIES only, not management."
+ },
+ "shared_capture_note": "this cursor also serves candidate A5, whose decision minute is 10:54. Same frame, same truncation."
+}

@@ -1,0 +1,12 @@
+{
+ "thesis": "{\"bias\":\"long\",\"day_type\":\"trend continuation, tight ON range\",\"thesis\":\"Prior day strong uptrend closing near highs (25253H/25227C); ON gap -39pts is shallow, consolidating tight near ON highs (25197) not filling toward lows \u2014 buyers defending the pullback\",\"invalidates\":\"Acceptance below ON low 25122 or loss of 25150 pre-open flips bias\"}",
+ "reread": "{\"bias\":\"long\",\"note\":\"Cash open held above prior close (25246 vs 25227), swept to 25263 then held 25217 \u2014 trend continuation confirmed, buy pullback rejections\"}",
+ "turns": [
+  {
+   "minute": "2025-10-07 09:48:00-04:00",
+   "why": "OPPOSING SIGNAL FILLED",
+   "sent": "harness: opposing canon signal (2025-10-07_0948_l_359) filled at 25234.25 \u2014 position closed and reversed (law)",
+   "reply": "(no reply \u2014 mechanical)"
+  }
+ ]
+}

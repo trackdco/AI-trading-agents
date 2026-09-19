@@ -1,0 +1,10 @@
+{
+ "lean": "neutral",
+ "confidence": "high",
+ "news_blackout": false,
+ "fomc_day": false,
+ "blackout_events": [],
+ "drivers": [],
+ "falsified_by": "any red-folder US release surfacing on the calendar at or before 2026-06-02 09:30 ET that isn't reflected in this briefing",
+ "reasoning": "No events released or scheduled for this decision minute per the briefing; standing policy on ISM Manufacturing is not applicable since no ISM row is present. No basis for a directional lean or a blackout."
+}

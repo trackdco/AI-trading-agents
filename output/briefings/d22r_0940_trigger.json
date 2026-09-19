@@ -1,0 +1,114 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "D22R-NYA1-0940",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-23T09:40 ET",
+ "candle_start": "09:38",
+ "timeframe": "2m",
+ "leak_check": "pass - truncated at 09:39:59; last completed 2m bar starts 09:38 (from the chart's own series)",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/d22r_c2_0940.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - never a leak. Authoritative state is this briefing. Chart truncated at the cursor.",
+ "chart_note": "weekly VP drawing hidden; weekly levels numeric and DEVELOPING. No agent-drawn positions.",
+ "level_provenance": "VWAP+bands from his chart's own study series at the last bar; BB MAs/profiles/fibs from the build.",
+ "thesis": {
+  "bias": "short",
+  "targets": [
+   {
+    "level": "vwap_m2",
+    "price": 29475.86
+   },
+   {
+    "level": "vwap_m3",
+    "price": 29178.63
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29923.0
+  },
+  "waiting_for": "rejection off the 2m/3m MA / vwap_m1 confluence (29723-29773), a closure back below stacked with another level, entered on the retest - not a 15m MA reclaim (trend day, T15 floor suspended)",
+  "two_sided": true,
+  "condition_for_other_side": "15m decisive close above weekly low 29923 licenses longs toward weekly_val ~30343",
+  "anticipated_resolution": {
+   "level": "vwap_m1",
+   "price": 29773.09,
+   "expect": "holds",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close above weekly low 29923 with a decisive body breaks the thesis; a wick-heavy absorption candle does not count",
+  "reasoning": "One-way trend day - high 30701 to low 29675.75, 15m MA still ~100pt above price, so T15 suspends the floor. Base low 29752 broke as anticipated; bounce sits at the 2m/3m MA under vwap_m1 - waiting for rejection there before continuation short.",
+  "as_of": "09:30 window_open"
+ },
+ "timing_note": "decision minute is 09:40 - ten minutes after the bell. Per your contract the no-entry bar covers roughly 09:30-09:35; from ~09:36 judge on structure, not the clock. Do not stack the clock on top of another failure.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ },
+ "signal_candle_2m": {
+  "start": "09:38",
+  "direction": "UP",
+  "open": 29713.25,
+  "high": 29797.75,
+  "low": 29699.5,
+  "close": 29780.75,
+  "note": "an 84.25pt bar - it closed UP through its own 2m MA (29722.68), through vwap_m1 (29718.96) and through the developing POC, three levels in one candle"
+ },
+ "preceding_3m": {
+  "start": "09:36",
+  "direction": "UP",
+  "open": 29720.0,
+  "close": 29747.25,
+  "low": 29699.5,
+  "note": "the 3m that closed through its own MA and vwap_m1 immediately before this one"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_2m",
+  "vwap_m1",
+  "daily_poc"
+ ],
+ "price_action_context": "Since the bell price made a new session low 29675.75, then reversed: 29699.5 -> 29797.75 across the last two bars. This candle is the largest up-bar of the session so far and closes at its high. The standing thesis is short and treats this zone as a rejection area; this candle went through it instead.",
+ "levels_at_decision_CHART": {
+  "vwap": 30019.89,
+  "vwap_p1": 30320.83,
+  "vwap_m1": 29718.96,
+  "vwap_m2": 29418.02,
+  "vwap_m3": 29117.09,
+  "bb_2m_basis": 29722.68,
+  "bb_2m_upper": 29763.39,
+  "bb_2m_lower": 29681.96
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_3m": 29732.24,
+  "bb_ma_15m": 29819.6,
+  "day_range_fibs": {
+   "0.382": 30030.87,
+   "0.5": 30158.88,
+   "0.618": 30286.88,
+   "0.705": 30381.25
+  },
+  "day_high": 30701.25,
+  "day_low": 29616.5,
+  "daily_profile": {
+   "poc": 29866.0,
+   "val": 29675.0,
+   "vah": 30261.0,
+   "note": "DEVELOPING"
+  },
+  "prior_day": {
+   "poc": 30642.0,
+   "val": 30516.0,
+   "vah": 30763.0,
+   "high": 30968.0,
+   "low": 30337.5
+  },
+  "weekly_low": 29923.0,
+  "session_low": 29675.75
+ },
+ "levels_above_for_target_selection": "bb_2m_upper 29763.39 (already exceeded), bb_ma_15m 29819.60, daily_poc 29866, weekly_low 29923, then vwap 30019.89. Apply T11: R = |entry-stop| first, then the NEAREST level inside 1.5R-2.5R; FIXED 1.5R if none qualifies.",
+ "fills_this_window": 0,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

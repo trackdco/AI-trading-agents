@@ -1,0 +1,10 @@
+{
+ "lean": "neutral",
+ "confidence": "high",
+ "news_blackout": false,
+ "fomc_day": false,
+ "blackout_events": [],
+ "drivers": [],
+ "falsified_by": "A high-impact US release appearing on the calendar at or before 08:00 ET that is not covered by the ISM Manufacturing PMI carve-out would change the blackout determination.",
+ "reasoning": "No events released so far today and none scheduled later today per the calendar as-of this decision minute. No named catalyst bears on NQ or its heavy constituents at this window, so lean is neutral with no gate triggered."
+}

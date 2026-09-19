@@ -1,0 +1,69 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "destination_printed_and_extreme_broken",
+ "event_detail": "three near-simultaneous facts, folded: (1) your primary target daily_vah 29540 printed at the 10:04-10:06 bar; (2) the London session high 29562.75 broke on the 10:06-10:08 bar (high 29577.25) \u2014 a session extreme taken out, upward; (3) the second cap trade completed through both (fill 29467, partial 29540, runner 29558, +2.33R). The NY_AM cap is now EXHAUSTED \u2014 no further entries this window regardless of your read; positions are flat. Your read governs the record and any management until 11:00, nothing else.",
+ "window": "NY_AM (entries to 11:00 but cap 2/2 used; book flat).",
+ "decision_minute": "2026-06-26T10:08 ET (session-day 2026-06-25)",
+ "leak_check": "pass \u2014 truncated at 10:07:59; last completed 2m bar starts 10:06",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/refire_1008_high_break.png",
+ "price_at_decision": 29553.75,
+ "prior_thesis_as_of_1002": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "daily_vah",
+    "price": 29540.0
+   },
+   {
+    "level": "prior_day_poc",
+    "price": 29655.0
+   },
+   {
+    "level": "weekly_poc",
+    "price": 29710.0
+   }
+  ],
+  "invalidation": {
+   "level": "bb_ma_15m",
+   "price": 29376.0
+  },
+  "waiting_for": "rebalance to prior_day_val 29465 that holds as support"
+ },
+ "what_happened_since_1002": "The 29465-holds rebalance came immediately (10:02 bar low 29458.5) and was bought; then straight through VAH 29540 and the London high. Price 29553.75, VWAP mid 29432 far below, 15m MA 29383 far below. The V from 29181.5 is now 396pt in 34 minutes.",
+ "levels_at_1008": {
+  "vwap": {
+   "mid": 29432.0,
+   "p1": 29596.0,
+   "note": "computed at 10:08 \u2014 vwap_p1 is 42pt overhead"
+  },
+  "bb_ma": {
+   "tf_2m": 29380.0,
+   "tf_3m": 29377.0,
+   "tf_15m": 29383.0
+  },
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29225.0,
+   "vah": 29540.0
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29290.0,
+   "vah": 30081.0
+  },
+  "prior_day": {
+   "low": 29295.75,
+   "val": 29465.0,
+   "poc": 29655.0
+  },
+  "weekly_low": 29160.5,
+  "session_low": 29181.5,
+  "old_london_high": 29562.75
+ },
+ "fib_source": "none available (his marked swings only)",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "low",
+  "news_blackout": false
+ }
+}

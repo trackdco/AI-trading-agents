@@ -1,0 +1,81 @@
+import type { Metadata } from "next";
+import Script from "next/script";
+import { Big_Shoulders, Instrument_Sans } from "next/font/google";
+import "./globals.css";
+import { Header } from "@/components/site/header";
+import { Footer } from "@/components/site/footer";
+import { JsonLd } from "@/components/site/json-ld";
+import { Analytics } from "@/components/site/analytics";
+import { Intro } from "@/components/site/intro";
+import { SmoothScroll } from "@/components/site/smooth-scroll";
+import { ScrollFx } from "@/components/site/scroll-fx";
+import { MobileBar } from "@/components/site/mobile-bar";
+import { PageWipe } from "@/components/site/page-wipe";
+import { site } from "@/lib/site";
+
+// Google folded "Big Shoulders Display" into the variable "Big Shoulders" family;
+// the opsz axis gives the display cut automatically at headline sizes.
+const display = Big_Shoulders({
+  subsets: ["latin"],
+  weight: "variable",
+  axes: ["opsz"],
+  variable: "--font-big-shoulders",
+  display: "swap",
+});
+
+const sans = Instrument_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-instrument",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
+  title: {
+    default: "Mobile Car Detailing Canberra | Imperium Detailing",
+    template: "%s · Imperium Detailing",
+  },
+  description:
+    "Canberra's premium mobile car detailing. Ceramic coatings from $997, paint correction from $397, full details from $225. We come to you, no call-out fee.",
+  openGraph: {
+    type: "website",
+    locale: "en_AU",
+    siteName: site.name,
+    images: [{ url: "/brand/og-image.jpg", width: 1200, height: 630, alt: "Imperium Detailing" }],
+  },
+  twitter: { card: "summary_large_image" },
+  icons: {
+    icon: [
+      { url: "/brand/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/brand/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: "/brand/apple-touch-icon.png",
+    shortcut: "/brand/favicon.ico",
+  },
+};
+
+export default function RootLayout({ children }: LayoutProps<"/">) {
+  return (
+    <html lang="en-AU" className={`${display.variable} ${sans.variable} dark h-full`}>
+      <body className="flex min-h-full flex-col">
+        {/* Runs before paint: marks that JS is on (so reveals may start hidden), skips the intro
+            curtain on repeat visits in this tab, and keeps the page-wipe curtain down when a wipe
+            started this page load. */}
+        <Script id="flags" strategy="beforeInteractive">{`try{var d=document.documentElement;d.dataset.js="1";if(sessionStorage.getItem("imperium-intro"))d.dataset.intro="done";if(sessionStorage.getItem("imperium-wipe")){d.dataset.wipe="1";sessionStorage.removeItem("imperium-wipe");}}catch(e){}`}</Script>
+        <Intro />
+        <SmoothScroll />
+        <ScrollFx />
+        <Header />
+        <main id="content" className="flex-1">
+          {children}
+        </main>
+        <Footer />
+        <MobileBar />
+        <PageWipe />
+        <JsonLd />
+        <Analytics />
+      </body>
+    </html>
+  );
+}

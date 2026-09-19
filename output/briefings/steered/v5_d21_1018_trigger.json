@@ -1,0 +1,126 @@
+{
+ "role": "tv-trigger",
+ "candidate_id": "V5-D21-NYA4-1018",
+ "window": "NY_AM 09:30-11:00 ET",
+ "session": "NY_AM",
+ "decision_minute": "2026-06-22T10:18 ET",
+ "candle_start": "10:15 (3m) / 10:16 (2m)",
+ "timeframe": "3m and 2m",
+ "leak_check": "pass - truncated at 10:17:59; last completed 2m bar starts 10:16, and the 3m bar starting 10:15 completes AT 10:18",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d21_c6_1018.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "vwap_p2",
+    "price": 30903.32
+   },
+   {
+    "level": "weekly_high",
+    "price": 30975.5
+   }
+  ],
+  "invalidation": {
+   "level": "weekly_vah",
+   "price": 30770.0
+  },
+  "waiting_for": "reclaim and hold above the 2m/3m MA stack (~30833-30839) with a retest, confirming continuation; a deeper rebalance to the weekly-VAH/prior-day-high/vwap+1 confluence (~30770-30776) that holds and turns up also licenses longs - 15m MA reclaim not required, T15 (trend day).",
+  "two_sided": true,
+  "condition_for_other_side": "shorts license on a 15m decisive-body close back below the weekly-VAH/prior-day-high/vwap+1 confluence (~30770-30776) - wherever this pullback's rollover actually stalls and fails to hold, not assumed at a fixed level; within the current 15m BB width.",
+  "anticipated_resolution": {
+   "level": "bb_2m3m_ma_stack",
+   "price": 30838.55,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "15m close beyond the ~30770-30776 weekly-VAH/prior-day-high/vwap+1 stack, with a decisive body - not a wick-heavy absorption candle.",
+  "reasoning": "Trend day (536pt range): accepted above prior-day high & weekly VAH at 08:15, hourly closes grinding up into cash open, trading in the VWAP+1/+2 band. The last 24min is a shallow ~58pt pause under the session high, still 65pt above the 15m MA with no close back below it since 07:30 - rebalance, not rejection, so long stands (T15: 15m MA is one level, not the floor). Two-sided only if the weekly-VAH/prior-day-high/vwap+1 stack (~30770) gives way on a 15m decisive close."
+ },
+ "waiting_for_status": "DIRECTION MISMATCH against a LONG thesis. Shorts are licensed only on a 15m decisive-body close below the 30770-30776 weekly-VAH/prior-day-high confluence; price is 30855.25, 80pt above it, and no 15m bar has closed near it. Apply the escalation rule and note T25: escalation requires a SAME-CANDLE two-level break behind a NAMED rejection.",
+ "POSITION_STATE": "FLAT. The 09:36 long banked its first target at 09:59 and its runner trailed out at 10:16, two minutes ago. NY_AM has used 1 of its 2 fills, so one remains, and 42 minutes of window.",
+ "macro": {
+  "lean": "neutral",
+  "confidence": "medium",
+  "news_blackout": false
+ },
+ "signal_candle_3m": {
+  "start": "10:15",
+  "direction": "DOWN",
+  "open": 30909.75,
+  "close": 30855.25,
+  "closed_at": "10:18",
+  "levels": "own 3m MA + vwap_p1, SAME CANDLE"
+ },
+ "signal_candle_2m": {
+  "start": "10:16",
+  "direction": "DOWN",
+  "open": 30897.75,
+  "high": 30897.75,
+  "low": 30848.0,
+  "close": 30855.25,
+  "volume": 3210,
+  "levels": "own 2m MA (30894.74) + vwap_p1 (30886.76), same candle; opened on its high"
+ },
+ "pair_shape": "same_candle",
+ "levels_closed": [
+  "own_ma_3m",
+  "own_ma_2m",
+  "vwap_p1"
+ ],
+ "context": "the advance topped at 30968.00 at 10:10 - 7.5pt short of the weekly high 30975.5 - and has rolled over 120pt in eight minutes. This candle opened on its high and closed on its low.",
+ "levels_at_decision_CHART": {
+  "vwap": 30736.24,
+  "vwap_p1": 30886.76,
+  "vwap_m1": 30585.73,
+  "vwap_p2": 31037.28,
+  "vwap_m2": 30435.21,
+  "bb_2m_basis": 30894.74,
+  "bb_2m_upper": 30979.86,
+  "bb_2m_lower": 30809.61
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 30894.74,
+  "bb_ma_3m": 30878.96,
+  "bb_ma_15m": 30784.78,
+  "bb_ma_60m": null,
+  "day_range_fibs": {
+   "0.382": 30578.35,
+   "0.5": 30652.75,
+   "0.618": 30727.15,
+   "0.705": 30782.0
+  },
+  "session_high_so_far": 30968.0,
+  "session_low_so_far": 30337.5,
+  "daily_profile": {
+   "poc": 30810.0,
+   "val": 30644.0,
+   "vah": 30969.0,
+   "note": "DEVELOPING as-of 10:18"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30443.0,
+   "val": 30349.0,
+   "vah": 30798.0,
+   "note": "DEVELOPING as-of 10:18"
+  },
+  "prior_day": {
+   "poc": 30668.0,
+   "val": 30568.0,
+   "vah": 30699.0,
+   "high": 30770.75,
+   "low": 30388.0
+  },
+  "weekly_high": 30975.5,
+  "weekly_low": 29923.0
+ },
+ "levels_below_for_target_selection": "the 2m BB lower 30809.61, the 3m MA 30878.96, the daily VAH 30969.0, the 15m MA 30784.78, then the VWAP 30736.24 and the weekly-VAH/prior-day-high confluence ~30770-30776.",
+ "T17_REMINDER": "first target band is 1.0R-2.5R (widened at the bottom from 1.5R). Compute R first, take the NEAREST qualifying level, fixed 1.5R only if none qualifies.",
+ "T20_REMINDER": "your limit must sit BETWEEN current price and where the move came FROM (above, 30897.75). A limit below 30855.25 is a breakout bet and is forbidden.",
+ "T25_REMINDER": "escalation requires a same-candle break behind a named rejection. This pair IS same-candle, so if you can name what was rejected the escalation qualifies. The orchestrator's gate will still refuse it on a mechanical ground - it will not, here: you are FLAT, the window is open, the cap is not spent, there is no news, and it is past 09:35.",
+ "fills_this_window": 1,
+ "window_cap": 2,
+ "fill_model_note": "limits are simulated: touch-equals-fill"
+}

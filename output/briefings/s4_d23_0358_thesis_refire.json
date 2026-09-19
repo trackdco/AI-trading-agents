@@ -1,0 +1,139 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "rebalance_complete",
+ "window": "LONDON 03:00-04:59 ET",
+ "decision_minute": "2026-06-24T03:58 ET",
+ "leak_check": "pass - replay truncated at 03:57:59, verified against replay_status after the jump. Every value below is computed from bars strictly before this minute and re-checked against the tape.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/s4_d23_0358.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The screenshot is the chart at your decision minute with replay truncated there. Nothing prints to the right of the cursor. Read it yourself - no one has described it to you.",
+ "level_provenance": "levels_at_decision_BUILD are recomputed from committed bars strictly before this minute. His CHART states its own values in the legend at the top of your screenshot - read them there. The two were parity-gated at the session open and spot-checked during the run, agreeing to 0.36pt or better on every VWAP band and exactly on the BB MA. Where they differ, the chart is the authority.",
+ "price_at_decision": 29776.75,
+ "last_completed_2m_bar": {
+  "start": "03:56",
+  "closed_at": "03:58",
+  "open": 29788.25,
+  "high": 29790.5,
+  "low": 29771.75,
+  "close": 29776.75,
+  "volume": 252,
+  "minutes": 2
+ },
+ "position_state": "FLAT. Nothing open.",
+ "window_state": {
+  "LONDON": "0 fills of 2 - open",
+  "NY_PRE": "not yet open",
+  "NY_AM": "not yet open"
+ },
+ "levels_at_decision_CHART": {},
+ "levels_at_decision_BUILD": {
+  "vwap": {
+   "vwap": 29767.06,
+   "vwap_p1": 29836.05,
+   "vwap_p2": 29905.05,
+   "vwap_p3": 29974.04,
+   "vwap_m1": 29698.06,
+   "vwap_m2": 29629.07,
+   "vwap_m3": 29560.08
+  },
+  "bb_ma": {
+   "bb_ma_2m": 29801.22,
+   "bb_ma_3m": 29803.46,
+   "bb_ma_15m": 29784.01,
+   "bb_ma_60m": 29775.16
+  },
+  "day_range_fibs": {
+   "0.382": 29702.49,
+   "0.5": 29738.62,
+   "0.618": 29774.76,
+   "0.705": 29801.41
+  },
+  "session_high_so_far": 29891.75,
+  "session_low_so_far": 29585.5,
+  "daily_profile": {
+   "poc": 29821.0,
+   "val": 29707.0,
+   "vah": 29858.0,
+   "note": "DEVELOPING as-of 03:58"
+  },
+  "anchored_weekly_profile": {
+   "poc": 30640.0,
+   "val": 30030.0,
+   "vah": 30955.0,
+   "high": 30968.0,
+   "low": 29577.25,
+   "anchor": "2026-06-16 18:00:00-04:00",
+   "note": "DEVELOPING as-of 03:58"
+  },
+  "prior_day": {
+   "poc": 29733.0,
+   "val": 29637.0,
+   "vah": 29928.0,
+   "high": 30701.25,
+   "low": 29577.25
+  }
+ },
+ "fib_source": "developing session-day high-to-low, objective, recomputed at this minute",
+ "flush_inputs": {
+  "path_efficiency": 0.005,
+  "net_move_15m": 6.75,
+  "total_15m_travel": 1344.5,
+  "candles_15m_up": 19,
+  "candles_15m_down": 21,
+  "note": "path_efficiency = |net move| / summed 15m body travel, session to date. High efficiency with a lopsided count is the flush shape."
+ },
+ "last_15m_candles": [
+  {
+   "start": "03:00",
+   "open": 29824.25,
+   "high": 29840.75,
+   "low": 29786.0,
+   "close": 29813.25,
+   "body_ratio": 0.2
+  },
+  {
+   "start": "03:15",
+   "open": 29813.25,
+   "high": 29827.75,
+   "low": 29790.5,
+   "close": 29794.25,
+   "body_ratio": 0.51
+  },
+  {
+   "start": "03:30",
+   "open": 29792.75,
+   "high": 29821.75,
+   "low": 29765.5,
+   "close": 29816.0,
+   "body_ratio": 0.41
+  },
+  {
+   "start": "03:45",
+   "open": 29815.5,
+   "high": 29836.0,
+   "low": 29771.75,
+   "close": 29776.75,
+   "body_ratio": 0.6
+  }
+ ],
+ "macro": {
+  "lean": "neutral",
+  "confidence": "high",
+  "news_blackout": false,
+  "drivers": []
+ },
+ "what_to_emit": "your thesis JSON for this window, per your contract.",
+ "prior_thesis": {
+  "bias": "long",
+  "escalation_response": "reaffirmed",
+  "condition_for_other_side": "shorts licensed on a rejection at today's high / prior-day VAH zone (29890-29930) that stalls and rolls over - not on mid-range VWAP/BB-basis chop below daily VAH",
+  "waiting_for": "rebalance to the 15m MA (~29773) before longs are licensed",
+  "invalidation": {
+   "level": "weekly_low",
+   "price": 29577.25
+  },
+  "flush": false,
+  "reasoning": "The escalated rejection at vwap_p1 is mixed and weak across timeframes - 2m 6/15, 5m 2/6, 15m 0/3 wick only - and sits essentially at price and the BB 2m basis in mid-range chop, not the 29890-29930 top-of-range cluster the short condition names. Neither side is licensed at this spot."
+ },
+ "what_happened_since_the_last_read": "Since your last read price traded up to 29836.0 at 03:48 and then down to a low of 29771.75 at 03:57, closing the last completed 2m bar at 29776.75.",
+ "why_you_are_being_re-fired": "Your standing waiting_for was a rebalance to the 15m MA. It has completed: the 2m bar starting 03:56 traded a low of 29771.75 against a 15m MA of 29784.01, so price reached the level you were waiting for. The orchestrator re-fires you on a completed rebalance; this is a structural event, not an escalation, and no escalation budget was spent.\n\nFour candidates have been adjudicated in this window so far and all four were passed. No position has been opened and the LONDON cap of 2 fills is untouched."
+}

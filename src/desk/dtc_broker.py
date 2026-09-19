@@ -50,6 +50,23 @@ class DTCBroker:
         for _ in range(self.pump_rounds):
             self.client.pump(timeout=0.2)
 
+    def ensure_connected(self) -> bool:
+        """Idle keepalive — the fix for the 2026-08-02/03 armed-session incidents. Every
+        `_pump()` above only fires from ORDER ACTIVITY (submit/cancel/status/position), so
+        a quiet market leaves the socket completely untouched: no heartbeat out, nothing
+        read back, for as long as nothing trades. Whatever reaps idle sockets on the box
+        (Sierra's own idle timeout, a firewall, the OS) does so with nobody watching, and
+        the NEXT real order discovers a corpse. `DTCClient.ensure_connected()` already
+        exists and is already tested (test_reconnect_after_drop) — it was simply never
+        called on a cadence independent of trading. The live loop calls THIS every few
+        seconds regardless of activity; that's the entire fix. Returns False on a failed
+        reconnect attempt (caller alerts; never raises — a dead socket must never crash
+        the loop, only slow it down to journaled warnings)."""
+        try:
+            return self.client.ensure_connected()
+        except Exception:                          # noqa: BLE001 — never crash the loop
+            return False
+
     def _state(self, oid: str) -> dict:
         return self.client.order_state.get(oid, {})
 
@@ -76,6 +93,21 @@ class DTCBroker:
         check and the spine would have flatten+halted a perfectly protected bracket)."""
         return st.get("OrderStatus") in D.ORDER_ALIVE_STATUSES
 
+    @staticmethod
+    def _dead(st: dict) -> bool:
+        """Terminal-bad: the server reported SOME status, and it's neither alive nor a
+        genuine fill. Deliberately NOT limited to ORDER_STATUS_REJECTED (2026-08-05
+        incident): Sierra's own Trade Orders window showed two stop legs as "Error", a
+        label the DTC protocol's OrderStatusEnum has no distinct numeric code for — the old
+        REJECTED-only check never saw them, and the paired entry was left free to fill with
+        no protection. Whitelisting "known good" (alive-or-filled) instead of blacklisting
+        one specific "known bad" code catches this failure and any future one Sierra
+        reports that hasn't been seen yet. `status is not None` guards a leg with no
+        update at all yet — absence of news is not itself bad news."""
+        status = st.get("OrderStatus")
+        return status is not None and status not in D.ORDER_ALIVE_STATUSES \
+            and status != D.ORDER_STATUS_FILLED
+
     # ---- Broker protocol ----------------------------------------------------
     def submit_bracket(self, intent) -> str:
         ref = self.client.submit_bracket(
@@ -88,16 +120,22 @@ class DTCBroker:
                                "stop": float(intent.stop), "account": intent.account}
         self._pump()
         # PAIRING ENFORCEMENT (the one hole in the independent-pair geometry): the pair is
-        # only safe if BOTH legs live. A REJECTED leg with a working partner is either a
-        # naked entry (no protection) or a naked stop (can open a position from flat) —
-        # cancel the survivor immediately. REJECTED only: a FILLED entry is a healthy pair
-        # (position + protective stop), never a reason to pull the stop.
+        # only safe if BOTH legs live. A dead leg with a working partner is either a naked
+        # entry (no protection) or a naked stop (can open a position from flat) — cancel
+        # the survivor immediately. A dead ENTRY is never a reason to pull a working stop's
+        # partner-check the other way: a FILLED entry is a healthy pair (position +
+        # protective stop), never treated as dead here.
         entry_st, stop_st = self._state(ref), self._state(stop_oid)
-        rejected = D.ORDER_STATUS_REJECTED
-        if entry_st.get("OrderStatus") == rejected and self._working(stop_st):
+        entry_dead, stop_dead = self._dead(entry_st), self._dead(stop_st)
+        entry_filled = entry_st.get("OrderStatus") == D.ORDER_STATUS_FILLED
+        if entry_dead and self._working(stop_st):
             self.client.cancel_order(stop_oid)
             self._pump()
-        elif stop_st.get("OrderStatus") == rejected and self._working(entry_st):
+        elif stop_dead and entry_filled:
+            # the entry is ALREADY a real position with no protection — cancelling a fill
+            # is not possible; the only safe response left is to flatten it now.
+            self.flatten(intent.account)
+        elif stop_dead and self._working(entry_st):
             self.client.cancel_order(ref)
             self._pump()
         return ref

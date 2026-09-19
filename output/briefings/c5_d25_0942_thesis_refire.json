@@ -1,0 +1,196 @@
+{
+ "role": "tv-thesis",
+ "event_trigger": "escalation",
+ "window": "NY_AM 09:30-11:00 ET",
+ "decision_minute": "2026-06-26T09:42 ET",
+ "leak_check": "pass - truncated at 09:41:59; the 3m bar starting 09:39 completes AT 09:42. Session extremes developing to this minute.",
+ "screenshot": "/Users/barbelldaddy/tradingview-mcp/screenshots/v5_d25_c9_0942.png",
+ "HOW_TO_READ_THIS_SCREENSHOT": "The header OHLC legend follows the CROSSHAIR, not the last bar - it is never a leak. This briefing is the authoritative state. The chart is truncated at the cursor; there is nothing to the right of it. The chart carries NO trade drawings of any kind - every position tool from every prior run is hidden.",
+ "chart_note": "the weekly VP drawing on the chart is anchored to a different window than this session-day; ignore it visually. The correct weekly levels are numeric below and DEVELOPING.",
+ "level_provenance": "VWAP+bands and the 2m Bollinger read from his chart's own study series at the last bar; BB MAs, volume profiles and day-range fibs from the research build.",
+ "price_at_decision": 29251.5,
+ "last_completed_2m_bar": {
+  "start": "09:40",
+  "closed_at": "09:42",
+  "open": 29239.25,
+  "high": 29277.75,
+  "low": 29217.75,
+  "close": 29251.5,
+  "volume": 3060
+ },
+ "position_state": "FLAT. Nothing open, nothing being managed.",
+ "window_state": {
+  "LONDON": "1 fill of 2 - closed",
+  "NY_PRE": "1 fill of 1 - closed and capped",
+  "NY_AM": "0 fills of 2 - open"
+ },
+ "levels_at_decision_CHART": {
+  "vwap": 29429.61,
+  "vwap_p1": 29596.97,
+  "vwap_p2": 29764.32,
+  "vwap_m1": 29262.26,
+  "vwap_m2": 29094.91,
+  "bb_ma_2m": 29286.25,
+  "bb_ma_3m": 29300.69,
+  "bb_ma_15m": 29363.96,
+  "bb_ma_60m": 29494.97
+ },
+ "levels_at_decision_BUILD": {
+  "bb_ma_2m": 29286.25,
+  "bb_ma_3m": 29300.69,
+  "bb_ma_15m": 29363.96,
+  "bb_ma_60m": 29494.97,
+  "day_range_fibs": {
+   "0.382": 29440.22,
+   "0.5": 29526.62,
+   "0.618": 29613.03,
+   "0.705": 29676.74
+  },
+  "session_high_so_far": 29892.75,
+  "session_low_so_far": 29160.5,
+  "daily_profile": {
+   "poc": 29369.0,
+   "val": 29215.0,
+   "vah": 29498.0,
+   "note": "DEVELOPING as-of 09:42"
+  },
+  "anchored_weekly_profile": {
+   "poc": 29710.0,
+   "val": 29264.0,
+   "vah": 30069.0,
+   "note": "DEVELOPING as-of 09:42"
+  },
+  "prior_day": {
+   "poc": 29655.0,
+   "val": 29465.0,
+   "vah": 29884.0,
+   "high": 30263.75,
+   "low": 29295.75
+  },
+  "weekly_high": 30968.0,
+  "weekly_low": 29160.5
+ },
+ "fib_source": "developing session-day H->L, objective",
+ "structure_notes": {
+  "hourly_closes_so_far": {
+   "03:00": {
+    "close": 29503.75,
+    "H": 29892.75,
+    "L": 29160.5
+   },
+   "04:00": {
+    "close": 29527.75,
+    "H": 29892.75,
+    "L": 29160.5
+   },
+   "05:00": {
+    "close": 29399.5,
+    "H": 29892.75,
+    "L": 29160.5
+   },
+   "06:00": {
+    "close": 29370.75,
+    "H": 29892.75,
+    "L": 29160.5
+   },
+   "07:00": {
+    "close": 29361.5,
+    "H": 29892.75,
+    "L": 29160.5
+   },
+   "08:00": {
+    "close": 29351.0,
+    "H": 29892.75,
+    "L": 29160.5
+   },
+   "09:00": {
+    "close": 29315.25,
+    "H": 29892.75,
+    "L": 29160.5
+   },
+   "09:30": {
+    "close": 29360.75,
+    "H": 29892.75,
+    "L": 29160.5
+   }
+  },
+  "15m_MA_crosses_so_far": [
+   {
+    "t": "05:00",
+    "dir": "DOWN",
+    "ma": 29408.19,
+    "close": 29399.5,
+    "body_ratio": 0.54
+   },
+   {
+    "t": "05:45",
+    "dir": "UP",
+    "ma": 29419.06,
+    "close": 29421.75,
+    "body_ratio": 0.48
+   },
+   {
+    "t": "08:15",
+    "dir": "UP",
+    "ma": 29417.15,
+    "close": 29420.5,
+    "body_ratio": 0.69
+   },
+   {
+    "t": "08:30",
+    "dir": "DOWN",
+    "ma": 29410.21,
+    "close": 29396.75,
+    "body_ratio": 0.31
+   }
+  ],
+  "signal_candle_3m": {
+   "start": "09:39",
+   "closed_at": "09:42",
+   "open": 29280.5,
+   "high": 29286.25,
+   "low": 29217.75,
+   "close": 29251.5,
+   "volume": 4631
+  },
+  "note": "listed only up to this decision minute."
+ },
+ "macro": {
+  "news_blackout": false,
+  "note": "no scheduled release inside this window."
+ },
+ "what_to_emit": "your standard thesis JSON for this window.",
+ "prior_thesis": {
+  "bias": "long",
+  "targets": [
+   {
+    "level": "prior_day_val",
+    "price": 29465.0
+   },
+   {
+    "level": "day_range_fib_0.5",
+    "price": 29526.62
+   },
+   {
+    "level": "anchored_weekly_poc",
+    "price": 29710.0
+   }
+  ],
+  "invalidation": {
+   "level": "anchored_weekly_val",
+   "price": 29278.0
+  },
+  "waiting_for": "a 15m close back above the 15m BB MA (~29373.79, confluent with the daily POC 29369) confirming the reclaim off the vwap_m1 / weekly VAL / prior-day-low confluence is resuming - a touch of the 2m/3m MA alone does not count on this rotational day",
+  "two_sided": true,
+  "condition_for_other_side": "shorts licensed on a 15m decisive-body close below the vwap_m1 / anchored weekly VAL / prior-day-low confluence (~29278-29296), reopening downside toward daily VAL 29225 and a retest of the weekly low 29160.5; also licensed on a stall or rejection at the VWAP / 0.5-fib / daily VAH confluence (~29450-29527) that rolls over",
+  "anticipated_resolution": {
+   "level": "bb_ma_15m_daily_poc_confluence",
+   "price": 29373.79,
+   "expect": "break_up",
+   "act_on_resolution": true
+  },
+  "acceptance_rule": "a 15m close with a decisive body beyond the level counts; a wick-only poke does not - the overnight dip below the weekly low 29160.5 was reclaimed with no confirming 15m close beneath it, so that low is still defended",
+  "reasoning": "Overnight swept the weekly low, reclaimed hard to the VWAP / 0.5-fib zone near 29524 and rejected there as flagged. The pullback since held above the vwap_m1 / weekly VAL / prior-day-low confluence with no new low, and the last 2m bar reclaimed sharply into the daily POC. Bottoming a multi-day range on a rotational rather than trend day, so the 15m MA stays the rebalance floor."
+ },
+ "why_you_are_being_re-fired": "Tier 2 returned pass with thesis_stale true and raised an escalation, which the orchestrator's gate granted. The gate checked, in order: the refusal was not mechanical; a rejected level was named; the pair was same-candle; this candidate had not escalated before; the level had not already been escalated at this price; and the NY_AM budget of 2 was not spent. Budget after this request: 1 of 2 remaining.\n\nWhat Tier 2 reported: the 3m candle closing 09:42 ran to a high of 29286.25, exactly the own 2m MA, was rejected there, and closed at 29251.5 - below the vwap_m1 / anchored weekly VAL confluence - breaking two levels in the same candle. It named the rejected level as the 2m MA at 29286.25.\n\nWhy it says it could not act: your waiting_for and condition_for_other_side both require a 15m decisive-body close below that confluence to license shorts on a rotational day, and only a 3m break exists so far.\n\nYou may accommodate - restate the condition so this shape qualifies - or re-affirm it unchanged. Both are valid and the orchestrator records which you chose. Re-affirming means no trade is taken here."
+}
